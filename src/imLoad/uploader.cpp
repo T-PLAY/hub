@@ -55,13 +55,15 @@ void Uploader::uploadTask() {
     std::cout << "rate : " << rate << std::endl;
 
     std::vector<std::string> positions;
-    while(!stream.eof()) {
-        stream.getline(buf, 256);
+    stream.getline(buf, 256);
+    while(!stream.eof() && strcmp(buf,"END") != 0) {
         positions.emplace_back(buf);
         std::cout << positions.back() << std::endl;
+        stream.getline(buf, 256);
     }
 
     if(positions.size() != _list.size()) {
+        std::cout << positions.size() << "/" << _list.size() << std::endl;
         progress->setLabelText("inconsistent coords and images");
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
         progress->setValue(100);
