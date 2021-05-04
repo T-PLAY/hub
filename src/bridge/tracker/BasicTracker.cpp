@@ -10,11 +10,7 @@ TrackerData BasicTracker::data() const {
 }
 
 void BasicTracker::start() {
-#ifdef _WIN32
-    bind(_sock,(SOCKADDR *)&_addr,sizeof(_addr));
-#elif __linux__
-    bind(_sock , (struct sockaddr*)&_addr, sizeof(_addr));
-#endif
+    _sock.bind(5123);
 
     _readThread = std::thread([this](){BasicTracker::readData();});
 
@@ -25,47 +21,16 @@ void BasicTracker::end() {
     _listen = false;
     _readThread.join();
 
-#ifdef _WIN32
-    closesocket(_sock);
-    WSACleanup();
-#elif __linux__
-    close(_sock);
-#endif
-}
-
-BasicTracker::BasicTracker() {
-#ifdef _WIN32
-    WSADATA WSAData;
-    WSAStartup(MAKEWORD(2,0), &WSAData);
-
-    _addr.sin_addr.s_addr = htonl (INADDR_ANY);
-    _addr.sin_family = AF_INET;
-    _addr.sin_port = htons(5123);
-    _sock = socket(AF_INET,SOCK_DGRAM,0);
-#elif __linux__
-    _sock=socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-    memset((char *) &_addr, 0, sizeof(_addr));
-
-    _addr.sin_family = AF_INET;
-    _addr.sin_port = htons(5123);
-    _addr.sin_addr.s_addr = htonl(INADDR_ANY);
-
-#endif
+    _sock.close();
 }
 
 void BasicTracker::readData() {
 
-    struct sockaddr udpaddrfrom;
-#ifdef _WIN32
-    int fromlen = sizeof(udpaddrfrom);
-#elif __linux__
-    socklen_t fromlen = sizeof(udpaddrfrom);
-#endif
-
     char buffer[256];
     int nread = 0;
-    while(_listen) {
-        nread = recvfrom(_sock,buffer,sizeof(buffer),0,&udpaddrfrom,&fromlen);
+    while(_listen && _sock.hasPendingDatagrams()) {
+        nread = _sock.readDatagram(buffer,256);
+        std::cout << nread << std::endl;
         _connected = true;
 
         int offset = 0;
