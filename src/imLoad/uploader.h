@@ -8,9 +8,7 @@
 #include <QProgressDialog>
 #include <fstream>
 
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
+#include <QTcpSocket>
 
 class Uploader {
 private:
@@ -20,9 +18,7 @@ private:
     int _port;
     QProgressDialog* progress;
 
-    int _sock;
-    struct sockaddr_in _addr;
-    socklen_t _addrLen;
+    QTcpSocket _sock;
 
     std::thread _uploadThread;
     bool _uped = false;

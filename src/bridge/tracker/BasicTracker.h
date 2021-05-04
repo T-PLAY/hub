@@ -2,35 +2,13 @@
 #define BRIDGE_BASICTRACKER_H
 #include "Tracker.h"
 #include <thread>
-
-#ifdef _WIN32
-#include <WinSock2.h>
-#include <Ws2tcpip.h>
-#pragma comment(lib, "Ws2_32.lib")
-#elif __linux__
-
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <arpa/inet.h>
-#include <cstring>
-#include <unistd.h>
-
-#endif
+#include <QUdpSocket>
 
 class BasicTracker : public Tracker{
 
-#ifdef _WIN32
-private:
-    SOCKET _sock;
-    SOCKADDR_IN _addr;
-
-#elif __linux__
-private:
-    int _sock;
-    struct sockaddr_in _addr;
-#endif
-
 private :
+    QUdpSocket _sock;
+
     bool _connected = false;
     TrackerData _data;
     std::thread _readThread;
@@ -45,10 +23,6 @@ public :
 
     void start() override;
     void end() override;
-
-    BasicTracker();
-
-
 };
 
 

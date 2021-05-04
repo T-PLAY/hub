@@ -7,13 +7,7 @@
 Uploader::Uploader(const QDir& dir, QStringList list, QString ipAddress, const QString& port) : _dir{dir}, _list{std::move(list)}, _ipAddress{std::move(ipAddress)}{
     _port = port.toInt();
 
-    _sock = socket(AF_INET, SOCK_STREAM, 0);
 
-
-    _addr.sin_family = AF_INET;
-    inet_pton(AF_INET, _ipAddress.toStdString().c_str(), &_addr.sin_addr);
-    _addr.sin_port = htons(_port);
-    _addrLen = sizeof(_addr);
 }
 
 void Uploader::upload() {
@@ -33,7 +27,9 @@ void Uploader::uploadTask() {
     int fileNum = _list.size();
     auto max = static_cast<float>(fileNum+1);
 
-    if(connect(_sock, reinterpret_cast<const sockaddr*>(&_addr), _addrLen) < 0) {
+    _sock.connectToHost(_ipAddress,_port);
+
+    if(!_sock.waitForConnected(1000)) {
         progress->setLabelText("Could not connect");
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
         progress->setValue(100);
@@ -72,29 +68,32 @@ void Uploader::uploadTask() {
 
     int strsize = positions.back().size();
 
-    send(_sock,&rate,sizeof(rate),0);
-
-    send(_sock,&fileNum,sizeof(fileNum),0);
+    _sock.write((const char *)&rate,sizeof(rate));
+    _sock.write((const char *)&fileNum,sizeof(fileNum));
     progress->setValue(static_cast<int>(++count/max)*100);
+
+    _sock.waitForBytesWritten(1000);
+    std::vector<unsigned char> buffer;
 
     int i = 0;
     for(const auto & file : _list) {
         progress->setLabelText("Sending : " + file + " ...");
         std::ifstream in(_dir.absoluteFilePath(file).toStdString(),std::ios::binary);
-        std::vector<unsigned char> buffer(std::istreambuf_iterator<char>(in), {});
+        buffer = std::vector<unsigned char>(std::istreambuf_iterator<char>(in), {});
 
         buffer.shrink_to_fit();
         int imsize = buffer.size();
 
-        send(_sock, &strsize, sizeof(strsize), 0);
-        send(_sock, positions[i].c_str(), strsize, 0);
-        send(_sock, &imsize, sizeof(imsize), 0);
-        send(_sock, buffer.data(), imsize, 0);
+        _sock.write((const char *)&strsize,sizeof(strsize));
+        _sock.write(positions[i].c_str(),strsize);
+        _sock.write((const char *)&imsize, sizeof(imsize));
+        _sock.write((const char *)buffer.data(),imsize);
 
-
+        _sock.waitForBytesWritten(1000);
         progress->setValue(static_cast<int>(++count/max)*100);
         ++i;
     }
+
     _uped = true;
 }
 

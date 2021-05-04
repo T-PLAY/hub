@@ -5,18 +5,17 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <string>
+#include <QTcpSocket>
 
 class ModeSender {
 private :
-    int _sock;
-    struct sockaddr_in _addr;
-    socklen_t _addrLen = sizeof(_addr);
+    QTcpSocket _sock;
+    std::string _address;
     uint _mode;
-    std::string _ip;
-
 
 public:
-    ModeSender(uint mode, std::string ip);
+    ModeSender(uint mode, std::string  ip);
+    ~ModeSender() = default;
 
     bool sendMode();
 
