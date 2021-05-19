@@ -8,26 +8,31 @@
 
 class ImageStream {
 private :
-    QTcpSocket _sock;
     QString _ipAddress;
 
     const int _port = 4041;
-    int _sendRate;
+    int _sendTime;
 
     bool _paused = false;
     bool _running = false;
+    bool _connected = false;
+    bool _error = false;
 
     std::string _message;
 
     std::unique_ptr<ImageAcquisition> _imAcq;
+    std::thread _sendThread;
 
     void streamImages();
 
 public:
-    ImageStream(std::unique_ptr<ImageAcquisition> imAcq, QString& ipAddress, int sendRate);
+    ImageStream(std::unique_ptr<ImageAcquisition> imAcq, int sendRate);
 
-    void start();
+    void start(const QString& ipAddress);
     void stop();
+
+    bool error() const;
+    bool connected() const;
 
     const std::string& message() const;
 
