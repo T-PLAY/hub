@@ -76,6 +76,10 @@ add_executable(${PROJECT_NAME} main.cpp
         #IMAGE LOAD
         src/imLoad/uploader.h src/imLoad/uploader.cpp
 
+        #IMAGE STREAM
+        src/imStream/ImageAcquisition.h
+        src/imStream/FileStreamer.h src/imStream/FileStreamer.cpp
+        src/imStream/ImageStream.h src/imStream/ImageStream.cpp
 
         )
 
