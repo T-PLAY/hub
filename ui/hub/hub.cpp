@@ -45,6 +45,7 @@ void Hub::OnLaunchClicked() {
         case 1 : //Select
             _mode = 1;
             if(sendMode()) {
+                _sw.setIp(ui->_ipEdit->text().toStdString());
                 _sw.show();
                 hide();
             } else {
@@ -56,6 +57,7 @@ void Hub::OnLaunchClicked() {
         case 2 : //Stream
             _mode = 2;
             if(sendMode()) {
+                _stw.setIp(ui->_ipEdit->text().toStdString());
                 _stw.show();
                 hide();
             } else {

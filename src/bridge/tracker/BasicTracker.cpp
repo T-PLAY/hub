@@ -26,11 +26,12 @@ void BasicTracker::end() {
 
 void BasicTracker::readData() {
 
+    std::cout << "read" << std::endl;
     char buffer[256];
-    int nread = 0;
-    while(_listen && _sock.hasPendingDatagrams()) {
+    long long nread = 0;
+    while(_listen) {
         nread = _sock.readDatagram(buffer,256);
-        std::cout << nread << std::endl;
+
         _connected = true;
 
         int offset = 0;
@@ -38,9 +39,9 @@ void BasicTracker::readData() {
             _data.nId = (buffer[offset+2]) - 1;
             offset += 12;
 
-            _data.v = - *reinterpret_cast<float*>(buffer+offset)/div;
-            _data.t = - *reinterpret_cast<float *>(buffer+offset+4)/div;
-            _data.u = *reinterpret_cast<float *>(buffer+offset+8)/div;
+            _data.v =  *reinterpret_cast<float*>(buffer+offset)/div;
+            _data.t =  *reinterpret_cast<float *>(buffer+offset+4)/div;
+            _data.u = - *reinterpret_cast<float *>(buffer+offset+8)/div;
             offset += 12;
 
             _data.w = *reinterpret_cast<float *>(buffer+offset);
@@ -52,6 +53,7 @@ void BasicTracker::readData() {
         }
 
     }
+    std::cout << "end read" << std::endl;
 }
 
 

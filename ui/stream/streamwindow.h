@@ -31,6 +31,8 @@ private:
     std::thread _updateThread;
     bool _alive = true;
 
+    std::string _baseIp = "127.0.0.1";
+
     void update_values();
     void update_fields();
     void update_infos();

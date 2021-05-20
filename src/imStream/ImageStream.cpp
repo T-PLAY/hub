@@ -43,8 +43,8 @@ void ImageStream::streamImages() {
             sock.write((const char *) &imsize, sizeof(imsize));
             std::cout << "sent size" << std::endl;
             sock.write((const char *) image.data(), imsize);
-
-            sock.waitForBytesWritten(1000);
+            sock.flush();
+            sock.waitForBytesWritten(5000);
             _message = "Sent image of size : " + std::to_string(imsize);
             if(_running) {
                 std::this_thread::sleep_for(std::chrono::milliseconds(_sendTime));

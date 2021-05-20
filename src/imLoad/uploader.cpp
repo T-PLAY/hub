@@ -78,6 +78,7 @@ void Uploader::uploadTask() {
     int i = 0;
     for(const auto & file : _list) {
         progress->setLabelText("Sending : " + file + " ...");
+        std::cout << _list.size() << "  " << file.toStdString() << std::endl;
         std::ifstream in(_dir.absoluteFilePath(file).toStdString(),std::ios::binary);
         buffer = std::vector<unsigned char>(std::istreambuf_iterator<char>(in), {});
 
@@ -88,8 +89,10 @@ void Uploader::uploadTask() {
         _sock.write(positions[i].c_str(),strsize);
         _sock.write((const char *)&imsize, sizeof(imsize));
         _sock.write((const char *)buffer.data(),imsize);
+        _sock.flush();
 
-        _sock.waitForBytesWritten(1000);
+        _sock.waitForBytesWritten(5000);
+        std::cout << "sent : " << file.toStdString() << std::endl;
         progress->setValue(static_cast<int>(++count/max)*100);
         ++i;
     }

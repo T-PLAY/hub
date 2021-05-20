@@ -47,9 +47,8 @@ StreamWindow::StreamWindow(QWidget *parent) :
     _updateThread = std::thread([this](){ StreamWindow::message_update();});
     _streamUpdateThread = std::thread([this](){ StreamWindow::stream_update();});
 
-    ui->_folderName->setText("../streams/echos");
-    ui->_ipAddress->setText("127.0.0.1");
-    ui->_sendRateEdit->setText("15");
+    ui->_folderName->setText("../streams/echosPNG");
+    ui->_sendRateEdit->setText("5");
 
 
 }
@@ -60,7 +59,10 @@ StreamWindow::~StreamWindow()
 }
 
 void StreamWindow::setIp(const std::string &ip) {
+    _baseIp = ip;
     ui->_ipAddress->setText(ip.c_str());
+    ui->_senderLine1->setText(ip.c_str());
+
 }
 
 void StreamWindow::update_values() {
@@ -104,7 +106,7 @@ void StreamWindow::update_fields() {
     }
     switch (_infos.senderType) {
         case UDPSENDER :
-            ui->_senderLine1->setText("127.0.0.1");
+            ui->_senderLine1->setText(_baseIp.c_str());
             ui->_senderLine2->setText("4040");
             break;
 
