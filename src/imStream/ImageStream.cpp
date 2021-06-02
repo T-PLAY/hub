@@ -9,10 +9,20 @@ ImageStream::ImageStream(std::unique_ptr<ImageAcquisition> imAcq, int sendRate):
 
 }
 
-ImageStream::~ImageStream() = default;
+ImageStream::~ImageStream(){
+    _running = false;
+    _imAcq->stop();
+    if(_sendThread.joinable())
+        _sendThread.join();
+}
 
 void ImageStream::streamImages() {
-    _imAcq->start();
+    if(!_imAcq->start()) {
+        _message = "Error with acquisition (wrong folder ?)";
+        _running = false;
+        _error = true;
+        return;
+    }
 
     QTcpSocket sock;
 
@@ -68,7 +78,8 @@ const std::string &ImageStream::message() const {
 void ImageStream::stop() {
     _running = false;
     _imAcq->stop();
-    _sendThread.join();
+    if(_sendThread.joinable())
+        _sendThread.join();
     _message = "Stream is stopped";
 }
 

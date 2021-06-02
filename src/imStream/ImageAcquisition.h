@@ -8,7 +8,7 @@ public:
 
     virtual bool imagePending() const = 0;
 
-    virtual void start() = 0;
+    virtual bool start() = 0;
     virtual void stop() = 0;
 
 };

@@ -32,6 +32,7 @@ private:
     bool _alive = true;
 
     std::string _baseIp = "127.0.0.1";
+    std::string _baseMessage = "Stream is stopped";
 
     void update_values();
     void update_fields();

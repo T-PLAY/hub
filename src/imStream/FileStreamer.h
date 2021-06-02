@@ -17,7 +17,7 @@ public :
     std::vector<unsigned char> image() final;
     bool connected() const final;
     bool imagePending() const final;
-    void start() final;
+    bool start() final;
     void stop() final;
 
 private :

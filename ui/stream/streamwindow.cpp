@@ -243,7 +243,7 @@ void StreamWindow::stream_update() {
         if(_stream) {
             ui->_label->setText(_stream->message().c_str());
         } else {
-            ui->_label->setText("Stream is stopped");
+            ui->_label->setText(_baseMessage.c_str());
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
@@ -270,6 +270,9 @@ void StreamWindow::start_stream_clicked() {
         ui->_streamStop->setEnabled(true);
         ui->_streamStart->setEnabled(false);
         ui->_updateStream->setEnabled(false);
+    } else if (_stream->error()) {
+        _baseMessage = _stream->message();
+        _stream.reset(nullptr);
     }
 }
 
@@ -309,5 +312,6 @@ void StreamWindow::source_changed(int index) {
 }
 
 void StreamWindow::updateStream_clicked() {
+    _baseMessage = "Stream is stopped";
     _stream.reset(nullptr);
 }
