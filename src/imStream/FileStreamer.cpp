@@ -40,14 +40,20 @@ void FileStreamer::readImages() {
     _connected = false;
 }
 
-void FileStreamer::start() {
+bool FileStreamer::start() {
+    if(_list.empty()) {
+        return false;
+    }
+
     _read = true;
     _readThread = std::thread([this](){FileStreamer::readImages();});
+    return true;
 }
 
 void FileStreamer::stop() {
     _read = false;
-    _readThread.join();
+    if(_readThread.joinable())
+        _readThread.join();
 }
 
 
