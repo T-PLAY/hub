@@ -63,6 +63,7 @@ void StreamWindow::setIp(const std::string &ip) {
     ui->_ipAddress->setText(ip.c_str());
     ui->_senderLine1->setText(ip.c_str());
 
+    update_clicked();
 }
 
 void StreamWindow::update_values() {
@@ -254,7 +255,7 @@ void StreamWindow::start_stream_clicked() {
         std::unique_ptr<ImageAcquisition> acq;
         switch(ui->_sourceCombo->currentIndex()) {
             case 0 :
-                acq = std::make_unique<FileStreamer>(ui->_folderName->text(), 10);
+                acq = std::make_unique<FileStreamer>(ui->_folderName->text(), 120);
                 break;
             default:
                 std::cout << "unimplemented source for streaming" << std::endl;
