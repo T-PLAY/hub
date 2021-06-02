@@ -38,7 +38,7 @@ SelectWindow::SelectWindow(QWidget *parent) :
 
 
     ui->_folderName->setText("../images/base");
-    ui->_ipAddress->setText("127.0.0.1");
+    ui->_ipAddress->setText(_baseIp.c_str());
     ui->_port->setText("4041");
 
     _updateThread= std::thread([this](){ SelectWindow::message_update();});
@@ -64,7 +64,11 @@ void SelectWindow::upload_clicked() {
 }
 
 void SelectWindow::setIp(const std::string& ip) {
+    _baseIp = ip;
     ui->_ipAddress->setText(ip.c_str());
+    ui->_senderLine1->setText(ip.c_str());
+
+    update_clicked();
 }
 
 
@@ -114,7 +118,7 @@ void SelectWindow::update_fields() {
     }
     switch (_infos.senderType) {
         case UDPSENDER :
-            ui->_senderLine1->setText("127.0.0.1");
+            ui->_senderLine1->setText(_baseIp.c_str());
             ui->_senderLine2->setText("4040");
             break;
 
