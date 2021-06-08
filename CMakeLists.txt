@@ -81,7 +81,7 @@ add_executable(${PROJECT_NAME} main.cpp
         src/imStream/FileStreamer.h src/imStream/FileStreamer.cpp
         src/imStream/ImageStream.h src/imStream/ImageStream.cpp
 
-        )
+        src/imStream/L515Streamer.cpp src/imStream/L515Streamer.h)
 
 
 target_link_libraries(${PROJECT_NAME} ${REQUIRED_LIBS_QUALIFIED} ${WIN32_REQUIRED_LIBS} ${UNIX_REQUIRED_LIBS})
