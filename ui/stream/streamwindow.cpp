@@ -2,6 +2,7 @@
 #include "streamwindow.h"
 #include "ui_streamwindow.h"
 #include "../../src/imStream/FileStreamer.h"
+#include "../../src/imStream/L515Streamer.h"
 
 StreamWindow::StreamWindow(QWidget *parent) :
         QMainWindow(parent),
@@ -18,7 +19,7 @@ StreamWindow::StreamWindow(QWidget *parent) :
     _infos.senderType = UDPSENDER;
 
     ui->_sourceCombo->addItem("Folder");
-    //ui->_sourceCombo->addItem("Test");
+    ui->_sourceCombo->addItem("L515");
 
 
     ui->_stopButton->setEnabled(false);
@@ -47,8 +48,8 @@ StreamWindow::StreamWindow(QWidget *parent) :
     _updateThread = std::thread([this](){ StreamWindow::message_update();});
     _streamUpdateThread = std::thread([this](){ StreamWindow::stream_update();});
 
-    ui->_folderName->setText("../streams/echosPNG");
-    ui->_sendRateEdit->setText("5");
+    ui->_folderName->setText("../streams/echos");
+    ui->_sendRateEdit->setText("15");
 
 
 }
@@ -255,7 +256,10 @@ void StreamWindow::start_stream_clicked() {
         std::unique_ptr<ImageAcquisition> acq;
         switch(ui->_sourceCombo->currentIndex()) {
             case 0 :
-                acq = std::make_unique<FileStreamer>(ui->_folderName->text(), 120);
+                acq = std::make_unique<FileStreamer>(ui->_folderName->text(), 30);
+                break;
+            case  1 :
+                acq = std::make_unique<L515Streamer>(6);
                 break;
             default:
                 std::cout << "unimplemented source for streaming" << std::endl;
