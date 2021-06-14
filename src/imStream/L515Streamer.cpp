@@ -48,7 +48,7 @@ void L515Streamer::readImages() {
     QTcpSocket sock;
     int a = 0;
     uint imLen=0;
-    sock.connectToHost("127.0.0.1",4044);
+    sock.connectToHost("127.0.0.1",4043);
     std::cout << "trying to connect to python" << std::endl;
 
     if(!sock.waitForConnected(2000)) {

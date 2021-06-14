@@ -21,7 +21,7 @@ print("Camera connected")
 while True :
     print("\nStarting server...")
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server.bind(("127.0.0.1", 4044))
+    server.bind(("127.0.0.1", 4043))
     server.listen(1)
     print("Server is listening")
 
