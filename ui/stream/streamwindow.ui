@@ -40,7 +40,7 @@
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
-      <string>Bridge</string>
+      <string>Stream</string>
      </attribute>
      <widget class="QWidget" name="gridLayoutWidget">
       <property name="geometry">
