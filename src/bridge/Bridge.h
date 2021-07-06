@@ -52,6 +52,8 @@ public:
 
     void setupSync(const SyncInfo& infos);
 
+    std::string getCurrentPos() const;
+
 };
 
 

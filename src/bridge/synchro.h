@@ -28,6 +28,7 @@ public :
     void end();
 
     const std::string& message() const;
+    std::string getCurrentPos() const;
 
 };
 

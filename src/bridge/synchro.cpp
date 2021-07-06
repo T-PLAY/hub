@@ -34,10 +34,10 @@ void Synchro::sendData() {
                                         + std::to_string(data.u) + " ; "
                                         + std::to_string(data.v) + ")"
                                         + "\n\trotation("
-                                        + std::to_string(data.w) + " ; "
                                         + std::to_string(data.x) + " ; "
                                         + std::to_string(data.y) + " ; "
-                                        + std::to_string(data.z) + ")";
+                                        + std::to_string(data.z) + " ; "
+                                        + std::to_string(data.w) + ")";
 
         std::this_thread::sleep_for(std::chrono::milliseconds(_sendTime));
     }
@@ -51,4 +51,8 @@ void Synchro::stop(){
 
 const std::string &Synchro::message() const{
     return _message;
+}
+
+std::string Synchro::getCurrentPos() const {
+    return Utils::dataToMessage(_tracker->data());
 }
