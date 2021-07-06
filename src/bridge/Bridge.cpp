@@ -49,3 +49,7 @@ void Bridge::setupSync(const SyncInfo& infos) {
 const std::string &Bridge::syncMessage() const {
     return _sync->message();
 }
+
+std::string Bridge::getCurrentPos() const {
+    return _sync->getCurrentPos();
+}

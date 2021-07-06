@@ -40,6 +40,11 @@ StreamWindow::StreamWindow(QWidget *parent) :
     connect(ui->_streamStop, SIGNAL(clicked()), this, SLOT(stop_stream_clicked()));
     connect(ui->_updateButton, SIGNAL(clicked()), this, SLOT(update_clicked()));
     connect(ui->_updateStream, SIGNAL(clicked()), this, SLOT(updateStream_clicked()));
+    connect(ui->_startRecord, SIGNAL(clicked()), this, SLOT(startRecord_clicked()));
+    connect(ui->_stopRecord, SIGNAL(clicked()), this, SLOT(stopRecord_clicked()));
+    connect(ui->_pauseRecord, SIGNAL(clicked()), this, SLOT(pauseRecord_clicked()));
+    connect(ui->_recordSelect, SIGNAL(clicked()), this, SLOT(selectRecord_clicked()));
+
 
     connect(ui->_trackerComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(tracker_changed(int)));
     connect(ui->_senderComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(sender_changed(int)));
@@ -154,6 +159,7 @@ bool StreamWindow::stop_sync() {
 void StreamWindow::message_update() {
     while (_alive) {
         ui->_infoLabel->setText(_bridge.syncMessage().c_str());
+        ui->_recordMessage->setText(_recorder.message().c_str());
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 }
@@ -319,4 +325,56 @@ void StreamWindow::source_changed(int index) {
 void StreamWindow::updateStream_clicked() {
     _baseMessage = "Stream is stopped";
     _stream.reset(nullptr);
+}
+
+void StreamWindow::startRecord_clicked() {
+    if(_recorder.startSession(ui->_recordFolderEdit->text().toStdString(),ui->_recordNameEdit->text().toStdString(), ui->_recordRateEdit->text().toInt())) {
+        _recording = true;
+        _recordPaused = false;
+        _recordTime = 1000/(ui->_recordRateEdit->text().toInt());
+        ui->_startRecord->setEnabled(false);
+        ui->_stopRecord->setEnabled(true);
+        ui->_pauseRecord->setEnabled(true);
+
+        _recordThread = std::thread([this](){StreamWindow::record_routine();});
+    }
+}
+
+void StreamWindow::stopRecord_clicked() {
+    _recorder.stopSession();
+    _recording = false;
+    _recordPaused = false;
+    ui->_startRecord->setEnabled(true);
+    ui->_stopRecord->setEnabled(false);
+    ui->_pauseRecord->setEnabled(false);
+
+    if(_recordThread.joinable()) {
+        _recordThread.join();
+    }
+}
+
+void StreamWindow::pauseRecord_clicked() {
+    _recordPaused = !_recordPaused;
+    ui->_startRecord->setEnabled(true);
+    ui->_stopRecord->setEnabled(true);
+    ui->_pauseRecord->setEnabled(true);
+}
+
+void StreamWindow::selectRecord_clicked() {
+    QFileDialog dialog;
+    dialog.setFileMode(QFileDialog::DirectoryOnly);
+    dialog.setOption(QFileDialog::ShowDirsOnly, true);
+    dialog.setDirectory("../images");
+    if (dialog.exec()) {
+        ui->_recordFolderEdit->setText(dialog.directory().path());
+    }
+}
+
+void StreamWindow::record_routine() {
+    while(_recording) {
+        if(!_recordPaused) {
+            _recorder.record(_stream->getCurrentImage(),_bridge.getCurrentPos());
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(_recordTime));
+    }
 }

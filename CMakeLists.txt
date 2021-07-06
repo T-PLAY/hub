@@ -1,5 +1,8 @@
 cmake_minimum_required (VERSION 3.8)
 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 project ("HubV2")
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
@@ -55,6 +58,9 @@ add_executable(${PROJECT_NAME} main.cpp
         ui/stream/streamwindow.ui ui/stream/streamwindow.h ui/stream/streamwindow.cpp
 
         #SRC
+        #EXTERNAL
+        src/external/toojpeg.h src/external/toojpeg.cpp
+
         #BRIDGE
             #SENDER
             src/bridge/sender/FileSender.h src/bridge/sender/FileSender.cpp
@@ -81,7 +87,7 @@ add_executable(${PROJECT_NAME} main.cpp
         src/imStream/FileStreamer.h src/imStream/FileStreamer.cpp
         src/imStream/ImageStream.h src/imStream/ImageStream.cpp
 
-        src/imStream/L515Streamer.cpp src/imStream/L515Streamer.h)
+        src/imStream/L515Streamer.cpp src/imStream/L515Streamer.h src/recorder/recorder.cpp src/recorder/recorder.h)
 
 
 target_link_libraries(${PROJECT_NAME} ${REQUIRED_LIBS_QUALIFIED} ${WIN32_REQUIRED_LIBS} ${UNIX_REQUIRED_LIBS})

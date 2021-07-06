@@ -34,6 +34,8 @@ public:
     bool error() const;
     bool connected() const;
 
+    std::vector<unsigned char> getCurrentImage() const;
+
     const std::string& message() const;
 
     ~ImageStream();

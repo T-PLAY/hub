@@ -5,6 +5,7 @@
 
 #include "../../src/bridge/Bridge.h"
 #include "../../src/imStream/ImageStream.h"
+#include "../../src/recorder/recorder.h"
 
 namespace Ui {
     class StreamWindow;
@@ -26,10 +27,15 @@ private:
     bool _status;
     SyncInfo _infos;
     Bridge _bridge;
+    Recorder _recorder;
     std::unique_ptr<ImageStream> _stream;
     std::thread _streamUpdateThread;
     std::thread _updateThread;
+    std::thread _recordThread;
     bool _alive = true;
+    bool _recordPaused = false;
+    bool _recording = false;
+    int _recordTime;
 
     std::string _baseIp = "127.0.0.1";
     std::string _baseMessage = "Stream is stopped";
@@ -43,6 +49,8 @@ private:
 
     void message_update();
     void stream_update();
+    void record_routine();
+
 
 private slots :
     void start_clicked();
@@ -55,6 +63,12 @@ private slots :
     void sender_changed(int index);
     void source_changed(int index);
     void updateStream_clicked();
+
+    void startRecord_clicked();
+    void stopRecord_clicked();
+    void pauseRecord_clicked();
+    void selectRecord_clicked();
+
 
 };
 

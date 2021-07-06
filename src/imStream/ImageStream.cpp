@@ -43,6 +43,10 @@ void ImageStream::streamImages() {
     _message = "Waiting for acquisition";
     while (!_imAcq->connected() && _running);
     _message = "Streaming is running";
+    int type = _imAcq->dataType();
+    sock.write((const char*) &type, sizeof(type));
+    sock.waitForBytesWritten();
+
 
     while (_running) {
         while (!_imAcq->imagePending() && _running);
@@ -96,6 +100,10 @@ bool ImageStream::error() const {
 
 bool ImageStream::connected() const {
     return _connected;
+}
+
+std::vector<unsigned char> ImageStream::getCurrentImage() const {
+    return _imAcq->image();
 }
 
 
