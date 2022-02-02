@@ -5,8 +5,9 @@ L515Streamer::L515Streamer(int readRate) : _readTime(1000/readRate) {
     _dataType = RAW;
 }
 
-std::vector<unsigned char> L515Streamer::image() {
-    _pending = false;
+std::vector<unsigned char> L515Streamer::image(bool consumePending) {
+    if(consumePending)
+        _pending = false;
     return _currImage;
 }
 
@@ -67,14 +68,11 @@ void L515Streamer::readImages() {
             sock.write(std::to_string(a++).c_str(),1);
             sock.waitForBytesWritten(1000);
             std::cout << "wrote" << std::endl;
-            if(sock.waitForReadyRead(1000)) {
-
-                std::cout << sizeof(imLen) << std::endl;
+            if(sock.waitForReadyRead(5000)) {
                 imLen = 0;
                 sock.read((char *)&imLen, sizeof(imLen));
                 std::cout << "Python image lenght : " << imLen << std::endl;
 
-                imLen = 921600;
                 _currImage.clear();
                 _currImage.resize(imLen);
 
