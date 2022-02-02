@@ -93,7 +93,7 @@ void Uploader::uploadTask() {
 
         _sock.waitForBytesWritten(5000);
         std::cout << "sent : " << file.toStdString() << std::endl;
-        progress->setValue(static_cast<int>(++count/max)*100);
+        progress->setValue(static_cast<int>((float)(++count)/(float)max)*100);
         ++i;
     }
 

@@ -6,6 +6,7 @@
 #include <QDir>
 #include <fstream>
 
+
 #include "../external/toojpeg.h"
 
 class Recorder {
@@ -32,6 +33,8 @@ private:
     std::vector<std::vector<unsigned char>> _imageBuffer;
     std::vector<std::string> _positionBuffer;
 
+
+    std::string pad(int val, int w);
 
     inline static std::ofstream file;
 
