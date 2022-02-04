@@ -10,7 +10,7 @@ class L515Streamer : public ImageAcquisition {
 public :
     explicit L515Streamer(int readRate);
 
-    std::vector<unsigned char> image() final;
+    std::vector<unsigned char> image(bool consumePending) final;
     bool connected() const final;
     bool imagePending() const final;
     bool start() final;

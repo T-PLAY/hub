@@ -10,7 +10,7 @@ enum DataType {
 
 class ImageAcquisition {
 public:
-    virtual std::vector<unsigned char> image() = 0;
+    virtual std::vector<unsigned char> image(bool consumePending) = 0;
     virtual bool connected() const = 0;
 
     virtual bool imagePending() const = 0;

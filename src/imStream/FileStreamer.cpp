@@ -9,8 +9,9 @@ FileStreamer::FileStreamer(const QString& folder, int readRate) : _readTime(1000
     _list = _dir.entryList(QStringList() << "*.png" << "*.PNG" << "*.jpg" << "*.jpeg" << "*.JPG" << "*.JPEG");
 }
 
-std::vector<unsigned char> FileStreamer::image() {
-    _pending = false;
+std::vector<unsigned char> FileStreamer::image(bool consumePending) {
+    if(consumePending)
+        _pending = false;
     return _currImage;
 }
 

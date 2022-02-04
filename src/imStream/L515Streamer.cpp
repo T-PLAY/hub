@@ -1,5 +1,6 @@
 #include <iostream>
 #include "L515Streamer.h"
+#include <vector>
 
 L515Streamer::L515Streamer(int readRate) : _readTime(1000/readRate) {
     _dataType = RAW;

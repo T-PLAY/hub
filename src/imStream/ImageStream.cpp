@@ -51,7 +51,7 @@ void ImageStream::streamImages() {
     while (_running) {
         while (!_imAcq->imagePending() && _running);
         if (_imAcq->imagePending()) {
-            const auto &image = _imAcq->image();
+            const auto &image = _imAcq->image(true);
             int imsize = image.size();
 
             sock.write((const char *) &imsize, sizeof(imsize));
@@ -103,7 +103,7 @@ bool ImageStream::connected() const {
 }
 
 std::vector<unsigned char> ImageStream::getCurrentImage() const {
-    return _imAcq->image();
+    return _imAcq->image(false);
 }
 
 
