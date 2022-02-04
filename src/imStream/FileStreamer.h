@@ -14,7 +14,7 @@ class FileStreamer : public ImageAcquisition {
 public :
     FileStreamer(const QString& folder, int readRate);
 
-    std::vector<unsigned char> image() final;
+    std::vector<unsigned char> image(bool consumePending) final;
     bool connected() const final;
     bool imagePending() const final;
     bool start() final;
