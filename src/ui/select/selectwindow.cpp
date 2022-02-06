@@ -37,7 +37,7 @@ SelectWindow::SelectWindow(QWidget *parent) :
     connect(ui->_senderComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(sender_changed(int)));
 
 
-    ui->_folderName->setText("../images/base");
+    ui->_folderName->setText(PROJECT_DIR "images/base");
     ui->_ipAddress->setText(_baseIp.c_str());
     ui->_port->setText("4041");
 
@@ -49,7 +49,7 @@ void SelectWindow::select_clicked() {
     QFileDialog dialog;
     dialog.setFileMode(QFileDialog::DirectoryOnly);
     dialog.setOption(QFileDialog::ShowDirsOnly, true);
-    dialog.setDirectory("../images");
+    dialog.setDirectory(PROJECT_DIR "images");
     if (dialog.exec()) {
         ui->_folderName->setText(dialog.directory().path());
     }

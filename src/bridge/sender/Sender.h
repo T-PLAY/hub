@@ -2,7 +2,7 @@
 #define BRIDGE_SENDER_H
 
 #include <string>
-#include "../utils.h"
+#include <bridge/utils.h>
 class Sender {
 public :
     virtual void send(std::string message) = 0;

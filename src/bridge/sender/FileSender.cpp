@@ -1,7 +1,7 @@
 #include "FileSender.h"
 
 FileSender::FileSender(const std::string &fileName, int writeRate) {
-    _fileStream.open("../records/" + fileName,std::ofstream::out | std::ofstream::trunc);
+    _fileStream.open(PROJECT_DIR "records/" + fileName,std::ofstream::out | std::ofstream::trunc);
     if(_fileStream.is_open()) {
         std::cout << "File opened" << std::endl;
         _fileStream << writeRate << std::endl;

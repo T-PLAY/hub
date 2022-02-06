@@ -5,7 +5,7 @@
 #include <QFileDialog>
 #include <QDir>
 
-#include "../../src/imLoad/uploader.h"
+#include <imLoad/uploader.h>
 
 namespace Ui {
 class DiapoWindow;
