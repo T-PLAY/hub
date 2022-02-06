@@ -3,9 +3,9 @@
 
 #include <QMainWindow>
 
-#include "../../src/bridge/Bridge.h"
-#include "../../src/imStream/ImageStream.h"
-#include "../../src/recorder/recorder.h"
+#include <bridge/Bridge.h>
+#include <imStream/ImageStream.h>
+#include <recorder/recorder.h>
 
 namespace Ui {
     class StreamWindow;

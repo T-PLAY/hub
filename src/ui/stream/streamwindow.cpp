@@ -1,8 +1,8 @@
 #include <QFileDialog>
 #include "streamwindow.h"
 #include "ui_streamwindow.h"
-#include "../../src/imStream/FileStreamer.h"
-#include "../../src/imStream/L515Streamer.h"
+#include <imStream/FileStreamer.h>
+#include <imStream/L515Streamer.h>
 
 StreamWindow::StreamWindow(QWidget *parent) :
         QMainWindow(parent),
@@ -53,7 +53,7 @@ StreamWindow::StreamWindow(QWidget *parent) :
     _updateThread = std::thread([this](){ StreamWindow::message_update();});
     _streamUpdateThread = std::thread([this](){ StreamWindow::stream_update();});
 
-    ui->_folderName->setText("../streams/echos");
+    ui->_folderName->setText(PROJECT_DIR "streams/echos");
     ui->_sendRateEdit->setText("15");
 
 
@@ -300,7 +300,7 @@ void StreamWindow::select_clicked() {
     QFileDialog dialog;
     dialog.setFileMode(QFileDialog::DirectoryOnly);
     dialog.setOption(QFileDialog::ShowDirsOnly, true);
-    dialog.setDirectory("../streams");
+    dialog.setDirectory(PROJECT_DIR "streams");
     if (dialog.exec()) {
         ui->_folderName->setText(dialog.directory().path());
     }
@@ -364,7 +364,7 @@ void StreamWindow::selectRecord_clicked() {
     QFileDialog dialog;
     dialog.setFileMode(QFileDialog::DirectoryOnly);
     dialog.setOption(QFileDialog::ShowDirsOnly, true);
-    dialog.setDirectory("../images");
+    dialog.setDirectory(PROJECT_DIR "images");
     if (dialog.exec()) {
         ui->_recordFolderEdit->setText(dialog.directory().path());
     }

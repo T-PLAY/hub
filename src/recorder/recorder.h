@@ -7,7 +7,7 @@
 #include <fstream>
 
 
-#include "../external/toojpeg.h"
+#include <external/toojpeg.h>
 
 class Recorder {
 private:

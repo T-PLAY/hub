@@ -1,6 +1,6 @@
 #ifndef BRIDGE_TRACKER_H
 #define BRIDGE_TRACKER_H
-#include "../utils.h"
+#include <bridge/utils.h>
 
 
 class Tracker {

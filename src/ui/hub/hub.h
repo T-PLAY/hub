@@ -9,10 +9,10 @@
 #include <QMainWindow>
 #include <QMessageBox>
 
-#include "../diapo/diapowindow.h"
-#include "../select/selectwindow.h"
-#include "../stream/streamwindow.h"
-#include "../../src/hub/modesender.h"
+#include <ui/diapo/diapowindow.h>
+#include <ui/select/selectwindow.h>
+#include <ui/stream/streamwindow.h>
+#include <hub/modesender.h>
 
 
 

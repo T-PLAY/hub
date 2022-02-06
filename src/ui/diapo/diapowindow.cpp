@@ -10,7 +10,7 @@ DiapoWindow::DiapoWindow(QWidget *parent) :
     connect(ui->_selectFolder, SIGNAL(clicked()), this, SLOT(select_clicked()));
     connect(ui->_upload, SIGNAL(clicked()), this, SLOT(upload_clicked()));
 
-    ui->_folderName->setText("../images/base");
+    ui->_folderName->setText(PROJECT_DIR "images/base");
     ui->_ipAddress->setText("127.0.0.1");
     ui->_port->setText("4041");
 }
@@ -24,7 +24,7 @@ void DiapoWindow::select_clicked() {
     QFileDialog dialog;
     dialog.setFileMode(QFileDialog::DirectoryOnly);
     dialog.setOption(QFileDialog::ShowDirsOnly, true);
-    dialog.setDirectory("../images");
+    dialog.setDirectory(PROJECT_DIR "images");
     if (dialog.exec()) {
         ui->_folderName->setText(dialog.directory().path());
     }

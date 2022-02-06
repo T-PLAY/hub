@@ -29,10 +29,10 @@ bool FileTracker::connected() const {
 }
 
 FileTracker::FileTracker(int recordNumber) {
-    _fileName = "../records/record" + std::to_string(recordNumber);
+    _fileName = PROJECT_DIR "records/record" + std::to_string(recordNumber);
 }
 
-FileTracker::FileTracker(const std::string& fileName) : _fileName("../records/" + fileName) {}
+FileTracker::FileTracker(const std::string& fileName) : _fileName(PROJECT_DIR "records/" + fileName) {}
 
 void FileTracker::readData() {
     char buffer[256];

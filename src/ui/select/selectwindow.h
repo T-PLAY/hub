@@ -5,8 +5,8 @@
 #include <QFileDialog>
 #include <QDir>
 
-#include "../../src/imLoad/uploader.h"
-#include "../../src/bridge/Bridge.h"
+#include <imLoad/uploader.h>
+#include <bridge/Bridge.h>
 
 namespace Ui {
     class SelectWindow;
