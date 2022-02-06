@@ -298,7 +298,8 @@ void StreamWindow::stop_stream_clicked() {
 
 void StreamWindow::select_clicked() {
     QFileDialog dialog;
-    dialog.setFileMode(QFileDialog::DirectoryOnly);
+//    dialog.setFileMode(QFileDialog::DirectoryOnly);
+    dialog.setFileMode(QFileDialog::Directory);
     dialog.setOption(QFileDialog::ShowDirsOnly, true);
     dialog.setDirectory(PROJECT_DIR "streams");
     if (dialog.exec()) {
@@ -362,7 +363,8 @@ void StreamWindow::pauseRecord_clicked() {
 
 void StreamWindow::selectRecord_clicked() {
     QFileDialog dialog;
-    dialog.setFileMode(QFileDialog::DirectoryOnly);
+//    dialog.setFileMode(QFileDialog::DirectoryOnly);
+    dialog.setFileMode(QFileDialog::Directory);
     dialog.setOption(QFileDialog::ShowDirsOnly, true);
     dialog.setDirectory(PROJECT_DIR "images");
     if (dialog.exec()) {
