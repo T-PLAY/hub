@@ -47,7 +47,8 @@ SelectWindow::SelectWindow(QWidget *parent) :
 
 void SelectWindow::select_clicked() {
     QFileDialog dialog;
-    dialog.setFileMode(QFileDialog::DirectoryOnly);
+//    dialog.setFileMode(QFileDialog::DirectoryOnly);
+    dialog.setFileMode(QFileDialog::Directory);
     dialog.setOption(QFileDialog::ShowDirsOnly, true);
     dialog.setDirectory(PROJECT_DIR "images");
     if (dialog.exec()) {

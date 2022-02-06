@@ -1,9 +1,10 @@
 #ifndef HUBV2_MODESENDER_H
 #define HUBV2_MODESENDER_H
 
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
+//#include <sys/socket.h>
+//#include <netinet/in.h>
+//#include <arpa/inet.h>
+
 #include <string>
 #include <QTcpSocket>
 
