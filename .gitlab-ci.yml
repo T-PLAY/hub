@@ -7,19 +7,24 @@
 # can use verions as well, like gcc:5.2
 # see https://hub.docker.com/_/gcc/
 
-image: gcc
+stages:
+  - build
 
-build:
+build:ubuntu:
   stage: build
-  # instead of calling g++ directly you can also use some build toolkit like make
-  # install the necessary build tools when needed
+  tags:
+    - ubuntu
   before_script:
-    - apt update && apt -y install cmake
+    - export PATH=$PATH:/opt/Qt/5.10.0/gcc_64/bin
   script:
     - mkdir build
     - cd build
-    - cmake ..
-    - make
+    - cmake -DCMAKE_BUILD_TYPE=Release ..
+    - make -j8
+  artifacts:
+    expire_in: 2 hrs
+    paths:
+      - build/
 
 #  artifacts:
 #    paths:
