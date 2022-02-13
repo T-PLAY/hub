@@ -23,6 +23,9 @@ MainWindow::MainWindow(QWidget* parent)
             std::cout << "trying to connect to server" << std::endl;
 
             if (!sock.waitForConnected(2000)) {
+#ifndef WIN32
+                std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+#endif
                 std::cout << "connection time out" << std::endl;
                 continue;
             }
