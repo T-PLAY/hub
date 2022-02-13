@@ -1,89 +1,116 @@
-#include <netinet/in.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+// As seen on http://www.di.uniba.it/~reti/LabProRete/Interazione(TCP)Client-Server_Portabile.pdf
+
+#if defined WIN32
+#include <winsock.h>
+# pragma comment(lib,"ws2_32.lib") //Winsock Library
+
+#else
+#define closesocket close
 #include <sys/socket.h>
+#include <arpa/inet.h>
 #include <unistd.h>
+#endif
+
 #define PORT 4043
+
+#include <stdio.h>
 #include <iostream>
 #include <thread>
 
-int main(int argc, char const* argv[])
-{
-    int server_fd, new_socket, valread;
+void ClearWinSock() {
+#if defined WIN32
+    WSACleanup();
+#endif
+}
+
+void ErrorHandler(char *errorMessage) {
+    printf(errorMessage);
+}
+
+
+int main(void) {
+#if defined WIN32
+    WSADATA wsaData;
+    int iResult = WSAStartup(MAKEWORD(2 ,2), &wsaData);
+    if (iResult != 0) {
+        printf("error at WSASturtup\n");
+        return 0;
+    }
+#endif
+
+    // Socket creation
+    int server_fd;
+    server_fd = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
+    if (server_fd < 0) {
+        ErrorHandler("socket creation failed.\n");
+        closesocket(server_fd);
+        ClearWinSock();
+        return 0;
+    }
+
+    // Server address construction
     struct sockaddr_in address;
-    int opt = 1;
     int addrlen = sizeof(address);
-    //    char buffer[1024] = { 0 };
-    //    char* hello = "Hello from server";
-
-    // Creating socket file descriptor
-//    if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0) {
-    if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0) {
-        perror("socket failed");
-        exit(EXIT_FAILURE);
-    }
-
-    // Forcefully attaching socket to the port 8080
-    if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT,
-            &opt, sizeof(opt))) {
-        perror("setsockopt");
-        exit(EXIT_FAILURE);
-    }
+    memset(&address, 0, sizeof(address));
     address.sin_family = AF_INET;
+    //    address.sin_addr.s_addr = inet_addr("192.168.0.100"); // server IP
     address.sin_addr.s_addr = INADDR_ANY;
-    address.sin_port = htons(PORT);
+    address.sin_port = htons(PORT); // Server port
 
-    // Forcefully attaching socket to the port 8080
-    if (bind(server_fd, (struct sockaddr*)&address,
-            sizeof(address))
-        < 0) {
-        perror("bind failed");
-        exit(EXIT_FAILURE);
+    // Create server
+    if (bind(server_fd, (struct sockaddr *) &address, sizeof(address)) < 0) {
+        ErrorHandler("Failed to bind.\n");
+        closesocket(server_fd);
+        ClearWinSock();
+        return 0;
     }
-    std::cout << "wait client on port " << PORT << std::endl;
+
     if (listen(server_fd, 3) < 0) {
         perror("listen");
-        exit(EXIT_FAILURE);
+        //        exit(EXIT_FAILURE);
+        closesocket(server_fd);
+        ClearWinSock();
+        return 0;
     }
 
+
     constexpr size_t imgSize = 192 * 512;
-    //    constexpr size_t imgSize = 100;
     unsigned char img[imgSize];
+    int new_socket;
     while (true) {
+
+        std::cout << "wait client on port " << PORT << std::endl;
         if ((new_socket = accept(server_fd, (struct sockaddr*)&address,
-                 (socklen_t*)&addrlen))
+                                 &addrlen))
             < 0) {
             perror("accept");
-            exit(EXIT_FAILURE);
+            //            exit(EXIT_FAILURE);
+            closesocket(server_fd);
+            ClearWinSock();
+            return 0;
         }
         std::cout << "new client on socket " << new_socket << std::endl;
 
-        //    valread = read(new_socket, buffer, 1024);
-        //    printf("%s\n", buffer);
         int dec = 0;
 
-        //    for (int i =0; i <imgSize; ++i) {
-        //        img[i] = i * 255 / 100;
-        //    }
         int byteSent = 1;
         do {
             std::chrono::high_resolution_clock::time_point start = std::chrono::high_resolution_clock::now();
             unsigned char a;
 
-            int byteRead = recv(new_socket, &a, 1, 0);
-            while (byteRead != 1) {
+            int byteRead = recv(new_socket, (char*)&a, 1, 0);
+            if (byteRead != 1) {
                 std::cout << "can't read sync byte " << byteRead  << std::endl;
-                std::this_thread::sleep_for(std::chrono::milliseconds(100));
-                byteRead = recv(new_socket, &a, 1, 0);
-                return 4;
+//                std::this_thread::sleep_for(std::chrono::milliseconds(100));
+//                byteRead = recv(new_socket, (char*)&a, 1, 0);
+//                closesocket(server_fd);
+//                ClearWinSock();
+//                return 4;
+                break;
             }
-//            if (byteRead != 1) {
-//                std::cout << "can't read sync byte " << byteRead  << std::endl;
-//                return -1;
-//            }
             std::cout << "read a : " << (int)a << std::endl;
 
+            // generate new image
             for (int i = 0; i < 512; ++i) {
                 for (int j = 0; j < 192; ++j) {
                     img[i * 192 + j] = i + dec;
@@ -91,42 +118,26 @@ int main(int argc, char const* argv[])
             }
             ++dec;
 
-//            int byteSent = send(new_socket, (char*)&a, 1, 0);
             int byteSent = send(new_socket, (char*)img, imgSize, 0);
-//            int byteSent = write(new_socket, (char*)&a, 1);
-            while (byteSent != imgSize) {
+            if (byteSent != imgSize) {
                 std::cout << "can't send sync byte " << byteSent  << std::endl;
-                std::this_thread::sleep_for(std::chrono::milliseconds(100));
-//                byteSent = send(new_socket, (char*)&a, 1, 0);
-                byteSent = send(new_socket, (char*)img, imgSize, 0);
-//                byteSent = write(new_socket, (char*)&a, 1);
-                return 3;
-            }
-//            std::cout << "sent a : " << (int)a << std::endl;
-
-////            try {
-////            byteSent = send(new_socket, img, imgSize, 0);
-//            byteSent = write(new_socket, img, imgSize);
-//            if (byteSent != imgSize) {
-//                std::cout << "error sent bad size" << std::endl;
+//                std::this_thread::sleep_for(std::chrono::milliseconds(100));
+//                byteSent = send(new_socket, (char*)img, imgSize, 0);
+//                closesocket(server_fd);
+//                ClearWinSock();
 //                return 3;
-//            }
-////            }  catch (std::exception e) {
-////                std::cout << e.what() << std::endl;
-////                return -2;
-////            }
+                break;
+            }
+
             std::cout << "sent " << byteSent << " bytes" << std::endl;
-////            std::this_thread::sleep_for(std::chrono::milliseconds(100));
-////            if (dec > 100) {
-////                std::this_thread::sleep_for(std::chrono::milliseconds(1'000));
-////            }
-//            std::chrono::high_resolution_clock::time_point end = std::chrono::high_resolution_clock::now();
-//            const auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
-//            double fps = 1'000 / std::max((double)duration, 0.0001);
-//            std::cout << "fps : " << fps << std::endl;
-////            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
         } while (byteSent > 0);
     }
-    return 0;
+
+    // Closing connection
+    closesocket(server_fd);
+    ClearWinSock();
+    printf("\n");
+    system("pause");
+    return (0);
 }
