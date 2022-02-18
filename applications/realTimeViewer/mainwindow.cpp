@@ -31,7 +31,8 @@ MainWindow::MainWindow(QWidget* parent)
             }
 
             unsigned char img[imgSize];
-            ui->widget->setImage(img, 192, 512);
+//            ui->widget->setImage(img, 192, 512);
+            ui->widget->setImage(img, 512, 192);
 
             bool isConnected = true;
             while (isConnected) {

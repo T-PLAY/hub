@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>949</width>
-    <height>623</height>
+    <width>1024</width>
+    <height>384</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -23,6 +23,12 @@
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
      <widget class="QWidget_Frame" name="widget" native="true">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
       <property name="styleSheet">
        <string notr="true">background-color:green;</string>
       </property>
@@ -35,8 +41,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>949</width>
-     <height>22</height>
+     <width>1024</width>
+     <height>21</height>
     </rect>
    </property>
   </widget>
