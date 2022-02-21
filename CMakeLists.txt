@@ -10,3 +10,5 @@ set(SRC_DIR ${CMAKE_SOURCE_DIR}/src/)
 
 add_subdirectory(src)
 add_subdirectory(applications)
+
+option(BUILD_LIDAR_EXAMPLE "Build Lidar examples (depends of realsense2 lib)" ON)
