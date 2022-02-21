@@ -1,32 +1,22 @@
-#ifndef STREAMER_H
-#define STREAMER_H
+#ifndef HUB_H
+#define HUB_H
 
-#if defined WIN32
-#include <winsock.h>
-#pragma comment(lib, "ws2_32.lib") // Winsock Library
-using socklen_t = int;
-
-#else
-#define closesocket close
-#include <arpa/inet.h>
-#include <csignal>
-#include <sys/socket.h>
-#include <unistd.h>
-#endif
 #include <string>
+#include <stream.h>
 
-class Hub {
+class Hub
+{
+
 public:
-    Hub(std::string ipv4, int port);
-    ~Hub();
+    Hub(std::string ipv4 = "127.0.0.1", int port = 4043);
 
-    template <class T>
-    void sendPacket(const T & t);
+    OutputStream createOutputStream(int width, int height, Stream::Format streamFormat, Device device = Device::NONE, Sensor sensor = Sensor::NONE);
+    InputStream waitInputStream();
 
 private:
     std::string mIpv4;
     int mPort;
-    SOCKET mSock;
+//    ClientSocket mSock;
 };
 
-#endif // STREAMER_H
+#endif // HUB_H

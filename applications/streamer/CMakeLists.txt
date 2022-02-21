@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 3.8)
 
 #project ("HubV2")
-project(server)
+project(streamer)
 
 set(WIN32_REQUIRED_LIBS)
 set(UNIX_REQUIRED_LIBS)
@@ -17,8 +17,8 @@ add_executable(${PROJECT_NAME}
 
 
 target_include_directories(${PROJECT_NAME} PUBLIC
-        ${PROJECT_SOURCE_DIR}
         ${SRC_DIR}
+        ${PROJECT_SOURCE_DIR}
         )
 
 if (WIN32)

@@ -26,8 +26,8 @@ if (WIN32)
 
 elseif(UNIX)
         #    set(THREADS_PREFER_PTHREAD_FLAG ON)
-#        find_package(Threads REQUIRED)
-#        set(UNIX_REQUIRED_LIBS Threads::Threads)
+        find_package(Threads REQUIRED)
+        set(UNIX_REQUIRED_LIBS Threads::Threads)
 endif()
 
 
