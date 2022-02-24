@@ -9,12 +9,12 @@ Hub::Hub(std::string ipv4, int port)
 {
 }
 
-OutputStream Hub::createOutputStream(int width, int height, Stream::Format streamFormat, Device device, Sensor sensor)
-{
-    OutputStream outputStream(width, height, streamFormat, device, sensor, mPort, mIpv4);
+//OutputStream Hub::createOutputStream(int width, int height, Stream::Format streamFormat, Device device, Sensor sensor)
+//{
+//    OutputStream outputStream(width, height, streamFormat, device, sensor, mPort, mIpv4);
 
-    return outputStream;
-}
+//    return outputStream;
+//}
 
 InputStream Hub::waitInputStream()
 {

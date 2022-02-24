@@ -22,10 +22,11 @@ using socket_fd = int;
 #include <list>
 #include <stdio.h>
 #include <thread>
+#include <set>
 
 namespace Net {
 static bool sInited = false;
-static std::list<socket_fd*> sSockets;
+static std::set<socket_fd> sSockets;
 
 static void clearSocket(socket_fd sock)
 {
@@ -43,9 +44,9 @@ static void signalHandler(int signum)
 
     // cleanup and close up stuff here
     // terminate program
-    for (const socket_fd* sock : sSockets) {
-        if (*sock != -1) {
-            clearSocket(*sock);
+    for (const socket_fd & sock : sSockets) {
+        if (sock != -1) {
+            clearSocket(sock);
         }
     }
     exit(signum);
@@ -67,6 +68,11 @@ static void init()
         }
 #else
         signal(SIGINT, signalHandler);
+//        signal(SIGPIPE, signalHandler);
+//        signal(SIGSTOP, signalHandler);
+//        signal(SIGTERM, signalHandler);
+//        signal(SIGKILL, signalHandler);
+
 #endif
         sInited = true;
     }
