@@ -4,11 +4,21 @@
 //#include <socket.h>
 //#include <net.h>
 #include <cassert>
+#include <memory>
 #include <stream.h>
+
+static std::string getServerHeader(int iThread)
+{
+    //    const auto & threadId = std::this_thread::get_id();
+    //    const size_t hash = std::hash<std::thread::id>{}(threadId);
+    const std::string str = "\t\033[" + std::to_string(31 + iThread % 7) + "m[server:" + std::to_string(iThread) + "]\033[0m ";
+    //    const std::string str = "\t\033[" + std::to_string(31 + iThread % 7) + "m[server]\033[0m ";
+    return str;
+}
 
 // Server::Server(std::function<void (Socket & sock)> processClient, int port)
 Server::Server(int port)
-    : mServerSock(port)
+    : mServerSock()
 //    , mProcessClient(processClient)
 {
 }
@@ -18,17 +28,26 @@ void Server::run()
     //    constexpr size_t imgSize = 192 * 512;
     //    unsigned char img[imgSize];
     //    SOCKET new_socket;
+    int iThread = 1;
+
     while (true) {
 
+        //        const ClientSocket && tmp = mServerSock.waitNewClient();
+        //        std::shared_ptr<ClientSocket> sock = std::make_shared<ClientSocket>(mServerSock.waitNewClient());
         ClientSocket sock = mServerSock.waitNewClient();
+        //        ClientSocket sock = std::move(tmp);
+        //        ClientSocket sock2 = std::move(sock);
 
-        std::thread thread([this, sock = std::move(sock)]() {
+        //        std::thread thread([this, sock = std::move(sock)]() {
+        std::cout << getServerHeader(0) << "new client" << std::endl;
+
+        std::thread thread([this, iThread, sock = std::move(sock)]() {
+            std::cout << getServerHeader(iThread) << "new thread\t\t\t\t server status : " << getStatus() << std::endl;
             Client::Type clientType;
             sock.read(clientType);
 
             switch (clientType) {
             case Client::Type::STREAMER: {
-                std::cout << "[server] new streamer" << std::endl;
                 //                Stream::InitPacket initPacket;
                 Streamer streamer;
                 sock.read(streamer.initPacket);
@@ -36,48 +55,100 @@ void Server::run()
                 streamer.id = m_iStreamer++;
 
                 mStreamers.push_back(&streamer);
-                //                std::cout << "type:" << (int)streamer.mType << std::endl;
-                std::cout << "device:" << (int)streamer.initPacket.mDevice << std::endl;
-                std::cout << "format:" << (int)streamer.initPacket.mFormat << std::endl;
-                std::cout << "height:" << (int)streamer.initPacket.mHeight << std::endl;
-                std::cout << "sensor:" << (int)streamer.initPacket.mSensor << std::endl;
-                std::cout << "width:" << (int)streamer.initPacket.mWidth << std::endl;
+                std::cout << getServerHeader(iThread) << "new streamer\t\t\t\t server status : " << getStatus() << std::endl;
 
-                // prevent all viewer there is a new streamer
-                for (const auto* viewer : mViewers) {
-                    viewer->socket->write(streamer.id);
-                }
+                try {
+                    //                std::cout << "type:" << (int)streamer.mType << std::endl;
+                    std::cout << getServerHeader(iThread) << "stream device:" << (int)streamer.initPacket.mDevice << std::endl;
+                    std::cout << getServerHeader(iThread) << "stream format:" << (int)streamer.initPacket.mFormat << std::endl;
+                    std::cout << getServerHeader(iThread) << "stream height:" << (int)streamer.initPacket.mHeight << std::endl;
+                    std::cout << getServerHeader(iThread) << "stream sensor:" << (int)streamer.initPacket.mSensor << std::endl;
+                    std::cout << getServerHeader(iThread) << "stream width:" << (int)streamer.initPacket.mWidth << std::endl;
 
-                const int acquistionSize = streamer.initPacket.mWidth
-                    * streamer.initPacket.mHeight
-                    * Stream::formatNbByte[static_cast<int>(streamer.initPacket.mFormat)];
-                char data[acquistionSize];
-                std::cout << "acquisitionSize:" << acquistionSize << std::endl;
-
-                // for each new stream acquistion
-                while (true) {
-                    char sync = 's';
-                    sock.write(sync);
-
-                    Stream::TimestampInterval timestampInterval;
-                    sock.read(timestampInterval);
-                    //                    sock.read()
-                    sock.read(data, acquistionSize);
-
-                    // stream new acquisition for all viewers of this stream
-                    for (const auto* viewer : streamer.viewers) {
-                        viewer->socket->write(timestampInterval);
-                        viewer->socket->write(data, acquistionSize);
+                    // prevent all viewer there is a new streamer
+                    std::cout << getServerHeader(iThread) << "prevent viewers this is a new streamer" << std::endl;
+                    for (const auto& viewer : mViewers) {
+                        viewer->socket->write(Server::Message::NEW_STREAMER);
+                        viewer->socket->write(streamer.id);
                     }
-                    //                    sock.read(data);
-                    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+
+                    const int acquistionSize = streamer.initPacket.mWidth
+                        * streamer.initPacket.mHeight
+                        * Stream::formatNbByte[static_cast<int>(streamer.initPacket.mFormat)];
+                    unsigned char data[acquistionSize];
+                    std::cout << getServerHeader(iThread) << "acquisitionSize:" << acquistionSize << std::endl;
+
+                    // for each new stream acquistion
+                    while (true) {
+
+                        if (!streamer.streamViewers.empty()) {
+                            sock.write(Message::SYNC);
+                            std::cout << getServerHeader(iThread) << "send sync start new acquisition\t server status : " << getStatus() << std::endl;
+
+                            Client::Message message;
+                            sock.read(message);
+
+                            assert(message == Client::Message::DATA);
+
+                            //                            switch (message) {
+                            //                            case Client::Message::PING:
+                            //                                std::cout << getServerHeader(iThread) << "client is pinging" << std::endl;
+                            //                                break;
+
+                            //                            case Client::Message::DATA:
+                            //                    char sync = 's';
+                            //                    sock.write(sync);
+
+                            Stream::TimestampInterval timestampInterval;
+                            sock.read(timestampInterval);
+                            //                    sock.read()
+                            sock.read(data, acquistionSize);
+                            std::cout << getServerHeader(iThread) << "receive data from streamer " << streamer.id << " and send it for " << streamer.streamViewers.size() << " stream viewers" << std::endl;
+
+                            // broadcast data
+                            // stream new acquisition for all viewers of this stream
+                            for (const auto& streamViewer : streamer.streamViewers) {
+                                streamViewer->socket->write(Server::Message::DATA);
+                                streamViewer->socket->write(timestampInterval);
+                                streamViewer->socket->write(data, acquistionSize);
+                            }
+                            //                    sock.read(data);
+                            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                            //                                break;
+
+                            //                            default:
+                            //                                std::cout << getServerHeader(iThread) << "unknown client message" << std::endl;
+                            //                                exit(5);
+                            //                            }
+                        } else {
+                            sock.write(Server::Message::PING);
+                            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+                        }
+                    }
+
+                } catch (std::exception& e) {
+                    std::cout << getServerHeader(iThread) << "catch exception : " << e.what() << std::endl;
                 }
+                mStreamers.remove(&streamer);
+
+                for (const auto* streamViewer : streamer.streamViewers) {
+                    streamViewer->socket->write(Server::Message::CLOSE);
+                }
+
+                for (const auto* viewer : mViewers) {
+                    viewer->socket->write(Server::Message::DEL_STREAMER);
+                    viewer->socket->write(streamer.id);
+                    //                    streamViewer->socket->write(Server::Message::CLOSE);
+                }
+
+                //                std::cout << getServerHeader(iThread) << "remove streamer\t\t server status : " << getStatus() << std::endl;
+
                 //                for (const auto & viewer : mViewers) {
                 //                }
+                std::cout << getServerHeader(iThread) << "end streamer" << std::endl;
             } break;
 
-            case Client::Type::VIEWER:
-                std::cout << "[server] new viewer" << std::endl;
+            case Client::Type::VIEWER: {
                 //                sock.write(Server::Message::LIST_OF_STREAMERS);
                 //                sock.write(mStreamers);
                 //                for (int i = 0; i < mStreamers.size(); ++i) {
@@ -89,15 +160,34 @@ void Server::run()
                     sock.write(streamer->id);
                     //                    sock.write(streamer);
                 }
-                break;
+                //                mViewers.push_back(Viewer { std::move(sock) });
+                Viewer viewer { &sock };
+                mViewers.push_back(&viewer);
+                std::cout << getServerHeader(iThread) << "new viewer\t\t\t\t server status : " << getStatus() << std::endl;
+
+                try {
+                    // check client still alive
+                    while (true) {
+                        sock.write(Server::Message::PING);
+                        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+                    }
+
+                } catch (std::exception& e) {
+                    std::cout << getServerHeader(iThread) << "catch exception : " << e.what() << std::endl;
+                }
+
+                mViewers.remove(&viewer);
+                std::cout << getServerHeader(iThread) << "end viewer" << std::endl;
+
+            } break;
 
             case Client::Type::STREAM_VIEWER: {
-                std::cout << "[server] new stream viewer" << std::endl;
+                std::cout << getServerHeader(iThread) << "new stream viewer" << std::endl;
                 int iStreamer;
                 sock.read(iStreamer);
 
                 Streamer* streamerI = nullptr;
-                for (auto* streamer : mStreamers) {
+                for (Streamer* streamer : mStreamers) {
                     if (streamer->id == iStreamer) {
                         streamerI = streamer;
                         break;
@@ -106,23 +196,78 @@ void Server::run()
                 assert(streamerI != nullptr);
                 sock.write(streamerI->initPacket);
 
+                StreamViewer streamViewer { &sock };
+                streamerI->streamViewers.push_back(&streamViewer);
+                //                ClientSocket sock2 = std::move(sock);
+                //                mViewers.push_back(Viewer { sock });
+                //                streamerI->streamViewers.push_back(Viewer { sock });
+                try {
+                    while (true) {
+                        //                        sock.write(Server::Message::PING);
+                        Client::Message clientMessage;
+                        sock.read(clientMessage);
+                        std::cout << getServerHeader(iThread) << "read message from stream viewer" << std::endl;
 
-//                Viewer viewer;
-//                viewer.socket = std::move(sock);
-//                streamerI->viewers.push_back({sock});
+                        if (clientMessage == Client::Message::CLOSE) {
+                            std::cout << getServerHeader(iThread) << "stream viewer want to close" << std::endl;
+                            break;
+                        }
+                    }
+                } catch (std::exception& e) {
+                    std::cout << getServerHeader(iThread) << "catch exception : " << e.what() << std::endl;
+                }
 
+                streamerI = nullptr;
+                for (Streamer* streamer : mStreamers) {
+                    if (streamer->id == iStreamer) {
+                        streamerI = streamer;
+                        break;
+                    }
+                }
+                if (streamerI != nullptr) {
+                    streamerI->streamViewers.remove(&streamViewer);
+                }
+                std::cout << getServerHeader(iThread) << "stream viewer end" << std::endl;
 
+                if (sock.isConnected())
+                    sock.write(Server::Message::OK);
+                //                viewer.socket =std::move(sock);
+                //                streamerI->viewers.push_back(Viewer(sock));
+                //                Viewer viewer;
+                //                viewer.socket = std::move(sock);
+                //                streamerI->viewers.push_back({sock});
+                std::cout << getServerHeader(iThread) << "end stream viewer" << std::endl;
             } break;
 
             default:
-                std::cout << "[server] unknown client type" << std::endl;
+                std::cout << getServerHeader(iThread) << "unknown client type" << std::endl;
             }
 
+            std::cout << getServerHeader(iThread) << "thread end\t\t\t\t server status : " << getStatus() << std::endl;
             //            Stream::InitPacket initPacket;
             //            sock.read(initPacket);
 
             //            mProcessClient(sock);
         });
         thread.detach();
+
+        ++iThread;
+    } // while (true)
+}
+
+std::string Server::getStatus() const
+{
+    std::string streamViewersStr = "[";
+    for (const auto& streamer : mStreamers) {
+        streamViewersStr += "(" + std::to_string(streamer->id) + "," + std::to_string(streamer->streamViewers.size()) + ")";
+
+        //        for (const auto & streamViewer : streamer->streamViewers) {
+
+        //        }
+        streamViewersStr += ",";
     }
+    streamViewersStr += "]";
+
+    std::string str = std::string("nbStreamer = ") + std::to_string(mStreamers.size()) + ", nbViewer = " + std::to_string(mViewers.size()) + " " + streamViewersStr;
+    return str;
 }
