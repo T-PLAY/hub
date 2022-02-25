@@ -140,12 +140,14 @@ void MainWindow::addViewStream(int iStreamer)
     //    streamView->setMinimumHeight(streamer.mHeight);
     //    ui->mdiArea->addSubWindow(streamView);
     QMdiSubWindow* subWindow = ui->mdiArea->addSubWindow(streamView);
+//    streamView->setParent(subWindow);
     //    mStreamId2StreamView[iStreamer] = streamView;
     subWindow->setVisible(true);
     //    subWindow->setParent(ui->mdiArea);
     //    streamView->setVisible(true);
     //    streamView->setEnabled(true);
     //    subWindow->setVisible(true);
+    mStreamViews.insert(streamView);
     //    show();
     //    streamView->setParent(subWindow);
     //    ui->mdiArea->update();
@@ -159,16 +161,23 @@ void MainWindow::delViewStream(int iStreamer)
     //    assert(mStreamId2StreamView.find(iStreamer) != mStreamId2StreamView.end());
     //        QWidget_StreamView* streamView = mStreamId2StreamView.at(iStreamer);
     //        QWidget_StreamView* streamView = nullptr;
-    for (QMdiSubWindow* subWindow : ui->mdiArea->subWindowList()) {
+//    for (QMdiSubWindow* subWindow : ui->mdiArea->subWindowList()) {
 
-        assert(subWindow->children().size() == 1);
-        const QWidget_StreamView* streamView = static_cast<QWidget_StreamView*>(subWindow->children().first());
+//        int nbChild = subWindow->children().size();
+//        assert(subWindow->children().size() == 1);
+//        const QWidget_StreamView* streamView = static_cast<QWidget_StreamView*>(subWindow->children().first());
 
+//        if (streamView->iStreamer() == iStreamer) {
+//            ui->mdiArea->removeSubWindow(static_cast<QWidget*>(subWindow));
+//            delete streamView;
+//        }
+//    }
+    for (const auto * streamView : mStreamViews) {
         if (streamView->iStreamer() == iStreamer) {
-            ui->mdiArea->removeSubWindow(static_cast<QWidget*>(subWindow));
-            delete streamView;
+            ui->mdiArea->removeSubWindow(streamView->parentWidget());
         }
     }
+
     //    QWidget_StreamView* streamView = mStreamId2StreamView.at(iStreamer);
 
     //    mStreamId2StreamView.erase(iStreamer);

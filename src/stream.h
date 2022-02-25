@@ -114,8 +114,8 @@ public:
     };
     class TimestampInterval {
     public:
-        long backendTimestamp;
-        long backendTimeOfArrival;
+        long long backendTimestamp;
+        long long backendTimeOfArrival;
     };
 
     class Acquisition {

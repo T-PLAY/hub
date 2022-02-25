@@ -83,6 +83,7 @@ void Thread_InputStream::run()
         }
     } catch (std::exception& e) {
         std::cout << "[streamView] catch exception : " << e.what() << std::endl;
+        return;
     }
 
     //    if (this->isInterruptionRequested() && !serverRequestClose) {
