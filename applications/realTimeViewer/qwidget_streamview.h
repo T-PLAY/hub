@@ -25,7 +25,9 @@ public:
     void run();
 
     Stream::InitPacket mInitPacket;
-    unsigned char * mData;
+    unsigned char * mData[2];
+    int m_iReadBuffer = 0;
+    int m_iWriteBuffer = 0;
 private:
     ClientSocket mSock;
     int mAcquisitionSize;

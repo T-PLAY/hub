@@ -5,6 +5,10 @@
 #include <iostream>
 #include <server.h>
 
+#include <mutex>
+
+//static std::mutex mtx;
+
 Thread_InputStream::Thread_InputStream(QObject* parent, int iStreamer)
     : QThread(parent)
     , mSock("127.0.0.1")
@@ -26,13 +30,15 @@ Thread_InputStream::Thread_InputStream(QObject* parent, int iStreamer)
     mAcquisitionSize = mInitPacket.mWidth
         * mInitPacket.mHeight
         * Stream::formatNbByte[static_cast<int>(mInitPacket.mFormat)];
-    mData = new unsigned char[mAcquisitionSize];
+    mData[0] = new unsigned char[mAcquisitionSize];
+    mData[1] = new unsigned char[mAcquisitionSize];
 }
 
 Thread_InputStream::~Thread_InputStream()
 {
     std::cout << "~Thread_InputStream()" << std::endl;
-    delete[] mData;
+    delete[] mData[0];
+    delete[] mData[1];
 }
 
 void Thread_InputStream::run()
@@ -53,17 +59,39 @@ void Thread_InputStream::run()
                 std::cout << "[streamView] read data" << std::endl;
                 mSock.read(timestampInterval);
 
-                mSock.read(mData, mAcquisitionSize);
-
                 constexpr int width = 192;
                 constexpr int height = 512;
+                //                for (int i = 0; i < width; ++i) {
+                //                    for (int j = 0; j < height; ++j) {
+                //                        mData[i + j * width] = 0;
+                ////                        assert(tmp == j + dec);
+                //                    }
+                //                }
+                //                mtx.lock();
+                mSock.read(mData[m_iWriteBuffer], mAcquisitionSize);
+                m_iReadBuffer = m_iWriteBuffer;
+                m_iWriteBuffer = (m_iWriteBuffer + 1) % 2;
+                //                mtx.unlock();
+
                 assert(mAcquisitionSize == 192 * 512);
-                int dec = mData[0];
+                int dec = mData[m_iReadBuffer][0];
+                bool badImage = false;
                 for (int i = 0; i < width; ++i) {
                     for (int j = 0; j < height; ++j) {
-                        const int tmp = mData[i + j * width];
-//                        assert(tmp == j + dec);
+                        const int tmp = mData[m_iReadBuffer][i + j * width];
+//                        if (tmp != (j + dec) % 256) {
+                        if (tmp != dec) {
+                            //                            std::cout << "[streamView] error bad image" << std::endl;
+                            badImage = true;
+                            break;
+                        }
+                        //                        assert(tmp == j + dec);
                     }
+                    if (badImage)
+                        break;
+                }
+                if (badImage) {
+                    std::cout << "[streamView] error bad image" << std::endl;
                 }
                 emit newImage();
                 //        //        Server::Message serverMessage;
@@ -123,7 +151,9 @@ QWidget_StreamView::~QWidget_StreamView()
 
 void QWidget_StreamView::newImage()
 {
-    setImage((unsigned char*)mThread.mData, mThread.mInitPacket.mWidth, mThread.mInitPacket.mHeight);
+    setImage((unsigned char*)mThread.mData[mThread.m_iReadBuffer], mThread.mInitPacket.mWidth, mThread.mInitPacket.mHeight);
+    //    mThread.m_iReadBuffer = (mThread.m_iReadBuffer + 1) % 2;
+    //    mtx.unlock();
 }
 
 void QWidget_StreamView::setImage(unsigned char* img_ptr, int pWidth, int pHeight)
@@ -133,10 +163,12 @@ void QWidget_StreamView::setImage(unsigned char* img_ptr, int pWidth, int pHeigh
     mWidth = pWidth;
     mHeight = pHeight;
     update();
+    //        mtx.unlock();
 }
 
 void QWidget_StreamView::paintEvent(QPaintEvent* event)
 {
+    //    mtx.lock();
     //    std::cout << "paintEvent " << width() << " " << height() << std::endl;
     Q_UNUSED(event);
     QPainter painter;
@@ -145,6 +177,7 @@ void QWidget_StreamView::paintEvent(QPaintEvent* event)
         QImage image = QImage((unsigned char*)img, mWidth, mHeight, mWidth, QImage::Format_Grayscale8).scaled(this->size());
         const QPoint p = QPoint(0, 0);
         painter.drawImage(p, image);
+        //        mtx.unlock();
     } else {
         painter.fillRect(0, 0, width(), height(), Qt::red);
     }

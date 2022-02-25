@@ -116,7 +116,7 @@ void Server::run()
                                 streamViewer->socket->write(data, acquistionSize);
                             }
                             //                    sock.read(data);
-                            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                            std::this_thread::sleep_for(std::chrono::milliseconds(10));
                             //                                break;
 
                             //                            default:
