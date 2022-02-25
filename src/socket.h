@@ -42,7 +42,7 @@ public:
     }
 };
 
-static std::string getHeader(int iSock)
+static std::string getHeader(socket_fd iSock)
 {
     std::string str = "\033[" + std::to_string(31 + iSock % 7) + "m[socket:" + std::to_string(iSock) + "]\033[0m ";
     return str;
@@ -215,6 +215,7 @@ void ClientSocket::read(T& data) const
             //            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
             std::cout << "byte read == -1 error" << std::endl;
             throw socket_error("Can't read packet, peer connection lost");
+            exit(5);
             return;
         } else if (byteRead == 0) {
             throw socket_error("0 byte received, peer connection lost");

@@ -257,13 +257,15 @@ ServerSocket::ServerSocket(int port)
 ClientSocket ServerSocket::waitNewClient()
 {
 
-    socket_fd new_socket;
     std::cout << getHeader(mFdSock) << "wait client on port " << mPort << std::endl;
     socklen_t addrlen = sizeof(mAddress);
-    if ((new_socket = accept(mFdSock, (struct sockaddr*)&mAddress,
-             &addrlen))
-        < 0) {
-        perror("accept");
+    socket_fd new_socket = accept(mFdSock, (struct sockaddr*)&mAddress, &addrlen);
+    if (new_socket == INVALID_SOCKET) {
+//    if ((new_socket = accept(mFdSock, (struct sockaddr*)&mAddress,
+//             &addrlen))
+//        < 0) {
+//        == INVALID_SOCKET) {
+        perror("not accept new socket");
         //            exit(EXIT_FAILURE);
         Net::clearSocket(new_socket);
         exit(1);
@@ -291,7 +293,10 @@ void ClientSocket::write(const unsigned char* data, size_t len) const
 {
     size_t uploadSize = 0;
     do {
-        int byteSent = send(mFdSock, data, len, 0);
+        // winsock const char * data
+//        int byteSent = send(mFdSock, static_cast<const char*>(data), len, 0);
+        // winsock int len
+        int byteSent = send(mFdSock, (const char*)data, len, 0);
         if (byteSent == -1) {
             std::cout << getHeader(mFdSock) << "can't send packet " << byteSent << "/" << len << std::endl;
             perror("Failed to send.\n");
@@ -317,7 +322,7 @@ void ClientSocket::read(unsigned char* data, size_t len) const
 //    ClientSocket::write(Client::Message::PING); // check peer connection
     size_t downloadSize = 0;
     do {
-        int byteRead = recv(mFdSock, data, len, 0);
+        int byteRead = recv(mFdSock, (char*)data, len, 0);
         if (byteRead == -1) {
             std::cout << getHeader(mFdSock) << "can't read packet " << byteRead << "/" << len << std::endl;
             perror("Failed to read.\n");

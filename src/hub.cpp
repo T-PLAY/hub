@@ -16,7 +16,7 @@ Hub::Hub(std::string ipv4, int port)
 //    return outputStream;
 //}
 
-InputStream Hub::waitInputStream()
-{
+//InputStream Hub::waitInputStream()
+//{
 
-}
+//}

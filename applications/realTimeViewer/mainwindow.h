@@ -53,7 +53,7 @@ private:
     Ui::MainWindow* ui;
     //    Thread_Client mThread;
     Thread_Client mThreadClient;
-//    std::list<QWidget_StreamView*> mStreamViews;
+    std::set<QWidget_StreamView*> mStreamViews;
 //    std::map<int, QWidget_StreamView*> mStreamId2StreamView;
 };
 

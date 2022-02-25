@@ -57,6 +57,8 @@ void Server::run()
                 mStreamers.push_back(&streamer);
                 std::cout << getServerHeader(iThread) << "new streamer\t\t\t\t server status : " << getStatus() << std::endl;
 
+                unsigned char* data = nullptr;
+
                 try {
                     //                std::cout << "type:" << (int)streamer.mType << std::endl;
                     std::cout << getServerHeader(iThread) << "stream device:" << (int)streamer.initPacket.mDevice << std::endl;
@@ -75,7 +77,8 @@ void Server::run()
                     const int acquistionSize = streamer.initPacket.mWidth
                         * streamer.initPacket.mHeight
                         * Stream::formatNbByte[static_cast<int>(streamer.initPacket.mFormat)];
-                    unsigned char data[acquistionSize];
+                    //                    unsigned char data[acquistionSize];
+                    data = new unsigned char[acquistionSize];
                     std::cout << getServerHeader(iThread) << "acquisitionSize:" << acquistionSize << std::endl;
 
                     // for each new stream acquistion
@@ -126,9 +129,13 @@ void Server::run()
                         }
                     }
 
+                } catch (socket_error& e) {
+                    std::cout << getServerHeader(iThread) << "catch socket exception : " << e.what() << std::endl;
                 } catch (std::exception& e) {
                     std::cout << getServerHeader(iThread) << "catch exception : " << e.what() << std::endl;
+                    throw;
                 }
+                delete[] data;
                 mStreamers.remove(&streamer);
 
                 for (const auto* streamViewer : streamer.streamViewers) {
@@ -172,8 +179,12 @@ void Server::run()
                         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
                     }
 
+                } catch (socket_error& e) {
+                    std::cout << getServerHeader(iThread) << "catch socket exception : " << e.what() << std::endl;
                 } catch (std::exception& e) {
                     std::cout << getServerHeader(iThread) << "catch exception : " << e.what() << std::endl;
+                    exit(3);
+                    throw;
                 }
 
                 mViewers.remove(&viewer);
@@ -213,8 +224,11 @@ void Server::run()
                             break;
                         }
                     }
+                } catch (socket_error& e) {
+                    std::cout << getServerHeader(iThread) << "catch socket exception : " << e.what() << std::endl;
                 } catch (std::exception& e) {
                     std::cout << getServerHeader(iThread) << "catch exception : " << e.what() << std::endl;
+                    throw;
                 }
 
                 streamerI = nullptr;
@@ -246,8 +260,11 @@ void Server::run()
             std::cout << getServerHeader(iThread) << "thread end\t\t\t\t server status : " << getStatus() << std::endl;
             //            Stream::InitPacket initPacket;
             //            sock.read(initPacket);
+            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
             //            mProcessClient(sock);
+            return;
+            exit(6);
         });
         thread.detach();
 

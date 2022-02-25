@@ -20,9 +20,9 @@ using socket_fd = int;
 #include <cstring>
 #include <iostream>
 #include <list>
+#include <set>
 #include <stdio.h>
 #include <thread>
-#include <set>
 
 namespace Net {
 static bool sInited = false;
@@ -30,10 +30,14 @@ static std::set<socket_fd> sSockets;
 
 static void clearSocket(socket_fd sock)
 {
-    std::cout << "Net::clearSocket(" << sock << ")" << std::endl;
+    std::cout << "Net::clearSocket(" << sock << ") close socket" << std::endl;
     closesocket(sock);
+    sSockets.erase(sock);
 #ifdef WIN32
-    WSACleanup();
+    if (sSockets.empty()) {
+        std::cout << "Net::clearSocket(" << sock << ") WSACleanup()" << std::endl;
+        WSACleanup();
+    }
 #endif
 }
 
@@ -44,7 +48,7 @@ static void signalHandler(int signum)
 
     // cleanup and close up stuff here
     // terminate program
-    for (const socket_fd & sock : sSockets) {
+    for (const socket_fd& sock : sSockets) {
         if (sock != -1) {
             clearSocket(sock);
         }
@@ -68,10 +72,10 @@ static void init()
         }
 #else
         signal(SIGINT, signalHandler);
-//        signal(SIGPIPE, signalHandler);
-//        signal(SIGSTOP, signalHandler);
-//        signal(SIGTERM, signalHandler);
-//        signal(SIGKILL, signalHandler);
+        //        signal(SIGPIPE, signalHandler);
+        //        signal(SIGSTOP, signalHandler);
+        //        signal(SIGTERM, signalHandler);
+        //        signal(SIGKILL, signalHandler);
 
 #endif
         sInited = true;
