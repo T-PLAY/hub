@@ -27,10 +27,13 @@ int main(void)
             constexpr size_t imgSize = width * height;
             //            unsigned char img[imgSize];
             unsigned char img[imgSize];
-            for (int i = 0; i < width; ++i) {
-                for (int j = 0; j < height; ++j) {
-                    img[i + j * width] = 127;
-                }
+            //            for (int i = 0; i < width; ++i) {
+            //                for (int j = 0; j < height; ++j) {
+            //                    img[i + j * width] = 127;
+            //                }
+            //            }
+            for (size_t i = 0; i < imgSize; ++i) {
+                img[i] = 127;
             }
 
             //    return 0;
@@ -72,11 +75,15 @@ int main(void)
 
                     const auto& start = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
                     // generate new image
-                    for (int i = 0; i < width; ++i) {
-                        for (int j = 0; j < height; ++j) {
-//                            img[i + j * width] = (j + dec) % 256;
-                            img[i + j * width] = dec % 256;
-                        }
+                    //                    for (int i = 0; i < width; ++i) {
+                    //                        for (int j = 0; j < height; ++j) {
+                    //                            img[i + j * width] = (j + dec) % 256;
+                    ////                            img[i + j * width] = 0;
+                    //                            //                            img[i + j * width] = dec % 256;
+                    //                        }
+                    //                    }
+                    for (size_t i = 0; i < imgSize; ++i) {
+                        img[i] = (i + dec) % 256;
                     }
                     const auto& end = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
                     ++dec;
@@ -92,6 +99,15 @@ int main(void)
                     Stream::TimestampInterval timestampInterval { start, end };
                     sock.write(timestampInterval);
                     sock.write((unsigned char*)img, imgSize);
+
+//                    constexpr int width = 192;
+//                    constexpr int height = 512;
+//                    int dec = img[0];
+//                    for (int i = 0; i < width; ++i) {
+//                        for (int j = 0; j < height; ++j) {
+//                            assert(img[i + j * width] == (j + dec) % 256);
+//                        }
+//                    }
                 } break;
 
                 default:

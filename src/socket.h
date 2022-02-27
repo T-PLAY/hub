@@ -8,9 +8,9 @@
 #include <list>
 #include <string>
 
-#define SERVICE_PORT 4041
+#define SERVICE_PORT 4042
 
-//#define DEBUG_MSG
+#define DEBUG_MSG
 
 class socket_error : public std::runtime_error {
     //    const char*mMsg;
@@ -152,7 +152,7 @@ void ClientSocket::write(const T& data) const
             std::cout << "AFTER throw" << std::endl;
         }
 
-        int byteSent = send(mFdSock, reinterpret_cast<const char*>(&data), len, 0);
+        int byteSent = send(mFdSock, reinterpret_cast<const unsigned char*>(&data) + uploadSize, len - uploadSize, 0);
         if (byteSent == -1) {
             std::cout << getHeader(mFdSock) << "can't send packet " << byteSent << "/" << len << std::endl;
             perror("send error\n");
@@ -209,7 +209,7 @@ void ClientSocket::read(T& data) const
 
         //        ClientSocket::write(Client::Message::PING); // check peer connection
         //        std::cout << "start recv" << std::endl;
-        int byteRead = recv(mFdSock, reinterpret_cast<char*>(&data) + downloadSize, len - downloadSize, 0);
+        int byteRead = recv(mFdSock, reinterpret_cast<unsigned char*>(&data) + downloadSize, len - downloadSize, 0);
         //        std::cout << "end recv" << std::endl;
         if (byteRead == -1) {
             //            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
