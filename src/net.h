@@ -9,6 +9,7 @@ using socklen_t = int;
 using socket_fd = SOCKET;
 
 #else
+#define INVALID_SOCKET -1
 #define closesocket close
 using socket_fd = int;
 #include <arpa/inet.h>
@@ -49,8 +50,9 @@ static void signalHandler(int signum)
     // cleanup and close up stuff here
     // terminate program
     for (const socket_fd& sock : sSockets) {
-        if (sock != -1) {
-            clearSocket(sock);
+        if (sock != INVALID_SOCKET) {
+//            clearSocket(sock);
+            closesocket(sock);
         }
     }
     exit(signum);

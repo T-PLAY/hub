@@ -7,7 +7,7 @@
 
 #include <mutex>
 
-//static std::mutex mtx;
+// static std::mutex mtx;
 
 Thread_InputStream::Thread_InputStream(QObject* parent, int iStreamer)
     : QThread(parent)
@@ -76,19 +76,21 @@ void Thread_InputStream::run()
                 assert(mAcquisitionSize == 192 * 512);
                 int dec = mData[m_iReadBuffer][0];
                 bool badImage = false;
-                for (int i = 0; i < width; ++i) {
-                    for (int j = 0; j < height; ++j) {
-                        const int tmp = mData[m_iReadBuffer][i + j * width];
-//                        if (tmp != (j + dec) % 256) {
-                        if (tmp != dec) {
-                            //                            std::cout << "[streamView] error bad image" << std::endl;
-                            badImage = true;
-                            break;
-                        }
-                        //                        assert(tmp == j + dec);
-                    }
-                    if (badImage)
+                for (int i = 0; i < mAcquisitionSize; ++i) {
+                    //                for (int i = 0; i < width; ++i) {
+                    //                    for (int j = 0; j < height; ++j) {
+                    //                        const int tmp = mData[m_iReadBuffer][i];
+                    //                        if (tmp != (j + dec) % 256) {
+                    if (mData[m_iReadBuffer][i] != (i + dec) % 256) {
+                        //                        if (tmp != dec) {
+                        //                            std::cout << "[streamView] error bad image" << std::endl;
+                        badImage = true;
                         break;
+                    }
+                    //                        assert(tmp == j + dec);
+                    //                }
+                    //                if (badImage)
+                    //                    break;
                 }
                 if (badImage) {
                     std::cout << "[streamView] error bad image" << std::endl;

@@ -296,7 +296,7 @@ void ClientSocket::write(const unsigned char* data, size_t len) const
         // winsock const char * data
 //        int byteSent = send(mFdSock, static_cast<const char*>(data), len, 0);
         // winsock int len
-        int byteSent = send(mFdSock, (const char*)data, len, 0);
+        int byteSent = send(mFdSock, (const unsigned char*)data + uploadSize, len - uploadSize, 0);
         if (byteSent == -1) {
             std::cout << getHeader(mFdSock) << "can't send packet " << byteSent << "/" << len << std::endl;
             perror("Failed to send.\n");
@@ -322,7 +322,7 @@ void ClientSocket::read(unsigned char* data, size_t len) const
 //    ClientSocket::write(Client::Message::PING); // check peer connection
     size_t downloadSize = 0;
     do {
-        int byteRead = recv(mFdSock, (char*)data, len, 0);
+        int byteRead = recv(mFdSock, data + downloadSize, len -downloadSize, 0);
         if (byteRead == -1) {
             std::cout << getHeader(mFdSock) << "can't read packet " << byteRead << "/" << len << std::endl;
             perror("Failed to read.\n");

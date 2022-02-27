@@ -74,10 +74,11 @@ void Server::run()
                         viewer->socket->write(streamer.id);
                     }
 
-                    const int acquistionSize = streamer.initPacket.mWidth
+                    const size_t acquistionSize = streamer.initPacket.mWidth
                         * streamer.initPacket.mHeight
                         * Stream::formatNbByte[static_cast<int>(streamer.initPacket.mFormat)];
                     //                    unsigned char data[acquistionSize];
+                    assert(acquistionSize == 192 * 512);
                     data = new unsigned char[acquistionSize];
                     std::cout << getServerHeader(iThread) << "acquisitionSize:" << acquistionSize << std::endl;
 
@@ -108,6 +109,25 @@ void Server::run()
                             sock.read(data, acquistionSize);
                             std::cout << getServerHeader(iThread) << "receive data from streamer " << streamer.id << " and send it for " << streamer.streamViewers.size() << " stream viewers" << std::endl;
 
+                            //                            constexpr int width = 192;
+                            //                            constexpr int height = 512;
+                            //                            int dec = data[0];
+                            //                            for (int i = 0; i < width; ++i) {
+                            //                                for (int j = 0; j < height; ++j) {
+                            //                                    assert(i + j * width < acquistionSize);
+                            //                                    assert(data[i + j * width] == (j + dec) % 256);
+                            //                                }
+                            //                            }
+                            int dec = data[0];
+                            for (size_t i = 0; i < acquistionSize; ++i) {
+                                if (data[i] != (i + dec) % 256) {
+                                    int tmp = data[i];
+                                    unsigned char* ptr = &data[i];
+                                    assert(false);
+                                }
+//                                assert(data[i] == 127);
+                            }
+
                             // broadcast data
                             // stream new acquisition for all viewers of this stream
                             for (const auto& streamViewer : streamer.streamViewers) {
@@ -116,7 +136,10 @@ void Server::run()
                                 streamViewer->socket->write(data, acquistionSize);
                             }
                             //                    sock.read(data);
-                            std::this_thread::sleep_for(std::chrono::milliseconds(10));
+                            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                            //                            std::cout << "wait input for new frame" << std::endl;
+                            //                            std::string a;
+                            //                            std::cin >> a;
                             //                                break;
 
                             //                            default:
