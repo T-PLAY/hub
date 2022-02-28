@@ -5,7 +5,8 @@
 #include <QMdiSubWindow>
 #include <QThread>
 #include <map>
-#include <qwidget_streamview.h>
+//#include <WidgetStreamView.h>
+#include <MainWindowStreamView.h>
 #include <server.h>
 
 // Q_DECLARE_METATYPE(Streamer);
@@ -53,7 +54,8 @@ private:
     Ui::MainWindow* ui;
     //    Thread_Client mThread;
     Thread_Client mThreadClient;
-    std::set<QWidget_StreamView*> mStreamViews;
+//    std::set<QWidget_StreamView*> mStreamViews;
+    std::set<MainWindowStreamView*> mStreamViews;
 //    std::map<int, QWidget_StreamView*> mStreamId2StreamView;
 };
 

@@ -9,7 +9,7 @@
 #include <QMdiSubWindow>
 #include <QStandardItemModel>
 #include <hub.h>
-#include <qwidget_streamview.h>
+//#include <FormStreamView.h>
 #include <server.h>
 
 Thread_Client::Thread_Client(QObject* parent)
@@ -109,6 +109,7 @@ MainWindow::MainWindow(QWidget* parent)
     QObject::connect(&mThreadClient, &Thread_Client::addViewStreamSignal, this, &MainWindow::addViewStream);
     QObject::connect(&mThreadClient, &Thread_Client::delViewStreamSignal, this, &MainWindow::delViewStream);
     mThreadClient.start();
+
     //    mThreadClient.run();
 }
 
@@ -134,7 +135,7 @@ void MainWindow::addViewStream(int iStreamer)
 // void MainWindow::addViewStream()
 {
     std::cout << "MainWindow::addViewStream slot" << std::endl;
-    QWidget_StreamView* streamView = new QWidget_StreamView(ui->mdiArea, iStreamer);
+    MainWindowStreamView* streamView = new MainWindowStreamView(ui->mdiArea, iStreamer);
     //    assert(mStreamId2StreamView.find(iStreamer) == mStreamId2StreamView.end());
     //    streamView->setMinimumWidth(streamer.mWidth);
     //    streamView->setMinimumHeight(streamer.mHeight);

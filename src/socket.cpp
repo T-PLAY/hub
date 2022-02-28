@@ -4,7 +4,7 @@
 
 Socket::Socket()
 {
-//    std::cout << getHeader(mFdSock) << "Socket()" << std::endl;
+    //    std::cout << getHeader(mFdSock) << "Socket()" << std::endl;
     Net::init();
 }
 
@@ -39,10 +39,9 @@ Socket::Socket()
 //     return *this;
 // }
 
-
 Socket::~Socket()
 {
-//    std::cout << getHeader(mFdSock) << "~Socket()" << std::endl;
+    //    std::cout << getHeader(mFdSock) << "~Socket()" << std::endl;
     if (mFdSock != -1) {
         //        if (mOpenned) {
         // Closing connection
@@ -72,8 +71,8 @@ bool Socket::isConnected() const
         return true;
 #endif
 
-//    std::cout << getHeader(mFdSock) << "loose connection" << std::endl;
-//    exit(9);
+    //    std::cout << getHeader(mFdSock) << "loose connection" << std::endl;
+    //    exit(9);
     return false;
 
     //        int error = 0;
@@ -94,7 +93,7 @@ ClientSocket::ClientSocket(std::string ipv4, int port)
     : mIpv4(ipv4)
     , mPort(port)
 {
-//    std::cout << getHeader(mFdSock) << "ClientSocket(std::string ipv4, int port)" << std::endl;
+    //    std::cout << getHeader(mFdSock) << "ClientSocket(std::string ipv4, int port)" << std::endl;
 
     // Socket creation
     mFdSock = socket(PF_INET, SOCK_STREAM, 0);
@@ -212,7 +211,7 @@ ClientSocket::ClientSocket(ClientSocket&& sock)
 {
     mFdSock = sock.mFdSock;
     sock.mFdSock = -1;
-//    std::cout << getHeader(mFdSock) << "ClientSocket(ClientSocket&& sock)" << std::endl;
+    //    std::cout << getHeader(mFdSock) << "ClientSocket(ClientSocket&& sock)" << std::endl;
 }
 
 //ClientSocket::ClientSocket(const ClientSocket& sock)
@@ -225,7 +224,7 @@ ClientSocket::ClientSocket(ClientSocket&& sock)
 ServerSocket::ServerSocket(int port)
     : mPort(port)
 {
-//    std::cout << getHeader(mFdSock) << "ServerSocket(int port)" << std::endl;
+    //    std::cout << getHeader(mFdSock) << "ServerSocket(int port)" << std::endl;
     // Socket creation
     mFdSock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (mFdSock < 0) {
@@ -261,10 +260,10 @@ ClientSocket ServerSocket::waitNewClient()
     socklen_t addrlen = sizeof(mAddress);
     socket_fd new_socket = accept(mFdSock, (struct sockaddr*)&mAddress, &addrlen);
     if (new_socket == INVALID_SOCKET) {
-//    if ((new_socket = accept(mFdSock, (struct sockaddr*)&mAddress,
-//             &addrlen))
-//        < 0) {
-//        == INVALID_SOCKET) {
+        //    if ((new_socket = accept(mFdSock, (struct sockaddr*)&mAddress,
+        //             &addrlen))
+        //        < 0) {
+        //        == INVALID_SOCKET) {
         perror("not accept new socket");
         //            exit(EXIT_FAILURE);
         Net::clearSocket(new_socket);
@@ -294,9 +293,9 @@ void ClientSocket::write(const unsigned char* data, size_t len) const
     size_t uploadSize = 0;
     do {
         // winsock const char * data
-//        int byteSent = send(mFdSock, static_cast<const char*>(data), len, 0);
+        //        int byteSent = send(mFdSock, static_cast<const char*>(data), len, 0);
         // winsock int len
-        int byteSent = send(mFdSock, (const unsigned char*)data + uploadSize, len - uploadSize, 0);
+        int byteSent = send(mFdSock, reinterpret_cast<const char*>(data) + uploadSize, static_cast<int>(len - uploadSize), 0);
         if (byteSent == -1) {
             std::cout << getHeader(mFdSock) << "can't send packet " << byteSent << "/" << len << std::endl;
             perror("Failed to send.\n");
@@ -318,11 +317,11 @@ void ClientSocket::write(const unsigned char* data, size_t len) const
 
 void ClientSocket::read(unsigned char* data, size_t len) const
 {
-//    std::cout << "ClientSocket::read(char* data, size_t len)" << std::endl;
-//    ClientSocket::write(Client::Message::PING); // check peer connection
+    //    std::cout << "ClientSocket::read(char* data, size_t len)" << std::endl;
+    //    ClientSocket::write(Client::Message::PING); // check peer connection
     size_t downloadSize = 0;
     do {
-        int byteRead = recv(mFdSock, data + downloadSize, len -downloadSize, 0);
+        int byteRead = recv(mFdSock, reinterpret_cast<char*>(data) + downloadSize, static_cast<int>(len - downloadSize), 0);
         if (byteRead == -1) {
             std::cout << getHeader(mFdSock) << "can't read packet " << byteRead << "/" << len << std::endl;
             perror("Failed to read.\n");
