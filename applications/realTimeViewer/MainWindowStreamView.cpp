@@ -1,13 +1,5 @@
-#include "qwidget_streamview.h"
-
-#include <QPainter>
-
-#include <iostream>
-#include <server.h>
-
-#include <mutex>
-
-// static std::mutex mtx;
+#include "MainWindowStreamView.h"
+#include "ui_MainWindowStreamView.h"
 
 Thread_InputStream::Thread_InputStream(QObject* parent, int iStreamer)
     : QThread(parent)
@@ -59,8 +51,8 @@ void Thread_InputStream::run()
                 std::cout << "[streamView] read data" << std::endl;
                 mSock.read(timestampInterval);
 
-                constexpr int width = 192;
-                constexpr int height = 512;
+//                constexpr int width = 192;
+//                constexpr int height = 512;
                 //                for (int i = 0; i < width; ++i) {
                 //                    for (int j = 0; j < height; ++j) {
                 //                        mData[i + j * width] = 0;
@@ -124,69 +116,60 @@ void Thread_InputStream::run()
     //    }
 }
 
-QWidget_StreamView::QWidget_StreamView(QWidget* parent, int iStreamer)
-    : QWidget(parent)
+//////////////////////////////////////////////////////////////////////
+
+MainWindowStreamView::MainWindowStreamView(QWidget* parent, int iStreamer)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindowStreamView)
     , m_iStreamer(iStreamer)
     , mThread(this, iStreamer)
+//    , ui(new Ui::MainWindowStreamView)
 {
-    setAttribute(Qt::WA_NoSystemBackground, true);
+    //    ui->setupUi(this);
+
+    //    setAttribute(Qt::WA_NoSystemBackground, true);
 
     setMinimumWidth(mThread.mInitPacket.mWidth);
     setMinimumHeight(mThread.mInitPacket.mHeight);
 
-    QObject::connect(&mThread, &Thread_InputStream::newImage, this, &QWidget_StreamView::newImage);
+    QObject::connect(&mThread, &Thread_InputStream::newImage, this, &MainWindowStreamView::newImage);
 
     mThread.start();
+
+    //    QStatusBar * statusBar = new QStatusBar(this);
+    //    statusBar->showMessage("hello");
 }
 
-QWidget_StreamView::~QWidget_StreamView()
+MainWindowStreamView::~MainWindowStreamView()
 {
-    std::cout << "~QWidget_StreamView()" << std::endl;
+    delete ui;
+
+    std::cout << "~MainWindowStreamView()" << std::endl;
     //    mThread.terminate();
     //    mThread.quit();
     //    mThread.wait();
     mThread.requestInterruption();
-    std::cout << "~QWidget_StreamView() requested interruption" << std::endl;
+    std::cout << "~MainWindowStreamView() requested interruption" << std::endl;
     mThread.wait();
-    std::cout << "~QWidget_StreamView() mThread join" << std::endl;
+    std::cout << "~MainWindowStreamView() mThread join" << std::endl;
 }
 
-void QWidget_StreamView::newImage()
-{
-    setImage((unsigned char*)mThread.mData[mThread.m_iReadBuffer], mThread.mInitPacket.mWidth, mThread.mInitPacket.mHeight);
-    //    mThread.m_iReadBuffer = (mThread.m_iReadBuffer + 1) % 2;
-    //    mtx.unlock();
-}
-
-void QWidget_StreamView::setImage(unsigned char* img_ptr, int pWidth, int pHeight)
-{
-    //    std::cout << "setImage " << width() << " " << height() << std::endl;
-    img = img_ptr;
-    mWidth = pWidth;
-    mHeight = pHeight;
-    update();
-    //        mtx.unlock();
-}
-
-void QWidget_StreamView::paintEvent(QPaintEvent* event)
-{
-    //    mtx.lock();
-    //    std::cout << "paintEvent " << width() << " " << height() << std::endl;
-    Q_UNUSED(event);
-    QPainter painter;
-    painter.begin(this);
-    if (img != nullptr) {
-        QImage image = QImage((unsigned char*)img, mWidth, mHeight, mWidth, QImage::Format_Grayscale8).scaled(this->size());
-        const QPoint p = QPoint(0, 0);
-        painter.drawImage(p, image);
-        //        mtx.unlock();
-    } else {
-        painter.fillRect(0, 0, width(), height(), Qt::red);
-    }
-    painter.end();
-}
-
-int QWidget_StreamView::iStreamer() const
+int MainWindowStreamView::iStreamer() const
 {
     return m_iStreamer;
+}
+
+void MainWindowStreamView::newImage()
+{
+    if (mCounterFps == 0) {
+        mStartFps = std::chrono::high_resolution_clock::now();
+    } else if (mCounterFps == 10) {
+        const auto end = std::chrono::high_resolution_clock::now();
+        const auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - mStartFps).count();
+        mFps = 10'000.0 / duration;
+    }
+
+    ui->centralwidget->setImage((unsigned char*)mThread.mData[mThread.m_iReadBuffer], mThread.mInitPacket.mWidth, mThread.mInitPacket.mHeight);
+    //    mThread.m_iReadBuffer = (mThread.m_iReadBuffer + 1) % 2;
+    //    mtx.unlock();
 }
