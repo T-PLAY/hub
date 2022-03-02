@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
   <widget class="WidgetStreamView" name="centralwidget"/>
   <widget class="QMenuBar" name="menubar">
    <property name="enabled">
@@ -23,7 +26,7 @@
      <x>0</x>
      <y>0</y>
      <width>482</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>

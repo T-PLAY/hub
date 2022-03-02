@@ -1,15 +1,15 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <MainWindowStreamView.h>
 #include <QMainWindow>
 #include <QMdiSubWindow>
 #include <QThread>
 #include <map>
-//#include <WidgetStreamView.h>
-#include <MainWindowStreamView.h>
 #include <server.h>
 
 // Q_DECLARE_METATYPE(Streamer);
+//Q_DECLARE_METATYPE(std::string)
 
 namespace Ui {
 class MainWindow;
@@ -22,17 +22,14 @@ public:
     explicit Thread_Client(QObject* parent = 0);
 
 signals:
-    //    void addViewStreamSignal(Streamer streamer);
-    void addViewStreamSignal(int iStreamer);
-    void delViewStreamSignal(int iStreamer);
-    //    void addViewStreamSignal();
+    void addViewStreamSignal(std::string streamerSensorName);
+    void delViewStreamSignal(std::string streamerSensorName);
 
 public:
     // overriding the QThread's run() method
     void run();
 
 private:
-    //    Ui::MainWindow * mUi;
 };
 
 class MainWindow : public QMainWindow {
@@ -45,18 +42,13 @@ public:
 signals:
 
 public slots:
-    //    void addViewStream(Streamer streamer);
-    void addViewStream(int iStreamer);
-    void delViewStream(int iStreamer);
-    //    void addViewStream();
+    void addViewStream(std::string streamerSensorName);
+    void delViewStream(std::string streamerSensorName);
 
 private:
     Ui::MainWindow* ui;
-    //    Thread_Client mThread;
     Thread_Client mThreadClient;
-//    std::set<QWidget_StreamView*> mStreamViews;
     std::set<MainWindowStreamView*> mStreamViews;
-//    std::map<int, QWidget_StreamView*> mStreamId2StreamView;
 };
 
 #endif // MAINWINDOW_H

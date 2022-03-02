@@ -3,11 +3,13 @@
 #include <QApplication>
 #include <hub.h>
 #include <server.h>
+//Q_DECLARE_METATYPE(std::string)
 
 int main(int argc, char* argv[])
 {
     QApplication a(argc, argv);
 //    qRegisterMetaType<Streamer>("Streamer");
+    qRegisterMetaType<std::string>("std::string");
     MainWindow w;
     w.show();
 

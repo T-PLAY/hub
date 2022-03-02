@@ -8,7 +8,7 @@
 #include <list>
 #include <string>
 
-#define SERVICE_PORT 4042
+#define SERVICE_PORT 4043
 
 //#define DEBUG_MSG
 
@@ -48,6 +48,8 @@ static std::string getHeader(socket_fd iSock)
     return str;
 }
 
+///////////////////////////////////////////////////////////////////////////////
+
 class Client {
 public:
     enum class Type {
@@ -58,14 +60,21 @@ public:
         COUNT
     };
 
-    enum class Message {
-        NONE,
-        PING,
-        GET_CONNECTED_DEVICES,
-        DATA,
-        CLOSE,
-        COUNT,
+    static constexpr char const* type2string[static_cast<int>(Type::COUNT)] = {
+        "NONE",
+        "STREAMER",
+        "VIEWER",
+        "STREAM_VIEWER",
     };
+
+    //    enum class Message {
+    //        NONE,
+    //        PING,
+    //        GET_CONNECTED_DEVICES,
+    //        DATA,
+    //        CLOSE,
+    //        COUNT,
+    //    };
 };
 
 class Socket {
@@ -73,6 +82,29 @@ public:
     //    Socket(int port); // server socket
     //    Socket(socket_fd fdSock);
     bool isConnected() const;
+    enum class Message {
+        NONE,
+        PING,
+        SYNC,
+        DATA,
+        OK,
+        CLOSE,
+        DEL_STREAMER,
+        NEW_STREAMER,
+        COUNT,
+    };
+
+    static constexpr char const* message2string[static_cast<int>(Message::COUNT)] = {
+        "NONE",
+        "PING",
+        "SYNC",
+        "DATA",
+        "OK",
+        "CLOSE",
+        "DEL_STREAMER",
+        "NEW_STREAMER"
+    };
+
 protected:
     Socket();
     //    Socket(Socket & socket);
@@ -81,7 +113,6 @@ protected:
     //    Socket& operator=(Socket socket);
 
     ~Socket();
-
 
     //    template <class T>
     //    void sendData(const T & t);
@@ -95,7 +126,7 @@ class ClientSocket : public Socket {
 public:
     ClientSocket(std::string ipv4, int port = SERVICE_PORT);
     ClientSocket(socket_fd fdSock);
-//    ~ClientSocket();
+    //    ~ClientSocket();
 
     ClientSocket(const ClientSocket& sock) = delete;
     ClientSocket(const ClientSocket&& sock) = delete;
@@ -109,17 +140,28 @@ public:
 
     ClientSocket&& operator=(ClientSocket&& sock) = delete;
 
+    //    void write(const Socket::Message & message) const;
     void write(const unsigned char* data, size_t len) const;
     template <class T>
-    void write(const T& data) const;
+    void write(const T& t) const;
     template <class T>
-    void write(const std::list<T>& data) const;
+    void write(const std::list<T>& list) const;
+    template <class T>
+    void write(const std::vector<T>& vector) const;
+    void write(const std::string& str) const;
 
+    //    void read(Socket::Message & message) const;
     void read(unsigned char* data, size_t len) const;
     template <class T>
-    void read(T& data) const;
+    void read(T& t) const;
     template <class T>
-    void read(std::list<T>& data) const;
+    void read(std::list<T>& list) const;
+    template <class T>
+    void read(std::vector<T>& vector) const;
+    void read(std::string& str) const;
+
+    void waitClose() const;
+    void clear();
 
 private:
     std::string mIpv4;
@@ -138,21 +180,23 @@ private:
     struct sockaddr_in mAddress;
 };
 
+///////////////////////////////////////////////////////////////////////////////
+
 template <class T>
-void ClientSocket::write(const T& data) const
+void ClientSocket::write(const T& t) const
 {
     int len = sizeof(T);
     int uploadSize = 0;
     do {
         // server is able to detect client disconnecting
         if (!isConnected()) {
-            std::cout << getHeader(mFdSock) << "client lost" << std::endl;
+            std::cout << getHeader(mFdSock) << "write(const T& t) : client lost" << std::endl;
             throw socket_error("Client lost");
             //            return;
             std::cout << "AFTER throw" << std::endl;
         }
 
-        int byteSent = send(mFdSock, reinterpret_cast<const char*>(&data) + uploadSize, len - uploadSize, 0);
+        int byteSent = send(mFdSock, reinterpret_cast<const char*>(&t) + uploadSize, len - uploadSize, 0);
         if (byteSent == -1) {
             std::cout << getHeader(mFdSock) << "can't send packet " << byteSent << "/" << len << std::endl;
             perror("send error\n");
@@ -172,7 +216,13 @@ void ClientSocket::write(const T& data) const
 #ifdef DEBUG_MSG
     std::cout << getHeader(mFdSock) << "write message ";
     for (int i = 0; i < len; ++i) {
-        std::cout << (int)*((unsigned char*)&data + i) << " ";
+        std::cout << (int)*((unsigned char*)&t + i) << " ";
+    }
+    if (std::is_same<T, Message>::value) {
+        std::cout << ", " << message2string[(int)t];
+    }
+    if (std::is_same<T, Client::Type>::value) {
+        std::cout << ", new client : " << Client::type2string[(int)t];
     }
     std::cout << std::endl;
 #endif
@@ -190,9 +240,22 @@ void ClientSocket::write(const std::list<T>& list) const
 }
 
 template <class T>
-void ClientSocket::read(T& data) const
+void ClientSocket::write(const std::vector<T>& vector) const
 {
-    //    std::cout << "ClientSocket::read(T& data)" << std::endl;
+    int nbEl = vector.size();
+    write(nbEl);
+
+    for (const T& el : vector) {
+        write(el);
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+template <class T>
+void ClientSocket::read(T& t) const
+{
+    //    std::cout << "ClientSocket::read(T& t)" << std::endl;
 
     int len = sizeof(T);
     //    std::cout << getHeader(mFdSock) << "ClientSocket reading " << len << " bytes" << std::endl;
@@ -209,7 +272,7 @@ void ClientSocket::read(T& data) const
 
         //        ClientSocket::write(Client::Message::PING); // check peer connection
         //        std::cout << "start recv" << std::endl;
-        int byteRead = recv(mFdSock, reinterpret_cast<char*>(&data) + downloadSize, len - downloadSize, 0);
+        int byteRead = recv(mFdSock, reinterpret_cast<char*>(&t) + downloadSize, len - downloadSize, 0);
         //        std::cout << "end recv" << std::endl;
         if (byteRead == -1) {
             //            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
@@ -233,8 +296,15 @@ void ClientSocket::read(T& data) const
 #ifdef DEBUG_MSG
     std::cout << getHeader(mFdSock) << "read message ";
     for (int i = 0; i < len; ++i) {
-        std::cout << (int)*((unsigned char*)&data + i) << " ";
+        std::cout << (int)*((unsigned char*)&t + i) << " ";
     }
+    if (std::is_same<T, Message>::value) {
+        std::cout << ", " << message2string[(int)t];
+    }
+    if (std::is_same<T, Client::Type>::value) {
+        std::cout << ", new client : " << Client::type2string[(int)t];
+    }
+
     std::cout << std::endl;
 #endif
 }
@@ -251,6 +321,20 @@ void ClientSocket::read(std::list<T>& list) const
         T el;
         read(el);
         list.push_back(std::move(el));
+    }
+}
+
+template <class T>
+void ClientSocket::read(std::vector<T>& vector) const
+{
+    int nbEl;
+    read(nbEl);
+
+    for (int i = 0; i < nbEl; ++i) {
+        //    for (const T& el : list) {
+        T el;
+        read(el);
+        vector.push_back(std::move(el));
     }
 }
 
