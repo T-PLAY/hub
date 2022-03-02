@@ -3,44 +3,42 @@
 
 #include <functional>
 #include <socket.h>
-//#include <list>
 #include <stream.h>
+#include <map>
 
-struct StreamViewer {
-    const ClientSocket * const socket = nullptr;
-//    ClientSocket socket;
-};
+//struct StreamViewer {
+////    OutputStream* mOutputStream = nullptr;
+//    OutputStream mOutputStream;
+//};
 
 struct Viewer {
-    const ClientSocket * const socket = nullptr;
-//    ClientSocket socket;
+    const ClientSocket* const socket = nullptr;
 };
 
 struct Streamer {
-    Stream::InitPacket initPacket;
-    const ClientSocket * socket = nullptr;
-    int id;
-    std::list<StreamViewer*> streamViewers;
+//    InputStream* mInputStream = nullptr;
+    InputStream mInputStream;
+//    InputStream mInputStream;
+//    std::list<OutputStream> streamViewers;
+    std::list<OutputStream> mOutputStreams;
 };
 
-
-class Server
-{
+class Server {
 public:
-    enum class Message {
-        NONE,
-        PING,
+//    enum class Message {
+//        NONE,
+//        PING,
+//        //        CLOSE,
+//        NEW_STREAMER,
+//        DEL_STREAMER,
+//        //        OPEN_INPUT_STREAM,
+//        SYNC,
+//        OK,
 //        CLOSE,
-        NEW_STREAMER,
-        DEL_STREAMER,
-//        OPEN_INPUT_STREAM,
-        SYNC,
-        OK,
-        CLOSE,
-        DATA,
-        COUNT,
-    };
-//    Server(std::function<void(Socket & sock)> processClient, int port = 4043);
+//        DATA,
+//        COUNT,
+//    };
+
     Server(int port = SERVICE_PORT);
 
     void run();
@@ -49,13 +47,9 @@ public:
 
 private:
     ServerSocket mServerSock;
-    std::list<Streamer*> mStreamers;
-//    std::vector<ClientSocket> mStreamerSockets;
+//    std::list<Streamer*> mStreamers;
+    std::map<std::string, Streamer*> mStreamers;
     std::list<Viewer*> mViewers;
-    int m_iStreamer = 0;
-//    std::vector<ClientSocket> mViewerSockets;
-//    int mFdSock;
-//    const std::function<void(Socket & sock)> mProcessClient;
 };
 
 #endif // SERVER_H

@@ -6,6 +6,6 @@ int main() {
 //    auto processClient = [](Socket & socket) {
 //    };
 
-    Server server(4043);
+    Server server;
     server.run();
 }

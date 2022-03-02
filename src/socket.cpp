@@ -1,52 +1,26 @@
 #include "socket.h"
 
-//#include <net.h>
+#include <cassert>
 
 Socket::Socket()
 {
-    //    std::cout << getHeader(mFdSock) << "Socket()" << std::endl;
+#ifdef DEBUG_MSG
+    std::cout << getHeader(mFdSock) << "Socket()" << std::endl;
+#endif
     Net::init();
 }
 
-//Socket::Socket(socket_fd fdSock)
-//    : mFdSock(fdSock)
-//{
-//    std::cout << getHeader(mFdSock) << "Socket(socket_fd fdSock)" << std::endl;
-//    Net::init();
-//    //    Net::sSockets.insert(mFdSock);
-//}
-
-//// Socket::Socket(Socket& socket)
-////     : Socket(socket.mFdSock)
-////{
-//// }
-
-//// Socket::Socket(Socket& socket)
-////     : Socket(socket.mFdSock)
-////{
-//// }
-
-//Socket::Socket(Socket&& socket)
-//    : Socket(socket.mFdSock)
-//{
-//    std::cout << getHeader(mFdSock) << "Socket(Socket&& fdSock)" << std::endl;
-//    socket.mFdSock = -1;
-//}
-
-// Socket& Socket::operator=(Socket socket)
-//{
-//     mFdSock = socket.mFdSock;
-//     return *this;
-// }
-
 Socket::~Socket()
 {
-    //    std::cout << getHeader(mFdSock) << "~Socket()" << std::endl;
+#ifdef DEBUG_MSG
+    std::cout << getHeader(mFdSock) << "~Socket()" << std::endl;
+#endif
     if (mFdSock != -1) {
         //        if (mOpenned) {
         // Closing connection
         std::cout << getHeader(mFdSock) << "close socket" << std::endl;
         Net::clearSocket(mFdSock);
+        mFdSock = -1;
     }
     //        }
     //    printf("\n");
@@ -74,26 +48,15 @@ bool Socket::isConnected() const
     //    std::cout << getHeader(mFdSock) << "loose connection" << std::endl;
     //    exit(9);
     return false;
-
-    //        int error = 0;
-    //        socklen_t len = sizeof (error);
-    //        int retval = getsockopt (mFdSock, SOL_SOCKET, SO_ERROR, &error, &len);
-    //        if (retval != 0) {
-    //            /* there was a problem getting the error code */
-    //            fprintf(stderr, "error getting socket error code: %s\n", strerror(retval));
-    //            return;
-    //        }
-    //        if (error != 0) {
-    //            /* socket has a non zero error status */
-    //            fprintf(stderr, "socket error: %s\n", strerror(error));
-    //        }
 }
 
 ClientSocket::ClientSocket(std::string ipv4, int port)
     : mIpv4(ipv4)
     , mPort(port)
 {
-    //    std::cout << getHeader(mFdSock) << "ClientSocket(std::string ipv4, int port)" << std::endl;
+#ifdef DEBUG_MSG
+    std::cout << getHeader(mFdSock) << "ClientSocket(std::string ipv4, int port)" << std::endl;
+#endif
 
     // Socket creation
     mFdSock = socket(PF_INET, SOCK_STREAM, 0);
@@ -120,12 +83,14 @@ ClientSocket::ClientSocket(std::string ipv4, int port)
 
     // Connect to server
     while (connect(mFdSock, (struct sockaddr*)&serv_addr, sizeof(serv_addr)) < 0) {
-        std::cout << getHeader(mFdSock) << "Failed to connect to address:" << ipv4 << " port:" << port << std::endl;
+        //        std::cout << getHeader(mFdSock) << "Failed to connect to address:" << ipv4 << " port:" << port << std::endl;
         //        perror("Failed to connect.\n");
         //        exit(1);
-        //        throw socket_error(((std::string("Failed to connect to server at address ") + ipv4 + std::string(" and port ") + std::to_string(mPort))).c_str());
         std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+        throw socket_error(((std::string("Failed to connect to server at address ") + ipv4 + std::string(" and port ") + std::to_string(mPort))).c_str());
     }
+
+    std::cout << getHeader(mFdSock) << "new client on socket " << mFdSock << std::endl;
 
     //    if (listen(mFdSock, 3) < 0) {
     //        perror("listen");
@@ -196,13 +161,22 @@ ClientSocket::ClientSocket(socket_fd fdSock)
 //    : Socket(fdSock)
 {
     mFdSock = fdSock;
+    //#ifdef DEBUG_MSG
     std::cout << getHeader(mFdSock) << "ClientSocket(socket_fd fdSock)" << std::endl;
+    //#endif
 }
 
-//ClientSocket::~ClientSocket()
+// ClientSocket::~ClientSocket()
 //{
-
-//}
+//     if (mFdSock != -1) {
+//         std::cout << getHeader(mFdSock) << "~ClientSocket() start" << std::endl;
+//         write(Socket::Message::CLOSE);
+//         Socket::Message message;
+//         read(message);
+//         assert(message == Message::OK);
+//         std::cout << getHeader(mFdSock) << "~ClientSocket() end" << std::endl;
+//     }
+// }
 
 ClientSocket::ClientSocket(ClientSocket&& sock)
     : Socket()
@@ -211,15 +185,30 @@ ClientSocket::ClientSocket(ClientSocket&& sock)
 {
     mFdSock = sock.mFdSock;
     sock.mFdSock = -1;
+
+#ifdef DEBUG_MSG
+    std::cout << getHeader(mFdSock) << "ClientSocket(ClientSocket && sock)" << std::endl;
+#endif
     //    std::cout << getHeader(mFdSock) << "ClientSocket(ClientSocket&& sock)" << std::endl;
 }
 
-//ClientSocket::ClientSocket(const ClientSocket& sock)
-//    : Socket()
+// ClientSocket::ClientSocket(const ClientSocket &&sock)
+//     : Socket()
+//     , mIpv4(sock.mIpv4)
+//     , mPort(sock.mPort)
 //{
-//    mFdSock = sock.mFdSock;
-//    std::cout << getHeader(mFdSock) << "ClientSocket(ClientSocket& fdSock)" << std::endl;
+//     mFdSock = sock.mFdSock;
+//     sock.mFdSock = -1;
+//     //    std::cout << getHeader(mFdSock) << "ClientSocket(ClientSocket&& sock)" << std::endl;
+
 //}
+
+// ClientSocket::ClientSocket(const ClientSocket& sock)
+//     : Socket()
+//{
+//     mFdSock = sock.mFdSock;
+//     std::cout << getHeader(mFdSock) << "ClientSocket(ClientSocket& fdSock)" << std::endl;
+// }
 
 ServerSocket::ServerSocket(int port)
     : mPort(port)
@@ -270,6 +259,7 @@ ClientSocket ServerSocket::waitNewClient()
         exit(1);
     }
     std::cout << getHeader(mFdSock) << "new client on socket " << new_socket << std::endl;
+    Net::sSockets.insert(new_socket);
 
     return ClientSocket(new_socket);
 }
@@ -287,6 +277,11 @@ ClientSocket ServerSocket::waitNewClient()
 //         exit(5);
 //     }
 // }
+
+// void ClientSocket::write(const Message &message) const
+//{
+
+//}
 
 void ClientSocket::write(const unsigned char* data, size_t len) const
 {
@@ -315,6 +310,22 @@ void ClientSocket::write(const unsigned char* data, size_t len) const
     } while (len != uploadSize);
 }
 
+void ClientSocket::write(const std::string& str) const
+{
+    int nbEl = str.size();
+    write(nbEl);
+
+    const char* data = str.data();
+    write((unsigned char*)data, nbEl);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+// void ClientSocket::read(Message &message) const
+//{
+
+//}
+
 void ClientSocket::read(unsigned char* data, size_t len) const
 {
     //    std::cout << "ClientSocket::read(char* data, size_t len)" << std::endl;
@@ -335,4 +346,48 @@ void ClientSocket::read(unsigned char* data, size_t len) const
         std::cout << getHeader(mFdSock) << "byteRead = " << byteRead << " (" << downloadSize << "/" << len << ")" << std::endl;
 #endif
     } while (len != downloadSize);
+}
+
+void ClientSocket::read(std::string& str) const
+{
+    int nbEl;
+    read(nbEl);
+
+    unsigned char tmp[nbEl + 1];
+    read(tmp, nbEl);
+    tmp[nbEl] = 0;
+    //    str = tmp;
+    str = std::string((char*)tmp);
+    //    read((unsigned char*)str.data(), nbEl);
+}
+
+void ClientSocket::waitClose() const
+{
+    Socket::Message message;
+    bool wantToClose = false;
+    while (!wantToClose) {
+        //        sock.write(Socket::Message::PING);
+        read(message);
+
+        switch (message) {
+        case Message::CLOSE:
+            wantToClose = true;
+            break;
+
+        default:
+            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+            break;
+        }
+    }
+
+    write(Message::OK);
+}
+
+void ClientSocket::clear()
+{
+    if (mFdSock != -1) {
+        std::cout << getHeader(mFdSock) << "close socket" << std::endl;
+        Net::clearSocket(mFdSock);
+        mFdSock = -1;
+    }
 }

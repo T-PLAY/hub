@@ -37,9 +37,10 @@ static void clearSocket(socket_fd sock)
 #ifdef WIN32
     if (sSockets.empty()) {
         std::cout << "Net::clearSocket(" << sock << ") WSACleanup()" << std::endl;
-//        WSACleanup();
+        //        WSACleanup();
     }
 #endif
+//    sock = -1;
 }
 
 #ifndef WIN32
@@ -51,7 +52,8 @@ static void signalHandler(int signum)
     // terminate program
     for (const socket_fd& sock : sSockets) {
         if (sock != INVALID_SOCKET) {
-//            clearSocket(sock);
+            //            clearSocket(sock);
+            std::cout << "Net::clearSocket(" << sock << ") close socket" << std::endl;
             closesocket(sock);
         }
     }

@@ -10,7 +10,7 @@ class Thread_InputStream : public QThread {
     Q_OBJECT
 public:
     // constructor
-    explicit Thread_InputStream(QObject* parent = 0, int iStreamer = 0);
+    explicit Thread_InputStream(QObject* parent = 0, std::string sensorName = "");
     ~Thread_InputStream();
 
 signals:
@@ -23,14 +23,16 @@ public:
     // overriding the QThread's run() method
     void run();
 
-    Stream::InitPacket mInitPacket;
+//    Stream::InitPacket mInitPacket;
     unsigned char* mData[2];
     int m_iReadBuffer = 0;
     int m_iWriteBuffer = 0;
 
+    InputStream mInputStream;
 private:
-    ClientSocket mSock;
-    int mAcquisitionSize;
+//    ClientSocket mSock;
+//    int mAcquisitionSize;
+
     //    Ui::MainWindow * mUi;
 };
 
@@ -46,10 +48,10 @@ class MainWindowStreamView : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindowStreamView(QWidget *parent = nullptr, int iStreamer = 0);
+    explicit MainWindowStreamView(QWidget *parent = nullptr, std::string sensorName = "");
     ~MainWindowStreamView();
 
-    int iStreamer() const;
+    std::string getStreamerSensorName() const;
 
 public slots:
     void newImage();
@@ -57,11 +59,11 @@ public slots:
 private:
     Ui::MainWindowStreamView *ui;
 
-    int m_iStreamer;
+//    int m_iStreamer;
     Thread_InputStream mThread;
 
     int mCounterFps = 0;
-    double mFps = 0.0;
+    double mFps = 10.0;
     std::chrono::time_point<std::chrono::high_resolution_clock> mStartFps;
 };
 
