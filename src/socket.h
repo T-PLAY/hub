@@ -8,39 +8,30 @@
 #include <list>
 #include <string>
 
-#define SERVICE_PORT 4042
+#define SERVICE_PORT 4041
 
-//#define DEBUG_MSG
+#define DEBUG_MSG
 
-class socket_error : public std::runtime_error {
-    //    const char*mMsg;
-    //    const char* mFile;
-    //    int mLine;
-    //    const char* mFunc;
-    //    const char* mInfo;
+// extern class Stream::exception;
+// namespace Stream {
+// class Stream_exception;
+//}
 
-public:
-    socket_error(const char* const message) throw()
-        : std::runtime_error(message)
-    {
-    }
-
-    //    socket_error(const char* msg, const char* file_, int line_, const char* func_, const char* info_ = "")
-    ////        : std::exception(msg)
-    //        : mMsg(msg)
-    //        , mFile(file_)
-    //        , mLine(line_)
-    //        , mFunc(func_)
-    //        , mInfo(info_)
-    //    {
-    //    }
-    const char* what() const throw()
-    {
-        //        return std::exception::what();
-        return std::runtime_error::what();
-        //        return (std::string("Socket exception : ") + mMsg + mFile + mLine + mFunc + mInfo).c_str();
-    }
-};
+// namespace hub {
+//    using exception = std::exception;
+//    using runtime_error = std::runtime_error;
+//// class exception : public std::exception {
+//// public:
+////     //    explicit exception(const char* const message) throw()
+////     //        : std::runtime_error(message)
+////     //    {
+////     //    }
+////     //    const char* what() const throw()
+////     //    {
+////     //        return std::runtime_error::what();
+////     //    }
+//// };
+// }
 
 static std::string getHeader(socket_fd iSock)
 {
@@ -79,6 +70,20 @@ public:
 
 class Socket {
 public:
+    class exception : public std::runtime_error {
+//    class exception : public hub::runtime_error {
+    public:
+        //    class exception : public hub::exception {
+        explicit exception(const char* const message) throw()
+            : std::runtime_error(message)
+        //            : hub::ecception(message)
+        {
+        }
+        const char* what() const throw()
+        {
+            return std::runtime_error::what();
+        }
+    };
     //    Socket(int port); // server socket
     //    Socket(socket_fd fdSock);
     bool isConnected() const;
@@ -191,7 +196,7 @@ void ClientSocket::write(const T& t) const
         // server is able to detect client disconnecting
         if (!isConnected()) {
             std::cout << getHeader(mFdSock) << "write(const T& t) : client lost" << std::endl;
-            throw socket_error("Client lost");
+            throw Socket::exception("Client lost");
             //            return;
             std::cout << "AFTER throw" << std::endl;
         }
@@ -201,7 +206,7 @@ void ClientSocket::write(const T& t) const
             std::cout << getHeader(mFdSock) << "can't send packet " << byteSent << "/" << len << std::endl;
             perror("send error\n");
             //        exit(5);
-            throw socket_error("Can't write packet, peer connection lost");
+            throw Socket::exception("Can't write packet, peer connection lost");
             return;
         } else if (byteSent == 0) {
             std::this_thread::sleep_for(std::chrono::milliseconds(1000));
@@ -277,11 +282,11 @@ void ClientSocket::read(T& t) const
         if (byteRead == -1) {
             //            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
             std::cout << "byte read == -1 error" << std::endl;
-            throw socket_error("Can't read packet, peer connection lost");
+            throw Socket::exception("Can't read packet, peer connection lost");
             exit(5);
             return;
         } else if (byteRead == 0) {
-            throw socket_error("0 byte received, peer connection lost");
+            throw Socket::exception("0 byte received, peer connection lost");
             std::this_thread::sleep_for(std::chrono::milliseconds(1000));
         }
         //        else {

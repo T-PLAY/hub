@@ -48,7 +48,8 @@ void Server::run()
 
                 std::cout << getServerHeader(iThread) << "[streamer] sensor name = '" << sensorName << "'" << std::endl;
 
-                Stream::Acquisition acq;
+//                Stream::Acquisition acq;
+                auto acq = inputStream.acquisition();
 
                 try {
 
@@ -59,10 +60,10 @@ void Server::run()
                         viewer->socket->write(inputStream.getSensorName());
                     }
 
-                    const size_t acquistionSize = inputStream.getAcquisitionSize();
-                    assert(acquistionSize == 192 * 512);
-                    acq.data = new unsigned char[acquistionSize];
-                    std::cout << getServerHeader(iThread) << "[streamer] acquisitionSize:" << acquistionSize << std::endl;
+                    const size_t acquisitionSize = inputStream.getAcquisitionSize();
+                    assert(acquisitionSize == 192 * 512);
+//                    acq.data = new unsigned char[acquisitionSize];
+                    std::cout << getServerHeader(iThread) << "[streamer] acquisitionSize:" << acquisitionSize << std::endl;
 
                     // for each new stream acquistion
                     while (true) {
@@ -76,7 +77,7 @@ void Server::run()
 
                             int dec = acq.data[0];
                             int width = inputStream.getDims().at(0);
-                            for (size_t i = 0; i < acquistionSize; ++i) {
+                            for (size_t i = 0; i < acquisitionSize; ++i) {
                                 if (acq.data[i] != (i / width + dec) % 256) {
                                     int tmp = acq.data[i];
                                     unsigned char* ptr = &acq.data[i];
@@ -96,7 +97,7 @@ void Server::run()
                                     outputStream << acq;
                                     ++it;
 
-                                } catch (socket_error& e) {
+                                } catch (Socket::exception& e) {
                                     std::cout << getServerHeader(iThread) << "[streamer] out : catch socket exception : " << e.what() << std::endl;
                                     it = outputStreams.erase(it);
                                     std::cout << getServerHeader(iThread) << "[streamer] out : end stream viewer\t server status : " << getStatus() << std::endl;
@@ -120,13 +121,13 @@ void Server::run()
                         }
                     } // while (true)
 
-                } catch (socket_error& e) {
+                } catch (Socket::exception& e) {
                     std::cout << getServerHeader(iThread) << "[streamer] in : catch socket exception : " << e.what() << std::endl;
                 } catch (std::exception& e) {
                     std::cout << getServerHeader(iThread) << "[streamer] in : catch exception : " << e.what() << std::endl;
                     throw;
                 }
-                delete[] acq.data;
+//                delete[] acq.data;
                 //                mStreamers.remove(&streamer);
                 mStreamers.erase(sensorName);
 
@@ -168,7 +169,7 @@ void Server::run()
                     }
                     //                    sock.waitClose();
 
-                } catch (socket_error& e) {
+                } catch (Socket::exception& e) {
                     std::cout << getServerHeader(iThread) << "[viewer] catch socket exception : " << e.what() << std::endl;
                 } catch (std::exception& e) {
                     std::cout << getServerHeader(iThread) << "[viewer] catch exception : " << e.what() << std::endl;
@@ -189,21 +190,25 @@ void Server::run()
                 std::string sensorName;
                 sock.read(sensorName);
 
-                assert(mStreamers.find(sensorName) != mStreamers.end());
-                Streamer* streamer = mStreamers.at(sensorName);
+                //                assert(mStreamers.find(sensorName) != mStreamers.end());
+                if (mStreamers.find(sensorName) != mStreamers.end()) {
+                    Streamer* streamer = mStreamers.at(sensorName);
 
-                //                OutputStream outputStream(std::move(sock), *streamer->mInputStream);
-                //                StreamViewer streamViewer = { &outputStream };
-                //                streamer->mOutputStreams.push_back(&streamViewer);
+                    //                OutputStream outputStream(std::move(sock), *streamer->mInputStream);
+                    //                StreamViewer streamViewer = { &outputStream };
+                    //                streamer->mOutputStreams.push_back(&streamViewer);
 
-                streamer->mOutputStreams.emplace_back(std::move(sock), streamer->mInputStream);
+                    streamer->mOutputStreams.emplace_back(std::move(sock), streamer->mInputStream);
+                } else {
+                    std::cout << getServerHeader(iThread) << "[stream viewer] unknown sensor name : '" << sensorName << "'" << std::endl;
+                }
                 //                streamer->mOutputStreams.empla(OutputStream { std::move(sock), *streamer->mInputStream });
 
                 //                try {
                 //                    // wait close connection from client
                 //                    outputStream.waitClose();
 
-                //                } catch (socket_error& e) {
+                //                } catch (Socket::exception& e) {
                 //                    std::cout << getServerHeader(iThread) << "[stream viewer] catch socket exception : " << e.what() << std::endl;
                 //                } catch (std::exception& e) {
                 //                    std::cout << getServerHeader(iThread) << "[stream viewer] catch exception : " << e.what() << std::endl;

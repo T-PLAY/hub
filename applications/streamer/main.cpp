@@ -24,16 +24,17 @@ int main(void)
 
             //    OutputStream proceduralStream(width, height, Stream::Format::Y8);
 
-            constexpr size_t imgSize = width * height;
+            Stream::Acquisition<unsigned char[32]> acq;
+            const size_t imgSize = proceduralStream.getAcquisitionSize();
             //            unsigned char img[imgSize];
-            unsigned char img[imgSize];
+//            unsigned char img[imgSize];
             //            for (int i = 0; i < width; ++i) {
             //                for (int j = 0; j < height; ++j) {
             //                    img[i + j * width] = 127;
             //                }
             //            }
             for (size_t i = 0; i < imgSize; ++i) {
-                img[i] = 127;
+                acq.data[i] = 127;
             }
 
             //    return 0;
@@ -54,13 +55,13 @@ int main(void)
                 //                        }
                 //                    }
                 for (size_t i = 0; i < imgSize; ++i) {
-                    img[i] = (i / width + dec) % 256;
+                    acq.data[i] = (i / width + dec) % 256;
                 }
                 const auto& end = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
                 ++dec;
                 //                    Stream::TimestampInterval timestampInterval { start, end };
 
-                Stream::Acquisition acq = { start, end, img };
+//                Stream::Acquisition acq = { start, end, img };
                 proceduralStream << acq;
             }
 

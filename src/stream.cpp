@@ -6,6 +6,12 @@
 //#include <server.h>
 #include <socket.h>
 
+//std::ostream& operator<<(std::ostream& os, const Stream::Acquisition& acq)
+//{
+//    os << acq.backendTimestamp << acq.backendTimeOfArrival << acq.data;
+//    return os;
+//}
+
 // Stream::Stream(int width, int height, Format format, Device device, Sensor sensor, int port, std::string ipv4)
 //     //    : mType(Type::NONE)
 ////    : mInitPacket{width, height, format, device, sensor}
@@ -57,16 +63,6 @@ size_t Stream::computeAcquisitionSize(Format format, const std::vector<int>& dim
     return std::accumulate(dims.cbegin(), dims.cend(), 1, std::multiplies<int> {}) * formatNbByte[static_cast<int>(format)];
 }
 
-void Stream::ping() const
-{
-    mSocket.write(Socket::Message::PING);
-}
-
-void Stream::close()
-{
-    mSocket.write(Socket::Message::CLOSE);
-}
-
 void Stream::waitClose()
 {
     while (true) {
@@ -82,6 +78,24 @@ void Stream::waitClose()
     }
 }
 
+///////////////////////////////////////////////////////////////////////////////
+
+void Stream::ping() const
+{
+    mSocket.write(Socket::Message::PING);
+}
+
+void Stream::close()
+{
+    mSocket.write(Socket::Message::CLOSE);
+}
+
+size_t Stream::getAcquisitionSize() const
+{
+    //    return std::accumulate(mDims.cbegin(), mDims.cend(), 1, std::multiplies<int> {}) * formatNbByte[static_cast<int>(mFormat)];
+    return mAcquisitionSize;
+}
+
 const std::string& Stream::getSensorName() const
 {
     return mSensorName;
@@ -90,12 +104,6 @@ const std::string& Stream::getSensorName() const
 const std::vector<int>& Stream::getDims() const
 {
     return mDims;
-}
-
-size_t Stream::getAcquisitionSize() const
-{
-    //    return std::accumulate(mDims.cbegin(), mDims.cend(), 1, std::multiplies<int> {}) * formatNbByte[static_cast<int>(mFormat)];
-    return mAcquisitionSize;
 }
 
 Stream::Format Stream::getFormat() const
@@ -117,8 +125,14 @@ InputStream::InputStream(const std::string& sensorName, const std::string& ipv4,
     mSocket.write(sensorName);
     //    mSocket.write(sensorName);
 
-    //    mSocket.read(mSensorName);
-    mSocket.read(mFormat);
+    try {
+        //    mSocket.read(mSensorName);
+        mSocket.read(mFormat);
+    } catch (Socket::exception& e) {
+        std::cout << "[InputStream] catch exception : " << e.what() << std::endl;
+        throw Stream::exception((std::string("sensor '") + sensorName + "' is not attached to server").c_str());
+    }
+
     mSocket.read(mDims);
 
     //    mAcquisitionSize = getAcquisitionSize();
@@ -152,7 +166,8 @@ InputStream::~InputStream()
     //    }
 }
 
-void InputStream::operator>>(Acquisition& acquisition) const
+template <class T>
+void InputStream::operator>>(Acquisition<T>& acquisition) const
 {
     //    std::cout << "[InputStream] operator>>(acq)" << std::endl;
 
@@ -178,7 +193,7 @@ void InputStream::operator>>(Acquisition& acquisition) const
         std::cout << "[InputStream] request close" << std::endl;
         //        serverRequestClose = true;
         //        throw stream_exception();
-        throw socket_error("server close connection");
+        throw Socket::exception("server close connection");
         break;
 
         //    case Socket::Message::PING:
