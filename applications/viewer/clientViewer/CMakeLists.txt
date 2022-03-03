@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.8)
 
-project(realTimeViewer)
+project(clientViewer)
 
 #set (CMAKE_PREFIX_PATH "C:\\Qt\\Qt5.0.1\\5.0.1\\msvc2010\\")
 
@@ -76,5 +76,5 @@ elseif(UNIX)
 endif()
 
 
-target_link_libraries(${PROJECT_NAME} src ${REQUIRED_LIBS_QUALIFIED} ${UNIX_REQUIRED_LIBS} ${WIN32_REQUIRED_LIBS})
+target_link_libraries(${PROJECT_NAME} src libViewer ${REQUIRED_LIBS_QUALIFIED} ${UNIX_REQUIRED_LIBS} ${WIN32_REQUIRED_LIBS})
 

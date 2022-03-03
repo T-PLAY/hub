@@ -87,7 +87,7 @@ ClientSocket::ClientSocket(std::string ipv4, int port)
         //        perror("Failed to connect.\n");
         //        exit(1);
         std::this_thread::sleep_for(std::chrono::milliseconds(2000));
-        throw socket_error(((std::string("Failed to connect to server at address ") + ipv4 + std::string(" and port ") + std::to_string(mPort))).c_str());
+        throw Socket::exception(((std::string("Failed to connect to server at address ") + ipv4 + std::string(" and port ") + std::to_string(mPort))).c_str());
     }
 
     std::cout << getHeader(mFdSock) << "new client on socket " << mFdSock << std::endl;
@@ -298,7 +298,7 @@ void ClientSocket::write(const unsigned char* data, size_t len) const
             //                byteSent = send(new_socket, (char*)img, imgSize, 0);
             //                Net::clearSocket(mFdSock);
             //                return 3;
-            throw socket_error("Can't write packet, peer connection lost");
+            throw Socket::exception("Can't write packet, peer connection lost");
             return;
         } else if (byteSent == 0) {
             std::this_thread::sleep_for(std::chrono::milliseconds(1000));
@@ -330,6 +330,7 @@ void ClientSocket::read(unsigned char* data, size_t len) const
 {
     //    std::cout << "ClientSocket::read(char* data, size_t len)" << std::endl;
     //    ClientSocket::write(Client::Message::PING); // check peer connection
+    std::cout << "read data array, size of data = " << sizeof(data) << std::endl;
     size_t downloadSize = 0;
     do {
         int byteRead = recv(mFdSock, reinterpret_cast<char*>(data) + downloadSize, static_cast<int>(len - downloadSize), 0);

@@ -47,7 +47,7 @@ void Thread_InputStream::run()
     try {
         while (!this->isInterruptionRequested() && !serverRequestClose) {
             Stream::Acquisition acq;
-            acq.data = mData[m_iWriteBuffer];
+//            acq.data = mData[m_iWriteBuffer];
 
             mInputStream >> acq;
             m_iReadBuffer = m_iWriteBuffer;
@@ -63,6 +63,7 @@ void Thread_InputStream::run()
                 if (mData[m_iReadBuffer][i] != (i / 192 + dec) % 256) {
                     //                        if (tmp != dec) {
                     //                            std::cout << "[streamView] error bad image" << std::endl;
+                    assert(false);
                     badImage = true;
                     break;
                 }

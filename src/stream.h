@@ -25,11 +25,13 @@
 //     COUNT
 // };
 
-//class stream_exception : public std::exception {
-//};
+// class stream_exception : public std::exception {
+// };
 
+// class Stream {
 class Stream {
 public:
+    //    class exception;
     //    enum class Type{
     //        NONE,
     //        INPUT,
@@ -106,6 +108,21 @@ public:
         // COUNT             /**< Number of enumeration values. Not a valid input: intended to be used in for-loops. */
     };
 
+    class exception : public std::runtime_error {
+        //    class exception : public hub::exception {
+    public:
+        //    class exception : public hub::exception {
+        explicit exception(const char* const message) throw()
+            : std::runtime_error(message)
+        //            : hub::ecception(message)
+        {
+        }
+        const char* what() const throw()
+        {
+            return std::runtime_error::what();
+        }
+    };
+
     //    class InitPacket {
     //    public:
     //        //        Type mType;
@@ -122,26 +139,35 @@ public:
     //        long long backendTimestamp;
     //        long long backendTimeOfArrival;
     //    };
-//    enum class Message {
-//        NONE,
-//        START_ACQUISITION,
-//        PING,
-//        CLOSE,
-//        SYNC,
-//        DATA,
-//        OK,
-//        COUNT
-//    };
+    //    enum class Message {
+    //        NONE,
+    //        START_ACQUISITION,
+    //        PING,
+    //        CLOSE,
+    //        SYNC,
+    //        DATA,
+    //        OK,
+    //        COUNT
+    //    };
 
+    template <class T>
     class Acquisition {
     public:
         //        TimestampInterval timestampInterval;
         long long backendTimestamp = 0;
         long long backendTimeOfArrival = 0;
-        unsigned char* data = nullptr;
+        //        unsigned char* data = nullptr;
+        //        unsigned char data[];
+        T data;
+
+        //        friend std::ostream& operator<<(std::ostream& os, const Acquisition& acq);
     };
+
+    template <class T>
+    Acquisition<T> acquisition();
     //    Stream(int width, int height, Format format, Device device = Device::NONE, Sensor sensor = Sensor::NONE, int port = SERVICE_PORT, std::string ipv4 = "127.0.0.1");
 
+protected:
     Stream(const std::string& sensorName, Format format, const std::vector<int>& dims, const std::string& ipv4 = ("127.0.0.1"), int port = SERVICE_PORT);
     ~Stream();
 
@@ -159,13 +185,14 @@ public:
 
     //    void setupAcquisitionSize();
     static size_t computeAcquisitionSize(Format format, const std::vector<int>& dims);
-    void ping() const;
-    void close();
     void waitClose();
 
+public:
+    void ping() const;
+    void close();
+    size_t getAcquisitionSize() const;
     const std::string& getSensorName() const;
     const std::vector<int>& getDims() const;
-    size_t getAcquisitionSize() const;
     Format getFormat() const;
 
 protected:
@@ -189,13 +216,19 @@ protected:
     size_t mAcquisitionSize;
 };
 
+//template <class T>
+//Stream::Acquisition<T> Stream::acquisition()
+//{
+//}
+
 class InputStream : public Stream {
 public:
     InputStream(const std::string& sensorName, const std::string& ipv4 = "127.0.0.1", int port = SERVICE_PORT);
     InputStream(ClientSocket&& sock);
     ~InputStream();
 
-    void operator>>(Acquisition& acquisition) const;
+    template <class T>
+    void operator>>(Acquisition<T>& acquisition) const;
 
 private:
 };
@@ -204,9 +237,10 @@ class OutputStream : public Stream {
 public:
     OutputStream(const std::string& sensorName, Format format, const std::vector<int>& dims, const std::string& ipv4 = "127.0.0.1", int port = SERVICE_PORT);
     OutputStream(const OutputStream& outputStream) = delete;
-    OutputStream(ClientSocket&& sock, const InputStream & inputStream);
+    OutputStream(ClientSocket&& sock, const InputStream& inputStream);
 
-    void operator<<(const Acquisition& acquisition) const;
+    template <class T>
+    void operator<<(const Acquisition<T>& acquisition) const;
 
 private:
 };
