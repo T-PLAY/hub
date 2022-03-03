@@ -5,27 +5,11 @@
 
 Thread_InputStream::Thread_InputStream(QObject* parent, std::string sensorName)
     : QThread(parent)
-    //    , mSock("127.0.0.1")
     , mInputStream(sensorName)
 {
     std::cout << "Thread_InputStream()" << std::endl;
 
-    //    mSock.write(Client::Type::STREAM_VIEWER);
-
-    //    mSock.write(iStreamer);
-
-    //    //    Streamer streamer;
-    //    mSock.read(mInitPacket);
-    //    std::cout << "device:" << (int)mInitPacket.mDevice << std::endl;
-    //    std::cout << "format:" << (int)mInitPacket.mFormat << std::endl;
-    //    std::cout << "height:" << (int)mInitPacket.mHeight << std::endl;
-    //    std::cout << "sensor:" << (int)mInitPacket.mSensor << std::endl;
-    //    std::cout << "width:" << (int)mInitPacket.mWidth << std::endl;
-
     size_t acquisitionSize = mInputStream.getAcquisitionSize();
-    //    mAcquisitionSize = mInitPacket.mWidth
-    //        * mInitPacket.mHeight
-    //        * Stream::formatNbByte[static_cast<int>(mInitPacket.mFormat)];
     mData[0] = new unsigned char[acquisitionSize];
     mData[1] = new unsigned char[acquisitionSize];
 }
@@ -40,8 +24,6 @@ Thread_InputStream::~Thread_InputStream()
 void Thread_InputStream::run()
 {
     std::cout << "Thread_InputStream::run()" << std::endl;
-    //        Hub hub("127.0.0.1", 4043);
-    //    ClientSocket sock("127.0.0.1", 4043);
 
     bool serverRequestClose = false;
     try {
@@ -50,8 +32,6 @@ void Thread_InputStream::run()
         size_t acquisitionSize = mInputStream.getAcquisitionSize();
 
         while (!this->isInterruptionRequested() && !serverRequestClose) {
-            //            Stream::Acquisition acq;
-            //            acq.data = mData[m_iWriteBuffer];
 
             acq.data = mData[m_iWriteBuffer];
             mInputStream >> acq;
@@ -61,21 +41,11 @@ void Thread_InputStream::run()
             int dec = mData[m_iReadBuffer][0];
             bool badImage = false;
             for (size_t i = 0; i < acquisitionSize; ++i) {
-                //                for (int i = 0; i < width; ++i) {
-                //                    for (int j = 0; j < height; ++j) {
-                //                        const int tmp = mData[m_iReadBuffer][i];
-                //                        if (tmp != (j + dec) % 256) {
                 if (mData[m_iReadBuffer][i] != (i / 192 + dec) % 256) {
-                    //                        if (tmp != dec) {
-                    //                            std::cout << "[streamView] error bad image" << std::endl;
                     assert(false);
                     badImage = true;
                     break;
                 }
-                //                        assert(tmp == j + dec);
-                //                }
-                //                if (badImage)
-                //                    break;
             }
             if (badImage) {
                 std::cout << "[streamView] error bad image" << std::endl;
@@ -96,15 +66,12 @@ void Thread_InputStream::run()
 MainWindowStreamView::MainWindowStreamView(QWidget* parent, std::string sensorName)
     : QMainWindow(parent)
     , ui(new Ui::MainWindowStreamView)
-    //    , m_iStreamer(sensorName)
     , mThread(this, sensorName)
-//    , ui(new Ui::MainWindowStreamView)
 {
     std::cout << "MainWindow::MainWindowStreamView(parent, " << sensorName << ")" << std::endl;
 
     ui->setupUi(this);
 
-    //    setAttribute(Qt::WA_NoSystemBackground, true);
 
     assert(mThread.mInputStream.getDims().size() == 2);
     setMinimumWidth(mThread.mInputStream.getDims().at(0));
@@ -113,11 +80,6 @@ MainWindowStreamView::MainWindowStreamView(QWidget* parent, std::string sensorNa
     QObject::connect(&mThread, &Thread_InputStream::newImage, this, &MainWindowStreamView::newImage);
 
     mThread.start();
-
-    //    ui->menubar->addAction("File");
-    //    ui->statusbar->showMessage("hello");
-    //    QStatusBar * statusBar = new QStatusBar(this);
-    //    statusBar->showMessage("hello");
 }
 
 MainWindowStreamView::~MainWindowStreamView()
@@ -126,9 +88,6 @@ MainWindowStreamView::~MainWindowStreamView()
 
     delete ui;
 
-    //    mThread.terminate();
-    //    mThread.quit();
-    //    mThread.wait();
     mThread.requestInterruption();
     std::cout << "~MainWindowStreamView() requested interruption" << std::endl;
     mThread.wait();
@@ -154,7 +113,4 @@ void MainWindowStreamView::newImage()
     ++mCounterFps;
 
     ui->centralwidget->setImage((unsigned char*)mThread.mData[mThread.m_iReadBuffer], mThread.mInputStream.getDims().at(0), mThread.mInputStream.getDims().at(1));
-
-    //    mThread.m_iReadBuffer = (mThread.m_iReadBuffer + 1) % 2;
-    //    mtx.unlock();
 }

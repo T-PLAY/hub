@@ -28,12 +28,6 @@ int main()
                 std::cout << "[simpleViewer] receive acquisition : " << acq << std::endl;
             }
 
-//        } catch (const Socket::exception& e) {
-//            std::cout << "[main] catch socket exception : " << e.what() << std::endl;
-
-//        } catch (const Stream::exception& e) {
-//            std::cout << "[main] catch stream exception : " << e.what() << std::endl;
-
         } catch (const std::exception& e) {
             std::cout << "[simpleViewer] catch exception : " << e.what() << std::endl;
         }

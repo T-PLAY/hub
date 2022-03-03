@@ -32,7 +32,6 @@ void Thread_Client::run()
                 case Socket::Message::PING: {
                     // server check client connection
                     // nothing to do
-                    //                    std::cout << "Thread_Client::run() server ping" << std::endl;
                 } break;
 
                 case Socket::Message::NEW_STREAMER: {
@@ -55,11 +54,6 @@ void Thread_Client::run()
                     std::cout << "unknown message from server" << std::endl;
                 }
             }
-
-            //            sock.write(Socket::Message::CLOSE);
-            //            Socket::Message message;
-            //            sock.read(message);
-            //            assert(message == Socket::Message::OK);
 
         } catch (std::exception& e) {
             std::cout << "[viewer] catch exception : " << e.what() << std::endl;
@@ -92,7 +86,7 @@ MainWindow::~MainWindow()
 
     std::cout << "~MainWindow() mThreadClient.terminated()" << std::endl;
 
-    for (auto * streamView : mStreamViews) {
+    for (auto* streamView : mStreamViews) {
         assert(streamView != nullptr);
         std::cout << "~MainWindow() delete " << streamView << std::endl;
         delete streamView;
@@ -104,14 +98,13 @@ void MainWindow::addViewStream(std::string streamerSensorName)
 {
     std::cout << "MainWindow::addViewStream slot '" << streamerSensorName << "'" << std::endl;
     MainWindowStreamView* streamView = new MainWindowStreamView(ui->mdiArea, streamerSensorName);
-    //    mStreamViews.insert(streamView);
     mStreamViews.push_back(streamView);
-    //    mStreamViews.emplace_back(ui->mdiArea, streamerSensorName);
-    //    auto & streamView = mStreamViews.back();
     std::cout << "MainWindow::addViewStream add " << streamView << std::endl;
 
     QMdiSubWindow* subWindow = ui->mdiArea->addSubWindow(streamView);
     subWindow->setVisible(true);
+
+    subWindow->setWindowTitle(streamerSensorName.c_str());
 }
 
 #include <typeinfo>
@@ -120,21 +113,10 @@ void MainWindow::delViewStream(std::string streamerSensorName)
 {
     std::cout << "MainWindow::delViewStream slot" << std::endl;
 
-    //    const auto & subWindows = ui->mdiArea->subWindowList();
-    //    for (auto & subWindow : subWindows) {
-    ////        for (QObject * children : subWindow->children()) {
-    //        for (QObject * children : subWindow->children()) {
-    //            std::cout << "type info : " << typeid(children).name() << std::endl;
-    //        }
-    //    }
-
-    //    for (auto* streamView : mStreamViews) {
     auto it = mStreamViews.begin();
     while (it != mStreamViews.end()) {
         MainWindowStreamView* streamView = *it;
-        //        MainWindowStreamView & streamView = *it;
 
-        //        assert(streamView != nullptr);
         if (streamView->getStreamerSensorName() == streamerSensorName) {
             std::cout << "MainWindow::delViewStream delete " << streamView << std::endl;
 
