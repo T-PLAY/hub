@@ -228,3 +228,13 @@ void OutputStream::operator<<(const Acquisition& acquisition) const
         }
     }
 }
+
+void Stream::Acquisition::start()
+{
+    backendTimestamp = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+}
+
+void Stream::Acquisition::end()
+{
+    backendTimeOfArrival = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+}

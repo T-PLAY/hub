@@ -56,8 +56,10 @@ void Server::run()
                     }
 
                     const size_t acquisitionSize = inputStream.getAcquisitionSize();
-                    assert(acquisitionSize == 192 * 512);
                     std::cout << getServerHeader(iThread) << "[streamer] acquisitionSize:" << acquisitionSize << std::endl;
+                    std::cout << getServerHeader(iThread) << "[streamer] width:" << inputStream.getDims()[0] << std::endl;
+                    std::cout << getServerHeader(iThread) << "[streamer] height:" << inputStream.getDims()[1] << std::endl;
+                    std::cout << getServerHeader(iThread) << "[streamer] format:" << (int)inputStream.getFormat() << std::endl;
 
                     // for each new stream acquistion
                     while (true) {
@@ -68,16 +70,6 @@ void Server::run()
                             inputStream >> acq;
 
                             std::cout << getServerHeader(iThread) << "[streamer] receive data from streamer '" << inputStream.getSensorName() << "' and send it for " << streamer.mOutputStreams.size() << " stream viewers" << std::endl;
-
-                            int dec = acq.data[0];
-                            int width = inputStream.getDims().at(0);
-                            for (size_t i = 0; i < acquisitionSize; ++i) {
-                                if (acq.data[i] != (i / width + dec) % 256) {
-                                    int tmp = acq.data[i];
-                                    unsigned char* ptr = &acq.data[i];
-                                    assert(false);
-                                }
-                            }
 
                             // broadcast data
                             // stream new acquisition for all viewers of this stream
@@ -101,7 +93,7 @@ void Server::run()
                             }
                             std::cout << getServerHeader(iThread) << "[streamer] data from streamer sent for " << outputStreams.size() << " stream viewers" << std::endl;
 
-                            const auto maxFps = 1;
+                            const auto maxFps = 10;
                             const auto end = start + std::chrono::microseconds(1'000'000 / maxFps);
                             std::this_thread::sleep_until(end);
 

@@ -19,11 +19,13 @@ void WidgetStreamView::setImage(unsigned char* img_ptr, int pWidth, int pHeight)
 
 void WidgetStreamView::paintEvent(QPaintEvent* event)
 {
+    std::cout << "[WidgetStreamView] paintEvent" << std::endl;
     Q_UNUSED(event);
     QPainter painter;
     painter.begin(this);
     if (img != nullptr) {
         QImage image = QImage((unsigned char*)img, mWidth, mHeight, mWidth, QImage::Format_Grayscale8).scaled(this->size());
+//        QImage image = QImage((unsigned char*)img, mWidth, mHeight, mWidth, QImage::Format_BGR888).scaled(this->size());
         const QPoint p = QPoint(0, 0);
         painter.drawImage(p, image);
     } else {
