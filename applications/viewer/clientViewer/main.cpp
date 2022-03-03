@@ -1,8 +1,7 @@
 #include "mainwindow.h"
 
 #include <QApplication>
-#include <hub.h>
-#include <server.h>
+#include <stream.h>
 //Q_DECLARE_METATYPE(std::string)
 
 int main(int argc, char* argv[])

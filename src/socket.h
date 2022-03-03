@@ -8,30 +8,9 @@
 #include <list>
 #include <string>
 
-#define SERVICE_PORT 4041
+#define SERVICE_PORT 4042
 
-#define DEBUG_MSG
-
-// extern class Stream::exception;
-// namespace Stream {
-// class Stream_exception;
-//}
-
-// namespace hub {
-//    using exception = std::exception;
-//    using runtime_error = std::runtime_error;
-//// class exception : public std::exception {
-//// public:
-////     //    explicit exception(const char* const message) throw()
-////     //        : std::runtime_error(message)
-////     //    {
-////     //    }
-////     //    const char* what() const throw()
-////     //    {
-////     //        return std::runtime_error::what();
-////     //    }
-//// };
-// }
+//#define DEBUG_MSG
 
 static std::string getHeader(socket_fd iSock)
 {
@@ -58,25 +37,14 @@ public:
         "STREAM_VIEWER",
     };
 
-    //    enum class Message {
-    //        NONE,
-    //        PING,
-    //        GET_CONNECTED_DEVICES,
-    //        DATA,
-    //        CLOSE,
-    //        COUNT,
-    //    };
 };
 
 class Socket {
 public:
     class exception : public std::runtime_error {
-//    class exception : public hub::runtime_error {
     public:
-        //    class exception : public hub::exception {
         explicit exception(const char* const message) throw()
             : std::runtime_error(message)
-        //            : hub::ecception(message)
         {
         }
         const char* what() const throw()
@@ -84,8 +52,6 @@ public:
             return std::runtime_error::what();
         }
     };
-    //    Socket(int port); // server socket
-    //    Socket(socket_fd fdSock);
     bool isConnected() const;
     enum class Message {
         NONE,
@@ -112,32 +78,24 @@ public:
 
 protected:
     Socket();
-    //    Socket(Socket & socket);
-    //    Socket(Socket &socket);
-    //    Socket(Socket&& socket);
-    //    Socket& operator=(Socket socket);
 
     ~Socket();
 
-    //    template <class T>
-    //    void sendData(const T & t);
 
 protected:
     socket_fd mFdSock = -1;
-    //    std::string mIpv4;
 };
 
 class ClientSocket : public Socket {
 public:
     ClientSocket(std::string ipv4, int port = SERVICE_PORT);
     ClientSocket(socket_fd fdSock);
-    //    ~ClientSocket();
 
     ClientSocket(const ClientSocket& sock) = delete;
     ClientSocket(const ClientSocket&& sock) = delete;
     ClientSocket(ClientSocket& sock) = delete;
     ClientSocket(ClientSocket&& sock);
-    //    ClientSocket(const ClientSocket& sock);
+
     ClientSocket& operator=(const ClientSocket& sock) = delete;
     ClientSocket& operator=(const ClientSocket&& sock) = delete;
     ClientSocket& operator=(ClientSocket sock) = delete;
@@ -145,7 +103,6 @@ public:
 
     ClientSocket&& operator=(ClientSocket&& sock) = delete;
 
-    //    void write(const Socket::Message & message) const;
     void write(const unsigned char* data, size_t len) const;
     template <class T>
     void write(const T& t) const;
@@ -155,7 +112,6 @@ public:
     void write(const std::vector<T>& vector) const;
     void write(const std::string& str) const;
 
-    //    void read(Socket::Message & message) const;
     void read(unsigned char* data, size_t len) const;
     template <class T>
     void read(T& t) const;
@@ -181,7 +137,6 @@ public:
 
 private:
     int mPort;
-    //    bool mOpenned;
     struct sockaddr_in mAddress;
 };
 
@@ -197,17 +152,13 @@ void ClientSocket::write(const T& t) const
         if (!isConnected()) {
             std::cout << getHeader(mFdSock) << "write(const T& t) : client lost" << std::endl;
             throw Socket::exception("Client lost");
-            //            return;
-            std::cout << "AFTER throw" << std::endl;
         }
 
         int byteSent = send(mFdSock, reinterpret_cast<const char*>(&t) + uploadSize, len - uploadSize, 0);
         if (byteSent == -1) {
             std::cout << getHeader(mFdSock) << "can't send packet " << byteSent << "/" << len << std::endl;
             perror("send error\n");
-            //        exit(5);
             throw Socket::exception("Can't write packet, peer connection lost");
-            return;
         } else if (byteSent == 0) {
             std::this_thread::sleep_for(std::chrono::milliseconds(1000));
         }
@@ -260,38 +211,20 @@ void ClientSocket::write(const std::vector<T>& vector) const
 template <class T>
 void ClientSocket::read(T& t) const
 {
-    //    std::cout << "ClientSocket::read(T& t)" << std::endl;
 
     int len = sizeof(T);
-    //    std::cout << getHeader(mFdSock) << "ClientSocket reading " << len << " bytes" << std::endl;
     int downloadSize = 0;
     do {
 
-        //        if (!isConnected())
-        //            return;
-
-        //        char buffer[32];
-        //        if (recv(mFdSock, buffer, sizeof(buffer), MSG_PEEK | MSG_DONTWAIT) == 0) {
-        //            std::cout << getHeader(mFdSock) << "server not connected" << std::endl;
-        //        }
-
-        //        ClientSocket::write(Client::Message::PING); // check peer connection
-        //        std::cout << "start recv" << std::endl;
         int byteRead = recv(mFdSock, reinterpret_cast<char*>(&t) + downloadSize, len - downloadSize, 0);
-        //        std::cout << "end recv" << std::endl;
         if (byteRead == -1) {
-            //            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
             std::cout << "byte read == -1 error" << std::endl;
             throw Socket::exception("Can't read packet, peer connection lost");
-            exit(5);
-            return;
+
         } else if (byteRead == 0) {
             throw Socket::exception("0 byte received, peer connection lost");
-            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
         }
-        //        else {
 
-        //        }
         downloadSize += byteRead;
 #ifdef DEBUG_MSG
         std::cout << getHeader(mFdSock) << "byteRead = " << byteRead << " (" << downloadSize << "/" << len << ")" << std::endl;
@@ -317,12 +250,10 @@ void ClientSocket::read(T& t) const
 template <class T>
 void ClientSocket::read(std::list<T>& list) const
 {
-    //    std::cout << "ClientSocket::read(std::list<T> & list)" << std::endl;
     int nbEl;
     read(nbEl);
 
     for (int i = 0; i < nbEl; ++i) {
-        //    for (const T& el : list) {
         T el;
         read(el);
         list.push_back(std::move(el));
@@ -336,7 +267,6 @@ void ClientSocket::read(std::vector<T>& vector) const
     read(nbEl);
 
     for (int i = 0; i < nbEl; ++i) {
-        //    for (const T& el : list) {
         T el;
         read(el);
         vector.push_back(std::move(el));

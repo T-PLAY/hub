@@ -4,40 +4,9 @@
 #include <socket.h>
 #include <string>
 
-// enum class Device {
-//     NONE,
-//     LIDAR,
-//     PROBE,
-//     COUNT
-// };
-// static const std::string device2string[static_cast<int>(Device::COUNT)] = {
-//     "none",
-//     "lidar",
-//     "probe",
-// };
 
-// enum class Sensor {
-//     NONE,
-//     L500_DEPTH_SENSOR,
-//     L500_INFRARED_SENSOR,
-//     RGB_CAMERA,
-//     MOTION_MODULE,
-//     COUNT
-// };
-
-// class stream_exception : public std::exception {
-// };
-
-// class Stream {
 class Stream {
 public:
-    //    class exception;
-    //    enum class Type{
-    //        NONE,
-    //        INPUT,
-    //        OUTPUT,
-    //        COUNT,
-    //    };
     enum class Format {
         NONE,
         Z16, /**< 16-bit linear depth values. The depth is meters is equal to depth scale * pixel value. */
@@ -109,12 +78,9 @@ public:
     };
 
     class exception : public std::runtime_error {
-        //    class exception : public hub::exception {
     public:
-        //    class exception : public hub::exception {
         explicit exception(const char* const message) throw()
             : std::runtime_error(message)
-        //            : hub::ecception(message)
         {
         }
         const char* what() const throw()
@@ -123,49 +89,20 @@ public:
         }
     };
 
-    //    class InitPacket {
-    //    public:
-    //        //        Type mType;
-    //        //        int mWidth;
-    //        //        int mHeight;
-    //        std::vector<int> mDims;
-    //        Format mFormat;
-    //        //        Device mDevice;
-    //        //        Sensor mSensor;
-    //        std::string mSensorName;
-    //    };
-    //    class TimestampInterval {
-    //    public:
-    //        long long backendTimestamp;
-    //        long long backendTimeOfArrival;
-    //    };
-    //    enum class Message {
-    //        NONE,
-    //        START_ACQUISITION,
-    //        PING,
-    //        CLOSE,
-    //        SYNC,
-    //        DATA,
-    //        OK,
-    //        COUNT
-    //    };
-
-    template <class T>
     class Acquisition {
     public:
-        //        TimestampInterval timestampInterval;
+
         long long backendTimestamp = 0;
         long long backendTimeOfArrival = 0;
-        //        unsigned char* data = nullptr;
-        //        unsigned char data[];
-        T data;
+        const size_t acquisitionSize;
+        unsigned char* data = nullptr;
 
-        //        friend std::ostream& operator<<(std::ostream& os, const Acquisition& acq);
+    public:
+        friend std::ostream& operator<<(std::ostream& os, const Acquisition& acq);
     };
 
-    template <class T>
-    Acquisition<T> acquisition();
-    //    Stream(int width, int height, Format format, Device device = Device::NONE, Sensor sensor = Sensor::NONE, int port = SERVICE_PORT, std::string ipv4 = "127.0.0.1");
+public:
+    Acquisition acquisition() const;
 
 protected:
     Stream(const std::string& sensorName, Format format, const std::vector<int>& dims, const std::string& ipv4 = ("127.0.0.1"), int port = SERVICE_PORT);
@@ -183,7 +120,6 @@ protected:
     Stream& operator=(const Stream&& stream) = delete;
     Stream& operator=(Stream&& stream) = delete;
 
-    //    void setupAcquisitionSize();
     static size_t computeAcquisitionSize(Format format, const std::vector<int>& dims);
     void waitClose();
 
@@ -199,27 +135,11 @@ protected:
     std::string mSensorName;
     Format mFormat;
     std::vector<int> mDims;
-    //        Device mDevice;
-    //        Sensor mSensor;
 
-    //    Type mType;
-    //    int mWidth;
-    //    int mHeight;
-    //    Format mFormat;
-    //    Device mDevice;
-    //    Sensor mSensor;
-    //    InitPacket mInitPacket;
-
-    //    int mPort;
-    //    std::string mIpv4;
     ClientSocket mSocket;
     size_t mAcquisitionSize;
 };
 
-//template <class T>
-//Stream::Acquisition<T> Stream::acquisition()
-//{
-//}
 
 class InputStream : public Stream {
 public:
@@ -227,8 +147,7 @@ public:
     InputStream(ClientSocket&& sock);
     ~InputStream();
 
-    template <class T>
-    void operator>>(Acquisition<T>& acquisition) const;
+    void operator>>(Acquisition& acquisition) const;
 
 private:
 };
@@ -239,8 +158,7 @@ public:
     OutputStream(const OutputStream& outputStream) = delete;
     OutputStream(ClientSocket&& sock, const InputStream& inputStream);
 
-    template <class T>
-    void operator<<(const Acquisition<T>& acquisition) const;
+    void operator<<(const Acquisition& acquisition) const;
 
 private:
 };

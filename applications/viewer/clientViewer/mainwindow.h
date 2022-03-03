@@ -6,7 +6,6 @@
 #include <QMdiSubWindow>
 #include <QThread>
 #include <map>
-#include <server.h>
 
 // Q_DECLARE_METATYPE(Streamer);
 //Q_DECLARE_METATYPE(std::string)

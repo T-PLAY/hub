@@ -48,7 +48,7 @@ void Server::run()
 
                 std::cout << getServerHeader(iThread) << "[streamer] sensor name = '" << sensorName << "'" << std::endl;
 
-//                Stream::Acquisition acq;
+                //                Stream::Acquisition acq;
                 auto acq = inputStream.acquisition();
 
                 try {
@@ -62,7 +62,7 @@ void Server::run()
 
                     const size_t acquisitionSize = inputStream.getAcquisitionSize();
                     assert(acquisitionSize == 192 * 512);
-//                    acq.data = new unsigned char[acquisitionSize];
+                    //                    acq.data = new unsigned char[acquisitionSize];
                     std::cout << getServerHeader(iThread) << "[streamer] acquisitionSize:" << acquisitionSize << std::endl;
 
                     // for each new stream acquistion
@@ -101,6 +101,7 @@ void Server::run()
                                     std::cout << getServerHeader(iThread) << "[streamer] out : catch socket exception : " << e.what() << std::endl;
                                     it = outputStreams.erase(it);
                                     std::cout << getServerHeader(iThread) << "[streamer] out : end stream viewer\t server status : " << getStatus() << std::endl;
+                                    std::cout << "---------------------------------------------------------------------------------------------" << std::endl;
                                     //                                    outputStreams.remove(outputStream);
                                     //                                    streamer.mOutputStreams.erase(outputStream);
                                 } catch (std::exception& e) {
@@ -110,8 +111,8 @@ void Server::run()
                             }
                             std::cout << getServerHeader(iThread) << "[streamer] data from streamer sent for " << outputStreams.size() << " stream viewers" << std::endl;
 
-                            const auto expectedFps = 1;
-                            const auto end = start + std::chrono::microseconds(1'000'000 / expectedFps);
+                            const auto maxFps = 1;
+                            const auto end = start + std::chrono::microseconds(1'000'000 / maxFps);
                             std::this_thread::sleep_until(end);
 
                         } else {
@@ -127,7 +128,7 @@ void Server::run()
                     std::cout << getServerHeader(iThread) << "[streamer] in : catch exception : " << e.what() << std::endl;
                     throw;
                 }
-//                delete[] acq.data;
+                //                delete[] acq.data;
                 //                mStreamers.remove(&streamer);
                 mStreamers.erase(sensorName);
 

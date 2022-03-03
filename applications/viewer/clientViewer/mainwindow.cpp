@@ -4,8 +4,8 @@
 #include <QDebug>
 #include <QMdiSubWindow>
 #include <QStandardItemModel>
-#include <hub.h>
-#include <server.h>
+//#include <server.h>
+#include <stream.h>
 
 Thread_Client::Thread_Client(QObject* parent)
     : QThread(parent)
