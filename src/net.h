@@ -20,7 +20,6 @@ using socket_fd = int;
 
 #include <cstring>
 #include <iostream>
-#include <list>
 #include <set>
 #include <stdio.h>
 #include <thread>
@@ -61,8 +60,6 @@ static void signalHandler(int signum)
 }
 #endif
 
-// class Net {
-// public:
 static void init()
 {
     if (!sInited) {

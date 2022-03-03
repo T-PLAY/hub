@@ -3,8 +3,8 @@
 
 #include <QMainWindow>
 #include <QThread>
-#include <server.h>
 #include <chrono>
+#include <stream.h>
 
 class Thread_InputStream : public QThread {
     Q_OBJECT

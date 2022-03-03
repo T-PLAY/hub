@@ -45,17 +45,22 @@ void Thread_InputStream::run()
 
     bool serverRequestClose = false;
     try {
-        while (!this->isInterruptionRequested() && !serverRequestClose) {
-            Stream::Acquisition acq;
-//            acq.data = mData[m_iWriteBuffer];
 
+        Stream::Acquisition acq = mInputStream.acquisition();
+        size_t acquisitionSize = mInputStream.getAcquisitionSize();
+
+        while (!this->isInterruptionRequested() && !serverRequestClose) {
+            //            Stream::Acquisition acq;
+            //            acq.data = mData[m_iWriteBuffer];
+
+            acq.data = mData[m_iWriteBuffer];
             mInputStream >> acq;
             m_iReadBuffer = m_iWriteBuffer;
             m_iWriteBuffer = (m_iWriteBuffer + 1) % 2;
 
             int dec = mData[m_iReadBuffer][0];
             bool badImage = false;
-            for (size_t i = 0; i < mInputStream.getAcquisitionSize(); ++i) {
+            for (size_t i = 0; i < acquisitionSize; ++i) {
                 //                for (int i = 0; i < width; ++i) {
                 //                    for (int j = 0; j < height; ++j) {
                 //                        const int tmp = mData[m_iReadBuffer][i];
