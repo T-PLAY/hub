@@ -8,7 +8,7 @@
 #include <list>
 #include <string>
 
-#define SERVICE_PORT 4043
+#define SERVICE_PORT 4042
 
 //#define DEBUG_MSG
 

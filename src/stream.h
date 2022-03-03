@@ -25,8 +25,8 @@
 //     COUNT
 // };
 
-class stream_exception : public std::exception {
-};
+//class stream_exception : public std::exception {
+//};
 
 class Stream {
 public:
@@ -206,7 +206,7 @@ public:
     OutputStream(const OutputStream& outputStream) = delete;
     OutputStream(ClientSocket&& sock, const InputStream & inputStream);
 
-    void operator<<(const Acquisition& acquisition);
+    void operator<<(const Acquisition& acquisition) const;
 
 private:
 };

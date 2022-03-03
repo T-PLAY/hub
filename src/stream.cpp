@@ -154,14 +154,14 @@ InputStream::~InputStream()
 
 void InputStream::operator>>(Acquisition& acquisition) const
 {
-    std::cout << "[InputStream] operator>>(acq)" << std::endl;
+    //    std::cout << "[InputStream] operator>>(acq)" << std::endl;
 
     //    while (!this->isInterruptionRequested() && !serverRequestClose) {
     mSocket.write(Socket::Message::SYNC);
-    std::cout << "[InputStream] wrote sync" << std::endl;
+    //    std::cout << "[InputStream] wrote sync" << std::endl;
     Socket::Message message;
     mSocket.read(message);
-    std::cout << "[InputStream] read message" << std::endl;
+    //    std::cout << "[InputStream] read message" << std::endl;
 
     switch (message) {
     case Socket::Message::DATA: {
@@ -173,18 +173,20 @@ void InputStream::operator>>(Acquisition& acquisition) const
         mSocket.read(acquisition.data, mAcquisitionSize);
 
     } break;
+
     case Socket::Message::CLOSE:
         std::cout << "[InputStream] request close" << std::endl;
         //        serverRequestClose = true;
-        throw stream_exception();
+        //        throw stream_exception();
+        throw socket_error("server close connection");
         break;
 
-    case Socket::Message::PING:
-        std::cout << "[InputStream] request ping" << std::endl;
-        break;
+        //    case Socket::Message::PING:
+        //        std::cout << "[InputStream] request ping" << std::endl;
+        //        break;
 
     default:
-        std::cout << "unknown message from server" << std::endl;
+        std::cout << "[InputStream] unknown message from server" << std::endl;
         exit(1);
     }
 
@@ -214,7 +216,7 @@ void InputStream::operator>>(Acquisition& acquisition) const
     //    //                    sock.read()
     //    sock.read(data, acquistionSize);
     //    //    }
-    std::cout << "[InputStream] operator>>(acq) end" << std::endl;
+    //    std::cout << "[InputStream] operator>>(acq) end" << std::endl;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -247,9 +249,9 @@ OutputStream::OutputStream(ClientSocket&& sock, const InputStream& inputStream)
     mSocket.write(mDims);
 }
 
-void OutputStream::operator<<(const Acquisition& acquisition)
+void OutputStream::operator<<(const Acquisition& acquisition) const
 {
-    std::cout << "[OutputStream] operator<<(const acq)" << std::endl;
+    //    std::cout << "[OutputStream] operator<<(const acq)" << std::endl;
 
     //    mSocket.sendData(packet);
     //    mSocket.write((char*)&acquisition.backendTimestamp, sizeof(acquisition) - sizeof(acquisition.data));
@@ -265,17 +267,17 @@ void OutputStream::operator<<(const Acquisition& acquisition)
 
         switch (message) {
         case Socket::Message::PING:
-            std::cout << "[OutputStream] request ping" << std::endl;
+            //            std::cout << "[OutputStream] request ping" << std::endl;
             break;
 
-        case Socket::Message::CLOSE:
-            std::cout << "[OutputStream] request close" << std::endl;
-            //        serverClose = true;
-            break;
+            //        case Socket::Message::CLOSE:
+            //            std::cout << "[OutputStream] request close" << std::endl;
+            //            //        serverClose = true;
+            //            break;
 
         case Socket::Message::SYNC: {
             //        std::cout << "[OutputStream] server sync, dec = " << dec << std::endl;
-            std::cout << "[OutputStream] request data" << std::endl;
+            std::cout << "[OutputStream] receive sync, request data sending" << std::endl;
 
             mSocket.write(Socket::Message::DATA);
             //                char sync;
@@ -302,7 +304,7 @@ void OutputStream::operator<<(const Acquisition& acquisition)
             mSocket.write(acquisition.backendTimeOfArrival);
             mSocket.write(acquisition.data, mAcquisitionSize);
 
-            std::cout << "[OutputStream] wrote data" << std::endl;
+            //            std::cout << "[OutputStream] wrote data" << std::endl;
             //                    constexpr int width = 192;
             //                    constexpr int height = 512;
             //                    int dec = img[0];
@@ -315,7 +317,7 @@ void OutputStream::operator<<(const Acquisition& acquisition)
         } break;
 
         default:
-            std::cout << "unknown message from server" << std::endl;
+            std::cout << "[OutputStream] unknown message from server" << std::endl;
             exit(1);
         }
     }
@@ -324,5 +326,5 @@ void OutputStream::operator<<(const Acquisition& acquisition)
     //    streamViewer->socket->write(acq.backendTimestamp);
     //    streamViewer->socket->write(acq.backendTimeOfArrival);
     //    streamViewer->socket->write(data, acquistionSize);
-    std::cout << "[OutputStream] operator<<(const acq) end" << std::endl;
+    //    std::cout << "[OutputStream] operator<<(const acq) end" << std::endl;
 }
