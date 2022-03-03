@@ -208,7 +208,6 @@ void OutputStream::operator<<(const Acquisition& acquisition) const
 
         switch (message) {
         case Socket::Message::PING:
-            //            std::cout << "[OutputStream] request ping" << std::endl;
             break;
 
         case Socket::Message::SYNC: {

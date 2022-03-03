@@ -4,7 +4,6 @@
 #include <socket.h>
 #include <string>
 
-
 class Stream {
 public:
     enum class Format {
@@ -91,7 +90,6 @@ public:
 
     class Acquisition {
     public:
-
         long long backendTimestamp = 0;
         long long backendTimeOfArrival = 0;
         const size_t acquisitionSize;
@@ -139,7 +137,6 @@ protected:
     ClientSocket mSocket;
     size_t mAcquisitionSize;
 };
-
 
 class InputStream : public Stream {
 public:

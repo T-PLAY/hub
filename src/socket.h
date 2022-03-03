@@ -36,7 +36,6 @@ public:
         "VIEWER",
         "STREAM_VIEWER",
     };
-
 };
 
 class Socket {
@@ -80,7 +79,6 @@ protected:
     Socket();
 
     ~Socket();
-
 
 protected:
     socket_fd mFdSock = -1;

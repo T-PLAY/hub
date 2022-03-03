@@ -61,18 +61,10 @@ ClientSocket::ClientSocket(std::string ipv4, int port)
 
     // Server address construction
     struct sockaddr_in serv_addr;
-    //    socklen_t addrlen = sizeof(serv_addr);
     memset(&serv_addr, 0, sizeof(serv_addr));
     serv_addr.sin_family = AF_INET;
-    //    serv_addr.sin_addr.s_addr = inet_addr("192.168.0.100"); // server IP
     serv_addr.sin_addr.s_addr = inet_addr(ipv4.c_str());
     serv_addr.sin_port = htons(port); // Server port
-
-    //    if(inet_pton(AF_INET, ipv4, &serv_addr.sin_addr)<=0)
-    //    {
-    //        printf("\nInvalid address/ Address not supported \n");
-    //        return -1;
-    //    }
 
     // Connect to server
     while (connect(mFdSock, (struct sockaddr*)&serv_addr, sizeof(serv_addr)) < 0) {
@@ -81,7 +73,6 @@ ClientSocket::ClientSocket(std::string ipv4, int port)
     }
 
     std::cout << getHeader(mFdSock) << "new client on socket " << mFdSock << std::endl;
-
 }
 
 ClientSocket::ClientSocket(socket_fd fdSock)
@@ -89,7 +80,6 @@ ClientSocket::ClientSocket(socket_fd fdSock)
     mFdSock = fdSock;
     std::cout << getHeader(mFdSock) << "ClientSocket(socket_fd fdSock)" << std::endl;
 }
-
 
 ClientSocket::ClientSocket(ClientSocket&& sock)
     : Socket()
@@ -104,7 +94,6 @@ ClientSocket::ClientSocket(ClientSocket&& sock)
 #endif
 }
 
-
 ServerSocket::ServerSocket(int port)
     : mPort(port)
 {
@@ -117,11 +106,8 @@ ServerSocket::ServerSocket(int port)
     Net::sSockets.insert(mFdSock);
 
     // Server address construction
-    //    struct sockaddr_in address;
-    //    socklen_t addrlen = sizeof(address);
     memset(&mAddress, 0, sizeof(mAddress));
     mAddress.sin_family = AF_INET;
-    //    mAddress.sin_addr.s_addr = inet_addr("192.168.0.100"); // server IP
     mAddress.sin_addr.s_addr = INADDR_ANY;
     mAddress.sin_port = htons(port); // Server port
 
@@ -143,12 +129,7 @@ ClientSocket ServerSocket::waitNewClient()
     socklen_t addrlen = sizeof(mAddress);
     socket_fd new_socket = accept(mFdSock, (struct sockaddr*)&mAddress, &addrlen);
     if (new_socket == INVALID_SOCKET) {
-        //    if ((new_socket = accept(mFdSock, (struct sockaddr*)&mAddress,
-        //             &addrlen))
-        //        < 0) {
-        //        == INVALID_SOCKET) {
         perror("not accept new socket");
-        //            exit(EXIT_FAILURE);
         Net::clearSocket(new_socket);
         exit(1);
     }
@@ -163,7 +144,6 @@ void ClientSocket::write(const unsigned char* data, size_t len) const
     size_t uploadSize = 0;
     do {
         // winsock const char * data
-        //        int byteSent = send(mFdSock, static_cast<const char*>(data), len, 0);
         // winsock int len
         int byteSent = send(mFdSock, reinterpret_cast<const char*>(data) + uploadSize, static_cast<int>(len - uploadSize), 0);
         if (byteSent == -1) {
@@ -191,7 +171,6 @@ void ClientSocket::write(const std::string& str) const
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-
 
 void ClientSocket::read(unsigned char* data, size_t len) const
 {

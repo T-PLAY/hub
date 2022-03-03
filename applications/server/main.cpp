@@ -1,10 +1,8 @@
 #include <server.h>
 #include <stream.h>
 
-int main() {
-
-//    auto processClient = [](Socket & socket) {
-//    };
+int main()
+{
 
     Server server;
     server.run();

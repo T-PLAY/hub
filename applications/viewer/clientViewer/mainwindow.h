@@ -8,7 +8,7 @@
 #include <map>
 
 // Q_DECLARE_METATYPE(Streamer);
-//Q_DECLARE_METATYPE(std::string)
+// Q_DECLARE_METATYPE(std::string)
 
 namespace Ui {
 class MainWindow;

@@ -33,22 +33,17 @@ void Server::run()
             switch (clientType) {
             case Client::Type::STREAMER: {
 
-                //                InputStream inputStream(std::move(sock));
-
                 Streamer streamer { std::move(sock), {} };
                 const std::string sensorName = streamer.mInputStream.getSensorName();
-                //                streamer.mInputStream = &inputStream;
                 const auto& inputStream = streamer.mInputStream;
                 auto& outputStreams = streamer.mOutputStreams;
 
-                //                mStreamers.push_back(&streamer);
                 assert(mStreamers.find(sensorName) == mStreamers.end());
                 mStreamers[sensorName] = &streamer;
                 std::cout << getServerHeader(iThread) << "[streamer] new streamer\t\t server status : " << getStatus() << std::endl;
 
                 std::cout << getServerHeader(iThread) << "[streamer] sensor name = '" << sensorName << "'" << std::endl;
 
-                //                Stream::Acquisition acq;
                 auto acq = inputStream.acquisition();
 
                 try {
@@ -62,7 +57,6 @@ void Server::run()
 
                     const size_t acquisitionSize = inputStream.getAcquisitionSize();
                     assert(acquisitionSize == 192 * 512);
-                    //                    acq.data = new unsigned char[acquisitionSize];
                     std::cout << getServerHeader(iThread) << "[streamer] acquisitionSize:" << acquisitionSize << std::endl;
 
                     // for each new stream acquistion
@@ -87,12 +81,10 @@ void Server::run()
 
                             // broadcast data
                             // stream new acquisition for all viewers of this stream
-                            //                            for (auto& outputStream : streamer.mOutputStreams) {
                             auto it = outputStreams.cbegin();
                             while (it != outputStreams.cend()) {
                                 auto& outputStream = *it;
 
-                                //                                assert(streamViewer->mOutputStream != nullptr);
                                 try {
                                     outputStream << acq;
                                     ++it;
@@ -102,8 +94,6 @@ void Server::run()
                                     it = outputStreams.erase(it);
                                     std::cout << getServerHeader(iThread) << "[streamer] out : end stream viewer\t server status : " << getStatus() << std::endl;
                                     std::cout << "---------------------------------------------------------------------------------------------" << std::endl;
-                                    //                                    outputStreams.remove(outputStream);
-                                    //                                    streamer.mOutputStreams.erase(outputStream);
                                 } catch (std::exception& e) {
                                     std::cout << getServerHeader(iThread) << "[streamer] out : catch exception : " << e.what() << std::endl;
                                     throw;
@@ -116,7 +106,6 @@ void Server::run()
                             std::this_thread::sleep_until(end);
 
                         } else {
-                            //                            sock.write(Socket::Message::PING);
                             inputStream.ping();
                             std::this_thread::sleep_for(std::chrono::milliseconds(1000));
                         }
@@ -128,12 +117,9 @@ void Server::run()
                     std::cout << getServerHeader(iThread) << "[streamer] in : catch exception : " << e.what() << std::endl;
                     throw;
                 }
-                //                delete[] acq.data;
-                //                mStreamers.remove(&streamer);
                 mStreamers.erase(sensorName);
 
                 for (auto& outputStream : streamer.mOutputStreams) {
-                    //                    outputStream->socket->write(Stream::Message::CLOSE);
                     outputStream.close();
                 }
 
@@ -147,12 +133,9 @@ void Server::run()
 
             case Client::Type::VIEWER: {
 
-                //                ClientSocket sock(std::move(sock));
                 // for each streamer, open stream viewer socket
-                //                for (const auto* streamer : mStreamers) {
                 for (const auto& pair : mStreamers) {
                     const auto& sensorName = pair.first;
-                    //                    const auto & streamer = pair.second;
 
                     sock.write(Socket::Message::NEW_STREAMER);
                     sock.write(sensorName);
@@ -168,7 +151,6 @@ void Server::run()
                         sock.write(Socket::Message::PING);
                         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
                     }
-                    //                    sock.waitClose();
 
                 } catch (Socket::exception& e) {
                     std::cout << getServerHeader(iThread) << "[viewer] catch socket exception : " << e.what() << std::endl;
@@ -191,37 +173,13 @@ void Server::run()
                 std::string sensorName;
                 sock.read(sensorName);
 
-                //                assert(mStreamers.find(sensorName) != mStreamers.end());
                 if (mStreamers.find(sensorName) != mStreamers.end()) {
                     Streamer* streamer = mStreamers.at(sensorName);
-
-                    //                OutputStream outputStream(std::move(sock), *streamer->mInputStream);
-                    //                StreamViewer streamViewer = { &outputStream };
-                    //                streamer->mOutputStreams.push_back(&streamViewer);
 
                     streamer->mOutputStreams.emplace_back(std::move(sock), streamer->mInputStream);
                 } else {
                     std::cout << getServerHeader(iThread) << "[stream viewer] unknown sensor name : '" << sensorName << "'" << std::endl;
                 }
-                //                streamer->mOutputStreams.empla(OutputStream { std::move(sock), *streamer->mInputStream });
-
-                //                try {
-                //                    // wait close connection from client
-                //                    outputStream.waitClose();
-
-                //                } catch (Socket::exception& e) {
-                //                    std::cout << getServerHeader(iThread) << "[stream viewer] catch socket exception : " << e.what() << std::endl;
-                //                } catch (std::exception& e) {
-                //                    std::cout << getServerHeader(iThread) << "[stream viewer] catch exception : " << e.what() << std::endl;
-                //                    throw;
-                //                }
-
-                //                streamer->mOutputStreams.remove(&streamViewer);
-
-                //                std::cout << getServerHeader(iThread) << "case stream viewer : stream viewer end" << std::endl;
-
-                //                if (sock.isConnected())
-                //                    sock.write(Socket::Message::OK);
 
                 std::cout << getServerHeader(iThread) << "[stream viewer] end" << std::endl;
             } break;
@@ -232,8 +190,6 @@ void Server::run()
 
             std::cout << getServerHeader(iThread) << "thread end\t\t\t\t server status : " << getStatus() << std::endl;
             std::cout << "---------------------------------------------------------------------------------------------" << std::endl;
-
-            //            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
             return;
             exit(6);
@@ -250,9 +206,7 @@ std::string Server::getStatus() const
     for (const auto& pair : mStreamers) {
         const auto& sensorName = pair.first;
         const auto& streamer = pair.second;
-        //        const int idSensor = mStreamers.find()
         std::string str = sensorName.substr(0, 3);
-        //        streamViewersStr += "(" + sensorName + "," + std::to_string(streamer->streamViewers.size()) + ")";
         streamViewersStr += "(" + str + "," + std::to_string(streamer->mOutputStreams.size()) + ")";
 
         streamViewersStr += ",";
