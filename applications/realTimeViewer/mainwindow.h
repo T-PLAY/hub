@@ -48,7 +48,7 @@ public slots:
 private:
     Ui::MainWindow* ui;
     Thread_Client mThreadClient;
-    std::set<MainWindowStreamView*> mStreamViews;
+    std::list<MainWindowStreamView*> mStreamViews;
 };
 
 #endif // MAINWINDOW_H

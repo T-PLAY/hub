@@ -63,7 +63,7 @@ private:
     Thread_InputStream mThread;
 
     int mCounterFps = 0;
-    double mFps = 10.0;
+    double mFps = 1.0;
     std::chrono::time_point<std::chrono::high_resolution_clock> mStartFps;
 };
 

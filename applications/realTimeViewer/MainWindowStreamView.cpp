@@ -81,6 +81,8 @@ void Thread_InputStream::run()
         std::cout << "[streamView] catch exception : " << e.what() << std::endl;
         return;
     }
+
+    std::cout << "Thread_InputStream::run() end" << std::endl;
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -114,9 +116,10 @@ MainWindowStreamView::MainWindowStreamView(QWidget* parent, std::string sensorNa
 
 MainWindowStreamView::~MainWindowStreamView()
 {
+    std::cout << "~MainWindowStreamView()" << std::endl;
+
     delete ui;
 
-    std::cout << "~MainWindowStreamView()" << std::endl;
     //    mThread.terminate();
     //    mThread.quit();
     //    mThread.wait();

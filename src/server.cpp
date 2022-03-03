@@ -33,12 +33,13 @@ void Server::run()
             switch (clientType) {
             case Client::Type::STREAMER: {
 
-//                InputStream inputStream(std::move(sock));
+                //                InputStream inputStream(std::move(sock));
 
-                Streamer streamer {std::move(sock), {}};
+                Streamer streamer { std::move(sock), {} };
                 const std::string sensorName = streamer.mInputStream.getSensorName();
-//                streamer.mInputStream = &inputStream;
-                const auto & inputStream = streamer.mInputStream;
+                //                streamer.mInputStream = &inputStream;
+                const auto& inputStream = streamer.mInputStream;
+                auto& outputStreams = streamer.mOutputStreams;
 
                 //                mStreamers.push_back(&streamer);
                 assert(mStreamers.find(sensorName) == mStreamers.end());
@@ -66,7 +67,7 @@ void Server::run()
                     // for each new stream acquistion
                     while (true) {
 
-                        if (!streamer.mOutputStreams.empty()) {
+                        if (!outputStreams.empty()) {
                             const auto start = std::chrono::high_resolution_clock::now();
 
                             inputStream >> acq;
@@ -85,13 +86,30 @@ void Server::run()
 
                             // broadcast data
                             // stream new acquisition for all viewers of this stream
-                            for (auto& outputStream : streamer.mOutputStreams) {
-                                //                                assert(streamViewer->mOutputStream != nullptr);
-                                outputStream << acq;
-                            }
-                            std::cout << getServerHeader(iThread) << "[streamer] data from streamer sent for all stream viewers" << std::endl;
+                            //                            for (auto& outputStream : streamer.mOutputStreams) {
+                            auto it = outputStreams.cbegin();
+                            while (it != outputStreams.cend()) {
+                                auto& outputStream = *it;
 
-                            const auto expectedFps = 20;
+                                //                                assert(streamViewer->mOutputStream != nullptr);
+                                try {
+                                    outputStream << acq;
+                                    ++it;
+
+                                } catch (socket_error& e) {
+                                    std::cout << getServerHeader(iThread) << "[streamer] out : catch socket exception : " << e.what() << std::endl;
+                                    it = outputStreams.erase(it);
+                                    std::cout << getServerHeader(iThread) << "[streamer] out : end stream viewer\t server status : " << getStatus() << std::endl;
+                                    //                                    outputStreams.remove(outputStream);
+                                    //                                    streamer.mOutputStreams.erase(outputStream);
+                                } catch (std::exception& e) {
+                                    std::cout << getServerHeader(iThread) << "[streamer] out : catch exception : " << e.what() << std::endl;
+                                    throw;
+                                }
+                            }
+                            std::cout << getServerHeader(iThread) << "[streamer] data from streamer sent for " << outputStreams.size() << " stream viewers" << std::endl;
+
+                            const auto expectedFps = 1;
                             const auto end = start + std::chrono::microseconds(1'000'000 / expectedFps);
                             std::this_thread::sleep_until(end);
 
@@ -103,9 +121,9 @@ void Server::run()
                     } // while (true)
 
                 } catch (socket_error& e) {
-                    std::cout << getServerHeader(iThread) << "[streamer] catch socket exception : " << e.what() << std::endl;
+                    std::cout << getServerHeader(iThread) << "[streamer] in : catch socket exception : " << e.what() << std::endl;
                 } catch (std::exception& e) {
-                    std::cout << getServerHeader(iThread) << "[streamer] catch exception : " << e.what() << std::endl;
+                    std::cout << getServerHeader(iThread) << "[streamer] in : catch exception : " << e.what() << std::endl;
                     throw;
                 }
                 delete[] acq.data;
