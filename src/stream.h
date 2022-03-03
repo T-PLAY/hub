@@ -4,6 +4,8 @@
 #include <socket.h>
 #include <string>
 
+constexpr int SERVICE_PORT = 4041;
+
 class Stream {
 public:
     enum class Format {
@@ -90,8 +92,13 @@ public:
 
     class Acquisition {
     public:
-        long long backendTimestamp = 0;
-        long long backendTimeOfArrival = 0;
+
+        void start();
+        void end();
+
+//    protected:
+        long long backendTimestamp = 0; // microseconds
+        long long backendTimeOfArrival = 0; // microseconds
         const size_t acquisitionSize;
         unsigned char* data = nullptr;
 

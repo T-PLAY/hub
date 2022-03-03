@@ -29,7 +29,7 @@ void Thread_InputStream::run()
     try {
 
         Stream::Acquisition acq = mInputStream.acquisition();
-        size_t acquisitionSize = mInputStream.getAcquisitionSize();
+//        size_t acquisitionSize = mInputStream.getAcquisitionSize();
 
         while (!this->isInterruptionRequested() && !serverRequestClose) {
 
@@ -38,18 +38,18 @@ void Thread_InputStream::run()
             m_iReadBuffer = m_iWriteBuffer;
             m_iWriteBuffer = (m_iWriteBuffer + 1) % 2;
 
-            int dec = mData[m_iReadBuffer][0];
-            bool badImage = false;
-            for (size_t i = 0; i < acquisitionSize; ++i) {
-                if (mData[m_iReadBuffer][i] != (i / 192 + dec) % 256) {
-                    assert(false);
-                    badImage = true;
-                    break;
-                }
-            }
-            if (badImage) {
-                std::cout << "[streamView] error bad image" << std::endl;
-            }
+//            int dec = mData[m_iReadBuffer][0];
+//            bool badImage = false;
+//            for (size_t i = 0; i < acquisitionSize; ++i) {
+//                if (mData[m_iReadBuffer][i] != (i / 192 + dec) % 256) {
+//                    assert(false);
+//                    badImage = true;
+//                    break;
+//                }
+//            }
+//            if (badImage) {
+//                std::cout << "[streamView] error bad image" << std::endl;
+//            }
             emit newImage();
         }
 

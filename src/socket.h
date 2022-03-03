@@ -8,9 +8,8 @@
 #include <list>
 #include <string>
 
-#define SERVICE_PORT 4042
 
-//#define DEBUG_MSG
+#define DEBUG_MSG
 
 static std::string getHeader(socket_fd iSock)
 {
@@ -86,7 +85,7 @@ protected:
 
 class ClientSocket : public Socket {
 public:
-    ClientSocket(std::string ipv4, int port = SERVICE_PORT);
+    ClientSocket(std::string ipv4, int port);
     ClientSocket(socket_fd fdSock);
 
     ClientSocket(const ClientSocket& sock) = delete;
@@ -129,7 +128,7 @@ private:
 
 class ServerSocket : public Socket {
 public:
-    ServerSocket(int port = SERVICE_PORT);
+    ServerSocket(int port);
 
     ClientSocket waitNewClient();
 
