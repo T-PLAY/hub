@@ -8,8 +8,7 @@
 #include <list>
 #include <string>
 
-
-#define DEBUG_MSG
+//#define DEBUG_MSG
 
 static std::string getHeader(socket_fd iSock)
 {
@@ -157,6 +156,7 @@ void ClientSocket::write(const T& t) const
             perror("send error\n");
             throw Socket::exception("Can't write packet, peer connection lost");
         } else if (byteSent == 0) {
+            std::cout << "byteSent == 0, sleep" << std::endl;
             std::this_thread::sleep_for(std::chrono::milliseconds(1000));
         }
         uploadSize += byteSent;
@@ -195,7 +195,7 @@ void ClientSocket::write(const std::list<T>& list) const
 template <class T>
 void ClientSocket::write(const std::vector<T>& vector) const
 {
-    int nbEl = vector.size();
+    int nbEl = static_cast<int>(vector.size());
     write(nbEl);
 
     for (const T& el : vector) {

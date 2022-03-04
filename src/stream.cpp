@@ -4,10 +4,16 @@
 #include <functional>
 #include <numeric>
 #include <socket.h>
+//#include <math.h>
 
 std::ostream& operator<<(std::ostream& os, const Stream::Acquisition& acq)
 {
-    os << "start:" << acq.backendTimestamp << ", end:" << acq.backendTimeOfArrival << ", sizeof of data:" << acq.acquisitionSize;
+    os << "start:" << acq.backendTimestamp / 1000 << ", end:" << acq.backendTimeOfArrival / 1000 << ", size:" << acq.acquisitionSize;
+    os << ", data:[";
+    for (int i = 0; i < min(10, acq.acquisitionSize); ++i) {
+        os << (int)acq.data[i] << " ";
+    }
+    os << "]";
     return os;
 }
 
@@ -151,10 +157,10 @@ void InputStream::operator>>(Acquisition& acquisition) const
 
     switch (message) {
     case Socket::Message::DATA: {
-        std::cout << "[InputStream] read data" << std::endl;
         mSocket.read(acquisition.backendTimestamp);
         mSocket.read(acquisition.backendTimeOfArrival);
         mSocket.read(acquisition.data, mAcquisitionSize);
+        std::cout << "[InputStream] read acq :  " << acquisition << std::endl;
 
     } break;
 
@@ -213,7 +219,7 @@ void OutputStream::operator<<(const Acquisition& acquisition) const
         case Socket::Message::SYNC: {
 
             mSocket.write(Socket::Message::DATA);
-            std::cout << "[OutputStream] receive sync, request data sending timestamp = " << acquisition.backendTimestamp << std::endl;
+            std::cout << "[OutputStream] send acq : " << acquisition << std::endl;
 
             mSocket.write(acquisition.backendTimestamp);
             mSocket.write(acquisition.backendTimeOfArrival);

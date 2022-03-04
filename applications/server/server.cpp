@@ -59,7 +59,7 @@ void Server::run()
                     std::cout << getServerHeader(iThread) << "[streamer] acquisitionSize:" << acquisitionSize << std::endl;
                     std::cout << getServerHeader(iThread) << "[streamer] width:" << inputStream.getDims()[0] << std::endl;
                     std::cout << getServerHeader(iThread) << "[streamer] height:" << inputStream.getDims()[1] << std::endl;
-                    std::cout << getServerHeader(iThread) << "[streamer] format:" << (int)inputStream.getFormat() << std::endl;
+                    std::cout << getServerHeader(iThread) << "[streamer] format:" << Stream::format2string[(int)inputStream.getFormat()] << " (byte:" << Stream::formatNbByte[(int)inputStream.getFormat()] << ")" << std::endl;
 
                     // for each new stream acquistion
                     while (true) {

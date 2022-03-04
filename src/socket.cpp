@@ -152,6 +152,7 @@ void ClientSocket::write(const unsigned char* data, size_t len) const
             throw Socket::exception("Can't write packet, peer connection lost");
 
         } else if (byteSent == 0) {
+            std::cout << "byteSent == 0, sleep" << std::endl;
             std::this_thread::sleep_for(std::chrono::milliseconds(1000));
         }
         uploadSize += byteSent;
@@ -163,7 +164,7 @@ void ClientSocket::write(const unsigned char* data, size_t len) const
 
 void ClientSocket::write(const std::string& str) const
 {
-    int nbEl = str.size();
+    int nbEl = static_cast<int>(str.size());
     write(nbEl);
 
     const char* data = str.data();
@@ -182,6 +183,7 @@ void ClientSocket::read(unsigned char* data, size_t len) const
             perror("Failed to read.\n");
             exit(5);
         } else if (byteRead == 0) {
+            std::cout << "byteRead == 0, sleep" << std::endl;
             std::this_thread::sleep_for(std::chrono::milliseconds(1000));
         }
 
@@ -197,10 +199,11 @@ void ClientSocket::read(std::string& str) const
     int nbEl;
     read(nbEl);
 
-    unsigned char tmp[nbEl + 1];
+    unsigned char * tmp = new unsigned char[nbEl + 1];
     read(tmp, nbEl);
     tmp[nbEl] = 0;
     str = std::string((char*)tmp);
+    delete [] tmp;
 }
 
 void ClientSocket::waitClose() const
@@ -216,6 +219,7 @@ void ClientSocket::waitClose() const
             break;
 
         default:
+            std::cout << "waitClose, sleep" << std::endl;
             std::this_thread::sleep_for(std::chrono::milliseconds(1000));
             break;
         }

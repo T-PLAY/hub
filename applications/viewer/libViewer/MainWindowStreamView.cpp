@@ -112,5 +112,6 @@ void MainWindowStreamView::newImage()
     }
     ++mCounterFps;
 
-    ui->centralwidget->setImage((unsigned char*)mThread.mData[mThread.m_iReadBuffer], mThread.mInputStream.getDims().at(0), mThread.mInputStream.getDims().at(1));
+    assert(mThread.mData[mThread.m_iReadBuffer] != nullptr);
+    ui->centralwidget->setImage((unsigned char*)mThread.mData[mThread.m_iReadBuffer], mThread.mInputStream.getDims().at(0), mThread.mInputStream.getDims().at(1), mThread.mInputStream.getFormat());
 }
