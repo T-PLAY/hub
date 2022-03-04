@@ -23,6 +23,7 @@ public:
     unsigned char* mData[2];
     int m_iReadBuffer = 0;
     int m_iWriteBuffer = 0;
+//    Stream::Format mFormat = Stream::Format::NONE;
 
     InputStream mInputStream;
 
@@ -53,7 +54,7 @@ private:
     Thread_InputStream mThread;
 
     int mCounterFps = 0;
-    double mFps = 1.0;
+    double mFps = 10.0;
     std::chrono::time_point<std::chrono::high_resolution_clock> mStartFps;
 };
 

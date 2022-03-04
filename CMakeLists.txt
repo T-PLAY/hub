@@ -12,3 +12,4 @@ add_subdirectory(src)
 add_subdirectory(applications)
 
 option(BUILD_LIDAR_EXAMPLE "Build Lidar examples (depends of realsense2 lib)" ON)
+option(BUILD_OPENCV_EXAMPLE "Build OpenCV examples (depends of opencv lib)" ON)
