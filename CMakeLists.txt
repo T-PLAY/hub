@@ -9,7 +9,13 @@ add_definitions(-DPROJECT_DIR=\"${CMAKE_SOURCE_DIR}/\")
 set(SRC_DIR ${CMAKE_SOURCE_DIR}/src/)
 
 add_subdirectory(src)
-add_subdirectory(applications)
 
-option(BUILD_LIDAR_EXAMPLE "Build Lidar examples (depends of realsense2 lib)" ON)
-option(BUILD_OPENCV_EXAMPLE "Build OpenCV examples (depends of opencv lib)" ON)
+set(CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/hub-install)
+
+option(BUILD_EXAMPLES "Build examples" OFF)
+
+if (BUILD_EXAMPLES)
+        option(BUILD_LIDAR_EXAMPLE "Build Lidar examples (depends of realsense2 lib)" ON)
+        option(BUILD_OPENCV_EXAMPLE "Build OpenCV examples (depends of opencv lib)" ON)
+        add_subdirectory(applications)
+endif()

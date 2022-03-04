@@ -40,8 +40,7 @@ int main(int argc, char* argv[])
 
                 // Try to get a frame of a depth image
                 rs2::depth_frame depth = frames.get_depth_frame();
-                size_t depthSize = depth.get_data_size();
-                assert(depthSize == depthAcq.acquisitionSize);
+                assert(depth.get_data_size() == depthAcq.acquisitionSize);
                 depthAcq.backendTimestamp = depth.get_frame_metadata(RS2_FRAME_METADATA_BACKEND_TIMESTAMP);
                 depthAcq.backendTimeOfArrival = depth.get_frame_metadata(RS2_FRAME_METADATA_TIME_OF_ARRIVAL);
                 depthAcq.data = (unsigned char*)depth.get_data();
@@ -50,8 +49,7 @@ int main(int argc, char* argv[])
                 rs2::video_frame color = frames.get_color_frame();
                 assert(color.get_width() == 1280);
                 assert(color.get_height() == 720);
-                size_t colorSize = color.get_data_size();
-                assert(colorSize == colorAcq.acquisitionSize);
+                assert(color.get_data_size() == colorAcq.acquisitionSize);
                 colorAcq.backendTimestamp = color.get_frame_metadata(RS2_FRAME_METADATA_BACKEND_TIMESTAMP);
                 colorAcq.backendTimeOfArrival = color.get_frame_metadata(RS2_FRAME_METADATA_TIME_OF_ARRIVAL);
                 colorAcq.data = (unsigned char*)color.get_data();
@@ -60,8 +58,7 @@ int main(int argc, char* argv[])
                 rs2::video_frame ir = frames.get_infrared_frame();
                 assert(ir.get_width() == 640);
                 assert(ir.get_height() == 480);
-                size_t irSize = ir.get_data_size();
-                assert(irSize == irAcq.acquisitionSize);
+                assert(ir.get_data_size() == irAcq.acquisitionSize);
                 irAcq.backendTimestamp = ir.get_frame_metadata(RS2_FRAME_METADATA_BACKEND_TIMESTAMP);
                 irAcq.backendTimeOfArrival = ir.get_frame_metadata(RS2_FRAME_METADATA_TIME_OF_ARRIVAL);
                 irAcq.data = (unsigned char*)ir.get_data();

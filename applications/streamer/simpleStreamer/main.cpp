@@ -17,7 +17,8 @@ int main()
 
             const size_t imgSize = proceduralStream.getAcquisitionSize();
 
-            auto acq = proceduralStream.acquisition();
+//            auto acq = proceduralStream.acquisition();
+            unsigned char data[width * height];
 
             int dec = 0;
             while (true) {
@@ -25,15 +26,15 @@ int main()
                 const auto& start = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
                 // generate new image
                 for (size_t i = 0; i < imgSize; ++i) {
-                    acq.data[i] = (i / width + dec) % 256;
+                    data[i] = (i / width + dec) % 256;
                 }
                 const auto& end = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
                 ++dec;
 
-                acq.backendTimestamp = start;
-                acq.backendTimeOfArrival = end;
+//                acq.backendTimestamp = start;
+//                acq.backendTimeOfArrival = end;
 
-                proceduralStream << acq;
+                proceduralStream << Stream::Acquisition{start, end, width * height, data};
             }
 
         } catch (std::exception& e) {

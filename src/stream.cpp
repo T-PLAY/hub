@@ -1,10 +1,12 @@
 #include "stream.h"
 
 #include <cassert>
-#include <functional>
+//#include <functional>
 #include <numeric>
 #include <socket.h>
 //#include <math.h>
+//#include <cmath>
+//#include <algorithm>
 
 std::ostream& operator<<(std::ostream& os, const Stream::Acquisition& acq)
 {
@@ -19,10 +21,11 @@ std::ostream& operator<<(std::ostream& os, const Stream::Acquisition& acq)
 
 Stream::Acquisition Stream::acquisition() const
 {
-    Acquisition acq { 0, 0, mAcquisitionSize, new unsigned char[mAcquisitionSize] };
-    for (size_t i = 0; i < mAcquisitionSize; ++i) {
-        acq.data[i] = 0;
-    }
+//    Acquisition acq { 0, 0, mAcquisitionSize, new unsigned char[mAcquisitionSize] };
+    Acquisition acq { 0, 0, mAcquisitionSize, nullptr };
+//    for (size_t i = 0; i < mAcquisitionSize; ++i) {
+//        acq.data[i] = 0;
+//    }
     return acq;
 }
 
@@ -237,10 +240,10 @@ void OutputStream::operator<<(const Acquisition& acquisition) const
 
 void Stream::Acquisition::start()
 {
-    backendTimestamp = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+//    backendTimestamp = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 }
 
 void Stream::Acquisition::end()
 {
-    backendTimeOfArrival = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+//    backendTimeOfArrival = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 }

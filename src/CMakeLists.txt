@@ -11,6 +11,7 @@ file(GLOB_RECURSE sources *.cpp)
 file(GLOB_RECURSE headers *.h)
 
 add_library(${PROJECT_NAME} STATIC
+#add_library(${PROJECT_NAME} SHARED
         ${sources}
         ${headers}
         )
@@ -32,4 +33,7 @@ endif()
 
 
 target_link_libraries(${PROJECT_NAME} ${UNIX_REQUIRED_LIBS} ${WIN32_REQUIRED_LIBS})
+
+install(TARGETS ${PROJECT_NAME} DESTINATION lib)
+install(FILES ${headers} DESTINATION include)
 
