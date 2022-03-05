@@ -45,6 +45,9 @@ public:
 
     std::string getStreamerSensorName() const;
 
+signals:
+    void onCloseStreamViewSignal(std::string streamerSensorName);
+
 public slots:
     void newImage();
 
@@ -56,6 +59,7 @@ private:
     int mCounterFps = 0;
     double mFps = 10.0;
     std::chrono::time_point<std::chrono::high_resolution_clock> mStartFps;
+    std::string mSensorName;
 };
 
 #endif // MAINWINDOWSTREAMVIEW_H

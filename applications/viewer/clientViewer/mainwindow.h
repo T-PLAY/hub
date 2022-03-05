@@ -6,6 +6,7 @@
 #include <QMdiSubWindow>
 #include <QThread>
 #include <map>
+#include <formsensorview.h>
 
 // Q_DECLARE_METATYPE(Streamer);
 // Q_DECLARE_METATYPE(std::string)
@@ -21,8 +22,10 @@ public:
     explicit Thread_Client(QObject* parent = 0);
 
 signals:
-    void addViewStreamSignal(std::string streamerSensorName);
-    void delViewStreamSignal(std::string streamerSensorName);
+    void addSensorSignal(std::string streamerSensorName, std::string format, std::string dims, std::string size);
+//    void addViewStreamSignal(std::string streamerSensorName);
+//    void delViewStreamSignal(std::string streamerSensorName);
+    void delSensorSignal(std::string streamerSensorName);
 
 public:
     // overriding the QThread's run() method
@@ -41,13 +44,20 @@ public:
 signals:
 
 public slots:
-    void addViewStream(std::string streamerSensorName);
-    void delViewStream(std::string streamerSensorName);
+    void addSensor(std::string streamerSensorName, std::string format, std::string dims, std::string size);
+    void delSensor(std::string streamerSensorName);
+
+    void addStreamView(std::string streamerSensorName);
+    void delStreamView(std::string streamerSensorName);
+
+    void onCloseStreamView(std::string streamerSensorName);
 
 private:
     Ui::MainWindow* ui;
     Thread_Client mThreadClient;
-    std::list<MainWindowStreamView*> mStreamViews;
+//    std::list<MainWindowStreamView*> mStreamViews;
+    std::map<std::string, MainWindowStreamView*> mStreamViews;
+    std::map<std::string, FormSensorView*> mSensorViews;
 };
 
 #endif // MAINWINDOW_H

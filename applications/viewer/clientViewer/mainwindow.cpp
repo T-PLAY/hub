@@ -5,17 +5,18 @@
 #include <QMdiSubWindow>
 #include <QStandardItemModel>
 //#include <server.h>
+#include <formsensorview.h>
 #include <stream.h>
 
 Thread_Client::Thread_Client(QObject* parent)
     : QThread(parent)
 {
-    std::cout << "Thread_Client()" << std::endl;
+    std::cout << "[Thread_Client] Thread_Client()" << std::endl;
 }
 
 void Thread_Client::run()
 {
-    std::cout << "Thread_Client::run()" << std::endl;
+    std::cout << "[Thread_Client] Thread_Client::run()" << std::endl;
 
     while (!this->isInterruptionRequested()) {
         try {
@@ -35,28 +36,36 @@ void Thread_Client::run()
                 } break;
 
                 case Socket::Message::NEW_STREAMER: {
-                    std::cout << "[viewer] new streamer" << std::endl;
+                    std::cout << "[Thread_Client] [viewer] new streamer" << std::endl;
                     std::string streamerSensorName;
                     sock.read(streamerSensorName);
+                    std::string format;
+                    sock.read(format);
+                    std::string dims;
+                    sock.read(dims);
+                    std::string size;
+                    sock.read(size);
 
-                    std::cout << "[viewer] emit addViewStreamSignal '" << streamerSensorName << "'" << std::endl;
-                    emit addViewStreamSignal(streamerSensorName);
+                    std::cout << "[Thread_Client] [viewer] new streamer " << streamerSensorName << ", format:" << format << ", dims:" << dims << ", acquisitionSize:" << size << std::endl;
+                    std::cout << "[Thread_Client] [viewer] emit addSensorSignal '" << streamerSensorName << "'" << std::endl;
+                    emit addSensorSignal(streamerSensorName, format, dims, size);
+
                 } break;
 
                 case Socket::Message::DEL_STREAMER: {
                     std::string streamerSensorName;
                     sock.read(streamerSensorName);
-                    std::cout << "[viewer] del streamer '" << streamerSensorName << "'" << std::endl;
-                    emit delViewStreamSignal(streamerSensorName);
+                    std::cout << "[Thread_Client] [viewer] del streamer '" << streamerSensorName << "'" << std::endl;
+                    emit delSensorSignal(streamerSensorName);
                 } break;
 
                 default:
-                    std::cout << "unknown message from server" << std::endl;
+                    std::cout << "[Thread_Client] unknown message from server" << std::endl;
                 }
             }
 
         } catch (std::exception& e) {
-            std::cout << "[viewer] catch exception : " << e.what() << std::endl;
+            std::cout << "[Thread_Client] [viewer] catch exception : " << e.what() << std::endl;
         }
     } // while (!this->isInterruptionRequested())
 }
@@ -69,63 +78,122 @@ MainWindow::MainWindow(QWidget* parent)
 
     ui->setupUi(this);
 
-    QObject::connect(&mThreadClient, &Thread_Client::addViewStreamSignal, this, &MainWindow::addViewStream);
-    QObject::connect(&mThreadClient, &Thread_Client::delViewStreamSignal, this, &MainWindow::delViewStream);
+    //    QObject::connect(&mThreadClient, &Thread_Client::addViewStreamSignal, this, &MainWindow::addStreamView);
+    QObject::connect(&mThreadClient, &Thread_Client::addSensorSignal, this, &MainWindow::addSensor);
+    //    QObject::connect(&mThreadClient, &Thread_Client::delViewStreamSignal, this, &MainWindow::delStreamView);
+    QObject::connect(&mThreadClient, &Thread_Client::delSensorSignal, this, &MainWindow::delSensor);
     mThreadClient.start();
 }
 
 MainWindow::~MainWindow()
 {
-    std::cout << "~MainWindow()" << std::endl;
+    std::cout << "[MainWindow] ~MainWindow()" << std::endl;
 
     delete ui;
-    std::cout << "~MainWindow() deleted ui" << std::endl;
+    std::cout << "[MainWindow] ~MainWindow() deleted ui" << std::endl;
 
     mThreadClient.requestInterruption();
     mThreadClient.wait();
 
-    std::cout << "~MainWindow() mThreadClient.terminated()" << std::endl;
+    std::cout << "[MainWindow] ~MainWindow() mThreadClient.terminated()" << std::endl;
 
-    for (auto* streamView : mStreamViews) {
+    for (auto& pair : mStreamViews) {
+        auto* streamView = pair.second;
+
         assert(streamView != nullptr);
-        std::cout << "~MainWindow() delete " << streamView << std::endl;
+        std::cout << "[MainWindow] ~MainWindow() delete " << streamView << std::endl;
         delete streamView;
         streamView = nullptr;
     }
+    mStreamViews.clear();
 }
 
-void MainWindow::addViewStream(std::string streamerSensorName)
+void MainWindow::addSensor(std::string streamerSensorName, std::string format, std::string dims, std::string size)
 {
-    std::cout << "MainWindow::addViewStream slot '" << streamerSensorName << "'" << std::endl;
+    std::cout << "[MainWindow] MainWindow::addSensor '" << streamerSensorName << "'" << std::endl;
+
+    FormSensorView* sensorView = new FormSensorView(ui->centralwidget, streamerSensorName, format, dims, size);
+    //        sensorView->setStyleSheet("border: 1px solid black; border-radius: 10px;");
+    //        sensorView->setStyleSheet("background-color: green;");
+    //    ui->verticalLayoutSensor->addWidget(sensorView);
+    ui->verticalLayoutSensor->insertWidget(mSensorViews.size(), sensorView);
+    mSensorViews[streamerSensorName] = sensorView;
+    //        sensorView->show();
+    //    ui->listWidget.a
+    //    QListWidgetItem* item = new QListWidgetItem("hello");
+    //    ui->listWidget->addItem(item);
+    QObject::connect(sensorView, &FormSensorView::addViewStreamSignal, this, &MainWindow::addStreamView);
+    QObject::connect(sensorView, &FormSensorView::delViewStreamSignal, this, &MainWindow::delStreamView);
+}
+
+void MainWindow::delSensor(std::string streamerSensorName)
+{
+    std::cout << "[MainWindow] MainWindow::delSensor '" << streamerSensorName << "'" << std::endl;
+
+    delStreamView(streamerSensorName);
+
+    assert(mSensorViews.find(streamerSensorName) != mSensorViews.end());
+    FormSensorView* sensorView = mSensorViews.at(streamerSensorName);
+    delete sensorView;
+    mSensorViews.erase(streamerSensorName);
+
+    std::cout << "[MainWindow] MainWindow::delSensor end '" << streamerSensorName << "'" << std::endl;
+}
+
+void MainWindow::addStreamView(std::string streamerSensorName)
+{
+    std::cout << "[MainWindow] MainWindow::addStreamView slot '" << streamerSensorName << "'"
+              << ", nb streamView = " << mStreamViews.size() << std::endl;
+
     MainWindowStreamView* streamView = new MainWindowStreamView(ui->mdiArea, streamerSensorName);
-    mStreamViews.push_back(streamView);
-    std::cout << "MainWindow::addViewStream add " << streamView << std::endl;
+    //    mStreamViews.push_back(streamView);
+    assert(mStreamViews.find(streamerSensorName) == mStreamViews.end());
+    mStreamViews[streamerSensorName] = streamView;
+    std::cout << "[MainWindow] MainWindow::addStreamView add " << streamView << std::endl;
 
     QMdiSubWindow* subWindow = ui->mdiArea->addSubWindow(streamView);
     subWindow->setVisible(true);
 
     subWindow->setWindowTitle(streamerSensorName.c_str());
+
+    QObject::connect(streamView, &MainWindowStreamView::onCloseStreamViewSignal, this, &MainWindow::onCloseStreamView);
 }
 
 #include <typeinfo>
 
-void MainWindow::delViewStream(std::string streamerSensorName)
+void MainWindow::delStreamView(std::string streamerSensorName)
 {
-    std::cout << "MainWindow::delViewStream slot" << std::endl;
+    std::cout << "[MainWindow] MainWindow::delStreamView slot, nb streamView = " << mStreamViews.size() << std::endl;
 
-    auto it = mStreamViews.begin();
-    while (it != mStreamViews.end()) {
-        MainWindowStreamView* streamView = *it;
+    //    auto it = mStreamViews.begin();
+    //    while (it != mStreamViews.end()) {
+    //    assert(mStreamViews.find(streamerSensorName) != mStreamViews.end());
+    if (mStreamViews.find(streamerSensorName) != mStreamViews.end()) {
+        MainWindowStreamView* streamView = mStreamViews.at(streamerSensorName);
+        //        MainWindowStreamView* streamView = *it;
 
-        if (streamView->getStreamerSensorName() == streamerSensorName) {
-            std::cout << "MainWindow::delViewStream delete " << streamView << std::endl;
+        //    if (streamView->getStreamerSensorName() == streamerSensorName) {
+        std::cout << "[MainWindow] MainWindow::delStreamView delete " << streamView << std::endl;
 
-            ui->mdiArea->removeSubWindow(streamView->parentWidget());
-            it = mStreamViews.erase(it);
-            delete streamView;
-            streamView = nullptr;
-        } else {
-            ++it;
-        }
+        ui->mdiArea->removeSubWindow(streamView->parentWidget());
+        //            it = mStreamViews.erase(it);
+        delete streamView;
+        streamView = nullptr;
+
+        //        } else {
+        //            ++it;
+        //        }
+        //    }
     }
+    std::cout << "[MainWindow] MainWindow::delStreamView slot end, nb streamView = " << mStreamViews.size() << std::endl;
+}
+
+void MainWindow::onCloseStreamView(std::string streamerSensorName)
+{
+    std::cout << "[MainWindow] MainWindow::onCloseStreamView " << std::endl;
+    assert(mSensorViews.find(streamerSensorName) != mSensorViews.end());
+    mSensorViews.at(streamerSensorName)->setRadioButtonOff();
+
+    assert(mStreamViews.find(streamerSensorName) != mStreamViews.end());
+    mStreamViews.erase(streamerSensorName);
 }
