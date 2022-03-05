@@ -76,6 +76,10 @@ void WidgetStreamView::paintEvent(QPaintEvent* event)
             image = QImage((unsigned char*)img, mWidth, mHeight, QImage::Format_RGB888);
             break;
 
+        case Stream::Format::BGR8:
+            image = QImage((unsigned char*)img, mWidth, mHeight, QImage::Format_BGR888);
+            break;
+
         default:
             std::cout << "[paintEvent] unknown stream format" << std::endl;
             assert(false);

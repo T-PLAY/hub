@@ -44,7 +44,8 @@ void Server::run()
 
                 std::cout << getServerHeader(iThread) << "[streamer] sensor name = '" << sensorName << "'" << std::endl;
 
-                auto acq = inputStream.acquisition();
+//                auto acq = inputStream.acquisition();
+                Stream::Acquisition acq;
 
                 try {
 

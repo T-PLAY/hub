@@ -29,9 +29,9 @@ int main(int, char**)
     const int width = cap.get(cv::CAP_PROP_FRAME_WIDTH);
     const int height = cap.get(cv::CAP_PROP_FRAME_HEIGHT);
 //    const auto format = cap.get(cv::CAP_PROP_FORMAT);
-//    OutputStream outputStream("webcam", Stream::Format::BGR8, {width, height});
-    OutputStream outputStream("webcam", Stream::Format::Y8, {width, height});
-    auto acq = outputStream.acquisition();
+    OutputStream outputStream("webcam", Stream::Format::BGR8, {width, height});
+//    OutputStream outputStream("webcam", Stream::Format::Y8, {width, height});
+//    auto acq = outputStream.acquisition();
 
     //--- GRAB AND WRITE LOOP
     std::cout << "Start grabbing" << std::endl
@@ -39,18 +39,17 @@ int main(int, char**)
     for (;;) {
         // wait for a new frame from camera and store it into 'frame'
 //        cap.read(frame);
-        acq.start();
+        auto start = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
         cap >> frame;
-        acq.end();
+        auto end = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 
         cv::Mat grey;
         cv::cvtColor(frame, grey, cv::COLOR_BGR2GRAY);
 //        unsigned char * data = frame.data;
 //        auto size = frame.size;
 //        acq.data = frame.data;
-        acq.data = grey.data;
 //        assert(size == outputStream.getAcquisitionSize());
-        outputStream << acq;
+        outputStream << Stream::Acquisition{start, end, frame.data};
 
         // check if we succeeded
         if (frame.empty()) {

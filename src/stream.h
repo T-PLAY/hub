@@ -127,21 +127,27 @@ public:
 
     class Acquisition {
     public:
-        void start();
-        void end();
+        Acquisition(long long backendTimestamp = 0, long long backendTimeOfArrival = 0, unsigned char * data = nullptr);
+        ~Acquisition();
+//        void start();
+//        void end();
 
         //    protected:
-        long long backendTimestamp = 0; // microseconds
-        long long backendTimeOfArrival = 0; // microseconds
-        const size_t acquisitionSize;
-        unsigned char* data = nullptr;
+        long long mBackendTimestamp; // microseconds
+        long long mBackendTimeOfArrival; // microseconds
+        unsigned char* mData;
+
+        size_t mSize = 0;
+        bool mOwnData = false;
+
+    private:
 
     public:
         friend std::ostream& operator<<(std::ostream& os, const Acquisition& acq);
     };
 
 public:
-    Acquisition acquisition() const;
+//    Acquisition acquisition() const;
 
 protected:
     Stream(const std::string& sensorName, Format format, const std::vector<int>& dims, const std::string& ipv4 = ("127.0.0.1"), int port = SERVICE_PORT);
