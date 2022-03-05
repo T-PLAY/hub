@@ -181,6 +181,7 @@ void ClientSocket::read(unsigned char* data, size_t len) const
         if (byteRead == -1) {
             std::cout << getHeader(mFdSock) << "can't read packet " << byteRead << "/" << len << std::endl;
             perror("Failed to read.\n");
+            assert(false);
             exit(5);
         } else if (byteRead == 0) {
             std::cout << "byteRead == 0, sleep" << std::endl;

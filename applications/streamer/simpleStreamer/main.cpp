@@ -16,9 +16,10 @@ int main()
             OutputStream proceduralStream = OutputStream("proceduralStreamer", Stream::Format::Y8, { width, height });
 
             const size_t imgSize = proceduralStream.getAcquisitionSize();
+            assert(imgSize == 192 * 512);
 
 //            auto acq = proceduralStream.acquisition();
-            unsigned char data[width * height];
+            unsigned char data[imgSize];
 
             int dec = 0;
             while (true) {
@@ -34,7 +35,7 @@ int main()
 //                acq.backendTimestamp = start;
 //                acq.backendTimeOfArrival = end;
 
-                proceduralStream << Stream::Acquisition{start, end, width * height, data};
+                proceduralStream << Stream::Acquisition{start, end, data};
             }
 
         } catch (std::exception& e) {

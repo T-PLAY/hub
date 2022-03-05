@@ -8,7 +8,7 @@
 #include <list>
 #include <string>
 
-#define DEBUG_MSG
+//#define DEBUG_MSG
 
 static std::string getHeader(socket_fd iSock)
 {

@@ -28,12 +28,13 @@ void Thread_InputStream::run()
     bool serverRequestClose = false;
     try {
 
-        Stream::Acquisition acq = mInputStream.acquisition();
+//        Stream::Acquisition acq = mInputStream.acquisition();
+        Stream::Acquisition acq;
 //        size_t acquisitionSize = mInputStream.getAcquisitionSize();
 
         while (!this->isInterruptionRequested() && !serverRequestClose) {
 
-            acq.data = mData[m_iWriteBuffer];
+            acq.mData = mData[m_iWriteBuffer];
             mInputStream >> acq;
             m_iReadBuffer = m_iWriteBuffer;
             m_iWriteBuffer = (m_iWriteBuffer + 1) % 2;

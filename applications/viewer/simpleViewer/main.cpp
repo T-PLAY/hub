@@ -15,14 +15,15 @@ int main()
             const size_t acquisitionSize = inputStream.getAcquisitionSize();
             const int width = inputStream.getDims().at(0);
 
-            auto acq = inputStream.acquisition();
+//            auto acq = inputStream.acquisition();
+            Stream::Acquisition acq;
 
             while (true) {
                 inputStream >> acq;
 
-                const int dec = acq.data[0];
+                const int dec = acq.mData[0];
                 for (size_t i = 0; i < acquisitionSize; ++i) {
-                    assert(acq.data[i] == (i / width + dec) % 256);
+                    assert(acq.mData[i] == (i / width + dec) % 256);
                 }
 
                 std::cout << "[simpleViewer] receive acquisition : " << acq << std::endl;
