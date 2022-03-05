@@ -44,7 +44,8 @@ void Server::run()
 
                 std::cout << getServerHeader(iThread) << "[streamer] sensor name = '" << sensorName << "'" << std::endl;
 
-//                auto acq = inputStream.acquisition();
+
+                //                auto acq = inputStream.acquisition();
                 Stream::Acquisition acq;
 
                 try {
@@ -53,7 +54,18 @@ void Server::run()
                     std::cout << getServerHeader(iThread) << "[streamer] prevent viewers there is a new streamer" << std::endl;
                     for (const auto& viewer : mViewers) {
                         viewer->socket->write(Socket::Message::NEW_STREAMER);
-                        viewer->socket->write(inputStream.getSensorName());
+                        viewer->socket->write(sensorName);
+
+                        viewer->socket->write(std::string(Stream::format2string[(int)inputStream.getFormat()]));
+
+                        std::string dimStr;
+                        for (const auto dim : inputStream.getDims()) {
+                            dimStr += std::to_string(dim) + " x ";
+                        }
+                        //                    dimStr[dimStr.size() - 2] = ' ';
+                        dimStr.resize(dimStr.size() - 3);
+                        viewer->socket->write(dimStr);
+                        viewer->socket->write(std::to_string(inputStream.getAcquisitionSize()));
                     }
 
                     const size_t acquisitionSize = inputStream.getAcquisitionSize();
@@ -129,9 +141,21 @@ void Server::run()
                 // for each streamer, open stream viewer socket
                 for (const auto& pair : mStreamers) {
                     const auto& sensorName = pair.first;
+                    const auto* streamer = pair.second;
 
                     sock.write(Socket::Message::NEW_STREAMER);
                     sock.write(sensorName);
+
+                    sock.write(std::string(Stream::format2string[(int)streamer->mInputStream.getFormat()]));
+
+                    std::string dimStr;
+                    for (const auto dim : streamer->mInputStream.getDims()) {
+                        dimStr += std::to_string(dim) + " x ";
+                    }
+                    //                    dimStr[dimStr.size() - 2] = ' ';
+                    dimStr.resize(dimStr.size() - 3);
+                    sock.write(dimStr);
+                    sock.write(std::to_string(streamer->mInputStream.getAcquisitionSize()));
                 }
 
                 Viewer viewer { &sock };

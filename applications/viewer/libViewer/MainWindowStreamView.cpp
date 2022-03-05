@@ -25,14 +25,14 @@ void Thread_InputStream::run()
 {
     std::cout << "Thread_InputStream::run()" << std::endl;
 
-    bool serverRequestClose = false;
+//    bool serverRequestClose = false;
     try {
 
 //        Stream::Acquisition acq = mInputStream.acquisition();
         Stream::Acquisition acq;
 //        size_t acquisitionSize = mInputStream.getAcquisitionSize();
 
-        while (!this->isInterruptionRequested() && !serverRequestClose) {
+        while (!this->isInterruptionRequested()) {
 
             acq.mData = mData[m_iWriteBuffer];
             mInputStream >> acq;
@@ -68,6 +68,7 @@ MainWindowStreamView::MainWindowStreamView(QWidget* parent, std::string sensorNa
     : QMainWindow(parent)
     , ui(new Ui::MainWindowStreamView)
     , mThread(this, sensorName)
+    , mSensorName(sensorName)
 {
     std::cout << "MainWindow::MainWindowStreamView(parent, " << sensorName << ")" << std::endl;
 
@@ -93,6 +94,9 @@ MainWindowStreamView::~MainWindowStreamView()
     std::cout << "~MainWindowStreamView() requested interruption" << std::endl;
     mThread.wait();
     std::cout << "~MainWindowStreamView() mThread join" << std::endl;
+
+    emit onCloseStreamViewSignal(mSensorName);
+
 }
 
 std::string MainWindowStreamView::getStreamerSensorName() const
