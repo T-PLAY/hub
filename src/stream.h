@@ -4,6 +4,8 @@
 #include <socket.h>
 #include <string>
 
+//#define DEBUG_STREAM
+
 constexpr int SERVICE_PORT = 4041;
 
 class Stream {
@@ -127,12 +129,9 @@ public:
 
     class Acquisition {
     public:
-        Acquisition(long long backendTimestamp = 0, long long backendTimeOfArrival = 0, unsigned char * data = nullptr);
+        Acquisition(long long backendTimestamp = 0, long long backendTimeOfArrival = 0, unsigned char* data = nullptr);
         ~Acquisition();
-//        void start();
-//        void end();
 
-        //    protected:
         long long mBackendTimestamp; // microseconds
         long long mBackendTimeOfArrival; // microseconds
         unsigned char* mData;
@@ -141,14 +140,11 @@ public:
         bool mOwnData = false;
 
     private:
-
     public:
         friend std::ostream& operator<<(std::ostream& os, const Acquisition& acq);
     };
 
 public:
-//    Acquisition acquisition() const;
-
 protected:
     Stream(const std::string& sensorName, Format format, const std::vector<int>& dims, const std::string& ipv4 = ("127.0.0.1"), int port = SERVICE_PORT);
     ~Stream();

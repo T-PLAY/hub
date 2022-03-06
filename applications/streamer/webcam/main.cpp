@@ -2,8 +2,8 @@
 #include <iostream>
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
-#include <opencv2/videoio.hpp>
 #include <opencv2/imgproc.hpp>
+#include <opencv2/videoio.hpp>
 #include <stdio.h>
 
 #include <stream.h>
@@ -28,28 +28,20 @@ int main(int, char**)
 
     const int width = cap.get(cv::CAP_PROP_FRAME_WIDTH);
     const int height = cap.get(cv::CAP_PROP_FRAME_HEIGHT);
-//    const auto format = cap.get(cv::CAP_PROP_FORMAT);
-    OutputStream outputStream("webcam", Stream::Format::BGR8, {width, height});
-//    OutputStream outputStream("webcam", Stream::Format::Y8, {width, height});
-//    auto acq = outputStream.acquisition();
+    OutputStream outputStream("webcam", Stream::Format::BGR8, { width, height });
 
     //--- GRAB AND WRITE LOOP
     std::cout << "Start grabbing" << std::endl
               << "Press any key to terminate" << std::endl;
     for (;;) {
         // wait for a new frame from camera and store it into 'frame'
-//        cap.read(frame);
         auto start = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
         cap >> frame;
         auto end = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 
         cv::Mat grey;
         cv::cvtColor(frame, grey, cv::COLOR_BGR2GRAY);
-//        unsigned char * data = frame.data;
-//        auto size = frame.size;
-//        acq.data = frame.data;
-//        assert(size == outputStream.getAcquisitionSize());
-        outputStream << Stream::Acquisition{start, end, frame.data};
+        outputStream << Stream::Acquisition { start, end, frame.data };
 
         // check if we succeeded
         if (frame.empty()) {
@@ -57,9 +49,6 @@ int main(int, char**)
             break;
         }
         // show live and wait for a key with timeout long enough to show images
-//        imshow("Live", frame);
-//        if (cv::waitKey(5) >= 0)
-//            break;
     }
     // the camera will be deinitialized automatically in VideoCapture destructor
     return 0;

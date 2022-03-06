@@ -24,8 +24,6 @@ int main(int argc, char* argv[])
             OutputStream infraredStream("L500 Depth Sensor (Infrared)", Stream::Format::Y8, { 640, 480 });
             auto irAcq = infraredStream.acquisition();
 
-            //        OutputStream motionStream("L500 Motion Module", Stream::Format::MOTION_XYZ32F, {1});
-
             // Create a Pipeline - this serves as a top-level API for streaming and processing frames
             rs2::pipeline p;
 
@@ -33,10 +31,8 @@ int main(int argc, char* argv[])
             p.start();
 
             while (true) {
-                //                const auto start = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
                 // Block program until frames arrive
                 rs2::frameset frames = p.wait_for_frames();
-                //                const auto end = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 
                 // Try to get a frame of a depth image
                 rs2::depth_frame depth = frames.get_depth_frame();
@@ -64,40 +60,8 @@ int main(int argc, char* argv[])
                 irAcq.data = (unsigned char*)ir.get_data();
                 infraredStream << irAcq;
 
-                //            std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(start).count() << std::endl;
-
                 // Get the depth frame's dimensions
-                //                const auto width = depth.get_width();
-                //                const auto height = depth.get_height();
-                //                const auto profile = depth.get_profile();
-                //                const auto backendTimestamp = depth.get_frame_metadata(RS2_FRAME_METADATA_BACKEND_TIMESTAMP);
-                //                const auto backendTimeOfArrival = depth.get_frame_metadata(RS2_FRAME_METADATA_TIME_OF_ARRIVAL);
-                //                const auto frameTimestamp = depth.get_frame_metadata(RS2_FRAME_METADATA_FRAME_TIMESTAMP);
 
-                //            const auto sensorTimestamp = depth.get_frame_metadata(RS2_FRAME_METADATA_SENSOR_TIMESTAMP);
-
-                //                std::cout << "[lidar] lidar backendTimestamp : " << backendTimestamp << std::endl;
-                //                std::cout << "[lidar] lidar backendTimeOfArrival : " << backendTimeOfArrival << std::endl;
-                //                std::cout << "[lidar] lidar frame timestamp : " << frameTimestamp << std::endl;
-                //            std::cout << "lidar sensor timestamp : " << sensorTimestamp << std::endl;
-                //            assert(depth.get_frame_timestamp_domain() == RS2_TIMESTAMP_DOMAIN_SYSTEM_TIME);
-                //            assert(depth.get_frame_timestamp_domain() == RS2_TIMESTAMP_DOMAIN_GLOBAL_TIME);
-                //                assert(depth.get_frame_timestamp_domain() == RS2_TIMESTAMP_DOMAIN_HARDWARE_CLOCK);
-
-                //                std::cout << "[lidar] format : " << profile.format() << std::endl;
-                //                std::cout << "[lidar] chrono backendTimestamp : " << start << std::endl;
-                //                std::cout << "[lidar] chrono backendTimeOfArrival : " << end << std::endl;
-
-                //            unsigned char * data = (unsigned char*)depth.get_data();
-
-                //            std::cout << "chrono duration : " << backendTimeOfArrival - backendTimestamp << std::endl;
-                //            std::cout << "chrono fps : " << 1000.0 / (backendTimeOfArrival - backendTimestamp) << std::endl;
-
-                //            std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(end).count() << std::endl;
-
-                //    Stream depthStream(width, height, Stream::Format::Z16);
-
-                //            return EXIT_SUCCESS;
             } // while (true)
 
         } catch (const Socket::exception& e) {

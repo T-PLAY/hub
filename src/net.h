@@ -36,7 +36,6 @@ static void clearSocket(socket_fd sock)
 #ifdef WIN32
     if (sSockets.empty()) {
         std::cout << "Net::clearSocket(" << sock << ") WSACleanup()" << std::endl;
-//        WSACleanup();
     }
 #endif
 }

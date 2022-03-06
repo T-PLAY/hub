@@ -7,12 +7,11 @@ namespace Ui {
 class FormSensorView;
 }
 
-class FormSensorView : public QWidget
-{
+class FormSensorView : public QWidget {
     Q_OBJECT
 
 public:
-    explicit FormSensorView(QWidget *parent = nullptr, std::string sensorName = "", std::string format = "", std::string dims = "", std::string size = "");
+    explicit FormSensorView(QWidget* parent = nullptr, std::string sensorName = "", std::string format = "", std::string dims = "", std::string size = "");
     ~FormSensorView();
 
     void setRadioButtonOff();
@@ -25,7 +24,7 @@ private slots:
     void on_radioButtonOnOff_clicked(bool checked);
 
 private:
-    Ui::FormSensorView *ui;
+    Ui::FormSensorView* ui;
     std::string mSensorName;
 };
 

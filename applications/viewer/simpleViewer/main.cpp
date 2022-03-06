@@ -15,7 +15,6 @@ int main()
             const size_t acquisitionSize = inputStream.getAcquisitionSize();
             const int width = inputStream.getDims().at(0);
 
-//            auto acq = inputStream.acquisition();
             Stream::Acquisition acq;
 
             while (true) {

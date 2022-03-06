@@ -25,12 +25,9 @@ void Thread_InputStream::run()
 {
     std::cout << "Thread_InputStream::run()" << std::endl;
 
-//    bool serverRequestClose = false;
     try {
 
-//        Stream::Acquisition acq = mInputStream.acquisition();
         Stream::Acquisition acq;
-//        size_t acquisitionSize = mInputStream.getAcquisitionSize();
 
         while (!this->isInterruptionRequested()) {
 
@@ -39,18 +36,6 @@ void Thread_InputStream::run()
             m_iReadBuffer = m_iWriteBuffer;
             m_iWriteBuffer = (m_iWriteBuffer + 1) % 2;
 
-//            int dec = mData[m_iReadBuffer][0];
-//            bool badImage = false;
-//            for (size_t i = 0; i < acquisitionSize; ++i) {
-//                if (mData[m_iReadBuffer][i] != (i / 192 + dec) % 256) {
-//                    assert(false);
-//                    badImage = true;
-//                    break;
-//                }
-//            }
-//            if (badImage) {
-//                std::cout << "[streamView] error bad image" << std::endl;
-//            }
             emit newImage();
         }
 
@@ -74,7 +59,6 @@ MainWindowStreamView::MainWindowStreamView(QWidget* parent, std::string sensorNa
 
     ui->setupUi(this);
 
-
     assert(mThread.mInputStream.getDims().size() == 2);
     setMinimumWidth(mThread.mInputStream.getDims().at(0));
     setMinimumHeight(mThread.mInputStream.getDims().at(1));
@@ -96,7 +80,6 @@ MainWindowStreamView::~MainWindowStreamView()
     std::cout << "~MainWindowStreamView() mThread join" << std::endl;
 
     emit onCloseStreamViewSignal(mSensorName);
-
 }
 
 std::string MainWindowStreamView::getStreamerSensorName() const

@@ -18,7 +18,6 @@ int main()
             const size_t imgSize = proceduralStream.getAcquisitionSize();
             assert(imgSize == 192 * 512);
 
-//            auto acq = proceduralStream.acquisition();
             unsigned char data[imgSize];
 
             int dec = 0;
@@ -32,10 +31,7 @@ int main()
                 const auto& end = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
                 ++dec;
 
-//                acq.backendTimestamp = start;
-//                acq.backendTimeOfArrival = end;
-
-                proceduralStream << Stream::Acquisition{start, end, data};
+                proceduralStream << Stream::Acquisition { start, end, data };
             }
 
         } catch (std::exception& e) {
