@@ -158,7 +158,6 @@ void ClientSocket::write(const T& t) const
         } else if (byteSent == 0) {
             std::cout << "byteSent == 0, sleep" << std::endl;
             std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-//            throw Socket::exception("0 byte send, peer connection lost");
         }
         uploadSize += byteSent;
 #ifdef DEBUG_MSG

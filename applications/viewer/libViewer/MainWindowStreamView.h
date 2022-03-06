@@ -23,7 +23,6 @@ public:
     unsigned char* mData[2];
     int m_iReadBuffer = 0;
     int m_iWriteBuffer = 0;
-//    Stream::Format mFormat = Stream::Format::NONE;
 
     InputStream mInputStream;
 

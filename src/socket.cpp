@@ -200,11 +200,11 @@ void ClientSocket::read(std::string& str) const
     int nbEl;
     read(nbEl);
 
-    unsigned char * tmp = new unsigned char[nbEl + 1];
+    unsigned char* tmp = new unsigned char[nbEl + 1];
     read(tmp, nbEl);
     tmp[nbEl] = 0;
     str = std::string((char*)tmp);
-    delete [] tmp;
+    delete[] tmp;
 }
 
 void ClientSocket::waitClose() const

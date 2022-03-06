@@ -5,8 +5,8 @@
 #include <QMainWindow>
 #include <QMdiSubWindow>
 #include <QThread>
-#include <map>
 #include <formsensorview.h>
+#include <map>
 
 // Q_DECLARE_METATYPE(Streamer);
 // Q_DECLARE_METATYPE(std::string)
@@ -23,8 +23,6 @@ public:
 
 signals:
     void addSensorSignal(std::string streamerSensorName, std::string format, std::string dims, std::string size);
-//    void addViewStreamSignal(std::string streamerSensorName);
-//    void delViewStreamSignal(std::string streamerSensorName);
     void delSensorSignal(std::string streamerSensorName);
 
 public:
@@ -55,7 +53,6 @@ public slots:
 private:
     Ui::MainWindow* ui;
     Thread_Client mThreadClient;
-//    std::list<MainWindowStreamView*> mStreamViews;
     std::map<std::string, MainWindowStreamView*> mStreamViews;
     std::map<std::string, FormSensorView*> mSensorViews;
 };

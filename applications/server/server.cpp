@@ -44,8 +44,6 @@ void Server::run()
 
                 std::cout << getServerHeader(iThread) << "[streamer] sensor name = '" << sensorName << "'" << std::endl;
 
-
-                //                auto acq = inputStream.acquisition();
                 Stream::Acquisition acq;
 
                 try {
@@ -62,7 +60,6 @@ void Server::run()
                         for (const auto dim : inputStream.getDims()) {
                             dimStr += std::to_string(dim) + " x ";
                         }
-                        //                    dimStr[dimStr.size() - 2] = ' ';
                         dimStr.resize(dimStr.size() - 3);
                         viewer->socket->write(dimStr);
                         viewer->socket->write(std::to_string(inputStream.getAcquisitionSize()));
@@ -152,7 +149,6 @@ void Server::run()
                     for (const auto dim : streamer->mInputStream.getDims()) {
                         dimStr += std::to_string(dim) + " x ";
                     }
-                    //                    dimStr[dimStr.size() - 2] = ' ';
                     dimStr.resize(dimStr.size() - 3);
                     sock.write(dimStr);
                     sock.write(std::to_string(streamer->mInputStream.getAcquisitionSize()));

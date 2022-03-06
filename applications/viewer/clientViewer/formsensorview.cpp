@@ -6,16 +6,12 @@ FormSensorView::FormSensorView(QWidget* parent, std::string sensorName, std::str
     , ui(new Ui::FormSensorView)
     , mSensorName(sensorName)
 {
-    //    setAttribute(Qt::WA_NoSystemBackground, true);
     ui->setupUi(this);
 
     ui->labelSensorName->setText(sensorName.c_str());
     ui->labelFormat->setText(format.c_str());
     ui->laberDimensions->setText(dims.c_str());
     ui->labelSize->setText((size + " bytes").c_str());
-    //    ui->radioButtonOnOff->setStyleSheet("border: 1px solid black; border-radius: 10px; background-color: red");
-    //    setStyleSheet("background-color: red");
-    //    ui->radioButtonOnOff->setStyleSheet("border: 1px solid black; border-radius: 10px; background-color: red");
 }
 
 FormSensorView::~FormSensorView()
