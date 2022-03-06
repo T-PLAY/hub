@@ -111,7 +111,7 @@ void MainWindow::addSensor(std::string streamerSensorName, std::string format, s
     std::cout << "[MainWindow] MainWindow::addSensor '" << streamerSensorName << "'" << std::endl;
 
     FormSensorView* sensorView = new FormSensorView(ui->centralwidget, streamerSensorName, format, dims, size);
-    ui->verticalLayoutSensor->insertWidget(mSensorViews.size(), sensorView);
+    ui->verticalLayoutSensor->insertWidget(static_cast<int>(mSensorViews.size()), sensorView);
     mSensorViews[streamerSensorName] = sensorView;
     QObject::connect(sensorView, &FormSensorView::addViewStreamSignal, this, &MainWindow::addStreamView);
     QObject::connect(sensorView, &FormSensorView::delViewStreamSignal, this, &MainWindow::delStreamView);

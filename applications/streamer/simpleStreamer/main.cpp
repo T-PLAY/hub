@@ -18,7 +18,7 @@ int main()
             const size_t imgSize = proceduralStream.getAcquisitionSize();
             assert(imgSize == 192 * 512);
 
-            unsigned char data[imgSize];
+            unsigned char data[192 * 512];
 
             int dec = 0;
             while (true) {
