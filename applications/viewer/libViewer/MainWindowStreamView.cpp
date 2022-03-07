@@ -10,15 +10,17 @@ Thread_InputStream::Thread_InputStream(QObject* parent, std::string sensorName)
     std::cout << "Thread_InputStream()" << std::endl;
 
     size_t acquisitionSize = mInputStream.getAcquisitionSize();
-    mData[0] = new unsigned char[acquisitionSize];
-    mData[1] = new unsigned char[acquisitionSize];
+//    mData[0] = new unsigned char[acquisitionSize];
+//    mData[1] = new unsigned char[acquisitionSize];
+    mData = new unsigned char[acquisitionSize];
 }
 
 Thread_InputStream::~Thread_InputStream()
 {
     std::cout << "~Thread_InputStream()" << std::endl;
-    delete[] mData[0];
-    delete[] mData[1];
+//    delete[] mData[0];
+//    delete[] mData[1];
+    delete mData;
 }
 
 void Thread_InputStream::run()
@@ -28,13 +30,15 @@ void Thread_InputStream::run()
     try {
 
         Stream::Acquisition acq;
+        acq.mData = mData;
 
         while (!this->isInterruptionRequested()) {
 
-            acq.mData = mData[m_iWriteBuffer];
+//            acq.mData = mData[m_iWriteBuffer];
+//            acq.mData = mData;
             mInputStream >> acq;
-            m_iReadBuffer = m_iWriteBuffer;
-            m_iWriteBuffer = (m_iWriteBuffer + 1) % 2;
+//            m_iReadBuffer = m_iWriteBuffer;
+//            m_iWriteBuffer = (m_iWriteBuffer + 1) % 2;
 
             emit newImage();
         }
@@ -60,8 +64,10 @@ MainWindowStreamView::MainWindowStreamView(QWidget* parent, std::string sensorNa
     ui->setupUi(this);
 
     assert(mThread.mInputStream.getDims().size() == 2);
-    setMinimumWidth(mThread.mInputStream.getDims().at(0));
-    setMinimumHeight(mThread.mInputStream.getDims().at(1));
+//    setMinimumWidth(mThread.mInputStream.getDims().at(0));
+    ui->centralwidget->setMinimumWidth(mThread.mInputStream.getDims().at(0));
+//    setMinimumHeight(mThread.mInputStream.getDims().at(1));
+    ui->centralwidget->setMinimumHeight(mThread.mInputStream.getDims().at(1));
 
     QObject::connect(&mThread, &Thread_InputStream::newImage, this, &MainWindowStreamView::newImage);
 
@@ -100,6 +106,8 @@ void MainWindowStreamView::newImage()
     }
     ++mCounterFps;
 
-    assert(mThread.mData[mThread.m_iReadBuffer] != nullptr);
-    ui->centralwidget->setImage((unsigned char*)mThread.mData[mThread.m_iReadBuffer], mThread.mInputStream.getDims().at(0), mThread.mInputStream.getDims().at(1), mThread.mInputStream.getFormat());
+//    assert(mThread.mData[mThread.m_iReadBuffer] != nullptr);
+    assert(mThread.mData != nullptr);
+//    ui->centralwidget->setImage((unsigned char*)mThread.mData[mThread.m_iReadBuffer], mThread.mInputStream.getDims().at(0), mThread.mInputStream.getDims().at(1), mThread.mInputStream.getFormat());
+    ui->centralwidget->setImage((unsigned char*)mThread.mData, mThread.mInputStream.getDims().at(0), mThread.mInputStream.getDims().at(1), mThread.mInputStream.getFormat());
 }

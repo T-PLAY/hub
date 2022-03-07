@@ -28,14 +28,18 @@ namespace Net {
 static bool sInited = false;
 static std::set<socket_fd> sSockets;
 
-static void clearSocket(socket_fd sock)
+static void clearSocket(socket_fd& sock)
 {
     std::cout << "Net::clearSocket(" << sock << ") close socket" << std::endl;
     closesocket(sock);
+    sock = INVALID_SOCKET;
     sSockets.erase(sock);
 #ifdef WIN32
     if (sSockets.empty()) {
         std::cout << "Net::clearSocket(" << sock << ") WSACleanup()" << std::endl;
+        WSACleanup();
+        sInited = false;
+        // TODO: find a way to cleanup WSA when program ended
     }
 #endif
 }

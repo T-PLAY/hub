@@ -11,6 +11,7 @@ int main()
     while (true) {
         try {
             InputStream inputStream("proceduralStreamer");
+            // InputStream inputStream("L500 Depth Sensor (Depth)");
 
             const size_t acquisitionSize = inputStream.getAcquisitionSize();
             const int width = inputStream.getDims().at(0);
