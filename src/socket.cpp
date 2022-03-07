@@ -4,7 +4,7 @@
 
 Socket::Socket()
 {
-#ifdef DEBUG_MSG
+#ifdef DEBUG_SOCKET
     std::cout << getHeader(mFdSock) << "Socket()" << std::endl;
 #endif
     Net::init();
@@ -12,13 +12,12 @@ Socket::Socket()
 
 Socket::~Socket()
 {
-#ifdef DEBUG_MSG
+#ifdef DEBUG_SOCKET
     std::cout << getHeader(mFdSock) << "~Socket()" << std::endl;
 #endif
-    if (mFdSock != -1) {
+    if (mFdSock != INVALID_SOCKET) {
         std::cout << getHeader(mFdSock) << "close socket" << std::endl;
         Net::clearSocket(mFdSock);
-        mFdSock = -1;
     }
 }
 
@@ -47,7 +46,7 @@ ClientSocket::ClientSocket(std::string ipv4, int port)
     : mIpv4(ipv4)
     , mPort(port)
 {
-#ifdef DEBUG_MSG
+#ifdef DEBUG_SOCKET
     std::cout << getHeader(mFdSock) << "ClientSocket(std::string ipv4, int port)" << std::endl;
 #endif
 
@@ -69,7 +68,7 @@ ClientSocket::ClientSocket(std::string ipv4, int port)
     // Connect to server
     while (connect(mFdSock, (struct sockaddr*)&serv_addr, sizeof(serv_addr)) < 0) {
         std::this_thread::sleep_for(std::chrono::milliseconds(2000));
-        throw Socket::exception(((std::string("Failed to connect to server at address ") + ipv4 + std::string(" and port ") + std::to_string(mPort))).c_str());
+        throw Socket::exception(((std::string("Failed to connect to server at address ") + ipv4 + " and port " + std::to_string(mPort))).c_str());
     }
 
     std::cout << getHeader(mFdSock) << "new client on socket " << mFdSock << std::endl;
@@ -87,9 +86,9 @@ ClientSocket::ClientSocket(ClientSocket&& sock)
     , mPort(sock.mPort)
 {
     mFdSock = sock.mFdSock;
-    sock.mFdSock = -1;
+    sock.mFdSock = INVALID_SOCKET;
 
-#ifdef DEBUG_MSG
+#ifdef DEBUG_SOCKET
     std::cout << getHeader(mFdSock) << "ClientSocket(ClientSocket && sock)" << std::endl;
 #endif
 }
@@ -156,7 +155,7 @@ void ClientSocket::write(const unsigned char* data, size_t len) const
             std::this_thread::sleep_for(std::chrono::milliseconds(1000));
         }
         uploadSize += byteSent;
-#ifdef DEBUG_MSG
+#ifdef DEBUG_SOCKET
         std::cout << getHeader(mFdSock) << "byteSent = " << byteSent << " (" << uploadSize << "/" << len << ")" << std::endl;
 #endif
     } while (len != uploadSize);
@@ -189,7 +188,7 @@ void ClientSocket::read(unsigned char* data, size_t len) const
         }
 
         downloadSize += byteRead;
-#ifdef DEBUG_MSG
+#ifdef DEBUG_SOCKET
         std::cout << getHeader(mFdSock) << "byteRead = " << byteRead << " (" << downloadSize << "/" << len << ")" << std::endl;
 #endif
     } while (len != downloadSize);
@@ -231,9 +230,9 @@ void ClientSocket::waitClose() const
 
 void ClientSocket::clear()
 {
-    if (mFdSock != -1) {
+    if (mFdSock != INVALID_SOCKET) {
         std::cout << getHeader(mFdSock) << "close socket" << std::endl;
         Net::clearSocket(mFdSock);
-        mFdSock = -1;
+        mFdSock = INVALID_SOCKET;
     }
 }

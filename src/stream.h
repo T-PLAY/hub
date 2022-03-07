@@ -80,7 +80,7 @@ public:
         // COUNT             /**< Number of enumeration values. Not a valid input: intended to be used in for-loops. */
     };
 
-    static constexpr int formatNbByte[static_cast<int>(Format::COUNT)] = {
+    static constexpr int format2byte[static_cast<int>(Format::COUNT)] = {
         0, // NONE
         2, // Z16             , /**< 16-bit linear depth values. The depth is meters is equal to depth scale * pixel value. */
         2, // DISPARITY16     , /**< 16-bit float-point disparity values. Depth->Disparity conversion : Disparity = Baseline*FocalLength/Depth. */

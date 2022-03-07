@@ -32,6 +32,9 @@ int main()
                 ++dec;
 
                 proceduralStream << Stream::Acquisition { start, end, data };
+//                proceduralStream << Stream::Acquisition( start, end, data );
+//                proceduralStream << { start, end, data };
+//                auto acq = { start, end, data };
             }
 
         } catch (std::exception& e) {

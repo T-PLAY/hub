@@ -8,33 +8,7 @@
 #include <list>
 #include <string>
 
-//#define DEBUG_MSG
-
-static std::string getHeader(socket_fd iSock)
-{
-    std::string str = "\033[" + std::to_string(31 + iSock % 7) + "m[socket:" + std::to_string(iSock) + "]\033[0m ";
-    return str;
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
-class Client {
-public:
-    enum class Type {
-        NONE,
-        STREAMER,
-        VIEWER,
-        STREAM_VIEWER,
-        COUNT
-    };
-
-    static constexpr char const* type2string[static_cast<int>(Type::COUNT)] = {
-        "NONE",
-        "STREAMER",
-        "VIEWER",
-        "STREAM_VIEWER",
-    };
-};
+//#define DEBUG_SOCKET
 
 class Socket {
 public:
@@ -49,7 +23,7 @@ public:
             return std::runtime_error::what();
         }
     };
-    bool isConnected() const;
+
     enum class Message {
         NONE,
         PING,
@@ -59,9 +33,8 @@ public:
         CLOSE,
         DEL_STREAMER,
         NEW_STREAMER,
-        COUNT,
+        COUNT
     };
-
     static constexpr char const* message2string[static_cast<int>(Message::COUNT)] = {
         "NONE",
         "PING",
@@ -70,12 +43,13 @@ public:
         "OK",
         "CLOSE",
         "DEL_STREAMER",
-        "NEW_STREAMER"
+        "NEW_STREAMER",
     };
+
+    bool isConnected() const;
 
 protected:
     Socket();
-
     ~Socket();
 
 protected:
@@ -84,6 +58,21 @@ protected:
 
 class ClientSocket : public Socket {
 public:
+
+    enum class Type {
+        NONE,
+        STREAMER,
+        VIEWER,
+        STREAM_VIEWER,
+        COUNT
+    };
+    static constexpr char const* type2string[static_cast<int>(Type::COUNT)] = {
+        "NONE",
+        "STREAMER",
+        "VIEWER",
+        "STREAM_VIEWER",
+    };
+
     ClientSocket(std::string ipv4, int port);
     ClientSocket(socket_fd fdSock);
 
@@ -93,28 +82,30 @@ public:
     ClientSocket(ClientSocket&& sock);
 
     ClientSocket& operator=(const ClientSocket& sock) = delete;
-    ClientSocket& operator=(const ClientSocket&& sock) = delete;
-    ClientSocket& operator=(ClientSocket sock) = delete;
+    ClientSocket&& operator=(const ClientSocket&& sock) = delete;
+    ClientSocket operator=(ClientSocket sock) = delete;
     ClientSocket& operator=(ClientSocket& sock) = delete;
-
     ClientSocket&& operator=(ClientSocket&& sock) = delete;
 
-    void write(const unsigned char* data, size_t len) const;
+
     template <class T>
     void write(const T& t) const;
     template <class T>
     void write(const std::list<T>& list) const;
     template <class T>
     void write(const std::vector<T>& vector) const;
+
+    void write(const unsigned char* data, size_t len) const;
     void write(const std::string& str) const;
 
-    void read(unsigned char* data, size_t len) const;
     template <class T>
     void read(T& t) const;
     template <class T>
     void read(std::list<T>& list) const;
     template <class T>
     void read(std::vector<T>& vector) const;
+
+    void read(unsigned char* data, size_t len) const;
     void read(std::string& str) const;
 
     void waitClose() const;
@@ -138,6 +129,12 @@ private:
 
 ///////////////////////////////////////////////////////////////////////////////
 
+static std::string getHeader(socket_fd iSock)
+{
+    std::string str = "\033[" + std::to_string(31 + iSock % 7) + "m[socket:" + std::to_string(iSock) + "]\033[0m ";
+    return str;
+}
+
 template <class T>
 void ClientSocket::write(const T& t) const
 {
@@ -155,18 +152,19 @@ void ClientSocket::write(const T& t) const
             std::cout << getHeader(mFdSock) << "can't send packet " << byteSent << "/" << len << std::endl;
             perror("send error\n");
             throw Socket::exception("Can't write packet, peer connection lost");
+
         } else if (byteSent == 0) {
             std::cout << "byteSent == 0, sleep" << std::endl;
             std::this_thread::sleep_for(std::chrono::milliseconds(1000));
         }
         uploadSize += byteSent;
-#ifdef DEBUG_MSG
+#ifdef DEBUG_SOCKET
         std::cout << getHeader(mFdSock) << "byteSent = " << byteSent << " (" << uploadSize << "/" << len << ")" << std::endl;
 #endif
 
     } while (len != uploadSize);
 
-#ifdef DEBUG_MSG
+#ifdef DEBUG_SOCKET
     std::cout << getHeader(mFdSock) << "write message ";
     for (int i = 0; i < len; ++i) {
         std::cout << (int)*((unsigned char*)&t + i) << " ";
@@ -174,8 +172,8 @@ void ClientSocket::write(const T& t) const
     if (std::is_same<T, Message>::value) {
         std::cout << ", " << message2string[(int)t];
     }
-    if (std::is_same<T, Client::Type>::value) {
-        std::cout << ", new client : " << Client::type2string[(int)t];
+    if (std::is_same<T, ClientSocket::Type>::value) {
+        std::cout << ", new client : " << ClientSocket::type2string[(int)t];
     }
     std::cout << std::endl;
 #endif
@@ -208,7 +206,6 @@ void ClientSocket::write(const std::vector<T>& vector) const
 template <class T>
 void ClientSocket::read(T& t) const
 {
-
     int len = sizeof(T);
     int downloadSize = 0;
     do {
@@ -223,12 +220,12 @@ void ClientSocket::read(T& t) const
         }
 
         downloadSize += byteRead;
-#ifdef DEBUG_MSG
+#ifdef DEBUG_SOCKET
         std::cout << getHeader(mFdSock) << "byteRead = " << byteRead << " (" << downloadSize << "/" << len << ")" << std::endl;
 #endif
     } while (len != downloadSize);
 
-#ifdef DEBUG_MSG
+#ifdef DEBUG_SOCKET
     std::cout << getHeader(mFdSock) << "read message ";
     for (int i = 0; i < len; ++i) {
         std::cout << (int)*((unsigned char*)&t + i) << " ";
@@ -236,8 +233,8 @@ void ClientSocket::read(T& t) const
     if (std::is_same<T, Message>::value) {
         std::cout << ", " << message2string[(int)t];
     }
-    if (std::is_same<T, Client::Type>::value) {
-        std::cout << ", new client : " << Client::type2string[(int)t];
+    if (std::is_same<T, ClientSocket::Type>::value) {
+        std::cout << ", new client : " << ClientSocket::type2string[(int)t];
     }
 
     std::cout << std::endl;

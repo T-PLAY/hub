@@ -27,11 +27,11 @@ void Server::run()
         std::thread thread([this, iThread, sock = std::move(sock)]() mutable {
             std::cout << getServerHeader(iThread) << "new thread\t\t\t\t server status : " << getStatus() << std::endl;
 
-            Client::Type clientType;
+            ClientSocket::Type clientType;
             sock.read(clientType);
 
             switch (clientType) {
-            case Client::Type::STREAMER: {
+            case ClientSocket::Type::STREAMER: {
 
                 Streamer streamer { std::move(sock), {} };
                 const std::string sensorName = streamer.mInputStream.getSensorName();
@@ -69,7 +69,7 @@ void Server::run()
                     std::cout << getServerHeader(iThread) << "[streamer] acquisitionSize:" << acquisitionSize << std::endl;
                     std::cout << getServerHeader(iThread) << "[streamer] width:" << inputStream.getDims()[0] << std::endl;
                     std::cout << getServerHeader(iThread) << "[streamer] height:" << inputStream.getDims()[1] << std::endl;
-                    std::cout << getServerHeader(iThread) << "[streamer] format:" << Stream::format2string[(int)inputStream.getFormat()] << " (byte:" << Stream::formatNbByte[(int)inputStream.getFormat()] << ")" << std::endl;
+                    std::cout << getServerHeader(iThread) << "[streamer] format:" << Stream::format2string[(int)inputStream.getFormat()] << " (byte:" << Stream::format2byte[(int)inputStream.getFormat()] << ")" << std::endl;
 
                     // for each new stream acquistion
                     while (true) {
@@ -79,7 +79,7 @@ void Server::run()
 
                             inputStream >> acq;
 
-                            std::cout << getServerHeader(iThread) << "[streamer] receive data from streamer '" << inputStream.getSensorName() << "' and send it for " << streamer.mOutputStreams.size() << " stream viewers" << std::endl;
+                            // std::cout << getServerHeader(iThread) << "[streamer] receive data from streamer '" << inputStream.getSensorName() << "' and send it for " << streamer.mOutputStreams.size() << " stream viewers" << std::endl;
 
                             // broadcast data
                             // stream new acquisition for all viewers of this stream
@@ -101,9 +101,9 @@ void Server::run()
                                     throw;
                                 }
                             }
-                            std::cout << getServerHeader(iThread) << "[streamer] data from streamer sent for " << outputStreams.size() << " stream viewers" << std::endl;
+                            // std::cout << getServerHeader(iThread) << "[streamer] data from streamer sent for " << outputStreams.size() << " stream viewers" << std::endl;
 
-                            const auto maxFps = 10;
+                            const auto maxFps = 60;
                             const auto end = start + std::chrono::microseconds(1'000'000 / maxFps);
                             std::this_thread::sleep_until(end);
 
@@ -133,7 +133,7 @@ void Server::run()
                 std::cout << getServerHeader(iThread) << "[streamer] end" << std::endl;
             } break;
 
-            case Client::Type::VIEWER: {
+            case ClientSocket::Type::VIEWER: {
 
                 // for each streamer, open stream viewer socket
                 for (const auto& pair : mStreamers) {
@@ -180,7 +180,7 @@ void Server::run()
 
             } break;
 
-            case Client::Type::STREAM_VIEWER: {
+            case ClientSocket::Type::STREAM_VIEWER: {
                 std::cout << getServerHeader(iThread) << "[stream viewer] new stream viewer\t server status : " << getStatus() << std::endl;
 
                 std::string sensorName;

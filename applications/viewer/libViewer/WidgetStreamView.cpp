@@ -9,7 +9,7 @@
 WidgetStreamView::WidgetStreamView(QWidget* parent)
     : QWidget(parent)
 {
-    setAttribute(Qt::WA_NoSystemBackground, true);
+//    setAttribute(Qt::WA_NoSystemBackground, true);
 }
 
 void WidgetStreamView::setImage(unsigned char* img_ptr, int pWidth, int pHeight, Stream::Format format)
@@ -29,6 +29,7 @@ void WidgetStreamView::paintEvent(QPaintEvent* event)
     painter.begin(this);
     if (img != nullptr) {
         QImage image;
+//        QPixmap pixmap;
         switch (mFormat) {
         case Stream::Format::Y8:
             image = QImage((unsigned char*)img, mWidth, mHeight, QImage::Format_Grayscale8);
@@ -53,7 +54,12 @@ void WidgetStreamView::paintEvent(QPaintEvent* event)
         }
         assert(!image.isNull());
         const QPoint p = QPoint(0, 0);
-        painter.drawImage(p, image.scaled(this->size()));
+
+        image = image.scaled(this->size());
+//        image = image.scaled(QSize(641, 481));
+//        painter.drawImage(p, image.scaled(this->size()));
+        painter.drawImage(p, image);
+
     } else {
         painter.fillRect(0, 0, width(), height(), Qt::gray);
     }

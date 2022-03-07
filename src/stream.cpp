@@ -49,7 +49,7 @@ Stream::Stream(ClientSocket&& clientSocket)
 
 size_t Stream::computeAcquisitionSize(Format format, const std::vector<int>& dims)
 {
-    return std::accumulate(dims.cbegin(), dims.cend(), 1, std::multiplies<int> {}) * formatNbByte[static_cast<int>(format)];
+    return std::accumulate(dims.cbegin(), dims.cend(), 1, std::multiplies<int> {}) * format2byte[static_cast<int>(format)];
 }
 
 void Stream::waitClose()
@@ -107,7 +107,7 @@ InputStream::InputStream(const std::string& sensorName, const std::string& ipv4,
 #ifdef DEBUG_MSG
     std::cout << "[InputStream] InputStream(sensorName, ipv4, port)" << std::endl;
 #endif
-    Client::Type clientType = Client::Type::STREAM_VIEWER;
+    ClientSocket::Type clientType = ClientSocket::Type::STREAM_VIEWER;
     mSocket.write(clientType);
 
     mSocket.write(sensorName);
@@ -187,7 +187,7 @@ void InputStream::operator>>(Acquisition& acquisition) const
 OutputStream::OutputStream(const std::string& sensorName, Stream::Format format, const std::vector<int>& dims, const std::string& ipv4, int port)
     : Stream(sensorName, format, dims, ipv4, port)
 {
-    Client::Type clientType = Client::Type::STREAMER;
+    ClientSocket::Type clientType = ClientSocket::Type::STREAMER;
     mSocket.write(clientType);
 
     mSocket.write(mSensorName);
