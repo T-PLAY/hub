@@ -4,6 +4,18 @@
 #include <memory>
 #include <stream.h>
 
+static std::string dims2string(const std::vector<int>& dims)
+{
+    std::string str = "[";
+    for (const auto& dim : dims) {
+        str += std::to_string(dim) + ", ";
+    }
+    str[str.size() - 2] = ']';
+    str.resize(str.size() - 1);
+    return str;
+}
+
+
 static std::string getServerHeader(int iThread)
 {
     const std::string str = "\t\033[" + std::to_string(31 + iThread % 7) + "m[server:" + std::to_string(iThread) + "]\033[0m ";
@@ -67,8 +79,8 @@ void Server::run()
 
                     const size_t acquisitionSize = inputStream.getAcquisitionSize();
                     std::cout << getServerHeader(iThread) << "[streamer] acquisitionSize:" << acquisitionSize << std::endl;
-                    std::cout << getServerHeader(iThread) << "[streamer] width:" << inputStream.getDims()[0] << std::endl;
-                    std::cout << getServerHeader(iThread) << "[streamer] height:" << inputStream.getDims()[1] << std::endl;
+                    std::cout << getServerHeader(iThread) << "[streamer] dims:" << dims2string(inputStream.getDims()) << std::endl;
+                    // std::cout << getServerHeader(iThread) << "[streamer] height:" << inputStream.getDims().at(1) << std::endl;
                     std::cout << getServerHeader(iThread) << "[streamer] format:" << Stream::format2string[(int)inputStream.getFormat()] << " (byte:" << Stream::format2byte[(int)inputStream.getFormat()] << ")" << std::endl;
 
                     // for each new stream acquistion

@@ -46,38 +46,38 @@ public:
     };
 
     static constexpr char const* format2string[static_cast<int>(Format::COUNT)] = {
-        "NONE", // NONE
-        "Z16", // Z16             , /**< 16-bit linear depth values. The depth is meters is equal to depth scale * pixel value. */
-        "DISPARITY16", // DISPARITY16     , /**< 16-bit float-point disparity values. Depth->Disparity conversion : Disparity = Baseline*FocalLength/Depth. */
-        "XYZ32F", // XYZ32F          , /**< 32-bit floating point 3D coordinates. */
-        "YUYV", // YUYV            , /**< 32-bit y0, u, y1, v data for every two pixels. Similar to YUV422 but packed in a different order - https://en.wikipedia.org/wiki/YUV */
-        "RGB8", // RGB8            , /**< 8-bit red, green and blue channels */
-        "BGR8", // BGR8            , /**< 8-bit blue, green, and red channels -- suitable for OpenCV */
-        "RGBA8", // RGBA8           , /**< 8-bit red, green and blue channels + constant alpha channel equal to FF */
-        "BGRA8", // BGRA8           , /**< 8-bit blue, green, and red channels + constant alpha channel equal to FF */
-        "Y8", // Y8              , /**< 8-bit per-pixel grayscale image */
-        "Y16", // Y16             , /**< 16-bit per-pixel grayscale image */
-        "RAW10", // RAW10           , /**< Four 10 bits per pixel luminance values packed into a 5-byte macropixel */
-        "RAW16", // RAW16           , /**< 16-bit raw image */
-        "RAW8", // RAW8            , /**< 8-bit raw image */
-        "UYVY", // UYVY            , /**< Similar to the standard YUYV pixel format, but packed in a different order */
-        "MOTION_RAW", // MOTION_RAW      , /**< Raw data from the motion sensor */
-        "MOTION_XYZ32F", // MOTION_XYZ32F   , /**< Motion data packed as 3 32-bit float values, for X, Y, and Z axis */
-        "GPIO_RAW", // GPIO_RAW        , /**< Raw data from the external sensors hooked to one of the GPIO's */
-        "DISPARITY32", // DISPARITY32     , /**< 32-bit float-point disparity values. Depth->Disparity conversion : Disparity = Baseline*FocalLength/Depth */
-        "DOF6", // DOF6            , /**< Pose data packed as floats array, containing translation vector, rotation quaternion and prediction velocities and accelerations vectors */
-        "Y10BPACK", // Y10BPACK        , /**< 16-bit per-pixel grayscale image unpacked from 10 bits per pixel packed ([8:8:8:8:2222]) grey-scale image. The data is unpacked to LSB and padded with 6 zero bits */
-        "DISTANCE", // DISTANCE        , /**< 32-bit float-point depth distance value.  */
-        "MJPEG", // MJPEG           , /**< Bitstream encoding for video in which an image of each frame is encoded as JPEG-DIB   */
-        "Y8I", // Y8I             , /**< 8-bit per pixel interleaved. 8-bit left, 8-bit right.  */
-        "Y12I", // Y12I            , /**< 12-bit per pixel interleaved. 12-bit left, 12-bit right. Each pixel is stored in a 24-bit word in little-endian order. */
-        "INZI", // INZI            , /**< multi-planar Depth 16bit + IR 10bit.  */
-        "INVI", // INVI            , /**< 8-bit IR stream.  */
-        "W10", // W10             , /**< Grey-scale image as a bit-packed array. 4 pixel data stream taking 5 bytes */
-        "Z16H", // Z16H            , /**< Variable-length Huffman-compressed 16-bit depth values. */
-        "FG", // FG              , /**< 16-bit per-pixel frame grabber format. */
-        "Y411", // Y411            , /**< 12-bit per-pixel. */
-        // COUNT             /**< Number of enumeration values. Not a valid input: intended to be used in for-loops. */
+        "NONE",
+        "Z16",
+        "DISPARITY16",
+        "XYZ32F",
+        "YUYV",
+        "RGB8",
+        "BGR8",
+        "RGBA8",
+        "BGRA8",
+        "Y8",
+        "Y16",
+        "RAW10",
+        "RAW16",
+        "RAW8",
+        "UYVY",
+        "MOTION_RAW",
+        "MOTION_XYZ32F",
+        "GPIO_RAW",
+        "DISPARITY32",
+        "DOF6",
+        "Y10BPACK",
+        "DISTANCE",
+        "MJPEG",
+        "Y8I",
+        "Y12I",
+        "INZI",
+        "INVI",
+        "W10",
+        "Z16H",
+        "FG",
+        "Y411",
+        // COUNT
     };
 
     static constexpr int format2byte[static_cast<int>(Format::COUNT)] = {
@@ -100,7 +100,7 @@ public:
         0, // MOTION_XYZ32F   , /**< Motion data packed as 3 32-bit float values, for X, Y, and Z axis */
         0, // GPIO_RAW        , /**< Raw data from the external sensors hooked to one of the GPIO's */
         0, // DISPARITY32     , /**< 32-bit float-point disparity values. Depth->Disparity conversion : Disparity = Baseline*FocalLength/Depth */
-        0, // DOF6            , /**< Pose data packed as floats array, containing translation vector, rotation quaternion and prediction velocities and accelerations vectors */
+        28, // DOF6           , /**< Pose data packed as floats array, containing translation vector, rotation quaternion and prediction velocities and accelerations vectors */
         0, // Y10BPACK        , /**< 16-bit per-pixel grayscale image unpacked from 10 bits per pixel packed ([8:8:8:8:2222]) grey-scale image. The data is unpacked to LSB and padded with 6 zero bits */
         4, // DISTANCE        , /**< 32-bit float-point depth distance value.  */
         0, // MJPEG           , /**< Bitstream encoding for video in which an image of each frame is encoded as JPEG-DIB   */
@@ -112,7 +112,7 @@ public:
         2, // Z16H            , /**< Variable-length Huffman-compressed 16-bit depth values. */
         2, // FG              , /**< 16-bit per-pixel frame grabber format. */
         2, // Y411            , /**< 12-bit per-pixel. */
-        // COUNT             /**< Number of enumeration values. Not a valid input: intended to be used in for-loops. */
+        // COUNT             	/**< Number of enumeration values. Not a valid input: intended to be used in for-loops. */
     };
 
     class exception : public std::runtime_error {

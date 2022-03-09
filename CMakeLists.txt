@@ -10,6 +10,7 @@ set(SRC_DIR ${CMAKE_SOURCE_DIR}/src/)
 
 add_subdirectory(src)
 
+set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 set(CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/hub-install)
 
 option(BUILD_EXAMPLES "Build examples" OFF)
@@ -17,5 +18,6 @@ option(BUILD_EXAMPLES "Build examples" OFF)
 if (BUILD_EXAMPLES)
         option(BUILD_LIDAR_EXAMPLE "Build Lidar examples (depends of realsense2 lib)" OFF)
         option(BUILD_OPENCV_EXAMPLE "Build OpenCV examples (depends of opencv lib)" OFF)
+        option(BUILD_PDI_EXAMPLE "Build PDI examples (depends of polhemus lib)" OFF)
         add_subdirectory(applications)
 endif()

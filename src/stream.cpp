@@ -12,7 +12,7 @@ std::ostream& operator<<(std::ostream& os, const Stream::Acquisition& acq)
 {
     os << "start:" << acq.mBackendTimestamp / 1000 << ", end:" << acq.mBackendTimeOfArrival / 1000;
     os << ", data:[";
-    for (int i = 0; i < 10; ++i) {
+    for (int i = 0; i < min(acq.mSize, 10); ++i) {
         os << (int)acq.mData[i] << " ";
     }
     os << "]";
