@@ -37,6 +37,12 @@ void Thread_InputStream::run()
 //            acq.mData = mData[m_iWriteBuffer];
 //            acq.mData = mData;
             mInputStream >> acq;
+            std::cout << "receive acq : " << acq << std::endl;
+
+            auto dec = acq.mBackendTimeOfArrival - acq.mBackendTimestamp - 1'000'000 / 40;
+            if (dec > 10'000) {
+                std::cout << "not 40Hz dec = " << dec << std::endl;
+            }
 //            m_iReadBuffer = m_iWriteBuffer;
 //            m_iWriteBuffer = (m_iWriteBuffer + 1) % 2;
 

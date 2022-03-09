@@ -15,7 +15,8 @@ std::ostream& operator<<(std::ostream& os, const Stream::Acquisition& acq)
     for (int i = 0; i < min(acq.mSize, 10); ++i) {
         os << (int)acq.mData[i] << " ";
     }
-    os << "]";
+    os << "], ";
+    os << 1'000'000.0 / (acq.mBackendTimeOfArrival -acq.mBackendTimestamp) << " fps" << std::endl;
     return os;
 }
 
@@ -164,6 +165,8 @@ void InputStream::operator>>(Acquisition& acquisition) const
         mSocket.read(acquisition.mBackendTimestamp);
         mSocket.read(acquisition.mBackendTimeOfArrival);
         mSocket.read(acquisition.mData, mAcquisitionSize);
+
+        assert(acquisition.mBackendTimestamp < acquisition.mBackendTimeOfArrival);
 
 #ifdef DEBUG_STREAM
         std::cout << "[InputStream] read acq :  " << acquisition << std::endl;
