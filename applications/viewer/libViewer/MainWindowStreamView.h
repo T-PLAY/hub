@@ -21,7 +21,8 @@ public:
     void run();
 
 //    unsigned char* mData[2];
-    unsigned char* mData = nullptr;
+//    unsigned char* mData = nullptr;
+    Stream::Acquisition mAcq;
 //    int m_iReadBuffer = 0;
 //    int m_iWriteBuffer = 0;
 
@@ -57,7 +58,7 @@ private:
     Thread_InputStream mThread;
 
     int mCounterFps = 0;
-    double mFps = 10.0;
+    double mFps = 5.0;
     std::chrono::time_point<std::chrono::high_resolution_clock> mStartFps;
     std::string mSensorName;
 };
