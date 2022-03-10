@@ -15,7 +15,6 @@ static std::string dims2string(const std::vector<int>& dims)
     return str;
 }
 
-
 static std::string getServerHeader(int iThread)
 {
     const std::string str = "\t\033[" + std::to_string(31 + iThread % 7) + "m[server:" + std::to_string(iThread) + "]\033[0m ";
@@ -56,25 +55,12 @@ void Server::run()
 
                 std::cout << getServerHeader(iThread) << "[streamer] sensor name = '" << sensorName << "'" << std::endl;
 
-                Stream::Acquisition acq;
-
                 try {
 
                     // prevent all viewer there is a new streamer
                     std::cout << getServerHeader(iThread) << "[streamer] prevent viewers there is a new streamer" << std::endl;
                     for (const auto& viewer : mViewers) {
-                        viewer->socket->write(Socket::Message::NEW_STREAMER);
-                        viewer->socket->write(sensorName);
-
-                        viewer->socket->write(std::string(Stream::format2string[(int)inputStream.getFormat()]));
-
-                        std::string dimStr;
-                        for (const auto dim : inputStream.getDims()) {
-                            dimStr += std::to_string(dim) + " x ";
-                        }
-                        dimStr.resize(dimStr.size() - 3);
-                        viewer->socket->write(dimStr);
-                        viewer->socket->write(std::to_string(inputStream.getAcquisitionSize()));
+                        viewer->notifyNewStreamer(streamer);
                     }
 
                     const size_t acquisitionSize = inputStream.getAcquisitionSize();
@@ -83,46 +69,47 @@ void Server::run()
                     // std::cout << getServerHeader(iThread) << "[streamer] height:" << inputStream.getDims().at(1) << std::endl;
                     std::cout << getServerHeader(iThread) << "[streamer] format:" << Stream::format2string[(int)inputStream.getFormat()] << " (byte:" << Stream::format2byte[(int)inputStream.getFormat()] << ")" << std::endl;
 
+                    Stream::Acquisition acq;
                     // for each new stream acquistion
                     while (true) {
 
-                        if (!outputStreams.empty()) {
-                            const auto start = std::chrono::high_resolution_clock::now();
+                        //                        if (!outputStreams.empty()) {
+                        //                            const auto start = std::chrono::high_resolution_clock::now();
 
-                            inputStream >> acq;
+                        inputStream >> acq;
 
-                            // std::cout << getServerHeader(iThread) << "[streamer] receive data from streamer '" << inputStream.getSensorName() << "' and send it for " << streamer.mOutputStreams.size() << " stream viewers" << std::endl;
+                        // std::cout << getServerHeader(iThread) << "[streamer] receive data from streamer '" << inputStream.getSensorName() << "' and send it for " << streamer.mOutputStreams.size() << " stream viewers" << std::endl;
 
-                            // broadcast data
-                            // stream new acquisition for all viewers of this stream
-                            auto it = outputStreams.cbegin();
-                            while (it != outputStreams.cend()) {
-                                auto& outputStream = *it;
+                        // broadcast data
+                        // stream new acquisition for all viewers of this stream
+                        auto it = outputStreams.cbegin();
+                        while (it != outputStreams.cend()) {
+                            const auto& outputStream = *it;
 
-                                try {
-                                    outputStream << acq;
-                                    ++it;
+                            try {
+                                outputStream << acq;
+                                ++it;
 
-                                } catch (Socket::exception& e) {
-                                    std::cout << getServerHeader(iThread) << "[streamer] out : catch socket exception : " << e.what() << std::endl;
-                                    it = outputStreams.erase(it);
-                                    std::cout << getServerHeader(iThread) << "[streamer] out : end stream viewer\t server status : " << getStatus() << std::endl;
-                                    std::cout << "---------------------------------------------------------------------------------------------" << std::endl;
-                                } catch (std::exception& e) {
-                                    std::cout << getServerHeader(iThread) << "[streamer] out : catch exception : " << e.what() << std::endl;
-                                    throw;
-                                }
+                            } catch (Socket::exception& e) {
+                                std::cout << getServerHeader(iThread) << "[streamer] out : catch socket exception : " << e.what() << std::endl;
+                                it = outputStreams.erase(it);
+                                std::cout << getServerHeader(iThread) << "[streamer] out : end stream viewer\t server status : " << getStatus() << std::endl;
+                                std::cout << "---------------------------------------------------------------------------------------------" << std::endl;
+                            } catch (std::exception& e) {
+                                std::cout << getServerHeader(iThread) << "[streamer] out : catch exception : " << e.what() << std::endl;
+                                throw;
                             }
-                            // std::cout << getServerHeader(iThread) << "[streamer] data from streamer sent for " << outputStreams.size() << " stream viewers" << std::endl;
-
-                            const auto maxFps = 60;
-                            const auto end = start + std::chrono::microseconds(1'000'000 / maxFps);
-                            std::this_thread::sleep_until(end);
-
-                        } else {
-                            inputStream.ping();
-                            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
                         }
+                        // std::cout << getServerHeader(iThread) << "[streamer] data from streamer sent for " << outputStreams.size() << " stream viewers" << std::endl;
+
+                        //                            const auto maxFps = 60;
+                        //                            const auto end = start + std::chrono::microseconds(1'000'000 / maxFps);
+                        //                            std::this_thread::sleep_until(end);
+
+                        //                        } else {
+                        //                            inputStream.ping();
+                        //                            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+                        //                        }
                     } // while (true)
 
                 } catch (Socket::exception& e) {
@@ -138,8 +125,8 @@ void Server::run()
                 }
 
                 for (const auto* viewer : mViewers) {
-                    viewer->socket->write(Socket::Message::DEL_STREAMER);
-                    viewer->socket->write(inputStream.getSensorName());
+                    viewer->mSock->write(Socket::Message::DEL_STREAMER);
+                    viewer->mSock->write(inputStream.getSensorName());
                 }
 
                 std::cout << getServerHeader(iThread) << "[streamer] end" << std::endl;
@@ -147,26 +134,14 @@ void Server::run()
 
             case ClientSocket::Type::VIEWER: {
 
+                Viewer viewer { &sock };
+
                 // for each streamer, open stream viewer socket
                 for (const auto& pair : mStreamers) {
-                    const auto& sensorName = pair.first;
-                    const auto* streamer = pair.second;
-
-                    sock.write(Socket::Message::NEW_STREAMER);
-                    sock.write(sensorName);
-
-                    sock.write(std::string(Stream::format2string[(int)streamer->mInputStream.getFormat()]));
-
-                    std::string dimStr;
-                    for (const auto dim : streamer->mInputStream.getDims()) {
-                        dimStr += std::to_string(dim) + " x ";
-                    }
-                    dimStr.resize(dimStr.size() - 3);
-                    sock.write(dimStr);
-                    sock.write(std::to_string(streamer->mInputStream.getAcquisitionSize()));
+                    const auto& streamer = *pair.second;
+                    viewer.notifyNewStreamer(streamer);
                 }
 
-                Viewer viewer { &sock };
                 mViewers.push_back(&viewer);
                 std::cout << getServerHeader(iThread) << "[viewer] new viewer\t\t\t server status : " << getStatus() << std::endl;
 
@@ -215,9 +190,6 @@ void Server::run()
 
             std::cout << getServerHeader(iThread) << "thread end\t\t\t\t server status : " << getStatus() << std::endl;
             std::cout << "---------------------------------------------------------------------------------------------" << std::endl;
-
-            return;
-            exit(6);
         });
         thread.detach();
 
@@ -240,4 +212,20 @@ std::string Server::getStatus() const
 
     std::string str = std::string("nbStreamer = ") + std::to_string(mStreamers.size()) + ", nbViewer = " + std::to_string(mViewers.size()) + " " + streamViewersStr;
     return str;
+}
+
+void Viewer::notifyNewStreamer(const Streamer& streamer) const
+{
+    mSock->write(Socket::Message::NEW_STREAMER);
+    mSock->write(streamer.mInputStream.getSensorName());
+
+    mSock->write(std::string(Stream::format2string[(int)streamer.mInputStream.getFormat()]));
+
+    std::string dimStr;
+    for (const auto dim : streamer.mInputStream.getDims()) {
+        dimStr += std::to_string(dim) + " x ";
+    }
+    dimStr.resize(dimStr.size() - 3);
+    mSock->write(dimStr);
+    mSock->write(std::to_string(streamer.mInputStream.getAcquisitionSize()));
 }

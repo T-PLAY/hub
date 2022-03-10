@@ -8,15 +8,17 @@
 
 // struct StreamViewer {
 // };
-
-struct Viewer {
-    const ClientSocket* const socket = nullptr;
-};
-
 struct Streamer {
     InputStream mInputStream;
     std::list<OutputStream> mOutputStreams;
 };
+
+struct Viewer {
+    const ClientSocket* const mSock = nullptr;
+
+    void notifyNewStreamer(const Streamer & streamer) const;
+};
+
 
 class Server {
 public:
