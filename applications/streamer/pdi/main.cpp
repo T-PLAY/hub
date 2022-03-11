@@ -76,7 +76,8 @@ int main(int argc, char* argv[])
                     while (true) { // each acquisition
                         // Block program until frames arrive
 
-                        unsigned char* pBuf;
+                        unsigned char* pBuf = nullptr;
+                        unsigned char* pLastBuf = nullptr;
                         unsigned long size;
 
                         //                        const auto start = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
@@ -88,34 +89,45 @@ int main(int argc, char* argv[])
                         } else if ((pBuf == 0) || (size == 0)) {
                             std::cout << "pBuf = 0, size = " << size << std::endl;
 
-                        } else {
+                        } else if (pBuf != pLastBuf) {
                             //                            const auto& end = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
                             const auto end = std::chrono::high_resolution_clock::now();
                             assert(pBuf != nullptr);
                             assert(pBuf != 0);
-                            assert(size == 8 + 4 + 12 + 16);
-                                                    assert(size == posStream.getAcquisitionSize() + 8 + 4); // header 8 bytes, frame count 4 bytes
+                            //                            assert(size == 8 + 4 + 12 + 16);
+                            assert(size == 8 + 12 + 16);
+                            assert(size == posStream.getAcquisitionSize() + 8); // header 8 bytes, frame count 4 bytes
 
                             unsigned char* data = &pBuf[8]; // size of header = 8 bytes
                             const auto timestampStart = std::chrono::duration_cast<std::chrono::microseconds>((end - std::chrono::microseconds(18'500)).time_since_epoch()).count(); // Polhemus technical spec latency = 18.5ms
                             const auto timestampEnd = std::chrono::duration_cast<std::chrono::microseconds>(end.time_since_epoch()).count();
 
-                            std::cout << "chrono timestamp = " << timestampStart << std::endl;
-                            uint32_t timestampPdi = ((uint32_t*)data)[0]; // milliseconds
-                            std::cout << "pdi timestamp = " << timestampPdi << std::endl;
+                            //                            std::cout << "chrono timestamp = " << timestampStart << std::endl;
+                            //                            uint32_t timestampPdi = ((uint32_t*)data)[0]; // milliseconds
+                            //                            std::cout << "pdi timestamp = " << timestampPdi << std::endl;
 
                             // Try to get a frame of a depth image
                             posStream << Stream::Acquisition { timestampStart, timestampEnd, &data[4] };
 
-                            float* translation = (float*)&data[4];
-                            float* quaternion = (float*)&data[4 + 12];
-                            std::cout << "x:" << translation[0] << ", y:" << translation[1] << ", z:" << translation[2] << ", az:" << quaternion[0] << ", el:" << quaternion[1] << ", ro:" << quaternion[2] << ", q4:" << quaternion[3] << std::endl;
+                            pLastBuf = pBuf;
+                            //                            float* translation = (float*)&data[4];
+                            //                            float* quaternion = (float*)&data[4 + 12];
+                            //                            std::cout << "x:" << translation[0] << ", y:" << translation[1] << ", z:" << translation[2] << ", az:" << quaternion[0] << ", el:" << quaternion[1] << ", ro:" << quaternion[2] << ", q4:" << quaternion[3] << std::endl;
+                        }
+                        else {
+                            std::cout << "no new frame" << std::endl;
                         }
 
+                        const auto maxFps = 80;
+//                        const auto now = std::chrono::high_resolution_clock::now();
+//                        std::cout << "sleep for " << (start + std::chrono::microseconds(1'000'000 / maxFps) - now).count() << std::endl;
                         //                        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-                        const auto maxFps = 1;
-                        const auto end = start + std::chrono::microseconds(1'000'000 / maxFps);
+                        const auto end = start + std::chrono::nanoseconds(1'000'000'000 / maxFps);
                         std::this_thread::sleep_until(end);
+
+//                        const auto end2 = std::chrono::high_resolution_clock::now();
+//                        const auto fps = (1'000'000'000) / std::chrono::duration_cast<std::chrono::nanoseconds>(end2 - start).count();
+//                        std::cout << "fps : " << fps << std::endl;
 
                     } // while (true) // each acquisition
 
@@ -169,7 +181,7 @@ bool Initialize()
 
     g_pdiMDat.Empty();
     //    g_pdiMDat.Append(PDI_MODATA_FRAMECOUNT);
-    g_pdiMDat.Append(PDI_MODATA_TIMESTAMP);
+    //    g_pdiMDat.Append(PDI_MODATA_TIMESTAMP);
     g_pdiMDat.Append(PDI_MODATA_POS);
     //    g_pdiMDat.Append(PDI_MODATA_ORI);
     g_pdiMDat.Append(PDI_MODATA_QTRN);

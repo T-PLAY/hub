@@ -76,7 +76,7 @@ MainWindowStreamView::MainWindowStreamView(QWidget* parent, std::string sensorNa
     assert(ui->centralwidget != nullptr);
     delete ui->centralwidget;
 
-    const int dim = mThread.mInputStream.getDims().size();
+    const auto dim = mThread.mInputStream.getDims().size();
     if (dim == 1) {
         ui->centralwidget = new WidgetStreamView1D(this);
 

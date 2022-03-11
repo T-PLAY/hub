@@ -35,7 +35,7 @@ int main()
                 const auto maxFps = 40;
                 const auto end = start + std::chrono::microseconds(1'000'000 / maxFps);
 
-//                const auto& timestampStart = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+                //                const auto& timestampStart = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
                 const auto& timestampStart = std::chrono::duration_cast<std::chrono::microseconds>(start.time_since_epoch()).count();
                 const auto& timestampEnd = std::chrono::duration_cast<std::chrono::microseconds>(end.time_since_epoch()).count();
                 ++dec;
@@ -48,7 +48,6 @@ int main()
                 std::this_thread::sleep_until(end);
             }
 #else
-
 
             OutputStream proceduralStream = OutputStream("proceduralStreamer", Stream::Format::DOF6, { 1 });
 
@@ -64,12 +63,12 @@ int main()
                 const auto start = std::chrono::high_resolution_clock::now();
                 // generate new image
                 for (size_t i = 0; i < imgSize / 4; ++i) {
-//                    data[i] = (i / width + dec) % 256;
-                    ((float*)data)[i] = dec;
+                    //                    data[i] = (i / width + dec) % 256;
+                    ((float*)data)[i] = (float)dec;
                 }
                 const auto end = std::chrono::high_resolution_clock::now();
 
-//                const auto& timestampStart = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+                //                const auto& timestampStart = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
                 const auto& timestampStart = std::chrono::duration_cast<std::chrono::microseconds>(start.time_since_epoch()).count();
                 const auto& timestampEnd = std::chrono::duration_cast<std::chrono::microseconds>(end.time_since_epoch()).count();
                 ++dec;
@@ -79,10 +78,17 @@ int main()
                 //                proceduralStream << Stream::Acquisition( start, end, data );
                 //                proceduralStream << { start, end, data };
                 //                auto acq = { start, end, data };
-                const auto maxFps = 30;
-//                const auto now = std::chrono::high_resolution_clock::now();
-//                std::cout << "sleep for " <<  (start + std::chrono::microseconds(1'000'000 / maxFps) - now).count() << std::endl;
-                std::this_thread::sleep_until(start + std::chrono::microseconds(1'000'000 / maxFps));
+
+                const auto maxFps = 80;
+                //                                const auto now = std::chrono::high_resolution_clock::now();
+                //                                std::cout << "sleep for " <<  (start + std::chrono::microseconds(1'000'000 / maxFps) - now).count() << std::endl;
+
+                //                const auto end2 = std::chrono::high_resolution_clock::now();
+                const auto end2 = start + std::chrono::microseconds(1'000'000 / maxFps);
+                const auto fps = (1'000'000) / std::chrono::duration_cast<std::chrono::microseconds>(end2 - start).count();
+                std::cout << "fps : " << fps << std::endl;
+                //                                std::this_thread::sleep_until(start + std::chrono::microseconds(1'000'000 / maxFps));
+                std::this_thread::sleep_until(end2);
             }
 #endif
 

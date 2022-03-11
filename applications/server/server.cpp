@@ -75,6 +75,7 @@ void Server::run()
 
                         //                        if (!outputStreams.empty()) {
                         //                            const auto start = std::chrono::high_resolution_clock::now();
+                        const auto start = std::chrono::high_resolution_clock::now();
 
                         inputStream >> acq;
 
@@ -100,6 +101,16 @@ void Server::run()
                                 throw;
                             }
                         }
+
+//                        const auto end = std::chrono::high_resolution_clock::now();
+//                        const auto fps = (1'000'000) / std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+//                        std::cout << "fps : " << fps << std::endl;
+
+//                const auto maxFps = 60;
+//                const auto now = std::chrono::high_resolution_clock::now();
+//                std::cout << "sleep for " <<  (start + std::chrono::microseconds(1'000'000 / maxFps) - now).count() << std::endl;
+//                std::this_thread::sleep_until(start + std::chrono::microseconds(1'000'000 / maxFps));
+
                         // std::cout << getServerHeader(iThread) << "[streamer] data from streamer sent for " << outputStreams.size() << " stream viewers" << std::endl;
 
                         //                            const auto maxFps = 60;
