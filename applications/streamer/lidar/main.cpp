@@ -8,8 +8,8 @@
 #include <cassert>
 #include <stream.h>
 
-//#define DEPTH_STREAM
-#define RGB_STREAM
+#define DEPTH_STREAM
+//#define RGB_STREAM
 //#define INFRARED_STREAM
 
 // Hello RealSense example demonstrates the basics of connecting to a RealSense device

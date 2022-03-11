@@ -3,6 +3,7 @@
 #define NET_H
 
 #if defined WIN32
+//#define NOMINMAX
 #include <winsock.h>
 #pragma comment(lib, "ws2_32.lib") // Winsock Library
 using socklen_t = int;

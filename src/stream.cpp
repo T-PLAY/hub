@@ -1,3 +1,4 @@
+
 #include "stream.h"
 
 #include <cassert>
@@ -12,7 +13,8 @@ std::ostream& operator<<(std::ostream& os, const Stream::Acquisition& acq)
 {
     os << "start:" << acq.mBackendTimestamp / 1000 << ", end:" << acq.mBackendTimeOfArrival / 1000;
     os << ", data:[";
-    for (auto i = 0ul; i < std::min(acq.mSize, 10ul); ++i) {
+    for (auto i = 0ul; i < min(acq.mSize, 10ull); ++i) {
+//    for (auto i = 0ul; i < 10; ++i) {
         os << (int)acq.mData[i] << " ";
     }
     os << "], \t";

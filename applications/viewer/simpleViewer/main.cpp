@@ -12,7 +12,7 @@ int main()
         try {
             InputStream inputStream("proceduralStreamer");
             // InputStream inputStream("L500 Depth Sensor (Depth)");
-            // InputStream inputStream("Polhemus Patriot (probe)");
+//             InputStream inputStream("Polhemus Patriot (probe)");
 
             const size_t acquisitionSize = inputStream.getAcquisitionSize();
             std::cout << "acquisitionSize = " << acquisitionSize << std::endl;
