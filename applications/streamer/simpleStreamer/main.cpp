@@ -79,14 +79,14 @@ int main()
                 //                proceduralStream << { start, end, data };
                 //                auto acq = { start, end, data };
 
-                const auto maxFps = 80;
+                const auto maxFps = 60;
                 //                                const auto now = std::chrono::high_resolution_clock::now();
                 //                                std::cout << "sleep for " <<  (start + std::chrono::microseconds(1'000'000 / maxFps) - now).count() << std::endl;
 
                 //                const auto end2 = std::chrono::high_resolution_clock::now();
-                const auto end2 = start + std::chrono::microseconds(1'000'000 / maxFps);
-                const auto fps = (1'000'000) / std::chrono::duration_cast<std::chrono::microseconds>(end2 - start).count();
-                std::cout << "fps : " << fps << std::endl;
+                const auto end2 = start + std::chrono::nanoseconds(1'000'000'000 / maxFps);
+//                const auto fps = (1'000'000) / std::chrono::duration_cast<std::chrono::microseconds>(end2 - start).count();
+//                std::cout << "fps : " << fps << std::endl;
                 //                                std::this_thread::sleep_until(start + std::chrono::microseconds(1'000'000 / maxFps));
                 std::this_thread::sleep_until(end2);
             }

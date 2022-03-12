@@ -56,7 +56,8 @@ ClientSocket::ClientSocket(std::string ipv4, int port)
         perror("[socket] socket creation failed.\n");
         return;
     }
-    Net::sSockets.insert(mFdSock);
+//    Net::sSockets.insert(mFdSock);
+    Net::sSockets.push_back(mFdSock);
 
     // Server address construction
     struct sockaddr_in serv_addr;
@@ -102,7 +103,7 @@ ServerSocket::ServerSocket(int port)
         perror("socket creation failed.\n");
         return;
     }
-    Net::sSockets.insert(mFdSock);
+    Net::sSockets.push_back(mFdSock);
 
     // Server address construction
     memset(&mAddress, 0, sizeof(mAddress));
@@ -133,7 +134,7 @@ ClientSocket ServerSocket::waitNewClient()
         exit(1);
     }
     std::cout << getHeader(mFdSock) << "new client on socket " << new_socket << std::endl;
-    Net::sSockets.insert(new_socket);
+    Net::sSockets.push_back(new_socket);
 
     return ClientSocket(new_socket);
 }

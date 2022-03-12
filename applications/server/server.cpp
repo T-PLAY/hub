@@ -67,7 +67,7 @@ void Server::run()
                     std::cout << getServerHeader(iThread) << "[streamer] acquisitionSize:" << acquisitionSize << std::endl;
                     std::cout << getServerHeader(iThread) << "[streamer] dims:" << dims2string(inputStream.getDims()) << std::endl;
                     // std::cout << getServerHeader(iThread) << "[streamer] height:" << inputStream.getDims().at(1) << std::endl;
-                    std::cout << getServerHeader(iThread) << "[streamer] format:" << Stream::format2string[(int)inputStream.getFormat()] << " (byte:" << Stream::format2byte[(int)inputStream.getFormat()] << ")" << std::endl;
+                    std::cout << getServerHeader(iThread) << "[streamer] format:" << Stream::format2string[(int)inputStream.getFormat()] << " (byte:" << Stream::format2nByte[(int)inputStream.getFormat()] << ")" << std::endl;
 
                     Stream::Acquisition acq;
                     // for each new stream acquistion
@@ -75,7 +75,7 @@ void Server::run()
 
                         //                        if (!outputStreams.empty()) {
                         //                            const auto start = std::chrono::high_resolution_clock::now();
-                        const auto start = std::chrono::high_resolution_clock::now();
+//                        const auto start = std::chrono::high_resolution_clock::now();
 
                         inputStream >> acq;
 
@@ -102,14 +102,14 @@ void Server::run()
                             }
                         }
 
-//                        const auto end = std::chrono::high_resolution_clock::now();
-//                        const auto fps = (1'000'000) / std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
-//                        std::cout << "fps : " << fps << std::endl;
+                        //                        const auto end = std::chrono::high_resolution_clock::now();
+                        //                        const auto fps = (1'000'000) / std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+                        //                        std::cout << "fps : " << fps << std::endl;
 
-//                const auto maxFps = 60;
-//                const auto now = std::chrono::high_resolution_clock::now();
-//                std::cout << "sleep for " <<  (start + std::chrono::microseconds(1'000'000 / maxFps) - now).count() << std::endl;
-//                std::this_thread::sleep_until(start + std::chrono::microseconds(1'000'000 / maxFps));
+                        //                const auto maxFps = 60;
+                        //                const auto now = std::chrono::high_resolution_clock::now();
+                        //                std::cout << "sleep for " <<  (start + std::chrono::microseconds(1'000'000 / maxFps) - now).count() << std::endl;
+                        //                std::this_thread::sleep_until(start + std::chrono::microseconds(1'000'000 / maxFps));
 
                         // std::cout << getServerHeader(iThread) << "[streamer] data from streamer sent for " << outputStreams.size() << " stream viewers" << std::endl;
 
@@ -131,9 +131,9 @@ void Server::run()
                 }
                 mStreamers.erase(sensorName);
 
-                for (auto& outputStream : streamer.mOutputStreams) {
-                    outputStream.close();
-                }
+                //                for (auto& outputStream : streamer.mOutputStreams) {
+                //                    outputStream.close();
+                //                }
 
                 for (const auto* viewer : mViewers) {
                     viewer->mSock->write(Socket::Message::DEL_STREAMER);

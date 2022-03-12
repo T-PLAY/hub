@@ -22,7 +22,7 @@ FormSensorView::~FormSensorView()
 void FormSensorView::on_radioButtonOnOff_clicked(bool checked)
 {
     if (checked) {
-        ui->radioButtonOnOff->setText("on");
+        ui->radioButtonOnOff->setText("on ");
         ui->frameButtonOnOff->setStyleSheet("border-radius: 10px; background-color: lightgreen");
         emit addViewStreamSignal(mSensorName);
     } else {

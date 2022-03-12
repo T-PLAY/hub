@@ -53,7 +53,7 @@ protected:
     ~Socket();
 
 protected:
-    socket_fd mFdSock = -1;
+    socket_fd mFdSock = INVALID_SOCKET;
 };
 
 class ClientSocket : public Socket {
@@ -142,10 +142,10 @@ void ClientSocket::write(const T& t) const
     int uploadSize = 0;
     do {
         // server is able to detect client disconnecting
-        if (!isConnected()) {
-            std::cout << getHeader(mFdSock) << "write(const T& t) : client lost" << std::endl;
-            throw Socket::exception("Client lost");
-        }
+//        if (!isConnected()) {
+//            std::cout << getHeader(mFdSock) << "write(const T& t) : isConnected() client lost" << std::endl;
+//            throw Socket::exception("Client lost");
+//        }
 
         int byteSent = send(mFdSock, reinterpret_cast<const char*>(&t) + uploadSize, len - uploadSize, 0);
         if (byteSent == -1) {

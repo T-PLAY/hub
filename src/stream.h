@@ -80,7 +80,7 @@ public:
         // COUNT
     };
 
-    static constexpr int format2byte[static_cast<int>(Format::COUNT)] = {
+    static constexpr int format2nByte[static_cast<int>(Format::COUNT)] = {
         0, // NONE
         2, // Z16             , /**< 16-bit linear depth values. The depth is meters is equal to depth scale * pixel value. */
         2, // DISPARITY16     , /**< 16-bit float-point disparity values. Depth->Disparity conversion : Disparity = Baseline*FocalLength/Depth. */
@@ -162,15 +162,15 @@ protected:
     Stream& operator=(Stream&& stream) = delete;
 
     static size_t computeAcquisitionSize(Format format, const std::vector<int>& dims);
-    void waitClose();
+    //    void waitClose();
 
 public:
-    void ping() const;
-    void close();
-    size_t getAcquisitionSize() const;
+    //    void ping() const;
+    //    void close();
     const std::string& getSensorName() const;
     const std::vector<int>& getDims() const;
     Format getFormat() const;
+    size_t getAcquisitionSize() const;
 
 protected:
     std::string mSensorName;
