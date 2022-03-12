@@ -13,8 +13,8 @@ std::ostream& operator<<(std::ostream& os, const Stream::Acquisition& acq)
 {
     os << "start:" << acq.mBackendTimestamp / 1000 << ", end:" << acq.mBackendTimeOfArrival / 1000;
     os << ", data:[";
-    for (auto i = 0ul; i < min(acq.mSize, 10ull); ++i) {
-//    for (auto i = 0ul; i < 10; ++i) {
+    for (auto i = 0; i < std::min((int)acq.mSize, 10); ++i) {
+        //    for (auto i = 0ul; i < 10; ++i) {
         os << (int)acq.mData[i] << " ";
     }
     os << "], \t";
@@ -52,40 +52,35 @@ Stream::Stream(ClientSocket&& clientSocket)
 
 size_t Stream::computeAcquisitionSize(Format format, const std::vector<int>& dims)
 {
-    return std::accumulate(dims.cbegin(), dims.cend(), 1, std::multiplies<int> {}) * format2byte[static_cast<int>(format)];
+    return std::accumulate(dims.cbegin(), dims.cend(), 1, std::multiplies<int> {}) * format2nByte[static_cast<int>(format)];
 }
 
-void Stream::waitClose()
-{
-    while (true) {
-        Socket::Message clientMessage;
-        mSocket.read(clientMessage);
+// void Stream::waitClose()
+//{
+//     while (true) {
+//         Socket::Message clientMessage;
+//         mSocket.read(clientMessage);
 
-        std::cout << "####### read message " << Socket::message2string[(int)clientMessage] << " from stream viewer" << std::endl;
+//        std::cout << "####### read message " << Socket::message2string[(int)clientMessage] << " from stream viewer" << std::endl;
 
-        if (clientMessage == Socket::Message::CLOSE) {
-            std::cout << "####### stream viewer want to close" << std::endl;
-            break;
-        }
-    }
-}
+//        if (clientMessage == Socket::Message::CLOSE) {
+//            std::cout << "####### stream viewer want to close" << std::endl;
+//            break;
+//        }
+//    }
+//}
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void Stream::ping() const
-{
-    mSocket.write(Socket::Message::PING);
-}
+// void Stream::ping() const
+//{
+//     mSocket.write(Socket::Message::PING);
+// }
 
-void Stream::close()
-{
-    mSocket.write(Socket::Message::CLOSE);
-}
-
-size_t Stream::getAcquisitionSize() const
-{
-    return mAcquisitionSize;
-}
+// void Stream::close()
+//{
+//     mSocket.write(Socket::Message::CLOSE);
+// }
 
 const std::string& Stream::getSensorName() const
 {
@@ -100,6 +95,11 @@ const std::vector<int>& Stream::getDims() const
 Stream::Format Stream::getFormat() const
 {
     return mFormat;
+}
+
+size_t Stream::getAcquisitionSize() const
+{
+    return mAcquisitionSize;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

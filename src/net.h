@@ -24,17 +24,24 @@ using socket_fd = int;
 #include <set>
 #include <stdio.h>
 #include <thread>
+#include <cassert>
+#include <list>
+#include <functional>
 
 namespace Net {
 static bool sInited = false;
-static std::set<socket_fd> sSockets;
+static std::list<socket_fd> sSockets;
 
 static void clearSocket(socket_fd& sock)
 {
     std::cout << "Net::clearSocket(" << sock << ") close socket" << std::endl;
     closesocket(sock);
-    sock = INVALID_SOCKET;
-    sSockets.erase(sock);
+    size_t size = sSockets.size();
+//    sSockets.erase(sock);
+    assert(std::find(sSockets.begin(), sSockets.end(), sock) != sSockets.end());
+    sSockets.remove(sock);
+    assert(sSockets.size() == size - 1);
+
 #ifdef WIN32
     if (sSockets.empty()) {
         std::cout << "Net::clearSocket(" << sock << ") WSACleanup()" << std::endl;
@@ -43,6 +50,8 @@ static void clearSocket(socket_fd& sock)
         // TODO: find a way to cleanup WSA when program ended
     }
 #endif
+
+    sock = INVALID_SOCKET;
 }
 
 #ifndef WIN32
