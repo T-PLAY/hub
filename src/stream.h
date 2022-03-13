@@ -147,6 +147,7 @@ public:
 public:
 protected:
     Stream(const std::string& sensorName, Format format, const std::vector<int>& dims, const std::string& ipv4 = ("127.0.0.1"), int port = SERVICE_PORT);
+    Stream(const std::string& sensorName, Format format, const std::vector<int>& dims, std::fstream & file);
     ~Stream();
 
     Stream(const Stream& stream) = delete;
@@ -177,17 +178,23 @@ protected:
     Format mFormat;
     std::vector<int> mDims;
 
-    ClientSocket mSocket;
+    //    IOStream & mSocket;
+    //    IOStream * mSocket = nullptr;
+    std::unique_ptr<IOStream> mIOStream;
     size_t mAcquisitionSize;
 };
+
+class OutputStream;
 
 class InputStream : public Stream {
 public:
     InputStream(const std::string& sensorName, const std::string& ipv4 = "127.0.0.1", int port = SERVICE_PORT);
+    InputStream(const std::string& sensorName, std::fstream & file);
     InputStream(ClientSocket&& sock);
     ~InputStream();
 
-    void operator>>(Acquisition& acquisition) const;
+    Acquisition & operator>>(Acquisition& acquisition) const;
+    void operator>>(const OutputStream& outputStream) const;
 
 private:
 };
@@ -195,10 +202,12 @@ private:
 class OutputStream : public Stream {
 public:
     OutputStream(const std::string& sensorName, Format format, const std::vector<int>& dims, const std::string& ipv4 = "127.0.0.1", int port = SERVICE_PORT);
+    OutputStream(const std::string& sensorName, Format format, const std::vector<int>& dims, std::fstream& file);
     OutputStream(const OutputStream& outputStream) = delete;
     OutputStream(ClientSocket&& sock, const InputStream& inputStream);
 
     void operator<<(const Acquisition& acquisition) const;
+    void operator<<(const InputStream& inputStream) const;
 
 private:
 };

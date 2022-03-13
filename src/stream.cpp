@@ -8,6 +8,8 @@
 //#include <math.h>
 //#include <cmath>
 //#include <algorithm>
+#include <FileIO.h>
+#include <memory>
 
 std::ostream& operator<<(std::ostream& os, const Stream::Acquisition& acq)
 {
@@ -30,7 +32,19 @@ Stream::Stream(const std::string& sensorName, Format format, const std::vector<i
     : mSensorName(sensorName)
     , mFormat(format)
     , mDims(dims)
-    , mSocket(ipv4, port)
+    , mIOStream(new ClientSocket(ipv4, port))
+    , mAcquisitionSize(computeAcquisitionSize(format, dims))
+{
+#ifdef DEBUG_MSG
+    std::cout << "[Stream] Stream()" << std::endl;
+#endif
+}
+
+Stream::Stream(const std::string& sensorName, Format format, const std::vector<int>& dims, std::fstream& file)
+    : mSensorName(sensorName)
+    , mFormat(format)
+    , mDims(dims)
+    , mIOStream(new FileIO(file))
     , mAcquisitionSize(computeAcquisitionSize(format, dims))
 {
 #ifdef DEBUG_MSG
@@ -46,7 +60,8 @@ Stream::~Stream()
 }
 
 Stream::Stream(ClientSocket&& clientSocket)
-    : mSocket(std::move(clientSocket))
+    //    : mIOStream(std::move(clientSocket))
+    : mIOStream(new ClientSocket(std::move(clientSocket)))
 {
 }
 
@@ -59,7 +74,7 @@ size_t Stream::computeAcquisitionSize(Format format, const std::vector<int>& dim
 //{
 //     while (true) {
 //         Socket::Message clientMessage;
-//         mSocket.read(clientMessage);
+//         mIOStream.read(clientMessage);
 
 //        std::cout << "####### read message " << Socket::message2string[(int)clientMessage] << " from stream viewer" << std::endl;
 
@@ -74,12 +89,12 @@ size_t Stream::computeAcquisitionSize(Format format, const std::vector<int>& dim
 
 // void Stream::ping() const
 //{
-//     mSocket.write(Socket::Message::PING);
+//     mIOStream.write(Socket::Message::PING);
 // }
 
 // void Stream::close()
 //{
-//     mSocket.write(Socket::Message::CLOSE);
+//     mIOStream.write(Socket::Message::CLOSE);
 // }
 
 const std::string& Stream::getSensorName() const
@@ -111,18 +126,41 @@ InputStream::InputStream(const std::string& sensorName, const std::string& ipv4,
     std::cout << "[InputStream] InputStream(sensorName, ipv4, port)" << std::endl;
 #endif
     ClientSocket::Type clientType = ClientSocket::Type::STREAM_VIEWER;
-    mSocket.write(clientType);
+    mIOStream->write(clientType);
 
-    mSocket.write(sensorName);
+    mIOStream->write(sensorName);
 
     try {
-        mSocket.read(mFormat);
+        mIOStream->read(mFormat);
     } catch (Socket::exception& e) {
         std::cout << "[InputStream] catch exception : " << e.what() << std::endl;
         throw Stream::exception((std::string("sensor '") + sensorName + "' is not attached to server").c_str());
     }
 
-    mSocket.read(mDims);
+    mIOStream->read(mDims);
+
+    mAcquisitionSize = computeAcquisitionSize(mFormat, mDims);
+}
+
+InputStream::InputStream(const std::string& sensorName, std::fstream& file)
+    : Stream(sensorName, Format::NONE, {}, file)
+{
+#ifdef DEBUG_MSG
+    std::cout << "[InputStream] InputStream(sensorName, ipv4, port)" << std::endl;
+#endif
+
+    std::string sensorNameInFile;
+    mIOStream->read(sensorNameInFile);
+    assert(sensorName == sensorNameInFile);
+
+    try {
+        mIOStream->read(mFormat);
+    } catch (Socket::exception& e) {
+        std::cout << "[InputStream] catch exception : " << e.what() << std::endl;
+        throw Stream::exception((std::string("sensor '") + sensorName + "' is not attached to server").c_str());
+    }
+
+    mIOStream->read(mDims);
 
     mAcquisitionSize = computeAcquisitionSize(mFormat, mDims);
 }
@@ -133,9 +171,9 @@ InputStream::InputStream(ClientSocket&& sock)
 #ifdef DEBUG_MSG
     std::cout << "[InputStream] InputStream(ClientSocket && sock)" << std::endl;
 #endif
-    mSocket.read(mSensorName);
-    mSocket.read(mFormat);
-    mSocket.read(mDims);
+    mIOStream->read(mSensorName);
+    mIOStream->read(mFormat);
+    mIOStream->read(mDims);
 
     mAcquisitionSize = computeAcquisitionSize(mFormat, mDims);
 }
@@ -147,7 +185,7 @@ InputStream::~InputStream()
 #endif
 }
 
-void InputStream::operator>>(Acquisition& acquisition) const
+Stream::Acquisition &InputStream::operator >>(Acquisition& acquisition) const
 {
     if (acquisition.mData == nullptr) {
         acquisition.mData = new unsigned char[mAcquisitionSize];
@@ -158,15 +196,15 @@ void InputStream::operator>>(Acquisition& acquisition) const
     assert(!acquisition.mOwnData || acquisition.mSize == mAcquisitionSize);
     assert(acquisition.mData != nullptr);
 
-    //    mSocket.write(Socket::Message::SYNC);
+    //    mIOStream.write(Socket::Message::SYNC);
     //    Socket::Message message;
-    //    mSocket.read(message);
+    //    mIOStream.read(message);
 
     //    switch (message) {
     //    case Socket::Message::DATA: {
-    mSocket.read(acquisition.mBackendTimestamp);
-    mSocket.read(acquisition.mBackendTimeOfArrival);
-    mSocket.read(acquisition.mData, mAcquisitionSize);
+    mIOStream->read(acquisition.mBackendTimestamp);
+    mIOStream->read(acquisition.mBackendTimeOfArrival);
+    mIOStream->read(acquisition.mData, mAcquisitionSize);
 
     assert(acquisition.mBackendTimestamp <= acquisition.mBackendTimeOfArrival);
 
@@ -185,6 +223,18 @@ void InputStream::operator>>(Acquisition& acquisition) const
     //        std::cout << "[InputStream] unknown message from server" << std::endl;
     //        exit(1);
     //    }
+    return acquisition;
+}
+
+void InputStream::operator>>(const OutputStream& outputStream) const
+{
+    Stream::Acquisition acq;
+    InputStream::operator>>(acq);
+    outputStream << std::move(acq);
+
+    //    mIOStream->write(acquisition.mBackendTimestamp);
+    //    mIOStream->write(acquisition.mBackendTimeOfArrival);
+    //    mIOStream->write(acquisition.mData, mAcquisitionSize);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -193,11 +243,20 @@ OutputStream::OutputStream(const std::string& sensorName, Stream::Format format,
     : Stream(sensorName, format, dims, ipv4, port)
 {
     ClientSocket::Type clientType = ClientSocket::Type::STREAMER;
-    mSocket.write(clientType);
+    mIOStream->write(clientType);
 
-    mSocket.write(mSensorName);
-    mSocket.write(mFormat);
-    mSocket.write(mDims);
+    mIOStream->write(mSensorName);
+    mIOStream->write(mFormat);
+    mIOStream->write(mDims);
+}
+
+OutputStream::OutputStream(const std::string& sensorName, Format format, const std::vector<int>& dims, std::fstream& file)
+    : Stream(sensorName, format, dims, file)
+{
+
+    mIOStream->write(mSensorName);
+    mIOStream->write(mFormat);
+    mIOStream->write(mDims);
 }
 
 OutputStream::OutputStream(ClientSocket&& sock, const InputStream& inputStream)
@@ -209,8 +268,8 @@ OutputStream::OutputStream(ClientSocket&& sock, const InputStream& inputStream)
 
     mAcquisitionSize = computeAcquisitionSize(mFormat, mDims);
 
-    mSocket.write(mFormat);
-    mSocket.write(mDims);
+    mIOStream->write(mFormat);
+    mIOStream->write(mDims);
 }
 
 void OutputStream::operator<<(const Acquisition& acquisition) const
@@ -225,7 +284,7 @@ void OutputStream::operator<<(const Acquisition& acquisition) const
     //    bool acquisitionSent = false;
     //    while (!acquisitionSent) {
 
-    //        mSocket.read(message);
+    //        mIOStream.read(message);
 
     //        switch (message) {
     //        case Socket::Message::PING:
@@ -238,11 +297,11 @@ void OutputStream::operator<<(const Acquisition& acquisition) const
     //            std::cout << "[OutputStream] send acq : " << acquisition << std::endl;
     //#endif
 
-    //            mSocket.write(Socket::Message::DATA);
+    //            mIOStream.write(Socket::Message::DATA);
 
-    mSocket.write(acquisition.mBackendTimestamp);
-    mSocket.write(acquisition.mBackendTimeOfArrival);
-    mSocket.write(acquisition.mData, mAcquisitionSize);
+    mIOStream->write(acquisition.mBackendTimestamp);
+    mIOStream->write(acquisition.mBackendTimeOfArrival);
+    mIOStream->write(acquisition.mData, mAcquisitionSize);
 
     //            acquisitionSent = true;
     //        } break;
@@ -252,6 +311,13 @@ void OutputStream::operator<<(const Acquisition& acquisition) const
     //            exit(1);
     //        }
     //    }
+}
+
+void OutputStream::operator<<(const InputStream& inputStream) const
+{
+    Stream::Acquisition acq;
+    inputStream >> acq;
+    OutputStream::operator<<(std::move(acq));
 }
 
 // void Stream::Acquisition::start()
