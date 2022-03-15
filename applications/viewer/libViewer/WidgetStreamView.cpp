@@ -14,7 +14,7 @@ WidgetStreamView::WidgetStreamView(QWidget* parent)
 
 void WidgetStreamView::setData(unsigned char* img_ptr, std::vector<int> dims, Stream::Format format)
 {
-    std::cout << "WidgetStreamView::setData" << std::endl;
+//    std::cout << "WidgetStreamView::setData" << std::endl;
     //    assert(false);
 }
 
@@ -27,7 +27,7 @@ WidgetStreamView2D::WidgetStreamView2D(QWidget* parent)
 
 void WidgetStreamView2D::setData(unsigned char* img_ptr, std::vector<int> dims, Stream::Format format)
 {
-    std::cout << "WidgetStreamView2D::setData" << std::endl;
+//    std::cout << "WidgetStreamView2D::setData" << std::endl;
     mData = img_ptr;
     assert(dims.size() == 2);
     mWidth = dims.at(0);
@@ -38,7 +38,7 @@ void WidgetStreamView2D::setData(unsigned char* img_ptr, std::vector<int> dims, 
 
 void WidgetStreamView2D::paintEvent(QPaintEvent* event)
 {
-    std::cout << "[WidgetStreamView] paintEvent : width:" << mWidth << ", height:" << mHeight << std::endl;
+//    std::cout << "[WidgetStreamView] paintEvent : width:" << mWidth << ", height:" << mHeight << std::endl;
     Q_UNUSED(event);
     QPainter painter;
     painter.begin(this);

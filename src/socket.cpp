@@ -141,6 +141,7 @@ ClientSocket ServerSocket::waitNewClient()
 
 void ClientSocket::write(const unsigned char* data, size_t len) const
 {
+    assert(len > 0);
     size_t uploadSize = 0;
     do {
         if (!isConnected()) {
@@ -149,7 +150,7 @@ void ClientSocket::write(const unsigned char* data, size_t len) const
         }
         // winsock const char * data
         // winsock int len
-        int byteSent = send(mFdSock, data + uploadSize, static_cast<int>(len - uploadSize), 0);
+        int byteSent = send(mFdSock, (const char*)data + uploadSize, static_cast<int>(len - uploadSize), 0);
         if (byteSent == -1) {
             std::cout << getHeader(mFdSock) << "can't send packet " << byteSent << "/" << len << std::endl;
             perror("Failed to send.\n");
@@ -179,7 +180,7 @@ void ClientSocket::read(unsigned char* data, size_t len) const
 {
     size_t downloadSize = 0;
     do {
-        int byteRead = recv(mFdSock, data + downloadSize, static_cast<int>(len - downloadSize), 0);
+        int byteRead = recv(mFdSock, (char *)data + downloadSize, static_cast<int>(len - downloadSize), 0);
         if (byteRead == -1) {
             std::cout << "byte read == -1 error" << std::endl;
             throw Socket::exception("Can't read packet, peer connection lost");
