@@ -15,7 +15,8 @@ std::ostream& operator<<(std::ostream& os, const Stream::Acquisition& acq)
 {
     os << "start:" << acq.mBackendTimestamp / 1000 << ", end:" << acq.mBackendTimeOfArrival / 1000;
     os << ", data:[";
-    for (auto i = 0; i < std::min((int)acq.mSize, 10); ++i) {
+    for (auto i = 0; i < min((int)acq.mSize, 10); ++i) {
+        //    for (auto i = 0; i < std::min((int)acq.mSize, 10); ++i) {
         //    for (auto i = 0ul; i < 10; ++i) {
         os << (int)acq.mData[i] << " ";
     }
@@ -119,7 +120,7 @@ size_t Stream::getAcquisitionSize() const
 
 ///////////////////////////////////////////////////////////////////////////////
 
-InputStream::InputStream(const std::string& sensorName, const std::string& ipv4, int port)
+InputStream::InputStream(const std::string& sensorName, const std::string& syncSensorName, const std::string& ipv4, int port)
     : Stream(sensorName, Format::NONE, {}, ipv4, port)
 {
 #ifdef DEBUG_MSG
@@ -129,6 +130,8 @@ InputStream::InputStream(const std::string& sensorName, const std::string& ipv4,
     mIOStream->write(clientType);
 
     mIOStream->write(sensorName);
+
+    mIOStream->write(syncSensorName);
 
     try {
         mIOStream->read(mFormat);
@@ -185,7 +188,7 @@ InputStream::~InputStream()
 #endif
 }
 
-Stream::Acquisition &InputStream::operator >>(Acquisition& acquisition) const
+Stream::Acquisition& InputStream::operator>>(Acquisition& acquisition) const
 {
     if (acquisition.mData == nullptr) {
         acquisition.mData = new unsigned char[mAcquisitionSize];
@@ -339,10 +342,72 @@ Stream::Acquisition::Acquisition(long long backendTimestamp, long long backendTi
 {
 }
 
+//Stream::Acquisition::Acquisition(Acquisition &&acq)
+//{
+
+//}
+
+//Stream::Acquisition &Stream::Acquisition::operator=(Acquisition &&acq)
+//{
+
+//}
+
+//Stream::Acquisition::Acquisition(const Acquisition& acq)
+//    : mBackendTimestamp(acq.mBackendTimestamp)
+//    , mBackendTimeOfArrival(acq.mBackendTimeOfArrival)
+//    , mData(acq.mData)
+//{
+//    if (acq.mOwnData) {
+//        mOwnData = true;
+//        mSize = acq.mSize;
+//        mData = new unsigned char[mSize];
+//        memcpy(mData, acq.mData, mSize);
+//    }
+//}
+
 Stream::Acquisition::~Acquisition()
 {
     if (mOwnData) {
         assert(mData != nullptr);
         delete[] mData;
+        mOwnData = false;
+        mData = nullptr;
     }
+}
+
+Stream::Acquisition::Acquisition(Acquisition&& acq)
+    : mBackendTimestamp(acq.mBackendTimestamp)
+    , mBackendTimeOfArrival(acq.mBackendTimeOfArrival)
+    , mData(acq.mData)
+    , mSize(acq.mSize)
+    , mOwnData(acq.mOwnData)
+{
+    acq.mOwnData = false;
+    acq.mData = nullptr;
+}
+
+Stream::Acquisition& Stream::Acquisition::operator=(Acquisition&& acq)
+{
+    mBackendTimestamp = acq.mBackendTimestamp;
+    mBackendTimeOfArrival = acq.mBackendTimeOfArrival;
+    mData = acq.mData;
+    mSize = acq.mSize;
+    mOwnData = acq.mOwnData;
+
+    acq.mOwnData = false;
+    acq.mData = nullptr;
+
+    return *this;
+}
+
+Stream::Acquisition Stream::Acquisition::clone() const
+{
+    assert(mData != nullptr);
+
+    Stream::Acquisition acq(mBackendTimestamp, mBackendTimeOfArrival, nullptr);
+    acq.mSize = mSize;
+    acq.mData = new unsigned char[mSize];
+    acq.mOwnData = true;
+    memcpy(acq.mData, mData, mSize);
+    return acq;
 }

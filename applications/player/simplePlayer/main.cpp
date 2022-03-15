@@ -2,6 +2,7 @@
 #include <filesystem>
 #include <fstream>
 #include <stream.h>
+#include <string>
 
 int main()
 {
@@ -11,7 +12,7 @@ int main()
     std::filesystem::current_path("../../recorder/simpleRecorder/records/");
 
     for (const auto& fileDir : std::filesystem::directory_iterator(".")) {
-        std::string sensorName = fileDir.path().filename().c_str();
+        const std::string sensorName = (const char*)fileDir.path().filename().c_str();
 
         std::fstream file(sensorName, std::ios::binary | std::ios::in);
         assert(file.is_open());

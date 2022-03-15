@@ -2,21 +2,28 @@
 
 void IOStream::write(const std::string& str) const
 {
-    int nbEl = static_cast<int>(str.size());
-    write(nbEl);
+    int strLen = static_cast<int>(str.size());
+    write(strLen);
 
-    const char* data = str.data();
-    write((const unsigned char*)data, nbEl);
+    if (strLen > 0) {
+        const char* data = str.data();
+        write((const unsigned char*)data, strLen);
+    }
 }
 
 void IOStream::read(std::string& str) const
 {
-    int nbEl;
-    read(nbEl);
+    int strLen;
+    read(strLen);
 
-    unsigned char* tmp = new unsigned char[nbEl + 1];
-    read(tmp, nbEl);
-    tmp[nbEl] = 0;
-    str = std::string((char*)tmp);
-    delete[] tmp;
+    if (strLen == 0) {
+        str = "";
+
+    } else {
+        unsigned char* tmp = new unsigned char[strLen + 1];
+        read(tmp, strLen);
+        tmp[strLen] = 0;
+        str = std::string((char*)tmp);
+        delete[] tmp;
+    }
 }

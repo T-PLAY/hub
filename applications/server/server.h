@@ -5,20 +5,40 @@
 #include <map>
 #include <socket.h>
 #include <stream.h>
+//#include <queue>
+#include <deque>
 
-// struct StreamViewer {
-// };
+struct Streamer;
+
+struct StreamViewer {
+    //public:
+    //    StreamViewer(const StreamViewer &) = default;
+    std::unique_ptr<OutputStream> mOutputStream;
+    Streamer* mSyncMaster = nullptr;
+//    std::vector<Stream::Acquisition> mAcqs;
+    std::deque<Stream::Acquisition> mAcqs;
+};
+
+//struct StreamSyncViewer : public StreamViewer {
+//    //    InputStream mInputStream;
+//    std::vector<Stream::Acquisition> mAcqs;
+//};
+
 struct Streamer {
     InputStream mInputStream;
-    std::list<OutputStream> mOutputStreams;
+    //    std::list<OutputStream> mOutputStreams;
+    std::list<StreamViewer> mStreamViewers;
+
+    std::list<StreamViewer*> mSyncViewers;
+    //    std::list<InputStream> mInputSlaveStreams;
+    //    std::list<OutputStream> mOutputSlaveStreams;
 };
 
 struct Viewer {
     const ClientSocket* const mSock = nullptr;
 
-    void notifyNewStreamer(const Streamer & streamer) const;
+    void notifyNewStreamer(const Streamer& streamer) const;
 };
-
 
 class Server {
 public:
