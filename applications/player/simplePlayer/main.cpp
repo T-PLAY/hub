@@ -7,8 +7,6 @@
 int main()
 {
 
-    //    std::filesystem::current_path(std::filesystem::temp_directory_path());
-    //    std::filesystem::create_directories("records");
     std::filesystem::current_path("../../recorder/simpleRecorder/records/");
 
     for (const auto& fileDir : std::filesystem::directory_iterator(".")) {
@@ -23,8 +21,6 @@ int main()
             Stream::Acquisition acq;
             while (true) {
                 inputStream >> acq;
-//                inputStream >> outputStream;
-//                outputStream << inputStream;
                 std::cout << "read acquisition : " << acq << std::endl;
                 outputStream << std::move(acq);
             }

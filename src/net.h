@@ -19,14 +19,14 @@ using socket_fd = int;
 #include <unistd.h>
 #endif
 
+#include <cassert>
 #include <cstring>
+#include <functional>
 #include <iostream>
+#include <list>
 #include <set>
 #include <stdio.h>
 #include <thread>
-#include <cassert>
-#include <list>
-#include <functional>
 
 namespace Net {
 static bool sInited = false;
@@ -37,7 +37,6 @@ static void clearSocket(socket_fd& sock)
     std::cout << "Net::clearSocket(" << sock << ") close socket" << std::endl;
     closesocket(sock);
     size_t size = sSockets.size();
-//    sSockets.erase(sock);
     assert(std::find(sSockets.begin(), sSockets.end(), sock) != sSockets.end());
     sSockets.remove(sock);
     assert(sSockets.size() == size - 1);

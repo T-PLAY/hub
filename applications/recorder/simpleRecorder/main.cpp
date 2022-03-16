@@ -6,7 +6,6 @@
 int main()
 {
 
-    //    std::filesystem::current_path(std::filesystem::temp_directory_path());
     std::filesystem::create_directories("records");
     std::filesystem::current_path("records");
 
@@ -43,7 +42,6 @@ int main()
 
                     std::thread thread([streamerSensorName]() {
                         InputStream inputStream(streamerSensorName);
-                        //                        std::ofstream file(streamerSensorName, std::ios::binary);
                         std::fstream file(streamerSensorName, std::ios::binary | std::ios::out);
                         assert(file.is_open());
 

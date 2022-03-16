@@ -130,13 +130,11 @@ public:
     class Acquisition {
     public:
         Acquisition(long long backendTimestamp = 0, long long backendTimeOfArrival = 0, unsigned char* data = nullptr);
-        Acquisition(const Acquisition & acq) = delete;
+        Acquisition(const Acquisition& acq) = delete;
         ~Acquisition();
 
-        Acquisition(Acquisition && acq);
-        Acquisition & operator=(Acquisition && acq);
-//        Acquisition(const Acquisition & acq);
-//        Acquisition() = delete;
+        Acquisition(Acquisition&& acq);
+        Acquisition& operator=(Acquisition&& acq);
         Acquisition clone() const;
 
         long long mBackendTimestamp; // microseconds
@@ -145,7 +143,6 @@ public:
 
         size_t mSize = 0;
         bool mOwnData = false;
-//        size_t mLifeId = 0;
 
     private:
     public:
@@ -155,7 +152,7 @@ public:
 public:
 protected:
     Stream(const std::string& sensorName, Format format, const std::vector<int>& dims, const std::string& ipv4 = ("127.0.0.1"), int port = SERVICE_PORT);
-    Stream(const std::string& sensorName, Format format, const std::vector<int>& dims, std::fstream & file);
+    Stream(const std::string& sensorName, Format format, const std::vector<int>& dims, std::fstream& file);
     ~Stream();
 
     Stream(const Stream& stream) = delete;
@@ -171,11 +168,8 @@ protected:
     Stream& operator=(Stream&& stream) = delete;
 
     static size_t computeAcquisitionSize(Format format, const std::vector<int>& dims);
-    //    void waitClose();
 
 public:
-    //    void ping() const;
-    //    void close();
     const std::string& getSensorName() const;
     const std::vector<int>& getDims() const;
     Format getFormat() const;
@@ -186,8 +180,6 @@ protected:
     Format mFormat;
     std::vector<int> mDims;
 
-    //    IOStream & mSocket;
-    //    IOStream * mSocket = nullptr;
     std::unique_ptr<IOStream> mIOStream;
     size_t mAcquisitionSize;
 };
@@ -197,11 +189,11 @@ class OutputStream;
 class InputStream : public Stream {
 public:
     InputStream(const std::string& sensorName, const std::string& syncSensorName = "", const std::string& ipv4 = "127.0.0.1", int port = SERVICE_PORT);
-    InputStream(const std::string& sensorName, std::fstream & file);
+    InputStream(const std::string& sensorName, std::fstream& file);
     InputStream(ClientSocket&& sock);
     ~InputStream();
 
-    Acquisition & operator>>(Acquisition& acquisition) const;
+    Acquisition& operator>>(Acquisition& acquisition) const;
     void operator>>(const OutputStream& outputStream) const;
 
 private:
@@ -218,7 +210,6 @@ public:
     void operator<<(const InputStream& inputStream) const;
 
 private:
-//    size_t mNAcquisitionWrote = 0;
 };
 
 #endif // FRAME_H

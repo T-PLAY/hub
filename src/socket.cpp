@@ -56,7 +56,6 @@ ClientSocket::ClientSocket(std::string ipv4, int port)
         perror("[socket] socket creation failed.\n");
         return;
     }
-//    Net::sSockets.insert(mFdSock);
     Net::sSockets.push_back(mFdSock);
 
     // Server address construction
@@ -180,7 +179,7 @@ void ClientSocket::read(unsigned char* data, size_t len) const
 {
     size_t downloadSize = 0;
     do {
-        int byteRead = recv(mFdSock, (char *)data + downloadSize, static_cast<int>(len - downloadSize), 0);
+        int byteRead = recv(mFdSock, (char*)data + downloadSize, static_cast<int>(len - downloadSize), 0);
         if (byteRead == -1) {
             std::cout << "byte read == -1 error" << std::endl;
             throw Socket::exception("Can't read packet, peer connection lost");
@@ -204,7 +203,6 @@ void ClientSocket::read(unsigned char* data, size_t len) const
 
 #endif
 }
-
 
 void ClientSocket::waitClose() const
 {

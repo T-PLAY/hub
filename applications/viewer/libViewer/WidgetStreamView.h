@@ -4,9 +4,9 @@
 #include <QObject>
 #include <QWidget>
 
-#include <stream.h>
 #include <QLabel>
 #include <QTableWidget>
+#include <stream.h>
 
 class WidgetStreamView : public QWidget {
     Q_OBJECT
@@ -17,12 +17,9 @@ public slots:
     virtual void setData(unsigned char* img_ptr, std::vector<int> dims, Stream::Format format) = 0;
 
 protected:
-    //    void paintEvent(QPaintEvent* event) override;
-
 protected:
     Stream::Format mFormat = Stream::Format::NONE;
     unsigned char* mData = nullptr;
-//    std::vector<int> mDims;
 };
 
 class WidgetStreamView2D : public WidgetStreamView {
@@ -51,13 +48,8 @@ public slots:
     void setData(unsigned char* img_ptr, std::vector<int> dims, Stream::Format format) override;
 
 protected:
-//    void paintEvent(QPaintEvent* event) override;
-
 private:
-//    QTableWidget * mTable = nullptr;
-    QLabel * mLabel = nullptr;
-//    int mWidth;
-//    int mHeight;
+    QLabel* mLabel = nullptr;
 };
 
 #endif // WIDGETSTREAMVIEW_H
