@@ -45,11 +45,18 @@ void Server::run()
             switch (clientType) {
             case ClientSocket::Type::STREAMER: {
 
-                Streamer streamer { std::move(sock), {} };
+                Streamer streamer { std::move(sock), "", {}, {}, nullptr, {} };
                 const std::string sensorName = streamer.mInputStream.getSensorName();
+                // sensor is unique
+                //                if (mStreamers.find(sensorName) != mStreamers.end())
+                //                    return;
+                streamer.mSensorName = sensorName;
                 const auto& inputStream = streamer.mInputStream;
-                //                auto& outputStreams = streamer.mOutputStreams;
-                auto& streamViewers = streamer.mStreamViewers;
+                auto& outputStreams = streamer.mOutputStreams;
+                auto& sensor2syncViewers = streamer.mSensor2syncViewers;
+                auto& sensor2acqs = streamer.mSensor2acqs;
+                auto& syncMaster = streamer.mSyncMaster;
+                //                auto& streamViewers = streamer.mStreamViewers;
 
                 assert(mStreamers.find(sensorName) == mStreamers.end());
                 mStreamers[sensorName] = &streamer;
@@ -85,121 +92,143 @@ void Server::run()
                         //                        std::cout << getServerHeader(iThread) << "[streamer] receive acq " << acq << std::endl;
 
                         // broadcast data
-                        // stream new acquisition for all viewers of this stream
-                        auto it = streamViewers.begin();
-                        while (it != streamViewers.end()) {
-                            //                            const auto& outputStream = *it;
-                            auto& streamViewer = *it;
+                        // send new acquisition for all no sync stream viewers of this stream
+                        {
+                            auto it = outputStreams.begin();
+                            while (it != outputStreams.end()) {
+                                const auto& outputStream = *it;
+                                //                            StreamViewer& streamViewer = *it;
+                                try {
+                                    // std::cout << getServerHeader(iThread) << "[streamer] receive and send acq : \t" << acq << std::endl;
+                                    outputStream << acq;
 
-                            try {
-                                if (streamViewer.mSyncMaster != nullptr) {
-                                    std::cout << getServerHeader(iThread) << "[streamer] save acq : \t\t" << acq << std::endl;
-                                    //                                    Stream::Acquisition acqTest;
-                                    //                                    Stream::Acquisition acq2 = acqTest;
-                                    //                                    streamViewer.mAcqs.push_back(acq);
-                                    streamViewer.mAcqs.push_front(acq.clone());
+                                    ++it;
 
-                                } else {
-                                    std::cout << getServerHeader(iThread) << "[streamer] receive and send acq : \t" << acq << std::endl;
-                                    *streamViewer.mOutputStream << acq;
+                                } catch (Socket::exception& e) {
+                                    // no sync stream viewer lost
+                                    std::cout << getServerHeader(iThread) << "[streamer] out : catch outputStream exception : " << e.what() << std::endl;
+                                    it = outputStreams.erase(it);
 
-                                    auto it2 = streamer.mSyncViewers.begin();
-                                    while (it2 != streamer.mSyncViewers.end()) {
-                                        auto& syncViewer = *it2;
-                                        //                                    for (const auto& syncViewer : streamer.mSyncViewers) {
-                                        auto& acqs = syncViewer->mAcqs;
-                                        //                                        assert(acqs.size() > 0);
-                                        while (acqs.empty()) {
-                                            std::cout << getServerHeader(iThread) << "[streamer] empty acqs" << std::endl;
-                                            std::this_thread::sleep_for(std::chrono::milliseconds(100));
-                                        }
+                                    //                                if (streamViewers.empty()) {
+                                    //                                    for (const auto& syncViewer : streamer.mSyncViewers) {
+                                    //                                        syncViewer->mSyncMaster = nullptr;
+                                    //                                        syncViewer->mAcqs.clear();
+                                    //                                    }
+                                    //                                    streamer.mSyncViewers.clear();
+                                    //                                }
 
-                                        Stream::Acquisition bestMatchAcq = std::move(acqs.back());
-                                        acqs.pop_back();
-                                        auto minDist = std::abs(acq.mBackendTimestamp - bestMatchAcq.mBackendTimestamp);
+                                    std::cout << getServerHeader(iThread) << "[streamer] out : end stream viewer\t\t server status : " << getStatus() << std::endl;
+                                    std::cout << "---------------------------------------------------------------------------------------------" << std::endl;
 
-                                        bool foundBestMatch = false;
-                                        while (!acqs.empty() && !foundBestMatch) {
-                                            auto& acq2 = acqs.back();
-                                            auto dist = std::abs(acq.mBackendTimestamp - acq2.mBackendTimestamp);
-                                            if (dist < minDist) {
-                                                minDist = dist;
-                                                std::cout << getServerHeader(iThread) << "[streamer] delete acq : \t\t" << bestMatchAcq << std::endl;
-                                                bestMatchAcq = std::move(acq2);
-                                                acqs.pop_back();
-                                            } else {
-                                                foundBestMatch = true;
-                                            }
-                                        }
-                                        std::cout << getServerHeader(iThread) << "[streamer] best acq : \t\t" << bestMatchAcq << "\t(" << acqs.size() << ")" << std::endl;
-
-                                        acqs.push_back(bestMatchAcq.clone());
-
-                                        //                                    for (const auto & syncViewerAcq : syncViewer->mAcqs) {
-                                        //                                        for (int i = 1; i < acqs.size(); ++i) {
-                                        //                                            const auto& curAcq = acqs[i];
-
-                                        //                                            auto dist = std::abs(acq.mBackendTimestamp - curAcq.mBackendTimestamp);
-                                        //                                            if (dist < minDist) {
-                                        //                                                minDist = dist;
-                                        //                                                bestMatchAcq = curAcq;
-                                        //                                            }
-                                        //                                        }
-
-                                        try {
-                                            *syncViewer->mOutputStream << bestMatchAcq;
-                                            std::cout << "----------" << std::endl;
-                                            ++it2;
-                                        } catch (std::exception& e) {
-                                            it2 = streamer.mSyncViewers.erase(it2);
-
-//                                            *syncViewer->mSyncMaster->mStreamViewers.remove()
-
-                                            std::cout << getServerHeader(iThread) << "[streamer] out : end sync viewer\t server status : " << getStatus() << std::endl;
-                                        }
-
-                                        //                                        syncViewer->mAcqs.clear();
-                                    }
+                                    //                            } catch (std::exception& e) {
+                                    //                                std::cout << getServerHeader(iThread) << "[streamer] out : catch exception : " << e.what() << std::endl;
+                                    //                                throw;
                                 }
-
-                                ++it;
-
-                            } catch (Socket::exception& e) {
-                                std::cout << getServerHeader(iThread) << "[streamer] out : catch socket exception : " << e.what() << std::endl;
-                                it = streamViewers.erase(it);
-                                std::cout << getServerHeader(iThread) << "[streamer] out : end stream viewer\t server status : " << getStatus() << std::endl;
-                                std::cout << "---------------------------------------------------------------------------------------------" << std::endl;
-                            } catch (std::exception& e) {
-                                std::cout << getServerHeader(iThread) << "[streamer] out : catch exception : " << e.what() << std::endl;
-                                throw;
                             }
                         }
 
-                        //                        const auto end = std::chrono::high_resolution_clock::now();
-                        //                        const auto fps = (1'000'000) / std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
-                        //                        std::cout << "fps : " << fps << std::endl;
+                        // save new acquisition for all sync stream viewers of this stream
+                        if (syncMaster != nullptr) {
+                            Streamer* root = syncMaster;
+                            while (root->mSyncMaster != nullptr)
+                                root = root->mSyncMaster;
 
-                        //                const auto maxFps = 60;
-                        //                const auto now = std::chrono::high_resolution_clock::now();
-                        //                std::cout << "sleep for " <<  (start + std::chrono::microseconds(1'000'000 / maxFps) - now).count() << std::endl;
-                        //                std::this_thread::sleep_until(start + std::chrono::microseconds(1'000'000 / maxFps));
+                            // std::cout << getServerHeader(iThread) << "[streamer] save acq : \t\t" << acq << std::endl;
+                            //                                    Stream::Acquisition acqTest;
+                            //                                    Stream::Acquisition acq2 = acqTest;
+                            //                                    streamViewer.mAcqs.push_back(acq);
+                            root->mSensor2acqs[sensorName].push_front(acq.clone());
+                        }
 
-                        // std::cout << getServerHeader(iThread) << "[streamer] data from streamer sent for " << outputStreams.size() << " stream viewers" << std::endl;
+                        //                                if (streamViewer.mSyncMaster != nullptr) {
 
-                        //                            const auto maxFps = 60;
-                        //                            const auto end = start + std::chrono::microseconds(1'000'000 / maxFps);
-                        //                            std::this_thread::sleep_until(end);
+                        //                                } else {
+                        //                                    *streamViewer.mOutputStream << acq;
+                        //                                }
 
-                        //                        } else {
-                        //                            inputStream.ping();
-                        //                            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-                        //                        }
+                        // for all synchronize viewers of this stream, send best match acquisition
+                        // according to the current acquisition
+                        {
+                            auto it = sensor2syncViewers.begin();
+                            while (it != sensor2syncViewers.end()) {
+                                //                        for (auto& pair : sensor2syncViewers) {
+                                auto& pair = *it;
+                                const auto& syncSensorName = pair.first;
+                                auto& outputStreams = pair.second;
+
+                                assert(!outputStreams.empty());
+                                //                                if (!outputStreams.empty()) {
+                                //                                auto& acqs = sensor2acqs.at(syncSensorName);
+                                auto& acqs = sensor2acqs[syncSensorName];
+                                //                                        assert(acqs.size() > 0);
+                                while (acqs.empty()) {
+                                    std::cout << getServerHeader(iThread) << "[streamer] empty acqs, sleep" << std::endl;
+                                    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                                }
+
+                                Stream::Acquisition bestMatchAcq = std::move(acqs.back());
+                                // search best match acq
+                                {
+                                    acqs.pop_back();
+                                    auto minDist = std::abs(acq.mBackendTimestamp - bestMatchAcq.mBackendTimestamp);
+
+                                    bool foundBestMatch = false;
+                                    //                                    while (!acqs.empty() && !foundBestMatch) {
+                                    while (!foundBestMatch) {
+                                        while (acqs.empty()) {
+                                            std::this_thread::sleep_for(std::chrono::milliseconds(1));
+                                        }
+                                        auto& acq2 = acqs.back();
+                                        auto dist = std::abs(acq.mBackendTimestamp - acq2.mBackendTimestamp);
+                                        if (dist < minDist) {
+                                            minDist = dist;
+                                            // std::cout << getServerHeader(iThread) << "[streamer] delete acq : \t\t" << bestMatchAcq << std::endl;
+                                            bestMatchAcq = std::move(acq2);
+                                            acqs.pop_back();
+                                        } else {
+                                            foundBestMatch = true;
+                                        }
+                                    }
+
+                                    assert(minDist < 1000 + std::min(acq.mBackendTimeOfArrival - acq.mBackendTimestamp, bestMatchAcq.mBackendTimeOfArrival - bestMatchAcq.mBackendTimestamp) / 2);
+                                    // std::cout << getServerHeader(iThread) << "[streamer] best acq : \t\t" << bestMatchAcq << "\t(" << acqs.size() << ")" << std::endl;
+
+                                    acqs.push_back(bestMatchAcq.clone());
+                                }
+
+                                // broadcast best match acquisition fo each stream viewers
+                                auto it2 = outputStreams.begin();
+                                while (it2 != outputStreams.end()) {
+                                    auto& outputStream = *it2;
+
+                                    try {
+                                        outputStream << bestMatchAcq;
+                                        // std::cout << "----------" << std::endl;
+                                        ++it2;
+
+                                    } catch (std::exception& e) {
+                                        it2 = outputStreams.erase(it2);
+                                    }
+                                }
+                                //                                } // if (!outputStreams.empty())
+
+                                if (outputStreams.empty()) {
+                                    mStreamers.at(syncSensorName)->mSyncMaster = nullptr;
+                                    assert(it2 == outputStreams.end());
+                                    it = sensor2syncViewers.erase(it);
+                                    std::cout << getServerHeader(iThread) << "[streamer] out : end sync viewer\t\t server status : " << getStatus() << std::endl;
+                                } else {
+
+                                    ++it;
+                                }
+                            } // while (it != sensor2syncViewers.end())
+                        }
                     } // while (true)
 
                 } catch (Socket::exception& e) {
                     std::cout << getServerHeader(iThread) << "[streamer] in : catch socket exception : " << e.what() << std::endl;
                 } catch (std::exception& e) {
-                    std::cout << getServerHeader(iThread) << "[streamer] in : catch exception : " << e.what() << std::endl;
+                    std::cout << getServerHeader(iThread) << "[streamer] in : catch inputStream exception : " << e.what() << std::endl;
                     throw;
                 }
                 mStreamers.erase(sensorName);
@@ -207,6 +236,10 @@ void Server::run()
                 //                for (auto& outputStream : streamer.mOutputStreams) {
                 //                    outputStream.close();
                 //                }
+                for (const auto& pair : sensor2syncViewers) {
+                    const auto& syncSensorName = pair.first;
+                    mStreamers.at(syncSensorName)->mSyncMaster = nullptr;
+                }
 
                 for (const auto* viewer : mViewers) {
                     viewer->mSock->write(Socket::Message::DEL_STREAMER);
@@ -271,16 +304,29 @@ void Server::run()
                     //                    OutputStream && outputStream = OutputStream(std::move(sock), streamer->mInputStream);
                     //                    StreamViewer && streamViewer{{std::move(sock), streamer->mInputStream}};
                     //                    streamer->mStreamViewers.push_back({{std::move(sock), streamer->mInputStream}});
-                    StreamViewer streamViewer;
-                    streamViewer.mOutputStream = std::make_unique<OutputStream>(std::move(sock), streamer->mInputStream);
-                    streamer->mStreamViewers.emplace_back(std::move(streamViewer));
+                    //                    streamer->mStreamViewers.push_back(&streamViewer);
+                    //                    streamer->mStreamViewers.emplace_back(std::move(tmp));
 
-                    StreamViewer& streamViewer2 = streamer->mStreamViewers.back();
+                    if (syncSensorName == "") {
+                        streamer->mOutputStreams.emplace_back(std::move(sock), streamer->mInputStream);
 
-                    if (syncSensorName != "") {
+                    } else {
                         Streamer* syncMaster = mStreamers.at(syncSensorName);
-                        streamViewer2.mSyncMaster = syncMaster;
-                        syncMaster->mSyncViewers.push_back(&streamViewer2);
+
+                        syncMaster->mSensor2syncViewers[sensorName].emplace_back(std::move(sock), streamer->mInputStream);
+                        assert(streamer->mSyncMaster == nullptr || streamer->mSyncMaster == syncMaster);
+                        streamer->mSyncMaster = syncMaster;
+
+                        //                        StreamViewer tmp;
+                        //                        tmp.mOutputStream = std::make_unique<OutputStream>(std::move(sock), streamer->mInputStream);
+                        //                        tmp.mSyncMaster = syncMaster;
+                        //                        tmp.mStreamer = streamer;
+                        //                        streamer->mSyncViewers.emplace_back(std::move(tmp));
+
+                        //                        StreamViewer& syncViewer = streamer->mSyncViewers.back();
+                        //                        syncViewer.mSyncMaster = syncMaster;
+                        //                        syncMaster->mSyncViewers.push_back(&streamViewer2);
+                        //                        syncMaster->mSyncViewers.push_back(&syncViewer);
                     }
 
                 } else {
@@ -310,8 +356,8 @@ std::string Server::getStatus() const
         const auto& sensorName = pair.first;
         const auto& streamer = pair.second;
         std::string str = sensorName.substr(0, 3);
-        //        streamViewersStr += "(" + str + "," + std::to_string(streamer->mOutputStreams.size()) + ")";
-        streamViewersStr += "(" + str + "," + std::to_string(streamer->mStreamViewers.size()) + ")";
+        streamViewersStr += "(" + str + "," + std::to_string(streamer->mOutputStreams.size()) + "," + std::to_string(streamer->mSensor2syncViewers.size()) + ")";
+        //        streamViewersStr += "(" + str + "," + std::to_string(streamer->mStreamViewers.size()) + ")";
 
         streamViewersStr += ",";
     }

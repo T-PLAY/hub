@@ -5,16 +5,22 @@
 
 #include <stream.h>
 
-int main()
+int main(int argc, char* argv[])
 {
+
+//    assert(argc == 2);
+//    const int iStream = atoi(argv[1]);
+//    std::string sensorNames[2] = { "proceduralStreamer", "proceduralStreamer2" };
+//    std::string sensorSyncNames[2] = { "", "proceduralStreamer" };
 
     while (true) {
         try {
             InputStream inputStream("proceduralStreamer");
+            //            InputStream inputStream(sensorNames[iStream], sensorSyncNames[iStream]);
             std::cout << "proceduralStreamer inited" << std::endl;
             InputStream inputStream2("proceduralStreamer2", "proceduralStreamer");
-//            InputStream inputStream2("proceduralStreamer2");
-            std::cout << "proceduralStreamer2 inited" << std::endl;
+            //            InputStream inputStream2("proceduralStreamer2");
+            //            std::cout << "proceduralStreamer2 inited" << std::endl;
             // InputStream inputStream("L500 Depth Sensor (Depth)");
             //             InputStream inputStream("Polhemus Patriot (probe)");
 
@@ -28,10 +34,10 @@ int main()
                 const auto start = std::chrono::high_resolution_clock::now();
                 for (int i = 0; i < 10; ++i) {
                     inputStream >> acq;
-                    std::cout << "inputStream acq : " << acq << std::endl;
+//                    std::cout << "inputStream acq : " << acq << std::endl;
 
                     inputStream2 >> acq2;
-                    std::cout << "inputStream2 acq : " << acq2 << std::endl;
+//                    std::cout << "inputStream2 acq : " << acq2 << std::endl;
                     std::cout << "timestamp start diff : " << std::abs(acq.mBackendTimestamp - acq2.mBackendTimestamp) / 1000.0 << " milliseconds" << std::endl;
 
                     // const int dec = acq.mData[0];
