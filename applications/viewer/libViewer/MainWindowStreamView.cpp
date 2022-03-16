@@ -9,19 +9,11 @@ Thread_InputStream::Thread_InputStream(QObject* parent, std::string sensorName)
     , mInputStream(sensorName)
 {
     std::cout << "Thread_InputStream()" << std::endl;
-
-    //    size_t acquisitionSize = mInputStream.getAcquisitionSize();
-    //    mData[0] = new unsigned char[acquisitionSize];
-    //    mData[1] = new unsigned char[acquisitionSize];
-    //    mData = new unsigned char[acquisitionSize];
 }
 
 Thread_InputStream::~Thread_InputStream()
 {
     std::cout << "~Thread_InputStream()" << std::endl;
-    //    delete[] mData[0];
-    //    delete[] mData[1];
-    //    delete mData;
 }
 
 void Thread_InputStream::run()
@@ -30,23 +22,10 @@ void Thread_InputStream::run()
 
     try {
 
-        //        Stream::Acquisition acq;
-        //        acq.mData = mData;
-
         while (!this->isInterruptionRequested()) {
 
-            //            acq.mData = mData[m_iWriteBuffer];
-            //            acq.mData = mData;
             mInputStream >> mAcq;
             // std::cout << "receive acq : " << mAcq << std::endl;
-
-            //            auto dec = mAcq.mBackendTimeOfArrival - mAcq.mBackendTimestamp - 1'000'000 / 40;
-            //            if (dec > 10'000) {
-            //                std::cout << "not 40Hz dec = " << dec << std::endl;
-            //            }
-
-            //            m_iReadBuffer = m_iWriteBuffer;
-            //            m_iWriteBuffer = (m_iWriteBuffer + 1) % 2;
 
             emit newImage();
         }
@@ -81,8 +60,6 @@ MainWindowStreamView::MainWindowStreamView(QWidget* parent, std::string sensorNa
         ui->centralwidget = new WidgetStreamView1D(this);
 
         ui->centralwidget->setMinimumSize(350, 30);
-        //        ui->centralwidget->setMinimumWidth(100);
-        //        ui->centralwidget->setMinimumHeight(30);
 
     } else if (dim == 2) {
 
@@ -95,9 +72,6 @@ MainWindowStreamView::MainWindowStreamView(QWidget* parent, std::string sensorNa
         exit(1);
     }
     ui->centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
-    //    auto policy = QSizePolicy::Maximum;
-    //    QSizePolicy sizePolicy1(policy, policy);
-    //    ui->centralwidget->setSizePolicy(sizePolicy1);
     setCentralWidget(ui->centralwidget);
 
     QObject::connect(&mThread, &Thread_InputStream::newImage, this, &MainWindowStreamView::newImage);
@@ -136,9 +110,7 @@ void MainWindowStreamView::newImage()
         mStartFps = std::chrono::high_resolution_clock::now();
     }
 
-    //    assert(mThread.mData[mThread.m_iReadBuffer] != nullptr);
     assert(mThread.mAcq.mData != nullptr);
-    //    ui->centralwidget->setImage((unsigned char*)mThread.mData[mThread.m_iReadBuffer], mThread.mInputStream.getDims().at(0), mThread.mInputStream.getDims().at(1), mThread.mInputStream.getFormat());
     (static_cast<WidgetStreamView*>(ui->centralwidget))->setData((unsigned char*)mThread.mAcq.mData, mThread.mInputStream.getDims(), mThread.mInputStream.getFormat());
 
     ++mCounterFps;

@@ -22,17 +22,14 @@ int main(int argc, char* argv[])
 #ifdef DEPTH_STREAM
             OutputStream depthStream("L500 Depth Sensor (Depth)", Stream::Format::Z16, { 640, 480 });
 #endif
-            //            auto depthAcq = depthStream.acquisition();
 
 #ifdef RGB_STREAM
             OutputStream rgbStream("L500 RGB Camera", Stream::Format::RGB8, { 1280, 720 });
 #endif
-            //            auto colorAcq = rgbStream.acquisition();
 
 #ifdef INFRARED_STREAM
             OutputStream infraredStream("L500 Depth Sensor (Infrared)", Stream::Format::Y8, { 640, 480 });
 #endif
-            //            auto irAcq = infraredStream.acquisition();
 
             // Create a Pipeline - this serves as a top-level API for streaming and processing frames
             rs2::pipeline p;

@@ -12,7 +12,7 @@
 #include <memory>
 
 #ifndef WIN32
-//using min = std::min;
+// using min = std::min;
 #define min std::min
 #endif
 
@@ -21,8 +21,6 @@ std::ostream& operator<<(std::ostream& os, const Stream::Acquisition& acq)
     os << "start:" << acq.mBackendTimestamp / 1000 << ", end:" << acq.mBackendTimeOfArrival / 1000;
     os << ", data:[";
     for (auto i = 0; i < min((int)acq.mSize, 10); ++i) {
-        //    for (auto i = 0; i < std::min((int)acq.mSize, 10); ++i) {
-        //    for (auto i = 0ul; i < 10; ++i) {
         os << (int)acq.mData[i] << " ";
     }
     os << "], \t";
@@ -66,7 +64,6 @@ Stream::~Stream()
 }
 
 Stream::Stream(ClientSocket&& clientSocket)
-    //    : mIOStream(std::move(clientSocket))
     : mIOStream(new ClientSocket(std::move(clientSocket)))
 {
 }
@@ -78,29 +75,17 @@ size_t Stream::computeAcquisitionSize(Format format, const std::vector<int>& dim
 
 // void Stream::waitClose()
 //{
-//     while (true) {
-//         Socket::Message clientMessage;
-//         mIOStream.read(clientMessage);
 
-//        std::cout << "####### read message " << Socket::message2string[(int)clientMessage] << " from stream viewer" << std::endl;
-
-//        if (clientMessage == Socket::Message::CLOSE) {
-//            std::cout << "####### stream viewer want to close" << std::endl;
-//            break;
-//        }
-//    }
 //}
 
 ///////////////////////////////////////////////////////////////////////////////
 
 // void Stream::ping() const
 //{
-//     mIOStream.write(Socket::Message::PING);
 // }
 
 // void Stream::close()
 //{
-//     mIOStream.write(Socket::Message::CLOSE);
 // }
 
 const std::string& Stream::getSensorName() const
@@ -204,12 +189,6 @@ Stream::Acquisition& InputStream::operator>>(Acquisition& acquisition) const
     assert(!acquisition.mOwnData || acquisition.mSize == mAcquisitionSize);
     assert(acquisition.mData != nullptr);
 
-    //    mIOStream.write(Socket::Message::SYNC);
-    //    Socket::Message message;
-    //    mIOStream.read(message);
-
-    //    switch (message) {
-    //    case Socket::Message::DATA: {
     mIOStream->read(acquisition.mBackendTimestamp);
     mIOStream->read(acquisition.mBackendTimeOfArrival);
     mIOStream->read(acquisition.mData, mAcquisitionSize);
@@ -220,17 +199,6 @@ Stream::Acquisition& InputStream::operator>>(Acquisition& acquisition) const
     std::cout << "[InputStream] read acq :  " << acquisition << std::endl;
 #endif
 
-    //    } break;
-
-    //    case Socket::Message::CLOSE:
-    //        std::cout << "[InputStream] request close" << std::endl;
-    //        throw Socket::exception("server close connection");
-    //        break;
-
-    //    default:
-    //        std::cout << "[InputStream] unknown message from server" << std::endl;
-    //        exit(1);
-    //    }
     return acquisition;
 }
 
@@ -239,10 +207,6 @@ void InputStream::operator>>(const OutputStream& outputStream) const
     Stream::Acquisition acq;
     InputStream::operator>>(acq);
     outputStream << std::move(acq);
-
-    //    mIOStream->write(acquisition.mBackendTimestamp);
-    //    mIOStream->write(acquisition.mBackendTimeOfArrival);
-    //    mIOStream->write(acquisition.mData, mAcquisitionSize);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -287,38 +251,12 @@ void OutputStream::operator<<(const Acquisition& acquisition) const
 
     assert(acquisition.mBackendTimestamp <= acquisition.mBackendTimeOfArrival);
 
-    //    Socket::Message message;
-
-    //    bool acquisitionSent = false;
-    //    while (!acquisitionSent) {
-
-    //        mIOStream.read(message);
-
-    //        switch (message) {
-    //        case Socket::Message::PING:
-    //            assert(false);
-    //            break;
-
-    //        case Socket::Message::SYNC: {
-
     //#ifdef DEBUG_STREAM
-    //            std::cout << "[OutputStream] send acq : " << acquisition << std::endl;
     //#endif
-
-    //            mIOStream.write(Socket::Message::DATA);
 
     mIOStream->write(acquisition.mBackendTimestamp);
     mIOStream->write(acquisition.mBackendTimeOfArrival);
     mIOStream->write(acquisition.mData, mAcquisitionSize);
-
-    //            acquisitionSent = true;
-    //        } break;
-
-    //        default:
-    //            std::cout << "[OutputStream] unknown message from server" << std::endl;
-    //            exit(1);
-    //        }
-    //    }
 }
 
 void OutputStream::operator<<(const InputStream& inputStream) const
@@ -347,28 +285,19 @@ Stream::Acquisition::Acquisition(long long backendTimestamp, long long backendTi
 {
 }
 
-//Stream::Acquisition::Acquisition(Acquisition &&acq)
+// Stream::Acquisition::Acquisition(Acquisition &&acq)
 //{
 
 //}
 
-//Stream::Acquisition &Stream::Acquisition::operator=(Acquisition &&acq)
+// Stream::Acquisition &Stream::Acquisition::operator=(Acquisition &&acq)
 //{
 
 //}
 
-//Stream::Acquisition::Acquisition(const Acquisition& acq)
-//    : mBackendTimestamp(acq.mBackendTimestamp)
-//    , mBackendTimeOfArrival(acq.mBackendTimeOfArrival)
-//    , mData(acq.mData)
+// Stream::Acquisition::Acquisition(const Acquisition& acq)
 //{
-//    if (acq.mOwnData) {
-//        mOwnData = true;
-//        mSize = acq.mSize;
-//        mData = new unsigned char[mSize];
-//        memcpy(mData, acq.mData, mSize);
-//    }
-//}
+// }
 
 Stream::Acquisition::~Acquisition()
 {

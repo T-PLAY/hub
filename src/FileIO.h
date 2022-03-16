@@ -4,8 +4,7 @@
 #include <IOStream.h>
 #include <fstream>
 
-class FileIO : public IOStream
-{
+class FileIO : public IOStream {
     class exception : public std::runtime_error {
     public:
         explicit exception(const char* const message) throw()
@@ -19,13 +18,13 @@ class FileIO : public IOStream
     };
 
 public:
-    FileIO(std::fstream & file);
+    FileIO(std::fstream& file);
 
     void write(const unsigned char* data, size_t len) const override;
     void read(unsigned char* data, size_t len) const override;
 
 protected:
-    std::fstream & mFile;
+    std::fstream& mFile;
 };
 
 #endif // FILEIO_H

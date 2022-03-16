@@ -20,11 +20,7 @@ public:
     // overriding the QThread's run() method
     void run();
 
-//    unsigned char* mData[2];
-//    unsigned char* mData = nullptr;
     Stream::Acquisition mAcq;
-//    int m_iReadBuffer = 0;
-//    int m_iWriteBuffer = 0;
 
     InputStream mInputStream;
 
