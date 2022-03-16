@@ -11,6 +11,11 @@
 #include <FileIO.h>
 #include <memory>
 
+#ifndef WIN32
+//using min = std::min;
+#define min std::min
+#endif
+
 std::ostream& operator<<(std::ostream& os, const Stream::Acquisition& acq)
 {
     os << "start:" << acq.mBackendTimestamp / 1000 << ", end:" << acq.mBackendTimeOfArrival / 1000;
