@@ -18,7 +18,7 @@
 CPDIdev g_pdiDev;
 CPDImdat g_pdiMDat;
 CPDIser g_pdiSer;
-unsigned long g_dwFrameSize;
+//unsigned long g_dwFrameSize;
 BOOL g_bCnxReady;
 unsigned long g_dwStationMap;
 HWND g_hwnd = NULL;
@@ -82,7 +82,7 @@ int main(int argc, char* argv[])
                         if (!(g_pdiDev.LastPnoPtr(pBuf, size))) {
                             AddResultMsg("LastPnoPtr");
                             exit(1);
-                        } else if ((pBuf == 0) || (size == 0)) {
+                        } else if ((pBuf == nullptr) || (size == 0)) {
                             std::cout << "pBuf = 0, size = " << size << std::endl;
 
                         } else if (pBuf != pLastBuf) {
@@ -90,21 +90,30 @@ int main(int argc, char* argv[])
                             assert(pBuf != nullptr);
                             assert(pBuf != 0);
                             assert(size == 8 + 12 + 16);
-                            assert(size == posStream.getAcquisitionSize() + 8); // header 8 bytes, frame count 4 bytes
+                            //                            assert(size == 8 + 12 + 12);
+                            assert(size == 8 + posStream.getAcquisitionSize()); // header 8 bytes, frame count 4 bytes
+                            //                            assert(size == 8 + posStream.getAcquisitionSize() - 4); // header 8 bytes, frame count 4 bytes
 
                             unsigned char* data = &pBuf[8]; // size of header = 8 bytes
                             const auto timestampStart = std::chrono::duration_cast<std::chrono::microseconds>((end - std::chrono::microseconds(18'500)).time_since_epoch()).count(); // Polhemus technical spec latency = 18.5ms
                             const auto timestampEnd = std::chrono::duration_cast<std::chrono::microseconds>(end.time_since_epoch()).count();
 
+                            float* translation = (float*)data;
+                            float* quaternion = (float*)&data[12];
+                            std::string str = std::string("x:") + std::to_string(translation[0]) + ", y:" + std::to_string(translation[1]) + ", z:" + std::to_string(translation[2])
+                                + "\naz:" + std::to_string(quaternion[0]) + ", el:" + std::to_string(quaternion[1]) + ", ro:" + std::to_string(quaternion[2]) + ", q4:" + std::to_string(quaternion[3]);
+                            //                                + "\naz:" + std::to_string(quaternion[0]) + ", el:" + std::to_string(quaternion[1]) + ", ro:" + std::to_string(quaternion[2]);
+                            std::cout << str << std::endl;
+
                             // Try to get a frame of a depth image
-                            posStream << Stream::Acquisition { timestampStart, timestampEnd, &data[4] };
+                            posStream << Stream::Acquisition { timestampStart, timestampEnd, data };
 
                             pLastBuf = pBuf;
                         } else {
                             std::cout << "no new frame" << std::endl;
                         }
 
-                        const auto maxFps = 80;
+                        const auto maxFps = 10;
                         const auto end = start + std::chrono::nanoseconds(1'000'000'000 / maxFps);
                         std::this_thread::sleep_until(end);
 
@@ -161,7 +170,8 @@ bool Initialize()
     g_pdiMDat.Empty();
     g_pdiMDat.Append(PDI_MODATA_POS);
     g_pdiMDat.Append(PDI_MODATA_QTRN);
-    g_dwFrameSize = 8 + 4 + 12 + 16;
+    //    g_pdiMDat.Append(PDI_MODATA_ORI);
+    //    g_dwFrameSize = 8 + 12 + 16;
 
     g_bCnxReady = false;
     g_dwStationMap = 0;
@@ -232,6 +242,14 @@ bool SetupDevice()
 
     // g_pdiDev.StartPipeExport();
     // AddResultMsg("StartPipeExport");
+
+    // set hemisphere tracking
+    std::cout << _T("\tSet SHemiTrack :");
+    bool bResult = g_pdiDev.SetSHemiTrack(-1);
+    if (bResult != TRUE) {
+        std::cout << _T("Failed. Continuing anyway.") << std::endl;
+    } else
+        std::cout << _T("Success.") << std::endl;
 
     std::string msg;
 

@@ -7,27 +7,35 @@
 
 int main(int argc, char* argv[])
 {
+    std::string sensorNames[2] = { "proceduralStreamer", "proceduralStreamer2" };
+    std::string sensorMasterNames[2] = { "", "proceduralStreamer" };
+    //    std::string sensorMasterNames[2] = { "", "" };
+    assert(argc == 2);
+    int i = atoi(argv[1]);
+    assert(i == 0 || i == 1);
 
     while (true) {
         try {
-            InputStream inputStream("proceduralStreamer");
+            //            InputStream inputStream("proceduralStreamer");
+            InputStream inputStream(sensorNames[i], sensorMasterNames[i]);
             std::cout << "proceduralStreamer inited" << std::endl;
-            InputStream inputStream2("proceduralStreamer2", "proceduralStreamer");
+            //            InputStream inputStream2("proceduralStreamer2", "proceduralStreamer");
+            //            InputStream inputStream2("proceduralStreamer2");
             // InputStream inputStream("L500 Depth Sensor (Depth)");
 
             const size_t acquisitionSize = inputStream.getAcquisitionSize();
             std::cout << "acquisitionSize = " << acquisitionSize << std::endl;
             // const int width = inputStream.getDims().at(0);
 
-            Stream::Acquisition acq, acq2;
+            Stream::Acquisition acq;
 
             while (true) {
                 const auto start = std::chrono::high_resolution_clock::now();
                 for (int i = 0; i < 10; ++i) {
                     inputStream >> acq;
 
-                    inputStream2 >> acq2;
-                    std::cout << "timestamp start diff : " << std::abs(acq.mBackendTimestamp - acq2.mBackendTimestamp) / 1000.0 << " milliseconds" << std::endl;
+                    //                    inputStream2 >> acq2;
+                    //                    std::cout << "timestamp start diff : " << std::abs(acq.mBackendTimestamp - acq2.mBackendTimestamp) / 1000.0 << " milliseconds" << std::endl;
 
                     // const int dec = acq.mData[0];
                     // for (size_t i = 0; i < acquisitionSize; ++i) {

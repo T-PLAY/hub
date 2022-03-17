@@ -152,7 +152,7 @@ void ClientSocket::write(const unsigned char* data, size_t len) const
         int byteSent = send(mFdSock, (const char*)data + uploadSize, static_cast<int>(len - uploadSize), 0);
         if (byteSent == -1) {
             std::cout << getHeader(mFdSock) << "can't send packet " << byteSent << "/" << len << std::endl;
-            perror("Failed to send.\n");
+//            perror("Failed to send.\n");
             throw Socket::exception("Can't write packet, peer connection lost");
 
         } else if (byteSent == 0) {
