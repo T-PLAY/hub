@@ -69,7 +69,12 @@ int main(int argc, char* argv[])
 
             while (true) { // each server connect
                 try {
-                    OutputStream posStream("Polhemus Patriot (probe)", Stream::Format::DOF6, { 1 });
+                    //                    OutputStream posStream("Polhemus Patriot (probe)", Stream::Format::DOF6, { 1 });
+                    std::vector<std::unique_ptr<OutputStream>> outputStreams;
+                    outputStreams.push_back(std::make_unique<OutputStream>("Polhemus Patriot (confidence)", Stream::Format::DOF6, std::vector<int>({ 1 })));
+                    outputStreams.push_back(std::make_unique<OutputStream>("Polhemus Patriot (probe)", Stream::Format::DOF6, std::vector<int>({ 1 })));
+//                    outputStreams.push_back(new OutputStream("Polhemus Patriot (probe)", Stream::Format::DOF6, { 1 }));
+                    assert(36 == 8 + outputStreams[0]->getAcquisitionSize()); // header 8 bytes, frame count 4 bytes
 
                     while (true) { // each acquisition
                         // Block program until frames arrive
@@ -86,29 +91,37 @@ int main(int argc, char* argv[])
                             std::cout << "pBuf = 0, size = " << size << std::endl;
 
                         } else if (pBuf != pLastBuf) {
-                            const auto end = std::chrono::high_resolution_clock::now();
+                            assert(size % 36 == 0);
                             assert(pBuf != nullptr);
                             assert(pBuf != 0);
-                            assert(size == 8 + 12 + 16);
-                            //                            assert(size == 8 + 12 + 12);
-                            assert(size == 8 + posStream.getAcquisitionSize()); // header 8 bytes, frame count 4 bytes
-                            //                            assert(size == 8 + posStream.getAcquisitionSize() - 4); // header 8 bytes, frame count 4 bytes
 
-                            unsigned char* data = &pBuf[8]; // size of header = 8 bytes
-                            const auto timestampStart = std::chrono::duration_cast<std::chrono::microseconds>((end - std::chrono::microseconds(18'500)).time_since_epoch()).count(); // Polhemus technical spec latency = 18.5ms
-                            const auto timestampEnd = std::chrono::duration_cast<std::chrono::microseconds>(end.time_since_epoch()).count();
+                            size_t i = 0;
+                            while (i < size) {
 
-                            float* translation = (float*)data;
-                            float* quaternion = (float*)&data[12];
-                            std::string str = std::string("x:") + std::to_string(translation[0]) + ", y:" + std::to_string(translation[1]) + ", z:" + std::to_string(translation[2])
-                                + "\naz:" + std::to_string(quaternion[0]) + ", el:" + std::to_string(quaternion[1]) + ", ro:" + std::to_string(quaternion[2]) + ", q4:" + std::to_string(quaternion[3]);
-                            //                                + "\naz:" + std::to_string(quaternion[0]) + ", el:" + std::to_string(quaternion[1]) + ", ro:" + std::to_string(quaternion[2]);
-                            std::cout << str << std::endl;
+                                int ucSensor = (int)pBuf[i + 2];
 
-                            // Try to get a frame of a depth image
-                            posStream << Stream::Acquisition { timestampStart, timestampEnd, data };
+                                const auto end = std::chrono::high_resolution_clock::now();
+                                //                            assert(size == 8 + 12 + 16);
+                                //                            assert(size == 8 + 12 + 12);
+                                //                            assert(size == 8 + posStream.getAcquisitionSize() - 4); // header 8 bytes, frame count 4 bytes
 
+                                unsigned char* data = &pBuf[i + 8]; // size of header = 8 bytes
+                                const auto timestampStart = std::chrono::duration_cast<std::chrono::microseconds>((end - std::chrono::microseconds(18'500)).time_since_epoch()).count(); // Polhemus technical spec latency = 18.5ms
+                                const auto timestampEnd = std::chrono::duration_cast<std::chrono::microseconds>(end.time_since_epoch()).count();
+
+                                // float* translation = (float*)data;
+                                // float* quaternion = (float*)&data[12];
+                                // std::string str = std::string("sensor:") + std::to_string(ucSensor) + std::string(", x:") + std::to_string(translation[0]) + ", y:" + std::to_string(translation[1]) + ", z:" + std::to_string(translation[2]) + "\naz:" + std::to_string(quaternion[0]) + ", el:" + std::to_string(quaternion[1]) + ", ro:" + std::to_string(quaternion[2]) + ", q4:" + std::to_string(quaternion[3]);
+                                //                                + "\naz:" + std::to_string(quaternion[0]) + ", el:" + std::to_string(quaternion[1]) + ", ro:" + std::to_string(quaternion[2]);
+                                // std::cout << str << std::endl;
+
+                                // Try to get a frame of a depth image
+                                *outputStreams[ucSensor - 1] << Stream::Acquisition { timestampStart, timestampEnd, data };
+
+                                i += 36;
+                            }
                             pLastBuf = pBuf;
+
                         } else {
                             std::cout << "no new frame" << std::endl;
                         }
