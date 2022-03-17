@@ -1,6 +1,8 @@
 #ifndef SOCKET_H
 #define SOCKET_H
 
+#define NOMINMAX
+
 #include <net.h>
 
 #include <IOStream.h>

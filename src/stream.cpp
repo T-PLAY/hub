@@ -10,18 +10,18 @@
 //#include <algorithm>
 #include <FileIO.h>
 #include <memory>
+#include <iomanip>
 
-#ifndef WIN32
-// using min = std::min;
-#define min std::min
-#endif
 
 std::ostream& operator<<(std::ostream& os, const Stream::Acquisition& acq)
 {
     os << "start:" << acq.mBackendTimestamp / 1000 << ", end:" << acq.mBackendTimeOfArrival / 1000;
     os << ", data:[";
-    for (auto i = 0; i < min((int)acq.mSize, 10); ++i) {
-        os << (int)acq.mData[i] << " ";
+    for (auto i = 0; i < std::min((int)acq.mSize, 10); ++i) {
+        os << std::setw(3) << (int)acq.mData[i] << " ";
+//        if (i % 4 == 3) {
+//            os << "\t";
+//        }
     }
     os << "], \t";
     os << 1'000'000.0 / (acq.mBackendTimeOfArrival - acq.mBackendTimestamp) << " fps";

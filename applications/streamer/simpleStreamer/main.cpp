@@ -43,6 +43,7 @@ int main(int argc, char* argv[])
 
     std::string sensorNames[2] = { "proceduralStreamer", "proceduralStreamer2" };
     int maxFpss[2] = { 40, 60 };
+    //    int maxFpss[2] = { 1, 10 };
 
     assert(argc == 2);
     int iThread = atoi(argv[1]);
@@ -57,32 +58,41 @@ int main(int argc, char* argv[])
             assert(imgSize == 28);
 
             unsigned char data[28];
+            const auto maxFps = maxFpss[iThread];
 
-            int dec = 0;
+            //            int dec = 0;
+            float dec = 0.0f;
             while (true) {
 
                 const auto start = std::chrono::high_resolution_clock::now();
                 // generate new image
                 for (size_t i = 0; i < imgSize / 4; ++i) {
-                    ((float*)data)[i] = (float)dec;
+                    ((float*)data)[i] = dec;
                 }
-                const auto maxFps = maxFpss[iThread];
+                ++dec;
                 const auto end = start + std::chrono::nanoseconds(1'000'000'000 / maxFps);
 
+                //                std::this_thread::sleep_until(end);
+                //                std::this_thread::sleep_for(std::chrono::nanoseconds(1'000'000'000 / maxFps - 10'000'000));
+                while (std::chrono::high_resolution_clock::now() < end);
+//{
+//                    std::this_thread::sleep_for(std::chrono::microseconds(1));
+//                }
+                //                const auto now = std::chrono::high_resolution_clock::now();
+
+                //                for (int i = 0; i < iThread; ++i) {
+                //                    std::cout << "\t";
+                //                }
+                const auto now = std::chrono::high_resolution_clock::now();
                 const auto& timestampStart = std::chrono::duration_cast<std::chrono::microseconds>(start.time_since_epoch()).count();
-                const auto& timestampEnd = std::chrono::duration_cast<std::chrono::microseconds>(end.time_since_epoch()).count();
-                ++dec;
-
+                const auto& timestampEnd = std::chrono::duration_cast<std::chrono::microseconds>(now.time_since_epoch()).count();
                 Stream::Acquisition acq { timestampStart, timestampEnd, data };
-                acq.mSize = proceduralStream.getAcquisitionSize();
-                for (int i = 0; i < iThread; ++i) {
-                    std::cout << "\t";
-                }
-                std::cout << "thread " << iThread << " send acq " << acq << std::endl;
+                acq.mSize = imgSize;
                 proceduralStream << acq;
+                std::cout << "thread " << iThread << " send acq " << acq << std::endl;
 
-                const auto end2 = start + std::chrono::nanoseconds(1'000'000'000 / maxFps);
-                std::this_thread::sleep_until(end2);
+                //                const auto end2 = start + std::chrono::nanoseconds(1'000'000'000 / maxFps);
+                //                std::this_thread::sleep_until(end2);
             } // while (true)
         } catch (std::exception& e) {
             std::cout << "[streamer] catch exception : " << e.what() << std::endl;
