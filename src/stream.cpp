@@ -155,6 +155,7 @@ InputStream::InputStream(std::fstream& file)
 #endif
 
     mIOStream->read(mSensorName);
+//    mIOStream->read(mSensorName);
 //    assert(sensorName == sensorNameInFile);
 
     //    try {

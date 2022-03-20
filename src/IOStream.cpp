@@ -13,7 +13,7 @@ void IOStream::write(const std::string& str) const
 
 void IOStream::read(std::string& str) const
 {
-    int strLen;
+    int strLen = 0;
     read(strLen);
 
     if (strLen == 0) {

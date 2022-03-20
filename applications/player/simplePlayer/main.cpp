@@ -45,6 +45,23 @@ int main(int argc, char * argv[])
 
         std::fstream file(filename, std::ios::binary | std::ios::in);
         assert(file.is_open());
+        std::cout << "tellg" << file.tellg() << std::endl;
+        file.seekg(0, std::ios::end);
+        std::cout << "tellg" << file.tellg() << std::endl;
+        file.seekg(0, std::ios::beg);
+
+        assert(! file.eof());
+        assert(sizeof(int) == 4);
+//        for (int i =0; i <4; ++i) {
+//            char a;
+//            file >> a;
+//            std::cout << "a = " << (int)a << std::endl;
+//        }
+
+//        int a;
+//        file.read((char*)&a, 4);
+//        file.readsome(reinterpret_cast<char*>(&a), 1);
+//        std::cout << "a = " << a << std::endl;
 
         InputStream inputStream(file);
         //        records.push_back({sensorName, {}, {sensorName, inputStream.getFormat(), inputStream.getDims()}});
