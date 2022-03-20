@@ -45,15 +45,30 @@ void Server::run()
             switch (clientType) {
             case ClientSocket::Type::STREAMER: {
 
-                Streamer streamer { std::move(sock), "", {}, {}, nullptr, {} };
-                const std::string sensorName = streamer.mInputStream.getSensorName();
+                std::string sensorName;
+                sock.read(sensorName);
+                if (mStreamers.find(sensorName) == mStreamers.end()) {
+                    sock.write(Socket::Message::NOT_FOUND);
+                } else {
+                    sock.write(Socket::Message::FOUND);
+                    std::cout << getServerHeader(iThread) << "[stream viewer] stream sensor name : '" << sensorName << "' already exist" << std::endl;
+                    break;
+                }
+                assert(mStreamers.find(sensorName) == mStreamers.end());
+
+                Streamer streamer { { std::move(sock), sensorName }, sensorName, {}, {}, nullptr, {} };
+                //                const std::string sensorName = streamer.mInputStream.getSensorName();
                 // sensor is unique
-                streamer.mSensorName = sensorName;
+//                streamer.mSensorName = sensorName;
                 const auto& inputStream = streamer.mInputStream;
                 auto& outputStreams = streamer.mOutputStreams;
                 auto& sensor2syncViewers = streamer.mSensor2syncViewers;
                 auto& sensor2acqs = streamer.mSensor2acqs;
                 auto& syncMaster = streamer.mSyncMaster;
+
+                // sensor is unique
+                //                if (mStreamers.find(sensorName) != mStreamers.end())
+                //                    break;
 
                 assert(mStreamers.find(sensorName) == mStreamers.end());
                 mStreamers[sensorName] = &streamer;
@@ -142,7 +157,7 @@ void Server::run()
                                     while (!foundBestMatch) {
                                         //                                    while (!foundBestMatch && minDist > period / 2) {
                                         while (acqs.empty()) {
-//                                            std::this_thread::sleep_for(std::chrono::milliseconds(1));
+                                            //                                            std::this_thread::sleep_for(std::chrono::milliseconds(1));
                                         }
                                         auto& acq2 = acqs.back();
                                         auto dist = std::abs(acq.mBackendTimestamp - acq2.mBackendTimestamp);
@@ -192,11 +207,11 @@ void Server::run()
                         }
                     } // while (true)
 
-//                } catch (Socket::exception& e) {
-//                    std::cout << getServerHeader(iThread) << "[streamer] in : catch inputStream exception : " << e.what() << std::endl;
+                    //                } catch (Socket::exception& e) {
+                    //                    std::cout << getServerHeader(iThread) << "[streamer] in : catch inputStream exception : " << e.what() << std::endl;
                 } catch (std::exception& e) {
                     std::cout << getServerHeader(iThread) << "[streamer] in : catch inputStream exception : " << e.what() << std::endl;
-//                    throw;
+                    //                    throw;
                 }
                 mStreamers.erase(sensorName);
 
@@ -245,31 +260,42 @@ void Server::run()
             } break;
 
             case ClientSocket::Type::STREAM_VIEWER: {
-                std::cout << getServerHeader(iThread) << "[stream viewer] new stream viewer\t" << getStatus() << std::endl;
 
                 std::string sensorName;
                 sock.read(sensorName);
+                if (mStreamers.find(sensorName) == mStreamers.end()) {
+                    sock.write(Socket::Message::NOT_FOUND);
+                    std::cout << getServerHeader(iThread) << "[stream viewer] unknown sensor name : '" << sensorName << "'" << std::endl;
+                    break;
+                } else {
+                    sock.write(Socket::Message::OK);
+                }
+                assert(mStreamers.find(sensorName) != mStreamers.end());
 
                 std::string syncSensorName;
                 sock.read(syncSensorName);
+                if (syncSensorName != "" && mStreamers.find(syncSensorName) == mStreamers.end()) {
+                    sock.write(Socket::Message::NOT_FOUND);
+                    std::cout << getServerHeader(iThread) << "[stream viewer] unknown sync sensor name : '" << syncSensorName << "'" << std::endl;
+                    break;
+                } else {
+                    sock.write(Socket::Message::OK);
+                }
                 assert(syncSensorName == "" || mStreamers.find(syncSensorName) != mStreamers.end());
 
-                if (mStreamers.find(sensorName) != mStreamers.end()) {
-                    Streamer* streamer = mStreamers.at(sensorName);
+                std::cout << getServerHeader(iThread) << "[stream viewer] new stream viewer\t" << getStatus() << std::endl;
 
-                    if (syncSensorName == "") {
-                        streamer->mOutputStreams.emplace_back(std::move(sock), streamer->mInputStream);
+                Streamer* streamer = mStreamers.at(sensorName);
 
-                    } else {
-                        Streamer* syncMaster = mStreamers.at(syncSensorName);
-
-                        syncMaster->mSensor2syncViewers[sensorName].emplace_back(std::move(sock), streamer->mInputStream);
-                        assert(streamer->mSyncMaster == nullptr || streamer->mSyncMaster == syncMaster);
-                        streamer->mSyncMaster = syncMaster;
-                    }
+                if (syncSensorName == "") {
+                    streamer->mOutputStreams.emplace_back(std::move(sock), streamer->mInputStream);
 
                 } else {
-                    std::cout << getServerHeader(iThread) << "[stream viewer] unknown sensor name : '" << sensorName << "'" << std::endl;
+                    Streamer* syncMaster = mStreamers.at(syncSensorName);
+
+                    syncMaster->mSensor2syncViewers[sensorName].emplace_back(std::move(sock), streamer->mInputStream);
+                    assert(streamer->mSyncMaster == nullptr || streamer->mSyncMaster == syncMaster);
+                    streamer->mSyncMaster = syncMaster;
                 }
 
                 std::cout << getServerHeader(iThread) << "[stream viewer] end" << std::endl;

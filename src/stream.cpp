@@ -9,9 +9,8 @@
 //#include <cmath>
 //#include <algorithm>
 #include <FileIO.h>
-#include <memory>
 #include <iomanip>
-
+#include <memory>
 
 std::ostream& operator<<(std::ostream& os, const Stream::Acquisition& acq)
 {
@@ -19,9 +18,9 @@ std::ostream& operator<<(std::ostream& os, const Stream::Acquisition& acq)
     os << ", data:[";
     for (auto i = 0; i < std::min((int)acq.mSize, 10); ++i) {
         os << std::setw(3) << (int)acq.mData[i] << " ";
-//        if (i % 4 == 3) {
-//            os << "\t";
-//        }
+        //        if (i % 4 == 3) {
+        //            os << "\t";
+        //        }
     }
     os << "], ";
     os << 1'000'000.0 / (acq.mBackendTimeOfArrival - acq.mBackendTimestamp) << " fps";
@@ -49,7 +48,7 @@ Stream::Stream(const std::string& sensorName, Format format, const std::vector<i
     , mFormat(format)
     , mDims(dims)
     , mIOStream(new FileIO(file))
-//    , mIOStream(std::make_unique<FileIO>(file))
+    //    , mIOStream(std::make_unique<FileIO>(file))
     , mAcquisitionSize(computeAcquisitionSize(format, dims))
 {
 #ifdef DEBUG_MSG
@@ -121,15 +120,26 @@ InputStream::InputStream(const std::string& sensorName, const std::string& syncS
     mIOStream->write(clientType);
 
     mIOStream->write(sensorName);
-
-    mIOStream->write(syncSensorName);
-
-    try {
-        mIOStream->read(mFormat);
-    } catch (Socket::exception& e) {
-        std::cout << "[InputStream] catch exception : " << e.what() << std::endl;
+    Socket::Message mess;
+    mIOStream->read(mess);
+    if (mess == Socket::Message::NOT_FOUND) {
         throw Stream::exception((std::string("sensor '") + sensorName + "' is not attached to server").c_str());
     }
+    assert(mess == Socket::Message::OK);
+
+    mIOStream->write(syncSensorName);
+    mIOStream->read(mess);
+    if (mess == Socket::Message::NOT_FOUND) {
+        throw Stream::exception((std::string("sync sensor '") + syncSensorName + "' is not attached to server").c_str());
+    }
+    assert(mess == Socket::Message::OK);
+
+    //    try {
+    mIOStream->read(mFormat);
+    //    } catch (Socket::exception& e) {
+    //        std::cout << "[InputStream] catch exception : " << e.what() << std::endl;
+    //        throw Stream::exception((std::string("sensor '") + sensorName + "' is not attached to server").c_str());
+    //    }
 
     mIOStream->read(mDims);
 
@@ -147,25 +157,26 @@ InputStream::InputStream(const std::string& sensorName, std::fstream& file)
     mIOStream->read(sensorNameInFile);
     assert(sensorName == sensorNameInFile);
 
-    try {
-        mIOStream->read(mFormat);
-    } catch (Socket::exception& e) {
-        std::cout << "[InputStream] catch exception : " << e.what() << std::endl;
-        throw Stream::exception((std::string("sensor '") + sensorName + "' is not attached to server").c_str());
-    }
+    //    try {
+    mIOStream->read(mFormat);
+    //    } catch (Socket::exception& e) {
+    //        std::cout << "[InputStream] catch exception : " << e.what() << std::endl;
+    //        throw Stream::exception((std::string("sensor '") + sensorName + "' is not attached to server").c_str());
+    //    }
 
     mIOStream->read(mDims);
 
     mAcquisitionSize = computeAcquisitionSize(mFormat, mDims);
 }
 
-InputStream::InputStream(ClientSocket&& sock)
+InputStream::InputStream(ClientSocket&& sock, const std::string& sensorName)
     : Stream(std::move(sock))
 {
 #ifdef DEBUG_MSG
     std::cout << "[InputStream] InputStream(ClientSocket && sock)" << std::endl;
 #endif
-    mIOStream->read(mSensorName);
+    mSensorName = sensorName;
+    //    mIOStream->read(mSensorName);
     mIOStream->read(mFormat);
     mIOStream->read(mDims);
 
@@ -224,6 +235,13 @@ OutputStream::OutputStream(const std::string& sensorName, Stream::Format format,
     mIOStream->write(clientType);
 
     mIOStream->write(mSensorName);
+    Socket::Message mess;
+    mIOStream->read(mess);
+    if (mess == Socket::Message::FOUND) {
+        throw Stream::exception((std::string("sensor '") + sensorName + "' is already attached to server").c_str());
+    }
+    assert(mess == Socket::Message::NOT_FOUND);
+
     mIOStream->write(mFormat);
     mIOStream->write(mDims);
 }

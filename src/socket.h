@@ -36,6 +36,8 @@ public:
         CLOSE,
         DEL_STREAMER,
         NEW_STREAMER,
+        NOT_FOUND,
+        FOUND,
         COUNT
     };
     static constexpr char const* message2string[static_cast<int>(Message::COUNT)] = {
