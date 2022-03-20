@@ -23,7 +23,7 @@ std::ostream& operator<<(std::ostream& os, const Stream::Acquisition& acq)
 //            os << "\t";
 //        }
     }
-    os << "], \t";
+    os << "], ";
     os << 1'000'000.0 / (acq.mBackendTimeOfArrival - acq.mBackendTimestamp) << " fps";
     return os;
 }
@@ -49,6 +49,7 @@ Stream::Stream(const std::string& sensorName, Format format, const std::vector<i
     , mFormat(format)
     , mDims(dims)
     , mIOStream(new FileIO(file))
+//    , mIOStream(std::make_unique<FileIO>(file))
     , mAcquisitionSize(computeAcquisitionSize(format, dims))
 {
 #ifdef DEBUG_MSG
@@ -180,6 +181,11 @@ InputStream::~InputStream()
 
 Stream::Acquisition& InputStream::operator>>(Acquisition& acquisition) const
 {
+    if (acquisition.mOwnData && acquisition.mSize != mAcquisitionSize) {
+        delete[] acquisition.mData;
+        acquisition.mOwnData = false;
+        acquisition.mData = nullptr;
+    }
     if (acquisition.mData == nullptr) {
         acquisition.mData = new unsigned char[mAcquisitionSize];
         acquisition.mOwnData = true;
