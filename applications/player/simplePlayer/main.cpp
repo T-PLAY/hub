@@ -37,10 +37,10 @@ int main(int argc, char * argv[])
 
     // read record
     for (const auto& fileDir : std::filesystem::directory_iterator(recordFolder)) {
-        std::cout << "path : " << fileDir.path().parent_path() << std::endl;
+//        std::cout << "path : " << fileDir.path().parent_path() << std::endl;
 //        const std::string filename = (const char*)fileDir.path().filename().c_str();
         const auto filename = fileDir.path().relative_path().string();
-        std::cout << "read " << filename << " record" << std::endl;
+        std::cout << "read '" << filename << "' record" << std::endl;
         assert(std::filesystem::exists(filename));
 
         std::fstream file(filename, std::ios::binary | std::ios::in);
