@@ -10,7 +10,8 @@
 //#include <algorithm>
 #include <FileIO.h>
 #include <iomanip>
-#include <memory>
+//#include <memory>
+#include <algorithm>
 
 std::ostream& operator<<(std::ostream& os, const Stream::Acquisition& acq)
 {
@@ -146,16 +147,15 @@ InputStream::InputStream(const std::string& sensorName, const std::string& syncS
     mAcquisitionSize = computeAcquisitionSize(mFormat, mDims);
 }
 
-InputStream::InputStream(const std::string& sensorName, std::fstream& file)
-    : Stream(sensorName, Format::NONE, {}, file)
+InputStream::InputStream(std::fstream& file)
+    : Stream("", Format::NONE, {}, file)
 {
 #ifdef DEBUG_MSG
     std::cout << "[InputStream] InputStream(sensorName, ipv4, port)" << std::endl;
 #endif
 
-    std::string sensorNameInFile;
-    mIOStream->read(sensorNameInFile);
-    assert(sensorName == sensorNameInFile);
+    mIOStream->read(mSensorName);
+//    assert(sensorName == sensorNameInFile);
 
     //    try {
     mIOStream->read(mFormat);

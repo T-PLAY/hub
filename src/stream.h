@@ -189,7 +189,7 @@ class OutputStream;
 class InputStream : public Stream {
 public:
     InputStream(const std::string& sensorName, const std::string& syncSensorName = "", const std::string& ipv4 = "127.0.0.1", int port = SERVICE_PORT);
-    InputStream(const std::string& sensorName, std::fstream& file);
+    InputStream(std::fstream& file);
     InputStream(ClientSocket&& sock, const std::string & sensorName);
     ~InputStream();
 

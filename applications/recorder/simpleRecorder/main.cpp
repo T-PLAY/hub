@@ -66,13 +66,15 @@ int main(int argc, char* argv[])
     //            std::cout << "create dir '" << cc << "'" << std::endl;
     //            std::filesystem::create_directories(cc);
     //            std::filesystem::current_path(cc);
-    std::array<char, 64> buffer;
-    buffer.fill(0);
+//    std::array<char, 64> buffer;
+    char buffer[64] = {0};
+//    buffer.fill(0);
     time_t rawtime;
     time(&rawtime);
     const auto timeinfo = localtime(&rawtime);
-    strftime(buffer.data(), sizeof(buffer), "%Y-%m-%d_%H:%M:%S", timeinfo);
-    fileFolder = buffer.data();
+    strftime(buffer, sizeof(buffer), "%Y-%m-%d_%H-%M-%S", timeinfo);
+    fileFolder = buffer;
+    std::cout << "create directory " << fileFolder << std::endl;
     std::filesystem::create_directories(fileFolder);
 
     //            std::fstream file(fileFolder + "/" + sensorNames[0], std::ios::binary | std::ios::out);
@@ -83,7 +85,8 @@ int main(int argc, char* argv[])
     //                        gFiles.clear();
     for (int i = 0; i < 2; ++i) {
         //                files.push_back(std::fstream(fileFolder + "/" + sensorNames[i], std::ios::binary | std::ios::out));
-        files[i] = std::fstream(fileFolder + "/" + sensorNames[i], std::ios::binary | std::ios::out);
+//        files[i] = std::fstream(fileFolder + "/" + sensorNames[i] + ".txt", std::ios::binary | std::ios::out);
+        files[i] = std::fstream(fileFolder + "/" + sensorNames[i] + ".txt", std::ios::binary | std::ios::out);
         assert(files[i].is_open());
         outputFileStreams.push_back(std::make_unique<OutputStream>(sensorNames[i], inputStreams[i]->getFormat(), inputStreams[i]->getDims(), files[i]));
         //                            outputFileStreams.push_back(std::make_unique<OutputStream>(sensorNames[i], inputStreams[i]->getFormat(), inputStreams[i]->getDims(), gFiles.back()));

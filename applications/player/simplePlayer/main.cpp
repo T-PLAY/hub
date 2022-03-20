@@ -25,7 +25,8 @@ int main(int argc, char * argv[])
         recordFolder = "../../recorder/simpleRecorder/records/latest/";
     }
 
-    std::filesystem::current_path(recordFolder);
+    assert(std::filesystem::exists(recordFolder));
+//    std::filesystem::current_path(recordFolder);
     std::cout << "record folder : " << recordFolder << std::endl;
 
     //    std::vector<Record> records;
@@ -35,15 +36,19 @@ int main(int argc, char * argv[])
     std::set<Snapshot> snapshots;
 
     // read record
-    for (const auto& fileDir : std::filesystem::directory_iterator(".")) {
-        const std::string sensorName = (const char*)fileDir.path().filename().c_str();
-        std::cout << "read " << sensorName << " record" << std::endl;
+    for (const auto& fileDir : std::filesystem::directory_iterator(recordFolder)) {
+        std::cout << "path : " << fileDir.path().parent_path() << std::endl;
+//        const std::string filename = (const char*)fileDir.path().filename().c_str();
+        const auto filename = fileDir.path().relative_path().string();
+        std::cout << "read " << filename << " record" << std::endl;
+        assert(std::filesystem::exists(filename));
 
-        std::fstream file(sensorName, std::ios::binary | std::ios::in);
+        std::fstream file(filename, std::ios::binary | std::ios::in);
         assert(file.is_open());
 
-        InputStream inputStream(sensorName, file);
+        InputStream inputStream(file);
         //        records.push_back({sensorName, {}, {sensorName, inputStream.getFormat(), inputStream.getDims()}});
+        const std::string & sensorName = inputStream.getSensorName();
         outputs[sensorName] = std::make_unique<OutputStream>(sensorName, inputStream.getFormat(), inputStream.getDims());
         //        OutputStream outputStream(sensorName, inputStream.getFormat(), inputStream.getDims());
         int nReadAcqs = 0;
