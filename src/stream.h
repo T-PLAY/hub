@@ -6,7 +6,7 @@
 
 //#define DEBUG_STREAM
 
-constexpr int SERVICE_PORT = 4042;
+constexpr int SERVICE_PORT = 4043;
 
 class Stream {
 public:
@@ -190,7 +190,7 @@ class InputStream : public Stream {
 public:
     InputStream(const std::string& sensorName, const std::string& syncSensorName = "", const std::string& ipv4 = "127.0.0.1", int port = SERVICE_PORT);
     InputStream(const std::string& sensorName, std::fstream& file);
-    InputStream(ClientSocket&& sock);
+    InputStream(ClientSocket&& sock, const std::string & sensorName);
     ~InputStream();
 
     Acquisition& operator>>(Acquisition& acquisition) const;
