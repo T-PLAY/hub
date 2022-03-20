@@ -37,7 +37,7 @@ void Server::run()
         std::cout << getServerHeader(0) << "new client" << std::endl;
 
         std::thread thread([this, iThread, sock = std::move(sock)]() mutable {
-            std::cout << getServerHeader(iThread) << "new thread\t\t\t\t server status : " << getStatus() << std::endl;
+            std::cout << getServerHeader(iThread) << "new thread\t\t\t\t" << getStatus() << std::endl;
 
             ClientSocket::Type clientType;
             sock.read(clientType);
@@ -57,7 +57,7 @@ void Server::run()
 
                 assert(mStreamers.find(sensorName) == mStreamers.end());
                 mStreamers[sensorName] = &streamer;
-                std::cout << getServerHeader(iThread) << "[streamer] new streamer\t\t\t server status : " << getStatus() << std::endl;
+                std::cout << getServerHeader(iThread) << "[streamer] new streamer\t\t" << getStatus() << std::endl;
 
                 std::cout << getServerHeader(iThread) << "[streamer] sensor name = '" << sensorName << "'" << std::endl;
 
@@ -93,12 +93,12 @@ void Server::run()
 
                                     ++it;
 
-                                } catch (Socket::exception& e) {
+                                } catch (std::exception& e) {
                                     // no sync stream viewer lost
                                     std::cout << getServerHeader(iThread) << "[streamer] out : catch outputStream exception : " << e.what() << std::endl;
                                     it = outputStreams.erase(it);
 
-                                    std::cout << getServerHeader(iThread) << "[streamer] out : end stream viewer\t server status : " << getStatus() << std::endl;
+                                    std::cout << getServerHeader(iThread) << "[streamer] out : end stream viewer\t" << getStatus() << std::endl;
                                     std::cout << "---------------------------------------------------------------------------------------------" << std::endl;
                                 }
                             }
@@ -183,7 +183,7 @@ void Server::run()
                                     mStreamers.at(syncSensorName)->mSyncMaster = nullptr;
                                     assert(it2 == outputStreams.end());
                                     it = sensor2syncViewers.erase(it);
-                                    std::cout << getServerHeader(iThread) << "[streamer] out : end sync viewer\t\t server status : " << getStatus() << std::endl;
+                                    std::cout << getServerHeader(iThread) << "[streamer] out : end sync viewer\t" << getStatus() << std::endl;
                                 } else {
 
                                     ++it;
@@ -192,11 +192,11 @@ void Server::run()
                         }
                     } // while (true)
 
-                } catch (Socket::exception& e) {
-                    std::cout << getServerHeader(iThread) << "[streamer] in : catch inputStream exception : " << e.what() << std::endl;
+//                } catch (Socket::exception& e) {
+//                    std::cout << getServerHeader(iThread) << "[streamer] in : catch inputStream exception : " << e.what() << std::endl;
                 } catch (std::exception& e) {
                     std::cout << getServerHeader(iThread) << "[streamer] in : catch inputStream exception : " << e.what() << std::endl;
-                    throw;
+//                    throw;
                 }
                 mStreamers.erase(sensorName);
 
@@ -224,7 +224,7 @@ void Server::run()
                 }
 
                 mViewers.push_back(&viewer);
-                std::cout << getServerHeader(iThread) << "[viewer] new viewer\t\t\t server status : " << getStatus() << std::endl;
+                std::cout << getServerHeader(iThread) << "[viewer] new viewer\t\t\t" << getStatus() << std::endl;
 
                 try {
                     // check client still alive
@@ -233,12 +233,8 @@ void Server::run()
                         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
                     }
 
-                } catch (Socket::exception& e) {
-                    std::cout << getServerHeader(iThread) << "[viewer] catch viewer exception : " << e.what() << std::endl;
                 } catch (std::exception& e) {
-                    std::cout << getServerHeader(iThread) << "[viewer] catch exception : " << e.what() << std::endl;
-                    exit(3);
-                    throw;
+                    std::cout << getServerHeader(iThread) << "[viewer] catch viewer exception : " << e.what() << std::endl;
                 }
 
                 mViewers.remove(&viewer);
@@ -249,7 +245,7 @@ void Server::run()
             } break;
 
             case ClientSocket::Type::STREAM_VIEWER: {
-                std::cout << getServerHeader(iThread) << "[stream viewer] new stream viewer\t server status : " << getStatus() << std::endl;
+                std::cout << getServerHeader(iThread) << "[stream viewer] new stream viewer\t" << getStatus() << std::endl;
 
                 std::string sensorName;
                 sock.read(sensorName);
@@ -283,7 +279,7 @@ void Server::run()
                 std::cout << getServerHeader(iThread) << "unknown client type" << std::endl;
             }
 
-            std::cout << getServerHeader(iThread) << "thread end\t\t\t\t server status : " << getStatus() << std::endl;
+            std::cout << getServerHeader(iThread) << "thread end\t\t\t\t" << getStatus() << std::endl;
             std::cout << "---------------------------------------------------------------------------------------------" << std::endl;
         });
         thread.detach();
@@ -305,7 +301,7 @@ std::string Server::getStatus() const
     }
     streamViewersStr += "]";
 
-    std::string str = std::string("nbStreamer = ") + std::to_string(mStreamers.size()) + ", nbViewer = " + std::to_string(mViewers.size()) + " " + streamViewersStr;
+    std::string str = std::string("status : nbStreamer:") + std::to_string(mStreamers.size()) + ", nbViewer:" + std::to_string(mViewers.size()) + " " + streamViewersStr;
     return str;
 }
 

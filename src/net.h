@@ -39,7 +39,7 @@ static void clearSocket(socket_fd& sock)
     size_t size = sSockets.size();
     assert(std::find(sSockets.begin(), sSockets.end(), sock) != sSockets.end());
     sSockets.remove(sock);
-    assert(sSockets.size() == size - 1);
+    // assert(sSockets.size() == size - 1);
 
 #ifdef WIN32
     if (sSockets.empty()) {
