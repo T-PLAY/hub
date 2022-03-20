@@ -43,7 +43,7 @@ int main(int argc, char* argv[])
 
     const std::string sensorNames[2] = { "ULA-OP 256", "Polhemus Patriot (probe)" };
     constexpr Stream::Format sensorFormats[2] = { Stream::Format::Y8, Stream::Format::DOF6 };
-    const std::vector<int> sensorDims[2] = { { 192, 512 }, { 1 } };
+    const std::vector<int> sensorDims[2] = { { 512, 192 }, { 1 } };
     constexpr int maxFpss[2] = { 40, 60 };
     constexpr size_t sensorDataSize[2] = { 192 * 512, 28 };
     //    int maxFpss[2] = { 1, 10 };
@@ -57,6 +57,8 @@ int main(int argc, char* argv[])
         const int iSensor = (nSensor == 1) ? (atoi(argv[1])) : (i);
 
         std::thread thread([=]() {
+            unsigned char * data = new unsigned char[sensorDataSize[iSensor]];
+
             while (true) {
                 try {
 
@@ -65,7 +67,6 @@ int main(int argc, char* argv[])
                     const size_t imgSize = proceduralStream.getAcquisitionSize();
                     assert(imgSize == 28 || imgSize == 98304);
 
-                    unsigned char data[sensorDataSize[iSensor]];
                     const auto maxFps = maxFpss[iSensor];
 
                     //            int dec = 0;
@@ -115,6 +116,7 @@ int main(int argc, char* argv[])
                     std::cout << "[streamer] catch exception : " << e.what() << std::endl;
                 }
             } // while (true)
+            delete [] data;
         });
         //        thread.detach();
         threads.emplace_back(std::move(thread));
