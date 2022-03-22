@@ -123,7 +123,7 @@ void MainWindow::delSensor(std::string streamerSensorName)
 
     delStreamView(streamerSensorName);
 
-    assert(mSensorViews.find(streamerSensorName) != mSensorViews.end());
+    assert(mSensorViews.find(streamerSensorName) != mSensorViews.end()); // todo: fix one time error
     FormSensorView* sensorView = mSensorViews.at(streamerSensorName);
     delete sensorView;
     mSensorViews.erase(streamerSensorName);

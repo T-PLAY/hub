@@ -15,18 +15,17 @@ struct Snapshot {
     }
 };
 
-int main(int argc, char * argv[])
+int main(int argc, char* argv[])
 {
     std::string recordFolder;
     if (argc == 2) {
         recordFolder = argv[1];
-    }
-    else {
+    } else {
         recordFolder = "../../recorder/simpleRecorder/records/latest/";
     }
 
     assert(std::filesystem::exists(recordFolder));
-//    std::filesystem::current_path(recordFolder);
+    //    std::filesystem::current_path(recordFolder);
     std::cout << "record folder : " << recordFolder << std::endl;
 
     //    std::vector<Record> records;
@@ -37,8 +36,8 @@ int main(int argc, char * argv[])
 
     // read record
     for (const auto& fileDir : std::filesystem::directory_iterator(recordFolder)) {
-//        std::cout << "path : " << fileDir.path().parent_path() << std::endl;
-//        const std::string filename = (const char*)fileDir.path().filename().c_str();
+        //        std::cout << "path : " << fileDir.path().parent_path() << std::endl;
+        //        const std::string filename = (const char*)fileDir.path().filename().c_str();
         const auto filename = fileDir.path().relative_path().string();
         std::cout << "read '" << filename << "' record" << std::endl;
         assert(std::filesystem::exists(filename));
@@ -50,26 +49,26 @@ int main(int argc, char * argv[])
         std::cout << "tellg" << file.tellg() << std::endl;
         file.seekg(0, std::ios::beg);
 
-        assert(! file.eof());
+        assert(!file.eof());
         assert(sizeof(int) == 4);
-//        for (int i =0; i <4; ++i) {
-//            char a;
-//            file >> a;
-//            std::cout << "a = " << (int)a << std::endl;
-//        }
+        //        for (int i =0; i <4; ++i) {
+        //            char a;
+        //            file >> a;
+        //            std::cout << "a = " << (int)a << std::endl;
+        //        }
 
-//        int a;
-//        file.read((char*)&a, 4);
-//        file.readsome(reinterpret_cast<char*>(&a), 1);
-//        std::cout << "a = " << a << std::endl;
+        //        int a;
+        //        file.read((char*)&a, 4);
+        //        file.readsome(reinterpret_cast<char*>(&a), 1);
+        //        std::cout << "a = " << a << std::endl;
 
-        InputStream inputStream(file);
-        //        records.push_back({sensorName, {}, {sensorName, inputStream.getFormat(), inputStream.getDims()}});
-        const std::string & sensorName = inputStream.getSensorName();
-        outputs[sensorName] = std::make_unique<OutputStream>(sensorName, inputStream.getFormat(), inputStream.getDims());
-        //        OutputStream outputStream(sensorName, inputStream.getFormat(), inputStream.getDims());
-        int nReadAcqs = 0;
         try {
+            InputStream inputStream(file);
+            //        records.push_back({sensorName, {}, {sensorName, inputStream.getFormat(), inputStream.getDims()}});
+            const std::string& sensorName = inputStream.getSensorName();
+            outputs[sensorName] = std::make_unique<OutputStream>(sensorName, inputStream.getFormat(), inputStream.getDims());
+            int nReadAcqs = 0;
+            //        OutputStream outputStream(sensorName, inputStream.getFormat(), inputStream.getDims());
             Stream::Acquisition acq;
             while (true) {
                 inputStream >> acq;
@@ -78,13 +77,16 @@ int main(int argc, char * argv[])
                 snapshots.insert(Snapshot { std::move(acq), sensorName });
                 ++nReadAcqs;
             }
+            std::cout << "read " << nReadAcqs << " acquisitions from file sensor '" << sensorName << "'" << std::endl;
+        } catch (Stream::exception & e) {
+            std::cout << "catch stream exception : " << e.what() << std::endl;
+            throw;
+
         } catch (std::exception& e) {
             std::cout << "catch exception : " << e.what() << std::endl;
         }
 
         file.close();
-
-        std::cout << "read " << nReadAcqs << " acquisitions from file sensor '" << sensorName << "'" << std::endl;
     }
     std::cout << "read all records" << std::endl;
 

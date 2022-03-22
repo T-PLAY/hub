@@ -126,9 +126,11 @@ int main(int argc, char* argv[])
                             std::cout << "no new frame" << std::endl;
                         }
 
-                        const auto maxFps = 10;
+                        const auto maxFps = 60;
                         const auto end = start + std::chrono::nanoseconds(1'000'000'000 / maxFps);
-                        std::this_thread::sleep_until(end);
+//                        std::this_thread::sleep_until(end);
+                        while (std::chrono::high_resolution_clock::now() < end);
+
 
                     } // while (true) // each acquisition
 
