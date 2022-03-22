@@ -6,7 +6,7 @@
 
 //#define DEBUG_STREAM
 
-constexpr int SERVICE_PORT = 4043;
+constexpr int SERVICE_PORT = 4042;
 
 class Stream {
 public:
