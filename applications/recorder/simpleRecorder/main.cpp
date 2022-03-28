@@ -43,6 +43,7 @@ int main(int argc, char* argv[])
     //    const std::string sensorNames[2] = { "Polhemus Patriot (probe)", "ULA-OP 256" };
     //    const std::string sensorSyncNames[2] = { "ULA-OP 256", "" };
 
+    std::filesystem::current_path(PROJECT_DIR);
     std::filesystem::create_directories("records");
     std::filesystem::current_path("records");
 
