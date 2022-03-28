@@ -6,18 +6,21 @@ project(radiumViewer)
 set(WIN32_REQUIRED_LIBS)
 set(UNIX_REQUIRED_LIBS)
 
-find_package(Radium REQUIRED Core Engine Gui)
+#set(RADIUM_LIBS Core Engine Gui)
+set(RADIUM_LIBS Core Engine Gui PluginBase IO)
+set(RADIUM_LIBS_QUALIFIED Radium::Core Radium::Engine Radium::Gui)
+find_package(Radium REQUIRED ${RADIUM_LIBS})
 
 if (WIN32)
     set(QT_VERSION 5)
 else()
     set(QT_VERSION 6)
 endif()
-set(REQUIRED_LIBS Core Widgets)
-set(REQUIRED_LIBS_QUALIFIED Qt${QT_VERSION}::Core Qt${QT_VERSION}::Widgets)
+set(QT_LIBS Core Widgets Gui)
+set(QT_LIBS_QUALIFIED Qt${QT_VERSION}::Core Qt${QT_VERSION}::Widgets)
 
 
-find_package(Qt${QT_VERSION} COMPONENTS ${REQUIRED_LIBS} REQUIRED)
+find_package(Qt${QT_VERSION} COMPONENTS ${QT_LIBS} REQUIRED)
 
 
 file(GLOB_RECURSE sources *.cpp)
@@ -36,6 +39,59 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 
 if (WIN32)
 
+    add_custom_command(
+        TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:${PROJECT_NAME}>/platforms/
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        $<TARGET_FILE:Qt${QT_VERSION}::QWindowsIntegrationPlugin>
+        $<TARGET_FILE_DIR:${PROJECT_NAME}>/platforms/
+        )
+
+    foreach (QT_LIB ${QT_LIBS})
+        add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:Qt${QT_VERSION}::${QT_LIB}> $<TARGET_FILE_DIR:${PROJECT_NAME}>
+            )
+    endforeach (QT_LIB)
+
+    foreach (RADIUM_LIB ${RADIUM_LIBS})
+        add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:Radium::${RADIUM_LIB}> $<TARGET_FILE_DIR:${PROJECT_NAME}>
+            )
+    endforeach (RADIUM_LIB)
+
+    set(RADIUM_DEP_LIBS
+        globjects::globjects
+        glbinding::glbinding
+        glbinding::glbinding-aux
+        cpplocate::cpplocate
+        Qt5::Xml
+        tinyply
+        )
+
+    foreach(RADIUM_DEP_LIB ${RADIUM_DEP_LIBS})
+        add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:${RADIUM_DEP_LIB}> $<TARGET_FILE_DIR:${PROJECT_NAME}>
+            )
+    endforeach()
+
+    set(RADIUM_FILES
+        ${RadiumExternalDlls_location}/assimp-vc142-mtd.dll
+        )
+    foreach(RADIUM_FILE ${RADIUM_FILES})
+        add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different ${RADIUM_FILE} $<TARGET_FILE_DIR:${PROJECT_NAME}>
+            )
+    endforeach()
+
+    set(RADIUM_DIRS
+        ${RadiumExternalDlls_location}/../Resources
+        )
+    foreach(RADIUM_DIR ${RADIUM_DIRS})
+        add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_directory ${RADIUM_DIR} $<TARGET_FILE_DIR:${PROJECT_NAME}>/Resources
+            )
+    endforeach()
+
 
 elseif(UNIX)
     #        find_package(Threads REQUIRED)
@@ -43,5 +99,5 @@ elseif(UNIX)
 endif()
 
 
-target_link_libraries(${PROJECT_NAME} src Radium::Core Radium::Engine Radium::Gui ${REQUIRED_LIBS_QUALIFIED} ${UNIX_REQUIRED_LIBS} ${WIN32_REQUIRED_LIBS})
+target_link_libraries(${PROJECT_NAME} src ${RADIUM_LIBS_QUALIFIED} ${QT_LIBS_QUALIFIED} ${UNIX_REQUIRED_LIBS} ${WIN32_REQUIRED_LIBS})
 

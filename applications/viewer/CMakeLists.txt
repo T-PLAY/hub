@@ -4,4 +4,7 @@ add_subdirectory(libViewer)
 add_subdirectory(clientViewer)
 add_subdirectory(streamViewer)
 add_subdirectory(simpleViewer)
-add_subdirectory(radiumViewer)
+
+if (BUILD_RADIUM_EXAMPLE)
+    add_subdirectory(radiumViewer)
+endif()
