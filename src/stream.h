@@ -196,6 +196,8 @@ public:
     Acquisition& operator>>(Acquisition& acquisition) const;
     void operator>>(const OutputStream& outputStream) const;
 
+    std::vector<Acquisition> getAllAcquisition();
+
 private:
 };
 

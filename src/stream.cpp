@@ -220,6 +220,27 @@ Stream::Acquisition& InputStream::operator>>(Acquisition& acquisition) const
     return acquisition;
 }
 
+std::vector<Stream::Acquisition> InputStream::getAllAcquisition()
+{
+    std::vector<Stream::Acquisition> acqs;
+
+    try {
+        Stream::Acquisition acq;
+        while (true) {
+            InputStream::operator>>(acq);
+            acqs.emplace_back(std::move(acq));
+        }
+    } catch (Stream::exception& e) {
+        std::cout << "[stream] catch stream exception : " << e.what() << std::endl;
+        throw;
+
+    } catch (std::exception& e) {
+        std::cout << "[stream] catch exception : " << e.what() << std::endl;
+    }
+
+    return acqs;
+}
+
 void InputStream::operator>>(const OutputStream& outputStream) const
 {
     Stream::Acquisition acq;
