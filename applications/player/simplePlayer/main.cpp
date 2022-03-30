@@ -21,7 +21,8 @@ int main(int argc, char* argv[])
     if (argc == 2) {
         recordFolder = argv[1];
     } else {
-        recordFolder = "../../recorder/simpleRecorder/records/latest/";
+//        recordFolder = "../../recorder/simpleRecorder/records/latest/";
+        recordFolder = PROJECT_DIR "records/latest/";
     }
 
     assert(std::filesystem::exists(recordFolder));
@@ -38,7 +39,8 @@ int main(int argc, char* argv[])
     for (const auto& fileDir : std::filesystem::directory_iterator(recordFolder)) {
         //        std::cout << "path : " << fileDir.path().parent_path() << std::endl;
         //        const std::string filename = (const char*)fileDir.path().filename().c_str();
-        const auto filename = fileDir.path().relative_path().string();
+//        const auto filename = fileDir.path().relative_path().string();
+        const auto filename = fileDir.path().string();
         std::cout << "read '" << filename << "' record" << std::endl;
         assert(std::filesystem::exists(filename));
 
@@ -92,6 +94,7 @@ int main(int argc, char* argv[])
 
     // play
     std::cout << "start playing" << std::endl;
+    int iLoop = 0;
     while (true) {
         const auto startRecord = snapshots.begin()->mAcq.mBackendTimestamp;
         const auto& startChrono = std::chrono::high_resolution_clock::now();
@@ -106,6 +109,7 @@ int main(int argc, char* argv[])
 
             *outputs.at(snapshot.mSensorName) << snapshot.mAcq;
         }
-        std::cout << "end record, auto loop" << std::endl;
+        std::cout << "end record, auto loop " << iLoop << std::endl;
+        ++iLoop;
     }
 }
