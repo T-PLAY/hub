@@ -73,8 +73,9 @@ int main(int argc, char* argv[])
                     std::vector<std::unique_ptr<OutputStream>> outputStreams;
                     outputStreams.push_back(std::make_unique<OutputStream>("Polhemus Patriot (confidence)", Stream::Format::DOF6, std::vector<int>({ 1 })));
                     outputStreams.push_back(std::make_unique<OutputStream>("Polhemus Patriot (probe)", Stream::Format::DOF6, std::vector<int>({ 1 })));
-//                    outputStreams.push_back(new OutputStream("Polhemus Patriot (probe)", Stream::Format::DOF6, { 1 }));
-                    assert(36 == 8 + outputStreams[0]->getAcquisitionSize()); // header 8 bytes, frame count 4 bytes
+                    //                    outputStreams.push_back(new OutputStream("Polhemus Patriot (probe)", Stream::Format::DOF6, { 1 }));
+                    constexpr int packetSize = 48;
+                    assert(packetSize == 8 + outputStreams[0]->getAcquisitionSize()); // header 8 bytes, frame count 4 bytes
 
                     while (true) { // each acquisition
                         // Block program until frames arrive
@@ -91,7 +92,7 @@ int main(int argc, char* argv[])
                             std::cout << "pBuf = 0, size = " << size << std::endl;
 
                         } else if (pBuf != pLastBuf) {
-                            assert(size % 36 == 0);
+                            assert(size % packetSize == 0);
                             assert(pBuf != nullptr);
                             assert(pBuf != 0);
 
@@ -118,7 +119,7 @@ int main(int argc, char* argv[])
                                 // Try to get a frame of a depth image
                                 *outputStreams[ucSensor - 1] << Stream::Acquisition { timestampStart, timestampEnd, data };
 
-                                i += 36;
+                                i += packetSize;
                             }
                             pLastBuf = pBuf;
 
@@ -128,9 +129,9 @@ int main(int argc, char* argv[])
 
                         const auto maxFps = 60;
                         const auto end = start + std::chrono::nanoseconds(1'000'000'000 / maxFps);
-//                        std::this_thread::sleep_until(end);
-                        while (std::chrono::high_resolution_clock::now() < end);
-
+                        //                        std::this_thread::sleep_until(end);
+                        while (std::chrono::high_resolution_clock::now() < end)
+                            ;
 
                     } // while (true) // each acquisition
 
@@ -185,7 +186,7 @@ bool Initialize()
     g_pdiMDat.Empty();
     g_pdiMDat.Append(PDI_MODATA_POS);
     g_pdiMDat.Append(PDI_MODATA_QTRN);
-    //    g_pdiMDat.Append(PDI_MODATA_ORI);
+    g_pdiMDat.Append(PDI_MODATA_ORI);
     //    g_dwFrameSize = 8 + 12 + 16;
 
     g_bCnxReady = false;

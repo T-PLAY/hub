@@ -18,11 +18,98 @@
 #include <fstream>
 #include <stream.h>
 
+#include <Eigen/Core>
+#include <Eigen/Geometry>
+#include <QThread>
+//#include <QObject>
+//#include <QCoreApplication>
+//#include "main.moc"
+
+class StreamThread : public QThread {
+    //    Q_OBJECT
+public:
+    // constructor
+    //    QObject::connect(close_timer, &QTimer::timeout, [&app, &iAcquisition, &posStream, &ro]() {
+    explicit StreamThread(QObject* parent = 0)
+        : QThread(parent)
+    {
+    }
+    //    //    ~Thread_InputStream();
+
+public:
+    // overriding the QThread's run() method
+    void run()
+    {
+        assert(mRo != nullptr);
+        assert(mApp != nullptr);
+
+        InputStream posStream("Polhemus Patriot (probe)");
+        int iAcquisition = 0;
+        while (true) {
+            std::cout << "update acquisition " << iAcquisition << std::endl;
+
+            // update texture
+            //        {
+            //            Stream::Acquisition scanAcq;
+            //            scanStream >> scanAcq;
+            //            //            Ra::Engine::Data::TextureParameters textureParameters;
+            //            //            textureParameters.name = "myTexture";
+            //            //            auto texture = app.m_engine->getTextureManager()->getOrLoadTexture(textureParameters);
+            //            Ra::Engine::Data::TextureParameters textureParameters;
+            //            textureParameters.name = "myTexture";
+            //            auto texture = app.m_engine->getTextureManager()->getOrLoadTexture(textureParameters);
+            //            auto& params = texture->getParameters();
+            //            //                    params.texels = scans[iAcquisition].mData;
+            //            //        memcpy(params.texels, scans[iAcquisition].mData, 192 * 512);
+            //            memcpy(params.texels, scanAcq.mData, 192 * 512);
+            //            //            updateTexel(params.texels, dec);
+            //            app.m_mainWindow->getViewer()->makeCurrent();
+            //            texture->initializeGL(false);
+            //            app.m_mainWindow->getViewer()->doneCurrent();
+            //        }
+
+            // update position and orientation
+            {
+                Stream::Acquisition posAcq;
+                posStream >> posAcq;
+                float* translation = (float*)posAcq.mData;
+                float* quaternion = (float*)&posAcq.mData[12];
+                //                std::string str = std::string("x:") + std::to_string(translation[0]) + ", y:" + std::to_string(translation[1]) + ", z:" + std::to_string(translation[2]) + "\naz:" + std::to_string(quaternion[0]) + ", el:" + std::to_string(quaternion[1]) + ", ro:" + std::to_string(quaternion[2]) + ", q4:" + std::to_string(quaternion[3]);
+                //                std::cout << str << std::endl;
+
+                Ra::Core::Transform T = Ra::Core::Transform::Identity();
+                //                Ra::Core::Vector3 vec(1.0, 1.0, 1.0);
+
+                Ra::Core::Quaternion quat(quaternion[0], quaternion[1], quaternion[2], quaternion[3]);
+                T.rotate(quat);
+
+                Ra::Core::Vector3 vecScale(1.0, 192.0 / 512, 1.0);
+                T.scale(vecScale);
+
+                Ra::Core::Vector3 vec(translation[0], translation[1], translation[2]);
+                vec /= 10.0;
+                T.translate(vec);
+                mRo->setLocalTransform(T);
+            }
+
+            //            std::cout << "update data with dec = " << dec << std::endl;
+            ++iAcquisition;
+            //        if (iAcquisition == poses.size())
+            //            iAcquisition = 0;
+            mApp->askForUpdate();
+        }
+    }
+
+    //private:
+    Ra::Gui::BaseApplication* mApp = nullptr;
+    Ra::Engine::Rendering::RenderObject* mRo = nullptr;
+};
+
 int main(int argc, char* argv[])
 {
-    //    InputStream scanStream("ULA-OP 256");
-    //    InputStream posStream("Polhemus Patriot (probe)", "ULA-OP 256");
-    InputStream posStream("Polhemus Patriot (probe)");
+        InputStream scanStream("ULA-OP 256");
+        InputStream posStream("Polhemus Patriot (probe)", "ULA-OP 256");
+//    InputStream posStream("Polhemus Patriot (probe)");
 
     //! [Creating the application]
     Ra::Gui::BaseApplication app(argc, argv);
@@ -39,6 +126,7 @@ int main(int argc, char* argv[])
     tex_coords.push_back({ 0_ra, 1_ra, 0_ra });
     tex_coords.push_back({ 1_ra, 1_ra, 0_ra });
     quad.addAttrib(Ra::Engine::Data::Mesh::getAttribName(Ra::Engine::Data::Mesh::VERTEX_TEXCOORD), tex_coords);
+
     // [Add missing texture coordonates for to the quad]
 
     //! [Creating a texture for the quad]
@@ -46,7 +134,13 @@ int main(int argc, char* argv[])
     // fill with some function
     for (int i = 0; i < 192; ++i) {
         for (int j = 0; j < 512; j++) {
-            data[(i * 512 + j)] = (unsigned char)(255.0 * std::abs(std::sin(j * i * M_PI / 64.0) * std::cos(j * i * M_PI / 96.0)));
+            //            data[(i * 512 + j)] = (unsigned char)(255.0 * std::abs(std::sin(j * i * M_PI / 64.0) * std::cos(j * i * M_PI / 96.0)));
+            if (std::abs(i - 20) < 3 || std::abs(j - 20) < 3) {
+                data[(i * 512 + j)] = 0;
+            } else {
+
+                data[(i * 512 + j)] = (j / 2) % 256;
+            }
         }
     }
     auto& myTexture = app.m_engine->getTextureManager()->addTexture("myTexture", 512, 192, data);
@@ -98,64 +192,147 @@ int main(int argc, char* argv[])
     //    std::cout << "nb acqs = " << scans.size() << std::endl;
     //    //        std::thread thread([=]() {
 
-    auto close_timer = new QTimer(&app);
-    close_timer->setInterval(25);
-    int iAcquisition = 0;
-    //    QObject::connect(close_timer, &QTimer::timeout, [&app, &iAcquisition, &poses, &scans, &ro]() {
-    //    QObject::connect(close_timer, &QTimer::timeout, [&app, &iAcquisition, &scanStream, &posStream, &ro]() {
-    QObject::connect(close_timer, &QTimer::timeout, [&app, &iAcquisition, &posStream, &ro]() {
-        std::cout << "update acquisition " << iAcquisition << std::endl;
+    //        StreamThread thread(&app);
+    //        thread.mApp = &app;
+    //        thread.mRo = &*ro;
+    //        thread.run();
 
-        // update texture
-//        {
-//            Stream::Acquisition scanAcq;
-//            scanStream >> scanAcq;
-//            //            Ra::Engine::Data::TextureParameters textureParameters;
-//            //            textureParameters.name = "myTexture";
-//            //            auto texture = app.m_engine->getTextureManager()->getOrLoadTexture(textureParameters);
-//            Ra::Engine::Data::TextureParameters textureParameters;
-//            textureParameters.name = "myTexture";
-//            auto texture = app.m_engine->getTextureManager()->getOrLoadTexture(textureParameters);
-//            auto& params = texture->getParameters();
-//            //                    params.texels = scans[iAcquisition].mData;
-//            //        memcpy(params.texels, scans[iAcquisition].mData, 192 * 512);
-//            memcpy(params.texels, scanAcq.mData, 192 * 512);
-//            //            updateTexel(params.texels, dec);
-//            app.m_mainWindow->getViewer()->makeCurrent();
-//            texture->initializeGL(false);
-//            app.m_mainWindow->getViewer()->doneCurrent();
-//        }
+    {
+        auto close_timer = new QTimer(&app);
+        close_timer->setInterval(10);
+        //    close_timer->setInterval(25);
+        //    close_timer->setSingleShot(true);
+        int iAcquisition = 0;
+        int nThread = 0;
+        //    QObject::connect(close_timer, &QTimer::timeout, [&app, &iAcquisition, &poses, &scans, &ro]() {
+        //    QObject::connect(close_timer, &QTimer::timeout, [&app, &iAcquisition, &scanStream, &posStream, &ro]() {
+//        QObject::connect(close_timer, &QTimer::timeout, [&app, &iAcquisition, &posStream, &ro, &nThread]() {
+        QObject::connect(close_timer, &QTimer::timeout, [&app, &iAcquisition, &posStream, &ro, &nThread, &scanStream]() {
+            ++nThread;
+            if (nThread > 1) {
+                std::cout << "thread pending ---------------------" << std::endl;
+                return;
+            }
+            //        while (true) {
+            std::cout << "update acquisition " << iAcquisition << std::endl;
 
-        // update position and orientation
-        {
-            Stream::Acquisition posAcq;
-            posStream >> posAcq;
-            float* translation = (float*)posAcq.mData;
-            float* quaternion = (float*)&posAcq.mData[12];
-            //                std::string str = std::string("x:") + std::to_string(translation[0]) + ", y:" + std::to_string(translation[1]) + ", z:" + std::to_string(translation[2]) + "\naz:" + std::to_string(quaternion[0]) + ", el:" + std::to_string(quaternion[1]) + ", ro:" + std::to_string(quaternion[2]) + ", q4:" + std::to_string(quaternion[3]);
-            //                std::cout << str << std::endl;
+            // update texture
+                    {
+                        Stream::Acquisition scanAcq;
+                        scanStream >> scanAcq;
+                        //            Ra::Engine::Data::TextureParameters textureParameters;
+                        //            textureParameters.name = "myTexture";
+                        //            auto texture = app.m_engine->getTextureManager()->getOrLoadTexture(textureParameters);
+                        Ra::Engine::Data::TextureParameters textureParameters;
+                        textureParameters.name = "myTexture";
+                        auto texture = app.m_engine->getTextureManager()->getOrLoadTexture(textureParameters);
+                        auto& params = texture->getParameters();
+                        //                    params.texels = scans[iAcquisition].mData;
+                        //        memcpy(params.texels, scans[iAcquisition].mData, 192 * 512);
+                        memcpy(params.texels, scanAcq.mData, 192 * 512);
+                        //            updateTexel(params.texels, dec);
+                        app.m_mainWindow->getViewer()->makeCurrent();
+                        texture->initializeGL(false);
+                        app.m_mainWindow->getViewer()->doneCurrent();
+                    }
 
-            Ra::Core::Transform T = Ra::Core::Transform::Identity();
-            //                Ra::Core::Vector3 vec(1.0, 1.0, 1.0);
+            // update position and orientation
+            {
+                Stream::Acquisition posAcq;
+                posStream >> posAcq;
+                float* translation = (float*)posAcq.mData;
+                float* quaternion = (float*)&posAcq.mData[12];
+                float* euler = (float*)&posAcq.mData[28];
+                float az = euler[0]; // yaw
+                float el = euler[1]; // pitch
+                float roll = euler[2];
+                std::cout << "x = " << translation[0] << ",\ty = " << translation[1] << ",\tz = " << translation[2] << std::endl;
+                //                std::cout << "az = " << az << ", el = " << el << ", roll = " << roll << std::endl;
 
-            Ra::Core::Quaternion quat(quaternion[0], quaternion[1], quaternion[2], quaternion[3]);
-            T.rotate(quat);
+                //  , PDI_MODATA_ORI           // az, el, ro Euler ori angles
+                //                std::string str = std::string("x:") + std::to_string(translation[0]) + ", y:" + std::to_string(translation[1]) + ", z:" + std::to_string(translation[2]) + "\naz:" + std::to_string(quaternion[0]) + ", el:" + std::to_string(quaternion[1]) + ", ro:" + std::to_string(quaternion[2]) + ", q4:" + std::to_string(quaternion[3]);
+                //                std::cout << str << std::endl;
 
-            Ra::Core::Vector3 vecScale(1.0, 192.0 / 512, 1.0);
-            T.scale(vecScale);
+                Ra::Core::Transform TRadium = Ra::Core::Transform::Identity();
+                TRadium.rotate(Eigen::AngleAxis(1.0f * Ra::Core::Math::Pi, Ra::Core::Vector3(0.0, 0.0, 1.0)));
+                TRadium.rotate(Eigen::AngleAxis(-0.5f * Ra::Core::Math::Pi, Ra::Core::Vector3(1.0, 0.0, 0.0)));
 
-            Ra::Core::Vector3 vec(translation[0], translation[1], translation[2]);
-            vec /= 10.0;
-            T.translate(vec);
-            ro->setLocalTransform(T);
-        }
+                Ra::Core::Transform TEuler = Ra::Core::Transform::Identity();
+                //                Ra::Core::Vector3 vec(1.0, 1.0, 1.0);
 
-        //            std::cout << "update data with dec = " << dec << std::endl;
-        ++iAcquisition;
-        //        if (iAcquisition == poses.size())
-        //            iAcquisition = 0;
-    });
-    close_timer->start();
+                //                                Ra::Core::Quaternion quat(quaternion[0], quaternion[1], quaternion[2], quaternion[3]);
+                //                Ra::Core::Quaternion quat(quaternion[0], quaternion[1], quaternion[2], quaternion[3]);
+                //                Ra::Core::Quaternion quat(quaternion[0], quaternion[1], quaternion[3], quaternion[2]);
+                //                Ra::Core::Transform T2 = Ra::Core::Transform::Identity();
+                //                T2.rotate(quat);
+                //                Ra::Core::Matrix4 mat = Ra::Core::Matrix4::Zero();
+                //                mat.col(0) << T2;
+                //                Ra::Core::Quaternion quat(quaternion[1], quaternion[2], quaternion[3], quaternion[0]);
+                //                quat = quat.inverse();
+                //                Ra::Core::Quaternion::inverse(q)
+                //                T.rotate(quat);
+                //                T.rotate(mat);
+                //                T.rotate(Eigen::AngleAxis(Ra::Core::Math::Pi / 2.0f, Ra::Core::Vector3(0.0, 1.0, 0.0)));
+                //                T.rotate(Eigen::AngleAxis(-Ra::Core::Math::Pi / 2.0f, Ra::Core::Vector3(1.0, 0.0, 0.0)));
+
+                TEuler.rotate(Eigen::AngleAxis(az / 180.0f * Ra::Core::Math::Pi, Ra::Core::Vector3(0.0, 1.0, 0.0)));
+                TEuler.rotate(Eigen::AngleAxis(el / 180.0f * Ra::Core::Math::Pi, Ra::Core::Vector3(1.0, 0.0, 0.0)));
+                TEuler.rotate(Eigen::AngleAxis(roll / 180.0f * Ra::Core::Math::Pi, Ra::Core::Vector3(0.0, 0.0, 1.0)));
+
+//                TEuler.rotate(Eigen::AngleAxis(roll / 180.0f * Ra::Core::Math::Pi, Ra::Core::Vector3(0.0, 1.0, 0.0)));
+//                TEuler.rotate(Eigen::AngleAxis(el / 180.0f * Ra::Core::Math::Pi, Ra::Core::Vector3(1.0, 0.0, 0.0)));
+//                TEuler.rotate(Eigen::AngleAxis(-roll / 180.0f * Ra::Core::Math::Pi, Ra::Core::Vector3(0.0, 0.0, 1.0)));
+
+                //                Ra::Core::Transform T2 = Ra::Core::Transform::Identity();
+                //                TEuler.rotate(Eigen::AngleAxis(-Ra::Core::Math::Pi / 2.0f, Ra::Core::Vector3(1.0, 0.0, 0.0)));
+                //                TEuler.rotate(Eigen::AngleAxis(-Ra::Core::Math::Pi / 2.0f, Ra::Core::Vector3(0.0, 0.0, 1.0)));
+                //                TEuler.rotate(Eigen::AngleAxis(Ra::Core::Math::Pi / 2.0f, Ra::Core::Vector3(0.0, 1.0, 0.0)));
+
+                // World transform
+                Ra::Core::Transform TWorld = Ra::Core::Transform::Identity();
+//                                TWorld.translate(Ra::Core::Vector3(0.0, 0.0, 1.0));
+//                TWorld.rotate(Eigen::AngleAxis(1.0f * Ra::Core::Math::Pi, Ra::Core::Vector3(0.0, 0.0, 1.0)));
+//                TWorld.rotate(Eigen::AngleAxis(-0.5f * Ra::Core::Math::Pi, Ra::Core::Vector3(1.0, 0.0, 0.0)));
+//                Ra::Core::Vector3 vec(-translation[0], -translation[2], -translation[1]);
+                Ra::Core::Vector3 vec(translation[0], translation[1], translation[2]);
+//                Ra::Core::Vector3 vec(-translation[0], -translation[1], -translation[2]);
+                vec /= 3.0;
+                TWorld.translate(vec);
+
+                // Local transform
+                Ra::Core::Transform TLocal = Ra::Core::Transform::Identity();
+//                TLocal.rotate(Eigen::AngleAxis(-0.5f * Ra::Core::Math::Pi, Ra::Core::Vector3(1.0, 0.0, 0.0)));
+                //                TLocal.rotate(Eigen::AngleAxis(-0.5f * Ra::Core::Math::Pi, Ra::Core::Vector3(0.0, 1.0, 0.0)));
+//                TLocal.rotate(Eigen::AngleAxis(0.5f * Ra::Core::Math::Pi, Ra::Core::Vector3(0.0, 0.0, 1.0)));
+//                TLocal.translate(Ra::Core::Vector3(1.0, 0.0, 0.0));
+
+//                                TLocal.rotate(Eigen::AngleAxis(0.5f * Ra::Core::Math::Pi, Ra::Core::Vector3(0.0, 0.0, 1.0)));
+//                                TLocal.rotate(Eigen::AngleAxis(-0.5f * Ra::Core::Math::Pi, Ra::Core::Vector3(1.0, 0.0, 0.0)));
+
+                Ra::Core::Vector3 vecScale(1.0, 192.0 / 512, 1.0);
+                TLocal.scale(vecScale);
+
+                //                T2.translate(Ra::Core::Vector3(0.0, 0.0, 1.0));
+
+                //                Ra::Core::Vector3 vec(-translation[0], -translation[2], -translation[1]);
+                //                vec /= 2.0;
+                //                T.translate(vec);
+
+                //                ro->setLocalTransform(T * T2);
+
+                ro->setLocalTransform(TWorld * TEuler * TLocal);
+//                ro->setLocalTransform(TRadium * TWorld * TEuler * TLocal);
+            }
+
+            //            std::cout << "update data with dec = " << dec << std::endl;
+            ++iAcquisition;
+            //        if (iAcquisition == poses.size())
+            //            iAcquisition = 0;
+            //        }
+            --nThread;
+        });
+        close_timer->start();
+    }
 
     return app.exec();
 }

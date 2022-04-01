@@ -19,7 +19,7 @@ find_package(Radium REQUIRED Core Engine Gui)
 
 find_qt_package(COMPONENTS Core Widgets REQUIRED)
 set(Qt_LIBRARIES Qt::Core Qt::Widgets)
-set(CMAKE_AUTOMOC ON)
+#set(CMAKE_AUTOMOC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 # ------------------------------------------------------------------------------
 
@@ -38,9 +38,14 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 file(GLOB_RECURSE sources *.cpp)
 file(GLOB_RECURSE headers *.h)
 
+set(app_uis)
+qt_wrap_ui(app_uis_moc ${app_uis})
+
+
 add_executable(${PROJECT_NAME}
     ${sources}
     ${headers}
+    ${app_uis}
     )
 
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
