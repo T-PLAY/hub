@@ -74,7 +74,7 @@ int main(int argc, char* argv[])
             Stream::Acquisition acq;
             while (true) {
                 inputStream >> acq;
-                //                std::cout << "read acquisition : " << acq << std::endl;
+                                std::cout << "read acquisition : " << acq << std::endl;
                 //                outputStream << std::move(acq);
                 snapshots.insert(Snapshot { std::move(acq), sensorName });
                 ++nReadAcqs;
@@ -90,7 +90,7 @@ int main(int argc, char* argv[])
 
         file.close();
     }
-    std::cout << "read all records" << std::endl;
+    std::cout << "read " << snapshots.size() << " acquistions" << std::endl;
 
     // play
     std::cout << "start playing" << std::endl;

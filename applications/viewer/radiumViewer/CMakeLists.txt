@@ -35,7 +35,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 #find_package(Qt${QT_VERSION} COMPONENTS ${QT_LIBS} REQUIRED)
 
 
-file(GLOB_RECURSE sources *.cpp)
+file(GLOB_RECURSE sources *.cpp *.glsl)
 file(GLOB_RECURSE headers *.h)
 
 set(app_uis)
