@@ -26,36 +26,36 @@
 #include <Engine/Data/PlainMaterial.hpp>
 #include <fstream>
 
-std::string loadShaderSource(const std::string& vertexPath)
-{
-    // 1. retrieve the vertex/fragment source code from filePath
-    std::string vertexCode;
-    std::ifstream vShaderFile;
-    // ensure ifstream objects can throw exceptions:
-    vShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-    try {
-        // open files
-        vShaderFile.open(vertexPath);
-        std::stringstream vShaderStream;
-        // read file's buffer contents into streams
-        vShaderStream << vShaderFile.rdbuf();
-        // close file handlers
-        vShaderFile.close();
-        // convert stream into string
-        vertexCode = vShaderStream.str();
-    } catch (std::ifstream::failure e) {
-        std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
-        return "";
-    }
-    return vertexCode;
-}
+//std::string loadShaderSource(const std::string& vertexPath)
+//{
+//    // 1. retrieve the vertex/fragment source code from filePath
+//    std::string vertexCode;
+//    std::ifstream vShaderFile;
+//    // ensure ifstream objects can throw exceptions:
+//    vShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+//    try {
+//        // open files
+//        vShaderFile.open(vertexPath);
+//        std::stringstream vShaderStream;
+//        // read file's buffer contents into streams
+//        vShaderStream << vShaderFile.rdbuf();
+//        // close file handlers
+//        vShaderFile.close();
+//        // convert stream into string
+//        vertexCode = vShaderStream.str();
+//    } catch (std::ifstream::failure e) {
+//        std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
+//        return "";
+//    }
+//    return vertexCode;
+//}
 
-/**
- * Demonstrate the usage of RawShaderMaterial functionalities
- */
+///**
+// * Demonstrate the usage of RawShaderMaterial functionalities
+// */
 // Vertex shader source code
 const std::string vertexShaderFile = PROJECT_DIR "applications/viewer/radiumViewer/vertexShader.glsl";
-const std::string vertexShaderSource = loadShaderSource(vertexShaderFile);
+//const std::string vertexShaderSource = loadShaderSource(vertexShaderFile);
 // const std::string _vertexShaderSource { "#include \"TransformStructs.glsl\"\n"
 //                                         "layout (location = 0) in vec3 in_position;\n"
 //                                         "layout (location = 4) in vec3 in_texcoord;\n"
@@ -71,7 +71,7 @@ const std::string vertexShaderSource = loadShaderSource(vertexShaderFile);
 //                                         "}\n" };
 //  Fragment shader source code
 const std::string fragmentShaderFile = PROJECT_DIR "applications/viewer/radiumViewer/fragmentShader.glsl";
-const std::string fragmentShaderSource = loadShaderSource(fragmentShaderFile);
+//const std::string fragmentShaderSource = loadShaderSource(fragmentShaderFile);
 // const std::string _fragmentShaderSource {
 //     "#include \"BlinnPhong.glsl\"\n"
 //     "#include \"VertexAttribInterface.frag.glsl\"\n"
@@ -86,45 +86,45 @@ const std::string fragmentShaderSource = loadShaderSource(fragmentShaderFile);
 //     "}\n"
 // };
 
-const std::vector<std::pair<Ra::Engine::Data::ShaderType, std::string>> _config1 {
-    { Ra::Engine::Data::ShaderType::ShaderType_VERTEX, vertexShaderSource },
-    { Ra::Engine::Data::ShaderType::ShaderType_FRAGMENT, fragmentShaderSource }
-};
+//const std::vector<std::pair<Ra::Engine::Data::ShaderType, std::string>> _config1 {
+//    { Ra::Engine::Data::ShaderType::ShaderType_VERTEX, vertexShaderSource },
+//    { Ra::Engine::Data::ShaderType::ShaderType_FRAGMENT, fragmentShaderSource }
+//};
 
 // const std::vector<std::pair<Ra::Engine::Data::ShaderType, std::string>> _config1 {
 //     { Ra::Engine::Data::ShaderType::ShaderType_VERTEX, vertexShaderFile },
 //     { Ra::Engine::Data::ShaderType::ShaderType_FRAGMENT, fragmentShaderFile }
 // };
 
-class MyParameterProvider : public Ra::Engine::Data::ShaderParameterProvider {
-public:
-    MyParameterProvider() { }
-    ~MyParameterProvider() { }
-    void updateGL() override
-    {
-        assert(m_texture != nullptr);
-        // Method called before drawing each frame in Renderer::updateRenderObjectsInternal.
-        // The name of the parameter corresponds to the shader's uniform name.
-        m_renderParameters.addParameter("aColorUniform", m_colorParameter);
-        m_renderParameters.addParameter("aScalarUniform", m_scalarParameter);
-        //        m_renderParameters.addParameter("material.tex.kd", m_texture);
-        //        m_renderParameters.addParameter("material.tex.hasKd", 1);
-    }
-    void setOrComputeTheParameterValues()
-    {
-        assert(m_texture != nullptr);
-        // client side computation of the parameters, e.g.
-        m_colorParameter = Ra::Core::Utils::Color::Red();
-        m_scalarParameter = .5_ra;
-        m_renderParameters.addParameter("material.tex.kd", m_texture);
-        m_renderParameters.addParameter("material.tex.hasKd", 1);
-    }
+//class MyParameterProvider : public Ra::Engine::Data::ShaderParameterProvider {
+//public:
+//    MyParameterProvider() { }
+//    ~MyParameterProvider() { }
+//    void updateGL() override
+//    {
+//        assert(m_texture != nullptr);
+//        // Method called before drawing each frame in Renderer::updateRenderObjectsInternal.
+//        // The name of the parameter corresponds to the shader's uniform name.
+//        m_renderParameters.addParameter("aColorUniform", m_colorParameter);
+//        m_renderParameters.addParameter("aScalarUniform", m_scalarParameter);
+//        //        m_renderParameters.addParameter("material.tex.kd", m_texture);
+//        //        m_renderParameters.addParameter("material.tex.hasKd", 1);
+//    }
+//    void setOrComputeTheParameterValues()
+//    {
+//        assert(m_texture != nullptr);
+//        // client side computation of the parameters, e.g.
+//        m_colorParameter = Ra::Core::Utils::Color::Red();
+//        m_scalarParameter = .5_ra;
+//        m_renderParameters.addParameter("material.tex.kd", m_texture);
+//        m_renderParameters.addParameter("material.tex.hasKd", 1);
+//    }
 
-    // private:
-    Ra::Core::Utils::Color m_colorParameter { Ra::Core::Utils::Color::Green() };
-    Scalar m_scalarParameter { 1 };
-    Ra::Engine::Data::Texture* m_texture = nullptr;
-};
+//    // private:
+//    Ra::Core::Utils::Color m_colorParameter { Ra::Core::Utils::Color::Green() };
+//    Scalar m_scalarParameter { 1 };
+//    Ra::Engine::Data::Texture* m_texture = nullptr;
+//};
 
 int main(int argc, char* argv[])
 {
@@ -220,9 +220,14 @@ int main(int argc, char* argv[])
 
     //        return app.exec();
 
-    InputStream scanStream("ULA-OP 256");
-    //    InputStream posStream("Polhemus Patriot (probe)", "ULA-OP 256");
+//#define POSE_ONLY
+#ifdef POSE_ONLY
     InputStream posStream("Polhemus Patriot (probe)");
+#else
+    InputStream scanStream("ULA-OP 256");
+//    InputStream posStream("Polhemus Patriot (probe)", "ULA-OP 256");
+    InputStream posStream("Polhemus Patriot (probe)");
+#endif
     //    // get scans
     //    std::fstream posFile(PROJECT_DIR "records/latest/Polhemus Patriot (probe).txt", std::ios::binary | std::ios::in);
     //    assert(posFile.is_open());
@@ -240,14 +245,19 @@ int main(int argc, char* argv[])
 
     auto close_timer = new QTimer(&app);
     //        close_timer->setInterval(10);
-    close_timer->setInterval(20);
+//    close_timer->setInterval(20); // linux
+    close_timer->setInterval(10); // win
     //    close_timer->setSingleShot(true);
     int iAcquisition = 0;
     int nThread = 0;
     //    QObject::connect(close_timer, &QTimer::timeout, [&app, &iAcquisition, &poses, &scans, &ro]() {
     //    QObject::connect(close_timer, &QTimer::timeout, [&app, &iAcquisition, &scanStream, &posStream, &ro]() {
     //        QObject::connect(close_timer, &QTimer::timeout, [&app, &iAcquisition, &posStream, &ro, &nThread]() {
+#ifdef POSE_ONLY
+    QObject::connect(close_timer, &QTimer::timeout, [&app, &iAcquisition, &posStream, &ro, &nThread]() {
+#else
     QObject::connect(close_timer, &QTimer::timeout, [&app, &iAcquisition, &posStream, &ro, &nThread, &scanStream]() {
+#endif
         ++nThread;
         if (nThread > 1) {
             std::cout << "thread pending ---------------------" << std::endl;
@@ -256,6 +266,7 @@ int main(int argc, char* argv[])
         //        while (true) {
         std::cout << "update acquisition " << iAcquisition << std::endl;
 
+#ifndef POSE_ONLY
         // update texture
         {
             Stream::Acquisition scanAcq;
@@ -273,6 +284,7 @@ int main(int argc, char* argv[])
             texture->initializeGL(false);
             app.m_mainWindow->getViewer()->doneCurrent();
         }
+#endif
 
         // update position and orientation
         {
@@ -317,9 +329,12 @@ int main(int argc, char* argv[])
             //                TWorld.rotate(Eigen::AngleAxis(1.0f * Ra::Core::Math::Pi, Ra::Core::Vector3(0.0, 0.0, 1.0)));
             //                TWorld.rotate(Eigen::AngleAxis(-0.5f * Ra::Core::Math::Pi, Ra::Core::Vector3(1.0, 0.0, 0.0)));
             //                Ra::Core::Vector3 vec(-translation[0], -translation[2], -translation[1]);
-            Ra::Core::Vector3 vecPos(translation[0], translation[1], translation[2]);
+
+//            Ra::Core::Vector3 vecPos(translation[0], translation[1], translation[2]);
+            Ra::Core::Vector3 vecPos(-translation[0], -translation[1], -translation[2]);
+
             //                Ra::Core::Vector3 vecPos(-translation[0], -translation[1], -translation[2]);
-            vecPos /= 3.0;
+            vecPos /= 5.0;
             TWorld.translate(vecPos);
 
             // Local transform

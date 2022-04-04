@@ -32,10 +32,11 @@ std::ostream& operator<<(std::ostream& os, const Stream::Acquisition& acq)
 //{
 //}
 
-Stream::Stream(const std::string& sensorName, Format format, const std::vector<int>& dims, const std::string& ipv4, int port)
+Stream::Stream(const std::string& sensorName, Format format, const std::vector<int>& dims, const MetaData& metaData, const std::string& ipv4, int port)
     : mSensorName(sensorName)
     , mFormat(format)
     , mDims(dims)
+    , mMetaData(metaData)
     , mIOStream(new ClientSocket(ipv4, port))
     , mAcquisitionSize(computeAcquisitionSize(format, dims))
 {
@@ -112,7 +113,7 @@ size_t Stream::getAcquisitionSize() const
 ///////////////////////////////////////////////////////////////////////////////
 
 InputStream::InputStream(const std::string& sensorName, const std::string& syncSensorName, const std::string& ipv4, int port)
-    : Stream(sensorName, Format::NONE, {}, ipv4, port)
+    : Stream(sensorName, Format::NONE, {}, {}, ipv4, port)
 {
 #ifdef DEBUG_MSG
     std::cout << "[InputStream] InputStream(sensorName, ipv4, port)" << std::endl;
@@ -250,8 +251,8 @@ void InputStream::operator>>(const OutputStream& outputStream) const
 
 ///////////////////////////////////////////////////////////////////////////////
 
-OutputStream::OutputStream(const std::string& sensorName, Stream::Format format, const std::vector<int>& dims, const std::string& ipv4, int port)
-    : Stream(sensorName, format, dims, ipv4, port)
+OutputStream::OutputStream(const std::string& sensorName, Stream::Format format, const std::vector<int>& dims, const MetaData& metaData, const std::string& ipv4, int port)
+    : Stream(sensorName, format, dims, metaData, ipv4, port)
 {
     ClientSocket::Type clientType = ClientSocket::Type::STREAMER;
     mIOStream->write(clientType);

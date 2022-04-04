@@ -3,17 +3,23 @@
 #include <chrono>
 
 #include <stream.h>
+#include <tuple>
 
-//#define ULA_STREAMER
+#define ULA_STREAMER
 
 int main(int argc, char* argv[])
 {
+    std::cout << typeid(5.0).name() << typeid(5.0).hash_code() << std::endl;
+    return 0;
 
 #ifdef ULA_STREAMER
     constexpr int width = 192;
     constexpr int height = 512;
 
-    OutputStream proceduralStream = OutputStream("proceduralStreamer", Stream::Format::Y8, { width, height });
+    Stream::MetaData metaData;
+    metaData.add("depth", 3.0);
+    metaData.add("name", "L533");
+    OutputStream proceduralStream = OutputStream("proceduralStreamer", Stream::Format::Y8, { width, height }, metaData);
 
     const size_t imgSize = proceduralStream.getAcquisitionSize();
     assert(imgSize == 192 * 512);
@@ -122,12 +128,12 @@ int main(int argc, char* argv[])
         threads.emplace_back(std::move(thread));
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
     } // for (int i = 0; i < nSensor; ++i)
-#endif
 
     for (int i = 0; i < nSensor; ++i) {
         if (threads[i].joinable())
             threads[i].join();
     }
+#endif
 
     return 0;
 }

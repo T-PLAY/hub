@@ -8,6 +8,7 @@
 
 constexpr int SERVICE_PORT = 4042;
 
+template <class MetaData>
 class Stream {
 public:
     enum class Format {
@@ -45,7 +46,7 @@ public:
         COUNT /**< 			Number of enumeration values. Not a valid input: intended to be used in for-loops. */
     };
 
-    static constexpr char const * format2string[static_cast<int>(Format::COUNT)] = {
+    static constexpr char const* format2string[static_cast<int>(Format::COUNT)] = {
         "NONE",
         "Z16",
         "DISPARITY16",
@@ -101,7 +102,7 @@ public:
         0, // GPIO_RAW        , /**< Raw data from the external sensors hooked to one of the GPIO's */
         0, // DISPARITY32     , /**< 32-bit float-point disparity values. Depth->Disparity conversion : Disparity = Baseline*FocalLength/Depth */
         12 + 16, // DOF6           , /**< Pose data packed as floats array, containing translation vector, rotation quaternion and prediction velocities and accelerations vectors */
-//        12 + 16 + 12, // DOF6           , /**< Pose data packed as floats array, containing translation vector, rotation quaternion and prediction velocities and accelerations vectors */
+        //        12 + 16 + 12, // DOF6           , /**< Pose data packed as floats array, containing translation vector, rotation quaternion and prediction velocities and accelerations vectors */
         0, // Y10BPACK        , /**< 16-bit per-pixel grayscale image unpacked from 10 bits per pixel packed ([8:8:8:8:2222]) grey-scale image. The data is unpacked to LSB and padded with 6 zero bits */
         4, // DISTANCE        , /**< 32-bit float-point depth distance value.  */
         0, // MJPEG           , /**< Bitstream encoding for video in which an image of each frame is encoded as JPEG-DIB   */
@@ -150,9 +151,17 @@ public:
         friend std::ostream& operator<<(std::ostream& os, const Acquisition& acq);
     };
 
+    //    class MetaData {
+    //    public:
+    //        template <class T>
+    //        void add(std::string, T val);
+    //    private:
+    ////        std::map<std::string, unsigned
+    //    };
+
 public:
 protected:
-    Stream(const std::string& sensorName, Format format, const std::vector<int>& dims, const std::string& ipv4 = ("127.0.0.1"), int port = SERVICE_PORT);
+    Stream(const std::string& sensorName, Format format, const std::vector<int>& dims, const MetaData& metaData = {}, const std::string& ipv4 = ("127.0.0.1"), int port = SERVICE_PORT);
     Stream(const std::string& sensorName, Format format, const std::vector<int>& dims, std::fstream& file);
     ~Stream();
 
@@ -180,6 +189,7 @@ protected:
     std::string mSensorName;
     Format mFormat;
     std::vector<int> mDims;
+    MetaData mMetaData;
 
     std::unique_ptr<IOStream> mIOStream;
     size_t mAcquisitionSize;
@@ -187,11 +197,12 @@ protected:
 
 class OutputStream;
 
-class InputStream : public Stream {
+template <class MetaData>
+class InputStream : public Stream<MetaData> {
 public:
     InputStream(const std::string& sensorName, const std::string& syncSensorName = "", const std::string& ipv4 = "127.0.0.1", int port = SERVICE_PORT);
     InputStream(std::fstream& file);
-    InputStream(ClientSocket&& sock, const std::string & sensorName);
+    InputStream(ClientSocket&& sock, const std::string& sensorName);
     ~InputStream();
 
     Acquisition& operator>>(Acquisition& acquisition) const;
@@ -202,9 +213,10 @@ public:
 private:
 };
 
-class OutputStream : public Stream {
+template <class MetaData>
+class OutputStream : public Stream<MetaData> {
 public:
-    OutputStream(const std::string& sensorName, Format format, const std::vector<int>& dims, const std::string& ipv4 = "127.0.0.1", int port = SERVICE_PORT);
+    OutputStream(const std::string& sensorName, Format format, const std::vector<int>& dims, const MetaData& metaData = {}, const std::string& ipv4 = "127.0.0.1", int port = SERVICE_PORT);
     OutputStream(const std::string& sensorName, Format format, const std::vector<int>& dims, std::fstream& file);
     OutputStream(const OutputStream& outputStream) = delete;
     OutputStream(ClientSocket&& sock, const InputStream& inputStream);

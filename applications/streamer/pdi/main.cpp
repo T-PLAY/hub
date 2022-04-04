@@ -74,7 +74,8 @@ int main(int argc, char* argv[])
                     outputStreams.push_back(std::make_unique<OutputStream>("Polhemus Patriot (confidence)", Stream::Format::DOF6, std::vector<int>({ 1 })));
                     outputStreams.push_back(std::make_unique<OutputStream>("Polhemus Patriot (probe)", Stream::Format::DOF6, std::vector<int>({ 1 })));
                     //                    outputStreams.push_back(new OutputStream("Polhemus Patriot (probe)", Stream::Format::DOF6, { 1 }));
-                    constexpr int packetSize = 48;
+//                    constexpr int packetSize = 8 + 12 + 16 + 12;
+                    constexpr int packetSize = 8 + 12 + 16;
                     assert(packetSize == 8 + outputStreams[0]->getAcquisitionSize()); // header 8 bytes, frame count 4 bytes
 
                     while (true) { // each acquisition
@@ -186,7 +187,7 @@ bool Initialize()
     g_pdiMDat.Empty();
     g_pdiMDat.Append(PDI_MODATA_POS);
     g_pdiMDat.Append(PDI_MODATA_QTRN);
-    g_pdiMDat.Append(PDI_MODATA_ORI);
+//    g_pdiMDat.Append(PDI_MODATA_ORI);
     //    g_dwFrameSize = 8 + 12 + 16;
 
     g_bCnxReady = false;
