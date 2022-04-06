@@ -32,37 +32,39 @@ std::ostream& operator<<(std::ostream& os, const Stream::Acquisition& acq)
 //{
 //}
 
-//Stream::Stream(const std::string& sensorName, Format format, const std::vector<int>& dims, const std::string& ipv4, int port)
-//    : mSensorName(sensorName)
-//    , mFormat(format)
-//    , mDims(dims)
-//    , mIOStream(new ClientSocket(ipv4, port))
-//    , mAcquisitionSize(computeAcquisitionSize(format, dims))
+// Stream::Stream(const std::string& sensorName, Format format, const std::vector<int>& dims, const std::string& ipv4, int port)
+//     : mSensorName(sensorName)
+//     , mFormat(format)
+//     , mDims(dims)
+//     , mIOStream(new ClientSocket(ipv4, port))
+//     , mAcquisitionSize(computeAcquisitionSize(format, dims))
 //{
 //#ifdef DEBUG_MSG
-//    std::cout << "[Stream] Stream()" << std::endl;
+//     std::cout << "[Stream] Stream()" << std::endl;
 //#endif
-//}
+// }
 
-//Stream::Stream(const std::string& sensorName, Format format, const std::vector<int>& dims, std::fstream& file)
-//    : mSensorName(sensorName)
-//    , mFormat(format)
-//    , mDims(dims)
-//    , mIOStream(new FileIO(file))
-//    //    , mIOStream(std::make_unique<FileIO>(file))
-//    , mAcquisitionSize(computeAcquisitionSize(format, dims))
+// Stream::Stream(const std::string& sensorName, Format format, const std::vector<int>& dims, std::fstream& file)
+//     : mSensorName(sensorName)
+//     , mFormat(format)
+//     , mDims(dims)
+//     , mIOStream(new FileIO(file))
+//     //    , mIOStream(std::make_unique<FileIO>(file))
+//     , mAcquisitionSize(computeAcquisitionSize(format, dims))
 //{
 //#ifdef DEBUG_MSG
-//    std::cout << "[Stream] Stream()" << std::endl;
+//     std::cout << "[Stream] Stream()" << std::endl;
 //#endif
-//}
+// }
 
-Stream::Stream(const std::string& sensorName, Format format, const std::vector<int>& dims, IOStream&& ioStream)
+Stream::Stream(const std::string& sensorName, Format format, const std::vector<int>& dims, const IOStream& ioStream)
     : mSensorName(sensorName)
     , mFormat(format)
     , mDims(dims)
-    //    , mIOStream(std::make_unique<IOStream>(std::move(ioStream)))
+    //        , mIOStream(std::make_unique<IOStream>(std::move(ioStream)))
+    //    , mIOStream(ioStream)
     , mIOStream(ioStream)
+    //    , mIOStream(std::move(ioStream))
     , mAcquisitionSize(computeAcquisitionSize(format, dims))
 {
 }
@@ -72,12 +74,14 @@ Stream::~Stream()
 #ifdef DEBUG_MSG
     std::cout << "[Stream] ~Stream()" << std::endl;
 #endif
+    delete &mIOStream;
+//    mIOStream = nullptr;
 }
 
-//Stream::Stream(ClientSocket&& clientSocket)
-//    : mIOStream(new ClientSocket(std::move(clientSocket)))
+// Stream::Stream(ClientSocket&& clientSocket)
+//     : mIOStream(new ClientSocket(std::move(clientSocket)))
 //{
-//}
+// }
 
 size_t Stream::computeAcquisitionSize(Format format, const std::vector<int>& dims)
 {
@@ -121,14 +125,14 @@ size_t Stream::getAcquisitionSize() const
 
 ///////////////////////////////////////////////////////////////////////////////
 
-//InputStream::InputStream(const std::string& sensorName, const std::string& syncSensorName, const std::string& ipv4, int port)
-//    : Stream(sensorName, Format::NONE, {}, ipv4, port)
+// InputStream::InputStream(const std::string& sensorName, const std::string& syncSensorName, const std::string& ipv4, int port)
+//     : Stream(sensorName, Format::NONE, {}, ipv4, port)
 //{
 //#ifdef DEBUG_MSG
-//    std::cout << "[InputStream] InputStream(sensorName, ipv4, port)" << std::endl;
+//     std::cout << "[InputStream] InputStream(sensorName, ipv4, port)" << std::endl;
 //#endif
-//    ClientSocket::Type clientType = ClientSocket::Type::STREAM_VIEWER;
-//    mIOStream.write(clientType);
+//     ClientSocket::Type clientType = ClientSocket::Type::STREAM_VIEWER;
+//     mIOStream.write(clientType);
 
 //    mIOStream.write(sensorName);
 //    Socket::Message mess;
@@ -157,11 +161,11 @@ size_t Stream::getAcquisitionSize() const
 //    mAcquisitionSize = computeAcquisitionSize(mFormat, mDims);
 //}
 
-//InputStream::InputStream(std::fstream& file)
-//    : Stream("", Format::NONE, {}, file)
+// InputStream::InputStream(std::fstream& file)
+//     : Stream("", Format::NONE, {}, file)
 //{
 //#ifdef DEBUG_MSG
-//    std::cout << "[InputStream] InputStream(sensorName, ipv4, port)" << std::endl;
+//     std::cout << "[InputStream] InputStream(sensorName, ipv4, port)" << std::endl;
 //#endif
 
 //    mIOStream.read(mSensorName);
@@ -180,26 +184,31 @@ size_t Stream::getAcquisitionSize() const
 //    mAcquisitionSize = computeAcquisitionSize(mFormat, mDims);
 //}
 
-InputStream::InputStream(IOStream&& ioStream)
+InputStream::InputStream(const IOStream&& ioStream)
+    //    : Stream("", Format::NONE, {}, std::move(ioStream))
+    //    : Stream("", Format::NONE, {}, std::forward<IOStream&>(ioStream))
     : Stream("", Format::NONE, {}, std::move(ioStream))
 {
+    //    ioStream.setupInput();
+
     mIOStream.read(mSensorName);
     mIOStream.read(mFormat);
     mIOStream.read(mDims);
+    //    mIOStream.read(mMetaData);
 
     mAcquisitionSize = computeAcquisitionSize(mFormat, mDims);
 }
 
-//InputStream::InputStream(ClientSocket&& sock, const std::string& sensorName)
-//    : Stream(std::move(sock))
+// InputStream::InputStream(ClientSocket&& sock, const std::string& sensorName)
+//     : Stream(std::move(sock))
 //{
 //#ifdef DEBUG_MSG
-//    std::cout << "[InputStream] InputStream(ClientSocket && sock)" << std::endl;
+//     std::cout << "[InputStream] InputStream(ClientSocket && sock)" << std::endl;
 //#endif
-//    mSensorName = sensorName;
-//    //    mIOStream.read(mSensorName);
-//    mIOStream.read(mFormat);
-//    mIOStream.read(mDims);
+//     mSensorName = sensorName;
+//     //    mIOStream.read(mSensorName);
+//     mIOStream.read(mFormat);
+//     mIOStream.read(mDims);
 
 //    mAcquisitionSize = computeAcquisitionSize(mFormat, mDims);
 //}
@@ -275,12 +284,11 @@ void InputStream::operator>>(const OutputStream& outputStream) const
 
 ///////////////////////////////////////////////////////////////////////////////
 
-
-//OutputStream::OutputStream(const std::string& sensorName, Stream::Format format, const std::vector<int>& dims, const MetaData& metaData, const std::string& ipv4, int port)
-//    : Stream(sensorName, format, dims, ipv4, port)
+// OutputStream::OutputStream(const std::string& sensorName, Stream::Format format, const std::vector<int>& dims, const MetaData& metaData, const std::string& ipv4, int port)
+//     : Stream(sensorName, format, dims, ipv4, port)
 //{
-//    ClientSocket::Type clientType = ClientSocket::Type::STREAMER;
-//    mIOStream.write(clientType);
+//     ClientSocket::Type clientType = ClientSocket::Type::STREAMER;
+//     mIOStream.write(clientType);
 
 //    mIOStream.write(mSensorName);
 //    Socket::Message mess;
@@ -294,8 +302,8 @@ void InputStream::operator>>(const OutputStream& outputStream) const
 //    mIOStream.write(mDims);
 //}
 
-//OutputStream::OutputStream(const std::string& sensorName, Format format, const std::vector<int>& dims, std::fstream& file)
-//    : Stream(sensorName, format, dims, file)
+// OutputStream::OutputStream(const std::string& sensorName, Format format, const std::vector<int>& dims, std::fstream& file)
+//     : Stream(sensorName, format, dims, file)
 //{
 
 //    mIOStream.write(mSensorName);
@@ -303,27 +311,42 @@ void InputStream::operator>>(const OutputStream& outputStream) const
 //    mIOStream.write(mDims);
 //}
 
-OutputStream::OutputStream(IOStream&& ioStream, Format format, const std::vector<int>& dims, const MetaData& metaData)
-    : Stream("", format, dims, std::move(ioStream))
-{
-//    mIOStream.write(mSensorName);
-    mIOStream.write(mFormat);
-    mIOStream.write(mDims);
-}
-
-OutputStream::OutputStream(IOStream && ioStream, const InputStream &inputStream)
-    : Stream("", Format::BGR8, {}, std::move(ioStream))
-//    : Stream("",
-{
-
-}
-
-//OutputStream::OutputStream(ClientSocket&& sock, const InputStream& inputStream)
-//    : Stream(std::move(sock))
+//OutputStream::OutputStream(const std::string& sensorName, Format format, const std::vector<int>& dims, const IOStream &ioStream, const MetaData& metaData)
+//    //    : Stream(sensorName, format, dims, dynamic_cast<IOStream&>(ioStream))
+//    : Stream(sensorName, format, dims, std::move(ioStream))
+////    : Stream(sensorName, format, dims, std::move(ioStream))
+////    : Stream(sensorName, format, dims, std::forward<IOStream&>(ioStream))
 //{
-//    mSensorName = inputStream.getSensorName();
-//    mFormat = inputStream.getFormat();
-//    mDims = inputStream.getDims();
+//    //    mIOStream.setupMode(IOStream::Mode::OUTPUT);
+//    //    mIOStream.init(sensorName);
+//    mIOStream.setupOutput(sensorName);
+
+//    mIOStream.write(mSensorName);
+//    mIOStream.write(mFormat);
+//    mIOStream.write(mDims);
+//    //    mIOStream.write(metaData);
+//}
+
+// OutputStream::OutputStream(IOStream &&ioStream)
+//     : Stream("", Format::NONE, {}, std::move(ioStream))
+//{
+
+//}
+
+// OutputStream::OutputStream(IOStream && ioStream, const InputStream &inputStream)
+////    : Stream("", Format::BGR8, {}, std::move(ioStream))
+//    : Stream("", Format::NONE, {}, std::move(ioStream))
+////    : Stream("",
+//{
+
+//}
+
+// OutputStream::OutputStream(ClientSocket&& sock, const InputStream& inputStream)
+//     : Stream(std::move(sock))
+//{
+//     mSensorName = inputStream.getSensorName();
+//     mFormat = inputStream.getFormat();
+//     mDims = inputStream.getDims();
 
 //    mAcquisitionSize = computeAcquisitionSize(mFormat, mDims);
 

@@ -19,7 +19,12 @@ int main(int argc, char* argv[])
     while (true) {
         try {
             //            InputStream inputStream("proceduralStreamer");
-            InputStream inputStream(ClientSocket(ClientSocket::Type::STREAM_VIEWER, sensorNames[i], sensorMasterNames[i]));
+//            InputStream inputStream(ClientSocket(ClientSocket::Type::STREAM_VIEWER, sensorNames[i], sensorMasterNames[i]));
+//            InputStream inputStream(ClientSocket(sensorNames[i], sensorMasterNames[i]));
+//            InputStream inputStream(sensorNames[i], sensorMasterNames[i]);
+//            InputStream inputStream(ClientSocket(sensorNames[i], sensorMasterNames[i]));
+//            InputStream inputStream(ClientSocket{sensorNames[i], sensorMasterNames[i]});
+            InputStream inputStream(ClientSocket{sensorNames[i], sensorMasterNames[i]});
             std::cout << "proceduralStreamer inited" << std::endl;
             const Stream::MetaData & metaData = inputStream.getMetaData();
             assert(std::any_cast<double>(metaData.at("depth")) == 3.0);

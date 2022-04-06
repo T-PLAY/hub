@@ -12,8 +12,9 @@
 #include <string>
 
 //#define DEBUG_SOCKET
+
 constexpr int SERVICE_PORT = 4042;
-constexpr const char * SERVICE_IP = "127.0.0.1";
+constexpr const char* SERVICE_IP = "127.0.0.1";
 
 class Socket {
 public:
@@ -51,7 +52,14 @@ public:
         "CLOSE",
         "DEL_STREAMER",
         "NEW_STREAMER",
+        "NOT_FOUND",
+        "FOUND",
     };
+    friend std::ostream& operator<<(std::ostream& os, const Message& msg)
+    {
+        os << message2string[(int)msg];
+        return os;
+    }
 
     bool isConnected() const;
 
@@ -78,9 +86,17 @@ public:
         "VIEWER",
         "STREAM_VIEWER",
     };
+    friend std::ostream& operator<<(std::ostream& os, const Type& type)
+    {
+        os << type2string[(int)type];
+        return os;
+    }
 
-    ClientSocket(Type type, std::string sensorName = "", std::string syncSensorName = "", std::string ipv4 = SERVICE_IP, int port = SERVICE_PORT);
-    ClientSocket(socket_fd fdSock);
+    void connectToServer();
+
+    ClientSocket(const std::string& ipv4 = SERVICE_IP, int port = SERVICE_PORT); // client : streamer
+    ClientSocket(const std::string& sensorName, const std::string& syncSensorName = "", const std::string ipv4 = SERVICE_IP, int port = SERVICE_PORT); // client : stream viewer
+    ClientSocket(socket_fd fdSock); // server side client (bind and listen)
 
     ClientSocket(const ClientSocket& sock) = delete;
     ClientSocket(const ClientSocket&& sock) = delete;
@@ -93,6 +109,8 @@ public:
     ClientSocket& operator=(ClientSocket& sock) = delete;
     ClientSocket&& operator=(ClientSocket&& sock) = delete;
 
+    ~ClientSocket();
+
     void write(const unsigned char* data, size_t len) const override;
     template <class T>
     void write(const T& t) const;
@@ -104,9 +122,14 @@ public:
     void waitClose() const;
     void clear();
 
+    void setupOutput(const std::string& sensorName) const override;
+
+    void setIsServer(bool isServer);
+
 private:
     std::string mIpv4;
     int mPort;
+    bool mIsServer = false;
 };
 
 class ServerSocket : public Socket {
@@ -134,17 +157,19 @@ void ClientSocket::write(const T& t) const
     // std::cout << "\033[31mClientSocket::write(const T& t) -> IOStream::write(t)\033[0m" << std::endl;
     IOStream::write(t);
 
-#ifdef DEBUG_SOCKET
-    if (std::is_enum<T>::value) {
-        if (std::is_same<T, Message>::value) {
-            std::cout << ", " << message2string[(int)(const Message&)t];
-        }
-        if (std::is_same<T, ClientSocket::Type>::value) {
-            std::cout << ", new client : " << ClientSocket::type2string[(int)(const ClientSocket::Type&)t];
-        }
-    }
-    std::cout << std::endl;
-#endif
+//#ifdef DEBUG_SOCKET
+//    if (std::is_enum<T>::value) {
+//        if (std::is_same<T, Message>::value) {
+//            std::cout << "socket message : " << message2string[(int)(const Message&)t];
+//        }
+//        if (std::is_same<T, ClientSocket::Type>::value) {
+//            std::cout << "new client : " << ClientSocket::type2string[(int)(const ClientSocket::Type&)t];
+//        }
+//    } else {
+//        std::cout << "type (" <<typeid(T).name() << ")" << "value : '" << t << "'" << std::endl;
+//    }
+//    std::cout << std::endl;
+//#endif
 }
 
 template <class T>
@@ -153,17 +178,19 @@ void ClientSocket::read(T& t) const
     // std::cout << "\033[31mClientSocket::read(T& t) -> IOStream::read(t)\033[0m" << std::endl;
     IOStream::read(t);
 
-#ifdef DEBUG_SOCKET
-    if (std::is_enum<T>::value) {
-        if (std::is_same<T, Message>::value) {
-            std::cout << ", " << message2string[(int)(Message&)t];
-        }
-        if (std::is_same<T, ClientSocket::Type>::value) {
-            std::cout << ", new client : " << ClientSocket::type2string[(int)(ClientSocket::Type&)t];
-        }
-    }
-    std::cout << std::endl;
-#endif
+//#ifdef DEBUG_SOCKET
+//    if (std::is_enum<T>::value) {
+//        if (std::is_same<T, Message>::value) {
+//            std::cout << "socket message : " << message2string[(int)(Message&)t];
+//        }
+//        if (std::is_same<T, ClientSocket::Type>::value) {
+//            std::cout << "new client : " << ClientSocket::type2string[(int)(ClientSocket::Type&)t];
+//        }
+//    } else {
+//        std::cout << "type (" <<typeid(T).name() << ")" << "value : '" << t << "'" << std::endl;
+//    }
+//    std::cout << std::endl;
+//#endif
 }
 
 #endif // SOCKET_H

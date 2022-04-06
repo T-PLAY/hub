@@ -1,6 +1,8 @@
 #include "socket.h"
 
 #include <cassert>
+#include <algorithm>
+//#include <utility>
 
 Socket::Socket()
 {
@@ -42,14 +44,8 @@ bool Socket::isConnected() const
     return false;
 }
 
-ClientSocket::ClientSocket(ClientSocket::Type clientType, std::string sensorName, std::string syncSensorName, std::string ipv4, int port)
-    : mIpv4(ipv4)
-    , mPort(port)
+void ClientSocket::connectToServer()
 {
-#ifdef DEBUG_SOCKET
-    std::cout << getHeader(mFdSock) << "ClientSocket(std::string ipv4, int port)" << std::endl;
-#endif
-
     // Socket creation
     mFdSock = socket(PF_INET, SOCK_STREAM, 0);
     if (mFdSock < 0) {
@@ -62,61 +58,107 @@ ClientSocket::ClientSocket(ClientSocket::Type clientType, std::string sensorName
     struct sockaddr_in serv_addr;
     memset(&serv_addr, 0, sizeof(serv_addr));
     serv_addr.sin_family = AF_INET;
-    serv_addr.sin_addr.s_addr = inet_addr(ipv4.c_str());
-    serv_addr.sin_port = htons(port); // Server port
+    serv_addr.sin_addr.s_addr = inet_addr(mIpv4.c_str());
+    serv_addr.sin_port = htons(mPort); // Server port
 
     // Connect to server
     while (connect(mFdSock, (struct sockaddr*)&serv_addr, sizeof(serv_addr)) < 0) {
         std::this_thread::sleep_for(std::chrono::milliseconds(2000));
-        throw Socket::exception(((std::string("Failed to connect to server at address ") + ipv4 + " and port " + std::to_string(mPort))).c_str());
+        throw Socket::exception(((std::string("Failed to connect to server at address ") + mIpv4 + " and port " + std::to_string(mPort))).c_str());
     }
 
     std::cout << getHeader(mFdSock) << "new client on socket " << mFdSock << std::endl;
+}
 
+ClientSocket::ClientSocket(const std::string& ipv4, int port)
+    : mIpv4(ipv4)
+    , mPort(port)
+{
+#ifdef DEBUG_SOCKET
+    std::cout << getHeader(mFdSock) << "ClientSocket(std::string ipv4, int port)" << std::endl;
+#endif
+
+    connectToServer();
+
+    // ask server
+    //    write(clientType);
+
+    //    switch (clientType) {
+    //    case Type::STREAM_VIEWER:
+    //    {
+    //        //        ClientSocket::Type clientType = ClientSocket::Type::STREAM_VIEWER;
+    //        write(sensorName);
+    //        Socket::Message mess;
+    //        read(mess);
+    //        if (mess == Socket::Message::NOT_FOUND) {
+    //            throw Socket::exception((std::string("sensor '") + sensorName + "' is not attached to server").c_str());
+    //        }
+    //        assert(mess == Socket::Message::OK);
+
+    //        write(syncSensorName);
+    //        read(mess);
+    //        if (mess == Socket::Message::NOT_FOUND) {
+    //            throw Socket::exception((std::string("sync sensor '") + syncSensorName + "' is not attached to server").c_str());
+    //        }
+    //        assert(mess == Socket::Message::OK);
+    //    } break;
+
+    //    case Type::STREAMER: {
+    ////        ClientSocket::Type clientType = ClientSocket::Type::STREAMER;
+    ////        write(clientType);
+
+    //        write(sensorName);
+    //        Socket::Message mess;
+    //        read(mess);
+    //        if (mess == Socket::Message::FOUND) {
+    //            throw Socket::exception((std::string("sensor '") + sensorName + "' is already attached to server").c_str());
+    //        }
+    //        assert(mess == Socket::Message::NOT_FOUND);
+
+    //        write(sensorName);
+    //    } break;
+
+    //    case Type::VIEWER:
+    //        break;
+
+    //    default:
+    //        assert(false);
+    //    }
+}
+
+ClientSocket::ClientSocket(const std::string& sensorName, const std::string& syncSensorName, const std::string ipv4, int port)
+    : mIpv4(ipv4)
+    , mPort(port)
+{
+#ifdef DEBUG_SOCKET
+    std::cout << getHeader(mFdSock) << "ClientSocket(std::string sensorName, std::string syncSensorName, std::string ipv4, int port)" << std::endl;
+#endif
+
+    connectToServer();
+
+    Type clientType = Type::STREAM_VIEWER;
     // ask server
     write(clientType);
 
-    switch (clientType) {
-    case Type::STREAM_VIEWER:
-    {
-        //        ClientSocket::Type clientType = ClientSocket::Type::STREAM_VIEWER;
-        write(sensorName);
-        Socket::Message mess;
-        read(mess);
-        if (mess == Socket::Message::NOT_FOUND) {
-            throw Socket::exception((std::string("sensor '") + sensorName + "' is not attached to server").c_str());
-        }
-        assert(mess == Socket::Message::OK);
-
-        write(syncSensorName);
-        read(mess);
-        if (mess == Socket::Message::NOT_FOUND) {
-            throw Socket::exception((std::string("sync sensor '") + syncSensorName + "' is not attached to server").c_str());
-        }
-        assert(mess == Socket::Message::OK);
-    } break;
-
-    case Type::STREAMER: {
-//        ClientSocket::Type clientType = ClientSocket::Type::STREAMER;
-//        write(clientType);
-
-        write(sensorName);
-        Socket::Message mess;
-        read(mess);
-        if (mess == Socket::Message::FOUND) {
-            throw Socket::exception((std::string("sensor '") + sensorName + "' is already attached to server").c_str());
-        }
-        assert(mess == Socket::Message::NOT_FOUND);
-
-        write(sensorName);
-    } break;
-
-    case Type::VIEWER:
-        break;
-
-    default:
-        assert(false);
+    //    switch (clientType) {
+    //    case Type::STREAM_VIEWER:
+    //    {
+    //        ClientSocket::Type clientType = ClientSocket::Type::STREAM_VIEWER;
+    write(sensorName);
+    Socket::Message mess;
+    read(mess);
+    if (mess == Socket::Message::NOT_FOUND) {
+        throw Socket::exception((std::string("sensor '") + sensorName + "' is not attached to server").c_str());
     }
+    assert(mess == Socket::Message::OK);
+
+    write(syncSensorName);
+    read(mess);
+    if (mess == Socket::Message::NOT_FOUND) {
+        throw Socket::exception((std::string("sync sensor '") + syncSensorName + "' is not attached to server").c_str());
+    }
+    assert(mess == Socket::Message::OK);
+    //    } break;
 }
 
 ClientSocket::ClientSocket(socket_fd fdSock)
@@ -129,6 +171,7 @@ ClientSocket::ClientSocket(ClientSocket&& sock)
     : Socket()
     , mIpv4(sock.mIpv4)
     , mPort(sock.mPort)
+    , mIsServer(sock.mIsServer)
 {
     mFdSock = sock.mFdSock;
     sock.mFdSock = INVALID_SOCKET;
@@ -137,6 +180,43 @@ ClientSocket::ClientSocket(ClientSocket&& sock)
     std::cout << getHeader(mFdSock) << "ClientSocket(ClientSocket && sock)" << std::endl;
 #endif
 }
+
+ClientSocket::~ClientSocket()
+{
+    std::cout << getHeader(mFdSock) << "~ClientSocket()" << std::endl;
+}
+
+void ClientSocket::setupOutput(const std::string& sensorName) const
+{
+    //    (void)sensorName;
+#ifdef DEBUG_SOCKET
+    std::cout << "ClientSocket::setOutputName(const std::string& sensorName)" << std::endl;
+#endif
+
+    if (!mIsServer) {
+        ClientSocket::Type clientType = ClientSocket::Type::STREAMER;
+        write(clientType);
+
+        write(sensorName);
+        Socket::Message mess;
+        read(mess);
+        if (mess == Socket::Message::FOUND) {
+            assert(false);
+            throw Socket::exception((std::string("sensor '") + sensorName + "' is already attached to server").c_str());
+        }
+        assert(mess == Socket::Message::NOT_FOUND);
+    }
+
+    //            write(sensorName);
+    IOStream::setupOutput(sensorName);
+}
+
+void ClientSocket::setIsServer(bool isServer)
+{
+    mIsServer = isServer;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
 
 ServerSocket::ServerSocket(int port)
     : mPort(port)
@@ -212,9 +292,10 @@ void ClientSocket::write(const unsigned char* data, size_t len) const
 
 #ifdef DEBUG_SOCKET
     std::cout << getHeader(mFdSock) << "write message ";
-    for (size_t i = 0; i < len; ++i) {
+    for (size_t i = 0; i < std::min(10, (int)len); ++i) {
         std::cout << (int)*(data + i) << " ";
     }
+    std::cout << std::endl;
 #endif
 }
 
@@ -242,10 +323,10 @@ void ClientSocket::read(unsigned char* data, size_t len) const
 #ifdef DEBUG_SOCKET
     std::cout << getHeader(mFdSock) << "read message ";
 
-    for (size_t i = 0; i < len; ++i) {
+    for (size_t i = 0; i < std::min(10, (int)len); ++i) {
         std::cout << (int)*(data + i) << " ";
     }
-
+    std::cout << std::endl;
 #endif
 }
 
