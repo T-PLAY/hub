@@ -18,7 +18,7 @@ class FileIO : public IOStream {
     };
 
 public:
-    FileIO(std::fstream& file, const std::string & sensorName = "");
+    FileIO(std::fstream& file);
 //    FileIO(std::ifstream& file);
 
     void write(const unsigned char* data, size_t len) const override;

@@ -1,13 +1,12 @@
 #include "server.h"
 
 #include <cassert>
-#include <memory>
-#include <stream.h>
-#include <vector>
-#include <socket.h>
-#include <memory>
-#include <utility>
 #include <iostream>
+#include <memory>
+#include <socket.h>
+#include <stream.h>
+#include <utility>
+#include <vector>
 
 static std::string dims2string(const std::vector<int>& dims)
 {
@@ -38,6 +37,7 @@ void Server::run()
     while (true) {
 
         ClientSocket sock = mServerSock.waitNewClient();
+        sock.setIsServer(true);
         std::cout << getServerHeader(0) << "new client" << std::endl;
 
         std::thread thread([this, iThread, sock = std::move(sock)]() mutable {
@@ -60,11 +60,12 @@ void Server::run()
                 }
                 assert(mStreamers.find(sensorName) == mStreamers.end());
 
-//                Streamer streamer { { std::move(sock), sensorName }, sensorName, {}, {}, nullptr, {} };
-                Streamer streamer { std::move(sock), sensorName, {}, {}, nullptr, {} };
+                //                Streamer streamer { { std::move(sock), sensorName }, sensorName, {}, {}, nullptr, {} };
+//                Streamer streamer { InputStream(std::move(sock)), sensorName, {}, {}, nullptr, {} };
+                Streamer streamer { InputStream(std::move(sock)), sensorName, {}, {}, nullptr, {} };
                 //                const std::string sensorName = streamer.mInputStream.getSensorName();
                 // sensor is unique
-//                streamer.mSensorName = sensorName;
+                //                streamer.mSensorName = sensorName;
                 const auto& inputStream = streamer.mInputStream;
                 auto& outputStreams = streamer.mOutputStreams;
                 auto& sensor2syncViewers = streamer.mSensor2syncViewers;
@@ -292,24 +293,36 @@ void Server::run()
 
                 Streamer* streamer = mStreamers.at(sensorName);
 
+                const auto& inputStream = streamer->mInputStream;
                 if (syncSensorName == "") {
-                    streamer->mOutputStreams.emplace_back(std::move(sock), streamer->mInputStream);
-//                    streamer->mOutputStreams.emplace_back(OutputStream(ClientSocket(std::move(sock))));
-//                    streamer->mOutputStreams.emplace_back(std::move(sock), Stream::Format::BGR8, {}, {});
-//                    streamer->mOutputStreams.push_back(OutputStream(std::move(sock), Stream::Format::BGR8, {}, {}));
-//                    streamer->mOutputStreams.emplace_back(std::move(sock), Stream::Format::BGR8, std::vector<int>(), Stream::MetaData());
-//                    streamer->mOutputStreams.push_back(ClientSocket(std::move(sock), Stream::Format::BGR8, std::vector<int>(), Stream::MetaData()));
+                    //                    streamer->mOutputStreams.emplace_back(std::move(sock), streamer->mInputStream);
+                    //                    streamer->mOutputStreams.emplace_back(sensorName, inputStream.getFormat(), inputStream.getDims(), std::move(sock), inputStream.getMetaData());
+                    //                    streamer->mOutputStreams.push_back(OutputStream(sensorName, inputStream.getFormat(), inputStream.getDims(), std::move(sock), inputStream.getMetaData()));
 
-//                    streamer->mOutputStreams.emplace_back(ClientSocket(std::move(sock)));
-//                    streamer->mOutputStreams.emplace_back(std::forward<ClientSocket&&>(sock));
-//                    streamer->mOutputStreams.push_back(std::move(sock));
-//                    streamer->mOutputStreams.insert(ClientSocket(std::move(sock)));
+                    //here
+//                    streamer->mOutputStreams.emplace_back(sensorName, inputStream.getFormat(), inputStream.getDims(), ClientSocket(std::move(sock)), inputStream.getMetaData());
+
+                    //                    streamer->mOutputStreams.emplace_back(OutputStream(ClientSocket(std::move(sock))));
+                    //                    streamer->mOutputStreams.emplace_back(std::move(sock), Stream::Format::BGR8, {}, {});
+                    //                    streamer->mOutputStreams.push_back(OutputStream(std::move(sock), Stream::Format::BGR8, {}, {}));
+                    //                    streamer->mOutputStreams.emplace_back(std::move(sock), Stream::Format::BGR8, std::vector<int>(), Stream::MetaData());
+                    //                    streamer->mOutputStreams.push_back(ClientSocket(std::move(sock), Stream::Format::BGR8, std::vector<int>(), Stream::MetaData()));
+
+                    //                    streamer->mOutputStreams.emplace_back(ClientSocket(std::move(sock)));
+                    //                    streamer->mOutputStreams.emplace_back(std::forward<ClientSocket&&>(sock));
+                    //                    streamer->mOutputStreams.push_back(std::move(sock));
+                    //                    streamer->mOutputStreams.insert(ClientSocket(std::move(sock)));
 
                 } else {
                     Streamer* syncMaster = mStreamers.at(syncSensorName);
 
-                    syncMaster->mSensor2syncViewers[sensorName].emplace_back(std::move(sock), streamer->mInputStream);
-//                    syncMaster->mSensor2syncViewers[sensorName].emplace_back(std::move(sock));
+                    //                    syncMaster->mSensor2syncViewers[sensorName].emplace_back(std::move(sock), streamer->mInputStream);
+                    //                    syncMaster->mSensor2syncViewers[sensorName].push_back(OutputStream(sensorName, inputStream.getFormat(), inputStream.getDims(), std::move(sock), inputStream.getMetaData()));
+
+                    // here
+//                    syncMaster->mSensor2syncViewers[sensorName].emplace_back(sensorName, inputStream.getFormat(), inputStream.getDims(), ClientSocket(std::move(sock)), inputStream.getMetaData());
+
+                    //                    syncMaster->mSensor2syncViewers[sensorName].emplace_back(std::move(sock));
                     assert(streamer->mSyncMaster == nullptr || streamer->mSyncMaster == syncMaster);
                     streamer->mSyncMaster = syncMaster;
                 }

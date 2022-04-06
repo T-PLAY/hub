@@ -19,7 +19,20 @@ int main(int argc, char* argv[])
     Stream::MetaData metaData;
     metaData["depth"] = 3.0;
     metaData["name"] = std::string("L533");
-    OutputStream proceduralStream = OutputStream(ClientSocket(ClientSocket::Type::STREAMER, "proceduralStreamer"), Stream::Format::Y8, { width, height }, metaData);
+//    OutputStream proceduralStream = OutputStream(ClientSocket(ClientSocket::Type::STREAMER, "proceduralStreamer"), Stream::Format::Y8, { width, height }, metaData);
+//    OutputStream proceduralStream = OutputStream(ClientSocket(ClientSocket::Type::STREAMER, "proceduralStreamer"), Stream::Format::Y8, { width, height }, metaData);
+
+    OutputStream proceduralStream("proceduralStreamer", Stream::Format::Y8, { width, height }, ClientSocket());
+//    OutputStream proceduralStream("proceduralStreamer", Stream::Format::Y8, { width, height }, ClientSocket());
+//    ClientSocket sock;
+//    OutputStream proceduralStream("proceduralStreamer", Stream::Format::Y8, { width, height }, std::move(sock));
+//    OutputStream proceduralStream("proceduralStreamer", Stream::Format::Y8, { width, height }, ClientSocket());
+//    OutputStream proceduralStream("proceduralStreamer", Stream::Format::Y8, { width, height }, std::move(ClientSocket()));
+//    OutputStream proceduralStream("proceduralStreamer", Stream::Format::Y8, { width, height }, std::move(*new ClientSocket()));
+//    OutputStream proceduralStream("proceduralStreamer", Stream::Format::Y8, { width, height }, std::move(*new ClientSocket()));
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+    return 0;
 
     const size_t imgSize = proceduralStream.getAcquisitionSize();
     assert(imgSize == 192 * 512);

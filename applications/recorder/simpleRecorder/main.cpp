@@ -59,7 +59,9 @@ int main(int argc, char* argv[])
 
     for (int i = 0; i < 2; ++i) {
         //        inputStreams.push_back(std::make_unique<InputStream>(sensorNames[i], sensorSyncNames[i]));
-        inputStreams.push_back(std::make_unique<InputStream>(ClientSocket(ClientSocket::Type::STREAM_VIEWER, sensorNames[i], sensorSyncNames[i])));
+//        inputStreams.push_back(std::make_unique<InputStream>(ClientSocket(ClientSocket::Type::STREAM_VIEWER, sensorNames[i], sensorSyncNames[i])));
+//        inputStreams.push_back(std::make_unique<InputStream>(ClientSocket(sensorNames[i], sensorSyncNames[i])));
+        inputStreams.push_back(std::make_unique<InputStream>(ClientSocket(sensorNames[i], sensorSyncNames[i])));
 
         //                inputStreams.push_back(std::move(InputStream(sensorNames[i], sensorSyncNames[i])));
     }
@@ -96,7 +98,10 @@ int main(int argc, char* argv[])
         files[i] = std::fstream(fileFolder + "/" + sensorNames[i] + ".txt", std::ios::binary | std::ios::out);
         assert(files[i].is_open());
         //        outputFileStreams.push_back(std::make_unique<OutputStream>(sensorNames[i], inputStreams[i]->getFormat(), inputStreams[i]->getDims(), files[i]));
-        outputFileStreams.push_back(std::make_unique<OutputStream>(FileIO(files[i], sensorNames[i]), inputStreams[i]->getFormat(), inputStreams[i]->getDims()));
+//        outputFileStreams.push_back(std::make_unique<OutputStream>(FileIO(files[i], sensorNames[i]), inputStreams[i]->getFormat(), inputStreams[i]->getDims()));
+
+        //here
+//        outputFileStreams.push_back(std::make_unique<OutputStream>(sensorNames[i], inputStreams[i]->getFormat(), inputStreams[i]->getDims(), FileIO(files[i])));
 
         //                            outputFileStreams.push_back(std::make_unique<OutputStream>(sensorNames[i], inputStreams[i]->getFormat(), inputStreams[i]->getDims(), gFiles.back()));
         //            outputFileStreams.push_back(std::make_unique<OutputStream>(sensorNames[0], inputStreams[0]->getFormat(), inputStreams[0]->getDims(), file));

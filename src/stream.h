@@ -3,15 +3,15 @@
 
 #include <any>
 //#include <socket.h>
-#include <string>
-#include <map>
+#include <IOStream.h>
 #include <exception>
 #include <iostream>
+#include <map>
+#include <socket.h>
+#include <string>
 #include <vector>
-#include <IOStream.h>
 
 //#define DEBUG_STREAM
-
 
 class Stream {
 public:
@@ -84,6 +84,11 @@ public:
         "Y411",
         // COUNT
     };
+    friend std::ostream& operator<<(std::ostream& os, const Format& format)
+    {
+        os << format2string[(int)format];
+        return os;
+    }
 
     static constexpr int format2nByte[static_cast<int>(Format::COUNT)] = {
         0, // NONE
@@ -155,26 +160,25 @@ public:
         friend std::ostream& operator<<(std::ostream& os, const Acquisition& acq);
     };
 
-//    class MetaData {
-//    public:
-//        template <class T>
-//        void add(std::string name, T val) {
-//            mMetaDatas[name] = val;
-//        }
+    //    class MetaData {
+    //    public:
+    //        template <class T>
+    //        void add(std::string name, T val) {
+    //            mMetaDatas[name] = val;
+    //        }
 
-//    private:
-//        //        std::map<std::string, unsigned
-////        std::vector<std::tuple<std::string, std::string, std::any>> mMetaDatas;
-//        std::map<std::string, std::any> mMetaDatas;
-//    };
+    //    private:
+    //        //        std::map<std::string, unsigned
+    ////        std::vector<std::tuple<std::string, std::string, std::any>> mMetaDatas;
+    //        std::map<std::string, std::any> mMetaDatas;
+    //    };
     using MetaData = std::map<std::string, std::any>;
 
 public:
 protected:
-
-    Stream(const std::string& sensorName, Format format, const std::vector<int>& dims, IOStream && ioStream);
-//    Stream(const std::string& sensorName, Format format, const std::vector<int>& dims, const std::string& ipv4 = ("127.0.0.1"), int port = SERVICE_PORT);
-//    Stream(const std::string& sensorName, Format format, const std::vector<int>& dims, std::fstream& file);
+    Stream(const std::string& sensorName, Format format, const std::vector<int>& dims, const IOStream& ioStream);
+    //    Stream(const std::string& sensorName, Format format, const std::vector<int>& dims, const std::string& ipv4 = ("127.0.0.1"), int port = SERVICE_PORT);
+    //    Stream(const std::string& sensorName, Format format, const std::vector<int>& dims, std::fstream& file);
     ~Stream();
 
     Stream(const Stream& stream) = delete;
@@ -182,7 +186,7 @@ protected:
     Stream(const Stream&& stream) = delete;
     Stream(Stream&& stream) = delete;
 
-//    Stream(ClientSocket&& clientSocket);
+    //    Stream(ClientSocket&& clientSocket);
 
     Stream& operator=(const Stream& stream) = delete;
     Stream& operator=(Stream& stream) = delete;
@@ -198,12 +202,12 @@ public:
     size_t getAcquisitionSize() const;
 
 protected:
-    std::string mSensorName;
-    Format mFormat;
+    std::string mSensorName = "";
+    Format mFormat = Format::NONE;
     std::vector<int> mDims;
 
-//    std::unique_ptr<IOStream> mIOStream;
-    IOStream &mIOStream;
+    //    std::unique_ptr<IOStream> mIOStream;
+    const IOStream& mIOStream;
     size_t mAcquisitionSize;
 };
 
@@ -211,37 +215,58 @@ class OutputStream;
 
 class InputStream : public Stream {
 public:
-//    InputStream(const std::string& sensorName, const std::string& syncSensorName = "", IOStream && ioStream = ClientSocket("127.0.0.1", SERVICE_PORT));
-    InputStream(IOStream && ioStream);
-//    InputStream(const std::string& sensorName, const std::string& syncSensorName = "", const std::string& ipv4 = "127.0.0.1", int port = SERVICE_PORT);
-//    InputStream(std::fstream& file);
-//    InputStream(ClientSocket&& sock, const std::string& sensorName);
+    //    InputStream(const std::string& sensorName, const std::string& syncSensorName = "", IOStream && ioStream = ClientSocket("127.0.0.1", SERVICE_PORT));
+    InputStream(const IOStream&& ioStream);
+    //    InputStream(const std::string& sensorName, const std::string& syncSensorName = "", const std::string& ipv4 = "127.0.0.1", int port = SERVICE_PORT);
+    //    InputStream(std::fstream& file);
+    //    InputStream(ClientSocket&& sock, const std::string& sensorName);
     ~InputStream();
 
     Acquisition& operator>>(Acquisition& acquisition) const;
     void operator>>(const OutputStream& outputStream) const;
 
     std::vector<Acquisition> getAllAcquisition();
-    const MetaData & getMetaData() const;
+    const MetaData& getMetaData() const;
 
 private:
     MetaData mMetaData;
 };
 
+// template<class T> constexpr T& no_move(T&& t) { return t; }
+
 class OutputStream : public Stream {
 public:
-    OutputStream(IOStream && ioStream, Format format, const std::vector<int>& dims, const MetaData& metaData = {});
-//    OutputStream(const std::string& sensorName, Format format, const std::vector<int>& dims, const MetaData& metaData = {}, const std::string& ipv4 = "127.0.0.1", int port = SERVICE_PORT);
-//    OutputStream(const std::string& sensorName, Format format, const std::vector<int>& dims, std::fstream& file);
+    template <class T>
+    OutputStream(const std::string& sensorName, Format format, const std::vector<int>& dims, T&& ioStream = ClientSocket());
+    //    OutputStream(const std::string& sensorName, Format format, const std::vector<int>& dims, const MetaData& metaData = {}, const std::string& ipv4 = "127.0.0.1", int port = SERVICE_PORT);
+    //    OutputStream(const std::string& sensorName, Format format, const std::vector<int>& dims, std::fstream& file);
     OutputStream(const OutputStream& outputStream) = delete;
-//    OutputStream(OutputStream&& outputStream) = delete;
-//    OutputStream(ClientSocket&& sock, const InputStream& inputStream);
-    OutputStream(IOStream && ioStream, const InputStream& inputStream);
+    OutputStream(OutputStream&& outputStream) = delete;
+    //    OutputStream(ClientSocket&& sock, const InputStream& inputStream);
+    //    OutputStream(IOStream&& ioStream, const InputStream& inputStream);
+    //    OutputStream(IOStream&& ioStream);
 
     void operator<<(const Acquisition& acquisition) const;
     void operator<<(const InputStream& inputStream) const;
 
 private:
 };
+
+template <class T>
+OutputStream::OutputStream(const std::string& sensorName, Format format, const std::vector<int>& dims, T&& ioStream)
+    //    : Stream(sensorName, format, dims, dynamic_cast<IOStream&>(ioStream))
+    : Stream(sensorName, format, dims, std::move(T(std::move(ioStream))))
+//    : Stream(sensorName, format, dims, std::move(ioStream))
+//    : Stream(sensorName, format, dims, std::forward<IOStream&>(ioStream))
+{
+    //    mIOStream.setupMode(IOStream::Mode::OUTPUT);
+    //    mIOStream.init(sensorName);
+    mIOStream.setupOutput(sensorName);
+
+    mIOStream.write(mSensorName);
+    mIOStream.write(mFormat);
+    mIOStream.write(mDims);
+    //    mIOStream.write(metaData);
+}
 
 #endif // FRAME_H

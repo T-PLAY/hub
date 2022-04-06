@@ -3,15 +3,17 @@
 #include <cassert>
 #include <iostream>
 
-FileIO::FileIO(std::fstream &file, const std::string& sensorName)
+FileIO::FileIO(std::fstream& file)
     : mFile(file)
 {
-//    mFile.write(sensorName);
-    IOStream::write(sensorName);
+    assert(file.is_open());
+
+    //    mFile.write(sensorName);
+    //    IOStream::write(sensorName);
 }
 
-//FileIO::FileIO(std::fstream &file)
-//    : mFile(file)
+// FileIO::FileIO(std::fstream &file)
+//     : mFile(file)
 //{
 
 //}
@@ -25,22 +27,21 @@ void FileIO::write(const unsigned char* data, size_t len) const
 
 void FileIO::read(unsigned char* data, size_t len) const
 {
-//    std::cout << "[FileIO] read(char* data, size_t len)" << std::endl;
+    //    std::cout << "[FileIO] read(char* data, size_t len)" << std::endl;
     size_t downloadSize = 0;
     do {
-//        auto byteRead = mFile.readsome((char*)data + downloadSize, len - downloadSize);
-//        mFile.read((char*)data + downloadSize, len - downloadSize);
+        //        auto byteRead = mFile.readsome((char*)data + downloadSize, len - downloadSize);
+        //        mFile.read((char*)data + downloadSize, len - downloadSize);
 
         auto before = mFile.tellg();
         mFile.read(reinterpret_cast<char*>(data + downloadSize), len - downloadSize);
         auto after = mFile.tellg();
         auto byteRead = after - before;
-//        assert(after - before == len);
+        //        assert(after - before == len);
         // std::cout << "[FileIO] byteRead = " << byteRead << std::endl;
         if (byteRead <= 0) {
-            throw exception("End of file");
+            throw FileIO::exception("End of file");
         }
-
 
         downloadSize += byteRead;
         //        assert(streamSize == len);
