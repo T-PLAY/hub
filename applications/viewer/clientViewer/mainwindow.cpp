@@ -7,6 +7,7 @@
 //#include <server.h>
 #include <formsensorview.h>
 #include <stream.h>
+#include <socket.h>
 
 Thread_Client::Thread_Client(QObject* parent)
     : QThread(parent)
@@ -20,8 +21,9 @@ void Thread_Client::run()
 
     while (!this->isInterruptionRequested()) {
         try {
-            ClientSocket sock("127.0.0.1", SERVICE_PORT);
-            sock.write(ClientSocket::Type::VIEWER);
+//            ClientSocket sock("127.0.0.1", SERVICE_PORT);
+            ClientSocket sock(ClientSocket::Type::VIEWER);
+//            sock.write(ClientSocket::Type::VIEWER);
 
             while (!this->isInterruptionRequested()) {
 

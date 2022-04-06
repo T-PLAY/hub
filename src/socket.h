@@ -12,6 +12,8 @@
 #include <string>
 
 //#define DEBUG_SOCKET
+constexpr int SERVICE_PORT = 4042;
+constexpr const char * SERVICE_IP = "127.0.0.1";
 
 class Socket {
 public:
@@ -77,7 +79,7 @@ public:
         "STREAM_VIEWER",
     };
 
-    ClientSocket(std::string ipv4, int port);
+    ClientSocket(Type type, std::string sensorName = "", std::string syncSensorName = "", std::string ipv4 = SERVICE_IP, int port = SERVICE_PORT);
     ClientSocket(socket_fd fdSock);
 
     ClientSocket(const ClientSocket& sock) = delete;

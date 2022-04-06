@@ -7,6 +7,7 @@
 #include <stream.h>
 //#include <queue>
 #include <deque>
+#include <socket.h>
 
 // struct Streamer;
 

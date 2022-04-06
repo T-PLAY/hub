@@ -245,8 +245,11 @@ int main(int argc, char* argv[])
 
     auto close_timer = new QTimer(&app);
     //        close_timer->setInterval(10);
-//    close_timer->setInterval(20); // linux
+#ifdef WIN32
     close_timer->setInterval(10); // win
+#else
+    close_timer->setInterval(20); // linux
+#endif
     //    close_timer->setSingleShot(true);
     int iAcquisition = 0;
     int nThread = 0;

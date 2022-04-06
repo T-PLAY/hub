@@ -4,6 +4,10 @@
 #include <fstream>
 #include <stream.h>
 //#include <format>
+#include <FileIO.h>
+#include <cassert>
+#include <socket.h>
+#include <thread>
 
 // static std::vector<std::fstream> gFiles;
 static bool gStop = false;
@@ -54,7 +58,9 @@ int main(int argc, char* argv[])
     std::vector<std::unique_ptr<OutputStream>> outputFileStreams;
 
     for (int i = 0; i < 2; ++i) {
-        inputStreams.push_back(std::make_unique<InputStream>(sensorNames[i], sensorSyncNames[i]));
+        //        inputStreams.push_back(std::make_unique<InputStream>(sensorNames[i], sensorSyncNames[i]));
+        inputStreams.push_back(std::make_unique<InputStream>(ClientSocket(ClientSocket::Type::STREAM_VIEWER, sensorNames[i], sensorSyncNames[i])));
+
         //                inputStreams.push_back(std::move(InputStream(sensorNames[i], sensorSyncNames[i])));
     }
 
@@ -67,9 +73,9 @@ int main(int argc, char* argv[])
     //            std::cout << "create dir '" << cc << "'" << std::endl;
     //            std::filesystem::create_directories(cc);
     //            std::filesystem::current_path(cc);
-//    std::array<char, 64> buffer;
-    char buffer[64] = {0};
-//    buffer.fill(0);
+    //    std::array<char, 64> buffer;
+    char buffer[64] = { 0 };
+    //    buffer.fill(0);
     time_t rawtime;
     time(&rawtime);
     const auto timeinfo = localtime(&rawtime);
@@ -86,10 +92,12 @@ int main(int argc, char* argv[])
     //                        gFiles.clear();
     for (int i = 0; i < 2; ++i) {
         //                files.push_back(std::fstream(fileFolder + "/" + sensorNames[i], std::ios::binary | std::ios::out));
-//        files[i] = std::fstream(fileFolder + "/" + sensorNames[i] + ".txt", std::ios::binary | std::ios::out);
+        //        files[i] = std::fstream(fileFolder + "/" + sensorNames[i] + ".txt", std::ios::binary | std::ios::out);
         files[i] = std::fstream(fileFolder + "/" + sensorNames[i] + ".txt", std::ios::binary | std::ios::out);
         assert(files[i].is_open());
-        outputFileStreams.push_back(std::make_unique<OutputStream>(sensorNames[i], inputStreams[i]->getFormat(), inputStreams[i]->getDims(), files[i]));
+        //        outputFileStreams.push_back(std::make_unique<OutputStream>(sensorNames[i], inputStreams[i]->getFormat(), inputStreams[i]->getDims(), files[i]));
+        outputFileStreams.push_back(std::make_unique<OutputStream>(FileIO(files[i], sensorNames[i]), inputStreams[i]->getFormat(), inputStreams[i]->getDims()));
+
         //                            outputFileStreams.push_back(std::make_unique<OutputStream>(sensorNames[i], inputStreams[i]->getFormat(), inputStreams[i]->getDims(), gFiles.back()));
         //            outputFileStreams.push_back(std::make_unique<OutputStream>(sensorNames[0], inputStreams[0]->getFormat(), inputStreams[0]->getDims(), file));
         //            outputFileStreams.push_back(std::make_unique<OutputStream>(sensorNames[1], inputStreams[1]->getFormat(), inputStreams[1]->getDims(), file2));

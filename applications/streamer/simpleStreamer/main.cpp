@@ -4,22 +4,22 @@
 
 #include <stream.h>
 #include <tuple>
+#include <socket.h>
 
 #define ULA_STREAMER
 
 int main(int argc, char* argv[])
 {
-    std::cout << typeid(5.0).name() << typeid(5.0).hash_code() << std::endl;
-    return 0;
+//    std::cout << typeid(5.0).name() << typeid(5.0).hash_code() << std::endl;
 
 #ifdef ULA_STREAMER
     constexpr int width = 192;
     constexpr int height = 512;
 
     Stream::MetaData metaData;
-    metaData.add("depth", 3.0);
-    metaData.add("name", "L533");
-    OutputStream proceduralStream = OutputStream("proceduralStreamer", Stream::Format::Y8, { width, height }, metaData);
+    metaData["depth"] = 3.0;
+    metaData["name"] = std::string("L533");
+    OutputStream proceduralStream = OutputStream(ClientSocket(ClientSocket::Type::STREAMER, "proceduralStreamer"), Stream::Format::Y8, { width, height }, metaData);
 
     const size_t imgSize = proceduralStream.getAcquisitionSize();
     assert(imgSize == 192 * 512);
