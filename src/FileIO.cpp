@@ -3,10 +3,18 @@
 #include <cassert>
 #include <iostream>
 
-FileIO::FileIO(std::fstream& file)
+FileIO::FileIO(std::fstream &file, const std::string& sensorName)
     : mFile(file)
 {
+//    mFile.write(sensorName);
+    IOStream::write(sensorName);
 }
+
+//FileIO::FileIO(std::fstream &file)
+//    : mFile(file)
+//{
+
+//}
 
 void FileIO::write(const unsigned char* data, size_t len) const
 {

@@ -4,6 +4,8 @@
 #include <iostream>
 
 #include <stream.h>
+#include <socket.h>
+#include <chrono>
 
 int main(int argc, char* argv[])
 {
@@ -17,8 +19,12 @@ int main(int argc, char* argv[])
     while (true) {
         try {
             //            InputStream inputStream("proceduralStreamer");
-            InputStream inputStream(sensorNames[i], sensorMasterNames[i]);
+            InputStream inputStream(ClientSocket(ClientSocket::Type::STREAM_VIEWER, sensorNames[i], sensorMasterNames[i]));
             std::cout << "proceduralStreamer inited" << std::endl;
+            const Stream::MetaData & metaData = inputStream.getMetaData();
+            assert(std::any_cast<double>(metaData.at("depth")) == 3.0);
+            assert(std::any_cast<std::string>(metaData.at("name")) == "L533");
+
             //            InputStream inputStream2("proceduralStreamer2", "proceduralStreamer");
             //            InputStream inputStream2("proceduralStreamer2");
             // InputStream inputStream("L500 Depth Sensor (Depth)");
