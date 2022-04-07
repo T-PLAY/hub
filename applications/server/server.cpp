@@ -301,6 +301,7 @@ void Server::run()
 
                     //here
 //                    streamer->mOutputStreams.emplace_back(sensorName, inputStream.getFormat(), inputStream.getDims(), ClientSocket(std::move(sock)), inputStream.getMetaData());
+                    streamer->mOutputStreams.emplace_back(sensorName, inputStream.getFormat(), inputStream.getDims(), ClientSocket(std::move(sock)));
 
                     //                    streamer->mOutputStreams.emplace_back(OutputStream(ClientSocket(std::move(sock))));
                     //                    streamer->mOutputStreams.emplace_back(std::move(sock), Stream::Format::BGR8, {}, {});
@@ -321,6 +322,7 @@ void Server::run()
 
                     // here
 //                    syncMaster->mSensor2syncViewers[sensorName].emplace_back(sensorName, inputStream.getFormat(), inputStream.getDims(), ClientSocket(std::move(sock)), inputStream.getMetaData());
+                    syncMaster->mSensor2syncViewers[sensorName].emplace_back(sensorName, inputStream.getFormat(), inputStream.getDims(), ClientSocket(std::move(sock)));
 
                     //                    syncMaster->mSensor2syncViewers[sensorName].emplace_back(std::move(sock));
                     assert(streamer->mSyncMaster == nullptr || streamer->mSyncMaster == syncMaster);

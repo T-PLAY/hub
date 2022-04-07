@@ -3,9 +3,9 @@
 #include <cassert>
 #include <iostream>
 
-#include <stream.h>
-#include <socket.h>
 #include <chrono>
+#include <socket.h>
+#include <stream.h>
 
 int main(int argc, char* argv[])
 {
@@ -16,19 +16,26 @@ int main(int argc, char* argv[])
     int i = atoi(argv[1]);
     assert(i == 0 || i == 1);
 
-    while (true) {
-        try {
+//    while (true) {
+//        try {
             //            InputStream inputStream("proceduralStreamer");
-//            InputStream inputStream(ClientSocket(ClientSocket::Type::STREAM_VIEWER, sensorNames[i], sensorMasterNames[i]));
-//            InputStream inputStream(ClientSocket(sensorNames[i], sensorMasterNames[i]));
-//            InputStream inputStream(sensorNames[i], sensorMasterNames[i]);
-//            InputStream inputStream(ClientSocket(sensorNames[i], sensorMasterNames[i]));
-//            InputStream inputStream(ClientSocket{sensorNames[i], sensorMasterNames[i]});
-            InputStream inputStream(ClientSocket{sensorNames[i], sensorMasterNames[i]});
+            //            InputStream inputStream(ClientSocket(ClientSocket::Type::STREAM_VIEWER, sensorNames[i], sensorMasterNames[i]));
+            //            InputStream inputStream(ClientSocket(sensorNames[i], sensorMasterNames[i]));
+            //            InputStream inputStream(sensorNames[i], sensorMasterNames[i]);
+            //            InputStream inputStream(ClientSocket(sensorNames[i], sensorMasterNames[i]));
+            //            InputStream inputStream(ClientSocket{sensorNames[i], sensorMasterNames[i]});
+            std::cout << "inputStream" << std::endl;
+//            ClientSocket && sock = ClientSocket(sensorNames[i], sensorMasterNames[i]);
+//            InputStream inputStream(std::move(sock));
+            InputStream inputStream(ClientSocket ( sensorNames[i], sensorMasterNames[i] ));
             std::cout << "proceduralStreamer inited" << std::endl;
-            const Stream::MetaData & metaData = inputStream.getMetaData();
-            assert(std::any_cast<double>(metaData.at("depth")) == 3.0);
-            assert(std::any_cast<std::string>(metaData.at("name")) == "L533");
+            //            const Stream::MetaData & metaData = inputStream.getMetaData();
+            //            assert(std::any_cast<double>(metaData.at("depth")) == 3.0);
+            //            assert(std::any_cast<std::string>(metaData.at("name")) == "L533");
+
+//            std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+//            std::cout << "slept" << std::endl;
+//            return 0;
 
             //            InputStream inputStream2("proceduralStreamer2", "proceduralStreamer");
             //            InputStream inputStream2("proceduralStreamer2");
@@ -47,6 +54,7 @@ int main(int argc, char* argv[])
 
                     //                    inputStream2 >> acq2;
                     //                    std::cout << "timestamp start diff : " << std::abs(acq.mBackendTimestamp - acq2.mBackendTimestamp) / 1000.0 << " milliseconds" << std::endl;
+                    std::cout << acq << std::endl;
 
                     // const int dec = acq.mData[0];
                     // for (size_t i = 0; i < acquisitionSize; ++i) {
@@ -57,10 +65,10 @@ int main(int argc, char* argv[])
                 std::cout << "fps : " << fps << std::endl;
             }
 
-        } catch (const std::exception& e) {
-            std::cout << "[simpleViewer] catch exception : " << e.what() << std::endl;
-        }
-        std::this_thread::sleep_for(std::chrono::milliseconds(2000));
-        std::cout << "--------------------------------------------" << std::endl;
-    }
+//        } catch (const std::exception& e) {
+//            std::cout << "[simpleViewer] catch exception : " << e.what() << std::endl;
+//        }
+//        std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+//        std::cout << "--------------------------------------------" << std::endl;
+//    }
 }

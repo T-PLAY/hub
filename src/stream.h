@@ -9,8 +9,12 @@
 #include <map>
 #include <socket.h>
 #include <string>
+#include <type_traits>
 #include <vector>
 
+#include <FileIO.h>
+
+class InputStream;
 //#define DEBUG_STREAM
 
 class Stream {
@@ -176,7 +180,7 @@ public:
 
 public:
 protected:
-    Stream(const std::string& sensorName, Format format, const std::vector<int>& dims, const IOStream& ioStream);
+    Stream(const std::string& sensorName, Format format, const std::vector<int>& dims, IOStream& ioStream);
     //    Stream(const std::string& sensorName, Format format, const std::vector<int>& dims, const std::string& ipv4 = ("127.0.0.1"), int port = SERVICE_PORT);
     //    Stream(const std::string& sensorName, Format format, const std::vector<int>& dims, std::fstream& file);
     ~Stream();
@@ -207,7 +211,7 @@ protected:
     std::vector<int> mDims;
 
     //    std::unique_ptr<IOStream> mIOStream;
-    const IOStream& mIOStream;
+    IOStream& mIOStream;
     size_t mAcquisitionSize;
 };
 
@@ -216,7 +220,14 @@ class OutputStream;
 class InputStream : public Stream {
 public:
     //    InputStream(const std::string& sensorName, const std::string& syncSensorName = "", IOStream && ioStream = ClientSocket("127.0.0.1", SERVICE_PORT));
-    InputStream(const IOStream&& ioStream);
+    InputStream(ClientSocket&& ioStream);
+    InputStream(FileIO&& ioStream);
+    template <class T>
+    InputStream(T&& ioStream);
+    template <class T>
+    InputStream(T& ioStream) = delete;
+    template <class T>
+    InputStream(T ioStream) = delete;
     //    InputStream(const std::string& sensorName, const std::string& syncSensorName = "", const std::string& ipv4 = "127.0.0.1", int port = SERVICE_PORT);
     //    InputStream(std::fstream& file);
     //    InputStream(ClientSocket&& sock, const std::string& sensorName);
@@ -232,12 +243,44 @@ private:
     MetaData mMetaData;
 };
 
+//template <typename T, class = typename std::enable_if<std::is_rvalue_reference<T>::value>::type>
+template <class T>
+InputStream::InputStream(T&& ioStream)
+    //    : Stream("", Format::NONE, {}, std::move(ioStream))
+    //    : Stream("", Format::NONE, {}, std::forward<IOStream&>(ioStream))
+    //    : Stream("", Format::NONE, {}, std::move(ioStream))
+    //    : Stream("", Format::NONE, {}, unmove(ioStream))
+    : Stream("", Format::NONE, {}, *std::move(new T(std::move(ioStream))))
+{
+    //    ioStream.setupInput();
+
+    mIOStream.read(mSensorName);
+    mIOStream.read(mFormat);
+    mIOStream.read(mDims);
+    //    mIOStream.read(mMetaData);
+
+    mAcquisitionSize = computeAcquisitionSize(mFormat, mDims);
+}
+//template <class T>
+//InputStream::InputStream(T ioStream)
+//    : Stream("", Format::NONE, {}, ioStream))
+//{
+//}
+
 // template<class T> constexpr T& no_move(T&& t) { return t; }
+//template<class T> T& unmove(T&& t) { return t; }
 
 class OutputStream : public Stream {
 public:
+    OutputStream(const std::string& sensorName, Format format, const std::vector<int>& dims, ClientSocket&& ioStream = ClientSocket());
+    OutputStream(const std::string& sensorName, Format format, const std::vector<int>& dims, FileIO&& ioStream);
     template <class T>
-    OutputStream(const std::string& sensorName, Format format, const std::vector<int>& dims, T&& ioStream = ClientSocket());
+    OutputStream(const std::string& sensorName, Format format, const std::vector<int>& dims, T&& ioStream);
+    template <class T>
+    OutputStream(const std::string& sensorName, Format format, const std::vector<int>& dims, T& ioStream) = delete;
+    template <class T>
+    OutputStream(const std::string& sensorName, Format format, const std::vector<int>& dims, T ioStream) = delete;
+
     //    OutputStream(const std::string& sensorName, Format format, const std::vector<int>& dims, const MetaData& metaData = {}, const std::string& ipv4 = "127.0.0.1", int port = SERVICE_PORT);
     //    OutputStream(const std::string& sensorName, Format format, const std::vector<int>& dims, std::fstream& file);
     OutputStream(const OutputStream& outputStream) = delete;
@@ -252,10 +295,14 @@ public:
 private:
 };
 
+
 template <class T>
 OutputStream::OutputStream(const std::string& sensorName, Format format, const std::vector<int>& dims, T&& ioStream)
-    //    : Stream(sensorName, format, dims, dynamic_cast<IOStream&>(ioStream))
-    : Stream(sensorName, format, dims, std::move(T(std::move(ioStream))))
+    //        : Stream(sensorName, format, dims, dynamic_cast<IOStream&>(std::move(ioStream)))
+    //        : Stream(sensorName, format, dims, (unmove(ioStream)))
+    : Stream(sensorName, format, dims, *std::move(new T(std::move(ioStream))))
+//    : Stream(sensorName, format, dims, std::move(T(std::move(ioStream))))
+//    : Stream(sensorName, format, dims, std::move(ioStream))
 //    : Stream(sensorName, format, dims, std::move(ioStream))
 //    : Stream(sensorName, format, dims, std::forward<IOStream&>(ioStream))
 {

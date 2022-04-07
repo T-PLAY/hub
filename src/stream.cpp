@@ -57,7 +57,7 @@ std::ostream& operator<<(std::ostream& os, const Stream::Acquisition& acq)
 //#endif
 // }
 
-Stream::Stream(const std::string& sensorName, Format format, const std::vector<int>& dims, const IOStream& ioStream)
+Stream::Stream(const std::string& sensorName, Format format, const std::vector<int>& dims, IOStream& ioStream)
     : mSensorName(sensorName)
     , mFormat(format)
     , mDims(dims)
@@ -75,7 +75,7 @@ Stream::~Stream()
     std::cout << "[Stream] ~Stream()" << std::endl;
 #endif
     delete &mIOStream;
-//    mIOStream = nullptr;
+    //    mIOStream = nullptr;
 }
 
 // Stream::Stream(ClientSocket&& clientSocket)
@@ -184,20 +184,22 @@ size_t Stream::getAcquisitionSize() const
 //    mAcquisitionSize = computeAcquisitionSize(mFormat, mDims);
 //}
 
-InputStream::InputStream(const IOStream&& ioStream)
-    //    : Stream("", Format::NONE, {}, std::move(ioStream))
-    //    : Stream("", Format::NONE, {}, std::forward<IOStream&>(ioStream))
-    : Stream("", Format::NONE, {}, std::move(ioStream))
-{
-    //    ioStream.setupInput();
+//InputStream::InputStream(IOStream&& ioStream)
+//    //    : Stream("", Format::NONE, {}, std::move(ioStream))
+//    //    : Stream("", Format::NONE, {}, std::forward<IOStream&>(ioStream))
+//    //    : Stream("", Format::NONE, {}, std::move(ioStream))
+////    : Stream("", Format::NONE, {}, unmove(ioStream))
+//    : Stream("", Format::NONE, {}, *std::move(new T(std::move(ioStream))))
+//{
+//    //    ioStream.setupInput();
 
-    mIOStream.read(mSensorName);
-    mIOStream.read(mFormat);
-    mIOStream.read(mDims);
-    //    mIOStream.read(mMetaData);
+//    mIOStream.read(mSensorName);
+//    mIOStream.read(mFormat);
+//    mIOStream.read(mDims);
+//    //    mIOStream.read(mMetaData);
 
-    mAcquisitionSize = computeAcquisitionSize(mFormat, mDims);
-}
+//    mAcquisitionSize = computeAcquisitionSize(mFormat, mDims);
+//}
 
 // InputStream::InputStream(ClientSocket&& sock, const std::string& sensorName)
 //     : Stream(std::move(sock))
@@ -212,6 +214,38 @@ InputStream::InputStream(const IOStream&& ioStream)
 
 //    mAcquisitionSize = computeAcquisitionSize(mFormat, mDims);
 //}
+
+InputStream::InputStream(ClientSocket &&ioStream)
+    //    : Stream("", Format::NONE, {}, std::move(ioStream))
+    //    : Stream("", Format::NONE, {}, std::forward<IOStream&>(ioStream))
+    //    : Stream("", Format::NONE, {}, std::move(ioStream))
+//    : Stream("", Format::NONE, {}, unmove(ioStream))
+    : Stream("", Format::NONE, {}, *std::move(new ClientSocket(std::move(ioStream))))
+{
+//    assert(false);
+    //    ioStream.setupInput();
+
+    mIOStream.read(mSensorName);
+    mIOStream.read(mFormat);
+    mIOStream.read(mDims);
+    //    mIOStream.read(mMetaData);
+
+    mAcquisitionSize = computeAcquisitionSize(mFormat, mDims);
+}
+
+InputStream::InputStream(FileIO &&ioStream)
+    : Stream("", Format::NONE, {}, *std::move(new FileIO(std::move(ioStream))))
+{
+    //    ioStream.setupInput();
+
+    mIOStream.read(mSensorName);
+    mIOStream.read(mFormat);
+    mIOStream.read(mDims);
+    //    mIOStream.read(mMetaData);
+
+    mAcquisitionSize = computeAcquisitionSize(mFormat, mDims);
+
+}
 
 InputStream::~InputStream()
 {
@@ -311,21 +345,42 @@ void InputStream::operator>>(const OutputStream& outputStream) const
 //    mIOStream.write(mDims);
 //}
 
-//OutputStream::OutputStream(const std::string& sensorName, Format format, const std::vector<int>& dims, const IOStream &ioStream, const MetaData& metaData)
-//    //    : Stream(sensorName, format, dims, dynamic_cast<IOStream&>(ioStream))
+OutputStream::OutputStream(const std::string& sensorName, Format format, const std::vector<int>& dims, ClientSocket&& ioStream)
+    //    : Stream(sensorName, format, dims, dynamic_cast<IOStream&>(ioStream))
+    //    : Stream(sensorName, format, dims, unmove(ioStream))
+    : Stream(sensorName, format, dims, *std::move(new ClientSocket(std::move(ioStream))))
+//    : Stream(sensorName, format, dims, unmove(ioStream))
+//    : Stream(sensorName, format, dims, unmove(ioStream))
 //    : Stream(sensorName, format, dims, std::move(ioStream))
-////    : Stream(sensorName, format, dims, std::move(ioStream))
-////    : Stream(sensorName, format, dims, std::forward<IOStream&>(ioStream))
-//{
-//    //    mIOStream.setupMode(IOStream::Mode::OUTPUT);
-//    //    mIOStream.init(sensorName);
-//    mIOStream.setupOutput(sensorName);
+//    : Stream(sensorName, format, dims, std::forward<IOStream&>(ioStream))
+{
+    //    mIOStream.setupMode(IOStream::Mode::OUTPUT);
+    //    mIOStream.init(sensorName);
+    mIOStream.setupOutput(sensorName);
 
-//    mIOStream.write(mSensorName);
-//    mIOStream.write(mFormat);
-//    mIOStream.write(mDims);
-//    //    mIOStream.write(metaData);
-//}
+    mIOStream.write(mSensorName);
+    mIOStream.write(mFormat);
+    mIOStream.write(mDims);
+    //    mIOStream.write(metaData);
+}
+
+OutputStream::OutputStream(const std::string &sensorName, Stream::Format format, const std::vector<int> &dims, FileIO &&ioStream)
+    : Stream(sensorName, format, dims, *std::move(new FileIO(std::move(ioStream))))
+//    : Stream(sensorName, format, dims, unmove(ioStream))
+//    : Stream(sensorName, format, dims, unmove(ioStream))
+//    : Stream(sensorName, format, dims, std::move(ioStream))
+//    : Stream(sensorName, format, dims, std::forward<IOStream&>(ioStream))
+{
+    //    mIOStream.setupMode(IOStream::Mode::OUTPUT);
+    //    mIOStream.init(sensorName);
+    mIOStream.setupOutput(sensorName);
+
+    mIOStream.write(mSensorName);
+    mIOStream.write(mFormat);
+    mIOStream.write(mDims);
+    //    mIOStream.write(metaData);
+
+}
 
 // OutputStream::OutputStream(IOStream &&ioStream)
 //     : Stream("", Format::NONE, {}, std::move(ioStream))
