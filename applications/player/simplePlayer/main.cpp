@@ -78,7 +78,8 @@ int main(int argc, char* argv[])
 //            outputs[sensorName] = std::make_unique<OutputStream>(ClientSocket(ClientSocket::Type::STREAMER, sensorName), inputStream.getFormat(), inputStream.getDims());
 
             // here
-            outputs[sensorName] = std::make_unique<OutputStream>(sensorName, inputStream.getFormat(), inputStream.getDims());
+//            outputs[sensorName] = std::make_unique<OutputStream>(sensorName, inputStream.getFormat(), inputStream.getDims());
+            outputs[sensorName] = std::make_unique<OutputStream>(sensorName, inputStream.getFormat(), inputStream.getDims(), ClientSocket());
             int nReadAcqs = 0;
             //        OutputStream outputStream(sensorName, inputStream.getFormat(), inputStream.getDims());
             Stream::Acquisition acq;

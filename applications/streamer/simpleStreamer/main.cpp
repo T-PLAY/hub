@@ -25,9 +25,12 @@ int main(int argc, char* argv[])
 //    auto&& sock2 = std::move(sock);
 
 //    OutputStream proceduralStream("proceduralStreamer", Stream::Format::Y8, { width, height }, ClientSocket());
-    OutputStream proceduralStream("proceduralStreamer", Stream::Format::Y8, { width, height });
+//    OutputStream proceduralStream("proceduralStreamer", Stream::Format::Y8, { width, height }, ClientSocket());
 //    ClientSocket sock;
 //    OutputStream proceduralStream("proceduralStreamer", Stream::Format::Y8, { width, height }, std::move(sock));
+//    OutputStream proceduralStream("proceduralStreamer", Stream::Format::Y8, { width, height }, sock2);
+    OutputStream proceduralStream("proceduralStreamer", Stream::Format::Y8, {width, height});
+//    OutputStream proceduralStream("proceduralStreamer", Stream::Format::Y8, { width, height }, std::move(sock2));
 //    OutputStream proceduralStream("proceduralStreamer", Stream::Format::Y8, { width, height }, ClientSocket());
 //    OutputStream proceduralStream("proceduralStreamer", Stream::Format::Y8, { width, height }, std::move(ClientSocket()));
 //    OutputStream proceduralStream("proceduralStreamer", Stream::Format::Y8, { width, height }, std::move(*new ClientSocket()));
