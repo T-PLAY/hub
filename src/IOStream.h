@@ -69,7 +69,7 @@ template <class T>
 void IOStream::write(const T& t) const
 {
 #ifdef DEBUG_IOSTREAM
-//    std::cout << "[IOStream] write : " << typeid(T).name() << " '" << t << "'" << std::endl;
+    std::cout << "[IOStream] write : " << typeid(T).name() << " '" << t << "'" << std::endl;
 #endif
 
     //    assert(mMode != Mode::INPUT || std::is_enum<T>::value);
@@ -111,7 +111,7 @@ void IOStream::read(T& t) const
     read(reinterpret_cast<unsigned char*>(&t), sizeof(T));
 
 #ifdef DEBUG_IOSTREAM
-//    std::cout << "[IOStream] read : " << typeid(T).name() << " '" << t << "'" << std::endl;
+    std::cout << "[IOStream] read : " << typeid(T).name() << " '" << t << "'" << std::endl;
 #endif
 }
 

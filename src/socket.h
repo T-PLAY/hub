@@ -13,7 +13,7 @@
 
 //#define DEBUG_SOCKET
 
-constexpr int SERVICE_PORT = 4042;
+constexpr int SERVICE_PORT = 4043;
 constexpr const char* SERVICE_IP = "127.0.0.1";
 
 class Socket {
