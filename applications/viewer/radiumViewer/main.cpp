@@ -224,9 +224,10 @@ int main(int argc, char* argv[])
 #ifdef POSE_ONLY
     InputStream posStream("Polhemus Patriot (probe)");
 #else
-    InputStream scanStream("ULA-OP 256");
+//    InputStream scanStream(ClientSocket("ULA-OP 256", ""));
+    InputStream scanStream(ClientSocket("ULA-OP 256", ""));
 //    InputStream posStream("Polhemus Patriot (probe)", "ULA-OP 256");
-    InputStream posStream("Polhemus Patriot (probe)");
+    InputStream posStream(ClientSocket("Polhemus Patriot (probe)", ""));
 #endif
     //    // get scans
     //    std::fstream posFile(PROJECT_DIR "records/latest/Polhemus Patriot (probe).txt", std::ios::binary | std::ios::in);

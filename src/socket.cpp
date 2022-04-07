@@ -183,7 +183,9 @@ ClientSocket::ClientSocket(ClientSocket&& sock)
 
 ClientSocket::~ClientSocket()
 {
+#ifdef DEBUG_SOCKET
     std::cout << getHeader(mFdSock) << "~ClientSocket()" << std::endl;
+#endif
 }
 
 void ClientSocket::setupOutput(const std::string& sensorName) const
@@ -269,7 +271,9 @@ void ClientSocket::write(const unsigned char* data, size_t len) const
     size_t uploadSize = 0;
     do {
         if (!isConnected()) {
+#ifdef DEBUG_SOCKET
             std::cout << getHeader(mFdSock) << "write(const unsigned char* data, size_t len) : isConnected() client lost" << std::endl;
+#endif
             throw Socket::exception("Client lost");
         }
         // winsock const char * data
