@@ -219,15 +219,35 @@ int main(int argc, char* argv[])
     renderTechnique.setConfiguration(shaderConfig);
 
     //        return app.exec();
+    InputStream* scanStream = nullptr;
+    InputStream* posStream = nullptr;
 
 //#define POSE_ONLY
 #ifdef POSE_ONLY
     InputStream posStream("Polhemus Patriot (probe)");
 #else
-//    InputStream scanStream(ClientSocket("ULA-OP 256", ""));
-    InputStream scanStream(ClientSocket("ULA-OP 256", ""));
-//    InputStream posStream("Polhemus Patriot (probe)", "ULA-OP 256");
-    InputStream posStream(ClientSocket("Polhemus Patriot (probe)", ""));
+    //    InputStream scanStream(ClientSocket("ULA-OP 256", ""));
+
+    try {
+        scanStream = new InputStream("ULA-OP 256", "");
+    } catch (std::exception& e) {
+        scanStream = nullptr;
+    }
+
+    try {
+        if (scanStream != nullptr) {
+            posStream = new InputStream("Polhemus Patriot (probe)", "ULA-OP 256");
+        } else {
+            posStream = new InputStream("Polhemus Patriot (probe)");
+        }
+    } catch (std::exception& e) {
+        posStream = nullptr;
+    }
+
+    if (posStream == nullptr && scanStream == nullptr) {
+        return 0;
+    }
+
 #endif
     //    // get scans
     //    std::fstream posFile(PROJECT_DIR "records/latest/Polhemus Patriot (probe).txt", std::ios::binary | std::ios::in);
@@ -258,9 +278,9 @@ int main(int argc, char* argv[])
     //    QObject::connect(close_timer, &QTimer::timeout, [&app, &iAcquisition, &scanStream, &posStream, &ro]() {
     //        QObject::connect(close_timer, &QTimer::timeout, [&app, &iAcquisition, &posStream, &ro, &nThread]() {
 #ifdef POSE_ONLY
-    QObject::connect(close_timer, &QTimer::timeout, [&app, &iAcquisition, &posStream, &ro, &nThread]() {
+    QObject::connect(close_timer, &QTimer::timeout, [&app, &iAcquisition, posStream, &ro, &nThread]() {
 #else
-    QObject::connect(close_timer, &QTimer::timeout, [&app, &iAcquisition, &posStream, &ro, &nThread, &scanStream]() {
+    QObject::connect(close_timer, &QTimer::timeout, [&app, &iAcquisition, &posStream = posStream, &ro, &nThread, &scanStream = scanStream]() {
 #endif
         ++nThread;
         if (nThread > 1) {
@@ -272,9 +292,10 @@ int main(int argc, char* argv[])
 
 #ifndef POSE_ONLY
         // update texture
+        if (scanStream != nullptr)
         {
             Stream::Acquisition scanAcq;
-            scanStream >> scanAcq;
+            *scanStream >> scanAcq;
 
             Ra::Engine::Data::TextureParameters textureParameters;
             textureParameters.name = "myTexture";
@@ -291,9 +312,10 @@ int main(int argc, char* argv[])
 #endif
 
         // update position and orientation
+        if (posStream != nullptr)
         {
             Stream::Acquisition posAcq;
-            posStream >> posAcq;
+            *posStream >> posAcq;
             float* translation = (float*)posAcq.mData;
             //            std::cout << "x = " << translation[0] << ",\ty = " << translation[1] << ",\tz = " << translation[2] << std::endl;
             float* quaternion = (float*)&posAcq.mData[12];
@@ -334,7 +356,7 @@ int main(int argc, char* argv[])
             //                TWorld.rotate(Eigen::AngleAxis(-0.5f * Ra::Core::Math::Pi, Ra::Core::Vector3(1.0, 0.0, 0.0)));
             //                Ra::Core::Vector3 vec(-translation[0], -translation[2], -translation[1]);
 
-//            Ra::Core::Vector3 vecPos(translation[0], translation[1], translation[2]);
+            //            Ra::Core::Vector3 vecPos(translation[0], translation[1], translation[2]);
             Ra::Core::Vector3 vecPos(-translation[0], -translation[1], -translation[2]);
 
             //                Ra::Core::Vector3 vecPos(-translation[0], -translation[1], -translation[2]);
@@ -365,5 +387,11 @@ int main(int argc, char* argv[])
     });
     close_timer->start();
 
+
     return app.exec();
+
+    if (posStream != nullptr)
+        delete posStream;
+    if (scanStream != nullptr)
+        delete scanStream;
 }

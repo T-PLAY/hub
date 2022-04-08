@@ -1,5 +1,6 @@
-#ifndef FRAME_H
-#define FRAME_H
+
+#ifndef STREAM_H
+#define STREAM_H
 
 #include <any>
 //#include <socket.h>
@@ -7,12 +8,86 @@
 #include <exception>
 #include <iostream>
 #include <map>
-#include <socket.h>
 #include <string>
 #include <type_traits>
 #include <vector>
 
-#include <FileIO.h>
+#include <socket.h>
+//#include <FileIO.h>
+
+//namespace std {
+//namespace any {
+
+namespace any {
+
+static std::string to_string(const std::any& any)
+{
+    //    std::any;
+    assert(any.has_value());
+    //    std::string hashCode = any.type().name();
+    //    const type_info & type = any.type();
+    const auto& hashCode = any.type().hash_code();
+    //    write(hashCode);
+
+    //    double val = my_any_cast<>(&any);
+    //    const auto * val = getValue(any);
+    //    double d = std::get<double>(any);
+    //    auto d = any::get<double>(any);
+
+    //    if (hashCode == "double") {
+    if (hashCode == typeid(double).hash_code()) {
+        const double* val = std::any_cast<double>(&any);
+        //        write(*val);
+        //        return std::string(*val);
+        return std::to_string(*val);
+
+    }
+    //    else if (hashCode == "class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >") {
+    else if (hashCode == typeid(std::string).hash_code()) {
+        const std::string* val = std::any_cast<std::string>(&any);
+        //        write(*val);
+        return std::string(*val);
+
+    } else if (hashCode == typeid(const char*).hash_code()) {
+        const char* val = *std::any_cast<const char*>(&any);
+//        write(val);
+        return std::string(val);
+
+
+    } else {
+        auto name = any.type().name();
+        auto raw_name = any.type().raw_name();
+        assert(false);
+    }
+    return "";
+}
+
+} // any
+
+//template <typename T>
+//T get(const std::any& any)
+//{
+//    const std::type_info& typeId = any.type();
+//    assert(typeId == typeid(T));
+//    return *std::any_cast<T>(&any);
+
+//    //    if (typeId == typeid(int))
+//    ////        return static_cast<T>(*std::any_cast<int>(any));
+//    //        return std::any_cast<int>(any);
+//    //    else if (typeId == typeid(long))
+//    //        return static_cast<T>(*std::any_cast<long>(any));
+//    //    else if (typeId == typeid(std::string))
+//    //        return static_cast<T>(*std::any_cast<std::string>(any));
+//}
+
+//friend std::ostream& operator<<(std::ostream& os, const std::any& any)
+//    {
+//        os << format2string[(int)format];
+//        return os;
+//    }
+
+//}
+//}
 
 class InputStream;
 //#define DEBUG_STREAM
@@ -176,7 +251,41 @@ public:
     ////        std::vector<std::tuple<std::string, std::string, std::any>> mMetaDatas;
     //        std::map<std::string, std::any> mMetaDatas;
     //    };
-    using MetaData = std::map<std::string, std::any>;
+    using MetaData = std::map<std::string, std::any>; // C++17
+    //    using MetaData = std::map<std::string, int>;
+    //    friend std::ostream& operator<<(std::ostream& os, const MetaData& metaData)
+    static std::string to_string(const MetaData& metaData)
+    {
+        std::string str = "";
+        str += "[";
+        for (const auto& pair : metaData) {
+            const auto& name = pair.first;
+            const auto& val = pair.second;
+            //                        std::cout << getServerHeader(iThread) << "[streamer] metaData: " << val.type().name() << " " << name << " = " << std::endl;
+            str += std::string(val.type().name()) + " " + name + " = '" + any::to_string(val) + "', ";
+        }
+        str += "]";
+        return str;
+    }
+    //            std::string hashCode = any.type().name();
+
+    //        if (hashCode == "double") {
+    //            const double* val = std::any_cast<double>(&any);
+    //            os << *val;
+
+    //        }
+    //        else if (hashCode == "class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >") {
+    //            const std::string* val = std::any_cast<std::string>(&any);
+    //            os << *val;
+    //        }
+    //        else {
+    //            auto name = any.type().name();
+    //            auto raw_name = any.type().raw_name();
+    //            assert(false);
+    //        }
+    //        //os << format2string[(int)format];
+    //        return os;
+    //    }
 
 public:
 protected:
@@ -220,15 +329,16 @@ class OutputStream;
 class InputStream : public Stream {
 public:
     //    InputStream(const std::string& sensorName, const std::string& syncSensorName = "", IOStream && ioStream = ClientSocket("127.0.0.1", SERVICE_PORT));
-//    InputStream(ClientSocket&& ioStream);
-//    InputStream(FileIO&& ioStream);
-    InputStream(const std::string& sensorName, const std::string& syncSensorName = "");
+    //    InputStream(ClientSocket&& ioStream);
+    //    InputStream(FileIO&& ioStream);
+    //    InputStream(const std::string& sensorName, const std::string& syncSensorName = "");
+    InputStream(const char* sensorName, const std::string& syncSensorName = "");
     template <class IOStream>
     InputStream(IOStream&& ioStream);
     template <class IOStream>
     InputStream(IOStream& ioStream) = delete;
-//    template <class T>
-//    InputStream(T ioStream) = delete;
+    //    template <class T>
+    //    InputStream(T ioStream) = delete;
     //    InputStream(const std::string& sensorName, const std::string& syncSensorName = "", const std::string& ipv4 = "127.0.0.1", int port = SERVICE_PORT);
     //    InputStream(std::fstream& file);
     //    InputStream(ClientSocket&& sock, const std::string& sensorName);
@@ -258,7 +368,7 @@ InputStream::InputStream(IOStream&& ioStream)
     mIOStream.read(mSensorName);
     mIOStream.read(mFormat);
     mIOStream.read(mDims);
-    //    mIOStream.read(mMetaData);
+    mIOStream.read(mMetaData);
 
     mAcquisitionSize = computeAcquisitionSize(mFormat, mDims);
 }
@@ -273,13 +383,13 @@ InputStream::InputStream(IOStream&& ioStream)
 
 class OutputStream : public Stream {
 public:
-    OutputStream(const std::string& sensorName, Format format, const std::vector<int>& dims, ClientSocket&& ioStream = ClientSocket());
+    OutputStream(const std::string& sensorName, Format format, const std::vector<int>& dims, ClientSocket&& ioStream = ClientSocket(), const MetaData& metaData = {});
     //    OutputStream(const std::string& sensorName, Format format, const std::vector<int>& dims, FileIO&& ioStream);
     template <class IOStream>
     //    OutputStream(const std::string& sensorName, Format format, const std::vector<int>& dims, IOStream&& ioStream = ClientSocket("127.0.0.1", 4043));
-    OutputStream(const std::string& sensorName, Format format, const std::vector<int>& dims, IOStream&& ioStream);
+    OutputStream(const std::string& sensorName, Format format, const std::vector<int>& dims, IOStream&& ioStream, const MetaData& metaData = {});
     template <class IOStream>
-    OutputStream(const std::string& sensorName, Format format, const std::vector<int>& dims, IOStream& ioStream) = delete;
+    OutputStream(const std::string& sensorName, Format format, const std::vector<int>& dims, IOStream& ioStream, const MetaData& metaData = {}) = delete;
     //    template <class T>
     //    OutputStream(const std::string& sensorName, Format format, const std::vector<int>& dims, T ioStream);
 
@@ -303,11 +413,11 @@ private:
 //    assert(false);
 //}
 
-template <class T>
-OutputStream::OutputStream(const std::string& sensorName, Format format, const std::vector<int>& dims, T&& ioStream)
+template <class IOStream>
+OutputStream::OutputStream(const std::string& sensorName, Format format, const std::vector<int>& dims, IOStream&& ioStream, const MetaData& metaData)
     //        : Stream(sensorName, format, dims, dynamic_cast<IOStream&>(std::move(ioStream)))
     //        : Stream(sensorName, format, dims, (unmove(ioStream)))
-    : Stream(sensorName, format, dims, *std::move(new T(std::move(ioStream))))
+    : Stream(sensorName, format, dims, *std::move(new IOStream(std::move(ioStream))))
 //    : Stream(sensorName, format, dims, std::move(T(std::move(ioStream))))
 //    : Stream(sensorName, format, dims, std::move(ioStream))
 //    : Stream(sensorName, format, dims, std::move(ioStream))
@@ -320,7 +430,7 @@ OutputStream::OutputStream(const std::string& sensorName, Format format, const s
     mIOStream.write(mSensorName);
     mIOStream.write(mFormat);
     mIOStream.write(mDims);
-    //    mIOStream.write(metaData);
+    mIOStream.write(metaData);
 }
 
 //OutputStream::OutputStream(const std::string &sensorName, Stream::Format format, const std::vector<int> &dims, ClientSocket &&ioStream)
@@ -329,4 +439,4 @@ OutputStream::OutputStream(const std::string& sensorName, Format format, const s
 
 //}
 
-#endif // FRAME_H
+#endif // STREAM_H

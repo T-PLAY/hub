@@ -61,7 +61,7 @@ void Server::run()
                 assert(mStreamers.find(sensorName) == mStreamers.end());
 
                 //                Streamer streamer { { std::move(sock), sensorName }, sensorName, {}, {}, nullptr, {} };
-//                Streamer streamer { InputStream(std::move(sock)), sensorName, {}, {}, nullptr, {} };
+                //                Streamer streamer { InputStream(std::move(sock)), sensorName, {}, {}, nullptr, {} };
                 Streamer streamer { InputStream(std::move(sock)), sensorName, {}, {}, nullptr, {} };
                 //                const std::string sensorName = streamer.mInputStream.getSensorName();
                 // sensor is unique
@@ -95,6 +95,14 @@ void Server::run()
                     std::cout << getServerHeader(iThread) << "[streamer] dims:" << dims2string(inputStream.getDims()) << std::endl;
                     // std::cout << getServerHeader(iThread) << "[streamer] height:" << inputStream.getDims().at(1) << std::endl;
                     std::cout << getServerHeader(iThread) << "[streamer] format:" << Stream::format2string[(int)inputStream.getFormat()] << " (byte:" << Stream::format2nByte[(int)inputStream.getFormat()] << ")" << std::endl;
+                    const Stream::MetaData& metadata = inputStream.getMetaData();
+                    for (const auto& pair : metadata) {
+                        const auto& name = pair.first;
+                        const auto& val = pair.second;
+                        //                        std::cout << getServerHeader(iThread) << "[streamer] metadata: " << val.type().name() << " " << name << " = " << std::endl;
+                        std::cout << getServerHeader(iThread) << "[streamer] metadata: " << val.type().name() << " " << name << " = '" << any::to_string(val) << "'" << std::endl;
+                    }
+//                    std::cout << "metadata: " << Stream::to_string(metadata) << std::endl;
 
                     Stream::Acquisition acq;
                     // for each new stream acquistion
@@ -299,9 +307,9 @@ void Server::run()
                     //                    streamer->mOutputStreams.emplace_back(sensorName, inputStream.getFormat(), inputStream.getDims(), std::move(sock), inputStream.getMetaData());
                     //                    streamer->mOutputStreams.push_back(OutputStream(sensorName, inputStream.getFormat(), inputStream.getDims(), std::move(sock), inputStream.getMetaData()));
 
-                    //here
-//                    streamer->mOutputStreams.emplace_back(sensorName, inputStream.getFormat(), inputStream.getDims(), ClientSocket(std::move(sock)), inputStream.getMetaData());
-                    streamer->mOutputStreams.emplace_back(sensorName, inputStream.getFormat(), inputStream.getDims(), ClientSocket(std::move(sock)));
+                    // here
+                    //                    streamer->mOutputStreams.emplace_back(sensorName, inputStream.getFormat(), inputStream.getDims(), ClientSocket(std::move(sock)), inputStream.getMetaData());
+                    streamer->mOutputStreams.emplace_back(sensorName, inputStream.getFormat(), inputStream.getDims(), ClientSocket(std::move(sock)), inputStream.getMetaData());
 
                     //                    streamer->mOutputStreams.emplace_back(OutputStream(ClientSocket(std::move(sock))));
                     //                    streamer->mOutputStreams.emplace_back(std::move(sock), Stream::Format::BGR8, {}, {});
@@ -321,8 +329,8 @@ void Server::run()
                     //                    syncMaster->mSensor2syncViewers[sensorName].push_back(OutputStream(sensorName, inputStream.getFormat(), inputStream.getDims(), std::move(sock), inputStream.getMetaData()));
 
                     // here
-//                    syncMaster->mSensor2syncViewers[sensorName].emplace_back(sensorName, inputStream.getFormat(), inputStream.getDims(), ClientSocket(std::move(sock)), inputStream.getMetaData());
-                    syncMaster->mSensor2syncViewers[sensorName].emplace_back(sensorName, inputStream.getFormat(), inputStream.getDims(), ClientSocket(std::move(sock)));
+                    //                    syncMaster->mSensor2syncViewers[sensorName].emplace_back(sensorName, inputStream.getFormat(), inputStream.getDims(), ClientSocket(std::move(sock)), inputStream.getMetaData());
+                    syncMaster->mSensor2syncViewers[sensorName].emplace_back(sensorName, inputStream.getFormat(), inputStream.getDims(), ClientSocket(std::move(sock)), inputStream.getMetaData());
 
                     //                    syncMaster->mSensor2syncViewers[sensorName].emplace_back(std::move(sock));
                     assert(streamer->mSyncMaster == nullptr || streamer->mSyncMaster == syncMaster);

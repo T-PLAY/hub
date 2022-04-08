@@ -18,7 +18,10 @@ int main(int argc, char* argv[])
 
     Stream::MetaData metaData;
     metaData["depth"] = 3.0;
-    metaData["name"] = std::string("L533");
+//    metaData["name"] = std::string("L533");
+    metaData["name"] = "L533";
+//    metaData["name"] = "L533";
+
 //    OutputStream proceduralStream = OutputStream(ClientSocket(ClientSocket::Type::STREAMER, "proceduralStreamer"), Stream::Format::Y8, { width, height }, metaData);
 //    OutputStream proceduralStream = OutputStream(ClientSocket(ClientSocket::Type::STREAMER, "proceduralStreamer"), Stream::Format::Y8, { width, height }, metaData);
 //    ClientSocket sock;
@@ -29,7 +32,7 @@ int main(int argc, char* argv[])
 //    ClientSocket sock;
 //    OutputStream proceduralStream("proceduralStreamer", Stream::Format::Y8, { width, height }, std::move(sock));
 //    OutputStream proceduralStream("proceduralStreamer", Stream::Format::Y8, { width, height }, sock2);
-    OutputStream proceduralStream("proceduralStreamer", Stream::Format::Y8, {width, height});
+    OutputStream proceduralStream("proceduralStreamer", Stream::Format::Y8, {width, height}, ClientSocket(), metaData);
 //    OutputStream proceduralStream("proceduralStreamer", Stream::Format::Y8, { width, height }, std::move(sock2));
 //    OutputStream proceduralStream("proceduralStreamer", Stream::Format::Y8, { width, height }, ClientSocket());
 //    OutputStream proceduralStream("proceduralStreamer", Stream::Format::Y8, { width, height }, std::move(ClientSocket()));
