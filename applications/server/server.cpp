@@ -384,4 +384,6 @@ void Viewer::notifyNewStreamer(const Streamer& streamer) const
     dimStr.resize(dimStr.size() - 3);
     mSock->write(dimStr);
     mSock->write(std::to_string(streamer.mInputStream.getAcquisitionSize()));
+
+    mSock->write(streamer.mInputStream.getMetaData());
 }

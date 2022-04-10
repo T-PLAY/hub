@@ -11,7 +11,7 @@ class FormSensorView : public QWidget {
     Q_OBJECT
 
 public:
-    explicit FormSensorView(QWidget* parent = nullptr, std::string sensorName = "", std::string format = "", std::string dims = "", std::string size = "");
+    explicit FormSensorView(QWidget* parent = nullptr, std::string sensorName = "", std::string format = "", std::string dims = "", std::string size = "", std::string metaData = "");
     ~FormSensorView();
 
     void setRadioButtonOff();

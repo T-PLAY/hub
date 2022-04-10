@@ -22,7 +22,7 @@ public:
     explicit Thread_Client(QObject* parent = 0);
 
 signals:
-    void addSensorSignal(std::string streamerSensorName, std::string format, std::string dims, std::string size);
+    void addSensorSignal(std::string streamerSensorName, std::string format, std::string dims, std::string size, std::string metaData);
     void delSensorSignal(std::string streamerSensorName);
 
 public:
@@ -42,7 +42,7 @@ public:
 signals:
 
 public slots:
-    void addSensor(std::string streamerSensorName, std::string format, std::string dims, std::string size);
+    void addSensor(std::string streamerSensorName, std::string format, std::string dims, std::string size, std::string metaData);
     void delSensor(std::string streamerSensorName);
 
     void addStreamView(std::string streamerSensorName);

@@ -8,6 +8,7 @@
 #include <formsensorview.h>
 #include <stream.h>
 #include <socket.h>
+#include <stream.h>
 
 Thread_Client::Thread_Client(QObject* parent)
     : QThread(parent)
@@ -49,9 +50,13 @@ void Thread_Client::run()
                     std::string size;
                     sock.read(size);
 
+                    Stream::MetaData metaData;
+                    sock.read(metaData);
+
                     std::cout << "[Thread_Client] [viewer] new streamer " << streamerSensorName << ", format:" << format << ", dims:" << dims << ", acquisitionSize:" << size << std::endl;
                     std::cout << "[Thread_Client] [viewer] emit addSensorSignal '" << streamerSensorName << "'" << std::endl;
-                    emit addSensorSignal(streamerSensorName, format, dims, size);
+                    std::cout << "[Thread_Client] [viewer] metadata : " << Stream::to_string(metaData, true);
+                    emit addSensorSignal(streamerSensorName, format, dims, size, Stream::to_string(metaData, true));
 
                 } break;
 
@@ -109,11 +114,11 @@ MainWindow::~MainWindow()
     mStreamViews.clear();
 }
 
-void MainWindow::addSensor(std::string streamerSensorName, std::string format, std::string dims, std::string size)
+void MainWindow::addSensor(std::string streamerSensorName, std::string format, std::string dims, std::string size, std::string metaData)
 {
     std::cout << "[MainWindow] MainWindow::addSensor '" << streamerSensorName << "'" << std::endl;
 
-    FormSensorView* sensorView = new FormSensorView(ui->centralwidget, streamerSensorName, format, dims, size);
+    FormSensorView* sensorView = new FormSensorView(ui->centralwidget, streamerSensorName, format, dims, size, metaData);
     ui->verticalLayoutSensor->insertWidget(static_cast<int>(mSensorViews.size()), sensorView);
     mSensorViews[streamerSensorName] = sensorView;
     QObject::connect(sensorView, &FormSensorView::addViewStreamSignal, this, &MainWindow::addStreamView);
