@@ -157,19 +157,8 @@ void ClientSocket::write(const T& t) const
     // std::cout << "\033[31mClientSocket::write(const T& t) -> IOStream::write(t)\033[0m" << std::endl;
     IOStream::write(t);
 
-//#ifdef DEBUG_SOCKET
-//    if (std::is_enum<T>::value) {
-//        if (std::is_same<T, Message>::value) {
-//            std::cout << "socket message : " << message2string[(int)(const Message&)t];
-//        }
-//        if (std::is_same<T, ClientSocket::Type>::value) {
-//            std::cout << "new client : " << ClientSocket::type2string[(int)(const ClientSocket::Type&)t];
-//        }
-//    } else {
-//        std::cout << "type (" <<typeid(T).name() << ")" << "value : '" << t << "'" << std::endl;
-//    }
-//    std::cout << std::endl;
-//#endif
+    //#ifdef DEBUG_SOCKET
+    //#endif
 }
 
 template <class T>
@@ -178,19 +167,8 @@ void ClientSocket::read(T& t) const
     // std::cout << "\033[31mClientSocket::read(T& t) -> IOStream::read(t)\033[0m" << std::endl;
     IOStream::read(t);
 
-//#ifdef DEBUG_SOCKET
-//    if (std::is_enum<T>::value) {
-//        if (std::is_same<T, Message>::value) {
-//            std::cout << "socket message : " << message2string[(int)(Message&)t];
-//        }
-//        if (std::is_same<T, ClientSocket::Type>::value) {
-//            std::cout << "new client : " << ClientSocket::type2string[(int)(ClientSocket::Type&)t];
-//        }
-//    } else {
-//        std::cout << "type (" <<typeid(T).name() << ")" << "value : '" << t << "'" << std::endl;
-//    }
-//    std::cout << std::endl;
-//#endif
+    //#ifdef DEBUG_SOCKET
+    //#endif
 }
 
 #endif // SOCKET_H

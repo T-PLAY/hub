@@ -495,10 +495,8 @@ int QueryUser4TrackerType(int& trk)
     gtk_widget_modify_fg(label, GTK_STATE_NORMAL, &red);
 
     // add a radio button for each tracker
-    //  gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dlg)->vbox),label,TRUE,TRUE,5);
     gtk_box_pack_start(GTK_BOX(content), label, TRUE, TRUE, 5);
     rb0 = gtk_radio_button_new_with_label(NULL, trackerNames[0]);
-    //  gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dlg)->vbox),rb0,TRUE,TRUE,5);
     gtk_box_pack_start(GTK_BOX(content), rb0, TRUE, TRUE, 5);
     g_object_set_data(G_OBJECT(rb0), "index", (gpointer)0);
     g_signal_connect(G_OBJECT(rb0), "toggled", G_CALLBACK(TrackerSelect), (gpointer)&trk_type);

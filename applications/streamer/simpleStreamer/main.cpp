@@ -2,15 +2,14 @@
 #include <cassert>
 #include <chrono>
 
+#include <socket.h>
 #include <stream.h>
 #include <tuple>
-#include <socket.h>
 
 #define ULA_STREAMER
 
 int main(int argc, char* argv[])
 {
-//    std::cout << typeid(5.0).name() << typeid(5.0).hash_code() << std::endl;
 
 #ifdef ULA_STREAMER
     constexpr int width = 192;
@@ -18,32 +17,9 @@ int main(int argc, char* argv[])
 
     Stream::MetaData metaData;
     metaData["depth"] = 3.0;
-//    metaData["name"] = std::string("L533");
     metaData["name"] = "L533";
-//    metaData["name"] = "L533";
 
-//    OutputStream proceduralStream = OutputStream(ClientSocket(ClientSocket::Type::STREAMER, "proceduralStreamer"), Stream::Format::Y8, { width, height }, metaData);
-//    OutputStream proceduralStream = OutputStream(ClientSocket(ClientSocket::Type::STREAMER, "proceduralStreamer"), Stream::Format::Y8, { width, height }, metaData);
-//    ClientSocket sock;
-//    auto&& sock2 = std::move(sock);
-
-//    OutputStream proceduralStream("proceduralStreamer", Stream::Format::Y8, { width, height }, ClientSocket());
-//    OutputStream proceduralStream("proceduralStreamer", Stream::Format::Y8, { width, height }, ClientSocket());
-//    ClientSocket sock;
-//    OutputStream proceduralStream("proceduralStreamer", Stream::Format::Y8, { width, height }, std::move(sock));
-//    OutputStream proceduralStream("proceduralStreamer", Stream::Format::Y8, { width, height }, sock2);
-    OutputStream proceduralStream("proceduralStreamer", Stream::Format::Y8, {width, height}, ClientSocket(), metaData);
-//    OutputStream proceduralStream("proceduralStreamer", Stream::Format::Y8, { width, height }, std::move(sock2));
-//    OutputStream proceduralStream("proceduralStreamer", Stream::Format::Y8, { width, height }, ClientSocket());
-//    OutputStream proceduralStream("proceduralStreamer", Stream::Format::Y8, { width, height }, std::move(ClientSocket()));
-//    OutputStream proceduralStream("proceduralStreamer", Stream::Format::Y8, { width, height }, std::move(*new ClientSocket()));
-//    OutputStream proceduralStream("proceduralStreamer", Stream::Format::Y8, { width, height }, std::move(ClientSocket()));
-
-//    OutputStream proceduralStream("proceduralStreamer", Stream::Format::Y8, { width, height }, std::move(*new ClientSocket()));
-
-//    std::this_thread::sleep_for(std::chrono::milliseconds(2000));
-//    std::cout << "slept" << std::endl;
-//    return 0;
+    OutputStream proceduralStream("proceduralStreamer", Stream::Format::Y8, { width, height }, ClientSocket(), metaData);
 
     const size_t imgSize = proceduralStream.getAcquisitionSize();
     assert(imgSize == 192 * 512);
@@ -76,18 +52,14 @@ int main(int argc, char* argv[])
     const std::vector<int> sensorDims[2] = { { 512, 192 }, { 1 } };
     constexpr int maxFpss[2] = { 40, 60 };
     constexpr size_t sensorDataSize[2] = { 192 * 512, 28 };
-    //    int maxFpss[2] = { 1, 10 };
     std::vector<std::thread> threads;
 
     int nSensor = (argc == 2) ? (1) : (2);
-    //    int iSensor = atoi(argv[1]);
-    //    std::cout << "iSensor = " << iSensor << std::endl;
-    //    assert(iSensor == 0 || iSensor == 1);
     for (int i = 0; i < nSensor; ++i) {
         const int iSensor = (nSensor == 1) ? (atoi(argv[1])) : (i);
 
         std::thread thread([=]() {
-            unsigned char * data = new unsigned char[sensorDataSize[iSensor]];
+            unsigned char* data = new unsigned char[sensorDataSize[iSensor]];
 
             while (true) {
                 try {
@@ -99,8 +71,6 @@ int main(int argc, char* argv[])
 
                     const auto maxFps = maxFpss[iSensor];
 
-                    //            int dec = 0;
-                    //                    float dec = 0.0f;
                     int dec = 0;
                     while (true) {
 
@@ -119,18 +89,10 @@ int main(int argc, char* argv[])
                         ++dec;
                         const auto end = start + std::chrono::nanoseconds(1'000'000'000 / maxFps);
 
-                        //                std::this_thread::sleep_until(end);
-                        //                std::this_thread::sleep_for(std::chrono::nanoseconds(1'000'000'000 / maxFps - 10'000'000));
                         while (std::chrono::high_resolution_clock::now() < end)
                             ;
                         //{
-                        //                    std::this_thread::sleep_for(std::chrono::microseconds(1));
-                        //                }
-                        //                const auto now = std::chrono::high_resolution_clock::now();
 
-                        //                for (int i = 0; i < iSensor; ++i) {
-                        //                    std::cout << "\t";
-                        //                }
                         const auto now = std::chrono::high_resolution_clock::now();
                         const auto& timestampStart = std::chrono::duration_cast<std::chrono::microseconds>(start.time_since_epoch()).count();
                         const auto& timestampEnd = std::chrono::duration_cast<std::chrono::microseconds>(now.time_since_epoch()).count();
@@ -139,16 +101,13 @@ int main(int argc, char* argv[])
                         proceduralStream << acq;
                         // std::cout << "thread " << iSensor << " send acq " << acq << std::endl;
 
-                        //                const auto end2 = start + std::chrono::nanoseconds(1'000'000'000 / maxFps);
-                        //                std::this_thread::sleep_until(end2);
                     } // while (true)
                 } catch (std::exception& e) {
                     std::cout << "[streamer] catch exception : " << e.what() << std::endl;
                 }
             } // while (true)
-            delete [] data;
+            delete[] data;
         });
-        //        thread.detach();
         threads.emplace_back(std::move(thread));
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
     } // for (int i = 0; i < nSensor; ++i)

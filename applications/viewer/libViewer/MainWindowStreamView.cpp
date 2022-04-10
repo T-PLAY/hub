@@ -7,9 +7,6 @@
 
 Thread_InputStream::Thread_InputStream(QObject* parent, std::string sensorName)
     : QThread(parent)
-//    , mInputStream(sensorName)
-//    , mInputStream(ClientSocket(ClientSocket::Type::STREAM_VIEWER, sensorName))
-//    , mInputStream(ClientSocket(sensorName, ""))
     , mInputStream(ClientSocket(sensorName, ""))
 {
     std::cout << "Thread_InputStream()" << std::endl;

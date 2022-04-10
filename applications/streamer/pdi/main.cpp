@@ -18,7 +18,7 @@
 CPDIdev g_pdiDev;
 CPDImdat g_pdiMDat;
 CPDIser g_pdiSer;
-//unsigned long g_dwFrameSize;
+// unsigned long g_dwFrameSize;
 BOOL g_bCnxReady;
 unsigned long g_dwStationMap;
 HWND g_hwnd = NULL;
@@ -69,12 +69,9 @@ int main(int argc, char* argv[])
 
             while (true) { // each server connect
                 try {
-                    //                    OutputStream posStream("Polhemus Patriot (probe)", Stream::Format::DOF6, { 1 });
                     std::vector<std::unique_ptr<OutputStream>> outputStreams;
                     outputStreams.push_back(std::make_unique<OutputStream>("Polhemus Patriot (confidence)", Stream::Format::DOF6, std::vector<int>({ 1 })));
                     outputStreams.push_back(std::make_unique<OutputStream>("Polhemus Patriot (probe)", Stream::Format::DOF6, std::vector<int>({ 1 })));
-                    //                    outputStreams.push_back(new OutputStream("Polhemus Patriot (probe)", Stream::Format::DOF6, { 1 }));
-//                    constexpr int packetSize = 8 + 12 + 16 + 12;
                     constexpr int packetSize = 8 + 12 + 16;
                     assert(packetSize == 8 + outputStreams[0]->getAcquisitionSize()); // header 8 bytes, frame count 4 bytes
 
@@ -103,9 +100,6 @@ int main(int argc, char* argv[])
                                 int ucSensor = (int)pBuf[i + 2];
 
                                 const auto end = std::chrono::high_resolution_clock::now();
-                                //                            assert(size == 8 + 12 + 16);
-                                //                            assert(size == 8 + 12 + 12);
-                                //                            assert(size == 8 + posStream.getAcquisitionSize() - 4); // header 8 bytes, frame count 4 bytes
 
                                 unsigned char* data = &pBuf[i + 8]; // size of header = 8 bytes
                                 const auto timestampStart = std::chrono::duration_cast<std::chrono::microseconds>((end - std::chrono::microseconds(18'500)).time_since_epoch()).count(); // Polhemus technical spec latency = 18.5ms
@@ -114,7 +108,6 @@ int main(int argc, char* argv[])
                                 // float* translation = (float*)data;
                                 // float* quaternion = (float*)&data[12];
                                 // std::string str = std::string("sensor:") + std::to_string(ucSensor) + std::string(", x:") + std::to_string(translation[0]) + ", y:" + std::to_string(translation[1]) + ", z:" + std::to_string(translation[2]) + "\naz:" + std::to_string(quaternion[0]) + ", el:" + std::to_string(quaternion[1]) + ", ro:" + std::to_string(quaternion[2]) + ", q4:" + std::to_string(quaternion[3]);
-                                //                                + "\naz:" + std::to_string(quaternion[0]) + ", el:" + std::to_string(quaternion[1]) + ", ro:" + std::to_string(quaternion[2]);
                                 // std::cout << str << std::endl;
 
                                 // Try to get a frame of a depth image
@@ -130,7 +123,6 @@ int main(int argc, char* argv[])
 
                         const auto maxFps = 60;
                         const auto end = start + std::chrono::nanoseconds(1'000'000'000 / maxFps);
-                        //                        std::this_thread::sleep_until(end);
                         while (std::chrono::high_resolution_clock::now() < end)
                             ;
 
@@ -158,21 +150,6 @@ int main(int argc, char* argv[])
 
 // typedef enum
 //{
-//  PDI_ODATA_SPACE = 0        // space
-//  , PDI_MODATA_SPACE = 0
-//  , PDI_MODATA_CRLF          // <cr><lf>
-//  , PDI_MODATA_POS           // x, y, z Cartesion pos coords
-//  , PDI_MODATA_POS_EP        // x, y, z Cartesion pos coords, extended precision
-//  , PDI_MODATA_ORI           // az, el, ro Euler ori angles
-//  , PDI_MODATA_ORI_EP        // az, el, ro Euler ori angles, extended precision
-//  , PDI_MODATA_DIRCOS        // Direction Cosine Matrix
-//  , PDI_MODATA_QTRN          // Orientation Quaternion
-//  , PDI_MODATA_TIMESTAMP     // Timestamp (32-bit)
-//  , PDI_MODATA_FRAMECOUNT    // Frame Count (32-bit)
-//  , PDI_MODATA_STYLUS        // Stylus Flag (32-bit)
-//  , PDI_MODATA_DISTLEV       // Distortion Level (32-bit)
-//  , PDI_MODATA_EXTSYNC       // External Sync (32-bit) (1 = Detected)
-//  , PDI_MODATA_DIGIO = 14	   // Digital IO bitfield
 
 //} ePDIMotionData;
 
@@ -187,8 +164,6 @@ bool Initialize()
     g_pdiMDat.Empty();
     g_pdiMDat.Append(PDI_MODATA_POS);
     g_pdiMDat.Append(PDI_MODATA_QTRN);
-//    g_pdiMDat.Append(PDI_MODATA_ORI);
-    //    g_dwFrameSize = 8 + 12 + 16;
 
     g_bCnxReady = false;
     g_dwStationMap = 0;

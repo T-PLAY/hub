@@ -1,7 +1,7 @@
 #include "socket.h"
 
-#include <cassert>
 #include <algorithm>
+#include <cassert>
 //#include <utility>
 
 Socket::Socket()
@@ -81,49 +81,6 @@ ClientSocket::ClientSocket(const std::string& ipv4, int port)
     connectToServer();
 
     // ask server
-    //    write(clientType);
-
-    //    switch (clientType) {
-    //    case Type::STREAM_VIEWER:
-    //    {
-    //        //        ClientSocket::Type clientType = ClientSocket::Type::STREAM_VIEWER;
-    //        write(sensorName);
-    //        Socket::Message mess;
-    //        read(mess);
-    //        if (mess == Socket::Message::NOT_FOUND) {
-    //            throw Socket::exception((std::string("sensor '") + sensorName + "' is not attached to server").c_str());
-    //        }
-    //        assert(mess == Socket::Message::OK);
-
-    //        write(syncSensorName);
-    //        read(mess);
-    //        if (mess == Socket::Message::NOT_FOUND) {
-    //            throw Socket::exception((std::string("sync sensor '") + syncSensorName + "' is not attached to server").c_str());
-    //        }
-    //        assert(mess == Socket::Message::OK);
-    //    } break;
-
-    //    case Type::STREAMER: {
-    ////        ClientSocket::Type clientType = ClientSocket::Type::STREAMER;
-    ////        write(clientType);
-
-    //        write(sensorName);
-    //        Socket::Message mess;
-    //        read(mess);
-    //        if (mess == Socket::Message::FOUND) {
-    //            throw Socket::exception((std::string("sensor '") + sensorName + "' is already attached to server").c_str());
-    //        }
-    //        assert(mess == Socket::Message::NOT_FOUND);
-
-    //        write(sensorName);
-    //    } break;
-
-    //    case Type::VIEWER:
-    //        break;
-
-    //    default:
-    //        assert(false);
-    //    }
 }
 
 ClientSocket::ClientSocket(const std::string& sensorName, const std::string& syncSensorName, const std::string ipv4, int port)
@@ -140,10 +97,6 @@ ClientSocket::ClientSocket(const std::string& sensorName, const std::string& syn
     // ask server
     write(clientType);
 
-    //    switch (clientType) {
-    //    case Type::STREAM_VIEWER:
-    //    {
-    //        ClientSocket::Type clientType = ClientSocket::Type::STREAM_VIEWER;
     write(sensorName);
     Socket::Message mess;
     read(mess);
@@ -158,7 +111,6 @@ ClientSocket::ClientSocket(const std::string& sensorName, const std::string& syn
         throw Socket::exception((std::string("sync sensor '") + syncSensorName + "' is not attached to server").c_str());
     }
     assert(mess == Socket::Message::OK);
-    //    } break;
 }
 
 ClientSocket::ClientSocket(socket_fd fdSock)
@@ -190,7 +142,6 @@ ClientSocket::~ClientSocket()
 
 void ClientSocket::setupOutput(const std::string& sensorName) const
 {
-    //    (void)sensorName;
 #ifdef DEBUG_SOCKET
     std::cout << "ClientSocket::setOutputName(const std::string& sensorName)" << std::endl;
 #endif
@@ -209,7 +160,6 @@ void ClientSocket::setupOutput(const std::string& sensorName) const
         assert(mess == Socket::Message::NOT_FOUND);
     }
 
-    //            write(sensorName);
     IOStream::setupOutput(sensorName);
 }
 
@@ -281,7 +231,6 @@ void ClientSocket::write(const unsigned char* data, size_t len) const
         int byteSent = send(mFdSock, (const char*)data + uploadSize, static_cast<int>(len - uploadSize), 0);
         if (byteSent == -1) {
             std::cout << getHeader(mFdSock) << "can't send packet " << byteSent << "/" << len << std::endl;
-            //            perror("Failed to send.\n");
             throw Socket::exception("Can't write packet, peer connection lost");
 
         } else if (byteSent == 0) {

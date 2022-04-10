@@ -19,9 +19,6 @@ std::ostream& operator<<(std::ostream& os, const Stream::Acquisition& acq)
     os << ", data:[";
     for (auto i = 0; i < std::min((int)acq.mSize, 10); ++i) {
         os << std::setw(3) << (int)acq.mData[i] << " ";
-        //        if (i % 4 == 3) {
-        //            os << "\t";
-        //        }
     }
     os << "], ";
     os << 1'000'000.0 / (acq.mBackendTimeOfArrival - acq.mBackendTimestamp) << " fps";
@@ -33,27 +30,14 @@ std::ostream& operator<<(std::ostream& os, const Stream::Acquisition& acq)
 //}
 
 // Stream::Stream(const std::string& sensorName, Format format, const std::vector<int>& dims, const std::string& ipv4, int port)
-//     : mSensorName(sensorName)
-//     , mFormat(format)
-//     , mDims(dims)
-//     , mIOStream(new ClientSocket(ipv4, port))
-//     , mAcquisitionSize(computeAcquisitionSize(format, dims))
 //{
 //#ifdef DEBUG_MSG
-//     std::cout << "[Stream] Stream()" << std::endl;
 //#endif
 // }
 
 // Stream::Stream(const std::string& sensorName, Format format, const std::vector<int>& dims, std::fstream& file)
-//     : mSensorName(sensorName)
-//     , mFormat(format)
-//     , mDims(dims)
-//     , mIOStream(new FileIO(file))
-//     //    , mIOStream(std::make_unique<FileIO>(file))
-//     , mAcquisitionSize(computeAcquisitionSize(format, dims))
 //{
 //#ifdef DEBUG_MSG
-//     std::cout << "[Stream] Stream()" << std::endl;
 //#endif
 // }
 
@@ -61,10 +45,7 @@ Stream::Stream(const std::string& sensorName, Format format, const std::vector<i
     : mSensorName(sensorName)
     , mFormat(format)
     , mDims(dims)
-    //        , mIOStream(std::make_unique<IOStream>(std::move(ioStream)))
-    //    , mIOStream(ioStream)
     , mIOStream(ioStream)
-    //    , mIOStream(std::move(ioStream))
     , mAcquisitionSize(computeAcquisitionSize(format, dims))
 {
 }
@@ -75,11 +56,9 @@ Stream::~Stream()
     std::cout << "[Stream] ~Stream()" << std::endl;
 #endif
     delete &mIOStream;
-    //    mIOStream = nullptr;
 }
 
 // Stream::Stream(ClientSocket&& clientSocket)
-//     : mIOStream(new ClientSocket(std::move(clientSocket)))
 //{
 // }
 
@@ -126,137 +105,45 @@ size_t Stream::getAcquisitionSize() const
 ///////////////////////////////////////////////////////////////////////////////
 
 // InputStream::InputStream(const std::string& sensorName, const std::string& syncSensorName, const std::string& ipv4, int port)
-//     : Stream(sensorName, Format::NONE, {}, ipv4, port)
 //{
 //#ifdef DEBUG_MSG
-//     std::cout << "[InputStream] InputStream(sensorName, ipv4, port)" << std::endl;
 //#endif
-//     ClientSocket::Type clientType = ClientSocket::Type::STREAM_VIEWER;
-//     mIOStream.write(clientType);
 
-//    mIOStream.write(sensorName);
-//    Socket::Message mess;
-//    mIOStream.read(mess);
-//    if (mess == Socket::Message::NOT_FOUND) {
-//        throw Stream::exception((std::string("sensor '") + sensorName + "' is not attached to server").c_str());
-//    }
-//    assert(mess == Socket::Message::OK);
-
-//    mIOStream.write(syncSensorName);
-//    mIOStream.read(mess);
-//    if (mess == Socket::Message::NOT_FOUND) {
-//        throw Stream::exception((std::string("sync sensor '") + syncSensorName + "' is not attached to server").c_str());
-//    }
-//    assert(mess == Socket::Message::OK);
-
-//    //    try {
-//    mIOStream.read(mFormat);
-//    //    } catch (Socket::exception& e) {
-//    //        std::cout << "[InputStream] catch exception : " << e.what() << std::endl;
-//    //        throw Stream::exception((std::string("sensor '") + sensorName + "' is not attached to server").c_str());
-//    //    }
-
-//    mIOStream.read(mDims);
-
-//    mAcquisitionSize = computeAcquisitionSize(mFormat, mDims);
 //}
 
 // InputStream::InputStream(std::fstream& file)
-//     : Stream("", Format::NONE, {}, file)
 //{
 //#ifdef DEBUG_MSG
-//     std::cout << "[InputStream] InputStream(sensorName, ipv4, port)" << std::endl;
 //#endif
 
-//    mIOStream.read(mSensorName);
-//    //    mIOStream.read(mSensorName);
-//    //    assert(sensorName == sensorNameInFile);
-
-//    //    try {
-//    mIOStream.read(mFormat);
-//    //    } catch (Socket::exception& e) {
-//    //        std::cout << "[InputStream] catch exception : " << e.what() << std::endl;
-//    //        throw Stream::exception((std::string("sensor '") + sensorName + "' is not attached to server").c_str());
-//    //    }
-
-//    mIOStream.read(mDims);
-
-//    mAcquisitionSize = computeAcquisitionSize(mFormat, mDims);
 //}
 
-//InputStream::InputStream(IOStream&& ioStream)
-//    //    : Stream("", Format::NONE, {}, std::move(ioStream))
-//    //    : Stream("", Format::NONE, {}, std::forward<IOStream&>(ioStream))
-//    //    : Stream("", Format::NONE, {}, std::move(ioStream))
-////    : Stream("", Format::NONE, {}, unmove(ioStream))
-//    : Stream("", Format::NONE, {}, *std::move(new T(std::move(ioStream))))
+// InputStream::InputStream(IOStream&& ioStream)
 //{
-//    //    ioStream.setupInput();
 
-//    mIOStream.read(mSensorName);
-//    mIOStream.read(mFormat);
-//    mIOStream.read(mDims);
-//    //    mIOStream.read(mMetaData);
-
-//    mAcquisitionSize = computeAcquisitionSize(mFormat, mDims);
 //}
 
 // InputStream::InputStream(ClientSocket&& sock, const std::string& sensorName)
-//     : Stream(std::move(sock))
 //{
 //#ifdef DEBUG_MSG
-//     std::cout << "[InputStream] InputStream(ClientSocket && sock)" << std::endl;
 //#endif
-//     mSensorName = sensorName;
-//     //    mIOStream.read(mSensorName);
-//     mIOStream.read(mFormat);
-//     mIOStream.read(mDims);
 
-//    mAcquisitionSize = computeAcquisitionSize(mFormat, mDims);
 //}
 
-//InputStream::InputStream(ClientSocket &&ioStream)
-//    //    : Stream("", Format::NONE, {}, std::move(ioStream))
-//    //    : Stream("", Format::NONE, {}, std::forward<IOStream&>(ioStream))
-//    //    : Stream("", Format::NONE, {}, std::move(ioStream))
-////    : Stream("", Format::NONE, {}, unmove(ioStream))
-//    : Stream("", Format::NONE, {}, *std::move(new ClientSocket(std::move(ioStream))))
+// InputStream::InputStream(ClientSocket &&ioStream)
 //{
-////    assert(false);
-//    //    ioStream.setupInput();
 
-//    mIOStream.read(mSensorName);
-//    mIOStream.read(mFormat);
-//    mIOStream.read(mDims);
-//    //    mIOStream.read(mMetaData);
-
-//    mAcquisitionSize = computeAcquisitionSize(mFormat, mDims);
 //}
 
-//InputStream::InputStream(FileIO &&ioStream)
-//    : Stream("", Format::NONE, {}, *std::move(new FileIO(std::move(ioStream))))
+// InputStream::InputStream(FileIO &&ioStream)
 //{
-//    //    ioStream.setupInput();
-
-//    mIOStream.read(mSensorName);
-//    mIOStream.read(mFormat);
-//    mIOStream.read(mDims);
-//    //    mIOStream.read(mMetaData);
-
-//    mAcquisitionSize = computeAcquisitionSize(mFormat, mDims);
 
 //}
 
 InputStream::InputStream(const char* sensorName, const std::string& syncSensorName)
-    //InputStream::InputStream(const std::string &sensorName, const std::string &syncSensorName)
-    //    : Stream("", Format::NONE, {}, std::move(ioStream))
-    //    : Stream("", Format::NONE, {}, std::forward<IOStream&>(ioStream))
-    //    : Stream("", Format::NONE, {}, std::move(ioStream))
-    //    : Stream("", Format::NONE, {}, unmove(ioStream))
+    // InputStream::InputStream(const std::string &sensorName, const std::string &syncSensorName)
     : Stream("", Format::NONE, {}, *std::move(new ClientSocket(sensorName, syncSensorName)))
 {
-    //    assert(false);
-    //    ioStream.setupInput();
 
     mIOStream.read(mSensorName);
     mIOStream.read(mFormat);
@@ -338,43 +225,18 @@ void InputStream::operator>>(const OutputStream& outputStream) const
 ///////////////////////////////////////////////////////////////////////////////
 
 // OutputStream::OutputStream(const std::string& sensorName, Stream::Format format, const std::vector<int>& dims, const MetaData& metaData, const std::string& ipv4, int port)
-//     : Stream(sensorName, format, dims, ipv4, port)
 //{
-//     ClientSocket::Type clientType = ClientSocket::Type::STREAMER;
-//     mIOStream.write(clientType);
 
-//    mIOStream.write(mSensorName);
-//    Socket::Message mess;
-//    mIOStream.read(mess);
-//    if (mess == Socket::Message::FOUND) {
-//        throw Stream::exception((std::string("sensor '") + sensorName + "' is already attached to server").c_str());
-//    }
-//    assert(mess == Socket::Message::NOT_FOUND);
-
-//    mIOStream.write(mFormat);
-//    mIOStream.write(mDims);
 //}
 
 // OutputStream::OutputStream(const std::string& sensorName, Format format, const std::vector<int>& dims, std::fstream& file)
-//     : Stream(sensorName, format, dims, file)
 //{
 
-//    mIOStream.write(mSensorName);
-//    mIOStream.write(mFormat);
-//    mIOStream.write(mDims);
 //}
 
 OutputStream::OutputStream(const std::string& sensorName, Format format, const std::vector<int>& dims, ClientSocket&& ioStream, const MetaData& metaData)
-    //    : Stream(sensorName, format, dims, dynamic_cast<IOStream&>(ioStream))
-    //    : Stream(sensorName, format, dims, unmove(ioStream))
     : Stream(sensorName, format, dims, *std::move(new ClientSocket(std::move(ioStream))))
-//    : Stream(sensorName, format, dims, unmove(ioStream))
-//    : Stream(sensorName, format, dims, unmove(ioStream))
-//    : Stream(sensorName, format, dims, std::move(ioStream))
-//    : Stream(sensorName, format, dims, std::forward<IOStream&>(ioStream))
 {
-    //    mIOStream.setupMode(IOStream::Mode::OUTPUT);
-    //    mIOStream.init(sensorName);
     mIOStream.setupOutput(sensorName);
 
     mIOStream.write(mSensorName);
@@ -383,50 +245,24 @@ OutputStream::OutputStream(const std::string& sensorName, Format format, const s
     mIOStream.write(metaData);
 }
 
-//OutputStream::OutputStream(const std::string &sensorName, Stream::Format format, const std::vector<int> &dims, FileIO &&ioStream)
-//    : Stream(sensorName, format, dims, *std::move(new FileIO(std::move(ioStream))))
-////    : Stream(sensorName, format, dims, unmove(ioStream))
-////    : Stream(sensorName, format, dims, unmove(ioStream))
-////    : Stream(sensorName, format, dims, std::move(ioStream))
-////    : Stream(sensorName, format, dims, std::forward<IOStream&>(ioStream))
+// OutputStream::OutputStream(const std::string &sensorName, Stream::Format format, const std::vector<int> &dims, FileIO &&ioStream)
 //{
-//    //    mIOStream.setupMode(IOStream::Mode::OUTPUT);
-//    //    mIOStream.init(sensorName);
-//    mIOStream.setupOutput(sensorName);
-
-//    mIOStream.write(mSensorName);
-//    mIOStream.write(mFormat);
-//    mIOStream.write(mDims);
-//    //    mIOStream.write(metaData);
 
 //}
 
 // OutputStream::OutputStream(IOStream &&ioStream)
-//     : Stream("", Format::NONE, {}, std::move(ioStream))
 //{
 
 //}
 
 // OutputStream::OutputStream(IOStream && ioStream, const InputStream &inputStream)
-////    : Stream("", Format::BGR8, {}, std::move(ioStream))
-//    : Stream("", Format::NONE, {}, std::move(ioStream))
-////    : Stream("",
 //{
 
 //}
 
 // OutputStream::OutputStream(ClientSocket&& sock, const InputStream& inputStream)
-//     : Stream(std::move(sock))
 //{
-//     mSensorName = inputStream.getSensorName();
-//     mFormat = inputStream.getFormat();
-//     mDims = inputStream.getDims();
 
-//    mAcquisitionSize = computeAcquisitionSize(mFormat, mDims);
-
-//    mIOStream.write(mSensorName);
-//    mIOStream.write(mFormat);
-//    mIOStream.write(mDims);
 //}
 
 void OutputStream::operator<<(const Acquisition& acquisition) const

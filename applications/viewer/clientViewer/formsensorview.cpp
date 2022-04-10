@@ -13,14 +13,6 @@ FormSensorView::FormSensorView(QWidget* parent, std::string sensorName, std::str
     ui->laberDimensions->setText(dims.c_str());
     ui->labelSize->setText((size + " bytes").c_str());
 
-    //    QLabel * labelMetada = new QLabel("Metadata :");
-    //    QLabel * labelMetadaContent = new QLabel(metaData.c_str());
-    //    labelMetadaContent->setAlignment(Qt::AlignHCenter);
-    //    auto * layout = ui->frame->layout();
-    //    QLayoutItem * layoutItem = new
-    //    layout->addItem(labelMetada);
-    //    ui->verticalLayout_4->addWidget(labelMetada);
-    //    ui->verticalLayout_4->addWidget(labelMetadaContent);
     if (metaData.empty()) {
         delete ui->label_metadata;
         delete ui->title_metadata;
