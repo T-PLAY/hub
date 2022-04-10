@@ -1,6 +1,7 @@
 #include "IOStream.h"
 
 #include <iostream>
+#include <cstring>
 
 void IOStream::write(const std::string& str) const
 {
@@ -61,7 +62,7 @@ void IOStream::write(const std::any& any) const
 
     } else {
         auto name = any.type().name();
-        auto raw_name = any.type().raw_name();
+        auto raw_name = any.type().name();
         assert(false);
     }
 }
@@ -163,7 +164,7 @@ void IOStream::read(std::any& any) const
 
     } else {
         auto name = any.type().name();
-        auto raw_name = any.type().raw_name();
+        auto raw_name = any.type().name();
         assert(false);
     }
     assert(any.has_value());

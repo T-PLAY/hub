@@ -15,8 +15,8 @@
 #include <socket.h>
 //#include <FileIO.h>
 
-//namespace std {
-//namespace any {
+// namespace std {
+// namespace any {
 
 namespace any {
 
@@ -50,13 +50,12 @@ static std::string to_string(const std::any& any)
 
     } else if (hashCode == typeid(const char*).hash_code()) {
         const char* val = *std::any_cast<const char*>(&any);
-//        write(val);
+        //        write(val);
         return std::string(val);
-
 
     } else {
         auto name = any.type().name();
-        auto raw_name = any.type().raw_name();
+        auto raw_name = any.type().name();
         assert(false);
     }
     return "";
@@ -64,12 +63,12 @@ static std::string to_string(const std::any& any)
 
 } // any
 
-//template <typename T>
-//T get(const std::any& any)
+// template <typename T>
+// T get(const std::any& any)
 //{
-//    const std::type_info& typeId = any.type();
-//    assert(typeId == typeid(T));
-//    return *std::any_cast<T>(&any);
+//     const std::type_info& typeId = any.type();
+//     assert(typeId == typeid(T));
+//     return *std::any_cast<T>(&any);
 
 //    //    if (typeId == typeid(int))
 //    ////        return static_cast<T>(*std::any_cast<int>(any));
@@ -80,11 +79,11 @@ static std::string to_string(const std::any& any)
 //    //        return static_cast<T>(*std::any_cast<std::string>(any));
 //}
 
-//friend std::ostream& operator<<(std::ostream& os, const std::any& any)
-//    {
-//        os << format2string[(int)format];
-//        return os;
-//    }
+// friend std::ostream& operator<<(std::ostream& os, const std::any& any)
+//     {
+//         os << format2string[(int)format];
+//         return os;
+//     }
 
 //}
 //}
@@ -254,17 +253,32 @@ public:
     using MetaData = std::map<std::string, std::any>; // C++17
     //    using MetaData = std::map<std::string, int>;
     //    friend std::ostream& operator<<(std::ostream& os, const MetaData& metaData)
-    static std::string to_string(const MetaData& metaData)
+    static std::string to_string(const MetaData& metaData, bool expand = false)
     {
         std::string str = "";
-        str += "[";
-        for (const auto& pair : metaData) {
-            const auto& name = pair.first;
-            const auto& val = pair.second;
-            //                        std::cout << getServerHeader(iThread) << "[streamer] metaData: " << val.type().name() << " " << name << " = " << std::endl;
-            str += std::string(val.type().name()) + " " + name + " = '" + any::to_string(val) + "', ";
+        if (expand) {
+            bool first = true;
+            for (const auto& pair : metaData) {
+                if (first)
+                    first = false;
+                else
+                    str += "\n";
+
+                const auto& name = pair.first;
+                const auto& val = pair.second;
+                //                        std::cout << getServerHeader(iThread) << "[streamer] metaData: " << val.type().name() << " " << name << " = " << std::endl;
+                str += std::string(val.type().name()) + " " + name + " = '" + any::to_string(val) + "'";
+            }
+        } else {
+            str += "[";
+            for (const auto& pair : metaData) {
+                const auto& name = pair.first;
+                const auto& val = pair.second;
+                //                        std::cout << getServerHeader(iThread) << "[streamer] metaData: " << val.type().name() << " " << name << " = " << std::endl;
+                str += std::string(val.type().name()) + " " + name + " = '" + any::to_string(val) + "', ";
+            }
+            str += "]";
         }
-        str += "]";
         return str;
     }
     //            std::string hashCode = any.type().name();
@@ -354,7 +368,7 @@ private:
     MetaData mMetaData;
 };
 
-//template <typename T, class = typename std::enable_if<std::is_rvalue_reference<T>::value>::type>
+// template <typename T, class = typename std::enable_if<std::is_rvalue_reference<T>::value>::type>
 template <class IOStream>
 InputStream::InputStream(IOStream&& ioStream)
     //    : Stream("", Format::NONE, {}, std::move(ioStream))
@@ -372,14 +386,14 @@ InputStream::InputStream(IOStream&& ioStream)
 
     mAcquisitionSize = computeAcquisitionSize(mFormat, mDims);
 }
-//template <class T>
-//InputStream::InputStream(T ioStream)
-//    : Stream("", Format::NONE, {}, ioStream))
+// template <class T>
+// InputStream::InputStream(T ioStream)
+//     : Stream("", Format::NONE, {}, ioStream))
 //{
-//}
+// }
 
 // template<class T> constexpr T& no_move(T&& t) { return t; }
-//template<class T> T& unmove(T&& t) { return t; }
+// template<class T> T& unmove(T&& t) { return t; }
 
 class OutputStream : public Stream {
 public:
@@ -407,11 +421,11 @@ public:
 private:
 };
 
-//template <class T>
-//OutputStream::OutputStream(const std::string& sensorName, Stream::Format format, const std::vector<int>& dims, T ioStream)
+// template <class T>
+// OutputStream::OutputStream(const std::string& sensorName, Stream::Format format, const std::vector<int>& dims, T ioStream)
 //{
-//    assert(false);
-//}
+//     assert(false);
+// }
 
 template <class IOStream>
 OutputStream::OutputStream(const std::string& sensorName, Format format, const std::vector<int>& dims, IOStream&& ioStream, const MetaData& metaData)
@@ -433,8 +447,8 @@ OutputStream::OutputStream(const std::string& sensorName, Format format, const s
     mIOStream.write(metaData);
 }
 
-//OutputStream::OutputStream(const std::string &sensorName, Stream::Format format, const std::vector<int> &dims, ClientSocket &&ioStream)
-//    : OutputStream(sensorName, format, dims, std::move(ioStream))
+// OutputStream::OutputStream(const std::string &sensorName, Stream::Format format, const std::vector<int> &dims, ClientSocket &&ioStream)
+//     : OutputStream(sensorName, format, dims, std::move(ioStream))
 //{
 
 //}
