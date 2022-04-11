@@ -141,6 +141,7 @@ int main(int argc, char* argv[])
     try {
         scanStream = new InputStream("ULA-OP 256", "");
     } catch (std::exception& e) {
+        std::cout << "[main] catch exception " << e.what() << std::endl;
         scanStream = nullptr;
     }
 
@@ -151,6 +152,7 @@ int main(int argc, char* argv[])
             posStream = new InputStream("Polhemus Patriot (probe)");
         }
     } catch (std::exception& e) {
+        std::cout << "[main] catch exception " << e.what() << std::endl;
         posStream = nullptr;
     }
 
