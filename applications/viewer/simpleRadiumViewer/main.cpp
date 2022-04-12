@@ -26,6 +26,10 @@
 #include <Engine/Data/PlainMaterial.hpp>
 #include <fstream>
 
+#include <Engine/Scene/CameraManager.hpp>
+
+//#define SENSOR
+
 // std::string loadShaderSource(const std::string& vertexPath)
 //{
 // }
@@ -34,10 +38,10 @@
 // * Demonstrate the usage of RawShaderMaterial functionalities
 // */
 // Vertex shader source code
-const std::string vertexShaderFile = PROJECT_DIR "applications/viewer/radiumViewer/vertexShader.glsl";
+const std::string vertexShaderFile = PROJECT_DIR "applications/viewer/simpleRadiumViewer/vertexShader.glsl";
 // const std::string vertexShaderSource = loadShaderSource(vertexShaderFile);
 //  const std::string _vertexShaderSource { "#include \"TransformStructs.glsl\"\n"
-const std::string fragmentShaderFile = PROJECT_DIR "applications/viewer/radiumViewer/fragmentShader.glsl";
+const std::string fragmentShaderFile = PROJECT_DIR "applications/viewer/simpleRadiumViewer/fragmentShader.glsl";
 // const std::string fragmentShaderSource = loadShaderSource(fragmentShaderFile);
 //  const std::string _fragmentShaderSource {
 //  };
@@ -61,75 +65,89 @@ int main(int argc, char* argv[])
     app.initialize(Ra::Gui::SimpleWindowFactory {});
     //! [Creating the application]
 
-    //! [add the custom material to the material system]
+    //    ! [add the custom material to the material system]
     Ra::Engine::Data::RawShaderMaterial::registerMaterial();
 
-    //! [Creating the quad]
-    auto quad = Ra::Core::Geometry::makeZNormalQuad({ 1_ra, 1_ra });
-    //! [Creating the quad]
-    // [Add missing texture coordonates for to the quad]
-    Ra::Core::Vector3Array tex_coords;
-    tex_coords.push_back({ 0_ra, 0_ra, 0_ra });
-    tex_coords.push_back({ 1_ra, 0_ra, 0_ra });
-    tex_coords.push_back({ 0_ra, 1_ra, 0_ra });
-    tex_coords.push_back({ 1_ra, 1_ra, 0_ra });
-    quad.addAttrib(Ra::Engine::Data::Mesh::getAttribName(Ra::Engine::Data::Mesh::VERTEX_TEXCOORD), tex_coords);
+    std::shared_ptr<Ra::Engine::Rendering::RenderObject> roQuad;
+    // quad
+    {
+        //! [Creating the quad]
+        auto quad = Ra::Core::Geometry::makeZNormalQuad({ 1_ra, 1_ra });
+        //! [Creating the quad]
+        // [Add missing texture coordonates for to the quad]
+        Ra::Core::Vector3Array tex_coords;
+        tex_coords.push_back({ 0_ra, 0_ra, 0_ra });
+        tex_coords.push_back({ 1_ra, 0_ra, 0_ra });
+        tex_coords.push_back({ 0_ra, 1_ra, 0_ra });
+        tex_coords.push_back({ 1_ra, 1_ra, 0_ra });
+        quad.addAttrib(Ra::Engine::Data::Mesh::getAttribName(Ra::Engine::Data::Mesh::VERTEX_TEXCOORD), tex_coords);
 
-    // [Add missing texture coordonates for to the quad]
+        // [Add missing texture coordonates for to the quad]
 
-    //! [Creating a texture for the quad]
-    unsigned char data[192 * 512];
-    // fill with some function
-    for (int i = 0; i < 192; ++i) {
-        for (int j = 0; j < 512; j++) {
-            if (std::abs(i - 20) < 3 || std::abs(j - 20) < 3) {
-                data[(i * 512 + j)] = 0;
-            } else {
+        //! [Creating a texture for the quad]
+        unsigned char data[192 * 512];
+        // fill with some function
+        for (int i = 0; i < 192; ++i) {
+            for (int j = 0; j < 512; j++) {
+                if (std::abs(i - 20) < 3 || std::abs(j - 20) < 3) {
+                    data[(i * 512 + j)] = 0;
+                } else {
 
-                data[(i * 512 + j)] = (j / 2) % 256;
+                    data[(i * 512 + j)] = (j / 2) % 256;
+                }
             }
         }
+        auto& textureParameters = app.m_engine->getTextureManager()->addTexture("myTexture", 512, 192, data);
+        textureParameters.format = gl::GLenum::GL_RED;
+        textureParameters.internalFormat = gl::GLenum::GL_R8;
+        //! [Creating a texture for the quad]
+
+        //! [create the quad material]
+        Ra::Core::Asset::BlinnPhongMaterialData matData("myMaterialData");
+        // uncomment this to remove glossy highlight
+        matData.m_specular = Ra::Core::Utils::Color::Black();
+        matData.m_hasSpecular = true;
+        matData.m_hasTexDiffuse = true;
+        matData.m_texDiffuse = "myTexture";
+
+        //! [Create Parameter provider for the shader]
+        //! [create the quad material]
+
+        //! [Create the engine entity for the quad]
+        auto e = app.m_engine->getEntityManager()->createEntity("Textured quad");
+        //! [Create the engine entity for the quad]
+
+        //! [Create a geometry component with the quad]
+        auto c = new Ra::Engine::Scene::TriangleMeshComponent("Quad Mesh", e, std::move(quad), &matData);
+        //! [Create a geometry component with the quad]
+
+        //! [Register the entity/component association to the geometry system ]
+        auto geometrySystem = app.m_engine->getSystem("GeometrySystem");
+        geometrySystem->addComponent(e, c);
+        //! [Register the entity/component association to the geometry system ]
+
+        //! [Tell the window that something is to be displayed]
+        app.m_mainWindow->prepareDisplay();
+        //! [Tell the window that something is to be displayed]
+
+        //![get the renderobject for further edition]
+        auto ro = Ra::Engine::RadiumEngine::getInstance()->getRenderObjectManager()->getRenderObject(c->m_renderObjects[0]);
+
+        auto& renderTechnique = *ro->getRenderTechnique();
+        Ra::Engine::Data::ShaderConfiguration shaderConfig("myShader", vertexShaderFile, fragmentShaderFile);
+        renderTechnique.setConfiguration(shaderConfig);
+
+        //        roQuad = ro;
     }
-    auto& textureParameters = app.m_engine->getTextureManager()->addTexture("myTexture", 512, 192, data);
-    textureParameters.format = gl::GLenum::GL_RED;
-    textureParameters.internalFormat = gl::GLenum::GL_R8;
-    //! [Creating a texture for the quad]
 
-    //! [create the quad material]
-    Ra::Core::Asset::BlinnPhongMaterialData matData("myMaterialData");
-    // uncomment this to remove glossy highlight
-    matData.m_specular = Ra::Core::Utils::Color::Black();
-    matData.m_hasSpecular = true;
-    matData.m_hasTexDiffuse = true;
-    matData.m_texDiffuse = "myTexture";
+    Ra::Engine::Scene::CameraManager* cameraManager = static_cast<Ra::Engine::Scene::CameraManager*>(app.m_engine->getInstance()->getSystem("DefaultCameraManager"));
+    cameraManager->defaultCamera.setPosition(Ra::Core::Vector3 { 100_ra, 100_ra, 100_ra });
+    //    cameraManager->updateActiveCameraData();
+    //    roQuad->setVisible(false);
 
-    //! [Create Parameter provider for the shader]
-    //! [create the quad material]
+    //    return app.exec();
 
-    //! [Create the engine entity for the quad]
-    auto e = app.m_engine->getEntityManager()->createEntity("Textured quad");
-    //! [Create the engine entity for the quad]
-
-    //! [Create a geometry component with the quad]
-    auto c = new Ra::Engine::Scene::TriangleMeshComponent("Quad Mesh", e, std::move(quad), &matData);
-    //! [Create a geometry component with the quad]
-
-    //! [Register the entity/component association to the geometry system ]
-    auto geometrySystem = app.m_engine->getSystem("GeometrySystem");
-    geometrySystem->addComponent(e, c);
-    //! [Register the entity/component association to the geometry system ]
-
-    //! [Tell the window that something is to be displayed]
-    app.m_mainWindow->prepareDisplay();
-    //! [Tell the window that something is to be displayed]
-
-    //![get the renderobject for further edition]
-    auto ro = Ra::Engine::RadiumEngine::getInstance()->getRenderObjectManager()->getRenderObject(c->m_renderObjects[0]);
-
-    auto& renderTechnique = *ro->getRenderTechnique();
-    Ra::Engine::Data::ShaderConfiguration shaderConfig("myShader", vertexShaderFile, fragmentShaderFile);
-    renderTechnique.setConfiguration(shaderConfig);
-
+#ifdef SENSOR
     InputStream* scanStream = nullptr;
     InputStream* posStream = nullptr;
 
@@ -162,6 +180,8 @@ int main(int argc, char* argv[])
 
 #endif
 
+#endif
+
     auto close_timer = new QTimer(&app);
 #ifdef WIN32
     close_timer->setInterval(10); // win
@@ -170,10 +190,11 @@ int main(int argc, char* argv[])
 #endif
     int iAcquisition = 0;
     int nThread = 0;
-#ifdef POSE_ONLY
-    QObject::connect(close_timer, &QTimer::timeout, [&app, &iAcquisition, posStream, &ro, &nThread]() {
+
+#ifdef SENSOR
+    QObject::connect(close_timer, &QTimer::timeout, [&app, &iAcquisition, &posStream = posStream, &roQuad, &nThread, &scanStream = scanStream]() {
 #else
-    QObject::connect(close_timer, &QTimer::timeout, [&app, &iAcquisition, &posStream = posStream, &ro, &nThread, &scanStream = scanStream]() {
+    QObject::connect(close_timer, &QTimer::timeout, [&app, &iAcquisition, &nThread]() {
 #endif
         ++nThread;
         if (nThread > 1) {
@@ -182,23 +203,38 @@ int main(int argc, char* argv[])
         }
         std::cout << "update acquisition " << iAcquisition << std::endl;
 
-#ifndef POSE_ONLY
+        //#ifndef POSE_ONLY
         // update texture
+
+#ifdef SENSOR
         if (scanStream != nullptr) {
             Stream::Acquisition scanAcq;
             *scanStream >> scanAcq;
+#else
+        unsigned char data[192 * 512] = { 0 };
+        for (int i = 0; i < 192; ++i) {
+            for (int j = 0; j < 512; j++) {
+                data[i * 512 + j] = (iAcquisition + j) % 256;
+            }
+        }
+
+#endif
 
             Ra::Engine::Data::TextureParameters textureParameters;
             textureParameters.name = "myTexture";
             auto texture = app.m_engine->getTextureManager()->getOrLoadTexture(textureParameters);
             auto& params = texture->getParameters();
-            memcpy(params.texels, scanAcq.mData, 192 * 512);
+            memcpy(params.texels, data, 192 * 512);
             app.m_mainWindow->getViewer()->makeCurrent();
             texture->initializeGL(false);
             app.m_mainWindow->getViewer()->doneCurrent();
+
+#ifdef SENSOR
         }
 #endif
+        //#endif
 
+#ifdef SENSOR
         // update position and orientation
         if (posStream != nullptr) {
             Stream::Acquisition posAcq;
@@ -230,8 +266,9 @@ int main(int argc, char* argv[])
             Ra::Core::Vector3 vecScale(1.0, 192.0 / 512, 1.0);
             TLocal.scale(vecScale);
 
-            ro->setLocalTransform(TRadium * TWorld * TOrientation * TLocal);
+            roQuad->setLocalTransform(TRadium * TWorld * TOrientation * TLocal);
         }
+#endif
 
         ++iAcquisition;
         --nThread;
@@ -240,8 +277,10 @@ int main(int argc, char* argv[])
 
     return app.exec();
 
+#ifdef SENSOR
     if (posStream != nullptr)
         delete posStream;
     if (scanStream != nullptr)
         delete scanStream;
+#endif
 }
