@@ -28,7 +28,7 @@
 
 #include <Engine/Scene/CameraManager.hpp>
 
-//#define SENSOR
+#define SENSOR
 
 // std::string loadShaderSource(const std::string& vertexPath)
 //{
@@ -137,7 +137,7 @@ int main(int argc, char* argv[])
         Ra::Engine::Data::ShaderConfiguration shaderConfig("myShader", vertexShaderFile, fragmentShaderFile);
         renderTechnique.setConfiguration(shaderConfig);
 
-        //        roQuad = ro;
+        roQuad = ro;
     }
 
     Ra::Engine::Scene::CameraManager* cameraManager = static_cast<Ra::Engine::Scene::CameraManager*>(app.m_engine->getInstance()->getSystem("DefaultCameraManager"));
@@ -210,6 +210,8 @@ int main(int argc, char* argv[])
         if (scanStream != nullptr) {
             Stream::Acquisition scanAcq;
             *scanStream >> scanAcq;
+
+            unsigned char* data = scanAcq.mData;
 #else
         unsigned char data[192 * 512] = { 0 };
         for (int i = 0; i < 192; ++i) {
@@ -251,6 +253,7 @@ int main(int argc, char* argv[])
             Ra::Core::Transform TOrientation = Ra::Core::Transform::Identity();
             Ra::Core::Quaternion quat(quaternion[0], quaternion[1], quaternion[2], quaternion[3]);
             TOrientation.rotate(quat);
+
 
             // World transform
             Ra::Core::Transform TWorld = Ra::Core::Transform::Identity();
