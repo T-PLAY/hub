@@ -10,6 +10,8 @@
 
 int main(int argc, char* argv[])
 {
+//    std::cout << typeid(int).operator==( << std::endl;
+//    return 0;
 
 #ifdef ULA_STREAMER
     constexpr int width = 192;
@@ -18,8 +20,11 @@ int main(int argc, char* argv[])
     Stream::MetaData metaData;
     metaData["depth"] = 3.0;
     metaData["name"] = "L533";
+    metaData["val"] = 1;
 
     OutputStream proceduralStream("proceduralStreamer", Stream::Format::Y8, { width, height }, ClientSocket(), metaData);
+
+//    return 0;
 
     const size_t imgSize = proceduralStream.getAcquisitionSize();
     assert(imgSize == 192 * 512);

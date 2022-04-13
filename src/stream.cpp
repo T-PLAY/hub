@@ -148,7 +148,9 @@ InputStream::InputStream(const char* sensorName, const std::string& syncSensorNa
     mIOStream.read(mSensorName);
     mIOStream.read(mFormat);
     mIOStream.read(mDims);
+//    std::cout << "[InputStream] before read metaData" << std::endl;
     mIOStream.read(mMetaData);
+//    std::cout << "[InputStream] after read metaData" << std::endl;
 
     mAcquisitionSize = computeAcquisitionSize(mFormat, mDims);
 }
@@ -242,6 +244,12 @@ OutputStream::OutputStream(const std::string& sensorName, Format format, const s
     mIOStream.write(mSensorName);
     mIOStream.write(mFormat);
     mIOStream.write(mDims);
+
+//    for (const auto& pair : metaData) {
+//        const auto& name = pair.first;
+//        const auto& val = pair.second;
+//        std::cout << "[OutputStream] metadata: " << val.type().name() << " " << name << " = '" << any::to_string(val) << "'" << std::endl;
+//    }
     mIOStream.write(metaData);
 }
 

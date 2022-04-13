@@ -37,6 +37,11 @@ static std::string to_string(const std::any& any)
         const char* val = *std::any_cast<const char*>(&any);
         return std::string(val);
 
+    } else if (hashCode == typeid(int).hash_code()) {
+        const int* val = std::any_cast<int>(&any);
+        return std::to_string(*val);
+
+
     } else {
         auto name = any.type().name();
         auto raw_name = any.type().name();
@@ -297,7 +302,9 @@ InputStream::InputStream(IOStream&& ioStream)
     mIOStream.read(mSensorName);
     mIOStream.read(mFormat);
     mIOStream.read(mDims);
+    std::cout << "[InputStream] before read metaData" << std::endl;
     mIOStream.read(mMetaData);
+    std::cout << "[InputStream] after read metaData" << std::endl;
 
     mAcquisitionSize = computeAcquisitionSize(mFormat, mDims);
 }

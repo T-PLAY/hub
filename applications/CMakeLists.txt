@@ -1,7 +1,9 @@
 
 
 #add_subdirectory(ihm)
-add_subdirectory(viewer)
+if (BUILD_VIEWERS)
+	add_subdirectory(viewer)
+endif()
 add_subdirectory(server)
 add_subdirectory(streamer)
 add_subdirectory(recorder)
