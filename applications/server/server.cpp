@@ -93,7 +93,11 @@ void Server::run()
                     for (const auto& pair : metadata) {
                         const auto& name = pair.first;
                         const auto& val = pair.second;
+#ifdef WIN32
                         std::cout << getServerHeader(iThread) << "[streamer] metadata: " << val.type().name() << " " << name << " = '" << any::to_string(val) << "' (" << val.type().raw_name() << ")" << std::endl;
+#else
+                        std::cout << getServerHeader(iThread) << "[streamer] metadata: " << val.type().name() << " " << name << " = '" << any::to_string(val) << "'" << std::endl;
+#endif
                     }
 
                     Stream::Acquisition acq;
