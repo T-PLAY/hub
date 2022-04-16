@@ -34,8 +34,8 @@
 
 #include <random>
 
-const std::string vertexShaderFile = PROJECT_DIR "applications/viewer/simpleRadiumViewer/vertexShader.glsl";
-const std::string fragmentShaderFile = PROJECT_DIR "applications/viewer/simpleRadiumViewer/fragmentShader.glsl";
+const std::string vertexShaderFile = PROJECT_DIR "applications/viewer/radiumViewer/vertexShader.glsl";
+const std::string fragmentShaderFile = PROJECT_DIR "applications/viewer/radiumViewer/fragmentShader.glsl";
 
 using namespace Ra;
 using namespace Ra::Core;
