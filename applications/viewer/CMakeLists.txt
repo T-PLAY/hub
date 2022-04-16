@@ -6,6 +6,6 @@ add_subdirectory(streamViewer)
 add_subdirectory(simpleViewer)
 
 if (BUILD_RADIUM_EXAMPLE)
-    add_subdirectory(simpleRadiumViewer)
-#    add_subdirectory(radiumViewer)
+    add_subdirectory(radiumViewer)
+#    add_subdirectory(radiumViewer2)
 endif()
