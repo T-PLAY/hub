@@ -3,20 +3,48 @@
 
 #include <QMainWindow>
 
+#include <Core/Tasks/TaskQueue.hpp>
+#include <Gui/Viewer/Viewer.hpp>
+
+QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
 }
+QT_END_NAMESPACE
 
-class MainWindow : public QMainWindow
-{
+class MainWindow : public QMainWindow {
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = nullptr);
+    MainWindow(QWidget* parent = nullptr);
     ~MainWindow();
 
-private:
-    Ui::MainWindow *ui;
-};
+public slots:
 
+    /// This function is the basic "game loop" iteration of the engine.
+    /// It starts the rendering then advance all systems by one frame.
+    void onGLInitialized();
+    void frame();
+
+private:
+    Ui::MainWindow* ui;
+
+    // Our instance of the engine
+    Ra::Engine::RadiumEngine* m_engine = nullptr;
+
+    // Task queue
+    Ra::Core::TaskQueue* m_task_queue = nullptr;
+
+    // Pointer to Qt/OpenGL Viewer widget
+    Ra::Gui::Viewer* m_viewer = nullptr;
+
+    // Pointer to Viewer widget
+    QWidget* m_viewerWidget = nullptr;
+
+    // Timer to wake us up at every frame start.
+    QTimer* m_frame_timer;
+
+    // Our framerate
+    uint m_target_fps = 60;
+};
 #endif // MAINWINDOW_H
