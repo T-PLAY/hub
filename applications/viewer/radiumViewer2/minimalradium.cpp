@@ -284,30 +284,30 @@ void MinimalSystem::generateTasks(Ra::Core::TaskQueue*, const Ra::Engine::FrameI
 {
     std::cout << "[MinimalSystem] generateTasks" << std::endl;
 
-    // update texture
-    {
-        Ra::Engine::Data::TextureParameters textureParameters;
-        textureParameters.name = "myTexture";
-        auto texture = m_app->m_engine->getTextureManager()->getOrLoadTexture(textureParameters);
-        auto& params = texture->getParameters();
-        unsigned char* data = new unsigned char[192 * 512];
-        for (int i = 0; i < 192; ++i) {
-            for (int j = 0; j < 512; j++) {
-                if (std::abs(i - 20) < 3 || std::abs(j - 20) < 3) {
-                    data[(i * 512 + j)] = 0;
-                } else {
+//    // update texture
+//    {
+//        Ra::Engine::Data::TextureParameters textureParameters;
+//        textureParameters.name = "myTexture";
+//        auto texture = m_app->m_engine->getTextureManager()->getOrLoadTexture(textureParameters);
+//        auto& params = texture->getParameters();
+//        unsigned char* data = new unsigned char[192 * 512];
+//        for (int i = 0; i < 192; ++i) {
+//            for (int j = 0; j < 512; j++) {
+//                if (std::abs(i - 20) < 3 || std::abs(j - 20) < 3) {
+//                    data[(i * 512 + j)] = 0;
+//                } else {
 
-                    data[(i * 512 + j)] = (j / 2) % 256;
-                }
-            }
-        }
-        memcpy(params.texels, data, 192 * 512);
-        //            memcpy(params.texels, scanAcq.mData, 192 * 512);
+//                    data[(i * 512 + j)] = (j / 2) % 256;
+//                }
+//            }
+//        }
+//        memcpy(params.texels, data, 192 * 512);
+//        //            memcpy(params.texels, scanAcq.mData, 192 * 512);
 
-        m_app->m_viewer->makeCurrent();
-        texture->initializeGL(false);
-        m_app->m_viewer->doneCurrent();
-    }
+//        m_app->m_viewer->makeCurrent();
+//        texture->initializeGL(false);
+//        m_app->m_viewer->doneCurrent();
+//    }
 }
 
 void MinimalSystem::addComponent(Ra::Engine::Scene::Entity* ent, MinimalComponent* comp)

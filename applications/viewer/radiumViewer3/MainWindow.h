@@ -12,6 +12,28 @@ class MainWindow;
 }
 QT_END_NAMESPACE
 
+class Thread_Client : public QThread {
+    Q_OBJECT
+public:
+    // constructor
+    Thread_Client(QObject* parent, Ra::Gui::Viewer& m_viewer, Ra::Engine::RadiumEngine& engine);
+
+signals:
+//    void addSensorSignal(std::string streamerSensorName, std::string format, std::string dims, std::string size, std::string metaData);
+//    void delSensorSignal(std::string streamerSensorName);
+
+public:
+    // overriding the QThread's run() method
+    void run();
+
+
+
+private:
+    size_t m_acquisition = 0;
+    Ra::Gui::Viewer *m_viewer;
+    Ra::Engine::RadiumEngine *m_engine;
+};
+
 class MainWindow : public QMainWindow {
     Q_OBJECT
 
@@ -25,6 +47,9 @@ public slots:
     /// It starts the rendering then advance all systems by one frame.
     void onGLInitialized();
     void frame();
+
+public:
+    void initScene();
 
 private:
     Ui::MainWindow* ui;
@@ -46,5 +71,7 @@ private:
 
     // Our framerate
     uint m_target_fps = 60;
+
+    Thread_Client * mThreadClient = nullptr;
 };
 #endif // MAINWINDOW_H
