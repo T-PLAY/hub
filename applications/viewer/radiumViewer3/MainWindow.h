@@ -5,6 +5,7 @@
 
 #include <Core/Tasks/TaskQueue.hpp>
 #include <Gui/Viewer/Viewer.hpp>
+#include <stream.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -19,19 +20,24 @@ public:
     Thread_Client(QObject* parent, Ra::Gui::Viewer& m_viewer, Ra::Engine::RadiumEngine& engine);
 
 signals:
-//    void addSensorSignal(std::string streamerSensorName, std::string format, std::string dims, std::string size, std::string metaData);
-//    void delSensorSignal(std::string streamerSensorName);
+    //    void addSensorSignal(std::string streamerSensorName, std::string format, std::string dims, std::string size, std::string metaData);
+    //    void delSensorSignal(std::string streamerSensorName);
 
 public:
     // overriding the QThread's run() method
     void run();
 
-
+    Ra::Engine::Rendering::RenderObject* m_scan = nullptr;
+    Ra::Engine::Rendering::RenderObject* m_probe = nullptr;
+    Ra::Engine::Rendering::RenderObject* m_probe_axis[3] = { nullptr, nullptr, nullptr };
 
 private:
     size_t m_acquisition = 0;
-    Ra::Gui::Viewer *m_viewer;
-    Ra::Engine::RadiumEngine *m_engine;
+    Ra::Gui::Viewer* m_viewer;
+    Ra::Engine::RadiumEngine* m_engine;
+
+    InputStream* m_poseStream = nullptr;
+    InputStream* m_scanStream = nullptr;
 };
 
 class MainWindow : public QMainWindow {
@@ -72,6 +78,11 @@ private:
     // Our framerate
     uint m_target_fps = 60;
 
-    Thread_Client * mThreadClient = nullptr;
+    Thread_Client* m_threadClient = nullptr;
+
+
+    //    Ra::Engine::Rendering::RenderObject* m_scan = nullptr;
+    //    Ra::Engine::Rendering::RenderObject* m_probe = nullptr;
+    //    Ra::Engine::Rendering::RenderObject* m_probe_axis[3] = { nullptr, nullptr, nullptr };
 };
 #endif // MAINWINDOW_H

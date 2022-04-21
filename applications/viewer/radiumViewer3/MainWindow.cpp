@@ -33,8 +33,12 @@
 #include <Engine/Scene/GeometryComponent.hpp>
 #include <Engine/Scene/GeometrySystem.hpp>
 
+#include <Engine/Data/LambertianMaterial.hpp>
+#include <Engine/Data/PlainMaterial.hpp>
 #include <Engine/Data/RawShaderMaterial.hpp>
 #include <QLayout>
+
+#include <stream.h>
 
 using namespace Ra;
 using namespace Ra::Core;
@@ -48,12 +52,34 @@ using namespace Ra::Engine::Scene;
 const std::string vertexShaderFile = PROJECT_DIR "applications/viewer/radiumViewer/vertexShader.glsl";
 const std::string fragmentShaderFile = PROJECT_DIR "applications/viewer/radiumViewer/fragmentShader.glsl";
 
+#define ONLY_POSE
+
 Thread_Client::Thread_Client(QObject* parent, Ra::Gui::Viewer& viewer, Ra::Engine::RadiumEngine& engine)
     : QThread(parent)
     , m_viewer(&viewer)
     , m_engine(&engine)
 {
     std::cout << "[Thread_Client] Thread_Client()" << std::endl;
+
+#ifndef ONLY_POSE
+    try {
+        m_scanStream = new InputStream("ULA-OP 256", "");
+    } catch (std::exception& e) {
+        std::cout << "[main] catch exception " << e.what() << std::endl;
+        m_scanStream = nullptr;
+    }
+#endif
+
+    try {
+        if (m_scanStream != nullptr) {
+            m_poseStream = new InputStream("Polhemus Patriot (probe)", "ULA-OP 256");
+        } else {
+            m_poseStream = new InputStream("Polhemus Patriot (probe)");
+        }
+    } catch (std::exception& e) {
+        std::cout << "[main] catch exception " << e.what() << std::endl;
+        m_poseStream = nullptr;
+    }
 }
 
 void Thread_Client::run()
@@ -62,6 +88,48 @@ void Thread_Client::run()
     std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
     while (!this->isInterruptionRequested()) {
+
+        assert(m_scan != nullptr);
+        //    g_scan->setLocalTransform(Transform { Translation(Vector3(2_ra, 2_ra, 2_ra)) });
+        // update position and orientation
+        if (m_poseStream != nullptr) {
+            Stream::Acquisition posAcq;
+            *m_poseStream >> posAcq;
+            float* translation = (float*)posAcq.mData;
+            float* quaternion = (float*)&posAcq.mData[12];
+
+            // change to Radium base reference
+            Ra::Core::Transform TRadium = Ra::Core::Transform::Identity();
+            TRadium.rotate(Eigen::AngleAxis(1.0f * Ra::Core::Math::Pi, Ra::Core::Vector3(0.0, 0.0, 1.0)));
+            TRadium.rotate(Eigen::AngleAxis(-0.5f * Ra::Core::Math::Pi, Ra::Core::Vector3(1.0, 0.0, 0.0)));
+
+            // orientation
+            Ra::Core::Transform TOrientation = Ra::Core::Transform::Identity();
+            Ra::Core::Quaternion quat(quaternion[0], quaternion[1], quaternion[2], quaternion[3]);
+            TOrientation.rotate(quat);
+
+            // World transform
+            Ra::Core::Transform TWorld = Ra::Core::Transform::Identity();
+
+            Ra::Core::Vector3 vecPos(-translation[0], -translation[1], -translation[2]);
+
+            vecPos /= 5.0;
+            TWorld.translate(vecPos);
+
+            //        g_scan->setLocalTransform(TRadium * TWorld * TOrientation * TLocal);
+            //        g_probe->setLocalTransform(TRadium * TWorld * TOrientation * TLocal);
+            m_probe->setLocalTransform(TRadium * TWorld * TOrientation);
+            //        for (int i = 0; i < 3; ++i) {
+            //            g_probe_axis[i]->setLocalTransform(TRadium * TWorld * TOrientation);
+            //        }
+
+            // Local transform scan
+            Ra::Core::Transform TLocal = Ra::Core::Transform::Identity();
+            TLocal.translate(Ra::Core::Vector3(1.0, 0.0, 2.0));
+            Ra::Core::Vector3 vecScale(1.0, 192.0 / 512, 1.0);
+            TLocal.scale(vecScale);
+            m_scan->setLocalTransform(TRadium * TWorld * TOrientation * TLocal);
+        }
 
         // update texture
         //        {
@@ -148,8 +216,8 @@ MainWindow::MainWindow(QWidget* parent)
     m_frame_timer->start();
 
     //    initScene();
-    mThreadClient = new Thread_Client(this, *m_viewer, *m_engine);
-    mThreadClient->start();
+    m_threadClient = new Thread_Client(this, *m_viewer, *m_engine);
+    m_threadClient->start();
 }
 
 MainWindow::~MainWindow()
@@ -234,34 +302,39 @@ void MainWindow::initScene()
     uint circleGridSize = 8;
     uint numberOfSphere = 32;
 
-//    //// GRID ////
-//    {
+    //    //// GRID ////
+    //    {
 
-//        auto gridPrimitive = DrawPrimitives::Grid(Vector3::Zero(),
-//            Vector3::UnitX(),
-//            Vector3::UnitZ(),
-//            Color::Grey(0.6f),
-//            cellSize,
-//            nCellX);
+    //        auto gridPrimitive = DrawPrimitives::Grid(Vector3::Zero(),
+    //            Vector3::UnitX(),
+    //            Vector3::UnitZ(),
+    //            Color::Grey(0.6f),
+    //            cellSize,
+    //            nCellX);
 
-//        //        auto gridRo = RenderObject::createRenderObject(
-//        //            "test_grid", RenderObjectType::Geometry, gridPrimitive, {});
-//        //        gridRo->setMaterial(Ra::Core::make_shared<PlainMaterial>("Grid material"));
+    //        //        auto gridRo = RenderObject::createRenderObject(
+    //        //            "test_grid", RenderObjectType::Geometry, gridPrimitive, {});
+    //                gridRo->setMaterial(Ra::Core::make_shared<PlainMaterial>("Grid material"));
 
-//        //        gridRo->setPickable(false);
-//        //        addRenderObject(gridRo);
-//    }
+    //        //        gridRo->setPickable(false);
+    //        //        addRenderObject(gridRo);
+    //    }
 
-    // cube
+    //    auto plainMaterial = make_shared<PlainMaterial>("Plain Material");
+    auto lambertianMaterial = make_shared<LambertianMaterial>("Lambertian Material");
+    lambertianMaterial->m_perVertexColor = true;
+
+    // ref cube
     {
         //! [Creating the cube]
-        auto cube = Ra::Core::Geometry::makeSharpBox({ 0.1f, 0.1f, 0.1f });
+        auto cubeSize = Vector3 { 1_ra, 1_ra, 1_ra };
+        auto cube = Ra::Core::Geometry::makeSharpBox(cubeSize * 0.7 / 2);
         //! [Creating the cube]
 
         //! [Colorize the Cube]
         cube.addAttrib(
             "in_color",
-            Ra::Core::Vector4Array { cube.vertices().size(), Ra::Core::Utils::Color::Green() });
+            Ra::Core::Vector4Array { cube.vertices().size(), Ra::Core::Utils::Color::Grey() });
         //! [Colorize the Cube]
 
         //! [Create the engine entity for the cube]
@@ -276,9 +349,46 @@ void MainWindow::initScene()
         geometrySystem->addComponent(e, c);
         //! [Register the entity/component association to the geometry system ]
         //    ! [add the custom material to the material system]
+        auto ro = Ra::Engine::RadiumEngine::getInstance()->getRenderObjectManager()->getRenderObject(c->m_renderObjects[0]);
+        ro->setLocalTransform(Transform { Translation(Vector3(0_ra, 0_ra, 0_ra)) });
+        ro->setMaterial(lambertianMaterial);
+
+        //        m_threadClient->m_probe = ro.get();
     }
 
-    std::shared_ptr<Ra::Engine::Rendering::RenderObject> roQuad;
+    // probe cube
+    {
+        //! [Creating the cube]
+        auto cubeSize = Vector3 { 1_ra, 1_ra, 1_ra };
+        auto cube = Ra::Core::Geometry::makeSharpBox(cubeSize * 0.2 / 2);
+        //! [Creating the cube]
+
+        //! [Colorize the Cube]
+        cube.addAttrib(
+            "in_color",
+            Ra::Core::Vector4Array { cube.vertices().size(), Ra::Core::Utils::Color::Grey() });
+        //! [Colorize the Cube]
+
+        //! [Create the engine entity for the cube]
+        auto e = m_engine->getEntityManager()->createEntity("Green cube");
+        //! [Create the engine entity for the cube]
+
+        //! [Create a geometry component with the cube]
+        auto c = new Ra::Engine::Scene::TriangleMeshComponent("Cube Mesh", e, std::move(cube), nullptr);
+        //! [Create a geometry component with the cube]
+
+        //! [Register the entity/component association to the geometry system ]
+        geometrySystem->addComponent(e, c);
+        //! [Register the entity/component association to the geometry system ]
+        //    ! [add the custom material to the material system]
+        auto ro = Ra::Engine::RadiumEngine::getInstance()->getRenderObjectManager()->getRenderObject(c->m_renderObjects[0]);
+        ro->setLocalTransform(Transform { Translation(Vector3(0_ra, 2_ra, 0_ra)) });
+        ro->setMaterial(lambertianMaterial);
+
+        m_threadClient->m_probe = ro.get();
+    }
+
+    //    std::shared_ptr<Ra::Engine::Rendering::RenderObject> roQuad;
     // quad texture
     {
         //! [Creating the quad]
@@ -295,7 +405,7 @@ void MainWindow::initScene()
         // [Add missing texture coordonates for to the quad]
 
         //! [Creating a texture for the quad]
-        unsigned char data[192 * 512];
+        unsigned char data[192 * 512] = { 0 };
         // fill with some function
         for (int i = 0; i < 192; ++i) {
             for (int j = 0; j < 512; j++) {
@@ -347,6 +457,7 @@ void MainWindow::initScene()
         Ra::Engine::Data::ShaderConfiguration shaderConfig("myShader", vertexShaderFile, fragmentShaderFile);
         renderTechnique.setConfiguration(shaderConfig);
 
+        m_threadClient->m_scan = ro.get();
         //        roQuad = ro;
     }
 }
