@@ -62,9 +62,11 @@ add_executable(${PROJECT_NAME}
 
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
 target_include_directories(
-    ${PROJECT_NAME} PRIVATE ${RADIUM_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR} # Moc
-                            ${CMAKE_CURRENT_SOURCE_DIR}
-)
+    ${PROJECT_NAME} PRIVATE
+    ${RADIUM_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR} # Moc
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${SRC_DIR}
+    )
 
 target_link_libraries(
     ${PROJECT_NAME} PUBLIC src Radium::Core Radium::Engine Radium::Gui ${Qt_LIBRARIES}

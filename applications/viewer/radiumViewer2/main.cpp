@@ -11,6 +11,7 @@
 #include <minimalradium.hpp>
 
 #include <Engine/Data/RawShaderMaterial.hpp>
+#include <Core/Types.hpp>
 
 int main( int argc, char* argv[] ) {
 
@@ -43,6 +44,7 @@ int main( int argc, char* argv[] ) {
 
     // Create and initialize entity and component
     Ra::Engine::Scene::Entity* e = app.m_engine->getEntityManager()->createEntity( "Cube" );
+//    e->setTransform(Ra::Core::Transform { Ra::Core::Translation(Ra::Core::Vector3(5_ra, 5_ra, 5_ra)) });
     MinimalComponent* c          = new MinimalComponent( e, &app );
     sys->addComponent( e, c );
     c->initialize();

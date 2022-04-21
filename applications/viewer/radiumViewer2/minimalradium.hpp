@@ -3,6 +3,7 @@
 #include <Engine/RadiumEngine.hpp>
 #include <Engine/Scene/Entity.hpp>
 #include <Engine/Scene/System.hpp>
+#include <Engine/Rendering/RenderObject.hpp>
 #include <Engine/Scene/SystemDisplay.hpp>
 
 #include <minimalapp.hpp>
@@ -35,4 +36,6 @@ public:
 
 private:
     MinimalApp* m_app = nullptr;
+
+//    Ra::Engine::Rendering::RenderObject& quad;
 };

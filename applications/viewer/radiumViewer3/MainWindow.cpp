@@ -25,6 +25,8 @@
 
 #include <Core/Asset/BlinnPhongMaterialData.hpp>
 #include <Core/Geometry/MeshPrimitives.hpp>
+
+#include <Engine/Data/DrawPrimitives.hpp>
 #include <Engine/Data/TextureManager.hpp>
 #include <Engine/Rendering/RenderObjectManager.hpp>
 #include <Engine/Scene/EntityManager.hpp>
@@ -33,6 +35,15 @@
 
 #include <Engine/Data/RawShaderMaterial.hpp>
 #include <QLayout>
+
+using namespace Ra;
+using namespace Ra::Core;
+using namespace Ra::Core::Utils;
+using namespace Ra::Core::Geometry;
+using namespace Ra::Engine;
+using namespace Ra::Engine::Rendering;
+using namespace Ra::Engine::Data;
+using namespace Ra::Engine::Scene;
 
 const std::string vertexShaderFile = PROJECT_DIR "applications/viewer/radiumViewer/vertexShader.glsl";
 const std::string fragmentShaderFile = PROJECT_DIR "applications/viewer/radiumViewer/fragmentShader.glsl";
@@ -52,75 +63,25 @@ void Thread_Client::run()
 
     while (!this->isInterruptionRequested()) {
 
-        unsigned char data[192 * 512] = { 0 };
-        for (int i = 0; i < 192; ++i) {
-            for (int j = 0; j < 512; j++) {
-                data[i * 512 + j] = (m_acquisition + j) % 256;
-            }
-        }
-
-        Ra::Engine::Data::TextureParameters textureParameters;
-        textureParameters.name = "myTexture";
-        auto texture = m_engine->getTextureManager()->getOrLoadTexture(textureParameters);
-        auto& params = texture->getParameters();
-        memcpy(params.texels, data, 192 * 512);
-        m_viewer->makeCurrent();
-        texture->initializeGL(false);
-        m_viewer->doneCurrent();
-
-        //        try {
-        //            ClientSocket sock;
-        //            sock.write(ClientSocket::Type::VIEWER);
-
-        //            while (!this->isInterruptionRequested()) {
-
-        //                Socket::Message serverMessage;
-        //                sock.read(serverMessage);
-
-        //                switch (serverMessage) {
-
-        //                case Socket::Message::PING: {
-        //                    // server check client connection
-        //                    // nothing to do
-        //                } break;
-
-        //                case Socket::Message::NEW_STREAMER: {
-        //                    std::cout << "[Thread_Client] [viewer] new streamer" << std::endl;
-        //                    std::string streamerSensorName;
-        //                    sock.read(streamerSensorName);
-        //                    std::string format;
-        //                    sock.read(format);
-        //                    std::string dims;
-        //                    sock.read(dims);
-        //                    std::string size;
-        //                    sock.read(size);
-
-        //                    Stream::MetaData metaData;
-        //                    sock.read(metaData);
-
-        //                    std::cout << "[Thread_Client] [viewer] new streamer " << streamerSensorName << ", format:" << format << ", dims:" << dims << ", acquisitionSize:" << size << std::endl;
-        //                    std::cout << "[Thread_Client] [viewer] emit addSensorSignal '" << streamerSensorName << "'" << std::endl;
-        //                    std::cout << "[Thread_Client] [viewer] metadata : " << Stream::to_string(metaData, true);
-        //                    emit addSensorSignal(streamerSensorName, format, dims, size, Stream::to_string(metaData, true));
-
-        //                } break;
-
-        //                case Socket::Message::DEL_STREAMER: {
-        //                    std::string streamerSensorName;
-        //                    sock.read(streamerSensorName);
-        //                    std::cout << "[Thread_Client] [viewer] del streamer '" << streamerSensorName << "'" << std::endl;
-        //                    emit delSensorSignal(streamerSensorName);
-        //                } break;
-
-        //                default:
-        //                    std::cout << "[Thread_Client] unknown message from server" << std::endl;
+        // update texture
+        //        {
+        //            unsigned char data[192 * 512] = { 0 };
+        //            for (int i = 0; i < 192; ++i) {
+        //                for (int j = 0; j < 512; j++) {
+        //                    data[i * 512 + j] = (m_acquisition + j) % 256;
         //                }
         //            }
 
-        //        } catch (std::exception& e) {
-        //            std::cout << "[Thread_Client] [viewer] catch exception : " << e.what() << std::endl;
+        //            Ra::Engine::Data::TextureParameters textureParameters;
+        //            textureParameters.name = "myTexture";
+        //            auto texture = m_engine->getTextureManager()->getOrLoadTexture(textureParameters);
+        //            auto& params = texture->getParameters();
+        //            memcpy(params.texels, data, 192 * 512);
+        //            m_viewer->makeCurrent();
+        //            texture->initializeGL(false);
+        //            m_viewer->doneCurrent();
         //        }
-    } // while (!this->isInterruptionRequested())
+    }
 }
 
 MainWindow::MainWindow(QWidget* parent)
@@ -186,7 +147,6 @@ MainWindow::MainWindow(QWidget* parent)
     // Start timer
     m_frame_timer->start();
 
-
     //    initScene();
     mThreadClient = new Thread_Client(this, *m_viewer, *m_engine);
     mThreadClient->start();
@@ -210,8 +170,8 @@ MainWindow::~MainWindow()
 
     delete ui;
 
-//    mThreadClient.requestInterruption();
-//    mThreadClient.wait();
+    //    mThreadClient.requestInterruption();
+    //    mThreadClient.wait();
 }
 
 void MainWindow::onGLInitialized()
@@ -254,6 +214,43 @@ void MainWindow::initScene()
     auto geometrySystem = m_engine->getSystem("GeometrySystem");
 
     Ra::Engine::Data::RawShaderMaterial::registerMaterial();
+
+    //// setup ////
+    Scalar colorBoost = 1_ra; /// since simple primitive are ambient only, boost their color
+    Scalar cellSize = 1_ra;
+    int nCellX = 10;
+    int nCellY = 10;
+    Vector3 cellCorner { -nCellX * cellSize / 2_ra, 0_ra, -nCellY * cellSize / 2_ra };
+    Vector3 toCellCenter { cellSize / 2_ra, cellSize / 2_ra, cellSize / 2_ra };
+    Scalar offset { 0.05_ra };
+    Vector3 offsetVec { offset, offset, offset };
+    std::random_device rd; // Will be used to obtain a seed for the random number engine
+    std::mt19937 gen(rd()); // Standard mersenne_twister_engine seeded with rd()
+    gen.seed(13371337);
+    std::uniform_real_distribution<Scalar> dis015(0_ra, cellSize - 2_ra * offset);
+    std::uniform_real_distribution<Scalar> dis01(0_ra, 1_ra);
+    std::uniform_real_distribution<Scalar> dis11(-1_ra, 1_ra);
+    std::uniform_int_distribution<uint> disInt(0, 128);
+    uint circleGridSize = 8;
+    uint numberOfSphere = 32;
+
+//    //// GRID ////
+//    {
+
+//        auto gridPrimitive = DrawPrimitives::Grid(Vector3::Zero(),
+//            Vector3::UnitX(),
+//            Vector3::UnitZ(),
+//            Color::Grey(0.6f),
+//            cellSize,
+//            nCellX);
+
+//        //        auto gridRo = RenderObject::createRenderObject(
+//        //            "test_grid", RenderObjectType::Geometry, gridPrimitive, {});
+//        //        gridRo->setMaterial(Ra::Core::make_shared<PlainMaterial>("Grid material"));
+
+//        //        gridRo->setPickable(false);
+//        //        addRenderObject(gridRo);
+//    }
 
     // cube
     {
