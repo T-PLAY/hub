@@ -55,7 +55,7 @@ set(PROJECT_SOURCES
 add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
 
 target_link_libraries(
-    ${PROJECT_NAME} PRIVATE Radium::Core Radium::Engine Radium::Gui ${Qt_LIBRARIES}
+    ${PROJECT_NAME} PRIVATE src Radium::Core Radium::Engine Radium::Gui ${Qt_LIBRARIES}
 )
 
 target_compile_options(${PROJECT_NAME} PRIVATE PUBLIC ${DEFAULT_COMPILE_OPTIONS} INTERFACE)
