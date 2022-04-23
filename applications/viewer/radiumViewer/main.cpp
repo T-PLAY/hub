@@ -151,17 +151,39 @@ int main(int argc, char* argv[])
     InputStream* scanStream = nullptr;
     InputStream* posStream = nullptr;
 
-//#define POSE_ONLY
-#ifdef POSE_ONLY
-    InputStream posStream("Polhemus Patriot (probe)");
-#else
+////#define ONLY_POSE
+//#ifdef ONLY_POSE
+//    InputStream posStream("Polhemus Patriot (probe)");
+//#else
 
+//    try {
+//        scanStream = new InputStream("ULA-OP 256", "");
+//    } catch (std::exception& e) {
+//        std::cout << "[main] catch exception " << e.what() << std::endl;
+//        scanStream = nullptr;
+//    }
+
+//    try {
+//        if (scanStream != nullptr) {
+//            posStream = new InputStream("Polhemus Patriot (probe)", "ULA-OP 256");
+//        } else {
+//            posStream = new InputStream("Polhemus Patriot (probe)");
+//        }
+//    } catch (std::exception& e) {
+//        std::cout << "[main] catch exception " << e.what() << std::endl;
+//        posStream = nullptr;
+//    }
+
+
+//#endif
+#ifndef ONLY_POSE
     try {
         scanStream = new InputStream("ULA-OP 256", "");
     } catch (std::exception& e) {
         std::cout << "[main] catch exception " << e.what() << std::endl;
         scanStream = nullptr;
     }
+#endif
 
     try {
         if (scanStream != nullptr) {
@@ -177,8 +199,6 @@ int main(int argc, char* argv[])
     if (posStream == nullptr && scanStream == nullptr) {
         return 0;
     }
-
-#endif
 
 #endif
 
@@ -203,7 +223,7 @@ int main(int argc, char* argv[])
         }
         std::cout << "update acquisition " << iAcquisition << std::endl;
 
-        //#ifndef POSE_ONLY
+        //#ifndef ONLY_POSE
         // update texture
 
 #ifdef SENSOR

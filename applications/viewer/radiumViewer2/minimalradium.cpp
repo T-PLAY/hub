@@ -307,7 +307,7 @@ void MinimalComponent::initialize()
 InputStream* scanStream = nullptr;
 InputStream* posStream = nullptr;
 
-#define ONLY_POSE
+//#define ONLY_POSE
 
 /// This system will be added to the engine. Every frame it will
 /// add a task to be executed, calling the spin function of the component.
@@ -393,30 +393,43 @@ void MinimalSystem::generateTasks(Ra::Core::TaskQueue*, const Ra::Engine::FrameI
 
     //    e->setTransform(Transform { Translation(Vector3(2_ra, 2_ra, 2_ra)) });
 
-    //    // update texture
-    //    {
-    //        Ra::Engine::Data::TextureParameters textureParameters;
-    //        textureParameters.name = "myTexture";
-    //        auto texture = m_app->m_engine->getTextureManager()->getOrLoadTexture(textureParameters);
-    //        auto& params = texture->getParameters();
-    //        unsigned char* data = new unsigned char[192 * 512];
-    //        for (int i = 0; i < 192; ++i) {
-    //            for (int j = 0; j < 512; j++) {
-    //                if (std::abs(i - 20) < 3 || std::abs(j - 20) < 3) {
-    //                    data[(i * 512 + j)] = 0;
-    //                } else {
+        // update texture
+    if (scanStream != nullptr)
+        {
+//            Ra::Engine::Data::TextureParameters textureParameters;
+//            textureParameters.name = "myTexture";
+//            auto texture = m_app->m_engine->getTextureManager()->getOrLoadTexture(textureParameters);
+//            auto& params = texture->getParameters();
+//            unsigned char* data = new unsigned char[192 * 512];
+//            for (int i = 0; i < 192; ++i) {
+//                for (int j = 0; j < 512; j++) {
+//                    if (std::abs(i - 20) < 3 || std::abs(j - 20) < 3) {
+//                        data[(i * 512 + j)] = 0;
+//                    } else {
 
-    //                    data[(i * 512 + j)] = (j / 2) % 256;
-    //                }
-    //            }
-    //        }
-    //        memcpy(params.texels, data, 192 * 512);
-    //        //            memcpy(params.texels, scanAcq.mData, 192 * 512);
+//                        data[(i * 512 + j)] = (j / 2) % 256;
+//                    }
+//                }
+//            }
+//            memcpy(params.texels, data, 192 * 512);
+//            //            memcpy(params.texels, scanAcq.mData, 192 * 512);
 
-    //        m_app->m_viewer->makeCurrent();
-    //        texture->initializeGL(false);
-    //        m_app->m_viewer->doneCurrent();
-    //    }
+//            m_app->m_viewer->makeCurrent();
+//            texture->initializeGL(false);
+//            m_app->m_viewer->doneCurrent();
+            Stream::Acquisition scanAcq;
+            *scanStream >> scanAcq;
+
+            unsigned char* data = scanAcq.mData;
+            Ra::Engine::Data::TextureParameters textureParameters;
+            textureParameters.name = "myTexture";
+            auto texture = m_app->m_engine->getTextureManager()->getOrLoadTexture(textureParameters);
+            auto& params = texture->getParameters();
+            memcpy(params.texels, data, 192 * 512);
+            m_app->m_viewer->makeCurrent();
+            texture->initializeGL(false);
+            m_app->m_viewer->doneCurrent();
+        }
 }
 
 void MinimalSystem::addComponent(Ra::Engine::Scene::Entity* ent, MinimalComponent* comp)

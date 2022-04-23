@@ -52,105 +52,105 @@ using namespace Ra::Engine::Scene;
 const std::string vertexShaderFile = PROJECT_DIR "applications/viewer/radiumViewer/vertexShader.glsl";
 const std::string fragmentShaderFile = PROJECT_DIR "applications/viewer/radiumViewer/fragmentShader.glsl";
 
-#define ONLY_POSE
+//#define ONLY_POSE
 
-Thread_Client::Thread_Client(QObject* parent, Ra::Gui::Viewer& viewer, Ra::Engine::RadiumEngine& engine)
-    : QThread(parent)
-    , m_viewer(&viewer)
-    , m_engine(&engine)
-{
-    std::cout << "[Thread_Client] Thread_Client()" << std::endl;
+// Thread_Client::Thread_Client(QObject* parent, Ra::Gui::Viewer& viewer, Ra::Engine::RadiumEngine& engine)
+//     : QThread(parent)
+//     , m_viewer(&viewer)
+//     , m_engine(&engine)
+//{
+//     std::cout << "[Thread_Client] Thread_Client()" << std::endl;
 
-#ifndef ONLY_POSE
-    try {
-        m_scanStream = new InputStream("ULA-OP 256", "");
-    } catch (std::exception& e) {
-        std::cout << "[main] catch exception " << e.what() << std::endl;
-        m_scanStream = nullptr;
-    }
-#endif
+//#ifndef ONLY_POSE
+//    try {
+//        m_scanStream = new InputStream("ULA-OP 256", "");
+//    } catch (std::exception& e) {
+//        std::cout << "[main] catch exception " << e.what() << std::endl;
+//        m_scanStream = nullptr;
+//    }
+//#endif
 
-    try {
-        if (m_scanStream != nullptr) {
-            m_poseStream = new InputStream("Polhemus Patriot (probe)", "ULA-OP 256");
-        } else {
-            m_poseStream = new InputStream("Polhemus Patriot (probe)");
-        }
-    } catch (std::exception& e) {
-        std::cout << "[main] catch exception " << e.what() << std::endl;
-        m_poseStream = nullptr;
-    }
-}
+//    try {
+//        if (m_scanStream != nullptr) {
+//            m_poseStream = new InputStream("Polhemus Patriot (probe)", "ULA-OP 256");
+//        } else {
+//            m_poseStream = new InputStream("Polhemus Patriot (probe)");
+//        }
+//    } catch (std::exception& e) {
+//        std::cout << "[main] catch exception " << e.what() << std::endl;
+//        m_poseStream = nullptr;
+//    }
+//}
 
-void Thread_Client::run()
-{
-    std::cout << "[Thread_Client] Thread_Client::run()" << std::endl;
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+// void Thread_Client::run()
+//{
+//     std::cout << "[Thread_Client] Thread_Client::run()" << std::endl;
+//     std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
-    while (!this->isInterruptionRequested()) {
+//    while (!this->isInterruptionRequested()) {
 
-        assert(m_scan != nullptr);
-        //    g_scan->setLocalTransform(Transform { Translation(Vector3(2_ra, 2_ra, 2_ra)) });
-        // update position and orientation
-        if (m_poseStream != nullptr) {
-            Stream::Acquisition posAcq;
-            *m_poseStream >> posAcq;
-            float* translation = (float*)posAcq.mData;
-            float* quaternion = (float*)&posAcq.mData[12];
+//        assert(m_scan != nullptr);
+//        //    g_scan->setLocalTransform(Transform { Translation(Vector3(2_ra, 2_ra, 2_ra)) });
+//        // update position and orientation
+//        if (m_poseStream != nullptr) {
+//            Stream::Acquisition posAcq;
+//            *m_poseStream >> posAcq;
+//            float* translation = (float*)posAcq.mData;
+//            float* quaternion = (float*)&posAcq.mData[12];
 
-            // change to Radium base reference
-            Ra::Core::Transform TRadium = Ra::Core::Transform::Identity();
-            TRadium.rotate(Eigen::AngleAxis(1.0f * Ra::Core::Math::Pi, Ra::Core::Vector3(0.0, 0.0, 1.0)));
-            TRadium.rotate(Eigen::AngleAxis(-0.5f * Ra::Core::Math::Pi, Ra::Core::Vector3(1.0, 0.0, 0.0)));
+//            // change to Radium base reference
+//            Ra::Core::Transform TRadium = Ra::Core::Transform::Identity();
+//            TRadium.rotate(Eigen::AngleAxis(1.0f * Ra::Core::Math::Pi, Ra::Core::Vector3(0.0, 0.0, 1.0)));
+//            TRadium.rotate(Eigen::AngleAxis(-0.5f * Ra::Core::Math::Pi, Ra::Core::Vector3(1.0, 0.0, 0.0)));
 
-            // orientation
-            Ra::Core::Transform TOrientation = Ra::Core::Transform::Identity();
-            Ra::Core::Quaternion quat(quaternion[0], quaternion[1], quaternion[2], quaternion[3]);
-            TOrientation.rotate(quat);
+//            // orientation
+//            Ra::Core::Transform TOrientation = Ra::Core::Transform::Identity();
+//            Ra::Core::Quaternion quat(quaternion[0], quaternion[1], quaternion[2], quaternion[3]);
+//            TOrientation.rotate(quat);
 
-            // World transform
-            Ra::Core::Transform TWorld = Ra::Core::Transform::Identity();
+//            // World transform
+//            Ra::Core::Transform TWorld = Ra::Core::Transform::Identity();
 
-            Ra::Core::Vector3 vecPos(-translation[0], -translation[1], -translation[2]);
+//            Ra::Core::Vector3 vecPos(-translation[0], -translation[1], -translation[2]);
 
-            vecPos /= 5.0;
-            TWorld.translate(vecPos);
+//            vecPos /= 5.0;
+//            TWorld.translate(vecPos);
 
-            //        g_scan->setLocalTransform(TRadium * TWorld * TOrientation * TLocal);
-            //        g_probe->setLocalTransform(TRadium * TWorld * TOrientation * TLocal);
-            m_probe->setLocalTransform(TRadium * TWorld * TOrientation);
-            //        for (int i = 0; i < 3; ++i) {
-            //            g_probe_axis[i]->setLocalTransform(TRadium * TWorld * TOrientation);
-            //        }
+//            //        g_scan->setLocalTransform(TRadium * TWorld * TOrientation * TLocal);
+//            //        g_probe->setLocalTransform(TRadium * TWorld * TOrientation * TLocal);
+//            m_probe->setLocalTransform(TRadium * TWorld * TOrientation);
+//            //        for (int i = 0; i < 3; ++i) {
+//            //            g_probe_axis[i]->setLocalTransform(TRadium * TWorld * TOrientation);
+//            //        }
 
-            // Local transform scan
-            Ra::Core::Transform TLocal = Ra::Core::Transform::Identity();
-            TLocal.translate(Ra::Core::Vector3(1.0, 0.0, 2.0));
-            Ra::Core::Vector3 vecScale(1.0, 192.0 / 512, 1.0);
-            TLocal.scale(vecScale);
-            m_scan->setLocalTransform(TRadium * TWorld * TOrientation * TLocal);
-        }
+//            // Local transform scan
+//            Ra::Core::Transform TLocal = Ra::Core::Transform::Identity();
+//            TLocal.translate(Ra::Core::Vector3(1.0, 0.0, 2.0));
+//            Ra::Core::Vector3 vecScale(1.0, 192.0 / 512, 1.0);
+//            TLocal.scale(vecScale);
+//            m_scan->setLocalTransform(TRadium * TWorld * TOrientation * TLocal);
+//        }
 
-        // update texture
-        //        {
-        //            unsigned char data[192 * 512] = { 0 };
-        //            for (int i = 0; i < 192; ++i) {
-        //                for (int j = 0; j < 512; j++) {
-        //                    data[i * 512 + j] = (m_acquisition + j) % 256;
-        //                }
-        //            }
+//        // update texture
+//        //        {
+//        //            unsigned char data[192 * 512] = { 0 };
+//        //            for (int i = 0; i < 192; ++i) {
+//        //                for (int j = 0; j < 512; j++) {
+//        //                    data[i * 512 + j] = (m_acquisition + j) % 256;
+//        //                }
+//        //            }
 
-        //            Ra::Engine::Data::TextureParameters textureParameters;
-        //            textureParameters.name = "myTexture";
-        //            auto texture = m_engine->getTextureManager()->getOrLoadTexture(textureParameters);
-        //            auto& params = texture->getParameters();
-        //            memcpy(params.texels, data, 192 * 512);
-        //            m_viewer->makeCurrent();
-        //            texture->initializeGL(false);
-        //            m_viewer->doneCurrent();
-        //        }
-    }
-}
+//        //            Ra::Engine::Data::TextureParameters textureParameters;
+//        //            textureParameters.name = "myTexture";
+//        //            auto texture = m_engine->getTextureManager()->getOrLoadTexture(textureParameters);
+//        //            auto& params = texture->getParameters();
+//        //            memcpy(params.texels, data, 192 * 512);
+//        //            m_viewer->makeCurrent();
+//        //            texture->initializeGL(false);
+//        //            m_viewer->doneCurrent();
+//        //        }
+//    }
+//}
 
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent)
@@ -215,9 +215,28 @@ MainWindow::MainWindow(QWidget* parent)
     // Start timer
     m_frame_timer->start();
 
-    //    initScene();
-    m_threadClient = new Thread_Client(this, *m_viewer, *m_engine);
-    m_threadClient->start();
+#ifndef ONLY_POSE
+    try {
+        m_scanStream = new InputStream("ULA-OP 256", "");
+    } catch (std::exception& e) {
+        std::cout << "[main] catch exception " << e.what() << std::endl;
+        m_scanStream = nullptr;
+    }
+#endif
+
+    try {
+        if (m_scanStream != nullptr) {
+            m_poseStream = new InputStream("Polhemus Patriot (probe)", "ULA-OP 256");
+        } else {
+            m_poseStream = new InputStream("Polhemus Patriot (probe)");
+        }
+    } catch (std::exception& e) {
+        std::cout << "[main] catch exception " << e.what() << std::endl;
+        m_poseStream = nullptr;
+    }
+    //        initScene();
+    //    m_threadClient = new Thread_Client(this, *m_viewer, *m_engine);
+    //    m_threadClient->start();
 }
 
 MainWindow::~MainWindow()
@@ -251,13 +270,82 @@ void MainWindow::onGLInitialized()
     std::shared_ptr<Ra::Engine::Rendering::Renderer> e(
         new Ra::Engine::Rendering::ForwardRenderer());
     m_viewer->addRenderer(e);
-    connect(m_frame_timer, &QTimer::timeout, this, &MainWindow::frame);
-
     initScene();
+    connect(m_frame_timer, &QTimer::timeout, this, &MainWindow::frame);
 }
 
 void MainWindow::frame()
 {
+    // update geometry
+    {
+        //        assert(m_scan != nullptr);
+        if (m_scan != nullptr) {
+            //    g_scan->setLocalTransform(Transform { Translation(Vector3(2_ra, 2_ra, 2_ra)) });
+            // update position and orientation
+            if (m_poseStream != nullptr) {
+                Stream::Acquisition posAcq;
+                *m_poseStream >> posAcq;
+                float* translation = (float*)posAcq.mData;
+                float* quaternion = (float*)&posAcq.mData[12];
+
+                // change to Radium base reference
+                Ra::Core::Transform TRadium = Ra::Core::Transform::Identity();
+                TRadium.rotate(Eigen::AngleAxis(1.0f * Ra::Core::Math::Pi, Ra::Core::Vector3(0.0, 0.0, 1.0)));
+                TRadium.rotate(Eigen::AngleAxis(-0.5f * Ra::Core::Math::Pi, Ra::Core::Vector3(1.0, 0.0, 0.0)));
+
+                // orientation
+                Ra::Core::Transform TOrientation = Ra::Core::Transform::Identity();
+                Ra::Core::Quaternion quat(quaternion[0], quaternion[1], quaternion[2], quaternion[3]);
+                TOrientation.rotate(quat);
+
+                // World transform
+                Ra::Core::Transform TWorld = Ra::Core::Transform::Identity();
+
+                Ra::Core::Vector3 vecPos(-translation[0], -translation[1], -translation[2]);
+
+                vecPos /= 5.0;
+                TWorld.translate(vecPos);
+
+                //        g_scan->setLocalTransform(TRadium * TWorld * TOrientation * TLocal);
+                //        g_probe->setLocalTransform(TRadium * TWorld * TOrientation * TLocal);
+                m_probe->setLocalTransform(TRadium * TWorld * TOrientation);
+                //        for (int i = 0; i < 3; ++i) {
+                //            g_probe_axis[i]->setLocalTransform(TRadium * TWorld * TOrientation);
+                //        }
+
+                // Local transform scan
+                Ra::Core::Transform TLocal = Ra::Core::Transform::Identity();
+                TLocal.translate(Ra::Core::Vector3(1.0, 0.0, 2.0));
+                Ra::Core::Vector3 vecScale(1.0, 192.0 / 512, 1.0);
+                TLocal.scale(vecScale);
+                m_scan->setLocalTransform(TRadium * TWorld * TOrientation * TLocal);
+            }
+
+            // update texture
+            if (m_scanStream != nullptr) {
+                //                        unsigned char data[192 * 512] = { 0 };
+                //                        for (int i = 0; i < 192; ++i) {
+                //                            for (int j = 0; j < 512; j++) {
+                //                                data[i * 512 + j] = (m_acquisition + j) % 256;
+                //                            }
+                //                        }
+                Stream::Acquisition scanAcq;
+                *m_scanStream >> scanAcq;
+
+                unsigned char* data = scanAcq.mData;
+
+                Ra::Engine::Data::TextureParameters textureParameters;
+                textureParameters.name = "myTexture";
+                auto texture = m_engine->getTextureManager()->getOrLoadTexture(textureParameters);
+                auto& params = texture->getParameters();
+                memcpy(params.texels, data, 192 * 512);
+                m_viewer->makeCurrent();
+                texture->initializeGL(false);
+                m_viewer->doneCurrent();
+            }
+        }
+    }
+
     // We use a fixed time step, but it is also possible
     // to check the time from last frame.
     const Scalar dt = 1.f / Scalar(m_target_fps);
@@ -370,7 +458,7 @@ void MainWindow::initScene()
         //! [Colorize the Cube]
 
         //! [Create the engine entity for the cube]
-        auto e = m_engine->getEntityManager()->createEntity("Green cube");
+        auto e = m_engine->getEntityManager()->createEntity("Probe cube");
         //! [Create the engine entity for the cube]
 
         //! [Create a geometry component with the cube]
@@ -385,11 +473,13 @@ void MainWindow::initScene()
         ro->setLocalTransform(Transform { Translation(Vector3(0_ra, 2_ra, 0_ra)) });
         ro->setMaterial(lambertianMaterial);
 
-        m_threadClient->m_probe = ro.get();
+        //        m_threadClient->m_probe = ro.get();
+        m_probe = ro.get();
     }
 
     //    std::shared_ptr<Ra::Engine::Rendering::RenderObject> roQuad;
     // quad texture
+    //    if (false)
     {
         //! [Creating the quad]
         auto quad = Ra::Core::Geometry::makeZNormalQuad({ 1_ra, 1_ra });
@@ -405,7 +495,8 @@ void MainWindow::initScene()
         // [Add missing texture coordonates for to the quad]
 
         //! [Creating a texture for the quad]
-        unsigned char data[192 * 512] = { 0 };
+        //        unsigned char data[192 * 512] = { 0 };
+        unsigned char* data = new unsigned char[192 * 512];
         // fill with some function
         for (int i = 0; i < 192; ++i) {
             for (int j = 0; j < 512; j++) {
@@ -446,7 +537,7 @@ void MainWindow::initScene()
         //! [Register the entity/component association to the geometry system ]
 
         //        //! [Tell the window that something is to be displayed]
-        //        app.m_mainWindow->prepareDisplay();
+        //                app.m_mainWindow->prepareDisplay();
         //        //! [Tell the window that something is to be displayed]
 
         //        //![get the renderobject for further edition]
@@ -457,7 +548,8 @@ void MainWindow::initScene()
         Ra::Engine::Data::ShaderConfiguration shaderConfig("myShader", vertexShaderFile, fragmentShaderFile);
         renderTechnique.setConfiguration(shaderConfig);
 
-        m_threadClient->m_scan = ro.get();
+        //        m_threadClient->m_scan = ro.get();
+        m_scan = ro.get();
         //        roQuad = ro;
     }
 }
