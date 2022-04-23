@@ -9,11 +9,11 @@ endif()
 project(radiumViewer5)
 # Set default install location to installed-<Compiler_ID> folder in build dir
 # we do not want to install to /usr by default
-#if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-#    set (CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}/installed-${CMAKE_CXX_COMPILER_ID}" CACHE PATH
-#            "Install path prefix, prepended onto install directories." FORCE )
-#    message( "Set install prefix to ${CMAKE_INSTALL_PREFIX}" )
-#endif()
+if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+    set (CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}/installed-${CMAKE_CXX_COMPILER_ID}" CACHE PATH
+            "Install path prefix, prepended onto install directories." FORCE )
+    message( "Set install prefix to ${CMAKE_INSTALL_PREFIX}" )
+endif()
 
 find_package( Radium REQUIRED Core Engine Gui PluginBase IO)
 
@@ -21,8 +21,12 @@ find_package( Radium REQUIRED Core Engine Gui PluginBase IO)
 # Application specific
 
 
-find_package(Qt5 COMPONENTS Core Widgets OpenGL REQUIRED)
-set( Qt5_LIBRARIES Qt5::Core Qt5::Widgets Qt5::OpenGL )
+find_package(QT NAMES Qt6 Qt5 COMPONENTS Core Widgets OpenGL REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
+
+
+#find_package(Qt6 COMPONENTS Core Widgets OpenGL REQUIRED)
+set( Qt_LIBRARIES Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::OpenGL )
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
@@ -53,7 +57,11 @@ set(app_uis
         Gui/ui/VectorEditor.ui
    )
 
-qt5_wrap_ui(app_uis_moc ${app_uis})
+if (${QT_VERSION_MAJOR} EQUAL 5)
+    qt5_wrap_ui(app_uis_moc ${app_uis})
+else()
+    qt6_wrap_ui(app_uis_moc ${app_uis})
+endif()
 
 set(app_resources
         Resources/ApplicationIcons.qrc
@@ -79,7 +87,7 @@ target_link_libraries (${PROJECT_NAME} PUBLIC
     Radium::Engine
     Radium::Gui
     Radium::IO
-    ${Qt5_LIBRARIES})
+    ${Qt_LIBRARIES})
 
 configure_radium_app(
     NAME ${PROJECT_NAME}
