@@ -223,11 +223,11 @@ void MainWindow::createConnections() {
     connect( this, &MainWindow::selectedItem, mainApp, &MainApplication::onSelectedItem );
 
     // Enable changing shaders
-    connect(
-        m_currentShaderBox,
-        static_cast<void ( QComboBox::* )( const QString& )>( &QComboBox::currentIndexChanged ),
-        this,
-        &MainWindow::changeRenderObjectShader );
+//    connect(
+//        m_currentShaderBox,
+//        static_cast<void ( QComboBox::* )( const QString& )>( &QComboBox::currentIndexChanged ),
+//        this,
+//        &MainWindow::changeRenderObjectShader );
 
     // RO Stuff
     connect( m_itemModel, &Gui::ItemModel::visibilityROChanged, this, &MainWindow::setROVisible );
@@ -239,16 +239,16 @@ void MainWindow::createConnections() {
     connect( m_showHideAllButton, &QPushButton::clicked, this, &MainWindow::showHideAllRO );
 
     // Renderer stuff
-    connect(
-        m_currentRendererCombo,
-        static_cast<void ( QComboBox::* )( const QString& )>( &QComboBox::currentIndexChanged ),
-        [=]( const QString& ) { this->onCurrentRenderChangedInUI(); } );
+//    connect(
+//        m_currentRendererCombo,
+//        static_cast<void ( QComboBox::* )( const QString& )>( &QComboBox::currentIndexChanged ),
+//        [=]( const QString& ) { this->onCurrentRenderChangedInUI(); } );
 
-    connect(
-        m_displayedTextureCombo,
-        static_cast<void ( QComboBox::* )( const QString& )>( &QComboBox::currentIndexChanged ),
-        m_viewer,
-        &Viewer::displayTexture );
+//    connect(
+//        m_displayedTextureCombo,
+//        static_cast<void ( QComboBox::* )( const QString& )>( &QComboBox::currentIndexChanged ),
+//        m_viewer,
+//        &Viewer::displayTexture );
 
     connect( m_enablePostProcess, &QCheckBox::stateChanged, m_viewer, &Viewer::enablePostProcess );
     connect(
