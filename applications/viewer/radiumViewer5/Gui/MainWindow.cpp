@@ -1,43 +1,12 @@
 #include <Gui/MainWindow.hpp>
 #include <MainApplication.hpp>
 
-//#include <Core/Asset/FileLoaderInterface.hpp>
-//#include <Engine/Data/Material.hpp>
-//#include <Engine/Data/MaterialConverters.hpp>
-//#include <Engine/Data/Mesh.hpp>
 #include <Engine/Rendering/ForwardRenderer.hpp>
 #include <Engine/Rendering/RenderObject.hpp>
 #include <Engine/Rendering/RenderObjectManager.hpp>
-//#include <Engine/Scene/CameraManager.hpp>
-//#include <Engine/Scene/Entity.hpp>
-//#include <Engine/Scene/EntityManager.hpp>
-//#include <Engine/Scene/SignalManager.hpp>
-//#include <Gui/SkeletonBasedAnimation/SkeletonBasedAnimationUI.hpp>
-//#include <Gui/Timeline/Timeline.hpp>
-//#include <Gui/TreeModel/EntityTreeModel.hpp>
-//#include <Gui/Utils/KeyMappingManager.hpp>
-//#include <Gui/Utils/qt_utils.hpp>
 #include <Gui/Viewer/FlightCameraManipulator.hpp>
-//#include <Gui/Viewer/Gizmo/GizmoManager.hpp>
 #include <Gui/Viewer/TrackballCameraManipulator.hpp>
 #include <Gui/Viewer/Viewer.hpp>
-//#include <IO/deprecated/OBJFileManager.hpp>
-//#include <PluginBase/RadiumPluginInterface.hpp>
-
-//#include <Core/Asset/Camera.hpp>
-//#include <Core/Utils/StringUtils.hpp>
-//#include <Engine/Scene/CameraComponent.hpp>
-//#include <Engine/Scene/SkeletonBasedAnimationSystem.hpp>
-//#include <Engine/Scene/SystemDisplay.hpp>
-
-//#include <QColorDialog>
-//#include <QComboBox>
-//#include <QFileDialog>
-//#include <QPushButton>
-//#include <QSettings>
-//#include <QToolButton>
-
-//using Ra::Engine::Scene::ItemEntry;
 
 namespace Ra {
 namespace Gui {
