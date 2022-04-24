@@ -2,11 +2,10 @@
 #define RADIUMENGINE_MAINWINDOW_HPP
 
 #include <Gui/MainWindowInterface.hpp>
-#include <Gui/MaterialEditor.hpp>
-#include <Gui/RaGui.hpp>
-#include <Gui/SelectionManager/SelectionManager.hpp>
-#include <Gui/TimerData/FrameTimerData.hpp>
-#include <Gui/TreeModel/EntityTreeModel.hpp>
+//#include <Gui/RaGui.hpp>
+//#include <Gui/SelectionManager/SelectionManager.hpp>
+//#include <Gui/TimerData/FrameTimerData.hpp>
+//#include <Gui/TreeModel/EntityTreeModel.hpp>
 
 #include "ui_MainWindow.h"
 #include <QMainWindow>
@@ -16,9 +15,6 @@
 
 namespace Ra {
 namespace Gui {
-class EntityTreeModel;
-class SkeletonBasedAnimationUI;
-class Timeline;
 class Viewer;
 } // namespace Gui
 } // namespace Ra
@@ -63,29 +59,19 @@ class MainWindow : public Ra::Gui::MainWindowInterface, private Ui::MainWindow
                       std::shared_ptr<Engine::Rendering::Renderer> e ) override;
 
   public slots:
-    /// Callback to rebuild the item model when the engine objects change.
-    void onItemAdded( const Engine::Scene::ItemEntry& ent );
-
-    void onItemRemoved( const Engine::Scene::ItemEntry& ent );
-
-    // Frame timers ui slots
-    void onUpdateFramestats( const std::vector<FrameTimerData>& stats );
-
-    // Selection tools
-    void onSelectionChanged( const QItemSelection& selected, const QItemSelection& deselected );
 
     // Gizmo buttons slots
-    void gizmoShowNone();
-    void gizmoShowTranslate();
-    void gizmoShowRotate();
-    void gizmoShowScale();
+//    void gizmoShowNone();
+//    void gizmoShowTranslate();
+//    void gizmoShowRotate();
+//    void gizmoShowScale();
 
     // Keymapping configuration tool
-    void reloadConfiguration();
-    void loadConfiguration();
+//    void reloadConfiguration();
+//    void loadConfiguration();
 
     /// Slot for the tree view checkboxes
-    void setROVisible( Core::Utils::Index roIndex, bool visible );
+//    void setROVisible( Core::Utils::Index roIndex, bool visible );
 
     /// Reset the camera to see all visible objects
     void fitCamera();
@@ -93,13 +79,13 @@ class MainWindow : public Ra::Gui::MainWindowInterface, private Ui::MainWindow
     void prepareDisplay() override;
 
     /// Slot for the "edit" button.
-    void editRO();
+//    void editRO();
 
     /// Cleanup resources.
     void cleanup() override;
 
     /// Show or hide all render objects
-    void showHideAllRO();
+//    void showHideAllRO();
 
   signals:
     /// Emitted when the frame loads
@@ -109,7 +95,7 @@ class MainWindow : public Ra::Gui::MainWindowInterface, private Ui::MainWindow
     void framescountForStatsChanged( int count );
 
     /// Emitted when a new item is selected. An invalid entry is sent when no item is selected.
-    void selectedItem( const Engine::Scene::ItemEntry& entry );
+//    void selectedItem( const Engine::Scene::ItemEntry& entry );
 
   private:
     /// Connect qt signals and slots. Called once by the constructor.
@@ -121,7 +107,7 @@ class MainWindow : public Ra::Gui::MainWindowInterface, private Ui::MainWindow
     virtual void closeEvent( QCloseEvent* event ) override;
 
     /// Update displayed texture according to the current renderer
-    void updateDisplayedTexture();
+//    void updateDisplayedTexture();
 
     /// Set the background color (updates viewer). If c is invalid, the color is fetch from
     /// QSettings.
@@ -129,24 +115,9 @@ class MainWindow : public Ra::Gui::MainWindowInterface, private Ui::MainWindow
 
     /// After loading a file, set the first camera loaded (if any) as the active camera.
     /// if multiple files are loaded, use the first camera of the first loaded file
-    void activateCamera( const std::string& sceneName );
+//    void activateCamera( const std::string& sceneName );
 
   private slots:
-    /// Slot for the "load file" menu.
-    void loadFile();
-
-    /// Slot for the "material editor"
-    void openMaterialEditor();
-
-    /// Slot for the user changing the current shader
-    void changeRenderObjectShader( const QString& shaderName );
-
-    /// Slot for the user changing the current renderer
-    void onCurrentRenderChangedInUI();
-
-    /// Slot for the picking results from the viewer.
-    void handlePicking( const Ra::Engine::Rendering::Renderer::PickingResult& pickingResult );
-
     // Slot to init renderers once gl is ready
     void onGLInitialized();
 
@@ -154,10 +125,10 @@ class MainWindow : public Ra::Gui::MainWindowInterface, private Ui::MainWindow
     void onRendererReady();
 
     /// Exports the mesh of the currently selected object to a file.
-    void exportCurrentMesh();
+//    void exportCurrentMesh();
 
     /// Remove the currently selected item (entity, component or ro)
-    void deleteCurrentItem();
+//    void deleteCurrentItem();
 
     /// Clears all entities and resets the camera.
     void resetScene();
@@ -166,7 +137,7 @@ class MainWindow : public Ra::Gui::MainWindowInterface, private Ui::MainWindow
     void toggleCirclePicking( bool on );
 
     /// set the current background color
-    void on_m_currentColorButton_clicked();
+//    void on_m_currentColorButton_clicked();
 
     /// activate trackball camera manipulator
     void activateTrackballManipulator();
@@ -176,60 +147,17 @@ class MainWindow : public Ra::Gui::MainWindowInterface, private Ui::MainWindow
 
     /// Allow to manage registered plugin paths
     /// @todo : for now, only add a new path ... make full management available
-    void addPluginPath();
+//    void addPluginPath();
     /// Remove all registered plugin directories
-    void clearPluginPaths();
+//    void clearPluginPaths();
 
   private slots:
     /// \name Time events
     /// \{
 
-    /// Slot for the user requesting to play/pause time through the time actions.
-    void on_actionPlay_triggered( bool checked );
-
-    /// Slot for the user requesting to step time.
-    void on_actionStep_triggered();
-
-    /// Slot for the user requesting to reset time.
-    void on_actionStop_triggered();
-
-    /// Slot for the user requesting to play/pause time through the timeline.
-    void timelinePlay( bool play );
-
-    /// Slot for the user requesting to change the current time through the timeline.
-    void timelineGoTo( double t );
-
-    /// Slot for the user requesting to change the start time through the timeline.
-    void timelineStartChanged( double t );
-
-    /// Slot for the user requesting to change the end time through the timeline.
-    void timelineEndChanged( double t );
-
-    /// Slot for the user requesting to change the time play mode through the timeline.
-    void timelineSetPingPong( bool status );
-    /// \}
-
   private:
-    /// Stores the internal model of engine objects for selection and visibility.
-    Gui::ItemModel* m_itemModel {nullptr};
-
-    /// Stores and manages the current selection.
-    Gui::SelectionManager* m_selectionManager {nullptr};
-
-    /// Widget to allow material edition.
-    std::unique_ptr<MaterialEditor> m_materialEditor {nullptr};
-
     /// Viewer widget
     Ra::Gui::Viewer* m_viewer {nullptr};
-
-    /// Skeleton-based animation gui
-    Ra::Gui::SkeletonBasedAnimationUI* m_skelAnim {nullptr};
-
-    /// Timeline gui
-    Ra::Gui::Timeline* m_timeline {nullptr};
-
-    /// Guard TimeSystem against issue with Timeline signals.
-    bool m_lockTimeSystem {false};
 
     /// Observers id for engine event
     ///@{

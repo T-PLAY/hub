@@ -31,31 +31,9 @@ set( Qt_LIBRARIES Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Widgets Qt$
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
-set(app_sources
-        main.cpp
-        MainApplication.cpp
-        Gui/ColorWidget.cpp
-        Gui/MainWindow.cpp
-        Gui/MaterialEditor.cpp
-        Gui/TransformEditorWidget.cpp
-    )
-
-set(app_headers
-        MainApplication.hpp
-        Gui/ColorWidget.hpp
-        Gui/MainWindow.hpp
-        Gui/MaterialEditor.hpp
-        Gui/RotationEditor.hpp
-        Gui/TransformEditorWidget.hpp
-        Gui/VectorEditor.hpp
-   )
-
-set(app_uis
-        Gui/ui/MainWindow.ui
-        Gui/ui/MaterialEditor.ui
-        Gui/ui/RotationEditor.ui
-        Gui/ui/VectorEditor.ui
-   )
+file(GLOB_RECURSE app_sources *.cpp)
+file(GLOB_RECURSE app_uis *.ui)
+file(GLOB_RECURSE app_headers *.h *.hpp)
 
 if (${QT_VERSION_MAJOR} EQUAL 5)
     qt5_wrap_ui(app_uis_moc ${app_uis})
@@ -63,9 +41,9 @@ else()
     qt6_wrap_ui(app_uis_moc ${app_uis})
 endif()
 
-set(app_resources
-        Resources/ApplicationIcons.qrc
-   )
+#set(app_resources
+#        Resources/ApplicationIcons.qrc
+#   )
 
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -79,7 +57,7 @@ add_executable(
     ${app_headers}
     ${app_inlines}
     ${app_uis_moc}
-    ${app_resources}
+#    ${app_resources}
     )
 
 target_link_libraries (${PROJECT_NAME} PUBLIC
