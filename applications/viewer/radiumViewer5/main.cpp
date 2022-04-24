@@ -4,6 +4,8 @@
 
 #include <Gui/MainWindow.hpp>
 
+//#include <Gui/BaseApplication.hpp>
+
 class MainWindowFactory : public Ra::Gui::BaseApplication::WindowFactory
 {
   public:
@@ -15,7 +17,8 @@ class MainWindowFactory : public Ra::Gui::BaseApplication::WindowFactory
 
 int main( int argc, char** argv ) {
     Ra::MainApplication app( argc, argv );
+//    Ra::Gui::BaseApplication app (argc, argv);
     app.initialize( MainWindowFactory() );
-    app.setContinuousUpdate( false );
+//    app.setContinuousUpdate( false );
     return app.exec();
 }
