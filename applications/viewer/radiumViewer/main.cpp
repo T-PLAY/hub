@@ -72,17 +72,8 @@ int main(int argc, char* argv[])
     // quad texture
     {
         //! [Creating the quad]
-        auto quad = Ra::Core::Geometry::makeZNormalQuad({ 1_ra, 1_ra });
+        auto quad = Ra::Core::Geometry::makeZNormalQuad({ 1_ra, 1_ra }, {}, true);
         //! [Creating the quad]
-        // [Add missing texture coordonates for to the quad]
-        Ra::Core::Vector3Array tex_coords;
-        tex_coords.push_back({ 0_ra, 0_ra, 0_ra });
-        tex_coords.push_back({ 1_ra, 0_ra, 0_ra });
-        tex_coords.push_back({ 0_ra, 1_ra, 0_ra });
-        tex_coords.push_back({ 1_ra, 1_ra, 0_ra });
-        quad.addAttrib(Ra::Engine::Data::Mesh::getAttribName(Ra::Engine::Data::Mesh::VERTEX_TEXCOORD), tex_coords);
-
-        // [Add missing texture coordonates for to the quad]
 
         //! [Creating a texture for the quad]
         unsigned char data[192 * 512];
