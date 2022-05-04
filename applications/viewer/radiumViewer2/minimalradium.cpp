@@ -238,13 +238,13 @@ void MinimalComponent::initialize()
 
     // scan plane
     {
-        auto quadTriangle = Ra::Core::Geometry::makeZNormalQuad({ 1_ra, 1_ra });
-        Ra::Core::Vector3Array tex_coords;
-        tex_coords.push_back({ 0_ra, 0_ra, 0_ra });
-        tex_coords.push_back({ 1_ra, 0_ra, 0_ra });
-        tex_coords.push_back({ 0_ra, 1_ra, 0_ra });
-        tex_coords.push_back({ 1_ra, 1_ra, 0_ra });
-        quadTriangle.addAttrib(Ra::Engine::Data::Mesh::getAttribName(Ra::Engine::Data::Mesh::VERTEX_TEXCOORD), tex_coords);
+        auto quadTriangle = Ra::Core::Geometry::makeZNormalQuad({ 1_ra, 1_ra }, {}, true);
+//        Ra::Core::Vector3Array tex_coords;
+//        tex_coords.push_back({ 0_ra, 0_ra, 0_ra });
+//        tex_coords.push_back({ 1_ra, 0_ra, 0_ra });
+//        tex_coords.push_back({ 0_ra, 1_ra, 0_ra });
+//        tex_coords.push_back({ 1_ra, 1_ra, 0_ra });
+//        quadTriangle.addAttrib(Ra::Engine::Data::Mesh::getAttribName(Ra::Engine::Data::Mesh::VERTEX_TEXCOORD), tex_coords);
 
         //! [Creating a texture for the slice]
         //        unsigned char data[192 * 512];
