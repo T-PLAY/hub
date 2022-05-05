@@ -27,6 +27,7 @@
 #include <fstream>
 
 #include <Engine/Scene/CameraManager.hpp>
+#include <Core/Geometry/StandardAttribNames.hpp>
 
 #define SENSOR
 
@@ -72,7 +73,14 @@ int main(int argc, char* argv[])
     // quad texture
     {
         //! [Creating the quad]
-        auto quad = Ra::Core::Geometry::makeZNormalQuad({ 1_ra, 1_ra }, {}, true);
+        auto quad = Ra::Core::Geometry::makeZNormalQuad({ 1_ra, 1_ra });
+        Ra::Core::Vector3Array tex_coords;
+        tex_coords.push_back({ 0_ra, 0_ra, 0_ra });
+        tex_coords.push_back({ 1_ra, 0_ra, 0_ra });
+        tex_coords.push_back({ 0_ra, 1_ra, 0_ra });
+        tex_coords.push_back({ 1_ra, 1_ra, 0_ra });
+        quad.addAttrib(Ra::Core::Geometry::getAttribName(Ra::Core::Geometry::VERTEX_TEXCOORD), tex_coords);
+
         //! [Creating the quad]
 
         //! [Creating a texture for the quad]
@@ -88,6 +96,7 @@ int main(int argc, char* argv[])
                 }
             }
         }
+
         auto& textureParameters = app.m_engine->getTextureManager()->addTexture("myTexture", 512, 192, data);
         textureParameters.format = gl::GLenum::GL_RED;
         textureParameters.internalFormat = gl::GLenum::GL_R8;
@@ -178,7 +187,8 @@ int main(int argc, char* argv[])
 
     try {
         if (scanStream != nullptr) {
-            posStream = new InputStream("Polhemus Patriot (probe)", "ULA-OP 256");
+//            posStream = new InputStream("Polhemus Patriot (probe)", "ULA-OP 256");
+            posStream = new InputStream("Polhemus Patriot (probe)");
         } else {
             posStream = new InputStream("Polhemus Patriot (probe)");
         }

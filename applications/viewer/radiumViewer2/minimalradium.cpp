@@ -325,7 +325,8 @@ MinimalSystem::MinimalSystem(MinimalApp* app)
 
     try {
         if (scanStream != nullptr) {
-            posStream = new InputStream("Polhemus Patriot (probe)", "ULA-OP 256");
+//            posStream = new InputStream("Polhemus Patriot (probe)", "ULA-OP 256");
+            posStream = new InputStream("Polhemus Patriot (probe)");
         } else {
             posStream = new InputStream("Polhemus Patriot (probe)");
         }
@@ -352,7 +353,8 @@ void MinimalSystem::generateTasks(Ra::Core::TaskQueue*, const Ra::Engine::FrameI
     assert(g_scan != nullptr);
     //    g_scan->setLocalTransform(Transform { Translation(Vector3(2_ra, 2_ra, 2_ra)) });
     // update position and orientation
-    if (posStream != nullptr) {
+//    if (posStream != nullptr) {
+        if (false) {
         Stream::Acquisition posAcq;
         *posStream >> posAcq;
         float* translation = (float*)posAcq.mData;
@@ -423,10 +425,10 @@ void MinimalSystem::generateTasks(Ra::Core::TaskQueue*, const Ra::Engine::FrameI
             unsigned char* data = scanAcq.mData;
             Ra::Engine::Data::TextureParameters textureParameters;
             textureParameters.name = "myTexture";
+            m_app->m_viewer->makeCurrent();
             auto texture = m_app->m_engine->getTextureManager()->getOrLoadTexture(textureParameters);
             auto& params = texture->getParameters();
             memcpy(params.texels, data, 192 * 512);
-            m_app->m_viewer->makeCurrent();
             texture->initializeGL(false);
             m_app->m_viewer->doneCurrent();
         }
