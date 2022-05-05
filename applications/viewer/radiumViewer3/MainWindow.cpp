@@ -39,6 +39,8 @@
 #include <QLayout>
 
 #include <stream.h>
+//#include "MinimalComponent.hpp"
+//#include "MinimalSystem.hpp"
 
 using namespace Ra;
 using namespace Ra::Core;
@@ -130,6 +132,14 @@ MainWindow::MainWindow( QWidget* parent ) : QMainWindow( parent ), ui( new Ui::M
     // Create one system
     //    MinimalSystem* sys = new MinimalSystem;
     //    app.m_engine->registerSystem( "Minimal system", sys );
+      auto* sys = m_engine->getSystem("GeometrySystem");;
+
+    // Create and initialize entity and component
+//    Ra::Engine::Scene::Entity* e = m_engine->getEntityManager()->createEntity( "Cube" );
+//    MinimalComponent* c          = new MinimalComponent( e, *m_engine );
+//    sys->addComponent( e, c );
+//    c->initialize();
+
 
     // prepare the viewer to render the scene (i.e. build RenderTechniques for the active renderer)
     m_viewer->prepareDisplay();
@@ -206,7 +216,7 @@ void MainWindow::onGLInitialized() {
     std::shared_ptr<Ra::Engine::Rendering::Renderer> e(
         new Ra::Engine::Rendering::ForwardRenderer() );
     m_viewer->addRenderer( e );
-    initScene();
+//    initScene();
     connect( m_frame_timer, &QTimer::timeout, this, &MainWindow::frame );
 }
 
