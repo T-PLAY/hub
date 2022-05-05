@@ -12,5 +12,6 @@ if (BUILD_RADIUM_EXAMPLE)
     add_subdirectory(radiumViewer3)
 #    add_subdirectory(radiumViewer4)
     add_subdirectory(radiumViewer5)
+    add_subdirectory(radiumViewer6)
 endif()
 
