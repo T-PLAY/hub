@@ -1,23 +1,32 @@
 #include "MainWindow.h"
 #include "./ui_MainWindow.h"
 
-#include <cassert>
 #include <Engine/Scene/EntityManager.hpp>
 #include <Gui/Viewer/RotateAroundCameraManipulator.hpp>
+#include <cassert>
+#include <Engine/Rendering/ForwardRenderer.hpp>
 
-#include <QOpenGLContext>
-#include <MinimalSystem.hpp>
 #include <MinimalComponent.hpp>
+#include <MinimalSystem.hpp>
+#include <QOpenGLContext>
+
+#include <QEvent>
+
 
 MainWindow::MainWindow( QWidget* parent ) : QMainWindow( parent ), ui( new Ui::MainWindow ) {
     ui->setupUi( this );
 
     // Create app and show viewer window
-    m_app = new MinimalApp;
-    auto & app = *m_app;
+    m_app     = new MinimalApp;
+    auto& app = *m_app;
 
-    app.m_viewer->show();
-    app.m_viewer->resize( { 500, 500 } );
+    QWidget * viewerWidget = QWidget::createWindowContainer(app.m_viewer.get());
+//    viewerWidget->setAutoFillBackground(false);
+    ui->horizontalLayout->addWidget(viewerWidget);
+    this->show();
+
+//    app.m_viewer->show();
+//    app.m_viewer->resize( { 500, 500 } );
     CORE_ASSERT( app.m_viewer->getContext()->isValid(), "OpenGL was not initialized" );
     // process all events so that everithing is initialized
     QApplication::processEvents();
@@ -28,12 +37,15 @@ MainWindow::MainWindow( QWidget* parent ) : QMainWindow( parent ), ui( new Ui::M
 
     // Create and initialize entity and component
     Ra::Engine::Scene::Entity* e = app.m_engine->getEntityManager()->createEntity( "Cube" );
-    MinimalComponent* c          = new MinimalComponent( e, *app.m_engine );
-    sys->addComponent( e, c );
-    c->initialize();
+    m_comp                       = new MinimalComponent( e, *app.m_engine );
+    sys->addComponent( e, m_comp );
+    m_comp->initialize();
 
     // prepare the viewer to render the scene (i.e. build RenderTechniques for the active renderer)
     app.m_viewer->prepareDisplay();
+
+    m_comp->updateShader();
+
     auto keyMappingManager = Ra::Gui::KeyMappingManager::getInstance();
     // Add default manipulator listener
     keyMappingManager->addListener(
@@ -46,5 +58,6 @@ MainWindow::MainWindow( QWidget* parent ) : QMainWindow( parent ), ui( new Ui::M
 }
 
 MainWindow::~MainWindow() {
+    delete m_app;
 }
 
