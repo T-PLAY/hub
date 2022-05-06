@@ -2,39 +2,38 @@
 #include "MinimalComponent.hpp"
 
 #include <Core/Asset/BlinnPhongMaterialData.hpp>
-#include <Core/Asset/FileData.hpp>
-#include <Core/Containers/MakeShared.hpp>
-#include <Core/Geometry/MeshPrimitives.hpp>
-#include <Core/Geometry/TopologicalMesh.hpp>
-#include <Core/Resources/Resources.hpp>
-#include <Core/Tasks/Task.hpp>
-#include <Core/Tasks/TaskQueue.hpp>
-#include <Core/Utils/Timer.hpp>
+//#include <Core/Asset/FileData.hpp>
+//#include <Core/Containers/MakeShared.hpp>
+//#include <Core/Geometry/MeshPrimitives.hpp>
+//#include <Core/Geometry/TopologicalMesh.hpp>
+//#include <Core/Resources/Resources.hpp>
+//#include <Core/Tasks/Task.hpp>
+//#include <Core/Tasks/TaskQueue.hpp>
+//#include <Core/Utils/Timer.hpp>
 
-#include <Engine/Data/BlinnPhongMaterial.hpp>
+//#include <Engine/Data/BlinnPhongMaterial.hpp>
 #include <Engine/Data/LambertianMaterial.hpp>
-#include <Engine/Data/Mesh.hpp>
+//#include <Engine/Data/Mesh.hpp>
 #include <Engine/Data/PlainMaterial.hpp>
-#include <Engine/FrameInfo.hpp>
-#include <Engine/Rendering/RenderObject.hpp>
-#include <Engine/Rendering/RenderObjectManager.hpp>
-#include <Engine/Scene/GeometryComponent.hpp>
+//#include <Engine/FrameInfo.hpp>
+//#include <Engine/Rendering/RenderObject.hpp>
+//#include <Engine/Rendering/RenderObjectManager.hpp>
+//#include <Engine/Scene/GeometryComponent.hpp>
 
 #include <Engine/Data/TextureManager.hpp>
-#include <Engine/Scene/EntityManager.hpp>
+//#include <Engine/Scene/EntityManager.hpp>
 #include <Engine/Scene/GeometryComponent.hpp>
 #include <Engine/Scene/GeometrySystem.hpp>
 
-#include <Gui/BaseApplication.hpp>
-#include <Gui/Viewer/Viewer.hpp>
+//#include <Gui/BaseApplication.hpp>
+//#include <Gui/Viewer/Viewer.hpp>
 
 #ifdef IO_USE_ASSIMP
 #    include <IO/AssimpLoader/AssimpFileLoader.hpp>
 #endif
 
 #include <random>
-
-#include <stream.h>
+//#include <stream.h>
 
 const char* vertexShaderFile   = PROJECT_DIR "applications/viewer/radiumViewer/vertexShader.glsl";
 const char* fragmentShaderFile = PROJECT_DIR "applications/viewer/radiumViewer/fragmentShader.glsl";
@@ -291,7 +290,7 @@ void MinimalComponent::updateProbe(Ra::Core::Vector3 pos, Ra::Core::Quaternion o
         m_scan->setLocalTransform(TRadium * TWorld * TOrientation * TLocal);
 }
 
-InputStream* scanStream = nullptr;
-InputStream* posStream  = nullptr;
+//InputStream* scanStream = nullptr;
+//InputStream* posStream  = nullptr;
 
 //#define ONLY_POSE
