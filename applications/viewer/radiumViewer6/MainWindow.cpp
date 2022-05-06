@@ -3,14 +3,15 @@
 
 #include <Engine/Scene/EntityManager.hpp>
 #include <Gui/Viewer/RotateAroundCameraManipulator.hpp>
-#include <cassert>
-#include <Engine/Rendering/ForwardRenderer.hpp>
+//#include <cassert>
+//#include <Engine/Rendering/ForwardRenderer.hpp>
 
 #include <MinimalComponent.hpp>
 #include <MinimalSystem.hpp>
 #include <QOpenGLContext>
 
-#include <QEvent>
+
+//#include <QEvent>
 
 
 MainWindow::MainWindow( QWidget* parent ) : QMainWindow( parent ), ui( new Ui::MainWindow ) {
@@ -62,9 +63,13 @@ MainWindow::MainWindow( QWidget* parent ) : QMainWindow( parent ), ui( new Ui::M
 
 
     ui->stackedWidget->setCurrentIndex(currentIndex);
+
+
+    m_sensorViews = new SensorViews(*ui->verticalLayout_sensors, *ui->mdiArea_sensors);
 }
 
 MainWindow::~MainWindow() {
+    delete m_sensorViews;
     delete m_app;
 }
 

@@ -5,6 +5,8 @@
 #include <MinimalComponent.hpp>
 #include <QMainWindow>
 
+#include <SensorViews.h>
+
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
@@ -32,5 +34,8 @@ private:
 
     MinimalApp* m_app        = nullptr;
     MinimalComponent* m_comp = nullptr;
+
+    SensorViews * m_sensorViews = nullptr;
+
 };
 #endif // MAINWINDOW_H

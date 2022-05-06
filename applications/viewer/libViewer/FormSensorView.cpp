@@ -1,5 +1,5 @@
-#include "formsensorview.h"
-#include "ui_formsensorview.h"
+#include "FormSensorView.h"
+#include "ui_FormSensorView.h"
 
 FormSensorView::FormSensorView(QWidget* parent, std::string sensorName, std::string format, std::string dims, std::string size, std::string metaData)
     : QWidget(parent)
