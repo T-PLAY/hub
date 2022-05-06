@@ -23,8 +23,11 @@ MainWindow::MainWindow( QWidget* parent ) : QMainWindow( parent ), ui( new Ui::M
     QWidget * viewerWidget = QWidget::createWindowContainer(app.m_viewer.get());
 //    viewerWidget->setAutoFillBackground(false);
 //    ui->verticalLayout->addWidget(viewerWidget);
-    ui->page3D->layout()->addWidget(viewerWidget);
-
+//    ui->stackedWidget->update();
+    ui->stackedWidget->setCurrentIndex(1);
+//    ui->page3D->layout()->addWidget(viewerWidget);
+    ui->layoutRadium->addWidget(viewerWidget);
+//    ui->page3D->show();
     this->show();
 
 //    app.m_viewer->show();
@@ -63,3 +66,19 @@ MainWindow::~MainWindow() {
     delete m_app;
 }
 
+
+void MainWindow::on_action2D_triggered()
+{
+//    ui->page3D->hide();
+//    ui->page2D->show();
+//    ui->page2D->update();
+    ui->stackedWidget->setCurrentIndex(0);
+}
+
+void MainWindow::on_action3D_triggered()
+{
+    ui->stackedWidget->setCurrentIndex(1);
+//    ui->page2D->hide();
+//    ui->page3D->show();
+//    ui->stackedWidget->update();
+}
