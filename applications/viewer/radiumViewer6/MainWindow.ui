@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>794</width>
-    <height>622</height>
+    <width>918</width>
+    <height>680</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -21,6 +21,9 @@
     </sizepolicy>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
+    <property name="bottomMargin">
+     <number>9</number>
+    </property>
     <item>
      <widget class="QSplitter" name="splitter">
       <property name="sizePolicy">
@@ -58,7 +61,7 @@
         </size>
        </property>
        <property name="currentIndex">
-        <number>1</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="tabServer">
         <attribute name="title">
@@ -104,7 +107,7 @@
         </sizepolicy>
        </property>
        <property name="currentIndex">
-        <number>0</number>
+        <number>1</number>
        </property>
        <widget class="QWidget" name="page2D">
         <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -121,19 +124,14 @@
         </layout>
        </widget>
        <widget class="QWidget" name="page3D">
-        <layout class="QVBoxLayout" name="verticalLayout_5">
-         <item>
-          <layout class="QVBoxLayout" name="layoutRadium"/>
-         </item>
-        </layout>
+        <layout class="QVBoxLayout" name="verticalLayout_5"/>
        </widget>
       </widget>
      </widget>
     </item>
    </layout>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
-  <widget class="QToolBar" name="toolBar">
+  <widget class="QToolBar" name="toolBar_topLeft">
    <property name="minimumSize">
     <size>
      <width>0</width>
@@ -157,7 +155,7 @@
    </attribute>
    <addaction name="actionAdd_Source"/>
   </widget>
-  <widget class="QToolBar" name="toolBar_2">
+  <widget class="QToolBar" name="toolBar_topRight">
    <property name="windowTitle">
     <string>toolBar_2</string>
    </property>
