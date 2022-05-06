@@ -22,7 +22,9 @@ MainWindow::MainWindow( QWidget* parent ) : QMainWindow( parent ), ui( new Ui::M
 
     QWidget * viewerWidget = QWidget::createWindowContainer(app.m_viewer.get());
 //    viewerWidget->setAutoFillBackground(false);
-    ui->horizontalLayout->addWidget(viewerWidget);
+//    ui->verticalLayout->addWidget(viewerWidget);
+    ui->page3D->layout()->addWidget(viewerWidget);
+
     this->show();
 
 //    app.m_viewer->show();
