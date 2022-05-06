@@ -24,10 +24,9 @@ MainWindow::MainWindow( QWidget* parent ) : QMainWindow( parent ), ui( new Ui::M
 //    viewerWidget->setAutoFillBackground(false);
 //    ui->verticalLayout->addWidget(viewerWidget);
 //    ui->stackedWidget->update();
+    const int currentIndex = ui->stackedWidget->currentIndex();
     ui->stackedWidget->setCurrentIndex(1);
-//    ui->page3D->layout()->addWidget(viewerWidget);
-    ui->layoutRadium->addWidget(viewerWidget);
-//    ui->page3D->show();
+    ui->page3D->layout()->addWidget(viewerWidget);
     this->show();
 
 //    app.m_viewer->show();
@@ -60,6 +59,9 @@ MainWindow::MainWindow( QWidget* parent ) : QMainWindow( parent ), ui( new Ui::M
     app.m_frame_timer->start();
     app.m_viewer->setCameraManipulator( new Ra::Gui::RotateAroundCameraManipulator(
         *( app.m_viewer->getCameraManipulator() ), app.m_viewer.get() ) );
+
+
+    ui->stackedWidget->setCurrentIndex(currentIndex);
 }
 
 MainWindow::~MainWindow() {
