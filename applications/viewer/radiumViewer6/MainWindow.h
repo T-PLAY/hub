@@ -22,7 +22,12 @@ class MainWindow : public QMainWindow
   public slots:
 
   public:
-  private:
+private slots:
+    void on_action2D_triggered();
+
+    void on_action3D_triggered();
+
+private:
     Ui::MainWindow* ui;
 
     MinimalApp* m_app        = nullptr;
