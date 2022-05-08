@@ -9,6 +9,8 @@
 #include <QMdiArea>
 #include <QVBoxLayout>
 #include <map>
+#include <stream.h>
+#include <SensorView.h>
 
 class Thread_Client : public QThread
 {
@@ -18,12 +20,12 @@ class Thread_Client : public QThread
     explicit Thread_Client( QObject* parent = 0 );
 
   signals:
-    void addSensorSignal( std::string streamerSensorName,
+    void addSensorSignal( std::string sensorName,
                           std::string format,
                           std::string dims,
                           std::string size,
                           std::string metaData );
-    void delSensorSignal( std::string streamerSensorName );
+    void delSensorSignal( std::string sensorName );
 
   public:
     // overriding the QThread's run() method
@@ -31,6 +33,7 @@ class Thread_Client : public QThread
 
   private:
 };
+
 
 class SensorViews : public QObject
 {
@@ -42,22 +45,22 @@ class SensorViews : public QObject
   signals:
 
   public slots:
-    void addSensor( std::string streamerSensorName,
+    void addSensor( std::string sensorName,
                     std::string format,
                     std::string dims,
                     std::string size,
                     std::string metaData );
-    void delSensor( std::string streamerSensorName );
+    void delSensor( std::string sensorName );
 
-    void addStreamView( std::string streamerSensorName );
-    void delStreamView( std::string streamerSensorName );
-
-    void onCloseStreamView( std::string streamerSensorName );
 
   private:
+    friend class Thread_Client;
     Thread_Client mThreadClient;
-    std::map<std::string, MainWindowStreamView*> mStreamViews;
-    std::map<std::string, FormSensorView*> mSensorViews;
+
+//    Thread_InputStream mThread;
+//    std::map<std::string, SensorView*> m_sensorViews;
+//    std::map<std::string, MainWindowStreamView*> mStreamViews;
+    std::map<std::string, FormSensorView*> m_sensorViews;
 
     QVBoxLayout & m_vBoxLayout;
     QMdiArea & m_mdiArea;

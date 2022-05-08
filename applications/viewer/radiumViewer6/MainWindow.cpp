@@ -27,7 +27,10 @@ MainWindow::MainWindow( QWidget* parent ) : QMainWindow( parent ), ui( new Ui::M
 //    ui->stackedWidget->update();
     const int currentIndex = ui->stackedWidget->currentIndex();
     ui->stackedWidget->setCurrentIndex(1);
-    ui->page3D->layout()->addWidget(viewerWidget);
+//    ui->page3D->layout()->addWidget(viewerWidget);
+    ui->verticalLayout_3dView->removeWidget(ui->frame);
+    delete ui->frame;
+    ui->verticalLayout_3dView->addWidget(viewerWidget);
     this->show();
 
 //    app.m_viewer->show();
