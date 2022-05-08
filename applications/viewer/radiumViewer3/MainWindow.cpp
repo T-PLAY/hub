@@ -437,7 +437,11 @@ void MainWindow::initScene() {
     //    if (false)
     {
         //! [Creating the quad]
+#ifdef USE_GOT_PR
         auto quad = Ra::Core::Geometry::makeZNormalQuad( { 1_ra, 1_ra }, {}, true );
+#else
+        auto quad = Ra::Core::Geometry::makeZNormalQuad( { 1_ra, 1_ra }, {} );
+#endif
         //! [Creating the quad]
         // [Add missing texture coordonates for to the quad]
         //        Ra::Core::Vector3Array tex_coords;

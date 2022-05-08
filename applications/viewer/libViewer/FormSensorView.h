@@ -15,7 +15,7 @@ class Thread_InputStream : public QThread
     ~Thread_InputStream();
 
   signals:
-    void newImage();
+    void newAcquisition();
 
   public:
     // overriding the QThread's run() method
@@ -46,14 +46,22 @@ public:
 signals:
 //    void addViewStreamSignal(std::string streamerSensorName);
 //    void delViewStreamSignal(std::string streamerSensorName);
+    void newAcquisition();
+    void streamingStarted(std::string sensorName);
+    void streamingStopped(std::string sensorName);
 
 private slots:
     void on_radioButtonOnOff_clicked(bool checked);
-    void startStreaming();
-    void stopStreaming();
-    void onCloseStreamView();
+    void on_startStreaming();
+    void on_stopStreaming();
+    void on_closeStreamView();
 
-    void newImage();
+    void on_newAcquisition();
+
+public:
+    const InputStream & getInputStream() const;
+
+    const Thread_InputStream *getInputStreamThread() const;
 
 private:
     Ui::FormSensorView* ui;

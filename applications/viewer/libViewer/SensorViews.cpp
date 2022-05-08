@@ -135,6 +135,11 @@ void SensorViews::addSensor( std::string sensorName,
 //        sensorView, &FormSensorView::addViewStreamSignal, this, &SensorViews::addStreamView );
 //    QObject::connect(
 //            sensorView, &FormSensorView::delViewStreamSignal, this, &SensorViews::delStreamView );
+//    emit sensorAdded(sensorName);
+    QObject::connect(
+        sensorView, &FormSensorView::streamingStarted, this, &SensorViews::streamingStarted );
+    QObject::connect(
+        sensorView, &FormSensorView::streamingStopped, this, &SensorViews::streamingStopped );
 }
 
 void SensorViews::delSensor( std::string sensorName ) {
@@ -155,4 +160,12 @@ void SensorViews::delSensor( std::string sensorName ) {
 
     std::cout << "[SensorViews] SensorViews::delSensor end '" << sensorName << "'"
               << std::endl;
+
+//    emit sensorDeleted(sensorName);
+}
+
+const FormSensorView &SensorViews::getSensorView(const std::string &sensorName) const
+{
+    assert(m_sensorViews.find(sensorName) != m_sensorViews.end());
+    return *m_sensorViews.at(sensorName);
 }

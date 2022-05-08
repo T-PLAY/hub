@@ -26,8 +26,19 @@ class MainWindow : public QMainWindow
   public:
 private slots:
     void on_action2D_triggered();
-
     void on_action3D_triggered();
+
+//    void on_newSensor(std::string sensorName);
+//    void on_delSensor(std::string sensorName);
+
+    void on_startStreaming(std::string sensorName);
+    void on_stopStreaming(std::string sensorName);
+
+    void on_comboBox_scan_currentTextChanged(const QString &sensorName);
+    void on_comboBox_pose_currentTextChanged(const QString &sensorName);
+
+    void on_newScanAcquisition();
+    void on_newPoseAcquisition();
 
 private:
     Ui::MainWindow* ui;
@@ -36,6 +47,11 @@ private:
     MinimalComponent* m_comp = nullptr;
 
     SensorViews * m_sensorViews = nullptr;
+
+    const Thread_InputStream * m_threadInputStreamScan = nullptr;
+    std::string m_activeStreamScan = "";
+    const Thread_InputStream * m_threadInputStreamPose = nullptr;
+    std::string m_activeStreamPose = "";
 
 };
 #endif // MAINWINDOW_H

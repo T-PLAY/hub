@@ -27,7 +27,10 @@
 #include <fstream>
 
 #include <Engine/Scene/CameraManager.hpp>
+
+#ifdef USE_GOT_PR
 #include <Core/Geometry/StandardAttribNames.hpp>
+#endif
 
 #define SENSOR
 
@@ -79,7 +82,13 @@ int main(int argc, char* argv[])
         tex_coords.push_back({ 1_ra, 0_ra, 0_ra });
         tex_coords.push_back({ 0_ra, 1_ra, 0_ra });
         tex_coords.push_back({ 1_ra, 1_ra, 0_ra });
+#ifdef USE_GOT_PR
         quad.addAttrib(Ra::Core::Geometry::getAttribName(Ra::Core::Geometry::VERTEX_TEXCOORD), tex_coords);
+#else
+//        quad.addAttrib("in_texCoords", tex_coords);
+                quad.addAttrib(Ra::Engine::Data::Mesh::getAttribName(Ra::Engine::Data::Mesh::VERTEX_TEXCOORD),
+                tex_coords);
+#endif
 
         //! [Creating the quad]
 

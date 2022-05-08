@@ -28,7 +28,7 @@ MainWindowStreamView::MainWindowStreamView( const InputStream& inputStream, QWid
     if ( dim == 1 ) {
         ui->centralwidget = new WidgetStreamView1D( this );
 
-        ui->centralwidget->setMinimumSize( 350, 30 );
+        ui->centralwidget->setMinimumSize( 350, 35 );
     }
     else if ( dim == 2 ) {
 
