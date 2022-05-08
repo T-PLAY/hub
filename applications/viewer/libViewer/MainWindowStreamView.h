@@ -2,30 +2,9 @@
 #define MAINWINDOWSTREAMVIEW_H
 
 #include <QMainWindow>
-#include <QThread>
-#include <chrono>
+//#include <QThread>
+//#include <chrono>
 #include <stream.h>
-
-class Thread_InputStream : public QThread {
-    Q_OBJECT
-public:
-    // constructor
-    explicit Thread_InputStream(QObject* parent = 0, std::string sensorName = "");
-    ~Thread_InputStream();
-
-signals:
-    void newImage();
-
-public:
-    // overriding the QThread's run() method
-    void run();
-
-    Stream::Acquisition mAcq;
-
-    InputStream mInputStream;
-
-private:
-};
 
 /////////////////////////////////////////////////////////////////////////////
 
@@ -37,26 +16,25 @@ class MainWindowStreamView : public QMainWindow {
     Q_OBJECT
 
 public:
-    explicit MainWindowStreamView(QWidget* parent = nullptr, std::string sensorName = "");
+    MainWindowStreamView(const InputStream & inputStream, QWidget* parent = nullptr);
     ~MainWindowStreamView();
 
-    std::string getStreamerSensorName() const;
+//    std::string getStreamerSensorName() const;
+
+    void setData(unsigned char* img_ptr, std::vector<int> dims, Stream::Format format);
 
 signals:
-    void onCloseStreamViewSignal(std::string streamerSensorName);
+    void onCloseStreamViewSignal();
 
 public slots:
-    void newImage();
 
 private:
     Ui::MainWindowStreamView* ui;
 
-    Thread_InputStream mThread;
+//    Thread_InputStream mThread;
+    const InputStream & m_inputStream;
 
-    int mCounterFps = 0;
-    double mFps = 5.0;
-    std::chrono::time_point<std::chrono::high_resolution_clock> mStartFps;
-    std::string mSensorName;
+//    std::string mSensorName;
 };
 
 #endif // MAINWINDOWSTREAMVIEW_H
