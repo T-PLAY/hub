@@ -80,7 +80,7 @@ WidgetStreamView1D::WidgetStreamView1D(QWidget* parent)
 {
     mLabel = new QLabel(this);
 
-    mLabel->setMinimumSize(350, 30);
+    mLabel->setMinimumSize(350, 35);
 }
 
 WidgetStreamView1D::~WidgetStreamView1D()

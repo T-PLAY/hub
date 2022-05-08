@@ -25,7 +25,7 @@ void Thread_InputStream::run() {
             mInputStream >> mAcq;
             // std::cout << "receive acq : " << mAcq << std::endl;
 
-            emit newImage();
+            emit newAcquisition();
         }
     }
     catch ( std::exception& e ) {
@@ -72,6 +72,15 @@ FormSensorView::FormSensorView( std::string sensorName,
 }
 
 FormSensorView::~FormSensorView() {
+    on_stopStreaming();
+//    if (m_inputStreamThread != nullptr) {
+//        assert(m_streamView != nullptr);
+
+//        delete m_inputStreamThread;
+//        m_inputStreamThread = nullptr;
+//        delete m_streamView;
+//        m_streamView = nullptr;
+//    }
     delete ui;
 }
 
@@ -80,13 +89,13 @@ void FormSensorView::on_radioButtonOnOff_clicked( bool checked ) {
         ui->radioButtonOnOff->setText( "on " );
         ui->frameButtonOnOff->setStyleSheet( "border-radius: 10px; background-color: lightgreen" );
         //        emit addViewStreamSignal(mSensorName);
-        startStreaming();
+        on_startStreaming();
     }
     else {
         ui->radioButtonOnOff->setText( "off" );
         ui->frameButtonOnOff->setStyleSheet( "border-radius: 10px; background-color: red" );
         //        emit delViewStreamSignal(mSensorName);
-        stopStreaming();
+        on_stopStreaming();
     }
 }
 
@@ -96,22 +105,22 @@ void FormSensorView::setRadioButtonOff() {
     ui->frameButtonOnOff->setStyleSheet( "border-radius: 10px; background-color: red" );
 }
 
-void FormSensorView::startStreaming() {
-    std::cout << "[FormSensorView] FormSensorView::startStreaming slot '" << mSensorName << "'"
+void FormSensorView::on_startStreaming() {
+    std::cout << "[FormSensorView] FormSensorView::on_startStreaming slot '" << mSensorName << "'"
               << std::endl;
     //              << ", nb streamView = " << mStreamViews.size() << std::endl;
 
     assert( m_inputStreamThread == nullptr );
     m_inputStreamThread = new Thread_InputStream( mSensorName, this );
     QObject::connect(
-        m_inputStreamThread, &Thread_InputStream::newImage, this, &FormSensorView::newImage );
+        m_inputStreamThread, &Thread_InputStream::newAcquisition, this, &FormSensorView::on_newAcquisition );
 
     assert( m_streamView == nullptr );
     m_streamView = new MainWindowStreamView( m_inputStreamThread->mInputStream, this );
 
     //    assert( mStreamViews.find( mSensorName ) == mStreamViews.end() );
     //    mStreamViews[mSensorName] = streamView;
-    //    std::cout << "[FormSensorView] FormSensorView::startStreaming " << mSensorName <<
+    //    std::cout << "[FormSensorView] FormSensorView::on_startStreaming " << mSensorName <<
     //    std::endl;
 
     QMdiSubWindow* subWindow = m_mdiArea.addSubWindow( m_streamView );
@@ -121,19 +130,22 @@ void FormSensorView::startStreaming() {
     QObject::connect( m_streamView,
                       &MainWindowStreamView::onCloseStreamViewSignal,
                       this,
-                      &FormSensorView::onCloseStreamView );
+                      &FormSensorView::on_closeStreamView );
 
     mCounterFps = 0;
     mFps        = 10;
     mStartFps   = std::chrono::high_resolution_clock::now();
     m_inputStreamThread->start();
+
+    emit streamingStarted(mSensorName);
 }
 
 //#include <typeinfo>
 
-void FormSensorView::stopStreaming() {
-    std::cout << "[FormSensorView] FormSensorView::stopStreaming " << mSensorName << std::endl;
+void FormSensorView::on_stopStreaming() {
+    std::cout << "[FormSensorView] FormSensorView::on_stopStreaming " << mSensorName << std::endl;
     //              << mStreamViews.size() << std::endl;
+
         if (m_inputStreamThread == nullptr)
             return;
 
@@ -141,7 +153,7 @@ void FormSensorView::stopStreaming() {
     //    if ( mStreamViews.find( sensorName ) != mStreamViews.end() ) {
     //        MainWindowStreamView* streamView = mStreamViews.at( sensorName );
 
-    //        std::cout << "[FormSensorView] FormSensorView::stopStreaming delete " << streamView <<
+    //        std::cout << "[FormSensorView] FormSensorView::on_stopStreaming delete " << streamView <<
     //        std::endl;
     m_inputStreamThread->requestInterruption();
     m_inputStreamThread->wait();
@@ -156,19 +168,21 @@ void FormSensorView::stopStreaming() {
         m_streamView = nullptr;
     }
     //    }
-    //    std::cout << "[FormSensorView] FormSensorView::stopStreaming slot end, nb streamView = "
+    //    std::cout << "[FormSensorView] FormSensorView::on_stopStreaming slot end, nb streamView = "
     //              << mStreamViews.size() << std::endl;
+
+    emit streamingStopped(mSensorName);
 }
 
-void FormSensorView::onCloseStreamView() {
+void FormSensorView::on_closeStreamView() {
 
         m_mdiArea.removeSubWindow( m_streamView->parentWidget() );
 //        delete m_streamView;
         m_streamView = nullptr;
         setRadioButtonOff();
-    stopStreaming();
+    on_stopStreaming();
 
-    //    std::cout << "[FormSensorView] FormSensorView::onCloseStreamView " << std::endl;
+    //    std::cout << "[FormSensorView] FormSensorView::on_closeStreamView " << std::endl;
     //    assert( mSensorViews.find( sensorName ) != mSensorViews.end() );
     //    mSensorViews.at( sensorName )->setRadioButtonOff();
 
@@ -176,8 +190,8 @@ void FormSensorView::onCloseStreamView() {
     //    mStreamViews.erase( sensorName );
 }
 
-void FormSensorView::newImage() {
-    //    std::cout << "[FormSensorView] newImage" << std::endl;
+void FormSensorView::on_newAcquisition() {
+    //    std::cout << "[FormSensorView] on_newAcquisition" << std::endl;
     if ( m_inputStreamThread == nullptr ) return;
 
     if ( mCounterFps == std::ceil( mFps ) ) {
@@ -201,4 +215,18 @@ void FormSensorView::newImage() {
     //    mThread.mInputStream.getFormat());
 
     ++mCounterFps;
+
+    emit newAcquisition();
+}
+
+const InputStream &FormSensorView::getInputStream() const
+{
+    assert(m_inputStreamThread != nullptr);
+    return m_inputStreamThread->mInputStream;
+}
+
+const Thread_InputStream *FormSensorView::getInputStreamThread() const
+{
+    assert(m_inputStreamThread != nullptr);
+    return m_inputStreamThread;
 }

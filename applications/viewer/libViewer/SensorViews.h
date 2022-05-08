@@ -11,6 +11,7 @@
 #include <map>
 #include <stream.h>
 #include <SensorView.h>
+#include <QComboBox>
 
 class Thread_Client : public QThread
 {
@@ -43,6 +44,12 @@ class SensorViews : public QObject
     ~SensorViews();
 
   signals:
+    void streamingStarted(std::string sensorName);
+    void streamingStopped(std::string sensorName);
+//    void startStreaming();
+//    void stopStreaming();
+//    void sensorAdded(const std::string & sensorName);
+//    void sensorDeleted(const std::string & sensorName);
 
   public slots:
     void addSensor( std::string sensorName,
@@ -51,6 +58,8 @@ class SensorViews : public QObject
                     std::string size,
                     std::string metaData );
     void delSensor( std::string sensorName );
+
+    const FormSensorView & getSensorView(const std::string & sensorName) const;
 
 
   private:
@@ -64,6 +73,8 @@ class SensorViews : public QObject
 
     QVBoxLayout & m_vBoxLayout;
     QMdiArea & m_mdiArea;
+//    QComboBox & m_comboBoxScan;
+//    QComboBox & m_comboBoxPose;
 };
 
 #endif // SENSORVIEWS_H
