@@ -5,6 +5,7 @@
 #include <WidgetStreamView.h>
 #include <iostream>
 #include <stream.h>
+#include <cmath>
 
 Thread_InputStream::Thread_InputStream( std::string sensorName, QObject* parent ) :
     QThread( parent ), mInputStream( ClientSocket( sensorName, "" ) ) {
