@@ -61,7 +61,7 @@
         </size>
        </property>
        <property name="currentIndex">
-        <number>0</number>
+        <number>1</number>
        </property>
        <widget class="QWidget" name="tabSources">
         <attribute name="title">
@@ -137,7 +137,7 @@
         </sizepolicy>
        </property>
        <property name="currentIndex">
-        <number>0</number>
+        <number>1</number>
        </property>
        <widget class="QWidget" name="page2D">
         <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -232,7 +232,7 @@
              </property>
              <property name="sizeHint" stdset="0">
               <size>
-               <width>40</width>
+               <width>1920</width>
                <height>20</height>
               </size>
              </property>
