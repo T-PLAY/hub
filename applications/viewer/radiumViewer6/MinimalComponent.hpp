@@ -32,6 +32,7 @@ struct MinimalComponent : public Ra::Engine::Scene::Component {
     Ra::Engine::Rendering::RenderObject* m_scan          = nullptr;
     Ra::Engine::Rendering::RenderObject* m_probe         = nullptr;
     Ra::Engine::Rendering::RenderObject* m_probe_axis[3] = { nullptr, nullptr, nullptr };
+    Ra::Engine::Rendering::RenderObject* m_scanLine         = nullptr;
 
   private:
     Ra::Engine::Data::Texture * m_textureScan = nullptr;

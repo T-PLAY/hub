@@ -10,6 +10,7 @@
 #include <MinimalComponent.hpp>
 #include <MinimalSystem.hpp>
 #include <QOpenGLContext>
+#include <QDoubleSpinBox>
 
 //#include <QEvent>
 

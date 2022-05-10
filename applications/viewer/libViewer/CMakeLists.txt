@@ -10,16 +10,18 @@ set(CMAKE_AUTOUIC ON)
 
 #set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Gui)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Gui)
+#find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Gui)
+#set(QT_VERSION ${QT_VERSION_MAJOR})
+set(QT_VERSION 5)
+find_package(Qt${QT_VERSION} REQUIRED COMPONENTS Widgets Gui)
 
 #set(QT_VERSION 5)
 #set(REQUIRED_LIBS Core Network Gui Widgets)
-set(REQUIRED_LIBS_QUALIFIED Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Gui Qt${QT_VERSION_MAJOR}::Widgets)
+set(REQUIRED_LIBS_QUALIFIED Qt${QT_VERSION}::Core Qt${QT_VERSION}::Gui Qt${QT_VERSION}::Widgets)
 set(WIN32_REQUIRED_LIBS)
 set(UNIX_REQUIRED_LIBS)
 
-#find_package(Qt${QT_VERSION_MAJOR} COMPONENTS ${REQUIRED_LIBS} REQUIRED)
+#find_package(Qt${QT_VERSION} COMPONENTS ${REQUIRED_LIBS} REQUIRED)
 
 file(GLOB_RECURSE sources *.cpp)
 file(GLOB_RECURSE forms *.ui)
@@ -57,17 +59,17 @@ if (WIN32)
         TARGET ${PROJECT_NAME} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:${PROJECT_NAME}>/platforms/
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        $<TARGET_FILE:Qt${QT_VERSION_MAJOR}::QWindowsIntegrationPlugin>
+        $<TARGET_FILE:Qt${QT_VERSION}::QWindowsIntegrationPlugin>
         $<TARGET_FILE_DIR:${PROJECT_NAME}>/platforms/
         )
 
     foreach (QT_LIB ${REQUIRED_LIBS})
         #        add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
         #                COMMAND ${CMAKE_COMMAND} -E copy
-        #                "${QT_INSTALL_PATH}/bin/Qt${QT_VERSION_MAJOR}${QT_LIB}${DEBUG_SUFFIX}.dll"
+        #                "${QT_INSTALL_PATH}/bin/Qt${QT_VERSION}${QT_LIB}${DEBUG_SUFFIX}.dll"
         #                "$<TARGET_FILE_DIR:${PROJECT_NAME}>")
         add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:Qt${QT_VERSION_MAJOR}::${QT_LIB}> $<TARGET_FILE_DIR:${PROJECT_NAME}>
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:Qt${QT_VERSION}::${QT_LIB}> $<TARGET_FILE_DIR:${PROJECT_NAME}>
             )
     endforeach (QT_LIB)
 

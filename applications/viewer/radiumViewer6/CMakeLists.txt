@@ -82,10 +82,13 @@ set(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
 
 
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
+set(QT_VERSION 5)
+set(REQUIRED_LIBS Core Widgets Gui Xml)
+set(REQUIRED_LIBS_QUALIFIED Qt${QT_VERSION}::Core Qt${QT_VERSION}::Gui Qt${QT_VERSION}::Widgets Qt${QT_VERSION}::Xml)
+#find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Gui)
+find_package(Qt${QT_VERSION} REQUIRED COMPONENTS ${REQUIRED_LIBS})
 
-find_package(Radium REQUIRED Core Engine Gui)
+find_package(Radium REQUIRED COMPONENTS Core Engine Gui)
 
 file(GLOB_RECURSE app_sources *.cpp)
 file(GLOB_RECURSE app_uis *.ui)
@@ -96,7 +99,7 @@ set(PROJECT_SOURCES
     ${app_headers}
 )
 
-if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
+if(${QT_VERSION} GREATER_EQUAL 6)
     qt_add_executable(${PROJECT_NAME}
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
@@ -123,9 +126,31 @@ endif()
 #        ${RADIUM_INCLUDE_DIRS}
 #)
 
+if (WIN32)
+	add_custom_command(
+		TARGET ${PROJECT_NAME} POST_BUILD
+		COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:${PROJECT_NAME}>/platforms/
+		COMMAND ${CMAKE_COMMAND} -E copy_if_different
+		$<TARGET_FILE:Qt${QT_VERSION}::QWindowsIntegrationPlugin>
+		$<TARGET_FILE_DIR:${PROJECT_NAME}>/platforms/
+		)
+
+	foreach (QT_LIB ${REQUIRED_LIBS})
+		#        add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+		#                COMMAND ${CMAKE_COMMAND} -E copy
+		#                "${QT_INSTALL_PATH}/bin/Qt${QT_VERSION}${QT_LIB}${DEBUG_SUFFIX}.dll"
+		#                "$<TARGET_FILE_DIR:${PROJECT_NAME}>")
+		add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+			COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:Qt${QT_VERSION}::${QT_LIB}> $<TARGET_FILE_DIR:${PROJECT_NAME}>
+			)
+	endforeach (QT_LIB)
+endif()
+
+
 target_link_libraries(${PROJECT_NAME} PUBLIC
-    Qt${QT_VERSION_MAJOR}::Widgets
-    Radium::Core Radium::Engine Radium::Gui
+#    Qt${QT_VERSION}::Widgets
+    ${REQUIRED_LIBS_QUALIFIED}
+    Radium::Core Radium::Gui Radium::Engine
     libViewer
     src
 )
@@ -138,7 +163,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
     WIN32_EXECUTABLE TRUE
 )
 
-if(QT_VERSION_MAJOR EQUAL 6)
+if(QT_VERSION EQUAL 6)
     qt_finalize_executable(${PROJECT_NAME})
 endif()
 

@@ -45,6 +45,7 @@ MinimalApp::MinimalApp() :
 }
 
 MinimalApp::~MinimalApp() {
+//    m_frame_timer->stop();
     // need to clean up everithing before engine is cleaned up.
     m_task_queue.reset( nullptr );
     m_viewer.reset( nullptr );
