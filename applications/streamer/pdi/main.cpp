@@ -234,9 +234,13 @@ bool SetupDevice()
 
     // g_pdiDev.StartPipeExport();
     // AddResultMsg("StartPipeExport");
+    g_pdiDev.SetMetric(true); // centimeters
+    AddResultMsg("SetMetric");
+
+
 
     // set hemisphere tracking
-    std::cout << _T("\tSet SHemiTrack :");
+    std::cout << _T("Set SHemiTrack :");
     bool bResult = g_pdiDev.SetSHemiTrack(-1);
     if (bResult != TRUE) {
         std::cout << _T("Failed. Continuing anyway.") << std::endl;

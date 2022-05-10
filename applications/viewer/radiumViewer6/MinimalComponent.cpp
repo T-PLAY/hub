@@ -80,7 +80,7 @@ void MinimalComponent::initialize()
     lambertianMaterial->m_perVertexColor = true;
 
     //// setup ////
-    Scalar cellSize = 1_ra;
+    Scalar cellSize = 10_ra;
     int nCellX = 10;
 
     //// GRID ////
@@ -108,13 +108,13 @@ void MinimalComponent::initialize()
         constexpr Scalar axisWidth = .05_ra;
         constexpr Scalar arrowFrac = 0_ra;
 
-        std::vector<Color> gizmoColors = { Color::Red(), Color::Green(), Color::Blue() };
+        std::vector<Color> gizmoColors = { Color::Red(), Color::Green(), Color::Blue(), Color::Cyan(), Color::Cyan() };
 
-        for (uint i = 0; i < 3; ++i) {
+        for (uint i = 0; i < 5; ++i) {
             Core::Vector3 cylinderEnd = Core::Vector3::Zero();
-            cylinderEnd[i] = (1_ra - arrowFrac);
+            cylinderEnd[i % 3] = (1_ra - arrowFrac);
             Core::Vector3 arrowEnd = Core::Vector3::Zero();
-            arrowEnd[i] = 1_ra;
+            arrowEnd[i % 3] = 1_ra;
             Core::Geometry::TriangleMesh cylinder = Core::Geometry::makeCylinder(Core::Vector3::Zero(),
                 arrowScale * cylinderEnd,
                 arrowScale * axisWidth / 2_ra,
@@ -134,6 +134,9 @@ void MinimalComponent::initialize()
                 "originAxis" + std::to_string(i), this, RenderObjectType::Geometry, meshAxis[i]);
 
             gizmo->setMaterial(plainMaterial);
+                Ra::Core::Transform TLocal = Transform::Identity();
+                TLocal.scale(10.0);
+                gizmo->setLocalTransform(TLocal);
             addRenderObject(gizmo);
         }
     }
@@ -142,7 +145,7 @@ void MinimalComponent::initialize()
     {
         std::shared_ptr<Mesh> cube1(new Mesh("Cube"));
         auto cubeSize = Vector3 { 1_ra, 1_ra, 1_ra };
-        auto box = Core::Geometry::makeSharpBox(cubeSize * 0.7 / 2, Color::Grey());
+        auto box = Core::Geometry::makeSharpBox(cubeSize * 5.0 / 2.0, Color::Grey());
         cube1->loadGeometry(std::move(box));
 
         auto renderObject1 = RenderObject::createRenderObject(
@@ -156,14 +159,14 @@ void MinimalComponent::initialize()
         std::shared_ptr<Mesh> cube2(new Mesh("Cube"));
 
         auto cubeSize = Vector3 { 1_ra, 1_ra, 1_ra };
-        cube2->loadGeometry(Geometry::makeSharpBox(cubeSize * 0.2 / 2));
+        cube2->loadGeometry(Geometry::makeSharpBox(cubeSize * 1.5 / 2.0));
         cube2->getCoreGeometry().addAttrib(
             "in_color", Vector4Array { cube2->getNumVertices(), Color::Grey() });
         //        cube2->setAttribNameCorrespondance("colour", "in_color");
 
         m_probe = RenderObject::createRenderObject(
             "probeCube", this, RenderObjectType::Geometry, cube2, {});
-        m_probe->setLocalTransform(Transform { Translation(Vector3(0_ra, 2_ra, 0_ra)) });
+        m_probe->setLocalTransform(Transform { Translation(Vector3(0_ra, 20_ra, 0_ra)) });
         m_probe->setMaterial(lambertianMaterial);
         addRenderObject(m_probe);
     }
@@ -176,9 +179,22 @@ void MinimalComponent::initialize()
             m_probe_axis[i]->setMaterial(plainMaterial);
             addRenderObject(m_probe_axis[i]);
 
-            m_probe_axis[i]->setLocalTransform(
-                Transform { Translation(Vector3(0_ra, 2_ra, 0_ra)) });
+                Ra::Core::Transform TLocal = Transform::Identity();
+                TLocal.translate(Vector3(0.0, 20.0, 0.0));
+                TLocal.scale(10.0);
+                m_probe_axis[i]->setLocalTransform(TLocal);
+//            m_probe_axis[i]->setLocalTransform(
+//                Transform { Translation(Vector3(0_ra, 20_ra, 0_ra)) });
         }
+
+            m_scanLine = RenderObject::createRenderObject(
+                "scanLine", this, RenderObjectType::Geometry, meshAxis[4]);
+            m_scanLine->setMaterial(plainMaterial);
+            addRenderObject(m_scanLine);
+
+//            m_scanLine->setLocalTransform(Transform::Identity());
+//            m_scanLine->setLocalTransform(
+//                Transform { Translation(Vector3(0_ra, 20_ra, 0_ra)) });
     }
 
     // scan plane
@@ -243,6 +259,9 @@ void MinimalComponent::initialize()
         //        roMaterial->needUpdate();
         m_scan->setMaterial(roMaterial);
 
+        auto TLocal = Transform::Identity();
+        TLocal.scale(10.0);
+        m_scan->setLocalTransform(TLocal);
         //        m_scan->getRenderTechnique()->setConfiguration( shaderConfig );
 
         addRenderObject(m_scan);
@@ -272,8 +291,10 @@ void MinimalComponent::updateProbe(const Stream::Acquisition& acq)
     float* translation = (float*)acq.mData;
     float* quaternion = (float*)&acq.mData[12];
 
-    Ra::Core::Vector3 pos(-translation[0], -translation[1],
-        -translation[2]);
+    //    Ra::Core::Vector3 pos(-translation[0], -translation[1],
+    //        -translation[2]);
+    Ra::Core::Vector3 pos(translation[0], translation[1],
+        translation[2]);
 
     Ra::Core::Quaternion orientation(quaternion[0], quaternion[1], quaternion[2],
         quaternion[3]);
@@ -285,36 +306,69 @@ void MinimalComponent::updateProbe(const Stream::Acquisition& acq)
 
     // orientation
     Ra::Core::Transform TOrientation = Ra::Core::Transform::Identity();
-    //            Ra::Core::Quaternion quat(quaternion[0], quaternion[1], quaternion[2], quaternion[3]);
     TOrientation.rotate(orientation);
 
     // World transform
     Ra::Core::Transform TWorld = Ra::Core::Transform::Identity();
-
-    //        Ra::Core::Vector3 vecPos(-translation[0], -translation[1], -translation[2]);
-
-    pos /= 5.0;
+    //    pos /= 10.0; // convert centimetre to metre
     TWorld.translate(pos);
+    //    TWorld.translate(Ra::Core::Vector3(0.0, 0.2, -0.1));
 
-    //        g_scan->setLocalTransform(TRadium * TWorld * TOrientation * TLocal);
-    //        g_probe->setLocalTransform(TRadium * TWorld * TOrientation * TLocal);
-    m_probe->setLocalTransform(TRadium * TWorld * TOrientation);
-    for (int i = 0; i < 3; ++i) {
-        m_probe_axis[i]->setLocalTransform(TRadium * TWorld * TOrientation);
+    {
+                Ra::Core::Transform TLocal = Transform::Identity();
+//                TLocal.scale(10.0);
+                TLocal.scale(5.0);
+
+        //    TLocal.translate(Ra::Core::Vector3(1.0, 0.0, 1.0));
+        //        Ra::Core::Vector3 vecScale = Ra::Core::Vector3::Identity();
+        //        vecScale *= 0.7;
+        //        TLocal.scale(vecScale);
+        //        TLocal.scale(Ra::Core::Vector3(1.0, 1.0, 10.0));
+
+        //        g_scan->setLocalTransform(TRadium * TWorld * TOrientation * TLocal);
+        //        g_probe->setLocalTransform(TRadium * TWorld * TOrientation * TLocal);
+        m_probe->setLocalTransform(TRadium * TWorld * TOrientation);
+        for (int i = 0; i < 3; ++i) {
+            m_probe_axis[i]->setLocalTransform(TRadium * TWorld * TOrientation * TLocal);
+        }
     }
 
-    // Local transform scan
-    Ra::Core::Transform TLocal = Ra::Core::Transform::Identity();
-    TLocal.translate(Ra::Core::Vector3(1.0, 0.0, 2.0));
-    Ra::Core::Vector3 vecScale(1.0, 192.0 / 512, 1.0);
-    TLocal.scale(vecScale);
-    m_scan->setLocalTransform(TRadium * TWorld * TOrientation * TLocal);
+    {
+        // Local transform scan
+        Ra::Core::Transform TLocal = Ra::Core::Transform::Identity();
+
+        //        Ra::Core::Vector3 vecScale(1.0, 192.0 / 512, 1.0);
+        const double scanWidth = 5.0; // centimeters
+        const double scanDepth = 3.5; // centimeters
+
+        TLocal.translate(Ra::Core::Vector3(scanDepth / 2.0 + 3.1, 0.0, 16.0));
+        //        TLocal.translate(Ra::Core::Vector3(0.05, 0.0, 0.5));
+
+        const double userScale = 1.0;
+        Ra::Core::Vector3 vecScale(userScale * scanDepth / 2.0, userScale * scanWidth / 2.0, 1.0);
+        TLocal.scale(vecScale);
+
+        //        TLocal.translate(Ra::Core::Vector3(scanDepth / 2.0 + tmp2, 0.0, tmp));
+        //        TLocal.translate(Ra::Core::Vector3(0.1, 0.0, 0.2));
+        //        m_scan->setLocalTransform(TRadium * TWorld * TLocal * TOrientation);
+        m_scan->setLocalTransform(TRadium * TWorld * TOrientation * TLocal);
+
+
+        Ra::Core::Transform TLocal2 = Ra::Core::Transform::Identity();
+        TLocal2.translate(Ra::Core::Vector3(3.1, - scanWidth / 2.0, 16.0));
+        Ra::Core::Vector3 vecScale2(3.0, userScale * scanWidth, 3.0);
+        TLocal2.scale(vecScale2);
+        m_scanLine->setLocalTransform(TRadium * TWorld * TOrientation * TLocal2);
+    }
 }
 
 void MinimalComponent::initProbe()
 {
-    auto TWorld = Transform(Translation(Vector3(0.0, 2.0, 0.0)));
-    m_scan->setLocalTransform(Transform::Identity());
+    auto TLocal = Transform::Identity();
+    TLocal.scale(10.0);
+    m_scan->setLocalTransform(TLocal);
+
+    auto TWorld = Transform(Translation(Vector3(0.0, 20.0, 0.0)));
     m_probe->setLocalTransform(TWorld);
     for (int i = 0; i < 3; ++i) {
         m_probe_axis[i]->setLocalTransform(TWorld);
