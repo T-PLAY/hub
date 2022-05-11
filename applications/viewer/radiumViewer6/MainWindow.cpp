@@ -13,6 +13,7 @@
 #include <QOpenGLContext>
 
 #include <constants.h>
+#include <filesystem>
 
 //#include <QEvent>
 
@@ -86,6 +87,31 @@ MainWindow::MainWindow(QWidget* parent)
 
     ui->label_scanSource->setText((g_probeScanSensorName + " :").c_str());
     ui->label_poseSource->setText((g_probePoseSensorName + " :").c_str());
+
+    // records view
+    QString recordPath = PROJECT_DIR "data/records/";
+    assert(std::filesystem::exists(recordPath.toStdString()));
+    m_recordFileModel = new QFileSystemModel(this);
+
+    m_recordFileModel->setReadOnly(true);
+
+    // Set filter
+        m_recordFileModel->setFilter(QDir::NoDotAndDotDot | QDir::AllDirs | QDir::AllEntries);
+//    m_recordFileModel->setFilter(QDir::NoDotAndDotDot | QDir::AllDirs);
+
+    // QFileSystemModel requires root path
+    m_recordFileModel->setRootPath(recordPath);
+
+    // Attach the model to the view
+    ui->treeView->setModel(m_recordFileModel);
+    const auto& rootIndex = m_recordFileModel->index(recordPath);
+    ui->treeView->setRootIndex(rootIndex);
+    ui->treeView->expand(rootIndex);
+    ui->treeView->setColumnHidden(1, true);
+    ui->treeView->setColumnHidden(2, true);
+    ui->treeView->setColumnHidden(3, true);
+//    ui->treeView->setItemsExpandable(false);
+//    ui->treeView->setColumnHidden(0, true);
 }
 
 MainWindow::~MainWindow()
@@ -232,4 +258,32 @@ void MainWindow::on_newPoseAcquisition()
     //    std::cout << "[on_newPoseAcquisition] " << std::endl;
 
     m_comp->updateProbe(m_threadInputStreamPose->mAcq);
+}
+
+void MainWindow::on_toolButton_record_toggled(bool checked)
+{
+    if (checked) {
+        ui->toolButton_record->setText("stopRecording");
+
+    } else {
+        ui->toolButton_record->setText("startRecording");
+    }
+}
+
+void MainWindow::on_toolButton_snapshot_clicked()
+{
+}
+
+void MainWindow::on_treeView_clicked(const QModelIndex& index)
+{
+    std::string mPath = m_recordFileModel->fileInfo(index).absoluteFilePath().toStdString();
+    const auto& selectionModel = ui->treeView->selectionModel();
+    if (selectionModel->isSelected(index)) {
+        std::cout << "treeView clicked " << mPath << std::endl;
+//        selectionModel->select(index, QItemSelectionModel::Deselect);
+//        ui->treeView->clearSelection();
+
+    } else {
+        std::cout << "treeView close " << mPath << std::endl;
+    }
 }
