@@ -152,6 +152,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
     ${REQUIRED_LIBS_QUALIFIED}
     Radium::Core Radium::Gui Radium::Engine
     libViewer
+    libApp
     src
 )
 

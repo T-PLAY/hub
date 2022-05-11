@@ -1,5 +1,7 @@
 
 
+add_subdirectory(libApp)
+
 #add_subdirectory(ihm)
 if (BUILD_VIEWERS)
     add_subdirectory(viewer)

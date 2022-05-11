@@ -56,7 +56,7 @@ int main(int argc, char* argv[])
             const std::string& sensorName = inputStream.getSensorName();
 
             // here
-            outputs[sensorName] = std::make_unique<OutputStream>(sensorName, inputStream.getFormat(), inputStream.getDims(), ClientSocket(), inputStream.getMetaData());
+            outputs[sensorName] = std::make_unique<OutputStream>(sensorName + " (record)", inputStream.getFormat(), inputStream.getDims(), ClientSocket(), inputStream.getMetaData());
             int nReadAcqs = 0;
             Stream::Acquisition acq;
             while (true) {
