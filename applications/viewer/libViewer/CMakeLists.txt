@@ -12,7 +12,7 @@ set(CMAKE_AUTOUIC ON)
 
 #find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Gui)
 #set(QT_VERSION ${QT_VERSION_MAJOR})
-set(QT_VERSION 5)
+#set(QT_VERSION 5)
 find_package(Qt${QT_VERSION} REQUIRED COMPONENTS Widgets Gui)
 
 #set(QT_VERSION 5)
