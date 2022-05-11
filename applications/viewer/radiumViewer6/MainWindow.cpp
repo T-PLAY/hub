@@ -9,8 +9,10 @@
 
 #include <MinimalComponent.hpp>
 #include <MinimalSystem.hpp>
-#include <QOpenGLContext>
 #include <QDoubleSpinBox>
+#include <QOpenGLContext>
+
+#include <constants.h>
 
 //#include <QEvent>
 
@@ -81,6 +83,9 @@ MainWindow::MainWindow(QWidget* parent)
     //    QObject::connect(
     //        m_sensorViews, &SensorViews::sensorDeleted, this,
     //        &MainWindow::on_delSensor );
+
+    ui->label_scanSource->setText((g_probeScanSensorName + " :").c_str());
+    ui->label_poseSource->setText((g_probePoseSensorName + " :").c_str());
 }
 
 MainWindow::~MainWindow()
@@ -105,90 +110,100 @@ void MainWindow::on_action3D_triggered()
     //    ui->stackedWidget->update();
 }
 
-void MainWindow::on_startStreaming(std::string sensorName)
+void MainWindow::on_startStreaming(std::string streamName)
 {
     assert(m_sensorViews != nullptr);
-    //    const auto & sensorView = m_sensorViews->getSensorView(sensorName);
+    //    const auto & sensorView = m_sensorViews->getSensorView(streamName);
     //    const auto & inputStream = sensorView.getInputStream();
+    const auto sensorName = streamName.substr(0, g_probeScanSensorName.size());
 
-    if (sensorName == "ULA-OP 256") {
-        ui->comboBox_scan->addItem(sensorName.c_str());
-    } else if (sensorName == "Polhemus Patriot (probe)") {
-        ui->comboBox_pose->addItem(sensorName.c_str());
+    if (sensorName == g_probeScanSensorName) {
+
+        const auto sourceType = streamName.substr(g_probeScanSensorName.size() + 2, streamName.size() - 1 - g_probeScanSensorName.size() - 2);
+        assert(sourceType == "record");
+        ui->comboBox_scan->addItem(sourceType.c_str());
+
+    } else if (streamName.substr(0, g_probePoseSensorName.size()) == g_probePoseSensorName) {
+
+        const auto sourceType = streamName.substr(g_probePoseSensorName.size() + 2, streamName.size() - 1 - g_probePoseSensorName.size() - 2);
+        ui->comboBox_pose->addItem(sourceType.c_str());
     }
 }
 
-void MainWindow::on_stopStreaming(std::string sensorName)
+void MainWindow::on_stopStreaming(std::string streamName)
 {
     assert(m_sensorViews != nullptr);
 
-    if (sensorName == "ULA-OP 256") {
-        int iItem = ui->comboBox_scan->findText(sensorName.c_str());
+    if (streamName.substr(0, g_probeScanSensorName.size()) == g_probeScanSensorName) {
+        auto sourceType = streamName.substr(g_probeScanSensorName.size() + 2, streamName.size() - 1 - g_probeScanSensorName.size() - 2);
+        int iItem = ui->comboBox_scan->findText(sourceType.c_str());
         assert(iItem >= 0);
         ui->comboBox_scan->removeItem(iItem);
-    } else if (sensorName == "Polhemus Patriot (probe)") {
-        int iItem = ui->comboBox_pose->findText(sensorName.c_str());
+
+    } else if (streamName.substr(0, g_probePoseSensorName.size()) == g_probePoseSensorName) {
+        auto sourceType = streamName.substr(g_probePoseSensorName.size() + 2, streamName.size() - 1 - g_probePoseSensorName.size() - 2);
+        int iItem = ui->comboBox_pose->findText(sourceType.c_str());
         assert(iItem >= 0);
         ui->comboBox_pose->removeItem(iItem);
     }
 }
 
 void MainWindow::on_comboBox_scan_currentTextChanged(
-    const QString& sensorName)
+    const QString& sourceType)
 {
-    const auto& sensorNameStd = sensorName.toStdString();
-    std::cout << "[on_comboBox_scan_currentTextChanged] " << sensorNameStd
+    const auto& streamNameStd = g_probeScanSensorName + " (" + sourceType.toStdString() + ")";
+    std::cout << "[on_comboBox_scan_currentTextChanged] " << streamNameStd
               << std::endl;
     assert(m_sensorViews != nullptr);
 
-    if (sensorNameStd != "" && sensorNameStd != m_activeStreamScan) {
+    if (sourceType != "" && streamNameStd != m_activeStreamScan) {
         QObject::disconnect(m_threadInputStreamScan,
             &Thread_InputStream::newAcquisition, this,
             &MainWindow::on_newScanAcquisition);
     }
 
-    if (sensorNameStd == "") {
+    if (sourceType == "") {
         assert(m_activeStreamScan != "");
         m_threadInputStreamScan = nullptr;
 
     } else {
-        const auto& sensorView = m_sensorViews->getSensorView(sensorNameStd);
+        const auto& sensorView = m_sensorViews->getSensorView(streamNameStd);
         m_threadInputStreamScan = sensorView.getInputStreamThread();
 
         QObject::connect(m_threadInputStreamScan,
             &Thread_InputStream::newAcquisition, this,
             &MainWindow::on_newScanAcquisition);
     }
-    m_activeStreamScan = sensorNameStd;
+    m_activeStreamScan = streamNameStd;
 }
 
 void MainWindow::on_comboBox_pose_currentTextChanged(
-    const QString& sensorName)
+    const QString& sourceType)
 {
-    const auto& sensorNameStd = sensorName.toStdString();
-    std::cout << "[on_comboBox_pose_currentTextChanged] " << sensorNameStd
+    const auto& streamNameStd = g_probePoseSensorName + " (" + sourceType.toStdString() + ")";
+    std::cout << "[on_comboBox_pose_currentTextChanged] " << streamNameStd
               << std::endl;
     assert(m_sensorViews != nullptr);
 
-    if (sensorNameStd != "" && sensorNameStd != m_activeStreamPose) {
+    if (sourceType != "" && streamNameStd != m_activeStreamPose) {
         QObject::disconnect(m_threadInputStreamPose,
             &Thread_InputStream::newAcquisition, this,
             &MainWindow::on_newPoseAcquisition);
     }
 
-    if (sensorNameStd == "") {
+    if (sourceType == "") {
         assert(m_activeStreamPose != "");
         m_threadInputStreamPose = nullptr;
 
     } else {
-        const auto& sensorView = m_sensorViews->getSensorView(sensorNameStd);
+        const auto& sensorView = m_sensorViews->getSensorView(streamNameStd);
         m_threadInputStreamPose = sensorView.getInputStreamThread();
 
         QObject::connect(m_threadInputStreamPose, &Thread_InputStream::newAcquisition,
             this, &MainWindow::on_newPoseAcquisition);
     }
 
-    m_activeStreamPose = sensorNameStd;
+    m_activeStreamPose = streamNameStd;
 }
 
 void MainWindow::on_newScanAcquisition()
@@ -215,7 +230,6 @@ void MainWindow::on_newPoseAcquisition()
 
     assert(m_threadInputStreamPose != nullptr);
     //    std::cout << "[on_newPoseAcquisition] " << std::endl;
-
 
     m_comp->updateProbe(m_threadInputStreamPose->mAcq);
 }

@@ -9,6 +9,8 @@
 #include <socket.h>
 #include <thread>
 
+#include <constants.h>
+
 // static std::vector<std::fstream> gFiles;
 static bool gStop = false;
 
@@ -30,8 +32,8 @@ int main(int argc, char* argv[])
 {
     std::thread keyBoardCommands(onEnter);
 
-    const std::string sensorNames[2] = { "Polhemus Patriot (probe)", "ULA-OP 256" };
-    const std::string sensorSyncNames[2] = { "ULA-OP 256", "" };
+    const std::string sensorNames[2] = { g_probePoseSensorName, g_probeScanSensorName };
+    const std::string sensorSyncNames[2] = { g_probeScanSensorName, "" };
 
     std::filesystem::current_path(PROJECT_DIR);
     std::filesystem::create_directories("records");

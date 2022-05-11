@@ -134,9 +134,9 @@ void MinimalComponent::initialize()
                 "originAxis" + std::to_string(i), this, RenderObjectType::Geometry, meshAxis[i]);
 
             gizmo->setMaterial(plainMaterial);
-                Ra::Core::Transform TLocal = Transform::Identity();
-                TLocal.scale(10.0);
-                gizmo->setLocalTransform(TLocal);
+            Ra::Core::Transform TLocal = Transform::Identity();
+            TLocal.scale(10.0);
+            gizmo->setLocalTransform(TLocal);
             addRenderObject(gizmo);
         }
     }
@@ -179,22 +179,22 @@ void MinimalComponent::initialize()
             m_probe_axis[i]->setMaterial(plainMaterial);
             addRenderObject(m_probe_axis[i]);
 
-                Ra::Core::Transform TLocal = Transform::Identity();
-                TLocal.translate(Vector3(0.0, 20.0, 0.0));
-                TLocal.scale(10.0);
-                m_probe_axis[i]->setLocalTransform(TLocal);
-//            m_probe_axis[i]->setLocalTransform(
-//                Transform { Translation(Vector3(0_ra, 20_ra, 0_ra)) });
+            Ra::Core::Transform TLocal = Transform::Identity();
+            TLocal.translate(Vector3(0.0, 20.0, 0.0));
+            TLocal.scale(10.0);
+            m_probe_axis[i]->setLocalTransform(TLocal);
+            //            m_probe_axis[i]->setLocalTransform(
+            //                Transform { Translation(Vector3(0_ra, 20_ra, 0_ra)) });
         }
 
-            m_scanLine = RenderObject::createRenderObject(
-                "scanLine", this, RenderObjectType::Geometry, meshAxis[4]);
-            m_scanLine->setMaterial(plainMaterial);
-            addRenderObject(m_scanLine);
+        m_scanLine = RenderObject::createRenderObject(
+            "scanLine", this, RenderObjectType::Geometry, meshAxis[4]);
+        m_scanLine->setMaterial(plainMaterial);
+        addRenderObject(m_scanLine);
 
-//            m_scanLine->setLocalTransform(Transform::Identity());
-//            m_scanLine->setLocalTransform(
-//                Transform { Translation(Vector3(0_ra, 20_ra, 0_ra)) });
+        //            m_scanLine->setLocalTransform(Transform::Identity());
+        //            m_scanLine->setLocalTransform(
+        //                Transform { Translation(Vector3(0_ra, 20_ra, 0_ra)) });
     }
 
     // scan plane
@@ -315,9 +315,9 @@ void MinimalComponent::updateProbe(const Stream::Acquisition& acq)
     //    TWorld.translate(Ra::Core::Vector3(0.0, 0.2, -0.1));
 
     {
-                Ra::Core::Transform TLocal = Transform::Identity();
-//                TLocal.scale(10.0);
-                TLocal.scale(5.0);
+        Ra::Core::Transform TLocal = Transform::Identity();
+        //                TLocal.scale(10.0);
+        TLocal.scale(5.0);
 
         //    TLocal.translate(Ra::Core::Vector3(1.0, 0.0, 1.0));
         //        Ra::Core::Vector3 vecScale = Ra::Core::Vector3::Identity();
@@ -353,9 +353,8 @@ void MinimalComponent::updateProbe(const Stream::Acquisition& acq)
         //        m_scan->setLocalTransform(TRadium * TWorld * TLocal * TOrientation);
         m_scan->setLocalTransform(TRadium * TWorld * TOrientation * TLocal);
 
-
         Ra::Core::Transform TLocal2 = Ra::Core::Transform::Identity();
-        TLocal2.translate(Ra::Core::Vector3(3.1, - scanWidth / 2.0, 16.0));
+        TLocal2.translate(Ra::Core::Vector3(3.1, -scanWidth / 2.0, 16.0));
         Ra::Core::Vector3 vecScale2(3.0, userScale * scanWidth, 3.0);
         TLocal2.scale(vecScale2);
         m_scanLine->setLocalTransform(TRadium * TWorld * TOrientation * TLocal2);
@@ -364,15 +363,23 @@ void MinimalComponent::updateProbe(const Stream::Acquisition& acq)
 
 void MinimalComponent::initProbe()
 {
-    auto TLocal = Transform::Identity();
-    TLocal.scale(10.0);
-    m_scan->setLocalTransform(TLocal);
-
-    auto TWorld = Transform(Translation(Vector3(0.0, 20.0, 0.0)));
-    m_probe->setLocalTransform(TWorld);
-    for (int i = 0; i < 3; ++i) {
-        m_probe_axis[i]->setLocalTransform(TWorld);
+    {
+        auto TLocal = Transform::Identity();
+        TLocal.scale(10.0);
+        m_scan->setLocalTransform(TLocal);
     }
+
+    {
+        auto TLocal = Transform::Identity();
+        TLocal.translate(Vector3(0.0, 20.0, 0.0));
+        m_probe->setLocalTransform(TLocal);
+        TLocal.scale(10.0);
+        for (int i = 0; i < 3; ++i) {
+            m_probe_axis[i]->setLocalTransform(TLocal);
+        }
+    }
+
+    m_scanLine->setLocalTransform(Transform::Identity());
 }
 
 void MinimalComponent::updateScan(const Stream::Acquisition& acq)

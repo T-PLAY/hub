@@ -31,11 +31,11 @@ private slots:
 //    void on_newSensor(std::string sensorName);
 //    void on_delSensor(std::string sensorName);
 
-    void on_startStreaming(std::string sensorName);
-    void on_stopStreaming(std::string sensorName);
+    void on_startStreaming(std::string streamName);
+    void on_stopStreaming(std::string streamName);
 
-    void on_comboBox_scan_currentTextChanged(const QString &sensorName);
-    void on_comboBox_pose_currentTextChanged(const QString &sensorName);
+    void on_comboBox_scan_currentTextChanged(const QString &sourceType);
+    void on_comboBox_pose_currentTextChanged(const QString &sourceType);
 
     void on_newScanAcquisition();
     void on_newPoseAcquisition();
