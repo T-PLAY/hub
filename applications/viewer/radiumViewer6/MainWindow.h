@@ -4,6 +4,7 @@
 #include <MinimalApp.hpp>
 #include <MinimalComponent.hpp>
 #include <QMainWindow>
+#include <QFileSystemModel>
 
 #include <SensorViews.h>
 
@@ -40,6 +41,12 @@ private slots:
     void on_newScanAcquisition();
     void on_newPoseAcquisition();
 
+    void on_toolButton_record_toggled(bool checked);
+
+    void on_toolButton_snapshot_clicked();
+
+    void on_treeView_clicked(const QModelIndex &index);
+
 private:
     Ui::MainWindow* ui;
 
@@ -52,6 +59,8 @@ private:
     std::string m_activeStreamScan = "";
     const Thread_InputStream * m_threadInputStreamPose = nullptr;
     std::string m_activeStreamPose = "";
+
+    QFileSystemModel * m_recordFileModel = nullptr;
 
 };
 #endif // MAINWINDOW_H

@@ -173,15 +173,15 @@ void MinimalComponent::initialize()
 
     // probe axis
     {
+        Ra::Core::Transform TLocal = Transform::Identity();
+        TLocal.translate(Vector3(0.0, 20.0, 0.0));
+        TLocal.scale(5.0);
         for (uint i = 0; i < 3; ++i) {
             m_probe_axis[i] = RenderObject::createRenderObject(
                 "probeAxis" + std::to_string(i), this, RenderObjectType::Geometry, meshAxis[i]);
             m_probe_axis[i]->setMaterial(plainMaterial);
             addRenderObject(m_probe_axis[i]);
 
-            Ra::Core::Transform TLocal = Transform::Identity();
-            TLocal.translate(Vector3(0.0, 20.0, 0.0));
-            TLocal.scale(10.0);
             m_probe_axis[i]->setLocalTransform(TLocal);
             //            m_probe_axis[i]->setLocalTransform(
             //                Transform { Translation(Vector3(0_ra, 20_ra, 0_ra)) });
@@ -373,7 +373,7 @@ void MinimalComponent::initProbe()
         auto TLocal = Transform::Identity();
         TLocal.translate(Vector3(0.0, 20.0, 0.0));
         m_probe->setLocalTransform(TLocal);
-        TLocal.scale(10.0);
+        TLocal.scale(5.0);
         for (int i = 0; i < 3; ++i) {
             m_probe_axis[i]->setLocalTransform(TLocal);
         }
