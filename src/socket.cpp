@@ -140,6 +140,11 @@ ClientSocket::~ClientSocket()
 #endif
 }
 
+void ClientSocket::close()
+{
+    clear();
+}
+
 void ClientSocket::setupOutput(const std::string& sensorName) const
 {
 #ifdef DEBUG_SOCKET

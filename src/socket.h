@@ -13,7 +13,7 @@
 
 //#define DEBUG_SOCKET
 
-constexpr int SERVICE_PORT = 4043;
+constexpr int SERVICE_PORT = 4042;
 constexpr const char* SERVICE_IP = "127.0.0.1";
 
 class Socket {
@@ -110,6 +110,8 @@ public:
     ClientSocket&& operator=(ClientSocket&& sock) = delete;
 
     ~ClientSocket();
+
+    void close() override;
 
     void write(const unsigned char* data, size_t len) const override;
     template <class T>
