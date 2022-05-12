@@ -76,6 +76,7 @@ MainWindow::MainWindow(QWidget* parent)
 
     //    m_sensorViews = new SensorViews(*ui->verticalLayout_sensors,
     //    *ui->mdiArea_sensors, *ui->comboBox_scan, *ui->comboBox_pose);
+//    m_sensorViews = new SensorViews(*ui->verticalLayout_sensors, *ui->mdiArea_sensors);
     m_sensorViews = new SensorViews(*ui->verticalLayout_sensors, *ui->mdiArea_sensors);
     QObject::connect(m_sensorViews, &SensorViews::streamingStarted, this,
         &MainWindow::on_startStreaming);

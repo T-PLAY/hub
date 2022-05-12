@@ -83,6 +83,7 @@ static void init()
         }
 #else
         signal(SIGINT, signalHandler);
+        signal(SIGPIPE, SIG_IGN);
 
 #endif
         sInited = true;
