@@ -188,7 +188,7 @@ int main(int argc, char* argv[])
 //#endif
 #ifndef ONLY_POSE
     try {
-        scanStream = new InputStream(g_probeScanSensorName.c_str(), "");
+        scanStream = new InputStream(g_probeScanSensorName, "");
     } catch (std::exception& e) {
         std::cout << "[main] catch exception " << e.what() << std::endl;
         scanStream = nullptr;
@@ -198,9 +198,9 @@ int main(int argc, char* argv[])
     try {
         if (scanStream != nullptr) {
 //            posStream = new InputStream("Polhemus Patriot (probe)", "ULA-OP 256");
-            posStream = new InputStream(g_probePoseSensorName.c_str());
+            posStream = new InputStream(g_probePoseSensorName);
         } else {
-            posStream = new InputStream(g_probePoseSensorName.c_str());
+            posStream = new InputStream(g_probePoseSensorName);
         }
     } catch (std::exception& e) {
         std::cout << "[main] catch exception " << e.what() << std::endl;

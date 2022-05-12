@@ -7,6 +7,7 @@
 #include <QFileSystemModel>
 
 #include <SensorViews.h>
+#include <Player.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -45,7 +46,7 @@ private slots:
 
     void on_toolButton_snapshot_clicked();
 
-    void on_treeView_clicked(const QModelIndex &index);
+    void on_treeView_record_clicked(const QModelIndex &index);
 
 private:
     Ui::MainWindow* ui;
@@ -62,5 +63,6 @@ private:
 
     QFileSystemModel * m_recordFileModel = nullptr;
 
+    Player m_player;
 };
 #endif // MAINWINDOW_H

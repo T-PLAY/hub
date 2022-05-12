@@ -96,22 +96,22 @@ MainWindow::MainWindow(QWidget* parent)
     m_recordFileModel->setReadOnly(true);
 
     // Set filter
-        m_recordFileModel->setFilter(QDir::NoDotAndDotDot | QDir::AllDirs | QDir::AllEntries);
-//    m_recordFileModel->setFilter(QDir::NoDotAndDotDot | QDir::AllDirs);
+    m_recordFileModel->setFilter(QDir::NoDotAndDotDot | QDir::AllDirs | QDir::AllEntries);
+    //    m_recordFileModel->setFilter(QDir::NoDotAndDotDot | QDir::AllDirs);
 
     // QFileSystemModel requires root path
     m_recordFileModel->setRootPath(recordPath);
 
     // Attach the model to the view
-    ui->treeView->setModel(m_recordFileModel);
+    ui->treeView_record->setModel(m_recordFileModel);
     const auto& rootIndex = m_recordFileModel->index(recordPath);
-    ui->treeView->setRootIndex(rootIndex);
-    ui->treeView->expand(rootIndex);
-    ui->treeView->setColumnHidden(1, true);
-    ui->treeView->setColumnHidden(2, true);
-    ui->treeView->setColumnHidden(3, true);
-//    ui->treeView->setItemsExpandable(false);
-//    ui->treeView->setColumnHidden(0, true);
+    ui->treeView_record->setRootIndex(rootIndex);
+    ui->treeView_record->expand(rootIndex);
+    ui->treeView_record->setColumnHidden(1, true);
+    ui->treeView_record->setColumnHidden(2, true);
+    ui->treeView_record->setColumnHidden(3, true);
+    //    ui->treeView->setItemsExpandable(false);
+    //    ui->treeView->setColumnHidden(0, true);
 }
 
 MainWindow::~MainWindow()
@@ -274,16 +274,21 @@ void MainWindow::on_toolButton_snapshot_clicked()
 {
 }
 
-void MainWindow::on_treeView_clicked(const QModelIndex& index)
+void MainWindow::on_treeView_record_clicked(const QModelIndex& index)
 {
     std::string mPath = m_recordFileModel->fileInfo(index).absoluteFilePath().toStdString();
-    const auto& selectionModel = ui->treeView->selectionModel();
-    if (selectionModel->isSelected(index)) {
-        std::cout << "treeView clicked " << mPath << std::endl;
-//        selectionModel->select(index, QItemSelectionModel::Deselect);
-//        ui->treeView->clearSelection();
 
+    if (mPath == m_player.getLoadedPath()) {
+        std::cout << "treeView_record unclicked " << mPath << std::endl;
+        const auto& selectionModel = ui->treeView_record->selectionModel();
+        selectionModel->select(index, QItemSelectionModel::Deselect);
+//        m_recordFilePlaying = "";
+        m_player.stop();
+        m_player.unload();
     } else {
-        std::cout << "treeView close " << mPath << std::endl;
+//        m_recordFilePlaying = mPath;
+        std::cout << "treeView_record clicked " << mPath << std::endl;
+        m_player.load(mPath);
+        m_player.play();
     }
 }
