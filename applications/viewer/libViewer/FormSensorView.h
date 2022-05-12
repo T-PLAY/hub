@@ -16,6 +16,7 @@ class Thread_InputStream : public QThread
 
   signals:
     void newAcquisition();
+//    void streamingStopped(std::string sensorName);
 
   public:
     // overriding the QThread's run() method

@@ -158,6 +158,8 @@ void MainWindow::on_startStreaming(std::string streamName)
 
 void MainWindow::on_stopStreaming(std::string streamName)
 {
+    std::cout << "[MainWindow] on_stopStreaming " << streamName << std::endl;
+
     assert(m_sensorViews != nullptr);
 
     if (streamName.substr(0, g_probeScanSensorName.size()) == g_probeScanSensorName) {
@@ -191,6 +193,7 @@ void MainWindow::on_comboBox_scan_currentTextChanged(
     if (sourceType == "") {
         assert(m_activeStreamScan != "");
         m_threadInputStreamScan = nullptr;
+        m_comp->initScan();
 
     } else {
         const auto& sensorView = m_sensorViews->getSensorView(streamNameStd);
@@ -220,6 +223,7 @@ void MainWindow::on_comboBox_pose_currentTextChanged(
     if (sourceType == "") {
         assert(m_activeStreamPose != "");
         m_threadInputStreamPose = nullptr;
+        m_comp->initProbe();
 
     } else {
         const auto& sensorView = m_sensorViews->getSensorView(streamNameStd);
@@ -279,7 +283,7 @@ void MainWindow::on_treeView_record_clicked(const QModelIndex& index)
     std::string mPath = m_recordFileModel->fileInfo(index).absoluteFilePath().toStdString();
 
     if (mPath == m_player.getLoadedPath()) {
-        std::cout << "treeView_record unclicked " << mPath << std::endl;
+        std::cout << "stop playing " << mPath << std::endl;
         const auto& selectionModel = ui->treeView_record->selectionModel();
         selectionModel->select(index, QItemSelectionModel::Deselect);
 //        m_recordFilePlaying = "";
@@ -287,7 +291,7 @@ void MainWindow::on_treeView_record_clicked(const QModelIndex& index)
         m_player.unload();
     } else {
 //        m_recordFilePlaying = mPath;
-        std::cout << "treeView_record clicked " << mPath << std::endl;
+        std::cout << "play new record " << mPath << std::endl;
         m_player.load(mPath);
         m_player.play();
     }
