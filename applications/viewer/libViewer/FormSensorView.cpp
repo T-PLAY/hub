@@ -31,6 +31,7 @@ void Thread_InputStream::run() {
     }
     catch ( std::exception& e ) {
         std::cout << "[streamView] catch exception : " << e.what() << std::endl;
+//        emit streamingStopped(mInputStream.getSensorName());
         return;
     }
 
@@ -115,6 +116,8 @@ void FormSensorView::on_startStreaming() {
     m_inputStreamThread = new Thread_InputStream( mSensorName, this );
     QObject::connect(
         m_inputStreamThread, &Thread_InputStream::newAcquisition, this, &FormSensorView::on_newAcquisition );
+//    QObject::connect(
+//        m_inputStreamThread, &Thread_InputStream::streamingStopped, this, &FormSensorView::streamingStopped );
 
     assert( m_streamView == nullptr );
     m_streamView = new MainWindowStreamView( m_inputStreamThread->mInputStream, this );

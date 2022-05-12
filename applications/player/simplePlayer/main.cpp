@@ -18,12 +18,16 @@ int main(int argc, char* argv[])
     assert(std::filesystem::exists(recordFolder));
 
     Player player;
-    for (int i = 0; i < 10; ++i) {
         player.load(recordFolder);
         player.play();
-//        std::this_thread::sleep_for(std::chrono::milliseconds(1));
-        player.stop();
-        player.unload();
-    }
+        std::this_thread::sleep_for(std::chrono::seconds(3600));
+
+//    for (int i = 0; i < 10; ++i) {
+//        player.load(recordFolder);
+//        player.play();
+////        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+//        player.stop();
+//        player.unload();
+//    }
     return 0;
 }
