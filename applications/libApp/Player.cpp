@@ -34,7 +34,7 @@ void Player::load(const std::string& path)
         //        assert(sizeof(int) == 4);
 
         try {
-            InputStream inputStream(FileIO { file });
+            InputStream inputStream(FileIO(std::move(file)));
             auto acqs = inputStream.getAllAcquisition();
             const std::string& sensorName = inputStream.getSensorName();
 
@@ -63,13 +63,16 @@ void Player::load(const std::string& path)
             std::cout << "catch exception : " << e.what() << std::endl;
         }
 
-        file.close();
+//        file.close();
     }
     std::cout << "read total of " << m_snapshots.size() << " acquistions" << std::endl;
 }
 
 void Player::unload()
 {
+    assert(! m_outputs.empty());
+    assert(! m_snapshots.empty());
+    assert(m_loadedPath != "");
     m_outputs.clear();
     m_snapshots.clear();
     m_loadedPath = "";

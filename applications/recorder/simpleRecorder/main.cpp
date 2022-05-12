@@ -57,13 +57,13 @@ int main(int argc, char* argv[])
     std::cout << "create directory " << fileFolder << std::endl;
     std::filesystem::create_directories(fileFolder);
 
-    std::fstream files[2];
+//    std::fstream files[2];
     for (int i = 0; i < 2; ++i) {
-        files[i] = std::fstream(fileFolder + "/" + sensorNames[i] + ".txt", std::ios::binary | std::ios::out);
-        assert(files[i].is_open());
+        auto file = std::fstream(fileFolder + "/" + sensorNames[i] + ".txt", std::ios::binary | std::ios::out);
+        assert(file.is_open());
 
         // here
-        outputFileStreams.push_back(std::make_unique<OutputStream>(sensorNames[i], inputStreams[i]->getFormat(), inputStreams[i]->getDims(), FileIO(files[i]), inputStreams[i]->getMetaData()));
+        outputFileStreams.push_back(std::make_unique<OutputStream>(sensorNames[i], inputStreams[i]->getFormat(), inputStreams[i]->getDims(), FileIO(std::move(file)), inputStreams[i]->getMetaData()));
     }
     try {
 
@@ -83,9 +83,9 @@ int main(int argc, char* argv[])
         gStop = true;
     }
 
-    for (int i = 0; i < 2; ++i) {
-        files[i].close();
-    }
+//    for (int i = 0; i < 2; ++i) {
+//        files[i].close();
+//    }
 
     std::filesystem::create_directories("latest");
     for (const auto& dirEntry : std::filesystem::directory_iterator("latest")) {
