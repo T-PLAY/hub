@@ -18,7 +18,9 @@ class FileIO : public IOStream {
     };
 
 public:
-    FileIO(std::fstream& file);
+//    FileIO(std::fstream&& file);
+    template <class FStream>
+    FileIO(FStream&& file);
 
     void write(const unsigned char* data, size_t len) const override;
     void read(unsigned char* data, size_t len) const override;
@@ -26,5 +28,12 @@ public:
 protected:
     std::fstream& mFile;
 };
+
+template<class FStream>
+FileIO::FileIO(FStream &&file)
+    : mFile(*std::move(new FStream(std::move(file))))
+{
+    assert(mFile.is_open());
+}
 
 #endif // FILEIO_H

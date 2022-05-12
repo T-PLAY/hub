@@ -3,11 +3,11 @@
 #include <cassert>
 #include <iostream>
 
-FileIO::FileIO(std::fstream& file)
-    : mFile(file)
-{
-    assert(file.is_open());
-}
+//FileIO::FileIO(std::fstream &&file)
+//    : mFile(std::move(file))
+//{
+//    assert(file.is_open());
+//}
 
 // FileIO::FileIO(std::fstream &file)
 //{
