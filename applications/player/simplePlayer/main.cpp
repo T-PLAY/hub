@@ -1,10 +1,9 @@
 
-#include <iostream>
-#include <filesystem>
 #include <cassert>
+#include <filesystem>
+#include <iostream>
 
 #include <Player.h>
-
 
 int main(int argc, char* argv[])
 {
@@ -19,10 +18,12 @@ int main(int argc, char* argv[])
     assert(std::filesystem::exists(recordFolder));
 
     Player player;
-    player.load(recordFolder);
-    player.play();
-
-    std::this_thread::sleep_for(std::chrono::seconds(2));
-    player.stop();
+    for (int i = 0; i < 10; ++i) {
+        player.load(recordFolder);
+        player.play();
+//        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        player.stop();
+        player.unload();
+    }
     return 0;
 }

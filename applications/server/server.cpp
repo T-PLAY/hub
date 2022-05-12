@@ -47,6 +47,7 @@ void Server::run()
             sock.read(clientType);
 
             switch (clientType) {
+            ////////////////////////////////////////////////////////////////////////////////////////////////
             case ClientSocket::Type::STREAMER: {
 
                 std::string sensorName;
@@ -222,14 +223,21 @@ void Server::run()
                     mStreamers.at(syncSensorName)->mSyncMaster = nullptr;
                 }
 
+                // if player kill many stream in same time (concurrency)
+                mMtx.lock();
+//                std::cout << "[" << sensorName << "] mutex lock" << std::endl;
                 for (const auto* viewer : mViewers) {
                     viewer->mSock->write(Socket::Message::DEL_STREAMER);
-                    viewer->mSock->write(inputStream.getSensorName());
+                    //                    viewer->mSock->write(inputStream.getSensorName());
+                    viewer->mSock->write(sensorName);
                 }
+//                std::cout << "[" << sensorName << "] mutex unlock" << std::endl;
+                mMtx.unlock();
 
-                std::cout << getServerHeader(iThread) << "[streamer] end" << std::endl;
+                std::cout << getServerHeader(iThread) << "[streamer] end (" << sensorName << ")" << std::endl;
             } break;
 
+            ////////////////////////////////////////////////////////////////////////////////////////////////
             case ClientSocket::Type::VIEWER: {
 
                 Viewer viewer { &sock };
@@ -261,6 +269,7 @@ void Server::run()
 
             } break;
 
+            ////////////////////////////////////////////////////////////////////////////////////////////////
             case ClientSocket::Type::STREAM_VIEWER: {
 
                 std::string sensorName;

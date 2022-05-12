@@ -17,6 +17,9 @@
 
 void Player::load(const std::string& path)
 {
+    assert(! m_isPlaying);
+    assert(m_loadedPath == "");
+
     // read records in folder
     for (const auto& fileDir : std::filesystem::directory_iterator(path)) {
         const auto filename = fileDir.path().string();
@@ -66,13 +69,21 @@ void Player::load(const std::string& path)
 //        file.close();
     }
     std::cout << "read total of " << m_snapshots.size() << " acquistions" << std::endl;
+
+    m_loadedPath = path;
 }
 
 void Player::unload()
 {
+    assert(! m_isPlaying);
+
     assert(! m_outputs.empty());
     assert(! m_snapshots.empty());
     assert(m_loadedPath != "");
+//    for (auto & output : m_outputs) {
+//        delete output.second.get();
+////        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+//    }
     m_outputs.clear();
     m_snapshots.clear();
     m_loadedPath = "";
@@ -80,40 +91,45 @@ void Player::unload()
 
 void Player::play()
 {
+//    m_futureObj = m_exitSignal.get_future();
     std::cout << "start playing" << std::endl;
     m_thread = std::thread([this]() {
         // play
         int iLoop = 0;
-        bool exitSignal = false;
-        while (!exitSignal) {
+//        bool exitSignal = false;
+        while (m_isPlaying) {
             const auto startRecord = m_snapshots.begin()->mAcq.mBackendTimestamp;
             const auto& startChrono = std::chrono::high_resolution_clock::now();
 
             auto it = m_snapshots.begin();
             //            while (it != m_snapshots.end()) {
-            while (!exitSignal && it != m_snapshots.end()) {
+            while (m_isPlaying && it != m_snapshots.end()) {
                 const auto& snapshot = *it;
 
                 std::this_thread::sleep_until(startChrono + std::chrono::microseconds(snapshot.mAcq.mBackendTimestamp - startRecord));
                 *m_outputs.at(snapshot.mSensorName) << snapshot.mAcq;
 
                 ++it;
-                exitSignal = m_futureObj.wait_for(std::chrono::milliseconds(1)) == std::future_status::timeout;
+//                m_isPlaying = m_futureObj.wait_for(std::chrono::milliseconds(1)) == std::future_status::timeout;
             }
 
-            if (!exitSignal) {
+            if (!m_isPlaying) {
                 std::cout << "end record, auto loop " << iLoop << std::endl;
             }
             ++iLoop;
         }
     });
+    m_isPlaying = true;
 }
 
 void Player::stop()
 {
+    assert(m_isPlaying);
     std::cout << "stop playing" << std::endl;
-    m_exitSignal.set_value();
+//    m_exitSignal.set_value();
+    m_isPlaying = false;
     m_thread.join();
+//    m_exitSignal.swap(std::promise<void>());
 }
 
 const std::string& Player::getLoadedPath() const

@@ -65,6 +65,11 @@ uint64_t typeInfoHash64(const char _DecoratedName[1])
 }
 
 
+//IOStream::~IOStream()
+//{
+//    close();
+//}
+
 void IOStream::write(const std::any& any) const
 {
 #ifdef DEBUG_IOSTREAM

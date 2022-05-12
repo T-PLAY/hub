@@ -13,6 +13,16 @@
 //{
 
 //}
+FileIO::FileIO(std::fstream &&file)
+    : mFile(*std::move(new std::fstream(std::move(file))))
+{
+    assert(mFile.is_open());
+}
+
+void FileIO::close()
+{
+    mFile.close();
+}
 
 void FileIO::write(const unsigned char* data, size_t len) const
 {

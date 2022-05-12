@@ -42,6 +42,9 @@ public:
     IOStream&& operator=(IOStream&& ioStream) = delete;
 
     virtual ~IOStream() = default;
+//    virtual ~IOStream();
+
+    virtual void close() = 0;
 
     void write(const std::any& any) const;
     virtual void write(const unsigned char* data, size_t len) const = 0;

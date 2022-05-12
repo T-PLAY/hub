@@ -17,6 +17,8 @@
 // struct StreamSyncViewer : public StreamViewer {
 // };
 
+#include <mutex>
+
 struct Streamer {
     InputStream mInputStream;
     std::string mSensorName;
@@ -46,6 +48,8 @@ private:
     ServerSocket mServerSock;
     std::map<std::string, Streamer*> mStreamers;
     std::list<Viewer*> mViewers;
+
+    std::mutex mMtx;
 };
 
 #endif // SERVER_H

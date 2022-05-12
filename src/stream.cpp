@@ -55,6 +55,7 @@ Stream::~Stream()
 #ifdef DEBUG_MSG
     std::cout << "[Stream] ~Stream()" << std::endl;
 #endif
+    mIOStream.close();
     delete &mIOStream;
 }
 

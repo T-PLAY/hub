@@ -34,9 +34,11 @@ private:
     std::set<Snapshot> m_snapshots;
     std::string m_loadedPath = "";
 
-    std::promise<void> m_exitSignal;
-    std::future<void> m_futureObj = m_exitSignal.get_future();
+//    std::promise<void> m_exitSignal;
+//    std::future<void> m_futureObj;
     std::thread m_thread;
+    bool m_isPlaying = false;
+//    bool m_exitSignal = false;
 
 public:
     const std::string & getLoadedPath() const;
