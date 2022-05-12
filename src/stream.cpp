@@ -140,7 +140,7 @@ size_t Stream::getAcquisitionSize() const
 
 //}
 
-InputStream::InputStream(const char* sensorName, const std::string& syncSensorName)
+InputStream::InputStream(const std::string & sensorName, const std::string& syncSensorName)
     // InputStream::InputStream(const std::string &sensorName, const std::string &syncSensorName)
     : Stream("", Format::NONE, {}, *std::move(new ClientSocket(sensorName, syncSensorName)))
 {
@@ -148,9 +148,9 @@ InputStream::InputStream(const char* sensorName, const std::string& syncSensorNa
     mIOStream.read(mSensorName);
     mIOStream.read(mFormat);
     mIOStream.read(mDims);
-//    std::cout << "[InputStream] before read metaData" << std::endl;
+    //    std::cout << "[InputStream] before read metaData" << std::endl;
     mIOStream.read(mMetaData);
-//    std::cout << "[InputStream] after read metaData" << std::endl;
+    //    std::cout << "[InputStream] after read metaData" << std::endl;
 
     mAcquisitionSize = computeAcquisitionSize(mFormat, mDims);
 }
@@ -197,9 +197,14 @@ std::vector<Stream::Acquisition> InputStream::getAllAcquisition()
 
     try {
         Stream::Acquisition acq;
+        int nReadAcqs = 0;
         while (true) {
             InputStream::operator>>(acq);
+            if (nReadAcqs < 10) {
+                std::cout << "read acquisition : " << acq << std::endl;
+            }
             acqs.emplace_back(std::move(acq));
+            ++nReadAcqs;
         }
     } catch (Stream::exception& e) {
         std::cout << "[stream] catch stream exception : " << e.what() << std::endl;
@@ -245,11 +250,11 @@ OutputStream::OutputStream(const std::string& sensorName, Format format, const s
     mIOStream.write(mFormat);
     mIOStream.write(mDims);
 
-//    for (const auto& pair : metaData) {
-//        const auto& name = pair.first;
-//        const auto& val = pair.second;
-//        std::cout << "[OutputStream] metadata: " << val.type().name() << " " << name << " = '" << any::to_string(val) << "'" << std::endl;
-//    }
+    //    for (const auto& pair : metaData) {
+    //        const auto& name = pair.first;
+    //        const auto& val = pair.second;
+    //        std::cout << "[OutputStream] metadata: " << val.type().name() << " " << name << " = '" << any::to_string(val) << "'" << std::endl;
+    //    }
     mIOStream.write(metaData);
 }
 
@@ -294,6 +299,8 @@ void OutputStream::operator<<(const InputStream& inputStream) const
     inputStream >> acq;
     OutputStream::operator<<(std::move(acq));
 }
+
+//////////////////////////////////////////////// Acquisition ///////////////////////////////////////////
 
 // void Stream::Acquisition::start()
 //{

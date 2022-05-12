@@ -117,7 +117,7 @@
           <number>0</number>
          </property>
          <item>
-          <widget class="QTreeView" name="treeView"/>
+          <widget class="QTreeView" name="treeView_record"/>
          </item>
         </layout>
        </widget>

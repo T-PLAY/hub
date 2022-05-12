@@ -30,10 +30,10 @@ elseif(UNIX)
 endif()
 
 
-#target_link_libraries(${PROJECT_NAME} PUBLIC
-#    # src
+target_link_libraries(${PROJECT_NAME} PUBLIC
+     src
 #    # ${REQUIRED_LIBS_QUALIFIED}
 #    # ${UNIX_REQUIRED_LIBS}
 #    # ${WIN32_REQUIRED_LIBS}
-#)
+)
 

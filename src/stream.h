@@ -276,7 +276,7 @@ class OutputStream;
 
 class InputStream : public Stream {
 public:
-    InputStream(const char* sensorName, const std::string& syncSensorName = "");
+    InputStream(const std::string & sensorName, const std::string& syncSensorName = "");
     template <class IOStream>
     InputStream(IOStream&& ioStream);
     template <class IOStream>
