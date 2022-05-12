@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cassert>
 //#include <utility>
+#include <exception>
 
 Socket::Socket()
 {
@@ -233,7 +234,16 @@ void ClientSocket::write(const unsigned char* data, size_t len) const
         }
         // winsock const char * data
         // winsock int len
-        int byteSent = send(mFdSock, (const char*)data + uploadSize, static_cast<int>(len - uploadSize), 0);
+        int byteSent;
+        try {
+            byteSent = send(mFdSock, (const char*)data + uploadSize, static_cast<int>(len - uploadSize), 0);
+        }
+//        catch (std::runtime_error & e) {
+        catch (std::exception & e) {
+            assert(false);
+            throw e;
+        }
+
         if (byteSent == -1) {
             std::cout << getHeader(mFdSock) << "can't send packet " << byteSent << "/" << len << std::endl;
             throw Socket::exception("Can't write packet, peer connection lost");

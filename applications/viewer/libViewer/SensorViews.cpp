@@ -81,7 +81,7 @@ void Thread_Client::run() {
 ///////////////////////////////////////////////////////////////////////////////////////
 
 
-SensorViews::SensorViews( QVBoxLayout& vboxLayout, QMdiArea& mdiArea, QObject* parent ) :
+SensorViews::SensorViews(QBoxLayout &vboxLayout, QMdiArea& mdiArea, QObject* parent ) :
     QObject( parent ),
     mThreadClient( this ),
     m_vBoxLayout(vboxLayout),

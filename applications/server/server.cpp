@@ -225,13 +225,18 @@ void Server::run()
 
                 // if player kill many stream in same time (concurrency)
                 mMtx.lock();
-//                std::cout << "[" << sensorName << "] mutex lock" << std::endl;
+                //                std::cout << "[" << sensorName << "] mutex lock" << std::endl;
                 for (const auto* viewer : mViewers) {
-                    viewer->mSock->write(Socket::Message::DEL_STREAMER);
-                    //                    viewer->mSock->write(inputStream.getSensorName());
-                    viewer->mSock->write(sensorName);
+                    try {
+                        viewer->mSock->write(Socket::Message::DEL_STREAMER);
+                        //                    viewer->mSock->write(inputStream.getSensorName());
+                        viewer->mSock->write(sensorName);
+
+                    } catch (std::exception& e) {
+                        std::cout << getServerHeader(iThread) << "[streamer] in : viewer is dead, this append when viewer/streamer process was stopped in same time : " << e.what() << std::endl;
+                    }
                 }
-//                std::cout << "[" << sensorName << "] mutex unlock" << std::endl;
+                //                std::cout << "[" << sensorName << "] mutex unlock" << std::endl;
                 mMtx.unlock();
 
                 std::cout << getServerHeader(iThread) << "[streamer] end (" << sensorName << ")" << std::endl;
@@ -242,7 +247,7 @@ void Server::run()
 
                 Viewer viewer { &sock };
 
-                // for each streamer, open stream viewer socket
+                // each already connected streamers prevent existence for this new viewer
                 for (const auto& pair : mStreamers) {
                     const auto& streamer = *pair.second;
                     viewer.notifyNewStreamer(streamer);

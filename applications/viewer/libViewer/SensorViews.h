@@ -40,7 +40,7 @@ class SensorViews : public QObject
 {
     Q_OBJECT
   public:
-    SensorViews( QVBoxLayout& vboxLayout, QMdiArea& mdiArea, QObject* parent = nullptr );
+    SensorViews( QBoxLayout& vboxLayout, QMdiArea& mdiArea, QObject* parent = nullptr );
     ~SensorViews();
 
   signals:
@@ -71,7 +71,7 @@ class SensorViews : public QObject
 //    std::map<std::string, MainWindowStreamView*> mStreamViews;
     std::map<std::string, FormSensorView*> m_sensorViews;
 
-    QVBoxLayout & m_vBoxLayout;
+    QBoxLayout & m_vBoxLayout;
     QMdiArea & m_mdiArea;
 //    QComboBox & m_comboBoxScan;
 //    QComboBox & m_comboBoxPose;
