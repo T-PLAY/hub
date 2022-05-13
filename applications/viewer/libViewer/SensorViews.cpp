@@ -121,6 +121,8 @@ SensorViews::SensorViews(QBoxLayout& vboxLayout,
     //    } );
     //    m_mainWindow.setEnabled(false);
     mThreadClient.start();
+
+    m_mainWindow.setEnabled(false);
 }
 
 SensorViews::~SensorViews()
