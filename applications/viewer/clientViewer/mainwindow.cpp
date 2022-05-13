@@ -14,7 +14,7 @@ MainWindow::MainWindow(QWidget* parent)
 
     ui->setupUi(this);
 
-    m_sensorViews = new SensorViews(*ui->verticalLayoutSensor, *ui->mdiArea);
+    m_sensorViews = new SensorViews(*ui->verticalLayoutSensor, *ui->mdiArea, *this);
 
 }
 
