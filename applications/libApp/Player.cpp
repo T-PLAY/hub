@@ -15,6 +15,14 @@
 
 //}
 
+Player::~Player()
+{
+    std::cout << "[Player] ~Player" << std::endl;
+
+    if (m_thread != nullptr)
+        stop();
+}
+
 void Player::load(const std::string& path)
 {
     assert(! m_isPlaying);
@@ -93,7 +101,8 @@ void Player::play()
 {
 //    m_futureObj = m_exitSignal.get_future();
     std::cout << "start playing" << std::endl;
-    m_thread = std::thread([this]() {
+    assert(m_thread == nullptr);
+    m_thread = new std::thread([this]() {
         // play
         int iLoop = 0;
 //        bool exitSignal = false;
@@ -128,7 +137,10 @@ void Player::stop()
     std::cout << "stop playing" << std::endl;
 //    m_exitSignal.set_value();
     m_isPlaying = false;
-    m_thread.join();
+    assert(m_thread != nullptr);
+    m_thread->join();
+    delete  m_thread;
+    m_thread = nullptr;
 //    m_exitSignal.swap(std::promise<void>());
 }
 
