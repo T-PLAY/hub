@@ -20,7 +20,7 @@ class Thread_Client : public QThread
     Q_OBJECT
   public:
     // constructor
-    explicit Thread_Client( QObject* parent = 0 );
+    explicit Thread_Client( DialogServerConnect & dialog,  QObject* parent = 0 );
 
   signals:
     void serverConnected();
@@ -36,7 +36,7 @@ class Thread_Client : public QThread
     // overriding the QThread's run() method
     void run();
 
-    DialogServerConnect m_dialog;
+    DialogServerConnect& m_dialog;
 
   private:
 };
@@ -68,11 +68,15 @@ class SensorViews : public QObject
                     std::string size,
                     std::string metaData );
     void delSensor( std::string sensorName );
+//    void onQuitApp();
 
     const FormSensorView & getSensorView(const std::string & sensorName) const;
 
 
+
   private:
+    DialogServerConnect m_dialog;
+
     friend class Thread_Client;
     Thread_Client mThreadClient;
 
