@@ -13,6 +13,8 @@
 #include <SensorView.h>
 #include <QComboBox>
 
+#include <DialogServerConnect.h>
+
 class Thread_Client : public QThread
 {
     Q_OBJECT
@@ -21,6 +23,8 @@ class Thread_Client : public QThread
     explicit Thread_Client( QObject* parent = 0 );
 
   signals:
+    void serverConnected();
+    void serverDisconnected();
     void addSensorSignal( std::string sensorName,
                           std::string format,
                           std::string dims,
@@ -32,6 +36,8 @@ class Thread_Client : public QThread
     // overriding the QThread's run() method
     void run();
 
+    DialogServerConnect m_dialog;
+
   private:
 };
 
@@ -40,10 +46,12 @@ class SensorViews : public QObject
 {
     Q_OBJECT
   public:
-    SensorViews( QBoxLayout& vboxLayout, QMdiArea& mdiArea, QObject* parent = nullptr );
+    SensorViews( QBoxLayout& vboxLayout, QMdiArea& mdiArea, QMainWindow & mainWindow, QObject* parent = nullptr );
     ~SensorViews();
 
   signals:
+//    void serverConnected();
+//    void serverDisconnected();
     void streamingStarted(std::string sensorName);
     void streamingStopped(std::string sensorName);
 //    void startStreaming();
@@ -52,6 +60,8 @@ class SensorViews : public QObject
 //    void sensorDeleted(const std::string & sensorName);
 
   public slots:
+    void onServerConnect();
+    void onServerDisconnect();
     void addSensor( std::string sensorName,
                     std::string format,
                     std::string dims,
@@ -73,6 +83,9 @@ class SensorViews : public QObject
 
     QBoxLayout & m_vBoxLayout;
     QMdiArea & m_mdiArea;
+    QMainWindow & m_mainWindow;
+
+//    DialogServerConnect & m_dialog;
 //    QComboBox & m_comboBoxScan;
 //    QComboBox & m_comboBoxPose;
 };
