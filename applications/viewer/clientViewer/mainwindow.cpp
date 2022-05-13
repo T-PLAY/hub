@@ -14,7 +14,9 @@ MainWindow::MainWindow(QWidget* parent)
 
     ui->setupUi(this);
 
-    m_sensorViews = new SensorViews(*ui->verticalLayoutSensor, *ui->mdiArea, *this);
+//    setAttribute(Qt::WA_DeleteOnClose);
+//    m_sensorViews = new SensorViews(*ui->verticalLayoutSensor, *ui->mdiArea, *this);
+    m_sensorViews = new SensorViews(*ui->verticalLayoutSensor, *ui->mdiArea, *this, this);
 
 }
 
@@ -23,6 +25,7 @@ MainWindow::~MainWindow()
     std::cout << "[MainWindow] ~MainWindow()" << std::endl;
 
     delete m_sensorViews;
+    m_sensorViews = nullptr;
 
     delete ui;
     std::cout << "[MainWindow] ~MainWindow() deleted ui" << std::endl;
