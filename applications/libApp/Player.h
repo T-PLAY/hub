@@ -20,6 +20,7 @@ class Player
 {
 public:
 //    Player();
+    ~Player();
 
     void load(const std::string & path);
     void unload();
@@ -36,7 +37,7 @@ private:
 
 //    std::promise<void> m_exitSignal;
 //    std::future<void> m_futureObj;
-    std::thread m_thread;
+    std::thread * m_thread = nullptr;
     bool m_isPlaying = false;
 //    bool m_exitSignal = false;
 
