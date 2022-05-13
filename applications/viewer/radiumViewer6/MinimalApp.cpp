@@ -45,12 +45,17 @@ MinimalApp::MinimalApp() :
 }
 
 MinimalApp::~MinimalApp() {
-//    m_frame_timer->stop();
+    std::cout << "[MinimalApp] ~MinimalApp() start" << std::endl;
+    m_frame_timer->stop();
+//    disconnect( m_frame_timer, &QTimer::timeout, this, &MinimalApp::frame );
+//    m_frame_timer = nullptr;
+
     // need to clean up everithing before engine is cleaned up.
     m_task_queue.reset( nullptr );
     m_viewer.reset( nullptr );
     m_engine->cleanup();
     m_engine.reset( nullptr );
+    std::cout << "[MinimalApp] ~MinimalApp() end" << std::endl;
 }
 
 void MinimalApp::onGLInitialized() {
@@ -64,6 +69,9 @@ void MinimalApp::onGLInitialized() {
 }
 
 void MinimalApp::frame() {
+//    if (m_frame_timer == nullptr)
+//        return;
+
     // We use a fixed time step, but it is also possible
     // to check the time from last frame.
     const Scalar dt = 1.f / Scalar( m_target_fps );

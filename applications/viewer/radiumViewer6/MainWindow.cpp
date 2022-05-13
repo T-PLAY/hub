@@ -24,6 +24,7 @@ MainWindow::MainWindow( QWidget* parent ) : QMainWindow( parent ), ui( new Ui::M
     m_app     = new MinimalApp;
     auto& app = *m_app;
 
+//    QWidget* viewerWidget = QWidget::createWindowContainer( app.m_viewer.get(), this );
     QWidget* viewerWidget = QWidget::createWindowContainer( app.m_viewer.get() );
     //    viewerWidget->setAutoFillBackground(false);
     //    ui->verticalLayout->addWidget(viewerWidget);
@@ -120,8 +121,10 @@ MainWindow::MainWindow( QWidget* parent ) : QMainWindow( parent ), ui( new Ui::M
 }
 
 MainWindow::~MainWindow() {
+    std::cout << "[MainWindow] ~MainWindow() start" << std::endl;
     delete m_sensorViews;
     delete m_app;
+    std::cout << "[MainWindow] ~MainWindow() end" << std::endl;
 }
 
 void MainWindow::on_action2D_triggered() {
