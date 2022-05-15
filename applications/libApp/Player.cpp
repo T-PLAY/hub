@@ -54,7 +54,9 @@ void Player::load(const std::string& path)
             }
 
             // here
-            m_outputs[sensorName] = std::make_unique<OutputStream>(sensorName + " (record)", inputStream.getFormat(), inputStream.getDims(), ClientSocket(), inputStream.getMetaData());
+//            m_outputs[sensorName] = std::make_unique<OutputStream>(sensorName + " (record)", inputStream.getFormat(), inputStream.getDims(), ClientSocket(), inputStream.getMetaData());
+            m_outputs[sensorName] = std::make_unique<OutputStream>(sensorName, inputStream.getFormat(), inputStream.getDims(), ClientSocket(), inputStream.getMetaData());
+//            m_outputs[sensorName] = std::make_unique<OutputStream>(sensorName + " (physical)", inputStream.getFormat(), inputStream.getDims(), ClientSocket(), inputStream.getMetaData());
 
             //            int nReadAcqs = 0;
             //            Stream::Acquisition acq;
