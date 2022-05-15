@@ -4,3 +4,5 @@ build/
 .vs/
 CMakeSettings.json
 hub-install/
+data/records/*
+data/snapshots/*

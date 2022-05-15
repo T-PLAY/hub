@@ -149,7 +149,7 @@
              <string>startRecording</string>
             </property>
             <property name="checkable">
-             <bool>true</bool>
+             <bool>false</bool>
             </property>
            </widget>
           </item>
@@ -369,7 +369,7 @@
          <enum>QTabWidget::South</enum>
         </property>
         <property name="currentIndex">
-         <number>1</number>
+         <number>2</number>
         </property>
         <widget class="QWidget" name="tabSources">
          <attribute name="title">
@@ -426,6 +426,23 @@
          <attribute name="title">
           <string>Snapshots</string>
          </attribute>
+         <layout class="QVBoxLayout" name="verticalLayout_8">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QTreeView" name="treeView_snapshot"/>
+          </item>
+         </layout>
         </widget>
        </widget>
        <widget class="QListView" name="listView_frames"/>

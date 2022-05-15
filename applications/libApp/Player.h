@@ -5,34 +5,17 @@
 #include <stream.h>
 #include <future>
 
-
-struct Snapshot {
-    Stream::Acquisition mAcq;
-    std::string mSensorName;
-
-    bool operator<(const Snapshot& snapshot) const
-    {
-        return mAcq.mBackendTimestamp < snapshot.mAcq.mBackendTimestamp;
-    }
-    bool operator==(const Snapshot& snapshot) const
-    {
-        return mSensorName == snapshot.mSensorName && mAcq.mBackendTimestamp == snapshot.mAcq.mBackendTimestamp;
-    }
-};
-
-struct Frame {
-//    std::vector<Snapshot> m_snapshots;
-    std::vector<const Snapshot*> m_snapshots;
-};
+#include <Frame.h>
 
 
 class Player
 {
 public:
-//    Player();
+    Player(const std::string & outputPostFixName = "");
     ~Player();
 
     void load(const std::string & path);
+    void update();
     void unload();
 
     void play();
@@ -40,11 +23,14 @@ public:
 
     void showFrame(int iFrame);
 
+    void setOutputPostFixName(const std::string & outputPostFixName);
 
 
 private:
 
     std::map<std::string, std::unique_ptr<OutputStream>> m_outputs;
+    std::string m_outputPostfixName = "";
+
     std::set<Snapshot> m_snapshots;
     std::vector<Frame> m_frames;
     std::string m_loadedPath = "";
