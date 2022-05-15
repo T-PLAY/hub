@@ -121,12 +121,25 @@ MainWindow::MainWindow(QWidget* parent)
     ui->treeView_record->setColumnHidden(3, true);
     //    ui->treeView->setItemsExpandable(false);
     //    ui->treeView->setColumnHidden(0, true);
+
+    m_frameModel = new QStringListModel(this);
+    //    ui->tableView_acqs->setModel(m_frameModel);
+
+    ui->listView_frames->setModel(m_frameModel);
+
+//    QObject::connect(ui->listView_frames, &QListView::currentChanged, this, &MainWindow::on_listView_frames_selectionChanged);
+//    connect(ui->listView_frames, SIGNAL(currentChanged(QModelIndex, QModelIndex)), this, SLOT(on_listView_frames_selectionChanged(QModelIndex, QModelIndex)));
+    connect(ui->listView_frames->selectionModel(), SIGNAL(currentRowChanged(QModelIndex, QModelIndex)), this, SLOT(on_listView_frames_selectionChanged(QModelIndex, QModelIndex)));
 }
 
 MainWindow::~MainWindow()
 {
     std::cout << "[MainWindow] ~MainWindow() start" << std::endl;
+    if (! m_player.isPlaying() && m_player.isLoaded()) // unload player due of viewer waiting for a new frame
+        m_player.unload();
     delete m_sensorViews;
+    delete m_recordFileModel;
+    delete m_frameModel;
     delete m_app;
     std::cout << "[MainWindow] ~MainWindow() end" << std::endl;
 }
@@ -313,12 +326,86 @@ void MainWindow::on_treeView_record_clicked(const QModelIndex& index)
         const auto& selectionModel = ui->treeView_record->selectionModel();
         selectionModel->select(index, QItemSelectionModel::Deselect);
         //        m_recordFilePlaying = "";
-        m_player.stop();
+        if (m_player.isPlaying())
+            m_player.stop();
         m_player.unload();
+        updateAcquisitionsView();
     } else {
         //        m_recordFilePlaying = mPath;
         std::cout << "play new record " << mPath << std::endl;
         m_player.load(mPath);
         m_player.play();
+        updateAcquisitionsView();
     }
 }
+
+void MainWindow::updateAcquisitionsView()
+{
+    std::cout << "[MainWindow] updateAcquisitionView" << std::endl;
+    const auto& frames = m_player.getFrames();
+
+    //    auto & listModel = ui->listView_acqs->model();
+    //    auto & view = ui->tableView_acqs;
+    //    listView->model().re
+
+    QStringList stringList;
+    for (int i = 0; i < frames.size(); ++i) {
+        //        ui->listView_acqs.add
+        //        view->addAction((std::string("Frame ") + std::to_string(i)).c_str());
+        stringList << ("Frame " + std::to_string(i)).c_str();
+    }
+    m_frameModel->setStringList(stringList);
+    //    view->show();
+}
+
+void MainWindow::on_listView_frames_clicked(const QModelIndex& index)
+{
+    std::cout << "[MainWindow] on_listView_frames_clicked" << std::endl;
+
+    const int iFrame = index.row();
+
+    if (iFrame == m_player.getCurrentFrame()) {
+
+        const auto& selectionModel = ui->listView_frames->selectionModel();
+        selectionModel->select(index, QItemSelectionModel::Deselect);
+    }
+
+}
+
+//void MainWindow::on_listView_frames_activated(const QModelIndex &index)
+//{
+//    std::cout << "[MainWindow] on_listView_frames_activated" << std::endl;
+//    //    const auto & itemData = m_frameModel->itemData(index);
+
+//}
+
+
+//void MainWindow::on_listView_frames_indexesMoved(const QModelIndexList &indexes)
+//{
+//    std::cout << "[MainWindow] on_listView_frames_indexesMoved" << std::endl;
+
+//}
+
+void MainWindow::on_listView_frames_selectionChanged(const QModelIndex &selected, const QModelIndex &deselected)
+{
+    std::cout << "[MainWindow] on_listView_frames_selectionChanged" << std::endl;
+
+    const std::string& frameName = m_frameModel->stringList().at(selected.row()).toStdString();
+    std::cout << "frame clicked " << frameName << std::endl;
+
+    const int iFrame = selected.row();
+    if (m_player.isPlaying())
+        m_player.stop();
+
+    if (iFrame != m_player.getCurrentFrame()) {
+
+//        std::cout << "stop frame " << frameName << std::endl;
+//        const auto& selectionModel = ui->listView_frames->selectionModel();
+//        selectionModel->select(selected, QItemSelectionModel::Deselect);
+
+//    } else {
+
+        m_player.showFrame(iFrame);
+    }
+}
+

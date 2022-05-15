@@ -48,6 +48,13 @@ private slots:
 
     void on_treeView_record_clicked(const QModelIndex &index);
 
+    void updateAcquisitionsView();
+
+    void on_listView_frames_clicked(const QModelIndex &index);
+//    void on_listView_frames_activated(const QModelIndex &index);
+//    void on_listView_frames_indexesMoved(const QModelIndexList &indexes);
+    void on_listView_frames_selectionChanged(const QModelIndex &selected, const QModelIndex & deselected);
+
 private:
     Ui::MainWindow* ui;
 
@@ -62,6 +69,8 @@ private:
     std::string m_activeStreamPose = "";
 
     QFileSystemModel * m_recordFileModel = nullptr;
+    QStringListModel * m_frameModel = nullptr;
+    std::string m_frameNameSelected = "";
 
     Player m_player;
 };
