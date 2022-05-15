@@ -6,7 +6,9 @@
 #include <utility>
 #include <thread>
 
-using InputStreamConfigs = std::vector<std::pair<std::string, std::string>>;
+#include <Frame.h>
+
+using InputStreamParameters = std::vector<std::pair<std::string, std::string>>;
 
 class Recorder
 {
@@ -15,14 +17,19 @@ public:
 //    Recorder(std::string rootPath);
     Recorder(const char * rootPath);
 
-    void record(const InputStreamConfigs & inputStreamConfigs);
+    void record(const InputStreamParameters & inputStreamConfigs);
     void stop();
+
+    void save(const Frame & frame);
 
 private:
     std::string m_rootPath = "";
     std::thread * m_thread = nullptr;
 
     bool m_isRecording = false;
+
+public:
+    bool isRecording() const;
 };
 
 #endif // RECORDER_H

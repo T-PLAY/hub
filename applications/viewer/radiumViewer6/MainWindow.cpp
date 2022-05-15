@@ -20,6 +20,9 @@
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
+    , m_recordPlayer(" (record)")
+    , m_snapShotPlayer(" (snapshot)")
+    , m_recorder(PROJECT_DIR "data/")
 {
     ui->setupUi(this);
 
@@ -101,13 +104,10 @@ MainWindow::MainWindow(QWidget* parent)
     QString recordPath = PROJECT_DIR "data/records/";
     assert(std::filesystem::exists(recordPath.toStdString()));
     m_recordFileModel = new QFileSystemModel(this);
-
     m_recordFileModel->setReadOnly(true);
-
     // Set filter
     m_recordFileModel->setFilter(QDir::NoDotAndDotDot | QDir::AllDirs | QDir::AllEntries);
     //    m_recordFileModel->setFilter(QDir::NoDotAndDotDot | QDir::AllDirs);
-
     // QFileSystemModel requires root path
     m_recordFileModel->setRootPath(recordPath);
 
@@ -122,21 +122,45 @@ MainWindow::MainWindow(QWidget* parent)
     //    ui->treeView->setItemsExpandable(false);
     //    ui->treeView->setColumnHidden(0, true);
 
+    // records view
+    QString snapshotPath = PROJECT_DIR "data/snapshots/";
+    assert(std::filesystem::exists(snapshotPath.toStdString()));
+    m_snapshotFileModel = new QFileSystemModel(this);
+    m_snapshotFileModel->setReadOnly(true);
+    // Set filter
+    m_snapshotFileModel->setFilter(QDir::NoDotAndDotDot | QDir::AllDirs | QDir::AllEntries);
+    //    m_snapshotFileModel->setFilter(QDir::NoDotAndDotDot | QDir::AllDirs);
+    // QFileSystemModel requires root path
+    m_snapshotFileModel->setRootPath(snapshotPath);
+
+    // Attach the model to the view
+    ui->treeView_snapshot->setModel(m_snapshotFileModel);
+    const auto& rootIndex2 = m_snapshotFileModel->index(snapshotPath);
+    ui->treeView_snapshot->setRootIndex(rootIndex2);
+    ui->treeView_snapshot->expand(rootIndex2);
+    ui->treeView_snapshot->setColumnHidden(1, true);
+    ui->treeView_snapshot->setColumnHidden(2, true);
+    ui->treeView_snapshot->setColumnHidden(3, true);
+    //    ui->treeView->setItemsExpandable(false);
+    //    ui->treeView->setColumnHidden(0, true);
+
     m_frameModel = new QStringListModel(this);
     //    ui->tableView_acqs->setModel(m_frameModel);
 
     ui->listView_frames->setModel(m_frameModel);
 
-//    QObject::connect(ui->listView_frames, &QListView::currentChanged, this, &MainWindow::on_listView_frames_selectionChanged);
-//    connect(ui->listView_frames, SIGNAL(currentChanged(QModelIndex, QModelIndex)), this, SLOT(on_listView_frames_selectionChanged(QModelIndex, QModelIndex)));
+    //    QObject::connect(ui->listView_frames, &QListView::currentChanged, this, &MainWindow::on_listView_frames_selectionChanged);
+    //    connect(ui->listView_frames, SIGNAL(currentChanged(QModelIndex, QModelIndex)), this, SLOT(on_listView_frames_selectionChanged(QModelIndex, QModelIndex)));
     connect(ui->listView_frames->selectionModel(), SIGNAL(currentRowChanged(QModelIndex, QModelIndex)), this, SLOT(on_listView_frames_selectionChanged(QModelIndex, QModelIndex)));
 }
 
 MainWindow::~MainWindow()
 {
     std::cout << "[MainWindow] ~MainWindow() start" << std::endl;
-    if (! m_player.isPlaying() && m_player.isLoaded()) // unload player due of viewer waiting for a new frame
-        m_player.unload();
+    if (!m_recordPlayer.isPlaying() && m_recordPlayer.isLoaded()) // unload player due of viewer waiting for a new frame
+        m_recordPlayer.unload();
+    if (!m_snapShotPlayer.isPlaying() && m_snapShotPlayer.isLoaded()) // unload player due of viewer waiting for a new frame
+        m_snapShotPlayer.unload();
     delete m_sensorViews;
     delete m_recordFileModel;
     delete m_frameModel;
@@ -304,45 +328,112 @@ void MainWindow::on_newPoseAcquisition()
     m_comp->updateProbe(m_threadInputStreamPose->mAcq);
 }
 
-void MainWindow::on_toolButton_record_toggled(bool checked)
+// void MainWindow::on_toolButton_record_toggled(bool checked)
+void MainWindow::on_toolButton_record_clicked()
 {
-    if (checked) {
-        ui->toolButton_record->setText("stopRecording");
-    } else {
+    if (m_recorder.isRecording()) {
+
+        m_recorder.stop();
         ui->toolButton_record->setText("startRecording");
+
+    } else {
+        InputStreamParameters inputStreamParameters;
+        if (m_activeStreamScan != "") {
+            inputStreamParameters.push_back({ m_activeStreamScan, "" });
+        }
+        if (m_activeStreamPose != "") {
+            inputStreamParameters.push_back({ m_activeStreamPose, "" });
+        }
+        if (inputStreamParameters.empty()) {
+            return;
+        }
+        m_recorder.record(inputStreamParameters);
+        ui->toolButton_record->setText("stopRecording");
     }
 }
 
 void MainWindow::on_toolButton_snapshot_clicked()
 {
+    Frame frame;
+
+    if (m_activeStreamScan != "") {
+        Snapshot scanSnapshot(m_threadInputStreamScan->mInputStream, m_threadInputStreamScan->mAcq);
+        //        scanSnapshot.mSensorName = m_threadInputStreamScan->mInputStream.getSensorName();
+        //        scanSnapshot.mAcq = m_threadInputStreamScan->mAcq.clone();
+        frame.push_back(scanSnapshot);
+    }
+    if (m_activeStreamPose != "") {
+        Snapshot poseSnapshot(m_threadInputStreamPose->mInputStream, m_threadInputStreamPose->mAcq);
+        //        poseSnapshot.mSensorName = m_threadInputStreamPose->mInputStream.getSensorName();
+        //        poseSnapshot.mAcq = m_threadInputStreamPose->mAcq.clone();
+        frame.push_back(poseSnapshot);
+    }
+    if (frame.empty()) {
+        return;
+    }
+    m_recorder.save(frame);
+
+    if (m_snapShotPlayer.isLoaded()) {
+        m_snapShotPlayer.update();
+        updateAcquisitionsView();
+    }
 }
 
 void MainWindow::on_treeView_record_clicked(const QModelIndex& index)
 {
     std::string mPath = m_recordFileModel->fileInfo(index).absoluteFilePath().toStdString();
 
-    if (mPath == m_player.getLoadedPath()) {
+    m_currentPlayer = &m_recordPlayer;
+
+    if (mPath == m_recordPlayer.getLoadedPath()) {
         std::cout << "stop playing " << mPath << std::endl;
         const auto& selectionModel = ui->treeView_record->selectionModel();
         selectionModel->select(index, QItemSelectionModel::Deselect);
         //        m_recordFilePlaying = "";
-        if (m_player.isPlaying())
-            m_player.stop();
-        m_player.unload();
+        if (m_recordPlayer.isPlaying())
+            m_recordPlayer.stop();
+        m_recordPlayer.unload();
         updateAcquisitionsView();
     } else {
         //        m_recordFilePlaying = mPath;
         std::cout << "play new record " << mPath << std::endl;
-        m_player.load(mPath);
-        m_player.play();
+        m_recordPlayer.load(mPath);
+        m_recordPlayer.play();
         updateAcquisitionsView();
+    }
+}
+
+void MainWindow::on_treeView_snapshot_clicked(const QModelIndex& index)
+{
+    std::string mPath = m_snapshotFileModel->fileInfo(index).absoluteFilePath().toStdString();
+
+    m_currentPlayer = &m_snapShotPlayer;
+
+    if (mPath == m_snapShotPlayer.getLoadedPath()) {
+        std::cout << "stop playing " << mPath << std::endl;
+        const auto& selectionModel = ui->treeView_record->selectionModel();
+        selectionModel->select(index, QItemSelectionModel::Deselect);
+        //        m_recordFilePlaying = "";
+        //        if (m_snapShotPlayer.isPlaying())
+        //            m_snapShotPlayer.stop();
+
+        m_snapShotPlayer.unload();
+        updateAcquisitionsView();
+    } else {
+        //        m_recordFilePlaying = mPath;
+        std::cout << "play new record " << mPath << std::endl;
+        m_snapShotPlayer.load(mPath);
+        //        m_snapShotPlayer.play();
+        updateAcquisitionsView();
+        //        m_currentPlayer->showFrame(0);
     }
 }
 
 void MainWindow::updateAcquisitionsView()
 {
+    assert(m_currentPlayer != nullptr);
     std::cout << "[MainWindow] updateAcquisitionView" << std::endl;
-    const auto& frames = m_player.getFrames();
+    const auto& frames = m_currentPlayer->getFrames();
 
     //    auto & listModel = ui->listView_acqs->model();
     //    auto & view = ui->tableView_acqs;
@@ -360,52 +451,51 @@ void MainWindow::updateAcquisitionsView()
 
 void MainWindow::on_listView_frames_clicked(const QModelIndex& index)
 {
+    assert(m_currentPlayer != nullptr);
     std::cout << "[MainWindow] on_listView_frames_clicked" << std::endl;
 
-    const int iFrame = index.row();
+    //    const int iFrame = index.row();
 
-    if (iFrame == m_player.getCurrentFrame()) {
+    //    if (iFrame == m_currentPlayer->getCurrentFrame()) {
 
-        const auto& selectionModel = ui->listView_frames->selectionModel();
-        selectionModel->select(index, QItemSelectionModel::Deselect);
-    }
-
+    //        const auto& selectionModel = ui->listView_frames->selectionModel();
+    //        selectionModel->select(index, QItemSelectionModel::Deselect);
+    //    }
 }
 
-//void MainWindow::on_listView_frames_activated(const QModelIndex &index)
+// void MainWindow::on_listView_frames_activated(const QModelIndex &index)
 //{
-//    std::cout << "[MainWindow] on_listView_frames_activated" << std::endl;
-//    //    const auto & itemData = m_frameModel->itemData(index);
+//     std::cout << "[MainWindow] on_listView_frames_activated" << std::endl;
+//     //    const auto & itemData = m_frameModel->itemData(index);
 
 //}
 
-
-//void MainWindow::on_listView_frames_indexesMoved(const QModelIndexList &indexes)
+// void MainWindow::on_listView_frames_indexesMoved(const QModelIndexList &indexes)
 //{
-//    std::cout << "[MainWindow] on_listView_frames_indexesMoved" << std::endl;
+//     std::cout << "[MainWindow] on_listView_frames_indexesMoved" << std::endl;
 
 //}
 
-void MainWindow::on_listView_frames_selectionChanged(const QModelIndex &selected, const QModelIndex &deselected)
+void MainWindow::on_listView_frames_selectionChanged(const QModelIndex& selected, const QModelIndex& deselected)
 {
+    assert(m_currentPlayer != nullptr);
     std::cout << "[MainWindow] on_listView_frames_selectionChanged" << std::endl;
 
     const std::string& frameName = m_frameModel->stringList().at(selected.row()).toStdString();
     std::cout << "frame clicked " << frameName << std::endl;
 
     const int iFrame = selected.row();
-    if (m_player.isPlaying())
-        m_player.stop();
+    if (m_currentPlayer->isPlaying())
+        m_currentPlayer->stop();
 
-    if (iFrame != m_player.getCurrentFrame()) {
+    if (iFrame != m_currentPlayer->getCurrentFrame()) {
 
-//        std::cout << "stop frame " << frameName << std::endl;
-//        const auto& selectionModel = ui->listView_frames->selectionModel();
-//        selectionModel->select(selected, QItemSelectionModel::Deselect);
+        //        std::cout << "stop frame " << frameName << std::endl;
+        //        const auto& selectionModel = ui->listView_frames->selectionModel();
+        //        selectionModel->select(selected, QItemSelectionModel::Deselect);
 
-//    } else {
+        //    } else {
 
-        m_player.showFrame(iFrame);
+        m_currentPlayer->showFrame(iFrame);
     }
 }
-

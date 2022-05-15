@@ -193,9 +193,10 @@ public:
     class Acquisition {
     public:
         Acquisition(long long backendTimestamp = 0, long long backendTimeOfArrival = 0, unsigned char* data = nullptr);
-        Acquisition(const Acquisition& acq) = delete;
         ~Acquisition();
 
+        Acquisition(const Acquisition& acq) = delete;
+//        Acquisition(const Acquisition& acq);
         Acquisition(Acquisition&& acq);
         Acquisition& operator=(Acquisition&& acq);
         Acquisition clone() const;

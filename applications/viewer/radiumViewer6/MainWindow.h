@@ -8,6 +8,7 @@
 
 #include <SensorViews.h>
 #include <Player.h>
+#include <Recorder.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -42,11 +43,13 @@ private slots:
     void on_newScanAcquisition();
     void on_newPoseAcquisition();
 
-    void on_toolButton_record_toggled(bool checked);
+//    void on_toolButton_record_toggled(bool checked);
+    void on_toolButton_record_clicked();
 
     void on_toolButton_snapshot_clicked();
 
     void on_treeView_record_clicked(const QModelIndex &index);
+    void on_treeView_snapshot_clicked(const QModelIndex &index);
 
     void updateAcquisitionsView();
 
@@ -54,6 +57,7 @@ private slots:
 //    void on_listView_frames_activated(const QModelIndex &index);
 //    void on_listView_frames_indexesMoved(const QModelIndexList &indexes);
     void on_listView_frames_selectionChanged(const QModelIndex &selected, const QModelIndex & deselected);
+
 
 private:
     Ui::MainWindow* ui;
@@ -72,6 +76,11 @@ private:
     QStringListModel * m_frameModel = nullptr;
     std::string m_frameNameSelected = "";
 
-    Player m_player;
+    Player m_recordPlayer;
+    Player m_snapShotPlayer;
+    Player * m_currentPlayer = nullptr;
+    QFileSystemModel * m_snapshotFileModel = nullptr;
+
+    Recorder m_recorder;
 };
 #endif // MAINWINDOW_H

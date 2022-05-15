@@ -322,6 +322,7 @@ Stream::Acquisition::Acquisition(long long backendTimestamp, long long backendTi
 {
 }
 
+
 // Stream::Acquisition::Acquisition(Acquisition &&acq)
 //{
 
@@ -345,6 +346,11 @@ Stream::Acquisition::~Acquisition()
         mData = nullptr;
     }
 }
+
+//Stream::Acquisition::Acquisition(const Acquisition &acq)
+//{
+
+//}
 
 Stream::Acquisition::Acquisition(Acquisition&& acq)
     : mBackendTimestamp(acq.mBackendTimestamp)
