@@ -51,9 +51,12 @@ signals:
     void streamingStarted(std::string sensorName);
     void streamingStopped(std::string sensorName);
 
-private slots:
-    void on_radioButtonOnOff_clicked(bool checked);
+public slots:
     void on_startStreaming();
+
+private slots:
+    void on_startStreamingPrivate();
+    void on_radioButtonOnOff_clicked(bool checked);
     void on_stopStreaming();
     void on_closeStreamView();
 

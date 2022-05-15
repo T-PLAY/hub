@@ -216,6 +216,9 @@ void Server::run()
                 } catch (std::exception& e) {
                     std::cout << getServerHeader(iThread) << "[streamer] in : catch inputStream exception : " << e.what() << std::endl;
                 }
+
+                // if player kill many stream in same time (concurrency)
+                mMtx.lock();
                 mStreamers.erase(sensorName);
 
                 for (const auto& pair : sensor2syncViewers) {
@@ -223,8 +226,6 @@ void Server::run()
                     mStreamers.at(syncSensorName)->mSyncMaster = nullptr;
                 }
 
-                // if player kill many stream in same time (concurrency)
-                mMtx.lock();
                 //                std::cout << "[" << sensorName << "] mutex lock" << std::endl;
                 for (const auto* viewer : mViewers) {
                     try {
@@ -237,9 +238,9 @@ void Server::run()
                     }
                 }
                 //                std::cout << "[" << sensorName << "] mutex unlock" << std::endl;
-                mMtx.unlock();
 
                 std::cout << getServerHeader(iThread) << "[streamer] end (" << sensorName << ")" << std::endl;
+                mMtx.unlock();
             } break;
 
             ////////////////////////////////////////////////////////////////////////////////////////////////

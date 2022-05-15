@@ -192,6 +192,8 @@ void SensorViews::addSensor(std::string sensorName,
         sensorView, &FormSensorView::streamingStarted, this, &SensorViews::streamingStarted);
     QObject::connect(
         sensorView, &FormSensorView::streamingStopped, this, &SensorViews::streamingStopped);
+
+   sensorView->on_startStreaming();
 }
 
 void SensorViews::delSensor(std::string sensorName)

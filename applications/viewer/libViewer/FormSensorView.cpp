@@ -91,7 +91,7 @@ void FormSensorView::on_radioButtonOnOff_clicked( bool checked ) {
         ui->radioButtonOnOff->setText( "on " );
         ui->frameButtonOnOff->setStyleSheet( "border-radius: 10px; background-color: lightgreen" );
         //        emit addViewStreamSignal(mSensorName);
-        on_startStreaming();
+        on_startStreamingPrivate();
     }
     else {
         ui->radioButtonOnOff->setText( "off" );
@@ -107,8 +107,16 @@ void FormSensorView::setRadioButtonOff() {
     ui->frameButtonOnOff->setStyleSheet( "border-radius: 10px; background-color: red" );
 }
 
-void FormSensorView::on_startStreaming() {
-    std::cout << "[FormSensorView] FormSensorView::on_startStreaming slot '" << mSensorName << "'"
+void FormSensorView::on_startStreaming()
+{
+//    on_radioButtonOnOff_clicked(true);
+//    ui->radioButtonOnOff->clicked(true);
+//    ui->radioButtonOnOff->setChecked(true);
+    ui->radioButtonOnOff->click();
+}
+
+void FormSensorView::on_startStreamingPrivate() {
+    std::cout << "[FormSensorView] FormSensorView::on_startStreamingPrivate slot '" << mSensorName << "'"
               << std::endl;
     //              << ", nb streamView = " << mStreamViews.size() << std::endl;
 
@@ -124,7 +132,7 @@ void FormSensorView::on_startStreaming() {
 
     //    assert( mStreamViews.find( mSensorName ) == mStreamViews.end() );
     //    mStreamViews[mSensorName] = streamView;
-    //    std::cout << "[FormSensorView] FormSensorView::on_startStreaming " << mSensorName <<
+    //    std::cout << "[FormSensorView] FormSensorView::on_startStreamingPrivate " << mSensorName <<
     //    std::endl;
 
     QMdiSubWindow* subWindow = m_mdiArea.addSubWindow( m_streamView );

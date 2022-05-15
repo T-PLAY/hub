@@ -2,7 +2,13 @@
 #include "ui_DialogServerConnect.h"
 
 #include <stream.h>
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <QRegExpValidator>
+#else
+#include <QRegularExpressionValidator>
+#include <QRegularExpression>
+#endif
 
 DialogServerConnect::DialogServerConnect(QWidget *parent) :
     QDialog(parent),
@@ -10,7 +16,7 @@ DialogServerConnect::DialogServerConnect(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    ui->lineEdit_ip->setValidator(new QRegExpValidator(QRegExp("[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}")));
+    ui->lineEdit_ip->setValidator(new QRegularExpressionValidator(QRegularExpression("[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}")));
     ui->lineEdit_ip->setText(SERVICE_IP);
 
 
