@@ -44,18 +44,8 @@
       <enum>QTabWidget::South</enum>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
-     <widget class="QWidget" name="tabSources">
-      <attribute name="title">
-       <string>Sources</string>
-      </attribute>
-      <layout class="QHBoxLayout" name="horizontalLayout_2">
-       <item>
-        <widget class="QListView" name="listView_sourceFrames"/>
-       </item>
-      </layout>
-     </widget>
      <widget class="QWidget" name="tabRecords">
       <attribute name="title">
        <string>Records</string>
@@ -75,7 +65,17 @@
         </widget>
        </item>
        <item>
-        <widget class="QListView" name="listView_recordFrames"/>
+        <widget class="QListView" name="listView_recordFrames">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="selectionMode">
+          <enum>QAbstractItemView::MultiSelection</enum>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
@@ -85,10 +85,37 @@
       </attribute>
       <layout class="QHBoxLayout" name="horizontalLayout_4">
        <item>
-        <widget class="QTreeView" name="treeView_snapshot"/>
+        <widget class="QTreeView" name="treeView_snapshot">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
        </item>
        <item>
-        <widget class="QListView" name="listView_snapshotFrames"/>
+        <widget class="QListView" name="listView_snapshotFrames">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="selectionMode">
+          <enum>QAbstractItemView::MultiSelection</enum>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tabSources">
+      <attribute name="title">
+       <string>Sources</string>
+      </attribute>
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QListView" name="listView_sourceFrames"/>
        </item>
       </layout>
      </widget>
