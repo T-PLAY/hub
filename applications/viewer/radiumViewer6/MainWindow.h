@@ -76,6 +76,7 @@ private:
     QStringListModel * m_frameModel = nullptr;
     std::string m_frameNameSelected = "";
 
+    bool m_autoPlay = false;
     Player m_recordPlayer;
     Player m_snapShotPlayer;
     Player * m_currentPlayer = nullptr;

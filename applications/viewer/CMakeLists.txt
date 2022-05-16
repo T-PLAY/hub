@@ -1,14 +1,5 @@
 cmake_minimum_required (VERSION 3.8)
 
-find_package(QT NAMES Qt6 Qt5)
-set(QT_VERSION ${QT_VERSION_MAJOR})
-message(STATUS ${QT_VERSION})
-if (NOT QT_VERSION)
-	set(QT_VERSION 5)
-endif()
-#set(QT_VERSION 5)
-#set(QT_VERSION 6)
-
 add_subdirectory(libViewer)
 add_subdirectory(clientViewer)
 add_subdirectory(streamViewer)
