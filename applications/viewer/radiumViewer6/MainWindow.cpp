@@ -15,6 +15,9 @@
 #include <constants.h>
 #include <filesystem>
 
+#include <FormSensorViews.h>
+
+
 //#include <QEvent>
 
 MainWindow::MainWindow(QWidget* parent)
@@ -23,87 +26,93 @@ MainWindow::MainWindow(QWidget* parent)
     , m_recorder(PROJECT_DIR "data/")
 {
     ui->setupUi(this);
+    //    ui->dockWidgetContents_server->setMdiArea(ui->mdiArea);
+    //    delete ui->dockWidget_server;
 
-    // Create app and show viewer window
-    m_app = new MinimalApp;
-    auto& app = *m_app;
+    // configure radium
+    {
+        // Create app and show viewer window
+        m_app = new MinimalApp;
+        auto& app = *m_app;
 
-    //    QWidget* viewerWidget = QWidget::createWindowContainer( app.m_viewer.get(), this );
-    QWidget* viewerWidget = QWidget::createWindowContainer(app.m_viewer.get());
-    //    viewerWidget->setAutoFillBackground(false);
-    //    ui->verticalLayout->addWidget(viewerWidget);
-    //    ui->stackedWidget->update();
-    const int currentIndex = ui->stackedWidget->currentIndex();
-    ui->stackedWidget->setCurrentIndex(1);
-    //    ui->page3D->layout()->addWidget(viewerWidget);
-    ui->verticalLayout_3dView->removeWidget(ui->frame);
-    delete ui->frame;
-    ui->verticalLayout_3dView->addWidget(viewerWidget);
-    this->show();
+        //    QWidget* viewerWidget = QWidget::createWindowContainer( app.m_viewer.get(), this );
+        QWidget* viewerWidget = QWidget::createWindowContainer(app.m_viewer.get());
+        //    viewerWidget->setAutoFillBackground(false);
+        //    ui->verticalLayout->addWidget(viewerWidget);
+        //    ui->stackedWidget->update();
+        const int currentIndex = ui->stackedWidget->currentIndex();
+        ui->stackedWidget->setCurrentIndex(1);
+        //    ui->page3D->layout()->addWidget(viewerWidget);
+        ui->verticalLayout_3dView->removeWidget(ui->frame);
+        delete ui->frame;
+        ui->verticalLayout_3dView->addWidget(viewerWidget);
+        this->show();
 
-    //    app.m_viewer->show();
-    //    app.m_viewer->resize( { 500, 500 } );
-    CORE_ASSERT(app.m_viewer->getContext()->isValid(), "OpenGL was not initialized");
-    // process all events so that everithing is initialized
-    QApplication::processEvents();
+        //    app.m_viewer->show();
+        //    app.m_viewer->resize( { 500, 500 } );
+        CORE_ASSERT(app.m_viewer->getContext()->isValid(), "OpenGL was not initialized");
+        // process all events so that everithing is initialized
+        QApplication::processEvents();
 
-    // Create one system
-    MinimalSystem* sys = new MinimalSystem;
-    app.m_engine->registerSystem("Minimal system", sys);
+        // Create one system
+        MinimalSystem* sys = new MinimalSystem;
+        app.m_engine->registerSystem("Minimal system", sys);
 
-    // Create and initialize entity and component
-    Ra::Engine::Scene::Entity* e = app.m_engine->getEntityManager()->createEntity("Cube");
-    m_comp = new MinimalComponent(e, *app.m_engine, *app.m_viewer);
-    sys->addComponent(e, m_comp);
-    m_comp->initialize();
+        // Create and initialize entity and component
+        Ra::Engine::Scene::Entity* e = app.m_engine->getEntityManager()->createEntity("Cube");
+        m_comp = new MinimalComponent(e, *app.m_engine, *app.m_viewer);
+        sys->addComponent(e, m_comp);
+        m_comp->initialize();
 
-    // prepare the viewer to render the scene (i.e. build RenderTechniques for the
-    // active renderer)
-    app.m_viewer->prepareDisplay();
+        // prepare the viewer to render the scene (i.e. build RenderTechniques for the
+        // active renderer)
+        app.m_viewer->prepareDisplay();
 
-    m_comp->updateShader();
+        m_comp->updateShader();
 
-    auto keyMappingManager = Ra::Gui::KeyMappingManager::getInstance();
-    // Add default manipulator listener
-    keyMappingManager->addListener(
-        Ra::Gui::RotateAroundCameraManipulator::KeyMapping::configureKeyMapping);
+        auto keyMappingManager = Ra::Gui::KeyMappingManager::getInstance();
+        // Add default manipulator listener
+        keyMappingManager->addListener(
+            Ra::Gui::RotateAroundCameraManipulator::KeyMapping::configureKeyMapping);
 
-    // Start the app.
-    app.m_frame_timer->start();
-    app.m_viewer->setCameraManipulator(new Ra::Gui::RotateAroundCameraManipulator(
-        *(app.m_viewer->getCameraManipulator()), app.m_viewer.get()));
+        // Start the app.
+        app.m_frame_timer->start();
+        app.m_viewer->setCameraManipulator(new Ra::Gui::RotateAroundCameraManipulator(
+            *(app.m_viewer->getCameraManipulator()), app.m_viewer.get()));
 
-    ui->stackedWidget->setCurrentIndex(currentIndex);
+        ui->stackedWidget->setCurrentIndex(currentIndex);
+    }
 
-    //    m_sensorViews = new SensorViews(*ui->verticalLayout_sensors,
-    //    *ui->mdiArea_sensors, *ui->comboBox_scan, *ui->comboBox_pose);
-    //    m_sensorViews = new SensorViews(*ui->verticalLayout_sensors, *ui->mdiArea_sensors);
-    m_sensorViews = new SensorViews(*ui->verticalLayout_sensors, *ui->mdiArea_sensors, *this);
-    QObject::connect(
-        m_sensorViews, &SensorViews::streamingStarted, this, &MainWindow::on_startStreaming);
-    QObject::connect(
-        m_sensorViews, &SensorViews::streamingStopped, this, &MainWindow::on_stopStreaming);
-    //    QObject::connect( m_sensorViews, &SensorViews::serverConnected, this, [this]() {
-    //        ui->dockWidget_2->setEnabled( true );
-    //    } );
-    //    QObject::connect( m_sensorViews, &SensorViews::serverDisconnected, this, [this]() {
-    //        ui->dockWidget_2->setEnabled( false );
-    //    } );
-    //    ui->dockWidget_2->setEnabled(false);
-
+    //    m_sensorViews = new SensorViews(*ui->verticalLayout_sensors, *ui->mdiArea_sensors, *this);
     //    QObject::connect(
-    //        m_sensorViews, &SensorViews::sensorDeleted, this,
-    //        &MainWindow::on_delSensor );
+    //        m_sensorViews, &SensorViews::streamingStarted, this, &MainWindow::on_startStreaming);
+    //    QObject::connect(
+    //        m_sensorViews, &SensorViews::streamingStopped, this, &MainWindow::on_stopStreaming);
 
     ui->label_scanSource->setText((g_probeScanSensorName + " :").c_str());
     ui->label_poseSource->setText((g_probePoseSensorName + " :").c_str());
 
+    //    delete ui->dockWidget_loader;
+    //    delete ui->dockWidget_server;
+
+#ifdef USE_FORM_SENSOR_VIEWS
+    m_formSensorViews = new FormSensorViews(this);
+    ui->dockWidget_left->setWidget(m_formSensorViews);
+#else
+    ui->dockWidget_left->close();
+#endif
+//    ui->dockWidgetContents_left = new FormSensorViews(this);
 }
 
 MainWindow::~MainWindow()
 {
     std::cout << "[MainWindow] ~MainWindow() start" << std::endl;
-    delete m_sensorViews;
+    //    delete m_sensorViews;
+
+#ifdef USE_FORM_SENSOR_VIEWS
+    if (m_formSensorViews != nullptr)
+        delete m_formSensorViews;
+#endif
     delete m_app;
     delete ui;
     std::cout << "[MainWindow] ~MainWindow() end" << std::endl;
@@ -111,23 +120,18 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_action2D_triggered()
 {
-    //    ui->page3D->hide();
-    //    ui->page2D->show();
-    //    ui->page2D->update();
     ui->stackedWidget->setCurrentIndex(0);
 }
 
 void MainWindow::on_action3D_triggered()
 {
     ui->stackedWidget->setCurrentIndex(1);
-    //    ui->page2D->hide();
-    //    ui->page3D->show();
-    //    ui->stackedWidget->update();
 }
 
 void MainWindow::on_startStreaming(std::string streamName)
 {
-    assert(m_sensorViews != nullptr);
+    //    assert(m_sensorViews != nullptr);
+
     //    const auto & sensorView = m_sensorViews->getSensorView(streamName);
     //    const auto & inputStream = sensorView.getInputStream();
 
@@ -154,7 +158,7 @@ void MainWindow::on_stopStreaming(std::string streamName)
 {
     std::cout << "[MainWindow] on_stopStreaming " << streamName << std::endl;
 
-    assert(m_sensorViews != nullptr);
+    //    assert(m_sensorViews != nullptr);
 
     if (streamName.substr(0, g_probeScanSensorName.size()) == g_probeScanSensorName) {
         auto sourceType = (g_probeScanSensorName.size() == streamName.size())
@@ -181,29 +185,29 @@ void MainWindow::on_comboBox_scan_currentTextChanged(const QString& sourceType)
         : (g_probeScanSensorName + " (" + sourceType.toStdString() + ")");
 
     std::cout << "[on_comboBox_scan_currentTextChanged] " << streamNameStd << std::endl;
-    assert(m_sensorViews != nullptr);
+    //    assert(m_sensorViews != nullptr);
 
-    if (sourceType != "" && streamNameStd != m_activeStreamScan) {
-        QObject::disconnect(m_threadInputStreamScan,
-            &Thread_InputStream::newAcquisition,
-            this,
-            &MainWindow::on_newScanAcquisition);
-    }
+    //    if (sourceType != "" && streamNameStd != m_activeStreamScan) {
+    //        QObject::disconnect(m_threadInputStreamScan,
+    //            &Thread_InputStream::newAcquisition,
+    //            this,
+    //            &MainWindow::on_newScanAcquisition);
+    //    }
 
-    if (sourceType == "") {
-        assert(m_activeStreamScan != "");
-        m_threadInputStreamScan = nullptr;
-        m_comp->initScan();
-    } else {
-        const auto& sensorView = m_sensorViews->getSensorView(streamNameStd);
-        m_threadInputStreamScan = sensorView.getInputStreamThread();
+    //    if (sourceType == "") {
+    //        assert(m_activeStreamScan != "");
+    //        m_threadInputStreamScan = nullptr;
+    //        m_comp->initScan();
+    //    } else {
+    //        const auto& sensorView = m_sensorViews->getSensorView(streamNameStd);
+    //        m_threadInputStreamScan = sensorView.getInputStreamThread();
 
-        QObject::connect(m_threadInputStreamScan,
-            &Thread_InputStream::newAcquisition,
-            this,
-            &MainWindow::on_newScanAcquisition);
-    }
-    m_activeStreamScan = streamNameStd;
+    //        QObject::connect(m_threadInputStreamScan,
+    //            &Thread_InputStream::newAcquisition,
+    //            this,
+    //            &MainWindow::on_newScanAcquisition);
+    //    }
+    //    m_activeStreamScan = streamNameStd;
 }
 
 void MainWindow::on_comboBox_pose_currentTextChanged(const QString& sourceType)
@@ -213,109 +217,97 @@ void MainWindow::on_comboBox_pose_currentTextChanged(const QString& sourceType)
         : (g_probePoseSensorName + " (" + sourceType.toStdString() + ")");
 
     std::cout << "[on_comboBox_pose_currentTextChanged] " << streamNameStd << std::endl;
-    assert(m_sensorViews != nullptr);
+    //    assert(m_sensorViews != nullptr);
 
-    if (sourceType != "" && streamNameStd != m_activeStreamPose) {
-        QObject::disconnect(m_threadInputStreamPose,
-            &Thread_InputStream::newAcquisition,
-            this,
-            &MainWindow::on_newPoseAcquisition);
-    }
+    //    if (sourceType != "" && streamNameStd != m_activeStreamPose) {
+    //        QObject::disconnect(m_threadInputStreamPose,
+    //            &Thread_InputStream::newAcquisition,
+    //            this,
+    //            &MainWindow::on_newPoseAcquisition);
+    //    }
 
-    if (sourceType == "") {
-        assert(m_activeStreamPose != "");
-        m_threadInputStreamPose = nullptr;
-        m_comp->initProbe();
-    } else {
-        const auto& sensorView = m_sensorViews->getSensorView(streamNameStd);
-        m_threadInputStreamPose = sensorView.getInputStreamThread();
+    //    if (sourceType == "") {
+    //        assert(m_activeStreamPose != "");
+    //        m_threadInputStreamPose = nullptr;
+    //        m_comp->initProbe();
+    //    } else {
+    //        const auto& sensorView = m_sensorViews->getSensorView(streamNameStd);
+    //        m_threadInputStreamPose = sensorView.getInputStreamThread();
 
-        QObject::connect(m_threadInputStreamPose,
-            &Thread_InputStream::newAcquisition,
-            this,
-            &MainWindow::on_newPoseAcquisition);
-    }
+    //        QObject::connect(m_threadInputStreamPose,
+    //            &Thread_InputStream::newAcquisition,
+    //            this,
+    //            &MainWindow::on_newPoseAcquisition);
+    //    }
 
-    m_activeStreamPose = streamNameStd;
+    //    m_activeStreamPose = streamNameStd;
 }
 
 void MainWindow::on_newScanAcquisition()
 {
-    if (m_threadInputStreamScan == nullptr) {
-        std::cout << "[on_newScanAcquisition] ##################################### nulptr"
-                  << std::endl;
-        m_comp->initScan();
-        return;
-    }
+    //    if (m_threadInputStreamScan == nullptr) {
+    //        std::cout << "[on_newScanAcquisition] ##################################### nulptr"
+    //                  << std::endl;
+    //        m_comp->initScan();
+    //        return;
+    //    }
 
-    assert(m_threadInputStreamScan != nullptr);
-    //    std::cout << "[on_newScanAcquisition] " << std::endl;
+    //    assert(m_threadInputStreamScan != nullptr);
 
-    m_comp->updateScan(m_threadInputStreamScan->mAcq);
+    //    m_comp->updateScan(m_threadInputStreamScan->mAcq);
 }
 
 void MainWindow::on_newPoseAcquisition()
 {
-    if (m_threadInputStreamPose == nullptr) {
-        std::cout << "[on_newPoseAcquisition] ##################################### nulptr"
-                  << std::endl;
-        m_comp->initProbe();
-        return;
-    }
+    //    if (m_threadInputStreamPose == nullptr) {
+    //        std::cout << "[on_newPoseAcquisition] ##################################### nulptr"
+    //                  << std::endl;
+    //        m_comp->initProbe();
+    //        return;
+    //    }
 
-    assert(m_threadInputStreamPose != nullptr);
-    //    std::cout << "[on_newPoseAcquisition] " << std::endl;
+    //    assert(m_threadInputStreamPose != nullptr);
 
-    m_comp->updateProbe(m_threadInputStreamPose->mAcq);
+    //    m_comp->updateProbe(m_threadInputStreamPose->mAcq);
 }
 
-// void MainWindow::on_toolButton_record_toggled(bool checked)
 void MainWindow::on_toolButton_record_clicked()
 {
-    if (m_recorder.isRecording()) {
+    //    if (m_recorder.isRecording()) {
 
-        m_recorder.stop();
-        ui->toolButton_record->setText("startRecording");
+    //        m_recorder.stop();
+    //        ui->toolButton_record->setText("startRecording");
 
-    } else {
-        InputStreamParameters inputStreamParameters;
-        if (m_activeStreamScan != "") {
-            inputStreamParameters.push_back({ m_activeStreamScan, "" });
-        }
-        if (m_activeStreamPose != "") {
-            inputStreamParameters.push_back({ m_activeStreamPose, "" });
-        }
-        if (inputStreamParameters.empty()) {
-            return;
-        }
-        m_recorder.record(inputStreamParameters);
-        ui->toolButton_record->setText("stopRecording");
-    }
+    //    } else {
+    //        InputStreamParameters inputStreamParameters;
+    //        if (m_activeStreamScan != "") {
+    //            inputStreamParameters.push_back({ m_activeStreamScan, "" });
+    //        }
+    //        if (m_activeStreamPose != "") {
+    //            inputStreamParameters.push_back({ m_activeStreamPose, "" });
+    //        }
+    //        if (inputStreamParameters.empty()) {
+    //            return;
+    //        }
+    //        m_recorder.record(inputStreamParameters);
+    //        ui->toolButton_record->setText("stopRecording");
+    //    }
 }
 
 void MainWindow::on_toolButton_snapshot_clicked()
 {
     Frame frame;
 
-    if (m_activeStreamScan != "") {
-        Snapshot scanSnapshot(m_threadInputStreamScan->mInputStream, m_threadInputStreamScan->mAcq);
-        //        scanSnapshot.mSensorName = m_threadInputStreamScan->mInputStream.getSensorName();
-        //        scanSnapshot.mAcq = m_threadInputStreamScan->mAcq.clone();
-        frame.push_back(scanSnapshot);
-    }
-    if (m_activeStreamPose != "") {
-        Snapshot poseSnapshot(m_threadInputStreamPose->mInputStream, m_threadInputStreamPose->mAcq);
-        //        poseSnapshot.mSensorName = m_threadInputStreamPose->mInputStream.getSensorName();
-        //        poseSnapshot.mAcq = m_threadInputStreamPose->mAcq.clone();
-        frame.push_back(poseSnapshot);
-    }
-    if (frame.empty()) {
-        return;
-    }
-    m_recorder.save(frame);
-
-//    if (m_snapShotPlayer.isLoaded()) {
-//        m_snapShotPlayer.update();
-//        updateAcquisitionsView();
-//    }
+    //    if (m_activeStreamScan != "") {
+    //        Snapshot scanSnapshot(m_threadInputStreamScan->mInputStream, m_threadInputStreamScan->mAcq);
+    //        frame.push_back(scanSnapshot);
+    //    }
+    //    if (m_activeStreamPose != "") {
+    //        Snapshot poseSnapshot(m_threadInputStreamPose->mInputStream, m_threadInputStreamPose->mAcq);
+    //        frame.push_back(poseSnapshot);
+    //    }
+    //    if (frame.empty()) {
+    //        return;
+    //    }
+    //    m_recorder.save(frame);
 }
