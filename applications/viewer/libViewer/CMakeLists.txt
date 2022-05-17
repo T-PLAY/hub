@@ -83,6 +83,7 @@ endif()
 
 target_link_libraries(${PROJECT_NAME} PUBLIC
     src
+    libApp
     ${REQUIRED_LIBS_QUALIFIED}
     ${UNIX_REQUIRED_LIBS}
     ${WIN32_REQUIRED_LIBS}

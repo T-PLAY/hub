@@ -10,78 +10,97 @@
 #include <stream.h>
 #include <string>
 
+#include <RamIO.h>
+
 // Loader::Loader(const std::string &path)
 //{
 
 //}
 
-//Loader::Loader( const std::string& outputPostFixName )
-//    : m_outputPostfixName( outputPostFixName )
+// Loader::Loader( const std::string& outputPostFixName )
+//     : m_outputPostfixName( outputPostFixName )
 //{}
 
-Loader::~Loader() {
+Loader::~Loader()
+{
     std::cout << "[Loader] ~Loader" << std::endl;
 
     //    if (m_thread != nullptr)
     //        stop();
 
-    if ( m_loadedPath != "" ) unload();
+    if (m_loadedPath != "")
+        unload();
 }
 
-void Loader::load( const std::string& path ) {
+void Loader::load(const std::string& path)
+{
     //    assert(!m_isPlaying);
-    assert( std::filesystem::exists( path ) );
-    assert( m_loadedPath == "" );
-    assert( m_snapshots.empty() );
-    assert( m_frames.empty() );
+    assert(std::filesystem::exists(path));
+    assert(m_loadedPath == "");
+    assert(m_snapshots.empty());
+    assert(m_frames.empty());
+    assert(m_inputStreams.empty());
 
-//    m_currentFrame = -1;
-    assert( !path.empty() );
+    //    m_currentFrame = -1;
+    assert(!path.empty());
     m_loadedPath = path;
     update();
 }
 
-void Loader::update() {
+void Loader::update()
+{
     m_frames.clear();
+    m_inputStreams.clear();
     m_snapshots.clear();
 
     //    assert(!m_isPlaying);
-    assert( m_loadedPath != "" );
-    assert( m_snapshots.empty() );
-    assert( m_frames.empty() );
+    assert(m_loadedPath != "");
+    assert(m_snapshots.empty());
+    assert(m_frames.empty());
 
     int nAcqs = -1;
 
     // read records in folder
-    for ( const auto& fileDir : std::filesystem::directory_iterator( m_loadedPath ) ) {
+    for (const auto& fileDir : std::filesystem::directory_iterator(m_loadedPath)) {
         const auto filename = fileDir.path().string();
         std::cout << "read '" << filename << "' record" << std::endl;
-        assert( std::filesystem::exists( filename ) );
+        assert(std::filesystem::exists(filename));
 
-        std::fstream file( filename, std::ios::binary | std::ios::in );
+        std::fstream file(filename, std::ios::binary | std::ios::in);
         //        assert(file.is_open());
         //        std::cout << "tellg" << file.tellg() << std::endl;
         //        file.seekg(0, std::ios::end);
         //        std::cout << "tellg" << file.tellg() << std::endl;
         //        file.seekg(0, std::ios::beg);
 
-        assert( !file.eof() );
+        assert(!file.eof());
         //        assert(sizeof(int) == 4);
 
         //        try {
-        InputStream inputStream( FileIO( std::move( file ) ) );
-        auto acqs                     = inputStream.getAllAcquisition();
+        //        m_inputStream = new InputStream(FileIO(std::move(file)));
+        //        m_inputStreams.push_back(new InputStream(FileIO(std::move(file))));
+        //        m_inputStreams.emplace_back(FileIO(std::move(file)));
+
+        //        m_inputStreams.push_back(std::make_unique<InputStream>(ClientSocket()));
+        m_inputStreams.push_back(std::make_unique<InputStream>(FileIO(std::move(file))));
+
+        //        m_inputStreams.emplace_back(FileIO(std::move(file)));
+        //        m_inputStreams.emplace_back(ClientSocket());
+
+        auto& inputStream = *m_inputStreams.back();
+
+        auto acqs = inputStream.getAllAcquisition();
         const std::string& sensorName = inputStream.getSensorName();
 
-        if ( nAcqs == -1 ) {
+        if (nAcqs == -1) {
             nAcqs = acqs.size();
-            m_frames.reserve( nAcqs );
-            m_frames.resize( nAcqs );
+            m_frames.reserve(nAcqs);
+            m_frames.resize(nAcqs);
         }
-        assert( acqs.size() == nAcqs );
+        assert(acqs.size() == nAcqs);
 
         int iAcq = 0;
-        for ( const auto& acq : acqs ) {
+        for (const auto& acq : acqs) {
             //                Snapshot && snapshot{std::move(acq), sensorName};
             //                m_frames[iAcq].m_snapshots.emplace_back(std::move(acq), sensorName);
             //                m_snapshots.insert(std::move(snapshot));
@@ -91,17 +110,17 @@ void Loader::update() {
             //                Snapshot snapshot { acq.clone(), sensorName };
             //                m_snapshots.insert(std::move(snapshot));
             //                m_snapshots.insert(Snapshot { acq.clone(), sensorName });
-            Snapshot snapshot( inputStream, acq );
-            m_snapshots.insert( std::move( snapshot ) );
+            Snapshot snapshot(inputStream, acq);
+            m_snapshots.insert(std::move(snapshot));
             //                m_snapshots.insert(Snapshot(sensorName, inputStream.getFormat(),
             //                inputStream.getDims(), acq));
 
             //                const auto& it = m_snapshots.find(Snapshot { acq.clone(), sensorName
             //                });
-            Snapshot snapshot2( inputStream, acq );
-            const auto& it = m_snapshots.find( snapshot2 );
-            assert( it != m_snapshots.end() );
-            m_frames[iAcq].push_back( *it );
+            Snapshot snapshot2(inputStream, acq);
+            const auto& it = m_snapshots.find(snapshot2);
+            assert(it != m_snapshots.end());
+            m_frames[iAcq].push_back(*it);
 
             ++iAcq;
         }
@@ -144,31 +163,41 @@ void Loader::update() {
     }
     std::cout << "read total of " << m_snapshots.size() << " acquistions" << std::endl;
 
-
-
     //    //    auto & listModel = ui->listView_acqs->model();
     //    //    auto & view = ui->tableView_acqs;
     //    //    listView->model().re
 
     QStringList stringList;
-    for ( int i = 0; i < m_frames.size(); ++i ) {
+    for (int i = 0; i < m_frames.size(); ++i) {
         //        ui->listView_acqs.add
         //        view->addAction((std::string("Frame ") + std::to_string(i)).c_str());
-        stringList << ( "Frame " + std::to_string( i ) ).c_str();
+        stringList << ("Frame " + std::to_string(i)).c_str();
     }
-    m_frameModel.setStringList( stringList );
+    m_frameModel.setStringList(stringList);
 
+    assert(m_outputStreams.empty());
+    for (const auto & inputStream : m_inputStreams) {
+        const auto & sensorName = inputStream->getSensorName();
+//        OutputStream && ramOutputStream = OutputStream(inputStream->getSensorName(), inputStream->getFormat(), inputStream->getDims(), RamIO());
+//        CyclicBuff buff;
+        m_outputStreamBuffs[sensorName] = CyclicBuff();
+        auto & cyclicBuff = m_outputStreamBuffs.at(sensorName);
+        m_outputStreams[inputStream->getSensorName()] = std::make_unique<OutputStream>(inputStream->getSensorName(), inputStream->getFormat(), inputStream->getDims(), RamIO(cyclicBuff));
+    }
     //        ui->listView_recordFrames->show();
     //        view->show();
+    emit pathLoaded();
 }
 
-void Loader::unload() {
+void Loader::unload()
+{
     //    assert(!m_isPlaying);
 
     //    assert(!m_outputs.empty());
-    assert( isLoaded() );
-    assert( !m_snapshots.empty() );
-    assert( !m_frames.empty() );
+    assert(isLoaded());
+    assert(!m_snapshots.empty());
+    assert(!m_frames.empty());
+    assert(!m_inputStreams.empty());
     //    for (auto & output : m_outputs) {
     //        delete output.second.get();
     ////        std::this_thread::sleep_for(std::chrono::milliseconds(1));
@@ -176,15 +205,87 @@ void Loader::unload() {
     //    m_outputs.clear();
     m_snapshots.clear();
     m_frames.clear();
+    m_inputStreams.clear();
     m_frameModel.setStringList(QStringList());
     m_loadedPath = "";
+}
+
+void Loader::onFrame_selectionChange(const QModelIndexList &selectedRows)
+{
+//    const auto & frames = m_recordLoader.getFrames();
+    std::cout << "[Loader] onFrame_selectionChange " << std::endl;
+
+    for ( const QModelIndex index : selectedRows ) {
+//        m_selectedRecordFrames.push_back(m_frames[index.row()]);
+
+        for (const auto & snapshot : m_frames[index.row()] ) {
+            const auto & sensorName = snapshot.getSensorName();
+
+            const auto & acq = snapshot.getAcq();
+            std::cout << "send acq : " << acq << std::endl;
+
+            assert(m_outputStreams.find(sensorName) != m_outputStreams.end());
+            *m_outputStreams.at(sensorName) << acq;
+        }
+
+    }
+
 
 }
 
-QStringListModel & Loader::getFrameModel()
+//void Loader::onFrame_selectionChange(const QItemSelection &selectedRows, const QItemSelection &deselected)
+//{
+//    const auto & selectedRows = ui->listView_recordFrames->selectionModel()->selectedRows();
+
+//    std::cout << "[FormWidgetLoader] on_listView_recordFrames_selectionChanged : "
+//              << selectedRows.size() << std::endl;
+
+//    m_selectedRecordFrames.clear();
+//    m_selectedRecordFrames.reserve(selectedRows.size());
+
+//    const auto & frames = m_recordLoader.getFrames();
+
+//    for ( QModelIndex index : selectedRows ) {
+//        m_selectedRecordFrames.push_back(frames[index.row()]);
+//    }
+
+//    emit recordFrames_selectionChanged();
+
+//}
+
+const std::map<std::string, CyclicBuff> &Loader::getOutputStreamBuffs() const
+{
+    return m_outputStreamBuffs;
+}
+
+// const std::vector<std::unique_ptr<InputStream>> &Loader::getInputStreams() const
+//{
+//     return m_inputStreams;
+// }
+
+QStringListModel& Loader::getFrameModel()
 {
     return m_frameModel;
 }
+
+//const std::map<std::string, std::unique_ptr<OutputStream> > &Loader::getRamOutputStreams() const
+//{
+////    std::vector<std::unique_ptr<OutputStream>> ramOutputStreams;
+
+//    return m_ramOutputStreams;
+////    return ramOutputStreams;
+//}
+
+//std::vector<std::unique_ptr<InputStream>> Loader::getInputStreams()
+//{
+//    std::vector<std::unique_ptr<InputStream>> inputStreams;
+
+//    for (const auto & inputStream : m_inputStreams) {
+
+//    }
+
+//    return inputStreams;
+//}
 
 // void Loader::play()
 //{
@@ -260,8 +361,9 @@ QStringListModel & Loader::getFrameModel()
 //    m_outputPostfixName = outputPostFixName;
 //}
 
-const std::vector<Frame>& Loader::getFrames() const {
-    assert( isLoaded() );
+const std::vector<Frame>& Loader::getFrames() const
+{
+    assert(isLoaded());
     return m_frames;
 }
 
@@ -270,16 +372,18 @@ const std::vector<Frame>& Loader::getFrames() const {
 //    return m_isPlaying;
 //}
 
-bool Loader::isLoaded() const {
+bool Loader::isLoaded() const
+{
     return m_loadedPath != "";
 }
 
-const std::string& Loader::getLoadedPath() const {
-    assert( isLoaded() );
+const std::string& Loader::getLoadedPath() const
+{
+    assert(isLoaded());
     return m_loadedPath;
 }
 
-//int Loader::getCurrentFrame() const {
-//    assert( isLoaded() );
+// int Loader::getCurrentFrame() const {
+//     assert( isLoaded() );
 ////    return m_currentFrame;
 //}

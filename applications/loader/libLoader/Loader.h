@@ -8,10 +8,17 @@
 #include <Frame.h>
 
 #include <QStringListModel>
+#include <QObject>
+#include <RamIO.h>
 
+#include <QItemSelection>
 
-class Loader
+#include <QTreeView>
+#include <QListView>
+
+class Loader : public QObject
 {
+        Q_OBJECT
 public:
 //    Loader(const std::string & outputPostFixName = "");
     ~Loader();
@@ -20,6 +27,9 @@ public:
     void update();
     void unload();
 
+
+signals:
+    void pathLoaded();
 //    void play();
 //    void stop();
 
@@ -27,11 +37,25 @@ public:
 
 //    void setOutputPostFixName(const std::string & outputPostFixName);
 
+public slots:
+//    void onFrame_selectionChange(const QItemSelection &selected, const QItemSelection & deselected);
+    void onFrame_selectionChange(const QModelIndexList &selectedRows);
+
 
 private:
 
 //    std::map<std::string, std::unique_ptr<OutputStream>> m_outputs;
 //    std::string m_outputPostfixName = "";
+
+//    InputStream * m_inputStream = nullptr;
+//    std::map<std::string, InputStream> m_inputStreams;
+    std::vector<std::unique_ptr<InputStream>> m_inputStreams;
+
+//    QListView & m_listViewFrame;
+//    QTreeView & m_treeViewFile;
+
+//    std::map<std::string, std::unique_ptr<InputStream>> m_inputStreams;
+//    std::vector<InputStream> m_inputStreams;
 
     std::set<Snapshot> m_snapshots;
     std::vector<Frame> m_frames;
@@ -45,6 +69,8 @@ private:
 //    bool m_isPlaying = false;
 //    bool m_exitSignal = false;
 //    int m_currentFrame = -1;
+    std::map<std::string, std::unique_ptr<OutputStream>> m_outputStreams;
+    std::map<std::string, CyclicBuff> m_outputStreamBuffs;
 
 public:
     const std::vector<Frame> & getFrames() const;
@@ -53,5 +79,11 @@ public:
     const std::string & getLoadedPath() const;
 //    int getCurrentFrame() const;
     QStringListModel & getFrameModel();
+//    const std::vector<InputStream> &getInputStreams() const;
+
+//    const std::vector<std::unique_ptr<InputStream>> &getInputStreams() const;
+//    std::vector<std::unique_ptr<InputStream>> getInputStreams();
+//    const std::map<std::string, std::unique_ptr<OutputStream>> & getRamOutputStreams() const;
+    const std::map<std::string, CyclicBuff> &getOutputStreamBuffs() const;
 };
 

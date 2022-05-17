@@ -6,6 +6,8 @@
 #include <MainWindowStreamView.h>
 #include <QMdiArea>
 
+//#include <FormInputStreamViews.h>
+
 class Thread_InputStream : public QThread
 {
     Q_OBJECT
@@ -23,7 +25,6 @@ class Thread_InputStream : public QThread
     void run();
 
     Stream::Acquisition mAcq;
-
     InputStream mInputStream;
 
   private:

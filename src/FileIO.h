@@ -22,6 +22,9 @@ public:
 //    template <class std::fstream>
     FileIO(std::fstream&& file);
 //    ~FileIO() = default;
+    FileIO(const FileIO & fileIO) = delete;
+    FileIO(FileIO && fileIO) = default;
+//    FileIO();
 
     void close() override;
 

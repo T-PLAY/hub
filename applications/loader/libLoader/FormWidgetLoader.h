@@ -22,9 +22,17 @@ public:
 
 //public slots:
 
+    const Loader &getRecordLoader() const;
+
+    const Loader &getSnapshotLoader() const;
+
 signals:
-    void recordFrames_selectionChanged();
-    void snapshotFrames_selectionChanged();
+//    void recordFrames_selectionChanged();
+//    void snapshotFrames_selectionChanged();
+
+    void recordPathLoaded();
+    void snapshotPathLoaded();
+
 
 
 private slots:
@@ -37,8 +45,8 @@ private slots:
 //    void on_listView_recordFrames_clicked(const QModelIndex &index);
 //    void on_listView_snapshotFrames_clicked(const QModelIndex &index);
 
-    void recordFrames_selectionChange(const QItemSelection &selected, const QItemSelection & deselected);
-    void snapshotFrames_selectionChange(const QItemSelection &selected, const QItemSelection & deselected);
+    void onRecordFrames_selectionChange(const QItemSelection &selected, const QItemSelection & deselected);
+    void onSnapshotFrames_selectionChange(const QItemSelection &selected, const QItemSelection & deselected);
 //    void on_listView_frames_activated(const QModelIndex &index);
 //    void on_listView_frames_indexesMoved(const QModelIndexList &indexes);
 
@@ -49,12 +57,14 @@ private:
     QFileSystemModel * m_recordFileModel = nullptr;
 //    QStringListModel * m_recordFrameModel = nullptr;
     Loader m_recordLoader;
-    std::vector<Frame> m_selectedRecordFrames;
+//    std::vector<Frame> m_selectedRecordFrames;
+//    OutputStream * m_recordOutputStream = nullptr;
 
     QFileSystemModel * m_snapshotFileModel = nullptr;
 //    QStringListModel * m_snapshotFrameModel = nullptr;
     Loader m_snapshotLoader;
-    std::vector<Frame> m_selectedSnapshotFrames;
+//    std::vector<Frame> m_selectedSnapshotFrames;
+//    OutputStream * m_snapshotOutputStream = nullptr;
 
 //    std::string m_frameNameSelected = "";
 

@@ -9,9 +9,15 @@
 //#include <SensorViews.h>
 #include <Player.h>
 #include <Recorder.h>
-#include <FormSensorViews.h>
 
 //#define USE_FORM_SENSOR_VIEWS
+#ifdef USE_FORM_SENSOR_VIEWS
+#include <FormSensorViews.h>
+#endif
+
+#include <FormWidgetLoader.h>
+#include <FormInputStreamViews.h>
+
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -29,6 +35,9 @@ class MainWindow : public QMainWindow
 
   public slots:
 
+    void onRecordLoaderPathLoaded();
+    void onSnapshotLoaderPathLoaded();
+
   public:
 private slots:
     void on_action2D_triggered();
@@ -40,11 +49,15 @@ private slots:
     void on_startStreaming(std::string streamName);
     void on_stopStreaming(std::string streamName);
 
-    void on_comboBox_scan_currentTextChanged(const QString &sourceType);
-    void on_comboBox_pose_currentTextChanged(const QString &sourceType);
+//    void on_comboBox_scan_currentTextChanged(const QString &sourceType);
+//    void on_comboBox_pose_currentTextChanged(const QString &sourceType);
 
-    void on_newScanAcquisition();
-    void on_newPoseAcquisition();
+//    void on_newScanAcquisition();
+//    void on_newPoseAcquisition();
+    void onInitPose();
+    void onInitScan();
+    void onUpdatePose();
+    void onUpdateScan();
 
 //    void on_toolButton_record_toggled(bool checked);
     void on_toolButton_record_clicked();
@@ -60,10 +73,9 @@ private:
 
 //    SensorViews * m_sensorViews = nullptr;
 
-//    const Thread_InputStream * m_threadInputStreamScan = nullptr;
-//    std::string m_activeStreamScan = "";
-//    const Thread_InputStream * m_threadInputStreamPose = nullptr;
-//    std::string m_activeStreamPose = "";
+    FormWidgetLoader * m_formWidgetLoader = nullptr;
+
+    FormInputStreamViews * m_formInputStreamViews = nullptr;
 
 #ifdef USE_FORM_SENSOR_VIEWS
     FormSensorViews * m_formSensorViews = nullptr;
