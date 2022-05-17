@@ -103,6 +103,11 @@ size_t Stream::getAcquisitionSize() const
     return mAcquisitionSize;
 }
 
+IOStream &Stream::getIOStream() const
+{
+    return mIOStream;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 // InputStream::InputStream(const std::string& sensorName, const std::string& syncSensorName, const std::string& ipv4, int port)
@@ -156,6 +161,17 @@ InputStream::InputStream(const std::string & sensorName, const std::string& sync
     mAcquisitionSize = computeAcquisitionSize(mFormat, mDims);
 }
 
+//InputStream::InputStream(RamIO &ramIO)
+//    : Stream("", Format::NONE, {}, ramIO)
+//{
+//    mIOStream.read(mSensorName);
+//    mIOStream.read(mFormat);
+//    mIOStream.read(mDims);
+//    mIOStream.read(mMetaData);
+
+//    mAcquisitionSize = computeAcquisitionSize(mFormat, mDims);
+//}
+
 InputStream::~InputStream()
 {
 #ifdef DEBUG_MSG
@@ -201,9 +217,9 @@ std::vector<Stream::Acquisition> InputStream::getAllAcquisition()
         int nReadAcqs = 0;
         while (true) {
             InputStream::operator>>(acq);
-            if (nReadAcqs < 10) {
-                std::cout << "read acquisition : " << acq << std::endl;
-            }
+//            if (nReadAcqs < 10) {
+//                std::cout << "read acquisition : " << acq << std::endl;
+//            }
             acqs.emplace_back(std::move(acq));
             ++nReadAcqs;
         }

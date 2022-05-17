@@ -14,6 +14,7 @@
 
 #include <socket.h>
 //#include <FileIO.h>
+//#include <RamIO.h>
 
 // namespace std {
 // namespace any {
@@ -264,6 +265,8 @@ public:
     Format getFormat() const;
     size_t getAcquisitionSize() const;
 
+    IOStream &getIOStream() const;
+
 protected:
     std::string mSensorName = "";
     Format mFormat = Format::NONE;
@@ -282,6 +285,8 @@ public:
     InputStream(IOStream&& ioStream);
     template <class IOStream>
     InputStream(IOStream& ioStream) = delete;
+//    InputStream(RamIO & ramIO);
+
     ~InputStream();
 
     Acquisition& operator>>(Acquisition& acquisition) const;

@@ -23,8 +23,8 @@ struct MinimalComponent : public Ra::Engine::Scene::Component {
 
     void updateShader();
 
-    void updateProbe(const Stream::Acquisition & acq);
-    void initProbe();
+    void updatePose(const Stream::Acquisition & acq);
+    void initPose();
     void updateScan(const Stream::Acquisition & acq);
     void initScan();
 

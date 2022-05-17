@@ -48,7 +48,9 @@ FormWidgetLoader::FormWidgetLoader( QWidget* parent ) :
         QObject::connect( ui->listView_recordFrames->selectionModel(),
                           &QItemSelectionModel::selectionChanged,
                           this,
-                          &FormWidgetLoader::recordFrames_selectionChange );
+                          &FormWidgetLoader::onRecordFrames_selectionChange);
+//                          &m_recordLoader,
+//                          &Loader::onFrame_selectionChange );
 
         //                connect( ui->listView_recordFrames->selectionModel(),
         //                         SIGNAL( currentRowChanged( QModelIndex, QModelIndex ) ),
@@ -93,8 +95,13 @@ FormWidgetLoader::FormWidgetLoader( QWidget* parent ) :
         QObject::connect( ui->listView_snapshotFrames->selectionModel(),
                           &QItemSelectionModel::selectionChanged,
                           this,
-                          &FormWidgetLoader::snapshotFrames_selectionChange );
+                          &FormWidgetLoader::onSnapshotFrames_selectionChange);
+//                          &m_snapshotLoader,
+//                          &Loader::onFrame_selectionChange );
     }
+
+    QObject::connect(&m_recordLoader, &Loader::pathLoaded, this, &FormWidgetLoader::recordPathLoaded);
+    QObject::connect(&m_snapshotLoader, &Loader::pathLoaded, this, &FormWidgetLoader::snapshotPathLoaded);
 
     //    QObject::connect(ui->listView_frames, &QListView::currentChanged, this,
     //    &FormWidgetLoader::on_listView_frames_selectionChanged); connect(ui->listView_frames,
@@ -198,7 +205,7 @@ void FormWidgetLoader::on_treeView_snapshot_clicked( const QModelIndex& index ) 
 //    std::cout << "[FormWidgetLoader] on_listView_snapshotFrames_clicked" << std::endl;
 //}
 
-void FormWidgetLoader::recordFrames_selectionChange( const QItemSelection& selected,
+void FormWidgetLoader::onRecordFrames_selectionChange( const QItemSelection& selected,
                                                       const QItemSelection& deselected ) {
 
     const auto & selectedRows = ui->listView_recordFrames->selectionModel()->selectedRows();
@@ -206,19 +213,21 @@ void FormWidgetLoader::recordFrames_selectionChange( const QItemSelection& selec
     std::cout << "[FormWidgetLoader] on_listView_recordFrames_selectionChanged : "
               << selectedRows.size() << std::endl;
 
-    m_selectedRecordFrames.clear();
-    m_selectedRecordFrames.reserve(selectedRows.size());
+    m_recordLoader.onFrame_selectionChange(selectedRows);
 
-    const auto & frames = m_recordLoader.getFrames();
+//    m_selectedRecordFrames.clear();
+//    m_selectedRecordFrames.reserve(selectedRows.size());
 
-    for ( QModelIndex index : selectedRows ) {
-        m_selectedRecordFrames.push_back(frames[index.row()]);
-    }
+//    const auto & frames = m_recordLoader.getFrames();
 
-    emit recordFrames_selectionChanged();
+//    for ( QModelIndex index : selectedRows ) {
+//        m_selectedRecordFrames.push_back(frames[index.row()]);
+//    }
+
+//    emit recordFrames_selectionChanged();
 }
 
-void FormWidgetLoader::snapshotFrames_selectionChange( const QItemSelection& selected,
+void FormWidgetLoader::onSnapshotFrames_selectionChange( const QItemSelection& selected,
                                                         const QItemSelection& deselected ) {
 
     const auto & selectedRows = ui->listView_snapshotFrames->selectionModel()->selectedRows();
@@ -226,17 +235,29 @@ void FormWidgetLoader::snapshotFrames_selectionChange( const QItemSelection& sel
     std::cout << "[FormWidgetLoader] on_listView_snapshotFrames_selectionChanged : "
               << selectedRows.size() << std::endl;
 
-    m_selectedSnapshotFrames.clear();
-    m_selectedSnapshotFrames.reserve(selectedRows.size());
+    m_snapshotLoader.onFrame_selectionChange(selectedRows);
 
-    const auto & frames = m_snapshotLoader.getFrames();
+//    m_selectedSnapshotFrames.clear();
+//    m_selectedSnapshotFrames.reserve(selectedRows.size());
 
-    for ( QModelIndex index : selectedRows ) {
-        m_selectedSnapshotFrames.push_back(frames[index.row()]);
-    }
+//    const auto & frames = m_snapshotLoader.getFrames();
+
+//    for ( QModelIndex index : selectedRows ) {
+//        m_selectedSnapshotFrames.push_back(frames[index.row()]);
+//    }
 
 
-    emit snapshotFrames_selectionChanged();
+//    emit snapshotFrames_selectionChanged();
+}
+
+const Loader &FormWidgetLoader::getSnapshotLoader() const
+{
+    return m_snapshotLoader;
+}
+
+const Loader &FormWidgetLoader::getRecordLoader() const
+{
+    return m_recordLoader;
 }
 
 // void FormWidgetLoader::on_listView_frames_clicked( const QModelIndex& index ) {

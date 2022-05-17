@@ -286,7 +286,7 @@ void MinimalComponent::updateShader()
     m_viewer.doneCurrent();
 }
 
-void MinimalComponent::updateProbe(const Stream::Acquisition& acq)
+void MinimalComponent::updatePose(const Stream::Acquisition& acq)
 {
     float* translation = (float*)acq.mData;
     float* quaternion = (float*)&acq.mData[12];
@@ -361,7 +361,7 @@ void MinimalComponent::updateProbe(const Stream::Acquisition& acq)
     }
 }
 
-void MinimalComponent::initProbe()
+void MinimalComponent::initPose()
 {
     {
         auto TLocal = Transform::Identity();
