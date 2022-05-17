@@ -4,7 +4,7 @@
 #include <QMainWindow>
 #include <QMdiSubWindow>
 
-#include <SensorViews.h>
+//#include <SensorViews.h>
 
 // Q_DECLARE_METATYPE(Streamer);
 // Q_DECLARE_METATYPE(std::string)
@@ -26,7 +26,7 @@ signals:
 private:
     Ui::MainWindow* ui;
 
-    SensorViews * m_sensorViews = nullptr;
+//    SensorViews * m_sensorViews = nullptr;
 };
 
 #endif // MAINWINDOW_H

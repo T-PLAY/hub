@@ -152,6 +152,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
 #    Qt${QT_VERSION}::Widgets
     ${REQUIRED_LIBS_QUALIFIED}
     Radium::Core Radium::Gui Radium::Engine
+    libLoader
     libViewer
     libApp
     src

@@ -6,9 +6,12 @@
 #include <QMainWindow>
 #include <QFileSystemModel>
 
-#include <SensorViews.h>
+//#include <SensorViews.h>
 #include <Player.h>
 #include <Recorder.h>
+#include <FormSensorViews.h>
+
+//#define USE_FORM_SENSOR_VIEWS
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -55,12 +58,16 @@ private:
     MinimalApp* m_app        = nullptr;
     MinimalComponent* m_comp = nullptr;
 
-    SensorViews * m_sensorViews = nullptr;
+//    SensorViews * m_sensorViews = nullptr;
 
-    const Thread_InputStream * m_threadInputStreamScan = nullptr;
-    std::string m_activeStreamScan = "";
-    const Thread_InputStream * m_threadInputStreamPose = nullptr;
-    std::string m_activeStreamPose = "";
+//    const Thread_InputStream * m_threadInputStreamScan = nullptr;
+//    std::string m_activeStreamScan = "";
+//    const Thread_InputStream * m_threadInputStreamPose = nullptr;
+//    std::string m_activeStreamPose = "";
+
+#ifdef USE_FORM_SENSOR_VIEWS
+    FormSensorViews * m_formSensorViews = nullptr;
+#endif
 
 
     Recorder m_recorder;
