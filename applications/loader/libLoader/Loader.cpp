@@ -28,7 +28,11 @@ Loader::~Loader()
     //    if (m_thread != nullptr)
     //        stop();
 
-    if (m_loadedPath != "")
+    //    if (m_loadedPath != "")
+    //        unload();
+    if (isPlaying())
+        stop();
+    if (isLoaded())
         unload();
 }
 
@@ -63,10 +67,10 @@ void Loader::update()
 
     // read records in folder
     for (const auto& fileDir : std::filesystem::directory_iterator(m_loadedPath)) {
-        const auto & filepath = fileDir.path().string();
-        const auto & filename = fileDir.path().filename();
+        const auto& filepath = fileDir.path().string();
+        const auto& filename = fileDir.path().filename();
         std::cout << "[Loader] read '" << filepath << "' record" << std::endl;
-//        std::cout << "read " << filename << std::endl;
+        //        std::cout << "read " << filename << std::endl;
         assert(std::filesystem::exists(filepath));
 
         std::fstream file(filepath, std::ios::binary | std::ios::in);
@@ -79,8 +83,8 @@ void Loader::update()
         assert(!file.eof());
         //        assert(sizeof(int) == 4);
 
-//        if (filename == "Polhemus Patriot (probe).txt")
-//            continue;
+        //        if (filename == "Polhemus Patriot (probe).txt")
+        //            continue;
 
         //        try {
         //        m_inputStream = new InputStream(FileIO(std::move(file)));
@@ -97,7 +101,6 @@ void Loader::update()
 
         auto acqs = inputStream.getAllAcquisition();
         const std::string& sensorName = inputStream.getSensorName();
-
 
         if (nAcqs == -1) {
             nAcqs = acqs.size();
@@ -187,9 +190,9 @@ void Loader::update()
         const auto& sensorName = inputStream->getSensorName();
         //        OutputStream && ramOutputStream = OutputStream(inputStream->getSensorName(), inputStream->getFormat(), inputStream->getDims(), RamIO());
         //        CyclicBuff buff;
-//        m_outputStreamBuffs[sensorName] = CyclicBuff();
+        //        m_outputStreamBuffs[sensorName] = CyclicBuff();
         m_outputStreamBuffs[sensorName] = std::make_unique<CyclicBuff>();
-//        m_outputStreamBuffs.insert(std::make_pair(sensorName, CyclicBuff()));
+        //        m_outputStreamBuffs.insert(std::make_pair(sensorName, CyclicBuff()));
         auto& cyclicBuff = *m_outputStreamBuffs.at(sensorName);
         m_outputStreams[inputStream->getSensorName()] = std::make_unique<OutputStream>(inputStream->getSensorName(), inputStream->getFormat(), inputStream->getDims(), RamIO(cyclicBuff));
     }
@@ -231,6 +234,16 @@ void Loader::onFrame_selectionChange(const QModelIndexList& selectedRows)
 {
     //    const auto & frames = m_recordLoader.getFrames();
     std::cout << "[Loader] onFrame_selectionChange " << std::endl;
+
+    if (selectedRows.empty()) {
+        if (!isPlaying()) {
+            play();
+            return;
+        }
+    }
+
+    if (isPlaying())
+        stop();
 
     for (const QModelIndex index : selectedRows) {
         //        m_selectedRecordFrames.push_back(m_frames[index.row()]);
@@ -333,8 +346,7 @@ void Loader::play()
 
             if (m_isPlaying) {
                 std::cout << "[Loader] end record, auto loop " << iLoop << std::endl;
-            }
-            else {
+            } else {
                 std::cout << "[Loader] record stopped by user" << std::endl;
             }
             ++iLoop;
@@ -378,13 +390,13 @@ void Loader::stop()
 //    m_outputPostfixName = outputPostFixName;
 //}
 
-//const std::vector<Frame>& Loader::getFrames() const
+// const std::vector<Frame>& Loader::getFrames() const
 //{
-//    assert(isLoaded());
-//    return m_frames;
-//}
+//     assert(isLoaded());
+//     return m_frames;
+// }
 
- bool Loader::isPlaying() const
+bool Loader::isPlaying() const
 {
     return m_isPlaying;
 }

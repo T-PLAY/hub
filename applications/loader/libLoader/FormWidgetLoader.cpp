@@ -110,6 +110,8 @@ FormWidgetLoader::FormWidgetLoader( QWidget* parent ) :
 }
 
 FormWidgetLoader::~FormWidgetLoader() {
+    std::cout << "[FormWidgetLoader] ~FormWidgetLoader()" << std::endl;
+
     //    if (!m_recordPlayer.isPlaying() && m_recordPlayer.isLoaded()) // unload player due of
     //    viewer waiting for a new frame
     //        m_recordPlayer.unload();

@@ -45,13 +45,26 @@ CyclicBuff::CyclicBuff(size_t size)
 
 CyclicBuff::~CyclicBuff()
 {
+    assert(!m_outputStreamWantsToClose);
+    assert(!m_inputStreamClose);
+    m_outputStreamWantsToClose = true;
+    while (!m_inputStreamClose) {
+        std::cout << "[CyclicBuff:" << this << "] ~CyclicBuff() : wait for inputStreamClose" << std::endl;
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
+
+    //    if (m_inputStreamClose) {
     delete[] m_buff;
     //    m_buff = nullptr;
     //    m_buff = nullptr;
+    std::cout << "[CyclicBuff:" << this << "] ~CyclicBuff()" << std::endl;
+    //    }
 }
 
 void CyclicBuff::write(const unsigned char* data, size_t len)
 {
+    assert(!m_outputStreamWantsToClose);
+
     size_t uploadSize = 0;
     do {
         // size of empty space in buff to write data
@@ -84,11 +97,15 @@ void CyclicBuff::read(unsigned char* data, size_t len)
 
         size_t byteRead;
         do {
-            if (m_isClose) {
+            if (m_outputStreamWantsToClose) {
+                m_inputStreamClose = true;
+                std::cout << "[CyclicBuff:" << this << "] read() : inputStream close" << std::endl;
                 throw CyclicBuff::exception("Connection closed");
                 assert(false);
             }
             if (m_buff == nullptr) {
+                m_inputStreamClose = true;
+                //                std::cout << "[CyclicBuff] read() : inputStream close" << std::endl;
                 throw CyclicBuff::exception("End of buffer (nullptr)");
                 assert(false);
             }
@@ -119,7 +136,6 @@ void CyclicBuff::read(unsigned char* data, size_t len)
 
 void CyclicBuff::close()
 {
-    m_isClose = true;
 }
 
 RamIO::RamIO(CyclicBuff& buff)
