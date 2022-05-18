@@ -4,38 +4,39 @@
 #include <filesystem>
 #include <iostream>
 
-FormWidgetLoader::FormWidgetLoader( QWidget* parent ) :
-    QWidget( parent ),
-    ui( new Ui::FormWidgetLoader )
-//    , m_recordPlayer(" (record)")
-//    , m_snapShotPlayer(" (snapshot)")
-//    ,
-//    m_recordLoader( " (record)" ),
-//    m_snapshotLoader( " (snapshot)" )
+FormWidgetLoader::FormWidgetLoader(QWidget* parent)
+    : QWidget(parent)
+    , ui(new Ui::FormWidgetLoader)
+    ,
+    //    , m_recordPlayer(" (record)")
+    //    , m_snapShotPlayer(" (snapshot)")
+    //    ,
+    m_recordLoader(" (record)")
+    , m_snapshotLoader(" (snapshot)", false)
 {
-    ui->setupUi( this );
+    ui->setupUi(this);
 
     // records view
     {
         // tree view
         QString recordPath = PROJECT_DIR "data/records/";
-        assert( std::filesystem::exists( recordPath.toStdString() ) );
-        m_recordFileModel = new QFileSystemModel( this );
-        m_recordFileModel->setReadOnly( true );
+        assert(std::filesystem::exists(recordPath.toStdString()));
+        m_recordFileModel = new QFileSystemModel(this);
+        m_recordFileModel->setReadOnly(true);
         // Set filter
-        m_recordFileModel->setFilter( QDir::NoDotAndDotDot | QDir::AllDirs | QDir::AllEntries );
+        m_recordFileModel->setFilter(QDir::NoDotAndDotDot | QDir::AllDirs | QDir::AllEntries);
         //    m_recordFileModel->setFilter(QDir::NoDotAndDotDot | QDir::AllDirs);
         // QFileSystemModel requires root path
-        m_recordFileModel->setRootPath( recordPath );
+        m_recordFileModel->setRootPath(recordPath);
 
         // Attach the model to the view
-        ui->treeView_record->setModel( m_recordFileModel );
-        const auto& rootIndex = m_recordFileModel->index( recordPath );
-        ui->treeView_record->setRootIndex( rootIndex );
-        ui->treeView_record->expand( rootIndex );
-        ui->treeView_record->setColumnHidden( 1, true );
-        ui->treeView_record->setColumnHidden( 2, true );
-        ui->treeView_record->setColumnHidden( 3, true );
+        ui->treeView_record->setModel(m_recordFileModel);
+        const auto& rootIndex = m_recordFileModel->index(recordPath);
+        ui->treeView_record->setRootIndex(rootIndex);
+        ui->treeView_record->expand(rootIndex);
+        ui->treeView_record->setColumnHidden(1, true);
+        ui->treeView_record->setColumnHidden(2, true);
+        ui->treeView_record->setColumnHidden(3, true);
         //    ui->treeView->setItemsExpandable(false);
         //    ui->treeView->setColumnHidden(0, true);
 
@@ -43,14 +44,14 @@ FormWidgetLoader::FormWidgetLoader( QWidget* parent ) :
         //        m_recordFrameModel = new QStringListModel( this );
         //    ui->tableView_acqs->setModel(m_recordFrameModel);
         //        ui->listView_recordFrames->setModel( m_recordFrameModel );
-        ui->listView_recordFrames->setModel( &m_recordLoader.getFrameModel() );
+        ui->listView_recordFrames->setModel(&m_recordLoader.getFrameModel());
         ui->listView_recordFrames->selectionModel();
-        QObject::connect( ui->listView_recordFrames->selectionModel(),
-                          &QItemSelectionModel::selectionChanged,
-                          this,
-                          &FormWidgetLoader::onRecordFrames_selectionChange);
-//                          &m_recordLoader,
-//                          &Loader::onFrame_selectionChange );
+        QObject::connect(ui->listView_recordFrames->selectionModel(),
+            &QItemSelectionModel::selectionChanged,
+            this,
+            &FormWidgetLoader::onRecordFrames_selectionChange);
+        //                          &m_recordLoader,
+        //                          &Loader::onFrame_selectionChange );
 
         //                connect( ui->listView_recordFrames->selectionModel(),
         //                         SIGNAL( currentRowChanged( QModelIndex, QModelIndex ) ),
@@ -63,41 +64,41 @@ FormWidgetLoader::FormWidgetLoader( QWidget* parent ) :
     {
         // tree view
         QString snapshotPath = PROJECT_DIR "data/snapshots/";
-        assert( std::filesystem::exists( snapshotPath.toStdString() ) );
-        m_snapshotFileModel = new QFileSystemModel( this );
-        m_snapshotFileModel->setReadOnly( true );
+        assert(std::filesystem::exists(snapshotPath.toStdString()));
+        m_snapshotFileModel = new QFileSystemModel(this);
+        m_snapshotFileModel->setReadOnly(true);
         // Set filter
-        m_snapshotFileModel->setFilter( QDir::NoDotAndDotDot | QDir::AllDirs | QDir::AllEntries );
+        m_snapshotFileModel->setFilter(QDir::NoDotAndDotDot | QDir::AllDirs | QDir::AllEntries);
         //    m_snapshotFileModel->setFilter(QDir::NoDotAndDotDot | QDir::AllDirs);
         // QFileSystemModel requires root path
-        m_snapshotFileModel->setRootPath( snapshotPath );
+        m_snapshotFileModel->setRootPath(snapshotPath);
 
         // Attach the model to the view
-        ui->treeView_snapshot->setModel( m_snapshotFileModel );
-        const auto& rootIndex2 = m_snapshotFileModel->index( snapshotPath );
-        ui->treeView_snapshot->setRootIndex( rootIndex2 );
-        ui->treeView_snapshot->expand( rootIndex2 );
-        ui->treeView_snapshot->setColumnHidden( 1, true );
-        ui->treeView_snapshot->setColumnHidden( 2, true );
-        ui->treeView_snapshot->setColumnHidden( 3, true );
+        ui->treeView_snapshot->setModel(m_snapshotFileModel);
+        const auto& rootIndex2 = m_snapshotFileModel->index(snapshotPath);
+        ui->treeView_snapshot->setRootIndex(rootIndex2);
+        ui->treeView_snapshot->expand(rootIndex2);
+        ui->treeView_snapshot->setColumnHidden(1, true);
+        ui->treeView_snapshot->setColumnHidden(2, true);
+        ui->treeView_snapshot->setColumnHidden(3, true);
         //    ui->treeView->setItemsExpandable(false);
         //    ui->treeView->setColumnHidden(0, true);
 
         // frame view
         //        m_snapshotFrameModel = new QStringListModel( this );
         //        ui->listView_snapshotFrames->setModel( m_snapshotFrameModel );
-        ui->listView_snapshotFrames->setModel( &m_snapshotLoader.getFrameModel() );
+        ui->listView_snapshotFrames->setModel(&m_snapshotLoader.getFrameModel());
         //        connect( ui->listView_snapshotFrames->selectionModel(),
         //                 SIGNAL( currentRowChanged( QModelIndex, QModelIndex ) ),
         //                 this,
         //                 SLOT( on_listView_snapshotFrames_selectionChanged( QModelIndex,
         //                 QModelIndex ) ) );
-        QObject::connect( ui->listView_snapshotFrames->selectionModel(),
-                          &QItemSelectionModel::selectionChanged,
-                          this,
-                          &FormWidgetLoader::onSnapshotFrames_selectionChange);
-//                          &m_snapshotLoader,
-//                          &Loader::onFrame_selectionChange );
+        QObject::connect(ui->listView_snapshotFrames->selectionModel(),
+            &QItemSelectionModel::selectionChanged,
+            this,
+            &FormWidgetLoader::onSnapshotFrames_selectionChange);
+        //                          &m_snapshotLoader,
+        //                          &Loader::onFrame_selectionChange );
     }
 
     QObject::connect(&m_recordLoader, &Loader::pathLoaded, this, &FormWidgetLoader::recordPathLoaded);
@@ -109,7 +110,8 @@ FormWidgetLoader::FormWidgetLoader( QWidget* parent ) :
     //    SLOT(on_listView_frames_selectionChanged(QModelIndex, QModelIndex)));
 }
 
-FormWidgetLoader::~FormWidgetLoader() {
+FormWidgetLoader::~FormWidgetLoader()
+{
     std::cout << "[FormWidgetLoader] ~FormWidgetLoader()" << std::endl;
 
     //    if (!m_recordPlayer.isPlaying() && m_recordPlayer.isLoaded()) // unload player due of
@@ -125,43 +127,45 @@ FormWidgetLoader::~FormWidgetLoader() {
     delete ui;
 }
 
-void FormWidgetLoader::on_treeView_record_clicked( const QModelIndex& index ) {
+void FormWidgetLoader::on_treeView_record_clicked(const QModelIndex& index)
+{
 
-    const std::string& mPath =
-        m_recordFileModel->fileInfo( index ).absoluteFilePath().toStdString();
+    const std::string& mPath = m_recordFileModel->fileInfo(index).absoluteFilePath().toStdString();
 
     std::cout << "[FormWidgetLoader] on_treeView_record_clicked : " << mPath << std::endl;
 
     // click twice -> unselect
-    if ( m_recordLoader.isLoaded() && mPath == m_recordLoader.getLoadedPath() ) {
+    if (m_recordLoader.isLoaded() && mPath == m_recordLoader.getLoadedPath()) {
         const auto& selectionModel = ui->treeView_record->selectionModel();
-        selectionModel->select( index, QItemSelectionModel::Deselect );
+        selectionModel->select(index, QItemSelectionModel::Deselect);
         m_recordLoader.unload();
         return;
     }
 
-    if ( m_recordLoader.isLoaded() ) m_recordLoader.unload();
+    if (m_recordLoader.isLoaded())
+        m_recordLoader.unload();
 
-    m_recordLoader.load( mPath );
+    m_recordLoader.load(mPath);
 }
 
-void FormWidgetLoader::on_treeView_snapshot_clicked( const QModelIndex& index ) {
+void FormWidgetLoader::on_treeView_snapshot_clicked(const QModelIndex& index)
+{
     std::cout << "[FormWidgetLoader] on_treeView_snapshot_clicked" << std::endl;
 
-    const std::string& mPath =
-        m_snapshotFileModel->fileInfo( index ).absoluteFilePath().toStdString();
+    const std::string& mPath = m_snapshotFileModel->fileInfo(index).absoluteFilePath().toStdString();
 
     // click twice -> unselect
-    if ( m_snapshotLoader.isLoaded() && mPath == m_snapshotLoader.getLoadedPath() ) {
+    if (m_snapshotLoader.isLoaded() && mPath == m_snapshotLoader.getLoadedPath()) {
         const auto& selectionModel = ui->treeView_snapshot->selectionModel();
-        selectionModel->select( index, QItemSelectionModel::Deselect );
+        selectionModel->select(index, QItemSelectionModel::Deselect);
         m_snapshotLoader.unload();
         return;
     }
 
-    if ( m_snapshotLoader.isLoaded() ) m_snapshotLoader.unload();
+    if (m_snapshotLoader.isLoaded())
+        m_snapshotLoader.unload();
 
-    m_snapshotLoader.load( mPath );
+    m_snapshotLoader.load(mPath);
 }
 
 // void FormWidgetLoader::updateRecordFrames() {
@@ -191,7 +195,7 @@ void FormWidgetLoader::on_treeView_snapshot_clicked( const QModelIndex& index ) 
 //    //        view->show();
 //}
 
-//void FormWidgetLoader::on_listView_recordFrames_clicked( const QModelIndex& index ) {
+// void FormWidgetLoader::on_listView_recordFrames_clicked( const QModelIndex& index ) {
 
 //    const int iFrame = index.row();
 //    std::cout << "[FormWidgetLoader] on_listView_recordFrames_clicked : " << iFrame << std::endl;
@@ -203,61 +207,62 @@ void FormWidgetLoader::on_treeView_snapshot_clicked( const QModelIndex& index ) 
 //    //        }
 //}
 
-//void FormWidgetLoader::on_listView_snapshotFrames_clicked( const QModelIndex& index ) {
-//    std::cout << "[FormWidgetLoader] on_listView_snapshotFrames_clicked" << std::endl;
-//}
+// void FormWidgetLoader::on_listView_snapshotFrames_clicked( const QModelIndex& index ) {
+//     std::cout << "[FormWidgetLoader] on_listView_snapshotFrames_clicked" << std::endl;
+// }
 
-void FormWidgetLoader::onRecordFrames_selectionChange( const QItemSelection& selected,
-                                                      const QItemSelection& deselected ) {
+void FormWidgetLoader::onRecordFrames_selectionChange(const QItemSelection& selected,
+    const QItemSelection& deselected)
+{
 
-    const auto & selectedRows = ui->listView_recordFrames->selectionModel()->selectedRows();
+    const auto& selectedRows = ui->listView_recordFrames->selectionModel()->selectedRows();
 
     std::cout << "[FormWidgetLoader] on_listView_recordFrames_selectionChanged : "
               << selectedRows.size() << std::endl;
 
     m_recordLoader.onFrame_selectionChange(selectedRows);
 
-//    m_selectedRecordFrames.clear();
-//    m_selectedRecordFrames.reserve(selectedRows.size());
+    //    m_selectedRecordFrames.clear();
+    //    m_selectedRecordFrames.reserve(selectedRows.size());
 
-//    const auto & frames = m_recordLoader.getFrames();
+    //    const auto & frames = m_recordLoader.getFrames();
 
-//    for ( QModelIndex index : selectedRows ) {
-//        m_selectedRecordFrames.push_back(frames[index.row()]);
-//    }
+    //    for ( QModelIndex index : selectedRows ) {
+    //        m_selectedRecordFrames.push_back(frames[index.row()]);
+    //    }
 
-//    emit recordFrames_selectionChanged();
+    //    emit recordFrames_selectionChanged();
 }
 
-void FormWidgetLoader::onSnapshotFrames_selectionChange( const QItemSelection& selected,
-                                                        const QItemSelection& deselected ) {
+void FormWidgetLoader::onSnapshotFrames_selectionChange(const QItemSelection& selected,
+    const QItemSelection& deselected)
+{
 
-    const auto & selectedRows = ui->listView_snapshotFrames->selectionModel()->selectedRows();
+    const auto& selectedRows = ui->listView_snapshotFrames->selectionModel()->selectedRows();
 
     std::cout << "[FormWidgetLoader] on_listView_snapshotFrames_selectionChanged : "
               << selectedRows.size() << std::endl;
 
     m_snapshotLoader.onFrame_selectionChange(selectedRows);
 
-//    m_selectedSnapshotFrames.clear();
-//    m_selectedSnapshotFrames.reserve(selectedRows.size());
+    //    m_selectedSnapshotFrames.clear();
+    //    m_selectedSnapshotFrames.reserve(selectedRows.size());
 
-//    const auto & frames = m_snapshotLoader.getFrames();
+    //    const auto & frames = m_snapshotLoader.getFrames();
 
-//    for ( QModelIndex index : selectedRows ) {
-//        m_selectedSnapshotFrames.push_back(frames[index.row()]);
-//    }
+    //    for ( QModelIndex index : selectedRows ) {
+    //        m_selectedSnapshotFrames.push_back(frames[index.row()]);
+    //    }
 
-
-//    emit snapshotFrames_selectionChanged();
+    //    emit snapshotFrames_selectionChanged();
 }
 
-const Loader &FormWidgetLoader::getSnapshotLoader() const
+const Loader& FormWidgetLoader::getSnapshotLoader() const
 {
     return m_snapshotLoader;
 }
 
-const Loader &FormWidgetLoader::getRecordLoader() const
+const Loader& FormWidgetLoader::getRecordLoader() const
 {
     return m_recordLoader;
 }

@@ -92,7 +92,7 @@ private:
     std::map<std::string, FormSensorView*> m_sensorViews;
 
 //    QBoxLayout& m_vBoxLayout;
-    QMdiArea * m_mdiArea = nullptr;
+//    QMdiArea * m_mdiArea = nullptr;
 //    QMainWindow& m_mainWindow;
 
     bool m_serverConnected = false;
@@ -102,7 +102,7 @@ private:
 
 public:
     const FormSensorView& getSensorView(const std::string& sensorName) const;
-    void setMdiArea(QMdiArea *newMdiArea);
+//    void setMdiArea(QMdiArea *newMdiArea);
 
 };
 

@@ -4,13 +4,13 @@
 #include <MinimalApp.hpp>
 #include <MinimalComponent.hpp>
 #include <QMainWindow>
-#include <QFileSystemModel>
+//#include <QFileSystemModel>
 
 //#include <SensorViews.h>
-#include <Player.h>
-#include <Recorder.h>
+//#include <Player.h>
+//#include <Recorder.h>
 
-//#define USE_FORM_SENSOR_VIEWS
+#define USE_FORM_SENSOR_VIEWS
 #ifdef USE_FORM_SENSOR_VIEWS
 #include <FormSensorViews.h>
 #endif
@@ -58,8 +58,8 @@ private slots:
     void onUpdateScan();
 
 //    void on_toolButton_record_toggled(bool checked);
-    void on_toolButton_record_clicked();
-    void on_toolButton_snapshot_clicked();
+//    void on_toolButton_record_clicked();
+//    void on_toolButton_snapshot_clicked();
 
 
 
@@ -80,6 +80,5 @@ private:
 #endif
 
 
-    Recorder m_recorder;
 };
 #endif // MAINWINDOW_H

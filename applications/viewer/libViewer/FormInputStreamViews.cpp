@@ -10,6 +10,8 @@
 
 #include <constants.h>
 
+#include <Frame.h>
+
 InputStreamThread::InputStreamThread(InputStream& inputStream, QObject* parent)
     : QThread(parent)
     , mInputStream(inputStream)
@@ -23,10 +25,10 @@ InputStreamThread::~InputStreamThread()
 {
     std::cout << "[InputStreamThread] ~InputStreamThread()" << std::endl;
 
-//    if (this->isRunning()) {
-//        this->requestInterruption();
-//        this->wait();
-//    }
+    //    if (this->isRunning()) {
+    //        this->requestInterruption();
+    //        this->wait();
+    //    }
 }
 
 void InputStreamThread::run()
@@ -56,11 +58,11 @@ void InputStreamThread::run()
 FormInputStreamViews::FormInputStreamViews(QWidget* parent)
     : QWidget(parent)
     , ui(new Ui::FormInputStreamViews)
+    , m_recorder(PROJECT_DIR "data/")
 {
     ui->setupUi(this);
 
     ui->comboBox_scan->setModel(&m_scanModel);
-
     ui->comboBox_pose->setModel(&m_poseModel);
 }
 
@@ -74,8 +76,8 @@ FormInputStreamViews::~FormInputStreamViews()
     //        delete pair.second;
     //    }
 
-//    m_inputStreams.clear();
-//    m_threads.clear();
+    //    m_inputStreams.clear();
+    //    m_threads.clear();
 
     delete ui;
     std::cout << "[FormInputStreamViews] ~FormInputStreamViews() end" << std::endl;
@@ -459,4 +461,45 @@ void FormInputStreamViews::on_comboBox_scan_currentIndexChanged(int index)
 void FormInputStreamViews::on_comboBox_pose_currentIndexChanged(int index)
 {
     std::cout << "[FormInputStreamViews] on_comboBox_pose_currentIndexChanged(" << index << ")" << std::endl;
+}
+
+void FormInputStreamViews::on_toolButton_record_clicked()
+{
+    if (m_recorder.isRecording()) {
+
+        m_recorder.stop();
+        ui->toolButton_record->setText("startRecording");
+
+    } else {
+        InputStreamParameters inputStreamParameters;
+        if (m_activeStreamScan != "") {
+            inputStreamParameters.push_back({ m_activeStreamScan, "" });
+        }
+        if (m_activeStreamPose != "") {
+            inputStreamParameters.push_back({ m_activeStreamPose, "" });
+        }
+        if (inputStreamParameters.empty()) {
+            return;
+        }
+        m_recorder.record(inputStreamParameters);
+        ui->toolButton_record->setText("stopRecording");
+    }
+}
+
+void FormInputStreamViews::on_toolButton_snapshot_clicked()
+{
+    Frame frame;
+
+    if (m_activeStreamScan != "") {
+        Snapshot scanSnapshot(m_threadInputStreamScan->mInputStream, m_threadInputStreamScan->mAcq);
+        frame.push_back(scanSnapshot);
+    }
+    if (m_activeStreamPose != "") {
+        Snapshot poseSnapshot(m_threadInputStreamPose->mInputStream, m_threadInputStreamPose->mAcq);
+        frame.push_back(poseSnapshot);
+    }
+    if (frame.empty()) {
+        return;
+    }
+    m_recorder.save(frame);
 }

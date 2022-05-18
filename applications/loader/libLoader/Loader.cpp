@@ -17,9 +17,10 @@
 
 //}
 
-// Loader::Loader( const std::string& outputPostFixName )
-//     : m_outputPostfixName( outputPostFixName )
-//{}
+ Loader::Loader( const std::string& outputPostFixName, bool autoPlay )
+     : m_outputPostfixName( outputPostFixName )
+     , m_autoPlay(autoPlay)
+{}
 
 Loader::~Loader()
 {
@@ -100,7 +101,7 @@ void Loader::update()
         auto& inputStream = *m_inputStreams.back();
 
         auto acqs = inputStream.getAllAcquisition();
-        const std::string& sensorName = inputStream.getSensorName();
+        const std::string& sensorName = inputStream.getSensorName() + m_outputPostfixName;
 
         if (nAcqs == -1) {
             nAcqs = acqs.size();
@@ -120,14 +121,16 @@ void Loader::update()
             //                Snapshot snapshot { acq.clone(), sensorName };
             //                m_snapshots.insert(std::move(snapshot));
             //                m_snapshots.insert(Snapshot { acq.clone(), sensorName });
-            Snapshot snapshot(inputStream, acq);
+//            Snapshot snapshot(inputStream, acq);
+            Snapshot snapshot(sensorName, inputStream.getFormat(), inputStream.getDims(), acq);
             m_snapshots.insert(std::move(snapshot));
             //                m_snapshots.insert(Snapshot(sensorName, inputStream.getFormat(),
             //                inputStream.getDims(), acq));
 
             //                const auto& it = m_snapshots.find(Snapshot { acq.clone(), sensorName
             //                });
-            Snapshot snapshot2(inputStream, acq);
+//            Snapshot snapshot2(inputStream, acq);
+            Snapshot snapshot2(sensorName, inputStream.getFormat(), inputStream.getDims(), acq);
             const auto& it = m_snapshots.find(snapshot2);
             assert(it != m_snapshots.end());
             m_frames[iAcq].push_back(*it);
@@ -187,19 +190,21 @@ void Loader::update()
 
     assert(m_outputStreams.empty());
     for (const auto& inputStream : m_inputStreams) {
-        const auto& sensorName = inputStream->getSensorName();
+        const auto& sensorName = inputStream->getSensorName() + m_outputPostfixName;
         //        OutputStream && ramOutputStream = OutputStream(inputStream->getSensorName(), inputStream->getFormat(), inputStream->getDims(), RamIO());
         //        CyclicBuff buff;
         //        m_outputStreamBuffs[sensorName] = CyclicBuff();
         m_outputStreamBuffs[sensorName] = std::make_unique<CyclicBuff>();
         //        m_outputStreamBuffs.insert(std::make_pair(sensorName, CyclicBuff()));
         auto& cyclicBuff = *m_outputStreamBuffs.at(sensorName);
-        m_outputStreams[inputStream->getSensorName()] = std::make_unique<OutputStream>(inputStream->getSensorName(), inputStream->getFormat(), inputStream->getDims(), RamIO(cyclicBuff));
+        m_outputStreams[sensorName] = std::make_unique<OutputStream>(sensorName, inputStream->getFormat(), inputStream->getDims(), RamIO(cyclicBuff));
     }
     //        ui->listView_recordFrames->show();
     //        view->show();
     emit pathLoaded();
-    play();
+
+    if (m_autoPlay)
+        play();
 }
 
 void Loader::unload()
@@ -235,7 +240,7 @@ void Loader::onFrame_selectionChange(const QModelIndexList& selectedRows)
     //    const auto & frames = m_recordLoader.getFrames();
     std::cout << "[Loader] onFrame_selectionChange " << std::endl;
 
-    if (selectedRows.empty()) {
+    if (m_autoPlay && selectedRows.empty()) {
         if (!isPlaying()) {
             play();
             return;
@@ -252,7 +257,7 @@ void Loader::onFrame_selectionChange(const QModelIndexList& selectedRows)
             const auto& sensorName = snapshot.getSensorName();
 
             const auto& acq = snapshot.getAcq();
-            std::cout << "[Loader] send acq : " << acq << std::endl;
+//            std::cout << "[Loader] send acq : " << acq << std::endl;
 
             assert(m_outputStreams.find(sensorName) != m_outputStreams.end());
             *m_outputStreams.at(sensorName) << acq;
@@ -316,6 +321,7 @@ QStringListModel& Loader::getFrameModel()
 
 void Loader::play()
 {
+    assert(m_autoPlay);
     //    m_futureObj = m_exitSignal.get_future();
     std::cout << "[Loader] start playing" << std::endl;
     assert(m_thread == nullptr);

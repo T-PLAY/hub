@@ -22,7 +22,6 @@
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
-    , m_recorder(PROJECT_DIR "data/")
 {
     ui->setupUi(this);
     //    ui->dockWidgetContents_server->setMdiArea(ui->mdiArea);
@@ -136,9 +135,9 @@ MainWindow::~MainWindow()
 void MainWindow::onRecordLoaderPathLoaded()
 {
     std::cout << "[MainWindow] onRecordLoaderPathLoaded()" << std::endl;
-    const auto& recordOutputStreams = m_formWidgetLoader->getRecordLoader().getOutputStreamBuffs();
+    const auto& outputStreamBuffs = m_formWidgetLoader->getRecordLoader().getOutputStreamBuffs();
 
-    for (const auto& pair : recordOutputStreams) {
+    for (const auto& pair : outputStreamBuffs) {
         const auto& streamName = pair.first;
         auto& cyclicBuff = const_cast<CyclicBuff&>(*pair.second);
 
@@ -155,6 +154,22 @@ void MainWindow::onRecordLoaderPathLoaded()
 
 void MainWindow::onSnapshotLoaderPathLoaded()
 {
+    std::cout << "[MainWindow] onRecordLoaderPathLoaded()" << std::endl;
+    const auto& outputStreamBuffs = m_formWidgetLoader->getSnapshotLoader().getOutputStreamBuffs();
+
+    for (const auto& pair : outputStreamBuffs) {
+        const auto& streamName = pair.first;
+        auto& cyclicBuff = const_cast<CyclicBuff&>(*pair.second);
+
+        //        IOStream & ioStream = cyclicBuff.getIOStream();
+        //        RamIO & ramIO = dynamic_cast<RamIO&>(ioStream);
+        //        InputStream inputStream(ramIO);
+        std::cout << "connected " << streamName << std::endl;
+
+        m_formInputStreamViews->addInputStream(streamName, RamIO(cyclicBuff));
+//    m_formInputStreamViews->connect(recordOutputStreams);
+    }
+
 }
 
 void MainWindow::on_action2D_triggered()
@@ -208,44 +223,3 @@ void MainWindow::onUpdateScan()
 //void MainWindow::onNewPoseAcquisition()
 //{
 //}
-
-void MainWindow::on_toolButton_record_clicked()
-{
-    //    if (m_recorder.isRecording()) {
-
-    //        m_recorder.stop();
-    //        ui->toolButton_record->setText("startRecording");
-
-    //    } else {
-    //        InputStreamParameters inputStreamParameters;
-    //        if (m_activeStreamScan != "") {
-    //            inputStreamParameters.push_back({ m_activeStreamScan, "" });
-    //        }
-    //        if (m_activeStreamPose != "") {
-    //            inputStreamParameters.push_back({ m_activeStreamPose, "" });
-    //        }
-    //        if (inputStreamParameters.empty()) {
-    //            return;
-    //        }
-    //        m_recorder.record(inputStreamParameters);
-    //        ui->toolButton_record->setText("stopRecording");
-    //    }
-}
-
-void MainWindow::on_toolButton_snapshot_clicked()
-{
-    Frame frame;
-
-    //    if (m_activeStreamScan != "") {
-    //        Snapshot scanSnapshot(m_threadInputStreamScan->mInputStream, m_threadInputStreamScan->mAcq);
-    //        frame.push_back(scanSnapshot);
-    //    }
-    //    if (m_activeStreamPose != "") {
-    //        Snapshot poseSnapshot(m_threadInputStreamPose->mInputStream, m_threadInputStreamPose->mAcq);
-    //        frame.push_back(poseSnapshot);
-    //    }
-    //    if (frame.empty()) {
-    //        return;
-    //    }
-    //    m_recorder.save(frame);
-}
