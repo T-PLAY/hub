@@ -82,6 +82,9 @@ public slots:
 
 private slots:
 
+    void onNewAcquisitionPose();
+    void onNewAcquisitionScan();
+
     void onNewInputStream(std::string streamName);
     void onDeleteInputStream(const std::string& streamName);
     //    void on_stopStreaming(std::string streamName);
@@ -93,7 +96,6 @@ private slots:
     void on_comboBox_pose_currentIndexChanged(int index);
 
     void on_toolButton_record_clicked();
-
     void on_toolButton_snapshot_clicked();
 
 private:
@@ -114,6 +116,7 @@ private:
     std::map<std::string, std::unique_ptr<InputStreamThread>> m_threads;
 
     Recorder m_recorder;
+//    bool m_isRecording = false;
 
 public:
     const Stream::Acquisition& getScanAcquisition() const;

@@ -238,7 +238,7 @@ void Loader::unload()
 void Loader::onFrame_selectionChange(const QModelIndexList& selectedRows)
 {
     //    const auto & frames = m_recordLoader.getFrames();
-    std::cout << "[Loader] onFrame_selectionChange " << std::endl;
+//    std::cout << "[Loader] onFrame_selectionChange " << std::endl;
 
     if (m_autoPlay && selectedRows.empty()) {
         if (!isPlaying()) {

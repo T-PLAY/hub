@@ -4,6 +4,9 @@
 #include <filesystem>
 #include <iostream>
 
+#include <QItemSelectionModel>
+#include <QInputDialog>
+
 FormWidgetLoader::FormWidgetLoader(QWidget* parent)
     : QWidget(parent)
     , ui(new Ui::FormWidgetLoader)
@@ -40,6 +43,11 @@ FormWidgetLoader::FormWidgetLoader(QWidget* parent)
         //    ui->treeView->setItemsExpandable(false);
         //    ui->treeView->setColumnHidden(0, true);
 
+
+//        QObject::connect(ui->treeView_record,
+//            &QWidget::event,
+//            this,
+//            &FormWidgetLoader::onTreeView_record_keyPressed);
         // frame view
         //        m_recordFrameModel = new QStringListModel( this );
         //    ui->tableView_acqs->setModel(m_recordFrameModel);
@@ -50,6 +58,12 @@ FormWidgetLoader::FormWidgetLoader(QWidget* parent)
             &QItemSelectionModel::selectionChanged,
             this,
             &FormWidgetLoader::onRecordFrames_selectionChange);
+
+        QObject::connect(ui->listView_recordFrames->selectionModel(),
+            &QItemSelectionModel::currentChanged,
+            this,
+            &FormWidgetLoader::onRecordFrames_currentChanged);
+
         //                          &m_recordLoader,
         //                          &Loader::onFrame_selectionChange );
 
@@ -98,6 +112,10 @@ FormWidgetLoader::FormWidgetLoader(QWidget* parent)
             this,
             &FormWidgetLoader::onSnapshotFrames_selectionChange);
         //                          &m_snapshotLoader,
+        QObject::connect(ui->listView_snapshotFrames->selectionModel(),
+            &QItemSelectionModel::currentChanged,
+            this,
+            &FormWidgetLoader::onSnapshotFrames_currentChanged);
         //                          &Loader::onFrame_selectionChange );
     }
 
@@ -130,9 +148,33 @@ FormWidgetLoader::~FormWidgetLoader()
 void FormWidgetLoader::on_treeView_record_clicked(const QModelIndex& index)
 {
 
-    const std::string& mPath = m_recordFileModel->fileInfo(index).absoluteFilePath().toStdString();
+}
 
-    std::cout << "[FormWidgetLoader] on_treeView_record_clicked : " << mPath << std::endl;
+void FormWidgetLoader::on_treeView_snapshot_clicked(const QModelIndex& index)
+{
+}
+
+
+void FormWidgetLoader::on_treeView_record_doubleClicked(const QModelIndex &index)
+{
+
+    const std::string& mPath = m_recordFileModel->fileInfo(index).absoluteFilePath().toStdString();
+//    const auto& mPath = m_recordFileModel->fileInfo(index).absolutePath().toStdString();
+//    const auto& mFilename = m_recordFileModel->fileInfo(index).fileName().toStdString();
+
+    std::cout << "[FormWidgetLoader] on_treeView_record_doubleClicked : " << mPath << std::endl;
+
+//    ui->treeView_record->edit(index);
+//    QString name = QInput
+//    auto newName = QInputDialog::getText(this, "Rename Record", "Enter a new name").toStdString();
+//    if (newName.empty()) return;
+
+//    m_recordFileModel->fileRenamed(mPath, mFilename, newName);
+
+//    std::filesystem::rename(mPath + "/" + mFilename, mPath + "/" + newName);
+
+
+//    m_recordFileModel.
 
     // click twice -> unselect
     if (m_recordLoader.isLoaded() && mPath == m_recordLoader.getLoadedPath()) {
@@ -148,9 +190,9 @@ void FormWidgetLoader::on_treeView_record_clicked(const QModelIndex& index)
     m_recordLoader.load(mPath);
 }
 
-void FormWidgetLoader::on_treeView_snapshot_clicked(const QModelIndex& index)
+void FormWidgetLoader::on_treeView_snapshot_doubleClicked(const QModelIndex &index)
 {
-    std::cout << "[FormWidgetLoader] on_treeView_snapshot_clicked" << std::endl;
+    std::cout << "[FormWidgetLoader] on_treeView_snapshot_doubleClicked" << std::endl;
 
     const std::string& mPath = m_snapshotFileModel->fileInfo(index).absoluteFilePath().toStdString();
 
@@ -166,7 +208,14 @@ void FormWidgetLoader::on_treeView_snapshot_clicked(const QModelIndex& index)
         m_snapshotLoader.unload();
 
     m_snapshotLoader.load(mPath);
+
 }
+
+
+//void FormWidgetLoader::on_treeView_record_keyPressed(QKeyEvent *event)
+//{
+
+//}
 
 // void FormWidgetLoader::updateRecordFrames() {
 
@@ -257,6 +306,27 @@ void FormWidgetLoader::onSnapshotFrames_selectionChange(const QItemSelection& se
     //    emit snapshotFrames_selectionChanged();
 }
 
+void FormWidgetLoader::onRecordFrames_currentChanged(const QModelIndex &current, const QModelIndex &previous)
+{
+
+    auto selectedRows = ui->listView_recordFrames->selectionModel()->selectedRows();
+    selectedRows.append(current);
+
+//    std::cout << "[FormWidgetLoader] on_listView_recordFrames_selectionChanged : "
+//              << selectedRows.size() << std::endl;
+
+    m_recordLoader.onFrame_selectionChange(selectedRows);
+
+}
+
+void FormWidgetLoader::onSnapshotFrames_currentChanged(const QModelIndex &current, const QModelIndex &previous)
+{
+    auto selectedRows = ui->listView_snapshotFrames->selectionModel()->selectedRows();
+    selectedRows.append(current);
+
+    m_snapshotLoader.onFrame_selectionChange(selectedRows);
+}
+
 const Loader& FormWidgetLoader::getSnapshotLoader() const
 {
     return m_snapshotLoader;
@@ -316,3 +386,68 @@ const Loader& FormWidgetLoader::getRecordLoader() const
 ////        m_currentPlayer->showFrame( iFrame );
 ////    }
 //}
+
+//void FormWidgetLoader::on_listView_recordFrames_indexesMoved(const QModelIndexList &indexes)
+//{
+//    std::cout << "indexes moved" << std::endl;
+
+//}
+
+
+void FormWidgetLoader::on_treeView_record_pressed(const QModelIndex &index)
+{
+    std::cout << "pressed" << std::endl;
+
+}
+
+
+void FormWidgetLoader::on_treeView_record_activated(const QModelIndex &index)
+{
+    std::cout << "activated" << std::endl;
+
+////    const std::string& mPath = m_recordFileModel->fileInfo(index).absoluteFilePath().toStdString();
+
+////    std::cout << "[FormWidgetLoader] on_treeView_record_clicked : " << mPath << std::endl;
+//    const auto& mPath = m_recordFileModel->fileInfo(index).absolutePath().toStdString();
+//    const auto& mFilename = m_recordFileModel->fileInfo(index).fileName().toStdString();
+
+//    std::cout << "[FormWidgetLoader] on_treeView_record_doubleClicked : " << mPath << std::endl;
+
+////    ui->treeView_record->edit(index);
+////    QString name = QInput
+//    auto newName = QInputDialog::getText(this, "Rename Record", "Enter a new name").toStdString();
+//    if (newName.empty()) return;
+
+////    m_recordFileModel->fileRenamed(mPath, mFilename, newName);
+
+//    std::filesystem::rename(mPath + "/" + mFilename, mPath + "/" + newName);
+
+////    ui->treeView_record->editTriggers();
+
+////    QFile file("test.txt");
+////    if(file.exists() && file.open(QIODevice::ReadWrite))
+////    {
+////      if(file.rename("text1.txt"))
+////      {
+////        qDebug() << "renamed";
+////      }
+////      file.close();
+////    }
+
+}
+
+
+void FormWidgetLoader::on_treeView_record_entered(const QModelIndex &index)
+{
+
+    std::cout << "entered" << std::endl;
+}
+
+
+void FormWidgetLoader::on_treeView_record_viewportEntered()
+{
+    std::cout << "viewport entered" << std::endl;
+
+}
+
+

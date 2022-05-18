@@ -184,6 +184,7 @@ void MainWindow::on_action3D_triggered()
     ui->stackedWidget->setCurrentIndex(1);
 }
 
+#ifdef USE_FORM_SENSOR_VIEWS
 void MainWindow::onServerStreamStarted(const std::string &streamName)
 {
     std::cout << "[MainWindow] onServerStreamStarted()" << std::endl;
@@ -197,6 +198,7 @@ void MainWindow::onServerStreamStopped(const std::string &streamName)
 
     m_formInputStreamViews->onKillInputStream(streamName);
 }
+#endif
 
 
 void MainWindow::onInitPose()
