@@ -23,7 +23,6 @@ public:
 //public slots:
 
     const Loader &getRecordLoader() const;
-
     const Loader &getSnapshotLoader() const;
 
 signals:

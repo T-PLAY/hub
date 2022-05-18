@@ -11,6 +11,7 @@
 //#include <constants.h>
 //#include <QComboBox>
 #include <QStringListModel>
+#include <Recorder.h>
 
 class InputStreamThread : public QThread {
     Q_OBJECT
@@ -90,6 +91,10 @@ private slots:
     void on_comboBox_scan_currentIndexChanged(int index);
     void on_comboBox_pose_currentIndexChanged(int index);
 
+    void on_toolButton_record_clicked();
+
+    void on_toolButton_snapshot_clicked();
+
 private:
     Ui::FormInputStreamViews* ui;
 
@@ -106,6 +111,8 @@ private:
     //    std::map<std::string, QHBoxLayout*> m_hBoxLayouts;
     //    std::map<std::string, std::unique_ptr<InputStreamThread>> m_threads;
     std::map<std::string, std::unique_ptr<InputStreamThread>> m_threads;
+
+    Recorder m_recorder;
 
 public:
     const Stream::Acquisition& getScanAcquisition() const;

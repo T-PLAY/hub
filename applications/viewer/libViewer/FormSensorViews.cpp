@@ -147,7 +147,7 @@ FormSensorViews::~FormSensorViews()
 {
     std::cout << "[FormSensorViews] ~FormSensorViews() start" << std::endl;
 
-    m_mdiArea = nullptr;
+//    m_mdiArea = nullptr;
 
     mThreadClient.requestInterruption();
     mThreadClient.wait();
@@ -202,12 +202,12 @@ void FormSensorViews::addSensor(std::string sensorName,
     std::string size,
     std::string metaData)
 {
-    assert(m_mdiArea != nullptr);
+//    assert(m_mdiArea != nullptr);
 
     std::cout << "[FormSensorViews] FormSensorViews::addSensor '" << sensorName << "'" << std::endl;
     assert(m_sensorViews.find(sensorName) == m_sensorViews.end());
 
-    auto* sensorView = new FormSensorView(sensorName, format, dims, size, metaData, *m_mdiArea, nullptr);
+    auto* sensorView = new FormSensorView(sensorName, format, dims, size, metaData, nullptr);
     ui->verticalLayout->insertWidget(static_cast<int>(m_sensorViews.size()), sensorView);
 
     m_sensorViews[sensorName] = sensorView;
@@ -258,7 +258,7 @@ const FormSensorView& FormSensorViews::getSensorView(const std::string& sensorNa
     return *m_sensorViews.at(sensorName);
 }
 
-void FormSensorViews::setMdiArea(QMdiArea *newMdiArea)
-{
-    m_mdiArea = newMdiArea;
-}
+//void FormSensorViews::setMdiArea(QMdiArea *newMdiArea)
+//{
+//    m_mdiArea = newMdiArea;
+//}

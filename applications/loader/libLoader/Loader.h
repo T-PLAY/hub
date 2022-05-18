@@ -20,7 +20,8 @@ class Loader : public QObject
 {
         Q_OBJECT
 public:
-//    Loader(const std::string & outputPostFixName = "");
+    Loader(const std::string & outputPostFixName = "", bool autoPlay = true);
+
     ~Loader();
 
     void load(const std::string & path);
@@ -47,7 +48,7 @@ public slots:
 private:
 
 //    std::map<std::string, std::unique_ptr<OutputStream>> m_outputs;
-//    std::string m_outputPostfixName = "";
+    std::string m_outputPostfixName = "";
 
 //    InputStream * m_inputStream = nullptr;
 //    std::map<std::string, InputStream> m_inputStreams;
@@ -69,6 +70,8 @@ private:
 //    std::future<void> m_futureObj;
     std::thread * m_thread = nullptr;
     bool m_isPlaying = false;
+    bool m_autoPlay;
+
 //    bool m_exitSignal = false;
 //    int m_currentFrame = -1;
     std::map<std::string, std::unique_ptr<OutputStream>> m_outputStreams;
