@@ -249,17 +249,13 @@ protected:
 
     Stream(const Stream& stream) = delete;
     Stream(Stream& stream) = delete;
-//    Stream(const Stream&& stream) = delete;
-    Stream(Stream&& stream)
-        :mIOStream(stream.mIOStream)
-    {
-
-    };
+    Stream(const Stream&& stream) = delete;
+    Stream(Stream&& stream) = delete;
 
     Stream& operator=(const Stream& stream) = delete;
     Stream& operator=(Stream& stream) = delete;
-//    Stream& operator=(const Stream&& stream) = delete;
-//    Stream& operator=(Stream&& stream) = default;
+    Stream& operator=(const Stream&& stream) = delete;
+    Stream& operator=(Stream&& stream) = delete;
 
     static size_t computeAcquisitionSize(Format format, const std::vector<int>& dims);
 
@@ -285,10 +281,10 @@ class OutputStream;
 class InputStream : public Stream {
 public:
     InputStream(const std::string & sensorName, const std::string& syncSensorName = "");
-    template <class IOStream>
-    InputStream(IOStream&& ioStream);
-    template <class IOStream>
-    InputStream(IOStream& ioStream) = delete;
+    template <class IOStreamT>
+    InputStream(IOStreamT&& ioStream);
+    template <class IOStreamT>
+    InputStream(IOStreamT& ioStream) = delete;
 //    InputStream(RamIO & ramIO);
 
     ~InputStream();
@@ -304,9 +300,9 @@ private:
 };
 
 // template <typename T, class = typename std::enable_if<std::is_rvalue_reference<T>::value>::type>
-template <class IOStream>
-InputStream::InputStream(IOStream&& ioStream)
-    : Stream("", Format::NONE, {}, *std::move(new IOStream(std::move(ioStream))))
+template <class IOStreamT>
+InputStream::InputStream(IOStreamT&& ioStream)
+    : Stream("", Format::NONE, {}, *std::move(new IOStreamT(std::move(ioStream))))
 {
 
     mIOStream.read(mSensorName);
@@ -329,10 +325,10 @@ InputStream::InputStream(IOStream&& ioStream)
 class OutputStream : public Stream {
 public:
     OutputStream(const std::string& sensorName, Format format, const std::vector<int>& dims, ClientSocket&& ioStream = ClientSocket(), const MetaData& metaData = {});
-    template <class IOStream>
-    OutputStream(const std::string& sensorName, Format format, const std::vector<int>& dims, IOStream&& ioStream, const MetaData& metaData = {});
-    template <class IOStream>
-    OutputStream(const std::string& sensorName, Format format, const std::vector<int>& dims, IOStream& ioStream, const MetaData& metaData = {}) = delete;
+    template <class IOStreamT>
+    OutputStream(const std::string& sensorName, Format format, const std::vector<int>& dims, IOStreamT&& ioStream, const MetaData& metaData = {});
+    template <class IOStreamT>
+    OutputStream(const std::string& sensorName, Format format, const std::vector<int>& dims, IOStreamT& ioStream, const MetaData& metaData = {}) = delete;
 
     OutputStream(const OutputStream& outputStream) = delete;
     OutputStream(OutputStream&& outputStream) = delete;
@@ -348,9 +344,9 @@ private:
 //{
 // }
 
-template <class IOStream>
-OutputStream::OutputStream(const std::string& sensorName, Format format, const std::vector<int>& dims, IOStream&& ioStream, const MetaData& metaData)
-    : Stream(sensorName, format, dims, *std::move(new IOStream(std::move(ioStream))))
+template <class IOStreamT>
+OutputStream::OutputStream(const std::string& sensorName, Format format, const std::vector<int>& dims, IOStreamT&& ioStream, const MetaData& metaData)
+    : Stream(sensorName, format, dims, *std::move(new IOStreamT(std::move(ioStream))))
 {
     mIOStream.setupOutput(sensorName);
 
