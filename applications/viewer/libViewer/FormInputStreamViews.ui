@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>606</width>
-    <height>124</height>
+    <width>452</width>
+    <height>43</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -34,7 +34,24 @@
     </spacer>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_inputStreams"/>
+    <widget class="QLabel" name="label_scan">
+     <property name="text">
+      <string>Scan</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QComboBox" name="comboBox_scan"/>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_pose">
+     <property name="text">
+      <string>Pose</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QComboBox" name="comboBox_pose"/>
    </item>
    <item>
     <widget class="Line" name="line_2">

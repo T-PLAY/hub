@@ -249,13 +249,17 @@ protected:
 
     Stream(const Stream& stream) = delete;
     Stream(Stream& stream) = delete;
-    Stream(const Stream&& stream) = delete;
-    Stream(Stream&& stream) = delete;
+//    Stream(const Stream&& stream) = delete;
+    Stream(Stream&& stream)
+        :mIOStream(stream.mIOStream)
+    {
+
+    };
 
     Stream& operator=(const Stream& stream) = delete;
     Stream& operator=(Stream& stream) = delete;
-    Stream& operator=(const Stream&& stream) = delete;
-    Stream& operator=(Stream&& stream) = delete;
+//    Stream& operator=(const Stream&& stream) = delete;
+//    Stream& operator=(Stream&& stream) = default;
 
     static size_t computeAcquisitionSize(Format format, const std::vector<int>& dims);
 

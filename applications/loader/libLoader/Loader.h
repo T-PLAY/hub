@@ -72,7 +72,7 @@ private:
 //    bool m_exitSignal = false;
 //    int m_currentFrame = -1;
     std::map<std::string, std::unique_ptr<OutputStream>> m_outputStreams;
-    std::map<std::string, CyclicBuff> m_outputStreamBuffs;
+    std::map<std::string, std::unique_ptr<CyclicBuff>> m_outputStreamBuffs;
 
 public:
 //    const std::vector<Frame> & getFrames() const;
@@ -86,6 +86,6 @@ public:
 //    const std::vector<std::unique_ptr<InputStream>> &getInputStreams() const;
 //    std::vector<std::unique_ptr<InputStream>> getInputStreams();
 //    const std::map<std::string, std::unique_ptr<OutputStream>> & getRamOutputStreams() const;
-    const std::map<std::string, CyclicBuff> &getOutputStreamBuffs() const;
+    const std::map<std::string, std::unique_ptr<CyclicBuff>> &getOutputStreamBuffs() const;
 };
 
