@@ -33,7 +33,7 @@ void InputStreamThread::run()
         while (!this->isInterruptionRequested()) {
 
             mInputStream >> mAcq;
-            std::cout << "receive acq : " << mAcq << std::endl;
+//            std::cout << "receive acq : " << mAcq << std::endl;
 
             emit newAcquisition(mSensorName);
         }
@@ -147,7 +147,7 @@ void FormInputStreamViews::onComboBox_pose_currentTextChanged(const QString& sou
 
 void FormInputStreamViews::onNewScanAcquisition(const std::string& sensorName)
 {
-    std::cout << "[FormInputStreamViews] onNewScanAcquisition(" << sensorName << ")" << std::endl;
+//    std::cout << "[FormInputStreamViews] onNewScanAcquisition(" << sensorName << ")" << std::endl;
 
     assert(sensorName == m_activeStreamScan);
     //    if (m_threadInputStreamScan == nullptr) {
@@ -165,7 +165,7 @@ void FormInputStreamViews::onNewScanAcquisition(const std::string& sensorName)
 
 void FormInputStreamViews::onNewPoseAcquisition(const std::string& sensorName)
 {
-    std::cout << "[FormInputStreamViews] onNewPoseAcquisition(" << sensorName << ")" << std::endl;
+//    std::cout << "[FormInputStreamViews] onNewPoseAcquisition(" << sensorName << ")" << std::endl;
 
     assert(sensorName == m_activeStreamPose);
 

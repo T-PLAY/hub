@@ -199,6 +199,9 @@ Stream::Acquisition& InputStream::operator>>(Acquisition& acquisition) const
     mIOStream.read(acquisition.mBackendTimeOfArrival);
     mIOStream.read(acquisition.mData, mAcquisitionSize);
 
+    if (acquisition.mBackendTimestamp > acquisition.mBackendTimeOfArrival) {
+        std::cout << "receive bad acq : " << acquisition << std::endl;
+    }
     assert(acquisition.mBackendTimestamp <= acquisition.mBackendTimeOfArrival);
 
 #ifdef DEBUG_STREAM

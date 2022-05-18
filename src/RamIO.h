@@ -2,7 +2,7 @@
 
 #include <IOStream.h>
 
-constexpr size_t m_bufLen = 2'000'000;
+constexpr size_t m_bufLen = 1'000'000;
 
 class CyclicBuff {
     class exception : public std::runtime_error {
