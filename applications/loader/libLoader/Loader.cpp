@@ -65,7 +65,7 @@ void Loader::update()
     for (const auto& fileDir : std::filesystem::directory_iterator(m_loadedPath)) {
         const auto & filepath = fileDir.path().string();
         const auto & filename = fileDir.path().filename();
-        std::cout << "read '" << filepath << "' record" << std::endl;
+        std::cout << "[Loader] read '" << filepath << "' record" << std::endl;
 //        std::cout << "read " << filename << std::endl;
         assert(std::filesystem::exists(filepath));
 
@@ -157,7 +157,7 @@ void Loader::update()
         //            }
         //            std::cout << "read " << nReadAcqs << " acquisitions from file sensor '" <<
         //            sensorName << "'" << std::endl;
-        std::cout << "read " << acqs.size() << " acquisitions from file sensor '" << sensorName
+        std::cout << "[Loader] read " << acqs.size() << " acquisitions from file sensor '" << sensorName
                   << "'" << std::endl;
         //        } catch (Stream::exception& e) {
         //            std::cout << "catch stream exception : " << e.what() << std::endl;
@@ -168,7 +168,7 @@ void Loader::update()
 
         //        file.close();
     }
-    std::cout << "read total of " << m_snapshots.size() << " acquistions" << std::endl;
+    std::cout << "[Loader] read total of " << m_snapshots.size() << " acquistions" << std::endl;
 
     //    //    auto & listModel = ui->listView_acqs->model();
     //    //    auto & view = ui->tableView_acqs;
@@ -187,8 +187,10 @@ void Loader::update()
         const auto& sensorName = inputStream->getSensorName();
         //        OutputStream && ramOutputStream = OutputStream(inputStream->getSensorName(), inputStream->getFormat(), inputStream->getDims(), RamIO());
         //        CyclicBuff buff;
-        m_outputStreamBuffs[sensorName] = CyclicBuff();
-        auto& cyclicBuff = m_outputStreamBuffs.at(sensorName);
+//        m_outputStreamBuffs[sensorName] = CyclicBuff();
+        m_outputStreamBuffs[sensorName] = std::make_unique<CyclicBuff>();
+//        m_outputStreamBuffs.insert(std::make_pair(sensorName, CyclicBuff()));
+        auto& cyclicBuff = *m_outputStreamBuffs.at(sensorName);
         m_outputStreams[inputStream->getSensorName()] = std::make_unique<OutputStream>(inputStream->getSensorName(), inputStream->getFormat(), inputStream->getDims(), RamIO(cyclicBuff));
     }
     //        ui->listView_recordFrames->show();
@@ -209,6 +211,8 @@ void Loader::unload()
     assert(!m_snapshots.empty());
     assert(!m_frames.empty());
     assert(!m_inputStreams.empty());
+    assert(!m_outputStreams.empty());
+    assert(!m_outputStreamBuffs.empty());
     //    for (auto & output : m_outputs) {
     //        delete output.second.get();
     ////        std::this_thread::sleep_for(std::chrono::milliseconds(1));
@@ -217,6 +221,8 @@ void Loader::unload()
     m_snapshots.clear();
     m_frames.clear();
     m_inputStreams.clear();
+    m_outputStreams.clear();
+    m_outputStreamBuffs.clear();
     m_frameModel.setStringList(QStringList());
     m_loadedPath = "";
 }
@@ -233,7 +239,7 @@ void Loader::onFrame_selectionChange(const QModelIndexList& selectedRows)
             const auto& sensorName = snapshot.getSensorName();
 
             const auto& acq = snapshot.getAcq();
-            std::cout << "send acq : " << acq << std::endl;
+            std::cout << "[Loader] send acq : " << acq << std::endl;
 
             assert(m_outputStreams.find(sensorName) != m_outputStreams.end());
             *m_outputStreams.at(sensorName) << acq;
@@ -261,7 +267,7 @@ void Loader::onFrame_selectionChange(const QModelIndexList& selectedRows)
 
 //}
 
-const std::map<std::string, CyclicBuff>& Loader::getOutputStreamBuffs() const
+const std::map<std::string, std::unique_ptr<CyclicBuff>>& Loader::getOutputStreamBuffs() const
 {
     return m_outputStreamBuffs;
 }
@@ -298,7 +304,7 @@ QStringListModel& Loader::getFrameModel()
 void Loader::play()
 {
     //    m_futureObj = m_exitSignal.get_future();
-    std::cout << "start playing" << std::endl;
+    std::cout << "[Loader] start playing" << std::endl;
     assert(m_thread == nullptr);
     assert(!m_frames.empty());
     assert(!m_snapshots.empty());
@@ -325,8 +331,11 @@ void Loader::play()
                 //                == std::future_status::timeout;
             }
 
-            if (!m_isPlaying) {
-                std::cout << "end record, auto loop " << iLoop << std::endl;
+            if (m_isPlaying) {
+                std::cout << "[Loader] end record, auto loop " << iLoop << std::endl;
+            }
+            else {
+                std::cout << "[Loader] record stopped by user" << std::endl;
             }
             ++iLoop;
         }
@@ -337,7 +346,7 @@ void Loader::play()
 void Loader::stop()
 {
     assert(m_isPlaying);
-    std::cout << "stop playing" << std::endl;
+    std::cout << "[Loader] stop playing" << std::endl;
     //    m_exitSignal.set_value();
     m_isPlaying = false;
     assert(m_thread != nullptr);

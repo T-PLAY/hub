@@ -155,38 +155,6 @@ void MainWindow::on_action3D_triggered()
     ui->stackedWidget->setCurrentIndex(1);
 }
 
-void MainWindow::on_startStreaming(std::string streamName)
-{
-    //    assert(m_sensorViews != nullptr);
-
-    //    const auto & sensorView = m_sensorViews->getSensorView(streamName);
-    //    const auto & inputStream = sensorView.getInputStream();
-
-}
-
-void MainWindow::on_stopStreaming(std::string streamName)
-{
-    std::cout << "[MainWindow] on_stopStreaming " << streamName << std::endl;
-
-    //    assert(m_sensorViews != nullptr);
-
-    //    if (streamName.substr(0, g_probeScanSensorName.size()) == g_probeScanSensorName) {
-    //        auto sourceType = (g_probeScanSensorName.size() == streamName.size())
-    //            ? ("physical")
-    //            : (streamName.substr(g_probeScanSensorName.size() + 2, streamName.size() - 1 - g_probeScanSensorName.size() - 2));
-    //        int iItem = ui->comboBox_scan->findText(sourceType.c_str());
-    //        assert(iItem >= 0);
-    //        ui->comboBox_scan->removeItem(iItem);
-
-    //    } else if (streamName.substr(0, g_probePoseSensorName.size()) == g_probePoseSensorName) {
-    //        auto sourceType = (g_probePoseSensorName.size() == streamName.size())
-    //            ? ("physical")
-    //            : (streamName.substr(g_probePoseSensorName.size() + 2, streamName.size() - 1 - g_probePoseSensorName.size() - 2));
-    //        int iItem = ui->comboBox_pose->findText(sourceType.c_str());
-    //        assert(iItem >= 0);
-    //        ui->comboBox_pose->removeItem(iItem);
-    //    }
-}
 
 void MainWindow::onInitPose()
 {

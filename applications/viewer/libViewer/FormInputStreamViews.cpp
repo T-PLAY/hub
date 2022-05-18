@@ -10,40 +10,40 @@
 
 #include <constants.h>
 
-InputStreamThread::InputStreamThread(InputStream& inputStream, QObject* parent)
-    : QThread(parent)
-    , mInputStream(inputStream)
-    , mSensorName(inputStream.getSensorName())
-//    mInputStream( std::move(iostream))
-{
-    std::cout << "InputStreamThread()" << std::endl;
-}
+//InputStreamThread::InputStreamThread(InputStream& inputStream, QObject* parent)
+//    : QThread(parent)
+//    , mInputStream(inputStream)
+//    , mSensorName(inputStream.getSensorName())
+////    mInputStream( std::move(iostream))
+//{
+//    std::cout << "[InputStreamThread] InputStreamThread()" << std::endl;
+//}
 
 InputStreamThread::~InputStreamThread()
 {
-    std::cout << "~InputStreamThread()" << std::endl;
+    std::cout << "[InputStreamThread] ~InputStreamThread()" << std::endl;
 }
 
 void InputStreamThread::run()
 {
-    std::cout << "InputStreamThread::run()" << std::endl;
+    std::cout << "[InputStreamThread] run()" << std::endl;
 
     try {
 
         while (!this->isInterruptionRequested()) {
 
             mInputStream >> mAcq;
-//            std::cout << "receive acq : " << mAcq << std::endl;
+            //            std::cout << "receive acq : " << mAcq << std::endl;
 
             emit newAcquisition(mSensorName);
         }
     } catch (std::exception& e) {
-        std::cout << "[streamView] catch exception : " << e.what() << std::endl;
-        //        emit streamingStopped(mInputStream.getSensorName());
+        std::cout << "[InputStreamThread] catch exception : " << e.what() << std::endl;
+        emit streamingStopped(mSensorName);
         return;
     }
 
-    std::cout << "InputStreamThread::run() end" << std::endl;
+    std::cout << "[InputStreamThread] run() end" << std::endl;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -58,12 +58,12 @@ FormInputStreamViews::FormInputStreamViews(QWidget* parent)
 FormInputStreamViews::~FormInputStreamViews()
 {
     std::cout << "[FormInputStreamViews] ~FormInputStreamViews() start" << std::endl;
-    for (const auto& pair : m_hBoxLayouts) {
-        delete pair.second;
-    }
-    for (const auto& pair : m_threads) {
-        delete pair.second;
-    }
+//    for (const auto& pair : m_hBoxLayouts) {
+//        delete pair.second;
+//    }
+//    for (auto& pair : m_threads) {
+//        delete pair.second;
+//    }
     delete ui;
     std::cout << "[FormInputStreamViews] ~FormInputStreamViews() end" << std::endl;
 }
@@ -93,7 +93,7 @@ void FormInputStreamViews::onComboBox_scan_currentTextChanged(const QString& sou
         //            m_comp->initScan();
     } else {
         //            const auto& sensorView = m_sensorViews->getSensorView(streamName);
-        m_threadInputStreamScan = m_threads.at(streamName);
+        m_threadInputStreamScan = m_threads.at(streamName).get();
 
         QObject::connect(m_threadInputStreamScan,
             &InputStreamThread::newAcquisition,
@@ -134,7 +134,7 @@ void FormInputStreamViews::onComboBox_pose_currentTextChanged(const QString& sou
         //            m_threadInputStreamPose = sensorView.getInputStreamThread();
 
         assert(m_threads.find(streamName) != m_threads.end());
-        m_threadInputStreamPose = m_threads.at(streamName);
+        m_threadInputStreamPose = m_threads.at(streamName).get();
 
         QObject::connect(m_threadInputStreamPose,
             &InputStreamThread::newAcquisition,
@@ -147,7 +147,7 @@ void FormInputStreamViews::onComboBox_pose_currentTextChanged(const QString& sou
 
 void FormInputStreamViews::onNewScanAcquisition(const std::string& sensorName)
 {
-//    std::cout << "[FormInputStreamViews] onNewScanAcquisition(" << sensorName << ")" << std::endl;
+    //    std::cout << "[FormInputStreamViews] onNewScanAcquisition(" << sensorName << ")" << std::endl;
 
     assert(sensorName == m_activeStreamScan);
     //    if (m_threadInputStreamScan == nullptr) {
@@ -165,7 +165,7 @@ void FormInputStreamViews::onNewScanAcquisition(const std::string& sensorName)
 
 void FormInputStreamViews::onNewPoseAcquisition(const std::string& sensorName)
 {
-//    std::cout << "[FormInputStreamViews] onNewPoseAcquisition(" << sensorName << ")" << std::endl;
+    //    std::cout << "[FormInputStreamViews] onNewPoseAcquisition(" << sensorName << ")" << std::endl;
 
     assert(sensorName == m_activeStreamPose);
 
@@ -182,15 +182,78 @@ void FormInputStreamViews::onNewPoseAcquisition(const std::string& sensorName)
     //    m_comp->updateProbe(m_threadInputStreamPose->mAcq);
 }
 
-const Stream::Acquisition &FormInputStreamViews::getScanAcquisition() const
+void FormInputStreamViews::onDeleteInputStream(const std::string &streamName)
 {
-//    return m_thre
-    assert(m_threads.find(m_activeStreamScan) != m_threads.end());
-    return m_threads.at(m_activeStreamScan)->mAcq;
 
 }
 
-const Stream::Acquisition &FormInputStreamViews::getPoseAcquisition() const
+//void FormInputStreamViews::onNewInputStream(const IOStream &&iostream)
+//{
+
+//}
+
+//void FormInputStreamViews::on_startStreaming(std::string streamName)
+//{
+//    //    assert(m_sensorViews != nullptr);
+
+//    //    const auto & sensorView = m_sensorViews->getSensorView(streamName);
+//    //    const auto & inputStream = sensorView.getInputStream();
+
+////        auto sensorName = streamName.substr(0, g_probeScanSensorName.size());
+////        if (sensorName == g_probeScanSensorName) {
+
+////            const auto sourceType = (sensorName.size() == streamName.size())
+////                ? ("physical")
+////                : (streamName.substr(g_probeScanSensorName.size() + 2, streamName.size() - 1 - g_probeScanSensorName.size() - 2));
+
+////            QObject::connect(comboBox, &QComboBox::currentTextChanged, this, &FormInputStreamViews::onComboBox_scan_currentTextChanged);
+////            comboBox->addItem(sourceType.c_str());
+////        }
+
+////        sensorName = streamName.substr(0, g_probePoseSensorName.size());
+////        if (sensorName == g_probePoseSensorName) {
+
+////            const auto sourceType = (sensorName.size() == streamName.size())
+////                ? ("physical")
+////                : (streamName.substr(g_probePoseSensorName.size() + 2, streamName.size() - 1 - g_probePoseSensorName.size() - 2));
+
+////            QObject::connect(comboBox, &QComboBox::currentTextChanged, this, &FormInputStreamViews::onComboBox_pose_currentTextChanged);
+////            comboBox->addItem(sourceType.c_str());
+////        }
+//}
+
+//void FormInputStreamViews::on_stopStreaming(std::string streamName)
+//{
+//    std::cout << "[FormInputStreamViews] on_stopStreaming " << streamName << std::endl;
+
+//    //    assert(m_sensorViews != nullptr);
+
+//    //    if (streamName.substr(0, g_probeScanSensorName.size()) == g_probeScanSensorName) {
+//    //        auto sourceType = (g_probeScanSensorName.size() == streamName.size())
+//    //            ? ("physical")
+//    //            : (streamName.substr(g_probeScanSensorName.size() + 2, streamName.size() - 1 - g_probeScanSensorName.size() - 2));
+//    //        int iItem = ui->comboBox_scan->findText(sourceType.c_str());
+//    //        assert(iItem >= 0);
+//    //        ui->comboBox_scan->removeItem(iItem);
+
+//    //    } else if (streamName.substr(0, g_probePoseSensorName.size()) == g_probePoseSensorName) {
+//    //        auto sourceType = (g_probePoseSensorName.size() == streamName.size())
+//    //            ? ("physical")
+//    //            : (streamName.substr(g_probePoseSensorName.size() + 2, streamName.size() - 1 - g_probePoseSensorName.size() - 2));
+//    //        int iItem = ui->comboBox_pose->findText(sourceType.c_str());
+//    //        assert(iItem >= 0);
+//    //        ui->comboBox_pose->removeItem(iItem);
+//    //    }
+//}
+
+const Stream::Acquisition& FormInputStreamViews::getScanAcquisition() const
+{
+    //    return m_thre
+    assert(m_threads.find(m_activeStreamScan) != m_threads.end());
+    return m_threads.at(m_activeStreamScan)->mAcq;
+}
+
+const Stream::Acquisition& FormInputStreamViews::getPoseAcquisition() const
 {
     assert(m_threads.find(m_activeStreamPose) != m_threads.end());
     return m_threads.at(m_activeStreamPose)->mAcq;
@@ -202,63 +265,53 @@ const Stream::Acquisition &FormInputStreamViews::getPoseAcquisition() const
 
 //}
 
-void FormInputStreamViews::connect(const std::map<std::string, CyclicBuff>& ramOutputStreams)
+void FormInputStreamViews::connect(const std::map<std::string, std::unique_ptr<CyclicBuff>>& ramOutputStreams)
 {
 
     for (const auto& pair : ramOutputStreams) {
         const auto& streamName = pair.first;
-        auto& cyclicBuff = const_cast<CyclicBuff&>(pair.second);
+        auto& cyclicBuff = const_cast<CyclicBuff&>(*pair.second);
 
         //        IOStream & ioStream = cyclicBuff.getIOStream();
         //        RamIO & ramIO = dynamic_cast<RamIO&>(ioStream);
         //        InputStream inputStream(ramIO);
+        std::cout << "connected " << streamName << std::endl;
 
-        assert(m_inputStreams.find(streamName) == m_inputStreams.end());
-        m_inputStreams[streamName] = std::make_unique<InputStream>(RamIO(cyclicBuff));
+        onNewInputStream(streamName, RamIO(cyclicBuff));
 
-        //        m_threads[streamName] = std::make_unique<InputStreamThread>(InputStreamThread(*m_inputStreams[streamName]));
-        auto* inputStreamThread = new InputStreamThread(*m_inputStreams.at(streamName));
-        //        QObject::connect(inputStreamThread, &InputStreamThread::newAcquisition, this, &FormInputStreamViews::onNewAcquisition);
-        assert(m_threads.find(streamName) == m_threads.end());
-        m_threads[streamName] = inputStreamThread;
-        inputStreamThread->start();
 
-        //        m_threads[streamName] = InputStreamThread(RamIO(cyclicBuff));
-        //        InputStream()
-
-        QLabel* label = new QLabel(streamName.c_str());
-        QComboBox* comboBox = new QComboBox();
-        QHBoxLayout* layout = new QHBoxLayout();
-        layout->addWidget(label);
-        layout->addWidget(comboBox);
-        m_hBoxLayouts[streamName] = layout;
+//        QLabel* label = new QLabel(streamName.c_str());
+//        QComboBox* comboBox = new QComboBox();
+//        QHBoxLayout* layout = new QHBoxLayout();
+//        layout->addWidget(label);
+//        layout->addWidget(comboBox);
+//        m_hBoxLayouts[streamName] = layout;
 
         //        ui->horizontalLayout->addLayout(layout);
         //        ui->horizontalLayout->insertLayout(1, layout);
-        ui->horizontalLayout_inputStreams->addLayout(layout);
+//        ui->horizontalLayout_inputStreams->addLayout(layout);
 
-        std::cout << "connected " << streamName << std::endl;
 
-        auto sensorName = streamName.substr(0, g_probeScanSensorName.size());
-        if (sensorName == g_probeScanSensorName) {
+//        auto sensorName = streamName.substr(0, g_probeScanSensorName.size());
+//        if (sensorName == g_probeScanSensorName) {
 
-            const auto sourceType = (sensorName.size() == streamName.size())
-                ? ("physical")
-                : (streamName.substr(g_probeScanSensorName.size() + 2, streamName.size() - 1 - g_probeScanSensorName.size() - 2));
+//            const auto sourceType = (sensorName.size() == streamName.size())
+//                ? ("physical")
+//                : (streamName.substr(g_probeScanSensorName.size() + 2, streamName.size() - 1 - g_probeScanSensorName.size() - 2));
 
-            QObject::connect(comboBox, &QComboBox::currentTextChanged, this, &FormInputStreamViews::onComboBox_scan_currentTextChanged);
-            comboBox->addItem(sourceType.c_str());
-        }
+//            QObject::connect(comboBox, &QComboBox::currentTextChanged, this, &FormInputStreamViews::onComboBox_scan_currentTextChanged);
+//            comboBox->addItem(sourceType.c_str());
+//        }
 
-        sensorName = streamName.substr(0, g_probePoseSensorName.size());
-        if (sensorName == g_probePoseSensorName) {
+//        sensorName = streamName.substr(0, g_probePoseSensorName.size());
+//        if (sensorName == g_probePoseSensorName) {
 
-            const auto sourceType = (sensorName.size() == streamName.size())
-                ? ("physical")
-                : (streamName.substr(g_probePoseSensorName.size() + 2, streamName.size() - 1 - g_probePoseSensorName.size() - 2));
+//            const auto sourceType = (sensorName.size() == streamName.size())
+//                ? ("physical")
+//                : (streamName.substr(g_probePoseSensorName.size() + 2, streamName.size() - 1 - g_probePoseSensorName.size() - 2));
 
-            QObject::connect(comboBox, &QComboBox::currentTextChanged, this, &FormInputStreamViews::onComboBox_pose_currentTextChanged);
-            comboBox->addItem(sourceType.c_str());
-        }
+//            QObject::connect(comboBox, &QComboBox::currentTextChanged, this, &FormInputStreamViews::onComboBox_pose_currentTextChanged);
+//            comboBox->addItem(sourceType.c_str());
+//        }
     }
 }

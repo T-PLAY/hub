@@ -2,7 +2,7 @@
 
 #include <IOStream.h>
 
-constexpr size_t m_bufLen = 1'000'000;
+//constexpr size_t m_bufLen = 1'000'000;
 
 class CyclicBuff {
     class exception : public std::runtime_error {
@@ -17,13 +17,28 @@ class CyclicBuff {
         }
     };
 public:
+    CyclicBuff(size_t size = 1'000'000);
+    CyclicBuff(const CyclicBuff & buff) = delete;
+    CyclicBuff(CyclicBuff && buff) = default;
+
+    CyclicBuff & operator=(const CyclicBuff & buff) = delete;
+    CyclicBuff & operator=(CyclicBuff && buff) = delete;
+
+    ~CyclicBuff();
+
     void write(const unsigned char* data, size_t len);
     void read(unsigned char* data, size_t len);
+    void close();
 
 private:
-    unsigned char m_buff[m_bufLen];
+    unsigned char * const m_buff;
+    const size_t m_buffLen;
+
     size_t m_writeHead = 0;
     size_t m_readHead = 0;
+
+    bool m_isClose = false;
+//    bool m_endBuff = false;
 };
 
 class RamIO : public IOStream {
