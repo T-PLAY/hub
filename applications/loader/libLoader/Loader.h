@@ -27,11 +27,13 @@ public:
     void update();
     void unload();
 
+    void play();
+    void stop();
+
 
 signals:
     void pathLoaded();
-//    void play();
-//    void stop();
+
 
 //    void showFrame(int iFrame);
 
@@ -65,15 +67,15 @@ private:
 
 //    std::promise<void> m_exitSignal;
 //    std::future<void> m_futureObj;
-//    std::thread * m_thread = nullptr;
-//    bool m_isPlaying = false;
+    std::thread * m_thread = nullptr;
+    bool m_isPlaying = false;
 //    bool m_exitSignal = false;
 //    int m_currentFrame = -1;
     std::map<std::string, std::unique_ptr<OutputStream>> m_outputStreams;
     std::map<std::string, CyclicBuff> m_outputStreamBuffs;
 
 public:
-    const std::vector<Frame> & getFrames() const;
+//    const std::vector<Frame> & getFrames() const;
     bool isPlaying() const;
     bool isLoaded() const;
     const std::string & getLoadedPath() const;

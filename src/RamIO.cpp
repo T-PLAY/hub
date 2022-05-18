@@ -33,14 +33,16 @@ void CyclicBuff::write(const unsigned char* data, size_t len)
 {
     size_t uploadSize = 0;
     do {
-
+        // size of empty space in buff to write data
         auto byteWrote = m_readHead - m_writeHead;
         if (byteWrote <= 0)
             byteWrote += m_bufLen;
         if (len > byteWrote) {
+            assert(false);
             throw CyclicBuff::exception("Buffer overflow");
         }
-        byteWrote = std::min(byteWrote, len - uploadSize);
+        byteWrote = std::min(byteWrote, len - uploadSize); // size of not copied user data
+        byteWrote = std::min(byteWrote, m_bufLen - m_writeHead); // distance to buffer end
 
         memcpy(&m_buff[m_writeHead], data + uploadSize, byteWrote);
         m_writeHead = (m_writeHead + byteWrote) % m_bufLen;
@@ -61,14 +63,17 @@ void CyclicBuff::read(unsigned char* data, size_t len)
 
         size_t byteRead;
         do {
+            // nb bytes ready to read
             byteRead = m_writeHead - m_readHead;
-            if (byteRead < 0)
-                byteRead = m_bufLen - m_readHead;
-            byteRead = std::min(byteRead, len - downloadSize);
             if (byteRead == 0) {
 //                std::cout << "[RamIO] nothing to read" << std::endl;
-                std::this_thread::sleep_for(std::chrono::milliseconds(200));
+                std::this_thread::sleep_for(std::chrono::milliseconds(16));
             }
+            if (byteRead < 0)
+                byteRead = m_bufLen - m_readHead;
+            byteRead = std::min(byteRead, len - downloadSize); // user copied bytes left
+            byteRead = std::min(byteRead, m_bufLen - m_readHead); // distance to end of buffer
+
         } while (byteRead == 0);
 
         memcpy(data + downloadSize, &m_buff[m_readHead], byteRead);

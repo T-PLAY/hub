@@ -202,14 +202,14 @@ void MainWindow::onInitScan()
 
 void MainWindow::onUpdatePose()
 {
-    std::cout << "[MainWindow] onUpdatePose()" << std::endl;
+//    std::cout << "[MainWindow] onUpdatePose()" << std::endl;
     m_comp->updatePose(m_formInputStreamViews->getPoseAcquisition());
 
 }
 
 void MainWindow::onUpdateScan()
 {
-    std::cout << "[MainWindow] onUpdateScan()" << std::endl;
+//    std::cout << "[MainWindow] onUpdateScan()" << std::endl;
     m_comp->updateScan(m_formInputStreamViews->getScanAcquisition());
 }
 
