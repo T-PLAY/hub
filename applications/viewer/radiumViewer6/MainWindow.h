@@ -46,6 +46,11 @@ private slots:
 //    void on_newSensor(std::string sensorName);
 //    void on_delSensor(std::string sensorName);
 
+#ifdef USE_FORM_SENSOR_VIEWS
+    void onServerStreamStarted(const std::string & streamName);
+    void onServerStreamStopped(const std::string & streamName);
+#endif
+
 
 //    void on_comboBox_scan_currentTextChanged(const QString &sourceType);
 //    void on_comboBox_pose_currentTextChanged(const QString &sourceType);

@@ -217,12 +217,14 @@ void FormSensorViews::addSensor(std::string sensorName,
     //            sensorView, &FormSensorView::delViewStreamSignal, this,
     //            &FormSensorViews::delStreamView );
     //    emit sensorAdded(sensorName);
+
     QObject::connect(
         sensorView, &FormSensorView::streamingStarted, this, &FormSensorViews::streamingStarted);
     QObject::connect(
         sensorView, &FormSensorView::streamingStopped, this, &FormSensorViews::streamingStopped);
 
     sensorView->on_startStreaming();
+//    sensorView->on_radioButtonOnOff_clicked(true);
 }
 
 void FormSensorViews::delSensor(std::string sensorName)

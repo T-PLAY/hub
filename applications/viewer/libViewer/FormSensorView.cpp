@@ -7,36 +7,36 @@
 #include <stream.h>
 #include <cmath>
 
-Thread_InputStream::Thread_InputStream( std::string sensorName, QObject* parent ) :
-    QThread( parent ), mInputStream( ClientSocket( sensorName, "" ) ) {
-    std::cout << "Thread_InputStream()" << std::endl;
-}
+//Thread_InputStream::Thread_InputStream( std::string sensorName, QObject* parent ) :
+//    QThread( parent ), mInputStream( ClientSocket( sensorName, "" ) ) {
+//    std::cout << "Thread_InputStream()" << std::endl;
+//}
 
-Thread_InputStream::~Thread_InputStream() {
-    std::cout << "~Thread_InputStream()" << std::endl;
-}
+//Thread_InputStream::~Thread_InputStream() {
+//    std::cout << "~Thread_InputStream()" << std::endl;
+//}
 
-void Thread_InputStream::run() {
-    std::cout << "Thread_InputStream::run()" << std::endl;
+//void Thread_InputStream::run() {
+//    std::cout << "Thread_InputStream::run()" << std::endl;
 
-    try {
+//    try {
 
-        while ( !this->isInterruptionRequested() ) {
+//        while ( !this->isInterruptionRequested() ) {
 
-            mInputStream >> mAcq;
-            // std::cout << "receive acq : " << mAcq << std::endl;
+//            mInputStream >> mAcq;
+//            // std::cout << "receive acq : " << mAcq << std::endl;
 
-            emit newAcquisition();
-        }
-    }
-    catch ( std::exception& e ) {
-        std::cout << "[streamView] catch exception : " << e.what() << std::endl;
-//        emit streamingStopped(mInputStream.getSensorName());
-        return;
-    }
+//            emit newAcquisition();
+//        }
+//    }
+//    catch ( std::exception& e ) {
+//        std::cout << "[streamView] catch exception : " << e.what() << std::endl;
+////        emit streamingStopped(mInputStream.getSensorName());
+//        return;
+//    }
 
-    std::cout << "Thread_InputStream::run() end" << std::endl;
-}
+//    std::cout << "Thread_InputStream::run() end" << std::endl;
+//}
 
 ///////////////////////////////////////////////////////////////////////////////////
 
@@ -45,12 +45,12 @@ FormSensorView::FormSensorView( std::string sensorName,
                                 std::string dims,
                                 std::string size,
                                 std::string metaData,
-                                QMdiArea& mdiArea,
+//                                QMdiArea& mdiArea,
                                 QWidget* parent ) :
     QWidget( parent ),
     ui( new Ui::FormSensorView ),
-    mSensorName( sensorName ),
-    m_mdiArea( mdiArea ) {
+    mSensorName( sensorName ) {
+//    m_mdiArea( mdiArea ) {
     ui->setupUi( this );
 
     ui->labelSensorName->setText( sensorName.c_str() );
@@ -70,11 +70,13 @@ FormSensorView::FormSensorView( std::string sensorName,
         ui->label_metadata->setText( metaData.c_str() );
     }
 
-    ui->label_frequency->setText( "0 Hz" );
+//    ui->label_frequency->setText( "0 Hz" );
+
+//    on_radioButtonOnOff_clicked(true);
 }
 
 FormSensorView::~FormSensorView() {
-    on_stopStreaming();
+//    on_stopStreaming();
 //    if (m_inputStreamThread != nullptr) {
 //        assert(m_streamView != nullptr);
 
@@ -91,13 +93,15 @@ void FormSensorView::on_radioButtonOnOff_clicked( bool checked ) {
         ui->radioButtonOnOff->setText( "on " );
         ui->frameButtonOnOff->setStyleSheet( "border-radius: 10px; background-color: lightgreen" );
         //        emit addViewStreamSignal(mSensorName);
-        on_startStreamingPrivate();
+//        on_startStreamingPrivate();
+        emit streamingStarted(mSensorName);
     }
     else {
         ui->radioButtonOnOff->setText( "off" );
         ui->frameButtonOnOff->setStyleSheet( "border-radius: 10px; background-color: red" );
         //        emit delViewStreamSignal(mSensorName);
-        on_stopStreaming();
+//        on_stopStreaming();
+        emit streamingStopped(mSensorName);
     }
 }
 
@@ -115,130 +119,130 @@ void FormSensorView::on_startStreaming()
     ui->radioButtonOnOff->click();
 }
 
-void FormSensorView::on_startStreamingPrivate() {
-    std::cout << "[FormSensorView] FormSensorView::on_startStreamingPrivate slot '" << mSensorName << "'"
-              << std::endl;
-    //              << ", nb streamView = " << mStreamViews.size() << std::endl;
+//void FormSensorView::on_startStreamingPrivate() {
+//    std::cout << "[FormSensorView] FormSensorView::on_startStreamingPrivate slot '" << mSensorName << "'"
+//              << std::endl;
+//    //              << ", nb streamView = " << mStreamViews.size() << std::endl;
 
-    assert( m_inputStreamThread == nullptr );
-    m_inputStreamThread = new Thread_InputStream( mSensorName, this );
-    QObject::connect(
-        m_inputStreamThread, &Thread_InputStream::newAcquisition, this, &FormSensorView::on_newAcquisition );
+//    assert( m_inputStreamThread == nullptr );
+//    m_inputStreamThread = new Thread_InputStream( mSensorName, this );
 //    QObject::connect(
-//        m_inputStreamThread, &Thread_InputStream::streamingStopped, this, &FormSensorView::streamingStopped );
+//        m_inputStreamThread, &Thread_InputStream::newAcquisition, this, &FormSensorView::on_newAcquisition );
+////    QObject::connect(
+////        m_inputStreamThread, &Thread_InputStream::streamingStopped, this, &FormSensorView::streamingStopped );
 
-    assert( m_streamView == nullptr );
-    m_streamView = new MainWindowStreamView( m_inputStreamThread->mInputStream, this );
+//    assert( m_streamView == nullptr );
+//    m_streamView = new MainWindowStreamView( m_inputStreamThread->mInputStream, this );
 
-    //    assert( mStreamViews.find( mSensorName ) == mStreamViews.end() );
-    //    mStreamViews[mSensorName] = streamView;
-    //    std::cout << "[FormSensorView] FormSensorView::on_startStreamingPrivate " << mSensorName <<
-    //    std::endl;
+//    //    assert( mStreamViews.find( mSensorName ) == mStreamViews.end() );
+//    //    mStreamViews[mSensorName] = streamView;
+//    //    std::cout << "[FormSensorView] FormSensorView::on_startStreamingPrivate " << mSensorName <<
+//    //    std::endl;
 
-    QMdiSubWindow* subWindow = m_mdiArea.addSubWindow( m_streamView );
-    subWindow->setVisible( true );
-    subWindow->setWindowTitle( mSensorName.c_str() );
+////    QMdiSubWindow* subWindow = m_mdiArea.addSubWindow( m_streamView );
+////    subWindow->setVisible( true );
+////    subWindow->setWindowTitle( mSensorName.c_str() );
 
-    QObject::connect( m_streamView,
-                      &MainWindowStreamView::onCloseStreamViewSignal,
-                      this,
-                      &FormSensorView::on_closeStreamView );
+//    QObject::connect( m_streamView,
+//                      &MainWindowStreamView::onCloseStreamViewSignal,
+//                      this,
+//                      &FormSensorView::on_closeStreamView );
 
-    mCounterFps = 0;
-    mFps        = 10;
-    mStartFps   = std::chrono::high_resolution_clock::now();
-    m_inputStreamThread->start();
+//    mCounterFps = 0;
+//    mFps        = 10;
+//    mStartFps   = std::chrono::high_resolution_clock::now();
+//    m_inputStreamThread->start();
 
-    emit streamingStarted(mSensorName);
-}
+//    emit streamingStarted(mSensorName);
+//}
 
 //#include <typeinfo>
 
-void FormSensorView::on_stopStreaming() {
-    std::cout << "[FormSensorView] FormSensorView::on_stopStreaming " << mSensorName << std::endl;
-    //              << mStreamViews.size() << std::endl;
+//void FormSensorView::on_stopStreaming() {
+//    std::cout << "[FormSensorView] FormSensorView::on_stopStreaming " << mSensorName << std::endl;
+//    //              << mStreamViews.size() << std::endl;
 
-        if (m_inputStreamThread == nullptr)
-            return;
+//        if (m_inputStreamThread == nullptr)
+//            return;
 
-    assert( m_inputStreamThread != nullptr );
-    //    if ( mStreamViews.find( sensorName ) != mStreamViews.end() ) {
-    //        MainWindowStreamView* streamView = mStreamViews.at( sensorName );
+//    assert( m_inputStreamThread != nullptr );
+//    //    if ( mStreamViews.find( sensorName ) != mStreamViews.end() ) {
+//    //        MainWindowStreamView* streamView = mStreamViews.at( sensorName );
 
-    //        std::cout << "[FormSensorView] FormSensorView::on_stopStreaming delete " << streamView <<
-    //        std::endl;
-    m_inputStreamThread->requestInterruption();
-    m_inputStreamThread->wait();
-    delete m_inputStreamThread;
-    m_inputStreamThread = nullptr;
-    ui->label_frequency->setText( "0 Hz" );
+//    //        std::cout << "[FormSensorView] FormSensorView::on_stopStreaming delete " << streamView <<
+//    //        std::endl;
+//    m_inputStreamThread->requestInterruption();
+//    m_inputStreamThread->wait();
+//    delete m_inputStreamThread;
+//    m_inputStreamThread = nullptr;
+//    ui->label_frequency->setText( "0 Hz" );
 
-    //    assert( m_streamView != nullptr );
-    if ( m_streamView != nullptr ) {
-        m_mdiArea.removeSubWindow( m_streamView->parentWidget() );
-        delete m_streamView;
-        m_streamView = nullptr;
-    }
-    //    }
-    //    std::cout << "[FormSensorView] FormSensorView::on_stopStreaming slot end, nb streamView = "
-    //              << mStreamViews.size() << std::endl;
+//    //    assert( m_streamView != nullptr );
+////    if ( m_streamView != nullptr ) {
+////        m_mdiArea.removeSubWindow( m_streamView->parentWidget() );
+////        delete m_streamView;
+////        m_streamView = nullptr;
+////    }
+//    //    }
+//    //    std::cout << "[FormSensorView] FormSensorView::on_stopStreaming slot end, nb streamView = "
+//    //              << mStreamViews.size() << std::endl;
 
-    emit streamingStopped(mSensorName);
-}
+//    emit streamingStopped(mSensorName);
+//}
 
-void FormSensorView::on_closeStreamView() {
+//void FormSensorView::on_closeStreamView() {
 
-        m_mdiArea.removeSubWindow( m_streamView->parentWidget() );
-//        delete m_streamView;
-        m_streamView = nullptr;
-        setRadioButtonOff();
-    on_stopStreaming();
+//        m_mdiArea.removeSubWindow( m_streamView->parentWidget() );
+////        delete m_streamView;
+//        m_streamView = nullptr;
+//        setRadioButtonOff();
+//    on_stopStreaming();
 
-    //    std::cout << "[FormSensorView] FormSensorView::on_closeStreamView " << std::endl;
-    //    assert( mSensorViews.find( sensorName ) != mSensorViews.end() );
-    //    mSensorViews.at( sensorName )->setRadioButtonOff();
+//    //    std::cout << "[FormSensorView] FormSensorView::on_closeStreamView " << std::endl;
+//    //    assert( mSensorViews.find( sensorName ) != mSensorViews.end() );
+//    //    mSensorViews.at( sensorName )->setRadioButtonOff();
 
-    //    assert( mStreamViews.find( sensorName ) != mStreamViews.end() );
-    //    mStreamViews.erase( sensorName );
-}
+//    //    assert( mStreamViews.find( sensorName ) != mStreamViews.end() );
+//    //    mStreamViews.erase( sensorName );
+//}
 
-void FormSensorView::on_newAcquisition() {
-    //    std::cout << "[FormSensorView] on_newAcquisition" << std::endl;
-    if ( m_inputStreamThread == nullptr ) return;
+//void FormSensorView::on_newAcquisition() {
+//    //    std::cout << "[FormSensorView] on_newAcquisition" << std::endl;
+//    if ( m_inputStreamThread == nullptr ) return;
 
-    if ( mCounterFps == std::ceil( mFps ) ) {
-        const auto end = std::chrono::high_resolution_clock::now();
-        const auto duration =
-            std::chrono::duration_cast<std::chrono::microseconds>( end - mStartFps ).count();
-        mFps = ( 1'000'000.0 * std::ceil( mFps ) ) / duration;
-        //        ui->statusbar->showMessage((std::string("fps:") + std::to_string(mFps)).c_str());
-        mCounterFps = 0;
-        mStartFps   = std::chrono::high_resolution_clock::now();
-        ui->label_frequency->setText( ( std::to_string( mFps ) + " Hz" ).c_str() );
-    }
+//    if ( mCounterFps == std::ceil( mFps ) ) {
+//        const auto end = std::chrono::high_resolution_clock::now();
+//        const auto duration =
+//            std::chrono::duration_cast<std::chrono::microseconds>( end - mStartFps ).count();
+//        mFps = ( 1'000'000.0 * std::ceil( mFps ) ) / duration;
+//        //        ui->statusbar->showMessage((std::string("fps:") + std::to_string(mFps)).c_str());
+//        mCounterFps = 0;
+//        mStartFps   = std::chrono::high_resolution_clock::now();
+//        ui->label_frequency->setText( ( std::to_string( mFps ) + " Hz" ).c_str() );
+//    }
 
-    assert( m_inputStreamThread != nullptr );
-    assert( m_inputStreamThread->mAcq.mData != nullptr );
-    m_streamView->setData( (unsigned char*)m_inputStreamThread->mAcq.mData,
-                           m_inputStreamThread->mInputStream.getDims(),
-                           m_inputStreamThread->mInputStream.getFormat() );
-    //        (static_cast<WidgetStreamView*>(m_streamView->ui->centralwidget))->setData((unsigned
-    //    char*)mThread.mAcq.mData, mThread.mInputStream.getDims(),
-    //    mThread.mInputStream.getFormat());
+//    assert( m_inputStreamThread != nullptr );
+//    assert( m_inputStreamThread->mAcq.mData != nullptr );
+//    m_streamView->setData( (unsigned char*)m_inputStreamThread->mAcq.mData,
+//                           m_inputStreamThread->mInputStream.getDims(),
+//                           m_inputStreamThread->mInputStream.getFormat() );
+//    //        (static_cast<WidgetStreamView*>(m_streamView->ui->centralwidget))->setData((unsigned
+//    //    char*)mThread.mAcq.mData, mThread.mInputStream.getDims(),
+//    //    mThread.mInputStream.getFormat());
 
-    ++mCounterFps;
+//    ++mCounterFps;
 
-    emit newAcquisition();
-}
+//    emit newAcquisition();
+//}
 
-const InputStream &FormSensorView::getInputStream() const
-{
-    assert(m_inputStreamThread != nullptr);
-    return m_inputStreamThread->mInputStream;
-}
+//const InputStream &FormSensorView::getInputStream() const
+//{
+//    assert(m_inputStreamThread != nullptr);
+//    return m_inputStreamThread->mInputStream;
+//}
 
-const Thread_InputStream *FormSensorView::getInputStreamThread() const
-{
-    assert(m_inputStreamThread != nullptr);
-    return m_inputStreamThread;
-}
+//const Thread_InputStream *FormSensorView::getInputStreamThread() const
+//{
+//    assert(m_inputStreamThread != nullptr);
+//    return m_inputStreamThread;
+//}

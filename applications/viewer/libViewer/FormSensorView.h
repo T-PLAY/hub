@@ -8,27 +8,27 @@
 
 //#include <FormInputStreamViews.h>
 
-class Thread_InputStream : public QThread
-{
-    Q_OBJECT
-  public:
-    // constructor
-    explicit Thread_InputStream( std::string sensorName = "", QObject* parent = nullptr );
-    ~Thread_InputStream();
+//class Thread_InputStream : public QThread
+//{
+//    Q_OBJECT
+//  public:
+//    // constructor
+//    explicit Thread_InputStream( std::string sensorName = "", QObject* parent = nullptr );
+//    ~Thread_InputStream();
 
-  signals:
-    void newAcquisition();
-//    void streamingStopped(std::string sensorName);
+//  signals:
+//    void newAcquisition();
+////    void streamingStopped(std::string sensorName);
 
-  public:
-    // overriding the QThread's run() method
-    void run();
+//  public:
+//    // overriding the QThread's run() method
+//    void run();
 
-    Stream::Acquisition mAcq;
-    InputStream mInputStream;
+//    Stream::Acquisition mAcq;
+//    InputStream mInputStream;
 
-  private:
-};
+//  private:
+//};
 
 
 namespace Ui {
@@ -39,7 +39,7 @@ class FormSensorView : public QWidget {
     Q_OBJECT
 
 public:
-    FormSensorView(std::string sensorName, std::string format, std::string dims, std::string size, std::string metaData, QMdiArea & mdiArea, QWidget * parent = nullptr);
+    FormSensorView(std::string sensorName, std::string format, std::string dims, std::string size, std::string metaData, QWidget * parent = nullptr);
 //    FormSensorView(const std::string sensorName, QWidget* parent = nullptr);
     ~FormSensorView();
 
@@ -48,37 +48,37 @@ public:
 signals:
 //    void addViewStreamSignal(std::string streamerSensorName);
 //    void delViewStreamSignal(std::string streamerSensorName);
-    void newAcquisition();
+//    void newAcquisition();
     void streamingStarted(std::string sensorName);
     void streamingStopped(std::string sensorName);
 
 public slots:
     void on_startStreaming();
+    void on_radioButtonOnOff_clicked(bool checked);
 
 private slots:
-    void on_startStreamingPrivate();
-    void on_radioButtonOnOff_clicked(bool checked);
-    void on_stopStreaming();
-    void on_closeStreamView();
+//    void on_startStreamingPrivate();
+//    void on_stopStreaming();
+//    void on_closeStreamView();
 
-    void on_newAcquisition();
+//    void on_newAcquisition();
 
 public:
-    const InputStream & getInputStream() const;
+//    const InputStream & getInputStream() const;
 
-    const Thread_InputStream *getInputStreamThread() const;
+//    const Thread_InputStream *getInputStreamThread() const;
 
 private:
     Ui::FormSensorView* ui;
     const std::string mSensorName;
-    QMdiArea & m_mdiArea;
+//    QMdiArea & m_mdiArea;
 
-    Thread_InputStream * m_inputStreamThread = nullptr;
-    MainWindowStreamView* m_streamView = nullptr;
+//    Thread_InputStream * m_inputStreamThread = nullptr;
+//    MainWindowStreamView* m_streamView = nullptr;
 //    QWidget * m_streamView = nullptr;
-    int mCounterFps;
-    double mFps;
-    std::chrono::time_point<std::chrono::high_resolution_clock> mStartFps;
+//    int mCounterFps;
+//    double mFps;
+//    std::chrono::time_point<std::chrono::high_resolution_clock> mStartFps;
 
 
 };
