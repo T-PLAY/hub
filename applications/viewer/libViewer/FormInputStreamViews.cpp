@@ -25,10 +25,10 @@ InputStreamThread::~InputStreamThread()
 {
     std::cout << "[InputStreamThread] ~InputStreamThread()" << std::endl;
 
-    //    if (this->isRunning()) {
-    //        this->requestInterruption();
-    //        this->wait();
-    //    }
+    if (this->isRunning()) {
+        this->requestInterruption();
+        this->wait();
+    }
 }
 
 void InputStreamThread::run()
@@ -81,6 +81,18 @@ FormInputStreamViews::~FormInputStreamViews()
 
     delete ui;
     std::cout << "[FormInputStreamViews] ~FormInputStreamViews() end" << std::endl;
+}
+
+void FormInputStreamViews::onKillInputStream(const std::string& streamName)
+{
+
+    onDeleteInputStream(streamName);
+
+    //    assert(m_threads.find(streamName) != m_threads.end());
+    //    auto& inputStreamThread = *m_threads.at(streamName);
+    //    assert(inputStreamThread.isRunning());
+    //    inputStreamThread.requestInterruption();
+    //    inputStreamThread.wait();
 }
 
 // void FormInputStreamViews::onComboBox_scan_currentTextChanged(const QString& sourceType)
@@ -182,6 +194,10 @@ void FormInputStreamViews::onDeleteInputStream(const std::string& streamName)
 
     auto sensorName = streamName.substr(0, g_probeScanSensorName.size());
     if (sensorName == g_probeScanSensorName) {
+        QObject::disconnect(m_threads.at(streamName).get(),
+            &InputStreamThread::newAcquisition,
+            this,
+            &FormInputStreamViews::newAcquisitionScan);
 
         const auto sourceType = (sensorName.size() == streamName.size())
             ? ("physical")
@@ -210,6 +226,10 @@ void FormInputStreamViews::onDeleteInputStream(const std::string& streamName)
 
     sensorName = streamName.substr(0, g_probePoseSensorName.size());
     if (sensorName == g_probePoseSensorName) {
+        QObject::disconnect(m_threads.at(streamName).get(),
+            &InputStreamThread::newAcquisition,
+            this,
+            &FormInputStreamViews::newAcquisitionPose);
 
         const auto sourceType = (sensorName.size() == streamName.size())
             ? ("physical")

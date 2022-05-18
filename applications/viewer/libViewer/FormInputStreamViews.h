@@ -78,12 +78,13 @@ public slots:
     //    void onNewAcquisition(const std::string & sensorName);
 //    void onNewScanAcquisition(const std::string& sensorName);
 //    void onNewPoseAcquisition(const std::string& sensorName);
+    void onKillInputStream(const std::string & streamName);
 
 private slots:
 
     void onNewInputStream(std::string streamName);
-    //    void on_stopStreaming(std::string streamName);
     void onDeleteInputStream(const std::string& streamName);
+    //    void on_stopStreaming(std::string streamName);
 
     void on_comboBox_scan_currentTextChanged(const QString &sourceType);
     void on_comboBox_pose_currentTextChanged(const QString &sourceType);

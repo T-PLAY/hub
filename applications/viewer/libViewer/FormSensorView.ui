@@ -186,18 +186,6 @@
             </property>
            </widget>
           </item>
-          <item>
-           <widget class="QLabel" name="label_4">
-            <property name="font">
-             <font>
-              <pointsize>8</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>Frequency :</string>
-            </property>
-           </widget>
-          </item>
          </layout>
         </item>
         <item>
@@ -228,18 +216,6 @@
           </item>
           <item>
            <widget class="QLabel" name="labelSize">
-            <property name="font">
-             <font>
-              <pointsize>8</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>TextLabel</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="label_frequency">
             <property name="font">
              <font>
               <pointsize>8</pointsize>
