@@ -98,8 +98,8 @@ MainWindow::MainWindow(QWidget* parent)
     ui->dockWidget_top->setWidget(m_formInputStreamViews);
     QObject::connect(m_formInputStreamViews, &FormInputStreamViews::initPose, this, &MainWindow::onInitPose);
     QObject::connect(m_formInputStreamViews, &FormInputStreamViews::initScan, this, &MainWindow::onInitScan);
-    QObject::connect(m_formInputStreamViews, &FormInputStreamViews::updatePose, this, &MainWindow::onUpdatePose);
-    QObject::connect(m_formInputStreamViews, &FormInputStreamViews::updateScan, this, &MainWindow::onUpdateScan);
+    QObject::connect(m_formInputStreamViews, &FormInputStreamViews::newAcquisitionPose, this, &MainWindow::onUpdatePose);
+    QObject::connect(m_formInputStreamViews, &FormInputStreamViews::newAcquisitionScan, this, &MainWindow::onUpdateScan);
 
     m_formWidgetLoader = new FormWidgetLoader(this);
     ui->dockWidget_bottom->setWidget(m_formWidgetLoader);
@@ -138,7 +138,19 @@ void MainWindow::onRecordLoaderPathLoaded()
     std::cout << "[MainWindow] onRecordLoaderPathLoaded()" << std::endl;
     const auto& recordOutputStreams = m_formWidgetLoader->getRecordLoader().getOutputStreamBuffs();
 
-    m_formInputStreamViews->connect(recordOutputStreams);
+    for (const auto& pair : recordOutputStreams) {
+        const auto& streamName = pair.first;
+        auto& cyclicBuff = const_cast<CyclicBuff&>(*pair.second);
+
+        //        IOStream & ioStream = cyclicBuff.getIOStream();
+        //        RamIO & ramIO = dynamic_cast<RamIO&>(ioStream);
+        //        InputStream inputStream(ramIO);
+        std::cout << "connected " << streamName << std::endl;
+
+        m_formInputStreamViews->addInputStream(streamName, RamIO(cyclicBuff));
+//    m_formInputStreamViews->connect(recordOutputStreams);
+    }
+
 }
 
 void MainWindow::onSnapshotLoaderPathLoaded()
