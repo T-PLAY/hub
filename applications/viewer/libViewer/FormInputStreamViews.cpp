@@ -22,6 +22,11 @@ InputStreamThread::InputStreamThread(InputStream& inputStream, QObject* parent)
 InputStreamThread::~InputStreamThread()
 {
     std::cout << "[InputStreamThread] ~InputStreamThread()" << std::endl;
+
+//    if (this->isRunning()) {
+//        this->requestInterruption();
+//        this->wait();
+//    }
 }
 
 void InputStreamThread::run()
@@ -68,6 +73,10 @@ FormInputStreamViews::~FormInputStreamViews()
     //    for (auto& pair : m_threads) {
     //        delete pair.second;
     //    }
+
+//    m_inputStreams.clear();
+//    m_threads.clear();
+
     delete ui;
     std::cout << "[FormInputStreamViews] ~FormInputStreamViews() end" << std::endl;
 }

@@ -37,7 +37,8 @@ private:
     size_t m_writeHead = 0;
     size_t m_readHead = 0;
 
-    bool m_isClose = false;
+    bool m_outputStreamWantsToClose = false;
+    bool m_inputStreamClose = false;
 //    bool m_endBuff = false;
 };
 

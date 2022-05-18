@@ -121,8 +121,8 @@ MainWindow::~MainWindow()
     std::cout << "[MainWindow] ~MainWindow() start" << std::endl;
     //    delete m_sensorViews;
 
-    delete m_formInputStreamViews;
     delete m_formWidgetLoader;
+    delete m_formInputStreamViews;
 
 #ifdef USE_FORM_SENSOR_VIEWS
     if (m_formSensorViews != nullptr)
