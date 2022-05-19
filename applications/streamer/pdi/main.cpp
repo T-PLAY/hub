@@ -15,6 +15,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <constants.h>
+
+
 CPDIdev g_pdiDev;
 CPDImdat g_pdiMDat;
 CPDIser g_pdiSer;
@@ -70,8 +73,8 @@ int main(int argc, char* argv[])
             while (true) { // each server connect
                 try {
                     std::vector<std::unique_ptr<OutputStream>> outputStreams;
-                    outputStreams.push_back(std::make_unique<OutputStream>("Polhemus Patriot 0", Stream::Format::DOF6, std::vector<int>({ 1 })));
-                    outputStreams.push_back(std::make_unique<OutputStream>("Polhemus Patriot 1", Stream::Format::DOF6, std::vector<int>({ 1 })));
+                    outputStreams.push_back(std::make_unique<OutputStream>("Polhemus Patriot (confidence)", Stream::Format::DOF6, std::vector<int>({ 1 })));
+                    outputStreams.push_back(std::make_unique<OutputStream>(g_probePoseSensorName, Stream::Format::DOF6, std::vector<int>({ 1 })));
                     constexpr int packetSize = 8 + 12 + 16;
                     assert(packetSize == 8 + outputStreams[0]->getAcquisitionSize()); // header 8 bytes, frame count 4 bytes
 

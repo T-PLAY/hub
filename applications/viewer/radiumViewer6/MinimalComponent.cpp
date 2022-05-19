@@ -291,10 +291,11 @@ void MinimalComponent::updatePose(const Stream::Acquisition& acq)
     float* translation = (float*)acq.mData;
     float* quaternion = (float*)&acq.mData[12];
 
-    //    Ra::Core::Vector3 pos(-translation[0], -translation[1],
-    //        -translation[2]);
+    //        Ra::Core::Vector3 pos(-translation[0], -translation[1],
+    //            -translation[2]);
     Ra::Core::Vector3 pos(translation[0], translation[1],
         translation[2]);
+//    pos = -pos;
 
     Ra::Core::Quaternion orientation(quaternion[0], quaternion[1], quaternion[2],
         quaternion[3]);
