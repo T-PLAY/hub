@@ -17,7 +17,7 @@ class CyclicBuff {
         }
     };
 public:
-    CyclicBuff(size_t size = 1'000'000);
+    CyclicBuff(size_t size = 2'000'000);
     CyclicBuff(const CyclicBuff & buff) = delete;
     CyclicBuff(CyclicBuff && buff) = default;
 
