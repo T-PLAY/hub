@@ -50,8 +50,8 @@ void InputStreamThread::run() {
         std::cout << "[InputStreamThread] catch exception : " << e.what() << std::endl;
         //        std::cout << "[InputStreamThread] streamingStopped : " << mSensorName <<
         //        std::endl;
+        std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
         emit streamingStopped( mSensorName );
-        //        std::this_thread::sleep_for(std::chrono::milliseconds(200));
         //        mFormInputStreamViews.onKillInputStream(mSensorName);
         return;
     }
@@ -93,8 +93,8 @@ FormInputStreamViews::~FormInputStreamViews() {
 void FormInputStreamViews::onKillInputStream( const std::string& streamName ) {
     std::cout << "[FormInputStreamViews] onKillInputStream(" << streamName << ")" << std::endl;
 
-    if (m_streamsKilled.find(streamName) != m_streamsKilled.end()) {
-        m_streamsKilled.erase(streamName);
+    if ( m_streamsKilled.find( streamName ) != m_streamsKilled.end() ) {
+        m_streamsKilled.erase( streamName );
         return;
     }
     onDeleteInputStream( streamName );
@@ -110,7 +110,12 @@ void FormInputStreamViews::onNewAcquisitionPose() {
     assert( m_recorder.isRecording() );
     //    m_recorder.savePose(getPoseAcquisition());
     m_recorder.add(
-        Snapshot( m_threadInputStreamPose->mInputStream, m_threadInputStreamPose->mAcq ) );
+        //        Snapshot( m_threadInputStreamPose->mInputStream, m_threadInputStreamPose->mAcq )
+        //        );
+        Snapshot( g_probePoseSensorName,
+                  m_threadInputStreamPose->mInputStream.getFormat(),
+                  m_threadInputStreamPose->mInputStream.getDims(),
+                  m_threadInputStreamPose->mAcq ) );
     //    m_recorder.save(m_activeStreamPose, m_threadInputStreamPose->mAcq);
 }
 
@@ -120,7 +125,12 @@ void FormInputStreamViews::onNewAcquisitionScan() {
     assert( m_recorder.isRecording() );
 
     m_recorder.add(
-        Snapshot( m_threadInputStreamScan->mInputStream, m_threadInputStreamScan->mAcq ) );
+        //        Snapshot( m_threadInputStreamScan->mInputStream, m_threadInputStreamScan->mAcq )
+        //        );
+        Snapshot( g_probeScanSensorName,
+                  m_threadInputStreamScan->mInputStream.getFormat(),
+                  m_threadInputStreamScan->mInputStream.getDims(),
+                  m_threadInputStreamScan->mAcq ) );
     //    m_recorder.save(m_activeStreamScan, m_threadInputStreamScan->mAcq);
 }
 
@@ -318,11 +328,11 @@ void FormInputStreamViews::onDeleteInputStream( const std::string& streamName ) 
 ////            const auto sourceType = (sensorName.size() == streamName.size())
 ////                ? ("physical")
 ////                : (streamName.substr(g_probeScanSensorName.size() + 2, streamName.size() - 1 -
-///g_probeScanSensorName.size() - 2));
+/// g_probeScanSensorName.size() - 2));
 
 ////            QObject::connect(comboBox, &QComboBox::currentTextChanged, this,
 ///&FormInputStreamViews::onComboBox_scan_currentTextChanged); /
-///comboBox->addItem(sourceType.c_str()); /        }
+/// comboBox->addItem(sourceType.c_str()); /        }
 
 ////        sensorName = streamName.substr(0, g_probePoseSensorName.size());
 ////        if (sensorName == g_probePoseSensorName) {
@@ -330,11 +340,11 @@ void FormInputStreamViews::onDeleteInputStream( const std::string& streamName ) 
 ////            const auto sourceType = (sensorName.size() == streamName.size())
 ////                ? ("physical")
 ////                : (streamName.substr(g_probePoseSensorName.size() + 2, streamName.size() - 1 -
-///g_probePoseSensorName.size() - 2));
+/// g_probePoseSensorName.size() - 2));
 
 ////            QObject::connect(comboBox, &QComboBox::currentTextChanged, this,
 ///&FormInputStreamViews::onComboBox_pose_currentTextChanged); /
-///comboBox->addItem(sourceType.c_str()); /        }
+/// comboBox->addItem(sourceType.c_str()); /        }
 //}
 
 // void FormInputStreamViews::on_stopStreaming(std::string streamName)
@@ -413,11 +423,11 @@ const Stream::Acquisition& FormInputStreamViews::getPoseAcquisition() const {
 ////            const auto sourceType = (sensorName.size() == streamName.size())
 ////                ? ("physical")
 ////                : (streamName.substr(g_probeScanSensorName.size() + 2, streamName.size() - 1 -
-///g_probeScanSensorName.size() - 2));
+/// g_probeScanSensorName.size() - 2));
 
 ////            QObject::connect(comboBox, &QComboBox::currentTextChanged, this,
 ///&FormInputStreamViews::onComboBox_scan_currentTextChanged); /
-///comboBox->addItem(sourceType.c_str()); /        }
+/// comboBox->addItem(sourceType.c_str()); /        }
 
 ////        sensorName = streamName.substr(0, g_probePoseSensorName.size());
 ////        if (sensorName == g_probePoseSensorName) {
@@ -425,11 +435,11 @@ const Stream::Acquisition& FormInputStreamViews::getPoseAcquisition() const {
 ////            const auto sourceType = (sensorName.size() == streamName.size())
 ////                ? ("physical")
 ////                : (streamName.substr(g_probePoseSensorName.size() + 2, streamName.size() - 1 -
-///g_probePoseSensorName.size() - 2));
+/// g_probePoseSensorName.size() - 2));
 
 ////            QObject::connect(comboBox, &QComboBox::currentTextChanged, this,
 ///&FormInputStreamViews::onComboBox_pose_currentTextChanged); /
-///comboBox->addItem(sourceType.c_str()); /        }
+/// comboBox->addItem(sourceType.c_str()); /        }
 //    }
 //}
 
@@ -547,6 +557,7 @@ void FormInputStreamViews::on_toolButton_record_clicked() {
         m_recorder.stop();
         //        m_recorder.saveOnDisk();
         ui->toolButton_record->setText( "startRecording" );
+        ui->toolButton_record->setStyleSheet( "background-color: none" );
     }
     else {
         //        InputStreamParameters inputStreamParameters;
@@ -569,6 +580,7 @@ void FormInputStreamViews::on_toolButton_record_clicked() {
                           &FormInputStreamViews::newAcquisitionScan,
                           this,
                           &FormInputStreamViews::onNewAcquisitionScan );
+        ui->toolButton_record->setStyleSheet( "background-color: red" );
     }
 }
 
