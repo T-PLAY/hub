@@ -52,7 +52,7 @@
       </attribute>
       <layout class="QHBoxLayout" name="horizontalLayout_3">
        <item>
-        <widget class="QTreeView" name="treeView_record">
+        <widget class="TreeViewStream" name="treeView_record">
          <property name="enabled">
           <bool>true</bool>
          </property>
@@ -85,7 +85,7 @@
       </attribute>
       <layout class="QHBoxLayout" name="horizontalLayout_4">
        <item>
-        <widget class="QTreeView" name="treeView_snapshot">
+        <widget class="TreeViewStream" name="treeView_snapshot">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>0</horstretch>
@@ -123,6 +123,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>TreeViewStream</class>
+   <extends>QTreeView</extends>
+   <header location="global">TreeViewStream.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

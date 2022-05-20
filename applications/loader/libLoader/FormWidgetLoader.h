@@ -35,11 +35,16 @@ signals:
 
 
 private slots:
-    void on_treeView_record_clicked(const QModelIndex &index);
-    void on_treeView_snapshot_clicked(const QModelIndex &index);
+//    void on_treeView_record_clicked(const QModelIndex &index);
+//    void on_treeView_snapshot_clicked(const QModelIndex &index);
 
-    void on_treeView_record_doubleClicked(const QModelIndex &index);
-    void on_treeView_snapshot_doubleClicked(const QModelIndex &index);
+//    void on_treeView_record_doubleClicked(const QModelIndex &index);
+//    void on_treeView_snapshot_doubleClicked(const QModelIndex &index);
+
+    void onTreeView_record_currentChanged(const QModelIndex &current, const QModelIndex &previous);
+    void onTreeView_snapshot_currentChanged(const QModelIndex &current, const QModelIndex &previous);
+
+    void onTreeView_record_selectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
 
 //    void on_treeView_record_keyPressed(QKeyEvent * event);
 
@@ -62,13 +67,13 @@ private slots:
 //    void on_listView_recordFrames_indexesMoved(const QModelIndexList &indexes);
 
 
-    void on_treeView_record_pressed(const QModelIndex &index);
+//    void on_treeView_record_pressed(const QModelIndex &index);
 
-    void on_treeView_record_activated(const QModelIndex &index);
+//    void on_treeView_record_activated(const QModelIndex &index);
 
-    void on_treeView_record_entered(const QModelIndex &index);
+//    void on_treeView_record_entered(const QModelIndex &index);
 
-    void on_treeView_record_viewportEntered();
+//    void on_treeView_record_viewportEntered();
 
 
 private:
