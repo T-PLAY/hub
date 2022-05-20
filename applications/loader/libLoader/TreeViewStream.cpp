@@ -11,18 +11,23 @@
 TreeViewStream::TreeViewStream( QWidget* parent ) : QTreeView( parent ) {}
 
 void TreeViewStream::keyPressEvent( QKeyEvent* event ) {
-    assert(m_loader != nullptr);
+    assert( m_loader != nullptr );
 
     //    QTreeView::keyPressEvent(event);
-    const auto& index = this->currentIndex();
-    const auto* model = dynamic_cast<const QFileSystemModel*>( this->model() );
+    const auto& index          = this->currentIndex();
+    const auto* model          = dynamic_cast<const QFileSystemModel*>( this->model() );
     const auto& selectionModel = this->selectionModel();
 
     //    std::cout << "[FormWidgetLoader] on_treeView_record_clicked : " << mPath << std::endl;
     const auto& mPath     = model->fileInfo( index ).absolutePath().toStdString();
     const auto& mFilename = model->fileInfo( index ).fileName().toStdString();
+    std::string filepath = mPath + "/" + mFilename;
 
-//    std::cout << "[FormWidgetLoader] on_treeView_record_doubleClicked : " << mPath << std::endl;
+
+    assert(std::filesystem::exists(filepath));
+
+    //    std::cout << "[FormWidgetLoader] on_treeView_record_doubleClicked : " << mPath <<
+    //    std::endl;
 
     switch ( event->key() ) {
 
@@ -36,16 +41,26 @@ void TreeViewStream::keyPressEvent( QKeyEvent* event ) {
 
         //    m_recordFileModel->fileRenamed(mPath, mFilename, newName);
 
-        std::filesystem::rename( mPath + "/" + mFilename, mPath + "/" + newName );
+        std::filesystem::rename( filepath, mPath + "/" + newName );
+    } break;
+
+    case Qt::Key_Delete: {
+        // rename current stream
+        //        std::cout << "F2" << std::endl;
+        //        onStreamRename();
+
+        //    m_recordFileModel->fileRenamed(mPath, mFilename, newName);
+
+        std::filesystem::remove_all( filepath );
     } break;
 
     case Qt::Key_Escape:
         std::cout << "Escape" << std::endl;
-//        const auto& selectionModel = ui->treeView_snapshot->selectionModel();
+        //        const auto& selectionModel = ui->treeView_snapshot->selectionModel();
         selectionModel->select( index, QItemSelectionModel::Deselect );
-        assert(m_loader->isLoaded());
+        assert( m_loader->isLoaded() );
         m_loader->unload();
-//        m_snapshotLoader.unload();
+        //        m_snapshotLoader.unload();
         break;
 
     default:
@@ -53,8 +68,7 @@ void TreeViewStream::keyPressEvent( QKeyEvent* event ) {
     }
 }
 
-void TreeViewStream::setLoader(Loader *loader)
-{
+void TreeViewStream::setLoader( Loader* loader ) {
     m_loader = loader;
 }
 
