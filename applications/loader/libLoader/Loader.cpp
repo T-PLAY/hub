@@ -210,9 +210,11 @@ void Loader::update()
 void Loader::unload()
 {
     //    assert(!m_isPlaying);
+    std::cout << "[Loader] unload : start" << std::endl;
 
     if (isPlaying())
         stop();
+
     //    assert(!m_outputs.empty());
     assert(m_thread == nullptr);
     assert(isLoaded());
@@ -233,6 +235,8 @@ void Loader::unload()
     m_outputStreamBuffs.clear();
     m_frameModel.setStringList(QStringList());
     m_loadedPath = "";
+
+    std::cout << "[Loader] unload : end" << std::endl;
 }
 
 void Loader::onFrame_selectionChange(const QModelIndexList& selectedRows)
@@ -329,6 +333,7 @@ void Loader::play()
     assert(!m_snapshots.empty());
     assert(!m_isPlaying);
 
+    m_isPlaying = true;
     m_thread = new std::thread([this]() {
         // play
         int iLoop = 0;
@@ -358,7 +363,6 @@ void Loader::play()
             ++iLoop;
         }
     });
-    m_isPlaying = true;
 }
 
 void Loader::stop()

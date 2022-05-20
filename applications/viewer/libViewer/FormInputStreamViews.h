@@ -12,6 +12,9 @@
 //#include <QComboBox>
 #include <QStringListModel>
 #include <Recorder.h>
+//#include <list>
+
+class FormInputStreamViews;
 
 class InputStreamThread : public QThread {
     Q_OBJECT
@@ -20,13 +23,13 @@ public:
 
     //    template <class IOStreamT>
     //    InputStreamThread(IOStreamT&& iostream, QObject* parent = nullptr);
-    InputStreamThread(InputStream& iostream, QObject* parent = nullptr);
+    InputStreamThread(InputStream& iostream, FormInputStreamViews& formInputStreamViews, QObject* parent = nullptr);
 
     ~InputStreamThread();
 
 signals:
     void newAcquisition(std::string sensorName);
-    void streamingStopped(std::string sensorName);
+    void streamingStopped(const std::string & sensorName);
 
 public:
     // overriding the QThread's run() method
@@ -35,6 +38,7 @@ public:
     Stream::Acquisition mAcq;
     InputStream& mInputStream;
     std::string mSensorName;
+    FormInputStreamViews & mFormInputStreamViews;
 
 private:
 };
@@ -85,7 +89,7 @@ private slots:
     void onNewAcquisitionPose();
     void onNewAcquisitionScan();
 
-    void onNewInputStream(std::string streamName);
+    void onNewInputStream(const std::string & streamName);
     void onDeleteInputStream(const std::string& streamName);
     //    void on_stopStreaming(std::string streamName);
 
@@ -114,6 +118,7 @@ private:
     //    std::map<std::string, QHBoxLayout*> m_hBoxLayouts;
     //    std::map<std::string, std::unique_ptr<InputStreamThread>> m_threads;
     std::map<std::string, std::unique_ptr<InputStreamThread>> m_threads;
+    std::set<std::string> m_streamsKilled;
 
     Recorder m_recorder;
 //    bool m_isRecording = false;
@@ -128,6 +133,20 @@ void FormInputStreamViews::addInputStream(const std::string streamName, IOStream
 // template <typename ...Args>
 // void FormInputStreamViews::addInputStream(const std::string streamName, Args&&... args)
 {
+//    while (m_inputStreams.find(streamName) != m_inputStreams.end()) {
+//        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+//    }
+//    if (m_inputStreams.find(streamName) != m_inputStreams.end()) {
+//        onDeleteInputStream(streamName);
+//    }
+
+    if (m_inputStreams.find(streamName) != m_inputStreams.end()) {
+//        auto * inputStream  = m_inputStreams.at(streamName).get();
+//        delete inputStream;
+        m_inputStreams.erase(streamName);
+        assert(m_streamsKilled.find(streamName) == m_streamsKilled.end());
+        m_streamsKilled.insert(streamName);
+    }
     assert(m_inputStreams.find(streamName) == m_inputStreams.end());
     m_inputStreams[streamName] = std::make_unique<InputStream>(std::move(iostream));
 
@@ -136,8 +155,22 @@ void FormInputStreamViews::addInputStream(const std::string streamName, IOStream
 
     //    InputStream inputStream(std::move(iostream));
     //    const std::string & streamName = inputStream.getSensorName();
+
+    if (m_threads.find(streamName) != m_threads.end()) {
+        auto * thread = m_threads.at(streamName).get();
+        QObject::disconnect( thread,
+                             &InputStreamThread::newAcquisition,
+                             this,
+                             &FormInputStreamViews::newAcquisitionScan );
+//        QObject::disconnect( thread,
+//                             &InputStreamThread::streamingStopped,
+//                             this,
+//                             &FormInputStreamViews::onDeleteInputStream );
+//        delete thread;
+        m_threads.erase(streamName);
+    }
     assert(m_threads.find(streamName) == m_threads.end());
-    m_threads[streamName] = std::make_unique<InputStreamThread>(inputStream);
+    m_threads[streamName] = std::make_unique<InputStreamThread>(inputStream, *this);
 
     //    m_threads[streamName] = std::make_unique<InputStreamThread>(std::move(iostream));
     //    m_threads[streamName] = std::make_unique<InputStreamThread>(std::forward<IOStreamT>(iostream));
@@ -146,13 +179,13 @@ void FormInputStreamViews::addInputStream(const std::string streamName, IOStream
 
     //    m_threads[streamName] = std::make_unique<InputStreamThread>(std::forward<Args>(args)...);
 
-    auto& inputStreamThread = *m_threads.at(streamName);
+    auto * inputStreamThread = m_threads.at(streamName).get();
     //    assert(inputStreamThread->mInputStream.getSensorName() == streamName);
     //            QObject::connect(inputStreamThread, &InputStreamThread::newAcquisition, this, &FormInputStreamViews::onNewAcquisition);
     QObject::connect(
-        &inputStreamThread, &InputStreamThread::streamingStopped, this, &FormInputStreamViews::onDeleteInputStream);
+        inputStreamThread, &InputStreamThread::streamingStopped, this, &FormInputStreamViews::onKillInputStream);
 
-    inputStreamThread.start();
+    inputStreamThread->start();
 
     emit onNewInputStream(streamName);
     //    //    m_inputStreams["ouou"] = std::make_unique<InputStream>(std::move(iostream));
