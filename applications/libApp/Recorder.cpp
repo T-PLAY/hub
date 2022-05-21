@@ -100,9 +100,11 @@ void Recorder::record(const InputStreamParameters& inputStreamConfigs)
 
 void Recorder::stop()
 {
+    std::cout << "[Recorder] stop" << std::endl;
+    assert(m_isRecording == true);
+    m_isRecording = false;
+
     if (m_snapshots.empty()) {
-        std::cout << "[Recorder] stop()" << std::endl;
-        assert(m_isRecording == true);
 
         m_thread->join();
         delete m_thread;
@@ -111,7 +113,6 @@ void Recorder::stop()
     } else {
         saveOnDisk();
     }
-    m_isRecording = false;
 }
 
 void Recorder::save(const Frame& frame)

@@ -15,7 +15,6 @@
 //#include <QRegularExpression>
 //#endif
 
-
 Thread_Client::Thread_Client(const FormSensorViews& formSensorViews, QObject* parent)
     : QThread(parent)
     //    , m_dialog(dialog)
@@ -140,6 +139,7 @@ FormSensorViews::FormSensorViews(
     //    m_mainWindow.setEnabled(false);
     mThreadClient.start();
 
+    m_sensorModel.setStringList(QStringList("none"));
     //    m_mainWindow.setEnabled(false);
 }
 
@@ -147,11 +147,10 @@ FormSensorViews::~FormSensorViews()
 {
     std::cout << "[FormSensorViews] ~FormSensorViews() start" << std::endl;
 
-//    m_mdiArea = nullptr;
+    //    m_mdiArea = nullptr;
 
     mThreadClient.requestInterruption();
     mThreadClient.wait();
-
 
     std::cout << "[FormSensorViews] ~FormSensorViews() mThreadClient.terminated()" << std::endl;
 
@@ -202,15 +201,21 @@ void FormSensorViews::addSensor(std::string sensorName,
     std::string size,
     std::string metaData)
 {
-//    assert(m_mdiArea != nullptr);
+    //    assert(m_mdiArea != nullptr);
 
     std::cout << "[FormSensorViews] FormSensorViews::addSensor '" << sensorName << "'" << std::endl;
     assert(m_sensorViews.find(sensorName) == m_sensorViews.end());
 
-    auto* sensorView = new FormSensorView(sensorName, format, dims, size, metaData, nullptr);
+    auto* sensorView = new FormSensorView(sensorName, format, dims, size, metaData, m_sensorModel, nullptr);
     ui->verticalLayout->insertWidget(static_cast<int>(m_sensorViews.size()), sensorView);
 
     m_sensorViews[sensorName] = sensorView;
+    auto stringList = m_sensorModel.stringList();
+    stringList.append(sensorName.c_str());
+    m_sensorModel.setStringList(stringList);
+
+    //    m_sensorModel.in
+
     //    QObject::connect(
     //        sensorView, &FormSensorView::addViewStreamSignal, this, &FormSensorViews::addStreamView );
     //    QObject::connect(
@@ -224,7 +229,7 @@ void FormSensorViews::addSensor(std::string sensorName,
         sensorView, &FormSensorView::streamingStopped, this, &FormSensorViews::streamingStopped);
 
     sensorView->on_startStreaming();
-//    sensorView->on_radioButtonOnOff_clicked(true);
+    //    sensorView->on_radioButtonOnOff_clicked(true);
 }
 
 void FormSensorViews::delSensor(std::string sensorName)
@@ -236,6 +241,9 @@ void FormSensorViews::delSensor(std::string sensorName)
     assert(m_sensorViews.find(sensorName) != m_sensorViews.end());
     auto* sensorView = m_sensorViews.at(sensorName);
     m_sensorViews.erase(sensorName);
+    auto stringList = m_sensorModel.stringList();
+    stringList.removeAll(sensorName.c_str());
+    m_sensorModel.setStringList(stringList);
     delete sensorView;
 
     //    assert( mSensorViews.find( sensorName ) !=
@@ -260,7 +268,7 @@ const FormSensorView& FormSensorViews::getSensorView(const std::string& sensorNa
     return *m_sensorViews.at(sensorName);
 }
 
-//void FormSensorViews::setMdiArea(QMdiArea *newMdiArea)
+// void FormSensorViews::setMdiArea(QMdiArea *newMdiArea)
 //{
-//    m_mdiArea = newMdiArea;
-//}
+//     m_mdiArea = newMdiArea;
+// }

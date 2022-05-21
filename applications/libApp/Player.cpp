@@ -31,7 +31,8 @@ Player::~Player()
         unload();
 }
 
-void Player::load(const std::string& path)
+
+void Player::load(const std::string &path, int iSensor)
 {
     assert(!m_isPlaying);
     assert(m_loadedPath == "");
@@ -41,10 +42,10 @@ void Player::load(const std::string& path)
     m_currentFrame = -1;
     assert(!path.empty());
     m_loadedPath = path;
-    update();
+    update(iSensor);
 }
 
-void Player::update()
+void Player::update(int iSensor)
 {
     m_frames.clear();
     m_snapshots.clear();
@@ -56,8 +57,12 @@ void Player::update()
 
     int nAcqs = -1;
 
+    int iFile = 0;
     // read records in folder
     for (const auto& fileDir : std::filesystem::directory_iterator(m_loadedPath)) {
+        if (iSensor != -1 && iFile != iSensor)
+            continue;
+
         const auto filename = fileDir.path().string();
         std::cout << "read '" << filename << "' record" << std::endl;
         assert(std::filesystem::exists(filename));
@@ -135,6 +140,7 @@ void Player::update()
         }
 
         //        file.close();
+        ++iFile;
     }
     std::cout << "read total of " << m_snapshots.size() << " acquistions" << std::endl;
 }
@@ -186,7 +192,10 @@ void Player::play()
             }
 
             if (!m_isPlaying) {
-                std::cout << "end record, auto loop " << iLoop << std::endl;
+                std::cout << "end record" << std::endl;
+            }
+            else {
+                std::cout << "auto loop " << iLoop << std::endl;
             }
             ++iLoop;
         }
