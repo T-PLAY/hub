@@ -6,6 +6,7 @@
 #include <MainWindowStreamView.h>
 #include <QMdiArea>
 
+#include <QSortFilterProxyModel>
 //#include <FormInputStreamViews.h>
 
 //class Thread_InputStream : public QThread
@@ -30,6 +31,7 @@
 //  private:
 //};
 
+#include <QStringListModel>
 
 namespace Ui {
 class FormSensorView;
@@ -39,7 +41,7 @@ class FormSensorView : public QWidget {
     Q_OBJECT
 
 public:
-    FormSensorView(std::string sensorName, std::string format, std::string dims, std::string size, std::string metaData, QWidget * parent = nullptr);
+    FormSensorView(std::string sensorName, std::string format, std::string dims, std::string size, std::string metaData, QStringListModel & sensorModel, QWidget * parent = nullptr);
 //    FormSensorView(const std::string sensorName, QWidget* parent = nullptr);
     ~FormSensorView();
 
@@ -71,6 +73,8 @@ public:
 private:
     Ui::FormSensorView* ui;
     const std::string mSensorName;
+    QStringListModel & mSensorModel;
+    QSortFilterProxyModel mProxySensorModel;
 //    QMdiArea & m_mdiArea;
 
 //    Thread_InputStream * m_inputStreamThread = nullptr;

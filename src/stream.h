@@ -308,9 +308,9 @@ InputStream::InputStream(IOStreamT&& ioStream)
     mIOStream.read(mSensorName);
     mIOStream.read(mFormat);
     mIOStream.read(mDims);
-    std::cout << "[InputStream] before read metaData" << std::endl;
+//    std::cout << "[InputStream] before read metaData" << std::endl;
     mIOStream.read(mMetaData);
-    std::cout << "[InputStream] after read metaData" << std::endl;
+//    std::cout << "[InputStream] after read metaData" << std::endl;
 
     mAcquisitionSize = computeAcquisitionSize(mFormat, mDims);
 }

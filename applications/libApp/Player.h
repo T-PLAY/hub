@@ -14,8 +14,8 @@ public:
     Player(const std::string & outputPostFixName = "");
     ~Player();
 
-    void load(const std::string & path);
-    void update();
+    void load(const std::string & path, int iSensor = -1);
+    void update(int iSensor);
     void unload();
 
     void play();

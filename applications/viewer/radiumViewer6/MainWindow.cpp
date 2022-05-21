@@ -106,15 +106,18 @@ MainWindow::MainWindow(QWidget* parent)
     QObject::connect(m_formWidgetLoader, &FormWidgetLoader::snapshotPathLoaded, this, &MainWindow::onSnapshotLoaderPathLoaded);
 
 #ifdef USE_FORM_SENSOR_VIEWS
-    m_formSensorViews = new FormSensorViews(this);
-    ui->dockWidget_left->setWidget(m_formSensorViews);
-    QObject::connect(m_formSensorViews, &FormSensorViews::streamingStarted, this, &MainWindow::onServerStreamStarted);
-    QObject::connect(m_formSensorViews, &FormSensorViews::streamingStopped, this, &MainWindow::onServerStreamStopped);
+    if (g_useFormSensorViews) {
+        m_formSensorViews = new FormSensorViews(this);
+        ui->dockWidget_left->setWidget(m_formSensorViews);
+        QObject::connect(m_formSensorViews, &FormSensorViews::streamingStarted, this, &MainWindow::onServerStreamStarted);
+        QObject::connect(m_formSensorViews, &FormSensorViews::streamingStopped, this, &MainWindow::onServerStreamStopped);
+    } else {
+        ui->dockWidget_left->close();
+    }
 #else
     ui->dockWidget_left->close();
 #endif
     //    ui->dockWidgetContents_left = new FormSensorViews(this);
-
 }
 
 MainWindow::~MainWindow()
@@ -149,9 +152,8 @@ void MainWindow::onRecordLoaderPathLoaded()
         std::cout << "connected " << streamName << std::endl;
 
         m_formInputStreamViews->addInputStream(streamName, RamIO(cyclicBuff));
-//    m_formInputStreamViews->connect(recordOutputStreams);
+        //    m_formInputStreamViews->connect(recordOutputStreams);
     }
-
 }
 
 void MainWindow::onSnapshotLoaderPathLoaded()
@@ -169,9 +171,8 @@ void MainWindow::onSnapshotLoaderPathLoaded()
         std::cout << "connected " << streamName << std::endl;
 
         m_formInputStreamViews->addInputStream(streamName, RamIO(cyclicBuff));
-//    m_formInputStreamViews->connect(recordOutputStreams);
+        //    m_formInputStreamViews->connect(recordOutputStreams);
     }
-
 }
 
 void MainWindow::on_action2D_triggered()
@@ -185,14 +186,14 @@ void MainWindow::on_action3D_triggered()
 }
 
 #ifdef USE_FORM_SENSOR_VIEWS
-void MainWindow::onServerStreamStarted(const std::string &streamName)
+void MainWindow::onServerStreamStarted(const std::string& streamName)
 {
     std::cout << "[MainWindow] onServerStreamStarted()" << std::endl;
 
     m_formInputStreamViews->addInputStream(streamName, ClientSocket(streamName, ""));
 }
 
-void MainWindow::onServerStreamStopped(const std::string &streamName)
+void MainWindow::onServerStreamStopped(const std::string& streamName)
 {
     std::cout << "[MainWindow] onServerStreamStopped()" << std::endl;
 
@@ -200,44 +201,42 @@ void MainWindow::onServerStreamStopped(const std::string &streamName)
 }
 #endif
 
-
 void MainWindow::onInitPose()
 {
+    std::cout << "[MainWindow] onInitPose" << std::endl;
     m_comp->initPose();
-
 }
 
 void MainWindow::onInitScan()
 {
+    std::cout << "[MainWindow] onInitScan" << std::endl;
     m_comp->initScan();
-
 }
 
 void MainWindow::onUpdatePose()
 {
-//    std::cout << "[MainWindow] onUpdatePose()" << std::endl;
+    //    std::cout << "[MainWindow] onUpdatePose()" << std::endl;
     m_comp->updatePose(m_formInputStreamViews->getPoseAcquisition());
-
 }
 
 void MainWindow::onUpdateScan()
 {
-//    std::cout << "[MainWindow] onUpdateScan()" << std::endl;
+    //    std::cout << "[MainWindow] onUpdateScan()" << std::endl;
     m_comp->updateScan(m_formInputStreamViews->getScanAcquisition());
 }
 
-//void MainWindow::on_comboBox_scan_currentTextChanged(const QString& sourceType)
+// void MainWindow::on_comboBox_scan_currentTextChanged(const QString& sourceType)
 //{
-//}
+// }
 
-//void MainWindow::on_comboBox_pose_currentTextChanged(const QString& sourceType)
+// void MainWindow::on_comboBox_pose_currentTextChanged(const QString& sourceType)
 //{
-//}
+// }
 
-//void MainWindow::onNewScanAcquisition()
+// void MainWindow::onNewScanAcquisition()
 //{
-//}
+// }
 
-//void MainWindow::onNewPoseAcquisition()
+// void MainWindow::onNewPoseAcquisition()
 //{
-//}
+// }

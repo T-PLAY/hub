@@ -13,6 +13,8 @@
 #include <map>
 #include <stream.h>
 
+#include <QStringListModel>
+
 //#include <DialogServerConnect.h>
 
 class FormSensorViews;
@@ -90,6 +92,7 @@ private:
     //    std::map<std::string, SensorView*> m_sensorViews;
     //    std::map<std::string, MainWindowStreamView*> mStreamViews;
     std::map<std::string, FormSensorView*> m_sensorViews;
+    QStringListModel m_sensorModel;
 
 //    QBoxLayout& m_vBoxLayout;
 //    QMdiArea * m_mdiArea = nullptr;

@@ -63,6 +63,20 @@
     </widget>
    </item>
    <item>
+    <widget class="QLabel" name="label_scanFrequency">
+     <property name="text">
+      <string>0 Hz</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="Line" name="line">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QLabel" name="label_pose">
      <property name="text">
       <string>Pose</string>
@@ -76,6 +90,13 @@
        <width>75</width>
        <height>0</height>
       </size>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_poseFrequency">
+     <property name="text">
+      <string>0 Hz</string>
      </property>
     </widget>
    </item>
