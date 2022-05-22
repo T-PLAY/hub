@@ -40,6 +40,7 @@ FormInputStreamViews::FormInputStreamViews(QWidget* parent)
 
     //    m_counterFpsThreads[1].start();
     //    m_counterFpsThreads[0].start();
+    setEnabled(false);
 }
 
 FormInputStreamViews::~FormInputStreamViews()
