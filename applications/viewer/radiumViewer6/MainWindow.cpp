@@ -112,6 +112,7 @@ MainWindow::MainWindow(QWidget* parent)
         ui->dockWidget_left->setWidget(m_formSensorViews);
         QObject::connect(m_formSensorViews, &FormSensorViews::streamingStarted, this, &MainWindow::onServerStreamStarted);
         QObject::connect(m_formSensorViews, &FormSensorViews::streamingStopped, this, &MainWindow::onServerStreamStopped);
+//        m_formSensorViews->startStreaming();
     } else {
         ui->dockWidget_left->close();
     }
@@ -187,19 +188,26 @@ void MainWindow::on_action3D_triggered()
 }
 
 #ifdef USE_FORM_SENSOR_VIEWS
-void MainWindow::onServerStreamStarted(const std::string& streamName)
+void MainWindow::onServerStreamStarted(const std::string& sensorName, const std::string & syncSensorName)
 {
     std::cout << "[MainWindow] onServerStreamStarted()" << std::endl;
 
-    m_formInputStreamViews->addInputStream(streamName, ClientSocket(streamName, ""));
+//    ClientSocket * socket = nullptr;
+//    if (sensorName == g_probePoseSensorName) {
+//        socket = new ClientSocket(sensorName, syncSensorName);
+//    }
+
+//    m_formInputStreamViews->addInputStream(sensorName, std::move(*socket));
+
+    m_formInputStreamViews->addInputStream(sensorName, ClientSocket(sensorName, syncSensorName));
 }
 
-void MainWindow::onServerStreamStopped(const std::string& streamName)
+void MainWindow::onServerStreamStopped(const std::string& sensorName)
 {
     std::cout << "[MainWindow] onServerStreamStopped()" << std::endl;
 
-    m_formInputStreamViews->deleteInputStream(streamName);
-//        m_formInputStreamViews->onKillInputStream(streamName);
+    m_formInputStreamViews->deleteInputStream(sensorName);
+//        m_formInputStreamViews->onKillInputStream(sensorName);
 }
 
 #endif

@@ -204,5 +204,8 @@ void FormInputStreamView::onStreamingStopped(const std::string& sourceType)
 
         if (stringList.empty())
             emit init(m_sensorName);
+
+        if (m_sourceType2inputStreamThreads.empty())
+            emit isEmpty(m_sensorName);
     }
 }

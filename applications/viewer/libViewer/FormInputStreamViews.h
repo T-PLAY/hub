@@ -70,6 +70,8 @@ public slots:
 private slots:
     //    void onKillInputStreamPrivate(const std::string& streamName, int iSensor);
 
+        void onDeleteStreamView(const std::string & sensorName);
+
 //    void onNewAcquisition(const std::string& streamName, int iSensor);
 //    void onNewAcquisition(const std::string& sensorName, const std::string & sourceType);
 
@@ -112,6 +114,8 @@ void FormInputStreamViews::addInputStream(const std::string streamName, IOStream
 // template <typename ...Args>
 // void FormInputStreamViews::addInputStream(const std::string streamName, Args&&... args)
 {
+    this->setEnabled(true);
+
     assert(m_streamViewsLayout != nullptr);
 
     std::cout << "[FormInputStreamViews] addInputStream('" << streamName << "')" << std::endl;
@@ -142,6 +146,7 @@ void FormInputStreamViews::addInputStream(const std::string streamName, IOStream
         QObject::connect(inputStreamView, &FormInputStreamView::newAcquisition, this, &FormInputStreamViews::newAcquisition);
         QObject::connect(inputStreamView, &FormInputStreamView::newAcquisition, this, &FormInputStreamViews::onNewAcquisition);
         QObject::connect(inputStreamView, &FormInputStreamView::init, this, &FormInputStreamViews::init);
+        QObject::connect(inputStreamView, &FormInputStreamView::isEmpty, this, &FormInputStreamViews::onDeleteStreamView);
         m_sensorName2streamView[sensorName] = inputStreamView;
 
         m_streamViewsLayout->addWidget(inputStreamView);

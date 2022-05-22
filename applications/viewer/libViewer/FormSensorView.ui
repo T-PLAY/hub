@@ -124,6 +124,9 @@
            </property>
            <item>
             <widget class="QRadioButton" name="radioButtonOnOff">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
              <property name="sizePolicy">
               <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
                <horstretch>0</horstretch>
@@ -163,6 +166,9 @@
         </item>
         <item>
          <widget class="QComboBox" name="comboBox_syncSensor">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
           <property name="sizePolicy">
            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
             <horstretch>0</horstretch>

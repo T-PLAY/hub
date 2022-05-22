@@ -57,12 +57,13 @@ public:
     explicit FormSensorViews(QWidget * parent = nullptr);
     ~FormSensorViews();
 
+//    void startStreaming();
 
 signals:
     //    void serverConnected();
     //    void serverDisconnected();
-    void streamingStarted(std::string sensorName);
-    void streamingStopped(std::string sensorName);
+    void streamingStarted(const std::string & sensorName, const std::string & syncSensorName);
+    void streamingStopped(const std::string & sensorName);
     //    void startStreaming();
     //    void stopStreaming();
     //    void sensorAdded(const std::string & sensorName);
@@ -91,6 +92,7 @@ private:
     //    Thread_InputStream mThread;
     //    std::map<std::string, SensorView*> m_sensorViews;
     //    std::map<std::string, MainWindowStreamView*> mStreamViews;
+
     std::map<std::string, FormSensorView*> m_sensorViews;
     QStringListModel m_sensorModel;
 
