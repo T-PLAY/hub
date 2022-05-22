@@ -26,6 +26,9 @@ FormWidgetLoader::FormWidgetLoader(QWidget* parent)
     {
         // tree view
         QString recordPath = PROJECT_DIR "data/records/";
+        if(! std::filesystem::exists(recordPath.toStdString())) {
+            std::filesystem::create_directory(recordPath.toStdString());
+        }
         assert(std::filesystem::exists(recordPath.toStdString()));
         m_recordFileModel = new QFileSystemModel(this);
         m_recordFileModel->setReadOnly(true);
@@ -90,6 +93,9 @@ FormWidgetLoader::FormWidgetLoader(QWidget* parent)
     {
         // tree view
         QString snapshotPath = PROJECT_DIR "data/snapshots/";
+        if (! std::filesystem::exists(snapshotPath.toStdString())) {
+            std::filesystem::create_directory(snapshotPath.toStdString());
+        }
         assert(std::filesystem::exists(snapshotPath.toStdString()));
         m_snapshotFileModel = new QFileSystemModel(this);
         m_snapshotFileModel->setReadOnly(true);

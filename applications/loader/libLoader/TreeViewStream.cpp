@@ -7,6 +7,9 @@
 #include <QFileSystemModel>
 #include <QInputDialog>
 #include <filesystem>
+#include <QDir>
+
+//#include <WinBase.h>
 
 TreeViewStream::TreeViewStream( QWidget* parent ) : QTreeView( parent ) {}
 
@@ -40,8 +43,16 @@ void TreeViewStream::keyPressEvent( QKeyEvent* event ) {
         if ( newName.empty() ) return;
 
         //    m_recordFileModel->fileRenamed(mPath, mFilename, newName);
+    std::string newFilepath = mPath + "/" + newName;
+//    std::string newFilepath = mPath + "\\" + newName;
 
-        std::filesystem::rename( filepath, mPath + "/" + newName );
+        std::filesystem::rename( filepath, newFilepath );
+//    MoveFile(filepath.c_str(), newFilepath.c_str() );
+//    std::rename(filepath.c_str(), newFilepath.c_str());
+//        QDir dir(mPath.c_str());
+//        dir.rename(mFilename.c_str(), newName.c_str());
+//        QDir::rename(filepath.c_str(), (mPath + "/" + newName).c_str());
+
     } break;
 
     case Qt::Key_Delete: {

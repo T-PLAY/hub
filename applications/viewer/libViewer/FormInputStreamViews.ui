@@ -63,6 +63,9 @@
    </item>
    <item>
     <widget class="QToolButton" name="toolButton_snapshot">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
      <property name="text">
       <string>take snapshot</string>
      </property>
