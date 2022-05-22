@@ -50,6 +50,9 @@
    </item>
    <item>
     <widget class="QToolButton" name="toolButton_record">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
      <property name="text">
       <string>startRecording</string>
      </property>

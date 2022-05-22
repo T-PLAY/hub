@@ -6,7 +6,7 @@
 #include <cmath>
 #include <iostream>
 #include <stream.h>
-
+#include <constants.h>
 
 // Thread_InputStream::Thread_InputStream( std::string sensorName, QObject* parent ) :
 //     QThread( parent ), mInputStream( ClientSocket( sensorName, "" ) ) {
@@ -74,19 +74,20 @@ FormSensorView::FormSensorView(std::string sensorName,
     }
 
     mProxySensorModel.setSourceModel(&mSensorModel);
-//    mProxySensorModel.setFilterFixedString(sensorName.c_str());
-//    mProxySensorModel.setFilterWildcard(sensorName.c_str());
-//    mProxySensorModel.setFilterRegularExpression(QRegularExpression(("^[" + sensorName + "]").c_str()));
-//    mProxySensorModel.setFilterRegularExpression(QRegularExpression(QString("^(?!\b") + sensorName.c_str() + "\b)"));
+    //    mProxySensorModel.setFilterFixedString(sensorName.c_str());
+    //    mProxySensorModel.setFilterWildcard(sensorName.c_str());
+    //    mProxySensorModel.setFilterRegularExpression(QRegularExpression(("^[" + sensorName + "]").c_str()));
+    //    mProxySensorModel.setFilterRegularExpression(QRegularExpression(QString("^(?!\b") + sensorName.c_str() + "\b)"));
     QString sensorNameMod = QString(sensorName.c_str()).replace("(", "\\(").replace(")", "\\)");
-//    mProxySensorModel.setFilterRegularExpression(QRegularExpression(QString("^(?!Polhemus Patriot \\(probe\\))")));
+    //    mProxySensorModel.setFilterRegularExpression(QRegularExpression(QString("^(?!Polhemus Patriot \\(probe\\))")));
     mProxySensorModel.setFilterRegularExpression(QRegularExpression(QString("^(?!" + sensorNameMod + ")")));
     ui->comboBox_syncSensor->setModel(&mProxySensorModel);
-//    ui->comboBox_syncSensor;
+    //    ui->comboBox_syncSensor;
 
     //    ui->label_frequency->setText( "0 Hz" );
 
     //    on_radioButtonOnOff_clicked(true);
+//    ui->radioButtonOnOff->click();
 }
 
 FormSensorView::~FormSensorView()
@@ -110,13 +111,30 @@ void FormSensorView::on_radioButtonOnOff_clicked(bool checked)
         ui->frameButtonOnOff->setStyleSheet("border-radius: 10px; background-color: lightgreen");
         //        emit addViewStreamSignal(mSensorName);
         //        on_startStreamingPrivate();
-        emit streamingStarted(mSensorName);
+
+        std::string syncSensorName = ui->comboBox_syncSensor->currentText().toStdString();
+        if (syncSensorName == "none")
+            syncSensorName = "";
+
+//        if (syncSensorName == "") {
+//            if (mSensorName == g_probePoseSensorName) {
+////                if (mSensorModel.stringList().contains(g_probeScanSensorName.c_str())) {
+//                    syncSensorName = g_probeScanSensorName;
+////                }
+//            }
+//        }
+        ui->comboBox_syncSensor->setCurrentText(syncSensorName.c_str());
+
+        emit streamingStarted(mSensorName, syncSensorName);
+        ui->comboBox_syncSensor->setEnabled(false);
+
     } else {
         ui->radioButtonOnOff->setText("off");
         ui->frameButtonOnOff->setStyleSheet("border-radius: 10px; background-color: red");
         //        emit delViewStreamSignal(mSensorName);
         //        on_stopStreaming();
         emit streamingStopped(mSensorName);
+        ui->comboBox_syncSensor->setEnabled(true);
     }
 }
 
@@ -132,7 +150,8 @@ void FormSensorView::on_startStreaming()
     //    on_radioButtonOnOff_clicked(true);
     //    ui->radioButtonOnOff->clicked(true);
     //    ui->radioButtonOnOff->setChecked(true);
-    ui->radioButtonOnOff->click();
+
+        ui->radioButtonOnOff->click();
 }
 
 // void FormSensorView::on_startStreamingPrivate() {
@@ -262,3 +281,12 @@ void FormSensorView::on_startStreaming()
 //     assert(m_inputStreamThread != nullptr);
 //     return m_inputStreamThread;
 // }
+
+//void FormSensorView::on_comboBox_syncSensor_currentTextChanged(const QString& syncSensorName)
+//{
+//    std::cout << "[FormSensorView] FormSensorView::on_comboBox_syncSensor_currentTextChanged " << syncSensorName.toStdString() << std::endl;
+//    if (ui->radioButtonOnOff->isEnabled()) {
+//        emit streamingStopped(mSensorName);
+//        emit streamingStarted(mSensorName, (syncSensorName == "none") ? "" : syncSensorName.toStdString());
+//    }
+//}

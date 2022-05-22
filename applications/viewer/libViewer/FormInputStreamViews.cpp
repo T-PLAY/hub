@@ -72,16 +72,18 @@ void FormInputStreamViews::deleteInputStream(const std::string& streamName)
     }
     assert(found);
 
-    assert(m_sensorName2streamView.find(sensorName) != m_sensorName2streamView.end());
-    FormInputStreamView* inputStreamView = m_sensorName2streamView.at(sensorName);
+    //    assert(m_sensorName2streamView.find(sensorName) != m_sensorName2streamView.end());
+    if (m_sensorName2streamView.find(sensorName) != m_sensorName2streamView.end()) {
+        FormInputStreamView* inputStreamView = m_sensorName2streamView.at(sensorName);
 
-    const auto sourceType = (sensorName.size() == streamName.size())
-        ? ("physical")
-        : (streamName.substr(sensorName.size() + 2,
-            streamName.size() - 1 - sensorName.size() - 2));
-    assert(sourceType == "" || sourceType == "physical" || sourceType == "record");
+        const auto sourceType = (sensorName.size() == streamName.size())
+            ? ("physical")
+            : (streamName.substr(sensorName.size() + 2,
+                streamName.size() - 1 - sensorName.size() - 2));
+        assert(sourceType == "" || sourceType == "physical" || sourceType == "record");
 
-    inputStreamView->remove(sourceType);
+        inputStreamView->remove(sourceType);
+    }
 }
 
 const Stream::Acquisition& FormInputStreamViews::getAcquisition(const std::string& sensorName, const std::string& sourceType) const
@@ -95,14 +97,26 @@ void FormInputStreamViews::onNewAcquisition(const std::string& sensorName, const
     if (m_recorder.isRecording()) {
         //    m_recorder.savePose(getPoseAcquisition());
         const auto& inputStreamThread = m_sensorName2streamView.at(sensorName)->getIputStreamThread(sourceType);
-        m_recorder.add(Snapshot(*inputStreamThread.mInputStream, inputStreamThread.mAcq));
-        //            Snapshot(sensorName,
-        //                inputStreamThread.mInputStream.get()->getFormat(),
-        //                inputStreamThread.mInputStream.get()->getDims(),
-        //                inputStreamThread.mAcq));
+        //        m_recorder.add(Snapshot(*inputStreamThread.mInputStream, inputStreamThread.mAcq));
+        m_recorder.add(
+            Snapshot(sensorName,
+                inputStreamThread.mInputStream->getFormat(),
+                inputStreamThread.mInputStream->getDims(),
+                inputStreamThread.mAcq));
 
         //            m_recorder.save(inputStreamThread.mInputStream);
     }
+}
+
+void FormInputStreamViews::onDeleteStreamView(const std::string &sensorName)
+{
+    auto * formInputStreamView = m_sensorName2streamView.at(sensorName);
+    m_sensorName2streamView.erase(sensorName);
+    m_streamViewsLayout->removeWidget(formInputStreamView);
+    delete formInputStreamView;
+
+    if (m_sensorName2streamView.empty())
+        setEnabled(false);
 }
 
 // void FormInputStreamViews::onKillInputStream(const std::string& streamName)
@@ -388,6 +402,9 @@ void FormInputStreamViews::on_toolButton_record_clicked()
         //        if (inputStreamParameters.empty()) {
         //            return;
         //        }
+        if (m_sensorName2streamView.empty())
+            return;
+
         m_recorder.record();
         ui->toolButton_record->setText("stopRecording");
         //        QObject::connect( this,

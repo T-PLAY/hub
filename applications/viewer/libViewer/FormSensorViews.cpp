@@ -174,6 +174,13 @@ FormSensorViews::~FormSensorViews()
     std::cout << "[FormSensorViews] ~FormSensorViews() end" << std::endl;
 }
 
+//void FormSensorViews::startStreaming()
+//{
+//    for (auto & pair : m_sensorViews) {
+//        pair.second->on_startStreaming();
+//    }
+//}
+
 void FormSensorViews::onServerConnect()
 {
     //    m_mainWindow.setEnabled(true);
@@ -191,6 +198,11 @@ void FormSensorViews::onServerDisconnect()
     m_serverConnected = false;
     ui->lineEdit_ip->setEnabled(true);
     ui->spinBox_port->setEnabled(true);
+
+//    for (auto& pair : m_sensorViews) {
+//        auto* sensorView = pair.second;
+//        delete sensorView;
+//    }
 
     //    m_dialog = new DialogServerConnect(&m_mainWindow);
 }
@@ -228,6 +240,7 @@ void FormSensorViews::addSensor(std::string sensorName,
     QObject::connect(
         sensorView, &FormSensorView::streamingStopped, this, &FormSensorViews::streamingStopped);
 
+//    std::this_thread::sleep_for(std::chrono::milliseconds(100));
     sensorView->on_startStreaming();
     //    sensorView->on_radioButtonOnOff_clicked(true);
 }

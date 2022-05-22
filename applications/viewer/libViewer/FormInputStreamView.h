@@ -97,6 +97,8 @@ signals:
     void newAcquisition(const std::string& sensorName, const std::string& sourceType);
     void init(const std::string& sensorName);
 
+    void isEmpty(const std::string & sensorName);
+
 private:
     Ui::FormInputStreamView* ui;
 

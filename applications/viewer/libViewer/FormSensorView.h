@@ -51,8 +51,8 @@ signals:
 //    void addViewStreamSignal(std::string streamerSensorName);
 //    void delViewStreamSignal(std::string streamerSensorName);
 //    void newAcquisition();
-    void streamingStarted(std::string sensorName);
-    void streamingStopped(std::string sensorName);
+    void streamingStarted(const std::string & sensorName, const std::string & syncSensorName);
+    void streamingStopped(const std::string & sensorName);
 
 public slots:
     void on_startStreaming();
@@ -64,6 +64,8 @@ private slots:
 //    void on_closeStreamView();
 
 //    void on_newAcquisition();
+
+//    void on_comboBox_syncSensor_currentTextChanged(const QString &arg1);
 
 public:
 //    const InputStream & getInputStream() const;
