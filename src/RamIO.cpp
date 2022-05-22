@@ -68,12 +68,15 @@ void CyclicBuff::write(const unsigned char* data, size_t len)
     size_t uploadSize = 0;
     do {
         // size of empty space in buff to write data
-        auto byteWrote = m_readHead - m_writeHead;
-        if (byteWrote <= 0)
-            byteWrote += m_buffLen;
+        int spaceLeft = m_readHead - m_writeHead;
+        if (spaceLeft <= 0)
+            spaceLeft += m_buffLen;
+//        std::cout << "[CyclicBuff] buff size = " << spaceLeft << std::endl;
+
+        size_t byteWrote = spaceLeft;
         if (len > byteWrote) {
+            throw CyclicBuff::exception("Buffer overflow, no space left");
             assert(false);
-            throw CyclicBuff::exception("Buffer overflow");
         }
         byteWrote = std::min(byteWrote, len - uploadSize); // size of not copied user data
         byteWrote = std::min(byteWrote, m_buffLen - m_writeHead); // distance to buffer end
@@ -88,6 +91,8 @@ void CyclicBuff::write(const unsigned char* data, size_t len)
 
         uploadSize += byteWrote;
     } while (len != uploadSize);
+
+//    std::cout << "[CyclicBuff] write " << len << " bytes" << std::endl;
 }
 
 void CyclicBuff::read(unsigned char* data, size_t len)

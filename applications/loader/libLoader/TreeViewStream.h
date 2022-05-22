@@ -3,7 +3,7 @@
 
 #include <QTreeView>
 #include <QWidget>
-#include <Loader.h>
+//#include <Loader.h>
 
 class TreeViewStream : public QTreeView
 {
@@ -11,14 +11,14 @@ class TreeViewStream : public QTreeView
 public:
     TreeViewStream(QWidget * parent = nullptr);
 
-    void setLoader(Loader *loader);
+//    void setLoader(Loader *loader);
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;
 
 private:
 
-    Loader * m_loader = nullptr;
+//    Loader * m_loader = nullptr;
 //    void onStreamRename();
 };
 
