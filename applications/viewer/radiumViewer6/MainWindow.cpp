@@ -95,10 +95,11 @@ MainWindow::MainWindow(QWidget* parent)
 
     m_formInputStreamViews = new FormInputStreamViews(this);
     ui->dockWidget_top->setWidget(m_formInputStreamViews);
-    QObject::connect(m_formInputStreamViews, &FormInputStreamViews::initPose, this, &MainWindow::onInitPose);
-    QObject::connect(m_formInputStreamViews, &FormInputStreamViews::initScan, this, &MainWindow::onInitScan);
-    QObject::connect(m_formInputStreamViews, &FormInputStreamViews::newAcquisitionPose, this, &MainWindow::onUpdatePose);
-    QObject::connect(m_formInputStreamViews, &FormInputStreamViews::newAcquisitionScan, this, &MainWindow::onUpdateScan);
+    //    QObject::connect(m_formInputStreamViews, &FormInputStreamViews::initPose, this, &MainWindow::onInitPose);
+    //    QObject::connect(m_formInputStreamViews, &FormInputStreamViews::initScan, this, &MainWindow::onInitScan);
+    QObject::connect(m_formInputStreamViews, &FormInputStreamViews::newAcquisition, this, &MainWindow::onNewAcquisition);
+    QObject::connect(m_formInputStreamViews, &FormInputStreamViews::init, this, &MainWindow::onInit);
+    //    QObject::connect(m_formInputStreamViews, &FormInputStreamViews::newAcquisitionScan, this, &MainWindow::onUpdateScan);
 
     m_formWidgetLoader = new FormWidgetLoader(this);
     ui->dockWidget_bottom->setWidget(m_formWidgetLoader);
@@ -197,33 +198,58 @@ void MainWindow::onServerStreamStopped(const std::string& streamName)
 {
     std::cout << "[MainWindow] onServerStreamStopped()" << std::endl;
 
-    m_formInputStreamViews->onKillInputStream(streamName);
+    m_formInputStreamViews->deleteInputStream(streamName);
+//        m_formInputStreamViews->onKillInputStream(streamName);
 }
+
 #endif
 
-void MainWindow::onInitPose()
+void MainWindow::onInit(const std::string& sensorName)
 {
-    std::cout << "[MainWindow] onInitPose" << std::endl;
-    m_comp->initPose();
+    if (sensorName == g_probeScanSensorName) {
+        m_comp->initScan();
+
+    } else if (sensorName == g_probePoseSensorName) {
+        m_comp->initPose();
+    }
 }
 
-void MainWindow::onInitScan()
+//void MainWindow::onInitPose()
+//{
+//    std::cout << "[MainWindow] onInitPose" << std::endl;
+//    m_comp->initPose();
+//}
+
+//void MainWindow::onInitScan()
+//{
+//    std::cout << "[MainWindow] onInitScan" << std::endl;
+//    m_comp->initScan();
+//}
+
+void MainWindow::onNewAcquisition(const std::string& sensorName, const std::string& sourceType)
 {
-    std::cout << "[MainWindow] onInitScan" << std::endl;
-    m_comp->initScan();
+    //    std::cout << "[MainWindow] onNewAcquisition(" << sensorName << ", " << sourceType << ")" << std::endl;
+    const auto& acq = m_formInputStreamViews->getAcquisition(sensorName, sourceType);
+    if (sensorName == g_probeScanSensorName) {
+        m_comp->updateScan(acq);
+    } else if (sensorName == g_probePoseSensorName) {
+        m_comp->updatePose(acq);
+    } else {
+        assert(false);
+    }
 }
 
-void MainWindow::onUpdatePose()
-{
-    //    std::cout << "[MainWindow] onUpdatePose()" << std::endl;
-    m_comp->updatePose(m_formInputStreamViews->getPoseAcquisition());
-}
+// void MainWindow::onUpdatePose()
+//{
+//     //    std::cout << "[MainWindow] onUpdatePose()" << std::endl;
+////    m_comp->updatePose(m_formInputStreamViews->getPoseAcquisition());
+//}
 
-void MainWindow::onUpdateScan()
-{
-    //    std::cout << "[MainWindow] onUpdateScan()" << std::endl;
-    m_comp->updateScan(m_formInputStreamViews->getScanAcquisition());
-}
+// void MainWindow::onUpdateScan()
+//{
+//     //    std::cout << "[MainWindow] onUpdateScan()" << std::endl;
+////    m_comp->updateScan(m_formInputStreamViews->getScanAcquisition());
+//}
 
 // void MainWindow::on_comboBox_scan_currentTextChanged(const QString& sourceType)
 //{

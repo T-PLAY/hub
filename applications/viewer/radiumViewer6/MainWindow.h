@@ -56,11 +56,14 @@ private slots:
 
     //    void on_newScanAcquisition();
     //    void on_newPoseAcquisition();
-    void onInitPose();
-    void onInitScan();
+//    void onInitPose();
+//    void onInitScan();
+    void onInit(const std::string& sensorName);
     //    void onNewAcquisition()
-    void onUpdatePose();
-    void onUpdateScan();
+//    void onUpdatePose();
+//    void onUpdateScan();
+
+    void onNewAcquisition(const std::string & sensorName, const std::string & sourceType);
 
     //    void on_toolButton_record_toggled(bool checked);
     //    void on_toolButton_record_clicked();

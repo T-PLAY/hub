@@ -46,66 +46,7 @@
     </spacer>
    </item>
    <item>
-    <widget class="QLabel" name="label_scan">
-     <property name="text">
-      <string>Scan</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QComboBox" name="comboBox_scan">
-     <property name="minimumSize">
-      <size>
-       <width>75</width>
-       <height>0</height>
-      </size>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QLabel" name="label_scanFrequency">
-     <property name="text">
-      <string>0 Hz</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="Line" name="line">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QLabel" name="label_pose">
-     <property name="text">
-      <string>Pose</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QComboBox" name="comboBox_pose">
-     <property name="minimumSize">
-      <size>
-       <width>75</width>
-       <height>0</height>
-      </size>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QLabel" name="label_poseFrequency">
-     <property name="text">
-      <string>0 Hz</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="Line" name="line_2">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-    </widget>
+    <layout class="QHBoxLayout" name="horizontalLayout_streamView"/>
    </item>
    <item>
     <widget class="QToolButton" name="toolButton_record">

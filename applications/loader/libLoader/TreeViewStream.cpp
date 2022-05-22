@@ -11,7 +11,7 @@
 TreeViewStream::TreeViewStream( QWidget* parent ) : QTreeView( parent ) {}
 
 void TreeViewStream::keyPressEvent( QKeyEvent* event ) {
-    assert( m_loader != nullptr );
+//    assert( m_loader != nullptr );
 
     //    QTreeView::keyPressEvent(event);
     const auto& index          = this->currentIndex();
@@ -57,9 +57,10 @@ void TreeViewStream::keyPressEvent( QKeyEvent* event ) {
     case Qt::Key_Escape:
         std::cout << "Escape" << std::endl;
         //        const auto& selectionModel = ui->treeView_snapshot->selectionModel();
-        selectionModel->select( index, QItemSelectionModel::Deselect );
-        assert( m_loader->isLoaded() );
-        m_loader->unload();
+//        selectionModel->select( index, QItemSelectionModel::Deselect );
+        selectionModel->clearSelection();
+//        assert( m_loader->isLoaded() );
+//        m_loader->unload();
         //        m_snapshotLoader.unload();
         break;
 
@@ -68,9 +69,9 @@ void TreeViewStream::keyPressEvent( QKeyEvent* event ) {
     }
 }
 
-void TreeViewStream::setLoader( Loader* loader ) {
-    m_loader = loader;
-}
+//void TreeViewStream::setLoader( Loader* loader ) {
+//    m_loader = loader;
+//}
 
 // void TreeViewStream::onStreamRename()
 //{
