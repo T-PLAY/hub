@@ -107,15 +107,11 @@ MainWindow::MainWindow(QWidget* parent)
     QObject::connect(m_formWidgetLoader, &FormWidgetLoader::snapshotPathLoaded, this, &MainWindow::onSnapshotLoaderPathLoaded);
 
 #ifdef USE_FORM_SENSOR_VIEWS
-    if (g_useFormSensorViews) {
         m_formSensorViews = new FormSensorViews(this);
         ui->dockWidget_left->setWidget(m_formSensorViews);
         QObject::connect(m_formSensorViews, &FormSensorViews::streamingStarted, this, &MainWindow::onServerStreamStarted);
         QObject::connect(m_formSensorViews, &FormSensorViews::streamingStopped, this, &MainWindow::onServerStreamStopped);
 //        m_formSensorViews->startStreaming();
-    } else {
-        ui->dockWidget_left->close();
-    }
 #else
     ui->dockWidget_left->close();
 #endif
