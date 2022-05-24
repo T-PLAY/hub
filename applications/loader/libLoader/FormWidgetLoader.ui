@@ -65,7 +65,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QListView" name="listView_recordFrames">
+        <widget class="ListViewStream" name="listView_recordFrames">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>0</horstretch>
@@ -128,6 +128,11 @@
    <class>TreeViewStream</class>
    <extends>QTreeView</extends>
    <header location="global">TreeViewStream.h</header>
+  </customwidget>
+  <customwidget>
+   <class>ListViewStream</class>
+   <extends>QListView</extends>
+   <header location="global">ListViewStream.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

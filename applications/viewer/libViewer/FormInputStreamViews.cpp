@@ -87,11 +87,17 @@ void FormInputStreamViews::deleteInputStream(const std::string& streamName)
     }
 }
 
-const Stream::Acquisition& FormInputStreamViews::getAcquisition(const std::string& sensorName, const std::string& sourceType) const
+Acquisitions & FormInputStreamViews::getAcquisitions(const std::string &sensorName, const std::string &sourceType)
 {
     assert(m_sensorName2streamView.find(sensorName) != m_sensorName2streamView.end());
-    return m_sensorName2streamView.at(sensorName)->getAcquisition(sourceType);
+    return m_sensorName2streamView.at(sensorName)->getAcquisitions(sourceType);
 }
+
+//const Stream::Acquisition& FormInputStreamViews::getAcquisition(const std::string& sensorName, const std::string& sourceType) const
+//{
+//    assert(m_sensorName2streamView.find(sensorName) != m_sensorName2streamView.end());
+//    return m_sensorName2streamView.at(sensorName)->getAcquisition(sourceType);
+//}
 
 void FormInputStreamViews::onNewAcquisition(const std::string& sensorName, const std::string& sourceType)
 {
@@ -103,7 +109,7 @@ void FormInputStreamViews::onNewAcquisition(const std::string& sensorName, const
             Snapshot(sensorName,
                 inputStreamThread.mInputStream->getFormat(),
                 inputStreamThread.mInputStream->getDims(),
-                inputStreamThread.mAcq));
+                inputStreamThread.mAcqs.back()));
 
         //            m_recorder.save(inputStreamThread.mInputStream);
     }

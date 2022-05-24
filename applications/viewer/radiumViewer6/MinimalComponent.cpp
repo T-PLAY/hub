@@ -41,6 +41,8 @@
 const char* vertexShaderFile   = PROJECT_DIR "applications/viewer/radiumViewer/vertexShader.glsl";
 const char* fragmentShaderFile = PROJECT_DIR "applications/viewer/radiumViewer/fragmentShader.glsl";
 
+constexpr int g_nProbes = 10;
+
 using namespace Ra;
 using namespace Ra::Core;
 using namespace Ra::Core::Utils;
@@ -55,11 +57,12 @@ using namespace Ra::Engine::Scene;
 //}
 
 struct Probe {
-    Ra::Engine::Rendering::RenderObject* m_refCube         = nullptr;
-    Ra::Engine::Rendering::RenderObject* m_scan          = nullptr;
+    Ra::Engine::Rendering::RenderObject* m_refCube    = nullptr;
+    Ra::Engine::Rendering::RenderObject* m_scan       = nullptr;
     Ra::Engine::Rendering::RenderObject* m_refAxis[3] = { nullptr, nullptr, nullptr };
-    Ra::Engine::Rendering::RenderObject* m_scanLine      = nullptr;
-    Ra::Engine::Data::Texture* m_textureScan             = nullptr;
+    Ra::Engine::Rendering::RenderObject* m_scanLine   = nullptr;
+    Ra::Engine::Data::Texture* m_textureScan          = nullptr;
+    std::string m_textureName;
 };
 
 static std::vector<Probe> g_probes;
@@ -67,6 +70,11 @@ static std::shared_ptr<BlinnPhongMaterial> g_blinnPhongMaterial;
 static std::shared_ptr<PlainMaterial> g_plainMaterial;
 static std::shared_ptr<LambertianMaterial> g_lambertianMaterial;
 static std::vector<std::shared_ptr<Engine::Data::Mesh>> m_meshAxis;
+
+static int g_iProbePose               = 0;
+static long long g_timestampProbePose = 0;
+static int g_iProbeScan               = 0;
+static long long g_timestampProbeScan = 0;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -176,13 +184,19 @@ void MinimalComponent::initialize() {
         addRenderObject( renderObject1 );
     }
 
-    addProbe();
+    //    addProbe();
+    g_probes.reserve( g_nProbes );
+    for ( int i = 0; i < g_nProbes; ++i ) {
+        addProbe();
+    }
 }
 
 constexpr double g_probeRefSize = 1.0;
 
 void MinimalComponent::addProbe() {
     Probe probe;
+
+    const int iProbe = g_probes.size();
 
     // probe ref cube
     {
@@ -197,7 +211,7 @@ void MinimalComponent::addProbe() {
         probe.m_refCube = RenderObject::createRenderObject(
             "probeCube", this, RenderObjectType::Geometry, cubeMesh, {} );
         probe.m_refCube->setLocalTransform(
-            Transform { Translation( Vector3( 0_ra, 20_ra, 0_ra ) ) } );
+            Transform { Translation( Vector3( 0_ra, 20_ra, -iProbe * 5 ) ) } );
         probe.m_refCube->setMaterial( g_lambertianMaterial );
         addRenderObject( probe.m_refCube );
     }
@@ -205,7 +219,7 @@ void MinimalComponent::addProbe() {
     // probe ref axis
     {
         Ra::Core::Transform TLocal = Transform::Identity();
-        TLocal.translate( Vector3( 0.0, 20.0, 0.0 ) );
+        TLocal.translate( Vector3( 0_ra, 20.0, -iProbe * 5 ) );
         TLocal.scale( 5.0 );
         for ( uint i = 0; i < 3; ++i ) {
             probe.m_refAxis[i] =
@@ -253,7 +267,7 @@ void MinimalComponent::addProbe() {
         // fill with some function
         for ( int i = 0; i < 192; ++i ) {
             for ( int j = 0; j < 512; j++ ) {
-                if ( std::abs( i - 20 ) < 3 || std::abs( j - 20 ) < 3 ) {
+                if ( std::abs( i - 20 - iProbe * 5 ) < 3 || std::abs( j - 20 - iProbe * 5 ) < 3 ) {
                     data[( i * 512 + j )] = 0;
                 }
                 else {
@@ -262,8 +276,9 @@ void MinimalComponent::addProbe() {
                 }
             }
         }
+        probe.m_textureName = std::string( "myTexture" ) + std::to_string( iProbe );
         auto& textureParameters =
-            m_engine.getTextureManager()->addTexture( "myTexture", 512, 192, data );
+            m_engine.getTextureManager()->addTexture( probe.m_textureName.c_str(), 512, 192, data );
         textureParameters.format         = gl::GLenum::GL_RED;
         textureParameters.internalFormat = gl::GLenum::GL_R8;
         //! [Creating a texture for the slice]
@@ -285,7 +300,8 @@ void MinimalComponent::addProbe() {
         matData.m_specular      = Ra::Core::Utils::Color::Black();
         matData.m_hasSpecular   = true;
         matData.m_hasTexDiffuse = true;
-        matData.m_texDiffuse    = "myTexture";
+        //        matData.m_texDiffuse    = "myTexture";
+        matData.m_texDiffuse = probe.m_textureName.c_str();
         //        probe.m_scan->setMaterial(matData);
 
         std::shared_ptr<Ra::Engine::Data::Material> roMaterial;
@@ -298,6 +314,7 @@ void MinimalComponent::addProbe() {
         probe.m_scan->setMaterial( roMaterial );
 
         auto TLocal = Transform::Identity();
+        TLocal.translate( Vector3( 0_ra, 0_ra, -iProbe * 5 ) );
         TLocal.scale( 10.0 );
         probe.m_scan->setLocalTransform( TLocal );
         //        probe.m_scan->getRenderTechnique()->setConfiguration( shaderConfig );
@@ -305,34 +322,65 @@ void MinimalComponent::addProbe() {
         addRenderObject( probe.m_scan );
     }
 
-    g_probes.push_back(std::move(probe));
+    g_probes.push_back( std::move( probe ) );
 
     //    updateProbe(Vector3(0_ra, 2_ra, 0_ra));
 }
 
-void MinimalComponent::updateShader( int iProbe ) {
-    //    for ( auto& probe : g_probes ) {
-    assert( iProbe < g_probes.size() );
-    auto& probe = g_probes.at( iProbe );
+void MinimalComponent::updateShader() {
+    for ( auto& probe : g_probes ) {
 
-    auto& scan = *probe.m_scan;
+        //        auto& probe = g_probes.at( iProbe );
+        auto& scan = *probe.m_scan;
 
-    auto renderTechnique = scan.getRenderTechnique();
-    Ra::Engine::Data::ShaderConfiguration shaderConfig(
-        "myShader", vertexShaderFile, fragmentShaderFile );
-    renderTechnique->setConfiguration( shaderConfig );
+        auto renderTechnique = scan.getRenderTechnique();
+        Ra::Engine::Data::ShaderConfiguration shaderConfig(
+            "myShader", vertexShaderFile, fragmentShaderFile );
+        renderTechnique->setConfiguration( shaderConfig );
 
-    Ra::Engine::Data::TextureParameters textureParameters;
-    textureParameters.name = "myTexture";
-    m_viewer.makeCurrent();
-    probe.m_textureScan = m_engine.getTextureManager()->getOrLoadTexture( textureParameters );
-    m_viewer.doneCurrent();
-    //    }
+        Ra::Engine::Data::TextureParameters textureParameters;
+        textureParameters.name = probe.m_textureName;
+        m_viewer.makeCurrent();
+        probe.m_textureScan = m_engine.getTextureManager()->getOrLoadTexture( textureParameters );
+        m_viewer.doneCurrent();
+    }
+
+    for ( int i = 0; i < g_nProbes; ++i ) {
+        initPose( i );
+        initScan( i );
+    }
 }
 
-void MinimalComponent::updatePose( const Stream::Acquisition& acq, int iProbe ) {
-    assert( iProbe < g_probes.size() );
-    auto& probe = g_probes.at( iProbe );
+void MinimalComponent::updatePose( const Stream::Acquisition& acq ) {
+    // void MinimalComponent::updatePose( Acquisitions& acqs ) {
+    // void MinimalComponent::updatePose( Stream::Acquisition && acq) {
+    //    iProbe = 1;
+    //    assert( iProbe < g_probes.size() );
+    //    auto& probe = g_probes.at( iProbe );
+    //    std::cout << "[MinimalComponent] upadePose : " << acq << std::endl;
+
+    if ( acq.mBackendTimestamp == g_timestampProbePose ) { ++g_iProbePose; }
+    else {
+        for ( int i = 1; i <= g_iProbePose; ++i ) {
+            initPose( i );
+        }
+        g_iProbePose         = 0;
+        g_timestampProbePose = acq.mBackendTimestamp;
+    }
+
+    //    int iProbe = 0;
+
+    //    const int nAcqs = acqs.size();
+    //    std::cout << "[MinimalComponent] upadePose : acqs size = " << acqs.size() << std::endl;
+    //    int iProbe = 0;
+    //    for ( int iProbe = 0; iProbe < nAcqs; ++iProbe ) {
+    //    while ( !acqs.empty() ) {
+    //        const auto& acq = acqs.front();
+
+    std::cout << "[MinimalComponent] upadePose : " << acq << std::endl;
+
+    auto& probe = g_probes.at( g_iProbePose );
+    //    auto& probe = g_probes.at( iProbe );
 
     float* translation = (float*)acq.mData;
     float* quaternion  = (float*)&acq.mData[12];
@@ -375,8 +423,11 @@ void MinimalComponent::updatePose( const Stream::Acquisition& acq, int iProbe ) 
         //        g_scan->setLocalTransform(TRadium * TWorld * TOrientation * TLocal);
         //        g_probe->setLocalTransform(TRadium * TWorld * TOrientation * TLocal);
         probe.m_refCube->setLocalTransform( TRadium * TWorld * TOrientation );
+//        if ( g_iProbePose > 0 ) probe.m_refCube->setVisible( true );
+
         for ( int i = 0; i < 3; ++i ) {
             probe.m_refAxis[i]->setLocalTransform( TRadium * TWorld * TOrientation * TLocal );
+//            if ( g_iProbePose > 0 ) probe.m_refAxis[i]->setVisible( true );
         }
     }
 
@@ -399,41 +450,77 @@ void MinimalComponent::updatePose( const Stream::Acquisition& acq, int iProbe ) 
         //        TLocal.translate(Ra::Core::Vector3(0.1, 0.0, 0.2));
         //        m_scan->setLocalTransform(TRadium * TWorld * TLocal * TOrientation);
         probe.m_scan->setLocalTransform( TRadium * TWorld * TOrientation * TLocal );
+        if ( g_iProbePose > 0 ) probe.m_scan->setVisible( true );
 
         Ra::Core::Transform TLocal2 = Ra::Core::Transform::Identity();
         TLocal2.translate( Ra::Core::Vector3( 3.1, -scanWidth / 2.0, 16.0 ) );
         Ra::Core::Vector3 vecScale2( 3.0, userScale * scanWidth, 3.0 );
         TLocal2.scale( vecScale2 );
         probe.m_scanLine->setLocalTransform( TRadium * TWorld * TOrientation * TLocal2 );
+        if ( g_iProbePose > 0 ) probe.m_scanLine->setVisible( true );
     }
+
+    //        acqs.pop();
+    //        ++iProbe;
+    //    }
 }
 
-void MinimalComponent::initPose(int iProbe) {
-    assert(iProbe < g_probes.size());
-    auto & probe = g_probes.at(iProbe);
+void MinimalComponent::initPose( int iProbe ) {
+    if ( iProbe == 0 ) {
+        for ( int i = 1; i <= g_iProbePose; ++i ) {
+            initPose( i );
+        }
+        g_iProbePose         = 0;
+        g_timestampProbePose = 0;
+    }
+    assert( iProbe < g_probes.size() );
+    auto& probe = g_probes.at( iProbe );
 
     {
         auto TLocal = Transform::Identity();
+        TLocal.translate( Vector3( 0_ra, 0_ra, -iProbe * 5 ) );
         TLocal.scale( 10.0 );
         probe.m_scan->setLocalTransform( TLocal );
+        if ( iProbe > 0 ) probe.m_scan->setVisible( false );
     }
 
     {
         auto TLocal = Transform::Identity();
-        TLocal.translate( Vector3( 0.0, 20.0, 0.0 ) );
+        TLocal.translate( Vector3( 0_ra, 20.0, -iProbe * 5 ) );
+        //        TLocal.translate( Vector3( 0.0, 20.0, 0.0 ) );
         probe.m_refCube->setLocalTransform( TLocal );
+        if ( iProbe > 0 ) probe.m_refCube->setVisible( false );
         TLocal.scale( 5.0 );
         for ( int i = 0; i < 3; ++i ) {
             probe.m_refAxis[i]->setLocalTransform( TLocal );
+            if ( iProbe > 0 ) probe.m_refAxis[i]->setVisible( false );
         }
     }
 
     probe.m_scanLine->setLocalTransform( Transform::Identity() );
+    if ( iProbe > 0 ) probe.m_scanLine->setVisible( false );
 }
 
-void MinimalComponent::updateScan( const Stream::Acquisition& acq, int iProbe ) {
-    assert(iProbe < g_probes.size());
-    auto & probe = g_probes.at(iProbe);
+// void MinimalComponent::updateScan( Acquisitions& acqs ) {
+void MinimalComponent::updateScan( const Stream::Acquisition& acq ) {
+    //    assert( iProbe < g_probes.size() );
+    if ( acq.mBackendTimestamp == g_timestampProbeScan ) { ++g_iProbeScan; }
+    else {
+        for ( int i = 1; i <= g_iProbeScan; ++i ) {
+            initScan( i );
+        }
+        g_iProbeScan         = 0;
+        g_timestampProbeScan = acq.mBackendTimestamp;
+    }
+    //     int iProbe = 0;
+
+    //    const int nAcqs = acqs.size();
+
+    //    for ( int iProbe = 0; iProbe < nAcqs; ++iProbe ) {
+    //        const auto& acq = acqs.front();
+
+    auto& probe = g_probes.at( g_iProbeScan );
+    //        auto& probe = g_probes.at( iProbe );
 
     assert( probe.m_textureScan != nullptr );
 
@@ -444,17 +531,31 @@ void MinimalComponent::updateScan( const Stream::Acquisition& acq, int iProbe ) 
     memcpy( params.texels, data, 192 * 512 );
     probe.m_textureScan->initializeGL( false );
     m_viewer.doneCurrent();
+
+    //        acqs.pop();
+    //    }
 }
 
-void MinimalComponent::initScan(int iProbe) {
-    assert(iProbe < g_probes.size());
-    auto & probe = g_probes.at(iProbe);
+void MinimalComponent::initScan( int iProbe ) {
+    if ( iProbe == 0 ) {
+        for ( int i = 1; i <= g_iProbeScan; ++i ) {
+            initScan( i );
+        }
+        g_iProbeScan         = 0;
+        g_timestampProbeScan = 0;
+    }
+    assert( iProbe < g_probes.size() );
+    auto& probe = g_probes.at( iProbe );
 
     unsigned char* data = new unsigned char[192 * 512];
     // fill with some function
     for ( int i = 0; i < 192; ++i ) {
         for ( int j = 0; j < 512; j++ ) {
-            if ( std::abs( i - 20 ) < 3 || std::abs( j - 20 ) < 3 ) { data[( i * 512 + j )] = 0; }
+            if ( std::abs( i - 20 - iProbe * 5 ) < 3 || std::abs( j - 20 - iProbe * 5 ) < 3 ) {
+                data[( i * 512 + j )] = 0;
+            }
+            //            if ( std::abs( i - 20 ) < 3 || std::abs( j - 20 ) < 3 ) { data[( i * 512 +
+            //            j )] = 0; }
             else {
 
                 data[( i * 512 + j )] = ( j / 2 ) % 256;

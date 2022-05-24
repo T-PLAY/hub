@@ -12,6 +12,7 @@
 //#include <Engine/Data/LambertianMaterial.hpp>
 
 #include <stream.h>
+#include <FormInputStreamView.h>
 
 /* This file contains a minimal radium/qt application which shows the
 classic "Spinning Cube" demo. */
@@ -29,11 +30,15 @@ struct MinimalComponent : public Ra::Engine::Scene::Component {
     void initialize() override;
 
     void addProbe();
-    void updateShader(int iProbe = 0);
+    void updateShader();
 
-    void updatePose( const Stream::Acquisition& acq, int iProbe = 0 );
+    void updatePose( const Stream::Acquisition& acq );
+//    void updatePose( Acquisitions & acqs );
+//    void updatePose( Stream::Acquisition && acq );
     void initPose(int iProbe = 0);
-    void updateScan( const Stream::Acquisition& acq, int iProbe = 0 );
+    void updateScan( const Stream::Acquisition& acq );
+//    void updateScan( Acquisitions& acqs );
+//    void updateScan( Stream::Acquisition && acq );
     void initScan(int iProbe = 0);
 
   public:
