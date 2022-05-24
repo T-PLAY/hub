@@ -7,35 +7,38 @@
 #include <Engine/Scene/SystemDisplay.hpp>
 #include <Gui/Viewer/Viewer.hpp>
 
+//#include <Engine/Data/BlinnPhongMaterial.hpp>
+//#include <Engine/Data/PlainMaterial.hpp>
+//#include <Engine/Data/LambertianMaterial.hpp>
+
 #include <stream.h>
 
 /* This file contains a minimal radium/qt application which shows the
 classic "Spinning Cube" demo. */
 
+
 /// This is a very basic component which holds a spinning cube.
 struct MinimalComponent : public Ra::Engine::Scene::Component {
 
-    MinimalComponent( Ra::Engine::Scene::Entity* entity, Ra::Engine::RadiumEngine& e, Ra::Gui::Viewer & viewer );
+    MinimalComponent( Ra::Engine::Scene::Entity* entity,
+                      Ra::Engine::RadiumEngine& e,
+                      Ra::Gui::Viewer& viewer );
 
     /// This function is called when the component is properly
     /// setup, i.e. it has an entity.
     void initialize() override;
 
-    void updateShader();
+    void addProbe();
+    void updateShader(int iProbe = 0);
 
-    void updatePose(const Stream::Acquisition & acq);
-    void initPose();
-    void updateScan(const Stream::Acquisition & acq);
-    void initScan();
+    void updatePose( const Stream::Acquisition& acq, int iProbe = 0 );
+    void initPose(int iProbe = 0);
+    void updateScan( const Stream::Acquisition& acq, int iProbe = 0 );
+    void initScan(int iProbe = 0);
 
   public:
-    Ra::Engine::Rendering::RenderObject* m_scan          = nullptr;
-    Ra::Engine::Rendering::RenderObject* m_probe         = nullptr;
-    Ra::Engine::Rendering::RenderObject* m_probe_axis[3] = { nullptr, nullptr, nullptr };
-    Ra::Engine::Rendering::RenderObject* m_scanLine         = nullptr;
-
   private:
-    Ra::Engine::Data::Texture * m_textureScan = nullptr;
     Ra::Engine::RadiumEngine& m_engine;
-    Ra::Gui::Viewer & m_viewer;
+    Ra::Gui::Viewer& m_viewer;
+
 };
