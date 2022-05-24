@@ -4,17 +4,17 @@
 #include <QKeyEvent>
 #include <iostream>
 
+#include <QDir>
 #include <QFileSystemModel>
 #include <QInputDialog>
 #include <filesystem>
-#include <QDir>
 
 //#include <WinBase.h>
 
 TreeViewStream::TreeViewStream( QWidget* parent ) : QTreeView( parent ) {}
 
 void TreeViewStream::keyPressEvent( QKeyEvent* event ) {
-//    assert( m_loader != nullptr );
+    //    assert( m_loader != nullptr );
 
     //    QTreeView::keyPressEvent(event);
     const auto& index          = this->currentIndex();
@@ -24,10 +24,9 @@ void TreeViewStream::keyPressEvent( QKeyEvent* event ) {
     //    std::cout << "[FormWidgetLoader] on_treeView_record_clicked : " << mPath << std::endl;
     const auto& mPath     = model->fileInfo( index ).absolutePath().toStdString();
     const auto& mFilename = model->fileInfo( index ).fileName().toStdString();
-    std::string filepath = mPath + "/" + mFilename;
+    std::string filepath  = mPath + "/" + mFilename;
 
-
-    assert(std::filesystem::exists(filepath));
+    assert( std::filesystem::exists( filepath ) );
 
     //    std::cout << "[FormWidgetLoader] on_treeView_record_doubleClicked : " << mPath <<
     //    std::endl;
@@ -39,19 +38,21 @@ void TreeViewStream::keyPressEvent( QKeyEvent* event ) {
         //        std::cout << "F2" << std::endl;
         //        onStreamRename();
         auto newName =
-            QInputDialog::getText( this, "Rename Record", "Enter a new name" ).toStdString();
+            QInputDialog::getText(
+                this, "Rename Record", "Enter a new name", QLineEdit::Normal, mFilename.c_str() )
+                .toStdString();
         if ( newName.empty() ) return;
 
         //    m_recordFileModel->fileRenamed(mPath, mFilename, newName);
-    std::string newFilepath = mPath + "/" + newName;
-//    std::string newFilepath = mPath + "\\" + newName;
+        std::string newFilepath = mPath + "/" + newName;
+        //    std::string newFilepath = mPath + "\\" + newName;
 
         std::filesystem::rename( filepath, newFilepath );
-//    MoveFile(filepath.c_str(), newFilepath.c_str() );
-//    std::rename(filepath.c_str(), newFilepath.c_str());
-//        QDir dir(mPath.c_str());
-//        dir.rename(mFilename.c_str(), newName.c_str());
-//        QDir::rename(filepath.c_str(), (mPath + "/" + newName).c_str());
+        //    MoveFile(filepath.c_str(), newFilepath.c_str() );
+        //    std::rename(filepath.c_str(), newFilepath.c_str());
+        //        QDir dir(mPath.c_str());
+        //        dir.rename(mFilename.c_str(), newName.c_str());
+        //        QDir::rename(filepath.c_str(), (mPath + "/" + newName).c_str());
 
     } break;
 
@@ -68,10 +69,10 @@ void TreeViewStream::keyPressEvent( QKeyEvent* event ) {
     case Qt::Key_Escape:
         std::cout << "Escape" << std::endl;
         //        const auto& selectionModel = ui->treeView_snapshot->selectionModel();
-//        selectionModel->select( index, QItemSelectionModel::Deselect );
+        //        selectionModel->select( index, QItemSelectionModel::Deselect );
         selectionModel->clearSelection();
-//        assert( m_loader->isLoaded() );
-//        m_loader->unload();
+        //        assert( m_loader->isLoaded() );
+        //        m_loader->unload();
         //        m_snapshotLoader.unload();
         break;
 
@@ -80,7 +81,7 @@ void TreeViewStream::keyPressEvent( QKeyEvent* event ) {
     }
 }
 
-//void TreeViewStream::setLoader( Loader* loader ) {
+// void TreeViewStream::setLoader( Loader* loader ) {
 //    m_loader = loader;
 //}
 
