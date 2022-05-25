@@ -101,11 +101,12 @@ void Server::run()
 #endif
                     }
 
-                    Stream::Acquisition acq;
+//                    Stream::Acquisition acq;
                     // for each new stream acquistion
                     while (true) {
 
-                        inputStream >> acq;
+                        auto acq = inputStream.getAcquisition();
+//                        inputStream >> acq;
 
                         // broadcast data
                         // send new acquisition for all no sync stream viewers of this stream
@@ -156,11 +157,14 @@ void Server::run()
                                     std::this_thread::sleep_for(std::chrono::milliseconds(100));
                                 }
 
-                                Stream::Acquisition bestMatchAcq = std::move(acqs.back());
+//                                Stream::Acquisition bestMatchAcq = std::move(acqs.back());
+                                std::unique_ptr<Stream::Acquisition> bestMatchAcq;
+//                                Stream::Acquisition & bestMatchAcq = acqs.back().clone();
+                                bestMatchAcq = std::make_unique<Stream::Acquisition>(acqs.back().clone());
                                 // search best match acq
                                 {
                                     acqs.pop_back();
-                                    auto minDist = std::abs(acq.mBackendTimestamp - bestMatchAcq.mBackendTimestamp);
+                                    auto minDist = std::abs(acq.mBackendTimestamp - bestMatchAcq->mBackendTimestamp);
 
                                     bool foundBestMatch = false;
                                     while (!foundBestMatch) {
@@ -171,7 +175,11 @@ void Server::run()
                                         if (dist < minDist) {
                                             minDist = dist;
                                             // std::cout << getServerHeader(iThread) << "[streamer] delete acq : \t\t" << bestMatchAcq << std::endl;
-                                            bestMatchAcq = std::move(acq2);
+//                                            bestMatchAcq = std::move(acq2);
+//                                            bestMatchAcq = acq2.clone();
+//                                            bestMatchAcq.reset(acq2.clone());
+                                            bestMatchAcq.release();
+                                            bestMatchAcq = std::make_unique<Stream::Acquisition>(acq2.clone());
                                             acqs.pop_back();
                                         } else {
                                             foundBestMatch = true;
@@ -181,7 +189,7 @@ void Server::run()
                                     // std::cout << getServerHeader(iThread) << "[streamer] best acq : \t\t" << bestMatchAcq << "\t(" << acqs.size() << ")" << std::endl;
                                     std::cout << "timestamp start diff : " << minDist / 1000.0 << " milliseconds" << std::endl;
 
-                                    acqs.emplace_back(bestMatchAcq.clone());
+                                    acqs.emplace_back(bestMatchAcq->clone());
                                 }
 
                                 // broadcast best match acquisition fo each stream viewers
@@ -190,7 +198,7 @@ void Server::run()
                                     auto& outputStream = *it2;
 
                                     try {
-                                        outputStream << bestMatchAcq;
+                                        outputStream << *bestMatchAcq;
                                         // std::cout << "----------" << std::endl;
                                         ++it2;
 

@@ -524,7 +524,7 @@ void MinimalComponent::updateScan( const Stream::Acquisition& acq ) {
 
     assert( probe.m_textureScan != nullptr );
 
-    unsigned char* data = acq.mData;
+    const unsigned char* data = acq.mData;
 
     m_viewer.makeCurrent();
     auto& params = probe.m_textureScan->getParameters();

@@ -33,12 +33,13 @@ int main(int argc, char* argv[])
     std::cout << "acquisitionSize = " << acquisitionSize << std::endl;
     // const int width = inputStream.getDims().at(0);
 
-    Stream::Acquisition acq;
+//    Stream::Acquisition acq;
 
     while (true) {
         const auto start = std::chrono::high_resolution_clock::now();
         for (int i = 0; i < 10; ++i) {
-            inputStream >> acq;
+//            inputStream >> acq;
+            auto acq = inputStream.getAcquisition();
 
             std::cout << acq << std::endl;
 

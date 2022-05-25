@@ -239,10 +239,11 @@ int main(int argc, char* argv[])
 
 #ifdef SENSOR
         if (scanStream != nullptr) {
-            Stream::Acquisition scanAcq;
-            *scanStream >> scanAcq;
+//            Stream::Acquisition scanAcq;
+//            *scanStream >> scanAcq;
+            auto scanAcq = scanStream->getAcquisition();
 
-            unsigned char* data = scanAcq.mData;
+            const unsigned char* data = scanAcq.mData;
 #else
         unsigned char data[192 * 512] = { 0 };
         for (int i = 0; i < 192; ++i) {
@@ -270,8 +271,9 @@ int main(int argc, char* argv[])
 #ifdef SENSOR
         // update position and orientation
         if (posStream != nullptr) {
-            Stream::Acquisition posAcq;
-            *posStream >> posAcq;
+//            Stream::Acquisition posAcq;
+//            *posStream >> posAcq;
+        auto posAcq = posStream->getAcquisition();
             float* translation = (float*)posAcq.mData;
             float* quaternion = (float*)&posAcq.mData[12];
 
