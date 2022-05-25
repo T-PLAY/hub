@@ -45,7 +45,9 @@ public:
     //    void addInputStream(const std::string streamName, Args&&... iostream);
     void deleteInputStream(const std::string& streamName);
 
-    const Stream::Acquisition & getAcquisition(const std::string& sensorName, const std::string & sourceType) const;
+//    const Stream::Acquisition & getAcquisition(const std::string& sensorName, const std::string & sourceType) const;
+//    Stream::Acquisition && getAcquisition(const std::string& sensorName, const std::string & sourceType);
+    Acquisitions & getAcquisitions(const std::string& sensorName, const std::string & sourceType);
 
 signals:
     //    void initPose();

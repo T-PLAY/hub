@@ -29,10 +29,7 @@
 //     assert(mFile.is_open());
 // }
 
-CyclicBuff::CyclicBuff(size_t size)
-    : m_buff(new unsigned char[size])
-    , m_buffLen(size)
-{
+CyclicBuff::CyclicBuff( size_t size ) : m_buff( new unsigned char[size] ), m_buffLen( size ) {
     //    assert(m_buff == nullptr);
     //    m_buff = new unsigned char[size];
 }
@@ -43,14 +40,14 @@ CyclicBuff::CyclicBuff(size_t size)
 //     return *this;
 // }
 
-CyclicBuff::~CyclicBuff()
-{
-    assert(!m_outputStreamWantsToClose);
-    assert(!m_inputStreamClose);
+CyclicBuff::~CyclicBuff() {
+    assert( !m_outputStreamWantsToClose );
+    assert( !m_inputStreamClose );
     m_outputStreamWantsToClose = true;
-    while (!m_inputStreamClose) {
-        std::cout << "[CyclicBuff:" << this << "] ~CyclicBuff() : wait for inputStreamClose" << std::endl;
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    while ( !m_inputStreamClose ) {
+        std::cout << "[CyclicBuff:" << this << "] ~CyclicBuff() : wait for inputStreamClose"
+                  << std::endl;
+        std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
     }
 
     //    if (m_inputStreamClose) {
@@ -61,95 +58,88 @@ CyclicBuff::~CyclicBuff()
     //    }
 }
 
-void CyclicBuff::write(const unsigned char* data, size_t len)
-{
-    assert(!m_outputStreamWantsToClose);
+void CyclicBuff::write( const unsigned char* data, size_t len ) {
+    assert( !m_outputStreamWantsToClose );
 
     size_t uploadSize = 0;
     do {
         // size of empty space in buff to write data
         int spaceLeft = m_readHead - m_writeHead;
-        if (spaceLeft <= 0)
-            spaceLeft += m_buffLen;
-//        std::cout << "[CyclicBuff] buff size = " << spaceLeft << std::endl;
+        if ( spaceLeft <= 0 ) spaceLeft += m_buffLen;
+        //        std::cout << "[CyclicBuff] buff size = " << spaceLeft << std::endl;
 
         size_t byteWrote = spaceLeft;
-        if (len > byteWrote) {
-            throw CyclicBuff::exception("Buffer overflow, no space left");
-            assert(false);
+        if ( len > byteWrote ) {
+            std::this_thread::sleep_for( std::chrono::milliseconds( 2 ) );
+            continue;
+            throw CyclicBuff::exception( "Buffer overflow, no space left" );
+            assert( false );
         }
-        byteWrote = std::min(byteWrote, len - uploadSize); // size of not copied user data
-        byteWrote = std::min(byteWrote, m_buffLen - m_writeHead); // distance to buffer end
+        byteWrote = std::min( byteWrote, len - uploadSize );        // size of not copied user data
+        byteWrote = std::min( byteWrote, m_buffLen - m_writeHead ); // distance to buffer end
 
-        memcpy(&m_buff[m_writeHead], data + uploadSize, byteWrote);
-        m_writeHead = (m_writeHead + byteWrote) % m_buffLen;
+        memcpy( &m_buff[m_writeHead], data + uploadSize, byteWrote );
+        m_writeHead = ( m_writeHead + byteWrote ) % m_buffLen;
 
-        if (byteWrote <= 0) {
-            assert(false);
-            throw CyclicBuff::exception("End of file");
+        if ( byteWrote <= 0 ) {
+            assert( false );
+            throw CyclicBuff::exception( "End of file" );
         }
 
         uploadSize += byteWrote;
-    } while (len != uploadSize);
+    } while ( len != uploadSize );
 
-//    std::cout << "[CyclicBuff] write " << len << " bytes" << std::endl;
+    //    std::cout << "[CyclicBuff] write " << len << " bytes" << std::endl;
 }
 
-void CyclicBuff::read(unsigned char* data, size_t len)
-{
+void CyclicBuff::read( unsigned char* data, size_t len ) {
     size_t downloadSize = 0;
     do {
 
         size_t byteRead;
         do {
-            if (m_outputStreamWantsToClose) {
+            if ( m_outputStreamWantsToClose ) {
                 m_inputStreamClose = true;
                 std::cout << "[CyclicBuff:" << this << "] read() : inputStream close" << std::endl;
-                throw CyclicBuff::exception("Connection closed");
-                assert(false);
+                throw CyclicBuff::exception( "Connection closed" );
+                assert( false );
             }
-            if (m_buff == nullptr) {
+            if ( m_buff == nullptr ) {
                 m_inputStreamClose = true;
-                //                std::cout << "[CyclicBuff] read() : inputStream close" << std::endl;
-                throw CyclicBuff::exception("End of buffer (nullptr)");
-                assert(false);
+                //                std::cout << "[CyclicBuff] read() : inputStream close" <<
+                //                std::endl;
+                throw CyclicBuff::exception( "End of buffer (nullptr)" );
+                assert( false );
             }
             // nb bytes ready to read
             byteRead = m_writeHead - m_readHead;
-            if (byteRead == 0) {
+            if ( byteRead == 0 ) {
                 //                std::cout << "[RamIO] nothing to read" << std::endl;
-                std::this_thread::sleep_for(std::chrono::milliseconds(16));
+                std::this_thread::sleep_for( std::chrono::milliseconds( 16 ) );
             }
-            if (byteRead < 0)
-                byteRead = m_buffLen - m_readHead;
-            byteRead = std::min(byteRead, len - downloadSize); // user copied bytes left
-            byteRead = std::min(byteRead, m_buffLen - m_readHead); // distance to end of buffer
+            if ( byteRead < 0 ) byteRead = m_buffLen - m_readHead;
+            byteRead = std::min( byteRead, len - downloadSize );     // user copied bytes left
+            byteRead = std::min( byteRead, m_buffLen - m_readHead ); // distance to end of buffer
 
-        } while (byteRead == 0);
+        } while ( byteRead == 0 );
 
-        memcpy(data + downloadSize, &m_buff[m_readHead], byteRead);
-        m_readHead = (m_readHead + byteRead) % m_buffLen;
+        memcpy( data + downloadSize, &m_buff[m_readHead], byteRead );
+        m_readHead = ( m_readHead + byteRead ) % m_buffLen;
 
-        if (byteRead <= 0) {
-            assert(false);
-            throw CyclicBuff::exception("End of file");
+        if ( byteRead <= 0 ) {
+            assert( false );
+            throw CyclicBuff::exception( "End of file" );
         }
 
         downloadSize += byteRead;
-    } while (len != downloadSize);
+    } while ( len != downloadSize );
 }
 
-void CyclicBuff::close()
-{
-}
+void CyclicBuff::close() {}
 
-RamIO::RamIO(CyclicBuff& buff)
-    : m_buff(buff)
-{
-}
+RamIO::RamIO( CyclicBuff& buff ) : m_buff( buff ) {}
 
-void RamIO::close()
-{
+void RamIO::close() {
     m_buff.close();
 
     //    mFile.close();
@@ -157,18 +147,17 @@ void RamIO::close()
     //    m_len = 0;
 }
 
-void RamIO::write(const unsigned char* data, size_t len) const
-{
-    m_buff.write(data, len);
+void RamIO::write( const unsigned char* data, size_t len ) const {
+    m_buff.write( data, len );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void RamIO::read(unsigned char* data, size_t len) const
-{
+void RamIO::read( unsigned char* data, size_t len ) const {
     try {
-        m_buff.read(data, len);
-    } catch (std::exception& e) {
+        m_buff.read( data, len );
+    }
+    catch ( std::exception& e ) {
         std::cout << "[RamIO] catch exception : " << e.what() << std::endl;
         throw e;
     }

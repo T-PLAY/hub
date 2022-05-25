@@ -199,6 +199,7 @@ public:
         Acquisition(const Acquisition& acq) = delete;
 //        Acquisition(const Acquisition& acq);
         Acquisition(Acquisition&& acq);
+        Acquisition & operator=(const Acquisition & acq) = delete;
         Acquisition& operator=(Acquisition&& acq);
         Acquisition clone() const;
 
