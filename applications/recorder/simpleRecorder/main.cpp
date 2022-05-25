@@ -45,7 +45,8 @@ int main(int argc, char* argv[])
 
     //    recorder.record({{g_probePoseSensorName + " (record)", g_probeScanSensorName + " (record)"}, {g_probeScanSensorName + " (record)", ""}});
 
-    recorder.record({ { g_probePoseSensorName, g_probeScanSensorName }, { g_probeScanSensorName, "" } });
+    recorder.record({ { g_probePoseSensorName, ""}, { g_probePoseSensorName, g_probeScanSensorName }, { g_probeScanSensorName, "" } });
+//    recorder.record({ { g_probePoseSensorName, ""}, { g_probeScanSensorName, "" } });
 
     //    while (true) {
     //        int a;
