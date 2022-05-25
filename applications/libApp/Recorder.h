@@ -30,7 +30,7 @@ private:
 
 private:
     std::string m_rootPath = "";
-    std::thread * m_thread = nullptr;
+  std::vector<std::thread*> m_threads;
 
     bool m_isRecording = false;
 

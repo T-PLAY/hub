@@ -25,7 +25,8 @@ void Recorder::record(const InputStreamParameters& inputStreamConfigs)
     assert(!inputStreamConfigs.empty());
     std::cout << "[Recorder] record()" << std::endl;
     assert(!m_isRecording);
-    assert(m_thread == nullptr);
+//    assert(m_thread == nullptr);
+    assert(m_threads.empty());
 
     std::vector<std::unique_ptr<InputStream>> inputStreams;
     std::vector<std::unique_ptr<OutputStream>> outputFileStreams;
@@ -52,23 +53,28 @@ void Recorder::record(const InputStreamParameters& inputStreamConfigs)
 
         //        //    std::fstream files[2];
         //        for (int i = 0; i < 2; ++i) {
-        auto file = std::fstream(newRecordFolder + "/" + sensorName + ".txt", std::ios::binary | std::ios::out);
+        auto fileName = sensorName;
+        if (syncSensorName != "")
+            fileName += "&" + syncSensorName;
+        auto file = std::fstream(newRecordFolder + "/" + fileName + ".txt", std::ios::binary | std::ios::out);
         assert(file.is_open());
 
         // here
         outputFileStreams.push_back(std::make_unique<OutputStream>(sensorName, inputStreams[i]->getFormat(), inputStreams[i]->getDims(), FileIO(std::move(file)), inputStreams[i]->getMetaData()));
     }
 
-    m_thread = new std::thread([this, inputStreams = std::move(inputStreams), outputFileStreams = std::move(outputFileStreams), newRecordFolder = std::move(newRecordFolder), nStream]() {
+    m_threads.resize(nStream);
+    for (int i = 0; i <nStream; ++i) {
+    m_threads[i] = new std::thread([this, inputStream = std::move(inputStreams[i]), outputFileStream = std::move(outputFileStreams[i]), newRecordFolder = std::move(newRecordFolder), nStream]() {
         try {
 
             m_isRecording = true;
             while (m_isRecording) {
                 Stream::Acquisition acq;
                 for (int i = 0; i < nStream; ++i) {
-                    *inputStreams[i] >> acq;
+                    *inputStream >> acq;
                     std::cout << "[" << i << "] read/write acq : " << acq << std::endl;
-                    *outputFileStreams[i] << acq;
+                    *outputFileStream << acq;
 
                     //                *inputStreams[1] >> acq;
                     //                std::cout << "[" << 1 << "] read/write acq : " << acq << std::endl;
@@ -96,6 +102,7 @@ void Recorder::record(const InputStreamParameters& inputStreamConfigs)
         //            std::filesystem::copy(newRecordFolder, latestFolder, std::filesystem::copy_options::recursive);
         //        }
     });
+    }
 }
 
 void Recorder::stop()
@@ -106,9 +113,12 @@ void Recorder::stop()
 
     if (m_snapshots.empty()) {
 
-        m_thread->join();
-        delete m_thread;
-        m_thread = nullptr;
+        for (auto * thread : m_threads) {
+        thread->join();
+        delete thread;
+        thread = nullptr;
+        }
+        m_threads.clear();
 
     } else {
         saveOnDisk();

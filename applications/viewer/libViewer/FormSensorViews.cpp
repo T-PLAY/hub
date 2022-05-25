@@ -241,7 +241,7 @@ void FormSensorViews::addSensor(std::string sensorName,
         sensorView, &FormSensorView::streamingStopped, this, &FormSensorViews::streamingStopped);
 
 //    std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    sensorView->on_startStreaming();
+//    sensorView->on_startStreaming();
     //    sensorView->on_radioButtonOnOff_clicked(true);
 }
 

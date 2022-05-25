@@ -64,7 +64,7 @@ void Loader::update()
     assert(m_snapshots.empty());
     assert(m_frames.empty());
 
-    int nAcqs = -1;
+    int nMaxAcqs = 0;
 
     // read records in folder
     for (const auto& fileDir : std::filesystem::directory_iterator(m_loadedPath)) {
@@ -103,12 +103,12 @@ void Loader::update()
         auto acqs = inputStream.getAllAcquisition();
         const std::string& sensorName = inputStream.getSensorName() + m_outputPostfixName;
 
-        if (nAcqs == -1) {
-            nAcqs = acqs.size();
-            m_frames.reserve(nAcqs);
-            m_frames.resize(nAcqs);
+        if (acqs.size() > nMaxAcqs) {
+            nMaxAcqs = acqs.size();
+//            m_frames.reserve(nMaxAcqs);
+            m_frames.resize(nMaxAcqs);
         }
-        assert(acqs.size() == nAcqs);
+//        assert(acqs.size() == nMaxAcqs);
 
         int iAcq = 0;
         for (const auto& acq : acqs) {
