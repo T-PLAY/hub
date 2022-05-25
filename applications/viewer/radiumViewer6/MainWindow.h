@@ -10,12 +10,10 @@
 //#include <Player.h>
 //#include <Recorder.h>
 
-#define USE_FORM_SENSOR_VIEWS
+//#define USE_FORM_SENSOR_VIEWS
 #ifdef USE_FORM_SENSOR_VIEWS
 #include <FormSensorViews.h>
 #endif
-constexpr bool g_useFormSensorViews = true;
-//constexpr bool g_useFormSensorViews = false;
 
 #include <FormInputStreamViews.h>
 #include <FormWidgetLoader.h>

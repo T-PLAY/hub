@@ -367,10 +367,12 @@ void FormWidgetLoader::onRecordFrames_selectionChange(const QItemSelection& sele
 
     const auto& selectedRows = ui->listView_recordFrames->selectionModel()->selectedRows();
 
-    std::cout << "[FormWidgetLoader] on_listView_recordFrames_selectionChanged : "
+    std::cout << "[FormWidgetLoader] onRecordFrames_selectionChanged : "
               << selectedRows.size() << std::endl;
 
     m_recordLoader.onFrame_selectionChange(selectedRows);
+
+
 
     //    m_selectedRecordFrames.clear();
     //    m_selectedRecordFrames.reserve(selectedRows.size());
@@ -383,6 +385,22 @@ void FormWidgetLoader::onRecordFrames_selectionChange(const QItemSelection& sele
 
     //    emit recordFrames_selectionChanged();
 }
+
+void FormWidgetLoader::onRecordFrames_currentChanged(const QModelIndex& current,
+    const QModelIndex& previous)
+{
+    std::cout << "[FormWidgetLoader] onRecordFrames_currentChanged : "
+              << current.row() << std::endl;
+
+    auto selectedRows = ui->listView_recordFrames->selectionModel()->selectedRows();
+    selectedRows.append(current);
+
+    //    std::cout << "[FormWidgetLoader] on_listView_recordFrames_selectionChanged : "
+    //              << selectedRows.size() << std::endl;
+
+    m_recordLoader.onFrame_selectionChange(selectedRows);
+}
+
 
 void FormWidgetLoader::onSnapshotFrames_selectionChange(const QItemSelection& selected,
     const QItemSelection& deselected)
@@ -405,19 +423,6 @@ void FormWidgetLoader::onSnapshotFrames_selectionChange(const QItemSelection& se
     //    }
 
     //    emit snapshotFrames_selectionChanged();
-}
-
-void FormWidgetLoader::onRecordFrames_currentChanged(const QModelIndex& current,
-    const QModelIndex& previous)
-{
-
-    auto selectedRows = ui->listView_recordFrames->selectionModel()->selectedRows();
-    selectedRows.append(current);
-
-    //    std::cout << "[FormWidgetLoader] on_listView_recordFrames_selectionChanged : "
-    //              << selectedRows.size() << std::endl;
-
-    m_recordLoader.onFrame_selectionChange(selectedRows);
 }
 
 void FormWidgetLoader::onSnapshotFrames_currentChanged(const QModelIndex& current,

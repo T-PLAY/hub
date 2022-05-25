@@ -2,7 +2,7 @@
 
 #include <IOStream.h>
 
-//constexpr size_t m_bufLen = 1'000'000;
+constexpr size_t g_buffLen = 1'000'000;
 
 class CyclicBuff {
     class exception : public std::runtime_error {
@@ -17,7 +17,7 @@ class CyclicBuff {
         }
     };
 public:
-    CyclicBuff(size_t size = 2'000'000);
+    CyclicBuff(size_t size = g_buffLen);
     CyclicBuff(const CyclicBuff & buff) = delete;
     CyclicBuff(CyclicBuff && buff) = default;
 

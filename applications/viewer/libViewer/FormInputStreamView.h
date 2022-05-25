@@ -7,6 +7,9 @@
 #include <QWidget>
 #include <stream.h>
 
+//#include <stack>
+#include <queue>
+
 class FormInputStreamViews;
 
 class InputStreamThread : public QThread {
@@ -29,7 +32,9 @@ public:
     // overriding the QThread's run() method
     void run();
 
-    Stream::Acquisition mAcq;
+//    Stream::Acquisition mAcq;
+    std::queue<Stream::Acquisition> mAcqs;
+
     //    int mIStream;
     //    InputStream& mInputStream;
     std::unique_ptr<InputStream> mInputStream;
@@ -73,6 +78,8 @@ namespace Ui {
 class FormInputStreamView;
 }
 
+using Acquisitions = std::queue<Stream::Acquisition>;
+
 class FormInputStreamView : public QWidget {
     Q_OBJECT
 
@@ -85,7 +92,8 @@ public:
 
     void remove(const std::string& sourceType);
 
-    const Stream::Acquisition& getAcquisition(const std::string& sourceType) const;
+//    const Stream::Acquisition& getAcquisition(const std::string& sourceType) const;
+    Acquisitions & getAcquisitions(const std::string& sourceType);
     const InputStreamThread& getIputStreamThread(const std::string& sourceType) const;
 
 private slots:

@@ -77,6 +77,8 @@ private:
     std::map<std::string, std::unique_ptr<OutputStream>> m_outputStreams;
     std::map<std::string, std::unique_ptr<CyclicBuff>> m_outputStreamBuffs;
 
+    size_t iFrame = 0;
+
 public:
 //    const std::vector<Frame> & getFrames() const;
     bool isPlaying() const;

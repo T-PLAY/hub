@@ -42,9 +42,9 @@ private slots:
 //    void on_treeView_snapshot_doubleClicked(const QModelIndex &index);
 
     void onTreeView_record_currentChanged(const QModelIndex &current, const QModelIndex &previous);
-    void onTreeView_snapshot_currentChanged(const QModelIndex &current, const QModelIndex &previous);
-
     void onTreeView_record_selectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
+
+    void onTreeView_snapshot_currentChanged(const QModelIndex &current, const QModelIndex &previous);
 
 //    void on_treeView_record_keyPressed(QKeyEvent * event);
 
