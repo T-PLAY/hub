@@ -253,13 +253,15 @@ void Loader::onFrame_selectionChange( const QModelIndexList& selectedRows ) {
         for ( const auto& snapshot : m_frames[index.row()] ) {
             const auto& sensorName = snapshot.getSensorName();
 
-//            const auto& acq = snapshot.getAcq();
-            auto acq = snapshot.getAcq().clone();
-            acq.mBackendTimestamp = iFrame;
+            const auto& acq = snapshot.getAcq();
+
+            Stream::Acquisition acq2(iFrame, iFrame, acq.mData);
+//            auto acq = snapshot.getAcq().clone();
+//            acq.mBackendTimestamp = iFrame;
 //                        std::cout << "[Loader:Frame" << index.row() << "] send acq : " << acq << std::endl;
 
             assert( m_outputStreams.find( sensorName ) != m_outputStreams.end() );
-            *m_outputStreams.at( sensorName ) << acq;
+            *m_outputStreams.at( sensorName ) << acq2;
 
 //            std::this_thread::sleep_for(std::chrono::milliseconds(100));
         }
