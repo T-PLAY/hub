@@ -10,7 +10,7 @@
 //#include <Player.h>
 //#include <Recorder.h>
 
-//#define USE_FORM_SENSOR_VIEWS
+#define USE_FORM_SENSOR_VIEWS
 #ifdef USE_FORM_SENSOR_VIEWS
 #include <FormSensorViews.h>
 #endif

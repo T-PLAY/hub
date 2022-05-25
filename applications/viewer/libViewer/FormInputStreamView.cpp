@@ -41,7 +41,10 @@ void InputStreamThread::run() {
             *mInputStream >> acq;
             //            std::cout << "[InputStreamThread] receive acq : " << acq << std::endl;
             //            mAcqs.push(std::move(acq));
-            mAcqs.push( std::move( acq ) );
+//            mAcqs.push({});
+//            *mInputStream >> mAcqs.back();
+            mAcqs.push( acq.clone());
+//            mAcqs.emplace()
             //            std::cout << "[InputStreamThread] acqs back : " << mAcqs.front() <<
             //            std::endl; mAcqs.emplace(acq); mAcqs.push(std::move(acq));
 

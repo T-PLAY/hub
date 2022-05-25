@@ -377,7 +377,7 @@ void MinimalComponent::updatePose( const Stream::Acquisition& acq ) {
     //    while ( !acqs.empty() ) {
     //        const auto& acq = acqs.front();
 
-    std::cout << "[MinimalComponent] upadePose : " << acq << std::endl;
+//    std::cout << "[MinimalComponent] upadePose : " << acq << std::endl;
 
     auto& probe = g_probes.at( g_iProbePose );
     //    auto& probe = g_probes.at( iProbe );
