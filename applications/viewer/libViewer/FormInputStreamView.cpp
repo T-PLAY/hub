@@ -37,8 +37,9 @@ void InputStreamThread::run() {
 
         while ( !this->isInterruptionRequested() ) {
 
-            Stream::Acquisition acq;
-            *mInputStream >> acq;
+//            Stream::Acquisition acq;
+//            *mInputStream >> acq;
+            auto acq = mInputStream->getAcquisition();
             //            std::cout << "[InputStreamThread] receive acq : " << acq << std::endl;
             //            mAcqs.push(std::move(acq));
 //            mAcqs.push({});

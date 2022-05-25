@@ -242,6 +242,7 @@ void MainWindow::onNewAcquisition( const std::string& sensorName, const std::str
     //    const auto& acq = m_formInputStreamViews->getAcquisition(sensorName, sourceType);
     //    auto && acq = m_formInputStreamViews->getAcquisition(sensorName, sourceType);
     auto& acqs = m_formInputStreamViews->getAcquisitions( sensorName, sourceType );
+    assert(! acqs.empty());
 
     if ( sensorName == g_probeScanSensorName ) {
 //        for ( const auto& acq : acqs ) {

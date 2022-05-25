@@ -255,7 +255,7 @@ void Loader::onFrame_selectionChange( const QModelIndexList& selectedRows ) {
 
             const auto& acq = snapshot.getAcq();
 
-            Stream::Acquisition acq2(iFrame, iFrame, acq.mData);
+            Stream::Acquisition acq2(iFrame, iFrame, acq.mData, acq.mSize);
 //            auto acq = snapshot.getAcq().clone();
 //            acq.mBackendTimestamp = iFrame;
 //                        std::cout << "[Loader:Frame" << index.row() << "] send acq : " << acq << std::endl;

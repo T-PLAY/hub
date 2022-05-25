@@ -46,7 +46,7 @@ int main(int argc, char* argv[])
         const auto& timestampEnd = std::chrono::duration_cast<std::chrono::microseconds>(end.time_since_epoch()).count();
         ++dec;
 
-        proceduralStream << Stream::Acquisition { timestampStart, timestampEnd, data };
+        proceduralStream << Stream::Acquisition { timestampStart, timestampEnd, data, imgSize };
 
         std::this_thread::sleep_until(end);
     }

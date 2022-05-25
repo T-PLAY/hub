@@ -193,22 +193,22 @@ public:
 
     class Acquisition {
     public:
-        Acquisition(long long backendTimestamp = 0, long long backendTimeOfArrival = 0, unsigned char* data = nullptr);
+//        Acquisition(long long backendTimestamp = 0, long long backendTimeOfArrival = 0, unsigned char* data = nullptr);
+        Acquisition(long long backendTimestamp, long long backendTimeOfArrival, const unsigned char* data, size_t size);
         ~Acquisition();
 
         Acquisition(const Acquisition& acq) = delete;
 //        Acquisition(const Acquisition& acq);
-        Acquisition(Acquisition&& acq);
+        Acquisition(Acquisition&& acq) = default;
         Acquisition & operator=(const Acquisition & acq) = delete;
-        Acquisition& operator=(Acquisition&& acq);
+        Acquisition& operator=(Acquisition&& acq) = delete;
         Acquisition clone() const;
 
-        long long mBackendTimestamp; // microseconds
-        long long mBackendTimeOfArrival; // microseconds
-        unsigned char* mData;
-
-        size_t mSize = 0;
-        bool mOwnData = false;
+        const long long mBackendTimestamp; // microseconds
+        const long long mBackendTimeOfArrival; // microseconds
+        const unsigned char* const mData;
+        const size_t mSize;
+//        bool mOwnData = false;
 
     private:
     public:
@@ -290,8 +290,10 @@ public:
 
     ~InputStream();
 
-    Acquisition& operator>>(Acquisition& acquisition) const;
-    void operator>>(const OutputStream& outputStream) const;
+    Acquisition getAcquisition() const;
+
+//    Acquisition& operator>>(Acquisition& acquisition) const;
+//    void operator>>(const OutputStream& outputStream) const;
 
     std::vector<Acquisition> getAllAcquisition();
     const MetaData& getMetaData() const;

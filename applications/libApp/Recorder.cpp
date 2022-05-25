@@ -70,9 +70,10 @@ void Recorder::record(const InputStreamParameters& inputStreamConfigs)
 
             m_isRecording = true;
             while (m_isRecording) {
-                Stream::Acquisition acq;
+//                Stream::Acquisition acq;
                 for (int i = 0; i < nStream; ++i) {
-                    *inputStream >> acq;
+//                    *inputStream >> acq;
+                    auto acq = inputStream->getAcquisition();
                     std::cout << "[" << i << "] read/write acq : " << acq << std::endl;
                     *outputFileStream << acq;
 
