@@ -44,7 +44,7 @@ const char* vertexShaderFile = PROJECT_DIR "applications/viewer/radiumViewer/ver
 const char* fragmentShaderFile = PROJECT_DIR "applications/viewer/radiumViewer/fragmentShader.glsl";
 
 constexpr int g_nProbes = 10;
-constexpr bool g_enableGrid = false;
+constexpr bool g_enableGrid = true;
 
 using namespace Ra;
 using namespace Ra::Core;
@@ -79,7 +79,7 @@ static long long g_timestampProbePose = 0;
 static int g_iProbeScan = 0;
 static long long g_timestampProbeScan = 0;
 
-Ra::Engine::Rendering::RenderObject* g_splineLine[3] = { nullptr, nullptr, nullptr };
+Ra::Engine::Rendering::RenderObject* g_splineLines[3] = { nullptr, nullptr, nullptr };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -209,7 +209,7 @@ void MinimalComponent::initialize()
         //    spline.
 
         for (int i = 0; i < 3; ++i) {
-            g_splineLine[i] = RenderObject::createRenderObject(
+            g_splineLines[i] = RenderObject::createRenderObject(
                 "test_line",
                 this,
                 RenderObjectType::Geometry,
@@ -218,8 +218,8 @@ void MinimalComponent::initialize()
                 //                              Color::Red() ),
                 DrawPrimitives::Spline(spline, 10, Color::Green(), Color::Red()),
                 {});
-            g_splineLine[i]->setMaterial(g_plainMaterial);
-            addRenderObject(g_splineLine[i]);
+            g_splineLines[i]->setMaterial(g_plainMaterial);
+            addRenderObject(g_splineLines[i]);
         }
     }
 }
@@ -704,22 +704,23 @@ void MinimalComponent::initPoseTraces(const std::vector<Stream::Acquisition>& po
     std::cout << "[MinimalComponent] splines added -----------------" << std::endl;
 
     m_viewer.makeCurrent();
-    //    g_splineLine->setLifetime(0);
-    //    g_splineLine->setVisible(false);
+    //    g_splineLines->setLifetime(0);
+    //    g_splineLines->setVisible(false);
     for (int i = 0; i < 3; ++i) {
         splines[i].setCtrlPoints(points[i]);
 //        Scalar scale = (i == 2) ? 10_ra : 1_ra;
-        g_splineLine[i]->setMesh(
+        g_splineLines[i]->setMesh(
             DrawPrimitives::Spline(splines[i], points[i].size(), Color::Cyan() * (i + 1) / 3.0, Color::Black() * (i + 1) / 3.0));
+        g_splineLines[i]->setTransparent(true);
     }
-    //    g_splineLine->updateGL();
-    //    g_splineLine->setVisible(true);
+    //    g_splineLines->updateGL();
+    //    g_splineLines->setVisible(true);
 //    this->invalidateAabb();
 //    m_engine.computeSceneAabb();
     m_viewer.doneCurrent();
 
     //    this->invalidateAabb();
-    //    g_splineLine->updateGL();
+    //    g_splineLines->updateGL();
 
     //    Ra::Engine::Scene::Entity* e = m_engine.getEntityManager()->createEntity("Spline");
     //    auto* splineComponent = new GeometryComponent("spline", e);

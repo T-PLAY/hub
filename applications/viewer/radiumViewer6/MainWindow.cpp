@@ -91,7 +91,7 @@ MainWindow::MainWindow( QWidget* parent ) : QMainWindow( parent ), ui( new Ui::M
     //    delete ui->dockWidget_loader;
     //    delete ui->dockWidget_server;
 
-    m_formInputStreamViews = new FormInputStreamViews( this );
+    m_formInputStreamViews = new FormInputStreamViews( *ui->mdiArea, this );
     ui->dockWidget_top->setWidget( m_formInputStreamViews );
     //    QObject::connect(m_formInputStreamViews, &FormInputStreamViews::initPose, this,
     //    &MainWindow::onInitPose); QObject::connect(m_formInputStreamViews,
@@ -261,7 +261,7 @@ void MainWindow::onNewAcquisition( const std::string& sensorName, const std::str
 //        m_comp->updateScan(acqs);
 //        while (! acqs.empty()) {
             m_comp->updateScan( acqs.front() );
-            acqs.pop();
+//            acqs.pop();
 //        }
 //        }
     }
@@ -274,12 +274,14 @@ void MainWindow::onNewAcquisition( const std::string& sensorName, const std::str
 ////            const auto & acq = acqs.front();
 ////            std::cout << "[MainWindow] update pose : " << acq << std::endl;
             m_comp->updatePose( acqs.front() );
-            acqs.pop();
+//            acqs.pop();
 //        }
     }
-    else {
-        assert( false );
-    }
+    acqs.pop();
+//    else {
+        // do n
+//        assert( false );
+//    }
 }
 
 // void MainWindow::onUpdatePose()

@@ -16,6 +16,8 @@
 #include <QLabel>
 #include <constants.h>
 
+#include <QMdiArea>
+
 // template <class IOStreamT>
 // InputStreamThread::InputStreamThread(IOStreamT&& iostream, QObject* parent)
 //     : QThread(parent)
@@ -35,7 +37,7 @@ class FormInputStreamViews : public QWidget {
     Q_OBJECT
 
 public:
-    explicit FormInputStreamViews(QWidget* parent = nullptr);
+    explicit FormInputStreamViews(QMdiArea& mdiArea, QWidget* parent = nullptr);
     ~FormInputStreamViews();
 
     //    void connect(const std::map<std::string, std::unique_ptr<CyclicBuff>>& ramOutputStreams);
@@ -45,16 +47,15 @@ public:
     //    void addInputStream(const std::string streamName, Args&&... iostream);
     void deleteInputStream(const std::string& streamName);
 
-//    const Stream::Acquisition & getAcquisition(const std::string& sensorName, const std::string & sourceType) const;
-//    Stream::Acquisition && getAcquisition(const std::string& sensorName, const std::string & sourceType);
-    Acquisitions & getAcquisitions(const std::string& sensorName, const std::string & sourceType);
+    //    const Stream::Acquisition & getAcquisition(const std::string& sensorName, const std::string & sourceType) const;
+    //    Stream::Acquisition && getAcquisition(const std::string& sensorName, const std::string & sourceType);
+    Acquisitions& getAcquisitions(const std::string& sensorName, const std::string& sourceType);
 
 signals:
     //    void initPose();
     //    void initScan();
-        void newAcquisition(const std::string& sensorName, const std::string & sourceType);
-        void init(const std::string& sensorName);
-
+    void newAcquisition(const std::string& sensorName, const std::string& sourceType);
+    void init(const std::string& sensorName);
 
     //    void newAcquisitionScan();
     //    void newAcquisitionPose();
@@ -63,7 +64,7 @@ public slots:
     //    void onComboBox_scan_currentTextChanged(const QString& sourceType);
     //    void onComboBox_pose_currentTextChanged(const QString& sourceType);
 
-        void onNewAcquisition(const std::string & sensorName, const std::string & sourceType);
+    void onNewAcquisition(const std::string& sensorName, const std::string& sourceType);
     //    void onNewScanAcquisition(const std::string& sensorName);
     //    void onNewPoseAcquisition(const std::string& sensorName);
 
@@ -72,16 +73,16 @@ public slots:
 private slots:
     //    void onKillInputStreamPrivate(const std::string& streamName, int iSensor);
 
-        void onDeleteStreamView(const std::string & sensorName);
+    void onDeleteStreamView(const std::string& sensorName);
 
-//    void onNewAcquisition(const std::string& streamName, int iSensor);
-//    void onNewAcquisition(const std::string& sensorName, const std::string & sourceType);
+    //    void onNewAcquisition(const std::string& streamName, int iSensor);
+    //    void onNewAcquisition(const std::string& sensorName, const std::string & sourceType);
 
     //        void onNewAcquisitionPose(const std::string& streamName);
     //        void onNewAcquisitionScan(const std::string& streamName);
 
-//    void onNewInputStream(const std::string& streamName, int iSensor);
-//    void onDeleteInputStream(const std::string& streamName);
+    //    void onNewInputStream(const std::string& streamName, int iSensor);
+    //    void onDeleteInputStream(const std::string& streamName);
 
     //    void on_stopStreaming(std::string streamName);
 
@@ -105,6 +106,8 @@ private:
     QHBoxLayout* m_streamViewsLayout = nullptr;
 
     Recorder m_recorder;
+
+    QMdiArea& m_mdiArea;
 
 public:
     //    const Stream::Acquisition& getScanAcquisition() const;
@@ -130,21 +133,34 @@ void FormInputStreamViews::addInputStream(const std::string streamName, IOStream
     //    //    }
     //    //       if (streamName.substr(0, m_sensorNames[0].size());
 
-    std::string sensorName;
-    int iSensor = -1;
-    bool found = false;
-    while (!found && iSensor < 2) {
-        ++iSensor;
+    //    std::string sensorName;
+    //    int iSensor = -1;
+    //    bool found = false;
+    //    while (!found && iSensor < 1) {
+    //        ++iSensor;
 
-        sensorName = m_sensorNames[iSensor];
-        found = streamName.substr(0, sensorName.size()) == sensorName;
+    //        sensorName = m_sensorNames[iSensor];
+    //        found = streamName.substr(0, sensorName.size()) == sensorName;
+    //    }
+    //    assert(found);
+
+    std::string sensorName = "";
+    for (std::string sourceType : { "record" }) {
+        const std::string subStr = streamName.substr(streamName.size() - sourceType.size() - 1, sourceType.size());
+        if (subStr == sourceType) {
+            sensorName = streamName.substr(0, streamName.size() - sourceType.size() - 3);
+            break;
+        }
     }
-    assert(found);
 
+    if (sensorName.empty())
+        sensorName = streamName;
+
+//    assert(sensorName == g_probeScanSensorName || sensorName == g_probePoseSensorName);
     //        FormInputStreamView inputStreamView(sensorName);
 
     if (m_sensorName2streamView.find(sensorName) == m_sensorName2streamView.end()) {
-        FormInputStreamView* inputStreamView = new FormInputStreamView(sensorName);
+        FormInputStreamView* inputStreamView = new FormInputStreamView(sensorName, m_mdiArea);
         QObject::connect(inputStreamView, &FormInputStreamView::newAcquisition, this, &FormInputStreamViews::newAcquisition);
         QObject::connect(inputStreamView, &FormInputStreamView::newAcquisition, this, &FormInputStreamViews::onNewAcquisition);
         QObject::connect(inputStreamView, &FormInputStreamView::init, this, &FormInputStreamViews::init);

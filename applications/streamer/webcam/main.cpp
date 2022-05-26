@@ -41,7 +41,7 @@ int main(int, char**)
 
         cv::Mat grey;
         cv::cvtColor(frame, grey, cv::COLOR_BGR2GRAY);
-        outputStream << Stream::Acquisition { start, end, frame.data };
+        outputStream << Stream::Acquisition(start, end, frame.data, 3 * width * height);
 
         // check if we succeeded
         if (frame.empty()) {

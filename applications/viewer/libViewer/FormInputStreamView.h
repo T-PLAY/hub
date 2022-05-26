@@ -10,6 +10,12 @@
 //#include <stack>
 #include <queue>
 
+#include <QMdiArea>
+#include <WidgetStreamView.h>
+
+#include <QMdiSubWindow>
+#include <constants.h>
+
 class FormInputStreamViews;
 
 class InputStreamThread : public QThread {
@@ -32,7 +38,7 @@ public:
     // overriding the QThread's run() method
     void run();
 
-//    Stream::Acquisition mAcq;
+    //    Stream::Acquisition mAcq;
     std::queue<Stream::Acquisition> mAcqs;
 
     //    int mIStream;
@@ -84,7 +90,7 @@ class FormInputStreamView : public QWidget {
     Q_OBJECT
 
 public:
-    explicit FormInputStreamView(const std::string& sensorName, QWidget* parent = nullptr);
+    explicit FormInputStreamView(const std::string& sensorName, QMdiArea& mdiArea, QWidget* parent = nullptr);
     ~FormInputStreamView();
 
     template <class IOStreamT>
@@ -92,8 +98,8 @@ public:
 
     void remove(const std::string& sourceType);
 
-//    const Stream::Acquisition& getAcquisition(const std::string& sourceType) const;
-    Acquisitions & getAcquisitions(const std::string& sourceType);
+    //    const Stream::Acquisition& getAcquisition(const std::string& sourceType) const;
+    Acquisitions& getAcquisitions(const std::string& sourceType);
     const InputStreamThread& getIputStreamThread(const std::string& sourceType) const;
 
 private slots:
@@ -105,7 +111,7 @@ signals:
     void newAcquisition(const std::string& sensorName, const std::string& sourceType);
     void init(const std::string& sensorName);
 
-    void isEmpty(const std::string & sensorName);
+    void isEmpty(const std::string& sensorName);
 
 private:
     Ui::FormInputStreamView* ui;
@@ -121,6 +127,9 @@ private:
     //    std::map<std::string, std::list<std::unique_ptr<InputStream>>> m_sourceType2inputStream;
     std::map<std::string, std::list<std::unique_ptr<InputStreamThread>>> m_sourceType2inputStreamThreads;
     //    std::set<std::string> m_streamsKilled;
+
+    WidgetStreamView* m_widgetStreamView = nullptr;
+    QMdiArea& m_mdiArea;
 };
 
 template <class IOStreamT>
@@ -150,6 +159,39 @@ void FormInputStreamView::add(const std::string streamName, IOStreamT&& iostream
         auto stringList = m_sourceTypeModel.stringList();
         stringList.append(sourceType.c_str());
         m_sourceTypeModel.setStringList(stringList);
+
+        assert(m_widgetStreamView == nullptr);
+
+        const auto& inputStream = inputStreamThread->mInputStream;
+        const auto& dims = inputStream->getDims();
+        if (dims.size() == 1) {
+            m_widgetStreamView = new WidgetStreamView1D(this);
+            m_widgetStreamView->setMinimumSize(400, 35);
+
+        } else if (dims.size() == 2) {
+            m_widgetStreamView = new WidgetStreamView2D(this);
+            m_widgetStreamView->setMinimumWidth(dims.at(0));
+            m_widgetStreamView->setMinimumHeight(dims.at(1));
+        }
+        //        if (m_widgetStreamView != nullptr) {
+        assert(m_widgetStreamView != nullptr);
+
+        auto* subWindow = m_mdiArea.addSubWindow(m_widgetStreamView);
+        subWindow->setVisible(true);
+        subWindow->setWindowFlags(Qt::CustomizeWindowHint | Qt::WindowMinMaxButtonsHint | Qt::WindowTitleHint);
+
+        std::string dimText = "(dim: ";
+        for (int i = 0; i < dims.size(); ++i) {
+            dimText += std::to_string(dims.at(i));
+            if (i != dims.size() - 1) {
+                dimText += " x ";
+            }
+        }
+        dimText += ")";
+
+        std::string formatText = std::string("(format: ") + Stream::format2string[(int)inputStream->getFormat()] + ")";
+        subWindow->setWindowTitle((m_sensorName + "   " + dimText + "   " + formatText).c_str());
+        //        }
     }
 }
 

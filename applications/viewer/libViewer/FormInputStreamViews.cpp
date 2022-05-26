@@ -12,10 +12,11 @@
 
 #include <Frame.h>
 
-FormInputStreamViews::FormInputStreamViews(QWidget* parent)
+FormInputStreamViews::FormInputStreamViews(QMdiArea &mdiArea, QWidget* parent)
     : QWidget(parent)
     , ui(new Ui::FormInputStreamViews)
     , m_recorder(PROJECT_DIR "data/")
+    , m_mdiArea(mdiArea)
 //    , m_counterFpsThreads[1](*ui->label_poseFrequency)
 //    , m_counterFpsThreads[0](*ui->label_scanFrequency)
 {
@@ -62,16 +63,30 @@ FormInputStreamViews::~FormInputStreamViews()
 void FormInputStreamViews::deleteInputStream(const std::string& streamName)
 {
 
-    std::string sensorName;
-    int iSensor = -1;
-    bool found = false;
-    while (!found && iSensor < 2) {
-        ++iSensor;
+//    std::string sensorName;
+//    int iSensor = -1;
+//    bool found = false;
+//    while (!found && iSensor < 2) {
+//        ++iSensor;
 
-        sensorName = m_sensorNames[iSensor];
-        found = streamName.substr(0, sensorName.size()) == sensorName;
+//        sensorName = m_sensorNames[iSensor];
+//        found = streamName.substr(0, sensorName.size()) == sensorName;
+//    }
+//    assert(found);
+
+    std::string sensorName = "";
+    for (std::string sourceType : { "record" }) {
+        const std::string subStr = streamName.substr(streamName.size() - sourceType.size() - 1, sourceType.size());
+        if (subStr == sourceType) {
+            sensorName = streamName.substr(0, streamName.size() - sourceType.size() - 3);
+            break;
+        }
     }
-    assert(found);
+
+    if (sensorName.empty())
+        sensorName = streamName;
+
+    assert (m_sensorName2streamView.find(sensorName) != m_sensorName2streamView.end());
 
     //    assert(m_sensorName2streamView.find(sensorName) != m_sensorName2streamView.end());
     if (m_sensorName2streamView.find(sensorName) != m_sensorName2streamView.end()) {
@@ -81,7 +96,7 @@ void FormInputStreamViews::deleteInputStream(const std::string& streamName)
             ? ("physical")
             : (streamName.substr(sensorName.size() + 2,
                 streamName.size() - 1 - sensorName.size() - 2));
-        assert(sourceType == "" || sourceType == "physical" || sourceType == "record");
+        assert(sourceType == "physical" || sourceType == "record");
 
         inputStreamView->remove(sourceType);
     }
