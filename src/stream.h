@@ -194,12 +194,14 @@ public:
     class Acquisition {
     public:
 //        Acquisition(long long backendTimestamp = 0, long long backendTimeOfArrival = 0, unsigned char* data = nullptr);
-        Acquisition(long long backendTimestamp, long long backendTimeOfArrival, const unsigned char* data, size_t size);
+        Acquisition(long long backendTimestamp, long long backendTimeOfArrival, const unsigned char* const data, size_t size);
         ~Acquisition();
 
         Acquisition(const Acquisition& acq) = delete;
 //        Acquisition(const Acquisition& acq);
-        Acquisition(Acquisition&& acq) = default;
+//        Acquisition(Acquisition&& acq) = default;
+        Acquisition(Acquisition&& acq);
+
         Acquisition & operator=(const Acquisition & acq) = delete;
         Acquisition& operator=(Acquisition&& acq) = delete;
         Acquisition clone() const;
@@ -211,6 +213,7 @@ public:
 //        bool mOwnData = false;
 
     private:
+        bool mIsMoved = false;
     public:
         friend std::ostream& operator<<(std::ostream& os, const Acquisition& acq);
     };

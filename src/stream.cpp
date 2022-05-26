@@ -178,7 +178,8 @@ InputStream::~InputStream() {
 Stream::Acquisition InputStream::getAcquisition() const {
     //    assert(acquisition.mData != nullptr);
     long long start, end;
-    unsigned char* data = new unsigned char[mAcquisitionSize];
+//    unsigned char* data = new unsigned char[mAcquisitionSize];
+    unsigned char data[mAcquisitionSize];
 
     mIOStream.read( start );
     mIOStream.read( end );
@@ -234,8 +235,9 @@ std::vector<Stream::Acquisition> InputStream::getAllAcquisition() {
             //            if (nReadAcqs < 10) {
             //                std::cout << "read acquisition : " << acq << std::endl;
             //            }
-            auto acq = getAcquisition();
-            acqs.emplace_back( std::move( acq ) );
+//            auto acq = getAcquisition();
+//            acqs.emplace_back( std::move( acq ) );
+            acqs.emplace_back( getAcquisition() );
             ++nReadAcqs;
         }
     }
@@ -355,7 +357,7 @@ void OutputStream::operator<<( const Acquisition& acquisition ) const {
 
 Stream::Acquisition::Acquisition( long long backendTimestamp,
                                   long long backendTimeOfArrival,
-                                  const unsigned char* data,
+                                  const unsigned char* const data,
                                   size_t size ) :
     mBackendTimestamp( backendTimestamp ),
     mBackendTimeOfArrival( backendTimeOfArrival ),
@@ -387,6 +389,12 @@ Stream::Acquisition::Acquisition( long long backendTimestamp,
 Stream::Acquisition::~Acquisition() {
 //    assert( mData != nullptr );
 //    delete[] mData;
+    assert(mData != nullptr);
+
+    if (! mIsMoved) {
+        delete [] mData;
+//        mData = nullptr;
+    }
 
     //    if (mOwnData) {
     //        assert(mData != nullptr);
@@ -401,16 +409,17 @@ Stream::Acquisition::~Acquisition() {
 
 //}
 
-// Stream::Acquisition::Acquisition(Acquisition&& acq)
-//    : mBackendTimestamp(acq.mBackendTimestamp)
-//    , mBackendTimeOfArrival(acq.mBackendTimeOfArrival)
-//    , mData(acq.mData)
-//    , mSize(acq.mSize)
+ Stream::Acquisition::Acquisition(Acquisition&& acq)
+    : mBackendTimestamp(acq.mBackendTimestamp)
+    , mBackendTimeOfArrival(acq.mBackendTimeOfArrival)
+    , mData(acq.mData)
+    , mSize(acq.mSize)
 //    , mOwnData(acq.mOwnData)
-//{
+{
+     acq.mIsMoved = true;
 //    acq.mOwnData = false;
 //    acq.mData = nullptr;
-//}
+}
 
 // Stream::Acquisition& Stream::Acquisition::operator=(Acquisition&& acq)
 //{
@@ -436,7 +445,9 @@ Stream::Acquisition Stream::Acquisition::clone() const {
     //    memcpy(acq.mData, mData, mSize);
     //    return acq;
 
-    unsigned char* data = new unsigned char[mSize];
-    memcpy( data, mData, mSize );
-    return Stream::Acquisition( mBackendTimestamp, mBackendTimeOfArrival, data, mSize );
+//    unsigned char* data = new unsigned char[mSize];
+//    unsigned char data[mSize];
+//    memcpy( data, mData, mSize );
+//    return Stream::Acquisition( mBackendTimestamp, mBackendTimeOfArrival, data, mSize );
+    return Stream::Acquisition( mBackendTimestamp, mBackendTimeOfArrival, mData, mSize );
 }
