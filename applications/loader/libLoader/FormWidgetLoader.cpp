@@ -37,6 +37,7 @@ FormWidgetLoader::FormWidgetLoader(QWidget* parent)
         //    m_recordFileModel->setFilter(QDir::NoDotAndDotDot | QDir::AllDirs);
         // QFileSystemModel requires root path
         m_recordFileModel->setRootPath(recordPath);
+        m_recordFileModel->sort(0, Qt::SortOrder::DescendingOrder);
 
         // Attach the model to the view
         ui->treeView_record->setModel(m_recordFileModel);
