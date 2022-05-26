@@ -144,6 +144,7 @@ public:
         return os;
     }
 
+
     static constexpr int format2nByte[static_cast<int>(Format::COUNT)] = {
         0, // NONE
         2, // Z16             , /**< 16-bit linear depth values. The depth is meters is equal to depth scale * pixel value. */
