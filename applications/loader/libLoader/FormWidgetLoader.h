@@ -30,6 +30,7 @@ signals:
 //    void snapshotFrames_selectionChanged();
 
     void recordPathLoaded();
+
     void snapshotPathLoaded();
 
 

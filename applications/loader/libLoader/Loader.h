@@ -60,6 +60,7 @@ private:
 //    std::map<std::string, std::unique_ptr<InputStream>> m_inputStreams;
 //    std::vector<InputStream> m_inputStreams;
 
+    std::map<std::string, std::vector<Stream::Acquisition>> m_sensorName2acquisitions;
     std::set<Snapshot> m_snapshots;
     std::vector<Frame> m_frames;
     std::string m_loadedPath = "";
@@ -92,5 +93,6 @@ public:
 //    std::vector<std::unique_ptr<InputStream>> getInputStreams();
 //    const std::map<std::string, std::unique_ptr<OutputStream>> & getRamOutputStreams() const;
     const std::map<std::string, std::unique_ptr<CyclicBuff>> &getOutputStreamBuffs() const;
+    const std::vector<Stream::Acquisition> &getAcquisitions(const std::string & sensorName) const;
 };
 

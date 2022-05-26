@@ -59,6 +59,7 @@ MainWindow::MainWindow( QWidget* parent ) : QMainWindow( parent ), ui( new Ui::M
         sys->addComponent( e, m_comp );
         m_comp->initialize();
 
+
         // prepare the viewer to render the scene (i.e. build RenderTechniques for the
         // active renderer)
         app.m_viewer->prepareDisplay();
@@ -150,7 +151,8 @@ MainWindow::~MainWindow() {
 
 void MainWindow::onRecordLoaderPathLoaded() {
     std::cout << "[MainWindow] onRecordLoaderPathLoaded()" << std::endl;
-    const auto& outputStreamBuffs = m_formWidgetLoader->getRecordLoader().getOutputStreamBuffs();
+    const auto & recordLoader = m_formWidgetLoader->getRecordLoader();
+    const auto& outputStreamBuffs = recordLoader.getOutputStreamBuffs();
 
     for ( const auto& pair : outputStreamBuffs ) {
         const auto& streamName = pair.first;
@@ -164,6 +166,10 @@ void MainWindow::onRecordLoaderPathLoaded() {
         m_formInputStreamViews->addInputStream( streamName, RamIO( cyclicBuff ) );
         //    m_formInputStreamViews->connect(recordOutputStreams);
     }
+
+    const auto & poseAcqs = recordLoader.getAcquisitions(g_probePoseSensorName);
+    m_comp->initPoseTraces(poseAcqs);
+
 }
 
 void MainWindow::onSnapshotLoaderPathLoaded() {

@@ -14,6 +14,8 @@
 #include <stream.h>
 #include <FormInputStreamView.h>
 
+//#include <MinimalSystem.hpp>
+
 /* This file contains a minimal radium/qt application which shows the
 classic "Spinning Cube" demo. */
 
@@ -23,7 +25,9 @@ struct MinimalComponent : public Ra::Engine::Scene::Component {
 
     MinimalComponent( Ra::Engine::Scene::Entity* entity,
                       Ra::Engine::RadiumEngine& e,
-                      Ra::Gui::Viewer& viewer );
+                      Ra::Gui::Viewer& viewer
+//                      MinimalSystem & minimalSystem
+                      );
 
     /// This function is called when the component is properly
     /// setup, i.e. it has an entity.
@@ -41,9 +45,12 @@ struct MinimalComponent : public Ra::Engine::Scene::Component {
 //    void updateScan( Stream::Acquisition && acq );
     void initScan(int iProbe = 0);
 
+    void initPoseTraces(const std::vector<Stream::Acquisition> & poseAcqs);
+
   public:
   private:
     Ra::Engine::RadiumEngine& m_engine;
     Ra::Gui::Viewer& m_viewer;
+//    MinimalSystem & m_system;
 
 };
