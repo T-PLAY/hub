@@ -120,6 +120,8 @@ MainWindow::MainWindow(QWidget* parent)
 
 #ifdef USE_FORM_SENSOR_VIEWS
     m_formSensorViews = new FormSensorViews(this);
+
+    //    if (m_formSensorViews->isServerConnected()) {
     ui->dockWidget_left->setWidget(m_formSensorViews);
     QObject::connect(m_formSensorViews,
         &FormSensorViews::streamingStarted,
@@ -129,7 +131,15 @@ MainWindow::MainWindow(QWidget* parent)
         &FormSensorViews::streamingStopped,
         this,
         &MainWindow::onServerStreamStopped);
-//        m_formSensorViews->startStreaming();
+    QObject::connect(m_formSensorViews,
+        &FormSensorViews::serverDisconnected,
+        this,
+        &MainWindow::onServerDisconnected);
+    //        m_formSensorViews->startStreaming();
+//    } else {
+//        delete m_formSensorViews;
+//        ui->dockWidget_left->close();
+//    }
 #else
     ui->dockWidget_left->close();
 #endif
@@ -230,6 +240,14 @@ void MainWindow::onServerStreamStopped(const std::string& sensorName)
 
     m_formInputStreamViews->deleteInputStream(sensorName);
     //        m_formInputStreamViews->onKillInputStream(sensorName);
+}
+
+void MainWindow::onServerDisconnected()
+{
+    delete m_formSensorViews;
+    m_formSensorViews = nullptr;
+    //    ui->dockWidgetContents_left.c
+    ui->dockWidget_left->close();
 }
 
 #endif

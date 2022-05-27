@@ -141,6 +141,7 @@ FormSensorViews::FormSensorViews(
 
     m_sensorModel.setStringList(QStringList("none"));
     //    m_mainWindow.setEnabled(false);
+//    std::this_thread::sleep_for(std::chrono::milliseconds(10));
 }
 
 FormSensorViews::~FormSensorViews()
@@ -174,12 +175,12 @@ FormSensorViews::~FormSensorViews()
     std::cout << "[FormSensorViews] ~FormSensorViews() end" << std::endl;
 }
 
-//void FormSensorViews::startStreaming()
+// void FormSensorViews::startStreaming()
 //{
-//    for (auto & pair : m_sensorViews) {
-//        pair.second->on_startStreaming();
-//    }
-//}
+//     for (auto & pair : m_sensorViews) {
+//         pair.second->on_startStreaming();
+//     }
+// }
 
 void FormSensorViews::onServerConnect()
 {
@@ -188,6 +189,7 @@ void FormSensorViews::onServerConnect()
     m_serverConnected = true;
     ui->lineEdit_ip->setEnabled(false);
     ui->spinBox_port->setEnabled(false);
+    m_serverPing = true;
 }
 
 void FormSensorViews::onServerDisconnect()
@@ -198,13 +200,14 @@ void FormSensorViews::onServerDisconnect()
     m_serverConnected = false;
     ui->lineEdit_ip->setEnabled(true);
     ui->spinBox_port->setEnabled(true);
-
-//    for (auto& pair : m_sensorViews) {
-//        auto* sensorView = pair.second;
-//        delete sensorView;
-//    }
+    m_serverPing = true;
+    //    for (auto& pair : m_sensorViews) {
+    //        auto* sensorView = pair.second;
+    //        delete sensorView;
+    //    }
 
     //    m_dialog = new DialogServerConnect(&m_mainWindow);
+    emit serverDisconnected();
 }
 
 void FormSensorViews::addSensor(std::string sensorName,
@@ -240,8 +243,8 @@ void FormSensorViews::addSensor(std::string sensorName,
     QObject::connect(
         sensorView, &FormSensorView::streamingStopped, this, &FormSensorViews::streamingStopped);
 
-//    std::this_thread::sleep_for(std::chrono::milliseconds(100));
-//    sensorView->on_startStreaming();
+    //    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    //    sensorView->on_startStreaming();
     //    sensorView->on_radioButtonOnOff_clicked(true);
 }
 
@@ -268,6 +271,14 @@ void FormSensorViews::delSensor(std::string sensorName)
     std::cout << "[FormSensorViews] FormSensorViews::delSensor end '" << sensorName << "'" << std::endl;
 
     //    emit sensorDeleted(sensorName);
+}
+
+bool FormSensorViews::isServerConnected() const
+{
+    //    while (!m_serverPing) {
+    //        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    //    };
+    return m_serverConnected;
 }
 
 // void FormSensorViews::onQuitApp()
