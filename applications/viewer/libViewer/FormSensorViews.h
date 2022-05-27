@@ -60,7 +60,7 @@ public:
 //    void startStreaming();
 
 signals:
-    //    void serverConnected();
+    //    void isServerConnected();
     //    void serverDisconnected();
     void streamingStarted(const std::string & sensorName, const std::string & syncSensorName);
     void streamingStopped(const std::string & sensorName);
@@ -68,6 +68,7 @@ signals:
     //    void stopStreaming();
     //    void sensorAdded(const std::string & sensorName);
     //    void sensorDeleted(const std::string & sensorName);
+    void serverDisconnected();
 
 public slots:
     void onServerConnect();
@@ -101,6 +102,7 @@ private:
 //    QMainWindow& m_mainWindow;
 
     bool m_serverConnected = false;
+    bool m_serverPing = false;
     //    DialogServerConnect & m_dialog;
     //    QComboBox & m_comboBoxScan;
     //    QComboBox & m_comboBoxPose;
@@ -109,6 +111,7 @@ public:
     const FormSensorView& getSensorView(const std::string& sensorName) const;
 //    void setMdiArea(QMdiArea *newMdiArea);
 
+    bool isServerConnected() const;
 };
 
 #endif // FORMSENSORVIEWS_H

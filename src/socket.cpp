@@ -64,7 +64,8 @@ void ClientSocket::connectToServer()
 
     // Connect to server
     while (connect(mFdSock, (struct sockaddr*)&serv_addr, sizeof(serv_addr)) < 0) {
-        std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+//        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+        std::cout << "[ClienSocket] failed to connect to server ########################" << std::endl;
         throw Socket::exception(((std::string("Failed to connect to server at address ") + mIpv4 + " and port " + std::to_string(mPort))).c_str());
     }
 
