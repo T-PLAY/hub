@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1024</width>
-    <height>768</height>
+    <width>1051</width>
+    <height>724</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,7 +26,7 @@
      <verstretch>0</verstretch>
     </sizepolicy>
    </property>
-   <layout class="QVBoxLayout" name="verticalLayout">
+   <layout class="QHBoxLayout" name="horizontalLayout_4">
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="sizePolicy">
@@ -36,7 +36,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="page2D">
        <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -55,7 +55,7 @@
       <widget class="QWidget" name="page3D">
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
-         <layout class="QVBoxLayout" name="verticalLayout_3dView">
+         <layout class="QHBoxLayout" name="layout_3dView">
           <item>
            <widget class="QFrame" name="frame">
             <property name="sizePolicy">
@@ -175,7 +175,7 @@
       <verstretch>0</verstretch>
      </sizepolicy>
     </property>
-    <layout class="QVBoxLayout" name="verticalLayout_6"/>
+    <layout class="QHBoxLayout" name="horizontalLayout_5"/>
    </widget>
   </widget>
   <widget class="QDockWidget" name="dockWidget_top">
@@ -195,6 +195,7 @@
       <verstretch>0</verstretch>
      </sizepolicy>
     </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_3"/>
    </widget>
   </widget>
   <action name="action2D">

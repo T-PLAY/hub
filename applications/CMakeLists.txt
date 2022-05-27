@@ -1,7 +1,7 @@
 
 find_package(QT NAMES Qt6 Qt5)
 set(QT_VERSION ${QT_VERSION_MAJOR})
-message(STATUS ${QT_VERSION})
+#message(STATUS ${QT_VERSION})
 if (NOT QT_VERSION)
         set(QT_VERSION 5)
 endif()
