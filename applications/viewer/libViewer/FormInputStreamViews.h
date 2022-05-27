@@ -146,9 +146,12 @@ void FormInputStreamViews::addInputStream(const std::string streamName, IOStream
 
     std::string sensorName = "";
     for (std::string sourceType : { "record" }) {
-        const std::string subStr = streamName.substr(streamName.size() - sourceType.size() - 1, sourceType.size());
+        const int start = streamName.size() - sourceType.size() - 1;
+        if (start < 0)
+            continue;
+        const std::string subStr = streamName.substr(start, sourceType.size());
         if (subStr == sourceType) {
-            sensorName = streamName.substr(0, streamName.size() - sourceType.size() - 3);
+            sensorName = streamName.substr(0, start - 2);
             break;
         }
     }
