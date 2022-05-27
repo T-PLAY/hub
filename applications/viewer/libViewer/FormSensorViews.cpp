@@ -88,6 +88,7 @@ void Thread_Client::run()
             }
         } catch (std::exception& e) {
             emit serverDisconnected();
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
             //            m_dialog.show();
             std::cout << "[Thread_Client] [viewer] no server, catch exception : " << e.what()
                       << std::endl;
