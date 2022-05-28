@@ -13,6 +13,8 @@ void FrameRuler::paintEvent(QPaintEvent* event)
 {
 //    std::cout << "[FrameRuler] paintEvent" << std::endl;
     assert(mCanvasPixelPerUnit != nullptr);
+    assert(mScrollBar != nullptr);
+    assert(mCanvasPixelSize != nullptr);
     assert(mType != NONE);
 
     const int sideSize = (mType == Type::HORIZONTAL) ? width() : height();
@@ -30,6 +32,15 @@ void FrameRuler::paintEvent(QPaintEvent* event)
     const int nStep = std::ceil(unitSide / stepSize);
 
     int alpha = 100;
+
+//    const int scrollPixelStart = mScrollBar->value();
+//    const double scroolUnitStart = scrollPixelStart / *mCanvasPixelPerUnit;
+    if (mType == Type::HORIZONTAL) {
+        this->setMinimumWidth(*mCanvasPixelSize + 15);
+    }
+    else {
+        this->setMinimumHeight(*mCanvasPixelSize + 15);
+    }
 
     QPainter painter;
     painter.begin(this);
@@ -52,6 +63,16 @@ void FrameRuler::paintEvent(QPaintEvent* event)
     }
 
     painter.end();
+}
+
+void FrameRuler::setCanvasPixelSize(const int *newCanvasPixelSize)
+{
+    mCanvasPixelSize = newCanvasPixelSize;
+}
+
+void FrameRuler::setScrollBar(const QScrollBar *newScrollBar)
+{
+    mScrollBar = newScrollBar;
 }
 
 void FrameRuler::setType(Type newType)

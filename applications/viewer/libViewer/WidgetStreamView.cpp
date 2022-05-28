@@ -323,6 +323,16 @@ void WidgetStreamView2D::resizeEvent(QResizeEvent* event)
     //    *m_image = m_image->scaled(QSize(mCanvasPixelWidth, mCanvasPixelHeight));
 }
 
+const int & WidgetStreamView2D::getCanvasPixelHeight() const
+{
+    return mCanvasPixelHeight;
+}
+
+const int & WidgetStreamView2D::getCanvasPixelWidth() const
+{
+    return mCanvasPixelWidth;
+}
+
 void WidgetStreamView2D::setCanvasPixelPerUnit(const double& newCanvasPixelPerUnit)
 {
     mCanvasPixelPerUnit = &newCanvasPixelPerUnit;
