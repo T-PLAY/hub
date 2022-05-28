@@ -9,8 +9,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     m_imageManipulator = new FormImageManipulator(this);
-    m_imageManipulator->setMinimumWidth(640);
-    m_imageManipulator->setMinimumHeight(1000);
+//    m_imageManipulator->setMinimumWidth(640);
+//    m_imageManipulator->setMinimumHeight(1000);
 
 //    FormIm
     ui->mdiArea->addSubWindow(m_imageManipulator);

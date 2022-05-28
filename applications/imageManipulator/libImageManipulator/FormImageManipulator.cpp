@@ -17,10 +17,18 @@ FormImageManipulator::FormImageManipulator(QWidget* parent)
 
     ui->frame_top_2->setPixelPerUnit(&ui->scrollArea->getCanvasPixelPerUnit());
     ui->frame_top_2->setType(FrameRuler::Type::HORIZONTAL);
+    ui->frame_top_2->setScrollBar(ui->scrollArea->horizontalScrollBar());
+    ui->frame_top_2->setCanvasPixelSize(&ui->widgetStreamView_2->getCanvasPixelWidth());
+
     ui->frame_left_2->setPixelPerUnit(&ui->scrollArea->getCanvasPixelPerUnit());
     ui->frame_left_2->setType(FrameRuler::Type::VERTICAL);
+    ui->frame_left_2->setScrollBar(ui->scrollArea->verticalScrollBar());
+    ui->frame_left_2->setCanvasPixelSize(&ui->widgetStreamView_2->getCanvasPixelHeight());
+
     ui->widgetStreamView_2->setCanvasPixelPerUnit(ui->scrollArea->getCanvasPixelPerUnit());
 
+    ui->scrollArea->setScrollAreaLeft(ui->scrollArea_left);
+    ui->scrollArea->setScrollAreaTop(ui->scrollArea_top);
     QObject::connect(ui->scrollArea, &QScrollAreaGrid::pixelPerUnitChanged, ui->widgetStreamView_2, &WidgetStreamView2D::onPixelPerUnitChanged);
     QObject::connect(ui->scrollArea, &QScrollAreaGrid::pixelPerUnitChanged, ui->frame_top_2, &FrameRuler::onPixelPerUnitChanged);
     QObject::connect(ui->scrollArea, &QScrollAreaGrid::pixelPerUnitChanged, ui->frame_left_2, &FrameRuler::onPixelPerUnitChanged);

@@ -1,26 +1,37 @@
 #include "QScrollAreaGrid.h"
 
-#include <iostream>
 #include <QScrollBar>
+#include <QWheelEvent>
+#include <iostream>
 
 QScrollAreaGrid::QScrollAreaGrid(QWidget* parent)
     : QScrollArea(parent)
 {
 }
 
-void QScrollAreaGrid::wheelEvent(QWheelEvent *event)
+void QScrollAreaGrid::wheelEvent(QWheelEvent* event)
 {
     int ry = event->angleDelta().ry();
 
     std::cout << ry << std::endl;
     if (ry > 0) {
         mCanvasPixelPerUnit += 1.0;
-    }
-    else if (ry < 0) {
+    } else if (ry < 0) {
         mCanvasPixelPerUnit = std::max(mCanvasPixelPerUnit - 1.0, 1.0);
     }
 
-//    update();
+    double vScroll = verticalScrollBar()->value();
+    double y = event->position().y();
+    //    double vUnit = (vScroll + y) / mCanvasPixelPerUnit;
+    verticalScrollBar()->setValue(vScroll + y);
+    m_scrollAreaLeft->verticalScrollBar()->setValue(vScroll + y);
+
+    double hScroll = horizontalScrollBar()->value();
+    double x = event->position().x();
+    horizontalScrollBar()->setValue(hScroll + x);
+    m_scrollAreaTop->horizontalScrollBar()->setValue(hScroll + x);
+
+    //    update();
     emit pixelPerUnitChanged();
 
     event->accept();
@@ -29,7 +40,7 @@ void QScrollAreaGrid::wheelEvent(QWheelEvent *event)
 void QScrollAreaGrid::mousePressEvent(QMouseEvent* event)
 {
     if (event->button() == Qt::LeftButton) {
-//        setCursor(Qt::SplitHCursor);
+        //        setCursor(Qt::SplitHCursor);
         setCursor(Qt::DragMoveCursor);
         mousePosX = event->x();
         mousePosY = event->y();
@@ -51,15 +62,28 @@ void QScrollAreaGrid::mouseReleaseEvent(QMouseEvent* event)
 void QScrollAreaGrid::mouseMoveEvent(QMouseEvent* event)
 {
     if (leftMouseDown) {
-        horizontalScrollBar()->setValue((hSliderPos + mousePosX - event->x()));
-        verticalScrollBar()->setValue((vSliderPos + mousePosY - event->y()));
+        const int xPos = hSliderPos + mousePosX - event->x();
+        horizontalScrollBar()->setValue(xPos);
+        m_scrollAreaTop->horizontalScrollBar()->setValue(xPos);
+
+        const int yPos = vSliderPos + mousePosY - event->y();
+        verticalScrollBar()->setValue(yPos);
+        m_scrollAreaLeft->verticalScrollBar()->setValue(yPos);
     }
-//    event->accept();
+    //    event->accept();
 }
 
+void QScrollAreaGrid::setScrollAreaLeft(QScrollArea* newScrollAreaLeft)
+{
+    m_scrollAreaLeft = newScrollAreaLeft;
+}
 
+void QScrollAreaGrid::setScrollAreaTop(QScrollArea* newScrollAreaTop)
+{
+    m_scrollAreaTop = newScrollAreaTop;
+}
 
-const double & QScrollAreaGrid::getCanvasPixelPerUnit() const
+const double& QScrollAreaGrid::getCanvasPixelPerUnit() const
 {
     return mCanvasPixelPerUnit;
 }

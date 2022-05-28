@@ -40,6 +40,9 @@ public:
 
     void setCanvasPixelPerUnit(const double &newCanvasPixelPerUnit);
 
+    const int & getCanvasPixelWidth() const;
+    const int & getCanvasPixelHeight() const;
+
 public slots:
     void setData(unsigned char* img_ptr, std::vector<int> dims, Stream::Format format) override;
     void setData(unsigned char* img_ptr, size_t size, std::vector<int> dims, Stream::Format format);

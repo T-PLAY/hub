@@ -13,6 +13,10 @@ public:
 
     const double & getCanvasPixelPerUnit() const;
 
+    void setScrollAreaTop(QScrollArea *newScrollAreaTop);
+
+    void setScrollAreaLeft(QScrollArea *newScrollAreaLeft);
+
 signals:
     void pixelPerUnitChanged();
 
@@ -32,6 +36,9 @@ private:
     int hSliderPos;
     int vSliderPos;
     bool leftMouseDown = false;
+
+    QScrollArea * m_scrollAreaTop = nullptr;
+    QScrollArea * m_scrollAreaLeft = nullptr;
 };
 
 #endif // QSCROLLAREAGRID_H
