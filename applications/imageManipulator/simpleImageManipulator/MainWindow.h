@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 
+#include <FormImageManipulator.h>
+
 namespace Ui {
 class MainWindow;
 }
@@ -17,6 +19,9 @@ public:
 
 private:
     Ui::MainWindow *ui;
+
+    FormImageManipulator * m_imageManipulator = nullptr;
+
 };
 
 #endif // MAINWINDOW_H
