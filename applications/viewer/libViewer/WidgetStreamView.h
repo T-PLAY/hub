@@ -48,7 +48,7 @@ private:
 
 protected:
     void paintEvent(QPaintEvent* event) override;
-    void resizeEvent(QResizeEvent* event) override;
+//    void resizeEvent(QResizeEvent* event) override;
 
 private:
     QImage * m_image = nullptr;
@@ -64,8 +64,8 @@ private:
 //    const double mHPixelPerUnit;
 //    const double mVPixelPerUnit;
 
-    int mImagePixelWidth;
-    int mImagePixelHeight;
+    int mImagePixelWidth = 0;
+    int mImagePixelHeight = 0;
 
     double mImageUnitWidth;
     double mImageUnitHeight;

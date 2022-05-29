@@ -107,6 +107,9 @@ void WidgetStreamView2D::init(int imagePixelWidth, int imagePixelHeight, double 
 
 void WidgetStreamView2D::setData(unsigned char* img_ptr, std::vector<int> dims, Stream::Format format)
 {
+    if (mImagePixelWidth != dims.at(0) || mImagePixelHeight != dims.at(1))
+        init(dims.at(0), dims.at(1));
+
     mData = img_ptr;
     assert(dims.size() == 2);
     assert(mImagePixelWidth == dims.at(0));
@@ -118,6 +121,9 @@ void WidgetStreamView2D::setData(unsigned char* img_ptr, std::vector<int> dims, 
 
 void WidgetStreamView2D::setData(unsigned char* img_ptr, size_t size, std::vector<int> dims, Stream::Format format)
 {
+    if (mImagePixelWidth != dims.at(0) || mImagePixelHeight != dims.at(1))
+        init(dims.at(0), dims.at(1));
+
     //    mData = img_ptr;
     assert(mData == nullptr);
     mData = new unsigned char[size];
@@ -273,114 +279,114 @@ void WidgetStreamView2D::paintEvent(QPaintEvent* event)
     //    QWidget::paintEvent(event);
 }
 
-void WidgetStreamView2D::resizeEvent(QResizeEvent* event)
-{
-    std::cout << "[WidgetStreamView2D] resizeEvent" << std::endl;
-    this->setWindowTitle(this->windowTitle() + " " + QString::number(this->size().width()) + " x " + QString::number(this->size().height()) + " pixels");
-    return;
+//void WidgetStreamView2D::resizeEvent(QResizeEvent* event)
+//{
+//    std::cout << "[WidgetStreamView2D] resizeEvent" << std::endl;
+////    this->setWindowTitle(this->windowTitle() + " " + QString::number(this->size().width()) + " x " + QString::number(this->size().height()) + " pixels");
+//    return;
 
-    //    if (width() == mCanvasPixelWidth && height() == mCanvasPixelHeight)
-    //        return;
-    double unitWidth = width() / mHPixelPerUnit;
-    double unitHeight = height() / mVPixelPerUnit;
-    if (unitWidth * mRatio > unitHeight) {
-        unitWidth = unitHeight / mRatio;
-        //    mCanvasPixelPerUnit = mVPixelPerUnit;
-    } else {
-        unitHeight = unitWidth * mRatio;
-        //    mCanvasPixelPerUnit = mHPixelPerUnit;
-    }
+//    //    if (width() == mCanvasPixelWidth && height() == mCanvasPixelHeight)
+//    //        return;
+//    double unitWidth = width() / mHPixelPerUnit;
+//    double unitHeight = height() / mVPixelPerUnit;
+//    if (unitWidth * mRatio > unitHeight) {
+//        unitWidth = unitHeight / mRatio;
+//        //    mCanvasPixelPerUnit = mVPixelPerUnit;
+//    } else {
+//        unitHeight = unitWidth * mRatio;
+//        //    mCanvasPixelPerUnit = mHPixelPerUnit;
+//    }
 
-    //    mCanvasPixelPerUnit = std::min()
-    //    update();
-    //    assert(mCanvasPixelPerUnit != nullptr);
+//    //    mCanvasPixelPerUnit = std::min()
+//    //    update();
+//    //    assert(mCanvasPixelPerUnit != nullptr);
 
-    //    mCanvasPixelPerUnit = mHPixelPerUnit;
+//    //    mCanvasPixelPerUnit = mHPixelPerUnit;
 
-    mCanvasPixelWidth = unitWidth * mCanvasPixelPerUnit;
-    mCanvasPixelHeight = unitHeight * mCanvasPixelPerUnit;
-    //    this->setMaximumWidth(mCan)
-    //    this.setWid
-    //    this->resize(mCanvasPixelWidth, mCanvasPixelHeight);
-    return;
-    //        int width = this->width();
-    //        int height = this->height();
-    //        if (width * mRatio > height) {
-    //            width = height / mRatio;
-    //        } else {
-    //            height = width * mRatio;
-    //        }
+//    mCanvasPixelWidth = unitWidth * mCanvasPixelPerUnit;
+//    mCanvasPixelHeight = unitHeight * mCanvasPixelPerUnit;
+//    //    this->setMaximumWidth(mCan)
+//    //    this.setWid
+//    //    this->resize(mCanvasPixelWidth, mCanvasPixelHeight);
+//    return;
+//    //        int width = this->width();
+//    //        int height = this->height();
+//    //        if (width * mRatio > height) {
+//    //            width = height / mRatio;
+//    //        } else {
+//    //            height = width * mRatio;
+//    //        }
 
-    //    double unitWidth = width() / mHPixelPerUnit;
-    //    double unitHeight = height() / mVPixelPerUnit;
-    //    if (unitWidth * mRatio > unitHeight) {
-    //        unitWidth = unitHeight / mRatio;
-    //    } else {
-    //        unitHeight = unitWidth * mRatio;
-    //    }
+//    //    double unitWidth = width() / mHPixelPerUnit;
+//    //    double unitHeight = height() / mVPixelPerUnit;
+//    //    if (unitWidth * mRatio > unitHeight) {
+//    //        unitWidth = unitHeight / mRatio;
+//    //    } else {
+//    //        unitHeight = unitWidth * mRatio;
+//    //    }
 
-    ////        mCanvasPixelWidth = width;
-    ////        mCanvasPixelHeight = height;
-    //    mCanvasPixelWidth = unitWidth * mHPixelPerUnit;
-    //    mCanvasPixelHeight = unitHeight * mVPixelPerUnit;
+//    ////        mCanvasPixelWidth = width;
+//    ////        mCanvasPixelHeight = height;
+//    //    mCanvasPixelWidth = unitWidth * mHPixelPerUnit;
+//    //    mCanvasPixelHeight = unitHeight * mVPixelPerUnit;
 
-    //    return;
+//    //    return;
 
-    //    double unitWidth = mImagePixelWidth / mHPixelPerUnit;
-    //    double unitHeight = mImagePixelHeight / mVPixelPerUnit;
-    //    if (unitWidth * mRatio > unitHeight) {
-    //        unitWidth = unitHeight / mRatio;
-    //    } else {
-    //        unitHeight = unitWidth * mRatio;
-    //    }
+//    //    double unitWidth = mImagePixelWidth / mHPixelPerUnit;
+//    //    double unitHeight = mImagePixelHeight / mVPixelPerUnit;
+//    //    if (unitWidth * mRatio > unitHeight) {
+//    //        unitWidth = unitHeight / mRatio;
+//    //    } else {
+//    //        unitHeight = unitWidth * mRatio;
+//    //    }
 
-    //    //    mCanvasPixelWidth = width;
-    //    //    mCanvasPixelHeight = height;
+//    //    //    mCanvasPixelWidth = width;
+//    //    //    mCanvasPixelHeight = height;
 
-    //    mCanvasPixelWidth = unitWidth * mHPixelPerUnit;
-    //    mCanvasPixelHeight = unitHeight * mVPixelPerUnit;
+//    //    mCanvasPixelWidth = unitWidth * mHPixelPerUnit;
+//    //    mCanvasPixelHeight = unitHeight * mVPixelPerUnit;
 
-    //    //    mHPixelPerUnit = mImagePixelWidth / mImageUnitWidth;
-    //    //    mCanvasPixelPerUnit =
-    //    const double pixelWidthPerUnit = mCanvasPixelWidth / mImageUnitWidth;
-    //    const double pixelHeightPerUnit = mCanvasPixelHeight / mImageUnitHeight;
+//    //    //    mHPixelPerUnit = mImagePixelWidth / mImageUnitWidth;
+//    //    //    mCanvasPixelPerUnit =
+//    //    const double pixelWidthPerUnit = mCanvasPixelWidth / mImageUnitWidth;
+//    //    const double pixelHeightPerUnit = mCanvasPixelHeight / mImageUnitHeight;
 
-    //    mCanvasPixelWidth = width;
-    //    mCanvasPixelHeight = height;
+//    //    mCanvasPixelWidth = width;
+//    //    mCanvasPixelHeight = height;
 
-    //    mHPixelPerUnit = mImagePixelWidth / mImageUnitWidth;
-    //    mVPixelPerUnit = mImagePixelHeight / mImageUnitHeight;
+//    //    mHPixelPerUnit = mImagePixelWidth / mImageUnitWidth;
+//    //    mVPixelPerUnit = mImagePixelHeight / mImageUnitHeight;
 
-    //    const double pixelWidthPerUnit = mCanvasPixelWidth / (mCanvasPixelWidth / mHPixelPerUnit);
-    //    const double pixelHeightPerUnit = mCanvasPixelHeight / (mCanvasPixelHeight / mVPixelPerUnit);
+//    //    const double pixelWidthPerUnit = mCanvasPixelWidth / (mCanvasPixelWidth / mHPixelPerUnit);
+//    //    const double pixelHeightPerUnit = mCanvasPixelHeight / (mCanvasPixelHeight / mVPixelPerUnit);
 
-    //        const double pixelWidthPerUnit = mImageUnitWidth / (mCanvasPixelWidth * mHPixelPerUnit);
-    //        const double pixelHeightPerUnit = mImageUnitHeight / (mCanvasPixelHeight * mVPixelPerUnit);
-    //        assert(std::abs(pixelWidthPerUnit - pixelHeightPerUnit) < 0.1);
+//    //        const double pixelWidthPerUnit = mImageUnitWidth / (mCanvasPixelWidth * mHPixelPerUnit);
+//    //        const double pixelHeightPerUnit = mImageUnitHeight / (mCanvasPixelHeight * mVPixelPerUnit);
+//    //        assert(std::abs(pixelWidthPerUnit - pixelHeightPerUnit) < 0.1);
 
-    //        mCanvasPixelPerUnit = std::min(pixelWidthPerUnit, pixelHeightPerUnit);
+//    //        mCanvasPixelPerUnit = std::min(pixelWidthPerUnit, pixelHeightPerUnit);
 
-    //    m_grid = new QPixmap(width, height);
-    //    m_grid = new QImage(mCanvasPixelWidth, mCanvasPixelHeight, QImage::Format_BGR888);
-    //    m_grid = new QImage(mCanvasPixelWidth, mCanvasPixelHeight, QImage::Format_Grayscale8);
-    //    QPainter painter(m_grid);
-    //    painter.begin(this);
+//    //    m_grid = new QPixmap(width, height);
+//    //    m_grid = new QImage(mCanvasPixelWidth, mCanvasPixelHeight, QImage::Format_BGR888);
+//    //    m_grid = new QImage(mCanvasPixelWidth, mCanvasPixelHeight, QImage::Format_Grayscale8);
+//    //    QPainter painter(m_grid);
+//    //    painter.begin(this);
 
-    //    double pixelWidthPerUnit = width / mImageUnitWidth;
-    //    double stepSize = 5.0; // millimeters
-    //    double nHStep = std::floor(mImageUnitWidth / stepSize);
+//    //    double pixelWidthPerUnit = width / mImageUnitWidth;
+//    //    double stepSize = 5.0; // millimeters
+//    //    double nHStep = std::floor(mImageUnitWidth / stepSize);
 
-    //    //    painter.setPen(QColor(255, 0, 0, 127));
-    //    painter.setPen(QColor(255, 0, 0, 255));
-    //    for (int iHStep = 1; iHStep < nHStep; ++iHStep) {
-    //        int x = iHStep * stepSize * pixelWidthPerUnit;
-    //        painter.drawLine(x, 0, x, height - 1);
-    //    }
+//    //    //    painter.setPen(QColor(255, 0, 0, 127));
+//    //    painter.setPen(QColor(255, 0, 0, 255));
+//    //    for (int iHStep = 1; iHStep < nHStep; ++iHStep) {
+//    //        int x = iHStep * stepSize * pixelWidthPerUnit;
+//    //        painter.drawLine(x, 0, x, height - 1);
+//    //    }
 
-    //    painter.end();
+//    //    painter.end();
 
-    //    *m_image = m_image->scaled(QSize(mCanvasPixelWidth, mCanvasPixelHeight));
-}
+//    //    *m_image = m_image->scaled(QSize(mCanvasPixelWidth, mCanvasPixelHeight));
+//}
 
 const double & WidgetStreamView2D::getImageUnitHeight() const
 {
