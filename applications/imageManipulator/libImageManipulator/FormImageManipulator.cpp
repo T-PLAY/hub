@@ -106,6 +106,18 @@ FormImageManipulator::~FormImageManipulator()
     delete ui;
 }
 
+void FormImageManipulator::update(const Stream::Acquisition &acquisition)
+{
+    ui->widgetStreamView_2->setData((unsigned char*)acquisition.mData, {512, 192}, Stream::Format::Y8);
+
+}
+
+void FormImageManipulator::init()
+{
+    ui->widgetStreamView_2->setData(nullptr, {512, 192}, Stream::Format::Y8);
+
+}
+
 WidgetStreamView2D &FormImageManipulator::getWidgetStreamView()
 {
     return *ui->widgetStreamView_2;

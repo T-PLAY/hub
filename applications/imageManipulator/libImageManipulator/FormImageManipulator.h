@@ -4,6 +4,8 @@
 #include <QWidget>
 #include <WidgetStreamView.h>
 
+#include <stream.h>
+
 namespace Ui {
 class FormImageManipulator;
 }
@@ -15,6 +17,8 @@ public:
     explicit FormImageManipulator(QWidget* parent = nullptr);
     ~FormImageManipulator();
 
+    void update(const Stream::Acquisition & acquisition);
+    void init();
 
     WidgetStreamView2D & getWidgetStreamView();
 protected:

@@ -41,9 +41,9 @@ MainWindow::MainWindow(QWidget* parent)
         const int currentIndex = ui->stackedWidget->currentIndex();
         ui->stackedWidget->setCurrentIndex(1);
         //    ui->page3D->layout()->addWidget(viewerWidget);
-        ui->layout_3dView->removeWidget(ui->frame);
+        ui->layout3dView->removeWidget(ui->frame);
         delete ui->frame;
-        ui->layout_3dView->addWidget(viewerWidget);
+        ui->layout3dView->addWidget(viewerWidget);
         this->show();
 
         //    app.m_viewer->show();
@@ -80,6 +80,9 @@ MainWindow::MainWindow(QWidget* parent)
 
         ui->stackedWidget->setCurrentIndex(currentIndex);
     }
+
+    auto & streamView = ui->dockWidgetContents_right->getWidgetStreamView();
+    streamView.init(512, 192, 35.0, 50.0);
 
     //    m_sensorViews = new SensorViews(*ui->verticalLayout_sensors, *ui->mdiArea_sensors, *this);
     //    QObject::connect(
@@ -256,6 +259,7 @@ void MainWindow::onInit(const std::string& sensorName)
 {
     if (sensorName == g_probeScanSensorName) {
         m_comp->initScan();
+        ui->dockWidgetContents_right->init();
     } else if (sensorName == g_probePoseSensorName) {
         m_comp->initPose();
     }
@@ -292,7 +296,11 @@ void MainWindow::onNewAcquisition(const std::string& sensorName, const std::stri
 
         //        m_comp->updateScan(acqs);
         //        while (! acqs.empty()) {
-        m_comp->updateScan(acqs.front());
+        const auto & acq = acqs.front();
+
+        m_comp->updateScan(acq);
+        ui->dockWidgetContents_right->update(acq);
+
         //            acqs.pop();
         //        }
         //        }
