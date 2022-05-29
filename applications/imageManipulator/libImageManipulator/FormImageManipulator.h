@@ -2,6 +2,7 @@
 #define FORMIMAGEMANIPULATOR_H
 
 #include <QWidget>
+#include <WidgetStreamView.h>
 
 namespace Ui {
 class FormImageManipulator;
@@ -14,15 +15,17 @@ public:
     explicit FormImageManipulator(QWidget* parent = nullptr);
     ~FormImageManipulator();
 
+
+    WidgetStreamView2D & getWidgetStreamView();
 protected:
 //    void paintEvent(QPaintEvent* event) override;
 
 private:
     Ui::FormImageManipulator* ui;
 
-    const double m_realWidth = 50.0; // millimeters
-    const double m_realHeight = 35.0; // millimeters
-    double m_ratio = 1.0;
+//    const double m_realWidth = 50.0; // millimeters
+//    const double m_realHeight = 35.0; // millimeters
+//    double m_ratio = 1.0;
 };
 
 #endif // FORMIMAGEMANIPULATOR_H
