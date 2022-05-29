@@ -31,6 +31,8 @@
 
 #include <Engine/Scene/EntityManager.hpp>
 
+#define USE_GOT_CONTRIB
+
 #ifdef IO_USE_ASSIMP
 #include <IO/AssimpLoader/AssimpFileLoader.hpp>
 #else
@@ -714,7 +716,7 @@ void MinimalComponent::initPoseTraces(const std::vector<Stream::Acquisition>& po
         splines[i].setCtrlPoints(points[i]);
 //        Scalar scale = (i == 2) ? 10_ra : 1_ra;
         g_splineLines[i]->setMesh(
-#ifdef USE_GOT_PR
+#ifdef USE_GOT_CONTRIB
             DrawPrimitives::Spline(splines[i], points[i].size(), Color::Cyan() * (i + 1) / 3.0, Color::Black() * (i + 1) / 3.0));
 #else
             DrawPrimitives::Spline(splines[i], points[i].size(), Color::Cyan() * (i + 1) / 3.0));

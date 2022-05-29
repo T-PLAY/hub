@@ -221,7 +221,7 @@ void FormInputStreamView::onNewAcquisition(const std::string& sourceType)
 //            m_widgetStreamView->setData((unsigned char*)acqs.back().mData, inputStream->getDims(), inputStream->getFormat());
 
 //            m_widgetStreamView->setData((unsigned char*)acqs.back().mData, inputStream->getDims(), inputStream->getFormat());
-            m_widgetStreamView->setData((unsigned char*)acqs.back().mData, 192 * 512, inputStream->getDims(), inputStream->getFormat());
+            m_widgetStreamView->setData((unsigned char*)acqs.back().mData, inputStream->getAcquisitionSize(), inputStream->getDims(), inputStream->getFormat());
 
             //            if (inputStreamThread.mAcqs.size() > 1) {
             //                m_widgetStreamView->setData((unsigned char*)inputStreamThread.mAcqs.back().mData, inputStream->getDims(), inputStream->getFormat());
