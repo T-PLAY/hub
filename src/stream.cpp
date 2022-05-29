@@ -178,8 +178,8 @@ InputStream::~InputStream() {
 Stream::Acquisition InputStream::getAcquisition() const {
     //    assert(acquisition.mData != nullptr);
     long long start, end;
-//    unsigned char* data = new unsigned char[mAcquisitionSize];
-    unsigned char data[mAcquisitionSize];
+    unsigned char* data = new unsigned char[mAcquisitionSize];
+//    unsigned char data[mAcquisitionSize];
 
     mIOStream.read( start );
     mIOStream.read( end );
@@ -190,6 +190,7 @@ Stream::Acquisition InputStream::getAcquisition() const {
 #endif
 
     return Stream::Acquisition( start, end, data, mAcquisitionSize );
+    delete[] data;
 }
 
 // Stream::Acquisition& InputStream::operator>>(Acquisition& acquisition) const

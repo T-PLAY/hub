@@ -66,7 +66,8 @@ MainWindowStreamView::~MainWindowStreamView() {
 void MainWindowStreamView::setData( unsigned char* img_ptr,
                                     std::vector<int> dims,
                                     Stream::Format format ) {
-    ( static_cast<WidgetStreamView*>( ui->centralwidget ) )->setData( img_ptr, dims, format );
+//    ( static_cast<WidgetStreamView*>( ui->centralwidget ) )->setData( img_ptr, dims, format );
+    ( static_cast<WidgetStreamView*>( ui->centralwidget ) )->setData( img_ptr, 192 * 512, dims, format );
 }
 
 // std::string MainWindowStreamView::getStreamerSensorName() const

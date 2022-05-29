@@ -16,7 +16,11 @@ WidgetStreamView::WidgetStreamView(QWidget* parent)
 {
 }
 
-void WidgetStreamView::setData(unsigned char* img_ptr, std::vector<int> dims, Stream::Format format)
+//void WidgetStreamView::setData(unsigned char* img_ptr, std::vector<int> dims, Stream::Format format)
+//{
+//}
+
+void WidgetStreamView::setData(unsigned char* img_ptr, size_t size, std::vector<int> dims, Stream::Format format)
 {
 }
 
@@ -110,28 +114,39 @@ void WidgetStreamView2D::init(int imagePixelWidth, int imagePixelHeight, double 
 //    //    mImageUnitHeight = mUnitPerImageVPixel * mImagePixelHeight;
 //}
 
-void WidgetStreamView2D::setData(unsigned char* img_ptr, std::vector<int> dims, Stream::Format format)
-{
-    if (mImagePixelWidth != dims.at(0) || mImagePixelHeight != dims.at(1))
-        init(dims.at(0), dims.at(1));
+//void WidgetStreamView2D::setData(unsigned char* img_ptr, std::vector<int> dims, Stream::Format format)
+//{
+//    assert(dims.size() == 2);
+//    if (mImagePixelWidth != dims.at(0) || mImagePixelHeight != dims.at(1))
+//        init(dims.at(0), dims.at(1));
 
-    mData = img_ptr;
-    assert(dims.size() == 2);
-    assert(mImagePixelWidth == dims.at(0));
-    assert(mImagePixelHeight == dims.at(1));
-    mFormat = format;
+//    mData = img_ptr;
+//    assert(dims.size() == 2);
+//    assert(mImagePixelWidth == dims.at(0));
+//    assert(mImagePixelHeight == dims.at(1));
+//    mFormat = format;
 
-    updateImage();
-}
+//    updateImage();
+//}
 
 void WidgetStreamView2D::setData(unsigned char* img_ptr, size_t size, std::vector<int> dims, Stream::Format format)
 {
+    assert(dims.size() == 2);
     if (mImagePixelWidth != dims.at(0) || mImagePixelHeight != dims.at(1))
         init(dims.at(0), dims.at(1));
 
+    if (img_ptr == nullptr) {
+        if (mData != nullptr) {
+            delete [] mData;
+        }
+        update();
+        return;
+    }
     //    mData = img_ptr;
-    assert(mData == nullptr);
-    mData = new unsigned char[size];
+//    assert(mData == nullptr);
+    if (mData == nullptr)
+        mData = new unsigned char[size];
+
     memcpy(mData, img_ptr, size);
     assert(dims.size() == 2);
     assert(mImagePixelWidth == dims.at(0));
@@ -143,7 +158,7 @@ void WidgetStreamView2D::setData(unsigned char* img_ptr, size_t size, std::vecto
 
 void WidgetStreamView2D::onPixelPerUnitChanged()
 {
-    std::cout << "[WidgetStreamView2D] onPixelPerUnitChanged" << std::endl;
+//    std::cout << "[WidgetStreamView2D] onPixelPerUnitChanged" << std::endl;
     double unitWidth = mImagePixelWidth / mHPixelPerUnit;
     double unitHeight = mImagePixelHeight / mVPixelPerUnit;
     if (unitWidth * mRatio > unitHeight) {
@@ -176,7 +191,7 @@ void WidgetStreamView2D::onPixelPerUnitChanged()
 
 void WidgetStreamView2D::updateImage()
 {
-    std::cout << "[WidgetStreamView2D] updateImage" << std::endl;
+//    std::cout << "[WidgetStreamView2D] updateImage" << std::endl;
 
     //        QImage image;
     if (mData != nullptr) {
@@ -215,7 +230,7 @@ void WidgetStreamView2D::updateImage()
 
 void WidgetStreamView2D::paintEvent(QPaintEvent* event)
 {
-    std::cout << "[WidgetStreamView2D] paintEvent" << std::endl;
+//    std::cout << "[WidgetStreamView2D] paintEvent" << std::endl;
 
     //    assert(mCanvasPixelPerUnit != nullptr);
     Q_UNUSED(event);
@@ -238,6 +253,7 @@ void WidgetStreamView2D::paintEvent(QPaintEvent* event)
 
     } else {
         painter.fillRect(0, 0, width(), height(), Qt::gray);
+//        return;
     }
 
     if (mShowGrid) {
@@ -468,7 +484,17 @@ WidgetStreamView1D::~WidgetStreamView1D()
     delete mLabel;
 }
 
-void WidgetStreamView1D::setData(unsigned char* img_ptr, std::vector<int> dims, Stream::Format format)
+//void WidgetStreamView1D::setData(unsigned char* img_ptr, std::vector<int> dims, Stream::Format format)
+//{
+
+//    float* translation = (float*)img_ptr;
+//    float* quaternion = (float*)&img_ptr[12];
+//    std::string str = std::string("x:") + std::to_string(translation[0]) + ", y:" + std::to_string(translation[1]) + ", z:" + std::to_string(translation[2]) + "\naz:" + std::to_string(quaternion[0]) + ", el:" + std::to_string(quaternion[1]) + ", ro:" + std::to_string(quaternion[2]) + ", q4:" + std::to_string(quaternion[3]);
+//    mLabel->setText(str.c_str());
+//}
+
+
+void WidgetStreamView1D::setData(unsigned char* img_ptr, size_t size, std::vector<int> dims, Stream::Format format)
 {
 
     float* translation = (float*)img_ptr;

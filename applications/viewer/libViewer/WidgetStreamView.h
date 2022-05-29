@@ -16,7 +16,8 @@ public:
     explicit WidgetStreamView(QWidget* parent = nullptr);
 
 public slots:
-    virtual void setData(unsigned char* img_ptr, std::vector<int> dims, Stream::Format format) = 0;
+//    virtual void setData(unsigned char* img_ptr, std::vector<int> dims, Stream::Format format) = 0;
+    virtual void setData(unsigned char* img_ptr, size_t size, std::vector<int> dims, Stream::Format format) = 0;
 
 protected:
 protected:
@@ -38,8 +39,8 @@ public:
 
 
 public slots:
-    void setData(unsigned char* img_ptr, std::vector<int> dims, Stream::Format format) override;
-    void setData(unsigned char* img_ptr, size_t size, std::vector<int> dims, Stream::Format format);
+//    void setData(unsigned char* img_ptr, std::vector<int> dims, Stream::Format format) override;
+    void setData(unsigned char* img_ptr, size_t size, std::vector<int> dims, Stream::Format format) override;
 
     void onPixelPerUnitChanged();
 
@@ -114,7 +115,8 @@ public:
     ~WidgetStreamView1D();
 
 public slots:
-    void setData(unsigned char* img_ptr, std::vector<int> dims, Stream::Format format) override;
+//    void setData(unsigned char* img_ptr, std::vector<int> dims, Stream::Format format) override;
+    void setData(unsigned char* img_ptr, size_t size, std::vector<int> dims, Stream::Format format) override;
 
 protected:
 private:
