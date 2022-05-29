@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1051</width>
-    <height>724</height>
+    <width>932</width>
+    <height>674</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -36,7 +36,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="page2D">
        <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -55,7 +55,7 @@
       <widget class="QWidget" name="page3D">
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
-         <layout class="QHBoxLayout" name="layout_3dView">
+         <layout class="QVBoxLayout" name="layout3dView">
           <item>
            <widget class="QFrame" name="frame">
             <property name="sizePolicy">
@@ -198,6 +198,18 @@
     <layout class="QHBoxLayout" name="horizontalLayout_3"/>
    </widget>
   </widget>
+  <widget class="QDockWidget" name="dockWidget_right">
+   <property name="minimumSize">
+    <size>
+     <width>400</width>
+     <height>35</height>
+    </size>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>2</number>
+   </attribute>
+   <widget class="FormImageManipulator" name="dockWidgetContents_right"/>
+  </widget>
   <action name="action2D">
    <property name="text">
     <string>2D</string>
@@ -231,6 +243,14 @@
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>FormImageManipulator</class>
+   <extends>QWidget</extends>
+   <header location="global">FormImageManipulator.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

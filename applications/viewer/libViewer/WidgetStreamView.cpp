@@ -62,9 +62,14 @@ void WidgetStreamView2D::init(int imagePixelWidth, int imagePixelHeight, double 
     //    update();
     //    assert(mCanvasPixelPerUnit != nullptr);
 
-    //    mCanvasPixelPerUnit = std::floor(std::min(mHPixelPerUnit, mVPixelPerUnit));
-    //    mCanvasPixelPerUnit = std::floor(std::max(mHPixelPerUnit, mVPixelPerUnit));
+    //        mCanvasPixelPerUnit = std::floor(std::min(width() / mImageUnitWidth, height() / mImageUnitHeight));
+    //    mCanvasPixelPerUnit = 10.0;
+    //        mCanvasPixelPerUnit = std::floor((width() / mImageUnitWidth + height() / mImageUnitHeight) / 2.0);
+    //        mCanvasPixelPerUnit = std::floor(std::min(mHPixelPerUnit, mVPixelPerUnit));
+    //        mCanvasPixelPerUnit = std::floor(std::max(mHPixelPerUnit, mVPixelPerUnit));
     mCanvasPixelPerUnit = std::floor((mHPixelPerUnit + mVPixelPerUnit) / 2.0);
+    //    mCanvasPixelPerUnit = std::floor((mHPixelPerUnit + mVPixelPerUnit) / 2.0);
+    //    mCanvasPixelPerUnit = std::floor(mHPixelPerUnit);
 
     mCanvasPixelWidth = unitWidth * mCanvasPixelPerUnit;
     mCanvasPixelHeight = unitHeight * mCanvasPixelPerUnit;
@@ -174,30 +179,31 @@ void WidgetStreamView2D::updateImage()
     std::cout << "[WidgetStreamView2D] updateImage" << std::endl;
 
     //        QImage image;
-    switch (mFormat) {
-    case Stream::Format::Y8:
-        m_image = new QImage((unsigned char*)mData, mImagePixelWidth, mImagePixelHeight, QImage::Format_Grayscale8);
-        break;
+    if (mData != nullptr) {
+        switch (mFormat) {
+        case Stream::Format::Y8:
+            m_image = new QImage((unsigned char*)mData, mImagePixelWidth, mImagePixelHeight, QImage::Format_Grayscale8);
+            break;
 
-    case Stream::Format::Y16:
-    case Stream::Format::Z16:
-        m_image = new QImage((unsigned char*)mData, mImagePixelWidth, mImagePixelHeight, QImage::Format_Grayscale16);
-        break;
+        case Stream::Format::Y16:
+        case Stream::Format::Z16:
+            m_image = new QImage((unsigned char*)mData, mImagePixelWidth, mImagePixelHeight, QImage::Format_Grayscale16);
+            break;
 
-    case Stream::Format::RGB8:
-        m_image = new QImage((unsigned char*)mData, mImagePixelWidth, mImagePixelHeight, QImage::Format_RGB888);
-        break;
+        case Stream::Format::RGB8:
+            m_image = new QImage((unsigned char*)mData, mImagePixelWidth, mImagePixelHeight, QImage::Format_RGB888);
+            break;
 
-    case Stream::Format::BGR8:
-        m_image = new QImage((unsigned char*)mData, mImagePixelWidth, mImagePixelHeight, QImage::Format_BGR888);
-        break;
+        case Stream::Format::BGR8:
+            m_image = new QImage((unsigned char*)mData, mImagePixelWidth, mImagePixelHeight, QImage::Format_BGR888);
+            break;
 
-    default:
-        std::cout << "[paintEvent] unknown stream format" << std::endl;
-        assert(false);
+        default:
+            std::cout << "[paintEvent] unknown stream format" << std::endl;
+            assert(false);
+        }
+        assert(!m_image->isNull());
     }
-    assert(!m_image->isNull());
-
     //    QMatrix rm;
     //    if (mRotateDeg != 0.0) {
     //        QTransform tr;
@@ -216,10 +222,10 @@ void WidgetStreamView2D::paintEvent(QPaintEvent* event)
     QPainter painter;
 
     painter.begin(this);
-//    painter.fillRect(0, 0, width(), height(), Qt::lightGray);
+    //    painter.fillRect(0, 0, width(), height(), Qt::lightGray);
     //    painter.fillRect(0, 0, mCanvasPixelWidth, mCanvasPixelHeight, Qt::red);
 
-//    const int alpha = 100;
+    //    const int alpha = 100;
 
     //    painter.drawPixmap(rect(), *m_grid);
     if (mData != nullptr) {
@@ -279,9 +285,9 @@ void WidgetStreamView2D::paintEvent(QPaintEvent* event)
     //    QWidget::paintEvent(event);
 }
 
-//void WidgetStreamView2D::resizeEvent(QResizeEvent* event)
+// void WidgetStreamView2D::resizeEvent(QResizeEvent* event)
 //{
-//    std::cout << "[WidgetStreamView2D] resizeEvent" << std::endl;
+//     std::cout << "[WidgetStreamView2D] resizeEvent" << std::endl;
 ////    this->setWindowTitle(this->windowTitle() + " " + QString::number(this->size().width()) + " x " + QString::number(this->size().height()) + " pixels");
 //    return;
 
@@ -388,12 +394,12 @@ void WidgetStreamView2D::paintEvent(QPaintEvent* event)
 //    //    *m_image = m_image->scaled(QSize(mCanvasPixelWidth, mCanvasPixelHeight));
 //}
 
-const double & WidgetStreamView2D::getImageUnitHeight() const
+const double& WidgetStreamView2D::getImageUnitHeight() const
 {
     return mImageUnitHeight;
 }
 
-const double & WidgetStreamView2D::getImageUnitWidth() const
+const double& WidgetStreamView2D::getImageUnitWidth() const
 {
     return mImageUnitWidth;
 }
