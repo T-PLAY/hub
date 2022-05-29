@@ -15,7 +15,7 @@ void WidgetGrid::paintEvent(QPaintEvent* event)
     assert(mImageUnitHeight != nullptr);
     assert(mCanvasPixelWidth != nullptr);
     assert(mCanvasPixelHeight != nullptr);
-    std::cout << "[WidgetGrid] paintEvent" << std::endl;
+//    std::cout << "[WidgetGrid] paintEvent" << std::endl;
 
     //        this->setMinimumWidth(*mCanvasPixelWidth);
     //        this->setMaximumWidth(*mCanvasPixelWidth);

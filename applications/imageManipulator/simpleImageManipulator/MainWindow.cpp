@@ -21,7 +21,8 @@ MainWindow::MainWindow(QWidget* parent)
     //    ui->mdiArea->addSubWindow(m_imageManipulator);
 
     {
-        std::string filepath = PROJECT_DIR "data/records/2022-05-27_10-16-00/webcam.txt";
+//        std::string filepath = PROJECT_DIR "data/records/2022-05-27_10-16-00/webcam.txt";
+        std::string filepath = PROJECT_DIR "data/records/2022-05-23_13-32-34 (carotide)/ULA-OP 256.txt";
         assert(std::filesystem::exists(filepath));
         std::fstream file(filepath, std::ios::binary | std::ios::in);
 

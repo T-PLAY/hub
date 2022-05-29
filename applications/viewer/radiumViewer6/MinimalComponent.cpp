@@ -216,7 +216,11 @@ void MinimalComponent::initialize()
                 //        DrawPrimitives::Line( Vector3(0_ra, 0_ra, 0_ra),
                 //                              Vector3 { 100_ra, 0_ra, 0_ra },
                 //                              Color::Red() ),
+#ifdef USE_GOT_CONTRIB
                 DrawPrimitives::Spline(spline, 10, Color::Green(), Color::Red()),
+#else
+                DrawPrimitives::Spline(spline, 10, Color::Green()),
+#endif
                 {});
             g_splineLines[i]->setMaterial(g_plainMaterial);
             addRenderObject(g_splineLines[i]);
@@ -710,7 +714,11 @@ void MinimalComponent::initPoseTraces(const std::vector<Stream::Acquisition>& po
         splines[i].setCtrlPoints(points[i]);
 //        Scalar scale = (i == 2) ? 10_ra : 1_ra;
         g_splineLines[i]->setMesh(
+#ifdef USE_GOT_PR
             DrawPrimitives::Spline(splines[i], points[i].size(), Color::Cyan() * (i + 1) / 3.0, Color::Black() * (i + 1) / 3.0));
+#else
+            DrawPrimitives::Spline(splines[i], points[i].size(), Color::Cyan() * (i + 1) / 3.0));
+#endif
         g_splineLines[i]->setTransparent(true);
     }
     //    g_splineLines->updateGL();
