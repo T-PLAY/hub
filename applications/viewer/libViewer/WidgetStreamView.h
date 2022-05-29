@@ -27,21 +27,15 @@ protected:
 class WidgetStreamView2D : public WidgetStreamView {
     Q_OBJECT
 public:
-    WidgetStreamView2D(int imagePixelWidth, int imagePixelHeight, double imageUnitWidth = 1.0, double imageUnitHeight = 1.0, QWidget* parent = nullptr);
+//    WidgetStreamView2D(int imagePixelWidth, int imagePixelHeight, double imageUnitWidth = 1.0, double imageUnitHeight = 1.0, QWidget* parent = nullptr);
     explicit WidgetStreamView2D(QWidget* parent = nullptr);
 
 //    void setRatio(double newRatio);
 //    void setRealSize(double realWidth, double realHeight);
-    void init(int imagePixelWidth, int imagePixelHeight, double imageUnitWidth = 1.0, double imageUnitHeight = 1.0);
+    void init(int imagePixelWidth, int imagePixelHeight, double imageUnitWidth = 0.0, double imageUnitHeight = 0.0);
 
 //    const double & getPixelPerUnit() const;
 
-    void setRotateDeg(double newRotateDeg);
-
-    void setCanvasPixelPerUnit(const double &newCanvasPixelPerUnit);
-
-    const int & getCanvasPixelWidth() const;
-    const int & getCanvasPixelHeight() const;
 
 public slots:
     void setData(unsigned char* img_ptr, std::vector<int> dims, Stream::Format format) override;
@@ -85,7 +79,8 @@ private:
 //    double mUnitPerImageHPixel = 1.0;
 //    double mUnitPerImageVPixel = 1.0;
 
-    const double * mCanvasPixelPerUnit = nullptr;
+//    const double * mCanvasPixelPerUnit = nullptr;
+    double mCanvasPixelPerUnit = 1.0;
     int mCanvasPixelWidth;
     int mCanvasPixelHeight;
 
@@ -98,7 +93,18 @@ private:
 //    QPixmap * m_grid = nullptr;
 //    QImage * m_grid = nullptr;
     double mRotateDeg = 0.0;
+    bool mShowGrid = false;
 
+public:
+    void setRotateDeg(double newRotateDeg);
+//    void setCanvasPixelPerUnit(const double &newCanvasPixelPerUnit);
+
+    const int & getCanvasPixelWidth() const;
+    const int & getCanvasPixelHeight() const;
+    double & getCanvasPixelPerUnit();
+    void setShowGrid(bool newShowGrid);
+    const double & getImageUnitWidth() const;
+    const double & getImageUnitHeight() const;
 };
 
 class WidgetStreamView1D : public WidgetStreamView {

@@ -11,11 +11,13 @@ class QScrollAreaGrid : public QScrollArea
 public:
     QScrollAreaGrid(QWidget * parent = nullptr);
 
-    const double & getCanvasPixelPerUnit() const;
+//    const double & getCanvasPixelPerUnit() const;
 
     void setScrollAreaTop(QScrollArea *newScrollAreaTop);
 
     void setScrollAreaLeft(QScrollArea *newScrollAreaLeft);
+
+    void setCanvasPixelPerUnit(double *newCanvasPixelPerUnit);
 
 signals:
     void pixelPerUnitChanged();
@@ -28,8 +30,9 @@ protected:
 
 
 
+
 private:
-    double mCanvasPixelPerUnit = 10.0;
+    double * mCanvasPixelPerUnit = nullptr;
 
     int mousePosX;
     int mousePosY;

@@ -30,8 +30,8 @@ void WidgetStreamView2D::init(int imagePixelWidth, int imagePixelHeight, double 
 {
     mImagePixelWidth = imagePixelWidth;
     mImagePixelHeight = imagePixelHeight;
-    mImageUnitWidth = imageUnitWidth;
-    mImageUnitHeight = imageUnitHeight;
+    mImageUnitWidth = (imageUnitWidth == 0.0) ? imagePixelWidth : imageUnitWidth;
+    mImageUnitHeight = (imageUnitHeight == 0.0) ? imagePixelHeight : imageUnitHeight;
     mHPixelPerUnit = mImagePixelWidth / mImageUnitWidth;
     mVPixelPerUnit = mImagePixelHeight / mImageUnitHeight;
     //    mRatio = mImageUnitHeight / mImageUnitWidth;
@@ -48,35 +48,62 @@ void WidgetStreamView2D::init(int imagePixelWidth, int imagePixelHeight, double 
 
     //    mImageUnitWidth = mUnitPerImageHPixel * mImagePixelWidth;
     //    mImageUnitHeight = mUnitPerImageVPixel * mImagePixelHeight;
-    onPixelPerUnitChanged();
-}
 
-WidgetStreamView2D::WidgetStreamView2D(int imagePixelWidth, int imagePixelHeight, double imageUnitWidth, double imageUnitHeight, QWidget* parent)
-    : WidgetStreamView(parent)
-    , mImagePixelWidth(imagePixelWidth)
-    , mImagePixelHeight(imagePixelHeight)
-    , mImageUnitWidth(imageUnitWidth)
-    , mImageUnitHeight(imageUnitHeight)
-    , mRatio(mImageUnitHeight / mImageUnitWidth)
-    , mHPixelPerUnit(mImagePixelWidth / mImageUnitWidth)
-    , mVPixelPerUnit(mImagePixelHeight / mImageUnitHeight)
-{
-    int width = mImagePixelWidth;
-    int height = mImagePixelHeight;
-    if (width * mRatio > height) {
-        width = height / mRatio;
+    double unitWidth = mImagePixelWidth / mHPixelPerUnit;
+    double unitHeight = mImagePixelHeight / mVPixelPerUnit;
+    if (unitWidth * mRatio > unitHeight) {
+        unitWidth = unitHeight / mRatio;
+        //    mCanvasPixelPerUnit = mHPixelPerUnit;
     } else {
-        height = width * mRatio;
+        unitHeight = unitWidth * mRatio;
+        //    mCanvasPixelPerUnit = mVPixelPerUnit;
     }
-    this->setMinimumWidth(width);
-    this->setMinimumHeight(height);
 
-    //    mCanvasPixelWidth = width;
-    //    mCanvasPixelHeight = height;
+    //    update();
+    //    assert(mCanvasPixelPerUnit != nullptr);
 
-    //    mImageUnitWidth = mUnitPerImageHPixel * mImagePixelWidth;
-    //    mImageUnitHeight = mUnitPerImageVPixel * mImagePixelHeight;
+    //    mCanvasPixelPerUnit = std::floor(std::min(mHPixelPerUnit, mVPixelPerUnit));
+    //    mCanvasPixelPerUnit = std::floor(std::max(mHPixelPerUnit, mVPixelPerUnit));
+    mCanvasPixelPerUnit = std::floor((mHPixelPerUnit + mVPixelPerUnit) / 2.0);
+
+    mCanvasPixelWidth = unitWidth * mCanvasPixelPerUnit;
+    mCanvasPixelHeight = unitHeight * mCanvasPixelPerUnit;
+
+    setMinimumWidth(mCanvasPixelWidth);
+    setMinimumHeight(mCanvasPixelHeight);
+
+    setMaximumWidth(mCanvasPixelWidth);
+    setMaximumHeight(mCanvasPixelHeight);
+
+    //    onPixelPerUnitChanged();
 }
+
+// WidgetStreamView2D::WidgetStreamView2D(int imagePixelWidth, int imagePixelHeight, double imageUnitWidth, double imageUnitHeight, QWidget* parent)
+//     : WidgetStreamView(parent)
+//     , mImagePixelWidth(imagePixelWidth)
+//     , mImagePixelHeight(imagePixelHeight)
+//     , mImageUnitWidth(imageUnitWidth)
+//     , mImageUnitHeight(imageUnitHeight)
+//     , mRatio(mImageUnitHeight / mImageUnitWidth)
+//     , mHPixelPerUnit(mImagePixelWidth / mImageUnitWidth)
+//     , mVPixelPerUnit(mImagePixelHeight / mImageUnitHeight)
+//{
+//     int width = mImagePixelWidth;
+//     int height = mImagePixelHeight;
+//     if (width * mRatio > height) {
+//         width = height / mRatio;
+//     } else {
+//         height = width * mRatio;
+//     }
+//     this->setMinimumWidth(width);
+//     this->setMinimumHeight(height);
+
+//    //    mCanvasPixelWidth = width;
+//    //    mCanvasPixelHeight = height;
+
+//    //    mImageUnitWidth = mUnitPerImageHPixel * mImagePixelWidth;
+//    //    mImageUnitHeight = mUnitPerImageVPixel * mImagePixelHeight;
+//}
 
 void WidgetStreamView2D::setData(unsigned char* img_ptr, std::vector<int> dims, Stream::Format format)
 {
@@ -115,16 +142,18 @@ void WidgetStreamView2D::onPixelPerUnitChanged()
     }
 
     //    update();
-    assert(mCanvasPixelPerUnit != nullptr);
+    //    assert(mCanvasPixelPerUnit != nullptr);
 
-    mCanvasPixelWidth = unitWidth * *mCanvasPixelPerUnit;
-    mCanvasPixelHeight = unitHeight * *mCanvasPixelPerUnit;
+    mCanvasPixelWidth = unitWidth * mCanvasPixelPerUnit;
+    mCanvasPixelHeight = unitHeight * mCanvasPixelPerUnit;
 
     //        mCanvasPixelWidth = mImagePixelWidth / mHPixelPerUnit;
     //        mCanvasPixelHeight = mImageUnitHeight * mVPixelPerUnit;
 
     this->setMinimumWidth(mCanvasPixelWidth);
     this->setMinimumHeight(mCanvasPixelHeight);
+    setMaximumWidth(mCanvasPixelWidth);
+    setMaximumHeight(mCanvasPixelHeight);
 
     update();
 }
@@ -176,14 +205,15 @@ void WidgetStreamView2D::paintEvent(QPaintEvent* event)
 {
     std::cout << "[WidgetStreamView2D] paintEvent" << std::endl;
 
-    assert(mCanvasPixelPerUnit != nullptr);
+    //    assert(mCanvasPixelPerUnit != nullptr);
     Q_UNUSED(event);
     QPainter painter;
 
     painter.begin(this);
-    painter.fillRect(0, 0, width(), height(), Qt::lightGray);
+//    painter.fillRect(0, 0, width(), height(), Qt::lightGray);
+    //    painter.fillRect(0, 0, mCanvasPixelWidth, mCanvasPixelHeight, Qt::red);
 
-    const int alpha = 100;
+//    const int alpha = 100;
 
     //    painter.drawPixmap(rect(), *m_grid);
     if (mData != nullptr) {
@@ -198,35 +228,38 @@ void WidgetStreamView2D::paintEvent(QPaintEvent* event)
         painter.fillRect(0, 0, width(), height(), Qt::gray);
     }
 
-    const std::vector<double> stepSizes = { 1.0, 2.0, 5.0, 10.0, 15.0, 20.0, 50.0 };
-    double tmp;
-    for (const auto& stepSize : stepSizes) {
-        tmp = stepSize;
-        if (*mCanvasPixelPerUnit * stepSize > 25)
-            break;
-    }
-    const double stepSize = tmp;
-
-    {
-        //        double mImageUnitWidth =
-        const int nHStep = std::ceil(mImageUnitWidth / stepSize);
-
-        //    painter.setPen(QColor(255, 0, 0, 127));
-        painter.setPen(QColor(255, 0, 0, alpha));
-        for (int iHStep = 1; iHStep < nHStep; ++iHStep) {
-            int x = iHStep * stepSize * *mCanvasPixelPerUnit;
-            painter.drawLine(x, 0, x, mCanvasPixelHeight - 1);
+    if (mShowGrid) {
+        int alpha = 100;
+        const std::vector<double> stepSizes = { 1.0, 2.0, 5.0, 10.0, 20.0, 50.0 };
+        double tmp;
+        for (const auto& stepSize : stepSizes) {
+            tmp = stepSize;
+            if (mCanvasPixelPerUnit * stepSize > 25)
+                break;
         }
-    }
+        const double stepSize = tmp;
 
-    {
-        const int nVStep = std::floor(mImageUnitHeight / stepSize);
+        {
+            //        double mImageUnitWidth =
+            const int nHStep = std::ceil(mImageUnitWidth / stepSize);
 
-        //    painter.setPen(QColor(255, 0, 0, 127));
-        painter.setPen(QColor(255, 0, 0, alpha));
-        for (int iVStep = 1; iVStep < nVStep; ++iVStep) {
-            int y = iVStep * stepSize * *mCanvasPixelPerUnit;
-            painter.drawLine(0, y, mCanvasPixelWidth - 1, y);
+            //    painter.setPen(QColor(255, 0, 0, 127));
+            painter.setPen(QColor(255, 0, 0, alpha));
+            for (int iHStep = 1; iHStep < nHStep; ++iHStep) {
+                int x = iHStep * stepSize * mCanvasPixelPerUnit;
+                painter.drawLine(x, 0, x, mCanvasPixelHeight - 1);
+            }
+        }
+
+        {
+            const int nVStep = std::floor(mImageUnitHeight / stepSize);
+
+            //    painter.setPen(QColor(255, 0, 0, 127));
+            painter.setPen(QColor(255, 0, 0, alpha));
+            for (int iVStep = 1; iVStep < nVStep; ++iVStep) {
+                int y = iVStep * stepSize * mCanvasPixelPerUnit;
+                painter.drawLine(0, y, mCanvasPixelWidth - 1, y);
+            }
         }
     }
 
@@ -243,6 +276,32 @@ void WidgetStreamView2D::paintEvent(QPaintEvent* event)
 void WidgetStreamView2D::resizeEvent(QResizeEvent* event)
 {
     std::cout << "[WidgetStreamView2D] resizeEvent" << std::endl;
+    this->setWindowTitle(this->windowTitle() + " " + QString::number(this->size().width()) + " x " + QString::number(this->size().height()) + " pixels");
+    return;
+
+    //    if (width() == mCanvasPixelWidth && height() == mCanvasPixelHeight)
+    //        return;
+    double unitWidth = width() / mHPixelPerUnit;
+    double unitHeight = height() / mVPixelPerUnit;
+    if (unitWidth * mRatio > unitHeight) {
+        unitWidth = unitHeight / mRatio;
+        //    mCanvasPixelPerUnit = mVPixelPerUnit;
+    } else {
+        unitHeight = unitWidth * mRatio;
+        //    mCanvasPixelPerUnit = mHPixelPerUnit;
+    }
+
+    //    mCanvasPixelPerUnit = std::min()
+    //    update();
+    //    assert(mCanvasPixelPerUnit != nullptr);
+
+    //    mCanvasPixelPerUnit = mHPixelPerUnit;
+
+    mCanvasPixelWidth = unitWidth * mCanvasPixelPerUnit;
+    mCanvasPixelHeight = unitHeight * mCanvasPixelPerUnit;
+    //    this->setMaximumWidth(mCan)
+    //    this.setWid
+    //    this->resize(mCanvasPixelWidth, mCanvasPixelHeight);
     return;
     //        int width = this->width();
     //        int height = this->height();
@@ -265,26 +324,26 @@ void WidgetStreamView2D::resizeEvent(QResizeEvent* event)
     //    mCanvasPixelWidth = unitWidth * mHPixelPerUnit;
     //    mCanvasPixelHeight = unitHeight * mVPixelPerUnit;
 
-    return;
+    //    return;
 
-    double unitWidth = mImagePixelWidth / mHPixelPerUnit;
-    double unitHeight = mImagePixelHeight / mVPixelPerUnit;
-    if (unitWidth * mRatio > unitHeight) {
-        unitWidth = unitHeight / mRatio;
-    } else {
-        unitHeight = unitWidth * mRatio;
-    }
+    //    double unitWidth = mImagePixelWidth / mHPixelPerUnit;
+    //    double unitHeight = mImagePixelHeight / mVPixelPerUnit;
+    //    if (unitWidth * mRatio > unitHeight) {
+    //        unitWidth = unitHeight / mRatio;
+    //    } else {
+    //        unitHeight = unitWidth * mRatio;
+    //    }
 
-    //    mCanvasPixelWidth = width;
-    //    mCanvasPixelHeight = height;
+    //    //    mCanvasPixelWidth = width;
+    //    //    mCanvasPixelHeight = height;
 
-    mCanvasPixelWidth = unitWidth * mHPixelPerUnit;
-    mCanvasPixelHeight = unitHeight * mVPixelPerUnit;
+    //    mCanvasPixelWidth = unitWidth * mHPixelPerUnit;
+    //    mCanvasPixelHeight = unitHeight * mVPixelPerUnit;
 
-    //    mHPixelPerUnit = mImagePixelWidth / mImageUnitWidth;
-    //    mCanvasPixelPerUnit =
-    const double pixelWidthPerUnit = mCanvasPixelWidth / mImageUnitWidth;
-    const double pixelHeightPerUnit = mCanvasPixelHeight / mImageUnitHeight;
+    //    //    mHPixelPerUnit = mImagePixelWidth / mImageUnitWidth;
+    //    //    mCanvasPixelPerUnit =
+    //    const double pixelWidthPerUnit = mCanvasPixelWidth / mImageUnitWidth;
+    //    const double pixelHeightPerUnit = mCanvasPixelHeight / mImageUnitHeight;
 
     //    mCanvasPixelWidth = width;
     //    mCanvasPixelHeight = height;
@@ -323,30 +382,20 @@ void WidgetStreamView2D::resizeEvent(QResizeEvent* event)
     //    *m_image = m_image->scaled(QSize(mCanvasPixelWidth, mCanvasPixelHeight));
 }
 
-const int & WidgetStreamView2D::getCanvasPixelHeight() const
+const double & WidgetStreamView2D::getImageUnitHeight() const
 {
-    return mCanvasPixelHeight;
+    return mImageUnitHeight;
 }
 
-const int & WidgetStreamView2D::getCanvasPixelWidth() const
+const double & WidgetStreamView2D::getImageUnitWidth() const
 {
-    return mCanvasPixelWidth;
+    return mImageUnitWidth;
 }
 
-void WidgetStreamView2D::setCanvasPixelPerUnit(const double& newCanvasPixelPerUnit)
+void WidgetStreamView2D::setShowGrid(bool newShowGrid)
 {
-    mCanvasPixelPerUnit = &newCanvasPixelPerUnit;
+    mShowGrid = newShowGrid;
 }
-
-void WidgetStreamView2D::setRotateDeg(double newRotateDeg)
-{
-    mRotateDeg = newRotateDeg;
-}
-
-// const double& WidgetStreamView2D::getPixelPerUnit() const
-//{
-//     return mCanvasPixelPerUnit;
-// }
 
 // void WidgetStreamView2D::setRatio(double newRatio)
 //{
@@ -361,6 +410,36 @@ void WidgetStreamView2D::setRotateDeg(double newRotateDeg)
 //    //        m_ratio = realWidth / realHeight;
 //    mRatio = realHeight / realWidth;
 //}
+
+double& WidgetStreamView2D::getCanvasPixelPerUnit()
+{
+    return mCanvasPixelPerUnit;
+}
+
+const int& WidgetStreamView2D::getCanvasPixelHeight() const
+{
+    return mCanvasPixelHeight;
+}
+
+const int& WidgetStreamView2D::getCanvasPixelWidth() const
+{
+    return mCanvasPixelWidth;
+}
+
+// void WidgetStreamView2D::setCanvasPixelPerUnit(const double& newCanvasPixelPerUnit)
+//{
+//     mCanvasPixelPerUnit = &newCanvasPixelPerUnit;
+// }
+
+void WidgetStreamView2D::setRotateDeg(double newRotateDeg)
+{
+    mRotateDeg = newRotateDeg;
+}
+
+// const double& WidgetStreamView2D::getPixelPerUnit() const
+//{
+//     return mCanvasPixelPerUnit;
+// }
 
 ///////////////////////////////////////////////////////////////////////////////
 

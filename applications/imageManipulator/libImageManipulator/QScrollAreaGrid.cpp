@@ -1,5 +1,6 @@
 #include "QScrollAreaGrid.h"
 
+#include <QPainter>
 #include <QScrollBar>
 #include <QWheelEvent>
 #include <iostream>
@@ -11,13 +12,14 @@ QScrollAreaGrid::QScrollAreaGrid(QWidget* parent)
 
 void QScrollAreaGrid::wheelEvent(QWheelEvent* event)
 {
+    assert(mCanvasPixelPerUnit != nullptr);
     int ry = event->angleDelta().ry();
 
     std::cout << ry << std::endl;
     if (ry > 0) {
-        mCanvasPixelPerUnit += 1.0;
+        *mCanvasPixelPerUnit += 1.0;
     } else if (ry < 0) {
-        mCanvasPixelPerUnit = std::max(mCanvasPixelPerUnit - 1.0, 1.0);
+        *mCanvasPixelPerUnit = std::max(*mCanvasPixelPerUnit - 1.0, 1.0);
     }
 
     double vScroll = verticalScrollBar()->value();
@@ -73,6 +75,11 @@ void QScrollAreaGrid::mouseMoveEvent(QMouseEvent* event)
     //    event->accept();
 }
 
+void QScrollAreaGrid::setCanvasPixelPerUnit(double* newCanvasPixelPerUnit)
+{
+    mCanvasPixelPerUnit = newCanvasPixelPerUnit;
+}
+
 void QScrollAreaGrid::setScrollAreaLeft(QScrollArea* newScrollAreaLeft)
 {
     m_scrollAreaLeft = newScrollAreaLeft;
@@ -83,7 +90,7 @@ void QScrollAreaGrid::setScrollAreaTop(QScrollArea* newScrollAreaTop)
     m_scrollAreaTop = newScrollAreaTop;
 }
 
-const double& QScrollAreaGrid::getCanvasPixelPerUnit() const
-{
-    return mCanvasPixelPerUnit;
-}
+// const double& QScrollAreaGrid::getCanvasPixelPerUnit() const
+//{
+//     return mCanvasPixelPerUnit;
+// }

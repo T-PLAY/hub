@@ -4,6 +4,7 @@
 #include <QMainWindow>
 
 #include <FormImageManipulator.h>
+#include <WidgetStreamView.h>
 
 namespace Ui {
 class MainWindow;
@@ -21,6 +22,9 @@ private:
     Ui::MainWindow *ui;
 
     FormImageManipulator * m_imageManipulator = nullptr;
+
+    WidgetStreamView2D * m_streamView2D = nullptr;
+    WidgetStreamView2D * m_streamView2D_2 = nullptr;
 
 };
 
