@@ -31,7 +31,7 @@
 
 #include <Engine/Scene/EntityManager.hpp>
 
-#define USE_GOT_CONTRIB
+//#define USE_GOT_CONTRIB
 
 #ifdef IO_USE_ASSIMP
 #include <IO/AssimpLoader/AssimpFileLoader.hpp>

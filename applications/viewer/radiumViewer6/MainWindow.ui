@@ -201,8 +201,8 @@
   <widget class="QDockWidget" name="dockWidget_right">
    <property name="minimumSize">
     <size>
-     <width>400</width>
-     <height>35</height>
+     <width>0</width>
+     <height>0</height>
     </size>
    </property>
    <attribute name="dockWidgetArea">

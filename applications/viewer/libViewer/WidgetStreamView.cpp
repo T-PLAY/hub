@@ -10,6 +10,7 @@
 #include <QPixmap>
 #include <QTransform>
 #include <cassert>
+#include <cmath>
 
 WidgetStreamView::WidgetStreamView(QWidget* parent)
     : QWidget(parent)

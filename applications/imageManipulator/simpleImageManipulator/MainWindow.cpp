@@ -63,8 +63,8 @@ MainWindow::MainWindow(QWidget* parent)
 
 //    {
         m_imageManipulator = new FormImageManipulator(this);
-        m_imageManipulator->setMinimumWidth(300);
-        m_imageManipulator->setMinimumHeight(1000);
+        m_imageManipulator->setMinimumWidth(400);
+        m_imageManipulator->setMinimumHeight(900);
         auto & widgetStreamView = m_imageManipulator->getWidgetStreamView();
         widgetStreamView.init(512, 192, 35.0, 50.0);
 //        widgetStreamView.init(512, 192);

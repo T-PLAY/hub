@@ -2,6 +2,7 @@
 
 #include <QPainter>
 #include <iostream>
+#include <cmath>
 
 WidgetGrid::WidgetGrid(QWidget* parent)
     : QWidget { parent }
