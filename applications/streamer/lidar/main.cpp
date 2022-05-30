@@ -8,8 +8,8 @@
 #include <cassert>
 #include <stream.h>
 
-#define DEPTH_STREAM
-//#define RGB_STREAM
+//#define DEPTH_STREAM
+#define RGB_STREAM
 //#define INFRARED_STREAM
 
 // Hello RealSense example demonstrates the basics of connecting to a RealSense device
@@ -48,22 +48,24 @@ int main(int argc, char* argv[])
 #ifdef DEPTH_STREAM
                 // Try to get a frame of a depth image
                 rs2::depth_frame depth = frames.get_depth_frame();
-                assert(depth.get_data_size() == depthStream.getAcquisitionSize());
+                const size_t & depthSize = depth.get_data_size();
+                assert(depthSize == depthStream.getAcquisitionSize());
                 assert(depth.get_width() == 640);
                 assert(depth.get_height() == 480);
                 depthStream << Stream::Acquisition { depth.get_frame_metadata(RS2_FRAME_METADATA_BACKEND_TIMESTAMP),
                     depth.get_frame_metadata(RS2_FRAME_METADATA_TIME_OF_ARRIVAL),
-                    (unsigned char*)depth.get_data() };
+                    (unsigned char*)depth.get_data(), depthSize };
 #endif
 
 #ifdef RGB_STREAM
                 rs2::video_frame color = frames.get_color_frame();
-                assert(color.get_data_size() == rgbStream.getAcquisitionSize());
+                const size_t colorSize = color.get_data_size();
+                assert(colorSize == rgbStream.getAcquisitionSize());
                 assert(color.get_width() == 1280);
                 assert(color.get_height() == 720);
                 rgbStream << Stream::Acquisition { color.get_frame_metadata(RS2_FRAME_METADATA_BACKEND_TIMESTAMP),
                     color.get_frame_metadata(RS2_FRAME_METADATA_TIME_OF_ARRIVAL),
-                    (unsigned char*)color.get_data() };
+                    (unsigned char*)color.get_data(), colorSize };
 #endif
 
 #ifdef INFRARED_STREAM

@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include <QPainter>
+#include <cmath>
 
 FrameRuler::FrameRuler(QWidget* parent)
     : QFrame(parent)

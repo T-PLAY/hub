@@ -27,6 +27,8 @@ MainWindow::MainWindow(QWidget* parent)
     //    ui->dockWidgetContents_server->setMdiArea(ui->mdiArea);
     //    delete ui->dockWidget_server;
 
+    ui->dockWidgetContents_right->setMinimumWidth(500);
+
     // configure radium
     {
         // Create app and show viewer window

@@ -1,8 +1,7 @@
 
 set(PDI_SDK "<UNSET>" CACHE PATH "Path of PDI SDK dir on your system")
 if (PDI_SDK STREQUAL "<UNSET>")
-    message(WARNING "You must set PDI_SDK path of PDI_140 (WIN) or piterm-1.0.4 (LINUX) folder in your system see : https://ftp.polhemus1.com/pub/Trackers/Patriot/Software/ or https://ftp.polhemus1.com/pub/Software/Linux/")
-    return()
+    message(FATAL_ERROR "You must set PDI_SDK path of PDI_140 (WIN) or piterm-1.0.4 (LINUX) folder in your system see : https://ftp.polhemus1.com/pub/Trackers/Patriot/Software/ or https://ftp.polhemus1.com/pub/Software/Linux/")
 endif()
 
 
