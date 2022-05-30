@@ -76,7 +76,8 @@ int main(int argc, char* argv[])
                     outputStreams.push_back(std::make_unique<OutputStream>("Polhemus Patriot (confidence)", Stream::Format::DOF6, std::vector<int>({ 1 })));
                     outputStreams.push_back(std::make_unique<OutputStream>(g_probePoseSensorName, Stream::Format::DOF6, std::vector<int>({ 1 })));
                     constexpr int packetSize = 8 + 12 + 16;
-                    assert(packetSize == 8 + outputStreams[0]->getAcquisitionSize()); // header 8 bytes, frame count 4 bytes
+                    const size_t acquisitionSize = outputStreams[0]->getAcquisitionSize();
+                    assert(packetSize == 8 + acquisitionSize); // header 8 bytes, frame count 4 bytes
 
                     while (true) { // each acquisition
                         // Block program until frames arrive
@@ -114,7 +115,7 @@ int main(int argc, char* argv[])
                                 // std::cout << str << std::endl;
 
                                 // Try to get a frame of a depth image
-                                *outputStreams[ucSensor - 1] << Stream::Acquisition { timestampStart, timestampEnd, data };
+                                *outputStreams[ucSensor - 1] << Stream::Acquisition { timestampStart, timestampEnd, data, acquisitionSize };
 
                                 i += packetSize;
                             }
