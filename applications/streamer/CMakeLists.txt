@@ -13,3 +13,7 @@ endif()
 if (BUILD_PDI_EXAMPLE)
     add_subdirectory(pdi)
 endif()
+
+if (BUILD_PATRIOT_EXAMPLE)
+    add_subdirectory(patriot)
+endif()
