@@ -16,7 +16,8 @@ project(patriot)
 #find_package(PkgConfig REQUIRED)
 #pkg_check_modules(libusb REQUIRED libusb-1.0)
 #find_package(libusb REQUIRED)
-find_package(Libusb1 REQUIRED)
+#find_package(Libusb1 REQUIRED)
+find_package(libusb REQUIRED)
 
 file(GLOB_RECURSE sources *.cpp)
 file(GLOB_RECURSE headers *.h)
@@ -50,7 +51,8 @@ endif()
  target_link_libraries(${PROJECT_NAME} PUBLIC
 #     ${libusb-1.0_LIBRARIES}
 #        ${LIBUSB_LIBRARY}
-        Libusb1
+#        Libusb1
+        libusb
 #        usb
 #        ${LIBUSB1_LIBRARIES}
 # #    # ${REQUIRED_LIBS_QUALIFIED}
