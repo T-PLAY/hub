@@ -22,6 +22,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+//#define LIBUSB_H
 #ifndef LIBUSB_H
 #define LIBUSB_H
 

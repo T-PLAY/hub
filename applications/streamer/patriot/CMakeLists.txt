@@ -17,7 +17,13 @@ project(patriot)
 #pkg_check_modules(libusb REQUIRED libusb-1.0)
 #find_package(libusb REQUIRED)
 #find_package(Libusb1 REQUIRED)
-find_package(libusb REQUIRED)
+
+find_package(LibUsb REQUIRED)
+#find_package(usb-1.0 REQUIRED)
+
+#find_package(libusb REQUIRED)
+#find_package(libusb-1.0 REQUIRED)
+#find_package(usb REQUIRED)
 
 file(GLOB_RECURSE sources *.cpp)
 file(GLOB_RECURSE headers *.h)
@@ -32,6 +38,7 @@ add_executable(${PROJECT_NAME}
 target_include_directories(${PROJECT_NAME} PUBLIC
     # ${SRC_DIR}
 #    ${LIBUSB1_INCLUDE_DIRS}
+    ${LibUSB_INCLUDE_DIRS}
     include/
     ${PROJECT_SOURCE_DIR}
     )
@@ -52,7 +59,15 @@ endif()
 #     ${libusb-1.0_LIBRARIES}
 #        ${LIBUSB_LIBRARY}
 #        Libusb1
-        libusb
+#        usb-1.0
+#        LibUsb
+#        ${LibUSB_LIBRARIES}
+#        ${LibUSB_LIBRARY}
+#        ${usb_LIBRARY}
+        usb-1.0
+#        libusb
+#        usb
+#        libusb
 #        usb
 #        ${LIBUSB1_LIBRARIES}
 # #    # ${REQUIRED_LIBS_QUALIFIED}
