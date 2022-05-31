@@ -45,7 +45,9 @@ int main(int argc, char* argv[])
 
     //    recorder.record({{g_probePoseSensorName + " (record)", g_probeScanSensorName + " (record)"}, {g_probeScanSensorName + " (record)", ""}});
 
-    recorder.record({ { g_probePoseSensorName, ""}, { g_probePoseSensorName, g_probeScanSensorName }, { g_probeScanSensorName, "" } });
+//    recorder.record({ { g_probePoseSensorName, ""}, { g_probePoseSensorName, g_probeScanSensorName }, { g_probeScanSensorName, "" } });
+    recorder.record({ { "L500 Depth Sensor (Depth)", ""}, { "L500 Depth Sensor (Infrared)", "" }, { "L500 RGB Camera", "" } });
+
 //    recorder.record({ { g_probePoseSensorName, ""}, { g_probeScanSensorName, "" } });
 
     //    while (true) {
