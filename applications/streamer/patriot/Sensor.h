@@ -32,6 +32,8 @@ namespace Polhemus {
 		 */
 		const Orientation getOrientation() const;
 
+        void updateData(void * data) const;
+
 		/**
 		 * Is sensor connected and active
 		 */

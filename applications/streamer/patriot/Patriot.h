@@ -42,8 +42,9 @@ namespace Polhemus {
 	#define CTRL_Z 0x1A
 
 	#define READ_BUFFER_SIZE 1000
-	#define USB_TIMEOUT 50
-	#define PATRIOT_SENSOR_COUNT 2
+    #define USB_TIMEOUT 50
+//    #define USB_TIMEOUT 500
+    #define PATRIOT_SENSOR_COUNT 2
 
 	#define POLHEMUS_NO_FIRMWARE_PRODUCTID 0xef11
 
@@ -65,7 +66,9 @@ namespace Polhemus {
 
 	const TrackerUSBParameters USB_PARMS[2]={
 			{0x0f44, 0xff12, 0x02, 0x82},   	// Liberty
-			{0x0f44, 0xef12, 0x02, 0x82}};  	// Patriot
+            { 0X0f44, 0xef20, 0x04, 0x88 } // Patriot HS
+//			{0x0f44, 0xef12, 0x02, 0x82}};  	// Patriot
+    };
 
 	struct ErrorCodeComperator
 	{
@@ -121,8 +124,9 @@ namespace Polhemus {
 
 	class Patriot {
 	private:
-		TrackerVersionInfo* trackerVerInf;
+        TrackerVersionInfo* trackerVerInf = nullptr;
 	protected:
+    public:
 		int readPort, writePort;
 		bool connected;
 		vector<Sensor*> sensors;
@@ -220,7 +224,14 @@ namespace Polhemus {
 		/**
 		 * Returned value must be deleted by caller after use.
 		 */
-		BinaryPosition* getMeasurement();
+        BinaryPosition getMeasurement();
+
+//        void * getData();
+//        SingleDataBinaryResponse2_4_1 getData();
+        void updateData(void * data);
+
+//    private:
+//        void * data = nullptr;
 	};
 }
 
