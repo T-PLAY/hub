@@ -28,6 +28,11 @@
    </property>
    <item>
     <widget class="QLabel" name="label_sensorName">
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
      <property name="text">
       <string>SensorName</string>
      </property>
@@ -38,6 +43,11 @@
    </item>
    <item>
     <widget class="QLabel" name="label_frequency">
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
      <property name="text">
       <string>0 Hz</string>
      </property>

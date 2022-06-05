@@ -87,7 +87,7 @@ void Player::update(int iSensor)
                 m_frames.reserve(nAcqs);
                 m_frames.resize(nAcqs);
             }
-            assert(acqs.size() == nAcqs);
+//            assert(acqs.size() == nAcqs);
 
             int iAcq = 0;
             for (const auto& acq : acqs) {
