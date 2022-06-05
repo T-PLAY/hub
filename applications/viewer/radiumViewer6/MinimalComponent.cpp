@@ -31,7 +31,7 @@
 
 #include <Engine/Scene/EntityManager.hpp>
 
-//#define USE_GOT_CONTRIB
+#define USE_GOT_CONTRIB
 
 #ifdef IO_USE_ASSIMP
 #include <IO/AssimpLoader/AssimpFileLoader.hpp>
@@ -45,8 +45,11 @@
 const char* vertexShaderFile = PROJECT_DIR "applications/viewer/radiumViewer/vertexShader.glsl";
 const char* fragmentShaderFile = PROJECT_DIR "applications/viewer/radiumViewer/fragmentShader.glsl";
 
-constexpr int g_nProbes = 10;
-constexpr bool g_enableGrid = true;
+constexpr int g_nProbes = 20;
+ constexpr bool g_enableGrid = true;
+//constexpr bool g_enableGrid = false;
+
+constexpr bool g_enableTrace = true;
 
 using namespace Ra;
 using namespace Ra::Core;
@@ -215,9 +218,9 @@ void MinimalComponent::initialize()
                 "test_line",
                 this,
                 RenderObjectType::Geometry,
-                //        DrawPrimitives::Line( Vector3(0_ra, 0_ra, 0_ra),
-                //                              Vector3 { 100_ra, 0_ra, 0_ra },
-                //                              Color::Red() ),
+            //        DrawPrimitives::Line( Vector3(0_ra, 0_ra, 0_ra),
+            //                              Vector3 { 100_ra, 0_ra, 0_ra },
+            //                              Color::Red() ),
 #ifdef USE_GOT_CONTRIB
                 DrawPrimitives::Spline(spline, 10, Color::Green(), Color::Red()),
 #else
@@ -563,6 +566,7 @@ void MinimalComponent::updateScan(const Stream::Acquisition& acq)
         g_iProbeScan = 0;
         g_timestampProbeScan = acq.mBackendTimestamp;
     }
+
     //     int iProbe = 0;
 
     //    const int nAcqs = acqs.size();
@@ -624,8 +628,10 @@ void MinimalComponent::initScan(int iProbe)
 void MinimalComponent::initPoseTraces(const std::vector<Stream::Acquisition>& poseAcqs)
 {
 
-    Ra::Core::Geometry::Spline<3, 3> splines[3];
-    Core::VectorArray<Vector3> points[3];
+//    if (g_enableTrace) {
+        Ra::Core::Geometry::Spline<3, 3> splines[3];
+        Core::VectorArray<Vector3> points[3];
+//    }
 
     for (const auto& acq : poseAcqs) {
 
@@ -684,9 +690,11 @@ void MinimalComponent::initPoseTraces(const std::vector<Stream::Acquisition>& po
             //            TLocal2.scale(vecScale2);
             const auto& transform = TRadium * TWorld * TOrientation * TLocal2;
 
-            for (int i = 0; i < 3; ++i) {
-                Vector3 pos2 = transform * Vector3(0, i * scanWidth / 2.0, 0);
-                points[i].push_back(pos2);
+            if (g_enableTrace) {
+                for (int i = 0; i < 3; ++i) {
+                    Vector3 pos2 = transform * Vector3(0, i * scanWidth / 2.0, 0);
+                    points[i].push_back(pos2);
+                }
             }
 
             //            probe.m_scanLine->setLocalTransform(TRadium * TWorld * TOrientation * TLocal2);
@@ -695,11 +703,13 @@ void MinimalComponent::initPoseTraces(const std::vector<Stream::Acquisition>& po
         }
     }
 
-    if (poseAcqs.empty()) {
-        for (int i = 0; i < 3; ++i) {
-            points[i].push_back(Vector3(0_ra, 0_ra, 0_ra));
-            points[i].push_back(Vector3(0_ra, 0_ra, 0_ra));
-            points[i].push_back(Vector3(0_ra, 0_ra, 0_ra));
+    if (g_enableTrace) {
+        if (poseAcqs.empty()) {
+            for (int i = 0; i < 3; ++i) {
+                points[i].push_back(Vector3(0_ra, 0_ra, 0_ra));
+                points[i].push_back(Vector3(0_ra, 0_ra, 0_ra));
+                points[i].push_back(Vector3(0_ra, 0_ra, 0_ra));
+            }
         }
     }
     //    points.push_back(Vector3(0_ra, 0_ra, 0_ra));
@@ -712,21 +722,25 @@ void MinimalComponent::initPoseTraces(const std::vector<Stream::Acquisition>& po
     m_viewer.makeCurrent();
     //    g_splineLines->setLifetime(0);
     //    g_splineLines->setVisible(false);
-    for (int i = 0; i < 3; ++i) {
-        splines[i].setCtrlPoints(points[i]);
-//        Scalar scale = (i == 2) ? 10_ra : 1_ra;
-        g_splineLines[i]->setMesh(
+
+    if (g_enableTrace) {
+        for (int i = 0; i < 3; ++i) {
+            splines[i].setCtrlPoints(points[i]);
+            //        Scalar scale = (i == 2) ? 10_ra : 1_ra;
+            g_splineLines[i]->setMesh(
 #ifdef USE_GOT_CONTRIB
-            DrawPrimitives::Spline(splines[i], points[i].size(), Color::Cyan() * (i + 1) / 3.0, Color::Black() * (i + 1) / 3.0));
+                DrawPrimitives::Spline(splines[i], points[i].size(), Color::Cyan() * (i + 1) / 3.0, Color::Black() * (i + 1) / 3.0));
 #else
-            DrawPrimitives::Spline(splines[i], points[i].size(), Color::Cyan() * (i + 1) / 3.0));
+                DrawPrimitives::Spline(splines[i], points[i].size(), Color::Cyan() * (i + 1) / 3.0));
 #endif
-        g_splineLines[i]->setTransparent(true);
+            g_splineLines[i]->setTransparent(true);
+        }
     }
+
     //    g_splineLines->updateGL();
     //    g_splineLines->setVisible(true);
-//    this->invalidateAabb();
-//    m_engine.computeSceneAabb();
+    //    this->invalidateAabb();
+    //    m_engine.computeSceneAabb();
     m_viewer.doneCurrent();
 
     //    this->invalidateAabb();

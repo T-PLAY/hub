@@ -216,6 +216,8 @@ void FormInputStreamView::onNewAcquisition(const std::string& sourceType)
             const auto& inputStreamThread = *m_sourceType2inputStreamThreads.at(activeSourceType.toStdString()).front().get();
             const auto& inputStream = inputStreamThread.mInputStream;
             const auto& acqs = inputStreamThread.mAcqs;
+            if (acqs.empty())
+                return;
             assert(!acqs.empty());
             assert(acqs.back().mData != nullptr);
 //            m_widgetStreamView->setData((unsigned char*)acqs.back().mData, inputStream->getDims(), inputStream->getFormat());
