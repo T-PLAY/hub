@@ -46,6 +46,7 @@ const char* vertexShaderFile = PROJECT_DIR "applications/viewer/radiumViewer/ver
 const char* fragmentShaderFile = PROJECT_DIR "applications/viewer/radiumViewer/fragmentShader.glsl";
 
 constexpr int g_nProbes = 20;
+
  constexpr bool g_enableGrid = true;
 //constexpr bool g_enableGrid = false;
 
