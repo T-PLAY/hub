@@ -22,18 +22,22 @@ namespace Polhemus {
 	 * Get sensor position in Cartesian coordinates
 	 */
 	const Position Sensor::getPosition() const {
-		BinaryPosition* bp = mTracker->getMeasurement();
-		Position position = bp->getPosition();
-		delete bp;
+        BinaryPosition bp = mTracker->getMeasurement();
+        Position position = bp.getPosition();
+//		delete bp;
 		return position;
 	}
 
 	const Orientation Sensor::getOrientation() const {
-		BinaryPosition* bp = mTracker->getMeasurement();
-		Orientation orientation = bp->getOrientation();
-		delete bp;
+        BinaryPosition bp = mTracker->getMeasurement();
+        Orientation orientation = bp.getOrientation();
+//		delete bp;
 		return orientation;
 	}
+
+    void Sensor::updateData(void * data) const {
+        mTracker->updateData(data);
+    }
 
 	bool Sensor::isActive() const {
 		return isActiveBool;

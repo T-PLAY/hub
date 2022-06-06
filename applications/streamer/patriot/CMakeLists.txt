@@ -10,6 +10,8 @@ set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
 project(patriot)
 
+#add_compile_options("-fno-stack-protector")
+
 
 #find_package(libusb-1.0 REQUIRED)
 #find_package(libusb1 REQUIRED)
@@ -18,7 +20,7 @@ project(patriot)
 #find_package(libusb REQUIRED)
 #find_package(Libusb1 REQUIRED)
 
-find_package(LibUsb REQUIRED)
+#find_package(LibUsb REQUIRED)
 #find_package(usb-1.0 REQUIRED)
 
 #find_package(libusb REQUIRED)
@@ -38,7 +40,7 @@ add_executable(${PROJECT_NAME}
 target_include_directories(${PROJECT_NAME} PUBLIC
     # ${SRC_DIR}
 #    ${LIBUSB1_INCLUDE_DIRS}
-    ${LibUSB_INCLUDE_DIRS}
+#    ${LibUSB_INCLUDE_DIRS}
     include/
     ${PROJECT_SOURCE_DIR}
     )
@@ -59,12 +61,12 @@ endif()
 #     ${libusb-1.0_LIBRARIES}
 #        ${LIBUSB_LIBRARY}
 #        Libusb1
-#        usb-1.0
+        usb-1.0
 #        LibUsb
 #        ${LibUSB_LIBRARIES}
 #        ${LibUSB_LIBRARY}
 #        ${usb_LIBRARY}
-        usb-1.0
+#        usb-1.0
 #        libusb
 #        usb
 #        libusb

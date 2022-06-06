@@ -190,6 +190,7 @@ void WidgetStreamView2D::onPixelPerUnitChanged()
 
 //}
 
+
 void WidgetStreamView2D::updateImage()
 {
 //    std::cout << "[WidgetStreamView2D] updateImage" << std::endl;
@@ -203,7 +204,10 @@ void WidgetStreamView2D::updateImage()
 
         case Stream::Format::Y16:
         case Stream::Format::Z16:
+#if QT_VERSION <= QT_VERSION_CHECK(5, 12, 0)
             m_image = new QImage((unsigned char*)mData, mImagePixelWidth, mImagePixelHeight, QImage::Format_Grayscale16);
+#else
+#endif
             break;
 
         case Stream::Format::RGB8:
@@ -211,8 +215,12 @@ void WidgetStreamView2D::updateImage()
             break;
 
         case Stream::Format::BGR8:
+#if QT_VERSION <= QT_VERSION_CHECK(5, 12, 0)
             m_image = new QImage((unsigned char*)mData, mImagePixelWidth, mImagePixelHeight, QImage::Format_BGR888);
-            break;
+#else
+        m_image = new QImage((unsigned char*)mData, mImagePixelWidth, mImagePixelHeight, QImage::Format_RGB888);
+#endif
+        break;
 
         default:
             std::cout << "[paintEvent] unknown stream format" << std::endl;

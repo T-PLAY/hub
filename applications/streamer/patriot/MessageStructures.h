@@ -1,6 +1,8 @@
 #ifndef POLHEMUS_MESSAGESTRUCTURES_H_
 #define POLHEMUS_MESSAGESTRUCTURES_H_
 
+#include <iostream>
+
 namespace Polhemus {
 	/**
 	 * Data from tracker is not aligned. Writing data from tracker to structs
@@ -48,7 +50,13 @@ namespace Polhemus {
 		unsigned char errorIndicator;
 		unsigned char reserved;
 		signed short responseSize;
-	};
+
+    friend std::ostream& operator<<(std::ostream& os, const BinaryResponseHeader& response)
+    {
+        os << "header, response size = " << response.responseSize;
+        return os;
+    }
+    };
 
 	struct WhoAmIBinaryResponse : BinaryResponseHeader {
 		unsigned char sensorCount;
@@ -82,11 +90,27 @@ namespace Polhemus {
 
 	struct OutputFormatBinaryResponse : BinaryResponseHeader {
 		signed int asciiOrBinary;
-	};
+
+    friend std::ostream& operator<<(std::ostream& os, const OutputFormatBinaryResponse& response)
+    {
+//        BinaryResponseHeader::operator<<(os, response);
+//        os << BinaryResponseHeader(response);
+        if (response.asciiOrBinary == 0)
+            os << "ascii";
+        else
+            os << "binary";
+        return os;
+    }
+    };
 
 	struct UnitsBinaryResponse : BinaryResponseHeader {
 		signed int inchesOrCentimeters;
-	};
+
+    friend std::ostream& operator<<(std::ostream& os, const UnitsBinaryResponse& response)
+    {
+        return os;
+    }
+    };
 
 	struct ActiveStationStateBinaryResponse : BinaryResponseHeader {
 		signed int activeStationBitmap;
