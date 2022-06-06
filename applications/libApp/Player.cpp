@@ -31,8 +31,7 @@ Player::~Player()
         unload();
 }
 
-
-void Player::load(const std::string &path, int iSensor)
+void Player::load(const std::string& path, int iSensor)
 {
     assert(!m_isPlaying);
     assert(m_loadedPath == "");
@@ -87,7 +86,7 @@ void Player::update(int iSensor)
                 m_frames.reserve(nAcqs);
                 m_frames.resize(nAcqs);
             }
-//            assert(acqs.size() == nAcqs);
+            //            assert(acqs.size() == nAcqs);
 
             int iAcq = 0;
             for (const auto& acq : acqs) {
@@ -172,6 +171,8 @@ void Player::play()
     assert(!m_snapshots.empty());
 
     m_thread = new std::thread([this]() {
+//        const long long duration = m_snapshots.end()->getAcq().mBackendTimeOfArrival - m_snapshots.begin()->getAcq().mBackendTimestamp;
+        const long long duration = m_snapshots.end()->getAcq().mBackendTimestamp - m_snapshots.begin()->getAcq().mBackendTimestamp;
         // play
         int iLoop = 0;
         //        bool exitSignal = false;
@@ -179,13 +180,21 @@ void Player::play()
             const auto startRecord = m_snapshots.begin()->getAcq().mBackendTimestamp;
             const auto& startChrono = std::chrono::high_resolution_clock::now();
 
+            long long dec = iLoop * duration;
+
             auto it = m_snapshots.begin();
             //            while (it != m_snapshots.end()) {
             while (m_isPlaying && it != m_snapshots.end()) {
                 const auto& snapshot = *it;
 
                 std::this_thread::sleep_until(startChrono + std::chrono::microseconds(snapshot.getAcq().mBackendTimestamp - startRecord));
-                *m_outputs.at(snapshot.getSensorName()) << snapshot.getAcq();
+
+                const auto& acq = snapshot.getAcq();
+                Stream::Acquisition acq2 { acq.mBackendTimestamp + dec, acq.mBackendTimeOfArrival + dec, acq.mData, acq.mSize };
+
+                *m_outputs.at(snapshot.getSensorName())
+                    << acq2;
+                //                    << snapshot.getAcq();
 
                 ++it;
                 //                m_isPlaying = m_futureObj.wait_for(std::chrono::milliseconds(1)) == std::future_status::timeout;
@@ -193,8 +202,7 @@ void Player::play()
 
             if (!m_isPlaying) {
                 std::cout << "end record" << std::endl;
-            }
-            else {
+            } else {
                 std::cout << "auto loop " << iLoop << std::endl;
             }
             ++iLoop;
