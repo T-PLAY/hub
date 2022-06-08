@@ -206,6 +206,8 @@ void WidgetStreamView2D::updateImage()
         case Stream::Format::Z16:
 #if QT_VERSION <= QT_VERSION_CHECK(5, 12, 0)
             m_image = new QImage((unsigned char*)mData, mImagePixelWidth, mImagePixelHeight, QImage::Format_Grayscale16);
+#elif QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+            m_image = new QImage((unsigned char*)mData, mImagePixelWidth, mImagePixelHeight, QImage::Format_Grayscale16);
 #else
 #endif
             break;
@@ -216,6 +218,8 @@ void WidgetStreamView2D::updateImage()
 
         case Stream::Format::BGR8:
 #if QT_VERSION <= QT_VERSION_CHECK(5, 12, 0)
+            m_image = new QImage((unsigned char*)mData, mImagePixelWidth, mImagePixelHeight, QImage::Format_BGR888);
+#elif QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
             m_image = new QImage((unsigned char*)mData, mImagePixelWidth, mImagePixelHeight, QImage::Format_BGR888);
 #else
         m_image = new QImage((unsigned char*)mData, mImagePixelWidth, mImagePixelHeight, QImage::Format_RGB888);
