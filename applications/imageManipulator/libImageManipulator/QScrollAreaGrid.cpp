@@ -25,6 +25,8 @@ void QScrollAreaGrid::wheelEvent(QWheelEvent* event)
     double vScroll = verticalScrollBar()->value();
 #if QT_VERSION <= QT_VERSION_CHECK(5, 12, 0)
     double y = event->position().y();
+#elif QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    double y = event->position().y();
 #else
     double y = event->x();
 #endif
@@ -34,6 +36,8 @@ void QScrollAreaGrid::wheelEvent(QWheelEvent* event)
 
     double hScroll = horizontalScrollBar()->value();
 #if QT_VERSION <= QT_VERSION_CHECK(5, 12, 0)
+    double x = event->position().x();
+#elif QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     double x = event->position().x();
 #else
     double x = event->x();
