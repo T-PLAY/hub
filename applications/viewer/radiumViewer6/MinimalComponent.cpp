@@ -31,7 +31,7 @@
 
 #include <Engine/Scene/EntityManager.hpp>
 
-#define USE_GOT_CONTRIB
+//#define USE_GOT_CONTRIB
 
 #ifdef IO_USE_ASSIMP
 #include <IO/AssimpLoader/AssimpFileLoader.hpp>
@@ -47,7 +47,6 @@ const char* fragmentShaderFile = PROJECT_DIR "applications/viewer/radiumViewer/f
 
 constexpr int g_nProbes = 20;
 
- constexpr bool g_enableGrid = true;
 //constexpr bool g_enableGrid = false;
 
 constexpr bool g_enableTrace = true;
@@ -85,7 +84,9 @@ static long long g_timestampProbePose = 0;
 static int g_iProbeScan = 0;
 static long long g_timestampProbeScan = 0;
 
-Ra::Engine::Rendering::RenderObject* g_splineLines[3] = { nullptr, nullptr, nullptr };
+//static Ra::Engine::Rendering::RenderObject * g_roGrid = nullptr;
+
+//Ra::Engine::Rendering::RenderObject* g_splineLines[3] = { nullptr, nullptr, nullptr };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -126,8 +127,7 @@ void MinimalComponent::initialize()
     int nCellX = 10;
 
     //// GRID ////
-    if (g_enableGrid) {
-
+    {
         auto gridPrimitive = DrawPrimitives::Grid(Vector3::Zero(),
             Vector3::UnitX(),
             Vector3::UnitZ(),
@@ -135,12 +135,13 @@ void MinimalComponent::initialize()
             cellSize,
             nCellX);
 
-        auto gridRo = RenderObject::createRenderObject(
+        m_roGrid = RenderObject::createRenderObject(
             "test_grid", this, RenderObjectType::Geometry, gridPrimitive, {});
-        gridRo->setMaterial(Ra::Core::make_shared<PlainMaterial>("Grid material"));
-        gridRo->setPickable(false);
-        addRenderObject(gridRo);
+        m_roGrid->setMaterial(Ra::Core::make_shared<PlainMaterial>("Grid material"));
+        m_roGrid->setPickable(false);
+        addRenderObject(m_roGrid);
     }
+
 
     //    std::vector<std::shared_ptr<Engine::Data::Mesh>> meshAxis;
 
@@ -215,7 +216,7 @@ void MinimalComponent::initialize()
         //    spline.
 
         for (int i = 0; i < 3; ++i) {
-            g_splineLines[i] = RenderObject::createRenderObject(
+            m_roTraces[i] = RenderObject::createRenderObject(
                 "test_line",
                 this,
                 RenderObjectType::Geometry,
@@ -228,8 +229,8 @@ void MinimalComponent::initialize()
                 DrawPrimitives::Spline(spline, 10, Color::Green()),
 #endif
                 {});
-            g_splineLines[i]->setMaterial(g_plainMaterial);
-            addRenderObject(g_splineLines[i]);
+            m_roTraces[i]->setMaterial(g_plainMaterial);
+            addRenderObject(m_roTraces[i]);
         }
     }
 }
@@ -692,7 +693,7 @@ void MinimalComponent::initPoseTraces(const std::vector<Stream::Acquisition>& po
             const auto& transform = TRadium * TWorld * TOrientation * TLocal2;
 
             if (g_enableTrace) {
-                for (int i = 0; i < 3; ++i) {
+                for (int i = 0; i < g_nTraces; ++i) {
                     Vector3 pos2 = transform * Vector3(0, i * scanWidth / 2.0, 0);
                     points[i].push_back(pos2);
                 }
@@ -721,31 +722,31 @@ void MinimalComponent::initPoseTraces(const std::vector<Stream::Acquisition>& po
     std::cout << "[MinimalComponent] splines added -----------------" << std::endl;
 
     m_viewer.makeCurrent();
-    //    g_splineLines->setLifetime(0);
-    //    g_splineLines->setVisible(false);
+    //    m_roTraces->setLifetime(0);
+    //    m_roTraces->setVisible(false);
 
     if (g_enableTrace) {
-        for (int i = 0; i < 3; ++i) {
+        for (int i = 0; i < g_nTraces; ++i) {
             splines[i].setCtrlPoints(points[i]);
             //        Scalar scale = (i == 2) ? 10_ra : 1_ra;
-            g_splineLines[i]->setMesh(
+            m_roTraces[i]->setMesh(
 #ifdef USE_GOT_CONTRIB
                 DrawPrimitives::Spline(splines[i], points[i].size(), Color::Cyan() * (i + 1) / 3.0, Color::Black() * (i + 1) / 3.0));
 #else
                 DrawPrimitives::Spline(splines[i], points[i].size(), Color::Cyan() * (i + 1) / 3.0));
 #endif
-            g_splineLines[i]->setTransparent(true);
+            m_roTraces[i]->setTransparent(true);
         }
     }
 
-    //    g_splineLines->updateGL();
-    //    g_splineLines->setVisible(true);
+    //    m_roTraces->updateGL();
+    //    m_roTraces->setVisible(true);
     //    this->invalidateAabb();
     //    m_engine.computeSceneAabb();
     m_viewer.doneCurrent();
 
     //    this->invalidateAabb();
-    //    g_splineLines->updateGL();
+    //    m_roTraces->updateGL();
 
     //    Ra::Engine::Scene::Entity* e = m_engine.getEntityManager()->createEntity("Spline");
     //    auto* splineComponent = new GeometryComponent("spline", e);
@@ -763,6 +764,27 @@ void MinimalComponent::initPoseTraces(const std::vector<Stream::Acquisition>& po
     //    splineComponent->addRenderObject(testline);
     //    addRenderObject(testline);
 }
+
+void MinimalComponent::traceSetVisible(bool visible)
+{
+//    for (int i = 0; i <3; ++i) {
+//        m_roTraces[i]->setVisible(visible);
+//    }
+    for (auto & roTrace : m_roTraces) {
+        roTrace->setVisible(visible);
+    }
+}
+
+RenderObject &MinimalComponent::getRoGrid()
+{
+    return *m_roGrid;
+}
+
+Traces & MinimalComponent::getRoTraces()
+{
+    return m_roTraces;
+}
+
 
 // InputStream* scanStream = nullptr;
 // InputStream* posStream  = nullptr;

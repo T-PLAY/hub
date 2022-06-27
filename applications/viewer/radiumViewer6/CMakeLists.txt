@@ -108,6 +108,8 @@ if(${QT_VERSION} GREATER_EQUAL 6)
     set_property(TARGET ${PROJECT_NAME} APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
                  ${CMAKE_CURRENT_SOURCE_DIR}/android)
 # For more information, see https://doc.qt.io/qt-6/qt-add-executable.html#target-creation
+    add_definitions(-DUSE_GOT_CONTRIB)
+
 else()
     if(ANDROID)
         add_library(${PROJECT_NAME} SHARED
