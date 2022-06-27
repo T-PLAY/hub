@@ -11,14 +11,16 @@
 //#include <Engine/Data/PlainMaterial.hpp>
 //#include <Engine/Data/LambertianMaterial.hpp>
 
-#include <stream.h>
 #include <FormInputStreamView.h>
+#include <stream.h>
 
 //#include <MinimalSystem.hpp>
 
 /* This file contains a minimal radium/qt application which shows the
 classic "Spinning Cube" demo. */
 
+constexpr int g_nTraces = 3;
+using Traces = std::array<Ra::Engine::Rendering::RenderObject*, g_nTraces>;
 
 /// This is a very basic component which holds a spinning cube.
 struct MinimalComponent : public Ra::Engine::Scene::Component {
@@ -26,8 +28,8 @@ struct MinimalComponent : public Ra::Engine::Scene::Component {
     MinimalComponent( Ra::Engine::Scene::Entity* entity,
                       Ra::Engine::RadiumEngine& e,
                       Ra::Gui::Viewer& viewer
-//                      MinimalSystem & minimalSystem
-                      );
+                      //                      MinimalSystem & minimalSystem
+    );
 
     /// This function is called when the component is properly
     /// setup, i.e. it has an entity.
@@ -37,20 +39,28 @@ struct MinimalComponent : public Ra::Engine::Scene::Component {
     void updateShader();
 
     void updatePose( const Stream::Acquisition& acq );
-//    void updatePose( Acquisitions & acqs );
-//    void updatePose( Stream::Acquisition && acq );
-    void initPose(int iProbe = 0);
+    //    void updatePose( Acquisitions & acqs );
+    //    void updatePose( Stream::Acquisition && acq );
+    void initPose( int iProbe = 0 );
     void updateScan( const Stream::Acquisition& acq );
-//    void updateScan( Acquisitions& acqs );
-//    void updateScan( Stream::Acquisition && acq );
-    void initScan(int iProbe = 0);
+    //    void updateScan( Acquisitions& acqs );
+    //    void updateScan( Stream::Acquisition && acq );
+    void initScan( int iProbe = 0 );
 
-    void initPoseTraces(const std::vector<Stream::Acquisition> & poseAcqs);
+    void initPoseTraces( const std::vector<Stream::Acquisition>& poseAcqs );
 
-  public:
+    void traceSetVisible(bool visible);
+
   private:
     Ra::Engine::RadiumEngine& m_engine;
     Ra::Gui::Viewer& m_viewer;
-//    MinimalSystem & m_system;
+    //    MinimalSystem & m_system;
 
+    Ra::Engine::Rendering::RenderObject* m_roGrid = nullptr;
+//    Ra::Engine::Rendering::RenderObject* m_roTraces[3] = {nullptr, nullptr, nullptr};
+    Traces m_roTraces;
+
+  public:
+    Ra::Engine::Rendering::RenderObject & getRoGrid();
+    Traces & getRoTraces();
 };
