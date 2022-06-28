@@ -81,6 +81,7 @@ set(CMAKE_DISABLE_SOURCE_CHANGES ON)
 set(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
 
 
+#add_definitions(-DPROJECT_DIR=\"${CMAKE_SOURCE_DIR}/\")
 
 #set(QT_VERSION 5)
 set(REQUIRED_LIBS Core Widgets Gui Xml)
@@ -90,7 +91,7 @@ find_package(Qt${QT_VERSION} REQUIRED COMPONENTS ${REQUIRED_LIBS})
 
 find_package(Radium REQUIRED COMPONENTS Core Engine Gui)
 
-file(GLOB_RECURSE app_sources *.cpp)
+file(GLOB_RECURSE app_sources *.cpp *.glsl)
 file(GLOB_RECURSE app_uis *.ui)
 file(GLOB_RECURSE app_headers *.h *.hpp)
 set(PROJECT_SOURCES

@@ -49,7 +49,6 @@ struct MinimalComponent : public Ra::Engine::Scene::Component {
 
     void initPoseTraces( const std::vector<Stream::Acquisition>& poseAcqs );
 
-    void traceSetVisible(bool visible);
 
   private:
     Ra::Engine::RadiumEngine& m_engine;
@@ -61,6 +60,7 @@ struct MinimalComponent : public Ra::Engine::Scene::Component {
     Traces m_roTraces;
 
   public:
+    void traceSetVisible(bool visible);
     Ra::Engine::Rendering::RenderObject & getRoGrid();
     Traces & getRoTraces();
 };
