@@ -430,7 +430,7 @@ void MinimalComponent::updateShader() {
 }
 
 void MinimalComponent::updatePose( const Stream::Acquisition& acq ) {
-    return;
+//    return;
 
     // void MinimalComponent::updatePose( Acquisitions& acqs ) {
     // void MinimalComponent::updatePose( Stream::Acquisition && acq) {
@@ -561,7 +561,7 @@ void MinimalComponent::initPose( int iProbe ) {
         TLocal.translate( Vector3( 0_ra, 0_ra, -iProbe * 5 ) );
         TLocal.scale( 10.0 );
         probe.m_scan->setLocalTransform( TLocal );
-//        if ( iProbe > 0 ) probe.m_scan->setVisible( false );
+        if ( iProbe > 0 ) probe.m_scan->setVisible( false );
     }
 
     {
@@ -585,7 +585,7 @@ void MinimalComponent::initPose( int iProbe ) {
 
 // void MinimalComponent::updateScan( Acquisitions& acqs ) {
 void MinimalComponent::updateScan( const Stream::Acquisition& acq ) {
-    return;
+//    return;
 
     //    assert( iProbe < g_probes.size() );
     if ( acq.mBackendTimestamp == g_timestampProbeScan ) { ++g_iProbeScan; }
@@ -622,13 +622,13 @@ void MinimalComponent::updateScan( const Stream::Acquisition& acq ) {
 }
 
 void MinimalComponent::initScan( int iProbe ) {
-//    if ( iProbe == 0 ) {
-//        for ( int i = 1; i <= g_iProbeScan; ++i ) {
-//            initScan( i );
-//        }
-//        g_iProbeScan         = 0;
-//        g_timestampProbeScan = 0;
-//    }
+    if ( iProbe == 0 ) {
+        for ( int i = 1; i <= g_iProbeScan; ++i ) {
+            initScan( i );
+        }
+        g_iProbeScan         = 0;
+        g_timestampProbeScan = 0;
+    }
     assert( iProbe < g_probes.size() );
     auto& probe = g_probes.at( iProbe );
 
