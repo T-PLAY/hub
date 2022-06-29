@@ -23,3 +23,4 @@ add_subdirectory(loader)
 
 add_subdirectory(imageManipulator)
 
+add_subdirectory(testScus)
