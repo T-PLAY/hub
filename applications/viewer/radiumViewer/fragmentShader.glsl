@@ -113,6 +113,8 @@ void main(void)
 {
         float gray = texture(material.tex.kd, in_texcoord.xy).r;
         out_color =  vec4(vec3(gray), 1.0);
+//        out_color = vec4(texture(material.tex.kd, in_texcoord.xy).r, 0.0, 0.0, 1.0);
+
 //        out_color =  vec4(in_texcoord.xy, 1.0, 1.0);
 	// out_color =  ( 1 + cos( 20 * ( in_pos.x + aScalarUniform ) ) ) * 0.5 * aColorUniform;
 }
