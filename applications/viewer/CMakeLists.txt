@@ -1,6 +1,7 @@
 cmake_minimum_required (VERSION 3.8)
 
 add_subdirectory(libViewer)
+
 #add_subdirectory(clientViewer)
 add_subdirectory(streamViewer)
 add_subdirectory(simpleViewer)
@@ -13,6 +14,10 @@ if (BUILD_RADIUM_EXAMPLE)
 #    add_subdirectory(radiumViewer4)
 #    add_subdirectory(radiumViewer5)
     add_subdirectory(radiumViewer6)
+
+    add_subdirectory(libDicomLoader)
+    add_subdirectory(VolumeDemoApp)
+    add_subdirectory(TexturedQuad)
 endif()
 
 
