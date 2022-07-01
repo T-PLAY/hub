@@ -70,8 +70,11 @@ target_include_directories(
 #    ${SRC_DIR}
     )
 
+
 target_link_libraries(
-    ${PROJECT_NAME} PUBLIC Radium::Core Radium::Engine Radium::Gui ${Qt_LIBRARIES} ${DCMTK_LIBRARIES}
+    ${PROJECT_NAME} PUBLIC Radium::Core Radium::Engine Radium::Gui ${Qt_LIBRARIES}
+#    ${DCMTK_LIBRARIES}
+    DCMTK::dcmdata DCMTK::dcmimage
 )
 
 configure_radium_app(NAME ${PROJECT_NAME})

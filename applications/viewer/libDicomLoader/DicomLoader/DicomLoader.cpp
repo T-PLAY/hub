@@ -148,7 +148,7 @@ Ra::Core::Asset::FileData* DicomLoader::loadDicomFile( const std::string& filena
         density->setBinSize( binSize );
 
         assert(bytePerVoxel == 2);
-        bytePerVoxel = 1;
+//        bytePerVoxel = 1;
         switch ( bytePerVoxel ) {
         case 1: {
             fillRadiumVolume( density, volumeData );

@@ -26,7 +26,7 @@ find_package(Qt${QT_VERSION} REQUIRED COMPONENTS ${REQUIRED_LIBS})
 
 find_package(Radium REQUIRED COMPONENTS Core Engine Gui)
 
-find_package(Scus REQUIRED)
+#find_package(Scus REQUIRED)
 
 file(GLOB_RECURSE app_sources *.cpp *.glsl)
 file(GLOB_RECURSE app_uis *.ui)

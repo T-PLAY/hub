@@ -35,7 +35,7 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 # ------------------------------------------------------------------------------
 
-set(app_sources main.cpp)
+set(app_sources main.cpp vertexShader.glsl fragmentShader.glsl)
 
 # to install the app as a redistribuable bundle on macos, add MACOSX_BUNDLE when calling
 # add_executable
@@ -48,3 +48,18 @@ target_link_libraries(
 target_compile_options(${PROJECT_NAME} PRIVATE PUBLIC ${DEFAULT_COMPILE_OPTIONS} INTERFACE)
 
 configure_radium_app(NAME ${PROJECT_NAME})
+
+#message("-----------------------------")
+#message("-- USER environment variable is set to: " $ENV{USER})
+#message("-- HOSTNAME environment variable is set to: " $ENV{HOSTNAME})
+
+#cmake_host_system_information(RESULT hostname QUERY HOSTNAME)
+#message("-- hostname variable is set to: " ${hostname})
+
+#if (${hostname} STREQUAL "brueghel")
+#    add_definitions(-DMRI_PATH=\"/export/home/brueghel/gbouyjou/Downloads/MRI/\")
+#elseif (${hostname} STREQUAL "gigabyte")
+#    add_definitions(-DMRI_PATH=\"/home/gauthier/tmpDicomViewer/MRI/\")
+#else()
+#    message(FATAL_ERROR "unknown system for finding MRI path")
+#endif ()

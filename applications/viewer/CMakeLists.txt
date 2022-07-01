@@ -15,9 +15,21 @@ if (BUILD_RADIUM_EXAMPLE)
 #    add_subdirectory(radiumViewer5)
     add_subdirectory(radiumViewer6)
 
-    add_subdirectory(libDicomLoader)
-    add_subdirectory(VolumeDemoApp)
-    add_subdirectory(TexturedQuad)
+    if (BUILD_DCMTK)
+        cmake_host_system_information(RESULT hostname QUERY HOSTNAME)
+        if (${hostname} STREQUAL "brueghel")
+            add_definitions(-DMRI_PATH=\"/export/home/brueghel/gbouyjou/Downloads/MRI/\")
+        elseif (${hostname} STREQUAL "gigabyte")
+            add_definitions(-DMRI_PATH=\"/home/gauthier/tmpDicomViewer/MRI/\")
+        else()
+            message(FATAL_ERROR "unknown system for finding MRI path")
+        endif ()
+
+        add_subdirectory(libDicomLoader)
+        add_subdirectory(VolumeDemoApp)
+        add_subdirectory(TexturedQuad)
+
+    endif()
 endif()
 
 
