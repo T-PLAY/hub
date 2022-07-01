@@ -16,7 +16,8 @@ namespace Data {
  * to true.
  *
  */
-class RA_ENGINE_API ScanMaterial final : public SimpleMaterial
+//class RA_ENGINE_API ScanMaterial final : public SimpleMaterial
+class ScanMaterial final : public SimpleMaterial
 {
   public:
     /**
