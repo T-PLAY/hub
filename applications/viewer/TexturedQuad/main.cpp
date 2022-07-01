@@ -15,10 +15,10 @@
 
 #include <DicomLoader/DicomUtils.hpp>
 
-const char* vertexShaderFile = PROJECT_DIR "applications/viewer/radiumViewer/vertexShader.glsl";
-const char* fragmentShaderFile = PROJECT_DIR "applications/viewer/radiumViewer/fragmentShader.glsl";
+const char* vertexShaderFile = PROJECT_DIR "applications/viewer/TexturedQuad/vertexShader.glsl";
+const char* fragmentShaderFile = PROJECT_DIR "applications/viewer/TexturedQuad/fragmentShader.glsl";
 
-#define MRI_PATH "/home/gauthier/tmpDicomViewer/MRI/"
+//#define MRI_PATH "/home/gauthier/tmpDicomViewer/MRI/"
 
 int main(int argc, char* argv[])
 {
@@ -44,7 +44,7 @@ int main(int argc, char* argv[])
     float pixelSpacingWidth, pixelSpacingHeight, sliceThickness;
 
     const auto filename = MRI_PATH "AXT2_ligaments_uterosacres/D0010525.dcm";
-    //    app.loadFile(QString(MRI_PATH "Ax_T2_PROP_5MM/D0010275.dcm"));
+//        app.loadFile(QString(MRI_PATH "Ax_T2_PROP_5MM/D0010275.dcm"));
     //    app.loadFile(QString(MRI_PATH "Loc/D0010001.dcm"));
     //    app.loadFile(QString(MRI_PATH "MPR_AX_T2/D0010551.dcm"));
     //    app.loadFile(QString(MRI_PATH "MPR_Coro_T2/D0010710.dcm"));
@@ -84,9 +84,9 @@ int main(int argc, char* argv[])
     auto& myTexture = app.m_engine->getTextureManager()->addTexture("myTexture", 512, 512, volumeData);
     // these values will be used when engine initialize texture GL representation.
 //    myTexture.format = gl::GLenum::GL_RED;
-    myTexture.format = gl::GLenum::GL_RED;
-    myTexture.internalFormat = gl::GLenum::GL_R16;
-//    myTexture.internalFormat = gl::GLenum::GL_R8;
+    myTexture.format = gl::GLenum::GL_RG;
+//    myTexture.internalFormat = gl::GLenum::GL_R16;
+    myTexture.internalFormat = gl::GLenum::GL_RG;
     //! [Creating a texture]
 
     //! [Create an entity and component to draw or data]

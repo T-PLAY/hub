@@ -112,11 +112,12 @@ uniform float aScalarUniform;
 void main(void)
 {
         float gray = texture(material.tex.kd, in_texcoord.xy).r;
-        out_color =  vec4(vec3(gray), 1.0);
-//        vec4 texColor = texture(material.tex.kd, in_texcoord.xy);
+//        out_color =  vec4(vec3(gray), 1.0);
+        vec4 texColor = texture(material.tex.kd, in_texcoord.xy);
 //        out_color = vec4(texture(material.tex.kd, in_texcoord.xy).g, 0.0, 0.0, 1.0);
-//        float color = (texColor.r + texColor.g * 255) / 255;
-//        out_color =  vec4(vec3(color), 1.0);
+        float color = (texColor.b + texColor.g * 255) / 255;
+//        float color = texColor.r;
+        out_color =  vec4(vec3(color), 1.0);
 //        out_color =  vec4(texColor.rgb, 1.0);
 //        out_color = vec4(texColor.a, 0.0, 0.0, 1.0);
 

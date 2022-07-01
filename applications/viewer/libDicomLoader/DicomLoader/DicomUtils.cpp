@@ -45,6 +45,10 @@ namespace IO {
             float* pixelSpacingHeight,
             float* sliceThickness)
         {
+            if (! std::filesystem::exists(filename)) {
+                std::cout << "file '" << filename << "' doesn't exist" << std::endl;
+                exit(1);
+            }
             assert(std::filesystem::exists(filename));
             auto filepath = std::filesystem::path(filename).remove_filename();
 
@@ -160,7 +164,7 @@ namespace IO {
 //                    Uint8* pixelData = (Uint8*)(image.getOutputData(8 /* bits */));
 //                    assert(pixelData != NULL);
 
-                    image.getOutputData(&volume[i * imageSize], imageSize, 8);
+                    image.getOutputData(&volume[i * imageSize], imageSize, *nBytesPerVoxel * 8);
 
                     //                    res.clear();
                     //                    res.insert(res.begin(), pixelData, pixelData + image.getHeight() * image.getWidth());
@@ -169,7 +173,7 @@ namespace IO {
                     exit(-1);
                 }
 
-                std::cout << "[DicomUtils] loaded image " << i << " '" << filename << std::endl;
+//                std::cout << "[DicomUtils] loaded image " << i << " '" << filename << std::endl;
             }
 
 
