@@ -146,7 +146,7 @@ namespace IO {
                 DicomImage image(filename.c_str());
 
                 auto dbg = image.getDepth();
-                assert(image.getDepth() == *nBytesPerVoxel * 8);
+//                assert(image.getDepth() == *nBytesPerVoxel * 8);
                 dbg = image.getFrameCount();
                 assert(image.getFrameCount() == 1);
                 dbg = image.getNumberOfFrames();
