@@ -68,13 +68,16 @@ private slots:
     //    void on_toolButton_record_clicked();
     //    void on_toolButton_snapshot_clicked();
 
+    void onSelectedSourceChanged(const std::string & sensorName, const std::string & sourceType);
+
 
     void on_checkBox_grid_toggled(bool checked);
     void on_checkBox_trace_toggled(bool checked);
     void on_toolButton_fitScene_clicked();
 
-
     void on_toolButton_fitTrace_clicked();
+
+    void loadFile( QString path );
 
 private:
     Ui::MainWindow* ui;

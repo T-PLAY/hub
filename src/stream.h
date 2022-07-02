@@ -272,6 +272,13 @@ public:
 
     IOStream &getIOStream() const;
 
+    friend std::ostream& operator<<(std::ostream& os, const Stream& stream)
+    {
+//        os << stream.mSensorName << stream.mFormat << stream.mDims << stream.mAcquisitionSize;
+        os << stream.mSensorName;
+        return os;
+    }
+
 protected:
     std::string mSensorName = "";
     Format mFormat = Format::NONE;
@@ -301,6 +308,13 @@ public:
 
     std::vector<Acquisition> getAllAcquisition();
     const MetaData& getMetaData() const;
+
+    friend std::ostream& operator<<(std::ostream& os, const InputStream& inputStream)
+    {
+        os << "metadata:" << to_string(inputStream.mMetaData);
+        return os;
+    }
+
 
 private:
     MetaData mMetaData;

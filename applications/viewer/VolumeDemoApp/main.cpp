@@ -110,7 +110,7 @@ int main(int argc, char* argv[])
 //    app.loadFile(DEMO_FILE);
     //    Ra::IO::DicomLoader DicomLoader;
     app.m_engine->registerFileLoader(std::shared_ptr<Ra::Core::Asset::FileLoaderInterface>(new Ra::IO::DicomLoader()));
-    app.addApplicationExtension();
+//    app.addApplicationExtension();
     //    app.loadFile("/home/gauthier/Downloads/DICOM/D0010001.dcm");
     //    constexpr auto irmPath = "/home/gauthier/tmpDicomViewer/IRM/";
 

@@ -5,6 +5,14 @@
 #include <Gui/Utils/KeyMappingManager.hpp>
 #include <Gui/Viewer/TrackballCameraManipulator.hpp>
 
+#include <Core/Asset/FileLoaderInterface.hpp>
+#include <DicomLoader/DicomLoader.hpp>
+#include <Engine/Scene/GeometrySystem.hpp>
+
+// the default priority for systems created here.
+constexpr int defaultSystemPriority = 1000;
+
+
 MinimalApp::MinimalApp() :
     m_engine( nullptr ),
     m_task_queue( nullptr ),
@@ -20,6 +28,20 @@ MinimalApp::MinimalApp() :
     // Initialize Engine.
     m_engine.reset( Ra::Engine::RadiumEngine::createInstance() );
     m_engine->initialize();
+
+    m_engine->registerSystem(
+        "GeometrySystem", new Ra::Engine::Scene::GeometrySystem, defaultSystemPriority );
+    // Register the TimeSystem managing time dependant systems
+//    Scalar dt = ( m_targetFPS == 0 ? 1_ra / 60_ra : 1_ra / m_targetFPS );
+//    m_engine->setConstantTimeStep( dt );
+//    // Register the SkeletonBasedAnimationSystem converting loaded assets to
+//    // skeletons and skinning data
+//    m_engine->registerSystem( "SkeletonBasedAnimationSystem",
+//                              new Ra::Engine::Scene::SkeletonBasedAnimationSystem,
+//                              defaultSystemPriority );
+
+    m_engine->registerFileLoader(std::shared_ptr<Ra::Core::Asset::FileLoaderInterface>(new Ra::IO::DicomLoader()));
+//    m_engine->loadFile(MRI_PATH "AXT2_ligaments_uterosacres/D0010525.dcm");
 
     ///\todo update when a basic viewer is implemented ... (to call setupKeyMappingCallbacks)
     Ra::Gui::KeyMappingManager::createInstance();
@@ -42,6 +64,7 @@ MinimalApp::MinimalApp() :
     // Initialize timer for the spinning cube.
     m_frame_timer = new QTimer( this );
     m_frame_timer->setInterval( 1000 / m_target_fps );
+
 }
 
 MinimalApp::~MinimalApp() {

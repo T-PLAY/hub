@@ -24,7 +24,7 @@ set(REQUIRED_LIBS_QUALIFIED Qt${QT_VERSION}::Core Qt${QT_VERSION}::Gui Qt${QT_VE
 #find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Gui)
 find_package(Qt${QT_VERSION} REQUIRED COMPONENTS ${REQUIRED_LIBS})
 
-find_package(Radium REQUIRED COMPONENTS Core Engine Gui)
+find_package(Radium REQUIRED COMPONENTS Core Engine Gui IO)
 
 #find_package(Scus REQUIRED)
 
@@ -91,12 +91,13 @@ endif()
 target_link_libraries(${PROJECT_NAME} PUBLIC
 #    Qt${QT_VERSION}::Widgets
     ${REQUIRED_LIBS_QUALIFIED}
-    Radium::Core Radium::Gui Radium::Engine
+    Radium::Core Radium::Gui Radium::Engine Radium::IO
     libLoader
     libImageManipulator
     libViewer
     libApp
     src
+    DicomLoader
 #    Scus
 )
 
