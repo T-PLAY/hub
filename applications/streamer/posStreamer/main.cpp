@@ -22,9 +22,12 @@ int main(int argc, char* argv[])
 {
 
     Stream::MetaData metaData;
-    //    metaData["depth"] = 3.0;
-    //    metaData["name"] = "L533";
-    //    metaData["val"] = 1;
+    metaData["scanWidth"] = 10.0;
+    metaData["scanDepth"] = 10.0;
+    metaData["x"] = 0.0;
+    metaData["y"] = 0.0;
+    metaData["z"] = 0.0;
+
 
     //    OutputStream proceduralStream("Polhemus Patriot (probe)", Stream::Format::Y8, { width, height }, ClientSocket(), metaData);
     OutputStream posStream(g_probePoseSensorName, Stream::Format::DOF6, { 1 }, ClientSocket(), metaData);

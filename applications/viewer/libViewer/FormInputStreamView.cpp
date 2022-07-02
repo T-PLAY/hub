@@ -198,6 +198,11 @@ FormInputStreamView::getIputStreamThread(const std::string& sourceType) const
     return *m_sourceType2inputStreamThreads.at(sourceType).back().get();
 }
 
+const InputStream &FormInputStreamView::getInputStream(const std::string &sourceType) const
+{
+    return *m_sourceType2inputStreamThreads.at(sourceType).back()->mInputStream;
+}
+
 // void FormInputStreamView::on_comboBox_sourceType_currentTextChanged(const QString& sourceType)
 //{
 //     std::cout << "[FormInputStreamView] on_comboBox_sourceType_currentTextChanged('"
@@ -220,9 +225,9 @@ void FormInputStreamView::onNewAcquisition(const std::string& sourceType)
                 return;
             assert(!acqs.empty());
             assert(acqs.back().mData != nullptr);
-//            m_widgetStreamView->setData((unsigned char*)acqs.back().mData, inputStream->getDims(), inputStream->getFormat());
+            //            m_widgetStreamView->setData((unsigned char*)acqs.back().mData, inputStream->getDims(), inputStream->getFormat());
 
-//            m_widgetStreamView->setData((unsigned char*)acqs.back().mData, inputStream->getDims(), inputStream->getFormat());
+            //            m_widgetStreamView->setData((unsigned char*)acqs.back().mData, inputStream->getDims(), inputStream->getFormat());
             m_widgetStreamView->setData((unsigned char*)acqs.back().mData, inputStream->getAcquisitionSize(), inputStream->getDims(), inputStream->getFormat());
 
             //            if (inputStreamThread.mAcqs.size() > 1) {
@@ -283,4 +288,11 @@ void FormInputStreamView::onStreamingStopped(const std::string& sourceType)
         if (m_sourceType2inputStreamThreads.empty())
             emit isEmpty(m_sensorName);
     }
+}
+
+void FormInputStreamView::on_comboBox_sourceType_currentTextChanged(const QString& sourceType)
+{
+    std::cout << "[FormInputStreamView]::on_comboBox_sourceType_currentTextChanged " << sourceType.toStdString() << std::endl;
+
+    emit selectedSourceChanged(m_sensorName, sourceType.toStdString());
 }

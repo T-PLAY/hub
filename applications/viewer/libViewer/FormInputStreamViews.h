@@ -50,12 +50,15 @@ public:
     //    const Stream::Acquisition & getAcquisition(const std::string& sensorName, const std::string & sourceType) const;
     //    Stream::Acquisition && getAcquisition(const std::string& sensorName, const std::string & sourceType);
     Acquisitions& getAcquisitions(const std::string& sensorName, const std::string& sourceType);
+    const InputStream& getInputStream(const std::string& sensorName, const std::string& sourceType) const;
 
 signals:
     //    void initPose();
     //    void initScan();
     void newAcquisition(const std::string& sensorName, const std::string& sourceType);
     void init(const std::string& sensorName);
+
+    void selectedSourceChanged(const std::string& sensorName, const std::string& sourceType);
 
     //    void newAcquisitionScan();
     //    void newAcquisitionPose();
@@ -168,6 +171,7 @@ void FormInputStreamViews::addInputStream(const std::string streamName, IOStream
         QObject::connect(inputStreamView, &FormInputStreamView::newAcquisition, this, &FormInputStreamViews::onNewAcquisition);
         QObject::connect(inputStreamView, &FormInputStreamView::init, this, &FormInputStreamViews::init);
         QObject::connect(inputStreamView, &FormInputStreamView::isEmpty, this, &FormInputStreamViews::onDeleteStreamView);
+        QObject::connect(inputStreamView, &FormInputStreamView::selectedSourceChanged, this, &FormInputStreamViews::selectedSourceChanged);
         m_sensorName2streamView[sensorName] = inputStreamView;
 
         m_streamViewsLayout->addWidget(inputStreamView);

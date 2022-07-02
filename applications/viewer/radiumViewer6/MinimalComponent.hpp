@@ -19,6 +19,12 @@
 /* This file contains a minimal radium/qt application which shows the
 classic "Spinning Cube" demo. */
 
+struct Scanner {
+    double width;
+    double depth;
+    Ra::Core::Vector3 pos;
+};
+
 constexpr int g_nTraces = 3;
 using Traces = std::array<Ra::Engine::Rendering::RenderObject*, g_nTraces>;
 
@@ -47,6 +53,9 @@ struct MinimalComponent : public Ra::Engine::Scene::Component {
     //    void updateScan( Stream::Acquisition && acq );
     void initScan( int iProbe = 0 );
 
+    void setupScanner(double scanWidth, double scanDepth, double x, double y, double z);
+
+
     void initPoseTraces( const std::vector<Stream::Acquisition>& poseAcqs );
 
 
@@ -54,6 +63,7 @@ struct MinimalComponent : public Ra::Engine::Scene::Component {
     Ra::Engine::RadiumEngine& m_engine;
     Ra::Gui::Viewer& m_viewer;
     //    MinimalSystem & m_system;
+    Scanner m_scanner;
 
     Ra::Engine::Rendering::RenderObject* m_roGrid = nullptr;
 //    Ra::Engine::Rendering::RenderObject* m_roTraces[3] = {nullptr, nullptr, nullptr};

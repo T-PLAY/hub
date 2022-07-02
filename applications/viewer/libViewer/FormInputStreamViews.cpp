@@ -111,6 +111,13 @@ Acquisitions & FormInputStreamViews::getAcquisitions(const std::string &sensorNa
     return m_sensorName2streamView.at(sensorName)->getAcquisitions(sourceType);
 }
 
+const InputStream &FormInputStreamViews::getInputStream(const std::string &sensorName, const std::string &sourceType) const
+{
+    assert(m_sensorName2streamView.find(sensorName) != m_sensorName2streamView.end());
+    return m_sensorName2streamView.at(sensorName)->getInputStream(sourceType);
+
+}
+
 //const Stream::Acquisition& FormInputStreamViews::getAcquisition(const std::string& sensorName, const std::string& sourceType) const
 //{
 //    assert(m_sensorName2streamView.find(sensorName) != m_sensorName2streamView.end());

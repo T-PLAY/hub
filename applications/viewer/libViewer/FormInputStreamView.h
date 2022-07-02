@@ -102,16 +102,22 @@ public:
     Acquisitions& getAcquisitions(const std::string& sourceType);
     const InputStreamThread& getIputStreamThread(const std::string& sourceType) const;
 
+    const InputStream & getInputStream(const std::string & sourceType) const;
+
 private slots:
     //    void on_comboBox_sourceType_currentTextChanged(const QString& sourceType);
     void onNewAcquisition(const std::string& sourceType);
     void onStreamingStopped(const std::string& sourceType);
+
+    void on_comboBox_sourceType_currentTextChanged(const QString &sourceType);
 
 signals:
     void newAcquisition(const std::string& sensorName, const std::string& sourceType);
     void init(const std::string& sensorName);
 
     void isEmpty(const std::string& sensorName);
+
+    void selectedSourceChanged(const std::string& sensorName, const std::string& sourceType);
 
 private:
     Ui::FormInputStreamView* ui;
