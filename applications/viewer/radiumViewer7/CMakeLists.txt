@@ -6,7 +6,7 @@ endif()
 
 #-------------------------------------------------------------------------------
 # exampleApp executables setup
-project(radiumViewer5)
+project(Radium-Sandbox)
 # Set default install location to installed-<Compiler_ID> folder in build dir
 # we do not want to install to /usr by default
 if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
@@ -21,29 +21,43 @@ find_package( Radium REQUIRED Core Engine Gui PluginBase IO)
 # Application specific
 
 
-find_package(QT NAMES Qt6 Qt5 COMPONENTS Core Widgets OpenGL REQUIRED)
-find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
-
-
-#find_package(Qt6 COMPONENTS Core Widgets OpenGL REQUIRED)
-set( Qt_LIBRARIES Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::OpenGL )
+find_package(Qt6 COMPONENTS Core Widgets OpenGL REQUIRED)
+set( Qt5_LIBRARIES Qt6::Core Qt6::Widgets Qt6::OpenGL )
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
-file(GLOB_RECURSE app_sources *.cpp)
-file(GLOB_RECURSE app_uis *.ui)
-file(GLOB_RECURSE app_headers *.h *.hpp)
+set(app_sources
+        main.cpp
+        MainApplication.cpp
+        Gui/ColorWidget.cpp
+        Gui/MainWindow.cpp
+        Gui/MaterialEditor.cpp
+        Gui/TransformEditorWidget.cpp
+    )
 
-if (${QT_VERSION_MAJOR} EQUAL 5)
-    qt5_wrap_ui(app_uis_moc ${app_uis})
-else()
-    qt6_wrap_ui(app_uis_moc ${app_uis})
-endif()
+set(app_headers
+        MainApplication.hpp
+        Gui/ColorWidget.hpp
+        Gui/MainWindow.hpp
+        Gui/MaterialEditor.hpp
+        Gui/RotationEditor.hpp
+        Gui/TransformEditorWidget.hpp
+        Gui/VectorEditor.hpp
+   )
 
-#set(app_resources
-#        Resources/ApplicationIcons.qrc
-#   )
+set(app_uis
+        Gui/ui/MainWindow.ui
+        Gui/ui/MaterialEditor.ui
+        Gui/ui/RotationEditor.ui
+        Gui/ui/VectorEditor.ui
+   )
+
+qt6_wrap_ui(app_uis_moc ${app_uis})
+
+set(app_resources
+        Resources/ApplicationIcons.qrc
+   )
 
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -57,7 +71,7 @@ add_executable(
     ${app_headers}
     ${app_inlines}
     ${app_uis_moc}
-#    ${app_resources}
+    ${app_resources}
     )
 
 target_link_libraries (${PROJECT_NAME} PUBLIC
@@ -65,7 +79,7 @@ target_link_libraries (${PROJECT_NAME} PUBLIC
     Radium::Engine
     Radium::Gui
     Radium::IO
-    ${Qt_LIBRARIES}
+    ${Qt5_LIBRARIES}
     DicomLoader
 )
 

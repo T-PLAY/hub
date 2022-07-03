@@ -148,7 +148,7 @@ void FormInputStreamViews::addInputStream(const std::string streamName, IOStream
     //    assert(found);
 
     std::string sensorName = "";
-    for (std::string sourceType : { "record" }) {
+    for (std::string sourceType : { "record", "simulator" }) {
         const int start = streamName.size() - sourceType.size() - 1;
         if (start < 0)
             continue;
@@ -161,6 +161,8 @@ void FormInputStreamViews::addInputStream(const std::string streamName, IOStream
 
     if (sensorName.empty())
         sensorName = streamName;
+
+    std::cout << "[FormInputStreamViews] sensorName = '" << sensorName << "'" << std::endl;
 
 //    assert(sensorName == g_probeScanSensorName || sensorName == g_probePoseSensorName);
     //        FormInputStreamView inputStreamView(sensorName);

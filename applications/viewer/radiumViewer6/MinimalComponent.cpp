@@ -668,6 +668,7 @@ void MinimalComponent::initScan(int iProbe)
 void MinimalComponent::setupScanner(double scanWidth, double scanDepth, double x, double y, double z)
 {
     m_scanner = { scanWidth, scanDepth, { x, y, z } };
+//    initScan();
 }
 
 void MinimalComponent::initPoseTraces(const std::vector<Stream::Acquisition>& poseAcqs)
