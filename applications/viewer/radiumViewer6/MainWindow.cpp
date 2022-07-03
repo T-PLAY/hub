@@ -367,7 +367,7 @@ void MainWindow::onSelectedSourceChanged(const std::string& sensorName, const st
 
     m_comp->setupScanner(scanWidth, scanDepth, x, y, z);
 
-//    m_app->m_engine->loadFile(MRI_PATH "AXT2_ligaments_uterosacres/D0010525.dcm");
+    m_app->m_engine->loadFile(MRI_PATH "AXT2_ligaments_uterosacres/D0010525.dcm");
 //    m_app->m_viewer->prepareDisplay();
 }
 

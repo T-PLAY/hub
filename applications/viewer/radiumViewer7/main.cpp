@@ -4,11 +4,10 @@
 
 #include <Gui/MainWindow.hpp>
 
-//#include <Gui/BaseApplication.hpp>
-
 #include <Core/Asset/FileLoaderInterface.hpp>
 #include <DicomLoader/DicomLoader.hpp>
 #include <Engine/RadiumEngine.hpp>
+
 
 class MainWindowFactory : public Ra::Gui::BaseApplication::WindowFactory
 {
@@ -21,13 +20,14 @@ class MainWindowFactory : public Ra::Gui::BaseApplication::WindowFactory
 
 int main( int argc, char** argv ) {
     Ra::MainApplication app( argc, argv );
-//    Ra::Gui::BaseApplication app (argc, argv);
     app.initialize( MainWindowFactory() );
+    app.setContinuousUpdate( false );
 
     app.m_engine->registerFileLoader(std::shared_ptr<Ra::Core::Asset::FileLoaderInterface>(new Ra::IO::DicomLoader()));
-    app.m_engine->loadFile(MRI_PATH "AXT2_ligaments_uterosacres/D0010525.dcm");
+//    app.m_engine->loadFile(MRI_PATH "AXT2_ligaments_uterosacres/D0010525.dcm");
+    app.m_engine->loadFile("/home/gauthier/document/projet/Clone_css/resourcesCStrike/maps/de_aztec/de_aztec.obj");
     app.askForUpdate();
+
     app.m_mainWindow->update();
-//    app.setContinuousUpdate( false );
     return app.exec();
 }

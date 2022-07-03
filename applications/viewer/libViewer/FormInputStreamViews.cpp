@@ -75,7 +75,7 @@ void FormInputStreamViews::deleteInputStream(const std::string& streamName)
 //    assert(found);
 
     std::string sensorName = "";
-    for (std::string sourceType : { "record" }) {
+    for (std::string sourceType : { "record", "simulator" }) {
         const int start = streamName.size() - sourceType.size() - 1;
         if (start < 0)
             continue;
@@ -99,7 +99,7 @@ void FormInputStreamViews::deleteInputStream(const std::string& streamName)
             ? ("physical")
             : (streamName.substr(sensorName.size() + 2,
                 streamName.size() - 1 - sensorName.size() - 2));
-        assert(sourceType == "physical" || sourceType == "record");
+        assert(sourceType == "physical" || sourceType == "record" || sourceType == "simulator");
 
         inputStreamView->remove(sourceType);
     }

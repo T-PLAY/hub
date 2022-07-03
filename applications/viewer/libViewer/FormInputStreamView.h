@@ -102,14 +102,14 @@ public:
     Acquisitions& getAcquisitions(const std::string& sourceType);
     const InputStreamThread& getIputStreamThread(const std::string& sourceType) const;
 
-    const InputStream & getInputStream(const std::string & sourceType) const;
+    const InputStream& getInputStream(const std::string& sourceType) const;
 
 private slots:
     //    void on_comboBox_sourceType_currentTextChanged(const QString& sourceType);
     void onNewAcquisition(const std::string& sourceType);
     void onStreamingStopped(const std::string& sourceType);
 
-    void on_comboBox_sourceType_currentTextChanged(const QString &sourceType);
+    void on_comboBox_sourceType_currentTextChanged(const QString& sourceType);
 
 signals:
     void newAcquisition(const std::string& sensorName, const std::string& sourceType);
@@ -145,9 +145,9 @@ void FormInputStreamView::add(const std::string streamName, IOStreamT&& iostream
         ? ("physical")
         : (streamName.substr(m_sensorName.size() + 2,
             streamName.size() - 1 - m_sensorName.size() - 2));
-    assert(sourceType == "" || sourceType == "physical" || sourceType == "record");
+    assert(sourceType == "" || sourceType == "physical" || sourceType == "record" || sourceType == "simulator");
 
-    std::cout << "[FormInputStreamView] add(" << streamName << ")" << std::endl;
+    std::cout << "[FormInputStreamView] add(" << streamName << ", " << sourceType << ")" << std::endl;
 
     //    InputStream inputStream(std::move(iostream));
     //    m_sourceType2inputStream[sourceType].push_back(std::make_unique<InputStream>(std::move(iostream)));
@@ -161,10 +161,11 @@ void FormInputStreamView::add(const std::string streamName, IOStreamT&& iostream
     QObject::connect(inputStreamThread, &InputStreamThread::streamingStopped, this, &FormInputStreamView::onStreamingStopped);
     inputStreamThread->start();
 
-    if (inputStreamThreads.size() == 1) {
-        auto stringList = m_sourceTypeModel.stringList();
-        stringList.append(sourceType.c_str());
-        m_sourceTypeModel.setStringList(stringList);
+    auto stringList = m_sourceTypeModel.stringList();
+    stringList.append(sourceType.c_str());
+    m_sourceTypeModel.setStringList(stringList);
+
+    if (m_sourceType2inputStreamThreads.size() == 1) {
 
         assert(m_widgetStreamView == nullptr);
 
