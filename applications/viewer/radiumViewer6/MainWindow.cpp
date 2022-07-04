@@ -8,7 +8,7 @@
 //#include <Engine/Rendering/ForwardRenderer.hpp>
 
 #include <MinimalComponent.hpp>
-#include <MinimalSystem.hpp>
+//#include <MinimalSystem.hpp>
 #include <QDoubleSpinBox>
 #include <QOpenGLContext>
 
@@ -17,7 +17,13 @@
 
 #include <FormSensorViews.h>
 
+#include <Core/Asset/FileLoaderInterface.hpp>
+#include <DicomLoader/DicomLoader.hpp>
+#include <Engine/Scene/GeometrySystem.hpp>
+
 //#include <QEvent>
+// the default priority for systems created here.
+constexpr int defaultSystemPriority = 1000;
 
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent)
@@ -55,14 +61,21 @@ MainWindow::MainWindow(QWidget* parent)
         QApplication::processEvents();
 
         // Create one system
-        MinimalSystem* sys = new MinimalSystem;
-        app.m_engine->registerSystem("Minimal system", sys);
+        //        MinimalSystem* sys = new MinimalSystem;
+        //        app.m_engine->registerSystem("Minimal system", sys);
+        app.m_engine->registerSystem(
+            "GeometrySystem", new Ra::Engine::Scene::GeometrySystem, defaultSystemPriority);
+        auto* sys = app.m_engine->getSystem("GeometrySystem");
 
         // Create and initialize entity and component
         Ra::Engine::Scene::Entity* e = app.m_engine->getEntityManager()->createEntity("Cube");
         m_comp = new MinimalComponent(e, *app.m_engine, *app.m_viewer);
         sys->addComponent(e, m_comp);
         m_comp->initialize();
+
+        app.m_engine->registerFileLoader(std::shared_ptr<Ra::Core::Asset::FileLoaderInterface>(new Ra::IO::DicomLoader()));
+                app.m_engine->loadFile(MRI_PATH "AXT2_ligaments_uterosacres/D0010525.dcm");
+//        app.m_engine->loadFile("/home/gauthier/document/projet/Clone_css/resourcesCStrike/maps/de_aztec/de_aztec.obj");
 
         // prepare the viewer to render the scene (i.e. build RenderTechniques for the
         // active renderer)
@@ -337,11 +350,11 @@ void MainWindow::onSelectedSourceChanged(const std::string& sensorName, const st
 {
     std::cout << "[MainWindow] onSelectedSourceChanged(" << sensorName << ", " << sourceType << ")" << std::endl;
 
-    const auto & inputStream = m_formInputStreamViews->getInputStream(sensorName, sourceType);
+    const auto& inputStream = m_formInputStreamViews->getInputStream(sensorName, sourceType);
 
     std::cout << inputStream << std::endl;
 
-    const auto & metadata = inputStream.getMetaData();
+    const auto& metadata = inputStream.getMetaData();
     double scanWidth = 5.0;
     if (metadata.find("scanWidth") != metadata.end()) {
         scanWidth = std::any_cast<double>(metadata.at("scanWidth"));
@@ -368,7 +381,7 @@ void MainWindow::onSelectedSourceChanged(const std::string& sensorName, const st
     m_comp->setupScanner(scanWidth, scanDepth, x, y, z);
 
     m_app->m_engine->loadFile(MRI_PATH "AXT2_ligaments_uterosacres/D0010525.dcm");
-//    m_app->m_viewer->prepareDisplay();
+    //    m_app->m_viewer->prepareDisplay();
 }
 
 // void MainWindow::onUpdatePose()
@@ -439,18 +452,19 @@ void MainWindow::on_toolButton_fitTrace_clicked()
 void MainWindow::loadFile(QString path)
 {
     std::string filename = path.toLocal8Bit().data();
-//    LOG( logINFO ) << "Loading file " << filename << "...";
-    bool res = m_app->m_engine->loadFile( filename );
+    //    LOG( logINFO ) << "Loading file " << filename << "...";
+    bool res = m_app->m_engine->loadFile(filename);
 
-    if ( !res ) {
+    if (!res) {
         std::cout << "Aborting file loading !";
-//        return false;
+        //        return false;
     }
 
     m_app->m_engine->releaseFile();
 
-//    m_mainWindow->prepareDisplay();
+    //    m_mainWindow->prepareDisplay();
+    //    m_app->m_viewer->update(0);
 
-//    emit loadComplete();
-//    return true;
+    //    emit loadComplete();
+    //    return true;
 }

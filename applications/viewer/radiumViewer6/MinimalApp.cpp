@@ -5,12 +5,13 @@
 #include <Gui/Utils/KeyMappingManager.hpp>
 #include <Gui/Viewer/TrackballCameraManipulator.hpp>
 
-#include <Core/Asset/FileLoaderInterface.hpp>
-#include <DicomLoader/DicomLoader.hpp>
-#include <Engine/Scene/GeometrySystem.hpp>
+//#include <Core/Asset/FileLoaderInterface.hpp>
+//#include <DicomLoader/DicomLoader.hpp>
+//#include <Engine/Scene/GeometrySystem.hpp>
+//#include <Engine/Scene/SkeletonBasedAnimationSystem.hpp>>
 
 // the default priority for systems created here.
-constexpr int defaultSystemPriority = 1000;
+//constexpr int defaultSystemPriority = 1000;
 
 
 MinimalApp::MinimalApp() :
@@ -29,8 +30,9 @@ MinimalApp::MinimalApp() :
     m_engine.reset( Ra::Engine::RadiumEngine::createInstance() );
     m_engine->initialize();
 
-    m_engine->registerSystem(
-        "GeometrySystem", new Ra::Engine::Scene::GeometrySystem, defaultSystemPriority );
+//    m_engine->registerSystem(
+//        "GeometrySystem", new Ra::Engine::Scene::GeometrySystem, defaultSystemPriority );
+
     // Register the TimeSystem managing time dependant systems
 //    Scalar dt = ( m_targetFPS == 0 ? 1_ra / 60_ra : 1_ra / m_targetFPS );
 //    m_engine->setConstantTimeStep( dt );
@@ -40,7 +42,7 @@ MinimalApp::MinimalApp() :
 //                              new Ra::Engine::Scene::SkeletonBasedAnimationSystem,
 //                              defaultSystemPriority );
 
-    m_engine->registerFileLoader(std::shared_ptr<Ra::Core::Asset::FileLoaderInterface>(new Ra::IO::DicomLoader()));
+//    m_engine->registerFileLoader(std::shared_ptr<Ra::Core::Asset::FileLoaderInterface>(new Ra::IO::DicomLoader()));
 //    m_engine->loadFile(MRI_PATH "AXT2_ligaments_uterosacres/D0010525.dcm");
 
     ///\todo update when a basic viewer is implemented ... (to call setupKeyMappingCallbacks)

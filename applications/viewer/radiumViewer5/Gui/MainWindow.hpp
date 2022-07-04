@@ -78,6 +78,9 @@ class MainWindow : public Ra::Gui::MainWindowInterface, private Ui::MainWindow
     /// clear selection, fit camera and update material name in ui
     void prepareDisplay() override;
 
+    void on_action2D_triggered();
+    void on_action3D_triggered();
+
     /// Slot for the "edit" button.
 //    void editRO();
 

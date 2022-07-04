@@ -1,5 +1,7 @@
 #include <Gui/MainWindow.hpp>
-#include <MainApplication.hpp>
+
+//#include <MainApplication.hpp>
+#include <BaseApplication.hpp>
 
 #include <Engine/Rendering/ForwardRenderer.hpp>
 #include <Engine/Rendering/RenderObject.hpp>
@@ -7,6 +9,14 @@
 #include <Gui/Viewer/FlightCameraManipulator.hpp>
 #include <Gui/Viewer/TrackballCameraManipulator.hpp>
 #include <Gui/Viewer/Viewer.hpp>
+
+#include <QMenuBar>
+
+/// Allow singleton-like access to the main app à la qApp.
+#if defined( mainApp )
+#    undef mainApp
+#endif
+#define mainApp ( static_cast<BaseApplication*>( qApp ) )
 
 namespace Ra {
 namespace Gui {
@@ -33,12 +43,19 @@ MainWindow::MainWindow( QWidget* parent ) : MainWindowInterface( parent ) {
     //  viewerwidget->setMinimumSize( QSize( 800, 600 ) );
     viewerwidget->setAutoFillBackground( false );
 
-    setCentralWidget( viewerwidget );
+//    setCentralWidget( viewerwidget );
+//    const int currentIndex = stackedWidget->currentIndex();
+    stackedWidget->setCurrentIndex(1);
+    verticalLayout_3D->addWidget(viewerwidget);
+//    this->show();
+//    m_viewer->prepareDisplay();
 
     createConnections();
 
     // load default color from QSettings
     updateBackgroundColor();
+
+//    stackedWidget->setCurrentIndex(currentIndex);
 }
 
 MainWindow::~MainWindow() {
@@ -169,6 +186,17 @@ void MainWindow::prepareDisplay() {
 //    m_currentShaderBox->setCurrentText( "" );
 
     if ( m_viewer->prepareDisplay() ) { mainApp->askForUpdate(); }
+}
+
+void MainWindow::on_action2D_triggered()
+{
+    stackedWidget->setCurrentIndex(0);
+}
+
+
+void MainWindow::on_action3D_triggered()
+{
+    stackedWidget->setCurrentIndex(1);
 }
 
 void MainWindow::onGLInitialized() {

@@ -6,7 +6,7 @@ endif()
 
 #-------------------------------------------------------------------------------
 # exampleApp executables setup
-project(Radium-Sandbox)
+project(radiumViewer7)
 # Set default install location to installed-<Compiler_ID> folder in build dir
 # we do not want to install to /usr by default
 if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
