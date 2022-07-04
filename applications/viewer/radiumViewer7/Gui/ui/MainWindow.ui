@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1350</width>
-    <height>972</height>
+    <width>1057</width>
+    <height>786</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -19,15 +19,24 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
-  <widget class="QWidget" name="m_centralWidget"/>
+  <widget class="QWidget" name="m_centralWidget">
+   <layout class="QGridLayout" name="gridLayout_5">
+    <item row="0" column="0">
+     <widget class="QStackedWidget" name="stackedWidget">
+      <widget class="QWidget" name="page"/>
+      <widget class="QWidget" name="page_2"/>
+     </widget>
+    </item>
+   </layout>
+  </widget>
   <widget class="QStatusBar" name="_statusBar"/>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1350</width>
-     <height>24</height>
+     <width>1057</width>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFILE">
@@ -76,6 +85,12 @@
    <addaction name="menuCamera"/>
   </widget>
   <widget class="QDockWidget" name="dockWidget">
+   <property name="minimumSize">
+    <size>
+     <width>302</width>
+     <height>706</height>
+    </size>
+   </property>
    <attribute name="dockWidgetArea">
     <number>1</number>
    </attribute>
@@ -93,7 +108,7 @@
               <property name="minimumSize">
                <size>
                 <width>0</width>
-                <height>150</height>
+                <height>0</height>
                </size>
               </property>
               <property name="editTriggers">
@@ -225,7 +240,7 @@
              <enum>QTabWidget::West</enum>
             </property>
             <property name="currentIndex">
-             <number>1</number>
+             <number>0</number>
             </property>
             <widget class="QWidget" name="tab_stats">
              <attribute name="title">

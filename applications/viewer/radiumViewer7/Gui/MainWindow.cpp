@@ -50,6 +50,10 @@ MainWindow::MainWindow( QWidget* parent ) : MainWindowInterface( parent ) {
 
     setupUi( this );
 
+    dockWidget->hide();
+    dockWidget_2->hide();
+    toolBar->hide();
+
     m_viewer = new Viewer();
     // Registers the application dependant camera manipulators
     auto keyMappingManager = Gui::KeyMappingManager::getInstance();
