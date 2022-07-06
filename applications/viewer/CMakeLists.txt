@@ -21,15 +21,18 @@ if (BUILD_RADIUM_EXAMPLE)
 #    add_subdirectory(radiumViewer2)
 #    add_subdirectory(radiumViewer3)
 #    add_subdirectory(radiumViewer4)
-    add_subdirectory(radiumViewer5)
-    add_subdirectory(radiumViewer6)
-    add_subdirectory(radiumViewer7)
+
 
     if (BUILD_DCMTK)
 
+        add_subdirectory(libGuiManager)
         add_subdirectory(libDicomLoader)
         add_subdirectory(VolumeDemoApp)
         add_subdirectory(TexturedQuad)
+
+        add_subdirectory(radiumViewer5)
+        add_subdirectory(radiumViewer6)
+        add_subdirectory(radiumViewer7)
 
     endif()
 endif()

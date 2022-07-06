@@ -21,7 +21,7 @@ ScanMaterial::~ScanMaterial() = default;
 void ScanMaterial::registerMaterial() {
     // Get the Radium Resource location on the filesystem
 //    auto resourcesRootDir { RadiumEngine::getInstance()->getResourcesDir() };
-    const std::string shadersDir   = PROJECT_DIR "applications/viewer/radiumViewer6/ScanMaterial/";
+    const std::string shadersDir   = PROJECT_DIR "applications/viewer/libGuiManager/ScanMaterial/";
 
     auto shaderProgramManager = RadiumEngine::getInstance()->getShaderProgramManager();
 

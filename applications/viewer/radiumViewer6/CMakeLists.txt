@@ -46,7 +46,7 @@ if(${QT_VERSION} GREATER_EQUAL 6)
     set_property(TARGET ${PROJECT_NAME} APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
                  ${CMAKE_CURRENT_SOURCE_DIR}/android)
 # For more information, see https://doc.qt.io/qt-6/qt-add-executable.html#target-creation
-    add_definitions(-DUSE_GOT_CONTRIB)
+#    add_definitions(-DUSE_GOT_CONTRIB)
 
 else()
     if(ANDROID)
@@ -92,12 +92,13 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
 #    Qt${QT_VERSION}::Widgets
     ${REQUIRED_LIBS_QUALIFIED}
     Radium::Core Radium::Gui Radium::Engine Radium::IO
-    libLoader
-    libImageManipulator
-    libViewer
-    libApp
-    src
-    DicomLoader
+    libGuiManager
+#    libLoader
+#    libImageManipulator
+#    libViewer
+#    libApp
+#    src
+#    DicomLoader
 #    Scus
 )
 
