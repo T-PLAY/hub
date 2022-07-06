@@ -1,3 +1,5 @@
+
+
 cmake_minimum_required (VERSION 3.8)
 
 project(libViewer)
@@ -84,8 +86,10 @@ endif()
 target_link_libraries(${PROJECT_NAME} PUBLIC
     src
     libApp
+    libLoader
+#    libImageManipulator
+    #DicomLoader
     ${REQUIRED_LIBS_QUALIFIED}
     ${UNIX_REQUIRED_LIBS}
     ${WIN32_REQUIRED_LIBS}
 )
-
