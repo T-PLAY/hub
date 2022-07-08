@@ -121,7 +121,8 @@ MainWindow::MainWindow(QWidget* parent)
 //    m_comp->traceSetVisible(ui->checkBox_trace->isChecked());
 
 
-//        app.m_viewer->prepareDisplay();
+        app.m_engine->loadFile(MRI_PATH "AXT2_ligaments_uterosacres/D0010525.dcm");
+        app.m_viewer->prepareDisplay();
 
     //    m_sensorViews = new SensorViews(*ui->verticalLayout_sensors, *ui->mdiArea_sensors, *this);
     //    QObject::connect(

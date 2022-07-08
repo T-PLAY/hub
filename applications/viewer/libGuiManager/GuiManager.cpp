@@ -62,6 +62,7 @@ GuiManager::~GuiManager()
 
 void GuiManager::init()
 {
+    assert(! m_initialized);
     assert(m_mainWindow != nullptr);
     m_dockLeft = new QDockWidget(m_mainWindow);
     m_dockTop = new QDockWidget(m_mainWindow);
@@ -90,6 +91,7 @@ void GuiManager::init()
 
     m_actionAddSources = new QAction("Add Source", m_mainWindow);
     m_toolBarTopLeft = new QToolBar(m_mainWindow);
+    m_toolBarTopLeft->setMinimumHeight(40);
     m_toolBarTopLeft->setMovable(false);
     m_toolBarTopLeft->addAction(m_actionAddSources);
     m_mainWindow->addToolBar(m_toolBarTopLeft);
@@ -218,6 +220,8 @@ void GuiManager::init()
     m_comp->updateShader();
 
     m_viewer->prepareDisplay();
+
+    m_initialized = true;
 }
 
 void GuiManager::onRecordLoaderPathLoaded()

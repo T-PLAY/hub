@@ -20,11 +20,26 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="m_centralWidget">
-   <layout class="QGridLayout" name="gridLayout_5">
-    <item row="0" column="0">
+   <layout class="QHBoxLayout" name="horizontalLayout_2">
+    <item>
      <widget class="QStackedWidget" name="stackedWidget">
-      <widget class="QWidget" name="page"/>
-      <widget class="QWidget" name="page_2"/>
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="page_3D">
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_3D"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="page_2">
+       <layout class="QVBoxLayout" name="verticalLayout_5">
+        <item>
+         <widget class="QMdiArea" name="mdiArea"/>
+        </item>
+       </layout>
+      </widget>
      </widget>
     </item>
    </layout>

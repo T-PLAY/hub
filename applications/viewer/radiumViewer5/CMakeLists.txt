@@ -28,6 +28,7 @@ find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
 #find_package(Qt6 COMPONENTS Core Widgets OpenGL REQUIRED)
 set( Qt_LIBRARIES Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::OpenGL )
 
+#set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
@@ -67,6 +68,7 @@ target_link_libraries (${PROJECT_NAME} PUBLIC
     Radium::IO
     ${Qt_LIBRARIES}
     DicomLoader
+    libGuiManager
 )
 
 configure_radium_app(

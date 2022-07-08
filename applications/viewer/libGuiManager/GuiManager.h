@@ -117,6 +117,8 @@ private:
 
     Form3DToolBox * m_3DToolBox = nullptr;
 
+    bool m_initialized = false;
+
 };
 
 #endif // GUIMANAGER_H
