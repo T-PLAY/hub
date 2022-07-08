@@ -13,6 +13,8 @@
 #include <QEvent>
 #include <qdebug.h>
 
+#include <GuiManager.h>
+
 namespace Ra {
 namespace Gui {
 class Viewer;
@@ -171,6 +173,8 @@ class MainWindow : public Ra::Gui::MainWindowInterface, private Ui::MainWindow
 //    int m_roAddObserverId {-1};
 //    int m_roRemoveObserverId {-1};
     ///@}
+
+    GuiManager m_guiManager;
 };
 
 } // namespace Gui
