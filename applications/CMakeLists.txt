@@ -8,6 +8,15 @@ endif()
 #set(QT_VERSION 5)
 #set(QT_VERSION 6)
 
+cmake_host_system_information(RESULT hostname QUERY HOSTNAME)
+if (${hostname} STREQUAL "brueghel")
+    add_definitions(-DMRI_PATH=\"/export/home/brueghel/gbouyjou/Downloads/MRI/\")
+elseif (${hostname} STREQUAL "gigabyte")
+    add_definitions(-DMRI_PATH=\"/home/gauthier/tmpDicomViewer/MRI/\")
+else()
+    message(FATAL_ERROR "unknown system for finding MRI path")
+endif ()
+
 
 add_subdirectory(libApp)
 

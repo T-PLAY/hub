@@ -84,6 +84,7 @@ static long long g_timestampProbePose = 0;
 static int g_iProbeScan = 0;
 static long long g_timestampProbeScan = 0;
 
+static long g_iter = 0;
 // static Ra::Engine::Rendering::RenderObject * g_roGrid = nullptr;
 
 // Ra::Engine::Rendering::RenderObject* g_splineLines[3] = { nullptr, nullptr, nullptr };
@@ -155,10 +156,10 @@ void MinimalComponent::initialize()
         constexpr Scalar arrowFrac = 0_ra;
 
         std::vector<Color> gizmoColors = {
-            Color::Red(), Color::Green(), Color::Blue(), Color::Cyan(), Color::Cyan()
+            Color::Red(), Color::Green(), Color::Blue(), Color::Cyan(), Color::Cyan(), Color::Cyan()
         };
 
-        for (uint i = 0; i < 5; ++i) {
+        for (uint i = 0; i < 6; ++i) {
             Core::Vector3 cylinderEnd = Core::Vector3::Zero();
             cylinderEnd[i % 3] = (1_ra - arrowFrac);
             Core::Vector3 arrowEnd = Core::Vector3::Zero();
@@ -283,7 +284,7 @@ void MinimalComponent::addProbe()
         }
 
         probe.m_scanLine = RenderObject::createRenderObject(
-            "scanLine", this, RenderObjectType::Geometry, m_meshAxis[4]);
+            "scanLine", this, RenderObjectType::Geometry, m_meshAxis[5]);
         probe.m_scanLine->setMaterial(g_plainMaterial);
         addRenderObject(probe.m_scanLine);
 
@@ -327,7 +328,8 @@ void MinimalComponent::addProbe()
         probe.m_textureName = std::string("myTexture") + std::to_string(iProbe);
         auto& textureParameters =
             //            m_engine.getTextureManager()->addTexture( probe.m_textureName.c_str(), 512, 192, data );
-            m_engine.getTextureManager()->addTexture(probe.m_textureName.c_str(), 512, 192, probe.m_data);
+            //            m_engine.getTextureManager()->addTexture(probe.m_textureName.c_str(), 512, 192, probe.m_data);
+            m_engine.getTextureManager()->addTexture(probe.m_textureName.c_str(), 256, 256, probe.m_data);
         textureParameters.format = gl::GLenum::GL_RED;
         textureParameters.internalFormat = gl::GLenum::GL_R8;
         assert(probe.m_textureName == textureParameters.name);
@@ -462,25 +464,30 @@ void MinimalComponent::updatePose(const Stream::Acquisition& acq)
     auto& probe = g_probes.at(g_iProbePose);
     //    auto& probe = g_probes.at( iProbe );
 
-    float* translation = (float*)acq.mData;
-    float* quaternion = (float*)&acq.mData[12];
+    float* translation = (float*)acq.mData; // x, y, z
+    float* quaternion = (float*)&acq.mData[12]; // x, y, z, w
 
     //        Ra::Core::Vector3 pos(-translation[0], -translation[1],
     //            -translation[2]);
     Ra::Core::Vector3 pos(translation[0], translation[1], translation[2]);
     //    pos = -pos;
 
-    Ra::Core::Quaternion orientation(quaternion[0], quaternion[1], quaternion[2], quaternion[3]);
+    Ra::Core::Quaternion orientation(quaternion[3], quaternion[0], quaternion[1], quaternion[2]); // w, x, y, z
+    std::cout << "update pose orientation " << quaternion[0] << ", " << quaternion[1] << ", " << quaternion[2] << ", " << quaternion[3] << std::endl;
 
     // change to Radium base reference
     Ra::Core::Transform TRadium = Ra::Core::Transform::Identity();
-    TRadium.rotate(
-        Eigen::AngleAxis(1.0f * Ra::Core::Math::Pi, Ra::Core::Vector3(0.0, 0.0, 1.0)));
-    TRadium.rotate(
-        Eigen::AngleAxis(-0.5f * Ra::Core::Math::Pi, Ra::Core::Vector3(1.0, 0.0, 0.0)));
+    //    TRadium.rotate(orientation);
+    //        TRadium.rotate(
+    //            Eigen::AngleAxis(0.5f * Ra::Core::Math::Pi, Ra::Core::Vector3(0.0, 1.0, 0.0)));
+    //    TRadium.rotate(
+    //        Eigen::AngleAxis(1.0f * Ra::Core::Math::Pi, Ra::Core::Vector3(0.0, 0.0, 1.0)));
+    //    TRadium.rotate(
+    //        Eigen::AngleAxis(-0.5f * Ra::Core::Math::Pi, Ra::Core::Vector3(1.0, 0.0, 0.0)));
 
     // orientation
     Ra::Core::Transform TOrientation = Ra::Core::Transform::Identity();
+    //        orientation = Ra::Core::Quaternion(1.0, 0.0, 0.0, 0.0);
     TOrientation.rotate(orientation);
 
     // World transform
@@ -489,10 +496,117 @@ void MinimalComponent::updatePose(const Stream::Acquisition& acq)
     TWorld.translate(pos);
     //    TWorld.translate(Ra::Core::Vector3(0.0, 0.2, -0.1));
 
+    Ra::Core::Transform TLocal3 = Ra::Core::Transform::Identity();
+    //    TLocal3.rotate(
+    //        Eigen::AngleAxis(0.5f * Ra::Core::Math::Pi, Ra::Core::Vector3(1.0, 0.0, 0.0)));
+    //    int tmp = g_iter;
+    //    int i1 = tmp % 2;
+    //    tmp /= 2;
+    //    int i2 = tmp % 2;
+    //    tmp /= 2;
+    //    int i3 = tmp % 4;
+    //    tmp /= 4;
+    //    int i4 = tmp % 2;
+    //    tmp /= 2;
+    //    int i5 = tmp % 2;
+    //    tmp /= 2;
+    //    int i6 = tmp % 4;
+    //    TLocal3.rotate(
+    //        Eigen::AngleAxis(i1 * 1.0f * Ra::Core::Math::Pi, Ra::Core::Vector3(1.0, 0.0, 0.0)));
+    //    TLocal3.rotate(
+    //        Eigen::AngleAxis(i2 * 1.0f * Ra::Core::Math::Pi, Ra::Core::Vector3(0.0, 1.0, 0.0)));
+    //    TLocal3.rotate(
+    //        Eigen::AngleAxis(i3 * 0.5f * Ra::Core::Math::Pi, Ra::Core::Vector3(0.0, 0.0, 1.0)));
+    //    TLocal3.rotate(
+    //        Eigen::AngleAxis(i4 * 1.0f * Ra::Core::Math::Pi, Ra::Core::Vector3(1.0, 0.0, 0.0)));
+    //    TLocal3.rotate(
+    //        Eigen::AngleAxis(i5 * 1.0f * Ra::Core::Math::Pi, Ra::Core::Vector3(0.0, 1.0, 0.0)));
+    //    TLocal3.rotate(
+    //        Eigen::AngleAxis(i6 * 0.5f * Ra::Core::Math::Pi, Ra::Core::Vector3(0.0, 0.0, 1.0)));
+
+    //            TLocal3.rotate(
+    //            Eigen::AngleAxis(1.0f * Ra::Core::Math::Pi, Ra::Core::Vector3(0.0, 1.0, 0.0)));
+    //    TLocal3.rotate(
+    //        Eigen::AngleAxis(0.5f * Ra::Core::Math::Pi, Ra::Core::Vector3(1.0, 0.0, 0.0)));
+    //    TLocal3.rotate(
+    //        Eigen::AngleAxis(0.5f * Ra::Core::Math::Pi, Ra::Core::Vector3(0.0, 1.0, 0.0)));
+    //        TLocal3.rotate(
+    //            Eigen::AngleAxis(0.5f * Ra::Core::Math::Pi, Ra::Core::Vector3(0.0, 0.0, 1.0)));
+
+    // worked
+    //    TLocal3.rotate(
+    //        Eigen::AngleAxis(0.5f * Ra::Core::Math::Pi, Ra::Core::Vector3(1.0, 0.0, 0.0)));
+    //    TLocal3.rotate(
+    //        Eigen::AngleAxis(0.5f * Ra::Core::Math::Pi, Ra::Core::Vector3(0.0, 0.0, 1.0)));
+    //    TLocal3.rotate(
+    //        Eigen::AngleAxis(1.0f * Ra::Core::Math::Pi, Ra::Core::Vector3(0.0, 1.0, 0.0)));
+    // end worked
+
+    //    TLocal3.rotate(
+    //        Eigen::AngleAxis(-0.5f * Ra::Core::Math::Pi, Ra::Core::Vector3(1.0, 0.0, 0.0)));
+    //    TLocal3.rotate(
+    //        Eigen::AngleAxis(0.5f * Ra::Core::Math::Pi, Ra::Core::Vector3(0.0, 0.0, 1.0)));
+    TLocal3.rotate(
+        Eigen::AngleAxis(0.5f * Ra::Core::Math::Pi, Ra::Core::Vector3(0.0, 1.0, 0.0)));
+    TLocal3.rotate(
+        Eigen::AngleAxis(0.5f * Ra::Core::Math::Pi, Ra::Core::Vector3(1.0, 0.0, 0.0)));
+    //    TLocal3.rotate(
+    //        Eigen::AngleAxis(1.0f * Ra::Core::Math::Pi, Ra::Core::Vector3(0.0, 0.0, 1.0)));
+    // end worked
+
+    //    Ra::Core::Transform TLocal5 = Ra::Core::Transform::Identity();
+    //    TLocal5.rotate(
+    //        Eigen::AngleAxis(0.5f * Ra::Core::Math::Pi, Ra::Core::Vector3(0.0, 1.0, 0.0)));
+    //    TLocal3 = TLocal5 * TLocal3;
+
+    //    TLocal3.rotate(
+    //        Eigen::AngleAxis(-0.5f * Ra::Core::Math::Pi, Ra::Core::Vector3(1.0, 0.0, 0.0)));
+    //    TLocal3.rotate(
+    //        Eigen::AngleAxis(1.0f * Ra::Core::Math::Pi, Ra::Core::Vector3(0.0, 0.0, 1.0)));
+    ////    TLocal3.rotate(
+    ////        Eigen::AngleAxis(1.0f * Ra::Core::Math::Pi, Ra::Core::Vector3(0.0, 1.0, 0.0)));
+    //    TLocal3.rotate(
+    //        Eigen::AngleAxis(1.5f * Ra::Core::Math::Pi, Ra::Core::Vector3(1.0, 0.0, 0.0)));
+
+    //        TLocal3.rotate(
+    //            Eigen::AngleAxis(0.5f * Ra::Core::Math::Pi, Ra::Core::Vector3(0.0, 0.0, 1.0)));
+
+    //    TLocal3.rotate(
+    //        Eigen::AngleAxis(0.5f * Ra::Core::Math::Pi, Ra::Core::Vector3(1.0, 0.0, 0.0)));
+    //    TLocal3.rotate(
+    //        Eigen::AngleAxis(-0.5f * Ra::Core::Math::Pi, Ra::Core::Vector3(0.0, 0.0, 1.0)));
+    //        TLocal3.rotate(
+    //            Eigen::AngleAxis(1.0f * Ra::Core::Math::Pi, Ra::Core::Vector3(0.0, 0.0, 1.0)));
+
+    //        TLocal3.rotate(
+    //            Eigen::AngleAxis(1.0f * Ra::Core::Math::Pi, Ra::Core::Vector3(1.0, 0.0, 0.0)));
+
+    Ra::Core::Transform TLocal4 = Ra::Core::Transform::Identity();
+    //            TLocal4.rotate(
+    //            Eigen::AngleAxis(1.0f * Ra::Core::Math::Pi, Ra::Core::Vector3(0.0, 1.0, 0.0)));
+    //    TLocal4.rotate(
+    //        Eigen::AngleAxis(0.5f * Ra::Core::Math::Pi, Ra::Core::Vector3(1.0, 0.0, 0.0)));
+    //    TLocal4.rotate(
+    //        Eigen::AngleAxis(0.5f * Ra::Core::Math::Pi, Ra::Core::Vector3(0.0, 1.0, 0.0)));
+    //    TLocal4.rotate(
+    //        Eigen::AngleAxis(0.5f * Ra::Core::Math::Pi, Ra::Core::Vector3(1.0, 0.0, 0.0)));
+    //        TLocal4.rotate(
+    //            Eigen::AngleAxis(0.5f * Ra::Core::Math::Pi, Ra::Core::Vector3(0.0, 0.0, 1.0)));
+    //    TLocal4.rotate(
+    //        Eigen::AngleAxis(1.0f * Ra::Core::Math::Pi, Ra::Core::Vector3(1.0, 0.0, 0.0)));
+    ////    TLocal4.rotate(
+    ////        Eigen::AngleAxis(-0.5f * Ra::Core::Math::Pi, Ra::Core::Vector3(0.0, 0.0, 1.0)));
+    //    TLocal4.rotate(
+    //        Eigen::AngleAxis(1.0f * Ra::Core::Math::Pi, Ra::Core::Vector3(0.0, 1.0, 0.0)));
+
+    //        TLocal4.rotate(
+    //            Eigen::AngleAxis(1.0f * Ra::Core::Math::Pi, Ra::Core::Vector3(0.0, 0.0, 1.0)));
+
+        const float lineRadius = m_scanner.width / 10.0;
     {
         Ra::Core::Transform TLocal = Transform::Identity();
         //                TLocal.scale(10.0);
-        TLocal.scale(5.0);
+        TLocal.scale(lineRadius);
 
         //    TLocal.translate(Ra::Core::Vector3(1.0, 0.0, 1.0));
         //        Ra::Core::Vector3 vecScale = Ra::Core::Vector3::Identity();
@@ -502,11 +616,15 @@ void MinimalComponent::updatePose(const Stream::Acquisition& acq)
 
         //        g_scan->setLocalTransform(TRadium * TWorld * TOrientation * TLocal);
         //        g_probe->setLocalTransform(TRadium * TWorld * TOrientation * TLocal);
-        probe.m_refCube->setLocalTransform(TRadium * TWorld * TOrientation);
+        probe.m_refCube->setLocalTransform(TRadium * TWorld * TLocal4 * TOrientation * TLocal3);
+        //        probe.m_refCube->setLocalTransform(TRadium * TWorld * TOrientation);
         //        if ( g_iProbePose > 0 ) probe.m_refCube->setVisible( true );
 
         for (int i = 0; i < 3; ++i) {
+            //            probe.m_refAxis[i]->setLocalTransform(TRadium * TWorld * TLocal4 * TOrientation * TLocal3 * TLocal);
             probe.m_refAxis[i]->setLocalTransform(TRadium * TWorld * TOrientation * TLocal);
+
+            //            probe.m_refAxis[i]->setLocalTransform(TRadium * TWorld * TOrientation * TLocal);
             //            if ( g_iProbePose > 0 ) probe.m_refAxis[i]->setVisible( true );
         }
     }
@@ -519,7 +637,9 @@ void MinimalComponent::updatePose(const Stream::Acquisition& acq)
         //        const double scanWidth = 5.0; // centimeters
         //        const double scanDepth = 3.5; // centimeters
 
-        TLocal.translate(Ra::Core::Vector3(m_scanner.depth / 2.0, 0.0, 0.0) + m_scanner.pos);
+        TLocal.translate(Ra::Core::Vector3(0.0, m_scanner.depth / 2.0, 0.0) + m_scanner.pos);
+        //        TLocal.translate(m_scanner.pos);
+
         //        TLocal.translate(Ra::Core::Vector3(0.05, 0.0, 0.5));
 
         //        const double userScale = 1.0;
@@ -529,14 +649,16 @@ void MinimalComponent::updatePose(const Stream::Acquisition& acq)
         //        TLocal.translate(Ra::Core::Vector3(scanDepth / 2.0 + tmp2, 0.0, tmp));
         //        TLocal.translate(Ra::Core::Vector3(0.1, 0.0, 0.2));
         //        m_scan->setLocalTransform(TRadium * TWorld * TLocal * TOrientation);
-        probe.m_scan->setLocalTransform(TRadium * TWorld * TOrientation * TLocal);
+        probe.m_scan->setLocalTransform(TRadium * TWorld * TLocal4 * TOrientation * TLocal3 * TLocal);
         if (g_iProbePose > 0)
             probe.m_scan->setVisible(true);
 
         Ra::Core::Transform TLocal2 = Ra::Core::Transform::Identity();
-        TLocal2.translate(Ra::Core::Vector3(0.0, -m_scanner.width / 2.0, 0.0) + m_scanner.pos);
-        Ra::Core::Vector3 vecScale2(3.0, m_scanner.width, 3.0);
+        TLocal2.translate(Ra::Core::Vector3(0.0, 0.0, -m_scanner.width / 2.0) + m_scanner.pos);
+        Ra::Core::Vector3 vecScale2(lineRadius, lineRadius, m_scanner.width);
         TLocal2.scale(vecScale2);
+
+//        probe.m_scanLine->setLocalTransform(TRadium * TWorld * TLocal4 * TOrientation * TLocal3 * TLocal2);
         probe.m_scanLine->setLocalTransform(TRadium * TWorld * TOrientation * TLocal2);
         if (g_iProbePose > 0)
             probe.m_scanLine->setVisible(true);
@@ -623,7 +745,8 @@ void MinimalComponent::updateScan(const Stream::Acquisition& acq)
 
     m_viewer.makeCurrent();
     auto& params = probe.m_textureScan->getParameters();
-    memcpy(params.texels, data, 192 * 512);
+    //    memcpy(params.texels, data, 192 * 512);
+    memcpy(params.texels, data, 256 * 256);
     probe.m_textureScan->initializeGL(false);
     m_viewer.doneCurrent();
 
@@ -644,6 +767,7 @@ void MinimalComponent::initScan(int iProbe)
     auto& probe = g_probes.at(iProbe);
 
     unsigned char* data = new unsigned char[192 * 512];
+    //    unsigned char* data = new unsigned char[256 * 256];
     // fill with some function
     for (int i = 0; i < 192; ++i) {
         for (int j = 0; j < 512; j++) {
@@ -660,7 +784,8 @@ void MinimalComponent::initScan(int iProbe)
     }
     m_viewer.makeCurrent();
     auto& params = probe.m_textureScan->getParameters();
-    memcpy(params.texels, data, 192 * 512);
+    //    memcpy(params.texels, data, 192 * 512);
+    memcpy(params.texels, data, 256 * 256);
     probe.m_textureScan->initializeGL(false);
     m_viewer.doneCurrent();
 }
@@ -668,7 +793,7 @@ void MinimalComponent::initScan(int iProbe)
 void MinimalComponent::setupScanner(double scanWidth, double scanDepth, double x, double y, double z)
 {
     m_scanner = { scanWidth, scanDepth, { x, y, z } };
-//    initScan();
+    //    initScan();
 }
 
 void MinimalComponent::initPoseTraces(const std::vector<Stream::Acquisition>& poseAcqs)
@@ -692,10 +817,10 @@ void MinimalComponent::initPoseTraces(const std::vector<Stream::Acquisition>& po
 
         // change to Radium base reference
         Ra::Core::Transform TRadium = Ra::Core::Transform::Identity();
-        TRadium.rotate(
-            Eigen::AngleAxis(1.0f * Ra::Core::Math::Pi, Ra::Core::Vector3(0.0, 0.0, 1.0)));
-        TRadium.rotate(
-            Eigen::AngleAxis(-0.5f * Ra::Core::Math::Pi, Ra::Core::Vector3(1.0, 0.0, 0.0)));
+        //        TRadium.rotate(
+        //            Eigen::AngleAxis(1.0f * Ra::Core::Math::Pi, Ra::Core::Vector3(0.0, 0.0, 1.0)));
+        //        TRadium.rotate(
+        //            Eigen::AngleAxis(-0.5f * Ra::Core::Math::Pi, Ra::Core::Vector3(1.0, 0.0, 0.0)));
 
         // orientation
         Ra::Core::Transform TOrientation = Ra::Core::Transform::Identity();
@@ -804,6 +929,12 @@ void MinimalComponent::initPoseTraces(const std::vector<Stream::Acquisition>& po
     //    testline->setMaterial(g_plainMaterial);
     //    splineComponent->addRenderObject(testline);
     //    addRenderObject(testline);
+}
+
+void MinimalComponent::incIter()
+{
+    g_iter++;
+    std::cout << "iter = " << g_iter << std::endl;
 }
 
 /////////////////////// GETTERS AND SETTERS

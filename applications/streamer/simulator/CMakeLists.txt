@@ -6,6 +6,8 @@ project(simulator)
 set(WIN32_REQUIRED_LIBS)
 set(UNIX_REQUIRED_LIBS)
 
+find_package(Scus)
+
 
 file(GLOB_RECURSE sources *.cpp)
 file(GLOB_RECURSE headers *.h)
@@ -32,5 +34,5 @@ elseif(UNIX)
 endif()
 
 
-target_link_libraries(${PROJECT_NAME} src libApp ${UNIX_REQUIRED_LIBS} ${WIN32_REQUIRED_LIBS})
+target_link_libraries(${PROJECT_NAME} src libApp Scus ${UNIX_REQUIRED_LIBS} ${WIN32_REQUIRED_LIBS})
 

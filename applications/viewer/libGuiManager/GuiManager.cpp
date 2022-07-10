@@ -21,7 +21,6 @@
 //#include <DicomLoader/DicomLoader.hpp>
 #include <Engine/Scene/GeometrySystem.hpp>
 
-
 #include <FormInputStreamViews.h>
 #include <FormWidgetLoader.h>
 
@@ -30,7 +29,7 @@ GuiManager::GuiManager(QObject* parent)
 {
 }
 
-//GuiManager::GuiManager()
+// GuiManager::GuiManager()
 //{
 
 //}
@@ -38,31 +37,31 @@ GuiManager::GuiManager(QObject* parent)
 GuiManager::~GuiManager()
 {
     std::cout << "[GuiManager] ~GuiManager() start" << std::endl;
-//    delete m_toolBar;
-//    m_toolBar = nullptr;
-//    delete m_action3D;
-//    m_action3D = nullptr;
-//    delete m_action2D;
-//    m_action2D = nullptr;
-//    delete m_comp;
-//    m_comp = nullptr;
-//    delete m_formWidgetLoader;
-//    m_formWidgetLoader = nullptr;
-//    delete m_formInputStreamViews;
-//    m_formInputStreamViews = nullptr;
-//    delete m_formSensorViews;
-//    m_formSensorViews = nullptr;
+    //    delete m_toolBar;
+    //    m_toolBar = nullptr;
+    //    delete m_action3D;
+    //    m_action3D = nullptr;
+    //    delete m_action2D;
+    //    m_action2D = nullptr;
+    //    delete m_comp;
+    //    m_comp = nullptr;
+    //    delete m_formWidgetLoader;
+    //    m_formWidgetLoader = nullptr;
+    //    delete m_formInputStreamViews;
+    //    m_formInputStreamViews = nullptr;
+    //    delete m_formSensorViews;
+    //    m_formSensorViews = nullptr;
 
     std::cout << "[GuiManager] ~GuiManager() end" << std::endl;
 }
 
+#include <QAction>
 #include <QDockWidget>
 #include <QToolBar>
-#include <QAction>
 
 void GuiManager::init()
 {
-    assert(! m_initialized);
+    assert(!m_initialized);
     assert(m_mainWindow != nullptr);
     m_dockLeft = new QDockWidget(m_mainWindow);
     m_dockTop = new QDockWidget(m_mainWindow);
@@ -136,25 +135,26 @@ void GuiManager::init()
         this,
         &GuiManager::on_checkBox_grid_toggled);
 
-//    m_layout3DView->addWidget(m_3DToolBox);
+    //    m_layout3DView->addWidget(m_3DToolBox);
     m_layout3DView->insertWidget(0, m_3DToolBox);
 
     //////////////////////////////////////// TOP
-//     dockWidgetContents_right->setMinimumWidth(500);
+    //     dockWidgetContents_right->setMinimumWidth(500);
 
-//    m_imageManipulator = new FormImageManipulator(this);
+    //    m_imageManipulator = new FormImageManipulator(this);
 
     m_dockRight->setMinimumWidth(500);
     m_dockRight->setWidget(&m_imageManipulator);
 
-//    auto& streamView = ui->dockWidgetContents_right->getWidgetStreamView();
+    //    auto& streamView = ui->dockWidgetContents_right->getWidgetStreamView();
     auto& streamView = m_imageManipulator.getWidgetStreamView();
-    streamView.init(512, 192, 35.0, 50.0);
+//    streamView.init(512, 192, 35.0, 50.0);
+    streamView.init(256, 256, 250, 250);
 
     //////////////////////////////////////// TOP
     assert(m_mdiArea != nullptr);
     m_formInputStreamViews = new FormInputStreamViews(*m_mdiArea, m_dockTop);
-//    ui->dockWidget_top->setWidget(m_formInputStreamViews);
+    //    ui->dockWidget_top->setWidget(m_formInputStreamViews);
     m_dockTop->setWidget(m_formInputStreamViews);
 
     //    QObject::connect(m_formInputStreamViews, &FormInputStreamViews::initPose, this,
@@ -175,7 +175,7 @@ void GuiManager::init()
 
     //////////////////////////////////////// BOTTOM
     m_formWidgetLoader = new FormWidgetLoader(m_dockBottom);
-//    ui->dockWidget_bottom->setWidget(m_formWidgetLoader);
+    //    ui->dockWidget_bottom->setWidget(m_formWidgetLoader);
     m_dockBottom->setWidget(m_formWidgetLoader);
     QObject::connect(m_formWidgetLoader,
         &FormWidgetLoader::recordPathLoaded,
@@ -190,7 +190,7 @@ void GuiManager::init()
     m_formSensorViews = new FormSensorViews(m_dockLeft);
 
     //    if (m_formSensorViews->isServerConnected()) {
-//    ui->dockWidget_left->setWidget(m_formSensorViews);
+    //    ui->dockWidget_left->setWidget(m_formSensorViews);
     m_dockLeft->setWidget(m_formSensorViews);
     QObject::connect(m_formSensorViews,
         &FormSensorViews::streamingStarted,
@@ -205,10 +205,10 @@ void GuiManager::init()
         this,
         &GuiManager::onServerDisconnected);
     //        m_formSensorViews->startStreaming();
-//    } else {
-//        delete m_formSensorViews;
-//        ui->dockWidget_left->close();
-//    }
+    //    } else {
+    //        delete m_formSensorViews;
+    //        ui->dockWidget_left->close();
+    //    }
     //    ui->dockWidgetContents_left = new FormSensorViews(this);
 
     //////////////////////////////////////// INIT 3D ENVIRONMENT
@@ -222,6 +222,12 @@ void GuiManager::init()
     m_viewer->prepareDisplay();
 
     m_initialized = true;
+}
+
+void GuiManager::incIter()
+{
+
+    m_comp->incIter();
 }
 
 void GuiManager::onRecordLoaderPathLoaded()
@@ -270,13 +276,13 @@ void GuiManager::onSnapshotLoaderPathLoaded()
 
 void GuiManager::on_action2D_triggered()
 {
-//    ui->stackedWidget->setCurrentIndex(0);
+    //    ui->stackedWidget->setCurrentIndex(0);
     m_stackedWidget->setCurrentIndex(0);
 }
 
 void GuiManager::on_action3D_triggered()
 {
-//    ui->stackedWidget->setCurrentIndex(1);
+    //    ui->stackedWidget->setCurrentIndex(1);
     m_stackedWidget->setCurrentIndex(1);
 }
 
@@ -309,7 +315,7 @@ void GuiManager::onServerDisconnected()
     delete m_formSensorViews;
     m_formSensorViews = nullptr;
     //    ui->dockWidgetContents_left.c
-//    ui->dockWidget_left->close();
+    //    ui->dockWidget_left->close();
     m_dockLeft->close();
 }
 
@@ -318,7 +324,7 @@ void GuiManager::onInit(const std::string& sensorName)
     std::cout << "[GuiManager] onInit '" << sensorName << "'" << std::endl;
     if (sensorName == g_probeScanSensorName) {
         m_comp->initScan();
-//        ui->dockWidgetContents_right->init();
+        //        ui->dockWidgetContents_right->init();
         m_imageManipulator.init();
 
     } else if (sensorName == g_probePoseSensorName) {
@@ -361,7 +367,7 @@ void GuiManager::onNewAcquisition(const std::string& sensorName, const std::stri
 
         m_comp->updateScan(acq);
         m_imageManipulator.update(acq);
-//        ui->dockWidgetContents_right->update(acq);
+        //        ui->dockWidgetContents_right->update(acq);
 
         //            acqs.pop();
         //        }
@@ -393,33 +399,35 @@ void GuiManager::onSelectedSourceChanged(const std::string& sensorName, const st
 
     std::cout << inputStream << std::endl;
 
-    const auto& metadata = inputStream.getMetaData();
-    double scanWidth = 5.0;
-    if (metadata.find("scanWidth") != metadata.end()) {
-        scanWidth = std::any_cast<double>(metadata.at("scanWidth"));
+    if (sensorName == g_probePoseSensorName) {
+        const auto& metadata = inputStream.getMetaData();
+        double scanWidth = 5.0;
+        if (metadata.find("scanWidth") != metadata.end()) {
+            scanWidth = std::any_cast<double>(metadata.at("scanWidth"));
+        }
+
+        double scanDepth = 3.5;
+        if (metadata.find("scanDepth") != metadata.end()) {
+            scanDepth = std::any_cast<double>(metadata.at("scanDepth"));
+        }
+
+        double x = 3.1;
+        if (metadata.find("x") != metadata.end()) {
+            x = std::any_cast<double>(metadata.at("x"));
+        }
+        double y = 0.0;
+        if (metadata.find("y") != metadata.end()) {
+            y = std::any_cast<double>(metadata.at("y"));
+        }
+        double z = 16.0;
+        if (metadata.find("z") != metadata.end()) {
+            z = std::any_cast<double>(metadata.at("z"));
+        }
+
+        m_comp->setupScanner(scanWidth, scanDepth, x, y, z);
     }
 
-    double scanDepth = 3.5;
-    if (metadata.find("scanDepth") != metadata.end()) {
-        scanDepth = std::any_cast<double>(metadata.at("scanDepth"));
-    }
-
-    double x = 3.1;
-    if (metadata.find("x") != metadata.end()) {
-        x = std::any_cast<double>(metadata.at("x"));
-    }
-    double y = 0.0;
-    if (metadata.find("y") != metadata.end()) {
-        y = std::any_cast<double>(metadata.at("y"));
-    }
-    double z = 16.0;
-    if (metadata.find("z") != metadata.end()) {
-        z = std::any_cast<double>(metadata.at("z"));
-    }
-
-    m_comp->setupScanner(scanWidth, scanDepth, x, y, z);
-
-//    m_engine->loadFile(MRI_PATH "AXT2_ligaments_uterosacres/D0010525.dcm");
+    //    m_engine->loadFile(MRI_PATH "AXT2_ligaments_uterosacres/D0010525.dcm");
     //    m_app->m_viewer->prepareDisplay();
 }
 
