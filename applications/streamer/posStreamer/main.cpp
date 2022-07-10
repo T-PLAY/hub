@@ -22,28 +22,46 @@ int main(int argc, char* argv[])
 {
 
     Stream::MetaData metaData;
-    metaData["scanWidth"] = 10.0;
-    metaData["scanDepth"] = 10.0;
-    metaData["x"] = 0.0;
-    metaData["y"] = 0.0;
-    metaData["z"] = 0.0;
-
+//    metaData["scanWidth"] = 10.0;
+//    metaData["scanDepth"] = 10.0;
+//    metaData["x"] = 0.0;
+//    metaData["y"] = 0.0;
+//    metaData["z"] = 0.0;
 
     //    OutputStream proceduralStream("Polhemus Patriot (probe)", Stream::Format::Y8, { width, height }, ClientSocket(), metaData);
     OutputStream posStream(g_probePoseSensorName, Stream::Format::DOF6, { 1 }, ClientSocket(), metaData);
 
-    glm::vec3 pos(0, -50, -50);
-    glm::quat quat(1.0, 0.0, 0.0, 0.0);
+    //    glm::vec3 pos(0, -50, -50);
+    //    glm::quat quat(1.0, 0.0, 0.0, 0.0);
+    //    auto pos = glm::vec3(0, 30, 125);
+    auto pos = glm::vec3(0.0, 1.0, 0.0); // x, y, z
+    //    auto quat = glm::angleAxis(0.f, glm::vec3(1, 0, 0));
+    //    auto quat = glm::angleAxis(0.f, glm::vec3(1, 0, 0));
     //    quat = glm::rotate(quat, glm::radians(45.0f), glm::vec3(1.0, 0.0, 0.0));
     //    quat = glm::rotate(quat, glm::radians(45.0f), glm::vec3(0.0, 1.0, 0.0));
     //    quat = glm::rotate(quat, glm::radians(45.0f), glm::vec3(0.0, 0.0, 1.0));
+    auto quat = glm::quat(1.0, 0.0, 0.0, 0.0); // w, x, y, z
+
+//    glm::vec3 cameraFront = glm::vec3(1.0, 0.0, 0.0);
+//    glm::vec3 cameraUp = glm::vec3(0.0, 1.0, 0.0);
+//    float pitch = 0.0f;
+//    float yaw = glm::radians(90.0f);
+//    float roll = 0.0f;
+
+//        auto quat = glm::quat(glm::vec3(pitch, yaw, roll));
 
     unsigned char data[28];
 
-    float* translation = glm::value_ptr(pos);
-    float* orientation = glm::value_ptr(quat);
+    float* translation = glm::value_ptr(pos); // x, y, z
+    float* orientation = glm::value_ptr(quat); // x, y, z, w
     memcpy(data, translation, 12);
     memcpy(&data[12], orientation, 16);
+    for (int i = 0; i < 7; ++i) {
+        std::cout << ((float*)data)[i] << ", ";
+    }
+    std::cout << std::endl;
+
+    const float moveSpeed = 5.0;
 
     //    KEY_SLEFT;
     char c;
@@ -58,34 +76,47 @@ int main(int argc, char* argv[])
             switch (getchar()) {
             case 'A': // up
                 //                std::cout << "up" << std::endl;
-                pos += glm::vec3(0.0, 1.0, 0.0);
+                                pos += moveSpeed * glm::vec3(1.0, 0.0, 0.0);
+                //                pos += moveSpeed * glm::vec3(0.0, 0.0, -1.0);
+//                pos += moveSpeed * cameraFront;
                 needUpdate = true;
                 break;
             case 'B': // down
                 //                std::cout << "down" << std::endl;
-                pos += glm::vec3(0.0, -1.0, 0.0);
+                                pos -= moveSpeed * glm::vec3(1.0, 0.0, 0.0);
+                //                pos += moveSpeed * glm::vec3(0.0, -1.0, 0.0);
+                //                pos += moveSpeed * glm::vec3(0.0, 0.0, 1.0);
+//                pos -= moveSpeed * cameraFront;
                 needUpdate = true;
                 break;
 
             case 'C': // right
                 //                std::cout << "right" << std::endl;
-                pos += glm::vec3(-1.0, 0.0, 0.0);
+                                pos += moveSpeed * glm::vec3(0.0, 0.0, 1.0);
+                //                pos += moveSpeed * glm::vec3(1.0, 0.0, 0.0);
+//                pos += moveSpeed * glm::normalize(glm::cross(cameraFront, cameraUp));
                 needUpdate = true;
                 break;
             case 'D': // left
                 //                std::cout << "left" << std::endl;
-                pos += glm::vec3(1.0, 0.0, 0.0);
+                                pos -= moveSpeed * glm::vec3(0.0, 0.0, 1.0);
+                //                pos += moveSpeed * glm::vec3(-1.0, 0.0, 0.0);
+//                pos -= moveSpeed * glm::normalize(glm::cross(cameraFront, cameraUp));
                 needUpdate = true;
                 break;
 
             case 'H': // page up
                 //                std::cout << "page up" << std::endl;
-                pos += glm::vec3(0.0, 0.0, -1.0);
+                                pos += moveSpeed * glm::vec3(0.0, 1.0, 0.0);
+                //                pos += moveSpeed * glm::vec3(0.0, 1.0, 0.0);
+//                pos += moveSpeed * cameraUp;
                 needUpdate = true;
                 break;
             case 'F': // page down
                 //                std::cout << "page down" << std::endl;
-                pos += glm::vec3(0.0, 0.0, 1.0);
+                                pos -= moveSpeed * glm::vec3(0.0, 1.0, 0.0);
+                //                pos += moveSpeed * glm::vec3(0.0, -1.0, 0.0);
+//                pos -= moveSpeed * cameraUp;
                 needUpdate = true;
                 break;
 
@@ -96,37 +127,46 @@ int main(int argc, char* argv[])
                 switch (getchar()) {
                 case 'A': // up
                     //                    std::cout << "up" << std::endl;
-                    quat = glm::rotate(quat, glm::radians(1.0f), glm::vec3(0.0, 0.0, 1.0));
+//                    pitch -= glm::radians(moveSpeed);
+                                        quat = glm::rotate(quat, glm::radians(moveSpeed), glm::vec3(0.0, 0.0, 1.0));
                     needUpdate = true;
                     break;
                 case 'B': // down
                     //                    std::cout << "down" << std::endl;
-                    quat = glm::rotate(quat, glm::radians(1.0f), glm::vec3(0.0, 0.0, -1.0));
+//                    pitch += glm::radians(moveSpeed);
+                                        quat = glm::rotate(quat, glm::radians(-moveSpeed), glm::vec3(0.0, 0.0, 1.0));
                     needUpdate = true;
                     break;
 
                 case 'C': // right
                     //                    std::cout << "right" << std::endl;
-                    quat = glm::rotate(quat, glm::radians(1.0f), glm::vec3(-1.0, 0.0, 0.0));
+//                    yaw -= glm::radians(moveSpeed);
+                                        quat = glm::rotate(quat, glm::radians(-moveSpeed), glm::vec3(0.0, 1.0, 0.0));
                     needUpdate = true;
                     break;
                 case 'D': // left
                     //                    std::cout << "left" << std::endl;
-                    quat = glm::rotate(quat, glm::radians(1.0f), glm::vec3(1.0, 0.0, 0.0));
+//                    yaw += glm::radians(moveSpeed);
+                                        quat = glm::rotate(quat, glm::radians(moveSpeed), glm::vec3(0.0, 1.0, 0.0));
+                    //                    quat = glm::rotate(quat, glm::radians(moveSpeed), glm::vec3(1.0, 0.0, 0.0));
                     needUpdate = true;
                     break;
 
                 case 'F': // page down
                     //                    std::cout << "page down" << std::endl;
-                    quat = glm::rotate(quat, glm::radians(1.0f), glm::vec3(0.0, -1.0, 0.0));
+//                    roll += glm::radians(moveSpeed);
+                                        quat = glm::rotate(quat, glm::radians(moveSpeed), glm::vec3(1.0, 0.0, 0.0));
                     needUpdate = true;
                     break;
                 case 'H': // page up
                     //                    std::cout << "page up" << std::endl;
-                    quat = glm::rotate(quat, glm::radians(1.0f), glm::vec3(0.0, 1.0, 0.0));
+//                    roll -= glm::radians(moveSpeed);
+                    //                    quat = glm::rotate(quat, glm::radians(moveSpeed), glm::vec3(0.0, 1.0, 0.0));
+                                        quat = glm::rotate(quat, glm::radians(-moveSpeed), glm::vec3(1.0, 0.0, 0.0));
                     needUpdate = true;
                     break;
                 }
+//                assert(-90 < pitch && pitch < 90);
                 break;
             }
 
@@ -138,6 +178,13 @@ int main(int argc, char* argv[])
         if (needUpdate) {
             //            std::cout << "update stream" << std::endl;
             needUpdate = false;
+//            quat = glm::quat(glm::vec3(pitch, yaw, roll));
+//            glm::vec3 front;
+//            front.x = cos(yaw) * cos(pitch);
+//            front.y = sin(pitch);
+//            front.z = sin(yaw) * cos(pitch);
+//            cameraFront = glm::normalize(front);
+
             assert(translation == glm::value_ptr(pos));
             assert(orientation == glm::value_ptr(quat));
             memcpy(data, translation, 12);
@@ -146,7 +193,7 @@ int main(int argc, char* argv[])
             posStream << Stream::Acquisition(timestampStart, timestampStart, data, 28);
 
             std::cout << "\r"
-                      << "x:" << pos.x << " y:" << pos.y << " z:" << pos.z
+                      << "x:" << pos.x << " y:" << pos.y << " z:" << pos.z << "\t"
                       << " w:" << quat.w << " x:" << quat.x << " y:" << quat.y << " z:" << quat.z << "                  ";
         }
         //        std::cout << c << " was pressed."<< std::endl;

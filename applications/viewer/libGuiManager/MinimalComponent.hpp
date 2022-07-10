@@ -58,6 +58,8 @@ struct MinimalComponent : public Ra::Engine::Scene::Component {
 
     void initPoseTraces( const std::vector<Stream::Acquisition>& poseAcqs );
 
+    void incIter();
+
 
   private:
     Ra::Engine::RadiumEngine& m_engine;
