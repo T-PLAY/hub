@@ -33,5 +33,5 @@ add_subdirectory(loader)
 add_subdirectory(imageManipulator)
 
 if (BUILD_SCUS)
-    add_subdirectory(testScus)
+	add_subdirectory(testScus)
 endif()
