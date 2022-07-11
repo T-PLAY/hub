@@ -7,6 +7,7 @@ set(WIN32_REQUIRED_LIBS)
 set(UNIX_REQUIRED_LIBS)
 
 find_package(Scus)
+find_package(DCMTK REQUIRED)
 
 
 file(GLOB_RECURSE sources *.cpp)
@@ -34,5 +35,8 @@ elseif(UNIX)
 endif()
 
 
-target_link_libraries(${PROJECT_NAME} src libApp Scus ${UNIX_REQUIRED_LIBS} ${WIN32_REQUIRED_LIBS})
+target_link_libraries(${PROJECT_NAME} 
+	src libApp Scus ${UNIX_REQUIRED_LIBS} ${WIN32_REQUIRED_LIBS}
+    DCMTK::dcmdata DCMTK::dcmimage
+	)
 

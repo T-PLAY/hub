@@ -6,6 +6,7 @@ project(posStreamer)
 set(WIN32_REQUIRED_LIBS)
 set(UNIX_REQUIRED_LIBS)
 
+find_package(glm REQUIRED)
 
 file(GLOB_RECURSE sources *.cpp)
 file(GLOB_RECURSE headers *.h)
@@ -32,5 +33,5 @@ elseif(UNIX)
 endif()
 
 
-target_link_libraries(${PROJECT_NAME} src libApp ${UNIX_REQUIRED_LIBS} ${WIN32_REQUIRED_LIBS})
+target_link_libraries(${PROJECT_NAME} glm src libApp ${UNIX_REQUIRED_LIBS} ${WIN32_REQUIRED_LIBS})
 
