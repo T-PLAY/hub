@@ -38,9 +38,9 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 # ------------------------------------------------------------------------------
 
 
-if(${QT_VERSION} GREATER_EQUAL 6)
-    add_definitions(-DUSE_GOT_CONTRIB)
-endif()
+#if(${QT_VERSION} GREATER_EQUAL 6)
+#    add_definitions(-DUSE_GOT_CONTRIB)
+#endif()
 
 
 #if (WIN32)

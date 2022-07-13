@@ -15,6 +15,8 @@ elseif (${hostname} STREQUAL "Brueghel") # work window
     add_definitions(-DMRI_PATH=\"C:\\Users\\gbouyjou\\Downloads\\MRI\\\")
 elseif (${hostname} STREQUAL "gigabyte")
     add_definitions(-DMRI_PATH=\"/home/gauthier/tmpDicomViewer/MRI/\")
+elseif (${hostname} STREQUAL "msi")
+	add_definitions(-DMRI_PATH=\"/home/gauthier/Downloads/MRI/\")
 else()
     message(FATAL_ERROR "unknown system for finding MRI path")
 endif ()
