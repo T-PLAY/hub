@@ -22,9 +22,9 @@ if (BUILD_RADIUM_EXAMPLE)
         add_subdirectory(VolumeDemoApp)
         add_subdirectory(TexturedQuad)
 
-#        add_subdirectory(radiumViewer5)
+#        add_subdirectory(radiumViewer5) #minimal BaseApplication
         add_subdirectory(radiumViewer6)
-#        add_subdirectory(radiumViewer7)
+        add_subdirectory(radiumViewer7) #radium-apps sandbox
 
     endif()
 endif()

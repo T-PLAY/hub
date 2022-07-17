@@ -24,6 +24,12 @@
 #include <FormInputStreamViews.h>
 #include <FormWidgetLoader.h>
 
+#include <Gui/TreeModel/EntityTreeModel.hpp>
+
+#include <Engine/Rendering/RenderObjectManager.hpp>>
+#include <Engine/Rendering/RenderObject.hpp>
+#include <Engine/Scene/Component.hpp>
+
 GuiManager::GuiManager(QObject* parent)
     : QObject { parent }
 {
@@ -138,18 +144,27 @@ void GuiManager::init()
     //    m_layout3DView->addWidget(m_3DToolBox);
     m_layout3DView->insertWidget(0, m_3DToolBox);
 
-    //////////////////////////////////////// TOP
+    //////////////////////////////////////// RIGHT
     //     dockWidgetContents_right->setMinimumWidth(500);
 
     //    m_imageManipulator = new FormImageManipulator(this);
 
-    m_dockRight->setMinimumWidth(500);
-    m_dockRight->setWidget(&m_imageManipulator);
+    m_dockRight->setMinimumWidth(200);
+//    m_dockRight->setWidget(&m_imageManipulator);
+//    m_dockRight->setWidget();
+//    QVBoxLayout * vLayout = new QVBoxLayout(m_dockRight);
+//    m_dockRight->setLayout(vLayout);
+//    QTreeView * treeView = new QTreeView(m_dockRight);
+//    treeView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+//    treeView->setMinimumSize(QSize(200, 200));
+//    vLayout->addWidget(treeView);
+//    Ra::Gui::ItemModel * itemModel = new Ra::Gui::ItemModel(m_engine, this);
+//    treeView->setModel(itemModel);
 
     //    auto& streamView = ui->dockWidgetContents_right->getWidgetStreamView();
-    auto& streamView = m_imageManipulator.getWidgetStreamView();
+//    auto& streamView = m_imageManipulator.getWidgetStreamView();
 //    streamView.init(512, 192, 35.0, 50.0);
-    streamView.init(256, 256, 250, 250);
+//    streamView.init(256, 256, 250, 250);
 
     //////////////////////////////////////// TOP
     assert(m_mdiArea != nullptr);
@@ -218,6 +233,22 @@ void GuiManager::init()
     m_system->addComponent(e, m_comp);
     m_comp->initialize();
     m_comp->updateShader();
+
+    Ra::Core::Transform TLocal = Ra::Core::Transform::Identity();
+    TLocal.translate(Ra::Core::Vector3(10_ra, 10_ra, 10_ra));
+//    e->setTransform(TLocal);
+//    auto transform = Ra::Core::Transform::translation()
+//    e->setTransform(
+//    e->transformationObservers();
+
+//    auto * entityManager = m_engine->getEntityManager();
+//    auto * entity1 = entityManager->createEntity("entity1");
+
+//    auto * component1 = new Ra::Engine::Scene::Component("component1", entity1);
+
+//    auto * renderObjectManager = m_engine->getRenderObjectManager();
+//    auto * ro = Ra::Engine::Rendering::RenderObject::createRenderObject("ro1",
+//    renderObjectManager->addRenderObject();
 
     m_viewer->prepareDisplay();
 
