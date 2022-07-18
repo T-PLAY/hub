@@ -792,7 +792,11 @@ void MinimalComponent::initScan(int iProbe)
 
 void MinimalComponent::setupScanner(double scanWidth, double scanDepth, double x, double y, double z)
 {
-    m_scanner = { scanWidth, scanDepth, { x, y, z } };
+//    m_scanner = { scanWidth, scanDepth, Ra::Core::Vector3{ x, y, z } };
+    m_scanner.width = scanWidth;
+    m_scanner.depth = scanDepth;
+    m_scanner.pos = Ra::Core::Vector3(x, y, z);
+//    m_scanner.pos = {x, y, z};
     //    initScan();
 }
 

@@ -89,7 +89,9 @@ int main(int argc, char* argv[])
         tex_coords.push_back({ 1_ra, 0_ra, 0_ra });
         tex_coords.push_back({ 0_ra, 1_ra, 0_ra });
         tex_coords.push_back({ 1_ra, 1_ra, 0_ra });
-        quad.addAttrib(Ra::Core::Geometry::getAttribName(Ra::Core::Geometry::VERTEX_TEXCOORD), tex_coords);
+//        quad.addAttrib(Ra::Core::Geometry::getAttribName(Ra::Core::Geometry::VERTEX_TEXCOORD), tex_coords);
+//        Ra::Engine::Data::TexturePa
+        quad.addAttrib("in_texcoord", tex_coords);
 #endif
 
         //! [Creating the quad]

@@ -16,17 +16,17 @@ if (BUILD_RADIUM_EXAMPLE)
 
 
     if (BUILD_DCMTK)
-
-        add_subdirectory(libGuiManager)
         add_subdirectory(libDicomLoader)
         add_subdirectory(VolumeDemoApp)
         add_subdirectory(TexturedQuad)
+    endif()
+
+        add_subdirectory(libGuiManager)
 
 #        add_subdirectory(radiumViewer5) #minimal BaseApplication
         add_subdirectory(radiumViewer6)
         add_subdirectory(radiumViewer7) #radium-apps sandbox
 
-    endif()
 endif()
 
 

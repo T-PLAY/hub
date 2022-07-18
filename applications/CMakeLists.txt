@@ -7,11 +7,11 @@ if (NOT QT_VERSION)
 endif()
 #set(QT_VERSION 5)
 #set(QT_VERSION 6)
-add_definitions(-DUSE_GOT_PR)
 
 cmake_host_system_information(RESULT hostname QUERY HOSTNAME)
 if (${hostname} STREQUAL "brueghel") # work linux
     add_definitions(-DMRI_PATH=\"/export/home/brueghel/gbouyjou/Downloads/MRI/\")
+    add_definitions(-DUSE_GOT_PR)
 elseif (${hostname} STREQUAL "Brueghel") # work window
     add_definitions(-DMRI_PATH=\"C:\\Users\\gbouyjou\\Downloads\\MRI\\\")
 elseif (${hostname} STREQUAL "gigabyte")

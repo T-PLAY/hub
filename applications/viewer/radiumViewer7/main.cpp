@@ -4,8 +4,8 @@
 
 #include <Gui/MainWindow.hpp>
 
-#include <Core/Asset/FileLoaderInterface.hpp>
-#include <DicomLoader/DicomLoader.hpp>
+//#include <Core/Asset/FileLoaderInterface.hpp>
+//#include <DicomLoader/DicomLoader.hpp>
 #include <Engine/RadiumEngine.hpp>
 
 
