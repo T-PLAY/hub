@@ -84,7 +84,7 @@ target_link_libraries (${PROJECT_NAME} PUBLIC
     Radium::Gui
     Radium::IO
 	${Qt_LIBRARIES}
-    DicomLoader
+#    DicomLoader
     libGuiManager
 )
 

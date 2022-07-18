@@ -11,6 +11,7 @@ file(GLOB_RECURSE sources *.cpp)
 file(GLOB_RECURSE headers *.h)
 
 find_package(Scus REQUIRED)
+find_package(TBB REQUIRED)
 find_package(DCMTK REQUIRED)
 
 message(STATUS ${SELF_DIR})

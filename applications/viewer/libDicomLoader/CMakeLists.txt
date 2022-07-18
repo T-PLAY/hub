@@ -74,6 +74,7 @@ target_include_directories(
 target_link_libraries(
     ${PROJECT_NAME} PUBLIC Radium::Core Radium::Engine Radium::Gui ${Qt_LIBRARIES}
 #    ${DCMTK_LIBRARIES}
+#    PRIVATE
     DCMTK::dcmdata DCMTK::dcmimage
 )
 

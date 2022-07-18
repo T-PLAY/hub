@@ -6,7 +6,8 @@ project(simulator)
 set(WIN32_REQUIRED_LIBS)
 set(UNIX_REQUIRED_LIBS)
 
-find_package(Scus)
+find_package(Scus REQUIRED)
+find_package(TBB REQUIRED)
 find_package(DCMTK REQUIRED)
 
 
