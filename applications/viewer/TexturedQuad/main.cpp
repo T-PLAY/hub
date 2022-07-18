@@ -15,6 +15,8 @@
 
 #include <DicomLoader/DicomUtils.hpp>
 
+#include <filesystem>
+
 const char* vertexShaderFile = PROJECT_DIR "applications/viewer/TexturedQuad/vertexShader.glsl";
 const char* fragmentShaderFile = PROJECT_DIR "applications/viewer/TexturedQuad/fragmentShader.glsl";
 
@@ -46,6 +48,11 @@ int main(int argc, char* argv[])
 
     unsigned int imageWidth, imageHeight, nImages, bytePerVoxel;
     float pixelSpacingWidth, pixelSpacingHeight, sliceThickness;
+
+//    const auto f = "C:\\Users\\gbouyjou\\Downloads\\MRI";
+    const auto f = "C:/Users/gbouyjou/Downloads/MRI";
+//    assert(std::filesystem::exists(f));
+//    std::cout << "MRI_PATH = '" << MRI_PATH << "'" <<  std::endl;
 
     const auto filename = MRI_PATH "AXT2_ligaments_uterosacres/D0010525.dcm";
 //        app.loadFile(QString(MRI_PATH "Ax_T2_PROP_5MM/D0010275.dcm"));

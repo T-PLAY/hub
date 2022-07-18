@@ -3,18 +3,18 @@ cmake_minimum_required (VERSION 3.8)
 project(DicomLoader)
 
 #set (CMAKE_PREFIX_PATH "C:\\Qt\\Qt5.0.1\\5.0.1\\msvc2010\\")
-set(WIN32_REQUIRED_LIBS)
-set(UNIX_REQUIRED_LIBS)
+# set(WIN32_REQUIRED_LIBS)
+# set(UNIX_REQUIRED_LIBS)
 
 
 
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_DISABLE_SOURCE_CHANGES ON)
+# set(CMAKE_DISABLE_SOURCE_CHANGES ON)
 
 # Disable in-source builds
-set(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
+# set(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
 
 # Be nice to visual studio
 #set_property(GLOBAL PROPERTY USE_FOLDERS ON)
@@ -63,20 +63,24 @@ add_library(${PROJECT_NAME}
 
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
 target_include_directories(
-    ${PROJECT_NAME} PRIVATE
-    ${RADIUM_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR} # Moc
+    ${PROJECT_NAME} 
     PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
+    # PRIVATE
+    # ${RADIUM_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR} # Moc
 #    ${SRC_DIR}
     )
 
 
 target_link_libraries(
-    ${PROJECT_NAME} PUBLIC Radium::Core Radium::Engine Radium::Gui ${Qt_LIBRARIES}
+    ${PROJECT_NAME} 
+    PUBLIC 
+    Radium::Core Radium::Engine Radium::Gui 
+    ${Qt_LIBRARIES}
 #    ${DCMTK_LIBRARIES}
 #    PRIVATE
     DCMTK::dcmdata DCMTK::dcmimage
 )
 
-configure_radium_app(NAME ${PROJECT_NAME})
+#configure_radium_app(NAME ${PROJECT_NAME})
 

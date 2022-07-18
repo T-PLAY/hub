@@ -42,10 +42,14 @@ set(app_sources main.cpp vertexShader.glsl fragmentShader.glsl)
 add_executable(${PROJECT_NAME} ${app_sources})
 
 target_link_libraries(
-    ${PROJECT_NAME} PUBLIC Radium::Core Radium::Engine Radium::Gui ${Qt_LIBRARIES} DicomLoader
+    ${PROJECT_NAME}
+    PUBLIC
+    Radium::Core Radium::Engine Radium::Gui Radium::IO
+    ${Qt_LIBRARIES}
+    DicomLoader
 )
 
-target_compile_options(${PROJECT_NAME} PRIVATE PUBLIC ${DEFAULT_COMPILE_OPTIONS} INTERFACE)
+#target_compile_options(${PROJECT_NAME} PRIVATE PUBLIC ${DEFAULT_COMPILE_OPTIONS} INTERFACE)
 
 configure_radium_app(NAME ${PROJECT_NAME})
 
