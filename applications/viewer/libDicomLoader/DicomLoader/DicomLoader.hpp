@@ -16,7 +16,8 @@ namespace IO {
  *      size [ w h d : 3 ints that gives the size of the grid ]
  *      density [ w*h*d white space separated floating point values defining the density ]
  */
-class RA_IO_API DicomLoader : public Ra::Core::Asset::FileLoaderInterface
+//class RA_IO_API DicomLoader : public Ra::Core::Asset::FileLoaderInterface
+class DicomLoader : public Ra::Core::Asset::FileLoaderInterface
 {
   public:
     DicomLoader();

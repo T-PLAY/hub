@@ -80,10 +80,10 @@ namespace IO {
             std::cout << "Opening Dicom with " << files_in_directory.size() << " slices" << std::endl;
 
             DcmFileFormat file_format;
-            OFCondition status = file_format.loadFile(files_in_directory.front().c_str());
+            OFCondition status = file_format.loadFile(files_in_directory.front().string().c_str());
 
             if (status.bad()) {
-                std::cerr << "Problem openning file:" << files_in_directory.front().c_str() << std::endl;
+                std::cerr << "Problem openning file:" << files_in_directory.front().string().c_str() << std::endl;
                 exit(-1);
             }
             DcmDataset* dataset = file_format.getDataset();
@@ -143,7 +143,8 @@ namespace IO {
             for (int i = 0; i < *nImages; ++i) {
                 const auto filename = files_in_directory.at(i);
 
-                DicomImage image(filename.c_str());
+//                DicomImage image(filename.c_str());
+                DicomImage image(filename.string().c_str());
 
                 auto dbg = image.getDepth();
 //                assert(image.getDepth() == *nBytesPerVoxel * 8);

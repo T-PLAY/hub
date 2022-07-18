@@ -17,6 +17,8 @@
 #include <Engine/Scene/SystemDisplay.hpp>
 
 //#define MRI_PATH "/home/gauthier/tmpDicomViewer/MRI/"
+//#define MRI_PATH2 "C:\\Users\\gbouyjou\\Downloads\\MRI"
+#define DEMO_FILE
 
 int main(int argc, char* argv[])
 {
@@ -115,6 +117,9 @@ int main(int argc, char* argv[])
     //    constexpr auto irmPath = "/home/gauthier/tmpDicomViewer/IRM/";
 
     app.loadFile(QString(MRI_PATH "AXT2_ligaments_uterosacres/D0010525.dcm"));
+//app.loadFile(QString("C:\\Users\\gbouyjou\\Downloads\\MRI" "AXT2_ligaments_uterosacres/D0010525.dcm"));
+//    app.loadFile(QString(MRI_PATH2 "AXT2_ligaments_uterosacres/D0010525.dcm"));
+
 //        app.loadFile(QString(MRI_PATH "Ax_T2_PROP_5MM/D0010275.dcm"));
 //        app.loadFile(QString(MRI_PATH "Loc/D0010001.dcm"));
 //        app.loadFile(QString(MRI_PATH "MPR_AX_T2/D0010551.dcm"));
