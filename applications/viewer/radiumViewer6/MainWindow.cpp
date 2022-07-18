@@ -17,8 +17,8 @@
 
 #include <FormSensorViews.h>
 
-#include <Core/Asset/FileLoaderInterface.hpp>
-#include <DicomLoader/DicomLoader.hpp>
+//#include <Core/Asset/FileLoaderInterface.hpp>
+//#include <DicomLoader/DicomLoader.hpp>
 #include <Engine/Scene/GeometrySystem.hpp>
 
 //#include <Core/Geometry/MeshPrimitives.hpp>
@@ -26,7 +26,7 @@
 //#include <Engine/Scene/GeometryComponent.hpp>
 //#include <Engine/Scene/GeometrySystem.hpp>
 
-#include <ImplicitVolume.h>
+//#include <ImplicitVolume.h>
 
 //#include <QEvent>
 // the default priority for systems created here.
@@ -80,7 +80,7 @@ MainWindow::MainWindow(QWidget* parent)
     //        sys->addComponent(e, m_comp);
     //        m_comp->initialize();
 
-    app.m_engine->registerFileLoader(std::shared_ptr<Ra::Core::Asset::FileLoaderInterface>(new Ra::IO::DicomLoader()));
+//    app.m_engine->registerFileLoader(std::shared_ptr<Ra::Core::Asset::FileLoaderInterface>(new Ra::IO::DicomLoader()));
     //    app.m_engine->loadFile(MRI_PATH "AXT2_ligaments_uterosacres/D0010525.dcm");
 
     // prepare the viewer to render the scene (i.e. build RenderTechniques for the
@@ -121,9 +121,9 @@ MainWindow::MainWindow(QWidget* parent)
     //    m_comp->getRoGrid().setVisible(ui->checkBox_grid->isChecked());
     //    m_comp->traceSetVisible(ui->checkBox_trace->isChecked());
 
-    app.m_engine->loadFile(MRI_PATH "AXT2_ligaments_uterosacres/D0010525.dcm");
+//    app.m_engine->loadFile(MRI_PATH "AXT2_ligaments_uterosacres/D0010525.dcm");
     //    ImplicitVolume::cube(*app.m_engine);
-    app.m_viewer->prepareDisplay();
+//    app.m_viewer->prepareDisplay();
 
     //    m_sensorViews = new SensorViews(*ui->verticalLayout_sensors, *ui->mdiArea_sensors, *this);
     //    QObject::connect(

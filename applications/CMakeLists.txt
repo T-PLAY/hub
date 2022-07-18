@@ -7,6 +7,7 @@ if (NOT QT_VERSION)
 endif()
 #set(QT_VERSION 5)
 #set(QT_VERSION 6)
+add_definitions(-DUSE_GOT_PR)
 
 cmake_host_system_information(RESULT hostname QUERY HOSTNAME)
 if (${hostname} STREQUAL "brueghel") # work linux
