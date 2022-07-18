@@ -77,18 +77,19 @@ int main(int argc, char* argv[])
     // quad texture
     {
         //! [Creating the quad]
+#ifdef USE_GOT_PR
+        auto quad = Ra::Core::Geometry::makeZNormalQuad({ 1_ra, 1_ra }, {}, true);
+//        quad.addAttrib("in_texCoords", tex_coords);
+//                quad.addAttrib(Ra::Engine::Data::Mesh::getAttribName(Ra::Engine::Data::Mesh::VERTEX_TEXCOORD),
+//                tex_coords);
+#else
         auto quad = Ra::Core::Geometry::makeZNormalQuad({ 1_ra, 1_ra });
         Ra::Core::Vector3Array tex_coords;
         tex_coords.push_back({ 0_ra, 0_ra, 0_ra });
         tex_coords.push_back({ 1_ra, 0_ra, 0_ra });
         tex_coords.push_back({ 0_ra, 1_ra, 0_ra });
         tex_coords.push_back({ 1_ra, 1_ra, 0_ra });
-#ifdef USE_GOT_PR
         quad.addAttrib(Ra::Core::Geometry::getAttribName(Ra::Core::Geometry::VERTEX_TEXCOORD), tex_coords);
-#else
-//        quad.addAttrib("in_texCoords", tex_coords);
-                quad.addAttrib(Ra::Engine::Data::Mesh::getAttribName(Ra::Engine::Data::Mesh::VERTEX_TEXCOORD),
-                tex_coords);
 #endif
 
         //! [Creating the quad]

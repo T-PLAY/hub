@@ -21,8 +21,8 @@ find_package( Radium REQUIRED Core Engine Gui PluginBase IO)
 # Application specific
 
 
-find_package(Qt6 COMPONENTS Core Widgets OpenGL REQUIRED)
-set( Qt5_LIBRARIES Qt6::Core Qt6::Widgets Qt6::OpenGL )
+find_package(Qt${QT_VERSION} COMPONENTS Core Widgets OpenGL REQUIRED)
+set( Qt_LIBRARIES Qt${QT_VERSION}::Core Qt${QT_VERSION}::Widgets Qt${QT_VERSION}::OpenGL )
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
@@ -53,7 +53,11 @@ set(app_uis
         Gui/ui/VectorEditor.ui
    )
 
-qt6_wrap_ui(app_uis_moc ${app_uis})
+if(${QT_VERSION} EQUAL 5)
+	qt5_wrap_ui(app_uis_moc ${app_uis})
+elseif(${QT_VERSION} EQUAL 6)
+	qt6_wrap_ui(app_uis_moc ${app_uis})
+endif()
 
 set(app_resources
         Resources/ApplicationIcons.qrc
@@ -79,7 +83,7 @@ target_link_libraries (${PROJECT_NAME} PUBLIC
     Radium::Engine
     Radium::Gui
     Radium::IO
-    ${Qt5_LIBRARIES}
+	${Qt_LIBRARIES}
     DicomLoader
     libGuiManager
 )

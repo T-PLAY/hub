@@ -29,6 +29,9 @@ int main(int argc, char* argv[])
 
     //! [Creating a quad geometry with texture coordinates]
     //    auto quad = Ra::Core::Geometry::makeZNormalQuad( { 1_ra, 1_ra }, {}, true );
+#ifdef USE_GOT_PR
+    auto quad = Ra::Core::Geometry::makeZNormalQuad({ 1_ra, 1_ra }, {}, true);
+#else
     auto quad = Ra::Core::Geometry::makeZNormalQuad({ 1_ra, 1_ra }, {});
     Ra::Core::Vector3Array tex_coords;
     tex_coords.push_back({ 0_ra, 0_ra, 0_ra });
@@ -39,6 +42,7 @@ int main(int argc, char* argv[])
         Ra::Engine::Data::Mesh::getAttribName(Ra::Engine::Data::Mesh::VERTEX_TEXCOORD),
         tex_coords);
     //! [Creating a quad geometry with texture coordinates]
+#endif
 
     unsigned int imageWidth, imageHeight, nImages, bytePerVoxel;
     float pixelSpacingWidth, pixelSpacingHeight, sliceThickness;
