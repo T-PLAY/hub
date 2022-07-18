@@ -33,5 +33,7 @@ elseif(UNIX)
 endif()
 
 
-target_link_libraries(${PROJECT_NAME} glm src libApp ${UNIX_REQUIRED_LIBS} ${WIN32_REQUIRED_LIBS})
+target_link_libraries(${PROJECT_NAME}
+    glm src libApp
+    ${UNIX_REQUIRED_LIBS} ${WIN32_REQUIRED_LIBS})
 

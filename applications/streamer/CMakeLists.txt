@@ -2,9 +2,9 @@ cmake_minimum_required (VERSION 3.8)
 
 add_subdirectory(simpleStreamer)
 
-if (UNIX)
-	add_subdirectory(posStreamer)
-endif()
+#if (UNIX)
+add_subdirectory(posStreamer)
+#endif()
 
 
 if (BUILD_LIDAR_EXAMPLE)
