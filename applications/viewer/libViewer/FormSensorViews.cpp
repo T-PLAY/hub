@@ -263,6 +263,8 @@ void FormSensorViews::delSensor(std::string sensorName)
     m_sensorModel.setStringList(stringList);
     delete sensorView;
 
+    emit streamingStopped(sensorName);
+
     //    assert( mSensorViews.find( sensorName ) !=
     //            mSensorViews.end() ); // todo: fix one more time error
     //    FormSensorView* sensorView = mSensorViews.at( sensorName );

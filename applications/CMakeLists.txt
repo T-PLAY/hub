@@ -16,6 +16,7 @@ elseif (${hostname} STREQUAL "Brueghel") # work window
     set(MRI_PATH "C:/Users/gbouyjou/Downloads/MRI/")
 
 elseif (${hostname} STREQUAL "gigabyte")
+    add_definitions(-DUSE_GOT_CONTRIB)
     set(MRI_PATH "/home/gauthier/tmpDicomViewer/MRI/")
 elseif (${hostname} STREQUAL "msi")
     set(MRI_PATH "/home/gauthier/Downloads/MRI/")

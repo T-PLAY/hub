@@ -25,7 +25,7 @@ if (BUILD_RADIUM_EXAMPLE)
 
 #        add_subdirectory(radiumViewer5) #minimal BaseApplication
         add_subdirectory(radiumViewer6)
-        add_subdirectory(radiumViewer7) #radium-apps sandbox
+#        add_subdirectory(radiumViewer7) #radium-apps sandbox
 
 endif()
 

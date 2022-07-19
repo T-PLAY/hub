@@ -12,8 +12,11 @@
 #include <stdio.h>
 //#include<conio.h>
 
-//#include <ncurses.h>
+#ifdef WIN32
 #include <WinUser.h>
+#else
+//#include <ncurses.h>
+#endif
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -284,14 +287,13 @@ int main(int argc, char* argv[])
                 case 'H': // page up
                     shiftHome();
                     break;
-                }
-            case 'F': // page down
-                shiftEnd();
+                case 'F': // page down
+                    shiftEnd();
+                    break;
+                    //                assert(-90 < pitch && pitch < 90);
+                } // switch getchar() 2
                 break;
-                //                assert(-90 < pitch && pitch < 90);
-                break;
-            }
-
+            } // switch (getchar()) 1
         } else if (c == '.') {
             system("stty cooked");
             exit(0);
