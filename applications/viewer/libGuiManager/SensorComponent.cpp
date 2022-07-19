@@ -1,6 +1,9 @@
+#include "SensorComponent.h"
 
+// SensorComponent::SensorComponent()
+//{
 
-#include <SceneComponent.hpp>
+//}
 
 #include <Core/Asset/FileData.hpp>
 #include <Core/Containers/MakeShared.hpp>
@@ -20,14 +23,6 @@
 #include <Engine/Rendering/RenderObjectManager.hpp>
 #include <Engine/Scene/GeometryComponent.hpp>
 
-#ifdef IO_USE_ASSIMP
-#    include <IO/AssimpLoader/AssimpFileLoader.hpp>
-#endif
-
-#include <random>
-
-const bool ENABLE_GRID      = true;
-
 using namespace Ra;
 using namespace Ra::Core;
 using namespace Ra::Core::Utils;
@@ -37,50 +32,10 @@ using namespace Ra::Engine::Rendering;
 using namespace Ra::Engine::Data;
 using namespace Ra::Engine::Scene;
 
-/**
- * This file contains a minimal radium/qt application which shows the geometrical primitives
- * supported by Radium
- */
-
-SceneComponent::SceneComponent( Ra::Engine::Scene::Entity* entity ) :
-    Ra::Engine::Scene::Component( "Scene component", entity ) {}
-
-
-/// This function is called when the component is properly
-/// setup, i.e. it has an entity.
-void SceneComponent::initialize() {
-//    auto blinnPhongMaterial              = make_shared<BlinnPhongMaterial>( "Shaded Material" );
-//    blinnPhongMaterial->m_perVertexColor = true;
-//    blinnPhongMaterial->m_ks             = Color::White();
-//    blinnPhongMaterial->m_ns             = 100_ra;
-
-    auto plainMaterial              = make_shared<PlainMaterial>( "Plain Material" );
+void SensorComponent::initialize()
+{
+    auto plainMaterial = make_shared<PlainMaterial>("Plain Material");
     plainMaterial->m_perVertexColor = true;
-
-//    auto lambertianMaterial              = make_shared<LambertianMaterial>( "Lambertian Material" );
-//    lambertianMaterial->m_perVertexColor = true;
-
-    //// setup ////
-    Scalar cellSize   = 100_ra;
-    int nCellX        = 10;
-
-    //// GRID ////
-    if ( ENABLE_GRID ) {
-
-        auto gridPrimitive = DrawPrimitives::Grid( Vector3::Zero(),
-                                                   Vector3::UnitX(),
-                                                   Vector3::UnitZ(),
-                                                   Color::Grey( 0.6f ),
-                                                   cellSize,
-                                                   nCellX );
-
-        assert(m_roGrid == nullptr);
-        m_roGrid = RenderObject::createRenderObject(
-            "grid", this, RenderObjectType::Geometry, gridPrimitive, {} );
-        m_roGrid->setMaterial( Ra::Core::make_shared<PlainMaterial>( "Grid material" ) );
-        m_roGrid->setPickable( false );
-        addRenderObject( m_roGrid );
-    }
 
     // origin gizmo
     {
@@ -114,7 +69,7 @@ void SceneComponent::initialize() {
         // origin axis
         assert(m_roAxes[1] == nullptr);
         for (uint i = 0; i < 3; ++i) {
-            m_roAxes[i] = RenderObject::createRenderObject("originAxis" + std::to_string(i),
+            m_roAxes[i] = RenderObject::createRenderObject("Dof6 axis" + std::to_string(i),
                 this,
                 RenderObjectType::Geometry,
                 m_meshAxis[i]);
@@ -126,6 +81,4 @@ void SceneComponent::initialize() {
             addRenderObject(m_roAxes[i]);
         }
     }
-
 }
-

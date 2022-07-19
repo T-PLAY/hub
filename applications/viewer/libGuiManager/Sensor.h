@@ -6,9 +6,15 @@
 #include <QThread>
 #include <stream.h>
 
+#include <Gui/Viewer/Viewer.hpp>
+
 #include <QMdiArea>
 #include <WidgetStreamView.h>
 #include <QStandardItem>
+
+#include <Dof6Component.hpp>
+#include <ScanComponent.hpp>
+#include <SensorComponent.h>
 
 class Sensor;
 
@@ -72,7 +78,7 @@ public:
     //    Sensor(IOStreamT&& iostream, QObject* parent = nullptr);
 
     //    Sensor(InputStream&& inputStream, QObject* parent = nullptr);
-    Sensor(std::unique_ptr<InputStream> inputStream, QMdiArea& mdiArea, QObject* parent = nullptr);
+    Sensor(std::unique_ptr<InputStream> inputStream, QMdiArea& mdiArea, Ra::Engine::RadiumEngine * engine, Ra::Gui::Viewer * viewer, Ra::Engine::Scene::System * sys, QObject* parent = nullptr);
     ~Sensor();
 
     //    Sensor(IOStream&& iostream, QObject* parent = nullptr);
@@ -85,6 +91,10 @@ protected:
 
 public:
     std::unique_ptr<InputStream> m_inputStream;
+
+    Ra::Engine::RadiumEngine * m_engine = nullptr;
+    Ra::Gui::Viewer * m_viewer = nullptr;
+    Ra::Engine::Scene::System * m_sys = nullptr;
 
 private:
     //    InputStream m_inputStream;
@@ -99,8 +109,15 @@ private:
     SensorCounterFpsThread m_counterFpsThread;
     int m_counterFrame = 0;
 
+    // Create and initialize entity and component
+    Ra::Engine::Scene::Entity* m_entity = nullptr;
+//    Ra::Engine::Scene::Component * m_component = nullptr;
+//    Dof6Component * m_dof6Component = nullptr;
+    SensorComponent * m_component = nullptr;
+
 public:
     const QList<QStandardItem *> &getItems() const;
+    Ra::Engine::Scene::Component * getComponent();
 };
 
 // Sensor::Sensor(IOStreamT&& iostream, QObject* parent)
