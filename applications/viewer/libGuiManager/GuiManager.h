@@ -119,6 +119,8 @@ private:
     FormImageManipulator m_imageManipulator;
     Form3DToolBox * m_3DToolBox = nullptr;
 
+    QTableView * m_sensorsView = nullptr;
+
     bool m_initialized = false;
 
 };

@@ -3,6 +3,8 @@
 #include <Engine/Scene/EntityManager.hpp>
 #include <SceneComponent.hpp>
 
+#include <QList>
+
 SceneManager::SceneManager(QObject* parent)
     : QObject { parent }
 {
@@ -24,18 +26,37 @@ void SceneManager::init()
     m_initialized = true;
 
     m_viewer->prepareDisplay();
+
+    m_sensorModel.setColumnCount(5);
+    QStringList header;
+    header << "sensor name" << "format" << "dimension" << "size" << "frequency";
+    m_sensorModel.setHorizontalHeaderLabels(header);
+//    QList<QStandardItem*> items;
+//    items.append(QStandardItem("hello"));
+//    items << "ouou";
+//    m_sensorModel.setItem(0, 0, new QStandardItem("root"));
+
+
+//    m_sensorModel.appendRow(&items);
+//    m_sensorModel.app
+
+//    m_sensorModel.se
+//    m_sensorModel.row
 }
 
 void SceneManager::delSensor(const std::string& sensorName)
 {
     auto it = m_sensors.begin();
+    int i = 0;
     while (it != m_sensors.end()) {
         auto& sensor = *it;
         if (sensor.m_inputStream->getSensorName() == sensorName) {
             std::cout << "[SceneManager] delSensor( " << sensorName << " )" << std::endl;
             it = m_sensors.erase(it);
+            m_sensorModel.removeRow(i);
             continue;
         }
         ++it;
+        ++i;
     }
 }

@@ -42,7 +42,6 @@ static std::string to_string(const std::any& any)
         const int* val = std::any_cast<int>(&any);
         return std::to_string(*val);
 
-
     } else {
         auto name = any.type().name();
         auto raw_name = any.type().name();
@@ -144,6 +143,17 @@ public:
         return os;
     }
 
+    static std::string dims2string(const std::vector<int>& dims)
+    {
+        std::string str = "";
+        for (int i = 0; i < dims.size(); ++i) {
+            str += std::to_string(dims[i]);
+            if (i != dims.size() - 1) {
+                str += " x ";
+            }
+        }
+        return str;
+    }
 
     static constexpr int format2nByte[static_cast<int>(Format::COUNT)] = {
         0, // NONE
@@ -194,16 +204,16 @@ public:
 
     class Acquisition {
     public:
-//        Acquisition(long long backendTimestamp = 0, long long backendTimeOfArrival = 0, unsigned char* data = nullptr);
+        //        Acquisition(long long backendTimestamp = 0, long long backendTimeOfArrival = 0, unsigned char* data = nullptr);
         Acquisition(long long backendTimestamp, long long backendTimeOfArrival, const unsigned char* const data, size_t size);
         ~Acquisition();
 
         Acquisition(const Acquisition& acq) = delete;
-//        Acquisition(const Acquisition& acq);
-//        Acquisition(Acquisition&& acq) = default;
+        //        Acquisition(const Acquisition& acq);
+        //        Acquisition(Acquisition&& acq) = default;
         Acquisition(Acquisition&& acq);
 
-        Acquisition & operator=(const Acquisition & acq) = delete;
+        Acquisition& operator=(const Acquisition& acq) = delete;
         Acquisition& operator=(Acquisition&& acq) = delete;
         Acquisition clone() const;
 
@@ -211,10 +221,11 @@ public:
         const long long mBackendTimeOfArrival; // microseconds
         const unsigned char* const mData;
         const size_t mSize;
-//        bool mOwnData = false;
+        //        bool mOwnData = false;
 
     private:
         bool mIsMoved = false;
+
     public:
         friend std::ostream& operator<<(std::ostream& os, const Acquisition& acq);
     };
@@ -270,11 +281,11 @@ public:
     Format getFormat() const;
     size_t getAcquisitionSize() const;
 
-    IOStream &getIOStream() const;
+    IOStream& getIOStream() const;
 
     friend std::ostream& operator<<(std::ostream& os, const Stream& stream)
     {
-//        os << stream.mSensorName << stream.mFormat << stream.mDims << stream.mAcquisitionSize;
+        //        os << stream.mSensorName << stream.mFormat << stream.mDims << stream.mAcquisitionSize;
         os << stream.mSensorName;
         return os;
     }
@@ -292,19 +303,19 @@ class OutputStream;
 
 class InputStream : public Stream {
 public:
-    InputStream(const std::string & sensorName, const std::string& syncSensorName = "");
+    InputStream(const std::string& sensorName, const std::string& syncSensorName = "");
     template <class IOStreamT>
     InputStream(IOStreamT&& ioStream);
     template <class IOStreamT>
     InputStream(IOStreamT& ioStream) = delete;
-//    InputStream(RamIO & ramIO);
+    //    InputStream(RamIO & ramIO);
 
     ~InputStream();
 
     Acquisition getAcquisition() const;
 
-//    Acquisition& operator>>(Acquisition& acquisition) const;
-//    void operator>>(const OutputStream& outputStream) const;
+    //    Acquisition& operator>>(Acquisition& acquisition) const;
+    //    void operator>>(const OutputStream& outputStream) const;
 
     std::vector<Acquisition> getAllAcquisition();
     const MetaData& getMetaData() const;
@@ -314,7 +325,6 @@ public:
         os << "metadata:" << to_string(inputStream.mMetaData);
         return os;
     }
-
 
 private:
     MetaData mMetaData;
@@ -330,9 +340,9 @@ InputStream::InputStream(IOStreamT&& ioStream)
     mIOStream.read(mSensorName);
     mIOStream.read(mFormat);
     mIOStream.read(mDims);
-//    std::cout << "[InputStream] before read metaData" << std::endl;
+    //    std::cout << "[InputStream] before read metaData" << std::endl;
     mIOStream.read(mMetaData);
-//    std::cout << "[InputStream] after read metaData" << std::endl;
+    //    std::cout << "[InputStream] after read metaData" << std::endl;
 
     mAcquisitionSize = computeAcquisitionSize(mFormat, mDims);
 }

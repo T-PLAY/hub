@@ -15,10 +15,10 @@ SensorThread::~SensorThread()
     std::cout << "[SensorThread] ~SensorThread(" << m_sensor.m_inputStream->getSensorName() << ")" << std::endl;
 
     //    assert(! isRunning());
-//    if (this->isRunning()) {
-//        this->requestInterruption();
-//        this->wait();
-//    }
+    //    if (this->isRunning()) {
+    //        this->requestInterruption();
+    //        this->wait();
+    //    }
 }
 
 void SensorThread::run()
@@ -34,8 +34,8 @@ void SensorThread::run()
             //            Stream::Acquisition acq;
             //            *mInputStream >> acq;
             const auto& acq = inputStream->getAcquisition();
+            //            std::cout << "[SensorThread] receive acq : " << acq << std::endl;
 
-            std::cout << "[SensorThread] receive acq : " << acq << std::endl;
             //            mAcqs.push(std::move(acq));
             //            mAcqs.push({});
             //            *mInputStream >> mAcqs.back();
@@ -43,6 +43,8 @@ void SensorThread::run()
 
             assert(m_sensor.m_widgetStreamView != nullptr);
             m_sensor.m_widgetStreamView->setData((unsigned char*)acq.mData, inputStream->getAcquisitionSize(), inputStream->getDims(), inputStream->getFormat());
+
+            ++m_sensor.m_counterFrame;
 
             //            mAcqs.emplace()
             //            std::cout << "[SensorThread] acqs back : " << mAcqs.front() <<
@@ -63,6 +65,53 @@ void SensorThread::run()
     std::cout << "[SensorThread] run() end" << std::endl;
 }
 
+///////////////////////////////////////////////////////////////////////////////////
+
+SensorCounterFpsThread::SensorCounterFpsThread(Sensor& sensor, QObject* parent)
+    : QThread(parent)
+    , m_sensor(sensor)
+{
+}
+
+SensorCounterFpsThread::~SensorCounterFpsThread()
+{
+    if (this->isRunning()) {
+        this->requestInterruption();
+        this->wait();
+    }
+}
+
+void SensorCounterFpsThread::run()
+{
+
+    //    double fps = 0.0;
+    //    m_labelFps.setText("0 Hz");
+
+    while (!this->isInterruptionRequested()) {
+
+        int i = 0;
+        std::chrono::time_point<std::chrono::high_resolution_clock> start = std::chrono::high_resolution_clock::now();
+        while (!this->isInterruptionRequested() && i < 10) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            ++i;
+        }
+        std::chrono::time_point<std::chrono::high_resolution_clock> end = std::chrono::high_resolution_clock::now();
+        double duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+
+        char buff[32];
+        double fps = 1000.0 * m_sensor.m_counterFrame / duration;
+        sprintf(buff, "%.2f Hz", fps);
+//        m_labelFps.setText((std::string(buff) + " Hz").c_str());
+        m_sensor.m_itemFps->setText(QString(buff));
+//        m_counterFrame = 0;
+        m_sensor.m_counterFrame = 0;
+
+        //        std::cout << "[SensorCounterFpsThread:" << m_sensorName << "] update" << std::endl;
+        //        double fps = m_counterFrame * 10.0;
+    }
+    //    assert(false);
+}
+
 /////////////////////////////////////////////////////////////////////
 
 // Sensor::Sensor(IOStream&& iostream, QObject* parent)
@@ -80,10 +129,11 @@ void SensorThread::run()
 
 Sensor::Sensor(std::unique_ptr<InputStream> inputStream, QMdiArea& mdiArea, QObject* parent)
     : QObject(parent)
+    , m_inputStream(std::move(inputStream))
     , m_mdiArea(mdiArea)
     //    , m_inputStream(std::move(inputStream))
-    , m_inputStream(std::move(inputStream))
     , m_thread(*this, parent)
+    , m_counterFpsThread(*this, parent)
 {
 
     // mdiArea window
@@ -121,7 +171,15 @@ Sensor::Sensor(std::unique_ptr<InputStream> inputStream, QMdiArea& mdiArea, QObj
         //        }
     }
 
+    m_items.append(new QStandardItem(m_inputStream->getSensorName().c_str()));
+    m_items.append(new QStandardItem(Stream::format2string[(int)m_inputStream->getFormat()]));
+    m_items.append(new QStandardItem(Stream::dims2string(m_inputStream->getDims()).c_str()));
+    m_items.append(new QStandardItem(std::to_string(m_inputStream->getAcquisitionSize()).c_str()));
+    m_itemFps = new QStandardItem("0");
+    m_items.append(m_itemFps);
+
     //    m_thread.run();
+    m_counterFpsThread.start();
     m_thread.start();
 }
 
@@ -133,6 +191,11 @@ Sensor::~Sensor()
         m_thread.requestInterruption();
         m_thread.wait();
     }
+    if (m_counterFpsThread.isRunning()) {
+        m_counterFpsThread.requestInterruption();
+        m_counterFpsThread.wait();
+    }
+
     assert(m_widgetStreamView != nullptr);
     //    m_mdiArea.removeSubWindow(m_widgetStreamView->parentWidget());
     m_mdiArea.removeSubWindow(m_subWindow);
@@ -140,4 +203,11 @@ Sensor::~Sensor()
     m_widgetStreamView = nullptr;
     delete m_subWindow;
     m_subWindow = nullptr;
+}
+
+///////////////////////////////////////////////////////
+
+const QList<QStandardItem*>& Sensor::getItems() const
+{
+    return m_items;
 }

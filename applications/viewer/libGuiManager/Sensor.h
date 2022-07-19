@@ -8,6 +8,7 @@
 
 #include <QMdiArea>
 #include <WidgetStreamView.h>
+#include <QStandardItem>
 
 class Sensor;
 
@@ -39,6 +40,29 @@ private:
     Sensor& m_sensor;
 };
 
+///////////////////////////////////////////////////////////////////////////////////
+
+class SensorCounterFpsThread : public QThread {
+    Q_OBJECT
+public:
+    SensorCounterFpsThread(Sensor & sensor, QObject* parent = nullptr);
+    ~SensorCounterFpsThread();
+    // constructor
+signals:
+
+public:
+    // overriding the QThread's run() method
+    void run();
+
+//    size_t m_counterFrame = 0;
+
+private:
+    //    std::string m_sensorName;
+    //    double m_fps = 10.0;
+    Sensor& m_sensor;
+//    QLabel& m_labelFps;
+};
+
 ////////////////////////////////////////////////////////////////////////
 
 class Sensor : public QObject {
@@ -57,17 +81,26 @@ signals:
 
 protected:
     friend class SensorThread;
+    friend class SensorCounterFpsThread;
 
 public:
     std::unique_ptr<InputStream> m_inputStream;
+
 private:
     //    InputStream m_inputStream;
     QMdiArea& m_mdiArea;
 
     WidgetStreamView* m_widgetStreamView = nullptr;
     QMdiSubWindow* m_subWindow = nullptr;
+    QList<QStandardItem*> m_items;
+    QStandardItem * m_itemFps = nullptr;
 
     SensorThread m_thread;
+    SensorCounterFpsThread m_counterFpsThread;
+    int m_counterFrame = 0;
+
+public:
+    const QList<QStandardItem *> &getItems() const;
 };
 
 // Sensor::Sensor(IOStreamT&& iostream, QObject* parent)
