@@ -165,13 +165,13 @@ void Server::run()
                                 {
                                     acqs.pop_back();
                                     //                                    assert(acq.mBackendTimestamp - bestMatchAcq->mBackendTimestamp >= 0);
-//                                    if (acq.mBackendTimestamp - bestMatchAcq->mBackendTimestamp >= 0) {
-////                                        while (acqs.empty()) { };
-//                                        bestMatchAcq.release();
-//                                        bestMatchAcq = std::make_unique<Stream::Acquisition>(acqs.back().clone());
-//                                        acqs.pop_back();
-//                                    }
-//                                    assert (acq.mBackendTimestamp - bestMatchAcq->mBackendTimestamp < 0);
+                                    //                                    if (acq.mBackendTimestamp - bestMatchAcq->mBackendTimestamp >= 0) {
+                                    ////                                        while (acqs.empty()) { };
+                                    //                                        bestMatchAcq.release();
+                                    //                                        bestMatchAcq = std::make_unique<Stream::Acquisition>(acqs.back().clone());
+                                    //                                        acqs.pop_back();
+                                    //                                    }
+                                    //                                    assert (acq.mBackendTimestamp - bestMatchAcq->mBackendTimestamp < 0);
                                     auto minDist = std::abs(acq.mBackendTimestamp - bestMatchAcq->mBackendTimestamp);
 
                                     bool foundBestMatch = false;
@@ -320,20 +320,24 @@ void Server::run()
 
                 Streamer* streamer = mStreamers.at(sensorName);
 
-                const auto& inputStream = streamer->mInputStream;
-                if (syncSensorName == "") {
+                try {
+                    const auto& inputStream = streamer->mInputStream;
+                    if (syncSensorName == "") {
 
-                    // here
-                    streamer->mOutputStreams.emplace_back(sensorName, inputStream.getFormat(), inputStream.getDims(), ClientSocket(std::move(sock)), inputStream.getMetaData());
+                        // here
+                        streamer->mOutputStreams.emplace_back(sensorName, inputStream.getFormat(), inputStream.getDims(), ClientSocket(std::move(sock)), inputStream.getMetaData());
 
-                } else {
-                    Streamer* syncMaster = mStreamers.at(syncSensorName);
+                    } else {
+                        Streamer* syncMaster = mStreamers.at(syncSensorName);
 
-                    // here
-                    syncMaster->mSensor2syncViewers[sensorName].emplace_back(sensorName, inputStream.getFormat(), inputStream.getDims(), ClientSocket(std::move(sock)), inputStream.getMetaData());
+                        // here
+                        syncMaster->mSensor2syncViewers[sensorName].emplace_back(sensorName, inputStream.getFormat(), inputStream.getDims(), ClientSocket(std::move(sock)), inputStream.getMetaData());
 
-                    assert(streamer->mSyncMaster == nullptr || streamer->mSyncMaster == syncMaster);
-                    streamer->mSyncMaster = syncMaster;
+                        assert(streamer->mSyncMaster == nullptr || streamer->mSyncMaster == syncMaster);
+                        streamer->mSyncMaster = syncMaster;
+                    }
+                } catch (std::exception& e) {
+                    std::cout << getServerHeader(iThread) << "[stream viewer] failed to initialize viewer : " << e.what() << std::endl;
                 }
 
                 std::cout << getServerHeader(iThread) << "[stream viewer] end" << std::endl;

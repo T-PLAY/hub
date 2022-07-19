@@ -16,6 +16,8 @@
 #include <QStackedWidget>
 #include <Form3DToolBox.h>
 
+#include <SceneManager.h>
+
 
 class GuiManager : public QObject
 {
@@ -28,7 +30,7 @@ public:
     ~GuiManager();
 
     void init();
-    void incIter();
+//    void incIter();
 
 signals:
 
@@ -105,17 +107,16 @@ private:
     QAction * m_actionAddSources = nullptr;
 
     //    SensorViews * m_sensorViews = nullptr;
-    MinimalComponent* m_comp = nullptr;
+//    MinimalComponent* m_comp = nullptr;
+    SceneManager m_sceneManager;
+
     FormWidgetLoader* m_formWidgetLoader = nullptr;
-
-    FormInputStreamViews* m_formInputStreamViews = nullptr;
-
+//    FormInputStreamViews* m_formInputStreamViews = nullptr;
     FormSensorViews* m_formSensorViews = nullptr;
 
 //    MainWindowStreamView * m_streamView = nullptr;
 //    FormImageManipulator * m_imageManipulator = nullptr;
     FormImageManipulator m_imageManipulator;
-
     Form3DToolBox * m_3DToolBox = nullptr;
 
     bool m_initialized = false;

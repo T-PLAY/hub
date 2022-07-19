@@ -324,6 +324,7 @@ private:
 template <class IOStreamT>
 InputStream::InputStream(IOStreamT&& ioStream)
     : Stream("", Format::NONE, {}, *std::move(new IOStreamT(std::move(ioStream))))
+//    : Stream("", Format::NONE, {}, std::move(ioStream))
 {
 
     mIOStream.read(mSensorName);
