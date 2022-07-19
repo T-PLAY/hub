@@ -1,6 +1,7 @@
 #include "Sensor.h"
 
 //#include <QM
+#include <Engine/Scene/EntityManager.hpp>
 #include <QMdiSubWindow>
 #include <WidgetStreamView.h>
 
@@ -41,8 +42,16 @@ void SensorThread::run()
             //            *mInputStream >> mAcqs.back();
             //            mAcqs.push(acq.clone());
 
-            assert(m_sensor.m_widgetStreamView != nullptr);
-            m_sensor.m_widgetStreamView->setData((unsigned char*)acq.mData, inputStream->getAcquisitionSize(), inputStream->getDims(), inputStream->getFormat());
+            // update 2D view
+            {
+                assert(m_sensor.m_widgetStreamView != nullptr);
+                m_sensor.m_widgetStreamView->setData((unsigned char*)acq.mData, inputStream->getAcquisitionSize(), inputStream->getDims(), inputStream->getFormat());
+            }
+
+            // update 3D component
+            {
+                m_sensor.m_component->update(acq);
+            }
 
             ++m_sensor.m_counterFrame;
 
@@ -101,9 +110,9 @@ void SensorCounterFpsThread::run()
         char buff[32];
         double fps = 1000.0 * m_sensor.m_counterFrame / duration;
         sprintf(buff, "%.2f Hz", fps);
-//        m_labelFps.setText((std::string(buff) + " Hz").c_str());
+        //        m_labelFps.setText((std::string(buff) + " Hz").c_str());
         m_sensor.m_itemFps->setText(QString(buff));
-//        m_counterFrame = 0;
+        //        m_counterFrame = 0;
         m_sensor.m_counterFrame = 0;
 
         //        std::cout << "[SensorCounterFpsThread:" << m_sensorName << "] update" << std::endl;
@@ -127,9 +136,12 @@ void SensorCounterFpsThread::run()
 
 //}
 
-Sensor::Sensor(std::unique_ptr<InputStream> inputStream, QMdiArea& mdiArea, QObject* parent)
+Sensor::Sensor(std::unique_ptr<InputStream> inputStream, QMdiArea& mdiArea, Ra::Engine::RadiumEngine* engine, Ra::Gui::Viewer* viewer, Ra::Engine::Scene::System* sys, QObject* parent)
     : QObject(parent)
     , m_inputStream(std::move(inputStream))
+    , m_engine(engine)
+    , m_viewer(viewer)
+    , m_sys(sys)
     , m_mdiArea(mdiArea)
     //    , m_inputStream(std::move(inputStream))
     , m_thread(*this, parent)
@@ -171,6 +183,31 @@ Sensor::Sensor(std::unique_ptr<InputStream> inputStream, QMdiArea& mdiArea, QObj
         //        }
     }
 
+    // create 3D scene object
+    {
+        assert(m_component == nullptr);
+        m_entity = m_engine->getEntityManager()->createEntity(m_inputStream->getSensorName() + " entity");
+        switch (m_inputStream->getFormat()) {
+        case Stream::Format::DOF6:
+            //            assert(m_dof6Component == nullptr);
+            //            m_dof6Component = new Dof6Component(m_entity);
+            m_component = new Dof6Component(m_entity);
+            break;
+
+        case Stream::Format::Y8:
+            m_component = new ScanComponent(m_entity);
+            break;
+
+        default:
+            assert(false);
+        }
+        //    Ra::Engine::Scene::Component* c = new Dof6Component(e);
+        m_sys->addComponent(m_entity, m_component);
+        m_component->initialize();
+        //        m_viewer->glInitialized();
+        m_viewer->prepareDisplay();
+    }
+
     m_items.append(new QStandardItem(m_inputStream->getSensorName().c_str()));
     m_items.append(new QStandardItem(Stream::format2string[(int)m_inputStream->getFormat()]));
     m_items.append(new QStandardItem(Stream::dims2string(m_inputStream->getDims()).c_str()));
@@ -196,6 +233,14 @@ Sensor::~Sensor()
         m_counterFpsThread.wait();
     }
 
+    // 3D
+    m_engine->getEntityManager()->removeEntity(m_entity);
+    //    delete m_component;
+    m_component = nullptr;
+    //    delete m_entity;
+    m_entity = nullptr;
+
+    // 2D
     assert(m_widgetStreamView != nullptr);
     //    m_mdiArea.removeSubWindow(m_widgetStreamView->parentWidget());
     m_mdiArea.removeSubWindow(m_subWindow);
@@ -210,4 +255,19 @@ Sensor::~Sensor()
 const QList<QStandardItem*>& Sensor::getItems() const
 {
     return m_items;
+}
+
+Ra::Engine::Scene::Component* Sensor::getComponent()
+{
+    assert(m_component != nullptr);
+    return m_component;
+    //    switch (m_inputStream->getFormat()) {
+    //    case Stream::Format::DOF6:
+    //        assert(m_dof6Component != nullptr);
+    //        return m_dof6Component;
+    //        break;
+
+    //    default:
+    //        assert(false);
+    //    }
 }

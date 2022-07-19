@@ -13,13 +13,14 @@ SceneManager::SceneManager(QObject* parent)
 void SceneManager::init()
 {
     assert(m_engine != nullptr);
-    assert(m_sys != nullptr);
     assert(m_viewer != nullptr);
+    assert(m_sys != nullptr);
     assert(m_mdiArea != nullptr);
 
     // Create and initialize entity and component
     Ra::Engine::Scene::Entity* e = m_engine->getEntityManager()->createEntity("Scene entity");
     SceneComponent* c = new SceneComponent(e);
+//    Dof6Component* c = new Dof6Component(e);
     m_sys->addComponent(e, c);
     c->initialize();
 
@@ -29,7 +30,7 @@ void SceneManager::init()
 
     m_sensorModel.setColumnCount(5);
     QStringList header;
-    header << "sensor name" << "format" << "dimension" << "size" << "frequency";
+    header << "Sensor name" << "Format" << "Dimension" << "Size" << "Frequency";
     m_sensorModel.setHorizontalHeaderLabels(header);
 //    QList<QStandardItem*> items;
 //    items.append(QStandardItem("hello"));

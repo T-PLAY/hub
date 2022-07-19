@@ -1,0 +1,163 @@
+
+
+#include <ScanComponent.hpp>
+
+#include <Core/Asset/FileData.hpp>
+#include <Core/Containers/MakeShared.hpp>
+#include <Core/Geometry/MeshPrimitives.hpp>
+#include <Core/Geometry/TopologicalMesh.hpp>
+#include <Core/Resources/Resources.hpp>
+#include <Core/Tasks/Task.hpp>
+#include <Core/Tasks/TaskQueue.hpp>
+#include <Core/Utils/Timer.hpp>
+
+#include <Engine/Data/BlinnPhongMaterial.hpp>
+#include <Engine/Data/LambertianMaterial.hpp>
+#include <Engine/Data/Mesh.hpp>
+#include <Engine/Data/PlainMaterial.hpp>
+#include <Engine/FrameInfo.hpp>
+#include <Engine/Rendering/RenderObject.hpp>
+#include <Engine/Rendering/RenderObjectManager.hpp>
+#include <Engine/Scene/GeometryComponent.hpp>
+
+#include <Engine/Data/TextureManager.hpp>
+#include <ScanMaterial/ScanMaterial.hpp>
+//#include <Engine/Scene/EntityManager.hpp>
+
+#ifdef IO_USE_ASSIMP
+#include <IO/AssimpLoader/AssimpFileLoader.hpp>
+#endif
+
+#include <random>
+
+const bool ENABLE_GRID = true;
+
+using namespace Ra;
+using namespace Ra::Core;
+using namespace Ra::Core::Utils;
+using namespace Ra::Core::Geometry;
+using namespace Ra::Engine;
+using namespace Ra::Engine::Rendering;
+using namespace Ra::Engine::Data;
+using namespace Ra::Engine::Scene;
+
+/**
+ * This file contains a minimal radium/qt application which shows the geometrical primitives
+ * supported by Radium
+ */
+
+ScanComponent::ScanComponent(Ra::Engine::Scene::Entity* entity, const InputStream& inputStream, Ra::Engine::RadiumEngine& engine, Ra::Gui::Viewer& viewer)
+    : //    Ra::Engine::Scene::Component( "Dof6 component", entity ) {}
+    SensorComponent("Scan component", entity)
+    , m_engine(engine)
+    , m_viewer(viewer)
+    , m_inputStream(inputStream)
+{
+}
+
+void ScanComponent::initialize()
+{
+    //    auto blinnPhongMaterial              = make_shared<BlinnPhongMaterial>( "Shaded Material" );
+    //    blinnPhongMaterial->m_perVertexColor = true;
+    //    blinnPhongMaterial->m_ks = Color::White();
+    //    blinnPhongMaterial->m_ns = 100_ra;
+
+    auto lambertianMaterial = make_shared<LambertianMaterial>("Lambertian Material");
+    lambertianMaterial->m_perVertexColor = true;
+
+    //// setup ////
+
+    // origin ref cube
+    {
+        assert(m_ro == nullptr);
+        std::shared_ptr<Mesh> cube1(new Mesh("Cube"));
+        const Scalar cubeSide = 50.0;
+        auto box = Core::Geometry::makeSharpBox(Vector3 { 1_ra, 1_ra, 1_ra } * cubeSide / 2.0, Color::Grey());
+        cube1->loadGeometry(std::move(box));
+
+        m_ro = RenderObject::createRenderObject(
+            "refCube", this, RenderObjectType::Geometry, cube1, {});
+        m_ro->setMaterial(lambertianMaterial);
+        addRenderObject(m_ro);
+    }
+
+    // scan plane
+    {
+#ifdef USE_GOT_PR
+        auto quadTriangle = Ra::Core::Geometry::makeZNormalQuad({ 1_ra, 1_ra }, {}, true);
+#else
+        auto quadTriangle = Ra::Core::Geometry::makeZNormalQuad({ 1_ra, 1_ra }, {});
+        Ra::Core::Vector3Array tex_coords;
+        tex_coords.push_back({ 0_ra, 0_ra, 0_ra });
+        tex_coords.push_back({ 1_ra, 0_ra, 0_ra });
+        tex_coords.push_back({ 0_ra, 1_ra, 0_ra });
+        tex_coords.push_back({ 1_ra, 1_ra, 0_ra });
+        quadTriangle.addAttrib(
+            Ra::Engine::Data::Mesh::getAttribName(Ra::Engine::Data::Mesh::VERTEX_TEXCOORD),
+            tex_coords);
+#endif
+
+        //! [Creating a texture for the slice]
+        //        unsigned char data[192 * 512];
+        //        unsigned char* data = new unsigned char[192 * 512];
+        assert(m_inputStream.getDims().size() == 2);
+        const int width = m_inputStream.getDims().at(0);
+        const int height = m_inputStream.getDims().at(1);
+        const int sizeData = m_inputStream.getAcquisitionSize();
+        assert(sizeData == width * height);
+        int iProbe = 0;
+
+        m_data = new unsigned char[sizeData];
+        // fill with some function
+        for (int i = 0; i < 192; ++i) {
+            for (int j = 0; j < 512; j++) {
+                if (std::abs(i - 20 - iProbe * 10) < 3 || std::abs(j - 20 - iProbe * 10) < 3) {
+                    //                    data[( i * 512 + j )] = 0;
+                    m_data[(i * 512 + j)] = 0;
+                } else {
+                    //                    data[( i * 512 + j )] = ( j / 2 ) % 256;
+                    m_data[(i * 512 + j)] = (j / 2) % 256;
+                }
+            }
+        }
+        m_textureName = std::string("myTexture") + std::to_string(iProbe);
+        auto& textureParameters =
+            //            m_engine.getTextureManager()->addTexture( probe.m_textureName.c_str(), 512, 192, data );
+            //            m_engine.getTextureManager()->addTexture(probe.m_textureName.c_str(), 512, 192, probe.m_data);
+            m_engine.getTextureManager()->addTexture(m_textureName.c_str(), width, height, m_data);
+        textureParameters.format = gl::GLenum::GL_RED;
+        textureParameters.internalFormat = gl::GLenum::GL_R8;
+        assert(m_textureName == textureParameters.name);
+        //! [Creating a texture for the slice]
+
+        std::shared_ptr<Engine::Data::Mesh> meshQuad(new Engine::Data::Mesh(std::string("Scan plane") + std::to_string(iProbe)));
+        meshQuad->loadGeometry(std::move(quadTriangle));
+
+        m_ro = RenderObject::createRenderObject(
+            "echoPlane", this, RenderObjectType::Geometry, meshQuad);
+
+        //            auto mat                   = make_shared<PlainMaterial>( (std::string("Plain Material") + std::to_string(iProbe)).c_str() );
+        auto mat = make_shared<ScanMaterial>("Scan Material");
+        //            auto mat                   = make_shared<BlinnPhongMaterial>( (std::string("Plain Material") + std::to_string(iProbe)).c_str() );
+
+        mat->m_perVertexColor = true;
+        mat->addTexture(ScanMaterial::TextureSemantic::TEX_COLOR, textureParameters);
+
+        //            mat->addTexture(PlainMaterial::TextureSemantic::TEX_COLOR, textureParameters);
+        //            mat->addTexture(BlinnPhongMaterial::TextureSemantic::TEX_DIFFUSE, textureParameters);
+        m_ro->setMaterial(mat);
+
+
+        //        auto TLocal = Transform::Identity();
+        //        TLocal.translate(Vector3(0_ra, 0_ra, -iProbe * 5));
+        //        TLocal.scale(10.0);
+        //        probe.m_ro->setLocalTransform(TLocal);
+        //        probe.m_ro->getRenderTechnique()->setConfiguration( shaderConfig );
+
+        addRenderObject(m_ro);
+    }
+}
+
+void ScanComponent::update(const Stream::Acquisition& acq)
+{
+}

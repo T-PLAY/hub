@@ -4,6 +4,7 @@
 #include <QObject>
 #include <Engine/RadiumEngine.hpp>
 #include <Gui/Viewer/Viewer.hpp>
+#include <Engine/Scene/EntityManager.hpp>
 
 #include <list>
 #include <Sensor.h>
@@ -11,6 +12,7 @@
 //#include <QAbstractTableModel>
 //#include <QTableView>
 #include <QStandardItemModel>
+#include <Engine/Scene/Component.hpp>
 
 class SceneManager : public QObject
 {
@@ -30,8 +32,8 @@ signals:
 
 public:
     Ra::Engine::RadiumEngine * m_engine = nullptr;
-    Ra::Engine::Scene::System * m_sys = nullptr;
     Ra::Gui::Viewer * m_viewer = nullptr;
+    Ra::Engine::Scene::System * m_sys = nullptr;
 
     QMdiArea * m_mdiArea = nullptr;
 
@@ -53,9 +55,8 @@ void SceneManager::addSensor(IOStreamT &&iostream)
 //    m_sensors.push_back(std::make_unique<InputStream>(std::move(iostream)));
 //    QList<QStandardItem*> items;
 
-    m_sensors.emplace_back(std::make_unique<InputStream>(std::move(iostream)), *m_mdiArea, this);
+    m_sensors.emplace_back(std::make_unique<InputStream>(std::move(iostream)), *m_mdiArea, m_engine, m_viewer, m_sys, this);
 
-//    const auto & inputStream = *m_sensors.back().m_inputStream;
 //    items.append(new QStandardItem(inputStream.getSensorName().c_str()));
 //    items.append(new QStandardItem(Stream::format2string[(int)inputStream.getFormat()]));
 //    items.append(new QStandardItem(Stream::dims2string(inputStream.getDims()).c_str()));
@@ -65,7 +66,9 @@ void SceneManager::addSensor(IOStreamT &&iostream)
     m_sensorModel.appendRow(m_sensors.back().getItems());
 //    m_sensorModel.setItem(0, 0, new QStandardItem("root"));
 
+//    const auto & inputStream = *m_sensors.back().m_inputStream;
 //    m_sensorName2sensor[sensorName] = Sensor(std::make_unique<InputStream>(std::move(iostream)), *m_mdiArea, this);
+
 }
 
 #endif // SCENEMANAGER_H
