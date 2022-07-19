@@ -52,6 +52,8 @@ Dof6Component::Dof6Component(Ra::Engine::Scene::Entity* entity)
 /// setup, i.e. it has an entity.
 void Dof6Component::initialize()
 {
+    SensorComponent::initialize();
+
     //    auto blinnPhongMaterial              = make_shared<BlinnPhongMaterial>( "Shaded Material" );
     //    blinnPhongMaterial->m_perVertexColor = true;
     //    blinnPhongMaterial->m_ks = Color::White();

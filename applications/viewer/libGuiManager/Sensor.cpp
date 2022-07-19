@@ -50,6 +50,7 @@ void SensorThread::run()
 
             // update 3D component
             {
+                assert(m_sensor.m_component != nullptr);
                 m_sensor.m_component->update(acq);
             }
 
@@ -84,10 +85,10 @@ SensorCounterFpsThread::SensorCounterFpsThread(Sensor& sensor, QObject* parent)
 
 SensorCounterFpsThread::~SensorCounterFpsThread()
 {
-    if (this->isRunning()) {
-        this->requestInterruption();
-        this->wait();
-    }
+//    if (this->isRunning()) {
+//        this->requestInterruption();
+//        this->wait();
+//    }
 }
 
 void SensorCounterFpsThread::run()
@@ -195,7 +196,7 @@ Sensor::Sensor(std::unique_ptr<InputStream> inputStream, QMdiArea& mdiArea, Ra::
             break;
 
         case Stream::Format::Y8:
-            m_component = new ScanComponent(m_entity);
+            m_component = new ScanComponent(m_entity, *m_inputStream, *m_engine, *m_viewer);
             break;
 
         default:

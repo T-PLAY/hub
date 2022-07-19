@@ -57,6 +57,8 @@ ScanComponent::ScanComponent(Ra::Engine::Scene::Entity* entity, const InputStrea
 
 void ScanComponent::initialize()
 {
+    SensorComponent::initialize();
+
     //    auto blinnPhongMaterial              = make_shared<BlinnPhongMaterial>( "Shaded Material" );
     //    blinnPhongMaterial->m_perVertexColor = true;
     //    blinnPhongMaterial->m_ks = Color::White();
@@ -67,19 +69,19 @@ void ScanComponent::initialize()
 
     //// setup ////
 
-    // origin ref cube
-    {
-        assert(m_ro == nullptr);
-        std::shared_ptr<Mesh> cube1(new Mesh("Cube"));
-        const Scalar cubeSide = 50.0;
-        auto box = Core::Geometry::makeSharpBox(Vector3 { 1_ra, 1_ra, 1_ra } * cubeSide / 2.0, Color::Grey());
-        cube1->loadGeometry(std::move(box));
+    //    // origin ref cube
+    //    {
+    //        assert(m_ro == nullptr);
+    //        std::shared_ptr<Mesh> cube1(new Mesh("Cube"));
+    //        const Scalar cubeSide = 50.0;
+    //        auto box = Core::Geometry::makeSharpBox(Vector3 { 1_ra, 1_ra, 1_ra } * cubeSide / 2.0, Color::Grey());
+    //        cube1->loadGeometry(std::move(box));
 
-        m_ro = RenderObject::createRenderObject(
-            "refCube", this, RenderObjectType::Geometry, cube1, {});
-        m_ro->setMaterial(lambertianMaterial);
-        addRenderObject(m_ro);
-    }
+    //        m_ro = RenderObject::createRenderObject(
+    //            "refCube", this, RenderObjectType::Geometry, cube1, {});
+    //        m_ro->setMaterial(lambertianMaterial);
+    //        addRenderObject(m_ro);
+    //    }
 
     // scan plane
     {
@@ -109,14 +111,14 @@ void ScanComponent::initialize()
 
         m_data = new unsigned char[sizeData];
         // fill with some function
-        for (int i = 0; i < 192; ++i) {
-            for (int j = 0; j < 512; j++) {
-                if (std::abs(i - 20 - iProbe * 10) < 3 || std::abs(j - 20 - iProbe * 10) < 3) {
+        for (int i = 0; i < width; ++i) {
+            for (int j = 0; j < height; j++) {
+                if (std::abs(i - 40 - iProbe * 10) < 5 || std::abs(j - 40 - iProbe * 10) < 5) {
                     //                    data[( i * 512 + j )] = 0;
-                    m_data[(i * 512 + j)] = 0;
+                    m_data[(i * height + j)] = 0;
                 } else {
                     //                    data[( i * 512 + j )] = ( j / 2 ) % 256;
-                    m_data[(i * 512 + j)] = (j / 2) % 256;
+                    m_data[(i * height + j)] = (j / 2) % 256;
                 }
             }
         }
@@ -124,7 +126,7 @@ void ScanComponent::initialize()
         auto& textureParameters =
             //            m_engine.getTextureManager()->addTexture( probe.m_textureName.c_str(), 512, 192, data );
             //            m_engine.getTextureManager()->addTexture(probe.m_textureName.c_str(), 512, 192, probe.m_data);
-            m_engine.getTextureManager()->addTexture(m_textureName.c_str(), width, height, m_data);
+            m_engine.getTextureManager()->addTexture(m_textureName.c_str(), height, width, m_data);
         textureParameters.format = gl::GLenum::GL_RED;
         textureParameters.internalFormat = gl::GLenum::GL_R8;
         assert(m_textureName == textureParameters.name);
@@ -147,12 +149,11 @@ void ScanComponent::initialize()
         //            mat->addTexture(BlinnPhongMaterial::TextureSemantic::TEX_DIFFUSE, textureParameters);
         m_ro->setMaterial(mat);
 
-
-        //        auto TLocal = Transform::Identity();
-        //        TLocal.translate(Vector3(0_ra, 0_ra, -iProbe * 5));
-        //        TLocal.scale(10.0);
-        //        probe.m_ro->setLocalTransform(TLocal);
-        //        probe.m_ro->getRenderTechnique()->setConfiguration( shaderConfig );
+        auto TLocal = Transform::Identity();
+        TLocal.translate(Vector3(0_ra, 0_ra, -iProbe * 5));
+        TLocal.scale(1000.0);
+        m_ro->setLocalTransform(TLocal);
+        //                m_ro->getRenderTechnique()->setConfiguration( shaderConfig );
 
         addRenderObject(m_ro);
     }
