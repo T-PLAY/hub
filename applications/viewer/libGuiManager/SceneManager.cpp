@@ -4,6 +4,7 @@
 #include <SceneComponent.hpp>
 
 #include <QList>
+#include <ScanMaterial/ScanMaterial.hpp>
 
 SceneManager::SceneManager(QObject* parent)
     : QObject { parent }
@@ -16,6 +17,8 @@ void SceneManager::init()
     assert(m_viewer != nullptr);
     assert(m_sys != nullptr);
     assert(m_mdiArea != nullptr);
+
+    Ra::Engine::Data::ScanMaterial::registerMaterial();
 
     // Create and initialize entity and component
     Ra::Engine::Scene::Entity* e = m_engine->getEntityManager()->createEntity("Scene entity");

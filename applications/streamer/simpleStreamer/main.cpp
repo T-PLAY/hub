@@ -27,9 +27,11 @@ int main(int argc, char* argv[])
 //    return 0;
 
     const size_t imgSize = proceduralStream.getAcquisitionSize();
-    assert(imgSize == 192 * 512);
+    assert(imgSize == width * height);
 
-    unsigned char data[192 * 512];
+//    unsigned char data[192 * 512];
+    auto * data = new unsigned char[imgSize];
+
 
     int dec = 0;
     while (true) {
@@ -37,7 +39,8 @@ int main(int argc, char* argv[])
         const auto start = std::chrono::high_resolution_clock::now();
         // generate new image
         for (size_t i = 0; i < imgSize; ++i) {
-            data[i] = (i / width + dec) % 256;
+//            data[i] = (i / width + dec) % 256;
+            data[i] = (i / height + dec) % 256;
         }
         const auto maxFps = 120;
         const auto end = start + std::chrono::microseconds(1'000'000 / maxFps);
