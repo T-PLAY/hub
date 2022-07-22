@@ -1,15 +1,21 @@
 
-set(PDI_SDK "<UNSET>" CACHE PATH "Path of PDI SDK dir on your system")
-if (PDI_SDK STREQUAL "<UNSET>")
-    message(FATAL_ERROR "You must set PDI_SDK path of PDI_140 (WIN) or piterm-1.0.4 (LINUX) folder in your system see : https://ftp.polhemus1.com/pub/Trackers/Patriot/Software/ or https://ftp.polhemus1.com/pub/Software/Linux/")
-endif()
-
-
-#find_path(PDI_INCLUDE_DIR
-#    NAMES PDI.h
-#    PATHS ${PDI_SDK}/Inc
+#set(PDI_SDK_DIR "")
+#find_path(PDI_SDK_DIR
+#    Inc
+#    PATHS "C:/Polhemus/PDI"
 #    DOC "PDI include path"
+#    #PATH_SUFFIXES Inc
 #    )
+#    message(STATUS "hello ${PDI_SDK_DIR}")
+
+
+set(PDI_SDK "<UNSET>" CACHE PATH "Path of PDI SDK dir on your system")
+if (WIN32 AND EXISTS "C:/Polhemus/PDI/PDI_140")
+    set(PDI_SDK "C:/Polhemus/PDI/PDI_140")
+endif()
+if (PDI_SDK STREQUAL "<UNSET>")
+    message(FATAL_ERROR "You must set PDI_SDK path of PDI_140 (WIN) or piterm-1.0.4 (LINUX) folder in your system see : https://ftp.polhemus1.com/pub/Trackers/Patriot/Software/ https://ftp.polhemus1.com/pub/Software/PDI_4.4.1_Setup-SWD-PS08-08.exe or https://ftp.polhemus1.com/pub/Software/Linux/")
+endif()
 
 if (WIN32)
     file(GLOB PDI_DLL ${PDI_SDK}/Lib/x64/P*.dll)
