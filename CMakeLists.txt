@@ -16,7 +16,7 @@ set(CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/hub-install)
 option(BUILD_EXAMPLES "Build examples" OFF)
 
 if (BUILD_EXAMPLES)
-    option(HAS_QT "Build qt examples" OFF)
+#    option(HAS_QT "Build qt examples" OFF)
     option(BUILD_LIDAR_EXAMPLE "Build Lidar examples (depends of realsense2 lib)" OFF)
     option(BUILD_OPENCV_EXAMPLE "Build OpenCV examples (depends of opencv lib)" OFF)
     option(BUILD_PDI_EXAMPLE "Build PDI examples (depends of polhemus lib)" OFF)

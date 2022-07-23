@@ -9,6 +9,7 @@
 
 #include <SensorComponent.h>
 #include <Gui/Viewer/Viewer.hpp>
+#include <Core/Asset/Image.hpp>
 
 /* This file contains a minimal radium/qt application which shows the
 classic "Spinning Cube" demo. */
@@ -17,7 +18,7 @@ classic "Spinning Cube" demo. */
 //struct ScanComponent : public Ra::Engine::Scene::Component {
 struct ScanComponent : public SensorComponent {
 
-    ScanComponent(Ra::Engine::Scene::Entity* entity, const InputStream & inputStream, Ra::Engine::RadiumEngine & engine, Ra::Gui::Viewer & viewer);
+    ScanComponent(const InputStream & inputStream, Ra::Engine::Scene::Entity* entity, Ra::Engine::RadiumEngine & engine, Ra::Gui::Viewer & viewer);
 
     /// This function is called when the component is properly
     /// setup, i.e. it has an entity.
@@ -34,7 +35,11 @@ private:
     Ra::Gui::Viewer & m_viewer;
 
     unsigned char * m_data = nullptr;
-    const InputStream & m_inputStream;
+//    const InputStream & m_inputStream;
     std::string m_textureName;
+    Ra::Engine::Data::Texture* m_textureScan = nullptr;
+//    int m_width;
+//    int m_height;
+    std::shared_ptr<Ra::Core::Asset::Image> m_image;
 
 };

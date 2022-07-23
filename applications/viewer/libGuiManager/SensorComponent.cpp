@@ -32,6 +32,12 @@ using namespace Ra::Engine::Rendering;
 using namespace Ra::Engine::Data;
 using namespace Ra::Engine::Scene;
 
+SensorComponent::SensorComponent(const InputStream& inputStream, Ra::Engine::Scene::Entity* entity)
+    : Ra::Engine::Scene::Component(inputStream.getSensorName(), entity)
+    , m_inputStream(inputStream)
+{
+}
+
 void SensorComponent::initialize()
 {
     auto plainMaterial = make_shared<PlainMaterial>("Plain Material");
@@ -40,8 +46,8 @@ void SensorComponent::initialize()
     // origin gizmo
     {
         std::vector<std::shared_ptr<Engine::Data::Mesh>> m_meshAxis;
-        constexpr Scalar arrowScale = 10_ra;
-        constexpr Scalar axisWidth = .05_ra;
+        constexpr Scalar arrowScale = 5_ra;
+        constexpr Scalar axisWidth = .1_ra;
         constexpr Scalar arrowFrac = 0_ra;
 
         std::vector<Color> gizmoColors = {

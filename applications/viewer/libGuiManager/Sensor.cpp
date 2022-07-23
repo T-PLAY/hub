@@ -192,11 +192,11 @@ Sensor::Sensor(std::unique_ptr<InputStream> inputStream, QMdiArea& mdiArea, Ra::
         case Stream::Format::DOF6:
             //            assert(m_dof6Component == nullptr);
             //            m_dof6Component = new Dof6Component(m_entity);
-            m_component = new Dof6Component(m_entity);
+            m_component = new Dof6Component(*m_inputStream, m_entity);
             break;
 
         case Stream::Format::Y8:
-            m_component = new ScanComponent(m_entity, *m_inputStream, *m_engine, *m_viewer);
+            m_component = new ScanComponent(*m_inputStream, m_entity, *m_engine, *m_viewer);
             break;
 
         default:

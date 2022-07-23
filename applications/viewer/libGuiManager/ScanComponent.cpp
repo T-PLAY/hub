@@ -46,12 +46,11 @@ using namespace Ra::Engine::Scene;
  * supported by Radium
  */
 
-ScanComponent::ScanComponent(Ra::Engine::Scene::Entity* entity, const InputStream& inputStream, Ra::Engine::RadiumEngine& engine, Ra::Gui::Viewer& viewer)
+ScanComponent::ScanComponent(const InputStream& inputStream, Ra::Engine::Scene::Entity* entity, Ra::Engine::RadiumEngine& engine, Ra::Gui::Viewer& viewer)
     : //    Ra::Engine::Scene::Component( "Dof6 component", entity ) {}
-    SensorComponent("Scan component", entity)
+    SensorComponent(inputStream, entity)
     , m_engine(engine)
     , m_viewer(viewer)
-    , m_inputStream(inputStream)
 {
 }
 
@@ -86,9 +85,9 @@ void ScanComponent::initialize()
     // scan plane
     {
 #ifdef USE_GOT_PR
-        auto quadTriangle = Ra::Core::Geometry::makeZNormalQuad({ 1_ra, 1_ra }, {}, true);
+        auto quadTriangle = Ra::Core::Geometry::makeYNormalQuad({ 1_ra, 1_ra }, {}, true);
 #else
-        auto quadTriangle = Ra::Core::Geometry::makeZNormalQuad({ 1_ra, 1_ra }, {});
+        auto quadTriangle = Ra::Core::Geometry::makeYNormalQuad({ 1_ra, 1_ra }, {});
         Ra::Core::Vector3Array tex_coords;
         tex_coords.push_back({ 0_ra, 0_ra, 0_ra });
         tex_coords.push_back({ 1_ra, 0_ra, 0_ra });
@@ -156,9 +155,31 @@ void ScanComponent::initialize()
         //                m_ro->getRenderTechnique()->setConfiguration( shaderConfig );
 
         addRenderObject(m_ro);
+
+        m_viewer.makeCurrent();
+        m_textureScan = m_engine.getTextureManager()->getOrLoadTexture(textureParameters);
+        m_viewer.doneCurrent();
+
+        Ra::Core::Asset::ImageSpec imgSpec(width, height, 1);
+        m_image = std::make_shared<Ra::Core::Asset::Image>(imgSpec, nullptr);
+
+        m_textureScan->attachImage(m_image);
+
     }
 }
 
 void ScanComponent::update(const Stream::Acquisition& acq)
 {
+    const unsigned char* data = acq.mData;
+
+//    m_viewer.makeCurrent();
+//    auto& params = m_textureScan->getParameters();
+//    //    memcpy(params.texels, data, 192 * 512);
+//    memcpy(params.texels, data, m_inputStream.getAcquisitionSize());
+//    m_textureScan->initializeGL(false);
+//    m_viewer.doneCurrent();
+
+    m_image->update(data, m_inputStream.getAcquisitionSize());
+
+    //        acqs.pop();
 }

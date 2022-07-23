@@ -26,8 +26,6 @@
 
 #include <random>
 
-const bool ENABLE_GRID = true;
-
 using namespace Ra;
 using namespace Ra::Core;
 using namespace Ra::Core::Utils;
@@ -42,9 +40,9 @@ using namespace Ra::Engine::Scene;
  * supported by Radium
  */
 
-Dof6Component::Dof6Component(Ra::Engine::Scene::Entity* entity)
+Dof6Component::Dof6Component(const InputStream& inputStream, Ra::Engine::Scene::Entity* entity)
     : //    Ra::Engine::Scene::Component( "Dof6 component", entity ) {}
-    SensorComponent("Dof6 component", entity)
+    SensorComponent(inputStream, entity)
 {
 }
 
@@ -64,19 +62,19 @@ void Dof6Component::initialize()
 
     //// setup ////
 
-    // origin ref cube
-    {
-        assert(m_ro == nullptr);
-        std::shared_ptr<Mesh> cube1(new Mesh("Cube"));
-        const Scalar cubeSide = 50.0;
-        auto box = Core::Geometry::makeSharpBox(Vector3 { 1_ra, 1_ra, 1_ra } * cubeSide / 2.0, Color::Grey());
-        cube1->loadGeometry(std::move(box));
+    //    // origin ref cube
+    //    {
+    //        assert(m_ro == nullptr);
+    //        std::shared_ptr<Mesh> cube1(new Mesh("Cube"));
+    //        const Scalar cubeSide = 50.0;
+    //        auto box = Core::Geometry::makeSharpBox(Vector3 { 1_ra, 1_ra, 1_ra } * cubeSide / 2.0, Color::Grey());
+    //        cube1->loadGeometry(std::move(box));
 
-        m_ro = RenderObject::createRenderObject(
-            "refCube", this, RenderObjectType::Geometry, cube1, {});
-        m_ro->setMaterial(lambertianMaterial);
-        addRenderObject(m_ro);
-    }
+    //        m_ro = RenderObject::createRenderObject(
+    //            "refCube", this, RenderObjectType::Geometry, cube1, {});
+    //        m_ro->setMaterial(lambertianMaterial);
+    //        addRenderObject(m_ro);
+    //    }
 }
 
 void Dof6Component::update(const Stream::Acquisition& acq)
