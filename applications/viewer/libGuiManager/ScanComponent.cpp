@@ -66,6 +66,9 @@ void ScanComponent::initialize()
     auto lambertianMaterial = make_shared<LambertianMaterial>("Lambertian Material");
     lambertianMaterial->m_perVertexColor = true;
 
+    auto plainMaterial = make_shared<PlainMaterial>("Plain Material");
+    plainMaterial->m_perVertexColor = true;
+
     //// setup ////
 
     //    // origin ref cube
@@ -81,6 +84,18 @@ void ScanComponent::initialize()
     //        m_ro->setMaterial(lambertianMaterial);
     //        addRenderObject(m_ro);
     //    }
+
+    const auto& metadata = m_inputStream.getMetaData();
+    double scanWidth = 100; // mm
+    if (metadata.find("scanWidth") != metadata.end()) {
+        scanWidth = std::any_cast<double>(metadata.at("scanWidth"));
+    }
+
+    double scanDepth = 100; // mm
+    if (metadata.find("scanDepth") != metadata.end()) {
+        scanDepth = std::any_cast<double>(metadata.at("scanDepth"));
+    }
+
 
     // scan plane
     {
@@ -128,6 +143,8 @@ void ScanComponent::initialize()
             m_engine.getTextureManager()->addTexture(m_textureName.c_str(), height, width, m_data);
         textureParameters.format = gl::GLenum::GL_RED;
         textureParameters.internalFormat = gl::GLenum::GL_R8;
+        //        textureParameters.minFilter = gl::GLenum::GL_LINEAR;
+        //        textureParameters.magFilter = gl::GLenum::GL_LINEAR;
         assert(m_textureName == textureParameters.name);
         //! [Creating a texture for the slice]
 
@@ -149,8 +166,9 @@ void ScanComponent::initialize()
         m_ro->setMaterial(mat);
 
         auto TLocal = Transform::Identity();
-        TLocal.translate(Vector3(0_ra, 0_ra, -iProbe * 5));
-        TLocal.scale(1000.0);
+        TLocal.scale(Vector3(scanDepth / 2.0, 1.0, scanWidth / 2.0));
+        TLocal.translate(Vector3(1.0, 0.0, 0.0));
+//        TLocal.scale(1000.0);
         m_ro->setLocalTransform(TLocal);
         //                m_ro->getRenderTechnique()->setConfiguration( shaderConfig );
 
@@ -164,7 +182,24 @@ void ScanComponent::initialize()
         m_image = std::make_shared<Ra::Core::Asset::Image>(imgSpec, nullptr);
 
         m_textureScan->attachImage(m_image);
+    }
 
+    // scan line
+    {
+        m_scanLine = RenderObject::createRenderObject(
+            "scanLine", this, RenderObjectType::Geometry, m_meshAxis[5]); // z axis
+        m_scanLine->setMaterial(plainMaterial);
+
+        const float lineRadius = 0.1 * scanDepth * 10;
+
+        auto TLocal = Transform::Identity();
+        TLocal.scale(Vector3(lineRadius, lineRadius, scanWidth));
+        TLocal.translate(Vector3(0.0, 0.0, -0.5));
+        //        TLocal.translate(Vector3(0_ra, 0_ra, -iProbe * 5));
+//        TLocal.scale(1000.0);
+        m_scanLine->setLocalTransform(TLocal);
+
+        addRenderObject(m_scanLine);
     }
 }
 
@@ -172,12 +207,12 @@ void ScanComponent::update(const Stream::Acquisition& acq)
 {
     const unsigned char* data = acq.mData;
 
-//    m_viewer.makeCurrent();
-//    auto& params = m_textureScan->getParameters();
-//    //    memcpy(params.texels, data, 192 * 512);
-//    memcpy(params.texels, data, m_inputStream.getAcquisitionSize());
-//    m_textureScan->initializeGL(false);
-//    m_viewer.doneCurrent();
+    //    m_viewer.makeCurrent();
+    //    auto& params = m_textureScan->getParameters();
+    //    //    memcpy(params.texels, data, 192 * 512);
+    //    memcpy(params.texels, data, m_inputStream.getAcquisitionSize());
+    //    m_textureScan->initializeGL(false);
+    //    m_viewer.doneCurrent();
 
     m_image->update(data, m_inputStream.getAcquisitionSize());
 

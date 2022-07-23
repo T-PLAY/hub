@@ -7,6 +7,8 @@
 #include <Engine/Scene/SystemDisplay.hpp>
 
 #include <Engine/Rendering/RenderObject.hpp>
+#include <Engine/Data/Mesh.hpp>
+#include <vector>
 
 #include <stream.h>
 
@@ -28,4 +30,5 @@ protected:
     Ra::Engine::Rendering::RenderObject* m_ro = nullptr;
 
     const InputStream & m_inputStream;
+    std::vector<std::shared_ptr<Ra::Engine::Data::Mesh>> m_meshAxis;
 };

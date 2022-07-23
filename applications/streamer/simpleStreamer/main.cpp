@@ -5,6 +5,8 @@
 #include <socket.h>
 #include <stream.h>
 #include <tuple>
+//#include <cmath>
+#include <utility>
 
 #define ULA_STREAMER
 
@@ -18,9 +20,9 @@ int main(int argc, char* argv[])
     constexpr int height = 512;
 
     Stream::MetaData metaData;
-    metaData["depth"] = 3.0;
-    metaData["name"] = "L533";
-    metaData["val"] = 1;
+    metaData["scanDepth"] = 35.0; // mm
+    metaData["scanWidth"] = 50.0; // mm
+    metaData["parent"] = "Keyboard";
 
     OutputStream proceduralStream("proceduralStreamer", Stream::Format::Y8, { width, height }, ClientSocket(), metaData);
 
@@ -38,10 +40,21 @@ int main(int argc, char* argv[])
 
         const auto start = std::chrono::high_resolution_clock::now();
         // generate new image
-        for (size_t i = 0; i < imgSize; ++i) {
-//            data[i] = (i / width + dec) % 256;
-            data[i] = (i / height + dec) % 256;
+//        for (size_t i = 0; i < imgSize; ++i) {
+        for (int i = 0; i < width; ++i) {
+            for (int j = 0; j <height; ++j) {
+                if (std::abs(i - 20) < 5)
+                    data[i * height + j] = 0;
+                else
+                    data[i * height + j] = (i + dec) % 256;
+            }
         }
+//            data[i] = (i / width + dec) % 256;
+//            if (std::abs(i / (float)height - 20.0) < 5)
+//                data[i] = 255;
+    //            else
+//		    data[i] = (i / height + dec) % 256;
+//        }
         const auto maxFps = 40;
         const auto end = start + std::chrono::microseconds(1'000'000 / maxFps);
 

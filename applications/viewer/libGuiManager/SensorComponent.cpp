@@ -45,9 +45,9 @@ void SensorComponent::initialize()
 
     // origin gizmo
     {
-        std::vector<std::shared_ptr<Engine::Data::Mesh>> m_meshAxis;
-        constexpr Scalar arrowScale = 5_ra;
-        constexpr Scalar axisWidth = .1_ra;
+//        std::vector<std::shared_ptr<Engine::Data::Mesh>> m_meshAxis;
+        constexpr Scalar arrowScale = 1_ra;
+        constexpr Scalar axisWidth = 0.1_ra;
         constexpr Scalar arrowFrac = 0_ra;
 
         std::vector<Color> gizmoColors = {
@@ -82,7 +82,7 @@ void SensorComponent::initialize()
 
             m_roAxes[i]->setMaterial(plainMaterial);
             Ra::Core::Transform TLocal = Transform::Identity();
-            TLocal.scale(10.0);
+            TLocal.scale(50.0);
             m_roAxes[i]->setLocalTransform(TLocal);
             addRenderObject(m_roAxes[i]);
         }
