@@ -8,11 +8,11 @@ add_subdirectory(simpleViewer)
 
 if (BUILD_RADIUM_EXAMPLE)
 
-#    add_definitions(-DONLY_POSE)
+    #    add_definitions(-DONLY_POSE)
     add_subdirectory(radiumViewer)
-#    add_subdirectory(radiumViewer2)
-#    add_subdirectory(radiumViewer3)
-#    add_subdirectory(radiumViewer4)
+    #    add_subdirectory(radiumViewer2)
+    #    add_subdirectory(radiumViewer3)
+    #    add_subdirectory(radiumViewer4)
 
 
     if (BUILD_DCMTK)
@@ -21,11 +21,11 @@ if (BUILD_RADIUM_EXAMPLE)
         add_subdirectory(TexturedQuad)
     endif()
 
-        add_subdirectory(libGuiManager)
+    add_subdirectory(libGuiManager)
 
-#        add_subdirectory(radiumViewer5) #minimal BaseApplication
-        add_subdirectory(radiumViewer6)
-#        add_subdirectory(radiumViewer7) #radium-apps sandbox
+    #        add_subdirectory(radiumViewer5) #minimal BaseApplication
+    add_subdirectory(radiumViewer6)
+    #        add_subdirectory(radiumViewer7) #radium-apps sandbox
 
 endif()
 

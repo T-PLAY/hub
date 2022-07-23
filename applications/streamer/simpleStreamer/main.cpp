@@ -42,7 +42,7 @@ int main(int argc, char* argv[])
 //            data[i] = (i / width + dec) % 256;
             data[i] = (i / height + dec) % 256;
         }
-        const auto maxFps = 120;
+        const auto maxFps = 40;
         const auto end = start + std::chrono::microseconds(1'000'000 / maxFps);
 
         const auto& timestampStart = std::chrono::duration_cast<std::chrono::microseconds>(start.time_since_epoch()).count();
