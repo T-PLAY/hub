@@ -50,7 +50,7 @@ int main(int argc, char* argv[])
     float pixelSpacingWidth, pixelSpacingHeight, sliceThickness;
 
 //    const auto f = "C:\\Users\\gbouyjou\\Downloads\\MRI";
-    const auto f = "C:/Users/gbouyjou/Downloads/MRI";
+//    const auto f = "C:/Users/gbouyjou/Downloads/MRI";
 //    assert(std::filesystem::exists(f));
 //    std::cout << "MRI_PATH = '" << MRI_PATH << "'" <<  std::endl;
 

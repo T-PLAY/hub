@@ -41,5 +41,6 @@ private:
 //    int m_width;
 //    int m_height;
     std::shared_ptr<Ra::Core::Asset::Image> m_image;
+    Ra::Engine::Rendering::RenderObject * m_scanLine = nullptr;
 
 };

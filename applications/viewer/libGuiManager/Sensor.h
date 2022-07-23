@@ -78,10 +78,13 @@ public:
     //    Sensor(IOStreamT&& iostream, QObject* parent = nullptr);
 
     //    Sensor(InputStream&& inputStream, QObject* parent = nullptr);
-    Sensor(std::unique_ptr<InputStream> inputStream, QMdiArea& mdiArea, Ra::Engine::RadiumEngine * engine, Ra::Gui::Viewer * viewer, Ra::Engine::Scene::System * sys, QObject* parent = nullptr);
+    Sensor(std::unique_ptr<InputStream> inputStream, QMdiArea& mdiArea, Ra::Engine::RadiumEngine * engine, Ra::Gui::Viewer * viewer, Ra::Engine::Scene::System * sys, Ra::Engine::Scene::Entity * parentEntity, QObject* parent = nullptr);
     ~Sensor();
 
     //    Sensor(IOStream&& iostream, QObject* parent = nullptr);
+    void updateTransform(const Ra::Engine::Scene::Entity * entity);
+
+//    Ra::Engine::Scene::Entity* m_entity = nullptr;
 
 signals:
 
@@ -111,6 +114,7 @@ private:
 
     // Create and initialize entity and component
     Ra::Engine::Scene::Entity* m_entity = nullptr;
+    Ra::Engine::Scene::Entity* m_parentEntity = nullptr;
 //    Ra::Engine::Scene::Component * m_component = nullptr;
 //    Dof6Component * m_dof6Component = nullptr;
     SensorComponent * m_component = nullptr;
@@ -118,6 +122,7 @@ private:
 public:
     const QList<QStandardItem *> &getItems() const;
     Ra::Engine::Scene::Component * getComponent();
+    Ra::Engine::Scene::Entity *getEntity() const;
 };
 
 // Sensor::Sensor(IOStreamT&& iostream, QObject* parent)

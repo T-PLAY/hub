@@ -5,6 +5,9 @@
 #include <QMdiSubWindow>
 #include <WidgetStreamView.h>
 
+#include <Core/Utils/Observable.hpp>
+#include <Engine/Scene/Entity.hpp>
+
 SensorThread::SensorThread(Sensor& sensor, QObject* parent)
     : QThread { parent }
     , m_sensor(sensor)
@@ -85,10 +88,10 @@ SensorCounterFpsThread::SensorCounterFpsThread(Sensor& sensor, QObject* parent)
 
 SensorCounterFpsThread::~SensorCounterFpsThread()
 {
-//    if (this->isRunning()) {
-//        this->requestInterruption();
-//        this->wait();
-//    }
+    //    if (this->isRunning()) {
+    //        this->requestInterruption();
+    //        this->wait();
+    //    }
 }
 
 void SensorCounterFpsThread::run()
@@ -137,7 +140,13 @@ void SensorCounterFpsThread::run()
 
 //}
 
-Sensor::Sensor(std::unique_ptr<InputStream> inputStream, QMdiArea& mdiArea, Ra::Engine::RadiumEngine* engine, Ra::Gui::Viewer* viewer, Ra::Engine::Scene::System* sys, QObject* parent)
+// void update(Ra::Engine::Scene::Entity *entity)
+//{
+////    m_entity.setTransform(entity.);
+//    m_entity->setTransform(entity->getTransform());
+//}
+
+Sensor::Sensor(std::unique_ptr<InputStream> inputStream, QMdiArea& mdiArea, Ra::Engine::RadiumEngine* engine, Ra::Gui::Viewer* viewer, Ra::Engine::Scene::System* sys, Ra::Engine::Scene::Entity* parentEntity, QObject* parent)
     : QObject(parent)
     , m_inputStream(std::move(inputStream))
     , m_engine(engine)
@@ -147,6 +156,7 @@ Sensor::Sensor(std::unique_ptr<InputStream> inputStream, QMdiArea& mdiArea, Ra::
     //    , m_inputStream(std::move(inputStream))
     , m_thread(*this, parent)
     , m_counterFpsThread(*this, parent)
+    , m_parentEntity(parentEntity)
 {
 
     // mdiArea window
@@ -188,6 +198,22 @@ Sensor::Sensor(std::unique_ptr<InputStream> inputStream, QMdiArea& mdiArea, Ra::
     {
         assert(m_component == nullptr);
         m_entity = m_engine->getEntityManager()->createEntity(m_inputStream->getSensorName() + " entity");
+
+        //        auto & transformObservers = m_entity->transformationObservers();
+        if (m_parentEntity != nullptr) {
+            auto& transformObservers = m_parentEntity->transformationObservers();
+
+            //            Ra::Core::Utils::Observable<Ra::Engine::Scene::Entity*> observer = &Sensor::update;
+            //            std::function<void(const Ra::Engine::Scene::Entity * entity)> observer = &Sensor::updateTransform;
+            //            std::function<void(const Ra::Engine::Scene::Entity * entity)> observer = this->updateTransform;
+            std::function<void(const Ra::Engine::Scene::Entity* entity)> observer = [this](const Ra::Engine::Scene::Entity* entity) {
+                assert(m_entity != nullptr);
+                std::cout << "[Sensor] update transform from observable" << std::endl;
+                m_entity->setTransform(entity->getTransform());
+            };
+            transformObservers.attach(observer);
+        }
+
         switch (m_inputStream->getFormat()) {
         case Stream::Format::DOF6:
             //            assert(m_dof6Component == nullptr);
@@ -249,6 +275,18 @@ Sensor::~Sensor()
     m_widgetStreamView = nullptr;
     delete m_subWindow;
     m_subWindow = nullptr;
+}
+
+void Sensor::updateTransform(const Ra::Engine::Scene::Entity* entity)
+{
+    //    m_entity.setTransform(entity.);
+    m_entity->setTransform(entity->getTransform());
+}
+
+Ra::Engine::Scene::Entity* Sensor::getEntity() const
+{
+    assert(m_entity != nullptr);
+    return m_entity;
 }
 
 ///////////////////////////////////////////////////////

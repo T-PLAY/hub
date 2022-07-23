@@ -85,7 +85,7 @@ void SceneComponent::initialize() {
     // origin gizmo
     {
         std::vector<std::shared_ptr<Engine::Data::Mesh>> m_meshAxis;
-        constexpr Scalar arrowScale = 10_ra;
+        constexpr Scalar arrowScale = 1_ra;
         constexpr Scalar axisWidth = .05_ra;
         constexpr Scalar arrowFrac = 0_ra;
 
@@ -121,9 +121,9 @@ void SceneComponent::initialize() {
 
             m_roAxes[i]->setMaterial(plainMaterial);
             Ra::Core::Transform TLocal = Transform::Identity();
-            TLocal.scale(10.0);
+            TLocal.scale(100.0);
             m_roAxes[i]->setLocalTransform(TLocal);
-            addRenderObject(m_roAxes[i]);
+//            addRenderObject(m_roAxes[i]);
         }
     }
 
