@@ -42,6 +42,34 @@ static std::string to_string(const std::any& any)
         const int* val = std::any_cast<int>(&any);
         return std::to_string(*val);
 
+    } else if (hashCode == typeid(std::vector<float>).hash_code()) {
+        const std::vector<float>* val = std::any_cast<std::vector<float>>(&any);
+        std::string str = "";
+        for (int i = 0; i < 3; ++i) {
+            for (int j = 0; j < 3; ++j) {
+                char buff[32];
+                sprintf(buff, "%.1f", val->at(i * 3 + j));
+                str += buff;
+                //            str += std::to_string(val->at(i));
+                if (j != 2)
+                    str += " ";
+            }
+            if (i != 2)
+                str += "  ";
+        }
+        return str;
+
+    } else if (hashCode == typeid(IOStream::Mat3).hash_code()) {
+        const IOStream::Mat3* val = std::any_cast<IOStream::Mat3>(&any);
+        std::string str = "";
+        for (int i = 0; i < 3; ++i) {
+            for (int j = 0; j < 3; ++j) {
+                str += std::to_string(val->data[i * 3 + j]) + " ";
+            }
+            str += "\n";
+        }
+        return str;
+
     } else {
         auto name = any.type().name();
         auto raw_name = any.type().name();

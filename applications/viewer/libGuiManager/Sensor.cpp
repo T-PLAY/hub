@@ -51,6 +51,14 @@ void SensorThread::run()
                 m_sensor.m_widgetStreamView->setData((unsigned char*)acq.mData, inputStream->getAcquisitionSize(), inputStream->getDims(), inputStream->getFormat());
             }
 
+            // update 2D manipulator view
+            {
+                //                assert(m_sensor.m_widgetStreamViewManipulator != nullptr);
+                if (m_sensor.m_widgetStreamViewManipulator != nullptr) {
+                    m_sensor.m_widgetStreamViewManipulator->setData((unsigned char*)acq.mData, inputStream->getAcquisitionSize(), inputStream->getDims(), inputStream->getFormat());
+                }
+            }
+
             // update 3D component
             {
                 assert(m_sensor.m_component != nullptr);
@@ -146,17 +154,19 @@ void SensorCounterFpsThread::run()
 //    m_entity->setTransform(entity->getTransform());
 //}
 
-Sensor::Sensor(std::unique_ptr<InputStream> inputStream, QMdiArea& mdiArea, Ra::Engine::RadiumEngine* engine, Ra::Gui::Viewer* viewer, Ra::Engine::Scene::System* sys, Ra::Engine::Scene::Entity* parentEntity, QObject* parent)
+Sensor::Sensor(std::unique_ptr<InputStream> inputStream, QMdiArea& mdiArea, FormImageManipulator& imageManipulator, Ra::Engine::RadiumEngine* engine, Ra::Gui::Viewer* viewer, Ra::Engine::Scene::System* sys, Sensor* parentSensor, QObject* parent)
     : QObject(parent)
     , m_inputStream(std::move(inputStream))
     , m_engine(engine)
     , m_viewer(viewer)
     , m_sys(sys)
     , m_mdiArea(mdiArea)
+    , m_imageManipulator(imageManipulator)
+    //    , m_widgetStreamViewManipulator(m_imageManipulator.getWidgetStreamView())
     //    , m_inputStream(std::move(inputStream))
     , m_thread(*this, parent)
     , m_counterFpsThread(*this, parent)
-    , m_parentEntity(parentEntity)
+//    , m_parentEntity(parentEntity)
 {
 
     // mdiArea window
@@ -194,25 +204,36 @@ Sensor::Sensor(std::unique_ptr<InputStream> inputStream, QMdiArea& mdiArea, Ra::
         //        }
     }
 
+    //     init image manipulator
+    //    {
+    //        if (m_inputStream->getDims().size() == 2) {
+    //            m_widgetStreamViewManipulator = &imageManipulator.getWidgetStreamView();
+    //            m_widgetStreamViewManipulator->init(512, 192, 35.0, 50.0);
+    //        }
+    //    }
+
     // create 3D scene object
     {
         assert(m_component == nullptr);
         m_entity = m_engine->getEntityManager()->createEntity(m_inputStream->getSensorName() + " entity");
 
         //        auto & transformObservers = m_entity->transformationObservers();
-        if (m_parentEntity != nullptr) {
-            auto& transformObservers = m_parentEntity->transformationObservers();
+        setParent(parentSensor);
+        //        if (m_parentEntity != nullptr) {
+        //            m_entity->setTransform(m_parentEntity->getTransform());
 
-            //            Ra::Core::Utils::Observable<Ra::Engine::Scene::Entity*> observer = &Sensor::update;
-            //            std::function<void(const Ra::Engine::Scene::Entity * entity)> observer = &Sensor::updateTransform;
-            //            std::function<void(const Ra::Engine::Scene::Entity * entity)> observer = this->updateTransform;
-            std::function<void(const Ra::Engine::Scene::Entity* entity)> observer = [this](const Ra::Engine::Scene::Entity* entity) {
-                assert(m_entity != nullptr);
-                std::cout << "[Sensor] update transform from observable" << std::endl;
-                m_entity->setTransform(entity->getTransform());
-            };
-            transformObservers.attach(observer);
-        }
+        //            auto& transformObservers = m_parentEntity->transformationObservers();
+
+        //            //            Ra::Core::Utils::Observable<Ra::Engine::Scene::Entity*> observer = &Sensor::update;
+        //            //            std::function<void(const Ra::Engine::Scene::Entity * entity)> observer = &Sensor::updateTransform;
+        //            //            std::function<void(const Ra::Engine::Scene::Entity * entity)> observer = this->updateTransform;
+        //            std::function<void(const Ra::Engine::Scene::Entity* entity)> observer = [this](const Ra::Engine::Scene::Entity* entity) {
+        //                assert(m_entity != nullptr);
+        //                std::cout << "[Sensor] update transform from observable" << std::endl;
+        //                m_entity->setTransform(entity->getTransform());
+        //            };
+        //            transformObservers.attach(observer);
+        //        }
 
         switch (m_inputStream->getFormat()) {
         case Stream::Format::DOF6:
@@ -232,7 +253,18 @@ Sensor::Sensor(std::unique_ptr<InputStream> inputStream, QMdiArea& mdiArea, Ra::
         m_sys->addComponent(m_entity, m_component);
         m_component->initialize();
         //        m_viewer->glInitialized();
-        m_viewer->prepareDisplay();
+        //        m_viewer->prepareDisplay();
+
+        auto renderer = m_viewer->getRenderer();
+        assert(renderer != nullptr);
+        m_viewer->makeCurrent();
+        renderer->buildAllRenderTechniques();
+        auto aabb = Ra::Engine::RadiumEngine::getInstance()->computeSceneAabb();
+        //            if ( aabb.isEmpty() ) { getCameraManipulator()->resetCamera(); }
+        //            else {
+        //                fitCameraToScene( aabb );
+        //            }
+        m_viewer->doneCurrent();
     }
 
     m_items.append(new QStandardItem(m_inputStream->getSensorName().c_str()));
@@ -260,6 +292,15 @@ Sensor::~Sensor()
         m_counterFpsThread.wait();
     }
 
+    // delete observer
+    {
+        if (m_parent != nullptr) {
+            auto* parentEntity = m_parent->m_entity;
+            auto& transformObservers = parentEntity->transformationObservers();
+            transformObservers.detach(m_observerId);
+        }
+    }
+
     // 3D
     m_engine->getEntityManager()->removeEntity(m_entity);
     //    delete m_component;
@@ -275,12 +316,66 @@ Sensor::~Sensor()
     m_widgetStreamView = nullptr;
     delete m_subWindow;
     m_subWindow = nullptr;
+
+    if (m_parent != nullptr) {
+        auto& sons = m_parent->m_sons;
+        sons.remove(this);
+        //        auto * it = sons.find(this);
+        //        assert(it != sons.end());
+        //        sons.erase(it);
+    }
+    for (auto* sensor : m_sons) {
+        sensor->m_parent = nullptr;
+    }
 }
 
 void Sensor::updateTransform(const Ra::Engine::Scene::Entity* entity)
 {
     //    m_entity.setTransform(entity.);
     m_entity->setTransform(entity->getTransform());
+}
+
+void Sensor::detachFromImageManipulator()
+{
+    if (m_widgetStreamViewManipulator != nullptr) {
+        m_widgetStreamViewManipulator->clear();
+        m_widgetStreamViewManipulator = nullptr;
+    }
+}
+
+void Sensor::attachFromImageManipulator()
+{
+    assert(m_widgetStreamViewManipulator == nullptr);
+    if (m_inputStream->getDims().size() == 2) {
+        m_widgetStreamViewManipulator = &m_imageManipulator.getWidgetStreamView();
+        m_widgetStreamViewManipulator->init(512, 192, 35.0, 50.0);
+        //        m_imageManipulator.
+        //        m_imageManipulator.update();
+    }
+}
+
+void Sensor::setParent(Sensor* parent)
+{
+    assert(m_parent == nullptr);
+    m_parent = parent;
+
+    //    assert(m_parentEntity == nullptr);
+    //    m_parentEntity = entity;
+    if (m_parent != nullptr) {
+        auto* parentEntity = m_parent->m_entity;
+        m_entity->setTransform(parentEntity->getTransform());
+
+        auto& transformObservers = parentEntity->transformationObservers();
+
+        m_observer = [this](const Ra::Engine::Scene::Entity* entity) {
+            assert(m_entity != nullptr);
+            std::cout << "[Sensor] update transform from observable" << std::endl;
+            m_entity->setTransform(entity->getTransform());
+        };
+        m_observerId = transformObservers.attach(m_observer);
+
+        m_parent->m_sons.push_back(this);
+    }
 }
 
 Ra::Engine::Scene::Entity* Sensor::getEntity() const

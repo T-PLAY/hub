@@ -190,7 +190,7 @@ void ScanComponent::initialize()
             "scanLine", this, RenderObjectType::Geometry, m_meshAxis[5]); // z axis
         m_scanLine->setMaterial(plainMaterial);
 
-        const float lineRadius = 0.1 * scanDepth * 10;
+        const float lineRadius = 0.02 * scanDepth * 10;
 
         auto TLocal = Transform::Identity();
         TLocal.scale(Vector3(lineRadius, lineRadius, scanWidth));

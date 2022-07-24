@@ -114,6 +114,19 @@ void IOStream::write(const std::any& any) const
         assert(sizeof(int) == 4);
         write(*val);
 
+    } else if (anyType == typeid(std::vector<float>)) {
+        write(Type::VECTOR_FLOAT);
+        auto * val = std::any_cast<std::vector<float>>(&any);
+        assert(val->size() == 9);
+        write(*val);
+
+    } else if (anyType == typeid(Mat3)) {
+        write(Type::MAT3);
+        auto * val = std::any_cast<Mat3>(&any);
+//        assert(val->size() == 9);
+        write(*val);
+
+
     } else {
         auto name = any.type().name();
         auto raw_name = any.type().name();
@@ -184,12 +197,6 @@ void IOStream::read(std::any& any) const
     //    const uint64_t& hashCodeTmp = typeInfoHash64(any.type().raw_name());
     //    if (hashCode == typeid(double).hash_code()) {
     switch (type) {
-    case Type::INT: {
-        assert(sizeof(int) == 4);
-        int val;
-        read(val);
-        any = std::any_cast<int>(val);
-    } break;
 
     case Type::DOUBLE: {
         double val;
@@ -221,6 +228,26 @@ void IOStream::read(std::any& any) const
         any = std::any_cast<const char*>((const char*)str);
 
     } break;
+
+    case Type::INT: {
+        assert(sizeof(int) == 4);
+        int val;
+        read(val);
+        any = std::any_cast<int>(val);
+    } break;
+
+    case Type::VECTOR_FLOAT: {
+        std::vector<float> val;
+        read(val);
+        any = std::any_cast<std::vector<float>>(val);
+    } break;
+
+    case Type::MAT3: {
+        Mat3 val;
+        read(val);
+        any = std::any_cast<Mat3>(val);
+    } break;
+
 
     default:
         auto name = any.type().name();

@@ -4,6 +4,8 @@
 #include <iostream>
 #include <cmath>
 
+#include <constants.h>
+
 WidgetGrid::WidgetGrid(QWidget* parent)
     : QWidget { parent }
 {
@@ -31,9 +33,9 @@ void WidgetGrid::paintEvent(QPaintEvent* event)
 //    painter.setPen(QColor(255, 0, 0, 50));
     painter.setPen(Qt::gray);
 
-    const std::vector<double> stepSizes = { 1.0, 2.0, 5.0, 10.0, 20.0, 50.0 };
+//    const std::vector<double> stepSizes = { 1.0, 2.0, 5.0, 10.0, 20.0, 50.0 };
     double tmp;
-    for (const auto& stepSize : stepSizes) {
+    for (const auto& stepSize : g_stepSizes) {
         tmp = stepSize;
         if (*mCanvasPixelPerUnit * stepSize > 25)
             break;

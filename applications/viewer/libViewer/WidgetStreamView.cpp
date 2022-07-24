@@ -12,6 +12,8 @@
 #include <cassert>
 #include <cmath>
 
+#include <constants.h>
+
 WidgetStreamView::WidgetStreamView(QWidget* parent)
     : QWidget(parent)
 {
@@ -86,6 +88,17 @@ void WidgetStreamView2D::init(int imagePixelWidth, int imagePixelHeight, double 
     setMaximumHeight(mCanvasPixelHeight);
 
     //    onPixelPerUnitChanged();
+}
+
+void WidgetStreamView2D::clear()
+{
+    if (mData != nullptr) {
+        delete [] mData;
+        mData = nullptr;
+    }
+//    mData = nullptr;
+
+    update();
 }
 
 // WidgetStreamView2D::WidgetStreamView2D(int imagePixelWidth, int imagePixelHeight, double imageUnitWidth, double imageUnitHeight, QWidget* parent)
@@ -271,9 +284,9 @@ void WidgetStreamView2D::paintEvent(QPaintEvent* event)
 
     if (mShowGrid) {
         int alpha = 100;
-        const std::vector<double> stepSizes = { 1.0, 2.0, 5.0, 10.0, 20.0, 50.0 };
+//        const std::vector<double> stepSizes = { 1.0, 2.0, 5.0, 10.0, 20.0, 50.0 };
         double tmp;
-        for (const auto& stepSize : stepSizes) {
+        for (const auto& stepSize : g_stepSizes) {
             tmp = stepSize;
             if (mCanvasPixelPerUnit * stepSize > 25)
                 break;

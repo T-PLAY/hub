@@ -13,11 +13,18 @@
 //#define DEBUG_IOSTREAM
 
 class IOStream {
+public:
+    struct Mat3 {
+        float data[9];
+    };
     enum class Type {
         INT = 0,
         DOUBLE,
         STRING,
         CONST_CHAR_PTR,
+        //        FLOAT_ARRAY_9,
+        VECTOR_FLOAT,
+        MAT3,
         COUNT
     };
     static constexpr char const* type2string[static_cast<int>(Type::COUNT)] = {
@@ -42,7 +49,7 @@ public:
     IOStream&& operator=(IOStream&& ioStream) = delete;
 
     virtual ~IOStream() = default;
-//    virtual ~IOStream();
+    //    virtual ~IOStream();
 
     virtual void close() = 0;
 
@@ -147,7 +154,7 @@ void IOStream::write(const std::map<T, U>& map) const
 
     int nbKey = static_cast<int>(map.size());
     write(nbKey);
-#ifdef  DEBUG_IOSTREAM
+#ifdef DEBUG_IOSTREAM
     std::cout << "[IOStream] map : nbEl = " << nbKey << std::endl;
 #endif
 

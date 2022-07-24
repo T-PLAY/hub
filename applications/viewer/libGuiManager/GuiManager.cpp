@@ -29,10 +29,11 @@
 #include <Engine/Rendering/RenderObject.hpp>
 #include <Engine/Rendering/RenderObjectManager.hpp>
 #include <Engine/Scene/Component.hpp>
+#include <QItemSelectionModel>
 
+#include <QHeaderView>
 #include <QPushButton>
 #include <QTableView>
-#include <QHeaderView>
 
 GuiManager::GuiManager(QObject* parent)
     : QObject { parent }
@@ -150,15 +151,21 @@ void GuiManager::init()
     //////////////////////////////////////// RIGHT
     //     dockWidgetContents_right->setMinimumWidth(500);
 
-    //    m_imageManipulator = new FormImageManipulator(this);
 
-//    m_dockRight->setSizePolicy(QSizePolicy(QSizePolicy::Policy::MinimumExpanding, QSizePolicy::Policy::Preferred));
-//    m_dockRight->setMinimumWidth(200);
-    //    m_dockRight->setWidget(&m_imageManipulator);
+    //    m_dockRight->setSizePolicy(QSizePolicy(QSizePolicy::Policy::MinimumExpanding, QSizePolicy::Policy::Preferred));
+        m_dockRight->setMinimumWidth(400);
+//        m_dockRight->setWidget(&m_imageManipulator);
     //    m_dockRight->setWidget();
-    QVBoxLayout* vLayout = new QVBoxLayout(m_dockRight);
-    m_dockRight->setLayout(vLayout);
-//    m_dockRight->setStyleSheet("background-color: red");
+
+    QWidget* rightContainer = new QWidget;
+    m_dockRight->setWidget(rightContainer);
+
+    QVBoxLayout* vLayout = new QVBoxLayout(rightContainer);
+
+    m_imageManipulator = new FormImageManipulator(m_dockRight);
+    vLayout->addWidget(m_imageManipulator);
+//    m_dockRight->setLayout(vLayout);
+    //    m_dockRight->setStyleSheet("background-color: red");
     //    vLayout->setSizeConstraint(QVBoxLayout::SizeConstraint::SetMaximumSize);
     //    QTreeView * treeView = new QTreeView(m_dockRight);
     //    treeView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -229,17 +236,22 @@ void GuiManager::init()
     //    m_sensorsView->setStyleSheet("background-color: green");
     hLayout->addWidget(m_sensorsView);
 
-//    m_sensorsView->horizontalHeader().
-//    m_sensorsView->setColumnWidth(0, 200);
-//    for (int i = 1; i < 5; ++i) {
-//        m_sensorsView->setColumnWidth(i, 10);
-//    }
-//    m_sensorsView->update();
+    QObject::connect(m_sensorsView->selectionModel(),
+        &QItemSelectionModel::selectionChanged,
+        this,
+        &GuiManager::on_sensorsView_selectionChanged);
 
-//    m_sensorsView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    //    m_sensorsView->horizontalHeader().
+    //    m_sensorsView->setColumnWidth(0, 200);
+    //    for (int i = 1; i < 5; ++i) {
+    //        m_sensorsView->setColumnWidth(i, 10);
+    //    }
+    //    m_sensorsView->update();
+
+    //    m_sensorsView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     m_sensorsView->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
-//    m_sensorsView->resizeColumnsToContents();
-//    m_sensorsView->horizontalHeader()->setMinimumSectionSize(50);
+    //    m_sensorsView->resizeColumnsToContents();
+    //    m_sensorsView->horizontalHeader()->setMinimumSectionSize(50);
 
     //////////////////////////////////////// LEFT
     m_formSensorViews = new FormSensorViews(m_dockLeft);
@@ -305,6 +317,7 @@ void GuiManager::init()
     m_sceneManager.m_sys = m_system;
     m_sceneManager.m_viewer = m_viewer;
     m_sceneManager.m_mdiArea = m_mdiArea;
+    m_sceneManager.m_imageManipulator = m_imageManipulator;
     m_sceneManager.init();
 
     m_initialized = true;
@@ -387,10 +400,10 @@ void GuiManager::onServerStreamStarted(const std::string& sensorName,
     //        ClientSocket(sensorName, syncSensorName));
 
     m_sceneManager.addSensor(ClientSocket(sensorName, syncSensorName));
-//    m_sensorsView->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
-//    m_sensorsView->resizeColumnsToContents();
+    //    m_sensorsView->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+    //    m_sensorsView->resizeColumnsToContents();
     //    Sensor sensor(ClientSocket(sensorName, syncSensorName), nullptr);
-//    m_sensorsView->setColumnWidth(0, 200);
+    //    m_sensorsView->setColumnWidth(0, 200);
 }
 
 void GuiManager::onServerStreamStopped(const std::string& sensorName)
@@ -607,4 +620,46 @@ void GuiManager::loadFile(QString path)
 
     //    emit loadComplete();
     //    return true;
+}
+
+// void GuiManager::on_sensorsView_clicked(const QModelIndex& index)
+//{
+////    std::cout << "row clicked " << index.row() << std::endl;
+//}
+
+void GuiManager::on_sensorsView_selectionChanged(const QItemSelection& selected, const QItemSelection& deselected)
+{
+    const auto& indexes = m_sensorsView->selectionModel()->selectedIndexes();
+
+    if (indexes.empty()) {
+        const int row = deselected.indexes().first().row();
+        std::cout << "[GuiManager] empty selection, deselected row " << row  << std::endl;
+
+        m_sceneManager.detachSensorFromImageManipulator(row);
+
+        //        if (m_recordLoader.isLoaded())
+        //            m_recordLoader.unload();
+    } else {
+
+        const auto& current = indexes.first();
+
+        const int row = current.row();
+
+        std::cout << "[GuiManager] row clicked " << row << std::endl;
+
+//        const auto& sensors = m_sceneManager.getSensors();
+
+//        assert(row < sensors.size());
+//        auto & sensor = m_sceneManager.getSensor(row);
+        m_sceneManager.attachSensorFromImageManipulator(row);
+
+        //        const auto & sensor = sensors.at
+
+        //        const std::string& mPath = m_recordFileModel->fileInfo(current).absoluteFilePath().toStdString();
+
+        //        std::cout << "[FormWidgetLoader] on_treeView_record_selectionChanged : " << mPath << std::endl;
+        //        if (m_recordLoader.isLoaded())
+        //            m_recordLoader.unload();
+        //        m_recordLoader.load(mPath);
+    }
 }
