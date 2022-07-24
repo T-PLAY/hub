@@ -120,6 +120,11 @@ void FormImageManipulator::init()
 
 }
 
+//void FormImageManipulator::update()
+//{
+////    update();
+//}
+
 WidgetStreamView2D &FormImageManipulator::getWidgetStreamView()
 {
     return *ui->widgetStreamView_2;

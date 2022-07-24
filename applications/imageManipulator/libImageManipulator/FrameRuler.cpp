@@ -4,6 +4,7 @@
 
 #include <QPainter>
 #include <cmath>
+#include <constants.h>
 
 FrameRuler::FrameRuler(QWidget* parent)
     : QFrame(parent)
@@ -32,9 +33,9 @@ void FrameRuler::paintEvent(QPaintEvent* event)
 //    const int xyZero = (rulerSize - *mCanvasPixelSize) / 2.0;
     const double unitSide = *mCanvasPixelSize / *mCanvasPixelPerUnit;
 
-    const std::vector<double> stepSizes = { 1.0, 2.0, 5.0, 10.0, 20.0, 50.0 };
+//    const std::vector<double> stepSizes = { 1.0, 2.0, 5.0, 10.0, 20.0, 50.0 };
     double tmp;
-    for (const auto& stepSize : stepSizes) {
+    for (const auto& stepSize : g_stepSizes) {
         tmp = stepSize;
         if (*mCanvasPixelPerUnit * stepSize > 25)
             break;

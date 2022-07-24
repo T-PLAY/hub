@@ -47,7 +47,7 @@ void SensorComponent::initialize()
     {
 //        std::vector<std::shared_ptr<Engine::Data::Mesh>> m_meshAxis;
         constexpr Scalar arrowScale = 1_ra;
-        constexpr Scalar axisWidth = 0.1_ra;
+        constexpr Scalar axisWidth = 0.05_ra;
         constexpr Scalar arrowFrac = 0_ra;
 
         std::vector<Color> gizmoColors = {

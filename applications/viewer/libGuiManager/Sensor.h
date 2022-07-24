@@ -16,6 +16,9 @@
 #include <ScanComponent.hpp>
 #include <SensorComponent.h>
 
+#include <FormImageManipulator.h>
+#include <WidgetStreamView.h>
+
 class Sensor;
 
 class SensorThread : public QThread {
@@ -78,13 +81,16 @@ public:
     //    Sensor(IOStreamT&& iostream, QObject* parent = nullptr);
 
     //    Sensor(InputStream&& inputStream, QObject* parent = nullptr);
-    Sensor(std::unique_ptr<InputStream> inputStream, QMdiArea& mdiArea, Ra::Engine::RadiumEngine * engine, Ra::Gui::Viewer * viewer, Ra::Engine::Scene::System * sys, Ra::Engine::Scene::Entity * parentEntity, QObject* parent = nullptr);
+    Sensor(std::unique_ptr<InputStream> inputStream, QMdiArea& mdiArea, FormImageManipulator& imageManipulator, Ra::Engine::RadiumEngine * engine, Ra::Gui::Viewer * viewer, Ra::Engine::Scene::System * sys, Sensor * parentSensor, QObject* parent = nullptr);
     ~Sensor();
 
     //    Sensor(IOStream&& iostream, QObject* parent = nullptr);
     void updateTransform(const Ra::Engine::Scene::Entity * entity);
 
+    void detachFromImageManipulator();
+    void attachFromImageManipulator();
 //    Ra::Engine::Scene::Entity* m_entity = nullptr;
+    void setParent(Sensor * parent);
 
 signals:
 
@@ -102,6 +108,8 @@ public:
 private:
     //    InputStream m_inputStream;
     QMdiArea& m_mdiArea;
+    FormImageManipulator& m_imageManipulator;
+    WidgetStreamView2D * m_widgetStreamViewManipulator = nullptr;
 
     WidgetStreamView* m_widgetStreamView = nullptr;
     QMdiSubWindow* m_subWindow = nullptr;
@@ -114,7 +122,13 @@ private:
 
     // Create and initialize entity and component
     Ra::Engine::Scene::Entity* m_entity = nullptr;
-    Ra::Engine::Scene::Entity* m_parentEntity = nullptr;
+//    Ra::Engine::Scene::Entity* m_parentEntity = nullptr;
+    Sensor * m_parent = nullptr;
+    std::list<Sensor*> m_sons;
+
+    std::function<void(const Ra::Engine::Scene::Entity* entity)> m_observer;
+    int m_observerId = -1;
+
 //    Ra::Engine::Scene::Component * m_component = nullptr;
 //    Dof6Component * m_dof6Component = nullptr;
     SensorComponent * m_component = nullptr;

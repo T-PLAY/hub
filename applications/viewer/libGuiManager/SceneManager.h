@@ -35,11 +35,21 @@ public:
     Ra::Engine::Scene::System* m_sys = nullptr;
 
     QMdiArea* m_mdiArea = nullptr;
+    FormImageManipulator* m_imageManipulator = nullptr;
 
     QStandardItemModel m_sensorModel;
 
+    const std::list<Sensor>& getSensors() const;
+    Sensor& getSensor(int iSensor);
+
+    void attachSensorFromImageManipulator(int iSensor);
+    void detachSensorFromImageManipulator(int iSensor);
+    //    void detachAllSensorsFromImageManipulator();
+
 private:
     std::list<Sensor> m_sensors;
+    //    std::vector<Sensor> m_sensors;
+
     //    std::map<std::string, Sensor> m_sensorName2sensor;
     //    QStringListModel m_sensorModel;
     //    QTableModel m_sensorModel;
@@ -62,25 +72,28 @@ void SceneManager::addSensor(IOStreamT&& iostream)
         parentName = std::any_cast<const char*>(metaData.at("parent"));
     }
 
-    Ra::Engine::Scene::Entity* parentEntity = nullptr;
+//    Ra::Engine::Scene::Entity* parentEntity = nullptr;
+    Sensor * parentSensor = nullptr;
 
+    // if parent exist in scene, link to it
     if (parentName != nullptr) {
         std::cout << "[SceneManager] searching parent in 3D scene = '" << parentName << "'" << std::endl;
-        for (const auto& sensor : m_sensors) {
+        for (auto& sensor : m_sensors) {
             if (sensor.m_inputStream->getSensorName() == parentName) {
-                parentEntity = sensor.getEntity();
+                parentSensor = &sensor;
+//                parentEntity = sensor.getEntity();
                 break;
             }
         }
 
-        if (parentEntity == nullptr) {
-            QMessageBox msgBox;
-            msgBox.setText((std::string("Could not find '") + parentName + "' sensor.\nUnable to attach the sensor '" + sensorName + "' with his parent.").c_str());
-            msgBox.exec();
-        }
+                if (parentSensor == nullptr) {
+                    QMessageBox msgBox;
+                    msgBox.setText((std::string("Could not find '") + parentName + "' sensor.\nUnable to attach the sensor '" + sensorName + "' with his parent.").c_str());
+                    msgBox.exec();
+                }
     }
 
-    m_sensors.emplace_back(std::move(inputStream), *m_mdiArea, m_engine, m_viewer, m_sys, parentEntity, this);
+    m_sensors.emplace_back(std::move(inputStream), *m_mdiArea, *m_imageManipulator, m_engine, m_viewer, m_sys, parentSensor, this);
     //    m_sensors.emplace_back(std::make_unique<InputStream>(std::move(iostream)), *m_mdiArea, m_engine, m_viewer, m_sys, this);
 
     //    items.append(new QStandardItem(inputStream.getSensorName().c_str()));
@@ -89,11 +102,33 @@ void SceneManager::addSensor(IOStreamT&& iostream)
     //    items.append(new QStandardItem(std::to_string(inputStream.getAcquisitionSize()).c_str()));
     //    items.append(new QStandardItem("0"));
     //    m_sensorModel.appendRow(items);
-    m_sensorModel.appendRow(m_sensors.back().getItems());
-    //    m_sensorModel.setItem(0, 0, new QStandardItem("root"));
 
+    auto& newSensor = m_sensors.back();
+    m_sensorModel.appendRow(newSensor.getItems());
+
+    //    m_sensorModel.setItem(0, 0, new QStandardItem("root"));
     //    const auto & inputStream = *m_sensors.back().m_inputStream;
     //    m_sensorName2sensor[sensorName] = Sensor(std::make_unique<InputStream>(std::move(iostream)), *m_mdiArea, this);
+
+    // prevent all father's sons, the father is comming
+    for (auto& sensor : m_sensors) {
+        const auto& inputStream = sensor.m_inputStream;
+        const auto& metaData = inputStream->getMetaData();
+
+        const char* parentName = nullptr;
+        if (metaData.find("parent") != metaData.end()) {
+            parentName = std::any_cast<const char*>(metaData.at("parent"));
+            if (sensorName == parentName) {
+//                sensor.setParentEntity(newSensor.getEntity());
+                sensor.setParent(&newSensor);
+            }
+        }
+
+        //            if (sensor.m_inputStream->getSensorName() == parentName) {
+        //                parentEntity = sensor.getEntity();
+        //                break;
+        //            }
+    }
 }
 
 #endif // SCENEMANAGER_H

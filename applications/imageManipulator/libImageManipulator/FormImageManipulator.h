@@ -20,6 +20,8 @@ public:
     void update(const Stream::Acquisition & acquisition);
     void init();
 
+//    void update();
+
     WidgetStreamView2D & getWidgetStreamView();
 protected:
 //    void paintEvent(QPaintEvent* event) override;

@@ -24,7 +24,7 @@ int main(int argc, char* argv[])
     metaData["scanWidth"] = 50.0; // mm
     metaData["parent"] = "Keyboard";
 
-    OutputStream proceduralStream("proceduralStreamer", Stream::Format::Y8, { width, height }, ClientSocket(), metaData);
+    OutputStream proceduralStream("ProceduralStreamer", Stream::Format::Y8, { width, height }, ClientSocket(), metaData);
 
 //    return 0;
 

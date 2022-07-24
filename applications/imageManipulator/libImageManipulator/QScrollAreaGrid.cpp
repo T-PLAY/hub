@@ -15,11 +15,12 @@ void QScrollAreaGrid::wheelEvent(QWheelEvent* event)
     assert(mCanvasPixelPerUnit != nullptr);
     int ry = event->angleDelta().ry();
 
+    const double speed = 0.1;
 //    std::cout << ry << std::endl;
     if (ry > 0) {
-        *mCanvasPixelPerUnit += 1.0;
+        *mCanvasPixelPerUnit += speed;
     } else if (ry < 0) {
-        *mCanvasPixelPerUnit = std::max(*mCanvasPixelPerUnit - 1.0, 1.0);
+        *mCanvasPixelPerUnit = std::max(*mCanvasPixelPerUnit - speed, 1.0);
     }
 
     double vScroll = verticalScrollBar()->value();

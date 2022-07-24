@@ -6,31 +6,29 @@
 //#include <QObject>
 #include <QApplication>
 
-#include <FormSensorViews.h>
 #include <FormInputStreamViews.h>
+#include <FormSensorViews.h>
 #include <FormWidgetLoader.h>
 #include <MinimalComponent.hpp>
 //#include <Imagema
 
+#include <Form3DToolBox.h>
 #include <FormImageManipulator.h>
 #include <QStackedWidget>
-#include <Form3DToolBox.h>
 
 #include <SceneManager.h>
 
-
-class GuiManager : public QObject
-{
+class GuiManager : public QObject {
     Q_OBJECT
 
 public:
-    explicit GuiManager(QObject *parent = nullptr);
-//    GuiManager();
+    explicit GuiManager(QObject* parent = nullptr);
+    //    GuiManager();
 
     ~GuiManager();
 
     void init();
-//    void incIter();
+    //    void incIter();
 
 signals:
 
@@ -47,7 +45,7 @@ private slots:
     //    void on_newSensor(std::string sensorName);
     //    void on_delSensor(std::string sensorName);
 
-    void onServerStreamStarted(const std::string& sensorName, const std::string & syncSensorName);
+    void onServerStreamStarted(const std::string& sensorName, const std::string& syncSensorName);
     void onServerStreamStopped(const std::string& sensorName);
     void onServerDisconnected();
 
@@ -56,21 +54,20 @@ private slots:
 
     //    void on_newScanAcquisition();
     //    void on_newPoseAcquisition();
-//    void onInitPose();
-//    void onInitScan();
+    //    void onInitPose();
+    //    void onInitScan();
     void onInit(const std::string& sensorName);
     //    void onNewAcquisition()
-//    void onUpdatePose();
-//    void onUpdateScan();
+    //    void onUpdatePose();
+    //    void onUpdateScan();
 
-    void onNewAcquisition(const std::string & sensorName, const std::string & sourceType);
+    void onNewAcquisition(const std::string& sensorName, const std::string& sourceType);
 
     //    void on_toolButton_record_toggled(bool checked);
     //    void on_toolButton_record_clicked();
     //    void on_toolButton_snapshot_clicked();
 
-    void onSelectedSourceChanged(const std::string & sensorName, const std::string & sourceType);
-
+    void onSelectedSourceChanged(const std::string& sensorName, const std::string& sourceType);
 
     void on_checkBox_grid_toggled(bool checked);
     void on_checkBox_trace_toggled(bool checked);
@@ -78,51 +75,51 @@ private slots:
 
     void on_toolButton_fitTrace_clicked();
 
-    void loadFile( QString path );
+    void loadFile(QString path);
 
+//    void on_sensorsView_clicked(const QModelIndex& index);
+    void on_sensorsView_selectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
 
 public:
+    QMdiArea* m_mdiArea = nullptr;
 
-    QMdiArea * m_mdiArea = nullptr;
+    Ra::Engine::RadiumEngine* m_engine = nullptr;
+    Ra::Gui::Viewer* m_viewer = nullptr;
+    Ra::Engine::Scene::System* m_system = nullptr;
 
-    Ra::Engine::RadiumEngine * m_engine = nullptr;
-    Ra::Gui::Viewer * m_viewer = nullptr;
-    Ra::Engine::Scene::System * m_system = nullptr;
-
-    QMainWindow * m_mainWindow = nullptr;
-    QStackedWidget * m_stackedWidget = nullptr;
-    QVBoxLayout * m_layout3DView = nullptr;
+    QMainWindow* m_mainWindow = nullptr;
+    QStackedWidget* m_stackedWidget = nullptr;
+    QVBoxLayout* m_layout3DView = nullptr;
 
 private:
-    QDockWidget * m_dockLeft = nullptr;
-    QDockWidget * m_dockTop = nullptr;
-    QDockWidget * m_dockRight = nullptr;
-    QDockWidget * m_dockBottom = nullptr;
+    QDockWidget* m_dockLeft = nullptr;
+    QDockWidget* m_dockTop = nullptr;
+    QDockWidget* m_dockRight = nullptr;
+    QDockWidget* m_dockBottom = nullptr;
 
-    QToolBar * m_toolBarTopLeft = nullptr;
-    QToolBar * m_toolBarTopRight = nullptr;
-    QAction * m_action3D = nullptr;
-    QAction * m_action2D = nullptr;
-    QAction * m_actionSettings = nullptr;
-    QAction * m_actionAddSources = nullptr;
+    QToolBar* m_toolBarTopLeft = nullptr;
+    QToolBar* m_toolBarTopRight = nullptr;
+    QAction* m_action3D = nullptr;
+    QAction* m_action2D = nullptr;
+    QAction* m_actionSettings = nullptr;
+    QAction* m_actionAddSources = nullptr;
 
     //    SensorViews * m_sensorViews = nullptr;
-//    MinimalComponent* m_comp = nullptr;
+    //    MinimalComponent* m_comp = nullptr;
     SceneManager m_sceneManager;
 
     FormWidgetLoader* m_formWidgetLoader = nullptr;
-//    FormInputStreamViews* m_formInputStreamViews = nullptr;
+    //    FormInputStreamViews* m_formInputStreamViews = nullptr;
     FormSensorViews* m_formSensorViews = nullptr;
 
-//    MainWindowStreamView * m_streamView = nullptr;
-//    FormImageManipulator * m_imageManipulator = nullptr;
-    FormImageManipulator m_imageManipulator;
-    Form3DToolBox * m_3DToolBox = nullptr;
+    //    MainWindowStreamView * m_streamView = nullptr;
+    //    FormImageManipulator * m_imageManipulator = nullptr;
+    FormImageManipulator* m_imageManipulator = nullptr;
+    Form3DToolBox* m_3DToolBox = nullptr;
 
-    QTableView * m_sensorsView = nullptr;
+    QTableView* m_sensorsView = nullptr;
 
     bool m_initialized = false;
-
 };
 
 #endif // GUIMANAGER_H

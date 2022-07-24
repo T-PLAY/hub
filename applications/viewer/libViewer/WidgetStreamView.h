@@ -36,11 +36,13 @@ public:
     void init(int imagePixelWidth, int imagePixelHeight, double imageUnitWidth = 0.0, double imageUnitHeight = 0.0);
 
 //    const double & getPixelPerUnit() const;
+    void clear();
 
 
 public slots:
 //    void setData(unsigned char* img_ptr, std::vector<int> dims, Stream::Format format) override;
     void setData(unsigned char* img_ptr, size_t size, std::vector<int> dims, Stream::Format format) override;
+
 
     void onPixelPerUnitChanged();
 
