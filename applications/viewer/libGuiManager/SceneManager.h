@@ -86,11 +86,11 @@ void SceneManager::addSensor(IOStreamT&& iostream)
             }
         }
 
-                if (parentSensor == nullptr) {
-                    QMessageBox msgBox;
-                    msgBox.setText((std::string("Could not find '") + parentName + "' sensor.\nUnable to attach the sensor '" + sensorName + "' with his parent.").c_str());
-                    msgBox.exec();
-                }
+//                if (parentSensor == nullptr) {
+//                    QMessageBox msgBox;
+//                    msgBox.setText((std::string("Could not find '") + parentName + "' sensor.\nUnable to attach the sensor '" + sensorName + "' with his parent.").c_str());
+//                    msgBox.exec();
+//                }
     }
 
     m_sensors.emplace_back(std::move(inputStream), *m_mdiArea, *m_imageManipulator, m_engine, m_viewer, m_sys, parentSensor, this);

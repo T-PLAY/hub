@@ -1,7 +1,8 @@
 #include <Gui/MainWindow.hpp>
 
 //#include <MainApplication.hpp>
-#include <BaseApplication.hpp>
+//#include <BaseApplication.hpp>
+#include <Gui/BaseApplication.hpp>
 
 #include <Engine/Rendering/ForwardRenderer.hpp>
 #include <Engine/Rendering/RenderObject.hpp>

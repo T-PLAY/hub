@@ -13,6 +13,8 @@
 // the default priority for systems created here.
 //constexpr int defaultSystemPriority = 1000;
 
+#include <Engine/Data/TextureManager.hpp>
+
 
 MinimalApp::MinimalApp() :
     m_engine( nullptr ),
@@ -107,8 +109,12 @@ void MinimalApp::frame() {
     m_task_queue->waitForTasks();
     m_task_queue->flushTaskQueue();
 
+
     // Starts the renderer
     m_viewer->startRendering( dt );
+
+//    auto * textureManager = m_engine->getTextureManager();
+//    textureManager->updatePendingTextures();
 
     // Finish the frame
     m_viewer->swapBuffers();
