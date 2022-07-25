@@ -116,6 +116,7 @@ void ScanComponent::initialize()
         //! [Creating a texture for the slice]
         //        unsigned char data[192 * 512];
         //        unsigned char* data = new unsigned char[192 * 512];
+        const auto & sensorName = m_inputStream.getSensorName();
         assert(m_inputStream.getDims().size() == 2);
         const int width = m_inputStream.getDims().at(0);
         const int height = m_inputStream.getDims().at(1);
@@ -136,7 +137,8 @@ void ScanComponent::initialize()
                 }
             }
         }
-        m_textureName = std::string("myTexture") + std::to_string(iProbe);
+//        m_textureName = std::string("myTexture") + std::to_string(iProbe);
+        m_textureName = sensorName;
         auto& textureParameters =
             //            m_engine.getTextureManager()->addTexture( probe.m_textureName.c_str(), 512, 192, data );
             //            m_engine.getTextureManager()->addTexture(probe.m_textureName.c_str(), 512, 192, probe.m_data);
@@ -178,10 +180,9 @@ void ScanComponent::initialize()
         m_textureScan = m_engine.getTextureManager()->getOrLoadTexture(textureParameters);
         m_viewer.doneCurrent();
 
-        Ra::Core::Asset::ImageSpec imgSpec(width, height, 1);
-        m_image = std::make_shared<Ra::Core::Asset::Image>(imgSpec, nullptr);
-
-        m_textureScan->attachImage(m_image);
+//        Ra::Core::Asset::ImageSpec imgSpec(width, height, 1);
+//        m_image = std::make_shared<Ra::Core::Asset::Image>(imgSpec, nullptr);
+//        m_textureScan->attachImage(m_image);
     }
 
     // scan line
@@ -206,6 +207,7 @@ void ScanComponent::initialize()
 void ScanComponent::update(const Stream::Acquisition& acq)
 {
     const unsigned char* data = acq.mData;
+    memcpy(m_data, data, m_inputStream.getAcquisitionSize());
 
     //    m_viewer.makeCurrent();
     //    auto& params = m_textureScan->getParameters();
@@ -214,7 +216,12 @@ void ScanComponent::update(const Stream::Acquisition& acq)
     //    m_textureScan->initializeGL(false);
     //    m_viewer.doneCurrent();
 
-    m_image->update(data, m_inputStream.getAcquisitionSize());
+    auto * textureManager = m_engine.getTextureManager();
+    const auto & sensorName = m_inputStream.getSensorName();
+    textureManager->updateTextureContent(sensorName, (void*)m_data);
+
+    // PR GOT
+//    m_image->update(data, m_inputStream.getAcquisitionSize());
 
     //        acqs.pop();
 }
