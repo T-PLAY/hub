@@ -113,8 +113,10 @@ void MinimalApp::frame() {
     // Starts the renderer
     m_viewer->startRendering( dt );
 
-//    auto * textureManager = m_engine->getTextureManager();
-//    textureManager->updatePendingTextures();
+#ifdef NO_PR_976
+    auto * textureManager = m_engine->getTextureManager();
+    textureManager->updatePendingTextures();
+#endif
 
     // Finish the frame
     m_viewer->swapBuffers();
