@@ -11,6 +11,7 @@ set(QT_VERSION ${QT_VERSION_MAJOR})
 cmake_host_system_information(RESULT hostname QUERY HOSTNAME)
 if (${hostname} STREQUAL "brueghel") # work linux
     add_definitions(-DUSE_GOT_PR)
+    add_definitions(-DNO_PR_976)
     set(MRI_PATH "/export/home/brueghel/gbouyjou/Downloads/MRI/")
 elseif (${hostname} STREQUAL "Brueghel") # work window
     set(MRI_PATH "C:/Users/gbouyjou/Downloads/MRI/")
