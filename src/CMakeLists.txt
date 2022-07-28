@@ -10,10 +10,11 @@ set(WIN32_REQUIRED_LIBS)
 set(UNIX_REQUIRED_LIBS)
 
 
-file(GLOB_RECURSE sources *.cpp)
+file(GLOB_RECURSE sources *.cpp *.c)
 file(GLOB_RECURSE headers *.h)
 
-add_library(${PROJECT_NAME} STATIC
+#add_library(${PROJECT_NAME} STATIC
+add_library(${PROJECT_NAME} SHARED
     #add_library(${PROJECT_NAME} SHARED
     ${sources}
     ${headers}

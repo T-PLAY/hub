@@ -1,47 +1,57 @@
 
 
-#include <cassert>
+//#include <cassert>
 #include <iostream>
 
 #include <chrono>
-#include <socket.h>
-#include <stream.h>
+//#include <socket.h>
+//#include <stream.h>
+
+#include <NativeStream.h>
 
 int main(int argc, char* argv[])
 {
-    argc = 2;
-    std::string sensorNames[2] = { "proceduralStreamer", "proceduralStreamer2" };
-    std::string sensorMasterNames[2] = { "", "proceduralStreamer" };
-    assert(argc == 2);
-    // int i = atoi(argv[1]);
-    int i = 0;
-    assert(i == 0 || i == 1);
 
-    std::cout << "inputStream" << std::endl;
-    InputStream inputStream(ClientSocket(sensorNames[i], sensorMasterNames[i]));
-    std::cout << "proceduralStreamer inited" << std::endl;
-    const Stream::MetaData& metaData = inputStream.getMetaData();
-    std::cout << "metadata : " << Stream::to_string(metaData) << std::endl;
-    assert(std::any_cast<double>(metaData.at("depth")) == 3.0);
-    std::string name(std::any_cast<const char*>(metaData.at("name")));
-    assert(name == "L533");
-    assert(std::string(std::any_cast<const char*>(metaData.at("name"))) == "L533");
+//    InputStream inputStream(ClientSocket("Keyboard", ""));
+    auto inputStream = createInputStream("Keyboard");
 
-    // InputStream inputStream("L500 Depth Sensor (Depth)");
+//    InputStream inputStream("Keyboard");
+//    const Stream::MetaData& metaData = inputStream.getMetaData();
+//    std::cout << "metadata : " << Stream::to_string(metaData) << std::endl;
 
-    const size_t acquisitionSize = inputStream.getAcquisitionSize();
-    std::cout << "acquisitionSize = " << acquisitionSize << std::endl;
+//     InputStream inputStream("L500 Depth Sensor (Depth)");
+
+//    const size_t acquisitionSize = inputStream.getAcquisitionSize();
+//    std::cout << "acquisitionSize = " << acquisitionSize << std::endl;
     // const int width = inputStream.getDims().at(0);
 
 //    Stream::Acquisition acq;
+
+    const auto size = getAcquisitionSize(inputStream);
+    auto data = new unsigned char[size];
+
 
     while (true) {
         const auto start = std::chrono::high_resolution_clock::now();
         for (int i = 0; i < 10; ++i) {
 //            inputStream >> acq;
-            auto acq = inputStream.getAcquisition();
 
-            std::cout << acq << std::endl;
+//            auto acq = inputStream.getAcquisition();
+            long long start, end;
+//            Stream::Acquisition * acq;
+            auto good = getAcquisition(inputStream, &start, &end, data);
+            if (! good)
+                exit(0);
+
+//            auto acq = nativeGetAcquisition(inputStream);
+
+            std::cout << "receive acq ";
+
+            for (int i = 0; i <std::min(size, 20); ++i) {
+                std::cout << (int)data[i] << " ";
+            }
+            std::cout << std::endl;
+//            std::cout << *acq << std::endl;
 
             // const int dec = acq.mData[0];
             // for (size_t i = 0; i < acquisitionSize; ++i) {
