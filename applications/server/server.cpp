@@ -317,6 +317,7 @@ void Server::run()
                 assert(syncSensorName == "" || mStreamers.find(syncSensorName) != mStreamers.end());
 
                 std::cout << getServerHeader(iThread) << "[stream viewer] new stream viewer\t" << getStatus() << std::endl;
+                std::cout << getServerHeader(iThread) << "[stream viewer] watching '" << sensorName << "'" << std::endl;
 
                 Streamer* streamer = mStreamers.at(sensorName);
 

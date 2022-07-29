@@ -49,6 +49,7 @@
 extern "C" NATIVECPPLIBRARY_API InputStream* createInputStream(const char * sensorName);
 extern "C" NATIVECPPLIBRARY_API void freeInputStream(InputStream* inputStream);
 extern "C" NATIVECPPLIBRARY_API int getAcquisitionSize( InputStream* inputStream );
+extern "C" NATIVECPPLIBRARY_API bool getData( InputStream* inputStream, unsigned char* data );
 extern "C" NATIVECPPLIBRARY_API bool getAcquisition(InputStream* inputStream, long long * start, long long * end, unsigned char * data);
 
 // // Block declarations

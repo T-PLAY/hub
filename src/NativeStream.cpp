@@ -48,37 +48,92 @@
 // acq);
 NATIVECPPLIBRARY_API InputStream* createInputStream( const char* sensorName ) {
     std::cout << "[NativeStream] createInputStream( " << sensorName << ")" << std::endl;
-    return new InputStream( sensorName, "" );
+    InputStream* inputStream;
+    try {
+        inputStream = new InputStream( sensorName, "" );
+    }
+    catch ( std::exception& e ) {
+        std::cout << "[NativeStream] createInputStream : catch exception : " << e.what()
+                  << std::endl;
+        return nullptr;
+    }
+
+    return inputStream;
 }
 
 NATIVECPPLIBRARY_API void freeinputStream( InputStream* inputStream ) {
+    assert( inputStream != nullptr );
+
     std::cout << "[NativeStream] freeinputStream( " << inputStream << ")" << std::endl;
     delete inputStream;
 }
 
 NATIVECPPLIBRARY_API int getAcquisitionSize( InputStream* inputStream ) {
+    assert( inputStream != nullptr );
+
     return inputStream->getAcquisitionSize();
+}
+
+NATIVECPPLIBRARY_API bool getData( InputStream* inputStream, unsigned char* data ) {
+    assert( inputStream != nullptr );
+
+//    for (int i = 0; i <28; ++i) {
+//        data[i] = i;
+//    }
+
+    std::cout << "[NativeStream] getData( " << inputStream << ")" << std::endl;
+
+    try {
+        auto acq = inputStream->getAcquisition();
+        //    Acq acq;
+//        *start = acq.mBackendTimestamp;
+//        *end   = acq.mBackendTimeOfArrival;
+        //    data = acq.mData;
+        std::cout << "[NativeStream] get acq : " << acq << std::endl;
+
+        std::cout << "[NativeStream] copying data " << std::endl;
+        memcpy( data, acq.mData, inputStream->getAcquisitionSize() );
+    }
+    catch ( std::exception& e ) {
+        std::cout << "[NativeStream] getAcquisition : catch exception : " << e.what() << std::endl;
+        return false;
+    }
+
+    //    acq = new Stream::Acquisition(inputStream->getAcquisition());
+    //    return inputStream->Foo(a);
+    //    return acq;
+    return true;
 }
 
 // NATIVECPPLIBRARY_API Acq getAcquisition( InputStream* inputStream ) {
 NATIVECPPLIBRARY_API bool
 getAcquisition( InputStream* inputStream, long long* start, long long* end, unsigned char* data ) {
-    *start = 1;
-    *end = 2;
-    for (int i = 0; i <10; ++i) {
-        data[i] = i;
-    }
-    return true;
+    assert( inputStream != nullptr );
+
+//    *start = 1;
+//    *end   = 2;
+//    for ( int i = 0; i < 10; ++i ) {
+//        data[i] = i;
+//    }
+//    return true;
+//    Stream::Acquisition* acq = nullptr;
+
     std::cout << "[NativeStream] getAcquisition( " << inputStream << ")" << std::endl;
     //    *acq = inputStream->getAcquisition().clone();
-    //    *acq = std::move(acq2.clone());
-    auto acq2 = inputStream->getAcquisition();
+    //    *acq = std::move(acq.clone());
+    try {
+        auto acq = inputStream->getAcquisition();
+        //    Acq acq;
+        *start = acq.mBackendTimestamp;
+        *end   = acq.mBackendTimeOfArrival;
+        //    data = acq.mData;
+        memcpy( data, acq.mData, inputStream->getAcquisitionSize() );
+    }
+    catch ( std::exception& e ) {
+        std::cout << "[NativeStream] getAcquisition : catch exception : " << e.what() << std::endl;
+        return false;
+    }
 
-    //    Acq acq;
-    *start = acq2.mBackendTimestamp;
-    *end   = acq2.mBackendTimeOfArrival;
-    //    data = acq2.mData;
-    memcpy( data, acq2.mData, inputStream->getAcquisitionSize() );
     //    acq = new Stream::Acquisition(inputStream->getAcquisition());
     //    return inputStream->Foo(a);
     //    return acq;
