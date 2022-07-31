@@ -61,7 +61,7 @@ NATIVECPPLIBRARY_API InputStream* createInputStream( const char* sensorName ) {
     return inputStream;
 }
 
-NATIVECPPLIBRARY_API void freeinputStream( InputStream* inputStream ) {
+NATIVECPPLIBRARY_API void freeInputStream( InputStream* inputStream ) {
     assert( inputStream != nullptr );
 
     std::cout << "[NativeStream] freeinputStream( " << inputStream << ")" << std::endl;
