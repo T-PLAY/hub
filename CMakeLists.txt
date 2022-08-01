@@ -9,7 +9,6 @@ add_definitions(-DPROJECT_DIR=\"${CMAKE_SOURCE_DIR}/\")
 set(SRC_DIR ${CMAKE_SOURCE_DIR}/src/)
 
 add_subdirectory(src)
-add_subdirectory(nativeLib)
 
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 set(CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/hub-install)

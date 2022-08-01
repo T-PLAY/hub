@@ -1,3 +1,4 @@
+//#ifdef USE_NATIVE
 
 /* NativeStream.cpp : Defines the exported functions for the DLL.
  */
@@ -46,7 +47,7 @@
 // extern "C" NATIVECPPLIBRARY_API void freeInputStream(InputStream* instance);
 // extern "C" NATIVECPPLIBRARY_API int getAcquisition(InputStream* instance, Stream::Acquisition*
 // acq);
-NATIVECPPLIBRARY_API InputStream* createInputStream( const char* sensorName ) {
+InputStream* createInputStream( const char* sensorName ) {
     std::cout << "[NativeStream] createInputStream( " << sensorName << ")" << std::endl;
     InputStream* inputStream;
     try {
@@ -61,20 +62,20 @@ NATIVECPPLIBRARY_API InputStream* createInputStream( const char* sensorName ) {
     return inputStream;
 }
 
-NATIVECPPLIBRARY_API void freeInputStream( InputStream* inputStream ) {
+void freeInputStream( InputStream* inputStream ) {
     assert( inputStream != nullptr );
 
     std::cout << "[NativeStream] freeinputStream( " << inputStream << ")" << std::endl;
     delete inputStream;
 }
 
-NATIVECPPLIBRARY_API int getAcquisitionSize( InputStream* inputStream ) {
+int getAcquisitionSize( InputStream* inputStream ) {
     assert( inputStream != nullptr );
 
-    return inputStream->getAcquisitionSize();
+    return static_cast<int>(inputStream->getAcquisitionSize());
 }
 
-NATIVECPPLIBRARY_API bool getData( InputStream* inputStream, unsigned char* data ) {
+bool getData( InputStream* inputStream, unsigned char* data ) {
     assert( inputStream != nullptr );
 
 //    for (int i = 0; i <28; ++i) {
@@ -106,7 +107,7 @@ NATIVECPPLIBRARY_API bool getData( InputStream* inputStream, unsigned char* data
 }
 
 // NATIVECPPLIBRARY_API Acq getAcquisition( InputStream* inputStream ) {
-NATIVECPPLIBRARY_API bool
+bool
 getAcquisition( InputStream* inputStream, long long* start, long long* end, unsigned char* data ) {
     assert( inputStream != nullptr );
 
@@ -139,3 +140,5 @@ getAcquisition( InputStream* inputStream, long long* start, long long* end, unsi
     //    return acq;
     return true;
 }
+
+//#endif

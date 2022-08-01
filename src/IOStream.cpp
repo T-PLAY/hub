@@ -24,7 +24,7 @@ void IOStream::write(const char* str) const
     std::cout << "[IOStream] write const char* : start" << std::endl;
 #endif
 
-    int strLen = strlen(str);
+    int strLen = static_cast<int>(strlen(str));
     write(strLen);
 
     if (strLen > 0) {
@@ -152,7 +152,8 @@ void IOStream::read(std::string& str) const
         str = "";
 
     } else {
-        unsigned char* tmp = new unsigned char[strLen + 1];
+        const int buffSize = strLen + 1;
+        unsigned char* tmp = new unsigned char[buffSize];
         read(tmp, strLen);
         tmp[strLen] = 0;
         str = std::string((char*)tmp);
@@ -217,10 +218,11 @@ void IOStream::read(std::any& any) const
         memset(buff, 0, 256);
         read(buff);
         //        std::cout << "val[256] = '" << buff << "'" << std::endl;
-        int len = strlen(buff);
+        int len = static_cast<int>(strlen(buff));
         //        std::cout << "len = " << len << std::endl;
 
-        char* str = new char[len + 1];
+        const int buffSize = len + 1;
+        char* str = new char[buffSize];
         memcpy(str, buff, len);
         str[len] = 0;
         delete[] buff;

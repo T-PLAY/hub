@@ -64,7 +64,7 @@ void CyclicBuff::write( const unsigned char* data, size_t len ) {
     size_t uploadSize = 0;
     do {
         // size of empty space in buff to write data
-        int spaceLeft = m_readHead - m_writeHead;
+        auto spaceLeft = m_readHead - m_writeHead;
         if ( spaceLeft <= 0 ) spaceLeft += m_buffLen;
         //        std::cout << "[CyclicBuff] buff size = " << spaceLeft << std::endl;
 

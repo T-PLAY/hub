@@ -1,3 +1,4 @@
+//#ifdef USE_NATIVE
 
 /* The following ifdef block is the standard way of creating macros which make
  * exporting from a DLL simpler. All files within this DLL are compiled with
@@ -8,8 +9,11 @@
  * this DLL sees symbols defined with this macro as being exported.
  */
 
+
 //#include <iostream>
 #include <stream.h>
+
+//#undef NATIVECPPLIBRARY_API
 
 #ifdef WIN32
 #    ifdef NATIVECPPLIBRARY_EXPORTS
@@ -60,3 +64,5 @@ extern "C" NATIVECPPLIBRARY_API bool getAcquisition(InputStream* inputStream, lo
 // }
 
 //}
+
+//#endif
