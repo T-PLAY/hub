@@ -16,6 +16,8 @@
 //#include <FileIO.h>
 //#include <RamIO.h>
 
+//#define _CRT_SECURE_NO_WARNINGS
+
 // namespace std {
 // namespace any {
 
@@ -45,10 +47,13 @@ static std::string to_string(const std::any& any)
     } else if (hashCode == typeid(std::vector<float>).hash_code()) {
         const std::vector<float>* val = std::any_cast<std::vector<float>>(&any);
         std::string str = "";
-        for (int i = 0; i < 3; ++i) {
-            for (int j = 0; j < 3; ++j) {
+        const int n                   = 3;
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < n; ++j) {
                 char buff[32];
-                sprintf(buff, "%.1f", val->at(i * 3 + j));
+                const int k = i * n + j;
+                //sprintf(buff, "%.1f", val->at(k));
+                sprintf_s(buff, "%.1f", val->at(k));
                 str += buff;
                 //            str += std::to_string(val->at(i));
                 if (j != 2)

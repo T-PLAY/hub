@@ -9,16 +9,28 @@ project(src)
 set(WIN32_REQUIRED_LIBS)
 set(UNIX_REQUIRED_LIBS)
 
+add_definitions(-DNATIVECPPLIBRARY_EXPORTS)
+#add_definitions(-DUSE_NATIVE=1)
 
 file(GLOB_RECURSE sources *.cpp *.c)
 file(GLOB_RECURSE headers *.h)
 
-#add_library(${PROJECT_NAME} STATIC
-add_library(${PROJECT_NAME} SHARED
-    #add_library(${PROJECT_NAME} SHARED
+if (BUILD_EXAMPLES)
+    add_library(${PROJECT_NAME} STATIC
     ${sources}
     ${headers}
     )
+else()
+    add_library(${PROJECT_NAME} SHARED
+    ${sources}
+    ${headers}
+    )
+endif()
+#add_library(${PROJECT_NAME} SHARED
+    #add_library(${PROJECT_NAME} SHARED
+#    ${sources}
+#    ${headers}
+#    )
 
 
 target_include_directories(${PROJECT_NAME} PUBLIC
