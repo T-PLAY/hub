@@ -101,7 +101,7 @@ public:
     ClientSocket(const ClientSocket& sock) = delete;
     ClientSocket(const ClientSocket&& sock) = delete;
     ClientSocket(ClientSocket& sock) = delete;
-    ClientSocket(ClientSocket&& sock);
+    ClientSocket(ClientSocket&& sock) noexcept;
 
     ClientSocket& operator=(const ClientSocket& sock) = delete;
     ClientSocket&& operator=(const ClientSocket&& sock) = delete;

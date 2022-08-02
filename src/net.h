@@ -4,10 +4,28 @@
 
 #if defined WIN32
 //#define NOMINMAX
-#include <winsock.h>
-#pragma comment(lib, "ws2_32.lib") // Winsock Library
+//#include <winsock.h>
+//#pragma comment(lib, "ws2_32.lib") // Winsock Library
+//#include <WinSock2.h>
+//#pragma comment( lib, "Ws2_32.lib" )
+
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
+
+#include <windows.h>
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#include <iphlpapi.h>
+#include <stdio.h>
+
+#pragma comment(lib, "Ws2_32.lib")
+
 using socklen_t = int;
 using socket_fd = SOCKET;
+//#include <basetsd.h>
+//using socket_fd = UINT_PTR;
+
 
 #else
 #define INVALID_SOCKET -1
