@@ -5,6 +5,8 @@
 //#include <utility>
 #include <exception>
 
+#include <WS2tcpip.h>
+
 Socket::Socket()
 {
 #ifdef DEBUG_SOCKET
@@ -47,6 +49,21 @@ bool Socket::isConnected() const
 
 void ClientSocket::connectToServer()
 {
+ /*   struct addrinfo *result = NULL, *ptr = NULL, hints;
+
+    ZeroMemory( &hints, sizeof( hints ) );
+    hints.ai_family   = AF_UNSPEC;
+    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_protocol = IPPROTO_TCP;*/
+
+    // Resolve the server address and port
+    /*const int iResult = getaddrinfo(mIpv4.c_str(), mPort, &hints, &result );
+    if ( iResult != 0 ) {
+        printf( "getaddrinfo failed: %d\n", iResult );
+        WSACleanup();
+        return;
+    }*/
+
     // Socket creation
     mFdSock = socket(PF_INET, SOCK_STREAM, 0);
     if (mFdSock < 0) {
@@ -59,7 +76,8 @@ void ClientSocket::connectToServer()
     struct sockaddr_in serv_addr;
     memset(&serv_addr, 0, sizeof(serv_addr));
     serv_addr.sin_family = AF_INET;
-    serv_addr.sin_addr.s_addr = inet_addr(mIpv4.c_str());
+    //serv_addr.sin_addr.s_addr = inet_addr(mIpv4.c_str()); // winsock 1.0
+    InetPton( AF_INET, (PCWSTR)mIpv4.c_str(), &serv_addr.sin_addr.s_addr ); // winsock 2.0
     serv_addr.sin_port = htons(mPort); // Server port
 
     // Connect to server
@@ -117,11 +135,12 @@ ClientSocket::ClientSocket(const std::string& sensorName, const std::string& syn
 
 ClientSocket::ClientSocket(socket_fd fdSock)
 {
+    mPort   = -1;
     mFdSock = fdSock;
     std::cout << getHeader(mFdSock) << "ClientSocket(socket_fd fdSock)" << std::endl;
 }
 
-ClientSocket::ClientSocket(ClientSocket&& sock)
+ClientSocket::ClientSocket(ClientSocket&& sock) noexcept
     : Socket()
     , mIpv4(sock.mIpv4)
     , mPort(sock.mPort)

@@ -1,9 +1,11 @@
-//#ifdef USE_NATIVE
+
 
 /* NativeStream.cpp : Defines the exported functions for the DLL.
  */
 
 #include "NativeStream.h"
+
+#ifndef NO_NATIVE
 
 #include <iostream>
 #include <stream.h>
@@ -141,4 +143,4 @@ getAcquisition( InputStream* inputStream, long long* start, long long* end, unsi
     return true;
 }
 
-//#endif
+#endif
