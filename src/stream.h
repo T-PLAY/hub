@@ -16,6 +16,8 @@
 //#include <FileIO.h>
 //#include <RamIO.h>
 
+#include "export.h"
+
 //#define _CRT_SECURE_NO_WARNINGS
 
 // namespace std {
@@ -99,7 +101,7 @@ static std::string to_string(const std::any& any)
 class InputStream;
 //#define DEBUG_STREAM
 
-class Stream {
+class SRC_API Stream {
 public:
     enum class Format {
         NONE,
@@ -179,7 +181,7 @@ public:
     static std::string dims2string(const std::vector<int>& dims)
     {
         std::string str = "";
-        for (int i = 0; i < dims.size(); ++i) {
+        for (unsigned int i = 0; i < dims.size(); ++i) {
             str += std::to_string(dims[i]);
             if (i != dims.size() - 1) {
                 str += " x ";
@@ -235,7 +237,7 @@ public:
         }
     };
 
-    class Acquisition {
+    class SRC_API Acquisition {
     public:
         //        Acquisition(long long backendTimestamp = 0, long long backendTimeOfArrival = 0, unsigned char* data = nullptr);
         Acquisition(long long backendTimestamp, long long backendTimeOfArrival, const unsigned char* const data, size_t size);
@@ -334,7 +336,7 @@ protected:
 
 class OutputStream;
 
-class InputStream : public Stream {
+class SRC_API InputStream : public Stream {
 public:
     InputStream(const std::string& sensorName, const std::string& syncSensorName = "");
     template <class IOStreamT>
@@ -387,7 +389,7 @@ InputStream::InputStream(IOStreamT&& ioStream)
 // template<class T> constexpr T& no_move(T&& t) { return t; }
 // template<class T> T& unmove(T&& t) { return t; }
 
-class OutputStream : public Stream {
+class SRC_API OutputStream : public Stream {
 public:
     OutputStream(const std::string& sensorName, Format format, const std::vector<int>& dims, ClientSocket&& ioStream = ClientSocket(), const MetaData& metaData = {});
     template <class IOStreamT>
