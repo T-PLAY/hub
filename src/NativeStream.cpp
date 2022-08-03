@@ -8,7 +8,7 @@
 #ifndef NO_NATIVE
 
 #include <iostream>
-#include <stream.h>
+#include "stream.h"
 
 // static std::map<int, std::unique_ptr<InputStream>> s_id2inputStream;
 // int createInputStream( const char* sensorName ) {

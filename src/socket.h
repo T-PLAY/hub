@@ -11,12 +11,14 @@
 #include <list>
 #include <string>
 
-//#define DEBUG_SOCKET
+#include "export.h"
+
+#define DEBUG_SOCKET
 
 constexpr int SERVICE_PORT = 4042;
 constexpr const char* SERVICE_IP = "127.0.0.1";
 
-class Socket {
+class SRC_API Socket {
 public:
     class exception : public std::runtime_error {
     public:
@@ -71,7 +73,7 @@ protected:
     socket_fd mFdSock = INVALID_SOCKET;
 };
 
-class ClientSocket : public Socket, public IOStream {
+class SRC_API ClientSocket : public Socket, public IOStream {
 public:
     enum class Type {
         NONE,
@@ -134,7 +136,7 @@ private:
     bool mIsServer = false;
 };
 
-class ServerSocket : public Socket {
+class SRC_API ServerSocket : public Socket {
 public:
     ServerSocket(int port);
 

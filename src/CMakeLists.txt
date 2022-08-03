@@ -57,14 +57,14 @@ project(src)
 set(WIN32_REQUIRED_LIBS)
 set(UNIX_REQUIRED_LIBS)
 
-add_definitions(-DNATIVECPPLIBRARY_EXPORTS)
+add_definitions(-DSRC_EXPORTS)
 #add_definitions(-DUSE_NATIVE=1)
 
 file(GLOB_RECURSE sources *.cpp *.c)
 file(GLOB_RECURSE headers *.h)
 
 if (BUILD_EXAMPLES)
-    add_library(${PROJECT_NAME} STATIC
+    add_library(${PROJECT_NAME} SHARED
     ${sources}
     ${headers}
     )

@@ -45,7 +45,7 @@ void FileIO::read(unsigned char* data, size_t len) const
             throw FileIO::exception("End of file");
         }
 
-        downloadSize += byteRead;
+        downloadSize += (size_t)byteRead;
     } while (len != downloadSize);
 
     //#ifdef DEBUG_SOCKET

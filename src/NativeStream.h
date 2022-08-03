@@ -6,30 +6,19 @@
 
 /* The following ifdef block is the standard way of creating macros which make
  * exporting from a DLL simpler. All files within this DLL are compiled with
- * the NATIVE_STREAM_EXPORTS symbol defined on the command line.
+ * the SRC_EXPORTS symbol defined on the command line.
  * This symbol should not be defined on any project that uses this DLL.
  * This way any other project whose source files include this file see
- * NATIVE_STREAM_API functions as being imported from a DLL, whereas
+ * SRC_API functions as being imported from a DLL, whereas
  * this DLL sees symbols defined with this macro as being exported.
  */
 
 
 //#include <iostream>
-#include <stream.h>
 
-//#undef NATIVE_STREAM_API
-#define NATIVE_STREAM_EXPORTS
+#include "export.h"
 
-#ifdef WIN32
-#    ifdef NATIVE_STREAM_EXPORTS
-#        define NATIVE_STREAM_API __declspec( dllexport )
-#    else
-#        define NATIVE_STREAM_API __declspec( dllimport )
-#    endif
-
-#else
-#    define NATIVE_STREAM_API
-#endif
+#include "stream.h"
 
 //#pragma once
 //#ifdef DLLPROJECT_EXPORTS
@@ -42,7 +31,7 @@
 
 //namespace Native {
 
-//extern "C" NATIVE_STREAM_API
+//extern "C" SRC_API
 //typedef  struct _Acq{
 //    long long start;
 //    long long end;
@@ -51,21 +40,27 @@
 
 
 // // Single line function declarations
-//extern "C" NATIVE_STREAM_API int createInputStream(const char * sensorName);
-//extern "C" NATIVE_STREAM_API int getAcquisitionSize(int id);
-//extern "C" NATIVE_STREAM_API bool getAcquisition(int id, long long * start, long long * end, unsigned char * data);
+//extern "C" SRC_API int createInputStream(const char * sensorName);
+//extern "C" SRC_API int getAcquisitionSize(int id);
+//extern "C" SRC_API bool getAcquisition(int id, long long * start, long long * end, unsigned char * data);
 
-extern "C" NATIVE_STREAM_API InputStream* createInputStream(const char * sensorName);
-extern "C" NATIVE_STREAM_API void freeInputStream(InputStream* inputStream);
-extern "C" NATIVE_STREAM_API int getAcquisitionSize( InputStream* inputStream );
-extern "C" NATIVE_STREAM_API bool getData( InputStream* inputStream, unsigned char* data );
-extern "C" NATIVE_STREAM_API bool getAcquisition(InputStream* inputStream, long long * start, long long * end, unsigned char * data);
+extern "C"
+{
+    SRC_API InputStream* createInputStream( const char* sensorName );
+    SRC_API void freeInputStream( InputStream* inputStream );
+    SRC_API int getAcquisitionSize( InputStream* inputStream );
+    SRC_API bool getData( InputStream* inputStream, unsigned char* data );
+    SRC_API bool getAcquisition( InputStream* inputStream,
+                                           long long* start,
+                                           long long* end,
+                                           unsigned char* data );
+}
 
 // // Block declarations
 // extern “C” {
-//     NATIVE_STREAM_API int displayNumber();
-//     NATIVE_STREAM_API int getRandom();
-//     NATIVE_STREAM_API int displaySum();
+//     SRC_API int displayNumber();
+//     SRC_API int getRandom();
+//     SRC_API int displaySum();
 // }
 
 //}

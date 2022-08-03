@@ -10,9 +10,11 @@
 #include <typeinfo>
 #include <vector>
 
+#include <export.h>
+
 //#define DEBUG_IOSTREAM
 
-class IOStream {
+class SRC_API IOStream {
 public:
     struct Mat3 {
         float data[9];
