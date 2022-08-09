@@ -13,6 +13,9 @@ add_subdirectory(src)
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 set(CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/hub-install)
 
+#set(CMAKE_SYSTEM_NAME WindowsStore)
+#set(CMAKE_SYSTEM_VERSION 10.0)
+
 option(BUILD_EXAMPLES "Build examples" OFF)
 
 if (BUILD_EXAMPLES)

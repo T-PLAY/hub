@@ -262,7 +262,7 @@ public:
         bool mIsMoved = false;
 
     public:
-        friend std::ostream& operator<<(std::ostream& os, const Acquisition& acq);
+        SRC_API friend std::ostream& operator<<(std::ostream& os, const Acquisition& acq);
     };
 
     using MetaData = std::map<std::string, std::any>; // C++17

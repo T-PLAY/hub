@@ -51,7 +51,7 @@ bool Socket::isConnected() const
 
 void ClientSocket::connectToServer()
 {
-    std::cerr << "[ClientSocket] connectToServer" << std::endl;
+    DEBUG_MSG("[ClientSocket] connectToServer");
 
  /*   struct addrinfo *result = NULL, *ptr = NULL, hints;
 
@@ -103,8 +103,14 @@ ClientSocket::ClientSocket(const std::string& ipv4, int port)
     DEBUG_MSG(getHeader(mFdSock) << "ClientSocket(std::string ipv4, int port)");
 #endif
 
+  DEBUG_MSG( getHeader( mFdSock )
+               << "[ClientSocket] ClientSocket('" << ipv4 << ", " << port << ")" );
+
     connectToServer();
 
+    DEBUG_MSG( getHeader(mFdSock) << "[ClientSocket] connected to the server, starting communication" );
+
+	DEBUG_MSG( getHeader(mFdSock) << "[ClientSocket] connected to server" );
     // ask server
 }
 
@@ -115,9 +121,12 @@ ClientSocket::ClientSocket(const std::string& sensorName, const std::string& syn
 #ifdef DEBUG_SOCKET
     DEBUG_MSG(getHeader(mFdSock) << "ClientSocket(std::string sensorName, std::string syncSensorName, std::string ipv4, int port)");
 #endif
-    std::cerr << getHeader(mFdSock) << "ClientSocket(std::string sensorName, std::string syncSensorName, std::string ipv4, int port)" << std::endl;
+    DEBUG_MSG( getHeader( mFdSock ) << "[ClientSocket] ClientSocket('" << sensorName << "', '"
+                                    << syncSensorName << ", " << ipv4 << ", " << port );
 
     connectToServer();
+
+    DEBUG_MSG( getHeader(mFdSock) << "[ClientSocket] connected to the server, starting communication" );
 
     Type clientType = Type::STREAM_VIEWER;
     // ask server
@@ -127,6 +136,8 @@ ClientSocket::ClientSocket(const std::string& sensorName, const std::string& syn
     Socket::Message mess;
     read(mess);
     if (mess == Socket::Message::NOT_FOUND) {
+        DEBUG_MSG( getHeader(mFdSock) << "[ClientSocket] exception sensor '" << sensorName
+                                                       << "' is not attached to server" );
         throw Socket::exception((std::string("sensor '") + sensorName + "' is not attached to server").c_str());
     }
     assert(mess == Socket::Message::OK);
@@ -137,6 +148,8 @@ ClientSocket::ClientSocket(const std::string& sensorName, const std::string& syn
         throw Socket::exception((std::string("sync sensor '") + syncSensorName + "' is not attached to server").c_str());
     }
     assert(mess == Socket::Message::OK);
+
+	DEBUG_MSG( getHeader(mFdSock) << "[ClientSocket] connected to server" );
 }
 
 ClientSocket::ClientSocket(socket_fd fdSock)

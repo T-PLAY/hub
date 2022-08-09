@@ -4,7 +4,9 @@
 #include <IOStream.h>
 #include <fstream>
 
-class FileIO : public IOStream {
+#include "export.h"
+
+class SRC_API FileIO : public IOStream {
     class exception : public std::runtime_error {
     public:
         explicit exception(const char* const message) throw()
