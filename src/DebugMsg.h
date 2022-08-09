@@ -3,19 +3,21 @@
 
 #include <fstream>
 
-std::ofstream logFile;
+static std::ofstream s_logFile;
 
 #define DEBUG
+
+// if ( !s_logFile.is_open() ){ \
+// 				s_logFile.open( "log.txt", std::ios_base::beg ); \
+// 			} \
+// 			assert( s_logFile.is_open() ); \
+//             s_logFile << str << std::endl; \
 
 #ifdef DEBUG
 #    define DEBUG_MSG( str ) \
         do {                               \
             std::cout << str << std::endl; \
-            if ( !logFile.is_open() ) { \
-				logFile.open( "log.txt", std::ios_base::beg ); \
-			} \
-			assert( logFile.is_open() ); \
-            logFile << str << std::endl; \
+            std::cerr << str << std::endl; \
         } while ( false )
 #else
 #    define DEBUG_MSG( str ) \
