@@ -9,6 +9,7 @@
 
 #include <iostream>
 #include "stream.h"
+#include "socket.h"
 
 // static std::map<int, std::unique_ptr<InputStream>> s_id2inputStream;
 // int createInputStream( const char* sensorName ) {
@@ -49,11 +50,11 @@
 // extern "C" NATIVECPPLIBRARY_API void freeInputStream(InputStream* instance);
 // extern "C" NATIVECPPLIBRARY_API int getAcquisition(InputStream* instance, Stream::Acquisition*
 // acq);
-InputStream* createInputStream( const char* sensorName ) {
+InputStream* createInputStream( const char* sensorName, const char * ipv4) {
     std::cout << "[NativeStream] createInputStream( " << sensorName << ")" << std::endl;
     InputStream* inputStream;
     try {
-        inputStream = new InputStream( sensorName, "" );
+        inputStream = new InputStream( ClientSocket( sensorName, "", ipv4, SERVICE_PORT ) );
     }
     catch ( std::exception& e ) {
         std::cout << "[NativeStream] createInputStream : catch exception : " << e.what()
