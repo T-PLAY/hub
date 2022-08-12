@@ -46,7 +46,7 @@
 
 extern "C"
 {
-    SRC_API InputStream* createInputStream( const char* sensorName );
+    SRC_API InputStream* createInputStream( const char* sensorName, const char * ipv4 );
     SRC_API void freeInputStream( InputStream* inputStream );
     SRC_API int getAcquisitionSize( InputStream* inputStream );
     SRC_API bool getData( InputStream* inputStream, unsigned char* data );
