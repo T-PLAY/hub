@@ -42,7 +42,7 @@ void Recorder::record(const InputStreamParameters& inputStreamConfigs)
     assert(!std::filesystem::exists(newRecordFolder));
     std::filesystem::create_directories(newRecordFolder);
 
-    const int nStream = inputStreamConfigs.size();
+    const auto nStream = inputStreamConfigs.size();
     for (int i = 0; i < nStream; ++i) {
         const auto& inputStreamConfig = inputStreamConfigs.at(i);
         //        for (const auto & inputStreamConfig : inputStreamConfigs) {
@@ -60,7 +60,9 @@ void Recorder::record(const InputStreamParameters& inputStreamConfigs)
         assert(file.is_open());
 
         // here
-        outputFileStreams.push_back(std::make_unique<OutputStream>(sensorName, inputStreams[i]->getFormat(), inputStreams[i]->getDims(), FileIO(std::move(file)), inputStreams[i]->getMetaData()));
+        outputFileStreams.push_back( std::make_unique<OutputStream>( inputStreams[i]->getHeader(),
+            FileIO( std::move( file ) )
+             ) );
     }
 
     m_threads.resize(nStream);
@@ -155,7 +157,7 @@ void Recorder::save(const Frame& frame)
     //    std::vector<std::unique_ptr<InputStream>> inputStreams;
     //    std::vector<std::unique_ptr<OutputStream>> outputFileStreams;
 
-    const int nStream = inputStreamConfigs.size();
+    const auto nStream = inputStreamConfigs.size();
     for (int i = 0; i < nStream; ++i) {
         const auto& inputStreamConfig = inputStreamConfigs.at(i);
         //        for (const auto & inputStreamConfig : inputStreamConfigs) {
@@ -163,7 +165,7 @@ void Recorder::save(const Frame& frame)
         //        const auto& syncSensorName = inputStreamConfig.second;
         //        inputStreams.push_back(std::make_unique<InputStream>(ClientSocket(sensorName, syncSensorName)));
         //        }
-        std::vector<Stream::Acquisition> acqs;
+        std::vector<Acquisition> acqs;
         //        //    std::fstream files[2];
         //        for (int i = 0; i < 2; ++i) {
         //        auto file = std::fstream(newRecordFolder + "/" + sensorName + ".txt", std::ios::binary | std::ios::out);
@@ -185,7 +187,10 @@ void Recorder::save(const Frame& frame)
         // here
         //        outputFileStreams.push_back(std::make_unique<OutputStream>(sensorName, inputStreams[i]->getFormat(), inputStreams[i]->getDims(), FileIO(std::move(file)), inputStreams[i]->getMetaData()));
         auto file = std::fstream(filename, std::ios::binary | std::ios::out);
-        OutputStream outputStream(sensorName, frame[i].getFormat(), frame[i].getDims(), FileIO(std::move(file)), {});
+        Header header( sensorName, frame[i].getFormat(), frame[i].getDims(), {} );
+        OutputStream outputStream(header, FileIO(std::move(file)));
+        //OutputStream outputStream( { sensorName, frame[i].getFormat(), frame[i].getDims(), {} },
+        //                           FileIO( std::move( file ) ) );
 
         for (const auto& acq : acqs) {
             outputStream << acq;
@@ -232,7 +237,9 @@ void Recorder::saveOnDisk()
         assert(file.is_open());
 
         const auto& firstSnapshot = snapshots.front();
-        OutputStream outputStream(sensorName, firstSnapshot.getFormat(), firstSnapshot.getDims(), FileIO(std::move(file)));
+        OutputStream outputStream(
+            { sensorName, firstSnapshot.getFormat(), firstSnapshot.getDims() },
+            FileIO( std::move( file ) ) );
 
         //        for (const auto& snapshot : snapshots) {
         for (int i = 0; i < min; ++i) {

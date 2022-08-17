@@ -53,7 +53,8 @@ int main(int argc, char* argv[])
     //    while (true) {
     //        int a;
     //        std::cin >> a;
-    getchar();
+    auto ret = getchar();
+    (void)ret;
     ////        gStop = true;
     //        break;
     //    }

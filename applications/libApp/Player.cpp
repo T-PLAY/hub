@@ -79,10 +79,11 @@ void Player::update(int iSensor)
         try {
             InputStream inputStream(FileIO(std::move(file)));
             auto acqs = inputStream.getAllAcquisition();
-            const std::string& sensorName = inputStream.getSensorName();
+            const auto& header            = inputStream.getHeader();
+            const std::string& sensorName = header.getSensorName();
 
             if (nAcqs == -1) {
-                nAcqs = acqs.size();
+                nAcqs = (int)acqs.size();
                 m_frames.reserve(nAcqs);
                 m_frames.resize(nAcqs);
             }
@@ -99,12 +100,12 @@ void Player::update(int iSensor)
                 //                Snapshot snapshot { acq.clone(), sensorName };
                 //                m_snapshots.insert(std::move(snapshot));
                 //                m_snapshots.insert(Snapshot { acq.clone(), sensorName });
-                Snapshot snapshot(sensorName, inputStream.getFormat(), inputStream.getDims(), acq);
+                Snapshot snapshot(sensorName, header.getFormat(), header.getDims(), acq);
                 m_snapshots.insert(std::move(snapshot));
                 //                m_snapshots.insert(Snapshot(sensorName, inputStream.getFormat(), inputStream.getDims(), acq));
 
                 //                const auto& it = m_snapshots.find(Snapshot { acq.clone(), sensorName });
-                Snapshot snapshot2(sensorName, inputStream.getFormat(), inputStream.getDims(), acq);
+                Snapshot snapshot2(sensorName, header.getFormat(), header.getDims(), acq);
                 const auto& it = m_snapshots.find(snapshot2);
                 assert(it != m_snapshots.end());
                 m_frames[iAcq].push_back(*it);
@@ -116,7 +117,13 @@ void Player::update(int iSensor)
             //            m_outputs[sensorName] = std::make_unique<OutputStream>(sensorName + " (record)", inputStream.getFormat(), inputStream.getDims(), ClientSocket(), inputStream.getMetaData());
 
             if (m_outputs.find(sensorName) == m_outputs.end()) {
-                m_outputs[sensorName] = std::make_unique<OutputStream>(sensorName + m_outputPostfixName, inputStream.getFormat(), inputStream.getDims(), ClientSocket(), inputStream.getMetaData());
+                m_outputs[sensorName] =
+                    std::make_unique<OutputStream>( Header { sensorName + m_outputPostfixName,
+                                                             header.getFormat(),
+                                                             header.getDims(),
+                                                             header.getMetaData() },
+                                                    ClientSocket()
+                                                     );
             }
 
             //            m_outputs[sensorName] = std::make_unique<OutputStream>(sensorName + " (physical)", inputStream.getFormat(), inputStream.getDims(), ClientSocket(), inputStream.getMetaData());
@@ -190,7 +197,7 @@ void Player::play()
                 std::this_thread::sleep_until(startChrono + std::chrono::microseconds(snapshot.getAcq().mBackendTimestamp - startRecord));
 
                 const auto& acq = snapshot.getAcq();
-                Stream::Acquisition acq2 { acq.mBackendTimestamp + dec, acq.mBackendTimeOfArrival + dec, acq.mData, acq.mSize };
+                Acquisition acq2 { acq.mBackendTimestamp + dec, acq.mBackendTimeOfArrival + dec, acq.mData, acq.mSize };
 
                 *m_outputs.at(snapshot.getSensorName())
                     << acq2;

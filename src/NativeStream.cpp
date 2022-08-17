@@ -72,10 +72,11 @@ void freeInputStream( InputStream* inputStream ) {
     delete inputStream;
 }
 
+
 int getAcquisitionSize( InputStream* inputStream ) {
     assert( inputStream != nullptr );
 
-    return static_cast<int>(inputStream->getAcquisitionSize());
+    return static_cast<int>(inputStream->getHeader().getAcquisitionSize());
 }
 
 bool getData( InputStream* inputStream, unsigned char* data ) {
@@ -96,7 +97,7 @@ bool getData( InputStream* inputStream, unsigned char* data ) {
         std::cout << "[NativeStream] get acq : " << acq << std::endl;
 
         std::cout << "[NativeStream] copying data " << std::endl;
-        memcpy( data, acq.mData, inputStream->getAcquisitionSize() );
+        memcpy( data, acq.mData, inputStream->getHeader().getAcquisitionSize() );
     }
     catch ( std::exception& e ) {
         std::cout << "[NativeStream] getAcquisition : catch exception : " << e.what() << std::endl;
@@ -131,7 +132,7 @@ getAcquisition( InputStream* inputStream, long long* start, long long* end, unsi
         *start = acq.mBackendTimestamp;
         *end   = acq.mBackendTimeOfArrival;
         //    data = acq.mData;
-        memcpy( data, acq.mData, inputStream->getAcquisitionSize() );
+        memcpy( data, acq.mData, inputStream->getHeader().getAcquisitionSize() );
     }
     catch ( std::exception& e ) {
         std::cout << "[NativeStream] getAcquisition : catch exception : " << e.what() << std::endl;

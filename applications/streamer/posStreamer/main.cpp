@@ -143,7 +143,7 @@ int main(int argc, char* argv[])
     std::cout << "sensor name = '" << sensorName << "'" << std::endl;
     
 
-    Stream::MetaData metaData;
+    Header::MetaData metaData;
     //    metaData["scanWidth"] = 10.0;
     //    metaData["scanDepth"] = 10.0;
     //    metaData["x"] = 0.0;
@@ -151,7 +151,7 @@ int main(int argc, char* argv[])
     //    metaData["z"] = 0.0;
 
     //    OutputStream proceduralStream("Polhemus Patriot (probe)", Stream::Format::Y8, { width, height }, ClientSocket(), metaData);
-    OutputStream posStream(sensorName, Stream::Format::DOF6, { 1 }, ClientSocket(), metaData);
+    OutputStream posStream( { sensorName, Header::Format::DOF6, { 1 }, metaData }, ClientSocket());
 
     //    glm::vec3 pos(0, -50, -50);
     //    glm::quat quat(1.0, 0.0, 0.0, 0.0);
@@ -322,7 +322,7 @@ int main(int argc, char* argv[])
             memcpy(data, translation, 12);
             memcpy(&data[12], orientation, 16);
             const auto& timestampStart = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count();
-            posStream << Stream::Acquisition(timestampStart, timestampStart, data, 28);
+            posStream << Acquisition(timestampStart, timestampStart, data, 28);
 
             std::cout << "\r"
                       << "x:" << pos.x << " y:" << pos.y << " z:" << pos.z << "\t"

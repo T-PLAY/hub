@@ -27,7 +27,7 @@ struct Streamer {
     std::map<std::string, std::list<OutputStream>> mSensor2syncViewers;
 
     Streamer* mSyncMaster = nullptr;
-    std::map<std::string, std::deque<Stream::Acquisition>> mSensor2acqs;
+    std::map<std::string, std::deque<Acquisition>> mSensor2acqs;
 };
 
 struct Viewer {
