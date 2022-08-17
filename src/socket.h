@@ -73,7 +73,11 @@ protected:
     socket_fd mFdSock = INVALID_SOCKET;
 };
 
-class SRC_API ClientSocket : public Socket, public IOStream {
+
+//template class SRC_API std::basic_string<char>;
+
+//class SRC_API ClientSocket : public Socket, public IOStream {
+class ClientSocket : public Socket, public IOStream {
 public:
     enum class Type {
         NONE,
@@ -96,14 +100,14 @@ public:
 
     void connectToServer();
 
-    ClientSocket(const std::string& ipv4 = SERVICE_IP, int port = SERVICE_PORT); // client : streamer
-    ClientSocket(const std::string& sensorName, const std::string& syncSensorName = "", const std::string ipv4 = SERVICE_IP, int port = SERVICE_PORT); // client : stream viewer
-    ClientSocket(socket_fd fdSock); // server side client (bind and listen)
+    SRC_API ClientSocket(const std::string& ipv4 = SERVICE_IP, int port = SERVICE_PORT); // client : streamer
+    SRC_API ClientSocket(const std::string& sensorName, const std::string& syncSensorName = "", const std::string ipv4 = SERVICE_IP, int port = SERVICE_PORT); // client : stream viewer
+    SRC_API ClientSocket(socket_fd fdSock); // server side client (bind and listen)
 
     ClientSocket(const ClientSocket& sock) = delete;
     ClientSocket(const ClientSocket&& sock) = delete;
     ClientSocket(ClientSocket& sock) = delete;
-    ClientSocket(ClientSocket&& sock) noexcept;
+    SRC_API ClientSocket(ClientSocket&& sock) noexcept;
 
     ClientSocket& operator=(const ClientSocket& sock) = delete;
     ClientSocket&& operator=(const ClientSocket&& sock) = delete;
@@ -111,7 +115,7 @@ public:
     ClientSocket& operator=(ClientSocket& sock) = delete;
     ClientSocket&& operator=(ClientSocket&& sock) = delete;
 
-    ~ClientSocket();
+    SRC_API ~ClientSocket();
 
     void close() override;
 
@@ -124,11 +128,11 @@ public:
     void read(T& t) const;
 
     void waitClose() const;
-    void clear();
+    SRC_API void clear();
 
     void setupOutput(const std::string& sensorName) const override;
 
-    void setIsServer(bool isServer);
+    SRC_API void setIsServer(bool isServer);
 
 private:
     std::string mIpv4;

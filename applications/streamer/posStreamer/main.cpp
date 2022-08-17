@@ -135,6 +135,13 @@ void shiftEnd()
 
 int main(int argc, char* argv[])
 {
+    char sensorName[80] = "Keyboard";
+    if ( argc > 2 ) { 
+        memcpy( sensorName, argv[1], strlen( argv[1] ) );
+    }
+
+    std::cout << "sensor name = '" << sensorName << "'" << std::endl;
+    
 
     Stream::MetaData metaData;
     //    metaData["scanWidth"] = 10.0;
@@ -144,7 +151,7 @@ int main(int argc, char* argv[])
     //    metaData["z"] = 0.0;
 
     //    OutputStream proceduralStream("Polhemus Patriot (probe)", Stream::Format::Y8, { width, height }, ClientSocket(), metaData);
-    OutputStream posStream("Keyboard", Stream::Format::DOF6, { 1 }, ClientSocket(), metaData);
+    OutputStream posStream(sensorName, Stream::Format::DOF6, { 1 }, ClientSocket(), metaData);
 
     //    glm::vec3 pos(0, -50, -50);
     //    glm::quat quat(1.0, 0.0, 0.0, 0.0);

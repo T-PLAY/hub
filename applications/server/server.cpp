@@ -8,16 +8,16 @@
 #include <utility>
 #include <vector>
 
-static std::string dims2string(const std::vector<int>& dims)
-{
-    std::string str = "[";
-    for (const auto& dim : dims) {
-        str += std::to_string(dim) + ", ";
-    }
-    str[str.size() - 2] = ']';
-    str.resize(str.size() - 1);
-    return str;
-}
+//static std::string dims2string(const std::vector<int>& dims)
+//{
+//    std::string str = "[";
+//    for (const auto& dim : dims) {
+//        str += std::to_string(dim) + ", ";
+//    }
+//    str[str.size() - 2] = ']';
+//    str.resize(str.size() - 1);
+//    return str;
+//}
 
 static std::string getServerHeader(int iThread)
 {
@@ -87,15 +87,15 @@ void Server::run()
 
                     const size_t acquisitionSize = inputStream.getAcquisitionSize();
                     std::cout << getServerHeader(iThread) << "[streamer] acquisitionSize:" << acquisitionSize << std::endl;
-                    std::cout << getServerHeader(iThread) << "[streamer] dims:" << dims2string(inputStream.getDims()) << std::endl;
+                    std::cout << getServerHeader(iThread) << "[streamer] dims:" << Stream::dims2string(inputStream.getDims()) << std::endl;
                     // std::cout << getServerHeader(iThread) << "[streamer] height:" << inputStream.getDims().at(1) << std::endl;
-                    std::cout << getServerHeader(iThread) << "[streamer] format:" << Stream::format2string[(int)inputStream.getFormat()] << " (byte:" << Stream::format2nByte[(int)inputStream.getFormat()] << ")" << std::endl;
+                    std::cout << getServerHeader(iThread) << "[streamer] format:" << inputStream.getFormat() << std::endl;
                     const Stream::MetaData& metadata = inputStream.getMetaData();
                     for (const auto& pair : metadata) {
                         const auto& name = pair.first;
                         const auto& val = pair.second;
 #ifdef WIN32
-                        std::cout << getServerHeader(iThread) << "[streamer] metadata: " << val.type().name() << " " << name << " = '" << any::to_string(val) << "' (" << val.type().raw_name() << ")" << std::endl;
+                        std::cout << getServerHeader(iThread) << "[streamer] metadata: " << val.type().name() << " " << name << " = '" << Stream::any2string(val) << "' (" << val.type().raw_name() << ")" << std::endl;
 #else
                         std::cout << getServerHeader(iThread) << "[streamer] metadata: " << val.type().name() << " " << name << " = '" << any::to_string(val) << "'" << std::endl;
 #endif
@@ -377,8 +377,8 @@ std::string Server::getStatus() const
 void Viewer::notifyNewStreamer(const Streamer& streamer) const
 {
     mSock->write(Socket::Message::NEW_STREAMER);
-    mSock->write(streamer.mInputStream.getSensorName());
 
+    /*mSock->write(streamer.mInputStream.getSensorName());
     mSock->write(std::string(Stream::format2string[(int)streamer.mInputStream.getFormat()]));
 
     std::string dimStr;
@@ -389,5 +389,7 @@ void Viewer::notifyNewStreamer(const Streamer& streamer) const
     mSock->write(dimStr);
     mSock->write(std::to_string(streamer.mInputStream.getAcquisitionSize()));
 
-    mSock->write(streamer.mInputStream.getMetaData());
+    mSock->write(streamer.mInputStream.getMetaData());*/
+
+    mSock->write( streamer.mInputStream );
 }
