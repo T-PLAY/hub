@@ -61,7 +61,7 @@ add_definitions(-DSRC_EXPORTS)
 #add_definitions(-DUSE_NATIVE=1)
 
 file(GLOB_RECURSE sources *.cpp *.c)
-file(GLOB_RECURSE headers *.h)
+file(GLOB_RECURSE headers *.hpp *.h)
 
 if (BUILD_EXAMPLES)
     add_library(${PROJECT_NAME} SHARED

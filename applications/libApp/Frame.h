@@ -7,8 +7,8 @@
 class Snapshot {
 public:
 
-    Snapshot(const std::string & sensorName, Stream::Format format, const std::vector<int> dims, const Stream::Acquisition & acquisition);
-    Snapshot(const InputStream & inputStream, const Stream::Acquisition & acq);
+    Snapshot(const std::string & sensorName, Header::Format format, const std::vector<int> dims, const Acquisition & acquisition);
+    Snapshot(const InputStream & inputStream, const Acquisition & acq);
     Snapshot(const Snapshot & snapshot);
 
     ~Snapshot();
@@ -25,15 +25,15 @@ public:
     }
 
     const std::string & getSensorName() const;
-    const Stream::Acquisition &getAcq() const;
-    Stream::Format getFormat() const;
+    const Acquisition &getAcq() const;
+    Header::Format getFormat() const;
     const std::vector<int> &getDims() const;
 
 private:
     std::string mSensorName;
-    Stream::Format mFormat;
+    Header::Format mFormat;
     std::vector<int> mDims;
-    Stream::Acquisition * mAcq = nullptr;
+    Acquisition * mAcq = nullptr;
 //    std::unique_ptr<Stream::Acquisition&> mAcq;
 };
 

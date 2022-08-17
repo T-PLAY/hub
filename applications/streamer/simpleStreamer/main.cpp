@@ -19,16 +19,17 @@ int main(int argc, char* argv[])
     constexpr int width = 192;
     constexpr int height = 512;
 
-    Stream::MetaData metaData;
+    Header::MetaData metaData;
     metaData["scanDepth"] = 35.0; // mm
     metaData["scanWidth"] = 50.0; // mm
     metaData["parent"] = "Keyboard";
 
-    OutputStream proceduralStream("ProceduralStreamer", Stream::Format::Y8, { width, height }, ClientSocket(), metaData);
+    OutputStream proceduralStream(
+        { "ProceduralStreamer", Header::Format::Y8, { width, height }, metaData }, ClientSocket() );
 
 //    return 0;
 
-    const size_t imgSize = proceduralStream.getAcquisitionSize();
+    const size_t imgSize = proceduralStream.getHeader().getAcquisitionSize();
     assert(imgSize == width * height);
 
 //    unsigned char data[192 * 512];
@@ -62,7 +63,7 @@ int main(int argc, char* argv[])
         const auto& timestampEnd = std::chrono::duration_cast<std::chrono::microseconds>(end.time_since_epoch()).count();
         ++dec;
 
-        proceduralStream << Stream::Acquisition { timestampStart, timestampEnd, data, imgSize };
+        proceduralStream << Acquisition { timestampStart, timestampEnd, data, imgSize };
 
         std::this_thread::sleep_until(end);
     }
