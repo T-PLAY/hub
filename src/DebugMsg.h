@@ -17,7 +17,6 @@ static std::ofstream s_logFile;
 #    define DEBUG_MSG( str ) \
         do {                               \
             std::cout << str << std::endl; \
-            std::cerr << str << std::endl; \
         } while ( false )
 #else
 #    define DEBUG_MSG( str ) \
