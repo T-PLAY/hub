@@ -1,65 +1,31 @@
-#include "RamIO.h"
+#include "IO/Ram.hpp"
 
 #include <cassert>
 #include <iostream>
 
-//#include <memory>
 #include <cstring>
 #include <thread>
 
-// RamIO::RamIO(std::fstream &&file)
-//     : mFile(std::move(file))
-//{
-//     assert(file.is_open());
-// }
+namespace hub {
 
-// RamIO::RamIO(std::fstream &file)
-//{
-
-//}
-// RamIO::RamIO()
-////    : m_buff(buff)
-////    , m_len(len)
-//{
-//}
-
-// RamIO::RamIO(std::fstream&& file)
-//     : mFile(*std::move(new std::fstream(std::move(file))))
-//{
-//     assert(mFile.is_open());
-// }
-
-CyclicBuff::CyclicBuff( size_t size ) : m_buff( new unsigned char[size] ), m_buffLen( size ) {
-    //    assert(m_buff == nullptr);
-    //    m_buff = new unsigned char[size];
-}
-
-// CyclicBuff &CyclicBuff::operator=(const CyclicBuff &buff)
-//{
-//     m_buffLen = buff.m_buffLen;
-//     return *this;
-// }
+CyclicBuff::CyclicBuff( size_t size ) : m_buff( new unsigned char[size] ), m_buffLen( size ) {}
 
 CyclicBuff::~CyclicBuff() {
-    assert( !m_outputStreamWantsToClose );
-    assert( !m_inputStreamClose );
-    m_outputStreamWantsToClose = true;
-    while ( !m_inputStreamClose ) {
-        std::cout << "[CyclicBuff:" << this << "] ~CyclicBuff() : wait for inputStreamClose"
+    assert( !m_outputSensorWantsToClose );
+    assert( !m_inputSensorClose );
+    m_outputSensorWantsToClose = true;
+    while ( !m_inputSensorClose ) {
+        std::cout << "[CyclicBuff:" << this << "] ~CyclicBuff() : wait for inputSensorClose"
                   << std::endl;
         std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
     }
 
-    //    if (m_inputStreamClose) {
     delete[] m_buff;
-    //    m_buff = nullptr;
-    //    m_buff = nullptr;
     std::cout << "[CyclicBuff:" << this << "] ~CyclicBuff()" << std::endl;
-    //    }
 }
 
 void CyclicBuff::write( const unsigned char* data, size_t len ) {
-    assert( !m_outputStreamWantsToClose );
+    assert( !m_outputSensorWantsToClose );
 
     size_t uploadSize = 0;
     do {
@@ -98,15 +64,15 @@ void CyclicBuff::read( unsigned char* data, size_t len ) {
 
         size_t byteRead;
         do {
-            if ( m_outputStreamWantsToClose ) {
-                m_inputStreamClose = true;
-                std::cout << "[CyclicBuff:" << this << "] read() : inputStream close" << std::endl;
+            if ( m_outputSensorWantsToClose ) {
+                m_inputSensorClose = true;
+                std::cout << "[CyclicBuff:" << this << "] read() : inputSensor close" << std::endl;
                 throw CyclicBuff::exception( "Connection closed" );
                 assert( false );
             }
             if ( m_buff == nullptr ) {
-                m_inputStreamClose = true;
-                //                std::cout << "[CyclicBuff] read() : inputStream close" <<
+                m_inputSensorClose = true;
+                //                std::cout << "[CyclicBuff] read() : inputSensor close" <<
                 //                std::endl;
                 throw CyclicBuff::exception( "End of buffer (nullptr)" );
                 assert( false );
@@ -141,17 +107,11 @@ RamIO::RamIO( CyclicBuff& buff ) : m_buff( buff ) {}
 
 void RamIO::close() {
     m_buff.close();
-
-    //    mFile.close();
-    //    m_buff = nullptr;
-    //    m_len = 0;
 }
 
 void RamIO::write( const unsigned char* data, size_t len ) const {
     m_buff.write( data, len );
 }
-
-///////////////////////////////////////////////////////////////////////////////
 
 void RamIO::read( unsigned char* data, size_t len ) const {
     try {
@@ -162,3 +122,5 @@ void RamIO::read( unsigned char* data, size_t len ) const {
         throw e;
     }
 }
+
+} // namespace hub

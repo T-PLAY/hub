@@ -4,10 +4,11 @@
 #include <functional>
 #include <map>
 //#include <socket.h>
-#include <stream.h>
 //#include <queue>
 #include <deque>
-#include <socket.h>
+
+#include "Socket.hpp"
+#include "Sensor.hpp"
 
 // struct Streamer;
 
@@ -20,32 +21,32 @@
 #include <mutex>
 
 struct Streamer {
-    InputStream mInputStream;
+    hub::InputSensor mInputSensor;
     std::string mSensorName;
 
-    std::list<OutputStream> mOutputStreams;
-    std::map<std::string, std::list<OutputStream>> mSensor2syncViewers;
+    std::list<hub::OutputSensor> mOutputSensors;
+    std::map<std::string, std::list<hub::OutputSensor>> mSensor2syncViewers;
 
     Streamer* mSyncMaster = nullptr;
-    std::map<std::string, std::deque<Acquisition>> mSensor2acqs;
+    std::map<std::string, std::deque<hub::Acquisition>> mSensor2acqs;
 };
 
 struct Viewer {
-    const ClientSocket* const mSock = nullptr;
+    const hub::ClientSocket* const mSock = nullptr;
 
     void notifyNewStreamer(const Streamer& streamer) const;
 };
 
 class Server {
 public:
-    Server(int port = SERVICE_PORT);
+    Server(int port = hub::SERVICE_PORT);
 
     void run();
 
     std::string getStatus() const;
 
 private:
-    ServerSocket mServerSock;
+    hub::ServerSocket mServerSock;
     std::map<std::string, Streamer*> mStreamers;
     std::list<Viewer*> mViewers;
 

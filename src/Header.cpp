@@ -1,5 +1,3 @@
-
-
 #include "Header.hpp"
 
 //#include <algorithm>
@@ -9,6 +7,7 @@
 // Format getFormat() const;
 // const Dims& getDims() const;
 // const MetaData& getMetaData() const;
+namespace hub {
 
 static constexpr int format2nByte[static_cast<int>( Header::Format::COUNT )] = {
     0,       // NONE
@@ -163,9 +162,9 @@ std::string Header::any2string( const std::any& any ) {
         }
         return str;
     }
-    else if ( hashCode == typeid( IOStream::Mat3 ).hash_code() ) {
-        const IOStream::Mat3* val = std::any_cast<IOStream::Mat3>( &any );
-        std::string str           = "";
+    else if ( hashCode == typeid( IO::Mat3 ).hash_code() ) {
+        const IO::Mat3* val = std::any_cast<IO::Mat3>( &any );
+        std::string str     = "";
         for ( int i = 0; i < 3; ++i ) {
             for ( int j = 0; j < 3; ++j ) {
                 str += std::to_string( val->data[i * 3 + j] ) + " ";
@@ -186,3 +185,5 @@ std::ostream& operator<<( std::ostream& os, const Header::Format& format ) {
     os << format2stringArray[(int)format] << " (byte:" << format2nByte[(int)format] << ")";
     return os;
 }
+
+} // namespace hub

@@ -1,14 +1,15 @@
 #ifndef FRAME_H
 #define FRAME_H
 
-#include <stream.h>
 #include <vector>
+
+#include "Sensor.hpp"
 
 class Snapshot {
 public:
 
-    Snapshot(const std::string & sensorName, Header::Format format, const std::vector<int> dims, const Acquisition & acquisition);
-    Snapshot(const InputStream & inputStream, const Acquisition & acq);
+    Snapshot(const std::string & sensorName, hub::Header::Format format, const std::vector<int> dims, const hub::Acquisition & acquisition);
+    Snapshot(const hub::InputSensor & inputSensor, const hub::Acquisition & acq);
     Snapshot(const Snapshot & snapshot);
 
     ~Snapshot();
@@ -25,16 +26,16 @@ public:
     }
 
     const std::string & getSensorName() const;
-    const Acquisition &getAcq() const;
-    Header::Format getFormat() const;
+    const hub::Acquisition &getAcq() const;
+    hub::Header::Format getFormat() const;
     const std::vector<int> &getDims() const;
 
 private:
     std::string mSensorName;
-    Header::Format mFormat;
+    hub::Header::Format mFormat;
     std::vector<int> mDims;
-    Acquisition * mAcq = nullptr;
-//    std::unique_ptr<Stream::Acquisition&> mAcq;
+    hub::Acquisition * mAcq = nullptr;
+//    std::unique_ptr<Stream::hub::Acquisition&> mAcq;
 };
 
 using Frame = std::vector<Snapshot>;

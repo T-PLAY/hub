@@ -8,7 +8,7 @@
 
 #include <Frame.h>
 
-using InputStreamParameters = std::vector<std::pair<std::string, std::string>>;
+using InputSensorParameters = std::vector<std::pair<std::string, std::string>>;
 
 class Recorder
 {
@@ -17,12 +17,12 @@ public:
 //    Recorder(std::string rootPath);
     Recorder(const char * rootPath);
 
-    void record(const InputStreamParameters & inputStreamConfigs);
+    void record(const InputSensorParameters & inputSensorConfigs);
     void stop();
 
     void save(const Frame & frame);
     void add(Snapshot && snapshot);
-//    void add(const std::string & streamName, const Stream::Acquisition & acq);
+//    void add(const std::string & streamName, const Stream::hub::Acquisition & acq);
     void record();
 
 private:
@@ -34,7 +34,7 @@ private:
 
     bool m_isRecording = false;
 
-//    std::map<std::string, std::vector<Stream::Acquisition>> m_snapshots;
+//    std::map<std::string, std::vector<Stream::hub::Acquisition>> m_snapshots;
 
     std::map<std::string, std::vector<Snapshot>> m_snapshots;
 //    std::vector<Snapshot> m_snapshots;

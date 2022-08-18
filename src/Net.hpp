@@ -1,6 +1,4 @@
-
-#ifndef NET_H
-#define NET_H
+#pragma once
 
 #if defined WIN32
 //#define NOMINMAX
@@ -9,32 +7,31 @@
 //#include <WinSock2.h>
 //#pragma comment( lib, "Ws2_32.lib" )
 
-#ifndef WIN32_LEAN_AND_MEAN
-#define WIN32_LEAN_AND_MEAN
-#endif
+#    ifndef WIN32_LEAN_AND_MEAN
+#        define WIN32_LEAN_AND_MEAN
+#    endif
 
-#include <windows.h>
-#include <winsock2.h>
-#include <ws2tcpip.h>
-#include <iphlpapi.h>
-#include <stdio.h>
+#    include <iphlpapi.h>
+#    include <stdio.h>
+#    include <windows.h>
+#    include <winsock2.h>
+#    include <ws2tcpip.h>
 
-#pragma comment(lib, "Ws2_32.lib")
+#    pragma comment( lib, "Ws2_32.lib" )
 
 using socklen_t = int;
 using socket_fd = SOCKET;
 //#include <basetsd.h>
-//using socket_fd = UINT_PTR;
-
+// using socket_fd = UINT_PTR;
 
 #else
-#define INVALID_SOCKET -1
-#define closesocket close
+#    define INVALID_SOCKET -1
+#    define closesocket close
 using socket_fd = int;
-#include <arpa/inet.h>
-#include <csignal>
-#include <sys/socket.h>
-#include <unistd.h>
+#    include <arpa/inet.h>
+#    include <csignal>
+#    include <sys/socket.h>
+#    include <unistd.h>
 #endif
 
 #include <cassert>
@@ -45,22 +42,22 @@ using socket_fd = int;
 #include <set>
 #include <stdio.h>
 #include <thread>
+namespace hub {
 
 namespace Net {
 static bool sInited = false;
 static std::list<socket_fd> sSockets;
 
-static void clearSocket(socket_fd& sock)
-{
+static void clearSocket( socket_fd& sock ) {
     std::cout << "Net::clearSocket(" << sock << ") close socket" << std::endl;
-    closesocket(sock);
+    closesocket( sock );
     size_t size = sSockets.size();
-    assert(std::find(sSockets.begin(), sSockets.end(), sock) != sSockets.end());
-    sSockets.remove(sock);
+    assert( std::find( sSockets.begin(), sSockets.end(), sock ) != sSockets.end() );
+    sSockets.remove( sock );
     // assert(sSockets.size() == size - 1);
 
 #ifdef WIN32
-    if (sSockets.empty()) {
+    if ( sSockets.empty() ) {
         std::cout << "Net::clearSocket(" << sock << ") WSACleanup()" << std::endl;
         WSACleanup();
         sInited = false;
@@ -72,42 +69,40 @@ static void clearSocket(socket_fd& sock)
 }
 
 #ifndef WIN32
-static void signalHandler(int signum)
-{
+static void signalHandler( int signum ) {
     std::cout << "Net::signalHandler() Interrupt signal (" << signum << ") received." << std::endl;
 
     // cleanup and close up stuff here
     // terminate program
-    for (const socket_fd& sock : sSockets) {
-        if (sock != INVALID_SOCKET) {
+    for ( const socket_fd& sock : sSockets ) {
+        if ( sock != INVALID_SOCKET ) {
             std::cout << "Net::clearSocket(" << sock << ") close socket" << std::endl;
-            closesocket(sock);
+            closesocket( sock );
         }
     }
-    exit(signum);
+    exit( signum );
 }
 #endif
 
-static void init()
-{
-    if (!sInited) {
+static void init() {
+    if ( !sInited ) {
         std::cout << "Net::init()" << std::endl;
 #if defined WIN32
         WSADATA wsaData;
-        int iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
-        if (iResult != 0) {
-            printf("error at WSAStartup\n");
-            exit(1);
+        int iResult = WSAStartup( MAKEWORD( 2, 2 ), &wsaData );
+        if ( iResult != 0 ) {
+            printf( "error at WSAStartup\n" );
+            exit( 1 );
         }
 #else
-        signal(SIGINT, signalHandler);
-        signal(SIGPIPE, SIG_IGN);
+        signal( SIGINT, signalHandler );
+        signal( SIGPIPE, SIG_IGN );
 
 #endif
         sInited = true;
     }
 }
 
-};
+} // namespace Net
 
-#endif // NET_H
+} // namespace hub

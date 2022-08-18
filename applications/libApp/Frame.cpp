@@ -1,19 +1,19 @@
 #include "Frame.h"
 
-Snapshot::Snapshot(const std::string &sensorName, Header::Format format, const std::vector<int> dims, const Acquisition &acquisition)
+Snapshot::Snapshot(const std::string &sensorName, hub::Header::Format format, const std::vector<int> dims, const hub::Acquisition &acquisition)
     : mSensorName(sensorName)
     , mFormat(format)
     , mDims(dims)
-    , mAcq(new Acquisition(acquisition.clone()))
+    , mAcq(new hub::Acquisition(acquisition.clone()))
 {
 
 }
 
-Snapshot::Snapshot(const InputStream &inputStream, const Acquisition &acq)
-    : mSensorName(inputStream.getHeader().getSensorName())
-    , mFormat(inputStream.getHeader().getFormat())
-    , mDims(inputStream.getHeader().getDims())
-    , mAcq(new Acquisition(acq.clone()))
+Snapshot::Snapshot(const hub::InputSensor &inputSensor, const hub::Acquisition &acq)
+    : mSensorName(inputSensor.getHeader().getSensorName())
+    , mFormat(inputSensor.getHeader().getFormat())
+    , mDims(inputSensor.getHeader().getDims())
+    , mAcq(new hub::Acquisition(acq.clone()))
 {
 
 }
@@ -22,7 +22,7 @@ Snapshot::Snapshot(const Snapshot &snapshot)
     : mSensorName(snapshot.mSensorName)
     , mFormat(snapshot.mFormat)
     , mDims(snapshot.mDims)
-    , mAcq(new Acquisition(snapshot.mAcq->clone()))
+    , mAcq(new hub::Acquisition(snapshot.mAcq->clone()))
 {
 
 }
@@ -38,12 +38,12 @@ const std::string &Snapshot::getSensorName() const
     return mSensorName;
 }
 
-const Acquisition &Snapshot::getAcq() const
+const hub::Acquisition &Snapshot::getAcq() const
 {
     return *mAcq;
 }
 
-Header::Format Snapshot::getFormat() const
+hub::Header::Format Snapshot::getFormat() const
 {
     return mFormat;
 }

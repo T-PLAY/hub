@@ -1,9 +1,9 @@
-
 #pragma once
 
-#include <fstream>
+//#include <fstream>
+// static std::ofstream s_logFile;
 
-static std::ofstream s_logFile;
+namespace hub {
 
 #define DEBUG
 
@@ -14,12 +14,28 @@ static std::ofstream s_logFile;
 //             s_logFile << str << std::endl; \
 
 #ifdef DEBUG
-#    define DEBUG_MSG( str ) \
+#    define DEBUG_MSG( str )               \
         do {                               \
             std::cout << str << std::endl; \
         } while ( false )
 #else
 #    define DEBUG_MSG( str ) \
         do {                 \
-        } while (false )
+        } while ( false )
 #endif
+
+//#undef SRC_API
+//#define SRC_EXPORTS
+
+#ifdef WIN32
+#    ifdef SRC_EXPORTS
+#        define SRC_API __declspec( dllexport )
+#    else
+#        define SRC_API __declspec( dllimport )
+#    endif
+
+#else
+#    define SRC_API
+#endif
+
+} // namespace hub

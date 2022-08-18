@@ -2,15 +2,17 @@
 #include <chrono>
 #include <filesystem>
 #include <fstream>
-#include <stream.h>
 //#include <format>
-#include <FileIO.h>
 #include <cassert>
-#include <socket.h>
 #include <thread>
+
 
 #include <Recorder.h>
 #include <constants.h>
+
+#include "IO/File.hpp"
+#include "Socket.hpp"
+#include "Sensor.hpp"
 
 // static std::vector<std::fstream> gFiles;
 // static bool gStop = false;
