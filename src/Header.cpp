@@ -162,8 +162,8 @@ std::string Header::any2string( const std::any& any ) {
         }
         return str;
     }
-    else if ( hashCode == typeid( IO::Mat3 ).hash_code() ) {
-        const IO::Mat3* val = std::any_cast<IO::Mat3>( &any );
+    else if ( hashCode == typeid( hub::io::Interface::Mat3 ).hash_code() ) {
+        const hub::io::Interface::Mat3* val = std::any_cast<hub::io::Interface::Mat3>( &any );
         std::string str     = "";
         for ( int i = 0; i < 3; ++i ) {
             for ( int j = 0; j < 3; ++j ) {

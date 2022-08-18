@@ -1,7 +1,7 @@
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
 
-#include <FileIO.h>
+#include <File.h>
 #include <filesystem>
 #include <fstream>
 #include <stream.h>
@@ -26,7 +26,7 @@ MainWindow::MainWindow(QWidget* parent)
         assert(std::filesystem::exists(filepath));
         std::fstream file(filepath, std::ios::binary | std::ios::in);
 
-        InputStream inputStream(FileIO(std::move(file)));
+        InputStream inputStream(File(std::move(file)));
         const auto & header = inputStream.getHeader();
         const auto& acqs = inputStream.getAllAcquisition();
         const auto& acq = acqs[4];
@@ -47,7 +47,7 @@ MainWindow::MainWindow(QWidget* parent)
         assert(std::filesystem::exists(filepath));
         std::fstream file(filepath, std::ios::binary | std::ios::in);
 
-        InputStream inputStream(FileIO(std::move(file)));
+        InputStream inputStream(File(std::move(file)));
         const auto & header = inputStream.getHeader();
         const auto& acqs = inputStream.getAllAcquisition();
         const auto& acq = acqs[163];

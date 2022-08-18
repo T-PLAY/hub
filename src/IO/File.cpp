@@ -2,22 +2,24 @@
 
 #include <cassert>
 #include <iostream>
-namespace hub {
 
-FileIO::FileIO( std::fstream&& file ) :
+namespace hub {
+namespace io {
+
+File::File( std::fstream&& file ) :
     mFile( *std::move( new std::fstream( std::move( file ) ) ) ) {
     assert( mFile.is_open() );
 }
 
-void FileIO::close() {
+void File::close() {
     mFile.close();
 }
 
-void FileIO::write( const unsigned char* data, size_t len ) const {
+void File::write( const unsigned char* data, size_t len ) const {
     mFile.write( (const char*)data, len );
 }
 
-void FileIO::read( unsigned char* data, size_t len ) const {
+void File::read( unsigned char* data, size_t len ) const {
     size_t downloadSize = 0;
     do {
 
@@ -25,11 +27,12 @@ void FileIO::read( unsigned char* data, size_t len ) const {
         mFile.read( reinterpret_cast<char*>( data + downloadSize ), len - downloadSize );
         auto after    = mFile.tellg();
         auto byteRead = after - before;
-        // std::cout << "[FileIO] byteRead = " << byteRead << std::endl;
-        if ( byteRead <= 0 ) { throw FileIO::exception( "End of file" ); }
+        // std::cout << "[File] byteRead = " << byteRead << std::endl;
+        if ( byteRead <= 0 ) { throw File::exception( "End of file" ); }
 
         downloadSize += (size_t)byteRead;
     } while ( len != downloadSize );
 }
 
+} // namespace io
 } // namespace hub

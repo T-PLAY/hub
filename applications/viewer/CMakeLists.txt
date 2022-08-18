@@ -7,7 +7,7 @@ add_subdirectory(streamViewer)
 add_subdirectory(simpleViewer)
 #add_subdirectory(nativeViewer)
 
-if (BUILD_RADIUM_EXAMPLE)
+if (HUB_ENABLE_RADIUM_EXAMPLE)
 
     #    add_definitions(-DONLY_POSE)
     add_subdirectory(radiumViewer)
@@ -16,7 +16,7 @@ if (BUILD_RADIUM_EXAMPLE)
     #    add_subdirectory(radiumViewer4)
 
 
-    if (BUILD_DCMTK)
+    if (HUB_ENABLE_DCMTK)
         add_subdirectory(libDicomLoader)
         add_subdirectory(VolumeDemoApp)
         add_subdirectory(TexturedQuad)

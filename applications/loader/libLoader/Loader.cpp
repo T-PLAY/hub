@@ -1,6 +1,6 @@
 #include "Loader.h"
 
-#include <FileIO.h>
+#include <File.h>
 #include <cassert>
 #include <filesystem>
 #include <fstream>
@@ -82,14 +82,14 @@ void Loader::update() {
         //            continue;
 
         //        try {
-        //        m_inputStream = new InputStream(FileIO(std::move(file)));
-        //        m_inputStreams.push_back(new InputStream(FileIO(std::move(file))));
-        //        m_inputStreams.emplace_back(FileIO(std::move(file)));
+        //        m_inputStream = new InputStream(File(std::move(file)));
+        //        m_inputStreams.push_back(new InputStream(File(std::move(file))));
+        //        m_inputStreams.emplace_back(File(std::move(file)));
 
         //        m_inputStreams.push_back(std::make_unique<InputStream>(ClientSocket()));
-        m_inputStreams.push_back( std::make_unique<InputStream>( FileIO( std::move( file ) ) ) );
+        m_inputStreams.push_back( std::make_unique<InputStream>( File( std::move( file ) ) ) );
 
-        //        m_inputStreams.emplace_back(FileIO(std::move(file)));
+        //        m_inputStreams.emplace_back(File(std::move(file)));
         //        m_inputStreams.emplace_back(ClientSocket());
 
         auto& inputStream = *m_inputStreams.back();

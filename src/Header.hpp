@@ -5,9 +5,11 @@
 #include <string>
 #include <vector>
 
-#include "IO.hpp"
+#include "Macros.hpp"
+#include "IO/Interface.hpp"
 
 namespace hub {
+
 class Header
 {
   public:
@@ -16,8 +18,8 @@ class Header
 
     enum class Format {
         NONE,
-        Z16, /**< 			16-bit linear depth values. The depth is meters is equal to depth scale * pixel
-                value. */
+        Z16, /**< 			16-bit linear depth values. The depth is meters is equal to depth scale *
+                pixel value. */
         DISPARITY16, /**< 	16-bit float-point disparity values. Depth->Disparity conversion :
                         Disparity = Baseline*FocalLength/Depth. */
         XYZ32F,      /**< 		32-bit floating point 3D coordinates. */
@@ -48,14 +50,15 @@ class Header
                      ([8:8:8:8:2222]) grey-scale image. The data is unpacked to LSB and padded with
                      6 zero bits */
         DISTANCE, /**< 		32-bit float-point depth distance value.  */
-        MJPEG,    /**< 		Bitstream encoding for video in which an image of each frame is encoded as
-                     JPEG-DIB   */
+        MJPEG,    /**< 		Bitstream encoding for video in which an image of each frame is encoded
+                     as    JPEG-DIB   */
         Y8I,      /**< 			8-bit per pixel interleaved. 8-bit left, 8-bit right.  */
         Y12I,     /**< 			12-bit per pixel interleaved. 12-bit left, 12-bit right. Each pixel     is
                      stored in a 24-bit word in little-endian order. */
         INZI,     /**< 			multi-planar Depth 16bit + IR 10bit.  */
         INVI,     /**< 			8-bit IR stream.  */
-        W10,      /**< 			Grey-scale image as a bit-packed array. 4 pixel data stream taking 5 bytes
+        W10,      /**< 			Grey-scale image as a bit-packed array. 4 pixel data stream taking 5
+                   * bytes
                    */
         Z16H,     /**< 			Variable-length Huffman-compressed 16-bit depth values. */
         FG,       /**< 			16-bit per-pixel frame grabber format. */
@@ -72,15 +75,14 @@ class Header
         mAcquisitionSize = computeAcquisitionSize( mFormat, mDims );
     };
 
-    SRC_API void write( IO& iostream ) const {
-
+    SRC_API void write( io::Interface& iostream ) const {
         iostream.write( mSensorName );
         iostream.write( mFormat );
         iostream.write( mDims );
         iostream.write( mMetaData );
     };
 
-    SRC_API void read( const IO& iostream ) {
+    SRC_API void read( const io::Interface& iostream ) {
         iostream.read( mSensorName );
         iostream.read( mFormat );
         iostream.read( mDims );

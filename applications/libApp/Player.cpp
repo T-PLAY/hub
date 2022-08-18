@@ -69,7 +69,7 @@ void Player::update( int iSensor ) {
         //        assert(sizeof(int) == 4);
 
         try {
-            hub::InputSensor inputSensor( hub::FileIO( std::move( file ) ) );
+            hub::InputSensor inputSensor( hub::File( std::move( file ) ) );
             auto acqs                     = inputSensor.getAllAcquisitions();
             const auto& header            = inputSensor.getHeader();
             const std::string& sensorName = header.getSensorName();

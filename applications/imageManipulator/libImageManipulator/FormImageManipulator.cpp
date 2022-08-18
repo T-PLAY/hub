@@ -1,7 +1,7 @@
 #include "FormImageManipulator.h"
 #include "ui_FormImageManipulator.h"
 
-#include <FileIO.h>
+#include <File.h>
 #include <filesystem>
 #include <fstream>
 #include <stream.h>
@@ -54,7 +54,7 @@ FormImageManipulator::FormImageManipulator(QWidget* parent)
 //        assert(std::filesystem::exists(filepath));
 //        std::fstream file(filepath, std::ios::binary | std::ios::in);
 
-//        InputStream inputStream(FileIO(std::move(file)));
+//        InputStream inputStream(File(std::move(file)));
 //        const auto& acqs = inputStream.getAllAcquisition();
 //        const auto& acq = acqs[4];
 //        const auto& dims = inputStream.getDims();
@@ -69,7 +69,7 @@ FormImageManipulator::FormImageManipulator(QWidget* parent)
 //        assert(std::filesystem::exists(filepath));
 //        std::fstream file(filepath, std::ios::binary | std::ios::in);
 
-//        InputStream inputStream(FileIO(std::move(file)));
+//        InputStream inputStream(File(std::move(file)));
 //        const auto& acqs = inputStream.getAllAcquisition();
 //        const auto& acq = acqs[163];
 //        const auto& dims = inputStream.getDims();

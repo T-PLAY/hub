@@ -7,7 +7,7 @@
 
 #    include <iostream>
 
-#    include "Socket.hpp"
+#    include "Net/Socket.hpp"
 
 namespace hub {
 // static std::map<int, std::unique_ptr<hub::InputSensor>> s_id2inputSensor;
@@ -47,8 +47,8 @@ namespace hub {
 
 // extern "C" NATIVECPPLIBRARY_API hub::InputSensor* createhub::InputSensor();
 // extern "C" NATIVECPPLIBRARY_API void freehub::InputSensor(hub::InputSensor* instance);
-// extern "C" NATIVECPPLIBRARY_API int getAcquisition(hub::InputSensor* instance, Stream::Acquisition*
-// acq);
+// extern "C" NATIVECPPLIBRARY_API int getAcquisition(hub::InputSensor* instance,
+// Stream::Acquisition* acq);
 InputSensor* createInputSensor( const char* sensorName, const char* ipv4 ) {
     std::cout << "[Native] createInputSensor( " << sensorName << ")" << std::endl;
     InputSensor* inputSensor;

@@ -62,7 +62,7 @@ void Recorder::record(const InputSensorParameters& inputSensorConfigs)
 
         // here
         outputFileStreams.push_back( std::make_unique<hub::OutputSensor>( inputSensors[i]->getHeader(),
-            hub::FileIO( std::move( file ) )
+            hub::File( std::move( file ) )
              ) );
     }
 
@@ -175,7 +175,7 @@ void Recorder::save(const Frame& frame)
         const auto& filename = newRecordFolder + "/" + sensorName + ".txt";
         if (std::filesystem::exists(filename)) {
             auto file = std::fstream(filename, std::ios::binary | std::ios::in);
-            hub::InputSensor inputSensor(hub::FileIO(std::move(file)));
+            hub::InputSensor inputSensor(hub::File(std::move(file)));
             //        assert(file.is_open());
 
             acqs = inputSensor.getAllAcquisitions();
@@ -186,12 +186,12 @@ void Recorder::save(const Frame& frame)
         acqs.push_back(frame[i].getAcq().clone());
 
         // here
-        //        outputFileStreams.push_back(std::make_unique<hub::OutputSensor>(sensorName, inputSensors[i]->getFormat(), inputSensors[i]->getDims(), hub::FileIO(std::move(file)), inputSensors[i]->getMetaData()));
+        //        outputFileStreams.push_back(std::make_unique<hub::OutputSensor>(sensorName, inputSensors[i]->getFormat(), inputSensors[i]->getDims(), hub::File(std::move(file)), inputSensors[i]->getMetaData()));
         auto file = std::fstream(filename, std::ios::binary | std::ios::out);
         hub::Header header( sensorName, frame[i].getFormat(), frame[i].getDims(), {} );
-        hub::OutputSensor outputSensor(header, hub::FileIO(std::move(file)));
+        hub::OutputSensor outputSensor(header, hub::File(std::move(file)));
         //hub::OutputSensor outputSensor( { sensorName, frame[i].getFormat(), frame[i].getDims(), {} },
-        //                           hub::FileIO( std::move( file ) ) );
+        //                           hub::File( std::move( file ) ) );
 
         for (const auto& acq : acqs) {
             outputSensor << acq;
@@ -240,7 +240,7 @@ void Recorder::saveOnDisk()
         const auto& firstSnapshot = snapshots.front();
         hub::OutputSensor outputSensor(
             { sensorName, firstSnapshot.getFormat(), firstSnapshot.getDims() },
-            hub::FileIO( std::move( file ) ) );
+            hub::File( std::move( file ) ) );
 
         //        for (const auto& snapshot : snapshots) {
         for (int i = 0; i < min; ++i) {
