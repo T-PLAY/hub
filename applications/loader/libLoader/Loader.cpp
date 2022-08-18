@@ -93,7 +93,8 @@ void Loader::update() {
         //        m_inputStreams.emplace_back(ClientSocket());
 
         auto& inputStream = *m_inputStreams.back();
-        const std::string& sensorName = inputStream.getSensorName();
+        const auto & header = inputStream.getHeader();
+        const std::string& sensorName = header.getSensorName();
         const std::string& sensorNamePostFix = sensorName + m_outputPostfixName;
 
         assert(m_sensorName2acquisitions.find(sensorName) == m_sensorName2acquisitions.end());
@@ -121,7 +122,7 @@ void Loader::update() {
             //                m_snapshots.insert(std::move(snapshot));
             //                m_snapshots.insert(Snapshot { acq.clone(), sensorName });
             //            Snapshot snapshot(inputStream, acq);
-            Snapshot snapshot( sensorNamePostFix, inputStream.getFormat(), inputStream.getDims(), acq );
+            Snapshot snapshot( sensorNamePostFix, header.getFormat(), header.getDims(), acq );
             m_snapshots.insert( std::move( snapshot ) );
             //                m_snapshots.insert(Snapshot(sensorName, inputStream.getFormat(),
             //                inputStream.getDims(), acq));
@@ -129,7 +130,7 @@ void Loader::update() {
             //                const auto& it = m_snapshots.find(Snapshot { acq.clone(), sensorName
             //                });
             //            Snapshot snapshot2(inputStream, acq);
-            Snapshot snapshot2( sensorNamePostFix, inputStream.getFormat(), inputStream.getDims(), acq );
+            Snapshot snapshot2( sensorNamePostFix, header.getFormat(), header.getDims(), acq );
             const auto& it = m_snapshots.find( snapshot2 );
             assert( it != m_snapshots.end() );
             m_frames[iAcq].push_back( *it );
@@ -189,7 +190,8 @@ void Loader::update() {
 
     assert( m_outputStreams.empty() );
     for ( const auto& inputStream : m_inputStreams ) {
-        const auto& sensorNamePostFix = inputStream->getSensorName() + m_outputPostfixName;
+        const auto & header = inputStream->getHeader();
+        const auto& sensorNamePostFix = header.getSensorName() + m_outputPostfixName;
         //        OutputStream && ramOutputStream = OutputStream(inputStream->getSensorName(),
         //        inputStream->getFormat(), inputStream->getDims(), RamIO()); CyclicBuff buff;
         //        m_outputStreamBuffs[sensorName] = CyclicBuff();
@@ -197,7 +199,7 @@ void Loader::update() {
         //        m_outputStreamBuffs.insert(std::make_pair(sensorName, CyclicBuff()));
         auto& cyclicBuff            = *m_outputStreamBuffs.at( sensorNamePostFix );
         m_outputStreams[sensorNamePostFix] = std::make_unique<OutputStream>(
-            sensorNamePostFix, inputStream->getFormat(), inputStream->getDims(), RamIO( cyclicBuff ) );
+            Header{ sensorNamePostFix, header.getFormat(), header.getDims()}, RamIO( cyclicBuff ) );
     }
     //        ui->listView_recordFrames->show();
     //        view->show();
@@ -262,7 +264,7 @@ void Loader::onFrame_selectionChange( const QModelIndexList& selectedRows ) {
 
             const auto& acq = snapshot.getAcq();
 
-            Stream::Acquisition acq2(iFrame, iFrame, acq.mData, acq.mSize);
+            Acquisition acq2(iFrame, iFrame, acq.mData, acq.mSize);
 //            auto acq = snapshot.getAcq().clone();
 //            acq.mBackendTimestamp = iFrame;
 //                        std::cout << "[Loader:Frame" << index.row() << "] send acq : " << acq << std::endl;
@@ -308,7 +310,7 @@ const std::map<std::string, std::unique_ptr<CyclicBuff>>& Loader::getOutputStrea
     return m_outputStreamBuffs;
 }
 
-const std::vector<Stream::Acquisition> &Loader::getAcquisitions(const std::string &sensorName) const
+const std::vector<Acquisition> &Loader::getAcquisitions(const std::string &sensorName) const
 {
     assert(m_sensorName2acquisitions.find(sensorName) != m_sensorName2acquisitions.end());
     return m_sensorName2acquisitions.at(sensorName);

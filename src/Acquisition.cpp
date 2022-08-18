@@ -4,6 +4,8 @@
 #include <cassert>
 #include <iomanip>
 
+#include <cstring>
+
 Acquisition::Acquisition( long long backendTimestamp,
                                   long long backendTimeOfArrival,
                                   const unsigned char* const data,

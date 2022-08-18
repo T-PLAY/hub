@@ -98,7 +98,7 @@ void Server::run()
 #ifdef WIN32
                         std::cout << getServerHeader(iThread) << "[streamer] metadata: " << val.type().name() << " " << name << " = '" << Header::any2string(val) << "' (" << val.type().raw_name() << ")" << std::endl;
 #else
-                        std::cout << getServerHeader(iThread) << "[streamer] metadata: " << val.type().name() << " " << name << " = '" << any::to_string(val) << "'" << std::endl;
+                        std::cout << getServerHeader(iThread) << "[streamer] metadata: " << val.type().name() << " " << name << " = '" << Header::any2string(val) << "'" << std::endl;
 #endif
                     }
 

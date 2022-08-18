@@ -27,16 +27,17 @@ MainWindow::MainWindow(QWidget* parent)
         std::fstream file(filepath, std::ios::binary | std::ios::in);
 
         InputStream inputStream(FileIO(std::move(file)));
+        const auto & header = inputStream.getHeader();
         const auto& acqs = inputStream.getAllAcquisition();
         const auto& acq = acqs[4];
-        const auto& dims = inputStream.getDims();
+        const auto& dims = header.getDims();
 
         //        ui->widgetStreamView->init(640, 480);
         m_streamView2D = new WidgetStreamView2D(this);
         //        m_streamView2D->setMinimumWidth(640);
         //        m_streamView2D->setMinimumHeight(480);
         m_streamView2D->init(dims.at(0), dims.at(1));
-        m_streamView2D->setData((unsigned char*)acq.mData, inputStream.getAcquisitionSize(), inputStream.getDims(), inputStream.getFormat());
+        m_streamView2D->setData((unsigned char*)acq.mData, header.getAcquisitionSize(), header.getDims(), header.getFormat());
 
         ui->mdiArea->addSubWindow(m_streamView2D);
     }
@@ -47,15 +48,16 @@ MainWindow::MainWindow(QWidget* parent)
         std::fstream file(filepath, std::ios::binary | std::ios::in);
 
         InputStream inputStream(FileIO(std::move(file)));
+        const auto & header = inputStream.getHeader();
         const auto& acqs = inputStream.getAllAcquisition();
         const auto& acq = acqs[163];
-        const auto& dims = inputStream.getDims();
+        const auto& dims = header.getDims();
 
         //        ui->widgetStreamView->init(dims.at(0), dims.at(1));
         m_streamView2D_2 = new WidgetStreamView2D(this);
         m_streamView2D_2->init(512, 192, 35.0, 50.0);
 //        m_streamView2D_2->init(512, 192);
-        m_streamView2D_2->setData((unsigned char*)acq.mData, inputStream.getAcquisitionSize(), inputStream.getDims(), inputStream.getFormat());
+        m_streamView2D_2->setData((unsigned char*)acq.mData, header.getAcquisitionSize(), header.getDims(), header.getFormat());
         ui->mdiArea->addSubWindow(m_streamView2D_2);
 
 //    }
@@ -68,7 +70,7 @@ MainWindow::MainWindow(QWidget* parent)
         auto & widgetStreamView = m_imageManipulator->getWidgetStreamView();
         widgetStreamView.init(512, 192, 35.0, 50.0);
 //        widgetStreamView.init(512, 192);
-        widgetStreamView.setData((unsigned char*)acq.mData, inputStream.getAcquisitionSize(), inputStream.getDims(), inputStream.getFormat());
+        widgetStreamView.setData((unsigned char*)acq.mData, header.getAcquisitionSize(), header.getDims(), header.getFormat());
 
     //    FormIm
         ui->mdiArea->addSubWindow(m_imageManipulator);

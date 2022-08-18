@@ -15,7 +15,7 @@ cmake_minimum_required (VERSION 3.8)
 #add_compile_definitions(WRL_NO_DEFAULT_LIB)
 #add_compile_definitions(_DEBUG)
 #set(COMPILER_MSVC_64 TRUE)
-#set(CMAKE_SYSTEM_PROCESSOR “ARM64”)
+#set(CMAKE_SYSTEM_PROCESSOR ARM64)
 #add_compile_definitions(JM_SSE4_2)
 #set(CMAKE_VS_WINRT_BY_DEFAULT TRUE)
 #add_compile_options($<$<COMPILE_LANGUAGE:CXX>:/ZW:nostdlib>)
@@ -64,35 +64,35 @@ file(GLOB_RECURSE sources *.cpp *.c)
 file(GLOB_RECURSE headers *.hpp *.h)
 
 if (BUILD_EXAMPLES)
-    add_library(${PROJECT_NAME} SHARED
-    ${sources}
-    ${headers}
-    )
+	add_library(${PROJECT_NAME} SHARED
+		${sources}
+		${headers}
+		)
 else()
-    add_library(${PROJECT_NAME} SHARED
-    ${sources}
-    ${headers}
-    )
+	add_library(${PROJECT_NAME} SHARED
+		${sources}
+		${headers}
+		)
 endif()
 #add_library(${PROJECT_NAME} SHARED
-    #add_library(${PROJECT_NAME} SHARED
+#add_library(${PROJECT_NAME} SHARED
 #    ${sources}
 #    ${headers}
 #    )
 
 
 target_include_directories(${PROJECT_NAME} PUBLIC
-    ${PROJECT_SOURCE_DIR}
-    )
+	${PROJECT_SOURCE_DIR}
+	)
 
 if (WIN32)
-    #    set(WIN32_REQUIRED_LIBS wsock32 ws2_32)
+	#    set(WIN32_REQUIRED_LIBS wsock32 ws2_32)
 
 
 elseif(UNIX)
-    #    set(THREADS_PREFER_PTHREAD_FLAG ON)
-    find_package(Threads REQUIRED)
-    set(UNIX_REQUIRED_LIBS Threads::Threads)
+	#    set(THREADS_PREFER_PTHREAD_FLAG ON)
+	find_package(Threads REQUIRED)
+	set(UNIX_REQUIRED_LIBS Threads::Threads)
 endif()
 
 #if (MSVC)

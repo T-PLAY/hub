@@ -39,7 +39,7 @@ public:
     void run();
 
     //    Stream::Acquisition mAcq;
-    std::queue<Stream::Acquisition> mAcqs;
+    std::queue<Acquisition> mAcqs;
 
     //    int mIStream;
     //    InputStream& mInputStream;
@@ -84,7 +84,7 @@ namespace Ui {
 class FormInputStreamView;
 }
 
-using Acquisitions = std::queue<Stream::Acquisition>;
+using Acquisitions = std::queue<Acquisition>;
 
 class FormInputStreamView : public QWidget {
     Q_OBJECT
@@ -170,7 +170,8 @@ void FormInputStreamView::add(const std::string streamName, IOStreamT&& iostream
         assert(m_widgetStreamView == nullptr);
 
         const auto& inputStream = inputStreamThread->mInputStream;
-        const auto& dims = inputStream->getDims();
+        const auto& header = inputStream->getHeader();
+        const auto& dims = header.getDims();
         if (dims.size() == 1) {
             m_widgetStreamView = new WidgetStreamView1D(this);
             m_widgetStreamView->setMinimumSize(400, 35);
@@ -196,7 +197,7 @@ void FormInputStreamView::add(const std::string streamName, IOStreamT&& iostream
         }
         dimText += ")";
 
-        std::string formatText = std::string("(format: ") + Stream::format2string[(int)inputStream->getFormat()] + ")";
+        std::string formatText = std::string("(format: ") + Header::format2string(header.getFormat()) + ")";
         subWindow->setWindowTitle((m_sensorName + "   " + dimText + "   " + formatText).c_str());
         //        }
     }

@@ -100,7 +100,8 @@ public:
      SRC_API size_t getAcquisitionSize() const;
 
      SRC_API static std::string dims2string( const Dims& dims );
-	 SRC_API static std::string metaData2string( const MetaData& metaData, bool expand = false );
+     SRC_API static std::string format2string( const Format& format );
+     SRC_API static std::string metaData2string( const MetaData& metaData, bool expand = false );
 	 SRC_API static std::string any2string( const std::any& any );
      SRC_API friend std::ostream& operator<<( std::ostream& os, const Format& format );
 };

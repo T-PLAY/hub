@@ -220,6 +220,7 @@ void FormInputStreamView::onNewAcquisition(const std::string& sourceType)
         if (m_widgetStreamView != nullptr) {
             const auto& inputStreamThread = *m_sourceType2inputStreamThreads.at(activeSourceType.toStdString()).front().get();
             const auto& inputStream = inputStreamThread.mInputStream;
+            const auto& header = inputStream->getHeader();
             const auto& acqs = inputStreamThread.mAcqs;
             if (acqs.empty())
                 return;
@@ -228,7 +229,7 @@ void FormInputStreamView::onNewAcquisition(const std::string& sourceType)
             //            m_widgetStreamView->setData((unsigned char*)acqs.back().mData, inputStream->getDims(), inputStream->getFormat());
 
             //            m_widgetStreamView->setData((unsigned char*)acqs.back().mData, inputStream->getDims(), inputStream->getFormat());
-            m_widgetStreamView->setData((unsigned char*)acqs.back().mData, inputStream->getAcquisitionSize(), inputStream->getDims(), inputStream->getFormat());
+            m_widgetStreamView->setData((unsigned char*)acqs.back().mData, header.getAcquisitionSize(), header.getDims(), header.getFormat());
 
             //            if (inputStreamThread.mAcqs.size() > 1) {
             //                m_widgetStreamView->setData((unsigned char*)inputStreamThread.mAcqs.back().mData, inputStream->getDims(), inputStream->getFormat());

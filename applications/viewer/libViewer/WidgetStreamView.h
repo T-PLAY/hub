@@ -17,11 +17,11 @@ public:
 
 public slots:
 //    virtual void setData(unsigned char* img_ptr, std::vector<int> dims, Stream::Format format) = 0;
-    virtual void setData(unsigned char* img_ptr, size_t size, std::vector<int> dims, Stream::Format format) = 0;
+    virtual void setData(unsigned char* img_ptr, size_t size, std::vector<int> dims, Header::Format format) = 0;
 
 protected:
 protected:
-    Stream::Format mFormat = Stream::Format::NONE;
+    Header::Format mFormat = Header::Format::NONE;
     unsigned char* mData = nullptr;
 };
 
@@ -41,7 +41,7 @@ public:
 
 public slots:
 //    void setData(unsigned char* img_ptr, std::vector<int> dims, Stream::Format format) override;
-    void setData(unsigned char* img_ptr, size_t size, std::vector<int> dims, Stream::Format format) override;
+    void setData(unsigned char* img_ptr, size_t size, std::vector<int> dims, Header::Format format) override;
 
 
     void onPixelPerUnitChanged();
@@ -118,7 +118,7 @@ public:
 
 public slots:
 //    void setData(unsigned char* img_ptr, std::vector<int> dims, Stream::Format format) override;
-    void setData(unsigned char* img_ptr, size_t size, std::vector<int> dims, Stream::Format format) override;
+    void setData(unsigned char* img_ptr, size_t size, std::vector<int> dims, Header::Format format) override;
 
 protected:
 private:

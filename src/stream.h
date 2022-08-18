@@ -45,7 +45,7 @@ protected:
 protected:
      friend class Header;
 	//std::unique_ptr<Header> m_header; // pimpl
-  Header * m_header;
+  Header m_header;
   //Header& m_header;
 
     //std::string mSensorName = "";
@@ -89,7 +89,7 @@ template <class IOStreamT>
 InputStream::InputStream(IOStreamT&& ioStream) :
     Stream( {}, *std::move( new IOStreamT( std::move( ioStream ) ) ) ) {
 
-    m_header->read( mIOStream );
+    m_header.read( mIOStream );
     //mIOStream.read(mSensorName);
     //mIOStream.read(mFormat);
     //mIOStream.read(mDims);
@@ -121,9 +121,9 @@ template <class IOStreamT>
 OutputStream::OutputStream(const Header & header, IOStreamT&& ioStream)
     : Stream(header, *std::move(new IOStreamT(std::move(ioStream))))
 {
-    mIOStream.setupOutput(m_header->getSensorName());
+    mIOStream.setupOutput(m_header.getSensorName());
 
-    m_header->write( mIOStream );
+    m_header.write( mIOStream );
     //    mIOStream.write(mSensorName);
 //    mIOStream.write(mFormat);
 //    mIOStream.write(mDims);

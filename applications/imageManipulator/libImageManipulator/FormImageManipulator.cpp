@@ -106,17 +106,17 @@ FormImageManipulator::~FormImageManipulator()
     delete ui;
 }
 
-void FormImageManipulator::update(const Stream::Acquisition &acquisition)
+void FormImageManipulator::update(const Acquisition &acquisition)
 {
 //    ui->widgetStreamView_2->setData((unsigned char*)acquisition.mData, 512 * 192, {512, 192}, Stream::Format::Y8);
-    ui->widgetStreamView_2->setData((unsigned char*)acquisition.mData, 256 * 256, {256, 256}, Stream::Format::Y8);
+    ui->widgetStreamView_2->setData((unsigned char*)acquisition.mData, 256 * 256, {256, 256}, Header::Format::Y8);
 
 }
 
 void FormImageManipulator::init()
 {
 //    ui->widgetStreamView_2->setData(nullptr, 192 * 512, {512, 192}, Stream::Format::Y8);
-    ui->widgetStreamView_2->setData(nullptr, 256 * 256, {256, 256}, Stream::Format::Y8);
+    ui->widgetStreamView_2->setData(nullptr, 256 * 256, {256, 256}, Header::Format::Y8);
 
 }
 

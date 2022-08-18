@@ -131,13 +131,14 @@ void FormInputStreamViews::onNewAcquisition(const std::string& sensorName, const
         const auto& inputStreamThread = m_sensorName2streamView.at(sensorName)->getIputStreamThread(sourceType);
         //        m_recorder.add(Snapshot(*inputStreamThread.mInputStream, inputStreamThread.mAcq));
 //        if (inputStreamThread.mAcqs.empty())
+        const auto& header = inputStreamThread.mInputStream->getHeader();
 //            return;
         assert(! inputStreamThread.mAcqs.empty());
 
         m_recorder.add(
             Snapshot(sensorName,
-                inputStreamThread.mInputStream->getFormat(),
-                inputStreamThread.mInputStream->getDims(),
+                header.getFormat(),
+                header.getDims(),
                 inputStreamThread.mAcqs.back()));
 //                inputStreamThread.mAcqs.front()));
 
