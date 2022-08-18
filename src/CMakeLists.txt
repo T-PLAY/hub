@@ -1,5 +1,66 @@
 cmake_minimum_required (VERSION 3.8)
 
+
+#project ("HubV2")
+project(${SRC_TARGET})
+
+set(WIN32_REQUIRED_LIBS)
+set(UNIX_REQUIRED_LIBS)
+
+add_definitions(-DSRC_EXPORTS)
+#add_definitions(-DUSE_NATIVE=1)
+
+file(GLOB_RECURSE sources *.cpp *.c)
+file(GLOB_RECURSE headers *.hpp *.h)
+
+if (BUILD_EXAMPLES)
+    add_library(${PROJECT_NAME} SHARED
+        ${sources}
+        ${headers}
+    )
+else()
+    add_library(${PROJECT_NAME} SHARED
+        ${sources}
+        ${headers}
+    )
+endif()
+#add_library(${PROJECT_NAME} SHARED
+#add_library(${PROJECT_NAME} SHARED
+#    ${sources}
+#    ${headers}
+#    )
+
+
+target_include_directories(${PROJECT_NAME} PUBLIC
+    ${PROJECT_SOURCE_DIR}
+)
+
+if (WIN32)
+    #    set(WIN32_REQUIRED_LIBS wsock32 ws2_32)
+
+
+elseif(UNIX)
+    #    set(THREADS_PREFER_PTHREAD_FLAG ON)
+    find_package(Threads REQUIRED)
+    set(UNIX_REQUIRED_LIBS Threads::Threads)
+endif()
+
+#if (MSVC)
+#	# Here I set the target System to WindowsStore, which *should* enable UWP-support
+#	set_target_properties(${PROJECT_NAME}
+#		PROPERTIES
+#			CMAKE_SYSTEM_NAME WindowsStore
+#			CMAKE_SYSTEM_VERSION 10.0
+#	)
+#    add_compile_options(/ZW)
+#endif()
+
+target_link_libraries(${PROJECT_NAME} ${UNIX_REQUIRED_LIBS} ${WIN32_REQUIRED_LIBS})
+
+install(TARGETS ${PROJECT_NAME} DESTINATION lib)
+install(FILES ${headers} DESTINATION include)
+
+
 #set(CMAKE_CXX_STANDARD 14) #ULA-OP C++14
 #set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
@@ -49,64 +110,3 @@ cmake_minimum_required (VERSION 3.8)
 #add_link_options(/DEBUG)
 #add_link_options(/OPT:NOREF)
 #add_link_options(/MACHINE:ARM64)
-
-
-#project ("HubV2")
-project(src)
-
-set(WIN32_REQUIRED_LIBS)
-set(UNIX_REQUIRED_LIBS)
-
-add_definitions(-DSRC_EXPORTS)
-#add_definitions(-DUSE_NATIVE=1)
-
-file(GLOB_RECURSE sources *.cpp *.c)
-file(GLOB_RECURSE headers *.hpp *.h)
-
-if (BUILD_EXAMPLES)
-	add_library(${PROJECT_NAME} SHARED
-		${sources}
-		${headers}
-		)
-else()
-	add_library(${PROJECT_NAME} SHARED
-		${sources}
-		${headers}
-		)
-endif()
-#add_library(${PROJECT_NAME} SHARED
-#add_library(${PROJECT_NAME} SHARED
-#    ${sources}
-#    ${headers}
-#    )
-
-
-target_include_directories(${PROJECT_NAME} PUBLIC
-	${PROJECT_SOURCE_DIR}
-	)
-
-if (WIN32)
-	#    set(WIN32_REQUIRED_LIBS wsock32 ws2_32)
-
-
-elseif(UNIX)
-	#    set(THREADS_PREFER_PTHREAD_FLAG ON)
-	find_package(Threads REQUIRED)
-	set(UNIX_REQUIRED_LIBS Threads::Threads)
-endif()
-
-#if (MSVC)
-#	# Here I set the target System to WindowsStore, which *should* enable UWP-support
-#	set_target_properties(${PROJECT_NAME}
-#		PROPERTIES
-#			CMAKE_SYSTEM_NAME WindowsStore
-#			CMAKE_SYSTEM_VERSION 10.0
-#	)
-#    add_compile_options(/ZW)
-#endif()
-
-target_link_libraries(${PROJECT_NAME} ${UNIX_REQUIRED_LIBS} ${WIN32_REQUIRED_LIBS})
-
-install(TARGETS ${PROJECT_NAME} DESTINATION lib)
-install(FILES ${headers} DESTINATION include)
-

@@ -6,8 +6,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 project (Hub)
 
 add_definitions(-DPROJECT_DIR=\"${CMAKE_SOURCE_DIR}/\")
-set(SRC_DIR ${CMAKE_SOURCE_DIR}/src/)
 
+set(SRC_DIR ${CMAKE_SOURCE_DIR}/src/)
+set(SRC_TARGET hub)
 add_subdirectory(src)
 
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)

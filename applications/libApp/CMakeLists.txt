@@ -32,7 +32,7 @@ endif()
 
 
 target_link_libraries(${PROJECT_NAME} PUBLIC
-     src
+     ${SRC_TARGET}
 #    # ${REQUIRED_LIBS_QUALIFIED}
 #    # ${UNIX_REQUIRED_LIBS}
 #    # ${WIN32_REQUIRED_LIBS}

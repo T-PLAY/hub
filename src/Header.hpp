@@ -78,7 +78,7 @@ class Header
 		mAcquisitionSize = computeAcquisitionSize( mFormat, mDims );
     };
 
-public:
+private:
     SRC_API static size_t computeAcquisitionSize( Format format, const Dims& dims );
 
 
