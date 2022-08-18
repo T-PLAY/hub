@@ -2,11 +2,12 @@
 
 #include <fstream>
 
-#include "IO.hpp"
+#include "IO/Interface.hpp"
 
 namespace hub {
+namespace io {
 
-class SRC_API FileIO : public IO
+class SRC_API File : public hub::io::Interface
 {
     class exception : public std::runtime_error
     {
@@ -16,9 +17,9 @@ class SRC_API FileIO : public IO
     };
 
   public:
-    FileIO( std::fstream&& file );
-    FileIO( const FileIO& fileIO ) = delete;
-    FileIO( FileIO&& fileIO )      = default;
+    File( std::fstream&& file );
+    File( const File& fileIO ) = delete;
+    File( File&& fileIO )      = default;
 
     void close() override;
 
@@ -30,4 +31,5 @@ class SRC_API FileIO : public IO
     std::fstream& mFile;
 };
 
+} // namespace io
 } // namespace hub

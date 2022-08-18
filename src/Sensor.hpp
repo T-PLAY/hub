@@ -2,7 +2,8 @@
 
 #include "Acquisition.hpp"
 #include "Header.hpp"
-#include "Socket.hpp"
+//#include "Socket.hpp"
+
 namespace hub {
 
 class SRC_API Sensor
@@ -16,8 +17,8 @@ class SRC_API Sensor
     };
 
   protected:
-    Sensor( const Header& header, IO& ioStream );
-    Sensor( IO& ioStream );
+    Sensor( const Header& header, io::Interface& interface );
+    Sensor( io::Interface& interface );
     ~Sensor();
 
     Sensor( const Sensor& stream ) = delete;
@@ -29,11 +30,11 @@ class SRC_API Sensor
   protected:
     Header m_header;
 
-    IO& mIO;
+    io::Interface& mInterface;
 
   public:
     const Header& getHeader() const;
-    IO& getIO() const;
+    io::Interface& getIO() const;
 
     SRC_API friend std::ostream& operator<<( std::ostream& os, const Sensor& stream );
 };
@@ -45,11 +46,11 @@ class OutputSensor;
 class SRC_API InputSensor : public Sensor
 {
   public:
-    InputSensor( const std::string& sensorName, const std::string& syncSensorName = "" );
-    template <class IOT>
-    InputSensor( IOT&& ioStream );
-    template <class IOT>
-    InputSensor( IOT& ioStream ) = delete;
+//    InputSensor( const std::string& sensorName, const std::string& syncSensorName = "" );
+    template <class InterfaceT>
+    InputSensor( InterfaceT&& interface );
+    template <class InterfaceT>
+    InputSensor( InterfaceT& interface ) = delete;
 
     ~InputSensor();
 
@@ -61,11 +62,11 @@ class SRC_API InputSensor : public Sensor
     SRC_API friend std::ostream& operator<<( std::ostream& os, const InputSensor& inputSensor );
 };
 
-template <class IOT>
-InputSensor::InputSensor( IOT&& ioStream ) :
-    Sensor( {}, *std::move( new IOT( std::move( ioStream ) ) ) ) {
+template <class InterfaceT>
+InputSensor::InputSensor( InterfaceT&& interface ) :
+    Sensor( {}, *std::move( new InterfaceT( std::move( interface ) ) ) ) {
 
-    m_header.read( mIO );
+    m_header.read( mInterface );
 }
 
 //////////////////////////// OutputSensor ///////////////////////////////////////
@@ -73,11 +74,11 @@ InputSensor::InputSensor( IOT&& ioStream ) :
 class SRC_API OutputSensor : public Sensor
 {
   public:
-    OutputSensor( const Header& header, ClientSocket&& ioStream = ClientSocket() );
-    template <class IOT>
-    OutputSensor( const Header& header, IOT&& ioStream );
-    template <class IOT>
-    OutputSensor( const Header& header, IOT& ioStream ) = delete;
+//    OutputSensor( const Header& header, ClientSocket&& interface = ClientSocket() );
+    template <class InterfaceT>
+    OutputSensor( const Header& header, InterfaceT&& interface );
+    template <class InterfaceT>
+    OutputSensor( const Header& header, InterfaceT& interface ) = delete;
 
     OutputSensor( const OutputSensor& outputSensor ) = delete;
     OutputSensor( OutputSensor&& outputSensor )      = delete;
@@ -88,12 +89,12 @@ class SRC_API OutputSensor : public Sensor
   private:
 };
 
-template <class IOT>
-OutputSensor::OutputSensor( const Header& header, IOT&& ioStream ) :
-    Sensor( header, *std::move( new IOT( std::move( ioStream ) ) ) ) {
-    mIO.setupOutput( m_header.getSensorName() );
+template <class InterfaceT>
+OutputSensor::OutputSensor( const Header& header, InterfaceT&& interface ) :
+    Sensor( header, *std::move( new InterfaceT( std::move( interface ) ) ) ) {
+    mInterface.setupOutput( m_header.getSensorName() );
 
-    m_header.write( mIO );
+    m_header.write( mInterface );
 }
 
 } // namespace hub

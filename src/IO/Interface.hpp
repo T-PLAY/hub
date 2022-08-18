@@ -12,9 +12,11 @@
 #include "Macros.hpp"
 
 //#define DEBUG_IOSTREAM
-namespace hub {
 
-class SRC_API IO
+namespace hub {
+namespace io {
+
+class SRC_API Interface
 {
   public:
     struct Mat3 {
@@ -42,16 +44,16 @@ class SRC_API IO
     }
 
   public:
-    IO()                                  = default;
-    IO( IO&& ioStream )                   = default;
-    IO( IO& ioStream )                    = delete;
-    IO& operator=( const IO& ioStream )   = delete;
-    IO&& operator=( const IO&& ioStream ) = delete;
-    IO& operator=( IO& ioStream )         = delete;
-    IO&& operator=( IO&& ioStream )       = delete;
+    Interface()                                  = default;
+    Interface( Interface&& ioStream )                   = default;
+    Interface( Interface& ioStream )                    = delete;
+    Interface& operator=( const Interface& ioStream )   = delete;
+    Interface&& operator=( const Interface&& ioStream ) = delete;
+    Interface& operator=( Interface& ioStream )         = delete;
+    Interface&& operator=( Interface&& ioStream )       = delete;
 
-    virtual ~IO() = default;
-    //    virtual ~IO();
+    virtual ~Interface() = default;
+    //    virtual ~Interface();
 
     virtual void close() = 0;
 
@@ -101,15 +103,15 @@ class SRC_API IO
 };
 
 // template <class T>
-// auto IO::getValue(const std::any& any) -> decltype (int)
+// auto Interface::getValue(const std::any& any) -> decltype (int)
 //{
 
 //}
 
 template <class T>
-void IO::write( const T& t ) const {
+void Interface::write( const T& t ) const {
 #ifdef DEBUG_IOSTREAM
-    std::cout << "[IO] write " << typeid( T ).name() << " '" << t << "' : start" << std::endl;
+    std::cout << "[Interface] write " << typeid( T ).name() << " '" << t << "' : start" << std::endl;
 #endif
 
     assert( mMode == Mode::OUTPUT || mMode == Mode::INPUT_OUTPUT );
@@ -117,9 +119,9 @@ void IO::write( const T& t ) const {
 }
 
 template <class T>
-void IO::write( const std::list<T>& list ) const {
+void Interface::write( const std::list<T>& list ) const {
 #ifdef DEBUG_IOSTREAM
-    std::cout << "[IO] write std::list : start" << std::endl;
+    std::cout << "[Interface] write std::list : start" << std::endl;
 #endif
 
     int nbEl = list.size();
@@ -131,9 +133,9 @@ void IO::write( const std::list<T>& list ) const {
 }
 
 template <class T>
-void IO::write( const std::vector<T>& vector ) const {
+void Interface::write( const std::vector<T>& vector ) const {
 #ifdef DEBUG_IOSTREAM
-    std::cout << "[IO] write std::vector : start" << std::endl;
+    std::cout << "[Interface] write std::vector : start" << std::endl;
 #endif
 
     int nbEl = static_cast<int>( vector.size() );
@@ -145,21 +147,21 @@ void IO::write( const std::vector<T>& vector ) const {
 }
 
 template <class T, class U>
-void IO::write( const std::map<T, U>& map ) const {
+void Interface::write( const std::map<T, U>& map ) const {
 #ifdef DEBUG_IOSTREAM
-    std::cout << "[IO] write std::map : start" << std::endl;
+    std::cout << "[Interface] write std::map : start" << std::endl;
 #endif
 
     int nbKey = static_cast<int>( map.size() );
     write( nbKey );
 #ifdef DEBUG_IOSTREAM
-    std::cout << "[IO] map : nbEl = " << nbKey << std::endl;
+    std::cout << "[Interface] map : nbEl = " << nbKey << std::endl;
 #endif
 
     for ( const auto& pair : map ) {
         const T& first = pair.first;
 #ifdef DEBUG_IOSTREAM
-        std::cout << "[IO] map : name = " << first << std::endl;
+        std::cout << "[Interface] map : name = " << first << std::endl;
 #endif
         const U& second = pair.second;
 
@@ -171,20 +173,20 @@ void IO::write( const std::map<T, U>& map ) const {
 ///////////////////////////////////////////////////////////////////////////////
 
 template <class T>
-void IO::read( T& t ) const {
+void Interface::read( T& t ) const {
 
     assert( mMode == Mode::INPUT || mMode == Mode::INPUT_OUTPUT );
     read( reinterpret_cast<unsigned char*>( &t ), sizeof( T ) );
 
 #ifdef DEBUG_IOSTREAM
-    std::cout << "[IO] read " << typeid( T ).name() << " '" << t << "' : end" << std::endl;
+    std::cout << "[Interface] read " << typeid( T ).name() << " '" << t << "' : end" << std::endl;
 #endif
 }
 
 template <class T>
-void IO::read( std::list<T>& list ) const {
+void Interface::read( std::list<T>& list ) const {
 #ifdef DEBUG_IOSTREAM
-    std::cout << "[IO] read std::list : start" << std::endl;
+    std::cout << "[Interface] read std::list : start" << std::endl;
 #endif
 
     int nbEl;
@@ -198,9 +200,9 @@ void IO::read( std::list<T>& list ) const {
 }
 
 template <class T>
-void IO::read( std::vector<T>& vector ) const {
+void Interface::read( std::vector<T>& vector ) const {
 #ifdef DEBUG_IOSTREAM
-    std::cout << "[IO] read std::vector : start" << std::endl;
+    std::cout << "[Interface] read std::vector : start" << std::endl;
 #endif
 
     int nbEl;
@@ -215,29 +217,30 @@ void IO::read( std::vector<T>& vector ) const {
 
 // template <class T = std::string, class U = std::any>
 template <class T, class U>
-void IO::read( std::map<T, U>& map ) const {
+void Interface::read( std::map<T, U>& map ) const {
 #ifdef DEBUG_IOSTREAM
-    std::cout << "[IO] read std::map : start" << std::endl;
+    std::cout << "[Interface] read std::map : start" << std::endl;
 #endif
 
     int nbEl;
     read( nbEl );
 #ifdef DEBUG_IOSTREAM
-    std::cout << "[IO] map : nbEl = " << nbEl << std::endl;
+    std::cout << "[Interface] map : nbEl = " << nbEl << std::endl;
 #endif
 
     for ( int i = 0; i < nbEl; ++i ) {
         T name;
         read( name );
 #ifdef DEBUG_IOSTREAM
-        std::cout << "[IO] map : name = " << name << std::endl;
+        std::cout << "[Interface] map : name = " << name << std::endl;
 #endif
         U val;
         read( val );
-        //        std::cout << "[IO] map : val = " << val << std::endl;
+        //        std::cout << "[Interface] map : val = " << val << std::endl;
         assert( map.find( name ) == map.end() );
         map[name] = val;
     }
 }
 
+} // namespace io
 } // namespace hub

@@ -1,21 +1,19 @@
 #pragma once
 
-#define NOMINMAX
+//#define NOMINMAX
 
 #include <exception>
 #include <functional>
 #include <list>
 #include <string>
 
-#include "IO.hpp"
-#include "Net.hpp"
+#include "IO/Interface.hpp"
+#include "Net/Utils.hpp"
 
 //#define DEBUG_SOCKET
 
 namespace hub {
-
-constexpr int SERVICE_PORT       = 4042;
-constexpr const char* SERVICE_IP = "127.0.0.1";
+namespace net {
 
 class SRC_API Socket
 {
@@ -67,10 +65,7 @@ class SRC_API Socket
     socket_fd mFdSock = INVALID_SOCKET;
 };
 
-// template class SRC_API std::basic_string<char>;
-
-// class SRC_API ClientSocket : public Socket, public IO {
-class ClientSocket : public Socket, public IO
+class ClientSocket : public Socket, public io::Interface
 {
   public:
     enum class Type { NONE, STREAMER, VIEWER, STREAM_VIEWER, COUNT };
@@ -87,27 +82,24 @@ class ClientSocket : public Socket, public IO
 
     void connectToServer();
 
-    SRC_API ClientSocket( const std::string& ipv4 = SERVICE_IP,
-                          int port                = SERVICE_PORT ); // client : streamer
-    SRC_API ClientSocket( const std::string& sensorName,
-                          const std::string& syncSensorName = "",
-                          const std::string ipv4            = SERVICE_IP,
-                          int port = SERVICE_PORT ); // client : stream viewer
-    SRC_API ClientSocket( socket_fd fdSock );        // server side client (bind and listen)
+    SRC_API ClientSocket();
+    SRC_API ClientSocket( const std::string& ipv4, int port );
+    //    SRC_API ClientSocket( const std::string& sensorName,
+    //                          const std::string& syncSensorName = "",
+    //                          const std::string ipv4            = SERVICE_IP,
+    //                          int port = SERVICE_PORT ); // client : stream viewer
+    SRC_API ClientSocket( socket_fd fdSock ); // server side client (bind and listen)
 
-    ClientSocket( const ClientSocket& sock )  = delete;
-    ClientSocket( const ClientSocket&& sock ) = delete;
-    ClientSocket( ClientSocket& sock )        = delete;
+    ClientSocket( const ClientSocket& sock ) = delete;
+    ClientSocket( ClientSocket& sock )       = delete;
     SRC_API ClientSocket( ClientSocket&& sock ) noexcept;
 
-    ClientSocket& operator=( const ClientSocket& sock )   = delete;
-    ClientSocket&& operator=( const ClientSocket&& sock ) = delete;
-    ClientSocket operator=( ClientSocket sock )           = delete;
-    ClientSocket& operator=( ClientSocket& sock )         = delete;
-    ClientSocket&& operator=( ClientSocket&& sock )       = delete;
+    ClientSocket& operator=( const ClientSocket& sock ) = delete;
+    ClientSocket&& operator=( ClientSocket&& sock )     = delete;
 
     SRC_API ~ClientSocket();
 
+  public:
     void close() override;
 
     void write( const unsigned char* data, size_t len ) const override;
@@ -153,20 +145,13 @@ static std::string getHeader( socket_fd iSock ) {
 
 template <class T>
 void ClientSocket::write( const T& t ) const {
-    // std::cout << "\033[31mClientSocket::write(const T& t) -> IO::write(t)\033[0m" << std::endl;
-    IO::write( t );
-
-    //#ifdef DEBUG_SOCKET
-    //#endif
+    io::Interface::write( t );
 }
 
 template <class T>
 void ClientSocket::read( T& t ) const {
-    // std::cout << "\033[31mClientSocket::read(T& t) -> IO::read(t)\033[0m" << std::endl;
-    IO::read( t );
-
-    //#ifdef DEBUG_SOCKET
-    //#endif
+    io::Interface::read( t );
 }
 
+} // namespace net
 } // namespace hub

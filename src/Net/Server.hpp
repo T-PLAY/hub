@@ -1,5 +1,4 @@
-#ifndef SERVER_H
-#define SERVER_H
+#pragma once
 
 #include <functional>
 #include <map>
@@ -7,18 +6,13 @@
 //#include <queue>
 #include <deque>
 
-#include "Socket.hpp"
+#include "Net/Socket.hpp"
 #include "Sensor.hpp"
 
-// struct Streamer;
-
-// struct StreamViewer {
-// };
-
-// struct StreamSyncViewer : public StreamViewer {
-// };
-
 #include <mutex>
+
+namespace hub {
+namespace net {
 
 struct Streamer {
     hub::InputSensor mInputSensor;
@@ -34,18 +28,19 @@ struct Streamer {
 struct Viewer {
     const hub::ClientSocket* const mSock = nullptr;
 
-    void notifyNewStreamer(const Streamer& streamer) const;
+    void notifyNewStreamer( const Streamer& streamer ) const;
 };
 
-class Server {
-public:
-    Server(int port = hub::SERVICE_PORT);
+class Server
+{
+  public:
+    Server( int port = hub::SERVICE_PORT );
 
     void run();
 
     std::string getStatus() const;
 
-private:
+  private:
     hub::ServerSocket mServerSock;
     std::map<std::string, Streamer*> mStreamers;
     std::list<Viewer*> mViewers;
@@ -53,4 +48,5 @@ private:
     std::mutex mMtx;
 };
 
-#endif // SERVER_H
+} // namespace net
+} // namespace hub

@@ -41,6 +41,6 @@ add_subdirectory(streamer)
 add_subdirectory(recorder)
 add_subdirectory(player)
 
-if (BUILD_SCUS AND BUILD_DCMTK)
+if (HUB_ENABLE_SCUS AND HUB_ENABLE_DCMTK)
 	add_subdirectory(testScus)
 endif()

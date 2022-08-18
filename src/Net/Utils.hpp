@@ -42,16 +42,17 @@ using socket_fd = int;
 #include <set>
 #include <stdio.h>
 #include <thread>
-namespace hub {
 
-namespace Net {
+namespace hub {
+namespace net {
+
 static bool sInited = false;
 static std::list<socket_fd> sSockets;
 
 static void clearSocket( socket_fd& sock ) {
     std::cout << "Net::clearSocket(" << sock << ") close socket" << std::endl;
     closesocket( sock );
-    size_t size = sSockets.size();
+    //    size_t size = sSockets.size();
     assert( std::find( sSockets.begin(), sSockets.end(), sock ) != sSockets.end() );
     sSockets.remove( sock );
     // assert(sSockets.size() == size - 1);
@@ -103,6 +104,5 @@ static void init() {
     }
 }
 
-} // namespace Net
-
+} // namespace net
 } // namespace hub

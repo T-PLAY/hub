@@ -1,12 +1,14 @@
-#include "IO.hpp"
+#include "Interface.hpp"
 
 #include <cstring>
 #include <iostream>
-namespace hub {
 
-void IO::write( const std::string& str ) const {
+namespace hub {
+namespace io {
+
+void Interface::write( const std::string& str ) const {
 #ifdef DEBUG_IOSTREAM
-    std::cout << "[IO] write std::string : start" << std::endl;
+    std::cout << "[Interface] write std::string : start" << std::endl;
 #endif
 
     int strLen = static_cast<int>( str.size() );
@@ -18,9 +20,9 @@ void IO::write( const std::string& str ) const {
     }
 }
 
-void IO::write( const char* str ) const {
+void Interface::write( const char* str ) const {
 #ifdef DEBUG_IOSTREAM
-    std::cout << "[IO] write const char* : start" << std::endl;
+    std::cout << "[Interface] write const char* : start" << std::endl;
 #endif
 
     int strLen = static_cast<int>( strlen( str ) );
@@ -60,14 +62,14 @@ uint64_t typeInfoHash64( const char _DecoratedName[1] ) {
     return value;
 }
 
-// IO::~IO()
+// Interface::~Interface()
 //{
 //     close();
 // }
 
-void IO::write( const std::any& any ) const {
+void Interface::write( const std::any& any ) const {
 #ifdef DEBUG_IOSTREAM
-    std::cout << "[IO] write std::any : start" << std::endl;
+    std::cout << "[Interface] write std::any : start" << std::endl;
     std::cout << "any raw name = '" << any.type().raw_name() << "'" << std::endl;
 #endif
 
@@ -130,14 +132,14 @@ void IO::write( const std::any& any ) const {
     }
 }
 
-// void IO::write(const std::map<std::string, std::any> &map) const
+// void Interface::write(const std::map<std::string, std::any> &map) const
 //{
 
 //}
 
-void IO::read( std::string& str ) const {
+void Interface::read( std::string& str ) const {
 #ifdef DEBUG_IOSTREAM
-    std::cout << "[IO] read std::string : start" << std::endl;
+    std::cout << "[Interface] read std::string : start" << std::endl;
 #endif
 
     int strLen = 0;
@@ -154,9 +156,9 @@ void IO::read( std::string& str ) const {
     }
 }
 
-void IO::read( char* str ) const {
+void Interface::read( char* str ) const {
 #ifdef DEBUG_IOSTREAM
-    std::cout << "[IO] read char* : start" << std::endl;
+    std::cout << "[Interface] read char* : start" << std::endl;
 #endif
 
     int strLen = 0;
@@ -170,9 +172,9 @@ void IO::read( char* str ) const {
     }
 }
 
-void IO::read( std::any& any ) const {
+void Interface::read( std::any& any ) const {
 #ifdef DEBUG_IOSTREAM
-    std::cout << "[IO] read std::any : start" << std::endl;
+    std::cout << "[Interface] read std::any : start" << std::endl;
 #endif
 
     //    uint64_t hashCode;
@@ -290,28 +292,29 @@ void IO::read( std::any& any ) const {
     assert( any.has_value() );
 }
 
-// void IO::read(std::map<std::string, std::any> &map) const
+// void Interface::read(std::map<std::string, std::any> &map) const
 //{
 
 //}
 
-void IO::setupOutput( const std::string& sensorName ) const {
+void Interface::setupOutput( const std::string& sensorName ) const {
     (void)sensorName;
 #ifdef DEBUG_IOSTREAM
-    std::cout << "IO::setOutputName(const std::string& sensorName)" << std::endl;
+    std::cout << "Interface::setOutputName(const std::string& sensorName)" << std::endl;
 #endif
 
     assert( mMode == Mode::INPUT_OUTPUT );
 }
 
-// IO::IO(const Mode& mode)
+// Interface::Interface(const Mode& mode)
 //{
 // }
 
-// void IO::setupMode(const Mode& mode)
+// void Interface::setupMode(const Mode& mode)
 //{
 #ifdef DEBUG_IOSTREAM
 #endif
 // }
 
+} // namespace io
 } // namespace hub

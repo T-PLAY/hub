@@ -8,13 +8,18 @@
 #ifdef WIN32
 #    include <WS2tcpip.h>
 #endif
+
 namespace hub {
+namespace net {
+
+constexpr int SERVICE_PORT       = 4042;
+constexpr const char* SERVICE_IP = "127.0.0.1";
 
 Socket::Socket() {
 #ifdef DEBUG_SOCKET
     DEBUG_MSG( getHeader( mFdSock ) << "Socket()" );
 #endif
-    Net::init();
+    net::init();
 }
 
 Socket::~Socket() {
@@ -23,7 +28,7 @@ Socket::~Socket() {
 #endif
     if ( mFdSock != INVALID_SOCKET ) {
         DEBUG_MSG( getHeader( mFdSock ) << "close socket" );
-        Net::clearSocket( mFdSock );
+        net::clearSocket( mFdSock );
     }
 }
 
@@ -70,7 +75,7 @@ void ClientSocket::connectToServer() {
         perror( "[socket] socket creation failed.\n" );
         return;
     }
-    Net::sSockets.push_back( mFdSock );
+    net::sSockets.push_back( mFdSock );
 
     // Server address construction
     struct sockaddr_in serv_addr;
@@ -201,7 +206,7 @@ void ClientSocket::setupOutput( const std::string& sensorName ) const {
         assert( mess == Socket::Message::NOT_FOUND );
     }
 
-    IO::setupOutput( sensorName );
+    io::Interface::setupOutput( sensorName );
 }
 
 void ClientSocket::setIsServer( bool isServer ) {
@@ -217,7 +222,7 @@ ServerSocket::ServerSocket( int port ) : mPort( port ) {
         perror( "socket creation failed.\n" );
         return;
     }
-    Net::sSockets.push_back( mFdSock );
+    net::sSockets.push_back( mFdSock );
 
     // Server address construction
     memset( &mAddress, 0, sizeof( mAddress ) );
@@ -243,11 +248,11 @@ ClientSocket ServerSocket::waitNewClient() {
     socket_fd new_socket = accept( mFdSock, (struct sockaddr*)&mAddress, &addrlen );
     if ( new_socket == INVALID_SOCKET ) {
         perror( "not accept new socket" );
-        Net::clearSocket( new_socket );
+        net::clearSocket( new_socket );
         exit( 1 );
     }
     DEBUG_MSG( getHeader( mFdSock ) << "new client on socket " << new_socket );
-    Net::sSockets.push_back( new_socket );
+    net::sSockets.push_back( new_socket );
 
     return ClientSocket( new_socket );
 }
@@ -337,7 +342,7 @@ void ClientSocket::waitClose() const {
     Socket::Message message;
     bool wantToClose = false;
     while ( !wantToClose ) {
-        IO::read( message );
+        io::Interface::read( message );
 
         switch ( message ) {
         case Message::CLOSE:
@@ -351,15 +356,16 @@ void ClientSocket::waitClose() const {
         }
     }
 
-    IO::write( Message::OK );
+    io::Interface::write( Message::OK );
 }
 
 void ClientSocket::clear() {
     if ( mFdSock != INVALID_SOCKET ) {
         DEBUG_MSG( getHeader( mFdSock ) << "close socket" );
-        Net::clearSocket( mFdSock );
+        net::clearSocket( mFdSock );
         mFdSock = INVALID_SOCKET;
     }
 }
 
+} // namespace net
 } // namespace hub

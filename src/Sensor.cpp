@@ -5,28 +5,26 @@
 #include <iomanip>
 #include <numeric>
 
-#include "Socket.hpp"
-
 namespace hub {
 //#define DEBUG_STREAM
 
-Sensor::Sensor( const Header& header, IO& ioStream ) :
+Sensor::Sensor( const Header& header, io::Interface& interface ) :
     m_header( header ),
     // mSensorName( sensorName ),
     // mFormat( format ),
     // mDims( dims ),
-    mIO( ioStream )
+    mInterface( interface )
 // mAcquisitionSize( computeAcquisitionSize( m_header->getFormat(), m_header->getDims() ) ) {}
 {}
 
-Sensor::Sensor( IO& ioStream ) : mIO( ioStream ) {};
+Sensor::Sensor( io::Interface& interface ) : mInterface( interface ) {};
 
 Sensor::~Sensor() {
 #ifdef DEBUG_MSG
     std::cout << "[Sensor] ~Sensor()" << std::endl;
 #endif
-    mIO.close();
-    delete &mIO;
+    mInterface.close();
+    delete &mInterface;
 }
 
 std::ostream& operator<<( std::ostream& os, const Sensor& stream ) {
@@ -45,17 +43,17 @@ const Header& Sensor::getHeader() const {
     return m_header;
 }
 
-IO& Sensor::getIO() const {
-    return mIO;
+io::Interface& Sensor::getIO() const {
+    return mInterface;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-InputSensor::InputSensor( const std::string& sensorName, const std::string& syncSensorName ) :
-    Sensor( {}, *std::move( new ClientSocket( sensorName, syncSensorName ) ) ) {
+//InputSensor::InputSensor( const std::string& sensorName, const std::string& syncSensorName ) :
+//    Sensor( {}, *std::move( new ClientSocket( sensorName, syncSensorName ) ) ) {
 
-    m_header.read( mIO );
-}
+//    m_header.read( mInterface );
+//}
 
 InputSensor::~InputSensor() {
 #ifdef DEBUG_MSG
@@ -67,9 +65,9 @@ Acquisition InputSensor::getAcquisition() const {
     long long start, end;
     unsigned char* data = new unsigned char[m_header.getAcquisitionSize()];
 
-    mIO.read( start );
-    mIO.read( end );
-    mIO.read( data, m_header.getAcquisitionSize() );
+    mInterface.read( start );
+    mInterface.read( end );
+    mInterface.read( data, m_header.getAcquisitionSize() );
 
 #ifdef DEBUG_STREAM
     std::cout << "[InputSensor] read acq :  " << acquisition << std::endl;
@@ -107,13 +105,13 @@ std::ostream& operator<<( std::ostream& os, const InputSensor& inputSensor ) {
 
 ////////////////////////////////// OutputSensor /////////////////////////////////////////////
 
-OutputSensor::OutputSensor( const Header& header, ClientSocket&& ioStream ) :
-    Sensor( header, *std::move( new ClientSocket( std::move( ioStream ) ) ) ) {
+//OutputSensor::OutputSensor( const Header& header, ClientSocket&& interface ) :
+//    Sensor( header, *std::move( new ClientSocket( std::move( interface ) ) ) ) {
 
-    mIO.setupOutput( m_header.getSensorName() );
+//    mInterface.setupOutput( m_header.getSensorName() );
 
-    m_header.write( mIO );
-}
+//    m_header.write( mInterface );
+//}
 
 void OutputSensor::operator<<( const Acquisition& acquisition ) const {
     assert( acquisition.mData != nullptr );
@@ -121,9 +119,9 @@ void OutputSensor::operator<<( const Acquisition& acquisition ) const {
 
     assert( acquisition.mBackendTimestamp <= acquisition.mBackendTimeOfArrival );
 
-    mIO.write( acquisition.mBackendTimestamp );
-    mIO.write( acquisition.mBackendTimeOfArrival );
-    mIO.write( acquisition.mData, m_header.getAcquisitionSize() );
+    mInterface.write( acquisition.mBackendTimestamp );
+    mInterface.write( acquisition.mBackendTimeOfArrival );
+    mInterface.write( acquisition.mData, m_header.getAcquisitionSize() );
 }
 
 } // namespace hub

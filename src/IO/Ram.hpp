@@ -1,8 +1,9 @@
 #pragma once
 
-#include <IO.hpp>
+#include <IO/Interface.hpp>
 
 namespace hub {
+namespace io {
 
 constexpr size_t g_buffLen = 1'000'000;
 
@@ -40,7 +41,7 @@ class CyclicBuff
     bool m_inputSensorClose         = false;
 };
 
-class RamIO : public IO
+class Ram : public io::Interface
 {
     class exception : public std::runtime_error
     {
@@ -50,7 +51,7 @@ class RamIO : public IO
     };
 
   public:
-    RamIO( CyclicBuff& buff );
+    Ram( CyclicBuff& buff );
 
     void close() override;
 
@@ -62,4 +63,5 @@ class RamIO : public IO
     CyclicBuff& m_buff;
 };
 
+} // namespace io
 } // namespace hub

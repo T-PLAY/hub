@@ -38,4 +38,6 @@ namespace hub {
 #    define SRC_API
 #endif
 
+#define NOMINMAX
+
 } // namespace hub

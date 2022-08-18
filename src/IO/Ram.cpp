@@ -7,6 +7,7 @@
 #include <thread>
 
 namespace hub {
+namespace io {
 
 CyclicBuff::CyclicBuff( size_t size ) : m_buff( new unsigned char[size] ), m_buffLen( size ) {}
 
@@ -80,7 +81,7 @@ void CyclicBuff::read( unsigned char* data, size_t len ) {
             // nb bytes ready to read
             byteRead = m_writeHead - m_readHead;
             if ( byteRead == 0 ) {
-                //                std::cout << "[RamIO] nothing to read" << std::endl;
+                //                std::cout << "[Ram] nothing to read" << std::endl;
                 std::this_thread::sleep_for( std::chrono::milliseconds( 16 ) );
             }
             if ( byteRead < 0 ) byteRead = m_buffLen - m_readHead;
@@ -103,24 +104,25 @@ void CyclicBuff::read( unsigned char* data, size_t len ) {
 
 void CyclicBuff::close() {}
 
-RamIO::RamIO( CyclicBuff& buff ) : m_buff( buff ) {}
+Ram::Ram( CyclicBuff& buff ) : m_buff( buff ) {}
 
-void RamIO::close() {
+void Ram::close() {
     m_buff.close();
 }
 
-void RamIO::write( const unsigned char* data, size_t len ) const {
+void Ram::write( const unsigned char* data, size_t len ) const {
     m_buff.write( data, len );
 }
 
-void RamIO::read( unsigned char* data, size_t len ) const {
+void Ram::read( unsigned char* data, size_t len ) const {
     try {
         m_buff.read( data, len );
     }
     catch ( std::exception& e ) {
-        std::cout << "[RamIO] catch exception : " << e.what() << std::endl;
+        std::cout << "[Ram] catch exception : " << e.what() << std::endl;
         throw e;
     }
 }
 
+} // namespace io
 } // namespace hub

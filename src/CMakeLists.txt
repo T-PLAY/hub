@@ -13,8 +13,8 @@ add_definitions(-DSRC_EXPORTS)
 file(GLOB_RECURSE sources *.cpp *.c)
 file(GLOB_RECURSE headers *.hpp *.h)
 
-if (BUILD_EXAMPLES)
-    add_library(${PROJECT_NAME} SHARED
+if (HUB_BUILD_STATIC_LIBRARY)
+    add_library(${PROJECT_NAME} STATIC
         ${sources}
         ${headers}
     )
