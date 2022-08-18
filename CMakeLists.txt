@@ -31,3 +31,6 @@ if (BUILD_EXAMPLES)
     option(BUILD_SCUS "Build Scus" OFF)
     add_subdirectory(applications)
 endif()
+
+
+add_subdirectory(tests)
