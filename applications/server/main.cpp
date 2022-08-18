@@ -1,5 +1,6 @@
 #include <server.h>
-#include <stream.h>
+
+#include "Sensor.hpp"
 
 int main()
 {

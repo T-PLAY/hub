@@ -1,4 +1,3 @@
-
 #include "Acquisition.hpp"
 
 #include <cassert>
@@ -6,10 +5,11 @@
 
 #include <cstring>
 
+namespace hub {
 Acquisition::Acquisition( long long backendTimestamp,
-                                  long long backendTimeOfArrival,
-                                  const unsigned char* const data,
-                                  size_t size ) :
+                          long long backendTimeOfArrival,
+                          const unsigned char* const data,
+                          size_t size ) :
     mBackendTimestamp( backendTimestamp ),
     mBackendTimeOfArrival( backendTimeOfArrival ),
     mData( new unsigned char[size] ),
@@ -51,3 +51,5 @@ std::ostream& operator<<( std::ostream& os, const Acquisition& acq ) {
     os << 1'000'000.0 / ( acq.mBackendTimeOfArrival - acq.mBackendTimestamp ) << " fps";
     return os;
 }
+
+} // namespace hub

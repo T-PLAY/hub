@@ -2,11 +2,10 @@
 #define PLAYER_H
 
 #include <string>
-#include <stream.h>
 #include <future>
 
 #include <Frame.h>
-
+#include "Sensor.hpp"
 
 class Player
 {
@@ -28,7 +27,7 @@ public:
 
 private:
 
-    std::map<std::string, std::unique_ptr<OutputStream>> m_outputs;
+    std::map<std::string, std::unique_ptr<hub::OutputSensor>> m_outputs;
     std::string m_outputPostfixName = "";
 
     std::set<Snapshot> m_snapshots;

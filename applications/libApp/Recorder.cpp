@@ -1,9 +1,10 @@
 #include "Recorder.h"
 
-#include <FileIO.h>
 #include <filesystem>
 #include <fstream>
-#include <stream.h>
+
+#include "IO/File.hpp"
+#include "Sensor.hpp"
 
 // Recorder::Recorder(const std::string& rootPath)
 //     : m_rootPath(rootPath)
@@ -20,16 +21,16 @@ Recorder::Recorder(const char* rootPath)
 {
 }
 
-void Recorder::record(const InputStreamParameters& inputStreamConfigs)
+void Recorder::record(const InputSensorParameters& inputSensorConfigs)
 {
-    assert(!inputStreamConfigs.empty());
+    assert(!inputSensorConfigs.empty());
     std::cout << "[Recorder] record()" << std::endl;
     assert(!m_isRecording);
 //    assert(m_thread == nullptr);
     assert(m_threads.empty());
 
-    std::vector<std::unique_ptr<InputStream>> inputStreams;
-    std::vector<std::unique_ptr<OutputStream>> outputFileStreams;
+    std::vector<std::unique_ptr<hub::InputSensor>> inputSensors;
+    std::vector<std::unique_ptr<hub::OutputSensor>> outputFileStreams;
 
     // creating new record folder
     char folderName[64] = { 0 };
@@ -42,13 +43,13 @@ void Recorder::record(const InputStreamParameters& inputStreamConfigs)
     assert(!std::filesystem::exists(newRecordFolder));
     std::filesystem::create_directories(newRecordFolder);
 
-    const auto nStream = inputStreamConfigs.size();
+    const auto nStream = inputSensorConfigs.size();
     for (int i = 0; i < nStream; ++i) {
-        const auto& inputStreamConfig = inputStreamConfigs.at(i);
-        //        for (const auto & inputStreamConfig : inputStreamConfigs) {
-        const auto& sensorName = inputStreamConfig.first;
-        const auto& syncSensorName = inputStreamConfig.second;
-        inputStreams.push_back(std::make_unique<InputStream>(ClientSocket(sensorName, syncSensorName)));
+        const auto& inputSensorConfig = inputSensorConfigs.at(i);
+        //        for (const auto & inputSensorConfig : inputSensorConfigs) {
+        const auto& sensorName = inputSensorConfig.first;
+        const auto& syncSensorName = inputSensorConfig.second;
+        inputSensors.push_back(std::make_unique<hub::InputSensor>(hub::ClientSocket(sensorName, syncSensorName)));
         //        }
 
         //        //    std::fstream files[2];
@@ -60,26 +61,26 @@ void Recorder::record(const InputStreamParameters& inputStreamConfigs)
         assert(file.is_open());
 
         // here
-        outputFileStreams.push_back( std::make_unique<OutputStream>( inputStreams[i]->getHeader(),
-            FileIO( std::move( file ) )
+        outputFileStreams.push_back( std::make_unique<hub::OutputSensor>( inputSensors[i]->getHeader(),
+            hub::FileIO( std::move( file ) )
              ) );
     }
 
     m_threads.resize(nStream);
     for (int i = 0; i <nStream; ++i) {
-    m_threads[i] = new std::thread([this, inputStream = std::move(inputStreams[i]), outputFileStream = std::move(outputFileStreams[i]), newRecordFolder = std::move(newRecordFolder), nStream]() {
+    m_threads[i] = new std::thread([this, inputSensor = std::move(inputSensors[i]), outputFileStream = std::move(outputFileStreams[i]), newRecordFolder = std::move(newRecordFolder), nStream]() {
         try {
 
             m_isRecording = true;
             while (m_isRecording) {
-//                Stream::Acquisition acq;
+//                Stream::hub::Acquisition acq;
                 for (int i = 0; i < nStream; ++i) {
-//                    *inputStream >> acq;
-                    auto acq = inputStream->getAcquisition();
+//                    *inputSensor >> acq;
+                    auto acq = inputSensor->getAcquisition();
                     std::cout << "[" << i << "] read/write acq : " << acq << std::endl;
                     *outputFileStream << acq;
 
-                    //                *inputStreams[1] >> acq;
+                    //                *inputSensors[1] >> acq;
                     //                std::cout << "[" << 1 << "] read/write acq : " << acq << std::endl;
                     //                *outputFileStreams[1] << acq;
                 }
@@ -132,7 +133,7 @@ void Recorder::save(const Frame& frame)
 {
     assert(!m_isRecording);
 
-    InputStreamParameters inputStreamConfigs;
+    InputSensorParameters inputSensorConfigs;
 
     std::string folderName = "";
     auto it = frame.begin();
@@ -142,7 +143,7 @@ void Recorder::save(const Frame& frame)
 
         folderName += snapshot.getSensorName();
 
-        inputStreamConfigs.push_back({ snapshot.getSensorName(), "" });
+        inputSensorConfigs.push_back({ snapshot.getSensorName(), "" });
 
         ++it;
         if (it != frame.end())
@@ -154,18 +155,18 @@ void Recorder::save(const Frame& frame)
     //    assert(!std::filesystem::exists(newRecordFolder));
     std::filesystem::create_directories(newRecordFolder);
 
-    //    std::vector<std::unique_ptr<InputStream>> inputStreams;
-    //    std::vector<std::unique_ptr<OutputStream>> outputFileStreams;
+    //    std::vector<std::unique_ptr<hub::InputSensor>> inputSensors;
+    //    std::vector<std::unique_ptr<hub::OutputSensor>> outputFileStreams;
 
-    const auto nStream = inputStreamConfigs.size();
+    const auto nStream = inputSensorConfigs.size();
     for (int i = 0; i < nStream; ++i) {
-        const auto& inputStreamConfig = inputStreamConfigs.at(i);
-        //        for (const auto & inputStreamConfig : inputStreamConfigs) {
-        const auto& sensorName = inputStreamConfig.first;
-        //        const auto& syncSensorName = inputStreamConfig.second;
-        //        inputStreams.push_back(std::make_unique<InputStream>(ClientSocket(sensorName, syncSensorName)));
+        const auto& inputSensorConfig = inputSensorConfigs.at(i);
+        //        for (const auto & inputSensorConfig : inputSensorConfigs) {
+        const auto& sensorName = inputSensorConfig.first;
+        //        const auto& syncSensorName = inputSensorConfig.second;
+        //        inputSensors.push_back(std::make_unique<hub::InputSensor>(hub::ClientSocket(sensorName, syncSensorName)));
         //        }
-        std::vector<Acquisition> acqs;
+        std::vector<hub::Acquisition> acqs;
         //        //    std::fstream files[2];
         //        for (int i = 0; i < 2; ++i) {
         //        auto file = std::fstream(newRecordFolder + "/" + sensorName + ".txt", std::ios::binary | std::ios::out);
@@ -174,31 +175,31 @@ void Recorder::save(const Frame& frame)
         const auto& filename = newRecordFolder + "/" + sensorName + ".txt";
         if (std::filesystem::exists(filename)) {
             auto file = std::fstream(filename, std::ios::binary | std::ios::in);
-            InputStream inputStream(FileIO(std::move(file)));
+            hub::InputSensor inputSensor(hub::FileIO(std::move(file)));
             //        assert(file.is_open());
 
-            acqs = inputStream.getAllAcquisition();
-            //            format = inputStream.getFormat();
-            //            dims = inputStream.getDims();
+            acqs = inputSensor.getAllAcquisitions();
+            //            format = inputSensor.getFormat();
+            //            dims = inputSensor.getDims();
         }
 
         acqs.push_back(frame[i].getAcq().clone());
 
         // here
-        //        outputFileStreams.push_back(std::make_unique<OutputStream>(sensorName, inputStreams[i]->getFormat(), inputStreams[i]->getDims(), FileIO(std::move(file)), inputStreams[i]->getMetaData()));
+        //        outputFileStreams.push_back(std::make_unique<hub::OutputSensor>(sensorName, inputSensors[i]->getFormat(), inputSensors[i]->getDims(), hub::FileIO(std::move(file)), inputSensors[i]->getMetaData()));
         auto file = std::fstream(filename, std::ios::binary | std::ios::out);
-        Header header( sensorName, frame[i].getFormat(), frame[i].getDims(), {} );
-        OutputStream outputStream(header, FileIO(std::move(file)));
-        //OutputStream outputStream( { sensorName, frame[i].getFormat(), frame[i].getDims(), {} },
-        //                           FileIO( std::move( file ) ) );
+        hub::Header header( sensorName, frame[i].getFormat(), frame[i].getDims(), {} );
+        hub::OutputSensor outputSensor(header, hub::FileIO(std::move(file)));
+        //hub::OutputSensor outputSensor( { sensorName, frame[i].getFormat(), frame[i].getDims(), {} },
+        //                           hub::FileIO( std::move( file ) ) );
 
         for (const auto& acq : acqs) {
-            outputStream << acq;
+            outputSensor << acq;
         }
     }
 }
 
-// void Recorder::add(const std::string &streamName, const Stream::Acquisition &acq)
+// void Recorder::add(const std::string &streamName, const Stream::hub::Acquisition &acq)
 //{
 //     m_snapshots[streamName].push_back(acq.clone());
 // }
@@ -223,12 +224,12 @@ void Recorder::saveOnDisk()
 
     //    for (int i = 0; i < nStream; ++i) {
     for (const auto& pair : m_snapshots) {
-        //        const auto& inputStreamConfig = inputStreamConfigs.at(i);
-        //        for (const auto & inputStreamConfig : inputStreamConfigs) {
+        //        const auto& inputSensorConfig = inputSensorConfigs.at(i);
+        //        for (const auto & inputSensorConfig : inputSensorConfigs) {
         const auto& sensorName = pair.first;
         const auto& snapshots = pair.second;
-        //        const auto& syncSensorName = inputStreamConfig.second;
-        //        inputStreams.push_back(std::make_unique<InputStream>(ClientSocket(sensorName, syncSensorName)));
+        //        const auto& syncSensorName = inputSensorConfig.second;
+        //        inputSensors.push_back(std::make_unique<hub::InputSensor>(hub::ClientSocket(sensorName, syncSensorName)));
         //        }
 
         //        //    std::fstream files[2];
@@ -237,13 +238,13 @@ void Recorder::saveOnDisk()
         assert(file.is_open());
 
         const auto& firstSnapshot = snapshots.front();
-        OutputStream outputStream(
+        hub::OutputSensor outputSensor(
             { sensorName, firstSnapshot.getFormat(), firstSnapshot.getDims() },
-            FileIO( std::move( file ) ) );
+            hub::FileIO( std::move( file ) ) );
 
         //        for (const auto& snapshot : snapshots) {
         for (int i = 0; i < min; ++i) {
-            outputStream << snapshots[i].getAcq();
+            outputSensor << snapshots[i].getAcq();
         }
         // here
     }

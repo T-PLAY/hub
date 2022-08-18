@@ -2,11 +2,12 @@
 #include <cassert>
 #include <chrono>
 
-#include <socket.h>
-#include <stream.h>
 #include <tuple>
 //#include <cmath>
 #include <utility>
+
+#include "Socket.hpp"
+#include "Sensor.hpp"
 
 #define ULA_STREAMER
 
@@ -19,13 +20,13 @@ int main(int argc, char* argv[])
     constexpr int width = 192;
     constexpr int height = 512;
 
-    Header::MetaData metaData;
+    hub::Header::MetaData metaData;
     metaData["scanDepth"] = 35.0; // mm
     metaData["scanWidth"] = 50.0; // mm
     metaData["parent"] = "Keyboard";
 
-    OutputStream proceduralStream(
-        { "ProceduralStreamer", Header::Format::Y8, { width, height }, metaData }, ClientSocket() );
+    hub::OutputSensor proceduralStream(
+        { "ProceduralStreamer", hub::Header::Format::Y8, { width, height }, metaData }, hub::ClientSocket() );
 
 //    return 0;
 
@@ -63,7 +64,7 @@ int main(int argc, char* argv[])
         const auto& timestampEnd = std::chrono::duration_cast<std::chrono::microseconds>(end.time_since_epoch()).count();
         ++dec;
 
-        proceduralStream << Acquisition { timestampStart, timestampEnd, data, imgSize };
+        proceduralStream << hub::Acquisition { timestampStart, timestampEnd, data, imgSize };
 
         std::this_thread::sleep_until(end);
     }
@@ -86,7 +87,7 @@ int main(int argc, char* argv[])
             while (true) {
                 try {
 
-                    OutputStream proceduralStream = OutputStream(sensorNames[iSensor], sensorFormats[iSensor], sensorDims[iSensor]);
+                    hub::OutputSensor proceduralStream = hub::OutputSensor(sensorNames[iSensor], sensorFormats[iSensor], sensorDims[iSensor]);
 
                     const size_t imgSize = proceduralStream.getAcquisitionSize();
                     assert(imgSize == 28 || imgSize == 98304);
@@ -118,7 +119,7 @@ int main(int argc, char* argv[])
                         const auto now = std::chrono::high_resolution_clock::now();
                         const auto& timestampStart = std::chrono::duration_cast<std::chrono::microseconds>(start.time_since_epoch()).count();
                         const auto& timestampEnd = std::chrono::duration_cast<std::chrono::microseconds>(now.time_since_epoch()).count();
-                        Stream::Acquisition acq { timestampStart, timestampEnd, data };
+                        Stream::hub::Acquisition acq { timestampStart, timestampEnd, data };
                         acq.mSize = imgSize;
                         proceduralStream << acq;
                         // std::cout << "thread " << iSensor << " send acq " << acq << std::endl;
