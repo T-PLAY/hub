@@ -57,7 +57,7 @@ void Thread_Client::run()
                     std::string size;
                     sock.read(size);
 
-                    Stream::MetaData metaData;
+                    Header::MetaData metaData;
                     sock.read(metaData);
 
                     std::cout << "[Thread_Client] [viewer] new streamer " << sensorName
@@ -66,9 +66,9 @@ void Thread_Client::run()
                     std::cout << "[Thread_Client] [viewer] emit addSensorSignal '" << sensorName
                               << "'" << std::endl;
                     std::cout << "[Thread_Client] [viewer] metadata : "
-                              << Stream::to_string(metaData, true);
+                              << Header::metaData2string(metaData, true);
                     emit addSensorSignal(
-                        sensorName, format, dims, size, Stream::to_string(metaData, true));
+                        sensorName, format, dims, size, Header::metaData2string(metaData, true));
 
                     //                    InputStream inputStream(sensorName.c_str(), "");
 

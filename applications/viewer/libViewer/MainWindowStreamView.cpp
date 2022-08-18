@@ -14,7 +14,8 @@ MainWindowStreamView::MainWindowStreamView( const InputStream& inputStream, QWid
 //    , mThread(this, sensorName)
 //    , mSensorName(sensorName)
 {
-    std::cout << "MainWindow::MainWindowStreamView(parent, " << inputStream.getSensorName() << ")"
+    const auto & header = m_inputStream.getHeader();
+    std::cout << "MainWindow::MainWindowStreamView(parent, " << header.getSensorName() << ")"
               << std::endl;
 
     ui->setupUi( this );
@@ -24,7 +25,7 @@ MainWindowStreamView::MainWindowStreamView( const InputStream& inputStream, QWid
     assert( ui->centralwidget != nullptr );
     delete ui->centralwidget;
 
-    const auto dim = m_inputStream.getDims().size();
+    const auto dim = header.getDims().size();
     if ( dim == 1 ) {
         ui->centralwidget = new WidgetStreamView1D( this );
 
@@ -34,8 +35,8 @@ MainWindowStreamView::MainWindowStreamView( const InputStream& inputStream, QWid
 
         ui->centralwidget = new WidgetStreamView2D( this );
 
-        ui->centralwidget->setMinimumWidth( m_inputStream.getDims().at( 0 ) );
-        ui->centralwidget->setMinimumHeight( m_inputStream.getDims().at( 1 ) );
+        ui->centralwidget->setMinimumWidth( header.getDims().at( 0 ) );
+        ui->centralwidget->setMinimumHeight( header.getDims().at( 1 ) );
     }
     else {
         std::cout << "unprocessed dimension" << std::endl;
@@ -65,7 +66,7 @@ MainWindowStreamView::~MainWindowStreamView() {
 
 void MainWindowStreamView::setData( unsigned char* img_ptr,
                                     std::vector<int> dims,
-                                    Stream::Format format ) {
+                                    Header::Format format ) {
 //    ( static_cast<WidgetStreamView*>( ui->centralwidget ) )->setData( img_ptr, dims, format );
     ( static_cast<WidgetStreamView*>( ui->centralwidget ) )->setData( img_ptr, 192 * 512, dims, format );
 }

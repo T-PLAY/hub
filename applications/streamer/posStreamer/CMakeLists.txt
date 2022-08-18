@@ -29,16 +29,18 @@ if (WIN32)
 		COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:src> $<TARGET_FILE_DIR:${PROJECT_NAME}>
         )
  
+	set(WIN32_REQUIRED_LIBS glm::glm)
 
 elseif(UNIX)
     #    set(THREADS_PREFER_PTHREAD_FLAG ON)
     #        find_package(Threads REQUIRED)
     #        set(UNIX_REQUIRED_LIBS Threads::Threads)
+	set(UNIX_REQUIRED_LIBS glm)
 endif()
 
 
 target_link_libraries(${PROJECT_NAME}
-    glm::glm
+    # glm::glm
     src libApp
     ${UNIX_REQUIRED_LIBS} ${WIN32_REQUIRED_LIBS})
 

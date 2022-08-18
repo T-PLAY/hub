@@ -5,7 +5,9 @@
 //#include <utility>
 #include <exception>
 
+#ifdef WIN32
 #include <WS2tcpip.h>
+#endif
 
 #include "DebugMsg.h"
 

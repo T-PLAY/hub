@@ -5,20 +5,12 @@
 //#include <algorithm>
 #include <numeric>
 
+
+
  //const std::string& getSensorName() const;
  //Format getFormat() const;
  //const Dims& getDims() const;
  //const MetaData& getMetaData() const;
-
-static constexpr char const* format2string[static_cast<int>( Header::Format::COUNT )] = {
-    "NONE",        "Z16",   "DISPARITY16", "XYZ32F",     "YUYV",          "RGB8",
-    "BGR8",        "RGBA8", "BGRA8",       "Y8",         "Y16",           "RAW10",
-    "RAW16",       "RAW8",  "UYVY",        "MOTION_RAW", "MOTION_XYZ32F", "GPIO_RAW",
-    "DISPARITY32", "6DOF",  "Y10BPACK",    "DISTANCE",   "MJPEG",         "Y8I",
-    "Y12I",        "INZI",  "INVI",        "W10",        "Z16H",          "FG",
-    "Y411",
-    // COUNT
-};
 
 static constexpr int format2nByte[static_cast<int>( Header::Format::COUNT )] = {
     0, // NONE
@@ -111,6 +103,22 @@ std::string Header::dims2string( const Dims& dims ) {
     return str;
 }
 
+static constexpr char const* format2stringArray[static_cast<int>( Header::Format::COUNT )] = {
+    "NONE",        "Z16",   "DISPARITY16", "XYZ32F",     "YUYV",          "RGB8",
+    "BGR8",        "RGBA8", "BGRA8",       "Y8",         "Y16",           "RAW10",
+    "RAW16",       "RAW8",  "UYVY",        "MOTION_RAW", "MOTION_XYZ32F", "GPIO_RAW",
+    "DISPARITY32", "6DOF",  "Y10BPACK",    "DISTANCE",   "MJPEG",         "Y8I",
+    "Y12I",        "INZI",  "INVI",        "W10",        "Z16H",          "FG",
+    "Y411",
+    // COUNT
+};
+
+
+std::string Header::format2string(const Format &format)
+{
+    return format2stringArray[(int)format];
+}
+
 std::string Header::metaData2string( const Header::MetaData& metaData, bool expand ) {
     std::string str = "";
     if ( expand ) {
@@ -168,7 +176,8 @@ std::string Header::any2string( const std::any& any ) {
                 char buff[32];
                 const int k = i * n + j;
                 // sprintf(buff, "%.1f", val->at(k));
-                sprintf_s( buff, "%.1f", val->at( k ) );
+//                sprintf_s( buff, "%.1f", val->at( k ) );
+                sprintf( buff, "%.1f", val->at( k ) );
                 str += buff;
                 //            str += std::to_string(val->at(i));
                 if ( j != 2 ) str += " ";
@@ -198,7 +207,7 @@ std::string Header::any2string( const std::any& any ) {
 
 
 std::ostream& operator<<( std::ostream& os, const Header::Format& format ) {
-    os << format2string[(int)format] << " (byte:" << format2nByte[(int)format] << ")";
+    os << Header::format2string(format) << " (byte:" << format2nByte[(int)format] << ")";
     return os;
 }
 

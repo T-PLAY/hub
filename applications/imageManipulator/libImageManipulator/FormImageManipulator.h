@@ -17,7 +17,7 @@ public:
     explicit FormImageManipulator(QWidget* parent = nullptr);
     ~FormImageManipulator();
 
-    void update(const Stream::Acquisition & acquisition);
+    void update(const Acquisition & acquisition);
     void init();
 
 //    void update();

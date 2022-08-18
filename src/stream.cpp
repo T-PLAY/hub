@@ -9,38 +9,10 @@
 
 //#define DEBUG_STREAM
 
-//class HeaderImpl : public Header
-//{
-//  public:
-//    HeaderImpl( const Header& header ) : Header( header ) {};
-//    HeaderImpl( const std::string& sensorName,
-//                Stream::Format format,
-//                const Stream::Dims& dims,
-//                const Stream::MetaData& metaData ) :
-//        Header( sensorName, format, dims, metaData ) {};
-//
-//    void write( IOStream& iostream ) const override {
-//
-//        iostream.write( mSensorName );
-//        iostream.write( mFormat );
-//        iostream.write( mDims );
-//        iostream.write( mMetaData );
-//    };
-//
-//    void read( const IOStream& iostream ) override {
-//        iostream.read( mSensorName );
-//        iostream.read( mFormat );
-//        iostream.read( mDims );
-//        iostream.read( mMetaData );
-//    };
-//};
-
-
-
 
 Stream::Stream( const Header & header,
                 IOStream& ioStream) :
-    m_header { new Header ( header ) },
+    m_header (header),
     //mSensorName( sensorName ),
     //mFormat( format ),
     //mDims( dims ),
@@ -49,7 +21,6 @@ Stream::Stream( const Header & header,
 	{}
 
 Stream::Stream( IOStream& ioStream ) : 
-    m_header { new Header },
     mIOStream( ioStream ) {};
  
 Stream::~Stream() {
@@ -63,7 +34,7 @@ Stream::~Stream() {
 
 std::ostream& operator<<( std::ostream& os, const Stream& stream ) {
     //        os << stream.mSensorName << stream.mFormat << stream.mDims << stream.mAcquisitionSize;
-    os << stream.m_header->getSensorName();
+    os << stream.m_header.getSensorName();
     return os;
 }
 
@@ -75,7 +46,7 @@ std::ostream& operator<<( std::ostream& os, const Stream& stream ) {
 //}
 
 const Header & Stream::getHeader() const {
-    return *m_header;
+    return m_header;
 }
 
 IOStream& Stream::getIOStream() const {
@@ -89,7 +60,7 @@ InputStream::InputStream( const std::string& sensorName, const std::string& sync
             *std::move( new ClientSocket( sensorName, syncSensorName ) )
             ) {
 
-    m_header->read( mIOStream );
+    m_header.read( mIOStream );
 
 }
 
@@ -101,17 +72,17 @@ InputStream::~InputStream() {
 
 Acquisition InputStream::getAcquisition() const {
     long long start, end;
-    unsigned char* data = new unsigned char[m_header->getAcquisitionSize()];
+    unsigned char* data = new unsigned char[m_header.getAcquisitionSize()];
 
     mIOStream.read( start );
     mIOStream.read( end );
-    mIOStream.read( data, m_header->getAcquisitionSize() );
+    mIOStream.read( data, m_header.getAcquisitionSize() );
 
 #ifdef DEBUG_STREAM
     std::cout << "[InputStream] read acq :  " << acquisition << std::endl;
 #endif
 
-    return Acquisition( start, end, data, m_header->getAcquisitionSize() );
+    return Acquisition( start, end, data, m_header.getAcquisitionSize() );
     delete[] data;
 }
 
@@ -138,7 +109,7 @@ std::vector<Acquisition> InputStream::getAllAcquisition() {
 
 
 std::ostream& operator<<( std::ostream& os, const InputStream& inputStream ) {
-    os << "metadata:" << Header::metaData2string( inputStream.m_header->getMetaData() );
+    os << "metadata:" << Header::metaData2string( inputStream.m_header.getMetaData() );
     return os;
 }
 
@@ -148,9 +119,9 @@ OutputStream::OutputStream( const Header & header,
                             ClientSocket&& ioStream ) :
     Stream( header, *std::move( new ClientSocket( std::move( ioStream ) ) )) {
 
-    mIOStream.setupOutput( m_header->getSensorName() );
+    mIOStream.setupOutput( m_header.getSensorName() );
 
-    m_header->write( mIOStream );
+    m_header.write( mIOStream );
 }
 
 void OutputStream::operator<<( const Acquisition& acquisition ) const {
@@ -161,6 +132,6 @@ void OutputStream::operator<<( const Acquisition& acquisition ) const {
 
     mIOStream.write( acquisition.mBackendTimestamp );
     mIOStream.write( acquisition.mBackendTimeOfArrival );
-    mIOStream.write( acquisition.mData, m_header->getAcquisitionSize() );
+    mIOStream.write( acquisition.mData, m_header.getAcquisitionSize() );
 }
 

@@ -3,7 +3,7 @@
 #include <QPainter>
 #include <iostream>
 
-// static constexpr QImage::Format * streamFormat2QtFormat[(int)Stream::Format::COUNT] = {
+// static constexpr QImage::Format * streamFormat2QtFormat[(int)Header::Format::COUNT] = {
 // };
 //#include <qmatrix4x4.h>
 #include <QPainter>
@@ -19,11 +19,11 @@ WidgetStreamView::WidgetStreamView(QWidget* parent)
 {
 }
 
-//void WidgetStreamView::setData(unsigned char* img_ptr, std::vector<int> dims, Stream::Format format)
+//void WidgetStreamView::setData(unsigned char* img_ptr, std::vector<int> dims, Header::Format format)
 //{
 //}
 
-void WidgetStreamView::setData(unsigned char* img_ptr, size_t size, std::vector<int> dims, Stream::Format format)
+void WidgetStreamView::setData(unsigned char* img_ptr, size_t size, std::vector<int> dims, Header::Format format)
 {
 }
 
@@ -128,7 +128,7 @@ void WidgetStreamView2D::clear()
 //    //    mImageUnitHeight = mUnitPerImageVPixel * mImagePixelHeight;
 //}
 
-//void WidgetStreamView2D::setData(unsigned char* img_ptr, std::vector<int> dims, Stream::Format format)
+//void WidgetStreamView2D::setData(unsigned char* img_ptr, std::vector<int> dims, Header::Format format)
 //{
 //    assert(dims.size() == 2);
 //    if (mImagePixelWidth != dims.at(0) || mImagePixelHeight != dims.at(1))
@@ -143,7 +143,7 @@ void WidgetStreamView2D::clear()
 //    updateImage();
 //}
 
-void WidgetStreamView2D::setData(unsigned char* img_ptr, size_t size, std::vector<int> dims, Stream::Format format)
+void WidgetStreamView2D::setData(unsigned char* img_ptr, size_t size, std::vector<int> dims, Header::Format format)
 {
     assert(dims.size() == 2);
     if (mImagePixelWidth != dims.at(0) || mImagePixelHeight != dims.at(1))
@@ -211,12 +211,12 @@ void WidgetStreamView2D::updateImage()
     //        QImage image;
     if (mData != nullptr) {
         switch (mFormat) {
-        case Stream::Format::Y8:
+        case Header::Format::Y8:
             m_image = new QImage((unsigned char*)mData, mImagePixelWidth, mImagePixelHeight, QImage::Format_Grayscale8);
             break;
 
-        case Stream::Format::Y16:
-        case Stream::Format::Z16:
+        case Header::Format::Y16:
+        case Header::Format::Z16:
 #if QT_VERSION <= QT_VERSION_CHECK(5, 12, 0)
             m_image = new QImage((unsigned char*)mData, mImagePixelWidth, mImagePixelHeight, QImage::Format_Grayscale16);
 #elif QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
@@ -225,11 +225,11 @@ void WidgetStreamView2D::updateImage()
 #endif
             break;
 
-        case Stream::Format::RGB8:
+        case Header::Format::RGB8:
             m_image = new QImage((unsigned char*)mData, mImagePixelWidth, mImagePixelHeight, QImage::Format_RGB888);
             break;
 
-        case Stream::Format::BGR8:
+        case Header::Format::BGR8:
 #if QT_VERSION <= QT_VERSION_CHECK(5, 12, 0)
             m_image = new QImage((unsigned char*)mData, mImagePixelWidth, mImagePixelHeight, QImage::Format_BGR888);
 #elif QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
@@ -510,7 +510,7 @@ WidgetStreamView1D::~WidgetStreamView1D()
     delete mLabel;
 }
 
-//void WidgetStreamView1D::setData(unsigned char* img_ptr, std::vector<int> dims, Stream::Format format)
+//void WidgetStreamView1D::setData(unsigned char* img_ptr, std::vector<int> dims, Header::Format format)
 //{
 
 //    float* translation = (float*)img_ptr;
@@ -520,7 +520,7 @@ WidgetStreamView1D::~WidgetStreamView1D()
 //}
 
 
-void WidgetStreamView1D::setData(unsigned char* img_ptr, size_t size, std::vector<int> dims, Stream::Format format)
+void WidgetStreamView1D::setData(unsigned char* img_ptr, size_t size, std::vector<int> dims, Header::Format format)
 {
 
     float* translation = (float*)img_ptr;

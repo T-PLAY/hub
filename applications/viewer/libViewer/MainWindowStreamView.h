@@ -21,7 +21,7 @@ public:
 
 //    std::string getStreamerSensorName() const;
 
-    void setData(unsigned char* img_ptr, std::vector<int> dims, Stream::Format format);
+    void setData(unsigned char* img_ptr, std::vector<int> dims, Header::Format format);
 
 signals:
     void onCloseStreamViewSignal();
