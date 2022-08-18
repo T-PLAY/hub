@@ -5,64 +5,44 @@
 //#include <algorithm>
 #include <numeric>
 
-
-
- //const std::string& getSensorName() const;
- //Format getFormat() const;
- //const Dims& getDims() const;
- //const MetaData& getMetaData() const;
+// const std::string& getSensorName() const;
+// Format getFormat() const;
+// const Dims& getDims() const;
+// const MetaData& getMetaData() const;
 
 static constexpr int format2nByte[static_cast<int>( Header::Format::COUNT )] = {
-    0, // NONE
-    2, // Z16             , /**< 16-bit linear depth values. The depth is meters is equal to depth
-       // scale * pixel value. */
-    2, // DISPARITY16     , /**< 16-bit float-point disparity values. Depth->Disparity conversion :
-       // Disparity = Baseline*FocalLength/Depth. */
-    4, // XYZ32F          , /**< 32-bit floating point 3D coordinates. */
-    4, // YUYV            , /**< 32-bit y0, u, y1, v data for every two pixels. Similar to YUV422
-       // but packed in a different order - https://en.wikipedia.org/wiki/YUV */
-    3, // RGB8            , /**< 8-bit red, green and blue channels */
-    3, // BGR8            , /**< 8-bit blue, green, and red channels -- suitable for OpenCV */
-    4, // RGBA8           , /**< 8-bit red, green and blue channels + constant alpha channel equal
-       // to FF */
-    4, // BGRA8           , /**< 8-bit blue, green, and red channels + constant alpha channel equal
-       // to FF */
-    1, // Y8              , /**< 8-bit per-pixel grayscale image */
-    2, // Y16             , /**< 16-bit per-pixel grayscale image */
-    0, // RAW10           , /**< Four 10 bits per pixel luminance values packed into a 5-byte
-       // macropixel */
-    2, // RAW16           , /**< 16-bit raw image */
-    1, // RAW8            , /**< 8-bit raw image */
-    0, // UYVY            , /**< Similar to the standard YUYV pixel format, but packed in a
-       // different order */
-    0, // MOTION_RAW      , /**< Raw data from the motion sensor */
-    0, // MOTION_XYZ32F   , /**< Motion data packed as 3 32-bit float values, for X, Y, and Z axis
-       // */
-    0, // GPIO_RAW        , /**< Raw data from the external sensors hooked to one of the GPIO's */
-    0, // DISPARITY32     , /**< 32-bit float-point disparity values. Depth->Disparity conversion :
-       // Disparity = Baseline*FocalLength/Depth */
-    12 + 16, // 6DOF           , /**< Pose data packed as floats array, containing translation
-             // vector, rotation quaternion and prediction velocities and accelerations vectors */
-    0, // Y10BPACK        , /**< 16-bit per-pixel grayscale image unpacked from 10 bits per pixel
-       // packed ([8:8:8:8:2222]) grey-scale image. The data is unpacked to LSB and padded with 6
-       // zero bits */
-    4, // DISTANCE        , /**< 32-bit float-point depth distance value.  */
-    0, // MJPEG           , /**< Bitstream encoding for video in which an image of each frame is
-       // encoded as JPEG-DIB   */
-    2, // Y8I             , /**< 8-bit per pixel interleaved. 8-bit left, 8-bit right.  */
-    3, // Y12I            , /**< 12-bit per pixel interleaved. 12-bit left, 12-bit right. Each pixel
-       // is stored in a 24-bit word in little-endian order. */
-    0, // INZI            , /**< multi-planar Depth 16bit + IR 10bit.  */
-    1, // INVI            , /**< 8-bit IR stream.  */
-    0, // W10             , /**< Grey-scale image as a bit-packed array. 4 pixel data stream taking
-       // 5 bytes */
-    2, // Z16H            , /**< Variable-length Huffman-compressed 16-bit depth values. */
-    2, // FG              , /**< 16-bit per-pixel frame grabber format. */
-    2, // Y411            , /**< 12-bit per-pixel. */
-    // COUNT             	/**< Number of enumeration values. Not a valid input: intended to be used
-    // in for-loops. */
+    0,       // NONE
+    2,       // Z16
+    2,       // DISPARITY16
+    4,       // XYZ32F
+    4,       // YUYV
+    3,       // RGB8
+    3,       // BGR8
+    4,       // RGBA8
+    4,       // BGRA8
+    1,       // Y8
+    2,       // Y16
+    0,       // RAW10
+    2,       // RAW16
+    1,       // RAW8
+    0,       // UYVY
+    0,       // MOTION_RAW
+    0,       // MOTION_XYZ32F
+    0,       // GPIO_RAW
+    0,       // DISPARITY32
+    12 + 16, // 6DOF
+    0,       // Y10BPACK
+    4,       // DISTANCE
+    0,       // MJPEG
+    2,       // Y8I
+    3,       // Y12I
+    0,       // INZI
+    1,       // INVI
+    0,       // W10
+    2,       // Z16H
+    2,       // FG
+    2,       // Y411
 };
-
 
 size_t Header::computeAcquisitionSize( Format format, const Dims& dims ) {
     return std::accumulate( dims.cbegin(), dims.cend(), 1, std::multiplies<int> {} ) *
@@ -89,10 +69,10 @@ size_t Header::getAcquisitionSize() const {
     return mAcquisitionSize;
 }
 
- //static std::string dims2string( const Dims& dims );
- //static std::string metaData2string( const MetaData& metaData, bool expand = false );
- //static std::string any2string( const std::any& any );
- //SRC_API friend std::ostream& operator<<( std::ostream& os, const Format& format );
+// static std::string dims2string( const Dims& dims );
+// static std::string metaData2string( const MetaData& metaData, bool expand = false );
+// static std::string any2string( const std::any& any );
+// SRC_API friend std::ostream& operator<<( std::ostream& os, const Format& format );
 
 std::string Header::dims2string( const Dims& dims ) {
     std::string str = "";
@@ -103,19 +83,16 @@ std::string Header::dims2string( const Dims& dims ) {
     return str;
 }
 
-static constexpr char const* format2stringArray[static_cast<int>( Header::Format::COUNT )] = {
+static std::string format2stringArray[static_cast<int>( Header::Format::COUNT )] = {
     "NONE",        "Z16",   "DISPARITY16", "XYZ32F",     "YUYV",          "RGB8",
     "BGR8",        "RGBA8", "BGRA8",       "Y8",         "Y16",           "RAW10",
     "RAW16",       "RAW8",  "UYVY",        "MOTION_RAW", "MOTION_XYZ32F", "GPIO_RAW",
     "DISPARITY32", "6DOF",  "Y10BPACK",    "DISTANCE",   "MJPEG",         "Y8I",
     "Y12I",        "INZI",  "INVI",        "W10",        "Z16H",          "FG",
     "Y411",
-    // COUNT
 };
 
-
-std::string Header::format2string(const Format &format)
-{
+std::string Header::format2string( const Format& format ) {
     return format2stringArray[(int)format];
 }
 
@@ -176,7 +153,7 @@ std::string Header::any2string( const std::any& any ) {
                 char buff[32];
                 const int k = i * n + j;
                 // sprintf(buff, "%.1f", val->at(k));
-//                sprintf_s( buff, "%.1f", val->at( k ) );
+                //                sprintf_s( buff, "%.1f", val->at( k ) );
                 sprintf( buff, "%.1f", val->at( k ) );
                 str += buff;
                 //            str += std::to_string(val->at(i));
@@ -205,9 +182,7 @@ std::string Header::any2string( const std::any& any ) {
     return "";
 }
 
-
 std::ostream& operator<<( std::ostream& os, const Header::Format& format ) {
-    os << Header::format2string(format) << " (byte:" << format2nByte[(int)format] << ")";
+    os << format2stringArray[(int)format] << " (byte:" << format2nByte[(int)format] << ")";
     return os;
 }
-

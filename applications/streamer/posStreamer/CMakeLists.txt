@@ -26,7 +26,7 @@ if (WIN32)
     #    set(WIN32_REQUIRED_LIBS wsock32 ws2_32)
 
    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-		COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:src> $<TARGET_FILE_DIR:${PROJECT_NAME}>
+                COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${SRC_TARGET}> $<TARGET_FILE_DIR:${PROJECT_NAME}>
         )
  
 	set(WIN32_REQUIRED_LIBS glm::glm)
@@ -41,6 +41,7 @@ endif()
 
 target_link_libraries(${PROJECT_NAME}
     # glm::glm
-    src libApp
+    ${SRC_TARGET}
+    libApp
     ${UNIX_REQUIRED_LIBS} ${WIN32_REQUIRED_LIBS})
 

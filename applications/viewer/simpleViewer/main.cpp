@@ -19,7 +19,7 @@ int main( int argc, char* argv[] ) {
     std::cout << "inputStream" << std::endl;
     InputStream inputStream( ClientSocket( sensorNames[iSensor], sensorMasterNames[iSensor] ) );
     std::cout << "proceduralStreamer inited" << std::endl;
-    const auto & header = inputStream.getHeader();
+    const auto& header               = inputStream.getHeader();
     const Header::MetaData& metaData = header.getMetaData();
 
     std::cout << "metadata : " << Header::metaData2string( metaData ) << std::endl;
