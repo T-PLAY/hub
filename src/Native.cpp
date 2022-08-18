@@ -53,7 +53,7 @@ InputSensor* createInputSensor( const char* sensorName, const char* ipv4 ) {
     std::cout << "[Native] createInputSensor( " << sensorName << ")" << std::endl;
     InputSensor* inputSensor;
     try {
-        inputSensor = new InputSensor( ClientSocket( sensorName, "", ipv4, SERVICE_PORT ) );
+//        inputSensor = new InputSensor( ClientSocket( sensorName, "", ipv4, SERVICE_PORT ) );
     }
     catch ( std::exception& e ) {
         std::cout << "[Native] createInputSensor : catch exception : " << e.what() << std::endl;

@@ -2,12 +2,12 @@
 
 #include <fstream>
 
-#include "IO/Interface.hpp"
+#include "Interface.hpp"
 
 namespace hub {
 namespace io {
 
-class SRC_API File : public hub::io::Interface
+class SRC_API File : public Interface
 {
     class exception : public std::runtime_error
     {

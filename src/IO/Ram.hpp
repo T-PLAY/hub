@@ -1,6 +1,6 @@
 #pragma once
 
-#include <IO/Interface.hpp>
+#include "Interface.hpp"
 
 namespace hub {
 namespace io {
@@ -41,7 +41,7 @@ class CyclicBuff
     bool m_inputSensorClose         = false;
 };
 
-class Ram : public io::Interface
+class Ram : public Interface
 {
     class exception : public std::runtime_error
     {

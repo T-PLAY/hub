@@ -2,11 +2,11 @@
 
 #include <functional>
 #include <map>
-//#include <socket.h>
-//#include <queue>
 #include <deque>
 
-#include "Net/Socket.hpp"
+//#include "Net/Socket.hpp"
+#include "ClientSocket.hpp"
+#include "ServerSocket.hpp"
 #include "Sensor.hpp"
 
 #include <mutex>
@@ -26,7 +26,7 @@ struct Streamer {
 };
 
 struct Viewer {
-    const hub::ClientSocket* const mSock = nullptr;
+    const ClientSocket* const mSock = nullptr;
 
     void notifyNewStreamer( const Streamer& streamer ) const;
 };
@@ -34,14 +34,15 @@ struct Viewer {
 class Server
 {
   public:
-    Server( int port = hub::SERVICE_PORT );
+    Server(  );
+    Server( int port );
 
     void run();
 
     std::string getStatus() const;
 
   private:
-    hub::ServerSocket mServerSock;
+    ServerSocket mServerSock;
     std::map<std::string, Streamer*> mStreamers;
     std::list<Viewer*> mViewers;
 
