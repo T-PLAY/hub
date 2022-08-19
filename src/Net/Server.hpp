@@ -7,7 +7,8 @@
 //#include "Net/Socket.hpp"
 #include "ClientSocket.hpp"
 #include "ServerSocket.hpp"
-#include "Sensor.hpp"
+#include "InputSensor.hpp"
+#include "OutputSensor.hpp"
 
 #include <mutex>
 

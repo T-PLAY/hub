@@ -28,35 +28,6 @@ class SRC_API Socket
         const char* what() const throw() { return std::runtime_error::what(); }
     };
 
-    enum class Message {
-        NONE,
-        PING,
-        SYNC,
-        DATA,
-        OK,
-        CLOSE,
-        DEL_STREAMER,
-        NEW_STREAMER,
-        NOT_FOUND,
-        FOUND,
-        COUNT
-    };
-    static constexpr char const* message2string[static_cast<int>( Message::COUNT )] = {
-        "NONE",
-        "PING",
-        "SYNC",
-        "DATA",
-        "OK",
-        "CLOSE",
-        "DEL_STREAMER",
-        "NEW_STREAMER",
-        "NOT_FOUND",
-        "FOUND",
-    };
-    friend std::ostream& operator<<( std::ostream& os, const Message& msg ) {
-        os << message2string[(int)msg];
-        return os;
-    }
 
     bool isConnected() const;
     static std::string getHeader( socket_fd iSock );

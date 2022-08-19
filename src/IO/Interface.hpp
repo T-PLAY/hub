@@ -10,6 +10,7 @@
 #include <vector>
 
 #include "Macros.hpp"
+#include "SensorSpec.hpp"
 
 //#define DEBUG_IOSTREAM
 
@@ -44,7 +45,7 @@ class SRC_API Interface
     }
 
   public:
-    Interface()                                  = default;
+    Interface()                                         = default;
     Interface( Interface&& ioStream )                   = default;
     Interface( Interface& ioStream )                    = delete;
     Interface& operator=( const Interface& ioStream )   = delete;
@@ -71,6 +72,7 @@ class SRC_API Interface
     void write( const std::map<T, U>& map ) const;
 
     void write( const std::string& str ) const;
+    void write( const SensorSpec& sensorSpec ) const;
 
     ////////////////////////////////////////////////////////////////////////////
 
@@ -88,6 +90,7 @@ class SRC_API Interface
     void read( std::map<T, U>& map ) const;
 
     void read( std::string& str ) const;
+    void read( SensorSpec& sensorSpec ) const;
 
     enum class Mode {
         NONE,
@@ -111,7 +114,8 @@ class SRC_API Interface
 template <class T>
 void Interface::write( const T& t ) const {
 #ifdef DEBUG_IOSTREAM
-    std::cout << "[Interface] write " << typeid( T ).name() << " '" << t << "' : start" << std::endl;
+    std::cout << "[Interface] write " << typeid( T ).name() << " '" << t << "' : start"
+              << std::endl;
 #endif
 
     assert( mMode == Mode::OUTPUT || mMode == Mode::INPUT_OUTPUT );

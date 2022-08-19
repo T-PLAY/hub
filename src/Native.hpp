@@ -1,7 +1,8 @@
 #pragma once
 
 #include "Macros.hpp"
-#include "Sensor.hpp"
+//#include "Sensor.hpp"
+#include "InputSensor.hpp"
 
 namespace hub {
 
