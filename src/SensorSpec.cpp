@@ -1,7 +1,10 @@
-#include "Header.hpp"
+#include "SensorSpec.hpp"
 
 //#include <algorithm>
 #include <numeric>
+#include <cassert>
+
+#include "IO/Interface.hpp"
 
 // const std::string& getSensorName() const;
 // Format getFormat() const;
@@ -9,7 +12,7 @@
 // const MetaData& getMetaData() const;
 namespace hub {
 
-static constexpr int format2nByte[static_cast<int>( Header::Format::COUNT )] = {
+static constexpr int format2nByte[static_cast<int>( SensorSpec::Format::COUNT )] = {
     0,       // NONE
     2,       // Z16
     2,       // DISPARITY16
@@ -43,37 +46,37 @@ static constexpr int format2nByte[static_cast<int>( Header::Format::COUNT )] = {
     2,       // Y411
 };
 
-size_t Header::computeAcquisitionSize( Format format, const Dims& dims ) {
+size_t SensorSpec::computeAcquisitionSize( Format format, const Dims& dims ) {
     return std::accumulate( dims.cbegin(), dims.cend(), 1, std::multiplies<int> {} ) *
            format2nByte[static_cast<int>( format )];
 }
 
-const std::string& Header::getSensorName() const {
-    return mSensorName;
-}
+//const std::string& SensorSpec::getSensorName() const {
+//    return mSensorName;
+//}
 
-Header::Format Header::getFormat() const {
-    return mFormat;
-}
+//SensorSpec::Format SensorSpec::getFormat() const {
+//    return mFormat;
+//}
 
-const std::vector<int>& Header::getDims() const {
-    return mDims;
-}
+//const std::vector<int>& SensorSpec::getDims() const {
+//    return mDims;
+//}
 
-const Header::MetaData& Header::getMetaData() const {
-    return mMetaData;
-}
+//const SensorSpec::MetaData& SensorSpec::getMetaData() const {
+//    return mMetaData;
+//}
 
-size_t Header::getAcquisitionSize() const {
-    return mAcquisitionSize;
-}
+//size_t SensorSpec::getAcquisitionSize() const {
+//    return mAcquisitionSize;
+//}
 
 // static std::string dims2string( const Dims& dims );
 // static std::string metaData2string( const MetaData& metaData, bool expand = false );
 // static std::string any2string( const std::any& any );
 // SRC_API friend std::ostream& operator<<( std::ostream& os, const Format& format );
 
-std::string Header::dims2string( const Dims& dims ) {
+std::string SensorSpec::dims2string( const Dims& dims ) {
     std::string str = "";
     for ( unsigned int i = 0; i < dims.size(); ++i ) {
         str += std::to_string( dims[i] );
@@ -82,7 +85,7 @@ std::string Header::dims2string( const Dims& dims ) {
     return str;
 }
 
-static std::string format2stringArray[static_cast<int>( Header::Format::COUNT )] = {
+static std::string format2stringArray[static_cast<int>( SensorSpec::Format::COUNT )] = {
     "NONE",        "Z16",   "DISPARITY16", "XYZ32F",     "YUYV",          "RGB8",
     "BGR8",        "RGBA8", "BGRA8",       "Y8",         "Y16",           "RAW10",
     "RAW16",       "RAW8",  "UYVY",        "MOTION_RAW", "MOTION_XYZ32F", "GPIO_RAW",
@@ -91,11 +94,11 @@ static std::string format2stringArray[static_cast<int>( Header::Format::COUNT )]
     "Y411",
 };
 
-std::string Header::format2string( const Format& format ) {
+std::string SensorSpec::format2string( const Format& format ) {
     return format2stringArray[(int)format];
 }
 
-std::string Header::metaData2string( const Header::MetaData& metaData, bool expand ) {
+std::string SensorSpec::metaData2string( const SensorSpec::MetaData& metaData, bool expand ) {
     std::string str = "";
     if ( expand ) {
         bool first = true;
@@ -123,7 +126,7 @@ std::string Header::metaData2string( const Header::MetaData& metaData, bool expa
     return str;
 }
 
-std::string Header::any2string( const std::any& any ) {
+std::string SensorSpec::any2string( const std::any& any ) {
     assert( any.has_value() );
     const auto& hashCode = any.type().hash_code();
 
@@ -164,7 +167,7 @@ std::string Header::any2string( const std::any& any ) {
     }
     else if ( hashCode == typeid( hub::io::Interface::Mat3 ).hash_code() ) {
         const hub::io::Interface::Mat3* val = std::any_cast<hub::io::Interface::Mat3>( &any );
-        std::string str     = "";
+        std::string str                     = "";
         for ( int i = 0; i < 3; ++i ) {
             for ( int j = 0; j < 3; ++j ) {
                 str += std::to_string( val->data[i * 3 + j] ) + " ";
@@ -181,7 +184,7 @@ std::string Header::any2string( const std::any& any ) {
     return "";
 }
 
-std::ostream& operator<<( std::ostream& os, const Header::Format& format ) {
+std::ostream& operator<<( std::ostream& os, const SensorSpec::Format& format ) {
     os << format2stringArray[(int)format] << " (byte:" << format2nByte[(int)format] << ")";
     return os;
 }

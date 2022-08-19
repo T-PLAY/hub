@@ -126,7 +126,11 @@ ClientSocket::ClientSocket( socket_fd fdSock ) {
 }
 
 ClientSocket::ClientSocket( ClientSocket&& sock ) noexcept :
-    Socket(), mIpv4( sock.mIpv4 ), mPort( sock.mPort ), mIsServer( sock.mIsServer ) {
+    Socket(),
+    mIpv4( sock.mIpv4 ),
+    mPort( sock.mPort )
+//    mIsServer( sock.mIsServer )
+{
     mFdSock      = sock.mFdSock;
     sock.mFdSock = INVALID_SOCKET;
 
@@ -139,39 +143,40 @@ ClientSocket::~ClientSocket() {
 #ifdef DEBUG_SOCKET
     DEBUG_MSG( getHeader( mFdSock ) << "~ClientSocket()" );
 #endif
-}
-
-void ClientSocket::close() {
     clear();
 }
 
-void ClientSocket::setupOutput( const std::string& sensorName ) const {
-#ifdef DEBUG_SOCKET
-    DEBUG_MSG( "ClientSocket::setOutputName(const std::string& sensorName)" );
-#endif
+// void ClientSocket::close() {
+//     clear();
+// }
 
-    if ( !mIsServer ) {
-        ClientSocket::Type clientType = ClientSocket::Type::STREAMER;
-        write( clientType );
+// void ClientSocket::setupOutput( const std::string& sensorName ) const {
+//#ifdef DEBUG_SOCKET
+//     DEBUG_MSG( "ClientSocket::setOutputName(const std::string& sensorName)" );
+//#endif
 
-        write( sensorName );
-        Socket::Message mess;
-        read( mess );
-        if ( mess == Socket::Message::FOUND ) {
-            assert( false );
-            throw Socket::exception(
-                ( std::string( "sensor '" ) + sensorName + "' is already attached to server" )
-                    .c_str() );
-        }
-        assert( mess == Socket::Message::NOT_FOUND );
-    }
+//    if ( !mIsServer ) {
+//        ClientSocket::Type clientType = ClientSocket::Type::STREAMER;
+//        write( clientType );
 
-    io::Interface::setupOutput( sensorName );
-}
+//        write( sensorName );
+//        Socket::Message mess;
+//        read( mess );
+//        if ( mess == Socket::Message::FOUND ) {
+//            assert( false );
+//            throw Socket::exception(
+//                ( std::string( "sensor '" ) + sensorName + "' is already attached to server" )
+//                    .c_str() );
+//        }
+//        assert( mess == Socket::Message::NOT_FOUND );
+//    }
 
-void ClientSocket::setIsServer( bool isServer ) {
-    mIsServer = isServer;
-}
+//    io::Interface::setupOutput( sensorName );
+//}
+
+// void ClientSocket::setIsServer( bool isServer ) {
+//     mIsServer = isServer;
+// }
 
 void ClientSocket::write( const unsigned char* data, size_t len ) const {
     assert( len > 0 );
@@ -254,26 +259,26 @@ void ClientSocket::read( unsigned char* data, size_t len ) const {
 #endif
 }
 
-void ClientSocket::waitClose() const {
-    Socket::Message message;
-    bool wantToClose = false;
-    while ( !wantToClose ) {
-        io::Interface::read( message );
+// void ClientSocket::waitClose() const {
+//     Socket::Message message;
+//     bool wantToClose = false;
+//     while ( !wantToClose ) {
+//         io::Interface::read( message );
 
-        switch ( message ) {
-        case Message::CLOSE:
-            wantToClose = true;
-            break;
+//        switch ( message ) {
+//        case Message::CLOSE:
+//            wantToClose = true;
+//            break;
 
-        default:
-            DEBUG_MSG( "waitClose, sleep" );
-            std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
-            break;
-        }
-    }
+//        default:
+//            DEBUG_MSG( "waitClose, sleep" );
+//            std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
+//            break;
+//        }
+//    }
 
-    io::Interface::write( Message::OK );
-}
+//    io::Interface::write( Message::OK );
+//}
 
 void ClientSocket::clear() {
     if ( mFdSock != INVALID_SOCKET ) {

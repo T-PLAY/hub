@@ -20,6 +20,13 @@ void Interface::write( const std::string& str ) const {
     }
 }
 
+void Interface::write( const SensorSpec& sensorSpec ) const {
+    write( sensorSpec.sensorName );
+    write( sensorSpec.format );
+    write( sensorSpec.dims );
+    write( sensorSpec.metaData );
+}
+
 void Interface::write( const char* str ) const {
 #ifdef DEBUG_IOSTREAM
     std::cout << "[Interface] write const char* : start" << std::endl;
@@ -156,6 +163,16 @@ void Interface::read( std::string& str ) const {
     }
 }
 
+void Interface::read( SensorSpec& sensorSpec ) const {
+    read( sensorSpec.sensorName );
+    read( sensorSpec.format );
+    read( sensorSpec.dims );
+    read( sensorSpec.metaData );
+
+//    sensorSpec.acquisitonSize =
+//        SensorSpec::computeAcquisitionSize( sensorSpec.format, sensorSpec.dims );
+}
+
 void Interface::read( char* str ) const {
 #ifdef DEBUG_IOSTREAM
     std::cout << "[Interface] read char* : start" << std::endl;
@@ -252,8 +269,8 @@ void Interface::read( std::any& any ) const {
     //        read(val);
     //        any = std::any_cast<double>(val);
     //    }
-    //    //	else if (hashCode == "class std::basic_string<char,struct std::char_traits<char>,class
-    //    std::allocator<char> >") {
+    //    //	else if (hashCode == "class std::basic_string<char,struct
+    //    std::char_traits<char>,class std::allocator<char> >") {
     //    //    else if (hashCode == typeid(std::string).hash_code()) {
     //    else if (hashCode == typeInfoHash64(typeid(std::string).raw_name())) {
     //        std::string val;
