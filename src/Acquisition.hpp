@@ -20,6 +20,8 @@ class SRC_API Acquisition
     Acquisition& operator=( const Acquisition& acq ) = delete;
     Acquisition& operator=( Acquisition&& acq )      = delete;
 
+    bool operator==(const Acquisition & acq) const;
+
   public:
     Acquisition clone() const;
 

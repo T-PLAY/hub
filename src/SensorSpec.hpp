@@ -54,14 +54,18 @@ class SensorSpec
     // clang-format on
 
     SRC_API SensorSpec( const std::string& pSensorName = "",
-                        Format pFormat = Format::NONE,
-                        const Dims& pDims = {},
-                        const MetaData& pMetaData = {} ) :
+                        Format pFormat                 = Format::NONE,
+                        const Dims& pDims              = {},
+                        const MetaData& pMetaData      = {} ) :
         sensorName( pSensorName ),
         format( pFormat ),
         dims( pDims ),
         metaData( pMetaData ),
         acquisitonSize( computeAcquisitionSize( pFormat, pDims ) ) {};
+
+    //    SensorSpec(io::InputInterface & inputInterface) {
+
+    //    }
 
     //        acquisitonSize( computeAcquisitionSize( format, dims ) ) {};
 
@@ -81,9 +85,10 @@ class SensorSpec
     //    acquisitonSize = computeAcquisitionSize( format, dims );
     //};
 
-  private:
+  public:
     SRC_API static size_t computeAcquisitionSize( Format format, const Dims& dims );
 
+  private:
   public:
     std::string sensorName;
     Format format;

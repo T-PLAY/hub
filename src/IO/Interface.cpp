@@ -169,8 +169,15 @@ void Interface::read( SensorSpec& sensorSpec ) const {
     read( sensorSpec.dims );
     read( sensorSpec.metaData );
 
-//    sensorSpec.acquisitonSize =
-//        SensorSpec::computeAcquisitionSize( sensorSpec.format, sensorSpec.dims );
+    sensorSpec.acquisitonSize =
+            SensorSpec::computeAcquisitionSize( sensorSpec.format, sensorSpec.dims );
+}
+
+SensorSpec Interface::getSensorSpec() const
+{
+    SensorSpec sensorSpec;
+    read(sensorSpec);
+    return sensorSpec;
 }
 
 void Interface::read( char* str ) const {
@@ -314,14 +321,14 @@ void Interface::read( std::any& any ) const {
 
 //}
 
-void Interface::setupOutput( const std::string& sensorName ) const {
-    (void)sensorName;
-#ifdef DEBUG_IOSTREAM
-    std::cout << "Interface::setOutputName(const std::string& sensorName)" << std::endl;
-#endif
+//void Interface::setupOutput( const std::string& sensorName ) const {
+//    (void)sensorName;
+//#ifdef DEBUG_IOSTREAM
+//    std::cout << "Interface::setOutputName(const std::string& sensorName)" << std::endl;
+//#endif
 
-    assert( mMode == Mode::INPUT_OUTPUT );
-}
+//    assert( mMode == Mode::INPUT_OUTPUT );
+//}
 
 // Interface::Interface(const Mode& mode)
 //{
@@ -329,8 +336,8 @@ void Interface::setupOutput( const std::string& sensorName ) const {
 
 // void Interface::setupMode(const Mode& mode)
 //{
-#ifdef DEBUG_IOSTREAM
-#endif
+//#ifdef DEBUG_IOSTREAM
+//#endif
 // }
 
 } // namespace io

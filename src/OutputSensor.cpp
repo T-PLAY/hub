@@ -8,12 +8,18 @@
 namespace hub {
 //#define DEBUG_STREAM
 
-// OutputSensor::OutputSensor( const SensorSpec& sensorSpec, ClientSocket&& interface ) :
-//     Sensor( sensorSpec, *std::move( new ClientSocket( std::move( interface ) ) ) ) {
+// OutputSensor::OutputSensor( const SensorSpec& sensorSpec, ClientSocket&& outputInterface ) :
+//     Sensor( sensorSpec, *std::move( new ClientSocket( std::move( outputInterface ) ) ) ) {
 
 //    m_interface.setupOutput( spec.getSensorName() );
 
 //    spec.write( m_interface );
+//}
+
+//OutputSensor::OutputSensor( const SensorSpec& sensorSpec, io::Output&& output ) :
+//    Sensor( sensorSpec, *(new io::Output(std::move(output))) ) {
+
+//    m_interface.write( spec );
 //}
 
 void OutputSensor::operator<<( const Acquisition& acquisition ) const {

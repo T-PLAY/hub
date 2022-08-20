@@ -3,6 +3,7 @@
 #include "Acquisition.hpp"
 #include "IO/Interface.hpp"
 #include "SensorSpec.hpp"
+#include <memory>
 
 namespace hub {
 
@@ -17,26 +18,28 @@ class SRC_API Sensor
     };
 
   protected:
-    Sensor( const SensorSpec& sensorSpec, io::Interface& interface );
+    Sensor( const SensorSpec&& sensorSpec, io::Interface& interface );
 //    Sensor( io::Interface& interface );
     ~Sensor();
 
     Sensor( const Sensor& sensor ) = delete;
-//    Sensor( Sensor&& sensor )      = delete;
+    //    Sensor( Sensor&& sensor )      = delete;
 
     Sensor& operator=( const Sensor& sensor ) = delete;
-//    Sensor& operator=( Sensor&& sensor )      = delete;
+    //    Sensor& operator=( Sensor&& sensor )      = delete;
+
+  public:
+    const SensorSpec spec;
 
   protected:
-    const SensorSpec spec;
+    //    std::unique_ptr<io::Interface> m_interface;
     io::Interface& m_interface;
 
   public:
-    const SensorSpec& getHeader() const;
+    //    const SensorSpec& getHeader() const;
     io::Interface& getIO() const;
 
     SRC_API friend std::ostream& operator<<( std::ostream& os, const Sensor& sensor );
 };
-
 
 } // namespace hub

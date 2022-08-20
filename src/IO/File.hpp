@@ -1,13 +1,14 @@
 #pragma once
 
 #include <fstream>
+#include <memory>
 
 #include "Interface.hpp"
 
 namespace hub {
 namespace io {
 
-class SRC_API File : public Interface
+class SRC_API File : public InputOutputInterface
 {
     class exception : public std::runtime_error
     {
@@ -21,6 +22,8 @@ class SRC_API File : public Interface
     File( const File& fileIO ) = delete;
     File( File&& fileIO )      = default;
 
+    ~File();
+
     void close() override;
 
     void write( const unsigned char* data, size_t len ) const override;
@@ -28,7 +31,9 @@ class SRC_API File : public Interface
 
   protected:
   private:
-    std::fstream& mFile;
+//    std::fstream& mFile;
+//    std::fstream * mFile = nullptr;
+    std::unique_ptr<std::fstream> mFile;
 };
 
 } // namespace io

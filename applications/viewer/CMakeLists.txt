@@ -7,7 +7,7 @@ add_subdirectory(streamViewer)
 add_subdirectory(simpleViewer)
 #add_subdirectory(nativeViewer)
 
-if (HUB_ENABLE_RADIUM_EXAMPLE)
+if (HUB_ENABLE_RADIUM_APPLICATION)
 
     #    add_definitions(-DONLY_POSE)
     add_subdirectory(radiumViewer)
