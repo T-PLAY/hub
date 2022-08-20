@@ -47,10 +47,8 @@ class SRC_API Interface
   public:
     Interface()                                         = default;
     Interface( Interface&& ioStream )                   = default;
-    Interface( Interface& ioStream )                    = delete;
+    Interface( const Interface& ioStream )                    = delete;
     Interface& operator=( const Interface& ioStream )   = delete;
-    Interface&& operator=( const Interface&& ioStream ) = delete;
-    Interface& operator=( Interface& ioStream )         = delete;
     Interface&& operator=( Interface&& ioStream )       = delete;
 
     virtual ~Interface() = default;
@@ -92,17 +90,19 @@ class SRC_API Interface
     void read( std::string& str ) const;
     void read( SensorSpec& sensorSpec ) const;
 
-    enum class Mode {
-        NONE,
-        INPUT,
-        OUTPUT,
-        INPUT_OUTPUT,
-    };
+    SensorSpec getSensorSpec() const;
 
-    virtual void setupOutput( const std::string& sensorName ) const;
+//    enum class Mode {
+//        NONE,
+//        INPUT,
+//        OUTPUT,
+//        INPUT_OUTPUT,
+//    };
+
+//    virtual void setupOutput( const std::string& sensorName ) const;
 
   private:
-    Mode mMode = Mode::INPUT_OUTPUT;
+//    Mode mMode = Mode::INPUT_OUTPUT;
 };
 
 // template <class T>
@@ -118,7 +118,7 @@ void Interface::write( const T& t ) const {
               << std::endl;
 #endif
 
-    assert( mMode == Mode::OUTPUT || mMode == Mode::INPUT_OUTPUT );
+//    assert( mMode == Mode::OUTPUT || mMode == Mode::INPUT_OUTPUT );
     write( reinterpret_cast<const unsigned char*>( &t ), sizeof( T ) );
 }
 
@@ -179,7 +179,7 @@ void Interface::write( const std::map<T, U>& map ) const {
 template <class T>
 void Interface::read( T& t ) const {
 
-    assert( mMode == Mode::INPUT || mMode == Mode::INPUT_OUTPUT );
+//    assert( mMode == Mode::INPUT || mMode == Mode::INPUT_OUTPUT );
     read( reinterpret_cast<unsigned char*>( &t ), sizeof( T ) );
 
 #ifdef DEBUG_IOSTREAM
@@ -245,6 +245,17 @@ void Interface::read( std::map<T, U>& map ) const {
         map[name] = val;
     }
 }
+
+class InputInterface : public virtual Interface
+{
+};
+
+class OutputInterface : public virtual Interface
+{
+};
+
+class InputOutputInterface : public InputInterface, public OutputInterface {
+};
 
 } // namespace io
 } // namespace hub

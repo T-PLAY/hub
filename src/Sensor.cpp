@@ -8,21 +8,29 @@
 namespace hub {
 //#define DEBUG_STREAM
 
-Sensor::Sensor( const SensorSpec& sensorSpec, io::Interface& interface ) :
-    spec( sensorSpec ),
+Sensor::Sensor(const SensorSpec &&sensorSpec, io::Interface& interface ) :
+    spec( std::move( sensorSpec ) ),
     // mSensorName( sensorName ),
     // mFormat( format ),
     // mDims( dims ),
+    //    m_interface(std::move(interface))
     m_interface( interface )
-// mAcquisitionSize( computeAcquisitionSize( spec->getFormat(), spec->getDims() ) ) {}
+  // mAcquisitionSize( computeAcquisitionSize( spec->getFormat(), spec->getDims() ) ) {}
 {}
+
+//Sensor::Sensor(io::Interface &interface) :
+//    spec(interface),
+//    m_interface(interface)
+//{
+
+//}
 
 // Sensor::Sensor( io::Interface& interface ) : m_interface( interface ) {};
 
 Sensor::~Sensor() {
-#ifdef DEBUG_MSG
+//#ifdef DEBUG_MSG
     std::cout << "[Sensor] ~Sensor()" << std::endl;
-#endif
+//#endif
     m_interface.close();
     delete &m_interface;
 }
@@ -39,9 +47,9 @@ std::ostream& operator<<( std::ostream& os, const Sensor& sensor ) {
 //     return spec->getAcquisitionSize();
 // }
 
-const SensorSpec& Sensor::getHeader() const {
-    return spec;
-}
+//const SensorSpec& Sensor::getHeader() const {
+//    return spec;
+//}
 
 io::Interface& Sensor::getIO() const {
     return m_interface;

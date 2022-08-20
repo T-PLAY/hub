@@ -9,28 +9,10 @@
 
 #include "Sensor.hpp"
 #include "Socket.hpp"
+//#include "IO/Client.hpp"
 
 namespace hub {
 namespace net {
-
-static std::string getServerHeader( int iThread ) {
-    const std::string str = "\t\033[" + std::to_string( 31 + iThread % 7 ) +
-                            "m[server:" + std::to_string( iThread ) + "]\033[0m ";
-    return str;
-}
-
-Server::Server() {}
-
-Server::Server( int port ) : mServerSock( port ) {}
-
-void Server::run() {
-    int iThread = 1;
-
-    while ( true ) {
-
-        ClientSocket sock = mServerSock.waitNewClient();
-//        sock.setIsServer( true );
-        std::cout << getServerHeader( 0 ) << "new client" << std::endl;
 
 //        std::thread thread( [this, iThread, sock = std::move( sock )]() mutable {
 //            std::cout << getServerHeader( iThread ) << "new thread\t\t\t\t" << getStatus()
@@ -433,46 +415,46 @@ void Server::run() {
 //        } );
 //        thread.detach();
 
-        ++iThread;
-    } // while (true)
-}
+//        ++iThread;
+//    } // while (true)
+//}
 
-std::string Server::getStatus() const {
-    std::string streamViewersStr = "[";
-    for ( const auto& pair : mStreamers ) {
-        const auto& sensorName = pair.first;
-        const auto& streamer   = pair.second;
-        std::string str        = sensorName.substr( 0, 3 );
-        streamViewersStr += "(" + str + "," + std::to_string( streamer->mOutputSensors.size() ) +
-                            "," + std::to_string( streamer->mSensor2syncViewers.size() ) + ")";
+//std::string Server::getStatus() const {
+//    std::string streamViewersStr = "[";
+////    for ( const auto& pair : mStreamers ) {
+////        const auto& sensorName = pair.first;
+////        const auto& streamer   = pair.second;
+////        std::string str        = sensorName.substr( 0, 3 );
+////        streamViewersStr += "(" + str + "," + std::to_string( streamer->mOutputSensors.size() ) +
+////                            "," + std::to_string( streamer->mSensor2syncViewers.size() ) + ")";
 
-        streamViewersStr += ",";
-    }
-    streamViewersStr += "]";
+////        streamViewersStr += ",";
+////    }
+//    streamViewersStr += "]";
 
-    std::string str = std::string( "status : nbStreamer:" ) + std::to_string( mStreamers.size() ) +
-                      ", nbViewer:" + std::to_string( mViewers.size() ) + " " + streamViewersStr;
-    return str;
-}
+//    std::string str = std::string( "status : nbStreamer:" ) + std::to_string( mStreamers.size() ) +
+//                      ", nbViewer:" + std::to_string( mViewers.size() ) + " " + streamViewersStr;
+//    return str;
+//}
 
-void Viewer::notifyNewStreamer( const Streamer& streamer ) const {
-//    mSock->write( Socket::Message::NEW_STREAMER );
+//void Viewer::notifyNewStreamer( const Streamer& streamer ) const {
+////    mSock->write( Socket::Message::NEW_STREAMER );
 
-    /*mSock->write(streamer.mhub::InputSensor.getSensorName());
-    mSock->write(std::string(Stream::format2string[(int)streamer.mhub::InputSensor.getFormat()]));
+//    /*mSock->write(streamer.mhub::InputSensor.getSensorName());
+//    mSock->write(std::string(Stream::format2string[(int)streamer.mhub::InputSensor.getFormat()]));
 
-    std::string dimStr;
-    for (const auto dim : streamer.mhub::InputSensor.getDims()) {
-        dimStr += std::to_string(dim) + " x ";
-    }
-    dimStr.resize(dimStr.size() - 3);
-    mSock->write(dimStr);
-    mSock->write(std::to_string(streamer.mhub::InputSensor.getAcquisitionSize()));
+//    std::string dimStr;
+//    for (const auto dim : streamer.mhub::InputSensor.getDims()) {
+//        dimStr += std::to_string(dim) + " x ";
+//    }
+//    dimStr.resize(dimStr.size() - 3);
+//    mSock->write(dimStr);
+//    mSock->write(std::to_string(streamer.mhub::InputSensor.getAcquisitionSize()));
 
-    mSock->write(streamer.mhub::InputSensor.getMetaData());*/
+//    mSock->write(streamer.mhub::InputSensor.getMetaData());*/
 
-//    mSock->write( streamer.mInputSensor );
-}
+////    mSock->write( streamer.mInputSensor );
+//}
 
 } // namespace net
 } // namespace hub

@@ -35,6 +35,15 @@ Acquisition::Acquisition( Acquisition&& acq ) noexcept :
     acq.mIsMoved = true;
 }
 
+bool Acquisition::operator==( const Acquisition& acq ) const {
+    if ( mBackendTimestamp == acq.mBackendTimestamp &&
+         mBackendTimeOfArrival == acq.mBackendTimeOfArrival && mSize == acq.mSize ) {
+
+        return memcmp( mData, acq.mData, mSize ) == 0;
+    }
+    return false;
+}
+
 Acquisition Acquisition::clone() const {
     assert( mData != nullptr );
 
