@@ -1,7 +1,10 @@
 #include "Interface.hpp"
 
+#include <any>
 #include <cstring>
 #include <iostream>
+#include <typeindex>
+#include <typeinfo>
 
 namespace hub {
 namespace io {
@@ -21,6 +24,10 @@ void Interface::write( const std::string& str ) const {
 }
 
 void Interface::write( const SensorSpec& sensorSpec ) const {
+#ifdef DEBUG_IOSTREAM
+    std::cout << "[Interface] write SensorSpec : start" << std::endl;
+#endif
+
     write( sensorSpec.sensorName );
     write( sensorSpec.format );
     write( sensorSpec.dims );
@@ -42,32 +49,32 @@ void Interface::write( const char* str ) const {
 // };
 
 // hash of type info for 64 bit only, no conversion for 32 bits (same value in uint64_t)
-uint64_t typeInfoHash64( const char _DecoratedName[1] ) {
-    //#ifdef _WIN64
-    // static_assert(sizeof(size_t) == 8, "This code is for 64-bit size_t.");
-    uint64_t const fnv_offset_basis = 14695981039346656037ULL;
-    uint64_t const fnv_prime        = 1099511628211ULL;
-    //#else
-    //    static_assert(sizeof(size_t) == 4, "This code is for 32-bit size_t.");
-    //    size_t const fnv_offset_basis = 2166136261U;
-    //    size_t const fnv_prime = 16777619U;
-    //#endif
+// uint64_t typeInfoHash64( const char _DecoratedName[1] ) {
+//    //#ifdef _WIN64
+//    // static_assert(sizeof(size_t) == 8, "This code is for 64-bit size_t.");
+//    uint64_t const fnv_offset_basis = 14695981039346656037ULL;
+//    uint64_t const fnv_prime        = 1099511628211ULL;
+//    //#else
+//    //    static_assert(sizeof(size_t) == 4, "This code is for 32-bit size_t.");
+//    //    size_t const fnv_offset_basis = 2166136261U;
+//    //    size_t const fnv_prime = 16777619U;
+//    //#endif
 
-    uint64_t value = fnv_offset_basis;
-    for ( char const* it = _DecoratedName + 1; *it != '\0'; ++it ) {
-        value ^= static_cast<uint64_t>( static_cast<unsigned char>( *it ) );
-        value *= fnv_prime;
-    }
+//    uint64_t value = fnv_offset_basis;
+//    for ( char const* it = _DecoratedName + 1; *it != '\0'; ++it ) {
+//        value ^= static_cast<uint64_t>( static_cast<unsigned char>( *it ) );
+//        value *= fnv_prime;
+//    }
 
-    //#ifdef _WIN64
-    static_assert( sizeof( uint64_t ) == 8, "This code is for 64-bit size_t." );
-    value ^= value >> 32;
-    //#else
-    //    static_assert(sizeof(size_t) == 4, "This code is for 32-bit size_t.");
-    //#endif
+//    //#ifdef _WIN64
+//    static_assert( sizeof( uint64_t ) == 8, "This code is for 64-bit size_t." );
+//    value ^= value >> 32;
+//    //#else
+//    //    static_assert(sizeof(size_t) == 4, "This code is for 32-bit size_t.");
+//    //#endif
 
-    return value;
-}
+//    return value;
+//}
 
 // Interface::~Interface()
 //{
@@ -77,7 +84,11 @@ uint64_t typeInfoHash64( const char _DecoratedName[1] ) {
 void Interface::write( const std::any& any ) const {
 #ifdef DEBUG_IOSTREAM
     std::cout << "[Interface] write std::any : start" << std::endl;
+#    ifdef WIN32
     std::cout << "any raw name = '" << any.type().raw_name() << "'" << std::endl;
+#    else
+    std::cout << "any raw name = '" << any.type().name() << "'" << std::endl;
+#    endif
 #endif
 
     assert( any.has_value() );
@@ -126,12 +137,12 @@ void Interface::write( const std::any& any ) const {
         assert( val->size() == 9 );
         write( *val );
     }
-    else if ( anyType == typeid( Mat3 ) ) {
-        write( Type::MAT3 );
-        auto* val = std::any_cast<Mat3>( &any );
-        //        assert(val->size() == 9);
-        write( *val );
-    }
+    //    else if ( anyType == typeid( Mat3 ) ) {
+    //        write( Type::MAT3 );
+    //        auto* val = std::any_cast<Mat3>( &any );
+    //        //        assert(val->size() == 9);
+    //        write( *val );
+    //    }
     else {
         auto name     = any.type().name();
         auto raw_name = any.type().name();
@@ -170,13 +181,12 @@ void Interface::read( SensorSpec& sensorSpec ) const {
     read( sensorSpec.metaData );
 
     sensorSpec.acquisitonSize =
-            SensorSpec::computeAcquisitionSize( sensorSpec.format, sensorSpec.dims );
+        SensorSpec::computeAcquisitionSize( sensorSpec.format, sensorSpec.dims );
 }
 
-SensorSpec Interface::getSensorSpec() const
-{
+SensorSpec Interface::getSensorSpec() const {
     SensorSpec sensorSpec;
-    read(sensorSpec);
+    read( sensorSpec );
     return sensorSpec;
 }
 
@@ -259,11 +269,11 @@ void Interface::read( std::any& any ) const {
         any = std::any_cast<std::vector<float>>( val );
     } break;
 
-    case Type::MAT3: {
-        Mat3 val;
-        read( val );
-        any = std::any_cast<Mat3>( val );
-    } break;
+        //    case Type::MAT3: {
+        //        Mat3 val;
+        //        read( val );
+        //        any = std::any_cast<Mat3>( val );
+        //    } break;
 
     default:
         auto name     = any.type().name();
@@ -321,10 +331,10 @@ void Interface::read( std::any& any ) const {
 
 //}
 
-//void Interface::setupOutput( const std::string& sensorName ) const {
-//    (void)sensorName;
+// void Interface::setupOutput( const std::string& sensorName ) const {
+//     (void)sensorName;
 //#ifdef DEBUG_IOSTREAM
-//    std::cout << "Interface::setOutputName(const std::string& sensorName)" << std::endl;
+//     std::cout << "Interface::setOutputName(const std::string& sensorName)" << std::endl;
 //#endif
 
 //    assert( mMode == Mode::INPUT_OUTPUT );

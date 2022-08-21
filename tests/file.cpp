@@ -26,6 +26,7 @@ TEST_CASE( "File test" ) {
             (unsigned char)iAcq, (unsigned char)( iAcq + 1 ), (unsigned char)( iAcq + 2 ) };
         acqs.emplace_back( iAcq, iAcq, data, 3 );
     }
+    CHECK(acqs[0] != acqs[1]);
 
     std::cout << "outputStream start" << std::endl;
     INFO( "OutputStream" );

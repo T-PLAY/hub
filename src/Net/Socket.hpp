@@ -30,14 +30,19 @@ class SRC_API Socket
 
 
     bool isConnected() const;
-    static std::string getHeader( socket_fd iSock );
+    std::string getHeader( socket_fd iSock ) const;
 
   protected:
     Socket();
     ~Socket();
 
+    Socket(const Socket & socket) = delete;
+    Socket(Socket && socket);
+    Socket & operator=(const Socket & socket) = delete;
+
   protected:
     socket_fd mFdSock = INVALID_SOCKET;
+    bool m_serverSide = false;
 };
 
 } // namespace net

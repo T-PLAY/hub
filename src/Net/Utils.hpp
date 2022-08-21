@@ -42,18 +42,56 @@ using socket_fd = int;
 #include <set>
 #include <stdio.h>
 #include <thread>
+#include <mutex>
+
+//#define DEBUG_NET
 
 namespace hub {
 namespace net {
 
+static std::string getHeader() {
+    const unsigned int id = std::hash<std::thread::id>{}(std::this_thread::get_id());
+    std::string str = "[Net:\033[" + std::to_string( 31 + id % 7 ) +
+                      "m" + std::to_string( id ) + "]\033[0m ";
+    return str;
+}
+
 static bool sInited = false;
 static std::list<socket_fd> sSockets;
+static std::mutex s_mtx;
+
+static void registerSocket( socket_fd socket) {
+    s_mtx.lock();
+
+#ifdef DEBUG_NET
+    std::cout << getHeader() << "registerSocket(" << socket << ")" << std::endl;
+#endif
+    sSockets.push_back(socket);
+#ifdef DEBUG_NET
+    std::cout << getHeader() << "sSockets = ";
+    for (const auto & socket : sSockets) {
+        std::cout << socket << " ";
+    }
+    std::cout << std::endl;
+#endif
+
+    s_mtx.unlock();
+}
 
 static void clearSocket( socket_fd& sock ) {
-    std::cout << "Net::clearSocket(" << sock << ") close socket" << std::endl;
+    s_mtx.lock();
+
+#ifdef DEBUG_NET
+    std::cout << getHeader() << "clearSocket(" << sock << ") close socket" << std::endl;
+    std::cout << getHeader() << "sSockets = ";
+    for (const auto & socket : sSockets) {
+        std::cout << socket << " ";
+    }
+    std::cout << std::endl;
+#endif
     closesocket( sock );
     //    size_t size = sSockets.size();
-    assert( std::find( sSockets.begin(), sSockets.end(), sock ) != sSockets.end() );
+//    assert( std::find( sSockets.begin(), sSockets.end(), sock ) != sSockets.end() );
     sSockets.remove( sock );
     // assert(sSockets.size() == size - 1);
 
@@ -67,17 +105,23 @@ static void clearSocket( socket_fd& sock ) {
 #endif
 
     sock = INVALID_SOCKET;
+
+    s_mtx.unlock();
 }
 
 #ifndef WIN32
 static void signalHandler( int signum ) {
-    std::cout << "Net::signalHandler() Interrupt signal (" << signum << ") received." << std::endl;
+#ifdef DEBUG_NET
+    std::cout << getHeader() << "signalHandler() Interrupt signal (" << signum << ") received." << std::endl;
+#endif
 
     // cleanup and close up stuff here
     // terminate program
     for ( const socket_fd& sock : sSockets ) {
         if ( sock != INVALID_SOCKET ) {
-            std::cout << "Net::clearSocket(" << sock << ") close socket" << std::endl;
+#ifdef DEBUG_NET
+            std::cout << getHeader() << "clearSocket(" << sock << ") close socket" << std::endl;
+#endif
             closesocket( sock );
         }
     }
@@ -87,7 +131,9 @@ static void signalHandler( int signum ) {
 
 static void init() {
     if ( !sInited ) {
-        std::cout << "Net::init()" << std::endl;
+#ifdef DEBUG_NET
+        std::cout << getHeader() << "init()" << std::endl;
+#endif
 #if defined WIN32
         WSADATA wsaData;
         int iResult = WSAStartup( MAKEWORD( 2, 2 ), &wsaData );

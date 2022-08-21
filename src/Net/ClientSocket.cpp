@@ -3,6 +3,35 @@
 namespace hub {
 namespace net {
 
+static constexpr std::string_view type2string[static_cast<int>( ClientSocket::Type::COUNT )] = {
+    "NONE",
+    "STREAMER",
+    "VIEWER",
+    "STREAM_VIEWER",
+};
+std::ostream& operator<<( std::ostream& os, const ClientSocket::Type& type ) {
+    os << type2string[(int)type];
+    return os;
+}
+
+static constexpr std::string_view message2string[static_cast<int>( ClientSocket::Message::COUNT )] = {
+    "NONE",
+    "PING",
+    "SYNC",
+    "DATA",
+    "OK",
+    "CLOSE",
+    "DEL_STREAMER",
+    "NEW_STREAMER",
+    "NOT_FOUND",
+    "FOUND",
+};
+std::ostream& operator<<( std::ostream& os, const ClientSocket::Message& msg ) {
+    os << message2string[(int)msg];
+    return os;
+}
+
+
 void ClientSocket::connectToServer() {
     DEBUG_MSG( "[ClientSocket] connectToServer" );
 
@@ -30,7 +59,8 @@ void ClientSocket::connectToServer() {
         perror( "[socket] socket creation failed.\n" );
         return;
     }
-    net::sSockets.push_back( mFdSock );
+//    net::sSockets.push_back( mFdSock );
+    net::registerSocket(mFdSock);
 
     // Server address construction
     struct sockaddr_in serv_addr;
@@ -52,8 +82,6 @@ void ClientSocket::connectToServer() {
 
     DEBUG_MSG( getHeader( mFdSock )
                << "[ClientSocket] connected to the server, starting communication" );
-
-    DEBUG_MSG( getHeader( mFdSock ) << "[ClientSocket] connected to server" );
 
     DEBUG_MSG( getHeader( mFdSock ) << "new client on socket " << mFdSock );
 }
@@ -120,24 +148,25 @@ ClientSocket::ClientSocket( const std::string& ipv4, int port ) : mIpv4( ipv4 ),
 //}
 
 ClientSocket::ClientSocket( socket_fd fdSock ) {
-    mPort   = -1;
-    mFdSock = fdSock;
+    mPort        = -1;
+    mFdSock      = fdSock;
+    m_serverSide = true;
     DEBUG_MSG( getHeader( mFdSock ) << "ClientSocket(socket_fd fdSock)" );
 }
 
-ClientSocket::ClientSocket( ClientSocket&& sock ) noexcept :
-    Socket(),
-    mIpv4( sock.mIpv4 ),
-    mPort( sock.mPort )
-//    mIsServer( sock.mIsServer )
-{
-    mFdSock      = sock.mFdSock;
-    sock.mFdSock = INVALID_SOCKET;
+//ClientSocket::ClientSocket( ClientSocket&& sock ) noexcept :
+//    Socket(),
+//    mIpv4( sock.mIpv4 ),
+//    mPort( sock.mPort )
+////    mIsServer( sock.mIsServer )
+//{
+////    mFdSock      = sock.mFdSock;
+////    sock.mFdSock = INVALID_SOCKET;
 
-#ifdef DEBUG_SOCKET
-    DEBUG_MSG( getHeader( mFdSock ) << "ClientSocket(ClientSocket && sock)" );
-#endif
-}
+//#ifdef DEBUG_SOCKET
+//    DEBUG_MSG( getHeader( mFdSock ) << "ClientSocket(ClientSocket && sock)" );
+//#endif
+//}
 
 ClientSocket::~ClientSocket() {
 #ifdef DEBUG_SOCKET
@@ -257,6 +286,11 @@ void ClientSocket::read( unsigned char* data, size_t len ) const {
 //    }
 //    std::cout << std::endl;
 #endif
+}
+
+void ClientSocket::close()
+{
+    clear();
 }
 
 // void ClientSocket::waitClose() const {

@@ -1,14 +1,15 @@
 #include "ServerSocket.hpp"
 
-
 namespace hub {
 namespace net {
 
 ServerSocket::ServerSocket() : mPort( s_defaultServicePort ) {
+    m_serverSide = true;
     initServer();
 }
 
 ServerSocket::ServerSocket( int port ) : mPort( port ) {
+    m_serverSide = true;
     initServer();
 }
 
@@ -23,20 +24,23 @@ ClientSocket ServerSocket::waitNewClient() {
         exit( 1 );
     }
     DEBUG_MSG( getHeader( mFdSock ) << "new client on socket " << new_socket );
-    net::sSockets.push_back( new_socket );
+//    net::sSockets.push_back( new_socket );
+    net::registerSocket(new_socket);
 
     return ClientSocket( new_socket );
 }
 
-void ServerSocket::initServer()
-{
+void ServerSocket::initServer() {
+    DEBUG_MSG( getHeader( mFdSock ) << "server started " );
+
     // Socket creation
     mFdSock = socket( PF_INET, SOCK_STREAM, IPPROTO_TCP );
     if ( mFdSock < 0 ) {
         perror( "socket creation failed.\n" );
         return;
     }
-    net::sSockets.push_back( mFdSock );
+//    net::sSockets.push_back( mFdSock );
+    net::registerSocket(mFdSock);
 
     // Server address construction
     memset( &mAddress, 0, sizeof( mAddress ) );
@@ -55,6 +59,7 @@ void ServerSocket::initServer()
         return;
     }
 
+    DEBUG_MSG( getHeader( mFdSock ) << "server inited " );
 }
 
 } // namespace net
