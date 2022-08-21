@@ -165,17 +165,17 @@ std::string SensorSpec::any2string( const std::any& any ) {
         }
         return str;
     }
-    else if ( hashCode == typeid( hub::io::Interface::Mat3 ).hash_code() ) {
-        const hub::io::Interface::Mat3* val = std::any_cast<hub::io::Interface::Mat3>( &any );
-        std::string str                     = "";
-        for ( int i = 0; i < 3; ++i ) {
-            for ( int j = 0; j < 3; ++j ) {
-                str += std::to_string( val->data[i * 3 + j] ) + " ";
-            }
-            str += "\n";
-        }
-        return str;
-    }
+//    else if ( hashCode == typeid( hub::io::Interface::Mat3 ).hash_code() ) {
+//        const hub::io::Interface::Mat3* val = std::any_cast<hub::io::Interface::Mat3>( &any );
+//        std::string str                     = "";
+//        for ( int i = 0; i < 3; ++i ) {
+//            for ( int j = 0; j < 3; ++j ) {
+//                str += std::to_string( val->data[i * 3 + j] ) + " ";
+//            }
+//            str += "\n";
+//        }
+//        return str;
+//    }
     else {
         auto name     = any.type().name();
         auto raw_name = any.type().name();

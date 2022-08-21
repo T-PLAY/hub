@@ -1,16 +1,18 @@
 #include <catch2/catch_test_macros.hpp>
 
+#include <IO/Client.hpp>
 #include <IO/File.hpp>
 #include <InputSensor.hpp>
-#include <OutputSensor.hpp>
 #include <Net/ClientSocket.hpp>
+#include <Net/Server.hpp>
+#include <OutputSensor.hpp>
 
 #include <filesystem>
 
 TEST_CASE( "Server test" ) {
 
     const std::string ipv4 = "127.0.0.1";
-    constexpr int port = 5000;
+    constexpr int port     = 5000;
 
     std::vector<hub::Acquisition> acqs;
     constexpr int nAcqs = 100;
@@ -20,42 +22,55 @@ TEST_CASE( "Server test" ) {
         acqs.emplace_back( iAcq, iAcq, data, 3 );
     }
 
-    std::cout << "outputStream start" << std::endl;
-    INFO( "OutputStream" );
-    {
+    std::cout << "############################### server start" << std::endl;
+    hub::net::Server server( port );
+    server.setMaxClients( 2 );
+    server.asyncRun();
+    std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
+    std::cout << "server end ------------------------------" << std::endl;
 
-        hub::OutputSensor outputSensor( { "sensorName", hub::SensorSpec::Format::BGR8, { 1 } },
-                                        hub::io::File( hub::net::ClientSocket(ipv4, port) ) );
+    std::cout << "############################### outputStream start" << std::endl;
+    //    INFO( "OutputStream" );
+    //    {
 
-        auto& sensorSpec = outputSensor.spec;
-        CHECK( sensorSpec.acquisitonSize == 3 );
-        CHECK( sensorSpec.sensorName == "sensorName" );
-        CHECK( sensorSpec.dims.size() == 1 );
-        CHECK( sensorSpec.dims.at( 0 ) == 1 );
-        CHECK( sensorSpec.format == hub::SensorSpec::Format::BGR8 );
+    hub::OutputSensor outputSensor(
+        { "sensorName", hub::SensorSpec::Format::BGR8, { 1 } },
+        hub::io::Streamer( "stream", hub::net::ClientSocket( ipv4, port ) ) );
 
-        for ( const auto& acq : acqs ) {
-            outputSensor << acq;
-        }
+    auto& outputSensorSpec = outputSensor.spec;
+    CHECK( outputSensorSpec.acquisitonSize == 3 );
+    CHECK( outputSensorSpec.sensorName == "sensorName" );
+    CHECK( outputSensorSpec.dims.size() == 1 );
+    CHECK( outputSensorSpec.dims.at( 0 ) == 1 );
+    CHECK( outputSensorSpec.format == hub::SensorSpec::Format::BGR8 );
+
+    //    }
+    std::cout << "outputStream end ---------------------------------" << std::endl;
+
+    std::cout << "############################### inputStream start" << std::endl;
+    //    INFO( "InputStream" );
+    //    {
+    hub::InputSensor inputSensor(
+        hub::io::StreamViewer( "stream", "", hub::net::ClientSocket( ipv4, port ) ) );
+
+    const auto& inputSensorSpec = inputSensor.spec;
+    CHECK( inputSensorSpec.acquisitonSize == 3 );
+    CHECK( inputSensorSpec.sensorName == "sensorName" );
+    CHECK( inputSensorSpec.dims.size() == 1 );
+    CHECK( inputSensorSpec.dims.at( 0 ) == 1 );
+    CHECK( inputSensorSpec.format == hub::SensorSpec::Format::BGR8 );
+
+    std::cout << "############################### send acquisitions" << std::endl;
+    for ( const auto& acq : acqs ) {
+        outputSensor << acq;
     }
-    std::cout << "outputStream end ################################" << std::endl;
 
-//    std::cout << "inputStream start" << std::endl;
-//    INFO( "InputStream" );
-//    {
-//        hub::InputSensor inputSensor( hub::io::File( std::fstream( filename, std::ios::in ) ) );
-
-//        const auto& sensorSpec = inputSensor.spec;
-//        CHECK( sensorSpec.acquisitonSize == 3 );
-//        CHECK( sensorSpec.sensorName == "sensorName" );
-//        CHECK( sensorSpec.dims.size() == 1 );
-//        CHECK( sensorSpec.dims.at( 0 ) == 1 );
-//        CHECK( sensorSpec.format == hub::SensorSpec::Format::BGR8 );
-//        const auto& inputAcqs = inputSensor.getAllAcquisitions();
-//        for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
-//            CHECK( inputAcqs[iAcq] == acqs[iAcq] );
-//        }
+//    std::cout << "############################### get acquisitions" << std::endl;
+//    const auto& inputAcqs = inputSensor.getAllAcquisitions();
+//    for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
+//        CHECK( inputAcqs[iAcq] == acqs[iAcq] );
 //    }
-//    std::cout << "inputStream end #################################" << std::endl;
+    std::cout << "inputStream end ---------------------------------" << std::endl;
 
+    server.stop();
 }

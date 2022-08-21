@@ -20,9 +20,9 @@ namespace io {
 class SRC_API Interface
 {
   public:
-    struct Mat3 {
-        float data[9];
-    };
+//    struct Mat3 {
+//        float data[9];
+//    };
     enum class Type {
         INT = 0,
         DOUBLE,
@@ -30,7 +30,7 @@ class SRC_API Interface
         CONST_CHAR_PTR,
         //        FLOAT_ARRAY_9,
         VECTOR_FLOAT,
-        MAT3,
+//        MAT3,
         COUNT
     };
     static constexpr char const* type2string[static_cast<int>( Type::COUNT )] = {
@@ -113,13 +113,17 @@ class SRC_API Interface
 
 template <class T>
 void Interface::write( const T& t ) const {
-#ifdef DEBUG_IOSTREAM
-    std::cout << "[Interface] write " << typeid( T ).name() << " '" << t << "' : start"
-              << std::endl;
-#endif
+//#ifdef DEBUG_IOSTREAM
+//    std::cout << "[Interface] write " << typeid( T ).name() << " '" << t << "' : start"
+//              << std::endl;
+//#endif
 
 //    assert( mMode == Mode::OUTPUT || mMode == Mode::INPUT_OUTPUT );
     write( reinterpret_cast<const unsigned char*>( &t ), sizeof( T ) );
+
+#ifdef DEBUG_IOSTREAM
+    std::cout << "[Interface] write " << typeid( T ).name() << " '" << t << "' : end" << std::endl;
+#endif
 }
 
 template <class T>

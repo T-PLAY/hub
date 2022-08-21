@@ -18,113 +18,151 @@
 namespace hub {
 namespace io {
 
-static std::string getServerHeader( int iThread ) {
-    const std::string str = "\t\033[" + std::to_string( 31 + iThread % 7 ) +
-                            "m[server:" + std::to_string( iThread ) + "]\033[0m ";
-    return str;
-}
+// static constexpr std::string_view type2string[static_cast<int>( Client::Type::COUNT )] = {
+//     "NONE",
+//     "STREAMER",
+//     "VIEWER",
+//     "STREAM_VIEWER",
+// };
+// std::ostream& operator<<( std::ostream& os, const Client::Type& type ) {
+//     os << type2string[(int)type];
+//     return os;
+// }
 
-Server::Server() {}
+// static constexpr std::string_view message2string[static_cast<int>( Client::Message::COUNT )] = {
+//     "NONE",
+//     "PING",
+//     "SYNC",
+//     "DATA",
+//     "OK",
+//     "CLOSE",
+//     "DEL_STREAMER",
+//     "NEW_STREAMER",
+//     "NOT_FOUND",
+//     "FOUND",
+// };
+// std::ostream& operator<<( std::ostream& os, const Client::Message& msg ) {
+//     os << message2string[(int)msg];
+//     return os;
+// }
 
-Server::Server( int port ) : mServerSock( port ) {}
+// Client::Client( net::ClientSocket&& clientSocket ) :
+//     m_socket( new net::ClientSocket( std::move( clientSocket ) ) ) {};
 
-void Server::run() {
-    int iThread = 1;
+//// Client* Client::init( net::ClientSocket&& sock ) {
 
-    while ( true ) {
+////    Type clientType;
+////    sock.read( reinterpret_cast<unsigned char*>( &clientType ), sizeof( Type ) );
 
-        net::ClientSocket sock = mServerSock.waitNewClient();
-//        sock.setIsServer( true );
-        std::cout << getServerHeader( 0 ) << "new client" << std::endl;
+////    switch ( clientType ) {
+////    case Type::STREAMER:
+////        return new Streamer( std::move( sock ) );
+////    case Type::VIEWER:
+////        return nullptr;
+////        //        return new Viewer( std::move( sock ) );
+////    case Type::STREAM_VIEWER:
+////        return new StreamViewer( std::move( sock ) );
+////    default:
+////        assert( false );
+////        return nullptr;
+////    }
+////    //    //        //    m_socket( new net::ClientSocket( clientSocket  ) ) {}
+////}
 
-        io::Client * newClient = io::Client::init(std::move(sock));
-        newClient->startAsyncRoutine(this, iThread);
+// void Client::close() {}
 
-        ++iThread;
-    }
-}
+// void Client::write( const unsigned char* data, size_t len ) const {
+//     m_socket->write( data, len );
+// }
 
+// void Client::read( unsigned char* data, size_t len ) const {
+//     m_socket->read( data, len );
+// }
 
+////////////////////////////////////////////////////////
 
-static constexpr std::string_view type2string[static_cast<int>( Client::Type::COUNT )] = {
-    "NONE",
-    "STREAMER",
-    "VIEWER",
-    "STREAM_VIEWER",
-};
-std::ostream& operator<<( std::ostream& os, const Client::Type& type ) {
-    os << type2string[(int)type];
-    return os;
-}
+Streamer::Streamer( const std::string& sensorName, net::ClientSocket&& clientSocket ) :
+    //    Client( std::move( clientSocket ) ) {
+    net::ClientSocket( std::move( clientSocket ) ) {
 
-static constexpr std::string_view message2string[static_cast<int>( Client::Message::COUNT )] = {
-    "NONE",
-    "PING",
-    "SYNC",
-    "DATA",
-    "OK",
-    "CLOSE",
-    "DEL_STREAMER",
-    "NEW_STREAMER",
-    "NOT_FOUND",
-    "FOUND",
-};
-std::ostream& operator<<( std::ostream& os, const Client::Message& msg ) {
-    os << message2string[(int)msg];
-    return os;
-}
+    std::cout << "\t[Streamer] Streamer(string, ClientSocket&&)" << std::endl;
 
-Client::Client( net::ClientSocket&& clientSocket ) :
-    m_socket( new net::ClientSocket( std::move( clientSocket ) ) ) {};
+    Interface::write( net::ClientSocket::Type::STREAMER );
 
-Client* Client::init( net::ClientSocket&& sock ) {
+    Interface::write( sensorName );
 
-    Type clientType;
-    sock.read( reinterpret_cast<unsigned char*>( &clientType ), sizeof( Type ) );
-
-    switch ( clientType ) {
-    case Type::STREAMER:
-        return new Streamer( std::move( sock ) );
-    case Type::VIEWER:
-        return new Viewer( std::move( sock ) );
-    case Type::STREAM_VIEWER:
-        return new StreamViewer( std::move( sock ) );
-    default:
+    net::ClientSocket::Message mess;
+    Interface::read( mess );
+    if ( mess == net::ClientSocket::Message::FOUND ) {
         assert( false );
-        return nullptr;
+        throw net::Socket::exception(
+            ( std::string( "sensor '" ) + sensorName + "' is already attached to server" )
+                .c_str() );
     }
-    //    //        //    m_socket( new net::ClientSocket( clientSocket  ) ) {}
+    assert( mess == net::ClientSocket::Message::NOT_FOUND );
+
+    //    }
 }
 
-void Client::close() {}
+Streamer::Streamer( ClientSocket&& clientSocket ) :
+    net::ClientSocket( std::move( clientSocket ) ) {}
 
-void Client::write( const unsigned char* data, size_t len ) const {
-    m_socket->write( data, len );
-}
-
-void Client::read( unsigned char* data, size_t len ) const {
-    m_socket->read( data, len );
-}
+// void Streamer::startAsyncRoutine( Server* server, int iThread ) {
+//     std::cout << "[Streamer] startAsyncRoutine(Server*, int)" << std::endl;
+// }
 
 ////////////////////////////////////////////////////////
 
-Streamer::Streamer( net::ClientSocket&& clientSocket ) : Client( std::move( clientSocket ) ) {}
+StreamViewer::StreamViewer( const std::string& sensorName,
+                            const std::string& syncSensorName,
+                            net::ClientSocket&& clientSocket ) :
+    net::ClientSocket( std::move( clientSocket ) ) {
+    //    Client( std::move( clientSocket ) ) {
 
-void Streamer::startAsyncRoutine( Server* server, int iThread ) {
+    std::cout << "\t[StreamViewer] StreamViewer(string, string, ClientSocket&&)" << std::endl;
+
+    Interface::write( net::ClientSocket::Type::STREAM_VIEWER );
+
+    Interface::write( sensorName );
+    ClientSocket::Message mess;
+    Interface::read( mess );
+    if ( mess == ClientSocket::Message::NOT_FOUND ) {
+        DEBUG_MSG( getHeader( mFdSock ) << "[StreamViewer] exception sensor '" << sensorName
+                                        << "' is not attached to server" );
+        throw ClientSocket::exception(
+            ( std::string( "sensor '" ) + sensorName + "' is not attached to server" ).c_str() );
+    }
+    assert( mess == ClientSocket::Message::OK );
+
+    Interface::write( syncSensorName );
+    Interface::read( mess );
+    if ( mess == ClientSocket::Message::NOT_FOUND ) {
+        throw ClientSocket::exception(
+            ( std::string( "sync sensor '" ) + syncSensorName + "' is not attached to server" )
+                .c_str() );
+    }
+    assert( mess == ClientSocket::Message::OK );
+
+    std::cout << "\t[StreamViewer] StreamViewer(string, string, ClientSocket&&) end" << std::endl;
+    //    DEBUG_MSG( getHeader( mFdSock ) << "[ClientSocket] connected to server" );
 }
 
+StreamViewer::StreamViewer( ClientSocket&& clientSocket ) :
+    net::ClientSocket( std::move( clientSocket ) ) {}
+
+// void Viewer::startAsyncRoutine( Server* server, int iThread ) {}
+
 ////////////////////////////////////////////////////////
 
-Viewer::Viewer( net::ClientSocket&& clientSocket ) : Client( std::move( clientSocket ) ) {}
+// Viewer::Viewer( net::ClientSocket&& clientSocket ) :
+//     net::ClientSocket( std::move( clientSocket ) ) {
+//     //    Client( std::move( clientSocket ) ) {
 
-void Viewer::startAsyncRoutine( Server* server, int iThread ) {}
+//    Interface::write( net::ClientSocket::Type::VIEWER );
 
-////////////////////////////////////////////////////////
+//}
 
-StreamViewer::StreamViewer( net::ClientSocket&& clientSocket ) :
-    Client( std::move( clientSocket ) ) {}
-
-void StreamViewer::startAsyncRoutine( Server* server, int iThread ) {}
+// void StreamViewer::startAsyncRoutine( Server* server, int iThread ) {}
 
 } // namespace io
 } // namespace hub

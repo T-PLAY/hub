@@ -48,11 +48,11 @@ std::vector<Acquisition> InputSensor::getAllAcquisitions() {
         }
     }
     catch ( Sensor::exception& e ) {
-        std::cout << "[stream] catch sensor exception : " << e.what() << std::endl;
+        std::cout << "[InputSensor] catch sensor exception : " << e.what() << std::endl;
         throw;
     }
     catch ( std::exception& e ) {
-        std::cout << "[stream] catch exception : " << e.what() << std::endl;
+        std::cout << "[InputSensor] catch exception : " << e.what() << std::endl;
     }
 
     return acqs;

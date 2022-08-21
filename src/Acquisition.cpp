@@ -44,6 +44,11 @@ bool Acquisition::operator==( const Acquisition& acq ) const {
     return false;
 }
 
+bool Acquisition::operator!=(const Acquisition &acq) const
+{
+    return ! (*this == acq);
+}
+
 Acquisition Acquisition::clone() const {
     assert( mData != nullptr );
 
