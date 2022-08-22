@@ -51,7 +51,7 @@ namespace net {
 
 static std::string getHeader() {
     const unsigned int id = std::hash<std::thread::id>{}(std::this_thread::get_id());
-    std::string str = "[Net:\033[" + std::to_string( 31 + id % 7 ) +
+    std::string str = "[\033[31mNet\033[0m:\033[" + std::to_string( 31 + id % 7 ) +
                       "m" + std::to_string( id ) + "]\033[0m ";
     return str;
 }
@@ -114,6 +114,9 @@ static void signalHandler( int signum ) {
 #ifdef DEBUG_NET
     std::cout << getHeader() << "signalHandler() Interrupt signal (" << signum << ") received." << std::endl;
 #endif
+
+    assert(sSockets.empty());
+    std::cout << getHeader() << "signalHandler() Interrupt signal (" << signum << ") received." << std::endl;
 
     // cleanup and close up stuff here
     // terminate program

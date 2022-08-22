@@ -17,55 +17,77 @@
 namespace hub {
 namespace net {
 
-
 class Server;
 
-class Client{
-public:
-    Client(Server & server, int iClient);
+class Client
+{
+  public:
+    Client( Server& server, int iClient );
+    virtual ~Client() = default;
 
-    std::string headerMsg();
+    virtual std::string headerMsg();
 
-protected:
-    Server & m_server;
+  protected:
+    Server& m_server;
     int m_iClient;
 };
 
+class StreamViewer;
+
 class Streamer : public Client
 {
-public:
-    Streamer(Server & server, int iClient, ClientSocket && sock);
+  public:
+    Streamer( Server& server, int iClient, ClientSocket&& sock );
+    ~Streamer();
 
-    std::string headerMsg();
+    std::string headerMsg() override;
 
-//private:
+    const InputSensor& getInputSensor() const;
+
+    const std::string &getStreamName() const;
+
+private:
     std::unique_ptr<InputSensor> m_inputSensor;
     std::string m_streamName;
+
+    std::map<std::string, std::list<StreamViewer*>> m_syncViewers;
+    std::map<std::string, std::deque<hub::Acquisition>> m_syncAcqs;
+
+    friend class Server;
 };
 
 class Viewer : public Client
 {
-public:
-    Viewer(Server & server, int iClient, ClientSocket && sock);
+  public:
+    Viewer( Server& server, int iClient, ClientSocket&& sock );
 
-    std::string headerMsg();
+    std::string headerMsg() override;
 
     void notifyNewStreamer( const Streamer& streamer ) const;
 };
 
 class StreamViewer : public Client
 {
-public:
-    StreamViewer(Server & server, int iClient, ClientSocket && sock);
+  public:
+    StreamViewer( Server& server, int iClient, ClientSocket&& sock );
+    ~StreamViewer();
 
-    std::string headerMsg();
+    std::string headerMsg() override;
 
-//    void send(const Acquisition & acq);
+//    void send( const Acquisition& acq );
+//    void send(Acquisition && acq);
+    void update(const Acquisition &acq);
 
-
-//private:
+  private:
     std::unique_ptr<OutputSensor> m_outputSensor;
     std::string m_streamName;
+
+//    std::deque<Acquisition> m_acquisitions;
+//    std::mutex m_mtxAcquisitions;
+    std::string m_syncStreamName;
+//    std::deque<Acquisition> m_syncAcquisitions;
+
+    friend class Server;
 };
 
 class Server
@@ -81,15 +103,27 @@ class Server
     void asyncRun();
     void stop();
 
-    Client * initClient(net::ClientSocket && sock, int iClient);
-        std::string getStatus() const;
+    Client* initClient( net::ClientSocket&& sock, int iClient );
+    std::string getStatus();
 
-public:
+    void addStreamer(Streamer * streamer);
+    void addStreamViewer(StreamViewer * streamViewer);
 
+    void delStreamer(Streamer * streamer);
+    void delStreamViewer(StreamViewer * streamViewer);
+
+    void newAcquisition(Streamer * streamer, Acquisition acq);
+
+  private:
     std::map<std::string, Streamer*> m_streamers;
+    std::mutex m_mtxStreamers;
     std::list<Viewer*> m_viewers;
-//    std::list<StreamViewer*> m_streamViewers;
+    std::mutex m_mtxViewers;
+    //    std::list<StreamViewer*> m_streamViewers;
     std::map<std::string, std::list<StreamViewer*>> m_streamViewers;
+    std::mutex m_mtxStreamViewers;
+
+    std::mutex m_mtx;
 
   private:
     net::ServerSocket mServerSock;
@@ -98,12 +132,13 @@ public:
     //    std::map<std::string, Streamer*> mStreamers;
     //    std::list<Viewer*> mViewers;
 
-    std::mutex mMtx;
     std::thread m_thread;
     int m_maxClients = 100;
     //    bool m_wantToStop = false;
   public:
     void setMaxClients( int maxThreads );
+    const std::map<std::string, Streamer*>& getStreamers() const;
+//    std::list<StreamViewer *> &getStreamViewers(const std::string & streamName);
 };
 
 // struct Streamer {
