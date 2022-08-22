@@ -16,17 +16,16 @@ namespace net {
 
 std::string Server::getStatus() const {
     std::string streamViewersStr = "[";
-    //    for ( const auto& pair : mStreamers ) {
-    //        const auto& sensorName = pair.first;
-    //        const auto& streamer   = pair.second;
-    //        std::string str        = sensorName.substr( 0, 3 );
-    //        streamViewersStr += "(" + str + "," + std::to_string( streamer->mOutputSensors.size()
-    //        )
-    ///+ /                            "," + std::to_string( streamer->mSensor2syncViewers.size() ) +
-    ///")";
 
-    //        streamViewersStr += ",";
-    //    }
+    for ( const auto& pair : m_streamViewers ) {
+        const auto& sensorName    = pair.first;
+        const auto& streamViewers = pair.second;
+        std::string str           = sensorName.substr( 0, 3 );
+        streamViewersStr += "(" + str + "," + std::to_string( streamViewers.size() ) + "," +
+                            std::to_string( streamViewers.size() ) + ")";
+
+        streamViewersStr += ",";
+    }
     streamViewersStr += "]";
 
     std::string str = std::string( "status : nbStreamer:" ) + std::to_string( m_streamers.size() ) +
@@ -193,13 +192,45 @@ Streamer::Streamer( Server& server, int iClient, ClientSocket&& sock ) : Client(
 
     std::thread thread( [this, streamName]() {
         try {
+            //            assert(m_server.m_streamViewers.find(streamName) !=
+            //            m_server.m_streamViewers.end());
+            auto& streamViewers = m_server.m_streamViewers[streamName];
+
             while ( 1 ) {
                 auto acq = m_inputSensor->getAcquisition();
-                //            std::cout << "[Streamer] receive acq : " << acq << std::endl;
-                // broadcast acquisition
-                for ( auto* streamViewer : m_server.m_streamViewers[streamName] ) {
-                    streamViewer->send( acq );
+//                std::cout << headerMsg() << "receive acq : " << acq << std::endl;
+
+                // broadcast data
+                // send new acquisition for all no sync stream viewers of this stream
+                {
+                    auto it = streamViewers.begin();
+                    while ( it != streamViewers.end() ) {
+                        const auto& streamViewer = *it;
+                        const auto& outputSensor = *streamViewer->m_outputSensor;
+
+                        try {
+//                            std::cout << headerMsg() << "send acq to stream viewer" << std::endl;
+                            outputSensor << acq;
+
+                            ++it;
+                        }
+                        catch ( std::exception& e ) {
+                            // no sync stream viewer lost
+                            std::cout << headerMsg()
+                                      << "catch stream viewer exception : " << e.what()
+                                      << std::endl;
+
+                            it = streamViewers.erase( it );
+
+                            std::cout << headerMsg() << "stream viewer lost\t"
+                                      << m_server.getStatus() << std::endl;
+                            std::cout << "-------------------------------------------------"
+                                         "--------------------------------------------"
+                                      << std::endl;
+                        }
+                    }
                 }
+
             } // while ( 1 )
         }
         catch ( std::exception& e ) {
@@ -254,9 +285,6 @@ StreamViewer::StreamViewer( Server& server, int iClient, ClientSocket&& sock ) :
     assert( syncSensorName == "" ||
             m_server.m_streamers.find( syncSensorName ) != m_server.m_streamers.end() );
 
-    std::cout << headerMsg() << "new stream viewer\t" << m_server.getStatus() << std::endl;
-    std::cout << headerMsg() << "watching '" << streamName << "'" << std::endl;
-
     Streamer* streamer    = m_server.m_streamers.at( streamName );
     SensorSpec sensorSpec = streamer->m_inputSensor->spec;
     m_outputSensor        = std::make_unique<OutputSensor>( std::move( sensorSpec ),
@@ -264,6 +292,9 @@ StreamViewer::StreamViewer( Server& server, int iClient, ClientSocket&& sock ) :
 
     //    server.m_streamViewers.push_back( this );
     server.m_streamViewers[streamName].push_back( this );
+
+    std::cout << headerMsg() << "new stream viewer\t" << m_server.getStatus() << std::endl;
+    std::cout << headerMsg() << "watching '" << streamName << "'" << std::endl;
 
     //        std::cout << headerMsg() << "end (" << m_inputSensor->spec.sensorName << ")"
     //                  << std::endl;
@@ -280,25 +311,25 @@ std::string StreamViewer::headerMsg() {
     return Client::headerMsg() + "[StreamViewer] ";
 }
 
-void StreamViewer::send( const Acquisition& acq ) {
-    try {
-        *m_outputSensor << acq;
-    }
-    catch ( std::exception& e ) {
-        // no sync stream viewer lost
-        std::cout << headerMsg() << "out : catch outputSensor exception : " << e.what()
-                  << std::endl;
-        //            it = outputSensors.erase( it );
+// void StreamViewer::send( const Acquisition& acq ) {
+//     try {
+//         *m_outputSensor << acq;
+//     }
+//     catch ( std::exception& e ) {
+//         // no sync stream viewer lost
+//         std::cout << headerMsg() << "out : catch outputSensor exception : " << e.what()
+//                   << std::endl;
+//         //            it = outputSensors.erase( it );
 
-        m_server.m_streamViewers.at(m_streamName).remove(this);
+//        m_server.m_streamViewers.at(m_streamName).remove(this);
 
-        std::cout << headerMsg() << "out : end stream viewer\t" << m_server.getStatus()
-                  << std::endl;
-        std::cout << "-------------------------------------------------"
-                     "--------------------------------------------"
-                  << std::endl;
-    }
-}
+//        std::cout << headerMsg() << "out : end stream viewer\t" << m_server.getStatus()
+//                  << std::endl;
+//        std::cout << "-------------------------------------------------"
+//                     "--------------------------------------------"
+//                  << std::endl;
+//    }
+//}
 
 ///////////////////////////////////////////////////////////////////////////
 //        std::thread thread( [this, iThread, sock = std::move( sock )]() mutable {
