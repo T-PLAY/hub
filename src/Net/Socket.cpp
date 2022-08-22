@@ -17,7 +17,7 @@ const char* const Socket::s_defaultServiceIp = "127.0.0.1";
 std::string Socket::getHeader( socket_fd iSock ) const {
     std::string str;
     if (m_serverSide) {
-        str += "\033[1m[Server]\033[0m";
+        str += "\t\033[1m[Server]\033[0m";
     }
     else {
         str += "[Client]";

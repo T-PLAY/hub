@@ -56,13 +56,14 @@ Acquisition Acquisition::clone() const {
 }
 
 std::ostream& operator<<( std::ostream& os, const Acquisition& acq ) {
-    os << "start:" << acq.mBackendTimestamp / 1000 << ", end:" << acq.mBackendTimeOfArrival / 1000;
+    os << "start:" << acq.mBackendTimestamp << ", end:" << acq.mBackendTimeOfArrival ;
     os << ", data:[";
     for ( auto i = 0; i < std::min( (int)acq.mSize, 10 ); ++i ) {
         os << std::setw( 3 ) << (int)acq.mData[i] << " ";
     }
     os << "], ";
     os << 1'000'000.0 / ( acq.mBackendTimeOfArrival - acq.mBackendTimestamp ) << " fps";
+    os << ", ptr = " << (uint64_t)acq.mData;
     return os;
 }
 
