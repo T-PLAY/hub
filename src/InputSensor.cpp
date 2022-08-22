@@ -5,9 +5,9 @@
 #include <iomanip>
 #include <numeric>
 
-namespace hub {
 //#define DEBUG_STREAM
 
+namespace hub {
 
 // InputSensor::InputSensor( const std::string& sensorName, const std::string& syncSensorName ) :
 //     Sensor( {}, *std::move( new ClientSocket( sensorName, syncSensorName ) ) ) {
@@ -15,11 +15,11 @@ namespace hub {
 //    spec.read( m_interface );
 //}
 
-//InputSensor::~InputSensor() {
+// InputSensor::~InputSensor() {
 //#ifdef DEBUG_MSG
-//    std::cout << "[InputSensor] ~InputSensor()" << std::endl;
+//     std::cout << "[InputSensor] ~InputSensor()" << std::endl;
 //#endif
-//}
+// }
 
 Acquisition InputSensor::getAcquisition() const {
     long long start, end;
@@ -30,6 +30,7 @@ Acquisition InputSensor::getAcquisition() const {
     m_interface.read( data, spec.acquisitonSize );
 
 #ifdef DEBUG_STREAM
+    Acquisition acquisition( start, end, data, spec.acquisitonSize );
     std::cout << "[InputSensor] read acq :  " << acquisition << std::endl;
 #endif
 
@@ -58,10 +59,9 @@ std::vector<Acquisition> InputSensor::getAllAcquisitions() {
     return acqs;
 }
 
-//std::ostream& operator<<( std::ostream& os, const InputSensor& inputSensor ) {
-//    os << "metadata:" << SensorSpec::metaData2string( inputSensor.spec.metaData );
-//    return os;
-//}
-
+// std::ostream& operator<<( std::ostream& os, const InputSensor& inputSensor ) {
+//     os << "metadata:" << SensorSpec::metaData2string( inputSensor.spec.metaData );
+//     return os;
+// }
 
 } // namespace hub

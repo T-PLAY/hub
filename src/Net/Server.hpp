@@ -60,10 +60,10 @@ public:
 
     std::string headerMsg();
 
-    void send(const Acquisition & acq);
+//    void send(const Acquisition & acq);
 
 
-private:
+//private:
     std::unique_ptr<OutputSensor> m_outputSensor;
     std::string m_streamName;
 };
