@@ -15,7 +15,7 @@ TEST_CASE( "Server test : direct stream" ) {
     constexpr int port     = 5000;
 
     std::vector<hub::Acquisition> acqs;
-    constexpr int nAcqs = 10;
+    constexpr int nAcqs = 20;
     constexpr int dataSize = 9;
     for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
         unsigned char data[dataSize];

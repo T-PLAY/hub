@@ -15,7 +15,7 @@ TEST_CASE( "Server test : direct stream" ) {
     constexpr int port     = 6001;
 
     std::vector<hub::Acquisition> acqs;
-    constexpr int nAcqs    = 2;
+    constexpr int nAcqs    = 5;
     constexpr int dataSize = 9;
     for ( int iAcq = 0; iAcq < nAcqs * 5; ++iAcq ) {
         unsigned char data[dataSize];
@@ -35,7 +35,7 @@ TEST_CASE( "Server test : direct stream" ) {
 
     std::cout << "[Test] ############################### server start" << std::endl;
     hub::net::Server server( port );
-    server.setMaxClients( 3 );
+    server.setMaxClients( 5 );
     server.asyncRun();
     std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
     std::cout << "[Test] server end ------------------------------" << std::endl;
@@ -45,6 +45,8 @@ TEST_CASE( "Server test : direct stream" ) {
         hub::OutputSensor outputSensor(
             { "sensorName", hub::SensorSpec::Format::BGR8, { 3 } },
             hub::io::Streamer( "stream", hub::net::ClientSocket( ipv4, port ) ) );
+
+//        hub::io::Streamer(hub::net::ClientSocket(ipv4, port));
 
         auto& outputSensorSpec = outputSensor.spec;
         CHECK( outputSensorSpec.acquisitonSize == dataSize );
@@ -79,6 +81,30 @@ TEST_CASE( "Server test : direct stream" ) {
         CHECK( inputSensorSpec.format == hub::SensorSpec::Format::BGR8 );
         std::cout << "[Test] inputStream end ---------------------------------" << std::endl;
 
+        std::cout << "[Test] ############################### inputStream2 start" << std::endl;
+        hub::InputSensor inputSensor2(
+            hub::io::StreamViewer( "stream", "", hub::net::ClientSocket( ipv4, port ) ) );
+
+        const auto& inputSensorSpec2 = inputSensor2.spec;
+        CHECK( inputSensorSpec2.acquisitonSize == dataSize );
+        CHECK( inputSensorSpec2.sensorName == "sensorName" );
+        CHECK( inputSensorSpec2.dims.size() == 1 );
+        CHECK( inputSensorSpec2.dims.at( 0 ) == 3 );
+        CHECK( inputSensorSpec2.format == hub::SensorSpec::Format::BGR8 );
+        std::cout << "[Test] inputStream2 end ---------------------------------" << std::endl;
+
+        std::cout << "[Test] ############################### inputStream3 start" << std::endl;
+        hub::InputSensor inputSensor3(
+            hub::io::StreamViewer( "master", "", hub::net::ClientSocket( ipv4, port ) ) );
+
+        const auto& inputSensorSpec3 = inputSensor3.spec;
+        CHECK( inputSensorSpec3.acquisitonSize == dataSize );
+        CHECK( inputSensorSpec3.sensorName == "sensorName2" );
+        CHECK( inputSensorSpec3.dims.size() == 1 );
+        CHECK( inputSensorSpec3.dims.at( 0 ) == 3 );
+        CHECK( inputSensorSpec3.format == hub::SensorSpec::Format::BGR8 );
+        std::cout << "[Test] inputStream2 end ---------------------------------" << std::endl;
+
         std::cout << "[Test] ############################### send acquisitions" << std::endl;
         for ( const auto& acq : acqs ) {
             outputSensor << acq;
@@ -92,11 +118,21 @@ TEST_CASE( "Server test : direct stream" ) {
 
         std::cout << "[Test] ############################### compare " << std::endl;
         for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
-            std::cout << "[Test] compare acq " << iAcq << std::endl;
             auto acq = inputSensor.getAcquisition();
             std::cout << "[Test] acq = " << acq << std::endl;
-//            CHECK( acq == acqs[iAcq] );
             CHECK( acq == acqs[iAcq * 5] );
+        }
+        std::cout << "[Test] ############################### compare2 " << std::endl;
+        for ( int iAcq = 0; iAcq < nAcqs * 5; ++iAcq ) {
+            auto acq = inputSensor2.getAcquisition();
+            std::cout << "[Test] acq2 = " << acq << std::endl;
+            CHECK( acq == acqs[iAcq] );
+        }
+        std::cout << "[Test] ############################### compare3 " << std::endl;
+        for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
+            auto acq = inputSensor3.getAcquisition();
+            std::cout << "[Test] acq3 = " << acq << std::endl;
+            CHECK( acq == acqs2[iAcq] );
         }
     }
     std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
