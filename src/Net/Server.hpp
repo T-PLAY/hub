@@ -116,12 +116,12 @@ class Server
 
   private:
     std::map<std::string, Streamer*> m_streamers;
-    std::mutex m_mtxStreamers;
+//    std::mutex m_mtxStreamers;
     std::list<Viewer*> m_viewers;
-    std::mutex m_mtxViewers;
+//    std::mutex m_mtxViewers;
     //    std::list<StreamViewer*> m_streamViewers;
     std::map<std::string, std::list<StreamViewer*>> m_streamViewers;
-    std::mutex m_mtxStreamViewers;
+//    std::mutex m_mtxStreamViewers;
 
     std::mutex m_mtx;
 
