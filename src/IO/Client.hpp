@@ -90,12 +90,17 @@ class Viewer : public net::ClientSocket
     //    Viewer( const std::string& sensorName,
     //            const std::string& syncSensorName = "",
     //            net::ClientSocket&& clientSocket  = net::ClientSocket() );
-    //    Viewer (net::ClientSocket&& clientSocket); // server side
+    Viewer(ClientSocket &&clientSocket, std::function<void (const std::string &, const SensorSpec &)> onNewStreamer, std::function<void (const std::string &)> onDelStreamer);
+    ~Viewer();
 
-  protected:
+protected:
     //    void startAsyncRoutine( Server* server, int iThread ) override;
 
   private:
+    std::thread m_thread;
+    bool m_stopThread = false;
+    std::function<void(const std::string & sensorName, const SensorSpec & sensorSpec)> m_onNewStreamer;
+    std::function<void(const std::string & sensorName)> m_onDelStreamer;
 };
 
 } // namespace io

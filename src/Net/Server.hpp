@@ -64,6 +64,11 @@ class Viewer : public Client
     std::string headerMsg() override;
 
     void notifyNewStreamer( const Streamer& streamer ) const;
+
+private:
+    ClientSocket m_socket;
+
+    friend class Server;
 };
 
 class StreamViewer : public Client
@@ -108,9 +113,11 @@ class Server
 
     void addStreamer(Streamer * streamer);
     void addStreamViewer(StreamViewer * streamViewer);
+    void addViewer(Viewer * viewer);
 
     void delStreamer(Streamer * streamer);
     void delStreamViewer(StreamViewer * streamViewer);
+    void delViewer(Viewer * viewer);
 
     void newAcquisition(Streamer * streamer, Acquisition acq);
 

@@ -92,10 +92,31 @@ void Server::addStreamViewer( StreamViewer* streamViewer ) {
     //    m_mtx.unlock();
 }
 
+void Server::addViewer( Viewer* viewer ) {
+
+    m_viewers.push_back( viewer );
+    std::cout << std::left << std::setw( g_margin2 ) << headerMsg() << std::setw( g_margin )
+              << "new viewer" << getStatus() << std::endl;
+}
+
 void Server::delStreamer( Streamer* streamer ) {
     m_mtx.lock();
 
     const auto streamerName = streamer->getStreamName();
+
+    for ( const auto* viewer : m_viewers ) {
+        try {
+            viewer->m_socket.write( ClientSocket::Message::DEL_STREAMER );
+            viewer->m_socket.write( streamerName );
+        }
+        catch ( std::exception& e ) {
+            assert( false );
+            std::cout << headerMsg()
+                      << "in : viewer is dead, this append when "
+                         "viewer/streamer process was stopped in same time : "
+                      << e.what() << std::endl;
+        }
+    }
 
     auto syncViewers = streamer->m_syncViewers;
     for ( auto& pair : syncViewers ) {
@@ -158,6 +179,12 @@ void Server::delStreamViewer( StreamViewer* streamViewer ) {
                  "--------------------"
               << std::endl;
     //    m_mtx.unlock();
+}
+
+void Server::delViewer( Viewer* viewer ) {
+    m_viewers.remove( viewer );
+    std::cout << std::left << std::setw( g_margin2 ) << headerMsg() << std::setw( g_margin )
+              << "del viewer" << getStatus() << std::endl;
 }
 
 void Server::newAcquisition( Streamer* streamer, Acquisition acq ) {
@@ -287,6 +314,10 @@ const std::map<std::string, Streamer*>& Server::getStreamers() const {
 
 void Viewer::notifyNewStreamer( const Streamer& streamer ) const {
     //    mSock->write( Socket::Message::NEW_STREAMER );
+
+    m_socket.write( ClientSocket::Message::NEW_STREAMER );
+    m_socket.write( streamer.getStreamName() );
+    m_socket.write( streamer.getInputSensor().spec );
 
     /*mSock->write(streamer.mhub::InputSensor.getSensorName());
     mSock->write(std::string(Stream::format2string[(int)streamer.mhub::InputSensor.getFormat()]));
@@ -483,7 +514,34 @@ const std::string& Streamer::getStreamName() const {
     return m_streamName;
 }
 
-Viewer::Viewer( Server& server, int iClient, ClientSocket&& sock ) : Client( server, iClient ) {}
+Viewer::Viewer( Server& server, int iClient, ClientSocket&& sock ) :
+    Client( server, iClient ), m_socket( std::move( sock ) ) {
+
+    // each already connected streamers prevent existence for this new viewer
+    for ( const auto& pair : server.getStreamers() ) {
+        const auto& streamer = *pair.second;
+        notifyNewStreamer( streamer );
+    }
+
+    server.addViewer( this );
+
+    std::thread thread( [this]() {
+        try {
+            // check client still alive
+            while ( true ) {
+                m_socket.write( ClientSocket::Message::PING );
+                std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
+                std::cout << headerMsg() << "ping viewer" << std::endl;
+            }
+        }
+        catch ( std::exception& e ) {
+            std::cout << headerMsg() << "catch viewer exception : " << e.what() << std::endl;
+        }
+
+        m_server.delViewer( this );
+    } );
+    thread.detach();
+}
 
 std::string Viewer::headerMsg() {
     return Client::headerMsg() + "[Viewer] ";
