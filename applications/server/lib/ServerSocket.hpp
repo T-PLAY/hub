@@ -1,7 +1,6 @@
 #pragma once
 
-#include "Socket.hpp"
-#include "ClientSocket.hpp"
+#include <Net/ClientSocket.hpp>
 
 namespace hub {
 namespace net {

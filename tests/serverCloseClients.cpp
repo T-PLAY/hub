@@ -1,13 +1,15 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include <IO/NetClient.hpp>
+#include <filesystem>
+
+#include <IO/Stream.hpp>
 #include <IO/File.hpp>
 #include <InputSensor.hpp>
 #include <Net/ClientSocket.hpp>
-#include <Net/Server.hpp>
 #include <OutputSensor.hpp>
 
-#include <filesystem>
+#include <Server.hpp>
+
 
 TEST_CASE( "Server test : close clients" ) {
 
@@ -34,7 +36,7 @@ TEST_CASE( "Server test : close clients" ) {
     }
 
     std::cout << "[Test] ############################### server start" << std::endl;
-    hub::net::Server server( port );
+    Server server( port );
     server.setMaxClients( 8 );
     server.asyncRun();
     std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
@@ -44,7 +46,7 @@ TEST_CASE( "Server test : close clients" ) {
         std::cout << "[Test] ############################### outputStream start" << std::endl;
         hub::OutputSensor outputSensor(
             { "sensorName", hub::SensorSpec::Format::BGR8, { 3 } },
-            hub::io::Streamer( "stream", hub::net::ClientSocket( ipv4, port ) ) );
+            hub::io::OutputStream( "stream", hub::net::ClientSocket( ipv4, port ) ) );
 
         //        hub::io::Streamer(hub::net::ClientSocket(ipv4, port));
 
@@ -59,7 +61,7 @@ TEST_CASE( "Server test : close clients" ) {
         std::cout << "[Test] ############################### outputStream2 start" << std::endl;
         hub::OutputSensor outputSensor2(
             { "sensorName2", hub::SensorSpec::Format::BGR8, { 3 } },
-            hub::io::Streamer( "master", hub::net::ClientSocket( ipv4, port ) ) );
+            hub::io::OutputStream( "master", hub::net::ClientSocket( ipv4, port ) ) );
 
         auto& outputSensorSpec2 = outputSensor2.spec;
         CHECK( outputSensorSpec2.acquisitonSize == dataSize );
@@ -73,7 +75,7 @@ TEST_CASE( "Server test : close clients" ) {
             std::cout << "[Test] ############################### inputSensor(stream, master)"
                       << std::endl;
             {
-                hub::InputSensor inputSensor( hub::io::StreamViewer(
+                hub::InputSensor inputSensor( hub::io::InputStream(
                     "stream", "master", hub::net::ClientSocket( ipv4, port ) ) );
 
                 const auto& inputSensorSpec = inputSensor.spec;
@@ -113,7 +115,7 @@ TEST_CASE( "Server test : close clients" ) {
             std::cout << "[Test] ############################### inputSensor(stream,)" << std::endl;
             {
                 hub::InputSensor inputSensor(
-                    hub::io::StreamViewer( "stream", "", hub::net::ClientSocket( ipv4, port ) ) );
+                    hub::io::InputStream( "stream", "", hub::net::ClientSocket( ipv4, port ) ) );
 
                 const auto& inputSensorSpec = inputSensor.spec;
                 CHECK( inputSensorSpec.acquisitonSize == dataSize );
@@ -144,7 +146,7 @@ TEST_CASE( "Server test : close clients" ) {
             std::cout << "[Test] ############################### inputSensor(master,)" << std::endl;
             {
                 hub::InputSensor inputSensor(
-                    hub::io::StreamViewer( "master", "", hub::net::ClientSocket( ipv4, port ) ) );
+                    hub::io::InputStream( "master", "", hub::net::ClientSocket( ipv4, port ) ) );
 
                 const auto& inputSensorSpec = inputSensor.spec;
                 CHECK( inputSensorSpec.acquisitonSize == dataSize );

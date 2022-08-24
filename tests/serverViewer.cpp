@@ -1,11 +1,13 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include <IO/NetClient.hpp>
+#include <IO/Stream.hpp>
 #include <IO/File.hpp>
 #include <InputSensor.hpp>
 #include <Net/ClientSocket.hpp>
-#include <Net/Server.hpp>
 #include <OutputSensor.hpp>
+#include <Viewer.hpp>
+
+#include <Server.hpp>
 
 #include <filesystem>
 
@@ -28,7 +30,7 @@ TEST_CASE( "Server test : viewer" ) {
     }
 
     std::cout << "[Test] ############################### server start" << std::endl;
-    hub::net::Server server( port );
+    Server server( port );
     server.setMaxClients( 3 );
     server.asyncRun();
     std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
@@ -41,7 +43,7 @@ TEST_CASE( "Server test : viewer" ) {
             std::cout << "[Test] ############################### onNewStreamer" << std::endl;
             {
                 hub::InputSensor inputSensor(
-                    hub::io::StreamViewer( sensorName, "", hub::net::ClientSocket( ipv4, port ) ) );
+                    hub::io::InputStream( sensorName, "", hub::net::ClientSocket( ipv4, port ) ) );
 
                 const auto& inputSensorSpec = inputSensor.spec;
                 CHECK( inputSensorSpec.acquisitonSize == dataSize );
@@ -58,7 +60,7 @@ TEST_CASE( "Server test : viewer" ) {
             std::cout << "[Test] ############################### onDelStreamer" << std::endl;
         };
         auto viewer =
-            hub::io::Viewer( hub::net::ClientSocket( ipv4, port ), onNewStreamer, onDelStreamer );
+            hub::Viewer( hub::net::ClientSocket( ipv4, port ), onNewStreamer, onDelStreamer );
         std::cout << "[Test] ############################### viewer created" << std::endl;
         std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
 
@@ -66,7 +68,7 @@ TEST_CASE( "Server test : viewer" ) {
             std::cout << "[Test] ############################### outputSensor start" << std::endl;
             hub::OutputSensor outputSensor(
                 { "sensorName", hub::SensorSpec::Format::BGR8, { width, height } },
-                hub::io::Streamer( "stream", hub::net::ClientSocket( ipv4, port ) ) );
+                hub::io::OutputStream( "stream", hub::net::ClientSocket( ipv4, port ) ) );
 //            outputSensor << acqs[0];
             std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
 

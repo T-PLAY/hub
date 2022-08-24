@@ -12,12 +12,13 @@ namespace hub {
 class SRC_API OutputSensor : public Sensor
 {
   public:
-    template <class OutputInterface,
+    template <class SensorSpec = hub::SensorSpec,
+            class OutputInterface,
               typename = typename std::enable_if<
                   std::is_base_of<io::OutputInterface, OutputInterface>::value>::type>
-    OutputSensor( const SensorSpec&& sensorSpec, OutputInterface&& outputInterface ) :
+    OutputSensor( SensorSpec&& sensorSpec, OutputInterface&& outputInterface ) :
 
-        Sensor( std::move( sensorSpec ),
+        Sensor( std::forward<hub::SensorSpec>( sensorSpec ),
                 *std::move( new OutputInterface( std::move( outputInterface ) ) ) ) {
 
         std::cout << "[OutputSensor] OutputSensor(const SensorSpec&&, OutputInterface&&)"
@@ -25,6 +26,8 @@ class SRC_API OutputSensor : public Sensor
 
         static_assert( std::is_base_of<io::OutputInterface, OutputInterface>::value,
                        "not a base class" );
+//        static_assert( std::is_base_of<hub::SensorSpec&&, SensorSpec>::value,
+//                       "not a base class" );
 
         m_interface.write( spec );
     }

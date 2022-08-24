@@ -1,15 +1,10 @@
 #include "SensorSpec.hpp"
 
-//#include <algorithm>
-#include <numeric>
 #include <cassert>
+#include <numeric>
 
 #include "IO/Interface.hpp"
 
-// const std::string& getSensorName() const;
-// Format getFormat() const;
-// const Dims& getDims() const;
-// const MetaData& getMetaData() const;
 namespace hub {
 
 static constexpr int format2nByte[static_cast<int>( SensorSpec::Format::COUNT )] = {
@@ -50,31 +45,6 @@ size_t SensorSpec::computeAcquisitionSize( Format format, const Dims& dims ) {
     return std::accumulate( dims.cbegin(), dims.cend(), 1, std::multiplies<int> {} ) *
            format2nByte[static_cast<int>( format )];
 }
-
-//const std::string& SensorSpec::getSensorName() const {
-//    return mSensorName;
-//}
-
-//SensorSpec::Format SensorSpec::getFormat() const {
-//    return mFormat;
-//}
-
-//const std::vector<int>& SensorSpec::getDims() const {
-//    return mDims;
-//}
-
-//const SensorSpec::MetaData& SensorSpec::getMetaData() const {
-//    return mMetaData;
-//}
-
-//size_t SensorSpec::getAcquisitionSize() const {
-//    return mAcquisitionSize;
-//}
-
-// static std::string dims2string( const Dims& dims );
-// static std::string metaData2string( const MetaData& metaData, bool expand = false );
-// static std::string any2string( const std::any& any );
-// SRC_API friend std::ostream& operator<<( std::ostream& os, const Format& format );
 
 std::string SensorSpec::dims2string( const Dims& dims ) {
     std::string str = "";
@@ -165,17 +135,17 @@ std::string SensorSpec::any2string( const std::any& any ) {
         }
         return str;
     }
-//    else if ( hashCode == typeid( hub::io::Interface::Mat3 ).hash_code() ) {
-//        const hub::io::Interface::Mat3* val = std::any_cast<hub::io::Interface::Mat3>( &any );
-//        std::string str                     = "";
-//        for ( int i = 0; i < 3; ++i ) {
-//            for ( int j = 0; j < 3; ++j ) {
-//                str += std::to_string( val->data[i * 3 + j] ) + " ";
-//            }
-//            str += "\n";
-//        }
-//        return str;
-//    }
+    //    else if ( hashCode == typeid( hub::io::Interface::Mat3 ).hash_code() ) {
+    //        const hub::io::Interface::Mat3* val = std::any_cast<hub::io::Interface::Mat3>( &any );
+    //        std::string str                     = "";
+    //        for ( int i = 0; i < 3; ++i ) {
+    //            for ( int j = 0; j < 3; ++j ) {
+    //                str += std::to_string( val->data[i * 3 + j] ) + " ";
+    //            }
+    //            str += "\n";
+    //        }
+    //        return str;
+    //    }
     else {
         auto name     = any.type().name();
         auto raw_name = any.type().name();

@@ -3,7 +3,6 @@
 #include "Acquisition.hpp"
 #include "IO/Interface.hpp"
 #include "Sensor.hpp"
-#include "SensorSpec.hpp"
 
 namespace hub {
 

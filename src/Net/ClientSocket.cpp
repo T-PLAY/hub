@@ -14,23 +14,23 @@ std::ostream& operator<<( std::ostream& os, const ClientSocket::Type& type ) {
     return os;
 }
 
-static constexpr std::string_view message2string[static_cast<int>( ClientSocket::Message::COUNT )] = {
-    "NONE",
-    "PING",
-    "SYNC",
-    "DATA",
-    "OK",
-    "CLOSE",
-    "DEL_STREAMER",
-    "NEW_STREAMER",
-    "NOT_FOUND",
-    "FOUND",
+static constexpr std::string_view message2string[static_cast<int>( ClientSocket::Message::COUNT )] =
+    {
+        "NONE",
+        "PING",
+        "SYNC",
+        "DATA",
+        "OK",
+        "CLOSE",
+        "DEL_STREAMER",
+        "NEW_STREAMER",
+        "NOT_FOUND",
+        "FOUND",
 };
 std::ostream& operator<<( std::ostream& os, const ClientSocket::Message& msg ) {
     os << message2string[(int)msg];
     return os;
 }
-
 
 void ClientSocket::connectToServer() {
     DEBUG_MSG( "[ClientSocket] connectToServer" );
@@ -59,8 +59,8 @@ void ClientSocket::connectToServer() {
         perror( "[socket] socket creation failed.\n" );
         return;
     }
-//    net::sSockets.push_back( mFdSock );
-    net::registerSocket(mFdSock);
+    //    net::sSockets.push_back( mFdSock );
+    net::registerSocket( mFdSock );
 
     // Server address construction
     struct sockaddr_in serv_addr;
@@ -100,52 +100,7 @@ ClientSocket::ClientSocket( const std::string& ipv4, int port ) : mIpv4( ipv4 ),
 #endif
 
     connectToServer();
-    // ask server
 }
-
-// ClientSocket::ClientSocket( const std::string& sensorName,
-//                             const std::string& syncSensorName,
-//                             const std::string ipv4,
-//                             int port ) :
-//     mIpv4( ipv4 ), mPort( port ) {
-//#ifdef DEBUG_SOCKET
-//     DEBUG_MSG( getHeader( mFdSock ) << "ClientSocket(std::string sensorName, std::string "
-//                                        "syncSensorName, std::string ipv4, int port)" );
-//#endif
-//     DEBUG_MSG( getHeader( mFdSock ) << "[ClientSocket] ClientSocket('" << sensorName << "', '"
-//                                     << syncSensorName << ", " << ipv4 << ", " << port );
-
-//    connectToServer();
-
-//    DEBUG_MSG( getHeader( mFdSock )
-//               << "[ClientSocket] connected to the server, starting communication" );
-
-//    Type clientType = Type::STREAM_VIEWER;
-//    // ask server
-//    write( clientType );
-
-//    write( sensorName );
-//    Socket::Message mess;
-//    read( mess );
-//    if ( mess == Socket::Message::NOT_FOUND ) {
-//        DEBUG_MSG( getHeader( mFdSock ) << "[ClientSocket] exception sensor '" << sensorName
-//                                        << "' is not attached to server" );
-//        throw Socket::exception(
-//            ( std::string( "sensor '" ) + sensorName + "' is not attached to server" ).c_str() );
-//    }
-//    assert( mess == Socket::Message::OK );
-
-//    write( syncSensorName );
-//    read( mess );
-//    if ( mess == Socket::Message::NOT_FOUND ) {
-//        throw Socket::exception(
-//            ( std::string( "sync sensor '" ) + syncSensorName + "' is not attached to server" )
-//                .c_str() );
-//    }
-//    assert( mess == Socket::Message::OK );
-
-//    DEBUG_MSG( getHeader( mFdSock ) << "[ClientSocket] connected to server" );
-//}
 
 ClientSocket::ClientSocket( socket_fd fdSock ) {
     mPort        = -1;
@@ -154,10 +109,10 @@ ClientSocket::ClientSocket( socket_fd fdSock ) {
     DEBUG_MSG( getHeader( mFdSock ) << "ClientSocket(socket_fd fdSock)" );
 }
 
-//ClientSocket::ClientSocket( ClientSocket&& sock ) noexcept :
-//    Socket(),
-//    mIpv4( sock.mIpv4 ),
-//    mPort( sock.mPort )
+// ClientSocket::ClientSocket( ClientSocket&& sock ) noexcept :
+//     Socket(),
+//     mIpv4( sock.mIpv4 ),
+//     mPort( sock.mPort )
 ////    mIsServer( sock.mIsServer )
 //{
 ////    mFdSock      = sock.mFdSock;
@@ -177,34 +132,6 @@ ClientSocket::~ClientSocket() {
 
 // void ClientSocket::close() {
 //     clear();
-// }
-
-// void ClientSocket::setupOutput( const std::string& sensorName ) const {
-//#ifdef DEBUG_SOCKET
-//     DEBUG_MSG( "ClientSocket::setOutputName(const std::string& sensorName)" );
-//#endif
-
-//    if ( !mIsServer ) {
-//        ClientSocket::Type clientType = ClientSocket::Type::STREAMER;
-//        write( clientType );
-
-//        write( sensorName );
-//        Socket::Message mess;
-//        read( mess );
-//        if ( mess == Socket::Message::FOUND ) {
-//            assert( false );
-//            throw Socket::exception(
-//                ( std::string( "sensor '" ) + sensorName + "' is already attached to server" )
-//                    .c_str() );
-//        }
-//        assert( mess == Socket::Message::NOT_FOUND );
-//    }
-
-//    io::Interface::setupOutput( sensorName );
-//}
-
-// void ClientSocket::setIsServer( bool isServer ) {
-//     mIsServer = isServer;
 // }
 
 void ClientSocket::write( const unsigned char* data, size_t len ) const {
@@ -288,8 +215,7 @@ void ClientSocket::read( unsigned char* data, size_t len ) const {
 #endif
 }
 
-void ClientSocket::close()
-{
+void ClientSocket::close() {
     clear();
 }
 

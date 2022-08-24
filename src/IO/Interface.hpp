@@ -20,9 +20,9 @@ namespace io {
 class SRC_API Interface
 {
   public:
-//    struct Mat3 {
-//        float data[9];
-//    };
+    //    struct Mat3 {
+    //        float data[9];
+    //    };
     enum class Type {
         INT = 0,
         DOUBLE,
@@ -30,7 +30,7 @@ class SRC_API Interface
         CONST_CHAR_PTR,
         //        FLOAT_ARRAY_9,
         VECTOR_FLOAT,
-//        MAT3,
+        //        MAT3,
         COUNT
     };
     static constexpr char const* type2string[static_cast<int>( Type::COUNT )] = {
@@ -45,11 +45,11 @@ class SRC_API Interface
     }
 
   public:
-    Interface()                                         = default;
-    Interface( Interface&& ioStream )                   = default;
-    Interface( const Interface& ioStream )                    = delete;
-    Interface& operator=( const Interface& ioStream )   = delete;
-    Interface&& operator=( Interface&& ioStream )       = delete;
+    Interface()                                       = default;
+    Interface( Interface&& ioStream )                 = default;
+    Interface( const Interface& ioStream )            = delete;
+    Interface& operator=( const Interface& ioStream ) = delete;
+    Interface&& operator=( Interface&& ioStream )     = delete;
 
     virtual ~Interface() = default;
     //    virtual ~Interface();
@@ -92,17 +92,7 @@ class SRC_API Interface
 
     SensorSpec getSensorSpec() const;
 
-//    enum class Mode {
-//        NONE,
-//        INPUT,
-//        OUTPUT,
-//        INPUT_OUTPUT,
-//    };
-
-//    virtual void setupOutput( const std::string& sensorName ) const;
-
   private:
-//    Mode mMode = Mode::INPUT_OUTPUT;
 };
 
 // template <class T>
@@ -113,12 +103,11 @@ class SRC_API Interface
 
 template <class T>
 void Interface::write( const T& t ) const {
-//#ifdef DEBUG_IOSTREAM
-//    std::cout << "[Interface] write " << typeid( T ).name() << " '" << t << "' : start"
-//              << std::endl;
-//#endif
+    //#ifdef DEBUG_IOSTREAM
+    //    std::cout << "[Interface] write " << typeid( T ).name() << " '" << t << "' : start"
+    //              << std::endl;
+    //#endif
 
-//    assert( mMode == Mode::OUTPUT || mMode == Mode::INPUT_OUTPUT );
     write( reinterpret_cast<const unsigned char*>( &t ), sizeof( T ) );
 
 #ifdef DEBUG_IOSTREAM
@@ -183,7 +172,6 @@ void Interface::write( const std::map<T, U>& map ) const {
 template <class T>
 void Interface::read( T& t ) const {
 
-//    assert( mMode == Mode::INPUT || mMode == Mode::INPUT_OUTPUT );
     read( reinterpret_cast<unsigned char*>( &t ), sizeof( T ) );
 
 #ifdef DEBUG_IOSTREAM
@@ -251,15 +239,13 @@ void Interface::read( std::map<T, U>& map ) const {
 }
 
 class InputInterface : public virtual Interface
-{
-};
+{};
 
 class OutputInterface : public virtual Interface
-{
-};
+{};
 
-class InputOutputInterface : public InputInterface, public OutputInterface {
-};
+class InputOutputInterface : public InputInterface, public OutputInterface
+{};
 
 } // namespace io
 } // namespace hub

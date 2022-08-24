@@ -1,18 +1,18 @@
 cmake_minimum_required (VERSION 3.8)
 
 #project ("HubV2")
-project(server)
+project(runServer)
 
 set(WIN32_REQUIRED_LIBS)
 set(UNIX_REQUIRED_LIBS)
 
 
-file(GLOB_RECURSE sources *.cpp)
-file(GLOB_RECURSE headers *.h)
+file(GLOB_RECURSE sources main.cpp)
+# file(GLOB_RECURSE headers *.h)
 
 add_executable(${PROJECT_NAME}
     ${sources}
-    ${headers}
+    # ${headers}
     )
 
 
@@ -36,5 +36,7 @@ elseif(UNIX)
 endif()
 
 
-target_link_libraries(${PROJECT_NAME} ${SRC_TARGET} ${UNIX_REQUIRED_LIBS} ${WIN32_REQUIRED_LIBS})
+target_link_libraries(${PROJECT_NAME} ${SRC_TARGET} ${UNIX_REQUIRED_LIBS} ${WIN32_REQUIRED_LIBS} server)
 
+
+add_subdirectory(lib)

@@ -32,13 +32,13 @@ foreach( name ${TEST_SRC_BASENAME} )
     set(TARGET_NAME test-${basename})
     add_executable( ${TARGET_NAME}
         ${name}.cpp )
-    target_link_libraries( ${TARGET_NAME} Catch2WithMain ${SRC_TARGET} )
+    target_link_libraries( ${TARGET_NAME} Catch2WithMain ${SRC_TARGET} server )
     set_property(TARGET ${TARGET_NAME} PROPERTY CXX_STANDARD 17)
     set_property(TARGET ${TARGET_NAME} PROPERTY CXX_EXTENSIONS OFF)
 endforeach()
 
 add_executable(test-all ${TEST_SRC})
-target_link_libraries( test-all Catch2WithMain ${SRC_TARGET})
+target_link_libraries( test-all Catch2WithMain ${SRC_TARGET} server)
 set_property(TARGET test-all PROPERTY CXX_STANDARD 17)
 set_property(TARGET test-all PROPERTY CXX_EXTENSIONS OFF)
 
