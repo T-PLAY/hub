@@ -3,6 +3,9 @@
 #include <InputSensor.hpp>
 #include <OutputSensor.hpp>
 
+#include <Net/ClientSocket.hpp>
+#include <IO/NetClient.hpp>
+
 int main() {
 
     //    const std::string filename = "file.txt";
@@ -14,6 +17,8 @@ int main() {
 
     //    const hub::SensorSpec sensorSpec( "hello", hub::SensorSpec::Format::BGR8, { 1 } );
     //    hub::OutputSensor outputSensor( std::move( sensorSpec ), std::move( file ) );
+
+    hub::io::StreamViewer streamViewer(hub::net::ClientSocket);
 
     {
         hub::OutputSensor outputSensor(

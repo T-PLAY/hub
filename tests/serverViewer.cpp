@@ -1,6 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include <IO/Client.hpp>
+#include <IO/NetClient.hpp>
 #include <IO/File.hpp>
 #include <InputSensor.hpp>
 #include <Net/ClientSocket.hpp>
