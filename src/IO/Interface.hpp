@@ -17,12 +17,21 @@
 namespace hub {
 namespace io {
 
+///
+/// \brief The Interface class
+/// allows the inherited classes to serialize the data.
+/// This allows to send an acquisition flow on different peripherals (file, socket, RAM, etc).
+///
 class SRC_API Interface
 {
   public:
     //    struct Mat3 {
     //        float data[9];
     //    };
+    ///
+    /// \brief The Type enum
+    /// allows to unify the data according to the different architecture (32, 64 bits).
+    ///
     enum class Type {
         INT = 0,
         DOUBLE,

@@ -15,6 +15,10 @@
 namespace hub {
 namespace net {
 
+///
+/// \brief The Socket class
+/// is an abstraction of socket use in (Windows, Linux).
+///
 class SRC_API Socket
 {
   public:

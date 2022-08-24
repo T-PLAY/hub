@@ -15,6 +15,11 @@ namespace hub {
 class SRC_API OutputSensor : public Sensor
 {
   public:
+    ///
+    /// \brief OutputSensor
+    /// \param sensorSpec
+    /// \param outputInterface
+    ///
     template <class SensorSpec = hub::SensorSpec,
             class OutputInterface,
               typename = typename std::enable_if<
@@ -42,6 +47,11 @@ class SRC_API OutputSensor : public Sensor
     OutputSensor operator=( const OutputSensor& outputSensor ) = delete;
 
   public:
+    ///
+    /// \brief operator <<
+    /// \param acquisition
+    /// to send through the sensor.
+    ///
     void operator<<( const Acquisition& acquisition ) const;
 
   private:

@@ -4,6 +4,12 @@
 
 namespace hub {
 
+///
+/// \brief The Viewer class
+/// can be use to be aware of streamer connected to the server,
+/// for example you can open input sensor in your application
+/// when new sensor is connected to server to have an interactive application.
+///
 class Viewer : public net::ClientSocket
 {
   public:
