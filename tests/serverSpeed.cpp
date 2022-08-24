@@ -13,7 +13,7 @@
 TEST_CASE( "Server test : speed test" ) {
 
     const std::string ipv4 = "127.0.0.1";
-    constexpr int port     = 8000;
+    constexpr int port     = 7000;
 
     std::vector<hub::Acquisition> acqs;
     constexpr int nAcqs    = 100;
@@ -45,13 +45,13 @@ TEST_CASE( "Server test : speed test" ) {
         hub::InputSensor inputSensor(
             hub::io::InputStream( "stream", "", hub::net::ClientSocket( ipv4, port ) ) );
 
-        const auto& inputSensorSpec = inputSensor.spec;
-        CHECK( inputSensorSpec.acquisitonSize == dataSize );
-        CHECK( inputSensorSpec.sensorName == "sensorName" );
-        CHECK( inputSensorSpec.dims.size() == 2 );
-        CHECK( inputSensorSpec.dims.at( 0 ) == width );
-        CHECK( inputSensorSpec.dims.at( 1 ) == height );
-        CHECK( inputSensorSpec.format == hub::SensorSpec::Format::BGR8 );
+        const auto& inputSensorSpec = inputSensor.m_spec;
+        CHECK( inputSensorSpec.m_acquisitionSize == dataSize );
+        CHECK( inputSensorSpec.m_sensorName == "sensorName" );
+        CHECK( inputSensorSpec.m_dims.size() == 2 );
+        CHECK( inputSensorSpec.m_dims.at( 0 ) == width );
+        CHECK( inputSensorSpec.m_dims.at( 1 ) == height );
+        CHECK( inputSensorSpec.m_format == hub::SensorSpec::Format::BGR8 );
         std::cout << "[Test] inputStream end ---------------------------------" << std::endl;
 
         std::cout << "[Test] ############################### send acquisitions" << std::endl;

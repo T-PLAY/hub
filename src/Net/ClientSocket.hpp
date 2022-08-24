@@ -59,8 +59,8 @@ class ClientSocket : public Socket, public virtual io::Interface
     void connectToServer();
 
   private:
-    std::string mIpv4;
-    int mPort;
+    std::string m_ipv4;
+    int m_port;
 };
 
 template <class T>

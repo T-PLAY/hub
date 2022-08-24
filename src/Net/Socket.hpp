@@ -41,7 +41,7 @@ class SRC_API Socket
     Socket & operator=(const Socket & socket) = delete;
 
   protected:
-    socket_fd mFdSock = INVALID_SOCKET;
+    socket_fd m_fdSock = INVALID_SOCKET;
     bool m_serverSide = false;
 };
 

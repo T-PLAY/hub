@@ -6,6 +6,10 @@
 
 namespace hub {
 
+///
+/// \brief The InputSensor class
+/// is created directly by the input interface.
+///
 class SRC_API InputSensor : public Sensor
 {
   public:

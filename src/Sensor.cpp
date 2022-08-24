@@ -3,7 +3,7 @@
 namespace hub {
 
 Sensor::Sensor( const SensorSpec&& sensorSpec, io::Interface& interface ) :
-    spec( std::move( sensorSpec ) ), m_interface( interface ) {}
+    m_spec( std::move( sensorSpec ) ), m_interface( interface ) {}
 
 Sensor::~Sensor() {
     //#ifdef DEBUG_MSG
@@ -14,7 +14,7 @@ Sensor::~Sensor() {
 }
 
 std::ostream& operator<<( std::ostream& os, const Sensor& sensor ) {
-    os << sensor.spec.sensorName;
+    os << sensor.m_spec.m_sensorName;
     return os;
 }
 

@@ -29,24 +29,24 @@ std::string Socket::getHeader( socket_fd iSock ) const {
 
 Socket::Socket() {
 #ifdef DEBUG_SOCKET
-    DEBUG_MSG( getHeader( mFdSock ) << "Socket()" );
+    DEBUG_MSG( getHeader( m_fdSock ) << "Socket()" );
 #endif
     net::init();
 }
 
 Socket::Socket(Socket &&socket)
 {
-    mFdSock = socket.mFdSock;
-    socket.mFdSock = INVALID_SOCKET;
+    m_fdSock = socket.m_fdSock;
+    socket.m_fdSock = INVALID_SOCKET;
 }
 
 Socket::~Socket() {
 #ifdef DEBUG_SOCKET
-    DEBUG_MSG( getHeader( mFdSock ) << "~Socket()" );
+    DEBUG_MSG( getHeader( m_fdSock ) << "~Socket()" );
 #endif
-    if ( mFdSock != INVALID_SOCKET ) {
-        DEBUG_MSG( getHeader( mFdSock ) << "close socket" );
-        net::clearSocket( mFdSock );
+    if ( m_fdSock != INVALID_SOCKET ) {
+        DEBUG_MSG( getHeader( m_fdSock ) << "close socket" );
+        net::clearSocket( m_fdSock );
     }
 }
 
@@ -61,7 +61,7 @@ bool Socket::isConnected() const {
     int optval;
     socklen_t optlen = sizeof( optval );
 
-    int res = getsockopt( mFdSock, SOL_SOCKET, SO_ERROR, &optval, &optlen );
+    int res = getsockopt( m_fdSock, SOL_SOCKET, SO_ERROR, &optval, &optlen );
 
     if ( optval == 0 && res == 0 ) return true;
 #endif

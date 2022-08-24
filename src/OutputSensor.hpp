@@ -9,6 +9,9 @@
 
 namespace hub {
 
+///
+/// \brief The OutputSensor class
+///
 class SRC_API OutputSensor : public Sensor
 {
   public:
@@ -29,7 +32,7 @@ class SRC_API OutputSensor : public Sensor
 //        static_assert( std::is_base_of<hub::SensorSpec&&, SensorSpec>::value,
 //                       "not a base class" );
 
-        m_interface.write( spec );
+        m_interface.write( m_spec );
     }
 
     template <class OutputInterface>

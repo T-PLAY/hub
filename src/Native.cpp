@@ -33,7 +33,7 @@ void freeInputSensor( InputSensor* inputSensor ) {
 
 int getAcquisitionSize( InputSensor* inputSensor ) {
     assert( inputSensor != nullptr );
-    return static_cast<int>( inputSensor->spec.acquisitonSize );
+    return static_cast<int>( inputSensor->m_spec.m_acquisitionSize );
 }
 
 bool getData( InputSensor* inputSensor, unsigned char* data ) {
@@ -46,7 +46,7 @@ bool getData( InputSensor* inputSensor, unsigned char* data ) {
         std::cout << "[Native] get acq : " << acq << std::endl;
 
         std::cout << "[Native] copying data " << std::endl;
-        memcpy( data, acq.mData, inputSensor->spec.acquisitonSize );
+        memcpy( data, acq.m_data, inputSensor->m_spec.m_acquisitionSize );
     }
     catch ( std::exception& e ) {
         std::cout << "[Native] getAcquisition : catch exception : " << e.what() << std::endl;

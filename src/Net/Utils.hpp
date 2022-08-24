@@ -56,8 +56,8 @@ static std::string getHeader() {
     return str;
 }
 
-static bool sInited = false;
-static std::list<socket_fd> sSockets;
+static bool s_inited = false;
+static std::list<socket_fd> s_sockets;
 static std::mutex s_mtx;
 
 static void registerSocket( socket_fd socket) {
@@ -66,10 +66,10 @@ static void registerSocket( socket_fd socket) {
 #ifdef DEBUG_NET
     std::cout << getHeader() << "registerSocket(" << socket << ")" << std::endl;
 #endif
-    sSockets.push_back(socket);
+    s_sockets.push_back(socket);
 #ifdef DEBUG_NET
-    std::cout << getHeader() << "sSockets = ";
-    for (const auto & socket : sSockets) {
+    std::cout << getHeader() << "s_sockets = ";
+    for (const auto & socket : s_sockets) {
         std::cout << socket << " ";
     }
     std::cout << std::endl;
@@ -83,23 +83,23 @@ static void clearSocket( socket_fd& sock ) {
 
 #ifdef DEBUG_NET
     std::cout << getHeader() << "clearSocket(" << sock << ") close socket" << std::endl;
-    std::cout << getHeader() << "sSockets = ";
-    for (const auto & socket : sSockets) {
+    std::cout << getHeader() << "s_sockets = ";
+    for (const auto & socket : s_sockets) {
         std::cout << socket << " ";
     }
     std::cout << std::endl;
 #endif
     closesocket( sock );
-    //    size_t size = sSockets.size();
-//    assert( std::find( sSockets.begin(), sSockets.end(), sock ) != sSockets.end() );
-    sSockets.remove( sock );
-    // assert(sSockets.size() == size - 1);
+    //    size_t size = s_sockets.size();
+//    assert( std::find( s_sockets.begin(), s_sockets.end(), sock ) != s_sockets.end() );
+    s_sockets.remove( sock );
+    // assert(s_sockets.size() == size - 1);
 
 #ifdef WIN32
-    if ( sSockets.empty() ) {
+    if ( s_sockets.empty() ) {
         std::cout << "Net::clearSocket(" << sock << ") WSACleanup()" << std::endl;
         WSACleanup();
-        sInited = false;
+        s_inited = false;
         // TODO: find a way to cleanup WSA when program ended
     }
 #endif
@@ -115,12 +115,12 @@ static void signalHandler( int signum ) {
     std::cout << getHeader() << "signalHandler() Interrupt signal (" << signum << ") received." << std::endl;
 #endif
 
-    assert(sSockets.empty());
+    assert(s_sockets.empty());
     std::cout << getHeader() << "signalHandler() Interrupt signal (" << signum << ") received." << std::endl;
 
     // cleanup and close up stuff here
     // terminate program
-    for ( const socket_fd& sock : sSockets ) {
+    for ( const socket_fd& sock : s_sockets ) {
         if ( sock != INVALID_SOCKET ) {
 #ifdef DEBUG_NET
             std::cout << getHeader() << "clearSocket(" << sock << ") close socket" << std::endl;
@@ -133,7 +133,7 @@ static void signalHandler( int signum ) {
 #endif
 
 static void init() {
-    if ( !sInited ) {
+    if ( !s_inited ) {
 #ifdef DEBUG_NET
         std::cout << getHeader() << "init()" << std::endl;
 #endif
@@ -149,7 +149,7 @@ static void init() {
         signal( SIGPIPE, SIG_IGN );
 
 #endif
-        sInited = true;
+        s_inited = true;
     }
 }
 

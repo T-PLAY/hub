@@ -6,40 +6,40 @@
 #include <cstring>
 
 namespace hub {
-Acquisition::Acquisition( long long backendTimestamp,
-                          long long backendTimeOfArrival,
+Acquisition::Acquisition( long long start,
+                          long long end,
                           const unsigned char* const data,
                           size_t size ) :
-    mBackendTimestamp( backendTimestamp ),
-    mBackendTimeOfArrival( backendTimeOfArrival ),
-    mData( new unsigned char[size] ),
-    mSize( size ) {
+    m_start( start ),
+    m_end( end ),
+    m_data( new unsigned char[size] ),
+    m_size( size ) {
 
     assert( data != nullptr );
-    memcpy( (unsigned char*)mData, data, size );
-    assert( size > 0 );
-    assert( backendTimestamp <= backendTimeOfArrival );
+    memcpy( (unsigned char*)m_data, data, m_size );
+    assert( m_size > 0 );
+    assert( m_start <= m_end );
 }
 
 Acquisition::~Acquisition() {
-    assert( mData != nullptr );
+    assert( m_data != nullptr );
 
-    if ( !mIsMoved ) { delete[] mData; }
+    if ( !m_isMoved ) { delete[] m_data; }
 }
 
 Acquisition::Acquisition( Acquisition&& acq ) noexcept :
-    mBackendTimestamp( acq.mBackendTimestamp ),
-    mBackendTimeOfArrival( acq.mBackendTimeOfArrival ),
-    mData( acq.mData ),
-    mSize( acq.mSize ) {
-    acq.mIsMoved = true;
+    m_start( acq.m_start ),
+    m_end( acq.m_end ),
+    m_data( acq.m_data ),
+    m_size( acq.m_size ) {
+    acq.m_isMoved = true;
 }
 
 bool Acquisition::operator==( const Acquisition& acq ) const {
-    if ( mBackendTimestamp == acq.mBackendTimestamp &&
-         mBackendTimeOfArrival == acq.mBackendTimeOfArrival && mSize == acq.mSize ) {
+    if ( m_start == acq.m_start &&
+         m_end == acq.m_end && m_size == acq.m_size ) {
 
-        return memcmp( mData, acq.mData, mSize ) == 0;
+        return memcmp( m_data, acq.m_data, m_size ) == 0;
     }
     return false;
 }
@@ -50,20 +50,20 @@ bool Acquisition::operator!=(const Acquisition &acq) const
 }
 
 Acquisition Acquisition::clone() const {
-    assert( mData != nullptr );
+    assert( m_data != nullptr );
 
-    return Acquisition( mBackendTimestamp, mBackendTimeOfArrival, mData, mSize );
+    return Acquisition( m_start, m_end, m_data, m_size );
 }
 
 std::ostream& operator<<( std::ostream& os, const Acquisition& acq ) {
-    os << "start:" << acq.mBackendTimestamp << ", end:" << acq.mBackendTimeOfArrival ;
+    os << "start:" << acq.m_start << ", end:" << acq.m_end ;
     os << ", data:[";
-    for ( auto i = 0; i < std::min( (int)acq.mSize, 10 ); ++i ) {
-        os << std::setw( 3 ) << (int)acq.mData[i] << " ";
+    for ( auto i = 0; i < std::min( (int)acq.m_size, 10 ); ++i ) {
+        os << std::setw( 3 ) << (int)acq.m_data[i] << " ";
     }
     os << "], ";
-    os << 1'000'000.0 / ( acq.mBackendTimeOfArrival - acq.mBackendTimestamp ) << " fps";
-    os << ", ptr = " << (uint64_t)acq.mData;
+    os << 1'000'000.0 / ( acq.m_end - acq.m_start ) << " fps";
+    os << ", ptr = " << (uint64_t)acq.m_data;
     return os;
 }
 

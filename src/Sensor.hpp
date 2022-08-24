@@ -6,6 +6,10 @@
 
 namespace hub {
 
+///
+/// \brief The Sensor class
+/// communicate the data through an input/output interface.
+///
 class SRC_API Sensor
 {
   public:
@@ -24,7 +28,7 @@ class SRC_API Sensor
     Sensor& operator=( const Sensor& sensor ) = delete;
 
   public:
-    const SensorSpec spec;
+    const SensorSpec m_spec;
 
   protected:
     //    std::unique_ptr<io::Interface> m_interface;
