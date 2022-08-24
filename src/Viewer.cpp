@@ -1,74 +1,6 @@
-#include "NetClient.hpp"
-
-#include <iostream>
-#include <typeinfo>
+#include "Viewer.hpp"
 
 namespace hub {
-namespace io {
-
-///////////////////////// STREAMER ///////////////////////////////
-
-Streamer::Streamer( const std::string& sensorName, net::ClientSocket&& clientSocket ) :
-    net::ClientSocket( std::move( clientSocket ) ) {
-
-    std::cout << "\t[Streamer] Streamer(string, ClientSocket&&)" << std::endl;
-
-    Interface::write( net::ClientSocket::Type::STREAMER );
-
-    Interface::write( sensorName );
-
-    net::ClientSocket::Message mess;
-    Interface::read( mess );
-    if ( mess == net::ClientSocket::Message::FOUND ) {
-        assert( false );
-        throw net::Socket::exception(
-            ( std::string( "sensor '" ) + sensorName + "' is already attached to server" )
-                .c_str() );
-    }
-    assert( mess == net::ClientSocket::Message::NOT_FOUND );
-}
-
-Streamer::Streamer( ClientSocket&& clientSocket ) :
-    net::ClientSocket( std::move( clientSocket ) ) {}
-
-///////////////////////// STREAM_VIEWER ///////////////////////////////
-
-StreamViewer::StreamViewer( const std::string& sensorName,
-                            const std::string& syncSensorName,
-                            net::ClientSocket&& clientSocket ) :
-    net::ClientSocket( std::move( clientSocket ) ) {
-
-    std::cout << "\t[StreamViewer] StreamViewer(string, string, ClientSocket&&)" << std::endl;
-
-    Interface::write( net::ClientSocket::Type::STREAM_VIEWER );
-
-    Interface::write( sensorName );
-    ClientSocket::Message mess;
-    Interface::read( mess );
-    if ( mess == ClientSocket::Message::NOT_FOUND ) {
-        DEBUG_MSG( getHeader( mFdSock ) << "[StreamViewer] exception sensor '" << sensorName
-                                        << "' is not attached to server" );
-        throw ClientSocket::exception(
-            ( std::string( "sensor '" ) + sensorName + "' is not attached to server" ).c_str() );
-    }
-    assert( mess == ClientSocket::Message::OK );
-
-    Interface::write( syncSensorName );
-    Interface::read( mess );
-    if ( mess == ClientSocket::Message::NOT_FOUND ) {
-        throw ClientSocket::exception(
-            ( std::string( "sync sensor '" ) + syncSensorName + "' is not attached to server" )
-                .c_str() );
-    }
-    assert( mess == ClientSocket::Message::OK );
-
-    std::cout << "\t[StreamViewer] StreamViewer(string, string, ClientSocket&&) end" << std::endl;
-}
-
-StreamViewer::StreamViewer( ClientSocket&& clientSocket ) :
-    net::ClientSocket( std::move( clientSocket ) ) {}
-
-///////////////////////// VIEWER ///////////////////////////////
 
 Viewer::Viewer( ClientSocket&& clientSocket,
                 std::function<void( const std::string& sensorName, const SensorSpec& sensorSpec )>
@@ -146,5 +78,4 @@ Viewer::~Viewer() {
     m_thread.join();
 }
 
-} // namespace io
 } // namespace hub

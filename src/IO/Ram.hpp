@@ -5,10 +5,10 @@
 namespace hub {
 namespace io {
 
-constexpr size_t g_buffLen = 1'000'000;
-
 class CyclicBuff
 {
+    static constexpr size_t g_buffLen = 1'000'000;
+
     class exception : public std::runtime_error
     {
       public:
@@ -41,7 +41,7 @@ class CyclicBuff
     bool m_inputSensorClose         = false;
 };
 
-class Ram : public Interface
+class Ram : public InputOutputInterface
 {
     class exception : public std::runtime_error
     {

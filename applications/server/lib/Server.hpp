@@ -5,15 +5,28 @@
 #include <map>
 #include <mutex>
 
-#include "ClientSocket.hpp"
-#include "InputSensor.hpp"
-#include "OutputSensor.hpp"
+#include <Acquisition.hpp>
+#include <InputSensor.hpp>
+#include <Net/ClientSocket.hpp>
+#include <OutputSensor.hpp>
+
 #include "ServerSocket.hpp"
 
-namespace hub {
-namespace net {
-
 class Server;
+
+// class Streamer : public io::OutputInterface, public net::ClientSocket
+//{
+//   public:
+//     Streamer( net::ClientSocket&& clientSocket ); // server side
+// };
+
+/////////////////////////// STREAM_VIEWER ///////////////////////////////
+
+// class StreamViewer : public io::InputInterface, public net::ClientSocket
+//{
+//   public:
+//     StreamViewer( net::ClientSocket&& clientSocket ); // server side
+// };
 
 class Client
 {
@@ -33,17 +46,17 @@ class StreamViewer;
 class Streamer : public Client
 {
   public:
-    Streamer( Server& server, int iClient, ClientSocket&& sock );
+    Streamer( Server& server, int iClient, hub::net::ClientSocket&& sock );
     ~Streamer();
 
     std::string headerMsg() override;
 
-    const InputSensor& getInputSensor() const;
+    const hub::InputSensor& getInputSensor() const;
 
     const std::string& getStreamName() const;
 
   private:
-    std::unique_ptr<InputSensor> m_inputSensor;
+    std::unique_ptr<hub::InputSensor> m_inputSensor;
     std::string m_streamName;
 
     std::map<std::string, std::list<StreamViewer*>> m_syncViewers;
@@ -55,14 +68,14 @@ class Streamer : public Client
 class Viewer : public Client
 {
   public:
-    Viewer( Server& server, int iClient, ClientSocket&& sock );
+    Viewer( Server& server, int iClient, hub::net::ClientSocket&& sock );
 
     std::string headerMsg() override;
 
     void notifyNewStreamer( const Streamer& streamer ) const;
 
   private:
-    ClientSocket m_socket;
+    hub::net::ClientSocket m_socket;
 
     friend class Server;
 };
@@ -70,15 +83,15 @@ class Viewer : public Client
 class StreamViewer : public Client
 {
   public:
-    StreamViewer( Server& server, int iClient, ClientSocket&& sock );
+    StreamViewer( Server& server, int iClient, hub::net::ClientSocket&& sock );
     ~StreamViewer();
 
     std::string headerMsg() override;
 
-    void update( const Acquisition& acq );
+    void update( const hub::Acquisition& acq );
 
   private:
-    std::unique_ptr<OutputSensor> m_outputSensor;
+    std::unique_ptr<hub::OutputSensor> m_outputSensor;
     std::string m_streamName;
 
     std::string m_syncStreamName;
@@ -99,7 +112,7 @@ class Server
     void asyncRun();
     void stop();
 
-    Client* initClient( net::ClientSocket&& sock, int iClient );
+    Client* initClient( hub::net::ClientSocket&& sock, int iClient );
     std::string getStatus();
 
     void addStreamer( Streamer* streamer );
@@ -110,7 +123,7 @@ class Server
     void delStreamViewer( StreamViewer* streamViewer );
     void delViewer( Viewer* viewer );
 
-    void newAcquisition( Streamer* streamer, Acquisition acq );
+    void newAcquisition( Streamer* streamer, hub::Acquisition acq );
 
   private:
     std::map<std::string, Streamer*> m_streamers;
@@ -120,7 +133,7 @@ class Server
     std::mutex m_mtx;
 
   private:
-    net::ServerSocket mServerSock;
+    hub::net::ServerSocket mServerSock;
     std::list<Client*> m_clients;
 
     std::thread m_thread;
@@ -130,9 +143,6 @@ class Server
     void setMaxClients( int maxThreads );
     const std::map<std::string, Streamer*>& getStreamers() const;
 };
-
-} // namespace net
-} // namespace hub
 
 // struct Streamer {
 //     hub::InputSensor mInputSensor;
@@ -146,7 +156,7 @@ class Server
 //};
 
 // struct Viewer {
-//     const ClientSocket* const mSock = nullptr;
+//     const hub::net::ClientSocket* const mSock = nullptr;
 
 //    void notifyNewStreamer( const Streamer& streamer ) const;
 //};

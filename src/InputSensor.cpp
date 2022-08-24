@@ -1,25 +1,8 @@
 #include "InputSensor.hpp"
 
-#include <algorithm>
-#include <cassert>
-#include <iomanip>
-#include <numeric>
-
 //#define DEBUG_STREAM
 
 namespace hub {
-
-// InputSensor::InputSensor( const std::string& sensorName, const std::string& syncSensorName ) :
-//     Sensor( {}, *std::move( new ClientSocket( sensorName, syncSensorName ) ) ) {
-
-//    spec.read( m_interface );
-//}
-
-// InputSensor::~InputSensor() {
-//#ifdef DEBUG_MSG
-//     std::cout << "[InputSensor] ~InputSensor()" << std::endl;
-//#endif
-// }
 
 Acquisition InputSensor::getAcquisition() const {
     long long start, end;
@@ -58,10 +41,5 @@ std::vector<Acquisition> InputSensor::getAllAcquisitions() {
 
     return acqs;
 }
-
-// std::ostream& operator<<( std::ostream& os, const InputSensor& inputSensor ) {
-//     os << "metadata:" << SensorSpec::metaData2string( inputSensor.spec.metaData );
-//     return os;
-// }
 
 } // namespace hub

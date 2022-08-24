@@ -29,14 +29,9 @@ class ClientSocket : public Socket, public virtual io::Interface
 
     SRC_API ClientSocket();
     SRC_API ClientSocket( const std::string& ipv4, int port );
-    //    SRC_API ClientSocket( const std::string& sensorName,
-    //                          const std::string& syncSensorName = "",
-    //                          const std::string ipv4            = SERVICE_IP,
-    //                          int port = SERVICE_PORT ); // client : stream viewer
     SRC_API ClientSocket( socket_fd fdSock ); // server side client (bind and listen)
 
-    ClientSocket( const ClientSocket& sock ) = delete;
-    //    ClientSocket( ClientSocket& sock )       = delete;
+    ClientSocket( const ClientSocket& sock )    = delete;
     SRC_API ClientSocket( ClientSocket&& sock ) = default;
 
     ClientSocket& operator=( const ClientSocket& sock ) = delete;
@@ -45,7 +40,6 @@ class ClientSocket : public Socket, public virtual io::Interface
     SRC_API ~ClientSocket();
 
   public:
-    //    void close() override;
     template <class T>
     void write( const T& t ) const;
 
@@ -59,12 +53,7 @@ class ClientSocket : public Socket, public virtual io::Interface
 
     void close() override;
 
-    //    void waitClose() const;
     SRC_API void clear();
-
-    //    void setupOutput( const std::string& sensorName ) const override;
-
-    //    SRC_API void setIsServer( bool isServer );
 
   private:
     void connectToServer();
@@ -72,8 +61,6 @@ class ClientSocket : public Socket, public virtual io::Interface
   private:
     std::string mIpv4;
     int mPort;
-
-    //    bool mIsServer = false;
 };
 
 template <class T>

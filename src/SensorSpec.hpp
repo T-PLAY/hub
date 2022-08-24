@@ -5,7 +5,6 @@
 #include <string>
 #include <vector>
 
-//#include "IO/Interface.hpp"
 #include "Macros.hpp"
 
 namespace hub {
@@ -63,28 +62,6 @@ class SensorSpec
         metaData( pMetaData ),
         acquisitonSize( computeAcquisitionSize( pFormat, pDims ) ) {};
 
-    //    SensorSpec(io::InputInterface & inputInterface) {
-
-    //    }
-
-    //        acquisitonSize( computeAcquisitionSize( format, dims ) ) {};
-
-    // SRC_API void write( io::Interface& iostream ) const {
-    //     iostream.write( sensorName );
-    //     iostream.write( format );
-    //     iostream.write( dims );
-    //     iostream.write( metaData );
-    // };
-
-    // SRC_API void read( const io::Interface& iostream ) {
-    //     iostream.read( sensorName );
-    //     iostream.read( format );
-    //     iostream.read( dims );
-    //     iostream.read( metaData );
-
-    //    acquisitonSize = computeAcquisitionSize( format, dims );
-    //};
-
   public:
     SRC_API static size_t computeAcquisitionSize( Format format, const Dims& dims );
 
@@ -98,14 +75,6 @@ class SensorSpec
     size_t acquisitonSize;
 
   public:
-    // friend class Stream;
-    //    SRC_API const std::string& getSensorName() const;
-    //    SRC_API Format getFormat() const;
-    //    SRC_API const Dims& getDims() const;
-    //    SRC_API const MetaData& getMetaData() const;
-
-    //    SRC_API size_t getAcquisitionSize() const;
-
     SRC_API static std::string dims2string( const Dims& dims );
     SRC_API static std::string format2string( const Format& format );
     SRC_API static std::string metaData2string( const MetaData& metaData, bool expand = false );

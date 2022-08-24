@@ -1,4 +1,4 @@
-#include "Net/Server.hpp"
+#include "Server.hpp"
 
 #include <cassert>
 #include <iomanip>
@@ -8,15 +8,28 @@
 #include <utility>
 #include <vector>
 
-#include "IO/NetClient.hpp"
-#include "Sensor.hpp"
-#include "Socket.hpp"
+#include <IO/Stream.hpp>
+#include <Net/Socket.hpp>
+#include <Sensor.hpp>
 
 constexpr int g_margin  = 30;
 constexpr int g_margin2 = 40;
 
-namespace hub {
-namespace net {
+class StreamerInterface : public hub::io::OutputInterface, public hub::net::ClientSocket
+{
+  public:
+    StreamerInterface( hub::net::ClientSocket&& clientSocket ) :
+        hub::net::ClientSocket( std::move( clientSocket ) ) {}
+};
+
+///////////////////////// STREAM_VIEWER ///////////////////////////////
+
+class StreamViewerInterface : public hub::io::InputInterface, public hub::net::ClientSocket
+{
+  public:
+    StreamViewerInterface( hub::net::ClientSocket&& clientSocket ) :
+        hub::net::ClientSocket( std::move( clientSocket ) ) {}
+};
 
 std::string Server::getStatus() {
     std::string streamViewersStr = "[";
@@ -106,7 +119,7 @@ void Server::delStreamer( Streamer* streamer ) {
 
     for ( const auto* viewer : m_viewers ) {
         try {
-            viewer->m_socket.write( ClientSocket::Message::DEL_STREAMER );
+            viewer->m_socket.write( hub::net::ClientSocket::Message::DEL_STREAMER );
             viewer->m_socket.write( streamerName );
         }
         catch ( std::exception& e ) {
@@ -183,13 +196,14 @@ void Server::delStreamViewer( StreamViewer* streamViewer ) {
 
 void Server::delViewer( Viewer* viewer ) {
     m_mtx.lock();
+    assert( std::find( m_viewers.begin(), m_viewers.end(), viewer ) != m_viewers.end() );
     m_viewers.remove( viewer );
     std::cout << std::left << std::setw( g_margin2 ) << headerMsg() << std::setw( g_margin )
               << "del viewer" << getStatus() << std::endl;
     m_mtx.unlock();
 }
 
-void Server::newAcquisition( Streamer* streamer, Acquisition acq ) {
+void Server::newAcquisition( Streamer* streamer, hub::Acquisition acq ) {
     m_mtx.lock();
 
     //    std::thread thread( [this, streamer, acq = std::move( acq )]() {
@@ -317,7 +331,7 @@ const std::map<std::string, Streamer*>& Server::getStreamers() const {
 void Viewer::notifyNewStreamer( const Streamer& streamer ) const {
     //    mSock->write( Socket::Message::NEW_STREAMER );
 
-    m_socket.write( ClientSocket::Message::NEW_STREAMER );
+    m_socket.write( hub::net::ClientSocket::Message::NEW_STREAMER );
     m_socket.write( streamer.getStreamName() );
     m_socket.write( streamer.getInputSensor().spec );
 
@@ -378,7 +392,7 @@ void Server::run() {
     int iClient = 0;
     while ( iClient < m_maxClients ) {
 
-        net::ClientSocket sock = mServerSock.waitNewClient();
+        hub::net::ClientSocket sock = mServerSock.waitNewClient();
 
         std::cout << headerMsg() << "new client" << std::endl;
 
@@ -403,18 +417,18 @@ void Server::stop() {
     //    m_thread.join();
 }
 
-Client* Server::initClient( ClientSocket&& sock, int iClient ) {
+Client* Server::initClient( hub::net::ClientSocket&& sock, int iClient ) {
 
-    net::ClientSocket::Type clientType;
+    hub::net::ClientSocket::Type clientType;
     //    sock.read( reinterpret_cast<unsigned char*>( &clientType ), sizeof( clientType ) );
     sock.read( clientType );
 
     switch ( clientType ) {
-    case net::ClientSocket::Type::STREAMER:
+    case hub::net::ClientSocket::Type::STREAMER:
         return new Streamer( *this, iClient, std::move( sock ) );
-    case net::ClientSocket::Type::VIEWER:
+    case hub::net::ClientSocket::Type::VIEWER:
         return new Viewer( *this, iClient, std::move( sock ) );
-    case net::ClientSocket::Type::STREAM_VIEWER:
+    case hub::net::ClientSocket::Type::STREAM_VIEWER:
         return new StreamViewer( *this, iClient, std::move( sock ) );
     default:
         assert( false );
@@ -427,24 +441,27 @@ void Server::setMaxClients( int maxThreads ) {
     m_maxClients = maxThreads;
 }
 
-Streamer::Streamer( Server& server, int iClient, ClientSocket&& sock ) : Client( server, iClient ) {
+Streamer::Streamer( Server& server, int iClient, hub::net::ClientSocket&& sock ) :
+    Client( server, iClient ) {
 
     //    std::string streamName;
     sock.read( m_streamName );
     //    m_streamName = streamName;
     const auto& streamers = m_server.getStreamers();
     if ( streamers.find( m_streamName ) == streamers.end() ) {
-        sock.write( ClientSocket::Message::NOT_FOUND );
+        sock.write( hub::net::ClientSocket::Message::NOT_FOUND );
     }
     else {
-        sock.write( ClientSocket::Message::FOUND );
+        sock.write( hub::net::ClientSocket::Message::FOUND );
         std::cout << headerMsg() << "stream sensor name : '" << m_streamName << "' already exist"
                   << std::endl;
         return;
     }
     assert( streamers.find( m_streamName ) == streamers.end() );
 
-    m_inputSensor = std::make_unique<InputSensor>( io::StreamViewer( std::move( sock ) ) );
+    //    m_inputSensor = std::make_unique<InputSensor>( io::StreamViewer( std::move( sock ) ) );
+    m_inputSensor =
+        std::make_unique<hub::InputSensor>( StreamViewerInterface( std::move( sock ) ) );
 
     assert( streamers.find( m_streamName ) == streamers.end() );
 
@@ -486,7 +503,7 @@ Streamer::Streamer( Server& server, int iClient, ClientSocket&& sock ) : Client(
                 m_server.newAcquisition( this, std::move( acq ) );
             }
         }
-        catch ( Socket::exception& e ) {
+        catch ( hub::net::Socket::exception& e ) {
             std::cout << headerMsg() << "in : catch inputSensor exception : " << e.what()
                       << std::endl;
         }
@@ -508,7 +525,7 @@ std::string Streamer::headerMsg() {
     return Client::headerMsg() + "[Streamer] ";
 }
 
-const InputSensor& Streamer::getInputSensor() const {
+const hub::InputSensor& Streamer::getInputSensor() const {
     return *m_inputSensor.get();
 }
 
@@ -516,7 +533,7 @@ const std::string& Streamer::getStreamName() const {
     return m_streamName;
 }
 
-Viewer::Viewer( Server& server, int iClient, ClientSocket&& sock ) :
+Viewer::Viewer( Server& server, int iClient, hub::net::ClientSocket&& sock ) :
     Client( server, iClient ), m_socket( std::move( sock ) ) {
 
     // each already connected streamers prevent existence for this new viewer
@@ -531,7 +548,7 @@ Viewer::Viewer( Server& server, int iClient, ClientSocket&& sock ) :
         try {
             // check client still alive
             while ( true ) {
-                m_socket.write( ClientSocket::Message::PING );
+                m_socket.write( hub::net::ClientSocket::Message::PING );
                 std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
                 std::cout << headerMsg() << "ping viewer" << std::endl;
             }
@@ -549,34 +566,36 @@ std::string Viewer::headerMsg() {
     return Client::headerMsg() + "[Viewer] ";
 }
 
-StreamViewer::StreamViewer( Server& server, int iClient, ClientSocket&& sock ) :
+StreamViewer::StreamViewer( Server& server, int iClient, hub::net::ClientSocket&& sock ) :
     Client( server, iClient ) {
 
     const auto& streamers = m_server.getStreamers();
 
     sock.read( m_streamName );
     if ( streamers.find( m_streamName ) == streamers.end() ) {
-        sock.write( ClientSocket::Message::NOT_FOUND );
+        sock.write( hub::net::ClientSocket::Message::NOT_FOUND );
         std::cout << headerMsg() << "unknown sensor name : '" << m_streamName << "'" << std::endl;
         return;
     }
-    else { sock.write( ClientSocket::Message::OK ); }
+    else { sock.write( hub::net::ClientSocket::Message::OK ); }
     assert( streamers.find( m_streamName ) != streamers.end() );
 
     sock.read( m_syncStreamName );
     if ( m_syncStreamName != "" && streamers.find( m_syncStreamName ) == streamers.end() ) {
-        sock.write( ClientSocket::Message::NOT_FOUND );
+        sock.write( hub::net::ClientSocket::Message::NOT_FOUND );
         std::cout << headerMsg() << "unknown sync sensor name : '" << m_syncStreamName << "'"
                   << std::endl;
         return;
     }
-    else { sock.write( ClientSocket::Message::OK ); }
+    else { sock.write( hub::net::ClientSocket::Message::OK ); }
     assert( m_syncStreamName == "" || streamers.find( m_syncStreamName ) != streamers.end() );
 
-    Streamer* streamer    = streamers.at( m_streamName );
-    SensorSpec sensorSpec = streamer->getInputSensor().spec;
-    m_outputSensor        = std::make_unique<OutputSensor>( std::move( sensorSpec ),
-                                                     io::Streamer( std::move( sock ) ) );
+    Streamer* streamer         = streamers.at( m_streamName );
+    hub::SensorSpec sensorSpec = streamer->getInputSensor().spec;
+    //    m_outputSensor        = std::make_unique<OutputSensor>( std::move( sensorSpec ),
+    //                                                     io::Streamer( std::move( sock ) ) );
+    m_outputSensor = std::make_unique<hub::OutputSensor>( std::move( sensorSpec ),
+                                                          StreamerInterface( std::move( sock ) ) );
 
     //    server.m_streamViewers.push_back( this );
     //    server.m_streamViewers[m_streamName].push_back( this );
@@ -631,7 +650,7 @@ std::string StreamViewer::headerMsg() {
     return Client::headerMsg() + "[StreamViewer] ";
 }
 
-void StreamViewer::update( const Acquisition& acq ) {
+void StreamViewer::update( const hub::Acquisition& acq ) {
     //    std::cout << headerMsg() << "update(Acquisition) receive acq : " << acq << std::endl;
     //    if ( m_syncStreamName != "" ) { m_acquisitions.emplace_front( acq.clone() ); }
     //    else {
@@ -654,9 +673,6 @@ void StreamViewer::update( const Acquisition& acq ) {
     }
     //    }
 }
-
-} // namespace net
-} // namespace hub
 
 ///////////////////////////////////////////////////////////////////////////
 //        std::thread thread( [this, iThread, sock = std::move( sock )]() mutable {

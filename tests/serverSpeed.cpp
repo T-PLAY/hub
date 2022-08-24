@@ -1,11 +1,12 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include <IO/NetClient.hpp>
+#include <IO/Stream.hpp>
 #include <IO/File.hpp>
 #include <InputSensor.hpp>
 #include <Net/ClientSocket.hpp>
-#include <Net/Server.hpp>
 #include <OutputSensor.hpp>
+
+#include <Server.hpp>
 
 #include <filesystem>
 
@@ -28,7 +29,7 @@ TEST_CASE( "Server test : speed test" ) {
     }
 
     std::cout << "[Test] ############################### server start" << std::endl;
-    hub::net::Server server( port );
+    Server server( port );
     server.setMaxClients( 2 );
     server.asyncRun();
     std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
@@ -38,11 +39,11 @@ TEST_CASE( "Server test : speed test" ) {
         std::cout << "[Test] ############################### outputStream start" << std::endl;
         hub::OutputSensor outputSensor(
             { "sensorName", hub::SensorSpec::Format::BGR8, { width, height } },
-            hub::io::Streamer( "stream", hub::net::ClientSocket( ipv4, port ) ) );
+            hub::io::OutputStream( "stream", hub::net::ClientSocket( ipv4, port ) ) );
 
         std::cout << "[Test] ############################### inputStream start" << std::endl;
         hub::InputSensor inputSensor(
-            hub::io::StreamViewer( "stream", "", hub::net::ClientSocket( ipv4, port ) ) );
+            hub::io::InputStream( "stream", "", hub::net::ClientSocket( ipv4, port ) ) );
 
         const auto& inputSensorSpec = inputSensor.spec;
         CHECK( inputSensorSpec.acquisitonSize == dataSize );
