@@ -45,13 +45,13 @@ TEST_CASE( "Server test : viewer" ) {
                 hub::InputSensor inputSensor(
                     hub::io::InputStream( sensorName, "", hub::net::ClientSocket( ipv4, port ) ) );
 
-                const auto& inputSensorSpec = inputSensor.spec;
-                CHECK( inputSensorSpec.acquisitonSize == dataSize );
-                CHECK( inputSensorSpec.sensorName == "sensorName" );
-                CHECK( inputSensorSpec.dims.size() == 2 );
-                CHECK( inputSensorSpec.dims.at( 0 ) == width );
-                CHECK( inputSensorSpec.dims.at( 1 ) == height );
-                CHECK( inputSensorSpec.format == hub::SensorSpec::Format::BGR8 );
+                const auto& inputSensorSpec = inputSensor.m_spec;
+                CHECK( inputSensorSpec.m_acquisitionSize == dataSize );
+                CHECK( inputSensorSpec.m_sensorName == "sensorName" );
+                CHECK( inputSensorSpec.m_dims.size() == 2 );
+                CHECK( inputSensorSpec.m_dims.at( 0 ) == width );
+                CHECK( inputSensorSpec.m_dims.at( 1 ) == height );
+                CHECK( inputSensorSpec.m_format == hub::SensorSpec::Format::BGR8 );
             }
             std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
             std::cout << "[Test] ############################### onNewStreamer end" << std::endl;

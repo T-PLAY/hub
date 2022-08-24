@@ -23,14 +23,14 @@ namespace hub {
 //}
 
 void OutputSensor::operator<<( const Acquisition& acquisition ) const {
-    assert( acquisition.mData != nullptr );
+    assert( acquisition.m_data != nullptr );
     // assert( acquisition.mSize == mAcquisitionSize );
 
-    assert( acquisition.mBackendTimestamp <= acquisition.mBackendTimeOfArrival );
+    assert( acquisition.m_start <= acquisition.m_end );
 
-    m_interface.write( acquisition.mBackendTimestamp );
-    m_interface.write( acquisition.mBackendTimeOfArrival );
-    m_interface.write( acquisition.mData, spec.acquisitonSize );
+    m_interface.write( acquisition.m_start );
+    m_interface.write( acquisition.m_end );
+    m_interface.write( acquisition.m_data, m_spec.m_acquisitionSize );
 }
 
 } // namespace hub

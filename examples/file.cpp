@@ -12,6 +12,9 @@ int main() {
     // not execute this, this is an example of how to use hub library
 
     {
+//        hub::net::ClientSocket clientSocket = hub::net::ClientSocket();
+//        hub::Sensor sensor = hub::Sensor(hub::SensorSpec(), clientSocket);
+
         hub::SensorSpec::MetaData metaData;
         {
             hub::OutputSensor outputSensor2(

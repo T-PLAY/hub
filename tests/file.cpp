@@ -35,12 +35,12 @@ TEST_CASE( "File test" ) {
         hub::OutputSensor outputSensor( { "sensorName", hub::SensorSpec::Format::BGR8, { 1 } },
                                         hub::io::File( std::fstream( filename, std::ios::out ) ) );
 
-        auto& sensorSpec = outputSensor.spec;
-        CHECK( sensorSpec.acquisitonSize == 3 );
-        CHECK( sensorSpec.sensorName == "sensorName" );
-        CHECK( sensorSpec.dims.size() == 1 );
-        CHECK( sensorSpec.dims.at( 0 ) == 1 );
-        CHECK( sensorSpec.format == hub::SensorSpec::Format::BGR8 );
+        auto& sensorSpec = outputSensor.m_spec;
+        CHECK( sensorSpec.m_acquisitionSize == 3 );
+        CHECK( sensorSpec.m_sensorName == "sensorName" );
+        CHECK( sensorSpec.m_dims.size() == 1 );
+        CHECK( sensorSpec.m_dims.at( 0 ) == 1 );
+        CHECK( sensorSpec.m_format == hub::SensorSpec::Format::BGR8 );
 
         for ( const auto& acq : acqs ) {
             outputSensor << acq;
@@ -53,12 +53,12 @@ TEST_CASE( "File test" ) {
     {
         hub::InputSensor inputSensor( hub::io::File( std::fstream( filename, std::ios::in ) ) );
 
-        const auto& sensorSpec = inputSensor.spec;
-        CHECK( sensorSpec.acquisitonSize == 3 );
-        CHECK( sensorSpec.sensorName == "sensorName" );
-        CHECK( sensorSpec.dims.size() == 1 );
-        CHECK( sensorSpec.dims.at( 0 ) == 1 );
-        CHECK( sensorSpec.format == hub::SensorSpec::Format::BGR8 );
+        const auto& sensorSpec = inputSensor.m_spec;
+        CHECK( sensorSpec.m_acquisitionSize == 3 );
+        CHECK( sensorSpec.m_sensorName == "sensorName" );
+        CHECK( sensorSpec.m_dims.size() == 1 );
+        CHECK( sensorSpec.m_dims.at( 0 ) == 1 );
+        CHECK( sensorSpec.m_format == hub::SensorSpec::Format::BGR8 );
         const auto& inputAcqs = inputSensor.getAllAcquisitions();
         for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
             CHECK( inputAcqs[iAcq] == acqs[iAcq] );

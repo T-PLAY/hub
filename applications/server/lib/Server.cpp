@@ -276,7 +276,7 @@ void Server::newAcquisition( Streamer* streamer, hub::Acquisition acq ) {
         {
             acqs.pop_back();
 
-            auto minDist = std::abs( acq.mBackendTimestamp - bestMatchAcq->mBackendTimestamp );
+            auto minDist = std::abs( acq.m_start - bestMatchAcq->m_start );
 
             bool foundBestMatch = false;
             while ( !foundBestMatch ) {
@@ -284,7 +284,7 @@ void Server::newAcquisition( Streamer* streamer, hub::Acquisition acq ) {
                 auto& acq2 = acqs.back();
                 //                std::cout << headerMsg() << "[Match] pop acq : " << acq2 <<
                 //                std::endl;
-                auto dist = std::abs( acq.mBackendTimestamp - acq2.mBackendTimestamp );
+                auto dist = std::abs( acq.m_start - acq2.m_start );
                 if ( dist < minDist ) {
                     minDist = dist;
                     bestMatchAcq.release();
@@ -333,7 +333,7 @@ void Viewer::notifyNewStreamer( const Streamer& streamer ) const {
 
     m_socket.write( hub::net::ClientSocket::Message::NEW_STREAMER );
     m_socket.write( streamer.getStreamName() );
-    m_socket.write( streamer.getInputSensor().spec );
+    m_socket.write( streamer.getInputSensor().m_spec );
 
     /*mSock->write(streamer.mhub::InputSensor.getSensorName());
     mSock->write(std::string(Stream::format2string[(int)streamer.mhub::InputSensor.getFormat()]));
@@ -469,15 +469,15 @@ Streamer::Streamer( Server& server, int iClient, hub::net::ClientSocket&& sock )
 
     std::cout << headerMsg() << "stream name = '" << m_streamName << "'" << std::endl;
 
-    const auto& sensorSpec       = m_inputSensor->spec;
-    const size_t acquisitionSize = sensorSpec.acquisitonSize;
-    std::cout << headerMsg() << "sensor name:'" << sensorSpec.sensorName << "'" << std::endl;
+    const auto& sensorSpec       = m_inputSensor->m_spec;
+    const size_t acquisitionSize = sensorSpec.m_acquisitionSize;
+    std::cout << headerMsg() << "sensor name:'" << sensorSpec.m_sensorName << "'" << std::endl;
     std::cout << headerMsg() << "acquisitionSize:" << acquisitionSize << std::endl;
-    std::cout << headerMsg() << "dims:" << hub::SensorSpec::dims2string( sensorSpec.dims )
+    std::cout << headerMsg() << "dims:" << hub::SensorSpec::dims2string( sensorSpec.m_dims )
               << std::endl;
-    std::cout << headerMsg() << "format:" << sensorSpec.format << std::endl;
+    std::cout << headerMsg() << "format:" << sensorSpec.m_format << std::endl;
 
-    const auto& metadata = sensorSpec.metaData;
+    const auto& metadata = sensorSpec.m_metaData;
     for ( const auto& pair : metadata ) {
         const auto& name = pair.first;
         const auto& val  = pair.second;
@@ -507,7 +507,7 @@ Streamer::Streamer( Server& server, int iClient, hub::net::ClientSocket&& sock )
             std::cout << headerMsg() << "in : catch inputSensor exception : " << e.what()
                       << std::endl;
         }
-        std::cout << headerMsg() << "end (" << m_inputSensor->spec.sensorName << ")" << std::endl;
+        std::cout << headerMsg() << "end (" << m_inputSensor->m_spec.m_sensorName << ")" << std::endl;
         //        m_server.m_streamers.erase( m_streamName );
 
         std::cout << headerMsg() << "thread end" << std::endl;
@@ -591,7 +591,7 @@ StreamViewer::StreamViewer( Server& server, int iClient, hub::net::ClientSocket&
     assert( m_syncStreamName == "" || streamers.find( m_syncStreamName ) != streamers.end() );
 
     Streamer* streamer         = streamers.at( m_streamName );
-    hub::SensorSpec sensorSpec = streamer->getInputSensor().spec;
+    hub::SensorSpec sensorSpec = streamer->getInputSensor().m_spec;
     //    m_outputSensor        = std::make_unique<OutputSensor>( std::move( sensorSpec ),
     //                                                     io::Streamer( std::move( sock ) ) );
     m_outputSensor = std::make_unique<hub::OutputSensor>( std::move( sensorSpec ),

@@ -7,37 +7,37 @@ namespace hub {
 namespace io {
 
 File::File( std::fstream&& file ) :
-    //    mFile( *std::move( new std::fstream( std::move( file ) ) ) ) {
-    mFile( new std::fstream( std::move( file ) ) ) {
+    //    m_file( *std::move( new std::fstream( std::move( file ) ) ) ) {
+    m_file( new std::fstream( std::move( file ) ) ) {
 
-    assert( mFile->is_open() );
+    assert( m_file->is_open() );
 }
 
 File::~File() {
     std::cout << "[File:" << this << "] ~File()" << std::endl;
-    if ( mFile != nullptr ) {
+    if ( m_file != nullptr ) {
         std::cout << "[File:" << this << "] ~File() close file" << std::endl;
-        //        mFile->close();
-        assert( !mFile->is_open() );
+        //        m_file->close();
+        assert( !m_file->is_open() );
     }
-    //    assert(! mFile.is_open());
+    //    assert(! m_file.is_open());
 }
 
 void File::close() {
-    mFile->close();
+    m_file->close();
 }
 
 void File::write( const unsigned char* data, size_t len ) const {
-    mFile->write( (const char*)data, len );
+    m_file->write( (const char*)data, len );
 }
 
 void File::read( unsigned char* data, size_t len ) const {
     size_t downloadSize = 0;
     do {
 
-        auto before = mFile->tellg();
-        mFile->read( reinterpret_cast<char*>( data + downloadSize ), len - downloadSize );
-        auto after    = mFile->tellg();
+        auto before = m_file->tellg();
+        m_file->read( reinterpret_cast<char*>( data + downloadSize ), len - downloadSize );
+        auto after    = m_file->tellg();
         auto byteRead = after - before;
         // std::cout << "[File] byteRead = " << byteRead << std::endl;
         if ( byteRead <= 0 ) { throw File::exception( "End of file" ); }

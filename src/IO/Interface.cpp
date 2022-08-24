@@ -28,10 +28,10 @@ void Interface::write( const SensorSpec& sensorSpec ) const {
     std::cout << "[Interface] write SensorSpec : start" << std::endl;
 #endif
 
-    write( sensorSpec.sensorName );
-    write( sensorSpec.format );
-    write( sensorSpec.dims );
-    write( sensorSpec.metaData );
+    write( sensorSpec.m_sensorName );
+    write( sensorSpec.m_format );
+    write( sensorSpec.m_dims );
+    write( sensorSpec.m_metaData );
 }
 
 void Interface::write( const char* str ) const {
@@ -175,13 +175,13 @@ void Interface::read( std::string& str ) const {
 }
 
 void Interface::read( SensorSpec& sensorSpec ) const {
-    read( sensorSpec.sensorName );
-    read( sensorSpec.format );
-    read( sensorSpec.dims );
-    read( sensorSpec.metaData );
+    read( sensorSpec.m_sensorName );
+    read( sensorSpec.m_format );
+    read( sensorSpec.m_dims );
+    read( sensorSpec.m_metaData );
 
-    sensorSpec.acquisitonSize =
-        SensorSpec::computeAcquisitionSize( sensorSpec.format, sensorSpec.dims );
+    sensorSpec.m_acquisitionSize =
+        SensorSpec::computeAcquisitionSize( sensorSpec.m_format, sensorSpec.m_dims );
 }
 
 SensorSpec Interface::getSensorSpec() const {

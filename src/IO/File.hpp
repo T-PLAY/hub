@@ -31,9 +31,7 @@ class SRC_API File : public InputOutputInterface
 
   protected:
   private:
-//    std::fstream& mFile;
-//    std::fstream * mFile = nullptr;
-    std::unique_ptr<std::fstream> mFile;
+    std::unique_ptr<std::fstream> m_file;
 };
 
 } // namespace io

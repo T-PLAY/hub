@@ -9,6 +9,12 @@
 
 namespace hub {
 
+///
+/// \brief The SensorSpec class
+/// defines the internal properties of a sensor as the format of the acquired data which
+/// allows to define how to visualize the data. Also the dimension of the data as well as the
+/// metadata.
+///
 class SensorSpec
 {
   public:
@@ -52,27 +58,27 @@ class SensorSpec
     };
     // clang-format on
 
-    SRC_API SensorSpec( const std::string& pSensorName = "",
-                        Format pFormat                 = Format::NONE,
-                        const Dims& pDims              = {},
-                        const MetaData& pMetaData      = {} ) :
-        sensorName( pSensorName ),
-        format( pFormat ),
-        dims( pDims ),
-        metaData( pMetaData ),
-        acquisitonSize( computeAcquisitionSize( pFormat, pDims ) ) {};
+    SRC_API SensorSpec( const std::string& sensorName = "",
+                        Format format                 = Format::NONE,
+                        const Dims& dims              = {},
+                        const MetaData& metaData      = {} ) :
+        m_sensorName( sensorName ),
+        m_format( format ),
+        m_dims( dims ),
+        m_metaData( metaData ),
+        m_acquisitionSize( computeAcquisitionSize( format, dims ) ) {};
 
   public:
     SRC_API static size_t computeAcquisitionSize( Format format, const Dims& dims );
 
   private:
   public:
-    std::string sensorName;
-    Format format;
-    Dims dims;
-    MetaData metaData;
+    std::string m_sensorName;
+    Format m_format;
+    Dims m_dims;
+    MetaData m_metaData;
 
-    size_t acquisitonSize;
+    size_t m_acquisitionSize;
 
   public:
     SRC_API static std::string dims2string( const Dims& dims );
