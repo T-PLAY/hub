@@ -1,88 +1,14 @@
-#include "Client.hpp"
+#include "NetClient.hpp"
 
 #include <iostream>
 #include <typeinfo>
 
-//#include <any>
-//#include <cassert>
-//#include <iostream>
-//#include <list>
-//#include <map>
-//#include <string>
-//#include <typeinfo>
-//#include <vector>
-
-//#include "Macros.hpp"
-//#include "SensorSpec.hpp"
-
 namespace hub {
 namespace io {
 
-// static constexpr std::string_view type2string[static_cast<int>( Client::Type::COUNT )] = {
-//     "NONE",
-//     "STREAMER",
-//     "VIEWER",
-//     "STREAM_VIEWER",
-// };
-// std::ostream& operator<<( std::ostream& os, const Client::Type& type ) {
-//     os << type2string[(int)type];
-//     return os;
-// }
-
-// static constexpr std::string_view message2string[static_cast<int>( Client::Message::COUNT )] = {
-//     "NONE",
-//     "PING",
-//     "SYNC",
-//     "DATA",
-//     "OK",
-//     "CLOSE",
-//     "DEL_STREAMER",
-//     "NEW_STREAMER",
-//     "NOT_FOUND",
-//     "FOUND",
-// };
-// std::ostream& operator<<( std::ostream& os, const Client::Message& msg ) {
-//     os << message2string[(int)msg];
-//     return os;
-// }
-
-// Client::Client( net::ClientSocket&& clientSocket ) :
-//     m_socket( new net::ClientSocket( std::move( clientSocket ) ) ) {};
-
-//// Client* Client::init( net::ClientSocket&& sock ) {
-
-////    Type clientType;
-////    sock.read( reinterpret_cast<unsigned char*>( &clientType ), sizeof( Type ) );
-
-////    switch ( clientType ) {
-////    case Type::STREAMER:
-////        return new Streamer( std::move( sock ) );
-////    case Type::VIEWER:
-////        return nullptr;
-////        //        return new Viewer( std::move( sock ) );
-////    case Type::STREAM_VIEWER:
-////        return new StreamViewer( std::move( sock ) );
-////    default:
-////        assert( false );
-////        return nullptr;
-////    }
-////    //    //        //    m_socket( new net::ClientSocket( clientSocket  ) ) {}
-////}
-
-// void Client::close() {}
-
-// void Client::write( const unsigned char* data, size_t len ) const {
-//     m_socket->write( data, len );
-// }
-
-// void Client::read( unsigned char* data, size_t len ) const {
-//     m_socket->read( data, len );
-// }
-
-////////////////////////////////////////////////////////
+///////////////////////// STREAMER ///////////////////////////////
 
 Streamer::Streamer( const std::string& sensorName, net::ClientSocket&& clientSocket ) :
-    //    Client( std::move( clientSocket ) ) {
     net::ClientSocket( std::move( clientSocket ) ) {
 
     std::cout << "\t[Streamer] Streamer(string, ClientSocket&&)" << std::endl;
@@ -100,24 +26,17 @@ Streamer::Streamer( const std::string& sensorName, net::ClientSocket&& clientSoc
                 .c_str() );
     }
     assert( mess == net::ClientSocket::Message::NOT_FOUND );
-
-    //    }
 }
 
 Streamer::Streamer( ClientSocket&& clientSocket ) :
     net::ClientSocket( std::move( clientSocket ) ) {}
 
-// void Streamer::startAsyncRoutine( Server* server, int iThread ) {
-//     std::cout << "[Streamer] startAsyncRoutine(Server*, int)" << std::endl;
-// }
-
-////////////////////////////////////////////////////////
+///////////////////////// STREAM_VIEWER ///////////////////////////////
 
 StreamViewer::StreamViewer( const std::string& sensorName,
                             const std::string& syncSensorName,
                             net::ClientSocket&& clientSocket ) :
     net::ClientSocket( std::move( clientSocket ) ) {
-    //    Client( std::move( clientSocket ) ) {
 
     std::cout << "\t[StreamViewer] StreamViewer(string, string, ClientSocket&&)" << std::endl;
 
@@ -144,11 +63,12 @@ StreamViewer::StreamViewer( const std::string& sensorName,
     assert( mess == ClientSocket::Message::OK );
 
     std::cout << "\t[StreamViewer] StreamViewer(string, string, ClientSocket&&) end" << std::endl;
-    //    DEBUG_MSG( getHeader( mFdSock ) << "[ClientSocket] connected to server" );
 }
 
 StreamViewer::StreamViewer( ClientSocket&& clientSocket ) :
     net::ClientSocket( std::move( clientSocket ) ) {}
+
+///////////////////////// VIEWER ///////////////////////////////
 
 Viewer::Viewer( ClientSocket&& clientSocket,
                 std::function<void( const std::string& sensorName, const SensorSpec& sensorSpec )>
@@ -162,8 +82,6 @@ Viewer::Viewer( ClientSocket&& clientSocket,
     Interface::write( net::ClientSocket::Type::VIEWER );
 
     m_thread = std::thread( [this]() {
-        //    std::thread thread = std::thread( [this]() {
-        //        while ( !this->isInterruptionRequested() ) {
         try {
             while ( !m_stopThread ) {
 
@@ -186,12 +104,15 @@ Viewer::Viewer( ClientSocket&& clientSocket,
                     SensorSpec sensorSpec;
                     Interface::read( sensorSpec );
 
-//                    std::cout << "[Viewer] new streamer " << sensorName
-//                              << ", format:" << sensorSpec.format
-//                              << ", dims:" << SensorSpec::dims2string( sensorSpec.dims )
-//                              << ", acquisitionSize:" << sensorSpec.acquisitonSize << std::endl;
-//                    std::cout << "[Viewer] metadata : "
-//                              << SensorSpec::metaData2string( sensorSpec.metaData, true );
+                    //                    std::cout << "[Viewer] new streamer " << sensorName
+                    //                              << ", format:" << sensorSpec.format
+                    //                              << ", dims:" << SensorSpec::dims2string(
+                    //                              sensorSpec.dims )
+                    //                              << ", acquisitionSize:" <<
+                    //                              sensorSpec.acquisitonSize << std::endl;
+                    //                    std::cout << "[Viewer] metadata : "
+                    //                              << SensorSpec::metaData2string(
+                    //                              sensorSpec.metaData, true );
 
                     m_onNewStreamer( sensorName, sensorSpec );
 
@@ -224,20 +145,6 @@ Viewer::~Viewer() {
     assert( m_thread.joinable() );
     m_thread.join();
 }
-
-// void Viewer::startAsyncRoutine( Server* server, int iThread ) {}
-
-////////////////////////////////////////////////////////
-
-// Viewer::Viewer( net::ClientSocket&& clientSocket ) :
-//     net::ClientSocket( std::move( clientSocket ) ) {
-//     //    Client( std::move( clientSocket ) ) {
-
-//    Interface::write( net::ClientSocket::Type::VIEWER );
-
-//}
-
-// void StreamViewer::startAsyncRoutine( Server* server, int iThread ) {}
 
 } // namespace io
 } // namespace hub
