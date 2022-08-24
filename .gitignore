@@ -8,3 +8,5 @@ hub-install/
 data/records/*
 data/snapshots/*
 cpp.hint
+src/html/
+src/latex/

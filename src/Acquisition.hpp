@@ -13,6 +13,15 @@ namespace hub {
 class SRC_API Acquisition
 {
   public:
+    ///
+    /// \brief Acquisition
+    /// \param start
+    /// timestamp in microseconds
+    /// \param end
+    /// timestamp in microseconds
+    /// \param data
+    /// \param size
+    ///
     Acquisition( long long start,
                  long long end,
                  const unsigned char* const data,

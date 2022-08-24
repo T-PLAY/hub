@@ -8,6 +8,11 @@
 namespace hub {
 namespace io {
 
+///
+/// \brief The File class
+/// is an encloser of a std fstream allowing to record or play acquisition streams.
+/// This cass can be use to create InputSensor (player) or Outputsensor (recorder).
+///
 class SRC_API File : public InputOutputInterface
 {
     class exception : public std::runtime_error
@@ -18,6 +23,12 @@ class SRC_API File : public InputOutputInterface
     };
 
   public:
+    ///
+    /// \brief File
+    /// from a std::fstream, if you use an InputSensor uses the std::ios::in constructor option,
+    /// if you use an OutputSensor the std::ios::out option when creating a std::fstream.
+    /// \param file
+    ///
     File( std::fstream&& file );
     File( const File& fileIO ) = delete;
     File( File&& fileIO )      = default;

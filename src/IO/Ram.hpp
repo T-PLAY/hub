@@ -5,6 +5,10 @@
 namespace hub {
 namespace io {
 
+///
+/// \brief The CyclicBuff class
+/// represents a memory buffer in RAM.
+///
 class CyclicBuff
 {
     static constexpr size_t g_buffLen = 1'000'000;
@@ -41,6 +45,10 @@ class CyclicBuff
     bool m_inputSensorClose         = false;
 };
 
+///
+/// \brief The Ram class
+/// allows user to transfer sensor data through the memory (pipe tube).
+///
 class Ram : public InputOutputInterface
 {
     class exception : public std::runtime_error

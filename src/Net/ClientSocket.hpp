@@ -6,6 +6,10 @@
 namespace hub {
 namespace net {
 
+///
+/// \brief The ClientSocket class
+/// is an connected socket to the server
+///
 class ClientSocket : public Socket, public virtual io::Interface
 {
   public:

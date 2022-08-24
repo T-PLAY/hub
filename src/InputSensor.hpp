@@ -13,6 +13,10 @@ namespace hub {
 class SRC_API InputSensor : public Sensor
 {
   public:
+    ///
+    /// \brief InputSensor
+    /// \param inputInterface
+    ///
     template <class InputInterface,
               typename = typename std::enable_if<
                   std::is_base_of<io::InputInterface, InputInterface>::value>::type>
@@ -34,6 +38,11 @@ class SRC_API InputSensor : public Sensor
     InputSensor operator=( const InputSensor& inputSensor ) = delete;
 
   public:
+    ///
+    /// \brief getAcquisition
+    /// \return
+    /// the oldest acqusition
+    ///
     Acquisition getAcquisition() const;
     std::vector<Acquisition> getAllAcquisitions();
 
