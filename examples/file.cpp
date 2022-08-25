@@ -1,7 +1,7 @@
 
 #include <IO/File.hpp>
-#include <IO/Stream.hpp>
 #include <IO/Ram.hpp>
+#include <IO/Stream.hpp>
 #include <InputSensor.hpp>
 #include <OutputSensor.hpp>
 
@@ -12,8 +12,8 @@ int main() {
     // not execute this, this is an example of how to use hub library
 
     {
-//        hub::net::ClientSocket clientSocket = hub::net::ClientSocket();
-//        hub::Sensor sensor = hub::Sensor(hub::SensorSpec(), clientSocket);
+        //        hub::net::ClientSocket clientSocket = hub::net::ClientSocket();
+        //        hub::Sensor sensor = hub::Sensor(hub::SensorSpec(), clientSocket);
 
         hub::SensorSpec::MetaData metaData;
         {
@@ -36,7 +36,7 @@ int main() {
         }
 
         {
-            hub::SensorSpec sensorSpec(
+            const hub::SensorSpec sensorSpec(
                 "sensorName", hub::SensorSpec::Format::BGR8, { 1 }, metaData );
             hub::io::CyclicBuff cyclicBuff;
             hub::OutputSensor outputSensor( sensorSpec, hub::io::Ram( cyclicBuff ) );
@@ -47,6 +47,7 @@ int main() {
         {
             hub::SensorSpec sensorSpec(
                 "sensorName", hub::SensorSpec::Format::BGR8, { 1 }, metaData );
+            sensorSpec.m_sensorName = "hello";
             hub::OutputSensor outputSensor(
                 sensorSpec, hub::io::OutputStream( "streamName", hub::net::ClientSocket() ) );
             //            hub::OutputSensor outputSensor2(
@@ -54,6 +55,7 @@ int main() {
             //                hub::net::ClientSocket() ) );
             hub::InputSensor inputSensor(
                 hub::io::InputStream( "streamName", "", hub::net::ClientSocket() ) );
+            //            inputSensor.m_spec.m_sensorName = "auou";
         }
     }
 
@@ -70,8 +72,6 @@ int main() {
             hub::io::File( std::fstream( "file.txt", std::ios::out ) ) );
         outputSensor << acq;
     }
-
-
 
     //    hub::OutputSensor outputSensor2(hub::SensorSpec("hello2"), std::fstream(filename,
     //    std::ios::out));

@@ -1,7 +1,5 @@
 cmake_minimum_required (VERSION 3.8)
 
-
-#project ("HubV2")
 project(${SRC_TARGET})
 
 set(WIN32_REQUIRED_LIBS)
@@ -24,12 +22,6 @@ else()
         ${headers}
     )
 endif()
-#add_library(${PROJECT_NAME} SHARED
-#add_library(${PROJECT_NAME} SHARED
-#    ${sources}
-#    ${headers}
-#    )
-
 
 target_include_directories(${PROJECT_NAME} PUBLIC
     ${PROJECT_SOURCE_DIR}

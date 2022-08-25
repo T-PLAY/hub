@@ -34,7 +34,7 @@ elseif(UNIX)
 endif()
 
 
-target_link_libraries(${PROJECT_NAME} ${UNIX_REQUIRED_LIBS} ${WIN32_REQUIRED_LIBS} src ${realsense2_LIBRARY})
+target_link_libraries(${PROJECT_NAME} ${UNIX_REQUIRED_LIBS} ${WIN32_REQUIRED_LIBS} ${SRC_TARGET} ${realsense2_LIBRARY})
 
 
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD

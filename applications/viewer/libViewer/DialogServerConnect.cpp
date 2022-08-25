@@ -1,7 +1,7 @@
 #include "DialogServerConnect.h"
 #include "ui_DialogServerConnect.h"
 
-#include <stream.h>
+#include <Net/Socket.hpp>
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <QRegExpValidator>
@@ -17,10 +17,10 @@ DialogServerConnect::DialogServerConnect(QWidget *parent) :
     ui->setupUi(this);
 
     ui->lineEdit_ip->setValidator(new QRegularExpressionValidator(QRegularExpression("[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}")));
-    ui->lineEdit_ip->setText(SERVICE_IP);
+    ui->lineEdit_ip->setText(hub::net::Socket::s_defaultServiceIp);
 
 
-    ui->spinBox_port->setValue(SERVICE_PORT);
+    ui->spinBox_port->setValue(hub::net::Socket::s_defaultServicePort);
 }
 
 DialogServerConnect::~DialogServerConnect()

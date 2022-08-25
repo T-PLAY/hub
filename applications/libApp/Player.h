@@ -3,9 +3,10 @@
 
 #include <string>
 #include <future>
+#include <set>
 
 #include <Frame.h>
-#include "Sensor.hpp"
+#include <OutputSensor.hpp>
 
 class Player
 {

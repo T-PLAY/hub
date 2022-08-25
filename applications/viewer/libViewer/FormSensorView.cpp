@@ -5,7 +5,6 @@
 #include <WidgetStreamView.h>
 #include <cmath>
 #include <iostream>
-#include <stream.h>
 #include <constants.h>
 
 // Thread_InputStream::Thread_InputStream( std::string sensorName, QObject* parent ) :

@@ -841,12 +841,12 @@ void StreamViewer::update( const hub::Acquisition& acq ) {
 //                                // search best match acq
 //                                {
 //                                    acqs.pop_back();
-//                                    // assert(acq.mBackendTimestamp
+//                                    // assert(acq.start
 //                                    //                                    -
-//                                    // bestMatchAcq->mBackendTimestamp
+//                                    // bestMatchAcq->start
 //                                    //                                    >= 0); if
-//                                    //                                    (acq.mBackendTimestamp -
-//                                    // bestMatchAcq->mBackendTimestamp
+//                                    //                                    (acq.start -
+//                                    // bestMatchAcq->start
 //                                    //                                    >= 0) {
 //                                    ////                                        while
 //                                    (acqs.empty())
@@ -858,18 +858,18 @@ void StreamViewer::update( const hub::Acquisition& acq ) {
 //                                    //                                        acqs.pop_back();
 //                                    //                                    }
 //                                    //                                    assert
-//                                    //                                    (acq.mBackendTimestamp -
-//                                    // bestMatchAcq->mBackendTimestamp
+//                                    //                                    (acq.start -
+//                                    // bestMatchAcq->start
 //                                    //                                    < 0);
-//                                    auto minDist = std::abs( acq.mBackendTimestamp -
-//                                                             bestMatchAcq->mBackendTimestamp );
+//                                    auto minDist = std::abs( acq.start -
+//                                                             bestMatchAcq->start );
 
 //                                    bool foundBestMatch = false;
 //                                    while ( !foundBestMatch ) {
 //                                        while ( acqs.empty() ) {}
 //                                        auto& acq2 = acqs.back();
-//                                        auto dist  = std::abs( acq.mBackendTimestamp -
-//                                                              acq2.mBackendTimestamp );
+//                                        auto dist  = std::abs( acq.start -
+//                                                              acq2.start );
 //                                        if ( dist < minDist ) {
 //                                            minDist = dist;
 //                                            // std::cout << getServerHeader(iThread) <<

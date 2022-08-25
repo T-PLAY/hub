@@ -1,6 +1,6 @@
 #include "Frame.h"
 
-Snapshot::Snapshot(const std::string &sensorName, hub::Header::Format format, const std::vector<int> dims, const hub::Acquisition &acquisition)
+Snapshot::Snapshot(const std::string &sensorName, hub::SensorSpec::Format format, const std::vector<int> dims, const hub::Acquisition &acquisition)
     : mSensorName(sensorName)
     , mFormat(format)
     , mDims(dims)
@@ -10,9 +10,9 @@ Snapshot::Snapshot(const std::string &sensorName, hub::Header::Format format, co
 }
 
 Snapshot::Snapshot(const hub::InputSensor &inputSensor, const hub::Acquisition &acq)
-    : mSensorName(inputSensor.getHeader().getSensorName())
-    , mFormat(inputSensor.getHeader().getFormat())
-    , mDims(inputSensor.getHeader().getDims())
+    : mSensorName(inputSensor.m_spec.m_sensorName)
+    , mFormat(inputSensor.m_spec.m_format)
+    , mDims(inputSensor.m_spec.m_dims)
     , mAcq(new hub::Acquisition(acq.clone()))
 {
 
@@ -43,7 +43,7 @@ const hub::Acquisition &Snapshot::getAcq() const
     return *mAcq;
 }
 
-hub::Header::Format Snapshot::getFormat() const
+hub::SensorSpec::Format Snapshot::getFormat() const
 {
     return mFormat;
 }

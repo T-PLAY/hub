@@ -16,7 +16,6 @@
 
 #include <Engine/Rendering/RenderObjectManager.hpp>
 #include <fstream>
-#include <stream.h>
 
 #include <Eigen/Core>
 #include <Eigen/Geometry>
@@ -32,6 +31,9 @@
 #ifdef USE_GOT_PR
 #include <Core/Geometry/StandardAttribNames.hpp>
 #endif
+
+#include <InputSensor.hpp>
+#include <IO/Stream.hpp>
 
 #define SENSOR
 
@@ -161,16 +163,16 @@ int main(int argc, char* argv[])
     //    return app.exec();
 
 #ifdef SENSOR
-    InputStream* scanStream = nullptr;
-    InputStream* posStream = nullptr;
+    hub::InputSensor* scanStream = nullptr;
+    hub::InputSensor* posStream = nullptr;
 
 ////#define ONLY_POSE
 //#ifdef ONLY_POSE
-//    InputStream posStream("Polhemus Patriot (probe)");
+//    hub::InputSensor posStream("Polhemus Patriot (probe)");
 //#else
 
 //    try {
-//        scanStream = new InputStream("ULA-OP 256", "");
+//        scanStream = new hub::InputSensor("ULA-OP 256", "");
 //    } catch (std::exception& e) {
 //        std::cout << "[main] catch exception " << e.what() << std::endl;
 //        scanStream = nullptr;
@@ -178,9 +180,9 @@ int main(int argc, char* argv[])
 
 //    try {
 //        if (scanStream != nullptr) {
-//            posStream = new InputStream("Polhemus Patriot (probe)", "ULA-OP 256");
+//            posStream = new hub::InputSensor("Polhemus Patriot (probe)", "ULA-OP 256");
 //        } else {
-//            posStream = new InputStream("Polhemus Patriot (probe)");
+//            posStream = new hub::InputSensor("Polhemus Patriot (probe)");
 //        }
 //    } catch (std::exception& e) {
 //        std::cout << "[main] catch exception " << e.what() << std::endl;
@@ -191,7 +193,7 @@ int main(int argc, char* argv[])
 //#endif
 #ifndef ONLY_POSE
     try {
-        scanStream = new InputStream(g_probeScanSensorName, "");
+        scanStream = new hub::InputSensor(hub::io::InputStream(g_probeScanSensorName, ""));
     } catch (std::exception& e) {
         std::cout << "[main] catch exception " << e.what() << std::endl;
         scanStream = nullptr;
@@ -200,10 +202,10 @@ int main(int argc, char* argv[])
 
     try {
         if (scanStream != nullptr) {
-//            posStream = new InputStream("Polhemus Patriot (probe)", "ULA-OP 256");
-            posStream = new InputStream(g_probePoseSensorName);
+//            posStream = new hub::InputSensor("Polhemus Patriot (probe)", "ULA-OP 256");
+            posStream = new hub::InputSensor(hub::io::InputStream(g_probePoseSensorName));
         } else {
-            posStream = new InputStream(g_probePoseSensorName);
+            posStream = new hub::InputSensor(hub::io::InputStream(g_probePoseSensorName));
         }
     } catch (std::exception& e) {
         std::cout << "[main] catch exception " << e.what() << std::endl;
@@ -246,7 +248,7 @@ int main(int argc, char* argv[])
 //            *scanStream >> scanAcq;
             auto scanAcq = scanStream->getAcquisition();
 
-            const unsigned char* data = scanAcq.mData;
+            const unsigned char* data = scanAcq.m_data;
 #else
         unsigned char data[192 * 512] = { 0 };
         for (int i = 0; i < 192; ++i) {
@@ -277,8 +279,8 @@ int main(int argc, char* argv[])
 //            Stream::Acquisition posAcq;
 //            *posStream >> posAcq;
         auto posAcq = posStream->getAcquisition();
-            float* translation = (float*)posAcq.mData;
-            float* quaternion = (float*)&posAcq.mData[12];
+            float* translation = (float*)posAcq.m_data;
+            float* quaternion = (float*)&posAcq.m_data[12];
 
             // change to Radium base reference
             Ra::Core::Transform TRadium = Ra::Core::Transform::Identity();

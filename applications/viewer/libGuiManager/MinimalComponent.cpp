@@ -429,25 +429,25 @@ void MinimalComponent::updateShader()
     }
 }
 
-void MinimalComponent::updatePose(const Stream::Acquisition& acq)
+void MinimalComponent::updatePose(const hub::Acquisition& acq)
 {
     //    return;
 
     // void MinimalComponent::updatePose( Acquisitions& acqs ) {
-    // void MinimalComponent::updatePose( Stream::Acquisition && acq) {
+    // void MinimalComponent::updatePose( hub::Acquisition && acq) {
     //    iProbe = 1;
     //    assert( iProbe < g_probes.size() );
     //    auto& probe = g_probes.at( iProbe );
     //    std::cout << "[MinimalComponent] upadePose : " << acq << std::endl;
 
-    if (acq.mBackendTimestamp == g_timestampProbePose) {
+    if (acq.m_start == g_timestampProbePose) {
         ++g_iProbePose;
     } else {
         for (int i = 1; i <= g_iProbePose; ++i) {
             initPose(i);
         }
         g_iProbePose = 0;
-        g_timestampProbePose = acq.mBackendTimestamp;
+        g_timestampProbePose = acq.m_start;
     }
 
     //    int iProbe = 0;
@@ -464,8 +464,8 @@ void MinimalComponent::updatePose(const Stream::Acquisition& acq)
     auto& probe = g_probes.at(g_iProbePose);
     //    auto& probe = g_probes.at( iProbe );
 
-    float* translation = (float*)acq.mData; // x, y, z
-    float* quaternion = (float*)&acq.mData[12]; // x, y, z, w
+    float* translation = (float*)acq.m_data; // x, y, z
+    float* quaternion = (float*)&acq.m_data[12]; // x, y, z, w
 
     //        Ra::Core::Vector3 pos(-translation[0], -translation[1],
     //            -translation[2]);
@@ -714,19 +714,19 @@ void MinimalComponent::initPose(int iProbe)
 }
 
 // void MinimalComponent::updateScan( Acquisitions& acqs ) {
-void MinimalComponent::updateScan(const Stream::Acquisition& acq)
+void MinimalComponent::updateScan(const hub::Acquisition& acq)
 {
     //    return;
 
     //    assert( iProbe < g_probes.size() );
-    if (acq.mBackendTimestamp == g_timestampProbeScan) {
+    if (acq.m_start == g_timestampProbeScan) {
         ++g_iProbeScan;
     } else {
         for (int i = 1; i <= g_iProbeScan; ++i) {
             initScan(i);
         }
         g_iProbeScan = 0;
-        g_timestampProbeScan = acq.mBackendTimestamp;
+        g_timestampProbeScan = acq.m_start;
     }
 
     //     int iProbe = 0;
@@ -741,7 +741,7 @@ void MinimalComponent::updateScan(const Stream::Acquisition& acq)
 
     assert(probe.m_textureScan != nullptr);
 
-    const unsigned char* data = acq.mData;
+    const unsigned char* data = acq.m_data;
 
     m_viewer.makeCurrent();
     auto& params = probe.m_textureScan->getParameters();
@@ -800,7 +800,7 @@ void MinimalComponent::setupScanner(double scanWidth, double scanDepth, double x
     //    initScan();
 }
 
-void MinimalComponent::initPoseTraces(const std::vector<Stream::Acquisition>& poseAcqs)
+void MinimalComponent::initPoseTraces(const std::vector<hub::Acquisition>& poseAcqs)
 {
 
     Ra::Core::Geometry::Spline<3, 3> splines[3];
@@ -808,8 +808,8 @@ void MinimalComponent::initPoseTraces(const std::vector<Stream::Acquisition>& po
 
     for (const auto& acq : poseAcqs) {
 
-        float* translation = (float*)acq.mData;
-        float* quaternion = (float*)&acq.mData[12];
+        float* translation = (float*)acq.m_data;
+        float* quaternion = (float*)&acq.m_data[12];
 
         //        Ra::Core::Vector3 pos(-translation[0], -translation[1],
         //            -translation[2]);

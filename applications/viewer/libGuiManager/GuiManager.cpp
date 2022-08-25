@@ -399,7 +399,7 @@ void GuiManager::onServerStreamStarted(const std::string& sensorName,
     //    m_formInputStreamViews->addInputStream(sensorName,
     //        ClientSocket(sensorName, syncSensorName));
 
-    m_sceneManager.addSensor(ClientSocket(sensorName, syncSensorName));
+    m_sceneManager.addSensor(hub::io::InputStream(sensorName, syncSensorName));
     //    m_sensorsView->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
     //    m_sensorsView->resizeColumnsToContents();
     //    Sensor sensor(ClientSocket(sensorName, syncSensorName), nullptr);

@@ -3,19 +3,19 @@
 
 #include <WidgetStreamView.h>
 #include <cmath>
-#include <socket.h>
+//#include <socket.h>
 
 //////////////////////////////////////////////////////////////////////
 
-MainWindowStreamView::MainWindowStreamView( const InputStream& inputStream, QWidget* parent ) :
+MainWindowStreamView::MainWindowStreamView( const hub::InputSensor& inputStream, QWidget* parent ) :
     QMainWindow( parent ),
     ui( new Ui::MainWindowStreamView ),
     m_inputStream( inputStream )
 //    , mThread(this, sensorName)
 //    , mSensorName(sensorName)
 {
-    const auto & header = m_inputStream.getHeader();
-    std::cout << "MainWindow::MainWindowStreamView(parent, " << header.getSensorName() << ")"
+    const auto & header = m_inputStream.m_spec;
+    std::cout << "MainWindow::MainWindowStreamView(parent, " << header.m_sensorName << ")"
               << std::endl;
 
     ui->setupUi( this );
@@ -25,7 +25,7 @@ MainWindowStreamView::MainWindowStreamView( const InputStream& inputStream, QWid
     assert( ui->centralwidget != nullptr );
     delete ui->centralwidget;
 
-    const auto dim = header.getDims().size();
+    const auto dim = header.m_dims.size();
     if ( dim == 1 ) {
         ui->centralwidget = new WidgetStreamView1D( this );
 
@@ -35,8 +35,8 @@ MainWindowStreamView::MainWindowStreamView( const InputStream& inputStream, QWid
 
         ui->centralwidget = new WidgetStreamView2D( this );
 
-        ui->centralwidget->setMinimumWidth( header.getDims().at( 0 ) );
-        ui->centralwidget->setMinimumHeight( header.getDims().at( 1 ) );
+        ui->centralwidget->setMinimumWidth( header.m_dims.at( 0 ) );
+        ui->centralwidget->setMinimumHeight( header.m_dims.at( 1 ) );
     }
     else {
         std::cout << "unprocessed dimension" << std::endl;
@@ -66,7 +66,7 @@ MainWindowStreamView::~MainWindowStreamView() {
 
 void MainWindowStreamView::setData( unsigned char* img_ptr,
                                     std::vector<int> dims,
-                                    Header::Format format ) {
+                                    hub::SensorSpec::Format format ) {
 //    ( static_cast<WidgetStreamView*>( ui->centralwidget ) )->setData( img_ptr, dims, format );
     ( static_cast<WidgetStreamView*>( ui->centralwidget ) )->setData( img_ptr, 192 * 512, dims, format );
 }

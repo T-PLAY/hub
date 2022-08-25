@@ -47,7 +47,7 @@ elseif(UNIX)
 endif()
 
 
-target_link_libraries(${PROJECT_NAME} src pdi libApp ${UNIX_REQUIRED_LIBS} ${WIN32_REQUIRED_LIBS})
+target_link_libraries(${PROJECT_NAME} ${SRC_TARGET} pdi libApp ${UNIX_REQUIRED_LIBS} ${WIN32_REQUIRED_LIBS})
 
 if (WIN32)
     foreach(dll ${PDI_DLL})

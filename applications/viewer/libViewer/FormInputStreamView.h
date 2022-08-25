@@ -1,20 +1,19 @@
 #ifndef FORMINPUTSTREAMVIEW_H
 #define FORMINPUTSTREAMVIEW_H
 
+//#include <stack>
+#include <queue>
+
 #include <QLabel>
 #include <QStringListModel>
 #include <QThread>
 #include <QWidget>
-#include <stream.h>
-
-//#include <stack>
-#include <queue>
-
 #include <QMdiArea>
 #include <WidgetStreamView.h>
-
 #include <QMdiSubWindow>
 #include <constants.h>
+
+#include <InputSensor.hpp>
 
 class FormInputStreamViews;
 
@@ -25,8 +24,8 @@ public:
 
     //    template <class IOStreamT>
     //    InputStreamThread(IOStreamT&& iostream, QObject* parent = nullptr);
-    InputStreamThread(std::unique_ptr<InputStream> inputStream, const std::string& sourceType, QObject* parent = nullptr);
-    //    InputStreamThread(InputStream& iostream, FormInputStreamViews& formInputStreamViews, int iSensor, QObject* parent = nullptr);
+    InputStreamThread(std::unique_ptr<hub::InputSensor> inputStream, const std::string& sourceType, QObject* parent = nullptr);
+    //    InputStreamThread(hub::InputSensor& iostream, FormInputStreamViews& formInputStreamViews, int iSensor, QObject* parent = nullptr);
 
     ~InputStreamThread();
 
@@ -38,12 +37,12 @@ public:
     // overriding the QThread's run() method
     void run();
 
-    //    Stream::Acquisition mAcq;
-    std::queue<Acquisition> mAcqs;
+    //    Stream::hub::Acquisition mAcq;
+    std::queue<hub::Acquisition> mAcqs;
 
     //    int mIStream;
-    //    InputStream& mInputStream;
-    std::unique_ptr<InputStream> mInputStream;
+    //    hub::InputSensor& mInputStream;
+    std::unique_ptr<hub::InputSensor> mInputStream;
     std::string mSourceType;
     //    FormInputStreamViews& mFormInputStreamViews;
 
@@ -52,7 +51,7 @@ private:
 
 // template <class IOStreamT>
 // InputStreamThread::InputStreamThread(IOStreamT&& iostream, QObject* parent)
-//     : mInputStream(std::make_unique<InputStream>(std::move(iostream)))
+//     : mInputStream(std::make_unique<hub::InputSensor>(std::move(iostream)))
 //{
 // }
 
@@ -84,7 +83,7 @@ namespace Ui {
 class FormInputStreamView;
 }
 
-using Acquisitions = std::queue<Acquisition>;
+using Acquisitions = std::queue<hub::Acquisition>;
 
 class FormInputStreamView : public QWidget {
     Q_OBJECT
@@ -98,11 +97,11 @@ public:
 
     void remove(const std::string& sourceType);
 
-    //    const Stream::Acquisition& getAcquisition(const std::string& sourceType) const;
+    //    const Stream::hub::Acquisition& getAcquisition(const std::string& sourceType) const;
     Acquisitions& getAcquisitions(const std::string& sourceType);
     const InputStreamThread& getIputStreamThread(const std::string& sourceType) const;
 
-    const InputStream& getInputStream(const std::string& sourceType) const;
+    const hub::InputSensor& getInputStream(const std::string& sourceType) const;
 
 private slots:
     //    void on_comboBox_sourceType_currentTextChanged(const QString& sourceType);
@@ -128,9 +127,9 @@ private:
 
     QStringListModel m_sourceTypeModel;
 
-    //    Stream::Acquisition m_lastAcqs;
+    //    Stream::hub::Acquisition m_lastAcqs;
     CounterFpsThread* m_counterFpsThreads = nullptr;
-    //    std::map<std::string, std::list<std::unique_ptr<InputStream>>> m_sourceType2inputStream;
+    //    std::map<std::string, std::list<std::unique_ptr<hub::InputSensor>>> m_sourceType2inputStream;
     std::map<std::string, std::list<std::unique_ptr<InputStreamThread>>> m_sourceType2inputStreamThreads;
     //    std::set<std::string> m_streamsKilled;
 
@@ -149,12 +148,12 @@ void FormInputStreamView::add(const std::string streamName, IOStreamT&& iostream
 
     std::cout << "[FormInputStreamView] add(" << streamName << ", " << sourceType << ")" << std::endl;
 
-    //    InputStream inputStream(std::move(iostream));
-    //    m_sourceType2inputStream[sourceType].push_back(std::make_unique<InputStream>(std::move(iostream)));
+    //    hub::InputSensor inputStream(std::move(iostream));
+    //    m_sourceType2inputStream[sourceType].push_back(std::make_unique<hub::InputSensor>(std::move(iostream)));
 
     //    assert(m_sourceType2inputStreamThreads.find(sourceType) == m_sourceType2inputStreamThreads.end());
     auto& inputStreamThreads = m_sourceType2inputStreamThreads[sourceType];
-    inputStreamThreads.push_back(std::make_unique<InputStreamThread>(std::make_unique<InputStream>(std::move(iostream)), sourceType));
+    inputStreamThreads.push_back(std::make_unique<InputStreamThread>(std::make_unique<hub::InputSensor>(std::move(iostream)), sourceType));
 
     auto* inputStreamThread = inputStreamThreads.back().get();
     QObject::connect(inputStreamThread, &InputStreamThread::newAcquisition, this, &FormInputStreamView::onNewAcquisition);
@@ -170,8 +169,8 @@ void FormInputStreamView::add(const std::string streamName, IOStreamT&& iostream
         assert(m_widgetStreamView == nullptr);
 
         const auto& inputStream = inputStreamThread->mInputStream;
-        const auto& header = inputStream->getHeader();
-        const auto& dims = header.getDims();
+        const auto& header = inputStream->m_spec;
+        const auto& dims = header.m_dims;
         if (dims.size() == 1) {
             m_widgetStreamView = new WidgetStreamView1D(this);
             m_widgetStreamView->setMinimumSize(400, 35);
@@ -197,7 +196,7 @@ void FormInputStreamView::add(const std::string streamName, IOStreamT&& iostream
         }
         dimText += ")";
 
-        std::string formatText = std::string("(format: ") + Header::format2string(header.getFormat()) + ")";
+        std::string formatText = std::string("(format: ") + hub::SensorSpec::format2string(header.m_format) + ")";
         subWindow->setWindowTitle((m_sensorName + "   " + dimText + "   " + formatText).c_str());
         //        }
     }

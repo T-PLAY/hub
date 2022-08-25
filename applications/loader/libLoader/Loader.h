@@ -2,19 +2,19 @@
 #pragma once
 
 #include <string>
-#include <stream.h>
+//#include <stream.h>
 #include <future>
-
-#include <Frame.h>
 
 #include <QStringListModel>
 #include <QObject>
-#include <RamIO.h>
-
 #include <QItemSelection>
-
 #include <QTreeView>
 #include <QListView>
+
+#include <Frame.h>
+#include <IO/Stream.hpp>
+#include <OutputSensor.hpp>
+#include <IO/Ram.hpp>
 
 class Loader : public QObject
 {
@@ -47,20 +47,20 @@ public slots:
 
 private:
 
-//    std::map<std::string, std::unique_ptr<OutputStream>> m_outputs;
+//    std::map<std::string, std::unique_ptr<hub::OutputSensor>> m_outputs;
     std::string m_outputPostfixName = "";
 
-//    InputStream * m_inputStream = nullptr;
-//    std::map<std::string, InputStream> m_inputStreams;
-    std::vector<std::unique_ptr<InputStream>> m_inputStreams;
+//    hub::InputSensor * m_inputStream = nullptr;
+//    std::map<std::string, hub::InputSensor> m_inputStreams;
+    std::vector<std::unique_ptr<hub::InputSensor>> m_inputStreams;
 
 //    QListView & m_listViewFrame;
 //    QTreeView & m_treeViewFile;
 
-//    std::map<std::string, std::unique_ptr<InputStream>> m_inputStreams;
-//    std::vector<InputStream> m_inputStreams;
+//    std::map<std::string, std::unique_ptr<hub::InputSensor>> m_inputStreams;
+//    std::vector<hub::InputSensor> m_inputStreams;
 
-    std::map<std::string, std::vector<Acquisition>> m_sensorName2acquisitions;
+    std::map<std::string, std::vector<hub::Acquisition>> m_sensorName2acquisitions;
     std::set<Snapshot> m_snapshots;
     std::vector<Frame> m_frames;
     std::string m_loadedPath = "";
@@ -75,8 +75,8 @@ private:
 
 //    bool m_exitSignal = false;
 //    int m_currentFrame = -1;
-    std::map<std::string, std::unique_ptr<OutputStream>> m_outputStreams;
-    std::map<std::string, std::unique_ptr<CyclicBuff>> m_outputStreamBuffs;
+    std::map<std::string, std::unique_ptr<hub::OutputSensor>> m_outputStreams;
+    std::map<std::string, std::unique_ptr<hub::io::CyclicBuff>> m_outputStreamBuffs;
 
     size_t iFrame = 0;
 
@@ -87,12 +87,12 @@ public:
     const std::string & getLoadedPath() const;
 //    int getCurrentFrame() const;
     QStringListModel & getFrameModel();
-//    const std::vector<InputStream> &getInputStreams() const;
+//    const std::vector<hub::InputSensor> &getInputStreams() const;
 
-//    const std::vector<std::unique_ptr<InputStream>> &getInputStreams() const;
-//    std::vector<std::unique_ptr<InputStream>> getInputStreams();
-//    const std::map<std::string, std::unique_ptr<OutputStream>> & getRamOutputStreams() const;
-    const std::map<std::string, std::unique_ptr<CyclicBuff>> &getOutputStreamBuffs() const;
-    const std::vector<Acquisition> &getAcquisitions(const std::string & sensorName) const;
+//    const std::vector<std::unique_ptr<hub::InputSensor>> &getInputStreams() const;
+//    std::vector<std::unique_ptr<hub::InputSensor>> getInputStreams();
+//    const std::map<std::string, std::unique_ptr<hub::OutputSensor>> & getRamOutputStreams() const;
+    const std::map<std::string, std::unique_ptr<hub::io::CyclicBuff>> &getOutputStreamBuffs() const;
+    const std::vector<hub::Acquisition> &getAcquisitions(const std::string & sensorName) const;
 };
 

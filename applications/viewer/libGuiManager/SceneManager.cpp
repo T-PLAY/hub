@@ -59,7 +59,7 @@ void SceneManager::delSensor(const std::string& sensorName)
     int i = 0;
     while (it != m_sensors.end()) {
         auto& sensor = *it;
-        if (sensor.m_inputStream->getSensorName() == sensorName) {
+        if (sensor.m_inputStream->m_spec.m_sensorName == sensorName) {
             std::cout << "[SceneManager] delSensor( " << sensorName << " )" << std::endl;
 
 

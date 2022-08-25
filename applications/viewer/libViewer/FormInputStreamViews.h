@@ -3,9 +3,6 @@
 
 #include <QHBoxLayout>
 #include <QWidget>
-#include <RamIO.h>
-#include <stream.h>
-
 #include <QObject>
 #include <QThread>
 //#include <constants.h>
@@ -15,19 +12,20 @@
 //#include <list>
 #include <QLabel>
 #include <constants.h>
-
 #include <QMdiArea>
 
 // template <class IOStreamT>
 // InputStreamThread::InputStreamThread(IOStreamT&& iostream, QObject* parent)
 //     : QThread(parent)
-//     , mInputStream(std::make_unique<InputStream>(std::move(iostream)))
+//     , mInputStream(std::make_unique<hub::InputSensor>(std::move(iostream)))
 ////    , mInputStream(std::forward<IOStream>(iostream))
 ////    , mSensorName(mInputStream.getSensorName())
 //{
 //}
 
 #include <FormInputStreamView.h>
+
+#include <InputSensor.hpp>
 
 namespace Ui {
 class FormInputStreamViews;
@@ -50,7 +48,7 @@ public:
     //    const Stream::Acquisition & getAcquisition(const std::string& sensorName, const std::string & sourceType) const;
     //    Stream::Acquisition && getAcquisition(const std::string& sensorName, const std::string & sourceType);
     Acquisitions& getAcquisitions(const std::string& sensorName, const std::string& sourceType);
-    const InputStream& getInputStream(const std::string& sensorName, const std::string& sourceType) const;
+    const hub::InputSensor& getInputStream(const std::string& sensorName, const std::string& sourceType) const;
 
 signals:
     //    void initPose();
@@ -198,12 +196,12 @@ void FormInputStreamViews::addInputStream(const std::string streamName, IOStream
     //        streamsKilled.insert(streamName);
     //    }
     //    assert(inputStreams.find(streamName) == inputStreams.end());
-    //    inputStreams[streamName] = std::make_unique<InputStream>(std::move(iostream));
+    //    inputStreams[streamName] = std::make_unique<hub::InputSensor>(std::move(iostream));
 
     //    auto& inputStream = *inputStreams.at(streamName);
     //    assert(inputStream.getSensorName() == streamName);
 
-    //    //    InputStream inputStream(std::move(iostream));
+    //    //    hub::InputSensor inputStream(std::move(iostream));
     //    //    const std::string & streamName = inputStream.getSensorName();
 
     //    auto & threads = m_threads[iSensor];
@@ -242,9 +240,9 @@ void FormInputStreamViews::addInputStream(const std::string streamName, IOStream
     //    //    emit onNewInputStream(streamName);
     //    onNewInputStream(streamName, iSensor);
 
-    //    //    //    inputStreams["ouou"] = std::make_unique<InputStream>(std::move(iostream));
+    //    //    //    inputStreams["ouou"] = std::make_unique<hub::InputSensor>(std::move(iostream));
 
-    //    //    inputStreams[streamName] = std::make_unique<InputStream>(std::move(iostream));
+    //    //    inputStreams[streamName] = std::make_unique<hub::InputSensor>(std::move(iostream));
 
     //    //    auto& inputStream = *inputStreams.at(streamName);
     //    //    assert(inputStream.getSensorName() == streamName);
@@ -256,7 +254,7 @@ void FormInputStreamViews::addInputStream(const std::string streamName, IOStream
     //    //    threads[streamName] = inputStreamThread;
 
     //    //        threads[streamName] = InputStreamThread(RamIO(cyclicBuff));
-    //    //        InputStream()
+    //    //        hub::InputSensor()
 
     //    //        on_startStreaming(streamName);
 }

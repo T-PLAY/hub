@@ -32,8 +32,8 @@ using namespace Ra::Engine::Rendering;
 using namespace Ra::Engine::Data;
 using namespace Ra::Engine::Scene;
 
-SensorComponent::SensorComponent(const InputStream& inputStream, Ra::Engine::Scene::Entity* entity)
-    : Ra::Engine::Scene::Component(inputStream.getSensorName(), entity)
+SensorComponent::SensorComponent(const hub::InputSensor& inputStream, Ra::Engine::Scene::Entity* entity)
+    : Ra::Engine::Scene::Component(inputStream.m_spec.m_sensorName, entity)
     , m_inputStream(inputStream)
 {
 }

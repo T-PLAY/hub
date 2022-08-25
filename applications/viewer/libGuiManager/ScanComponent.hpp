@@ -18,13 +18,13 @@ classic "Spinning Cube" demo. */
 //struct ScanComponent : public Ra::Engine::Scene::Component {
 struct ScanComponent : public SensorComponent {
 
-    ScanComponent(const InputStream & inputStream, Ra::Engine::Scene::Entity* entity, Ra::Engine::RadiumEngine & engine, Ra::Gui::Viewer & viewer);
+    ScanComponent(const hub::InputSensor & inputStream, Ra::Engine::Scene::Entity* entity, Ra::Engine::RadiumEngine & engine, Ra::Gui::Viewer & viewer);
 
     /// This function is called when the component is properly
     /// setup, i.e. it has an entity.
     void initialize() override;
 
-    void update(const Stream::Acquisition & acq) override;
+    void update(const hub::Acquisition & acq) override;
 
 private:
 //    Ra::Engine::Rendering::RenderObject* m_roGrid = nullptr;
@@ -35,7 +35,7 @@ private:
     Ra::Gui::Viewer & m_viewer;
 
     unsigned char * m_data = nullptr;
-//    const InputStream & m_inputStream;
+//    const hub::InputSensor & m_inputStream;
     std::string m_textureName;
     Ra::Engine::Data::Texture* m_textureScan = nullptr;
 //    int m_width;

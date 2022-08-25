@@ -3,12 +3,12 @@
 
 #include <QObject>
 #include <QWidget>
-
 #include <QLabel>
 #include <QTableWidget>
-#include <stream.h>
-
 #include <QImage>
+
+#include <SensorSpec.hpp>
+
 
 class WidgetStreamView : public QWidget {
     Q_OBJECT
@@ -17,11 +17,11 @@ public:
 
 public slots:
 //    virtual void setData(unsigned char* img_ptr, std::vector<int> dims, Stream::Format format) = 0;
-    virtual void setData(unsigned char* img_ptr, size_t size, std::vector<int> dims, Header::Format format) = 0;
+    virtual void setData(unsigned char* img_ptr, size_t size, std::vector<int> dims, hub::SensorSpec::Format format) = 0;
 
 protected:
 protected:
-    Header::Format mFormat = Header::Format::NONE;
+    hub::SensorSpec::Format mFormat = hub::SensorSpec::Format::NONE;
     unsigned char* mData = nullptr;
 };
 
@@ -41,7 +41,7 @@ public:
 
 public slots:
 //    void setData(unsigned char* img_ptr, std::vector<int> dims, Stream::Format format) override;
-    void setData(unsigned char* img_ptr, size_t size, std::vector<int> dims, Header::Format format) override;
+    void setData(unsigned char* img_ptr, size_t size, std::vector<int> dims, hub::SensorSpec::Format format) override;
 
 
     void onPixelPerUnitChanged();
@@ -118,7 +118,7 @@ public:
 
 public slots:
 //    void setData(unsigned char* img_ptr, std::vector<int> dims, Stream::Format format) override;
-    void setData(unsigned char* img_ptr, size_t size, std::vector<int> dims, Header::Format format) override;
+    void setData(unsigned char* img_ptr, size_t size, std::vector<int> dims, hub::SensorSpec::Format format) override;
 
 protected:
 private:

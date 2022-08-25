@@ -1,7 +1,7 @@
 #include "FormInputStreamView.h"
 #include "ui_FormInputStreamView.h"
 
-// InputStreamThread::InputStreamThread(InputStream& inputStream,
+// InputStreamThread::InputStreamThread(hub::InputSensor& inputStream,
 //     FormInputStreamViews& formInputStreamViews,
 //     int iSensor,
 //     QObject* parent)
@@ -15,10 +15,11 @@
 //    std::cout << "[InputStreamThread] InputStreamThread()" << std::endl;
 //}
 #include <QMdiSubWindow>
+#include <thread>
 
 #include <constants.h>
 
-InputStreamThread::InputStreamThread(std::unique_ptr<InputStream> inputStream,
+InputStreamThread::InputStreamThread(std::unique_ptr<hub::InputSensor> inputStream,
     const std::string& sourceType,
     //    QMdiArea& mdiArea,
     QObject* parent)
@@ -198,7 +199,7 @@ FormInputStreamView::getIputStreamThread(const std::string& sourceType) const
     return *m_sourceType2inputStreamThreads.at(sourceType).back().get();
 }
 
-const InputStream &FormInputStreamView::getInputStream(const std::string &sourceType) const
+const hub::InputSensor &FormInputStreamView::getInputStream(const std::string &sourceType) const
 {
     return *m_sourceType2inputStreamThreads.at(sourceType).back()->mInputStream;
 }
@@ -220,16 +221,16 @@ void FormInputStreamView::onNewAcquisition(const std::string& sourceType)
         if (m_widgetStreamView != nullptr) {
             const auto& inputStreamThread = *m_sourceType2inputStreamThreads.at(activeSourceType.toStdString()).front().get();
             const auto& inputStream = inputStreamThread.mInputStream;
-            const auto& header = inputStream->getHeader();
+            const auto& header = inputStream->m_spec;
             const auto& acqs = inputStreamThread.mAcqs;
             if (acqs.empty())
                 return;
             assert(!acqs.empty());
-            assert(acqs.back().mData != nullptr);
+            assert(acqs.back().m_data != nullptr);
             //            m_widgetStreamView->setData((unsigned char*)acqs.back().mData, inputStream->getDims(), inputStream->getFormat());
 
             //            m_widgetStreamView->setData((unsigned char*)acqs.back().mData, inputStream->getDims(), inputStream->getFormat());
-            m_widgetStreamView->setData((unsigned char*)acqs.back().mData, header.getAcquisitionSize(), header.getDims(), header.getFormat());
+            m_widgetStreamView->setData((unsigned char*)acqs.back().m_data, header.m_acquisitionSize, header.m_dims, header.m_format);
 
             //            if (inputStreamThread.mAcqs.size() > 1) {
             //                m_widgetStreamView->setData((unsigned char*)inputStreamThread.mAcqs.back().mData, inputStream->getDims(), inputStream->getFormat());
@@ -251,7 +252,7 @@ void FormInputStreamView::onStreamingStopped(const std::string& sourceType)
     auto& inputStreamThreads = m_sourceType2inputStreamThreads.at(sourceType);
 
     assert(inputStreamThreads.size() >= 1);
-    //    m_sourceType2inputStreamThreads[sourceType].push_back(std::make_unique<InputStreamThread>(std::make_unique<InputStream>(std::move(iostream)),
+    //    m_sourceType2inputStreamThreads[sourceType].push_back(std::make_unique<InputStreamThread>(std::make_unique<hub::InputSensor>(std::move(iostream)),
     //    sourceType));
     auto* inputStreamThread = inputStreamThreads.front().get();
     QObject::disconnect(inputStreamThread,

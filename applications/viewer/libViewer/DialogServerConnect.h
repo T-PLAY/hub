@@ -3,7 +3,6 @@
 
 #include <QDialog>
 
-#include <stream.h>
 
 namespace Ui {
 class DialogServerConnect;

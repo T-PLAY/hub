@@ -1,10 +1,8 @@
 #ifndef SENSOR_H
 #define SENSOR_H
 
-#include <IOStream.h>
 #include <QObject>
 #include <QThread>
-#include <stream.h>
 
 #include <Gui/Viewer/Viewer.hpp>
 
@@ -19,6 +17,8 @@
 #include <FormImageManipulator.h>
 #include <WidgetStreamView.h>
 
+#include <InputSensor.hpp>
+
 class Sensor;
 
 class SensorThread : public QThread {
@@ -29,7 +29,7 @@ public:
     //    template <class IOStreamT>
     //    SensorThread(IOStreamT&& iostream, QObject* parent = nullptr);
     SensorThread(Sensor & sensor, QObject* parent = nullptr);
-    //    SensorThread(InputStream& iostream, FormInputStreamViews& formInputStreamViews, int iSensor, QObject* parent = nullptr);
+    //    SensorThread(hub::InputSensor& iostream, FormInputStreamViews& formInputStreamViews, int iSensor, QObject* parent = nullptr);
 
     ~SensorThread();
 
@@ -43,7 +43,7 @@ public:
 
     //    std::queue<Stream::Acquisition> mAcqs;
 
-    //    std::unique_ptr<InputStream> mInputStream;
+    //    std::unique_ptr<hub::InputSensor> mInputStream;
 
 private:
     Sensor& m_sensor;
@@ -80,8 +80,8 @@ public:
     //    template <class IOStreamT>
     //    Sensor(IOStreamT&& iostream, QObject* parent = nullptr);
 
-    //    Sensor(InputStream&& inputStream, QObject* parent = nullptr);
-    Sensor(std::unique_ptr<InputStream> inputStream, QMdiArea& mdiArea, FormImageManipulator& imageManipulator, Ra::Engine::RadiumEngine * engine, Ra::Gui::Viewer * viewer, Ra::Engine::Scene::System * sys, Sensor * parentSensor, QObject* parent = nullptr);
+    //    Sensor(hub::InputSensor&& inputStream, QObject* parent = nullptr);
+    Sensor(std::unique_ptr<hub::InputSensor> inputStream, QMdiArea& mdiArea, FormImageManipulator& imageManipulator, Ra::Engine::RadiumEngine * engine, Ra::Gui::Viewer * viewer, Ra::Engine::Scene::System * sys, Sensor * parentSensor, QObject* parent = nullptr);
     ~Sensor();
 
     //    Sensor(IOStream&& iostream, QObject* parent = nullptr);
@@ -99,14 +99,14 @@ protected:
     friend class SensorCounterFpsThread;
 
 public:
-    std::unique_ptr<InputStream> m_inputStream;
+    std::unique_ptr<hub::InputSensor> m_inputStream;
 
     Ra::Engine::RadiumEngine * m_engine = nullptr;
     Ra::Gui::Viewer * m_viewer = nullptr;
     Ra::Engine::Scene::System * m_sys = nullptr;
 
 private:
-    //    InputStream m_inputStream;
+    //    hub::InputSensor m_inputStream;
     QMdiArea& m_mdiArea;
     FormImageManipulator& m_imageManipulator;
     WidgetStreamView2D * m_widgetStreamViewManipulator = nullptr;
@@ -143,7 +143,7 @@ public:
 // template <class IOStreamT>
 // Sensor::Sensor(IOStreamT&& iostream, QObject* parent)
 //     : QObject(parent)
-//     , m_inputStream(new InputStream(std::move(iostream)))
+//     , m_inputStream(new hub::InputSensor(std::move(iostream)))
 //{
 // }
 

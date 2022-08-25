@@ -66,7 +66,7 @@ bool getData( InputSensor* inputSensor, unsigned char* data ) {
 //    try {
 //        auto acq = inputSensor->getAcquisition();
 //        //    Acq acq;
-//        *start = acq.mBackendTimestamp;
+//        *start = acq.start;
 //        *end   = acq.mBackendTimeOfArrival;
 //        //    data = acq.mData;
 //        memcpy( data, acq.mData, inputSensor->spec.acquisitonSize );

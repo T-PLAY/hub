@@ -11,14 +11,18 @@ if (HUB_ENABLE_APPLICATIONS)
         add_definitions(-DUSE_GOT_PR)
         add_definitions(-DNO_PR_976)
         set(MRI_PATH "/export/home/brueghel/gbouyjou/Downloads/MRI/")
+
     elseif (${hostname} STREQUAL "Brueghel") # work window
         set(MRI_PATH "C:/Users/gbouyjou/Downloads/MRI/")
+
     elseif (${hostname} STREQUAL "gigabyte")
         add_definitions(-DUSE_GOT_PR)
         #    add_definitions(-DUSE_GOT_CONTRIB)
         set(MRI_PATH "/home/gauthier/tmpDicomViewer/MRI/")
+
     elseif (${hostname} STREQUAL "msi")
         set(MRI_PATH "/home/gauthier/Downloads/MRI/")
+
     else()
         message(WARNING "unknown system for finding MRI path")
     endif ()
@@ -28,9 +32,9 @@ if (HUB_ENABLE_APPLICATIONS)
     add_subdirectory(libApp)
 
     if (QT_VERSION)
-        #    add_subdirectory(viewer)
-        #    add_subdirectory(loader)
-        #    add_subdirectory(imageManipulator)
+        add_subdirectory(viewer)
+        add_subdirectory(loader)
+        add_subdirectory(imageManipulator)
     endif()
     add_subdirectory(streamer)
     add_subdirectory(recorder)
