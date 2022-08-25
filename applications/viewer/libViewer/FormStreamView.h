@@ -34,16 +34,16 @@
 #include <QStringListModel>
 
 namespace Ui {
-class FormSensorView;
+class FormStreamView;
 }
 
-class FormSensorView : public QWidget {
+class FormStreamView : public QWidget {
     Q_OBJECT
 
 public:
-    FormSensorView(std::string sensorName, std::string format, std::string dims, std::string size, std::string metaData, QStringListModel & sensorModel, QWidget * parent = nullptr);
-//    FormSensorView(const std::string sensorName, QWidget* parent = nullptr);
-    ~FormSensorView();
+    FormStreamView(std::string streamName, const hub::SensorSpec & sensorSpec, QStringListModel & sensorModel, QWidget * parent = nullptr);
+//    FormStreamView(const std::string streamName, QWidget* parent = nullptr);
+    ~FormStreamView();
 
     void setRadioButtonOff();
 
@@ -51,8 +51,8 @@ signals:
 //    void addViewStreamSignal(std::string streamerSensorName);
 //    void delViewStreamSignal(std::string streamerSensorName);
 //    void newAcquisition();
-    void streamingStarted(const std::string & sensorName, const std::string & syncSensorName);
-    void streamingStopped(const std::string & sensorName);
+    void streamingStarted(const std::string & streamName, const std::string & syncSensorName);
+    void streamingStopped(const std::string & streamName);
 
 public slots:
     void on_startStreaming();
@@ -73,8 +73,8 @@ public:
 //    const Thread_InputStream *getInputStreamThread() const;
 
 private:
-    Ui::FormSensorView* ui;
-    const std::string mSensorName;
+    Ui::FormStreamView* ui;
+    const std::string m_streamName;
     QStringListModel & mSensorModel;
     QSortFilterProxyModel mProxySensorModel;
 //    QMdiArea & m_mdiArea;

@@ -7,7 +7,7 @@
 #include <QApplication>
 
 #include <FormInputStreamViews.h>
-#include <FormSensorViews.h>
+#include <FormStreamViews.h>
 #include <FormWidgetLoader.h>
 #include <MinimalComponent.hpp>
 //#include <Imagema
@@ -108,13 +108,18 @@ private:
     //    MinimalComponent* m_comp = nullptr;
     SceneManager m_sceneManager;
 
+#ifdef ENABLE_LOADER
     FormWidgetLoader* m_formWidgetLoader = nullptr;
+#endif
+
     //    FormInputStreamViews* m_formInputStreamViews = nullptr;
-    FormSensorViews* m_formSensorViews = nullptr;
+    FormStreamViews* m_formStreamViews = nullptr;
 
     //    MainWindowStreamView * m_streamView = nullptr;
     //    FormImageManipulator * m_imageManipulator = nullptr;
+#ifdef ENABLE_IMAGE_VIEWER
     FormImageManipulator* m_imageManipulator = nullptr;
+#endif
     Form3DToolBox* m_3DToolBox = nullptr;
 
     QTableView* m_sensorsView = nullptr;

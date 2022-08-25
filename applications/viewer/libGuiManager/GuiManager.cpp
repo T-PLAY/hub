@@ -15,7 +15,7 @@
 #include <constants.h>
 #include <filesystem>
 
-#include <FormSensorViews.h>
+#include <FormStreamViews.h>
 
 #include <Core/Asset/FileLoaderInterface.hpp>
 //#include <DicomLoader/DicomLoader.hpp>
@@ -60,8 +60,8 @@ GuiManager::~GuiManager()
     //    m_formWidgetLoader = nullptr;
     //    delete m_formInputStreamViews;
     //    m_formInputStreamViews = nullptr;
-    //    delete m_formSensorViews;
-    //    m_formSensorViews = nullptr;
+    //    delete m_formStreamViews;
+    //    m_formStreamViews = nullptr;
 
     std::cout << "[GuiManager] ~GuiManager() end" << std::endl;
 }
@@ -75,16 +75,16 @@ void GuiManager::init()
     assert(!m_initialized);
     assert(m_mainWindow != nullptr);
     m_dockLeft = new QDockWidget(m_mainWindow);
-    m_dockTop = new QDockWidget(m_mainWindow);
-    m_dockRight = new QDockWidget(m_mainWindow);
+//    m_dockTop = new QDockWidget(m_mainWindow);
+//    m_dockRight = new QDockWidget(m_mainWindow);
     m_dockBottom = new QDockWidget(m_mainWindow);
     //    m_dockLeft = new QDockWidget();
     //    m_dockTop = new QDockWidget();
     //    m_dockRight = new QDockWidget();
     //    m_dockBottom = new QDockWidget();
     assert(m_dockLeft != nullptr);
-    assert(m_dockTop != nullptr);
-    assert(m_dockRight != nullptr);
+//    assert(m_dockTop != nullptr);
+//    assert(m_dockRight != nullptr);
     assert(m_dockBottom != nullptr);
 
     assert(m_mdiArea != nullptr);
@@ -151,6 +151,7 @@ void GuiManager::init()
     //////////////////////////////////////// RIGHT
     //     dockWidgetContents_right->setMinimumWidth(500);
 
+#ifdef ENABLE_IMAGE_VIEWER
 
     //    m_dockRight->setSizePolicy(QSizePolicy(QSizePolicy::Policy::MinimumExpanding, QSizePolicy::Policy::Preferred));
         m_dockRight->setMinimumWidth(400);
@@ -178,6 +179,8 @@ void GuiManager::init()
     //    auto& streamView = m_imageManipulator.getWidgetStreamView();
     //    streamView.init(512, 192, 35.0, 50.0);
     //    streamView.init(256, 256, 250, 250);
+
+#endif
 
     //////////////////////////////////////// TOP
     assert(m_mdiArea != nullptr);
@@ -213,6 +216,7 @@ void GuiManager::init()
     //    m_dockBottom->setLayout(hLayout);
     //    m_dockBottom->setLayoutDirection(Qt::LayoutDirection::LeftToRight);
 
+#ifdef ENABLE_LOADER
     m_formWidgetLoader = new FormWidgetLoader;
     //    ui->dockWidget_bottom->setWidget(m_formWidgetLoader);
     //    m_dockBottom->setWidget(m_formWidgetLoader);
@@ -225,6 +229,7 @@ void GuiManager::init()
         &FormWidgetLoader::snapshotPathLoaded,
         this,
         &GuiManager::onSnapshotLoaderPathLoaded);
+#endif
 
     //////////////
 
@@ -254,35 +259,35 @@ void GuiManager::init()
     //    m_sensorsView->horizontalHeader()->setMinimumSectionSize(50);
 
     //////////////////////////////////////// LEFT
-    m_formSensorViews = new FormSensorViews(m_dockLeft);
+    m_formStreamViews = new FormStreamViews(m_dockLeft);
 
-    //    if (m_formSensorViews->isServerConnected()) {
-    //    ui->dockWidget_left->setWidget(m_formSensorViews);
-    m_dockLeft->setWidget(m_formSensorViews);
-    QObject::connect(m_formSensorViews,
-        &FormSensorViews::streamingStarted,
+    //    if (m_formStreamViews->isServerConnected()) {
+    //    ui->dockWidget_left->setWidget(m_formStreamViews);
+    m_dockLeft->setWidget(m_formStreamViews);
+    QObject::connect(m_formStreamViews,
+        &FormStreamViews::streamingStarted,
         this,
         &GuiManager::onServerStreamStarted);
-    QObject::connect(m_formSensorViews,
-        &FormSensorViews::streamingStopped,
+    QObject::connect(m_formStreamViews,
+        &FormStreamViews::streamingStopped,
         this,
         &GuiManager::onServerStreamStopped);
-    QObject::connect(m_formSensorViews,
-        &FormSensorViews::serverDisconnected,
+    QObject::connect(m_formStreamViews,
+        &FormStreamViews::serverDisconnected,
         this,
         &GuiManager::onServerDisconnected);
-    //        m_formSensorViews->startStreaming();
+    //        m_formStreamViews->startStreaming();
     //    } else {
-    //        delete m_formSensorViews;
+    //        delete m_formStreamViews;
     //        ui->dockWidget_left->close();
     //    }
-    //    ui->dockWidgetContents_left = new FormSensorViews(this);
+    //    ui->dockWidgetContents_left = new FormStreamViews(this);
 
     //////////////////////////////////////// INIT DOCKERS
 
     m_mainWindow->addDockWidget(Qt::DockWidgetArea::LeftDockWidgetArea, m_dockLeft);
-    m_mainWindow->addDockWidget(Qt::DockWidgetArea::TopDockWidgetArea, m_dockTop);
-    m_mainWindow->addDockWidget(Qt::DockWidgetArea::RightDockWidgetArea, m_dockRight);
+//    m_mainWindow->addDockWidget(Qt::DockWidgetArea::TopDockWidgetArea, m_dockTop);
+//    m_mainWindow->addDockWidget(Qt::DockWidgetArea::RightDockWidgetArea, m_dockRight);
     m_mainWindow->addDockWidget(Qt::DockWidgetArea::BottomDockWidgetArea, m_dockBottom);
 
     //    m_mainWindow->update();
@@ -317,7 +322,9 @@ void GuiManager::init()
     m_sceneManager.m_sys = m_system;
     m_sceneManager.m_viewer = m_viewer;
     m_sceneManager.m_mdiArea = m_mdiArea;
+#ifdef ENABLE_IMAGE_VIEWER
     m_sceneManager.m_imageManipulator = m_imageManipulator;
+#endif
     m_sceneManager.init();
 
     m_initialized = true;
@@ -384,56 +391,56 @@ void GuiManager::on_action3D_triggered()
     m_stackedWidget->setCurrentIndex(1);
 }
 
-void GuiManager::onServerStreamStarted(const std::string& sensorName,
-    const std::string& syncSensorName)
+void GuiManager::onServerStreamStarted(const std::string& streamName,
+    const std::string& syncStreamName)
 {
     std::cout << "[GuiManager] onServerStreamStarted()" << std::endl;
 
     //    ClientSocket * socket = nullptr;
-    //    if (sensorName == g_probePoseSensorName) {
-    //        socket = new ClientSocket(sensorName, syncSensorName);
+    //    if (streamName == g_probePoseSensorName) {
+    //        socket = new ClientSocket(streamName, syncStreamName);
     //    }
 
-    //    m_formInputStreamViews->addInputStream(sensorName, std::move(*socket));
+    //    m_formInputStreamViews->addInputStream(streamName, std::move(*socket));
 
-    //    m_formInputStreamViews->addInputStream(sensorName,
-    //        ClientSocket(sensorName, syncSensorName));
+    //    m_formInputStreamViews->addInputStream(streamName,
+    //        ClientSocket(streamName, syncStreamName));
 
-    m_sceneManager.addSensor(hub::io::InputStream(sensorName, syncSensorName));
+    m_sceneManager.addStream(hub::io::InputStream(streamName, syncStreamName));
     //    m_sensorsView->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
     //    m_sensorsView->resizeColumnsToContents();
-    //    Sensor sensor(ClientSocket(sensorName, syncSensorName), nullptr);
+    //    Sensor sensor(ClientSocket(streamName, syncStreamName), nullptr);
     //    m_sensorsView->setColumnWidth(0, 200);
 }
 
-void GuiManager::onServerStreamStopped(const std::string& sensorName)
+void GuiManager::onServerStreamStopped(const std::string& streamName)
 {
     std::cout << "[GuiManager] onServerStreamStopped()" << std::endl;
 
-    m_sceneManager.delSensor(sensorName);
+    m_sceneManager.delStream(streamName);
 
-    //    m_formInputStreamViews->deleteInputStream(sensorName);
-    //    //        m_formInputStreamViews->onKillInputStream(sensorName);
+    //    m_formInputStreamViews->deleteInputStream(streamName);
+    //    //        m_formInputStreamViews->onKillInputStream(streamName);
 }
 
 void GuiManager::onServerDisconnected()
 {
-    delete m_formSensorViews;
-    m_formSensorViews = nullptr;
+    delete m_formStreamViews;
+    m_formStreamViews = nullptr;
     //    ui->dockWidgetContents_left.c
     //    ui->dockWidget_left->close();
     m_dockLeft->close();
 }
 
-void GuiManager::onInit(const std::string& sensorName)
+void GuiManager::onInit(const std::string& streamName)
 {
-    //    std::cout << "[GuiManager] onInit '" << sensorName << "'" << std::endl;
-    //    if (sensorName == g_probeScanSensorName) {
+    //    std::cout << "[GuiManager] onInit '" << streamName << "'" << std::endl;
+    //    if (streamName == g_probeScanSensorName) {
     //        m_comp->initScan();
     //        //        ui->dockWidgetContents_right->init();
     //        m_imageManipulator.init();
 
-    //    } else if (sensorName == g_probePoseSensorName) {
+    //    } else if (streamName == g_probePoseSensorName) {
     //        m_comp->initPose();
     //    }
 }
@@ -450,13 +457,13 @@ void GuiManager::onInit(const std::string& sensorName)
 //    m_comp->initScan();
 //}
 
-void GuiManager::onNewAcquisition(const std::string& sensorName, const std::string& sourceType)
+void GuiManager::onNewAcquisition(const std::string& streamName, const std::string& sourceType)
 {
-    //    //    std::cout << "[GuiManager] onNewAcquisition(" << sensorName << ", " << sourceType << ")"
+    //    //    std::cout << "[GuiManager] onNewAcquisition(" << streamName << ", " << sourceType << ")"
     //    //    << std::endl;
-    //    //    const auto& acq = m_formInputStreamViews->getAcquisition(sensorName, sourceType);
-    //    //    auto && acq = m_formInputStreamViews->getAcquisition(sensorName, sourceType);
-    //    auto& acqs = m_formInputStreamViews->getAcquisitions(sensorName, sourceType);
+    //    //    const auto& acq = m_formInputStreamViews->getAcquisition(streamName, sourceType);
+    //    //    auto && acq = m_formInputStreamViews->getAcquisition(streamName, sourceType);
+    //    auto& acqs = m_formInputStreamViews->getAcquisitions(streamName, sourceType);
 
     //    if (acqs.empty()) {
     //        std::cout << "[GuiManager] void signal, empty acqs --------------" << std::endl;
@@ -464,7 +471,7 @@ void GuiManager::onNewAcquisition(const std::string& sensorName, const std::stri
     //    }
     //    assert(!acqs.empty());
 
-    //    if (sensorName == g_probeScanSensorName) {
+    //    if (streamName == g_probeScanSensorName) {
     //        //        for ( const auto& acq : acqs ) {
 
     //        //        m_comp->updateScan(acqs);
@@ -478,7 +485,7 @@ void GuiManager::onNewAcquisition(const std::string& sensorName, const std::stri
     //        //            acqs.pop();
     //        //        }
     //        //        }
-    //    } else if (sensorName == g_probePoseSensorName) {
+    //    } else if (streamName == g_probePoseSensorName) {
     //        //        for ( const auto& acq : acqs ) {
     //        //        m_comp->updatePose( acq );
     //        //        }
@@ -497,15 +504,15 @@ void GuiManager::onNewAcquisition(const std::string& sensorName, const std::stri
     //    //    }
 }
 
-void GuiManager::onSelectedSourceChanged(const std::string& sensorName, const std::string& sourceType)
+void GuiManager::onSelectedSourceChanged(const std::string& streamName, const std::string& sourceType)
 {
-    //    std::cout << "[GuiManager] onSelectedSourceChanged(" << sensorName << ", " << sourceType << ")" << std::endl;
+    //    std::cout << "[GuiManager] onSelectedSourceChanged(" << streamName << ", " << sourceType << ")" << std::endl;
 
-    //    const auto& inputStream = m_formInputStreamViews->getInputStream(sensorName, sourceType);
+    //    const auto& inputStream = m_formInputStreamViews->getInputStream(streamName, sourceType);
 
     //    std::cout << inputStream << std::endl;
 
-    //    if (sensorName == g_probePoseSensorName) {
+    //    if (streamName == g_probePoseSensorName) {
     //        const auto& metadata = inputStream.getMetaData();
     //        double scanWidth = 5.0;
     //        if (metadata.find("scanWidth") != metadata.end()) {

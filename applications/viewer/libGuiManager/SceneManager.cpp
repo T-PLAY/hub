@@ -17,7 +17,9 @@ void SceneManager::init()
     assert(m_viewer != nullptr);
     assert(m_sys != nullptr);
     assert(m_mdiArea != nullptr);
+#ifdef ENABLE_IMAGE_VIEWER
     assert(m_imageManipulator != nullptr);
+#endif
 
     Ra::Engine::Data::ScanMaterial::registerMaterial();
 
@@ -52,15 +54,15 @@ void SceneManager::init()
     //    m_sensorModel.row
 }
 
-void SceneManager::delSensor(const std::string& sensorName)
+void SceneManager::delStream(const std::string& streamName)
 {
 
     auto it = m_sensors.begin();
     int i = 0;
     while (it != m_sensors.end()) {
         auto& sensor = *it;
-        if (sensor.m_inputStream->m_spec.m_sensorName == sensorName) {
-            std::cout << "[SceneManager] delSensor( " << sensorName << " )" << std::endl;
+        if (sensor.m_inputStream->m_spec.m_sensorName == streamName) {
+            std::cout << "[SceneManager] delStream( " << streamName << " )" << std::endl;
 
 
             it = m_sensors.erase(it);

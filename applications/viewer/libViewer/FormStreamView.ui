@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>FormSensorView</class>
- <widget class="QWidget" name="FormSensorView">
+ <class>FormStreamView</class>
+ <widget class="QWidget" name="FormStreamView">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>314</width>
-    <height>210</height>
+    <height>231</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -53,14 +53,14 @@
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
-         <widget class="QLabel" name="labelSensorName">
+         <widget class="QLabel" name="labelStreamName">
           <property name="font">
            <font>
             <pointsize>11</pointsize>
            </font>
           </property>
           <property name="text">
-           <string>Sensor name</string>
+           <string>Stream name</string>
           </property>
          </widget>
         </item>
@@ -152,7 +152,7 @@
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_4">
         <item>
-         <widget class="QLabel" name="label_syncSensor">
+         <widget class="QLabel" name="label_syncStream">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
             <horstretch>0</horstretch>
@@ -160,7 +160,7 @@
            </sizepolicy>
           </property>
           <property name="text">
-           <string>Sync sensor :</string>
+           <string>Sync stream :</string>
           </property>
          </widget>
         </item>
@@ -186,6 +186,18 @@
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
          <layout class="QVBoxLayout" name="verticalLayout">
+          <item>
+           <widget class="QLabel" name="label_4">
+            <property name="font">
+             <font>
+              <pointsize>8</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>Sensor name :</string>
+            </property>
+           </widget>
+          </item>
           <item>
            <widget class="QLabel" name="label_2">
             <property name="font">
@@ -226,6 +238,18 @@
         </item>
         <item>
          <layout class="QVBoxLayout" name="verticalLayout_3">
+          <item>
+           <widget class="QLabel" name="labelSensorName">
+            <property name="font">
+             <font>
+              <pointsize>8</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>TextLabel</string>
+            </property>
+           </widget>
+          </item>
           <item>
            <widget class="QLabel" name="laberDimensions">
             <property name="font">

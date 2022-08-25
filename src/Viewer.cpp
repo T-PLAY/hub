@@ -3,9 +3,9 @@
 namespace hub {
 
 Viewer::Viewer( ClientSocket&& clientSocket,
-                std::function<void( const std::string& sensorName, const SensorSpec& sensorSpec )>
+                std::function<void( const std::string& streamName, const SensorSpec& sensorSpec )>
                     onNewStreamer,
-                std::function<void( const std::string& sensorName )> onDelStreamer ) :
+                std::function<void( const std::string& streamName )> onDelStreamer ) :
 
     net::ClientSocket( std::move( clientSocket ) ),
     m_onNewStreamer( onNewStreamer ),
@@ -29,14 +29,14 @@ Viewer::Viewer( ClientSocket&& clientSocket,
                 } break;
 
                 case ClientSocket::Message::NEW_STREAMER: {
-                    std::string sensorName;
-                    Interface::read( sensorName );
-                    std::cout << "[Viewer] new streamer '" << sensorName << "'" << std::endl;
+                    std::string streamName;
+                    Interface::read( streamName );
+                    std::cout << "[Viewer] new streamer '" << streamName << "'" << std::endl;
 
                     SensorSpec sensorSpec;
                     Interface::read( sensorSpec );
 
-                    //                    std::cout << "[Viewer] new streamer " << sensorName
+                    //                    std::cout << "[Viewer] new streamer " << streamName
                     //                              << ", format:" << sensorSpec.format
                     //                              << ", dims:" << SensorSpec::dims2string(
                     //                              sensorSpec.dims )
@@ -46,16 +46,16 @@ Viewer::Viewer( ClientSocket&& clientSocket,
                     //                              << SensorSpec::metaData2string(
                     //                              sensorSpec.metaData, true );
 
-                    m_onNewStreamer( sensorName, sensorSpec );
+                    m_onNewStreamer( streamName, sensorSpec );
 
                 } break;
 
                 case ClientSocket::Message::DEL_STREAMER: {
-                    std::string sensorName;
-                    Interface::read( sensorName );
-                    std::cout << "[Viewer] del streamer '" << sensorName << "'" << std::endl;
+                    std::string streamName;
+                    Interface::read( streamName );
+                    std::cout << "[Viewer] del streamer '" << streamName << "'" << std::endl;
 
-                    m_onDelStreamer( sensorName );
+                    m_onDelStreamer( streamName );
 
                 } break;
 
