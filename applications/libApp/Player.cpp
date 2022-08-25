@@ -8,8 +8,10 @@
 #include <string>
 
 #include "IO/File.hpp"
-#include "Sensor.hpp"
-#include "Socket.hpp"
+//#include "Sensor.hpp"
+//#include "Socket.hpp"
+#include <Net/ClientSocket.hpp>
+#include <IO/Stream.hpp>
 
 // Player::Player(const std::string &path)
 //{
@@ -69,10 +71,10 @@ void Player::update( int iSensor ) {
         //        assert(sizeof(int) == 4);
 
         try {
-            hub::InputSensor inputSensor( hub::File( std::move( file ) ) );
+            hub::InputSensor inputSensor( hub::io::File( std::move( file ) ) );
             auto acqs                     = inputSensor.getAllAcquisitions();
-            const auto& header            = inputSensor.getHeader();
-            const std::string& sensorName = header.getSensorName();
+            const auto& header            = inputSensor.m_spec;
+            const std::string& sensorName = header.m_sensorName;
 
             if ( nAcqs == -1 ) {
                 nAcqs = (int)acqs.size();
@@ -92,14 +94,14 @@ void Player::update( int iSensor ) {
                 //                Snapshot snapshot { acq.clone(), sensorName };
                 //                m_snapshots.insert(std::move(snapshot));
                 //                m_snapshots.insert(Snapshot { acq.clone(), sensorName });
-                Snapshot snapshot( sensorName, header.getFormat(), header.getDims(), acq );
+                Snapshot snapshot( sensorName, header.m_format, header.m_dims, acq );
                 m_snapshots.insert( std::move( snapshot ) );
                 //                m_snapshots.insert(Snapshot(sensorName, inputSensor.getFormat(),
                 //                inputSensor.getDims(), acq));
 
                 //                const auto& it = m_snapshots.find(Snapshot { acq.clone(),
                 //                sensorName });
-                Snapshot snapshot2( sensorName, header.getFormat(), header.getDims(), acq );
+                Snapshot snapshot2( sensorName, header.m_format, header.m_dims, acq );
                 const auto& it = m_snapshots.find( snapshot2 );
                 assert( it != m_snapshots.end() );
                 m_frames[iAcq].push_back( *it );
@@ -114,11 +116,11 @@ void Player::update( int iSensor ) {
 
             if ( m_outputs.find( sensorName ) == m_outputs.end() ) {
                 m_outputs[sensorName] = std::make_unique<hub::OutputSensor>(
-                    hub::Header { sensorName + m_outputPostfixName,
-                                  header.getFormat(),
-                                  header.getDims(),
-                                  header.getMetaData() },
-                    hub::ClientSocket() );
+                    hub::SensorSpec { sensorName + m_outputPostfixName,
+                                  header.m_format,
+                                  header.m_dims,
+                                  header.m_metaData },
+                    hub::io::OutputStream(sensorName + m_outputPostfixName, hub::net::ClientSocket()) );
             }
 
             //            m_outputs[sensorName] = std::make_unique<hub::OutputSensor>(sensorName + "
@@ -177,15 +179,15 @@ void Player::play() {
     assert( !m_snapshots.empty() );
 
     m_thread    = new std::thread( [this]() {
-        //        const long long duration = m_snapshots.end()->getAcq().mBackendTimeOfArrival -
-        //        m_snapshots.begin()->getAcq().mBackendTimestamp;
-        const long long duration = m_snapshots.end()->getAcq().mBackendTimestamp -
-                                   m_snapshots.begin()->getAcq().mBackendTimestamp;
+        //        const long long duration = m_snapshots.end()->getAcq().m_end -
+        //        m_snapshots.begin()->getAcq().start;
+        const long long duration = m_snapshots.end()->getAcq().m_start -
+                                   m_snapshots.begin()->getAcq().m_start;
         // play
         int iLoop = 0;
         //        bool exitSignal = false;
         while ( m_isPlaying ) {
-            const auto startRecord  = m_snapshots.begin()->getAcq().mBackendTimestamp;
+            const auto startRecord  = m_snapshots.begin()->getAcq().m_start;
             const auto& startChrono = std::chrono::high_resolution_clock::now();
 
             long long dec = iLoop * duration;
@@ -196,14 +198,14 @@ void Player::play() {
                 const auto& snapshot = *it;
 
                 std::this_thread::sleep_until(
-                    startChrono + std::chrono::microseconds( snapshot.getAcq().mBackendTimestamp -
+                    startChrono + std::chrono::microseconds( snapshot.getAcq().m_start -
                                                              startRecord ) );
 
                 const auto& acq = snapshot.getAcq();
-                hub::Acquisition acq2 { acq.mBackendTimestamp + dec,
-                                        acq.mBackendTimeOfArrival + dec,
-                                        acq.mData,
-                                        acq.mSize };
+                hub::Acquisition acq2 { acq.m_start + dec,
+                                        acq.m_end + dec,
+                                        acq.m_data,
+                                        acq.m_size };
 
                 *m_outputs.at( snapshot.getSensorName() ) << acq2;
                 //                    << snapshot.getAcq();

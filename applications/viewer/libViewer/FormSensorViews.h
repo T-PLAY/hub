@@ -11,7 +11,6 @@
 #include <QVBoxLayout>
 #include <SensorView.h>
 #include <map>
-#include <stream.h>
 
 #include <QStringListModel>
 

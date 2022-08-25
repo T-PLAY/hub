@@ -34,5 +34,5 @@ elseif(UNIX)
 endif()
 
 
-target_link_libraries(${PROJECT_NAME} src ${OpenCV_LIBS} ${UNIX_REQUIRED_LIBS} ${WIN32_REQUIRED_LIBS})
+target_link_libraries(${PROJECT_NAME} ${SRC_TARGET} ${OpenCV_LIBS} ${UNIX_REQUIRED_LIBS} ${WIN32_REQUIRED_LIBS})
 

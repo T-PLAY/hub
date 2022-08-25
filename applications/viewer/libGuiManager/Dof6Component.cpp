@@ -40,7 +40,7 @@ using namespace Ra::Engine::Scene;
  * supported by Radium
  */
 
-Dof6Component::Dof6Component(const InputStream& inputStream, Ra::Engine::Scene::Entity* entity)
+Dof6Component::Dof6Component(const hub::InputSensor& inputStream, Ra::Engine::Scene::Entity* entity)
     : //    Ra::Engine::Scene::Component( "Dof6 component", entity ) {}
     SensorComponent(inputStream, entity)
 {
@@ -77,10 +77,10 @@ void Dof6Component::initialize()
     //    }
 }
 
-void Dof6Component::update(const Stream::Acquisition& acq)
+void Dof6Component::update(const hub::Acquisition& acq)
 {
-    float* translation = (float*)acq.mData; // x, y, z
-    float* quaternion = (float*)&acq.mData[12]; // x, y, z, w
+    float* translation = (float*)acq.m_data; // x, y, z
+    float* quaternion = (float*)&acq.m_data[12]; // x, y, z, w
 
     //                Ra::Core::Vector3 pos(10, 10, 10);
     //            -translation[2]);

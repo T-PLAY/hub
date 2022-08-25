@@ -4,7 +4,8 @@
 #include <QMainWindow>
 //#include <QThread>
 //#include <chrono>
-#include <stream.h>
+
+#include <InputSensor.hpp>
 
 /////////////////////////////////////////////////////////////////////////////
 
@@ -16,12 +17,12 @@ class MainWindowStreamView : public QMainWindow {
     Q_OBJECT
 
 public:
-    MainWindowStreamView(const InputStream & inputStream, QWidget* parent = nullptr);
+    MainWindowStreamView(const hub::InputSensor & inputStream, QWidget* parent = nullptr);
     ~MainWindowStreamView();
 
 //    std::string getStreamerSensorName() const;
 
-    void setData(unsigned char* img_ptr, std::vector<int> dims, Header::Format format);
+    void setData(unsigned char* img_ptr, std::vector<int> dims, hub::SensorSpec::Format format);
 
 signals:
     void onCloseStreamViewSignal();
@@ -32,7 +33,7 @@ private:
     Ui::MainWindowStreamView* ui;
 
 //    Thread_InputStream mThread;
-    const InputStream & m_inputStream;
+    const hub::InputSensor & m_inputStream;
 
 //    std::string mSensorName;
 };

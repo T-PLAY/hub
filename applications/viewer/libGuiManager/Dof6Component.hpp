@@ -15,13 +15,13 @@ classic "Spinning Cube" demo. */
 //struct Dof6Component : public Ra::Engine::Scene::Component {
 struct Dof6Component : SensorComponent {
 
-    Dof6Component(const InputStream & inputStream, Ra::Engine::Scene::Entity* entity);
+    Dof6Component(const hub::InputSensor & inputStream, Ra::Engine::Scene::Entity* entity);
 
     /// This function is called when the component is properly
     /// setup, i.e. it has an entity.
     void initialize() override;
 
-    void update(const Stream::Acquisition & acq) override;
+    void update(const hub::Acquisition & acq) override;
 
 private:
 //    Ra::Engine::Rendering::RenderObject* m_roGrid = nullptr;

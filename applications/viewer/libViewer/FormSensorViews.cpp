@@ -15,6 +15,8 @@
 //#include <QRegularExpression>
 //#endif
 
+#include <Net/ClientSocket.hpp>
+
 Thread_Client::Thread_Client(const FormSensorViews& formSensorViews, QObject* parent)
     : QThread(parent)
     //    , m_dialog(dialog)
@@ -29,24 +31,24 @@ void Thread_Client::run()
 
     while (!this->isInterruptionRequested()) {
         try {
-            ClientSocket sock(m_formSensorViews.ui->lineEdit_ip->text().toStdString(), m_formSensorViews.ui->spinBox_port->value());
-            sock.write(ClientSocket::Type::VIEWER);
+            hub::net::ClientSocket sock(m_formSensorViews.ui->lineEdit_ip->text().toStdString(), m_formSensorViews.ui->spinBox_port->value());
+            sock.write(hub::net::ClientSocket::Type::VIEWER);
             emit serverConnected();
             //            m_dialog.hide();
 
             while (!this->isInterruptionRequested()) {
 
-                Socket::Message serverMessage;
+                hub::net::ClientSocket::Message serverMessage;
                 sock.read(serverMessage);
 
                 switch (serverMessage) {
 
-                case Socket::Message::PING: {
+                case hub::net::ClientSocket::Message::PING: {
                     // server check client connection
                     // nothing to do
                 } break;
 
-                case Socket::Message::NEW_STREAMER: {
+                case hub::net::ClientSocket::Message::NEW_STREAMER: {
                     std::cout << "[Thread_Client] [viewer] new streamer" << std::endl;
                     std::string sensorName;
                     sock.read(sensorName);
@@ -57,7 +59,7 @@ void Thread_Client::run()
                     std::string size;
                     sock.read(size);
 
-                    Header::MetaData metaData;
+                    hub::SensorSpec::MetaData metaData;
                     sock.read(metaData);
 
                     std::cout << "[Thread_Client] [viewer] new streamer " << sensorName
@@ -66,15 +68,15 @@ void Thread_Client::run()
                     std::cout << "[Thread_Client] [viewer] emit addSensorSignal '" << sensorName
                               << "'" << std::endl;
                     std::cout << "[Thread_Client] [viewer] metadata : "
-                              << Header::metaData2string(metaData, true);
+                              << hub::SensorSpec::metaData2string(metaData, true);
                     emit addSensorSignal(
-                        sensorName, format, dims, size, Header::metaData2string(metaData, true));
+                        sensorName, format, dims, size, hub::SensorSpec::metaData2string(metaData, true));
 
                     //                    InputStream inputStream(sensorName.c_str(), "");
 
                 } break;
 
-                case Socket::Message::DEL_STREAMER: {
+                case hub::net::ClientSocket::Message::DEL_STREAMER: {
                     std::string sensorName;
                     sock.read(sensorName);
                     std::cout << "[Thread_Client] [viewer] del streamer '" << sensorName << "'"
@@ -117,8 +119,8 @@ FormSensorViews::FormSensorViews(
     //    mainWindow.setAttribute(Qt::WA_DeleteOnClose); // for dialog window
 
     ui->lineEdit_ip->setValidator(new QRegularExpressionValidator(QRegularExpression("[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}")));
-    ui->lineEdit_ip->setText(SERVICE_IP);
-    ui->spinBox_port->setValue(SERVICE_PORT);
+    ui->lineEdit_ip->setText(hub::net::Socket::s_defaultServiceIp);
+    ui->spinBox_port->setValue(hub::net::Socket::s_defaultServicePort);
 
     QObject::connect(
         &mThreadClient, &Thread_Client::addSensorSignal, this, &FormSensorViews::addSensor);

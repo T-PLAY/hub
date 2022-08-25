@@ -8,6 +8,8 @@
 #include <Core/Utils/Observable.hpp>
 #include <Engine/Scene/Entity.hpp>
 
+#include <SensorSpec.hpp>
+
 SensorThread::SensorThread(Sensor& sensor, QObject* parent)
     : QThread { parent }
     , m_sensor(sensor)
@@ -16,7 +18,7 @@ SensorThread::SensorThread(Sensor& sensor, QObject* parent)
 
 SensorThread::~SensorThread()
 {
-    std::cout << "[SensorThread] ~SensorThread(" << m_sensor.m_inputStream->getSensorName() << ")" << std::endl;
+    std::cout << "[SensorThread] ~SensorThread(" << m_sensor.m_inputStream->m_spec.m_sensorName << ")" << std::endl;
 
     //    assert(! isRunning());
     //    if (this->isRunning()) {
@@ -48,14 +50,14 @@ void SensorThread::run()
             // update 2D view
             {
                 assert(m_sensor.m_widgetStreamView != nullptr);
-                m_sensor.m_widgetStreamView->setData((unsigned char*)acq.mData, inputStream->getAcquisitionSize(), inputStream->getDims(), inputStream->getFormat());
+                m_sensor.m_widgetStreamView->setData((unsigned char*)acq.m_data, inputStream->m_spec.m_acquisitionSize, inputStream->m_spec.m_dims, inputStream->m_spec.m_format);
             }
 
             // update 2D manipulator view
             {
                 //                assert(m_sensor.m_widgetStreamViewManipulator != nullptr);
                 if (m_sensor.m_widgetStreamViewManipulator != nullptr) {
-                    m_sensor.m_widgetStreamViewManipulator->setData((unsigned char*)acq.mData, inputStream->getAcquisitionSize(), inputStream->getDims(), inputStream->getFormat());
+                    m_sensor.m_widgetStreamViewManipulator->setData((unsigned char*)acq.m_data, inputStream->m_spec.m_acquisitionSize, inputStream->m_spec.m_dims, inputStream->m_spec.m_format);
                 }
             }
 
@@ -143,7 +145,7 @@ void SensorCounterFpsThread::run()
 
 // Sensor::Sensor(IOStream &&iostream, QObject *parent)
 //     :QObject{parent}
-//     , m_inputStream(new InputStream(std::move(iostream)))
+//     , m_inputStream(new hub::InputSensor(std::move(iostream)))
 //{
 
 //}
@@ -154,7 +156,7 @@ void SensorCounterFpsThread::run()
 //    m_entity->setTransform(entity->getTransform());
 //}
 
-Sensor::Sensor(std::unique_ptr<InputStream> inputStream, QMdiArea& mdiArea, FormImageManipulator& imageManipulator, Ra::Engine::RadiumEngine* engine, Ra::Gui::Viewer* viewer, Ra::Engine::Scene::System* sys, Sensor* parentSensor, QObject* parent)
+Sensor::Sensor(std::unique_ptr<hub::InputSensor> inputStream, QMdiArea& mdiArea, FormImageManipulator& imageManipulator, Ra::Engine::RadiumEngine* engine, Ra::Gui::Viewer* viewer, Ra::Engine::Scene::System* sys, Sensor* parentSensor, QObject* parent)
     : QObject(parent)
     , m_inputStream(std::move(inputStream))
     , m_engine(engine)
@@ -173,7 +175,7 @@ Sensor::Sensor(std::unique_ptr<InputStream> inputStream, QMdiArea& mdiArea, Form
     {
         assert(m_widgetStreamView == nullptr);
 
-        const auto& dims = m_inputStream->getDims();
+        const auto& dims = m_inputStream->m_spec.m_dims;
         if (dims.size() == 1) {
             m_widgetStreamView = new WidgetStreamView1D(&m_mdiArea);
             m_widgetStreamView->setMinimumSize(400, 35);
@@ -199,8 +201,8 @@ Sensor::Sensor(std::unique_ptr<InputStream> inputStream, QMdiArea& mdiArea, Form
         }
         dimText += ")";
 
-        std::string formatText = std::string("(format: ") + Stream::format2string[(int)m_inputStream->getFormat()] + ")";
-        m_subWindow->setWindowTitle((m_inputStream->getSensorName() + "   " + dimText + "   " + formatText).c_str());
+        std::string formatText = std::string("(format: ") + hub::SensorSpec::format2string(m_inputStream->m_spec.m_format) + ")";
+        m_subWindow->setWindowTitle((m_inputStream->m_spec.m_sensorName + "   " + dimText + "   " + formatText).c_str());
         //        }
     }
 
@@ -215,7 +217,7 @@ Sensor::Sensor(std::unique_ptr<InputStream> inputStream, QMdiArea& mdiArea, Form
     // create 3D scene object
     {
         assert(m_component == nullptr);
-        m_entity = m_engine->getEntityManager()->createEntity(m_inputStream->getSensorName() + " entity");
+        m_entity = m_engine->getEntityManager()->createEntity(m_inputStream->m_spec.m_sensorName + " entity");
 
         //        auto & transformObservers = m_entity->transformationObservers();
         setParent(parentSensor);
@@ -235,14 +237,14 @@ Sensor::Sensor(std::unique_ptr<InputStream> inputStream, QMdiArea& mdiArea, Form
         //            transformObservers.attach(observer);
         //        }
 
-        switch (m_inputStream->getFormat()) {
-        case Stream::Format::DOF6:
+        switch (m_inputStream->m_spec.m_format) {
+        case hub::SensorSpec::Format::DOF6:
             //            assert(m_dof6Component == nullptr);
             //            m_dof6Component = new Dof6Component(m_entity);
             m_component = new Dof6Component(*m_inputStream, m_entity);
             break;
 
-        case Stream::Format::Y8:
+        case hub::SensorSpec::Format::Y8:
             m_component = new ScanComponent(*m_inputStream, m_entity, *m_engine, *m_viewer);
             break;
 
@@ -267,10 +269,10 @@ Sensor::Sensor(std::unique_ptr<InputStream> inputStream, QMdiArea& mdiArea, Form
         m_viewer->doneCurrent();
     }
 
-    m_items.append(new QStandardItem(m_inputStream->getSensorName().c_str()));
-    m_items.append(new QStandardItem(Stream::format2string[(int)m_inputStream->getFormat()]));
-    m_items.append(new QStandardItem(Stream::dims2string(m_inputStream->getDims()).c_str()));
-    m_items.append(new QStandardItem(std::to_string(m_inputStream->getAcquisitionSize()).c_str()));
+    m_items.append(new QStandardItem(m_inputStream->m_spec.m_sensorName.c_str()));
+    m_items.append(new QStandardItem(hub::SensorSpec::format2string(m_inputStream->m_spec.m_format).c_str()));
+    m_items.append(new QStandardItem(hub::SensorSpec::dims2string(m_inputStream->m_spec.m_dims).c_str()));
+    m_items.append(new QStandardItem(std::to_string(m_inputStream->m_spec.m_acquisitionSize).c_str()));
     m_itemFps = new QStandardItem("0");
     m_items.append(m_itemFps);
 
@@ -281,7 +283,7 @@ Sensor::Sensor(std::unique_ptr<InputStream> inputStream, QMdiArea& mdiArea, Form
 
 Sensor::~Sensor()
 {
-    std::cout << "[Sensor] ~Sensor(" << m_inputStream->getSensorName() << ")" << std::endl;
+    std::cout << "[Sensor] ~Sensor(" << m_inputStream->m_spec.m_sensorName << ")" << std::endl;
 
     if (m_thread.isRunning()) {
         m_thread.requestInterruption();
@@ -346,7 +348,7 @@ void Sensor::detachFromImageManipulator()
 void Sensor::attachFromImageManipulator()
 {
     assert(m_widgetStreamViewManipulator == nullptr);
-    if (m_inputStream->getDims().size() == 2) {
+    if (m_inputStream->m_spec.m_dims.size() == 2) {
         m_widgetStreamViewManipulator = &m_imageManipulator.getWidgetStreamView();
         m_widgetStreamViewManipulator->init(512, 192, 35.0, 50.0);
         //        m_imageManipulator.

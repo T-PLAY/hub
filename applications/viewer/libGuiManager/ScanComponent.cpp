@@ -46,7 +46,7 @@ using namespace Ra::Engine::Scene;
  * supported by Radium
  */
 
-ScanComponent::ScanComponent(const InputStream& inputStream, Ra::Engine::Scene::Entity* entity, Ra::Engine::RadiumEngine& engine, Ra::Gui::Viewer& viewer)
+ScanComponent::ScanComponent(const hub::InputSensor& inputStream, Ra::Engine::Scene::Entity* entity, Ra::Engine::RadiumEngine& engine, Ra::Gui::Viewer& viewer)
     : //    Ra::Engine::Scene::Component( "Dof6 component", entity ) {}
     SensorComponent(inputStream, entity)
     , m_engine(engine)
@@ -85,7 +85,7 @@ void ScanComponent::initialize()
     //        addRenderObject(m_ro);
     //    }
 
-    const auto& metadata = m_inputStream.getMetaData();
+    const auto& metadata = m_inputStream.m_spec.m_metaData;
     double scanWidth = 100; // mm
     if (metadata.find("scanWidth") != metadata.end()) {
         scanWidth = std::any_cast<double>(metadata.at("scanWidth"));
@@ -116,11 +116,11 @@ void ScanComponent::initialize()
         //! [Creating a texture for the slice]
         //        unsigned char data[192 * 512];
         //        unsigned char* data = new unsigned char[192 * 512];
-        const auto & sensorName = m_inputStream.getSensorName();
-        assert(m_inputStream.getDims().size() == 2);
-        const int width = m_inputStream.getDims().at(0);
-        const int height = m_inputStream.getDims().at(1);
-        const int sizeData = m_inputStream.getAcquisitionSize();
+        const auto & sensorName = m_inputStream.m_spec.m_sensorName;
+        assert(m_inputStream.m_spec.m_dims.size() == 2);
+        const int width = m_inputStream.m_spec.m_dims.at(0);
+        const int height = m_inputStream.m_spec.m_dims.at(1);
+        const int sizeData = m_inputStream.m_spec.m_acquisitionSize;
         assert(sizeData == width * height);
         int iProbe = 0;
 
@@ -204,10 +204,10 @@ void ScanComponent::initialize()
     }
 }
 
-void ScanComponent::update(const Stream::Acquisition& acq)
+void ScanComponent::update(const hub::Acquisition& acq)
 {
-    const unsigned char* data = acq.mData;
-    memcpy(m_data, data, m_inputStream.getAcquisitionSize());
+    const unsigned char* data = acq.m_data;
+    memcpy(m_data, data, m_inputStream.m_spec.m_acquisitionSize);
 
     //    m_viewer.makeCurrent();
     //    auto& params = m_textureScan->getParameters();
@@ -217,7 +217,7 @@ void ScanComponent::update(const Stream::Acquisition& acq)
     //    m_viewer.doneCurrent();
 
     auto * textureManager = m_engine.getTextureManager();
-    const auto & sensorName = m_inputStream.getSensorName();
+    const auto & sensorName = m_inputStream.m_spec.m_sensorName;
     textureManager->updateTextureContent(sensorName, (void*)m_data);
 
     // PR GOT

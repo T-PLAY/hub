@@ -4,7 +4,7 @@
 #include <QWidget>
 #include <WidgetStreamView.h>
 
-#include <stream.h>
+#include <Acquisition.hpp>
 
 namespace Ui {
 class FormImageManipulator;
@@ -17,7 +17,7 @@ public:
     explicit FormImageManipulator(QWidget* parent = nullptr);
     ~FormImageManipulator();
 
-    void update(const Acquisition & acquisition);
+    void update(const hub::Acquisition & acquisition);
     void init();
 
 //    void update();

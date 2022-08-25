@@ -12,7 +12,6 @@
 //#include <Engine/Data/LambertianMaterial.hpp>
 
 #include <FormInputStreamView.h>
-#include <stream.h>
 
 //#include <MinimalSystem.hpp>
 
@@ -44,19 +43,19 @@ struct MinimalComponent : public Ra::Engine::Scene::Component {
     void addProbe();
     void updateShader();
 
-    void updatePose( const Stream::Acquisition& acq );
+    void updatePose( const hub::Acquisition& acq );
     //    void updatePose( Acquisitions & acqs );
-    //    void updatePose( Stream::Acquisition && acq );
+    //    void updatePose( hub::Acquisition && acq );
     void initPose( int iProbe = 0 );
-    void updateScan( const Stream::Acquisition& acq );
+    void updateScan( const hub::Acquisition& acq );
     //    void updateScan( Acquisitions& acqs );
-    //    void updateScan( Stream::Acquisition && acq );
+    //    void updateScan( hub::Acquisition && acq );
     void initScan( int iProbe = 0 );
 
     void setupScanner(double scanWidth, double scanDepth, double x, double y, double z);
 
 
-    void initPoseTraces( const std::vector<Stream::Acquisition>& poseAcqs );
+    void initPoseTraces( const std::vector<hub::Acquisition>& poseAcqs );
 
     void incIter();
 

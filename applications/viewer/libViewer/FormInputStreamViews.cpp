@@ -6,7 +6,6 @@
 //#include <QHorizontalLayout>
 #include <QHBoxLayout>
 
-#include <RamIO.h>
 
 #include <constants.h>
 
@@ -111,7 +110,7 @@ Acquisitions & FormInputStreamViews::getAcquisitions(const std::string &sensorNa
     return m_sensorName2streamView.at(sensorName)->getAcquisitions(sourceType);
 }
 
-const InputStream &FormInputStreamViews::getInputStream(const std::string &sensorName, const std::string &sourceType) const
+const hub::InputSensor &FormInputStreamViews::getInputStream(const std::string &sensorName, const std::string &sourceType) const
 {
     assert(m_sensorName2streamView.find(sensorName) != m_sensorName2streamView.end());
     return m_sensorName2streamView.at(sensorName)->getInputStream(sourceType);
@@ -131,14 +130,14 @@ void FormInputStreamViews::onNewAcquisition(const std::string& sensorName, const
         const auto& inputStreamThread = m_sensorName2streamView.at(sensorName)->getIputStreamThread(sourceType);
         //        m_recorder.add(Snapshot(*inputStreamThread.mInputStream, inputStreamThread.mAcq));
 //        if (inputStreamThread.mAcqs.empty())
-        const auto& header = inputStreamThread.mInputStream->getHeader();
+        const auto& header = inputStreamThread.mInputStream->m_spec;
 //            return;
         assert(! inputStreamThread.mAcqs.empty());
 
         m_recorder.add(
             Snapshot(sensorName,
-                header.getFormat(),
-                header.getDims(),
+                header.m_format,
+                header.m_dims,
                 inputStreamThread.mAcqs.back()));
 //                inputStreamThread.mAcqs.front()));
 

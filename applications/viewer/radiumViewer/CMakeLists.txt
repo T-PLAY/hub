@@ -69,7 +69,7 @@ target_include_directories(
     )
 
 target_link_libraries(
-    ${PROJECT_NAME} PUBLIC src libApp Radium::Core Radium::Engine Radium::Gui ${Qt_LIBRARIES}
+    ${PROJECT_NAME} PUBLIC ${SRC_TARGET} libApp Radium::Core Radium::Engine Radium::Gui ${Qt_LIBRARIES}
 )
 
 configure_radium_app(NAME ${PROJECT_NAME})

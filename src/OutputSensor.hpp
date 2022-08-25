@@ -26,7 +26,8 @@ class SRC_API OutputSensor : public Sensor
                   std::is_base_of<io::OutputInterface, OutputInterface>::value>::type>
     OutputSensor( SensorSpec&& sensorSpec, OutputInterface&& outputInterface ) :
 
-        Sensor( std::forward<hub::SensorSpec>( sensorSpec ),
+//        Sensor( std::forward<hub::SensorSpec>( sensorSpec ), // not worked for const reference parameter, why ?
+        Sensor( std::move( sensorSpec ),
                 *std::move( new OutputInterface( std::move( outputInterface ) ) ) ) {
 
         std::cout << "[OutputSensor] OutputSensor(const SensorSpec&&, OutputInterface&&)"

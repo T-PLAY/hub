@@ -128,9 +128,9 @@ int main(int argc, char* argv[])
                 verticalMirror[i * 256 + j] = data[i * 256 + (256 - j - 1)];
             }
         }
-        //        outputScanStream << Stream::Acquisition { acq.mBackendTimestamp, acq.mBackendTimeOfArrival, verticalMirror, width * height };
-        outputScanStream << Stream::Acquisition { acq.mBackendTimestamp, acq.mBackendTimeOfArrival, data, width * height };
-        //        outputScanStream << Stream::Acquisition { acq.mBackendTimestamp, acq.mBackendTimeOfArrival, transpose, width * height };
+        //        outputScanStream << Stream::Acquisition { acq.start, acq.mBackendTimeOfArrival, verticalMirror, width * height };
+        outputScanStream << Stream::Acquisition { acq.start, acq.mBackendTimeOfArrival, data, width * height };
+        //        outputScanStream << Stream::Acquisition { acq.start, acq.mBackendTimeOfArrival, transpose, width * height };
 
         //    stbi_write_jpg("test.jpg", 1024, 1024, 1, (void*)bu.getCorrespondingUS(acq, 1024, 1024).data(), 90);
         std::cout << "Computed frame " << iFrame << std::endl;

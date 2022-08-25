@@ -4,8 +4,10 @@
 #include <iostream>
 
 #include <chrono>
-#include <socket.h>
-#include <stream.h>
+//#include <socket.h>
+//#include <stream.h>
+#include <InputSensor.hpp>
+#include <IO/Stream.hpp>
 
 int main( int argc, char* argv[] ) {
     //    argc = 2;
@@ -17,12 +19,12 @@ int main( int argc, char* argv[] ) {
     //    assert(i == 0 || i == 1);
 
     std::cout << "inputStream" << std::endl;
-    InputStream inputStream( ClientSocket( sensorNames[iSensor], sensorMasterNames[iSensor] ) );
+    hub::InputSensor inputStream( hub::io::InputStream(sensorNames[iSensor], sensorMasterNames[iSensor]) );
     std::cout << "proceduralStreamer inited" << std::endl;
-    const auto& header               = inputStream.getHeader();
-    const Header::MetaData& metaData = header.getMetaData();
+    const auto& header               = inputStream.m_spec;
+    const hub::SensorSpec::MetaData& metaData = header.m_metaData;
 
-    std::cout << "metadata : " << Header::metaData2string( metaData ) << std::endl;
+    std::cout << "metadata : " << hub::SensorSpec::metaData2string( metaData ) << std::endl;
     if ( iSensor != 2 ) {
         assert( std::any_cast<double>( metaData.at( "depth" ) ) == 3.0 );
         std::string name( std::any_cast<const char*>( metaData.at( "name" ) ) );
@@ -30,9 +32,9 @@ int main( int argc, char* argv[] ) {
         assert( std::string( std::any_cast<const char*>( metaData.at( "name" ) ) ) == "L533" );
     }
 
-    // InputStream inputStream("L500 Depth Sensor (Depth)");
+    // hub::InputSensor inputStream("L500 Depth Sensor (Depth)");
 
-    const size_t acquisitionSize = header.getAcquisitionSize();
+    const size_t acquisitionSize = header.m_acquisitionSize;
     std::cout << "acquisitionSize = " << acquisitionSize << std::endl;
     // const int width = inputStream.getDims().at(0);
 
