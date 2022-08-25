@@ -4,7 +4,7 @@
 #include <QThread>
 #include <QWidget>
 
-#include <FormSensorView.h>
+#include <FormStreamView.h>
 #include <MainWindowStreamView.h>
 #include <QComboBox>
 #include <QMdiArea>
@@ -16,73 +16,71 @@
 
 //#include <DialogServerConnect.h>
 
-class FormSensorViews;
+class FormStreamViews;
 
 class Thread_Client : public QThread {
     Q_OBJECT
 public:
     // constructor
-    explicit Thread_Client(const FormSensorViews &formSensorViews, QObject* parent = 0);
+    explicit Thread_Client(const FormStreamViews &formSensorViews, QObject* parent = 0);
 
 signals:
     void serverConnected();
     void serverDisconnected();
-    void addSensorSignal(std::string sensorName,
-        std::string format,
-        std::string dims,
-        std::string size,
-        std::string metaData);
-    void delSensorSignal(std::string sensorName);
+    void addStreamSignal(std::string streamName,
+        const hub::SensorSpec & sensorSpec);
+//        std::string format,
+//        std::string dims,
+//        std::string size,
+//        std::string metaData);
+    void delStreamSignal(std::string streamName);
 
 public:
     // overriding the QThread's run() method
     void run();
 
 //    DialogServerConnect& m_dialog;
-    const FormSensorViews & m_formSensorViews;
+    const FormStreamViews & m_formSensorViews;
 
 private:
 };
 
 namespace Ui {
-class FormSensorViews;
+class FormStreamViews;
 }
 
-class FormSensorViews : public QWidget {
+class FormStreamViews : public QWidget {
     Q_OBJECT
 
 public:
-//    FormSensorViews(QBoxLayout& vboxLayout, QMdiArea& mdiArea, QMainWindow& mainWindow, QWidget* parent = nullptr);
-    explicit FormSensorViews(QWidget * parent = nullptr);
-    ~FormSensorViews();
+//    FormStreamViews(QBoxLayout& vboxLayout, QMdiArea& mdiArea, QMainWindow& mainWindow, QWidget* parent = nullptr);
+    explicit FormStreamViews(QWidget * parent = nullptr);
+    ~FormStreamViews();
 
 //    void startStreaming();
 
 signals:
     //    void isServerConnected();
     //    void serverDisconnected();
-    void streamingStarted(const std::string & sensorName, const std::string & syncSensorName);
-    void streamingStopped(const std::string & sensorName);
+    void streamingStarted(const std::string & streamName, const std::string & syncSensorName);
+    void streamingStopped(const std::string & streamName);
     //    void startStreaming();
     //    void stopStreaming();
-    //    void sensorAdded(const std::string & sensorName);
-    //    void sensorDeleted(const std::string & sensorName);
+    //    void sensorAdded(const std::string & streamName);
+    //    void sensorDeleted(const std::string & streamName);
     void serverDisconnected();
 
 public slots:
     void onServerConnect();
     void onServerDisconnect();
-    void addSensor(std::string sensorName,
-        std::string format,
-        std::string dims,
-        std::string size,
-        std::string metaData);
-    void delSensor(std::string sensorName);
+    void addStream(std::string streamName,
+        const hub::SensorSpec & sensorSpec);
+    void delStream(std::string streamName);
     //    void onQuitApp();
 
 
 private:
-    Ui::FormSensorViews* ui;
+    Ui::FormStreamViews* ui;
 
 //    DialogServerConnect m_dialog;
 
@@ -93,7 +91,7 @@ private:
     //    std::map<std::string, SensorView*> m_sensorViews;
     //    std::map<std::string, MainWindowStreamView*> mStreamViews;
 
-    std::map<std::string, FormSensorView*> m_sensorViews;
+    std::map<std::string, FormStreamView*> m_sensorViews;
     QStringListModel m_sensorModel;
 
 //    QBoxLayout& m_vBoxLayout;
@@ -107,7 +105,7 @@ private:
     //    QComboBox & m_comboBoxPose;
 
 public:
-    const FormSensorView& getSensorView(const std::string& sensorName) const;
+    const FormStreamView& getSensorView(const std::string& streamName) const;
 //    void setMdiArea(QMdiArea *newMdiArea);
 
     bool isServerConnected() const;

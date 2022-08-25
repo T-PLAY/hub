@@ -200,6 +200,9 @@ void Server::delViewer( Viewer* viewer ) {
     m_viewers.remove( viewer );
     std::cout << std::left << std::setw( g_margin2 ) << headerMsg() << std::setw( g_margin )
               << "del viewer" << getStatus() << std::endl;
+    std::cout << "-------------------------------------------------------------------------"
+                 "--------------------"
+              << std::endl;
     m_mtx.unlock();
 }
 
@@ -507,7 +510,8 @@ Streamer::Streamer( Server& server, int iClient, hub::net::ClientSocket&& sock )
             std::cout << headerMsg() << "in : catch inputSensor exception : " << e.what()
                       << std::endl;
         }
-        std::cout << headerMsg() << "end (" << m_inputSensor->m_spec.m_sensorName << ")" << std::endl;
+        std::cout << headerMsg() << "end (" << m_inputSensor->m_spec.m_sensorName << ")"
+                  << std::endl;
         //        m_server.m_streamers.erase( m_streamName );
 
         std::cout << headerMsg() << "thread end" << std::endl;
@@ -550,7 +554,7 @@ Viewer::Viewer( Server& server, int iClient, hub::net::ClientSocket&& sock ) :
             while ( true ) {
                 m_socket.write( hub::net::ClientSocket::Message::PING );
                 std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
-                std::cout << headerMsg() << "ping viewer" << std::endl;
+                //                std::cout << headerMsg() << "ping viewer" << std::endl;
             }
         }
         catch ( std::exception& e ) {

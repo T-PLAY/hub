@@ -21,9 +21,9 @@ class Viewer : public net::ClientSocket
   private:
     std::thread m_thread;
     bool m_stopThread = false;
-    std::function<void( const std::string& sensorName, const SensorSpec& sensorSpec )>
+    std::function<void( const std::string& streamName, const SensorSpec& sensorSpec )>
         m_onNewStreamer;
-    std::function<void( const std::string& sensorName )> m_onDelStreamer;
+    std::function<void( const std::string& streamName )> m_onDelStreamer;
 };
 
 } // namespace hub

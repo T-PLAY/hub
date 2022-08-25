@@ -24,6 +24,10 @@ if (HUB_APPLICATION_ENABLE_PATRIOT)
     add_subdirectory(patriot)
 endif()
 
-if (HUB_ENABLE_SCUS AND HUB_ENABLE_DCMTK)
+if (HUB_ENABLE_SCUS AND HUB_USE_DCMTK)
     add_subdirectory(simulator)
+endif()
+
+if (HUB_USE_DCMTK)
+    add_subdirectory(dicomStreamer)
 endif()

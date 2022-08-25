@@ -1,5 +1,5 @@
-#include "FormSensorView.h"
-#include "ui_FormSensorView.h"
+#include "FormStreamView.h"
+#include "ui_FormStreamView.h"
 
 #include <QMdiSubWindow>
 #include <WidgetStreamView.h>
@@ -7,8 +7,8 @@
 #include <iostream>
 #include <constants.h>
 
-// Thread_InputStream::Thread_InputStream( std::string sensorName, QObject* parent ) :
-//     QThread( parent ), mInputStream( ClientSocket( sensorName, "" ) ) {
+// Thread_InputStream::Thread_InputStream( std::string streamName, QObject* parent ) :
+//     QThread( parent ), mInputStream( ClientSocket( streamName, "" ) ) {
 //     std::cout << "Thread_InputStream()" << std::endl;
 // }
 
@@ -40,28 +40,26 @@
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-FormSensorView::FormSensorView(std::string sensorName,
-    std::string format,
-    std::string dims,
-    std::string size,
-    std::string metaData,
+FormStreamView::FormStreamView(std::string streamName,
+    const hub::SensorSpec &sensorSpec,
     QStringListModel& sensorModel,
     QWidget* parent)
 
     : QWidget(parent)
-    , ui(new Ui::FormSensorView)
-    , mSensorName(sensorName)
+    , ui(new Ui::FormStreamView)
+    , m_streamName(streamName)
     , mSensorModel(sensorModel)
 {
     //    m_mdiArea( mdiArea ) {
     ui->setupUi(this);
 
-    ui->labelSensorName->setText(sensorName.c_str());
-    ui->labelFormat->setText(format.c_str());
-    ui->laberDimensions->setText(dims.c_str());
-    ui->labelSize->setText((size + " bytes").c_str());
+    ui->labelStreamName->setText(streamName.c_str());
+    ui->labelSensorName->setText(sensorSpec.m_sensorName.c_str());
+    ui->labelFormat->setText(hub::SensorSpec::format2string(sensorSpec.m_format).c_str());
+    ui->laberDimensions->setText(hub::SensorSpec::dims2string(sensorSpec.m_dims).c_str());
+    ui->labelSize->setText((std::to_string(sensorSpec.m_acquisitionSize) + " bytes").c_str());
 
-    if (metaData.empty()) {
+    if (sensorSpec.m_metaData.empty()) {
         delete ui->label_metadata;
         delete ui->title_metadata;
         delete ui->line_metadata;
@@ -69,15 +67,15 @@ FormSensorView::FormSensorView(std::string sensorName,
         ui->verticalLayout_4->removeItem(ui->verticalLayout_metaData);
         delete ui->verticalLayout_metaData;
     } else {
-        ui->label_metadata->setText(metaData.c_str());
+        ui->label_metadata->setText(hub::SensorSpec::metaData2string(sensorSpec.m_metaData).c_str());
     }
 
     mProxySensorModel.setSourceModel(&mSensorModel);
-    //    mProxySensorModel.setFilterFixedString(sensorName.c_str());
-    //    mProxySensorModel.setFilterWildcard(sensorName.c_str());
-    //    mProxySensorModel.setFilterRegularExpression(QRegularExpression(("^[" + sensorName + "]").c_str()));
-    //    mProxySensorModel.setFilterRegularExpression(QRegularExpression(QString("^(?!\b") + sensorName.c_str() + "\b)"));
-    QString sensorNameMod = QString(sensorName.c_str()).replace("(", "\\(").replace(")", "\\)");
+    //    mProxySensorModel.setFilterFixedString(streamName.c_str());
+    //    mProxySensorModel.setFilterWildcard(streamName.c_str());
+    //    mProxySensorModel.setFilterRegularExpression(QRegularExpression(("^[" + streamName + "]").c_str()));
+    //    mProxySensorModel.setFilterRegularExpression(QRegularExpression(QString("^(?!\b") + streamName.c_str() + "\b)"));
+    QString sensorNameMod = QString(streamName.c_str()).replace("(", "\\(").replace(")", "\\)");
     //    mProxySensorModel.setFilterRegularExpression(QRegularExpression(QString("^(?!Polhemus Patriot \\(probe\\))")));
     mProxySensorModel.setFilterRegularExpression(QRegularExpression(QString("^(?!" + sensorNameMod + ")")));
     ui->comboBox_syncSensor->setModel(&mProxySensorModel);
@@ -89,7 +87,7 @@ FormSensorView::FormSensorView(std::string sensorName,
 //    ui->radioButtonOnOff->click();
 }
 
-FormSensorView::~FormSensorView()
+FormStreamView::~FormStreamView()
 {
     //    on_stopStreaming();
     //    if (m_inputStreamThread != nullptr) {
@@ -103,12 +101,12 @@ FormSensorView::~FormSensorView()
     delete ui;
 }
 
-void FormSensorView::on_radioButtonOnOff_clicked(bool checked)
+void FormStreamView::on_radioButtonOnOff_clicked(bool checked)
 {
     if (checked) {
         ui->radioButtonOnOff->setText("on ");
         ui->frameButtonOnOff->setStyleSheet("border-radius: 10px; background-color: lightgreen");
-        //        emit addViewStreamSignal(mSensorName);
+        //        emit addViewStreamSignal(m_streamName);
         //        on_startStreamingPrivate();
 
         std::string syncSensorName = ui->comboBox_syncSensor->currentText().toStdString();
@@ -116,7 +114,7 @@ void FormSensorView::on_radioButtonOnOff_clicked(bool checked)
             syncSensorName = "";
 
 //        if (syncSensorName == "") {
-//            if (mSensorName == g_probePoseSensorName) {
+//            if (m_streamName == g_probePoseSensorName) {
 ////                if (mSensorModel.stringList().contains(g_probeScanSensorName.c_str())) {
 //                    syncSensorName = g_probeScanSensorName;
 ////                }
@@ -124,27 +122,27 @@ void FormSensorView::on_radioButtonOnOff_clicked(bool checked)
 //        }
         ui->comboBox_syncSensor->setCurrentText(syncSensorName.c_str());
 
-        emit streamingStarted(mSensorName, syncSensorName);
+        emit streamingStarted(m_streamName, syncSensorName);
         ui->comboBox_syncSensor->setEnabled(false);
 
     } else {
         ui->radioButtonOnOff->setText("off");
         ui->frameButtonOnOff->setStyleSheet("border-radius: 10px; background-color: red");
-        //        emit delViewStreamSignal(mSensorName);
+        //        emit delViewStreamSignal(m_streamName);
         //        on_stopStreaming();
-        emit streamingStopped(mSensorName);
+        emit streamingStopped(m_streamName);
         ui->comboBox_syncSensor->setEnabled(true);
     }
 }
 
-void FormSensorView::setRadioButtonOff()
+void FormStreamView::setRadioButtonOff()
 {
     ui->radioButtonOnOff->setChecked(false);
     ui->radioButtonOnOff->setText("off");
     ui->frameButtonOnOff->setStyleSheet("border-radius: 10px; background-color: red");
 }
 
-void FormSensorView::on_startStreaming()
+void FormStreamView::on_startStreaming()
 {
     //    on_radioButtonOnOff_clicked(true);
     //    ui->radioButtonOnOff->clicked(true);
@@ -153,57 +151,57 @@ void FormSensorView::on_startStreaming()
         ui->radioButtonOnOff->click();
 }
 
-// void FormSensorView::on_startStreamingPrivate() {
-//     std::cout << "[FormSensorView] FormSensorView::on_startStreamingPrivate slot '" << mSensorName << "'"
+// void FormStreamView::on_startStreamingPrivate() {
+//     std::cout << "[FormStreamView] FormStreamView::on_startStreamingPrivate slot '" << m_streamName << "'"
 //               << std::endl;
 //     //              << ", nb streamView = " << mStreamViews.size() << std::endl;
 
 //    assert( m_inputStreamThread == nullptr );
-//    m_inputStreamThread = new Thread_InputStream( mSensorName, this );
+//    m_inputStreamThread = new Thread_InputStream( m_streamName, this );
 //    QObject::connect(
-//        m_inputStreamThread, &Thread_InputStream::newAcquisition, this, &FormSensorView::on_newAcquisition );
+//        m_inputStreamThread, &Thread_InputStream::newAcquisition, this, &FormStreamView::on_newAcquisition );
 ////    QObject::connect(
-////        m_inputStreamThread, &Thread_InputStream::streamingStopped, this, &FormSensorView::streamingStopped );
+////        m_inputStreamThread, &Thread_InputStream::streamingStopped, this, &FormStreamView::streamingStopped );
 
 //    assert( m_streamView == nullptr );
 //    m_streamView = new MainWindowStreamView( m_inputStreamThread->mInputStream, this );
 
-//    //    assert( mStreamViews.find( mSensorName ) == mStreamViews.end() );
-//    //    mStreamViews[mSensorName] = streamView;
-//    //    std::cout << "[FormSensorView] FormSensorView::on_startStreamingPrivate " << mSensorName <<
+//    //    assert( mStreamViews.find( m_streamName ) == mStreamViews.end() );
+//    //    mStreamViews[m_streamName] = streamView;
+//    //    std::cout << "[FormStreamView] FormStreamView::on_startStreamingPrivate " << m_streamName <<
 //    //    std::endl;
 
 ////    QMdiSubWindow* subWindow = m_mdiArea.addSubWindow( m_streamView );
 ////    subWindow->setVisible( true );
-////    subWindow->setWindowTitle( mSensorName.c_str() );
+////    subWindow->setWindowTitle( m_streamName.c_str() );
 
 //    QObject::connect( m_streamView,
 //                      &MainWindowStreamView::onCloseStreamViewSignal,
 //                      this,
-//                      &FormSensorView::on_closeStreamView );
+//                      &FormStreamView::on_closeStreamView );
 
 //    mCounterFps = 0;
 //    mFps        = 10;
 //    mStartFps   = std::chrono::high_resolution_clock::now();
 //    m_inputStreamThread->start();
 
-//    emit streamingStarted(mSensorName);
+//    emit streamingStarted(m_streamName);
 //}
 
 //#include <typeinfo>
 
-// void FormSensorView::on_stopStreaming() {
-//     std::cout << "[FormSensorView] FormSensorView::on_stopStreaming " << mSensorName << std::endl;
+// void FormStreamView::on_stopStreaming() {
+//     std::cout << "[FormStreamView] FormStreamView::on_stopStreaming " << m_streamName << std::endl;
 //     //              << mStreamViews.size() << std::endl;
 
 //        if (m_inputStreamThread == nullptr)
 //            return;
 
 //    assert( m_inputStreamThread != nullptr );
-//    //    if ( mStreamViews.find( sensorName ) != mStreamViews.end() ) {
-//    //        MainWindowStreamView* streamView = mStreamViews.at( sensorName );
+//    //    if ( mStreamViews.find( streamName ) != mStreamViews.end() ) {
+//    //        MainWindowStreamView* streamView = mStreamViews.at( streamName );
 
-//    //        std::cout << "[FormSensorView] FormSensorView::on_stopStreaming delete " << streamView <<
+//    //        std::cout << "[FormStreamView] FormStreamView::on_stopStreaming delete " << streamView <<
 //    //        std::endl;
 //    m_inputStreamThread->requestInterruption();
 //    m_inputStreamThread->wait();
@@ -218,13 +216,13 @@ void FormSensorView::on_startStreaming()
 ////        m_streamView = nullptr;
 ////    }
 //    //    }
-//    //    std::cout << "[FormSensorView] FormSensorView::on_stopStreaming slot end, nb streamView = "
+//    //    std::cout << "[FormStreamView] FormStreamView::on_stopStreaming slot end, nb streamView = "
 //    //              << mStreamViews.size() << std::endl;
 
-//    emit streamingStopped(mSensorName);
+//    emit streamingStopped(m_streamName);
 //}
 
-// void FormSensorView::on_closeStreamView() {
+// void FormStreamView::on_closeStreamView() {
 
 //        m_mdiArea.removeSubWindow( m_streamView->parentWidget() );
 ////        delete m_streamView;
@@ -232,16 +230,16 @@ void FormSensorView::on_startStreaming()
 //        setRadioButtonOff();
 //    on_stopStreaming();
 
-//    //    std::cout << "[FormSensorView] FormSensorView::on_closeStreamView " << std::endl;
-//    //    assert( mSensorViews.find( sensorName ) != mSensorViews.end() );
-//    //    mSensorViews.at( sensorName )->setRadioButtonOff();
+//    //    std::cout << "[FormStreamView] FormStreamView::on_closeStreamView " << std::endl;
+//    //    assert( mSensorViews.find( streamName ) != mSensorViews.end() );
+//    //    mSensorViews.at( streamName )->setRadioButtonOff();
 
-//    //    assert( mStreamViews.find( sensorName ) != mStreamViews.end() );
-//    //    mStreamViews.erase( sensorName );
+//    //    assert( mStreamViews.find( streamName ) != mStreamViews.end() );
+//    //    mStreamViews.erase( streamName );
 //}
 
-// void FormSensorView::on_newAcquisition() {
-//     //    std::cout << "[FormSensorView] on_newAcquisition" << std::endl;
+// void FormStreamView::on_newAcquisition() {
+//     //    std::cout << "[FormStreamView] on_newAcquisition" << std::endl;
 //     if ( m_inputStreamThread == nullptr ) return;
 
 //    if ( mCounterFps == std::ceil( mFps ) ) {
@@ -269,23 +267,23 @@ void FormSensorView::on_startStreaming()
 //    emit newAcquisition();
 //}
 
-// const InputStream &FormSensorView::getInputStream() const
+// const InputStream &FormStreamView::getInputStream() const
 //{
 //     assert(m_inputStreamThread != nullptr);
 //     return m_inputStreamThread->mInputStream;
 // }
 
-// const Thread_InputStream *FormSensorView::getInputStreamThread() const
+// const Thread_InputStream *FormStreamView::getInputStreamThread() const
 //{
 //     assert(m_inputStreamThread != nullptr);
 //     return m_inputStreamThread;
 // }
 
-//void FormSensorView::on_comboBox_syncSensor_currentTextChanged(const QString& syncSensorName)
+//void FormStreamView::on_comboBox_syncSensor_currentTextChanged(const QString& syncSensorName)
 //{
-//    std::cout << "[FormSensorView] FormSensorView::on_comboBox_syncSensor_currentTextChanged " << syncSensorName.toStdString() << std::endl;
+//    std::cout << "[FormStreamView] FormStreamView::on_comboBox_syncSensor_currentTextChanged " << syncSensorName.toStdString() << std::endl;
 //    if (ui->radioButtonOnOff->isEnabled()) {
-//        emit streamingStopped(mSensorName);
-//        emit streamingStarted(mSensorName, (syncSensorName == "none") ? "" : syncSensorName.toStdString());
+//        emit streamingStopped(m_streamName);
+//        emit streamingStarted(m_streamName, (syncSensorName == "none") ? "" : syncSensorName.toStdString());
 //    }
 //}

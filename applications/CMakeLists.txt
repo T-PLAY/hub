@@ -40,7 +40,7 @@ if (HUB_ENABLE_APPLICATIONS)
     add_subdirectory(recorder)
     add_subdirectory(player)
 
-    if (HUB_ENABLE_SCUS AND HUB_ENABLE_DCMTK)
+    if (HUB_ENABLE_SCUS AND HUB_USE_DCMTK)
         add_subdirectory(testScus)
     endif()
 

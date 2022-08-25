@@ -117,14 +117,15 @@ static void signalHandler( int signum ) {
 
     assert(s_sockets.empty());
     std::cout << getHeader() << "signalHandler() Interrupt signal (" << signum << ") received." << std::endl;
+    std::cout << getHeader() << "signalHandler() s_sockets size = " << s_sockets.size() << std::endl;
 
     // cleanup and close up stuff here
     // terminate program
     for ( const socket_fd& sock : s_sockets ) {
         if ( sock != INVALID_SOCKET ) {
-#ifdef DEBUG_NET
-            std::cout << getHeader() << "clearSocket(" << sock << ") close socket" << std::endl;
-#endif
+//#ifdef DEBUG_NET
+            std::cout << getHeader() << "signalHandler() close socket" << sock << std::endl;
+//#endif
             closesocket( sock );
         }
     }
