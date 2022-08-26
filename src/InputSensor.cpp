@@ -5,20 +5,15 @@
 namespace hub {
 
 Acquisition InputSensor::getAcquisition() const {
-    long long start, end;
-    unsigned char* data = new unsigned char[m_spec.m_acquisitionSize];
 
-    m_interface.read( start );
-    m_interface.read( end );
-    m_interface.read( data, m_spec.m_acquisitionSize );
+    Acquisition acq = m_interface.getAcquisition(m_spec.m_acquisitionSize);
 
 #ifdef DEBUG_STREAM
     Acquisition acquisition( start, end, data, spec.m_acquisitonSize );
     std::cout << "[InputSensor] read acq :  " << acquisition << std::endl;
 #endif
 
-    return Acquisition( start, end, data, m_spec.m_acquisitionSize );
-    delete[] data;
+    return acq;
 }
 
 std::vector<Acquisition> InputSensor::getAllAcquisitions() {

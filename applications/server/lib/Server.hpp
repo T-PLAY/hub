@@ -4,6 +4,8 @@
 #include <functional>
 #include <map>
 #include <mutex>
+//#include <semaphore.h>
+//#include <semaphore>
 
 #include <Acquisition.hpp>
 #include <InputSensor.hpp>
@@ -34,7 +36,7 @@ class Client
     Client( Server& server, int iClient );
     virtual ~Client() = default;
 
-    virtual std::string headerMsg();
+    virtual std::string headerMsg() const;
 
   protected:
     Server& m_server;
@@ -49,20 +51,28 @@ class Streamer : public Client
     Streamer( Server& server, int iClient, hub::net::ClientSocket&& sock );
     ~Streamer();
 
-    std::string headerMsg() override;
+    std::string headerMsg() const override;
 
     const hub::InputSensor& getInputSensor() const;
 
+    void addStreamViewer( StreamViewer* streamViewer );
+    void delStreamViewer( StreamViewer* streamViewer );
+
+    void newAcquisition (const std::string & streamerName, const hub::Acquisition & acq);
+
     const std::string& getStreamName() const;
 
+    const std::map<std::string, std::list<StreamViewer*>>& getSyncViewers() const;
+
   private:
+    std::mutex m_mtx;
     std::unique_ptr<hub::InputSensor> m_inputSensor;
     std::string m_streamName;
 
     std::map<std::string, std::list<StreamViewer*>> m_syncViewers;
     std::map<std::string, std::deque<hub::Acquisition>> m_syncAcqs;
 
-    friend class Server;
+    //    friend class Server;
 };
 
 class Viewer : public Client
@@ -70,14 +80,15 @@ class Viewer : public Client
   public:
     Viewer( Server& server, int iClient, hub::net::ClientSocket&& sock );
 
-    std::string headerMsg() override;
+    std::string headerMsg() const override;
 
     void notifyNewStreamer( const Streamer& streamer ) const;
+    void notifyDelStreamer( const std::string & streamerName ) const;
 
   private:
     hub::net::ClientSocket m_socket;
 
-    friend class Server;
+    //    friend class Server;
 };
 
 class StreamViewer : public Client
@@ -86,17 +97,25 @@ class StreamViewer : public Client
     StreamViewer( Server& server, int iClient, hub::net::ClientSocket&& sock );
     ~StreamViewer();
 
-    std::string headerMsg() override;
+    std::string headerMsg() const override;
 
     void update( const hub::Acquisition& acq );
 
+    const std::string& getSyncStreamName() const;
+    const std::string& getStreamName() const;
+
   private:
     std::unique_ptr<hub::OutputSensor> m_outputSensor;
+    std::mutex m_mtxOutputSensor;
     std::string m_streamName;
 
     std::string m_syncStreamName;
 
-    friend class Server;
+    std::thread m_thread;
+    bool m_isKilled     = false;
+    bool m_updateFailed = false;
+
+    //    friend class Server;
 };
 
 class Server
@@ -106,7 +125,7 @@ class Server
     Server( int port );
     ~Server();
 
-    std::string headerMsg();
+    std::string headerMsg() const;
 
     void run();
     void asyncRun();
@@ -127,10 +146,11 @@ class Server
 
   private:
     std::map<std::string, Streamer*> m_streamers;
+//    mutable std::mutex m_mtxStreamers;
     std::list<Viewer*> m_viewers;
     std::map<std::string, std::list<StreamViewer*>> m_streamViewers;
 
-    std::mutex m_mtx;
+//    std::mutex m_mtx;
 
   private:
     hub::net::ServerSocket mServerSock;

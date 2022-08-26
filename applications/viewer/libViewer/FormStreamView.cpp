@@ -67,7 +67,7 @@ FormStreamView::FormStreamView(std::string streamName,
         ui->verticalLayout_4->removeItem(ui->verticalLayout_metaData);
         delete ui->verticalLayout_metaData;
     } else {
-        ui->label_metadata->setText(hub::SensorSpec::metaData2string(sensorSpec.m_metaData).c_str());
+        ui->label_metadata->setText(hub::SensorSpec::metaData2string(sensorSpec.m_metaData, true).c_str());
     }
 
     mProxySensorModel.setSourceModel(&mSensorModel);

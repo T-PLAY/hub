@@ -34,6 +34,13 @@ void Interface::write( const SensorSpec& sensorSpec ) const {
     write( sensorSpec.m_metaData );
 }
 
+void Interface::write(const Acquisition &acq) const
+{
+    write( acq.m_start );
+    write( acq.m_end );
+    write( acq.m_data, acq.m_size );
+}
+
 void Interface::write( const char* str ) const {
 #ifdef DEBUG_IOSTREAM
     std::cout << "[Interface] write const char* : start" << std::endl;
@@ -188,6 +195,20 @@ SensorSpec Interface::getSensorSpec() const {
     SensorSpec sensorSpec;
     read( sensorSpec );
     return sensorSpec;
+}
+
+Acquisition Interface::getAcquisition(int acquisitionSize) const
+{
+    long long start, end;
+    unsigned char* data = new unsigned char[acquisitionSize];
+
+    read( start );
+    read( end );
+    read( data, acquisitionSize );
+
+    Acquisition acq( start, end, data, acquisitionSize );
+    delete[] data;
+    return acq;
 }
 
 void Interface::read( char* str ) const {
