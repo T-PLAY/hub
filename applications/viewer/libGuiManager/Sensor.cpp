@@ -14,7 +14,7 @@ SensorThread::SensorThread( Sensor& sensor, QObject* parent ) :
     QThread { parent }, m_sensor( sensor ) {}
 
 SensorThread::~SensorThread() {
-    std::cout << "[SensorThread] ~SensorThread(" << m_sensor.m_inputStream->m_spec.m_sensorName
+    std::cout << "[SensorThread] ~SensorThread(" << m_sensor.m_inputSensor->m_spec.m_sensorName
               << ")" << std::endl;
 
     //    assert(! isRunning());
@@ -27,16 +27,16 @@ SensorThread::~SensorThread() {
 void SensorThread::run() {
     std::cout << "[SensorThread] run()" << std::endl;
 
-    auto& inputStream = m_sensor.m_inputStream;
+    auto& inputStream = m_sensor.m_inputSensor;
 
     try {
 
         while ( !this->isInterruptionRequested() ) {
 
-            //            Stream::Acquisition acq;
+            //            Sensor::Acquisition acq;
             //            *mInputStream >> acq;
             const auto& acq = inputStream->getAcquisition();
-            //            std::cout << "[SensorThread] receive acq : " << acq << std::endl;
+            //            std::cout << "[SensorThreaSensorThread] receive acq : " << acq << std::endl;
 
             //            mAcqs.push(std::move(acq));
             //            mAcqs.push({});
@@ -141,13 +141,13 @@ void SensorCounterFpsThread::run() {
 
 // Sensor::Sensor(IOStream&& iostream, QObject* parent)
 //     : QObject { parent }
-//     , m_inputStream(std::move(iostream))
+//     , m_inputSensor(std::move(iostream))
 //{
 // }
 
 // Sensor::Sensor(IOStream &&iostream, QObject *parent)
 //     :QObject{parent}
-//     , m_inputStream(new hub::InputSensor(std::move(iostream)))
+//     , m_inputSensor(new hub::InputSensor(std::move(iostream)))
 //{
 
 //}
@@ -167,14 +167,14 @@ Sensor::Sensor( std::unique_ptr<hub::InputSensor> inputStream,
                 Sensor* parentSensor,
                 QObject* parent ) :
     QObject( parent ),
-    m_inputStream( std::move( inputStream ) ),
+    m_inputSensor( std::move( inputStream ) ),
     m_engine( engine ),
     m_viewer( viewer ),
     m_sys( sys ),
     m_mdiArea( mdiArea ),
     m_imageManipulator( imageManipulator )
     //    , m_widgetStreamViewManipulator(m_imageManipulator.getWidgetStreamView())
-    //    , m_inputStream(std::move(inputStream))
+    //    , m_inputSensor(std::move(inputStream))
     ,
     m_thread( *this, parent ),
     m_counterFpsThread( *this, parent )
@@ -185,7 +185,7 @@ Sensor::Sensor( std::unique_ptr<hub::InputSensor> inputStream,
     {
         assert( m_widgetStreamView == nullptr );
 
-        const auto& dims = m_inputStream->m_spec.m_dims;
+        const auto& dims = m_inputSensor->m_spec.m_dims;
         if ( dims.size() == 1 ) {
             m_widgetStreamView = new WidgetStreamView1D( &m_mdiArea );
             m_widgetStreamView->setMinimumSize( 400, 35 );
@@ -211,16 +211,16 @@ Sensor::Sensor( std::unique_ptr<hub::InputSensor> inputStream,
         dimText += ")";
 
         std::string formatText = std::string( "(format: " ) +
-                                 hub::SensorSpec::format2string( m_inputStream->m_spec.m_format ) +
+                                 hub::SensorSpec::format2string( m_inputSensor->m_spec.m_format ) +
                                  ")";
         m_subWindow->setWindowTitle(
-            ( m_inputStream->m_spec.m_sensorName + "   " + dimText + "   " + formatText ).c_str() );
+            ( m_inputSensor->m_spec.m_sensorName + "   " + dimText + "   " + formatText ).c_str() );
         //        }
     }
 
     //     init image manipulator
     //    {
-    //        if (m_inputStream->getDims().size() == 2) {
+    //        if (m_inputSensor->getDims().size() == 2) {
     //            m_widgetStreamViewManipulator = &imageManipulator.getWidgetStreamView();
     //            m_widgetStreamViewManipulator->init(512, 192, 35.0, 50.0);
     //        }
@@ -229,7 +229,7 @@ Sensor::Sensor( std::unique_ptr<hub::InputSensor> inputStream,
     // create 3D scene object
     {
         assert( m_component == nullptr );
-        m_entity = m_engine->getEntityManager()->createEntity( m_inputStream->m_spec.m_sensorName +
+        m_entity = m_engine->getEntityManager()->createEntity( m_inputSensor->m_spec.m_sensorName +
                                                                " entity" );
 
         //        auto & transformObservers = m_entity->transformationObservers();
@@ -240,9 +240,9 @@ Sensor::Sensor( std::unique_ptr<hub::InputSensor> inputStream,
         //            auto& transformObservers = m_parentEntity->transformationObservers();
 
         //            //            Ra::Core::Utils::Observable<Ra::Engine::Scene::Entity*> observer
-        //            = &Sensor::update;
+        //            = &SensoSensor::update;
         //            //            std::function<void(const Ra::Engine::Scene::Entity * entity)>
-        //            observer = &Sensor::updateTransform;
+        //            observer = &Stream::updateTransform;
         //            //            std::function<void(const Ra::Engine::Scene::Entity * entity)>
         //            observer = this->updateTransform; std::function<void(const
         //            Ra::Engine::Scene::Entity* entity)> observer = [this](const
@@ -254,16 +254,16 @@ Sensor::Sensor( std::unique_ptr<hub::InputSensor> inputStream,
         //            transformObservers.attach(observer);
         //        }
 
-        switch ( m_inputStream->m_spec.m_format ) {
+        switch ( m_inputSensor->m_spec.m_format ) {
         case hub::SensorSpec::Format::DOF6:
             //            assert(m_dof6Component == nullptr);
             //            m_dof6Component = new Dof6Component(m_entity);
-            m_component = new Dof6Component( *m_inputStream, m_entity );
+            m_component = new Dof6Component( *m_inputSensor, m_entity );
             break;
 
         case hub::SensorSpec::Format::Y8:
         case hub::SensorSpec::Format::Y16:
-            m_component = new ScanComponent( *m_inputStream, m_entity, *m_engine, *m_viewer );
+            m_component = new ScanComponent( *m_inputSensor, m_entity, *m_engine, *m_viewer );
             break;
 
         default:
@@ -287,13 +287,13 @@ Sensor::Sensor( std::unique_ptr<hub::InputSensor> inputStream,
         m_viewer->doneCurrent();
     }
 
-    m_items.append( new QStandardItem( m_inputStream->m_spec.m_sensorName.c_str() ) );
+    m_items.append( new QStandardItem( m_inputSensor->m_spec.m_sensorName.c_str() ) );
     m_items.append( new QStandardItem(
-        hub::SensorSpec::format2string( m_inputStream->m_spec.m_format ).c_str() ) );
+        hub::SensorSpec::format2string( m_inputSensor->m_spec.m_format ).c_str() ) );
     m_items.append(
-        new QStandardItem( hub::SensorSpec::dims2string( m_inputStream->m_spec.m_dims ).c_str() ) );
+        new QStandardItem( hub::SensorSpec::dims2string( m_inputSensor->m_spec.m_dims ).c_str() ) );
     m_items.append(
-        new QStandardItem( std::to_string( m_inputStream->m_spec.m_acquisitionSize ).c_str() ) );
+        new QStandardItem( std::to_string( m_inputSensor->m_spec.m_acquisitionSize ).c_str() ) );
     m_itemFps = new QStandardItem( "0" );
     m_items.append( m_itemFps );
 
@@ -303,7 +303,7 @@ Sensor::Sensor( std::unique_ptr<hub::InputSensor> inputStream,
 }
 
 Sensor::~Sensor() {
-    std::cout << "[Sensor] ~Sensor(" << m_inputStream->m_spec.m_sensorName << ")" << std::endl;
+    std::cout << "[Sensor] ~Sensor(" << m_inputSensor->m_spec.m_sensorName << ")" << std::endl;
 
     if ( m_thread.isRunning() ) {
         m_thread.requestInterruption();
@@ -367,7 +367,7 @@ void Sensor::detachFromImageManipulator() {
 
 void Sensor::attachFromImageManipulator() {
     assert( m_widgetStreamViewManipulator == nullptr );
-    if ( m_inputStream->m_spec.m_dims.size() == 2 ) {
+    if ( m_inputSensor->m_spec.m_dims.size() == 2 ) {
         if ( m_imageManipulator != nullptr ) {
             m_widgetStreamViewManipulator = &m_imageManipulator->getWidgetStreamView();
             m_widgetStreamViewManipulator->init( 512, 192, 35.0, 50.0 );
@@ -414,8 +414,8 @@ const QList<QStandardItem*>& Sensor::getItems() const {
 Ra::Engine::Scene::Component* Sensor::getComponent() {
     assert( m_component != nullptr );
     return m_component;
-    //    switch (m_inputStream->getFormat()) {
-    //    case Stream::Format::DOF6:
+    //    switch (m_inputSensor->getFormat()) {
+    //    case Sensor::Format::DOF6:
     //        assert(m_dof6Component != nullptr);
     //        return m_dof6Component;
     //        break;

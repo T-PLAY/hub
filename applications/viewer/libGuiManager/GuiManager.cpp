@@ -406,21 +406,21 @@ void GuiManager::onServerStreamStarted(const std::string& streamName,
     //    m_formInputStreamViews->addInputStream(streamName,
     //        ClientSocket(streamName, syncStreamName));
 
-    m_sceneManager.addStream(hub::io::InputStream(streamName, syncStreamName));
+    m_sceneManager.addSensor(hub::io::InputStream(streamName, syncStreamName));
     //    m_sensorsView->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
     //    m_sensorsView->resizeColumnsToContents();
     //    Sensor sensor(ClientSocket(streamName, syncStreamName), nullptr);
     //    m_sensorsView->setColumnWidth(0, 200);
 }
 
-void GuiManager::onServerStreamStopped(const std::string& streamName)
+void GuiManager::onServerStreamStopped(const std::string& streamName, const hub::SensorSpec & sensorSpec)
 {
     std::cout << "[GuiManager] onServerStreamStopped()" << std::endl;
 
-    m_sceneManager.delStream(streamName);
+    m_sceneManager.delSensor(sensorSpec.m_sensorName);
 
-    //    m_formInputStreamViews->deleteInputStream(streamName);
-    //    //        m_formInputStreamViews->onKillInputStream(streamName);
+    //    m_formInputStreamViews->deleteInputStream(sensorName);
+    //    //        m_formInputStreamViews->onKillInputStream(sensorName);
 }
 
 void GuiManager::onServerDisconnected()

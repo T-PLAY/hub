@@ -53,6 +53,8 @@ Viewer::Viewer( ClientSocket&& clientSocket,
                 case ClientSocket::Message::DEL_STREAMER: {
                     std::string streamName;
                     Interface::read( streamName );
+                    SensorSpec sensorSpec;
+                    Interface::read( sensorSpec );
                     std::cout << "[Viewer] del streamer '" << streamName << "'" << std::endl;
 
                     m_onDelStreamer( streamName );

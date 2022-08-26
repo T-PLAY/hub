@@ -48,6 +48,7 @@ FormStreamView::FormStreamView(std::string streamName,
     : QWidget(parent)
     , ui(new Ui::FormStreamView)
     , m_streamName(streamName)
+    , m_sensorSpec(sensorSpec)
     , mSensorModel(sensorModel)
 {
     //    m_mdiArea( mdiArea ) {
@@ -130,7 +131,7 @@ void FormStreamView::on_radioButtonOnOff_clicked(bool checked)
         ui->frameButtonOnOff->setStyleSheet("border-radius: 10px; background-color: red");
         //        emit delViewStreamSignal(m_streamName);
         //        on_stopStreaming();
-        emit streamingStopped(m_streamName);
+        emit streamingStopped(m_streamName, m_sensorSpec);
         ui->comboBox_syncSensor->setEnabled(true);
     }
 }

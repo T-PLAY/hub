@@ -58,11 +58,13 @@ class Streamer : public Client
     void addStreamViewer( StreamViewer* streamViewer );
     void delStreamViewer( StreamViewer* streamViewer );
 
-    void newAcquisition (const std::string & streamerName, const hub::Acquisition & acq);
+    void newAcquisition( const std::string& streamerName, const hub::Acquisition& acq );
 
     const std::string& getStreamName() const;
 
     const std::map<std::string, std::list<StreamViewer*>>& getSyncViewers() const;
+
+    const hub::Acquisition* getLastAcq() const;
 
   private:
     std::mutex m_mtx;
@@ -71,6 +73,8 @@ class Streamer : public Client
 
     std::map<std::string, std::list<StreamViewer*>> m_syncViewers;
     std::map<std::string, std::deque<hub::Acquisition>> m_syncAcqs;
+
+    std::unique_ptr<hub::Acquisition> m_lastAcq;
 
     //    friend class Server;
 };
@@ -83,7 +87,8 @@ class Viewer : public Client
     std::string headerMsg() const override;
 
     void notifyNewStreamer( const Streamer& streamer ) const;
-    void notifyDelStreamer( const std::string & streamerName ) const;
+    void notifyDelStreamer( const std::string& streamerName,
+                            const hub::SensorSpec& sensorSpec ) const;
 
   private:
     hub::net::ClientSocket m_socket;
@@ -143,14 +148,15 @@ class Server
     void delViewer( Viewer* viewer );
 
     void newAcquisition( Streamer* streamer, hub::Acquisition acq );
+    const hub::Acquisition* getLastAcq( const std::string& streamName );
 
   private:
     std::map<std::string, Streamer*> m_streamers;
-//    mutable std::mutex m_mtxStreamers;
+    //    mutable std::mutex m_mtxStreamers;
     std::list<Viewer*> m_viewers;
     std::map<std::string, std::list<StreamViewer*>> m_streamViewers;
 
-//    std::mutex m_mtx;
+    //    std::mutex m_mtx;
 
   private:
     hub::net::ServerSocket mServerSock;

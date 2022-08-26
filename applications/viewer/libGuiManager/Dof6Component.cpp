@@ -42,7 +42,7 @@ using namespace Ra::Engine::Scene;
 
 Dof6Component::Dof6Component(const hub::InputSensor& inputStream, Ra::Engine::Scene::Entity* entity)
     : //    Ra::Engine::Scene::Component( "Dof6 component", entity ) {}
-    SensorComponent(inputStream, entity)
+    StreamComponent(inputStream, entity)
 {
 }
 
@@ -50,7 +50,7 @@ Dof6Component::Dof6Component(const hub::InputSensor& inputStream, Ra::Engine::Sc
 /// setup, i.e. it has an entity.
 void Dof6Component::initialize()
 {
-    SensorComponent::initialize();
+    StreamComponent::initialize();
 
     //    auto blinnPhongMaterial              = make_shared<BlinnPhongMaterial>( "Shaded Material" );
     //    blinnPhongMaterial->m_perVertexColor = true;

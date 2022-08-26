@@ -1,5 +1,4 @@
-#ifndef SENSOR_H
-#define SENSOR_H
+#pragma once
 
 #include <QObject>
 #include <QThread>
@@ -12,7 +11,7 @@
 
 #include <Dof6Component.hpp>
 #include <ScanComponent.hpp>
-#include <SensorComponent.h>
+#include <StreamComponent.h>
 
 #include <FormImageManipulator.h>
 #include <WidgetStreamView.h>
@@ -41,7 +40,7 @@ public:
     // overriding the QThread's run() method
     void run();
 
-    //    std::queue<Stream::Acquisition> mAcqs;
+    //    std::queue<Sensor::Acquisition> mAcqs;
 
     //    std::unique_ptr<hub::InputSensor> mInputStream;
 
@@ -99,7 +98,7 @@ protected:
     friend class SensorCounterFpsThread;
 
 public:
-    std::unique_ptr<hub::InputSensor> m_inputStream;
+    std::unique_ptr<hub::InputSensor> m_inputSensor;
 
     Ra::Engine::RadiumEngine * m_engine = nullptr;
     Ra::Gui::Viewer * m_viewer = nullptr;
@@ -131,7 +130,7 @@ private:
 
 //    Ra::Engine::Scene::Component * m_component = nullptr;
 //    Dof6Component * m_dof6Component = nullptr;
-    SensorComponent * m_component = nullptr;
+    StreamComponent * m_component = nullptr;
 
 public:
     const QList<QStandardItem *> &getItems() const;
@@ -147,4 +146,3 @@ public:
 //{
 // }
 
-#endif // SENSOR_H

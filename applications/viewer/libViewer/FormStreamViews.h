@@ -33,7 +33,7 @@ signals:
 //        std::string dims,
 //        std::string size,
 //        std::string metaData);
-    void delStreamSignal(std::string streamName);
+    void delStreamSignal(std::string streamName, const hub::SensorSpec & sensorSpec);
 
 public:
     // overriding the QThread's run() method
@@ -63,7 +63,7 @@ signals:
     //    void isServerConnected();
     //    void serverDisconnected();
     void streamingStarted(const std::string & streamName, const std::string & syncSensorName);
-    void streamingStopped(const std::string & streamName);
+    void streamingStopped(const std::string & streamName, const hub::SensorSpec & sensorSpec);
     //    void startStreaming();
     //    void stopStreaming();
     //    void sensorAdded(const std::string & streamName);
@@ -75,7 +75,7 @@ public slots:
     void onServerDisconnect();
     void addStream(std::string streamName,
         const hub::SensorSpec & sensorSpec);
-    void delStream(std::string streamName);
+    void delStream(std::string streamName, const hub::SensorSpec & sensorSpec);
     //    void onQuitApp();
 
 

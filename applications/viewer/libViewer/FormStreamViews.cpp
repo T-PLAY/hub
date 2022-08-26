@@ -88,9 +88,11 @@ void Thread_Client::run() {
                 case hub::net::ClientSocket::Message::DEL_STREAMER: {
                     std::string streamName;
                     sock.read( streamName );
+                    hub::SensorSpec sensorSpec;
+                    sock.read( sensorSpec );
                     std::cout << "[Thread_Client] [viewer] del streamer '" << streamName << "'"
                               << std::endl;
-                    emit delStreamSignal( streamName );
+                    emit delStreamSignal( streamName, sensorSpec );
                 } break;
 
                 default:
@@ -260,7 +262,7 @@ void FormStreamViews::addStream(std::string streamName, const hub::SensorSpec &s
     //    sensorView->on_radioButtonOnOff_clicked(true);
 }
 
-void FormStreamViews::delStream( std::string streamName ) {
+void FormStreamViews::delStream( std::string streamName, const hub::SensorSpec & sensorSpec ) {
     std::cout << "[FormStreamViews] FormStreamViews::delStream '" << streamName << "'" << std::endl;
 
     //    delStreamView( streamName );
@@ -273,7 +275,7 @@ void FormStreamViews::delStream( std::string streamName ) {
     m_sensorModel.setStringList( stringList );
     delete sensorView;
 
-    emit streamingStopped( streamName );
+    emit streamingStopped( streamName, sensorSpec );
 
     //    assert( mSensorViews.find( streamName ) !=
     //            mSensorViews.end() ); // todo: fix one more time error

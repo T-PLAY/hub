@@ -6,42 +6,38 @@
 #include <QList>
 #include <ScanMaterial/ScanMaterial.hpp>
 
-SceneManager::SceneManager(QObject* parent)
-    : QObject { parent }
-{
-}
+SceneManager::SceneManager( QObject* parent ) : QObject { parent } {}
 
-void SceneManager::init()
-{
-    assert(m_engine != nullptr);
-    assert(m_viewer != nullptr);
-    assert(m_sys != nullptr);
-    assert(m_mdiArea != nullptr);
+void SceneManager::init() {
+    assert( m_engine != nullptr );
+    assert( m_viewer != nullptr );
+    assert( m_sys != nullptr );
+    assert( m_mdiArea != nullptr );
 #ifdef ENABLE_IMAGE_VIEWER
-    assert(m_imageManipulator != nullptr);
+    assert( m_imageManipulator != nullptr );
 #endif
 
     Ra::Engine::Data::ScanMaterial::registerMaterial();
 
     // Create and initialize entity and component
-    Ra::Engine::Scene::Entity* e = m_engine->getEntityManager()->createEntity("Scene entity");
-    SceneComponent* c = new SceneComponent(e);
+    Ra::Engine::Scene::Entity* e = m_engine->getEntityManager()->createEntity( "Scene entity" );
+    SceneComponent* c            = new SceneComponent( e );
     //    Dof6Component* c = new Dof6Component(e);
-    m_sys->addComponent(e, c);
+    m_sys->addComponent( e, c );
     c->initialize();
 
     m_initialized = true;
 
     m_viewer->prepareDisplay();
 
-    m_sensorModel.setColumnCount(5);
+    m_sensorModel.setColumnCount( 5 );
     QStringList header;
-    header << "Stream name"
+    header << "Sensor name"
            << "Format"
            << "Dimension"
            << "Size"
            << "Frequency";
-    m_sensorModel.setHorizontalHeaderLabels(header);
+    m_sensorModel.setHorizontalHeaderLabels( header );
     //    QList<QStandardItem*> items;
     //    items.append(QStandardItem("hello"));
     //    items << "ouou";
@@ -54,19 +50,17 @@ void SceneManager::init()
     //    m_sensorModel.row
 }
 
-void SceneManager::delStream(const std::string& streamName)
-{
+void SceneManager::delSensor( const std::string& sensorName ) {
 
     auto it = m_sensors.begin();
-    int i = 0;
-    while (it != m_sensors.end()) {
+    int i   = 0;
+    while ( it != m_sensors.end() ) {
         auto& sensor = *it;
-        if (sensor.m_inputStream->m_spec.m_sensorName == streamName) {
-            std::cout << "[SceneManager] delStream( " << streamName << " )" << std::endl;
+        if ( sensor.m_inputSensor->m_spec.m_sensorName == sensorName ) {
+            std::cout << "[SceneManager] delSensor( " << sensorName << " )" << std::endl;
 
-
-            it = m_sensors.erase(it);
-            m_sensorModel.removeRow(i);
+            it = m_sensors.erase( it );
+            m_sensorModel.removeRow( i );
             continue;
         }
         ++it;
@@ -74,47 +68,37 @@ void SceneManager::delStream(const std::string& streamName)
     }
 }
 
-const std::list<Sensor>& SceneManager::getSensors() const
-{
+const std::list<Sensor>& SceneManager::getSensors() const {
     return m_sensors;
 }
 
-Sensor& SceneManager::getSensor(int iSensor)
-{
-    assert(iSensor < m_sensors.size());
+Sensor& SceneManager::getSensor( int iSensor ) {
+    assert( iSensor < m_sensors.size() );
     int i = 0;
-    for (auto& sensor : m_sensors) {
-        if (i == iSensor) {
-            return sensor;
-        }
+    for ( auto& sensor : m_sensors ) {
+        if ( i == iSensor ) { return sensor; }
         ++i;
     }
-    assert(false);
+    assert( false );
     return m_sensors.front();
 }
 
-void SceneManager::attachSensorFromImageManipulator(int iSensor)
-{
-    for (auto & sensor : m_sensors) {
+void SceneManager::attachSensorFromImageManipulator( int iSensor ) {
+    for ( auto& sensor : m_sensors ) {
         sensor.detachFromImageManipulator();
     }
 
     int i = 0;
-    for (auto& sensor : m_sensors) {
-        if (i == iSensor) {
-            sensor.attachFromImageManipulator();
-        }
+    for ( auto& sensor : m_sensors ) {
+        if ( i == iSensor ) { sensor.attachFromImageManipulator(); }
         ++i;
     }
 }
 
-void SceneManager::detachSensorFromImageManipulator(int iSensor)
-{
+void SceneManager::detachSensorFromImageManipulator( int iSensor ) {
     int i = 0;
-    for (auto& sensor : m_sensors) {
-        if (i == iSensor) {
-            sensor.detachFromImageManipulator();
-        }
+    for ( auto& sensor : m_sensors ) {
+        if ( i == iSensor ) { sensor.detachFromImageManipulator(); }
         ++i;
     }
 }

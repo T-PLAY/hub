@@ -51,12 +51,12 @@ ScanComponent::ScanComponent( const hub::InputSensor& inputStream,
                               Ra::Engine::RadiumEngine& engine,
                               Ra::Gui::Viewer& viewer ) :
     //    Ra::Engine::Scene::Component( "Dof6 component", entity ) {}
-    SensorComponent( inputStream, entity ),
+    StreamComponent( inputStream, entity ),
     m_engine( engine ),
     m_viewer( viewer ) {}
 
 void ScanComponent::initialize() {
-    SensorComponent::initialize();
+    StreamComponent::initialize();
 
     //    auto blinnPhongMaterial              = make_shared<BlinnPhongMaterial>( "Shaded Material"
     //    ); blinnPhongMaterial->m_perVertexColor = true; blinnPhongMaterial->m_ks = Color::White();
