@@ -7,7 +7,7 @@
 
 #include <Engine/Rendering/RenderObject.hpp>
 
-#include <SensorComponent.h>
+#include <StreamComponent.h>
 #include <Gui/Viewer/Viewer.hpp>
 //#include <Core/Asset/Image.hpp>
 
@@ -16,7 +16,7 @@ classic "Spinning Cube" demo. */
 
 /// This is a very basic component which holds a spinning cube.
 //struct ScanComponent : public Ra::Engine::Scene::Component {
-struct ScanComponent : public SensorComponent {
+struct ScanComponent : public StreamComponent {
 
     ScanComponent(const hub::InputSensor & inputStream, Ra::Engine::Scene::Entity* entity, Ra::Engine::RadiumEngine & engine, Ra::Gui::Viewer & viewer);
 

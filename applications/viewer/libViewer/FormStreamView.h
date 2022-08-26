@@ -52,7 +52,7 @@ signals:
 //    void delViewStreamSignal(std::string streamerSensorName);
 //    void newAcquisition();
     void streamingStarted(const std::string & streamName, const std::string & syncSensorName);
-    void streamingStopped(const std::string & streamName);
+    void streamingStopped(const std::string & streamName, const hub::SensorSpec & sensorSpec);
 
 public slots:
     void on_startStreaming();
@@ -75,6 +75,7 @@ public:
 private:
     Ui::FormStreamView* ui;
     const std::string m_streamName;
+    const hub::SensorSpec m_sensorSpec;
     QStringListModel & mSensorModel;
     QSortFilterProxyModel mProxySensorModel;
 //    QMdiArea & m_mdiArea;

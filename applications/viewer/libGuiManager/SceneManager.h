@@ -13,39 +13,41 @@
 #include <Engine/Scene/Component.hpp>
 #include <QStandardItemModel>
 
-class SceneManager : public QObject {
+class SceneManager : public QObject
+{
     Q_OBJECT
-public:
-    explicit SceneManager(QObject* parent = nullptr);
+  public:
+    explicit SceneManager( QObject* parent = nullptr );
 
     void init();
 
     template <class Interface>
-    void addStream(Interface&& interface);
+    void addSensor( Interface&& interface );
 
-    void delStream(const std::string& streamName);
+    void delSensor( const std::string& sensorName );
 
-signals:
+  signals:
 
-public:
+  public:
     Ra::Engine::RadiumEngine* m_engine = nullptr;
-    Ra::Gui::Viewer* m_viewer = nullptr;
-    Ra::Engine::Scene::System* m_sys = nullptr;
+    Ra::Gui::Viewer* m_viewer          = nullptr;
+    Ra::Engine::Scene::System* m_sys   = nullptr;
 
-    QMdiArea* m_mdiArea = nullptr;
+    QMdiArea* m_mdiArea                      = nullptr;
     FormImageManipulator* m_imageManipulator = nullptr;
 
     QStandardItemModel m_sensorModel;
 
     const std::list<Sensor>& getSensors() const;
-    Sensor& getSensor(int iSensor);
+    Sensor& getSensor( int iSensor );
 
-    void attachSensorFromImageManipulator(int iSensor);
-    void detachSensorFromImageManipulator(int iSensor);
+    void attachSensorFromImageManipulator( int iSensor );
+    void detachSensorFromImageManipulator( int iSensor );
     //    void detachAllSensorsFromImageManipulator();
 
-private:
+  private:
     std::list<Sensor> m_sensors;
+    //    std::map<std::string, std::unique_ptr<Sensor>> m_streamName2Sensor;
     //    std::vector<Sensor> m_sensors;
 
     //    std::map<std::string, Sensor> m_sensorName2sensor;
@@ -56,73 +58,83 @@ private:
 };
 
 template <class Interface>
-void SceneManager::addStream(Interface&& interface)
-{
+void SceneManager::addSensor( Interface&& interface ) {
     //    m_sensors.push_back(std::make_unique<hub::InputSensor>(std::move(interface)));
     //    QList<QStandardItem*> items;
 
-    auto&& inputStream = std::make_unique<hub::InputSensor>(std::move(interface));
-    const auto& streamName = inputStream->m_spec.m_sensorName;
-    const auto& metaData = inputStream->m_spec.m_metaData;
+    auto&& inputSensor     = std::make_unique<hub::InputSensor>( std::move( interface ) );
+    const auto& sensorName = inputSensor->m_spec.m_sensorName;
+    const auto& metaData   = inputSensor->m_spec.m_metaData;
 
     const char* parentName = nullptr;
-    if (metaData.find("parent") != metaData.end()) {
-        parentName = std::any_cast<const char*>(metaData.at("parent"));
+    if ( metaData.find( "parent" ) != metaData.end() ) {
+        parentName = std::any_cast<const char*>( metaData.at( "parent" ) );
     }
 
-//    Ra::Engine::Scene::Entity* parentEntity = nullptr;
-    Sensor * parentSensor = nullptr;
+    //    Ra::Engine::Scene::Entity* parentEntity = nullptr;
+    Sensor* parentSensor = nullptr;
 
     // if parent exist in scene, link to it
-    if (parentName != nullptr) {
-        std::cout << "[SceneManager] searching parent in 3D scene = '" << parentName << "'" << std::endl;
-        for (auto& sensor : m_sensors) {
-            if (sensor.m_inputStream->m_spec.m_sensorName == parentName) {
+    if ( parentName != nullptr ) {
+        std::cout << "[SceneManager] searching parent in 3D scene = '" << parentName << "'"
+                  << std::endl;
+        for ( auto& sensor : m_sensors ) {
+            if ( sensor.m_inputSensor->m_spec.m_sensorName == parentName ) {
                 parentSensor = &sensor;
-//                parentEntity = sensor.getEntity();
+                //                parentEntity = sensor.getEntity();
                 break;
             }
         }
 
-//                if (parentSensor == nullptr) {
-//                    QMessageBox msgBox;
-//                    msgBox.setText((std::string("Could not find '") + parentName + "' sensor.\nUnable to attach the sensor '" + streamName + "' with his parent.").c_str());
-//                    msgBox.exec();
-//                }
+        //                if (parentSensor == nullptr) {
+        //                    QMessageBox msgBox;
+        //                    msgBox.setText((std::string("Could not find '") + parentName + "'
+        //                    sensor.\nUnable to attach the sensor '" + sensorName + "' with his
+        //                    parent.").c_str()); msgBox.exec();
+        //                }
     }
 
-    m_sensors.emplace_back(std::move(inputStream), *m_mdiArea, m_imageManipulator, m_engine, m_viewer, m_sys, parentSensor, this);
-    //    m_sensors.emplace_back(std::make_unique<hub::InputSensor>(std::move(interface)), *m_mdiArea, m_engine, m_viewer, m_sys, this);
+    m_sensors.emplace_back( std::move( inputSensor ),
+                            *m_mdiArea,
+                            m_imageManipulator,
+                            m_engine,
+                            m_viewer,
+                            m_sys,
+                            parentSensor,
+                            this );
+    //    m_sensors.emplace_back(std::make_unique<hub::InputSensor>(std::move(interface)),
+    //    *m_mdiArea, m_engine, m_viewer, m_sys, this);
 
-    //    items.append(new QStandardItem(inputStream.getSensorName().c_str()));
-    //    items.append(new QStandardItem(Interface::format2string[(int)inputStream.getFormat()]));
-    //    items.append(new QStandardItem(Interface::dims2string(inputStream.getDims()).c_str()));
-    //    items.append(new QStandardItem(std::to_string(inputStream.getAcquisitionSize()).c_str()));
+    //    items.append(new QStandardItem(inputSensor.getSensorName().c_str()));
+    //    items.append(new QStandardItem(Interface::format2string[(int)inputSensor.getFormat()]));
+    //    items.append(new QStandardItem(Interface::dims2string(inputSensor.getDims()).c_str()));
+    //    items.append(new QStandardItem(std::to_string(inputSensor.getAcquisitionSize()).c_str()));
     //    items.append(new QStandardItem("0"));
     //    m_sensorModel.appendRow(items);
 
     auto& newSensor = m_sensors.back();
-    m_sensorModel.appendRow(newSensor.getItems());
+    m_sensorModel.appendRow( newSensor.getItems() );
 
     //    m_sensorModel.setItem(0, 0, new QStandardItem("root"));
-    //    const auto & inputStream = *m_sensors.back().m_inputStream;
-    //    m_sensorName2sensor[streamName] = Sensor(std::make_unique<hub::InputSensor>(std::move(interface)), *m_mdiArea, this);
+    //    const auto & inputSensor = *m_sensors.back().m_inputSensor;
+    //    m_sensorName2sensor[sensorName] =
+    //    Sensor(std::make_unique<hub::InputSensor>(std::move(interface)), *m_mdiArea, this);
 
     // prevent all father's sons, the father is comming
-    for (auto& sensor : m_sensors) {
-        const auto& inputStream = sensor.m_inputStream;
-        const auto& metaData = inputStream->m_spec.m_metaData;
+    for ( auto& sensor : m_sensors ) {
+        const auto& inputSensor = sensor.m_inputSensor;
+        const auto& metaData    = inputSensor->m_spec.m_metaData;
 
         const char* parentName = nullptr;
-        if (metaData.find("parent") != metaData.end()) {
-            parentName = std::any_cast<const char*>(metaData.at("parent"));
-            if (streamName == parentName) {
-//                sensor.setParentEntity(newSensor.getEntity());
-                sensor.setParent(&newSensor);
+        if ( metaData.find( "parent" ) != metaData.end() ) {
+            parentName = std::any_cast<const char*>( metaData.at( "parent" ) );
+            if ( sensorName == parentName ) {
+                //                sensor.setParentEntity(newSensor.getEntity());
+                sensor.setParent( &newSensor );
             }
         }
 
-        //            if (sensor.m_inputStream->getSensorName() == parentName) {
+        //            if (sensor.m_inputSensor->getSensorName() == parentName) {
         //                parentEntity = sensor.getEntity();
         //                break;
         //            }

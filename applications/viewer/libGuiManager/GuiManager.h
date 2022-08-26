@@ -45,8 +45,8 @@ private slots:
     //    void on_newSensor(std::string sensorName);
     //    void on_delSensor(std::string sensorName);
 
-    void onServerStreamStarted(const std::string& sensorName, const std::string& syncSensorName);
-    void onServerStreamStopped(const std::string& sensorName);
+    void onServerStreamStarted(const std::string& streamName, const std::string& syncStreamName);
+    void onServerStreamStopped(const std::string& streamName, const hub::SensorSpec &sensorSpec);
     void onServerDisconnected();
 
     //    void on_comboBox_scan_currentTextChanged(const QString &sourceType);

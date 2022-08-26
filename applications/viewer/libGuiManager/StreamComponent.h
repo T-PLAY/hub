@@ -13,10 +13,10 @@
 #include <InputSensor.hpp>
 
 /// This is a very basic component which holds a spinning cube.
-struct SensorComponent : public Ra::Engine::Scene::Component {
+struct StreamComponent : public Ra::Engine::Scene::Component {
 
     //    Component( const std::string& name, Entity* entity );
-    SensorComponent(const hub::InputSensor & inputStream, Ra::Engine::Scene::Entity* entity);
+    StreamComponent(const hub::InputSensor & inputStream, Ra::Engine::Scene::Entity* entity);
 
     /// This function is called when the component is properly
     /// setup, i.e. it has an entity.

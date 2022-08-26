@@ -116,12 +116,13 @@ void Server::addViewer( Viewer* viewer ) {
 }
 
 void Server::delStreamer( Streamer* streamer ) {
-//    m_mtx.lock();
+    //    m_mtx.lock();
 
     const auto streamerName = streamer->getStreamName();
+    const auto& sensorSpec  = streamer->getInputSensor().m_spec;
 
     for ( const auto* viewer : m_viewers ) {
-        viewer->notifyDelStreamer( streamerName );
+        viewer->notifyDelStreamer( streamerName, sensorSpec );
     }
 
     auto streamViewers = m_streamViewers[streamerName];
@@ -140,11 +141,11 @@ void Server::delStreamer( Streamer* streamer ) {
               << std::endl;
 
     delete streamer;
-//    m_mtx.unlock();
+    //    m_mtx.unlock();
 }
 
 void Server::delStreamViewer( StreamViewer* streamViewer ) {
-//    m_mtx.lock();
+    //    m_mtx.lock();
 
     const auto& syncStreamName = streamViewer->getSyncStreamName();
     const auto& streamName     = streamViewer->getStreamName();
@@ -169,11 +170,11 @@ void Server::delStreamViewer( StreamViewer* streamViewer ) {
     std::cout << "-------------------------------------------------------------------------"
                  "--------------------"
               << std::endl;
-//    m_mtx.unlock();
+    //    m_mtx.unlock();
 }
 
 void Server::delViewer( Viewer* viewer ) {
-//    m_mtx.lock();
+    //    m_mtx.lock();
     assert( std::find( m_viewers.begin(), m_viewers.end(), viewer ) != m_viewers.end() );
     m_viewers.remove( viewer );
     std::cout << std::left << std::setw( g_margin2 ) << headerMsg() << std::setw( g_margin )
@@ -181,11 +182,11 @@ void Server::delViewer( Viewer* viewer ) {
     std::cout << "-------------------------------------------------------------------------"
                  "--------------------"
               << std::endl;
-//    m_mtx.unlock();
+    //    m_mtx.unlock();
 }
 
 void Server::newAcquisition( Streamer* streamer, hub::Acquisition acq ) {
-//    m_mtx.lock();
+    //    m_mtx.lock();
 
     //    std::thread thread( [this, streamer, acq = std::move( acq )]() {
     //    std::cout << headerMsg() << "newAcquisition(" << streamer->m_streamName << ", " << acq <<
@@ -202,7 +203,7 @@ void Server::newAcquisition( Streamer* streamer, hub::Acquisition acq ) {
     //            assert( false );
 
     // broadcast acquisition for each live viewer (no sync)
-//        m_mtxStreamViewers.lock();
+    //        m_mtxStreamViewers.lock();
     auto streamViewers = m_streamViewers[streamerName];
     //    for ( const auto& streamViewer : m_streamViewers[streamerName] ) {
     for ( const auto& streamViewer : streamViewers ) {
@@ -243,7 +244,12 @@ void Server::newAcquisition( Streamer* streamer, hub::Acquisition acq ) {
 
     //    } );
     //    thread.detach();
-//    m_mtx.unlock();
+    //    m_mtx.unlock();
+}
+
+const hub::Acquisition * Server::getLastAcq( const std::string& streamName ) {
+    assert(m_streamers.find(streamName) != m_streamers.end());
+    return m_streamers.at(streamName)->getLastAcq();
 }
 
 // std::list<StreamViewer*>& Server::getStreamViewers( const std::string& streamName ) {
@@ -252,8 +258,8 @@ void Server::newAcquisition( Streamer* streamer, hub::Acquisition acq ) {
 // }
 
 const std::map<std::string, Streamer*>& Server::getStreamers() const {
-//    m_mtxStreamers.lock();
-//    m_mtxStreamers.unlock();
+    //    m_mtxStreamers.lock();
+    //    m_mtxStreamers.unlock();
     return m_streamers;
 }
 
@@ -280,7 +286,8 @@ void Viewer::notifyNewStreamer( const Streamer& streamer ) const {
     //    mSock->write( streamer.mInputSensor );
 }
 
-void Viewer::notifyDelStreamer( const std::string& streamerName ) const {
+void Viewer::notifyDelStreamer( const std::string& streamerName,
+                                const hub::SensorSpec& sensorSpec ) const {
     try {
         m_socket.write( hub::net::ClientSocket::Message::DEL_STREAMER );
         m_socket.write( streamerName );
@@ -384,7 +391,6 @@ void Server::setMaxClients( int maxThreads ) {
     m_maxClients = maxThreads;
 }
 
-
 Streamer::Streamer( Server& server, int iClient, hub::net::ClientSocket&& sock ) :
     Client( server, iClient ) {
 
@@ -445,6 +451,7 @@ Streamer::Streamer( Server& server, int iClient, hub::net::ClientSocket&& sock )
         try {
             while ( 1 ) {
                 auto acq = m_inputSensor->getAcquisition();
+
                 //                std::cout << headerMsg() << "receive acq : " << acq << std::endl;
                 auto syncViewers = m_syncViewers;
                 for ( auto& pair : syncViewers ) {
@@ -500,7 +507,10 @@ Streamer::Streamer( Server& server, int iClient, hub::net::ClientSocket&& sock )
                     }
                 }
 
-                m_server.newAcquisition( this, std::move( acq ) );
+                m_server.newAcquisition( this, acq.clone() );
+
+                m_lastAcq.release();
+                m_lastAcq = std::make_unique<hub::Acquisition>( std::move( acq ) );
             }
         }
         catch ( hub::net::Socket::exception& e ) {
@@ -585,6 +595,10 @@ const std::map<std::string, std::list<StreamViewer*>>& Streamer::getSyncViewers(
     return m_syncViewers;
 }
 
+const hub::Acquisition* Streamer::getLastAcq() const {
+    return m_lastAcq.get();
+}
+
 Viewer::Viewer( Server& server, int iClient, hub::net::ClientSocket&& sock ) :
     Client( server, iClient ), m_socket( std::move( sock ) ) {
 
@@ -662,14 +676,22 @@ StreamViewer::StreamViewer( Server& server, int iClient, hub::net::ClientSocket&
         try {
             // check client still alive
             while ( !m_updateFailed ) {
-                std::cout << headerMsg() << "thread : ping stream viewer" << std::endl;
+                //                std::cout << headerMsg() << "thread : ping stream viewer" <<
+                //                std::endl;
                 m_mtxOutputSensor.lock();
-                std::cout << headerMsg() << "thread : writing ping" << std::endl;
-                m_outputSensor->getInterface().write( hub::net::ClientSocket::Message::PING );
-                std::cout << headerMsg() << "thread : ping wrote" << std::endl;
+                //                std::cout << headerMsg() << "thread : writing ping" << std::endl;
+                auto lastAcq = m_server.getLastAcq( m_streamName );
+                if ( lastAcq == nullptr ) {
+                    m_outputSensor->getInterface().write( hub::net::ClientSocket::Message::PING );
+//                    std::cout << headerMsg() << "thread : ping wrote" << std::endl;
+                }
+                else {
+                    *m_outputSensor << *lastAcq;
+//                    std::cout << headerMsg() << "thread : acq wrote" << std::endl;
+                }
                 m_mtxOutputSensor.unlock();
                 std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
-                std::cout << headerMsg() << "thread : end sleep" << std::endl;
+                //                std::cout << headerMsg() << "thread : end sleep" << std::endl;
             }
         }
         catch ( std::exception& e ) {
