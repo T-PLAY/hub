@@ -27,6 +27,7 @@ class ClientSocket : public Socket, public virtual io::Interface
         NEW_STREAMER,
         NOT_FOUND,
         FOUND,
+        NEW_ACQ,
         COUNT
     };
     friend std::ostream& operator<<( std::ostream& os, const Message& msg );
@@ -56,6 +57,8 @@ class ClientSocket : public Socket, public virtual io::Interface
     void read( unsigned char* data, size_t len ) const override;
 
     void close() override;
+
+//    Acquisition getAcquisition(int acquistionSize) const override;
 
     SRC_API void clear();
 

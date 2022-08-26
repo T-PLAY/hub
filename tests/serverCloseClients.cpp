@@ -14,7 +14,7 @@
 TEST_CASE( "Server test : close clients" ) {
 
     const std::string ipv4 = "127.0.0.1";
-    constexpr int port     = 6000;
+    constexpr int port     = 6001;
 
     std::vector<hub::Acquisition> acqs;
     constexpr int nAcqs    = 2;
@@ -106,6 +106,7 @@ TEST_CASE( "Server test : close clients" ) {
                     auto acq = inputSensor.getAcquisition();
                     std::cout << "[Test] acq = " << acq << std::endl;
                     //            CHECK( acq == acqs[iAcq] );
+                    assert( acq == acqs[iAcq * 5] );
                     CHECK( acq == acqs[iAcq * 5] );
                 }
             }
@@ -173,7 +174,7 @@ TEST_CASE( "Server test : close clients" ) {
             }
             outputSensor << acqs.front();
             outputSensor2 << acqs2.front();
-            std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+            std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
         }
     }
     std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );

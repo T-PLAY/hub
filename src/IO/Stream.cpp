@@ -40,7 +40,7 @@ InputStream::InputStream( const std::string& streamName,
     Interface::read( mess );
     if ( mess == ClientSocket::Message::NOT_FOUND ) {
         DEBUG_MSG( getHeader( m_fdSock ) << "[InputStream] exception sensor '" << streamName
-                                        << "' is not attached to server" );
+                                         << "' is not attached to server" );
         throw ClientSocket::exception(
             ( std::string( "sensor '" ) + streamName + "' is not attached to server" ).c_str() );
     }
@@ -56,6 +56,18 @@ InputStream::InputStream( const std::string& streamName,
     assert( mess == ClientSocket::Message::OK );
 
     std::cout << "\t[InputStream] InputStream(string, string, ClientSocket&&) end" << std::endl;
+}
+
+Acquisition InputStream::getAcquisition( int acquisitionSize ) const {
+//    std::cout << "[InputStream **************************************" << std::endl;
+    net::ClientSocket::Message message;
+    do {
+        Interface::read( message );
+    } while ( message == net::ClientSocket::Message::PING );
+
+    assert( message == net::ClientSocket::Message::NEW_ACQ );
+    auto acq = Interface::getAcquisition( acquisitionSize );
+    return acq;
 }
 
 } // namespace io

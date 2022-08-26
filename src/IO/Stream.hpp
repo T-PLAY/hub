@@ -43,6 +43,9 @@ class InputStream : public InputInterface, public net::ClientSocket
     InputStream( const std::string& streamName,
                  const std::string& syncStreamName = "",
                  net::ClientSocket&& clientSocket  = net::ClientSocket() );
+
+protected:
+    Acquisition getAcquisition(int acquisitionSize) const override;
 };
 
 } // namespace io

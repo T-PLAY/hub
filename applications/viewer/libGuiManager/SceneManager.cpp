@@ -36,7 +36,7 @@ void SceneManager::init()
 
     m_sensorModel.setColumnCount(5);
     QStringList header;
-    header << "Sensor name"
+    header << "Stream name"
            << "Format"
            << "Dimension"
            << "Size"

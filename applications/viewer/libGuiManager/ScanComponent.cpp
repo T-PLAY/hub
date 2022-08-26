@@ -85,15 +85,15 @@ void ScanComponent::initialize() {
     //    }
 
     const auto& metadata = m_inputStream.m_spec.m_metaData;
-    double scanWidth     = 100; // mm
-    if ( metadata.find( "scanWidth" ) != metadata.end() ) {
-        scanWidth = std::any_cast<double>( metadata.at( "scanWidth" ) );
-    }
+    double scanWidth     = 1000; // mm
+//    if ( metadata.find( "scanWidth" ) != metadata.end() ) {
+//        scanWidth = std::any_cast<double>( metadata.at( "scanWidth" ) );
+//    }
 
-    double scanDepth = 100; // mm
-    if ( metadata.find( "scanDepth" ) != metadata.end() ) {
-        scanDepth = std::any_cast<double>( metadata.at( "scanDepth" ) );
-    }
+    double scanDepth = 1000; // mm
+//    if ( metadata.find( "scanDepth" ) != metadata.end() ) {
+//        scanDepth = std::any_cast<double>( metadata.at( "scanDepth" ) );
+//    }
 
     // scan plane
     {
@@ -119,7 +119,18 @@ void ScanComponent::initialize() {
         const int width    = m_inputStream.m_spec.m_dims.at( 0 );
         const int height   = m_inputStream.m_spec.m_dims.at( 1 );
         const int sizeData = m_inputStream.m_spec.m_acquisitionSize;
-        const int nChannel = 2;
+        int nChannel = 0;
+        switch (m_inputStream.m_spec.m_format) {
+        case hub::SensorSpec::Format::Y8:
+            nChannel = 1;
+            break;
+        case hub::SensorSpec::Format::Y16:
+            nChannel = 2;
+            break;
+        default:
+            assert(false);
+            break;
+        }
         assert( sizeData == width * height * nChannel );
         int iProbe = 0;
 

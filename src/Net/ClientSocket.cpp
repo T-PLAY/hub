@@ -219,6 +219,13 @@ void ClientSocket::close() {
     clear();
 }
 
+//Acquisition ClientSocket::getAcquisition(int acquistionSize) const
+//{
+//    std::cout << "hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh" << std::endl;
+//    Acquisition acq = io::Interface::getAcquisition(acquistionSize);
+//    return acq;
+//}
+
 // void ClientSocket::waitClose() const {
 //     Socket::Message message;
 //     bool wantToClose = false;

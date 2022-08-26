@@ -11,6 +11,7 @@
 
 #include "Macros.hpp"
 #include "SensorSpec.hpp"
+#include "Acquisition.hpp"
 
 //#define DEBUG_IOSTREAM
 
@@ -81,6 +82,8 @@ class SRC_API Interface
     void write( const std::string& str ) const;
     void write( const SensorSpec& sensorSpec ) const;
 
+    virtual void write (const Acquisition& acq) const;
+
     ////////////////////////////////////////////////////////////////////////////
 
     void read( std::any& any ) const;
@@ -100,6 +103,7 @@ class SRC_API Interface
     void read( SensorSpec& sensorSpec ) const;
 
     SensorSpec getSensorSpec() const;
+    virtual Acquisition getAcquisition(int acquisitionSize) const;
 
   private:
 };

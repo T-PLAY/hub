@@ -28,9 +28,10 @@ void OutputSensor::operator<<( const Acquisition& acquisition ) const {
 
     assert( acquisition.m_start <= acquisition.m_end );
 
-    m_interface.write( acquisition.m_start );
-    m_interface.write( acquisition.m_end );
-    m_interface.write( acquisition.m_data, m_spec.m_acquisitionSize );
+//    m_interface.write( acquisition.m_start );
+//    m_interface.write( acquisition.m_end );
+//    m_interface.write( acquisition.m_data, m_spec.m_acquisitionSize );
+    m_interface.write(acquisition);
 }
 
 } // namespace hub
