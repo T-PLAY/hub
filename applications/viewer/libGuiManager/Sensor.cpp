@@ -27,7 +27,7 @@ SensorThread::~SensorThread() {
 void SensorThread::run() {
     std::cout << "[SensorThread] run()" << std::endl;
 
-    auto& inputStream = m_sensor.m_inputSensor;
+    auto& inputSensor = m_sensor.m_inputSensor;
 
     try {
 
@@ -35,7 +35,7 @@ void SensorThread::run() {
 
             //            Sensor::Acquisition acq;
             //            *mInputStream >> acq;
-            const auto& acq = inputStream->getAcquisition();
+            const auto& acq = inputSensor->getAcquisition();
             //            std::cout << "[SensorThreaSensorThread] receive acq : " << acq << std::endl;
 
             //            mAcqs.push(std::move(acq));
@@ -47,9 +47,9 @@ void SensorThread::run() {
             {
                 assert( m_sensor.m_widgetStreamView != nullptr );
                 m_sensor.m_widgetStreamView->setData( (unsigned char*)acq.m_data,
-                                                      inputStream->m_spec.m_acquisitionSize,
-                                                      inputStream->m_spec.m_dims,
-                                                      inputStream->m_spec.m_format );
+                                                      inputSensor->m_spec.m_acquisitionSize,
+                                                      inputSensor->m_spec.m_dims,
+                                                      inputSensor->m_spec.m_format );
             }
 
             // update 2D manipulator view
@@ -58,9 +58,9 @@ void SensorThread::run() {
                 if ( m_sensor.m_widgetStreamViewManipulator != nullptr ) {
                     m_sensor.m_widgetStreamViewManipulator->setData(
                         (unsigned char*)acq.m_data,
-                        inputStream->m_spec.m_acquisitionSize,
-                        inputStream->m_spec.m_dims,
-                        inputStream->m_spec.m_format );
+                        inputSensor->m_spec.m_acquisitionSize,
+                        inputSensor->m_spec.m_dims,
+                        inputSensor->m_spec.m_format );
                 }
             }
 
@@ -159,7 +159,7 @@ void SensorCounterFpsThread::run() {
 //    m_entity->setTransform(entity->getTransform());
 //}
 
-Sensor::Sensor( std::unique_ptr<hub::InputSensor> inputStream,
+Sensor::Sensor( std::unique_ptr<hub::InputSensor> inputSensor,
                 QMdiArea& mdiArea,
                 FormImageManipulator* imageManipulator,
                 Ra::Engine::RadiumEngine* engine,
@@ -168,14 +168,14 @@ Sensor::Sensor( std::unique_ptr<hub::InputSensor> inputStream,
                 Sensor* parentSensor,
                 QObject* parent ) :
     QObject( parent ),
-    m_inputSensor( std::move( inputStream ) ),
+    m_inputSensor( std::move( inputSensor ) ),
     m_engine( engine ),
     m_viewer( viewer ),
     m_sys( sys ),
     m_mdiArea( mdiArea ),
     m_imageManipulator( imageManipulator )
     //    , m_widgetStreamViewManipulator(m_imageManipulator.getWidgetStreamView())
-    //    , m_inputSensor(std::move(inputStream))
+    //    , m_inputSensor(std::move(inputSensor))
     ,
     m_thread( *this, parent ),
     m_counterFpsThread( *this, parent )

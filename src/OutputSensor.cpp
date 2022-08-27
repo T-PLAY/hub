@@ -22,9 +22,10 @@ namespace hub {
 //    m_interface.write( spec );
 //}
 
-void OutputSensor::operator<<( const Acquisition& acquisition ) const {
-    assert( acquisition.m_data != nullptr );
-    // assert( acquisition.mSize == mAcquisitionSize );
+//OutputSensor &OutputSensor::operator <<( const Acquisition& acquisition ) {
+void OutputSensor::operator <<( const Acquisition& acquisition ) const {
+//    assert( acquisition.m_data != nullptr );
+     assert( acquisition.getSize() == m_spec.m_acquisitionSize );
 
     assert( acquisition.m_start <= acquisition.m_end );
 
@@ -32,6 +33,12 @@ void OutputSensor::operator<<( const Acquisition& acquisition ) const {
 //    m_interface.write( acquisition.m_end );
 //    m_interface.write( acquisition.m_data, m_spec.m_acquisitionSize );
     m_interface.write(acquisition);
+//    return *this;
 }
+
+//OutputSensor & OutputSensor::operator<<( const Measure& measure ) {
+//    m_interface.write(measure);
+//    return *this;
+//}
 
 } // namespace hub

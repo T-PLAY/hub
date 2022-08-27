@@ -43,16 +43,26 @@ int main( int argc, char* argv[] ) {
     //    volumeData);
 
     hub::SensorSpec::MetaData metaData;
+    metaData["type"]        = "record";
     constexpr int imageSize = 512 * 512 * 2;
     hub::SensorSpec sensorSpec(
         "mri", hub::SensorSpec::Format::Y16, { 512, 512 }, std::move( metaData ) );
     hub::OutputSensor outputSensor( std::move( sensorSpec ),
                                     hub::io::OutputStream( "dicomStream" ) );
 
-    outputSensor << hub::Acquisition { 0, 0, volumeData, imageSize };
+    for ( int iImage = 0; iImage < nImages; ++iImage ) {
+        hub::Dof6 dof6(0.0, 0.0, iImage * sliceThickness);
+//        dof6.m_z = iImage * sliceThickness;
+        hub::Image image(&volumeData[imageSize * iImage], imageSize);
+//        outputSensor << hub::Acquisition { iImage, iImage, &volumeData[imageSize * iImage], imageSize };
+//        hub::Acquisition acq(iImage, iImage);
+//        hub::Acquisition {0, 0} << std::move(dof6);
+//        outputSensor << (hub::Acquisition { iImage, iImage } << std::move(dof6) << std::move(image));
+        outputSensor << hub::Acquisition { iImage, iImage, std::move(dof6) };
+    }
 
-    while (true) {
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    while ( true ) {
+        std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
     }
 
     return 0;

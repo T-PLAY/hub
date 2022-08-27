@@ -203,9 +203,9 @@ void Player::play() {
 
                 const auto& acq = snapshot.getAcq();
                 hub::Acquisition acq2 { acq.m_start + dec,
-                                        acq.m_end + dec,
-                                        acq.m_data,
-                                        acq.m_size };
+                                        acq.m_end + dec
+                                        };
+                acq2 << acq.getMeasures();
 
                 *m_outputs.at( snapshot.getSensorName() ) << acq2;
                 //                    << snapshot.getAcq();

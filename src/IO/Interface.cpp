@@ -29,16 +29,21 @@ void Interface::write( const SensorSpec& sensorSpec ) const {
 #endif
 
     write( sensorSpec.m_sensorName );
-    write( sensorSpec.m_format );
-    write( sensorSpec.m_dims );
+    write( sensorSpec.m_resolutions );
+    //    write( sensorSpec.m_format );
+    //    write( sensorSpec.m_dims );
     write( sensorSpec.m_metaData );
 }
 
-void Interface::write(const Acquisition &acq) const
-{
+void Interface::write( const Measure& measure ) const {
+    write( measure.m_size );
+    write( measure.m_data, measure.m_size );
+}
+
+void Interface::write( const Acquisition& acq ) const {
     write( acq.m_start );
     write( acq.m_end );
-    write( acq.m_data, acq.m_size );
+    write( acq.getMeasures() );
 }
 
 void Interface::write( const char* str ) const {
@@ -183,13 +188,30 @@ void Interface::read( std::string& str ) const {
 
 void Interface::read( SensorSpec& sensorSpec ) const {
     read( sensorSpec.m_sensorName );
-    read( sensorSpec.m_format );
-    read( sensorSpec.m_dims );
+    //    read( sensorSpec.m_format );
+    //    read( sensorSpec.m_dims );
+    read( sensorSpec.m_resolutions );
     read( sensorSpec.m_metaData );
 
-    sensorSpec.m_acquisitionSize =
-        SensorSpec::computeAcquisitionSize( sensorSpec.m_format, sensorSpec.m_dims );
+    sensorSpec.m_acquisitionSize = SensorSpec::computeAcquisitionSize( sensorSpec.m_resolutions );
 }
+
+Measure Interface::getMeasure() const {
+    size_t size;
+    read( size );
+    unsigned char* data = new unsigned char[size];
+    read( data, size );
+
+    Measure measure( data, size );
+    //    delete [] data;
+    //    measure.m_ownData = true;
+    return measure;
+}
+
+// void Interface::read(Measure &measure) const
+//{
+//     read(measure.m_data, measure.m_size);
+// }
 
 SensorSpec Interface::getSensorSpec() const {
     SensorSpec sensorSpec;
@@ -197,17 +219,23 @@ SensorSpec Interface::getSensorSpec() const {
     return sensorSpec;
 }
 
-Acquisition Interface::getAcquisition(int acquisitionSize) const
-{
+Acquisition Interface::getAcquisition( int acquisitionSize ) const {
     long long start, end;
-    unsigned char* data = new unsigned char[acquisitionSize];
 
     read( start );
     read( end );
-    read( data, acquisitionSize );
 
-    Acquisition acq( start, end, data, acquisitionSize );
-    delete[] data;
+    Acquisition acq( start, end );
+
+    int nMeasures;
+    read( nMeasures );
+
+    for ( int iMeasure = 0; iMeasure < nMeasures; ++iMeasure ) {
+        acq << Interface::getMeasure();
+    }
+
+    assert( acquisitionSize == acq.getSize() );
+
     return acq;
 }
 
