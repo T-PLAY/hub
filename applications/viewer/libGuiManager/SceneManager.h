@@ -18,6 +18,7 @@ class SceneManager : public QObject
     Q_OBJECT
   public:
     explicit SceneManager( QObject* parent = nullptr );
+    ~SceneManager();
 
     void init();
 
@@ -25,6 +26,8 @@ class SceneManager : public QObject
     void addSensor( Interface&& interface );
 
     void delSensor( const std::string& sensorName );
+
+    void clear();
 
   signals:
 

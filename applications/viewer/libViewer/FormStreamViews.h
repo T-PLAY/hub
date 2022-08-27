@@ -14,36 +14,59 @@
 
 #include <QStringListModel>
 
+#include <Viewer.hpp>
+
 //#include <DialogServerConnect.h>
 
 class FormStreamViews;
 
-class Thread_Client : public QThread {
+class ViewerQt : public QObject
+{
     Q_OBJECT
 public:
-    // constructor
-    explicit Thread_Client(const FormStreamViews &formSensorViews, QObject* parent = 0);
-
+    ViewerQt(const std::string & ipv4, const int & port);
+    ~ViewerQt();
 signals:
     void serverConnected();
     void serverDisconnected();
-    void addStreamSignal(std::string streamName,
+    void addStreamSignal(const std::string & streamName,
         const hub::SensorSpec & sensorSpec);
 //        std::string format,
 //        std::string dims,
 //        std::string size,
 //        std::string metaData);
-    void delStreamSignal(std::string streamName, const hub::SensorSpec & sensorSpec);
-
-public:
-    // overriding the QThread's run() method
-    void run();
-
-//    DialogServerConnect& m_dialog;
-    const FormStreamViews & m_formSensorViews;
+    void delStreamSignal(const std::string & streamName, const hub::SensorSpec & sensorSpec);
 
 private:
+    hub::Viewer *  m_viewer = nullptr;
 };
+
+//class Thread_Client : public QThread {
+//    Q_OBJECT
+//public:
+//    // constructor
+//    explicit Thread_Client(const FormStreamViews &formSensorViews, QObject* parent = 0);
+
+//signals:
+//    void serverConnected();
+//    void serverDisconnected();
+//    void addStreamSignal(std::string streamName,
+//        const hub::SensorSpec & sensorSpec);
+////        std::string format,
+////        std::string dims,
+////        std::string size,
+////        std::string metaData);
+//    void delStreamSignal(std::string streamName, const hub::SensorSpec & sensorSpec);
+
+//public:
+//    // overriding the QThread's run() method
+//    void run();
+
+////    DialogServerConnect& m_dialog;
+//    const FormStreamViews & m_formSensorViews;
+
+//private:
+//};
 
 namespace Ui {
 class FormStreamViews;
@@ -73,9 +96,9 @@ signals:
 public slots:
     void onServerConnect();
     void onServerDisconnect();
-    void addStream(std::string streamName,
+    void addStream(const std::string & streamName,
         const hub::SensorSpec & sensorSpec);
-    void delStream(std::string streamName, const hub::SensorSpec & sensorSpec);
+    void delStream(const std::string & streamName, const hub::SensorSpec & sensorSpec);
     //    void onQuitApp();
 
 
@@ -84,8 +107,14 @@ private:
 
 //    DialogServerConnect m_dialog;
 
-    friend class Thread_Client;
-    Thread_Client mThreadClient;
+//    friend class Thread_Client;
+//    Thread_Client mThreadClient;
+//    hub::Viewer * m_viewer;
+
+    ViewerQt * m_viewerQt = nullptr;
+//    hub::Viewer * m_viewer = nullptr;
+    std::string m_ipv4;
+    int m_port;
 
     //    Thread_InputStream mThread;
     //    std::map<std::string, SensorView*> m_sensorViews;
@@ -103,12 +132,16 @@ private:
     //    DialogServerConnect & m_dialog;
     //    QComboBox & m_comboBoxScan;
     //    QComboBox & m_comboBoxPose;
+    bool m_autoStartStream = true;
 
 public:
     const FormStreamView& getSensorView(const std::string& streamName) const;
 //    void setMdiArea(QMdiArea *newMdiArea);
 
     bool isServerConnected() const;
+private slots:
+    void on_lineEdit_ip_textChanged(const QString &ipv4);
+    void on_spinBox_port_valueChanged(int port);
 };
 
 #endif // FORMSENSORVIEWS_H
