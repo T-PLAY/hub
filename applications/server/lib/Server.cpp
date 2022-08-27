@@ -291,6 +291,7 @@ void Viewer::notifyDelStreamer( const std::string& streamerName,
     try {
         m_socket.write( hub::net::ClientSocket::Message::DEL_STREAMER );
         m_socket.write( streamerName );
+        m_socket.write(sensorSpec);
     }
     catch ( std::exception& e ) {
         assert( false );

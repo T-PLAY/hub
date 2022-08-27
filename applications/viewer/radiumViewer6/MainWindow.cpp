@@ -143,6 +143,8 @@ MainWindow::~MainWindow()
     std::cout << "[MainWindow] ~MainWindow() start" << std::endl;
     //    delete m_sensorViews;
 
+    m_guiManager.clear();
+
     delete m_app;
     delete ui;
     std::cout << "[MainWindow] ~MainWindow() end" << std::endl;

@@ -8,6 +8,15 @@
 
 SceneManager::SceneManager( QObject* parent ) : QObject { parent } {}
 
+SceneManager::~SceneManager()
+{
+    std::cout << "[SceneManager] ~SceneManager() start" << std::endl;
+
+    m_sensors.clear();
+
+    std::cout << "[SceneManager] ~SceneManager() end" << std::endl;
+}
+
 void SceneManager::init() {
     assert( m_engine != nullptr );
     assert( m_viewer != nullptr );
@@ -66,6 +75,11 @@ void SceneManager::delSensor( const std::string& sensorName ) {
         ++it;
         ++i;
     }
+}
+
+void SceneManager::clear()
+{
+    m_sensors.clear();
 }
 
 const std::list<Sensor>& SceneManager::getSensors() const {

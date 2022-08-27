@@ -28,6 +28,7 @@ public:
     ~GuiManager();
 
     void init();
+    void clear();
     //    void incIter();
 
 signals:

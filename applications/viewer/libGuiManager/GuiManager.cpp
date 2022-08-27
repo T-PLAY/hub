@@ -57,13 +57,19 @@ GuiManager::~GuiManager()
     //    delete m_comp;
     //    m_comp = nullptr;
     //    delete m_formWidgetLoader;
+    m_sceneManager.clear();
     //    m_formWidgetLoader = nullptr;
     //    delete m_formInputStreamViews;
     //    m_formInputStreamViews = nullptr;
-    //    delete m_formStreamViews;
-    //    m_formStreamViews = nullptr;
+        delete m_formStreamViews;
+        m_formStreamViews = nullptr;
 
     std::cout << "[GuiManager] ~GuiManager() end" << std::endl;
+}
+
+void GuiManager::clear()
+{
+    m_sceneManager.clear();
 }
 
 #include <QAction>
@@ -268,14 +274,17 @@ void GuiManager::init()
         &FormStreamViews::streamingStarted,
         this,
         &GuiManager::onServerStreamStarted);
+
     QObject::connect(m_formStreamViews,
         &FormStreamViews::streamingStopped,
         this,
         &GuiManager::onServerStreamStopped);
+
     QObject::connect(m_formStreamViews,
         &FormStreamViews::serverDisconnected,
         this,
         &GuiManager::onServerDisconnected);
+
     //        m_formStreamViews->startStreaming();
     //    } else {
     //        delete m_formStreamViews;
@@ -332,6 +341,7 @@ void GuiManager::init()
 
     m_initialized = true;
 }
+
 
 // void GuiManager::incIter()
 //{

@@ -65,6 +65,7 @@ void SensorThread::run() {
             }
 
             // update 3D component
+            if (! this->isInterruptionRequested())
             {
                 assert( m_sensor.m_component != nullptr );
                 m_sensor.m_component->update( acq );
@@ -303,7 +304,7 @@ Sensor::Sensor( std::unique_ptr<hub::InputSensor> inputStream,
 }
 
 Sensor::~Sensor() {
-    std::cout << "[Sensor] ~Sensor(" << m_inputSensor->m_spec.m_sensorName << ")" << std::endl;
+    std::cout << "[Sensor] ~Sensor(" << m_inputSensor->m_spec.m_sensorName << ") start" << std::endl;
 
     if ( m_thread.isRunning() ) {
         m_thread.requestInterruption();
@@ -349,6 +350,7 @@ Sensor::~Sensor() {
     for ( auto* sensor : m_sons ) {
         sensor->m_parent = nullptr;
     }
+    std::cout << "[Sensor] ~Sensor(" << m_inputSensor->m_spec.m_sensorName << ") end" << std::endl;
 }
 
 void Sensor::updateTransform( const Ra::Engine::Scene::Entity* entity ) {

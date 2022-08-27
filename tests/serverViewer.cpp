@@ -14,7 +14,7 @@
 TEST_CASE( "Server test : viewer" ) {
 
     const std::string ipv4 = "127.0.0.1";
-    constexpr int port     = 9000;
+    constexpr int port     = 9002;
 
     std::vector<hub::Acquisition> acqs;
     constexpr int nAcqs       = 100;
@@ -56,11 +56,11 @@ TEST_CASE( "Server test : viewer" ) {
             std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
             std::cout << "[Test] ############################### onNewStreamer end" << std::endl;
         };
-        auto onDelStreamer = []( const std::string& sensorName ) {
+        auto onDelStreamer = []( const std::string& sensorName, const hub::SensorSpec& sensorSpec ) {
             std::cout << "[Test] ############################### onDelStreamer" << std::endl;
         };
         auto viewer =
-            hub::Viewer( hub::net::ClientSocket( ipv4, port ), onNewStreamer, onDelStreamer );
+            hub::Viewer( ipv4, port , onNewStreamer, onDelStreamer );
         std::cout << "[Test] ############################### viewer created" << std::endl;
         std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
 

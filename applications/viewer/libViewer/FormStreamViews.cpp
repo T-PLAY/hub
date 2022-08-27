@@ -17,98 +17,123 @@
 
 #include <Net/ClientSocket.hpp>
 
-Thread_Client::Thread_Client( const FormStreamViews& formSensorViews, QObject* parent ) :
-    QThread( parent )
-    //    , m_dialog(dialog)
-    ,
-    m_formSensorViews( formSensorViews ) {
-    std::cout << "[Thread_Client] Thread_Client()" << std::endl;
+ViewerQt::ViewerQt( const std::string& ipv4, const int& port ) {
+    auto _addStreamer = [this]( const std::string& streamerName,
+                                const hub::SensorSpec& sensorSpec ) {
+        emit addStreamSignal( streamerName, sensorSpec );
+        //        this->addStream( streamerName, sensorSpec );
+    };
+    //    auto _delStream = std::bind(&FormStreamViews::delStream, this);
+    //    auto _delStream = [this] -> {FormStreamViews::delStream();}
+    auto _delStreamer = [this]( const std::string& streamerName,
+                                const hub::SensorSpec& sensorSpec ) {
+        emit delStreamSignal( streamerName, sensorSpec );
+    };
+    auto _onServerConnected    = [this]() { emit serverConnected(); };
+    auto _onServerDisconnected = [this]() { emit serverDisconnected(); };
+
+    m_viewer = new hub::Viewer(
+        ipv4, port, _addStreamer, _delStreamer, _onServerConnected, _onServerDisconnected );
 }
 
-void Thread_Client::run() {
-    std::cout << "[Thread_Client] Thread_Client::run()" << std::endl;
-
-    while ( !this->isInterruptionRequested() ) {
-        try {
-            hub::net::ClientSocket sock( m_formSensorViews.ui->lineEdit_ip->text().toStdString(),
-                                         m_formSensorViews.ui->spinBox_port->value() );
-            sock.write( hub::net::ClientSocket::Type::VIEWER );
-            emit serverConnected();
-            //            m_dialog.hide();
-
-            while ( !this->isInterruptionRequested() ) {
-
-                hub::net::ClientSocket::Message serverMessage;
-                sock.read( serverMessage );
-
-                switch ( serverMessage ) {
-
-                case hub::net::ClientSocket::Message::PING: {
-                    // server check client connection
-                    // nothing to do
-                } break;
-
-                case hub::net::ClientSocket::Message::NEW_STREAMER: {
-                    std::cout << "[Thread_Client] [viewer] new streamer" << std::endl;
-                    std::string streamName;
-                    sock.read( streamName );
-                    //                    std::string streamName;
-                    //                    sock.read(streamName);
-                    //                    std::string format;
-                    //                    sock.read(format);
-                    //                    std::string dims;
-                    //                    sock.read(dims);
-                    //                    std::string size;
-                    //                    sock.read(size);
-                    //                    hub::SensorSpec::MetaData metaData;
-                    //                    sock.read(metaData);
-                    hub::SensorSpec sensorSpec;
-                    sock.read( sensorSpec );
-
-                    std::cout << "[Thread_Client] [viewer] new streamer " << sensorSpec.m_sensorName
-                              << ", format:" << sensorSpec.m_format
-                              << ", dims:" << hub::SensorSpec::dims2string( sensorSpec.m_dims )
-                              << ", acquisitionSize:" << sensorSpec.m_acquisitionSize << std::endl;
-                    std::cout << "[Thread_Client] [viewer] emit addStreamSignal '" << streamName
-                              << "'" << std::endl;
-                    std::cout << "[Thread_Client] [viewer] metadata : "
-                              << hub::SensorSpec::metaData2string( sensorSpec.m_metaData, true );
-                    emit addStreamSignal(streamName, sensorSpec);
-//                    emit addStreamSignal(
-//                        sensorSpec.m_sensorName,
-//                        hub::SensorSpec::format2string(sensorSpec.m_format),
-//                        hub::SensorSpec::dims2string(sensorSpec.m_dims),
-//                        std::to_string(sensorSpec.m_acquisitionSize),
-//                        hub::SensorSpec::metaData2string( sensorSpec.m_metaData, true ) );
-
-                    //                    InputStream inputStream(streamName.c_str(), "");
-
-                } break;
-
-                case hub::net::ClientSocket::Message::DEL_STREAMER: {
-                    std::string streamName;
-                    sock.read( streamName );
-                    hub::SensorSpec sensorSpec;
-                    sock.read( sensorSpec );
-                    std::cout << "[Thread_Client] [viewer] del streamer '" << streamName << "'"
-                              << std::endl;
-                    emit delStreamSignal( streamName, sensorSpec );
-                } break;
-
-                default:
-                    std::cout << "[Thread_Client] unknown message from server" << std::endl;
-                }
-            }
-        }
-        catch ( std::exception& e ) {
-            emit serverDisconnected();
-            std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
-            //            m_dialog.show();
-            std::cout << "[Thread_Client] [viewer] no server, catch exception : " << e.what()
-                      << std::endl;
-        }
-    } // while (!this->isInterruptionRequested())
+ViewerQt::~ViewerQt() {
+    delete m_viewer;
 }
+
+// Thread_Client::Thread_Client( const FormStreamViews& formSensorViews, QObject* parent ) :
+//     QThread( parent )
+//     //    , m_dialog(dialog)
+//     ,
+//     m_formSensorViews( formSensorViews ) {
+//     std::cout << "[Thread_Client] Thread_Client()" << std::endl;
+// }
+
+// void Thread_Client::run() {
+//     std::cout << "[Thread_Client] Thread_Client::run()" << std::endl;
+
+//    while ( !this->isInterruptionRequested() ) {
+//        try {
+//            hub::net::ClientSocket sock( m_formSensorViews.ui->lineEdit_ip->text().toStdString(),
+//                                         m_formSensorViews.ui->spinBox_port->value() );
+//            sock.write( hub::net::ClientSocket::Type::VIEWER );
+//            emit serverConnected();
+//            //            m_dialog.hide();
+
+//            while ( !this->isInterruptionRequested() ) {
+
+//                hub::net::ClientSocket::Message serverMessage;
+//                sock.read( serverMessage );
+
+//                switch ( serverMessage ) {
+
+//                case hub::net::ClientSocket::Message::PING: {
+//                    // server check client connection
+//                    // nothing to do
+//                } break;
+
+//                case hub::net::ClientSocket::Message::NEW_STREAMER: {
+//                    std::cout << "[Thread_Client] [viewer] new streamer" << std::endl;
+//                    std::string streamName;
+//                    sock.read( streamName );
+//                    //                    std::string streamName;
+//                    //                    sock.read(streamName);
+//                    //                    std::string format;
+//                    //                    sock.read(format);
+//                    //                    std::string dims;
+//                    //                    sock.read(dims);
+//                    //                    std::string size;
+//                    //                    sock.read(size);
+//                    //                    hub::SensorSpec::MetaData metaData;
+//                    //                    sock.read(metaData);
+//                    hub::SensorSpec sensorSpec;
+//                    sock.read( sensorSpec );
+
+//                    std::cout << "[Thread_Client] [viewer] new streamer " <<
+//                    sensorSpec.m_sensorName
+//                              << ", format:" << sensorSpec.m_format
+//                              << ", dims:" << hub::SensorSpec::dims2string( sensorSpec.m_dims )
+//                              << ", acquisitionSize:" << sensorSpec.m_acquisitionSize <<
+//                              std::endl;
+//                    std::cout << "[Thread_Client] [viewer] emit addStreamSignal '" << streamName
+//                              << "'" << std::endl;
+//                    std::cout << "[Thread_Client] [viewer] metadata : "
+//                              << hub::SensorSpec::metaData2string( sensorSpec.m_metaData, true );
+//                    emit addStreamSignal(streamName, sensorSpec);
+////                    emit addStreamSignal(
+////                        sensorSpec.m_sensorName,
+////                        hub::SensorSpec::format2string(sensorSpec.m_format),
+////                        hub::SensorSpec::dims2string(sensorSpec.m_dims),
+////                        std::to_string(sensorSpec.m_acquisitionSize),
+////                        hub::SensorSpec::metaData2string( sensorSpec.m_metaData, true ) );
+
+//                    //                    InputStream inputStream(streamName.c_str(), "");
+
+//                } break;
+
+//                case hub::net::ClientSocket::Message::DEL_STREAMER: {
+//                    std::string streamName;
+//                    sock.read( streamName );
+//                    hub::SensorSpec sensorSpec;
+//                    sock.read( sensorSpec );
+//                    std::cout << "[Thread_Client] [viewer] del streamer '" << streamName << "'"
+//                              << std::endl;
+//                    emit delStreamSignal( streamName, sensorSpec );
+//                } break;
+
+//                default:
+//                    std::cout << "[Thread_Client] unknown message from server" << std::endl;
+//                }
+//            }
+//        }
+//        catch ( std::exception& e ) {
+//            emit serverDisconnected();
+//            std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+//            //            m_dialog.show();
+//            std::cout << "[Thread_Client] [viewer] no server, catch exception : " << e.what()
+//                      << std::endl;
+//        }
+//    } // while (!this->isInterruptionRequested())
+//}
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
@@ -118,8 +143,8 @@ FormStreamViews::FormStreamViews(
     //    QMainWindow& mainWindow,
     QWidget* parent ) :
     QWidget( parent ),
-    ui( new Ui::FormStreamViews ),
-    mThreadClient( *this, this )
+    ui( new Ui::FormStreamViews )
+//    mThreadClient( *this, this )
 //    , m_dialog(&mainWindow)
 //    , m_dialog()
 //    , mThreadClient(m_dialog, this)
@@ -135,30 +160,67 @@ FormStreamViews::FormStreamViews(
     ui->lineEdit_ip->setText( hub::net::Socket::s_defaultServiceIp );
     ui->spinBox_port->setValue( hub::net::Socket::s_defaultServicePort );
 
-    QObject::connect(
-        &mThreadClient, &Thread_Client::addStreamSignal, this, &FormStreamViews::addStream );
-    QObject::connect(
-        &mThreadClient, &Thread_Client::delStreamSignal, this, &FormStreamViews::delStream );
+    m_ipv4 = hub::net::Socket::s_defaultServiceIp;
+    m_port = hub::net::Socket::s_defaultServicePort;
 
-    QObject::connect(
-        &mThreadClient, &Thread_Client::serverConnected, this, &FormStreamViews::onServerConnect );
-    QObject::connect( &mThreadClient,
-                      &Thread_Client::serverDisconnected,
-                      this,
-                      &FormStreamViews::onServerDisconnect );
+    //    QObject::connect(
+    //        &mThreadClient, &Thread_Client::addStreamSignal, this, &FormStreamViews::addStream );
+    //    QObject::connect(
+    //        &mThreadClient, &Thread_Client::delStreamSignal, this, &FormStreamViews::delStream );
 
-    //    QObject::connect(QApplication::instance(), &QApplication::aboutToQuit, this,
-    //    &FormStreamViews::onQuitApp);
+    //    QObject::connect(
+    //        &mThreadClient, &Thread_Client::serverConnected, this,
+    //        &FormStreamViews::onServerConnect );
+    //    QObject::connect( &mThreadClient,
+    //                      &Thread_Client::serverDisconnected,
+    //                      this,
+    //                      &FormStreamViews::onServerDisconnect );
 
-    //    QObject::connect(&mainWindow, &QMainWindow::c)
-    //    QObject::connect( &mThreadClient, &Thread_Client::serverConnected, this, [this]() {
-    //        m_mainWindow.setEnabled( true );
-    //    } );
-    //    QObject::connect( &mThreadClient, &Thread_Client::serverDisconnected, this, [this]() {
-    //        m_mainWindow.setEnabled( false );
-    //    } );
-    //    m_mainWindow.setEnabled(false);
-    mThreadClient.start();
+//    {
+//        auto _addStreamer = [this]( const std::string& streamerName,
+//                                    const hub::SensorSpec& sensorSpec ) {
+//            addStream( streamerName, sensorSpec );
+//            //        this->addStream( streamerName, sensorSpec );
+//        };
+////        auto _addStream = std::bind(&FormStreamViews::addStream, this);
+//        //    auto _delStream = std::bind(&FormStreamViews::delStream, this);
+//        //    auto _delStream = [this] -> {FormStreamViews::delStream();}
+//        auto _delStreamer = [this]( const std::string& streamerName,
+//                                    const hub::SensorSpec& sensorSpec ) {
+//            delStream( streamerName, sensorSpec );
+//        };
+//        auto _onServerConnected    = [this]() { onServerConnect(); };
+//        auto _onServerDisconnected = [this]() { onServerDisconnect(); };
+
+//    m_viewer = new hub::Viewer(
+//        m_ipv4, m_port, _addStreamer, _delStreamer, _onServerConnected, _onServerDisconnected );
+//    }
+
+    {
+        m_viewerQt = new ViewerQt( m_ipv4, m_port );
+        QObject::connect(
+            m_viewerQt, &ViewerQt::addStreamSignal, this, &FormStreamViews::addStream );
+        QObject::connect(
+            m_viewerQt, &ViewerQt::delStreamSignal, this, &FormStreamViews::delStream );
+        QObject::connect(
+            m_viewerQt, &ViewerQt::serverConnected, this, &FormStreamViews::onServerConnect );
+        QObject::connect(
+            m_viewerQt, &ViewerQt::serverDisconnected, this, &FormStreamViews::onServerDisconnect );
+    }
+
+    //    //    QObject::connect(QApplication::instance(), &QApplication::aboutToQuit, this,
+    //    //    &FormStreamViews::onQuitApp);
+
+    //    //    QObject::connect(&mainWindow, &QMainWindow::c)
+    //    //    QObject::connect( &mThreadClient, &Thread_Client::serverConnected, this, [this]() {
+    //    //        m_mainWindow.setEnabled( true );
+    //    //    } );
+    //    //    QObject::connect( &mThreadClient, &Thread_Client::serverDisconnected, this, [this]()
+    //    {
+    //    //        m_mainWindow.setEnabled( false );
+    //    //    } );
+    //    //    m_mainWindow.setEnabled(false);
+    //    mThreadClient.start();
 
     m_sensorModel.setStringList( QStringList( "none" ) );
     //    m_mainWindow.setEnabled(false);
@@ -170,8 +232,12 @@ FormStreamViews::~FormStreamViews() {
 
     //    m_mdiArea = nullptr;
 
-    mThreadClient.requestInterruption();
-    mThreadClient.wait();
+    //    mThreadClient.requestInterruption();
+    //    mThreadClient.wait();
+    //    assert(m_viewer != nullptr);
+
+    delete m_viewerQt;
+//    delete m_viewer;
 
     std::cout << "[FormStreamViews] ~FormStreamViews() mThreadClient.terminated()" << std::endl;
 
@@ -227,14 +293,14 @@ void FormStreamViews::onServerDisconnect() {
     emit serverDisconnected();
 }
 
-void FormStreamViews::addStream(std::string streamName, const hub::SensorSpec &sensorSpec) {
+void FormStreamViews::addStream( const std::string& streamName,
+                                 const hub::SensorSpec& sensorSpec ) {
     //    assert(m_mdiArea != nullptr);
 
     std::cout << "[FormStreamViews] FormStreamViews::addStream '" << streamName << "'" << std::endl;
     assert( m_sensorViews.find( streamName ) == m_sensorViews.end() );
 
-    auto* sensorView =
-        new FormStreamView( streamName, sensorSpec, m_sensorModel, nullptr );
+    auto* sensorView = new FormStreamView( streamName, sensorSpec, m_sensorModel, nullptr );
     ui->verticalLayout->insertWidget( static_cast<int>( m_sensorViews.size() ), sensorView );
 
     m_sensorViews[streamName] = sensorView;
@@ -258,11 +324,17 @@ void FormStreamViews::addStream(std::string streamName, const hub::SensorSpec &s
         sensorView, &FormStreamView::streamingStopped, this, &FormStreamViews::streamingStopped );
 
     //    std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    //    sensorView->on_startStreaming();
     //    sensorView->on_radioButtonOnOff_clicked(true);
+    std::cout << "[FormStreamViews] FormStreamViews::addStream '" << streamName << "' done."
+              << std::endl;
+
+    if (m_autoStartStream) {
+    sensorView->on_startStreaming();
+    }
 }
 
-void FormStreamViews::delStream( std::string streamName, const hub::SensorSpec & sensorSpec ) {
+void FormStreamViews::delStream( const std::string& streamName,
+                                 const hub::SensorSpec& sensorSpec ) {
     std::cout << "[FormStreamViews] FormStreamViews::delStream '" << streamName << "'" << std::endl;
 
     //    delStreamView( streamName );
@@ -310,3 +382,11 @@ const FormStreamView& FormStreamViews::getSensorView( const std::string& streamN
 //{
 //     m_mdiArea = newMdiArea;
 // }
+
+void FormStreamViews::on_lineEdit_ip_textChanged( const QString& ipv4 ) {
+    m_ipv4 = ipv4.toStdString();
+}
+
+void FormStreamViews::on_spinBox_port_valueChanged( int port ) {
+    m_port = port;
+}
