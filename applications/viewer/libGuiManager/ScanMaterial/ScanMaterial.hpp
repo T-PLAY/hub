@@ -45,6 +45,8 @@ class ScanMaterial final : public SimpleMaterial
      * After removal, the material is no more available, ...
      */
     static void unregisterMaterial();
+
+    bool isTransparent() const override;
 };
 
 } // namespace Data

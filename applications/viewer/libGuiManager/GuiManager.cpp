@@ -318,6 +318,9 @@ void GuiManager::init()
     //    renderObjectManager->addRenderObject();
     //    m_viewer->prepareDisplay();
 
+//    m_viewer->setBackgroundColor(Ra::Core::Utils::Color::Alpha());
+//    m_viewer->setBackgroundColor(Ra::Core::Utils::Color::Red());
+
     m_sceneManager.m_engine = m_engine;
     m_sceneManager.m_sys = m_system;
     m_sceneManager.m_viewer = m_viewer;
