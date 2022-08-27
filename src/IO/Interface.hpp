@@ -78,9 +78,12 @@ class SRC_API Interface
     void write( const std::vector<T>& vector ) const;
     template <class T, class U>
     void write( const std::map<T, U>& map ) const;
+    template <class T, class U>
+    void write( const std::pair<T, U>& pair ) const;
 
     void write( const std::string& str ) const;
     void write( const SensorSpec& sensorSpec ) const;
+    void write( const Measure& measure ) const;
 
     virtual void write (const Acquisition& acq) const;
 
@@ -98,15 +101,20 @@ class SRC_API Interface
     void read( std::vector<T>& vector ) const;
     template <class T, class U>
     void read( std::map<T, U>& map ) const;
+    template <class T, class U>
+    void read( std::pair<T, U>& pair ) const;
 
     void read( std::string& str ) const;
     void read( SensorSpec& sensorSpec ) const;
+//    void read( Measure& measure ) const;
 
+    Measure getMeasure() const;
     SensorSpec getSensorSpec() const;
     virtual Acquisition getAcquisition(int acquisitionSize) const;
 
-  private:
+private:
 };
+
 
 // template <class T>
 // auto Interface::getValue(const std::any& any) -> decltype (int)
@@ -168,16 +176,26 @@ void Interface::write( const std::map<T, U>& map ) const {
     std::cout << "[Interface] map : nbEl = " << nbKey << std::endl;
 #endif
 
-    for ( const auto& pair : map ) {
-        const T& first = pair.first;
-#ifdef DEBUG_IOSTREAM
-        std::cout << "[Interface] map : name = " << first << std::endl;
-#endif
-        const U& second = pair.second;
+    for ( const std::pair<T, U>& pair : map ) {
+        write(pair);
+//        const T& first = pair.first;
+//#ifdef DEBUG_IOSTREAM
+//        std::cout << "[Interface] map : name = " << first << std::endl;
+//#endif
+//        const U& second = pair.second;
 
-        write( first );
-        write( second );
+//        write( first );
+//        write( second );
     }
+}
+
+template<class T, class U>
+void Interface::write(const std::pair<T, U> &pair) const
+{
+        const T& first = pair.first;
+        const U& second = pair.second;
+        write(first);
+        write(second);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -238,17 +256,31 @@ void Interface::read( std::map<T, U>& map ) const {
 #endif
 
     for ( int i = 0; i < nbEl; ++i ) {
-        T name;
-        read( name );
-#ifdef DEBUG_IOSTREAM
-        std::cout << "[Interface] map : name = " << name << std::endl;
-#endif
-        U val;
-        read( val );
-        //        std::cout << "[Interface] map : val = " << val << std::endl;
-        assert( map.find( name ) == map.end() );
-        map[name] = val;
+//        T name;
+//        read( name );
+//#ifdef DEBUG_IOSTREAM
+//        std::cout << "[Interface] map : name = " << name << std::endl;
+//#endif
+//        U val;
+//        read( val );
+//        //        std::cout << "[Interface] map : val = " << val << std::endl;
+//        map[name] = val;
+//        assert( map.find( name ) == map.end() );
+        std::pair<T, U> pair;
+        read(pair);
+        assert( map.find( pair.first ) == map.end() );
+        map.emplace(std::move(pair));
     }
+}
+
+template<class T, class U>
+void Interface::read(std::pair<T, U> &pair) const
+{
+        T first;
+        read(first);
+        U second;
+        read(second);
+        pair = std::make_pair(first, second);
 }
 
 class InputInterface : public virtual Interface

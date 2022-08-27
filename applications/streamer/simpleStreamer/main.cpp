@@ -66,7 +66,8 @@ int main( int argc, char* argv[] ) {
             std::chrono::duration_cast<std::chrono::microseconds>( end.time_since_epoch() ).count();
         ++dec;
 
-        proceduralStream << hub::Acquisition { timestampStart, timestampEnd, data, imgSize };
+        // TODO :: ACQ
+//        proceduralStream << hub::Acquisition { timestampStart, timestampEnd, data, imgSize };
 
         std::this_thread::sleep_until( end );
     }

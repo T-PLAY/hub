@@ -426,9 +426,10 @@ Streamer::Streamer( Server& server, int iClient, hub::net::ClientSocket&& sock )
     const size_t acquisitionSize = sensorSpec.m_acquisitionSize;
     std::cout << headerMsg() << "sensor name:'" << sensorSpec.m_sensorName << "'" << std::endl;
     std::cout << headerMsg() << "acquisitionSize:" << acquisitionSize << std::endl;
-    std::cout << headerMsg() << "dims:" << hub::SensorSpec::dims2string( sensorSpec.m_dims )
-              << std::endl;
-    std::cout << headerMsg() << "format:" << sensorSpec.m_format << std::endl;
+    std::cout << headerMsg() << "resolutions:" << hub::SensorSpec::resolutions2string( sensorSpec.m_resolutions );
+//    std::cout << headerMsg() << "dims:" << hub::SensorSpec::dims2string( sensorSpec.m_dims )
+//              << std::endl;
+//    std::cout << headerMsg() << "format:" << sensorSpec.m_format << std::endl;
 
     const auto& metadata = sensorSpec.m_metaData;
     for ( const auto& pair : metadata ) {

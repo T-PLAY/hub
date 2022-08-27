@@ -79,8 +79,8 @@ public:
     //    template <class IOStreamT>
     //    Sensor(IOStreamT&& iostream, QObject* parent = nullptr);
 
-    //    Sensor(hub::InputSensor&& inputStream, QObject* parent = nullptr);
-    Sensor(std::unique_ptr<hub::InputSensor> inputStream, QMdiArea& mdiArea, FormImageManipulator * imageManipulator, Ra::Engine::RadiumEngine * engine, Ra::Gui::Viewer * viewer, Ra::Engine::Scene::System * sys, Sensor * parentSensor, QObject* parent = nullptr);
+    //    Sensor(hub::InputSensor&& inputSensor, QObject* parent = nullptr);
+    Sensor(std::unique_ptr<hub::InputSensor> inputSensor, QMdiArea& mdiArea, FormImageManipulator * imageManipulator, Ra::Engine::RadiumEngine * engine, Ra::Gui::Viewer * viewer, Ra::Engine::Scene::System * sys, Sensor * parentSensor, QObject* parent = nullptr);
     ~Sensor();
 
     //    Sensor(IOStream&& iostream, QObject* parent = nullptr);

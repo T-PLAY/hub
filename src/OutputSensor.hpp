@@ -53,7 +53,10 @@ class SRC_API OutputSensor : public Sensor
     /// \param acquisition
     /// to send through the sensor.
     ///
+//    OutputSensor & operator<<( const Acquisition& acquisition );
     void operator<<( const Acquisition& acquisition ) const;
+
+//    OutputSensor & operator<<( const Measure& measure );
 
   private:
 };

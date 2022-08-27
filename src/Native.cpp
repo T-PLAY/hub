@@ -36,7 +36,7 @@ int getAcquisitionSize( InputSensor* inputSensor ) {
     return static_cast<int>( inputSensor->m_spec.m_acquisitionSize );
 }
 
-bool getData( InputSensor* inputSensor, unsigned char* data ) {
+bool getData( InputSensor* inputSensor, unsigned char* data, int iMeasure = 0 ) {
     assert( inputSensor != nullptr );
 
     std::cout << "[Native] getData( " << inputSensor << ")" << std::endl;
@@ -46,7 +46,9 @@ bool getData( InputSensor* inputSensor, unsigned char* data ) {
         std::cout << "[Native] get acq : " << acq << std::endl;
 
         std::cout << "[Native] copying data " << std::endl;
-        memcpy( data, acq.m_data, inputSensor->m_spec.m_acquisitionSize );
+        assert(iMeasure < acq.getMeasures().size());
+        const auto & measure = acq.getMeasures().at(iMeasure);
+        memcpy( data, measure.m_data, measure.m_size );
     }
     catch ( std::exception& e ) {
         std::cout << "[Native] getAcquisition : catch exception : " << e.what() << std::endl;
