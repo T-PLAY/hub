@@ -64,7 +64,7 @@ class Streamer : public Client
 
     const std::map<std::string, std::list<StreamViewer*>>& getSyncViewers() const;
 
-    const hub::Acquisition* getLastAcq() const;
+    const std::vector<std::unique_ptr<hub::Acquisition>> & getLastAcqs() const;
 
   private:
     std::mutex m_mtx;
@@ -74,7 +74,9 @@ class Streamer : public Client
     std::map<std::string, std::list<StreamViewer*>> m_syncViewers;
     std::map<std::string, std::deque<hub::Acquisition>> m_syncAcqs;
 
-    std::unique_ptr<hub::Acquisition> m_lastAcq;
+    std::vector<std::unique_ptr<hub::Acquisition>> m_lastAcqs;
+
+    bool m_isRecordStream = false;
 
     //    friend class Server;
 };
@@ -148,7 +150,7 @@ class Server
     void delViewer( Viewer* viewer );
 
     void newAcquisition( Streamer* streamer, hub::Acquisition acq );
-    const hub::Acquisition* getLastAcq( const std::string& streamName );
+    const std::vector<std::unique_ptr<hub::Acquisition>> & getLastAcqs( const std::string& streamName );
 
 public:
     bool m_acqPing = true;

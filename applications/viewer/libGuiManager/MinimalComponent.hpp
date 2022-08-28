@@ -11,12 +11,14 @@
 //#include <Engine/Data/PlainMaterial.hpp>
 //#include <Engine/Data/LambertianMaterial.hpp>
 
-#include <FormInputStreamView.h>
+//#include <FormInputStreamView.h>
 
 //#include <MinimalSystem.hpp>
 
 /* This file contains a minimal radium/qt application which shows the
 classic "Spinning Cube" demo. */
+
+#include <Acquisition.hpp>
 
 struct Scanner {
     double width;

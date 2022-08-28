@@ -9,7 +9,7 @@
 #include <QComboBox>
 #include <QMdiArea>
 #include <QVBoxLayout>
-#include <SensorView.h>
+//#include <SensorView.h>
 #include <map>
 
 #include <QStringListModel>

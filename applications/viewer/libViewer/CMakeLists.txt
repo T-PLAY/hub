@@ -86,7 +86,7 @@ endif()
 target_link_libraries(${PROJECT_NAME} PUBLIC
     ${SRC_TARGET}
     libApp
-    libLoader
+#    libLoader
 #    libImageManipulator
     #DicomLoader
     ${REQUIRED_LIBS_QUALIFIED}

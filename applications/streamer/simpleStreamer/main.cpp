@@ -25,7 +25,7 @@ int main( int argc, char* argv[] ) {
     metaData["parent"]    = "Keyboard";
 
     hub::OutputSensor proceduralStream(
-        { "ProceduralStreamer", hub::SensorSpec::Format::Y8, { width, height }, metaData },
+        { "ProceduralStreamer", { { { width, height }, hub::SensorSpec::Format::Y8 } }, metaData },
         hub::io::OutputStream( "ProceduralStreamer" ) );
 
     //    return 0;
@@ -66,8 +66,8 @@ int main( int argc, char* argv[] ) {
             std::chrono::duration_cast<std::chrono::microseconds>( end.time_since_epoch() ).count();
         ++dec;
 
-        // TODO :: ACQ
-//        proceduralStream << hub::Acquisition { timestampStart, timestampEnd, data, imgSize };
+        proceduralStream << ( hub::Acquisition { timestampStart, timestampEnd }
+                              << hub::Measure { data, imgSize } );
 
         std::this_thread::sleep_until( end );
     }

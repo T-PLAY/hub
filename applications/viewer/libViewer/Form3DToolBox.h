@@ -21,6 +21,8 @@ signals:
 
     void checkBox_showGrid_toggled(bool checked);
     void checkBox_showTrace_toggled(bool checked);
+    void doubleSpinBox_transparency_valueChanged(double transparency);
+    void doubleSpinBox_transparency2_valueChanged(double transparency);
 
 public slots:
     void on_pushButton_fitScene_clicked();
@@ -28,6 +30,11 @@ public slots:
 
     void on_checkBox_showGrid_toggled(bool checked);
     void on_checkBox_showTrace_toggled(bool checked);
+
+private slots:
+    void on_doubleSpinBox_transparency_valueChanged(double transparency);
+
+    void on_doubleSpinBox_transparency_2_valueChanged(double transparency);
 
 private:
     Ui::Form3DToolBox *ui;

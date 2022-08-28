@@ -39,11 +39,10 @@ void SceneManager::init() {
 
     m_viewer->prepareDisplay();
 
-    m_sensorModel.setColumnCount( 5 );
+    m_sensorModel.setColumnCount( 4 );
     QStringList header;
     header << "Sensor name"
-           << "Format"
-           << "Dimension"
+           << "Resolutions"
            << "Size"
            << "Frequency";
     m_sensorModel.setHorizontalHeaderLabels( header );
@@ -104,7 +103,9 @@ void SceneManager::attachSensorFromImageManipulator( int iSensor ) {
 
     int i = 0;
     for ( auto& sensor : m_sensors ) {
-        if ( i == iSensor ) { sensor.attachFromImageManipulator(); }
+        if ( i == iSensor ) {
+            sensor.attachFromImageManipulator();
+        }
         ++i;
     }
 }
@@ -115,4 +116,19 @@ void SceneManager::detachSensorFromImageManipulator( int iSensor ) {
         if ( i == iSensor ) { sensor.detachFromImageManipulator(); }
         ++i;
     }
+}
+
+void SceneManager::onTransparencyChanged(double transparency)
+{
+    for (auto & sensor : m_sensors) {
+        sensor.onTransparencyChanged(transparency);
+    }
+}
+
+void SceneManager::onTransparency2Changed(double transparency)
+{
+    for (auto & sensor : m_sensors) {
+        sensor.onTransparency2Changed(transparency);
+    }
+
 }

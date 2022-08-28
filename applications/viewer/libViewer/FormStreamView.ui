@@ -206,19 +206,7 @@
              </font>
             </property>
             <property name="text">
-             <string>Dimensions :</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="label_3">
-            <property name="font">
-             <font>
-              <pointsize>8</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>Format :</string>
+             <string>Resolutions :</string>
             </property>
            </widget>
           </item>
@@ -251,19 +239,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QLabel" name="laberDimensions">
-            <property name="font">
-             <font>
-              <pointsize>8</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>TextLabel</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="labelFormat">
+           <widget class="QLabel" name="labelResolutions">
             <property name="font">
              <font>
               <pointsize>8</pointsize>

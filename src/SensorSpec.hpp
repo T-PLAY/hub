@@ -43,7 +43,7 @@ class SensorSpec
         MOTION_XYZ32F, 	/**< Motion data packed as 3 32-bit float values, for X, Y, and Z axis */
         GPIO_RAW,      	/**< Raw data from the external sensors hooked to one of the GPIO's */
         DISPARITY32,   	/**< 32-bit float-point disparity values. Depth->Disparity conversion : Disparity = Baseline*FocalLength/Depth */
-        DOF6,     		/**< Pose data packed as floats array, containing translation vector (x, y, z), rotation quaternion (x, y, z, w) */
+        DOF6,     		/**< Pose data packed as floats array, containing translation vector (x, y, z), rotation quaternion (w0, w1, w2, w3 || w, x, y, z) */
         Y10BPACK, 		/**< 16-bit per-pixel grayscale image unpacked from 10 bits per pixel packed ([8:8:8:8:2222]) grey-scale image. The data is unpacked to LSB and padded with 6 zero bits */
         DISTANCE, 		/**< 32-bit float-point depth distance value.  */
         MJPEG,    		/**< Bitstream encoding for video in which an image of each frame is encoded as JPEG-DIB */

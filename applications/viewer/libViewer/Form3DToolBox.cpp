@@ -36,3 +36,17 @@ void Form3DToolBox::on_checkBox_showTrace_toggled(bool checked)
     emit checkBox_showTrace_toggled(checked);
 }
 
+
+
+void Form3DToolBox::on_doubleSpinBox_transparency_valueChanged(double tranparency)
+{
+    emit doubleSpinBox_transparency_valueChanged(tranparency);
+}
+
+
+void Form3DToolBox::on_doubleSpinBox_transparency_2_valueChanged(double transparency)
+{
+    emit doubleSpinBox_transparency2_valueChanged(transparency);
+
+}
+

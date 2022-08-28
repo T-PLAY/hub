@@ -8,7 +8,9 @@
 namespace hub {
 
 Dof6::Dof6( const Measure& measure ) : Measure( measure.m_data, measure.m_size ) {
-    memcpy( this, m_data, m_size );
+    assert( measure.m_size == 28 );
+    memcpy( (unsigned char*)&m_x, m_data, m_size );
+    assert( m_data != nullptr );
 }
 
 Dof6::Dof6( float x, float y, float z, float w0, float w1, float w2, float w3 ) :
@@ -21,7 +23,13 @@ Dof6::Dof6( float x, float y, float z, float w0, float w1, float w2, float w3 ) 
 //    m_w2( w2 ),
 //    m_w3( w3 ) {
 {
-    //    memcpy( m_data, this, 28 );
+    assert( m_size == 28 );
+    memcpy( (unsigned char*)&m_x, m_data, m_size );
+}
+
+std::ostream& operator<<( std::ostream& os, const Dof6& dof6 ) {
+    os << "dof6";
+    return os;
 }
 
 // Dof6::~Dof6() {
@@ -70,8 +78,17 @@ bool Measure::operator!=( const Measure& measure ) const {
 }
 
 std::ostream& operator<<( std::ostream& os, const Measure& measure ) {
-    for ( auto i = 0; i < std::min( (int)measure.m_size, 10 ); ++i ) {
-        os << std::setw( 3 ) << (int)measure.m_data[i] << " ";
+    if ( measure.m_size == 28 ) {
+        float* dof6 = (float*)measure.m_data;
+        os << "dof6:";
+        for ( auto i = 0; i < 7; ++i ) {
+            os << std::setw( 3 ) << dof6[i] << " ";
+        }
+    }
+    else {
+        for ( auto i = 0; i < std::min( (int)measure.m_size, 10 ); ++i ) {
+            os << std::setw( 3 ) << (int)measure.m_data[i] << " ";
+        }
     }
     return os;
 }
@@ -82,11 +99,12 @@ Measure::Measure( Measure&& measure ) :
     m_data( measure.m_data ),
     m_size( measure.m_size ) {
     //     m_format( measure.m_format ) {
+    //    measure.m_data = nullptr;
     measure.m_isMoved = true;
 }
 
 Measure::~Measure() {
-    assert( m_data != nullptr );
+    //    assert( m_data != nullptr );
 
     if ( !m_isMoved ) { delete[] m_data; }
 }

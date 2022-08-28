@@ -464,16 +464,21 @@ void MinimalComponent::updatePose(const hub::Acquisition& acq)
     auto& probe = g_probes.at(g_iProbePose);
     //    auto& probe = g_probes.at( iProbe );
 
-    float* translation = (float*)acq.m_data; // x, y, z
-    float* quaternion = (float*)&acq.m_data[12]; // x, y, z, w
+//    float* translation = (float*)acq.m_data; // x, y, z
+//    float* quaternion = (float*)&acq.m_data[12]; // x, y, z, w
+    assert(acq.getMeasures().size() == 1);
+    hub::Dof6 dof6 = acq.getMeasures().at(0);
 
     //        Ra::Core::Vector3 pos(-translation[0], -translation[1],
     //            -translation[2]);
-    Ra::Core::Vector3 pos(translation[0], translation[1], translation[2]);
+//    Ra::Core::Vector3 pos(translation[0], translation[1], translation[2]);
+    Ra::Core::Vector3 pos(dof6.m_x, dof6.m_y, dof6.m_z);
     //    pos = -pos;
 
-    Ra::Core::Quaternion orientation(quaternion[3], quaternion[0], quaternion[1], quaternion[2]); // w, x, y, z
-    std::cout << "update pose orientation " << quaternion[0] << ", " << quaternion[1] << ", " << quaternion[2] << ", " << quaternion[3] << std::endl;
+//    Ra::Core::Quaternion orientation(quaternion[3], quaternion[0], quaternion[1], quaternion[2]); // w, x, y, z
+    Ra::Core::Quaternion orientation(dof6.m_w0, dof6.m_w1, dof6.m_w2, dof6.m_w3);
+//    std::cout << "update pose orientation " << quaternion[0] << ", " << quaternion[1] << ", " << quaternion[2] << ", " << quaternion[3] << std::endl;
+    std::cout << "update pose orientation " << dof6.m_w0 << ", " << dof6.m_w1 << ", " << dof6.m_w2 << ", " << dof6.m_w3 << std::endl;
 
     // change to Radium base reference
     Ra::Core::Transform TRadium = Ra::Core::Transform::Identity();
@@ -741,7 +746,8 @@ void MinimalComponent::updateScan(const hub::Acquisition& acq)
 
     assert(probe.m_textureScan != nullptr);
 
-    const unsigned char* data = acq.m_data;
+    assert(acq.getMeasures().size() == 1);
+    const unsigned char* data = acq.getMeasures().at(0).m_data;
 
     m_viewer.makeCurrent();
     auto& params = probe.m_textureScan->getParameters();
@@ -808,16 +814,28 @@ void MinimalComponent::initPoseTraces(const std::vector<hub::Acquisition>& poseA
 
     for (const auto& acq : poseAcqs) {
 
-        float* translation = (float*)acq.m_data;
-        float* quaternion = (float*)&acq.m_data[12];
+//        float* translation = (float*)acq.m_data;
+//        float* quaternion = (float*)&acq.m_data[12];
 
-        //        Ra::Core::Vector3 pos(-translation[0], -translation[1],
-        //            -translation[2]);
-        Ra::Core::Vector3 pos(translation[0], translation[1], translation[2]);
-        //    pos = -pos;
+//        //        Ra::Core::Vector3 pos(-translation[0], -translation[1],
+//        //            -translation[2]);
+//        Ra::Core::Vector3 pos(translation[0], translation[1], translation[2]);
+//        //    pos = -pos;
 
-        Ra::Core::Quaternion orientation(
-            quaternion[0], quaternion[1], quaternion[2], quaternion[3]);
+//        Ra::Core::Quaternion orientation(
+//            quaternion[0], quaternion[1], quaternion[2], quaternion[3]);
+
+    assert(acq.getMeasures().size() == 1);
+    hub::Dof6 dof6 = acq.getMeasures().at(0);
+
+    //        Ra::Core::Vector3 pos(-translation[0], -translation[1],
+    //            -translation[2]);
+//    Ra::Core::Vector3 pos(translation[0], translation[1], translation[2]);
+    Ra::Core::Vector3 pos(dof6.m_x, dof6.m_y, dof6.m_z);
+    //    pos = -pos;
+
+//    Ra::Core::Quaternion orientation(quaternion[3], quaternion[0], quaternion[1], quaternion[2]); // w, x, y, z
+    Ra::Core::Quaternion orientation(dof6.m_w0, dof6.m_w1, dof6.m_w2, dof6.m_w3);
 
         // change to Radium base reference
         Ra::Core::Transform TRadium = Ra::Core::Transform::Identity();

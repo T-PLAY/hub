@@ -45,20 +45,25 @@ int main( int argc, char* argv[] ) {
     hub::SensorSpec::MetaData metaData;
     metaData["type"]        = "record";
     constexpr int imageSize = 512 * 512 * 2;
-    hub::SensorSpec sensorSpec(
-        "mri", hub::SensorSpec::Format::Y16, { 512, 512 }, std::move( metaData ) );
+    hub::SensorSpec sensorSpec( "mri",
+                                { { { 1 }, hub::SensorSpec::Format::DOF6 },
+                                  { { 512, 512 }, hub::SensorSpec::Format::Y16 } },
+                                std::move( metaData ) );
     hub::OutputSensor outputSensor( std::move( sensorSpec ),
                                     hub::io::OutputStream( "dicomStream" ) );
 
+//    nImages = 1;
     for ( int iImage = 0; iImage < nImages; ++iImage ) {
-        hub::Dof6 dof6(0.0, 0.0, iImage * sliceThickness);
-//        dof6.m_z = iImage * sliceThickness;
-        hub::Image image(&volumeData[imageSize * iImage], imageSize);
-//        outputSensor << hub::Acquisition { iImage, iImage, &volumeData[imageSize * iImage], imageSize };
-//        hub::Acquisition acq(iImage, iImage);
-//        hub::Acquisition {0, 0} << std::move(dof6);
-//        outputSensor << (hub::Acquisition { iImage, iImage } << std::move(dof6) << std::move(image));
-        outputSensor << hub::Acquisition { iImage, iImage, std::move(dof6) };
+        hub::Dof6 dof6( 0.0, iImage * sliceThickness, 0.0 );
+        //        dof6.m_z = iImage * sliceThickness;
+        hub::Measure image( &volumeData[imageSize * iImage], imageSize );
+        //        outputSensor << hub::Acquisition { iImage, iImage, &volumeData[imageSize *
+        //        iImage], imageSize }; hub::Acquisition acq(iImage, iImage); hub::Acquisition {0,
+        //        0} << std::move(dof6); outputSensor << (hub::Acquisition { iImage, iImage } <<
+        //        std::move(dof6) << std::move(image)); outputSensor << hub::Acquisition { iImage,
+        //        iImage, std::move(dof6) };
+        outputSensor << ( hub::Acquisition { iImage, iImage } << std::move( dof6 )
+                                                              << std::move( image ) );
     }
 
     while ( true ) {

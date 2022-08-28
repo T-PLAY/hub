@@ -1,4 +1,0 @@
-#ifndef SENSORVIEWS_H
-#define SENSORVIEWS_H
-
-#endif // SENSORVIEWS_H

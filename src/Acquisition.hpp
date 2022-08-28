@@ -57,12 +57,13 @@ class Dof6 : public Measure
           float w1 = 0.0,
           float w2 = 0.0,
           float w3 = 0.0 );
-    ~Dof6();
+//    ~Dof6();
     // private:
     const float m_x = 0.0, m_y = 0.0, m_z = 0.0;
     const float m_w0 = 1.0, m_w1 = 0.0, m_w2 = 0.0, m_w3 = 0.0;
     //    SensorSpec::Format getFormat() override;
 
+    SRC_API friend std::ostream& operator<<( std::ostream& os, const Dof6& dof6 );
   private:
     //    constexpr static SensorSpec::Format m_format = SensorSpec::Format::DOF6;
 };

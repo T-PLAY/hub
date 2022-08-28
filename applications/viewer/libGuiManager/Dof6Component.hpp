@@ -6,14 +6,14 @@
 #include <Engine/Scene/SystemDisplay.hpp>
 
 #include <Engine/Rendering/RenderObject.hpp>
-#include <StreamComponent.h>
+#include <SensorComponent.h>
 
 /* This file contains a minimal radium/qt application which shows the
 classic "Spinning Cube" demo. */
 
 /// This is a very basic component which holds a spinning cube.
 //struct Dof6Component : public Ra::Engine::Scene::Component {
-struct Dof6Component : StreamComponent {
+struct Dof6Component : SensorComponent {
 
     Dof6Component(const hub::InputSensor & inputStream, Ra::Engine::Scene::Entity* entity);
 
