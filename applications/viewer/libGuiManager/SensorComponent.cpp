@@ -1,6 +1,6 @@
-#include "StreamComponent.h"
+#include "SensorComponent.h"
 
-// StreamComponent::StreamComponent()
+// SensorComponent::SensorComponent()
 //{
 
 //}
@@ -32,13 +32,13 @@ using namespace Ra::Engine::Rendering;
 using namespace Ra::Engine::Data;
 using namespace Ra::Engine::Scene;
 
-StreamComponent::StreamComponent(const hub::InputSensor& inputStream, Ra::Engine::Scene::Entity* entity)
-    : Ra::Engine::Scene::Component(inputStream.m_spec.m_sensorName, entity)
-    , m_inputStream(inputStream)
+SensorComponent::SensorComponent(const hub::InputSensor& inputSensor, Ra::Engine::Scene::Entity* entity)
+    : Ra::Engine::Scene::Component(inputSensor.m_spec.m_sensorName, entity)
+    , m_inputSensor(inputSensor)
 {
 }
 
-void StreamComponent::initialize()
+void SensorComponent::initialize()
 {
     auto plainMaterial = make_shared<PlainMaterial>("Plain Material");
     plainMaterial->m_perVertexColor = true;

@@ -107,7 +107,9 @@ FormImageManipulator::~FormImageManipulator()
 void FormImageManipulator::update(const hub::Acquisition &acquisition)
 {
 //    ui->widgetStreamView_2->setData((unsigned char*)acquisition.mData, 512 * 192, {512, 192}, Stream::Format::Y8);
-    ui->widgetStreamView_2->setData((unsigned char*)acquisition.m_data, 256 * 256, {256, 256}, hub::SensorSpec::Format::Y8);
+    assert(acquisition.getMeasures().size() == 1);
+    const auto & measure = acquisition.getMeasures().at(0);
+    ui->widgetStreamView_2->setData((unsigned char*)measure.m_data, 256 * 256, {256, 256}, hub::SensorSpec::Format::Y8);
 
 }
 

@@ -11,7 +11,7 @@
 
 #include <Dof6Component.hpp>
 #include <ScanComponent.hpp>
-#include <StreamComponent.h>
+#include <SensorComponent.h>
 
 #include <FormImageManipulator.h>
 #include <WidgetStreamView.h>
@@ -90,6 +90,8 @@ public:
     void attachFromImageManipulator();
 //    Ra::Engine::Scene::Entity* m_entity = nullptr;
     void setParent(Sensor * parent);
+    void onTransparencyChanged(double transparency);
+    void onTransparency2Changed(double transparency);
 
 signals:
 
@@ -110,8 +112,8 @@ private:
     FormImageManipulator* m_imageManipulator = nullptr;
     WidgetStreamView2D * m_widgetStreamViewManipulator = nullptr;
 
-    WidgetStreamView* m_widgetStreamView = nullptr;
-    QMdiSubWindow* m_subWindow = nullptr;
+    std::vector<WidgetStreamView*> m_widgetStreamViews;
+    std::vector<QMdiSubWindow*> m_subWindows;
     QList<QStandardItem*> m_items;
     QStandardItem * m_itemFps = nullptr;
 
@@ -130,7 +132,7 @@ private:
 
 //    Ra::Engine::Scene::Component * m_component = nullptr;
 //    Dof6Component * m_dof6Component = nullptr;
-    StreamComponent * m_component = nullptr;
+    SensorComponent * m_component = nullptr;
 
 public:
     const QList<QStandardItem *> &getItems() const;

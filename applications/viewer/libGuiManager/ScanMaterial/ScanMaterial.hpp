@@ -46,7 +46,17 @@ class ScanMaterial final : public SimpleMaterial
      */
     static void unregisterMaterial();
 
+//    void updateGL() override;
+
     bool isTransparent() const override;
+
+    /**
+     * Update the rendering parameters for the Material
+     */
+//    void updateRenderingParameters();
+
+private:
+    float m_transparency = 0.5f;
 };
 
 } // namespace Data

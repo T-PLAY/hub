@@ -14,8 +14,8 @@ MainWindowStreamView::MainWindowStreamView( const hub::InputSensor& inputStream,
 //    , mThread(this, sensorName)
 //    , mSensorName(sensorName)
 {
-    const auto & header = m_inputStream.m_spec;
-    std::cout << "MainWindow::MainWindowStreamView(parent, " << header.m_sensorName << ")"
+    const auto & sensorSpec = m_inputStream.m_spec;
+    std::cout << "MainWindow::MainWindowStreamView(parent, " << sensorSpec.m_sensorName << ")"
               << std::endl;
 
     ui->setupUi( this );
@@ -25,18 +25,20 @@ MainWindowStreamView::MainWindowStreamView( const hub::InputSensor& inputStream,
     assert( ui->centralwidget != nullptr );
     delete ui->centralwidget;
 
-    const auto dim = header.m_dims.size();
-    if ( dim == 1 ) {
+    const auto & resolutions = sensorSpec.m_resolutions;
+    assert(resolutions.size() == 1);
+    const auto & dims = resolutions.at(0).first;
+    if ( dims.size() == 1 ) {
         ui->centralwidget = new WidgetStreamView1D( this );
 
         ui->centralwidget->setMinimumSize( 350, 35 );
     }
-    else if ( dim == 2 ) {
+    else if ( dims.size() == 2 ) {
 
         ui->centralwidget = new WidgetStreamView2D( this );
 
-        ui->centralwidget->setMinimumWidth( header.m_dims.at( 0 ) );
-        ui->centralwidget->setMinimumHeight( header.m_dims.at( 1 ) );
+        ui->centralwidget->setMinimumWidth( dims.at(0) );
+        ui->centralwidget->setMinimumHeight( dims.at(1) );
     }
     else {
         std::cout << "unprocessed dimension" << std::endl;

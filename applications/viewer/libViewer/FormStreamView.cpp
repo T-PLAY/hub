@@ -56,8 +56,9 @@ FormStreamView::FormStreamView(std::string streamName,
 
     ui->labelStreamName->setText(streamName.c_str());
     ui->labelSensorName->setText(sensorSpec.m_sensorName.c_str());
-    ui->labelFormat->setText(hub::SensorSpec::format2string(sensorSpec.m_format).c_str());
-    ui->laberDimensions->setText(hub::SensorSpec::dims2string(sensorSpec.m_dims).c_str());
+//    ui->labelFormat->setText(hub::SensorSpec::format2string(sensorSpec.m_format).c_str());
+//    ui->laberDimensions->setText(hub::SensorSpec::dims2string(sensorSpec.m_dims).c_str());
+    ui->labelResolutions->setText(hub::SensorSpec::resolutions2string(sensorSpec.m_resolutions).c_str());
     ui->labelSize->setText((std::to_string(sensorSpec.m_acquisitionSize) + " bytes").c_str());
 
     if (sensorSpec.m_metaData.empty()) {

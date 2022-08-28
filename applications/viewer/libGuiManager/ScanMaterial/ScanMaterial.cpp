@@ -13,11 +13,18 @@ namespace Data {
 
 static const std::string materialName { "Scan" };
 
+
 ScanMaterial::ScanMaterial( const std::string& instanceName ) :
-//    SimpleMaterial( instanceName, materialName, Material::MaterialAspect::MAT_TRANSPARENT ) {}
-    SimpleMaterial( instanceName, materialName, Material::MaterialAspect::MAT_OPAQUE ) {}
+    SimpleMaterial( instanceName, materialName, Material::MaterialAspect::MAT_TRANSPARENT ) {}
+//    SimpleMaterial( instanceName, materialName, Material::MaterialAspect::MAT_OPAQUE ) {}
 
 ScanMaterial::~ScanMaterial() = default;
+
+// void ScanMaterial::updateRenderingParameters()
+// {
+//     m_renderParameters.addParameter("transparency", m_transparency);
+
+// }
 
 void ScanMaterial::registerMaterial() {
     // Get the Radium Resource location on the filesystem
@@ -56,24 +63,25 @@ void ScanMaterial::registerMaterial() {
             auto zprepass = Data::ShaderConfigurationFactory::getConfiguration( "ZprepassScan" );
             rt.setConfiguration( *zprepass, Rendering::DefaultRenderingPasses::Z_PREPASS );
 
-//            // Transparent pass (0ptional) : If Transparent ... add LitOIT
-//            if ( isTransparent ) {
-//                auto transparentpass =
-//                    Data::ShaderConfigurationFactory::getConfiguration( "LitOITScan" );
-//                rt.setConfiguration( *transparentpass,
-//                                     Rendering::DefaultRenderingPasses::LIGHTING_TRANSPARENT );
-//            }
+            // Transparent pass (0ptional) : If Transparent ... add LitOIT
+            if ( isTransparent ) {
+                auto transparentpass =
+                    Data::ShaderConfigurationFactory::getConfiguration( "LitOITScan" );
+                rt.setConfiguration( *transparentpass,
+                                     Rendering::DefaultRenderingPasses::LIGHTING_TRANSPARENT );
+            }
         } );
 }
 
 void ScanMaterial::unregisterMaterial() {
-    Rendering::EngineRenderTechniques::removeDefaultTechnique( "Scan" );
+    Rendering::EngineRenderTechniques::removeDefaultTechnique( materialName );
 }
 
  bool ScanMaterial::isTransparent() const
 {
      return true;
  }
+
 
 } // namespace Data
 } // namespace Engine

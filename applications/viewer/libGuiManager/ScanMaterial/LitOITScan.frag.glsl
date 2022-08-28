@@ -48,20 +48,23 @@ void main() {
     //out_color = vec4( bc.rgb, 1 );
 //    out_color = vec4( bc.rrr, 1 );
 
-    float color = (bc.b + bc.g * 255.0) / 255.0;
-    float alpha = color - 1.0;
+//    float color = (bc.b + bc.g * 255.0) / 255.0;
+//    float alpha = color - 1.0;
 //    out_color = vec4(vec3(color), 0.1);
 
-    float a = 0.5;
-    discard;
+//    float a = bc.g;
+    float a = material.color.g;
+//    out_color = vec4(vec3(color * 0.5), material.color.g);
+//    discard;
     if (! toDiscard(material, bc) || a < 0.001 ) discard;
 
     vec3 contribution = lightContributionFrom( light, getWorldSpacePosition().xyz );
 
     float w        = weight( gl_FragCoord.z, a );
 //    f_Accumulation = vec4( bsdf * contribution * a, a ) * w;
-    //f_Accumulation = vec4( contribution * a, a ) * w;
-    f_Accumulation = vec4( a ) * w;
+    f_Accumulation = vec4( contribution * a, a ) * w;
+//    f_Accumulation = vec4( contribution * a, a ) * w;
+//    f_Accumulation = vec4( a ) * w;
     f_Revealage    = vec4( a );
 }
 

@@ -47,6 +47,8 @@ class SceneManager : public QObject
     void attachSensorFromImageManipulator( int iSensor );
     void detachSensorFromImageManipulator( int iSensor );
     //    void detachAllSensorsFromImageManipulator();
+    void onTransparencyChanged(double transparency);
+    void onTransparency2Changed(double transparency);
 
   private:
     std::list<Sensor> m_sensors;

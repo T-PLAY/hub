@@ -32,6 +32,8 @@
 
 const bool ENABLE_GRID = true;
 
+constexpr int s_maxScans = 50;
+
 using namespace Ra;
 using namespace Ra::Core;
 using namespace Ra::Core::Utils;
@@ -46,29 +48,44 @@ using namespace Ra::Engine::Scene;
  * supported by Radium
  */
 
-ScanComponent::ScanComponent( const hub::InputSensor& inputStream,
+ScanComponent::ScanComponent( const hub::InputSensor& inputSensor,
                               Ra::Engine::Scene::Entity* entity,
                               Ra::Engine::RadiumEngine& engine,
                               Ra::Gui::Viewer& viewer ) :
     //    Ra::Engine::Scene::Component( "Dof6 component", entity ) {}
-    StreamComponent( inputStream, entity ),
+    SensorComponent( inputSensor, entity ),
     m_engine( engine ),
     m_viewer( viewer ) {}
 
 void ScanComponent::initialize() {
-    StreamComponent::initialize();
+    SensorComponent::initialize();
 
     //    auto blinnPhongMaterial              = make_shared<BlinnPhongMaterial>( "Shaded Material"
     //    ); blinnPhongMaterial->m_perVertexColor = true; blinnPhongMaterial->m_ks = Color::White();
     //    blinnPhongMaterial->m_ns = 100_ra;
 
-    auto lambertianMaterial              = make_shared<LambertianMaterial>( "Lambertian Material" );
-    lambertianMaterial->m_perVertexColor = true;
+    //    auto lambertianMaterial              = make_shared<LambertianMaterial>( "Lambertian
+    //    Material" ); lambertianMaterial->m_perVertexColor = true;
 
-    auto plainMaterial              = make_shared<PlainMaterial>( "Plain Material" );
-    plainMaterial->m_perVertexColor = true;
+    //    auto plainMaterial              = make_shared<PlainMaterial>( "Plain Material" );
+    m_scanLineMaterial                   = make_shared<PlainMaterial>( "Plain Material" );
+    m_scanLineMaterial->m_perVertexColor = true;
 
+    //    m_scanMaterial = std::make_unique<ScanMaterial>( "Scan Material" );
     //// setup ////
+
+    const auto& sensorSpec  = m_inputSensor.m_spec;
+    const auto& resolutions = sensorSpec.m_resolutions;
+
+    if ( resolutions.size() == 1 ) {
+        addScan();
+        m_iScan = 0;
+    }
+    else {
+        for ( int i = 0; i < s_maxScans; ++i ) {
+            addScan();
+        }
+    }
 
     //    // origin ref cube
     //    {
@@ -84,16 +101,122 @@ void ScanComponent::initialize() {
     //        addRenderObject(m_ro);
     //    }
 
-    const auto& metadata = m_inputStream.m_spec.m_metaData;
-    double scanWidth     = 1000; // mm
-//    if ( metadata.find( "scanWidth" ) != metadata.end() ) {
-//        scanWidth = std::any_cast<double>( metadata.at( "scanWidth" ) );
-//    }
+    //    const auto& metadata = m_inputSensor.m_spec.m_metaData;
+    //    double scanWidth     = 1000; // mm
+    //                                 //    if ( metadata.find( "scanWidth" ) != metadata.end() ) {
+    //    //        scanWidth = std::any_cast<double>( metadata.at( "scanWidth" ) );
+    //    //    }
+
+    //    double scanDepth = 1000; // mm
+    //    //    if ( metadata.find( "scanDepth" ) != metadata.end() ) {
+    //    //        scanDepth = std::any_cast<double>( metadata.at( "scanDepth" ) );
+    //    //    }
+}
+
+void ScanComponent::update( const hub::Acquisition& acq ) {
+
+    const auto& measures = acq.getMeasures();
+    const auto nMeasures = measures.size();
+    if ( nMeasures == 2 ) {
+        if ( m_firstUpdate || acq.m_start != m_lastUpdateDate ) {
+            m_firstUpdate    = false;
+            m_lastUpdateDate = acq.m_start;
+            ++m_iScan;
+        }
+        else { return; }
+    }
+    std::cout << "[ScanComponent] iScan = " << m_iScan << ", update acq : " << acq << std::endl;
+
+    assert( !m_scans.empty() );
+    assert( 0 <= m_iScan && m_iScan < s_maxScans );
+    assert( m_iScan < (int)m_scans.size() );
+    auto& scan = m_scans.at( m_iScan );
+
+    double scanWidth               = 250; // mm
+    double scanDepth               = 250; // mm
+    const unsigned char* imageData = nullptr;
+    int imageSize;
+    if ( nMeasures == 1 ) {
+        const auto& image = measures.at( 0 );
+        imageData         = image.m_data;
+        imageSize         = image.m_size;
+    }
+    else if ( nMeasures == 2 ) {
+        const hub::Measure& measure = measures.at( 0 );
+        assert( measure.m_size == 28 );
+        assert( measure.m_data != nullptr );
+        const hub::Dof6& dof6 = acq.getMeasures().at( 0 );
+        Ra::Core::Vector3 pos( dof6.m_x, dof6.m_y, dof6.m_z );
+        Ra::Core::Quaternion orientation( dof6.m_w0, dof6.m_w1, dof6.m_w2, dof6.m_w3 );
+        //        scan.m_quad.s
+        // update quad
+        {
+            auto TLocal = Transform::Identity();
+            TLocal.translate( pos );
+            TLocal.rotate( orientation );
+            TLocal.scale( Vector3( scanDepth / 2.0, 1.0, scanWidth / 2.0 ) );
+            TLocal.translate( Vector3( 1.0, 0.0, 0.0 ) );
+            scan.m_quad->setLocalTransform( TLocal );
+            scan.m_quad->setVisible( true );
+        }
+
+        // update scan line
+        {
+            const float lineRadius = 0.02 * scanDepth * 10;
+            auto TLocal            = Transform::Identity();
+            TLocal.translate( pos );
+            TLocal.rotate( orientation );
+            TLocal.scale( Vector3( lineRadius, lineRadius, scanWidth ) );
+            TLocal.translate( Vector3( 0.0, 0.0, -0.5 ) );
+            //        TLocal.translate(Vector3(0_ra, 0_ra, -iScan * 5));
+            //        TLocal.scale(1000.0);
+            scan.m_scanLine->setLocalTransform( TLocal );
+//            scan.m_scanLine->setVisible( true );
+        }
+
+        const auto& image = acq.getMeasures().at( 1 );
+        imageData         = image.m_data;
+        imageSize         = image.m_size;
+    }
+    else { assert( false ); }
+
+    // update texture
+    {
+        //    const unsigned char* data = measure.m_data;
+        memcpy( scan.m_textureData, imageData, imageSize );
+
+        //    m_viewer.makeCurrent();
+        //    auto& params = m_textureScan->getParameters();
+        //    //    memcpy(params.texels, data, 192 * 512);
+        //    memcpy(params.texels, data, m_inputSensor.getAcquisitionSize());
+        //    m_textureScan->initializeGL(false);
+        //    m_viewer.doneCurrent();
+
+        auto* textureManager = m_engine.getTextureManager();
+        //    const auto& sensorName = m_inputSensor.m_spec.m_sensorName;
+        textureManager->updateTextureContent( scan.m_textureName, (void*)scan.m_textureData );
+        //        scan.m_textureScan = m_engine.getTextureManager()->getOrLoadTexture(
+        //        textureParameters );
+
+        // PR GOT
+        //    m_image->update(data, m_inputSensor.getAcquisitionSize());
+
+        //        acqs.pop();
+    }
+}
+
+void ScanComponent::addScan() {
+    const int iScan = m_scans.size();
+
+    double scanWidth = 1000; // mm
+                             //    if ( metadata.find( "scanWidth" ) != metadata.end() ) {
+    //        scanWidth = std::any_cast<double>( metadata.at( "scanWidth" ) );
+    //    }
 
     double scanDepth = 1000; // mm
-//    if ( metadata.find( "scanDepth" ) != metadata.end() ) {
-//        scanDepth = std::any_cast<double>( metadata.at( "scanDepth" ) );
-//    }
+    //    if ( metadata.find( "scanDepth" ) != metadata.end() ) {
+
+    Scan scan;
 
     // scan plane
     {
@@ -114,13 +237,36 @@ void ScanComponent::initialize() {
         //! [Creating a texture for the slice]
         //        unsigned char data[192 * 512];
         //        unsigned char* data = new unsigned char[192 * 512];
-        const auto& sensorName = m_inputStream.m_spec.m_sensorName;
-        assert( m_inputStream.m_spec.m_dims.size() == 2 );
-        const int width    = m_inputStream.m_spec.m_dims.at( 0 );
-        const int height   = m_inputStream.m_spec.m_dims.at( 1 );
-        const int sizeData = m_inputStream.m_spec.m_acquisitionSize;
+        const auto& sensorName = m_inputSensor.m_spec.m_sensorName;
+        const auto& sensorSpec = m_inputSensor.m_spec;
+        //        assert(sensorSpec.m_resolutions.size() == 1);
+        const auto& resolutions = sensorSpec.m_resolutions;
+        int width;
+        int height;
+        int imageSize;
+        hub::SensorSpec::Dims dims;
+        hub::SensorSpec::Format format;
+        const int resolutionsSize = resolutions.size();
+        if ( resolutionsSize == 1 ) {
+            dims      = resolutions.at( 0 ).first;
+            format    = resolutions.at( 0 ).second;
+            width     = dims.at( 0 );
+            height    = dims.at( 1 );
+            imageSize = sensorSpec.m_acquisitionSize;
+        }
+        else if ( resolutionsSize == 2 ) {
+            assert( resolutions.at( 0 ).second == hub::SensorSpec::Format::DOF6 );
+            assert( resolutions.at( 1 ).first.size() == 2 );
+            dims      = resolutions.at( 1 ).first;
+            format    = resolutions.at( 1 ).second;
+            width     = dims.at( 0 );
+            height    = dims.at( 1 );
+            imageSize = hub::SensorSpec::computeAcquisitionSize( resolutions.at( 1 ) );
+        }
+        else { assert( false ); }
+        assert( dims.size() == 2 );
         int nChannel = 0;
-        switch (m_inputStream.m_spec.m_format) {
+        switch ( format ) {
         case hub::SensorSpec::Format::Y8:
             nChannel = 1;
             break;
@@ -128,40 +274,39 @@ void ScanComponent::initialize() {
             nChannel = 2;
             break;
         default:
-            assert(false);
+            assert( false );
             break;
         }
-        assert( sizeData == width * height * nChannel );
-        int iProbe = 0;
+        assert( imageSize == width * height * nChannel );
+        //        int iProbe = 0;
 
-        m_data = new unsigned char[sizeData];
+        scan.m_textureData = new unsigned char[imageSize];
         // fill with some function
         for ( int i = 0; i < width; ++i ) {
             for ( int j = 0; j < height; j++ ) {
                 for ( int k = 0; k < nChannel; ++k ) {
-                    if ( std::abs( i - 40 - iProbe * 10 ) < 5 ||
-                         std::abs( j - 40 - iProbe * 10 ) < 5 ) {
+                    if ( std::abs( i - 40 - iScan ) < 5 || std::abs( j - 40 - iScan ) < 5 ) {
                         //                    data[( i * 512 + j )] = 0;
-                        m_data[( i * height + j ) * nChannel]     = 0;
-                        m_data[( i * height + j ) * nChannel + 1] = 0;
+                        scan.m_textureData[( i * height + j ) * nChannel]     = 0;
+                        scan.m_textureData[( i * height + j ) * nChannel + 1] = 0;
                     }
                     else {
                         //                    data[( i * 512 + j )] = ( j / 2 ) % 256;
-                        m_data[( i * height + j ) * nChannel]     = ( j / 2 ) % 256;
-                        m_data[( i * height + j ) * nChannel + 1] = ( j / 2 ) % 256;
+                        scan.m_textureData[( i * height + j ) * nChannel]     = ( i / 2 ) % 256;
+                        scan.m_textureData[( i * height + j ) * nChannel + 1] = ( i / 2 ) % 256;
                     }
                 }
             }
         }
-        //        m_textureName = std::string("myTexture") + std::to_string(iProbe);
-        m_textureName = sensorName;
+        //        m_textureName = std::string("myTexture") + std::to_string(iScan);
+        scan.m_textureName = sensorName + std::to_string( iScan );
         auto& textureParameters =
             //            m_engine.getTextureManager()->addTexture( probe.m_textureName.c_str(),
             //            512, 192, data );
             //            m_engine.getTextureManager()->addTexture(probe.m_textureName.c_str(), 512,
-            //            192, probe.m_data);
+            //            192, probe.scan.m_textureData);
             m_engine.getTextureManager()->addTexture(
-                m_textureName.c_str(), height, width, m_data );
+                scan.m_textureName.c_str(), width, height, scan.m_textureData );
 
         if ( nChannel == 1 ) {
             textureParameters.format         = gl::GLenum::GL_RED;
@@ -174,41 +319,45 @@ void ScanComponent::initialize() {
 
         //        textureParameters.minFilter = gl::GLenum::GL_LINEAR;
         //        textureParameters.magFilter = gl::GLenum::GL_LINEAR;
-        assert( m_textureName == textureParameters.name );
+        assert( scan.m_textureName == textureParameters.name );
         //! [Creating a texture for the slice]
 
         std::shared_ptr<Engine::Data::Mesh> meshQuad(
-            new Engine::Data::Mesh( std::string( "Scan plane" ) + std::to_string( iProbe ) ) );
+            new Engine::Data::Mesh( std::string( "Scan plane" ) + std::to_string( iScan ) ) );
         meshQuad->loadGeometry( std::move( quadTriangle ) );
 
-        m_ro = RenderObject::createRenderObject(
+        scan.m_quad = RenderObject::createRenderObject(
             "echoPlane", this, RenderObjectType::Geometry, meshQuad );
 
         //            auto mat                   = make_shared<PlainMaterial>( (std::string("Plain
-        //            Material") + std::to_string(iProbe)).c_str() );
-        auto mat = make_shared<ScanMaterial>( "Scan Material" );
+        //            Material") + std::to_string(iScan)).c_str() );
+        scan.m_material = make_shared<ScanMaterial>( "Scan Material" );
         //            auto mat                   = make_shared<BlinnPhongMaterial>(
-        //            (std::string("Plain Material") + std::to_string(iProbe)).c_str() );
+        //            (std::string("Plain Material") + std::to_string(iScan)).c_str() );
 
-        mat->m_perVertexColor = true;
-        mat->addTexture( ScanMaterial::TextureSemantic::TEX_COLOR, textureParameters );
+        scan.m_material->m_perVertexColor = true;
+        scan.m_material->m_color.x() = 0.25;
+        scan.m_material->m_color.y() = 0.65;
+        scan.m_material->addTexture( ScanMaterial::TextureSemantic::TEX_COLOR, textureParameters );
 
         //            mat->addTexture(PlainMaterial::TextureSemantic::TEX_COLOR, textureParameters);
         //            mat->addTexture(BlinnPhongMaterial::TextureSemantic::TEX_DIFFUSE,
         //            textureParameters);
-        m_ro->setMaterial( mat );
+        scan.m_quad->setMaterial( scan.m_material );
 
         auto TLocal = Transform::Identity();
         TLocal.scale( Vector3( scanDepth / 2.0, 1.0, scanWidth / 2.0 ) );
-        TLocal.translate( Vector3( 1.0, 0.0, 0.0 ) );
+        TLocal.translate( Vector3( 1.0, iScan * 100.0, 0.0 ) );
         //        TLocal.scale(1000.0);
-        m_ro->setLocalTransform( TLocal );
-        //                m_ro->getRenderTechnique()->setConfiguration( shaderConfig );
+        scan.m_quad->setLocalTransform( TLocal );
+        scan.m_quad->setVisible( false );
+        //        //                scan.m_quad->getRenderTechnique()->setConfiguration(
+        //        shaderConfig );
 
-        addRenderObject( m_ro );
+        addRenderObject( scan.m_quad );
 
         m_viewer.makeCurrent();
-        m_textureScan = m_engine.getTextureManager()->getOrLoadTexture( textureParameters );
+        scan.m_textureScan = m_engine.getTextureManager()->getOrLoadTexture( textureParameters );
         m_viewer.doneCurrent();
 
         //        Ra::Core::Asset::ImageSpec imgSpec(width, height, 1);
@@ -218,40 +367,41 @@ void ScanComponent::initialize() {
 
     // scan line
     {
-        m_scanLine = RenderObject::createRenderObject(
+        scan.m_scanLine = RenderObject::createRenderObject(
             "scanLine", this, RenderObjectType::Geometry, m_meshAxis[5] ); // z axis
-        m_scanLine->setMaterial( plainMaterial );
+        scan.m_scanLine->setMaterial( m_scanLineMaterial );
 
         const float lineRadius = 0.02 * scanDepth * 10;
 
         auto TLocal = Transform::Identity();
         TLocal.scale( Vector3( lineRadius, lineRadius, scanWidth ) );
         TLocal.translate( Vector3( 0.0, 0.0, -0.5 ) );
-        //        TLocal.translate(Vector3(0_ra, 0_ra, -iProbe * 5));
+        //        TLocal.translate(Vector3(0_ra, 0_ra, -iScan * 5));
         //        TLocal.scale(1000.0);
-        m_scanLine->setLocalTransform( TLocal );
+        scan.m_scanLine->setLocalTransform( TLocal );
+        scan.m_scanLine->setVisible( false );
 
-        addRenderObject( m_scanLine );
+        addRenderObject( scan.m_scanLine );
+    }
+
+    m_scans.push_back( scan );
+}
+
+void ScanComponent::changeTransparency(double transparency)
+{
+//    std::cout << "[ScanComponent] change transparency : " << transparency << std::endl;
+    for (auto & scan : m_scans) {
+        scan.m_material->m_color.x() = transparency;
+        scan.m_material->needUpdate();
     }
 }
 
-void ScanComponent::update( const hub::Acquisition& acq ) {
-    const unsigned char* data = acq.m_data;
-    memcpy( m_data, data, m_inputStream.m_spec.m_acquisitionSize );
+void ScanComponent::changeTransparency2(double transparency)
+{
+    std::cout << "[ScanComponent] change transparency 2 : " << transparency << std::endl;
+    for (auto & scan : m_scans) {
+        scan.m_material->m_color.y() = transparency;
+        scan.m_material->needUpdate();
+    }
 
-    //    m_viewer.makeCurrent();
-    //    auto& params = m_textureScan->getParameters();
-    //    //    memcpy(params.texels, data, 192 * 512);
-    //    memcpy(params.texels, data, m_inputStream.getAcquisitionSize());
-    //    m_textureScan->initializeGL(false);
-    //    m_viewer.doneCurrent();
-
-    auto* textureManager   = m_engine.getTextureManager();
-    const auto& sensorName = m_inputStream.m_spec.m_sensorName;
-    textureManager->updateTextureContent( sensorName, (void*)m_data );
-
-    // PR GOT
-    //    m_image->update(data, m_inputStream.getAcquisitionSize());
-
-    //        acqs.pop();
 }

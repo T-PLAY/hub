@@ -249,16 +249,17 @@ void Server::newAcquisition( Streamer* streamer, hub::Acquisition acq ) {
     //    m_mtx.unlock();
 }
 
-const hub::Acquisition* Server::getLastAcq( const std::string& streamName ) {
+const std::vector<std::unique_ptr<hub::Acquisition>>&
+Server::getLastAcqs( const std::string& streamName ) {
     m_mtxStreamers.lock();
     assert( m_streamers.find( streamName ) != m_streamers.end() );
-    auto lastAcq = m_streamers.at( streamName )->getLastAcq();
+    //    auto lastAcq = m_streamers.at( streamName )->getLastAcq();
+    const auto& lastAcqs = m_streamers.at( streamName )->getLastAcqs();
     m_mtxStreamers.unlock();
-    return lastAcq;
+    return lastAcqs;
 }
 
-void Server::setAcqPing(bool newAcqPing)
-{
+void Server::setAcqPing( bool newAcqPing ) {
     m_acqPing = newAcqPing;
 }
 
@@ -304,7 +305,6 @@ void Viewer::notifyDelStreamer( const std::string& streamerName,
         m_socket.write( sensorSpec );
     }
     catch ( std::exception& e ) {
-        assert( false );
         std::cout << headerMsg()
                   << "in : viewer is dead, this append when "
                      "viewer/streamer process was stopped in same time : "
@@ -432,28 +432,35 @@ Streamer::Streamer( Server& server, int iClient, hub::net::ClientSocket&& sock )
 
     std::cout << headerMsg() << "stream name = '" << m_streamName << "'" << std::endl;
 
-    const auto& sensorSpec       = m_inputSensor->m_spec;
+    const auto& sensorSpec = m_inputSensor->m_spec;
+
     const size_t acquisitionSize = sensorSpec.m_acquisitionSize;
     std::cout << headerMsg() << "sensor name:'" << sensorSpec.m_sensorName << "'" << std::endl;
     std::cout << headerMsg() << "acquisitionSize:" << acquisitionSize << std::endl;
     std::cout << headerMsg()
-              << "resolutions:" << hub::SensorSpec::resolutions2string( sensorSpec.m_resolutions );
+              << "resolutions:" << hub::SensorSpec::resolutions2string( sensorSpec.m_resolutions )
+              << std::endl;
     //    std::cout << headerMsg() << "dims:" << hub::SensorSpec::dims2string( sensorSpec.m_dims )
     //              << std::endl;
     //    std::cout << headerMsg() << "format:" << sensorSpec.m_format << std::endl;
 
-    const auto& metadata = sensorSpec.m_metaData;
-    for ( const auto& pair : metadata ) {
+    const auto& metaData = sensorSpec.m_metaData;
+    for ( const auto& pair : metaData ) {
         const auto& name = pair.first;
         const auto& val  = pair.second;
 #ifdef WIN32
-        std::cout << headerMsg() << "metadata: " << val.type().name() << " " << name << " = '"
+        std::cout << headerMsg() << "metaData: " << val.type().name() << " " << name << " = '"
                   << hub::Header::any2string( val ) << "' (" << val.type().raw_name() << ")"
                   << std::endl;
 #else
-        std::cout << headerMsg() << "metadata: " << val.type().name() << " " << name << " = '"
+        std::cout << headerMsg() << "metaData: " << val.type().name() << " " << name << " = '"
                   << hub::SensorSpec::any2string( val ) << "'" << std::endl;
 #endif
+    }
+    if ( metaData.find( "type" ) != metaData.end() ) {
+        std::cout << headerMsg() << "type detected : record stream" << std::endl;
+        const char* type = std::any_cast<const char*>( metaData.at( "type" ) );
+        if ( strcmp( type, "record" ) == 0 ) { m_isRecordStream = true; }
     }
 
     m_server.addStreamer( this );
@@ -522,8 +529,12 @@ Streamer::Streamer( Server& server, int iClient, hub::net::ClientSocket&& sock )
 
                 m_server.newAcquisition( this, acq.clone() );
 
-                m_lastAcq.release();
-                m_lastAcq = std::make_unique<hub::Acquisition>( std::move( acq ) );
+                //                m_lastAcqs.release();
+                if ( !m_isRecordStream ) {
+                    m_lastAcqs.back().release();
+                    m_lastAcqs.clear();
+                }
+                m_lastAcqs.push_back( std::make_unique<hub::Acquisition>( std::move( acq ) ) );
             }
         }
         catch ( hub::net::Socket::exception& e ) {
@@ -608,8 +619,8 @@ const std::map<std::string, std::list<StreamViewer*>>& Streamer::getSyncViewers(
     return m_syncViewers;
 }
 
-const hub::Acquisition* Streamer::getLastAcq() const {
-    return m_lastAcq.get();
+const std::vector<std::unique_ptr<hub::Acquisition>>& Streamer::getLastAcqs() const {
+    return m_lastAcqs;
 }
 
 Viewer::Viewer( Server& server, int iClient, hub::net::ClientSocket&& sock ) :
@@ -684,6 +695,11 @@ StreamViewer::StreamViewer( Server& server, int iClient, hub::net::ClientSocket&
               << "new stream viewer" << m_server.getStatus() << std::endl;
     std::cout << headerMsg() << "watching '" << m_streamName << "'" << std::endl;
 
+    const auto& lastAcqs = m_server.getLastAcqs( m_streamName );
+    for ( const auto& acq : lastAcqs ) {
+        *m_outputSensor << *acq;
+    }
+
     std::thread thread( [this]() {
         //    m_thread = std::thread( [this]() {
         try {
@@ -693,14 +709,19 @@ StreamViewer::StreamViewer( Server& server, int iClient, hub::net::ClientSocket&
                 //                std::endl;
                 m_mtxOutputSensor.lock();
                 //                std::cout << headerMsg() << "thread : writing ping" << std::endl;
-                auto lastAcq = m_server.getLastAcq( m_streamName );
-                if ( lastAcq == nullptr ) {
+                const auto& lastAcqs = m_server.getLastAcqs( m_streamName );
+                if ( lastAcqs.empty() ) {
                     m_outputSensor->getInterface().write( hub::net::ClientSocket::Message::PING );
                     //                    std::cout << headerMsg() << "thread : ping wrote" <<
                     //                    std::endl;
                 }
                 else {
-                    if ( m_server.m_acqPing ) { *m_outputSensor << *lastAcq; }
+                    if ( m_server.m_acqPing ) {
+                        *m_outputSensor << *lastAcqs.back();
+                        //                        for (const auto & acq : lastAcqs) {
+                        //                        *m_outputSensor << *acq;
+                        //                        }
+                    }
                     else {
                         m_outputSensor->getInterface().write(
                             hub::net::ClientSocket::Message::PING );

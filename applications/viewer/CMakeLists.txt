@@ -10,7 +10,7 @@ add_subdirectory(simpleViewer)
 if (HUB_APPLICATION_ENABLE_RADIUM)
 
     #    add_definitions(-DONLY_POSE)
-    add_subdirectory(radiumViewer)
+#    add_subdirectory(radiumViewer)
     #    add_subdirectory(radiumViewer2)
     #    add_subdirectory(radiumViewer3)
     #    add_subdirectory(radiumViewer4)

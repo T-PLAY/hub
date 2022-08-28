@@ -21,8 +21,10 @@
 //#include <DicomLoader/DicomLoader.hpp>
 #include <Engine/Scene/GeometrySystem.hpp>
 
-#include <FormInputStreamViews.h>
+//#include <FormInputStreamViews.h>
+#ifdef ENABLE_LOADER
 #include <FormWidgetLoader.h>
+#endif
 
 #include <Gui/TreeModel/EntityTreeModel.hpp>
 
@@ -34,6 +36,8 @@
 #include <QHeaderView>
 #include <QPushButton>
 #include <QTableView>
+
+#include <IO/Stream.hpp>
 
 GuiManager::GuiManager(QObject* parent)
     : QObject { parent }
@@ -150,6 +154,18 @@ void GuiManager::init()
         &Form3DToolBox::checkBox_showGrid_toggled,
         this,
         &GuiManager::on_checkBox_grid_toggled);
+    QObject::connect(m_3DToolBox,
+        &Form3DToolBox::checkBox_showGrid_toggled,
+        this,
+        &GuiManager::on_checkBox_grid_toggled);
+    QObject::connect(m_3DToolBox,
+        &Form3DToolBox::doubleSpinBox_transparency_valueChanged,
+        this,
+        &GuiManager::on_transparency_valueChanged);
+    QObject::connect(m_3DToolBox,
+        &Form3DToolBox::doubleSpinBox_transparency2_valueChanged,
+        this,
+        &GuiManager::on_transparency2_valueChanged);
 
     //    m_layout3DView->addWidget(m_3DToolBox);
     m_layout3DView->insertWidget(0, m_3DToolBox);
@@ -682,4 +698,14 @@ void GuiManager::on_sensorsView_selectionChanged(const QItemSelection& selected,
         //            m_recordLoader.unload();
         //        m_recordLoader.load(mPath);
     }
+}
+
+void GuiManager::on_transparency_valueChanged(double transparency)
+{
+    m_sceneManager.onTransparencyChanged(transparency);
+}
+
+void GuiManager::on_transparency2_valueChanged(double transparency)
+{
+    m_sceneManager.onTransparency2Changed(transparency);
 }

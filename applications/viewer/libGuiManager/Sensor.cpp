@@ -9,6 +9,7 @@
 #include <Engine/Scene/Entity.hpp>
 
 #include <SensorSpec.hpp>
+#include <Gui/Viewer/RotateAroundCameraManipulator.hpp>
 
 SensorThread::SensorThread( Sensor& sensor, QObject* parent ) :
     QThread { parent }, m_sensor( sensor ) {}
@@ -36,37 +37,48 @@ void SensorThread::run() {
             //            Sensor::Acquisition acq;
             //            *mInputStream >> acq;
             const auto& acq = inputSensor->getAcquisition();
-            //            std::cout << "[SensorThreaSensorThread] receive acq : " << acq << std::endl;
+            //            std::cout << "[SensorThreaSensorThread] receive acq : " << acq <<
+            //            std::endl;
 
             //            mAcqs.push(std::move(acq));
             //            mAcqs.push({});
             //            *mInputStream >> mAcqs.back();
             //            mAcqs.push(acq.clone());
+            const auto& sensorSpec  = inputSensor->m_spec;
+            const auto& resolutions = sensorSpec.m_resolutions;
+            const auto& measures = acq.getMeasures();
 
             // update 2D view
             {
-                assert( m_sensor.m_widgetStreamView != nullptr );
-                m_sensor.m_widgetStreamView->setData( (unsigned char*)acq.m_data,
-                                                      inputSensor->m_spec.m_acquisitionSize,
-                                                      inputSensor->m_spec.m_dims,
-                                                      inputSensor->m_spec.m_format );
-            }
+                for ( int i = 0; i < resolutions.size(); ++i ) {
+                    const auto& resolution = resolutions.at( i );
+                    const auto& dims       = resolution.first;
+                    const auto& format     = resolution.second;
+                    const auto& measure    = measures.at( i );
 
-            // update 2D manipulator view
-            {
-                //                assert(m_sensor.m_widgetStreamViewManipulator != nullptr);
-                if ( m_sensor.m_widgetStreamViewManipulator != nullptr ) {
-                    m_sensor.m_widgetStreamViewManipulator->setData(
-                        (unsigned char*)acq.m_data,
-                        inputSensor->m_spec.m_acquisitionSize,
-                        inputSensor->m_spec.m_dims,
-                        inputSensor->m_spec.m_format );
+                    //                assert( m_sensor.m_widgetStreamViews != nullptr );
+                    m_sensor.m_widgetStreamViews[i]->setData(
+                        (unsigned char*)measure.m_data, measure.m_size, dims, format );
                 }
             }
 
+            // update 2D manipulator view
+            //            {
+            //                //                assert(m_sensor.m_widgetStreamViewManipulator !=
+            //                nullptr); if ( m_sensor.m_widgetStreamViewManipulator != nullptr ) {
+            //                    m_sensor.m_widgetStreamViewManipulator->setData(
+            //                        (unsigned char*)measure.m_data,
+            //                        inputSensor->m_spec.m_acquisitionSize,
+            //                        dims,
+            //                        format );
+            //                }
+            //            }
+            //            const auto& measure = acq.getMeasures().at( 0 );
+            //            const auto& dims    = inputSensor->m_spec.m_resolutions.at( 0 ).first;
+            //            const auto& format  = inputSensor->m_spec.m_resolutions.at( 0 ).second;
+
             // update 3D component
-            if (! this->isInterruptionRequested())
-            {
+            if ( !this->isInterruptionRequested() ) {
                 assert( m_sensor.m_component != nullptr );
                 m_sensor.m_component->update( acq );
             }
@@ -181,42 +193,51 @@ Sensor::Sensor( std::unique_ptr<hub::InputSensor> inputSensor,
     m_counterFpsThread( *this, parent )
 //    , m_parentEntity(parentEntity)
 {
+    const auto& sensorSpec  = m_inputSensor->m_spec;
+    const auto& resolutions = sensorSpec.m_resolutions;
 
+    // create 2D viewers
     // mdiArea window
-    {
-        assert( m_widgetStreamView == nullptr );
+    for ( const auto& resolution : resolutions ) {
+        const auto& dims   = resolution.first;
+        const auto& format = resolution.second;
 
-        const auto& dims = m_inputSensor->m_spec.m_dims;
+        //        assert( m_widgetStreamViews == nullptr );
+        WidgetStreamView* widgetStreamView = nullptr;
+
+        //        const auto& dims = m_inputSensor->m_spec.m_dims;
         if ( dims.size() == 1 ) {
-            m_widgetStreamView = new WidgetStreamView1D( &m_mdiArea );
-            m_widgetStreamView->setMinimumSize( 400, 35 );
+            widgetStreamView = new WidgetStreamView1D( &m_mdiArea );
+            widgetStreamView->setMinimumSize( 400, 35 );
         }
         else if ( dims.size() == 2 ) {
-            m_widgetStreamView = new WidgetStreamView2D( &m_mdiArea );
-            m_widgetStreamView->setMinimumWidth( dims.at( 0 ) );
-            m_widgetStreamView->setMinimumHeight( dims.at( 1 ) );
+            widgetStreamView = new WidgetStreamView2D( &m_mdiArea );
+            widgetStreamView->setMinimumWidth( dims.at( 0 ) );
+            widgetStreamView->setMinimumHeight( dims.at( 1 ) );
         }
-        //        if (m_widgetStreamView != nullptr) {
-        assert( m_widgetStreamView != nullptr );
+        //        if (widgetStreamView != nullptr) {
+        assert( widgetStreamView != nullptr );
 
-        m_subWindow = m_mdiArea.addSubWindow( m_widgetStreamView );
-        m_subWindow->setVisible( true );
-        m_subWindow->setWindowFlags( Qt::CustomizeWindowHint | Qt::WindowMinMaxButtonsHint |
-                                     Qt::WindowTitleHint );
+        QMdiSubWindow* subWindow = m_mdiArea.addSubWindow( widgetStreamView );
+        subWindow->setVisible( true );
+        subWindow->setWindowFlags( Qt::CustomizeWindowHint | Qt::WindowMinMaxButtonsHint |
+                                   Qt::WindowTitleHint );
 
-        std::string dimText = "(dim: ";
-        for ( int i = 0; i < dims.size(); ++i ) {
-            dimText += std::to_string( dims.at( i ) );
-            if ( i != dims.size() - 1 ) { dimText += " x "; }
-        }
-        dimText += ")";
-
-        std::string formatText = std::string( "(format: " ) +
-                                 hub::SensorSpec::format2string( m_inputSensor->m_spec.m_format ) +
-                                 ")";
-        m_subWindow->setWindowTitle(
-            ( m_inputSensor->m_spec.m_sensorName + "   " + dimText + "   " + formatText ).c_str() );
+        //        std::string dimText = "(dim: ";
+        //        for ( int i = 0; i < dims.size(); ++i ) {
+        //            dimText += std::to_string( dims.at( i ) );
+        //            if ( i != dims.size() - 1 ) { dimText += " x "; }
         //        }
+        //        dimText += ")";
+        //        std::string formatText =
+        //            std::string( "(format: " ) + hub::SensorSpec::format2string( format ) + ")";
+        subWindow->setWindowTitle( ( m_inputSensor->m_spec.m_sensorName + "   " +
+                                     hub::SensorSpec::dims2string( dims ) + "   " +
+                                     hub::SensorSpec::format2string( format ) )
+                                       .c_str() );
+        m_subWindows.push_back( subWindow );
+
+        m_widgetStreamViews.push_back( widgetStreamView );
     }
 
     //     init image manipulator
@@ -255,21 +276,38 @@ Sensor::Sensor( std::unique_ptr<hub::InputSensor> inputSensor,
         //            transformObservers.attach(observer);
         //        }
 
-        switch ( m_inputSensor->m_spec.m_format ) {
-        case hub::SensorSpec::Format::DOF6:
-            //            assert(m_dof6Component == nullptr);
-            //            m_dof6Component = new Dof6Component(m_entity);
-            m_component = new Dof6Component( *m_inputSensor, m_entity );
-            break;
+        const int resolutionSize = resolutions.size();
+        if ( resolutionSize == 1 ) {
+            //            const auto& dims   = resolutions.at( 0 ).first;
+            const auto& format = resolutions.at( 0 ).second;
 
-        case hub::SensorSpec::Format::Y8:
-        case hub::SensorSpec::Format::Y16:
-            m_component = new ScanComponent( *m_inputSensor, m_entity, *m_engine, *m_viewer );
-            break;
+            switch ( format ) {
+            case hub::SensorSpec::Format::DOF6:
+                //            assert(m_dof6Component == nullptr);
+                //            m_dof6Component = new Dof6Component(m_entity);
+                m_component = new Dof6Component( *m_inputSensor, m_entity );
+                break;
 
-        default:
-            assert( false );
+            case hub::SensorSpec::Format::Y8:
+            case hub::SensorSpec::Format::Y16:
+                m_component = new ScanComponent( *m_inputSensor, m_entity, *m_engine, *m_viewer );
+                break;
+
+            default:
+                assert( false );
+            }
         }
+        else if ( resolutionSize == 2 ) {
+            const auto& format  = resolutions.at( 0 ).second;
+            const auto& format2 = resolutions.at( 1 ).second;
+
+            assert( format == hub::SensorSpec::Format::DOF6 );
+            assert( format2 == hub::SensorSpec::Format::Y16 );
+
+            m_component = new ScanComponent( *m_inputSensor, m_entity, *m_engine, *m_viewer );
+        }
+
+        assert( m_component != nullptr );
         //    Ra::Engine::Scene::Component* c = new Dof6Component(e);
         m_sys->addComponent( m_entity, m_component );
         m_component->initialize();
@@ -289,10 +327,12 @@ Sensor::Sensor( std::unique_ptr<hub::InputSensor> inputSensor,
     }
 
     m_items.append( new QStandardItem( m_inputSensor->m_spec.m_sensorName.c_str() ) );
-    m_items.append( new QStandardItem(
-        hub::SensorSpec::format2string( m_inputSensor->m_spec.m_format ).c_str() ) );
     m_items.append(
-        new QStandardItem( hub::SensorSpec::dims2string( m_inputSensor->m_spec.m_dims ).c_str() ) );
+        new QStandardItem( hub::SensorSpec::resolutions2string( resolutions ).c_str() ) );
+    //    m_items.append( new QStandardItem(
+    //        hub::SensorSpec::format2string( format ).c_str() ) );
+    //    m_items.append(
+    //        new QStandardItem( hub::SensorSpec::dims2string( dims ).c_str() ) );
     m_items.append(
         new QStandardItem( std::to_string( m_inputSensor->m_spec.m_acquisitionSize ).c_str() ) );
     m_itemFps = new QStandardItem( "0" );
@@ -304,7 +344,8 @@ Sensor::Sensor( std::unique_ptr<hub::InputSensor> inputSensor,
 }
 
 Sensor::~Sensor() {
-    std::cout << "[Sensor] ~Sensor(" << m_inputSensor->m_spec.m_sensorName << ") start" << std::endl;
+    std::cout << "[Sensor] ~Sensor(" << m_inputSensor->m_spec.m_sensorName << ") start"
+              << std::endl;
 
     if ( m_thread.isRunning() ) {
         m_thread.requestInterruption();
@@ -332,13 +373,21 @@ Sensor::~Sensor() {
     m_entity = nullptr;
 
     // 2D
-    assert( m_widgetStreamView != nullptr );
-    //    m_mdiArea.removeSubWindow(m_widgetStreamView->parentWidget());
-    m_mdiArea.removeSubWindow( m_subWindow );
-    delete m_widgetStreamView;
-    m_widgetStreamView = nullptr;
-    delete m_subWindow;
-    m_subWindow = nullptr;
+    //    assert( m_widgetStreamViews != nullptr );
+    //    m_mdiArea.removeSubWindow(m_widgetStreamViews->parentWidget());
+    assert( m_widgetStreamViews.size() == m_subWindows.size() );
+    for ( int i = 0; i < m_widgetStreamViews.size(); ++i ) {
+
+        auto * widgetStreamView = m_widgetStreamViews.at(i);
+        delete widgetStreamView;
+
+        auto * subWindow = m_subWindows.at(i);
+        m_mdiArea.removeSubWindow( subWindow );
+        delete subWindow;
+//        delete m_widgetStreamViews;
+//        m_widgetStreamViews = nullptr;
+//        m_subWindows = nullptr;
+    }
 
     if ( m_parent != nullptr ) {
         auto& sons = m_parent->m_sons;
@@ -368,8 +417,34 @@ void Sensor::detachFromImageManipulator() {
 }
 
 void Sensor::attachFromImageManipulator() {
+
+        auto& viewer = *m_viewer;
+        //    auto aabb = Ra::Engine::RadiumEngine::getInstance()->computeSceneAabb();
+        //    auto aabb = m_app->m_engine->computeSceneAabb();
+
+//        const auto& traces = m_comp->getRoTraces();
+        //    auto aabb = traces[0].compu
+//        auto aabb = traces[0]->computeAabb();
+//        for (int i = 1; i < g_nTraces; ++i) {
+//            aabb.extend(traces[i]->computeAabb());
+//        }
+//        auto aabb = m_enti
+        auto aabb = m_entity->computeAabb();
+
+        if (aabb.isEmpty()) {
+            viewer.getCameraManipulator()->resetCamera();
+        } else {
+            viewer.fitCameraToScene(aabb);
+        }
+
+    return;
+    //    //    RA_DISPLAY_AABB( aabb, Ra::Core::Utils::Color::Blue() );
     assert( m_widgetStreamViewManipulator == nullptr );
-    if ( m_inputSensor->m_spec.m_dims.size() == 2 ) {
+
+    assert( m_inputSensor->m_spec.m_resolutions.size() == 1 );
+    const auto& dims = m_inputSensor->m_spec.m_resolutions.at( 0 ).first;
+
+    if ( dims.size() == 2 ) {
         if ( m_imageManipulator != nullptr ) {
             m_widgetStreamViewManipulator = &m_imageManipulator->getWidgetStreamView();
             m_widgetStreamViewManipulator->init( 512, 192, 35.0, 50.0 );
@@ -400,6 +475,16 @@ void Sensor::setParent( Sensor* parent ) {
 
         m_parent->m_sons.push_back( this );
     }
+}
+
+void Sensor::onTransparencyChanged(double transparency)
+{
+    m_component->changeTransparency(transparency);
+}
+
+void Sensor::onTransparency2Changed(double transparency)
+{
+    m_component->changeTransparency2(transparency);
 }
 
 Ra::Engine::Scene::Entity* Sensor::getEntity() const {

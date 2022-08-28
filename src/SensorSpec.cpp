@@ -44,10 +44,10 @@ static constexpr int format2nByte[static_cast<int>( SensorSpec::Format::COUNT )]
 size_t SensorSpec::computeAcquisitionSize( const Resolutions& resolutions ) {
     size_t size = 0;
     for ( const auto& resolution : resolutions ) {
-        size += computeAcquisitionSize(resolution);
-//        const auto& dims   = pair.first;
-//        const auto& format = pair.second;
-//        size += computeAcquisitionSize( format, dims );
+        size += computeAcquisitionSize( resolution );
+        //        const auto& dims   = pair.first;
+        //        const auto& format = pair.second;
+        //        size += computeAcquisitionSize( format, dims );
     }
     return size;
 }
@@ -86,12 +86,18 @@ std::string SensorSpec::format2string( const Format& format ) {
 }
 
 std::string SensorSpec::resolutions2string( const Resolutions& resolutions ) {
+    const int size  = resolutions.size();
     std::string str = "";
-    for ( const auto& pair : resolutions ) {
-        const auto& dims   = pair.first;
-        const auto& format = pair.second;
-        str += "{" + dims2string( dims ) + ", " + format2string( format ) + "}, ";
+    if ( size > 1 ) str += "[";
+    for ( int i = 0; i < size; ++i ) {
+        const auto& dims   = resolutions[i].first;
+        const auto& format = resolutions[i].second;
+        if ( size > 1 ) str += "{";
+        str += dims2string( dims ) + " : " + format2string( format );
+        if ( size > 1 ) str += "}";
+        if ( i != size - 1 ) str += ", ";
     }
+    if ( size > 1 ) str += "]";
     return str;
 }
 

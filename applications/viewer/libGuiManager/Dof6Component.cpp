@@ -42,7 +42,7 @@ using namespace Ra::Engine::Scene;
 
 Dof6Component::Dof6Component(const hub::InputSensor& inputStream, Ra::Engine::Scene::Entity* entity)
     : //    Ra::Engine::Scene::Component( "Dof6 component", entity ) {}
-    StreamComponent(inputStream, entity)
+    SensorComponent(inputStream, entity)
 {
 }
 
@@ -50,7 +50,7 @@ Dof6Component::Dof6Component(const hub::InputSensor& inputStream, Ra::Engine::Sc
 /// setup, i.e. it has an entity.
 void Dof6Component::initialize()
 {
-    StreamComponent::initialize();
+    SensorComponent::initialize();
 
     //    auto blinnPhongMaterial              = make_shared<BlinnPhongMaterial>( "Shaded Material" );
     //    blinnPhongMaterial->m_perVertexColor = true;
@@ -79,15 +79,19 @@ void Dof6Component::initialize()
 
 void Dof6Component::update(const hub::Acquisition& acq)
 {
-    float* translation = (float*)acq.m_data; // x, y, z
-    float* quaternion = (float*)&acq.m_data[12]; // x, y, z, w
+//    float* translation = (float*)acq.m_data; // x, y, z
+//    float* quaternion = (float*)&acq.m_data[12]; // x, y, z, w
+    assert(acq.getMeasures().size() == 1);
+    const hub::Dof6 & dof6 = acq.getMeasures().at(0);
 
     //                Ra::Core::Vector3 pos(10, 10, 10);
     //            -translation[2]);
-    Ra::Core::Vector3 pos(translation[0], translation[1], translation[2]);
+//    Ra::Core::Vector3 pos(translation[0], translation[1], translation[2]);
+    Ra::Core::Vector3 pos(dof6.m_x, dof6.m_y, dof6.m_z);
     //    pos = -pos;
 
-    Ra::Core::Quaternion orientation(quaternion[3], quaternion[0], quaternion[1], quaternion[2]); // w, x, y, z
+//    Ra::Core::Quaternion orientation(quaternion[3], quaternion[0], quaternion[1], quaternion[2]); // w, x, y, z
+    Ra::Core::Quaternion orientation(dof6.m_w0, dof6.m_w1, dof6.m_w2, dof6.m_w3);
     //            std::cout << "update pose orientation " << quaternion[0] << ", " << quaternion[1] << ", " << quaternion[2] << ", " << quaternion[3] << std::endl;
 
     // change to Radium base reference
