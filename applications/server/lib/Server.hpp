@@ -150,9 +150,13 @@ class Server
     void newAcquisition( Streamer* streamer, hub::Acquisition acq );
     const hub::Acquisition* getLastAcq( const std::string& streamName );
 
+public:
+    bool m_acqPing = true;
+
   private:
     std::map<std::string, Streamer*> m_streamers;
-    //    mutable std::mutex m_mtxStreamers;
+    std::mutex m_mtxStreamers;
+
     std::list<Viewer*> m_viewers;
     std::map<std::string, std::list<StreamViewer*>> m_streamViewers;
 
@@ -168,6 +172,7 @@ class Server
   public:
     void setMaxClients( int maxThreads );
     const std::map<std::string, Streamer*>& getStreamers() const;
+    void setAcqPing(bool newAcqPing);
 };
 
 // struct Streamer {

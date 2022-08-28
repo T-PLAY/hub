@@ -33,6 +33,10 @@ class Measure
     const unsigned char* const m_data;
     const size_t m_size;
 
+    bool operator==( const Measure& measure ) const;
+    bool operator!=( const Measure& measure ) const;
+    SRC_API friend std::ostream& operator<<( std::ostream& os, const Measure& measure );
+
   protected:
     //    bool m_ownData = false;
     bool m_isMoved = false;
@@ -118,7 +122,8 @@ class SRC_API Acquisition
     ~Acquisition();
 
     Acquisition( const Acquisition& acq ) = delete;
-    Acquisition( Acquisition&& acq ) noexcept;
+//    Acquisition( Acquisition&& acq ) noexcept;
+    Acquisition( Acquisition&& acq ) = default;
 
     Acquisition& operator=( const Acquisition& acq ) = delete;
     Acquisition& operator=( Acquisition&& acq )      = delete;
@@ -127,7 +132,7 @@ class SRC_API Acquisition
     bool operator!=( const Acquisition& acq ) const;
 
     Acquisition& operator<<( Measure&& measure );
-    Acquisition& operator<<( const Measures& measure );
+//    Acquisition& operator<<( const Measures& measure );
 
     //        template <class T>
     //        const T& get() const {
@@ -161,7 +166,7 @@ class SRC_API Acquisition
   private:
     Measures m_measures;
     size_t m_size  = 0;
-    bool m_isMoved = false;
+//    bool m_isMoved = false;
 
   public:
     SRC_API friend std::ostream& operator<<( std::ostream& os, const Acquisition& acq );

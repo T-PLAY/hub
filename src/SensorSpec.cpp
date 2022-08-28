@@ -41,15 +41,21 @@ static constexpr int format2nByte[static_cast<int>( SensorSpec::Format::COUNT )]
     2,       // Y411
 };
 
-size_t SensorSpec::computeAcquisitionSize(const Resolutions &resolutions)
-{
+size_t SensorSpec::computeAcquisitionSize( const Resolutions& resolutions ) {
     size_t size = 0;
-    for (const auto & pair : resolutions) {
-        const auto & dims = pair.first;
-        const auto & format = pair.second;
-        size += computeAcquisitionSize(format, dims);
+    for ( const auto& resolution : resolutions ) {
+        size += computeAcquisitionSize(resolution);
+//        const auto& dims   = pair.first;
+//        const auto& format = pair.second;
+//        size += computeAcquisitionSize( format, dims );
     }
     return size;
+}
+
+size_t SensorSpec::computeAcquisitionSize( const Resolution& resolution ) {
+    const auto& dims   = resolution.first;
+    const auto& format = resolution.second;
+    return computeAcquisitionSize( format, dims );
 }
 
 size_t SensorSpec::computeAcquisitionSize( Format format, const Dims& dims ) {
@@ -79,13 +85,12 @@ std::string SensorSpec::format2string( const Format& format ) {
     return format2stringArray[(int)format];
 }
 
-std::string SensorSpec::resolutions2string(const Resolutions &resolutions)
-{
+std::string SensorSpec::resolutions2string( const Resolutions& resolutions ) {
     std::string str = "";
-    for (const auto & pair : resolutions) {
-        const auto & dims = pair.first;
-        const auto & format = pair.second;
-        str += "{" + dims2string(dims) + ", " + format2string(format) + "}, ";
+    for ( const auto& pair : resolutions ) {
+        const auto& dims   = pair.first;
+        const auto& format = pair.second;
+        str += "{" + dims2string( dims ) + ", " + format2string( format ) + "}, ";
     }
     return str;
 }
