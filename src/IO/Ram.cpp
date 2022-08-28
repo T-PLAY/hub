@@ -15,11 +15,11 @@ CyclicBuff::~CyclicBuff() {
     assert( !m_outputSensorWantsToClose );
     assert( !m_inputSensorClose );
     m_outputSensorWantsToClose = true;
-    while ( !m_inputSensorClose ) {
-        std::cout << "[CyclicBuff:" << this << "] ~CyclicBuff() : wait for inputSensorClose"
-                  << std::endl;
-        std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
-    }
+//    while ( !m_inputSensorClose ) {
+//        std::cout << "[CyclicBuff:" << this << "] ~CyclicBuff() : wait for inputSensorClose"
+//                  << std::endl;
+//        std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
+//    }
 
     delete[] m_buff;
     std::cout << "[CyclicBuff:" << this << "] ~CyclicBuff()" << std::endl;

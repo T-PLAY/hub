@@ -60,6 +60,22 @@ Measure Measure::clone() const {
     return Measure( m_data, m_size );
 }
 
+bool Measure::operator==( const Measure& measure ) const {
+    if ( m_size == measure.m_size ) { return memcmp( m_data, measure.m_data, m_size ) == 0; }
+    return false;
+}
+
+bool Measure::operator!=( const Measure& measure ) const {
+    return !( *this == measure );
+}
+
+std::ostream& operator<<( std::ostream& os, const Measure& measure ) {
+    for ( auto i = 0; i < std::min( (int)measure.m_size, 10 ); ++i ) {
+        os << std::setw( 3 ) << (int)measure.m_data[i] << " ";
+    }
+    return os;
+}
+
 Measure::Measure( Measure&& measure ) :
     //     Measure(measure.m_measurement),
     //    Measure( measure.m_format ),
@@ -143,7 +159,8 @@ Measure::~Measure() {
 //}
 
 Acquisition::Acquisition( long long start, long long end ) :
-    m_start( start ), m_end( end )
+    m_start( start ),
+    m_end( end )
 //    m_measures( std::move(measures) )
 {
     assert( m_start <= m_end );
@@ -151,14 +168,26 @@ Acquisition::Acquisition( long long start, long long end ) :
 
 Acquisition::~Acquisition() {}
 
-Acquisition::Acquisition( Acquisition&& acq ) noexcept :
-    m_start( acq.m_start ), m_end( acq.m_end ) {
-    //    m_data( acq.m_data ), m_size( acq.m_size ) {
-    acq.m_isMoved = true;
-}
+// Acquisition::Acquisition( Acquisition&& acq ) noexcept :
+//     m_start( acq.m_start ),
+//     m_end( acq.m_end ),
+//     m_measures(std::move(acq.m_measures)),
+//     m_size(acq.m_size)
+//     {
+//     //    m_data( acq.m_data ), m_size( acq.m_size ) {
+////    acq.m_isMoved = true;
+//    assert(m_size == acq.m_size);
+////    m_size = acq.m_size;
+//}
 
 bool Acquisition::operator==( const Acquisition& acq ) const {
-    if ( m_start == acq.m_start && m_end == acq.m_end ) {
+    if ( m_start == acq.m_start && m_end == acq.m_end && m_size == acq.m_size &&
+         m_measures.size() == acq.m_measures.size() ) {
+
+        for ( int i = 0; i < m_measures.size(); ++i ) {
+            if ( m_measures.at( i ) != acq.m_measures.at( i ) ) { return false; }
+        }
+
         //        && m_size == acq.m_size ) {
         //        return memcmp( m_data, acq.m_data, m_size ) == 0;
         return true;
@@ -176,12 +205,12 @@ Acquisition& Acquisition::operator<<( Measure&& measure ) {
     return *this;
 }
 
-Acquisition& Acquisition::operator<<( const Measures& measures ) {
-    for (const auto & measure : measures) {
-        Acquisition::operator<<(measure.clone());
-    }
-    return *this;
-}
+// Acquisition& Acquisition::operator<<( const Measures& measures ) {
+//     for (const auto & measure : measures) {
+//         Acquisition::operator<<(measure.clone());
+//     }
+//     return *this;
+// }
 
 // Acquisition& Acquisition::operator<<( Measure&& measure ) {
 //     assert( m_measures.find( measure.m_format ) == m_measures.end() );
@@ -228,13 +257,13 @@ size_t Acquisition::getSize() const {
 
 std::ostream& operator<<( std::ostream& os, const Acquisition& acq ) {
     os << "start:" << acq.m_start << ", end:" << acq.m_end;
-    //    os << ", data:[";
-    //    for ( auto i = 0; i < std::min( (int)acq.m_size, 10 ); ++i ) {
-    //        os << std::setw( 3 ) << (int)acq.m_data[i] << " ";
-    //    }
-    //    os << "], ";
-    //    os << 1'000'000.0 / ( acq.m_end - acq.m_start ) << " fps";
-    //    os << ", ptr = " << (uint64_t)acq.m_data;
+    os << ", measures:[";
+    for ( const auto& measure : acq.m_measures ) {
+        os << "[" << measure << "], ";
+    }
+    os << "], ";
+    os << 1'000'000.0 / ( acq.m_end - acq.m_start ) << " fps.";
+    //        os << ", ptr = " << (uint64_t)acq.m_data;
     return os;
 }
 

@@ -59,7 +59,8 @@ class SensorSpec
     };
     // clang-format on
 
-    using Resolutions = std::vector<std::pair<Dims, Format>>;
+    using Resolution = std::pair<Dims, Format>;
+    using Resolutions = std::vector<Resolution>;
 
     SRC_API SensorSpec( const std::string& sensorName = "",
 //                        Format format                 = Format::NONE,
@@ -75,6 +76,7 @@ class SensorSpec
 
   public:
     SRC_API static size_t computeAcquisitionSize( const Resolutions & resolutions );
+    SRC_API static size_t computeAcquisitionSize( const Resolution & resolution );
 private:
     SRC_API static size_t computeAcquisitionSize( Format format, const Dims& dims );
 

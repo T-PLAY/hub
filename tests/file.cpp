@@ -24,23 +24,29 @@ TEST_CASE( "File test" ) {
     for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
         unsigned char data[3] = {
             (unsigned char)iAcq, (unsigned char)( iAcq + 1 ), (unsigned char)( iAcq + 2 ) };
-        acqs.emplace_back( iAcq, iAcq, data, 3 );
+        //        acqs.emplace_back( iAcq, iAcq, data, 3 );
+//        acqs.emplace_back( iAcq, iAcq );
+        acqs.push_back( hub::Acquisition(iAcq, iAcq) );
+        acqs.back() << hub::Measure( data, 3 );
+        CHECK(acqs.back().getSize() == 3);
     }
-    CHECK(acqs[0] != acqs[1]);
+    CHECK( acqs[0] != acqs[1] );
 
     std::cout << "outputStream start" << std::endl;
     INFO( "OutputStream" );
     {
 
-        hub::OutputSensor outputSensor( { "sensorName", hub::SensorSpec::Format::BGR8, { 1 } },
-                                        hub::io::File( std::fstream( filename, std::ios::out ) ) );
+        hub::OutputSensor outputSensor(
+            { "sensorName", { { { 1 }, hub::SensorSpec::Format::BGR8 } } },
+            hub::io::File( std::fstream( filename, std::ios::out ) ) );
 
         auto& sensorSpec = outputSensor.m_spec;
         CHECK( sensorSpec.m_acquisitionSize == 3 );
         CHECK( sensorSpec.m_sensorName == "sensorName" );
-        CHECK( sensorSpec.m_dims.size() == 1 );
-        CHECK( sensorSpec.m_dims.at( 0 ) == 1 );
-        CHECK( sensorSpec.m_format == hub::SensorSpec::Format::BGR8 );
+        CHECK( sensorSpec.m_resolutions.size() == 1 );
+        CHECK( sensorSpec.m_resolutions[0].first.size() == 1 );
+        CHECK( sensorSpec.m_resolutions[0].first.at( 0 ) == 1 );
+        CHECK( sensorSpec.m_resolutions[0].second == hub::SensorSpec::Format::BGR8 );
 
         for ( const auto& acq : acqs ) {
             outputSensor << acq;
@@ -56,9 +62,10 @@ TEST_CASE( "File test" ) {
         const auto& sensorSpec = inputSensor.m_spec;
         CHECK( sensorSpec.m_acquisitionSize == 3 );
         CHECK( sensorSpec.m_sensorName == "sensorName" );
-        CHECK( sensorSpec.m_dims.size() == 1 );
-        CHECK( sensorSpec.m_dims.at( 0 ) == 1 );
-        CHECK( sensorSpec.m_format == hub::SensorSpec::Format::BGR8 );
+        CHECK( sensorSpec.m_resolutions.size() == 1 );
+        CHECK( sensorSpec.m_resolutions[0].first.size() == 1 );
+        CHECK( sensorSpec.m_resolutions[0].first.at( 0 ) == 1 );
+        CHECK( sensorSpec.m_resolutions[0].second == hub::SensorSpec::Format::BGR8 );
         const auto& inputAcqs = inputSensor.getAllAcquisitions();
         for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
             CHECK( inputAcqs[iAcq] == acqs[iAcq] );

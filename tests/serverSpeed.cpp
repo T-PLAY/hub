@@ -25,7 +25,7 @@ TEST_CASE( "Server test : speed test" ) {
         for ( int i = 0; i < dataSize; ++i ) {
             data[i] = iAcq;
         }
-        acqs.emplace_back( iAcq, iAcq, data, dataSize );
+        acqs.emplace_back( iAcq, iAcq ) << hub::Measure(data, dataSize);
     }
 
     std::cout << "[Test] ############################### server start" << std::endl;
@@ -38,7 +38,7 @@ TEST_CASE( "Server test : speed test" ) {
     {
         std::cout << "[Test] ############################### outputStream start" << std::endl;
         hub::OutputSensor outputSensor(
-            { "sensorName", hub::SensorSpec::Format::BGR8, { width, height } },
+            { "sensorName", {{{width, height}, hub::SensorSpec::Format::BGR8} } },
             hub::io::OutputStream( "stream", hub::net::ClientSocket( ipv4, port ) ) );
 
         std::cout << "[Test] ############################### inputStream start" << std::endl;
@@ -48,10 +48,11 @@ TEST_CASE( "Server test : speed test" ) {
         const auto& inputSensorSpec = inputSensor.m_spec;
         CHECK( inputSensorSpec.m_acquisitionSize == dataSize );
         CHECK( inputSensorSpec.m_sensorName == "sensorName" );
-        CHECK( inputSensorSpec.m_dims.size() == 2 );
-        CHECK( inputSensorSpec.m_dims.at( 0 ) == width );
-        CHECK( inputSensorSpec.m_dims.at( 1 ) == height );
-        CHECK( inputSensorSpec.m_format == hub::SensorSpec::Format::BGR8 );
+            CHECK( inputSensorSpec.m_resolutions.size() == 1);
+            CHECK( inputSensorSpec.m_resolutions[0].first.size() == 2 );
+            CHECK( inputSensorSpec.m_resolutions[0].first.at( 0 ) == width );
+            CHECK( inputSensorSpec.m_resolutions[0].first.at( 1 ) == height );
+            CHECK( inputSensorSpec.m_resolutions[0].second == hub::SensorSpec::Format::BGR8 );
         std::cout << "[Test] inputStream end ---------------------------------" << std::endl;
 
         std::cout << "[Test] ############################### send acquisitions" << std::endl;
