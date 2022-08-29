@@ -11,7 +11,7 @@
 namespace hub {
 namespace net {
 
-constexpr int Socket::s_defaultServicePort       = 4041;
+constexpr int Socket::s_defaultServicePort       = 4040;
 const char* const Socket::s_defaultServiceIp = "127.0.0.1";
 
 std::string Socket::getHeader( socket_fd iSock ) const {

@@ -118,6 +118,8 @@ MainWindow::MainWindow(QWidget* parent)
 
     m_guiManager.init();
 
+    connect(ui->actionreloadShaders, &QAction::triggered, app.m_viewer.get(), &Ra::Gui::Viewer::reloadShaders);
+
     //    m_comp->getRoGrid().setVisible(ui->checkBox_grid->isChecked());
     //    m_comp->traceSetVisible(ui->checkBox_trace->isChecked());
 

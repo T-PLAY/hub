@@ -95,6 +95,14 @@
     <string>Settings</string>
    </property>
   </action>
+  <action name="actionreloadShaders">
+   <property name="text">
+    <string>reloadShaders</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

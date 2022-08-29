@@ -6,6 +6,8 @@ Form3DToolBox::Form3DToolBox(QWidget *parent) :
     ui(new Ui::Form3DToolBox)
 {
     ui->setupUi(this);
+
+    m_comboBoxDisplayedTexture = ui->comboBox_displayedTexture;
 }
 
 Form3DToolBox::~Form3DToolBox()
@@ -48,5 +50,11 @@ void Form3DToolBox::on_doubleSpinBox_transparency_2_valueChanged(double transpar
 {
     emit doubleSpinBox_transparency2_valueChanged(transparency);
 
+}
+
+
+void Form3DToolBox::on_pushButton_reloadShaders_clicked()
+{
+    emit pushButton_reloadShaders_clicked();
 }
 

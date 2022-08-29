@@ -1,5 +1,5 @@
 #include "Scan.glsl"
-#include "DefaultLight.glsl"
+//#include "DefaultLight.glsl"
 #include "TransformStructs.glsl"
 
 layout( location = 0 ) out vec4 f_Accumulation;
@@ -7,7 +7,8 @@ layout( location = 1 ) out vec4 f_Revealage;
 
 #include "VertexAttribInterface.frag.glsl"
 
-//out vec4 out_color;
+//layout( location = 5 ) in vec3 in_viewVector;
+//layout( location = 6 ) in vec3 in_lightVector;
 
 // implementation of weight functions of the paper
 // Weighted Blended Order-Independent Transparency
@@ -41,30 +42,40 @@ float weight( float z, float alpha ) {
     return pow( alpha, 0.5 ) * clamp( 10 / ( 1e-5 + pow( z / 10, 6 ) ), 1e-2, 3 * 1e3 );
 }
 
-
 void main() {
-    vec4 bc = getBaseColor( material, getPerVertexTexCoord() );
-    if ( toDiscard( material, bc ) ) discard;
-    //out_color = vec4( bc.rgb, 1 );
-//    out_color = vec4( bc.rrr, 1 );
-
-//    float color = (bc.b + bc.g * 255.0) / 255.0;
-//    float alpha = color - 1.0;
-//    out_color = vec4(vec3(color), 0.1);
-
+    // only render non opaque fragments and not fully transparent fragments
+    vec4 bc = getDiffuseColor( material, getPerVertexTexCoord() );
+    // compute the transparency factor
+    float a = bc.a;
 //    float a = bc.g;
-    float a = material.color.g;
-//    out_color = vec4(vec3(color * 0.5), material.color.g);
-//    discard;
-    if (! toDiscard(material, bc) || a < 0.001 ) discard;
+//    float a = 0.5;
+    if ( !toDiscard( material, bc ) || a < 0.001 ) discard;
 
-    vec3 contribution = lightContributionFrom( light, getWorldSpacePosition().xyz );
+    // all vectors are in world space
+//    vec3 binormal    = getWorldSpaceBiTangent();
+//    vec3 normalWorld = getNormal(
+//        material, getPerVertexTexCoord(), getWorldSpaceNormal(), getWorldSpaceTangent(), binormal );
+//    vec3 binormalWorld = normalize( cross( normalWorld, getWorldSpaceTangent() ) );
+//    vec3 tangentWorld  = cross( binormalWorld, normalWorld );
+
+    // A material is always evaluated in the fragment local Frame
+    // compute matrix from World to local Frame
+//    mat3 world2local;
+//    world2local[0] = vec3( tangentWorld.x, binormalWorld.x, normalWorld.x );
+//    world2local[1] = vec3( tangentWorld.y, binormalWorld.y, normalWorld.y );
+//    world2local[2] = vec3( tangentWorld.z, binormalWorld.z, normalWorld.z );
+    // transform all vectors in local frame so that N = (0, 0, 1);
+//    vec3 wi = world2local * normalize( in_lightVector ); // incident direction
+//    vec3 wo = world2local * normalize( in_viewVector );  // outgoing direction
+
+//    vec3 bsdf = evaluateBSDF( material, getPerVertexTexCoord(), wi, wo );
+
+//    vec3 contribution = lightContributionFrom( light, getWorldSpacePosition().xyz );
 
     float w        = weight( gl_FragCoord.z, a );
 //    f_Accumulation = vec4( bsdf * contribution * a, a ) * w;
-    f_Accumulation = vec4( contribution * a, a ) * w;
-//    f_Accumulation = vec4( contribution * a, a ) * w;
-//    f_Accumulation = vec4( a ) * w;
+    f_Accumulation = vec4( vec3(a), a ) * w;
     f_Revealage    = vec4( a );
+//    f_Accumulation = vec4( 0.5 );
+//    f_Revealage    = vec4( 0.5 );
 }
-

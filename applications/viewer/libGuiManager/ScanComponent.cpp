@@ -336,9 +336,10 @@ void ScanComponent::addScan() {
         //            (std::string("Plain Material") + std::to_string(iScan)).c_str() );
 
         scan.m_material->m_perVertexColor = true;
-        scan.m_material->m_color.x() = 0.25;
-        scan.m_material->m_color.y() = 0.65;
+//        scan.m_material->m_color.x() = 0.25;
+//        scan.m_material->m_color.y() = 0.65;
         scan.m_material->addTexture( ScanMaterial::TextureSemantic::TEX_COLOR, textureParameters );
+        scan.m_material->setMaterialAspect(Engine::Data::Material::MaterialAspect::MAT_TRANSPARENT);
 
         //            mat->addTexture(PlainMaterial::TextureSemantic::TEX_COLOR, textureParameters);
         //            mat->addTexture(BlinnPhongMaterial::TextureSemantic::TEX_DIFFUSE,
@@ -390,18 +391,17 @@ void ScanComponent::addScan() {
 void ScanComponent::changeTransparency(double transparency)
 {
 //    std::cout << "[ScanComponent] change transparency : " << transparency << std::endl;
-    for (auto & scan : m_scans) {
-        scan.m_material->m_color.x() = transparency;
-        scan.m_material->needUpdate();
-    }
+//    for (auto & scan : m_scans) {
+//        scan.m_material->m_color.x() = transparency;
+//        scan.m_material->needUpdate();
+//    }
 }
 
 void ScanComponent::changeTransparency2(double transparency)
 {
-    std::cout << "[ScanComponent] change transparency 2 : " << transparency << std::endl;
-    for (auto & scan : m_scans) {
-        scan.m_material->m_color.y() = transparency;
-        scan.m_material->needUpdate();
-    }
-
+//    std::cout << "[ScanComponent] change transparency 2 : " << transparency << std::endl;
+//    for (auto & scan : m_scans) {
+//        scan.m_material->m_color.y() = transparency;
+//        scan.m_material->needUpdate();
+//    }
 }

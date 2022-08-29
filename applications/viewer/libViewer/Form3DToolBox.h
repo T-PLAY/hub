@@ -2,6 +2,7 @@
 #define FORM3DTOOLBOX_H
 
 #include <QWidget>
+#include <QComboBox>
 
 namespace Ui {
 class Form3DToolBox;
@@ -23,6 +24,7 @@ signals:
     void checkBox_showTrace_toggled(bool checked);
     void doubleSpinBox_transparency_valueChanged(double transparency);
     void doubleSpinBox_transparency2_valueChanged(double transparency);
+    void pushButton_reloadShaders_clicked();
 
 public slots:
     void on_pushButton_fitScene_clicked();
@@ -35,6 +37,11 @@ private slots:
     void on_doubleSpinBox_transparency_valueChanged(double transparency);
 
     void on_doubleSpinBox_transparency_2_valueChanged(double transparency);
+
+    void on_pushButton_reloadShaders_clicked();
+
+public:
+    QComboBox * m_comboBoxDisplayedTexture = nullptr;
 
 private:
     Ui::Form3DToolBox *ui;

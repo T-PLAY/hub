@@ -35,14 +35,15 @@ void ScanMaterial::registerMaterial() {
     auto shaderProgramManager = RadiumEngine::getInstance()->getShaderProgramManager();
 
     shaderProgramManager->addNamedString( "/Scan.glsl", shadersDir + "Scan.glsl" );
+
     // registering re-usable shaders
     Data::ShaderConfiguration lpconfig(
         "Scan", shadersDir + "Scan.vert.glsl", shadersDir + "Scan.frag.glsl" );
-
     Data::ShaderConfigurationFactory::addConfiguration( lpconfig );
 
     Data::ShaderConfiguration zprepassconfig(
-        "ZprepassScan", shadersDir + "Scan.vert.glsl", shadersDir + "Scan.frag.glsl" );
+        "ZprepassScan", shadersDir + "Scan.vert.glsl", shadersDir + "ScanZPrepass.frag.glsl" );
+//        "ZprepassScan", shadersDir + "Scan.vert.glsl", shadersDir + "Scan.frag.glsl" );
     Data::ShaderConfigurationFactory::addConfiguration( zprepassconfig );
 
     Data::ShaderConfiguration transparentpassconfig(
@@ -64,6 +65,7 @@ void ScanMaterial::registerMaterial() {
             rt.setConfiguration( *zprepass, Rendering::DefaultRenderingPasses::Z_PREPASS );
 
             // Transparent pass (0ptional) : If Transparent ... add LitOIT
+            assert(isTransparent == true);
             if ( isTransparent ) {
                 auto transparentpass =
                     Data::ShaderConfigurationFactory::getConfiguration( "LitOITScan" );
@@ -80,6 +82,7 @@ void ScanMaterial::unregisterMaterial() {
  bool ScanMaterial::isTransparent() const
 {
      return true;
+//     return false;
  }
 
 
