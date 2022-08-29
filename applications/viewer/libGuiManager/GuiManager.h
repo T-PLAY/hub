@@ -127,6 +127,7 @@ private:
     FormImageManipulator* m_imageManipulator = nullptr;
 #endif
     Form3DToolBox* m_3DToolBox = nullptr;
+    QComboBox * m_comboBoxDisplayedTexture = nullptr;
 
     QTableView* m_sensorsView = nullptr;
 

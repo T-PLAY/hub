@@ -56,7 +56,7 @@ class ScanMaterial final : public SimpleMaterial
 //    void updateRenderingParameters();
 
 private:
-    float m_transparency = 0.5f;
+    float m_transparency = 1.0f;
 };
 
 } // namespace Data
