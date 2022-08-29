@@ -12,7 +12,7 @@
 #ifdef ENABLE_LOADER
 #include <FormWidgetLoader.h>
 #endif
-#include <MinimalComponent.hpp>
+//#include <MinimalComponent.hpp>
 //#include <Imagema
 
 #include <Form3DToolBox.h>
@@ -83,8 +83,6 @@ private slots:
 
 //    void on_sensorsView_clicked(const QModelIndex& index);
     void on_sensorsView_selectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
-    void on_transparency_valueChanged(double transparency);
-    void on_transparency2_valueChanged(double transparency);
 
 public:
     QMdiArea* m_mdiArea = nullptr;

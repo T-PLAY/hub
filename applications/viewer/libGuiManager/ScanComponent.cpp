@@ -273,6 +273,9 @@ void ScanComponent::addScan() {
         case hub::SensorSpec::Format::Y16:
             nChannel = 2;
             break;
+        case hub::SensorSpec::Format::RGBA8:
+            nChannel = 4;
+            break;
         default:
             assert( false );
             break;
@@ -287,13 +290,13 @@ void ScanComponent::addScan() {
                 for ( int k = 0; k < nChannel; ++k ) {
                     if ( std::abs( i - 40 - iScan ) < 5 || std::abs( j - 40 - iScan ) < 5 ) {
                         //                    data[( i * 512 + j )] = 0;
-                        scan.m_textureData[( i * height + j ) * nChannel]     = 0;
-                        scan.m_textureData[( i * height + j ) * nChannel + 1] = 0;
+                        scan.m_textureData[( i * height + j ) * nChannel + k]     = 0;
+//                        scan.m_textureData[( i * height + j ) * nChannel + 1] = 0;
                     }
                     else {
                         //                    data[( i * 512 + j )] = ( j / 2 ) % 256;
-                        scan.m_textureData[( i * height + j ) * nChannel]     = ( i / 2 ) % 256;
-                        scan.m_textureData[( i * height + j ) * nChannel + 1] = ( i / 2 ) % 256;
+                        scan.m_textureData[( i * height + j ) * nChannel + k]     = ( i / 2 ) % 256;
+//                        scan.m_textureData[( i * height + j ) * nChannel + 1] = ( i / 2 ) % 256;
                     }
                 }
             }
@@ -316,6 +319,13 @@ void ScanComponent::addScan() {
             textureParameters.format         = gl::GLenum::GL_RG;
             textureParameters.internalFormat = gl::GLenum::GL_RG;
         }
+        else if ( nChannel == 4 ) {
+            textureParameters.format         = gl::GLenum::GL_RGBA;
+            textureParameters.internalFormat = gl::GLenum::GL_RGBA;
+        }
+        else {
+            assert(false);
+        }
 
         //        textureParameters.minFilter = gl::GLenum::GL_LINEAR;
         //        textureParameters.magFilter = gl::GLenum::GL_LINEAR;
@@ -331,20 +341,30 @@ void ScanComponent::addScan() {
 
         //            auto mat                   = make_shared<PlainMaterial>( (std::string("Plain
         //            Material") + std::to_string(iScan)).c_str() );
-        scan.m_material = make_shared<ScanMaterial>( "Scan Material" );
+//        scan.m_material = make_shared<ScanMaterial>( "Scan Material" );
+        scan.m_material = make_shared<CurrentMaterial>((std::string("Scan material ") + std::to_string(iScan)).c_str());
         //            auto mat                   = make_shared<BlinnPhongMaterial>(
         //            (std::string("Plain Material") + std::to_string(iScan)).c_str() );
 
-        scan.m_material->m_perVertexColor = true;
+//        scan.m_material->m_perVertexColor = true;
+        scan.m_material->m_ks = Utils::Color::Black();
+        scan.m_material->setMaterialAspect(ScanMaterial::MaterialAspect::MAT_TRANSPARENT);
+//        scan.m_material->setMaterialAspect(Material::MaterialAspect::MAT_OPAQUE);
+//        scan.m_material->m_alpha = 0.5;
 //        scan.m_material->m_color.x() = 0.25;
+        scan.m_material->m_pimp.x() = 0.5;
+        scan.m_material->m_pimp.y() = 1.0;
 //        scan.m_material->m_color.y() = 0.65;
-        scan.m_material->addTexture( ScanMaterial::TextureSemantic::TEX_COLOR, textureParameters );
-        scan.m_material->setMaterialAspect(Engine::Data::Material::MaterialAspect::MAT_TRANSPARENT);
+        scan.m_material->addTexture( CurrentMaterial::TextureSemantic::TEX_DIFFUSE, textureParameters );
+        scan.m_material->needUpdate();
+        assert(scan.m_material->isTransparent() == true);
 
         //            mat->addTexture(PlainMaterial::TextureSemantic::TEX_COLOR, textureParameters);
         //            mat->addTexture(BlinnPhongMaterial::TextureSemantic::TEX_DIFFUSE,
         //            textureParameters);
         scan.m_quad->setMaterial( scan.m_material );
+        scan.m_quad->setTransparent(true);
+
 
         auto TLocal = Transform::Identity();
         TLocal.scale( Vector3( scanDepth / 2.0, 1.0, scanWidth / 2.0 ) );
@@ -388,20 +408,49 @@ void ScanComponent::addScan() {
     m_scans.push_back( scan );
 }
 
-void ScanComponent::changeTransparency(double transparency)
+void ScanComponent::on_tune_valueChanged(double arg1)
 {
-//    std::cout << "[ScanComponent] change transparency : " << transparency << std::endl;
-//    for (auto & scan : m_scans) {
-//        scan.m_material->m_color.x() = transparency;
-//        scan.m_material->needUpdate();
-//    }
+    std::cout << "[ScanComponent] on_tune_valueChanged : " << arg1 << std::endl;
+    for (auto & scan : m_scans) {
+        scan.m_material->m_pimp.x() = arg1;
+        scan.m_material->needUpdate();
+    }
+
 }
 
-void ScanComponent::changeTransparency2(double transparency)
+void ScanComponent::on_tune2_valueChanged(double arg1)
 {
-//    std::cout << "[ScanComponent] change transparency 2 : " << transparency << std::endl;
-//    for (auto & scan : m_scans) {
-//        scan.m_material->m_color.y() = transparency;
-//        scan.m_material->needUpdate();
-//    }
+    std::cout << "[ScanComponent] on_tune_valueChanged : " << arg1 << std::endl;
+    for (auto & scan : m_scans) {
+        scan.m_material->m_pimp.y() = arg1;
+        scan.m_material->needUpdate();
+    }
+
+}
+
+void ScanComponent::on_tune3_valueChanged(double arg1)
+{
+    std::cout << "[ScanComponent] on_tune_valueChanged : " << arg1 << std::endl;
+    for (auto & scan : m_scans) {
+        scan.m_material->m_pimp.z() = arg1;
+        scan.m_material->needUpdate();
+    }
+
+}
+
+void ScanComponent::on_tune4_valueChanged(double arg1)
+{
+    std::cout << "[ScanComponent] on_tune_valueChanged : " << arg1 << std::endl;
+    for (auto & scan : m_scans) {
+        scan.m_material->m_pimp.w() = arg1;
+        scan.m_material->needUpdate();
+    }
+}
+
+void ScanComponent::on_palette_valueChanged(int palette)
+{
+    for (auto & scan : m_scans) {
+        scan.m_material->m_iPalette = palette;
+        scan.m_material->needUpdate();
+    }
 }

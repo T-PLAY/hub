@@ -24,8 +24,13 @@ struct SensorComponent : public Ra::Engine::Scene::Component {
 
     virtual void update(const hub::Acquisition& acq) = 0;
 
-    virtual void changeTransparency(double transparency) {};
-    virtual void changeTransparency2(double transparency) {};
+//    virtual void changeTransparency(double transparency) {};
+//    virtual void changeTransparency2(double transparency) {};
+    virtual void on_tune_valueChanged(double arg1) {};
+    virtual void on_tune2_valueChanged(double arg1) {};
+    virtual void on_tune3_valueChanged(double arg1) {};
+    virtual void on_tune4_valueChanged(double arg1) {};
+    virtual void on_palette_valueChanged(int palette) {};
 
     // private:
 protected:

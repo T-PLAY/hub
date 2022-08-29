@@ -302,7 +302,8 @@ Sensor::Sensor( std::unique_ptr<hub::InputSensor> inputSensor,
             const auto& format2 = resolutions.at( 1 ).second;
 
             assert( format == hub::SensorSpec::Format::DOF6 );
-            assert( format2 == hub::SensorSpec::Format::Y16 );
+//            assert( format2 == hub::SensorSpec::Format::Y16 );
+//            assert( format2 == hub::SensorSpec::Format::RGBA8 );
 
             m_component = new ScanComponent( *m_inputSensor, m_entity, *m_engine, *m_viewer );
         }
@@ -477,14 +478,32 @@ void Sensor::setParent( Sensor* parent ) {
     }
 }
 
-void Sensor::onTransparencyChanged(double transparency)
+void Sensor::on_tune_valueChanged(double arg1)
 {
-    m_component->changeTransparency(transparency);
+    m_component->on_tune_valueChanged(arg1);
 }
 
-void Sensor::onTransparency2Changed(double transparency)
+void Sensor::on_tune2_valueChanged(double arg1)
 {
-    m_component->changeTransparency2(transparency);
+    m_component->on_tune2_valueChanged(arg1);
+
+}
+
+void Sensor::on_tune3_valueChanged(double arg1)
+{
+    m_component->on_tune3_valueChanged(arg1);
+
+}
+
+void Sensor::on_tune4_valueChanged(double arg1)
+{
+    m_component->on_tune4_valueChanged(arg1);
+
+}
+
+void Sensor::on_palette_valueChanged(int palette)
+{
+    m_component->on_palette_valueChanged(palette);
 }
 
 Ra::Engine::Scene::Entity* Sensor::getEntity() const {

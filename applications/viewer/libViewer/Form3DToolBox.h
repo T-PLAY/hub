@@ -22,9 +22,12 @@ signals:
 
     void checkBox_showGrid_toggled(bool checked);
     void checkBox_showTrace_toggled(bool checked);
-    void doubleSpinBox_transparency_valueChanged(double transparency);
-    void doubleSpinBox_transparency2_valueChanged(double transparency);
     void pushButton_reloadShaders_clicked();
+    void doubleSpinBox_tune3_valueChanged(double arg1);
+    void doubleSpinBox_tune4_valueChanged(double arg1);
+    void doubleSpinBox_tune_valueChanged(double arg1);
+    void doubleSpinBox_tune2_valueChanged(double arg1);
+    void comboBox_palettes_currentIndexChanged(int index);
 
 public slots:
     void on_pushButton_fitScene_clicked();
@@ -34,11 +37,13 @@ public slots:
     void on_checkBox_showTrace_toggled(bool checked);
 
 private slots:
-    void on_doubleSpinBox_transparency_valueChanged(double transparency);
-
-    void on_doubleSpinBox_transparency_2_valueChanged(double transparency);
-
     void on_pushButton_reloadShaders_clicked();
+    void on_doubleSpinBox_tune_valueChanged(double arg1);
+    void on_doubleSpinBox_tune2_valueChanged(double arg1);
+    void on_doubleSpinBox_tune3_valueChanged(double arg1);
+    void on_doubleSpinBox_tune4_valueChanged(double arg1);
+
+    void on_comboBox_palettes_currentIndexChanged(int index);
 
 public:
     QComboBox * m_comboBoxDisplayedTexture = nullptr;

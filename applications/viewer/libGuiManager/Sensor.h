@@ -90,8 +90,15 @@ public:
     void attachFromImageManipulator();
 //    Ra::Engine::Scene::Entity* m_entity = nullptr;
     void setParent(Sensor * parent);
+
     void onTransparencyChanged(double transparency);
     void onTransparency2Changed(double transparency);
+
+    void on_tune_valueChanged(double arg1);
+    void on_tune2_valueChanged(double arg1);
+    void on_tune3_valueChanged(double arg1);
+    void on_tune4_valueChanged(double arg1);
+    void on_palette_valueChanged(int palette);
 
 signals:
 

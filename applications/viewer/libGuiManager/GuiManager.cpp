@@ -147,13 +147,25 @@ void GuiManager::init() {
                       this,
                       &GuiManager::on_checkBox_grid_toggled );
     QObject::connect( m_3DToolBox,
-                      &Form3DToolBox::doubleSpinBox_transparency_valueChanged,
-                      this,
-                      &GuiManager::on_transparency_valueChanged );
+                      &Form3DToolBox::doubleSpinBox_tune_valueChanged,
+                      &m_sceneManager,
+                      &SceneManager::on_tune_valueChanged );
     QObject::connect( m_3DToolBox,
-                      &Form3DToolBox::doubleSpinBox_transparency2_valueChanged,
-                      this,
-                      &GuiManager::on_transparency2_valueChanged );
+                      &Form3DToolBox::doubleSpinBox_tune2_valueChanged,
+                      &m_sceneManager,
+                      &SceneManager::on_tune2_valueChanged );
+    QObject::connect( m_3DToolBox,
+                      &Form3DToolBox::doubleSpinBox_tune3_valueChanged,
+                      &m_sceneManager,
+                      &SceneManager::on_tune3_valueChanged );
+    QObject::connect( m_3DToolBox,
+                      &Form3DToolBox::doubleSpinBox_tune4_valueChanged,
+                      &m_sceneManager,
+                      &SceneManager::on_tune4_valueChanged );
+    QObject::connect( m_3DToolBox,
+                      &Form3DToolBox::comboBox_palettes_currentIndexChanged,
+                      &m_sceneManager,
+                      &SceneManager::on_palette_valueChanged );
 
     //    m_layout3DView->addWidget(m_3DToolBox);
     m_layout3DView->insertWidget( 0, m_3DToolBox );
@@ -596,6 +608,7 @@ void GuiManager::onSelectedSourceChanged( const std::string& streamName,
 // }
 
 void GuiManager::on_checkBox_grid_toggled( bool checked ) {
+    m_sceneManager.m_sceneComponent->setVisible(checked);
     //    m_comp->getRoGrid().setVisible(checked);
 }
 
@@ -689,13 +702,4 @@ void GuiManager::on_sensorsView_selectionChanged( const QItemSelection& selected
         //            m_recordLoader.unload();
         //        m_recordLoader.load(mPath);
     }
-}
-
-void GuiManager::on_transparency_valueChanged( double transparency ) {
-    m_sceneManager.onTransparencyChanged( transparency );
-}
-
-void GuiManager::on_transparency2_valueChanged( double transparency ) {
-    m_viewer->getRenderer()->displayTexture( "ouou" );
-    m_sceneManager.onTransparency2Changed( transparency );
 }

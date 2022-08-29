@@ -129,3 +129,11 @@ void SceneComponent::initialize() {
 
 }
 
+void SceneComponent::setVisible(bool visible)
+{
+    m_roAxes[0]->setVisible(visible);
+    m_roAxes[1]->setVisible(visible);
+    m_roAxes[2]->setVisible(visible);
+    m_roGrid->setVisible(visible);
+}
+

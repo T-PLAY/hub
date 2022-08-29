@@ -696,8 +696,16 @@ StreamViewer::StreamViewer( Server& server, int iClient, hub::net::ClientSocket&
     std::cout << headerMsg() << "watching '" << m_streamName << "'" << std::endl;
 
     const auto& lastAcqs = m_server.getLastAcqs( m_streamName );
-    for ( const auto& acq : lastAcqs ) {
-        *m_outputSensor << *acq;
+    try {
+        for ( const auto& acq : lastAcqs ) {
+            *m_outputSensor << *acq;
+        }
+    }
+    catch ( std::exception& e ) {
+        std::cout << headerMsg() << "thread : catch stream viewer exception : " << e.what()
+                  << std::endl;
+        m_server.delStreamViewer( this );
+        return;
     }
 
     std::thread thread( [this]() {

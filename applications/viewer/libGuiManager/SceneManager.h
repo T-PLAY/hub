@@ -13,6 +13,8 @@
 #include <Engine/Scene/Component.hpp>
 #include <QStandardItemModel>
 
+#include <SceneComponent.hpp>
+
 class SceneManager : public QObject
 {
     Q_OBJECT
@@ -47,9 +49,17 @@ class SceneManager : public QObject
     void attachSensorFromImageManipulator( int iSensor );
     void detachSensorFromImageManipulator( int iSensor );
     //    void detachAllSensorsFromImageManipulator();
-    void onTransparencyChanged(double transparency);
-    void onTransparency2Changed(double transparency);
+//    void onTransparencyChanged(double transparency);
+//    void onTransparency2Changed(double transparency);
+public slots:
+    void on_tune_valueChanged(double arg1);
+    void on_tune2_valueChanged(double arg1);
+    void on_tune3_valueChanged(double arg1);
+    void on_tune4_valueChanged(double arg1);
+    void on_palette_valueChanged(int arg1);
 
+public:
+    SceneComponent * m_sceneComponent = nullptr;
   private:
     std::list<Sensor> m_sensors;
     //    std::map<std::string, std::unique_ptr<Sensor>> m_streamName2Sensor;
