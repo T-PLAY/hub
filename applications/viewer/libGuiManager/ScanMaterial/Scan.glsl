@@ -1,5 +1,6 @@
-#ifndef GLSL_SCAN_MATERIAL
-#define GLSL_SCAN_MATERIAL
+
+#ifndef SCANMATERIAL_GLSL
+#define SCANMATERIAL_GLSL
 
 //------------------- VertexAttrib interface ---------------------
 vec4 getPerVertexBaseColor();
@@ -38,6 +39,9 @@ struct Material {
     int renderAsSplat;
 
     ScanTextures tex;
+
+    vec4 pimp;
+    int iPalette;
 };
 
 // Implementation of the emissivity interface.
@@ -51,7 +55,17 @@ vec3 getEmissiveColor( Material material, vec3 textCoord ) {
 vec4 getDiffuseColor( Material material, vec3 texCoord ) {
     vec4 dc = vec4( material.kd.rgb, material.alpha );
     if ( material.hasPerVertexKd == 1 ) { dc.rgb = getPerVertexBaseColor().rgb; }
-    if ( material.tex.hasKd == 1 ) { dc.rgb = texture( material.tex.kd, texCoord.xy ).rgb; }
+    if ( material.tex.hasKd == 1 ) {
+        vec4 rgba = texture( material.tex.kd, texCoord.xy );
+//        dc.rgb = rgba.rgb;
+//        dc.a *= rgba.a;
+        float color = (rgba.r + rgba.g * 256.0) / 256.0;
+        dc.rgb = vec3(color);
+        dc.a = color;
+//        float color = texture( material.tex.kd, texCoord.xy ).g;
+//        dc.rgb = vec3(color);
+//        dc.a *= color;
+    }
     if ( material.tex.hasAlpha == 1 ) { dc.a *= texture( material.tex.alpha, texCoord.xy ).r; }
     if ( material.renderAsSplat == 1 ) { dc.a = ( dot( texCoord.xy, texCoord.xy ) > 1 ) ? 0 : 1; }
     return dc;
@@ -88,7 +102,8 @@ vec3 getNormal( Material material, vec3 texCoord, vec3 N, vec3 T, vec3 B ) {
 }
 
 bool toDiscard( Material material, vec4 color ) {
-    return color.a < 1;
+//    return color.a < 0.5;
+    return color.a < 1.0;
 }
 
 vec3 diffuseBSDF( Material material, vec3 texC ) {
@@ -143,6 +158,4 @@ vec3 evaluateBSDF( Material material, vec3 texC, vec3 l, vec3 v ) {
 
 uniform Material material;
 
-
-
-#endif
+#endif // SCANMATERIAL_GLSL

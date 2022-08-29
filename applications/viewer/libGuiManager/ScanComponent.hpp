@@ -12,9 +12,13 @@
 //#include <Core/Asset/Image.hpp>
 #include <Engine/Data/PlainMaterial.hpp>
 #include <ScanMaterial/ScanMaterial.hpp>
+#include <Engine/Data/BlinnPhongMaterial.hpp>
 
 /* This file contains a minimal radium/qt application which shows the
 classic "Spinning Cube" demo. */
+
+//using CurrentMaterial = Ra::Engine::Data::BlinnPhongMaterial;
+using CurrentMaterial = Ra::Engine::Data::ScanMaterial;
 
 struct Scan {
     unsigned char * m_textureData = nullptr;
@@ -22,7 +26,8 @@ struct Scan {
     Ra::Engine::Data::Texture* m_textureScan = nullptr;
     Ra::Engine::Rendering::RenderObject * m_quad = nullptr;
     Ra::Engine::Rendering::RenderObject * m_scanLine = nullptr;
-    std::shared_ptr<Ra::Engine::Data::ScanMaterial> m_material;
+//    std::shared_ptr<Ra::Engine::Data::ScanMaterial> m_material;
+    std::shared_ptr<CurrentMaterial> m_material;
 };
 
 /// This is a very basic component which holds a spinning cube.
@@ -39,8 +44,11 @@ struct ScanComponent : public SensorComponent {
 
     void addScan();
 
-    void changeTransparency(double transparency) override;
-    void changeTransparency2(double transparency) override;
+    virtual void on_tune_valueChanged(double arg1) override;
+    virtual void on_tune2_valueChanged(double arg1) override;
+    virtual void on_tune3_valueChanged(double arg1) override;
+    virtual void on_tune4_valueChanged(double arg1) override;
+    virtual void on_palette_valueChanged(int palette) override;
 
 private:
 //    Ra::Engine::Rendering::RenderObject* m_roGrid = nullptr;

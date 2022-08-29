@@ -8,8 +8,7 @@
 
 SceneManager::SceneManager( QObject* parent ) : QObject { parent } {}
 
-SceneManager::~SceneManager()
-{
+SceneManager::~SceneManager() {
     std::cout << "[SceneManager] ~SceneManager() start" << std::endl;
 
     m_sensors.clear();
@@ -30,10 +29,10 @@ void SceneManager::init() {
 
     // Create and initialize entity and component
     Ra::Engine::Scene::Entity* e = m_engine->getEntityManager()->createEntity( "Scene entity" );
-    SceneComponent* c            = new SceneComponent( e );
+    m_sceneComponent            = new SceneComponent( e );
     //    Dof6Component* c = new Dof6Component(e);
-    m_sys->addComponent( e, c );
-    c->initialize();
+    m_sys->addComponent( e, m_sceneComponent );
+    m_sceneComponent->initialize();
 
     m_initialized = true;
 
@@ -76,8 +75,7 @@ void SceneManager::delSensor( const std::string& sensorName ) {
     }
 }
 
-void SceneManager::clear()
-{
+void SceneManager::clear() {
     m_sensors.clear();
 }
 
@@ -103,9 +101,7 @@ void SceneManager::attachSensorFromImageManipulator( int iSensor ) {
 
     int i = 0;
     for ( auto& sensor : m_sensors ) {
-        if ( i == iSensor ) {
-            sensor.attachFromImageManipulator();
-        }
+        if ( i == iSensor ) { sensor.attachFromImageManipulator(); }
         ++i;
     }
 }
@@ -118,17 +114,35 @@ void SceneManager::detachSensorFromImageManipulator( int iSensor ) {
     }
 }
 
-void SceneManager::onTransparencyChanged(double transparency)
-{
-    for (auto & sensor : m_sensors) {
-        sensor.onTransparencyChanged(transparency);
+void SceneManager::on_tune_valueChanged( double arg1 ) {
+    for ( auto& sensor : m_sensors ) {
+        sensor.on_tune_valueChanged(arg1 );
     }
 }
 
-void SceneManager::onTransparency2Changed(double transparency)
-{
-    for (auto & sensor : m_sensors) {
-        sensor.onTransparency2Changed(transparency);
+void SceneManager::on_tune2_valueChanged( double arg1 ) {
+    for ( auto& sensor : m_sensors ) {
+        sensor.on_tune2_valueChanged( arg1 );
     }
+}
 
+void SceneManager::on_tune3_valueChanged( double arg1 ) {
+
+    for ( auto& sensor : m_sensors ) {
+        sensor.on_tune3_valueChanged( arg1 );
+    }
+}
+
+void SceneManager::on_tune4_valueChanged( double arg1 ) {
+
+    for ( auto& sensor : m_sensors ) {
+        sensor.on_tune4_valueChanged( arg1 );
+    }
+}
+
+void SceneManager::on_palette_valueChanged(int palette)
+{
+    for ( auto& sensor : m_sensors ) {
+        sensor.on_palette_valueChanged( palette );
+    }
 }

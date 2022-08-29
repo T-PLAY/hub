@@ -373,7 +373,7 @@ void MinimalComponent::addProbe()
             //            auto mat                   = make_shared<BlinnPhongMaterial>( (std::string("Plain Material") + std::to_string(iProbe)).c_str() );
 
             mat->m_perVertexColor = true;
-            mat->addTexture(ScanMaterial::TextureSemantic::TEX_COLOR, textureParameters);
+            mat->addTexture(ScanMaterial::TextureSemantic::TEX_DIFFUSE, textureParameters);
 
             //            mat->addTexture(PlainMaterial::TextureSemantic::TEX_COLOR, textureParameters);
             //            mat->addTexture(BlinnPhongMaterial::TextureSemantic::TEX_DIFFUSE, textureParameters);

@@ -19,6 +19,8 @@ struct SceneComponent : public Ra::Engine::Scene::Component {
     /// setup, i.e. it has an entity.
     void initialize() override;
 
+    void setVisible(bool visible);
+
 private:
     Ra::Engine::Rendering::RenderObject* m_roGrid = nullptr;
     Ra::Engine::Rendering::RenderObject* m_roAxes[3] = { nullptr };

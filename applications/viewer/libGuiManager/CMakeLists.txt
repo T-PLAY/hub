@@ -54,7 +54,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 
 file(GLOB_RECURSE sources *.cpp *.glsl)
-file(GLOB_RECURSE headers *.h)
+file(GLOB_RECURSE headers *.h *.inl)
 
 #set(app_uis)
 #qt_wrap_ui(app_uis_moc ${app_uis})

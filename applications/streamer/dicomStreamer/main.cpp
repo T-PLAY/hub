@@ -6,7 +6,7 @@
 #include <OutputSensor.hpp>
 
 int main( int argc, char* argv[] ) {
-    unsigned int imageWidth, imageHeight, nImages, bytePerVoxel;
+    unsigned int imageWidth, imageHeight, nSlices, bytePerVoxel;
     float pixelSpacingWidth, pixelSpacingHeight, sliceThickness;
 
     const auto filename = MRI_PATH "AXT2_ligaments_uterosacres/D0010525.dcm";
@@ -29,7 +29,7 @@ int main( int argc, char* argv[] ) {
     auto* volumeData = Ra::IO::DICOM::readDicomVolume( filename,
                                                        &imageWidth,
                                                        &imageHeight,
-                                                       &nImages,
+                                                       &nSlices,
                                                        &bytePerVoxel,
                                                        &pixelSpacingWidth,
                                                        &pixelSpacingHeight,
@@ -44,19 +44,50 @@ int main( int argc, char* argv[] ) {
 
     hub::SensorSpec::MetaData metaData;
     metaData["type"]        = "record";
-    constexpr int imageSize = 512 * 512 * 2;
+    constexpr int sliceSize = 512 * 512 * 2;
+
+#ifdef USE_RGBA
+
+    hub::SensorSpec sensorSpec( "mri",
+                                { { { 1 }, hub::SensorSpec::Format::DOF6 },
+                                  { { 512, 512 }, hub::SensorSpec::Format::RGBA8 } },
+                                std::move( metaData ) );
+    const int volumeSize      = sliceSize * nSlices;
+    constexpr int textureSize = 512 * 512 * 4;
+    const auto& resolution    = sensorSpec.m_resolutions.at( 1 );
+    assert( hub::SensorSpec::computeAcquisitionSize( resolution ) == textureSize );
+    unsigned char* texturesData = new unsigned char[textureSize * nSlices];
+    for ( int i = 0; i < volumeSize / 2; ++i ) {
+        //        auto * pixel = &volumeData[i * 2];
+        //        unsigned char color = volumeData[2 * i + 1];
+        //        unsigned char color = (volumeData[2 * i] + volumeData[2 * i + 1] * 256) / 256;
+        unsigned char color = ( (uint16_t*)volumeData )[i] / 256;
+
+        assert( 0 <= color && color <= 255 );
+
+        texturesData[4 * i]     = color;
+        texturesData[4 * i + 1] = color;
+        texturesData[4 * i + 2] = color;
+        texturesData[4 * i + 3] = color;
+    }
+
+#else
+    unsigned char * texturesData = volumeData;
+    constexpr int textureSize  = sliceSize;
     hub::SensorSpec sensorSpec( "mri",
                                 { { { 1 }, hub::SensorSpec::Format::DOF6 },
                                   { { 512, 512 }, hub::SensorSpec::Format::Y16 } },
                                 std::move( metaData ) );
+#endif
+
     hub::OutputSensor outputSensor( std::move( sensorSpec ),
                                     hub::io::OutputStream( "dicomStream" ) );
-
-//    nImages = 1;
-    for ( int iImage = 0; iImage < nImages; ++iImage ) {
+    //    nSlices = 1;
+    for ( int iImage = 0; iImage < nSlices; ++iImage ) {
         hub::Dof6 dof6( 0.0, iImage * sliceThickness, 0.0 );
         //        dof6.m_z = iImage * sliceThickness;
-        hub::Measure image( &volumeData[imageSize * iImage], imageSize );
+        //        hub::Measure image( &volumeData[textureSize * iImage], textureSize );
+        hub::Measure image( &texturesData[textureSize * iImage], textureSize );
         //        outputSensor << hub::Acquisition { iImage, iImage, &volumeData[imageSize *
         //        iImage], imageSize }; hub::Acquisition acq(iImage, iImage); hub::Acquisition {0,
         //        0} << std::move(dof6); outputSensor << (hub::Acquisition { iImage, iImage } <<
@@ -69,6 +100,8 @@ int main( int argc, char* argv[] ) {
     while ( true ) {
         std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
     }
+
+    delete[] texturesData;
 
     return 0;
 }

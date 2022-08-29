@@ -229,6 +229,10 @@ void WidgetStreamView2D::updateImage()
             m_image = new QImage((unsigned char*)mData, mImagePixelWidth, mImagePixelHeight, QImage::Format_RGB888);
             break;
 
+        case hub::SensorSpec::Format::RGBA8:
+            m_image = new QImage((unsigned char*)mData, mImagePixelWidth, mImagePixelHeight, QImage::Format_RGBA8888);
+            break;
+
         case hub::SensorSpec::Format::BGR8:
 #if QT_VERSION <= QT_VERSION_CHECK(5, 12, 0)
             m_image = new QImage((unsigned char*)mData, mImagePixelWidth, mImagePixelHeight, QImage::Format_BGR888);
