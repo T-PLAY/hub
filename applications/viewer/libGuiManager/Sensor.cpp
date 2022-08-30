@@ -8,8 +8,8 @@
 #include <Core/Utils/Observable.hpp>
 #include <Engine/Scene/Entity.hpp>
 
-#include <SensorSpec.hpp>
 #include <Gui/Viewer/RotateAroundCameraManipulator.hpp>
+#include <SensorSpec.hpp>
 
 SensorThread::SensorThread( Sensor& sensor, QObject* parent ) :
     QThread { parent }, m_sensor( sensor ) {}
@@ -46,7 +46,7 @@ void SensorThread::run() {
             //            mAcqs.push(acq.clone());
             const auto& sensorSpec  = inputSensor->m_spec;
             const auto& resolutions = sensorSpec.m_resolutions;
-            const auto& measures = acq.getMeasures();
+            const auto& measures    = acq.getMeasures();
 
             // update 2D view
             {
@@ -283,6 +283,7 @@ Sensor::Sensor( std::unique_ptr<hub::InputSensor> inputSensor,
 
             switch ( format ) {
             case hub::SensorSpec::Format::DOF6:
+            case hub::SensorSpec::Format::MAT4:
                 //            assert(m_dof6Component == nullptr);
                 //            m_dof6Component = new Dof6Component(m_entity);
                 m_component = new Dof6Component( *m_inputSensor, m_entity );
@@ -302,8 +303,8 @@ Sensor::Sensor( std::unique_ptr<hub::InputSensor> inputSensor,
             const auto& format2 = resolutions.at( 1 ).second;
 
             assert( format == hub::SensorSpec::Format::DOF6 );
-//            assert( format2 == hub::SensorSpec::Format::Y16 );
-//            assert( format2 == hub::SensorSpec::Format::RGBA8 );
+            //            assert( format2 == hub::SensorSpec::Format::Y16 );
+            //            assert( format2 == hub::SensorSpec::Format::RGBA8 );
 
             m_component = new ScanComponent( *m_inputSensor, m_entity, *m_engine, *m_viewer );
         }
@@ -379,15 +380,15 @@ Sensor::~Sensor() {
     assert( m_widgetStreamViews.size() == m_subWindows.size() );
     for ( int i = 0; i < m_widgetStreamViews.size(); ++i ) {
 
-        auto * widgetStreamView = m_widgetStreamViews.at(i);
+        auto* widgetStreamView = m_widgetStreamViews.at( i );
         delete widgetStreamView;
 
-        auto * subWindow = m_subWindows.at(i);
+        auto* subWindow = m_subWindows.at( i );
         m_mdiArea.removeSubWindow( subWindow );
         delete subWindow;
-//        delete m_widgetStreamViews;
-//        m_widgetStreamViews = nullptr;
-//        m_subWindows = nullptr;
+        //        delete m_widgetStreamViews;
+        //        m_widgetStreamViews = nullptr;
+        //        m_subWindows = nullptr;
     }
 
     if ( m_parent != nullptr ) {
@@ -419,24 +420,23 @@ void Sensor::detachFromImageManipulator() {
 
 void Sensor::attachFromImageManipulator() {
 
-        auto& viewer = *m_viewer;
-        //    auto aabb = Ra::Engine::RadiumEngine::getInstance()->computeSceneAabb();
-        //    auto aabb = m_app->m_engine->computeSceneAabb();
+    auto& viewer = *m_viewer;
+    //    auto aabb = Ra::Engine::RadiumEngine::getInstance()->computeSceneAabb();
+    //    auto aabb = m_app->m_engine->computeSceneAabb();
 
-//        const auto& traces = m_comp->getRoTraces();
-        //    auto aabb = traces[0].compu
-//        auto aabb = traces[0]->computeAabb();
-//        for (int i = 1; i < g_nTraces; ++i) {
-//            aabb.extend(traces[i]->computeAabb());
-//        }
-//        auto aabb = m_enti
-        auto aabb = m_entity->computeAabb();
+    //        const auto& traces = m_comp->getRoTraces();
+    //    auto aabb = traces[0].compu
+    //        auto aabb = traces[0]->computeAabb();
+    //        for (int i = 1; i < g_nTraces; ++i) {
+    //            aabb.extend(traces[i]->computeAabb());
+    //        }
+    //        auto aabb = m_enti
+    auto aabb = m_entity->computeAabb();
+    RA_CLEAR_DEBUG_DISPLAY();
+    RA_DISPLAY_AABB( aabb, Ra::Core::Utils::Color::Green() );
 
-        if (aabb.isEmpty()) {
-            viewer.getCameraManipulator()->resetCamera();
-        } else {
-            viewer.fitCameraToScene(aabb);
-        }
+    if ( aabb.isEmpty() ) { viewer.getCameraManipulator()->resetCamera(); }
+    else { viewer.fitCameraToScene( aabb ); }
 
     return;
     //    //    RA_DISPLAY_AABB( aabb, Ra::Core::Utils::Color::Blue() );
@@ -469,41 +469,36 @@ void Sensor::setParent( Sensor* parent ) {
 
         m_observer = [this]( const Ra::Engine::Scene::Entity* entity ) {
             assert( m_entity != nullptr );
-            std::cout << "[Sensor] update transform from observable" << std::endl;
+            //            std::cout << "[Sensor] update transform from observable" << std::endl;
             m_entity->setTransform( entity->getTransform() );
         };
         m_observerId = transformObservers.attach( m_observer );
 
         m_parent->m_sons.push_back( this );
+        std::cout << "[Sensor] ----> link '" << m_inputSensor->m_spec.m_sensorName
+                  << "' to parent '" << m_parent->m_inputSensor->m_spec.m_sensorName << "'"
+                  << std::endl;
     }
 }
 
-void Sensor::on_tune_valueChanged(double arg1)
-{
-    m_component->on_tune_valueChanged(arg1);
+void Sensor::on_tune_valueChanged( double arg1 ) {
+    m_component->on_tune_valueChanged( arg1 );
 }
 
-void Sensor::on_tune2_valueChanged(double arg1)
-{
-    m_component->on_tune2_valueChanged(arg1);
-
+void Sensor::on_tune2_valueChanged( double arg1 ) {
+    m_component->on_tune2_valueChanged( arg1 );
 }
 
-void Sensor::on_tune3_valueChanged(double arg1)
-{
-    m_component->on_tune3_valueChanged(arg1);
-
+void Sensor::on_tune3_valueChanged( double arg1 ) {
+    m_component->on_tune3_valueChanged( arg1 );
 }
 
-void Sensor::on_tune4_valueChanged(double arg1)
-{
-    m_component->on_tune4_valueChanged(arg1);
-
+void Sensor::on_tune4_valueChanged( double arg1 ) {
+    m_component->on_tune4_valueChanged( arg1 );
 }
 
-void Sensor::on_palette_valueChanged(int palette)
-{
-    m_component->on_palette_valueChanged(palette);
+void Sensor::on_palette_valueChanged( int palette ) {
+    m_component->on_palette_valueChanged( palette );
 }
 
 Ra::Engine::Scene::Entity* Sensor::getEntity() const {

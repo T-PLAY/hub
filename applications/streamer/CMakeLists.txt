@@ -7,7 +7,6 @@ if (HUB_APPLICATION_ENABLE_KEYBOARD)
 	add_subdirectory(posStreamer)
 endif()
 
-
 if (HUB_APPLICATION_ENABLE_LIDAR)
     add_subdirectory(lidar)
 endif()
@@ -31,3 +30,5 @@ endif()
 if (HUB_USE_DCMTK)
     add_subdirectory(dicomStreamer)
 endif()
+
+add_subdirectory(calibrator)

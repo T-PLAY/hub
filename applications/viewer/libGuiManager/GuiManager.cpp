@@ -166,6 +166,10 @@ void GuiManager::init() {
                       &Form3DToolBox::comboBox_palettes_currentIndexChanged,
                       &m_sceneManager,
                       &SceneManager::on_palette_valueChanged );
+    QObject::connect( m_3DToolBox,
+                      &Form3DToolBox::checkBox_debug_toggled,
+                      m_viewer,
+                      &Ra::Gui::Viewer::enableDebugDraw);
 
     //    m_layout3DView->addWidget(m_3DToolBox);
     m_layout3DView->insertWidget( 0, m_3DToolBox );
@@ -313,6 +317,7 @@ void GuiManager::init() {
     //////////////////////////////////////// INIT DOCKERS
 
     m_mainWindow->addDockWidget( Qt::DockWidgetArea::LeftDockWidgetArea, m_dockLeft );
+    m_mainWindow->setCorner(Qt::Corner::BottomLeftCorner, Qt::DockWidgetArea::LeftDockWidgetArea);
     //    m_mainWindow->addDockWidget(Qt::DockWidgetArea::TopDockWidgetArea, m_dockTop);
     //    m_mainWindow->addDockWidget(Qt::DockWidgetArea::RightDockWidgetArea, m_dockRight);
     m_mainWindow->addDockWidget( Qt::DockWidgetArea::BottomDockWidgetArea, m_dockBottom );

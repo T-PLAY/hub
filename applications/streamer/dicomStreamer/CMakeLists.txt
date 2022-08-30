@@ -10,6 +10,8 @@ set(UNIX_REQUIRED_LIBS)
 # find_package(TBB REQUIRED)
 find_package(DCMTK REQUIRED)
 
+find_package(glm REQUIRED)
+
 
 file(GLOB_RECURSE sources *.cpp)
 file(GLOB_RECURSE headers *.h)
@@ -17,19 +19,21 @@ file(GLOB_RECURSE headers *.h)
 add_executable(${PROJECT_NAME}
     ${sources}
     ${headers}
-    )
+)
 
 
 target_include_directories(${PROJECT_NAME} PUBLIC
     ${SRC_DIR}
     ${PROJECT_SOURCE_DIR}
-    )
+)
 
 if (WIN32)
     #    set(WIN32_REQUIRED_LIBS wsock32 ws2_32)
 
+    set(WIN32_REQUIRED_LIBS glm::glm)
 
 elseif(UNIX)
+    set(UNIX_REQUIRED_LIBS glm)
     #    set(THREADS_PREFER_PTHREAD_FLAG ON)
     #        find_package(Threads REQUIRED)
     #        set(UNIX_REQUIRED_LIBS Threads::Threads)
@@ -37,8 +41,8 @@ endif()
 
 
 target_link_libraries(${PROJECT_NAME} 
-	${SRC_TARGET} libApp ${UNIX_REQUIRED_LIBS} ${WIN32_REQUIRED_LIBS}
-	DCMTK::dcmdata DCMTK::dcmimage
-        DicomLoader
-	)
+    ${SRC_TARGET} libApp ${UNIX_REQUIRED_LIBS} ${WIN32_REQUIRED_LIBS}
+    DCMTK::dcmdata DCMTK::dcmimage
+    DicomLoader
+)
 

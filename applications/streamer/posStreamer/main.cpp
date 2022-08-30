@@ -22,8 +22,8 @@
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "Socket.hpp"
-#include "Sensor.hpp"
+#include <OutputSensor.hpp>
+#include <IO/Stream.hpp>
 
 auto pos = glm::vec3(0.0, 1.0, 0.0);
 auto quat = glm::quat(1.0, 0.0, 0.0, 0.0); // w, x, y, z
@@ -145,7 +145,7 @@ int main(int argc, char* argv[])
     std::cout << "sensor name = '" << sensorName << "'" << std::endl;
     
 
-    hub::Header::MetaData metaData;
+//    hub::Header::MetaData metaData;
     //    metaData["scanWidth"] = 10.0;
     //    metaData["scanDepth"] = 10.0;
     //    metaData["x"] = 0.0;
@@ -153,7 +153,7 @@ int main(int argc, char* argv[])
     //    metaData["z"] = 0.0;
 
     //    hub::OutputSensor proceduralStream("Polhemus Patriot (probe)", Stream::Format::Y8, { width, height }, hub::ClientSocket(), metaData);
-    hub::OutputSensor posStream( { sensorName, hub::Header::Format::DOF6, { 1 }, metaData }, hub::ClientSocket());
+    hub::OutputSensor keyboard( { sensorName, {{{1}, hub::SensorSpec::Format::DOF6}} }, hub::io::OutputStream(sensorName));
 
     //    glm::vec3 pos(0, -50, -50);
     //    glm::quat quat(1.0, 0.0, 0.0, 0.0);
@@ -174,16 +174,15 @@ int main(int argc, char* argv[])
 
     //        auto quat = glm::quat(glm::vec3(pitch, yaw, roll));
 
-    unsigned char data[28];
-
-    float* translation = glm::value_ptr(pos); // x, y, z
-    float* orientation = glm::value_ptr(quat); // x, y, z, w
-    memcpy(data, translation, 12);
-    memcpy(&data[12], orientation, 16);
-    for (int i = 0; i < 7; ++i) {
-        std::cout << ((float*)data)[i] << ", ";
-    }
-    std::cout << std::endl;
+//    unsigned char data[28];
+//    float* translation = glm::value_ptr(pos); // x, y, z
+//    float* orientation = glm::value_ptr(quat); // x, y, z, w
+//    memcpy(data, translation, 12);
+//    memcpy(&data[12], orientation, 16);
+//    for (int i = 0; i < 7; ++i) {
+//        std::cout << ((float*)data)[i] << ", ";
+//    }
+//    std::cout << std::endl;
 
     //    KEY_SLEFT;
     char c;
@@ -319,12 +318,13 @@ int main(int argc, char* argv[])
             //            front.z = sin(yaw) * cos(pitch);
             //            cameraFront = glm::normalize(front);
 
-            assert(translation == glm::value_ptr(pos));
-            assert(orientation == glm::value_ptr(quat));
-            memcpy(data, translation, 12);
-            memcpy(&data[12], orientation, 16);
+            hub::Dof6 dof6(pos.x, pos.y, pos.z, quat.w, quat.x, quat.y, quat.z);
+//            assert(translation == glm::value_ptr(pos));
+//            assert(orientation == glm::value_ptr(quat));
+//            memcpy(data, translation, 12);
+//            memcpy(&data[12], orientation, 16);
             const auto& timestampStart = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count();
-            posStream << hub::Acquisition(timestampStart, timestampStart, data, 28);
+            keyboard << (hub::Acquisition(timestampStart, timestampStart) << std::move(dof6));
 
             std::cout << "\r"
                       << "x:" << pos.x << " y:" << pos.y << " z:" << pos.z << "\t"

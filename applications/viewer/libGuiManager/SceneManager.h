@@ -49,17 +49,18 @@ class SceneManager : public QObject
     void attachSensorFromImageManipulator( int iSensor );
     void detachSensorFromImageManipulator( int iSensor );
     //    void detachAllSensorsFromImageManipulator();
-//    void onTransparencyChanged(double transparency);
-//    void onTransparency2Changed(double transparency);
-public slots:
-    void on_tune_valueChanged(double arg1);
-    void on_tune2_valueChanged(double arg1);
-    void on_tune3_valueChanged(double arg1);
-    void on_tune4_valueChanged(double arg1);
-    void on_palette_valueChanged(int arg1);
+    //    void onTransparencyChanged(double transparency);
+    //    void onTransparency2Changed(double transparency);
+  public slots:
+    void on_tune_valueChanged( double arg1 );
+    void on_tune2_valueChanged( double arg1 );
+    void on_tune3_valueChanged( double arg1 );
+    void on_tune4_valueChanged( double arg1 );
+    void on_palette_valueChanged( int arg1 );
 
-public:
-    SceneComponent * m_sceneComponent = nullptr;
+  public:
+    SceneComponent* m_sceneComponent = nullptr;
+
   private:
     std::list<Sensor> m_sensors;
     //    std::map<std::string, std::unique_ptr<Sensor>> m_streamName2Sensor;
@@ -101,12 +102,14 @@ void SceneManager::addSensor( Interface&& interface ) {
             }
         }
 
-        //                if (parentSensor == nullptr) {
-        //                    QMessageBox msgBox;
-        //                    msgBox.setText((std::string("Could not find '") + parentName + "'
-        //                    sensor.\nUnable to attach the sensor '" + sensorName + "' with his
-        //                    parent.").c_str()); msgBox.exec();
-        //                }
+        if ( parentSensor == nullptr ) {
+            std::cout << "[SceneManager] the parent is not alive"
+                      << std::endl;
+            //                    QMessageBox msgBox;
+            //                    msgBox.setText((std::string("Could not find '") + parentName + "'
+            //                    sensor.\nUnable to attach the sensor '" + sensorName + "' with his
+            //                    parent.").c_str()); msgBox.exec();
+        }
     }
 
     m_sensors.emplace_back( std::move( inputSensor ),

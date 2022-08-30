@@ -20,8 +20,10 @@
 #include <Engine/Rendering/RenderObjectManager.hpp>
 #include <Engine/Scene/GeometryComponent.hpp>
 
+//#include <Eigen/Dense>
+
 #ifdef IO_USE_ASSIMP
-#include <IO/AssimpLoader/AssimpFileLoader.hpp>
+#    include <IO/AssimpLoader/AssimpFileLoader.hpp>
 #endif
 
 #include <random>
@@ -40,24 +42,21 @@ using namespace Ra::Engine::Scene;
  * supported by Radium
  */
 
-Dof6Component::Dof6Component(const hub::InputSensor& inputStream, Ra::Engine::Scene::Entity* entity)
-    : //    Ra::Engine::Scene::Component( "Dof6 component", entity ) {}
-    SensorComponent(inputStream, entity)
-{
-}
+Dof6Component::Dof6Component( const hub::InputSensor& inputStream,
+                              Ra::Engine::Scene::Entity* entity ) :
+    //    Ra::Engine::Scene::Component( "Dof6 component", entity ) {}
+    SensorComponent( inputStream, entity ) {}
 
 /// This function is called when the component is properly
 /// setup, i.e. it has an entity.
-void Dof6Component::initialize()
-{
+void Dof6Component::initialize() {
     SensorComponent::initialize();
 
-    //    auto blinnPhongMaterial              = make_shared<BlinnPhongMaterial>( "Shaded Material" );
-    //    blinnPhongMaterial->m_perVertexColor = true;
-    //    blinnPhongMaterial->m_ks = Color::White();
+    //    auto blinnPhongMaterial              = make_shared<BlinnPhongMaterial>( "Shaded Material"
+    //    ); blinnPhongMaterial->m_perVertexColor = true; blinnPhongMaterial->m_ks = Color::White();
     //    blinnPhongMaterial->m_ns = 100_ra;
 
-    auto lambertianMaterial = make_shared<LambertianMaterial>("Lambertian Material");
+    auto lambertianMaterial              = make_shared<LambertianMaterial>( "Lambertian Material" );
     lambertianMaterial->m_perVertexColor = true;
 
     //// setup ////
@@ -67,8 +66,8 @@ void Dof6Component::initialize()
     //        assert(m_ro == nullptr);
     //        std::shared_ptr<Mesh> cube1(new Mesh("Cube"));
     //        const Scalar cubeSide = 50.0;
-    //        auto box = Core::Geometry::makeSharpBox(Vector3 { 1_ra, 1_ra, 1_ra } * cubeSide / 2.0, Color::Grey());
-    //        cube1->loadGeometry(std::move(box));
+    //        auto box = Core::Geometry::makeSharpBox(Vector3 { 1_ra, 1_ra, 1_ra } * cubeSide / 2.0,
+    //        Color::Grey()); cube1->loadGeometry(std::move(box));
 
     //        m_ro = RenderObject::createRenderObject(
     //            "refCube", this, RenderObjectType::Geometry, cube1, {});
@@ -77,27 +76,34 @@ void Dof6Component::initialize()
     //    }
 }
 
-void Dof6Component::update(const hub::Acquisition& acq)
-{
-//    float* translation = (float*)acq.m_data; // x, y, z
-//    float* quaternion = (float*)&acq.m_data[12]; // x, y, z, w
-    assert(acq.getMeasures().size() == 1);
-    const hub::Dof6 & dof6 = acq.getMeasures().at(0);
+void Dof6Component::update( const hub::Acquisition& acq ) {
+    //    float* translation = (float*)acq.m_data; // x, y, z
+    //    float* quaternion = (float*)&acq.m_data[12]; // x, y, z, w
+    assert( acq.getMeasures().size() == 1 );
+    const auto& format = m_inputSensor.m_spec.m_resolutions.at( 0 ).second;
 
-    //                Ra::Core::Vector3 pos(10, 10, 10);
-    //            -translation[2]);
-//    Ra::Core::Vector3 pos(translation[0], translation[1], translation[2]);
-    Ra::Core::Vector3 pos(dof6.m_x, dof6.m_y, dof6.m_z);
-    //    pos = -pos;
+    if ( format == hub::SensorSpec::Format::DOF6 ) {
 
-//    Ra::Core::Quaternion orientation(quaternion[3], quaternion[0], quaternion[1], quaternion[2]); // w, x, y, z
-    Ra::Core::Quaternion orientation(dof6.m_w0, dof6.m_w1, dof6.m_w2, dof6.m_w3);
-    //            std::cout << "update pose orientation " << quaternion[0] << ", " << quaternion[1] << ", " << quaternion[2] << ", " << quaternion[3] << std::endl;
+        const hub::Dof6& dof6 = acq.getMeasures().at( 0 );
 
-    // change to Radium base reference
-    Ra::Core::Transform TLocal = Ra::Core::Transform::Identity();
-    TLocal.translate(pos);
-    TLocal.rotate(orientation);
+        Ra::Core::Vector3 pos( dof6.m_x, dof6.m_y, dof6.m_z );
+        Ra::Core::Quaternion orientation( dof6.m_w0, dof6.m_w1, dof6.m_w2, dof6.m_w3 );
 
-    m_entity->setTransform(TLocal);
+        Ra::Core::Transform TLocal = Ra::Core::Transform::Identity();
+        TLocal.translate( pos );
+        TLocal.rotate( orientation );
+
+        m_entity->setTransform( TLocal );
+    }
+    else if ( format == hub::SensorSpec::Format::MAT4 ) {
+
+        const hub::Measure& measure = acq.getMeasures().at( 0 );
+        //        auto mat4 = Eigen::Map<Eigen::Matrix<float, 4, 4,
+        //        Eigen::RowMajor>>((float*)measure.m_data); // Row-major
+        const auto& mat4 =
+            Eigen::Map<Eigen::Matrix<float, 4, 4>>( (float*)measure.m_data ); // Column-major
+        //        std::cout << mat4 << std::endl;
+        m_entity->setTransform( mat4 );
+    }
+    else { assert( false ); }
 }

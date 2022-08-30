@@ -423,8 +423,14 @@ Streamer::Streamer( Server& server, int iClient, hub::net::ClientSocket&& sock )
     assert( streamers.find( m_streamName ) == streamers.end() );
 
     //    m_inputSensor = std::make_unique<InputSensor>( io::StreamViewer( std::move( sock ) ) );
-    m_inputSensor =
-        std::make_unique<hub::InputSensor>( StreamViewerInterface( std::move( sock ) ) );
+    try {
+        m_inputSensor =
+            std::make_unique<hub::InputSensor>( StreamViewerInterface( std::move( sock ) ) );
+    }
+    catch ( hub::net::Socket::exception& e ) {
+        std::cout << headerMsg() << "InputSensor() : catch exception : " << e.what() << std::endl;
+        return;
+    }
 
     assert( streamers.find( m_streamName ) == streamers.end() );
 
@@ -446,16 +452,8 @@ Streamer::Streamer( Server& server, int iClient, hub::net::ClientSocket&& sock )
 
     const auto& metaData = sensorSpec.m_metaData;
     for ( const auto& pair : metaData ) {
-        const auto& name = pair.first;
-        const auto& val  = pair.second;
-#ifdef WIN32
-        std::cout << headerMsg() << "metaData: " << val.type().name() << " " << name << " = '"
-                  << hub::Header::any2string( val ) << "' (" << val.type().raw_name() << ")"
+        std::cout << headerMsg() << "metaData: " << hub::SensorSpec::metaData2string( pair )
                   << std::endl;
-#else
-        std::cout << headerMsg() << "metaData: " << val.type().name() << " " << name << " = '"
-                  << hub::SensorSpec::any2string( val ) << "'" << std::endl;
-#endif
     }
     if ( metaData.find( "type" ) != metaData.end() ) {
         std::cout << headerMsg() << "type detected : record stream" << std::endl;
@@ -530,11 +528,13 @@ Streamer::Streamer( Server& server, int iClient, hub::net::ClientSocket&& sock )
                 m_server.newAcquisition( this, acq.clone() );
 
                 //                m_lastAcqs.release();
-                if ( !m_isRecordStream ) {
+                m_mtxLastAcqs.lock();
+                if ( !m_isRecordStream && ! m_lastAcqs.empty() ) {
                     m_lastAcqs.back().release();
                     m_lastAcqs.clear();
                 }
                 m_lastAcqs.push_back( std::make_unique<hub::Acquisition>( std::move( acq ) ) );
+                m_mtxLastAcqs.unlock();
             }
         }
         catch ( hub::net::Socket::exception& e ) {
