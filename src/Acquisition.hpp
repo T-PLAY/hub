@@ -68,6 +68,12 @@ class Dof6 : public Measure
     //    constexpr static SensorSpec::Format m_format = SensorSpec::Format::DOF6;
 };
 
+class Mat4 : public Measure
+{
+public:
+    Mat4(const float * array);
+};
+
 // class Image : public Measure
 //{
 //   public:

@@ -32,6 +32,13 @@ std::ostream& operator<<( std::ostream& os, const Dof6& dof6 ) {
     return os;
 }
 
+Mat4::Mat4(const float *array)
+    : Measure((unsigned char*)array, 64)
+{
+    assert(m_size == 64);
+}
+
+
 // Dof6::~Dof6() {
 ////    delete m_data;
 //    //    m_data = nullptr;

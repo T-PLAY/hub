@@ -9,9 +9,9 @@
 #include <typeinfo>
 #include <vector>
 
+#include "Acquisition.hpp"
 #include "Macros.hpp"
 #include "SensorSpec.hpp"
-#include "Acquisition.hpp"
 
 //#define DEBUG_IOSTREAM
 
@@ -26,33 +26,8 @@ namespace io {
 class SRC_API Interface
 {
   public:
-    //    struct Mat3 {
-    //        float data[9];
-    //    };
-    ///
-    /// \brief The Type enum
-    /// allows to unify the data according to the different architecture (32, 64 bits).
-    ///
-    enum class Type {
-        INT = 0,
-        DOUBLE,
-        STRING,
-        CONST_CHAR_PTR,
-        //        FLOAT_ARRAY_9,
-        VECTOR_FLOAT,
-        //        MAT3,
-        COUNT
-    };
-    static constexpr char const* type2string[static_cast<int>( Type::COUNT )] = {
-        "int",
-        "double",
-        "std::string",
-        "const char *",
-    };
-    friend std::ostream& operator<<( std::ostream& os, const Type& type ) {
-        os << type2string[(int)type];
-        return os;
-    }
+    SRC_API static std::string anyValue2string( const std::any& any );
+    SRC_API static const std::string &anyType2string( const std::any& any );
 
   public:
     Interface()                                       = default;
@@ -85,7 +60,7 @@ class SRC_API Interface
     void write( const SensorSpec& sensorSpec ) const;
     void write( const Measure& measure ) const;
 
-    virtual void write (const Acquisition& acq) const;
+    virtual void write( const Acquisition& acq ) const;
 
     ////////////////////////////////////////////////////////////////////////////
 
@@ -106,15 +81,14 @@ class SRC_API Interface
 
     void read( std::string& str ) const;
     void read( SensorSpec& sensorSpec ) const;
-//    void read( Measure& measure ) const;
+    //    void read( Measure& measure ) const;
 
     Measure getMeasure() const;
     SensorSpec getSensorSpec() const;
-    virtual Acquisition getAcquisition(int acquisitionSize) const;
+    virtual Acquisition getAcquisition( int acquisitionSize ) const;
 
-private:
+  private:
 };
-
 
 // template <class T>
 // auto Interface::getValue(const std::any& any) -> decltype (int)
@@ -177,25 +151,24 @@ void Interface::write( const std::map<T, U>& map ) const {
 #endif
 
     for ( const std::pair<T, U>& pair : map ) {
-        write(pair);
-//        const T& first = pair.first;
-//#ifdef DEBUG_IOSTREAM
-//        std::cout << "[Interface] map : name = " << first << std::endl;
-//#endif
-//        const U& second = pair.second;
+        write( pair );
+        //        const T& first = pair.first;
+        //#ifdef DEBUG_IOSTREAM
+        //        std::cout << "[Interface] map : name = " << first << std::endl;
+        //#endif
+        //        const U& second = pair.second;
 
-//        write( first );
-//        write( second );
+        //        write( first );
+        //        write( second );
     }
 }
 
-template<class T, class U>
-void Interface::write(const std::pair<T, U> &pair) const
-{
-        const T& first = pair.first;
-        const U& second = pair.second;
-        write(first);
-        write(second);
+template <class T, class U>
+void Interface::write( const std::pair<T, U>& pair ) const {
+    const T& first  = pair.first;
+    const U& second = pair.second;
+    write( first );
+    write( second );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -256,31 +229,30 @@ void Interface::read( std::map<T, U>& map ) const {
 #endif
 
     for ( int i = 0; i < nbEl; ++i ) {
-//        T name;
-//        read( name );
-//#ifdef DEBUG_IOSTREAM
-//        std::cout << "[Interface] map : name = " << name << std::endl;
-//#endif
-//        U val;
-//        read( val );
-//        //        std::cout << "[Interface] map : val = " << val << std::endl;
-//        map[name] = val;
-//        assert( map.find( name ) == map.end() );
+        //        T name;
+        //        read( name );
+        //#ifdef DEBUG_IOSTREAM
+        //        std::cout << "[Interface] map : name = " << name << std::endl;
+        //#endif
+        //        U val;
+        //        read( val );
+        //        //        std::cout << "[Interface] map : val = " << val << std::endl;
+        //        map[name] = val;
+        //        assert( map.find( name ) == map.end() );
         std::pair<T, U> pair;
-        read(pair);
+        read( pair );
         assert( map.find( pair.first ) == map.end() );
-        map.emplace(std::move(pair));
+        map.emplace( std::move( pair ) );
     }
 }
 
-template<class T, class U>
-void Interface::read(std::pair<T, U> &pair) const
-{
-        T first;
-        read(first);
-        U second;
-        read(second);
-        pair = std::make_pair(first, second);
+template <class T, class U>
+void Interface::read( std::pair<T, U>& pair ) const {
+    T first;
+    read( first );
+    U second;
+    read( second );
+    pair = std::make_pair( first, second );
 }
 
 class InputInterface : public virtual Interface

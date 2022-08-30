@@ -85,15 +85,15 @@ void SceneComponent::initialize() {
     // origin gizmo
     {
         std::vector<std::shared_ptr<Engine::Data::Mesh>> m_meshAxis;
-        constexpr Scalar arrowScale = 1_ra;
-        constexpr Scalar axisWidth = .05_ra;
-        constexpr Scalar arrowFrac = 0_ra;
+        constexpr Scalar arrowScale = 50_ra;
+        constexpr Scalar axisWidth = 0.05_ra;
+        constexpr Scalar arrowFrac = 0.0_ra;
 
         std::vector<Color> gizmoColors = {
-            Color::Red(), Color::Green(), Color::Blue(), Color::Cyan(), Color::Cyan(), Color::Cyan()
+            Color::Red(), Color::Green(), Color::Blue()
         };
 
-        for (uint i = 0; i < 6; ++i) {
+        for (uint i = 0; i < 3; ++i) {
             Core::Vector3 cylinderEnd = Core::Vector3::Zero();
             cylinderEnd[i % 3] = (1_ra - arrowFrac);
             Core::Vector3 arrowEnd = Core::Vector3::Zero();
@@ -120,9 +120,9 @@ void SceneComponent::initialize() {
                 m_meshAxis[i]);
 
             m_roAxes[i]->setMaterial(plainMaterial);
-            Ra::Core::Transform TLocal = Transform::Identity();
-            TLocal.scale(100.0);
-            m_roAxes[i]->setLocalTransform(TLocal);
+//            Ra::Core::Transform TLocal = Transform::Identity();
+//            TLocal.scale(100.0);
+//            m_roAxes[i]->setLocalTransform(TLocal);
             addRenderObject(m_roAxes[i]);
         }
     }

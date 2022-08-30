@@ -9,6 +9,142 @@
 namespace hub {
 namespace io {
 
+///
+/// \brief The AnyType enum
+/// allows to unify the data according to the different architecture (32, 64 bits).
+///
+enum class AnyType {
+    INT = 0,
+    DOUBLE,
+    STRING,
+    CONST_CHAR_PTR,
+    VECTOR_FLOAT,
+    UINT,
+    CONST_FLOAT_PTR,
+    //        MAT3,
+    //        FLOAT_ARRAY_9,
+    COUNT
+};
+static const std::string s_anyType2string[static_cast<int>( AnyType::COUNT )] = {
+    "int",
+    "double",
+    "string",
+    "cchar_ptr",
+    "vector_float",
+    "uint",
+    "cfloat_ptr",
+};
+static const std::map<size_t, AnyType> s_hash2anyType = {
+    { typeid( int ).hash_code(), AnyType::INT },
+    { typeid( double ).hash_code(), AnyType::DOUBLE },
+    { typeid( std::string ).hash_code(), AnyType::STRING },
+    { typeid( const char* ).hash_code(), AnyType::CONST_CHAR_PTR },
+    { typeid( std::vector<float> ).hash_code(), AnyType::VECTOR_FLOAT },
+    { typeid( unsigned int ).hash_code(), AnyType::UINT },
+    { typeid( const float* ).hash_code(), AnyType::CONST_FLOAT_PTR },
+};
+//    friend std::ostream& operator<<( std::ostream& os, const AnyType& type ) {
+//        os << s_anyType2string[(int)type];
+//        return os;
+//    }
+
+std::string Interface::anyValue2string( const std::any& any ) {
+    assert( any.has_value() );
+    const auto& hashCode = any.type().hash_code();
+
+    assert( s_hash2anyType.find( hashCode ) != s_hash2anyType.end() );
+    AnyType anyType = s_hash2anyType.at( hashCode );
+
+    switch ( anyType ) {
+    case AnyType::INT: {
+        const int* val = std::any_cast<int>( &any );
+        return std::to_string( *val );
+    } break;
+
+    case AnyType::DOUBLE: {
+        const double* val = std::any_cast<double>( &any );
+        return std::to_string( *val );
+    } break;
+
+    case AnyType::STRING: {
+        const std::string* val = std::any_cast<std::string>( &any );
+        return std::string( *val );
+    } break;
+
+    case AnyType::CONST_CHAR_PTR: {
+        const char* val = *std::any_cast<const char*>( &any );
+        return std::string( val );
+    } break;
+
+    case AnyType::VECTOR_FLOAT: {
+        const std::vector<float>* val = std::any_cast<std::vector<float>>( &any );
+        std::string str               = "";
+        const int n                   = 3;
+        for ( int i = 0; i < n; ++i ) {
+            for ( int j = 0; j < n; ++j ) {
+                char buff[32];
+                const int k = i * n + j;
+                // sprintf(buff, "%.1f", val->at(k));
+                //                sprintf_s( buff, "%.1f", val->at( k ) );
+                sprintf( buff, "%.1f", val->at( k ) );
+                str += buff;
+                //            str += std::to_string(val->at(i));
+                if ( j != 2 ) str += " ";
+            }
+            if ( i != 2 ) str += "  ";
+        }
+        return str;
+    } break;
+
+    case AnyType::UINT: {
+        const unsigned int* val = std::any_cast<unsigned int>( &any );
+        return std::to_string( *val );
+    } break;
+
+    case AnyType::CONST_FLOAT_PTR: {
+        const float* val = *std::any_cast<const float*>( &any );
+        std::string str  = "";
+        for ( int i = 0; i < 4; ++i ) {
+            for ( int j = 0; j < 4; ++j ) {
+                char buff[32];
+                sprintf( buff, "%.0f ", val[4 * j + i] );
+                str += buff;
+            }
+                if ( i != 3 ) str += " ";
+        }
+        return str;
+    } break;
+
+    default:
+        auto name     = any.type().name();
+        auto raw_name = any.type().name();
+        assert( false );
+    }
+
+    //    else if ( hashCode == typeid( hub::io::Interface::Mat3 ).hash_code() ) {
+    //        const hub::io::Interface::Mat3* val = std::any_cast<hub::io::Interface::Mat3>( &any );
+    //        std::string str                     = "";
+    //        for ( int i = 0; i < 3; ++i ) {
+    //            for ( int j = 0; j < 3; ++j ) {
+    //                str += std::to_string( val->data[i * 3 + j] ) + " ";
+    //            }
+    //            str += "\n";
+    //        }
+    //        return str;
+    //    }
+    //    return "";
+}
+
+const std::string& Interface::anyType2string( const std::any& any ) {
+    assert( any.has_value() );
+    const auto& hashCode = any.type().hash_code();
+
+    assert( s_hash2anyType.find( hashCode ) != s_hash2anyType.end() );
+    AnyType anyType = s_hash2anyType.at( hashCode );
+
+    return s_anyType2string[static_cast<int>( anyType )];
+}
+
 void Interface::write( const std::string& str ) const {
 #ifdef DEBUG_IOSTREAM
     std::cout << "[Interface] write std::string : start" << std::endl;
@@ -104,53 +240,51 @@ void Interface::write( const std::any& any ) const {
 #endif
 
     assert( any.has_value() );
-    //    const auto& hashCode = any.type().hash_code();
-
-    //    const uint64_t& hashCodeTmp = any.type().hash_code();
-    //    const uint64_t& hashCodeTmp = typeInfoHash64(any.type().raw_name());
-    //    assert(sizeof(hashCodeTmp) == 8);
-    //    write(hashCodeTmp);
-    //    //    any.type() == typeid (double);
     const auto& anyType = any.type();
 
-    //    if (hashCode == typeid(double).hash_code()) {
-    if ( anyType == typeid( double ) ) {
-        write( Type::DOUBLE );
-        const double* val = std::any_cast<double>( &any );
-        assert( sizeof( double ) == 8 );
-        write( *val );
-
-        //    } else if (hashCode == typeid(std::string).hash_code()) {
-    }
-    else if ( anyType == typeid( std::string ) ) {
-        write( Type::STRING );
-        const std::string* val = std::any_cast<std::string>( &any );
-        write( *val );
-
-        //    } else if (hashCode == typeid(const char*).hash_code()) {
-    }
-    else if ( anyType == typeid( const char* ) ) {
-        write( Type::CONST_CHAR_PTR );
-        const char* val = *std::any_cast<const char*>( &any );
-        assert( sizeof( char ) == 1 );
-        write( val );
-
-        //    } else if (hashCode == typeid(int).hash_code()) {
-    }
-    else if ( anyType == typeid( int ) ) {
-        write( Type::INT );
+    if ( anyType == typeid( int ) ) {
+        write( AnyType::INT );
         const int* val = std::any_cast<int>( &any );
         assert( sizeof( int ) == 4 );
         write( *val );
     }
+    else if ( anyType == typeid( double ) ) {
+        write( AnyType::DOUBLE );
+        const double* val = std::any_cast<double>( &any );
+        assert( sizeof( double ) == 8 );
+        write( *val );
+    }
+    else if ( anyType == typeid( std::string ) ) {
+        write( AnyType::STRING );
+        const std::string* val = std::any_cast<std::string>( &any );
+        write( *val );
+    }
+    else if ( anyType == typeid( const char* ) ) {
+        write( AnyType::CONST_CHAR_PTR );
+        const char* val = *std::any_cast<const char*>( &any );
+        assert( sizeof( char ) == 1 );
+        write( val );
+    }
     else if ( anyType == typeid( std::vector<float> ) ) {
-        write( Type::VECTOR_FLOAT );
+        write( AnyType::VECTOR_FLOAT );
         auto* val = std::any_cast<std::vector<float>>( &any );
         assert( val->size() == 9 );
         write( *val );
     }
+    else if ( anyType == typeid( unsigned int ) ) {
+        write( AnyType::UINT );
+        const unsigned int* val = std::any_cast<unsigned int>( &any );
+        //        assert( sizeof( int ) == 4 );
+        write( *val );
+    }
+    else if ( anyType == typeid( const float* ) ) {
+        write( AnyType::CONST_FLOAT_PTR );
+        const float* val = *std::any_cast<const float*>( &any );
+        //        assert( sizeof( float ) == 1 );
+        write( (unsigned char*)val, 64 );
+    }
     //    else if ( anyType == typeid( Mat3 ) ) {
-    //        write( Type::MAT3 );
+    //        write( AnyType::MAT3 );
     //        auto* val = std::any_cast<Mat3>( &any );
     //        //        assert(val->size() == 9);
     //        write( *val );
@@ -188,8 +322,6 @@ void Interface::read( std::string& str ) const {
 
 void Interface::read( SensorSpec& sensorSpec ) const {
     read( sensorSpec.m_sensorName );
-    //    read( sensorSpec.m_format );
-    //    read( sensorSpec.m_dims );
     read( sensorSpec.m_resolutions );
     read( sensorSpec.m_metaData );
 
@@ -260,40 +392,36 @@ void Interface::read( std::any& any ) const {
     std::cout << "[Interface] read std::any : start" << std::endl;
 #endif
 
-    //    uint64_t hashCode;
-    //    assert(sizeof(hashCode) == 8);
-    //    read(hashCode);
-
-    Type type;
+    AnyType type;
     read( type );
 
-    //    decltype(any.type().hash_code()) hashCode = hashCodeTmp;
-
-    //    const uint64_t& hashCodeTmp = typeInfoHash64(any.type().raw_name());
-    //    if (hashCode == typeid(double).hash_code()) {
     switch ( type ) {
+    case AnyType::INT: {
+        assert( sizeof( int ) == 4 );
+        int val;
+        read( val );
+        any = std::any_cast<int>( val );
+    } break;
 
-    case Type::DOUBLE: {
+    case AnyType::DOUBLE: {
         double val;
         assert( sizeof( double ) == 8 );
         read( val );
         any = std::any_cast<double>( val );
     } break;
 
-    case Type::STRING: {
+    case AnyType::STRING: {
         std::string val;
         read( val );
         any = std::any_cast<std::string>( val );
     } break;
 
-    case Type::CONST_CHAR_PTR: {
+    case AnyType::CONST_CHAR_PTR: {
         assert( sizeof( char ) == 1 );
         char* buff = new char[256];
         memset( buff, 0, 256 );
         read( buff );
-        //        std::cout << "val[256] = '" << buff << "'" << std::endl;
         int len = static_cast<int>( strlen( buff ) );
-        //        std::cout << "len = " << len << std::endl;
 
         const int buffSize = len + 1;
         char* str          = new char[buffSize];
@@ -305,20 +433,27 @@ void Interface::read( std::any& any ) const {
 
     } break;
 
-    case Type::INT: {
-        assert( sizeof( int ) == 4 );
-        int val;
-        read( val );
-        any = std::any_cast<int>( val );
-    } break;
-
-    case Type::VECTOR_FLOAT: {
+    case AnyType::VECTOR_FLOAT: {
         std::vector<float> val;
         read( val );
         any = std::any_cast<std::vector<float>>( val );
     } break;
 
-        //    case Type::MAT3: {
+    case AnyType::UINT: {
+        unsigned int val;
+        read( val );
+        any = std::any_cast<unsigned int>( val );
+    } break;
+
+    case AnyType::CONST_FLOAT_PTR: {
+        float* buff = new float[16];
+        read( (unsigned char*)buff, 64 );
+
+        any = std::any_cast<const float*>( (const float*)buff );
+
+    } break;
+
+        //    case AnyType::MAT3: {
         //        Mat3 val;
         //        read( val );
         //        any = std::any_cast<Mat3>( val );
@@ -329,75 +464,8 @@ void Interface::read( std::any& any ) const {
         auto raw_name = any.type().name();
         assert( false );
     }
-    //    if (hashCode == typeInfoHash64(typeid(double).raw_name())) {
-    //        double val;
-    //        assert(sizeof(double) == 8);
-    //        read(val);
-    //        any = std::any_cast<double>(val);
-    //    }
-    //    //	else if (hashCode == "class std::basic_string<char,struct
-    //    std::char_traits<char>,class std::allocator<char> >") {
-    //    //    else if (hashCode == typeid(std::string).hash_code()) {
-    //    else if (hashCode == typeInfoHash64(typeid(std::string).raw_name())) {
-    //        std::string val;
-    //        read(val);
-    //        any = std::any_cast<std::string>(val);
-
-    //        //    } else if (hashCode == typeid(const char*).hash_code()) {
-    //    } else if (hashCode == typeInfoHash64(typeid(const char*).raw_name())) {
-    //        assert(sizeof(char) == 8);
-    //        char* buff = new char[256];
-    //        memset(buff, 0, 256);
-    //        read(buff);
-    //        //        std::cout << "val[256] = '" << buff << "'" << std::endl;
-    //        int len = strlen(buff);
-    //        //        std::cout << "len = " << len << std::endl;
-
-    //        char* str = new char[len + 1];
-    //        memcpy(str, buff, len);
-    //        str[len] = 0;
-    //        delete[] buff;
-
-    //        any = std::any_cast<const char*>((const char*)str);
-
-    //        //    } else if (hashCode == typeid(int).hash_code()) {
-    //    } else if (hashCode == typeInfoHash64(typeid(int).raw_name())) {
-    //        assert(sizeof(int) == 4);
-    //        int val;
-    //        read(val);
-    //        any = std::any_cast<int>(val);
-
-    //    } else {
-    //        auto name = any.type().name();
-    //        auto raw_name = any.type().name();
-    //        assert(false);
-    //    }
     assert( any.has_value() );
 }
-
-// void Interface::read(std::map<std::string, std::any> &map) const
-//{
-
-//}
-
-// void Interface::setupOutput( const std::string& sensorName ) const {
-//     (void)sensorName;
-//#ifdef DEBUG_IOSTREAM
-//     std::cout << "Interface::setOutputName(const std::string& sensorName)" << std::endl;
-//#endif
-
-//    assert( mMode == Mode::INPUT_OUTPUT );
-//}
-
-// Interface::Interface(const Mode& mode)
-//{
-// }
-
-// void Interface::setupMode(const Mode& mode)
-//{
-//#ifdef DEBUG_IOSTREAM
-//#endif
-// }
 
 } // namespace io
 } // namespace hub

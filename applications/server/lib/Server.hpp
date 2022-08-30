@@ -75,6 +75,7 @@ class Streamer : public Client
     std::map<std::string, std::deque<hub::Acquisition>> m_syncAcqs;
 
     std::vector<std::unique_ptr<hub::Acquisition>> m_lastAcqs;
+    std::mutex m_mtxLastAcqs;
 
     bool m_isRecordStream = false;
 

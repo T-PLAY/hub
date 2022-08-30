@@ -60,8 +60,12 @@ private:
 
     std::vector<Scan> m_scans;
     int m_iScan = -1;
+    int m_nScans = 1;
     long long m_lastUpdateDate = 0;
     bool m_firstUpdate = true;
+    bool m_recordStream = false;
+
+    Eigen::Matrix<float, 4, 4> m_transform;
 
     std::shared_ptr<Ra::Engine::Data::PlainMaterial> m_scanLineMaterial;
 //    std::unique_ptr<Ra::Engine::Data::ScanMaterial> m_scanMaterial;
