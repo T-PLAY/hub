@@ -3,6 +3,8 @@
 #include <QApplication>
 #include <QSurfaceFormat>
 
+#include <SensorSpec.hpp>
+
 
 int main(int argc, char *argv[])
 {
@@ -28,6 +30,7 @@ int main(int argc, char *argv[])
 
     QApplication a(argc, argv);
     qRegisterMetaType<std::string>("std::string");
+    qRegisterMetaType<hub::SensorSpec>("hub::SensorSpec");
     MainWindow w;
 //    w.resize(1280, 840);
     w.show();

@@ -32,6 +32,7 @@ TEST_CASE( "Server test : direct stream" ) {
     std::cout << "[Test] ############################### server start" << std::endl;
     Server server( port );
     server.setMaxClients( 2 * nLoop );
+    server.setAcqPing(false);
     server.asyncRun();
     //    std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
     std::cout << "[Test] server end ------------------------------" << std::endl;
