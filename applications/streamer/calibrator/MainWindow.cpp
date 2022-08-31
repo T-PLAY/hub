@@ -2,6 +2,8 @@
 #include "ui_MainWindow.h"
 
 #include <QIntValidator>
+#include <QObject>
+#include <QSpinBox>
 
 #include <glm/gtx/string_cast.hpp>
 #include <Acquisition.hpp>
@@ -9,15 +11,15 @@
 MainWindow::MainWindow( QWidget* parent ) : QMainWindow( parent ), ui( new Ui::MainWindow ) {
     ui->setupUi( this );
 
-    QObject::connect( ui->spinBox_tx, &QSpinBox::valueChanged, this, &MainWindow::updateTransform );
-    QObject::connect( ui->spinBox_ty, &QSpinBox::valueChanged, this, &MainWindow::updateTransform );
-    QObject::connect( ui->spinBox_tz, &QSpinBox::valueChanged, this, &MainWindow::updateTransform );
-    QObject::connect( ui->spinBox_rx, &QSpinBox::valueChanged, this, &MainWindow::updateTransform );
-    QObject::connect( ui->spinBox_ry, &QSpinBox::valueChanged, this, &MainWindow::updateTransform );
-    QObject::connect( ui->spinBox_rz, &QSpinBox::valueChanged, this, &MainWindow::updateTransform );
-    QObject::connect( ui->spinBox_sx, &QSpinBox::valueChanged, this, &MainWindow::updateTransform );
-    QObject::connect( ui->spinBox_sy, &QSpinBox::valueChanged, this, &MainWindow::updateTransform );
-    QObject::connect( ui->spinBox_sz, &QSpinBox::valueChanged, this, &MainWindow::updateTransform );
+    QObject::connect( ui->spinBox_tx, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &MainWindow::updateTransform );
+    QObject::connect( ui->spinBox_ty, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &MainWindow::updateTransform );
+    QObject::connect( ui->spinBox_tz, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &MainWindow::updateTransform );
+    QObject::connect( ui->spinBox_rx, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &MainWindow::updateTransform );
+    QObject::connect( ui->spinBox_ry, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &MainWindow::updateTransform );
+    QObject::connect( ui->spinBox_rz, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &MainWindow::updateTransform );
+    QObject::connect( ui->spinBox_sx, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &MainWindow::updateTransform );
+    QObject::connect( ui->spinBox_sy, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &MainWindow::updateTransform );
+    QObject::connect( ui->spinBox_sz, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &MainWindow::updateTransform );
 
     //    std::string sensorName = "calibrator";
     m_outputSensor =
