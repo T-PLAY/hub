@@ -24,6 +24,13 @@ class OutputStream : public OutputInterface, public net::ClientSocket
     ///
     OutputStream( const std::string& streamName,
                   net::ClientSocket&& clientSocket = net::ClientSocket() );
+
+#ifdef WIN32 // msvc warning C4250
+  protected:
+    void write( const unsigned char* data, size_t len ) const override;
+    void read( unsigned char* data, size_t len ) const override;
+    void close() override;
+#endif
 };
 
 ///
@@ -43,6 +50,13 @@ class InputStream : public InputInterface, public net::ClientSocket
     InputStream( const std::string& streamName,
                  const std::string& syncStreamName = "",
                  net::ClientSocket&& clientSocket  = net::ClientSocket() );
+
+#ifdef WIN32 // msvc warning C4250
+  protected:
+    void write( const unsigned char* data, size_t len ) const override;
+    void read( unsigned char* data, size_t len ) const override;
+    void close() override;
+#endif
 
 protected:
     Acquisition getAcquisition(int acquisitionSize) const override;

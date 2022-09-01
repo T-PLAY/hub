@@ -87,7 +87,7 @@ std::string SensorSpec::format2string( const Format& format ) {
 }
 
 std::string SensorSpec::resolutions2string( const Resolutions& resolutions ) {
-    const int size  = resolutions.size();
+    const int size  = static_cast<int>(resolutions.size());
     std::string str = "";
     if ( size > 1 ) str += "[";
     for ( int i = 0; i < size; ++i ) {

@@ -5,6 +5,7 @@
 #include <OutputSensor.hpp>
 
 #include <filesystem>
+#include <thread>
 
 TEST_CASE( "File test" ) {
 
@@ -54,6 +55,8 @@ TEST_CASE( "File test" ) {
     }
     std::cout << "outputStream end ################################" << std::endl;
 
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+
     std::cout << "inputStream start" << std::endl;
     INFO( "InputStream" );
     {
@@ -66,9 +69,12 @@ TEST_CASE( "File test" ) {
         CHECK( sensorSpec.m_resolutions[0].first.size() == 1 );
         CHECK( sensorSpec.m_resolutions[0].first.at( 0 ) == 1 );
         CHECK( sensorSpec.m_resolutions[0].second == hub::SensorSpec::Format::BGR8 );
-        const auto& inputAcqs = inputSensor.getAllAcquisitions();
+//        const auto& inputAcqs = inputSensor.getAllAcquisitions();
+            std::cout << "####### compare acqs" << std::endl;
         for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
-            CHECK( inputAcqs[iAcq] == acqs[iAcq] );
+//            CHECK( inputAcqs[iAcq] == acqs[iAcq] );
+            auto acq = inputSensor.getAcquisition();
+            CHECK(acq == acqs[iAcq]);
         }
     }
     std::cout << "inputStream end #################################" << std::endl;

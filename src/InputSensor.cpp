@@ -6,7 +6,7 @@ namespace hub {
 
 Acquisition InputSensor::getAcquisition() const {
 
-    Acquisition acq = m_interface.getAcquisition(m_spec.m_acquisitionSize);
+    Acquisition acq = m_interface.getAcquisition(static_cast<int>(m_spec.m_acquisitionSize));
 
     assert(acq.getSize() == m_spec.m_acquisitionSize);
     const auto & resolutions = m_spec.m_resolutions;

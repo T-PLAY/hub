@@ -30,7 +30,8 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 if (WIN32)
     #    set(WIN32_REQUIRED_LIBS wsock32 ws2_32)
 
-    set(WIN32_REQUIRED_LIBS glm::glm)
+#    set(WIN32_REQUIRED_LIBS glm::glm)
+    set(WIN32_REQUIRED_LIBS glm)
 
 elseif(UNIX)
     set(UNIX_REQUIRED_LIBS glm)

@@ -27,17 +27,21 @@ namespace hub {
 //#undef SRC_API
 //#define SRC_EXPORTS
 
-#ifdef WIN32
-#    ifdef SRC_EXPORTS
-#        define SRC_API __declspec( dllexport )
-#    else
-#        define SRC_API __declspec( dllimport )
-#    endif
+//#ifdef WIN32
+//#    ifdef SRC_EXPORTS
+//#        define SRC_API __declspec( dllexport )
+//#    else
+//#        define SRC_API __declspec( dllimport )
+//#    endif
 
-#else
+//#else
 #    define SRC_API
-#endif
+//#endif
 
-#define NOMINMAX
+//#ifndef NOMINMAX
+//#define NOMINMAX
+//#endif
+
+//#include <windows.h>
 
 } // namespace hub

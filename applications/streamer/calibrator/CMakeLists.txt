@@ -76,7 +76,8 @@ foreach (QT_LIB ${REQUIRED_LIBS})
         COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:Qt${QT_VERSION}::${QT_LIB}> $<TARGET_FILE_DIR:${PROJECT_NAME}>
     )
 endforeach (QT_LIB)
-set(WIN32_REQUIRED_LIBS glm::glm)
+#set(WIN32_REQUIRED_LIBS glm::glm)
+set(WIN32_REQUIRED_LIBS glm)
 
 elseif(UNIX)
     #    set(THREADS_PREFER_PTHREAD_FLAG ON)

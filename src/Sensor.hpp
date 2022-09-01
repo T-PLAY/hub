@@ -4,6 +4,10 @@
 #include "SensorSpec.hpp"
 //#include <memory>
 
+//#ifdef interface
+//#undef interface
+//#endif
+
 namespace hub {
 
 ///
@@ -21,14 +25,14 @@ class SRC_API Sensor
     };
 
   protected:
-    Sensor( const SensorSpec&& sensorSpec, io::Interface& interface );
+    Sensor( const SensorSpec&& sensorSpec, io::Interface& interface_ );
     ~Sensor();
 
     Sensor( const Sensor& sensor ) = delete;
     Sensor& operator=( const Sensor& sensor ) = delete;
 
   public:
-    const SensorSpec m_spec;
+    SensorSpec m_spec;
 
   protected:
     //    std::unique_ptr<io::Interface> m_interface;

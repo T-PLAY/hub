@@ -68,7 +68,7 @@ void ClientSocket::connectToServer() {
     serv_addr.sin_family = AF_INET;
     // serv_addr.sin_addr.s_addr = inet_addr(m_ipv4.c_str()); // winsock 1.0
     inet_pton( AF_INET, m_ipv4.c_str(), &serv_addr.sin_addr.s_addr ); // winsock 2.0
-    // InetPton( AF_INET, (PCWSTR)m_ipv4.c_str(), &serv_addr.sin_addr.s_addr ); // winsock 2.0
+//     InetPton( AF_INET, (PCWSTR)m_ipv4.c_str(), &serv_addr.sin_addr.s_addr ); // winsock 2.0
     serv_addr.sin_port = htons( m_port ); // Server port
 
     // Connect to server

@@ -54,7 +54,30 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 
 file(GLOB_RECURSE sources *.cpp *.glsl)
-file(GLOB_RECURSE headers *.h *.inl)
+file(GLOB_RECURSE headers *.h *.hpp *.inl)
+#set(sources
+#        ScanMaterial/ScanMaterial.cpp
+#        Dof6Component.cpp
+#        GuiManager.cpp
+#        MinimalComponent.cpp
+#        ScanComponent.cpp
+#        SceneComponent.cpp
+#        SceneManager.cpp
+#        Sensor.cpp
+#        SensorComponent.cpp
+#)
+
+#set(headers
+#        ScanMaterial/ScanMaterial.hpp
+#        Dof6Component.hpp
+#        GuiManager.h
+#        MinimalComponent.hpp
+#        ScanComponent.hpp
+#        SceneComponent.hpp
+#        SceneManager.h
+#        Sensor.h
+#        SensorComponent.h
+#)
 
 #set(app_uis)
 #qt_wrap_ui(app_uis_moc ${app_uis})

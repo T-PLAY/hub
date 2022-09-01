@@ -26,6 +26,29 @@ OutputStream::OutputStream( const std::string& streamName, net::ClientSocket&& c
     assert( mess == net::ClientSocket::Message::NOT_FOUND );
 }
 
+#ifdef WIN32
+void OutputStream::write(const unsigned char *data, size_t len) const
+{
+//    Interface::write(data, len);
+//    OutputInterface::write(data, len);
+    net::ClientSocket::write(data, len);
+}
+
+void OutputStream::read(unsigned char *data, size_t len) const
+{
+//    Interface::read(data, len);
+    net::ClientSocket::read(data, len);
+}
+
+void OutputStream::close()
+{
+//    Interface::close();
+    net::ClientSocket::close();
+}
+#endif
+
+///////////////////////////////////////////////////////////////
+
 InputStream::InputStream( const std::string& streamName,
                           const std::string& syncStreamName,
                           net::ClientSocket&& clientSocket ) :
@@ -57,6 +80,23 @@ InputStream::InputStream( const std::string& streamName,
 
     std::cout << "\t[InputStream] InputStream(string, string, ClientSocket&&) end" << std::endl;
 }
+
+#ifdef WIN32
+void InputStream::write(const unsigned char *data, size_t len) const
+{
+    net::ClientSocket::write(data, len);
+}
+
+void InputStream::read(unsigned char *data, size_t len) const
+{
+    net::ClientSocket::read(data, len);
+}
+
+void InputStream::close()
+{
+    net::ClientSocket::close();
+}
+#endif
 
 Acquisition InputStream::getAcquisition( int acquisitionSize ) const {
 //    std::cout << "[InputStream **************************************" << std::endl;

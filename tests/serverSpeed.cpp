@@ -20,13 +20,16 @@ TEST_CASE( "Server test : speed test" ) {
     constexpr int width    = 1920;
     constexpr int height   = 1080;
     constexpr size_t dataSize = width * height * 3;
+    unsigned char * data = new unsigned char[dataSize];
+
     for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
-        unsigned char data[dataSize];
+//        unsigned char data[dataSize];
         for ( int i = 0; i < dataSize; ++i ) {
             data[i] = iAcq;
         }
         acqs.emplace_back( iAcq, iAcq ) << hub::Measure(data, dataSize);
     }
+    delete [] data;
 
     std::cout << "[Test] ############################### server start" << std::endl;
     Server server( port );
@@ -41,6 +44,8 @@ TEST_CASE( "Server test : speed test" ) {
         hub::OutputSensor outputSensor(
             { "sensorName", {{{width, height}, hub::SensorSpec::Format::BGR8} } },
             hub::io::OutputStream( "stream", hub::net::ClientSocket( ipv4, port ) ) );
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
         std::cout << "[Test] ############################### inputStream start" << std::endl;
         hub::InputSensor inputSensor(

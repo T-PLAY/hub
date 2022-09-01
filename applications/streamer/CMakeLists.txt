@@ -31,4 +31,6 @@ if (HUB_USE_DCMTK)
     add_subdirectory(dicomStreamer)
 endif()
 
-add_subdirectory(calibrator)
+if (QT_VERSION)
+	add_subdirectory(calibrator)
+endif()

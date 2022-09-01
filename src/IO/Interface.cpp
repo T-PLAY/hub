@@ -86,7 +86,11 @@ std::string Interface::anyValue2string( const std::any& any ) {
                 const int k = i * n + j;
                 // sprintf(buff, "%.1f", val->at(k));
                 //                sprintf_s( buff, "%.1f", val->at( k ) );
+#ifdef WIN32
+                sprintf_s(buff, "%.1f", val->at( k ) );
+#else
                 sprintf( buff, "%.1f", val->at( k ) );
+#endif
                 str += buff;
                 //            str += std::to_string(val->at(i));
                 if ( j != 2 ) str += " ";
@@ -107,7 +111,11 @@ std::string Interface::anyValue2string( const std::any& any ) {
         for ( int i = 0; i < 4; ++i ) {
             for ( int j = 0; j < 4; ++j ) {
                 char buff[32];
+#ifdef WIN32
+                sprintf_s(buff, "%.0f ", val[4 * j + i] );
+#else
                 sprintf( buff, "%.0f ", val[4 * j + i] );
+#endif
                 str += buff;
             }
                 if ( i != 3 ) str += " ";
@@ -116,8 +124,8 @@ std::string Interface::anyValue2string( const std::any& any ) {
     } break;
 
     default:
-        auto name     = any.type().name();
-        auto raw_name = any.type().name();
+//        auto name     = any.type().name();
+//        auto raw_name = any.type().name();
         assert( false );
     }
 
@@ -132,7 +140,7 @@ std::string Interface::anyValue2string( const std::any& any ) {
     //        }
     //        return str;
     //    }
-    //    return "";
+        return "";
 }
 
 const std::string& Interface::anyType2string( const std::any& any ) {
@@ -290,8 +298,8 @@ void Interface::write( const std::any& any ) const {
     //        write( *val );
     //    }
     else {
-        auto name     = any.type().name();
-        auto raw_name = any.type().name();
+//        auto name     = any.type().name();
+//        auto raw_name = any.type().name();
         assert( false );
     }
 }
@@ -460,8 +468,8 @@ void Interface::read( std::any& any ) const {
         //    } break;
 
     default:
-        auto name     = any.type().name();
-        auto raw_name = any.type().name();
+//        auto name     = any.type().name();
+//        auto raw_name = any.type().name();
         assert( false );
     }
     assert( any.has_value() );

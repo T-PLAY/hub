@@ -10,6 +10,9 @@
 #include <Engine/Data/Material.hpp>
 #include <Engine/Data/Texture.hpp>
 
+#undef RA_ENGINE_API
+#define RA_ENGINE_API
+
 namespace Ra {
 namespace Core {
 namespace Asset {

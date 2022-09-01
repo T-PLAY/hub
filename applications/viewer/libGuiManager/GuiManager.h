@@ -1,7 +1,27 @@
-#ifndef GUIMANAGER_H
-#define GUIMANAGER_H
 
 #pragma once
+
+#include <Net/Utils.hpp>
+//#define NOMINMAX
+
+//#ifndef _WINDOWS_
+//#define WIN32_LEAN_AND_MEAN
+//#include <windows.h>
+//#undef WIN32_LEAN_AND_MEAN
+//#endif
+
+//#include <winsock2.h>
+
+//#pragma comment(lib, "ws2_32.lib")
+
+
+//#define WIN32_LEAN_AND_MEAN
+//#include <WinSock2.h>
+//#include <WS2tcpip.h>
+//#include <Windows.h>
+//#endif
+
+#include <SceneManager.h>
 
 //#include <QObject>
 #include <QApplication>
@@ -19,7 +39,6 @@
 #include <FormImageManipulator.h>
 #include <QStackedWidget>
 
-#include <SceneManager.h>
 
 class GuiManager : public QObject {
     Q_OBJECT
@@ -132,4 +151,3 @@ private:
     bool m_initialized = false;
 };
 
-#endif // GUIMANAGER_H

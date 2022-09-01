@@ -10,6 +10,34 @@ add_definitions(-DSRC_EXPORTS)
 
 file(GLOB_RECURSE sources *.cpp *.c)
 file(GLOB_RECURSE headers *.hpp *.h)
+#set(sources
+#        Acquisition.cpp
+#        InputSensor.cpp
+#        Native.cpp
+#        OutputSensor.cpp
+#        Sensor.cpp
+#        SensorSpec.cpp
+#        Viewer.cpp
+#        IO/interface.cpp
+#        Net/ClientSocket.cpp
+#        Net/Socket.cpp
+#        IO/Stream.cpp
+#)
+#set(headers
+#        Acquisition.hpp
+#        InputSensor.hpp
+#        Macros.hpp
+#        Native.hpp
+#        OutputSensor.hpp
+#        Sensor.hpp
+#        SensorSpec.hpp
+#        Viewer.hpp
+#        IO/interface.hpp
+#        Net/ClientSocket.hpp
+#        Net/Socket.hpp
+#        Net/Utils.hpp
+#        IO/Stream.hpp
+#)
 
 if (HUB_BUILD_STATIC_LIBRARY)
     add_library(${PROJECT_NAME} STATIC

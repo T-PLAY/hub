@@ -4,9 +4,9 @@
 #include <cassert>
 #include <exception>
 
-#ifdef WIN32
-#    include <WS2tcpip.h>
-#endif
+//#ifdef WIN32
+//#    include <WS2tcpip.h>
+//#endif
 
 namespace hub {
 namespace net {

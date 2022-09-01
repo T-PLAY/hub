@@ -24,8 +24,8 @@ class SceneManager : public QObject
 
     void init();
 
-    template <class Interface>
-    void addSensor( Interface&& interface );
+    template <class InterfaceT>
+    void addSensor( InterfaceT&& interfaceT );
 
     void delSensor( const std::string& sensorName );
 
@@ -73,12 +73,12 @@ class SceneManager : public QObject
     bool m_initialized = false;
 };
 
-template <class Interface>
-void SceneManager::addSensor( Interface&& interface ) {
-    //    m_sensors.push_back(std::make_unique<hub::InputSensor>(std::move(interface)));
+template <class InterfaceT>
+void SceneManager::addSensor( InterfaceT&& interfaceT ) {
+    //    m_sensors.push_back(std::make_unique<hub::InputSensor>(std::move(interfaceT)));
     //    QList<QStandardItem*> items;
 
-    auto&& inputSensor     = std::make_unique<hub::InputSensor>( std::move( interface ) );
+    auto&& inputSensor     = std::make_unique<hub::InputSensor>( std::move( interfaceT ) );
     const auto& sensorName = inputSensor->m_spec.m_sensorName;
     const auto& metaData   = inputSensor->m_spec.m_metaData;
 
@@ -120,7 +120,7 @@ void SceneManager::addSensor( Interface&& interface ) {
                             m_sys,
                             parentSensor,
                             this );
-    //    m_sensors.emplace_back(std::make_unique<hub::InputSensor>(std::move(interface)),
+    //    m_sensors.emplace_back(std::make_unique<hub::InputSensor>(std::move(interfaceT)),
     //    *m_mdiArea, m_engine, m_viewer, m_sys, this);
 
     //    items.append(new QStandardItem(inputSensor.getSensorName().c_str()));
@@ -136,7 +136,7 @@ void SceneManager::addSensor( Interface&& interface ) {
     //    m_sensorModel.setItem(0, 0, new QStandardItem("root"));
     //    const auto & inputSensor = *m_sensors.back().m_inputSensor;
     //    m_sensorName2sensor[sensorName] =
-    //    Sensor(std::make_unique<hub::InputSensor>(std::move(interface)), *m_mdiArea, this);
+    //    Sensor(std::make_unique<hub::InputSensor>(std::move(interfaceT)), *m_mdiArea, this);
 
     // prevent all father's sons, the father is comming
     for ( auto& sensor : m_sensors ) {

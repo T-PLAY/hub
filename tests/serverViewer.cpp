@@ -40,7 +40,7 @@ TEST_CASE( "Server test : viewer" ) {
 
     {
 
-        auto onNewStreamer = [ipv4, port]( const std::string& sensorName,
+        auto onNewStreamer = [=]( const std::string& sensorName,
                                            const hub::SensorSpec& sensorSpec ) {
             std::cout << "[Test] ############################### onNewStreamer" << std::endl;
             {
