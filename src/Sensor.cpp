@@ -2,8 +2,8 @@
 
 namespace hub {
 
-Sensor::Sensor( const SensorSpec&& sensorSpec, io::Interface& interface ) :
-    m_spec( std::move( sensorSpec ) ), m_interface( interface ) {}
+Sensor::Sensor( const SensorSpec&& sensorSpec, io::Interface& interface_ ) :
+    m_spec( std::move( sensorSpec ) ), m_interface( interface_ ) {}
 
 Sensor::~Sensor() {
     //#ifdef DEBUG_MSG

@@ -5,6 +5,9 @@ if (HUB_ENABLE_APPLICATIONS)
 
     find_package(QT NAMES Qt6 Qt5)
     set(QT_VERSION ${QT_VERSION_MAJOR})
+    if (NOT QT_VERSION)
+        set(Qt5_DIR CACHE PATH)
+    endif()
 
     cmake_host_system_information(RESULT hostname QUERY HOSTNAME)
     if (${hostname} STREQUAL "brueghel") # work linux
@@ -13,7 +16,8 @@ if (HUB_ENABLE_APPLICATIONS)
         set(MRI_PATH "/export/home/brueghel/gbouyjou/Downloads/MRI/")
 
     elseif (${hostname} STREQUAL "Brueghel") # work window
-        set(MRI_PATH "C:/Users/gbouyjou/Downloads/MRI/")
+        add_definitions(-DUSE_GOT_PR)
+        set(MRI_PATH "E:/Downloads/MRI/")
 
     elseif (${hostname} STREQUAL "gigabyte")
         add_definitions(-DUSE_GOT_PR)

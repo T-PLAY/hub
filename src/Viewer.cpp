@@ -150,7 +150,7 @@ Viewer::Viewer( const std::string& ipv4,
             } // while (! m_stopThread)
         }
         catch ( std::exception& e ) {
-            std::cout << "[Viewer] catch exception" << std::endl;
+            std::cout << "[Viewer] catch exception " << e.what() << std::endl;
         }
         m_onServerDisconnected();
 

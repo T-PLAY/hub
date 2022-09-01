@@ -23,7 +23,37 @@ class StreamerInterface : public hub::io::OutputInterface, public hub::net::Clie
 
   protected:
     void write( const hub::Acquisition& acq ) const override;
+
+#ifdef WIN32 // msvc warning C4250
+  protected:
+    void write( const unsigned char* data, size_t len ) const override;
+    void read( unsigned char* data, size_t len ) const override;
+    void close() override;
+#endif
 };
+
+void StreamerInterface::write( const hub::Acquisition& acq ) const {
+    //    std::cout << "[StreamerInterface ----------------------------------" << std::endl;
+    hub::io::Interface::write( hub::net::ClientSocket::Message::NEW_ACQ );
+    hub::io::Interface::write( acq );
+}
+
+#ifdef WIN32 // msvc warning C4250
+void StreamerInterface::write(const unsigned char *data, size_t len) const
+{
+    hub::net::ClientSocket::write(data, len);
+}
+
+void StreamerInterface::read(unsigned char *data, size_t len) const
+{
+    hub::net::ClientSocket::read(data, len);
+}
+
+void StreamerInterface::close()
+{
+    hub::net::ClientSocket::close();
+}
+#endif
 
 ///////////////////////// STREAM_VIEWER ///////////////////////////////
 
@@ -32,7 +62,32 @@ class StreamViewerInterface : public hub::io::InputInterface, public hub::net::C
   public:
     StreamViewerInterface( hub::net::ClientSocket&& clientSocket ) :
         hub::net::ClientSocket( std::move( clientSocket ) ) {}
+
+#ifdef WIN32 // msvc warning C4250
+  protected:
+    void write( const unsigned char* data, size_t len ) const override;
+    void read( unsigned char* data, size_t len ) const override;
+    void close() override;
+#endif
 };
+
+#ifdef WIN32 // msvc warning C4250
+void StreamViewerInterface::write(const unsigned char *data, size_t len) const
+{
+    hub::net::ClientSocket::write(data, len);
+}
+
+void StreamViewerInterface::read(unsigned char *data, size_t len) const
+{
+    hub::net::ClientSocket::read(data, len);
+}
+
+void StreamViewerInterface::close()
+{
+    hub::net::ClientSocket::close();
+}
+#endif
+
 
 std::string Server::getStatus() {
     std::string streamViewersStr = "[";
@@ -48,7 +103,7 @@ std::string Server::getStatus() {
 
         std::string str = streamerName.substr( 0, 3 );
         if ( !streamViewers.empty() || !syncViewers.empty() ) {
-            int nbViewers = 0;
+            size_t nbViewers = 0;
             for ( const auto& pair : syncViewers ) {
                 //                const auto & name = pair.first;
                 const auto& viewers = pair.second;
@@ -813,11 +868,6 @@ const std::string& StreamViewer::getStreamName() const {
     return m_streamName;
 }
 
-void StreamerInterface::write( const hub::Acquisition& acq ) const {
-    //    std::cout << "[StreamerInterface ----------------------------------" << std::endl;
-    hub::io::Interface::write( hub::net::ClientSocket::Message::NEW_ACQ );
-    hub::io::Interface::write( acq );
-}
 
 ///////////////////////////////////////////////////////////////////////////
 //        std::thread thread( [this, iThread, sock = std::move( sock )]() mutable {

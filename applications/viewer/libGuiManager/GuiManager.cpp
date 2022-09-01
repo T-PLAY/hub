@@ -1,5 +1,7 @@
 #include "GuiManager.h"
 
+#include <IO/Stream.hpp>
+
 #include <Engine/Scene/EntityManager.hpp>
 #include <Gui/Viewer/RotateAroundCameraManipulator.hpp>
 
@@ -37,7 +39,6 @@
 #include <QPushButton>
 #include <QTableView>
 
-#include <IO/Stream.hpp>
 
 GuiManager::GuiManager( QObject* parent ) : QObject { parent } {}
 
