@@ -29,10 +29,10 @@ static const std::string s_anyType2string[static_cast<int>( AnyType::COUNT )] = 
     "int",
     "double",
     "string",
-    "cchar_ptr",
+    "cst_char_ptr",
     "vector_float",
     "uint",
-    "cfloat_ptr",
+    "cst_float_ptr",
 };
 static const std::map<size_t, AnyType> s_hash2anyType = {
     { typeid( int ).hash_code(), AnyType::INT },
@@ -43,10 +43,10 @@ static const std::map<size_t, AnyType> s_hash2anyType = {
     { typeid( unsigned int ).hash_code(), AnyType::UINT },
     { typeid( const float* ).hash_code(), AnyType::CONST_FLOAT_PTR },
 };
-//    friend std::ostream& operator<<( std::ostream& os, const AnyType& type ) {
-//        os << s_anyType2string[(int)type];
-//        return os;
-//    }
+std::ostream& operator<<( std::ostream& os, const AnyType& type ) {
+    os << s_anyType2string[(int)type];
+    return os;
+}
 
 std::string Interface::anyValue2string( const std::any& any ) {
     assert( any.has_value() );
@@ -155,7 +155,7 @@ const std::string& Interface::anyType2string( const std::any& any ) {
 
 void Interface::write( const std::string& str ) const {
 #ifdef DEBUG_IOSTREAM
-    std::cout << "[Interface] write std::string : start" << std::endl;
+    std::cout << "[Interface] write(std::string) : '" << str << "' start" << std::endl;
 #endif
 
     int strLen = static_cast<int>( str.size() );
@@ -169,7 +169,7 @@ void Interface::write( const std::string& str ) const {
 
 void Interface::write( const SensorSpec& sensorSpec ) const {
 #ifdef DEBUG_IOSTREAM
-    std::cout << "[Interface] write SensorSpec : start" << std::endl;
+    std::cout << "[Interface] write(SensorSpec) : start" << std::endl;
 #endif
 
     write( sensorSpec.m_sensorName );
@@ -180,11 +180,19 @@ void Interface::write( const SensorSpec& sensorSpec ) const {
 }
 
 void Interface::write( const Measure& measure ) const {
+#ifdef DEBUG_IOSTREAM
+    std::cout << "[Interface] write(Measure) : start" << std::endl;
+#endif
+
     write( measure.m_size );
     write( measure.m_data, measure.m_size );
 }
 
 void Interface::write( const Acquisition& acq ) const {
+#ifdef DEBUG_IOSTREAM
+    std::cout << "[Interface] write(Acquisition) : start" << std::endl;
+#endif
+
     write( acq.m_start );
     write( acq.m_end );
     write( acq.getMeasures() );
@@ -192,7 +200,7 @@ void Interface::write( const Acquisition& acq ) const {
 
 void Interface::write( const char* str ) const {
 #ifdef DEBUG_IOSTREAM
-    std::cout << "[Interface] write const char* : start" << std::endl;
+    std::cout << "[Interface] write(const char*) : start" << std::endl;
 #endif
 
     int strLen = static_cast<int>( strlen( str ) );
@@ -239,7 +247,7 @@ void Interface::write( const char* str ) const {
 
 void Interface::write( const std::any& any ) const {
 #ifdef DEBUG_IOSTREAM
-    std::cout << "[Interface] write std::any : start" << std::endl;
+    std::cout << "[Interface] write(std::any) : start" << std::endl;
 #    ifdef WIN32
     std::cout << "any raw name = '" << any.type().raw_name() << "'" << std::endl;
 #    else
@@ -310,9 +318,6 @@ void Interface::write( const std::any& any ) const {
 //}
 
 void Interface::read( std::string& str ) const {
-#ifdef DEBUG_IOSTREAM
-    std::cout << "[Interface] read std::string : start" << std::endl;
-#endif
 
     int strLen = 0;
     read( strLen );
@@ -326,9 +331,16 @@ void Interface::read( std::string& str ) const {
         str         = std::string( (char*)tmp );
         delete[] tmp;
     }
+#ifdef DEBUG_IOSTREAM
+    std::cout << "[Interface] read(std::string) : '" << str << "'" << std::endl;
+#endif
 }
 
 void Interface::read( SensorSpec& sensorSpec ) const {
+#ifdef DEBUG_IOSTREAM
+    std::cout << "[Interface] read(SensorSpec) : start" << std::endl;
+#endif
+
     read( sensorSpec.m_sensorName );
     read( sensorSpec.m_resolutions );
     read( sensorSpec.m_metaData );
@@ -337,6 +349,10 @@ void Interface::read( SensorSpec& sensorSpec ) const {
 }
 
 Measure Interface::getMeasure() const {
+#ifdef DEBUG_IOSTREAM
+    std::cout << "[Interface] getMeasure() : start" << std::endl;
+#endif
+
     size_t size;
     read( size );
     unsigned char* data = new unsigned char[size];
@@ -354,12 +370,20 @@ Measure Interface::getMeasure() const {
 // }
 
 SensorSpec Interface::getSensorSpec() const {
+#ifdef DEBUG_IOSTREAM
+    std::cout << "[Interface] getSensorSpec() : start" << std::endl;
+#endif
+
     SensorSpec sensorSpec;
     read( sensorSpec );
     return sensorSpec;
 }
 
 Acquisition Interface::getAcquisition( int acquisitionSize ) const {
+#ifdef DEBUG_IOSTREAM
+    std::cout << "[Interface] getAcquisition() : start" << std::endl;
+#endif
+
     long long start, end;
 
     read( start );
@@ -397,7 +421,7 @@ void Interface::read( char* str ) const {
 
 void Interface::read( std::any& any ) const {
 #ifdef DEBUG_IOSTREAM
-    std::cout << "[Interface] read std::any : start" << std::endl;
+    std::cout << "[Interface] read(std::any) : start" << std::endl;
 #endif
 
     AnyType type;

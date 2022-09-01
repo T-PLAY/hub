@@ -31,7 +31,6 @@ ClientSocket ServerSocket::waitNewClient() {
 }
 
 void ServerSocket::initServer() {
-    DEBUG_MSG( getHeader( m_fdSock ) << "server started " );
 
     // Socket creation
     m_fdSock = socket( PF_INET, SOCK_STREAM, IPPROTO_TCP );
@@ -39,6 +38,7 @@ void ServerSocket::initServer() {
         perror( "socket creation failed.\n" );
         return;
     }
+    DEBUG_MSG( getHeader( m_fdSock ) << "server started " );
 //    net::sSockets.push_back( mFdSock );
     net::registerSocket(m_fdSock);
 

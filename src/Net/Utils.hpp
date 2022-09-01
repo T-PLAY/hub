@@ -130,8 +130,8 @@ namespace net {
 
 #ifdef WIN32
         if (s_sockets.empty()) {
-            std::cout << "Net::clearSocket(" << sock << ") WSACleanup()" << std::endl;
-            WSACleanup();
+//            std::cout << "Net::clearSocket(" << sock << ") WSACleanup()" << std::endl;
+//            WSACleanup();
             s_inited = false;
             // TODO: find a way to cleanup WSA when program ended
         }
@@ -169,7 +169,7 @@ namespace net {
 
     static void init()
     {
-        std::cout << getHeader() << "net::init()" << std::endl;
+//        std::cout << getHeader() << "net::init()" << std::endl;
         if (!s_inited) {
 #ifdef DEBUG_NET
             std::cout << getHeader() << "init()" << std::endl;

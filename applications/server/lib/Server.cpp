@@ -79,6 +79,7 @@ void StreamViewerInterface::write(const unsigned char *data, size_t len) const
 
 void StreamViewerInterface::read(unsigned char *data, size_t len) const
 {
+//    std::cout << "[StreamViewerInterface] read(data, len=" << len << ")" << std::endl;
     hub::net::ClientSocket::read(data, len);
 }
 

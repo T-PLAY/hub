@@ -18,6 +18,9 @@
 namespace hub {
 namespace io {
 
+//    enum class AnyType;
+//    std::ostream& operator<<( std::ostream& os, const AnyType& type );
+
 ///
 /// \brief The Interface class
 /// allows the inherited classes to serialize the data.
@@ -106,14 +109,14 @@ void Interface::write( const T& t ) const {
     write( reinterpret_cast<const unsigned char*>( &t ), sizeof( T ) );
 
 #ifdef DEBUG_IOSTREAM
-    std::cout << "[Interface] write " << typeid( T ).name() << " '" << t << "' : end" << std::endl;
+    std::cout << "[Interface] write(T) : " << typeid( T ).name() << " '" << t << "' : end" << std::endl;
 #endif
 }
 
 template <class T>
 void Interface::write( const std::list<T>& list ) const {
 #ifdef DEBUG_IOSTREAM
-    std::cout << "[Interface] write std::list : start" << std::endl;
+    std::cout << "[Interface] write(std::list) : start" << std::endl;
 #endif
 
     int nbEl = list.size();
@@ -127,7 +130,7 @@ void Interface::write( const std::list<T>& list ) const {
 template <class T>
 void Interface::write( const std::vector<T>& vector ) const {
 #ifdef DEBUG_IOSTREAM
-    std::cout << "[Interface] write std::vector : start" << std::endl;
+    std::cout << "[Interface] write(std::vector) : start" << std::endl;
 #endif
 
     int nbEl = static_cast<int>( vector.size() );
@@ -141,7 +144,7 @@ void Interface::write( const std::vector<T>& vector ) const {
 template <class T, class U>
 void Interface::write( const std::map<T, U>& map ) const {
 #ifdef DEBUG_IOSTREAM
-    std::cout << "[Interface] write std::map : start" << std::endl;
+    std::cout << "[Interface] write(std::map) : start" << std::endl;
 #endif
 
     int nbKey = static_cast<int>( map.size() );
@@ -165,6 +168,9 @@ void Interface::write( const std::map<T, U>& map ) const {
 
 template <class T, class U>
 void Interface::write( const std::pair<T, U>& pair ) const {
+#ifdef DEBUG_IOSTREAM
+    std::cout << "[Interface] write(std::pair) : start" << std::endl;
+#endif
     const T& first  = pair.first;
     const U& second = pair.second;
     write( first );
@@ -179,14 +185,14 @@ void Interface::read( T& t ) const {
     read( reinterpret_cast<unsigned char*>( &t ), sizeof( T ) );
 
 #ifdef DEBUG_IOSTREAM
-    std::cout << "[Interface] read " << typeid( T ).name() << " '" << t << "' : end" << std::endl;
+    std::cout << "[Interface] read(T) : " << typeid( T ).name() << " '" << t << "' : end" << std::endl;
 #endif
 }
 
 template <class T>
 void Interface::read( std::list<T>& list ) const {
 #ifdef DEBUG_IOSTREAM
-    std::cout << "[Interface] read std::list : start" << std::endl;
+    std::cout << "[Interface] read(std::list) : start" << std::endl;
 #endif
 
     int nbEl;
@@ -202,7 +208,7 @@ void Interface::read( std::list<T>& list ) const {
 template <class T>
 void Interface::read( std::vector<T>& vector ) const {
 #ifdef DEBUG_IOSTREAM
-    std::cout << "[Interface] read std::vector : start" << std::endl;
+    std::cout << "[Interface] read(std::vector) : start" << std::endl;
 #endif
 
     int nbEl;
@@ -219,7 +225,7 @@ void Interface::read( std::vector<T>& vector ) const {
 template <class T, class U>
 void Interface::read( std::map<T, U>& map ) const {
 #ifdef DEBUG_IOSTREAM
-    std::cout << "[Interface] read std::map : start" << std::endl;
+    std::cout << "[Interface] read(std::map) : start" << std::endl;
 #endif
 
     int nbEl;
@@ -248,6 +254,9 @@ void Interface::read( std::map<T, U>& map ) const {
 
 template <class T, class U>
 void Interface::read( std::pair<T, U>& pair ) const {
+#ifdef DEBUG_IOSTREAM
+    std::cout << "[Interface] read(std::pair) : start" << std::endl;
+#endif
     T first;
     read( first );
     U second;

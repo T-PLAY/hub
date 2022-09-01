@@ -111,6 +111,7 @@ void Ram::close() {
 }
 
 void Ram::write( const unsigned char* data, size_t len ) const {
+//    std::cout << "[Ram] write(data, len)" << std::endl;
     m_buff.write( data, len );
 }
 
