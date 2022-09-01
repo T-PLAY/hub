@@ -29,6 +29,7 @@ OutputStream::OutputStream( const std::string& streamName, net::ClientSocket&& c
 #ifdef WIN32
 void OutputStream::write(const unsigned char *data, size_t len) const
 {
+//    std::cout << "[OutputStream] write(uchar*, len)" << std::endl;
 //    Interface::write(data, len);
 //    OutputInterface::write(data, len);
     net::ClientSocket::write(data, len);

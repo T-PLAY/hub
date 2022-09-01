@@ -102,12 +102,12 @@ int main( int argc, char* argv[] ) {
     hub::OutputSensor outputSensor( std::move( sensorSpec ),
                                     hub::io::OutputStream( "dicomStream" ) );
 
-    for ( int iImage = 0; iImage < nSlices; ++iImage ) {
-        hub::Dof6 dof6( 0.0, iImage * sliceThickness, 0.0 );
-        hub::Measure image( &texturesData[textureSize * iImage], textureSize );
-        outputSensor << ( hub::Acquisition { iImage, iImage } << std::move( dof6 )
-                                                              << std::move( image ) );
-    }
+//    for ( int iImage = 0; iImage < nSlices; ++iImage ) {
+//        hub::Dof6 dof6( 0.0, iImage * sliceThickness, 0.0 );
+//        hub::Measure image( &texturesData[textureSize * iImage], textureSize );
+//        outputSensor << ( hub::Acquisition { iImage, iImage } << std::move( dof6 )
+//                                                              << std::move( image ) );
+//    }
 
     while ( true ) {
         std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );

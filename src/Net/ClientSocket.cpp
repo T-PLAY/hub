@@ -59,7 +59,7 @@ void ClientSocket::connectToServer() {
         perror( "[socket] socket creation failed.\n" );
         return;
     }
-    //    net::sSockets.push_back( mFdSock );
+    //    net::sSockets.push_back( m_fdSock );
     net::registerSocket( m_fdSock );
 
     // Server address construction
@@ -88,7 +88,7 @@ void ClientSocket::connectToServer() {
 
 ClientSocket::ClientSocket() : m_ipv4( s_defaultServiceIp ), m_port( s_defaultServicePort ) {
 #ifdef DEBUG_SOCKET
-    DEBUG_MSG( getHeader( mFdSock ) << "ClientSocket()" );
+    DEBUG_MSG( getHeader( m_fdSock ) << "ClientSocket()" );
 #endif
 
     connectToServer();
@@ -96,7 +96,7 @@ ClientSocket::ClientSocket() : m_ipv4( s_defaultServiceIp ), m_port( s_defaultSe
 
 ClientSocket::ClientSocket( const std::string& ipv4, int port ) : m_ipv4( ipv4 ), m_port( port ) {
 #ifdef DEBUG_SOCKET
-    DEBUG_MSG( getHeader( mFdSock ) << "ClientSocket(std::string ipv4, int port)" );
+    DEBUG_MSG( getHeader( m_fdSock ) << "ClientSocket(std::string ipv4, int port)" );
 #endif
 
     connectToServer();
@@ -115,17 +115,17 @@ ClientSocket::ClientSocket( socket_fd fdSock ) {
 //     m_port( sock.m_port )
 ////    mIsServer( sock.mIsServer )
 //{
-////    mFdSock      = sock.mFdSock;
-////    sock.mFdSock = INVALID_SOCKET;
+////    m_fdSock      = sock.m_fdSock;
+////    sock.m_fdSock = INVALID_SOCKET;
 
 //#ifdef DEBUG_SOCKET
-//    DEBUG_MSG( getHeader( mFdSock ) << "ClientSocket(ClientSocket && sock)" );
+//    DEBUG_MSG( getHeader( m_fdSock ) << "ClientSocket(ClientSocket && sock)" );
 //#endif
 //}
 
 ClientSocket::~ClientSocket() {
 #ifdef DEBUG_SOCKET
-    DEBUG_MSG( getHeader( mFdSock ) << "~ClientSocket()" );
+    DEBUG_MSG( getHeader( m_fdSock ) << "~ClientSocket()" );
 #endif
     clear();
 }
@@ -135,13 +135,24 @@ ClientSocket::~ClientSocket() {
 // }
 
 void ClientSocket::write( const unsigned char* data, size_t len ) const {
+#ifdef DEBUG_SOCKET
+    // DEBUG_MSG(getHeader(m_fdSock) << "write message ");
+//    std::string str = "[ClientSocket] write(uchar*, len) : " + getHeader(m_fdSock) + " [";
+//    for (size_t i = 0; i < std::min(10, (int)len); ++i) {
+//        std::cout << (int)*(data + i) << " ";
+//        str += std::to_string((int)*(data + i)) + " ";
+//    }
+//    str += "]";
+//    std::cout << str << std::endl;
+//    std::cout << std::endl;
+#endif
     assert( len > 0 );
     size_t uploadSize = 0;
     do {
         if ( !isConnected() ) {
 #ifdef DEBUG_SOCKET
             DEBUG_MSG(
-                getHeader( mFdSock )
+                getHeader( m_fdSock )
                 << "write(const unsigned char* data, size_t len) : isConnected() client lost" );
 #endif
             throw Socket::exception( "Client lost" );
@@ -169,18 +180,11 @@ void ClientSocket::write( const unsigned char* data, size_t len ) const {
         }
         uploadSize += byteSent;
 #ifdef DEBUG_SOCKET
-        DEBUG_MSG( getHeader( mFdSock )
+        DEBUG_MSG( getHeader( m_fdSock )
                    << "byteSent = " << byteSent << " (" << uploadSize << "/" << len << ")" );
 #endif
     } while ( len != uploadSize );
 
-#ifdef DEBUG_SOCKET
-    // DEBUG_MSG(getHeader(mFdSock) << "write message ");
-//    for (size_t i = 0; i < std::min(10, (int)len); ++i) {
-//        std::cout << (int)*(data + i) << " ";
-//    }
-//    std::cout << std::endl;
-#endif
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -200,18 +204,24 @@ void ClientSocket::read( unsigned char* data, size_t len ) const {
 
         downloadSize += byteRead;
 #ifdef DEBUG_SOCKET
-        DEBUG_MSG( getHeader( mFdSock )
+        DEBUG_MSG( getHeader( m_fdSock )
                    << "byteRead = " << byteRead << " (" << downloadSize << "/" << len << ")" );
 #endif
     } while ( len != downloadSize );
 
 #ifdef DEBUG_SOCKET
-//    DEBUG_MSG(getHeader(mFdSock) << "read message ");
+//    DEBUG_MSG(getHeader(m_fdSock) << "read message ");
 //
 //    for (size_t i = 0; i < std::min(10, (int)len); ++i) {
 //        std::cout << (int)*(data + i) << " ";
 //    }
 //    std::cout << std::endl;
+//    std::string str = "[ClientSocket] read(uchar*, len) : " + getHeader(m_fdSock) + " [";
+//    for (size_t i = 0; i < std::min(10, (int)len); ++i) {
+//        str += std::to_string((int)*(data + i)) + " ";
+//    }
+//    str += "]";
+//    std::cout << str << std::endl;
 #endif
 }
 

@@ -127,13 +127,13 @@ std::string SensorSpec::metaData2string( const SensorSpec::MetaData& metaData, b
 std::string SensorSpec::metaData2string( const std::pair<std::string, std::any>& metaData ) {
     const auto& name = metaData.first;
     const auto& val  = metaData.second;
-#ifdef WIN32
-    std::string str = std::string( val.type().name() ) + " " + name + " = '" +
-                      hub::io::Interface::anyValue2string( val ) + "'";
-#else
+//#ifdef WIN32
+//    std::string str = std::string( val.type().name() ) + " " + name + " = '" +
+//                      hub::io::Interface::anyValue2string( val ) + "'";
+//#else
     std::string str = hub::io::Interface::anyType2string( val ) + " " + name + " = '" +
                       hub::io::Interface::anyValue2string( val ) + "'";
-#endif
+//#endif
     return str;
 }
 
