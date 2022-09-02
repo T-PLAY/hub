@@ -10,7 +10,7 @@ namespace net {
 /// \brief The ClientSocket class
 /// is an connected socket to the server
 ///
-class ClientSocket : public Socket, public virtual io::Interface
+class SRC_API ClientSocket : public Socket, public virtual io::Interface
 {
   public:
     enum class Type { NONE, STREAMER, VIEWER, STREAM_VIEWER, COUNT };
@@ -32,17 +32,17 @@ class ClientSocket : public Socket, public virtual io::Interface
     };
     friend std::ostream& operator<<( std::ostream& os, const Message& msg );
 
-    SRC_API ClientSocket();
-    SRC_API ClientSocket( const std::string& ipv4, int port );
-    SRC_API ClientSocket( socket_fd fdSock ); // server side client (bind and listen)
+     ClientSocket();
+     ClientSocket( const std::string& ipv4, int port );
+     ClientSocket( socket_fd fdSock ); // server side client (bind and listen)
 
     ClientSocket( const ClientSocket& sock )    = delete;
-    SRC_API ClientSocket( ClientSocket&& sock ) = default;
+     ClientSocket( ClientSocket&& sock ) = default;
 
     ClientSocket& operator=( const ClientSocket& sock ) = delete;
     ClientSocket&& operator=( ClientSocket&& sock )     = delete;
 
-    SRC_API ~ClientSocket();
+     ~ClientSocket();
 
   public:
     template <class T>
@@ -60,7 +60,7 @@ class ClientSocket : public Socket, public virtual io::Interface
 
 //    Acquisition getAcquisition(int acquistionSize) const override;
 
-    SRC_API void clear();
+     void clear();
 
   private:
     void connectToServer();

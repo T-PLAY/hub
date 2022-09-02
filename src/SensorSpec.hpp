@@ -15,7 +15,7 @@ namespace hub {
 /// allows to define how to visualize the data. Also the dimension of the data as well as the
 /// metadata.
 ///
-class SensorSpec
+class SRC_API SensorSpec
 {
   public:
     using MetaData = std::map<std::string, std::any>; // any -> C++17
@@ -62,7 +62,7 @@ class SensorSpec
     using Resolution  = std::pair<Dims, Format>;
     using Resolutions = std::vector<Resolution>;
 
-    SRC_API SensorSpec( const std::string& sensorName = "",
+    SensorSpec( const std::string& sensorName = "",
                         //                        Format format                 = Format::NONE,
                         //                        const Dims& dims              = {},
                         const Resolutions& resolutions = {},
@@ -75,11 +75,11 @@ class SensorSpec
         m_acquisitionSize( computeAcquisitionSize( resolutions ) ) {};
 
   public:
-    SRC_API static size_t computeAcquisitionSize( const Resolutions& resolutions );
-    SRC_API static size_t computeAcquisitionSize( const Resolution& resolution );
+     static size_t computeAcquisitionSize( const Resolutions& resolutions );
+     static size_t computeAcquisitionSize( const Resolution& resolution );
 
   private:
-    SRC_API static size_t computeAcquisitionSize( Format format, const Dims& dims );
+     static size_t computeAcquisitionSize( Format format, const Dims& dims );
 
   private:
   public:
@@ -92,12 +92,12 @@ class SensorSpec
     size_t m_acquisitionSize;
 
   public:
-    SRC_API static std::string dims2string( const Dims& dims );
-    SRC_API static std::string format2string( const Format& format );
-    SRC_API static std::string resolutions2string( const Resolutions& resolutions );
-    SRC_API static std::string metaData2string( const MetaData& metaData, bool expand = false );
-    SRC_API static std::string metaData2string( const std::pair<std::string, std::any>& metaData );
-    SRC_API friend std::ostream& operator<<( std::ostream& os, const Format& format );
+     static std::string dims2string( const Dims& dims );
+     static std::string format2string( const Format& format );
+     static std::string resolutions2string( const Resolutions& resolutions );
+     static std::string metaData2string( const MetaData& metaData, bool expand = false );
+     static std::string metaData2string( const std::pair<std::string, std::any>& metaData );
+     SRC_API friend std::ostream& operator<<( std::ostream& os, const Format& format );
 };
 
 } // namespace hub

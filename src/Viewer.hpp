@@ -15,7 +15,7 @@ namespace hub {
 /// for example you can open input sensor in your application
 /// when new sensor is connected to server to have an interactive application.
 ///
-class Viewer
+class SRC_API Viewer
 {
   public:
     //    Viewer( hub::net::ClientSocket&& clientSocket,
