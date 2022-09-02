@@ -1,66 +1,114 @@
 #pragma once
 
-//#include <fstream>
-// static std::ofstream s_logFile;
-
-//namespace hub {
-
-#define DEBUG
-
-// if ( !s_logFile.is_open() ){ \
-// 				s_logFile.open( "log.txt", std::ios_base::beg ); \
-// 			} \
-// 			assert( s_logFile.is_open() ); \
-//             s_logFile << str << std::endl; \
-
-#ifdef DEBUG
-#    define DEBUG_MSG( str )               \
-        do {                               \
-            std::cout << str << std::endl; \
-        } while ( false )
+// ----------------------------------------------------------------------------
+// Compiler identification
+// ----------------------------------------------------------------------------
+#if defined(__clang__)
+#define COMPILER_CLANG
+#elif defined(__GNUC__)
+#define COMPILER_GCC
+#elif defined (_MSC_VER)
+#define COMPILER_MSVC
+#define _USE_MATH_DEFINES
 #else
-#    define DEBUG_MSG( str ) \
-        do {                 \
-        } while ( false )
+#error unsupported compiler
 #endif
 
+// ----------------------------------------------------------------------------
+// OS and architecture identification
+// ----------------------------------------------------------------------------
 
-
-//#undef SRC_API
-//#ifdef WIN32
-#if SRC_EXPORTS
-#   define SRC_API __declspec( dllexport )
-#elif defined SRC_STATIC
-#   define SRC_API
+#if defined(_WIN32) || defined(_WIN64) // ------------------------------ Windows
+#define OS_WINDOWS
+#    if defined( _M_X64 ) || defined(__x86_64__)
+#       define ARCH_X64
+#    elif defined(i386) || defined(__i386__) || defined(__i386) || defined(_M_IX86)
+#       define ARCH_X86
+#   elif defined(__arm__) || defined (__arm)
+#       define ARCH_ARM32
+#    elif defined( __aarch64__ ) || defined(_M_ARM64)
+#       define ARCH_ARM64
+#   else
+#       error unsupported arch
+#   endif
+#elif defined(__APPLE__) || defined(__MACH__) // ------------------------ Mac OS
+#   define OS_MACOS
+#elif defined(__linux__) || defined (__CYGWIN__) // ---------------------- Linux
+#   define OS_LINUX
 #else
-#   define SRC_API __declspec( dllimport )
+#error unsupported OS
 #endif
 
-//#undef SRC_API
-//#define SRC_API
+// Check arch for macos and linux
+#if defined (OS_MACOS) || defined(OS_LINUX)
+#   if defined(__i386__)
+#       define ARCH_X86
+#   elif defined(__x86_64__) || defined (__x86_64)
+#       define ARCH_X64
+#   elif defined(__arm__) || defined (__arm)
+#       define ARCH_ARM32
+#   elif defined(__aarch64__) || defined(__aarch64)
+#       define ARCH_ARM64
+#   else
+#       error unsupported arch
+#   endif
+#endif
 
-//#ifdef WIN32
-//
-//#ifndef _WINDOWS_
-//#define WIN32_LEAN_AND_MEAN
-//#define NOMINMAX
-//#include <windows.h>
-//#undef WIN32_LEAN_AND_MEAN
-//#endif
-//
-//#include <WS2tcpip.h>
-//#include <winsock2.h>
-//
-//#pragma comment( lib, "ws2_32.lib" )
-//
-////#ifndef NOMINMAX
-////#define NOMINMAX
-////#endif
-////#include <windows.h>
-//
-//#endif
+// Todo : endianness, pointer sixe
 
-#if WIN32
+// ----------------------------------------------------------------------------
+// Build configuration
+// ----------------------------------------------------------------------------
+
+// This tells apart between debug and release builds :
+// DEBUG is defined in debug builds and RELEASE in release builds.
+// Additionally REL_DEB is defined on release build with debug info
+// Also the macro ON_DEBUG() can be used to execute an expression only on debug.
+// By default, debug has assert macros enabled. In release builds
+// asserts are disabled except if explicitly required by
+// defining CORE_USE_ASSERT
+
+// Make sure all "debug" macros are defined
+#if defined (DEBUG) || defined(_DEBUG) || defined (CORE_DEBUG) // ------- Debug
+#   undef CORE_DEBUG
+#   define CORE_DEBUG
+
+#   undef _DEBUG
+#   define _DEBUG
+
+#   undef DEBUG
+#   define DEBUG
+
+#   undef NDEBUG
+#   undef RELEASE
+
+#   define ON_DEBUG(CODE) CODE
+#else // --------------------------------------------------------------- Release
+
+#   define RELEASE
+
+#ifndef NO_DEBUG_INFO
+#   define REL_DEB
+#endif
+
+#   undef CORE_DEBUG
+#   undef DEBUG
+#   undef _DEBUG
+
+#   if !defined (NDEBUG)
+#       define NDEBUG
+#   endif
+
+#   define ON_DEBUG(CODE) /* Nothing */
+#endif
+
+// ----------------------------------------------------------------------------
+// Explicit compiler warning disables.
+// ----------------------------------------------------------------------------
+
+#if defined(COMPILER_GCC)
+#endif
+#if defined(COMPILER_MSVC)
 //	#pragma warning(disable: 4244) // Conversion from double to float loses data.
     #pragma warning(disable: 4251) // stl dllexports
 //	#pragma warning(disable: 4267) // conversion from size_t to uint
@@ -71,4 +119,38 @@
 //	#pragma warning(disable: 4503) // Truncated decorated name
 #endif
 
-//} // namespace hub
+// ----------------------------------------------------------------------------
+// Debug log message.
+// ----------------------------------------------------------------------------
+
+// if ( !s_logFile.is_open() ){ \
+// 				s_logFile.open( "log.txt", std::ios_base::beg ); \
+// 			} \
+// 			assert( s_logFile.is_open() ); \
+//             s_logFile << str << std::endl; \
+
+#ifdef DEBUG
+#    define DEBUG_MSG( str )               \
+do {                               \
+std::cout << str << std::endl; \
+} while ( false )
+#else
+#    define DEBUG_MSG( str ) \
+do {                 \
+} while ( false )
+#endif
+
+// ----------------------------------------------------------------------------
+// Dll import/export.
+// ----------------------------------------------------------------------------
+
+#ifdef COMPILER_MSVC
+#if SRC_EXPORTS
+#   define SRC_API __declspec( dllexport )
+#elif defined SRC_STATIC
+#   define SRC_API
+#else
+#   define SRC_API __declspec( dllimport )
+#endif
+#endif
+
