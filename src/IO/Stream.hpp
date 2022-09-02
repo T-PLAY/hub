@@ -14,7 +14,7 @@ namespace io {
 /// A viewer connected with the server can show this new stream, and have the possibility to open an InputStream with
 /// the same stream name.
 ///
-class OutputStream : public OutputInterface, public net::ClientSocket
+class SRC_API OutputStream : public OutputInterface, public net::ClientSocket
 {
   public:
     ///
@@ -38,7 +38,7 @@ class OutputStream : public OutputInterface, public net::ClientSocket
 /// Allows an user to retrieve the data from an already created OutputStream.
 /// An atream can be synchronize with an another stream.
 ///
-class InputStream : public InputInterface, public net::ClientSocket
+class SRC_API InputStream : public InputInterface, public net::ClientSocket
 {
   public:
     ///

@@ -1,5 +1,7 @@
 #include "ClientSocket.hpp"
 
+#include "Configurations.hpp"
+
 namespace hub {
 namespace net {
 

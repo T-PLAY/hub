@@ -7,8 +7,6 @@ project(server)
 set(WIN32_REQUIRED_LIBS)
 set(UNIX_REQUIRED_LIBS)
 
-add_definitions(-DSRC_EXPORTS)
-#add_definitions(-DUSE_NATIVE=1)
 
 file(GLOB_RECURSE sources *.cpp *.c)
 file(GLOB_RECURSE headers *.hpp *.h)

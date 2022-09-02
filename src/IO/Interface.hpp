@@ -29,8 +29,8 @@ namespace io {
 class SRC_API Interface
 {
   public:
-    SRC_API static std::string anyValue2string( const std::any& any );
-    SRC_API static const std::string &anyType2string( const std::any& any );
+    static std::string anyValue2string( const std::any& any );
+    static const std::string &anyType2string( const std::any& any );
 
   public:
     Interface()                                       = default;
@@ -264,13 +264,13 @@ void Interface::read( std::pair<T, U>& pair ) const {
     pair = std::make_pair( first, second );
 }
 
-class InputInterface : public virtual Interface
+class SRC_API InputInterface : public virtual Interface
 {};
 
-class OutputInterface : public virtual Interface
+class SRC_API OutputInterface : public virtual Interface
 {};
 
-class InputOutputInterface : public InputInterface, public OutputInterface
+class SRC_API InputOutputInterface : public InputInterface, public OutputInterface
 {};
 
 } // namespace io

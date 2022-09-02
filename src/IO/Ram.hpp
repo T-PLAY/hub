@@ -9,7 +9,7 @@ namespace io {
 /// \brief The CyclicBuff class
 /// represents a memory buffer in RAM.
 ///
-class CyclicBuff
+class SRC_API CyclicBuff
 {
     static constexpr size_t g_buffLen = 1'000'000;
 
@@ -49,7 +49,7 @@ class CyclicBuff
 /// \brief The Ram class
 /// allows user to transfer sensor data through the memory (pipe tube).
 ///
-class Ram : public InputOutputInterface
+class SRC_API Ram : public InputOutputInterface
 {
     class exception : public std::runtime_error
     {

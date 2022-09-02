@@ -5,7 +5,6 @@ project(${SRC_TARGET})
 set(WIN32_REQUIRED_LIBS)
 set(UNIX_REQUIRED_LIBS)
 
-add_definitions(-DSRC_EXPORTS)
 #add_definitions(-DUSE_NATIVE=1)
 
 file(GLOB_RECURSE sources *.cpp *.c)
@@ -39,30 +38,34 @@ file(GLOB_RECURSE headers *.hpp *.h)
 #        IO/Stream.hpp
 #)
 
+
 if (HUB_BUILD_STATIC_LIBRARY)
-    add_library(${PROJECT_NAME} STATIC
-        ${sources}
-        ${headers}
-    )
+        add_library(${PROJECT_NAME} STATIC
+                ${sources}
+                ${headers}
+        )
+        target_compile_definitions(${PROJECT_NAME} PUBLIC -DSRC_STATIC)
 else()
-    add_library(${PROJECT_NAME} SHARED
-        ${sources}
-        ${headers}
-    )
+        add_library(${PROJECT_NAME} SHARED
+                ${sources}
+                ${headers}
+        )
+        target_compile_definitions(${PROJECT_NAME} PUBLIC -DSRC_EXPORTS)
 endif()
 
+
 target_include_directories(${PROJECT_NAME} PUBLIC
-    ${PROJECT_SOURCE_DIR}
+        ${PROJECT_SOURCE_DIR}
 )
 
 if (WIN32)
-    #    set(WIN32_REQUIRED_LIBS wsock32 ws2_32)
+        #    set(WIN32_REQUIRED_LIBS wsock32 ws2_32)
 
 
 elseif(UNIX)
-    #    set(THREADS_PREFER_PTHREAD_FLAG ON)
-    find_package(Threads REQUIRED)
-    set(UNIX_REQUIRED_LIBS Threads::Threads)
+        #    set(THREADS_PREFER_PTHREAD_FLAG ON)
+        find_package(Threads REQUIRED)
+        set(UNIX_REQUIRED_LIBS Threads::Threads)
 endif()
 
 #if (MSVC)
