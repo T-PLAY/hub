@@ -3,12 +3,6 @@ add_subdirectory(server)
 
 if (HUB_ENABLE_APPLICATIONS)
 
-    find_package(QT NAMES Qt6 Qt5)
-    set(QT_VERSION ${QT_VERSION_MAJOR})
-    if (NOT QT_VERSION)
-        set(Qt5_DIR CACHE PATH)
-    endif()
-
     cmake_host_system_information(RESULT hostname QUERY HOSTNAME)
     if (${hostname} STREQUAL "brueghel") # work linux
         add_definitions(-DUSE_GOT_PR)
@@ -18,6 +12,9 @@ if (HUB_ENABLE_APPLICATIONS)
     elseif (${hostname} STREQUAL "Brueghel") # work window
         add_definitions(-DUSE_GOT_PR)
         set(MRI_PATH "E:/Downloads/MRI/")
+
+        #set(Qt5_DIR PATH "E:/Programs/Qt/5.15.2/msvc2019_64/lib/cmake/Qt5")
+        #set(Radium_DIR PATH "E:/Documents/radiumReleaseCandidate/Radium-Engine/out/install/x64-Debug/lib/cmake/Radium")
 
     elseif (${hostname} STREQUAL "gigabyte")
         add_definitions(-DUSE_GOT_PR)
@@ -32,6 +29,13 @@ if (HUB_ENABLE_APPLICATIONS)
     endif ()
     add_definitions(-DMRI_PATH=\"${MRI_PATH}\")
 
+    find_package(QT NAMES Qt6 Qt5)
+    set(QT_VERSION ${QT_VERSION_MAJOR})
+    if (NOT QT_VERSION)
+        if (NOT Qt5_DIR)
+			set(Qt5_DIR CACHE PATH)
+        endif()
+    endif()
 
     add_subdirectory(libApp)
 

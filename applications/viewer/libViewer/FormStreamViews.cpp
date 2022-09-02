@@ -15,6 +15,8 @@
 //#include <QRegularExpression>
 //#endif
 
+#include <Configurations.hpp>
+
 #include <Net/ClientSocket.hpp>
 
 ViewerQt::ViewerQt( const std::string& ipv4, const int& port ) {
@@ -157,11 +159,11 @@ FormStreamViews::FormStreamViews(
 
     ui->lineEdit_ip->setValidator( new QRegularExpressionValidator(
         QRegularExpression( "[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}" ) ) );
-    ui->lineEdit_ip->setText( hub::net::Socket::s_defaultServiceIp );
-    ui->spinBox_port->setValue( hub::net::Socket::s_defaultServicePort );
+    ui->lineEdit_ip->setText( hub::net::s_defaultServiceIp.c_str() );
+    ui->spinBox_port->setValue( hub::net::s_defaultServicePort );
 
-    m_ipv4 = hub::net::Socket::s_defaultServiceIp;
-    m_port = hub::net::Socket::s_defaultServicePort;
+    m_ipv4 = hub::net::s_defaultServiceIp;
+    m_port = hub::net::s_defaultServicePort;
 
     //    QObject::connect(
     //        &mThreadClient, &Thread_Client::addStreamSignal, this, &FormStreamViews::addStream );
