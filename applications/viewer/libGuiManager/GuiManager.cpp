@@ -39,7 +39,6 @@
 #include <QPushButton>
 #include <QTableView>
 
-
 GuiManager::GuiManager( QObject* parent ) : QObject { parent } {}
 
 // GuiManager::GuiManager()
@@ -81,7 +80,9 @@ void GuiManager::init() {
     assert( m_mainWindow != nullptr );
     m_dockLeft = new QDockWidget( m_mainWindow );
     //    m_dockTop = new QDockWidget(m_mainWindow);
-    //    m_dockRight = new QDockWidget(m_mainWindow);
+#ifdef ENABLE_IMAGE_VIEWER
+    m_dockRight = new QDockWidget( m_mainWindow );
+#endif
     m_dockBottom = new QDockWidget( m_mainWindow );
     //    m_dockLeft = new QDockWidget();
     //    m_dockTop = new QDockWidget();
@@ -170,11 +171,14 @@ void GuiManager::init() {
     QObject::connect( m_3DToolBox,
                       &Form3DToolBox::checkBox_debug_toggled,
                       m_viewer,
-                      &Ra::Gui::Viewer::enableDebugDraw);
+                      &Ra::Gui::Viewer::enableDebugDraw );
+    QObject::connect( m_3DToolBox,
+                      &Form3DToolBox::checkBox_transparency_toggled,
+                      &m_sceneManager,
+                      &SceneManager::on_setTransparency );
 
     //    m_layout3DView->addWidget(m_3DToolBox);
     m_layout3DView->insertWidget( 0, m_3DToolBox );
-
 
     //////////////////////////////////////// RIGHT
     //     dockWidgetContents_right->setMinimumWidth(500);
@@ -184,6 +188,7 @@ void GuiManager::init() {
     //    m_dockRight->setSizePolicy(QSizePolicy(QSizePolicy::Policy::MinimumExpanding,
     //    QSizePolicy::Policy::Preferred));
     m_dockRight->setMinimumWidth( 400 );
+    //    m_mainWindow->update();
     //        m_dockRight->setWidget(&m_imageManipulator);
     //    m_dockRight->setWidget();
 
@@ -191,10 +196,11 @@ void GuiManager::init() {
     m_dockRight->setWidget( rightContainer );
 
     QVBoxLayout* vLayout = new QVBoxLayout( rightContainer );
+    m_dockRight->setLayout( vLayout );
 
-    m_imageManipulator = new FormImageManipulator( m_dockRight );
+    m_imageManipulator = new FormImageManipulator;
     vLayout->addWidget( m_imageManipulator );
-    //    m_dockRight->setLayout(vLayout);
+
     //    m_dockRight->setStyleSheet("background-color: red");
     //    vLayout->setSizeConstraint(QVBoxLayout::SizeConstraint::SetMaximumSize);
     //    QTreeView * treeView = new QTreeView(m_dockRight);
@@ -318,9 +324,11 @@ void GuiManager::init() {
     //////////////////////////////////////// INIT DOCKERS
 
     m_mainWindow->addDockWidget( Qt::DockWidgetArea::LeftDockWidgetArea, m_dockLeft );
-    m_mainWindow->setCorner(Qt::Corner::BottomLeftCorner, Qt::DockWidgetArea::LeftDockWidgetArea);
+    m_mainWindow->setCorner( Qt::Corner::BottomLeftCorner, Qt::DockWidgetArea::LeftDockWidgetArea );
     //    m_mainWindow->addDockWidget(Qt::DockWidgetArea::TopDockWidgetArea, m_dockTop);
-    //    m_mainWindow->addDockWidget(Qt::DockWidgetArea::RightDockWidgetArea, m_dockRight);
+#ifdef ENABLE_IMAGE_VIEWER
+    m_mainWindow->addDockWidget( Qt::DockWidgetArea::RightDockWidgetArea, m_dockRight );
+#endif
     m_mainWindow->addDockWidget( Qt::DockWidgetArea::BottomDockWidgetArea, m_dockBottom );
 
     //    m_mainWindow->update();
@@ -370,8 +378,14 @@ void GuiManager::init() {
     for ( const auto& tex : texs ) {
         m_comboBoxDisplayedTexture->addItem( tex.c_str() );
     }
-    QObject::connect(m_comboBoxDisplayedTexture, &QComboBox::currentTextChanged, m_viewer, &Ra::Gui::Viewer::displayTexture);
-    QObject::connect(m_3DToolBox, &Form3DToolBox::pushButton_reloadShaders_clicked, m_viewer, &Ra::Gui::Viewer::reloadShaders);
+    QObject::connect( m_comboBoxDisplayedTexture,
+                      &QComboBox::currentTextChanged,
+                      m_viewer,
+                      &Ra::Gui::Viewer::displayTexture );
+    QObject::connect( m_3DToolBox,
+                      &Form3DToolBox::pushButton_reloadShaders_clicked,
+                      m_viewer,
+                      &Ra::Gui::Viewer::reloadShaders );
 
     m_initialized = true;
 }
@@ -614,7 +628,7 @@ void GuiManager::onSelectedSourceChanged( const std::string& streamName,
 // }
 
 void GuiManager::on_checkBox_grid_toggled( bool checked ) {
-    m_sceneManager.m_sceneComponent->setVisible(checked);
+    m_sceneManager.m_sceneComponent->setVisible( checked );
     //    m_comp->getRoGrid().setVisible(checked);
 }
 

@@ -2,6 +2,8 @@
 
 #include <Configurations.hpp>
 
+#include <cstring>
+
 namespace hub {
 namespace net {
 

@@ -75,7 +75,7 @@ void main() {
 
     vec3 contribution = lightContributionFrom( light, getWorldSpacePosition().xyz );
 
-    float w        = weight( gl_FragCoord.z, a );
+//    float w        = weight( gl_FragCoord.z, a );
 //    f_Accumulation = vec4( bsdf * contribution * a, a ) * w;
 //    f_Accumulation = vec4( contribution * a, a ) * w;
 //    f_Revealage    = vec4( a );
@@ -118,10 +118,12 @@ void main() {
 
     vec3 colorPow = color;
     float aPow = a;
+//    float w        = weight( gl_FragCoord.z, aPow );
     for (int i = 0; i <int(material.pimp.x * 20); ++i) {
         colorPow *= color;
         aPow *= a;
     }
+
 
     color *= material.pimp.y;
     aPow *= material.pimp.y;
@@ -129,6 +131,7 @@ void main() {
 //    a = 0.1 * a;
 //    a = a5;
 //    color = colorPow;
+//    f_Accumulation = vec4( color, aPow ) * w;
     f_Accumulation = vec4( color, aPow );
     f_Revealage    = vec4( color, aPow );
 }

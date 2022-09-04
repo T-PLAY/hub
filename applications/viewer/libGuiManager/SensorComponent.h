@@ -31,6 +31,7 @@ struct SensorComponent : public Ra::Engine::Scene::Component {
     virtual void on_tune3_valueChanged(double arg1) {};
     virtual void on_tune4_valueChanged(double arg1) {};
     virtual void on_palette_valueChanged(int palette) {};
+    virtual void on_setTransparency(bool isTransparent) {};
 
     // private:
 protected:

@@ -78,18 +78,31 @@ void ScanComponent::initialize() {
     const auto& metaData   = sensorSpec.m_metaData;
     if ( metaData.find( "type" ) != metaData.end() ) {
         const char* type = std::any_cast<const char*>( metaData.at( "type" ) );
-        if ( strcmp( type, "record" ) == 0 ) { m_recordStream = true; }
+        if ( strcmp( type, "record" ) == 0 ) {
+            //            m_isRecordStream = true;
+            m_isLiveStream = false;
+        }
 
         assert( metaData.find( "nAcqs" ) != metaData.end() );
         m_nScans = std::any_cast<unsigned int>( metaData.at( "nAcqs" ) );
     }
     if ( metaData.find( "transform" ) != metaData.end() ) {
         const float* array = std::any_cast<const float*>( metaData.at( "transform" ) );
-        m_transform = Eigen::Map<Eigen::Matrix<float, 4, 4>>( (float*)array ); // Column-major
+        m_transform        = Eigen::Map<Eigen::Matrix4f>( (float*)array ); // Column-major
+    }
+    else {
+        //        auto TLocal = Transform::Identity();
+        //                TLocal.translate( pos );
+        //                TLocal.rotate( orientation );
+        //        TLocal.scale( Vector3( 100, 100, 100 ) );
+        //        m_transform = Eigen::Scaling( 100.0, 100.0, 100.0 ).resize(4, 4);
+        //        m_transform = Eigen::Matrix4f::Identity();
+        m_transform.block( 0, 0, 3, 3 ) = Eigen::Scaling( 100.0f, 100.0f, 100.0f );
     }
 
-    const auto& resolutions = sensorSpec.m_resolutions;
-    if ( resolutions.size() == 1 ) {
+    //    const auto& resolutions = sensorSpec.m_resolutions;
+    //    if ( resolutions.size() == 1 ) {
+    if ( m_isLiveStream ) {
         addScan();
         m_iScan = 0;
     }
@@ -98,6 +111,7 @@ void ScanComponent::initialize() {
             addScan();
         }
     }
+    //}
 
     //    // origin ref cube
     //    {
@@ -129,14 +143,15 @@ void ScanComponent::update( const hub::Acquisition& acq ) {
 
     const auto& measures = acq.getMeasures();
     const auto nMeasures = measures.size();
-    if ( nMeasures == 2 ) {
-        if ( m_firstUpdate || acq.m_start != m_lastUpdateDate ) {
-            m_firstUpdate    = false;
-            m_lastUpdateDate = acq.m_start;
-            ++m_iScan;
-        }
-        else { return; }
+    //    if (! m_isLiveStream) {
+    //    if ( nMeasures == 2 ) {
+    if ( m_firstUpdate || acq.m_start != m_lastUpdateDate ) {
+        m_firstUpdate    = false;
+        m_lastUpdateDate = acq.m_start;
+        if ( !m_isLiveStream ) ++m_iScan;
     }
+    else { return; }
+    //    }
     std::cout << "[ScanComponent] iScan = " << m_iScan << ", update acq : " << acq << std::endl;
 
     assert( !m_scans.empty() );
@@ -144,8 +159,8 @@ void ScanComponent::update( const hub::Acquisition& acq ) {
     assert( m_iScan < (int)m_scans.size() );
     auto& scan = m_scans.at( m_iScan );
 
-    double scanWidth               = 250; // mm
-    double scanDepth               = 250; // mm
+    //    double scanWidth               = 250; // mm
+    //    double scanDepth               = 250; // mm
     const unsigned char* imageData = nullptr;
     int imageSize;
     if ( nMeasures == 1 ) {
@@ -168,12 +183,17 @@ void ScanComponent::update( const hub::Acquisition& acq ) {
             TLocal.rotate( orientation );
             //            TLocal.scale( Vector3( 100, 100, 100 ) );
             //            TLocal.scale( Vector3( scanDepth / 2.0, 1.0, scanWidth / 2.0 ) );
+            //            TLocal.scale( Vector3( 100.0, 100.0, 100.0 ) );
             TLocal *= m_transform;
             //            TLocal.translate( Vector3( 1.0, 0.0, 0.0 ) );
+            scan.m_scanLine->setLocalTransform( TLocal );
+            if ( ! m_isLiveStream )
+                TLocal *= Eigen::AngleAxis<float>( M_PIf, Vector3( 1.0, 0.0, 0.0 ) );
+            TLocal *= Eigen::AngleAxis<float>( M_PI_2f, Vector3( 0.0, 1.0, 0.0 ) );
             scan.m_quad->setLocalTransform( TLocal );
             scan.m_quad->setVisible( true );
-            scan.m_scanLine->setLocalTransform( TLocal );
-            if ( m_nScans == 1 ) scan.m_scanLine->setVisible( true );
+            //            if ( m_nScans == 1 ) scan.m_scanLine->setVisible( true );
+            if ( m_isLiveStream ) scan.m_scanLine->setVisible( true );
             //            m_roAxes[0]->setLocalTransform( TLocal );
             //            m_roAxes[1]->setLocalTransform( TLocal );
             //            m_roAxes[2]->setLocalTransform( TLocal );
@@ -226,12 +246,12 @@ void ScanComponent::update( const hub::Acquisition& acq ) {
 void ScanComponent::addScan() {
     const int iScan = m_scans.size();
 
-    double scanWidth = 1000; // mm
-                             //    if ( metadata.find( "scanWidth" ) != metadata.end() ) {
+    //    double scanWidth = 1000; // mm
+    //    if ( metadata.find( "scanWidth" ) != metadata.end() ) {
     //        scanWidth = std::any_cast<double>( metadata.at( "scanWidth" ) );
     //    }
 
-    double scanDepth = 1000; // mm
+    //    double scanDepth = 1000; // mm
     //    if ( metadata.find( "scanDepth" ) != metadata.end() ) {
 
     Scan scan;
@@ -283,40 +303,40 @@ void ScanComponent::addScan() {
         }
         else { assert( false ); }
         assert( dims.size() == 2 );
-        int nChannel = 0;
+        int nChannels = 0;
         switch ( format ) {
         case hub::SensorSpec::Format::Y8:
-            nChannel = 1;
+            nChannels = 1;
             break;
         case hub::SensorSpec::Format::Y16:
-            nChannel = 2;
+            nChannels = 2;
             break;
         case hub::SensorSpec::Format::RGBA8:
-            nChannel = 4;
+            nChannels = 4;
             break;
         default:
             assert( false );
             break;
         }
-        assert( imageSize == width * height * nChannel );
+        assert( imageSize == width * height * nChannels );
         //        int iProbe = 0;
 
         scan.m_textureData = new unsigned char[imageSize];
         // fill with some function
         for ( int i = 0; i < width; ++i ) {
             for ( int j = 0; j < height; j++ ) {
-                for ( int k = 0; k < nChannel; ++k ) {
+                for ( int k = 0; k < nChannels; ++k ) {
                     if ( std::abs( i - 40 - iScan ) < 5 || std::abs( j - 40 - iScan ) < 5 ) {
                         //                    data[( i * 512 + j )] = 0;
-                        scan.m_textureData[( i * height + j ) * nChannel + k] = 0;
-                        //                        scan.m_textureData[( i * height + j ) * nChannel +
-                        //                        1] = 0;
+                        scan.m_textureData[( i * height + j ) * nChannels + k] = 0;
+                        //                        scan.m_textureData[( i * height + j ) * nChannels
+                        //                        + 1] = 0;
                     }
                     else {
                         //                    data[( i * 512 + j )] = ( j / 2 ) % 256;
-                        scan.m_textureData[( i * height + j ) * nChannel + k] = ( i / 2 ) % 256;
-                        //                        scan.m_textureData[( i * height + j ) * nChannel +
-                        //                        1] = ( i / 2 ) % 256;
+                        scan.m_textureData[( i * height + j ) * nChannels + k] = ( i / 2 ) % 256;
+                        //                        scan.m_textureData[( i * height + j ) * nChannels
+                        //                        + 1] = ( i / 2 ) % 256;
                     }
                 }
             }
@@ -331,15 +351,15 @@ void ScanComponent::addScan() {
             m_engine.getTextureManager()->addTexture(
                 scan.m_textureName.c_str(), width, height, scan.m_textureData );
 
-        if ( nChannel == 1 ) {
+        if ( nChannels == 1 ) {
             textureParameters.format         = gl::GLenum::GL_RED;
             textureParameters.internalFormat = gl::GLenum::GL_R8;
         }
-        else if ( nChannel == 2 ) {
+        else if ( nChannels == 2 ) {
             textureParameters.format         = gl::GLenum::GL_RG;
             textureParameters.internalFormat = gl::GLenum::GL_RG;
         }
-        else if ( nChannel == 4 ) {
+        else if ( nChannels == 4 ) {
             textureParameters.format         = gl::GLenum::GL_RGBA;
             textureParameters.internalFormat = gl::GLenum::GL_RGBA;
         }
@@ -368,29 +388,36 @@ void ScanComponent::addScan() {
         //        scan.m_material->m_perVertexColor = true;
         scan.m_material->m_ks = Utils::Color::Black();
         scan.m_material->setMaterialAspect( ScanMaterial::MaterialAspect::MAT_TRANSPARENT );
-        //        scan.m_material->setMaterialAspect(Material::MaterialAspect::MAT_OPAQUE);
-        //        scan.m_material->m_alpha = 0.5;
-        //        scan.m_material->m_color.x() = 0.25;
-        scan.m_material->m_pimp.x() = 0.5;
-        scan.m_material->m_pimp.y() = 1.0;
+//        scan.m_material->setMaterialAspect( Material::MaterialAspect::MAT_OPAQUE );
+//        scan.m_material->m_alpha = 0.5;
+//        scan.m_material->m_color.x() = 0.25;
+#ifndef USE_BLINN_PHONG_MATERIAL
+        scan.m_material->m_pimp.x()  = 0.5;
+        scan.m_material->m_pimp.y()  = 1.0;
+        scan.m_material->m_nChannels = nChannels;
+#endif
         //        scan.m_material->m_color.y() = 0.65;
         scan.m_material->addTexture( CurrentMaterial::TextureSemantic::TEX_DIFFUSE,
                                      textureParameters );
         scan.m_material->needUpdate();
-        assert( scan.m_material->isTransparent() == true );
+        //        assert( scan.m_material->isTransparent() == true );
 
         //            mat->addTexture(PlainMaterial::TextureSemantic::TEX_COLOR, textureParameters);
         //            mat->addTexture(BlinnPhongMaterial::TextureSemantic::TEX_DIFFUSE,
         //            textureParameters);
         scan.m_quad->setMaterial( scan.m_material );
-        scan.m_quad->setTransparent( true );
+        if ( !m_isLiveStream ) {
+            scan.m_quad->setTransparent( true );
+            scan.m_material->m_isTransparent = true;
+        }
 
         //        auto TLocal = Transform::Identity();
         //        TLocal.scale( Vector3( scanDepth / 2.0, 1.0, scanWidth / 2.0 ) );
         //        TLocal.translate( Vector3( 1.0, iScan * 100.0, 0.0 ) );
-        //        TLocal.scale(1000.0);
+        //        TLocal.scale( 1000.0 );
         //        scan.m_quad->setLocalTransform( TLocal );
-        scan.m_quad->setVisible( false );
+        scan.m_quad->setLocalTransform( m_transform );
+        if ( !m_isLiveStream ) { scan.m_quad->setVisible( false ); }
         //        //                scan.m_quad->getRenderTechnique()->setConfiguration(
         //        shaderConfig );
 
@@ -429,7 +456,8 @@ void ScanComponent::addScan() {
         //        TLocal.translate(Vector3(0_ra, 0_ra, -iScan * 5));
         //        TLocal.scale(1000.0);
         //        scan.m_scanLine->setLocalTransform( TLocal );
-        scan.m_scanLine->setVisible( false );
+        scan.m_scanLine->setLocalTransform( m_transform );
+        if ( !m_isLiveStream ) { scan.m_scanLine->setVisible( false ); }
 
         addRenderObject( scan.m_scanLine );
     }
@@ -438,40 +466,61 @@ void ScanComponent::addScan() {
 }
 
 void ScanComponent::on_tune_valueChanged( double arg1 ) {
+#ifndef USE_BLINN_PHONG_MATERIAL
     std::cout << "[ScanComponent] on_tune_valueChanged : " << arg1 << std::endl;
     for ( auto& scan : m_scans ) {
         scan.m_material->m_pimp.x() = arg1;
         scan.m_material->needUpdate();
     }
+#endif
 }
 
 void ScanComponent::on_tune2_valueChanged( double arg1 ) {
+#ifndef USE_BLINN_PHONG_MATERIAL
     std::cout << "[ScanComponent] on_tune_valueChanged : " << arg1 << std::endl;
     for ( auto& scan : m_scans ) {
         scan.m_material->m_pimp.y() = arg1;
         scan.m_material->needUpdate();
     }
+#endif
 }
 
 void ScanComponent::on_tune3_valueChanged( double arg1 ) {
+#ifndef USE_BLINN_PHONG_MATERIAL
     std::cout << "[ScanComponent] on_tune_valueChanged : " << arg1 << std::endl;
     for ( auto& scan : m_scans ) {
         scan.m_material->m_pimp.z() = arg1;
         scan.m_material->needUpdate();
     }
+#endif
 }
 
 void ScanComponent::on_tune4_valueChanged( double arg1 ) {
+#ifndef USE_BLINN_PHONG_MATERIAL
     std::cout << "[ScanComponent] on_tune_valueChanged : " << arg1 << std::endl;
     for ( auto& scan : m_scans ) {
         scan.m_material->m_pimp.w() = arg1;
         scan.m_material->needUpdate();
     }
+#endif
 }
 
 void ScanComponent::on_palette_valueChanged( int palette ) {
+#ifndef USE_BLINN_PHONG_MATERIAL
     for ( auto& scan : m_scans ) {
         scan.m_material->m_iPalette = palette;
         scan.m_material->needUpdate();
     }
+#endif
+}
+
+void ScanComponent::on_setTransparency( bool isTransparent ) {
+#ifndef USE_BLINN_PHONG_MATERIAL
+    if ( !m_isLiveStream ) {
+        for ( auto& scan : m_scans ) {
+            scan.m_material->m_isTransparent = isTransparent;
+            scan.m_material->needUpdate();
+        }
+    }
+#endif
 }

@@ -59,23 +59,32 @@ void SensorThread::run() {
                     //                assert( m_sensor.m_widgetStreamViews != nullptr );
                     m_sensor.m_widgetStreamViews[i]->setData(
                         (unsigned char*)measure.m_data, measure.m_size, dims, format );
+
+                    if ( m_sensor.m_widgetStreamViewManipulator != nullptr ) {
+                        if ( dims.size() == 2 ) {
+                            m_sensor.m_widgetStreamViewManipulator->setData(
+                                (unsigned char*)measure.m_data, measure.m_size, dims, format );
+                        }
+                    }
                 }
             }
 
             // update 2D manipulator view
-            //            {
-            //                //                assert(m_sensor.m_widgetStreamViewManipulator !=
-            //                nullptr); if ( m_sensor.m_widgetStreamViewManipulator != nullptr ) {
-            //                    m_sensor.m_widgetStreamViewManipulator->setData(
-            //                        (unsigned char*)measure.m_data,
-            //                        inputSensor->m_spec.m_acquisitionSize,
-            //                        dims,
-            //                        format );
-            //                }
-            //            }
-            //            const auto& measure = acq.getMeasures().at( 0 );
-            //            const auto& dims    = inputSensor->m_spec.m_resolutions.at( 0 ).first;
-            //            const auto& format  = inputSensor->m_spec.m_resolutions.at( 0 ).second;
+            //                        {
+            //// assert(m_sensor.m_widgetStreamViewManipulator != nullptr);
+            //                        const auto& measure = acq.getMeasures().at( 0 );
+            //                if ( m_sensor.m_widgetStreamViewManipulator != nullptr ) {
+            //                                m_sensor.m_widgetStreamViewManipulator->setData(
+            //                                    (unsigned char*)measure.m_data,
+            //                                    inputSensor->m_spec.m_acquisitionSize,
+            //                                    dims,
+            //                                    format );
+            //                            }
+            //                        }
+            //                        const auto& measure = acq.getMeasures().at( 0 );
+            //                        const auto& dims    = inputSensor->m_spec.m_resolutions.at( 0
+            //                        ).first; const auto& format  =
+            //                        inputSensor->m_spec.m_resolutions.at( 0 ).second;
 
             // update 3D component
             if ( !this->isInterruptionRequested() ) {
@@ -438,20 +447,29 @@ void Sensor::attachFromImageManipulator() {
     if ( aabb.isEmpty() ) { viewer.getCameraManipulator()->resetCamera(); }
     else { viewer.fitCameraToScene( aabb ); }
 
-    return;
+    //    return;
     //    //    RA_DISPLAY_AABB( aabb, Ra::Core::Utils::Color::Blue() );
     assert( m_widgetStreamViewManipulator == nullptr );
 
-    assert( m_inputSensor->m_spec.m_resolutions.size() == 1 );
-    const auto& dims = m_inputSensor->m_spec.m_resolutions.at( 0 ).first;
+    const auto& resolutions = m_inputSensor->m_spec.m_resolutions;
+    const auto& dims        = resolutions.at( resolutions.size() - 1 ).first;
+    const auto& metaData    = m_inputSensor->m_spec.m_metaData;
+    double scanWidth        = 1.0;
+    if ( metaData.find( "scanWidth" ) != metaData.end() ) {
+        scanWidth = std::any_cast<double>( metaData.at( "scanWidth" ) );
+    }
 
-    if ( dims.size() == 2 ) {
-        if ( m_imageManipulator != nullptr ) {
-            m_widgetStreamViewManipulator = &m_imageManipulator->getWidgetStreamView();
-            m_widgetStreamViewManipulator->init( 512, 192, 35.0, 50.0 );
-            //        m_imageManipulator.
-            //        m_imageManipulator.update();
-        }
+    double scanDepth = 1.0;
+    if ( metaData.find( "scanDepth" ) != metaData.end() ) {
+        scanDepth = std::any_cast<double>( metaData.at( "scanDepth" ) );
+    }
+
+    assert( dims.size() == 2 );
+    if ( m_imageManipulator != nullptr ) {
+        m_widgetStreamViewManipulator = &m_imageManipulator->getWidgetStreamView();
+        m_widgetStreamViewManipulator->init( dims.at( 0 ), dims.at( 1 ), scanWidth, scanDepth );
+        //        m_imageManipulator.
+        //        m_imageManipulator.update();
     }
 }
 
@@ -499,6 +517,10 @@ void Sensor::on_tune4_valueChanged( double arg1 ) {
 
 void Sensor::on_palette_valueChanged( int palette ) {
     m_component->on_palette_valueChanged( palette );
+}
+
+void Sensor::on_setTransparency( bool isTransparent ) {
+    m_component->on_setTransparency( isTransparent );
 }
 
 Ra::Engine::Scene::Entity* Sensor::getEntity() const {

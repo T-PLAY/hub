@@ -17,8 +17,12 @@
 /* This file contains a minimal radium/qt application which shows the
 classic "Spinning Cube" demo. */
 
-//using CurrentMaterial = Ra::Engine::Data::BlinnPhongMaterial;
+//#define USE_BLINN_PHONG_MATERIAL
+#ifdef USE_BLINN_PHONG_MATERIAL
+using CurrentMaterial = Ra::Engine::Data::BlinnPhongMaterial;
+#else
 using CurrentMaterial = Ra::Engine::Data::ScanMaterial;
+#endif
 
 struct Scan {
     unsigned char * m_textureData = nullptr;
@@ -49,6 +53,7 @@ struct ScanComponent : public SensorComponent {
     virtual void on_tune3_valueChanged(double arg1) override;
     virtual void on_tune4_valueChanged(double arg1) override;
     virtual void on_palette_valueChanged(int palette) override;
+    virtual void on_setTransparency(bool isTransparent) override;
 
 private:
 //    Ra::Engine::Rendering::RenderObject* m_roGrid = nullptr;
@@ -63,9 +68,10 @@ private:
     int m_nScans = 1;
     long long m_lastUpdateDate = 0;
     bool m_firstUpdate = true;
-    bool m_recordStream = false;
+//    bool m_isRecordStream = false;
+    bool m_isLiveStream = true;
 
-    Eigen::Matrix<float, 4, 4> m_transform;
+    Eigen::Matrix4f m_transform = Eigen::Matrix4f::Identity();
 
     std::shared_ptr<Ra::Engine::Data::PlainMaterial> m_scanLineMaterial;
 //    std::unique_ptr<Ra::Engine::Data::ScanMaterial> m_scanMaterial;

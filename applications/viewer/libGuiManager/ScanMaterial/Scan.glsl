@@ -42,6 +42,8 @@ struct Material {
 
     vec4 pimp;
     int iPalette;
+    int nChannels;
+    bool isTransparent;
 };
 
 // Implementation of the emissivity interface.
@@ -59,9 +61,22 @@ vec4 getDiffuseColor( Material material, vec3 texCoord ) {
         vec4 rgba = texture( material.tex.kd, texCoord.xy );
 //        dc.rgb = rgba.rgb;
 //        dc.a *= rgba.a;
-        float color = (rgba.r + rgba.g * 256.0) / 256.0;
+        float color;
+        if (material.nChannels == 1) {
+            color = rgba.r;
+        }
+        else if (material.nChannels == 2) {
+            color = (rgba.r + rgba.g * 256.0) / 256.0;
+        }
         dc.rgb = vec3(color);
+//        if (material.isTransparent) {
+//            dc.a = color;
+//        }
+//        else {
+//            dc.a = 1.0;
+//        }
         dc.a = color;
+//        dc.a = 1.0;
 //        float color = texture( material.tex.kd, texCoord.xy ).g;
 //        dc.rgb = vec3(color);
 //        dc.a *= color;
@@ -103,7 +118,10 @@ vec3 getNormal( Material material, vec3 texCoord, vec3 N, vec3 T, vec3 B ) {
 
 bool toDiscard( Material material, vec4 color ) {
 //    return color.a < 0.5;
-    return color.a < 1.0;
+    if (material.isTransparent)
+        return color.a < 1.0;
+    else
+        return color.a < 0.1;
 }
 
 vec3 diffuseBSDF( Material material, vec3 texC ) {

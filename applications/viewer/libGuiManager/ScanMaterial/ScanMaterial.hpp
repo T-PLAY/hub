@@ -86,6 +86,8 @@ class RA_ENGINE_API ScanMaterial final : public Material
 
     inline bool isColoredByVertexAttrib() const override;
 
+protected:
+
   public:
     Core::Utils::Color m_kd { 0.7, 0.7, 0.7, 1.0 };
     Core::Utils::Color m_ks { 0.3, 0.3, 0.3, 1.0 };
@@ -94,6 +96,8 @@ class RA_ENGINE_API ScanMaterial final : public Material
     bool m_perVertexColor { false };
     bool m_renderAsSplat { false };
     int m_iPalette = 0;
+    int m_nChannels = 1; // Y8 -> 1, Y16 -> 2
+    bool m_isTransparent = false;
 
     Core::Utils::Color m_pimp { 0.0, 0.0, 0.0, 0.0 };
 

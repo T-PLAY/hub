@@ -7,6 +7,7 @@
 #include <thread>
 #include <utility>
 #include <vector>
+#include <cstring>
 
 #include <IO/Stream.hpp>
 #include <Net/Socket.hpp>

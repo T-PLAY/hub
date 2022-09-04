@@ -99,6 +99,7 @@ public:
     void on_tune3_valueChanged(double arg1);
     void on_tune4_valueChanged(double arg1);
     void on_palette_valueChanged(int palette);
+    void on_setTransparency(bool isTransparent);
 
 signals:
 

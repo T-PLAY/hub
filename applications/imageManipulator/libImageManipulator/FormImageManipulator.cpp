@@ -11,7 +11,10 @@ FormImageManipulator::FormImageManipulator(QWidget* parent)
     : QWidget(parent)
     , ui(new Ui::FormImageManipulator)
 {
+     std::cout << "[FormImageManipulator] create start" << std::endl;
     ui->setupUi(this);
+
+//    return;
 
     ui->frame_top_2->setPixelPerUnit(&ui->widgetStreamView_2->getCanvasPixelPerUnit());
     ui->frame_top_2->setType(FrameRuler::Type::HORIZONTAL);
@@ -28,10 +31,6 @@ FormImageManipulator::FormImageManipulator(QWidget* parent)
 
     ui->scrollArea->setScrollAreaLeft(ui->scrollArea_left);
     ui->scrollArea->setScrollAreaTop(ui->scrollArea_top);
-    QObject::connect(ui->scrollArea, &QScrollAreaGrid::pixelPerUnitChanged, ui->widgetStreamView_2, &WidgetStreamView2D::onPixelPerUnitChanged);
-    QObject::connect(ui->scrollArea, &QScrollAreaGrid::pixelPerUnitChanged, ui->scrollAreaWidgetContents_grid, &WidgetGrid::onPixelPerUnitChanged);
-    QObject::connect(ui->scrollArea, &QScrollAreaGrid::pixelPerUnitChanged, ui->frame_top_2, &FrameRuler::onPixelPerUnitChanged);
-    QObject::connect(ui->scrollArea, &QScrollAreaGrid::pixelPerUnitChanged, ui->frame_left_2, &FrameRuler::onPixelPerUnitChanged);
 
 
     ui->widgetStreamView_2->setShowGrid(true);
@@ -43,7 +42,12 @@ FormImageManipulator::FormImageManipulator(QWidget* parent)
     ui->scrollAreaWidgetContents_grid->setCanvasPixelHeight(&ui->widgetStreamView_2->getCanvasPixelHeight());
 
 
-    ui->scrollArea->update();
+//    ui->scrollArea->update();
+
+    QObject::connect(ui->scrollArea, &QScrollAreaGrid::pixelPerUnitChanged, ui->widgetStreamView_2, &WidgetStreamView2D::onPixelPerUnitChanged);
+    QObject::connect(ui->scrollArea, &QScrollAreaGrid::pixelPerUnitChanged, ui->scrollAreaWidgetContents_grid, &WidgetGrid::onPixelPerUnitChanged);
+    QObject::connect(ui->scrollArea, &QScrollAreaGrid::pixelPerUnitChanged, ui->frame_top_2, &FrameRuler::onPixelPerUnitChanged);
+    QObject::connect(ui->scrollArea, &QScrollAreaGrid::pixelPerUnitChanged, ui->frame_left_2, &FrameRuler::onPixelPerUnitChanged);
 //    if (true)
 //    if (false)
 //    {
@@ -97,6 +101,7 @@ FormImageManipulator::FormImageManipulator(QWidget* parent)
     //        ui->widgetStreamView->setData((unsigned char*)data, imgSize, { imgWidth, imgHeight }, Stream::Format::Y8);
     ////        ui->widgetStreamView->update();
     //    }
+     std::cout << "[FormImageManipulator] create end" << std::endl;
 }
 
 FormImageManipulator::~FormImageManipulator()
@@ -106,6 +111,8 @@ FormImageManipulator::~FormImageManipulator()
 
 void FormImageManipulator::update(const hub::Acquisition &acquisition)
 {
+//    assert(false);
+     std::cout << "[FormImageManipulator] update" << std::endl;
 //    ui->widgetStreamView_2->setData((unsigned char*)acquisition.mData, 512 * 192, {512, 192}, Stream::Format::Y8);
     assert(acquisition.getMeasures().size() == 1);
     const auto & measure = acquisition.getMeasures().at(0);
@@ -115,6 +122,7 @@ void FormImageManipulator::update(const hub::Acquisition &acquisition)
 
 void FormImageManipulator::init()
 {
+//    assert(false);
 //    ui->widgetStreamView_2->setData(nullptr, 192 * 512, {512, 192}, Stream::Format::Y8);
     ui->widgetStreamView_2->setData(nullptr, 256 * 256, {256, 256}, hub::SensorSpec::Format::Y8);
 
@@ -127,6 +135,7 @@ void FormImageManipulator::init()
 
 WidgetStreamView2D &FormImageManipulator::getWidgetStreamView()
 {
+//    assert(false);
     return *ui->widgetStreamView_2;
 }
 

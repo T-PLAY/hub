@@ -68,6 +68,8 @@
 // asserts are disabled except if explicitly required by
 // defining CORE_USE_ASSERT
 
+#define DEBUG
+
 // Make sure all "debug" macros are defined
 #if defined (DEBUG) || defined(_DEBUG) || defined (CORE_DEBUG) // ------- Debug
 #   undef CORE_DEBUG
@@ -144,7 +146,7 @@ do {                 \
 // Dll import/export.
 // ----------------------------------------------------------------------------
 
-#ifdef COMPILER_MSVC
+#ifdef OS_WINDOWS
 #if SRC_EXPORTS
 #   define SRC_API __declspec( dllexport )
 #elif defined SRC_STATIC
@@ -152,5 +154,8 @@ do {                 \
 #else
 #   define SRC_API __declspec( dllimport )
 #endif
+
+#else
+#define SRC_API
 #endif
 
