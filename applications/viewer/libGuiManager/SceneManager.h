@@ -14,6 +14,7 @@
 #include <QStandardItemModel>
 
 #include <SceneComponent.hpp>
+#define ENABLE_IMAGE_VIEWER
 
 class SceneManager : public QObject
 {
@@ -57,6 +58,7 @@ class SceneManager : public QObject
     void on_tune3_valueChanged( double arg1 );
     void on_tune4_valueChanged( double arg1 );
     void on_palette_valueChanged( int arg1 );
+    void on_setTransparency(bool isTransparent);
 
   public:
     SceneComponent* m_sceneComponent = nullptr;

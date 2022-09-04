@@ -33,7 +33,7 @@ namespace Data {
 static const std::string materialName { "Scan" };
 
 ScanMaterial::ScanMaterial( const std::string& instanceName ) :
-    //    Material( instanceName, materialName, Material::MaterialAspect::MAT_OPAQUE ) {}
+//        Material( instanceName, materialName, Material::MaterialAspect::MAT_OPAQUE ) {}
     Material( instanceName, materialName, Material::MaterialAspect::MAT_TRANSPARENT ) {}
 
 ScanMaterial::~ScanMaterial() {
@@ -44,6 +44,8 @@ void ScanMaterial::updateRenderingParameters() {
     // update the rendering parameters
     m_renderParameters.addParameter( "material.pimp", m_pimp );
     m_renderParameters.addParameter( "material.iPalette", m_iPalette );
+    m_renderParameters.addParameter( "material.nChannels", m_nChannels );
+    m_renderParameters.addParameter( "material.isTransparent", m_isTransparent );
     m_renderParameters.addParameter( "material.kd", m_kd );
     m_renderParameters.addParameter( "material.hasPerVertexKd", m_perVertexColor );
     m_renderParameters.addParameter( "material.renderAsSplat", m_renderAsSplat );

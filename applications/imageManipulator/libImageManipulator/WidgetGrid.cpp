@@ -13,6 +13,7 @@ WidgetGrid::WidgetGrid(QWidget* parent)
 
 void WidgetGrid::paintEvent(QPaintEvent* event)
 {
+//    return;
     assert(mCanvasPixelPerUnit != nullptr);
     assert(mImageUnitWidth != nullptr);
     assert(mImageUnitHeight != nullptr);

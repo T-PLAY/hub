@@ -22,7 +22,7 @@ void SceneManager::init() {
     assert( m_sys != nullptr );
     assert( m_mdiArea != nullptr );
 #ifdef ENABLE_IMAGE_VIEWER
-    assert( m_imageManipulator != nullptr );
+//    assert( m_imageManipulator != nullptr );
 #endif
 
     Ra::Engine::Data::ScanMaterial::registerMaterial();
@@ -145,4 +145,12 @@ void SceneManager::on_palette_valueChanged(int palette)
     for ( auto& sensor : m_sensors ) {
         sensor.on_palette_valueChanged( palette );
     }
+}
+
+void SceneManager::on_setTransparency(bool isTransparent)
+{
+    for ( auto& sensor : m_sensors ) {
+        sensor.on_setTransparency(isTransparent );
+    }
+
 }

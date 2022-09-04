@@ -1,5 +1,6 @@
 #pragma once
 
+
 #ifdef WIN32
 
 //#define UDT_API // no dllimport/export
@@ -68,12 +69,13 @@ using socket_fd = int;
 //#include <cstring>
 #include <functional>
 #include <iostream>
-//#include <list>
+#include <list>
 //#include <set>
 //#include <stdio.h>
 #include <mutex>
 #include <string>
 #include <thread>
+#include <cassert>
 
 
 //#define DEBUG_NET

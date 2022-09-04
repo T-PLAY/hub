@@ -51,8 +51,11 @@ void Form3DToolBox::on_comboBox_palettes_currentIndexChanged( int index ) {
     emit comboBox_palettes_currentIndexChanged( index );
 }
 
-void Form3DToolBox::on_checkBox_debug_toggled(bool checked)
-{
-    emit checkBox_debug_toggled(checked);
+void Form3DToolBox::on_checkBox_debug_toggled( bool checked ) {
+    emit checkBox_debug_toggled( checked );
 }
 
+void Form3DToolBox::on_checkBox_transparency_toggled( bool checked ) {
+
+    emit checkBox_transparency_toggled( checked );
+}

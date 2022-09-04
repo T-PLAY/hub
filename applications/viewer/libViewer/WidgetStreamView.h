@@ -70,12 +70,12 @@ private:
     int mImagePixelWidth = 0;
     int mImagePixelHeight = 0;
 
-    double mImageUnitWidth;
-    double mImageUnitHeight;
+    double mImageUnitWidth = 0;
+    double mImageUnitHeight = 0;
 
-    double mRatio;
-    double mHPixelPerUnit;
-    double mVPixelPerUnit;
+    double mRatio = 1.0;
+    double mHPixelPerUnit = 1.0;
+    double mVPixelPerUnit = 1.0;
 
 
 
@@ -84,8 +84,8 @@ private:
 
 //    const double * mCanvasPixelPerUnit = nullptr;
     double mCanvasPixelPerUnit = 1.0;
-    int mCanvasPixelWidth;
-    int mCanvasPixelHeight;
+    int mCanvasPixelWidth = 0.0;
+    int mCanvasPixelHeight = 0.0;
 
 
 //    double mHPixelPerUnit;

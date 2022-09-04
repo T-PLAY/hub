@@ -20,8 +20,8 @@ int main( int argc, char* argv[] ) {
     constexpr int height = 512;
 
     hub::SensorSpec::MetaData metaData;
-    metaData["scanDepth"] = 35.0; // mm
-    metaData["scanWidth"] = 50.0; // mm
+//    metaData["scanDepth"] = 35.0; // mm
+//    metaData["scanWidth"] = 50.0; // mm
     metaData["parent"]    = "Keyboard";
 
     hub::OutputSensor proceduralStream(

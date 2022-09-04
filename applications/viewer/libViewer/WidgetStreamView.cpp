@@ -35,6 +35,7 @@ WidgetStreamView2D::WidgetStreamView2D(QWidget* parent)
 
 void WidgetStreamView2D::init(int imagePixelWidth, int imagePixelHeight, double imageUnitWidth, double imageUnitHeight)
 {
+    std::cout << "[WidgetStreamView2D] init" << std::endl;
     mImagePixelWidth = imagePixelWidth;
     mImagePixelHeight = imagePixelHeight;
     mImageUnitWidth = (imageUnitWidth == 0.0) ? imagePixelWidth : imageUnitWidth;

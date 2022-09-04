@@ -29,6 +29,7 @@ signals:
     void doubleSpinBox_tune2_valueChanged(double arg1);
     void comboBox_palettes_currentIndexChanged(int index);
     void checkBox_debug_toggled(bool checked);
+    void checkBox_transparency_toggled(bool checked);
 
 public slots:
     void on_pushButton_fitScene_clicked();
@@ -47,6 +48,9 @@ private slots:
     void on_comboBox_palettes_currentIndexChanged(int index);
 
     void on_checkBox_debug_toggled(bool checked);
+
+
+    void on_checkBox_transparency_toggled(bool checked);
 
 public:
     QComboBox * m_comboBoxDisplayedTexture = nullptr;

@@ -127,6 +127,16 @@
       </widget>
      </item>
      <item>
+      <widget class="QCheckBox" name="checkBox_transparency">
+       <property name="text">
+        <string>transparency</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QLabel" name="label_4">
        <property name="text">
         <string>Palettes :</string>

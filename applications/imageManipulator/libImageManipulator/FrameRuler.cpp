@@ -13,6 +13,7 @@ FrameRuler::FrameRuler(QWidget* parent)
 
 void FrameRuler::paintEvent(QPaintEvent* event)
 {
+//    return;
     //    std::cout << "[FrameRuler] paintEvent" << std::endl;
     assert(mCanvasPixelPerUnit != nullptr);
     assert(mScrollBar != nullptr);
