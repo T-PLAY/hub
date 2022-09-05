@@ -5,18 +5,23 @@
 #include <iostream> // for cout
 
 #include <cassert>
-#include <stream.h>
+//#include <stream.h>
 
 #include <tchar.h>
 
+#include <IO/Stream.hpp>
+#include <OutputSensor.hpp>
+
+//#include <windows.h>
+//#include <windef.h>
+//#include <minwindef.h>
 #include <PDI.h>
 
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <constants.h>
-
+//#include <constants.h>
 
 CPDIdev g_pdiDev;
 CPDImdat g_pdiMDat;
@@ -72,13 +77,15 @@ int main(int argc, char* argv[])
 
             while (true) { // each server connect
                 try {
-                    std::vector<std::unique_ptr<OutputStream>> outputStreams;
-                    outputStreams.push_back(std::make_unique<OutputStream>("Polhemus Patriot (confidence)", Stream::Format::DOF6, std::vector<int>({ 1 }), ClientSocket("192.168.137.1", 4042)));
-                    //outputStreams.push_back(std::make_unique<OutputStream>("Polhemus Patriot (confidence)", Stream::Format::DOF6, std::vector<int>({ 1 })));
-                    outputStreams.push_back(std::make_unique<OutputStream>(g_probePoseSensorName, Stream::Format::DOF6, std::vector<int>({ 1 }), ClientSocket("192.168.137.1", 4042)));
-                    //outputStreams.push_back(std::make_unique<OutputStream>(g_probePoseSensorName, Stream::Format::DOF6, std::vector<int>({ 1 })));
+                    std::vector<std::unique_ptr<hub::OutputSensor>> outputSensors;
+                    hub::SensorSpec sensorSpec("Polhemus Patriot (sensor 1)", {{{1}, hub::SensorSpec::Format::DOF6}});
+                    outputSensors.push_back(std::make_unique<hub::OutputSensor>(sensorSpec, hub::io::OutputStream(sensorSpec.m_sensorName)));
+                    //outputSensors.push_back(std::make_unique<hub::OutputSensor>("Polhemus Patriot (confidence)", Stream::Format::DOF6, std::vector<int>({ 1 })));
+                    sensorSpec.m_sensorName = "Polhemus Patriot (sensor 2)";
+                    outputSensors.push_back(std::make_unique<hub::OutputSensor>(sensorSpec, hub::io::OutputStream(sensorSpec.m_sensorName)));
+                    //outputSensors.push_back(std::make_unique<hub::OutputSensor>(g_probePoseSensorName, Stream::Format::DOF6, std::vector<int>({ 1 })));
                     constexpr int packetSize = 8 + 12 + 16;
-                    const size_t acquisitionSize = outputStreams[0]->getAcquisitionSize();
+                    const size_t acquisitionSize = outputSensors[0]->m_spec.m_acquisitionSize;
                     assert(packetSize == 8 + acquisitionSize); // header 8 bytes, frame count 4 bytes
 
                     while (true) { // each acquisition
@@ -111,13 +118,20 @@ int main(int argc, char* argv[])
                                 const auto timestampStart = std::chrono::duration_cast<std::chrono::microseconds>((end - std::chrono::microseconds(18'500)).time_since_epoch()).count(); // Polhemus technical spec latency = 18.5ms
                                 const auto timestampEnd = std::chrono::duration_cast<std::chrono::microseconds>(end.time_since_epoch()).count();
 
+                                float * poses = (float*)data;
+                                for (int i = 0; i <3; ++i) {
+//                                    poses[i] = 10.0 * poses[i]; // convert centimeters to millimeters
+                                    poses[i] = -10.0 * poses[i]; // convert centimeters to millimeters
+                                }
+//                                float * orientation = &((float*)data)[3];
+
                                 // float* translation = (float*)data;
                                 // float* quaternion = (float*)&data[12];
                                 // std::string str = std::string("sensor:") + std::to_string(ucSensor) + std::string(", x:") + std::to_string(translation[0]) + ", y:" + std::to_string(translation[1]) + ", z:" + std::to_string(translation[2]) + "\naz:" + std::to_string(quaternion[0]) + ", el:" + std::to_string(quaternion[1]) + ", ro:" + std::to_string(quaternion[2]) + ", q4:" + std::to_string(quaternion[3]);
                                 // std::cout << str << std::endl;
 
                                 // Try to get a frame of a depth image
-                                *outputStreams[ucSensor - 1] << Stream::Acquisition { timestampStart, timestampEnd, data, acquisitionSize };
+                                *outputSensors[ucSensor - 1] << (hub::Acquisition { timestampStart, timestampEnd } << hub::Measure { data, acquisitionSize });
 
                                 i += packetSize;
                             }
@@ -134,10 +148,10 @@ int main(int argc, char* argv[])
 
                     } // while (true) // each acquisition
 
-                } catch (const Socket::exception& e) {
+                } catch (const hub::net::ClientSocket::exception& e) {
                     std::cerr << "[pdi] catch socket exception : " << e.what() << std::endl;
-                } catch (const Stream::exception& e) {
-                    std::cerr << "[pdi] catch stream exception : " << e.what() << std::endl;
+                } catch (const hub::Sensor::exception& e) {
+                    std::cerr << "[pdi] catch sensor exception : " << e.what() << std::endl;
                 } catch (const std::exception& e) {
                     std::cerr << "[pdi] catch main exception : " << e.what() << std::endl;
                     return EXIT_FAILURE;
@@ -242,8 +256,6 @@ bool SetupDevice()
     // AddResultMsg("StartPipeExport");
     g_pdiDev.SetMetric(true); // centimeters
     AddResultMsg("SetMetric");
-
-
 
     // set hemisphere tracking
     std::cout << _T("Set SHemiTrack :");

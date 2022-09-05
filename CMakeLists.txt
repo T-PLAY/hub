@@ -25,7 +25,7 @@ option(HUB_APPLICATION_ENABLE_LIDAR "Build Lidar examples (depends of realsense2
 option(HUB_APPLICATION_ENABLE_OPENCV "Build OpenCV examples (depends of opencv lib)" OFF)
 option(HUB_APPLICATION_ENABLE_PDI "Build PDI examples (depends of polhemus lib)" OFF)
 option(HUB_APPLICATION_ENABLE_KEYBOARD "Build keyboard streamer (depends of glm lib)" OFF)
-option(HUB_APPLICATION_ENABLE_PATRIOT "Build Patriot examples (depends of polhemus lib)" OFF)
+#option(HUB_APPLICATION_ENABLE_PATRIOT "Build Patriot examples (depends of polhemus lib)" OFF)
 option(HUB_APPLICATION_ENABLE_RADIUM "Build Radium examples (depends of radium lib)" OFF)
 option(HUB_USE_DCMTK "Build Dcmtk examples and libs" OFF)
 option(HUB_ENABLE_SCUS "Build Scus" OFF)
