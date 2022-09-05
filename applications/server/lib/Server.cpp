@@ -170,6 +170,9 @@ void Server::addViewer( Viewer* viewer ) {
     m_viewers.push_back( viewer );
     std::cout << std::left << std::setw( g_margin2 ) << headerMsg() << std::setw( g_margin )
               << "new viewer" << getStatus() << std::endl;
+    std::cout << "-------------------------------------------------------------------------"
+                 "--------------------"
+              << std::endl;
 }
 
 void Server::delStreamer( Streamer* streamer ) {
@@ -521,6 +524,9 @@ Streamer::Streamer( Server& server, int iClient, hub::net::ClientSocket&& sock )
     m_server.addStreamer( this );
     std::cout << std::left << std::setw( g_margin2 ) << headerMsg() << std::setw( g_margin )
               << "new streamer" << m_server.getStatus() << std::endl;
+    std::cout << "-------------------------------------------------------------------------"
+                 "--------------------"
+              << std::endl;
 
     std::thread thread( [this]() {
         try {
@@ -751,6 +757,9 @@ StreamViewer::StreamViewer( Server& server, int iClient, hub::net::ClientSocket&
     std::cout << std::left << std::setw( g_margin2 ) << headerMsg() << std::setw( g_margin )
               << "new stream viewer" << m_server.getStatus() << std::endl;
     std::cout << headerMsg() << "watching '" << m_streamName << "'" << std::endl;
+    std::cout << "-------------------------------------------------------------------------"
+                 "--------------------"
+              << std::endl;
 
     const auto& lastAcqs = m_server.getLastAcqs( m_streamName );
     try {

@@ -6,8 +6,9 @@ project(simulator)
 set(WIN32_REQUIRED_LIBS)
 set(UNIX_REQUIRED_LIBS)
 
-find_package(Scus REQUIRED)
+#find_package(glm REQUIRED)
 find_package(TBB REQUIRED)
+find_package(Scus REQUIRED)
 find_package(DCMTK REQUIRED)
 
 
@@ -28,6 +29,13 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 if (WIN32)
     #    set(WIN32_REQUIRED_LIBS wsock32 ws2_32)
 
+        add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:TBB::tbb> $<TARGET_FILE_DIR:${PROJECT_NAME}>
+        )
+        add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${SRC_TARGET}> $<TARGET_FILE_DIR:${PROJECT_NAME}>
+        )
+
 
 elseif(UNIX)
     #    set(THREADS_PREFER_PTHREAD_FLAG ON)
@@ -37,7 +45,9 @@ endif()
 
 
 target_link_libraries(${PROJECT_NAME} 
-        ${SRC_TARGET} libApp Scus ${UNIX_REQUIRED_LIBS} ${WIN32_REQUIRED_LIBS}
+        ${SRC_TARGET}
+#        glm
+        libApp Scus ${UNIX_REQUIRED_LIBS} ${WIN32_REQUIRED_LIBS}
     DCMTK::dcmdata DCMTK::dcmimage
     DicomLoader
         )

@@ -24,6 +24,10 @@
 #include <ScanMaterial/ScanMaterial.hpp>
 //#include <Engine/Scene/EntityManager.hpp>
 
+//#define _USE_MATH_DEFINES
+//#include <cmath>
+//#include <iostream>
+
 #ifdef IO_USE_ASSIMP
 #    include <IO/AssimpLoader/AssimpFileLoader.hpp>
 #endif
@@ -188,8 +192,8 @@ void ScanComponent::update( const hub::Acquisition& acq ) {
             //            TLocal.translate( Vector3( 1.0, 0.0, 0.0 ) );
             scan.m_scanLine->setLocalTransform( TLocal );
             if ( ! m_isLiveStream )
-                TLocal *= Eigen::AngleAxis<float>( M_PIf, Vector3( 1.0, 0.0, 0.0 ) );
-            TLocal *= Eigen::AngleAxis<float>( M_PI_2f, Vector3( 0.0, 1.0, 0.0 ) );
+                TLocal *= Eigen::AngleAxis<float>( M_PI, Vector3( 1.0, 0.0, 0.0 ) );
+            TLocal *= Eigen::AngleAxis<float>( M_PI_2, Vector3( 0.0, 1.0, 0.0 ) );
             scan.m_quad->setLocalTransform( TLocal );
             scan.m_quad->setVisible( true );
             //            if ( m_nScans == 1 ) scan.m_scanLine->setVisible( true );

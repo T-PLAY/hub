@@ -188,7 +188,8 @@ int main( int argc, char* argv[] ) {
     std::vector<std::string> fileList;
     for ( const auto& file : files_in_directory ) {
         std::cout << file << std::endl; // printed in alphabetical order
-        fileList.push_back( file );
+//        fileList.push_back( file );
+        fileList.push_back( file.string() );
     }
 
     if ( files_in_directory.empty() ) {
@@ -220,20 +221,29 @@ int main( int argc, char* argv[] ) {
     //    stbi_write_jpg("test.jpg", 1024, 1024, 1, (void*)bu.getCorrespondingUS(acq, 1024,
     //    1024).data(), 90);
 
-    //    InputStream inputPosStream(std::string("Keyboard"));
-    //    InputStream inputPosStream(ClientSocket("Keyboard", ""));
-    hub::InputSensor inputPosStream( hub::io::InputStream( "Keyboard" ) );
-    //    OutputStream outputPosStream("Simulator", inputPosStream.getFormat(),
-    //    inputPosStream.getDims(), ClientSocket(), metaData2);
+    //    InputStream inputPosSensor(std::string("Keyboard"));
+    //    InputStream inputPosSensor(ClientSocket("Keyboard", ""));
+//    hub::InputSensor inputPosSensor( hub::io::InputStream( "Keyboard" ) );
+    hub::InputSensor inputPosSensor( hub::io::InputStream( "Polhemus Patriot (sensor 1)" ) );
+    //    OutputStream outputPosStream("Simulator", inputPosSensor.getFormat(),
+    //    inputPosSensor.getDims(), ClientSocket(), metaData2);
 
     std::cout << "Ready to simulate" << std::endl;
 
     size_t iFrame       = 0;
-    long long lastStart = 0;
+    long long lastFrameDuration = 0;
+    long long lastAcqStart = 0;
     while ( true ) {
-        const auto& acq = inputPosStream.getAcquisition();
-        if ( acq.m_start == lastStart ) { continue; }
-        lastStart = acq.m_start;
+        const auto& acq = inputPosSensor.getAcquisition();
+
+        if (acq.m_start < lastAcqStart + lastFrameDuration)
+            continue;
+
+        if ( acq.m_start == lastAcqStart ) { continue; }
+        lastAcqStart = acq.m_start;
+
+
+        const auto& startChrono = std::chrono::high_resolution_clock::now();
 
         //        outputPosStream << acq;
         const auto& measures = acq.getMeasures();
@@ -290,6 +300,16 @@ int main( int argc, char* argv[] ) {
         //    1024).data(), 90);
         std::cout << "Computed frame " << iFrame << std::endl;
         ++iFrame;
+        const auto& endChrono = std::chrono::high_resolution_clock::now();
+//        const auto duration = std::cast
+//                std::this_thread::sleep_until(
+//                    startChrono + std::chrono::microseconds( snapshot.getAcq().m_start -
+//                                                             startRecord ) );
+        lastFrameDuration = std::chrono::duration_cast<std::chrono::microseconds>(endChrono - startChrono).count();
+//                        const auto& timestampStart =
+//                            std::chrono::duration_cast<std::chrono::microseconds>(
+//                                start.time_since_epoch() )
+//                                .count();
     }
 
     return 0;
