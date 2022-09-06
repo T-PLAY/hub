@@ -2,7 +2,7 @@
 #include <cassert>
 #include <string>
 
-#include <DicomLoader/DicomUtils.hpp>
+#include <DicomUtils/DicomUtils.hpp>
 #include <IO/Stream.hpp>
 #include <OutputSensor.hpp>
 
@@ -37,7 +37,7 @@ int main( int argc, char* argv[] ) {
     mriName                 = mriName.substr( 0, mriName.find_last_of( '/' ) );
     std::cout << "mriName = '" << mriName << "'" << std::endl;
 
-    auto* volumeData = Ra::IO::DICOM::readDicomVolume( filename,
+    auto* volumeData = DICOM::readDicomVolume( filename,
                                                        &sliceWidth,
                                                        &sliceHeight,
                                                        &nSlices,

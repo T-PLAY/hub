@@ -7,7 +7,7 @@
 
 #include <IO/File.hpp>
 #include <InputSensor.hpp>
-#include <DicomLoader/DicomUtils.hpp>
+#include <DicomUtils/DicomUtils.hpp>
 #include <IO/Stream.hpp>
 #include <OutputSensor.hpp>
 
@@ -50,7 +50,7 @@ MainWindow::MainWindow(QWidget* parent)
 
         unsigned int sliceWidth, sliceHeight, nSlices, bytePerVoxel;
         float pixelSpacingWidth, pixelSpacingHeight, sliceThickness;
-        auto* volumeData = Ra::IO::DICOM::readDicomVolume( filename,
+        auto* volumeData = DICOM::readDicomVolume( filename,
                                                            &sliceWidth,
                                                            &sliceHeight,
                                                            &nSlices,

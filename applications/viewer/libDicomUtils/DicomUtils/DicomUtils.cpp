@@ -1,4 +1,4 @@
-#include <DicomLoader/DicomLoader.hpp>
+#include <DicomUtils/DicomUtils.hpp>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -11,8 +11,6 @@
 
 #include <filesystem>
 
-namespace Ra {
-namespace IO {
     namespace DICOM {
 
 //        void getDicomPixels(const std::string& filename, std::vector<unsigned char>& res)
@@ -140,7 +138,7 @@ namespace IO {
             const auto imageSize = *imageWidth * *imageHeight * *nBytesPerVoxel;
             auto * volume = new unsigned char[imageSize * *nImages];
 
-            for (uint i = 0; i < *nImages; ++i) {
+            for (int i = 0; i < *nImages; ++i) {
                 const auto filename = files_in_directory.at(i);
 
 //                DicomImage image(filename.c_str());
@@ -183,5 +181,3 @@ namespace IO {
 
     } // namespace DICOM
 
-} // namespace IO
-} // namespace Ra

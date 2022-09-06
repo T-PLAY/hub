@@ -7,6 +7,10 @@ add_subdirectory(streamViewer)
 add_subdirectory(simpleViewer)
 #add_subdirectory(nativeViewer)
 
+if (HUB_USE_DCMTK)
+        add_subdirectory(libDicomUtils)
+endif()
+
 if (HUB_APPLICATION_ENABLE_RADIUM)
 
     #    add_definitions(-DONLY_POSE)
@@ -31,4 +35,4 @@ if (HUB_APPLICATION_ENABLE_RADIUM)
 endif()
 
 
-message(STATUS "QT_VERSION = '" ${QT_VERSION} "'")
+#message(STATUS "QT_VERSION = '" ${QT_VERSION} "'")

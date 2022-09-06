@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.8)
 
-project(DicomLoader)
+project(DicomUtils)
 
 #set (CMAKE_PREFIX_PATH "C:\\Qt\\Qt5.0.1\\5.0.1\\msvc2010\\")
 # set(WIN32_REQUIRED_LIBS)
@@ -27,7 +27,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # ------------------------------------------------------------------------------
 find_package(DCMTK REQUIRED)
 #if(NOT IN_RADIUM_BUILD_TREE)
-find_package(Radium REQUIRED Core Engine Gui)
+#find_package(Radium REQUIRED Core Engine Gui)
 #endif()
 
 #find_qt_package(COMPONENTS Core Widgets REQUIRED)
@@ -58,7 +58,7 @@ file(GLOB_RECURSE headers *.h)
 add_library(${PROJECT_NAME}
     ${sources}
     ${headers}
-    ${app_uis}
+#    ${app_uis}
     )
 
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
@@ -75,7 +75,7 @@ target_include_directories(
 target_link_libraries(
     ${PROJECT_NAME} 
     PUBLIC 
-    Radium::Core Radium::Engine Radium::Gui
+#    Radium::Core Radium::Engine Radium::Gui
 #    ${Qt_LIBRARIES}
 #    ${DCMTK_LIBRARIES}
 #    PRIVATE

@@ -68,41 +68,41 @@
 // asserts are disabled except if explicitly required by
 // defining CORE_USE_ASSERT
 
-#define DEBUG
+//#define DEBUG
 
-// Make sure all "debug" macros are defined
-#if defined (DEBUG) || defined(_DEBUG) || defined (CORE_DEBUG) // ------- Debug
-#   undef CORE_DEBUG
-#   define CORE_DEBUG
+//// Make sure all "debug" macros are defined
+//#if defined (DEBUG) || defined(_DEBUG) || defined (CORE_DEBUG) // ------- Debug
+//#   undef CORE_DEBUG
+//#   define CORE_DEBUG
 
-#   undef _DEBUG
-#   define _DEBUG
+//#   undef _DEBUG
+//#   define _DEBUG
 
-#   undef DEBUG
-#   define DEBUG
+//#   undef DEBUG
+//#   define DEBUG
 
-#   undef NDEBUG
-#   undef RELEASE
+//#   undef NDEBUG
+//#   undef RELEASE
 
-#   define ON_DEBUG(CODE) CODE
-#else // --------------------------------------------------------------- Release
+//#   define ON_DEBUG(CODE) CODE
+//#else // --------------------------------------------------------------- Release
 
-#   define RELEASE
+//#   define RELEASE
 
-#ifndef NO_DEBUG_INFO
-#   define REL_DEB
-#endif
+//#ifndef NO_DEBUG_INFO
+//#   define REL_DEB
+//#endif
 
-#   undef CORE_DEBUG
-#   undef DEBUG
-#   undef _DEBUG
+//#   undef CORE_DEBUG
+//#   undef DEBUG
+//#   undef _DEBUG
 
-#   if !defined (NDEBUG)
-#       define NDEBUG
-#   endif
+//#   if !defined (NDEBUG)
+//#       define NDEBUG
+//#   endif
 
-#   define ON_DEBUG(CODE) /* Nothing */
-#endif
+//#   define ON_DEBUG(CODE) /* Nothing */
+//#endif
 
 // ----------------------------------------------------------------------------
 // Explicit compiler warning disables.
