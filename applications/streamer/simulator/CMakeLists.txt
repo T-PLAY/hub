@@ -49,6 +49,7 @@ target_link_libraries(${PROJECT_NAME}
 #        glm
         libApp Scus ${UNIX_REQUIRED_LIBS} ${WIN32_REQUIRED_LIBS}
     DCMTK::dcmdata DCMTK::dcmimage
-    DicomLoader
+#    DicomLoader
+    DicomUtils
         )
 

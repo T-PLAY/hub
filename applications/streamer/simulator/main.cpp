@@ -3,7 +3,7 @@
 
 #include <Scus.h>
 
-#include <DicomLoader/DicomUtils.hpp>
+#include <DicomUtils/DicomUtils.hpp>
 #include <IO/Stream.hpp>
 #include <InputSensor.hpp>
 #include <OutputSensor.hpp>
@@ -40,7 +40,7 @@ int main( int argc, char* argv[] ) {
 
     unsigned int sliceWidth, sliceHeight, nSlices, bytePerVoxel;
     float pixelSpacingWidth, pixelSpacingHeight, sliceThickness;
-    auto* volumeData = Ra::IO::DICOM::readDicomVolume( filename,
+    auto* volumeData = DICOM::readDicomVolume( filename,
                                                        &sliceWidth,
                                                        &sliceHeight,
                                                        &nSlices,
@@ -209,7 +209,9 @@ int main( int argc, char* argv[] ) {
 
     //    const Grid grid(250, 100, 250, 1, wf, sampler, true);
     //    const Grid grid(250, 80, 250, 1, wf, sampler, true);
-    Grid grid( 10, 10, 10, 1, wf, sampler, true );
+//    Grid grid( 10, 10, 10, 1, wf, sampler, true );
+    Grid grid( sliceRealDepth, nSlices * sliceThickness, sliceRealWidth, 8, wf, sampler, true );
+    std::cout << "grid created" << std::endl;
     BasicUS bu( grid );
 
     //    AcquisitionZone acq(glm::vec3(25, 50, 50), glm::angleAxis(0.f, glm::vec3(1, 0, 0)),
@@ -270,9 +272,8 @@ int main( int argc, char* argv[] ) {
         const AcquisitionZone acqZone( position, orientation, scanRealWidth, 2.0, scanRealDepth );
         //        AcquisitionZone acqZone(glm::vec3(0, 30, 125), glm::angleAxis(0.f, glm::vec3(0, 0,
         //        1)), 256, 256, 256);
-        const auto& scanImage = bu.getCorrespondingUS( acqZone, scanWidth, scanHeight );
-        //        const auto& scanImage = bu.getCorrespondingRealUS( acqZone, grid, scanWidth,
-        //        scanHeight );
+//        const auto& scanImage = bu.getCorrespondingUS( acqZone, scanWidth, scanHeight );
+                const auto& scanImage = bu.getCorrespondingRealUS( acqZone, grid, scanWidth, scanHeight );
         assert( scanImage.size() == scanSize );
         const unsigned char* scanData = scanImage.data();
 
