@@ -29,7 +29,8 @@ if (WIN32)
                 COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${SRC_TARGET}> $<TARGET_FILE_DIR:${PROJECT_NAME}>
         )
  
-	set(WIN32_REQUIRED_LIBS glm::glm)
+	# set(WIN32_REQUIRED_LIBS glm::glm)
+	set(WIN32_REQUIRED_LIBS glm)
 
 elseif(UNIX)
     #    set(THREADS_PREFER_PTHREAD_FLAG ON)

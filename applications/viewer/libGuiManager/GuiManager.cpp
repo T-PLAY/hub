@@ -133,6 +133,10 @@ void GuiManager::init() {
                       this,
                       &GuiManager::on_toolButton_fitScene_clicked );
     QObject::connect( m_3DToolBox,
+                      &Form3DToolBox::pushButton_fitSelected_clicked,
+                      this,
+                      &GuiManager::on_toolButton_fitSelected_clicked );
+    QObject::connect( m_3DToolBox,
                       &Form3DToolBox::pushButton_fitTrace_clicked,
                       this,
                       &GuiManager::on_toolButton_fitTrace_clicked );
@@ -638,6 +642,37 @@ void GuiManager::on_checkBox_trace_toggled( bool checked ) {
 
 void GuiManager::on_toolButton_fitScene_clicked() {
     m_viewer->fitCamera();
+}
+
+void GuiManager::on_toolButton_fitSelected_clicked()
+{
+    const auto& indexes = m_sensorsView->selectionModel()->selectedIndexes();
+
+    if ( ! indexes.empty() ) {
+
+        const auto& current = indexes.first();
+
+        const int row = current.row();
+
+        std::cout << "[GuiManager] row clicked " << row << std::endl;
+
+        //        const auto& sensors = m_sceneManager.getSensors();
+
+        //        assert(row < sensors.size());
+        //        auto & sensor = m_sceneManager.getSensor(row);
+        m_sceneManager.fitView( row );
+
+        //        const auto & sensor = sensors.at
+
+        //        const std::string& mPath =
+        //        m_recordFileModel->fileInfo(current).absoluteFilePath().toStdString();
+
+        //        std::cout << "[FormWidgetLoader] on_treeView_record_selectionChanged : " << mPath
+        //        << std::endl; if (m_recordLoader.isLoaded())
+        //            m_recordLoader.unload();
+        //        m_recordLoader.load(mPath);
+    }
+
 }
 
 #include <Core/Utils/Color.hpp>

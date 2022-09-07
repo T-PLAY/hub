@@ -94,6 +94,15 @@ Sensor& SceneManager::getSensor( int iSensor ) {
     return m_sensors.front();
 }
 
+void SceneManager::fitView(int iSensor)
+{
+    int i = 0;
+    for ( auto& sensor : m_sensors ) {
+        if ( i == iSensor ) { sensor.fitView(); }
+        ++i;
+    }
+}
+
 void SceneManager::attachSensorFromImageManipulator( int iSensor ) {
     for ( auto& sensor : m_sensors ) {
         sensor.detachFromImageManipulator();

@@ -429,30 +429,14 @@ void Sensor::detachFromImageManipulator() {
 
 void Sensor::attachFromImageManipulator() {
 
-    auto& viewer = *m_viewer;
-    //    auto aabb = Ra::Engine::RadiumEngine::getInstance()->computeSceneAabb();
-    //    auto aabb = m_app->m_engine->computeSceneAabb();
-
-    //        const auto& traces = m_comp->getRoTraces();
-    //    auto aabb = traces[0].compu
-    //        auto aabb = traces[0]->computeAabb();
-    //        for (int i = 1; i < g_nTraces; ++i) {
-    //            aabb.extend(traces[i]->computeAabb());
-    //        }
-    //        auto aabb = m_enti
-    auto aabb = m_entity->computeAabb();
-    RA_CLEAR_DEBUG_DISPLAY();
-    RA_DISPLAY_AABB( aabb, Ra::Core::Utils::Color::Green() );
-
-    if ( aabb.isEmpty() ) { viewer.getCameraManipulator()->resetCamera(); }
-    else { viewer.fitCameraToScene( aabb ); }
-
     //    return;
     //    //    RA_DISPLAY_AABB( aabb, Ra::Core::Utils::Color::Blue() );
     assert( m_widgetStreamViewManipulator == nullptr );
 
     const auto& resolutions = m_inputSensor->m_spec.m_resolutions;
     const auto& dims        = resolutions.at( resolutions.size() - 1 ).first;
+    if (dims.size() != 2)
+        return;
     const auto& metaData    = m_inputSensor->m_spec.m_metaData;
     double scanWidth        = 1.0;
     if ( metaData.find( "scanWidth" ) != metaData.end() ) {
@@ -471,6 +455,29 @@ void Sensor::attachFromImageManipulator() {
         //        m_imageManipulator.
         //        m_imageManipulator.update();
     }
+}
+
+void Sensor::fitView()
+{
+    auto& viewer = *m_viewer;
+    //    auto aabb = Ra::Engine::RadiumEngine::getInstance()->computeSceneAabb();
+    //    auto aabb = m_app->m_engine->computeSceneAabb();
+
+    //        const auto& traces = m_comp->getRoTraces();
+    //    auto aabb = traces[0].compu
+    //        auto aabb = traces[0]->computeAabb();
+    //        for (int i = 1; i < g_nTraces; ++i) {
+    //            aabb.extend(traces[i]->computeAabb());
+    //        }
+    //        auto aabb = m_enti
+    auto aabb = m_entity->computeAabb();
+    RA_CLEAR_DEBUG_DISPLAY();
+    RA_DISPLAY_AABB( aabb, Ra::Core::Utils::Color::Green() );
+
+    if ( aabb.isEmpty() ) { viewer.getCameraManipulator()->resetCamera(); }
+    else { viewer.fitCameraToScene( aabb ); }
+
+
 }
 
 void Sensor::setParent( Sensor* parent ) {
