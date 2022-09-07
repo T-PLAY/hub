@@ -109,7 +109,8 @@ int main( int argc, char* argv[] ) {
                                     hub::io::OutputStream( "dicomStream" ) );
 
     for ( int iImage = 0; iImage < nSlices; ++iImage ) {
-        hub::Dof6 dof6( 0.0, iImage * sliceThickness, 0.0 );
+//        hub::Dof6 dof6( 0.0, iImage * sliceThickness, 0.0 );
+        hub::Dof6 dof6( 0.0, (nSlices - iImage - 1) * sliceThickness, 0.0 );
         hub::Measure image( &texturesData[textureSize * iImage], textureSize );
         outputSensor << ( hub::Acquisition { iImage, iImage } << std::move( dof6 )
                                                               << std::move( image ) );
@@ -143,13 +144,18 @@ int main( int argc, char* argv[] ) {
     //    metaData2["scanDepth"] = 256.0;
     //    metaData2["parent"] = "Keyboard";
     //    metaData2["transform"] = transformPtr;
+//    glm::mat4 worldTransform(1.0);
+//    worldTransform = glm::translate(worldTransform, glm::vec3(100, 100, 100));
+//    glm::mat4 worldTransformInv = glm::inverse(worldTransform);
     glm::mat4 transform2( 1.0 );
+
+//    transform2 *= worldTransform;
     //    const float sliceRealWidth = 50.0;
     //    const float sliceRealDepth = 35.0;
 //    double scanRealWidth = 200;
 //    double scanRealDepth = 200;
-    double scanRealWidth = 50.0;
-    double scanRealDepth = 35.0;
+    double scanRealWidth = 50.0 * 1.5;
+    double scanRealDepth = 35.0 * 1.5;
     //    transform2 = glm::rotate(transform2, glm::radians(90.0), glm::vec3(0.0, 1.0, 0.0));
     transform2 =
         glm::scale( transform2, glm::vec3( scanRealDepth / 2.0, 1.0, scanRealWidth / 2.0 ) );
@@ -186,6 +192,7 @@ int main( int argc, char* argv[] ) {
         if ( !std::filesystem::is_directory( entry ) ) { files_in_directory.push_back( entry ); }
     }
     std::sort( files_in_directory.begin(), files_in_directory.end() );
+    std::reverse(files_in_directory.begin(), files_in_directory.end());
 
     std::vector<std::string> fileList;
     for ( const auto& file : files_in_directory ) {
@@ -269,6 +276,9 @@ int main( int argc, char* argv[] ) {
 
         glm::vec3 position( dof6.m_x, dof6.m_y, dof6.m_z );
         glm::quat orientation( dof6.m_w0, dof6.m_w1, dof6.m_w2, dof6.m_w3 );
+
+//        position = worldTransformInv * glm::vec4(position, 1.0);
+//        orientation *= glm::mat3(worldTransformInv);
 
         //    float* translation = glm::value_ptr(pos);
         //    float* orientation = glm::value_ptr(quat);
