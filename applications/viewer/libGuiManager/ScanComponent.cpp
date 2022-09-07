@@ -188,13 +188,19 @@ void ScanComponent::update( const hub::Acquisition& acq ) {
             //            TLocal.scale( Vector3( 100, 100, 100 ) );
             //            TLocal.scale( Vector3( scanDepth / 2.0, 1.0, scanWidth / 2.0 ) );
             //            TLocal.scale( Vector3( 100.0, 100.0, 100.0 ) );
-            TLocal *= m_transform;
-            //            TLocal.translate( Vector3( 1.0, 0.0, 0.0 ) );
-            scan.m_scanLine->setLocalTransform( TLocal );
-            if ( ! m_isLiveStream )
+
+            if (m_isLiveStream) {
+                m_entity->setTransform(TLocal);
+            } else {
+                TLocal *= m_transform;
+                //            TLocal.translate( Vector3( 1.0, 0.0, 0.0 ) );
+                //            scan.m_scanLine->setLocalTransform( TLocal );
+                //            if ( ! m_isLiveStream )
                 TLocal *= Eigen::AngleAxis<float>( M_PI, Vector3( 1.0, 0.0, 0.0 ) );
-            TLocal *= Eigen::AngleAxis<float>( M_PI_2, Vector3( 0.0, 1.0, 0.0 ) );
-            scan.m_quad->setLocalTransform( TLocal );
+                TLocal *= Eigen::AngleAxis<float>( M_PI_2, Vector3( 0.0, 1.0, 0.0 ) );
+                scan.m_quad->setLocalTransform( TLocal );
+            }
+
             scan.m_quad->setVisible( true );
             //            if ( m_nScans == 1 ) scan.m_scanLine->setVisible( true );
             if ( m_isLiveStream ) scan.m_scanLine->setVisible( true );
@@ -464,6 +470,18 @@ void ScanComponent::addScan() {
         if ( !m_isLiveStream ) { scan.m_scanLine->setVisible( false ); }
 
         addRenderObject( scan.m_scanLine );
+    }
+
+    if (m_isLiveStream)
+    {
+                auto TLocal = Transform::Identity();
+            TLocal *= m_transform;
+            //            TLocal.translate( Vector3( 1.0, 0.0, 0.0 ) );
+            scan.m_scanLine->setLocalTransform( TLocal );
+            if ( ! m_isLiveStream )
+                TLocal *= Eigen::AngleAxis<float>( M_PI, Vector3( 1.0, 0.0, 0.0 ) );
+            TLocal *= Eigen::AngleAxis<float>( M_PI_2, Vector3( 0.0, 1.0, 0.0 ) );
+            scan.m_quad->setLocalTransform( TLocal );
     }
 
     m_scans.push_back( scan );

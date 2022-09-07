@@ -47,6 +47,7 @@ class SceneManager : public QObject
     const std::list<Sensor>& getSensors() const;
     Sensor& getSensor( int iSensor );
 
+    void fitView(int iSensor);
     void attachSensorFromImageManipulator( int iSensor );
     void detachSensorFromImageManipulator( int iSensor );
     //    void detachAllSensorsFromImageManipulator();

@@ -18,6 +18,7 @@ public:
 
 signals:
     void pushButton_fitScene_clicked();
+    void pushButton_fitSelected_clicked();
     void pushButton_fitTrace_clicked();
 
     void checkBox_showGrid_toggled(bool checked);
@@ -30,9 +31,11 @@ signals:
     void comboBox_palettes_currentIndexChanged(int index);
     void checkBox_debug_toggled(bool checked);
     void checkBox_transparency_toggled(bool checked);
+    void horizontalSliderDynamic_valueChanged(int value);
 
 public slots:
     void on_pushButton_fitScene_clicked();
+  void on_pushButton_fitSelected_clicked();
     void on_pushButton_fitTrace_clicked();
 
     void on_checkBox_showGrid_toggled(bool checked);
@@ -55,7 +58,11 @@ private slots:
 public:
     QComboBox * m_comboBoxDisplayedTexture = nullptr;
 
-private:
+
+  private slots:
+    void on_horizontalSliderDynamic_valueChanged(int value);
+
+  private:
     Ui::Form3DToolBox *ui;
 
 };

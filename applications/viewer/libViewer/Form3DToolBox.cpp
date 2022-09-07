@@ -15,6 +15,11 @@ void Form3DToolBox::on_pushButton_fitScene_clicked() {
     emit pushButton_fitScene_clicked();
 }
 
+void Form3DToolBox::on_pushButton_fitSelected_clicked()
+{
+    emit pushButton_fitSelected_clicked();
+}
+
 void Form3DToolBox::on_pushButton_fitTrace_clicked() {
     emit pushButton_fitTrace_clicked();
 }
@@ -59,3 +64,11 @@ void Form3DToolBox::on_checkBox_transparency_toggled( bool checked ) {
 
     emit checkBox_transparency_toggled( checked );
 }
+
+
+
+void Form3DToolBox::on_horizontalSliderDynamic_valueChanged(int value)
+{
+    emit horizontalSliderDynamic_valueChanged(value);
+}
+

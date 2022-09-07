@@ -88,6 +88,7 @@ public:
 
     void detachFromImageManipulator();
     void attachFromImageManipulator();
+    void fitView();
 //    Ra::Engine::Scene::Entity* m_entity = nullptr;
     void setParent(Sensor * parent);
 

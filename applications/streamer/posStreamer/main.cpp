@@ -10,6 +10,8 @@
 #include <stdio.h>
 //#include<conio.h>
 
+#include <OutputSensor.hpp>
+#include <IO/Stream.hpp>
 
 #ifdef WIN32
 #include <WinUser.h>
@@ -22,8 +24,6 @@
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include <OutputSensor.hpp>
-#include <IO/Stream.hpp>
 
 auto pos = glm::vec3(0.0, 1.0, 0.0);
 auto quat = glm::quat(1.0, 0.0, 0.0, 0.0); // w, x, y, z
