@@ -17,6 +17,11 @@ set(CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/hub-install)
 
 #set(CMAKE_SYSTEM_NAME WindowsStore)
 #set(CMAKE_SYSTEM_VERSION 10.0)
+if (${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+    add_definitions(-DDEBUG)
+else()
+    add_definitions(-DNDEBUG)
+endif()
 
 option(HUB_ENABLE_APPLICATIONS "Build applications" OFF)
 #if (HUB_ENABLE_APPLICATIONS)
