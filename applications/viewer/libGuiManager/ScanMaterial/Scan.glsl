@@ -69,13 +69,14 @@ vec4 getDiffuseColor( Material material, vec3 texCoord ) {
             color = (rgba.r + rgba.g * 256.0) / 256.0;
         }
         dc.rgb = vec3(color);
-//        if (material.isTransparent) {
-//            dc.a = color;
-//        }
-//        else {
-//            dc.a = 1.0;
-//        }
-        dc.a = color;
+
+        if (material.isTransparent) {
+            dc.a = color;
+        }
+        else {
+            dc.a = 1.0;
+        }
+//        dc.a = color;
 //        dc.a = 1.0;
 //        float color = texture( material.tex.kd, texCoord.xy ).g;
 //        dc.rgb = vec3(color);

@@ -44,7 +44,8 @@ int main( int argc, char* argv[] ) {
         //        for (size_t i = 0; i < imgSize; ++i) {
         for ( int i = 0; i < width; ++i ) {
             for ( int j = 0; j < height; ++j ) {
-                if ( std::abs( i - 20 ) < 5 )
+//                if ( std::abs( i - 20 ) < 5 )
+                if (true)
                     data[i * height + j] = 0;
                 else
                     data[i * height + j] = ( i + dec ) % 256;
