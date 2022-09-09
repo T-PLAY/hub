@@ -156,7 +156,7 @@ void ScanComponent::update( const hub::Acquisition& acq ) {
     }
     else { return; }
     //    }
-    std::cout << "[ScanComponent] iScan = " << m_iScan << ", update acq : " << acq << std::endl;
+//    std::cout << "[ScanComponent] iScan = " << m_iScan << ", update acq : " << acq << std::endl;
 
     assert( !m_scans.empty() );
     assert( 0 <= m_iScan && m_iScan < m_nScans );

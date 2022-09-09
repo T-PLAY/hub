@@ -154,8 +154,8 @@ int main( int argc, char* argv[] ) {
     //    const float sliceRealDepth = 35.0;
 //    double scanRealWidth = 200;
 //    double scanRealDepth = 200;
-    double scanRealWidth = 50.0 * 1.5;
-    double scanRealDepth = 35.0 * 1.5;
+    double scanRealWidth = 50.0 * 1.0;
+    double scanRealDepth = 35.0 * 1.0;
     //    transform2 = glm::rotate(transform2, glm::radians(90.0), glm::vec3(0.0, 1.0, 0.0));
     transform2 =
         glm::scale( transform2, glm::vec3( scanRealDepth / 2.0, 1.0, scanRealWidth / 2.0 ) );
@@ -218,14 +218,14 @@ int main( int argc, char* argv[] ) {
 
     std::cout << "generating grid ..." << std::endl;
     //    const Grid grid(250, 100, 250, 1, wf, sampler, true);
-    //    const Grid grid(250, 80, 250, 1, wf, sampler, true);
-    Grid grid( 10, 10, 10, 1, wf, sampler, true );
+        Grid grid(250, 80, 250, 8, wf, sampler, true);
+//    Grid grid( 10, 10, 10, 1, wf, sampler, true );
 //    Grid grid( sliceRealDepth, nSlices * sliceThickness, sliceRealWidth, 16, wf, sampler, true );
     std::cout << "grid created" << std::endl;
     BasicUS bu( grid );
     bu.setSigLateral(1.25);
     bu.setSigAxial(0.2);
-    bu.setDynamicRange(20.0);
+    bu.setDynamicRange(25.0);
 
     //    AcquisitionZone acq(glm::vec3(25, 50, 50), glm::angleAxis(0.f, glm::vec3(1, 0, 0)),
     //    50, 1.1f, 60); AcquisitionZone acq(glm::vec3(0, 30, 125), glm::angleAxis(0.f, glm::vec3(0,
@@ -285,11 +285,11 @@ int main( int argc, char* argv[] ) {
         //    memcpy(data, translation, 12);
         //    memcpy(&data[12], orientation, 16);
 
-        const AcquisitionZone acqZone( position, orientation, scanRealWidth, 2.0, scanRealDepth );
+        const AcquisitionZone acqZone( position, orientation, scanRealWidth, 1.1, scanRealDepth );
         //        AcquisitionZone acqZone(glm::vec3(0, 30, 125), glm::angleAxis(0.f, glm::vec3(0, 0,
         //        1)), 256, 256, 256);
-        const auto& scanImage = bu.getCorrespondingUS( acqZone, scanWidth, scanHeight );
-//                const auto& scanImage = bu.getCorrespondingRealUS( acqZone, grid, scanWidth, scanHeight );
+//        const auto& scanImage = bu.getCorrespondingUS( acqZone, scanWidth, scanHeight );
+                const auto& scanImage = bu.getCorrespondingRealUS( acqZone, grid, scanWidth, scanHeight );
         assert( scanImage.size() == scanSize );
         const unsigned char* scanData = scanImage.data();
 

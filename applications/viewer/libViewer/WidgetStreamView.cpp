@@ -223,6 +223,7 @@ void WidgetStreamView2D::updateImage()
 #elif QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
             m_image = new QImage((unsigned char*)mData, mImagePixelWidth, mImagePixelHeight, QImage::Format_Grayscale16);
 #else
+//            m_image = new QImage((unsigned char*)mData, mImagePixelWidth, mImagePixelHeight, mImagePixelWidth * 2, QImage::Format_Grayscale8);
             m_image = new QImage((unsigned char*)mData, mImagePixelWidth, mImagePixelHeight, QImage::Format_Grayscale16);
 #endif
             break;
