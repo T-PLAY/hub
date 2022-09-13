@@ -36,7 +36,7 @@ int getAcquisitionSize( InputSensor* inputSensor ) {
     return static_cast<int>( inputSensor->m_spec.m_acquisitionSize );
 }
 
-bool getData( InputSensor* inputSensor, unsigned char* data, int iMeasure = 0 ) {
+bool getData( InputSensor* inputSensor, unsigned char* data, int iMeasure) {
     assert( inputSensor != nullptr );
 
     std::cout << "[Native] getData( " << inputSensor << ")" << std::endl;
