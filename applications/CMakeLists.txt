@@ -1,5 +1,7 @@
 
-add_subdirectory(server)
+if (HUB_ENABLE_APPLICATIONS OR HUB_ENABLE_TESTS)
+        add_subdirectory(server)
+endif()
 
 if (HUB_ENABLE_APPLICATIONS)
 
