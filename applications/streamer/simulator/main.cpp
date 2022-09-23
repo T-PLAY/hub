@@ -154,8 +154,8 @@ int main( int argc, char* argv[] ) {
     //    const float sliceRealDepth = 35.0;
 //    double scanRealWidth = 200;
 //    double scanRealDepth = 200;
-    double scanRealWidth = 50.0 * 1.0;
-    double scanRealDepth = 35.0 * 1.0;
+    double scanRealWidth = 50.0 * 1.5;
+    double scanRealDepth = 35.0 * 1.5;
     //    transform2 = glm::rotate(transform2, glm::radians(90.0), glm::vec3(0.0, 1.0, 0.0));
     transform2 =
         glm::scale( transform2, glm::vec3( scanRealDepth / 2.0, 1.0, scanRealWidth / 2.0 ) );
@@ -275,6 +275,7 @@ int main( int argc, char* argv[] ) {
         //        const auto orientation = glm::make_quat(quaternionData);
 
         glm::vec3 position( dof6.m_x, dof6.m_y, dof6.m_z );
+//        glm::vec3 position( -dof6.m_x, -dof6.m_y, -dof6.m_z );
         glm::quat orientation( dof6.m_w0, dof6.m_w1, dof6.m_w2, dof6.m_w3 );
 
 //        position = worldTransformInv * glm::vec4(position, 1.0);

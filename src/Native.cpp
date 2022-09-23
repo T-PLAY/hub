@@ -58,6 +58,24 @@ bool getData( InputSensor* inputSensor, unsigned char* data, int iMeasure) {
     return true;
 }
 
+Viewer* createViewer(const char* ipv4, int port,
+    void (*onNewStreamer)(const char* streamName, const SensorSpec* sensorSpec),
+    void (*onDelStreamer)(const char* streamName, const SensorSpec* sensorSpec)) {
+
+
+    //Viewer* viewer = new Viewer( "127.0.0.1", 4042, {}, {} );
+    //return viewer;
+
+    auto onNewStreamerCpp = [=]( const std::string& sensorName, const SensorSpec& sensorSpec ) {
+        onNewStreamer( sensorName.c_str(), &sensorSpec );
+    };
+    auto onDelStreamerCpp = [=]( const std::string& sensorName, const SensorSpec& sensorSpec ) {
+        onDelStreamer( sensorName.c_str(), &sensorSpec );
+    };
+    Viewer * viewer = new Viewer( std::string(ipv4), port, onNewStreamerCpp, onDelStreamerCpp );
+    return viewer;
+}
+
 // bool getAcquisition( InputSensor* inputSensor,
 //                      long long* start,
 //                      long long* end,
