@@ -13,6 +13,7 @@ file(GLOB_RECURSE headers *.h)
 find_package(Scus REQUIRED)
 find_package(TBB REQUIRED)
 find_package(DCMTK REQUIRED)
+find_package(OpenMP REQUIRED)
 
 message(STATUS ${SELF_DIR})
 

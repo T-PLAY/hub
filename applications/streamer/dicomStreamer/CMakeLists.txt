@@ -33,6 +33,11 @@ if (WIN32)
 #    set(WIN32_REQUIRED_LIBS glm::glm)
     set(WIN32_REQUIRED_LIBS glm)
 
+
+        add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${SRC_TARGET}> $<TARGET_FILE_DIR:${PROJECT_NAME}>
+        )
+
 elseif(UNIX)
     set(UNIX_REQUIRED_LIBS glm)
     #    set(THREADS_PREFER_PTHREAD_FLAG ON)
@@ -47,4 +52,3 @@ target_link_libraries(${PROJECT_NAME}
 #    DicomLoader
     DicomUtils
 )
-

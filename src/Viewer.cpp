@@ -90,13 +90,18 @@ Viewer::Viewer( const std::string& ipv4,
     m_ipv4( ipv4 ),
     m_port( port ) {
 
+	SensorSpec sensorSpec;
+    m_onNewStreamer( "hello", sensorSpec );
+    m_onDelStreamer( "goodbye", sensorSpec );
+
     m_thread = std::thread( [this]() {
         //        while ( !m_stopThread ) {
         try {
             net::ClientSocket sock( m_ipv4, m_port );
             sock.write( net::ClientSocket::Type::VIEWER );
 
-            m_onServerConnected();
+            if (m_onServerConnected)
+				m_onServerConnected();
 
             while ( !m_stopThread ) {
                 net::ClientSocket::Message serverMessage;
@@ -152,7 +157,8 @@ Viewer::Viewer( const std::string& ipv4,
         catch ( std::exception& e ) {
             std::cout << "[Viewer] catch exception " << e.what() << std::endl;
         }
-        m_onServerDisconnected();
+        if (m_onServerDisconnected)
+			m_onServerDisconnected();
 
         //        } // while (! m_stopThread)
     } ); // thread

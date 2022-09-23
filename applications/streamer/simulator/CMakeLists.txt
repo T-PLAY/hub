@@ -10,6 +10,7 @@ set(UNIX_REQUIRED_LIBS)
 find_package(TBB REQUIRED)
 find_package(Scus REQUIRED)
 find_package(DCMTK REQUIRED)
+find_package(OpenMP REQUIRED)
 
 
 file(GLOB_RECURSE sources *.cpp)

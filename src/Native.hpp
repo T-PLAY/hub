@@ -2,6 +2,7 @@
 
 #include "Macros.hpp"
 #include "InputSensor.hpp"
+#include "Viewer.hpp"
 
 namespace hub {
 
@@ -15,6 +16,11 @@ extern "C"
 //                                 long long* start,
 //                                 long long* end,
 //                                 unsigned char* data );
+    SRC_API Viewer*
+    createViewer( const char* ipv4,
+                  int port,
+                  void ( *onNewStreamer )( const char* streamName, const SensorSpec* sensorSpec ),
+                  void ( *onDelStreamer )( const char* streamName, const SensorSpec* sensorSpec ) );
 }
 
 } // namespace hub
