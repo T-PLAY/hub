@@ -10,6 +10,7 @@
 #include <cstring>
 
 namespace hub {
+namespace native {
 
 InputSensor* createInputSensor( const char* streamName, const char* ipv4, int port ) {
     std::cout << "[Native] createInputSensor( " << streamName << ")" << std::endl;
@@ -31,12 +32,12 @@ void freeInputSensor( InputSensor* inputSensor ) {
     delete inputSensor;
 }
 
-int getAcquisitionSize( InputSensor* inputSensor ) {
+int getAcquisitionSize( const InputSensor* inputSensor ) {
     assert( inputSensor != nullptr );
     return static_cast<int>( inputSensor->m_spec.m_acquisitionSize );
 }
 
-bool getData( InputSensor* inputSensor, unsigned char* data, int iMeasure) {
+bool getData( const InputSensor* inputSensor, unsigned char* data, int iMeasure ) {
     assert( inputSensor != nullptr );
 
     std::cout << "[Native] getData( " << inputSensor << ")" << std::endl;
@@ -46,8 +47,8 @@ bool getData( InputSensor* inputSensor, unsigned char* data, int iMeasure) {
         std::cout << "[Native] get acq : " << acq << std::endl;
 
         std::cout << "[Native] copying data " << std::endl;
-        assert(iMeasure < acq.getMeasures().size());
-        const auto & measure = acq.getMeasures().at(iMeasure);
+        assert( iMeasure < acq.getMeasures().size() );
+        const auto& measure = acq.getMeasures().at( iMeasure );
         memcpy( data, measure.m_data, measure.m_size );
     }
     catch ( std::exception& e ) {
@@ -58,13 +59,16 @@ bool getData( InputSensor* inputSensor, unsigned char* data, int iMeasure) {
     return true;
 }
 
-Viewer* createViewer(const char* ipv4, int port,
-    void (*onNewStreamer)(const char* streamName, const SensorSpec* sensorSpec),
-    void (*onDelStreamer)(const char* streamName, const SensorSpec* sensorSpec)) {
+Viewer*
+createViewer( void ( *onNewStreamer )( const char* streamName, const SensorSpec* sensorSpec ),
+              void ( *onDelStreamer )( const char* streamName, const SensorSpec* sensorSpec ),
+              void ( *onServerConnected )(),
+              void ( *onServerDisconnected )(),
+              const char* ipv4,
+              int port ) {
 
-
-    //Viewer* viewer = new Viewer( "127.0.0.1", 4042, {}, {} );
-    //return viewer;
+    //    Viewer* viewer = new Viewer( "127.0.0.1", 4042, {}, {} );
+    //    return viewer;
 
     auto onNewStreamerCpp = [=]( const std::string& sensorName, const SensorSpec& sensorSpec ) {
         onNewStreamer( sensorName.c_str(), &sensorSpec );
@@ -72,8 +76,53 @@ Viewer* createViewer(const char* ipv4, int port,
     auto onDelStreamerCpp = [=]( const std::string& sensorName, const SensorSpec& sensorSpec ) {
         onDelStreamer( sensorName.c_str(), &sensorSpec );
     };
-    Viewer * viewer = new Viewer( std::string(ipv4), port, onNewStreamerCpp, onDelStreamerCpp );
+    //    auto onServerConnectedCpp = [=](  ) {
+    //        onServerConnected();
+    //    };
+    //    auto onServerDisconnectedCpp = [=](  ) {
+    //        onServerDisconnected();
+    //    };
+    //    Viewer * viewer = new Viewer( onNewStreamerCpp, onDelStreamerCpp, onServerConnectedCpp,
+    //    onServerDisconnectedCpp, std::string(ipv4), port);
+    Viewer* viewer = new Viewer(
+        onNewStreamerCpp, onDelStreamerCpp, onServerConnected, onServerDisconnected, ipv4, port );
     return viewer;
+}
+
+void freeViewer( Viewer* viewer ) {
+    assert( viewer != nullptr );
+    delete viewer;
+}
+
+void sensorSpec_getSensorName(const SensorSpec* sensorSpec , char *sensorName) {
+//    sensorName = sensorSpec->m_sensorName.c_str();
+//    sensorName = new char[sensorSpec->m_sensorName.size() + 1];
+    memcpy(sensorName, sensorSpec->m_sensorName.c_str(), sensorSpec->m_sensorName.size());
+//    sensorName[sensorSpec->m_sensorName.size()] = 0;
+//    sensorName = sensorSpec->m_sensorName.c_str();
+}
+
+int sensorSpec_getResolutionsSize( const SensorSpec* sensorSpec ) {
+    return sensorSpec->m_resolutions.size();
+}
+
+int sensorSpec_getAcquisitionSize( const SensorSpec* sensorSpec ) {
+    return sensorSpec->m_acquisitionSize;
+}
+
+int sensorSpec_getFormat(const SensorSpec *sensorSpec, int iResolution)
+{
+    return static_cast<int>(sensorSpec->m_resolutions.at(iResolution).second);
+}
+
+int sensorSpec_getDimensionsSize(const SensorSpec *sensorSpec, int iResolution)
+{
+    return sensorSpec->m_resolutions.at(iResolution).first.size();
+}
+
+int sensorSpec_getDimension(const SensorSpec *sensorSpec, int iResolution, int iDimension)
+{
+    return sensorSpec->m_resolutions.at(iResolution).first.at(iDimension);
 }
 
 // bool getAcquisition( InputSensor* inputSensor,
@@ -99,4 +148,5 @@ Viewer* createViewer(const char* ipv4, int port,
 //    return true;
 //}
 
+} // namespace native
 } // namespace hub

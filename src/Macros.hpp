@@ -131,11 +131,17 @@
 // 			assert( s_logFile.is_open() ); \
 //             s_logFile << str << std::endl; \
 
-#ifdef DEBUG
+//#if SRC_EXPORTS
+#define ENABLE_DEBUG_MSG
+//#endif
+
+#if defined(ENABLE_DEBUG_MSG) && defined(DEBUG)
 #    define DEBUG_MSG( str )               \
 do {                               \
 std::cout << str << std::endl; \
 } while ( false )
+//std::cout << "[" << __FILE_NAME__ << "][" << __FUNCTION__ << ":" << __LINE__ << "] " << str << std::endl;
+
 #else
 #    define DEBUG_MSG( str ) \
 do {                 \

@@ -13,12 +13,16 @@ class SRC_API ServerSocket : public Socket
 
     ClientSocket waitNewClient();
 
-  private:
+
+private:
     void initServer();
 
   private:
     int mPort;
     struct sockaddr_in mAddress;
+
+public:
+    int getPort() const;
 };
 
 

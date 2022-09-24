@@ -34,7 +34,9 @@ class SRC_API Socket
 
 
     bool isConnected() const;
+#ifdef DEBUG_SOCKET
     std::string getHeader( socket_fd iSock ) const;
+#endif
 
   protected:
     Socket();

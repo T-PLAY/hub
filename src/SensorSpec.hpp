@@ -54,7 +54,7 @@ class SRC_API SensorSpec
         Z16H,     		/**< Variable-length Huffman-compressed 16-bit depth values. */
         FG,       		/**< 16-bit per-pixel frame grabber format. */
         Y411,     		/**< 12-bit per-pixel. */
-        MAT4,     		/**< Transform matrix 4x4 float. */
+        MAT4,     		/**< Transform matrix 4x4 of float. */
         COUNT     		/**< Number of enumeration values. Not a valid input: intended to be used in for-loops. */
     };
     // clang-format on

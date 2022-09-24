@@ -14,6 +14,7 @@ namespace net {
 //constexpr int Socket::s_defaultServicePort       = 4041;
 //const char* const Socket::s_defaultServiceIp = "127.0.0.1";
 
+#ifdef DEBUG_SOCKET
 std::string Socket::getHeader( socket_fd iSock ) const {
     std::string str;
     if (m_serverSide) {
@@ -26,6 +27,7 @@ std::string Socket::getHeader( socket_fd iSock ) const {
                       "m[socket:" + std::to_string( iSock ) + "]\033[0m ";
     return str;
 }
+#endif
 
 Socket::Socket() {
 #ifdef DEBUG_SOCKET
@@ -45,7 +47,9 @@ Socket::~Socket() {
     DEBUG_MSG( getHeader( m_fdSock ) << "~Socket()" );
 #endif
     if ( m_fdSock != INVALID_SOCKET ) {
+#ifdef DEBUG_SOCKET
         DEBUG_MSG( getHeader( m_fdSock ) << "close socket" );
+#endif
         net::clearSocket( m_fdSock );
     }
 }

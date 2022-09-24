@@ -6,6 +6,7 @@
 #include <thread>
 
 #include "SensorSpec.hpp"
+#include "Configurations.hpp"
 
 namespace hub {
 
@@ -21,25 +22,27 @@ class SRC_API Viewer
     //    Viewer( hub::net::ClientSocket&& clientSocket,
     //            std::function<void( const std::string&, const SensorSpec& )> onNewStreamer,
     //            std::function<void( const std::string& )> onDelStreamer );
-    Viewer( const std::string& ipv4,
-            const int& port,
-            std::function<void( const std::string& streamerName, const SensorSpec& )> onNewStreamer,
-            std::function<void( const std::string& streamerName, const SensorSpec& )> onDelStreamer,
+    Viewer(
+            std::function<void( const std::string& streamName, const SensorSpec& )> onNewStreamer,
+            std::function<void( const std::string& streamName, const SensorSpec& )> onDelStreamer,
             std::function<void()> onServerConnected    = {},
-            std::function<void()> onServerDisconnected = {} );
+            std::function<void()> onServerDisconnected = {},
+            const std::string& ipv4 = net::s_defaultServiceIp,
+            int port = net::s_defaultServicePort);
     ~Viewer();
 
   private:
     std::thread m_thread;
     bool m_stopThread = false;
 
-    std::function<void( const std::string& streamerName, const SensorSpec& )> m_onNewStreamer;
-    std::function<void( const std::string& streamerName, const SensorSpec& )> m_onDelStreamer;
+    std::function<void( const std::string& streamName, const SensorSpec& )> m_onNewStreamer;
+    std::function<void( const std::string& streamName, const SensorSpec& )> m_onDelStreamer;
     std::function<void()> m_onServerConnected;
     std::function<void()> m_onServerDisconnected;
 
-    const std::string& m_ipv4;
-    const int& m_port;
+    const std::string m_ipv4;
+    const int m_port;
+    bool m_serverConnected = false;
 };
 
 } // namespace hub

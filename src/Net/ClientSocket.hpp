@@ -66,7 +66,7 @@ class SRC_API ClientSocket : public Socket, public virtual io::Interface
     void connectToServer();
 
   private:
-    std::string m_ipv4;
+    const std::string m_ipv4;
     int m_port;
 };
 

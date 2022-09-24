@@ -10,6 +10,7 @@
 #include <cassert>
 
 #include <filesystem>
+#include <vector>
 
     namespace DICOM {
 

@@ -21,7 +21,7 @@ foreach( name ${EXAMPLE_SRC_BASENAME} )
     set(TARGET_NAME example-${basename})
     add_executable( ${TARGET_NAME}
         ${name}.cpp )
-    target_link_libraries( ${TARGET_NAME} ${SRC_TARGET} )
+    target_link_libraries( ${TARGET_NAME} ${SRC_TARGET} server )
     set_property(TARGET ${TARGET_NAME} PROPERTY CXX_STANDARD 17)
     set_property(TARGET ${TARGET_NAME} PROPERTY CXX_EXTENSIONS OFF)
 endforeach()

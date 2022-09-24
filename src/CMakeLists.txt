@@ -51,6 +51,7 @@ else()
                 ${headers}
         )
         target_compile_definitions(${PROJECT_NAME} PUBLIC -DSRC_EXPORTS)
+#        target_compile_definitions(${PROJECT_NAME} PUBLIC -DDEBUG)
 endif()
 
 

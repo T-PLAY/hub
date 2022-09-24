@@ -19,7 +19,9 @@ ServerSocket::ServerSocket( int port ) : mPort( port ) {
 
 ClientSocket ServerSocket::waitNewClient() {
 
+#ifdef DEBUG_SOCKET
     DEBUG_MSG( getHeader( m_fdSock ) << "wait client on port " << mPort );
+#endif
     socklen_t addrlen    = sizeof( mAddress );
     socket_fd new_socket = accept( m_fdSock, (struct sockaddr*)&mAddress, &addrlen );
     if ( new_socket == INVALID_SOCKET ) {
@@ -27,7 +29,9 @@ ClientSocket ServerSocket::waitNewClient() {
         net::clearSocket( new_socket );
         exit( 1 );
     }
+#ifdef DEBUG_SOCKET
     DEBUG_MSG( getHeader( m_fdSock ) << "new client on socket " << new_socket );
+#endif
 //    net::sSockets.push_back( new_socket );
     net::registerSocket(new_socket);
 
@@ -42,7 +46,9 @@ void ServerSocket::initServer() {
         perror( "socket creation failed.\n" );
         return;
     }
+#ifdef DEBUG_SOCKET
     DEBUG_MSG( getHeader( m_fdSock ) << "server started " );
+#endif
 //    net::sSockets.push_back( mFdSock );
     net::registerSocket(m_fdSock);
 
@@ -63,7 +69,14 @@ void ServerSocket::initServer() {
         return;
     }
 
+#ifdef DEBUG_SOCKET
     DEBUG_MSG( getHeader( m_fdSock ) << "server inited " );
+#endif
+}
+
+int ServerSocket::getPort() const
+{
+    return mPort;
 }
 
 } // namespace net
