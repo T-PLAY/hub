@@ -69,7 +69,7 @@ TEST_CASE( "Server test : viewer" ) {
         auto onServerDisconnected = []() {
             std::cout << "[Test] ############################### onServerDisconnected" << std::endl;
         };
-        auto viewer = hub::Viewer( ipv4, port, onNewStreamer, onDelStreamer, onServerConnected, onServerDisconnected );
+        auto viewer = hub::Viewer( onNewStreamer, onDelStreamer, onServerConnected, onServerDisconnected, ipv4, port );
         std::cout << "[Test] ############################### viewer created" << std::endl;
         std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
 

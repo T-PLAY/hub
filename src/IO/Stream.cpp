@@ -63,8 +63,10 @@ InputStream::InputStream( const std::string& streamName,
     ClientSocket::Message mess;
     Interface::read( mess );
     if ( mess == ClientSocket::Message::NOT_FOUND ) {
+#ifdef DEBUG_SOCKET
         DEBUG_MSG( getHeader( m_fdSock ) << "[InputStream] exception sensor '" << streamName
                                          << "' is not attached to server" );
+#endif
         throw ClientSocket::exception(
             ( std::string( "sensor '" ) + streamName + "' is not attached to server" ).c_str() );
     }

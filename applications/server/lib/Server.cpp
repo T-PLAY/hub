@@ -408,7 +408,7 @@ std::string Server::headerMsg() const {
 }
 
 void Server::run() {
-    std::cout << headerMsg() << "run() start" << std::endl;
+    std::cout << headerMsg() << "listening port " << mServerSock.getPort() << std::endl;
 
     int iClient = 0;
     while ( iClient < m_maxClients ) {
