@@ -35,7 +35,7 @@ ViewerQt::ViewerQt( const std::string& ipv4, const int& port ) {
     auto _onServerDisconnected = [this]() { emit serverDisconnected(); };
 
     m_viewer = new hub::Viewer(
-        ipv4, port, _addStreamer, _delStreamer, _onServerConnected, _onServerDisconnected );
+        _addStreamer, _delStreamer, _onServerConnected, _onServerDisconnected, ipv4, port );
 }
 
 ViewerQt::~ViewerQt() {

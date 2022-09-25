@@ -112,18 +112,36 @@ int sensorSpec_getAcquisitionSize( const SensorSpec* sensorSpec ) {
 
 int sensorSpec_getFormat(const SensorSpec *sensorSpec, int iResolution)
 {
+    assert(iResolution < sensorSpec->m_resolutions.size());
     return static_cast<int>(sensorSpec->m_resolutions.at(iResolution).second);
 }
 
 int sensorSpec_getDimensionsSize(const SensorSpec *sensorSpec, int iResolution)
 {
+    assert(iResolution < sensorSpec->m_resolutions.size());
     return sensorSpec->m_resolutions.at(iResolution).first.size();
 }
 
 int sensorSpec_getDimension(const SensorSpec *sensorSpec, int iResolution, int iDimension)
 {
+    assert(iResolution < sensorSpec->m_resolutions.size());
+    assert(iDimension < sensorSpec->m_resolutions.at(iResolution).first.size());
     return sensorSpec->m_resolutions.at(iResolution).first.at(iDimension);
 }
+
+void sensorSpec_getResolutionsStr(const SensorSpec *sensorSpec, char *resolutionsStr)
+{
+    const auto & resolutionsString = SensorSpec::resolutions2string(sensorSpec->m_resolutions);
+    memcpy(resolutionsStr,  resolutionsString.c_str(), resolutionsString.size());
+
+}
+
+void sensorSpec_getMetaDataStr(const SensorSpec *sensorSpec, char *metaDataStr)
+{
+    const auto & metaDataString = SensorSpec::metaData2string(sensorSpec->m_metaData, true);
+    memcpy(metaDataStr,  metaDataString.c_str(), metaDataString.size());
+}
+
 
 // bool getAcquisition( InputSensor* inputSensor,
 //                      long long* start,

@@ -30,11 +30,14 @@ extern "C"
 
     SRC_API void sensorSpec_getSensorName( const SensorSpec* sensorSpec, char* sensorName );
     SRC_API int sensorSpec_getResolutionsSize( const SensorSpec* sensorSpec );
+    SRC_API void sensorSpec_getResolutionsStr( const SensorSpec* sensorSpec, char* resolutionsStr );
     SRC_API int sensorSpec_getFormat( const SensorSpec* sensorSpec, int iResolution );
     SRC_API int sensorSpec_getDimensionsSize( const SensorSpec* sensorSpec, int iResolution );
     SRC_API int
     sensorSpec_getDimension( const SensorSpec* sensorSpec, int iResolution, int iDimension );
+//    SRC_API void sensorSpec_getDimensionStr( const SensorSpec* sensorSpec, int iResolution, int iDimension, char* sensorName );
     SRC_API int sensorSpec_getAcquisitionSize( const SensorSpec* sensorSpec );
+    SRC_API void sensorSpec_getMetaDataStr( const SensorSpec* sensorSpec, char* metaDataStr );
 }
 
 } // namespace native

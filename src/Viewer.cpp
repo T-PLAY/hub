@@ -46,6 +46,8 @@ Viewer::Viewer( std::function<void( const std::string&, const SensorSpec& )> onN
 
             if ( m_onServerConnected ) m_onServerConnected();
 
+                    SensorSpec sensorSpec;
+
             while ( !m_stopThread ) {
                 net::ClientSocket::Message serverMessage;
                 sock.read( serverMessage );
@@ -67,7 +69,7 @@ Viewer::Viewer( std::function<void( const std::string&, const SensorSpec& )> onN
                     DEBUG_MSG( "[Viewer] new streamer '" << streamName << "'" );
 #endif
 
-                    SensorSpec sensorSpec;
+//                    SensorSpec sensorSpec;
                     sock.read( sensorSpec );
 
                     //                    std::cout << "[Viewer] new streamer " << streamName

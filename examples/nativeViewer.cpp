@@ -52,6 +52,17 @@ int main() {
         }
         std::cout << "[Example][Viewer] acquisitionsSize : "
                   << hub::native::sensorSpec_getAcquisitionSize( sensorSpec ) << std::endl;
+
+        char resolutionsStr[80] = {0};
+        hub::native::sensorSpec_getResolutionsStr(sensorSpec, resolutionsStr);
+        std::cout << "[Example][Viewer] resolutionsStr : '"
+                  << resolutionsStr << "'" << std::endl;
+
+        char metaDataStr[80] = {0};
+        hub::native::sensorSpec_getMetaDataStr(sensorSpec, metaDataStr);
+        std::cout << "[Example][Viewer] metaDataStr : '"
+                  << metaDataStr << "'" << std::endl;
+
     };
     auto onDelStreamer = []( const char* streamName, const hub::SensorSpec* sensorSpec ) {
         std::cout << "[Example][Viewer] onDelStreamer" << std::endl;
@@ -72,7 +83,8 @@ int main() {
 //                );
                 , hub::net::s_defaultServiceIp.c_str(), hub::net::s_defaultServicePort );
 
-    while ( true ) {
-        std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
-    }
+//    while ( true ) {
+//        std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+//    }
+    std::this_thread::sleep_for(std::chrono::seconds(1));
 }
