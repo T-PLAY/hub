@@ -24,11 +24,15 @@
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include <iomanip>
+
 
 auto pos = glm::vec3(0.0, 1.0, 0.0);
 auto quat = glm::quat(1.0, 0.0, 0.0, 0.0); // w, x, y, z
 bool needUpdate = true;
 const float moveSpeed = 5.0;
+
+#define margin std::setw(5) << std::setfill(' ') << std::left
 
 void up()
 {
@@ -326,12 +330,15 @@ int main(int argc, char* argv[])
             const auto& timestampStart = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count();
             keyboard << (hub::Acquisition(timestampStart, timestampStart) << std::move(dof6));
 
-            std::cout << "\r"
-                      << "x:" << pos.x << " y:" << pos.y << " z:" << pos.z << "\t"
-                      << " w:" << quat.w << " x:" << quat.x << " y:" << quat.y << " z:" << quat.z << "                  ";
+//            std::cout << "\r"
+                    std::cout
+                      << "\tx:" << margin << pos.x << " y:" << margin << pos.y << " z:" << margin << pos.z << "\t\t"
+                      << " w:" << margin << quat.w << " x:" << margin << quat.x << " y:" << margin << quat.y << " z:" << margin << quat.z
+                << std::endl;
+//                << std::flush;
         }
         //        std::cout << c << " was pressed."<< std::endl;
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 
     //    char c;
