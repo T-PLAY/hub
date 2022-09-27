@@ -98,7 +98,7 @@ void sensorSpec_getSensorName(const SensorSpec* sensorSpec , char *sensorName) {
 //    sensorName = sensorSpec->m_sensorName.c_str();
 //    sensorName = new char[sensorSpec->m_sensorName.size() + 1];
     memcpy(sensorName, sensorSpec->m_sensorName.c_str(), sensorSpec->m_sensorName.size());
-//    sensorName[sensorSpec->m_sensorName.size()] = 0;
+    sensorName[sensorSpec->m_sensorName.size()] = 0;
 //    sensorName = sensorSpec->m_sensorName.c_str();
 }
 
@@ -132,14 +132,18 @@ int sensorSpec_getDimension(const SensorSpec *sensorSpec, int iResolution, int i
 void sensorSpec_getResolutionsStr(const SensorSpec *sensorSpec, char *resolutionsStr)
 {
     const auto & resolutionsString = SensorSpec::resolutions2string(sensorSpec->m_resolutions);
+//    resolutionsStr = new char[resolutionsString.size() + 1];
     memcpy(resolutionsStr,  resolutionsString.c_str(), resolutionsString.size());
+    resolutionsStr[resolutionsString.size()] = 0;
 
 }
 
 void sensorSpec_getMetaDataStr(const SensorSpec *sensorSpec, char *metaDataStr)
 {
     const auto & metaDataString = SensorSpec::metaData2string(sensorSpec->m_metaData, true);
+//    metaDataStr = new char[metaDataString.size() + 1];
     memcpy(metaDataStr,  metaDataString.c_str(), metaDataString.size());
+    metaDataStr[metaDataString.size()] = 0;
 }
 
 
