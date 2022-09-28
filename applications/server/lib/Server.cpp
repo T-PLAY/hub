@@ -810,6 +810,7 @@ StreamViewer::StreamViewer( Server& server, int iClient, hub::net::ClientSocket&
             }
         }
         catch ( std::exception& e ) {
+            m_mtxOutputSensor.unlock();
             std::cout << headerMsg() << "thread : catch stream viewer exception : " << e.what()
                       << std::endl;
         }

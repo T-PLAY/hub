@@ -146,6 +146,16 @@ void sensorSpec_getMetaDataStr(const SensorSpec *sensorSpec, char *metaDataStr)
     metaDataStr[metaDataString.size()] = 0;
 }
 
+SensorSpec *sensorSpec_copy(const SensorSpec *source)
+{
+    return new SensorSpec(source->m_sensorName, source->m_resolutions, source->m_metaData);
+}
+
+void freeSensorSpec(SensorSpec *sensorSpec)
+{
+    delete sensorSpec;
+}
+
 
 // bool getAcquisition( InputSensor* inputSensor,
 //                      long long* start,

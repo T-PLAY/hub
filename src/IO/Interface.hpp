@@ -214,6 +214,9 @@ void Interface::read( std::vector<T>& vector ) const {
     int nbEl;
     read( nbEl );
 
+    vector.clear();
+    vector.reserve(nbEl);
+
     for ( int i = 0; i < nbEl; ++i ) {
         T el;
         read( el );
@@ -233,6 +236,7 @@ void Interface::read( std::map<T, U>& map ) const {
 #ifdef DEBUG_IOSTREAM
     std::cout << "[Interface] map : nbEl = " << nbEl << std::endl;
 #endif
+    map.clear();
 
     for ( int i = 0; i < nbEl; ++i ) {
         //        T name;
