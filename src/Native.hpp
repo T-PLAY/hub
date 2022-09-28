@@ -38,6 +38,9 @@ extern "C"
 //    SRC_API void sensorSpec_getDimensionStr( const SensorSpec* sensorSpec, int iResolution, int iDimension, char* sensorName );
     SRC_API int sensorSpec_getAcquisitionSize( const SensorSpec* sensorSpec );
     SRC_API void sensorSpec_getMetaDataStr( const SensorSpec* sensorSpec, char* metaDataStr );
+    SRC_API SensorSpec * sensorSpec_copy( const SensorSpec* source);
+    SRC_API void freeSensorSpec( SensorSpec* dest);
+
 }
 
 } // namespace native
