@@ -97,8 +97,9 @@ void freeViewer( Viewer* viewer ) {
 void sensorSpec_getSensorName(const SensorSpec* sensorSpec , char *sensorName) {
 //    sensorName = sensorSpec->m_sensorName.c_str();
 //    sensorName = new char[sensorSpec->m_sensorName.size() + 1];
-    memcpy(sensorName, sensorSpec->m_sensorName.c_str(), sensorSpec->m_sensorName.size());
-    sensorName[sensorSpec->m_sensorName.size()] = 0;
+    const int len = sensorSpec->m_sensorName.size();
+    memcpy(sensorName, sensorSpec->m_sensorName.c_str(), len + 1);
+    sensorName[len] = 0;
 //    sensorName = sensorSpec->m_sensorName.c_str();
 }
 
@@ -133,8 +134,9 @@ void sensorSpec_getResolutionsStr(const SensorSpec *sensorSpec, char *resolution
 {
     const auto & resolutionsString = SensorSpec::resolutions2string(sensorSpec->m_resolutions);
 //    resolutionsStr = new char[resolutionsString.size() + 1];
-    memcpy(resolutionsStr,  resolutionsString.c_str(), resolutionsString.size());
-    resolutionsStr[resolutionsString.size()] = 0;
+    const int len = resolutionsString.size();
+    memcpy(resolutionsStr,  resolutionsString.c_str(), len + 1);
+    resolutionsStr[len] = 0;
 
 }
 
@@ -142,8 +144,9 @@ void sensorSpec_getMetaDataStr(const SensorSpec *sensorSpec, char *metaDataStr)
 {
     const auto & metaDataString = SensorSpec::metaData2string(sensorSpec->m_metaData, true);
 //    metaDataStr = new char[metaDataString.size() + 1];
-    memcpy(metaDataStr,  metaDataString.c_str(), metaDataString.size());
-    metaDataStr[metaDataString.size()] = 0;
+    const int len = metaDataString.size();
+    memcpy(metaDataStr,  metaDataString.c_str(), len + 1);
+    metaDataStr[len] = 0;
 }
 
 SensorSpec *sensorSpec_copy(const SensorSpec *source)
@@ -154,6 +157,24 @@ SensorSpec *sensorSpec_copy(const SensorSpec *source)
 void freeSensorSpec(SensorSpec *sensorSpec)
 {
     delete sensorSpec;
+}
+
+const SensorSpec::MetaData *sensorSpec_getMetaData(const SensorSpec *sensorSpec)
+{
+    return &sensorSpec->m_metaData;
+}
+
+bool metaData_getString(const SensorSpec::MetaData *metaData, const char *metaName, char *output)
+{
+    if (metaData->find(metaName) == metaData->end())
+        return false;
+
+    const char* meta = std::any_cast<const char*>( metaData->at( metaName ) );
+//    output = (char*)meta;
+    const int len = strlen(meta);
+    memcpy(output,  meta, len + 1);
+    output[len] = 0;
+    return true;
 }
 
 
