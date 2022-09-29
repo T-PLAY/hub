@@ -41,6 +41,9 @@ extern "C"
     SRC_API SensorSpec * sensorSpec_copy( const SensorSpec* source);
     SRC_API void freeSensorSpec( SensorSpec* dest);
 
+    SRC_API const SensorSpec::MetaData * sensorSpec_getMetaData( const SensorSpec* sensorSpec );
+    SRC_API bool metaData_getString( const SensorSpec::MetaData * metaData, const char * metaName, char* output );
+
 }
 
 } // namespace native

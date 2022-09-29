@@ -23,6 +23,7 @@
 #include <Engine/Data/TextureManager.hpp>
 #include <ScanMaterial/ScanMaterial.hpp>
 //#include <Engine/Scene/EntityManager.hpp>
+#include <Core/Geometry/StandardAttribNames.hpp>
 
 //#define _USE_MATH_DEFINES
 //#include <cmath>
@@ -196,8 +197,8 @@ void ScanComponent::update( const hub::Acquisition& acq ) {
                 //            TLocal.translate( Vector3( 1.0, 0.0, 0.0 ) );
                 //            scan.m_scanLine->setLocalTransform( TLocal );
                 //            if ( ! m_isLiveStream )
-                TLocal *= Eigen::AngleAxis<float>( M_PI, Vector3( 1.0, 0.0, 0.0 ) );
-                TLocal *= Eigen::AngleAxis<float>( M_PI_2, Vector3( 0.0, 1.0, 0.0 ) );
+//                TLocal *= Eigen::AngleAxis<float>( M_PI, Vector3( 1.0, 0.0, 0.0 ) );
+//                TLocal *= Eigen::AngleAxis<float>( M_PI_2, Vector3( 0.0, 1.0, 0.0 ) );
                 scan.m_quad->setLocalTransform( TLocal );
             }
 
@@ -268,19 +269,20 @@ void ScanComponent::addScan() {
 
     // scan plane
     {
-#ifdef USE_GOT_PR
-        auto quadTriangle = Ra::Core::Geometry::makeYNormalQuad( { 1_ra, 1_ra }, {}, true );
-#else
+//#ifdef USE_GOT_PR
+//        auto quadTriangle = Ra::Core::Geometry::makeYNormalQuad( { 1_ra, 1_ra }, {}, true );
+//#else
         auto quadTriangle = Ra::Core::Geometry::makeYNormalQuad( { 1_ra, 1_ra }, {} );
         Ra::Core::Vector3Array tex_coords;
-        tex_coords.push_back( { 0_ra, 0_ra, 0_ra } );
         tex_coords.push_back( { 1_ra, 0_ra, 0_ra } );
-        tex_coords.push_back( { 0_ra, 1_ra, 0_ra } );
+        tex_coords.push_back( { 0_ra, 0_ra, 0_ra } );
         tex_coords.push_back( { 1_ra, 1_ra, 0_ra } );
+        tex_coords.push_back( { 0_ra, 1_ra, 0_ra } );
+//        Ra::Engine::Data::Mesh::
         quadTriangle.addAttrib(
-            Ra::Engine::Data::Mesh::getAttribName( Ra::Engine::Data::Mesh::VERTEX_TEXCOORD ),
+            Ra::Core::Geometry::getAttribName( Ra::Core::Geometry::VERTEX_TEXCOORD ),
             tex_coords );
-#endif
+//#endif
 
         //! [Creating a texture for the slice]
         //        unsigned char data[192 * 512];
@@ -478,9 +480,9 @@ void ScanComponent::addScan() {
             TLocal *= m_transform;
             //            TLocal.translate( Vector3( 1.0, 0.0, 0.0 ) );
             scan.m_scanLine->setLocalTransform( TLocal );
-            if ( ! m_isLiveStream )
-                TLocal *= Eigen::AngleAxis<float>( M_PI, Vector3( 1.0, 0.0, 0.0 ) );
-            TLocal *= Eigen::AngleAxis<float>( M_PI_2, Vector3( 0.0, 1.0, 0.0 ) );
+//            if ( ! m_isLiveStream )
+//                TLocal *= Eigen::AngleAxis<float>( M_PI, Vector3( 1.0, 0.0, 0.0 ) );
+//            TLocal *= Eigen::AngleAxis<float>( M_PI_2, Vector3( 0.0, 1.0, 0.0 ) );
             scan.m_quad->setLocalTransform( TLocal );
     }
 
