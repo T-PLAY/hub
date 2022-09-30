@@ -94,14 +94,25 @@ void freeViewer( Viewer* viewer ) {
     delete viewer;
 }
 
-void sensorSpec_getSensorName(const SensorSpec* sensorSpec , char *sensorName) {
+void sensorSpec_getSensorName(const SensorSpec* sensorSpec , char *sensorName, int * strLen) {
 //    sensorName = sensorSpec->m_sensorName.c_str();
 //    sensorName = new char[sensorSpec->m_sensorName.size() + 1];
-    const int len = sensorSpec->m_sensorName.size();
-    memcpy(sensorName, sensorSpec->m_sensorName.c_str(), len + 1);
-    sensorName[len] = 0;
+    *strLen = sensorSpec->m_sensorName.size();
+    memcpy(sensorName, sensorSpec->m_sensorName.c_str(), *strLen + 1);
+    sensorName[*strLen] = 0;
 //    sensorName = sensorSpec->m_sensorName.c_str();
 }
+////void passString([out] LPStr *str);
+//const char * sensorSpec_getSensorName(const SensorSpec* sensorSpec) {
+////    sensorName = sensorSpec->m_sensorName.c_str();
+////    sensorName = new char[sensorSpec->m_sensorName.size() + 1];
+//    return "hello";
+//    return sensorSpec->m_sensorName.c_str();
+////    const int len = sensorSpec->m_sensorName.size();
+////    memcpy(sensorName, sensorSpec->m_sensorName.c_str(), len + 1);
+////    sensorName[len] = 0;
+////    sensorName = sensorSpec->m_sensorName.c_str();
+//}
 
 int sensorSpec_getResolutionsSize( const SensorSpec* sensorSpec ) {
     return sensorSpec->m_resolutions.size();
@@ -164,16 +175,16 @@ const SensorSpec::MetaData *sensorSpec_getMetaData(const SensorSpec *sensorSpec)
     return &sensorSpec->m_metaData;
 }
 
-bool metaData_getString(const SensorSpec::MetaData *metaData, const char *metaName, char *output)
+bool metaData_getString(const SensorSpec::MetaData *metaData, const char *metaName, char *output, int * strLen)
 {
     if (metaData->find(metaName) == metaData->end())
         return false;
 
     const char* meta = std::any_cast<const char*>( metaData->at( metaName ) );
 //    output = (char*)meta;
-    const int len = strlen(meta);
-    memcpy(output,  meta, len + 1);
-    output[len] = 0;
+    *strLen = strlen(meta);
+    memcpy(output,  meta, *strLen + 1);
+    output[*strLen] = 0;
     return true;
 }
 
