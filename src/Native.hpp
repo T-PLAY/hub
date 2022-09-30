@@ -4,6 +4,12 @@
 #include "Macros.hpp"
 #include "Viewer.hpp"
 
+//#include <iostream>
+//#include <stdlib.h>
+//#include <stdio.h>
+//#include <windows.h>
+//#include <winbase.h>
+
 namespace hub {
 namespace native {
 
@@ -28,7 +34,9 @@ extern "C"
     //                  int port         = hub::net::s_defaultServicePort );
     SRC_API void freeViewer( Viewer* viewer );
 
-    SRC_API void sensorSpec_getSensorName( const SensorSpec* sensorSpec, char* sensorName );
+//    void passString([in, out] LPSTR *str);
+    SRC_API void sensorSpec_getSensorName( const SensorSpec* sensorSpec, char* sensorName, int * strLen );
+//    SRC_API const char* sensorSpec_getSensorName( const SensorSpec* sensorSpec );
     SRC_API int sensorSpec_getResolutionsSize( const SensorSpec* sensorSpec );
     SRC_API void sensorSpec_getResolutionsStr( const SensorSpec* sensorSpec, char* resolutionsStr );
     SRC_API int sensorSpec_getFormat( const SensorSpec* sensorSpec, int iResolution );
@@ -42,7 +50,7 @@ extern "C"
     SRC_API void freeSensorSpec( SensorSpec* dest);
 
     SRC_API const SensorSpec::MetaData * sensorSpec_getMetaData( const SensorSpec* sensorSpec );
-    SRC_API bool metaData_getString( const SensorSpec::MetaData * metaData, const char * metaName, char* output );
+    SRC_API bool metaData_getString( const SensorSpec::MetaData * metaData, const char * metaName, char* output, int * strLen );
 
 }
 

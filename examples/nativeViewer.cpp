@@ -28,9 +28,12 @@ int main() {
     auto onNewStreamer = []( const char* streamName, const hub::SensorSpec* sensorSpec ) {
         std::cout << "[Example][Viewer] onNewStreamer : " << streamName << std::endl;
         char sensorName[80] = {0};
-        hub::native::sensorSpec_getSensorName(sensorSpec, sensorName);
+//        const char * sensorName = nullptr;
+        int strLen = 0;
+        hub::native::sensorSpec_getSensorName(sensorSpec, sensorName, &strLen);
+//        sensorName = hub::native::sensorSpec_getSensorName(sensorSpec);
         std::cout << "[Example][Viewer] sensorName : '"
-                  << sensorName << "'" << std::endl;
+                  << sensorName << "' size = " << strLen << std::endl;
 //        delete sensorName;
         const int resolutionsSize = hub::native::sensorSpec_getResolutionsSize( sensorSpec );
         std::cout << "[Example][Viewer] resolutions size : " << resolutionsSize << std::endl;
