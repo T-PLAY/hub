@@ -62,7 +62,7 @@ int main( int argc, char* argv[] ) {
         //            else
         //		    data[i] = (i / height + dec) % 256;
         //        }
-        const auto maxFps = 40;
+        const auto maxFps = 10;
         const auto end    = start + std::chrono::microseconds( 1'000'000 / maxFps );
 
         const auto& timestampStart =

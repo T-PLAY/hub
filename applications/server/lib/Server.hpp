@@ -13,6 +13,7 @@
 #include <OutputSensor.hpp>
 
 #include "ServerSocket.hpp"
+#include <memory>
 
 class Server;
 
@@ -64,8 +65,14 @@ class Streamer : public Client
 
     const std::map<std::string, std::list<StreamViewer*>>& getSyncViewers() const;
 
-    const std::vector<std::unique_ptr<hub::Acquisition>> & getLastAcqs() const;
+//    const std::vector<std::unique_ptr<hub::Acquisition>> & getLastAcqs() const;
+    const std::vector<std::shared_ptr<hub::Acquisition>> & getLastAcqs() const;
+//    std::shared_ptr<hub::Acquisition> getLastAcq() const;
+//    hub::Acquisition getLastAcq() const;
+//    std::vector<std::unique_ptr<hub::Acquisition>> getLastAcqs() const;
 
+public:
+    mutable std::mutex m_mtxLastAcqs;
   private:
     std::mutex m_mtx;
     std::unique_ptr<hub::InputSensor> m_inputSensor;
@@ -74,8 +81,8 @@ class Streamer : public Client
     std::map<std::string, std::list<StreamViewer*>> m_syncViewers;
     std::map<std::string, std::deque<hub::Acquisition>> m_syncAcqs;
 
-    std::vector<std::unique_ptr<hub::Acquisition>> m_lastAcqs;
-    std::mutex m_mtxLastAcqs;
+//    std::vector<std::unique_ptr<hub::Acquisition>> m_lastAcqs;
+    std::vector<std::shared_ptr<hub::Acquisition>> m_lastAcqs;
 
     bool m_isRecordStream = false;
 
@@ -111,6 +118,7 @@ class StreamViewer : public Client
 
     const std::string& getSyncStreamName() const;
     const std::string& getStreamName() const;
+    void killThread();
 
   private:
     std::unique_ptr<hub::OutputSensor> m_outputSensor;
@@ -151,7 +159,11 @@ class Server
     void delViewer( Viewer* viewer );
 
     void newAcquisition( Streamer* streamer, hub::Acquisition acq );
-    const std::vector<std::unique_ptr<hub::Acquisition>> & getLastAcqs( const std::string& streamName );
+//    const std::vector<std::unique_ptr<hub::Acquisition>> & getLastAcqs( const std::string& streamName );
+    const std::vector<std::shared_ptr<hub::Acquisition>> & getLastAcqs( const std::string& streamName );
+//    std::vector<std::unique_ptr<hub::Acquisition>> getLastAcqs( const std::string& streamName );
+//    void releaseGetLastAcqs(const std::string& streamName);
+//    const hub::Acquisition * getLastAcq( const std::string& streamName );
 
 public:
     bool m_acqPing = true;
