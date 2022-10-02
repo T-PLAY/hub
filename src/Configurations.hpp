@@ -5,7 +5,7 @@
 namespace hub {
 namespace net {
 
-static constexpr int s_defaultServicePort = 4042;
+static constexpr int s_defaultServicePort = 4041;
 //static constexpr const char * const s_defaultServiceIp = "127.0.0.1";
 static std::string s_defaultServiceIp = "127.0.0.1";
 //static std::string s_defaultServiceIp = "141.115.68.30"; // work ip
