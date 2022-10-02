@@ -18,7 +18,13 @@ extern "C"
     SRC_API InputSensor* createInputSensor( const char* streamName, const char* ipv4, int port );
     SRC_API void freeInputSensor( InputSensor* inputSensor );
     SRC_API int getAcquisitionSize( const InputSensor* inputSensor );
-    SRC_API bool getData( const InputSensor* inputSensor, unsigned char* data, int iMeasure = 0 );
+//    SRC_API bool getData( const InputSensor* inputSensor, unsigned char* data, int iMeasure = 0 );
+
+    SRC_API Acquisition * getAcquisition( const InputSensor* inputSensor );
+    SRC_API void freeAcquisition( Acquisition* acquisition );
+    SRC_API void acquisition_getMeasure( const Acquisition* acquisition, unsigned char* data, int iMeasure = 0 );
+    SRC_API long long acquisition_getStart( const Acquisition* acquisition );
+
     //    SRC_API bool getAcquisition( InputSensor* inputSensor,
     //                                 long long* start,
     //                                 long long* end,
@@ -38,6 +44,7 @@ extern "C"
     SRC_API void sensorSpec_getSensorName( const SensorSpec* sensorSpec, char* sensorName, int * strLen );
 //    SRC_API const char* sensorSpec_getSensorName( const SensorSpec* sensorSpec );
     SRC_API int sensorSpec_getResolutionsSize( const SensorSpec* sensorSpec );
+    SRC_API int sensorSpec_getResolutionSize( const SensorSpec* sensorSpec, int iResolution = 0 );
     SRC_API void sensorSpec_getResolutionsStr( const SensorSpec* sensorSpec, char* resolutionsStr );
     SRC_API int sensorSpec_getFormat( const SensorSpec* sensorSpec, int iResolution );
     SRC_API int sensorSpec_getDimensionsSize( const SensorSpec* sensorSpec, int iResolution );
@@ -51,6 +58,7 @@ extern "C"
 
     SRC_API const SensorSpec::MetaData * sensorSpec_getMetaData( const SensorSpec* sensorSpec );
     SRC_API bool metaData_getString( const SensorSpec::MetaData * metaData, const char * metaName, char* output, int * strLen );
+    SRC_API bool metaData_getMat4( const SensorSpec::MetaData * metaData, const char * metaName, float * output );
 
 }
 

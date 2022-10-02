@@ -816,8 +816,8 @@ StreamViewer::StreamViewer( Server& server, int iClient, hub::net::ClientSocket&
         return;
     }
 
-//    std::thread thread( [this, streamer]() {
-            m_thread = std::thread( [this, streamer]() {
+    //    std::thread thread( [this, streamer]() {
+    m_thread = new std::thread( [this, streamer]() {
         try {
             // check client still alive
             while ( !m_updateFailed || !m_isKilled ) {
@@ -890,11 +890,12 @@ StreamViewer::StreamViewer( Server& server, int iClient, hub::net::ClientSocket&
         else {
             std::cout << headerMsg() << "thread : thread end" << std::endl;
             //        if ( !m_updateFailed ) { m_server.delStreamViewer( this ); }
+            m_isKilled = true;
             m_server.delStreamViewer( this );
         }
     } );
-    //    m_thread.detach();
-//    thread.detach();
+    //        m_thread.detach();
+    //    thread.detach();
 }
 
 StreamViewer::~StreamViewer() {
@@ -903,6 +904,8 @@ StreamViewer::~StreamViewer() {
     //    m_isKilled = true;
     //        m_thread.join();
     std::cout << headerMsg() << "deleted" << std::endl;
+    //    if (! m_isKilled)
+    if ( m_thread != nullptr ) m_thread->detach();
 }
 
 std::string StreamViewer::headerMsg() const {
@@ -945,9 +948,15 @@ void StreamViewer::update( const hub::Acquisition& acq ) {
 }
 
 void StreamViewer::killThread() {
+    if ( m_isKilled ) return;
     m_isKilled = true;
-    if (m_thread.joinable())
-        m_thread.join();
+    if ( m_thread != nullptr ) {
+        if ( m_thread->joinable() ) {
+            m_thread->join();
+            delete m_thread;
+            m_thread = nullptr;
+        }
+    }
 }
 
 const std::string& StreamViewer::getSyncStreamName() const {

@@ -37,27 +37,74 @@ int getAcquisitionSize( const InputSensor* inputSensor ) {
     return static_cast<int>( inputSensor->m_spec.m_acquisitionSize );
 }
 
-bool getData( const InputSensor* inputSensor, unsigned char* data, int iMeasure ) {
+
+Acquisition * getAcquisition(const InputSensor *inputSensor)
+{
     assert( inputSensor != nullptr );
 
-    std::cout << "[Native] getData( " << inputSensor << ")" << std::endl;
+    std::cout << "[Native] getAcquisition( " << inputSensor << ")" << std::endl;
+    Acquisition * ret = nullptr;
 
     try {
         auto acq = inputSensor->getAcquisition();
         std::cout << "[Native] get acq : " << acq << std::endl;
-
-        std::cout << "[Native] copying data " << std::endl;
-        assert( iMeasure < acq.getMeasures().size() );
-        const auto& measure = acq.getMeasures().at( iMeasure );
-        memcpy( data, measure.m_data, measure.m_size );
+        ret = new Acquisition(std::move(acq));
     }
     catch ( std::exception& e ) {
         std::cout << "[Native] getAcquisition : catch exception : " << e.what() << std::endl;
-        return false;
+        return ret;
     }
-
-    return true;
+    return ret;
 }
+
+void freeAcquisition(Acquisition *acquisition)
+{
+    delete acquisition;
+}
+
+void acquisition_getMeasure(const Acquisition *acquisition, unsigned char *data, int iMeasure)
+{
+    assert( acquisition != nullptr );
+//    std::cout << "[Native] getData( " << acquisition << ")" << std::endl;
+//    try {
+//        auto acq = acquisition->getAcquisition();
+//        std::cout << "[Native] get acq : " << acq << std::endl;
+
+        std::cout << "[Native] copying data " << std::endl;
+        assert( iMeasure < acquisition->getMeasures().size() );
+        const auto& measure = acquisition->getMeasures().at( iMeasure );
+        memcpy( data, measure.m_data, measure.m_size );
+//    }
+//    catch ( std::exception& e ) {
+//        std::cout << "[Native] getAcquisition : catch exception : " << e.what() << std::endl;
+//        return false;
+//    }
+
+//    return true;
+
+}
+
+//bool getData( const InputSensor* inputSensor, unsigned char* data, int iMeasure ) {
+//    assert( inputSensor != nullptr );
+
+//    std::cout << "[Native] getData( " << inputSensor << ")" << std::endl;
+
+//    try {
+//        auto acq = inputSensor->getAcquisition();
+//        std::cout << "[Native] get acq : " << acq << std::endl;
+
+//        std::cout << "[Native] copying data " << std::endl;
+//        assert( iMeasure < acq.getMeasures().size() );
+//        const auto& measure = acq.getMeasures().at( iMeasure );
+//        memcpy( data, measure.m_data, measure.m_size );
+//    }
+//    catch ( std::exception& e ) {
+//        std::cout << "[Native] getAcquisition : catch exception : " << e.what() << std::endl;
+//        return false;
+//    }
+
+//    return true;
+//}
 
 Viewer*
 createViewer( void ( *onNewStreamer )( const char* streamName, const SensorSpec* sensorSpec ),
@@ -113,6 +160,11 @@ void sensorSpec_getSensorName(const SensorSpec* sensorSpec , char *sensorName, i
 ////    sensorName[len] = 0;
 ////    sensorName = sensorSpec->m_sensorName.c_str();
 //}
+
+int sensorSpec_getResolutionSize(const SensorSpec *sensorSpec, int iResolution)
+{
+    return SensorSpec::computeAcquisitionSize(sensorSpec->m_resolutions.at(iResolution));
+}
 
 int sensorSpec_getResolutionsSize( const SensorSpec* sensorSpec ) {
     return sensorSpec->m_resolutions.size();
@@ -187,6 +239,26 @@ bool metaData_getString(const SensorSpec::MetaData *metaData, const char *metaNa
     output[*strLen] = 0;
     return true;
 }
+
+bool metaData_getMat4(const SensorSpec::MetaData *metaData, const char * metaName, float *output)
+{
+    if ( metaData->find( metaName  ) != metaData->end() ) {
+        const float* array = std::any_cast<const float*>( metaData->at( metaName ) );
+        memcpy(output, array, 64);
+        return true;
+//        m_transform        = Eigen::Map<Eigen::Matrix4f>( (float*)array ); // Column-major
+    }
+    return false;
+}
+
+
+long long acquisition_getStart(const Acquisition *acquisition)
+{
+    return acquisition->m_start;
+}
+
+
+
 
 
 // bool getAcquisition( InputSensor* inputSensor,
