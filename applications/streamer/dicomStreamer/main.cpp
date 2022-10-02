@@ -60,6 +60,13 @@ int main( int argc, char* argv[] ) {
     transform       = glm::scale( transform, glm::vec3( scanDepth / 2.0, 1.0, scanWidth / 2.0 ) );
     transform       = glm::translate( transform, glm::vec3( 1.0, 0.0, 0.0 ) );
     const float* array    = glm::value_ptr( transform );
+    std::cout << "transform matrix : " << std::endl;
+    for (int i = 0; i <4; ++i) {
+        for (int j = 0; j <4; ++j) {
+            std::cout << array[i * 4 + j] << " ";
+        }
+        std::cout << std::endl;
+    }
     metaData["transform"] = array;
 
     const int sliceSize = sliceWidth * sliceHeight * 2;

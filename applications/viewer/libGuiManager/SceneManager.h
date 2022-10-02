@@ -141,7 +141,7 @@ void SceneManager::addSensor( InterfaceT&& interfaceT ) {
     //    m_sensorName2sensor[sensorName] =
     //    Sensor(std::make_unique<hub::InputSensor>(std::move(interfaceT)), *m_mdiArea, this);
 
-    // prevent all father's sons, the father is comming
+    // prevent all father's sons, the father is coming
     for ( auto& sensor : m_sensors ) {
         const auto& inputSensor = sensor.m_inputSensor;
         const auto& metaData    = inputSensor->m_spec.m_metaData;
