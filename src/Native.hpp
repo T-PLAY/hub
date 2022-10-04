@@ -57,8 +57,11 @@ extern "C"
     SRC_API void freeSensorSpec( SensorSpec* dest);
 
     SRC_API const SensorSpec::MetaData * sensorSpec_getMetaData( const SensorSpec* sensorSpec );
+    SRC_API bool metaData_exists( const SensorSpec::MetaData * metaData, const char * metaName );
     SRC_API bool metaData_getString( const SensorSpec::MetaData * metaData, const char * metaName, char* output, int * strLen );
     SRC_API bool metaData_getMat4( const SensorSpec::MetaData * metaData, const char * metaName, float * output );
+    SRC_API int metaData_getInt( const SensorSpec::MetaData * metaData, const char * metaName );
+    SRC_API unsigned int metaData_getUInt( const SensorSpec::MetaData * metaData, const char * metaName );
 
 }
 
