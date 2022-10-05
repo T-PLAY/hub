@@ -50,7 +50,8 @@ Acquisition* getAcquisition( const InputSensor* inputSensor ) {
     }
     catch ( std::exception& e ) {
         std::cout << "[Native] getAcquisition : catch exception : " << e.what() << std::endl;
-        return ret;
+        return nullptr;
+//        return ret;
     }
     return ret;
 }
