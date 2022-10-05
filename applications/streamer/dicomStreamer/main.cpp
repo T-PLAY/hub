@@ -58,7 +58,12 @@ int main( int argc, char* argv[] ) {
     const float scanWidth = sliceWidth * pixelSpacingWidth;
     const float scanDepth = sliceHeight * pixelSpacingHeight;
     transform       = glm::scale( transform, glm::vec3( scanDepth / 2.0, 1.0, scanWidth / 2.0 ) );
-    transform       = glm::translate( transform, glm::vec3( 1.0, 0.0, 0.0 ) );
+    transform       = glm::translate( transform, glm::vec3( 1.0, 100.0, 1.0 ) );
+//    transform = glm::rotate(transform, glm::radians(45.0f), glm::vec3(1.0, 0.0, 0.0));
+    transform = glm::rotate(transform, glm::radians(45.0f), glm::vec3(0.0, 1.0, 0.0));
+//    transform = glm::rotate(transform, glm::radians(45.0f), glm::vec3(0.0, 0.0, 1.0));
+//    transform = glm::rotate(transform, glm::radians(90.0), glm::vec3(0.0, 1.0, 0.0));
+//        transform = glm::rotate(transform, glm::radians(90.0), glm::vec3(0.0, 1.0, 0.0));
     const float* array    = glm::value_ptr( transform );
     std::cout << "transform matrix : " << std::endl;
     for (int i = 0; i <4; ++i) {
