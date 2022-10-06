@@ -26,106 +26,111 @@
 
 #include <iomanip>
 
-auto pos              = glm::vec3( 0.0, 1.0, 0.0 );
-auto quat             = glm::quat( 1.0, 0.0, 0.0, 0.0 ); // w, x, y, z
-bool needUpdate       = true;
-const float moveSpeed = 5.0;
+static auto s_pos                  = glm::vec3( 0.0, 1.0, 0.0 );
+static auto s_quat                 = glm::quat( 1.0, 0.0, 0.0, 0.0 ); // w, x, y, z
+static bool s_needUpdate           = true;
+static constexpr float s_moveSpeed = 5.0;
+static bool s_exitApp = false;
 
 #define margin std::setw( 5 ) << std::setfill( ' ' ) << std::left
 
+void exitApp() {
+    s_exitApp = true;
+}
+
 void up() {
     //                std::cout << "up" << std::endl;
-    pos += moveSpeed * glm::vec3( 1.0, 0.0, 0.0 );
-    //                pos += moveSpeed * glm::vec3(0.0, 0.0, -1.0);
-    //                pos += moveSpeed * cameraFront;
-    needUpdate = true;
+    s_pos += s_moveSpeed * glm::vec3( 1.0, 0.0, 0.0 );
+    //                s_pos += s_moveSpeed * glm::vec3(0.0, 0.0, -1.0);
+    //                s_pos += s_moveSpeed * cameraFront;
+    s_needUpdate = true;
 }
 
 void down() {
     //                std::cout << "down" << std::endl;
-    pos -= moveSpeed * glm::vec3( 1.0, 0.0, 0.0 );
-    //                pos += moveSpeed * glm::vec3(0.0, -1.0, 0.0);
-    //                pos += moveSpeed * glm::vec3(0.0, 0.0, 1.0);
-    //                pos -= moveSpeed * cameraFront;
-    needUpdate = true;
+    s_pos -= s_moveSpeed * glm::vec3( 1.0, 0.0, 0.0 );
+    //                s_pos += s_moveSpeed * glm::vec3(0.0, -1.0, 0.0);
+    //                s_pos += s_moveSpeed * glm::vec3(0.0, 0.0, 1.0);
+    //                s_pos -= s_moveSpeed * cameraFront;
+    s_needUpdate = true;
 }
 
 void right() {
     //                std::cout << "right" << std::endl;
-    pos += moveSpeed * glm::vec3( 0.0, 0.0, 1.0 );
-    //                pos += moveSpeed * glm::vec3(1.0, 0.0, 0.0);
-    //                pos += moveSpeed * glm::normalize(glm::cross(cameraFront, cameraUp));
-    needUpdate = true;
+    s_pos += s_moveSpeed * glm::vec3( 0.0, 0.0, 1.0 );
+    //                s_pos += s_moveSpeed * glm::vec3(1.0, 0.0, 0.0);
+    //                s_pos += s_moveSpeed * glm::normalize(glm::cross(cameraFront, cameraUp));
+    s_needUpdate = true;
 }
 
 void left() {
     //                std::cout << "left" << std::endl;
-    pos -= moveSpeed * glm::vec3( 0.0, 0.0, 1.0 );
-    //                pos += moveSpeed * glm::vec3(-1.0, 0.0, 0.0);
-    //                pos -= moveSpeed * glm::normalize(glm::cross(cameraFront, cameraUp));
-    needUpdate = true;
+    s_pos -= s_moveSpeed * glm::vec3( 0.0, 0.0, 1.0 );
+    //                s_pos += s_moveSpeed * glm::vec3(-1.0, 0.0, 0.0);
+    //                s_pos -= s_moveSpeed * glm::normalize(glm::cross(cameraFront, cameraUp));
+    s_needUpdate = true;
 }
 
 void home() {
     //                std::cout << "page up" << std::endl;
-    pos += moveSpeed * glm::vec3( 0.0, 1.0, 0.0 );
-    //                pos += moveSpeed * glm::vec3(0.0, 1.0, 0.0);
-    //                pos += moveSpeed * cameraUp;
-    needUpdate = true;
+    s_pos += s_moveSpeed * glm::vec3( 0.0, 1.0, 0.0 );
+    //                s_pos += s_moveSpeed * glm::vec3(0.0, 1.0, 0.0);
+    //                s_pos += s_moveSpeed * cameraUp;
+    s_needUpdate = true;
 }
 
 void end() {
     //                std::cout << "page down" << std::endl;
-    pos -= moveSpeed * glm::vec3( 0.0, 1.0, 0.0 );
-    //                pos += moveSpeed * glm::vec3(0.0, -1.0, 0.0);
-    //                pos -= moveSpeed * cameraUp;
-    needUpdate = true;
+    s_pos -= s_moveSpeed * glm::vec3( 0.0, 1.0, 0.0 );
+    //                s_pos += s_moveSpeed * glm::vec3(0.0, -1.0, 0.0);
+    //                s_pos -= s_moveSpeed * cameraUp;
+    s_needUpdate = true;
 }
 
 void shiftUp() {
     //                    std::cout << "up" << std::endl;
-    //                    pitch -= glm::radians(moveSpeed);
-    quat       = glm::rotate( quat, glm::radians( moveSpeed ), glm::vec3( 0.0, 0.0, 1.0 ) );
-    needUpdate = true;
+    //                    pitch -= glm::radians(s_moveSpeed);
+    s_quat       = glm::rotate( s_quat, glm::radians( s_moveSpeed ), glm::vec3( 0.0, 0.0, 1.0 ) );
+    s_needUpdate = true;
 }
 
 void shiftDown() {
     //                    std::cout << "down" << std::endl;
-    //                    pitch += glm::radians(moveSpeed);
-    quat       = glm::rotate( quat, glm::radians( -moveSpeed ), glm::vec3( 0.0, 0.0, 1.0 ) );
-    needUpdate = true;
+    //                    pitch += glm::radians(s_moveSpeed);
+    s_quat       = glm::rotate( s_quat, glm::radians( -s_moveSpeed ), glm::vec3( 0.0, 0.0, 1.0 ) );
+    s_needUpdate = true;
 }
 
 void shiftRight() {
     //                    std::cout << "right" << std::endl;
-    //                    yaw -= glm::radians(moveSpeed);
-    quat       = glm::rotate( quat, glm::radians( -moveSpeed ), glm::vec3( 0.0, 1.0, 0.0 ) );
-    needUpdate = true;
+    //                    yaw -= glm::radians(s_moveSpeed);
+    s_quat       = glm::rotate( s_quat, glm::radians( -s_moveSpeed ), glm::vec3( 0.0, 1.0, 0.0 ) );
+    s_needUpdate = true;
 }
 
 void shiftLeft() {
     //                    std::cout << "left" << std::endl;
-    //                    yaw += glm::radians(moveSpeed);
-    quat = glm::rotate( quat, glm::radians( moveSpeed ), glm::vec3( 0.0, 1.0, 0.0 ) );
-    //                    quat = glm::rotate(quat, glm::radians(moveSpeed), glm::vec3(1.0, 0.0,
+    //                    yaw += glm::radians(s_moveSpeed);
+    s_quat = glm::rotate( s_quat, glm::radians( s_moveSpeed ), glm::vec3( 0.0, 1.0, 0.0 ) );
+    //                    s_quat = glm::rotate(s_quat, glm::radians(s_moveSpeed), glm::vec3(1.0, 0.0,
     //                    0.0));
-    needUpdate = true;
+    s_needUpdate = true;
 }
 
 void shiftHome() {
     //                    std::cout << "page up" << std::endl;
-    //                    roll -= glm::radians(moveSpeed);
-    //                    quat = glm::rotate(quat, glm::radians(moveSpeed), glm::vec3(0.0, 1.0,
+    //                    roll -= glm::radians(s_moveSpeed);
+    //                    s_quat = glm::rotate(s_quat, glm::radians(s_moveSpeed), glm::vec3(0.0, 1.0,
     //                    0.0));
-    quat       = glm::rotate( quat, glm::radians( -moveSpeed ), glm::vec3( 1.0, 0.0, 0.0 ) );
-    needUpdate = true;
+    s_quat       = glm::rotate( s_quat, glm::radians( -s_moveSpeed ), glm::vec3( 1.0, 0.0, 0.0 ) );
+    s_needUpdate = true;
 }
 
 void shiftEnd() {
     //                    std::cout << "page down" << std::endl;
-    //                    roll += glm::radians(moveSpeed);
-    quat       = glm::rotate( quat, glm::radians( moveSpeed ), glm::vec3( 1.0, 0.0, 0.0 ) );
-    needUpdate = true;
+    //                    roll += glm::radians(s_moveSpeed);
+    s_quat       = glm::rotate( s_quat, glm::radians( s_moveSpeed ), glm::vec3( 1.0, 0.0, 0.0 ) );
+    s_needUpdate = true;
 }
 
 int main( int argc, char* argv[] ) {
@@ -136,7 +141,7 @@ int main( int argc, char* argv[] ) {
 
     //        hub::Header::MetaData metaData;
     hub::SensorSpec::MetaData metaData;
-//    metaData["parent"] = "Keyboard";
+    //    metaData["parent"] = "Keyboard";
     //    metaData["scanWidth"] = 10.0;
     //    metaData["scanDepth"] = 10.0;
     //    metaData["x"] = 0.0;
@@ -145,20 +150,47 @@ int main( int argc, char* argv[] ) {
 
     //    hub::OutputSensor proceduralStream("Polhemus Patriot (probe)", Stream::Format::Y8, {
     //    width, height }, hub::ClientSocket(), metaData);
-    hub::OutputSensor keyboard(
-        { sensorName, { { { 1 }, hub::SensorSpec::Format::DOF6 } }, metaData },
-        hub::io::OutputStream( sensorName ) );
 
-    //    glm::vec3 pos(0, -50, -50);
-    //    glm::quat quat(1.0, 0.0, 0.0, 0.0);
-    //    auto pos = glm::vec3(0, 30, 125);
-    //    auto pos = glm::vec3(0.0, 1.0, 0.0); // x, y, z
-    //    auto quat = glm::angleAxis(0.f, glm::vec3(1, 0, 0));
-    //    auto quat = glm::angleAxis(0.f, glm::vec3(1, 0, 0));
-    //    quat = glm::rotate(quat, glm::radians(45.0f), glm::vec3(1.0, 0.0, 0.0));
-    //    quat = glm::rotate(quat, glm::radians(45.0f), glm::vec3(0.0, 1.0, 0.0));
-    //    quat = glm::rotate(quat, glm::radians(45.0f), glm::vec3(0.0, 0.0, 1.0));
-    //    auto quat = glm::quat(1.0, 0.0, 0.0, 0.0); // w, x, y, z
+
+    std::thread thread = std::thread( [&]() {
+        hub::OutputSensor keyboard(
+            { sensorName, { { { 1 }, hub::SensorSpec::Format::DOF6 } }, metaData },
+            hub::io::OutputStream( sensorName ) );
+
+        while ( ! s_exitApp ) {
+            const auto start = std::chrono::high_resolution_clock::now();
+            hub::Dof6 dof6( s_pos.x, s_pos.y, s_pos.z, s_quat.w, s_quat.x, s_quat.y, s_quat.z );
+            //            assert(translation == glm::value_ptr(s_pos));
+            //            assert(orientation == glm::value_ptr(s_quat));
+            //            memcpy(data, translation, 12);
+            //            memcpy(&data[12], orientation, 16);
+
+            const auto maxFps = 60;
+            const auto end    = start + std::chrono::microseconds( 1'000'000 / maxFps );
+
+            const auto& timestampStart =
+                std::chrono::duration_cast<std::chrono::microseconds>( start.time_since_epoch() )
+                    .count();
+            const auto& timestampEnd =
+                std::chrono::duration_cast<std::chrono::microseconds>( end.time_since_epoch() )
+                    .count();
+
+            keyboard << ( hub::Acquisition( timestampStart, timestampEnd ) << std::move( dof6 ) );
+
+            std::this_thread::sleep_until( end );
+        }
+    } );
+
+    //    glm::vec3 s_pos(0, -50, -50);
+    //    glm::s_quat s_quat(1.0, 0.0, 0.0, 0.0);
+    //    auto s_pos = glm::vec3(0, 30, 125);
+    //    auto s_pos = glm::vec3(0.0, 1.0, 0.0); // x, y, z
+    //    auto s_quat = glm::angleAxis(0.f, glm::vec3(1, 0, 0));
+    //    auto s_quat = glm::angleAxis(0.f, glm::vec3(1, 0, 0));
+    //    s_quat = glm::rotate(s_quat, glm::radians(45.0f), glm::vec3(1.0, 0.0, 0.0));
+    //    s_quat = glm::rotate(s_quat, glm::radians(45.0f), glm::vec3(0.0, 1.0, 0.0));
+    //    s_quat = glm::rotate(s_quat, glm::radians(45.0f), glm::vec3(0.0, 0.0, 1.0));
+    //    auto s_quat = glm::s_quat(1.0, 0.0, 0.0, 0.0); // w, x, y, z
 
     //    glm::vec3 cameraFront = glm::vec3(1.0, 0.0, 0.0);
     //    glm::vec3 cameraUp = glm::vec3(0.0, 1.0, 0.0);
@@ -166,11 +198,11 @@ int main( int argc, char* argv[] ) {
     //    float yaw = glm::radians(90.0f);
     //    float roll = 0.0f;
 
-    //        auto quat = glm::quat(glm::vec3(pitch, yaw, roll));
+    //        auto s_quat = glm::s_quat(glm::vec3(pitch, yaw, roll));
 
     //    unsigned char data[28];
-    //    float* translation = glm::value_ptr(pos); // x, y, z
-    //    float* orientation = glm::value_ptr(quat); // x, y, z, w
+    //    float* translation = glm::value_ptr(s_pos); // x, y, z
+    //    float* orientation = glm::value_ptr(s_quat); // x, y, z, w
     //    memcpy(data, translation, 12);
     //    memcpy(&data[12], orientation, 16);
     //    for (int i = 0; i < 7; ++i) {
@@ -189,7 +221,7 @@ int main( int argc, char* argv[] ) {
     // Set the terminal to raw mode
     system( "stty raw" );
 #endif
-    while ( 1 ) {
+    while ( ! s_exitApp ) {
 
 #ifdef WIN32
         //        HWND activeWindow = GetActiveWindow();
@@ -210,7 +242,8 @@ int main( int argc, char* argv[] ) {
         //        if ( GetKeyState( VK_ESCAPE ) & 0x8000 ) {
         if ( GetKeyState( VK_OEM_PERIOD ) & 0x8000 || GetKeyState( VK_ESCAPE ) & 0x8000 ) {
             std::cout << std::endl;
-            exit( 0 );
+            exitApp();
+//            exit( 0 );
         }
         if ( GetKeyState( VK_RIGHT ) & 0x8000 ) {
             if ( shifted ) { shiftRight(); }
@@ -296,48 +329,38 @@ int main( int argc, char* argv[] ) {
         }
         else if ( c == '.' ) {
             system( "stty cooked" );
-            exit( 0 );
+            exitApp();
+//            exit( 0 );
         }
 #endif
 
-        if ( needUpdate ) {
+        if ( s_needUpdate ) {
             //            std::cout << "update stream" << std::endl;
-            needUpdate = false;
-            //            quat = glm::quat(glm::vec3(pitch, yaw, roll));
+            s_needUpdate = false;
+            //            s_quat = glm::s_quat(glm::vec3(pitch, yaw, roll));
             //            glm::vec3 front;
             //            front.x = cos(yaw) * cos(pitch);
             //            front.y = sin(pitch);
             //            front.z = sin(yaw) * cos(pitch);
             //            cameraFront = glm::normalize(front);
 
-            hub::Dof6 dof6( pos.x, pos.y, pos.z, quat.w, quat.x, quat.y, quat.z );
-            //            assert(translation == glm::value_ptr(pos));
-            //            assert(orientation == glm::value_ptr(quat));
-            //            memcpy(data, translation, 12);
-            //            memcpy(&data[12], orientation, 16);
-            const auto& timestampStart =
-                std::chrono::duration_cast<std::chrono::microseconds>(
-                    std::chrono::high_resolution_clock::now().time_since_epoch() )
-                    .count();
-            keyboard << ( hub::Acquisition( timestampStart, timestampStart ) << std::move( dof6 ) );
-
             //            std::cout << "\r"
             std::cout
 #ifdef OS_LINUX
                 << "\r"
 #endif
-                << "\tx:" << margin << pos.x << " y:" << margin << pos.y << " z:" << margin << pos.z
+                << "\tx:" << margin << s_pos.x << " y:" << margin << s_pos.y << " z:" << margin << s_pos.z
                 << "\t\t"
-                << " w:" << margin << quat.w << " x:" << margin << quat.x << " y:" << margin
-                << quat.y << " z:" << margin << quat.z
+                << " w:" << margin << s_quat.w << " x:" << margin << s_quat.x << " y:" << margin
+                << s_quat.y << " z:" << margin << s_quat.z
 #ifdef OS_WINDOWS
                 << std::endl
 #endif
                 ;
             //                << std::flush;
-        } // if (needUpdate)
+        } // if (s_needUpdate)
         //        std::cout << c << " was pressed."<< std::endl;
-        std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+//        std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
     } // while (1)
 
     //    char c;
