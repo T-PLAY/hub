@@ -466,7 +466,7 @@ void GuiManager::onServerStreamStarted( const std::string& streamName,
     //    m_formInputStreamViews->addInputStream(streamName,
     //        ClientSocket(streamName, syncStreamName));
 
-    m_sceneManager.addSensor( hub::io::InputStream( streamName, syncStreamName ) );
+    m_sceneManager.addSensor( hub::io::InputStream( streamName, syncStreamName ), streamName );
     //    m_sensorsView->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
     //    m_sensorsView->resizeColumnsToContents();
     //    Sensor sensor(ClientSocket(streamName, syncStreamName), nullptr);
@@ -477,7 +477,8 @@ void GuiManager::onServerStreamStopped( const std::string& streamName,
                                         const hub::SensorSpec& sensorSpec ) {
     std::cout << "[GuiManager] onServerStreamStopped()" << std::endl;
 
-    m_sceneManager.delSensor( sensorSpec.m_sensorName );
+//    m_sceneManager.delSensor( sensorSpec.m_sensorName );
+    m_sceneManager.delSensor( streamName );
 
     //    m_formInputStreamViews->deleteInputStream(sensorName);
     //    //        m_formInputStreamViews->onKillInputStream(sensorName);
@@ -660,7 +661,10 @@ void GuiManager::on_toolButton_fitSelected_clicked()
 
         //        assert(row < sensors.size());
         //        auto & sensor = m_sceneManager.getSensor(row);
-        m_sceneManager.fitView( row );
+
+        const std::string streamName = current.data().toString().toStdString();
+        m_sceneManager.fitView( streamName );
+//        m_sceneManager.fitView( row );
 
         //        const auto & sensor = sensors.at
 
@@ -725,10 +729,17 @@ void GuiManager::on_sensorsView_selectionChanged( const QItemSelection& selected
     const auto& indexes = m_sensorsView->selectionModel()->selectedIndexes();
 
     if ( indexes.empty() ) {
-        const int row = deselected.indexes().first().row();
-        std::cout << "[GuiManager] empty selection, deselected row " << row << std::endl;
+        const auto & index = deselected.indexes().first();
+        const int row = index.row();
+//        std::cout << "[GuiManager] empty selection, deselected row " << row << std::endl;
 
-        m_sceneManager.detachSensorFromImageManipulator( row );
+        const std::string streamName = m_sensorsView->model()->data(m_sensorsView->model()->index(row, 0)).toString().toStdString();
+//        const std::string streamName = index.data().toString().toStdString();
+        std::cout << "[GuiManager] stream " << streamName << " deselected" << std::endl;
+
+        m_sceneManager.detachSensorFromImageManipulator( streamName );
+
+//        m_sceneManager.detachSensorFromImageManipulator( row );
 
         //        if (m_recordLoader.isLoaded())
         //            m_recordLoader.unload();
@@ -736,16 +747,20 @@ void GuiManager::on_sensorsView_selectionChanged( const QItemSelection& selected
     else {
 
         const auto& current = indexes.first();
-
         const int row = current.row();
-
-        std::cout << "[GuiManager] row clicked " << row << std::endl;
 
         //        const auto& sensors = m_sceneManager.getSensors();
 
         //        assert(row < sensors.size());
         //        auto & sensor = m_sceneManager.getSensor(row);
-        m_sceneManager.attachSensorFromImageManipulator( row );
+
+//        const std::string streamName = current.data().toString().toStdString();
+        const std::string streamName = m_sensorsView->model()->data(m_sensorsView->model()->index(row, 0)).toString().toStdString();
+        std::cout << "[GuiManager] stream " << streamName << " clicked" << std::endl;
+
+        m_sceneManager.attachSensorFromImageManipulator( streamName );
+
+//        m_sceneManager.attachSensorFromImageManipulator( row );
 
         //        const auto & sensor = sensors.at
 
