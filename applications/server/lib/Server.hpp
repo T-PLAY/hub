@@ -182,7 +182,7 @@ public:
     std::list<Client*> m_clients;
 
     std::thread m_thread;
-    int m_maxClients = 100;
+    int m_maxClients = 1000;
 
   public:
     void setMaxClients( int maxThreads );

@@ -29,10 +29,15 @@
 static auto s_pos                  = glm::vec3( 0.0, 1.0, 0.0 );
 static auto s_quat                 = glm::quat( 1.0, 0.0, 0.0, 0.0 ); // w, x, y, z
 static bool s_needUpdate           = true;
-static constexpr float s_moveSpeed = 5.0;
-static bool s_exitApp = false;
+static constexpr float s_moveSpeed = 1.0;
+static bool s_exitApp              = false;
 
 #define margin std::setw( 5 ) << std::setfill( ' ' ) << std::left
+
+void init() {
+    s_pos  = glm::vec3( 0.0, 1.0, 0.0 );
+    s_quat = glm::quat( 1.0, 0.0, 0.0, 0.0 ); // w, x, y, z
+}
 
 void exitApp() {
     s_exitApp = true;
@@ -112,16 +117,16 @@ void shiftLeft() {
     //                    std::cout << "left" << std::endl;
     //                    yaw += glm::radians(s_moveSpeed);
     s_quat = glm::rotate( s_quat, glm::radians( s_moveSpeed ), glm::vec3( 0.0, 1.0, 0.0 ) );
-    //                    s_quat = glm::rotate(s_quat, glm::radians(s_moveSpeed), glm::vec3(1.0, 0.0,
-    //                    0.0));
+    //                    s_quat = glm::rotate(s_quat, glm::radians(s_moveSpeed), glm::vec3(1.0,
+    //                    0.0, 0.0));
     s_needUpdate = true;
 }
 
 void shiftHome() {
     //                    std::cout << "page up" << std::endl;
     //                    roll -= glm::radians(s_moveSpeed);
-    //                    s_quat = glm::rotate(s_quat, glm::radians(s_moveSpeed), glm::vec3(0.0, 1.0,
-    //                    0.0));
+    //                    s_quat = glm::rotate(s_quat, glm::radians(s_moveSpeed),
+    //                    glm::vec3(0.0, 1.0, 0.0));
     s_quat       = glm::rotate( s_quat, glm::radians( -s_moveSpeed ), glm::vec3( 1.0, 0.0, 0.0 ) );
     s_needUpdate = true;
 }
@@ -151,13 +156,12 @@ int main( int argc, char* argv[] ) {
     //    hub::OutputSensor proceduralStream("Polhemus Patriot (probe)", Stream::Format::Y8, {
     //    width, height }, hub::ClientSocket(), metaData);
 
-
     std::thread thread = std::thread( [&]() {
         hub::OutputSensor keyboard(
             { sensorName, { { { 1 }, hub::SensorSpec::Format::DOF6 } }, metaData },
             hub::io::OutputStream( sensorName ) );
 
-        while ( ! s_exitApp ) {
+        while ( !s_exitApp ) {
             const auto start = std::chrono::high_resolution_clock::now();
             hub::Dof6 dof6( s_pos.x, s_pos.y, s_pos.z, s_quat.w, s_quat.x, s_quat.y, s_quat.z );
             //            assert(translation == glm::value_ptr(s_pos));
@@ -221,7 +225,7 @@ int main( int argc, char* argv[] ) {
     // Set the terminal to raw mode
     system( "stty raw" );
 #endif
-    while ( ! s_exitApp ) {
+    while ( !s_exitApp ) {
 
 #ifdef WIN32
         //        HWND activeWindow = GetActiveWindow();
@@ -243,7 +247,7 @@ int main( int argc, char* argv[] ) {
         if ( GetKeyState( VK_OEM_PERIOD ) & 0x8000 || GetKeyState( VK_ESCAPE ) & 0x8000 ) {
             std::cout << std::endl;
             exitApp();
-//            exit( 0 );
+            //            exit( 0 );
         }
         if ( GetKeyState( VK_RIGHT ) & 0x8000 ) {
             if ( shifted ) { shiftRight(); }
@@ -271,11 +275,20 @@ int main( int argc, char* argv[] ) {
         }
 
 #else
-        c = getchar();
+        std::string inputKeyStr;
+        //        std::string getString(char c) {
+        //            return std::to_string(c);
+        //        }
+        auto getString = []( char c ) { return std::to_string( c ) + " "; };
+        c              = getchar();
+        inputKeyStr += getString( c );
         // terminate when "." is pressed
         if ( c == '\033' ) {
-            getchar();
-            switch ( getchar() ) {
+            c = getchar();
+            inputKeyStr += getString( c );
+            c = getchar();
+            inputKeyStr += getString( c );
+            switch ( c ) {
             case 'A': // up
                 up();
                 break;
@@ -298,40 +311,53 @@ int main( int argc, char* argv[] ) {
                 break;
 
             case '1':
-                getchar();
-                getchar();
-                //                std::cout << "shift ";
-                switch ( getchar() ) {
-                case 'A': // up
-                    shiftUp();
-                    break;
-                case 'B': // down
-                    shiftDown();
-                    break;
+                c = getchar();
+                inputKeyStr += getString( c );
+                if ( c == 59 ) {
 
-                case 'C': // right
-                    shiftRight();
-                    break;
-                case 'D': // left
-                    shiftLeft();
-                    break;
+                    c = getchar();
+                    inputKeyStr += getString( c );
+                    c = getchar();
+                    inputKeyStr += getString( c );
+                    //                std::cout << "shift ";
+                    switch ( c ) {
+                    case 'A': // up
+                        shiftUp();
+                        break;
+                    case 'B': // down
+                        shiftDown();
+                        break;
 
-                case 'H': // page up
-                    shiftHome();
+                    case 'C': // right
+                        shiftRight();
+                        break;
+                    case 'D': // left
+                        shiftLeft();
+                        break;
+
+                    case 'H': // page up
+                        shiftHome();
+                        break;
+                    case 'F': // page down
+                        shiftEnd();
+                        break;
+                        //                assert(-90 < pitch && pitch < 90);
+                    } // switch getchar() 2
                     break;
-                case 'F': // page down
-                    shiftEnd();
-                    break;
-                    //                assert(-90 < pitch && pitch < 90);
-                } // switch getchar() 2
-                break;
+                }
+                // F5
+                else if ( c == 53 ) {
+                    //                    std::cout << "F5" << std::endl;
+                    init();
+                }
             } // switch (getchar()) 1
         }
         else if ( c == '.' ) {
             system( "stty cooked" );
             exitApp();
-//            exit( 0 );
+            //            exit( 0 );
         }
+//        std::cout << "input key : '" << inputKeyStr << "'" << std::endl;
 #endif
 
         if ( s_needUpdate ) {
@@ -349,8 +375,8 @@ int main( int argc, char* argv[] ) {
 #ifdef OS_LINUX
                 << "\r"
 #endif
-                << "\tx:" << margin << s_pos.x << " y:" << margin << s_pos.y << " z:" << margin << s_pos.z
-                << "\t\t"
+                << "\tx:" << margin << s_pos.x << " y:" << margin << s_pos.y << " z:" << margin
+                << s_pos.z << "\t\t"
                 << " w:" << margin << s_quat.w << " x:" << margin << s_quat.x << " y:" << margin
                 << s_quat.y << " z:" << margin << s_quat.z
 #ifdef OS_WINDOWS
@@ -360,8 +386,10 @@ int main( int argc, char* argv[] ) {
             //                << std::flush;
         } // if (s_needUpdate)
         //        std::cout << c << " was pressed."<< std::endl;
-//        std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+        //        std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
     } // while (1)
+
+    thread.join();
 
     //    char c;
     //    while(1){ // infinite loop

@@ -180,14 +180,15 @@ void SensorCounterFpsThread::run() {
 //    m_entity->setTransform(entity->getTransform());
 //}
 
-Sensor::Sensor( std::unique_ptr<hub::InputSensor> inputSensor,
+Sensor::Sensor(std::unique_ptr<hub::InputSensor> inputSensor,
                 QMdiArea& mdiArea,
                 FormImageManipulator* imageManipulator,
                 Ra::Engine::RadiumEngine* engine,
                 Ra::Gui::Viewer* viewer,
                 Ra::Engine::Scene::System* sys,
                 Sensor* parentSensor,
-                QObject* parent ) :
+                const std::string & streamName,
+                QObject* parent) :
     QObject( parent ),
     m_inputSensor( std::move( inputSensor ) ),
     m_engine( engine ),
@@ -337,6 +338,7 @@ Sensor::Sensor( std::unique_ptr<hub::InputSensor> inputSensor,
         m_viewer->doneCurrent();
     }
 
+    m_items.append( new QStandardItem( streamName.c_str() ) );
     m_items.append( new QStandardItem( m_inputSensor->m_spec.m_sensorName.c_str() ) );
     m_items.append(
         new QStandardItem( hub::SensorSpec::resolutions2string( resolutions ).c_str() ) );
@@ -408,8 +410,11 @@ Sensor::~Sensor() {
         //        sons.erase(it);
     }
     for ( auto* sensor : m_sons ) {
+        sensor->m_entity->setTransform( Ra::Core::Transform::Identity() );
         sensor->m_parent = nullptr;
     }
+
+    detachFromImageManipulator();
     std::cout << "[Sensor] ~Sensor(" << m_inputSensor->m_spec.m_sensorName << ") end" << std::endl;
 }
 
