@@ -96,13 +96,15 @@ void ScanComponent::initialize() {
         m_transform        = Eigen::Map<Eigen::Matrix4f>( (float*)array ); // Column-major
     }
     else {
-        //        auto TLocal = Transform::Identity();
+//                auto TLocal = Transform::Identity();
         //                TLocal.translate( pos );
         //                TLocal.rotate( orientation );
         //        TLocal.scale( Vector3( 100, 100, 100 ) );
+//                TLocal *= Eigen::AngleAxis<float>( M_PI, Vector3( 1.0, 0.0, 0.0 ) );
         //        m_transform = Eigen::Scaling( 100.0, 100.0, 100.0 ).resize(4, 4);
         //        m_transform = Eigen::Matrix4f::Identity();
         m_transform.block( 0, 0, 3, 3 ) = Eigen::Scaling( 100.0f, 100.0f, 100.0f );
+//        m_transform *= TLocal;
     }
 
     //    const auto& resolutions = sensorSpec.m_resolutions;
@@ -188,6 +190,7 @@ void ScanComponent::update( const hub::Acquisition& acq ) {
             TLocal.rotate( orientation );
             //            TLocal.scale( Vector3( 100, 100, 100 ) );
             //            TLocal.scale( Vector3( scanDepth / 2.0, 1.0, scanWidth / 2.0 ) );
+//                TLocal *= Eigen::AngleAxis<float>( M_PI, Vector3( 1.0, 0.0, 0.0 ) );
             //            TLocal.scale( Vector3( 100.0, 100.0, 100.0 ) );
 
             if (m_isLiveStream) {
@@ -278,6 +281,10 @@ void ScanComponent::addScan() {
         tex_coords.push_back( { 0_ra, 0_ra, 0_ra } );
         tex_coords.push_back( { 1_ra, 1_ra, 0_ra } );
         tex_coords.push_back( { 0_ra, 1_ra, 0_ra } );
+//        tex_coords.push_back( { 0_ra, 0_ra, 0_ra } );
+//        tex_coords.push_back( { 1_ra, 0_ra, 0_ra } );
+//        tex_coords.push_back( { 0_ra, 1_ra, 0_ra } );
+//        tex_coords.push_back( { 1_ra, 1_ra, 0_ra } );
 //        Ra::Engine::Data::Mesh::
         quadTriangle.addAttrib(
             Ra::Core::Geometry::getAttribName( Ra::Core::Geometry::VERTEX_TEXCOORD ),
@@ -478,6 +485,7 @@ void ScanComponent::addScan() {
     {
                 auto TLocal = Transform::Identity();
             TLocal *= m_transform;
+//            TLocal *= Eigen::AngleAxis<float>( M_PI, Vector3( 1.0, 0.0, 0.0 ) );
             //            TLocal.translate( Vector3( 1.0, 0.0, 0.0 ) );
             scan.m_scanLine->setLocalTransform( TLocal );
 //            if ( ! m_isLiveStream )

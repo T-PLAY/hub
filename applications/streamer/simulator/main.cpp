@@ -64,7 +64,7 @@ int main( int argc, char* argv[] ) {
     glm::mat4 transform( 1.0 );
     transform =
         glm::scale( transform, glm::vec3( sliceRealDepth / 2.0, 1.0, sliceRealWidth / 2.0 ) );
-    transform             = glm::translate( transform, glm::vec3( 1.0, 0.0, 1.0 ) );
+    transform             = glm::translate( transform, glm::vec3( 1.0, 0.0, -1.0 ) );
     const float* array    = glm::value_ptr( transform );
     metaData["transform"] = array;
 
@@ -110,7 +110,12 @@ int main( int argc, char* argv[] ) {
 
     for ( int iImage = 0; iImage < nSlices; ++iImage ) {
 //        hub::Dof6 dof6( 0.0, iImage * sliceThickness, 0.0 );
-        hub::Dof6 dof6( 0.0, (nSlices - iImage - 1) * sliceThickness, 0.0 );
+        glm::quat quat(1.0, 0.0, 0.0, 0.0);
+        quat = glm::rotate(quat, glm::radians(180.0f), glm::vec3(1.0, 0.0, 0.0));
+//        hub::Dof6 dof6( 0.0, (nSlices - iImage - 1) * sliceThickness, 0.0, quat.w, quat.x, quat.y, quat.z );
+        hub::Dof6 dof6( 0.0, iImage * sliceThickness, 0.0, quat.w, quat.x, quat.y, quat.z );
+//        hub::Dof6 dof6( 0.0, iImage * sliceThickness, 0.0);
+
         hub::Measure image( &texturesData[textureSize * iImage], textureSize );
         outputSensor << ( hub::Acquisition { iImage, iImage } << std::move( dof6 )
                                                               << std::move( image ) );
@@ -154,8 +159,11 @@ int main( int argc, char* argv[] ) {
     //    const float sliceRealDepth = 35.0;
 //    double scanRealWidth = 200;
 //    double scanRealDepth = 200;
-    double scanRealWidth = 50.0 * 1.5;
-    double scanRealDepth = 35.0 * 1.5;
+    double scale = 1.5;
+//    double scanRealWidth = 50.0 * scale;
+//    double scanRealDepth = 35.0 * scale;
+    double scanRealWidth = sliceRealWidth;
+    double scanRealDepth = sliceRealDepth;
     //    transform2 = glm::rotate(transform2, glm::radians(90.0), glm::vec3(0.0, 1.0, 0.0));
     transform2 =
         glm::scale( transform2, glm::vec3( scanRealDepth / 2.0, 1.0, scanRealWidth / 2.0 ) );
@@ -192,7 +200,7 @@ int main( int argc, char* argv[] ) {
         if ( !std::filesystem::is_directory( entry ) ) { files_in_directory.push_back( entry ); }
     }
     std::sort( files_in_directory.begin(), files_in_directory.end() );
-    std::reverse(files_in_directory.begin(), files_in_directory.end());
+//    std::reverse(files_in_directory.begin(), files_in_directory.end());
 
     std::vector<std::string> fileList;
     for ( const auto& file : files_in_directory ) {
@@ -238,8 +246,10 @@ int main( int argc, char* argv[] ) {
 
     //    InputStream inputPosSensor(std::string("Keyboard"));
     //    InputStream inputPosSensor(ClientSocket("Keyboard", ""));
-//    hub::InputSensor inputPosSensor( hub::io::InputStream( "Keyboard" ) );
-    hub::InputSensor inputPosSensor( hub::io::InputStream( "Polhemus Patriot (sensor 1)" ) );
+
+    hub::InputSensor inputPosSensor( hub::io::InputStream( "Keyboard" ) );
+//    hub::InputSensor inputPosSensor( hub::io::InputStream( "Polhemus Patriot (sensor 1)" ) );
+
     //    OutputStream outputPosStream("Simulator", inputPosSensor.getFormat(),
     //    inputPosSensor.getDims(), ClientSocket(), metaData2);
 
@@ -269,6 +279,11 @@ int main( int argc, char* argv[] ) {
 
         //        float* translationData = (float*)acq.mData;
         //        float* quaternionData = (float*)&acq.mData[12];
+//        glm::quat orientation(dof6.m_w0, dof6.m_w1, dof6.m_w2, dof6.m_w3);
+//        orientation = glm::rotate(orientation, glm::radians(180.0f), glm::vec3(1.0, 0.0, 0.0));
+
+//        hub::Dof6 dof6( 0.0, (nSlices - iImage - 1) * sliceThickness, 0.0, quat.w, quat.x, quat.y, quat.z );
+//        hub::Dof6 dof6( 0.0, iImage * sliceThickness, 0.0, quat.w, quat.x, quat.y, quat.z );
 
         //        glm::vec3 pos(translationData[0], translationData[1], translationData[2]);
         //        const auto position = glm::make_vec3(translationData);
@@ -289,8 +304,10 @@ int main( int argc, char* argv[] ) {
         const AcquisitionZone acqZone( position, orientation, scanRealWidth, 1.1, scanRealDepth );
         //        AcquisitionZone acqZone(glm::vec3(0, 30, 125), glm::angleAxis(0.f, glm::vec3(0, 0,
         //        1)), 256, 256, 256);
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
 //        const auto& scanImage = bu.getCorrespondingUS( acqZone, scanWidth, scanHeight );
-                const auto& scanImage = bu.getCorrespondingRealUS( acqZone, grid, scanWidth, scanHeight );
+        const auto& scanImage = bu.getCorrespondingRealUS( acqZone, grid, scanWidth, scanHeight );
         assert( scanImage.size() == scanSize );
         const unsigned char* scanData = scanImage.data();
 
