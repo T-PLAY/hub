@@ -284,6 +284,11 @@ void GuiManager::init() {
                       &QItemSelectionModel::selectionChanged,
                       this,
                       &GuiManager::on_sensorsView_selectionChanged );
+    QObject::connect( m_sensorsView,
+                      &QTableView::doubleClicked,
+                      this,
+                      &GuiManager::on_sensorsView_doubleClicked );
+
 
     //    m_sensorsView->horizontalHeader().
     //    m_sensorsView->setColumnWidth(0, 200);
@@ -662,7 +667,8 @@ void GuiManager::on_toolButton_fitSelected_clicked()
         //        assert(row < sensors.size());
         //        auto & sensor = m_sceneManager.getSensor(row);
 
-        const std::string streamName = current.data().toString().toStdString();
+        const std::string streamName = m_sensorsView->model()->data(m_sensorsView->model()->index(row, 0)).toString().toStdString();
+//        const std::string streamName = current.data().toString().toStdString();
         m_sceneManager.fitView( streamName );
 //        m_sceneManager.fitView( row );
 
@@ -772,4 +778,23 @@ void GuiManager::on_sensorsView_selectionChanged( const QItemSelection& selected
         //            m_recordLoader.unload();
         //        m_recordLoader.load(mPath);
     }
+}
+
+void GuiManager::on_sensorsView_doubleClicked(const QModelIndex &index)
+{
+//        const auto& current = indexes.first();
+
+        const int row = index.row();
+
+        std::cout << "[GuiManager] row clicked " << row << std::endl;
+
+        //        const auto& sensors = m_sceneManager.getSensors();
+
+        //        assert(row < sensors.size());
+        //        auto & sensor = m_sceneManager.getSensor(row);
+
+        const std::string streamName = m_sensorsView->model()->data(m_sensorsView->model()->index(row, 0)).toString().toStdString();
+//        const std::string streamName = current.data().toString().toStdString();
+        m_sceneManager.fitView( streamName );
+
 }

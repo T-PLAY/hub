@@ -104,6 +104,7 @@ private slots:
 
 //    void on_sensorsView_clicked(const QModelIndex& index);
     void on_sensorsView_selectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
+    void on_sensorsView_doubleClicked(const QModelIndex& index);
 
 public:
     QMdiArea* m_mdiArea = nullptr;

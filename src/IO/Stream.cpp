@@ -18,7 +18,7 @@ OutputStream::OutputStream( const std::string& streamName, net::ClientSocket&& c
     net::ClientSocket::Message mess;
     Interface::read( mess );
     if ( mess == net::ClientSocket::Message::FOUND ) {
-        assert( false );
+//        assert( false );
         throw net::Socket::exception(
             ( std::string( "sensor '" ) + streamName + "' is already attached to server" )
                 .c_str() );
