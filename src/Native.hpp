@@ -32,8 +32,8 @@ extern "C"
     SRC_API Viewer*
     createViewer( void ( *onNewStreamer )( const char* streamName, const SensorSpec* sensorSpec ),
                   void ( *onDelStreamer )( const char* streamName, const SensorSpec* sensorSpec ),
-                  void ( *onServerConnected )(),
-                  void ( *onServerDisconnected )(),
+                  void ( *onServerConnected )(const std::string& ipv4, int port),
+                  void ( *onServerDisconnected )(const std::string& ipv4, int port),
                   const char* ipv4,
                   int port );
     //                  const char* ipv4 = hub::net::s_defaultServiceIp.c_str(),

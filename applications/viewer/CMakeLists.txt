@@ -5,6 +5,7 @@ add_subdirectory(libViewer)
 #add_subdirectory(clientViewer)
 add_subdirectory(streamViewer)
 add_subdirectory(simpleViewer)
+# add_subdirectory(smartViewer)
 #add_subdirectory(nativeViewer)
 
 if (HUB_USE_DCMTK)
