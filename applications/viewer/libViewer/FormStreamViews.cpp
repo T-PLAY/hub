@@ -22,6 +22,7 @@
 ViewerQt::ViewerQt( const std::string& ipv4, const int& port ) {
     auto _addStreamer = [this]( const std::string& streamerName,
                                 const hub::SensorSpec& sensorSpec ) {
+        std::cout << "[ViewerQt] add streamer " << streamerName << std::endl;
         emit addStreamSignal( streamerName, sensorSpec );
         //        this->addStream( streamerName, sensorSpec );
     };
@@ -29,10 +30,17 @@ ViewerQt::ViewerQt( const std::string& ipv4, const int& port ) {
     //    auto _delStream = [this] -> {FormStreamViews::delStream();}
     auto _delStreamer = [this]( const std::string& streamerName,
                                 const hub::SensorSpec& sensorSpec ) {
+        std::cout << "[ViewerQt] del streamer " << streamerName << std::endl;
         emit delStreamSignal( streamerName, sensorSpec );
     };
-    auto _onServerConnected    = [this]() { emit serverConnected(); };
-    auto _onServerDisconnected = [this]() { emit serverDisconnected(); };
+    auto _onServerConnected = [this]( const std::string& ipv4, int port ) {
+        emit serverConnected();
+        std::cout << "[ViewerQt] connected to server : " << ipv4 << " " << port << std::endl;
+    };
+    auto _onServerDisconnected = [this]( const std::string& ipv4, int port ) {
+        emit serverDisconnected();
+        std::cout << "[ViewerQt] disconnected from server : " << ipv4 << " " << port << std::endl;
+    };
 
     m_viewer = new hub::Viewer(
         _addStreamer, _delStreamer, _onServerConnected, _onServerDisconnected, ipv4, port );
@@ -154,16 +162,21 @@ FormStreamViews::FormStreamViews(
 //    , m_mdiArea(mdiArea)
 //    , m_mainWindow(mainWindow)
 {
+    m_ipv4 = hub::net::s_defaultServiceIp;
+    m_port = hub::net::s_defaultServicePort;
+    //    m_port = 4000;
+
     ui->setupUi( this );
     //    mainWindow.setAttribute(Qt::WA_DeleteOnClose); // for dialog window
 
-    ui->lineEdit_ip->setValidator( new QRegularExpressionValidator(
-        QRegularExpression( "[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}" ) ) );
-    ui->lineEdit_ip->setText( hub::net::s_defaultServiceIp.c_str() );
-    ui->spinBox_port->setValue( hub::net::s_defaultServicePort );
+    //    ui->lineEdit_ip->setValidator( new QRegularExpressionValidator(
+    //        QRegularExpression( "[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}" ) ) );
+    ui->lineEdit_ip->setValidator( new QRegularExpressionValidator( m_ipv4RegularExpression ) );
 
-    m_ipv4 = hub::net::s_defaultServiceIp;
-    m_port = hub::net::s_defaultServicePort;
+    assert( m_ipv4RegularExpression.match( m_ipv4.c_str() ).hasMatch() );
+    ui->lineEdit_ip->setText( m_ipv4.c_str() );
+    //    assert(ui->lineEdit_ip->validator())
+    ui->spinBox_port->setValue( m_port );
 
     //    QObject::connect(
     //        &mThreadClient, &Thread_Client::addStreamSignal, this, &FormStreamViews::addStream );
@@ -178,25 +191,26 @@ FormStreamViews::FormStreamViews(
     //                      this,
     //                      &FormStreamViews::onServerDisconnect );
 
-//    {
-//        auto _addStreamer = [this]( const std::string& streamerName,
-//                                    const hub::SensorSpec& sensorSpec ) {
-//            addStream( streamerName, sensorSpec );
-//            //        this->addStream( streamerName, sensorSpec );
-//        };
-////        auto _addStream = std::bind(&FormStreamViews::addStream, this);
-//        //    auto _delStream = std::bind(&FormStreamViews::delStream, this);
-//        //    auto _delStream = [this] -> {FormStreamViews::delStream();}
-//        auto _delStreamer = [this]( const std::string& streamerName,
-//                                    const hub::SensorSpec& sensorSpec ) {
-//            delStream( streamerName, sensorSpec );
-//        };
-//        auto _onServerConnected    = [this]() { onServerConnect(); };
-//        auto _onServerDisconnected = [this]() { onServerDisconnect(); };
+    //    {
+    //        auto _addStreamer = [this]( const std::string& streamerName,
+    //                                    const hub::SensorSpec& sensorSpec ) {
+    //            addStream( streamerName, sensorSpec );
+    //            //        this->addStream( streamerName, sensorSpec );
+    //        };
+    ////        auto _addStream = std::bind(&FormStreamViews::addStream, this);
+    //        //    auto _delStream = std::bind(&FormStreamViews::delStream, this);
+    //        //    auto _delStream = [this] -> {FormStreamViews::delStream();}
+    //        auto _delStreamer = [this]( const std::string& streamerName,
+    //                                    const hub::SensorSpec& sensorSpec ) {
+    //            delStream( streamerName, sensorSpec );
+    //        };
+    //        auto _onServerConnected    = [this]() { onServerConnect(); };
+    //        auto _onServerDisconnected = [this]() { onServerDisconnect(); };
 
-//    m_viewer = new hub::Viewer(
-//        m_ipv4, m_port, _addStreamer, _delStreamer, _onServerConnected, _onServerDisconnected );
-//    }
+    //    m_viewer = new hub::Viewer(
+    //        m_ipv4, m_port, _addStreamer, _delStreamer, _onServerConnected, _onServerDisconnected
+    //        );
+    //    }
 
     {
         m_viewerQt = new ViewerQt( m_ipv4, m_port );
@@ -239,7 +253,7 @@ FormStreamViews::~FormStreamViews() {
     //    assert(m_viewer != nullptr);
 
     delete m_viewerQt;
-//    delete m_viewer;
+    //    delete m_viewer;
 
     std::cout << "[FormStreamViews] ~FormStreamViews() mThreadClient.terminated()" << std::endl;
 
@@ -291,6 +305,33 @@ void FormStreamViews::onServerDisconnect() {
     //        delete sensorView;
     //    }
 
+    //    for ( auto& pair : m_sensorViews ) {
+    //        auto* sensorView = pair.second;
+    //        delete sensorView;
+    //    }
+    //    m_sensorViews.clear();
+    m_sensorModel.setStringList( QStringList( "none" ) );
+
+    for ( auto& pair : m_sensorViews ) {
+        const auto& streamName = pair.first;
+
+        assert( m_sensorViews.find( streamName ) != m_sensorViews.end() );
+        auto* sensorView = m_sensorViews.at( streamName );
+        //        m_sensorViews.erase( streamName );
+        //        auto stringList = m_sensorModel.stringList();
+        //        stringList.removeAll( streamName.c_str() );
+        //        m_sensorModel.setStringList( stringList );
+
+        emit streamingStopped( streamName, sensorView->m_sensorSpec );
+        delete sensorView;
+    }
+    m_sensorViews.clear();
+
+#ifdef OS_LINUX
+    ++m_port;
+#endif
+    ui->spinBox_port->setValue( m_port );
+
     //    m_dialog = new DialogServerConnect(&m_mainWindow);
     emit serverDisconnected();
 }
@@ -330,9 +371,7 @@ void FormStreamViews::addStream( const std::string& streamName,
     std::cout << "[FormStreamViews] FormStreamViews::addStream '" << streamName << "' done."
               << std::endl;
 
-    if (m_autoStartStream) {
-    sensorView->on_startStreaming();
-    }
+    if ( m_autoStartStream ) { sensorView->on_startStreaming(); }
 }
 
 void FormStreamViews::delStream( const std::string& streamName,
@@ -363,12 +402,20 @@ void FormStreamViews::delStream( const std::string& streamName,
     //    emit sensorDeleted(streamName);
 }
 
-bool FormStreamViews::isServerConnected() const {
-    //    while (!m_serverPing) {
-    //        std::this_thread::sleep_for(std::chrono::milliseconds(10));
-    //    };
-    return m_serverConnected;
+int FormStreamViews::getPort() const {
+    return m_port;
 }
+
+const std::string& FormStreamViews::getIpv4() const {
+    return m_ipv4;
+}
+
+// bool FormStreamViews::isServerConnected() const {
+//     //    while (!m_serverPing) {
+//     //        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+//     //    };
+//     return m_serverConnected;
+// }
 
 // void FormStreamViews::onQuitApp()
 //{
@@ -386,9 +433,23 @@ const FormStreamView& FormStreamViews::getSensorView( const std::string& streamN
 // }
 
 void FormStreamViews::on_lineEdit_ip_textChanged( const QString& ipv4 ) {
-    m_ipv4 = ipv4.toStdString();
+    //    std::cout << "[FormStreamViews] on_lineEdit_ip_textChanged " << ipv4.toStdString() <<
+    //    std::endl;
+    if ( m_viewerQt != nullptr ) {
+        m_ipv4 = ipv4.toStdString();
+        //        assert(m_ipv4RegularExpression.match(m_ipv4.c_str()).hasMatch());
+
+        if ( m_ipv4RegularExpression.match( m_ipv4.c_str() ).hasMatch() ) {
+            m_viewerQt->m_viewer->setIpv4( m_ipv4 );
+            ui->lineEdit_ip->setStyleSheet( "background-color: none" );
+        }
+        else { ui->lineEdit_ip->setStyleSheet( "background-color: red" ); }
+    }
 }
 
 void FormStreamViews::on_spinBox_port_valueChanged( int port ) {
-    m_port = port;
+    if ( m_viewerQt != nullptr ) {
+        m_port = port;
+        m_viewerQt->m_viewer->setPort( m_port );
+    }
 }

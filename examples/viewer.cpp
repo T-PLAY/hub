@@ -21,11 +21,11 @@ int main() {
     auto onDelStreamer = []( const std::string& sensorName, const hub::SensorSpec& sensorSpec ) {
         std::cout << "[Example][Viewer] onDelStreamer" << std::endl;
     };
-    auto onServerConnected = []() {
-        std::cout << "[Example][Viewer] onServerConnected" << std::endl;
+    auto onServerConnected = [](const std::string& ipv4, int port) {
+        std::cout << "[Example][Viewer] onServerConnected : " << ipv4 << " " << port << std::endl;
     };
-    auto onServerDisconnected = []() {
-        std::cout << "[Example][Viewer] onServerDisconnected" << std::endl;
+    auto onServerDisconnected = [](const std::string& ipv4, int port) {
+        std::cout << "[Example][Viewer] onServerDisconnected : " << ipv4 << " " << port << std::endl;
     };
 
     auto viewer = hub::Viewer(

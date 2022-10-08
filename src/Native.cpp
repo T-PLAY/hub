@@ -103,10 +103,10 @@ void acquisition_getMeasure( const Acquisition* acquisition, unsigned char* data
 //}
 
 Viewer*
-createViewer( void ( *onNewStreamer )( const char* streamName, const SensorSpec* sensorSpec ),
+createViewer(void ( *onNewStreamer )( const char* streamName, const SensorSpec* sensorSpec ),
               void ( *onDelStreamer )( const char* streamName, const SensorSpec* sensorSpec ),
-              void ( *onServerConnected )(),
-              void ( *onServerDisconnected )(),
+              void (*onServerConnected)(const std::string &, int),
+              void (*onServerDisconnected)(const std::string &, int),
               const char* ipv4,
               int port ) {
 

@@ -72,10 +72,10 @@ public:
 
 //    const Thread_InputStream *getInputStreamThread() const;
 
+    const hub::SensorSpec m_sensorSpec;
 private:
     Ui::FormStreamView* ui;
     const std::string m_streamName;
-    const hub::SensorSpec m_sensorSpec;
     QStringListModel & mSensorModel;
     QSortFilterProxyModel mProxySensorModel;
 //    QMdiArea & m_mdiArea;

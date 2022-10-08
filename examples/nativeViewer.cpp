@@ -70,10 +70,10 @@ int main() {
     auto onDelStreamer = []( const char* streamName, const hub::SensorSpec* sensorSpec ) {
         std::cout << "[Example][Viewer] onDelStreamer" << std::endl;
     };
-    auto onServerConnected = []() {
+    auto onServerConnected = [](const std::string& ipv4, int port) {
         std::cout << "[Example][Viewer] onServerConnected" << std::endl;
     };
-    auto onServerDisconnected = []() {
+    auto onServerDisconnected = [](const std::string& ipv4, int port) {
         std::cout << "[Example][Viewer] onServerDisconnected" << std::endl;
     };
 

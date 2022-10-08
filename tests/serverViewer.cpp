@@ -63,10 +63,10 @@ TEST_CASE( "Server test : viewer" ) {
                                  const hub::SensorSpec& sensorSpec ) {
             std::cout << "[Test] ############################### onDelStreamer" << std::endl;
         };
-        auto onServerConnected = []() {
+        auto onServerConnected = [](const std::string& ipv4, int port) {
             std::cout << "[Test] ############################### onServerConnected" << std::endl;
         };
-        auto onServerDisconnected = []() {
+        auto onServerDisconnected = [](const std::string& ipv4, int port) {
             std::cout << "[Test] ############################### onServerDisconnected" << std::endl;
         };
         auto viewer = hub::Viewer( onNewStreamer, onDelStreamer, onServerConnected, onServerDisconnected, ipv4, port );
