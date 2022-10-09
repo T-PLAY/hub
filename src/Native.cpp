@@ -51,7 +51,7 @@ Acquisition* getAcquisition( const InputSensor* inputSensor ) {
     catch ( std::exception& e ) {
         std::cout << "[Native] getAcquisition : catch exception : " << e.what() << std::endl;
         return nullptr;
-//        return ret;
+        //        return ret;
     }
     return ret;
 }
@@ -67,7 +67,7 @@ void acquisition_getMeasure( const Acquisition* acquisition, unsigned char* data
     //        auto acq = acquisition->getAcquisition();
     //        std::cout << "[Native] get acq : " << acq << std::endl;
 
-    std::cout << "[Native] copying data " << std::endl;
+//    std::cout << "[Native] copying data " << std::endl;
     assert( iMeasure < acquisition->getMeasures().size() );
     const auto& measure = acquisition->getMeasures().at( iMeasure );
     memcpy( data, measure.m_data, measure.m_size );
@@ -103,10 +103,11 @@ void acquisition_getMeasure( const Acquisition* acquisition, unsigned char* data
 //}
 
 Viewer*
-createViewer(void ( *onNewStreamer )( const char* streamName, const SensorSpec* sensorSpec ),
+createViewer( void ( *onNewStreamer )( const char* streamName, const SensorSpec* sensorSpec ),
               void ( *onDelStreamer )( const char* streamName, const SensorSpec* sensorSpec ),
-              void (*onServerConnected)(const std::string &, int),
-              void (*onServerDisconnected)(const std::string &, int),
+              void ( *onServerConnected )( const char* ipv4, int port ),
+              void ( *onServerDisconnected )( const char* ipv4, int port ),
+              void ( *onNewAcquisition )( const char* streamName, const Acquisition* acq ),
               const char* ipv4,
               int port ) {
 
@@ -115,9 +116,19 @@ createViewer(void ( *onNewStreamer )( const char* streamName, const SensorSpec* 
 
     auto onNewStreamerCpp = [=]( const std::string& sensorName, const SensorSpec& sensorSpec ) {
         onNewStreamer( sensorName.c_str(), &sensorSpec );
+        return true;
     };
     auto onDelStreamerCpp = [=]( const std::string& sensorName, const SensorSpec& sensorSpec ) {
         onDelStreamer( sensorName.c_str(), &sensorSpec );
+    };
+    auto onServerConnectedCpp = [=]( const std::string& ipv4, int port ) {
+        onServerConnected( ipv4.c_str(), port );
+    };
+    auto onServerDisconnectedCpp = [=]( const std::string& ipv4, int port ) {
+        onServerDisconnected( ipv4.c_str(), port );
+    };
+    auto onNewAcquisitionCpp = [=]( const std::string& sensorName, const Acquisition& acq ) {
+        onNewAcquisition( sensorName.c_str(), &acq );
     };
     //    auto onServerConnectedCpp = [=](  ) {
     //        onServerConnected();
@@ -127,8 +138,13 @@ createViewer(void ( *onNewStreamer )( const char* streamName, const SensorSpec* 
     //    };
     //    Viewer * viewer = new Viewer( onNewStreamerCpp, onDelStreamerCpp, onServerConnectedCpp,
     //    onServerDisconnectedCpp, std::string(ipv4), port);
-    Viewer* viewer = new Viewer(
-        onNewStreamerCpp, onDelStreamerCpp, onServerConnected, onServerDisconnected, ipv4, port );
+    Viewer* viewer = new Viewer( onNewStreamerCpp,
+                                 onDelStreamerCpp,
+                                 onServerConnectedCpp,
+                                 onServerDisconnectedCpp,
+                                 onNewAcquisitionCpp,
+                                 ipv4,
+                                 port );
     return viewer;
 }
 

@@ -27,14 +27,14 @@ int main() {
 
     auto onNewStreamer = []( const char* streamName, const hub::SensorSpec* sensorSpec ) {
         std::cout << "[Example][Viewer] onNewStreamer : " << streamName << std::endl;
-        char sensorName[80] = {0};
-//        const char * sensorName = nullptr;
+        char sensorName[80] = { 0 };
+        //        const char * sensorName = nullptr;
         int strLen = 0;
-        hub::native::sensorSpec_getSensorName(sensorSpec, sensorName, &strLen);
-//        sensorName = hub::native::sensorSpec_getSensorName(sensorSpec);
-        std::cout << "[Example][Viewer] sensorName : '"
-                  << sensorName << "' size = " << strLen << std::endl;
-//        delete sensorName;
+        hub::native::sensorSpec_getSensorName( sensorSpec, sensorName, &strLen );
+        //        sensorName = hub::native::sensorSpec_getSensorName(sensorSpec);
+        std::cout << "[Example][Viewer] sensorName : '" << sensorName << "' size = " << strLen
+                  << std::endl;
+        //        delete sensorName;
         const int resolutionsSize = hub::native::sensorSpec_getResolutionsSize( sensorSpec );
         std::cout << "[Example][Viewer] resolutions size : " << resolutionsSize << std::endl;
         for ( int iResolution = 0; iResolution < resolutionsSize; ++iResolution ) {
@@ -56,25 +56,26 @@ int main() {
         std::cout << "[Example][Viewer] acquisitionsSize : "
                   << hub::native::sensorSpec_getAcquisitionSize( sensorSpec ) << std::endl;
 
-        char resolutionsStr[80] = {0};
-        hub::native::sensorSpec_getResolutionsStr(sensorSpec, resolutionsStr);
-        std::cout << "[Example][Viewer] resolutionsStr : '"
-                  << resolutionsStr << "'" << std::endl;
+        char resolutionsStr[80] = { 0 };
+        hub::native::sensorSpec_getResolutionsStr( sensorSpec, resolutionsStr );
+        std::cout << "[Example][Viewer] resolutionsStr : '" << resolutionsStr << "'" << std::endl;
 
-        char metaDataStr[80] = {0};
-        hub::native::sensorSpec_getMetaDataStr(sensorSpec, metaDataStr);
-        std::cout << "[Example][Viewer] metaDataStr : '"
-                  << metaDataStr << "'" << std::endl;
-
+        char metaDataStr[80] = { 0 };
+        hub::native::sensorSpec_getMetaDataStr( sensorSpec, metaDataStr );
+        std::cout << "[Example][Viewer] metaDataStr : '" << metaDataStr << "'" << std::endl;
     };
     auto onDelStreamer = []( const char* streamName, const hub::SensorSpec* sensorSpec ) {
-        std::cout << "[Example][Viewer] onDelStreamer" << std::endl;
+        std::cout << "[Example][Viewer] onDelStreamer " << streamName << std::endl;
     };
-    auto onServerConnected = [](const std::string& ipv4, int port) {
-        std::cout << "[Example][Viewer] onServerConnected" << std::endl;
+    auto onServerConnected = []( const char* ipv4, int port ) {
+        std::cout << "[Example][Viewer] onServerConnected " << ipv4 << " " << port << std::endl;
     };
-    auto onServerDisconnected = [](const std::string& ipv4, int port) {
-        std::cout << "[Example][Viewer] onServerDisconnected" << std::endl;
+    auto onServerDisconnected = []( const char* ipv4, int port ) {
+        std::cout << "[Example][Viewer] onServerDisconnected " << ipv4 << " " << port << std::endl;
+    };
+    auto onNewAcquisition = []( const char* streamName, const hub::Acquisition* acq ) {
+        std::cout << "[Example][Viewer] onNewAcquisition " << streamName << " " << *acq
+                  << std::endl;
     };
 
     auto viewer = hub::native::createViewer(
@@ -82,12 +83,13 @@ int main() {
         onNewStreamer,
         onDelStreamer,
         onServerConnected,
-        onServerDisconnected
-//                );
-                , hub::net::s_defaultServiceIp.c_str(), hub::net::s_defaultServicePort );
+        onServerDisconnected,
+        onNewAcquisition,
+        hub::net::s_defaultServiceIp.c_str(),
+        hub::net::s_defaultServicePort );
 
-//    while ( true ) {
-//        std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
-//    }
-    std::this_thread::sleep_for(std::chrono::seconds(1));
+    while ( true ) {
+        std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+    }
+    //    std::this_thread::sleep_for( std::chrono::seconds( 1 ) );
 }

@@ -7,6 +7,8 @@
 #include <IO/Stream.hpp>
 #include <InputSensor.hpp>
 #include <OutputSensor.hpp>
+#include <Streamer.hpp>
+#include <Viewer.hpp>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -14,6 +16,8 @@
 #include <glm/gtc/type_ptr.hpp>
 
 int main( int argc, char* argv[] ) {
+    int port = hub::net::s_defaultServicePort;
+    if ( argc == 2 ) { port = atoi( argv[1] ); }
 
     const auto filename = MRI_PATH "AXT2_ligaments_uterosacres/D0010525.dcm";
     //            const auto filename = MRI_PATH "Ax_T2_PROP_5MM/D0010275.dcm";
@@ -41,13 +45,13 @@ int main( int argc, char* argv[] ) {
     unsigned int sliceWidth, sliceHeight, nSlices, bytePerVoxel;
     float pixelSpacingWidth, pixelSpacingHeight, sliceThickness;
     auto* volumeData = DICOM::readDicomVolume( filename,
-                                                       &sliceWidth,
-                                                       &sliceHeight,
-                                                       &nSlices,
-                                                       &bytePerVoxel,
-                                                       &pixelSpacingWidth,
-                                                       &pixelSpacingHeight,
-                                                       &sliceThickness );
+                                               &sliceWidth,
+                                               &sliceHeight,
+                                               &nSlices,
+                                               &bytePerVoxel,
+                                               &pixelSpacingWidth,
+                                               &pixelSpacingHeight,
+                                               &sliceThickness );
 
     assert( bytePerVoxel == 2 );
     double sliceRealWidth = sliceWidth * pixelSpacingWidth;
@@ -64,7 +68,7 @@ int main( int argc, char* argv[] ) {
     glm::mat4 transform( 1.0 );
     transform =
         glm::scale( transform, glm::vec3( sliceRealDepth / 2.0, 1.0, sliceRealWidth / 2.0 ) );
-    transform             = glm::translate( transform, glm::vec3( 1.0, 0.0, -1.0 ) );
+    transform             = glm::translate( transform, glm::vec3( 1.0, 0.0, 1.0 ) );
     const float* array    = glm::value_ptr( transform );
     metaData["transform"] = array;
 
@@ -96,36 +100,43 @@ int main( int argc, char* argv[] ) {
     }
 
 #else
-    unsigned char* texturesData = volumeData;
-    const int textureSize       = sliceSize;
+    unsigned char* texturesData       = volumeData;
+    const int textureSize             = sliceSize;
+    const std::string dicomStreamName = "dicomStream";
     hub::SensorSpec sensorSpec(
-        "dicomStream",
+        "mri",
         { { { 1 }, hub::SensorSpec::Format::DOF6 },
           { { (int)sliceWidth, (int)sliceHeight }, hub::SensorSpec::Format::Y16 } },
         std::move( metaData ) );
 #endif
 
-    hub::OutputSensor outputSensor( std::move( sensorSpec ),
-                                    hub::io::OutputStream( "dicomStream" ) );
-
+    std::vector<hub::Acquisition> dicomAcqs;
     for ( int iImage = 0; iImage < nSlices; ++iImage ) {
-//        hub::Dof6 dof6( 0.0, iImage * sliceThickness, 0.0 );
-        glm::quat quat(1.0, 0.0, 0.0, 0.0);
-        quat = glm::rotate(quat, glm::radians(180.0f), glm::vec3(1.0, 0.0, 0.0));
-//        hub::Dof6 dof6( 0.0, (nSlices - iImage - 1) * sliceThickness, 0.0, quat.w, quat.x, quat.y, quat.z );
+        //        hub::Dof6 dof6( 0.0, iImage * sliceThickness, 0.0 );
+        glm::quat quat( 1.0, 0.0, 0.0, 0.0 );
+        quat = glm::rotate( quat, glm::radians( 180.0f ), glm::vec3( 1.0, 0.0, 0.0 ) );
+        //        hub::Dof6 dof6( 0.0, (nSlices - iImage - 1) * sliceThickness, 0.0, quat.w,
+        //        quat.x, quat.y, quat.z );
         hub::Dof6 dof6( 0.0, iImage * sliceThickness, 0.0, quat.w, quat.x, quat.y, quat.z );
-//        hub::Dof6 dof6( 0.0, iImage * sliceThickness, 0.0);
+        //        hub::Dof6 dof6( 0.0, iImage * sliceThickness, 0.0);
 
         hub::Measure image( &texturesData[textureSize * iImage], textureSize );
-        outputSensor << ( hub::Acquisition { iImage, iImage } << std::move( dof6 )
-                                                              << std::move( image ) );
+        //        outputSensor << ( hub::Acquisition { iImage, iImage } << std::move( dof6 )
+        //                                                              << std::move( image
+        //                                                              ) );
+//        std::cout << "[Simulator][Streamer] added new acq " << iImage << std::endl;
+        dicomAcqs.push_back( std::move( hub::Acquisition { iImage, iImage }
+                                        << std::move( dof6 ) << std::move( image ) ) );
     }
+
+    //    hub::OutputSensor outputSensor( std::move( sensorSpec ),
+    //                                    hub::io::OutputStream( dicomStreamName ) );
 
     //    while ( true ) {
     //        std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
     //    }
 
-    delete[] texturesData;
+    //    delete[] texturesData;
     //    }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -149,19 +160,19 @@ int main( int argc, char* argv[] ) {
     //    metaData2["scanDepth"] = 256.0;
     //    metaData2["parent"] = "Keyboard";
     //    metaData2["transform"] = transformPtr;
-//    glm::mat4 worldTransform(1.0);
-//    worldTransform = glm::translate(worldTransform, glm::vec3(100, 100, 100));
-//    glm::mat4 worldTransformInv = glm::inverse(worldTransform);
+    //    glm::mat4 worldTransform(1.0);
+    //    worldTransform = glm::translate(worldTransform, glm::vec3(100, 100, 100));
+    //    glm::mat4 worldTransformInv = glm::inverse(worldTransform);
     glm::mat4 transform2( 1.0 );
 
-//    transform2 *= worldTransform;
+    //    transform2 *= worldTransform;
     //    const float sliceRealWidth = 50.0;
     //    const float sliceRealDepth = 35.0;
-//    double scanRealWidth = 200;
-//    double scanRealDepth = 200;
+    //    double scanRealWidth = 200;
+    //    double scanRealDepth = 200;
     double scale = 1.5;
-//    double scanRealWidth = 50.0 * scale;
-//    double scanRealDepth = 35.0 * scale;
+    //    double scanRealWidth = 50.0 * scale;
+    //    double scanRealDepth = 35.0 * scale;
     double scanRealWidth = sliceRealWidth;
     double scanRealDepth = sliceRealDepth;
     //    transform2 = glm::rotate(transform2, glm::radians(90.0), glm::vec3(0.0, 1.0, 0.0));
@@ -180,13 +191,14 @@ int main( int argc, char* argv[] ) {
     metaData2["series"]    = mriName;
     //    OutputStream outputScanStream("Simulator", Stream::Format::Y8, { scanWidth, scanDepth },
     //    ClientSocket(), metaData2);
-    hub::SensorSpec sensorSpec2( "simulator",
+    hub::SensorSpec sensorSpec2( "",
                                  { { { 1 }, hub::SensorSpec::Format::DOF6 },
                                    { { scanWidth, scanHeight }, hub::SensorSpec::Format::Y8 } },
                                  std::move( metaData2 ) );
 
-    hub::OutputSensor outputSensor2( std::move( sensorSpec2 ),
-                                     hub::io::OutputStream( "simulator" ) );
+    const std::string simulatorStreamName = "simulator";
+    //    hub::OutputSensor outputSensor2( std::move( sensorSpec2 ),
+    //                                     hub::io::OutputStream( "simulator" ) );
 
     if ( !std::filesystem::exists( filename ) ) {
         std::cout << "file '" << filename << "' doesn't exist" << std::endl;
@@ -200,12 +212,12 @@ int main( int argc, char* argv[] ) {
         if ( !std::filesystem::is_directory( entry ) ) { files_in_directory.push_back( entry ); }
     }
     std::sort( files_in_directory.begin(), files_in_directory.end() );
-//    std::reverse(files_in_directory.begin(), files_in_directory.end());
+    //    std::reverse(files_in_directory.begin(), files_in_directory.end());
 
     std::vector<std::string> fileList;
     for ( const auto& file : files_in_directory ) {
         std::cout << file << std::endl; // printed in alphabetical order
-//        fileList.push_back( file );
+                                        //        fileList.push_back( file );
         fileList.push_back( file.string() );
     }
 
@@ -226,14 +238,56 @@ int main( int argc, char* argv[] ) {
 
     std::cout << "generating grid ..." << std::endl;
     //    const Grid grid(250, 100, 250, 1, wf, sampler, true);
-        Grid grid(250, 80, 250, 8, wf, sampler, true);
-//    Grid grid( 10, 10, 10, 1, wf, sampler, true );
-//    Grid grid( sliceRealDepth, nSlices * sliceThickness, sliceRealWidth, 16, wf, sampler, true );
+    Grid grid( 250, 80, 250, 8, wf, sampler, true );
+    //    Grid grid( 10, 10, 10, 1, wf, sampler, true );
+    //    Grid grid( sliceRealDepth, nSlices * sliceThickness, sliceRealWidth, 16, wf, sampler, true
+    //    );
     std::cout << "grid created" << std::endl;
     BasicUS bu( grid );
-    bu.setSigLateral(1.25);
-    bu.setSigAxial(0.2);
-    bu.setDynamicRange(25.0);
+    bu.setSigLateral( 1.25 );
+    bu.setSigAxial( 0.2 );
+    bu.setDynamicRange( 25.0 );
+
+    ////////////////////////////////////////////////////////// INIT STREAMERS
+
+    std::vector<hub::Acquisition> simuAcq;
+    {
+        const hub::Dof6 dof6;
+
+        glm::vec3 position( dof6.m_x, dof6.m_y, dof6.m_z );
+        glm::quat orientation( dof6.m_w0, dof6.m_w1, dof6.m_w2, dof6.m_w3 );
+
+        const AcquisitionZone acqZone( position, orientation, scanRealWidth, 1.1, scanRealDepth );
+
+        const auto& scanImage = bu.getCorrespondingRealUS( acqZone, grid, scanWidth, scanHeight );
+        assert( scanImage.size() == scanSize );
+        const unsigned char* scanData = scanImage.data();
+
+        simuAcq.push_back( std::move( hub::Acquisition { 0, 0 }
+                                      << dof6.clone() << hub::Measure { scanData, scanSize } ) );
+    }
+
+    //    auto streamerOnServerConnected =
+    //        [&]( hub::Streamer& streamer, const std::string& ipv4, int port ) {
+    //            std::cout << "[Simulator][Streamer] onServerConnected : " << ipv4 << " " << port
+    //                      << std::endl;
+
+    //            for ( const auto& acq : dicomAcqs ) {
+    //                streamer.newAcquisition( dicomStreamName, acq.clone() );
+    //            }
+
+    //            streamer.newAcquisition( simulatorStreamName, simuAcq->clone() );
+    //            //            streamer.newAcquisition( dicomStreamName,
+    //            //                                     std::move( hub::Acquisition { iImage,
+    //            iImage }
+    //            //                                                << std::move( dof6 ) <<
+    //            std::move(
+    //            //                                                image ) ) );
+    //        };
+
+    hub::Streamer streamer( hub::net::s_defaultServiceIp, port );
+    streamer.addStream( dicomStreamName, std::move( sensorSpec ), dicomAcqs );
+    streamer.addStream( simulatorStreamName, std::move( sensorSpec2 ), simuAcq );
 
     //    AcquisitionZone acq(glm::vec3(25, 50, 50), glm::angleAxis(0.f, glm::vec3(1, 0, 0)),
     //    50, 1.1f, 60); AcquisitionZone acq(glm::vec3(0, 30, 125), glm::angleAxis(0.f, glm::vec3(0,
@@ -247,105 +301,203 @@ int main( int argc, char* argv[] ) {
     //    InputStream inputPosSensor(std::string("Keyboard"));
     //    InputStream inputPosSensor(ClientSocket("Keyboard", ""));
 
-    hub::InputSensor inputPosSensor( hub::io::InputStream( "Keyboard" ) );
-//    hub::InputSensor inputPosSensor( hub::io::InputStream( "Polhemus Patriot (sensor 1)" ) );
+    ////////////////////////////////////////////////////////// INIT VIEWER
 
-    //    OutputStream outputPosStream("Simulator", inputPosSensor.getFormat(),
-    //    inputPosSensor.getDims(), ClientSocket(), metaData2);
+    auto onNewStreamer = [=]( const std::string& streamName, const hub::SensorSpec& sensorSpec ) {
+        std::cout << "[Simulator] onNewStreamer : " << streamName << std::endl;
+        if ( streamName == "Keyboard" || streamName == "Polhemus Patriot (sensor 1)" ) return true;
+        return false;
+    };
+    auto onDelStreamer = []( const std::string& streamName, const hub::SensorSpec& sensorSpec ) {
+        std::cout << "[Simulator] onDelStreamer : " << streamName << std::endl;
+    };
+    auto onServerConnected = []( const std::string& ipv4, int port ) {
+        std::cout << "[Simulator] onServerConnected : " << ipv4 << " " << port << std::endl;
+    };
+    auto onServerDisconnected = []( const std::string& ipv4, int port ) {
+        std::cout << "[Simulator] onServerDisconnected : " << ipv4 << " " << port << std::endl;
+    };
 
     std::cout << "Ready to simulate" << std::endl;
 
-    size_t iFrame       = 0;
+    size_t iFrame               = 0;
     long long lastFrameDuration = 0;
-    long long lastAcqStart = 0;
-    while ( true ) {
-        const auto& acq = inputPosSensor.getAcquisition();
+    long long lastAcqStart      = 0;
 
-        if (acq.m_start < lastAcqStart + lastFrameDuration)
-            continue;
+    auto onNewAcquisition = [&streamer,
+                             &simulatorStreamName,
+                             &bu,
+                             &grid,
+                             &iFrame,
+                             &lastFrameDuration,
+                             &lastAcqStart,
+                             scanRealDepth,
+                             scanRealWidth]( const std::string& streamName,
+                                             const hub::Acquisition& acq ) {
+        //        std::cout << "[Simulator] onNewAcquisition : " << acq << std::endl;
 
-        if ( acq.m_start == lastAcqStart ) { continue; }
+        assert( streamName == "Keyboard" || streamName == "Polhemus Patriot (sensor 1)" );
+
+        if ( acq.m_start < lastAcqStart + lastFrameDuration ) return;
+
+        if ( acq.m_start == lastAcqStart ) { return; }
         lastAcqStart = acq.m_start;
-
 
         const auto& startChrono = std::chrono::high_resolution_clock::now();
 
-        //        outputPosStream << acq;
         const auto& measures = acq.getMeasures();
         assert( measures.size() == 1 );
 
         const hub::Dof6& dof6 = measures[0];
-        //        const auto & image = measures[1];
-
-        //        float* translationData = (float*)acq.mData;
-        //        float* quaternionData = (float*)&acq.mData[12];
-//        glm::quat orientation(dof6.m_w0, dof6.m_w1, dof6.m_w2, dof6.m_w3);
-//        orientation = glm::rotate(orientation, glm::radians(180.0f), glm::vec3(1.0, 0.0, 0.0));
-
-//        hub::Dof6 dof6( 0.0, (nSlices - iImage - 1) * sliceThickness, 0.0, quat.w, quat.x, quat.y, quat.z );
-//        hub::Dof6 dof6( 0.0, iImage * sliceThickness, 0.0, quat.w, quat.x, quat.y, quat.z );
-
-        //        glm::vec3 pos(translationData[0], translationData[1], translationData[2]);
-        //        const auto position = glm::make_vec3(translationData);
-        //        const auto orientation = glm::make_quat(quaternionData);
 
         glm::vec3 position( dof6.m_x, dof6.m_y, dof6.m_z );
-//        glm::vec3 position( -dof6.m_x, -dof6.m_y, -dof6.m_z );
         glm::quat orientation( dof6.m_w0, dof6.m_w1, dof6.m_w2, dof6.m_w3 );
 
-//        position = worldTransformInv * glm::vec4(position, 1.0);
-//        orientation *= glm::mat3(worldTransformInv);
-
-        //    float* translation = glm::value_ptr(pos);
-        //    float* orientation = glm::value_ptr(quat);
-        //    memcpy(data, translation, 12);
-        //    memcpy(&data[12], orientation, 16);
-
         const AcquisitionZone acqZone( position, orientation, scanRealWidth, 1.1, scanRealDepth );
-        //        AcquisitionZone acqZone(glm::vec3(0, 30, 125), glm::angleAxis(0.f, glm::vec3(0, 0,
-        //        1)), 256, 256, 256);
+        //        AcquisitionZone acqZone(glm::vec3(0, 30, 125), glm::angleAxis(0.f,
+        //        glm::vec3(0, 0, 1)), 256, 256, 256);
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
-//        const auto& scanImage = bu.getCorrespondingUS( acqZone, scanWidth, scanHeight );
+        std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
+
+        //        const auto& scanImage = bu.getCorrespondingUS( acqZone, scanWidth,
+        //        scanHeight
+        //        );
         const auto& scanImage = bu.getCorrespondingRealUS( acqZone, grid, scanWidth, scanHeight );
         assert( scanImage.size() == scanSize );
         const unsigned char* scanData = scanImage.data();
 
-        //        unsigned char transpose[256 * 256];
-        //        for (int i = 0; i < 256; ++i) {
-        //            for (int j = 0; j < 256; ++j) {
-        //                transpose[i * 256 + j] = data[j * 256 + i];
-        //            }
-        //        }
-        //        unsigned char verticalMirror[256 * 256];
-        //        for (int i = 0; i < 256; ++i) {
-        //            for (int j = 0; j < 256; ++j) {
-        //                verticalMirror[i * 256 + j] = data[i * 256 + (256 - j - 1)];
-        //            }
-        //        }
-        //        outputScanStream << Stream::Acquisition { acq.start, acq.mBackendTimeOfArrival,
-        //        verticalMirror, width * height };
-        outputSensor2 << ( hub::Acquisition { acq.m_start, acq.m_end }
-                           << dof6.clone() << hub::Measure { scanData, scanSize } );
+        streamer.newAcquisition( simulatorStreamName,
+                                 std::move( hub::Acquisition { acq.m_start, acq.m_end }
+                                            << dof6.clone()
+                                            << hub::Measure { scanData, scanSize } ) );
 
-        //        outputScanStream << Stream::Acquisition { acq.start, acq.mBackendTimeOfArrival,
-        //        transpose, width * height };
+        //                outputSensor2 << ( hub::Acquisition { acq.m_start, acq.m_end }
+        //                                   << dof6.clone() << hub::Measure { scanData,
+        //                                   scanSize } );
 
-        //    stbi_write_jpg("test.jpg", 1024, 1024, 1, (void*)bu.getCorrespondingUS(acq, 1024,
-        //    1024).data(), 90);
         std::cout << "Computed frame " << iFrame << std::endl;
         ++iFrame;
         const auto& endChrono = std::chrono::high_resolution_clock::now();
-//        const auto duration = std::cast
-//                std::this_thread::sleep_until(
-//                    startChrono + std::chrono::microseconds( snapshot.getAcq().m_start -
-//                                                             startRecord ) );
-        lastFrameDuration = std::chrono::duration_cast<std::chrono::microseconds>(endChrono - startChrono).count();
-//                        const auto& timestampStart =
-//                            std::chrono::duration_cast<std::chrono::microseconds>(
-//                                start.time_since_epoch() )
-//                                .count();
+
+        lastFrameDuration =
+            std::chrono::duration_cast<std::chrono::microseconds>( endChrono - startChrono )
+                .count();
+    };
+    auto viewer = hub::Viewer(
+        onNewStreamer, onDelStreamer, onServerConnected, onServerDisconnected, onNewAcquisition );
+
+    //    hub::InputSensor inputPosSensor( hub::io::InputStream( "Keyboard" ) );
+    //    hub::InputSensor inputPosSensor( hub::io::InputStream( "Polhemus Patriot (sensor 1)" ) );
+
+    //    OutputStream outputPosStream("Simulator", inputPosSensor.getFormat(),
+    //    inputPosSensor.getDims(), ClientSocket(), metaData2);
+
+    while ( true ) {
+
+        std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
+        streamer.newAcquisition( dicomStreamName, dicomAcqs.back().clone() );
     }
+
+    //    std::cout << "Ready to simulate" << std::endl;
+
+    //    size_t iFrame       = 0;
+    //    long long lastFrameDuration = 0;
+    //    long long lastAcqStart = 0;
+    //    while ( true ) {
+    //        const auto& acq = inputPosSensor.getAcquisition();
+
+    //        if (acq.m_start < lastAcqStart + lastFrameDuration)
+    //            continue;
+
+    //        if ( acq.m_start == lastAcqStart ) { continue; }
+    //        lastAcqStart = acq.m_start;
+
+    //        const auto& startChrono = std::chrono::high_resolution_clock::now();
+
+    //        //        outputPosStream << acq;
+    //        const auto& measures = acq.getMeasures();
+    //        assert( measures.size() == 1 );
+
+    //        const hub::Dof6& dof6 = measures[0];
+    //        //        const auto & image = measures[1];
+
+    //        //        float* translationData = (float*)acq.mData;
+    //        //        float* quaternionData = (float*)&acq.mData[12];
+    ////        glm::quat orientation(dof6.m_w0, dof6.m_w1, dof6.m_w2, dof6.m_w3);
+    ////        orientation = glm::rotate(orientation, glm::radians(180.0f), glm::vec3(1.0, 0.0,
+    /// 0.0));
+
+    ////        hub::Dof6 dof6( 0.0, (nSlices - iImage - 1) * sliceThickness, 0.0, quat.w, quat.x,
+    /// quat.y, quat.z ); /        hub::Dof6 dof6( 0.0, iImage * sliceThickness, 0.0, quat.w,
+    /// quat.x, quat.y, quat.z );
+
+    //        //        glm::vec3 pos(translationData[0], translationData[1], translationData[2]);
+    //        //        const auto position = glm::make_vec3(translationData);
+    //        //        const auto orientation = glm::make_quat(quaternionData);
+
+    //        glm::vec3 position( dof6.m_x, dof6.m_y, dof6.m_z );
+    ////        glm::vec3 position( -dof6.m_x, -dof6.m_y, -dof6.m_z );
+    //        glm::quat orientation( dof6.m_w0, dof6.m_w1, dof6.m_w2, dof6.m_w3 );
+
+    ////        position = worldTransformInv * glm::vec4(position, 1.0);
+    ////        orientation *= glm::mat3(worldTransformInv);
+
+    //        //    float* translation = glm::value_ptr(pos);
+    //        //    float* orientation = glm::value_ptr(quat);
+    //        //    memcpy(data, translation, 12);
+    //        //    memcpy(&data[12], orientation, 16);
+
+    //        const AcquisitionZone acqZone( position, orientation, scanRealWidth, 1.1,
+    //        scanRealDepth );
+    //        //        AcquisitionZone acqZone(glm::vec3(0, 30, 125), glm::angleAxis(0.f,
+    //        glm::vec3(0, 0,
+    //        //        1)), 256, 256, 256);
+
+    //        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    ////        const auto& scanImage = bu.getCorrespondingUS( acqZone, scanWidth, scanHeight );
+    //        const auto& scanImage = bu.getCorrespondingRealUS( acqZone, grid, scanWidth,
+    //        scanHeight ); assert( scanImage.size() == scanSize ); const unsigned char* scanData =
+    //        scanImage.data();
+
+    //        //        unsigned char transpose[256 * 256];
+    //        //        for (int i = 0; i < 256; ++i) {
+    //        //            for (int j = 0; j < 256; ++j) {
+    //        //                transpose[i * 256 + j] = data[j * 256 + i];
+    //        //            }
+    //        //        }
+    //        //        unsigned char verticalMirror[256 * 256];
+    //        //        for (int i = 0; i < 256; ++i) {
+    //        //            for (int j = 0; j < 256; ++j) {
+    //        //                verticalMirror[i * 256 + j] = data[i * 256 + (256 - j - 1)];
+    //        //            }
+    //        //        }
+    //        //        outputScanStream << Stream::Acquisition { acq.start,
+    //        acq.mBackendTimeOfArrival,
+    //        //        verticalMirror, width * height };
+    //        outputSensor2 << ( hub::Acquisition { acq.m_start, acq.m_end }
+    //                           << dof6.clone() << hub::Measure { scanData, scanSize } );
+
+    //        //        outputScanStream << Stream::Acquisition { acq.start,
+    //        acq.mBackendTimeOfArrival,
+    //        //        transpose, width * height };
+
+    //        //    stbi_write_jpg("test.jpg", 1024, 1024, 1, (void*)bu.getCorrespondingUS(acq,
+    //        1024,
+    //        //    1024).data(), 90);
+    //        std::cout << "Computed frame " << iFrame << std::endl;
+    //        ++iFrame;
+    //        const auto& endChrono = std::chrono::high_resolution_clock::now();
+    ////        const auto duration = std::cast
+    ////                std::this_thread::sleep_until(
+    ////                    startChrono + std::chrono::microseconds( snapshot.getAcq().m_start -
+    ////                                                             startRecord ) );
+    //        lastFrameDuration = std::chrono::duration_cast<std::chrono::microseconds>(endChrono -
+    //        startChrono).count();
+    ////                        const auto& timestampStart =
+    ////                            std::chrono::duration_cast<std::chrono::microseconds>(
+    ////                                start.time_since_epoch() )
+    ////                                .count();
+    //    }
 
     return 0;
 }
