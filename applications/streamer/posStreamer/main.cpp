@@ -138,9 +138,15 @@ void shiftEnd() {
     s_needUpdate = true;
 }
 
+#include <Configurations.hpp>
+#include <Streamer.hpp>
+
 int main( int argc, char* argv[] ) {
+    //    if ( argc > 2 ) { memcpy( sensorName, argv[1], strlen( argv[1] ) ); }
+    int port = hub::net::s_defaultServicePort;
+    if ( argc == 2 ) { port = atoi( argv[1] ); }
+
     char sensorName[80] = "Keyboard";
-    if ( argc > 2 ) { memcpy( sensorName, argv[1], strlen( argv[1] ) ); }
 
     std::cout << "sensor name = '" << sensorName << "'" << std::endl;
 
@@ -156,10 +162,14 @@ int main( int argc, char* argv[] ) {
     //    hub::OutputSensor proceduralStream("Polhemus Patriot (probe)", Stream::Format::Y8, {
     //    width, height }, hub::ClientSocket(), metaData);
 
+    hub::Streamer streamer( hub::net::s_defaultServiceIp, port );
+    streamer.addStream( sensorName,
+                        { sensorName, { { { 1 }, hub::SensorSpec::Format::DOF6 } }, metaData } );
+
     std::thread thread = std::thread( [&]() {
-        hub::OutputSensor keyboard(
-            { sensorName, { { { 1 }, hub::SensorSpec::Format::DOF6 } }, metaData },
-            hub::io::OutputStream( sensorName ) );
+        //        hub::OutputSensor keyboard(
+        //            { sensorName, { { { 1 }, hub::SensorSpec::Format::DOF6 } }, metaData },
+        //            hub::io::OutputStream( sensorName ) );
 
         while ( !s_exitApp ) {
             const auto start = std::chrono::high_resolution_clock::now();
@@ -179,7 +189,11 @@ int main( int argc, char* argv[] ) {
                 std::chrono::duration_cast<std::chrono::microseconds>( end.time_since_epoch() )
                     .count();
 
-            keyboard << ( hub::Acquisition( timestampStart, timestampEnd ) << std::move( dof6 ) );
+            //            keyboard << ( hub::Acquisition( timestampStart, timestampEnd ) <<
+            //            std::move( dof6 ) );
+            streamer.newAcquisition( sensorName,
+                                     std::move( hub::Acquisition( timestampStart, timestampEnd )
+                                                << std::move( dof6 ) ) );
 
             std::this_thread::sleep_until( end );
         }
@@ -371,18 +385,20 @@ int main( int argc, char* argv[] ) {
             //            cameraFront = glm::normalize(front);
 
             //            std::cout << "\r"
-            std::cout
+            if ( streamer.isConnected() ) {
+                std::cout
 #ifdef OS_LINUX
-                << "\r"
+                    << "\r"
 #endif
-                << "\tx:" << margin << s_pos.x << " y:" << margin << s_pos.y << " z:" << margin
-                << s_pos.z << "\t\t"
-                << " w:" << margin << s_quat.w << " x:" << margin << s_quat.x << " y:" << margin
-                << s_quat.y << " z:" << margin << s_quat.z
+                    << "\tx:" << margin << s_pos.x << " y:" << margin << s_pos.y << " z:" << margin
+                    << s_pos.z << "\t\t"
+                    << " w:" << margin << s_quat.w << " x:" << margin << s_quat.x << " y:" << margin
+                    << s_quat.y << " z:" << margin << s_quat.z
 #ifdef OS_WINDOWS
-                << std::endl
+                    << std::endl
 #endif
-                ;
+                    ;
+            }
             //                << std::flush;
         } // if (s_needUpdate)
         //        std::cout << c << " was pressed."<< std::endl;

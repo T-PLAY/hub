@@ -1,5 +1,6 @@
 #include "Viewer.hpp"
 
+#include "IO/Stream.hpp"
 #include "Net/ClientSocket.hpp"
 
 //#define DEBUG_VIEWER
@@ -7,10 +8,12 @@
 
 namespace hub {
 
-Viewer::Viewer( std::function<void( const std::string&, const SensorSpec& )> onNewStreamer,
+Viewer::Viewer( std::function<bool( const std::string&, const SensorSpec& )> onNewStreamer,
                 std::function<void( const std::string&, const SensorSpec& )> onDelStreamer,
                 std::function<void( const std::string& ipv4, int port )> onServerConnected,
                 std::function<void( const std::string& ipv4, int port )> onServerDisconnected,
+                std::function<void( const std::string& streamName, const hub::Acquisition& acq )>
+                    onNewAcquisition,
                 const std::string& ipv4,
                 int port ) :
 
@@ -18,6 +21,7 @@ Viewer::Viewer( std::function<void( const std::string&, const SensorSpec& )> onN
     m_onDelStreamer( onDelStreamer ),
     m_onServerConnected( onServerConnected ),
     m_onServerDisconnected( onServerDisconnected ),
+    m_onNewAcquisition( onNewAcquisition ),
     m_ipv4( ipv4 ),
     m_port( port ),
     m_ipv4Regex( std::regex( "^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$" ) ) {
@@ -28,8 +32,9 @@ Viewer::Viewer( std::function<void( const std::string&, const SensorSpec& )> onN
     m_thread = std::thread( [this]() {
         while ( !m_stopThread ) {
             try {
-                std::cout << "[Viewer] unable to connect to server : " << m_ipv4 << " " << m_port
-                          << std::endl;
+#ifdef DEBUG_VIEWER
+                DEBUG_MSG( "[Viewer] unable to connect to server : " << m_ipv4 << " " << m_port );
+#endif
                 net::ClientSocket sock( m_ipv4, m_port );
 
                 m_serverConnected = true;
@@ -61,7 +66,17 @@ Viewer::Viewer( std::function<void( const std::string&, const SensorSpec& )> onN
                         SensorSpec sensorSpec;
                         sock.read( sensorSpec );
 
-                        m_onNewStreamer( streamName, sensorSpec );
+                        assert( m_streamName2sensorSpec.find( streamName ) ==
+                                m_streamName2sensorSpec.end() );
+                        m_streamName2sensorSpec[streamName] = sensorSpec;
+
+                        if ( m_onNewStreamer ) {
+                            bool added = m_onNewStreamer( streamName, sensorSpec );
+
+                            if ( m_onNewAcquisition && added ) {
+                                startStream( streamName, sensorSpec );
+                            }
+                        }
 
                     } break;
 
@@ -73,8 +88,15 @@ Viewer::Viewer( std::function<void( const std::string&, const SensorSpec& )> onN
 #ifdef DEBUG_VIEWER
                         DEBUG_MSG( "[Viewer] del streamer '" << streamName << "'" );
 #endif
+                        assert( m_streamName2sensorSpec.find( streamName ) !=
+                                m_streamName2sensorSpec.end() );
+                        m_streamName2sensorSpec.erase( streamName );
 
-                        m_onDelStreamer( streamName, sensorSpec );
+                        if ( m_onDelStreamer ) {
+                            m_onDelStreamer( streamName, sensorSpec );
+
+                            if ( m_onNewAcquisition ) { stopStream( streamName, sensorSpec ); }
+                        }
 
                     } break;
 
@@ -94,9 +116,24 @@ Viewer::Viewer( std::function<void( const std::string&, const SensorSpec& )> onN
 #endif
                 std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
             }
-            if ( m_serverConnected && m_onServerDisconnected )
-                m_onServerDisconnected( m_ipv4, m_port );
-            m_serverConnected = false;
+            if ( m_serverConnected ) {
+                m_serverConnected = false;
+
+                if ( m_onServerDisconnected ) m_onServerDisconnected( m_ipv4, m_port );
+
+                for ( const auto& pair : m_streamName2sensorSpec ) {
+                    const auto& streamName = pair.first;
+                    const auto& sensorSpec = pair.second;
+                    m_onDelStreamer( streamName, sensorSpec );
+
+                    if ( m_onNewAcquisition ) { stopStream( streamName, sensorSpec ); }
+                }
+                m_streamName2sensorSpec.clear();
+
+#ifdef OS_LINUX
+                ++m_port;
+#endif
+            }
 
         } // while (! m_stopThread)
     } );  // thread
@@ -109,6 +146,15 @@ Viewer::~Viewer() {
     m_stopThread = true;
     assert( m_thread.joinable() );
     m_thread.join();
+
+    for ( auto& pair : m_streamName2thread ) {
+        const auto& streamName = pair.first;
+        assert( m_streamName2stopThread.find( streamName ) != m_streamName2stopThread.end() );
+        m_streamName2stopThread.at( streamName ) = true;
+        auto& thread                             = pair.second;
+        assert( thread.joinable() );
+        thread.join();
+    }
 #ifdef DEBUG_VIEWER
     DEBUG_MSG( "[Viewer] ~Viewer() done" );
 #endif
@@ -124,6 +170,49 @@ void Viewer::setPort( int port ) {
     assert( !m_serverConnected );
     assert( 0 <= m_port && m_port <= 65535 );
     m_port = port;
+}
+
+void Viewer::startStream( const std::string& streamName, const SensorSpec& sensorSpec ) {
+    //    assert(m_streamName2inputSensor.find(streamName) == m_streamName2inputSensor.end());
+    //    auto inputSensor = std::make_unique<InputSensor>(io::InputStream(streamName, "",
+    //    net::ClientSocket(m_ipv4, m_port))); m_streamName2inputSensor[streamName] =
+    //    std::move(inputSensor); InputSensor inputSensor = InputSensor(io::InputStream(streamName,
+    //    "", net::ClientSocket(m_ipv4, m_port)));
+
+    assert( m_streamName2stopThread.find( streamName ) == m_streamName2stopThread.end() );
+    m_streamName2stopThread[streamName] = false;
+    assert( m_streamName2thread.find( streamName ) == m_streamName2thread.end() );
+    m_streamName2thread[streamName] = std::thread( [this, streamName, sensorSpec]() {
+        try {
+            InputSensor inputSensor = InputSensor(
+                io::InputStream( streamName, "", net::ClientSocket( m_ipv4, m_port ) ) );
+
+            while ( !m_streamName2stopThread.at( streamName ) ) {
+                auto acq = inputSensor.getAcquisition();
+                m_onNewAcquisition( streamName, acq );
+            }
+        }
+        catch ( net::Socket::exception& e ) {
+            DEBUG_MSG( "[Viewer] startStream() inputStream '"
+                       << streamName << "' disconnected, catch exception " << e.what() );
+            //            m_onDelStreamer( streamName, sensorSpec );
+        }
+    } );
+}
+
+void Viewer::stopStream( const std::string& streamName, const SensorSpec& ) {
+    if ( m_streamName2stopThread.find( streamName ) != m_streamName2stopThread.end() ) {
+        //        assert( m_streamName2stopThread.find( streamName ) !=
+        //        m_streamName2stopThread.end() );
+        m_streamName2stopThread.at( streamName ) = true;
+
+        assert( m_streamName2thread.find( streamName ) != m_streamName2thread.end() );
+        auto& thread = m_streamName2thread.at( streamName );
+        assert( thread.joinable() );
+        thread.join();
+        m_streamName2stopThread.erase( streamName );
+        m_streamName2thread.erase( streamName );
+    }
 }
 
 } // namespace hub

@@ -25,6 +25,7 @@ ViewerQt::ViewerQt( const std::string& ipv4, const int& port ) {
         std::cout << "[ViewerQt] add streamer " << streamerName << std::endl;
         emit addStreamSignal( streamerName, sensorSpec );
         //        this->addStream( streamerName, sensorSpec );
+        return true;
     };
     //    auto _delStream = std::bind(&FormStreamViews::delStream, this);
     //    auto _delStream = [this] -> {FormStreamViews::delStream();}
@@ -43,7 +44,7 @@ ViewerQt::ViewerQt( const std::string& ipv4, const int& port ) {
     };
 
     m_viewer = new hub::Viewer(
-        _addStreamer, _delStreamer, _onServerConnected, _onServerDisconnected, ipv4, port );
+        _addStreamer, _delStreamer, _onServerConnected, _onServerDisconnected, {}, ipv4, port );
 }
 
 ViewerQt::~ViewerQt() {
@@ -310,22 +311,23 @@ void FormStreamViews::onServerDisconnect() {
     //        delete sensorView;
     //    }
     //    m_sensorViews.clear();
-    m_sensorModel.setStringList( QStringList( "none" ) );
 
-    for ( auto& pair : m_sensorViews ) {
-        const auto& streamName = pair.first;
+//    m_sensorModel.setStringList( QStringList( "none" ) );
 
-        assert( m_sensorViews.find( streamName ) != m_sensorViews.end() );
-        auto* sensorView = m_sensorViews.at( streamName );
-        //        m_sensorViews.erase( streamName );
-        //        auto stringList = m_sensorModel.stringList();
-        //        stringList.removeAll( streamName.c_str() );
-        //        m_sensorModel.setStringList( stringList );
+//    for ( auto& pair : m_sensorViews ) {
+//        const auto& streamName = pair.first;
 
-        emit streamingStopped( streamName, sensorView->m_sensorSpec );
-        delete sensorView;
-    }
-    m_sensorViews.clear();
+//        assert( m_sensorViews.find( streamName ) != m_sensorViews.end() );
+//        auto* sensorView = m_sensorViews.at( streamName );
+//        //        m_sensorViews.erase( streamName );
+//        //        auto stringList = m_sensorModel.stringList();
+//        //        stringList.removeAll( streamName.c_str() );
+//        //        m_sensorModel.setStringList( stringList );
+
+//        emit streamingStopped( streamName, sensorView->m_sensorSpec );
+//        delete sensorView;
+//    }
+//    m_sensorViews.clear();
 
 #ifdef OS_LINUX
     ++m_port;

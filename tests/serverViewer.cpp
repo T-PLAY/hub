@@ -58,6 +58,7 @@ TEST_CASE( "Server test : viewer" ) {
             }
             std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
             std::cout << "[Test] ############################### onNewStreamer end" << std::endl;
+            return true;
         };
         auto onDelStreamer = []( const std::string& sensorName,
                                  const hub::SensorSpec& sensorSpec ) {
@@ -69,7 +70,11 @@ TEST_CASE( "Server test : viewer" ) {
         auto onServerDisconnected = [](const std::string& ipv4, int port) {
             std::cout << "[Test] ############################### onServerDisconnected" << std::endl;
         };
-        auto viewer = hub::Viewer( onNewStreamer, onDelStreamer, onServerConnected, onServerDisconnected, ipv4, port );
+        auto onNewAcquisition = []( const std::string& sensorName,
+                                 const hub::Acquisition& acq ) {
+            std::cout << "[Test] ############################### onNewAcquisition" << std::endl;
+        };
+        auto viewer = hub::Viewer( onNewStreamer, onDelStreamer, onServerConnected, onServerDisconnected, onNewAcquisition, ipv4, port );
         std::cout << "[Test] ############################### viewer created" << std::endl;
         std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
 

@@ -11,7 +11,7 @@ SceneManager::SceneManager( QObject* parent ) : QObject { parent } {}
 SceneManager::~SceneManager() {
     std::cout << "[SceneManager] ~SceneManager() start" << std::endl;
 
-//    m_sensors.clear();
+    //    m_sensors.clear();
     m_streamName2sensor.clear();
 
     std::cout << "[SceneManager] ~SceneManager() end" << std::endl;
@@ -30,7 +30,7 @@ void SceneManager::init() {
 
     // Create and initialize entity and component
     Ra::Engine::Scene::Entity* e = m_engine->getEntityManager()->createEntity( "Scene entity" );
-    m_sceneComponent            = new SceneComponent( e );
+    m_sceneComponent             = new SceneComponent( e );
     //    Dof6Component* c = new Dof6Component(e);
     m_sys->addComponent( e, m_sceneComponent );
     m_sceneComponent->initialize();
@@ -61,116 +61,117 @@ void SceneManager::init() {
 
 void SceneManager::delSensor( const std::string& streamName ) {
 
-    assert(m_streamName2sensor.find(streamName) != m_streamName2sensor.end());
-//    m_streamName2sensor.erase(m_streamName2sensor.find(streamName));
-    m_streamName2sensor.erase(streamName);
+    if ( m_streamName2sensor.find( streamName ) != m_streamName2sensor.end() ) {
+//        assert( m_streamName2sensor.find( streamName ) != m_streamName2sensor.end() );
+        //    m_streamName2sensor.erase(m_streamName2sensor.find(streamName));
+        m_streamName2sensor.erase( streamName );
 
-    QList<QStandardItem*> lst = m_sensorModel.findItems(streamName.c_str(), Qt::MatchExactly, 0);
-    assert(lst.size() == 1);
-    m_sensorModel.removeRow(lst.front()->index().row());
+        QList<QStandardItem*> lst =
+            m_sensorModel.findItems( streamName.c_str(), Qt::MatchExactly, 0 );
+        assert( lst.size() == 1 );
+        m_sensorModel.removeRow( lst.front()->index().row() );
 
-//    auto it = m_sensors.begin();
-//    int i   = 0;
-//    while ( it != m_sensors.end() ) {
-//        auto& sensor = *it;
-//        if ( sensor.m_inputSensor->m_spec.m_sensorName == streamName ) {
-//            std::cout << "[SceneManager] delSensor( " << streamName << " )" << std::endl;
+        //    auto it = m_sensors.begin();
+        //    int i   = 0;
+        //    while ( it != m_sensors.end() ) {
+        //        auto& sensor = *it;
+        //        if ( sensor.m_inputSensor->m_spec.m_sensorName == streamName ) {
+        //            std::cout << "[SceneManager] delSensor( " << streamName << " )" << std::endl;
 
-//            it = m_sensors.erase( it );
-//            m_sensorModel.removeRow( i );
-//            continue;
-//        }
-//        ++it;
-//        ++i;
-//    }
+        //            it = m_sensors.erase( it );
+        //            m_sensorModel.removeRow( i );
+        //            continue;
+        //        }
+        //        ++it;
+        //        ++i;
+        //    }
+    }
 }
 
 void SceneManager::clear() {
-//    m_sensors.clear();
+    //    m_sensors.clear();
     m_streamName2sensor.clear();
 }
 
+// const std::list<Sensor>& SceneManager::getSensors() const {
+//     return m_sensors;
+// }
 
-//const std::list<Sensor>& SceneManager::getSensors() const {
-//    return m_sensors;
-//}
+// Sensor& SceneManager::getSensor( int iSensor ) {
+//     assert( iSensor < m_sensors.size() );
+//     int i = 0;
+//     for ( auto& sensor : m_sensors ) {
+//         if ( i == iSensor ) { return sensor; }
+//         ++i;
+//     }
+//     assert( false );
+//     return m_sensors.front();
+// }
 
-//Sensor& SceneManager::getSensor( int iSensor ) {
-//    assert( iSensor < m_sensors.size() );
-//    int i = 0;
-//    for ( auto& sensor : m_sensors ) {
-//        if ( i == iSensor ) { return sensor; }
-//        ++i;
-//    }
-//    assert( false );
-//    return m_sensors.front();
-//}
-
-void SceneManager::fitView(const std::string &streamName) {
-//void SceneManager::fitView(int iSensor)
-//{
-    assert(m_streamName2sensor.find(streamName) != m_streamName2sensor.end());
-    auto & sensor = *m_streamName2sensor.at(streamName);
+void SceneManager::fitView( const std::string& streamName ) {
+    // void SceneManager::fitView(int iSensor)
+    //{
+    assert( m_streamName2sensor.find( streamName ) != m_streamName2sensor.end() );
+    auto& sensor = *m_streamName2sensor.at( streamName );
     sensor.fitView();
 
-//    int i = 0;
-//    for ( auto& sensor : m_sensors ) {
-//        if ( i == iSensor ) { sensor.fitView(); }
-//        ++i;
-//    }
+    //    int i = 0;
+    //    for ( auto& sensor : m_sensors ) {
+    //        if ( i == iSensor ) { sensor.fitView(); }
+    //        ++i;
+    //    }
 }
 
-void SceneManager::attachSensorFromImageManipulator(const std::string & streamName) {
-    for (auto & pair : m_streamName2sensor) {
-//    for ( auto& sensor : m_sensors ) {
-        auto & sensor = *pair.second;
+void SceneManager::attachSensorFromImageManipulator( const std::string& streamName ) {
+    for ( auto& pair : m_streamName2sensor ) {
+        //    for ( auto& sensor : m_sensors ) {
+        auto& sensor = *pair.second;
         sensor.detachFromImageManipulator();
     }
 
-//    const auto & streamName = modelIndex.
-    assert(m_streamName2sensor.find(streamName) != m_streamName2sensor.end());
-    auto & sensor = m_streamName2sensor.at(streamName);
+    //    const auto & streamName = modelIndex.
+    assert( m_streamName2sensor.find( streamName ) != m_streamName2sensor.end() );
+    auto& sensor = m_streamName2sensor.at( streamName );
     sensor->attachFromImageManipulator();
-//    int i = 0;
-//    for ( auto& sensor : m_sensors ) {
-//        if ( i == iSensor ) { sensor.attachFromImageManipulator(); }
-//        ++i;
-//    }
+    //    int i = 0;
+    //    for ( auto& sensor : m_sensors ) {
+    //        if ( i == iSensor ) { sensor.attachFromImageManipulator(); }
+    //        ++i;
+    //    }
 }
 
-void SceneManager::detachSensorFromImageManipulator(const std::string & streamName) {
-    if (m_streamName2sensor.find(streamName) == m_streamName2sensor.end())
-        return;
-    assert(m_streamName2sensor.find(streamName) != m_streamName2sensor.end());
-    auto & sensor = m_streamName2sensor.at(streamName);
+void SceneManager::detachSensorFromImageManipulator( const std::string& streamName ) {
+    if ( m_streamName2sensor.find( streamName ) == m_streamName2sensor.end() ) return;
+    assert( m_streamName2sensor.find( streamName ) != m_streamName2sensor.end() );
+    auto& sensor = m_streamName2sensor.at( streamName );
     sensor->detachFromImageManipulator();
-//    int i = 0;
-//    for ( auto& sensor : m_sensors ) {
-//        if ( i == iSensor ) { sensor.detachFromImageManipulator(); }
-//        ++i;
-//    }
+    //    int i = 0;
+    //    for ( auto& sensor : m_sensors ) {
+    //        if ( i == iSensor ) { sensor.detachFromImageManipulator(); }
+    //        ++i;
+    //    }
 }
 
 void SceneManager::on_tune_valueChanged( double arg1 ) {
-    for (auto & pair : m_streamName2sensor) {
+    for ( auto& pair : m_streamName2sensor ) {
         auto& sensor = *pair.second;
-//    for ( auto& sensor : m_sensors ) {
-        sensor.on_tune_valueChanged(arg1 );
+        //    for ( auto& sensor : m_sensors ) {
+        sensor.on_tune_valueChanged( arg1 );
     }
 }
 
 void SceneManager::on_tune2_valueChanged( double arg1 ) {
-    for (auto & pair : m_streamName2sensor) {
+    for ( auto& pair : m_streamName2sensor ) {
         auto& sensor = *pair.second;
-//    for ( auto& sensor : m_sensors ) {
+        //    for ( auto& sensor : m_sensors ) {
         sensor.on_tune2_valueChanged( arg1 );
     }
 }
 
 void SceneManager::on_tune3_valueChanged( double arg1 ) {
 
-//    for ( auto& sensor : m_sensors ) {
-    for (auto & pair : m_streamName2sensor) {
+    //    for ( auto& sensor : m_sensors ) {
+    for ( auto& pair : m_streamName2sensor ) {
         auto& sensor = *pair.second;
         sensor.on_tune3_valueChanged( arg1 );
     }
@@ -178,28 +179,25 @@ void SceneManager::on_tune3_valueChanged( double arg1 ) {
 
 void SceneManager::on_tune4_valueChanged( double arg1 ) {
 
-//    for ( auto& sensor : m_sensors ) {
-    for (auto & pair : m_streamName2sensor) {
+    //    for ( auto& sensor : m_sensors ) {
+    for ( auto& pair : m_streamName2sensor ) {
         auto& sensor = *pair.second;
         sensor.on_tune4_valueChanged( arg1 );
     }
 }
 
-void SceneManager::on_palette_valueChanged(int palette)
-{
-    for (auto & pair : m_streamName2sensor) {
+void SceneManager::on_palette_valueChanged( int palette ) {
+    for ( auto& pair : m_streamName2sensor ) {
         auto& sensor = *pair.second;
-//    for ( auto& sensor : m_sensors ) {
+        //    for ( auto& sensor : m_sensors ) {
         sensor.on_palette_valueChanged( palette );
     }
 }
 
-void SceneManager::on_setTransparency(bool isTransparent)
-{
-    for (auto & pair : m_streamName2sensor) {
+void SceneManager::on_setTransparency( bool isTransparent ) {
+    for ( auto& pair : m_streamName2sensor ) {
         auto& sensor = *pair.second;
-//    for ( auto& sensor : m_sensors ) {
-        sensor.on_setTransparency(isTransparent );
+        //    for ( auto& sensor : m_sensors ) {
+        sensor.on_setTransparency( isTransparent );
     }
-
 }

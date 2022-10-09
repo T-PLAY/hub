@@ -493,7 +493,8 @@ void GuiManager::onServerStreamStopped( const std::string& streamName,
 }
 
 void GuiManager::onServerDisconnected() {
-    m_sceneManager.clear();
+//    m_sceneManager.clear();
+
     //    delete m_formStreamViews;
     //    m_formStreamViews = nullptr;
     //    //    ui->dockWidgetContents_left.c
