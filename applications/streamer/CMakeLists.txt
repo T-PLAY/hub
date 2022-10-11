@@ -25,6 +25,7 @@ endif()
 
 if (HUB_ENABLE_SCUS AND HUB_USE_DCMTK)
     add_subdirectory(simulator)
+    add_subdirectory(simulatorOld)
 endif()
 
 if (HUB_USE_DCMTK)

@@ -47,14 +47,15 @@ class SRC_API Streamer
     std::map<std::string, SensorSpec> m_streamName2sensorSpec;
     std::map<std::string, std::unique_ptr<OutputSensor>> m_streamName2outputSensor;
     std::map<std::string, std::vector<Acquisition>> m_streamName2initAcqs;
-    std::map<std::string, std::chrono::system_clock::time_point> m_streamName2lastLogout;
+//    std::map<std::string, std::chrono::system_clock::time_point> m_streamName2lastLogout;
+    std::map<std::string, std::chrono::time_point<std::chrono::high_resolution_clock>> m_streamName2lastLogout;
     //    std::map<std::string, OutputSensor> m_streamName2outputSensor;
     bool m_stopThread = false;
 
     std::string m_ipv4;
     int m_port;
 
-    bool m_serverConnected = true;
+    bool m_serverConnected = false;
     std::regex m_ipv4Regex;
 };
 

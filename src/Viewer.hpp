@@ -21,14 +21,15 @@ namespace hub {
 class SRC_API Viewer
 {
   public:
-    Viewer( std::function<bool( const std::string& streamName, const SensorSpec& )> onNewStreamer,
-            std::function<void( const std::string& streamName, const SensorSpec& )> onDelStreamer,
-            std::function<void( const std::string& ipv4, int port )> onServerConnected    = {},
-            std::function<void( const std::string& ipv4, int port )> onServerDisconnected = {},
-            std::function<void( const std::string& streamName, const hub::Acquisition& acq )>
+    Viewer( std::function<bool( const char* streamName, const SensorSpec& )> onNewStreamer,
+            std::function<void( const char* streamName, const SensorSpec& )> onDelStreamer,
+            std::function<void( const char* ipv4, int port )> onServerConnected    = {},
+            std::function<void( const char* ipv4, int port )> onServerDisconnected = {},
+            std::function<void( const char* streamName, const hub::Acquisition& acq )>
                 onNewAcquisition    = {},
             const std::string& ipv4 = net::s_defaultServiceIp,
             int port                = net::s_defaultServicePort );
+
     ~Viewer();
 
     void setIpv4( const std::string& ipv4 );
@@ -40,11 +41,11 @@ class SRC_API Viewer
     std::thread m_thread;
     bool m_stopThread = false;
 
-    std::function<bool( const std::string& streamName, const SensorSpec& )> m_onNewStreamer;
-    std::function<void( const std::string& streamName, const SensorSpec& )> m_onDelStreamer;
-    std::function<void( const std::string& ipv4, int port )> m_onServerConnected;
-    std::function<void( const std::string& ipv4, int port )> m_onServerDisconnected;
-    std::function<void( const std::string& streamName, const hub::Acquisition& acq )>
+    std::function<bool( const char* streamName, const SensorSpec& )> m_onNewStreamer;
+    std::function<void( const char* streamName, const SensorSpec& )> m_onDelStreamer;
+    std::function<void( const char* ipv4, int port )> m_onServerConnected;
+    std::function<void( const char* ipv4, int port )> m_onServerDisconnected;
+    std::function<void( const char* streamName, const hub::Acquisition& acq )>
         m_onNewAcquisition;
 
     std::string m_ipv4;

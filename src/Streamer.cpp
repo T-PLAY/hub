@@ -3,6 +3,7 @@
 //#define DEBUG_VIEWER
 
 #include <regex>
+#include <chrono>
 
 #include "IO/Stream.hpp"
 #include "Net/ClientSocket.hpp"
@@ -69,6 +70,7 @@ void Streamer::addStream( const std::string& streamName,
         }
     }
 
+//    auto chrono = std::chrono::high_resolution_clock::now();
     m_streamName2lastLogout[streamName] = std::chrono::high_resolution_clock::now();
     //        std::make_unique<OutputSensor>( sensorSpec, io::OutputStream( "streamName" ) );
 
@@ -84,6 +86,8 @@ void Streamer::newAcquisition( const std::string& streamName, Acquisition&& acqu
     //                     assert( m_streamName2outputSensor.find( streamName ) !=
     //    m_streamName2outputSensor.end() );
     if ( m_streamName2outputSensor.find( streamName ) == m_streamName2outputSensor.end() ) {
+//        std::cout << "[Streamer] unable to find " << streamName << std::endl;
+
         auto& lastLogout = m_streamName2lastLogout.at( streamName );
         auto now         = std::chrono::high_resolution_clock::now();
         auto diff =
@@ -95,9 +99,9 @@ void Streamer::newAcquisition( const std::string& streamName, Acquisition&& acqu
                     sensorSpec,
                     io::OutputStream( streamName, net::ClientSocket( m_ipv4, m_port ) ) );
                 m_streamName2outputSensor[streamName] = std::move( outputSensor );
-                for ( const auto& acq : m_streamName2initAcqs.at( streamName ) ) {
-                    newAcquisition( streamName, acq.clone() );
-                }
+//                for ( const auto& acq : m_streamName2initAcqs.at( streamName ) ) {
+//                    newAcquisition( streamName, acq.clone() );
+//                }
                 if ( !m_serverConnected ) {
                     onServerConnected();
                     //                    m_serverConnected = true;
@@ -174,7 +178,10 @@ void Streamer::onServerDisconnected() {
             for ( const auto& pair : m_streamName2initAcqs ) {
                 const auto& streamName = pair.first;
                 const auto& initAcqs   = pair.second;
-                newAcquisition( streamName, initAcqs.front().clone() );
+                if (! initAcqs.empty()) {
+                    assert(initAcqs.size() > 0);
+                    newAcquisition( streamName, initAcqs.front().clone() );
+                }
                 //                if (m_serverConnected)
                 //                    break;
             }

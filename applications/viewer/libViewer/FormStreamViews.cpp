@@ -213,6 +213,8 @@ FormStreamViews::FormStreamViews(
     //        );
     //    }
 
+
+    std::cout << "[FormStreamViews] connect viewerQt start" << std::endl;
     {
         m_viewerQt = new ViewerQt( m_ipv4, m_port );
         QObject::connect(
@@ -224,6 +226,7 @@ FormStreamViews::FormStreamViews(
         QObject::connect(
             m_viewerQt, &ViewerQt::serverDisconnected, this, &FormStreamViews::onServerDisconnect );
     }
+    std::cout << "[FormStreamViews] connect viewerQt end" << std::endl;
 
     //    //    QObject::connect(QApplication::instance(), &QApplication::aboutToQuit, this,
     //    //    &FormStreamViews::onQuitApp);
