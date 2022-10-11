@@ -380,6 +380,7 @@ void Viewer::notifyNewStreamer( const Streamer& streamer ) const {
 
 void Viewer::notifyDelStreamer( const std::string& streamerName,
                                 const hub::SensorSpec& sensorSpec ) const {
+    std::cout << headerMsg() << "notifyDelStreamer " << streamerName << std::endl;
     try {
         m_socket.write( hub::net::ClientSocket::Message::DEL_STREAMER );
         m_socket.write( streamerName );
@@ -542,12 +543,6 @@ Streamer::Streamer( Server& server, int iClient, hub::net::ClientSocket&& sock )
         if ( strcmp( type, "record" ) == 0 ) { m_isRecordStream = true; }
     }
 
-    m_server.addStreamer( this );
-    std::cout << std::left << std::setw( g_margin2 ) << headerMsg() << std::setw( g_margin )
-              << "new streamer" << m_server.getStatus() << std::endl;
-    std::cout << "-------------------------------------------------------------------------"
-                 "--------------------"
-              << std::endl;
 
     std::thread thread( [this]() {
         try {
@@ -636,6 +631,15 @@ Streamer::Streamer( Server& server, int iClient, hub::net::ClientSocket&& sock )
         m_server.delStreamer( this );
     } );
     thread.detach();
+
+    // get record acqs before prevent viewer
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    m_server.addStreamer( this );
+    std::cout << std::left << std::setw( g_margin2 ) << headerMsg() << std::setw( g_margin )
+              << "new streamer" << m_server.getStatus() << std::endl;
+    std::cout << "-------------------------------------------------------------------------"
+                 "--------------------"
+              << std::endl;
 
     m_mtx.unlock();
 }
@@ -794,13 +798,6 @@ StreamViewer::StreamViewer( Server& server, int iClient, hub::net::ClientSocket&
     //    server.m_streamViewers[m_streamName].push_back( this );
     m_server.addStreamViewer( this );
 
-    std::cout << std::left << std::setw( g_margin2 ) << headerMsg() << std::setw( g_margin )
-              << "new stream viewer" << m_server.getStatus() << std::endl;
-    std::cout << headerMsg() << "watching '" << m_streamName << "'" << std::endl;
-    std::cout << "-------------------------------------------------------------------------"
-                 "--------------------"
-              << std::endl;
-
     const auto& lastAcqs = m_server.getLastAcqs( m_streamName );
     try {
         for ( const auto& acq : lastAcqs ) {
@@ -815,6 +812,14 @@ StreamViewer::StreamViewer( Server& server, int iClient, hub::net::ClientSocket&
         m_server.delStreamViewer( this );
         return;
     }
+
+    std::cout << std::left << std::setw( g_margin2 ) << headerMsg() << std::setw( g_margin )
+              << "new stream viewer" << m_server.getStatus() << std::endl;
+    std::cout << headerMsg() << "watching '" << m_streamName << "'" << std::endl;
+    std::cout << "-------------------------------------------------------------------------"
+                 "--------------------"
+              << std::endl;
+
 
     //    std::thread thread( [this, streamer]() {
     m_thread = new std::thread( [this, streamer]() {
@@ -905,7 +910,14 @@ StreamViewer::~StreamViewer() {
     //        m_thread.join();
     std::cout << headerMsg() << "deleted" << std::endl;
     //    if (! m_isKilled)
-    if ( m_thread != nullptr ) m_thread->detach();
+    if ( m_thread != nullptr ) {
+        m_thread->detach();
+//        if (m_thread->joinable()) {
+//            m_thread->join();
+//            m_mtxOutputSensor.unlock();
+//        }
+    }
+//    m_mtxOutputSensor.unlock();
 }
 
 std::string StreamViewer::headerMsg() const {

@@ -195,7 +195,9 @@ void Interface::write( const Acquisition& acq ) const {
 
     write( acq.m_start );
     write( acq.m_end );
-    write( acq.getMeasures() );
+    const auto & measures = acq.getMeasures();
+    assert(measures.size() > 0);
+    write( measures );
 }
 
 void Interface::write( const char* str ) const {
@@ -393,6 +395,7 @@ Acquisition Interface::getAcquisition( int acquisitionSize ) const {
 
     int nMeasures;
     read( nMeasures );
+    assert(nMeasures > 0);
 
     for ( int iMeasure = 0; iMeasure < nMeasures; ++iMeasure ) {
         acq << Interface::getMeasure();

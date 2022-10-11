@@ -9,7 +9,7 @@ namespace io {
 OutputStream::OutputStream( const std::string& streamName, net::ClientSocket&& clientSocket ) :
     net::ClientSocket( std::move( clientSocket ) ) {
 
-    std::cout << "\t[OutputStream] OutputStream(string, ClientSocket&&)" << std::endl;
+//    std::cout << "\t[OutputStream] OutputStream(string, ClientSocket&&)" << std::endl;
 
     Interface::write( net::ClientSocket::Type::STREAMER );
 
@@ -55,7 +55,7 @@ InputStream::InputStream( const std::string& streamName,
                           net::ClientSocket&& clientSocket ) :
     net::ClientSocket( std::move( clientSocket ) ) {
 
-    std::cout << "\t[InputStream] InputStream(string, string, ClientSocket&&)" << std::endl;
+//    std::cout << "\t[InputStream] InputStream(string, string, ClientSocket&&)" << std::endl;
 
     Interface::write( net::ClientSocket::Type::STREAM_VIEWER );
 
@@ -81,7 +81,7 @@ InputStream::InputStream( const std::string& streamName,
     }
     assert( mess == ClientSocket::Message::OK );
 
-    std::cout << "\t[InputStream] InputStream(string, string, ClientSocket&&) end" << std::endl;
+//    std::cout << "\t[InputStream] InputStream(string, string, ClientSocket&&) end" << std::endl;
 }
 
 #ifdef WIN32

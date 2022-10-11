@@ -31,8 +31,20 @@ extern "C"
     //                                 long long* start,
     //                                 long long* end,
     //                                 unsigned char* data );
+
+    typedef bool (__stdcall * onNewStreamerFunc)(const char * streamName, const SensorSpec * sensorSpec);
+    typedef void (__stdcall * onDelStreamerFunc)(const char * streamName, const SensorSpec * sensorSpec);
+    typedef void (__stdcall * onServerConnectedFunc)(const char * ipv4, int port);
+    typedef void (__stdcall * onServerDisconnectedFunc)(const char * ipv4, int port);
+
     SRC_API Viewer*
-    createViewer( void ( *onNewStreamer )( const char* streamName, const SensorSpec* sensorSpec ),
+    createViewer2( onNewStreamerFunc onNewStreamer,
+                   onDelStreamerFunc onDelStreamer,
+                   onServerConnectedFunc onServerConnected,
+                   onServerDisconnectedFunc onServerDisconnected);
+
+    SRC_API Viewer*
+    createViewer( bool ( *onNewStreamer )( const char* streamName, const SensorSpec* sensorSpec ),
                   void ( *onDelStreamer )( const char* streamName, const SensorSpec* sensorSpec ),
                   void ( *onServerConnected )( const char* ipv4, int port ),
                   void ( *onServerDisconnected )( const char* ipv4, int port ),

@@ -8,12 +8,11 @@
 
 namespace hub {
 
-Viewer::Viewer( std::function<bool( const std::string&, const SensorSpec& )> onNewStreamer,
-                std::function<void( const std::string&, const SensorSpec& )> onDelStreamer,
-                std::function<void( const std::string& ipv4, int port )> onServerConnected,
-                std::function<void( const std::string& ipv4, int port )> onServerDisconnected,
-                std::function<void( const std::string& streamName, const hub::Acquisition& acq )>
-                    onNewAcquisition,
+Viewer::Viewer(std::function<bool (const char *, const SensorSpec &)> onNewStreamer,
+                std::function<void (const char *, const SensorSpec &)> onDelStreamer,
+                std::function<void (const char *, int)> onServerConnected,
+                std::function<void (const char *, int)> onServerDisconnected,
+                std::function<void (const char *, const hub::Acquisition &)> onNewAcquisition,
                 const std::string& ipv4,
                 int port ) :
 
@@ -40,7 +39,9 @@ Viewer::Viewer( std::function<bool( const std::string&, const SensorSpec& )> onN
                 m_serverConnected = true;
                 sock.write( net::ClientSocket::Type::VIEWER );
 
-                if ( m_onServerConnected ) m_onServerConnected( m_ipv4, m_port );
+                if ( m_onServerConnected ) m_onServerConnected( m_ipv4.c_str(), m_port );
+
+//                std::string streamName;
 
                 while ( !m_stopThread ) {
                     net::ClientSocket::Message serverMessage;
@@ -71,12 +72,14 @@ Viewer::Viewer( std::function<bool( const std::string&, const SensorSpec& )> onN
                         m_streamName2sensorSpec[streamName] = sensorSpec;
 
                         if ( m_onNewStreamer ) {
-                            bool added = m_onNewStreamer( streamName, sensorSpec );
+                            bool added = m_onNewStreamer( streamName.c_str(), sensorSpec );
 
                             if ( m_onNewAcquisition && added ) {
                                 startStream( streamName, sensorSpec );
                             }
                         }
+                        // wait for client init sensorSpec with main thread context (async)
+                        std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
                     } break;
 
@@ -93,10 +96,11 @@ Viewer::Viewer( std::function<bool( const std::string&, const SensorSpec& )> onN
                         m_streamName2sensorSpec.erase( streamName );
 
                         if ( m_onDelStreamer ) {
-                            m_onDelStreamer( streamName, sensorSpec );
+                            m_onDelStreamer( streamName.c_str(), sensorSpec );
 
                             if ( m_onNewAcquisition ) { stopStream( streamName, sensorSpec ); }
                         }
+                        std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
                     } break;
 
@@ -119,12 +123,12 @@ Viewer::Viewer( std::function<bool( const std::string&, const SensorSpec& )> onN
             if ( m_serverConnected ) {
                 m_serverConnected = false;
 
-                if ( m_onServerDisconnected ) m_onServerDisconnected( m_ipv4, m_port );
+                if ( m_onServerDisconnected ) m_onServerDisconnected( m_ipv4.c_str(), m_port );
 
                 for ( const auto& pair : m_streamName2sensorSpec ) {
                     const auto& streamName = pair.first;
                     const auto& sensorSpec = pair.second;
-                    m_onDelStreamer( streamName, sensorSpec );
+                    m_onDelStreamer( streamName.c_str(), sensorSpec );
 
                     if ( m_onNewAcquisition ) { stopStream( streamName, sensorSpec ); }
                 }
@@ -189,7 +193,7 @@ void Viewer::startStream( const std::string& streamName, const SensorSpec& senso
 
             while ( !m_streamName2stopThread.at( streamName ) ) {
                 auto acq = inputSensor.getAcquisition();
-                m_onNewAcquisition( streamName, acq );
+                m_onNewAcquisition( streamName.c_str(), acq );
             }
         }
         catch ( net::Socket::exception& e ) {

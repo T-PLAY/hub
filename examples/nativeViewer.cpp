@@ -63,6 +63,7 @@ int main() {
         char metaDataStr[80] = { 0 };
         hub::native::sensorSpec_getMetaDataStr( sensorSpec, metaDataStr );
         std::cout << "[Example][Viewer] metaDataStr : '" << metaDataStr << "'" << std::endl;
+        return true;
     };
     auto onDelStreamer = []( const char* streamName, const hub::SensorSpec* sensorSpec ) {
         std::cout << "[Example][Viewer] onDelStreamer " << streamName << std::endl;
