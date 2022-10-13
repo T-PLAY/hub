@@ -36,19 +36,21 @@ extern "C"
     typedef void (__stdcall * onDelStreamerFunc)(const char * streamName, const SensorSpec * sensorSpec);
     typedef void (__stdcall * onServerConnectedFunc)(const char * ipv4, int port);
     typedef void (__stdcall * onServerDisconnectedFunc)(const char * ipv4, int port);
+    typedef void (__stdcall * onNewAcquisitionFunc)(const char * streamName, const Acquisition * acq);
+
+//    SRC_API Viewer*
+//    createViewer2( onNewStreamerFunc onNewStreamer,
+//                   onDelStreamerFunc onDelStreamer,
+//                   onServerConnectedFunc onServerConnected,
+//                   onServerDisconnectedFunc onServerDisconnected);
 
     SRC_API Viewer*
-    createViewer2( onNewStreamerFunc onNewStreamer,
+//   __stdcall Viewer*
+    createViewer( onNewStreamerFunc onNewStreamer,
                    onDelStreamerFunc onDelStreamer,
                    onServerConnectedFunc onServerConnected,
-                   onServerDisconnectedFunc onServerDisconnected);
-
-    SRC_API Viewer*
-    createViewer( bool ( *onNewStreamer )( const char* streamName, const SensorSpec* sensorSpec ),
-                  void ( *onDelStreamer )( const char* streamName, const SensorSpec* sensorSpec ),
-                  void ( *onServerConnected )( const char* ipv4, int port ),
-                  void ( *onServerDisconnected )( const char* ipv4, int port ),
-                  void ( *onNewAcquisition )( const char* streamName, const Acquisition* acq ),
+                   onServerDisconnectedFunc onServerDisconnected,
+                  onNewAcquisitionFunc onNewAcquisition,
                   const char* ipv4,
                   int port );
     //                  const char* ipv4 = hub::net::s_defaultServiceIp.c_str(),
