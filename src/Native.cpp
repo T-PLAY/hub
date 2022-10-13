@@ -105,36 +105,34 @@ namespace native {
     //    return true;
     //}
 
-    Viewer *createViewer2(onNewStreamerFunc onNewStreamer, onDelStreamerFunc onDelStreamer, onServerConnectedFunc onServerConnected, onServerDisconnectedFunc onServerDisconnected)
-    {
-        auto onNewStreamerCpp = [=](const char* sensorName, const SensorSpec& sensorSpec) {
-            return onNewStreamer(sensorName, &sensorSpec);
-        };
-        auto onDelStreamerCpp = [=](const char* sensorName, const SensorSpec& sensorSpec) {
-            onDelStreamer(sensorName, &sensorSpec);
-        };
-        auto onServerConnectedCpp = [=](const char* ipv4, int port) {
-            onServerConnected(ipv4, port);
-        };
-        auto onServerDisconnectedCpp = [=](const char* ipv4, int port) {
-            onServerDisconnected(ipv4, port);
-        };
-        Viewer* viewer = new Viewer(onNewStreamerCpp,
-            onDelStreamerCpp,
-            onServerConnectedCpp,
-            onServerDisconnectedCpp);
+    //    Viewer *createViewer2(onNewStreamerFunc onNewStreamer, onDelStreamerFunc onDelStreamer, onServerConnectedFunc onServerConnected, onServerDisconnectedFunc onServerDisconnected)
+    //    {
+    //        auto onNewStreamerCpp = [=](const char* sensorName, const SensorSpec& sensorSpec) {
+    //            return onNewStreamer(sensorName, &sensorSpec);
+    //        };
+    //        auto onDelStreamerCpp = [=](const char* sensorName, const SensorSpec& sensorSpec) {
+    //            onDelStreamer(sensorName, &sensorSpec);
+    //        };
+    //        auto onServerConnectedCpp = [=](const char* ipv4, int port) {
+    //            onServerConnected(ipv4, port);
+    //        };
+    //        auto onServerDisconnectedCpp = [=](const char* ipv4, int port) {
+    //            onServerDisconnected(ipv4, port);
+    //        };
+    //        Viewer* viewer = new Viewer(onNewStreamerCpp,
+    //            onDelStreamerCpp,
+    //            onServerConnectedCpp,
+    //            onServerDisconnectedCpp);
 
-        return viewer;
-    }
+    //        return viewer;
+    //    }
 
-    Viewer*
-    createViewer(bool (*onNewStreamer)(const char* streamName, const SensorSpec* sensorSpec),
-        void (*onDelStreamer)(const char* streamName, const SensorSpec* sensorSpec),
-        void (*onServerConnected)(const char* ipv4, int port),
-        void (*onServerDisconnected)(const char* ipv4, int port),
-        void (*onNewAcquisition)(const char* streamName, const Acquisition* acq),
-        const char* ipv4,
-        int port)
+    Viewer* createViewer(onNewStreamerFunc onNewStreamer,
+                          onDelStreamerFunc onDelStreamer,
+                          onServerConnectedFunc onServerConnected,
+                          onServerDisconnectedFunc onServerDisconnected,
+                          onNewAcquisitionFunc onNewAcquisition,
+                          const char* ipv4, int port)
     {
 
         //    Viewer* viewer = new Viewer( "127.0.0.1", 4042, {}, {} );
@@ -317,8 +315,6 @@ namespace native {
         assert(metaData->find(metaName) != metaData->end());
         return std::any_cast<unsigned int>(metaData->at(metaName));
     }
-
-
 
     // bool getAcquisition( InputSensor* inputSensor,
     //                      long long* start,
