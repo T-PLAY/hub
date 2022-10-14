@@ -56,8 +56,8 @@ void Dof6Component::initialize() {
     //    ); blinnPhongMaterial->m_perVertexColor = true; blinnPhongMaterial->m_ks = Color::White();
     //    blinnPhongMaterial->m_ns = 100_ra;
 
-    auto lambertianMaterial              = make_shared<LambertianMaterial>( "Lambertian Material" );
-    lambertianMaterial->m_perVertexColor = true;
+//    auto lambertianMaterial              = make_shared<LambertianMaterial>( "Lambertian Material" );
+//    lambertianMaterial->m_perVertexColor = true;
 
     //// setup ////
 
@@ -103,7 +103,11 @@ void Dof6Component::update( const hub::Acquisition& acq ) {
         const auto& mat4 =
             Eigen::Map<Eigen::Matrix<float, 4, 4>>( (float*)measure.m_data ); // Column-major
         //        std::cout << mat4 << std::endl;
+
         m_entity->setTransform( mat4 );
+//        for (int i = 0; i <3; ++i) {
+//            m_roAxes[i]->setLocalTransform(mat4);
+//        }
     }
     else { assert( false ); }
 }

@@ -355,7 +355,7 @@ Measure Interface::getMeasure() const {
     std::cout << "[Interface] getMeasure() : start" << std::endl;
 #endif
 
-    size_t size;
+    uint64_t size; // compatibility 32/64 bits
     read( size );
     unsigned char* data = new unsigned char[size];
     read( data, size );

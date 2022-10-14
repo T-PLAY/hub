@@ -1,6 +1,8 @@
 cmake_minimum_required (VERSION 3.8)
 
-add_subdirectory(libViewer)
+if (QT_VERSION)
+	add_subdirectory(libViewer)
+endif()
 
 #add_subdirectory(clientViewer)
 add_subdirectory(streamViewer)

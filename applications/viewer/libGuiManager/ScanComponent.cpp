@@ -103,7 +103,10 @@ void ScanComponent::initialize() {
 //                TLocal *= Eigen::AngleAxis<float>( M_PI, Vector3( 1.0, 0.0, 0.0 ) );
         //        m_transform = Eigen::Scaling( 100.0, 100.0, 100.0 ).resize(4, 4);
         //        m_transform = Eigen::Matrix4f::Identity();
-        m_transform.block( 0, 0, 3, 3 ) = Eigen::Scaling( 100.0f, 100.0f, 100.0f );
+
+//        m_transform.block( 0, 0, 3, 3 ) = Eigen::Scaling( 100.0f, 100.0f, 100.0f );
+//        m_transform.block( 0, 0, 3, 3 ) = Eigen::Scaling( 10.0f, 10.0f, 10.0f );
+
 //        m_transform *= TLocal;
     }
 

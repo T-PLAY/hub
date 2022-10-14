@@ -80,7 +80,7 @@ public:
     //    Sensor(IOStreamT&& iostream, QObject* parent = nullptr);
 
     //    Sensor(hub::InputSensor&& inputSensor, QObject* parent = nullptr);
-    Sensor(std::unique_ptr<hub::InputSensor> inputSensor, QMdiArea& mdiArea, FormImageManipulator * imageManipulator, Ra::Engine::RadiumEngine * engine, Ra::Gui::Viewer * viewer, Ra::Engine::Scene::System * sys, Sensor * parentSensor, const std::string & streamName, QObject* parent = nullptr);
+    Sensor(std::unique_ptr<hub::InputSensor> inputSensor, QMdiArea& mdiArea, FormImageManipulator * imageManipulator, Ra::Engine::RadiumEngine * engine, Ra::Gui::Viewer * viewer, Ra::Engine::Scene::System * sys, Sensor * parentSensor, const std::string & streamName, QStandardItemModel & model, QTableView & view, QObject* parent = nullptr);
     ~Sensor();
 
     //    Sensor(IOStream&& iostream, QObject* parent = nullptr);
@@ -142,6 +142,8 @@ private:
 //    Ra::Engine::Scene::Component * m_component = nullptr;
 //    Dof6Component * m_dof6Component = nullptr;
     SensorComponent * m_component = nullptr;
+    QStandardItemModel & m_model;
+    QTableView & m_view;
 
 public:
     const QList<QStandardItem *> &getItems() const;

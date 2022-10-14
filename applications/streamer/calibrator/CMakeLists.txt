@@ -20,7 +20,7 @@ find_package(glm REQUIRED)
 
 
 #set(QT_VERSION 5)
-#set(REQUIRED_LIBS Core Network Gui Widgets)
+set(REQUIRED_LIBS Core Gui Widgets)
 set(REQUIRED_LIBS_QUALIFIED Qt${QT_VERSION}::Core Qt${QT_VERSION}::Gui Qt${QT_VERSION}::Widgets)
 set(WIN32_REQUIRED_LIBS)
 set(UNIX_REQUIRED_LIBS)
@@ -45,6 +45,10 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 
 if (WIN32)
     #    set(WIN32_REQUIRED_LIBS wsock32 ws2_32)
+
+   add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${SRC_TARGET}> $<TARGET_FILE_DIR:${PROJECT_NAME}>
+        )
 
 
     message(STATUS ${QT_INSTALL_PATH})

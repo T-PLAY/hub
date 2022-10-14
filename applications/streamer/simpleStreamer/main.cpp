@@ -28,7 +28,13 @@ int main( int argc, char* argv[] ) {
     hub::SensorSpec::MetaData metaData;
     //    metaData["scanDepth"] = 35.0; // mm
     //    metaData["scanWidth"] = 50.0; // mm
-    metaData["parent"] = "Keyboard";
+//    const float transform[16] = {0.000000, -0.000000, -50.000000, 0.000000,
+//                            -0.000000, -1.000000, 0.000000, 0.000000,
+//                            -35.000000, 0.000000, -0.000000, 0.000000,
+//                            0.000000, 0.000000, 0.000000, 1.000000 };
+//    metaData["transform"] = transform;
+//    metaData["parent"] = "Keyboard";
+    metaData["parent"] = "calibrator";
 
     //    hub::OutputSensor proceduralStream(
     //        { "ProceduralStreamer", { { { width, height }, hub::SensorSpec::Format::Y8 } },
@@ -96,6 +102,7 @@ int main( int argc, char* argv[] ) {
         //                              << hub::Measure { data, imgSize } );
 
         std::this_thread::sleep_until( end );
+//        break;
     }
 #else
 

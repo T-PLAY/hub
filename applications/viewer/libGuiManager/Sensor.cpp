@@ -153,6 +153,13 @@ void SensorCounterFpsThread::run() {
         //        m_counterFrame = 0;
         m_sensor.m_counterFrame = 0;
 
+//        const QModelIndex & modelIndex = m_sensor.m_itemFps->index();
+//        m_sensor.m_model.setData(modelIndex, QString(buff));
+//        m_sensor.m_model.dataChanged(modelIndex, modelIndex);
+//        m_sensor.m_model.itemChanged(m_sensor.m_itemFps);
+//        m_sensor.m_view.update();
+        m_sensor.m_view.viewport()->update();
+
         //        std::cout << "[SensorCounterFpsThread:" << m_sensorName << "] update" <<
         //        std::endl; double fps = m_counterFrame * 10.0;
     }
@@ -188,6 +195,8 @@ Sensor::Sensor(std::unique_ptr<hub::InputSensor> inputSensor,
                 Ra::Engine::Scene::System* sys,
                 Sensor* parentSensor,
                 const std::string & streamName,
+                QStandardItemModel &model,
+                QTableView & view,
                 QObject* parent) :
     QObject( parent ),
     m_inputSensor( std::move( inputSensor ) ),
@@ -200,7 +209,10 @@ Sensor::Sensor(std::unique_ptr<hub::InputSensor> inputSensor,
     //    , m_inputSensor(std::move(inputSensor))
     ,
     m_thread( *this, parent ),
-    m_counterFpsThread( *this, parent )
+    m_counterFpsThread( *this, parent ),
+    m_model(model),
+    m_view(view)
+
 //    , m_parentEntity(parentEntity)
 {
     const auto& sensorSpec  = m_inputSensor->m_spec;
@@ -350,6 +362,7 @@ Sensor::Sensor(std::unique_ptr<hub::InputSensor> inputSensor,
         new QStandardItem( std::to_string( m_inputSensor->m_spec.m_acquisitionSize ).c_str() ) );
     m_itemFps = new QStandardItem( "0" );
     m_items.append( m_itemFps );
+
 
     //    m_thread.run();
     m_counterFpsThread.start();
