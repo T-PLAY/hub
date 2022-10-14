@@ -38,13 +38,14 @@ file(GLOB_RECURSE headers *.hpp *.h)
 #        IO/Stream.hpp
 #)
 
-
+#set (HUB_BUILD_STATIC_LIBRARY "1")
 if (HUB_BUILD_STATIC_LIBRARY)
         add_library(${PROJECT_NAME} STATIC
                 ${sources}
                 ${headers}
         )
         target_compile_definitions(${PROJECT_NAME} PUBLIC -DSRC_STATIC)
+#        add_definitions()
 else()
         add_library(${PROJECT_NAME} SHARED
                 ${sources}
@@ -53,6 +54,7 @@ else()
         target_compile_definitions(${PROJECT_NAME} PUBLIC -DSRC_EXPORTS)
 #        target_compile_definitions(${PROJECT_NAME} PUBLIC -DDEBUG)
 endif()
+#unset(HUB_BUILD_STATIC_LIBRARY CACHE)
 
 
 target_include_directories(${PROJECT_NAME} PUBLIC
@@ -82,7 +84,8 @@ endif()
 target_link_libraries(${PROJECT_NAME} ${UNIX_REQUIRED_LIBS} ${WIN32_REQUIRED_LIBS})
 
 install(TARGETS ${PROJECT_NAME} DESTINATION lib)
-install(FILES ${headers} DESTINATION include)
+#install(FILES ${headers} DESTINATION include)
+install(DIRECTORY ${SRC_DIR} DESTINATION include FILES_MATCHING PATTERN "*.hpp")
 
 
 #set(CMAKE_CXX_STANDARD 14) #ULA-OP C++14

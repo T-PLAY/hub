@@ -22,8 +22,12 @@ MainWindow::MainWindow( QWidget* parent ) : QMainWindow( parent ), ui( new Ui::M
     QObject::connect( ui->spinBox_sz, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &MainWindow::updateTransform );
 
     //    std::string sensorName = "calibrator";
+    hub::SensorSpec::MetaData metaData;
+//    metaData["parent"] = "Keyboard";
+    metaData["parent"] = "Polhemus Patriot (sensor 2)";
+    //    metaData["scanWidth"] = 10.0;
     m_outputSensor =
-        new hub::OutputSensor( { "calibrator", { { { 1 }, hub::SensorSpec::Format::MAT4 } } },
+        new hub::OutputSensor( { "calibrator", { { { 1 }, hub::SensorSpec::Format::MAT4 } }, metaData },
                                hub::io::OutputStream( "calibrator" ) );
     updateTransform();
 }

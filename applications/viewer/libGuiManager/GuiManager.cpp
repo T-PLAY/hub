@@ -274,6 +274,7 @@ void GuiManager::init() {
 
     m_sensorsView = new QTableView;
     m_sensorsView->setModel( &m_sceneManager.m_sensorModel );
+    m_sensorsView->show();
     //    m_sensorsView->setMinimumWidth(200);
     //    m_sensorsView->setMinimumHeight(200);
     //    m_sensorsView->setSizePolicy(QSizePolicy(QSizePolicy::Policy::Expanding,
@@ -288,6 +289,10 @@ void GuiManager::init() {
                       &QTableView::doubleClicked,
                       this,
                       &GuiManager::on_sensorsView_doubleClicked );
+//    connect( &m_sceneManager.m_sensorModel,
+//             SIGNAL(dataChanged(QModelIndex, QModelIndex)),
+//                      m_sensorsView,
+//             SLOT(update()));
 
     //    m_sensorsView->horizontalHeader().
     //    m_sensorsView->setColumnWidth(0, 200);
@@ -300,6 +305,8 @@ void GuiManager::init() {
     m_sensorsView->horizontalHeader()->setSectionResizeMode( QHeaderView::ResizeToContents );
     //    m_sensorsView->resizeColumnsToContents();
     //    m_sensorsView->horizontalHeader()->setMinimumSectionSize(50);
+
+    m_sceneManager.m_sensorsView = m_sensorsView;
 
     //////////////////////////////////////// LEFT
     m_formStreamViews = new FormStreamViews( m_dockLeft );

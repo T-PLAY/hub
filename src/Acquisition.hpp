@@ -31,7 +31,7 @@ class SRC_API Measure
     //    Measurement m_measurement;
     //    virtual SensorSpec::Format getFormat() = 0;
     const unsigned char* const m_data;
-    const size_t m_size;
+    const uint64_t m_size; // compatibility 32/64 bits
 
     bool operator==( const Measure& measure ) const;
     bool operator!=( const Measure& measure ) const;

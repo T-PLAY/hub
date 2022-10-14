@@ -19,18 +19,21 @@
 // ----------------------------------------------------------------------------
 
 #if defined(_WIN32) || defined(_WIN64) // ------------------------------ Windows
-#define OS_WINDOWS
-#    if defined( _M_X64 ) || defined(__x86_64__)
+	// Shlwapi.h also define this macro
+#    ifndef OS_WINDOWS
+		#define OS_WINDOWS
+	#endif
+#if defined( _M_X64 ) || defined(__x86_64__)
 #       define ARCH_X64
-#    elif defined(i386) || defined(__i386__) || defined(__i386) || defined(_M_IX86)
+#elif defined(i386) || defined(__i386__) || defined(__i386) || defined(_M_IX86)
 #       define ARCH_X86
-#   elif defined(__arm__) || defined (__arm)
+#elif defined(__arm__) || defined (__arm)
 #       define ARCH_ARM32
-#    elif defined( __aarch64__ ) || defined(_M_ARM64)
+#elif defined( __aarch64__ ) || defined(_M_ARM64)
 #       define ARCH_ARM64
-#   else
+#else
 #       error unsupported arch
-#   endif
+#endif
 #elif defined(__APPLE__) || defined(__MACH__) // ------------------------ Mac OS
 #   define OS_MACOS
 #elif defined(__linux__) || defined (__CYGWIN__) // ---------------------- Linux
@@ -152,11 +155,14 @@ do {                 \
 // Dll import/export.
 // ----------------------------------------------------------------------------
 
+//#define SRC_STATIC
+//#undef SRC_EXPORTS
+
 #ifdef OS_WINDOWS
-#if SRC_EXPORTS
-#   define SRC_API __declspec( dllexport )
-#elif defined SRC_STATIC
+#if defined SRC_STATIC
 #   define SRC_API
+#elif defined SRC_EXPORTS
+#   define SRC_API __declspec( dllexport )
 #else
 #   define SRC_API __declspec( dllimport )
 #endif

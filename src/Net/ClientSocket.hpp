@@ -14,7 +14,7 @@ class SRC_API ClientSocket : public Socket, public virtual io::Interface
 {
   public:
     enum class Type { NONE, STREAMER, VIEWER, STREAM_VIEWER, COUNT };
-    friend std::ostream& operator<<( std::ostream& os, const Type& type );
+    SRC_API friend std::ostream& operator<<( std::ostream& os, const Type& type );
 
     enum class Message {
         NONE,
@@ -30,7 +30,7 @@ class SRC_API ClientSocket : public Socket, public virtual io::Interface
         NEW_ACQ,
         COUNT
     };
-    friend std::ostream& operator<<( std::ostream& os, const Message& msg );
+    SRC_API friend std::ostream& operator<<( std::ostream& os, const Message& msg );
 
      ClientSocket();
      ClientSocket( const std::string& ipv4, int port );
