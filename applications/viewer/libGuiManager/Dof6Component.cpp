@@ -45,7 +45,11 @@ using namespace Ra::Engine::Scene;
 Dof6Component::Dof6Component( const hub::InputSensor& inputStream,
                               Ra::Engine::Scene::Entity* entity ) :
     //    Ra::Engine::Scene::Component( "Dof6 component", entity ) {}
-    SensorComponent( inputStream, entity ) {}
+    SensorComponent( inputStream, entity ) {
+
+    assert( m_inputSensor.m_spec.m_resolutions.size() == 1 );
+    m_format = m_inputSensor.m_spec.m_resolutions.at( 0 ).second;
+}
 
 /// This function is called when the component is properly
 /// setup, i.e. it has an entity.
@@ -56,8 +60,8 @@ void Dof6Component::initialize() {
     //    ); blinnPhongMaterial->m_perVertexColor = true; blinnPhongMaterial->m_ks = Color::White();
     //    blinnPhongMaterial->m_ns = 100_ra;
 
-//    auto lambertianMaterial              = make_shared<LambertianMaterial>( "Lambertian Material" );
-//    lambertianMaterial->m_perVertexColor = true;
+    //    auto lambertianMaterial              = make_shared<LambertianMaterial>( "Lambertian
+    //    Material" ); lambertianMaterial->m_perVertexColor = true;
 
     //// setup ////
 
@@ -74,15 +78,24 @@ void Dof6Component::initialize() {
     //        m_ro->setMaterial(lambertianMaterial);
     //        addRenderObject(m_ro);
     //    }
+    if ( m_format == hub::SensorSpec::Format::DOF6 ) {
+        for ( uint i = 0; i < 3; ++i ) {
+
+            Ra::Core::Transform TLocal = Transform::Identity();
+            TLocal.scale( 100.0 );
+            m_roAxes[i]->setLocalTransform( TLocal );
+            addRenderObject( m_roAxes[i] );
+        }
+    }
 }
 
 void Dof6Component::update( const hub::Acquisition& acq ) {
     //    float* translation = (float*)acq.m_data; // x, y, z
     //    float* quaternion = (float*)&acq.m_data[12]; // x, y, z, w
     assert( acq.getMeasures().size() == 1 );
-    const auto& format = m_inputSensor.m_spec.m_resolutions.at( 0 ).second;
+    //    const auto& format = m_inputSensor.m_spec.m_resolutions.at( 0 ).second;
 
-    if ( format == hub::SensorSpec::Format::DOF6 ) {
+    if ( m_format == hub::SensorSpec::Format::DOF6 ) {
 
         const hub::Dof6& dof6 = acq.getMeasures().at( 0 );
 
@@ -95,7 +108,7 @@ void Dof6Component::update( const hub::Acquisition& acq ) {
 
         m_entity->setTransform( TLocal );
     }
-    else if ( format == hub::SensorSpec::Format::MAT4 ) {
+    else if ( m_format == hub::SensorSpec::Format::MAT4 ) {
 
         const hub::Measure& measure = acq.getMeasures().at( 0 );
         //        auto mat4 = Eigen::Map<Eigen::Matrix<float, 4, 4,
@@ -105,9 +118,9 @@ void Dof6Component::update( const hub::Acquisition& acq ) {
         //        std::cout << mat4 << std::endl;
 
         m_entity->setTransform( mat4 );
-//        for (int i = 0; i <3; ++i) {
-//            m_roAxes[i]->setLocalTransform(mat4);
-//        }
+        //        for (int i = 0; i <3; ++i) {
+        //            m_roAxes[i]->setLocalTransform(mat4);
+        //        }
     }
     else { assert( false ); }
 }

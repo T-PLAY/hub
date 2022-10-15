@@ -33,10 +33,17 @@ int main( int argc, char* argv[] ) {
 //                            -35.000000, 0.000000, -0.000000, 0.000000,
 //                            0.000000, 0.000000, 0.000000, 1.000000 };
 //    metaData["transform"] = transform;
-//    metaData["parent"] = "Keyboard";
-    metaData["parent"] = "calibrator";
+    metaData["parent"] = "Keyboard";
+//    metaData["parent"] = "calibrator";
     metaData["scanWidth"] = 50.0;
     metaData["scanDepth"] = 35.0;
+    const float localTransform[16] {
+    17.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.500000, 0.866025, 0.000000,
+    0.000000, -21.650637, 12.499999, 0.000000,
+    30.000000, 140.000000, 50.000000, 1.000000
+    };
+    metaData["transform"] = localTransform;
 
     //    hub::OutputSensor proceduralStream(
     //        { "ProceduralStreamer", { { { width, height }, hub::SensorSpec::Format::Y8 } },
@@ -72,9 +79,14 @@ int main( int argc, char* argv[] ) {
         //                    data[i * height + j] = ( i + dec ) % 256;
         //            }
         //        }
+//        for ( int i = 0; i < height; ++i ) {
+//            for ( int j = 0; j < width; ++j ) {
+//                data[i * width + j] = ( i + j + dec ) % 256;
+//            }
+//        }
         for ( int i = 0; i < height; ++i ) {
             for ( int j = 0; j < width; ++j ) {
-                data[i * width + j] = ( i + j + dec ) % 256;
+                data[i * width + j] = ( dec ) % 256;
             }
         }
         //            data[i] = (i / width + dec) % 256;
@@ -84,8 +96,8 @@ int main( int argc, char* argv[] ) {
         //		    data[i] = (i / height + dec) % 256;
         //        }
         //        const auto maxFps = 40;
-//        const auto maxFps = 40;
-        const auto maxFps = 2;
+        const auto maxFps = 40;
+//        const auto maxFps = 2;
         const auto end    = start + std::chrono::microseconds( 1'000'000 / maxFps );
 
         const auto& timestampStart =
