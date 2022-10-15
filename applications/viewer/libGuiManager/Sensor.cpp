@@ -472,6 +472,8 @@ void Sensor::attachFromImageManipulator() {
         m_widgetStreamViewManipulator->init( dims.at( 0 ), dims.at( 1 ), scanWidth, scanDepth );
         //        m_imageManipulator.
         //        m_imageManipulator.update();
+//        m_imageManipulator->update();
+//        m_imageManipulator->update();
     }
 }
 

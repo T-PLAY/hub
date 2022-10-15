@@ -17,10 +17,15 @@ public:
     explicit FormImageManipulator(QWidget* parent = nullptr);
     ~FormImageManipulator();
 
-    void update(const hub::Acquisition & acquisition);
+//    void update(const hub::Acquisition & acquisition);
     void init();
 
+public slots:
+    void onStreamViewInited();
+
 //    void update();
+
+public:
 
     WidgetStreamView2D & getWidgetStreamView();
 protected:

@@ -48,6 +48,10 @@ FormImageManipulator::FormImageManipulator(QWidget* parent)
     QObject::connect(ui->scrollArea, &QScrollAreaGrid::pixelPerUnitChanged, ui->scrollAreaWidgetContents_grid, &WidgetGrid::onPixelPerUnitChanged);
     QObject::connect(ui->scrollArea, &QScrollAreaGrid::pixelPerUnitChanged, ui->frame_top_2, &FrameRuler::onPixelPerUnitChanged);
     QObject::connect(ui->scrollArea, &QScrollAreaGrid::pixelPerUnitChanged, ui->frame_left_2, &FrameRuler::onPixelPerUnitChanged);
+
+
+    QObject::connect(ui->widgetStreamView_2, &WidgetStreamView2D::inited, this, &FormImageManipulator::onStreamViewInited);
+
 //    if (true)
 //    if (false)
 //    {
@@ -109,16 +113,16 @@ FormImageManipulator::~FormImageManipulator()
     delete ui;
 }
 
-void FormImageManipulator::update(const hub::Acquisition &acquisition)
-{
-//    assert(false);
-     std::cout << "[FormImageManipulator] update" << std::endl;
-//    ui->widgetStreamView_2->setData((unsigned char*)acquisition.mData, 512 * 192, {512, 192}, Stream::Format::Y8);
-    assert(acquisition.getMeasures().size() == 1);
-    const auto & measure = acquisition.getMeasures().at(0);
-    ui->widgetStreamView_2->setData((unsigned char*)measure.m_data, 256 * 256, {256, 256}, hub::SensorSpec::Format::Y8);
+//void FormImageManipulator::update(const hub::Acquisition &acquisition)
+//{
+////    assert(false);
+//     std::cout << "[FormImageManipulator] update" << std::endl;
+////    ui->widgetStreamView_2->setData((unsigned char*)acquisition.mData, 512 * 192, {512, 192}, Stream::Format::Y8);
+//    assert(acquisition.getMeasures().size() == 1);
+//    const auto & measure = acquisition.getMeasures().at(0);
+//    ui->widgetStreamView_2->setData((unsigned char*)measure.m_data, 256 * 256, {256, 256}, hub::SensorSpec::Format::Y8);
 
-}
+//}
 
 void FormImageManipulator::init()
 {
@@ -126,6 +130,11 @@ void FormImageManipulator::init()
 //    ui->widgetStreamView_2->setData(nullptr, 192 * 512, {512, 192}, Stream::Format::Y8);
     ui->widgetStreamView_2->setData(nullptr, 256 * 256, {256, 256}, hub::SensorSpec::Format::Y8);
 
+}
+
+void FormImageManipulator::onStreamViewInited()
+{
+    emit ui->scrollArea->pixelPerUnitChanged();
 }
 
 //void FormImageManipulator::update()

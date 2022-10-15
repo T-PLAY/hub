@@ -15,7 +15,7 @@ void QScrollAreaGrid::wheelEvent(QWheelEvent* event)
     assert(mCanvasPixelPerUnit != nullptr);
     int ry = event->angleDelta().ry();
 
-    const double speed = 0.1;
+    constexpr double speed = 1.0;
 //    std::cout << ry << std::endl;
     if (ry > 0) {
         *mCanvasPixelPerUnit += speed;

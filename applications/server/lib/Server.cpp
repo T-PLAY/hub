@@ -170,6 +170,7 @@ void Server::addViewer( Viewer* viewer ) {
 
 void Server::delStreamer( Streamer* streamer ) {
     //    m_mtx.lock();
+    m_mtxStreamers.lock();
 
     const auto streamerName = streamer->getStreamName();
     const auto& sensorSpec  = streamer->getInputSensor().m_spec;
@@ -184,10 +185,10 @@ void Server::delStreamer( Streamer* streamer ) {
     }
     m_streamViewers.at( streamerName ).clear();
 
-    m_mtxStreamers.lock();
+//    m_mtxStreamers.lock();
     assert( m_streamers.find( streamerName ) != m_streamers.end() );
     m_streamers.erase( m_streamers.find( streamerName ) );
-    m_mtxStreamers.unlock();
+//    m_mtxStreamers.unlock();
 
     std::cout << std::left << std::setw( g_margin2 ) << headerMsg() << std::setw( g_margin )
               << "del streamer" << getStatus() << std::endl;
@@ -197,6 +198,7 @@ void Server::delStreamer( Streamer* streamer ) {
 
     delete streamer;
     //    m_mtx.unlock();
+    m_mtxStreamers.unlock();
 }
 
 void Server::delStreamViewer( StreamViewer* streamViewer ) {
