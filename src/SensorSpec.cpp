@@ -59,6 +59,21 @@ size_t SensorSpec::computeAcquisitionSize( const Resolution& resolution ) {
     return computeAcquisitionSize( format, dims );
 }
 
+SensorSpec SensorSpec::operator +(const SensorSpec &sensorSpec) const
+{
+    SensorSpec ret;
+    ret.m_sensorName = m_sensorName + " + " + sensorSpec.m_sensorName;
+    ret.m_resolutions = m_resolutions;
+    ret.m_resolutions.insert(ret.m_resolutions.end(), sensorSpec.m_resolutions.begin(), sensorSpec.m_resolutions.end());
+    ret.m_metaData = m_metaData;
+    ret.m_metaData.insert(sensorSpec.m_metaData.begin(), sensorSpec.m_metaData.end());
+    ret.m_metaData.erase("parent");
+
+    ret.m_acquisitionSize = m_acquisitionSize + sensorSpec.m_acquisitionSize;
+    assert(ret.m_acquisitionSize == computeAcquisitionSize(ret.m_resolutions));
+    return ret;
+}
+
 size_t SensorSpec::computeAcquisitionSize( Format format, const Dims& dims ) {
     return std::accumulate( dims.cbegin(), dims.cend(), 1, std::multiplies<int> {} ) *
            format2nByte[static_cast<int>( format )];
@@ -139,6 +154,11 @@ std::string SensorSpec::metaData2string( const std::pair<std::string, std::any>&
 
 std::ostream& operator<<( std::ostream& os, const SensorSpec::Format& format ) {
     os << format2stringArray[(int)format] << " (byte:" << format2nByte[(int)format] << ")";
+    return os;
+}
+
+std::ostream& operator<<( std::ostream& os, const SensorSpec& sensorSpec ) {
+    os << sensorSpec.m_sensorName << ", " << SensorSpec::resolutions2string(sensorSpec.m_resolutions) << ", " << SensorSpec::metaData2string(sensorSpec.m_metaData) << ", " << sensorSpec.m_acquisitionSize;
     return os;
 }
 

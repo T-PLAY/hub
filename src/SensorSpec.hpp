@@ -77,6 +77,7 @@ class SRC_API SensorSpec
   public:
      static size_t computeAcquisitionSize( const Resolutions& resolutions );
      static size_t computeAcquisitionSize( const Resolution& resolution );
+     SensorSpec operator +(const SensorSpec & sensorSpec) const;
 
   private:
      static size_t computeAcquisitionSize( Format format, const Dims& dims );
@@ -98,6 +99,7 @@ class SRC_API SensorSpec
      static std::string metaData2string( const MetaData& metaData, bool expand = false );
      static std::string metaData2string( const std::pair<std::string, std::any>& metaData );
      SRC_API friend std::ostream& operator<<( std::ostream& os, const Format& format );
+     SRC_API friend std::ostream& operator<<( std::ostream& os, const SensorSpec& sensorSpec );
 };
 
 } // namespace hub

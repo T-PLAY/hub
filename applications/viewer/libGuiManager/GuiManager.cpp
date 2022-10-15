@@ -193,7 +193,7 @@ void GuiManager::init() {
 
     //    m_dockRight->setSizePolicy(QSizePolicy(QSizePolicy::Policy::MinimumExpanding,
     //    QSizePolicy::Policy::Preferred));
-    m_dockRight->setMinimumWidth( 400 );
+    m_dockRight->setMinimumWidth( 500 );
     //    m_mainWindow->update();
     //        m_dockRight->setWidget(&m_imageManipulator);
     //    m_dockRight->setWidget();

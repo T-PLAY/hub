@@ -71,7 +71,7 @@ private:
 //    bool m_isRecordStream = false;
     bool m_isLiveStream = true;
 
-    Eigen::Matrix4f m_transform = Eigen::Matrix4f::Identity();
+    Eigen::Matrix4f m_localTransform = Eigen::Matrix4f::Identity();
 
     std::shared_ptr<Ra::Engine::Data::PlainMaterial> m_scanLineMaterial;
 //    std::unique_ptr<Ra::Engine::Data::ScanMaterial> m_scanMaterial;

@@ -20,17 +20,31 @@ int main( int argc, char* argv[] ) {
 
     hub::InputSensor inputSensor( hub::io::File( std::move( recordFile ) ) );
 
-    hub::OutputSensor outputSensor( inputSensor.m_spec, hub::io::OutputStream( "Player" ) );
-
     auto acqs = inputSensor.getAllAcquisitions();
 
-    const long long duration = acqs.back().m_start - acqs.front().m_start;
-    int iLoop                = 0;
+    hub::SensorSpec sensorSpec = inputSensor.m_spec;
+    auto& metaData             = sensorSpec.m_metaData;
+    metaData["type"]           = "record";
+    metaData["nAcqs"]          = (unsigned int)acqs.size();
+    hub::OutputSensor outputSensor( sensorSpec, hub::io::OutputStream( "Player (record)" ) );
+
+    for ( const auto& acq : acqs ) {
+        outputSensor << acq;
+    }
+
+    //    while (true) {
+    //        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    //    }
+
+    hub::OutputSensor outputSensor2( inputSensor.m_spec, hub::io::OutputStream( "Player (live)" ) );
+
+    //    const long long duration = acqs.back().m_start - acqs.front().m_start;
+    int iLoop = 0;
     while ( true ) {
         const auto startRecord  = acqs.front().m_start;
         const auto& startChrono = std::chrono::high_resolution_clock::now();
 
-//        long long dec = iLoop * duration;
+        //        long long dec = iLoop * duration;
 
         auto it = acqs.begin();
         //            while (it != m_snapshots.end()) {
@@ -39,6 +53,8 @@ int main( int argc, char* argv[] ) {
 
             std::this_thread::sleep_until( startChrono +
                                            std::chrono::microseconds( acq.m_start - startRecord ) );
+            //            std::this_thread::sleep_for(
+            //                                           std::chrono::milliseconds( 1000));
 
             //                const auto& acq = snapshot.getAcq();
             //                hub::Acquisition acq2 { acq.m_start + dec,
@@ -48,7 +64,7 @@ int main( int argc, char* argv[] ) {
 
             //                *m_outputs.at( snapshot.getSensorName() ) << acq2;
             //                    << snapshot.getAcq();
-            outputSensor << acq;
+            outputSensor2 << acq;
 
             ++it;
             //                m_isPlaying = m_futureObj.wait_for(std::chrono::milliseconds(1))

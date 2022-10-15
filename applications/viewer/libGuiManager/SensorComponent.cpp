@@ -82,7 +82,7 @@ void SensorComponent::initialize()
 
             m_roAxes[i]->setMaterial(plainMaterial);
             Ra::Core::Transform TLocal = Transform::Identity();
-            TLocal.scale(100.0);
+//            TLocal.scale(100.0);
             m_roAxes[i]->setLocalTransform(TLocal);
             addRenderObject(m_roAxes[i]);
         }

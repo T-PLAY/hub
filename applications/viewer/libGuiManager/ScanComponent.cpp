@@ -93,7 +93,15 @@ void ScanComponent::initialize() {
     }
     if ( metaData.find( "transform" ) != metaData.end() ) {
         const float* array = std::any_cast<const float*>( metaData.at( "transform" ) );
-        m_transform        = Eigen::Map<Eigen::Matrix4f>( (float*)array ); // Column-major
+        m_localTransform        = Eigen::Map<Eigen::Matrix4f>( (float*)array ); // Column-major
+    }
+    else if ( metaData.find( "parent" ) != metaData.end() ) {
+//        m_localTransform.block( 0, 0, 3, 3 ) = Eigen::Scaling( 100.0f, 100.0f, 100.0f );
+//        Ra::Core::Transform TLocal = Transform::Identity();
+//        TLocal.scale(0.01);
+//        for (int i = 0; i <3; ++i) {
+//            m_roAxes[i]->setLocalTransform(TLocal);
+//        }
     }
     else {
 //                auto TLocal = Transform::Identity();
@@ -101,13 +109,13 @@ void ScanComponent::initialize() {
         //                TLocal.rotate( orientation );
         //        TLocal.scale( Vector3( 100, 100, 100 ) );
 //                TLocal *= Eigen::AngleAxis<float>( M_PI, Vector3( 1.0, 0.0, 0.0 ) );
-        //        m_transform = Eigen::Scaling( 100.0, 100.0, 100.0 ).resize(4, 4);
-        //        m_transform = Eigen::Matrix4f::Identity();
+        //        m_localTransform = Eigen::Scaling( 100.0, 100.0, 100.0 ).resize(4, 4);
+        //        m_localTransform = Eigen::Matrix4f::Identity();
 
-        m_transform.block( 0, 0, 3, 3 ) = Eigen::Scaling( 100.0f, 100.0f, 100.0f );
-//        m_transform.block( 0, 0, 3, 3 ) = Eigen::Scaling( 10.0f, 10.0f, 10.0f );
+        m_localTransform.block( 0, 0, 3, 3 ) = Eigen::Scaling( 100.0f, 100.0f, 100.0f );
+//        m_localTransform.block( 0, 0, 3, 3 ) = Eigen::Scaling( 10.0f, 10.0f, 10.0f );
 
-//        m_transform *= TLocal;
+//        m_localTransform *= TLocal;
     }
 
     //    const auto& resolutions = sensorSpec.m_resolutions;
@@ -199,7 +207,7 @@ void ScanComponent::update( const hub::Acquisition& acq ) {
             if (m_isLiveStream) {
                 m_entity->setTransform(TLocal);
             } else {
-                TLocal *= m_transform;
+                TLocal *= m_localTransform;
                 //            TLocal.translate( Vector3( 1.0, 0.0, 0.0 ) );
                 //            scan.m_scanLine->setLocalTransform( TLocal );
                 //            if ( ! m_isLiveStream )
@@ -438,7 +446,7 @@ void ScanComponent::addScan() {
         //        TLocal.translate( Vector3( 1.0, iScan * 100.0, 0.0 ) );
         //        TLocal.scale( 1000.0 );
         //        scan.m_quad->setLocalTransform( TLocal );
-        scan.m_quad->setLocalTransform( m_transform );
+        scan.m_quad->setLocalTransform( m_localTransform );
         if ( !m_isLiveStream ) { scan.m_quad->setVisible( false ); }
         //        //                scan.m_quad->getRenderTechnique()->setConfiguration(
         //        shaderConfig );
@@ -478,7 +486,7 @@ void ScanComponent::addScan() {
         //        TLocal.translate(Vector3(0_ra, 0_ra, -iScan * 5));
         //        TLocal.scale(1000.0);
         //        scan.m_scanLine->setLocalTransform( TLocal );
-        scan.m_scanLine->setLocalTransform( m_transform );
+        scan.m_scanLine->setLocalTransform( m_localTransform );
         if ( !m_isLiveStream ) { scan.m_scanLine->setVisible( false ); }
 
         addRenderObject( scan.m_scanLine );
@@ -487,7 +495,7 @@ void ScanComponent::addScan() {
     if (m_isLiveStream)
     {
                 auto TLocal = Transform::Identity();
-            TLocal *= m_transform;
+            TLocal *= m_localTransform;
 //            TLocal *= Eigen::AngleAxis<float>( M_PI, Vector3( 1.0, 0.0, 0.0 ) );
             //            TLocal.translate( Vector3( 1.0, 0.0, 0.0 ) );
             scan.m_scanLine->setLocalTransform( TLocal );

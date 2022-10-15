@@ -24,6 +24,7 @@ struct Dof6Component : SensorComponent {
     void update(const hub::Acquisition & acq) override;
 
 private:
+    hub::SensorSpec::Format m_format;
 //    Ra::Engine::Rendering::RenderObject* m_roGrid = nullptr;
 //    Ra::Engine::Rendering::RenderObject* m_roAxes[3] = { nullptr };
 
