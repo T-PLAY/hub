@@ -89,6 +89,8 @@ void WidgetStreamView2D::init(int imagePixelWidth, int imagePixelHeight, double 
     setMaximumHeight(mCanvasPixelHeight);
 
     //    onPixelPerUnitChanged();
+//    update();
+    emit inited();
 }
 
 void WidgetStreamView2D::clear()
@@ -98,6 +100,21 @@ void WidgetStreamView2D::clear()
         mData = nullptr;
     }
 //    mData = nullptr;
+    mImagePixelWidth = 0;
+    mImagePixelHeight = 0;
+
+    mImageUnitWidth = 0;
+    mImageUnitHeight = 0;
+
+    mRatio = 1.0;
+    mHPixelPerUnit = 1.0;
+    mVPixelPerUnit = 1.0;
+
+    mCanvasPixelPerUnit = 1.0;
+    mCanvasPixelWidth = 0.0;
+    mCanvasPixelHeight = 0.0;
+
+    emit inited();
 
     update();
 }

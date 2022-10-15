@@ -35,6 +35,8 @@ int main( int argc, char* argv[] ) {
 //    metaData["transform"] = transform;
 //    metaData["parent"] = "Keyboard";
     metaData["parent"] = "calibrator";
+    metaData["scanWidth"] = 50.0;
+    metaData["scanDepth"] = 35.0;
 
     //    hub::OutputSensor proceduralStream(
     //        { "ProceduralStreamer", { { { width, height }, hub::SensorSpec::Format::Y8 } },

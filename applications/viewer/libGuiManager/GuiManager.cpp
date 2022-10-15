@@ -181,6 +181,8 @@ void GuiManager::init() {
                       &m_sceneManager,
                       &SceneManager::on_setTransparency );
 
+    m_viewer->enableDebugDraw(0);
+
     //    m_layout3DView->addWidget(m_3DToolBox);
     m_layout3DView->insertWidget( 0, m_3DToolBox );
 

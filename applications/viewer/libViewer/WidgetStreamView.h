@@ -35,6 +35,10 @@ public:
 //    void setRealSize(double realWidth, double realHeight);
     void init(int imagePixelWidth, int imagePixelHeight, double imageUnitWidth = 0.0, double imageUnitHeight = 0.0);
 
+signals:
+    void inited();
+
+public:
 //    const double & getPixelPerUnit() const;
     void clear();
 
