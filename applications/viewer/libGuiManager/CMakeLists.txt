@@ -55,6 +55,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 file(GLOB_RECURSE sources *.cpp *.glsl)
 file(GLOB_RECURSE headers *.h *.hpp *.inl)
+file(GLOB_RECURSE app_uis *.ui)
 #set(sources
 #        ScanMaterial/ScanMaterial.cpp
 #        Dof6Component.cpp
@@ -80,13 +81,13 @@ file(GLOB_RECURSE headers *.h *.hpp *.inl)
 #)
 
 #set(app_uis)
-#qt_wrap_ui(app_uis_moc ${app_uis})
+qt_wrap_ui(app_uis_moc ${app_uis})
 
 
 add_library(${PROJECT_NAME}
     ${sources}
     ${headers}
-    # ${app_uis}
+     ${app_uis}
     )
 
 

@@ -234,7 +234,8 @@ namespace Gui {
         addRenderer("Forward Renderer", e);
 
         m_guiManager.m_mdiArea = mdiArea;
-        m_guiManager.m_engine = mainApp->m_engine.get();
+//        m_guiManager.m_engine = mainApp->m_engine.get();
+        m_guiManager.m_engine = mainApp->m_engine;
         m_guiManager.m_viewer = m_viewer;
 //        mainApp->m_mainWindow;
 //        m_guiManager.m_system = sys;

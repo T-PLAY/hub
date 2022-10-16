@@ -1,9 +1,9 @@
-#include "MainWindow.h"
+#include "GuiMainWindow.h"
 
 #include <Engine/Scene/EntityManager.hpp>
 #include <Gui/Viewer/RotateAroundCameraManipulator.hpp>
 
-#include "./ui_MainWindow.h"
+#include "./ui_GuiMainWindow.h"
 //#include <cassert>
 //#include <Engine/Rendering/ForwardRenderer.hpp>
 
@@ -34,22 +34,27 @@ constexpr int defaultSystemPriority = 1000;
 
 //#define CUBE_VOLUME
 
-MainWindow::MainWindow(QWidget* parent)
+GuiMainWindow::GuiMainWindow(Ra::Engine::RadiumEngine *engine, Ra::Gui::Viewer *viewer, QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
+    , ui(new Ui::GuiMainWindow)
 {
     ui->setupUi(this);
+
     //    ui->dockWidgetContents_server->setMdiArea(ui->mdiArea);
     //    delete ui->dockWidget_server;
 
     // configure radium
     //    {
     // Create app and show viewer window
-    m_app = new MinimalApp;
-    auto& app = *m_app;
+//    m_app = new MinimalApp;
+//    auto& app = *m_app;
+    assert(engine != nullptr);
+    assert(viewer != nullptr);
+    m_guiManager.m_engine = engine;
+    m_guiManager.m_viewer = viewer;
 
     //    QWidget* viewerWidget = QWidget::createWindowContainer( app.m_viewer.get(), this );
-    QWidget* viewerWidget = QWidget::createWindowContainer(app.m_viewer.get());
+    QWidget* viewerWidget = QWidget::createWindowContainer(m_guiManager.m_viewer);
     //    viewerWidget->setAutoFillBackground(false);
     //    ui->verticalLayout->addWidget(viewerWidget);
     //    ui->stackedWidget->update();
@@ -63,16 +68,16 @@ MainWindow::MainWindow(QWidget* parent)
 
     //    app.m_viewer->show();
     //    app.m_viewer->resize( { 500, 500 } );
-    CORE_ASSERT(app.m_viewer->getContext()->isValid(), "OpenGL was not initialized");
+    CORE_ASSERT(m_guiManager.m_viewer->getContext()->isValid(), "OpenGL was not initialized");
     // process all events so that everithing is initialized
     QApplication::processEvents();
 
     // Create one system
     //        MinimalSystem* sys = new MinimalSystem;
     //        app.m_engine->registerSystem("Minimal system", sys);
-    app.m_engine->registerSystem(
+    m_guiManager.m_engine->registerSystem(
         "GeometrySystem", new Ra::Engine::Scene::GeometrySystem, defaultSystemPriority);
-    auto* sys = app.m_engine->getSystem("GeometrySystem");
+    auto* sys = m_guiManager.m_engine->getSystem("GeometrySystem");
 
     // Create and initialize entity and component
     //        Ra::Engine::Scene::Entity* e = app.m_engine->getEntityManager()->createEntity("Cube");
@@ -85,19 +90,19 @@ MainWindow::MainWindow(QWidget* parent)
 
     // prepare the viewer to render the scene (i.e. build RenderTechniques for the
     // active renderer)
-    app.m_viewer->prepareDisplay();
+    m_guiManager.m_viewer->prepareDisplay();
 
     //        m_comp->updateShader();
 
-    auto keyMappingManager = Ra::Gui::KeyMappingManager::getInstance();
-    // Add default manipulator listener
-    keyMappingManager->addListener(
-        Ra::Gui::RotateAroundCameraManipulator::KeyMapping::configureKeyMapping);
+//    auto keyMappingManager = Ra::Gui::KeyMappingManager::getInstance();
+//    // Add default manipulator listener
+//    keyMappingManager->addListener(
+//        Ra::Gui::RotateAroundCameraManipulator::KeyMapping::configureKeyMapping);
 
     // Start the app.
-    app.m_frame_timer->start();
-    app.m_viewer->setCameraManipulator(new Ra::Gui::RotateAroundCameraManipulator(
-        *(app.m_viewer->getCameraManipulator()), app.m_viewer.get()));
+//    app.m_frame_timer->start();
+//    app.m_viewer->setCameraManipulator(new Ra::Gui::RotateAroundCameraManipulator(
+//        *(app.m_viewer->getCameraManipulator()), app.m_viewer.get()));
 
     //        ui->stackedWidget->setCurrentIndex(currentIndex);
     //    }
@@ -109,8 +114,8 @@ MainWindow::MainWindow(QWidget* parent)
 
     m_guiManager.m_mdiArea = ui->mdiArea;
 //    m_guiManager.m_engine = app.m_engine.get();
-    m_guiManager.m_engine = app.m_engine;
-    m_guiManager.m_viewer = app.m_viewer.get();
+//    m_guiManager.m_engine = app.m_engine;
+//    m_guiManager.m_viewer = app.m_viewer.get();
     m_guiManager.m_system = sys;
 
     m_guiManager.m_mainWindow = this;
@@ -119,7 +124,7 @@ MainWindow::MainWindow(QWidget* parent)
 
     m_guiManager.init();
 
-    connect(ui->actionreloadShaders, &QAction::triggered, app.m_viewer.get(), &Ra::Gui::Viewer::reloadShaders);
+    connect(ui->actionreloadShaders, &QAction::triggered, m_guiManager.m_viewer, &Ra::Gui::Viewer::reloadShaders);
 
     //    m_comp->getRoGrid().setVisible(ui->checkBox_grid->isChecked());
     //    m_comp->traceSetVisible(ui->checkBox_trace->isChecked());
@@ -130,9 +135,9 @@ MainWindow::MainWindow(QWidget* parent)
 
     //    m_sensorViews = new SensorViews(*ui->verticalLayout_sensors, *ui->mdiArea_sensors, *this);
     //    QObject::connect(
-    //        m_sensorViews, &SensorViews::streamingStarted, this, &MainWindow::on_startStreaming);
+    //        m_sensorViews, &SensorViews::streamingStarted, this, &GuiMainWindow::on_startStreaming);
     //    QObject::connect(
-    //        m_sensorViews, &SensorViews::streamingStopped, this, &MainWindow::on_stopStreaming);
+    //        m_sensorViews, &SensorViews::streamingStopped, this, &GuiMainWindow::on_stopStreaming);
 
     //    ui->label_scanSource->setText((g_probeScanSensorName + " :").c_str());
     //    ui->label_poseSource->setText((g_probePoseSensorName + " :").c_str());
@@ -141,14 +146,15 @@ MainWindow::MainWindow(QWidget* parent)
     //    delete ui->dockWidget_server;
 }
 
-MainWindow::~MainWindow()
+
+GuiMainWindow::~GuiMainWindow()
 {
-    std::cout << "[MainWindow] ~MainWindow() start" << std::endl;
+    std::cout << "[GuiMainWindow] ~GuiMainWindow() start" << std::endl;
     //    delete m_sensorViews;
 
     m_guiManager.clear();
 
-    delete m_app;
+//    delete m_app;
     delete ui;
-    std::cout << "[MainWindow] ~MainWindow() end" << std::endl;
+    std::cout << "[GuiMainWindow] ~GuiMainWindow() end" << std::endl;
 }
