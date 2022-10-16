@@ -17,7 +17,7 @@
 
 
 MinimalApp::MinimalApp() :
-    m_engine( nullptr ),
+//    m_engine( nullptr ),
     m_task_queue( nullptr ),
     m_viewer( nullptr ),
     m_frame_timer( nullptr ),
@@ -29,7 +29,8 @@ MinimalApp::MinimalApp() :
     QCoreApplication::setApplicationName( "RadiumViewer" );
 
     // Initialize Engine.
-    m_engine.reset( Ra::Engine::RadiumEngine::createInstance() );
+//    m_engine.reset( Ra::Engine::RadiumEngine::createInstance() );
+    m_engine = Ra::Engine::RadiumEngine::createInstance();
     m_engine->initialize();
 
 //    m_engine->registerSystem(
@@ -81,7 +82,7 @@ MinimalApp::~MinimalApp() {
     m_task_queue.reset( nullptr );
     m_viewer.reset( nullptr );
     m_engine->cleanup();
-    m_engine.reset( nullptr );
+//    m_engine.reset( nullptr );
     std::cout << "[MinimalApp] ~MinimalApp() end" << std::endl;
 }
 

@@ -30,6 +30,7 @@
 
 #include <Gui/TreeModel/EntityTreeModel.hpp>
 
+
 #include <Engine/Rendering/RenderObject.hpp>
 #include <Engine/Rendering/RenderObjectManager.hpp>
 #include <Engine/Scene/Component.hpp>
@@ -181,7 +182,8 @@ void GuiManager::init() {
                       &m_sceneManager,
                       &SceneManager::on_setTransparency );
 
-    m_viewer->enableDebugDraw(0);
+//    m_viewer->enableDebugDraw(0);
+//    m_viewer->getPickingManager()->
 
     //    m_layout3DView->addWidget(m_3DToolBox);
     m_layout3DView->insertWidget( 0, m_3DToolBox );
