@@ -84,7 +84,7 @@ void Dof6Component::initialize() {
             Ra::Core::Transform TLocal = Transform::Identity();
             TLocal.scale( 100.0 );
             m_roAxes[i]->setLocalTransform( TLocal );
-            addRenderObject( m_roAxes[i] );
+//            addRenderObject( m_roAxes[i] );
         }
     }
 }
