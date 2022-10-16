@@ -34,7 +34,7 @@ if (HUB_APPLICATION_ENABLE_RADIUM)
 #            add_subdirectory(radiumViewer5) #minimal BaseApplication
     add_subdirectory(radiumViewer6)
 #            add_subdirectory(radiumViewer7) #radium-apps sandbox
-            add_subdirectory(radiumViewer8)
+#            add_subdirectory(radiumViewer8)
 
 endif()
 

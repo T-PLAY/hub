@@ -6,8 +6,11 @@
 #include <Gui/Viewer/RotateAroundCameraManipulator.hpp>
 #include <Gui/Viewer/TrackballCameraManipulator.hpp>
 
+#include <Engine/Data/TextureManager.hpp>
+
 #include <QMainWindow>
 #include <QOpenGLContext>
+
 
 using namespace Ra;
 using namespace Ra::Gui;
@@ -22,7 +25,9 @@ MinimalApp::MinimalApp( int& argc, char** argv ) : QApplication( argc, argv ) {
 
 MinimalApp::~MinimalApp() {
     // need to clean up everithing before engine is cleaned up.
+    m_frameTimer->stop();
     m_taskQueue.reset( nullptr );
+//    assert(m_viewer == nullptr);
     m_viewer.reset( nullptr );
     m_engine->cleanup();
     Ra::Engine::RadiumEngine::destroyInstance();
@@ -107,6 +112,9 @@ void MinimalApp::frame() {
 
     // Starts the renderer
     m_viewer->startRendering( dt );
+
+    auto * textureManager = m_engine->getTextureManager();
+    textureManager->updatePendingTextures();
 
     // Finish the frame
     m_viewer->swapBuffers();

@@ -179,7 +179,7 @@ int main( int argc, char* argv[] ) {
             //            memcpy(data, translation, 12);
             //            memcpy(&data[12], orientation, 16);
 
-            const auto maxFps = 10;
+            const auto maxFps = 60;
             const auto end    = start + std::chrono::microseconds( 1'000'000 / maxFps );
 
             const auto& timestampStart =
@@ -196,6 +196,7 @@ int main( int argc, char* argv[] ) {
                                                 << std::move( dof6 ) ) );
 
             std::this_thread::sleep_until( end );
+//            std::cout << "+" << std::flush;
         }
     } );
 

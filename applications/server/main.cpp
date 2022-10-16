@@ -8,6 +8,7 @@ int main(int argc, char* argv[])
     if (argc == 2) {
         port = atoi(argv[1]);
     }
+//    port = 4043;
 
     Server server(port);
     server.run();

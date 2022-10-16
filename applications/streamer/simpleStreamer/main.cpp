@@ -6,8 +6,11 @@
 //#include <cmath>
 #include <utility>
 
+#include <Configurations.hpp>
+
 //#include <IO/Stream.hpp>
 //#include <OutputSensor.hpp>
+
 #include <Streamer.hpp>
 
 #define ULA_STREAMER
@@ -45,9 +48,9 @@ int main( int argc, char* argv[] ) {
     };
     metaData["transform"] = localTransform;
 
-    //    hub::OutputSensor proceduralStream(
-    //        { "ProceduralStreamer", { { { width, height }, hub::SensorSpec::Format::Y8 } },
-    //        metaData }, hub::io::OutputStream( "ProceduralStreamer" ) );
+//        hub::OutputSensor proceduralStream(
+//            { "ProceduralStreamer", { { { width, height }, hub::SensorSpec::Format::Y8 } },
+//            metaData }, hub::io::OutputStream( "ProceduralStreamer" ) );
 
     hub::Streamer streamer(hub::net::s_defaultServiceIp, port);
     streamer.addStream( "ProceduralStreamer",
@@ -79,16 +82,19 @@ int main( int argc, char* argv[] ) {
         //                    data[i * height + j] = ( i + dec ) % 256;
         //            }
         //        }
+
 //        for ( int i = 0; i < height; ++i ) {
 //            for ( int j = 0; j < width; ++j ) {
 //                data[i * width + j] = ( i + j + dec ) % 256;
 //            }
 //        }
+
         for ( int i = 0; i < height; ++i ) {
             for ( int j = 0; j < width; ++j ) {
                 data[i * width + j] = ( dec ) % 256;
             }
         }
+
         //            data[i] = (i / width + dec) % 256;
         //            if (std::abs(i / (float)height - 20.0) < 5)
         //                data[i] = 255;
@@ -108,14 +114,16 @@ int main( int argc, char* argv[] ) {
         ++dec;
 
 //        std::cout << "new acquisition" << std::endl;
+
         streamer.newAcquisition( "ProceduralStreamer",
                                  std::move( hub::Acquisition { timestampStart, timestampEnd }
                                             << hub::Measure { data, imgSize } ) );
-        //                                )
-        //        proceduralStream << ( hub::Acquisition { timestampStart, timestampEnd }
-        //                              << hub::Measure { data, imgSize } );
+
+//                proceduralStream << ( hub::Acquisition { timestampStart, timestampEnd }
+//                                      << hub::Measure { data, imgSize } );
 
         std::this_thread::sleep_until( end );
+//        std::cout << "+" << std::flush;
 //        break;
     }
 #else

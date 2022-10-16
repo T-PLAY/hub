@@ -50,8 +50,13 @@ namespace Gui {
         //    const int currentIndex = stackedWidget->currentIndex();
         stackedWidget->setCurrentIndex(1);
         verticalLayout_3D->addWidget(viewerwidget);
-        //    this->show();
-        //    m_viewer->prepareDisplay();
+//        mainApp->m_mainWindow->show();
+//        this->show();
+//        this->show();
+
+//        assert(m_viewer->getContext().isValid());
+//        CORE_ASSERT(m_viewer->getContext()->isValid(), "OpenGL was not initialized");
+            m_viewer->prepareDisplay();
 
         createConnections();
 
@@ -221,6 +226,7 @@ namespace Gui {
 
     void MainWindow::onGLInitialized()
     {
+//        assert(m_viewer->isOpenGlInitialized());
         // Connection to gizmos after their creation
         //    connect( actionToggle_Local_Global,
         //             &QAction::toggled,

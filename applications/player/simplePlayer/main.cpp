@@ -32,9 +32,9 @@ int main( int argc, char* argv[] ) {
         outputSensor << acq;
     }
 
-    //    while (true) {
-    //        std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    //    }
+        while (true) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        }
 
     hub::OutputSensor outputSensor2( inputSensor.m_spec, hub::io::OutputStream( "Player (live)" ) );
 
