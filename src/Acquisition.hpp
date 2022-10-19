@@ -15,7 +15,7 @@ class SRC_API Measure
 {
 
   public:
-    Measure( const unsigned char* const data, size_t size, bool floatData = false );
+    Measure( const unsigned char* const data, uint64_t size, bool floatData = false );
     Measure( Measure&& measure );
     //    Measure( Measurement measurement );
     Measure( const Measure& ) = delete;
