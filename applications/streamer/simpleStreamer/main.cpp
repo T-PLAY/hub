@@ -36,15 +36,16 @@ int main( int argc, char* argv[] ) {
 //                            -35.000000, 0.000000, -0.000000, 0.000000,
 //                            0.000000, 0.000000, 0.000000, 1.000000 };
 //    metaData["transform"] = transform;
-    metaData["parent"] = "Keyboard";
+//    metaData["parent"] = "Keyboard";
+    metaData["parent"] = "Polhemus Patriot (sensor 2)";
 //    metaData["parent"] = "calibrator";
     metaData["scanWidth"] = 50.0;
     metaData["scanDepth"] = 35.0;
-    const float localTransform[16] {
-    17.000000, 0.000000, 0.000000, 0.000000,
-    0.000000, 0.500000, 0.866025, 0.000000,
-    0.000000, -21.650637, 12.499999, 0.000000,
-    30.000000, 140.000000, 50.000000, 1.000000
+    const float localTransform[16] = {
+        17.5,		   0.000000, 0.000000, 0.000000,
+        0.000000, -0.000004, 100.000000, 0.000000,
+        0.000000, -25.000000, -0.00000, 0.000000,
+        30 + 17.5, 0.000000, 140.000000, 1.000000
     };
     metaData["transform"] = localTransform;
 

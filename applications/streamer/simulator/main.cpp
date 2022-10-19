@@ -172,10 +172,10 @@ int main( int argc, char* argv[] ) {
     //    double scanRealWidth = 200;
     //    double scanRealDepth = 200;
     double scale = 1.5;
-    //    double scanRealWidth = 50.0 * scale;
-    //    double scanRealDepth = 35.0 * scale;
-    double scanRealWidth = sliceRealWidth;
-    double scanRealDepth = sliceRealDepth;
+        double scanRealWidth = 50.0 * scale;
+        double scanRealDepth = 35.0 * scale;
+//    double scanRealWidth = sliceRealWidth;
+//    double scanRealDepth = sliceRealDepth;
     //    transform2 = glm::rotate(transform2, glm::radians(90.0), glm::vec3(0.0, 1.0, 0.0));
     transform2 =
         glm::scale( transform2, glm::vec3( scanRealDepth / 2.0, 1.0, scanRealWidth / 2.0 ) );
@@ -372,16 +372,18 @@ int main( int argc, char* argv[] ) {
         //        AcquisitionZone acqZone(glm::vec3(0, 30, 125), glm::angleAxis(0.f,
         //        glm::vec3(0, 0, 1)), 256, 256, 256);
 
-        std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
 
         //        const auto& scanImage = bu.getCorrespondingUS( acqZone, scanWidth,
         //        scanHeight
         //        );
 #ifdef DEBUG
+        std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
         const auto& scanImage = bu.getCorrespondingUS(acqZone, scanWidth, scanHeight );
 #else
         const auto& scanImage = bu.getCorrespondingRealUS( acqZone, grid, scanWidth, scanHeight );
 #endif
+        std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+//        const auto& scanImage = bu.getCorrespondingRealUS( acqZone, grid, scanWidth, scanHeight );
         assert( scanImage.size() == scanSize );
         const unsigned char* scanData = scanImage.data();
 

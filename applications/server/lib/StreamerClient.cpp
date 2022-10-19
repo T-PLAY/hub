@@ -202,7 +202,7 @@ StreamerClient::StreamerClient( Server& server, int iClient, hub::net::ClientSoc
     thread.detach();
 
     // get record acqs before prevent viewer
-    std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+    std::this_thread::sleep_for( std::chrono::milliseconds( 200 ) );
     m_server.addStreamer( this );
     std::cout << std::left << std::setw( g_margin2 ) << headerMsg() << std::setw( g_margin )
               << "new streamer" << m_server.getStatus() << std::endl;

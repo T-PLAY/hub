@@ -44,7 +44,7 @@ Mat4::Mat4(const float *array)
 //    //    m_data = nullptr;
 //}
 
-Measure::Measure( const unsigned char* const data, size_t size, bool floatData ) :
+Measure::Measure( const unsigned char* const data, uint64_t size, bool floatData ) :
     //    Measure( Measurement::IMAGE ),
     m_data( new unsigned char[size] ),
     //    m_data( data ),

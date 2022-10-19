@@ -23,9 +23,9 @@ int main( int argc, char* argv[] ) {
     auto acqs = inputSensor.getAllAcquisitions();
 
     hub::SensorSpec sensorSpec = inputSensor.m_spec;
-    auto& metaData             = sensorSpec.m_metaData;
-    metaData["type"]           = "record";
-    metaData["nAcqs"]          = (unsigned int)acqs.size();
+//    auto& metaData             = sensorSpec.m_metaData;
+//    metaData["type"]           = "record";
+//    metaData["nAcqs"]          = (unsigned int)acqs.size();
     hub::OutputSensor outputSensor( sensorSpec, hub::io::OutputStream( "Player (record)" ) );
 
     for ( const auto& acq : acqs ) {
