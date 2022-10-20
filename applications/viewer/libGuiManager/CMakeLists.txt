@@ -24,11 +24,14 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # and for other tools.
 #set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+#set(Radium_DIR "E:/Documents/radiumReleaseCandidate3/Radium-Engine/out/install/x64-Debug/lib/cmake/Radium")
+
+#set(Radium_DIR "E:/Documents/radiumReleaseCandidate4/Radium-Engine/out/install/x64-${CMAKE_BUILD_TYPE}/lib/cmake/Radium")
 
 # ------------------------------------------------------------------------------
 #find_package(DCMTK REQUIRED)
 #if(NOT IN_RADIUM_BUILD_TREE)
-find_package(Radium REQUIRED Core Engine Gui)
+find_package(Radium REQUIRED Core Engine Gui NO_DEFAULT_PATH)
 #endif()
 
 find_qt_package(COMPONENTS Core Widgets REQUIRED)
@@ -103,8 +106,8 @@ target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
 
 
 target_link_libraries(${PROJECT_NAME}
-    # PUBLIC 
-    Radium::Core Radium::Engine Radium::Gui 
+    # PUBLIC
+    Radium::Core Radium::Engine Radium::Gui
     ${Qt_LIBRARIES}
     libViewer
     # DicomLoader

@@ -114,6 +114,8 @@ void ScanMaterial::registerMaterial() {
     const std::string resourcesRootDir =
         PROJECT_DIR "applications/viewer/libGuiManager/ScanMaterial/";
     //    auto resourcesRootDir { RadiumEngine::getInstance()->getResourcesDir() };
+
+
     auto shaderProgramManager = RadiumEngine::getInstance()->getShaderProgramManager();
 
     // Defining the material converter
@@ -123,6 +125,8 @@ void ScanMaterial::registerMaterial() {
     // adding the material glsl implementation file
     shaderProgramManager->addNamedString( "/Scan.glsl", resourcesRootDir + "Scan.glsl" );
     shaderProgramManager->addNamedString( "/Palettes.glsl", resourcesRootDir + "Palettes.glsl" );
+
+
     // registering re-usable shaders
     Data::ShaderConfiguration lpconfig(
         "Scan", resourcesRootDir + "Scan.vert.glsl", resourcesRootDir + "Scan.frag.glsl" );
