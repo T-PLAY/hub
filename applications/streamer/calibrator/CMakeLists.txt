@@ -16,7 +16,9 @@ set(CMAKE_AUTOUIC ON)
 #set(QT_VERSION 5)
 find_package(Qt${QT_VERSION} REQUIRED COMPONENTS Widgets Gui)
 
-find_package(glm REQUIRED)
+
+
+find_package(glm REQUIRED NO_DEFAULT_PATH)
 
 
 #set(QT_VERSION 5)

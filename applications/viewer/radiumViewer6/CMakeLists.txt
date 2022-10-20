@@ -24,8 +24,13 @@ set(REQUIRED_LIBS_QUALIFIED Qt${QT_VERSION}::Core Qt${QT_VERSION}::Gui Qt${QT_VE
 #find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Gui)
 find_package(Qt${QT_VERSION} REQUIRED COMPONENTS ${REQUIRED_LIBS})
 
-find_package(Radium REQUIRED COMPONENTS Core Engine Gui IO)
+set(CMAKE_FIND_PACKAGE_NO_SYSTEM_PACKAGE_REGISTRY False)
 
+#set(Radium_DIR "E:/Documents/radiumReleaseCandidate3/Radium-Engine/out/install/x64-Debug/lib/cmake/Radium")
+
+find_package(Radium REQUIRED COMPONENTS Core Engine Gui IO NO_DEFAULT_PATH)
+
+message(STATUS ${RadiumDIR})
 #find_package(Scus REQUIRED)
 
 file(GLOB_RECURSE app_sources *.cpp *.glsl)
