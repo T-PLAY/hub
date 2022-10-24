@@ -120,8 +120,13 @@ int main(int argc, char* argv[])
 
                                 float * poses = (float*)data;
                                 for (int i = 0; i <3; ++i) {
-                                    poses[i] = 10.0 * poses[i]; // convert centimeters to millimeters
 //                                    poses[i] = -10.0 * poses[i]; // convert centimeters to millimeters
+                                    if (ucSensor == 1) {
+                                        poses[i] = -10.0 * poses[i]; // convert centimeters to millimeters
+                                    }
+                                    else if (ucSensor == 2) {
+                                        poses[i] = 10.0 * poses[i]; // convert centimeters to millimeters
+                                    }
                                 }
 //                                float * orientation = &((float*)data)[3];
 
