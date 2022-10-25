@@ -73,7 +73,7 @@ StreamViewerClient::StreamViewerClient( Server& server,
     hub::SensorSpec sensorSpec     = streamer->getInputSensor().m_spec;
     if ( m_syncStreamName != "" ) {
         sensorSpec += streamers.at( m_syncStreamName )->getInputSensor().m_spec;
-        streamer = streamers.at(m_syncStreamName);
+        streamer = streamers.at( m_syncStreamName );
     }
     //    m_outputSensor        = std::make_unique<OutputSensor>( std::move( sensorSpec ),
     //                                                     io::Streamer( std::move( sock ) ) );
@@ -84,26 +84,31 @@ StreamViewerClient::StreamViewerClient( Server& server,
     //    server.m_streamViewers[m_streamName].push_back( this );
     m_server.addStreamViewer( this );
 
-    std::string lastAcqsName = (m_syncStreamName == "") ?("") :(m_streamName);
+    std::string lastAcqsName = ( m_syncStreamName == "" ) ? ( "" ) : ( m_streamName );
 
     //    const auto& lastAcqs = m_server.getLastAcqs( m_streamName );
-    streamer->m_mtxLastAcqs.lock();
-    const auto& lastAcqs = streamer->getLastAcqs(lastAcqsName);
-    try {
-        for ( const auto& acq : lastAcqs ) {
-            *m_outputSensor << *acq;
+    if ( m_syncStreamName == "" ) {
+        streamer->m_mtxLastAcqs.lock();
+        m_mtxOutputSensor.lock();
+        const auto& lastAcqs = streamer->getLastAcqs( lastAcqsName );
+        try {
+            for ( const auto& acq : lastAcqs ) {
+                *m_outputSensor << *acq;
+            }
+            //        m_server.releaseGetLastAcqs(m_streamName);
         }
-        //        m_server.releaseGetLastAcqs(m_streamName);
-    }
-    catch ( std::exception& e ) {
+        catch ( std::exception& e ) {
+            m_mtxOutputSensor.unlock();
+            streamer->m_mtxLastAcqs.unlock();
+            //        m_server.releaseGetLastAcqs(m_streamName);
+            std::cout << headerMsg() << "thread : catch stream viewer exception : " << e.what()
+                      << std::endl;
+            m_server.delStreamViewer( this );
+            return;
+        }
+        m_mtxOutputSensor.unlock();
         streamer->m_mtxLastAcqs.unlock();
-        //        m_server.releaseGetLastAcqs(m_streamName);
-        std::cout << headerMsg() << "thread : catch stream viewer exception : " << e.what()
-                  << std::endl;
-        m_server.delStreamViewer( this );
-        return;
     }
-    streamer->m_mtxLastAcqs.unlock();
 
     std::cout << std::left << std::setw( g_margin2 ) << headerMsg() << std::setw( g_margin )
               << "new stream viewer" << m_server.getStatus() << std::endl;
@@ -131,7 +136,7 @@ StreamViewerClient::StreamViewerClient( Server& server,
                     m_mtxOutputSensor.unlock();
                     break;
                 }
-                const auto& lastAcqs = streamer->getLastAcqs(lastAcqsName);
+                const auto& lastAcqs = streamer->getLastAcqs( lastAcqsName );
                 //                std::cout << headerMsg() << "thread : end getLastAcq" <<
                 //                std::endl; if ( lastAcq == nullptr ) {
                 if ( lastAcqs.empty() ) {
@@ -216,7 +221,7 @@ std::string StreamViewerClient::headerMsg() const {
 }
 
 void StreamViewerClient::update( const hub::Acquisition& acq ) {
-    //    std::cout << headerMsg() << "update(Acquisition) receive acq : " << acq << std::endl;
+    //        std::cout << headerMsg() << "update(Acquisition) receive acq : " << acq << std::endl;
     //    if ( m_syncStreamName != "" ) { m_acquisitions.emplace_front( acq.clone() ); }
     //    else {
     if ( m_updateFailed ) return;

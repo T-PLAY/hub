@@ -1,7 +1,7 @@
 
 cmake_minimum_required (VERSION 3.8)
 
-project(calibrator)
+project(localTransform)
 
 #set (CMAKE_PREFIX_PATH "C:\\Qt\\Qt5.0.1\\5.0.1\\msvc2010\\")
 

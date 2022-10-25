@@ -78,15 +78,16 @@ void Dof6Component::initialize() {
     //        m_ro->setMaterial(lambertianMaterial);
     //        addRenderObject(m_ro);
     //    }
-    if ( m_format == hub::SensorSpec::Format::DOF6 ) {
-        for ( uint i = 0; i < 3; ++i ) {
 
-            Ra::Core::Transform TLocal = Transform::Identity();
-            TLocal.scale( 100.0 );
-            m_roAxes[i]->setLocalTransform( TLocal );
-//            addRenderObject( m_roAxes[i] );
-        }
-    }
+//    if ( m_format == hub::SensorSpec::Format::DOF6 ) {
+//        for ( uint i = 0; i < 3; ++i ) {
+
+//            Ra::Core::Transform TLocal = Transform::Identity();
+//            TLocal.scale( 100.0 );
+//            m_roAxes[i]->setLocalTransform( TLocal );
+////            addRenderObject( m_roAxes[i] );
+//        }
+//    }
 }
 
 void Dof6Component::update( const hub::Acquisition& acq ) {

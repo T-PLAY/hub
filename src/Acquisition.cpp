@@ -64,10 +64,10 @@ Measure::Measure( const unsigned char* const data, uint64_t size ) :
     assert( m_data != nullptr );
 }
 
-//Measure::Measure( unsigned char* data, uint64_t size ) : m_data( data ), m_size( size ) {
-//    assert( m_size > 0 );
-//    assert( m_data != nullptr );
-//}
+// Measure::Measure( unsigned char* data, uint64_t size ) : m_data( data ), m_size( size ) {
+//     assert( m_size > 0 );
+//     assert( m_data != nullptr );
+// }
 
 // Measure::Measure( Measure&& measure ) :
 //     m_data( measure.m_data ), m_size( measure.m_size ), m_ownData( measure.m_ownData ) {
@@ -122,8 +122,8 @@ Measure::Measure( Measure&& measure ) :
 }
 
 Measure::~Measure() {
-//    std::cout << "[Measure] delete data : " << (uintptr_t)m_data << ", size : " << m_size
-//              << std::endl;
+    //    std::cout << "[Measure] delete data : " << (uintptr_t)m_data << ", size : " << m_size
+    //              << std::endl;
 
     //    assert( m_data != nullptr );
 
@@ -246,12 +246,12 @@ Acquisition& Acquisition::operator<<( Measure&& measure ) {
     return *this;
 }
 
-// Acquisition& Acquisition::operator<<( const Measures& measures ) {
-//     for (const auto & measure : measures) {
-//         Acquisition::operator<<(measure.clone());
-//     }
-//     return *this;
-// }
+Acquisition& Acquisition::operator<<( const Measures& measures ) {
+    for ( const auto& measure : measures ) {
+        Acquisition::operator<<( measure.clone() );
+    }
+    return *this;
+}
 
 // Acquisition& Acquisition::operator<<( Measure&& measure ) {
 //     assert( m_measures.find( measure.m_format ) == m_measures.end() );

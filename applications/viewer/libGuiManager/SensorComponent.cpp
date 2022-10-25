@@ -75,14 +75,14 @@ void SensorComponent::initialize()
         // origin axis
         assert(m_roAxes[1] == nullptr);
         for (uint i = 0; i < 3; ++i) {
-            m_roAxes[i] = RenderObject::createRenderObject("Dof6 axis" + std::to_string(i),
+            m_roAxes[i] = RenderObject::createRenderObject("axis" + std::to_string(i),
                 this,
                 RenderObjectType::Geometry,
                 m_meshAxis[i]);
 
             m_roAxes[i]->setMaterial(plainMaterial);
             Ra::Core::Transform TLocal = Transform::Identity();
-//            TLocal.scale(100.0);
+            TLocal.scale(100.0);
             m_roAxes[i]->setLocalTransform(TLocal);
             addRenderObject(m_roAxes[i]);
         }
