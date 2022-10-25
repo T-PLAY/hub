@@ -36,8 +36,8 @@ int main( int argc, char* argv[] ) {
 //                            -35.000000, 0.000000, -0.000000, 0.000000,
 //                            0.000000, 0.000000, 0.000000, 1.000000 };
 //    metaData["transform"] = transform;
-//    metaData["parent"] = "Keyboard";
-    metaData["parent"] = "Polhemus Patriot (sensor 2)";
+    metaData["parent"] = "Keyboard";
+//    metaData["parent"] = "Polhemus Patriot (sensor 2)";
 //    metaData["parent"] = "calibrator";
     metaData["scanWidth"] = 50.0;
     metaData["scanDepth"] = 35.0;
@@ -84,17 +84,17 @@ int main( int argc, char* argv[] ) {
         //            }
         //        }
 
-//        for ( int i = 0; i < height; ++i ) {
-//            for ( int j = 0; j < width; ++j ) {
-//                data[i * width + j] = ( i + j + dec ) % 256;
-//            }
-//        }
-
         for ( int i = 0; i < height; ++i ) {
             for ( int j = 0; j < width; ++j ) {
-                data[i * width + j] = ( dec ) % 256;
+                data[i * width + j] = ( i + j + dec ) % 256;
             }
         }
+
+//        for ( int i = 0; i < height; ++i ) {
+//            for ( int j = 0; j < width; ++j ) {
+//                data[i * width + j] = ( dec ) % 256;
+//            }
+//        }
 
         //            data[i] = (i / width + dec) % 256;
         //            if (std::abs(i / (float)height - 20.0) < 5)

@@ -6,7 +6,7 @@
 #include <InputSensor.hpp>
 #include <OutputSensor.hpp>
 
-TEST_CASE( "Resolutions test" ) {
+TEST_CASE( "Measures test" ) {
 
     const hub::SensorSpec sensorSpec( "sensorName",
                                       { { { 1 }, hub::SensorSpec::Format::DOF6 },

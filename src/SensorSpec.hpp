@@ -78,6 +78,7 @@ class SRC_API SensorSpec
      static size_t computeAcquisitionSize( const Resolutions& resolutions );
      static size_t computeAcquisitionSize( const Resolution& resolution );
      SensorSpec operator +(const SensorSpec & sensorSpec) const;
+     SensorSpec & operator +=(const SensorSpec & sensorSpec);
 
   private:
      static size_t computeAcquisitionSize( Format format, const Dims& dims );

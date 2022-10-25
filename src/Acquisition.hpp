@@ -15,7 +15,9 @@ class SRC_API Measure
 {
 
   public:
-    Measure( const unsigned char* const data, uint64_t size, bool floatData = false );
+//    Measure( const unsigned char* const data, uint64_t size, bool floatData = false );
+    Measure( const unsigned char* const data, uint64_t size);
+//    Measure( unsigned char* data, uint64_t size);
     Measure( Measure&& measure );
     //    Measure( Measurement measurement );
     Measure( const Measure& ) = delete;
@@ -38,7 +40,7 @@ class SRC_API Measure
     friend std::ostream& operator<<( std::ostream& os, const Measure& measure );
 
   protected:
-    //    bool m_ownData = false;
+    bool m_ownData = false;
     bool m_isMoved = false;
 
   private:
