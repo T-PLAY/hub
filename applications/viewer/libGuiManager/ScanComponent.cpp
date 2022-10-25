@@ -39,15 +39,15 @@ using namespace Ra::Engine::Rendering;
 using namespace Ra::Engine::Data;
 using namespace Ra::Engine::Scene;
 
-//Scan::~Scan() {
-//    if (m_textureData != nullptr) {
-//        delete m_textureData;
-//        m_textureData = nullptr;
-//        delete m_textureScan;
-//        delete m_quad;
-//        delete m_scanLine;
-//    }
-//}
+// Scan::~Scan() {
+//     if (m_textureData != nullptr) {
+//         delete m_textureData;
+//         m_textureData = nullptr;
+//         delete m_textureScan;
+//         delete m_quad;
+//         delete m_scanLine;
+//     }
+// }
 
 ScanComponent::ScanComponent( const hub::InputSensor& inputSensor,
                               Ra::Engine::Scene::Entity* entity,
@@ -127,6 +127,7 @@ void ScanComponent::initialize() {
 }
 
 void ScanComponent::update( const hub::Acquisition& acq ) {
+//    std::cout << "[ScanComponent] update(Acquisition) receive acq : " << acq << std::endl;
 
     const auto& measures = acq.getMeasures();
     const auto nMeasures = measures.size();

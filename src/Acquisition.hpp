@@ -141,7 +141,7 @@ class SRC_API Acquisition
     bool operator!=( const Acquisition& acq ) const;
 
     Acquisition& operator<<( Measure&& measure );
-//    Acquisition& operator<<( const Measures& measure );
+    Acquisition& operator<<( const Measures& measure );
 
     //        template <class T>
     //        const T& get() const {

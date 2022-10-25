@@ -79,7 +79,7 @@ FormStreamView::FormStreamView(std::string streamName,
     //    mProxySensorModel.setFilterRegularExpression(QRegularExpression(QString("^(?!\b") + streamName.c_str() + "\b)"));
     QString sensorNameMod = QString(streamName.c_str()).replace("(", "\\(").replace(")", "\\)");
     //    mProxySensorModel.setFilterRegularExpression(QRegularExpression(QString("^(?!Polhemus Patriot \\(probe\\))")));
-    mProxySensorModel.setFilterRegularExpression(QRegularExpression(QString("^(?!" + sensorNameMod + ")")));
+    mProxySensorModel.setFilterRegularExpression(QRegularExpression(QString("^(?!" + sensorNameMod + "$)")));
     ui->comboBox_syncSensor->setModel(&mProxySensorModel);
     //    ui->comboBox_syncSensor;
 

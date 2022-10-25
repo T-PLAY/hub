@@ -469,7 +469,7 @@ void GuiManager::on_action3D_triggered() {
 
 void GuiManager::onServerStreamStarted( const std::string& streamName,
                                         const std::string& syncStreamName ) {
-    std::cout << "[GuiManager] onServerStreamStarted()" << std::endl;
+    std::cout << "[GuiManager] onServerStreamStarted(" << streamName << ", " << syncStreamName << ")" << std::endl;
 
     //    ClientSocket * socket = nullptr;
     //    if (streamName == g_probePoseSensorName) {
