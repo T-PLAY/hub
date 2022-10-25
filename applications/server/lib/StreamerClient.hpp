@@ -31,7 +31,7 @@ class StreamerClient : public Client
 
     const std::map<std::string, std::list<StreamViewerClient*>>& getSyncViewers() const;
 
-    const std::vector<std::shared_ptr<hub::Acquisition>> & getLastAcqs() const;
+    const std::vector<std::shared_ptr<hub::Acquisition>> & getLastAcqs(const std::string & streamName) const;
 
 public:
     mutable std::mutex m_mtxLastAcqs;
@@ -46,7 +46,7 @@ public:
     std::map<std::string, std::deque<hub::Acquisition>> m_syncAcqs;
     std::mutex m_mtxSyncAcqs;
 
-    std::vector<std::shared_ptr<hub::Acquisition>> m_lastAcqs;
+    std::map<std::string, std::vector<std::shared_ptr<hub::Acquisition>>> m_lastAcqs;
 
     bool m_isRecordStream = false;
 

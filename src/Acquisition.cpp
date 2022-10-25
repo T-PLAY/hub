@@ -14,7 +14,7 @@ Dof6::Dof6( const Measure& measure ) : Measure( measure.m_data, measure.m_size )
 }
 
 Dof6::Dof6( float x, float y, float z, float w0, float w1, float w2, float w3 ) :
-    Measure( (unsigned char*)new float[7] { x, y, z, w0, w1, w2, w3 }, 28, true )
+    Measure( (unsigned char*)new float[7] { x, y, z, w0, w1, w2, w3 }, 28 )
 //    m_x( x ),
 //    m_y(),
 //    m_z( z ),
@@ -23,6 +23,8 @@ Dof6::Dof6( float x, float y, float z, float w0, float w1, float w2, float w3 ) 
 //    m_w2( w2 ),
 //    m_w3( w3 ) {
 {
+    m_ownData = true;
+    assert( m_ownData == true );
     assert( m_size == 28 );
     memcpy( (unsigned char*)&m_x, m_data, m_size );
 }
@@ -32,31 +34,40 @@ std::ostream& operator<<( std::ostream& os, const Dof6& dof6 ) {
     return os;
 }
 
-Mat4::Mat4(const float *array)
-    : Measure((unsigned char*)array, 64)
-{
-    assert(m_size == 64);
+Mat4::Mat4( const float* array ) : Measure( (unsigned char*)array, 64 ) {
+    assert( m_size == 64 );
 }
-
 
 // Dof6::~Dof6() {
 ////    delete m_data;
 //    //    m_data = nullptr;
 //}
 
-Measure::Measure( const unsigned char* const data, uint64_t size, bool floatData ) :
-    //    Measure( Measurement::IMAGE ),
-    m_data( new unsigned char[size] ),
-    //    m_data( data ),
-    m_size( size ) {
-    //    m_format( format ) {
+// Measure::Measure( const unsigned char* const data, uint64_t size, bool floatData ) :
+//     //    Measure( Measurement::IMAGE ),
+//     m_data( new unsigned char[size] ),
+//     //    m_data( data ),
+//     m_size( size ) {
+//     //    m_format( format ) {
 
-    assert( m_size > 0 );
-    assert( data != nullptr );
+//    assert( m_size > 0 );
+//    assert( data != nullptr );
+//    memcpy( (unsigned char*)m_data, data, m_size );
+
+//    if ( floatData ) delete[] data;
+//}
+
+Measure::Measure( const unsigned char* const data, uint64_t size ) :
+    m_data( new unsigned char[size] ), m_size( size ), m_ownData( true ) {
     memcpy( (unsigned char*)m_data, data, m_size );
-
-    if ( floatData ) delete[] data;
+    assert( m_size > 0 );
+    assert( m_data != nullptr );
 }
+
+//Measure::Measure( unsigned char* data, uint64_t size ) : m_data( data ), m_size( size ) {
+//    assert( m_size > 0 );
+//    assert( m_data != nullptr );
+//}
 
 // Measure::Measure( Measure&& measure ) :
 //     m_data( measure.m_data ), m_size( measure.m_size ), m_ownData( measure.m_ownData ) {
@@ -111,9 +122,12 @@ Measure::Measure( Measure&& measure ) :
 }
 
 Measure::~Measure() {
+//    std::cout << "[Measure] delete data : " << (uintptr_t)m_data << ", size : " << m_size
+//              << std::endl;
+
     //    assert( m_data != nullptr );
 
-    if ( !m_isMoved ) { delete[] m_data; }
+    if ( m_ownData && !m_isMoved ) { delete[] m_data; }
 }
 
 // Measure::Measure( Measurement measurement ) : m_measurement( measurement ) {}
@@ -191,7 +205,9 @@ Acquisition::Acquisition( long long start, long long end ) :
     assert( m_start <= m_end );
 }
 
-Acquisition::~Acquisition() {}
+Acquisition::~Acquisition() {
+    m_measures.clear();
+}
 
 // Acquisition::Acquisition( Acquisition&& acq ) noexcept :
 //     m_start( acq.m_start ),

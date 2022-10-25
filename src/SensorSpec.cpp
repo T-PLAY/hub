@@ -8,38 +8,38 @@
 namespace hub {
 
 static constexpr int format2nByte[static_cast<int>( SensorSpec::Format::COUNT )] = {
-    0,         // NONE
-    2,         // Z16
-    2,         // DISPARITY16
-    4,         // XYZ32F
-    4,         // YUYV
-    3,         // RGB8
-    3,         // BGR8
-    4,         // RGBA8
-    4,         // BGRA8
-    1,         // Y8
-    2,         // Y16
-    0,         // RAW10
-    2,         // RAW16
-    1,         // RAW8
-    0,         // UYVY
-    0,         // MOTION_RAW
-    0,         // MOTION_XYZ32F
-    0,         // GPIO_RAW
-    0,         // DISPARITY32
-    12 + 16,   // DOF6
-    0,         // Y10BPACK
-    4,         // DISTANCE
-    0,         // MJPEG
-    2,         // Y8I
-    3,         // Y12I
-    0,         // INZI
-    1,         // INVI
-    0,         // W10
-    2,         // Z16H
-    2,         // FG
-    2,         // Y411
-    64, // MAT4
+    0,       // NONE
+    2,       // Z16
+    2,       // DISPARITY16
+    4,       // XYZ32F
+    4,       // YUYV
+    3,       // RGB8
+    3,       // BGR8
+    4,       // RGBA8
+    4,       // BGRA8
+    1,       // Y8
+    2,       // Y16
+    0,       // RAW10
+    2,       // RAW16
+    1,       // RAW8
+    0,       // UYVY
+    0,       // MOTION_RAW
+    0,       // MOTION_XYZ32F
+    0,       // GPIO_RAW
+    0,       // DISPARITY32
+    12 + 16, // DOF6
+    0,       // Y10BPACK
+    4,       // DISTANCE
+    0,       // MJPEG
+    2,       // Y8I
+    3,       // Y12I
+    0,       // INZI
+    1,       // INVI
+    0,       // W10
+    2,       // Z16H
+    2,       // FG
+    2,       // Y411
+    64,      // MAT4
 };
 
 size_t SensorSpec::computeAcquisitionSize( const Resolutions& resolutions ) {
@@ -59,19 +59,24 @@ size_t SensorSpec::computeAcquisitionSize( const Resolution& resolution ) {
     return computeAcquisitionSize( format, dims );
 }
 
-SensorSpec SensorSpec::operator +(const SensorSpec &sensorSpec) const
-{
+SensorSpec SensorSpec::operator+( const SensorSpec& sensorSpec ) const {
     SensorSpec ret;
-    ret.m_sensorName = m_sensorName + " + " + sensorSpec.m_sensorName;
+    ret.m_sensorName  = m_sensorName + " + " + sensorSpec.m_sensorName;
     ret.m_resolutions = m_resolutions;
-    ret.m_resolutions.insert(ret.m_resolutions.end(), sensorSpec.m_resolutions.begin(), sensorSpec.m_resolutions.end());
+    ret.m_resolutions.insert(
+        ret.m_resolutions.end(), sensorSpec.m_resolutions.begin(), sensorSpec.m_resolutions.end() );
     ret.m_metaData = m_metaData;
-    ret.m_metaData.insert(sensorSpec.m_metaData.begin(), sensorSpec.m_metaData.end());
-    ret.m_metaData.erase("parent");
+    ret.m_metaData.insert( sensorSpec.m_metaData.begin(), sensorSpec.m_metaData.end() );
+    ret.m_metaData.erase( "parent" );
 
     ret.m_acquisitionSize = m_acquisitionSize + sensorSpec.m_acquisitionSize;
-    assert(ret.m_acquisitionSize == computeAcquisitionSize(ret.m_resolutions));
+    assert( ret.m_acquisitionSize == computeAcquisitionSize( ret.m_resolutions ) );
     return ret;
+}
+
+SensorSpec& SensorSpec::operator+=( const SensorSpec& sensorSpec ) {
+    *this = *this + sensorSpec;
+    return *this;
 }
 
 size_t SensorSpec::computeAcquisitionSize( Format format, const Dims& dims ) {
@@ -102,7 +107,7 @@ std::string SensorSpec::format2string( const Format& format ) {
 }
 
 std::string SensorSpec::resolutions2string( const Resolutions& resolutions ) {
-    const int size  = static_cast<int>(resolutions.size());
+    const int size  = static_cast<int>( resolutions.size() );
     std::string str = "";
     if ( size > 1 ) str += "[";
     for ( int i = 0; i < size; ++i ) {
@@ -142,13 +147,13 @@ std::string SensorSpec::metaData2string( const SensorSpec::MetaData& metaData, b
 std::string SensorSpec::metaData2string( const std::pair<std::string, std::any>& metaData ) {
     const auto& name = metaData.first;
     const auto& val  = metaData.second;
-//#ifdef WIN32
-//    std::string str = std::string( val.type().name() ) + " " + name + " = '" +
-//                      hub::io::Interface::anyValue2string( val ) + "'";
-//#else
+    //#ifdef WIN32
+    //    std::string str = std::string( val.type().name() ) + " " + name + " = '" +
+    //                      hub::io::Interface::anyValue2string( val ) + "'";
+    //#else
     std::string str = hub::io::Interface::anyType2string( val ) + " " + name + " = '" +
                       hub::io::Interface::anyValue2string( val ) + "'";
-//#endif
+    //#endif
     return str;
 }
 
@@ -158,7 +163,10 @@ std::ostream& operator<<( std::ostream& os, const SensorSpec::Format& format ) {
 }
 
 std::ostream& operator<<( std::ostream& os, const SensorSpec& sensorSpec ) {
-    os << sensorSpec.m_sensorName << ", " << SensorSpec::resolutions2string(sensorSpec.m_resolutions) << ", " << SensorSpec::metaData2string(sensorSpec.m_metaData) << ", " << sensorSpec.m_acquisitionSize;
+    os << sensorSpec.m_sensorName << ", "
+       << SensorSpec::resolutions2string( sensorSpec.m_resolutions ) << ", "
+       << SensorSpec::metaData2string( sensorSpec.m_metaData ) << ", "
+       << sensorSpec.m_acquisitionSize;
     return os;
 }
 

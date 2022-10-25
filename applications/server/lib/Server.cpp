@@ -173,7 +173,7 @@ void Server::delViewer( ViewerClient* viewer ) {
     //    m_mtx.unlock();
 }
 
-void Server::newAcquisition( StreamerClient* streamer, hub::Acquisition acq ) {
+void Server::newAcquisition( StreamerClient* streamer, const hub::Acquisition & acq ) {
 
     const auto& streamerName = streamer->getStreamName();
     //    const auto streamViewers = m_streamViewers[streamerName];
@@ -209,17 +209,17 @@ void Server::newAcquisition( StreamerClient* streamer, hub::Acquisition acq ) {
     }
 }
 
-const std::vector<std::shared_ptr<hub::Acquisition>>&
-Server::getLastAcqs( const std::string& streamName ) {
-    m_mtxStreamers.lock();
-    assert( m_streamers.find( streamName ) != m_streamers.end() );
-    //    auto lastAcq = m_streamers.at( streamName )->getLastAcq();
-    const auto& streamer = m_streamers.at( streamName );
-    //    streamer->m_mtxLastAcqs.lock();
-    const auto& lastAcqs = streamer->getLastAcqs();
-    m_mtxStreamers.unlock();
-    return lastAcqs;
-}
+//const std::vector<std::shared_ptr<hub::Acquisition>>&
+//Server::getLastAcqs( const std::string& streamName ) {
+//    m_mtxStreamers.lock();
+//    assert( m_streamers.find( streamName ) != m_streamers.end() );
+//    //    auto lastAcq = m_streamers.at( streamName )->getLastAcq();
+//    const auto& streamer = m_streamers.at( streamName );
+//    //    streamer->m_mtxLastAcqs.lock();
+//    const auto& lastAcqs = streamer->getLastAcqs();
+//    m_mtxStreamers.unlock();
+//    return lastAcqs;
+//}
 
 void Server::setAcqPing( bool newAcqPing ) {
     m_acqPing = newAcqPing;

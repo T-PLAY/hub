@@ -93,6 +93,15 @@ class SRC_API Interface
   private:
 };
 
+class SRC_API InputInterface : public virtual Interface
+{};
+
+class SRC_API OutputInterface : public virtual Interface
+{};
+
+class SRC_API InputOutputInterface : public InputInterface, public OutputInterface
+{};
+
 // template <class T>
 // auto Interface::getValue(const std::any& any) -> decltype (int)
 //{
@@ -268,14 +277,6 @@ void Interface::read( std::pair<T, U>& pair ) const {
     pair = std::make_pair( first, second );
 }
 
-class SRC_API InputInterface : public virtual Interface
-{};
-
-class SRC_API OutputInterface : public virtual Interface
-{};
-
-class SRC_API InputOutputInterface : public InputInterface, public OutputInterface
-{};
 
 } // namespace io
 } // namespace hub

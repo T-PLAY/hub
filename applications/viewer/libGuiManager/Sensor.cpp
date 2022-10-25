@@ -36,7 +36,7 @@ void SensorThread::run() {
 
             //            Sensor::Acquisition acq;
             //            *mInputStream >> acq;
-            const auto& acq = inputSensor->getAcquisition();
+            const auto acq = inputSensor->getAcquisition();
             //            std::cout << "[SensorThreaSensorThread] receive acq : " << acq <<
             //            std::endl;
 
@@ -55,6 +55,8 @@ void SensorThread::run() {
                     const auto& dims       = resolution.first;
                     const auto& format     = resolution.second;
                     const auto& measure    = measures.at( i );
+
+                    assert(measure.m_data != nullptr);
 
                     //                assert( m_sensor.m_widgetStreamViews != nullptr );
                     m_sensor.m_widgetStreamViews[i]->setData(

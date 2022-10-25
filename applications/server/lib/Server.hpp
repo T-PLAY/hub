@@ -46,9 +46,10 @@ class Server
     void delStreamViewer( StreamViewerClient* streamViewer );
     void delViewer( ViewerClient* viewer );
 
-    void newAcquisition( StreamerClient* streamer, hub::Acquisition acq );
-    const std::vector<std::shared_ptr<hub::Acquisition>>&
-    getLastAcqs( const std::string& streamName );
+    void newAcquisition(StreamerClient* streamer, const hub::Acquisition &acq );
+
+//    const std::vector<std::shared_ptr<hub::Acquisition>>&
+//    getLastAcqs( const std::string& streamName );
 
   public:
     bool m_acqPing = true;
