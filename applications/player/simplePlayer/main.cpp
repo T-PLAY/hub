@@ -12,47 +12,105 @@
 #include <IO/File.hpp>
 #include <IO/Stream.hpp>
 
-int main( int argc, char* argv[] ) {
+#include <filesystem>
+#include <set>
 
-    std::string recordPath = PROJECT_DIR "data/";
-    std::fstream recordFile( recordPath + "latest.txt", std::ios::in );
-    assert( recordFile.is_open() );
+struct Snap {
+    hub::Acquisition m_acq;
+    int iStream;
+//    std::string m_streamName;
 
-    hub::InputSensor inputSensor( hub::io::File( std::move( recordFile ) ) );
+    bool operator<(const Snap& other) const
+    {
+        return m_acq.m_start < other.m_acq.m_start;
+    }
+};
 
-    auto acqs = inputSensor.getAllAcquisitions();
+int main(int argc, char* argv[])
+{
 
-    hub::SensorSpec sensorSpec = inputSensor.m_spec;
-//    auto& metaData             = sensorSpec.m_metaData;
-//    metaData["type"]           = "record";
-//    metaData["nAcqs"]          = (unsigned int)acqs.size();
-    hub::OutputSensor outputSensor( sensorSpec, hub::io::OutputStream( "Player (record)" ) );
+//    std::map<std::string, std::unique_ptr<hub::OutputSensor>> outputStreams;
+    std::vector<std::unique_ptr<hub::OutputSensor>> outputStreams;
+//    std::vector<hub::OutputSensor> outputStreams;
+    outputStreams.reserve(10);
+    std::set<Snap> snaps;
 
-    for ( const auto& acq : acqs ) {
-        outputSensor << acq;
+    std::string recordPath = PROJECT_DIR "data/records/latest/";
+    //    std::vector<std::string> streamNames { "Keyboard", "ProceduralStreamer" };
+    //    std::vector<std::string> streamNames { "Polhemus Patriot (sensor 2)" };
+    //    const std::string streamName = "Keyboard";
+
+    //    for (const auto& streamName : streamNames) {
+    //        std::fstream recordFile(recordPath + streamName + ".txt", std::ios::in | std::ios::binary | std::ios::beg);
+    //        assert(recordFile.is_open());
+
+    for (const auto& fileDir : std::filesystem::directory_iterator(recordPath)) {
+        //        if ( iSensor != -1 && iFile != iSensor ) continue;
+
+        const auto filename = fileDir.path().string();
+        std::cout << "read '" << filename << "' record" << std::endl;
+        assert(std::filesystem::exists(filename));
+
+        std::fstream file(filename, std::ios::binary | std::ios::in | std::ios::beg);
+        assert(file.is_open());
+        //        //        std::cout << "tellg" << file.tellg() << std::endl;
+        //        //        file.seekg(0, std::ios::end);
+        //        //        std::cout << "tellg" << file.tellg() << std::endl;
+        //        //        file.seekg(0, std::ios::beg);
+
+        //        assert( !file.eof() );
+        //        //        assert(sizeof(int) == 4);
+
+        const std::string streamName = filename;
+
+        hub::InputSensor inputSensor(hub::io::File(std::move(file)));
+        //        hub::InputSensor inputSensor(hub::io::File(std::move(recordFile)));
+
+        auto acqs = inputSensor.getAllAcquisitions();
+
+        //        hub::OutputSensor outputSensor2(inputSensor.m_spec, hub::io::OutputStream("Player (" + streamName + ")"));
+//        outputStreams[streamName] = std::make_unique<hub::OutputSensor>(inputSensor.m_spec, hub::io::OutputStream("Player (" + streamName + ")"));
+        outputStreams.push_back(std::make_unique<hub::OutputSensor>(inputSensor.m_spec, hub::io::OutputStream("Player : " + inputSensor.m_spec.m_sensorName)));
+//        outputStreams.emplace_back(inputSensor.m_spec, hub::io::OutputStream("Player (" + streamName + ")"));
+
+        for (const auto& acq : acqs) {
+            //            std::cout << "read acq : " << acq << std::endl;
+            Snap snap { acq.clone(), (int)(outputStreams.size() - 1) };
+            snaps.insert(std::move(snap));
+        }
+        std::cout << acqs.size() << " acquisitions read." << std::endl;
     }
 
-        while (true) {
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
-        }
+    //    hub::SensorSpec sensorSpec = inputSensor.m_spec;
+    //    auto& metaData             = sensorSpec.m_metaData;
+    //    metaData["type"]           = "record";
+    //    metaData["nAcqs"]          = (unsigned int)acqs.size();
 
-    hub::OutputSensor outputSensor2( inputSensor.m_spec, hub::io::OutputStream( "Player (live)" ) );
+    //    hub::OutputSensor outputSensor( inputSensor.m_spec, hub::io::OutputStream( "Player (record)" ) );
+
+    //    for ( const auto& acq : acqs ) {
+    //        outputSensor << acq;
+    //    }
+
+    //        while (true) {
+    //            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    //        }
 
     //    const long long duration = acqs.back().m_start - acqs.front().m_start;
     int iLoop = 0;
-    while ( true ) {
-        const auto startRecord  = acqs.front().m_start;
+    while (true) {
+        //        const auto startRecord = acqs.front().m_start;
+        const auto startRecord = snaps.begin()->m_acq.m_start;
         const auto& startChrono = std::chrono::high_resolution_clock::now();
 
         //        long long dec = iLoop * duration;
 
-        auto it = acqs.begin();
+        auto it = snaps.begin();
         //            while (it != m_snapshots.end()) {
-        while ( it != acqs.end() ) {
-            const auto& acq = *it;
+        while (it != snaps.end()) {
+            const auto& snap = *it;
 
-            std::this_thread::sleep_until( startChrono +
-                                           std::chrono::microseconds( acq.m_start - startRecord ) );
+            std::this_thread::sleep_until(startChrono + std::chrono::microseconds(snap.m_acq.m_start - startRecord));
             //            std::this_thread::sleep_for(
             //                                           std::chrono::milliseconds( 1000));
 
@@ -64,7 +122,9 @@ int main( int argc, char* argv[] ) {
 
             //                *m_outputs.at( snapshot.getSensorName() ) << acq2;
             //                    << snapshot.getAcq();
-            outputSensor2 << acq;
+            //            outputSensor2 << snap;
+            *outputStreams.at(snap.iStream) << snap.m_acq;
+//            outputStreams.at(snap.iStream) << snap.m_acq;
 
             ++it;
             //                m_isPlaying = m_futureObj.wait_for(std::chrono::milliseconds(1))

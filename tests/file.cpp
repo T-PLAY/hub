@@ -39,7 +39,7 @@ TEST_CASE( "File test" ) {
 
         hub::OutputSensor outputSensor(
             { "sensorName", { { { 1 }, hub::SensorSpec::Format::BGR8 } } },
-            hub::io::File( std::fstream( filename, std::ios::out ) ) );
+            hub::io::File( std::fstream( filename, std::ios::out | std::ios::binary | std::ios::trunc ) ) );
 
         auto& sensorSpec = outputSensor.m_spec;
         CHECK( sensorSpec.m_acquisitionSize == 3 );
@@ -60,7 +60,7 @@ TEST_CASE( "File test" ) {
     std::cout << "inputStream start" << std::endl;
     INFO( "InputStream" );
     {
-        hub::InputSensor inputSensor( hub::io::File( std::fstream( filename, std::ios::in ) ) );
+        hub::InputSensor inputSensor( hub::io::File( std::fstream( filename, std::ios::in | std::ios::binary | std::ios::beg ) ) );
 
         const auto& sensorSpec = inputSensor.m_spec;
         CHECK( sensorSpec.m_acquisitionSize == 3 );

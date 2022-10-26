@@ -97,6 +97,8 @@ StreamerClient::StreamerClient( Server& server, int iClient, hub::net::ClientSoc
         if ( strcmp( type, "record" ) == 0 ) { m_isRecordStream = true; }
     }
 
+    m_lastAcqs[""];
+
     std::thread thread( [this]() {
         try {
             while ( 1 ) {
@@ -110,14 +112,14 @@ StreamerClient::StreamerClient( Server& server, int iClient, hub::net::ClientSoc
                 for ( auto& pair : syncViewers ) {
                     const auto& streamViewerName = pair.first;
 
-                    std::cout << headerMsg() << "receive sync master acq : " << acq << std::endl;
+//                    std::cout << headerMsg() << "receive sync master acq : " << acq << std::endl;
 
                     auto& acqs = m_syncAcqs[streamViewerName];
                     m_mtxSyncAcqs.lock();
                     while ( acqs.empty() ) {
-                        std::cout << headerMsg() << "empty acqs, sleep" << std::endl;
+//                        std::cout << headerMsg() << "empty acqs, sleep" << std::endl;
                         m_mtxSyncAcqs.unlock();
-                        std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+                        std::this_thread::sleep_for( std::chrono::milliseconds( 1 ) );
                         m_mtxSyncAcqs.lock();
                     }
                     assert( !acqs.empty() );
@@ -133,15 +135,15 @@ StreamerClient::StreamerClient( Server& server, int iClient, hub::net::ClientSoc
                         acqs.pop_back();
 
                         auto minDist = std::abs( acq.m_start - bestMatchAcq->m_start );
-                        std::cout << headerMsg() << "dist = " << minDist << std::endl;
+//                        std::cout << headerMsg() << "dist = " << minDist << std::endl;
 
                         bool foundBestMatch = false;
                         while ( !foundBestMatch ) {
                             m_mtxSyncAcqs.lock();
                             while ( acqs.empty() ) {
-                                std::cout << headerMsg() << "empty acqs, sleep" << std::endl;
+//                                std::cout << headerMsg() << "empty acqs, sleep" << std::endl;
                                 m_mtxSyncAcqs.unlock();
-                                std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+                                std::this_thread::sleep_for( std::chrono::milliseconds( 1 ) );
                                 m_mtxSyncAcqs.lock();
                             }
                             assert( !acqs.empty() );
@@ -151,22 +153,28 @@ StreamerClient::StreamerClient( Server& server, int iClient, hub::net::ClientSoc
                             //                std::cout << headerMsg() << "[Match] pop acq : " <<
                             //                acq2 << std::endl;
                             auto dist = std::abs( acq.m_start - acq2.m_start );
-                            std::cout << headerMsg() << "dist = " << dist << std::endl;
+//                            std::cout << headerMsg() << "dist = " << dist << std::endl;
                             if ( dist < minDist ) {
                                 minDist = dist;
                                 bestMatchAcq.release();
                                 bestMatchAcq = std::make_unique<hub::Acquisition>( acq2.clone() );
                                 acqs.pop_back();
                             }
-                            else { foundBestMatch = true; }
+                            else {
+                                assert(minDist < 20'000); // 20 ms
+                                if (minDist > 8'000) {
+                                    std::cout << headerMsg() << "sync dist = " << minDist << std::endl;
+                                }
+                                foundBestMatch = true;
+                            }
                         }
 
                         m_mtxSyncAcqs.lock();
                         acqs.emplace_back( bestMatchAcq->clone() );
-                        while ( ! acqs.empty() && acqs.back().m_start < acq.m_start ) {
-//                        while ( ! acqs.empty() && acqs.back().m_start < acq.m_start - 8000 ) {
-                            acqs.pop_back();
-                        }
+//                        while ( ! acqs.empty() && acqs.back().m_start < acq.m_start ) {
+////                        while ( ! acqs.empty() && acqs.back().m_start < acq.m_start - 8000 ) {
+//                            acqs.pop_back();
+//                        }
                         m_mtxSyncAcqs.unlock();
 
                         //                        if (acq.m_start < bestMatchAcq->m_start) {

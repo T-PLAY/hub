@@ -107,12 +107,13 @@ int main(int argc, char* argv[])
                             assert(pBuf != nullptr);
                             assert(pBuf != 0);
 
+                            const auto end = std::chrono::high_resolution_clock::now();
+
                             size_t i = 0;
                             while (i < size) {
 
                                 int ucSensor = (int)pBuf[i + 2];
 
-                                const auto end = std::chrono::high_resolution_clock::now();
 
                                 unsigned char* data = &pBuf[i + 8]; // size of header = 8 bytes
                                 const auto timestampStart = std::chrono::duration_cast<std::chrono::microseconds>((end - std::chrono::microseconds(18'500)).time_since_epoch()).count(); // Polhemus technical spec latency = 18.5ms
@@ -122,7 +123,7 @@ int main(int argc, char* argv[])
                                 for (int i = 0; i <3; ++i) {
 //                                    poses[i] = -10.0 * poses[i]; // convert centimeters to millimeters
                                     if (ucSensor == 1) {
-                                        poses[i] = -10.0 * poses[i]; // convert centimeters to millimeters
+                                        poses[i] = 10.0 * poses[i]; // convert centimeters to millimeters
                                     }
                                     else if (ucSensor == 2) {
                                         poses[i] = 10.0 * poses[i]; // convert centimeters to millimeters

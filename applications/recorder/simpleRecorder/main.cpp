@@ -6,157 +6,90 @@
 #include <IO/Stream.hpp>
 
 #include <Configurations.hpp>
+#include <filesystem>
 #include <thread>
 
-int main( int argc, char* argv[] ) {
+int main(int argc, char* argv[])
+{
 
     int port = hub::net::s_defaultServicePort;
-    if ( argc == 2 ) { port = atoi( argv[1] ); }
+    if (argc == 2) {
+        port = atoi(argv[1]);
+    }
 
     bool stopThread = false;
 
-    std::string posStreamName = "Keyboard";
     //    std::string posStreamName = "Polhemus Patriot (sensor 2)";
 
-    std::string imageStreamName = "ProceduralStreamer";
+    const std::string rootPath = PROJECT_DIR "data/";
+
+    // creating new record folder
+    char folderName[64] = { 0 };
+    time_t rawtime;
+    time(&rawtime);
+    const auto timeinfo = localtime(&rawtime);
+    strftime(folderName, sizeof(folderName), "%Y-%m-%d_%H-%M-%S", timeinfo);
+    const std::string newRecordFolder = rootPath + "records/" + folderName + "/";
+    std::cout << "create directory " << newRecordFolder << std::endl;
+    assert(!std::filesystem::exists(newRecordFolder));
+    std::filesystem::create_directories(newRecordFolder);
+
+    //    const std::string imageStreamName = "ProceduralStreamer";
+    //    const std::string posStreamName = "Keyboard";
+
+    //    std::vector<std::string> streamNames { posStreamName, imageStreamName };
+    //    std::vector<std::string> streamNames { "Keyboard", "ProceduralStreamer" };
+//    std::vector<std::string> streamNames { "Polhemus Patriot (sensor 2)" };
+//    std::vector<std::string> streamNames { "Polhemus Patriot (sensor 1)", "Polhemus Patriot (sensor 2)" };
+    std::vector<std::string> streamNames { "Polhemus Patriot (sensor 2)", "ULA-OP 256" };
+    std::vector<std::thread> threads;
+    //    threads.resize(streamNames.size());
+
     //        std::string imageStreamName = "ULA-OP 256";
 
-    std::vector<hub::Acquisition> acqs;
+    for (const auto& streamName : streamNames) {
 
-    std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
+        threads.push_back(std::thread([=, &stopThread]() {
+            hub::InputSensor inputSensor(
+                hub::io::InputStream(streamName,
+                    "",
+                    hub::net::ClientSocket(hub::net::s_defaultServiceIp, port)));
 
-    hub::SensorSpec sensorSpec;
+            std::fstream recordFile(newRecordFolder + streamName + ".txt", std::ios::out | std::ios::binary | std::ios::trunc);
+            assert(recordFile.is_open());
 
-    {
+            hub::OutputSensor outputSensor(inputSensor.m_spec, hub::io::File(std::move(recordFile)));
 
-        hub::InputSensor inputSensor(
-            hub::io::InputStream( posStreamName,
-                                  imageStreamName,
-                                  hub::net::ClientSocket( hub::net::s_defaultServiceIp, port ) ) );
-
-        //        std::this_thread::sleep_for(std::chrono::milliseconds(100));
-        {
-
-            //            hub::InputSensor inputSensor2(hub::io::InputStream(
-            //                imageStreamName,
-            //                "",
-            //                hub::net::ClientSocket(hub::net::s_defaultServiceIp, port)));
-
-            std::cout << inputSensor.m_spec << std::endl;
-            sensorSpec = inputSensor.m_spec;
-            //            std::cout << inputSensor2.m_spec << std::endl;
-            //            sensorSpecSum = inputSensor.m_spec + inputSensor2.m_spec;
-            //            std::cout << sensorSpecSum << std::endl;
-
-            long long lastAcqStart = -1;
-            //            long long lastAcqStart2 = -1;
-            auto thread = std::thread( [&]() {
-                while ( !stopThread ) {
-                    auto acq = std::make_unique<hub::Acquisition>( inputSensor.getAcquisition() );
-                    //                    auto acq = inputSensor.getAcquisition();
-                    while ( acq->m_start == lastAcqStart ) {
-                        acq = std::make_unique<hub::Acquisition>( inputSensor.getAcquisition() );
-                        //                        acq = inputSensor.getAcquisition();
-                        std::cout << "remove ping for inputSensor" << std::endl;
-                    }
-                    lastAcqStart = acq->m_start;
-                    assert( acq->getMeasures().size() == 2 );
-                    //                    const auto& measure = acq->getMeasures().front();
-
-                    //                    auto acq2 =
-                    //                    std::make_unique<hub::Acquisition>(inputSensor2.getAcquisition());
-                    //                    while (acq2->m_start == lastAcqStart2) {
-                    //                        acq2 =
-                    //                        std::make_unique<hub::Acquisition>(inputSensor2.getAcquisition());
-                    //                        std::cout << "remove ping for inputSensor2" <<
-                    //                        std::endl;
-                    //                    }
-                    //                    lastAcqStart2 = acq2->m_start;
-                    //                    assert(acq2->getMeasures().size() == 1);
-                    //                    const auto& measure2 = acq2->getMeasures().front();
-
-                    //                    auto acq3 = std::move(hub::Acquisition { acq->m_start,
-                    //                    acq->m_end }
-                    //                        << hub::Measure { measure.m_data, measure.m_size }
-                    //                        << hub::Measure { measure2.m_data, measure2.m_size });
-
-                    acqs.push_back( std::move( *acq ) );
-
-                    std::cout << "+" << std::flush;
-                }
-            } );
+            int nAcq = 0;
+            while (!stopThread) {
+                auto acq = inputSensor.getAcquisition();
+                //                std::cout << "[" << streamName << "] record acq : " << acq << std::endl;
+                outputSensor << acq;
+                std::cout << "+" << std::flush;
+                ++nAcq;
+            }
             std::cout << std::endl;
-
-            //        std::this_thread::sleep_for( std::chrono::milliseconds( 6000 ) );
-            auto ret = getchar();
-            (void)ret;
-            stopThread = true;
-
-            assert( thread.joinable() );
-            thread.join();
-
-        } // end inputSensor2
-
-        //    inputSensor.getInterface().close();
-        std::cout << "inputSensor2 closed" << std::endl;
-        //        getchar();
-        //        std::this_thread::sleep_for(std::chrono::milliseconds(100));
-
-    } // end inputSensor
-
-    //    inputSensor2.getInterface().close();
-    std::cout << "inputSensor closed" << std::endl;
-    //    std::this_thread::sleep_for(std::chrono::milliseconds(500));
-    //        getchar();
-
-    // record file
-    {
-        std::string recordPath = PROJECT_DIR "data/";
-        std::fstream recordFile( recordPath + "latest.txt", std::ios::out );
-        assert( recordFile.is_open() );
-
-        auto& metaData    = sensorSpec.m_metaData;
-        metaData["type"]  = "record";
-        metaData["nAcqs"] = (unsigned int)acqs.size();
-
-        hub::OutputSensor outputSensor( sensorSpec, hub::io::File( std::move( recordFile ) ) );
-        for ( const auto& acq : acqs ) {
-            outputSensor << acq;
-        }
-        //        outputSensor.getInterface().close();
+            std::cout << "[" << streamName << "] " << nAcq << " acq recorded" << std::endl;
+        }));
     }
 
     //    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    getchar();
+    stopThread = true;
 
-    // play record
+    for (auto& thread : threads) {
+        assert(thread.joinable());
+        thread.join();
+    }
+
+    // copy this record into latest folder
     {
-        std::string recordPath = PROJECT_DIR "data/";
-        std::fstream recordFile( recordPath + "latest.txt", std::ios::in );
-        assert( recordFile.is_open() );
-
-        hub::InputSensor inputSensor( hub::io::File( std::move( recordFile ) ) );
-
-        auto acqs2 = inputSensor.getAllAcquisitions();
-
-        // play
-        //        hub::SensorSpec sensorSpec = sensorSpec;
-        //                auto& metaData             = sensorSpec.m_metaData;
-        //                metaData["type"]           = "record";
-        //                metaData["nAcqs"]          = (unsigned int)acqs.size();
-        //        hub::OutputSensor outputSensor2(sensorSpec, hub::io::OutputStream("Player
-        //        (record)"));
-        hub::OutputSensor outputSensor2( inputSensor.m_spec,
-                                         hub::io::OutputStream( "Player (record)" ) );
-
-        for ( const auto& acq : acqs2 ) {
-            outputSensor2 << acq;
+        std::string latestFolder = rootPath + "records/latest/";
+        std::filesystem::create_directories(latestFolder);
+        for (const auto& dirEntry : std::filesystem::directory_iterator(latestFolder)) {
+            std::filesystem::remove(dirEntry);
         }
-
-        //        std::this_thread::sleep_for( std::chrono::milliseconds( 5000 ) );
-        while ( true ) {
-            std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
-        }
-        //    }
+        std::filesystem::copy(newRecordFolder, latestFolder, std::filesystem::copy_options::recursive);
     }
 }
 
