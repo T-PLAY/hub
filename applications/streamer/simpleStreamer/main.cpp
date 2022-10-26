@@ -102,10 +102,14 @@ int main( int argc, char* argv[] ) {
         //            else
         //		    data[i] = (i / height + dec) % 256;
         //        }
-                const auto maxFps = 40;
+#if defined(WIN32)
+            const auto maxFps = 60.0;
+#else
+            const auto maxFps = 40.0;
+#endif
 //        const auto maxFps = 10;
 //        const auto maxFps = 2;
-        const auto end    = start + std::chrono::microseconds( 1'000'000 / maxFps );
+            const auto end    = start + std::chrono::microseconds( (int)(1'000'000 / maxFps ));
 
         const auto& timestampStart =
             std::chrono::duration_cast<std::chrono::microseconds>( start.time_since_epoch() )

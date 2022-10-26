@@ -134,8 +134,9 @@ class FormStreamViews : public QWidget
     //    DialogServerConnect & m_dialog;
     //    QComboBox & m_comboBoxScan;
     //    QComboBox & m_comboBoxPose;
-//    bool m_autoStartStream = true;
-    bool m_autoStartStream = false;
+
+    bool m_autoStartStream = true;
+//    bool m_autoStartStream = false;
 
   public:
     const FormStreamView& getSensorView( const std::string& streamName ) const;

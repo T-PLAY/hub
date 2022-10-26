@@ -87,7 +87,7 @@ StreamViewerClient::StreamViewerClient( Server& server,
     std::string lastAcqsName = ( m_syncStreamName == "" ) ? ( "" ) : ( m_streamName );
 
     //    const auto& lastAcqs = m_server.getLastAcqs( m_streamName );
-    if ( m_syncStreamName == "" ) {
+    if ( m_syncStreamName == "" && m_server.m_acqPing ) {
         streamer->m_mtxLastAcqs.lock();
         m_mtxOutputSensor.lock();
         const auto& lastAcqs = streamer->getLastAcqs( lastAcqsName );

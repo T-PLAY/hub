@@ -179,8 +179,12 @@ int main( int argc, char* argv[] ) {
             //            memcpy(data, translation, 12);
             //            memcpy(&data[12], orientation, 16);
 
-            const auto maxFps = 60;
-            const auto end    = start + std::chrono::microseconds( 1'000'000 / maxFps );
+#if defined(WIN32)
+            const auto maxFps = 70.0;
+#else
+            const auto maxFps = 60.0;
+#endif
+            const auto end    = start + std::chrono::microseconds( (int)(1'000'000 / maxFps) );
 
             const auto& timestampStart =
                 std::chrono::duration_cast<std::chrono::microseconds>( start.time_since_epoch() )
