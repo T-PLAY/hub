@@ -10,6 +10,9 @@ class TreeViewStream : public QTreeView
   public:
     TreeViewStream( QWidget* parent = nullptr );
 
+signals:
+    void onSpace();
+
   protected:
     void keyPressEvent( QKeyEvent* event ) override;
 
