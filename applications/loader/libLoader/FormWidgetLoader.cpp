@@ -42,6 +42,8 @@ FormWidgetLoader::FormWidgetLoader( QWidget* parent ) :
         //    ui->treeView->setItemsExpandable(false);
         //    ui->treeView->setColumnHidden(0, true);
 
+        QObject::connect(ui->treeView_record, &TreeViewStream::onSpace, this, &FormWidgetLoader::onSpace);
+
         //        QObject::connect( ui->treeView_record->selectionModel(),
         //                          &QItemSelectionModel::currentChanged,
         //                          this,
@@ -53,8 +55,14 @@ FormWidgetLoader::FormWidgetLoader( QWidget* parent ) :
                           &FormWidgetLoader::onTreeView_record_selectionChanged );
     }
 
+    m_recordLoader.setAutoLoop(ui->checkBox_autoLoop->isChecked());
+//    m_recordLoader.setAutoPlay(ui.)
+
+        QObject::connect(
+            &m_recordLoader, &Loader::acqChanged, this, &FormWidgetLoader::onAcqChanged );
     //    QObject::connect(
     //        &m_recordLoader, &Loader::pathLoaded, this, &FormWidgetLoader::recordPathLoaded );
+    m_recordLoader.setAutoPlay(ui->pushButton_playPause->text() == "Pause");
 }
 
 FormWidgetLoader::~FormWidgetLoader() {
@@ -111,9 +119,65 @@ void FormWidgetLoader::onTreeView_record_selectionChanged( const QItemSelection&
         }
 //        std::this_thread::sleep_for(std::chrono::milliseconds(300));
         m_recordLoader.load( mPath );
+        const int nAcq = m_recordLoader.getNAcq();
+        ui->label_nAcq->setText("/" + QString::number(nAcq));
+        ui->horizontalSlider_iAcq->setMaximum(nAcq - 1);
+        ui->spinBox_iAcq->setMaximum(nAcq - 1);
     }
 }
 
 const Loader& FormWidgetLoader::getRecordLoader() const {
     return m_recordLoader;
 }
+
+void FormWidgetLoader::onAcqChanged(int iAcq)
+{
+    ui->horizontalSlider_iAcq->setValue(iAcq);
+    ui->spinBox_iAcq->setValue(iAcq);
+}
+
+void FormWidgetLoader::onSpace()
+{
+    ui->pushButton_playPause->click();
+}
+
+void FormWidgetLoader::on_checkBox_autoLoop_toggled(bool checked)
+{
+    m_recordLoader.setAutoLoop(checked);
+}
+
+
+void FormWidgetLoader::on_pushButton_playPause_clicked()
+{
+    if (ui->pushButton_playPause->text() == "Play") {
+        m_recordLoader.play();
+        ui->pushButton_playPause->setText("Pause");
+        m_recordLoader.setAutoPlay(true);
+    }
+    else {
+        assert(ui->pushButton_playPause->text() == "Pause");
+        m_recordLoader.stop();
+        ui->pushButton_playPause->setText("Play");
+        m_recordLoader.setAutoPlay(false);
+    }
+}
+
+
+
+void FormWidgetLoader::on_horizontalSlider_iAcq_valueChanged(int value)
+{
+//    std::cout << "value changed " << value << std::endl;
+    if (ui->pushButton_playPause->text() == "Play") {
+        m_recordLoader.setIAcq(value);
+        ui->spinBox_iAcq->setValue(value);
+    }
+}
+
+
+void FormWidgetLoader::on_spinBox_iAcq_valueChanged(int arg1)
+{
+//    if (ui->pushButton_playPause->text() == "Play") {
+//        m_recordLoader.setIAcq(arg1);
+//    }
+}
+

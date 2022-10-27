@@ -28,17 +28,25 @@ class FormWidgetLoader : public QWidget
 //    void recordPathUnloaded();
 
   private slots:
+    void onAcqChanged(int iAcq);
+    void onSpace();
 
 //    void onTreeView_record_currentChanged( const QModelIndex& current,
 //                                           const QModelIndex& previous );
     void onTreeView_record_selectionChanged( const QItemSelection& selected,
                                              const QItemSelection& deselected );
 
-  private:
+    void on_checkBox_autoLoop_toggled(bool checked);
+    void on_pushButton_playPause_clicked();
+    void on_horizontalSlider_iAcq_valueChanged(int value);
+    void on_spinBox_iAcq_valueChanged(int arg1);
+
+private:
     Ui::FormWidgetLoader* ui;
 
     QFileSystemModel* m_recordFileModel = nullptr;
     Loader m_recordLoader;
+
 };
 
 #endif // FORMWIDGETLOADER_H

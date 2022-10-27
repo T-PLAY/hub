@@ -22,17 +22,18 @@ Loader::~Loader() {
 void Loader::load( const std::string& path ) {
     std::cout << "[Loader] load(" << path << ")" << std::endl;
     //    return;
-    if ( isPlaying() ) {
-        stop();
+    if ( isPlaying() ) stop();
 
-        assert( m_thread == nullptr );
-        assert( isLoaded() );
-        //    assert( !m_inputStreams.empty() );
-        assert( !m_outputStreams.empty() );
-        //    m_inputStreams.clear();
-        m_snaps.clear();
-        m_loadedPath = "";
-    }
+    assert( m_thread == nullptr );
+//    assert( isLoaded() );
+    //    assert( !m_inputStreams.empty() );
+//    assert( !m_outputStreams.empty() );
+    //    m_inputStreams.clear();
+    m_snaps.clear();
+    m_loadedPath = "";
+
+    //////////////////////////////////////
+
     assert( std::filesystem::exists( path ) );
     assert( m_loadedPath == "" );
     //    assert( m_inputStreams.empty() );
@@ -45,6 +46,7 @@ void Loader::load( const std::string& path ) {
 
     assert( !path.empty() );
     //    assert( path != "" );
+    std::set<Snap> sortedSnaps;
 
     // read records in folder
     for ( const auto& fileDir : std::filesystem::directory_iterator( path ) ) {
@@ -93,17 +95,31 @@ void Loader::load( const std::string& path ) {
             //            std::cout << "read acq : " << acq << std::endl;
             //            Snap snap { acq.clone(), (int)( m_outputStreams.size() - 1 ) };
             Snap snap { acq.clone(), sensorName };
-            m_snaps.insert( std::move( snap ) );
+            sortedSnaps.insert( std::move( snap ) );
         }
 
         std::cout << "[Loader] read " << acqs.size() << " acquisitions from file sensor '"
                   << sensorName << "'" << std::endl;
+
+    } // for ( const auto& fileDir : std::filesystem::directory_iterator( path ) )
+
+    m_snaps.reserve( sortedSnaps.size() );
+    //    m_snaps.insert(m_snaps.begin(), sortedSnaps.begin(), sortedSnaps.end());
+    for ( auto& acq : sortedSnaps ) {
+        m_snaps.push_back( Snap { acq.m_acq.clone(), acq.m_sensorName } );
     }
 
     m_loadedPath = path;
     emit pathLoaded();
 
-    if ( m_autoPlay ) play();
+    m_iAcq = 0;
+    if ( m_autoPlay )
+        play();
+    else {
+        const auto& snap = m_snaps.at( m_iAcq );
+        *m_outputStreams.at( snap.m_sensorName ) << snap.m_acq;
+        emit acqChanged( m_iAcq );
+    }
 }
 
 void Loader::unload() {
@@ -145,28 +161,35 @@ void Loader::play() {
         // play
         int iLoop = 0;
         //        bool exitSignal = false;
-        while ( m_isPlaying ) {
-
-            const auto startRecord  = m_snaps.begin()->m_acq.m_start;
+        do {
+            //            const auto startRecord  = m_snaps.begin()->m_acq.m_start;
+            const auto startRecord  = m_snaps[m_iAcq].m_acq.m_start;
             const auto& startChrono = std::chrono::high_resolution_clock::now();
 
-            auto it = m_snaps.begin();
+            //            auto it = m_snaps.begin();
             //            while (it != m_snapshots.end()) {
-            while ( m_isPlaying && it != m_snaps.end() ) {
-                const auto& snap = *it;
+            //            int iAcq = 0;
+            //            while ( m_isPlaying && it != m_snaps.end() ) {
+            while ( m_isPlaying && m_iAcq < m_snaps.size() ) {
+                //                const auto& snap = *it;
+                const auto& snap = m_snaps.at( m_iAcq );
 
                 std::this_thread::sleep_until(
                     startChrono + std::chrono::microseconds( snap.m_acq.m_start - startRecord ) );
                 *m_outputStreams.at( snap.m_sensorName ) << snap.m_acq;
+                emit acqChanged( m_iAcq );
 
-                ++it;
+                //                ++it;
+                ++m_iAcq;
             }
             if ( m_isPlaying ) {
                 std::cout << "[Loader] end record, auto loop " << iLoop << std::endl;
+                m_iAcq = 0;
             }
             else { std::cout << "[Loader] record stopped by user" << std::endl; }
             ++iLoop;
-        }
+
+        } while ( m_isPlaying && m_autoLoop );
     } );
 }
 
@@ -194,3 +217,21 @@ bool Loader::isLoaded() const {
 //     assert( isLoaded() );
 //     return m_loadedPath;
 // }
+
+void Loader::setAutoLoop( bool newAutoLoop ) {
+    m_autoLoop = newAutoLoop;
+}
+void Loader::setAutoPlay( bool newAutoPlay ) {
+    m_autoPlay = newAutoPlay;
+}
+
+int Loader::getNAcq() const {
+    return m_snaps.size();
+}
+
+void Loader::setIAcq( int newIAcq ) {
+    assert( 0 <= newIAcq && newIAcq < m_snaps.size() );
+    m_iAcq           = newIAcq;
+    const auto& snap = m_snaps.at( m_iAcq );
+    *m_outputStreams.at( snap.m_sensorName ) << snap.m_acq;
+}

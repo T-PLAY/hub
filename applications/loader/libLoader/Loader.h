@@ -46,6 +46,7 @@ class Loader : public QObject
 
   signals:
     void pathLoaded();
+    void acqChanged(int nAcq);
 
   public slots:
 
@@ -55,12 +56,16 @@ class Loader : public QObject
 //    std::vector<std::unique_ptr<hub::InputSensor>> m_inputStreams;
 
 //    std::map<std::string, std::vector<hub::Acquisition>> m_sensorName2acquisitions;
-    std::set<Snap> m_snaps;
+//    std::set<Snap> m_snaps;
+    std::vector<Snap> m_snaps;
     std::string m_loadedPath = "";
 
     std::thread* m_thread = nullptr;
     bool m_isPlaying      = false;
-    bool m_autoPlay = true;
+    bool m_autoPlay = false;
+    bool m_autoLoop = false;
+
+    int m_iAcq;
 
     std::map<std::string, std::unique_ptr<hub::OutputSensor>> m_outputStreams;
 //    std::vector<std::unique_ptr<hub::OutputSensor>> m_outputStreams;
@@ -69,5 +74,9 @@ class Loader : public QObject
     bool isPlaying() const;
     bool isLoaded() const;
 //    const std::string& getLoadedPath() const;
-//    const std::vector<hub::Acquisition>& getAcquisitions( const std::string& sensorName ) const;
+    //    const std::vector<hub::Acquisition>& getAcquisitions( const std::string& sensorName ) const;
+    void setAutoLoop(bool newAutoLoop);
+    void setAutoPlay(bool newAutoPlay);
+    int getNAcq() const;
+    void setIAcq(int newIAcq);
 };
