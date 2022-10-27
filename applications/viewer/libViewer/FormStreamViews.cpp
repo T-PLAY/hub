@@ -280,6 +280,13 @@ FormStreamViews::~FormStreamViews() {
     std::cout << "[FormStreamViews] ~FormStreamViews() end" << std::endl;
 }
 
+//void FormStreamViews::closeAllStream()
+//{
+//    for (const auto & streamView : m_sensorViews) {
+//        streamView.second->setRadioButtonOff();
+//    }
+//}
+
 // void FormStreamViews::startStreaming()
 //{
 //     for (auto & pair : m_sensorViews) {

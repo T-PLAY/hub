@@ -104,6 +104,17 @@ target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
 #     # ${RADIUM_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR} # Moc
      )
 
+set(OTHER_LIBRARIES)
+
+if (HUB_VIEWER_ENABLE_IMAGE_VIEWER)
+    add_definitions(-DENABLE_IMAGE_VIEWER)
+    set(OTHER_LIBRARIES ${OTHER_LIBRARIES} libImageManipulator)
+endif()
+
+if (HUB_VIEWER_ENABLE_LOADER)
+    add_definitions(-DENABLE_LOADER)
+    set(OTHER_LIBRARIES ${OTHER_LIBRARIES} libLoader)
+endif()
 
 target_link_libraries(${PROJECT_NAME}
     # PUBLIC
@@ -111,7 +122,10 @@ target_link_libraries(${PROJECT_NAME}
     ${Qt_LIBRARIES}
     libViewer
     # DicomLoader
-   libImageManipulator
+
+    ${OTHER_LIBRARIES}
+#   libImageManipulator
+#   libLoader
 
 
 #    ${DCMTK_LIBRARIES}

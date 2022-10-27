@@ -1,6 +1,7 @@
 
 #pragma once
 
+
 #include <Net/Utils.hpp>
 //#define NOMINMAX
 
@@ -30,14 +31,18 @@
 //#include <FormInputStreamViews.h>
 
 #include <FormStreamViews.h>
+
 #ifdef ENABLE_LOADER
-#include <FormWidgetLoader.h>
+    #include <FormWidgetLoader.h>
 #endif
 //#include <MinimalComponent.hpp>
 //#include <Imagema
 
 #include <Form3DToolBox.h>
-#include <FormImageManipulator.h>
+#ifdef ENABLE_IMAGE_VIEWER
+    #include <FormImageManipulator.h>
+#endif
+
 #include <QStackedWidget>
 
 
@@ -59,6 +64,7 @@ signals:
 public slots:
 
     void onRecordLoaderPathLoaded();
+//    void onRecordLoaderPathUnloaded();
     void onSnapshotLoaderPathLoaded();
 
 public:

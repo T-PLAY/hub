@@ -9,6 +9,7 @@
 
 #include <SensorSpec.hpp>
 
+const std::vector<double> g_stepSizes = { 1.0, 2.0, 5.0, 10.0, 20.0, 25.0, 50.0, 75.0, 100.0 };
 
 class WidgetStreamView : public QWidget {
     Q_OBJECT

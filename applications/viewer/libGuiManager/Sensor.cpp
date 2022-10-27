@@ -191,7 +191,7 @@ void SensorCounterFpsThread::run() {
 
 Sensor::Sensor(std::unique_ptr<hub::InputSensor> inputSensor,
                 QMdiArea& mdiArea,
-                FormImageManipulator* imageManipulator,
+//                FormImageManipulator* imageManipulator,
                 Ra::Engine::RadiumEngine* engine,
                 Ra::Gui::Viewer* viewer,
                 Ra::Engine::Scene::System* sys,
@@ -206,10 +206,10 @@ Sensor::Sensor(std::unique_ptr<hub::InputSensor> inputSensor,
     m_viewer( viewer ),
     m_sys( sys ),
     m_mdiArea( mdiArea ),
-    m_imageManipulator( imageManipulator )
+//    m_imageManipulator( imageManipulator )
     //    , m_widgetStreamViewManipulator(m_imageManipulator.getWidgetStreamView())
     //    , m_inputSensor(std::move(inputSensor))
-    ,
+//    ,
     m_thread( *this, parent ),
     m_counterFpsThread( *this, parent ),
     m_model(model),
@@ -372,6 +372,7 @@ Sensor::Sensor(std::unique_ptr<hub::InputSensor> inputSensor,
 }
 
 Sensor::~Sensor() {
+
     std::cout << "[Sensor] ~Sensor(" << m_inputSensor->m_spec.m_sensorName << ") start"
               << std::endl;
 
@@ -429,7 +430,9 @@ Sensor::~Sensor() {
         sensor->m_parent = nullptr;
     }
 
+#ifdef ENABLE_IMAGE_VIEWER
     detachFromImageManipulator();
+#endif
     std::cout << "[Sensor] ~Sensor(" << m_inputSensor->m_spec.m_sensorName << ") end" << std::endl;
 }
 
@@ -438,6 +441,7 @@ void Sensor::updateTransform( const Ra::Engine::Scene::Entity* entity ) {
     m_entity->setTransform( entity->getTransform() );
 }
 
+#ifdef ENABLE_IMAGE_VIEWER
 void Sensor::detachFromImageManipulator() {
     if ( m_imageManipulator != nullptr ) {
         if ( m_widgetStreamViewManipulator != nullptr ) {
@@ -478,6 +482,7 @@ void Sensor::attachFromImageManipulator() {
 //        m_imageManipulator->update();
     }
 }
+#endif
 
 void Sensor::fitView()
 {

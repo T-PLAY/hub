@@ -32,6 +32,10 @@ option(HUB_APPLICATION_ENABLE_KEYBOARD "Build keyboard streamer (depends of glm 
 option(HUB_APPLICATION_ENABLE_RADIUM "Build Radium examples (depends of radium lib)" OFF)
 option(HUB_USE_DCMTK "Build Dcmtk examples and libs" OFF)
 option(HUB_ENABLE_SCUS "Build Scus" OFF)
+
+option(HUB_VIEWER_ENABLE_IMAGE_VIEWER "Enable image viewer" ON)
+option(HUB_VIEWER_ENABLE_LOADER "Enable loader" ON)
+
 #endif()
 #if (HUB_BUILD_STATIC_LIBRARY) {
 #    add_definitions(-DSTATIC)

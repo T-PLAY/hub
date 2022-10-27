@@ -3,23 +3,17 @@
 
 #include <QTreeView>
 #include <QWidget>
-//#include <Loader.h>
 
 class TreeViewStream : public QTreeView
 {
     Q_OBJECT
-public:
-    TreeViewStream(QWidget * parent = nullptr);
+  public:
+    TreeViewStream( QWidget* parent = nullptr );
 
-//    void setLoader(Loader *loader);
+  protected:
+    void keyPressEvent( QKeyEvent* event ) override;
 
-protected:
-    void keyPressEvent(QKeyEvent *event) override;
-
-private:
-
-//    Loader * m_loader = nullptr;
-//    void onStreamRename();
+  private:
 };
 
 #endif // TREEVIEWSTREAM_H

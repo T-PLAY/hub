@@ -60,7 +60,8 @@ TEST_CASE( "File test" ) {
     std::cout << "inputStream start" << std::endl;
     INFO( "InputStream" );
     {
-        hub::InputSensor inputSensor( hub::io::File( std::fstream( filename, std::ios::in | std::ios::binary | std::ios::beg ) ) );
+//        hub::InputSensor inputSensor( hub::io::File( std::fstream( filename, std::ios::in | std::ios::binary | std::ios::beg ) ) );
+        hub::InputSensor inputSensor( hub::io::File( std::fstream( filename, std::ios::in | std::ios::binary ) ) );
 
         const auto& sensorSpec = inputSensor.m_spec;
         CHECK( sensorSpec.m_acquisitionSize == 3 );

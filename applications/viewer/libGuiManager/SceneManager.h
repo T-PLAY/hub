@@ -14,7 +14,6 @@
 #include <QStandardItemModel>
 
 #include <SceneComponent.hpp>
-#define ENABLE_IMAGE_VIEWER
 
 class SceneManager : public QObject {
     Q_OBJECT
@@ -39,7 +38,9 @@ public:
     Ra::Engine::Scene::System* m_sys = nullptr;
 
     QMdiArea* m_mdiArea = nullptr;
+#ifdef ENABLE_IMAGE_VIEWER
     FormImageManipulator* m_imageManipulator = nullptr;
+#endif
 
     QStandardItemModel m_sensorModel;
     QTableView* m_sensorsView = nullptr;
@@ -48,8 +49,10 @@ public:
     //    Sensor& getSensor( int iSensor );
 
     void fitView(const std::string& streamName);
+#ifdef ENABLE_IMAGE_VIEWER
     void attachSensorFromImageManipulator(const std::string& streamName);
     void detachSensorFromImageManipulator(const std::string& streamName);
+#endif
     //        void attachSensorFromImageManipulator( int iSensor );
     //        void detachSensorFromImageManipulator( int iSensor );
 
@@ -135,7 +138,7 @@ void SceneManager::addSensor(InterfaceT&& interfaceT, const std::string streamNa
     assert(m_sensorsView != nullptr);
     m_streamName2sensor[streamName] = std::make_unique<Sensor>(std::move(inputSensor),
         *m_mdiArea,
-        m_imageManipulator,
+//        m_imageManipulator,
         m_engine,
         m_viewer,
         m_sys,
@@ -144,6 +147,7 @@ void SceneManager::addSensor(InterfaceT&& interfaceT, const std::string streamNa
         m_sensorModel,
         *m_sensorsView,
         this);
+
     //    Sensor sensor( std::move( inputSensor ),
     //                   *m_mdiArea,
     //                   m_imageManipulator,
@@ -175,6 +179,9 @@ void SceneManager::addSensor(InterfaceT&& interfaceT, const std::string streamNa
 
     //    auto& newSensor = m_sensors.back();
     auto& newSensor = *m_streamName2sensor.at(streamName);
+#ifdef ENABLE_IMAGE_VIEWER
+    newSensor.m_imageManipulator = m_imageManipulator;
+#endif
     m_sensorModel.appendRow(newSensor.getItems());
 
     //    m_sensorModel.setItem(0, 0, new QStandardItem("root"));

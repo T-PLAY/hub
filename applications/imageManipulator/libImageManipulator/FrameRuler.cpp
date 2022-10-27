@@ -5,6 +5,7 @@
 #include <QPainter>
 #include <cmath>
 #include <constants.h>
+#include <WidgetStreamView.h>
 
 FrameRuler::FrameRuler(QWidget* parent)
     : QFrame(parent)
