@@ -146,7 +146,7 @@ class FormStreamViews : public QWidget
 
     //    bool isServerConnected() const;
     const std::string &getIpv4() const;
-    int getPort() const;
+    const int & getPort() const;
 
 private slots:
     void on_lineEdit_ip_textChanged( const QString& ipv4 );

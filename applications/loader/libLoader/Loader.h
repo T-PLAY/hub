@@ -33,7 +33,7 @@ class Loader : public QObject
     Q_OBJECT
   public:
 //    Loader( const std::string& outputPostFixName = "", bool autoPlay = true );
-//    Loader( );
+    Loader( const std::string & ipv4, const int & port );
 
     ~Loader();
 
@@ -47,6 +47,8 @@ class Loader : public QObject
   signals:
     void pathLoaded();
     void acqChanged(int nAcq);
+//    void loopEnded();
+    void playEnded();
 
   public slots:
 
@@ -59,6 +61,9 @@ class Loader : public QObject
 //    std::set<Snap> m_snaps;
     std::vector<Snap> m_snaps;
     std::string m_loadedPath = "";
+
+    const std::string & m_ipv4;
+    const int & m_port;
 
     std::thread* m_thread = nullptr;
     bool m_isPlaying      = false;

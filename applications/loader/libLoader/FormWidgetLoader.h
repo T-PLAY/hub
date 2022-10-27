@@ -16,7 +16,7 @@ class FormWidgetLoader : public QWidget
     Q_OBJECT
 
   public:
-    explicit FormWidgetLoader( QWidget* parent = nullptr );
+    FormWidgetLoader( const std::string & ipv4, const int & port, QWidget* parent = nullptr );
     ~FormWidgetLoader();
 
     // public slots:
@@ -30,6 +30,7 @@ class FormWidgetLoader : public QWidget
   private slots:
     void onAcqChanged(int iAcq);
     void onSpace();
+    void onPlayEnded();
 
 //    void onTreeView_record_currentChanged( const QModelIndex& current,
 //                                           const QModelIndex& previous );
