@@ -9,13 +9,10 @@
 #include <filesystem>
 #include <thread>
 
-int main(int argc, char* argv[])
-{
+int main( int argc, char* argv[] ) {
 
     int port = hub::net::s_defaultServicePort;
-    if (argc == 2) {
-        port = atoi(argv[1]);
-    }
+    if ( argc == 2 ) { port = atoi( argv[1] ); }
 
     bool stopThread = false;
 
@@ -26,70 +23,76 @@ int main(int argc, char* argv[])
     // creating new record folder
     char folderName[64] = { 0 };
     time_t rawtime;
-    time(&rawtime);
-    const auto timeinfo = localtime(&rawtime);
-    strftime(folderName, sizeof(folderName), "%Y-%m-%d_%H-%M-%S", timeinfo);
+    time( &rawtime );
+    const auto timeinfo = localtime( &rawtime );
+    strftime( folderName, sizeof( folderName ), "%Y-%m-%d_%H-%M-%S", timeinfo );
     const std::string newRecordFolder = rootPath + "records/" + folderName + "/";
     std::cout << "create directory " << newRecordFolder << std::endl;
-    assert(!std::filesystem::exists(newRecordFolder));
-    std::filesystem::create_directories(newRecordFolder);
+    assert( !std::filesystem::exists( newRecordFolder ) );
+    std::filesystem::create_directories( newRecordFolder );
 
     //    const std::string imageStreamName = "ProceduralStreamer";
     //    const std::string posStreamName = "Keyboard";
 
     //    std::vector<std::string> streamNames { posStreamName, imageStreamName };
     //    std::vector<std::string> streamNames { "Keyboard", "ProceduralStreamer" };
-//    std::vector<std::string> streamNames { "Polhemus Patriot (sensor 2)" };
-//    std::vector<std::string> streamNames { "Polhemus Patriot (sensor 1)", "Polhemus Patriot (sensor 2)" };
-    std::vector<std::string> streamNames { "Polhemus Patriot (sensor 2)", "ULA-OP 256" };
+    //    std::vector<std::string> streamNames { "Polhemus Patriot (sensor 2)" };
+    //    std::vector<std::string> streamNames { "Polhemus Patriot (sensor 1)", "Polhemus Patriot
+    //    (sensor 2)" };
+    std::vector<std::pair<std::string, std::string>> streamNames {
+//        { "Polhemus Patriot (sensor 2)", "" }, { "ULA-OP 256", "" }
+        { "Polhemus Patriot (sensor 2)", "ULA-OP 256" }
+    };
     std::vector<std::thread> threads;
     //    threads.resize(streamNames.size());
 
     //        std::string imageStreamName = "ULA-OP 256";
 
-    for (const auto& streamName : streamNames) {
+    for ( const auto& streamName : streamNames ) {
 
-        threads.push_back(std::thread([=, &stopThread]() {
-            hub::InputSensor inputSensor(
-                hub::io::InputStream(streamName,
-                    "",
-                    hub::net::ClientSocket(hub::net::s_defaultServiceIp, port)));
+        threads.push_back( std::thread( [=, &stopThread]() {
+            hub::InputSensor inputSensor( hub::io::InputStream(
+                streamName.first, streamName.second, hub::net::ClientSocket( hub::net::s_defaultServiceIp, port ) ) );
 
-            std::fstream recordFile(newRecordFolder + streamName + ".txt", std::ios::out | std::ios::binary | std::ios::trunc);
-            assert(recordFile.is_open());
+            std::fstream recordFile( newRecordFolder + streamName.first + ".txt",
+                                     std::ios::out | std::ios::binary | std::ios::trunc );
+            assert( recordFile.is_open() );
 
-            hub::OutputSensor outputSensor(inputSensor.m_spec, hub::io::File(std::move(recordFile)));
+            hub::OutputSensor outputSensor( inputSensor.m_spec,
+                                            hub::io::File( std::move( recordFile ) ) );
 
             int nAcq = 0;
-            while (!stopThread) {
+            while ( !stopThread ) {
                 auto acq = inputSensor.getAcquisition();
-                //                std::cout << "[" << streamName << "] record acq : " << acq << std::endl;
+                //                std::cout << "[" << streamName << "] record acq : " << acq <<
+                //                std::endl;
                 outputSensor << acq;
                 std::cout << "+" << std::flush;
                 ++nAcq;
             }
             std::cout << std::endl;
-            std::cout << "[" << streamName << "] " << nAcq << " acq recorded" << std::endl;
-        }));
+            std::cout << "[" << streamName.first << "] " << nAcq << " acq recorded" << std::endl;
+        } ) );
     }
 
     //    std::this_thread::sleep_for(std::chrono::milliseconds(500));
     getchar();
     stopThread = true;
 
-    for (auto& thread : threads) {
-        assert(thread.joinable());
+    for ( auto& thread : threads ) {
+        assert( thread.joinable() );
         thread.join();
     }
 
     // copy this record into latest folder
     {
         std::string latestFolder = rootPath + "records/latest/";
-        std::filesystem::create_directories(latestFolder);
-        for (const auto& dirEntry : std::filesystem::directory_iterator(latestFolder)) {
-            std::filesystem::remove(dirEntry);
+        std::filesystem::create_directories( latestFolder );
+        for ( const auto& dirEntry : std::filesystem::directory_iterator( latestFolder ) ) {
+            std::filesystem::remove( dirEntry );
         }
-        std::filesystem::copy(newRecordFolder, latestFolder, std::filesystem::copy_options::recursive);
+        std::filesystem::copy(
+            newRecordFolder, latestFolder, std::filesystem::copy_options::recursive );
     }
 }
 

@@ -54,7 +54,9 @@ void Loader::load( const std::string& path ) {
     for ( const auto& fileDir : std::filesystem::directory_iterator( path ) ) {
         const auto& filepath = fileDir.path().string();
         const auto& filename = fileDir.path().filename();
-        std::cout << "[Loader] read '" << filepath << "' record" << std::endl;
+        if ( filename == "export" ) continue;
+        //        std::cout << "[Loader] read '" << filepath << "' record" << std::endl;
+        std::cout << "[Loader] read '" << filename << "' record" << std::endl;
         assert( std::filesystem::exists( filepath ) );
 
         std::fstream file( filepath, std::ios::binary | std::ios::in );
@@ -85,8 +87,8 @@ void Loader::load( const std::string& path ) {
             assert( m_outputStreams.find( sensorName ) == m_outputStreams.end() );
             m_outputStreams[sensorName] = std::make_unique<hub::OutputSensor>(
                 inputSensor.m_spec,
-                hub::io::OutputStream( "Loader : " + sensorName + ")",
-                                       hub::net::ClientSocket( m_ipv4, m_port ) ) );
+                //                hub::io::OutputStream( "Loader : " + sensorName + ")",
+                hub::io::OutputStream( sensorName, hub::net::ClientSocket( m_ipv4, m_port ) ) );
         }
 
         //        m_outputStreams.push_back( std::make_unique<hub::OutputSensor>(
@@ -167,7 +169,7 @@ void Loader::play() {
         //        bool exitSignal = false;
         do {
             //            const auto startRecord  = m_snaps.begin()->m_acq.m_start;
-            const auto startRecord  = m_snaps[m_iAcq].m_acq.m_start;
+            const auto startRecord  = m_snaps.at( m_iAcq ).m_acq.m_start;
             const auto& startChrono = std::chrono::high_resolution_clock::now();
 
             //            auto it = m_snaps.begin();

@@ -30,7 +30,7 @@ Dof6::Dof6( float x, float y, float z, float w0, float w1, float w2, float w3 ) 
 }
 
 std::ostream& operator<<( std::ostream& os, const Dof6& dof6 ) {
-    os << "dof6";
+    os << "x:" << dof6.m_x << " y:" << dof6.m_y << " z:" << dof6.m_z << "   w0:" << dof6.m_w0 << " w1:" << dof6.m_w1 << " w2:" << dof6.m_w2 << " w3:" << dof6.m_w3;
     return os;
 }
 
