@@ -161,7 +161,7 @@ StreamerClient::StreamerClient( Server& server, int iClient, hub::net::ClientSoc
                                 acqs.pop_back();
                             }
                             else {
-                                assert(minDist < 20'000); // 20 ms
+//                                assert(minDist < 20'000); // 20 ms
                                 if (minDist > 8'000) {
                                     std::cout << headerMsg() << "sync dist = " << minDist << std::endl;
                                 }
@@ -171,10 +171,10 @@ StreamerClient::StreamerClient( Server& server, int iClient, hub::net::ClientSoc
 
                         m_mtxSyncAcqs.lock();
                         acqs.emplace_back( bestMatchAcq->clone() );
-//                        while ( ! acqs.empty() && acqs.back().m_start < acq.m_start ) {
-////                        while ( ! acqs.empty() && acqs.back().m_start < acq.m_start - 8000 ) {
-//                            acqs.pop_back();
-//                        }
+                        while ( ! acqs.empty() && acqs.back().m_start < acq.m_start ) {
+//                        while ( ! acqs.empty() && acqs.back().m_start < acq.m_start - 8000 ) {
+                            acqs.pop_back();
+                        }
                         m_mtxSyncAcqs.unlock();
 
                         //                        if (acq.m_start < bestMatchAcq->m_start) {

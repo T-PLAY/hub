@@ -414,12 +414,17 @@ void FormStreamViews::delStream( const std::string& streamName,
     //    emit sensorDeleted(streamName);
 }
 
-int FormStreamViews::getPort() const {
-    return m_port;
-}
+//int FormStreamViews::getPort() const {
+//    return m_port;
+//}
 
 const std::string& FormStreamViews::getIpv4() const {
     return m_ipv4;
+}
+
+const int &FormStreamViews::getPort() const
+{
+    return m_port;
 }
 
 // bool FormStreamViews::isServerConnected() const {

@@ -52,8 +52,8 @@ class Server
 //    getLastAcqs( const std::string& streamName );
 
   public:
-//    bool m_acqPing = true;
-    bool m_acqPing = false;
+    bool m_acqPing = true;
+//    bool m_acqPing = false;
 
   private:
     std::map<std::string, StreamerClient*> m_streamers;

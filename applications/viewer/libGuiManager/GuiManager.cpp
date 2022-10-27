@@ -261,6 +261,36 @@ void GuiManager::init() {
     //    QObject::connect(m_formInputStreamViews, &FormInputStreamViews::newAcquisitionScan, this,
     //    &GuiManager::onUpdateScan);
 
+    //////////////////////////////////////// LEFT
+    /////////////////////////////////////////////////////////////////
+
+    m_formStreamViews = new FormStreamViews( m_dockLeft );
+
+    //    if (m_formStreamViews->isServerConnected()) {
+    //    ui->dockWidget_left->setWidget(m_formStreamViews);
+    m_dockLeft->setWidget( m_formStreamViews );
+    QObject::connect( m_formStreamViews,
+                      &FormStreamViews::streamingStarted,
+                      this,
+                      &GuiManager::onServerStreamStarted );
+
+    QObject::connect( m_formStreamViews,
+                      &FormStreamViews::streamingStopped,
+                      this,
+                      &GuiManager::onServerStreamStopped );
+
+    QObject::connect( m_formStreamViews,
+                      &FormStreamViews::serverDisconnected,
+                      this,
+                      &GuiManager::onServerDisconnected );
+
+    //        m_formStreamViews->startStreaming();
+    //    } else {
+    //        delete m_formStreamViews;
+    //        ui->dockWidget_left->close();
+    //    }
+    //    ui->dockWidgetContents_left = new FormStreamViews(this);
+
     //////////////////////////////////////// BOTTOM
     //////////////////////////////////////////////////////////////
 
@@ -315,7 +345,7 @@ void GuiManager::init() {
     ////////////// LOADER
 
 #ifdef ENABLE_LOADER
-    m_formWidgetLoader = new FormWidgetLoader( bottomContainer );
+    m_formWidgetLoader = new FormWidgetLoader( m_formStreamViews->getIpv4(), m_formStreamViews->getPort(), bottomContainer );
     //    ui->dockWidget_bottom->setWidget(m_formWidgetLoader);
     //    m_dockBottom->setWidget(m_formWidgetLoader);
     hLayout->addWidget( m_formWidgetLoader );
@@ -333,35 +363,6 @@ void GuiManager::init() {
 //                      &GuiManager::onSnapshotLoaderPathLoaded );
 #endif
 
-    //////////////////////////////////////// LEFT
-    /////////////////////////////////////////////////////////////////
-
-    m_formStreamViews = new FormStreamViews( m_dockLeft );
-
-    //    if (m_formStreamViews->isServerConnected()) {
-    //    ui->dockWidget_left->setWidget(m_formStreamViews);
-    m_dockLeft->setWidget( m_formStreamViews );
-    QObject::connect( m_formStreamViews,
-                      &FormStreamViews::streamingStarted,
-                      this,
-                      &GuiManager::onServerStreamStarted );
-
-    QObject::connect( m_formStreamViews,
-                      &FormStreamViews::streamingStopped,
-                      this,
-                      &GuiManager::onServerStreamStopped );
-
-    QObject::connect( m_formStreamViews,
-                      &FormStreamViews::serverDisconnected,
-                      this,
-                      &GuiManager::onServerDisconnected );
-
-    //        m_formStreamViews->startStreaming();
-    //    } else {
-    //        delete m_formStreamViews;
-    //        ui->dockWidget_left->close();
-    //    }
-    //    ui->dockWidgetContents_left = new FormStreamViews(this);
 
     //////////////////////////////////////// INIT DOCKERS
 

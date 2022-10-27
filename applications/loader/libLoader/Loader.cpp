@@ -12,6 +12,8 @@
 // Loader::Loader( const std::string& outputPostFixName, bool autoPlay ) :
 //     m_outputPostfixName( outputPostFixName ), m_autoPlay( autoPlay ) {}
 
+Loader::Loader( const std::string& ipv4, const int& port ) : m_ipv4( ipv4 ), m_port( port ) {}
+
 Loader::~Loader() {
     std::cout << "[Loader] ~Loader" << std::endl;
 
@@ -25,9 +27,9 @@ void Loader::load( const std::string& path ) {
     if ( isPlaying() ) stop();
 
     assert( m_thread == nullptr );
-//    assert( isLoaded() );
+    //    assert( isLoaded() );
     //    assert( !m_inputStreams.empty() );
-//    assert( !m_outputStreams.empty() );
+    //    assert( !m_outputStreams.empty() );
     //    m_inputStreams.clear();
     m_snaps.clear();
     m_loadedPath = "";
@@ -82,7 +84,9 @@ void Loader::load( const std::string& path ) {
         if ( m_outputStreams.find( sensorName ) == m_outputStreams.end() ) {
             assert( m_outputStreams.find( sensorName ) == m_outputStreams.end() );
             m_outputStreams[sensorName] = std::make_unique<hub::OutputSensor>(
-                inputSensor.m_spec, hub::io::OutputStream( "Loader : " + sensorName + ")" ) );
+                inputSensor.m_spec,
+                hub::io::OutputStream( "Loader : " + sensorName + ")",
+                                       hub::net::ClientSocket( m_ipv4, m_port ) ) );
         }
 
         //        m_outputStreams.push_back( std::make_unique<hub::OutputSensor>(
@@ -190,6 +194,11 @@ void Loader::play() {
             ++iLoop;
 
         } while ( m_isPlaying && m_autoLoop );
+
+        if ( m_isPlaying ) {
+            //            m_isPlaying = false;
+            emit playEnded();
+        }
     } );
 }
 

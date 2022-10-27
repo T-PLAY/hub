@@ -147,6 +147,8 @@ StreamViewerClient::StreamViewerClient( Server& server,
                 else {
                     if ( m_server.m_acqPing ) {
                         *m_outputSensor << *lastAcqs.back();
+//                                        std::cout << headerMsg() << "thread : ping acq wrote" <<
+//                                        std::endl;
                         //                        *m_outputSensor << *lastAcq;
                         //                        for (const auto & acq : lastAcqs) {
                         //                        *m_outputSensor << *acq;
