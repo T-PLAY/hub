@@ -23,7 +23,7 @@ void SceneManager::init() {
     assert( m_sys != nullptr );
     assert( m_mdiArea != nullptr );
 #ifdef ENABLE_IMAGE_VIEWER
-//    assert( m_imageManipulator != nullptr );
+    assert( m_imageManipulator != nullptr );
 #endif
 
     Ra::Engine::Data::ScanMaterial::registerMaterial();
@@ -122,6 +122,7 @@ void SceneManager::fitView( const std::string& streamName ) {
     //    }
 }
 
+#ifdef ENABLE_IMAGE_VIEWER
 void SceneManager::attachSensorFromImageManipulator( const std::string& streamName ) {
     for ( auto& pair : m_streamName2sensor ) {
         //    for ( auto& sensor : m_sensors ) {
@@ -151,6 +152,7 @@ void SceneManager::detachSensorFromImageManipulator( const std::string& streamNa
     //        ++i;
     //    }
 }
+#endif
 
 void SceneManager::on_tune_valueChanged( double arg1 ) {
     for ( auto& pair : m_streamName2sensor ) {

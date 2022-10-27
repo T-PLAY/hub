@@ -82,6 +82,8 @@ class FormStreamViews : public QWidget
     explicit FormStreamViews( QWidget* parent = nullptr );
     ~FormStreamViews();
 
+//    void closeAllStream();
+
     //    void startStreaming();
 
   signals:

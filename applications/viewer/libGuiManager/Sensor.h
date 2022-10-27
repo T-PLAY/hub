@@ -13,7 +13,9 @@
 #include <ScanComponent.hpp>
 #include <SensorComponent.h>
 
+#ifdef ENABLE_IMAGE_VIEWER
 #include <FormImageManipulator.h>
+#endif
 #include <WidgetStreamView.h>
 
 #include <InputSensor.hpp>
@@ -80,14 +82,17 @@ public:
     //    Sensor(IOStreamT&& iostream, QObject* parent = nullptr);
 
     //    Sensor(hub::InputSensor&& inputSensor, QObject* parent = nullptr);
-    Sensor(std::unique_ptr<hub::InputSensor> inputSensor, QMdiArea& mdiArea, FormImageManipulator * imageManipulator, Ra::Engine::RadiumEngine * engine, Ra::Gui::Viewer * viewer, Ra::Engine::Scene::System * sys, Sensor * parentSensor, const std::string & streamName, QStandardItemModel & model, QTableView & view, QObject* parent = nullptr);
+//    Sensor(std::unique_ptr<hub::InputSensor> inputSensor, QMdiArea& mdiArea, FormImageManipulator * imageManipulator, Ra::Engine::RadiumEngine * engine, Ra::Gui::Viewer * viewer, Ra::Engine::Scene::System * sys, Sensor * parentSensor, const std::string & streamName, QStandardItemModel & model, QTableView & view, QObject* parent = nullptr);
+    Sensor(std::unique_ptr<hub::InputSensor> inputSensor, QMdiArea& mdiArea, Ra::Engine::RadiumEngine * engine, Ra::Gui::Viewer * viewer, Ra::Engine::Scene::System * sys, Sensor * parentSensor, const std::string & streamName, QStandardItemModel & model, QTableView & view, QObject* parent = nullptr);
     ~Sensor();
 
     //    Sensor(IOStream&& iostream, QObject* parent = nullptr);
     void updateTransform(const Ra::Engine::Scene::Entity * entity);
 
+#ifdef ENABLE_IMAGE_VIEWER
     void detachFromImageManipulator();
     void attachFromImageManipulator();
+#endif
     void fitView();
 //    Ra::Engine::Scene::Entity* m_entity = nullptr;
     void setParent(Sensor * parent);
@@ -115,10 +120,12 @@ public:
     Ra::Gui::Viewer * m_viewer = nullptr;
     Ra::Engine::Scene::System * m_sys = nullptr;
 
+#ifdef ENABLE_IMAGE_VIEWER
+    FormImageManipulator* m_imageManipulator = nullptr;
+#endif
 private:
     //    hub::InputSensor m_inputStream;
     QMdiArea& m_mdiArea;
-    FormImageManipulator* m_imageManipulator = nullptr;
     WidgetStreamView2D * m_widgetStreamViewManipulator = nullptr;
 
     std::vector<WidgetStreamView*> m_widgetStreamViews;

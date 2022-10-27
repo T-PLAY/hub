@@ -30,7 +30,6 @@
 
 #include <Gui/TreeModel/EntityTreeModel.hpp>
 
-
 #include <Engine/Rendering/RenderObject.hpp>
 #include <Engine/Rendering/RenderObjectManager.hpp>
 #include <Engine/Scene/Component.hpp>
@@ -58,12 +57,23 @@ GuiManager::~GuiManager() {
     //    delete m_comp;
     //    m_comp = nullptr;
     //    delete m_formWidgetLoader;
-    m_sceneManager.clear();
     //    m_formWidgetLoader = nullptr;
     //    delete m_formInputStreamViews;
     //    m_formInputStreamViews = nullptr;
     delete m_formStreamViews;
     m_formStreamViews = nullptr;
+
+#ifdef ENABLE_IMAGE_VIEWER
+    delete m_imageManipulator;
+    m_imageManipulator = nullptr;
+#endif
+
+#ifdef ENABLE_LOADER
+    delete m_formWidgetLoader;
+    m_formWidgetLoader = nullptr;
+#endif
+
+    m_sceneManager.clear();
 
     std::cout << "[GuiManager] ~GuiManager() end" << std::endl;
 }
@@ -182,13 +192,15 @@ void GuiManager::init() {
                       &m_sceneManager,
                       &SceneManager::on_setTransparency );
 
-//    m_viewer->enableDebugDraw(0);
-//    m_viewer->getPickingManager()->
+    //    m_viewer->enableDebugDraw(0);
+    //    m_viewer->getPickingManager()->
 
     //    m_layout3DView->addWidget(m_3DToolBox);
     m_layout3DView->insertWidget( 0, m_3DToolBox );
 
     //////////////////////////////////////// RIGHT
+    //////////////////////////////////////////////////////
+
     //     dockWidgetContents_right->setMinimumWidth(500);
 
 #ifdef ENABLE_IMAGE_VIEWER
@@ -226,6 +238,7 @@ void GuiManager::init() {
 #endif
 
     //////////////////////////////////////// TOP
+    //////////////////////////////////////////////////////////
     assert( m_mdiArea != nullptr );
     //    m_formInputStreamViews = new FormInputStreamViews(*m_mdiArea, m_dockTop);
     //    //    ui->dockWidget_top->setWidget(m_formInputStreamViews);
@@ -249,9 +262,11 @@ void GuiManager::init() {
     //    &GuiManager::onUpdateScan);
 
     //////////////////////////////////////// BOTTOM
+    //////////////////////////////////////////////////////////////
+
     //    m_dockBottom->setStyleSheet("background-color: blue");
     //    m_dockBottom->setMinimumHeight(200);
-    QWidget* bottomContainer = new QWidget;
+    QWidget* bottomContainer = new QWidget( m_dockBottom );
     m_dockBottom->setWidget( bottomContainer );
 
     QHBoxLayout* hLayout = new QHBoxLayout( bottomContainer );
@@ -259,24 +274,9 @@ void GuiManager::init() {
     //    m_dockBottom->setLayout(hLayout);
     //    m_dockBottom->setLayoutDirection(Qt::LayoutDirection::LeftToRight);
 
-#ifdef ENABLE_LOADER
-    m_formWidgetLoader = new FormWidgetLoader;
-    //    ui->dockWidget_bottom->setWidget(m_formWidgetLoader);
-    //    m_dockBottom->setWidget(m_formWidgetLoader);
-    hLayout->addWidget( m_formWidgetLoader );
-    QObject::connect( m_formWidgetLoader,
-                      &FormWidgetLoader::recordPathLoaded,
-                      this,
-                      &GuiManager::onRecordLoaderPathLoaded );
-    QObject::connect( m_formWidgetLoader,
-                      &FormWidgetLoader::snapshotPathLoaded,
-                      this,
-                      &GuiManager::onSnapshotLoaderPathLoaded );
-#endif
+    ////////////// SENSORS VIEW
 
-    //////////////
-
-    m_sensorsView = new QTableView;
+    m_sensorsView = new QTableView( bottomContainer );
     m_sensorsView->setModel( &m_sceneManager.m_sensorModel );
     m_sensorsView->show();
     //    m_sensorsView->setMinimumWidth(200);
@@ -293,10 +293,10 @@ void GuiManager::init() {
                       &QTableView::doubleClicked,
                       this,
                       &GuiManager::on_sensorsView_doubleClicked );
-//    connect( &m_sceneManager.m_sensorModel,
-//             SIGNAL(dataChanged(QModelIndex, QModelIndex)),
-//                      m_sensorsView,
-//             SLOT(update()));
+    //    connect( &m_sceneManager.m_sensorModel,
+    //             SIGNAL(dataChanged(QModelIndex, QModelIndex)),
+    //                      m_sensorsView,
+    //             SLOT(update()));
 
     //    m_sensorsView->horizontalHeader().
     //    m_sensorsView->setColumnWidth(0, 200);
@@ -312,7 +312,30 @@ void GuiManager::init() {
 
     m_sceneManager.m_sensorsView = m_sensorsView;
 
+    ////////////// LOADER
+
+#ifdef ENABLE_LOADER
+    m_formWidgetLoader = new FormWidgetLoader( bottomContainer );
+    //    ui->dockWidget_bottom->setWidget(m_formWidgetLoader);
+    //    m_dockBottom->setWidget(m_formWidgetLoader);
+    hLayout->addWidget( m_formWidgetLoader );
+    //    QObject::connect( m_formWidgetLoader,
+    //                      &FormWidgetLoader::recordPathLoaded,
+    //                      this,
+    //                      &GuiManager::onRecordLoaderPathLoaded );
+//    QObject::connect( m_formWidgetLoader,
+//                      &FormWidgetLoader::recordPathUnloaded,
+//                      this,
+//                      &GuiManager::onRecordLoaderPathUnloaded );
+//    QObject::connect( m_formWidgetLoader,
+//                      &FormWidgetLoader::snapshotPathLoaded,
+//                      this,
+//                      &GuiManager::onSnapshotLoaderPathLoaded );
+#endif
+
     //////////////////////////////////////// LEFT
+    /////////////////////////////////////////////////////////////////
+
     m_formStreamViews = new FormStreamViews( m_dockLeft );
 
     //    if (m_formStreamViews->isServerConnected()) {
@@ -413,6 +436,9 @@ void GuiManager::init() {
 //{
 //     m_comp->incIter();
 // }
+//void GuiManager::onRecordLoaderPathUnloaded() {
+//    m_formStreamViews->closeAllStream();
+//}
 
 void GuiManager::onRecordLoaderPathLoaded() {
     //    std::cout << "[GuiManager] onRecordLoaderPathLoaded()" << std::endl;
@@ -469,7 +495,8 @@ void GuiManager::on_action3D_triggered() {
 
 void GuiManager::onServerStreamStarted( const std::string& streamName,
                                         const std::string& syncStreamName ) {
-    std::cout << "[GuiManager] onServerStreamStarted(" << streamName << ", " << syncStreamName << ")" << std::endl;
+    std::cout << "[GuiManager] onServerStreamStarted(" << streamName << ", " << syncStreamName
+              << ")" << std::endl;
 
     //    ClientSocket * socket = nullptr;
     //    if (streamName == g_probePoseSensorName) {
@@ -504,7 +531,7 @@ void GuiManager::onServerStreamStopped( const std::string& streamName,
 }
 
 void GuiManager::onServerDisconnected() {
-//    m_sceneManager.clear();
+    //    m_sceneManager.clear();
 
     //    delete m_formStreamViews;
     //    m_formStreamViews = nullptr;
@@ -763,7 +790,9 @@ void GuiManager::on_sensorsView_selectionChanged( const QItemSelection& selected
         //        const std::string streamName = index.data().toString().toStdString();
         std::cout << "[GuiManager] stream " << streamName << " deselected" << std::endl;
 
+#ifdef ENABLE_IMAGE_VIEWER
         m_sceneManager.detachSensorFromImageManipulator( streamName );
+#endif
 
         //        m_sceneManager.detachSensorFromImageManipulator( row );
 
@@ -787,7 +816,9 @@ void GuiManager::on_sensorsView_selectionChanged( const QItemSelection& selected
                                            .toStdString();
         std::cout << "[GuiManager] stream " << streamName << " clicked" << std::endl;
 
+#ifdef ENABLE_IMAGE_VIEWER
         m_sceneManager.attachSensorFromImageManipulator( streamName );
+#endif
 
         //        m_sceneManager.attachSensorFromImageManipulator( row );
 

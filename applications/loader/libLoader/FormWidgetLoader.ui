@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>391</width>
-    <height>276</height>
+    <width>449</width>
+    <height>288</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -64,65 +64,6 @@
          </property>
         </widget>
        </item>
-       <item>
-        <widget class="ListViewStream" name="listView_recordFrames">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>150</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="selectionMode">
-          <enum>QAbstractItemView::MultiSelection</enum>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="tabSnapshots">
-      <attribute name="title">
-       <string>Snapshots</string>
-      </attribute>
-      <layout class="QHBoxLayout" name="horizontalLayout_4">
-       <item>
-        <widget class="TreeViewStream" name="treeView_snapshot">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QListView" name="listView_snapshotFrames">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="selectionMode">
-          <enum>QAbstractItemView::MultiSelection</enum>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="tabSources">
-      <attribute name="title">
-       <string>Sources</string>
-      </attribute>
-      <layout class="QHBoxLayout" name="horizontalLayout_2">
-       <item>
-        <widget class="QListView" name="listView_sourceFrames"/>
-       </item>
       </layout>
      </widget>
     </widget>
@@ -134,11 +75,6 @@
    <class>TreeViewStream</class>
    <extends>QTreeView</extends>
    <header location="global">TreeViewStream.h</header>
-  </customwidget>
-  <customwidget>
-   <class>ListViewStream</class>
-   <extends>QListView</extends>
-   <header location="global">ListViewStream.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

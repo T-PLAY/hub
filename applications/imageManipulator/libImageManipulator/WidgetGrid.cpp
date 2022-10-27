@@ -5,6 +5,7 @@
 #include <cmath>
 
 #include <constants.h>
+#include <WidgetStreamView.h>
 
 WidgetGrid::WidgetGrid(QWidget* parent)
     : QWidget { parent }
