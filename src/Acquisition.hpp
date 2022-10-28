@@ -37,7 +37,7 @@ class SRC_API Measure
 
     bool operator==( const Measure& measure ) const;
     bool operator!=( const Measure& measure ) const;
-    friend std::ostream& operator<<( std::ostream& os, const Measure& measure );
+    SRC_API friend std::ostream& operator<<( std::ostream& os, const Measure& measure );
 
   protected:
     bool m_ownData = false;
@@ -65,7 +65,7 @@ class SRC_API Dof6 : public Measure
     const float m_w0 = 1.0, m_w1 = 0.0, m_w2 = 0.0, m_w3 = 0.0;
     //    SensorSpec::Format getFormat() override;
 
-    friend std::ostream& operator<<( std::ostream& os, const Dof6& dof6 );
+    SRC_API friend std::ostream& operator<<( std::ostream& os, const Dof6& dof6 );
   private:
     //    constexpr static SensorSpec::Format m_format = SensorSpec::Format::DOF6;
 };

@@ -105,7 +105,7 @@ int main( int argc, char* argv[] ) {
         const std::string exportDir = recordPath + "export/";
         std::filesystem::create_directories( exportDir );
 
-        std::ofstream fstream( exportDir + "posQuat.txt" );
+        std::ofstream fstream( exportDir + "acq.dat" );
         assert( fstream.is_open() );
 
         int iAcq = 0;
@@ -137,7 +137,7 @@ int main( int argc, char* argv[] ) {
                     << std::endl;
 
             char filename[80];
-            sprintf( filename, "us$%d.jpg", iAcq );
+            sprintf( filename, "us%d.jpg", iAcq );
 
             const std::string filePath = exportDir + filename;
             std::cout << filePath << std::endl;
