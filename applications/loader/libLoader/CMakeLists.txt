@@ -15,6 +15,8 @@ set(CMAKE_AUTOUIC ON)
 #set(QT_VERSION 5)
 find_package(Qt${QT_VERSION} REQUIRED COMPONENTS Widgets Gui)
 
+find_package(glm REQUIRED)
+
 #set(QT_VERSION 5)
 #set(REQUIRED_LIBS Core Network Gui Widgets)
 set(REQUIRED_LIBS_QUALIFIED Qt${QT_VERSION}::Core Qt${QT_VERSION}::Gui Qt${QT_VERSION}::Widgets)
@@ -87,5 +89,6 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
     ${REQUIRED_LIBS_QUALIFIED}
     ${UNIX_REQUIRED_LIBS}
     ${WIN32_REQUIRED_LIBS}
+    glm
 )
 

@@ -17,6 +17,8 @@
 #include <OutputSensor.hpp>
 #include <set>
 
+#include <Configurations.hpp>
+
 struct Snap {
     hub::Acquisition m_acq;
 //    int iStream;
@@ -33,7 +35,7 @@ class Loader : public QObject
     Q_OBJECT
   public:
 //    Loader( const std::string& outputPostFixName = "", bool autoPlay = true );
-    Loader( const std::string & ipv4, const int & port );
+    Loader( const std::string & ipv4 = hub::net::s_defaultServiceIp, const int & port = hub::net::s_defaultServicePort );
 
     ~Loader();
 
@@ -67,8 +69,8 @@ class Loader : public QObject
 
     std::thread* m_thread = nullptr;
     bool m_isPlaying      = false;
-    bool m_autoPlay = false;
-    bool m_autoLoop = false;
+    bool m_autoPlay = true;
+    bool m_autoLoop = true;
 
     int m_iAcq;
 

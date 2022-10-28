@@ -15,12 +15,13 @@
 //#include <filesystem>
 //#include <set>
 #include <Loader.h>
+#include <Configurations.hpp>
 
 int main(int argc, char* argv[])
 {
     std::string recordPath = PROJECT_DIR "data/records/latest/";
 
-    Loader loader("127.0.0.1", 4042);
+    Loader loader;
     loader.load(recordPath);
 
     while (true) {
