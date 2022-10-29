@@ -486,6 +486,7 @@ void Sensor::attachFromImageManipulator() {
 
 void Sensor::fitView()
 {
+
     auto& viewer = *m_viewer;
     //    auto aabb = Ra::Engine::RadiumEngine::getInstance()->computeSceneAabb();
     //    auto aabb = m_app->m_engine->computeSceneAabb();
@@ -497,7 +498,10 @@ void Sensor::fitView()
     //            aabb.extend(traces[i]->computeAabb());
     //        }
     //        auto aabb = m_enti
-    auto aabb = m_entity->computeAabb();
+//    auto aabb = m_entity->computeAabb();
+    auto aabb = m_component->getAabb();
+//    for (const auto & )
+
     RA_CLEAR_DEBUG_DISPLAY();
     RA_DISPLAY_AABB( aabb, Ra::Core::Utils::Color::Green() );
 

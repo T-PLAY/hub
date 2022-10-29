@@ -125,3 +125,12 @@ void Dof6Component::update( const hub::Acquisition& acq ) {
     }
     else { assert( false ); }
 }
+
+Aabb Dof6Component::getAabb() const
+{
+    Aabb aabb = m_entity->computeAabb();
+    aabb.transform(m_entity->getTransform());
+//    return m_entity->computeAabb();
+//    return Aabb();
+    return aabb;
+}

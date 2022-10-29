@@ -46,6 +46,7 @@ struct ScanComponent : public SensorComponent {
     void initialize() override;
 
     void update( const hub::Acquisition& acq ) override;
+    Ra::Core::Aabb getAabb() const override;
 
     void addScan();
 
@@ -61,11 +62,13 @@ struct ScanComponent : public SensorComponent {
     Ra::Gui::Viewer& m_viewer;
 
     std::vector<Scan> m_scans;
-    int m_iScan                = -1;
-    int m_nScans               = 1;
-    long long m_lastUpdateDate = 0;
-    bool m_firstUpdate         = true;
-    bool m_isLiveStream        = true;
+    std::map<long long, int> m_startScan2iScan;
+    int m_iScan                = 0;
+    int m_nScans = 0;
+    int m_nMaxScans               = 500;
+//    long long m_lastUpdateDate = 0;
+//    bool m_firstUpdate         = true;
+//    bool m_isLiveStream        = true;
 
     Eigen::Matrix4f m_localTransform = Eigen::Matrix4f::Identity();
 

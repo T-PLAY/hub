@@ -75,17 +75,19 @@ void ScanComponent::initialize() {
     //    m_scanMaterial = std::make_unique<ScanMaterial>( "Scan Material" );
     //// setup ////
 
-    const auto& sensorSpec = m_inputSensor.m_spec;
-    const auto& metaData   = sensorSpec.m_metaData;
-    if ( metaData.find( "type" ) != metaData.end() ) {
-        const char* type = std::any_cast<const char*>( metaData.at( "type" ) );
-        if ( strcmp( type, "record" ) == 0 ) {
-            //            m_isRecordStream = true;
-            m_isLiveStream = false;
-        }
+    const auto& sensorSpec  = m_inputSensor.m_spec;
+    const auto& metaData    = sensorSpec.m_metaData;
+    const auto& resolutions = sensorSpec.m_resolutions;
+    //    if ( metaData.find( "type" ) != metaData.end() ) {
+    //        const char* type = std::any_cast<const char*>( metaData.at( "type" ) );
+    //        if ( strcmp( type, "record" ) == 0 ) {
+    //            //            m_isRecordStream = true;
+    //            m_isLiveStream = false;
+    //        }
 
-        assert( metaData.find( "nAcqs" ) != metaData.end() );
-        m_nScans = std::any_cast<unsigned int>( metaData.at( "nAcqs" ) );
+    if ( metaData.find( "nAcqs" ) != metaData.end() ) {
+        //        assert( metaData.find( "nAcqs" ) != metaData.end() );
+        m_nMaxScans = std::any_cast<unsigned int>( metaData.at( "nAcqs" ) );
     }
     if ( metaData.find( "transform" ) != metaData.end() ) {
         const float* array = std::any_cast<const float*>( metaData.at( "transform" ) );
@@ -101,15 +103,31 @@ void ScanComponent::initialize() {
     }
     else { m_localTransform.block( 0, 0, 3, 3 ) = Eigen::Scaling( 100.0f, 100.0f, 100.0f ); }
 
-    if ( m_isLiveStream ) {
+    // image only
+    if ( resolutions.size() == 1 ) {
         addScan();
-        m_iScan = 0;
+        //        m_iScan     = 0;
+        auto& scan = m_scans.at( 0 );
+        scan.m_quad->setVisible( true );
+        scan.m_scanLine->setVisible( true );
+        m_nMaxScans = 1;
+//        m_nScans    = 1;
     }
-    else {
-        for ( int i = 0; i < m_nScans; ++i ) {
+    else if ( resolutions.size() == 2 ) {
+        for ( int i = 0; i < m_nMaxScans; ++i ) {
             addScan();
         }
     }
+    else { assert( false ); }
+    //    if ( m_isLiveStream ) {
+    //        addScan();
+    //        m_iScan = 0;
+    //    }
+    //    else {
+    //        for ( int i = 0; i < m_nScans; ++i ) {
+    //            addScan();
+    //        }
+    //    }
 
     //    // origin ref cube
     //    {
@@ -127,63 +145,70 @@ void ScanComponent::initialize() {
 }
 
 void ScanComponent::update( const hub::Acquisition& acq ) {
-//    std::cout << "[ScanComponent] update(Acquisition) receive acq : " << acq << std::endl;
+    //    std::cout << "[ScanComponent] update(Acquisition) receive acq : " << acq << std::endl;
 
     const auto& measures = acq.getMeasures();
     const auto nMeasures = measures.size();
 
-    if ( m_firstUpdate || acq.m_start != m_lastUpdateDate ) {
-        m_firstUpdate    = false;
-        m_lastUpdateDate = acq.m_start;
-        if ( !m_isLiveStream ) ++m_iScan;
+    //    int iScan = 0;
+
+    // image only
+    if ( nMeasures == 1 ) {
+        //        if ( iScan == -1 ) {
+        //            addScan();
+        //            iScan = 0;
+        //        }
     }
-    else { return; }
+    // scan (image + 6DOF)
+    else if ( nMeasures == 2 ) {
+        assert( !m_scans.empty() );
+        assert( 0 <= m_iScan && m_iScan < m_nMaxScans );
+        assert( m_iScan < (int)m_scans.size() );
+        auto& lastScan = m_scans.at( m_iScan );
+        //        lastScan.m_quad->setVisible(false);
+        //        if ( !m_isLiveStream ) {
+        //        lastScan.m_quad->setTransparent( true );
+        lastScan.m_material->m_isTransparent = true;
+        lastScan.m_material->needUpdate();
+        lastScan.m_scanLine->setVisible( false );
+        //        }
+
+        //        addScan();
+        //        ++iScan;
+        if ( m_startScan2iScan.find( acq.m_start ) != m_startScan2iScan.end() ) {
+            m_iScan = m_startScan2iScan.at( acq.m_start );
+        }
+        else {
+            m_iScan                        = m_nScans++;
+            m_startScan2iScan[acq.m_start] = m_iScan;
+            std::cout << "[ScanComponent] update() show new scan " << m_nScans << std::endl;
+        }
+    }
+    else { assert( false ); }
+    //    if ( m_firstUpdate || acq.m_start != m_lastUpdateDate ) {
+    //        m_firstUpdate    = false;
+    //        m_lastUpdateDate = acq.m_start;
+    //        if ( !m_isLiveStream ) ++m_iScan;
     //    }
-    //    std::cout << "[ScanComponent] iScan = " << m_iScan << ", update acq : " << acq <<
+    //    else { return; }
+    //    }
+    //    std::cout << "[ScanComponent] m_iScan = " << m_iScan << ", update acq : " << acq <<
     //    std::endl;
 
     assert( !m_scans.empty() );
-    assert( 0 <= m_iScan && m_iScan < m_nScans );
+    assert( 0 <= m_iScan && m_iScan < m_nMaxScans );
     assert( m_iScan < (int)m_scans.size() );
     auto& scan = m_scans.at( m_iScan );
 
-    const unsigned char* imageData = nullptr;
-    int imageSize;
-    if ( nMeasures == 1 ) {
-        const auto& image = measures.at( 0 );
-        assert( image.m_data != nullptr );
-        imageData = image.m_data;
-        imageSize = image.m_size;
-    }
-    else if ( nMeasures == 2 ) {
-        const hub::Measure& measure = measures.at( 0 );
-        assert( measure.m_size == 28 );
-        assert( measure.m_data != nullptr );
-        const hub::Dof6& dof6 = acq.getMeasures().at( 0 );
-        Ra::Core::Vector3 pos( dof6.m_x, dof6.m_y, dof6.m_z );
-        Ra::Core::Quaternion orientation( dof6.m_w0, dof6.m_w1, dof6.m_w2, dof6.m_w3 );
+    scan.m_material->m_isTransparent = false;
+    scan.m_material->needUpdate();
 
-        // update quad
-        {
-            auto TLocal = Transform::Identity();
-            TLocal.translate( pos );
-            TLocal.rotate( orientation );
-
-            if ( m_isLiveStream ) { m_entity->setTransform( TLocal ); }
-            else {
-                TLocal *= m_localTransform;
-                scan.m_quad->setLocalTransform( TLocal );
-            }
-
-            scan.m_quad->setVisible( true );
-            if ( m_isLiveStream ) scan.m_scanLine->setVisible( true );
-        }
-
-        const auto& image = acq.getMeasures().at( 1 );
-        imageData         = image.m_data;
-        imageSize         = image.m_size;
-    }
-    else { assert( false ); }
+    assert( 1 <= nMeasures && nMeasures <= 2 );
+    // find image data
+    // image is always the last measure by convention
+    const auto& image              = measures.at( nMeasures - 1 );
+    const unsigned char* imageData = image.m_data;
+    int imageSize                  = image.m_size;
 
     // update texture
     {
@@ -192,9 +217,53 @@ void ScanComponent::update( const hub::Acquisition& acq ) {
         auto* textureManager = m_engine.getTextureManager();
         textureManager->updateTextureContent( scan.m_textureName, (void*)scan.m_textureData );
     }
+
+    // update position and orientation
+    if ( nMeasures == 2 ) {
+        // update quad
+        {
+            const hub::Dof6& dof6 = measures.at( 0 );
+            Ra::Core::Vector3 pos( dof6.m_x, dof6.m_y, dof6.m_z );
+            Ra::Core::Quaternion orientation( dof6.m_w0, dof6.m_w1, dof6.m_w2, dof6.m_w3 );
+            auto TLocal = Transform::Identity();
+            TLocal.translate( pos );
+            TLocal.rotate( orientation );
+
+            for ( int i = 0; i < 3; ++i ) {
+                m_roAxes[i]->setLocalTransform( TLocal );
+            }
+
+            //            if ( m_isLiveStream ) { m_entity->setTransform( TLocal ); }
+            //            else {
+            TLocal *= m_localTransform;
+            scan.m_quad->setLocalTransform( TLocal );
+            scan.m_scanLine->setLocalTransform( TLocal );
+            //            }
+
+            scan.m_quad->setVisible( true );
+            scan.m_scanLine->setVisible( true );
+            //            if ( m_isLiveStream ) scan.m_scanLine->setVisible( true );
+        }
+    }
+}
+
+Aabb ScanComponent::getAabb() const {
+    //    Aabb aabb = m_scans.at(0).m_quad->computeAabb();
+    Aabb aabb;
+    if ( m_nScans == 0 ) {
+        aabb = m_entity->computeAabb();
+        aabb.transform( m_entity->getTransform() );
+    }
+    else {
+        for ( int i = 0; i < m_nScans; ++i ) {
+            aabb.extend( m_scans.at( i ).m_quad->computeAabb() );
+        }
+    }
+    return aabb;
 }
 
 void ScanComponent::addScan() {
+    //    std::cout << "[ScanComponent] addScan " << m_scans.size() << std::endl;
     const int iScan = m_scans.size();
 
     Scan scan;
@@ -263,12 +332,16 @@ void ScanComponent::addScan() {
         for ( int i = 0; i < width; ++i ) {
             for ( int j = 0; j < height; j++ ) {
                 for ( int k = 0; k < nChannels; ++k ) {
-                    if ( std::abs( i - 40 - iScan ) < 5 || std::abs( j - 40 - iScan ) < 5 ) {
-                        scan.m_textureData[( i * height + j ) * nChannels + k] = 0;
-                    }
-                    else {
-                        scan.m_textureData[( i * height + j ) * nChannels + k] = ( i / 2 ) % 256;
-                    }
+                    scan.m_textureData[( i * height + j ) * nChannels + k] = 0;
+                    //                    if ( std::abs( i - 40 - iScan ) < 5 || std::abs( j - 40 -
+                    //                    iScan ) < 5 ) {
+                    //                        scan.m_textureData[( i * height + j ) * nChannels + k]
+                    //                        = 0;
+                    //                    }
+                    //                    else {
+                    //                        scan.m_textureData[( i * height + j ) * nChannels + k]
+                    //                        = ( i / 2 ) % 256;
+                    //                    }
                 }
             }
         }
@@ -313,16 +386,18 @@ void ScanComponent::addScan() {
 #endif
         scan.m_material->addTexture( CurrentMaterial::TextureSemantic::TEX_DIFFUSE,
                                      textureParameters );
-        scan.m_material->needUpdate();
 
         scan.m_quad->setMaterial( scan.m_material );
-        if ( !m_isLiveStream ) {
-            scan.m_quad->setTransparent( true );
-            scan.m_material->m_isTransparent = true;
-        }
+        //        if ( !m_isLiveStream ) {
+        scan.m_quad->setTransparent( true );
+        scan.m_material->m_isTransparent = false;
+        scan.m_material->needUpdate();
+        //        }
 
-        scan.m_quad->setLocalTransform( m_localTransform );
-        if ( !m_isLiveStream ) { scan.m_quad->setVisible( false ); }
+        scan.m_quad->setVisible( false );
+
+        //        scan.m_quad->setLocalTransform( m_localTransform );
+        //        if ( !m_isLiveStream ) { scan.m_quad->setVisible( false ); }
 
         addRenderObject( scan.m_quad );
 
@@ -348,18 +423,19 @@ void ScanComponent::addScan() {
             "scanLine", this, RenderObjectType::Geometry, mesh ); // z axis
         scan.m_scanLine->setMaterial( m_scanLineMaterial );
 
-        scan.m_scanLine->setLocalTransform( m_localTransform );
-        if ( !m_isLiveStream ) { scan.m_scanLine->setVisible( false ); }
+        //        scan.m_scanLine->setLocalTransform( m_localTransform );
+        //        if ( !m_isLiveStream ) { scan.m_scanLine->setVisible( false ); }
+        scan.m_scanLine->setVisible( false );
 
         addRenderObject( scan.m_scanLine );
     }
 
-    if ( m_isLiveStream ) {
-        auto TLocal = Transform::Identity();
-        TLocal *= m_localTransform;
-        scan.m_scanLine->setLocalTransform( TLocal );
-        scan.m_quad->setLocalTransform( TLocal );
-    }
+    //    if ( m_isLiveStream ) {
+    auto TLocal = Transform::Identity();
+    TLocal *= m_localTransform;
+    scan.m_scanLine->setLocalTransform( TLocal );
+    scan.m_quad->setLocalTransform( TLocal );
+    //    }
 
     m_scans.push_back( scan );
 }
@@ -415,11 +491,11 @@ void ScanComponent::on_palette_valueChanged( int palette ) {
 
 void ScanComponent::on_setTransparency( bool isTransparent ) {
 #ifndef USE_BLINN_PHONG_MATERIAL
-    if ( !m_isLiveStream ) {
-        for ( auto& scan : m_scans ) {
-            scan.m_material->m_isTransparent = isTransparent;
-            scan.m_material->needUpdate();
-        }
+    //    if ( !m_isLiveStream ) {
+    for ( auto& scan : m_scans ) {
+        scan.m_material->m_isTransparent = isTransparent;
+        scan.m_material->needUpdate();
     }
+//    }
 #endif
 }

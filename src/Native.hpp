@@ -32,11 +32,17 @@ extern "C"
     //                                 long long* end,
     //                                 unsigned char* data );
 
-    typedef bool (__stdcall * onNewStreamerFunc)(const char * streamName, const SensorSpec * sensorSpec);
-    typedef void (__stdcall * onDelStreamerFunc)(const char * streamName, const SensorSpec * sensorSpec);
-    typedef void (__stdcall * onServerConnectedFunc)(const char * ipv4, int port);
-    typedef void (__stdcall * onServerDisconnectedFunc)(const char * ipv4, int port);
-    typedef void (__stdcall * onNewAcquisitionFunc)(const char * streamName, const Acquisition * acq);
+//    typedef bool (__stdcall * onNewStreamerFunc)(const char * streamName, const SensorSpec * sensorSpec);
+//    typedef void (__stdcall * onDelStreamerFunc)(const char * streamName, const SensorSpec * sensorSpec);
+//    typedef void (__stdcall * onServerConnectedFunc)(const char * ipv4, int port);
+//    typedef void (__stdcall * onServerDisconnectedFunc)(const char * ipv4, int port);
+//    typedef void (__stdcall * onNewAcquisitionFunc)(const char * streamName, const Acquisition * acq);
+
+    typedef bool (* onNewStreamerFunc)(const char * streamName, const SensorSpec * sensorSpec);
+    typedef void (* onDelStreamerFunc)(const char * streamName, const SensorSpec * sensorSpec);
+    typedef void (* onServerConnectedFunc)(const char * ipv4, int port);
+    typedef void (* onServerDisconnectedFunc)(const char * ipv4, int port);
+    typedef void (* onNewAcquisitionFunc)(const char * streamName, const Acquisition * acq);
 
 //    SRC_API Viewer*
 //    createViewer2( onNewStreamerFunc onNewStreamer,
