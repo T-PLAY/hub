@@ -22,6 +22,7 @@ struct Dof6Component : SensorComponent {
     void initialize() override;
 
     void update(const hub::Acquisition & acq) override;
+    Ra::Core::Aabb getAabb() const override;
 
 private:
     hub::SensorSpec::Format m_format;

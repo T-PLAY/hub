@@ -12,6 +12,9 @@
 
 #include <InputSensor.hpp>
 
+//#include <Core/RaCore.hpp>
+#include <Core/Types.hpp>
+
 /// This is a very basic component which holds a spinning cube.
 struct SensorComponent : public Ra::Engine::Scene::Component {
 
@@ -23,6 +26,7 @@ struct SensorComponent : public Ra::Engine::Scene::Component {
     void initialize() override;
 
     virtual void update(const hub::Acquisition& acq) = 0;
+    virtual Ra::Core::Aabb getAabb() const = 0;
 
 //    virtual void changeTransparency(double transparency) {};
 //    virtual void changeTransparency2(double transparency) {};
