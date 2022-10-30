@@ -88,7 +88,8 @@ StreamViewerClient::StreamViewerClient( Server& server,
 
     //    const auto& lastAcqs = m_server.getLastAcqs( m_streamName );
 //    if ( m_syncStreamName == "" && m_server.m_acqPing ) {
-    if (m_outputSensor->m_spec.m_resolutions.size() == 2) {
+    if (m_syncStreamName == "" && m_outputSensor->m_spec.m_resolutions.size() == 2) {
+//    if (m_outputSensor->m_spec.m_resolutions.size() == 2) {
 //        streamer->m_mtxLastAcqs.lock();
         m_mtxOutputSensor.lock();
         const auto& lastAcqs = streamer->getSaveAcqs( lastAcqsName );
@@ -141,12 +142,13 @@ StreamViewerClient::StreamViewerClient( Server& server,
                 const auto& lastAcq = streamer->getLastAcq(lastAcqsName);
                 //                std::cout << headerMsg() << "thread : end getLastAcq" <<
                 //                std::endl; if ( lastAcq == nullptr ) {
-                if ( lastAcq == nullptr ) {
+                if ( lastAcq.get() == nullptr ) {
                     m_outputSensor->getInterface().write( hub::net::ClientSocket::Message::PING );
                     //                    std::cout << headerMsg() << "thread : ping wrote" <<
                     //                    std::endl;
                 }
                 else {
+                    assert(lastAcq->getSize() == m_outputSensor->m_spec.m_acquisitionSize);
                     if ( m_server.m_acqPing ) {
                         *m_outputSensor << *lastAcq;
 //                                        std::cout << headerMsg() << "thread : ping acq wrote" <<

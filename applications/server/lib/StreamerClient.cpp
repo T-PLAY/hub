@@ -98,72 +98,81 @@ StreamerClient::StreamerClient( Server& server, int iClient, hub::net::ClientSoc
     }
 
     //    m_lastAcqs[""];
+    m_lastAcq[""];
 
     std::thread thread( [this]() {
         try {
             while ( 1 ) {
-                auto acq = m_inputSensor->getAcquisition();
+                auto masterAcq = m_inputSensor->getAcquisition();
                 //                continue;
+                if ( masterAcq.m_start == -1 ) {
+                    std::cout << headerMsg() << "receive reset acq : " << masterAcq << std::endl;
+                    m_lastAcq[""].reset();
+                    m_streamName2saveAcqs[""].clear();
+                    m_server.newAcquisition( this, masterAcq );
+                    continue;
+                }
 
-                //                std::cout << headerMsg() << "receive acq : " << acq << std::endl;
+                //                std::cout << headerMsg() << "receive acq : " << masterAcq <<
+                //                std::endl;
 
                 m_mtxSyncViewers.lock();
-                auto syncViewers = m_syncViewers;
+                auto& syncViewers = m_syncViewers;
                 for ( auto& pair : syncViewers ) {
                     const auto& streamViewerName = pair.first;
 
                     //                    std::cout << headerMsg() << "receive sync master acq : "
-                    //                    << acq << std::endl;
+                    //                    << masterAcq << std::endl;
 
-                    auto& acqs = m_syncAcqs[streamViewerName];
+                    auto& syncAcqs = m_syncAcqs[streamViewerName];
                     m_mtxSyncAcqs.lock();
-                    while ( acqs.empty() ) {
-                        //                        std::cout << headerMsg() << "empty acqs, sleep" <<
-                        //                        std::endl;
+                    while ( syncAcqs.empty() ) {
+                        //                        std::cout << headerMsg() << "empty syncAcqs,
+                        //                        sleep" << std::endl;
                         m_mtxSyncAcqs.unlock();
                         std::this_thread::sleep_for( std::chrono::milliseconds( 1 ) );
                         m_mtxSyncAcqs.lock();
                     }
-                    assert( !acqs.empty() );
+                    assert( !syncAcqs.empty() );
                     m_mtxSyncAcqs.unlock();
 
                     //        std::cout << headerMsg() << "[Match] want to be close to acq : " <<
-                    //        acq << std::endl;
+                    //        masterAcq << std::endl;
                     std::unique_ptr<hub::Acquisition> bestMatchAcq;
-                    bestMatchAcq = std::make_unique<hub::Acquisition>( acqs.back().clone() );
+                    bestMatchAcq = std::make_unique<hub::Acquisition>( syncAcqs.back().clone() );
 
                     // search best match acq
                     {
-                        acqs.pop_back();
+                        syncAcqs.pop_back();
 
-                        auto minDist = std::abs( acq.m_start - bestMatchAcq->m_start );
+                        auto minDist = std::abs( masterAcq.m_start - bestMatchAcq->m_start );
                         //                        std::cout << headerMsg() << "dist = " << minDist
                         //                        << std::endl;
 
                         bool foundBestMatch = false;
                         while ( !foundBestMatch ) {
                             m_mtxSyncAcqs.lock();
-                            while ( acqs.empty() ) {
+                            while ( syncAcqs.empty() ) {
                                 //                                std::cout << headerMsg() << "empty
-                                //                                acqs, sleep" << std::endl;
+                                //                                syncAcqs, sleep" << std::endl;
                                 m_mtxSyncAcqs.unlock();
                                 std::this_thread::sleep_for( std::chrono::milliseconds( 1 ) );
                                 m_mtxSyncAcqs.lock();
                             }
-                            assert( !acqs.empty() );
+                            assert( !syncAcqs.empty() );
                             m_mtxSyncAcqs.unlock();
 
-                            auto& acq2 = acqs.back();
+                            auto& acq2 = syncAcqs.back();
                             //                std::cout << headerMsg() << "[Match] pop acq : " <<
                             //                acq2 << std::endl;
-                            auto dist = std::abs( acq.m_start - acq2.m_start );
+                            auto dist = std::abs( masterAcq.m_start - acq2.m_start );
                             //                            std::cout << headerMsg() << "dist = " <<
                             //                            dist << std::endl;
                             if ( dist < minDist ) {
                                 minDist = dist;
                                 bestMatchAcq.release();
                                 bestMatchAcq = std::make_unique<hub::Acquisition>( acq2.clone() );
-                                acqs.pop_back();
+                                syncAcqs.pop_back();
                             }
                             else {
                                 //                                assert(minDist < 20'000); // 20 ms
@@ -176,16 +185,18 @@ StreamerClient::StreamerClient( Server& server, int iClient, hub::net::ClientSoc
                         }
 
                         m_mtxSyncAcqs.lock();
-                        acqs.emplace_back( bestMatchAcq->clone() );
-                        while ( !acqs.empty() && acqs.back().m_start < acq.m_start ) {
-                            //                        while ( ! acqs.empty() && acqs.back().m_start
-                            //                        < acq.m_start - 8000 ) {
-                            acqs.pop_back();
+                        syncAcqs.emplace_back( bestMatchAcq->clone() );
+                        //                        while ( !syncAcqs.empty() &&
+                        //                        syncAcqs.back().m_start < masterAcq.m_start ) {
+                        while ( !syncAcqs.empty() &&
+                                std::abs( syncAcqs.back().m_start - masterAcq.m_start ) > 8'000 ) {
+                            syncAcqs.pop_back();
                         }
                         m_mtxSyncAcqs.unlock();
 
-                        //                        if (acq.m_start < bestMatchAcq->m_start) {
-                        //                            acqs.emplace_back( bestMatchAcq->clone() );
+                        //                        if (masterAcq.m_start < bestMatchAcq->m_start) {
+                        //                            syncAcqs.emplace_back( bestMatchAcq->clone()
+                        //                            );
                         //                        }
                     }
                     //                std::cout << headerMsg() << "[Match] best match : " <<
@@ -195,8 +206,8 @@ StreamerClient::StreamerClient( Server& server, int iClient, hub::net::ClientSoc
 
                     //                                // broadcast best match acquisition fo each
                     //                                stream viewers
-                    assert( acq.getMeasures().size() == 1 );
-                    const auto& syncMeasure = acq.getMeasures().front();
+                    assert( masterAcq.getMeasures().size() == 1 );
+                    const auto& syncMeasure = masterAcq.getMeasures().front();
                     *bestMatchAcq << hub::Measure { syncMeasure.m_data, syncMeasure.m_size };
 
                     const auto streamViewers = pair.second;
@@ -214,25 +225,27 @@ StreamerClient::StreamerClient( Server& server, int iClient, hub::net::ClientSoc
                 }
                 m_mtxSyncViewers.unlock();
 
-                m_server.newAcquisition( this, acq );
+                m_server.newAcquisition( this, masterAcq );
 
                 //                m_lastAcqs.release();
                 //                m_mtxLastAcqs.lock();
                 //                if ( !m_isRecordStream && !m_lastAcqs[""].empty() ) {
-                //                if ( acq.getMeasures().size() == 1 && !m_lastAcqs[""].empty() ) {
+                //                if ( masterAcq.getMeasures().size() == 1 &&
+                //                !m_lastAcqs[""].empty() ) {
                 //                    //                    m_lastAcqs.back().release();
                 //                    m_lastAcqs[""].clear();
                 //                }
-                if ( acq.getMeasures().size() == 1 ) {
-                    m_lastAcq[""] = std::make_shared<hub::Acquisition>( std::move( acq ) );
+                if ( masterAcq.getMeasures().size() == 1 ) {
+                    m_lastAcq[""] = std::make_shared<hub::Acquisition>( std::move( masterAcq ) );
                 }
                 else {
                     //                    m_lastAcqs[""].push_back(
-                    //                    std::make_shared<hub::Acquisition>( std::move( acq ) ) );
-                    saveNewAcq( "", std::move( acq ) );
+                    //                    std::make_shared<hub::Acquisition>( std::move( masterAcq )
+                    //                    ) );
+                    saveNewAcq( "", std::move( masterAcq ) );
                 }
                 //                m_lastAcqs.push_back( std::make_unique<hub::Acquisition>(
-                //                std::move( acq ) ) );
+                //                std::move( masterAcq ) ) );
                 //                m_mtxLastAcqs.unlock();
             }
         }
@@ -308,6 +321,8 @@ void StreamerClient::addSyncStreamViewer( StreamViewerClient* syncStreamViewer )
     //        m_s[syncStreamViewer->m_streamName].push_back( syncStreamViewer );
     syncViewers.push_back( syncStreamViewer );
     //    m_lastAcqs[streamName];
+    m_streamName2saveAcqs[streamName];
+    m_lastAcq[streamName];
     m_mtxSyncViewers.unlock();
 }
 
@@ -324,6 +339,8 @@ void StreamerClient::delStreamViewer( StreamViewerClient* streamViewer ) {
     if ( syncViewers.empty() ) {
         m_syncViewers.erase( streamName );
         m_syncAcqs.erase( streamName );
+        m_streamName2saveAcqs.erase( streamName );
+        m_lastAcq.erase( streamName );
     }
     m_mtxSyncViewers.unlock();
 }
@@ -368,11 +385,13 @@ StreamerClient::getSyncViewers() const {
 
 const std::shared_ptr<hub::Acquisition>
 StreamerClient::getLastAcq( const std::string& streamName ) const {
+    assert( m_lastAcq.find( streamName ) != m_lastAcq.end() );
     return m_lastAcq.at( streamName );
 }
 
 const std::map<long long, std::shared_ptr<hub::Acquisition>>&
 StreamerClient::getSaveAcqs( const std::string& streamName ) const {
+    assert( m_streamName2saveAcqs.find( streamName ) != m_streamName2saveAcqs.end() );
     return m_streamName2saveAcqs.at( streamName );
 }
 
@@ -393,21 +412,20 @@ void StreamerClient::saveNewAcq( const std::string& streamName, hub::Acquisition
     auto& saveAcqs = m_streamName2saveAcqs[streamName];
     // save new acq
     if ( saveAcqs.find( newAcq.m_start ) == saveAcqs.end() ) {
-        std::cout << headerMsg() << " [ ";
-//        << streamName << " save new acq : " << saveAcqs.size() << std::endl;
-        for (const auto & [streamName, saveAcqs] : m_streamName2saveAcqs) {
+        std::cout << headerMsg() << " save new acq : [ ";
+        //        << streamName << " save new acq : " << saveAcqs.size() << std::endl;
+        for ( const auto& [streamName, saveAcqs] : m_streamName2saveAcqs ) {
             std::cout << streamName << ":" << saveAcqs.size() << ", ";
         }
         std::cout << " ] ";
         std::cout << std::endl;
         saveAcqs[newAcq.m_start] = newAcqPtr;
-
     }
     // acq already saved
     else {}
 
-    auto lastAcq = m_lastAcq[streamName];
+    auto& lastAcq = m_lastAcq[streamName];
     //    auto& newAcq  = saveAcqs.at( acq.m_start );
-//    if ( lastAcq.get() != newAcqPtr.get() ) { lastAcq = newAcqPtr; }
-    if ( lastAcq != newAcqPtr ) { lastAcq = newAcqPtr; }
+    //    if ( lastAcq.get() != newAcqPtr.get() ) { lastAcq = newAcqPtr; }
+    if ( lastAcq.get() != newAcqPtr.get() ) { lastAcq = newAcqPtr; }
 }

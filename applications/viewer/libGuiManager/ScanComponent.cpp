@@ -147,6 +147,18 @@ void ScanComponent::initialize() {
 void ScanComponent::update( const hub::Acquisition& acq ) {
     //    std::cout << "[ScanComponent] update(Acquisition) receive acq : " << acq << std::endl;
 
+    if ( acq.m_start == -1 ) {
+        std::cout << "[ScanComponent] receive reset acq : " << acq << std::endl;
+        for ( int iScan = 0; iScan < m_nScans; ++iScan ) {
+            auto& scan = m_scans.at( iScan );
+            scan.m_quad->setVisible( m_traceEnabled );
+        }
+        m_iScan  = 0;
+        m_nScans = 0;
+        m_startScan2iScan.clear();
+        return;
+    }
+
     const auto& measures = acq.getMeasures();
     const auto nMeasures = measures.size();
 
@@ -205,7 +217,6 @@ void ScanComponent::update( const hub::Acquisition& acq ) {
     assert( m_iScan < (int)m_scans.size() );
     auto& scan = m_scans.at( m_iScan );
 
-
     assert( 1 <= nMeasures && nMeasures <= 2 );
 
     // update scan properties
@@ -235,9 +246,9 @@ void ScanComponent::update( const hub::Acquisition& acq ) {
                 TLocal.translate( pos );
                 TLocal.rotate( orientation );
 
-                for ( int i = 0; i < 3; ++i ) {
-                    m_roAxes[i]->setLocalTransform( TLocal );
-                }
+                //                for ( int i = 0; i < 3; ++i ) {
+                //                    m_roAxes[i]->setLocalTransform( TLocal );
+                //                }
 
                 //            if ( m_isLiveStream ) { m_entity->setTransform( TLocal ); }
                 //            else {
@@ -256,6 +267,17 @@ void ScanComponent::update( const hub::Acquisition& acq ) {
         scan.m_material->needUpdate();
         scan.m_quad->setVisible( true );
         scan.m_scanLine->setVisible( true );
+
+        const hub::Dof6& dof6 = measures.at( 0 );
+        Ra::Core::Vector3 pos( dof6.m_x, dof6.m_y, dof6.m_z );
+        Ra::Core::Quaternion orientation( dof6.m_w0, dof6.m_w1, dof6.m_w2, dof6.m_w3 );
+        auto TLocal = Transform::Identity();
+        TLocal.translate( pos );
+        TLocal.rotate( orientation );
+
+        for ( int i = 0; i < 3; ++i ) {
+            m_roAxes[i]->setLocalTransform( TLocal );
+        }
     }
 }
 
@@ -276,10 +298,10 @@ Aabb ScanComponent::getAabb() const {
 
 void ScanComponent::enableTrace( bool enable ) {
     m_traceEnabled = enable;
-    for (int iScan = 0; iScan < m_nScans; ++iScan) {
-//    for (auto & scan : m_scans) {
-        auto & scan = m_scans.at(iScan);
-        scan.m_quad->setVisible(m_traceEnabled);
+    for ( int iScan = 0; iScan < m_nScans; ++iScan ) {
+        //    for (auto & scan : m_scans) {
+        auto& scan = m_scans.at( iScan );
+        scan.m_quad->setVisible( m_traceEnabled );
     }
 }
 
@@ -408,8 +430,8 @@ void ScanComponent::addScan() {
         scan.m_material->setMaterialAspect( ScanMaterial::MaterialAspect::MAT_TRANSPARENT );
 
 #ifndef USE_BLINN_PHONG_MATERIAL
-        scan.m_material->m_pimp.x()  = 0.5;
-        scan.m_material->m_pimp.y()  = 1.0;
+        scan.m_material->m_pimp.x()  = m_tune0;
+        scan.m_material->m_pimp.y()  = m_tune1;
         scan.m_material->m_nChannels = nChannels;
 #endif
         scan.m_material->addTexture( CurrentMaterial::TextureSemantic::TEX_DIFFUSE,
@@ -471,8 +493,9 @@ void ScanComponent::addScan() {
 void ScanComponent::on_tune_valueChanged( double arg1 ) {
 #ifndef USE_BLINN_PHONG_MATERIAL
     std::cout << "[ScanComponent] on_tune_valueChanged : " << arg1 << std::endl;
+    m_tune0 = arg1;
     for ( auto& scan : m_scans ) {
-        scan.m_material->m_pimp.x() = arg1;
+        scan.m_material->m_pimp.x() = m_tune0;
         scan.m_material->needUpdate();
     }
 #endif
@@ -480,9 +503,10 @@ void ScanComponent::on_tune_valueChanged( double arg1 ) {
 
 void ScanComponent::on_tune2_valueChanged( double arg1 ) {
 #ifndef USE_BLINN_PHONG_MATERIAL
-    std::cout << "[ScanComponent] on_tune_valueChanged : " << arg1 << std::endl;
+    std::cout << "[ScanComponent] on_tune2_valueChanged : " << arg1 << std::endl;
+    m_tune1 = arg1;
     for ( auto& scan : m_scans ) {
-        scan.m_material->m_pimp.y() = arg1;
+        scan.m_material->m_pimp.y() = m_tune1;
         scan.m_material->needUpdate();
     }
 #endif

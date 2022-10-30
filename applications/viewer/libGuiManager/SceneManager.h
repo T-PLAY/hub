@@ -46,6 +46,8 @@ public:
     QTableView* m_sensorsView = nullptr;
     bool m_enableTrace = true;
     bool m_enableLive = true;
+    double m_tune0 = 0.25;
+    double m_tune1 = 1.0;
 
     //    const std::list<Sensor>& getSensors() const;
     //    Sensor& getSensor( int iSensor );
@@ -186,6 +188,8 @@ void SceneManager::addSensor(InterfaceT&& interfaceT, const std::string streamNa
     auto& newSensor = *m_streamName2sensor.at(streamName);
     newSensor.getSensorComponent()->enableTrace(m_enableTrace);
     newSensor.getSensorComponent()->enableLive(m_enableLive);
+    newSensor.on_tune_valueChanged(m_tune0);
+    newSensor.on_tune2_valueChanged(m_tune1);
 #ifdef ENABLE_IMAGE_VIEWER
     newSensor.m_imageManipulator = m_imageManipulator;
 #endif
