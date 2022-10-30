@@ -71,6 +71,9 @@ struct ScanComponent : public SensorComponent {
 
     bool m_traceEnabled = true;
     bool m_liveEnabled = true;
+
+    double m_tune0 = 0.25;
+    double m_tune1 = 1.0;
 //    long long m_lastUpdateDate = 0;
 //    bool m_firstUpdate         = true;
 //    bool m_isLiveStream        = true;

@@ -177,18 +177,20 @@ void SceneManager::detachSensorFromImageManipulator( const std::string& streamNa
 #endif
 
 void SceneManager::on_tune_valueChanged( double arg1 ) {
+    m_tune0 = arg1;
     for ( auto& pair : m_streamName2sensor ) {
         auto& sensor = *pair.second;
         //    for ( auto& sensor : m_sensors ) {
-        sensor.on_tune_valueChanged( arg1 );
+        sensor.on_tune_valueChanged( m_tune0 );
     }
 }
 
 void SceneManager::on_tune2_valueChanged( double arg1 ) {
+    m_tune1 = arg1;
     for ( auto& pair : m_streamName2sensor ) {
         auto& sensor = *pair.second;
         //    for ( auto& sensor : m_sensors ) {
-        sensor.on_tune2_valueChanged( arg1 );
+        sensor.on_tune2_valueChanged( m_tune1 );
     }
 }
 

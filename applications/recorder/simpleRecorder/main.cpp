@@ -9,6 +9,8 @@
 #include <filesystem>
 #include <thread>
 
+//#include <set>
+
 int main( int argc, char* argv[] ) {
 
     int port = hub::net::s_defaultServicePort;
@@ -48,6 +50,8 @@ int main( int argc, char* argv[] ) {
 
     //        std::string imageStreamName = "ULA-OP 256";
 
+//    std::set<long long> starts;
+
     for ( const auto& streamName : streamNames ) {
 
         threads.push_back( std::thread( [=, &stopThread]() {
@@ -62,13 +66,23 @@ int main( int argc, char* argv[] ) {
                                             hub::io::File( std::move( recordFile ) ) );
 
             int nAcq = 0;
+            long long previousStart = -1;
             while ( !stopThread ) {
                 auto acq = inputSensor.getAcquisition();
                 //                std::cout << "[" << streamName << "] record acq : " << acq <<
                 //                std::endl;
+                // ping acq
+                if (acq.m_start == previousStart)
+                    continue;
+
+                assert(acq.m_start > previousStart);
+
                 outputSensor << acq;
                 std::cout << "+" << std::flush;
                 ++nAcq;
+//                starts.emplace(acq.m_start);
+//                starts.insert(acq.m_start);
+                previousStart = acq.m_start;
             }
             std::cout << std::endl;
             std::cout << "[" << streamName.first << "] " << nAcq << " acq recorded" << std::endl;

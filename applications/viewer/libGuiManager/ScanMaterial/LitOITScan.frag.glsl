@@ -132,7 +132,7 @@ void main() {
 //    a = 0.1 * a;
 //    a = a5;
 //    color = colorPow;
-    if (material.pimp.x == 0.0) {
+    if (material.pimp.x < 0.0) {
         f_Accumulation = vec4( color, aPow ) * w;
     } else {
         f_Accumulation = vec4( color, aPow );
