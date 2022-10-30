@@ -5,9 +5,10 @@
 #include <InputSensor.hpp>
 #include <Net/ClientSocket.hpp>
 
-#include <mutex>
-#include <memory>
 #include <deque>
+#include <memory>
+#include <mutex>
+#include <set>
 
 class Server;
 class StreamViewerClient;
@@ -21,20 +22,24 @@ class StreamerClient : public Client
     std::string headerMsg() const override;
 
     const hub::InputSensor& getInputSensor() const;
-
     void addSyncStreamViewer( StreamViewerClient* streamViewer );
     void delStreamViewer( StreamViewerClient* streamViewer );
-
     void newAcquisition( const std::string& streamerName, const hub::Acquisition& acq );
-
     const std::string& getStreamName() const;
-
     const std::map<std::string, std::list<StreamViewerClient*>>& getSyncViewers() const;
 
-    const std::vector<std::shared_ptr<hub::Acquisition>> & getLastAcqs(const std::string & streamName) const;
+    //    const std::vector<std::shared_ptr<hub::Acquisition>> & getLastAcqs(const std::string &
+    //    streamName) const;
+    const std::shared_ptr<hub::Acquisition> getLastAcq( const std::string& streamName ) const;
+    const std::map<long long, std::shared_ptr<hub::Acquisition>>& getSaveAcqs( const std::string& streamName ) const;
 
-public:
-    mutable std::mutex m_mtxLastAcqs;
+    void saveNewAcq(const std::string & streamName, hub::Acquisition && newAcq);
+
+  public:
+//    mutable std::mutex m_mtxLastAcqs;
+    mutable std::mutex m_mtxLastAcq;
+    mutable std::mutex m_mtxSaveAcqs;
+
   private:
     std::mutex m_mtx;
     std::unique_ptr<hub::InputSensor> m_inputSensor;
@@ -46,8 +51,9 @@ public:
     std::map<std::string, std::deque<hub::Acquisition>> m_syncAcqs;
     std::mutex m_mtxSyncAcqs;
 
-    std::map<std::string, std::vector<std::shared_ptr<hub::Acquisition>>> m_lastAcqs;
+    //    std::map<std::string, std::vector<std::shared_ptr<hub::Acquisition>>> m_lastAcqs;
+    std::map<std::string, std::shared_ptr<hub::Acquisition>> m_lastAcq;
+    std::map<std::string, std::map<long long, std::shared_ptr<hub::Acquisition>>> m_streamName2saveAcqs;
 
     bool m_isRecordStream = false;
-
 };

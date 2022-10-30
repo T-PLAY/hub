@@ -47,6 +47,8 @@ struct ScanComponent : public SensorComponent {
 
     void update( const hub::Acquisition& acq ) override;
     Ra::Core::Aabb getAabb() const override;
+    void enableTrace(bool enable) override;
+    void enableLive(bool enable) override;
 
     void addScan();
 
@@ -66,6 +68,9 @@ struct ScanComponent : public SensorComponent {
     int m_iScan                = 0;
     int m_nScans = 0;
     int m_nMaxScans               = 500;
+
+    bool m_traceEnabled = true;
+    bool m_liveEnabled = true;
 //    long long m_lastUpdateDate = 0;
 //    bool m_firstUpdate         = true;
 //    bool m_isLiveStream        = true;

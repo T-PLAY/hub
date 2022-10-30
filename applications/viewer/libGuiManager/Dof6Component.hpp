@@ -23,6 +23,8 @@ struct Dof6Component : SensorComponent {
 
     void update(const hub::Acquisition & acq) override;
     Ra::Core::Aabb getAabb() const override;
+    void enableTrace(bool enable) override;
+    void enableLive(bool enable) override;
 
 private:
     hub::SensorSpec::Format m_format;

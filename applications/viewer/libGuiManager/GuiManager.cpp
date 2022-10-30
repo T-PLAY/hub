@@ -156,13 +156,14 @@ void GuiManager::init() {
                       this,
                       &GuiManager::on_checkBox_trace_toggled );
     QObject::connect( m_3DToolBox,
-                      &Form3DToolBox::checkBox_showGrid_toggled,
+                      &Form3DToolBox::checkBox_live_toggled,
                       this,
-                      &GuiManager::on_checkBox_grid_toggled );
+                      &GuiManager::on_checkBox_live_toggled );
     QObject::connect( m_3DToolBox,
                       &Form3DToolBox::checkBox_showGrid_toggled,
                       this,
                       &GuiManager::on_checkBox_grid_toggled );
+
     QObject::connect( m_3DToolBox,
                       &Form3DToolBox::doubleSpinBox_tune_valueChanged,
                       &m_sceneManager,
@@ -183,6 +184,7 @@ void GuiManager::init() {
                       &Form3DToolBox::comboBox_palettes_currentIndexChanged,
                       &m_sceneManager,
                       &SceneManager::on_palette_valueChanged );
+
     QObject::connect( m_3DToolBox,
                       &Form3DToolBox::checkBox_debug_toggled,
                       m_viewer,
@@ -283,6 +285,10 @@ void GuiManager::init() {
                       &FormStreamViews::serverDisconnected,
                       this,
                       &GuiManager::onServerDisconnected );
+    QObject::connect( m_formStreamViews,
+                      &FormStreamViews::serverConnected,
+                      this,
+                      &GuiManager::onServerConnected );
 
     //        m_formStreamViews->startStreaming();
     //    } else {
@@ -346,6 +352,7 @@ void GuiManager::init() {
 
 #ifdef ENABLE_LOADER
     m_formWidgetLoader = new FormWidgetLoader( m_formStreamViews->getIpv4(), m_formStreamViews->getPort(), bottomContainer );
+    m_formWidgetLoader->setEnabled(false);
     //    ui->dockWidget_bottom->setWidget(m_formWidgetLoader);
     //    m_dockBottom->setWidget(m_formWidgetLoader);
     hLayout->addWidget( m_formWidgetLoader );
@@ -531,7 +538,12 @@ void GuiManager::onServerStreamStopped( const std::string& streamName,
     //    //        m_formInputStreamViews->onKillInputStream(sensorName);
 }
 
+void GuiManager::onServerConnected() {
+    m_formWidgetLoader->setEnabled(true);
+}
+
 void GuiManager::onServerDisconnected() {
+    m_formWidgetLoader->setEnabled(false);
     //    m_sceneManager.clear();
 
     //    delete m_formStreamViews;
@@ -688,6 +700,12 @@ void GuiManager::on_checkBox_grid_toggled( bool checked ) {
 
 void GuiManager::on_checkBox_trace_toggled( bool checked ) {
     //    m_comp->traceSetVisible(checked);
+    m_sceneManager.enableTrace(checked);
+}
+
+void GuiManager::on_checkBox_live_toggled(bool checked)
+{
+    m_sceneManager.enableLive(checked);
 }
 
 void GuiManager::on_toolButton_fitScene_clicked() {

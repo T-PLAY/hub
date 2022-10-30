@@ -27,6 +27,8 @@ struct SensorComponent : public Ra::Engine::Scene::Component {
 
     virtual void update(const hub::Acquisition& acq) = 0;
     virtual Ra::Core::Aabb getAabb() const = 0;
+    virtual void enableTrace(bool enable) = 0;
+    virtual void enableLive(bool enable) = 0;
 
 //    virtual void changeTransparency(double transparency) {};
 //    virtual void changeTransparency2(double transparency) {};

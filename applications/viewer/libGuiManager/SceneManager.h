@@ -44,11 +44,16 @@ public:
 
     QStandardItemModel m_sensorModel;
     QTableView* m_sensorsView = nullptr;
+    bool m_enableTrace = true;
+    bool m_enableLive = true;
 
     //    const std::list<Sensor>& getSensors() const;
     //    Sensor& getSensor( int iSensor );
 
     void fitView(const std::string& streamName);
+    void enableTrace(bool enable);
+    void enableLive(bool enable);
+
 #ifdef ENABLE_IMAGE_VIEWER
     void attachSensorFromImageManipulator(const std::string& streamName);
     void detachSensorFromImageManipulator(const std::string& streamName);
@@ -179,6 +184,8 @@ void SceneManager::addSensor(InterfaceT&& interfaceT, const std::string streamNa
 
     //    auto& newSensor = m_sensors.back();
     auto& newSensor = *m_streamName2sensor.at(streamName);
+    newSensor.getSensorComponent()->enableTrace(m_enableTrace);
+    newSensor.getSensorComponent()->enableLive(m_enableLive);
 #ifdef ENABLE_IMAGE_VIEWER
     newSensor.m_imageManipulator = m_imageManipulator;
 #endif

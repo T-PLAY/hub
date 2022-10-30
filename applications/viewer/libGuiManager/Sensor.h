@@ -155,6 +155,7 @@ private:
 public:
     const QList<QStandardItem *> &getItems() const;
     Ra::Engine::Scene::Component * getComponent();
+    SensorComponent * getSensorComponent();
     Ra::Engine::Scene::Entity *getEntity() const;
 };
 
