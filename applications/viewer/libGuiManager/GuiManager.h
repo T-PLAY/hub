@@ -78,6 +78,7 @@ private slots:
     void onServerStreamStarted(const std::string& streamName, const std::string& syncStreamName);
     void onServerStreamStopped(const std::string& streamName, const hub::SensorSpec &sensorSpec);
     void onServerDisconnected();
+    void onServerConnected();
 
     //    void on_comboBox_scan_currentTextChanged(const QString &sourceType);
     //    void on_comboBox_pose_currentTextChanged(const QString &sourceType);
@@ -101,6 +102,7 @@ private slots:
 
     void on_checkBox_grid_toggled(bool checked);
     void on_checkBox_trace_toggled(bool checked);
+    void on_checkBox_live_toggled(bool checked);
     void on_toolButton_fitScene_clicked();
     void on_toolButton_fitSelected_clicked();
 

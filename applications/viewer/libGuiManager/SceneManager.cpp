@@ -122,6 +122,28 @@ void SceneManager::fitView( const std::string& streamName ) {
     //    }
 }
 
+void SceneManager::enableTrace(bool enable)
+{
+    assert(enable != m_enableTrace);
+    m_enableTrace = enable;
+    for ( auto& pair : m_streamName2sensor ) {
+        auto& sensor = *pair.second;
+//        sensor.
+        sensor.getSensorComponent()->enableTrace(m_enableTrace);
+    }
+}
+
+void SceneManager::enableLive(bool enable)
+{
+    assert(enable != m_enableLive);
+    m_enableLive = enable;
+    for ( auto& pair : m_streamName2sensor ) {
+        auto& sensor = *pair.second;
+        sensor.getSensorComponent()->enableLive(m_enableLive);
+    }
+
+}
+
 #ifdef ENABLE_IMAGE_VIEWER
 void SceneManager::attachSensorFromImageManipulator( const std::string& streamName ) {
     for ( auto& pair : m_streamName2sensor ) {

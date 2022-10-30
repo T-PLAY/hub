@@ -56,6 +56,11 @@ void Loader::load( const std::string& path ) {
     //    assert( path != "" );
     std::set<Snap> sortedSnaps;
 
+    std::list<std::string> sensorNamesToRemove;
+    for ( const auto& [key, value] : m_outputStreams ) {
+        sensorNamesToRemove.push_back( key );
+    }
+
     // read records in folder
     for ( const auto& fileDir : std::filesystem::directory_iterator( path ) ) {
         const auto& filepath = fileDir.path().string();
@@ -83,14 +88,14 @@ void Loader::load( const std::string& path ) {
         //        inputSensor.getAllAcquisitions();
 
         //        const auto& acqs = m_sensorName2acquisitions.at( sensorName );
-//        hub::SensorSpec sensorSpec2 = sensorSpec;
-//        const auto & metaData = sensorSpec.m_metaData;
-//        glm::mat4 localTransform;
-//        if ( metaData.find( "transform" ) != metaData.end() ) {
-//            const float* array = std::any_cast<const float*>( metaData.at( "transform" ) );
-//            localTransform          = glm::make_mat4( array );
-//        }
-//        sensorSpec2.m_metaData.erase("transform");
+        //        hub::SensorSpec sensorSpec2 = sensorSpec;
+        //        const auto & metaData = sensorSpec.m_metaData;
+        //        glm::mat4 localTransform;
+        //        if ( metaData.find( "transform" ) != metaData.end() ) {
+        //            const float* array = std::any_cast<const float*>( metaData.at( "transform" )
+        //            ); localTransform          = glm::make_mat4( array );
+        //        }
+        //        sensorSpec2.m_metaData.erase("transform");
 
         auto acqs = inputSensor.getAllAcquisitions();
 
@@ -101,9 +106,15 @@ void Loader::load( const std::string& path ) {
             assert( m_outputStreams.find( sensorName ) == m_outputStreams.end() );
             m_outputStreams[sensorName] = std::make_unique<hub::OutputSensor>(
                 inputSensor.m_spec,
-//                sensorSpec2,
+                //                sensorSpec2,
                 //                hub::io::OutputStream( "Loader : " + sensorName + ")",
                 hub::io::OutputStream( sensorName, hub::net::ClientSocket( m_ipv4, m_port ) ) );
+        }
+        else {
+            assert( std::find( sensorNamesToRemove.begin(),
+                               sensorNamesToRemove.end(),
+                               sensorName ) != sensorNamesToRemove.end() );
+            sensorNamesToRemove.remove( sensorName );
         }
 
         //        m_outputStreams.push_back( std::make_unique<hub::OutputSensor>(
@@ -113,35 +124,39 @@ void Loader::load( const std::string& path ) {
         //        streamName + ")"));
 
         for ( const auto& acq : acqs ) {
-//                        std::cout << "read acq : " << acq << std::endl;
+            //                        std::cout << "read acq : " << acq << std::endl;
             //            Snap snap { acq.clone(), (int)( m_outputStreams.size() - 1 ) };
-//            const auto& measures = acq.getMeasures();
-//            assert( measures.size() == 2 );
-//            const hub::Dof6& dof6 = measures.at( 0 );
-////            std::cout << dof6 << std::endl;
-//            glm::vec3 position    = glm::vec3( dof6.m_x, dof6.m_y, dof6.m_z );
-//            glm::quat orientation = glm::quat( dof6.m_w0, dof6.m_w1, dof6.m_w2, dof6.m_w3 );
+            //            const auto& measures = acq.getMeasures();
+            //            assert( measures.size() == 2 );
+            //            const hub::Dof6& dof6 = measures.at( 0 );
+            ////            std::cout << dof6 << std::endl;
+            //            glm::vec3 position    = glm::vec3( dof6.m_x, dof6.m_y, dof6.m_z );
+            //            glm::quat orientation = glm::quat( dof6.m_w0, dof6.m_w1, dof6.m_w2,
+            //            dof6.m_w3 );
 
-////            glm::vec3 translation = glm::vec3(localTransform[3][0], localTransform[3][1], localTransform[3][2]); // column major
-////            glm::vec3 translation = glm::vec3(localTransform[0][3], localTransform[1][3], localTransform[2][3]); // row major
-//            glm::vec3 scale;
-//            glm::quat rotation;
-//            glm::vec3 translation;
-//            glm::vec3 skew;
-//            glm::vec4 perspective;
-//            glm::decompose(localTransform, scale, rotation, translation, skew, perspective);
-//            rotation = glm::conjugate(rotation);
+            ////            glm::vec3 translation = glm::vec3(localTransform[3][0],
+            /// localTransform[3][1], localTransform[3][2]); // column major /            glm::vec3
+            /// translation = glm::vec3(localTransform[0][3], localTransform[1][3],
+            /// localTransform[2][3]); // row major
+            //            glm::vec3 scale;
+            //            glm::quat rotation;
+            //            glm::vec3 translation;
+            //            glm::vec3 skew;
+            //            glm::vec4 perspective;
+            //            glm::decompose(localTransform, scale, rotation, translation, skew,
+            //            perspective); rotation = glm::conjugate(rotation);
 
-//            position += translation;
-//            orientation *= rotation;
+            //            position += translation;
+            //            orientation *= rotation;
 
-//            hub::Dof6 newDof6(position.x, position.y, position.z, orientation.w, orientation.x, orientation.y, orientation.z);
+            //            hub::Dof6 newDof6(position.x, position.y, position.z, orientation.w,
+            //            orientation.x, orientation.y, orientation.z);
 
-//            hub::Acquisition newAcq(acq.m_start, acq.m_end);
-////			newAcq << hub::Measure(std::move(newDof6));
-//            newAcq << std::move(newDof6);
-//            newAcq << hub::Measure(measures.at(1).m_data, measures.at(1).m_size);
-//            Snap snap { std::move(newAcq), sensorName };
+            //            hub::Acquisition newAcq(acq.m_start, acq.m_end);
+            ////			newAcq << hub::Measure(std::move(newDof6));
+            //            newAcq << std::move(newDof6);
+            //            newAcq << hub::Measure(measures.at(1).m_data, measures.at(1).m_size);
+            //            Snap snap { std::move(newAcq), sensorName };
 
             Snap snap { acq.clone(), sensorName };
             sortedSnaps.insert( std::move( snap ) );
@@ -152,6 +167,15 @@ void Loader::load( const std::string& path ) {
 
     } // for ( const auto& fileDir : std::filesystem::directory_iterator( path ) )
 
+
+    for ( const auto& sensorNameToRemove : sensorNamesToRemove ) {
+        assert( m_outputStreams.find( sensorNameToRemove ) != m_outputStreams.end() );
+        //        assert( std::find( m_outputStreams.begin(), m_outputStreams.end(),
+        //        sensorNameToRemove ) !=
+        //                m_outputStreams.end() );
+        m_outputStreams.erase( sensorNameToRemove );
+    }
+
     m_snaps.reserve( sortedSnaps.size() );
     //    m_snaps.insert(m_snaps.begin(), sortedSnaps.begin(), sortedSnaps.end());
     for ( auto& acq : sortedSnaps ) {
@@ -160,6 +184,16 @@ void Loader::load( const std::string& path ) {
 
     m_loadedPath = path;
     emit pathLoaded();
+
+    for ( const auto& snap : m_snaps ) {
+        //        const auto& snap = m_snaps.at( m_iAcq );
+        if ( snap.m_acq.getMeasures().size() == 2 ) {
+            auto& outputStream = *m_outputStreams.at( snap.m_sensorName );
+            //        outputStream.m_spec.
+            outputStream << snap.m_acq;
+        }
+        //        *m_outputStreams.at( snap.m_sensorName ) << snap.m_acq;
+    }
 
     m_iAcq = 0;
     if ( m_autoPlay )

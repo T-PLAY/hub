@@ -301,6 +301,8 @@ void FormStreamViews::onServerConnect() {
     ui->lineEdit_ip->setEnabled( false );
     ui->spinBox_port->setEnabled( false );
     m_serverPing = true;
+
+    emit serverConnected();
 }
 
 void FormStreamViews::onServerDisconnect() {

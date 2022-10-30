@@ -585,3 +585,9 @@ Ra::Engine::Scene::Component* Sensor::getComponent() {
     //        assert(false);
     //    }
 }
+
+SensorComponent *Sensor::getSensorComponent()
+{
+    assert(m_component != nullptr);
+    return m_component;
+}

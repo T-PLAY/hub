@@ -32,6 +32,7 @@ signals:
     void checkBox_debug_toggled(bool checked);
     void checkBox_transparency_toggled(bool checked);
     void horizontalSliderDynamic_valueChanged(int value);
+    void checkBox_live_toggled(bool checked);
 
 public slots:
     void on_pushButton_fitScene_clicked();
@@ -62,7 +63,9 @@ public:
   private slots:
     void on_horizontalSliderDynamic_valueChanged(int value);
 
-  private:
+    void on_checkBox_live_toggled(bool checked);
+
+private:
     Ui::Form3DToolBox *ui;
 
 };

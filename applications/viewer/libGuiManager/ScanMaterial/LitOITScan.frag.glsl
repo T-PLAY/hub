@@ -54,26 +54,26 @@ void main() {
 //    float a = 0.5;
     if ( !toDiscard( material, bc ) || a < 0.001 ) discard;
 
-    // all vectors are in world space
-    vec3 binormal    = getWorldSpaceBiTangent();
-    vec3 normalWorld = getNormal(
-        material, getPerVertexTexCoord(), getWorldSpaceNormal(), getWorldSpaceTangent(), binormal );
-    vec3 binormalWorld = normalize( cross( normalWorld, getWorldSpaceTangent() ) );
-    vec3 tangentWorld  = cross( binormalWorld, normalWorld );
+//    // all vectors are in world space
+//    vec3 binormal    = getWorldSpaceBiTangent();
+//    vec3 normalWorld = getNormal(
+//        material, getPerVertexTexCoord(), getWorldSpaceNormal(), getWorldSpaceTangent(), binormal );
+//    vec3 binormalWorld = normalize( cross( normalWorld, getWorldSpaceTangent() ) );
+//    vec3 tangentWorld  = cross( binormalWorld, normalWorld );
 
-    // A material is always evaluated in the fragment local Frame
-    // compute matrix from World to local Frame
-    mat3 world2local;
-    world2local[0] = vec3( tangentWorld.x, binormalWorld.x, normalWorld.x );
-    world2local[1] = vec3( tangentWorld.y, binormalWorld.y, normalWorld.y );
-    world2local[2] = vec3( tangentWorld.z, binormalWorld.z, normalWorld.z );
-    // transform all vectors in local frame so that N = (0, 0, 1);
-    vec3 wi = world2local * normalize( in_lightVector ); // incident direction
-    vec3 wo = world2local * normalize( in_viewVector );  // outgoing direction
+//    // A material is always evaluated in the fragment local Frame
+//    // compute matrix from World to local Frame
+//    mat3 world2local;
+//    world2local[0] = vec3( tangentWorld.x, binormalWorld.x, normalWorld.x );
+//    world2local[1] = vec3( tangentWorld.y, binormalWorld.y, normalWorld.y );
+//    world2local[2] = vec3( tangentWorld.z, binormalWorld.z, normalWorld.z );
+//    // transform all vectors in local frame so that N = (0, 0, 1);
+//    vec3 wi = world2local * normalize( in_lightVector ); // incident direction
+//    vec3 wo = world2local * normalize( in_viewVector );  // outgoing direction
 
-    vec3 bsdf = evaluateBSDF( material, getPerVertexTexCoord(), wi, wo );
+//    vec3 bsdf = evaluateBSDF( material, getPerVertexTexCoord(), wi, wo );
 
-    vec3 contribution = lightContributionFrom( light, getWorldSpacePosition().xyz );
+//    vec3 contribution = lightContributionFrom( light, getWorldSpacePosition().xyz );
 
 //    float w        = weight( gl_FragCoord.z, a );
 //    f_Accumulation = vec4( bsdf * contribution * a, a ) * w;
@@ -118,7 +118,8 @@ void main() {
 
     vec3 colorPow = color;
     float aPow = a;
-//    float w        = weight( gl_FragCoord.z, aPow );
+//    float w        = max(1.0, weight( gl_FragCoord.z, aPow ) * material.pimp.z);
+    float w        = weight( gl_FragCoord.z, aPow );
     for (int i = 0; i <int(material.pimp.x * 20); ++i) {
         colorPow *= color;
         aPow *= a;
@@ -131,7 +132,10 @@ void main() {
 //    a = 0.1 * a;
 //    a = a5;
 //    color = colorPow;
-//    f_Accumulation = vec4( color, aPow ) * w;
-    f_Accumulation = vec4( color, aPow );
+    if (material.pimp.x == 0.0) {
+        f_Accumulation = vec4( color, aPow ) * w;
+    } else {
+        f_Accumulation = vec4( color, aPow );
+    }
     f_Revealage    = vec4( color, aPow );
 }

@@ -72,3 +72,9 @@ void Form3DToolBox::on_horizontalSliderDynamic_valueChanged(int value)
     emit horizontalSliderDynamic_valueChanged(value);
 }
 
+
+void Form3DToolBox::on_checkBox_live_toggled(bool checked)
+{
+    emit checkBox_live_toggled(checked);
+}
+

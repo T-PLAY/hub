@@ -134,3 +134,13 @@ Aabb Dof6Component::getAabb() const
 //    return Aabb();
     return aabb;
 }
+
+void Dof6Component::enableTrace(bool enable)
+{
+
+}
+
+void Dof6Component::enableLive(bool enable)
+{
+
+}

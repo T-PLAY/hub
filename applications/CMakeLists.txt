@@ -73,6 +73,7 @@ if (HUB_ENABLE_APPLICATIONS)
         add_subdirectory(recorder)
             add_subdirectory(player)
             add_subdirectory(exporter)
+            add_subdirectory(importer)
             add_subdirectory(calibrator)
 
         if (HUB_ENABLE_SCUS AND HUB_USE_DCMTK)

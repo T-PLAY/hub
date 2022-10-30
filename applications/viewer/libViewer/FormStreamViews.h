@@ -96,6 +96,7 @@ class FormStreamViews : public QWidget
     //    void sensorAdded(const std::string & streamName);
     //    void sensorDeleted(const std::string & streamName);
     void serverDisconnected();
+    void serverConnected();
 
   public slots:
     void onServerConnect();
