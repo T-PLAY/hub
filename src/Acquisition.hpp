@@ -29,6 +29,9 @@ class SRC_API Measure
 
     Measure clone() const;
 
+    bool interpolable() const;
+    static Measure slerp(const Measure & left, const Measure & right, double t);
+
     //  private:
     //    Measurement m_measurement;
     //    virtual SensorSpec::Format getFormat() = 0;
@@ -39,12 +42,15 @@ class SRC_API Measure
     bool operator!=( const Measure& measure ) const;
     SRC_API friend std::ostream& operator<<( std::ostream& os, const Measure& measure );
 
+
   protected:
     bool m_ownData = false;
     bool m_isMoved = false;
+    hub::SensorSpec::Resolution m_resolution;
 
   private:
     //    friend class Acquisition;
+    friend class InputSensor;
 };
 using Measures = std::vector<Measure>;
 
@@ -61,9 +67,12 @@ class SRC_API Dof6 : public Measure
           float w3 = 0.0 );
 //    ~Dof6();
     // private:
-    const float m_x = 0.0, m_y = 0.0, m_z = 0.0;
-    const float m_w0 = 1.0, m_w1 = 0.0, m_w2 = 0.0, m_w3 = 0.0;
+    const float m_x = 0.0, m_y = 0.0, m_z = 0.0; // vec3
+    const float m_w0 = 1.0, m_w1 = 0.0, m_w2 = 0.0, m_w3 = 0.0; // quat : w, x, y, z
     //    SensorSpec::Format getFormat() override;
+
+//    Dof6 operator*(const Dof6 & dof6) const;
+    static Dof6 slerp(const Dof6 & left, const Dof6 & right, long long t);
 
     SRC_API friend std::ostream& operator<<( std::ostream& os, const Dof6& dof6 );
   private:
@@ -143,6 +152,11 @@ class SRC_API Acquisition
     Acquisition& operator<<( Measure&& measure );
     Acquisition& operator<<( const Measures& measure );
 
+    bool interpolable() const;
+    static Acquisition slerp(const Acquisition & left, const Acquisition & right, double t);
+
+//    static Acquisition lerp(const Acquisition & left, const Acquisition & right, long long time);
+
     //        template <class T>
     //        const T& get() const {
     //            static_assert( std::is_base_of<Measure, T>::value, "not a base class" );
@@ -183,6 +197,8 @@ class SRC_API Acquisition
     //    const std::vector<Measure> &getMeasures() const;
     //    const std::list<Measure>& getMeasures() const;
     const Measures& getMeasures() const;
+
+    friend class InputSensor;
 };
 
 // template <>

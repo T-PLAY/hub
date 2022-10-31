@@ -3,6 +3,7 @@
 #include <cassert>
 #include <iomanip>
 
+#include <cmath>
 #include <cstring>
 
 namespace hub {
@@ -29,8 +30,80 @@ Dof6::Dof6( float x, float y, float z, float w0, float w1, float w2, float w3 ) 
     memcpy( (unsigned char*)&m_x, m_data, m_size );
 }
 
+Dof6 Dof6::slerp( const Dof6& left,
+//                  long long startLeft,
+                  const Dof6& right,
+//                  long long startRight,
+                  long long t ) {
+//    const Dof6& left  = ( startLeft > startRight ) ? ( pRight ) : ( pLeft );
+//    const Dof6& right = ( startLeft > startRight ) ? ( pLeft ) : ( pRight );
+//    if ( startLeft > startRight ) {
+//        long long tmp = startLeft;
+//        startLeft     = startRight;
+//        startRight    = tmp;
+//    }
+//    assert( startLeft <= time && time <= startRight );
+//    //    Dof6 ret;
+//    double t = ( time - startLeft ) / ( startRight - startLeft );
+//    assert( 0.0 <= t && t <= 1.0 );
+
+    float x = ( 1.0 - t ) * left.m_x + t * right.m_x;
+    float y = ( 1.0 - t ) * left.m_y + t * right.m_y;
+    float z = ( 1.0 - t ) * left.m_z + t * right.m_z;
+
+    //    return Dof6(x, y, z, w0, w1, w2, w3);
+    float w0, w1, w2, w3;
+
+    // source:
+    // http://www.euclideanspace.com/maths/algebra/realNormedAlgebra/quaternions/slerp/index.htm
+    //    quat slerp(quat qa, quat qb, double t) {
+    // quaternion to return
+    //        quat qm = new quat();
+    // Calculate angle between them.
+    double cosHalfTheta = left.m_w0 * right.m_w0 + left.m_w1 * right.m_w1 + left.m_w2 * right.m_w2 +
+                          left.m_w3 * right.m_w3;
+    // if left=right or left=-right then theta = 0 and we can return left
+    if ( std::abs( cosHalfTheta ) >= 1.0 ) {
+        w0 = left.m_w0;
+        w1 = left.m_w1;
+        w2 = left.m_w2;
+        w3 = left.m_w3;
+        //            return qm;
+        return Dof6( x, y, z, w0, w1, w2, w3 );
+    }
+    // Calculate temporary values.
+    double halfTheta    = acos( cosHalfTheta );
+    double sinHalfTheta = sqrt( 1.0 - cosHalfTheta * cosHalfTheta );
+    // if theta = 180 degrees then result is not fully defined
+    // we could rotate around any axis normal to left or right
+    if ( fabs( sinHalfTheta ) < 0.001 ) { // fabs is floating point absolute
+        w0 = ( left.m_w0 * 0.5 + right.m_w0 * 0.5 );
+        w1 = ( left.m_w1 * 0.5 + right.m_w1 * 0.5 );
+        w2 = ( left.m_w2 * 0.5 + right.m_w2 * 0.5 );
+        w3 = ( left.m_w3 * 0.5 + right.m_w3 * 0.5 );
+        return Dof6( x, y, z, w0, w1, w2, w3 );
+        //            return qm;
+    }
+    double ratioA = sin( ( 1 - t ) * halfTheta ) / sinHalfTheta;
+    double ratioB = sin( t * halfTheta ) / sinHalfTheta;
+    // calculate Quaternion.
+    w0 = ( left.m_w0 * ratioA + right.m_w0 * ratioB );
+    w1 = ( left.m_w1 * ratioA + right.m_w1 * ratioB );
+    w2 = ( left.m_w2 * ratioA + right.m_w2 * ratioB );
+    w3 = ( left.m_w3 * ratioA + right.m_w3 * ratioB );
+    //        return qm;
+    //    }
+    return Dof6( x, y, z, w0, w1, w2, w3 );
+}
+
+// Dof6 Dof6::operator*(const Dof6 &dof6) const
+//{
+//     Dof6 ret;
+// }
+
 std::ostream& operator<<( std::ostream& os, const Dof6& dof6 ) {
-    os << "x:" << dof6.m_x << " y:" << dof6.m_y << " z:" << dof6.m_z << "   w0:" << dof6.m_w0 << " w1:" << dof6.m_w1 << " w2:" << dof6.m_w2 << " w3:" << dof6.m_w3;
+    os << "x:" << dof6.m_x << " y:" << dof6.m_y << " z:" << dof6.m_z << "   w0:" << dof6.m_w0
+       << " w1:" << dof6.m_w1 << " w2:" << dof6.m_w2 << " w3:" << dof6.m_w3;
     return os;
 }
 
@@ -83,11 +156,39 @@ Measure Measure::clone() const {
     //    memcpy( data, m_data, m_size );
     //    Measure measure( m_data, m_size );
     //    measure.m_ownData = true;
-    return Measure( m_data, m_size );
+    Measure ret ( m_data, m_size );
+    ret.m_resolution = m_resolution;
+    return ret;
+}
+
+bool Measure::interpolable() const {
+    assert(m_resolution.second != SensorSpec::Format::NONE);
+    assert( !m_resolution.first.empty() );
+    return SensorSpec::interpolable( m_resolution.second );
+}
+
+Measure Measure::slerp( const Measure& left, const Measure& right, double t ) {
+    assert( left.m_size == right.m_size );
+    assert( !left.m_resolution.first.empty() );
+    assert( !right.m_resolution.first.empty() );
+    assert( left.interpolable() );
+    assert( right.interpolable() );
+    assert( left.m_resolution == right.m_resolution );
+
+    switch ( left.m_resolution.second ) {
+    case SensorSpec::Format::DOF6: {
+//        const Dof6& dof6Left  = left;
+//        const Dof6& dof6Right = right;
+        return Dof6::slerp(left, right, t);
+    }
+    default:
+        assert( false );
+        break;
+    }
 }
 
 bool Measure::operator==( const Measure& measure ) const {
-    if ( m_size == measure.m_size ) { return memcmp( m_data, measure.m_data, m_size ) == 0; }
+    if ( m_size == measure.m_size ) { return memcmp( m_data, measure.m_data, m_size ) == 0 && m_resolution == measure.m_resolution; }
     return false;
 }
 
@@ -115,7 +216,9 @@ Measure::Measure( Measure&& measure ) :
     //     Measure(measure.m_measurement),
     //    Measure( measure.m_format ),
     m_data( measure.m_data ),
-    m_size( measure.m_size ) {
+    m_size( measure.m_size ),
+    m_resolution(measure.m_resolution)
+{
     //     m_format( measure.m_format ) {
     //    measure.m_data = nullptr;
     measure.m_isMoved = true;
@@ -246,6 +349,37 @@ Acquisition& Acquisition::operator<<( Measure&& measure ) {
     return *this;
 }
 
+bool Acquisition::interpolable() const {
+    for ( const auto& measure : m_measures ) {
+        if ( !measure.interpolable() ) return false;
+    }
+    return true;
+}
+
+Acquisition Acquisition::slerp( const Acquisition& left, const Acquisition& right, double t ) {
+    assert( left.getMeasures().size() == right.getMeasures().size() );
+    assert( 0.0 <= t <= 1.0 );
+    const long long start     = ( 1.0 - t ) * left.m_start + t * right.m_start;
+    const long long end       = ( 1.0 - t ) * left.m_end + t * right.m_end;
+    Acquisition ret           = Acquisition { start, end };
+    const auto& leftMeasures  = left.getMeasures();
+    const auto& rightMeasures = right.getMeasures();
+    for ( int iMeasure = 0; iMeasure < leftMeasures.size(); ++iMeasure ) {
+        ret << Measure::slerp( leftMeasures.at( iMeasure ), rightMeasures.at( iMeasure ), t );
+    }
+    return ret;
+}
+
+// Acquisition Acquisition::lerp(const Acquisition &left, const Acquisition &right, long long time)
+//{
+//     assert(left.getMeasures().size() == right.getMeasures().size());
+//     assert(left.m_start <= time && time <= right.m_start);
+//     for (int iMeasure = 0; iMeasure < left.getMeasures().size(); ++iMeasure) {
+////        left.getMeasures().at(iMeasure).
+//    }
+
+//}
+
 Acquisition& Acquisition::operator<<( const Measures& measures ) {
     for ( const auto& measure : measures ) {
         Acquisition::operator<<( measure.clone() );
@@ -297,7 +431,10 @@ size_t Acquisition::getSize() const {
 }
 
 std::ostream& operator<<( std::ostream& os, const Acquisition& acq ) {
-    os << "start:" << acq.m_start << ", end:" << acq.m_end;
+    os << "\tstart:" << ( acq.m_start / 1'000'000 ) % 1'000 << " "
+       << ( acq.m_start / 1'000 ) % 1'000 << " " << acq.m_start % 1'000
+       << ", end:" << ( acq.m_end / 1'000'000 ) % 1'000 << " " << ( acq.m_end / 1'000 ) % 1'000
+       << " " << acq.m_end % 1'000;
     os << ", measures:[";
     for ( const auto& measure : acq.m_measures ) {
         os << "[" << measure << "], ";

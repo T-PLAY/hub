@@ -48,7 +48,9 @@ class StreamerClient : public Client
     std::map<std::string, std::list<StreamViewerClient*>> m_syncViewers;
     std::mutex m_mtxSyncViewers;
 
-    std::map<std::string, std::deque<hub::Acquisition>> m_syncAcqs;
+//    std::map<std::string, std::deque<hub::Acquisition>> m_syncAcqs;
+    std::map<std::string, std::list<hub::Acquisition>> m_syncAcqs;
+    std::map<std::string, bool> m_isSyncthing;
     std::mutex m_mtxSyncAcqs;
 
     //    std::map<std::string, std::vector<std::shared_ptr<hub::Acquisition>>> m_lastAcqs;

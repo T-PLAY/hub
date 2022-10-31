@@ -42,6 +42,41 @@ static constexpr int format2nByte[static_cast<int>( SensorSpec::Format::COUNT )]
     64,      // MAT4
 };
 
+static constexpr bool format2interpolable[static_cast<int>( SensorSpec::Format::COUNT )] = {
+    false, // NONE
+    false, // Z16
+    false, // DISPARITY16
+    false, // XYZ32F
+    false, // YUYV
+    false, // RGB8
+    false, // BGR8
+    false, // RGBA8
+    false, // BGRA8
+    false, // Y8
+    false, // Y16
+    false, // RAW10
+    false, // RAW16
+    false, // RAW8
+    false, // UYVY
+    false, // MOTION_RAW
+    false, // MOTION_XYZ32F
+    false, // GPIO_RAW
+    false, // DISPARITY32
+    true,  // DOF6
+    false, // Y10BPACK
+    false, // DISTANCE
+    false, // MJPEG
+    false, // Y8I
+    false, // Y12I
+    false, // INZI
+    false, // INVI
+    false, // W10
+    false, // Z16H
+    false, // FG
+    false, // Y411
+    false, // MAT4
+};
+
 size_t SensorSpec::computeAcquisitionSize( const Resolutions& resolutions ) {
     size_t size = 0;
     for ( const auto& resolution : resolutions ) {
@@ -155,6 +190,10 @@ std::string SensorSpec::metaData2string( const std::pair<std::string, std::any>&
                       hub::io::Interface::anyValue2string( val ) + "'";
     //#endif
     return str;
+}
+
+bool SensorSpec::interpolable( const Format& format ) {
+    return format2interpolable[(int)format];
 }
 
 std::ostream& operator<<( std::ostream& os, const SensorSpec::Format& format ) {

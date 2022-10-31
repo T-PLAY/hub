@@ -6,14 +6,20 @@ namespace hub {
 
 Acquisition InputSensor::getAcquisition() const {
 
-    Acquisition acq = m_interface.getAcquisition(static_cast<int>(m_spec.m_acquisitionSize));
+    Acquisition acq = m_interface.getAcquisition( static_cast<int>( m_spec.m_acquisitionSize ) );
 
-    assert(acq.getSize() == m_spec.m_acquisitionSize);
-    const auto & resolutions = m_spec.m_resolutions;
-    const auto & measures = acq.getMeasures();
-    assert(resolutions.size() == measures.size());
-    for (int i = 0; i <resolutions.size(); ++i) {
-        assert(SensorSpec::computeAcquisitionSize(resolutions.at(i)) == measures.at(i).m_size);
+    assert( acq.getSize() == m_spec.m_acquisitionSize );
+    const auto& resolutions = m_spec.m_resolutions;
+    auto& measures          = acq.m_measures;
+    assert( resolutions.size() == measures.size() );
+    assert( resolutions.size() > 0 );
+    for ( size_t i = 0; i < resolutions.size(); ++i ) {
+        assert( SensorSpec::computeAcquisitionSize( resolutions.at( i ) ) ==
+                measures.at( i ).m_size );
+        measures.at( i ).m_resolution = resolutions.at( i );
+        assert( measures.at( i ).m_resolution == resolutions.at( i ) );
+        assert( !measures.at( i ).m_resolution.first.empty() );
+        assert( measures.at( i ).m_resolution.second != SensorSpec::Format::NONE );
     }
 
 #ifdef DEBUG_STREAM

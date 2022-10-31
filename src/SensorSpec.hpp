@@ -99,6 +99,7 @@ class SRC_API SensorSpec
      static std::string resolutions2string( const Resolutions& resolutions );
      static std::string metaData2string( const MetaData& metaData, bool expand = false );
      static std::string metaData2string( const std::pair<std::string, std::any>& metaData );
+     static bool interpolable(const Format & format);
      SRC_API friend std::ostream& operator<<( std::ostream& os, const Format& format );
      SRC_API friend std::ostream& operator<<( std::ostream& os, const SensorSpec& sensorSpec );
 };
