@@ -20,6 +20,10 @@ MainWindow::MainWindow( QWidget* parent ) : QMainWindow( parent ), ui( new Ui::M
                       static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ),
                       this,
                       &MainWindow::updateLatency );
+    QObject::connect( ui->spinBox_latency_2,
+                      static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ),
+                      this,
+                      &MainWindow::updateLatency );
 
     //    {
     std::string filename =
@@ -62,15 +66,15 @@ MainWindow::MainWindow( QWidget* parent ) : QMainWindow( parent ), ui( new Ui::M
     assert( it->getMeasures().size() == 1 );
     assert( m_acqs2.front().getMeasures().size() == 1 );
 
-    for ( const auto& acq : m_acqs2 ) {
-        const auto startMaster = acq.m_start + m_latency * 1000;
-        int dist               = std::abs( startMaster - it->m_start );
-        while ( it + 1 != m_acqs.end() && dist > std::abs( startMaster - ( it + 1 )->m_start ) ) {
+    for ( const auto& acq2 : m_acqs2 ) {
+        const auto acq2Start = acq2.m_start;
+        int dist             = std::abs( acq2Start - it->m_start );
+        while ( it + 1 != m_acqs.end() && dist > std::abs( acq2Start - ( it + 1 )->m_start ) ) {
             ++it;
-            dist = std::abs( startMaster - it->m_start );
+            dist = std::abs( acq2Start - it->m_start );
         }
-        *m_outputSensor << ( hub::Acquisition { startMaster, startMaster } << it->getMeasures()
-                                                                           << acq.getMeasures() );
+        *m_outputSensor << ( hub::Acquisition { acq2Start, acq2Start } << it->getMeasures()
+                                                                       << acq2.getMeasures() );
     }
 }
 
@@ -81,7 +85,9 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::updateLatency() {
-    m_latency = ui->spinBox_latency->value();
+    long long latency  = ui->spinBox_latency->value();
+    long long latency2 = ui->spinBox_latency_2->value();
+
     *m_outputSensor << ( hub::Acquisition( -1, -1 )
                          << m_acqs.front().getMeasures() << m_acqs2.front().getMeasures() );
 
@@ -96,16 +102,86 @@ void MainWindow::updateLatency() {
     assert( it->getMeasures().size() == 1 );
     assert( m_acqs2.front().getMeasures().size() == 1 );
 
-    for ( const auto& acq : m_acqs2 ) {
-        const auto startMaster = acq.m_start + m_latency * 1000;
-        int dist               = std::abs( startMaster - it->m_start );
-        while ( it + 1 != m_acqs.end() && dist > std::abs( startMaster - ( it + 1 )->m_start ) ) {
+    for ( const auto& acq2 : m_acqs2 ) {
+        //        const auto acqStart = it->m_start + latency * 1000;
+        const auto acq2Start = acq2.m_start + latency2 * 1000;
+
+        int dist = std::abs( acq2Start - ( it->m_start + latency * 1000 ) );
+        while ( it + 1 != m_acqs.end() &&
+                dist > std::abs( acq2Start - ( ( it + 1 )->m_start + latency * 1000 ) ) ) {
             ++it;
-            dist = std::abs( startMaster - it->m_start );
+            dist = std::abs( acq2Start - ( it->m_start + latency * 1000 ) );
         }
-        *m_outputSensor << ( hub::Acquisition { startMaster, startMaster } << it->getMeasures()
-                                                                           << acq.getMeasures() );
+        //        assert(dist < 8'000);
+        if ( dist > m_maxDist ) {
+            std::cout << "dist sup 8ms : " << dist << std::endl;
+            continue;
+        }
+
+        const hub::Dof6& dof6 = it->getMeasures().front();
+        //        hub::Dof6 dof62;
+        auto it2 = m_acqs.begin();
+
+        assert( ( it - 1 )->m_start < it->m_start );
+        assert( it->m_start < ( it + 1 )->m_start );
+
+        auto itStart = it->m_start + latency * 1000;
+        if ( itStart > acq2Start ) {
+            if ( it == m_acqs.begin() ) continue;
+            assert( it != m_acqs.begin() );
+            it2 = it - 1;
+            //            it2 = it;
+            //            it = it - 1;
+        }
+        else {
+            assert( it != m_acqs.end() );
+            it2 = it + 1;
+        }
+
+        //        if ( it == m_acqs.begin() ) { it2 = it + 1; }
+        //        else if ( it == m_acqs.end() ) { it2 = it - 1; }
+        //        else if ( std::abs( acq2Start - ( ( it - 1 )->m_start + latency * 1000 ) ) >
+        //                  std::abs( acq2Start - ( ( it + 1 )->m_start + latency * 1000 ) ) ) {
+        //            it2 = it + 1;
+        //        }
+        //        else { it2 = it - 1; }
+        const hub::Dof6& dof62 = it2->getMeasures().front();
+
+        auto it2Start = it2->m_start + latency * 1000;
+
+        //        assert(itStart <= acq2Start);
+        //        assert(acq2Start <= it2Start);
+        assert( itStart <= acq2Start <= it2Start || it2Start <= acq2Start <= itStart );
+        //        auto dof6Interpolate = dof6 * dof62;
+        //        auto acqInterpolate = hub::Acquisition::lerp(*it, *it2, acq2Start);
+
+        //    const Dof6& left  = ( startLeft > startRight ) ? ( pRight ) : ( pLeft );
+        //    const Dof6& right = ( startLeft > startRight ) ? ( pLeft ) : ( pRight );
+        //    if ( startLeft > startRight ) {
+        //        long long tmp = startLeft;
+        //        startLeft     = startRight;
+        //        startRight    = tmp;
+        //    }
+        //    assert( startLeft <= time && time <= startRight );
+        //    //    Dof6 ret;
+        double t            = ( acq2Start - itStart ) / ( it2Start - itStart );
+        auto acqInterpolate = hub::Dof6::slerp( dof6, dof62, t );
+
+        hub::Acquisition acq { acq2Start, acq2Start };
+        if ( m_interpolate ) {
+            acq << hub::Measure { acqInterpolate.m_data, acqInterpolate.m_size };
+        }
+        else { acq << hub::Measure { dof6.m_data, dof6.m_size }; }
+        //        acq << hub::Measure { dof6Interpolate.m_data, dof6Interpolate.m_size };
+        acq << acq2.getMeasures();
+        *m_outputSensor << acq;
+        //        *m_outputSensor << ( hub::Acquisition { acq2Start, acq2Start } <<
+        //        it->getMeasures()
+        //                                                                       <<
+        //                                                                       acq2.getMeasures()
+        //                                                                       );
     }
+    std::cout << std::endl;
 }
 
 void MainWindow::on_pushButton_minus_clicked() {
@@ -114,4 +190,22 @@ void MainWindow::on_pushButton_minus_clicked() {
 
 void MainWindow::on_pushButton_plus_clicked() {
     ui->spinBox_latency->setValue( ui->spinBox_latency->value() + 10 );
+}
+
+void MainWindow::on_pushButton_minus_2_clicked() {
+    ui->spinBox_latency_2->setValue( ui->spinBox_latency_2->value() - 10 );
+}
+
+void MainWindow::on_pushButton_plus_2_clicked() {
+    ui->spinBox_latency_2->setValue( ui->spinBox_latency_2->value() + 10 );
+}
+
+void MainWindow::on_spinBox_valueChanged( int arg1 ) {
+    m_maxDist = arg1;
+    updateLatency();
+}
+
+void MainWindow::on_checkBox_interpolate_toggled( bool checked ) {
+    m_interpolate = checked;
+    updateLatency();
 }
