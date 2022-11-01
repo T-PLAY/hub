@@ -60,7 +60,7 @@ int main() {
 
             std::fstream file( "file.txt", std::ios::in );
             hub::InputSensor inputSensor( hub::io::File( std::move( file ) ) );
-            const hub::SensorSpec::Resolutions & resolutions = inputSensor.m_spec.m_resolutions;
+            const hub::SensorSpec::Resolutions& resolutions = inputSensor.m_spec.m_resolutions;
 
             auto acq = inputSensor.getAcquisition();
 

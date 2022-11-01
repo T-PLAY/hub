@@ -42,21 +42,22 @@ int main( int argc, char* argv[] ) {
     //    std::vector<std::string> streamNames { "Polhemus Patriot (sensor 1)", "Polhemus Patriot
     //    (sensor 2)" };
     std::vector<std::pair<std::string, std::string>> streamNames {
-//        { "Polhemus Patriot (sensor 2)", "" }, { "ULA-OP 256", "" }
-        { "Polhemus Patriot (sensor 2)", "ULA-OP 256" }
-    };
+        //        { "Polhemus Patriot (sensor 2)", "" }, { "ULA-OP 256", "" }
+        { "Polhemus Patriot (sensor 2)", "ULA-OP 256" } };
     std::vector<std::thread> threads;
     //    threads.resize(streamNames.size());
 
     //        std::string imageStreamName = "ULA-OP 256";
 
-//    std::set<long long> starts;
+    //    std::set<long long> starts;
 
     for ( const auto& streamName : streamNames ) {
 
         threads.push_back( std::thread( [=, &stopThread]() {
             hub::InputSensor inputSensor( hub::io::InputStream(
-                streamName.first, streamName.second, hub::net::ClientSocket( hub::net::s_defaultServiceIp, port ) ) );
+                streamName.first,
+                streamName.second,
+                hub::net::ClientSocket( hub::net::s_defaultServiceIp, port ) ) );
 
             std::fstream recordFile( newRecordFolder + streamName.first + ".txt",
                                      std::ios::out | std::ios::binary | std::ios::trunc );
@@ -65,23 +66,22 @@ int main( int argc, char* argv[] ) {
             hub::OutputSensor outputSensor( inputSensor.m_spec,
                                             hub::io::File( std::move( recordFile ) ) );
 
-            int nAcq = 0;
+            int nAcq                = 0;
             long long previousStart = -1;
             while ( !stopThread ) {
                 auto acq = inputSensor.getAcquisition();
                 //                std::cout << "[" << streamName << "] record acq : " << acq <<
                 //                std::endl;
                 // ping acq
-                if (acq.m_start == previousStart)
-                    continue;
+                if ( acq.m_start == previousStart ) continue;
 
-                assert(acq.m_start > previousStart);
+                assert( acq.m_start > previousStart );
 
                 outputSensor << acq;
                 std::cout << "+" << std::flush;
                 ++nAcq;
-//                starts.emplace(acq.m_start);
-//                starts.insert(acq.m_start);
+                //                starts.emplace(acq.m_start);
+                //                starts.insert(acq.m_start);
                 previousStart = acq.m_start;
             }
             std::cout << std::endl;

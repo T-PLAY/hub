@@ -25,9 +25,9 @@ class StreamViewerClient : public Client
 
     std::string m_syncStreamName;
 
-    std::thread * m_thread = nullptr;
-    bool m_isKilled     = false;
-    bool m_updateFailed = false;
+    std::thread* m_thread = nullptr;
+    bool m_isKilled       = false;
+    bool m_updateFailed   = false;
 
     //    friend class Server;
 };

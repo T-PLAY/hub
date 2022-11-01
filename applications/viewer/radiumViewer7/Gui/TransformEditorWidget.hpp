@@ -3,8 +3,8 @@
 #include <QWidget>
 
 #include <Core/Containers/AlignedAllocator.hpp>
-#include <Gui/VectorEditor.hpp>
 #include <Gui/TransformEditor/TransformEditor.hpp>
+#include <Gui/VectorEditor.hpp>
 
 class QLayout;
 
@@ -17,7 +17,7 @@ class TransformEditorWidget : public QWidget, public Gui::TransformEditor
     Q_OBJECT
   public:
     explicit TransformEditorWidget( QWidget* parent = nullptr );
-    ~TransformEditorWidget(){};
+    ~TransformEditorWidget() {};
 
   public slots:
 

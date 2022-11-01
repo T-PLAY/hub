@@ -31,8 +31,8 @@ class MinimalApp : public QObject
 
   public:
     // Our instance of the engine
-//    std::unique_ptr<Ra::Engine::RadiumEngine> m_engine;
-    Ra::Engine::RadiumEngine * m_engine {nullptr};
+    //    std::unique_ptr<Ra::Engine::RadiumEngine> m_engine;
+    Ra::Engine::RadiumEngine* m_engine { nullptr };
 
     // Task queue
     std::unique_ptr<Ra::Core::TaskQueue> m_task_queue;

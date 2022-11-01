@@ -4,36 +4,37 @@
 #include <QFrame>
 #include <QScrollBar>
 
-class FrameRuler : public QFrame {
+class FrameRuler : public QFrame
+{
     Q_OBJECT
-public:
+  public:
     enum Type {
         NONE,
         HORIZONTAL,
         VERTICAL,
     };
-    FrameRuler(QWidget* parent = nullptr);
+    FrameRuler( QWidget* parent = nullptr );
 
-    void setPixelPerUnit(const double *newPixelPerUnit);
+    void setPixelPerUnit( const double* newPixelPerUnit );
 
-    void setScrollBar(const QScrollBar *newScrollBar);
+    void setScrollBar( const QScrollBar* newScrollBar );
 
-    void setCanvasPixelSize(const int *newCanvasPixelSize);
+    void setCanvasPixelSize( const int* newCanvasPixelSize );
 
-public slots:
+  public slots:
     void onPixelPerUnitChanged();
 
-    void setType(Type newType);
+    void setType( Type newType );
 
-protected:
-    void paintEvent(QPaintEvent* event) override;
+  protected:
+    void paintEvent( QPaintEvent* event ) override;
 
-private:
-    const double * mCanvasPixelPerUnit = nullptr;
-    const int * mCanvasPixelSize = nullptr;
-    Type mType = NONE;
+  private:
+    const double* mCanvasPixelPerUnit = nullptr;
+    const int* mCanvasPixelSize       = nullptr;
+    Type mType                        = NONE;
 
-    const QScrollBar * mScrollBar = nullptr;
+    const QScrollBar* mScrollBar = nullptr;
 };
 
 #endif // FRAMERULER_H

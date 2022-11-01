@@ -29,11 +29,11 @@
 #include <constants.h>
 
 #ifdef USE_GOT_PR
-#include <Core/Geometry/StandardAttribNames.hpp>
+#    include <Core/Geometry/StandardAttribNames.hpp>
 #endif
 
-#include <InputSensor.hpp>
 #include <IO/Stream.hpp>
+#include <InputSensor.hpp>
 
 #define SENSOR
 
@@ -45,10 +45,12 @@
 // * Demonstrate the usage of RawShaderMaterial functionalities
 // */
 // Vertex shader source code
-const std::string vertexShaderFile = PROJECT_DIR "applications/viewer/radiumViewer/vertexShader.glsl";
+const std::string vertexShaderFile =
+    PROJECT_DIR "applications/viewer/radiumViewer/vertexShader.glsl";
 // const std::string vertexShaderSource = loadShaderSource(vertexShaderFile);
 //  const std::string _vertexShaderSource { "#include \"TransformStructs.glsl\"\n"
-const std::string fragmentShaderFile = PROJECT_DIR "applications/viewer/radiumViewer/fragmentShader.glsl";
+const std::string fragmentShaderFile =
+    PROJECT_DIR "applications/viewer/radiumViewer/fragmentShader.glsl";
 // const std::string fragmentShaderSource = loadShaderSource(fragmentShaderFile);
 //  const std::string _fragmentShaderSource {
 //  };
@@ -64,12 +66,11 @@ const std::string fragmentShaderFile = PROJECT_DIR "applications/viewer/radiumVi
 
 //};
 
-int main(int argc, char* argv[])
-{
+int main( int argc, char* argv[] ) {
 
     //! [Creating the application]
-    Ra::Gui::BaseApplication app(argc, argv);
-    app.initialize(Ra::Gui::SimpleWindowFactory {});
+    Ra::Gui::BaseApplication app( argc, argv );
+    app.initialize( Ra::Gui::SimpleWindowFactory {} );
     //! [Creating the application]
 
     //    ! [add the custom material to the material system]
@@ -80,20 +81,20 @@ int main(int argc, char* argv[])
     {
         //! [Creating the quad]
 #ifdef USE_GOT_PR
-        auto quad = Ra::Core::Geometry::makeZNormalQuad({ 1_ra, 1_ra }, {}, true);
+        auto quad = Ra::Core::Geometry::makeZNormalQuad( { 1_ra, 1_ra }, {}, true );
 //        quad.addAttrib("in_texCoords", tex_coords);
 //                quad.addAttrib(Ra::Engine::Data::Mesh::getAttribName(Ra::Engine::Data::Mesh::VERTEX_TEXCOORD),
 //                tex_coords);
 #else
-        auto quad = Ra::Core::Geometry::makeZNormalQuad({ 1_ra, 1_ra });
+        auto quad = Ra::Core::Geometry::makeZNormalQuad( { 1_ra, 1_ra } );
         Ra::Core::Vector3Array tex_coords;
-        tex_coords.push_back({ 0_ra, 0_ra, 0_ra });
-        tex_coords.push_back({ 1_ra, 0_ra, 0_ra });
-        tex_coords.push_back({ 0_ra, 1_ra, 0_ra });
-        tex_coords.push_back({ 1_ra, 1_ra, 0_ra });
-//        quad.addAttrib(Ra::Core::Geometry::getAttribName(Ra::Core::Geometry::VERTEX_TEXCOORD), tex_coords);
-//        Ra::Engine::Data::TexturePa
-        quad.addAttrib("in_texcoord", tex_coords);
+        tex_coords.push_back( { 0_ra, 0_ra, 0_ra } );
+        tex_coords.push_back( { 1_ra, 0_ra, 0_ra } );
+        tex_coords.push_back( { 0_ra, 1_ra, 0_ra } );
+        tex_coords.push_back( { 1_ra, 1_ra, 0_ra } );
+        //        quad.addAttrib(Ra::Core::Geometry::getAttribName(Ra::Core::Geometry::VERTEX_TEXCOORD),
+        //        tex_coords); Ra::Engine::Data::TexturePa
+        quad.addAttrib( "in_texcoord", tex_coords );
 #endif
 
         //! [Creating the quad]
@@ -101,44 +102,44 @@ int main(int argc, char* argv[])
         //! [Creating a texture for the quad]
         unsigned char data[192 * 512];
         // fill with some function
-        for (int i = 0; i < 192; ++i) {
-            for (int j = 0; j < 512; j++) {
-                if (std::abs(i - 20) < 3 || std::abs(j - 20) < 3) {
-                    data[(i * 512 + j)] = 0;
-                } else {
-
-                    data[(i * 512 + j)] = (j / 2) % 256;
+        for ( int i = 0; i < 192; ++i ) {
+            for ( int j = 0; j < 512; j++ ) {
+                if ( std::abs( i - 20 ) < 3 || std::abs( j - 20 ) < 3 ) {
+                    data[( i * 512 + j )] = 0;
                 }
+                else { data[( i * 512 + j )] = ( j / 2 ) % 256; }
             }
         }
 
-        auto& textureParameters = app.m_engine->getTextureManager()->addTexture("myTexture", 512, 192, data);
-        textureParameters.format = gl::GLenum::GL_RED;
+        auto& textureParameters =
+            app.m_engine->getTextureManager()->addTexture( "myTexture", 512, 192, data );
+        textureParameters.format         = gl::GLenum::GL_RED;
         textureParameters.internalFormat = gl::GLenum::GL_R8;
         //! [Creating a texture for the quad]
 
         //! [create the quad material]
-        Ra::Core::Asset::BlinnPhongMaterialData matData("myMaterialData");
+        Ra::Core::Asset::BlinnPhongMaterialData matData( "myMaterialData" );
         // uncomment this to remove glossy highlight
-        matData.m_specular = Ra::Core::Utils::Color::Black();
-        matData.m_hasSpecular = true;
+        matData.m_specular      = Ra::Core::Utils::Color::Black();
+        matData.m_hasSpecular   = true;
         matData.m_hasTexDiffuse = true;
-        matData.m_texDiffuse = "myTexture";
+        matData.m_texDiffuse    = "myTexture";
 
         //! [Create Parameter provider for the shader]
         //! [create the quad material]
 
         //! [Create the engine entity for the quad]
-        auto e = app.m_engine->getEntityManager()->createEntity("Textured quad");
+        auto e = app.m_engine->getEntityManager()->createEntity( "Textured quad" );
         //! [Create the engine entity for the quad]
 
         //! [Create a geometry component with the quad]
-        auto c = new Ra::Engine::Scene::TriangleMeshComponent("Quad Mesh", e, std::move(quad), &matData);
+        auto c = new Ra::Engine::Scene::TriangleMeshComponent(
+            "Quad Mesh", e, std::move( quad ), &matData );
         //! [Create a geometry component with the quad]
 
         //! [Register the entity/component association to the geometry system ]
-        auto geometrySystem = app.m_engine->getSystem("GeometrySystem");
-        geometrySystem->addComponent(e, c);
+        auto geometrySystem = app.m_engine->getSystem( "GeometrySystem" );
+        geometrySystem->addComponent( e, c );
         //! [Register the entity/component association to the geometry system ]
 
         //! [Tell the window that something is to be displayed]
@@ -146,17 +147,22 @@ int main(int argc, char* argv[])
         //! [Tell the window that something is to be displayed]
 
         //![get the renderobject for further edition]
-        auto ro = Ra::Engine::RadiumEngine::getInstance()->getRenderObjectManager()->getRenderObject(c->m_renderObjects[0]);
+        auto ro =
+            Ra::Engine::RadiumEngine::getInstance()->getRenderObjectManager()->getRenderObject(
+                c->m_renderObjects[0] );
 
         auto& renderTechnique = *ro->getRenderTechnique();
-        Ra::Engine::Data::ShaderConfiguration shaderConfig("myShader", vertexShaderFile, fragmentShaderFile);
-        renderTechnique.setConfiguration(shaderConfig);
+        Ra::Engine::Data::ShaderConfiguration shaderConfig(
+            "myShader", vertexShaderFile, fragmentShaderFile );
+        renderTechnique.setConfiguration( shaderConfig );
 
         roQuad = ro;
     }
 
-    Ra::Engine::Scene::CameraManager* cameraManager = static_cast<Ra::Engine::Scene::CameraManager*>(app.m_engine->getInstance()->getSystem("DefaultCameraManager"));
-    cameraManager->defaultCamera.setPosition(Ra::Core::Vector3 { 100_ra, 100_ra, 100_ra });
+    Ra::Engine::Scene::CameraManager* cameraManager =
+        static_cast<Ra::Engine::Scene::CameraManager*>(
+            app.m_engine->getInstance()->getSystem( "DefaultCameraManager" ) );
+    cameraManager->defaultCamera.setPosition( Ra::Core::Vector3 { 100_ra, 100_ra, 100_ra } );
     //    cameraManager->updateActiveCameraData();
     //    roQuad->setVisible(false);
 
@@ -164,7 +170,7 @@ int main(int argc, char* argv[])
 
 #ifdef SENSOR
     hub::InputSensor* scanStream = nullptr;
-    hub::InputSensor* posStream = nullptr;
+    hub::InputSensor* posStream  = nullptr;
 
 ////#define ONLY_POSE
 //#ifdef ONLY_POSE
@@ -189,139 +195,147 @@ int main(int argc, char* argv[])
 //        posStream = nullptr;
 //    }
 
-
 //#endif
-#ifndef ONLY_POSE
+#    ifndef ONLY_POSE
     try {
-        scanStream = new hub::InputSensor(hub::io::InputStream(g_probeScanSensorName, ""));
-    } catch (std::exception& e) {
+        scanStream = new hub::InputSensor( hub::io::InputStream( g_probeScanSensorName, "" ) );
+    }
+    catch ( std::exception& e ) {
         std::cout << "[main] catch exception " << e.what() << std::endl;
         scanStream = nullptr;
     }
-#endif
+#    endif
 
     try {
-        if (scanStream != nullptr) {
-//            posStream = new hub::InputSensor("Polhemus Patriot (probe)", "ULA-OP 256");
-            posStream = new hub::InputSensor(hub::io::InputStream(g_probePoseSensorName));
-        } else {
-            posStream = new hub::InputSensor(hub::io::InputStream(g_probePoseSensorName));
+        if ( scanStream != nullptr ) {
+            //            posStream = new hub::InputSensor("Polhemus Patriot (probe)", "ULA-OP
+            //            256");
+            posStream = new hub::InputSensor( hub::io::InputStream( g_probePoseSensorName ) );
         }
-    } catch (std::exception& e) {
+        else { posStream = new hub::InputSensor( hub::io::InputStream( g_probePoseSensorName ) ); }
+    }
+    catch ( std::exception& e ) {
         std::cout << "[main] catch exception " << e.what() << std::endl;
         posStream = nullptr;
     }
 
-    if (posStream == nullptr && scanStream == nullptr) {
-        return 0;
-    }
+    if ( posStream == nullptr && scanStream == nullptr ) { return 0; }
 
 #endif
 
-    auto close_timer = new QTimer(&app);
+    auto close_timer = new QTimer( &app );
 #ifdef WIN32
-    close_timer->setInterval(10); // win
+    close_timer->setInterval( 10 ); // win
 #else
-    close_timer->setInterval(20); // linux
+    close_timer->setInterval( 20 ); // linux
 #endif
     int iAcquisition = 0;
-    int nThread = 0;
+    int nThread      = 0;
 
 #ifdef SENSOR
-    QObject::connect(close_timer, &QTimer::timeout, [&app, &iAcquisition, &posStream = posStream, &roQuad, &nThread, &scanStream = scanStream]() {
+    QObject::connect(
+        close_timer,
+        &QTimer::timeout,
+        [&app,
+         &iAcquisition,
+         &posStream = posStream,
+         &roQuad,
+         &nThread,
+         &scanStream = scanStream]() {
 #else
-    QObject::connect(close_timer, &QTimer::timeout, [&app, &iAcquisition, &nThread]() {
+    QObject::connect( close_timer, &QTimer::timeout, [&app, &iAcquisition, &nThread]() {
 #endif
-        ++nThread;
-        if (nThread > 1) {
-            std::cout << "thread pending ---------------------" << std::endl;
-            return;
-        }
-        std::cout << "update acquisition " << iAcquisition << std::endl;
+            ++nThread;
+            if ( nThread > 1 ) {
+                std::cout << "thread pending ---------------------" << std::endl;
+                return;
+            }
+            std::cout << "update acquisition " << iAcquisition << std::endl;
 
         //#ifndef ONLY_POSE
         // update texture
 
 #ifdef SENSOR
-        if (scanStream != nullptr) {
-//            Stream::Acquisition scanAcq;
-//            *scanStream >> scanAcq;
-            auto scanAcq = scanStream->getAcquisition();
+            if ( scanStream != nullptr ) {
+                //            Stream::Acquisition scanAcq;
+                //            *scanStream >> scanAcq;
+                auto scanAcq = scanStream->getAcquisition();
 
-            const unsigned char* data = scanAcq.m_data;
+                const unsigned char* data = scanAcq.m_data;
 #else
         unsigned char data[192 * 512] = { 0 };
-        for (int i = 0; i < 192; ++i) {
-            for (int j = 0; j < 512; j++) {
-                data[i * 512 + j] = (iAcquisition + j) % 256;
+        for ( int i = 0; i < 192; ++i ) {
+            for ( int j = 0; j < 512; j++ ) {
+                data[i * 512 + j] = ( iAcquisition + j ) % 256;
             }
         }
 
 #endif
 
-            Ra::Engine::Data::TextureParameters textureParameters;
-            textureParameters.name = "myTexture";
-            auto texture = app.m_engine->getTextureManager()->getOrLoadTexture(textureParameters);
-            auto& params = texture->getParameters();
-            memcpy(params.texels, data, 192 * 512);
-            app.m_mainWindow->getViewer()->makeCurrent();
-            texture->initializeGL(false);
-            app.m_mainWindow->getViewer()->doneCurrent();
+                Ra::Engine::Data::TextureParameters textureParameters;
+                textureParameters.name = "myTexture";
+                auto texture =
+                    app.m_engine->getTextureManager()->getOrLoadTexture( textureParameters );
+                auto& params = texture->getParameters();
+                memcpy( params.texels, data, 192 * 512 );
+                app.m_mainWindow->getViewer()->makeCurrent();
+                texture->initializeGL( false );
+                app.m_mainWindow->getViewer()->doneCurrent();
 
 #ifdef SENSOR
-        }
+            }
 #endif
         //#endif
 
 #ifdef SENSOR
-        // update position and orientation
-        if (posStream != nullptr) {
-//            Stream::Acquisition posAcq;
-//            *posStream >> posAcq;
-        auto posAcq = posStream->getAcquisition();
-            float* translation = (float*)posAcq.m_data;
-            float* quaternion = (float*)&posAcq.m_data[12];
+            // update position and orientation
+            if ( posStream != nullptr ) {
+                //            Stream::Acquisition posAcq;
+                //            *posStream >> posAcq;
+                auto posAcq        = posStream->getAcquisition();
+                float* translation = (float*)posAcq.m_data;
+                float* quaternion  = (float*)&posAcq.m_data[12];
 
-            // change to Radium base reference
-            Ra::Core::Transform TRadium = Ra::Core::Transform::Identity();
-            TRadium.rotate(Eigen::AngleAxis(1.0f * Ra::Core::Math::Pi, Ra::Core::Vector3(0.0, 0.0, 1.0)));
-            TRadium.rotate(Eigen::AngleAxis(-0.5f * Ra::Core::Math::Pi, Ra::Core::Vector3(1.0, 0.0, 0.0)));
+                // change to Radium base reference
+                Ra::Core::Transform TRadium = Ra::Core::Transform::Identity();
+                TRadium.rotate( Eigen::AngleAxis( 1.0f * Ra::Core::Math::Pi,
+                                                  Ra::Core::Vector3( 0.0, 0.0, 1.0 ) ) );
+                TRadium.rotate( Eigen::AngleAxis( -0.5f * Ra::Core::Math::Pi,
+                                                  Ra::Core::Vector3( 1.0, 0.0, 0.0 ) ) );
 
-            // orientation
-            Ra::Core::Transform TOrientation = Ra::Core::Transform::Identity();
-            Ra::Core::Quaternion quat(quaternion[0], quaternion[1], quaternion[2], quaternion[3]);
-            TOrientation.rotate(quat);
+                // orientation
+                Ra::Core::Transform TOrientation = Ra::Core::Transform::Identity();
+                Ra::Core::Quaternion quat(
+                    quaternion[0], quaternion[1], quaternion[2], quaternion[3] );
+                TOrientation.rotate( quat );
 
+                // World transform
+                Ra::Core::Transform TWorld = Ra::Core::Transform::Identity();
 
-            // World transform
-            Ra::Core::Transform TWorld = Ra::Core::Transform::Identity();
+                Ra::Core::Vector3 vecPos( -translation[0], -translation[1], -translation[2] );
 
-            Ra::Core::Vector3 vecPos(-translation[0], -translation[1], -translation[2]);
+                vecPos /= 5.0;
+                TWorld.translate( vecPos );
 
-            vecPos /= 5.0;
-            TWorld.translate(vecPos);
+                // Local transform
+                Ra::Core::Transform TLocal = Ra::Core::Transform::Identity();
+                TLocal.translate( Ra::Core::Vector3( 1.0, 0.0, 0.0 ) );
+                Ra::Core::Vector3 vecScale( 1.0, 192.0 / 512, 1.0 );
+                TLocal.scale( vecScale );
 
-            // Local transform
-            Ra::Core::Transform TLocal = Ra::Core::Transform::Identity();
-            TLocal.translate(Ra::Core::Vector3(1.0, 0.0, 0.0));
-            Ra::Core::Vector3 vecScale(1.0, 192.0 / 512, 1.0);
-            TLocal.scale(vecScale);
-
-            roQuad->setLocalTransform(TRadium * TWorld * TOrientation * TLocal);
-        }
+                roQuad->setLocalTransform( TRadium * TWorld * TOrientation * TLocal );
+            }
 #endif
 
-        ++iAcquisition;
-        --nThread;
-    });
+            ++iAcquisition;
+            --nThread;
+        } );
     close_timer->start();
 
     return app.exec();
 
 #ifdef SENSOR
-    if (posStream != nullptr)
-        delete posStream;
-    if (scanStream != nullptr)
-        delete scanStream;
+    if ( posStream != nullptr ) delete posStream;
+    if ( scanStream != nullptr ) delete scanStream;
 #endif
 }

@@ -19,8 +19,7 @@ class VectorEditor : public QWidget, private Ui::VectorEditor
                            QString title,
                            bool editable   = true,
                            QWidget* parent = nullptr ) :
-        QWidget( parent ),
-        m_id( id ) {
+        QWidget( parent ), m_id( id ) {
         setupUi( this );
         m_groupBox->setTitle( title );
 

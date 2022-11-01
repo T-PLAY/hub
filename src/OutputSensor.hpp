@@ -21,12 +21,13 @@ class SRC_API OutputSensor : public Sensor
     /// \param outputInterface
     ///
     template <class SensorSpec = hub::SensorSpec,
-            class OutputInterface,
+              class OutputInterface,
               typename = typename std::enable_if<
                   std::is_base_of<io::OutputInterface, OutputInterface>::value>::type>
     OutputSensor( SensorSpec&& sensorSpec, OutputInterface&& outputInterface ) :
 
-//        Sensor( std::forward<hub::SensorSpec>( sensorSpec ), // not worked for const reference parameter, why ?
+        //        Sensor( std::forward<hub::SensorSpec>( sensorSpec ), // not worked for const
+        //        reference parameter, why ?
         Sensor( std::move( sensorSpec ),
                 *std::move( new OutputInterface( std::move( outputInterface ) ) ) ) {
 
@@ -35,8 +36,8 @@ class SRC_API OutputSensor : public Sensor
 
         static_assert( std::is_base_of<io::OutputInterface, OutputInterface>::value,
                        "not a base class" );
-//        static_assert( std::is_base_of<hub::SensorSpec&&, SensorSpec>::value,
-//                       "not a base class" );
+        //        static_assert( std::is_base_of<hub::SensorSpec&&, SensorSpec>::value,
+        //                       "not a base class" );
 
         m_interface.write( m_spec );
     }
@@ -53,10 +54,10 @@ class SRC_API OutputSensor : public Sensor
     /// \param acquisition
     /// to send through the sensor.
     ///
-//    OutputSensor & operator<<( const Acquisition& acquisition );
+    //    OutputSensor & operator<<( const Acquisition& acquisition );
     void operator<<( const Acquisition& acquisition ) const;
 
-//    OutputSensor & operator<<( const Measure& measure );
+    //    OutputSensor & operator<<( const Measure& measure );
 
   private:
 };

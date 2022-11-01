@@ -213,34 +213,34 @@ class MainWindow : public Ra::Gui::MainWindowInterface, private Ui::MainWindow
 
   private:
     /// Stores the internal model of engine objects for selection and visibility.
-    Gui::ItemModel* m_itemModel {nullptr};
+    Gui::ItemModel* m_itemModel { nullptr };
 
     /// Stores and manages the current selection.
-    Gui::SelectionManager* m_selectionManager {nullptr};
+    Gui::SelectionManager* m_selectionManager { nullptr };
 
     /// Widget to allow material edition.
-    std::unique_ptr<MaterialEditor> m_materialEditor {nullptr};
+    std::unique_ptr<MaterialEditor> m_materialEditor { nullptr };
 
     /// Viewer widget
-    Ra::Gui::Viewer* m_viewer {nullptr};
+    Ra::Gui::Viewer* m_viewer { nullptr };
 
     /// Skeleton-based animation gui
-    Ra::Gui::SkeletonBasedAnimationUI* m_skelAnim {nullptr};
+    Ra::Gui::SkeletonBasedAnimationUI* m_skelAnim { nullptr };
 
     /// Timeline gui
-    Ra::Gui::Timeline* m_timeline {nullptr};
+    Ra::Gui::Timeline* m_timeline { nullptr };
 
     /// Guard TimeSystem against issue with Timeline signals.
-    bool m_lockTimeSystem {false};
+    bool m_lockTimeSystem { false };
 
     /// Observers id for engine event
     ///@{
-    int m_entityAddObserverId {-1};
-    int m_entityRemoveObserverId {-1};
-    int m_componentAddObserverId {-1};
-    int m_componentRemoveObserverId {-1};
-    int m_roAddObserverId {-1};
-    int m_roRemoveObserverId {-1};
+    int m_entityAddObserverId { -1 };
+    int m_entityRemoveObserverId { -1 };
+    int m_componentAddObserverId { -1 };
+    int m_componentRemoveObserverId { -1 };
+    int m_roAddObserverId { -1 };
+    int m_roRemoveObserverId { -1 };
     ///@}
 
     GuiManager m_guiManager;

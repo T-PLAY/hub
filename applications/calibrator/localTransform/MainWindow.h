@@ -8,8 +8,8 @@
 //#include <glm/gtc/quaternion.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include <OutputSensor.hpp>
 #include <IO/Stream.hpp>
+#include <OutputSensor.hpp>
 
 namespace Ui {
 class MainWindow;
@@ -19,19 +19,19 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
-public:
-    explicit MainWindow(QWidget *parent = nullptr);
+  public:
+    explicit MainWindow( QWidget* parent = nullptr );
     ~MainWindow();
 
-private slots:
+  private slots:
 
-private:
+  private:
     void updateTransform();
 
-private:
-    Ui::MainWindow *ui;
+  private:
+    Ui::MainWindow* ui;
 
-    hub::OutputSensor * m_outputSensor = nullptr;
+    hub::OutputSensor* m_outputSensor = nullptr;
     glm::mat4 m_transform;
 };
 

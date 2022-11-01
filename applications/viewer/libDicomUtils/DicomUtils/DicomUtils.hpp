@@ -16,13 +16,12 @@ namespace DICOM {
  * @return  a pointer to the raw density data, nullptr if the file was not loaded.
  */
 unsigned char* readDicomVolume( const char* filename,
-                              unsigned int* width,
-                              unsigned int* height,
-                              unsigned int* depth,
-                              unsigned int* bytes,
-                              float* scalex,
-                              float* scaley,
-                              float* scalez);
+                                unsigned int* width,
+                                unsigned int* height,
+                                unsigned int* depth,
+                                unsigned int* bytes,
+                                float* scalex,
+                                float* scaley,
+                                float* scalez );
 
 } // namespace DICOM
-

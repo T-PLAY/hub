@@ -15,9 +15,9 @@ class SRC_API Measure
 {
 
   public:
-//    Measure( const unsigned char* const data, uint64_t size, bool floatData = false );
-    Measure( const unsigned char* const data, uint64_t size);
-//    Measure( unsigned char* data, uint64_t size);
+    //    Measure( const unsigned char* const data, uint64_t size, bool floatData = false );
+    Measure( const unsigned char* const data, uint64_t size );
+    //    Measure( unsigned char* data, uint64_t size);
     Measure( Measure&& measure );
     //    Measure( Measurement measurement );
     Measure( const Measure& ) = delete;
@@ -30,7 +30,7 @@ class SRC_API Measure
     Measure clone() const;
 
     bool interpolable() const;
-    static Measure slerp(const Measure & left, const Measure & right, double t);
+    static Measure slerp( const Measure& left, const Measure& right, double t );
 
     //  private:
     //    Measurement m_measurement;
@@ -41,7 +41,6 @@ class SRC_API Measure
     bool operator==( const Measure& measure ) const;
     bool operator!=( const Measure& measure ) const;
     SRC_API friend std::ostream& operator<<( std::ostream& os, const Measure& measure );
-
 
   protected:
     bool m_ownData = false;
@@ -65,24 +64,25 @@ class SRC_API Dof6 : public Measure
           float w1 = 0.0,
           float w2 = 0.0,
           float w3 = 0.0 );
-//    ~Dof6();
+    //    ~Dof6();
     // private:
-    const float m_x = 0.0, m_y = 0.0, m_z = 0.0; // vec3
+    const float m_x = 0.0, m_y = 0.0, m_z = 0.0;                // vec3
     const float m_w0 = 1.0, m_w1 = 0.0, m_w2 = 0.0, m_w3 = 0.0; // quat : w, x, y, z
     //    SensorSpec::Format getFormat() override;
 
-//    Dof6 operator*(const Dof6 & dof6) const;
-    static Dof6 slerp(const Dof6 & left, const Dof6 & right, long long t);
+    //    Dof6 operator*(const Dof6 & dof6) const;
+    static Dof6 slerp( const Dof6& left, const Dof6& right, long long t );
 
     SRC_API friend std::ostream& operator<<( std::ostream& os, const Dof6& dof6 );
+
   private:
     //    constexpr static SensorSpec::Format m_format = SensorSpec::Format::DOF6;
 };
 
 class Mat4 : public Measure
 {
-public:
-    Mat4(const float * array);
+  public:
+    Mat4( const float* array );
 };
 
 // class Image : public Measure
@@ -129,7 +129,7 @@ class SRC_API Acquisition
     /// \param size
     ///
     //    template <typename Arg, typename... Args>
-//    Acquisition( long long start, long long end, Measures && measures = {} );
+    //    Acquisition( long long start, long long end, Measures && measures = {} );
     Acquisition( long long start, long long end );
     //    Acquisition( long long start,
     //                 long long end,
@@ -140,7 +140,7 @@ class SRC_API Acquisition
     ~Acquisition();
 
     Acquisition( const Acquisition& acq ) = delete;
-//    Acquisition( Acquisition&& acq ) noexcept;
+    //    Acquisition( Acquisition&& acq ) noexcept;
     Acquisition( Acquisition&& acq ) = default;
 
     Acquisition& operator=( const Acquisition& acq ) = delete;
@@ -153,9 +153,10 @@ class SRC_API Acquisition
     Acquisition& operator<<( const Measures& measure );
 
     bool interpolable() const;
-    static Acquisition slerp(const Acquisition & left, const Acquisition & right, double t);
+    static Acquisition slerp( const Acquisition& left, const Acquisition& right, double t );
 
-//    static Acquisition lerp(const Acquisition & left, const Acquisition & right, long long time);
+    //    static Acquisition lerp(const Acquisition & left, const Acquisition & right, long long
+    //    time);
 
     //        template <class T>
     //        const T& get() const {
@@ -188,8 +189,8 @@ class SRC_API Acquisition
                              //    const unsigned char* const m_data;
   private:
     Measures m_measures;
-    size_t m_size  = 0;
-//    bool m_isMoved = false;
+    size_t m_size = 0;
+    //    bool m_isMoved = false;
 
   public:
     SRC_API friend std::ostream& operator<<( std::ostream& os, const Acquisition& acq );

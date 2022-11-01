@@ -19,10 +19,7 @@ int main( int argc, char* argv[] ) {
     //    std::cout << typeid(int).operator==( << std::endl;
     //    return 0;
     int port = hub::net::s_defaultServicePort;
-    if (argc == 2) {
-        port = atoi(argv[1]);
-    }
-
+    if ( argc == 2 ) { port = atoi( argv[1] ); }
 
 #ifdef ULA_STREAMER
     constexpr int width  = 192;
@@ -31,29 +28,39 @@ int main( int argc, char* argv[] ) {
     hub::SensorSpec::MetaData metaData;
     //    metaData["scanDepth"] = 35.0; // mm
     //    metaData["scanWidth"] = 50.0; // mm
-//    const float transform[16] = {0.000000, -0.000000, -50.000000, 0.000000,
-//                            -0.000000, -1.000000, 0.000000, 0.000000,
-//                            -35.000000, 0.000000, -0.000000, 0.000000,
-//                            0.000000, 0.000000, 0.000000, 1.000000 };
-//    metaData["transform"] = transform;
+    //    const float transform[16] = {0.000000, -0.000000, -50.000000, 0.000000,
+    //                            -0.000000, -1.000000, 0.000000, 0.000000,
+    //                            -35.000000, 0.000000, -0.000000, 0.000000,
+    //                            0.000000, 0.000000, 0.000000, 1.000000 };
+    //    metaData["transform"] = transform;
     metaData["parent"] = "Keyboard";
-//    metaData["parent"] = "Polhemus Patriot (sensor 2)";
-//    metaData["parent"] = "calibrator";
-    metaData["scanWidth"] = 50.0;
-    metaData["scanDepth"] = 35.0;
-    const float localTransform[16] = {
-        17.5,		   0.000000, 0.000000, 0.000000,
-        0.000000, -0.000004, 100.000000, 0.000000,
-        0.000000, -25.000000, -0.00000, 0.000000,
-        30 + 17.5, 0.000000, 140.000000, 1.000000
-    };
-    metaData["transform"] = localTransform;
+    //    metaData["parent"] = "Polhemus Patriot (sensor 2)";
+    //    metaData["parent"] = "calibrator";
+    metaData["scanWidth"]          = 50.0;
+    metaData["scanDepth"]          = 35.0;
+    const float localTransform[16] = { 17.5,
+                                       0.000000,
+                                       0.000000,
+                                       0.000000,
+                                       0.000000,
+                                       -0.000004,
+                                       100.000000,
+                                       0.000000,
+                                       0.000000,
+                                       -25.000000,
+                                       -0.00000,
+                                       0.000000,
+                                       30 + 17.5,
+                                       0.000000,
+                                       140.000000,
+                                       1.000000 };
+    metaData["transform"]          = localTransform;
 
-//        hub::OutputSensor proceduralStream(
-//            { "ProceduralStreamer", { { { width, height }, hub::SensorSpec::Format::Y8 } },
-//            metaData }, hub::io::OutputStream( "ProceduralStreamer" ) );
+    //        hub::OutputSensor proceduralStream(
+    //            { "ProceduralStreamer", { { { width, height }, hub::SensorSpec::Format::Y8 } },
+    //            metaData }, hub::io::OutputStream( "ProceduralStreamer" ) );
 
-    hub::Streamer streamer(hub::net::s_defaultServiceIp, port);
+    hub::Streamer streamer( hub::net::s_defaultServiceIp, port );
     streamer.addStream( "ProceduralStreamer",
                         { "ProceduralStreamer",
                           { { { width, height }, hub::SensorSpec::Format::Y8 } },
@@ -90,11 +97,11 @@ int main( int argc, char* argv[] ) {
             }
         }
 
-//        for ( int i = 0; i < height; ++i ) {
-//            for ( int j = 0; j < width; ++j ) {
-//                data[i * width + j] = ( dec ) % 256;
-//            }
-//        }
+        //        for ( int i = 0; i < height; ++i ) {
+        //            for ( int j = 0; j < width; ++j ) {
+        //                data[i * width + j] = ( dec ) % 256;
+        //            }
+        //        }
 
         //            data[i] = (i / width + dec) % 256;
         //            if (std::abs(i / (float)height - 20.0) < 5)
@@ -102,14 +109,14 @@ int main( int argc, char* argv[] ) {
         //            else
         //		    data[i] = (i / height + dec) % 256;
         //        }
-#if defined(WIN32)
-            const auto maxFps = 60.0;
-#else
-            const auto maxFps = 40.0;
-#endif
-//        const auto maxFps = 10;
-//        const auto maxFps = 2;
-            const auto end    = start + std::chrono::microseconds( (int)(1'000'000 / maxFps ));
+#    if defined( WIN32 )
+        const auto maxFps = 60.0;
+#    else
+        const auto maxFps = 40.0;
+#    endif
+        //        const auto maxFps = 10;
+        //        const auto maxFps = 2;
+        const auto end = start + std::chrono::microseconds( (int)( 1'000'000 / maxFps ) );
 
         const auto& timestampStart =
             std::chrono::duration_cast<std::chrono::microseconds>( start.time_since_epoch() )
@@ -118,18 +125,18 @@ int main( int argc, char* argv[] ) {
             std::chrono::duration_cast<std::chrono::microseconds>( end.time_since_epoch() ).count();
         ++dec;
 
-//        std::cout << "new acquisition" << std::endl;
+        //        std::cout << "new acquisition" << std::endl;
 
         streamer.newAcquisition( "ProceduralStreamer",
                                  std::move( hub::Acquisition { timestampStart, timestampEnd }
                                             << hub::Measure { data, imgSize } ) );
 
-//                proceduralStream << ( hub::Acquisition { timestampStart, timestampEnd }
-//                                      << hub::Measure { data, imgSize } );
+        //                proceduralStream << ( hub::Acquisition { timestampStart, timestampEnd }
+        //                                      << hub::Measure { data, imgSize } );
 
         std::this_thread::sleep_until( end );
-//        std::cout << "+" << std::flush;
-//        break;
+        //        std::cout << "+" << std::flush;
+        //        break;
     }
 #else
 

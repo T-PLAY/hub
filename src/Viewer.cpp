@@ -8,11 +8,11 @@
 
 namespace hub {
 
-Viewer::Viewer(std::function<bool (const char *, const SensorSpec &)> onNewStreamer,
-                std::function<void (const char *, const SensorSpec &)> onDelStreamer,
-                std::function<void (const char *, int)> onServerConnected,
-                std::function<void (const char *, int)> onServerDisconnected,
-                std::function<void (const char *, const hub::Acquisition &)> onNewAcquisition,
+Viewer::Viewer( std::function<bool( const char*, const SensorSpec& )> onNewStreamer,
+                std::function<void( const char*, const SensorSpec& )> onDelStreamer,
+                std::function<void( const char*, int )> onServerConnected,
+                std::function<void( const char*, int )> onServerDisconnected,
+                std::function<void( const char*, const hub::Acquisition& )> onNewAcquisition,
                 const std::string& ipv4,
                 int port ) :
 
@@ -41,7 +41,7 @@ Viewer::Viewer(std::function<bool (const char *, const SensorSpec &)> onNewStrea
 
                 if ( m_onServerConnected ) m_onServerConnected( m_ipv4.c_str(), m_port );
 
-//                std::string streamName;
+                //                std::string streamName;
 
                 while ( !m_stopThread ) {
                     net::ClientSocket::Message serverMessage;
@@ -79,7 +79,7 @@ Viewer::Viewer(std::function<bool (const char *, const SensorSpec &)> onNewStrea
                             }
                         }
                         // wait for client init sensorSpec with main thread context (async)
-                        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                        std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
 
                     } break;
 
@@ -100,7 +100,7 @@ Viewer::Viewer(std::function<bool (const char *, const SensorSpec &)> onNewStrea
 
                             if ( m_onNewAcquisition ) { stopStream( streamName, sensorSpec ); }
                         }
-                        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                        std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
 
                     } break;
 

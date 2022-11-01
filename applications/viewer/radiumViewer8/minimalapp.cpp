@@ -11,7 +11,6 @@
 #include <QMainWindow>
 #include <QOpenGLContext>
 
-
 using namespace Ra;
 using namespace Ra::Gui;
 
@@ -27,7 +26,7 @@ MinimalApp::~MinimalApp() {
     // need to clean up everithing before engine is cleaned up.
     m_frameTimer->stop();
     m_taskQueue.reset( nullptr );
-//    assert(m_viewer == nullptr);
+    //    assert(m_viewer == nullptr);
     m_viewer.reset( nullptr );
     m_engine->cleanup();
     Ra::Engine::RadiumEngine::destroyInstance();
@@ -74,13 +73,13 @@ void MinimalApp::initialize() {
     m_frameTimer = new QTimer( this );
     m_frameTimer->setInterval( 1000 / m_targetFps );
 
-//    // Create a window container for the viewer.
-//    // using viewer directly as main windows fail to have valid glbinding context
-//    // on Debian bullseye, Qt version 6.2.4
-//    auto viewerWidget = QWidget::createWindowContainer( m_viewer.get() );
-//    viewerWidget->setAutoFillBackground( false );
-//    viewerWidget->resize( 500, 500 );
-//    viewerWidget->show();
+    //    // Create a window container for the viewer.
+    //    // using viewer directly as main windows fail to have valid glbinding context
+    //    // on Debian bullseye, Qt version 6.2.4
+    //    auto viewerWidget = QWidget::createWindowContainer( m_viewer.get() );
+    //    viewerWidget->setAutoFillBackground( false );
+    //    viewerWidget->resize( 500, 500 );
+    //    viewerWidget->show();
 }
 
 void MinimalApp::onGLInitialized() {
@@ -113,7 +112,7 @@ void MinimalApp::frame() {
     // Starts the renderer
     m_viewer->startRendering( dt );
 
-    auto * textureManager = m_engine->getTextureManager();
+    auto* textureManager = m_engine->getTextureManager();
     textureManager->updatePendingTextures();
 
     // Finish the frame

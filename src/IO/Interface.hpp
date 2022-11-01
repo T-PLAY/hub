@@ -30,7 +30,7 @@ class SRC_API Interface
 {
   public:
     static std::string anyValue2string( const std::any& any );
-    static const std::string &anyType2string( const std::any& any );
+    static const std::string& anyType2string( const std::any& any );
 
   public:
     Interface()                                       = default;
@@ -118,7 +118,8 @@ void Interface::write( const T& t ) const {
     write( reinterpret_cast<const unsigned char*>( &t ), sizeof( T ) );
 
 #ifdef DEBUG_IOSTREAM
-    std::cout << "[Interface] write(T) : " << typeid( T ).name() << " '" << t << "' : end" << std::endl;
+    std::cout << "[Interface] write(T) : " << typeid( T ).name() << " '" << t << "' : end"
+              << std::endl;
 #endif
 }
 
@@ -194,7 +195,8 @@ void Interface::read( T& t ) const {
     read( reinterpret_cast<unsigned char*>( &t ), sizeof( T ) );
 
 #ifdef DEBUG_IOSTREAM
-    std::cout << "[Interface] read(T) : " << typeid( T ).name() << " '" << t << "' : end" << std::endl;
+    std::cout << "[Interface] read(T) : " << typeid( T ).name() << " '" << t << "' : end"
+              << std::endl;
 #endif
 }
 
@@ -224,7 +226,7 @@ void Interface::read( std::vector<T>& vector ) const {
     read( nbEl );
 
     vector.clear();
-    vector.reserve(nbEl);
+    vector.reserve( nbEl );
 
     for ( int i = 0; i < nbEl; ++i ) {
         T el;
@@ -276,7 +278,6 @@ void Interface::read( std::pair<T, U>& pair ) const {
     read( second );
     pair = std::make_pair( first, second );
 }
-
 
 } // namespace io
 } // namespace hub

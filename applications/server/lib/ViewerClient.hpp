@@ -10,7 +10,6 @@
 
 class StreamerClient;
 
-
 class ViewerClient : public Client
 {
   public:

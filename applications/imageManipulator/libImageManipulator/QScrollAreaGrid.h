@@ -2,37 +2,34 @@
 #define QSCROLLAREAGRID_H
 
 #include <QScrollArea>
-#include <QWidget>
 #include <QWheelEvent>
+#include <QWidget>
 
 class QScrollAreaGrid : public QScrollArea
 {
     Q_OBJECT
-public:
-    QScrollAreaGrid(QWidget * parent = nullptr);
+  public:
+    QScrollAreaGrid( QWidget* parent = nullptr );
 
-//    const double & getCanvasPixelPerUnit() const;
+    //    const double & getCanvasPixelPerUnit() const;
 
-    void setScrollAreaTop(QScrollArea *newScrollAreaTop);
+    void setScrollAreaTop( QScrollArea* newScrollAreaTop );
 
-    void setScrollAreaLeft(QScrollArea *newScrollAreaLeft);
+    void setScrollAreaLeft( QScrollArea* newScrollAreaLeft );
 
-    void setCanvasPixelPerUnit(double *newCanvasPixelPerUnit);
+    void setCanvasPixelPerUnit( double* newCanvasPixelPerUnit );
 
-signals:
+  signals:
     void pixelPerUnitChanged();
 
-protected:
-    void wheelEvent(QWheelEvent * event) override;
-    void mousePressEvent(QMouseEvent* event) override;
-    void mouseReleaseEvent(QMouseEvent* event) override;
-    void mouseMoveEvent(QMouseEvent* event) override;
+  protected:
+    void wheelEvent( QWheelEvent* event ) override;
+    void mousePressEvent( QMouseEvent* event ) override;
+    void mouseReleaseEvent( QMouseEvent* event ) override;
+    void mouseMoveEvent( QMouseEvent* event ) override;
 
-
-
-
-private:
-    double * mCanvasPixelPerUnit = nullptr;
+  private:
+    double* mCanvasPixelPerUnit = nullptr;
 
     int mousePosX;
     int mousePosY;
@@ -40,8 +37,8 @@ private:
     int vSliderPos;
     bool leftMouseDown = false;
 
-    QScrollArea * m_scrollAreaTop = nullptr;
-    QScrollArea * m_scrollAreaLeft = nullptr;
+    QScrollArea* m_scrollAreaTop  = nullptr;
+    QScrollArea* m_scrollAreaLeft = nullptr;
 };
 
 #endif // QSCROLLAREAGRID_H

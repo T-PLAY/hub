@@ -1,132 +1,146 @@
 #ifndef WIDGETSTREAMVIEW_H
 #define WIDGETSTREAMVIEW_H
 
-#include <QObject>
-#include <QWidget>
-#include <QLabel>
-#include <QTableWidget>
 #include <QImage>
+#include <QLabel>
+#include <QObject>
+#include <QTableWidget>
+#include <QWidget>
 
 #include <SensorSpec.hpp>
 
 const std::vector<double> g_stepSizes = { 1.0, 2.0, 5.0, 10.0, 20.0, 25.0, 50.0, 75.0, 100.0 };
 
-class WidgetStreamView : public QWidget {
+class WidgetStreamView : public QWidget
+{
     Q_OBJECT
-public:
-    explicit WidgetStreamView(QWidget* parent = nullptr);
+  public:
+    explicit WidgetStreamView( QWidget* parent = nullptr );
 
-public slots:
-//    virtual void setData(unsigned char* img_ptr, std::vector<int> dims, Stream::Format format) = 0;
-    virtual void setData(unsigned char* img_ptr, size_t size, std::vector<int> dims, hub::SensorSpec::Format format) = 0;
+  public slots:
+    //    virtual void setData(unsigned char* img_ptr, std::vector<int> dims, Stream::Format format)
+    //    = 0;
+    virtual void setData( unsigned char* img_ptr,
+                          size_t size,
+                          std::vector<int> dims,
+                          hub::SensorSpec::Format format ) = 0;
 
-protected:
-protected:
+  protected:
+  protected:
     hub::SensorSpec::Format mFormat = hub::SensorSpec::Format::NONE;
-    unsigned char* mData = nullptr;
+    unsigned char* mData            = nullptr;
 };
 
-class WidgetStreamView2D : public WidgetStreamView {
+class WidgetStreamView2D : public WidgetStreamView
+{
     Q_OBJECT
-public:
-//    WidgetStreamView2D(int imagePixelWidth, int imagePixelHeight, double imageUnitWidth = 1.0, double imageUnitHeight = 1.0, QWidget* parent = nullptr);
-    explicit WidgetStreamView2D(QWidget* parent = nullptr);
+  public:
+    //    WidgetStreamView2D(int imagePixelWidth, int imagePixelHeight, double imageUnitWidth = 1.0,
+    //    double imageUnitHeight = 1.0, QWidget* parent = nullptr);
+    explicit WidgetStreamView2D( QWidget* parent = nullptr );
 
-//    void setRatio(double newRatio);
-//    void setRealSize(double realWidth, double realHeight);
-    void init(int imagePixelWidth, int imagePixelHeight, double imageUnitWidth = 0.0, double imageUnitHeight = 0.0);
+    //    void setRatio(double newRatio);
+    //    void setRealSize(double realWidth, double realHeight);
+    void init( int imagePixelWidth,
+               int imagePixelHeight,
+               double imageUnitWidth  = 0.0,
+               double imageUnitHeight = 0.0 );
 
-signals:
+  signals:
     void inited();
 
-public:
-//    const double & getPixelPerUnit() const;
+  public:
+    //    const double & getPixelPerUnit() const;
     void clear();
 
-
-public slots:
-//    void setData(unsigned char* img_ptr, std::vector<int> dims, Stream::Format format) override;
-    void setData(unsigned char* img_ptr, size_t size, std::vector<int> dims, hub::SensorSpec::Format format) override;
-
+  public slots:
+    //    void setData(unsigned char* img_ptr, std::vector<int> dims, Stream::Format format)
+    //    override;
+    void setData( unsigned char* img_ptr,
+                  size_t size,
+                  std::vector<int> dims,
+                  hub::SensorSpec::Format format ) override;
 
     void onPixelPerUnitChanged();
 
-private:
+  private:
     void updateImage();
 
-protected:
-    void paintEvent(QPaintEvent* event) override;
-//    void resizeEvent(QResizeEvent* event) override;
+  protected:
+    void paintEvent( QPaintEvent* event ) override;
+    //    void resizeEvent(QResizeEvent* event) override;
 
-private:
-    QImage * m_image = nullptr;
-//    QPixmap * m_image = nullptr;
+  private:
+    QImage* m_image = nullptr;
+    //    QPixmap * m_image = nullptr;
 
-//    const int mImagePixelWidth;
-//    const int mImagePixelHeight;
+    //    const int mImagePixelWidth;
+    //    const int mImagePixelHeight;
 
-//    const double mImageUnitWidth;
-//    const double mImageUnitHeight;
+    //    const double mImageUnitWidth;
+    //    const double mImageUnitHeight;
 
-//    const double mRatio;
-//    const double mHPixelPerUnit;
-//    const double mVPixelPerUnit;
+    //    const double mRatio;
+    //    const double mHPixelPerUnit;
+    //    const double mVPixelPerUnit;
 
-    int mImagePixelWidth = 0;
+    int mImagePixelWidth  = 0;
     int mImagePixelHeight = 0;
 
-    double mImageUnitWidth = 0;
+    double mImageUnitWidth  = 0;
     double mImageUnitHeight = 0;
 
-    double mRatio = 1.0;
+    double mRatio         = 1.0;
     double mHPixelPerUnit = 1.0;
     double mVPixelPerUnit = 1.0;
 
+    //    double mUnitPerImageHPixel = 1.0;
+    //    double mUnitPerImageVPixel = 1.0;
 
-
-//    double mUnitPerImageHPixel = 1.0;
-//    double mUnitPerImageVPixel = 1.0;
-
-//    const double * mCanvasPixelPerUnit = nullptr;
+    //    const double * mCanvasPixelPerUnit = nullptr;
     double mCanvasPixelPerUnit = 1.0;
-    int mCanvasPixelWidth = 0.0;
-    int mCanvasPixelHeight = 0.0;
+    int mCanvasPixelWidth      = 0.0;
+    int mCanvasPixelHeight     = 0.0;
 
+    //    double mHPixelPerUnit;
+    //    double mVPixelPerUnit;
 
-//    double mHPixelPerUnit;
-//    double mVPixelPerUnit;
-
-//    double mPixelWidthPerMillimeters;
-//    double mPixelHeightPerMillimeters;
-//    QPixmap * m_grid = nullptr;
-//    QImage * m_grid = nullptr;
+    //    double mPixelWidthPerMillimeters;
+    //    double mPixelHeightPerMillimeters;
+    //    QPixmap * m_grid = nullptr;
+    //    QImage * m_grid = nullptr;
     double mRotateDeg = 0.0;
-    bool mShowGrid = false;
+    bool mShowGrid    = false;
 
-public:
-    void setRotateDeg(double newRotateDeg);
-//    void setCanvasPixelPerUnit(const double &newCanvasPixelPerUnit);
+  public:
+    void setRotateDeg( double newRotateDeg );
+    //    void setCanvasPixelPerUnit(const double &newCanvasPixelPerUnit);
 
-    const int & getCanvasPixelWidth() const;
-    const int & getCanvasPixelHeight() const;
-    double & getCanvasPixelPerUnit();
-    void setShowGrid(bool newShowGrid);
-    const double & getImageUnitWidth() const;
-    const double & getImageUnitHeight() const;
+    const int& getCanvasPixelWidth() const;
+    const int& getCanvasPixelHeight() const;
+    double& getCanvasPixelPerUnit();
+    void setShowGrid( bool newShowGrid );
+    const double& getImageUnitWidth() const;
+    const double& getImageUnitHeight() const;
 };
 
-class WidgetStreamView1D : public WidgetStreamView {
+class WidgetStreamView1D : public WidgetStreamView
+{
     Q_OBJECT
-public:
-    explicit WidgetStreamView1D(QWidget* parent = nullptr);
+  public:
+    explicit WidgetStreamView1D( QWidget* parent = nullptr );
     ~WidgetStreamView1D();
 
-public slots:
-//    void setData(unsigned char* img_ptr, std::vector<int> dims, Stream::Format format) override;
-    void setData(unsigned char* img_ptr, size_t size, std::vector<int> dims, hub::SensorSpec::Format format) override;
+  public slots:
+    //    void setData(unsigned char* img_ptr, std::vector<int> dims, Stream::Format format)
+    //    override;
+    void setData( unsigned char* img_ptr,
+                  size_t size,
+                  std::vector<int> dims,
+                  hub::SensorSpec::Format format ) override;
 
-protected:
-private:
+  protected:
+  private:
     QLabel* mLabel = nullptr;
 };
 

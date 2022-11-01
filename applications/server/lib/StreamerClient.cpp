@@ -105,8 +105,8 @@ StreamerClient::StreamerClient( Server& server, int iClient, hub::net::ClientSoc
         try {
             while ( 1 ) {
                 auto masterAcq = m_inputSensor->getAcquisition();
-//                assert(! masterAcq.getMeasures().empty());
-//                masterAcq.getMeasures().front().interpolable();
+                //                assert(! masterAcq.getMeasures().empty());
+                //                masterAcq.getMeasures().front().interpolable();
 
                 //                continue;
                 if ( masterAcq.m_start == -1 ) {
@@ -153,7 +153,8 @@ StreamerClient::StreamerClient( Server& server, int iClient, hub::net::ClientSoc
                         assert( syncAcqs.size() >= 2 );
 
                         if ( syncAcqs.begin()->m_start == std::next( syncAcqs.begin() )->m_start ) {
-//                            std::cout << headerMsg() << "detect ping acq" << std::endl;
+                            //                            std::cout << headerMsg() << "detect ping
+                            //                            acq" << std::endl;
                             syncAcqs.pop_front();
                             continue;
                         }
@@ -161,8 +162,9 @@ StreamerClient::StreamerClient( Server& server, int iClient, hub::net::ClientSoc
                                 std::next( syncAcqs.begin() )->m_start );
 
                         if ( syncAcqs.begin()->m_start >= std::next( syncAcqs.begin() )->m_start ) {
-//                            std::cout << headerMsg() << "detect auto loop timestamp" << std::endl;
-                            //                            std::cout << headerMsg() << "left " <<
+                            //                            std::cout << headerMsg() << "detect auto
+                            //                            loop timestamp" << std::endl; std::cout <<
+                            //                            headerMsg() << "left " <<
                             //                            *syncAcqs.begin() << std::endl; std::cout
                             //                            << headerMsg() << "right " << *std::next(
                             //                            syncAcqs.begin() )
@@ -177,8 +179,9 @@ StreamerClient::StreamerClient( Server& server, int iClient, hub::net::ClientSoc
                                 std::next( syncAcqs.begin() )->m_start );
 
                         if ( syncAcqs.begin()->m_start >= masterAcq.m_start ) {
-//                            std::cout << headerMsg() << "detect bad left acq" << std::endl;
-                            //                            std::cout << headerMsg() << "left " <<
+                            //                            std::cout << headerMsg() << "detect bad
+                            //                            left acq" << std::endl; std::cout <<
+                            //                            headerMsg() << "left " <<
                             //                            *syncAcqs.begin() << std::endl; std::cout
                             //                            << headerMsg() << "right " << *std::next(
                             //                            syncAcqs.begin() )
@@ -186,8 +189,9 @@ StreamerClient::StreamerClient( Server& server, int iClient, hub::net::ClientSoc
                             //                            std::cout << headerMsg() << "master " <<
                             //                            masterAcq << std::endl;
                             if ( !isSyncthing ) {
-//                                std::cout << headerMsg() << "unable to sync master acq"
-//                                          << std::endl;
+                                //                                std::cout << headerMsg() <<
+                                //                                "unable to sync master acq"
+                                //                                          << std::endl;
                                 break;
                             }
                             syncAcqs.pop_front();
@@ -232,9 +236,10 @@ StreamerClient::StreamerClient( Server& server, int iClient, hub::net::ClientSoc
 
                     hub::Acquisition acq { masterAcq.m_start, masterAcq.m_end };
                     if ( itLeftAcq->interpolable() ) {
-//                        assert(itRightAcq->interpolable());
-                        const double t = (masterAcq.m_start - itLeftAcq->m_start) / (double)(itRightAcq->m_start - itLeftAcq->m_start);
-                        acq << hub::Acquisition::slerp(*itLeftAcq, *itRightAcq, t).getMeasures();
+                        //                        assert(itRightAcq->interpolable());
+                        const double t = ( masterAcq.m_start - itLeftAcq->m_start ) /
+                                         (double)( itRightAcq->m_start - itLeftAcq->m_start );
+                        acq << hub::Acquisition::slerp( *itLeftAcq, *itRightAcq, t ).getMeasures();
                     }
                     else { acq << closestAcq->getMeasures(); }
                     acq << masterAcq.getMeasures();

@@ -63,17 +63,17 @@ class MainWindow : public Ra::Gui::MainWindowInterface, private Ui::MainWindow
   public slots:
 
     // Gizmo buttons slots
-//    void gizmoShowNone();
-//    void gizmoShowTranslate();
-//    void gizmoShowRotate();
-//    void gizmoShowScale();
+    //    void gizmoShowNone();
+    //    void gizmoShowTranslate();
+    //    void gizmoShowRotate();
+    //    void gizmoShowScale();
 
     // Keymapping configuration tool
-//    void reloadConfiguration();
-//    void loadConfiguration();
+    //    void reloadConfiguration();
+    //    void loadConfiguration();
 
     /// Slot for the tree view checkboxes
-//    void setROVisible( Core::Utils::Index roIndex, bool visible );
+    //    void setROVisible( Core::Utils::Index roIndex, bool visible );
 
     /// Reset the camera to see all visible objects
     void fitCamera();
@@ -84,13 +84,13 @@ class MainWindow : public Ra::Gui::MainWindowInterface, private Ui::MainWindow
     void on_action3D_triggered();
 
     /// Slot for the "edit" button.
-//    void editRO();
+    //    void editRO();
 
     /// Cleanup resources.
     void cleanup() override;
 
     /// Show or hide all render objects
-//    void showHideAllRO();
+    //    void showHideAllRO();
 
   signals:
     /// Emitted when the frame loads
@@ -100,7 +100,7 @@ class MainWindow : public Ra::Gui::MainWindowInterface, private Ui::MainWindow
     void framescountForStatsChanged( int count );
 
     /// Emitted when a new item is selected. An invalid entry is sent when no item is selected.
-//    void selectedItem( const Engine::Scene::ItemEntry& entry );
+    //    void selectedItem( const Engine::Scene::ItemEntry& entry );
 
   private:
     /// Connect qt signals and slots. Called once by the constructor.
@@ -112,7 +112,7 @@ class MainWindow : public Ra::Gui::MainWindowInterface, private Ui::MainWindow
     virtual void closeEvent( QCloseEvent* event ) override;
 
     /// Update displayed texture according to the current renderer
-//    void updateDisplayedTexture();
+    //    void updateDisplayedTexture();
 
     /// Set the background color (updates viewer). If c is invalid, the color is fetch from
     /// QSettings.
@@ -120,7 +120,7 @@ class MainWindow : public Ra::Gui::MainWindowInterface, private Ui::MainWindow
 
     /// After loading a file, set the first camera loaded (if any) as the active camera.
     /// if multiple files are loaded, use the first camera of the first loaded file
-//    void activateCamera( const std::string& sceneName );
+    //    void activateCamera( const std::string& sceneName );
 
   private slots:
     // Slot to init renderers once gl is ready
@@ -130,10 +130,10 @@ class MainWindow : public Ra::Gui::MainWindowInterface, private Ui::MainWindow
     void onRendererReady();
 
     /// Exports the mesh of the currently selected object to a file.
-//    void exportCurrentMesh();
+    //    void exportCurrentMesh();
 
     /// Remove the currently selected item (entity, component or ro)
-//    void deleteCurrentItem();
+    //    void deleteCurrentItem();
 
     /// Clears all entities and resets the camera.
     void resetScene();
@@ -142,7 +142,7 @@ class MainWindow : public Ra::Gui::MainWindowInterface, private Ui::MainWindow
     void toggleCirclePicking( bool on );
 
     /// set the current background color
-//    void on_m_currentColorButton_clicked();
+    //    void on_m_currentColorButton_clicked();
 
     /// activate trackball camera manipulator
     void activateTrackballManipulator();
@@ -152,9 +152,9 @@ class MainWindow : public Ra::Gui::MainWindowInterface, private Ui::MainWindow
 
     /// Allow to manage registered plugin paths
     /// @todo : for now, only add a new path ... make full management available
-//    void addPluginPath();
+    //    void addPluginPath();
     /// Remove all registered plugin directories
-//    void clearPluginPaths();
+    //    void clearPluginPaths();
 
   private slots:
     /// \name Time events
@@ -162,16 +162,16 @@ class MainWindow : public Ra::Gui::MainWindowInterface, private Ui::MainWindow
 
   private:
     /// Viewer widget
-    Ra::Gui::Viewer* m_viewer {nullptr};
+    Ra::Gui::Viewer* m_viewer { nullptr };
 
     /// Observers id for engine event
     ///@{
-//    int m_entityAddObserverId {-1};
-//    int m_entityRemoveObserverId {-1};
-//    int m_componentAddObserverId {-1};
-//    int m_componentRemoveObserverId {-1};
-//    int m_roAddObserverId {-1};
-//    int m_roRemoveObserverId {-1};
+    //    int m_entityAddObserverId {-1};
+    //    int m_entityRemoveObserverId {-1};
+    //    int m_componentAddObserverId {-1};
+    //    int m_componentRemoveObserverId {-1};
+    //    int m_roAddObserverId {-1};
+    //    int m_roRemoveObserverId {-1};
     ///@}
 
     GuiManager m_guiManager;

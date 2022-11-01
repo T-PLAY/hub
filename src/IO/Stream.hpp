@@ -10,9 +10,9 @@ namespace io {
 
 ///
 /// \brief The OutputStream class
-/// communicates with the server application, and create new streamer with the according stream name.
-/// A viewer connected with the server can show this new stream, and have the possibility to open an InputStream with
-/// the same stream name.
+/// communicates with the server application, and create new streamer with the according stream
+/// name. A viewer connected with the server can show this new stream, and have the possibility to
+/// open an InputStream with the same stream name.
 ///
 class SRC_API OutputStream : public OutputInterface, public net::ClientSocket
 {
@@ -58,8 +58,8 @@ class SRC_API InputStream : public InputInterface, public net::ClientSocket
     void close() override;
 #endif
 
-protected:
-    Acquisition getAcquisition(int acquisitionSize) const override;
+  protected:
+    Acquisition getAcquisition( int acquisitionSize ) const override;
 };
 
 } // namespace io

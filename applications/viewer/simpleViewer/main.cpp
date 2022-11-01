@@ -6,8 +6,8 @@
 #include <chrono>
 //#include <socket.h>
 //#include <stream.h>
-#include <InputSensor.hpp>
 #include <IO/Stream.hpp>
+#include <InputSensor.hpp>
 
 int main( int argc, char* argv[] ) {
     //    argc = 2;
@@ -19,9 +19,10 @@ int main( int argc, char* argv[] ) {
     //    assert(i == 0 || i == 1);
 
     std::cout << "inputStream" << std::endl;
-    hub::InputSensor inputStream( hub::io::InputStream(sensorNames[iSensor], sensorMasterNames[iSensor]) );
+    hub::InputSensor inputStream(
+        hub::io::InputStream( sensorNames[iSensor], sensorMasterNames[iSensor] ) );
     std::cout << "proceduralStreamer inited" << std::endl;
-    const auto& header               = inputStream.m_spec;
+    const auto& header                        = inputStream.m_spec;
     const hub::SensorSpec::MetaData& metaData = header.m_metaData;
 
     std::cout << "metadata : " << hub::SensorSpec::metaData2string( metaData ) << std::endl;

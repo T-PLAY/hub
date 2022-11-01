@@ -10,33 +10,34 @@ namespace Ui {
 class FormImageManipulator;
 }
 
-class FormImageManipulator : public QWidget {
+class FormImageManipulator : public QWidget
+{
     Q_OBJECT
 
-public:
-    explicit FormImageManipulator(QWidget* parent = nullptr);
+  public:
+    explicit FormImageManipulator( QWidget* parent = nullptr );
     ~FormImageManipulator();
 
-//    void update(const hub::Acquisition & acquisition);
+    //    void update(const hub::Acquisition & acquisition);
     void init();
 
-public slots:
+  public slots:
     void onStreamViewInited();
 
-//    void update();
+    //    void update();
 
-public:
+  public:
+    WidgetStreamView2D& getWidgetStreamView();
 
-    WidgetStreamView2D & getWidgetStreamView();
-protected:
-//    void paintEvent(QPaintEvent* event) override;
+  protected:
+    //    void paintEvent(QPaintEvent* event) override;
 
-private:
+  private:
     Ui::FormImageManipulator* ui;
 
-//    const double m_realWidth = 50.0; // millimeters
-//    const double m_realHeight = 35.0; // millimeters
-//    double m_ratio = 1.0;
+    //    const double m_realWidth = 50.0; // millimeters
+    //    const double m_realHeight = 35.0; // millimeters
+    //    double m_ratio = 1.0;
 };
 
 #endif // FORMIMAGEMANIPULATOR_H

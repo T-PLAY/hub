@@ -63,10 +63,10 @@ class SRC_API SensorSpec
     using Resolutions = std::vector<Resolution>;
 
     SensorSpec( const std::string& sensorName = "",
-                        //                        Format format                 = Format::NONE,
-                        //                        const Dims& dims              = {},
-                        const Resolutions& resolutions = {},
-                        const MetaData& metaData       = {} ) :
+                //                        Format format                 = Format::NONE,
+                //                        const Dims& dims              = {},
+                const Resolutions& resolutions = {},
+                const MetaData& metaData       = {} ) :
         m_sensorName( sensorName ),
         //        m_format( format ),
         //        m_dims( dims ),
@@ -75,13 +75,13 @@ class SRC_API SensorSpec
         m_acquisitionSize( computeAcquisitionSize( resolutions ) ) {};
 
   public:
-     static size_t computeAcquisitionSize( const Resolutions& resolutions );
-     static size_t computeAcquisitionSize( const Resolution& resolution );
-     SensorSpec operator +(const SensorSpec & sensorSpec) const;
-     SensorSpec & operator +=(const SensorSpec & sensorSpec);
+    static size_t computeAcquisitionSize( const Resolutions& resolutions );
+    static size_t computeAcquisitionSize( const Resolution& resolution );
+    SensorSpec operator+( const SensorSpec& sensorSpec ) const;
+    SensorSpec& operator+=( const SensorSpec& sensorSpec );
 
   private:
-     static size_t computeAcquisitionSize( Format format, const Dims& dims );
+    static size_t computeAcquisitionSize( Format format, const Dims& dims );
 
   private:
   public:
@@ -94,14 +94,14 @@ class SRC_API SensorSpec
     size_t m_acquisitionSize;
 
   public:
-     static std::string dims2string( const Dims& dims );
-     static std::string format2string( const Format& format );
-     static std::string resolutions2string( const Resolutions& resolutions );
-     static std::string metaData2string( const MetaData& metaData, bool expand = false );
-     static std::string metaData2string( const std::pair<std::string, std::any>& metaData );
-     static bool interpolable(const Format & format);
-     SRC_API friend std::ostream& operator<<( std::ostream& os, const Format& format );
-     SRC_API friend std::ostream& operator<<( std::ostream& os, const SensorSpec& sensorSpec );
+    static std::string dims2string( const Dims& dims );
+    static std::string format2string( const Format& format );
+    static std::string resolutions2string( const Resolutions& resolutions );
+    static std::string metaData2string( const MetaData& metaData, bool expand = false );
+    static std::string metaData2string( const std::pair<std::string, std::any>& metaData );
+    static bool interpolable( const Format& format );
+    SRC_API friend std::ostream& operator<<( std::ostream& os, const Format& format );
+    SRC_API friend std::ostream& operator<<( std::ostream& os, const SensorSpec& sensorSpec );
 };
 
 } // namespace hub

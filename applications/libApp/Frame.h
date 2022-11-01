@@ -5,12 +5,12 @@
 
 //#include <InputSensor.hpp>
 
-//class Snapshot {
-//public:
+// class Snapshot {
+// public:
 
-//    Snapshot(const std::string & sensorName, hub::SensorSpec::Format format, const std::vector<int> dims, const hub::Acquisition & acquisition);
-//    Snapshot(const hub::InputSensor & inputSensor, const hub::Acquisition & acq);
-//    Snapshot(const Snapshot & snapshot);
+//    Snapshot(const std::string & sensorName, hub::SensorSpec::Format format, const
+//    std::vector<int> dims, const hub::Acquisition & acquisition); Snapshot(const hub::InputSensor
+//    & inputSensor, const hub::Acquisition & acq); Snapshot(const Snapshot & snapshot);
 
 //    ~Snapshot();
 
@@ -30,19 +30,18 @@
 //    hub::SensorSpec::Format getFormat() const;
 //    const std::vector<int> &getDims() const;
 
-//private:
-//    std::string mSensorName;
-//    hub::SensorSpec::Format mFormat;
-//    std::vector<int> mDims;
-//    hub::Acquisition * mAcq = nullptr;
+// private:
+//     std::string mSensorName;
+//     hub::SensorSpec::Format mFormat;
+//     std::vector<int> mDims;
+//     hub::Acquisition * mAcq = nullptr;
 ////    std::unique_ptr<Stream::hub::Acquisition&> mAcq;
 //};
 
-//using Frame = std::vector<Snapshot>;
+// using Frame = std::vector<Snapshot>;
 ////struct Frame {
 //////    std::vector<Snapshot> m_snapshots;
 ////    std::vector<const Snapshot*> m_snapshots;
 ////};
-
 
 #endif // FRAME_H

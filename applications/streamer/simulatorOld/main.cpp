@@ -16,8 +16,8 @@
 #include <glm/gtc/type_ptr.hpp>
 
 int main( int argc, char* argv[] ) {
-//    int port = hub::net::s_defaultServicePort;
-//    if ( argc == 2 ) { port = atoi( argv[1] ); }
+    //    int port = hub::net::s_defaultServicePort;
+    //    if ( argc == 2 ) { port = atoi( argv[1] ); }
 
     const auto filename = MRI_PATH "AXT2_ligaments_uterosacres/D0010525.dcm";
     //            const auto filename = MRI_PATH "Ax_T2_PROP_5MM/D0010275.dcm";
@@ -68,7 +68,7 @@ int main( int argc, char* argv[] ) {
     glm::mat4 transform( 1.0 );
     transform =
         glm::scale( transform, glm::vec3( sliceRealDepth / 2.0, 1.0, sliceRealWidth / 2.0 ) );
-    transform             = glm::translate( transform, glm::vec3( 1.0, 0.0, 1.0 ) );
+    transform = glm::translate( transform, glm::vec3( 1.0, 0.0, 1.0 ) );
     transform = glm::rotate( transform, glm::radians( 180.0f ), glm::vec3( 1.0, 0.0, 0.0 ) );
     const float* array    = glm::value_ptr( transform );
     metaData["transform"] = array;
@@ -111,28 +111,26 @@ int main( int argc, char* argv[] ) {
         std::move( metaData ) );
 #endif
 
-        hub::OutputSensor outputSensor( std::move( sensorSpec ),
-                                        hub::io::OutputStream( dicomStreamName ) );
-//    std::vector<hub::Acquisition> dicomAcqs;
+    hub::OutputSensor outputSensor( std::move( sensorSpec ),
+                                    hub::io::OutputStream( dicomStreamName ) );
+    //    std::vector<hub::Acquisition> dicomAcqs;
     for ( int iImage = 0; iImage < nSlices; ++iImage ) {
         //        hub::Dof6 dof6( 0.0, iImage * sliceThickness, 0.0 );
         glm::quat quat( 1.0, 0.0, 0.0, 0.0 );
-//        quat = glm::rotate( quat, glm::radians( 180.0f ), glm::vec3( 1.0, 0.0, 0.0 ) );
+        //        quat = glm::rotate( quat, glm::radians( 180.0f ), glm::vec3( 1.0, 0.0, 0.0 ) );
         //        hub::Dof6 dof6( 0.0, (nSlices - iImage - 1) * sliceThickness, 0.0, quat.w,
         //        quat.x, quat.y, quat.z );
         hub::Dof6 dof6( 0.0, iImage * sliceThickness, 0.0, quat.w, quat.x, quat.y, quat.z );
         //        hub::Dof6 dof6( 0.0, iImage * sliceThickness, 0.0);
 
         hub::Measure image( &texturesData[textureSize * iImage], textureSize );
-                outputSensor << ( hub::Acquisition { iImage, iImage } << std::move( dof6 )
-                                                                      << std::move( image
-                                                                      ) );
+        outputSensor << ( hub::Acquisition { iImage, iImage } << std::move( dof6 )
+                                                              << std::move( image ) );
 
         std::cout << "[Simulator][Streamer] added new acq " << iImage << std::endl;
-//        dicomAcqs.push_back( std::move( hub::Acquisition { iImage, iImage }
-//                                        << std::move( dof6 ) << std::move( image ) ) );
+        //        dicomAcqs.push_back( std::move( hub::Acquisition { iImage, iImage }
+        //                                        << std::move( dof6 ) << std::move( image ) ) );
     }
-
 
     //    while ( true ) {
     //        std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
@@ -172,11 +170,11 @@ int main( int argc, char* argv[] ) {
     //    const float sliceRealDepth = 35.0;
     //    double scanRealWidth = 200;
     //    double scanRealDepth = 200;
-    double scale = 1.5;
-        double scanRealWidth = 50.0 * scale;
-        double scanRealDepth = 35.0 * scale;
-//    double scanRealWidth = sliceRealWidth;
-//    double scanRealDepth = sliceRealDepth;
+    double scale         = 1.5;
+    double scanRealWidth = 50.0 * scale;
+    double scanRealDepth = 35.0 * scale;
+    //    double scanRealWidth = sliceRealWidth;
+    //    double scanRealDepth = sliceRealDepth;
     //    transform2 = glm::rotate(transform2, glm::radians(90.0), glm::vec3(0.0, 1.0, 0.0));
     transform2 =
         glm::scale( transform2, glm::vec3( scanRealDepth / 2.0, 1.0, scanRealWidth / 2.0 ) );
@@ -199,8 +197,8 @@ int main( int argc, char* argv[] ) {
                                  std::move( metaData2 ) );
 
     const std::string simulatorStreamName = "simulator";
-        hub::OutputSensor outputSensor2( std::move( sensorSpec2 ),
-                                         hub::io::OutputStream( "simulator" ) );
+    hub::OutputSensor outputSensor2( std::move( sensorSpec2 ),
+                                     hub::io::OutputStream( "simulator" ) );
 
     if ( !std::filesystem::exists( filename ) ) {
         std::cout << "file '" << filename << "' doesn't exist" << std::endl;
@@ -252,28 +250,29 @@ int main( int argc, char* argv[] ) {
 
     ////////////////////////////////////////////////////////// INIT STREAMERS
 
-//    std::vector<hub::Acquisition> simuAcq;
-//    {
-//        const hub::Dof6 dof6;
+    //    std::vector<hub::Acquisition> simuAcq;
+    //    {
+    //        const hub::Dof6 dof6;
 
-////        glm::vec3 position( dof6.m_x, dof6.m_y, dof6.m_z );
-//        glm::vec3 position( 0, 19, 0 );
-//        glm::quat orientation( dof6.m_w0, dof6.m_w1, dof6.m_w2, dof6.m_w3 );
+    ////        glm::vec3 position( dof6.m_x, dof6.m_y, dof6.m_z );
+    //        glm::vec3 position( 0, 19, 0 );
+    //        glm::quat orientation( dof6.m_w0, dof6.m_w1, dof6.m_w2, dof6.m_w3 );
 
-//        const AcquisitionZone acqZone( position, orientation, scanRealWidth, 1.1, scanRealDepth );
+    //        const AcquisitionZone acqZone( position, orientation, scanRealWidth, 1.1,
+    //        scanRealDepth );
 
-//        const auto& scanImage = bu.getCorrespondingRealUS( acqZone, grid, scanWidth, scanHeight );
-//        assert( scanImage.size() == scanSize );
-//        const unsigned char* scanData = scanImage.data();
-//        for (int i = 0; i <scanSize; ++i) {
-//            if ((int)scanData[i] > 0)
-//                std::cout << (int)scanData[i] << " ";
-//        }
-//        std::cout << std::endl;
+    //        const auto& scanImage = bu.getCorrespondingRealUS( acqZone, grid, scanWidth,
+    //        scanHeight ); assert( scanImage.size() == scanSize ); const unsigned char* scanData =
+    //        scanImage.data(); for (int i = 0; i <scanSize; ++i) {
+    //            if ((int)scanData[i] > 0)
+    //                std::cout << (int)scanData[i] << " ";
+    //        }
+    //        std::cout << std::endl;
 
-//        simuAcq.push_back( std::move( hub::Acquisition { 0, 0 }
-//                                      << dof6.clone() << hub::Measure { scanData, scanSize } ) );
-//    }
+    //        simuAcq.push_back( std::move( hub::Acquisition { 0, 0 }
+    //                                      << dof6.clone() << hub::Measure { scanData, scanSize } )
+    //                                      );
+    //    }
 
     //    auto streamerOnServerConnected =
     //        [&]( hub::Streamer& streamer, const std::string& ipv4, int port ) {
@@ -293,10 +292,10 @@ int main( int argc, char* argv[] ) {
     //            //                                                image ) ) );
     //        };
 
-//    hub::Streamer streamer( hub::net::s_defaultServiceIp, port );
-//    streamer.addStream( dicomStreamName, std::move( sensorSpec ), dicomAcqs );
-//    streamer.addStream( simulatorStreamName, std::move( sensorSpec2 ), simuAcq );
-//    streamer.addStream( simulatorStreamName, std::move( sensorSpec2 ) );
+    //    hub::Streamer streamer( hub::net::s_defaultServiceIp, port );
+    //    streamer.addStream( dicomStreamName, std::move( sensorSpec ), dicomAcqs );
+    //    streamer.addStream( simulatorStreamName, std::move( sensorSpec2 ), simuAcq );
+    //    streamer.addStream( simulatorStreamName, std::move( sensorSpec2 ) );
 
     //    AcquisitionZone acq(glm::vec3(25, 50, 50), glm::angleAxis(0.f, glm::vec3(1, 0, 0)),
     //    50, 1.1f, 60); AcquisitionZone acq(glm::vec3(0, 30, 125), glm::angleAxis(0.f, glm::vec3(0,
@@ -312,46 +311,48 @@ int main( int argc, char* argv[] ) {
 
     ////////////////////////////////////////////////////////// INIT VIEWER
 
-//    auto onNewStreamer = [=]( const std::string& streamName, const hub::SensorSpec& sensorSpec ) {
-//        std::cout << "[Simulator] onNewStreamer : " << streamName << std::endl;
-//        if ( streamName == "Keyboard" || streamName == "Polhemus Patriot (sensor 1)" ) return true;
-//        return false;
-//    };
-//    auto onDelStreamer = []( const std::string& streamName, const hub::SensorSpec& sensorSpec ) {
-//        std::cout << "[Simulator] onDelStreamer : " << streamName << std::endl;
-//    };
-//    auto onServerConnected = []( const std::string& ipv4, int port ) {
-//        std::cout << "[Simulator] onServerConnected : " << ipv4 << " " << port << std::endl;
-//    };
-//    auto onServerDisconnected = []( const std::string& ipv4, int port ) {
-//        std::cout << "[Simulator] onServerDisconnected : " << ipv4 << " " << port << std::endl;
-//    };
+    //    auto onNewStreamer = [=]( const std::string& streamName, const hub::SensorSpec& sensorSpec
+    //    ) {
+    //        std::cout << "[Simulator] onNewStreamer : " << streamName << std::endl;
+    //        if ( streamName == "Keyboard" || streamName == "Polhemus Patriot (sensor 1)" ) return
+    //        true; return false;
+    //    };
+    //    auto onDelStreamer = []( const std::string& streamName, const hub::SensorSpec& sensorSpec
+    //    ) {
+    //        std::cout << "[Simulator] onDelStreamer : " << streamName << std::endl;
+    //    };
+    //    auto onServerConnected = []( const std::string& ipv4, int port ) {
+    //        std::cout << "[Simulator] onServerConnected : " << ipv4 << " " << port << std::endl;
+    //    };
+    //    auto onServerDisconnected = []( const std::string& ipv4, int port ) {
+    //        std::cout << "[Simulator] onServerDisconnected : " << ipv4 << " " << port <<
+    //        std::endl;
+    //    };
 
     std::cout << "Ready to simulate" << std::endl;
 
     size_t iFrame               = 0;
     long long lastFrameDuration = 0;
     long long lastAcqStart      = 0;
-//        std::cout << "streamer : " << &streamer << std::endl;
+    //        std::cout << "streamer : " << &streamer << std::endl;
 
-//        hub::InputSensor inputPosSensor( hub::io::InputStream( "Keyboard" ) );
-        hub::InputSensor inputPosSensor( hub::io::InputStream( "Polhemus Patriot (sensor 1)" ) );
+    //        hub::InputSensor inputPosSensor( hub::io::InputStream( "Keyboard" ) );
+    hub::InputSensor inputPosSensor( hub::io::InputStream( "Polhemus Patriot (sensor 1)" ) );
 
-    constexpr int width = 192;
+    constexpr int width  = 192;
     constexpr int height = 512;
-    assert(scanSize == width * height);
+    assert( scanSize == width * height );
 
-//    scanData = new unsigned char[192 * 512];
-//    unsigned char proceduralData[width * height];
-//    std::vector<unsigned char> scanImage;
+    //    scanData = new unsigned char[192 * 512];
+    //    unsigned char proceduralData[width * height];
+    //    std::vector<unsigned char> scanImage;
 
-
-    while (true) {
+    while ( true ) {
 
         auto acq = inputPosSensor.getAcquisition();
-//        std::cout << "[Simulator] onNewAcquisition : " << acq << std::endl;
+        //        std::cout << "[Simulator] onNewAcquisition : " << acq << std::endl;
 
-//        assert( streamName == "Keyboard" || streamName == "Polhemus Patriot (sensor 1)" );
+        //        assert( streamName == "Keyboard" || streamName == "Polhemus Patriot (sensor 1)" );
 
         if ( acq.m_start < lastAcqStart + lastFrameDuration ) continue;
 
@@ -364,11 +365,11 @@ int main( int argc, char* argv[] ) {
         assert( measures.size() == 1 );
 
         const hub::Dof6& dof6 = measures[0];
-//        std::cout << "streamer dof6 : " << dof6.m_x << " " << dof6.m_y << " " << dof6.m_z << std::endl;
+        //        std::cout << "streamer dof6 : " << dof6.m_x << " " << dof6.m_y << " " << dof6.m_z
+        //        << std::endl;
 
         glm::vec3 position( dof6.m_x, dof6.m_y, dof6.m_z );
         glm::quat orientation( dof6.m_w0, dof6.m_w1, dof6.m_w2, dof6.m_w3 );
-
 
         const AcquisitionZone acqZone( position, orientation, scanRealWidth, 1.1, scanRealDepth );
         //        AcquisitionZone acqZone(glm::vec3(0, 30, 125), glm::angleAxis(0.f,
@@ -383,45 +384,47 @@ int main( int argc, char* argv[] ) {
 //        unsigned char * imageData = nullptr;
 //        try {
 #ifdef DEBUG
-        const auto& scanImage = bu.getCorrespondingUS(acqZone, scanWidth, scanHeight );
+        const auto& scanImage = bu.getCorrespondingUS( acqZone, scanWidth, scanHeight );
 #else
         const auto& scanImage = bu.getCorrespondingRealUS( acqZone, grid, scanWidth, scanHeight );
 #endif
-            assert( scanImage.size() == scanSize );
-            const unsigned char * imageData = scanImage.data();
+        assert( scanImage.size() == scanSize );
+        const unsigned char* imageData = scanImage.data();
 
-//        } catch (std::exception & e) {
-//            std::cout << "getUs failed" << std::endl;
-//        }
+        //        } catch (std::exception & e) {
+        //            std::cout << "getUs failed" << std::endl;
+        //        }
 
-////			unsigned char* scanData = scanImage.data();
+        ////			unsigned char* scanData = scanImage.data();
 
-////			unsigned char otherData[192 * 512];
-//            for ( int i = 0; i < height; ++i ) {
-//                for ( int j = 0; j < width; ++j ) {
-//                    proceduralData[i * width + j] = ( i + j + iFrame ) % 256;
-//                }
-//            }
-//            imageData = proceduralData;
-//        }
+        ////			unsigned char otherData[192 * 512];
+        //            for ( int i = 0; i < height; ++i ) {
+        //                for ( int j = 0; j < width; ++j ) {
+        //                    proceduralData[i * width + j] = ( i + j + iFrame ) % 256;
+        //                }
+        //            }
+        //            imageData = proceduralData;
+        //        }
 
-//        std::cout << "streamer scanImage : ";
-//        for (int i = 0; i <10; ++i) {
-//            std::cout << (int)scanData[i] << " ";
-//        }
-//        std::cout << std::endl;
+        //        std::cout << "streamer scanImage : ";
+        //        for (int i = 0; i <10; ++i) {
+        //            std::cout << (int)scanData[i] << " ";
+        //        }
+        //        std::cout << std::endl;
 
-//        hub::Acquisition acq2 = std::move(hub::Acquisition{acq.m_start, acq.m_end} << dof6.clone() << hub::Measure{scanData, (size_t)scanSize});
-//        std::cout << "streamer new acq " << acq2 << std::endl;
-//        streamer.newAcquisition( simulatorStreamName, std::move(acq2));
-//                                 std::move(hub::Acquisition { acq.m_start, acq.m_end }
-//                                            << dof6.clone()
-//                                            << hub::Measure { scanData, (size_t)scanSize }) ) ;
-//                                            << hub::Measure { otherData, (size_t)scanSize } ) );
+        //        hub::Acquisition acq2 = std::move(hub::Acquisition{acq.m_start, acq.m_end} <<
+        //        dof6.clone() << hub::Measure{scanData, (size_t)scanSize}); std::cout << "streamer
+        //        new acq " << acq2 << std::endl; streamer.newAcquisition( simulatorStreamName,
+        //        std::move(acq2));
+        //                                 std::move(hub::Acquisition { acq.m_start, acq.m_end }
+        //                                            << dof6.clone()
+        //                                            << hub::Measure { scanData, (size_t)scanSize
+        //                                            }) ) ;
+        //                                            << hub::Measure { otherData, (size_t)scanSize
+        //                                            } ) );
 
-                        outputSensor2 << ( hub::Acquisition { acq.m_start, acq.m_end }
-                                           << dof6.clone() << hub::Measure { imageData,
-                                           scanSize } );
+        outputSensor2 << ( hub::Acquisition { acq.m_start, acq.m_end }
+                           << dof6.clone() << hub::Measure { imageData, scanSize } );
 
         std::cout << "Computed frame " << iFrame << std::endl;
         ++iFrame;
@@ -431,8 +434,9 @@ int main( int argc, char* argv[] ) {
             std::chrono::duration_cast<std::chrono::microseconds>( endChrono - startChrono )
                 .count();
     };
-//    auto viewer = hub::Viewer(
-//        onNewStreamer, onDelStreamer, onServerConnected, onServerDisconnected, onNewAcquisition );
+    //    auto viewer = hub::Viewer(
+    //        onNewStreamer, onDelStreamer, onServerConnected, onServerDisconnected,
+    //        onNewAcquisition );
 
     //    hub::InputSensor inputPosSensor( hub::io::InputStream( "Keyboard" ) );
     //    hub::InputSensor inputPosSensor( hub::io::InputStream( "Polhemus Patriot (sensor 1)" ) );
@@ -440,11 +444,11 @@ int main( int argc, char* argv[] ) {
     //    OutputStream outputPosStream("Simulator", inputPosSensor.getFormat(),
     //    inputPosSensor.getDims(), ClientSocket(), metaData2);
 
-//    while ( true ) {
+    //    while ( true ) {
 
-//        std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
-////        streamer.newAcquisition( dicomStreamName, dicomAcqs.back().clone() );
-//    }
+    //        std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
+    ////        streamer.newAcquisition( dicomStreamName, dicomAcqs.back().clone() );
+    //    }
 
     //    std::cout << "Ready to simulate" << std::endl;
 

@@ -10,7 +10,7 @@ class TreeViewStream : public QTreeView
   public:
     TreeViewStream( QWidget* parent = nullptr );
 
-signals:
+  signals:
     void onSpace();
 
   protected:

@@ -24,15 +24,14 @@ TEST_CASE( "Server test : direct stream" ) {
         for ( int i = 0; i < dataSize; ++i ) {
             data[i] = iAcq + i;
         }
-//        acqs.emplace_back( iAcq + 1, iAcq + 2, data, dataSize );
-        acqs.emplace_back(iAcq + 1, iAcq + 2) << hub::Measure(data, dataSize);
-
+        //        acqs.emplace_back( iAcq + 1, iAcq + 2, data, dataSize );
+        acqs.emplace_back( iAcq + 1, iAcq + 2 ) << hub::Measure( data, dataSize );
     }
 
     std::cout << "[Test] ############################### server start" << std::endl;
     Server server( port );
     server.setMaxClients( 2 * nLoop );
-    server.setAcqPing(false);
+    server.setAcqPing( false );
     server.asyncRun();
     //    std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
     std::cout << "[Test] server end ------------------------------" << std::endl;
@@ -44,13 +43,13 @@ TEST_CASE( "Server test : direct stream" ) {
             //    {
 
             hub::OutputSensor outputSensor(
-                { "sensorName", {{{3}, hub::SensorSpec::Format::BGR8}} },
+                { "sensorName", { { { 3 }, hub::SensorSpec::Format::BGR8 } } },
                 hub::io::OutputStream( "stream", hub::net::ClientSocket( ipv4, port ) ) );
 
             auto& outputSensorSpec = outputSensor.m_spec;
             CHECK( outputSensorSpec.m_acquisitionSize == dataSize );
             CHECK( outputSensorSpec.m_sensorName == "sensorName" );
-            CHECK( outputSensorSpec.m_resolutions.size() == 1);
+            CHECK( outputSensorSpec.m_resolutions.size() == 1 );
             CHECK( outputSensorSpec.m_resolutions[0].first.size() == 1 );
             CHECK( outputSensorSpec.m_resolutions[0].first.at( 0 ) == 3 );
             CHECK( outputSensorSpec.m_resolutions[0].second == hub::SensorSpec::Format::BGR8 );
@@ -68,10 +67,10 @@ TEST_CASE( "Server test : direct stream" ) {
                 const auto& inputSensorSpec = inputSensor.m_spec;
                 CHECK( inputSensorSpec.m_acquisitionSize == dataSize );
                 CHECK( inputSensorSpec.m_sensorName == "sensorName" );
-            CHECK( inputSensorSpec.m_resolutions.size() == 1);
-            CHECK( inputSensorSpec.m_resolutions[0].first.size() == 1 );
-            CHECK( inputSensorSpec.m_resolutions[0].first.at( 0 ) == 3 );
-            CHECK( inputSensorSpec.m_resolutions[0].second == hub::SensorSpec::Format::BGR8 );
+                CHECK( inputSensorSpec.m_resolutions.size() == 1 );
+                CHECK( inputSensorSpec.m_resolutions[0].first.size() == 1 );
+                CHECK( inputSensorSpec.m_resolutions[0].first.at( 0 ) == 3 );
+                CHECK( inputSensorSpec.m_resolutions[0].second == hub::SensorSpec::Format::BGR8 );
 
                 std::cout << "[Test] ############################### send acquisitions"
                           << std::endl;
@@ -92,7 +91,7 @@ TEST_CASE( "Server test : direct stream" ) {
                 std::cout << "[Test] inputStream end ---------------------------------"
                           << std::endl;
             }
-                    outputSensor << acqs[0];
+            outputSensor << acqs[0];
         }
         std::cout << "[Test] inputStream deleted *******************************" << std::endl;
         std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );

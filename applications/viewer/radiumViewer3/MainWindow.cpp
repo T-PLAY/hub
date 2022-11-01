@@ -87,8 +87,6 @@ const std::string _fragmentShaderSource {
     "   // out_color =  ( 1 + cos( 20 * ( in_pos.x + aScalarUniform ) ) ) * 0.5 * aColorUniform;\n"
     "}\n" };
 
-
-
 MainWindow::MainWindow( QWidget* parent ) : QMainWindow( parent ), ui( new Ui::MainWindow ) {
     ui->setupUi( this );
     //    setCentralWidget(ui->centralwidget);
@@ -129,17 +127,17 @@ MainWindow::MainWindow( QWidget* parent ) : QMainWindow( parent ), ui( new Ui::M
 
     m_engine->registerSystem(
         "GeometrySystem", new Ra::Engine::Scene::GeometrySystem, 1000 ); // BaseApplication.cpp
-    // Create one system
+                                                                         // Create one system
     //    MinimalSystem* sys = new MinimalSystem;
     //    app.m_engine->registerSystem( "Minimal system", sys );
-      auto* sys = m_engine->getSystem("GeometrySystem");;
+    auto* sys = m_engine->getSystem( "GeometrySystem" );
+    ;
 
     // Create and initialize entity and component
-//    Ra::Engine::Scene::Entity* e = m_engine->getEntityManager()->createEntity( "Cube" );
-//    MinimalComponent* c          = new MinimalComponent( e, *m_engine );
-//    sys->addComponent( e, c );
-//    c->initialize();
-
+    //    Ra::Engine::Scene::Entity* e = m_engine->getEntityManager()->createEntity( "Cube" );
+    //    MinimalComponent* c          = new MinimalComponent( e, *m_engine );
+    //    sys->addComponent( e, c );
+    //    c->initialize();
 
     // prepare the viewer to render the scene (i.e. build RenderTechniques for the active renderer)
     m_viewer->prepareDisplay();
@@ -174,9 +172,7 @@ MainWindow::MainWindow( QWidget* parent ) : QMainWindow( parent ), ui( new Ui::M
             //            m_poseStream = new InputStream("Polhemus Patriot (probe)", "ULA-OP 256");
             m_poseStream = new InputStream( "Polhemus Patriot (probe)" );
         }
-        else {
-            m_poseStream = new InputStream( "Polhemus Patriot (probe)" );
-        }
+        else { m_poseStream = new InputStream( "Polhemus Patriot (probe)" ); }
     }
     catch ( std::exception& e ) {
         std::cout << "[main] catch exception " << e.what() << std::endl;
@@ -216,7 +212,7 @@ void MainWindow::onGLInitialized() {
     std::shared_ptr<Ra::Engine::Rendering::Renderer> e(
         new Ra::Engine::Rendering::ForwardRenderer() );
     m_viewer->addRenderer( e );
-//    initScene();
+    //    initScene();
     connect( m_frame_timer, &QTimer::timeout, this, &MainWindow::frame );
 }
 
@@ -463,10 +459,7 @@ void MainWindow::initScene() {
                 if ( std::abs( i - 20 ) < 3 || std::abs( j - 20 ) < 3 ) {
                     data[( i * 512 + j )] = 0;
                 }
-                else {
-
-                    data[( i * 512 + j )] = ( j / 2 ) % 256;
-                }
+                else { data[( i * 512 + j )] = ( j / 2 ) % 256; }
             }
         }
         auto& textureParameters =

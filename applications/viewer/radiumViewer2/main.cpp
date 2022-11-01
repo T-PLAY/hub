@@ -10,11 +10,10 @@
 #include <minimalapp.hpp>
 #include <minimalradium.hpp>
 
-#include <Engine/Data/RawShaderMaterial.hpp>
 #include <Core/Types.hpp>
+#include <Engine/Data/RawShaderMaterial.hpp>
 
 int main( int argc, char* argv[] ) {
-
 
     // Create default format for Qt.
     QSurfaceFormat format;
@@ -35,17 +34,18 @@ int main( int argc, char* argv[] ) {
     // process all events so that everithing is initialized
     QApplication::processEvents();
 
-//    ! [add the custom material to the material system]
+    //    ! [add the custom material to the material system]
     Ra::Engine::Data::RawShaderMaterial::registerMaterial();
 
     // Create one system
-    MinimalSystem* sys = new MinimalSystem(&app);
+    MinimalSystem* sys = new MinimalSystem( &app );
     app.m_engine->registerSystem( "Minimal system", sys );
 
     // Create and initialize entity and component
     Ra::Engine::Scene::Entity* e = app.m_engine->getEntityManager()->createEntity( "Cube" );
-//    e->setTransform(Ra::Core::Transform { Ra::Core::Translation(Ra::Core::Vector3(5_ra, 5_ra, 5_ra)) });
-    MinimalComponent* c          = new MinimalComponent( e, &app );
+    //    e->setTransform(Ra::Core::Transform { Ra::Core::Translation(Ra::Core::Vector3(5_ra, 5_ra,
+    //    5_ra)) });
+    MinimalComponent* c = new MinimalComponent( e, &app );
     sys->addComponent( e, c );
     c->initialize();
 

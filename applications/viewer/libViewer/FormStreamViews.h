@@ -82,7 +82,7 @@ class FormStreamViews : public QWidget
     explicit FormStreamViews( QWidget* parent = nullptr );
     ~FormStreamViews();
 
-//    void closeAllStream();
+    //    void closeAllStream();
 
     //    void startStreaming();
 
@@ -139,17 +139,17 @@ class FormStreamViews : public QWidget
     //    QComboBox & m_comboBoxPose;
 
     bool m_autoStartStream = true;
-//    bool m_autoStartStream = false;
+    //    bool m_autoStartStream = false;
 
   public:
     const FormStreamView& getSensorView( const std::string& streamName ) const;
     //    void setMdiArea(QMdiArea *newMdiArea);
 
     //    bool isServerConnected() const;
-    const std::string &getIpv4() const;
-    const int & getPort() const;
+    const std::string& getIpv4() const;
+    const int& getPort() const;
 
-private slots:
+  private slots:
     void on_lineEdit_ip_textChanged( const QString& ipv4 );
     void on_spinBox_port_valueChanged( int port );
 };

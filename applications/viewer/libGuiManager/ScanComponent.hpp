@@ -14,7 +14,6 @@
 #include <Engine/Data/PlainMaterial.hpp>
 #include <ScanMaterial/ScanMaterial.hpp>
 
-
 //#define USE_BLINN_PHONG_MATERIAL
 #ifdef USE_BLINN_PHONG_MATERIAL
 using CurrentMaterial = Ra::Engine::Data::BlinnPhongMaterial;
@@ -30,7 +29,7 @@ struct Scan {
     Ra::Engine::Rendering::RenderObject* m_scanLine = nullptr;
     std::shared_ptr<CurrentMaterial> m_material;
 
-//    ~Scan();
+    //    ~Scan();
 };
 
 /// This is a very basic component which holds a spinning cube.
@@ -47,8 +46,8 @@ struct ScanComponent : public SensorComponent {
 
     void update( const hub::Acquisition& acq ) override;
     Ra::Core::Aabb getAabb() const override;
-    void enableTrace(bool enable) override;
-    void enableLive(bool enable) override;
+    void enableTrace( bool enable ) override;
+    void enableLive( bool enable ) override;
 
     void addScan();
 
@@ -65,18 +64,18 @@ struct ScanComponent : public SensorComponent {
 
     std::vector<Scan> m_scans;
     std::map<long long, int> m_startScan2iScan;
-    int m_iScan                = 0;
-    int m_nScans = 0;
-    int m_nMaxScans               = 500;
+    int m_iScan     = 0;
+    int m_nScans    = 0;
+    int m_nMaxScans = 500;
 
     bool m_traceEnabled = true;
-    bool m_liveEnabled = true;
+    bool m_liveEnabled  = true;
 
     double m_tune0 = 0.25;
     double m_tune1 = 1.0;
-//    long long m_lastUpdateDate = 0;
-//    bool m_firstUpdate         = true;
-//    bool m_isLiveStream        = true;
+    //    long long m_lastUpdateDate = 0;
+    //    bool m_firstUpdate         = true;
+    //    bool m_isLiveStream        = true;
 
     Eigen::Matrix4f m_localTransform = Eigen::Matrix4f::Identity();
 

@@ -89,7 +89,7 @@ int main( int argc, char* argv[] ) {
         glm::mat4 localTransform;
         if ( metaData.find( "transform" ) != metaData.end() ) {
             const float* array = std::any_cast<const float*>( metaData.at( "transform" ) );
-            localTransform          = glm::make_mat4( array );
+            localTransform     = glm::make_mat4( array );
         }
 
         //        hub::OutputSensor outputSensor2(inputSensor.m_spec, hub::io::OutputStream("Player
@@ -119,15 +119,17 @@ int main( int argc, char* argv[] ) {
             glm::vec3 position    = glm::vec3( dof6.m_x, dof6.m_y, dof6.m_z );
             glm::quat orientation = glm::quat( dof6.m_w0, dof6.m_w1, dof6.m_w2, dof6.m_w3 );
 
-//            glm::vec3 translation = glm::vec3(localTransform[3][0], localTransform[3][1], localTransform[3][2]); // column major
-//            glm::vec3 translation = glm::vec3(localTransform[0][3], localTransform[1][3], localTransform[2][3]); // row major
+            //            glm::vec3 translation = glm::vec3(localTransform[3][0],
+            //            localTransform[3][1], localTransform[3][2]); // column major glm::vec3
+            //            translation = glm::vec3(localTransform[0][3], localTransform[1][3],
+            //            localTransform[2][3]); // row major
             glm::vec3 scale;
             glm::quat rotation;
             glm::vec3 translation;
             glm::vec3 skew;
             glm::vec4 perspective;
-            glm::decompose(localTransform, scale, rotation, translation, skew, perspective);
-            rotation = glm::conjugate(rotation);
+            glm::decompose( localTransform, scale, rotation, translation, skew, perspective );
+            rotation = glm::conjugate( rotation );
 
             position += translation;
             orientation *= rotation;

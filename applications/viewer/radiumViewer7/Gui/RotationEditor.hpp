@@ -13,9 +13,7 @@ class RotationEditor : public QWidget, private Ui::RotationEditor
     Q_OBJECT
   public:
     explicit RotationEditor( uint id, QString title, bool editable, QWidget* parent = nullptr ) :
-        QWidget( parent ),
-        m_id( id ),
-        m_relativeAxis( -1 ) {
+        QWidget( parent ), m_id( id ), m_relativeAxis( -1 ) {
         setupUi( this );
         m_groupBox->setTitle( title );
 
@@ -165,8 +163,7 @@ class RotationEditor : public QWidget, private Ui::RotationEditor
 
   private:
     void valueChangedSpinRel( uint axis ) {
-        if ( m_relativeAxis != axis )
-        {
+        if ( m_relativeAxis != axis ) {
             const Scalar x = Scalar( m_x->value() );
             const Scalar y = Scalar( m_y->value() );
             const Scalar z = Scalar( m_z->value() );
@@ -197,8 +194,7 @@ class RotationEditor : public QWidget, private Ui::RotationEditor
     }
 
     void valueChangedSlideRel( uint axis ) {
-        if ( m_relativeAxis != axis )
-        {
+        if ( m_relativeAxis != axis ) {
             const Scalar x = Scalar( m_x->value() );
             const Scalar y = Scalar( m_y->value() );
             const Scalar z = Scalar( m_z->value() );
@@ -277,10 +273,8 @@ class RotationEditor : public QWidget, private Ui::RotationEditor
         box->blockSignals( false );
     }
     void resetRel() {
-        for ( uint i = 0; i < 3; ++i )
-        {
-            if ( i != m_relativeAxis )
-            {
+        for ( uint i = 0; i < 3; ++i ) {
+            if ( i != m_relativeAxis ) {
                 m_relSpinBoxes[i]->blockSignals( true );
                 m_relSpinBoxes[i]->setValue( 0 );
                 m_relSpinBoxes[i]->blockSignals( false );

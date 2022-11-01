@@ -14,7 +14,7 @@ MainWindowStreamView::MainWindowStreamView( const hub::InputSensor& inputStream,
 //    , mThread(this, sensorName)
 //    , mSensorName(sensorName)
 {
-    const auto & sensorSpec = m_inputStream.m_spec;
+    const auto& sensorSpec = m_inputStream.m_spec;
     std::cout << "MainWindow::MainWindowStreamView(parent, " << sensorSpec.m_sensorName << ")"
               << std::endl;
 
@@ -25,9 +25,9 @@ MainWindowStreamView::MainWindowStreamView( const hub::InputSensor& inputStream,
     assert( ui->centralwidget != nullptr );
     delete ui->centralwidget;
 
-    const auto & resolutions = sensorSpec.m_resolutions;
-    assert(resolutions.size() == 1);
-    const auto & dims = resolutions.at(0).first;
+    const auto& resolutions = sensorSpec.m_resolutions;
+    assert( resolutions.size() == 1 );
+    const auto& dims = resolutions.at( 0 ).first;
     if ( dims.size() == 1 ) {
         ui->centralwidget = new WidgetStreamView1D( this );
 
@@ -37,8 +37,8 @@ MainWindowStreamView::MainWindowStreamView( const hub::InputSensor& inputStream,
 
         ui->centralwidget = new WidgetStreamView2D( this );
 
-        ui->centralwidget->setMinimumWidth( dims.at(0) );
-        ui->centralwidget->setMinimumHeight( dims.at(1) );
+        ui->centralwidget->setMinimumWidth( dims.at( 0 ) );
+        ui->centralwidget->setMinimumHeight( dims.at( 1 ) );
     }
     else {
         std::cout << "unprocessed dimension" << std::endl;
@@ -69,8 +69,9 @@ MainWindowStreamView::~MainWindowStreamView() {
 void MainWindowStreamView::setData( unsigned char* img_ptr,
                                     std::vector<int> dims,
                                     hub::SensorSpec::Format format ) {
-//    ( static_cast<WidgetStreamView*>( ui->centralwidget ) )->setData( img_ptr, dims, format );
-    ( static_cast<WidgetStreamView*>( ui->centralwidget ) )->setData( img_ptr, 192 * 512, dims, format );
+    //    ( static_cast<WidgetStreamView*>( ui->centralwidget ) )->setData( img_ptr, dims, format );
+    ( static_cast<WidgetStreamView*>( ui->centralwidget ) )
+        ->setData( img_ptr, 192 * 512, dims, format );
 }
 
 // std::string MainWindowStreamView::getStreamerSensorName() const

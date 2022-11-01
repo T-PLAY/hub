@@ -22,15 +22,15 @@ class SRC_API InputSensor : public Sensor
                   std::is_base_of<io::InputInterface, InputInterface>::value>::type>
     InputSensor( InputInterface&& inputInterface ) :
 
-//        Sensor( inputInterface.getSensorSpec(),
-//                *std::move( new InputInterface( std::move( inputInterface ) ) ) ) { // unable to get sensor spec before moving interface.
-        Sensor( {},
-                *std::move( new InputInterface( std::move( inputInterface ) ) ) ) {
+        //        Sensor( inputInterface.getSensorSpec(),
+        //                *std::move( new InputInterface( std::move( inputInterface ) ) ) ) { //
+        //                unable to get sensor spec before moving interface.
+        Sensor( {}, *std::move( new InputInterface( std::move( inputInterface ) ) ) ) {
 
         static_assert( std::is_base_of<io::InputInterface, InputInterface>::value,
                        "not a base class" );
 
-                m_interface.read( m_spec );
+        m_interface.read( m_spec );
     }
 
     template <class InputInterface>

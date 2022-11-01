@@ -2,15 +2,13 @@
 
 #include <QApplication>
 
-int main(int argc, char *argv[])
-{
+int main( int argc, char* argv[] ) {
 
     // Set application and organization names in order to ensure uniform
     // QSettings configurations.
     // \see http://doc.qt.io/qt-5/qsettings.html#QSettings-4
-    QCoreApplication::setOrganizationName("STORM-IRIT");
-    QCoreApplication::setApplicationName("RadiumViewer");
-
+    QCoreApplication::setOrganizationName( "STORM-IRIT" );
+    QCoreApplication::setApplicationName( "RadiumViewer" );
 
     // Create default format for Qt.
     QSurfaceFormat format;
@@ -23,8 +21,7 @@ int main(int argc, char *argv[])
     format.setSwapInterval( 0 );
     QSurfaceFormat::setDefaultFormat( format );
 
-
-    QApplication a(argc, argv);
+    QApplication a( argc, argv );
     MainWindow w;
     w.show();
     return a.exec();

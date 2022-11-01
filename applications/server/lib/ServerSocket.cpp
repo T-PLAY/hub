@@ -32,8 +32,8 @@ ClientSocket ServerSocket::waitNewClient() {
 #ifdef DEBUG_SOCKET
     DEBUG_MSG( getHeader( m_fdSock ) << "new client on socket " << new_socket );
 #endif
-//    net::sSockets.push_back( new_socket );
-    net::registerSocket(new_socket);
+    //    net::sSockets.push_back( new_socket );
+    net::registerSocket( new_socket );
 
     return ClientSocket( new_socket );
 }
@@ -49,8 +49,8 @@ void ServerSocket::initServer() {
 #ifdef DEBUG_SOCKET
     DEBUG_MSG( getHeader( m_fdSock ) << "server started " );
 #endif
-//    net::sSockets.push_back( mFdSock );
-    net::registerSocket(m_fdSock);
+    //    net::sSockets.push_back( mFdSock );
+    net::registerSocket( m_fdSock );
 
     // Server address construction
     memset( &mAddress, 0, sizeof( mAddress ) );
@@ -74,8 +74,7 @@ void ServerSocket::initServer() {
 #endif
 }
 
-int ServerSocket::getPort() const
-{
+int ServerSocket::getPort() const {
     return mPort;
 }
 

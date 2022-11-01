@@ -79,15 +79,15 @@ void Dof6Component::initialize() {
     //        addRenderObject(m_ro);
     //    }
 
-//    if ( m_format == hub::SensorSpec::Format::DOF6 ) {
-//        for ( uint i = 0; i < 3; ++i ) {
+    //    if ( m_format == hub::SensorSpec::Format::DOF6 ) {
+    //        for ( uint i = 0; i < 3; ++i ) {
 
-//            Ra::Core::Transform TLocal = Transform::Identity();
-//            TLocal.scale( 100.0 );
-//            m_roAxes[i]->setLocalTransform( TLocal );
-////            addRenderObject( m_roAxes[i] );
-//        }
-//    }
+    //            Ra::Core::Transform TLocal = Transform::Identity();
+    //            TLocal.scale( 100.0 );
+    //            m_roAxes[i]->setLocalTransform( TLocal );
+    ////            addRenderObject( m_roAxes[i] );
+    //        }
+    //    }
 }
 
 void Dof6Component::update( const hub::Acquisition& acq ) {
@@ -126,21 +126,14 @@ void Dof6Component::update( const hub::Acquisition& acq ) {
     else { assert( false ); }
 }
 
-Aabb Dof6Component::getAabb() const
-{
+Aabb Dof6Component::getAabb() const {
     Aabb aabb = m_entity->computeAabb();
-    aabb.transform(m_entity->getTransform());
-//    return m_entity->computeAabb();
-//    return Aabb();
+    aabb.transform( m_entity->getTransform() );
+    //    return m_entity->computeAabb();
+    //    return Aabb();
     return aabb;
 }
 
-void Dof6Component::enableTrace(bool enable)
-{
+void Dof6Component::enableTrace( bool enable ) {}
 
-}
-
-void Dof6Component::enableLive(bool enable)
-{
-
-}
+void Dof6Component::enableLive( bool enable ) {}

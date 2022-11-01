@@ -124,7 +124,7 @@ int main( int argc, char* argv[] ) {
 
     const std::string rootPath        = PROJECT_DIR "data/";
     const std::string newRecordFolder = rootPath + "records/" + "mri" + "/";
-    std::filesystem::create_directories(newRecordFolder);
+    std::filesystem::create_directories( newRecordFolder );
     std::fstream recordFile( newRecordFolder + "mri" + ".txt",
                              std::ios::out | std::ios::binary | std::ios::trunc );
 

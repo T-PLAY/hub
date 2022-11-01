@@ -5,30 +5,57 @@
 #include <QObject>
 #include <QSpinBox>
 
-#include <glm/gtx/string_cast.hpp>
 #include <Acquisition.hpp>
+#include <glm/gtx/string_cast.hpp>
 
 MainWindow::MainWindow( QWidget* parent ) : QMainWindow( parent ), ui( new Ui::MainWindow ) {
     ui->setupUi( this );
 
-    QObject::connect( ui->spinBox_tx, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &MainWindow::updateTransform );
-    QObject::connect( ui->spinBox_ty, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &MainWindow::updateTransform );
-    QObject::connect( ui->spinBox_tz, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &MainWindow::updateTransform );
-    QObject::connect( ui->spinBox_rx, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &MainWindow::updateTransform );
-    QObject::connect( ui->spinBox_ry, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &MainWindow::updateTransform );
-    QObject::connect( ui->spinBox_rz, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &MainWindow::updateTransform );
-    QObject::connect( ui->spinBox_sx, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &MainWindow::updateTransform );
-    QObject::connect( ui->spinBox_sy, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &MainWindow::updateTransform );
-    QObject::connect( ui->spinBox_sz, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &MainWindow::updateTransform );
+    QObject::connect( ui->spinBox_tx,
+                      static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ),
+                      this,
+                      &MainWindow::updateTransform );
+    QObject::connect( ui->spinBox_ty,
+                      static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ),
+                      this,
+                      &MainWindow::updateTransform );
+    QObject::connect( ui->spinBox_tz,
+                      static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ),
+                      this,
+                      &MainWindow::updateTransform );
+    QObject::connect( ui->spinBox_rx,
+                      static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ),
+                      this,
+                      &MainWindow::updateTransform );
+    QObject::connect( ui->spinBox_ry,
+                      static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ),
+                      this,
+                      &MainWindow::updateTransform );
+    QObject::connect( ui->spinBox_rz,
+                      static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ),
+                      this,
+                      &MainWindow::updateTransform );
+    QObject::connect( ui->spinBox_sx,
+                      static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ),
+                      this,
+                      &MainWindow::updateTransform );
+    QObject::connect( ui->spinBox_sy,
+                      static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ),
+                      this,
+                      &MainWindow::updateTransform );
+    QObject::connect( ui->spinBox_sz,
+                      static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ),
+                      this,
+                      &MainWindow::updateTransform );
 
     //    std::string sensorName = "calibrator";
     hub::SensorSpec::MetaData metaData;
-//    metaData["parent"] = "Keyboard";
+    //    metaData["parent"] = "Keyboard";
     metaData["parent"] = "Polhemus Patriot (sensor 2)";
     //    metaData["scanWidth"] = 10.0;
-    m_outputSensor =
-        new hub::OutputSensor( { "calibrator", { { { 1 }, hub::SensorSpec::Format::MAT4 } }, metaData },
-                               hub::io::OutputStream( "calibrator" ) );
+    m_outputSensor = new hub::OutputSensor(
+        { "calibrator", { { { 1 }, hub::SensorSpec::Format::MAT4 } }, metaData },
+        hub::io::OutputStream( "calibrator" ) );
     updateTransform();
 }
 
@@ -74,14 +101,15 @@ void MainWindow::updateTransform() {
         matPrint += "\n";
     }
     matPrint += "\n";
-    float * array = glm::value_ptr(transform);
+    float* array = glm::value_ptr( transform );
     matPrint += "array content (row major) : \n";
-    for (int i = 0; i <16; ++i) {
-        matPrint += std::to_string(array[i]) + " ";
+    for ( int i = 0; i < 16; ++i ) {
+        matPrint += std::to_string( array[i] ) + " ";
     }
     matPrint += "\n";
 
     ui->textBrowser->setText( matPrint.c_str() );
 
-    *m_outputSensor << (hub::Acquisition(0, 0) << hub::Measure((unsigned char*)array, 16 * 4));
+    *m_outputSensor << ( hub::Acquisition( 0, 0 )
+                         << hub::Measure( (unsigned char*)array, 16 * 4 ) );
 }

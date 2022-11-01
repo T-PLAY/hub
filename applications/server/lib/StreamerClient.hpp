@@ -31,12 +31,13 @@ class StreamerClient : public Client
     //    const std::vector<std::shared_ptr<hub::Acquisition>> & getLastAcqs(const std::string &
     //    streamName) const;
     const std::shared_ptr<hub::Acquisition> getLastAcq( const std::string& streamName ) const;
-    const std::map<long long, std::shared_ptr<hub::Acquisition>>& getSaveAcqs( const std::string& streamName ) const;
+    const std::map<long long, std::shared_ptr<hub::Acquisition>>&
+    getSaveAcqs( const std::string& streamName ) const;
 
-    void saveNewAcq(const std::string & streamName, hub::Acquisition && newAcq);
+    void saveNewAcq( const std::string& streamName, hub::Acquisition&& newAcq );
 
   public:
-//    mutable std::mutex m_mtxLastAcqs;
+    //    mutable std::mutex m_mtxLastAcqs;
     mutable std::mutex m_mtxLastAcq;
     mutable std::mutex m_mtxSaveAcqs;
 
@@ -48,14 +49,15 @@ class StreamerClient : public Client
     std::map<std::string, std::list<StreamViewerClient*>> m_syncViewers;
     std::mutex m_mtxSyncViewers;
 
-//    std::map<std::string, std::deque<hub::Acquisition>> m_syncAcqs;
+    //    std::map<std::string, std::deque<hub::Acquisition>> m_syncAcqs;
     std::map<std::string, std::list<hub::Acquisition>> m_syncAcqs;
     std::map<std::string, bool> m_isSyncthing;
     std::mutex m_mtxSyncAcqs;
 
     //    std::map<std::string, std::vector<std::shared_ptr<hub::Acquisition>>> m_lastAcqs;
     std::map<std::string, std::shared_ptr<hub::Acquisition>> m_lastAcq;
-    std::map<std::string, std::map<long long, std::shared_ptr<hub::Acquisition>>> m_streamName2saveAcqs;
+    std::map<std::string, std::map<long long, std::shared_ptr<hub::Acquisition>>>
+        m_streamName2saveAcqs;
 
     bool m_isRecordStream = false;
 };

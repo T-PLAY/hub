@@ -82,12 +82,14 @@ void ClientSocket::connectToServer() {
 #ifdef DEBUG_SOCKET
         DEBUG_MSG( "[ClienSocket] failed to connect to server ########################" );
 #endif
-        throw Socket::exception( ( ( std::string( "[ClientSocket] connectToServer() Failed to connect to server at address " ) +
-                                     m_ipv4 + " and port " + std::to_string( m_port ) ) )
-                                     .c_str() );
+        throw Socket::exception(
+            ( ( std::string(
+                    "[ClientSocket] connectToServer() Failed to connect to server at address " ) +
+                m_ipv4 + " and port " + std::to_string( m_port ) ) )
+                .c_str() );
     }
 
-#    ifdef DEBUG_SOCKET
+#ifdef DEBUG_SOCKET
     DEBUG_MSG( getHeader( m_fdSock )
                << "[ClientSocket] connected to the server, starting communication" );
     DEBUG_MSG( getHeader( m_fdSock ) << "new client on socket " << m_fdSock );
@@ -95,17 +97,17 @@ void ClientSocket::connectToServer() {
 }
 
 ClientSocket::ClientSocket() : m_ipv4( s_defaultServiceIp ), m_port( s_defaultServicePort ) {
-#            ifdef DEBUG_SOCKET
+#ifdef DEBUG_SOCKET
     DEBUG_MSG( getHeader( m_fdSock ) << "ClientSocket()" );
-#            endif
+#endif
 
     connectToServer();
 }
 
 ClientSocket::ClientSocket( const std::string& ipv4, int port ) : m_ipv4( ipv4 ), m_port( port ) {
-#            ifdef DEBUG_SOCKET
+#ifdef DEBUG_SOCKET
     DEBUG_MSG( getHeader( m_fdSock ) << "ClientSocket(std::string ipv4, int port)" );
-#            endif
+#endif
 
     connectToServer();
 }
@@ -114,7 +116,7 @@ ClientSocket::ClientSocket( socket_fd fdSock ) {
     m_port       = -1;
     m_fdSock     = fdSock;
     m_serverSide = true;
-#            ifdef DEBUG_SOCKET
+#ifdef DEBUG_SOCKET
     DEBUG_MSG( getHeader( m_fdSock ) << "ClientSocket(socket_fd fdSock)" );
 #endif
 }
@@ -134,9 +136,9 @@ ClientSocket::ClientSocket( socket_fd fdSock ) {
 //}
 
 ClientSocket::~ClientSocket() {
-#                ifdef DEBUG_SOCKET
+#ifdef DEBUG_SOCKET
     DEBUG_MSG( getHeader( m_fdSock ) << "~ClientSocket()" );
-#                endif
+#endif
     clear();
 }
 
@@ -145,7 +147,7 @@ ClientSocket::~ClientSocket() {
 // }
 
 void ClientSocket::write( const unsigned char* data, size_t len ) const {
-#                ifdef DEBUG_SOCKET
+#ifdef DEBUG_SOCKET
     // DEBUG_MSG(getHeader(m_fdSock) << "write message ");
 //    std::string str = "[ClientSocket] write(uchar*, len) : " + getHeader(m_fdSock) + " [";
 //    for (size_t i = 0; i < std::min(10, (int)len); ++i) {
@@ -155,16 +157,16 @@ void ClientSocket::write( const unsigned char* data, size_t len ) const {
 //    str += "]";
 //    std::cout << str << std::endl;
 //    std::cout << std::endl;
-#                endif
+#endif
     assert( len > 0 );
     size_t uploadSize = 0;
     do {
         if ( !isConnected() ) {
-#                ifdef DEBUG_SOCKET
+#ifdef DEBUG_SOCKET
             DEBUG_MSG(
                 getHeader( m_fdSock )
                 << "write(const unsigned char* data, size_t len) : isConnected() client lost" );
-#                endif
+#endif
             throw Socket::exception( "[ClientSocket] write(data, len) Server lost" );
         }
         // winsock const char * data
@@ -181,22 +183,23 @@ void ClientSocket::write( const unsigned char* data, size_t len ) const {
         }
 
         if ( byteSent == -1 ) {
-#                ifdef DEBUG_SOCKET
+#ifdef DEBUG_SOCKET
             DEBUG_MSG( getHeader( m_fdSock ) << "can't send packet " << byteSent << "/" << len );
 #endif
-            throw Socket::exception( "[ClientSocket] write(data, len) Can't write packet, peer connection lost" );
+            throw Socket::exception(
+                "[ClientSocket] write(data, len) Can't write packet, peer connection lost" );
         }
         else if ( byteSent == 0 ) {
-#                    ifdef DEBUG_SOCKET
+#ifdef DEBUG_SOCKET
             DEBUG_MSG( "byteSent == 0, sleep" );
 #endif
             std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
         }
         uploadSize += byteSent;
-#                        ifdef DEBUG_SOCKET
+#ifdef DEBUG_SOCKET
         DEBUG_MSG( getHeader( m_fdSock )
                    << "byteSent = " << byteSent << " (" << uploadSize << "/" << len << ")" );
-#                        endif
+#endif
     } while ( len != uploadSize );
 }
 
@@ -208,23 +211,25 @@ void ClientSocket::read( unsigned char* data, size_t len ) const {
         int byteRead =
             recv( m_fdSock, (char*)data + downloadSize, static_cast<int>( len - downloadSize ), 0 );
         if ( byteRead == -1 ) {
-#                        ifdef DEBUG_SOCKET
+#ifdef DEBUG_SOCKET
             DEBUG_MSG( "byte read == -1 error" );
 #endif
-            throw Socket::exception( "[ClientSocket] read(data, len) Can't read packet, peer connection lost" );
+            throw Socket::exception(
+                "[ClientSocket] read(data, len) Can't read packet, peer connection lost" );
         }
         else if ( byteRead == 0 ) {
-            throw Socket::exception( "[ClientSocket] read(data, len) 0 byte received, peer connection lost" );
+            throw Socket::exception(
+                "[ClientSocket] read(data, len) 0 byte received, peer connection lost" );
         }
 
         downloadSize += byteRead;
-#                            ifdef DEBUG_SOCKET
+#ifdef DEBUG_SOCKET
         DEBUG_MSG( getHeader( m_fdSock )
                    << "byteRead = " << byteRead << " (" << downloadSize << "/" << len << ")" );
-#                            endif
+#endif
     } while ( len != downloadSize );
 
-#                            ifdef DEBUG_SOCKET
+#ifdef DEBUG_SOCKET
 //    DEBUG_MSG(getHeader(m_fdSock) << "read message ");
 //
 //    for (size_t i = 0; i < std::min(10, (int)len); ++i) {
@@ -237,7 +242,7 @@ void ClientSocket::read( unsigned char* data, size_t len ) const {
 //    }
 //    str += "]";
 //    std::cout << str << std::endl;
-#                            endif
+#endif
 }
 
 void ClientSocket::close() {
@@ -274,7 +279,7 @@ void ClientSocket::close() {
 
 void ClientSocket::clear() {
     if ( m_fdSock != INVALID_SOCKET ) {
-#                            ifdef DEBUG_SOCKET
+#ifdef DEBUG_SOCKET
         DEBUG_MSG( getHeader( m_fdSock ) << "close socket" );
 #endif
         net::clearSocket( m_fdSock );

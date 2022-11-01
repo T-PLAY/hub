@@ -5,12 +5,12 @@
 
 class ImplicitVolume
 {
-public:
-//    ImplicitVolume();
+  public:
+    //    ImplicitVolume();
 
-    static void cube(Ra::Engine::RadiumEngine & engine);
+    static void cube( Ra::Engine::RadiumEngine& engine );
 
-private:
+  private:
 };
 
 #endif // IMPLICITVOLUME_H
