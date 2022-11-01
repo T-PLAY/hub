@@ -41,7 +41,6 @@ void TreeViewStream::keyPressEvent( QKeyEvent* event ) {
     } break;
 
     case Qt::Key_Escape:
-        //        std::cout << "Escape" << std::endl;
         selectionModel->clearSelection();
         break;
 

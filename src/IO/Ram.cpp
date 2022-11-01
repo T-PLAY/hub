@@ -15,11 +15,6 @@ CyclicBuff::~CyclicBuff() {
     assert( !m_outputSensorWantsToClose );
     assert( !m_inputSensorClose );
     m_outputSensorWantsToClose = true;
-    //    while ( !m_inputSensorClose ) {
-    //        std::cout << "[CyclicBuff:" << this << "] ~CyclicBuff() : wait for inputSensorClose"
-    //                  << std::endl;
-    //        std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
-    //    }
 
     delete[] m_buff;
     std::cout << "[CyclicBuff:" << this << "] ~CyclicBuff()" << std::endl;
@@ -33,7 +28,6 @@ void CyclicBuff::write( const unsigned char* data, size_t len ) {
         // size of empty space in buff to write data
         auto spaceLeft = m_readHead - m_writeHead;
         if ( spaceLeft <= 0 ) spaceLeft += m_buffLen;
-        //        std::cout << "[CyclicBuff] buff size = " << spaceLeft << std::endl;
 
         size_t byteWrote = spaceLeft;
         if ( len > byteWrote ) {
@@ -56,7 +50,6 @@ void CyclicBuff::write( const unsigned char* data, size_t len ) {
         uploadSize += byteWrote;
     } while ( len != uploadSize );
 
-    //    std::cout << "[CyclicBuff] write " << len << " bytes" << std::endl;
 }
 
 void CyclicBuff::read( unsigned char* data, size_t len ) {
@@ -73,15 +66,12 @@ void CyclicBuff::read( unsigned char* data, size_t len ) {
             }
             if ( m_buff == nullptr ) {
                 m_inputSensorClose = true;
-                //                std::cout << "[CyclicBuff] read() : inputSensor close" <<
-                //                std::endl;
                 throw CyclicBuff::exception( "End of buffer (nullptr)" );
                 assert( false );
             }
             // nb bytes ready to read
             byteRead = m_writeHead - m_readHead;
             if ( byteRead == 0 ) {
-                //                std::cout << "[Ram] nothing to read" << std::endl;
                 std::this_thread::sleep_for( std::chrono::milliseconds( 16 ) );
             }
             if ( byteRead < 0 ) byteRead = m_buffLen - m_readHead;
@@ -111,7 +101,6 @@ void Ram::close() {
 }
 
 void Ram::write( const unsigned char* data, size_t len ) const {
-    //    std::cout << "[Ram] write(data, len)" << std::endl;
     m_buff.write( data, len );
 }
 

@@ -4,7 +4,6 @@
 Client::Client( Server& server, int iClient ) : m_server( server ), m_iClient( iClient ) {}
 
 // Client::~Client() {
-//     std::cout << headerMsg() << " deleted" << std::endl;
 // }
 
 std::string Client::headerMsg() const {

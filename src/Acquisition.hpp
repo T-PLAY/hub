@@ -15,13 +15,9 @@ class SRC_API Measure
 {
 
   public:
-    //    Measure( const unsigned char* const data, uint64_t size, bool floatData = false );
     Measure( const unsigned char* const data, uint64_t size );
-    //    Measure( unsigned char* data, uint64_t size);
     Measure( Measure&& measure );
-    //    Measure( Measurement measurement );
     Measure( const Measure& ) = delete;
-    //    Measure( Measure&& )                 = default;
     Measure& operator=( const Measure& ) = delete;
     Measure& operator=( Measure&& )      = delete;
 
@@ -32,9 +28,6 @@ class SRC_API Measure
     bool interpolable() const;
     static Measure slerp( const Measure& left, const Measure& right, double t );
 
-    //  private:
-    //    Measurement m_measurement;
-    //    virtual SensorSpec::Format getFormat() = 0;
     const unsigned char* const m_data;
     const uint64_t m_size; // compatibility 32/64 bits
 
@@ -48,7 +41,6 @@ class SRC_API Measure
     hub::SensorSpec::Resolution m_resolution;
 
   private:
-    //    friend class Acquisition;
     friend class InputSensor;
 };
 using Measures = std::vector<Measure>;
@@ -64,19 +56,15 @@ class SRC_API Dof6 : public Measure
           float w1 = 0.0,
           float w2 = 0.0,
           float w3 = 0.0 );
-    //    ~Dof6();
     // private:
     const float m_x = 0.0, m_y = 0.0, m_z = 0.0;                // vec3
     const float m_w0 = 1.0, m_w1 = 0.0, m_w2 = 0.0, m_w3 = 0.0; // quat : w, x, y, z
-    //    SensorSpec::Format getFormat() override;
 
-    //    Dof6 operator*(const Dof6 & dof6) const;
     static Dof6 slerp( const Dof6& left, const Dof6& right, long long t );
 
     SRC_API friend std::ostream& operator<<( std::ostream& os, const Dof6& dof6 );
 
   private:
-    //    constexpr static SensorSpec::Format m_format = SensorSpec::Format::DOF6;
 };
 
 class Mat4 : public Measure
@@ -87,20 +75,9 @@ class Mat4 : public Measure
 
 // class Image : public Measure
 //{
-//   public:
-//     Image( const unsigned char* const data, size_t size, Format format );
-//     Image( Image&& image );
-//     ~Image();
-//     // private:
-//     const unsigned char* const m_data;
-//     const size_t m_size;
 
-////    Format m_format;
 
-//    //        SensorSpec::Format getFormat() override;
 
-//  private:
-//    bool m_isMoved = false;
 //};
 
 // measure_tag<Dof6> = SensorSpec::
@@ -128,19 +105,10 @@ class SRC_API Acquisition
     /// \param data
     /// \param size
     ///
-    //    template <typename Arg, typename... Args>
-    //    Acquisition( long long start, long long end, Measures && measures = {} );
     Acquisition( long long start, long long end );
-    //    Acquisition( long long start,
-    //                 long long end,
-    //                 Measure&& measure,
-    //                 std::initializer_list<Measure> otherMeasures = {} );
-    //                 const unsigned char* const data,
-    //                 size_t size );
     ~Acquisition();
 
     Acquisition( const Acquisition& acq ) = delete;
-    //    Acquisition( Acquisition&& acq ) noexcept;
     Acquisition( Acquisition&& acq ) = default;
 
     Acquisition& operator=( const Acquisition& acq ) = delete;
@@ -155,29 +123,9 @@ class SRC_API Acquisition
     bool interpolable() const;
     static Acquisition slerp( const Acquisition& left, const Acquisition& right, double t );
 
-    //    static Acquisition lerp(const Acquisition & left, const Acquisition & right, long long
-    //    time);
 
-    //        template <class T>
-    //        const T& get() const {
-    //            static_assert( std::is_base_of<Measure, T>::value, "not a base class" );
-    //            constexpr Measurement measurement = measure_format_tag<T>;
-    //            static_assert( measurement != Measurement::NONE );
-    //            assert( m_measures.find( measurement ) != m_measures.end() );
-    //            return dynamic_cast<const T&>( m_measures.at( measurement ) );
-    //        };
 
-    //        assert( false );
-    //        //        static_assert( std::is_base_of<T, Measure>::value,
-    //        //                       "not a base class" );
-    //        //        T measure;
-    //        //        Measure * m = &measure;
-    //        //        SensorSpec::Format format2 = m->getFormat();
-    //        ////        SensorSpec::Format format2 = SensorSpec::Format::DOF6;
 
-    //        //        assert( m_measures.find( format2 ) != m_measures.end() );
-    //        //        return dynamic_cast<const T&>(m_measures.at( format2 ));
-    //    }
 
   public:
     Acquisition clone() const;
@@ -185,18 +133,13 @@ class SRC_API Acquisition
   public:
     const long long m_start; // microseconds
     const long long m_end;   // microseconds
-                             //    std::map<Measurement, const Measure&> m_measures;
-                             //    const unsigned char* const m_data;
   private:
     Measures m_measures;
     size_t m_size = 0;
-    //    bool m_isMoved = false;
 
   public:
     SRC_API friend std::ostream& operator<<( std::ostream& os, const Acquisition& acq );
     size_t getSize() const;
-    //    const std::vector<Measure> &getMeasures() const;
-    //    const std::list<Measure>& getMeasures() const;
     const Measures& getMeasures() const;
 
     friend class InputSensor;
@@ -204,20 +147,12 @@ class SRC_API Acquisition
 
 // template <>
 // inline const Dof6& Acquisition::get<Dof6>() const {
-//     assert( m_measures.find( SensorSpec::Format::DOF6 ) != m_measures.end() );
-//     return dynamic_cast<const Dof6&>( m_measures.at( SensorSpec::Format::DOF6 ) );
 // }
 
 // template <typename Arg, typename... Args>
 // Acquisition::Acquisition( long long start, long long end, Args... args ) :
-//     m_start( start ), m_end( end ) {
 
-//    for (auto arg : args) {
-//    assert(m_measures.find(arg.m_format) == m_measures.end());
 
-//    }
-////    m_measures[measure.m_format] = std::move(measure);
-////    m_measures.insert(std::pair<SensorSpec::Format, const Measure>(measure.m_format,
 /// std::move(measure)));
 
 //}

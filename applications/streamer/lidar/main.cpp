@@ -25,8 +25,6 @@ int main( int argc, char* argv[] )
 #endif
 
 #ifdef RGB_STREAM
-            //            OutputStream rgbStream("L500 RGB Camera", Stream::Format::RGB8, { 1280,
-            //            720 });
             OutputStream rgbStream( "L500 RGB Camera", Stream::Format::RGB8, { 640, 480 } );
 #endif
 
@@ -42,7 +40,6 @@ int main( int argc, char* argv[] )
             rs2::config cfg;
 #ifdef DEPTH_STREAM
             cfg.enable_stream( RS2_STREAM_DEPTH, 640, 480, RS2_FORMAT_Z16, 30 );
-//             cfg.enable_stream(RS2_STREAM_COLOR, 1280, 720, RS2_FORMAT_RGB8, 60);
 #endif
 #ifdef RGB_STREAM
             cfg.enable_stream( RS2_STREAM_COLOR, 640, 480, RS2_FORMAT_RGB8, 30 );
@@ -53,7 +50,6 @@ int main( int argc, char* argv[] )
 
             // Configure and start the pipeline
             p.start( cfg );
-            //            p.start();
 
             int iFrame = 0;
             while ( true ) {
@@ -66,8 +62,6 @@ int main( int argc, char* argv[] )
                 rs2::depth_frame depth  = frames.get_depth_frame();
                 const size_t& depthSize = depth.get_data_size();
                 assert( depthSize == depthStream.getAcquisitionSize() );
-                //                assert(depth.get_width() == 640);
-                //                assert(depth.get_height() == 480);
                 depthStream << Stream::Acquisition {
                     depth.get_frame_metadata( RS2_FRAME_METADATA_BACKEND_TIMESTAMP ),
                     depth.get_frame_metadata( RS2_FRAME_METADATA_TIME_OF_ARRIVAL ),
@@ -79,8 +73,6 @@ int main( int argc, char* argv[] )
                 rs2::video_frame color = frames.get_color_frame();
                 const size_t colorSize = color.get_data_size();
                 assert( colorSize == rgbStream.getAcquisitionSize() );
-                //                assert(color.get_width() == 1280);
-                //                assert(color.get_height() == 720);
                 rgbStream << Stream::Acquisition {
                     color.get_frame_metadata( RS2_FRAME_METADATA_BACKEND_TIMESTAMP ),
                     color.get_frame_metadata( RS2_FRAME_METADATA_TIME_OF_ARRIVAL ),
@@ -92,8 +84,6 @@ int main( int argc, char* argv[] )
                 rs2::video_frame ir       = frames.get_infrared_frame();
                 const size_t infraredSize = ir.get_data_size();
                 assert( infraredSize == infraredStream.getAcquisitionSize() );
-                //                assert(ir.get_width() == 640);
-                //                assert(ir.get_height() == 480);
                 infraredStream << Stream::Acquisition {
                     ir.get_frame_metadata( RS2_FRAME_METADATA_BACKEND_TIMESTAMP ),
                     ir.get_frame_metadata( RS2_FRAME_METADATA_TIME_OF_ARRIVAL ),

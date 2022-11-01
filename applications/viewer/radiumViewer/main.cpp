@@ -48,12 +48,9 @@
 const std::string vertexShaderFile =
     PROJECT_DIR "applications/viewer/radiumViewer/vertexShader.glsl";
 // const std::string vertexShaderSource = loadShaderSource(vertexShaderFile);
-//  const std::string _vertexShaderSource { "#include \"TransformStructs.glsl\"\n"
 const std::string fragmentShaderFile =
     PROJECT_DIR "applications/viewer/radiumViewer/fragmentShader.glsl";
 // const std::string fragmentShaderSource = loadShaderSource(fragmentShaderFile);
-//  const std::string _fragmentShaderSource {
-//  };
 
 // const std::vector<std::pair<Ra::Engine::Data::ShaderType, std::string>> _config1 {
 // };
@@ -73,7 +70,6 @@ int main( int argc, char* argv[] ) {
     app.initialize( Ra::Gui::SimpleWindowFactory {} );
     //! [Creating the application]
 
-    //    ! [add the custom material to the material system]
     Ra::Engine::Data::RawShaderMaterial::registerMaterial();
 
     std::shared_ptr<Ra::Engine::Rendering::RenderObject> roQuad;
@@ -82,9 +78,6 @@ int main( int argc, char* argv[] ) {
         //! [Creating the quad]
 #ifdef USE_GOT_PR
         auto quad = Ra::Core::Geometry::makeZNormalQuad( { 1_ra, 1_ra }, {}, true );
-//        quad.addAttrib("in_texCoords", tex_coords);
-//                quad.addAttrib(Ra::Engine::Data::Mesh::getAttribName(Ra::Engine::Data::Mesh::VERTEX_TEXCOORD),
-//                tex_coords);
 #else
         auto quad = Ra::Core::Geometry::makeZNormalQuad( { 1_ra, 1_ra } );
         Ra::Core::Vector3Array tex_coords;
@@ -92,8 +85,6 @@ int main( int argc, char* argv[] ) {
         tex_coords.push_back( { 1_ra, 0_ra, 0_ra } );
         tex_coords.push_back( { 0_ra, 1_ra, 0_ra } );
         tex_coords.push_back( { 1_ra, 1_ra, 0_ra } );
-        //        quad.addAttrib(Ra::Core::Geometry::getAttribName(Ra::Core::Geometry::VERTEX_TEXCOORD),
-        //        tex_coords); Ra::Engine::Data::TexturePa
         quad.addAttrib( "in_texcoord", tex_coords );
 #endif
 
@@ -163,10 +154,7 @@ int main( int argc, char* argv[] ) {
         static_cast<Ra::Engine::Scene::CameraManager*>(
             app.m_engine->getInstance()->getSystem( "DefaultCameraManager" ) );
     cameraManager->defaultCamera.setPosition( Ra::Core::Vector3 { 100_ra, 100_ra, 100_ra } );
-    //    cameraManager->updateActiveCameraData();
-    //    roQuad->setVisible(false);
 
-    //    return app.exec();
 
 #ifdef SENSOR
     hub::InputSensor* scanStream = nullptr;
@@ -174,26 +162,9 @@ int main( int argc, char* argv[] ) {
 
 ////#define ONLY_POSE
 //#ifdef ONLY_POSE
-//    hub::InputSensor posStream("Polhemus Patriot (probe)");
 //#else
 
-//    try {
-//        scanStream = new hub::InputSensor("ULA-OP 256", "");
-//    } catch (std::exception& e) {
-//        std::cout << "[main] catch exception " << e.what() << std::endl;
-//        scanStream = nullptr;
-//    }
 
-//    try {
-//        if (scanStream != nullptr) {
-//            posStream = new hub::InputSensor("Polhemus Patriot (probe)", "ULA-OP 256");
-//        } else {
-//            posStream = new hub::InputSensor("Polhemus Patriot (probe)");
-//        }
-//    } catch (std::exception& e) {
-//        std::cout << "[main] catch exception " << e.what() << std::endl;
-//        posStream = nullptr;
-//    }
 
 //#endif
 #    ifndef ONLY_POSE
@@ -208,8 +179,6 @@ int main( int argc, char* argv[] ) {
 
     try {
         if ( scanStream != nullptr ) {
-            //            posStream = new hub::InputSensor("Polhemus Patriot (probe)", "ULA-OP
-            //            256");
             posStream = new hub::InputSensor( hub::io::InputStream( g_probePoseSensorName ) );
         }
         else { posStream = new hub::InputSensor( hub::io::InputStream( g_probePoseSensorName ) ); }
@@ -257,8 +226,6 @@ int main( int argc, char* argv[] ) {
 
 #ifdef SENSOR
             if ( scanStream != nullptr ) {
-                //            Stream::Acquisition scanAcq;
-                //            *scanStream >> scanAcq;
                 auto scanAcq = scanStream->getAcquisition();
 
                 const unsigned char* data = scanAcq.m_data;
@@ -290,8 +257,6 @@ int main( int argc, char* argv[] ) {
 #ifdef SENSOR
             // update position and orientation
             if ( posStream != nullptr ) {
-                //            Stream::Acquisition posAcq;
-                //            *posStream >> posAcq;
                 auto posAcq        = posStream->getAcquisition();
                 float* translation = (float*)posAcq.m_data;
                 float* quaternion  = (float*)&posAcq.m_data[12];

@@ -28,25 +28,17 @@ class SensorThread : public QThread
   public:
     // constructor
 
-    //    template <class IOStreamT>
-    //    SensorThread(IOStreamT&& iostream, QObject* parent = nullptr);
     SensorThread( Sensor& sensor, QObject* parent = nullptr );
-    //    SensorThread(hub::InputSensor& iostream, FormInputStreamViews& formInputStreamViews, int
-    //    iSensor, QObject* parent = nullptr);
 
     ~SensorThread();
 
   signals:
-    //     void newAcquisition(const std::string& sourceType);
-    //     void streamingStopped(const std::string& sourceType);
 
   public:
     // overriding the QThread's run() method
     void run();
 
-    //    std::queue<Sensor::Acquisition> mAcqs;
 
-    //    std::unique_ptr<hub::InputSensor> mInputStream;
 
   private:
     Sensor& m_sensor;
@@ -67,13 +59,9 @@ class SensorCounterFpsThread : public QThread
     // overriding the QThread's run() method
     void run();
 
-    //    size_t m_counterFrame = 0;
 
   private:
-    //    std::string m_sensorName;
-    //    double m_fps = 10.0;
     Sensor& m_sensor;
-    //    QLabel& m_labelFps;
 };
 
 ////////////////////////////////////////////////////////////////////////
@@ -82,15 +70,7 @@ class Sensor : public QObject
 {
     Q_OBJECT
   public:
-    //    template <class IOStreamT>
-    //    Sensor(IOStreamT&& iostream, QObject* parent = nullptr);
 
-    //    Sensor(hub::InputSensor&& inputSensor, QObject* parent = nullptr);
-    //    Sensor(std::unique_ptr<hub::InputSensor> inputSensor, QMdiArea& mdiArea,
-    //    FormImageManipulator * imageManipulator, Ra::Engine::RadiumEngine * engine,
-    //    Ra::Gui::Viewer * viewer, Ra::Engine::Scene::System * sys, Sensor * parentSensor, const
-    //    std::string & streamName, QStandardItemModel & model, QTableView & view, QObject* parent =
-    //    nullptr);
     Sensor( std::unique_ptr<hub::InputSensor> inputSensor,
             QMdiArea& mdiArea,
             Ra::Engine::RadiumEngine* engine,
@@ -103,7 +83,6 @@ class Sensor : public QObject
             QObject* parent = nullptr );
     ~Sensor();
 
-    //    Sensor(IOStream&& iostream, QObject* parent = nullptr);
     void updateTransform( const Ra::Engine::Scene::Entity* entity );
 
 #ifdef ENABLE_IMAGE_VIEWER
@@ -111,7 +90,6 @@ class Sensor : public QObject
     void attachFromImageManipulator();
 #endif
     void fitView();
-    //    Ra::Engine::Scene::Entity* m_entity = nullptr;
     void setParent( Sensor* parent );
 
     void onTransparencyChanged( double transparency );
@@ -141,7 +119,6 @@ class Sensor : public QObject
     FormImageManipulator* m_imageManipulator = nullptr;
 #endif
   private:
-    //    hub::InputSensor m_inputStream;
     QMdiArea& m_mdiArea;
     WidgetStreamView2D* m_widgetStreamViewManipulator = nullptr;
 
@@ -156,15 +133,12 @@ class Sensor : public QObject
 
     // Create and initialize entity and component
     Ra::Engine::Scene::Entity* m_entity = nullptr;
-    //    Ra::Engine::Scene::Entity* m_parentEntity = nullptr;
     Sensor* m_parent = nullptr;
     std::list<Sensor*> m_sons;
 
     std::function<void( const Ra::Engine::Scene::Entity* entity )> m_observer;
     int m_observerId = -1;
 
-    //    Ra::Engine::Scene::Component * m_component = nullptr;
-    //    Dof6Component * m_dof6Component = nullptr;
     SensorComponent* m_component = nullptr;
     QStandardItemModel& m_model;
     QTableView& m_view;
@@ -179,7 +153,5 @@ class Sensor : public QObject
 // Sensor::Sensor(IOStreamT&& iostream, QObject* parent)
 // template <class IOStreamT>
 // Sensor::Sensor(IOStreamT&& iostream, QObject* parent)
-//     : QObject(parent)
-//     , m_inputStream(new hub::InputSensor(std::move(iostream)))
 //{
 // }

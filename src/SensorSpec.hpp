@@ -63,13 +63,9 @@ class SRC_API SensorSpec
     using Resolutions = std::vector<Resolution>;
 
     SensorSpec( const std::string& sensorName = "",
-                //                        Format format                 = Format::NONE,
-                //                        const Dims& dims              = {},
                 const Resolutions& resolutions = {},
                 const MetaData& metaData       = {} ) :
         m_sensorName( sensorName ),
-        //        m_format( format ),
-        //        m_dims( dims ),
         m_resolutions( resolutions ),
         m_metaData( metaData ),
         m_acquisitionSize( computeAcquisitionSize( resolutions ) ) {};
@@ -86,8 +82,6 @@ class SRC_API SensorSpec
   private:
   public:
     std::string m_sensorName;
-    //    Format m_format;
-    //    Dims m_dims;
     Resolutions m_resolutions;
     MetaData m_metaData;
 

@@ -28,7 +28,6 @@ int main( int argc, char* argv[] ) {
     qRegisterMetaType<std::string>( "std::string" );
     qRegisterMetaType<hub::SensorSpec>( "hub::SensorSpec" );
     MainWindow w;
-    //    w.resize(1280, 840);
     w.show();
     return a.exec();
 }

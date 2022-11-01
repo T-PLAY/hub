@@ -24,16 +24,12 @@ class FormWidgetLoader : public QWidget
     const Loader& getSnapshotLoader() const;
 
   signals:
-    //    void recordPathLoaded();
-    //    void recordPathUnloaded();
 
   private slots:
     void onAcqChanged( int iAcq );
     void onSpace();
     void onPlayEnded();
 
-    //    void onTreeView_record_currentChanged( const QModelIndex& current,
-    //                                           const QModelIndex& previous );
     void onTreeView_record_selectionChanged( const QItemSelection& selected,
                                              const QItemSelection& deselected );
 

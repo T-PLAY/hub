@@ -29,5 +29,4 @@ class StreamViewerClient : public Client
     bool m_isKilled       = false;
     bool m_updateFailed   = false;
 
-    //    friend class Server;
 };

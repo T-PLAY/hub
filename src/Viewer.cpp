@@ -41,7 +41,6 @@ Viewer::Viewer( std::function<bool( const char*, const SensorSpec& )> onNewStrea
 
                 if ( m_onServerConnected ) m_onServerConnected( m_ipv4.c_str(), m_port );
 
-                //                std::string streamName;
 
                 while ( !m_stopThread ) {
                     net::ClientSocket::Message serverMessage;
@@ -177,11 +176,6 @@ void Viewer::setPort( int port ) {
 }
 
 void Viewer::startStream( const std::string& streamName, const SensorSpec& sensorSpec ) {
-    //    assert(m_streamName2inputSensor.find(streamName) == m_streamName2inputSensor.end());
-    //    auto inputSensor = std::make_unique<InputSensor>(io::InputStream(streamName, "",
-    //    net::ClientSocket(m_ipv4, m_port))); m_streamName2inputSensor[streamName] =
-    //    std::move(inputSensor); InputSensor inputSensor = InputSensor(io::InputStream(streamName,
-    //    "", net::ClientSocket(m_ipv4, m_port)));
 
     assert( m_streamName2stopThread.find( streamName ) == m_streamName2stopThread.end() );
     m_streamName2stopThread[streamName] = false;
@@ -199,15 +193,12 @@ void Viewer::startStream( const std::string& streamName, const SensorSpec& senso
         catch ( net::Socket::exception& e ) {
             DEBUG_MSG( "[Viewer] startStream() inputStream '"
                        << streamName << "' disconnected, catch exception " << e.what() );
-            //            m_onDelStreamer( streamName, sensorSpec );
         }
     } );
 }
 
 void Viewer::stopStream( const std::string& streamName, const SensorSpec& ) {
     if ( m_streamName2stopThread.find( streamName ) != m_streamName2stopThread.end() ) {
-        //        assert( m_streamName2stopThread.find( streamName ) !=
-        //        m_streamName2stopThread.end() );
         m_streamName2stopThread.at( streamName ) = true;
 
         assert( m_streamName2thread.find( streamName ) != m_streamName2thread.end() );

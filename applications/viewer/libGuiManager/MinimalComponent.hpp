@@ -35,7 +35,6 @@ struct MinimalComponent : public Ra::Engine::Scene::Component {
     MinimalComponent( Ra::Engine::Scene::Entity* entity,
                       Ra::Engine::RadiumEngine& e,
                       Ra::Gui::Viewer& viewer
-                      //                      MinimalSystem & minimalSystem
     );
 
     /// This function is called when the component is properly
@@ -46,12 +45,8 @@ struct MinimalComponent : public Ra::Engine::Scene::Component {
     void updateShader();
 
     void updatePose( const hub::Acquisition& acq );
-    //    void updatePose( Acquisitions & acqs );
-    //    void updatePose( hub::Acquisition && acq );
     void initPose( int iProbe = 0 );
     void updateScan( const hub::Acquisition& acq );
-    //    void updateScan( Acquisitions& acqs );
-    //    void updateScan( hub::Acquisition && acq );
     void initScan( int iProbe = 0 );
 
     void setupScanner( double scanWidth, double scanDepth, double x, double y, double z );
@@ -63,11 +58,9 @@ struct MinimalComponent : public Ra::Engine::Scene::Component {
   private:
     Ra::Engine::RadiumEngine& m_engine;
     Ra::Gui::Viewer& m_viewer;
-    //    MinimalSystem & m_system;
     Scanner m_scanner;
 
     Ra::Engine::Rendering::RenderObject* m_roGrid = nullptr;
-    //    Ra::Engine::Rendering::RenderObject* m_roTraces[3] = {nullptr, nullptr, nullptr};
     Traces m_roTraces;
 
   public:

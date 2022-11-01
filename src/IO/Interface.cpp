@@ -21,8 +21,6 @@ enum class AnyType {
     VECTOR_FLOAT,
     UINT,
     CONST_FLOAT_PTR,
-    //        MAT3,
-    //        FLOAT_ARRAY_9,
     COUNT
 };
 static const std::string s_anyType2string[static_cast<int>( AnyType::COUNT )] = {
@@ -85,14 +83,12 @@ std::string Interface::anyValue2string( const std::any& any ) {
                 char buff[32];
                 const int k = i * n + j;
                 // sprintf(buff, "%.1f", val->at(k));
-                //                sprintf_s( buff, "%.1f", val->at( k ) );
 #ifdef WIN32
                 sprintf_s( buff, "%.1f", val->at( k ) );
 #else
                 sprintf( buff, "%.1f", val->at( k ) );
 #endif
                 str += buff;
-                //            str += std::to_string(val->at(i));
                 if ( j != 2 ) str += " ";
             }
             if ( i != 2 ) str += "  ";
@@ -124,22 +120,9 @@ std::string Interface::anyValue2string( const std::any& any ) {
     } break;
 
     default:
-        //        auto name     = any.type().name();
-        //        auto raw_name = any.type().name();
         assert( false );
     }
 
-    //    else if ( hashCode == typeid( hub::io::Interface::Mat3 ).hash_code() ) {
-    //        const hub::io::Interface::Mat3* val = std::any_cast<hub::io::Interface::Mat3>( &any );
-    //        std::string str                     = "";
-    //        for ( int i = 0; i < 3; ++i ) {
-    //            for ( int j = 0; j < 3; ++j ) {
-    //                str += std::to_string( val->data[i * 3 + j] ) + " ";
-    //            }
-    //            str += "\n";
-    //        }
-    //        return str;
-    //    }
     return "";
 }
 
@@ -174,8 +157,6 @@ void Interface::write( const SensorSpec& sensorSpec ) const {
 
     write( sensorSpec.m_sensorName );
     write( sensorSpec.m_resolutions );
-    //    write( sensorSpec.m_format );
-    //    write( sensorSpec.m_dims );
     write( sensorSpec.m_metaData );
 }
 
@@ -216,35 +197,13 @@ void Interface::write( const char* str ) const {
 
 // hash of type info for 64 bit only, no conversion for 32 bits (same value in uint64_t)
 // uint64_t typeInfoHash64( const char _DecoratedName[1] ) {
-//    //#ifdef _WIN64
-//    // static_assert(sizeof(size_t) == 8, "This code is for 64-bit size_t.");
-//    uint64_t const fnv_offset_basis = 14695981039346656037ULL;
-//    uint64_t const fnv_prime        = 1099511628211ULL;
-//    //#else
-//    //    static_assert(sizeof(size_t) == 4, "This code is for 32-bit size_t.");
-//    //    size_t const fnv_offset_basis = 2166136261U;
-//    //    size_t const fnv_prime = 16777619U;
-//    //#endif
 
-//    uint64_t value = fnv_offset_basis;
-//    for ( char const* it = _DecoratedName + 1; *it != '\0'; ++it ) {
-//        value ^= static_cast<uint64_t>( static_cast<unsigned char>( *it ) );
-//        value *= fnv_prime;
-//    }
 
-//    //#ifdef _WIN64
-//    static_assert( sizeof( uint64_t ) == 8, "This code is for 64-bit size_t." );
-//    value ^= value >> 32;
-//    //#else
-//    //    static_assert(sizeof(size_t) == 4, "This code is for 32-bit size_t.");
-//    //#endif
 
-//    return value;
 //}
 
 // Interface::~Interface()
 //{
-//     close();
 // }
 
 void Interface::write( const std::any& any ) const {
@@ -292,24 +251,14 @@ void Interface::write( const std::any& any ) const {
     else if ( anyType == typeid( unsigned int ) ) {
         write( AnyType::UINT );
         const unsigned int* val = std::any_cast<unsigned int>( &any );
-        //        assert( sizeof( int ) == 4 );
         write( *val );
     }
     else if ( anyType == typeid( const float* ) ) {
         write( AnyType::CONST_FLOAT_PTR );
         const float* val = *std::any_cast<const float*>( &any );
-        //        assert( sizeof( float ) == 1 );
         write( (unsigned char*)val, 64 );
     }
-    //    else if ( anyType == typeid( Mat3 ) ) {
-    //        write( AnyType::MAT3 );
-    //        auto* val = std::any_cast<Mat3>( &any );
-    //        //        assert(val->size() == 9);
-    //        write( *val );
-    //    }
     else {
-        //        auto name     = any.type().name();
-        //        auto raw_name = any.type().name();
         assert( false );
     }
 }
@@ -361,14 +310,11 @@ Measure Interface::getMeasure() const {
     read( data, size );
 
     Measure measure( data, size );
-    //    delete [] data;
-    //    measure.m_ownData = true;
     return measure;
 }
 
 // void Interface::read(Measure &measure) const
 //{
-//     read(measure.m_data, measure.m_size);
 // }
 
 SensorSpec Interface::getSensorSpec() const {
@@ -488,15 +434,8 @@ void Interface::read( std::any& any ) const {
 
     } break;
 
-        //    case AnyType::MAT3: {
-        //        Mat3 val;
-        //        read( val );
-        //        any = std::any_cast<Mat3>( val );
-        //    } break;
 
     default:
-        //        auto name     = any.type().name();
-        //        auto raw_name = any.type().name();
         assert( false );
     }
     assert( any.has_value() );

@@ -18,9 +18,7 @@ namespace Gui {
 
 MainWindow::MainWindow( QWidget* parent ) :
     MainWindowInterface( parent )
-//        , ui(new Ui::MainWindow)
 {
-    //        ui->setupUi(this);
     setupUi( this );
 
     if ( objectName().isEmpty() ) setObjectName( QString::fromUtf8( "RadiumSimpleWindow" ) );
@@ -41,16 +39,12 @@ MainWindow::MainWindow( QWidget* parent ) :
     viewerWidget->setAutoFillBackground( false );
     setCentralWidget( viewerWidget );
 
-    //        ui->dockWidget->setWidget(viewerWidget);
-    //        ui->centralwidget = viewerWidget;
-    //        dockWidget->setWidget(viewerWidget);
     setWindowTitle( QString( "Radium player" ) );
 
     createConnections();
 }
 
 MainWindow::~MainWindow() {
-    //        delete ui;
 }
 
 Ra::Gui::Viewer* MainWindow::getViewer() {
@@ -93,13 +87,6 @@ void MainWindow::displayHelpDialog() {
 
 void MainWindow::onGLInitialized() {
     // Connection to gizmos after their creation
-    //        connect( actionToggle_Local_Global,
-    //                 &QAction::toggled,
-    //                 m_viewer->getGizmoManager(),
-    //                 &GizmoManager::setLocal );
-    //        connect(
-    //            this, &MainWindow::selectedItem, m_viewer->getGizmoManager(),
-    //            &GizmoManager::setEditable );
 
     // set default renderer once OpenGL is configured
     std::shared_ptr<Engine::Rendering::Renderer> e( new Engine::Rendering::ForwardRenderer() );
@@ -107,7 +94,6 @@ void MainWindow::onGLInitialized() {
 }
 
 void MainWindow::onRendererReady() {
-    //        updateDisplayedTexture();
 }
 
 } // namespace Gui

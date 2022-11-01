@@ -18,8 +18,6 @@ extern "C"
     SRC_API InputSensor* createInputSensor( const char* streamName, const char* ipv4, int port );
     SRC_API void freeInputSensor( InputSensor* inputSensor );
     SRC_API int getAcquisitionSize( const InputSensor* inputSensor );
-    //    SRC_API bool getData( const InputSensor* inputSensor, unsigned char* data, int iMeasure =
-    //    0 );
 
     SRC_API Acquisition* getAcquisition( const InputSensor* inputSensor );
     SRC_API void freeAcquisition( Acquisition* acquisition );
@@ -27,17 +25,7 @@ extern "C"
     acquisition_getMeasure( const Acquisition* acquisition, unsigned char* data, int iMeasure = 0 );
     SRC_API long long acquisition_getStart( const Acquisition* acquisition );
 
-    //    SRC_API bool getAcquisition( InputSensor* inputSensor,
-    //                                 long long* start,
-    //                                 long long* end,
-    //                                 unsigned char* data );
 
-    //    typedef bool (__stdcall * onNewStreamerFunc)(const char * streamName, const SensorSpec *
-    //    sensorSpec); typedef void (__stdcall * onDelStreamerFunc)(const char * streamName, const
-    //    SensorSpec * sensorSpec); typedef void (__stdcall * onServerConnectedFunc)(const char *
-    //    ipv4, int port); typedef void (__stdcall * onServerDisconnectedFunc)(const char * ipv4,
-    //    int port); typedef void (__stdcall * onNewAcquisitionFunc)(const char * streamName, const
-    //    Acquisition * acq);
 
     typedef bool ( *onNewStreamerFunc )( const char* streamName, const SensorSpec* sensorSpec );
     typedef void ( *onDelStreamerFunc )( const char* streamName, const SensorSpec* sensorSpec );
@@ -45,14 +33,8 @@ extern "C"
     typedef void ( *onServerDisconnectedFunc )( const char* ipv4, int port );
     typedef void ( *onNewAcquisitionFunc )( const char* streamName, const Acquisition* acq );
 
-    //    SRC_API Viewer*
-    //    createViewer2( onNewStreamerFunc onNewStreamer,
-    //                   onDelStreamerFunc onDelStreamer,
-    //                   onServerConnectedFunc onServerConnected,
-    //                   onServerDisconnectedFunc onServerDisconnected);
 
     SRC_API Viewer*
-    //   __stdcall Viewer*
     createViewer( onNewStreamerFunc onNewStreamer,
                   onDelStreamerFunc onDelStreamer,
                   onServerConnectedFunc onServerConnected,
@@ -60,14 +42,10 @@ extern "C"
                   onNewAcquisitionFunc onNewAcquisition,
                   const char* ipv4,
                   int port );
-    //                  const char* ipv4 = hub::net::s_defaultServiceIp.c_str(),
-    //                  int port         = hub::net::s_defaultServicePort );
     SRC_API void freeViewer( Viewer* viewer );
 
-    //    void passString([in, out] LPSTR *str);
     SRC_API void
     sensorSpec_getSensorName( const SensorSpec* sensorSpec, char* sensorName, int* strLen );
-    //    SRC_API const char* sensorSpec_getSensorName( const SensorSpec* sensorSpec );
     SRC_API int sensorSpec_getResolutionsSize( const SensorSpec* sensorSpec );
     SRC_API int sensorSpec_getResolutionSize( const SensorSpec* sensorSpec, int iResolution = 0 );
     SRC_API void sensorSpec_getResolutionsStr( const SensorSpec* sensorSpec, char* resolutionsStr );
@@ -75,8 +53,6 @@ extern "C"
     SRC_API int sensorSpec_getDimensionsSize( const SensorSpec* sensorSpec, int iResolution );
     SRC_API int
     sensorSpec_getDimension( const SensorSpec* sensorSpec, int iResolution, int iDimension );
-    //    SRC_API void sensorSpec_getDimensionStr( const SensorSpec* sensorSpec, int iResolution,
-    //    int iDimension, char* sensorName );
     SRC_API int sensorSpec_getAcquisitionSize( const SensorSpec* sensorSpec );
     SRC_API void sensorSpec_getMetaDataStr( const SensorSpec* sensorSpec, char* metaDataStr );
     SRC_API SensorSpec* sensorSpec_copy( const SensorSpec* source );

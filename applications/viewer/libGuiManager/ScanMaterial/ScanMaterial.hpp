@@ -133,11 +133,7 @@ class RA_ENGINE_API ScanMaterial final : public Material
 // */
 // class RA_ENGINE_API BlinnPhongMaterialConverter final
 //{
-//  public:
-//    BlinnPhongMaterialConverter()  = default;
-//    ~BlinnPhongMaterialConverter() = default;
 
-//    Material* operator()( const Ra::Core::Asset::MaterialData* toconvert );
 //};
 
 // Add a texture as material parameter from an already existing Radium Texture

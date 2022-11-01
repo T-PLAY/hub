@@ -18,7 +18,6 @@
 /// This is a very basic component which holds a spinning cube.
 struct SensorComponent : public Ra::Engine::Scene::Component {
 
-    //    Component( const std::string& name, Entity* entity );
     SensorComponent( const hub::InputSensor& inputSensor, Ra::Engine::Scene::Entity* entity );
 
     /// This function is called when the component is properly
@@ -30,8 +29,6 @@ struct SensorComponent : public Ra::Engine::Scene::Component {
     virtual void enableTrace( bool enable )            = 0;
     virtual void enableLive( bool enable )             = 0;
 
-    //    virtual void changeTransparency(double transparency) {};
-    //    virtual void changeTransparency2(double transparency) {};
     virtual void on_tune_valueChanged( double arg1 ) {};
     virtual void on_tune2_valueChanged( double arg1 ) {};
     virtual void on_tune3_valueChanged( double arg1 ) {};

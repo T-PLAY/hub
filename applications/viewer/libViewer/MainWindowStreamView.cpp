@@ -11,8 +11,6 @@ MainWindowStreamView::MainWindowStreamView( const hub::InputSensor& inputStream,
     QMainWindow( parent ),
     ui( new Ui::MainWindowStreamView ),
     m_inputStream( inputStream )
-//    , mThread(this, sensorName)
-//    , mSensorName(sensorName)
 {
     const auto& sensorSpec = m_inputStream.m_spec;
     std::cout << "MainWindow::MainWindowStreamView(parent, " << sensorSpec.m_sensorName << ")"
@@ -47,10 +45,7 @@ MainWindowStreamView::MainWindowStreamView( const hub::InputSensor& inputStream,
     ui->centralwidget->setObjectName( QString::fromUtf8( "centralwidget" ) );
     setCentralWidget( ui->centralwidget );
 
-    //    QObject::connect(&mThread, &Thread_InputStream::newImage, this,
-    //    &MainWindowStreamView::newImage); mThread.start();
 
-    //    mStartFps = std::chrono::high_resolution_clock::now();
 }
 
 MainWindowStreamView::~MainWindowStreamView() {
@@ -58,10 +53,6 @@ MainWindowStreamView::~MainWindowStreamView() {
 
     delete ui;
 
-    //    mThread.requestInterruption();
-    //    std::cout << "~MainWindowStreamView() requested interruption" << std::endl;
-    //    mThread.wait();
-    //    std::cout << "~MainWindowStreamView() mThread join" << std::endl;
 
     emit onCloseStreamViewSignal();
 }
@@ -69,12 +60,10 @@ MainWindowStreamView::~MainWindowStreamView() {
 void MainWindowStreamView::setData( unsigned char* img_ptr,
                                     std::vector<int> dims,
                                     hub::SensorSpec::Format format ) {
-    //    ( static_cast<WidgetStreamView*>( ui->centralwidget ) )->setData( img_ptr, dims, format );
     ( static_cast<WidgetStreamView*>( ui->centralwidget ) )
         ->setData( img_ptr, 192 * 512, dims, format );
 }
 
 // std::string MainWindowStreamView::getStreamerSensorName() const
 //{
-//     return m_inputStream.getSensorName();
 // }

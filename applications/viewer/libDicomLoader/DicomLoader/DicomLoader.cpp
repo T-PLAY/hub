@@ -150,7 +150,6 @@ Ra::Core::Asset::FileData* DicomLoader::loadDicomFile( const std::string& filena
         density->setBinSize( binSize );
 
         assert( bytePerVoxel == 2 );
-        //        bytePerVoxel = 1;
         switch ( bytePerVoxel ) {
         case 1: {
             fillRadiumVolume( density, volumeData );
@@ -167,7 +166,6 @@ Ra::Core::Asset::FileData* DicomLoader::loadDicomFile( const std::string& filena
         default:
             LOG( logERROR ) << "DicomLoader : unsupported number of componenets : " << bytePerVoxel;
         }
-        //        free( volumeData );
         delete[] volumeData;
 
         LOG( logINFO ) << "\tVolumeLoader : done reading";
@@ -187,9 +185,6 @@ Ra::Core::Asset::FileData* DicomLoader::loadDicomFile( const std::string& filena
         volume->densityToModel = Eigen::Scaling( binSize );
 
         volume->modelToWorld = TRadium;
-        //        volume->modelToWorld   = Eigen::Scaling( 0.1_ra );
-        //        volume->modelToWorld   = Eigen::Scaling( 1_ra / maxDim ) * Translation( p1 * -0.5
-        //        );
 
         std::cout << "p1 = " << p1.x() << ", " << p1.y() << ", " << p1.z() << std::endl;
 

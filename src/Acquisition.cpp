@@ -16,13 +16,6 @@ Dof6::Dof6( const Measure& measure ) : Measure( measure.m_data, measure.m_size )
 
 Dof6::Dof6( float x, float y, float z, float w0, float w1, float w2, float w3 ) :
     Measure( (unsigned char*)new float[7] { x, y, z, w0, w1, w2, w3 }, 28 )
-//    m_x( x ),
-//    m_y(),
-//    m_z( z ),
-//    m_w0( w0 ),
-//    m_w1( w1 ),
-//    m_w2( w2 ),
-//    m_w3( w3 ) {
 {
     m_ownData = true;
     assert( m_ownData == true );
@@ -31,34 +24,18 @@ Dof6::Dof6( float x, float y, float z, float w0, float w1, float w2, float w3 ) 
 }
 
 Dof6 Dof6::slerp( const Dof6& left,
-                  //                  long long startLeft,
                   const Dof6& right,
-                  //                  long long startRight,
                   long long t ) {
-    //    const Dof6& left  = ( startLeft > startRight ) ? ( pRight ) : ( pLeft );
-    //    const Dof6& right = ( startLeft > startRight ) ? ( pLeft ) : ( pRight );
-    //    if ( startLeft > startRight ) {
-    //        long long tmp = startLeft;
-    //        startLeft     = startRight;
-    //        startRight    = tmp;
-    //    }
-    //    assert( startLeft <= time && time <= startRight );
-    //    //    Dof6 ret;
-    //    double t = ( time - startLeft ) / ( startRight - startLeft );
-    //    assert( 0.0 <= t && t <= 1.0 );
 
     float x = ( 1.0 - t ) * left.m_x + t * right.m_x;
     float y = ( 1.0 - t ) * left.m_y + t * right.m_y;
     float z = ( 1.0 - t ) * left.m_z + t * right.m_z;
 
-    //    return Dof6(x, y, z, w0, w1, w2, w3);
     float w0, w1, w2, w3;
 
     // source:
     // http://www.euclideanspace.com/maths/algebra/realNormedAlgebra/quaternions/slerp/index.htm
-    //    quat slerp(quat qa, quat qb, double t) {
     // quaternion to return
-    //        quat qm = new quat();
     // Calculate angle between them.
     double cosHalfTheta = left.m_w0 * right.m_w0 + left.m_w1 * right.m_w1 + left.m_w2 * right.m_w2 +
                           left.m_w3 * right.m_w3;
@@ -68,7 +45,6 @@ Dof6 Dof6::slerp( const Dof6& left,
         w1 = left.m_w1;
         w2 = left.m_w2;
         w3 = left.m_w3;
-        //            return qm;
         return Dof6( x, y, z, w0, w1, w2, w3 );
     }
     // Calculate temporary values.
@@ -82,7 +58,6 @@ Dof6 Dof6::slerp( const Dof6& left,
         w2 = ( left.m_w2 * 0.5 + right.m_w2 * 0.5 );
         w3 = ( left.m_w3 * 0.5 + right.m_w3 * 0.5 );
         return Dof6( x, y, z, w0, w1, w2, w3 );
-        //            return qm;
     }
     double ratioA = sin( ( 1 - t ) * halfTheta ) / sinHalfTheta;
     double ratioB = sin( t * halfTheta ) / sinHalfTheta;
@@ -91,14 +66,11 @@ Dof6 Dof6::slerp( const Dof6& left,
     w1 = ( left.m_w1 * ratioA + right.m_w1 * ratioB );
     w2 = ( left.m_w2 * ratioA + right.m_w2 * ratioB );
     w3 = ( left.m_w3 * ratioA + right.m_w3 * ratioB );
-    //        return qm;
-    //    }
     return Dof6( x, y, z, w0, w1, w2, w3 );
 }
 
 // Dof6 Dof6::operator*(const Dof6 &dof6) const
 //{
-//     Dof6 ret;
 // }
 
 std::ostream& operator<<( std::ostream& os, const Dof6& dof6 ) {
@@ -112,22 +84,11 @@ Mat4::Mat4( const float* array ) : Measure( (unsigned char*)array, 64 ) {
 }
 
 // Dof6::~Dof6() {
-////    delete m_data;
-//    //    m_data = nullptr;
 //}
 
 // Measure::Measure( const unsigned char* const data, uint64_t size, bool floatData ) :
-//     //    Measure( Measurement::IMAGE ),
-//     m_data( new unsigned char[size] ),
-//     //    m_data( data ),
-//     m_size( size ) {
-//     //    m_format( format ) {
 
-//    assert( m_size > 0 );
-//    assert( data != nullptr );
-//    memcpy( (unsigned char*)m_data, data, m_size );
 
-//    if ( floatData ) delete[] data;
 //}
 
 Measure::Measure( const unsigned char* const data, uint64_t size ) :
@@ -138,24 +99,15 @@ Measure::Measure( const unsigned char* const data, uint64_t size ) :
 }
 
 // Measure::Measure( unsigned char* data, uint64_t size ) : m_data( data ), m_size( size ) {
-//     assert( m_size > 0 );
-//     assert( m_data != nullptr );
 // }
 
 // Measure::Measure( Measure&& measure ) :
-//     m_data( measure.m_data ), m_size( measure.m_size ), m_ownData( measure.m_ownData ) {
-//     measure.m_ownData = false;
 // }
 
 // Measure::~Measure() {
-//     if ( m_ownData ) { delete[] m_data; }
 // }
 
 Measure Measure::clone() const {
-    //    unsigned char* data = new unsigned char[m_size];
-    //    memcpy( data, m_data, m_size );
-    //    Measure measure( m_data, m_size );
-    //    measure.m_ownData = true;
     Measure ret( m_data, m_size );
     ret.m_resolution = m_resolution;
     return ret;
@@ -177,8 +129,6 @@ Measure Measure::slerp( const Measure& left, const Measure& right, double t ) {
 
     switch ( left.m_resolution.second ) {
     case SensorSpec::Format::DOF6: {
-        //        const Dof6& dof6Left  = left;
-        //        const Dof6& dof6Right = right;
         return Dof6::slerp( left, right, t );
     }
     default:
@@ -216,21 +166,14 @@ std::ostream& operator<<( std::ostream& os, const Measure& measure ) {
 }
 
 Measure::Measure( Measure&& measure ) :
-    //     Measure(measure.m_measurement),
-    //    Measure( measure.m_format ),
     m_data( measure.m_data ),
     m_size( measure.m_size ),
     m_resolution( measure.m_resolution ) {
-    //     m_format( measure.m_format ) {
-    //    measure.m_data = nullptr;
     measure.m_isMoved = true;
 }
 
 Measure::~Measure() {
-    //    std::cout << "[Measure] delete data : " << (uintptr_t)m_data << ", size : " << m_size
-    //              << std::endl;
 
-    //    assert( m_data != nullptr );
 
     if ( m_ownData && !m_isMoved ) { delete[] m_data; }
 }
@@ -239,73 +182,40 @@ Measure::~Measure() {
 
 // SensorSpec::Format Measure::getFormat()
 //{
-//     return m_format;
 // }
 
 //// SensorSpec::Format Dof6::getFormat()
 ////{
-////     return m_format;
 //// }
 
 // Image::Image( const unsigned char* const data, size_t size, Format format ) :
-//     Measure( Measurement::IMAGE ),
-//     m_data( new unsigned char[size] ),
-//     m_size( size ),
-//     m_format( format ) {
 
-//    assert( m_size > 0 );
-//    assert( data != nullptr );
-//    memcpy( (unsigned char*)m_data, data, m_size );
 //}
 
 // Image::Image( Image&& image ) :
-//     Measure(image.m_measurement),
-//     //    Measure( image.m_format ),
-//     m_data( image.m_data ),
-//     m_size( image.m_size ),
-//     m_format( image.m_format ) {
-//     image.m_isMoved = true;
 // }
 
 // Image::~Image() {
-//     assert( m_data != nullptr );
 
-//    if ( !m_isMoved ) { delete[] m_data; }
 //}
 
 // SensorSpec::Format Image::getFormat()
 //{
-//     return m_format;
 // }
 
 // Acquisition::Acquisition(long long start, long long end , hub::Acquisition::Args args) : m_start(
 // start ), m_end( end ) {
 
-//    assert( m_start <= m_end );
 //}
 
 // Acquisition::Acquisition( long long start,
-//                           long long end,
-//                           Measure&& measure,
-//                           std::initializer_list<Measure> otherMeasures ) :
-//     m_start( start ), m_end( end ) {
-//     assert( m_start <= m_end );
 
-//    assert( m_measures.find( measure.m_format ) == m_measures.end() );
-//    m_measures.insert(
-//        std::pair<SensorSpec::Format, const Measure>( measure.m_format, std::move( measure ) ) );
 
-//    for ( auto&& otherMeasure : otherMeasures ) {
-//        assert( m_measures.find( otherMeasure.m_format ) == m_measures.end() );
-//        m_measures.insert( std::pair<SensorSpec::Format, const Measure>(
-//            otherMeasure.m_format, std::move( otherMeasure ) ) );
-//    }
 //}
 
 Acquisition::Acquisition( long long start, long long end ) :
     m_start( start ),
     m_end( end )
-//    m_measures( std::move(measures) )
 {
     assert( m_start <= m_end );
 }
@@ -315,15 +225,6 @@ Acquisition::~Acquisition() {
 }
 
 // Acquisition::Acquisition( Acquisition&& acq ) noexcept :
-//     m_start( acq.m_start ),
-//     m_end( acq.m_end ),
-//     m_measures(std::move(acq.m_measures)),
-//     m_size(acq.m_size)
-//     {
-//     //    m_data( acq.m_data ), m_size( acq.m_size ) {
-////    acq.m_isMoved = true;
-//    assert(m_size == acq.m_size);
-////    m_size = acq.m_size;
 //}
 
 bool Acquisition::operator==( const Acquisition& acq ) const {
@@ -334,8 +235,6 @@ bool Acquisition::operator==( const Acquisition& acq ) const {
             if ( m_measures.at( i ) != acq.m_measures.at( i ) ) { return false; }
         }
 
-        //        && m_size == acq.m_size ) {
-        //        return memcmp( m_data, acq.m_data, m_size ) == 0;
         return true;
     }
     return false;
@@ -374,11 +273,6 @@ Acquisition Acquisition::slerp( const Acquisition& left, const Acquisition& righ
 
 // Acquisition Acquisition::lerp(const Acquisition &left, const Acquisition &right, long long time)
 //{
-//     assert(left.getMeasures().size() == right.getMeasures().size());
-//     assert(left.m_start <= time && time <= right.m_start);
-//     for (int iMeasure = 0; iMeasure < left.getMeasures().size(); ++iMeasure) {
-////        left.getMeasures().at(iMeasure).
-//    }
 
 //}
 
@@ -390,21 +284,12 @@ Acquisition& Acquisition::operator<<( const Measures& measures ) {
 }
 
 // Acquisition& Acquisition::operator<<( Measure&& measure ) {
-//     assert( m_measures.find( measure.m_format ) == m_measures.end() );
-//     //    m_measures[measure.m_format] = std::move(measure);
-//     m_measures.insert(
-//         std::pair<SensorSpec::Format, const Measure&>( measure.m_format, std::move( measure ) )
-//         );
-//     return *this;
 // }
 
 // const Measure& Acquisition::get( SensorSpec::Format format ) const {
-//     assert( m_measures.find( format ) != m_measures.end() );
-//     return m_measures.at( format );
 // }
 
 Acquisition Acquisition::clone() const {
-    //    assert( m_data != nullptr );
 
     Acquisition acq( m_start, m_end );
 
@@ -414,8 +299,6 @@ Acquisition Acquisition::clone() const {
 
     return acq;
 
-    //    return Acquisition( m_start, m_end, m_data, m_size );
-    //    return Acquisition( m_start, m_end );
 }
 
 // const std::list<Measure> &Acquisition::getMeasures() const
@@ -425,7 +308,6 @@ const Measures& Acquisition::getMeasures() const {
 
 // const std::vector<Measure> &Acquisition::getMeasures() const
 //{
-//     return m_measures;
 // }
 
 size_t Acquisition::getSize() const {
@@ -443,7 +325,6 @@ std::ostream& operator<<( std::ostream& os, const Acquisition& acq ) {
     }
     os << "], ";
     os << 1'000'000.0 / ( acq.m_end - acq.m_start ) << " fps.";
-    //        os << ", ptr = " << (uint64_t)acq.m_data;
     return os;
 }
 

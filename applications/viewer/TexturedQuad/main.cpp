@@ -29,7 +29,6 @@ int main( int argc, char* argv[] ) {
     //! [Creating the application]
 
     //! [Creating a quad geometry with texture coordinates]
-    //    auto quad = Ra::Core::Geometry::makeZNormalQuad( { 1_ra, 1_ra }, {}, true );
 #ifdef USE_GOT_PR
     auto quad = Ra::Core::Geometry::makeZNormalQuad( { 1_ra, 1_ra }, {}, true );
 #else
@@ -48,27 +47,8 @@ int main( int argc, char* argv[] ) {
     unsigned int imageWidth, imageHeight, nImages, bytePerVoxel;
     float pixelSpacingWidth, pixelSpacingHeight, sliceThickness;
 
-    //    const auto f = "C:\\Users\\gbouyjou\\Downloads\\MRI";
-    //    const auto f = "C:/Users/gbouyjou/Downloads/MRI";
-    //    assert(std::filesystem::exists(f));
-    //    std::cout << "MRI_PATH = '" << MRI_PATH << "'" <<  std::endl;
 
     const auto filename = MRI_PATH "AXT2_ligaments_uterosacres/D0010525.dcm";
-    //        app.loadFile(QString(MRI_PATH "Ax_T2_PROP_5MM/D0010275.dcm"));
-    //    app.loadFile(QString(MRI_PATH "Loc/D0010001.dcm"));
-    //    app.loadFile(QString(MRI_PATH "MPR_AX_T2/D0010551.dcm"));
-    //    app.loadFile(QString(MRI_PATH "MPR_Coro_T2/D0010710.dcm"));
-    //    app.loadFile(QString(MRI_PATH "MPR_Sag_T2/D0010652.dcm"));
-    //    app.loadFile(QString(MRI_PATH "PACS_AXIAL_ABDO/IM0001.dcm"));
-    //    app.loadFile(QString(MRI_PATH "PACS_AXIAL_AP/IM0001.dcm"));
-    //    app.loadFile(QString(MRI_PATH "PACS_AXIAL_TAP/IM0001.dcm"));
-    //    app.loadFile(QString(MRI_PATH "PACS_PARENCHYME/IM0001.dcm"));
-    //    app.loadFile(QString(MRI_PATH "RapportDose/IM0001.dcm"));
-    //    app.loadFile(QString(MRI_PATH "Sag_CUBE_T2/D0010031.dcm"));
-    //    app.loadFile(QString(MRI_PATH "Scouts/IM0001.dcm"));
-    //    app.loadFile(QString(MRI_PATH "ScreenSave/IM0001.dcm"));
-    //    app.loadFile(QString(MRI_PATH "SerieSmartPrep/IM0001.dcm"));
-    //    app.loadFile(QString(MRI_PATH "WATER:AX_LAVA-Flex/D0010333.dcm"));
 
     auto volumeData = Ra::IO::DICOM::readDicomVolume( filename,
                                                       &imageWidth,
@@ -84,20 +64,11 @@ int main( int argc, char* argv[] ) {
     assert( bytePerVoxel == 2 );
 
     //! [Creating a texture]
-    //    unsigned char data[512 * 512 * 2];
     // fill with some function
-    //    for (int i = 0; i < 192; ++i) {
-    //        for (int j = 0; j < 512; j++) {
-    //            data[(i * 512 + j)] = (unsigned char)(255.0 * std::abs(std::sin(j * i * M_PI
-    //            / 64.0) * std::cos(j * i * M_PI / 96.0)));
-    //        }
-    //    }
     auto& myTexture =
         app.m_engine->getTextureManager()->addTexture( "myTexture", 512, 512, volumeData );
     // these values will be used when engine initialize texture GL representation.
-    //    myTexture.format = gl::GLenum::GL_RED;
     myTexture.format = gl::GLenum::GL_RG;
-    //    myTexture.internalFormat = gl::GLenum::GL_R16;
     myTexture.internalFormat = gl::GLenum::GL_RG;
     //! [Creating a texture]
 
@@ -118,12 +89,8 @@ int main( int argc, char* argv[] ) {
 
     const auto& roManager = Ra::Engine::RadiumEngine::getInstance()->getRenderObjectManager();
     const auto nObjects   = roManager->getRenderObjectsCount();
-    //    for (int i = 0; i < nObjects; ++i) {
-    //        std::cout << roManager->getRenderObject(i)->getName() << std::endl;
-    //    }
     auto ro = Ra::Engine::RadiumEngine::getInstance()->getRenderObjectManager()->getRenderObject(
         nObjects - 1 );
-    //    ro->setVisible(false);
     auto renderTechnique = ro->getRenderTechnique();
     Ra::Engine::Data::ShaderConfiguration shaderConfig(
         "myShader", vertexShaderFile, fragmentShaderFile );

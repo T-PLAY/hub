@@ -132,7 +132,6 @@
 // 				s_logFile.open( "log.txt", std::ios_base::beg ); \
 // 			} \
 // 			assert( s_logFile.is_open() ); \
-//             s_logFile << str << std::endl; \
 
 //#if SRC_EXPORTS
 #define ENABLE_DEBUG_MSG

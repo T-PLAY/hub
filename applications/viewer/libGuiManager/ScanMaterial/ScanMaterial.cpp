@@ -1,19 +1,7 @@
-//    const std::string shadersDir = PROJECT_DIR "applications/viewer/libGuiManager/ScanMaterial/";
 
-//    auto resourcesRootDir { RadiumEngine::getInstance()->getResourcesDir() };
-//    auto shaderProgramManager = RadiumEngine::getInstance()->getShaderProgramManager();
 
-//    shaderProgramManager->addNamedString( "/Scan.glsl", shadersDir + "Scan.glsl" );
 
-//    // registering re-usable shaders
-//    Data::ShaderConfiguration lpconfig(
-//        "Scan", shadersDir + "Scan.vert.glsl", shadersDir + "Scan.frag.glsl" );
-//    Data::ShaderConfigurationFactory::addConfiguration( lpconfig );
 
-//    Data::ShaderConfiguration zprepassconfig(
-//        "ZprepassScan", shadersDir + "Scan.vert.glsl", shadersDir + "ScanZPrepass.frag.glsl" );
-////        "ZprepassScan", shadersDir + "Scan.vert.glsl", shadersDir + "Scan.frag.glsl" );
-//    Data::ShaderConfigurationFactory::addConfiguration( zprepassconfig );
 
 //#include <Engine/Data/ScanMaterial.hpp>
 #include "ScanMaterial.hpp"
@@ -33,7 +21,6 @@ namespace Data {
 static const std::string materialName { "Scan" };
 
 ScanMaterial::ScanMaterial( const std::string& instanceName ) :
-    //        Material( instanceName, materialName, Material::MaterialAspect::MAT_OPAQUE ) {}
     Material( instanceName, materialName, Material::MaterialAspect::MAT_TRANSPARENT ) {}
 
 ScanMaterial::~ScanMaterial() {
@@ -96,7 +83,6 @@ void ScanMaterial::updateGL() {
         auto texture          = texManager->getOrLoadTexture( tex.second, tolinear );
         m_textures[tex.first] = texture;
         // do not call addTexture since it invalidate m_pendingTextures itr
-        //       addTexture( tex.first, texture );
     }
 
     m_pendingTextures.clear();
@@ -113,13 +99,10 @@ void ScanMaterial::registerMaterial() {
     // For resources access (glsl files) in a filesystem
     const std::string resourcesRootDir =
         PROJECT_DIR "applications/viewer/libGuiManager/ScanMaterial/";
-    //    auto resourcesRootDir { RadiumEngine::getInstance()->getResourcesDir() };
 
     auto shaderProgramManager = RadiumEngine::getInstance()->getShaderProgramManager();
 
     // Defining the material converter
-    //    EngineMaterialConverters::registerMaterialConverter( materialName,
-    //                                                         BlinnPhongMaterialConverter() );
 
     // adding the material glsl implementation file
     shaderProgramManager->addNamedString( "/Scan.glsl", resourcesRootDir + "Scan.glsl" );
@@ -165,36 +148,13 @@ void ScanMaterial::registerMaterial() {
 }
 
 void ScanMaterial::unregisterMaterial() {
-    //    EngineMaterialConverters::removeMaterialConverter( materialName );
     Rendering::EngineRenderTechniques::removeDefaultTechnique( materialName );
 }
 
 // Material*
 // BlinnPhongMaterialConverter::operator()( const Ra::Core::Asset::MaterialData* toconvert ) {
-//     auto result = new ScanMaterial( toconvert->getName() );
-//     // we are sure here that the concrete type of "toconvert" is BlinnPhongMaterialData
-//     // static cst is safe here
-//     auto source = static_cast<const Ra::Core::Asset::BlinnPhongMaterialData*>( toconvert );
 
-//    if ( source->hasDiffuse() ) result->m_kd = source->m_diffuse;
-//    if ( source->hasSpecular() ) result->m_ks = source->m_specular;
-//    if ( source->hasShininess() ) result->m_ns = source->m_shininess;
-//    if ( source->hasOpacity() ) result->m_alpha = source->m_opacity;
-//    if ( source->hasDiffuseTexture() )
-//        result->addTexture( ScanMaterial::TextureSemantic::TEX_DIFFUSE,
-//                            source->m_texDiffuse );
-//    if ( source->hasSpecularTexture() )
-//        result->addTexture( ScanMaterial::TextureSemantic::TEX_SPECULAR,
-//                            source->m_texSpecular );
-//    if ( source->hasShininessTexture() )
-//        result->addTexture( ScanMaterial::TextureSemantic::TEX_SHININESS,
-//                            source->m_texShininess );
-//    if ( source->hasOpacityTexture() )
-//        result->addTexture( ScanMaterial::TextureSemantic::TEX_ALPHA, source->m_texOpacity );
-//    if ( source->hasNormalTexture() )
-//        result->addTexture( ScanMaterial::TextureSemantic::TEX_NORMAL, source->m_texNormal );
 
-//    return result;
 //}
 
 } // namespace Data

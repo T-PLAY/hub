@@ -7,7 +7,6 @@ Sensor::Sensor( const SensorSpec&& sensorSpec, io::Interface& interface_ ) :
 
 Sensor::~Sensor() {
     //#ifdef DEBUG_MSG
-    //    std::cout << "[Sensor] ~Sensor()" << std::endl;
     //#endif
     m_interface.close();
     delete &m_interface;

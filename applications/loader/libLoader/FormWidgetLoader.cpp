@@ -11,7 +11,6 @@ FormWidgetLoader::FormWidgetLoader( const std::string& ipv4, const int& port, QW
     QWidget( parent ),
     ui( new Ui::FormWidgetLoader ),
     m_recordLoader( ipv4, port )
-//    m_recordLoader( " (record)" ) {
 {
     ui->setupUi( this );
 
@@ -27,7 +26,6 @@ FormWidgetLoader::FormWidgetLoader( const std::string& ipv4, const int& port, QW
         m_recordFileModel->setReadOnly( true );
         // Set filter
         m_recordFileModel->setFilter( QDir::NoDotAndDotDot | QDir::AllDirs | QDir::AllEntries );
-        //    m_recordFileModel->setFilter(QDir::NoDotAndDotDot | QDir::AllDirs);
         // QFileSystemModel requires root path
         m_recordFileModel->setRootPath( recordPath );
         m_recordFileModel->sort( 0, Qt::SortOrder::DescendingOrder );
@@ -40,16 +38,10 @@ FormWidgetLoader::FormWidgetLoader( const std::string& ipv4, const int& port, QW
         ui->treeView_record->setColumnHidden( 1, true );
         ui->treeView_record->setColumnHidden( 2, true );
         ui->treeView_record->setColumnHidden( 3, true );
-        //    ui->treeView->setItemsExpandable(false);
-        //    ui->treeView->setColumnHidden(0, true);
 
         QObject::connect(
             ui->treeView_record, &TreeViewStream::onSpace, this, &FormWidgetLoader::onSpace );
 
-        //        QObject::connect( ui->treeView_record->selectionModel(),
-        //                          &QItemSelectionModel::currentChanged,
-        //                          this,
-        //                          &FormWidgetLoader::onTreeView_record_currentChanged );
 
         QObject::connect( ui->treeView_record->selectionModel(),
                           &QItemSelectionModel::selectionChanged,
@@ -58,12 +50,9 @@ FormWidgetLoader::FormWidgetLoader( const std::string& ipv4, const int& port, QW
     }
 
     m_recordLoader.setAutoLoop( ui->checkBox_autoLoop->isChecked() );
-    //    m_recordLoader.setAutoPlay(ui.)
 
     QObject::connect( &m_recordLoader, &Loader::acqChanged, this, &FormWidgetLoader::onAcqChanged );
     QObject::connect( &m_recordLoader, &Loader::playEnded, this, &FormWidgetLoader::onPlayEnded );
-    //    QObject::connect(
-    //        &m_recordLoader, &Loader::pathLoaded, this, &FormWidgetLoader::recordPathLoaded );
     m_recordLoader.setAutoPlay( ui->pushButton_playPause->text() == "Pause" );
 }
 
@@ -75,28 +64,13 @@ FormWidgetLoader::~FormWidgetLoader() {
 }
 
 // void FormWidgetLoader::onTreeView_record_currentChanged( const QModelIndex& current,
-//                                                          const QModelIndex& previous ) {
-//     const std::string& mPath =
-//         m_recordFileModel->fileInfo( current ).absoluteFilePath().toStdString();
-//     //    std::cout << "[FormWidgetLoader] on_treeView_record_currentChanged : " << mPath <<
-//     //    std::endl;
 
-//    //    if (m_recordLoader.isLoaded() && mPath == m_recordLoader.getLoadedPath()) {
-//    //        const auto& selectionModel = ui->treeView_record->selectionModel();
-//    //        selectionModel->select(current, QItemSelectionModel::Deselect);
-//    //        m_recordLoader.unload();
-//    //        return;
-//    //    }
 
-//    //    if ( m_recordLoader.isLoaded() ) m_recordLoader.unload();
 
-//    //    m_recordLoader.load( mPath );
 //}
 
 void FormWidgetLoader::onTreeView_record_selectionChanged( const QItemSelection& selected,
                                                            const QItemSelection& deselected ) {
-    //    assert(! selected.empty());
-    //    const auto & current = selected.indexes().first();
 
     const auto& indexes = ui->treeView_record->selectionModel()->selectedIndexes();
 
@@ -113,10 +87,7 @@ void FormWidgetLoader::onTreeView_record_selectionChanged( const QItemSelection&
         std::cout << "[FormWidgetLoader] on_treeView_record_selectionChanged : " << mPath
                   << std::endl;
         if ( m_recordLoader.isLoaded() ) {
-            //            emit recordPathUnloaded();
-            //            m_recordLoader.unload();
         }
-        //        std::this_thread::sleep_for(std::chrono::milliseconds(300));
         m_recordLoader.load( mPath );
         const int nAcq = m_recordLoader.getNAcq();
         ui->label_nAcq->setText( "/" + QString::number( nAcq ) );
@@ -139,7 +110,6 @@ void FormWidgetLoader::onSpace() {
 }
 
 void FormWidgetLoader::onPlayEnded() {
-    //    m_recordLoader.stop();
     ui->pushButton_playPause->click();
 }
 
@@ -162,7 +132,6 @@ void FormWidgetLoader::on_pushButton_playPause_clicked() {
 }
 
 void FormWidgetLoader::on_horizontalSlider_iAcq_valueChanged( int value ) {
-    //    std::cout << "value changed " << value << std::endl;
     if ( ui->pushButton_playPause->text() == "Play" ) {
         m_recordLoader.setIAcq( value );
         ui->spinBox_iAcq->setValue( value );
@@ -170,7 +139,4 @@ void FormWidgetLoader::on_horizontalSlider_iAcq_valueChanged( int value ) {
 }
 
 void FormWidgetLoader::on_spinBox_iAcq_valueChanged( int arg1 ) {
-    //    if (ui->pushButton_playPause->text() == "Play") {
-    //        m_recordLoader.setIAcq(arg1);
-    //    }
 }

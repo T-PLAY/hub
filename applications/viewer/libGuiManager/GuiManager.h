@@ -48,20 +48,17 @@ class GuiManager : public QObject
 
   public:
     explicit GuiManager( QObject* parent = nullptr );
-    //    GuiManager();
 
     ~GuiManager();
 
     void init();
     void clear();
-    //    void incIter();
 
   signals:
 
   public slots:
 
     void onRecordLoaderPathLoaded();
-    //    void onRecordLoaderPathUnloaded();
     void onSnapshotLoaderPathLoaded();
 
   public:
@@ -69,31 +66,17 @@ class GuiManager : public QObject
     void on_action2D_triggered();
     void on_action3D_triggered();
 
-    //    void on_newSensor(std::string sensorName);
-    //    void on_delSensor(std::string sensorName);
 
     void onServerStreamStarted( const std::string& streamName, const std::string& syncStreamName );
     void onServerStreamStopped( const std::string& streamName, const hub::SensorSpec& sensorSpec );
     void onServerDisconnected();
     void onServerConnected();
 
-    //    void on_comboBox_scan_currentTextChanged(const QString &sourceType);
-    //    void on_comboBox_pose_currentTextChanged(const QString &sourceType);
 
-    //    void on_newScanAcquisition();
-    //    void on_newPoseAcquisition();
-    //    void onInitPose();
-    //    void onInitScan();
     void onInit( const std::string& sensorName );
-    //    void onNewAcquisition()
-    //    void onUpdatePose();
-    //    void onUpdateScan();
 
     void onNewAcquisition( const std::string& sensorName, const std::string& sourceType );
 
-    //    void on_toolButton_record_toggled(bool checked);
-    //    void on_toolButton_record_clicked();
-    //    void on_toolButton_snapshot_clicked();
 
     void onSelectedSourceChanged( const std::string& sensorName, const std::string& sourceType );
 
@@ -107,7 +90,6 @@ class GuiManager : public QObject
 
     void loadFile( QString path );
 
-    //    void on_sensorsView_clicked(const QModelIndex& index);
     void on_sensorsView_selectionChanged( const QItemSelection& selected,
                                           const QItemSelection& deselected );
     void on_sensorsView_doubleClicked( const QModelIndex& index );
@@ -136,19 +118,14 @@ class GuiManager : public QObject
     QAction* m_actionSettings   = nullptr;
     QAction* m_actionAddSources = nullptr;
 
-    //    SensorViews * m_sensorViews = nullptr;
-    //    MinimalComponent* m_comp = nullptr;
     SceneManager m_sceneManager;
 
 #ifdef ENABLE_LOADER
     FormWidgetLoader* m_formWidgetLoader = nullptr;
 #endif
 
-    //    FormInputStreamViews* m_formInputStreamViews = nullptr;
     FormStreamViews* m_formStreamViews = nullptr;
 
-    //    MainWindowStreamView * m_streamView = nullptr;
-    //    FormImageManipulator * m_imageManipulator = nullptr;
 #ifdef ENABLE_IMAGE_VIEWER
     FormImageManipulator* m_imageManipulator = nullptr;
 #endif

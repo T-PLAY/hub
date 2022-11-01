@@ -26,7 +26,6 @@ class MainWindow : public QMainWindow
   private:
     Ui::MainWindow* ui;
 
-    //    SensorViews * m_sensorViews = nullptr;
 };
 
 #endif // MAINWINDOW_H

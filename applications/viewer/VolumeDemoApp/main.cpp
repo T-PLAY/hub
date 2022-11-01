@@ -26,7 +26,6 @@ int main( int argc, char* argv[] ) {
     app.initialize( Ra::Gui::SimpleWindowFactory {} );
     //! [Creating the application]
 
-//    return app.exec();
 
 // DEMO_FILE is set during configure time by cmake and defines the file to load in the demo
 #ifndef DEMO_FILE
@@ -106,70 +105,21 @@ int main( int argc, char* argv[] ) {
     //! [Tell the window that something is to be displayed]
 #else
 
-    //    app.loadFile(DEMO_FILE);
-    //    Ra::IO::DicomLoader DicomLoader;
     app.m_engine->registerFileLoader(
         std::shared_ptr<Ra::Core::Asset::FileLoaderInterface>( new Ra::IO::DicomLoader() ) );
-    //    app.addApplicationExtension();
-    //    app.loadFile("/home/gauthier/Downloads/DICOM/D0010001.dcm");
-    //    constexpr auto irmPath = "/home/gauthier/tmpDicomViewer/IRM/";
 
     app.loadFile( QString( MRI_PATH "AXT2_ligaments_uterosacres/D0010525.dcm" ) );
     // app.loadFile(QString("C:\\Users\\gbouyjou\\Downloads\\MRI"
     // "AXT2_ligaments_uterosacres/D0010525.dcm"));
-    //     app.loadFile(QString(MRI_PATH2 "AXT2_ligaments_uterosacres/D0010525.dcm"));
 
-    //        app.loadFile(QString(MRI_PATH "Ax_T2_PROP_5MM/D0010275.dcm"));
-    //        app.loadFile(QString(MRI_PATH "Loc/D0010001.dcm"));
-    //        app.loadFile(QString(MRI_PATH "MPR_AX_T2/D0010551.dcm"));
-    //        app.loadFile(QString(MRI_PATH "MPR_Coro_T2/D0010710.dcm"));
-    //        app.loadFile(QString(MRI_PATH "MPR_Sag_T2/D0010652.dcm"));
-    //        app.loadFile(QString(MRI_PATH "PACS_AXIAL_ABDO/IM0001.dcm")); // 17 bits per voxel
-    //        app.loadFile(QString(MRI_PATH "PACS_AXIAL_AP/IM0001.dcm")); // 17 bits per voxel
-    //        app.loadFile(QString(MRI_PATH "PACS_AXIAL_TAP/IM0001.dcm")); // 17 bits per voxel
-    //        app.loadFile(QString(MRI_PATH "PACS_PARENCHYME/IM0001.dcm")); // 17 bits per voxel
-    //        app.loadFile(QString(MRI_PATH "RapportDose/IM0001.dcm")); // not loadable
-    //        app.loadFile(QString(MRI_PATH "Sag_CUBE_T2/D0010031.dcm"));
-    //        app.loadFile(QString(MRI_PATH "Scouts/IM0001.dcm")); // 17 bits per voxel
-    //        app.loadFile(QString(MRI_PATH "ScreenSave/IM0001.dcm")); // not loadable
-    //        app.loadFile(QString(MRI_PATH "SerieSmartPrep/IM0001.dcm")); // 17 bits per voxel
-    //        app.loadFile(QString(MRI_PATH "WATER:AX_LAVA-Flex/D0010333.dcm"));
 
-    //    auto entities = app.m_engine->getEntityManager()->getEntities();
-    //    auto e = entities[entities.size() - 1];
-    //    Ra::Core::Transform tr = Ra::Core::Transform::Identity();
-    //    tr.rotate(Ra::Core::AngleAxis(-Ra::Core::Math::PiDiv2, Ra::Core::Vector3 { 1_ra, 0_ra,
-    //    0_ra })); tr.translate(Ra::Core::Vector3 { 0_ra, 0_ra, 0.125_ra }); e->setTransform(tr);
 
-    //    auto geometrySystem = app.m_engine->getSystem( "GeometrySystem" );
-    //    //! [Creating the cube]
-    //    auto cube = Ra::Core::Geometry::makeSharpBox( { 0.5_ra, 0.05_ra, 0.5_ra } );
-    //    //! [Creating the cube]
 
-    //    //! [Colorize the Cube]
-    //    cube.addAttrib(
-    //        "in_color",
-    //        Ra::Core::Vector4Array { cube.vertices().size(), Ra::Core::Utils::Color::White() } );
-    //    //! [Colorize the Cube]
 
-    //    //! [Create the engine entity for the cube]
-    //    auto ce = app.m_engine->getEntityManager()->createEntity( "White cube" );
-    //    //! [Create the engine entity for the cube]
 
-    //    //! [Create a geometry component with the cube]
-    //    auto cc =
-    //        new Ra::Engine::Scene::TriangleMeshComponent( "Cube Mesh", ce, std::move( cube ),
-    //        nullptr );
-    //    //! [Create a geometry component with the cube]
 
-    //    //! [Register the entity/component association to the geometry system ]
-    //    geometrySystem->addComponent( ce, cc );
-    //    //! [Register the entity/component association to the geometry system ]
 
     //![get the renderobject for further edition]
-    //    const auto & ro = app.m_engine->getRenderObjectManager()->getRenderObject();
-    //    std::cout << ro->getName() << std::endl;
-    //    ro->computeAabb();
 
     const auto& roManager = Ra::Engine::RadiumEngine::getInstance()->getRenderObjectManager();
     roManager->getRenderObjects();
@@ -179,7 +129,6 @@ int main( int argc, char* argv[] ) {
     }
     auto ro = Ra::Engine::RadiumEngine::getInstance()->getRenderObjectManager()->getRenderObject(
         nObjects - 1 );
-    //    ro->setVisible(false);
 
     RA_DISPLAY_AABB( ro->computeAabb(), Ra::Core::Utils::Color::Blue() );
 
@@ -189,10 +138,6 @@ int main( int argc, char* argv[] ) {
 
 #endif
 
-    //    // terminate the app after 8 second (approximatively). Camera can be moved using mouse
-    //    moves. auto close_timer = new QTimer( &app ); close_timer->setInterval( 8000 );
-    //    QObject::connect( close_timer, &QTimer::timeout, [&app]() { app.appNeedsToQuit(); } );
-    //    // close_timer->start();
 
     return app.exec();
 }

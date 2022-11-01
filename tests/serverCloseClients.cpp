@@ -23,7 +23,6 @@ TEST_CASE( "Server test : close clients" ) {
         for ( int i = 0; i < dataSize; ++i ) {
             data[i] = iAcq * 2;
         }
-        //        acqs.emplace_back( iAcq * 2, iAcq * 2, data, dataSize );
         acqs.emplace_back( iAcq * 2, iAcq * 2 );
         acqs.back() << hub::Measure( data, dataSize );
     }
@@ -33,7 +32,6 @@ TEST_CASE( "Server test : close clients" ) {
         for ( int i = 0; i < dataSize; ++i ) {
             data[i] = iAcq2 * 10;
         }
-        //        acqs2.emplace_back( iAcq2 * 10, iAcq2 * 10, data, dataSize );
         acqs2.push_back( hub::Acquisition( iAcq2 * 10, iAcq2 * 10 ) );
         acqs2.back() << hub::Measure( data, dataSize );
     }
@@ -52,7 +50,6 @@ TEST_CASE( "Server test : close clients" ) {
             { "sensorName", { { { 3 }, hub::SensorSpec::Format::BGR8 } } },
             hub::io::OutputStream( "stream", hub::net::ClientSocket( ipv4, port ) ) );
 
-        //        hub::io::Streamer(hub::net::ClientSocket(ipv4, port));
 
         auto& outputSensorSpec = outputSensor.m_spec;
         CHECK( outputSensorSpec.m_acquisitionSize == dataSize );
@@ -109,10 +106,8 @@ TEST_CASE( "Server test : close clients" ) {
 
                 std::cout << "[Test] ############################### compare " << std::endl;
                 for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
-                    //            std::cout << "[Test] compare acq " << iAcq << std::endl;
                     auto acq = inputSensor.getAcquisition();
                     std::cout << "[Test] acq = " << acq << std::endl;
-                    //            CHECK( acq == acqs[iAcq] );
                     assert( acq == acqs[iAcq * 5] );
                     CHECK( acq == acqs[iAcq * 5] );
                 }

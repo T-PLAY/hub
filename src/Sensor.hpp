@@ -35,7 +35,6 @@ class SRC_API Sensor
     SensorSpec m_spec;
 
   protected:
-    //    std::unique_ptr<io::Interface> m_interface;
     io::Interface& m_interface;
 
   public:

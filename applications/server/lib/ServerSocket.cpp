@@ -32,7 +32,6 @@ ClientSocket ServerSocket::waitNewClient() {
 #ifdef DEBUG_SOCKET
     DEBUG_MSG( getHeader( m_fdSock ) << "new client on socket " << new_socket );
 #endif
-    //    net::sSockets.push_back( new_socket );
     net::registerSocket( new_socket );
 
     return ClientSocket( new_socket );
@@ -49,7 +48,6 @@ void ServerSocket::initServer() {
 #ifdef DEBUG_SOCKET
     DEBUG_MSG( getHeader( m_fdSock ) << "server started " );
 #endif
-    //    net::sSockets.push_back( mFdSock );
     net::registerSocket( m_fdSock );
 
     // Server address construction

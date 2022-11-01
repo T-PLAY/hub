@@ -48,15 +48,10 @@ SceneComponent::SceneComponent( Ra::Engine::Scene::Entity* entity ) :
 /// This function is called when the component is properly
 /// setup, i.e. it has an entity.
 void SceneComponent::initialize() {
-    //    auto blinnPhongMaterial              = make_shared<BlinnPhongMaterial>( "Shaded Material"
-    //    ); blinnPhongMaterial->m_perVertexColor = true; blinnPhongMaterial->m_ks             =
-    //    Color::White(); blinnPhongMaterial->m_ns             = 100_ra;
 
     auto plainMaterial              = make_shared<PlainMaterial>( "Plain Material" );
     plainMaterial->m_perVertexColor = true;
 
-    //    auto lambertianMaterial              = make_shared<LambertianMaterial>( "Lambertian
-    //    Material" ); lambertianMaterial->m_perVertexColor = true;
 
     //// setup ////
     Scalar cellSize = 100_ra;
@@ -117,9 +112,6 @@ void SceneComponent::initialize() {
                                                             m_meshAxis[i] );
 
             m_roAxes[i]->setMaterial( plainMaterial );
-            //            Ra::Core::Transform TLocal = Transform::Identity();
-            //            TLocal.scale(100.0);
-            //            m_roAxes[i]->setLocalTransform(TLocal);
             addRenderObject( m_roAxes[i] );
         }
     }

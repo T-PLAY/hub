@@ -21,15 +21,6 @@ void ImplicitVolume::cube( Ra::Engine::RadiumEngine& engine ) {
     auto& data = density->data();
     // Radial density with value 1 at center
     auto densityField = [sx, sy, sz]( int i, int j, int k, int r ) {
-        //        i -= sx / 2;
-        //        j -= sy / 2;
-        //        k -= sz / 2;
-        //        Scalar d = (std::sqrt(i * i + j * j + k * k) - r) / r;
-        //        if (d > 0) {
-        //            return 0_ra;
-        //        } else {
-        //            return -d;
-        //        }
         return 1.0;
     };
     for ( int i = 0; i < sx; ++i ) {
@@ -47,13 +38,10 @@ void ImplicitVolume::cube( Ra::Engine::RadiumEngine& engine ) {
     Ra::Core::Vector3 p1( sx, sy, sz );
     volume->boundingBox    = Ra::Core::Aabb( p0, p1 );
     volume->densityToModel = Ra::Core::Transform::Identity();
-    //    volume->modelToWorld = Eigen::Scaling(1_ra / maxDim); // In the scene, the volume has size
-    //    1^3
     //! [Creating the Volume]
 
     //! [Create the engine entity for the Volume]
     auto e = engine.getEntityManager()->createEntity( "Volume demo" );
-    //    e->setTransform(Ra::Core::Transform { Ra::Core::Translation(0_ra, 0_ra, 0.5_ra) });
     //! [Create the engine entity for the Volume]
 
     //! [Create a geometry component with the Volume]
@@ -66,25 +54,9 @@ void ImplicitVolume::cube( Ra::Engine::RadiumEngine& engine ) {
 
     //! [Register the entity/component association to the geometry system ]
     //! [Creating the cube]
-    //    auto cube = Ra::Core::Geometry::makeSharpBox({ 0.5f, 0.5f, 1.f });
     //! [Creating the cube]
 
-    //    //! [Colorize the Cube]
-    //    cube.addAttrib(
-    //        "in_color",
-    //        Ra::Core::Vector4Array { cube.vertices().size(), Ra::Core::Utils::Color::White() });
-    //    //! [Colorize the Cube]
 
-    //    //! [Create the engine entity for the cube]
-    //    auto ce = app.m_engine->getEntityManager()->createEntity("White cube");
-    //    //! [Create the engine entity for the cube]
 
-    //    //! [Create a geometry component with the cube]
-    //    auto cc = new Ra::Engine::Scene::TriangleMeshComponent("Cube Mesh", ce, std::move(cube),
-    //    nullptr);
-    //    //! [Create a geometry component with the cube]
 
-    //    //! [Register the entity/component association to the geometry system ]
-    //    geometrySystem->addComponent(ce, cc);
-    //    //! [Register the entity/component association to the geometry system ]
 }

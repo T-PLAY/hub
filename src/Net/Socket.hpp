@@ -22,8 +22,6 @@ namespace net {
 class SRC_API Socket
 {
   public:
-    //    static const int s_defaultServicePort;
-    //    static const char* const s_defaultServiceIp;
 
     class exception : public std::runtime_error
     {
