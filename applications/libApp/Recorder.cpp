@@ -22,38 +22,15 @@
 // void Recorder::record(const InputSensorParameters& inputSensorConfigs)
 //{
 
-
-
-
-
-
-
-
-
-
-
 //}
 
 // void Recorder::stop()
 //{
 
-
-
 //}
 
 // void Recorder::save(const Frame& frame)
 //{
-
-
-
-
-
-
-
-
-
-
-
 
 //}
 
@@ -63,10 +40,6 @@
 
 // void Recorder::saveOnDisk()
 //{
-
-
-
-
 
 //}
 

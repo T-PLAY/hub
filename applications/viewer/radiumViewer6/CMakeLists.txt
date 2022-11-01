@@ -16,14 +16,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_DISABLE_SOURCE_CHANGES ON)
 set(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
 
-
 set(REQUIRED_LIBS Core Widgets Gui Xml)
 set(REQUIRED_LIBS_QUALIFIED Qt${QT_VERSION}::Core Qt${QT_VERSION}::Gui Qt${QT_VERSION}::Widgets
                             Qt${QT_VERSION}::Xml)
 find_package(Qt${QT_VERSION} REQUIRED COMPONENTS ${REQUIRED_LIBS})
 
 set(CMAKE_FIND_PACKAGE_NO_SYSTEM_PACKAGE_REGISTRY False)
-
 
 find_package(Radium REQUIRED COMPONENTS Core Engine Gui IO NO_DEFAULT_PATH)
 
@@ -52,7 +50,6 @@ else()
     endif()
 endif()
 
-
 if(WIN32)
     add_custom_command(
         TARGET ${PROJECT_NAME}
@@ -76,8 +73,7 @@ target_link_libraries(
     ${PROJECT_NAME}
     PUBLIC # Qt${QT_VERSION}::Widgets
            ${REQUIRED_LIBS_QUALIFIED} Radium::Core Radium::Gui Radium::Engine Radium::IO
-           libGuiManager
-)
+           libGuiManager)
 
 set_target_properties(
     ${PROJECT_NAME}
@@ -98,14 +94,3 @@ target_compile_options(
     INTERFACE)
 
 configure_radium_app(NAME ${PROJECT_NAME})
-
-
-
-
-
-
-
-
-
-
-

@@ -52,15 +52,13 @@ MainWindow::MainWindow( QWidget* parent ) : MainWindowInterface( parent ) {
 
     // load default color from QSettings
     updateBackgroundColor();
-
 }
 
 MainWindow::~MainWindow() {
     // Child QObjects will automatically be deleted
 }
 
-void MainWindow::cleanup() {
-}
+void MainWindow::cleanup() {}
 
 void MainWindow::activateTrackballManipulator() {
     // set trackball manipulator (default)
@@ -129,8 +127,7 @@ void MainWindow::updateBackgroundColor( QColor c ) {
 
 void Gui::MainWindow::updateUi( Plugins::RadiumPluginInterface* plugin ) {}
 
-void MainWindow::onRendererReady() {
-}
+void MainWindow::onRendererReady() {}
 
 void MainWindow::onFrameComplete() {}
 
@@ -177,8 +174,8 @@ void MainWindow::onGLInitialized() {
     addRenderer( "Forward Renderer", e );
 
     m_guiManager.m_mdiArea = mdiArea;
-    m_guiManager.m_engine = mainApp->m_engine;
-    m_guiManager.m_viewer = m_viewer;
+    m_guiManager.m_engine  = mainApp->m_engine;
+    m_guiManager.m_viewer  = m_viewer;
 
     m_guiManager.m_mainWindow    = this;
     m_guiManager.m_stackedWidget = stackedWidget;

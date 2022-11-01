@@ -18,6 +18,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${SRC_DIR} ${PROJECT_SOURCE_DI
 if(WIN32)
 
 elseif(UNIX)
+
 endif()
 
 target_link_libraries(${PROJECT_NAME} ${SRC_TARGET} ${OpenCV_LIBS} ${UNIX_REQUIRED_LIBS}

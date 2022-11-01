@@ -17,7 +17,7 @@ class SRC_API Measure
   public:
     Measure( const unsigned char* const data, uint64_t size );
     Measure( Measure&& measure );
-    Measure( const Measure& ) = delete;
+    Measure( const Measure& )            = delete;
     Measure& operator=( const Measure& ) = delete;
     Measure& operator=( Measure&& )      = delete;
 
@@ -76,8 +76,6 @@ class Mat4 : public Measure
 // class Image : public Measure
 //{
 
-
-
 //};
 
 // measure_tag<Dof6> = SensorSpec::
@@ -109,7 +107,7 @@ class SRC_API Acquisition
     ~Acquisition();
 
     Acquisition( const Acquisition& acq ) = delete;
-    Acquisition( Acquisition&& acq ) = default;
+    Acquisition( Acquisition&& acq )      = default;
 
     Acquisition& operator=( const Acquisition& acq ) = delete;
     Acquisition& operator=( Acquisition&& acq )      = delete;
@@ -122,10 +120,6 @@ class SRC_API Acquisition
 
     bool interpolable() const;
     static Acquisition slerp( const Acquisition& left, const Acquisition& right, double t );
-
-
-
-
 
   public:
     Acquisition clone() const;
@@ -151,7 +145,6 @@ class SRC_API Acquisition
 
 // template <typename Arg, typename... Args>
 // Acquisition::Acquisition( long long start, long long end, Args... args ) :
-
 
 /// std::move(measure)));
 

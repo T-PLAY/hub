@@ -34,8 +34,7 @@ struct MinimalComponent : public Ra::Engine::Scene::Component {
 
     MinimalComponent( Ra::Engine::Scene::Entity* entity,
                       Ra::Engine::RadiumEngine& e,
-                      Ra::Gui::Viewer& viewer
-    );
+                      Ra::Gui::Viewer& viewer );
 
     /// This function is called when the component is properly
     /// setup, i.e. it has an entity.

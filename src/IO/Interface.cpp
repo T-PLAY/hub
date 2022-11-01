@@ -198,8 +198,6 @@ void Interface::write( const char* str ) const {
 // hash of type info for 64 bit only, no conversion for 32 bits (same value in uint64_t)
 // uint64_t typeInfoHash64( const char _DecoratedName[1] ) {
 
-
-
 //}
 
 // Interface::~Interface()
@@ -258,9 +256,7 @@ void Interface::write( const std::any& any ) const {
         const float* val = *std::any_cast<const float*>( &any );
         write( (unsigned char*)val, 64 );
     }
-    else {
-        assert( false );
-    }
+    else { assert( false ); }
 }
 
 // void Interface::write(const std::map<std::string, std::any> &map) const
@@ -433,7 +429,6 @@ void Interface::read( std::any& any ) const {
         any = std::any_cast<const float*>( (const float*)buff );
 
     } break;
-
 
     default:
         assert( false );

@@ -121,14 +121,11 @@ StreamViewerClient::StreamViewerClient( Server& server,
                 }
                 else {
                     assert( lastAcq->getSize() == m_outputSensor->m_spec.m_acquisitionSize );
-                    if ( m_server.m_acqPing ) {
-                        *m_outputSensor << *lastAcq;
-                    }
+                    if ( m_server.m_acqPing ) { *m_outputSensor << *lastAcq; }
                     else {
                         m_outputSensor->getInterface().write(
                             hub::net::ClientSocket::Message::PING );
                     }
-
                 }
                 m_mtxOutputSensor.unlock();
                 std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
@@ -146,7 +143,6 @@ StreamViewerClient::StreamViewerClient( Server& server,
             throw e;
         }
 
-
         if ( m_isKilled ) { std::cout << headerMsg() << "thread : thread killed" << std::endl; }
         else {
             std::cout << headerMsg() << "thread : thread end" << std::endl;
@@ -158,9 +154,7 @@ StreamViewerClient::StreamViewerClient( Server& server,
 
 StreamViewerClient::~StreamViewerClient() {
     std::cout << headerMsg() << "deleted" << std::endl;
-    if ( m_thread != nullptr ) {
-        m_thread->detach();
-    }
+    if ( m_thread != nullptr ) { m_thread->detach(); }
 }
 
 std::string StreamViewerClient::headerMsg() const {
@@ -181,8 +175,6 @@ void StreamViewerClient::update( const hub::Acquisition& acq ) {
                   << std::endl;
         std::cout << headerMsg() << "update(Acquisition) : end stream : '" << m_streamName << "'"
                   << std::endl;
-
-
 
         m_updateFailed = true;
         m_mtxOutputSensor.unlock();

@@ -10,9 +10,7 @@
 
 namespace hub {
 
-Streamer::Streamer(
-    const std::string& ipv4,
-    int port ) :
+Streamer::Streamer( const std::string& ipv4, int port ) :
     m_ipv4( ipv4 ),
     m_port( port ),
     m_ipv4Regex( std::regex( "^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$" ) ) {
@@ -34,7 +32,6 @@ void Streamer::addStream( const std::string& streamName,
     }
     m_streamName2initAcqs[streamName] = std::move( acqs );
 
-
     try {
         auto outputSensor = std::make_unique<OutputSensor>(
             sensorSpec, io::OutputStream( streamName, net::ClientSocket( m_ipv4, m_port ) ) );
@@ -42,20 +39,15 @@ void Streamer::addStream( const std::string& streamName,
         for ( const auto& acq : m_streamName2initAcqs.at( streamName ) ) {
             newAcquisition( streamName, acq.clone() );
         }
-        if ( !m_serverConnected ) {
-            onServerConnected();
-        }
+        if ( !m_serverConnected ) { onServerConnected(); }
     }
     catch ( net::Socket::exception& ex ) {
         std::cout << "[Streamer] unable to connect to server : " << m_ipv4 << " " << m_port
                   << std::endl;
-        if ( m_serverConnected ) {
-            onServerDisconnected();
-        }
+        if ( m_serverConnected ) { onServerDisconnected(); }
     }
 
     m_streamName2lastLogout[streamName] = std::chrono::high_resolution_clock::now();
-
 
     assert( m_streamName2sensorSpec.find( streamName ) == m_streamName2sensorSpec.end() );
     m_streamName2sensorSpec[streamName] = std::move( sensorSpec );
@@ -76,17 +68,13 @@ void Streamer::newAcquisition( const std::string& streamName, Acquisition&& acqu
                     sensorSpec,
                     io::OutputStream( streamName, net::ClientSocket( m_ipv4, m_port ) ) );
                 m_streamName2outputSensor[streamName] = std::move( outputSensor );
-                if ( !m_serverConnected ) {
-                    onServerConnected();
-                }
+                if ( !m_serverConnected ) { onServerConnected(); }
             }
             catch ( net::Socket::exception& ex ) {
                 std::cout << "[Streamer] unable to connect to server : " << m_ipv4 << " " << m_port
                           << std::endl;
                 m_streamName2lastLogout.at( streamName ) = now;
-                if ( m_serverConnected ) {
-                    onServerDisconnected();
-                }
+                if ( m_serverConnected ) { onServerDisconnected(); }
             }
         }
     }
@@ -95,9 +83,7 @@ void Streamer::newAcquisition( const std::string& streamName, Acquisition&& acqu
         try {
             auto& outputSensor = *m_streamName2outputSensor.at( streamName );
             outputSensor << acquisition;
-            if ( !m_serverConnected ) {
-                onServerConnected();
-            }
+            if ( !m_serverConnected ) { onServerConnected(); }
         }
         catch ( net::Socket::exception& ex ) {
             m_streamName2outputSensor.clear();
@@ -106,9 +92,7 @@ void Streamer::newAcquisition( const std::string& streamName, Acquisition&& acqu
             for ( auto& pair : m_streamName2lastLogout ) {
                 pair.second = now;
             }
-            if ( m_serverConnected ) {
-                onServerDisconnected();
-            }
+            if ( m_serverConnected ) { onServerDisconnected(); }
 #ifdef OS_LINUX
             ++m_port;
 #endif
@@ -153,10 +137,11 @@ void Streamer::onServerDisconnected() {
 
 //}
 
+//#ifdef DEBUG_VIEWER
+//#endif
 
-
-
-
+//#ifdef DEBUG_VIEWER
+//#endif
 
 //#ifdef DEBUG_VIEWER
 //#endif
@@ -164,20 +149,8 @@ void Streamer::onServerDisconnected() {
 //#ifdef DEBUG_VIEWER
 //#endif
 
-
-
-
 //#ifdef DEBUG_VIEWER
 //#endif
-
-
-
-//#ifdef DEBUG_VIEWER
-//#endif
-
-//#ifdef DEBUG_VIEWER
-//#endif
-
 
 Streamer::~Streamer() {
 #ifdef DEBUG_VIEWER

@@ -45,8 +45,6 @@ void SceneManager::init() {
            << "Size"
            << "Frequency";
     m_sensorModel.setHorizontalHeaderLabels( header );
-
-
 }
 
 void SceneManager::delSensor( const std::string& streamName ) {
@@ -58,8 +56,6 @@ void SceneManager::delSensor( const std::string& streamName ) {
             m_sensorModel.findItems( streamName.c_str(), Qt::MatchExactly, 0 );
         assert( lst.size() == 1 );
         m_sensorModel.removeRow( lst.front()->index().row() );
-
-
     }
 }
 
@@ -79,7 +75,6 @@ void SceneManager::fitView( const std::string& streamName ) {
     assert( m_streamName2sensor.find( streamName ) != m_streamName2sensor.end() );
     auto& sensor = *m_streamName2sensor.at( streamName );
     sensor.fitView();
-
 }
 
 void SceneManager::enableTrace( bool enable ) {

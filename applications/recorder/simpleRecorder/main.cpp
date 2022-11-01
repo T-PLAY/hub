@@ -18,7 +18,6 @@ int main( int argc, char* argv[] ) {
 
     bool stopThread = false;
 
-
     const std::string rootPath = PROJECT_DIR "data/";
 
     // creating new record folder
@@ -32,12 +31,9 @@ int main( int argc, char* argv[] ) {
     assert( !std::filesystem::exists( newRecordFolder ) );
     std::filesystem::create_directories( newRecordFolder );
 
-
     std::vector<std::pair<std::string, std::string>> streamNames {
         { "Polhemus Patriot (sensor 2)", "ULA-OP 256" } };
     std::vector<std::thread> threads;
-
-
 
     for ( const auto& streamName : streamNames ) {
 
@@ -121,13 +117,6 @@ int main( int argc, char* argv[] ) {
 // int main(int argc, char* argv[])
 //{
 
-
-
-
-
 /// g_probeScanSensorName }, { g_probeScanSensorName, "" } });
-
-
-
 
 //}

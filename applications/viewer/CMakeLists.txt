@@ -13,7 +13,6 @@ endif()
 
 if(HUB_APPLICATION_ENABLE_RADIUM)
 
-
     if(HUB_USE_DCMTK)
         add_subdirectory(libDicomLoader)
         add_subdirectory(VolumeDemoApp)
@@ -27,4 +26,3 @@ if(HUB_APPLICATION_ENABLE_RADIUM)
     # add_subdirectory(radiumViewer7) #radium-apps sandbox add_subdirectory(radiumViewer8)
 
 endif()
-

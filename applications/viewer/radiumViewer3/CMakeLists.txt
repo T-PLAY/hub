@@ -49,18 +49,4 @@ target_compile_options(
 
 configure_radium_app(NAME ${PROJECT_NAME})
 
-
-
-
-
-
-
-
-
 # For more information, see https://doc.qt.io/qt-6/qt-add-executable.html#target-creation else()
-
-
-
-
-
-

@@ -40,7 +40,6 @@ GuiMainWindow::GuiMainWindow( Ra::Engine::RadiumEngine* engine,
     QMainWindow( parent ), ui( new Ui::GuiMainWindow ) {
     ui->setupUi( this );
 
-
     // configure radium
     // Create app and show viewer window
     assert( engine != nullptr );
@@ -63,19 +62,14 @@ GuiMainWindow::GuiMainWindow( Ra::Engine::RadiumEngine* engine,
 
     // Create and initialize entity and component
 
-
     // prepare the viewer to render the scene (i.e. build RenderTechniques for the
     // active renderer)
     m_guiManager.m_viewer->prepareDisplay();
 
-
-
     // Start the app.
 
-
-
     m_guiManager.m_mdiArea = ui->mdiArea;
-    m_guiManager.m_system = sys;
+    m_guiManager.m_system  = sys;
 
     m_guiManager.m_mainWindow    = this;
     m_guiManager.m_stackedWidget = ui->stackedWidget;
@@ -87,11 +81,6 @@ GuiMainWindow::GuiMainWindow( Ra::Engine::RadiumEngine* engine,
              &QAction::triggered,
              m_guiManager.m_viewer,
              &Ra::Gui::Viewer::reloadShaders );
-
-
-
-
-
 }
 
 GuiMainWindow::~GuiMainWindow() {

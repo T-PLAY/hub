@@ -15,11 +15,6 @@ namespace Ra {
 namespace IO {
 namespace DICOM {
 
-
-
-
-
-
 // read a DICOM volume
 unsigned char* readDicomVolume( const char* filename,
                                 unsigned int* imageWidth,
@@ -41,8 +36,6 @@ unsigned char* readDicomVolume( const char* filename,
         if ( !std::filesystem::is_directory( entry ) ) { files_in_directory.push_back( entry ); }
     }
     std::sort( files_in_directory.begin(), files_in_directory.end() );
-
-
 
     if ( files_in_directory.empty() ) {
         std::cerr << "Name list empty" << std::endl;
@@ -116,7 +109,7 @@ unsigned char* readDicomVolume( const char* filename,
         DicomImage image( filename.string().c_str() );
 
         auto dbg = image.getDepth();
-        dbg = image.getFrameCount();
+        dbg      = image.getFrameCount();
         assert( image.getFrameCount() == 1 );
         dbg = image.getNumberOfFrames();
         assert( image.getNumberOfFrames() == 1 );
@@ -130,16 +123,13 @@ unsigned char* readDicomVolume( const char* filename,
 
             image.setMinMaxWindow();
 
-
             image.getOutputData( &volume[i * imageSize], imageSize, *nBytesPerVoxel * 8 );
-
         }
         else {
             std::cerr << "Error: cannot load DICOM image ("
                       << DicomImage::getString( image.getStatus() ) << ")" << std::endl;
             exit( -1 );
         }
-
     }
 
     return volume;

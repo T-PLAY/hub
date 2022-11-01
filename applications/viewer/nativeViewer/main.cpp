@@ -13,10 +13,7 @@ int main( int argc, char* argv[] ) {
 
     auto inputStream = createInputStream( "Keyboard" );
 
-
-
     // const int width = inputStream.getDims().at(0);
-
 
     const auto size = getAcquisitionSize( inputStream );
     assert( size == 28 );
@@ -29,7 +26,6 @@ int main( int argc, char* argv[] ) {
             long long start, end;
             auto good = getAcquisition( inputStream, &start, &end, data );
             if ( !good ) exit( 0 );
-
 
             std::cout << "receive acq ";
 
@@ -44,7 +40,6 @@ int main( int argc, char* argv[] ) {
                 std::cout << orientation[i] << " ";
             }
             std::cout << std::endl;
-
 
             // const int dec = acq.mData[0];
             // for (size_t i = 0; i < acquisitionSize; ++i) {

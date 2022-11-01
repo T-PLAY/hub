@@ -8,10 +8,6 @@
 // class Snapshot {
 // public:
 
-
-
-
-
 // private:
 //};
 

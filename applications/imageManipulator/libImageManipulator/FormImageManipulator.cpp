@@ -12,7 +12,6 @@ FormImageManipulator::FormImageManipulator( QWidget* parent ) :
     std::cout << "[FormImageManipulator] create start" << std::endl;
     ui->setupUi( this );
 
-
     ui->frame_top_2->setPixelPerUnit( &ui->widgetStreamView_2->getCanvasPixelPerUnit() );
     ui->frame_top_2->setType( FrameRuler::Type::HORIZONTAL );
     ui->frame_top_2->setScrollBar( ui->scrollArea->horizontalScrollBar() );
@@ -41,7 +40,6 @@ FormImageManipulator::FormImageManipulator( QWidget* parent ) :
     ui->scrollAreaWidgetContents_grid->setCanvasPixelHeight(
         &ui->widgetStreamView_2->getCanvasPixelHeight() );
 
-
     QObject::connect( ui->scrollArea,
                       &QScrollAreaGrid::pixelPerUnitChanged,
                       ui->widgetStreamView_2,
@@ -63,15 +61,6 @@ FormImageManipulator::FormImageManipulator( QWidget* parent ) :
                       &WidgetStreamView2D::inited,
                       this,
                       &FormImageManipulator::onStreamViewInited );
-
-
-
-
-
-
-
-
-
 
     /// imgHeight)) % 255; /            } /        }
 
@@ -107,7 +96,5 @@ WidgetStreamView2D& FormImageManipulator::getWidgetStreamView() {
 
 // void FormImageManipulator::paintEvent(QPaintEvent* event)
 //{
-
-
 
 //}

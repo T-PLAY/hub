@@ -20,7 +20,6 @@ find_package(
     PluginBase
     IO)
 
-
 find_package(
     Qt${QT_VERSION}
     COMPONENTS Core Widgets OpenGL
@@ -60,10 +59,7 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR} # Moc
 add_executable(${PROJECT_NAME} MACOSX_BUNDLE ${app_sources} ${app_headers} ${app_inlines}
                                              ${app_uis_moc} ${app_resources})
 
-target_link_libraries(
-    ${PROJECT_NAME}
-    PUBLIC Radium::Core Radium::Engine Radium::Gui Radium::IO ${Qt_LIBRARIES}
-           libGuiManager)
+target_link_libraries(${PROJECT_NAME} PUBLIC Radium::Core Radium::Engine Radium::Gui Radium::IO
+                                             ${Qt_LIBRARIES} libGuiManager)
 
 configure_radium_app(NAME ${PROJECT_NAME} USE_PLUGINS)
-

@@ -95,7 +95,6 @@ class MainWindow : public Ra::Gui::MainWindowInterface, private Ui::MainWindow
 
     /// Stores the internal model of engine objects for selection and visibility.
     std::unique_ptr<Ra::Gui::ItemModel> m_sceneModel;
-
 };
 
 } // namespace Gui

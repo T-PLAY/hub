@@ -50,7 +50,6 @@ class SceneManager : public QObject
     double m_tune0            = 0.25;
     double m_tune1            = 1.0;
 
-
     void fitView( const std::string& streamName );
     void enableTrace( bool enable );
     void enableLive( bool enable );
@@ -73,8 +72,6 @@ class SceneManager : public QObject
 
   private:
     std::map<std::string, std::unique_ptr<Sensor>> m_streamName2sensor;
-
-
 
     bool m_initialized = false;
 };
@@ -123,8 +120,6 @@ void SceneManager::addSensor( InterfaceT&& interfaceT, const std::string streamN
                                                                 *m_sensorsView,
                                                                 this );
 
-
-
     auto& newSensor = *m_streamName2sensor.at( streamName );
     newSensor.getSensorComponent()->enableTrace( m_enableTrace );
     newSensor.getSensorComponent()->enableLive( m_enableLive );
@@ -135,7 +130,6 @@ void SceneManager::addSensor( InterfaceT&& interfaceT, const std::string streamN
 #endif
     m_sensorModel.appendRow( newSensor.getItems() );
 
-
     // prevent all father's sons, the father is coming
     for ( auto& pair : m_streamName2sensor ) {
         auto& sensor            = *pair.second;
@@ -145,11 +139,8 @@ void SceneManager::addSensor( InterfaceT&& interfaceT, const std::string streamN
         const char* parentName = nullptr;
         if ( metaData.find( "parent" ) != metaData.end() ) {
             parentName = std::any_cast<const char*>( metaData.at( "parent" ) );
-            if ( sensorName == parentName ) {
-                sensor.setParent( &newSensor );
-            }
+            if ( sensorName == parentName ) { sensor.setParent( &newSensor ); }
         }
-
     }
 }
 

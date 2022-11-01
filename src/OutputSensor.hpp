@@ -52,7 +52,6 @@ class SRC_API OutputSensor : public Sensor
     ///
     void operator<<( const Acquisition& acquisition ) const;
 
-
   private:
 };
 

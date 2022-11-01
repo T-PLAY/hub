@@ -16,10 +16,7 @@
 #include <Engine/Data/TextureManager.hpp>
 
 MinimalApp::MinimalApp() :
-    m_task_queue( nullptr ),
-    m_viewer( nullptr ),
-    m_frame_timer( nullptr ),
-    m_target_fps( 40 ) {
+    m_task_queue( nullptr ), m_viewer( nullptr ), m_frame_timer( nullptr ), m_target_fps( 40 ) {
     // Set application and organization names in order to ensure uniform
     // QSettings configurations.
     // \see http://doc.qt.io/qt-5/qsettings.html#QSettings-4
@@ -30,9 +27,7 @@ MinimalApp::MinimalApp() :
     m_engine = Ra::Engine::RadiumEngine::createInstance();
     m_engine->initialize();
 
-
     // Register the TimeSystem managing time dependant systems
-
 
     ///\todo update when a basic viewer is implemented ... (to call setupKeyMappingCallbacks)
     Ra::Gui::KeyMappingManager::createInstance();

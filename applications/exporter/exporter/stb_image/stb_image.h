@@ -6183,7 +6183,7 @@ static int stbi__tga_info( stbi__context* s, int* x, int* y, int* comp ) {
             stbi__rewind( s );
             return 0;
         }
-        stbi__skip( s, 4 );   // skip index of first colormap entry and number of entries
+        stbi__skip( s, 4 ); // skip index of first colormap entry and number of entries
         if ( ( sz != 8 ) && ( sz != 15 ) && ( sz != 16 ) && ( sz != 24 ) && ( sz != 32 ) ) {
             stbi__rewind( s );
             return 0;
@@ -6240,7 +6240,7 @@ static int stbi__tga_test( stbi__context* s ) {
     int sz, tga_color_type;
     if ( tga_color_type == 1 ) {                 // colormapped (paletted) image
         if ( sz != 1 && sz != 9 ) goto errorEnd; // colortype 1 demands image type 1 or 9
-        stbi__skip( s, 4 );   // skip index of first colormap entry and number of entries
+        stbi__skip( s, 4 ); // skip index of first colormap entry and number of entries
         if ( ( sz != 8 ) && ( sz != 15 ) && ( sz != 16 ) && ( sz != 24 ) && ( sz != 32 ) )
             goto errorEnd;
         stbi__skip( s, 4 ); // skip image x and y origin

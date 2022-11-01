@@ -11,7 +11,6 @@ class QScrollAreaGrid : public QScrollArea
   public:
     QScrollAreaGrid( QWidget* parent = nullptr );
 
-
     void setScrollAreaTop( QScrollArea* newScrollAreaTop );
 
     void setScrollAreaLeft( QScrollArea* newScrollAreaLeft );

@@ -8,10 +8,7 @@
 //////////////////////////////////////////////////////////////////////
 
 MainWindowStreamView::MainWindowStreamView( const hub::InputSensor& inputStream, QWidget* parent ) :
-    QMainWindow( parent ),
-    ui( new Ui::MainWindowStreamView ),
-    m_inputStream( inputStream )
-{
+    QMainWindow( parent ), ui( new Ui::MainWindowStreamView ), m_inputStream( inputStream ) {
     const auto& sensorSpec = m_inputStream.m_spec;
     std::cout << "MainWindow::MainWindowStreamView(parent, " << sensorSpec.m_sensorName << ")"
               << std::endl;
@@ -44,15 +41,12 @@ MainWindowStreamView::MainWindowStreamView( const hub::InputSensor& inputStream,
     }
     ui->centralwidget->setObjectName( QString::fromUtf8( "centralwidget" ) );
     setCentralWidget( ui->centralwidget );
-
-
 }
 
 MainWindowStreamView::~MainWindowStreamView() {
     std::cout << "~MainWindowStreamView()" << std::endl;
 
     delete ui;
-
 
     emit onCloseStreamViewSignal();
 }

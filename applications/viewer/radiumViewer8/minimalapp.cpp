@@ -71,7 +71,6 @@ void MinimalApp::initialize() {
     // Initialize timer for the spinning cube.
     m_frameTimer = new QTimer( this );
     m_frameTimer->setInterval( 1000 / m_targetFps );
-
 }
 
 void MinimalApp::onGLInitialized() {

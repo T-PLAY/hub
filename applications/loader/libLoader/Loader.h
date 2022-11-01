@@ -49,8 +49,6 @@ class Loader : public QObject
   public slots:
 
   private:
-
-
     std::vector<Snap> m_snaps;
     std::string m_loadedPath = "";
 

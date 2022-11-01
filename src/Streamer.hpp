@@ -18,9 +18,8 @@ namespace hub {
 class SRC_API Streamer
 {
   public:
-    Streamer(
-        const std::string& ipv4 = net::s_defaultServiceIp,
-        int port                = net::s_defaultServicePort );
+    Streamer( const std::string& ipv4 = net::s_defaultServiceIp,
+              int port                = net::s_defaultServicePort );
     ~Streamer();
 
     void addStream( const std::string& streamName,

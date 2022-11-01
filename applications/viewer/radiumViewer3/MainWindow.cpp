@@ -131,7 +131,6 @@ MainWindow::MainWindow( QWidget* parent ) : QMainWindow( parent ), ui( new Ui::M
     keyMappingManager->addListener(
         Ra::Gui::RotateAroundCameraManipulator::KeyMapping::configureKeyMapping );
 
-
     // Initialize timer for the spinning cube.
     m_frame_timer = new QTimer( this );
     m_frame_timer->setInterval( 1000 / 60.0 );
@@ -177,7 +176,6 @@ MainWindow::~MainWindow() {
     m_viewerWidget = nullptr;
 
     delete ui;
-
 }
 
 void MainWindow::onGLInitialized() {
@@ -196,13 +194,6 @@ void MainWindow::frame() {
     {
         if ( m_scan != nullptr ) {
             // update position and orientation
-
-
-
-
-
-
-
 
             // update texture
             if ( m_scanStream != nullptr ) {
@@ -266,10 +257,6 @@ void MainWindow::initScene() {
     uint circleGridSize = 8;
     uint numberOfSphere = 32;
 
-
-
-
-
     auto lambertianMaterial              = make_shared<LambertianMaterial>( "Lambertian Material" );
     lambertianMaterial->m_perVertexColor = true;
 
@@ -303,7 +290,6 @@ void MainWindow::initScene() {
                 c->m_renderObjects[0] );
         ro->setLocalTransform( Transform { Translation( Vector3( 0_ra, 0_ra, 0_ra ) ) } );
         ro->setMaterial( lambertianMaterial );
-
     }
 
     // probe cube
@@ -393,7 +379,6 @@ void MainWindow::initScene() {
         //! [Register the entity/component association to the geometry system ]
         geometrySystem->addComponent( e, c );
         //! [Register the entity/component association to the geometry system ]
-
 
         auto ro =
             Ra::Engine::RadiumEngine::getInstance()->getRenderObjectManager()->getRenderObject(

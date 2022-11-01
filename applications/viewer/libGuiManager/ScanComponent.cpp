@@ -46,14 +46,10 @@ ScanComponent::ScanComponent( const hub::InputSensor& inputSensor,
                               Ra::Engine::Scene::Entity* entity,
                               Ra::Engine::RadiumEngine& engine,
                               Ra::Gui::Viewer& viewer ) :
-    SensorComponent( inputSensor, entity ),
-    m_engine( engine ),
-    m_viewer( viewer ) {}
+    SensorComponent( inputSensor, entity ), m_engine( engine ), m_viewer( viewer ) {}
 
 void ScanComponent::initialize() {
     SensorComponent::initialize();
-
-
 
     m_scanLineMaterial                   = make_shared<PlainMaterial>( "Plain Material" );
     m_scanLineMaterial->m_perVertexColor = true;
@@ -71,8 +67,7 @@ void ScanComponent::initialize() {
         const float* array = std::any_cast<const float*>( metaData.at( "transform" ) );
         m_localTransform   = Eigen::Map<Eigen::Matrix4f>( (float*)array ); // Column-major
     }
-    else if ( metaData.find( "parent" ) != metaData.end() ) {
-    }
+    else if ( metaData.find( "parent" ) != metaData.end() ) {}
     else { m_localTransform.block( 0, 0, 3, 3 ) = Eigen::Scaling( 100.0f, 100.0f, 100.0f ); }
 
     // image only
@@ -89,8 +84,6 @@ void ScanComponent::initialize() {
         }
     }
     else { assert( false ); }
-
-
 }
 
 void ScanComponent::update( const hub::Acquisition& acq ) {
@@ -110,19 +103,17 @@ void ScanComponent::update( const hub::Acquisition& acq ) {
     const auto& measures = acq.getMeasures();
     const auto nMeasures = measures.size();
 
-
     bool isNewScan = true;
 
     if ( m_traceEnabled ) {
         // image only
-        if ( nMeasures == 1 ) {
-        }
+        if ( nMeasures == 1 ) {}
         // scan (image + 6DOF)
         else if ( nMeasures == 2 ) {
             assert( !m_scans.empty() );
             assert( 0 <= m_iScan && m_iScan < m_nMaxScans );
             assert( m_iScan < (int)m_scans.size() );
-            auto& lastScan = m_scans.at( m_iScan );
+            auto& lastScan                       = m_scans.at( m_iScan );
             lastScan.m_material->m_isTransparent = true;
             lastScan.m_material->needUpdate();
             lastScan.m_scanLine->setVisible( false );
@@ -174,11 +165,9 @@ void ScanComponent::update( const hub::Acquisition& acq ) {
                 TLocal.translate( pos );
                 TLocal.rotate( orientation );
 
-
                 TLocal *= m_localTransform;
                 scan.m_quad->setLocalTransform( TLocal );
                 scan.m_scanLine->setLocalTransform( TLocal );
-
             }
         }
     }
@@ -348,7 +337,6 @@ void ScanComponent::addScan() {
         scan.m_material->needUpdate();
 
         scan.m_quad->setVisible( false );
-
 
         addRenderObject( scan.m_quad );
 

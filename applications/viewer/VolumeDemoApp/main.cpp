@@ -26,7 +26,6 @@ int main( int argc, char* argv[] ) {
     app.initialize( Ra::Gui::SimpleWindowFactory {} );
     //! [Creating the application]
 
-
 // DEMO_FILE is set during configure time by cmake and defines the file to load in the demo
 #ifndef DEMO_FILE
     //! [Creating the Volume]
@@ -112,13 +111,6 @@ int main( int argc, char* argv[] ) {
     // app.loadFile(QString("C:\\Users\\gbouyjou\\Downloads\\MRI"
     // "AXT2_ligaments_uterosacres/D0010525.dcm"));
 
-
-
-
-
-
-
-
     //![get the renderobject for further edition]
 
     const auto& roManager = Ra::Engine::RadiumEngine::getInstance()->getRenderObjectManager();
@@ -137,7 +129,6 @@ int main( int argc, char* argv[] ) {
     //! [Tell the window that something is to be displayed]
 
 #endif
-
 
     return app.exec();
 }

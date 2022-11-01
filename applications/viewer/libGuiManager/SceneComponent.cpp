@@ -52,7 +52,6 @@ void SceneComponent::initialize() {
     auto plainMaterial              = make_shared<PlainMaterial>( "Plain Material" );
     plainMaterial->m_perVertexColor = true;
 
-
     //// setup ////
     Scalar cellSize = 100_ra;
     int nCellX      = 10;

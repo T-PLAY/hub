@@ -50,7 +50,6 @@ TEST_CASE( "Server test : close clients" ) {
             { "sensorName", { { { 3 }, hub::SensorSpec::Format::BGR8 } } },
             hub::io::OutputStream( "stream", hub::net::ClientSocket( ipv4, port ) ) );
 
-
         auto& outputSensorSpec = outputSensor.m_spec;
         CHECK( outputSensorSpec.m_acquisitionSize == dataSize );
         CHECK( outputSensorSpec.m_sensorName == "sensorName" );

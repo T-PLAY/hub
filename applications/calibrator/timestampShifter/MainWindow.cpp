@@ -107,7 +107,7 @@ void MainWindow::updateLatency() {
         }
 
         const hub::Dof6& dof6 = it->getMeasures().front();
-        auto it2 = m_acqs.begin();
+        auto it2              = m_acqs.begin();
 
         assert( ( it - 1 )->m_start < it->m_start );
         assert( it->m_start < ( it + 1 )->m_start );

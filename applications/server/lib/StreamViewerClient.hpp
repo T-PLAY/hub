@@ -28,5 +28,4 @@ class StreamViewerClient : public Client
     std::thread* m_thread = nullptr;
     bool m_isKilled       = false;
     bool m_updateFailed   = false;
-
 };

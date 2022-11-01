@@ -15,17 +15,14 @@ Dof6::Dof6( const Measure& measure ) : Measure( measure.m_data, measure.m_size )
 }
 
 Dof6::Dof6( float x, float y, float z, float w0, float w1, float w2, float w3 ) :
-    Measure( (unsigned char*)new float[7] { x, y, z, w0, w1, w2, w3 }, 28 )
-{
+    Measure( (unsigned char*)new float[7] { x, y, z, w0, w1, w2, w3 }, 28 ) {
     m_ownData = true;
     assert( m_ownData == true );
     assert( m_size == 28 );
     memcpy( (unsigned char*)&m_x, m_data, m_size );
 }
 
-Dof6 Dof6::slerp( const Dof6& left,
-                  const Dof6& right,
-                  long long t ) {
+Dof6 Dof6::slerp( const Dof6& left, const Dof6& right, long long t ) {
 
     float x = ( 1.0 - t ) * left.m_x + t * right.m_x;
     float y = ( 1.0 - t ) * left.m_y + t * right.m_y;
@@ -87,7 +84,6 @@ Mat4::Mat4( const float* array ) : Measure( (unsigned char*)array, 64 ) {
 //}
 
 // Measure::Measure( const unsigned char* const data, uint64_t size, bool floatData ) :
-
 
 //}
 
@@ -166,14 +162,11 @@ std::ostream& operator<<( std::ostream& os, const Measure& measure ) {
 }
 
 Measure::Measure( Measure&& measure ) :
-    m_data( measure.m_data ),
-    m_size( measure.m_size ),
-    m_resolution( measure.m_resolution ) {
+    m_data( measure.m_data ), m_size( measure.m_size ), m_resolution( measure.m_resolution ) {
     measure.m_isMoved = true;
 }
 
 Measure::~Measure() {
-
 
     if ( m_ownData && !m_isMoved ) { delete[] m_data; }
 }
@@ -210,13 +203,9 @@ Measure::~Measure() {
 
 // Acquisition::Acquisition( long long start,
 
-
 //}
 
-Acquisition::Acquisition( long long start, long long end ) :
-    m_start( start ),
-    m_end( end )
-{
+Acquisition::Acquisition( long long start, long long end ) : m_start( start ), m_end( end ) {
     assert( m_start <= m_end );
 }
 
@@ -298,7 +287,6 @@ Acquisition Acquisition::clone() const {
     }
 
     return acq;
-
 }
 
 // const std::list<Measure> &Acquisition::getMeasures() const

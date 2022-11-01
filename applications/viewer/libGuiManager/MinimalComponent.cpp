@@ -99,12 +99,10 @@ static long g_iter = 0;
 // MinimalComponent::MinimalComponent(Ra::Engine::Scene::Entity* entity,
 MinimalComponent::MinimalComponent( Ra::Engine::Scene::Entity* entity,
                                     Ra::Engine::RadiumEngine& e,
-                                    Ra::Gui::Viewer& viewer )
-    :
+                                    Ra::Gui::Viewer& viewer ) :
     Ra::Engine::Scene::Component( "Minimal Component", entity ),
     m_engine( e ),
-    m_viewer( viewer )
-{}
+    m_viewer( viewer ) {}
 
 /// This function is called when the component is properly
 /// setup, i.e. it has an entity.
@@ -142,7 +140,6 @@ void MinimalComponent::initialize() {
         m_roGrid->setPickable( false );
         addRenderObject( m_roGrid );
     }
-
 
     // origin gizmo
     {
@@ -279,7 +276,6 @@ void MinimalComponent::addProbe() {
             "scanLine", this, RenderObjectType::Geometry, m_meshAxis[5] );
         probe.m_scanLine->setMaterial( g_plainMaterial );
         addRenderObject( probe.m_scanLine );
-
     }
 
     // scan plane
@@ -307,15 +303,12 @@ void MinimalComponent::addProbe() {
                      std::abs( j - 20 - iProbe * 10 ) < 3 ) {
                     probe.m_data[( i * 512 + j )] = 0;
                 }
-                else {
-                    probe.m_data[( i * 512 + j )] = ( j / 2 ) % 256;
-                }
+                else { probe.m_data[( i * 512 + j )] = ( j / 2 ) % 256; }
             }
         }
-        probe.m_textureName = std::string( "myTexture" ) + std::to_string( iProbe );
-        auto& textureParameters =
-            m_engine.getTextureManager()->addTexture(
-                probe.m_textureName.c_str(), 256, 256, probe.m_data );
+        probe.m_textureName     = std::string( "myTexture" ) + std::to_string( iProbe );
+        auto& textureParameters = m_engine.getTextureManager()->addTexture(
+            probe.m_textureName.c_str(), 256, 256, probe.m_data );
         textureParameters.format         = gl::GLenum::GL_RED;
         textureParameters.internalFormat = gl::GLenum::GL_R8;
         assert( probe.m_textureName == textureParameters.name );
@@ -325,15 +318,11 @@ void MinimalComponent::addProbe() {
             new Engine::Data::Mesh( std::string( "Scan plane" ) + std::to_string( iProbe ) ) );
         meshQuad->loadGeometry( std::move( quadTriangle ) );
 
-
         probe.m_scan =
             RenderObject::createRenderObject( std::string( "echoPlane" ) + std::to_string( iProbe ),
                                               this,
                                               RenderObjectType::Geometry,
                                               meshQuad );
-
-
-
 
         {
             auto mat = make_shared<ScanMaterial>(
@@ -343,7 +332,6 @@ void MinimalComponent::addProbe() {
             mat->addTexture( ScanMaterial::TextureSemantic::TEX_DIFFUSE, textureParameters );
 
             probe.m_scan->setMaterial( mat );
-
         }
 
         auto TLocal = Transform::Identity();
@@ -355,7 +343,6 @@ void MinimalComponent::addProbe() {
     }
 
     g_probes.push_back( std::move( probe ) );
-
 }
 
 void MinimalComponent::updateShader() {
@@ -363,7 +350,6 @@ void MinimalComponent::updateShader() {
     for ( auto& probe : g_probes ) {
 
         auto& scan = *probe.m_scan;
-
 
         Ra::Engine::Data::TextureParameters textureParameters;
         textureParameters.name = probe.m_textureName;
@@ -395,9 +381,6 @@ void MinimalComponent::updatePose( const hub::Acquisition& acq ) {
         g_timestampProbePose = acq.m_start;
     }
 
-
-
-
     auto& probe = g_probes.at( g_iProbePose );
 
     assert( acq.getMeasures().size() == 1 );
@@ -422,7 +405,6 @@ void MinimalComponent::updatePose( const hub::Acquisition& acq ) {
 
     Ra::Core::Transform TLocal3 = Ra::Core::Transform::Identity();
 
-
     // worked
     // end worked
 
@@ -432,25 +414,17 @@ void MinimalComponent::updatePose( const hub::Acquisition& acq ) {
         Eigen::AngleAxis( 0.5f * Ra::Core::Math::Pi, Ra::Core::Vector3( 1.0, 0.0, 0.0 ) ) );
     // end worked
 
-
-
-
-
-
     Ra::Core::Transform TLocal4 = Ra::Core::Transform::Identity();
-
 
     const float lineRadius = m_scanner.width / 10.0;
     {
         Ra::Core::Transform TLocal = Transform::Identity();
         TLocal.scale( lineRadius );
 
-
         probe.m_refCube->setLocalTransform( TRadium * TWorld * TLocal4 * TOrientation * TLocal3 );
 
         for ( int i = 0; i < 3; ++i ) {
             probe.m_refAxis[i]->setLocalTransform( TRadium * TWorld * TOrientation * TLocal );
-
         }
     }
 
@@ -458,9 +432,7 @@ void MinimalComponent::updatePose( const hub::Acquisition& acq ) {
         // Local transform scan
         Ra::Core::Transform TLocal = Ra::Core::Transform::Identity();
 
-
         TLocal.translate( Ra::Core::Vector3( 0.0, m_scanner.depth / 2.0, 0.0 ) + m_scanner.pos );
-
 
         Ra::Core::Vector3 vecScale( m_scanner.depth / 2.0, m_scanner.width / 2.0, 1.0 );
         TLocal.scale( vecScale );
@@ -477,7 +449,6 @@ void MinimalComponent::updatePose( const hub::Acquisition& acq ) {
         probe.m_scanLine->setLocalTransform( TRadium * TWorld * TOrientation * TLocal2 );
         if ( g_iProbePose > 0 ) probe.m_scanLine->setVisible( true );
     }
-
 }
 
 void MinimalComponent::initPose( int iProbe ) {
@@ -529,9 +500,6 @@ void MinimalComponent::updateScan( const hub::Acquisition& acq ) {
         g_timestampProbeScan = acq.m_start;
     }
 
-
-
-
     auto& probe = g_probes.at( g_iProbeScan );
 
     assert( probe.m_textureScan != nullptr );
@@ -544,7 +512,6 @@ void MinimalComponent::updateScan( const hub::Acquisition& acq ) {
     memcpy( params.texels, data, 256 * 256 );
     probe.m_textureScan->initializeGL( false );
     m_viewer.doneCurrent();
-
 }
 
 void MinimalComponent::initScan( int iProbe ) {
@@ -592,9 +559,6 @@ void MinimalComponent::initPoseTraces( const std::vector<hub::Acquisition>& pose
 
     for ( const auto& acq : poseAcqs ) {
 
-
-
-
         assert( acq.getMeasures().size() == 1 );
         hub::Dof6 dof6 = acq.getMeasures().at( 0 );
 
@@ -617,11 +581,8 @@ void MinimalComponent::initPoseTraces( const std::vector<hub::Acquisition>& pose
             // Local transform scan
             Ra::Core::Transform TLocal = Ra::Core::Transform::Identity();
 
-
             TLocal.translate( Ra::Core::Vector3( m_scanner.depth / 2.0, 0.0, 0.0 ) +
                               m_scanner.pos );
-
-
 
             Ra::Core::Transform TLocal2 = Ra::Core::Transform::Identity();
             TLocal2.translate( Ra::Core::Vector3( 0.0, -m_scanner.width / 2.0, 0.0 ) +
@@ -632,7 +593,6 @@ void MinimalComponent::initPoseTraces( const std::vector<hub::Acquisition>& pose
                 Vector3 pos2 = transform * Vector3( 0, i * m_scanner.width / 2.0, 0 );
                 points[i].push_back( pos2 );
             }
-
         }
     }
 
@@ -664,9 +624,6 @@ void MinimalComponent::initPoseTraces( const std::vector<hub::Acquisition>& pose
     }
 
     m_viewer.doneCurrent();
-
-
-
 }
 
 void MinimalComponent::incIter() {

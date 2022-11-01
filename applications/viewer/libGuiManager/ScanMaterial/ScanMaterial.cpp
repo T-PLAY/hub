@@ -1,8 +1,5 @@
 
 
-
-
-
 //#include <Engine/Data/ScanMaterial.hpp>
 #include "ScanMaterial.hpp"
 
@@ -153,7 +150,6 @@ void ScanMaterial::unregisterMaterial() {
 
 // Material*
 // BlinnPhongMaterialConverter::operator()( const Ra::Core::Asset::MaterialData* toconvert ) {
-
 
 //}
 

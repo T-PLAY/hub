@@ -47,7 +47,6 @@ int main( int argc, char* argv[] ) {
     unsigned int imageWidth, imageHeight, nImages, bytePerVoxel;
     float pixelSpacingWidth, pixelSpacingHeight, sliceThickness;
 
-
     const auto filename = MRI_PATH "AXT2_ligaments_uterosacres/D0010525.dcm";
 
     auto volumeData = Ra::IO::DICOM::readDicomVolume( filename,
@@ -68,7 +67,7 @@ int main( int argc, char* argv[] ) {
     auto& myTexture =
         app.m_engine->getTextureManager()->addTexture( "myTexture", 512, 512, volumeData );
     // these values will be used when engine initialize texture GL representation.
-    myTexture.format = gl::GLenum::GL_RG;
+    myTexture.format         = gl::GLenum::GL_RG;
     myTexture.internalFormat = gl::GLenum::GL_RG;
     //! [Creating a texture]
 

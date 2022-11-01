@@ -2,18 +2,15 @@ cmake_minimum_required(VERSION 3.8)
 
 project(libImageManipulator)
 
-
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
-
 
 find_package(Qt${QT_VERSION} REQUIRED COMPONENTS Widgets Gui)
 
 set(REQUIRED_LIBS_QUALIFIED Qt${QT_VERSION}::Core Qt${QT_VERSION}::Gui Qt${QT_VERSION}::Widgets)
 set(WIN32_REQUIRED_LIBS)
 set(UNIX_REQUIRED_LIBS)
-
 
 file(GLOB_RECURSE sources *.cpp)
 file(GLOB_RECURSE forms *.ui)

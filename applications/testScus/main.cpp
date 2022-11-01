@@ -16,18 +16,12 @@
 
 int main( int argc, char* argv[] ) {
 
-
-
-
-
-
     const std::shared_ptr<WeightingFunction> wf( new Cube( glm::vec3( 50.0, 50.0, 50.0 ), 100.0 ) );
 
     std::shared_ptr<Sampler> sampler( new utk::SamplerDartThrowing );
 
     Grid grid( 10, 10, 10, 1, wf, sampler, true );
     BasicUS bu( grid );
-
 
     glm::quat quat( 1.0, 0.0, 0.0, 0.0 );
     AcquisitionZone acq( glm::vec3( 0, 1, 0 ), quat, 200, 200, 200 );

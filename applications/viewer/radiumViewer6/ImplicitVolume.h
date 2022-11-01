@@ -6,7 +6,6 @@
 class ImplicitVolume
 {
   public:
-
     static void cube( Ra::Engine::RadiumEngine& engine );
 
   private:

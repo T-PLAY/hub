@@ -11,8 +11,6 @@ TEST_CASE( "File test" ) {
 
     const std::string filename = "file.txt";
 
-
-
     std::filesystem::remove( filename );
 
     std::vector<hub::Acquisition> acqs;
@@ -71,5 +69,4 @@ TEST_CASE( "File test" ) {
         }
     }
     std::cout << "inputStream end #################################" << std::endl;
-
 }

@@ -28,5 +28,4 @@ struct Dof6Component : SensorComponent {
 
   private:
     hub::SensorSpec::Format m_format;
-
 };

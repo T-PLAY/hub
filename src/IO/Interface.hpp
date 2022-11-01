@@ -18,7 +18,6 @@
 namespace hub {
 namespace io {
 
-
 ///
 /// \brief The Interface class
 /// allows the inherited classes to serialize the data.
@@ -161,7 +160,6 @@ void Interface::write( const std::map<T, U>& map ) const {
         write( pair );
         //#ifdef DEBUG_IOSTREAM
         //#endif
-
     }
 }
 

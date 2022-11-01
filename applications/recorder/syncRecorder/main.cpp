@@ -34,12 +34,11 @@ int main( int argc, char* argv[] ) {
 
         {
 
-
             std::cout << inputSensor.m_spec << std::endl;
             sensorSpec = inputSensor.m_spec;
 
             long long lastAcqStart = -1;
-            auto thread = std::thread( [&]() {
+            auto thread            = std::thread( [&]() {
                 while ( !stopThread ) {
                     auto acq = std::make_unique<hub::Acquisition>( inputSensor.getAcquisition() );
                     while ( acq->m_start == lastAcqStart ) {
@@ -48,8 +47,6 @@ int main( int argc, char* argv[] ) {
                     }
                     lastAcqStart = acq->m_start;
                     assert( acq->getMeasures().size() == 2 );
-
-
 
                     acqs.push_back( std::move( *acq ) );
 
@@ -89,7 +86,6 @@ int main( int argc, char* argv[] ) {
             outputSensor << acq;
         }
     }
-
 
     // play record
     {
@@ -143,13 +139,6 @@ int main( int argc, char* argv[] ) {
 // int main(int argc, char* argv[])
 //{
 
-
-
-
-
 /// g_probeScanSensorName }, { g_probeScanSensorName, "" } });
-
-
-
 
 //}

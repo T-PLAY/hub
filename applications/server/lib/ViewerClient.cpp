@@ -54,7 +54,6 @@ void ViewerClient::notifyNewStreamer( const StreamerClient& streamer ) const {
     mSock->write(std::to_string(streamer.mhub::InputSensor.getAcquisitionSize()));
 
     mSock->write(streamer.mhub::InputSensor.getMetaData());*/
-
 }
 
 void ViewerClient::notifyDelStreamer( const std::string& streamerName,

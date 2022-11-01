@@ -23,7 +23,6 @@
 
 // Player::~Player() {
 
-
 //}
 
 // void Player::load( const std::string& path, int iSensor ) {
@@ -31,22 +30,6 @@
 //}
 
 // void Player::update( int iSensor ) {
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //}
 
@@ -56,20 +39,12 @@
 
 // void Player::play() {
 
-
-
-
-
-
-
-
 //}
 
 // void Player::stop() {
 // }
 
 // void Player::showFrame( int iFrame ) {
-
 
 //}
 

@@ -14,9 +14,7 @@
 MainWindow::MainWindow( QWidget* parent ) : QMainWindow( parent ), ui( new Ui::MainWindow ) {
     ui->setupUi( this );
 
-
-
-    const auto filename = MRI_PATH "AXT2_ligaments_uterosacres/D0010525.dcm";
+    const auto filename     = MRI_PATH "AXT2_ligaments_uterosacres/D0010525.dcm";
     std::string filenameStr = std::string( filename );
     std::string mriName     = filenameStr.substr( filenameStr.find( "MRI/" ) + 4 );
     mriName                 = mriName.substr( 0, mriName.find_last_of( '/' ) );
@@ -40,8 +38,6 @@ MainWindow::MainWindow( QWidget* parent ) : QMainWindow( parent ), ui( new Ui::M
     const int sliceSize         = sliceWidth * sliceHeight * 2;
     unsigned char* texturesData = volumeData;
 
-
-
     m_streamView2D = new WidgetStreamView2D( this );
     m_streamView2D->init( sliceWidth, sliceHeight );
     m_streamView2D->setData( texturesData,
@@ -51,10 +47,7 @@ MainWindow::MainWindow( QWidget* parent ) : QMainWindow( parent ), ui( new Ui::M
 
     ui->mdiArea->addSubWindow( m_streamView2D );
 
-
-
     /// sensorSpec.m_dims, sensorSpec.m_format);
-
 
     m_imageManipulator = new FormImageManipulator( this );
     m_imageManipulator->setMinimumWidth( 400 );
@@ -67,7 +60,6 @@ MainWindow::MainWindow( QWidget* parent ) : QMainWindow( parent ), ui( new Ui::M
                               hub::SensorSpec::Format::Y16 );
 
     ui->mdiArea->addSubWindow( m_imageManipulator );
-
 }
 
 MainWindow::~MainWindow() {

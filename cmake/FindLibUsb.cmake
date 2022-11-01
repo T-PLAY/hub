@@ -1,16 +1,12 @@
-
 # #find_path(LIBUSB_INCLUDE_DIR #    NAMES LIBUSB.h #    PATHS ${LIBUSB_ROOT_DIR}/Inc #    DOC
-# "LIBUSB include path" #    )
-# #    find_library(LIBUSB_LIBRARY #        NAMES libusb-1.0 #        PATHS ${LIBUSB_ROOT_DIR}/dll/
-# #        DOC "LIBUSB library" # ) message(STATUS "library : " ${LIBUSB_LIBRARY}) if
-# found") endif() add_library(libusb INTERFACE IMPORTED) # set(LIBUSB_INCLUDE_DIR
-# else() #    file(GLOB LIBUSB_SRC ${LIBUSB_ROOT_DIR}/src/*.cpp) # list(REMOVE_ITEM LIBUSB_SRC
-# ${LIBUSB_ROOT_DIR}/src/PiTerm.cpp) #    file(GLOB LIBUSB_HEADERS ${LIBUSB_ROOT_DIR}/src/*.h) #
-# #    add_library(libusb-1.0 STATIC ${LIBUSB_SRC} ${LIBUSB_HEADERS}) # set(LIBUSB_LIBRARY
-# libusb-1.0) #    set(LIBUSB_INCLUDE_DIR ${LIBUSB_ROOT_DIR}/src/) endif()
-# LIBUSB_LIBRARY # LIBUSB_INCLUDE_DIR )
-# ${LIBUSB_LIBRARY} # INTERFACE_INCLUDE_DIRECTORIES ${LIBUSB_INCLUDE_DIR} ) else()
-
+# "LIBUSB include path" #    ) #    find_library(LIBUSB_LIBRARY #        NAMES libusb-1.0 # PATHS
+# ${LIBUSB_ROOT_DIR}/dll/ #        DOC "LIBUSB library" # ) message(STATUS "library : "
+# ${LIBUSB_LIBRARY}) if found") endif() add_library(libusb INTERFACE IMPORTED) #
+# set(LIBUSB_INCLUDE_DIR else() #    file(GLOB LIBUSB_SRC ${LIBUSB_ROOT_DIR}/src/*.cpp) #
+# list(REMOVE_ITEM LIBUSB_SRC ${LIBUSB_ROOT_DIR}/src/PiTerm.cpp) #    file(GLOB LIBUSB_HEADERS
+# ${LIBUSB_ROOT_DIR}/src/*.h) # #    add_library(libusb-1.0 STATIC ${LIBUSB_SRC} ${LIBUSB_HEADERS})
+# # set(LIBUSB_LIBRARY libusb-1.0) #    set(LIBUSB_INCLUDE_DIR ${LIBUSB_ROOT_DIR}/src/) endif()
+# LIBUSB_LIBRARY # LIBUSB_INCLUDE_DIR ) ${LIBUSB_LIBRARY} # INTERFACE_INCLUDE_DIRECTORIES
 
 include(CheckLibraryExists)
 include(CheckIncludeFile)

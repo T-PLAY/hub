@@ -57,11 +57,9 @@ MainWindow::MainWindow( QWidget* parent ) : QMainWindow( parent ), ui( new Ui::M
 
     // Create and initialize entity and component
 
-
     // prepare the viewer to render the scene (i.e. build RenderTechniques for the
     // active renderer)
     app.m_viewer->prepareDisplay();
-
 
     auto keyMappingManager = Ra::Gui::KeyMappingManager::getInstance();
     // Add default manipulator listener
@@ -73,12 +71,10 @@ MainWindow::MainWindow( QWidget* parent ) : QMainWindow( parent ), ui( new Ui::M
     app.m_viewer->setCameraManipulator( new Ra::Gui::RotateAroundCameraManipulator(
         *( app.m_viewer->getCameraManipulator() ), app.m_viewer.get() ) );
 
-
-
     m_guiManager.m_mdiArea = ui->mdiArea;
-    m_guiManager.m_engine = app.m_engine;
-    m_guiManager.m_viewer = app.m_viewer.get();
-    m_guiManager.m_system = sys;
+    m_guiManager.m_engine  = app.m_engine;
+    m_guiManager.m_viewer  = app.m_viewer.get();
+    m_guiManager.m_system  = sys;
 
     m_guiManager.m_mainWindow    = this;
     m_guiManager.m_stackedWidget = ui->stackedWidget;
@@ -90,11 +86,6 @@ MainWindow::MainWindow( QWidget* parent ) : QMainWindow( parent ), ui( new Ui::M
              &QAction::triggered,
              app.m_viewer.get(),
              &Ra::Gui::Viewer::reloadShaders );
-
-
-
-
-
 }
 
 MainWindow::~MainWindow() {

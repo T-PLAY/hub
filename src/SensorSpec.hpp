@@ -62,7 +62,7 @@ class SRC_API SensorSpec
     using Resolution  = std::pair<Dims, Format>;
     using Resolutions = std::vector<Resolution>;
 
-    SensorSpec( const std::string& sensorName = "",
+    SensorSpec( const std::string& sensorName  = "",
                 const Resolutions& resolutions = {},
                 const MetaData& metaData       = {} ) :
         m_sensorName( sensorName ),

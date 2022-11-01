@@ -28,7 +28,6 @@ struct Scan {
     Ra::Engine::Rendering::RenderObject* m_quad     = nullptr;
     Ra::Engine::Rendering::RenderObject* m_scanLine = nullptr;
     std::shared_ptr<CurrentMaterial> m_material;
-
 };
 
 /// This is a very basic component which holds a spinning cube.

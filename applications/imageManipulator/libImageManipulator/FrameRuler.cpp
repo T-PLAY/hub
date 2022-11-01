@@ -34,7 +34,6 @@ void FrameRuler::paintEvent( QPaintEvent* event ) {
 
     int alpha = 100;
 
-
     QPainter painter;
     painter.begin( this );
     painter.setPen( QColor( 0, 0, 0, alpha ) );

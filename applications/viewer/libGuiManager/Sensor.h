@@ -38,8 +38,6 @@ class SensorThread : public QThread
     // overriding the QThread's run() method
     void run();
 
-
-
   private:
     Sensor& m_sensor;
 };
@@ -59,7 +57,6 @@ class SensorCounterFpsThread : public QThread
     // overriding the QThread's run() method
     void run();
 
-
   private:
     Sensor& m_sensor;
 };
@@ -70,7 +67,6 @@ class Sensor : public QObject
 {
     Q_OBJECT
   public:
-
     Sensor( std::unique_ptr<hub::InputSensor> inputSensor,
             QMdiArea& mdiArea,
             Ra::Engine::RadiumEngine* engine,
@@ -133,7 +129,7 @@ class Sensor : public QObject
 
     // Create and initialize entity and component
     Ra::Engine::Scene::Entity* m_entity = nullptr;
-    Sensor* m_parent = nullptr;
+    Sensor* m_parent                    = nullptr;
     std::list<Sensor*> m_sons;
 
     std::function<void( const Ra::Engine::Scene::Entity* entity )> m_observer;

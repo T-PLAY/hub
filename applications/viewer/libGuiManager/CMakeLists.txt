@@ -2,16 +2,10 @@ cmake_minimum_required(VERSION 3.8)
 
 project(libGuiManager)
 
-
 set(CMAKE_AUTOMOC ON)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-
-
-
-
 
 find_package(Radium REQUIRED Core Engine Gui NO_DEFAULT_PATH)
 
@@ -19,12 +13,9 @@ find_qt_package(COMPONENTS Core Widgets REQUIRED)
 set(Qt_LIBRARIES Qt::Core Qt::Widgets)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-
-
 file(GLOB_RECURSE sources *.cpp *.glsl)
 file(GLOB_RECURSE headers *.h *.hpp *.inl)
 file(GLOB_RECURSE app_uis *.ui)
-
 
 qt_wrap_ui(app_uis_moc ${app_uis})
 
@@ -55,6 +46,4 @@ target_link_libraries(
     Radium::Gui
     ${Qt_LIBRARIES}
     libViewer
-    ${OTHER_LIBRARIES}
-)
-
+    ${OTHER_LIBRARIES})

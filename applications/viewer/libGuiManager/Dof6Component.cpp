@@ -55,13 +55,7 @@ Dof6Component::Dof6Component( const hub::InputSensor& inputStream,
 void Dof6Component::initialize() {
     SensorComponent::initialize();
 
-
-
     //// setup ////
-
-
-
-
 }
 
 void Dof6Component::update( const hub::Acquisition& acq ) {

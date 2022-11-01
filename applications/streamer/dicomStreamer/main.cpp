@@ -127,7 +127,6 @@ int main( int argc, char* argv[] ) {
         }
     }
 
-
     delete[] texturesData;
 
     return 0;

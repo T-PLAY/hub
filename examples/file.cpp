@@ -45,7 +45,6 @@ int main() {
                                << hub::Measure( bgrArray, 3 ) << hub::Measure { dof6Array, 28 }
                                << std::move( hub::Dof6() ) << std::move( dof6 ) );
 
-
             std::fstream file( "file.txt", std::ios::in );
             hub::InputSensor inputSensor( hub::io::File( std::move( file ) ) );
             const hub::SensorSpec::Resolutions& resolutions = inputSensor.m_spec.m_resolutions;
@@ -87,7 +86,6 @@ int main() {
             hub::io::File( std::fstream( "file.txt", std::ios::out ) ) );
         outputSensor << acq;
     }
-
 
     return 0;
 }
