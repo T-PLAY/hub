@@ -111,7 +111,7 @@ FormImageManipulator::FormImageManipulator( QWidget* parent ) :
     ////        for (int i = 0; i < imgWidth; ++i) {
     ////            for (int j = 0; j < imgHeight; ++j) {
     ////                data[i * imgHeight + j] = int(255.0 * double(i + j) / (imgWidth +
-    ///imgHeight)) % 255; /            } /        }
+    /// imgHeight)) % 255; /            } /        }
     //                for (int i = 0; i < imgSize; ++i) {
     //                    data[i] = ((double)i / imgSize) * 255.0;
     //                }
@@ -134,7 +134,7 @@ FormImageManipulator::~FormImageManipulator() {
 ////    assert(false);
 //     std::cout << "[FormImageManipulator] update" << std::endl;
 ////    ui->widgetStreamView_2->setData((unsigned char*)acquisition.mData, 512 * 192, {512, 192},
-///Stream::Format::Y8);
+/// Stream::Format::Y8);
 //    assert(acquisition.getMeasures().size() == 1);
 //    const auto & measure = acquisition.getMeasures().at(0);
 //    ui->widgetStreamView_2->setData((unsigned char*)measure.m_data, 256 * 256, {256, 256},

@@ -139,7 +139,7 @@ Ra::Core::Asset::FileData* DicomLoader::loadDicomFile( const std::string& filena
         auto fillRadiumVolume = []( auto container, auto densityData ) {
             std::generate( container->data().begin(), container->data().end(), [&densityData]() {
                 auto d = *densityData++;
-                return Scalar( d ) / Scalar(std::numeric_limits<decltype( d )>::max());
+                return Scalar( d ) / Scalar( std::numeric_limits<decltype( d )>::max() );
             } );
         };
         Ra::Core::Vector3 binSize {
