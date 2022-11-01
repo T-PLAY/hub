@@ -5,13 +5,9 @@ endif(APPLE)
 
 project(TexturedQuad VERSION 1.0.0)
 
-# ------------------------------------------------------------------------------
-# set wanted application defaults for cmake settings
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
 endif()
-# Set default install location to installed-<Compiler_ID> folder in build dir we do not want to
-# install to /usr by default
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     set(CMAKE_INSTALL_PREFIX
         "${CMAKE_CURRENT_BINARY_DIR}/installed-${CMAKE_CXX_COMPILER_ID}-${CMAKE_BUILD_TYPE}"
@@ -23,7 +19,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_DISABLE_SOURCE_CHANGES ON)
 set(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
 
-# ------------------------------------------------------------------------------
 if(NOT IN_RADIUM_BUILD_TREE)
     find_package(Radium REQUIRED Core Engine Gui)
 endif()
@@ -32,28 +27,16 @@ find_qt_package(COMPONENTS Core Widgets REQUIRED)
 set(Qt_LIBRARIES Qt::Core Qt::Widgets)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-# ------------------------------------------------------------------------------
 
 set(app_sources main.cpp vertexShader.glsl fragmentShader.glsl)
 
-# to install the app as a redistribuable bundle on macos, add MACOSX_BUNDLE when calling
-# add_executable
 add_executable(${PROJECT_NAME} ${app_sources})
 
 target_link_libraries(${PROJECT_NAME} PUBLIC Radium::Core Radium::Engine Radium::Gui Radium::IO
                                              ${Qt_LIBRARIES} DicomLoader)
 
-# target_compile_options(${PROJECT_NAME} PRIVATE PUBLIC ${DEFAULT_COMPILE_OPTIONS} INTERFACE)
 
 configure_radium_app(NAME ${PROJECT_NAME})
 
-# message("-----------------------------") message("-- USER environment variable is set to: "
-# $ENV{USER}) message("-- HOSTNAME environment variable is set to: " $ENV{HOSTNAME})
 
-# cmake_host_system_information(RESULT hostname QUERY HOSTNAME) message("-- hostname variable is set
-# to: " ${hostname})
 
-# if (${hostname} STREQUAL "brueghel")
-# add_definitions(-DMRI_PATH=\"/export/home/brueghel/gbouyjou/Downloads/MRI/\") elseif (${hostname}
-# STREQUAL "gigabyte") add_definitions(-DMRI_PATH=\"/home/gauthier/tmpDicomViewer/MRI/\") else()
-# message(FATAL_ERROR "unknown system for finding MRI path") endif ()

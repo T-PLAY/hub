@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.8)
 
 add_subdirectory(simpleStreamer)
 
-# if (UNIX)
 if(HUB_APPLICATION_ENABLE_KEYBOARD)
     add_subdirectory(posStreamer)
 endif()
@@ -32,4 +31,3 @@ if(HUB_USE_DCMTK)
     add_subdirectory(dicomStreamer)
 endif()
 
-# if (QT_VERSION) add_subdirectory(calibrator) endif()
