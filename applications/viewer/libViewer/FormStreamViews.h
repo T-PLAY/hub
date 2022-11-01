@@ -44,7 +44,6 @@ class ViewerQt : public QObject
 
 // public:
 
-
 // private:
 // };
 
@@ -59,8 +58,6 @@ class FormStreamViews : public QWidget
   public:
     explicit FormStreamViews( QWidget* parent = nullptr );
     ~FormStreamViews();
-
-
 
   signals:
     void streamingStarted( const std::string& streamName, const std::string& syncSensorName );
@@ -77,18 +74,14 @@ class FormStreamViews : public QWidget
   private:
     Ui::FormStreamViews* ui;
 
-
-
     ViewerQt* m_viewerQt = nullptr;
     std::string m_ipv4;
     int m_port;
     const QRegularExpression m_ipv4RegularExpression =
         QRegularExpression( "[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}" );
 
-
     std::map<std::string, FormStreamView*> m_sensorViews;
     QStringListModel m_sensorModel;
-
 
     bool m_serverConnected = false;
     bool m_serverPing      = false;

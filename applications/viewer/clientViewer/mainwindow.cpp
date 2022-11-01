@@ -11,12 +11,10 @@ MainWindow::MainWindow( QWidget* parent ) : QMainWindow( parent ), ui( new Ui::M
     ui->setupUi( this );
 
     ui->widgetSensorViews->setMdiArea( ui->mdiArea );
-
 }
 
 MainWindow::~MainWindow() {
     std::cout << "[MainWindow] ~MainWindow()" << std::endl;
-
 
     delete ui;
     std::cout << "[MainWindow] ~MainWindow() deleted ui" << std::endl;

@@ -20,7 +20,7 @@ std::string Server::getStatus() {
         const auto& streamerName = pair.first;
         const auto& streamer     = pair.second;
 
-        auto& streamViewers = m_streamViewers[streamerName];
+        auto& streamViewers     = m_streamViewers[streamerName];
         const auto& syncViewers = streamer->getSyncViewers();
 
         std::string str = streamerName.substr( 0, 3 );
@@ -55,7 +55,6 @@ void Server::addStreamer( StreamerClient* streamer ) {
     for ( const auto& viewer : m_viewers ) {
         viewer->notifyNewStreamer( *streamer );
     }
-
 }
 
 void Server::addStreamViewer( StreamViewerClient* streamViewer ) {
@@ -212,7 +211,6 @@ void Server::run() {
 
         Client* newClient = initClient( std::move( sock ), ++iClient );
         m_clients.push_back( newClient );
-
     }
     std::cout << headerMsg() << "run() max clients attempt" << std::endl;
 }
@@ -222,8 +220,7 @@ void Server::asyncRun() {
     m_thread = std::thread( [this]() { run(); } );
 }
 
-void Server::stop() {
-}
+void Server::stop() {}
 
 Client* Server::initClient( hub::net::ClientSocket&& sock, int iClient ) {
 
@@ -249,59 +246,9 @@ void Server::setMaxClients( int maxThreads ) {
 
 //////////////////////////////////////// old ///////////////////////////////////
 
-
-
-
-
-
-
-
-
-
-
 //#ifdef WIN32
 //#else
 //#endif
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //}
 
@@ -309,12 +256,8 @@ void Server::setMaxClients( int maxThreads ) {
 ///+ /                            "," + std::to_string( streamer->mSensor2syncViewers.size() ) +
 ///")";
 
-
 //}
 
 // void Viewer::notifyNewStreamer( const Streamer& streamer ) const {
-
-
-
 
 //}

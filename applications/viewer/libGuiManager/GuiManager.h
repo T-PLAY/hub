@@ -66,17 +66,14 @@ class GuiManager : public QObject
     void on_action2D_triggered();
     void on_action3D_triggered();
 
-
     void onServerStreamStarted( const std::string& streamName, const std::string& syncStreamName );
     void onServerStreamStopped( const std::string& streamName, const hub::SensorSpec& sensorSpec );
     void onServerDisconnected();
     void onServerConnected();
 
-
     void onInit( const std::string& sensorName );
 
     void onNewAcquisition( const std::string& sensorName, const std::string& sourceType );
-
 
     void onSelectedSourceChanged( const std::string& sensorName, const std::string& sourceType );
 

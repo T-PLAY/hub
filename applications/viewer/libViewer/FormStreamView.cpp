@@ -15,10 +15,6 @@
 
 // void Thread_InputStream::run() {
 
-
-
-
-
 //}
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -61,8 +57,6 @@ FormStreamView::FormStreamView( std::string streamName,
     mProxySensorModel.setFilterRegularExpression(
         QRegularExpression( QString( "^(?!" + sensorNameMod + "$)" ) ) );
     ui->comboBox_syncSensor->setModel( &mProxySensorModel );
-
-
 }
 
 FormStreamView::~FormStreamView() {
@@ -106,33 +100,19 @@ void FormStreamView::on_startStreaming() {
 
 ///&FormStreamView::streamingStopped );
 
-
-
-
-
-
 //}
 
 //#include <typeinfo>
 
 // void FormStreamView::on_stopStreaming() {
 
-
-
-
-
 //}
 
 // void FormStreamView::on_closeStreamView() {
 
-
-
 //}
 
 // void FormStreamView::on_newAcquisition() {
-
-
-
 
 //}
 

@@ -155,7 +155,6 @@ int main( int argc, char* argv[] ) {
             app.m_engine->getInstance()->getSystem( "DefaultCameraManager" ) );
     cameraManager->defaultCamera.setPosition( Ra::Core::Vector3 { 100_ra, 100_ra, 100_ra } );
 
-
 #ifdef SENSOR
     hub::InputSensor* scanStream = nullptr;
     hub::InputSensor* posStream  = nullptr;
@@ -163,8 +162,6 @@ int main( int argc, char* argv[] ) {
 ////#define ONLY_POSE
 //#ifdef ONLY_POSE
 //#else
-
-
 
 //#endif
 #    ifndef ONLY_POSE

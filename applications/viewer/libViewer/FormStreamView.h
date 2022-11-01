@@ -12,9 +12,6 @@
 // class Thread_InputStream : public QThread
 //{
 
-
-
-
 //};
 
 #include <QStringListModel>
@@ -46,11 +43,7 @@ class FormStreamView : public QWidget
 
   private slots:
 
-
-
   public:
-
-
     const hub::SensorSpec m_sensorSpec;
 
   private:
@@ -58,7 +51,6 @@ class FormStreamView : public QWidget
     const std::string m_streamName;
     QStringListModel& mSensorModel;
     QSortFilterProxyModel mProxySensorModel;
-
 };
 
 #endif // FORMSENSORVIEW_H

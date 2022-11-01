@@ -52,7 +52,6 @@ class MainWindow : public QMainWindow
     // Our framerate
     uint m_target_fps = 60;
 
-
     InputStream* m_poseStream                            = nullptr;
     InputStream* m_scanStream                            = nullptr;
     Ra::Engine::Rendering::RenderObject* m_scan          = nullptr;

@@ -122,7 +122,6 @@ void MinimalComponent::initialize() {
         addRenderObject( gridRo );
     }
 
-
     std::vector<std::shared_ptr<Engine::Data::Mesh>> meshAxis;
 
     // origin gizmo
@@ -150,7 +149,6 @@ void MinimalComponent::initialize() {
             mesh->loadGeometry( std::move( cylinder ) );
 
             meshAxis.push_back( std::move( mesh ) );
-
         }
 
         // origin axis
@@ -269,7 +267,6 @@ void MinimalComponent::initialize() {
 
         addRenderObject( slice );
         g_scan = slice;
-
     }
 }
 
@@ -292,9 +289,7 @@ MinimalSystem::MinimalSystem( MinimalApp* app ) : m_app( app ) {
 #endif
 
     try {
-        if ( scanStream != nullptr ) {
-            posStream = new InputStream( "Polhemus Patriot (probe)" );
-        }
+        if ( scanStream != nullptr ) { posStream = new InputStream( "Polhemus Patriot (probe)" ); }
         else { posStream = new InputStream( "Polhemus Patriot (probe)" ); }
     }
     catch ( std::exception& e ) {
@@ -306,7 +301,6 @@ MinimalSystem::MinimalSystem( MinimalApp* app ) : m_app( app ) {
 // static bool first = false;
 
 void MinimalSystem::generateTasks( Ra::Core::TaskQueue*, const Ra::Engine::FrameInfo& ) {
-
 
     assert( g_scan != nullptr );
     // update position and orientation
@@ -349,10 +343,8 @@ void MinimalSystem::generateTasks( Ra::Core::TaskQueue*, const Ra::Engine::Frame
         g_scan->setLocalTransform( TRadium * TWorld * TOrientation * TLocal );
     }
 
-
     // update texture
     if ( scanStream != nullptr ) {
-
 
         Stream::Acquisition scanAcq;
         *scanStream >> scanAcq;

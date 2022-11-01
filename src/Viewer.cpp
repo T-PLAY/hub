@@ -41,7 +41,6 @@ Viewer::Viewer( std::function<bool( const char*, const SensorSpec& )> onNewStrea
 
                 if ( m_onServerConnected ) m_onServerConnected( m_ipv4.c_str(), m_port );
 
-
                 while ( !m_stopThread ) {
                     net::ClientSocket::Message serverMessage;
                     sock.read( serverMessage );

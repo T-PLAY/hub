@@ -23,5 +23,4 @@ class ViewerClient : public Client
 
   private:
     hub::net::ClientSocket m_socket;
-
 };

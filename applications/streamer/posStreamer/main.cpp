@@ -89,7 +89,7 @@ void shiftRight() {
 }
 
 void shiftLeft() {
-    s_quat = glm::rotate( s_quat, glm::radians( s_moveSpeed ), glm::vec3( 0.0, 1.0, 0.0 ) );
+    s_quat       = glm::rotate( s_quat, glm::radians( s_moveSpeed ), glm::vec3( 0.0, 1.0, 0.0 ) );
     s_needUpdate = true;
 }
 
@@ -116,13 +116,11 @@ int main( int argc, char* argv[] ) {
 
     hub::SensorSpec::MetaData metaData;
 
-
     hub::Streamer streamer( hub::net::s_defaultServiceIp, port );
     streamer.addStream( sensorName,
                         { sensorName, { { { 1 }, hub::SensorSpec::Format::DOF6 } }, metaData } );
 
     std::thread thread = std::thread( [&]() {
-
         while ( !s_exitApp ) {
             const auto start = std::chrono::high_resolution_clock::now();
             hub::Dof6 dof6( s_pos.x, s_pos.y, s_pos.z, s_quat.w, s_quat.x, s_quat.y, s_quat.z );
@@ -148,10 +146,6 @@ int main( int argc, char* argv[] ) {
             std::this_thread::sleep_until( end );
         }
     } );
-
-
-
-
 
     char c;
 #ifdef WIN32
@@ -272,9 +266,7 @@ int main( int argc, char* argv[] ) {
                     break;
                 }
                 // F5
-                else if ( c == 53 ) {
-                    init();
-                }
+                else if ( c == 53 ) { init(); }
             } // switch (getchar()) 1
         }
         else if ( c == '.' ) {
@@ -301,10 +293,9 @@ int main( int argc, char* argv[] ) {
                     ;
             }
         } // if (s_needUpdate)
-    } // while (1)
+    }     // while (1)
 
     thread.join();
-
 
     return 0;
 }
@@ -330,7 +321,6 @@ int main( int argc, char* argv[] ) {
 
 //// int main()
 ////{
-
 
 /// c, c); /                refresh(); /                break; /        } / print_menu(menu_win,
 /// highlight); /        if(choice != 0)	/* User did a choice come out of the infinite loop */ /

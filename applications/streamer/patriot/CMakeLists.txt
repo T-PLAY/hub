@@ -7,17 +7,10 @@ set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
 project(patriot)
 
-
-
-
-
 file(GLOB_RECURSE sources *.cpp)
 file(GLOB_RECURSE headers *.h)
 
-add_executable(
-    ${PROJECT_NAME}
-    ${sources}
-    ${headers})
+add_executable(${PROJECT_NAME} ${sources} ${headers})
 
 target_include_directories(
     ${PROJECT_NAME} PUBLIC # ${SRC_DIR} # ${LIBUSB1_INCLUDE_DIRS} ${LibUSB_INCLUDE_DIRS}

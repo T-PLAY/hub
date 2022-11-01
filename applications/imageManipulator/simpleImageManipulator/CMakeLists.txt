@@ -2,11 +2,9 @@ cmake_minimum_required(VERSION 3.8)
 
 project(simpleImageManipulator)
 
-
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
-
 
 set(REQUIRED_LIBS Core Network Gui Widgets)
 find_package(Qt${QT_VERSION} REQUIRED COMPONENTS ${REQUIRED_LIBS})

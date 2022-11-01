@@ -14,7 +14,6 @@ set(SRC_TARGET hub)
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 set(CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/hub-install)
 
-
 option(HUB_ENABLE_APPLICATIONS "Enable applications" OFF)
 option(HUB_ENABLE_QT "Enable Qt" OFF)
 option(HUB_BUILD_STATIC_LIBRARY "Build static library" OFF)
@@ -31,7 +30,6 @@ if(HUB_APPLICATION_ENABLE_RADIUM)
     option(HUB_VIEWER_ENABLE_IMAGE_VIEWER "Enable image viewer" ON)
     option(HUB_VIEWER_ENABLE_LOADER "Enable loader" ON)
 endif()
-
 
 add_subdirectory(src)
 add_subdirectory(applications)

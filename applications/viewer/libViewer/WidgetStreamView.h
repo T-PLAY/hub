@@ -63,9 +63,6 @@ class WidgetStreamView2D : public WidgetStreamView
   private:
     QImage* m_image = nullptr;
 
-
-
-
     int mImagePixelWidth  = 0;
     int mImagePixelHeight = 0;
 
@@ -76,11 +73,9 @@ class WidgetStreamView2D : public WidgetStreamView
     double mHPixelPerUnit = 1.0;
     double mVPixelPerUnit = 1.0;
 
-
     double mCanvasPixelPerUnit = 1.0;
     int mCanvasPixelWidth      = 0.0;
     int mCanvasPixelHeight     = 0.0;
-
 
     double mRotateDeg = 0.0;
     bool mShowGrid    = false;

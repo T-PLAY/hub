@@ -58,7 +58,6 @@ class SRC_API ClientSocket : public Socket, public virtual io::Interface
 
     void close() override;
 
-
     void clear();
 
   private:

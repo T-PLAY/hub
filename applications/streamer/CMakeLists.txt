@@ -30,4 +30,3 @@ endif()
 if(HUB_USE_DCMTK)
     add_subdirectory(dicomStreamer)
 endif()
-

@@ -19,7 +19,7 @@ int main( int argc, char* argv[] ) {
     int port = hub::net::s_defaultServicePort;
     if ( argc == 2 ) { port = atoi( argv[1] ); }
 
-    const auto filename = MRI_PATH "AXT2_ligaments_uterosacres/D0010525.dcm";
+    const auto filename     = MRI_PATH "AXT2_ligaments_uterosacres/D0010525.dcm";
     std::string filenameStr = std::string( filename );
     std::string mriName     = filenameStr.substr( filenameStr.find( "MRI/" ) + 4 );
     mriName                 = mriName.substr( 0, mriName.find_last_of( '/' ) );
@@ -104,16 +104,11 @@ int main( int argc, char* argv[] ) {
                                         << std::move( dof6 ) << std::move( image ) ) );
     }
 
-
-
-
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
     constexpr int scanWidth  = 192;
     constexpr int scanHeight = 512;
     constexpr int scanSize   = scanWidth * scanHeight;
-
-
 
     hub::SensorSpec::MetaData metaData2;
     glm::mat4 transform2( 1.0 );
@@ -160,7 +155,6 @@ int main( int argc, char* argv[] ) {
         exit( -1 );
     }
 
-
     const std::shared_ptr<WeightingFunction> wf( new Dicom( fileList ) );
 
     const std::shared_ptr<Sampler> sampler( new utk::SamplerDartThrowing );
@@ -196,16 +190,9 @@ int main( int argc, char* argv[] ) {
                                       << dof6.clone() << hub::Measure { scanData, scanSize } ) );
     }
 
-
-
-
     hub::Streamer streamer( hub::net::s_defaultServiceIp, port );
     streamer.addStream( dicomStreamName, std::move( sensorSpec ), dicomAcqs );
     streamer.addStream( simulatorStreamName, std::move( sensorSpec2 ), simuAcq );
-
-
-
-
 
     ////////////////////////////////////////////////////////// INIT VIEWER
 
@@ -244,7 +231,6 @@ int main( int argc, char* argv[] ) {
                              &lastFrameDuration,
                              &lastAcqStart]( const std::string& streamName,
                                              const hub::Acquisition& acq ) {
-
         assert( streamName == "Keyboard" || streamName == "Polhemus Patriot (sensor 1)" );
 
         if ( acq.m_start < lastAcqStart + lastFrameDuration ) return;
@@ -274,14 +260,10 @@ int main( int argc, char* argv[] ) {
         assert( scanImage.size() == scanSize );
         const unsigned char* scanData = scanImage.data();
 
-
-
         hub::Acquisition acq2 =
             std::move( hub::Acquisition { acq.m_start, acq.m_end }
                        << dof6.clone() << hub::Measure { scanData, (size_t)scanSize } );
         streamer.newAcquisition( simulatorStreamName, std::move( acq2 ) );
-
-
 
         std::cout << "Computed frame " << iFrame << std::endl;
         ++iFrame;
@@ -294,33 +276,15 @@ int main( int argc, char* argv[] ) {
     auto viewer = hub::Viewer(
         onNewStreamer, onDelStreamer, onServerConnected, onServerDisconnected, onNewAcquisition );
 
-
-
     while ( true ) {
 
         std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
     }
 
-
-
-
-
-
-
-
     /// 0.0));
 
     /// quat.y, quat.z ); /        hub::Dof6 dof6( 0.0, iImage * sliceThickness, 0.0, quat.w,
     /// quat.x, quat.y, quat.z );
-
-
-
-
-
-
-
-
-
 
     return 0;
 }

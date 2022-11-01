@@ -8,7 +8,6 @@
 
 TEST_CASE( "Ram test" ) {
 
-
     hub::io::CyclicBuff cyclicBuff;
 
     std::vector<hub::Acquisition> acqs;
@@ -65,5 +64,4 @@ TEST_CASE( "Ram test" ) {
         }
     }
     std::cout << "inputStream end #################################" << std::endl;
-
 }

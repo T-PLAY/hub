@@ -16,7 +16,6 @@ void WidgetGrid::paintEvent( QPaintEvent* event ) {
     assert( mCanvasPixelWidth != nullptr );
     assert( mCanvasPixelHeight != nullptr );
 
-
     QPainter painter( this );
     painter.setPen( Qt::gray );
 

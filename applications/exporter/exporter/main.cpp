@@ -32,9 +32,7 @@
 
 int main( int argc, char* argv[] ) {
 
-
     std::string recordPath = PROJECT_DIR "data/records/latest/";
-
 
     for ( const auto& fileDir : std::filesystem::directory_iterator( recordPath ) ) {
 
@@ -47,7 +45,6 @@ int main( int argc, char* argv[] ) {
 
         std::fstream file( filepath, std::ios::binary | std::ios::in );
         assert( file.is_open() );
-
 
         const std::string streamName = filepath;
 
@@ -69,7 +66,6 @@ int main( int argc, char* argv[] ) {
             const float* array = std::any_cast<const float*>( metaData.at( "transform" ) );
             localTransform     = glm::make_mat4( array );
         }
-
 
         const std::string exportDir = recordPath + "export/";
         std::filesystem::create_directories( exportDir );
@@ -117,20 +113,4 @@ int main( int argc, char* argv[] ) {
 
         std::cout << acqs.size() << " acquisitions exported." << std::endl;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

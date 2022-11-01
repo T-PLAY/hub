@@ -16,9 +16,7 @@ using namespace Engine::Rendering;
 
 namespace Gui {
 
-MainWindow::MainWindow( QWidget* parent ) :
-    MainWindowInterface( parent )
-{
+MainWindow::MainWindow( QWidget* parent ) : MainWindowInterface( parent ) {
     setupUi( this );
 
     if ( objectName().isEmpty() ) setObjectName( QString::fromUtf8( "RadiumSimpleWindow" ) );
@@ -44,8 +42,7 @@ MainWindow::MainWindow( QWidget* parent ) :
     createConnections();
 }
 
-MainWindow::~MainWindow() {
-}
+MainWindow::~MainWindow() {}
 
 Ra::Gui::Viewer* MainWindow::getViewer() {
     return m_viewer.get();
@@ -93,8 +90,7 @@ void MainWindow::onGLInitialized() {
     addRenderer( "Forward Renderer", e );
 }
 
-void MainWindow::onRendererReady() {
-}
+void MainWindow::onRendererReady() {}
 
 } // namespace Gui
 } // namespace Ra

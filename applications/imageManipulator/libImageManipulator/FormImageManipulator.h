@@ -23,15 +23,12 @@ class FormImageManipulator : public QWidget
   public slots:
     void onStreamViewInited();
 
-
   public:
     WidgetStreamView2D& getWidgetStreamView();
 
   protected:
-
   private:
     Ui::FormImageManipulator* ui;
-
 };
 
 #endif // FORMIMAGEMANIPULATOR_H

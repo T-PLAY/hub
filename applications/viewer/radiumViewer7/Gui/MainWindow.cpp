@@ -234,7 +234,6 @@ void MainWindow::createConnections() {
 
     // Renderer stuff
 
-
     connect( m_enablePostProcess, &QCheckBox::stateChanged, m_viewer, &Viewer::enablePostProcess );
     connect(
         m_enablePostProcess, &QCheckBox::stateChanged, mainApp, &MainApplication::askForUpdate );
@@ -854,8 +853,8 @@ void MainWindow::onGLInitialized() {
 
     ////////////////////////////////////////////// init gui Manager
     m_guiManager.m_mdiArea = mdiArea;
-    m_guiManager.m_engine = mainApp->m_engine;
-    m_guiManager.m_viewer = m_viewer;
+    m_guiManager.m_engine  = mainApp->m_engine;
+    m_guiManager.m_viewer  = m_viewer;
 
     m_guiManager.m_mainWindow    = this;
     m_guiManager.m_stackedWidget = stackedWidget;

@@ -50,7 +50,7 @@ MainWindow::MainWindow( QWidget* parent ) : QMainWindow( parent ), ui( new Ui::M
 
     hub::SensorSpec::MetaData metaData;
     metaData["parent"] = "Polhemus Patriot (sensor 2)";
-    m_outputSensor = new hub::OutputSensor(
+    m_outputSensor     = new hub::OutputSensor(
         { "calibrator", { { { 1 }, hub::SensorSpec::Format::MAT4 } }, metaData },
         hub::io::OutputStream( "calibrator" ) );
     updateTransform();

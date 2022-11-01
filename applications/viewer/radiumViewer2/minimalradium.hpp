@@ -37,5 +37,4 @@ class MinimalSystem : public Ra::Engine::Scene::System
 
   private:
     MinimalApp* m_app = nullptr;
-
 };

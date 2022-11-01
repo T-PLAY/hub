@@ -8,10 +8,7 @@
 #include <QItemSelectionModel>
 
 FormWidgetLoader::FormWidgetLoader( const std::string& ipv4, const int& port, QWidget* parent ) :
-    QWidget( parent ),
-    ui( new Ui::FormWidgetLoader ),
-    m_recordLoader( ipv4, port )
-{
+    QWidget( parent ), ui( new Ui::FormWidgetLoader ), m_recordLoader( ipv4, port ) {
     ui->setupUi( this );
 
     // records view
@@ -42,7 +39,6 @@ FormWidgetLoader::FormWidgetLoader( const std::string& ipv4, const int& port, QW
         QObject::connect(
             ui->treeView_record, &TreeViewStream::onSpace, this, &FormWidgetLoader::onSpace );
 
-
         QObject::connect( ui->treeView_record->selectionModel(),
                           &QItemSelectionModel::selectionChanged,
                           this,
@@ -65,8 +61,6 @@ FormWidgetLoader::~FormWidgetLoader() {
 
 // void FormWidgetLoader::onTreeView_record_currentChanged( const QModelIndex& current,
 
-
-
 //}
 
 void FormWidgetLoader::onTreeView_record_selectionChanged( const QItemSelection& selected,
@@ -86,8 +80,7 @@ void FormWidgetLoader::onTreeView_record_selectionChanged( const QItemSelection&
 
         std::cout << "[FormWidgetLoader] on_treeView_record_selectionChanged : " << mPath
                   << std::endl;
-        if ( m_recordLoader.isLoaded() ) {
-        }
+        if ( m_recordLoader.isLoaded() ) {}
         m_recordLoader.load( mPath );
         const int nAcq = m_recordLoader.getNAcq();
         ui->label_nAcq->setText( "/" + QString::number( nAcq ) );
@@ -138,5 +131,4 @@ void FormWidgetLoader::on_horizontalSlider_iAcq_valueChanged( int value ) {
     }
 }
 
-void FormWidgetLoader::on_spinBox_iAcq_valueChanged( int arg1 ) {
-}
+void FormWidgetLoader::on_spinBox_iAcq_valueChanged( int arg1 ) {}

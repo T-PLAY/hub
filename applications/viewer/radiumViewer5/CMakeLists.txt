@@ -20,7 +20,6 @@ find_package(
     PluginBase
     IO)
 
-
 find_package(
     QT NAMES Qt6 Qt5
     COMPONENTS Core Widgets OpenGL
@@ -46,7 +45,6 @@ else()
     qt6_wrap_ui(app_uis_moc ${app_uis})
 endif()
 
-
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 include_directories(${CMAKE_CURRENT_BINARY_DIR} # Moc
 )
@@ -67,4 +65,3 @@ target_link_libraries(
            libGuiManager)
 
 configure_radium_app(NAME ${PROJECT_NAME} USE_PLUGINS)
-

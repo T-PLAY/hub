@@ -10,7 +10,6 @@ namespace hub {
 
 // OutputSensor::OutputSensor( const SensorSpec& sensorSpec, ClientSocket&& outputInterface ) :
 
-
 //}
 
 // OutputSensor::OutputSensor( const SensorSpec& sensorSpec, io::Output&& output ) :

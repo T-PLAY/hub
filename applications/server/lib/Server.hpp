@@ -48,7 +48,6 @@ class Server
 
     void newAcquisition( StreamerClient* streamer, const hub::Acquisition& acq );
 
-
   public:
     bool m_acqPing = true;
 
@@ -79,7 +78,6 @@ class Server
 // };
 
 // struct Streamer {
-
 
 //};
 

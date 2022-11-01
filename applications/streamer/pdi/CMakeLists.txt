@@ -35,9 +35,8 @@ elseif(UNIX)
     set(UNIX_REQUIRED_LIBS usb-1.0 ${GTK3_LIBRARIES})
 endif()
 
-target_link_libraries(
-    ${PROJECT_NAME} pdi ${SRC_TARGET}
-    ${UNIX_REQUIRED_LIBS} ${WIN32_REQUIRED_LIBS})
+target_link_libraries(${PROJECT_NAME} pdi ${SRC_TARGET} ${UNIX_REQUIRED_LIBS}
+                      ${WIN32_REQUIRED_LIBS})
 
 if(WIN32)
 

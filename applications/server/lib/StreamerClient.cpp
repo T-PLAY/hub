@@ -66,7 +66,6 @@ StreamerClient::StreamerClient( Server& server, int iClient, hub::net::ClientSoc
 
     assert( streamers.find( m_streamName ) == streamers.end() );
 
-
     std::cout << headerMsg() << "stream name = '" << m_streamName << "'" << std::endl;
 
     const auto& sensorSpec = m_inputSensor->m_spec;
@@ -104,16 +103,14 @@ StreamerClient::StreamerClient( Server& server, int iClient, hub::net::ClientSoc
                     continue;
                 }
 
-
                 m_mtxSyncViewers.lock();
                 auto& syncViewers = m_syncViewers;
                 for ( auto& pair : syncViewers ) {
                     const auto& syncViewerName = pair.first;
 
-
                     auto& syncAcqs = m_syncAcqs.at( syncViewerName );
 
-                    bool foundLeft = false;
+                    bool foundLeft    = false;
                     bool& isSyncthing = m_isSyncthing.at( syncViewerName );
                     do {
                         while ( syncAcqs.size() < 2 ) {
@@ -138,9 +135,7 @@ StreamerClient::StreamerClient( Server& server, int iClient, hub::net::ClientSoc
                                 std::next( syncAcqs.begin() )->m_start );
 
                         if ( syncAcqs.begin()->m_start >= masterAcq.m_start ) {
-                            if ( !isSyncthing ) {
-                                break;
-                            }
+                            if ( !isSyncthing ) { break; }
                             syncAcqs.pop_front();
                             continue;
                         }
@@ -359,13 +354,3 @@ void StreamerClient::saveNewAcq( const std::string& streamName, hub::Acquisition
 /// std::make_unique<hub::Acquisition>(std::move(*rightAcq)); }
 
 /// syncAcqs.back() );
-
-
-
-
-
-
-
-
-
-

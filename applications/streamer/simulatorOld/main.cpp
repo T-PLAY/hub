@@ -17,7 +17,7 @@
 
 int main( int argc, char* argv[] ) {
 
-    const auto filename = MRI_PATH "AXT2_ligaments_uterosacres/D0010525.dcm";
+    const auto filename     = MRI_PATH "AXT2_ligaments_uterosacres/D0010525.dcm";
     std::string filenameStr = std::string( filename );
     std::string mriName     = filenameStr.substr( filenameStr.find( "MRI/" ) + 4 );
     mriName                 = mriName.substr( 0, mriName.find_last_of( '/' ) );
@@ -104,15 +104,11 @@ int main( int argc, char* argv[] ) {
         std::cout << "[Simulator][Streamer] added new acq " << iImage << std::endl;
     }
 
-
-
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
     constexpr int scanWidth  = 192;
     constexpr int scanHeight = 512;
     constexpr int scanSize   = scanWidth * scanHeight;
-
-
 
     hub::SensorSpec::MetaData metaData2;
     glm::mat4 transform2( 1.0 );
@@ -161,7 +157,6 @@ int main( int argc, char* argv[] ) {
         exit( -1 );
     }
 
-
     const std::shared_ptr<WeightingFunction> wf( new Dicom( fileList ) );
 
     const std::shared_ptr<Sampler> sampler( new utk::SamplerDartThrowing );
@@ -176,21 +171,7 @@ int main( int argc, char* argv[] ) {
 
     ////////////////////////////////////////////////////////// INIT STREAMERS
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     ////////////////////////////////////////////////////////// INIT VIEWER
-
 
     std::cout << "Ready to simulate" << std::endl;
 
@@ -204,11 +185,9 @@ int main( int argc, char* argv[] ) {
     constexpr int height = 512;
     assert( scanSize == width * height );
 
-
     while ( true ) {
 
         auto acq = inputPosSensor.getAcquisition();
-
 
         if ( acq.m_start < lastAcqStart + lastFrameDuration ) continue;
 
@@ -237,12 +216,9 @@ int main( int argc, char* argv[] ) {
         assert( scanImage.size() == scanSize );
         const unsigned char* imageData = scanImage.data();
 
-
         ////			unsigned char* scanData = scanImage.data();
 
         ////			unsigned char otherData[192 * 512];
-
-
 
         outputSensor2 << ( hub::Acquisition { acq.m_start, acq.m_end }
                            << dof6.clone() << hub::Measure { imageData, scanSize } );
@@ -256,30 +232,10 @@ int main( int argc, char* argv[] ) {
                 .count();
     };
 
-
-
-
-
-
-
-
-
-
-
-
     /// 0.0));
 
     /// quat.y, quat.z ); /        hub::Dof6 dof6( 0.0, iImage * sliceThickness, 0.0, quat.w,
     /// quat.x, quat.y, quat.z );
-
-
-
-
-
-
-
-
-
 
     return 0;
 }

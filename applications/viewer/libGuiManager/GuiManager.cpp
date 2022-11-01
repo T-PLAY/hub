@@ -182,7 +182,6 @@ void GuiManager::init() {
     //////////////////////////////////////// RIGHT
     //////////////////////////////////////////////////////
 
-
 #ifdef ENABLE_IMAGE_VIEWER
 
     m_dockRight->setMinimumWidth( 500 );
@@ -196,15 +195,11 @@ void GuiManager::init() {
     m_imageManipulator = new FormImageManipulator;
     vLayout->addWidget( m_imageManipulator );
 
-
-
 #endif
 
     //////////////////////////////////////// TOP
     //////////////////////////////////////////////////////////
     assert( m_mdiArea != nullptr );
-
-
 
     //////////////////////////////////////// LEFT
     /////////////////////////////////////////////////////////////////
@@ -231,7 +226,6 @@ void GuiManager::init() {
                       this,
                       &GuiManager::onServerConnected );
 
-
     //////////////////////////////////////// BOTTOM
     //////////////////////////////////////////////////////////////
 
@@ -256,7 +250,6 @@ void GuiManager::init() {
                       this,
                       &GuiManager::on_sensorsView_doubleClicked );
 
-
     m_sensorsView->horizontalHeader()->setSectionResizeMode( QHeaderView::ResizeToContents );
 
     m_sceneManager.m_sensorsView = m_sensorsView;
@@ -279,15 +272,8 @@ void GuiManager::init() {
 #endif
     m_mainWindow->addDockWidget( Qt::DockWidgetArea::BottomDockWidgetArea, m_dockBottom );
 
-
     //////////////////////////////////////// INIT 3D ENVIRONMENT
     // Create and initialize entity and component
-
-
-
-
-
-
 
     m_sceneManager.m_engine  = m_engine;
     m_sceneManager.m_sys     = m_system;
@@ -323,18 +309,9 @@ void GuiManager::init() {
 // void GuiManager::onRecordLoaderPathUnloaded() {
 //}
 
-void GuiManager::onRecordLoaderPathLoaded() {
+void GuiManager::onRecordLoaderPathLoaded() {}
 
-
-
-
-}
-
-void GuiManager::onSnapshotLoaderPathLoaded() {
-
-
-
-}
+void GuiManager::onSnapshotLoaderPathLoaded() {}
 
 void GuiManager::on_action2D_triggered() {
     m_stackedWidget->setCurrentIndex( 0 );
@@ -349,8 +326,6 @@ void GuiManager::onServerStreamStarted( const std::string& streamName,
     std::cout << "[GuiManager] onServerStreamStarted(" << streamName << ", " << syncStreamName
               << ")" << std::endl;
 
-
-
     const auto& ipv4 = m_formStreamViews->getIpv4();
     const auto port  = m_formStreamViews->getPort();
 
@@ -364,7 +339,6 @@ void GuiManager::onServerStreamStopped( const std::string& streamName,
     std::cout << "[GuiManager] onServerStreamStopped()" << std::endl;
 
     m_sceneManager.delSensor( streamName );
-
 }
 
 void GuiManager::onServerConnected() {
@@ -377,12 +351,9 @@ void GuiManager::onServerDisconnected() {
 #ifdef ENABLE_LOADER
     m_formWidgetLoader->setEnabled( false );
 #endif
-
 }
 
-void GuiManager::onInit( const std::string& streamName ) {
-
-}
+void GuiManager::onInit( const std::string& streamName ) {}
 
 // void GuiManager::onInitPose()
 //{
@@ -392,24 +363,10 @@ void GuiManager::onInit( const std::string& streamName ) {
 //{
 //}
 
-void GuiManager::onNewAcquisition( const std::string& streamName, const std::string& sourceType ) {
-
-
-
-
-
-}
+void GuiManager::onNewAcquisition( const std::string& streamName, const std::string& sourceType ) {}
 
 void GuiManager::onSelectedSourceChanged( const std::string& streamName,
-                                          const std::string& sourceType ) {
-
-
-
-
-
-
-
-}
+                                          const std::string& sourceType ) {}
 
 // void GuiManager::onUpdatePose()
 //{
@@ -462,36 +419,24 @@ void GuiManager::on_toolButton_fitSelected_clicked() {
 
         std::cout << "[GuiManager] row clicked " << row << std::endl;
 
-
-
         const std::string streamName = m_sensorsView->model()
                                            ->data( m_sensorsView->model()->index( row, 0 ) )
                                            .toString()
                                            .toStdString();
         m_sceneManager.fitView( streamName );
-
-
-
     }
 }
 
 #include <Core/Utils/Color.hpp>
-void GuiManager::on_toolButton_fitTrace_clicked() {
-
-
-}
+void GuiManager::on_toolButton_fitTrace_clicked() {}
 
 void GuiManager::loadFile( QString path ) {
     std::string filename = path.toLocal8Bit().data();
-    bool res = m_engine->loadFile( filename );
+    bool res             = m_engine->loadFile( filename );
 
-    if ( !res ) {
-        std::cout << "Aborting file loading !";
-    }
+    if ( !res ) { std::cout << "Aborting file loading !"; }
 
     m_engine->releaseFile();
-
-
 }
 
 // void GuiManager::on_sensorsView_clicked(const QModelIndex& index)
@@ -515,15 +460,11 @@ void GuiManager::on_sensorsView_selectionChanged( const QItemSelection& selected
 #ifdef ENABLE_IMAGE_VIEWER
         m_sceneManager.detachSensorFromImageManipulator( streamName );
 #endif
-
-
     }
     else {
 
         const auto& current = indexes.first();
         const int row       = current.row();
-
-
 
         const std::string streamName = m_sensorsView->model()
                                            ->data( m_sensorsView->model()->index( row, 0 ) )
@@ -534,10 +475,6 @@ void GuiManager::on_sensorsView_selectionChanged( const QItemSelection& selected
 #ifdef ENABLE_IMAGE_VIEWER
         m_sceneManager.attachSensorFromImageManipulator( streamName );
 #endif
-
-
-
-
     }
 }
 
@@ -546,8 +483,6 @@ void GuiManager::on_sensorsView_doubleClicked( const QModelIndex& index ) {
     const int row = index.row();
 
     std::cout << "[GuiManager] row clicked " << row << std::endl;
-
-
 
     const std::string streamName = m_sensorsView->model()
                                        ->data( m_sensorsView->model()->index( row, 0 ) )

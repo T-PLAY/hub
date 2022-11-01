@@ -40,20 +40,12 @@ void WidgetStreamView2D::init( int imagePixelWidth,
     mImageUnitHeight  = ( imageUnitHeight == 0.0 ) ? imagePixelHeight : imageUnitHeight;
     mHPixelPerUnit    = mImagePixelWidth / mImageUnitWidth;
     mVPixelPerUnit    = mImagePixelHeight / mImageUnitHeight;
-    mRatio = mImageUnitHeight / mImageUnitWidth;
-
-
-
+    mRatio            = mImageUnitHeight / mImageUnitWidth;
 
     double unitWidth  = mImagePixelWidth / mHPixelPerUnit;
     double unitHeight = mImagePixelHeight / mVPixelPerUnit;
-    if ( unitWidth * mRatio > unitHeight ) {
-        unitWidth = unitHeight / mRatio;
-    }
-    else {
-        unitHeight = unitWidth * mRatio;
-    }
-
+    if ( unitWidth * mRatio > unitHeight ) { unitWidth = unitHeight / mRatio; }
+    else { unitHeight = unitWidth * mRatio; }
 
     mCanvasPixelPerUnit = std::floor( ( mHPixelPerUnit + mVPixelPerUnit ) / 2.0 );
 
@@ -97,13 +89,11 @@ void WidgetStreamView2D::clear() {
 // imageUnitWidth, double imageUnitHeight, QWidget* parent)
 //{
 
-
 //}
 
 // void WidgetStreamView2D::setData(unsigned char* img_ptr, std::vector<int> dims,
 // hub::SensorSpec::Format format)
 //{
-
 
 //}
 
@@ -137,10 +127,8 @@ void WidgetStreamView2D::onPixelPerUnitChanged() {
     if ( unitWidth * mRatio > unitHeight ) { unitWidth = unitHeight / mRatio; }
     else { unitHeight = unitWidth * mRatio; }
 
-
     mCanvasPixelWidth  = unitWidth * mCanvasPixelPerUnit;
     mCanvasPixelHeight = unitHeight * mCanvasPixelPerUnit;
-
 
     this->setMinimumWidth( mCanvasPixelWidth );
     this->setMinimumHeight( mCanvasPixelHeight );
@@ -227,16 +215,13 @@ void WidgetStreamView2D::paintEvent( QPaintEvent* event ) {
 
     painter.begin( this );
 
-
     if ( mData != nullptr ) {
         const QPoint p = QPoint( 0, 0 );
 
         QImage image = m_image->scaled( QSize( mCanvasPixelWidth, mCanvasPixelHeight ) );
         painter.drawImage( p, image );
     }
-    else {
-        painter.fillRect( 0, 0, width(), height(), Qt::gray );
-    }
+    else { painter.fillRect( 0, 0, width(), height(), Qt::gray ); }
 
     if ( mShowGrid ) {
         int alpha = 100;
@@ -269,33 +254,11 @@ void WidgetStreamView2D::paintEvent( QPaintEvent* event ) {
     }
 
     painter.end();
-
-
 }
 
 // void WidgetStreamView2D::resizeEvent(QResizeEvent* event)
 //{
 ///" + QString::number(this->size().height()) + " pixels");
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //}
 

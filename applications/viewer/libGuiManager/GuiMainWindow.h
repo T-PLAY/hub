@@ -26,6 +26,5 @@ class GuiMainWindow : public QMainWindow
   private:
     Ui::GuiMainWindow* ui;
 
-
     GuiManager m_guiManager;
 };

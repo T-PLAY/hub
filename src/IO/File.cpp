@@ -6,8 +6,7 @@
 namespace hub {
 namespace io {
 
-File::File( std::fstream&& file ) :
-    m_file( new std::fstream( std::move( file ) ) ) {
+File::File( std::fstream&& file ) : m_file( new std::fstream( std::move( file ) ) ) {
 
     assert( m_file->is_open() );
 }

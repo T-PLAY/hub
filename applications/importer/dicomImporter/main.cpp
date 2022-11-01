@@ -121,10 +121,5 @@ int main( int argc, char* argv[] ) {
 
     std::cout << "[dicomImporter] " << nSlices << " acquisitions imported" << std::endl;
 
-
-
-
-
-
     return 0;
 }

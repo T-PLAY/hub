@@ -58,17 +58,14 @@ int main() {
 
             assert( tracker.isConnected() );
 
-
             tracker.clearPendingData( "" );
 
             tracker.requestBinaryPositionData();
             bool received = tracker.receive( singleDataBinaryResponse );
             assert( received );
 
-
             std::cout << "x = " << data[0] << ", y = " << data[1] << ", z = " << data[2]
                       << std::endl;
-
 
             //			delete ori;
             //			delete pos;

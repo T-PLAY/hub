@@ -30,6 +30,7 @@ if(WIN32)
     endforeach(QT_LIB)
 
 elseif(UNIX)
+
 endif()
 
 target_link_libraries(${PROJECT_NAME} ${SRC_TARGET} libApp libLoader ${UNIX_REQUIRED_LIBS}

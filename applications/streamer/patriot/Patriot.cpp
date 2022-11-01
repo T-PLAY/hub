@@ -97,7 +97,6 @@ bool Patriot::connect() {
     std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
     putTrackerIntoBinaryMode();
 
-
     unsigned int stationStateBitmap = getStationActivationState();
     updateSensorActiveState( stationStateBitmap );
 
@@ -208,7 +207,6 @@ bool Patriot::receive( void* binaryResponsebuffer, int bufferSize ) {
         default:
             assert( false );
         }
-
     }
 
     char buff[256] = { 0 };
@@ -259,7 +257,6 @@ void Patriot::send( string data ) const {
 
     while ( uploadSize != dataSize ) {
         int writtenBytes = 0;
-
 
         int ret = libusb_bulk_transfer( handle,
                                         USB_PARMS[PATRIOT].bulkWriteEndPoint,
@@ -399,7 +396,6 @@ void Patriot::setTrackerBinaryMode( bool setBinaryMode ) {
         string asciiModeRequest = "F0\r";
         send( asciiModeRequest );
     }
-
 }
 
 /**

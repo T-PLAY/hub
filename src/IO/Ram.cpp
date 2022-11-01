@@ -49,7 +49,6 @@ void CyclicBuff::write( const unsigned char* data, size_t len ) {
 
         uploadSize += byteWrote;
     } while ( len != uploadSize );
-
 }
 
 void CyclicBuff::read( unsigned char* data, size_t len ) {
@@ -71,9 +70,7 @@ void CyclicBuff::read( unsigned char* data, size_t len ) {
             }
             // nb bytes ready to read
             byteRead = m_writeHead - m_readHead;
-            if ( byteRead == 0 ) {
-                std::this_thread::sleep_for( std::chrono::milliseconds( 16 ) );
-            }
+            if ( byteRead == 0 ) { std::this_thread::sleep_for( std::chrono::milliseconds( 16 ) ); }
             if ( byteRead < 0 ) byteRead = m_buffLen - m_readHead;
             byteRead = std::min( byteRead, len - downloadSize );     // user copied bytes left
             byteRead = std::min( byteRead, m_buffLen - m_readHead ); // distance to end of buffer

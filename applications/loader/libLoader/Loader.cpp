@@ -41,7 +41,6 @@ void Loader::load( const std::string& path ) {
     assert( m_thread == nullptr );
     assert( m_snaps.empty() );
 
-
     assert( !path.empty() );
     std::set<Snap> sortedSnaps;
 
@@ -66,10 +65,7 @@ void Loader::load( const std::string& path ) {
         const auto& sensorSpec        = inputSensor.m_spec;
         const std::string& sensorName = sensorSpec.m_sensorName;
 
-
-
         auto acqs = inputSensor.getAllAcquisitions();
-
 
         if ( m_outputStreams.find( sensorName ) == m_outputStreams.end() ) {
             assert( m_outputStreams.find( sensorName ) == m_outputStreams.end() );
@@ -84,14 +80,11 @@ void Loader::load( const std::string& path ) {
             sensorNamesToRemove.remove( sensorName );
         }
 
-
         for ( const auto& acq : acqs ) {
 
             /// localTransform[3][1], localTransform[3][2]); // column major /            glm::vec3
             /// translation = glm::vec3(localTransform[0][3], localTransform[1][3],
             /// localTransform[2][3]); // row major
-
-
 
             ////			newAcq << hub::Measure(std::move(newDof6));
 
@@ -146,7 +139,6 @@ void Loader::unload() {
     m_loadedPath = "";
 
     m_outputStreams.clear();
-
 }
 
 // const std::vector<hub::Acquisition>&
@@ -185,9 +177,7 @@ void Loader::play() {
 
         } while ( m_isPlaying && m_autoLoop );
 
-        if ( m_isPlaying ) {
-            emit playEnded();
-        }
+        if ( m_isPlaying ) { emit playEnded(); }
     } );
 }
 

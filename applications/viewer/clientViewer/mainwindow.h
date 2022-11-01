@@ -25,7 +25,6 @@ class MainWindow : public QMainWindow
 
   private:
     Ui::MainWindow* ui;
-
 };
 
 #endif // MAINWINDOW_H

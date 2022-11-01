@@ -216,7 +216,6 @@ class Patriot
     BinaryPosition getMeasurement();
 
     void updateData( void* data );
-
 };
 } // namespace Polhemus
 

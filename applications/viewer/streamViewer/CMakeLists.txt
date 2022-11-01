@@ -2,11 +2,9 @@ cmake_minimum_required(VERSION 3.8)
 
 project(streamViewer)
 
-
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
-
 
 set(REQUIRED_LIBS Core Network Gui Widgets)
 set(REQUIRED_LIBS_QUALIFIED Qt${QT_VERSION}::Gui Qt${QT_VERSION}::Widgets)

@@ -24,7 +24,7 @@ int main( int argc, char* argv[] ) {
     constexpr int height = 512;
 
     hub::SensorSpec::MetaData metaData;
-    metaData["parent"] = "Keyboard";
+    metaData["parent"]             = "Keyboard";
     metaData["scanWidth"]          = 50.0;
     metaData["scanDepth"]          = 35.0;
     const float localTransform[16] = { 17.5,
@@ -45,13 +45,11 @@ int main( int argc, char* argv[] ) {
                                        1.000000 };
     metaData["transform"]          = localTransform;
 
-
     hub::Streamer streamer( hub::net::s_defaultServiceIp, port );
     streamer.addStream( "ProceduralStreamer",
                         { "ProceduralStreamer",
                           { { { width, height }, hub::SensorSpec::Format::Y8 } },
                           metaData } );
-
 
     const size_t imgSize = width * height;
     assert( imgSize == width * height );
@@ -70,7 +68,6 @@ int main( int argc, char* argv[] ) {
             }
         }
 
-
         //		    data[i] = (i / height + dec) % 256;
 #    if defined( WIN32 )
         const auto maxFps = 60.0;
@@ -86,11 +83,9 @@ int main( int argc, char* argv[] ) {
             std::chrono::duration_cast<std::chrono::microseconds>( end.time_since_epoch() ).count();
         ++dec;
 
-
         streamer.newAcquisition( "ProceduralStreamer",
                                  std::move( hub::Acquisition { timestampStart, timestampEnd }
                                             << hub::Measure { data, imgSize } ) );
-
 
         std::this_thread::sleep_until( end );
     }

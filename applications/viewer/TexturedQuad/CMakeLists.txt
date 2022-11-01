@@ -35,8 +35,4 @@ add_executable(${PROJECT_NAME} ${app_sources})
 target_link_libraries(${PROJECT_NAME} PUBLIC Radium::Core Radium::Engine Radium::Gui Radium::IO
                                              ${Qt_LIBRARIES} DicomLoader)
 
-
 configure_radium_app(NAME ${PROJECT_NAME})
-
-
-

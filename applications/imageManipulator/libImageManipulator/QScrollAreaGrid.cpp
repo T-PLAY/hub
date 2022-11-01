@@ -12,12 +12,8 @@ void QScrollAreaGrid::wheelEvent( QWheelEvent* event ) {
     int ry = event->angleDelta().ry();
 
     constexpr double speed = 0.1;
-    if ( ry > 0 ) {
-        *mCanvasPixelPerUnit *= ( 1.0 + speed );
-    }
-    else if ( ry < 0 ) {
-        *mCanvasPixelPerUnit *= ( 1.0 - speed );
-    }
+    if ( ry > 0 ) { *mCanvasPixelPerUnit *= ( 1.0 + speed ); }
+    else if ( ry < 0 ) { *mCanvasPixelPerUnit *= ( 1.0 - speed ); }
 
     double vScroll = verticalScrollBar()->value();
 #if QT_VERSION <= QT_VERSION_CHECK( 5, 12, 0 )

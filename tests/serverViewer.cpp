@@ -89,8 +89,6 @@ TEST_CASE( "Server test : viewer" ) {
                 { "sensorName", { { { width, height }, hub::SensorSpec::Format::BGR8 } } },
                 hub::io::OutputStream( "stream", hub::net::ClientSocket( ipv4, port ) ) );
             std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
-
-
         }
         std::cout << "[Test] ############################### outputSensor end" << std::endl;
         std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );

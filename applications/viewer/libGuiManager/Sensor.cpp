@@ -17,7 +17,6 @@ SensorThread::SensorThread( Sensor& sensor, QObject* parent ) :
 SensorThread::~SensorThread() {
     std::cout << "[SensorThread] ~SensorThread(" << m_sensor.m_inputSensor->m_spec.m_sensorName
               << ")" << std::endl;
-
 }
 
 void SensorThread::run() {
@@ -67,8 +66,6 @@ void SensorThread::run() {
             }
 
             ++m_sensor.m_counterFrame;
-
-
         }
     }
     catch ( std::exception& e ) {
@@ -84,11 +81,9 @@ void SensorThread::run() {
 SensorCounterFpsThread::SensorCounterFpsThread( Sensor& sensor, QObject* parent ) :
     QThread( parent ), m_sensor( sensor ) {}
 
-SensorCounterFpsThread::~SensorCounterFpsThread() {
-}
+SensorCounterFpsThread::~SensorCounterFpsThread() {}
 
 void SensorCounterFpsThread::run() {
-
 
     while ( !this->isInterruptionRequested() ) {
 
@@ -111,7 +106,6 @@ void SensorCounterFpsThread::run() {
         m_sensor.m_counterFrame = 0;
 
         m_sensor.m_view.viewport()->update();
-
     }
 }
 
@@ -188,7 +182,6 @@ Sensor::Sensor( std::unique_ptr<hub::InputSensor> inputSensor,
         m_widgetStreamViews.push_back( widgetStreamView );
     }
 
-
     // create 3D scene object
     {
         assert( m_component == nullptr );
@@ -196,8 +189,6 @@ Sensor::Sensor( std::unique_ptr<hub::InputSensor> inputSensor,
                                                                " entity" );
 
         setParent( parentSensor );
-
-
 
         const int resolutionSize = resolutions.size();
         if ( resolutionSize == 1 ) {
@@ -278,7 +269,7 @@ Sensor::~Sensor() {
     // 3D
     m_engine->getEntityManager()->removeEntity( m_entity );
     m_component = nullptr;
-    m_entity = nullptr;
+    m_entity    = nullptr;
 
     // 2D
     assert( m_widgetStreamViews.size() == m_subWindows.size() );
@@ -421,7 +412,6 @@ const QList<QStandardItem*>& Sensor::getItems() const {
 Ra::Engine::Scene::Component* Sensor::getComponent() {
     assert( m_component != nullptr );
     return m_component;
-
 }
 
 SensorComponent* Sensor::getSensorComponent() {

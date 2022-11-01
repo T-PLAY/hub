@@ -15,6 +15,3 @@ foreach(name ${EXAMPLE_SRC_BASENAME})
     set_property(TARGET ${TARGET_NAME} PROPERTY CXX_STANDARD 17)
     set_property(TARGET ${TARGET_NAME} PROPERTY CXX_EXTENSIONS OFF)
 endforeach()
-
-
-

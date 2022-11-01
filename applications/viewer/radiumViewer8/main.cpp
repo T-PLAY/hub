@@ -30,7 +30,6 @@ int main( int argc, char* argv[] ) {
     // Start the app.
     app.m_frameTimer->start();
 
-
     GuiMainWindow w( app.m_engine, app.m_viewer.get() );
     w.show();
 

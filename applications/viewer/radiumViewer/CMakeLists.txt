@@ -11,14 +11,11 @@ set(CMAKE_DISABLE_SOURCE_CHANGES ON)
 
 set(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
 
-
-
 find_package(Radium REQUIRED Core Engine Gui)
 
 find_qt_package(COMPONENTS Core Widgets REQUIRED)
 set(Qt_LIBRARIES Qt::Core Qt::Widgets)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-
 
 file(GLOB_RECURSE sources *.cpp *.glsl)
 file(GLOB_RECURSE headers *.h)
@@ -38,14 +35,4 @@ target_link_libraries(${PROJECT_NAME} PUBLIC ${SRC_TARGET} libApp Radium::Core R
 
 configure_radium_app(NAME ${PROJECT_NAME})
 
-
-
-
-
-
-
-
-
-
 # elseif(UNIX) #        find_package(Threads REQUIRED) # set(UNIX_REQUIRED_LIBS Threads::Threads)
-

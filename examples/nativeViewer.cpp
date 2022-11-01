@@ -26,7 +26,7 @@ int main() {
     auto onNewStreamer = []( const char* streamName, const hub::SensorSpec* sensorSpec ) {
         std::cout << "[Example][Viewer] onNewStreamer : " << streamName << std::endl;
         char sensorName[80] = { 0 };
-        int strLen = 0;
+        int strLen          = 0;
         hub::native::sensorSpec_getSensorName( sensorSpec, sensorName, &strLen );
         std::cout << "[Example][Viewer] sensorName : '" << sensorName << "' size = " << strLen
                   << std::endl;
@@ -74,14 +74,13 @@ int main() {
                   << std::endl;
     };
 
-    auto viewer = hub::native::createViewer(
-        onNewStreamer,
-        onDelStreamer,
-        onServerConnected,
-        onServerDisconnected,
-        onNewAcquisition,
-        hub::net::s_defaultServiceIp.c_str(),
-        hub::net::s_defaultServicePort );
+    auto viewer = hub::native::createViewer( onNewStreamer,
+                                             onDelStreamer,
+                                             onServerConnected,
+                                             onServerDisconnected,
+                                             onNewAcquisition,
+                                             hub::net::s_defaultServiceIp.c_str(),
+                                             hub::net::s_defaultServicePort );
 
     while ( true ) {
         std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );

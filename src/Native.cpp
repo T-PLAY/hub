@@ -65,17 +65,11 @@ void acquisition_getMeasure( const Acquisition* acquisition, unsigned char* data
     assert( iMeasure < acquisition->getMeasures().size() );
     const auto& measure = acquisition->getMeasures().at( iMeasure );
     memcpy( data, measure.m_data, measure.m_size );
-
 }
 
 // bool getData( const InputSensor* inputSensor, unsigned char* data, int iMeasure ) {
 
-
-
-
 //}
-
-
 
 Viewer* createViewer( onNewStreamerFunc onNewStreamer,
                       onDelStreamerFunc onDelStreamer,
@@ -84,7 +78,6 @@ Viewer* createViewer( onNewStreamerFunc onNewStreamer,
                       onNewAcquisitionFunc onNewAcquisition,
                       const char* ipv4,
                       int port ) {
-
 
     auto onNewStreamerCpp = [=]( const std::string& sensorName, const SensorSpec& sensorSpec ) {
         onNewStreamer( sensorName.c_str(), &sensorSpec );
@@ -156,14 +149,14 @@ int sensorSpec_getDimension( const SensorSpec* sensorSpec, int iResolution, int 
 
 void sensorSpec_getResolutionsStr( const SensorSpec* sensorSpec, char* resolutionsStr ) {
     const auto& resolutionsString = SensorSpec::resolutions2string( sensorSpec->m_resolutions );
-    const int len = resolutionsString.size();
+    const int len                 = resolutionsString.size();
     memcpy( resolutionsStr, resolutionsString.c_str(), len + 1 );
     resolutionsStr[len] = 0;
 }
 
 void sensorSpec_getMetaDataStr( const SensorSpec* sensorSpec, char* metaDataStr ) {
     const auto& metaDataString = SensorSpec::metaData2string( sensorSpec->m_metaData, true );
-    const int len = metaDataString.size();
+    const int len              = metaDataString.size();
     memcpy( metaDataStr, metaDataString.c_str(), len + 1 );
     metaDataStr[len] = 0;
 }
@@ -187,7 +180,7 @@ bool metaData_getString( const SensorSpec::MetaData* metaData,
     if ( metaData->find( metaName ) == metaData->end() ) return false;
 
     const char* meta = std::any_cast<const char*>( metaData->at( metaName ) );
-    *strLen = strlen( meta );
+    *strLen          = strlen( meta );
     memcpy( output, meta, *strLen + 1 );
     output[*strLen] = 0;
     return true;
@@ -221,7 +214,6 @@ unsigned int metaData_getUInt( const SensorSpec::MetaData* metaData, const char*
 }
 
 // bool getAcquisition( InputSensor* inputSensor,
-
 
 //}
 

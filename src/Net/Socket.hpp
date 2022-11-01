@@ -22,7 +22,6 @@ namespace net {
 class SRC_API Socket
 {
   public:
-
     class exception : public std::runtime_error
     {
       public:
