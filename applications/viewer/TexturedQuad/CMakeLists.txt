@@ -15,8 +15,7 @@ endif()
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     set(CMAKE_INSTALL_PREFIX
         "${CMAKE_CURRENT_BINARY_DIR}/installed-${CMAKE_CXX_COMPILER_ID}-${CMAKE_BUILD_TYPE}"
-        CACHE PATH "Install path prefix, prepended onto install directories." FORCE
-    )
+        CACHE PATH "Install path prefix, prepended onto install directories." FORCE)
     message("Set install prefix to ${CMAKE_INSTALL_PREFIX}")
 endif()
 set(CMAKE_CXX_STANDARD 17)
@@ -41,29 +40,20 @@ set(app_sources main.cpp vertexShader.glsl fragmentShader.glsl)
 # add_executable
 add_executable(${PROJECT_NAME} ${app_sources})
 
-target_link_libraries(
-    ${PROJECT_NAME}
-    PUBLIC
-    Radium::Core Radium::Engine Radium::Gui Radium::IO
-    ${Qt_LIBRARIES}
-    DicomLoader
-)
+target_link_libraries(${PROJECT_NAME} PUBLIC Radium::Core Radium::Engine Radium::Gui Radium::IO
+                                             ${Qt_LIBRARIES} DicomLoader)
 
-#target_compile_options(${PROJECT_NAME} PRIVATE PUBLIC ${DEFAULT_COMPILE_OPTIONS} INTERFACE)
+# target_compile_options(${PROJECT_NAME} PRIVATE PUBLIC ${DEFAULT_COMPILE_OPTIONS} INTERFACE)
 
 configure_radium_app(NAME ${PROJECT_NAME})
 
-#message("-----------------------------")
-#message("-- USER environment variable is set to: " $ENV{USER})
-#message("-- HOSTNAME environment variable is set to: " $ENV{HOSTNAME})
+# message("-----------------------------") message("-- USER environment variable is set to: "
+# $ENV{USER}) message("-- HOSTNAME environment variable is set to: " $ENV{HOSTNAME})
 
-#cmake_host_system_information(RESULT hostname QUERY HOSTNAME)
-#message("-- hostname variable is set to: " ${hostname})
+# cmake_host_system_information(RESULT hostname QUERY HOSTNAME) message("-- hostname variable is set
+# to: " ${hostname})
 
-#if (${hostname} STREQUAL "brueghel")
-#    add_definitions(-DMRI_PATH=\"/export/home/brueghel/gbouyjou/Downloads/MRI/\")
-#elseif (${hostname} STREQUAL "gigabyte")
-#    add_definitions(-DMRI_PATH=\"/home/gauthier/tmpDicomViewer/MRI/\")
-#else()
-#    message(FATAL_ERROR "unknown system for finding MRI path")
-#endif ()
+# if (${hostname} STREQUAL "brueghel")
+# add_definitions(-DMRI_PATH=\"/export/home/brueghel/gbouyjou/Downloads/MRI/\") elseif (${hostname}
+# STREQUAL "gigabyte") add_definitions(-DMRI_PATH=\"/home/gauthier/tmpDicomViewer/MRI/\") else()
+# message(FATAL_ERROR "unknown system for finding MRI path") endif ()

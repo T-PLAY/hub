@@ -18,8 +18,7 @@ endif()
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     set(CMAKE_INSTALL_PREFIX
         "${CMAKE_CURRENT_BINARY_DIR}/installed-${CMAKE_CXX_COMPILER_ID}-${CMAKE_BUILD_TYPE}"
-        CACHE PATH "Install path prefix, prepended onto install directories." FORCE
-    )
+        CACHE PATH "Install path prefix, prepended onto install directories." FORCE)
     message("Set install prefix to ${CMAKE_INSTALL_PREFIX}")
 endif()
 set(CMAKE_CXX_STANDARD 17)
@@ -49,21 +48,13 @@ set(app_resources)
 # add_executable
 add_executable(${PROJECT_NAME} ${app_sources} ${app_headers} ${app_uis} ${app_resources})
 
-#target_compile_definitions(
-#    ${PROJECT_NAME} PRIVATE DEMO_FILE="${CMAKE_CURRENT_SOURCE_DIR}/../../unittest/data/Lobster.pvm"
-#)
-#target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
-#target_include_directories(
-#    ${PROJECT_NAME} PRIVATE ${RADIUM_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR} # Moc
-#                            ${CMAKE_CURRENT_SOURCE_DIR}
-#)
+# target_compile_definitions( ${PROJECT_NAME} PRIVATE
+# DEMO_FILE="${CMAKE_CURRENT_SOURCE_DIR}/../../unittest/data/Lobster.pvm" )
+# target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17) target_include_directories(
+# ${PROJECT_NAME} PRIVATE ${RADIUM_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR} # Moc
+# ${CMAKE_CURRENT_SOURCE_DIR} )
 
-target_link_libraries(
-    ${PROJECT_NAME}
-    PUBLIC
-    Radium::Core Radium::Engine Radium::Gui Radium::IO
-    ${Qt_LIBRARIES}
-    DicomLoader
-)
+target_link_libraries(${PROJECT_NAME} PUBLIC Radium::Core Radium::Engine Radium::Gui Radium::IO
+                                             ${Qt_LIBRARIES} DicomLoader)
 
 configure_radium_app(NAME ${PROJECT_NAME})

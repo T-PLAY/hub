@@ -6,19 +6,13 @@ endif(APPLE)
 project(radiumViewer4 VERSION 1.0.0)
 
 # ------------------------------------------------------------------------------
-# set wanted application defaults for cmake settings
-#if(NOT CMAKE_BUILD_TYPE)
-#    set(CMAKE_BUILD_TYPE Release)
-#endif()
-# Set default install location to installed-<Compiler_ID> folder in build dir we do not want to
-# install to /usr by default
-#if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-#    set(CMAKE_INSTALL_PREFIX
-#        "${CMAKE_CURRENT_BINARY_DIR}/installed-${CMAKE_CXX_COMPILER_ID}-${CMAKE_BUILD_TYPE}"
-#        CACHE PATH "Install path prefix, prepended onto install directories." FORCE
-#    )
-#    message("Set install prefix to ${CMAKE_INSTALL_PREFIX}")
-#endif()
+# set wanted application defaults for cmake settings if(NOT CMAKE_BUILD_TYPE) set(CMAKE_BUILD_TYPE
+# Release) endif() Set default install location to installed-<Compiler_ID> folder in build dir we do
+# not want to install to /usr by default if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+# set(CMAKE_INSTALL_PREFIX
+# "${CMAKE_CURRENT_BINARY_DIR}/installed-${CMAKE_CXX_COMPILER_ID}-${CMAKE_BUILD_TYPE}" CACHE PATH
+# "Install path prefix, prepended onto install directories." FORCE ) message("Set install prefix to
+# ${CMAKE_INSTALL_PREFIX}") endif()
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_DISABLE_SOURCE_CHANGES ON)
@@ -45,10 +39,13 @@ file(GLOB_RECURSE app_headers *.h *.hpp)
 # add_executable
 add_executable(${PROJECT_NAME} ${app_sources} ${app_uis} ${app_headers})
 
-target_link_libraries(
-    ${PROJECT_NAME} PUBLIC Radium::Core Radium::Engine Radium::Gui ${Qt_LIBRARIES}
-)
+target_link_libraries(${PROJECT_NAME} PUBLIC Radium::Core Radium::Engine Radium::Gui
+                                             ${Qt_LIBRARIES})
 
-target_compile_options(${PROJECT_NAME} PRIVATE PUBLIC ${DEFAULT_COMPILE_OPTIONS} INTERFACE)
+target_compile_options(
+    ${PROJECT_NAME}
+    PRIVATE
+    PUBLIC ${DEFAULT_COMPILE_OPTIONS}
+    INTERFACE)
 
 configure_radium_app(NAME ${PROJECT_NAME})
