@@ -14,8 +14,7 @@ endif()
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     set(CMAKE_INSTALL_PREFIX
         "${CMAKE_CURRENT_BINARY_DIR}/installed-${CMAKE_CXX_COMPILER_ID}-${CMAKE_BUILD_TYPE}"
-        CACHE PATH "Install path prefix, prepended onto install directories." FORCE
-    )
+        CACHE PATH "Install path prefix, prepended onto install directories." FORCE)
     message("Set install prefix to ${CMAKE_INSTALL_PREFIX}")
 endif()
 set(CMAKE_CXX_STANDARD 17)
@@ -42,9 +41,8 @@ set(app_resources)
 
 # to install the app as a redistribuable bundle on macos, add MACOSX_BUNDLE when calling
 # add_executable
-add_executable(
-    ${PROJECT_NAME} MACOSX_BUNDLE ${app_sources} ${app_headers} ${app_uis} ${app_resources}
-)
+add_executable(${PROJECT_NAME} MACOSX_BUNDLE ${app_sources} ${app_headers} ${app_uis}
+                                             ${app_resources})
 
 if("${CMAKE_CXX_COMPILER_ID}" MATCHES "MSVC")
     target_compile_options(
@@ -61,8 +59,7 @@ if("${CMAKE_CXX_COMPILER_ID}" MATCHES "MSVC")
                 /GL
                 /GF
                 >
-        PUBLIC
-    )
+        PUBLIC)
 endif()
 
 get_target_property(USE_ASSIMP Radium::IO IO_HAS_ASSIMP)
@@ -73,16 +70,11 @@ endif()
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
 target_include_directories(
     ${PROJECT_NAME} PRIVATE ${RADIUM_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR} # Moc
-                            ${CMAKE_CURRENT_SOURCE_DIR}
-)
+                            ${CMAKE_CURRENT_SOURCE_DIR})
 
-target_link_libraries(
-    ${PROJECT_NAME} PUBLIC Radium::Core Radium::Engine Radium::Gui Radium::IO ${Qt_LIBRARIES}
-    libGuiManager
-)
+target_link_libraries(${PROJECT_NAME} PUBLIC Radium::Core Radium::Engine Radium::Gui Radium::IO
+                                             ${Qt_LIBRARIES} libGuiManager)
 
 # configure the application
-configure_radium_app(
-    NAME ${PROJECT_NAME} PREFIX Examples/${PROJECT_NAME}
-    RESOURCES "${CMAKE_CURRENT_SOURCE_DIR}/Assets"
-)
+configure_radium_app(NAME ${PROJECT_NAME} PREFIX Examples/${PROJECT_NAME} RESOURCES
+                     "${CMAKE_CURRENT_SOURCE_DIR}/Assets")
