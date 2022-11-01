@@ -539,11 +539,15 @@ void GuiManager::onServerStreamStopped( const std::string& streamName,
 }
 
 void GuiManager::onServerConnected() {
+#ifdef ENABLE_LOADER
     m_formWidgetLoader->setEnabled(true);
+#endif
 }
 
 void GuiManager::onServerDisconnected() {
+#ifdef ENABLE_LOADER
     m_formWidgetLoader->setEnabled(false);
+#endif
     //    m_sceneManager.clear();
 
     //    delete m_formStreamViews;
