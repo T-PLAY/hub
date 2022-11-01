@@ -10,5 +10,5 @@ cd $rootPath
 
 for file in $(find . -type f \( -name "*.cpp" -o -name "*.hpp" -o -name "*.h" -o -name "*.inl" \)); do
 	echo $file
-	clang-format -i --style=file $file
+	sed -i '/.*\/\/  .*/d' $file
 done
