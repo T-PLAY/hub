@@ -88,11 +88,11 @@ int main( int argc, char* argv[] ) {
 //        //        hub::OutputSensor outputSensor2(inputSensor.m_spec,
 //        hub::io::OutputStream("Player (" + streamName + ")"));
 ////        outputStreams[streamName] = std::make_unique<hub::OutputSensor>(inputSensor.m_spec,
-///hub::io::OutputStream("Player (" + streamName + ")"));
+/// hub::io::OutputStream("Player (" + streamName + ")"));
 //        outputStreams.push_back(std::make_unique<hub::OutputSensor>(inputSensor.m_spec,
 //        hub::io::OutputStream("Player : " + inputSensor.m_spec.m_sensorName)));
 ////        outputStreams.emplace_back(inputSensor.m_spec, hub::io::OutputStream("Player (" +
-///streamName + ")"));
+/// streamName + ")"));
 
 //        for (const auto& acq : acqs) {
 //            //            std::cout << "read acq : " << acq << std::endl;

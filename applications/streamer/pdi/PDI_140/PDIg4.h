@@ -194,8 +194,8 @@ class PDI_API CPDIg4 : public CPDIdev
     // BOOL	ClearPnoBuffer	( VOID );							// Clears output P&O output buffer
     // BOOL	LastPnoPtr		( PBYTE & pBuf, DWORD & dwSize );	// Returns pointer to last P&O frame
     // collected
-    // BOOL	ResetPnoPtr		( VOID );							// Resets P&O output pointer to beginning of
-    // buffer
+    // BOOL	ResetPnoPtr		( VOID );							// Resets P&O output pointer to
+    // beginning of buffer
     // BOOL	SetPnoBuffer	( PBYTE pBuf, DWORD dwSize );		// Sets/Clears output P&O output
     // buffer BOOL	ResetHostFrameCount ( VOID );						// Resets Host P&O frame
     // counter BOOL	LastHostFrameCount  ( DWORD & dwFrameCount );		// Returns index of last P&O
@@ -208,8 +208,8 @@ class PDI_API CPDIg4 : public CPDIdev
     BOOL StartContPno( HWND hwnd ); // Starts continuous P&O collection: posts data msg to HWND
     BOOL StopContPno( VOID );       // Stops continuous P&O collection
 
-    // P&O Collection methods - Native G4 hierarchical format		// Data is organized in blocks of
-    // type G4_HUBDATA
+    // P&O Collection methods - Native G4 hierarchical format		// Data is organized in blocks
+    // of type G4_HUBDATA
     BOOL ReadSinglePnoG4( HWND hwnd );
     BOOL ReadSinglePnoBufG4( PBYTE& pBuf, DWORD& dwSize );
     BOOL StartContPnoG4( HWND hwnd );

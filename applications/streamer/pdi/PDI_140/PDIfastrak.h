@@ -340,8 +340,8 @@ class PDI_API CPDIfastrak : public CPDIdev
         return CPDIdev::WhoAmI( szBuf );
     }
     // n/a Fastrak BOOL	WhoAmISensor	( INT nSensor,  LPCSTR & szBuf )	// Issues sensor WhoAmI
-    // command ( '^V' command ); puts result in argument 						{ return CPDIdev::WhoAmISensor( nSensor,
-    //szBuf ); }
+    // command ( '^V' command ); puts result in argument 						{ return
+    // CPDIdev::WhoAmISensor( nSensor, szBuf ); }
 
     // The following are better suited for Unicode builds
     BOOL TxtCmdW( LPCWSTR szWCmd,

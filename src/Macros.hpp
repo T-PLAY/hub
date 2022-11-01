@@ -118,10 +118,10 @@
 #    pragma warning( disable : 4251 ) // stl dllexports
 //	#pragma warning(disable: 4267) // conversion from size_t to uint
 //	#pragma warning(disable: 4275) // non - DLL-interface class 'class_1' used as base for
-//DLL-interface class 'class_2' 	#pragma warning(disable: 4577) // noexcept used with no exception
-//handling mode 	#pragma warning(disable: 4838) // conversion from enum to uint. 	#pragma
-//warning(disable: 4996) // sprintf unsafe 	#pragma warning(disable: 4503) // Truncated decorated
-//name
+// DLL-interface class 'class_2' 	#pragma warning(disable: 4577) // noexcept used with no
+// exception handling mode 	#pragma warning(disable: 4838) // conversion from enum to uint.
+// #pragma warning(disable: 4996) // sprintf unsafe 	#pragma warning(disable: 4503) // Truncated
+// decorated name
 #endif
 
 // ----------------------------------------------------------------------------

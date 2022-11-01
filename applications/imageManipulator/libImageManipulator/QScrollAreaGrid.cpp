@@ -55,7 +55,7 @@ void QScrollAreaGrid::mousePressEvent( QMouseEvent* event ) {
     if ( event->button() == Qt::LeftButton ) {
         //        setCursor(Qt::SplitHCursor);
         setCursor( Qt::DragMoveCursor );
-//        mousePosX  = event->x();
+        //        mousePosX  = event->x();
         mousePosX  = event->position().x();
         mousePosY  = event->position().y();
         hSliderPos = this->horizontalScrollBar()->value();

@@ -110,7 +110,7 @@ MainWindow::MainWindow( QWidget* parent ) : QMainWindow( parent ), ui( new Ui::M
     //        m_streamView2D_2->init(512, 192, 35.0, 50.0);
     ////        m_streamView2D_2->init(512, 192);
     ////        m_streamView2D_2->setData((unsigned char*)acq.m_data, sensorSpec.m_acquisitionSize,
-    ///sensorSpec.m_dims, sensorSpec.m_format);
+    /// sensorSpec.m_dims, sensorSpec.m_format);
     //        m_streamView2D->setData((unsigned char*)acq.getMeasures().at(0).m_data,
     //        sensorSpec.m_acquisitionSize, dims, format);
     //        ui->mdiArea->addSubWindow(m_streamView2D_2);
