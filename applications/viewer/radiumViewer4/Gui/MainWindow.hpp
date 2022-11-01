@@ -11,11 +11,9 @@
 #include "ui_MainWindow.h"
 #include <QMainWindow>
 
-//QT_BEGIN_NAMESPACE
-//namespace Ui { class MainWindow; }
-//QT_END_NAMESPACE
-
-
+// QT_BEGIN_NAMESPACE
+// namespace Ui { class MainWindow; }
+// QT_END_NAMESPACE
 
 #include <QEvent>
 #include <qdebug.h>
@@ -77,16 +75,12 @@ class MainWindow : public Ra::Gui::MainWindowInterface, private Ui::MainWindow
     /// Emitted when frame must be updated
     void frameUpdate();
 
-private slots:
+  private slots:
     // Slot to init renderers once gl is ready
     void onGLInitialized();
 
     /// Slot to accept a new renderer
     void onRendererReady();
-
-
-
-
 
   private:
     /// create the UI connections
@@ -102,7 +96,7 @@ private slots:
     /// Stores the internal model of engine objects for selection and visibility.
     std::unique_ptr<Ra::Gui::ItemModel> m_sceneModel;
 
-//    Ui::MainWindow *ui;
+    //    Ui::MainWindow *ui;
 };
 
 } // namespace Gui

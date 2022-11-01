@@ -14,34 +14,32 @@
 
 #include <constants.h>
 
-WidgetStreamView::WidgetStreamView(QWidget* parent)
-    : QWidget(parent)
-{
-}
+WidgetStreamView::WidgetStreamView( QWidget* parent ) : QWidget( parent ) {}
 
-//void WidgetStreamView::setData(unsigned char* img_ptr, std::vector<int> dims, hub::SensorSpec::Format format)
+// void WidgetStreamView::setData(unsigned char* img_ptr, std::vector<int> dims,
+// hub::SensorSpec::Format format)
 //{
-//}
+// }
 
-void WidgetStreamView::setData(unsigned char* img_ptr, size_t size, std::vector<int> dims, hub::SensorSpec::Format format)
-{
-}
+void WidgetStreamView::setData( unsigned char* img_ptr,
+                                size_t size,
+                                std::vector<int> dims,
+                                hub::SensorSpec::Format format ) {}
 
 ///////////////////////////////////////////////////////////////////////////////
-WidgetStreamView2D::WidgetStreamView2D(QWidget* parent)
-    : WidgetStreamView(parent)
-{
-}
+WidgetStreamView2D::WidgetStreamView2D( QWidget* parent ) : WidgetStreamView( parent ) {}
 
-void WidgetStreamView2D::init(int imagePixelWidth, int imagePixelHeight, double imageUnitWidth, double imageUnitHeight)
-{
+void WidgetStreamView2D::init( int imagePixelWidth,
+                               int imagePixelHeight,
+                               double imageUnitWidth,
+                               double imageUnitHeight ) {
     std::cout << "[WidgetStreamView2D] init" << std::endl;
-    mImagePixelWidth = imagePixelWidth;
+    mImagePixelWidth  = imagePixelWidth;
     mImagePixelHeight = imagePixelHeight;
-    mImageUnitWidth = (imageUnitWidth == 0.0) ? imagePixelWidth : imageUnitWidth;
-    mImageUnitHeight = (imageUnitHeight == 0.0) ? imagePixelHeight : imageUnitHeight;
-    mHPixelPerUnit = mImagePixelWidth / mImageUnitWidth;
-    mVPixelPerUnit = mImagePixelHeight / mImageUnitHeight;
+    mImageUnitWidth   = ( imageUnitWidth == 0.0 ) ? imagePixelWidth : imageUnitWidth;
+    mImageUnitHeight  = ( imageUnitHeight == 0.0 ) ? imagePixelHeight : imageUnitHeight;
+    mHPixelPerUnit    = mImagePixelWidth / mImageUnitWidth;
+    mVPixelPerUnit    = mImagePixelHeight / mImageUnitHeight;
     //    mRatio = mImageUnitHeight / mImageUnitWidth;
     //    mRatio = mHPixelPerUnit / mVPixelPerUnit;
     //        mRatio = mVPixelPerUnit / mHPixelPerUnit;
@@ -57,12 +55,13 @@ void WidgetStreamView2D::init(int imagePixelWidth, int imagePixelHeight, double 
     //    mImageUnitWidth = mUnitPerImageHPixel * mImagePixelWidth;
     //    mImageUnitHeight = mUnitPerImageVPixel * mImagePixelHeight;
 
-    double unitWidth = mImagePixelWidth / mHPixelPerUnit;
+    double unitWidth  = mImagePixelWidth / mHPixelPerUnit;
     double unitHeight = mImagePixelHeight / mVPixelPerUnit;
-    if (unitWidth * mRatio > unitHeight) {
+    if ( unitWidth * mRatio > unitHeight ) {
         unitWidth = unitHeight / mRatio;
         //    mCanvasPixelPerUnit = mHPixelPerUnit;
-    } else {
+    }
+    else {
         unitHeight = unitWidth * mRatio;
         //    mCanvasPixelPerUnit = mVPixelPerUnit;
     }
@@ -70,56 +69,58 @@ void WidgetStreamView2D::init(int imagePixelWidth, int imagePixelHeight, double 
     //    update();
     //    assert(mCanvasPixelPerUnit != nullptr);
 
-    //        mCanvasPixelPerUnit = std::floor(std::min(width() / mImageUnitWidth, height() / mImageUnitHeight));
+    //        mCanvasPixelPerUnit = std::floor(std::min(width() / mImageUnitWidth, height() /
+    //        mImageUnitHeight));
     //    mCanvasPixelPerUnit = 10.0;
-    //        mCanvasPixelPerUnit = std::floor((width() / mImageUnitWidth + height() / mImageUnitHeight) / 2.0);
-    //        mCanvasPixelPerUnit = std::floor(std::min(mHPixelPerUnit, mVPixelPerUnit));
-    //        mCanvasPixelPerUnit = std::floor(std::max(mHPixelPerUnit, mVPixelPerUnit));
-    mCanvasPixelPerUnit = std::floor((mHPixelPerUnit + mVPixelPerUnit) / 2.0);
+    //        mCanvasPixelPerUnit = std::floor((width() / mImageUnitWidth + height() /
+    //        mImageUnitHeight) / 2.0); mCanvasPixelPerUnit = std::floor(std::min(mHPixelPerUnit,
+    //        mVPixelPerUnit)); mCanvasPixelPerUnit = std::floor(std::max(mHPixelPerUnit,
+    //        mVPixelPerUnit));
+    mCanvasPixelPerUnit = std::floor( ( mHPixelPerUnit + mVPixelPerUnit ) / 2.0 );
     //    mCanvasPixelPerUnit = std::floor((mHPixelPerUnit + mVPixelPerUnit) / 2.0);
     //    mCanvasPixelPerUnit = std::floor(mHPixelPerUnit);
 
-    mCanvasPixelWidth = unitWidth * mCanvasPixelPerUnit;
+    mCanvasPixelWidth  = unitWidth * mCanvasPixelPerUnit;
     mCanvasPixelHeight = unitHeight * mCanvasPixelPerUnit;
 
-    setMinimumWidth(mCanvasPixelWidth);
-    setMinimumHeight(mCanvasPixelHeight);
+    setMinimumWidth( mCanvasPixelWidth );
+    setMinimumHeight( mCanvasPixelHeight );
 
-    setMaximumWidth(mCanvasPixelWidth);
-    setMaximumHeight(mCanvasPixelHeight);
+    setMaximumWidth( mCanvasPixelWidth );
+    setMaximumHeight( mCanvasPixelHeight );
 
     //    onPixelPerUnitChanged();
-//    update();
+    //    update();
     emit inited();
 }
 
-void WidgetStreamView2D::clear()
-{
-    if (mData != nullptr) {
-        delete [] mData;
+void WidgetStreamView2D::clear() {
+    if ( mData != nullptr ) {
+        delete[] mData;
         mData = nullptr;
     }
-//    mData = nullptr;
-    mImagePixelWidth = 0;
+    //    mData = nullptr;
+    mImagePixelWidth  = 0;
     mImagePixelHeight = 0;
 
-    mImageUnitWidth = 0;
+    mImageUnitWidth  = 0;
     mImageUnitHeight = 0;
 
-    mRatio = 1.0;
+    mRatio         = 1.0;
     mHPixelPerUnit = 1.0;
     mVPixelPerUnit = 1.0;
 
     mCanvasPixelPerUnit = 1.0;
-    mCanvasPixelWidth = 0.0;
-    mCanvasPixelHeight = 0.0;
+    mCanvasPixelWidth   = 0.0;
+    mCanvasPixelHeight  = 0.0;
 
     emit inited();
 
     update();
 }
 
-// WidgetStreamView2D::WidgetStreamView2D(int imagePixelWidth, int imagePixelHeight, double imageUnitWidth, double imageUnitHeight, QWidget* parent)
+// WidgetStreamView2D::WidgetStreamView2D(int imagePixelWidth, int imagePixelHeight, double
+// imageUnitWidth, double imageUnitHeight, QWidget* parent)
 //     : WidgetStreamView(parent)
 //     , mImagePixelWidth(imagePixelWidth)
 //     , mImagePixelHeight(imagePixelHeight)
@@ -146,11 +147,12 @@ void WidgetStreamView2D::clear()
 //    //    mImageUnitHeight = mUnitPerImageVPixel * mImagePixelHeight;
 //}
 
-//void WidgetStreamView2D::setData(unsigned char* img_ptr, std::vector<int> dims, hub::SensorSpec::Format format)
+// void WidgetStreamView2D::setData(unsigned char* img_ptr, std::vector<int> dims,
+// hub::SensorSpec::Format format)
 //{
-//    assert(dims.size() == 2);
-//    if (mImagePixelWidth != dims.at(0) || mImagePixelHeight != dims.at(1))
-//        init(dims.at(0), dims.at(1));
+//     assert(dims.size() == 2);
+//     if (mImagePixelWidth != dims.at(0) || mImagePixelHeight != dims.at(1))
+//         init(dims.at(0), dims.at(1));
 
 //    mData = img_ptr;
 //    assert(dims.size() == 2);
@@ -161,57 +163,52 @@ void WidgetStreamView2D::clear()
 //    updateImage();
 //}
 
-void WidgetStreamView2D::setData(unsigned char* img_ptr, size_t size, std::vector<int> dims, hub::SensorSpec::Format format)
-{
-    assert(dims.size() == 2);
-    if (mImagePixelWidth != dims.at(0) || mImagePixelHeight != dims.at(1))
-        init(dims.at(0), dims.at(1));
+void WidgetStreamView2D::setData( unsigned char* img_ptr,
+                                  size_t size,
+                                  std::vector<int> dims,
+                                  hub::SensorSpec::Format format ) {
+    assert( dims.size() == 2 );
+    if ( mImagePixelWidth != dims.at( 0 ) || mImagePixelHeight != dims.at( 1 ) )
+        init( dims.at( 0 ), dims.at( 1 ) );
 
-    if (img_ptr == nullptr) {
-        if (mData != nullptr) {
-            delete [] mData;
-        }
+    if ( img_ptr == nullptr ) {
+        if ( mData != nullptr ) { delete[] mData; }
         update();
         return;
     }
     //    mData = img_ptr;
-//    assert(mData == nullptr);
-    if (mData == nullptr)
-        mData = new unsigned char[size];
+    //    assert(mData == nullptr);
+    if ( mData == nullptr ) mData = new unsigned char[size];
 
-    memcpy(mData, img_ptr, size);
-    assert(dims.size() == 2);
-    assert(mImagePixelWidth == dims.at(0));
-    assert(mImagePixelHeight == dims.at(1));
+    memcpy( mData, img_ptr, size );
+    assert( dims.size() == 2 );
+    assert( mImagePixelWidth == dims.at( 0 ) );
+    assert( mImagePixelHeight == dims.at( 1 ) );
     mFormat = format;
 
     updateImage();
 }
 
-void WidgetStreamView2D::onPixelPerUnitChanged()
-{
-//    std::cout << "[WidgetStreamView2D] onPixelPerUnitChanged" << std::endl;
-    double unitWidth = mImagePixelWidth / mHPixelPerUnit;
+void WidgetStreamView2D::onPixelPerUnitChanged() {
+    //    std::cout << "[WidgetStreamView2D] onPixelPerUnitChanged" << std::endl;
+    double unitWidth  = mImagePixelWidth / mHPixelPerUnit;
     double unitHeight = mImagePixelHeight / mVPixelPerUnit;
-    if (unitWidth * mRatio > unitHeight) {
-        unitWidth = unitHeight / mRatio;
-    } else {
-        unitHeight = unitWidth * mRatio;
-    }
+    if ( unitWidth * mRatio > unitHeight ) { unitWidth = unitHeight / mRatio; }
+    else { unitHeight = unitWidth * mRatio; }
 
     //    update();
     //    assert(mCanvasPixelPerUnit != nullptr);
 
-    mCanvasPixelWidth = unitWidth * mCanvasPixelPerUnit;
+    mCanvasPixelWidth  = unitWidth * mCanvasPixelPerUnit;
     mCanvasPixelHeight = unitHeight * mCanvasPixelPerUnit;
 
     //        mCanvasPixelWidth = mImagePixelWidth / mHPixelPerUnit;
     //        mCanvasPixelHeight = mImageUnitHeight * mVPixelPerUnit;
 
-    this->setMinimumWidth(mCanvasPixelWidth);
-    this->setMinimumHeight(mCanvasPixelHeight);
-    setMaximumWidth(mCanvasPixelWidth);
-    setMaximumHeight(mCanvasPixelHeight);
+    this->setMinimumWidth( mCanvasPixelWidth );
+    this->setMinimumHeight( mCanvasPixelHeight );
+    setMaximumWidth( mCanvasPixelWidth );
+    setMaximumHeight( mCanvasPixelHeight );
 
     update();
 }
@@ -221,53 +218,71 @@ void WidgetStreamView2D::onPixelPerUnitChanged()
 
 //}
 
-
-void WidgetStreamView2D::updateImage()
-{
-//    std::cout << "[WidgetStreamView2D] updateImage" << std::endl;
+void WidgetStreamView2D::updateImage() {
+    //    std::cout << "[WidgetStreamView2D] updateImage" << std::endl;
 
     //        QImage image;
-    if (mData != nullptr) {
-        switch (mFormat) {
+    if ( mData != nullptr ) {
+        switch ( mFormat ) {
         case hub::SensorSpec::Format::Y8:
-            m_image = new QImage((unsigned char*)mData, mImagePixelWidth, mImagePixelHeight, QImage::Format_Grayscale8);
+            m_image = new QImage( (unsigned char*)mData,
+                                  mImagePixelWidth,
+                                  mImagePixelHeight,
+                                  QImage::Format_Grayscale8 );
             break;
 
         case hub::SensorSpec::Format::Y16:
         case hub::SensorSpec::Format::Z16:
-#if QT_VERSION <= QT_VERSION_CHECK(5, 12, 0)
-            m_image = new QImage((unsigned char*)mData, mImagePixelWidth, mImagePixelHeight, QImage::Format_Grayscale16);
-#elif QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-            m_image = new QImage((unsigned char*)mData, mImagePixelWidth, mImagePixelHeight, QImage::Format_Grayscale16);
+#if QT_VERSION <= QT_VERSION_CHECK( 5, 12, 0 )
+            m_image = new QImage( (unsigned char*)mData,
+                                  mImagePixelWidth,
+                                  mImagePixelHeight,
+                                  QImage::Format_Grayscale16 );
+#elif QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
+            m_image = new QImage( (unsigned char*)mData,
+                                  mImagePixelWidth,
+                                  mImagePixelHeight,
+                                  QImage::Format_Grayscale16 );
 #else
-//            m_image = new QImage((unsigned char*)mData, mImagePixelWidth, mImagePixelHeight, mImagePixelWidth * 2, QImage::Format_Grayscale8);
-            m_image = new QImage((unsigned char*)mData, mImagePixelWidth, mImagePixelHeight, QImage::Format_Grayscale16);
+            //            m_image = new QImage((unsigned char*)mData, mImagePixelWidth,
+            //            mImagePixelHeight, mImagePixelWidth * 2, QImage::Format_Grayscale8);
+            m_image = new QImage( (unsigned char*)mData,
+                                  mImagePixelWidth,
+                                  mImagePixelHeight,
+                                  QImage::Format_Grayscale16 );
 #endif
             break;
 
         case hub::SensorSpec::Format::RGB8:
-            m_image = new QImage((unsigned char*)mData, mImagePixelWidth, mImagePixelHeight, QImage::Format_RGB888);
+            m_image = new QImage(
+                (unsigned char*)mData, mImagePixelWidth, mImagePixelHeight, QImage::Format_RGB888 );
             break;
 
         case hub::SensorSpec::Format::RGBA8:
-            m_image = new QImage((unsigned char*)mData, mImagePixelWidth, mImagePixelHeight, QImage::Format_RGBA8888);
+            m_image = new QImage( (unsigned char*)mData,
+                                  mImagePixelWidth,
+                                  mImagePixelHeight,
+                                  QImage::Format_RGBA8888 );
             break;
 
         case hub::SensorSpec::Format::BGR8:
-#if QT_VERSION <= QT_VERSION_CHECK(5, 12, 0)
-            m_image = new QImage((unsigned char*)mData, mImagePixelWidth, mImagePixelHeight, QImage::Format_BGR888);
-#elif QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-            m_image = new QImage((unsigned char*)mData, mImagePixelWidth, mImagePixelHeight, QImage::Format_BGR888);
+#if QT_VERSION <= QT_VERSION_CHECK( 5, 12, 0 )
+            m_image = new QImage(
+                (unsigned char*)mData, mImagePixelWidth, mImagePixelHeight, QImage::Format_BGR888 );
+#elif QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
+            m_image = new QImage(
+                (unsigned char*)mData, mImagePixelWidth, mImagePixelHeight, QImage::Format_BGR888 );
 #else
-        m_image = new QImage((unsigned char*)mData, mImagePixelWidth, mImagePixelHeight, QImage::Format_RGB888);
+            m_image = new QImage(
+                (unsigned char*)mData, mImagePixelWidth, mImagePixelHeight, QImage::Format_RGB888 );
 #endif
-        break;
+            break;
 
         default:
             std::cout << "[paintEvent] unknown stream format" << std::endl;
-            assert(false);
+            assert( false );
         }
-        assert(!m_image->isNull());
+        assert( !m_image->isNull() );
     }
     //    QMatrix rm;
     //    if (mRotateDeg != 0.0) {
@@ -278,65 +293,63 @@ void WidgetStreamView2D::updateImage()
     update();
 }
 
-void WidgetStreamView2D::paintEvent(QPaintEvent* event)
-{
-//    std::cout << "[WidgetStreamView2D] paintEvent" << std::endl;
+void WidgetStreamView2D::paintEvent( QPaintEvent* event ) {
+    //    std::cout << "[WidgetStreamView2D] paintEvent" << std::endl;
 
     //    assert(mCanvasPixelPerUnit != nullptr);
-    Q_UNUSED(event);
+    Q_UNUSED( event );
     QPainter painter;
 
-    painter.begin(this);
+    painter.begin( this );
     //    painter.fillRect(0, 0, width(), height(), Qt::lightGray);
     //    painter.fillRect(0, 0, mCanvasPixelWidth, mCanvasPixelHeight, Qt::red);
 
     //    const int alpha = 100;
 
     //    painter.drawPixmap(rect(), *m_grid);
-    if (mData != nullptr) {
-        const QPoint p = QPoint(0, 0);
+    if ( mData != nullptr ) {
+        const QPoint p = QPoint( 0, 0 );
 
         //        QImage image = m_image->scaled(this->size());
-        QImage image = m_image->scaled(QSize(mCanvasPixelWidth, mCanvasPixelHeight));
-        painter.drawImage(p, image);
+        QImage image = m_image->scaled( QSize( mCanvasPixelWidth, mCanvasPixelHeight ) );
+        painter.drawImage( p, image );
         //        painter.drawImage(p, *m_grid);
-
-    } else {
-        painter.fillRect(0, 0, width(), height(), Qt::gray);
-//        return;
+    }
+    else {
+        painter.fillRect( 0, 0, width(), height(), Qt::gray );
+        //        return;
     }
 
-    if (mShowGrid) {
+    if ( mShowGrid ) {
         int alpha = 100;
-//        const std::vector<double> stepSizes = { 1.0, 2.0, 5.0, 10.0, 20.0, 50.0 };
+        //        const std::vector<double> stepSizes = { 1.0, 2.0, 5.0, 10.0, 20.0, 50.0 };
         double tmp;
-        for (const auto& stepSize : g_stepSizes) {
+        for ( const auto& stepSize : g_stepSizes ) {
             tmp = stepSize;
-            if (mCanvasPixelPerUnit * stepSize > 25)
-                break;
+            if ( mCanvasPixelPerUnit * stepSize > 25 ) break;
         }
         const double stepSize = tmp;
 
         {
             //        double mImageUnitWidth =
-            const int nHStep = std::ceil(mImageUnitWidth / stepSize);
+            const int nHStep = std::ceil( mImageUnitWidth / stepSize );
 
             //    painter.setPen(QColor(255, 0, 0, 127));
-            painter.setPen(QColor(255, 0, 0, alpha));
-            for (int iHStep = 1; iHStep < nHStep; ++iHStep) {
+            painter.setPen( QColor( 255, 0, 0, alpha ) );
+            for ( int iHStep = 1; iHStep < nHStep; ++iHStep ) {
                 int x = iHStep * stepSize * mCanvasPixelPerUnit;
-                painter.drawLine(x, 0, x, mCanvasPixelHeight - 1);
+                painter.drawLine( x, 0, x, mCanvasPixelHeight - 1 );
             }
         }
 
         {
-            const int nVStep = std::floor(mImageUnitHeight / stepSize);
+            const int nVStep = std::floor( mImageUnitHeight / stepSize );
 
             //    painter.setPen(QColor(255, 0, 0, 127));
-            painter.setPen(QColor(255, 0, 0, alpha));
-            for (int iVStep = 1; iVStep < nVStep; ++iVStep) {
+            painter.setPen( QColor( 255, 0, 0, alpha ) );
+            for ( int iVStep = 1; iVStep < nVStep; ++iVStep ) {
                 int y = iVStep * stepSize * mCanvasPixelPerUnit;
-                painter.drawLine(0, y, mCanvasPixelWidth - 1, y);
+                painter.drawLine( 0, y, mCanvasPixelWidth - 1, y );
             }
         }
     }
@@ -354,7 +367,8 @@ void WidgetStreamView2D::paintEvent(QPaintEvent* event)
 // void WidgetStreamView2D::resizeEvent(QResizeEvent* event)
 //{
 //     std::cout << "[WidgetStreamView2D] resizeEvent" << std::endl;
-////    this->setWindowTitle(this->windowTitle() + " " + QString::number(this->size().width()) + " x " + QString::number(this->size().height()) + " pixels");
+////    this->setWindowTitle(this->windowTitle() + " " + QString::number(this->size().width()) + " x
+///" + QString::number(this->size().height()) + " pixels");
 //    return;
 
 //    //    if (width() == mCanvasPixelWidth && height() == mCanvasPixelHeight)
@@ -429,11 +443,15 @@ void WidgetStreamView2D::paintEvent(QPaintEvent* event)
 //    //    mHPixelPerUnit = mImagePixelWidth / mImageUnitWidth;
 //    //    mVPixelPerUnit = mImagePixelHeight / mImageUnitHeight;
 
-//    //    const double pixelWidthPerUnit = mCanvasPixelWidth / (mCanvasPixelWidth / mHPixelPerUnit);
-//    //    const double pixelHeightPerUnit = mCanvasPixelHeight / (mCanvasPixelHeight / mVPixelPerUnit);
+//    //    const double pixelWidthPerUnit = mCanvasPixelWidth / (mCanvasPixelWidth /
+//    mHPixelPerUnit);
+//    //    const double pixelHeightPerUnit = mCanvasPixelHeight / (mCanvasPixelHeight /
+//    mVPixelPerUnit);
 
-//    //        const double pixelWidthPerUnit = mImageUnitWidth / (mCanvasPixelWidth * mHPixelPerUnit);
-//    //        const double pixelHeightPerUnit = mImageUnitHeight / (mCanvasPixelHeight * mVPixelPerUnit);
+//    //        const double pixelWidthPerUnit = mImageUnitWidth / (mCanvasPixelWidth *
+//    mHPixelPerUnit);
+//    //        const double pixelHeightPerUnit = mImageUnitHeight / (mCanvasPixelHeight *
+//    mVPixelPerUnit);
 //    //        assert(std::abs(pixelWidthPerUnit - pixelHeightPerUnit) < 0.1);
 
 //    //        mCanvasPixelPerUnit = std::min(pixelWidthPerUnit, pixelHeightPerUnit);
@@ -460,18 +478,15 @@ void WidgetStreamView2D::paintEvent(QPaintEvent* event)
 //    //    *m_image = m_image->scaled(QSize(mCanvasPixelWidth, mCanvasPixelHeight));
 //}
 
-const double& WidgetStreamView2D::getImageUnitHeight() const
-{
+const double& WidgetStreamView2D::getImageUnitHeight() const {
     return mImageUnitHeight;
 }
 
-const double& WidgetStreamView2D::getImageUnitWidth() const
-{
+const double& WidgetStreamView2D::getImageUnitWidth() const {
     return mImageUnitWidth;
 }
 
-void WidgetStreamView2D::setShowGrid(bool newShowGrid)
-{
+void WidgetStreamView2D::setShowGrid( bool newShowGrid ) {
     mShowGrid = newShowGrid;
 }
 
@@ -489,18 +504,15 @@ void WidgetStreamView2D::setShowGrid(bool newShowGrid)
 //    mRatio = realHeight / realWidth;
 //}
 
-double& WidgetStreamView2D::getCanvasPixelPerUnit()
-{
+double& WidgetStreamView2D::getCanvasPixelPerUnit() {
     return mCanvasPixelPerUnit;
 }
 
-const int& WidgetStreamView2D::getCanvasPixelHeight() const
-{
+const int& WidgetStreamView2D::getCanvasPixelHeight() const {
     return mCanvasPixelHeight;
 }
 
-const int& WidgetStreamView2D::getCanvasPixelWidth() const
-{
+const int& WidgetStreamView2D::getCanvasPixelWidth() const {
     return mCanvasPixelWidth;
 }
 
@@ -509,8 +521,7 @@ const int& WidgetStreamView2D::getCanvasPixelWidth() const
 //     mCanvasPixelPerUnit = &newCanvasPixelPerUnit;
 // }
 
-void WidgetStreamView2D::setRotateDeg(double newRotateDeg)
-{
+void WidgetStreamView2D::setRotateDeg( double newRotateDeg ) {
     mRotateDeg = newRotateDeg;
 }
 
@@ -521,34 +532,40 @@ void WidgetStreamView2D::setRotateDeg(double newRotateDeg)
 
 ///////////////////////////////////////////////////////////////////////////////
 
-WidgetStreamView1D::WidgetStreamView1D(QWidget* parent)
-    : WidgetStreamView(parent)
-{
-    mLabel = new QLabel(this);
+WidgetStreamView1D::WidgetStreamView1D( QWidget* parent ) : WidgetStreamView( parent ) {
+    mLabel = new QLabel( this );
 
-    mLabel->setMinimumSize(350, 35);
+    mLabel->setMinimumSize( 350, 35 );
 }
 
-WidgetStreamView1D::~WidgetStreamView1D()
-{
+WidgetStreamView1D::~WidgetStreamView1D() {
     delete mLabel;
 }
 
-//void WidgetStreamView1D::setData(unsigned char* img_ptr, std::vector<int> dims, hub::SensorSpec::Format format)
+// void WidgetStreamView1D::setData(unsigned char* img_ptr, std::vector<int> dims,
+// hub::SensorSpec::Format format)
 //{
 
 //    float* translation = (float*)img_ptr;
 //    float* quaternion = (float*)&img_ptr[12];
-//    std::string str = std::string("x:") + std::to_string(translation[0]) + ", y:" + std::to_string(translation[1]) + ", z:" + std::to_string(translation[2]) + "\naz:" + std::to_string(quaternion[0]) + ", el:" + std::to_string(quaternion[1]) + ", ro:" + std::to_string(quaternion[2]) + ", q4:" + std::to_string(quaternion[3]);
+//    std::string str = std::string("x:") + std::to_string(translation[0]) + ", y:" +
+//    std::to_string(translation[1]) + ", z:" + std::to_string(translation[2]) + "\naz:" +
+//    std::to_string(quaternion[0]) + ", el:" + std::to_string(quaternion[1]) + ", ro:" +
+//    std::to_string(quaternion[2]) + ", q4:" + std::to_string(quaternion[3]);
 //    mLabel->setText(str.c_str());
 //}
 
-
-void WidgetStreamView1D::setData(unsigned char* img_ptr, size_t size, std::vector<int> dims, hub::SensorSpec::Format format)
-{
+void WidgetStreamView1D::setData( unsigned char* img_ptr,
+                                  size_t size,
+                                  std::vector<int> dims,
+                                  hub::SensorSpec::Format format ) {
 
     float* translation = (float*)img_ptr;
-    float* quaternion = (float*)&img_ptr[12];
-    std::string str = std::string("x:") + std::to_string(translation[0]) + ", y:" + std::to_string(translation[1]) + ", z:" + std::to_string(translation[2]) + "\naz:" + std::to_string(quaternion[0]) + ", el:" + std::to_string(quaternion[1]) + ", ro:" + std::to_string(quaternion[2]) + ", q4:" + std::to_string(quaternion[3]);
-    mLabel->setText(str.c_str());
+    float* quaternion  = (float*)&img_ptr[12];
+    std::string str =
+        std::string( "x:" ) + std::to_string( translation[0] ) +
+        ", y:" + std::to_string( translation[1] ) + ", z:" + std::to_string( translation[2] ) +
+        "\naz:" + std::to_string( quaternion[0] ) + ", el:" + std::to_string( quaternion[1] ) +
+        ", ro:" + std::to_string( quaternion[2] ) + ", q4:" + std::to_string( quaternion[3] );
+    mLabel->setText( str.c_str() );
 }

@@ -6,11 +6,11 @@
 //#endif
 //#define mainApp ( static_cast<Ra::MainApplication*>( qApp ) )
 
-//namespace Ra {
-//class MainApplication : public Ra::Gui::BaseApplication
+// namespace Ra {
+// class MainApplication : public Ra::Gui::BaseApplication
 //{
-//  public:
-//    using Ra::Gui::BaseApplication::BaseApplication;
-//};
+//   public:
+//     using Ra::Gui::BaseApplication::BaseApplication;
+// };
 
 //} // namespace Ra

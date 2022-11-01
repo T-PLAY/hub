@@ -167,7 +167,6 @@ void Loader::load( const std::string& path ) {
 
     } // for ( const auto& fileDir : std::filesystem::directory_iterator( path ) )
 
-
     for ( const auto& sensorNameToRemove : sensorNamesToRemove ) {
         assert( m_outputStreams.find( sensorNameToRemove ) != m_outputStreams.end() );
         //        assert( std::find( m_outputStreams.begin(), m_outputStreams.end(),

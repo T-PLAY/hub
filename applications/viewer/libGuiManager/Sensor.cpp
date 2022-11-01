@@ -56,7 +56,7 @@ void SensorThread::run() {
                     const auto& format     = resolution.second;
                     const auto& measure    = measures.at( i );
 
-                    assert(measure.m_data != nullptr);
+                    assert( measure.m_data != nullptr );
 
                     //                assert( m_sensor.m_widgetStreamViews != nullptr );
                     m_sensor.m_widgetStreamViews[i]->setData(
@@ -155,11 +155,11 @@ void SensorCounterFpsThread::run() {
         //        m_counterFrame = 0;
         m_sensor.m_counterFrame = 0;
 
-//        const QModelIndex & modelIndex = m_sensor.m_itemFps->index();
-//        m_sensor.m_model.setData(modelIndex, QString(buff));
-//        m_sensor.m_model.dataChanged(modelIndex, modelIndex);
-//        m_sensor.m_model.itemChanged(m_sensor.m_itemFps);
-//        m_sensor.m_view.update();
+        //        const QModelIndex & modelIndex = m_sensor.m_itemFps->index();
+        //        m_sensor.m_model.setData(modelIndex, QString(buff));
+        //        m_sensor.m_model.dataChanged(modelIndex, modelIndex);
+        //        m_sensor.m_model.itemChanged(m_sensor.m_itemFps);
+        //        m_sensor.m_view.update();
         m_sensor.m_view.viewport()->update();
 
         //        std::cout << "[SensorCounterFpsThread:" << m_sensorName << "] update" <<
@@ -189,31 +189,31 @@ void SensorCounterFpsThread::run() {
 //    m_entity->setTransform(entity->getTransform());
 //}
 
-Sensor::Sensor(std::unique_ptr<hub::InputSensor> inputSensor,
+Sensor::Sensor( std::unique_ptr<hub::InputSensor> inputSensor,
                 QMdiArea& mdiArea,
-//                FormImageManipulator* imageManipulator,
+                //                FormImageManipulator* imageManipulator,
                 Ra::Engine::RadiumEngine* engine,
                 Ra::Gui::Viewer* viewer,
                 Ra::Engine::Scene::System* sys,
                 Sensor* parentSensor,
-                const std::string & streamName,
-                QStandardItemModel &model,
-                QTableView & view,
-                QObject* parent) :
+                const std::string& streamName,
+                QStandardItemModel& model,
+                QTableView& view,
+                QObject* parent ) :
     QObject( parent ),
     m_inputSensor( std::move( inputSensor ) ),
     m_engine( engine ),
     m_viewer( viewer ),
     m_sys( sys ),
     m_mdiArea( mdiArea ),
-//    m_imageManipulator( imageManipulator )
+    //    m_imageManipulator( imageManipulator )
     //    , m_widgetStreamViewManipulator(m_imageManipulator.getWidgetStreamView())
     //    , m_inputSensor(std::move(inputSensor))
-//    ,
+    //    ,
     m_thread( *this, parent ),
     m_counterFpsThread( *this, parent ),
-    m_model(model),
-    m_view(view)
+    m_model( model ),
+    m_view( view )
 
 //    , m_parentEntity(parentEntity)
 {
@@ -365,7 +365,6 @@ Sensor::Sensor(std::unique_ptr<hub::InputSensor> inputSensor,
     m_itemFps = new QStandardItem( "0" );
     m_items.append( m_itemFps );
 
-
     //    m_thread.run();
     m_counterFpsThread.start();
     m_thread.start();
@@ -459,10 +458,9 @@ void Sensor::attachFromImageManipulator() {
 
     const auto& resolutions = m_inputSensor->m_spec.m_resolutions;
     const auto& dims        = resolutions.at( resolutions.size() - 1 ).first;
-    if (dims.size() != 2)
-        return;
-    const auto& metaData    = m_inputSensor->m_spec.m_metaData;
-    double scanWidth        = 1.0;
+    if ( dims.size() != 2 ) return;
+    const auto& metaData = m_inputSensor->m_spec.m_metaData;
+    double scanWidth     = 1.0;
     if ( metaData.find( "scanWidth" ) != metaData.end() ) {
         scanWidth = std::any_cast<double>( metaData.at( "scanWidth" ) );
     }
@@ -478,14 +476,13 @@ void Sensor::attachFromImageManipulator() {
         m_widgetStreamViewManipulator->init( dims.at( 0 ), dims.at( 1 ), scanWidth, scanDepth );
         //        m_imageManipulator.
         //        m_imageManipulator.update();
-//        m_imageManipulator->update();
-//        m_imageManipulator->update();
+        //        m_imageManipulator->update();
+        //        m_imageManipulator->update();
     }
 }
 #endif
 
-void Sensor::fitView()
-{
+void Sensor::fitView() {
 
     auto& viewer = *m_viewer;
     //    auto aabb = Ra::Engine::RadiumEngine::getInstance()->computeSceneAabb();
@@ -498,17 +495,15 @@ void Sensor::fitView()
     //            aabb.extend(traces[i]->computeAabb());
     //        }
     //        auto aabb = m_enti
-//    auto aabb = m_entity->computeAabb();
+    //    auto aabb = m_entity->computeAabb();
     auto aabb = m_component->getAabb();
-//    for (const auto & )
+    //    for (const auto & )
 
     RA_CLEAR_DEBUG_DISPLAY();
     RA_DISPLAY_AABB( aabb, Ra::Core::Utils::Color::Green() );
 
     if ( aabb.isEmpty() ) { viewer.getCameraManipulator()->resetCamera(); }
     else { viewer.fitCameraToScene( aabb ); }
-
-
 }
 
 void Sensor::setParent( Sensor* parent ) {
@@ -586,8 +581,7 @@ Ra::Engine::Scene::Component* Sensor::getComponent() {
     //    }
 }
 
-SensorComponent *Sensor::getSensorComponent()
-{
-    assert(m_component != nullptr);
+SensorComponent* Sensor::getSensorComponent() {
+    assert( m_component != nullptr );
     return m_component;
 }

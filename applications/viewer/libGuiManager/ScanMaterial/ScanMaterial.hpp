@@ -86,8 +86,7 @@ class RA_ENGINE_API ScanMaterial final : public Material
 
     inline bool isColoredByVertexAttrib() const override;
 
-protected:
-
+  protected:
   public:
     Core::Utils::Color m_kd { 0.7, 0.7, 0.7, 1.0 };
     Core::Utils::Color m_ks { 0.3, 0.3, 0.3, 1.0 };
@@ -95,8 +94,8 @@ protected:
     Scalar m_alpha { 1.0 };
     bool m_perVertexColor { false };
     bool m_renderAsSplat { false };
-    int m_iPalette = 0;
-    int m_nChannels = 1; // Y8 -> 1, Y16 -> 2
+    int m_iPalette       = 0;
+    int m_nChannels      = 1; // Y8 -> 1, Y16 -> 2
     bool m_isTransparent = false;
 
     Core::Utils::Color m_pimp { 0.0, 0.0, 0.0, 0.0 };
@@ -132,7 +131,7 @@ protected:
 ///**
 // * Converter from an external representation comming from FileData to internal representation.
 // */
-//class RA_ENGINE_API BlinnPhongMaterialConverter final
+// class RA_ENGINE_API BlinnPhongMaterialConverter final
 //{
 //  public:
 //    BlinnPhongMaterialConverter()  = default;
@@ -151,7 +150,7 @@ inline void ScanMaterial::addTexture( const TextureSemantic& semantic, Texture* 
 
 // Add a texture as material parameter with texture parameter set by default for this material
 inline TextureParameters& ScanMaterial::addTexture( const TextureSemantic& semantic,
-                                                          const std::string& texture ) {
+                                                    const std::string& texture ) {
     CORE_ASSERT( !texture.empty(), "Invalid texture name" );
 
     TextureParameters data;
@@ -166,7 +165,7 @@ inline TextureParameters& ScanMaterial::addTexture( const TextureSemantic& seman
 // The textures will be finalized (i.e loaded from a file if needed and transformed to OpenGL
 // texture) only when needed by the updateGL method.
 inline TextureParameters& ScanMaterial::addTexture( const TextureSemantic& semantic,
-                                                          const TextureParameters& texture ) {
+                                                    const TextureParameters& texture ) {
     m_pendingTextures[semantic] = texture;
     m_isDirty                   = true;
 
@@ -191,7 +190,6 @@ inline void ScanMaterial::setColoredByVertexAttrib( bool state ) {
 inline bool ScanMaterial::isColoredByVertexAttrib() const {
     return m_perVertexColor;
 }
-
 
 } // namespace Data
 } // namespace Engine

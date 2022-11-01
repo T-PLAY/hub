@@ -13,20 +13,20 @@ namespace Ui {
 class MainWindow;
 }
 
-class MainWindow : public QMainWindow {
+class MainWindow : public QMainWindow
+{
     Q_OBJECT
 
-public:
-    explicit MainWindow(QWidget* parent = nullptr);
+  public:
+    explicit MainWindow( QWidget* parent = nullptr );
     ~MainWindow();
 
-signals:
+  signals:
 
-
-private:
+  private:
     Ui::MainWindow* ui;
 
-//    SensorViews * m_sensorViews = nullptr;
+    //    SensorViews * m_sensorViews = nullptr;
 };
 
 #endif // MAINWINDOW_H

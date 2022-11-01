@@ -5,27 +5,28 @@
 //#include <MinimalApp.hpp>
 #include <QMainWindow>
 
-
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class GuiMainWindow;
 }
 QT_END_NAMESPACE
 
-class GuiMainWindow : public QMainWindow {
+class GuiMainWindow : public QMainWindow
+{
     Q_OBJECT
 
-public:
-    GuiMainWindow(Ra::Engine::RadiumEngine * engine, Ra::Gui::Viewer * viewer, QWidget* parent = nullptr);
+  public:
+    GuiMainWindow( Ra::Engine::RadiumEngine* engine,
+                   Ra::Gui::Viewer* viewer,
+                   QWidget* parent = nullptr );
     ~GuiMainWindow();
 
-private slots:
+  private slots:
 
-private:
+  private:
     Ui::GuiMainWindow* ui;
 
-//    MinimalApp* m_app = nullptr;
+    //    MinimalApp* m_app = nullptr;
 
     GuiManager m_guiManager;
-
 };

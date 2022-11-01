@@ -194,7 +194,7 @@ void GuiManager::init() {
                       &m_sceneManager,
                       &SceneManager::on_setTransparency );
 
-    m_viewer->enableDebugDraw(0);
+    m_viewer->enableDebugDraw( 0 );
     //    m_viewer->getPickingManager()->
 
     //    m_layout3DView->addWidget(m_3DToolBox);
@@ -351,8 +351,9 @@ void GuiManager::init() {
     ////////////// LOADER
 
 #ifdef ENABLE_LOADER
-    m_formWidgetLoader = new FormWidgetLoader( m_formStreamViews->getIpv4(), m_formStreamViews->getPort(), bottomContainer );
-    m_formWidgetLoader->setEnabled(false);
+    m_formWidgetLoader = new FormWidgetLoader(
+        m_formStreamViews->getIpv4(), m_formStreamViews->getPort(), bottomContainer );
+    m_formWidgetLoader->setEnabled( false );
     //    ui->dockWidget_bottom->setWidget(m_formWidgetLoader);
     //    m_dockBottom->setWidget(m_formWidgetLoader);
     hLayout->addWidget( m_formWidgetLoader );
@@ -369,7 +370,6 @@ void GuiManager::init() {
 //                      this,
 //                      &GuiManager::onSnapshotLoaderPathLoaded );
 #endif
-
 
     //////////////////////////////////////// INIT DOCKERS
 
@@ -444,7 +444,7 @@ void GuiManager::init() {
 //{
 //     m_comp->incIter();
 // }
-//void GuiManager::onRecordLoaderPathUnloaded() {
+// void GuiManager::onRecordLoaderPathUnloaded() {
 //    m_formStreamViews->closeAllStream();
 //}
 
@@ -540,13 +540,13 @@ void GuiManager::onServerStreamStopped( const std::string& streamName,
 
 void GuiManager::onServerConnected() {
 #ifdef ENABLE_LOADER
-    m_formWidgetLoader->setEnabled(true);
+    m_formWidgetLoader->setEnabled( true );
 #endif
 }
 
 void GuiManager::onServerDisconnected() {
 #ifdef ENABLE_LOADER
-    m_formWidgetLoader->setEnabled(false);
+    m_formWidgetLoader->setEnabled( false );
 #endif
     //    m_sceneManager.clear();
 
@@ -704,12 +704,11 @@ void GuiManager::on_checkBox_grid_toggled( bool checked ) {
 
 void GuiManager::on_checkBox_trace_toggled( bool checked ) {
     //    m_comp->traceSetVisible(checked);
-    m_sceneManager.enableTrace(checked);
+    m_sceneManager.enableTrace( checked );
 }
 
-void GuiManager::on_checkBox_live_toggled(bool checked)
-{
-    m_sceneManager.enableLive(checked);
+void GuiManager::on_checkBox_live_toggled( bool checked ) {
+    m_sceneManager.enableLive( checked );
 }
 
 void GuiManager::on_toolButton_fitScene_clicked() {

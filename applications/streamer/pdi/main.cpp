@@ -40,125 +40,147 @@ bool Connect();
 bool SetupDevice();
 void Disconnect();
 void DisplaySingle();
-void AddResultMsg(const char* szCmd);
+void AddResultMsg( const char* szCmd );
 bool StartCont();
 bool StopCont();
 
-static void sigHandler(int sig)
-{
-    printf("Signal %d received, exiting\n", sig);
+static void sigHandler( int sig ) {
+    printf( "Signal %d received, exiting\n", sig );
     StopCont();
     Disconnect();
-    exit(0);
+    exit( 0 );
 };
 
-int main(int argc, char* argv[])
-{
-    signal(SIGINT, sigHandler);
+int main( int argc, char* argv[] ) {
+    signal( SIGINT, sigHandler );
 #ifdef SIGBREAK
-    signal(SIGBREAK, sigHandler); // handles Ctrl-Break on Win32
+    signal( SIGBREAK, sigHandler ); // handles Ctrl-Break on Win32
 #endif
-    signal(SIGABRT, sigHandler);
-    signal(SIGTERM, sigHandler);
+    signal( SIGABRT, sigHandler );
+    signal( SIGTERM, sigHandler );
 
-    if (!Initialize()) {
-    }
+    if ( !Initialize() ) {}
     // Connect To Tracker
-    else if (!(Connect())) {
-    }
+    else if ( !( Connect() ) ) {}
 
     // Configure Tracker
-    else if (!(SetupDevice())) {
-    }
+    else if ( !( SetupDevice() ) ) {}
 
     else {
-        if (!StartCont()) {
-        } else {
+        if ( !StartCont() ) {}
+        else {
 
-            while (true) { // each server connect
+            while ( true ) { // each server connect
                 try {
                     std::vector<std::unique_ptr<hub::OutputSensor>> outputSensors;
-                    hub::SensorSpec sensorSpec("Polhemus Patriot (sensor 1)", {{{1}, hub::SensorSpec::Format::DOF6}});
-                    outputSensors.push_back(std::make_unique<hub::OutputSensor>(sensorSpec, hub::io::OutputStream(sensorSpec.m_sensorName)));
-                    //outputSensors.push_back(std::make_unique<hub::OutputSensor>("Polhemus Patriot (confidence)", Stream::Format::DOF6, std::vector<int>({ 1 })));
+                    hub::SensorSpec sensorSpec( "Polhemus Patriot (sensor 1)",
+                                                { { { 1 }, hub::SensorSpec::Format::DOF6 } } );
+                    outputSensors.push_back( std::make_unique<hub::OutputSensor>(
+                        sensorSpec, hub::io::OutputStream( sensorSpec.m_sensorName ) ) );
+                    // outputSensors.push_back(std::make_unique<hub::OutputSensor>("Polhemus Patriot
+                    // (confidence)", Stream::Format::DOF6, std::vector<int>({ 1 })));
                     sensorSpec.m_sensorName = "Polhemus Patriot (sensor 2)";
-                    outputSensors.push_back(std::make_unique<hub::OutputSensor>(sensorSpec, hub::io::OutputStream(sensorSpec.m_sensorName)));
-                    //outputSensors.push_back(std::make_unique<hub::OutputSensor>(g_probePoseSensorName, Stream::Format::DOF6, std::vector<int>({ 1 })));
-                    constexpr int packetSize = 8 + 12 + 16;
+                    outputSensors.push_back( std::make_unique<hub::OutputSensor>(
+                        sensorSpec, hub::io::OutputStream( sensorSpec.m_sensorName ) ) );
+                    // outputSensors.push_back(std::make_unique<hub::OutputSensor>(g_probePoseSensorName,
+                    // Stream::Format::DOF6, std::vector<int>({ 1 })));
+                    constexpr int packetSize     = 8 + 12 + 16;
                     const size_t acquisitionSize = outputSensors[0]->m_spec.m_acquisitionSize;
-                    assert(packetSize == 8 + acquisitionSize); // header 8 bytes, frame count 4 bytes
+                    assert( packetSize ==
+                            8 + acquisitionSize ); // header 8 bytes, frame count 4 bytes
 
-                    while (true) { // each acquisition
+                    while ( true ) { // each acquisition
                         // Block program until frames arrive
 
-                        unsigned char* pBuf = nullptr;
+                        unsigned char* pBuf     = nullptr;
                         unsigned char* pLastBuf = nullptr;
                         unsigned long size;
 
                         const auto start = std::chrono::high_resolution_clock::now();
-                        if (!(g_pdiDev.LastPnoPtr(pBuf, size))) {
-                            AddResultMsg("LastPnoPtr");
-                            exit(1);
-                        } else if ((pBuf == nullptr) || (size == 0)) {
+                        if ( !( g_pdiDev.LastPnoPtr( pBuf, size ) ) ) {
+                            AddResultMsg( "LastPnoPtr" );
+                            exit( 1 );
+                        }
+                        else if ( ( pBuf == nullptr ) || ( size == 0 ) ) {
                             std::cout << "pBuf = 0, size = " << size << std::endl;
-
-                        } else if (pBuf != pLastBuf) {
-                            assert(size % packetSize == 0);
-                            assert(pBuf != nullptr);
-                            assert(pBuf != 0);
+                        }
+                        else if ( pBuf != pLastBuf ) {
+                            assert( size % packetSize == 0 );
+                            assert( pBuf != nullptr );
+                            assert( pBuf != 0 );
 
                             const auto end = std::chrono::high_resolution_clock::now();
 
                             size_t i = 0;
-                            while (i < size) {
+                            while ( i < size ) {
 
                                 int ucSensor = (int)pBuf[i + 2];
 
-
                                 unsigned char* data = &pBuf[i + 8]; // size of header = 8 bytes
-                                const auto timestampStart = std::chrono::duration_cast<std::chrono::microseconds>((end - std::chrono::microseconds(18'500)).time_since_epoch()).count(); // Polhemus technical spec latency = 18.5ms
-                                const auto timestampEnd = std::chrono::duration_cast<std::chrono::microseconds>(end.time_since_epoch()).count();
+                                const auto timestampStart =
+                                    std::chrono::duration_cast<std::chrono::microseconds>(
+                                        ( end - std::chrono::microseconds( 18'500 ) )
+                                            .time_since_epoch() )
+                                        .count(); // Polhemus technical spec latency = 18.5ms
+                                const auto timestampEnd =
+                                    std::chrono::duration_cast<std::chrono::microseconds>(
+                                        end.time_since_epoch() )
+                                        .count();
 
-                                float * poses = (float*)data;
-                                for (int i = 0; i <3; ++i) {
-//                                    poses[i] = -10.0 * poses[i]; // convert centimeters to millimeters
-                                    if (ucSensor == 1) {
-                                        poses[i] = 10.0 * poses[i]; // convert centimeters to millimeters
+                                float* poses = (float*)data;
+                                for ( int i = 0; i < 3; ++i ) {
+                                    //                                    poses[i] = -10.0 *
+                                    //                                    poses[i]; // convert
+                                    //                                    centimeters to millimeters
+                                    if ( ucSensor == 1 ) {
+                                        poses[i] =
+                                            10.0 * poses[i]; // convert centimeters to millimeters
                                     }
-                                    else if (ucSensor == 2) {
-                                        poses[i] = 10.0 * poses[i]; // convert centimeters to millimeters
+                                    else if ( ucSensor == 2 ) {
+                                        poses[i] =
+                                            10.0 * poses[i]; // convert centimeters to millimeters
                                     }
                                 }
-//                                float * orientation = &((float*)data)[3];
+                                //                                float * orientation =
+                                //                                &((float*)data)[3];
 
                                 // float* translation = (float*)data;
                                 // float* quaternion = (float*)&data[12];
-                                // std::string str = std::string("sensor:") + std::to_string(ucSensor) + std::string(", x:") + std::to_string(translation[0]) + ", y:" + std::to_string(translation[1]) + ", z:" + std::to_string(translation[2]) + "\naz:" + std::to_string(quaternion[0]) + ", el:" + std::to_string(quaternion[1]) + ", ro:" + std::to_string(quaternion[2]) + ", q4:" + std::to_string(quaternion[3]);
-                                // std::cout << str << std::endl;
+                                // std::string str = std::string("sensor:") +
+                                // std::to_string(ucSensor) + std::string(", x:") +
+                                // std::to_string(translation[0]) + ", y:" +
+                                // std::to_string(translation[1]) + ", z:" +
+                                // std::to_string(translation[2]) + "\naz:" +
+                                // std::to_string(quaternion[0]) + ", el:" +
+                                // std::to_string(quaternion[1]) + ", ro:" +
+                                // std::to_string(quaternion[2]) + ", q4:" +
+                                // std::to_string(quaternion[3]); std::cout << str << std::endl;
 
                                 // Try to get a frame of a depth image
-                                *outputSensors[ucSensor - 1] << (hub::Acquisition { timestampStart, timestampEnd } << hub::Measure { data, acquisitionSize });
+                                *outputSensors[ucSensor - 1]
+                                    << ( hub::Acquisition { timestampStart, timestampEnd }
+                                         << hub::Measure { data, acquisitionSize } );
 
                                 i += packetSize;
                             }
                             pLastBuf = pBuf;
-
-                        } else {
-                            std::cout << "no new frame" << std::endl;
                         }
+                        else { std::cout << "no new frame" << std::endl; }
 
                         const auto maxFps = 60;
-                        const auto end = start + std::chrono::nanoseconds(1'000'000'000 / maxFps);
-                        while (std::chrono::high_resolution_clock::now() < end)
+                        const auto end = start + std::chrono::nanoseconds( 1'000'000'000 / maxFps );
+                        while ( std::chrono::high_resolution_clock::now() < end )
                             ;
 
                     } // while (true) // each acquisition
-
-                } catch (const hub::net::ClientSocket::exception& e) {
+                }
+                catch ( const hub::net::ClientSocket::exception& e ) {
                     std::cerr << "[pdi] catch socket exception : " << e.what() << std::endl;
-                } catch (const hub::Sensor::exception& e) {
+                }
+                catch ( const hub::Sensor::exception& e ) {
                     std::cerr << "[pdi] catch sensor exception : " << e.what() << std::endl;
-                } catch (const std::exception& e) {
+                }
+                catch ( const std::exception& e ) {
                     std::cerr << "[pdi] catch main exception : " << e.what() << std::endl;
                     return EXIT_FAILURE;
                 }
@@ -179,54 +201,52 @@ int main(int argc, char* argv[])
 
 //} ePDIMotionData;
 
-bool Initialize()
-{
+bool Initialize() {
 
-    g_pdiDev.Trace(true, 7);
-    g_pdiDev.Log(true);
+    g_pdiDev.Trace( true, 7 );
+    g_pdiDev.Log( true );
 
-    ::SetConsoleTitle("PDIconsole");
+    ::SetConsoleTitle( "PDIconsole" );
 
     g_pdiMDat.Empty();
-    g_pdiMDat.Append(PDI_MODATA_POS);
-    g_pdiMDat.Append(PDI_MODATA_QTRN);
+    g_pdiMDat.Append( PDI_MODATA_POS );
+    g_pdiMDat.Append( PDI_MODATA_QTRN );
 
-    g_bCnxReady = false;
+    g_bCnxReady    = false;
     g_dwStationMap = 0;
 
     return true;
 }
 
-bool Connect()
-{
+bool Connect() {
     // TCHAR tc;
 
     // basic_string<TCHAR> tmsg;
     // tmsg = "test" + basic_string<TCHAR>(g_pdiDev.GetLastResultStr() ) + "\r\n";
     std::string msg;
-    if (!(g_pdiDev.CnxReady())) {
-        g_pdiDev.SetSerialIF(&g_pdiSer);
+    if ( !( g_pdiDev.CnxReady() ) ) {
+        g_pdiDev.SetSerialIF( &g_pdiSer );
 
         // BOOL bRet = g_pdiDev.ConnectUSB(false);
         // ePiCommType eType = g_pdiDev.CnxType();
 
-        ePiCommType eType = g_pdiDev.DiscoverCnx(false);
-        switch (eType) {
+        ePiCommType eType = g_pdiDev.DiscoverCnx( false );
+        switch ( eType ) {
         case PI_CNX_USB:
-            msg = "USB Connection: " + std::string(g_pdiDev.GetLastResultStr()) + "\r\n";
+            msg = "USB Connection: " + std::string( g_pdiDev.GetLastResultStr() ) + "\r\n";
             break;
         case PI_CNX_SERIAL:
-            msg = "Serial Connection: " + std::string(g_pdiDev.GetLastResultStr()) + "\r\n";
+            msg = "Serial Connection: " + std::string( g_pdiDev.GetLastResultStr() ) + "\r\n";
             break;
         default:
-            msg = "DiscoverCnx result: " + std::string(g_pdiDev.GetLastResultStr()) + "\r\n";
+            msg = "DiscoverCnx result: " + std::string( g_pdiDev.GetLastResultStr() ) + "\r\n";
             break;
         }
 
         g_bCnxReady = g_pdiDev.CnxReady();
         std::cout << msg;
-
-    } else {
+    }
+    else {
         g_bCnxReady = true;
         std::cout << "Already connected\r\n";
     }
@@ -234,60 +254,57 @@ bool Connect()
     return g_bCnxReady;
 }
 
-void AddResultMsg(const char* szCmd)
-{
+void AddResultMsg( const char* szCmd ) {
     std::string msg;
 
     // msg.Format("%s result: %s\r\n", szCmd, m_pdiDev.GetLastResultStr() );
-    msg = std::string(szCmd) + " \r\nresult: " + std::string(g_pdiDev.GetLastResultStr()) + "\r\n";
+    msg = std::string( szCmd ) + " \r\nresult: " + std::string( g_pdiDev.GetLastResultStr() ) +
+          "\r\n";
     std::cout << msg;
 }
 
-void UpdateStationMap()
-{
-    g_pdiDev.GetStationMap(g_dwStationMap);
-    AddResultMsg("GetStationMap");
+void UpdateStationMap() {
+    g_pdiDev.GetStationMap( g_dwStationMap );
+    AddResultMsg( "GetStationMap" );
 
     // char szMsg[100];
     // _sntprintf(szMsg, _countof(szMsg), "ActiveStationMap: %#x\r\n", g_dwStationMap);
     std::cout << "ActiveStationMap: " << g_dwStationMap << std::endl;
 }
 
-bool SetupDevice()
-{
-    g_pdiDev.SetPnoBuffer(g_pMotionBuf, BUFFER_SIZE);
-    AddResultMsg("SetPnoBuffer");
+bool SetupDevice() {
+    g_pdiDev.SetPnoBuffer( g_pMotionBuf, BUFFER_SIZE );
+    AddResultMsg( "SetPnoBuffer" );
 
     // g_pdiDev.StartPipeExport();
     // AddResultMsg("StartPipeExport");
-    g_pdiDev.SetMetric(true); // centimeters
-    AddResultMsg("SetMetric");
+    g_pdiDev.SetMetric( true ); // centimeters
+    AddResultMsg( "SetMetric" );
 
     // set hemisphere tracking
     std::cout << _T("Set SHemiTrack :");
-    bool bResult = g_pdiDev.SetSHemiTrack(-1);
-    if (bResult != TRUE) {
-        std::cout << _T("Failed. Continuing anyway.") << std::endl;
-    } else
+    bool bResult = g_pdiDev.SetSHemiTrack( -1 );
+    if ( bResult != TRUE ) { std::cout << _T("Failed. Continuing anyway.") << std::endl; }
+    else
         std::cout << _T("Success.") << std::endl;
 
     std::string msg;
 
-    g_pdiDev.SetSDataList(-1, g_pdiMDat);
-    AddResultMsg("SetSDataList");
+    g_pdiDev.SetSDataList( -1, g_pdiMDat );
+    AddResultMsg( "SetSDataList" );
 
     CPDIbiterr cBE;
-    g_pdiDev.GetBITErrs(cBE);
-    AddResultMsg("GetBITErrs");
+    g_pdiDev.GetBITErrs( cBE );
+    AddResultMsg( "GetBITErrs" );
 
     char sz[100];
-    cBE.Parse(sz, 100);
-    msg = "BIT Errors: " + std::string(sz) + "\r\n";
+    cBE.Parse( sz, 100 );
+    msg = "BIT Errors: " + std::string( sz ) + "\r\n";
     std::cout << msg;
 
-    if (!(cBE.IsClear())) {
+    if ( !( cBE.IsClear() ) ) {
         g_pdiDev.ClearBITErrs();
-        AddResultMsg("ClearBITErrs");
+        AddResultMsg( "ClearBITErrs" );
     }
 
     UpdateStationMap();
@@ -295,44 +312,40 @@ bool SetupDevice()
     return true;
 }
 
-bool StartCont()
-{
+bool StartCont() {
     BOOL bRet = false;
 
-    if (!(g_pdiDev.StartContPno(g_hwnd))) {
-    } else {
+    if ( !( g_pdiDev.StartContPno( g_hwnd ) ) ) {}
+    else {
         bRet = TRUE;
         // Sleep(1000);  // don't need to sleep here if event-driven.
     }
-    AddResultMsg(_T("\nStartContPno"));
+    AddResultMsg( _T("\nStartContPno") );
 
     return bRet;
 }
 
 /////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////
-bool StopCont()
-{
+bool StopCont() {
     bool bRet = false;
 
-    if (!(g_pdiDev.StopContPno())) {
-    } else {
+    if ( !( g_pdiDev.StopContPno() ) ) {}
+    else {
         bRet = TRUE;
-        Sleep(1000);
+        Sleep( 1000 );
     }
-    AddResultMsg(_T("StopContPno"));
+    AddResultMsg( _T("StopContPno") );
 
     return bRet;
 }
 
-void Disconnect()
-{
+void Disconnect() {
     std::string msg;
-    if (!(g_pdiDev.CnxReady())) {
-        msg = "Already disconnected\r\n";
-    } else {
+    if ( !( g_pdiDev.CnxReady() ) ) { msg = "Already disconnected\r\n"; }
+    else {
         g_pdiDev.Disconnect();
-        msg = "Disconnect result: " + std::string(g_pdiDev.GetLastResultStr()) + "\r\n";
+        msg = "Disconnect result: " + std::string( g_pdiDev.GetLastResultStr() ) + "\r\n";
     }
     std::cout << msg;
 }

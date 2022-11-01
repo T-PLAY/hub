@@ -8,11 +8,11 @@
 //#include <Frame.h>
 //#include <OutputSensor.hpp>
 
-//class Player
+// class Player
 //{
-//public:
-//    Player(const std::string & outputPostFixName = "");
-//    ~Player();
+// public:
+//     Player(const std::string & outputPostFixName = "");
+//     ~Player();
 
 //    void load(const std::string & path, int iSensor = -1);
 //    void update(int iSensor);
@@ -25,8 +25,7 @@
 
 //    void setOutputPostFixName(const std::string & outputPostFixName);
 
-
-//private:
+// private:
 
 //    std::map<std::string, std::unique_ptr<hub::OutputSensor>> m_outputs;
 //    std::string m_outputPostfixName = "";
@@ -42,12 +41,12 @@
 ////    bool m_exitSignal = false;
 //    int m_currentFrame = -1;
 
-//public:
-//    const std::vector<Frame> & getFrames() const;
-//    bool isPlaying() const;
-//    bool isLoaded() const;
-//    const std::string & getLoadedPath() const;
-//    int getCurrentFrame() const;
-//};
+// public:
+//     const std::vector<Frame> & getFrames() const;
+//     bool isPlaying() const;
+//     bool isLoaded() const;
+//     const std::string & getLoadedPath() const;
+//     int getCurrentFrame() const;
+// };
 
 #endif // PLAYER_H

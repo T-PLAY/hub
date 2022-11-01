@@ -14,26 +14,25 @@
 
 //#include <filesystem>
 //#include <set>
-#include <Loader.h>
 #include <Configurations.hpp>
+#include <Loader.h>
 
-int main(int argc, char* argv[])
-{
+int main( int argc, char* argv[] ) {
     std::string recordPath = PROJECT_DIR "data/records/latest/";
 
     Loader loader;
-    loader.load(recordPath);
+    loader.load( recordPath );
 
-    while (true) {
-        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    while ( true ) {
+        std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
     }
 
     return 0;
 }
 
-//struct Snap {
-//    hub::Acquisition m_acq;
-//    int iStream;
+// struct Snap {
+//     hub::Acquisition m_acq;
+//     int iStream;
 ////    std::string m_streamName;
 
 //    bool operator<(const Snap& other) const
@@ -42,7 +41,7 @@ int main(int argc, char* argv[])
 //    }
 //};
 
-//int main(int argc, char* argv[])
+// int main(int argc, char* argv[])
 //{
 
 ////    std::map<std::string, std::unique_ptr<hub::OutputSensor>> outputStreams;
@@ -57,7 +56,8 @@ int main(int argc, char* argv[])
 //    //    const std::string streamName = "Keyboard";
 
 //    //    for (const auto& streamName : streamNames) {
-//    //        std::fstream recordFile(recordPath + streamName + ".txt", std::ios::in | std::ios::binary | std::ios::beg);
+//    //        std::fstream recordFile(recordPath + streamName + ".txt", std::ios::in |
+//    std::ios::binary | std::ios::beg);
 //    //        assert(recordFile.is_open());
 
 //    for (const auto& fileDir : std::filesystem::directory_iterator(recordPath)) {
@@ -85,10 +85,14 @@ int main(int argc, char* argv[])
 
 //        auto acqs = inputSensor.getAllAcquisitions();
 
-//        //        hub::OutputSensor outputSensor2(inputSensor.m_spec, hub::io::OutputStream("Player (" + streamName + ")"));
-////        outputStreams[streamName] = std::make_unique<hub::OutputSensor>(inputSensor.m_spec, hub::io::OutputStream("Player (" + streamName + ")"));
-//        outputStreams.push_back(std::make_unique<hub::OutputSensor>(inputSensor.m_spec, hub::io::OutputStream("Player : " + inputSensor.m_spec.m_sensorName)));
-////        outputStreams.emplace_back(inputSensor.m_spec, hub::io::OutputStream("Player (" + streamName + ")"));
+//        //        hub::OutputSensor outputSensor2(inputSensor.m_spec,
+//        hub::io::OutputStream("Player (" + streamName + ")"));
+////        outputStreams[streamName] = std::make_unique<hub::OutputSensor>(inputSensor.m_spec,
+///hub::io::OutputStream("Player (" + streamName + ")"));
+//        outputStreams.push_back(std::make_unique<hub::OutputSensor>(inputSensor.m_spec,
+//        hub::io::OutputStream("Player : " + inputSensor.m_spec.m_sensorName)));
+////        outputStreams.emplace_back(inputSensor.m_spec, hub::io::OutputStream("Player (" +
+///streamName + ")"));
 
 //        for (const auto& acq : acqs) {
 //            //            std::cout << "read acq : " << acq << std::endl;
@@ -103,7 +107,8 @@ int main(int argc, char* argv[])
 //    //    metaData["type"]           = "record";
 //    //    metaData["nAcqs"]          = (unsigned int)acqs.size();
 
-//    //    hub::OutputSensor outputSensor( inputSensor.m_spec, hub::io::OutputStream( "Player (record)" ) );
+//    //    hub::OutputSensor outputSensor( inputSensor.m_spec, hub::io::OutputStream( "Player
+//    (record)" ) );
 
 //    //    for ( const auto& acq : acqs ) {
 //    //        outputSensor << acq;
@@ -127,7 +132,8 @@ int main(int argc, char* argv[])
 //        while (it != snaps.end()) {
 //            const auto& snap = *it;
 
-//            std::this_thread::sleep_until(startChrono + std::chrono::microseconds(snap.m_acq.m_start - startRecord));
+//            std::this_thread::sleep_until(startChrono +
+//            std::chrono::microseconds(snap.m_acq.m_start - startRecord));
 //            //            std::this_thread::sleep_for(
 //            //                                           std::chrono::milliseconds( 1000));
 

@@ -37,7 +37,6 @@ std::string ViewerClient::headerMsg() const {
     return Client::headerMsg() + "[ViewerClient] ";
 }
 
-
 void ViewerClient::notifyNewStreamer( const StreamerClient& streamer ) const {
     //    mSock->write( Socket::Message::NEW_STREAMER );
 
@@ -62,7 +61,7 @@ void ViewerClient::notifyNewStreamer( const StreamerClient& streamer ) const {
 }
 
 void ViewerClient::notifyDelStreamer( const std::string& streamerName,
-                                const hub::SensorSpec& sensorSpec ) const {
+                                      const hub::SensorSpec& sensorSpec ) const {
     std::cout << headerMsg() << "notifyDelStreamer " << streamerName << std::endl;
     try {
         m_socket.write( hub::net::ClientSocket::Message::DEL_STREAMER );

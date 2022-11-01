@@ -27,8 +27,8 @@ int main( int argc, char* argv[] ) {
     //    Stream::Acquisition acq;
 
     const auto size = getAcquisitionSize( inputStream );
-    assert(size == 28);
-    auto data       = new unsigned char[size];
+    assert( size == 28 );
+    auto data = new unsigned char[size];
 
     while ( true ) {
         const auto start = std::chrono::high_resolution_clock::now();
@@ -45,15 +45,14 @@ int main( int argc, char* argv[] ) {
 
             std::cout << "receive acq ";
 
-
             float* translation = (float*)data;
             float* orientation = (float*)&data[12]; // x, y, z, w
 
-            for (int i = 0; i <3; ++i) {
+            for ( int i = 0; i < 3; ++i ) {
                 std::cout << translation[i] << " ";
             }
             std::cout << "  ";
-            for (int i = 0; i <4; ++i) {
+            for ( int i = 0; i < 4; ++i ) {
                 std::cout << orientation[i] << " ";
             }
             std::cout << std::endl;

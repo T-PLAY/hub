@@ -28,7 +28,7 @@ class SRC_API Sensor
     Sensor( const SensorSpec&& sensorSpec, io::Interface& interface_ );
     ~Sensor();
 
-    Sensor( const Sensor& sensor ) = delete;
+    Sensor( const Sensor& sensor )            = delete;
     Sensor& operator=( const Sensor& sensor ) = delete;
 
   public:

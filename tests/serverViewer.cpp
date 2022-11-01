@@ -33,7 +33,7 @@ TEST_CASE( "Server test : viewer" ) {
     std::cout << "[Test] ############################### server start" << std::endl;
     Server server( port );
     server.setMaxClients( 3 );
-    server.setAcqPing(false);
+    server.setAcqPing( false );
     server.asyncRun();
     std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
     std::cout << "[Test] server end ------------------------------" << std::endl;
@@ -41,7 +41,7 @@ TEST_CASE( "Server test : viewer" ) {
     {
 
         auto onNewStreamer = [=]( const std::string& sensorName,
-                                           const hub::SensorSpec& sensorSpec ) {
+                                  const hub::SensorSpec& sensorSpec ) {
             std::cout << "[Test] ############################### onNewStreamer" << std::endl;
             {
                 hub::InputSensor inputSensor(
@@ -64,17 +64,22 @@ TEST_CASE( "Server test : viewer" ) {
                                  const hub::SensorSpec& sensorSpec ) {
             std::cout << "[Test] ############################### onDelStreamer" << std::endl;
         };
-        auto onServerConnected = [](const std::string& ipv4, int port) {
+        auto onServerConnected = []( const std::string& ipv4, int port ) {
             std::cout << "[Test] ############################### onServerConnected" << std::endl;
         };
-        auto onServerDisconnected = [](const std::string& ipv4, int port) {
+        auto onServerDisconnected = []( const std::string& ipv4, int port ) {
             std::cout << "[Test] ############################### onServerDisconnected" << std::endl;
         };
-        auto onNewAcquisition = []( const std::string& sensorName,
-                                 const hub::Acquisition& acq ) {
+        auto onNewAcquisition = []( const std::string& sensorName, const hub::Acquisition& acq ) {
             std::cout << "[Test] ############################### onNewAcquisition" << std::endl;
         };
-        auto viewer = hub::Viewer( onNewStreamer, onDelStreamer, onServerConnected, onServerDisconnected, onNewAcquisition, ipv4, port );
+        auto viewer = hub::Viewer( onNewStreamer,
+                                   onDelStreamer,
+                                   onServerConnected,
+                                   onServerDisconnected,
+                                   onNewAcquisition,
+                                   ipv4,
+                                   port );
         std::cout << "[Test] ############################### viewer created" << std::endl;
         std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
 

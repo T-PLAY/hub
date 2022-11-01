@@ -1,7 +1,7 @@
 #include <Gui/MaterialEditor.hpp>
 
-#include <Engine/RadiumEngine.hpp>
 #include <Engine/Data/BlinnPhongMaterial.hpp>
+#include <Engine/RadiumEngine.hpp>
 #include <Engine/Rendering/RenderObject.hpp>
 #include <Engine/Rendering/RenderObjectManager.hpp>
 #include <Engine/Rendering/RenderTechnique.hpp>
@@ -11,10 +11,7 @@
 namespace Ra {
 namespace Gui {
 MaterialEditor::MaterialEditor( QWidget* parent ) :
-    QWidget( parent ),
-    m_visible( false ),
-    m_roIdx( -1 ),
-    m_usable( false ) {
+    QWidget( parent ), m_visible( false ), m_roIdx( -1 ), m_usable( false ) {
     setupUi( this );
     typedef void ( QSpinBox::*sigPtr )( int );
     connect( kdR,
@@ -61,8 +58,7 @@ void MaterialEditor::updateEngine() {
 }
 
 void MaterialEditor::onExpChanged( double v ) {
-    if ( m_renderObject && m_usable )
-    {
+    if ( m_renderObject && m_usable ) {
         m_blinnphongmaterial->m_ns = Scalar( v );
         updateEngine();
     }
@@ -71,8 +67,7 @@ void MaterialEditor::onExpChanged( double v ) {
 void MaterialEditor::onKdColorChanged( int ) {
     kdColorWidget->colorChanged( kdR->value(), kdG->value(), kdB->value() );
 
-    if ( m_renderObject && m_usable )
-    {
+    if ( m_renderObject && m_usable ) {
         m_blinnphongmaterial->m_kd = Core::Utils::Color(
             kdR->value() / 255_ra, kdG->value() / 255_ra, kdB->value() / 255_ra, 1_ra );
         updateEngine();
@@ -82,8 +77,7 @@ void MaterialEditor::onKdColorChanged( int ) {
 void MaterialEditor::onKsColorChanged( int ) {
     ksColorWidget->colorChanged( ksR->value(), ksG->value(), ksB->value() );
 
-    if ( m_renderObject && m_usable )
-    {
+    if ( m_renderObject && m_usable ) {
         m_blinnphongmaterial->m_ks = Core::Utils::Color(
             ksR->value() / 255_ra, ksG->value() / 255_ra, ksB->value() / 255_ra, 1_ra );
         updateEngine();
@@ -99,10 +93,9 @@ void MaterialEditor::newKdColor( const QColor& color ) {
     kdG->setValue( color.green() );
     kdB->setValue( color.blue() );
 
-    if ( m_renderObject && m_usable )
-    {
-        m_blinnphongmaterial->m_kd =
-            Core::Utils::Color( (Scalar)color.redF(), (Scalar)color.greenF(), (Scalar)color.blueF(), (Scalar)1.0f );
+    if ( m_renderObject && m_usable ) {
+        m_blinnphongmaterial->m_kd = Core::Utils::Color(
+            (Scalar)color.redF(), (Scalar)color.greenF(), (Scalar)color.blueF(), (Scalar)1.0f );
         updateEngine();
     }
 }
@@ -116,10 +109,9 @@ void MaterialEditor::newKsColor( const QColor& color ) {
     ksG->setValue( color.green() );
     ksB->setValue( color.blue() );
 
-    if ( m_renderObject && m_usable )
-    {
-        m_blinnphongmaterial->m_ks =
-            Core::Utils::Color( (Scalar)color.redF(), (Scalar)color.greenF(), (Scalar)color.blueF(), (Scalar)1.0f );
+    if ( m_renderObject && m_usable ) {
+        m_blinnphongmaterial->m_ks = Core::Utils::Color(
+            (Scalar)color.redF(), (Scalar)color.greenF(), (Scalar)color.blueF(), (Scalar)1.0f );
         updateEngine();
     }
 }
@@ -137,20 +129,18 @@ void MaterialEditor::closeEvent( QCloseEvent* /*e*/ ) {
 }
 
 void MaterialEditor::changeRenderObject( Core::Utils::Index roIdx ) {
-    if ( roIdx.isValid() )
-    {
+    if ( roIdx.isValid() ) {
         m_renderObject =
             Engine::RadiumEngine::getInstance()->getRenderObjectManager()->getRenderObject( roIdx );
 
-        if ( m_renderObject != nullptr )
-        {
+        if ( m_renderObject != nullptr ) {
             m_BlinnPhongGroup->hide();
 
             auto genericMaterial = m_renderObject->getMaterial();
-            if ( genericMaterial->getMaterialName() == "BlinnPhong" )
-            {
+            if ( genericMaterial->getMaterialName() == "BlinnPhong" ) {
                 m_blinnphongmaterial = const_cast<Ra::Engine::Data::BlinnPhongMaterial*>(
-                    dynamic_cast<const Ra::Engine::Data::BlinnPhongMaterial*>( genericMaterial.get() ) );
+                    dynamic_cast<const Ra::Engine::Data::BlinnPhongMaterial*>(
+                        genericMaterial.get() ) );
                 updateBlinnPhongViz();
                 m_BlinnPhongGroup->show();
             }
@@ -203,8 +193,7 @@ void Ra::Gui::MaterialEditor::on_m_closeButton_clicked() {
 }
 
 void Ra::Gui::MaterialEditor::on_kUsePerVertex_clicked( bool checked ) {
-    if ( m_renderObject && m_usable )
-    {
+    if ( m_renderObject && m_usable ) {
         m_blinnphongmaterial->m_perVertexColor = checked;
         updateEngine();
     }

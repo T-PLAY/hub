@@ -32,17 +32,17 @@ class SRC_API ClientSocket : public Socket, public virtual io::Interface
     };
     SRC_API friend std::ostream& operator<<( std::ostream& os, const Message& msg );
 
-     ClientSocket();
-     ClientSocket( const std::string& ipv4, int port );
-     ClientSocket( socket_fd fdSock ); // server side client (bind and listen)
+    ClientSocket();
+    ClientSocket( const std::string& ipv4, int port );
+    ClientSocket( socket_fd fdSock ); // server side client (bind and listen)
 
-    ClientSocket( const ClientSocket& sock )    = delete;
-     ClientSocket( ClientSocket&& sock ) = default;
+    ClientSocket( const ClientSocket& sock ) = delete;
+    ClientSocket( ClientSocket&& sock )      = default;
 
     ClientSocket& operator=( const ClientSocket& sock ) = delete;
     ClientSocket&& operator=( ClientSocket&& sock )     = delete;
 
-     ~ClientSocket();
+    ~ClientSocket();
 
   public:
     template <class T>
@@ -58,9 +58,9 @@ class SRC_API ClientSocket : public Socket, public virtual io::Interface
 
     void close() override;
 
-//    Acquisition getAcquisition(int acquistionSize) const override;
+    //    Acquisition getAcquisition(int acquistionSize) const override;
 
-     void clear();
+    void clear();
 
   private:
     void connectToServer();

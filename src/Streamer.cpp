@@ -2,8 +2,8 @@
 
 //#define DEBUG_VIEWER
 
-#include <regex>
 #include <chrono>
+#include <regex>
 
 #include "IO/Stream.hpp"
 #include "Net/ClientSocket.hpp"
@@ -70,7 +70,7 @@ void Streamer::addStream( const std::string& streamName,
         }
     }
 
-//    auto chrono = std::chrono::high_resolution_clock::now();
+    //    auto chrono = std::chrono::high_resolution_clock::now();
     m_streamName2lastLogout[streamName] = std::chrono::high_resolution_clock::now();
     //        std::make_unique<OutputSensor>( sensorSpec, io::OutputStream( "streamName" ) );
 
@@ -81,12 +81,13 @@ void Streamer::addStream( const std::string& streamName,
 }
 
 void Streamer::newAcquisition( const std::string& streamName, Acquisition&& acquisition ) {
-//    std::cout << "[Streamer] new acquisition " << streamName << " " << acquisition << std::endl;
+    //    std::cout << "[Streamer] new acquisition " << streamName << " " << acquisition <<
+    //    std::endl;
 
     //                     assert( m_streamName2outputSensor.find( streamName ) !=
     //    m_streamName2outputSensor.end() );
     if ( m_streamName2outputSensor.find( streamName ) == m_streamName2outputSensor.end() ) {
-//        std::cout << "[Streamer] unable to find " << streamName << std::endl;
+        //        std::cout << "[Streamer] unable to find " << streamName << std::endl;
 
         auto& lastLogout = m_streamName2lastLogout.at( streamName );
         auto now         = std::chrono::high_resolution_clock::now();
@@ -99,9 +100,9 @@ void Streamer::newAcquisition( const std::string& streamName, Acquisition&& acqu
                     sensorSpec,
                     io::OutputStream( streamName, net::ClientSocket( m_ipv4, m_port ) ) );
                 m_streamName2outputSensor[streamName] = std::move( outputSensor );
-//                for ( const auto& acq : m_streamName2initAcqs.at( streamName ) ) {
-//                    newAcquisition( streamName, acq.clone() );
-//                }
+                //                for ( const auto& acq : m_streamName2initAcqs.at( streamName ) ) {
+                //                    newAcquisition( streamName, acq.clone() );
+                //                }
                 if ( !m_serverConnected ) {
                     onServerConnected();
                     //                    m_serverConnected = true;
@@ -161,7 +162,7 @@ bool Streamer::isConnected() const {
 }
 
 void Streamer::onServerConnected() {
-    assert(! m_serverConnected);
+    assert( !m_serverConnected );
     std::cout << "[Streamer] onServerConnected" << std::endl;
     m_serverConnected = true;
 
@@ -169,7 +170,7 @@ void Streamer::onServerConnected() {
 }
 
 void Streamer::onServerDisconnected() {
-    assert(m_serverConnected);
+    assert( m_serverConnected );
     std::cout << "[Streamer] onServerDisconnected" << std::endl;
     m_serverConnected = false;
 
@@ -178,8 +179,8 @@ void Streamer::onServerDisconnected() {
             for ( const auto& pair : m_streamName2initAcqs ) {
                 const auto& streamName = pair.first;
                 const auto& initAcqs   = pair.second;
-                if (! initAcqs.empty()) {
-                    assert(initAcqs.size() > 0);
+                if ( !initAcqs.empty() ) {
+                    assert( initAcqs.size() > 0 );
                     newAcquisition( streamName, initAcqs.front().clone() );
                 }
                 //                if (m_serverConnected)

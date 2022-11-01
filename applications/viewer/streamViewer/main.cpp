@@ -10,8 +10,8 @@ int main( int argc, char* argv[] ) {
     //    MainWindowStreamView w(nullptr, "proceduralStreamer");
     //     MainWindowStreamView w(nullptr, "L500 Depth Sensor (Depth)");
 
-//    MainWindowStreamView w( nullptr, "ULA-OP 256" );
-//    w.show();
+    //    MainWindowStreamView w( nullptr, "ULA-OP 256" );
+    //    w.show();
 
     return a.exec();
 }

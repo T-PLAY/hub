@@ -6,13 +6,13 @@
 //
 //  Filename:           $Workfile: PDIbiterrFT.h $
 //
-//  Project Name:       Polhemus Tracker Command Interface API 
+//  Project Name:       Polhemus Tracker Command Interface API
 //
 //  Original Author:    S. Gagnon
 //
 //  Description:        Interface for the CFTBITErr class
 //
-//  VSS $Header: /PiDevTools11/Inc/PDIbiterrFT.h 2     1/09/14 1:05p Suzanne $  
+//  VSS $Header: /PiDevTools11/Inc/PDIbiterrFT.h 2     1/09/14 1:05p Suzanne $
 //
 /////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////
@@ -27,19 +27,20 @@ class CFTBITErr;
 
 class PDI_API CPDIbiterrFT
 {
-public:
-	CPDIbiterrFT();
-	virtual ~CPDIbiterrFT();
+  public:
+    CPDIbiterrFT();
+    virtual ~CPDIbiterrFT();
 
-    VOID    Parse    ( LPTSTR szBuf, DWORD dwSize ) const;	// Parses BIT results into provided string buffer
-	BOOL	IsClear	 ( VOID );
+    VOID Parse( LPTSTR szBuf,
+                DWORD dwSize ) const; // Parses BIT results into provided string buffer
+    BOOL IsClear( VOID );
 
-private:
-	CPDIbiterrFT( const CPDIbiterrFT & );
+  private:
+    CPDIbiterrFT( const CPDIbiterrFT& );
 
-	CFTBITErr * m_pFTB;
+    CFTBITErr* m_pFTB;
 
-	friend class CPDIfastrak;
+    friend class CPDIfastrak;
 };
 
 #endif

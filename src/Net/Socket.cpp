@@ -11,20 +11,16 @@
 namespace hub {
 namespace net {
 
-//constexpr int Socket::s_defaultServicePort       = 4041;
-//const char* const Socket::s_defaultServiceIp = "127.0.0.1";
+// constexpr int Socket::s_defaultServicePort       = 4041;
+// const char* const Socket::s_defaultServiceIp = "127.0.0.1";
 
 #ifdef DEBUG_SOCKET
 std::string Socket::getHeader( socket_fd iSock ) const {
     std::string str;
-    if (m_serverSide) {
-        str += "\t\033[1m[Server]\033[0m";
-    }
-    else {
-        str += "[Client]";
-    }
-    str += "\033[" + std::to_string( 31 + iSock % 7 ) +
-                      "m[socket:" + std::to_string( iSock ) + "]\033[0m ";
+    if ( m_serverSide ) { str += "\t\033[1m[Server]\033[0m"; }
+    else { str += "[Client]"; }
+    str += "\033[" + std::to_string( 31 + iSock % 7 ) + "m[socket:" + std::to_string( iSock ) +
+           "]\033[0m ";
     return str;
 }
 #endif
@@ -36,9 +32,8 @@ Socket::Socket() {
     net::init();
 }
 
-Socket::Socket(Socket &&socket)
-{
-    m_fdSock = socket.m_fdSock;
+Socket::Socket( Socket&& socket ) {
+    m_fdSock        = socket.m_fdSock;
     socket.m_fdSock = INVALID_SOCKET;
 }
 

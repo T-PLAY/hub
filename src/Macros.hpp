@@ -3,58 +3,58 @@
 // ----------------------------------------------------------------------------
 // Compiler identification
 // ----------------------------------------------------------------------------
-#if defined(__clang__)
-#define COMPILER_CLANG
-#elif defined(__GNUC__)
-#define COMPILER_GCC
-#elif defined (_MSC_VER)
-#define COMPILER_MSVC
-#define _USE_MATH_DEFINES
+#if defined( __clang__ )
+#    define COMPILER_CLANG
+#elif defined( __GNUC__ )
+#    define COMPILER_GCC
+#elif defined( _MSC_VER )
+#    define COMPILER_MSVC
+#    define _USE_MATH_DEFINES
 #else
-#error unsupported compiler
+#    error unsupported compiler
 #endif
 
 // ----------------------------------------------------------------------------
 // OS and architecture identification
 // ----------------------------------------------------------------------------
 
-#if defined(_WIN32) || defined(_WIN64) // ------------------------------ Windows
-	// Shlwapi.h also define this macro
+#if defined( _WIN32 ) || defined( _WIN64 ) // ------------------------------ Windows
+                                           // Shlwapi.h also define this macro
 #    ifndef OS_WINDOWS
-		#define OS_WINDOWS
-	#endif
-#if defined( _M_X64 ) || defined(__x86_64__)
-#       define ARCH_X64
-#elif defined(i386) || defined(__i386__) || defined(__i386) || defined(_M_IX86)
-#       define ARCH_X86
-#elif defined(__arm__) || defined (__arm)
-#       define ARCH_ARM32
-#elif defined( __aarch64__ ) || defined(_M_ARM64)
-#       define ARCH_ARM64
+#        define OS_WINDOWS
+#    endif
+#    if defined( _M_X64 ) || defined( __x86_64__ )
+#        define ARCH_X64
+#    elif defined( i386 ) || defined( __i386__ ) || defined( __i386 ) || defined( _M_IX86 )
+#        define ARCH_X86
+#    elif defined( __arm__ ) || defined( __arm )
+#        define ARCH_ARM32
+#    elif defined( __aarch64__ ) || defined( _M_ARM64 )
+#        define ARCH_ARM64
+#    else
+#        error unsupported arch
+#    endif
+#elif defined( __APPLE__ ) || defined( __MACH__ ) // ------------------------ Mac OS
+#    define OS_MACOS
+#elif defined( __linux__ ) || defined( __CYGWIN__ ) // ---------------------- Linux
+#    define OS_LINUX
 #else
-#       error unsupported arch
-#endif
-#elif defined(__APPLE__) || defined(__MACH__) // ------------------------ Mac OS
-#   define OS_MACOS
-#elif defined(__linux__) || defined (__CYGWIN__) // ---------------------- Linux
-#   define OS_LINUX
-#else
-#error unsupported OS
+#    error unsupported OS
 #endif
 
 // Check arch for macos and linux
-#if defined (OS_MACOS) || defined(OS_LINUX)
-#   if defined(__i386__)
-#       define ARCH_X86
-#   elif defined(__x86_64__) || defined (__x86_64)
-#       define ARCH_X64
-#   elif defined(__arm__) || defined (__arm)
-#       define ARCH_ARM32
-#   elif defined(__aarch64__) || defined(__aarch64)
-#       define ARCH_ARM64
-#   else
-#       error unsupported arch
-#   endif
+#if defined( OS_MACOS ) || defined( OS_LINUX )
+#    if defined( __i386__ )
+#        define ARCH_X86
+#    elif defined( __x86_64__ ) || defined( __x86_64 )
+#        define ARCH_X64
+#    elif defined( __arm__ ) || defined( __arm )
+#        define ARCH_ARM32
+#    elif defined( __aarch64__ ) || defined( __aarch64 )
+#        define ARCH_ARM64
+#    else
+#        error unsupported arch
+#    endif
 #endif
 
 // Todo : endianness, pointer sixe
@@ -111,17 +111,17 @@
 // Explicit compiler warning disables.
 // ----------------------------------------------------------------------------
 
-#if defined(COMPILER_GCC)
+#if defined( COMPILER_GCC )
 #endif
-#if defined(COMPILER_MSVC)
+#if defined( COMPILER_MSVC )
 //	#pragma warning(disable: 4244) // Conversion from double to float loses data.
-    #pragma warning(disable: 4251) // stl dllexports
+#    pragma warning( disable : 4251 ) // stl dllexports
 //	#pragma warning(disable: 4267) // conversion from size_t to uint
-//	#pragma warning(disable: 4275) // non - DLL-interface class 'class_1' used as base for DLL-interface class 'class_2'
-//	#pragma warning(disable: 4577) // noexcept used with no exception handling mode
-//	#pragma warning(disable: 4838) // conversion from enum to uint.
-//	#pragma warning(disable: 4996) // sprintf unsafe
-//	#pragma warning(disable: 4503) // Truncated decorated name
+//	#pragma warning(disable: 4275) // non - DLL-interface class 'class_1' used as base for
+//DLL-interface class 'class_2' 	#pragma warning(disable: 4577) // noexcept used with no exception
+//handling mode 	#pragma warning(disable: 4838) // conversion from enum to uint. 	#pragma
+//warning(disable: 4996) // sprintf unsafe 	#pragma warning(disable: 4503) // Truncated decorated
+//name
 #endif
 
 // ----------------------------------------------------------------------------
@@ -138,17 +138,18 @@
 #define ENABLE_DEBUG_MSG
 //#endif
 
-#if defined(ENABLE_DEBUG_MSG) && defined(DEBUG)
+#if defined( ENABLE_DEBUG_MSG ) && defined( DEBUG )
 #    define DEBUG_MSG( str )               \
-do {                               \
-std::cout << str << std::endl; \
-} while ( false )
-//std::cout << "[" << __FILE_NAME__ << "][" << __FUNCTION__ << ":" << __LINE__ << "] " << str << std::endl;
+        do {                               \
+            std::cout << str << std::endl; \
+        } while ( false )
+// std::cout << "[" << __FILE_NAME__ << "][" << __FUNCTION__ << ":" << __LINE__ << "] " << str <<
+// std::endl;
 
 #else
 #    define DEBUG_MSG( str ) \
-do {                 \
-} while ( false )
+        do {                 \
+        } while ( false )
 #endif
 
 // ----------------------------------------------------------------------------
@@ -159,15 +160,14 @@ do {                 \
 //#undef SRC_EXPORTS
 
 #ifdef OS_WINDOWS
-#if defined SRC_STATIC
-#   define SRC_API
-#elif defined SRC_EXPORTS
-#   define SRC_API __declspec( dllexport )
-#else
-#   define SRC_API __declspec( dllimport )
-#endif
+#    if defined SRC_STATIC
+#        define SRC_API
+#    elif defined SRC_EXPORTS
+#        define SRC_API __declspec( dllexport )
+#    else
+#        define SRC_API __declspec( dllimport )
+#    endif
 
 #else
-#define SRC_API
+#    define SRC_API
 #endif
-

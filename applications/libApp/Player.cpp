@@ -18,21 +18,22 @@
 
 ////}
 
-//Player::Player( const std::string& outputPostFixName ) : m_outputPostfixName( outputPostFixName ) {}
+// Player::Player( const std::string& outputPostFixName ) : m_outputPostfixName( outputPostFixName )
+// {}
 
-//Player::~Player() {
-//    std::cout << "[Player] ~Player" << std::endl;
+// Player::~Player() {
+//     std::cout << "[Player] ~Player" << std::endl;
 
 //    if ( m_thread != nullptr ) stop();
 
 //    if ( m_loadedPath != "" ) unload();
 //}
 
-//void Player::load( const std::string& path, int iSensor ) {
-//    assert( !m_isPlaying );
-//    assert( m_loadedPath == "" );
-//    assert( m_snapshots.empty() );
-//    assert( m_frames.empty() );
+// void Player::load( const std::string& path, int iSensor ) {
+//     assert( !m_isPlaying );
+//     assert( m_loadedPath == "" );
+//     assert( m_snapshots.empty() );
+//     assert( m_frames.empty() );
 
 //    m_currentFrame = -1;
 //    assert( !path.empty() );
@@ -40,9 +41,9 @@
 //    update( iSensor );
 //}
 
-//void Player::update( int iSensor ) {
-//    m_frames.clear();
-//    m_snapshots.clear();
+// void Player::update( int iSensor ) {
+//     m_frames.clear();
+//     m_snapshots.clear();
 
 //    assert( !m_isPlaying );
 //    assert( m_loadedPath != "" );
@@ -110,7 +111,8 @@
 //            }
 
 //            // here
-//            //            m_outputs[sensorName] = std::make_unique<hub::OutputSensor>(sensorName + "
+//            //            m_outputs[sensorName] = std::make_unique<hub::OutputSensor>(sensorName +
+//            "
 //            //            (record)", inputSensor.getFormat(), inputSensor.getDims(),
 //            //            hub::ClientSocket(), inputSensor.getMetaData());
 
@@ -120,10 +122,12 @@
 //                                  header.m_format,
 //                                  header.m_dims,
 //                                  header.m_metaData },
-//                    hub::io::OutputStream(sensorName + m_outputPostfixName, hub::net::ClientSocket()) );
+//                    hub::io::OutputStream(sensorName + m_outputPostfixName,
+//                    hub::net::ClientSocket()) );
 //            }
 
-//            //            m_outputs[sensorName] = std::make_unique<hub::OutputSensor>(sensorName + "
+//            //            m_outputs[sensorName] = std::make_unique<hub::OutputSensor>(sensorName +
+//            "
 //            //            (physical)", inputSensor.getFormat(), inputSensor.getDims(),
 //            //            hub::ClientSocket(), inputSensor.getMetaData());
 
@@ -135,9 +139,11 @@
 //            //                m_snapshots.insert(Snapshot { std::move(acq), sensorName });
 //            //                ++nReadAcqs;
 //            //            }
-//            //            std::cout << "read " << nReadAcqs << " acquisitions from file sensor '" <<
+//            //            std::cout << "read " << nReadAcqs << " acquisitions from file sensor '"
+//            <<
 //            //            sensorName << "'" << std::endl;
-//            std::cout << "read " << acqs.size() << " acquisitions from file sensor '" << sensorName
+//            std::cout << "read " << acqs.size() << " acquisitions from file sensor '" <<
+//            sensorName
 //                      << "'" << std::endl;
 //        }
 //        catch ( hub::Sensor::exception& e ) {
@@ -154,8 +160,8 @@
 //    std::cout << "read total of " << m_snapshots.size() << " acquistions" << std::endl;
 //}
 
-//void Player::unload() {
-//    assert( !m_isPlaying );
+// void Player::unload() {
+//     assert( !m_isPlaying );
 
 //    assert( !m_outputs.empty() );
 //    assert( !m_snapshots.empty() );
@@ -171,12 +177,12 @@
 //    m_loadedPath = "";
 //}
 
-//void Player::play() {
-//    //    m_futureObj = m_exitSignal.get_future();
-//    std::cout << "start playing" << std::endl;
-//    assert( m_thread == nullptr );
-//    assert( !m_frames.empty() );
-//    assert( !m_snapshots.empty() );
+// void Player::play() {
+//     //    m_futureObj = m_exitSignal.get_future();
+//     std::cout << "start playing" << std::endl;
+//     assert( m_thread == nullptr );
+//     assert( !m_frames.empty() );
+//     assert( !m_snapshots.empty() );
 
 //    m_thread    = new std::thread( [this]() {
 //        //        const long long duration = m_snapshots.end()->getAcq().m_end -
@@ -223,25 +229,25 @@
 //    m_isPlaying = true;
 //}
 
-//void Player::stop() {
-//    assert( m_isPlaying );
-//    std::cout << "stop playing" << std::endl;
-//    //    m_exitSignal.set_value();
-//    m_isPlaying = false;
-//    assert( m_thread != nullptr );
-//    m_thread->join();
-//    delete m_thread;
-//    m_thread = nullptr;
-//    //    m_exitSignal.swap(std::promise<void>());
-//}
+// void Player::stop() {
+//     assert( m_isPlaying );
+//     std::cout << "stop playing" << std::endl;
+//     //    m_exitSignal.set_value();
+//     m_isPlaying = false;
+//     assert( m_thread != nullptr );
+//     m_thread->join();
+//     delete m_thread;
+//     m_thread = nullptr;
+//     //    m_exitSignal.swap(std::promise<void>());
+// }
 
-//void Player::showFrame( int iFrame ) {
-//    assert( !m_isPlaying );
-//    assert( m_loadedPath != "" );
-//    assert( !m_snapshots.empty() );
-//    assert( !m_frames.empty() );
-//    assert( m_currentFrame != iFrame );
-//    assert( iFrame < m_frames.size() );
+// void Player::showFrame( int iFrame ) {
+//     assert( !m_isPlaying );
+//     assert( m_loadedPath != "" );
+//     assert( !m_snapshots.empty() );
+//     assert( !m_frames.empty() );
+//     assert( m_currentFrame != iFrame );
+//     assert( iFrame < m_frames.size() );
 
 //    const auto& frame = m_frames[iFrame];
 //    for ( const auto& snapshot : frame ) {
@@ -251,26 +257,26 @@
 //    m_currentFrame = iFrame;
 //}
 
-//void Player::setOutputPostFixName( const std::string& outputPostFixName ) {
-//    m_outputPostfixName = outputPostFixName;
-//}
+// void Player::setOutputPostFixName( const std::string& outputPostFixName ) {
+//     m_outputPostfixName = outputPostFixName;
+// }
 
-//const std::vector<Frame>& Player::getFrames() const {
-//    return m_frames;
-//}
+// const std::vector<Frame>& Player::getFrames() const {
+//     return m_frames;
+// }
 
-//bool Player::isPlaying() const {
-//    return m_isPlaying;
-//}
+// bool Player::isPlaying() const {
+//     return m_isPlaying;
+// }
 
-//bool Player::isLoaded() const {
-//    return m_loadedPath != "";
-//}
+// bool Player::isLoaded() const {
+//     return m_loadedPath != "";
+// }
 
-//const std::string& Player::getLoadedPath() const {
-//    return m_loadedPath;
-//}
+// const std::string& Player::getLoadedPath() const {
+//     return m_loadedPath;
+// }
 
-//int Player::getCurrentFrame() const {
-//    return m_currentFrame;
-//}
+// int Player::getCurrentFrame() const {
+//     return m_currentFrame;
+// }

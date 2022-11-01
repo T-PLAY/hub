@@ -2,16 +2,13 @@
 #include <Gui/BaseApplication.hpp>
 #
 
-
-#include <Gui/Utils/KeyMappingManager.hpp>
 #include <Gui/MainWindow.hpp>
+#include <Gui/Utils/KeyMappingManager.hpp>
 
 #include <Core/Geometry/MeshPrimitives.hpp>
 #include <Engine/Scene/EntityManager.hpp>
 #include <Engine/Scene/GeometryComponent.hpp>
 #include <Engine/Scene/GeometrySystem.hpp>
-
-
 
 class MainWindowFactory : public Ra::Gui::BaseApplication::WindowFactory
 {
@@ -23,10 +20,10 @@ class MainWindowFactory : public Ra::Gui::BaseApplication::WindowFactory
 };
 
 int main( int argc, char** argv ) {
-//    Ra::MainApplication app( argc, argv );
+    //    Ra::MainApplication app( argc, argv );
     Ra::Gui::BaseApplication app( argc, argv );
     app.initialize( MainWindowFactory() );
-//    app.setContinuousUpdate( false );
+    //    app.setContinuousUpdate( false );
 
     //! [Creating the cube]
     auto cube = Ra::Core::Geometry::makeSharpBox( { 0.1f, 0.1f, 0.1f } );
@@ -51,7 +48,6 @@ int main( int argc, char** argv ) {
     auto geometrySystem = app.m_engine->getSystem( "GeometrySystem" );
     geometrySystem->addComponent( e, c );
     //! [Register the entity/component association to the geometry system ]
-
 
     app.m_mainWindow->prepareDisplay();
     return app.exec();

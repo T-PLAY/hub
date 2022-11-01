@@ -32,59 +32,54 @@ using namespace Ra::Engine::Rendering;
 using namespace Ra::Engine::Data;
 using namespace Ra::Engine::Scene;
 
-SensorComponent::SensorComponent(const hub::InputSensor& inputSensor, Ra::Engine::Scene::Entity* entity)
-    : Ra::Engine::Scene::Component(inputSensor.m_spec.m_sensorName, entity)
-    , m_inputSensor(inputSensor)
-{
-}
+SensorComponent::SensorComponent( const hub::InputSensor& inputSensor,
+                                  Ra::Engine::Scene::Entity* entity ) :
+    Ra::Engine::Scene::Component( inputSensor.m_spec.m_sensorName, entity ),
+    m_inputSensor( inputSensor ) {}
 
-void SensorComponent::initialize()
-{
-    auto plainMaterial = make_shared<PlainMaterial>("Plain Material");
+void SensorComponent::initialize() {
+    auto plainMaterial              = make_shared<PlainMaterial>( "Plain Material" );
     plainMaterial->m_perVertexColor = true;
 
     // origin gizmo
     {
-//        std::vector<std::shared_ptr<Engine::Data::Mesh>> m_meshAxis;
+        //        std::vector<std::shared_ptr<Engine::Data::Mesh>> m_meshAxis;
         constexpr Scalar arrowScale = 0.1_ra * 100;
-        constexpr Scalar axisWidth = 0.1_ra;
-        constexpr Scalar arrowFrac = 0_ra;
+        constexpr Scalar axisWidth  = 0.1_ra;
+        constexpr Scalar arrowFrac  = 0_ra;
 
-        std::vector<Color> gizmoColors = {
-            Color::Red(), Color::Green(), Color::Blue()
-        };
+        std::vector<Color> gizmoColors = { Color::Red(), Color::Green(), Color::Blue() };
 
-        for (uint i = 0; i < 3; ++i) {
+        for ( uint i = 0; i < 3; ++i ) {
             Core::Vector3 cylinderEnd = Core::Vector3::Zero();
-            cylinderEnd[i % 3] = (1_ra - arrowFrac);
-            Core::Vector3 arrowEnd = Core::Vector3::Zero();
-            arrowEnd[i % 3] = 1_ra;
-            Core::Geometry::TriangleMesh cylinder = Core::Geometry::makeCylinder(Core::Vector3::Zero(),
-                arrowScale * cylinderEnd,
-                arrowScale * axisWidth / 2_ra,
-                32,
-                gizmoColors[i]);
+            cylinderEnd[i % 3]        = ( 1_ra - arrowFrac );
+            Core::Vector3 arrowEnd    = Core::Vector3::Zero();
+            arrowEnd[i % 3]           = 1_ra;
+            Core::Geometry::TriangleMesh cylinder =
+                Core::Geometry::makeCylinder( Core::Vector3::Zero(),
+                                              arrowScale * cylinderEnd,
+                                              arrowScale * axisWidth / 2_ra,
+                                              32,
+                                              gizmoColors[i] );
 
             std::shared_ptr<Engine::Data::Mesh> mesh(
-                new Engine::Data::Mesh("Translate Gizmo Arrow"));
-            mesh->loadGeometry(std::move(cylinder));
+                new Engine::Data::Mesh( "Translate Gizmo Arrow" ) );
+            mesh->loadGeometry( std::move( cylinder ) );
 
-            m_meshAxis.push_back(std::move(mesh));
+            m_meshAxis.push_back( std::move( mesh ) );
         }
 
         // origin axis
-        assert(m_roAxes[1] == nullptr);
-        for (uint i = 0; i < 3; ++i) {
-            m_roAxes[i] = RenderObject::createRenderObject("axis" + std::to_string(i),
-                this,
-                RenderObjectType::Geometry,
-                m_meshAxis[i]);
+        assert( m_roAxes[1] == nullptr );
+        for ( uint i = 0; i < 3; ++i ) {
+            m_roAxes[i] = RenderObject::createRenderObject(
+                "axis" + std::to_string( i ), this, RenderObjectType::Geometry, m_meshAxis[i] );
 
-            m_roAxes[i]->setMaterial(plainMaterial);
-//            Ra::Core::Transform TLocal = Transform::Identity();
-//            TLocal.scale(100.0);
-//            m_roAxes[i]->setLocalTransform(TLocal);
-            addRenderObject(m_roAxes[i]);
+            m_roAxes[i]->setMaterial( plainMaterial );
+            //            Ra::Core::Transform TLocal = Transform::Identity();
+            //            TLocal.scale(100.0);
+            //            m_roAxes[i]->setLocalTransform(TLocal);
+            addRenderObject( m_roAxes[i] );
         }
     }
 }

@@ -27,7 +27,7 @@ struct Scanner {
 };
 
 constexpr int g_nTraces = 3;
-using Traces = std::array<Ra::Engine::Rendering::RenderObject*, g_nTraces>;
+using Traces            = std::array<Ra::Engine::Rendering::RenderObject*, g_nTraces>;
 
 /// This is a very basic component which holds a spinning cube.
 struct MinimalComponent : public Ra::Engine::Scene::Component {
@@ -54,13 +54,11 @@ struct MinimalComponent : public Ra::Engine::Scene::Component {
     //    void updateScan( hub::Acquisition && acq );
     void initScan( int iProbe = 0 );
 
-    void setupScanner(double scanWidth, double scanDepth, double x, double y, double z);
-
+    void setupScanner( double scanWidth, double scanDepth, double x, double y, double z );
 
     void initPoseTraces( const std::vector<hub::Acquisition>& poseAcqs );
 
     void incIter();
-
 
   private:
     Ra::Engine::RadiumEngine& m_engine;
@@ -69,11 +67,11 @@ struct MinimalComponent : public Ra::Engine::Scene::Component {
     Scanner m_scanner;
 
     Ra::Engine::Rendering::RenderObject* m_roGrid = nullptr;
-//    Ra::Engine::Rendering::RenderObject* m_roTraces[3] = {nullptr, nullptr, nullptr};
+    //    Ra::Engine::Rendering::RenderObject* m_roTraces[3] = {nullptr, nullptr, nullptr};
     Traces m_roTraces;
 
   public:
-    void traceSetVisible(bool visible);
-    Ra::Engine::Rendering::RenderObject & getRoGrid();
-    Traces & getRoTraces();
+    void traceSetVisible( bool visible );
+    Ra::Engine::Rendering::RenderObject& getRoGrid();
+    Traces& getRoTraces();
 };

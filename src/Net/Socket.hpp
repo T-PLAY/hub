@@ -22,8 +22,8 @@ namespace net {
 class SRC_API Socket
 {
   public:
-//    static const int s_defaultServicePort;
-//    static const char* const s_defaultServiceIp;
+    //    static const int s_defaultServicePort;
+    //    static const char* const s_defaultServiceIp;
 
     class exception : public std::runtime_error
     {
@@ -31,7 +31,6 @@ class SRC_API Socket
         explicit exception( const char* const message ) throw() : std::runtime_error( message ) {}
         const char* what() const throw() { return std::runtime_error::what(); }
     };
-
 
     bool isConnected() const;
 #ifdef DEBUG_SOCKET
@@ -42,13 +41,13 @@ class SRC_API Socket
     Socket();
     ~Socket();
 
-    Socket(const Socket & socket) = delete;
-    Socket(Socket && socket);
-    Socket & operator=(const Socket & socket) = delete;
+    Socket( const Socket& socket ) = delete;
+    Socket( Socket&& socket );
+    Socket& operator=( const Socket& socket ) = delete;
 
   protected:
     socket_fd m_fdSock = INVALID_SOCKET;
-    bool m_serverSide = false;
+    bool m_serverSide  = false;
 };
 
 } // namespace net

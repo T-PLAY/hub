@@ -13,29 +13,30 @@ namespace Ui {
 class MainWindowStreamView;
 }
 
-class MainWindowStreamView : public QMainWindow {
+class MainWindowStreamView : public QMainWindow
+{
     Q_OBJECT
 
-public:
-    MainWindowStreamView(const hub::InputSensor & inputStream, QWidget* parent = nullptr);
+  public:
+    MainWindowStreamView( const hub::InputSensor& inputStream, QWidget* parent = nullptr );
     ~MainWindowStreamView();
 
-//    std::string getStreamerSensorName() const;
+    //    std::string getStreamerSensorName() const;
 
-    void setData(unsigned char* img_ptr, std::vector<int> dims, hub::SensorSpec::Format format);
+    void setData( unsigned char* img_ptr, std::vector<int> dims, hub::SensorSpec::Format format );
 
-signals:
+  signals:
     void onCloseStreamViewSignal();
 
-public slots:
+  public slots:
 
-private:
+  private:
     Ui::MainWindowStreamView* ui;
 
-//    Thread_InputStream mThread;
-    const hub::InputSensor & m_inputStream;
+    //    Thread_InputStream mThread;
+    const hub::InputSensor& m_inputStream;
 
-//    std::string mSensorName;
+    //    std::string mSensorName;
 };
 
 #endif // MAINWINDOWSTREAMVIEW_H

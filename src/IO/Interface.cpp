@@ -87,7 +87,7 @@ std::string Interface::anyValue2string( const std::any& any ) {
                 // sprintf(buff, "%.1f", val->at(k));
                 //                sprintf_s( buff, "%.1f", val->at( k ) );
 #ifdef WIN32
-                sprintf_s(buff, "%.1f", val->at( k ) );
+                sprintf_s( buff, "%.1f", val->at( k ) );
 #else
                 sprintf( buff, "%.1f", val->at( k ) );
 #endif
@@ -112,20 +112,20 @@ std::string Interface::anyValue2string( const std::any& any ) {
             for ( int j = 0; j < 4; ++j ) {
                 char buff[32];
 #ifdef WIN32
-                sprintf_s(buff, "%.0f ", val[4 * i + j] );
+                sprintf_s( buff, "%.0f ", val[4 * i + j] );
 #else
                 sprintf( buff, "%.0f ", val[4 * i + j] );
 #endif
                 str += buff;
             }
-                if ( i != 3 ) str += " ";
+            if ( i != 3 ) str += " ";
         }
         return str;
     } break;
 
     default:
-//        auto name     = any.type().name();
-//        auto raw_name = any.type().name();
+        //        auto name     = any.type().name();
+        //        auto raw_name = any.type().name();
         assert( false );
     }
 
@@ -140,7 +140,7 @@ std::string Interface::anyValue2string( const std::any& any ) {
     //        }
     //        return str;
     //    }
-        return "";
+    return "";
 }
 
 const std::string& Interface::anyType2string( const std::any& any ) {
@@ -195,8 +195,8 @@ void Interface::write( const Acquisition& acq ) const {
 
     write( acq.m_start );
     write( acq.m_end );
-    const auto & measures = acq.getMeasures();
-    assert(measures.size() > 0);
+    const auto& measures = acq.getMeasures();
+    assert( measures.size() > 0 );
     write( measures );
 }
 
@@ -308,8 +308,8 @@ void Interface::write( const std::any& any ) const {
     //        write( *val );
     //    }
     else {
-//        auto name     = any.type().name();
-//        auto raw_name = any.type().name();
+        //        auto name     = any.type().name();
+        //        auto raw_name = any.type().name();
         assert( false );
     }
 }
@@ -395,7 +395,7 @@ Acquisition Interface::getAcquisition( int acquisitionSize ) const {
 
     int nMeasures;
     read( nMeasures );
-    assert(nMeasures > 0);
+    assert( nMeasures > 0 );
 
     for ( int iMeasure = 0; iMeasure < nMeasures; ++iMeasure ) {
         acq << Interface::getMeasure();
@@ -495,8 +495,8 @@ void Interface::read( std::any& any ) const {
         //    } break;
 
     default:
-//        auto name     = any.type().name();
-//        auto raw_name = any.type().name();
+        //        auto name     = any.type().name();
+        //        auto raw_name = any.type().name();
         assert( false );
     }
     assert( any.has_value() );

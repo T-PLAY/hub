@@ -112,7 +112,8 @@ int main( int argc, char* argv[] ) {
     // record file
     {
         std::string recordPath = PROJECT_DIR "data/";
-        std::fstream recordFile( recordPath + "latest.txt", std::ios::out | std::ios::binary | std::ios::trunc );
+        std::fstream recordFile( recordPath + "latest.txt",
+                                 std::ios::out | std::ios::binary | std::ios::trunc );
         assert( recordFile.is_open() );
 
         auto& metaData    = sensorSpec.m_metaData;
@@ -131,8 +132,9 @@ int main( int argc, char* argv[] ) {
     // play record
     {
         std::string recordPath = PROJECT_DIR "data/";
-//        std::fstream recordFile( recordPath + "latest.txt", std::ios::in | std::ios::binary | std::ios::beg  );
-        std::fstream recordFile( recordPath + "latest.txt", std::ios::in | std::ios::binary  );
+        //        std::fstream recordFile( recordPath + "latest.txt", std::ios::in |
+        //        std::ios::binary | std::ios::beg  );
+        std::fstream recordFile( recordPath + "latest.txt", std::ios::in | std::ios::binary );
         assert( recordFile.is_open() );
 
         hub::InputSensor inputSensor( hub::io::File( std::move( recordFile ) ) );

@@ -31,21 +31,21 @@ Dof6::Dof6( float x, float y, float z, float w0, float w1, float w2, float w3 ) 
 }
 
 Dof6 Dof6::slerp( const Dof6& left,
-//                  long long startLeft,
+                  //                  long long startLeft,
                   const Dof6& right,
-//                  long long startRight,
+                  //                  long long startRight,
                   long long t ) {
-//    const Dof6& left  = ( startLeft > startRight ) ? ( pRight ) : ( pLeft );
-//    const Dof6& right = ( startLeft > startRight ) ? ( pLeft ) : ( pRight );
-//    if ( startLeft > startRight ) {
-//        long long tmp = startLeft;
-//        startLeft     = startRight;
-//        startRight    = tmp;
-//    }
-//    assert( startLeft <= time && time <= startRight );
-//    //    Dof6 ret;
-//    double t = ( time - startLeft ) / ( startRight - startLeft );
-//    assert( 0.0 <= t && t <= 1.0 );
+    //    const Dof6& left  = ( startLeft > startRight ) ? ( pRight ) : ( pLeft );
+    //    const Dof6& right = ( startLeft > startRight ) ? ( pLeft ) : ( pRight );
+    //    if ( startLeft > startRight ) {
+    //        long long tmp = startLeft;
+    //        startLeft     = startRight;
+    //        startRight    = tmp;
+    //    }
+    //    assert( startLeft <= time && time <= startRight );
+    //    //    Dof6 ret;
+    //    double t = ( time - startLeft ) / ( startRight - startLeft );
+    //    assert( 0.0 <= t && t <= 1.0 );
 
     float x = ( 1.0 - t ) * left.m_x + t * right.m_x;
     float y = ( 1.0 - t ) * left.m_y + t * right.m_y;
@@ -156,13 +156,13 @@ Measure Measure::clone() const {
     //    memcpy( data, m_data, m_size );
     //    Measure measure( m_data, m_size );
     //    measure.m_ownData = true;
-    Measure ret ( m_data, m_size );
+    Measure ret( m_data, m_size );
     ret.m_resolution = m_resolution;
     return ret;
 }
 
 bool Measure::interpolable() const {
-    assert(m_resolution.second != SensorSpec::Format::NONE);
+    assert( m_resolution.second != SensorSpec::Format::NONE );
     assert( !m_resolution.first.empty() );
     return SensorSpec::interpolable( m_resolution.second );
 }
@@ -177,9 +177,9 @@ Measure Measure::slerp( const Measure& left, const Measure& right, double t ) {
 
     switch ( left.m_resolution.second ) {
     case SensorSpec::Format::DOF6: {
-//        const Dof6& dof6Left  = left;
-//        const Dof6& dof6Right = right;
-        return Dof6::slerp(left, right, t);
+        //        const Dof6& dof6Left  = left;
+        //        const Dof6& dof6Right = right;
+        return Dof6::slerp( left, right, t );
     }
     default:
         assert( false );
@@ -188,7 +188,10 @@ Measure Measure::slerp( const Measure& left, const Measure& right, double t ) {
 }
 
 bool Measure::operator==( const Measure& measure ) const {
-    if ( m_size == measure.m_size ) { return memcmp( m_data, measure.m_data, m_size ) == 0 && m_resolution == measure.m_resolution; }
+    if ( m_size == measure.m_size ) {
+        return memcmp( m_data, measure.m_data, m_size ) == 0 &&
+               m_resolution == measure.m_resolution;
+    }
     return false;
 }
 
@@ -217,8 +220,7 @@ Measure::Measure( Measure&& measure ) :
     //    Measure( measure.m_format ),
     m_data( measure.m_data ),
     m_size( measure.m_size ),
-    m_resolution(measure.m_resolution)
-{
+    m_resolution( measure.m_resolution ) {
     //     m_format( measure.m_format ) {
     //    measure.m_data = nullptr;
     measure.m_isMoved = true;

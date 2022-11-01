@@ -6,13 +6,10 @@ namespace Ra {
 namespace Gui {
 
 TransformEditorWidget::TransformEditorWidget( QWidget* parent ) :
-    QWidget( parent ),
-    m_layout( new QVBoxLayout( this ) ),
-    m_translationEditor( nullptr ) {}
+    QWidget( parent ), m_layout( new QVBoxLayout( this ) ), m_translationEditor( nullptr ) {}
 
 void TransformEditorWidget::updateValues() {
-    if ( canEdit() )
-    {
+    if ( canEdit() ) {
         getTransform();
         CORE_ASSERT( m_translationEditor, "No edtitor widget !" );
         m_translationEditor->blockSignals( true );
@@ -30,8 +27,7 @@ void TransformEditorWidget::onChangedPosition( const Core::Vector3& v, uint id )
 void TransformEditorWidget::setEditable( const Engine::Scene::ItemEntry& ent ) {
     delete m_translationEditor;
     TransformEditor::setEditable( ent );
-    if ( canEdit() )
-    {
+    if ( canEdit() ) {
         m_translationEditor =
             new VectorEditor( 0,
                               QString::fromStdString( getEntryName(

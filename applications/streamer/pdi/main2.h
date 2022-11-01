@@ -1,8 +1,8 @@
 // PiTerm.h
 
 /*
-Polhemus Tracker Terminal (PiTerm) version 1.0.3 -- Terminal Interface to Polhemus Trackers: Fastrak, Patriot, and Liberty
-Copyright  ©  2009-2011  Polhemus, Inc.
+Polhemus Tracker Terminal (PiTerm) version 1.0.3 -- Terminal Interface to Polhemus Trackers:
+Fastrak, Patriot, and Liberty Copyright  ©  2009-2011  Polhemus, Inc.
 
 This file is part of Tracker Terminal.
 
@@ -47,13 +47,7 @@ Added support for the Fastrak 3, gtk+-3.0
 #include <stdio.h>
 #include <unistd.h>
 
-enum { TRKR_LIB_HS,
-    TRKR_LIB,
-    TRKR_PAT_HS,
-    TRKR_PAT,
-    TRKR_FT,
-    TRKR_FT3,
-    NUM_SUPP_TRKS };
+enum { TRKR_LIB_HS, TRKR_LIB, TRKR_PAT_HS, TRKR_PAT, TRKR_FT, TRKR_FT3, NUM_SUPP_TRKS };
 
 // structure definitions
 
@@ -94,36 +88,33 @@ typedef struct _READ_WRITE_STRUCT {
 } * LPREAD_WRITE_STRUCT, READ_WRITE_STRUCT;
 
 // usb vid/pids for Polehemus trackers
-USB_PARAMS usbTrkParams[NUM_SUPP_TRKS] = {
-    { 0x0f44, 0xff20, 0x04, 0x88 }, // Lib HS
-    { 0x0f44, 0xff12, 0x02, 0x82 }, // Lib
-    { 0X0f44, 0xef20, 0x04, 0x88 }, // Patriot HS
-    { 0x0f44, 0xef12, 0x02, 0x82 }, // Patriot
-    { 0x0f44, 0x0002, 0x02, 0x82 }, // Fastrak
-    { 0x0f44, 0x0003, 0x02, 0x84 }
-}; // Fastrak 3
+USB_PARAMS usbTrkParams[NUM_SUPP_TRKS] = { { 0x0f44, 0xff20, 0x04, 0x88 },   // Lib HS
+                                           { 0x0f44, 0xff12, 0x02, 0x82 },   // Lib
+                                           { 0X0f44, 0xef20, 0x04, 0x88 },   // Patriot HS
+                                           { 0x0f44, 0xef12, 0x02, 0x82 },   // Patriot
+                                           { 0x0f44, 0x0002, 0x02, 0x82 },   // Fastrak
+                                           { 0x0f44, 0x0003, 0x02, 0x84 } }; // Fastrak 3
 
 // polhemus tracker names
-const gchar* trackerNames[NUM_SUPP_TRKS] = {
-    "High Speed Liberty", "Liberty", "High Speed Patriot", "Patriot", "Fastrak", "Fastrak 3"
-};
+const gchar* trackerNames[NUM_SUPP_TRKS] =
+    { "High Speed Liberty", "Liberty", "High Speed Patriot", "Patriot", "Fastrak", "Fastrak 3" };
 
 // definitions for the GTK+ callbacks and other worker functions
 
-void OnAbout(GtkWidget*, GtkWindow*);
-void OnClear(GtkWidget*, GtkTextView*);
-void OnCapture(GtkToggleButton*, LPCAP_STRUCT);
-void OnCaptureBrowse(GtkWidget*, LPCAP_STRUCT);
-int OpenCaptureFile(LPCAP_STRUCT);
-void OnCnxType(GtkToggleButton*, LPCNX_STRUCT);
-void OnConnect(GtkWidget*, LPCNX_STRUCT);
-void OnDisconnect(GtkWidget*, LPCNX_STRUCT);
-int QueryUser4TrackerType(int&);
-void TrackerSelect(GtkToggleButton*, int*);
-gboolean CommandEntered(GtkEntry*, GdkEventKey*, LPCNX_STRUCT);
-int Browse4CaptureFile(LPCAP_STRUCT);
-void* ReadTrackerThread(void*);
-gboolean Write2Display(gpointer);
+void OnAbout( GtkWidget*, GtkWindow* );
+void OnClear( GtkWidget*, GtkTextView* );
+void OnCapture( GtkToggleButton*, LPCAP_STRUCT );
+void OnCaptureBrowse( GtkWidget*, LPCAP_STRUCT );
+int OpenCaptureFile( LPCAP_STRUCT );
+void OnCnxType( GtkToggleButton*, LPCNX_STRUCT );
+void OnConnect( GtkWidget*, LPCNX_STRUCT );
+void OnDisconnect( GtkWidget*, LPCNX_STRUCT );
+int QueryUser4TrackerType( int& );
+void TrackerSelect( GtkToggleButton*, int* );
+gboolean CommandEntered( GtkEntry*, GdkEventKey*, LPCNX_STRUCT );
+int Browse4CaptureFile( LPCAP_STRUCT );
+void* ReadTrackerThread( void* );
+gboolean Write2Display( gpointer );
 
 // GNU General Public License preamble
 // used in about box.

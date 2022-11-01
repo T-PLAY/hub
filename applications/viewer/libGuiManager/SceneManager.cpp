@@ -62,7 +62,7 @@ void SceneManager::init() {
 void SceneManager::delSensor( const std::string& streamName ) {
 
     if ( m_streamName2sensor.find( streamName ) != m_streamName2sensor.end() ) {
-//        assert( m_streamName2sensor.find( streamName ) != m_streamName2sensor.end() );
+        //        assert( m_streamName2sensor.find( streamName ) != m_streamName2sensor.end() );
         //    m_streamName2sensor.erase(m_streamName2sensor.find(streamName));
         m_streamName2sensor.erase( streamName );
 
@@ -122,26 +122,23 @@ void SceneManager::fitView( const std::string& streamName ) {
     //    }
 }
 
-void SceneManager::enableTrace(bool enable)
-{
-    assert(enable != m_enableTrace);
+void SceneManager::enableTrace( bool enable ) {
+    assert( enable != m_enableTrace );
     m_enableTrace = enable;
     for ( auto& pair : m_streamName2sensor ) {
         auto& sensor = *pair.second;
-//        sensor.
-        sensor.getSensorComponent()->enableTrace(m_enableTrace);
+        //        sensor.
+        sensor.getSensorComponent()->enableTrace( m_enableTrace );
     }
 }
 
-void SceneManager::enableLive(bool enable)
-{
-    assert(enable != m_enableLive);
+void SceneManager::enableLive( bool enable ) {
+    assert( enable != m_enableLive );
     m_enableLive = enable;
     for ( auto& pair : m_streamName2sensor ) {
         auto& sensor = *pair.second;
-        sensor.getSensorComponent()->enableLive(m_enableLive);
+        sensor.getSensorComponent()->enableLive( m_enableLive );
     }
-
 }
 
 #ifdef ENABLE_IMAGE_VIEWER

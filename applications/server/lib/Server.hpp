@@ -46,14 +46,14 @@ class Server
     void delStreamViewer( StreamViewerClient* streamViewer );
     void delViewer( ViewerClient* viewer );
 
-    void newAcquisition(StreamerClient* streamer, const hub::Acquisition &acq );
+    void newAcquisition( StreamerClient* streamer, const hub::Acquisition& acq );
 
-//    const std::vector<std::shared_ptr<hub::Acquisition>>&
-//    getLastAcqs( const std::string& streamName );
+    //    const std::vector<std::shared_ptr<hub::Acquisition>>&
+    //    getLastAcqs( const std::string& streamName );
 
   public:
     bool m_acqPing = true;
-//    bool m_acqPing = false;
+    //    bool m_acqPing = false;
 
   private:
     std::map<std::string, StreamerClient*> m_streamers;
@@ -74,7 +74,6 @@ class Server
     const std::map<std::string, StreamerClient*>& getStreamers() const;
     void setAcqPing( bool newAcqPing );
 };
-
 
 /////////////////////////// old ///////////////////////////////
 

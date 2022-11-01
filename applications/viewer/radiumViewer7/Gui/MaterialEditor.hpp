@@ -14,11 +14,11 @@ class QShowEvent;
 
 namespace Ra {
 namespace Engine {
-namespace Rendering{
+namespace Rendering {
 class RadiumEngine;
 class RenderObjectManager;
 class RenderObject;
-}
+} // namespace Rendering
 namespace Data {
 class Material;
 class BlinnPhongMaterial;

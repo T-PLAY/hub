@@ -5,16 +5,13 @@
 
 #include <SensorSpec.hpp>
 
-
-int main(int argc, char *argv[])
-{
+int main( int argc, char* argv[] ) {
 
     // Set application and organization names in order to ensure uniform
     // QSettings configurations.
     // \see http://doc.qt.io/qt-5/qsettings.html#QSettings-4
-    QCoreApplication::setOrganizationName("STORM-IRIT");
-    QCoreApplication::setApplicationName("RadiumViewer");
-
+    QCoreApplication::setOrganizationName( "STORM-IRIT" );
+    QCoreApplication::setApplicationName( "RadiumViewer" );
 
     // Create default format for Qt.
     QSurfaceFormat format;
@@ -27,12 +24,11 @@ int main(int argc, char *argv[])
     format.setSwapInterval( 0 );
     QSurfaceFormat::setDefaultFormat( format );
 
-
-    QApplication a(argc, argv);
-    qRegisterMetaType<std::string>("std::string");
-    qRegisterMetaType<hub::SensorSpec>("hub::SensorSpec");
+    QApplication a( argc, argv );
+    qRegisterMetaType<std::string>( "std::string" );
+    qRegisterMetaType<hub::SensorSpec>( "hub::SensorSpec" );
     MainWindow w;
-//    w.resize(1280, 840);
+    //    w.resize(1280, 840);
     w.show();
     return a.exec();
 }

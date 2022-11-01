@@ -6,11 +6,11 @@
 //
 //  Filename:           $Workfile: PDIbiterr.h $
 //
-//  Project Name:       Polhemus Developer Interface  
+//  Project Name:       Polhemus Developer Interface
 //
 //  Description:        BIT Error class
 //
-//  VSS $Header: /PiDevTools11/Inc/PDIbiterr.h 4     1/09/14 1:05p Suzanne $  
+//  VSS $Header: /PiDevTools11/Inc/PDIbiterr.h 4     1/09/14 1:05p Suzanne $
 //
 /////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////
@@ -28,22 +28,20 @@ class CPiBITErr;
 /////////////////////////////////////////////////////////////////////
 class PDI_API CPDIbiterr
 {
-public:
-	CPDIbiterr( VOID );
-	virtual ~CPDIbiterr( VOID );
+  public:
+    CPDIbiterr( VOID );
+    virtual ~CPDIbiterr( VOID );
 
-    VOID    Parse    ( LPTSTR szBuf, DWORD dwSize ) const;	// Parses BIT results into provide string buffer
-	BOOL	IsClear	 ( VOID );
+    VOID Parse( LPTSTR szBuf, DWORD dwSize ) const; // Parses BIT results into provide string buffer
+    BOOL IsClear( VOID );
 
-private:
-	CPDIbiterr( const CPDIbiterr & );
+  private:
+    CPDIbiterr( const CPDIbiterr& );
 
-	CPiBITErr * m_pBE;
+    CPiBITErr* m_pBE;
 
-	friend class CPDIdev;
+    friend class CPDIdev;
 };
-
-
 
 /////////////////////////////////////////////////////////////////////
 // END $Workfile: PDIbiterr.h $

@@ -213,7 +213,6 @@ FormStreamViews::FormStreamViews(
     //        );
     //    }
 
-
     std::cout << "[FormStreamViews] connect viewerQt start" << std::endl;
     {
         m_viewerQt = new ViewerQt( m_ipv4, m_port );
@@ -280,12 +279,12 @@ FormStreamViews::~FormStreamViews() {
     std::cout << "[FormStreamViews] ~FormStreamViews() end" << std::endl;
 }
 
-//void FormStreamViews::closeAllStream()
+// void FormStreamViews::closeAllStream()
 //{
-//    for (const auto & streamView : m_sensorViews) {
-//        streamView.second->setRadioButtonOff();
-//    }
-//}
+//     for (const auto & streamView : m_sensorViews) {
+//         streamView.second->setRadioButtonOff();
+//     }
+// }
 
 // void FormStreamViews::startStreaming()
 //{
@@ -324,22 +323,22 @@ void FormStreamViews::onServerDisconnect() {
     //    }
     //    m_sensorViews.clear();
 
-//    m_sensorModel.setStringList( QStringList( "none" ) );
+    //    m_sensorModel.setStringList( QStringList( "none" ) );
 
-//    for ( auto& pair : m_sensorViews ) {
-//        const auto& streamName = pair.first;
+    //    for ( auto& pair : m_sensorViews ) {
+    //        const auto& streamName = pair.first;
 
-//        assert( m_sensorViews.find( streamName ) != m_sensorViews.end() );
-//        auto* sensorView = m_sensorViews.at( streamName );
-//        //        m_sensorViews.erase( streamName );
-//        //        auto stringList = m_sensorModel.stringList();
-//        //        stringList.removeAll( streamName.c_str() );
-//        //        m_sensorModel.setStringList( stringList );
+    //        assert( m_sensorViews.find( streamName ) != m_sensorViews.end() );
+    //        auto* sensorView = m_sensorViews.at( streamName );
+    //        //        m_sensorViews.erase( streamName );
+    //        //        auto stringList = m_sensorModel.stringList();
+    //        //        stringList.removeAll( streamName.c_str() );
+    //        //        m_sensorModel.setStringList( stringList );
 
-//        emit streamingStopped( streamName, sensorView->m_sensorSpec );
-//        delete sensorView;
-//    }
-//    m_sensorViews.clear();
+    //        emit streamingStopped( streamName, sensorView->m_sensorSpec );
+    //        delete sensorView;
+    //    }
+    //    m_sensorViews.clear();
 
 #ifdef OS_LINUX
     ++m_port;
@@ -416,16 +415,15 @@ void FormStreamViews::delStream( const std::string& streamName,
     //    emit sensorDeleted(streamName);
 }
 
-//int FormStreamViews::getPort() const {
-//    return m_port;
-//}
+// int FormStreamViews::getPort() const {
+//     return m_port;
+// }
 
 const std::string& FormStreamViews::getIpv4() const {
     return m_ipv4;
 }
 
-const int &FormStreamViews::getPort() const
-{
+const int& FormStreamViews::getPort() const {
     return m_port;
 }
 
