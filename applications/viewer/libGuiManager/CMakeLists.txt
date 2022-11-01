@@ -107,12 +107,14 @@ target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
 set(OTHER_LIBRARIES)
 
 if (HUB_VIEWER_ENABLE_IMAGE_VIEWER)
-    add_definitions(-DENABLE_IMAGE_VIEWER)
+#    add_definitions(-DENABLE_IMAGE_VIEWER=1)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC ENABLE_IMAGE_VIEWER)
     set(OTHER_LIBRARIES ${OTHER_LIBRARIES} libImageManipulator)
 endif()
 
 if (HUB_VIEWER_ENABLE_LOADER)
-    add_definitions(-DENABLE_LOADER)
+#    add_definitions(-DENABLE_LOADER)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC ENABLE_LOADER)
     set(OTHER_LIBRARIES ${OTHER_LIBRARIES} libLoader)
 endif()
 

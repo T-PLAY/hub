@@ -33,8 +33,10 @@ option(HUB_APPLICATION_ENABLE_RADIUM "Build Radium examples (depends of radium l
 option(HUB_USE_DCMTK "Build Dcmtk examples and libs" OFF)
 option(HUB_ENABLE_SCUS "Build Scus" OFF)
 
-option(HUB_VIEWER_ENABLE_IMAGE_VIEWER "Enable image viewer" ON)
-option(HUB_VIEWER_ENABLE_LOADER "Enable loader" ON)
+if (HUB_APPLICATION_ENABLE_RADIUM)
+    option(HUB_VIEWER_ENABLE_IMAGE_VIEWER "Enable image viewer" ON)
+    option(HUB_VIEWER_ENABLE_LOADER "Enable loader" ON)
+endif()
 
 #endif()
 #if (HUB_BUILD_STATIC_LIBRARY) {
