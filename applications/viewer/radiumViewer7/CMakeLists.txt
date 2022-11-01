@@ -1,14 +1,9 @@
-# Build Radium Sandbox
 cmake_minimum_required(VERSION 3.8)
 if(${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} VERSION_GREATER "3.9")
     cmake_policy(SET CMP0071 NEW)
 endif()
 
-# -------------------------------------------------------------------------------
-# exampleApp executables setup
 project(radiumViewer7)
-# Set default install location to installed-<Compiler_ID> folder in build dir we do not want to
-# install to /usr by default
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     set(CMAKE_INSTALL_PREFIX
         "${CMAKE_CURRENT_BINARY_DIR}/installed-${CMAKE_CXX_COMPILER_ID}"
@@ -25,8 +20,6 @@ find_package(
     PluginBase
     IO)
 
-# ------------------------------------------------------------------------------
-# Application specific
 
 find_package(
     Qt${QT_VERSION}
@@ -70,9 +63,7 @@ add_executable(${PROJECT_NAME} MACOSX_BUNDLE ${app_sources} ${app_headers} ${app
 target_link_libraries(
     ${PROJECT_NAME}
     PUBLIC Radium::Core Radium::Engine Radium::Gui Radium::IO ${Qt_LIBRARIES}
-           # DicomLoader
            libGuiManager)
 
 configure_radium_app(NAME ${PROJECT_NAME} USE_PLUGINS)
 
-# radium_cotire( ${app_target} )

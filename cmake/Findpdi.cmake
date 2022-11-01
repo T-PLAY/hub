@@ -1,4 +1,3 @@
-# set(PDI_SDK_DIR "") find_path(PDI_SDK_DIR Inc PATHS "C:/Polhemus/PDI" DOC "PDI include path"
 # #PATH_SUFFIXES Inc ) message(STATUS "hello ${PDI_SDK_DIR}")
 
 set(PDI_SDK
@@ -16,7 +15,6 @@ endif()
 
 if(WIN32)
     file(GLOB PDI_DLL ${PDI_SDK}/Lib/x64/P*.dll)
-    # file(GLOB PDI_DLL ${PDI_SDK}/Lib/x64/PDI.dll)
 
     find_library(
         PDI_LIBRARY

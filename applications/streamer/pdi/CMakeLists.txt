@@ -17,7 +17,6 @@ if(NOT WIN32)
     set(UNIX_INCLUDE_DIRS ${GTK3_INCLUDE_DIRS})
 endif()
 
-# file(GLOB_RECURSE sources *.cpp) file(GLOB_RECURSE headers *.h)
 if(WIN32)
     set(sources main.cpp)
 else()
@@ -38,7 +37,6 @@ endif()
 
 target_link_libraries(
     ${PROJECT_NAME} pdi ${SRC_TARGET}
-    # libApp
     ${UNIX_REQUIRED_LIBS} ${WIN32_REQUIRED_LIBS})
 
 if(WIN32)

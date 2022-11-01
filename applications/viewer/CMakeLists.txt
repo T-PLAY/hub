@@ -4,10 +4,8 @@ if(QT_VERSION)
     add_subdirectory(libViewer)
 endif()
 
-# add_subdirectory(clientViewer)
 add_subdirectory(streamViewer)
 add_subdirectory(simpleViewer)
-# add_subdirectory(smartViewer) add_subdirectory(nativeViewer)
 
 if(HUB_USE_DCMTK)
     add_subdirectory(libDicomUtils)
@@ -15,8 +13,6 @@ endif()
 
 if(HUB_APPLICATION_ENABLE_RADIUM)
 
-    # add_definitions(-DONLY_POSE) add_subdirectory(radiumViewer) add_subdirectory(radiumViewer2)
-    # add_subdirectory(radiumViewer3) add_subdirectory(radiumViewer4)
 
     if(HUB_USE_DCMTK)
         add_subdirectory(libDicomLoader)
@@ -32,4 +28,3 @@ if(HUB_APPLICATION_ENABLE_RADIUM)
 
 endif()
 
-# message(STATUS "QT_VERSION = '" ${QT_VERSION} "'")

@@ -16,11 +16,8 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${SRC_DIR} ${PROJECT_SOURCE_DI
                                                   ${OpenCV_INCLUDE_DIRS})
 
 if(WIN32)
-    # set(WIN32_REQUIRED_LIBS wsock32 ws2_32)
 
 elseif(UNIX)
-    # set(THREADS_PREFER_PTHREAD_FLAG ON) find_package(Threads REQUIRED) set(UNIX_REQUIRED_LIBS
-    # Threads::Threads)
 endif()
 
 target_link_libraries(${PROJECT_NAME} ${SRC_TARGET} ${OpenCV_LIBS} ${UNIX_REQUIRED_LIBS}
