@@ -51,7 +51,6 @@ Acquisition* getAcquisition( const InputSensor* inputSensor ) {
     catch ( std::exception& e ) {
         std::cout << "[Native] getAcquisition : catch exception : " << e.what() << std::endl;
         return nullptr;
-        //        return ret;
     }
     return ret;
 }
@@ -62,68 +61,21 @@ void freeAcquisition( Acquisition* acquisition ) {
 
 void acquisition_getMeasure( const Acquisition* acquisition, unsigned char* data, int iMeasure ) {
     assert( acquisition != nullptr );
-    //    std::cout << "[Native] getData( " << acquisition << ")" << std::endl;
-    //    try {
-    //        auto acq = acquisition->getAcquisition();
-    //        std::cout << "[Native] get acq : " << acq << std::endl;
 
-    //    std::cout << "[Native] copying data " << std::endl;
     assert( iMeasure < acquisition->getMeasures().size() );
     const auto& measure = acquisition->getMeasures().at( iMeasure );
     memcpy( data, measure.m_data, measure.m_size );
-    //    }
-    //    catch ( std::exception& e ) {
-    //        std::cout << "[Native] getAcquisition : catch exception : " << e.what() << std::endl;
-    //        return false;
-    //    }
 
-    //    return true;
 }
 
 // bool getData( const InputSensor* inputSensor, unsigned char* data, int iMeasure ) {
-//     assert( inputSensor != nullptr );
 
-//    std::cout << "[Native] getData( " << inputSensor << ")" << std::endl;
 
-//    try {
-//        auto acq = inputSensor->getAcquisition();
-//        std::cout << "[Native] get acq : " << acq << std::endl;
 
-//        std::cout << "[Native] copying data " << std::endl;
-//        assert( iMeasure < acq.getMeasures().size() );
-//        const auto& measure = acq.getMeasures().at( iMeasure );
-//        memcpy( data, measure.m_data, measure.m_size );
-//    }
-//    catch ( std::exception& e ) {
-//        std::cout << "[Native] getAcquisition : catch exception : " << e.what() << std::endl;
-//        return false;
-//    }
 
-//    return true;
 //}
 
-//    Viewer *createViewer2(onNewStreamerFunc onNewStreamer, onDelStreamerFunc onDelStreamer,
-//    onServerConnectedFunc onServerConnected, onServerDisconnectedFunc onServerDisconnected)
-//    {
-//        auto onNewStreamerCpp = [=](const char* sensorName, const SensorSpec& sensorSpec) {
-//            return onNewStreamer(sensorName, &sensorSpec);
-//        };
-//        auto onDelStreamerCpp = [=](const char* sensorName, const SensorSpec& sensorSpec) {
-//            onDelStreamer(sensorName, &sensorSpec);
-//        };
-//        auto onServerConnectedCpp = [=](const char* ipv4, int port) {
-//            onServerConnected(ipv4, port);
-//        };
-//        auto onServerDisconnectedCpp = [=](const char* ipv4, int port) {
-//            onServerDisconnected(ipv4, port);
-//        };
-//        Viewer* viewer = new Viewer(onNewStreamerCpp,
-//            onDelStreamerCpp,
-//            onServerConnectedCpp,
-//            onServerDisconnectedCpp);
 
-//        return viewer;
-//    }
 
 Viewer* createViewer( onNewStreamerFunc onNewStreamer,
                       onDelStreamerFunc onDelStreamer,
@@ -133,8 +85,6 @@ Viewer* createViewer( onNewStreamerFunc onNewStreamer,
                       const char* ipv4,
                       int port ) {
 
-    //    Viewer* viewer = new Viewer( "127.0.0.1", 4042, {}, {} );
-    //    return viewer;
 
     auto onNewStreamerCpp = [=]( const std::string& sensorName, const SensorSpec& sensorSpec ) {
         onNewStreamer( sensorName.c_str(), &sensorSpec );
@@ -152,20 +102,11 @@ Viewer* createViewer( onNewStreamerFunc onNewStreamer,
     auto onNewAcquisitionCpp = [=]( const std::string& sensorName, const Acquisition& acq ) {
         onNewAcquisition( sensorName.c_str(), &acq );
     };
-    //    auto onServerConnectedCpp = [=](  ) {
-    //        onServerConnected();
-    //    };
-    //    auto onServerDisconnectedCpp = [=](  ) {
-    //        onServerDisconnected();
-    //    };
-    //    Viewer * viewer = new Viewer( onNewStreamerCpp, onDelStreamerCpp, onServerConnectedCpp,
-    //    onServerDisconnectedCpp, std::string(ipv4), port);
     Viewer* viewer = new Viewer( onNewStreamerCpp,
                                  onDelStreamerCpp,
                                  onServerConnectedCpp,
                                  onServerDisconnectedCpp,
                                  onNewAcquisitionCpp,
-                                 //                                 {},
                                  ipv4,
                                  port );
     return viewer;
@@ -177,23 +118,12 @@ void freeViewer( Viewer* viewer ) {
 }
 
 void sensorSpec_getSensorName( const SensorSpec* sensorSpec, char* sensorName, int* strLen ) {
-    //    sensorName = sensorSpec->m_sensorName.c_str();
-    //    sensorName = new char[sensorSpec->m_sensorName.size() + 1];
     *strLen = sensorSpec->m_sensorName.size();
     memcpy( sensorName, sensorSpec->m_sensorName.c_str(), *strLen + 1 );
     sensorName[*strLen] = 0;
-    //    sensorName = sensorSpec->m_sensorName.c_str();
 }
 ////void passString([out] LPStr *str);
 // const char * sensorSpec_getSensorName(const SensorSpec* sensorSpec) {
-////    sensorName = sensorSpec->m_sensorName.c_str();
-////    sensorName = new char[sensorSpec->m_sensorName.size() + 1];
-//    return "hello";
-//    return sensorSpec->m_sensorName.c_str();
-////    const int len = sensorSpec->m_sensorName.size();
-////    memcpy(sensorName, sensorSpec->m_sensorName.c_str(), len + 1);
-////    sensorName[len] = 0;
-////    sensorName = sensorSpec->m_sensorName.c_str();
 //}
 
 int sensorSpec_getResolutionSize( const SensorSpec* sensorSpec, int iResolution ) {
@@ -226,7 +156,6 @@ int sensorSpec_getDimension( const SensorSpec* sensorSpec, int iResolution, int 
 
 void sensorSpec_getResolutionsStr( const SensorSpec* sensorSpec, char* resolutionsStr ) {
     const auto& resolutionsString = SensorSpec::resolutions2string( sensorSpec->m_resolutions );
-    //    resolutionsStr = new char[resolutionsString.size() + 1];
     const int len = resolutionsString.size();
     memcpy( resolutionsStr, resolutionsString.c_str(), len + 1 );
     resolutionsStr[len] = 0;
@@ -234,7 +163,6 @@ void sensorSpec_getResolutionsStr( const SensorSpec* sensorSpec, char* resolutio
 
 void sensorSpec_getMetaDataStr( const SensorSpec* sensorSpec, char* metaDataStr ) {
     const auto& metaDataString = SensorSpec::metaData2string( sensorSpec->m_metaData, true );
-    //    metaDataStr = new char[metaDataString.size() + 1];
     const int len = metaDataString.size();
     memcpy( metaDataStr, metaDataString.c_str(), len + 1 );
     metaDataStr[len] = 0;
@@ -259,7 +187,6 @@ bool metaData_getString( const SensorSpec::MetaData* metaData,
     if ( metaData->find( metaName ) == metaData->end() ) return false;
 
     const char* meta = std::any_cast<const char*>( metaData->at( metaName ) );
-    //    output = (char*)meta;
     *strLen = strlen( meta );
     memcpy( output, meta, *strLen + 1 );
     output[*strLen] = 0;
@@ -271,7 +198,6 @@ bool metaData_getMat4( const SensorSpec::MetaData* metaData, const char* metaNam
         const float* array = std::any_cast<const float*>( metaData->at( metaName ) );
         memcpy( output, array, 64 );
         return true;
-        //        m_transform        = Eigen::Map<Eigen::Matrix4f>( (float*)array ); // Column-major
     }
     return false;
 }
@@ -295,26 +221,8 @@ unsigned int metaData_getUInt( const SensorSpec::MetaData* metaData, const char*
 }
 
 // bool getAcquisition( InputSensor* inputSensor,
-//                      long long* start,
-//                      long long* end,
-//                      unsigned char* data ) {
-//     assert( inputSensor != nullptr );
 
-//    std::cout << "[Native] getAcquisition( " << inputSensor << ")" << std::endl;
-//    try {
-//        auto acq = inputSensor->getAcquisition();
-//        //    Acq acq;
-//        *start = acq.start;
-//        *end   = acq.mBackendTimeOfArrival;
-//        //    data = acq.mData;
-//        memcpy( data, acq.mData, inputSensor->spec.acquisitonSize );
-//    }
-//    catch ( std::exception& e ) {
-//        std::cout << "[Native] getAcquisition : catch exception : " << e.what() << std::endl;
-//        return false;
-//    }
 
-//    return true;
 //}
 
 } // namespace native

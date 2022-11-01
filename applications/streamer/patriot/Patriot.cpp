@@ -97,8 +97,6 @@ bool Patriot::connect() {
     std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
     putTrackerIntoBinaryMode();
 
-    //   bool isbinary = getIsInBinaryOutputMode();
-    //   assert(isbinary);
 
     unsigned int stationStateBitmap = getStationActivationState();
     updateSensorActiveState( stationStateBitmap );
@@ -196,10 +194,7 @@ bool Patriot::receive( void* binaryResponsebuffer, int bufferSize ) {
                                         USB_TIMEOUT );
 
         assert( bytesRead <= bufferSize - downloadSize );
-        //      assert(ret == LIBUSB_SUCCESS || ret == LIBUSB_ERROR_TIMEOUT);
-        //      assert(ret == LIBUSB_SUCCESS);
 
-        //      assert(ret == LIBUSB_SUCCESS);
         if ( ret == LIBUSB_SUCCESS ) {
             downloadSize += bytesRead;
             continue;
@@ -214,15 +209,6 @@ bool Patriot::receive( void* binaryResponsebuffer, int bufferSize ) {
             assert( false );
         }
 
-        //      if (ret == LIBUSB_ERROR_TIMEOUT) {
-        //          std::cout << "[Patriot] receive timeout" << std::endl;
-        //      }
-        //      if (bytesRead == 0) {
-        //          std::cout << "[Patriot] receive 0 data" << std::endl;
-        //      }
-        //      std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-        //      assert(ret == LIBUSB_ERROR_TIMEOUT);
-        //      std::cout << "[Patriot] receive timeout" << std::endl;
     }
 
     char buff[256] = { 0 };
@@ -235,15 +221,11 @@ bool Patriot::receive( void* binaryResponsebuffer, int bufferSize ) {
     std::cout << std::endl;
 
     assert( downloadSize == bufferSize );
-    //  if (bytesRead <= 0 || ret != LIBUSB_SUCCESS)
-    //  if (downloadSize <= 0)
-    //    return false;
 
     bool ok = checkResponseData( *(BinaryResponseHeader*)binaryResponsebuffer );
     assert( ok );
 
     // TODO How to invoke overriding methods in C++? Use templates?
-    //  return checkResponseData(*(BinaryResponseHeader *)binaryResponsebuffer);
     return true;
 }
 
@@ -278,7 +260,6 @@ void Patriot::send( string data ) const {
     while ( uploadSize != dataSize ) {
         int writtenBytes = 0;
 
-        //      unsigned char *udata = (unsigned char *)data.c_str();
 
         int ret = libusb_bulk_transfer( handle,
                                         USB_PARMS[PATRIOT].bulkWriteEndPoint,
@@ -383,7 +364,6 @@ TrackerVersionInfo const* Patriot::getVersionInfo() {
     if ( trackerVerInf == nullptr ) {
         requestVersionInfo();
         WhoAmIBinaryResponse whoAmIBinaryResponse;
-        //    std::this_thread::sleep_for(std::chrono::milliseconds(100));
         //			usleep(100000);
         receive( &whoAmIBinaryResponse, sizeof( WhoAmIBinaryResponse ) );
         trackerVerInf = new TrackerVersionInfo( whoAmIBinaryResponse );
@@ -400,7 +380,6 @@ bool Patriot::getIsInBinaryOutputMode() {
     string binaryModeRequest = "F\r";
 
     send( binaryModeRequest );
-    //  std::this_thread::sleep_for(std::chrono::milliseconds(100));
     receive( outPutFormatBinaryResponse );
 
     // TODO Endianess conversion
@@ -420,10 +399,7 @@ void Patriot::setTrackerBinaryMode( bool setBinaryMode ) {
         string asciiModeRequest = "F0\r";
         send( asciiModeRequest );
     }
-    //  std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
-    //  OutputFormatBinaryResponse outPutFormatBinaryResponse;
-    //  Patriot::receive(outPutFormatBinaryResponse);
 }
 
 /**

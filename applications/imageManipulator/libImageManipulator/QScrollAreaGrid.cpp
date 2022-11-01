@@ -12,13 +12,10 @@ void QScrollAreaGrid::wheelEvent( QWheelEvent* event ) {
     int ry = event->angleDelta().ry();
 
     constexpr double speed = 0.1;
-    //    std::cout << ry << std::endl;
     if ( ry > 0 ) {
-        //        *mCanvasPixelPerUnit += speed;
         *mCanvasPixelPerUnit *= ( 1.0 + speed );
     }
     else if ( ry < 0 ) {
-        //        *mCanvasPixelPerUnit = std::max(*mCanvasPixelPerUnit - speed, 1.0);
         *mCanvasPixelPerUnit *= ( 1.0 - speed );
     }
 
@@ -30,7 +27,6 @@ void QScrollAreaGrid::wheelEvent( QWheelEvent* event ) {
 #else
     double y = event->x();
 #endif
-    //    double vUnit = (vScroll + y) / mCanvasPixelPerUnit;
     verticalScrollBar()->setValue( vScroll + y );
     m_scrollAreaLeft->verticalScrollBar()->setValue( vScroll + y );
 
@@ -45,7 +41,6 @@ void QScrollAreaGrid::wheelEvent( QWheelEvent* event ) {
     horizontalScrollBar()->setValue( hScroll + x );
     m_scrollAreaTop->horizontalScrollBar()->setValue( hScroll + x );
 
-    //    update();
     emit pixelPerUnitChanged();
 
     event->accept();
@@ -53,9 +48,7 @@ void QScrollAreaGrid::wheelEvent( QWheelEvent* event ) {
 
 void QScrollAreaGrid::mousePressEvent( QMouseEvent* event ) {
     if ( event->button() == Qt::LeftButton ) {
-        //        setCursor(Qt::SplitHCursor);
         setCursor( Qt::DragMoveCursor );
-        //        mousePosX  = event->x();
         mousePosX  = event->position().x();
         mousePosY  = event->position().y();
         hSliderPos = this->horizontalScrollBar()->value();
@@ -82,7 +75,6 @@ void QScrollAreaGrid::mouseMoveEvent( QMouseEvent* event ) {
         verticalScrollBar()->setValue( yPos );
         m_scrollAreaLeft->verticalScrollBar()->setValue( yPos );
     }
-    //    event->accept();
 }
 
 void QScrollAreaGrid::setCanvasPixelPerUnit( double* newCanvasPixelPerUnit ) {
@@ -99,5 +91,4 @@ void QScrollAreaGrid::setScrollAreaTop( QScrollArea* newScrollAreaTop ) {
 
 // const double& QScrollAreaGrid::getCanvasPixelPerUnit() const
 //{
-//     return mCanvasPixelPerUnit;
 // }

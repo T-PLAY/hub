@@ -43,7 +43,6 @@ using std::vector;
 
 #define READ_BUFFER_SIZE 1000
 #define USB_TIMEOUT 50
-//    #define USB_TIMEOUT 500
 #define PATRIOT_SENSOR_COUNT 2
 
 #define POLHEMUS_NO_FIRMWARE_PRODUCTID 0xef11
@@ -216,12 +215,8 @@ class Patriot
      */
     BinaryPosition getMeasurement();
 
-    //        void * getData();
-    //        SingleDataBinaryResponse2_4_1 getData();
     void updateData( void* data );
 
-    //    private:
-    //        void * data = nullptr;
 };
 } // namespace Polhemus
 

@@ -25,7 +25,6 @@ MainWindow::MainWindow( QWidget* parent ) : QMainWindow( parent ), ui( new Ui::M
                       this,
                       &MainWindow::updateLatency );
 
-    //    {
     std::string filename =
         PROJECT_DIR "data/records/5HzRadialAxial/Polhemus Patriot (sensor 2).txt";
     std::cout << "read '" << filename << "' record" << std::endl;
@@ -39,9 +38,7 @@ MainWindow::MainWindow( QWidget* parent ) : QMainWindow( parent ), ui( new Ui::M
     m_acqs = inputSensor.getAllAcquisitions();
 
     std::cout << m_acqs.size() << " acquisitions read." << std::endl;
-    //    }
 
-    //    {
     std::string filename2 = PROJECT_DIR "data/records/5HzRadialAxial/ULA-OP 256.txt";
     std::cout << "read '" << filename2 << "' record" << std::endl;
     assert( std::filesystem::exists( filename2 ) );
@@ -54,7 +51,6 @@ MainWindow::MainWindow( QWidget* parent ) : QMainWindow( parent ), ui( new Ui::M
     m_acqs2 = inputSensor2.getAllAcquisitions();
 
     std::cout << m_acqs2.size() << " acquisitions read." << std::endl;
-    //    }
 
     m_outputSensor = new hub::OutputSensor(
         inputSensor.m_spec + inputSensor2.m_spec,
@@ -91,19 +87,12 @@ void MainWindow::updateLatency() {
     *m_outputSensor << ( hub::Acquisition( -1, -1 )
                          << m_acqs.front().getMeasures() << m_acqs2.front().getMeasures() );
 
-    //    for ( const auto& acq : m_acqs ) {
-    //        *m_outputSensor
-    //            << ( hub::Acquisition { acq.m_start + m_latency * 1000, acq.m_end + m_latency *
-    //            1000 }
-    //                 << acq.getMeasures() );
-    //    }
     auto it = m_acqs.begin();
 
     assert( it->getMeasures().size() == 1 );
     assert( m_acqs2.front().getMeasures().size() == 1 );
 
     for ( const auto& acq2 : m_acqs2 ) {
-        //        const auto acqStart = it->m_start + latency * 1000;
         const auto acq2Start = acq2.m_start + latency2 * 1000;
 
         int dist = std::abs( acq2Start - ( it->m_start + latency * 1000 ) );
@@ -112,14 +101,12 @@ void MainWindow::updateLatency() {
             ++it;
             dist = std::abs( acq2Start - ( it->m_start + latency * 1000 ) );
         }
-        //        assert(dist < 8'000);
         if ( dist > m_maxDist ) {
             std::cout << "dist sup 8ms : " << dist << std::endl;
             continue;
         }
 
         const hub::Dof6& dof6 = it->getMeasures().front();
-        //        hub::Dof6 dof62;
         auto it2 = m_acqs.begin();
 
         assert( ( it - 1 )->m_start < it->m_start );
@@ -130,40 +117,18 @@ void MainWindow::updateLatency() {
             if ( it == m_acqs.begin() ) continue;
             assert( it != m_acqs.begin() );
             it2 = it - 1;
-            //            it2 = it;
-            //            it = it - 1;
         }
         else {
             assert( it != m_acqs.end() );
             it2 = it + 1;
         }
 
-        //        if ( it == m_acqs.begin() ) { it2 = it + 1; }
-        //        else if ( it == m_acqs.end() ) { it2 = it - 1; }
-        //        else if ( std::abs( acq2Start - ( ( it - 1 )->m_start + latency * 1000 ) ) >
-        //                  std::abs( acq2Start - ( ( it + 1 )->m_start + latency * 1000 ) ) ) {
-        //            it2 = it + 1;
-        //        }
-        //        else { it2 = it - 1; }
         const hub::Dof6& dof62 = it2->getMeasures().front();
 
         auto it2Start = it2->m_start + latency * 1000;
 
-        //        assert(itStart <= acq2Start);
-        //        assert(acq2Start <= it2Start);
         assert( itStart <= acq2Start <= it2Start || it2Start <= acq2Start <= itStart );
-        //        auto dof6Interpolate = dof6 * dof62;
-        //        auto acqInterpolate = hub::Acquisition::lerp(*it, *it2, acq2Start);
 
-        //    const Dof6& left  = ( startLeft > startRight ) ? ( pRight ) : ( pLeft );
-        //    const Dof6& right = ( startLeft > startRight ) ? ( pLeft ) : ( pRight );
-        //    if ( startLeft > startRight ) {
-        //        long long tmp = startLeft;
-        //        startLeft     = startRight;
-        //        startRight    = tmp;
-        //    }
-        //    assert( startLeft <= time && time <= startRight );
-        //    //    Dof6 ret;
         double t            = ( acq2Start - itStart ) / ( it2Start - itStart );
         auto acqInterpolate = hub::Dof6::slerp( dof6, dof62, t );
 
@@ -172,14 +137,8 @@ void MainWindow::updateLatency() {
             acq << hub::Measure { acqInterpolate.m_data, acqInterpolate.m_size };
         }
         else { acq << hub::Measure { dof6.m_data, dof6.m_size }; }
-        //        acq << hub::Measure { dof6Interpolate.m_data, dof6Interpolate.m_size };
         acq << acq2.getMeasures();
         *m_outputSensor << acq;
-        //        *m_outputSensor << ( hub::Acquisition { acq2Start, acq2Start } <<
-        //        it->getMeasures()
-        //                                                                       <<
-        //                                                                       acq2.getMeasures()
-        //                                                                       );
     }
     std::cout << std::endl;
 }

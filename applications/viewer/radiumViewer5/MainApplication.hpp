@@ -9,8 +9,6 @@
 // namespace Ra {
 // class MainApplication : public Ra::Gui::BaseApplication
 //{
-//   public:
-//     using Ra::Gui::BaseApplication::BaseApplication;
 // };
 
 //} // namespace Ra

@@ -21,7 +21,6 @@ class MainWindowStreamView : public QMainWindow
     MainWindowStreamView( const hub::InputSensor& inputStream, QWidget* parent = nullptr );
     ~MainWindowStreamView();
 
-    //    std::string getStreamerSensorName() const;
 
     void setData( unsigned char* img_ptr, std::vector<int> dims, hub::SensorSpec::Format format );
 
@@ -33,10 +32,8 @@ class MainWindowStreamView : public QMainWindow
   private:
     Ui::MainWindowStreamView* ui;
 
-    //    Thread_InputStream mThread;
     const hub::InputSensor& m_inputStream;
 
-    //    std::string mSensorName;
 };
 
 #endif // MAINWINDOWSTREAMVIEW_H

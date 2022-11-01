@@ -81,9 +81,6 @@ size_t SensorSpec::computeAcquisitionSize( const Resolutions& resolutions ) {
     size_t size = 0;
     for ( const auto& resolution : resolutions ) {
         size += computeAcquisitionSize( resolution );
-        //        const auto& dims   = pair.first;
-        //        const auto& format = pair.second;
-        //        size += computeAcquisitionSize( format, dims );
     }
     return size;
 }
@@ -183,8 +180,6 @@ std::string SensorSpec::metaData2string( const std::pair<std::string, std::any>&
     const auto& name = metaData.first;
     const auto& val  = metaData.second;
     //#ifdef WIN32
-    //    std::string str = std::string( val.type().name() ) + " " + name + " = '" +
-    //                      hub::io::Interface::anyValue2string( val ) + "'";
     //#else
     std::string str = hub::io::Interface::anyType2string( val ) + " " + name + " = '" +
                       hub::io::Interface::anyValue2string( val ) + "'";

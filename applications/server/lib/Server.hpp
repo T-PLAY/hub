@@ -48,12 +48,9 @@ class Server
 
     void newAcquisition( StreamerClient* streamer, const hub::Acquisition& acq );
 
-    //    const std::vector<std::shared_ptr<hub::Acquisition>>&
-    //    getLastAcqs( const std::string& streamName );
 
   public:
     bool m_acqPing = true;
-    //    bool m_acqPing = false;
 
   private:
     std::map<std::string, StreamerClient*> m_streamers;
@@ -79,23 +76,13 @@ class Server
 
 // class StreamViewerClient : public io::InputInterface, public net::ClientSocket
 //{
-//   public:
-//     StreamViewerClient( net::ClientSocket&& clientSocket ); // server side
 // };
 
 // struct Streamer {
-//     hub::InputSensor mInputSensor;
-//     std::string mSensorName;
 
-//    std::list<hub::OutputSensor> mOutputSensors;
-//    std::map<std::string, std::list<hub::OutputSensor>> mSensor2syncViewers;
 
-//    Streamer* mSyncMaster = nullptr;
-//    std::map<std::string, std::deque<hub::Acquisition>> mSensor2acqs;
 //};
 
 // struct Viewer {
-//     const hub::net::ClientSocket* const mSock = nullptr;
 
-//    void notifyNewStreamer( const Streamer& streamer ) const;
 //};

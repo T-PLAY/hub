@@ -92,8 +92,6 @@ struct OutputFormatBinaryResponse : BinaryResponseHeader {
 
     friend std::ostream& operator<<( std::ostream& os,
                                      const OutputFormatBinaryResponse& response ) {
-        //        BinaryResponseHeader::operator<<(os, response);
-        //        os << BinaryResponseHeader(response);
         if ( response.asciiOrBinary == 0 )
             os << "ascii";
         else

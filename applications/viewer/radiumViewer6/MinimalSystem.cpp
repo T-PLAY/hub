@@ -6,5 +6,4 @@
 // void MinimalSystem::generateTasks( Ra::Core::TaskQueue*, const Ra::Engine::FrameInfo& ) {}
 
 // void MinimalSystem::addComponent( Ra::Engine::Scene::Entity* ent, MinimalComponent* comp ) {
-//     registerComponent( ent, comp );
 // }

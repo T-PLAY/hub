@@ -10,13 +10,10 @@
 #include <InputSensor.hpp>
 
 int main( int argc, char* argv[] ) {
-    //    argc = 2;
     std::string sensorNames[3]       = { "proceduralStreamer", "proceduralStreamer2", "Keyboard" };
     std::string sensorMasterNames[3] = { "", "proceduralStreamer", "" };
-    //    assert(argc == 2);
     // int i = atoi(argv[1]);
     int iSensor = 2;
-    //    assert(i == 0 || i == 1);
 
     std::cout << "inputStream" << std::endl;
     hub::InputSensor inputStream(
@@ -39,12 +36,10 @@ int main( int argc, char* argv[] ) {
     std::cout << "acquisitionSize = " << acquisitionSize << std::endl;
     // const int width = inputStream.getDims().at(0);
 
-    //    Stream::Acquisition acq;
 
     while ( true ) {
         const auto start = std::chrono::high_resolution_clock::now();
         for ( int i = 0; i < 10; ++i ) {
-            //            inputStream >> acq;
             auto acq = inputStream.getAcquisition();
 
             std::cout << acq << std::endl;

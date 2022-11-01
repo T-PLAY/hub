@@ -64,7 +64,6 @@ void ClientSocket::connectToServer() {
         perror( "[socket] socket creation failed.\n" );
         return;
     }
-    //    net::sSockets.push_back( m_fdSock );
     net::registerSocket( m_fdSock );
 
     // Server address construction
@@ -73,12 +72,10 @@ void ClientSocket::connectToServer() {
     serv_addr.sin_family = AF_INET;
     // serv_addr.sin_addr.s_addr = inet_addr(m_ipv4.c_str()); // winsock 1.0
     inet_pton( AF_INET, m_ipv4.c_str(), &serv_addr.sin_addr.s_addr ); // winsock 2.0
-    //     InetPton( AF_INET, (PCWSTR)m_ipv4.c_str(), &serv_addr.sin_addr.s_addr ); // winsock 2.0
     serv_addr.sin_port = htons( m_port ); // Server port
 
     // Connect to server
     while ( connect( m_fdSock, (struct sockaddr*)&serv_addr, sizeof( serv_addr ) ) < 0 ) {
-        //        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 #ifdef DEBUG_SOCKET
         DEBUG_MSG( "[ClienSocket] failed to connect to server ########################" );
 #endif
@@ -122,16 +119,9 @@ ClientSocket::ClientSocket( socket_fd fdSock ) {
 }
 
 // ClientSocket::ClientSocket( ClientSocket&& sock ) noexcept :
-//     Socket(),
-//     m_ipv4( sock.m_ipv4 ),
-//     m_port( sock.m_port )
-////    mIsServer( sock.mIsServer )
 //{
-////    m_fdSock      = sock.m_fdSock;
-////    sock.m_fdSock = INVALID_SOCKET;
 
 //#ifdef DEBUG_SOCKET
-//    DEBUG_MSG( getHeader( m_fdSock ) << "ClientSocket(ClientSocket && sock)" );
 //#endif
 //}
 
@@ -143,20 +133,11 @@ ClientSocket::~ClientSocket() {
 }
 
 // void ClientSocket::close() {
-//     clear();
 // }
 
 void ClientSocket::write( const unsigned char* data, size_t len ) const {
 #ifdef DEBUG_SOCKET
     // DEBUG_MSG(getHeader(m_fdSock) << "write message ");
-//    std::string str = "[ClientSocket] write(uchar*, len) : " + getHeader(m_fdSock) + " [";
-//    for (size_t i = 0; i < std::min(10, (int)len); ++i) {
-//        std::cout << (int)*(data + i) << " ";
-//        str += std::to_string((int)*(data + i)) + " ";
-//    }
-//    str += "]";
-//    std::cout << str << std::endl;
-//    std::cout << std::endl;
 #endif
     assert( len > 0 );
     size_t uploadSize = 0;
@@ -176,7 +157,6 @@ void ClientSocket::write( const unsigned char* data, size_t len ) const {
             byteSent = send(
                 m_fdSock, (const char*)data + uploadSize, static_cast<int>( len - uploadSize ), 0 );
         }
-        //        catch (std::runtime_error & e) {
         catch ( std::exception& e ) {
             assert( false );
             throw e;
@@ -230,18 +210,7 @@ void ClientSocket::read( unsigned char* data, size_t len ) const {
     } while ( len != downloadSize );
 
 #ifdef DEBUG_SOCKET
-//    DEBUG_MSG(getHeader(m_fdSock) << "read message ");
 //
-//    for (size_t i = 0; i < std::min(10, (int)len); ++i) {
-//        std::cout << (int)*(data + i) << " ";
-//    }
-//    std::cout << std::endl;
-//    std::string str = "[ClientSocket] read(uchar*, len) : " + getHeader(m_fdSock) + " [";
-//    for (size_t i = 0; i < std::min(10, (int)len); ++i) {
-//        str += std::to_string((int)*(data + i)) + " ";
-//    }
-//    str += "]";
-//    std::cout << str << std::endl;
 #endif
 }
 
@@ -251,30 +220,12 @@ void ClientSocket::close() {
 
 // Acquisition ClientSocket::getAcquisition(int acquistionSize) const
 //{
-//     std::cout << "hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh" << std::endl;
-//     Acquisition acq = io::Interface::getAcquisition(acquistionSize);
-//     return acq;
 // }
 
 // void ClientSocket::waitClose() const {
-//     Socket::Message message;
-//     bool wantToClose = false;
-//     while ( !wantToClose ) {
-//         io::Interface::read( message );
 
-//        switch ( message ) {
-//        case Message::CLOSE:
-//            wantToClose = true;
-//            break;
 
-//        default:
-//            DEBUG_MSG( "waitClose, sleep" );
-//            std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
-//            break;
-//        }
-//    }
 
-//    io::Interface::write( Message::OK );
 //}
 
 void ClientSocket::clear() {

@@ -18,26 +18,20 @@ class FormImageManipulator : public QWidget
     explicit FormImageManipulator( QWidget* parent = nullptr );
     ~FormImageManipulator();
 
-    //    void update(const hub::Acquisition & acquisition);
     void init();
 
   public slots:
     void onStreamViewInited();
 
-    //    void update();
 
   public:
     WidgetStreamView2D& getWidgetStreamView();
 
   protected:
-    //    void paintEvent(QPaintEvent* event) override;
 
   private:
     Ui::FormImageManipulator* ui;
 
-    //    const double m_realWidth = 50.0; // millimeters
-    //    const double m_realHeight = 35.0; // millimeters
-    //    double m_ratio = 1.0;
 };
 
 #endif // FORMIMAGEMANIPULATOR_H

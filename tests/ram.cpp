@@ -8,8 +8,6 @@
 
 TEST_CASE( "Ram test" ) {
 
-    //    const hub::SensorSpec sensorSpec( "hello", hub::SensorSpec::Format::BGR8, { 1 } );
-    //    hub::OutputSensor outputSensor( std::move( sensorSpec ), std::move( file ) );
 
     hub::io::CyclicBuff cyclicBuff;
 
@@ -18,8 +16,6 @@ TEST_CASE( "Ram test" ) {
     for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
         unsigned char data[3] = {
             (unsigned char)iAcq, (unsigned char)( iAcq + 1 ), (unsigned char)( iAcq + 2 ) };
-        //        acqs.emplace_back( iAcq, iAcq, data, 3 );
-        //        acqs.emplace_back( iAcq, iAcq );
         acqs.push_back( hub::Acquisition( iAcq, iAcq ) );
         acqs.back() << hub::Measure( data, 3 );
         CHECK( acqs.back().getSize() == 3 );
@@ -62,16 +58,12 @@ TEST_CASE( "Ram test" ) {
         CHECK( sensorSpec.m_resolutions[0].first.size() == 1 );
         CHECK( sensorSpec.m_resolutions[0].first.at( 0 ) == 1 );
         CHECK( sensorSpec.m_resolutions[0].second == hub::SensorSpec::Format::BGR8 );
-        //        const auto& inputAcqs = inputSensor.getAllAcquisitions();
         std::cout << "####### compare acqs" << std::endl;
         for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
-            //            CHECK( inputAcqs[iAcq] == acqs[iAcq] );
             auto acq = inputSensor.getAcquisition();
             CHECK( acq == acqs[iAcq] );
         }
     }
     std::cout << "inputStream end #################################" << std::endl;
 
-    //    hub::OutputSensor outputSensor2(hub::SensorSpec("hello2"), std::fstream(filename,
-    //    std::ios::out));
 }

@@ -52,7 +52,6 @@ class SRC_API Viewer
     bool m_serverConnected = false;
     std::regex m_ipv4Regex;
 
-    //    std::map<std::string, std::unique_ptr<InputSensor>> m_streamName2inputSensor;
     std::map<std::string, SensorSpec> m_streamName2sensorSpec;
     std::map<std::string, std::thread> m_streamName2thread;
     std::map<std::string, bool> m_streamName2stopThread;

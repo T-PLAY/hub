@@ -48,11 +48,8 @@ MainWindow::MainWindow( QWidget* parent ) : QMainWindow( parent ), ui( new Ui::M
                       this,
                       &MainWindow::updateTransform );
 
-    //    std::string sensorName = "calibrator";
     hub::SensorSpec::MetaData metaData;
-    //    metaData["parent"] = "Keyboard";
     metaData["parent"] = "Polhemus Patriot (sensor 2)";
-    //    metaData["scanWidth"] = 10.0;
     m_outputSensor = new hub::OutputSensor(
         { "calibrator", { { { 1 }, hub::SensorSpec::Format::MAT4 } }, metaData },
         hub::io::OutputStream( "calibrator" ) );
@@ -86,16 +83,12 @@ void MainWindow::updateTransform() {
     int sy    = ui->spinBox_sy->value();
     int sz    = ui->spinBox_sz->value();
     transform = glm::scale( transform, glm::vec3( (float)sx, (float)sy, (float)sz ) );
-    //    transform = glm::scale( transform, glm::vec3( 0.0, 1.0, 0.0 ) * (float)sy );
-    //    transform = glm::scale( transform, glm::vec3( 0.0, 0.0, 1.0 ) * (float)sz );
 
     m_transform = transform;
 
-    //    std::string matPrint = glm::to_string( transform );
     std::string matPrint = "mat4 :\n";
     for ( int i = 0; i < 4; ++i ) {
         for ( int j = 0; j < 4; ++j ) {
-            //            std::cout << transform[i][j] << ", ";
             matPrint += std::to_string( transform[i][j] ) + ", ";
         }
         matPrint += "\n";

@@ -72,7 +72,6 @@ const std::string _vertexShaderSource {
     "    out_texcoord = in_texcoord;\n"
     "}\n" };
 
-//  Fragment shader source code
 const std::string _fragmentShaderSource {
     "#include \"BlinnPhong.glsl\"\n"
     "#include \"VertexAttribInterface.frag.glsl\"\n"
@@ -89,8 +88,6 @@ const std::string _fragmentShaderSource {
 
 MainWindow::MainWindow( QWidget* parent ) : QMainWindow( parent ), ui( new Ui::MainWindow ) {
     ui->setupUi( this );
-    //    setCentralWidget(ui->centralwidget);
-    //    ui->centralwidget->show();
 
     // Initialize Engine.
     m_engine = Ra::Engine::RadiumEngine::createInstance();
@@ -110,12 +107,7 @@ MainWindow::MainWindow( QWidget* parent ) : QMainWindow( parent ), ui( new Ui::M
     CORE_ASSERT( m_viewer != nullptr, "GUI was not initialized" );
 
     m_viewerWidget = QWidget::createWindowContainer( m_viewer, ui->splitter );
-    //    delete ui->widgetRadium;
     ui->layoutRadium->addWidget( m_viewerWidget );
-    //    ui->splitter->replaceWidget(1, m_viewerWidget);
-    //    ui->splitter->addWidget(m_viewerWidget);
-    //    ui->widgetRadium = QWidget::createWindowContainer(m_viewer, this);
-    //    setCentralWidget(m_viewerWidget);
     connect( m_viewer,
              &Ra::Gui::Viewer::requestEngineOpenGLInitialization,
              this,
@@ -123,21 +115,14 @@ MainWindow::MainWindow( QWidget* parent ) : QMainWindow( parent ), ui( new Ui::M
     m_viewer->setupKeyMappingCallbacks();
 
     m_viewer->show();
-    //    CORE_ASSERT(m_viewer->getContext()->isValid(), "OpenGL was not initialized");
 
     m_engine->registerSystem(
         "GeometrySystem", new Ra::Engine::Scene::GeometrySystem, 1000 ); // BaseApplication.cpp
                                                                          // Create one system
-    //    MinimalSystem* sys = new MinimalSystem;
-    //    app.m_engine->registerSystem( "Minimal system", sys );
     auto* sys = m_engine->getSystem( "GeometrySystem" );
     ;
 
     // Create and initialize entity and component
-    //    Ra::Engine::Scene::Entity* e = m_engine->getEntityManager()->createEntity( "Cube" );
-    //    MinimalComponent* c          = new MinimalComponent( e, *m_engine );
-    //    sys->addComponent( e, c );
-    //    c->initialize();
 
     // prepare the viewer to render the scene (i.e. build RenderTechniques for the active renderer)
     m_viewer->prepareDisplay();
@@ -146,9 +131,6 @@ MainWindow::MainWindow( QWidget* parent ) : QMainWindow( parent ), ui( new Ui::M
     keyMappingManager->addListener(
         Ra::Gui::RotateAroundCameraManipulator::KeyMapping::configureKeyMapping );
 
-    //    m_viewer->setCameraManipulator(new Ra::Gui::RotateAroundCameraManipulator(
-    //        *(m_viewer->getCameraManipulator()), m_viewer));
-    //    initScene();
 
     // Initialize timer for the spinning cube.
     m_frame_timer = new QTimer( this );
@@ -169,7 +151,6 @@ MainWindow::MainWindow( QWidget* parent ) : QMainWindow( parent ), ui( new Ui::M
 
     try {
         if ( m_scanStream != nullptr ) {
-            //            m_poseStream = new InputStream("Polhemus Patriot (probe)", "ULA-OP 256");
             m_poseStream = new InputStream( "Polhemus Patriot (probe)" );
         }
         else { m_poseStream = new InputStream( "Polhemus Patriot (probe)" ); }
@@ -178,9 +159,6 @@ MainWindow::MainWindow( QWidget* parent ) : QMainWindow( parent ), ui( new Ui::M
         std::cout << "[main] catch exception " << e.what() << std::endl;
         m_poseStream = nullptr;
     }
-    //            initScene();
-    //    m_threadClient = new Thread_Client(this, *m_viewer, *m_engine);
-    //    m_threadClient->start();
 }
 
 MainWindow::~MainWindow() {
@@ -200,8 +178,6 @@ MainWindow::~MainWindow() {
 
     delete ui;
 
-    //    mThreadClient.requestInterruption();
-    //    mThreadClient.wait();
 }
 
 void MainWindow::onGLInitialized() {
@@ -212,69 +188,24 @@ void MainWindow::onGLInitialized() {
     std::shared_ptr<Ra::Engine::Rendering::Renderer> e(
         new Ra::Engine::Rendering::ForwardRenderer() );
     m_viewer->addRenderer( e );
-    //    initScene();
     connect( m_frame_timer, &QTimer::timeout, this, &MainWindow::frame );
 }
 
 void MainWindow::frame() {
     // update geometry
     {
-        //        assert(m_scan != nullptr);
         if ( m_scan != nullptr ) {
-            //    g_scan->setLocalTransform(Transform { Translation(Vector3(2_ra, 2_ra, 2_ra)) });
             // update position and orientation
-            //            if (m_poseStream != nullptr) {
-            //                Stream::Acquisition posAcq;
-            //                *m_poseStream >> posAcq;
-            //                float* translation = (float*)posAcq.mData;
-            //                float* quaternion = (float*)&posAcq.mData[12];
 
-            //                // change to Radium base reference
-            //                Ra::Core::Transform TRadium = Ra::Core::Transform::Identity();
-            //                TRadium.rotate(Eigen::AngleAxis(1.0f * Ra::Core::Math::Pi,
-            //                Ra::Core::Vector3(0.0, 0.0, 1.0)));
-            //                TRadium.rotate(Eigen::AngleAxis(-0.5f * Ra::Core::Math::Pi,
-            //                Ra::Core::Vector3(1.0, 0.0, 0.0)));
 
-            //                // orientation
-            //                Ra::Core::Transform TOrientation = Ra::Core::Transform::Identity();
-            //                Ra::Core::Quaternion quat(quaternion[0], quaternion[1], quaternion[2],
-            //                quaternion[3]); TOrientation.rotate(quat);
 
-            //                // World transform
-            //                Ra::Core::Transform TWorld = Ra::Core::Transform::Identity();
 
-            //                Ra::Core::Vector3 vecPos(-translation[0], -translation[1],
-            //                -translation[2]);
 
-            //                vecPos /= 5.0;
-            //                TWorld.translate(vecPos);
 
-            //                //        g_scan->setLocalTransform(TRadium * TWorld * TOrientation *
-            //                TLocal);
-            //                //        g_probe->setLocalTransform(TRadium * TWorld * TOrientation *
-            //                TLocal); m_probe->setLocalTransform(TRadium * TWorld * TOrientation);
-            //                //        for (int i = 0; i < 3; ++i) {
-            //                //            g_probe_axis[i]->setLocalTransform(TRadium * TWorld *
-            //                TOrientation);
-            //                //        }
 
-            //                // Local transform scan
-            //                Ra::Core::Transform TLocal = Ra::Core::Transform::Identity();
-            //                TLocal.translate(Ra::Core::Vector3(1.0, 0.0, 2.0));
-            //                Ra::Core::Vector3 vecScale(1.0, 192.0 / 512, 1.0);
-            //                TLocal.scale(vecScale);
-            //                m_scan->setLocalTransform(TRadium * TWorld * TOrientation * TLocal);
-            //            }
 
             // update texture
             if ( m_scanStream != nullptr ) {
-                //                        unsigned char data[192 * 512] = { 0 };
-                //                        for (int i = 0; i < 192; ++i) {
-                //                            for (int j = 0; j < 512; j++) {
-                //                                data[i * 512 + j] = (m_acquisition + j) % 256;
-                //                            }
-                //                        }
                 Stream::Acquisition scanAcq;
                 *m_scanStream >> scanAcq;
 
@@ -335,25 +266,10 @@ void MainWindow::initScene() {
     uint circleGridSize = 8;
     uint numberOfSphere = 32;
 
-    //    //// GRID ////
-    //    {
 
-    //        auto gridPrimitive = DrawPrimitives::Grid(Vector3::Zero(),
-    //            Vector3::UnitX(),
-    //            Vector3::UnitZ(),
-    //            Color::Grey(0.6f),
-    //            cellSize,
-    //            nCellX);
 
-    //        //        auto gridRo = RenderObject::createRenderObject(
-    //        //            "test_grid", RenderObjectType::Geometry, gridPrimitive, {});
-    //                gridRo->setMaterial(Ra::Core::make_shared<PlainMaterial>("Grid material"));
 
-    //        //        gridRo->setPickable(false);
-    //        //        addRenderObject(gridRo);
-    //    }
 
-    //    auto plainMaterial = make_shared<PlainMaterial>("Plain Material");
     auto lambertianMaterial              = make_shared<LambertianMaterial>( "Lambertian Material" );
     lambertianMaterial->m_perVertexColor = true;
 
@@ -382,14 +298,12 @@ void MainWindow::initScene() {
         //! [Register the entity/component association to the geometry system ]
         geometrySystem->addComponent( e, c );
         //! [Register the entity/component association to the geometry system ]
-        //    ! [add the custom material to the material system]
         auto ro =
             Ra::Engine::RadiumEngine::getInstance()->getRenderObjectManager()->getRenderObject(
                 c->m_renderObjects[0] );
         ro->setLocalTransform( Transform { Translation( Vector3( 0_ra, 0_ra, 0_ra ) ) } );
         ro->setMaterial( lambertianMaterial );
 
-        //        m_threadClient->m_probe = ro.get();
     }
 
     // probe cube
@@ -417,20 +331,16 @@ void MainWindow::initScene() {
         //! [Register the entity/component association to the geometry system ]
         geometrySystem->addComponent( e, c );
         //! [Register the entity/component association to the geometry system ]
-        //    ! [add the custom material to the material system]
         auto ro =
             Ra::Engine::RadiumEngine::getInstance()->getRenderObjectManager()->getRenderObject(
                 c->m_renderObjects[0] );
         ro->setLocalTransform( Transform { Translation( Vector3( 0_ra, 2_ra, 0_ra ) ) } );
         ro->setMaterial( lambertianMaterial );
 
-        //        m_threadClient->m_probe = ro.get();
         m_probe = ro.get();
     }
 
-    //    std::shared_ptr<Ra::Engine::Rendering::RenderObject> roQuad;
     // quad texture
-    //    if (false)
     {
         //! [Creating the quad]
 #ifdef USE_GOT_PR
@@ -440,18 +350,10 @@ void MainWindow::initScene() {
 #endif
         //! [Creating the quad]
         // [Add missing texture coordonates for to the quad]
-        //        Ra::Core::Vector3Array tex_coords;
-        //        tex_coords.push_back({ 0_ra, 0_ra, 0_ra });
-        //        tex_coords.push_back({ 1_ra, 0_ra, 0_ra });
-        //        tex_coords.push_back({ 0_ra, 1_ra, 0_ra });
-        //        tex_coords.push_back({ 1_ra, 1_ra, 0_ra });
-        //        quad.addAttrib(Ra::Engine::Data::Mesh::getAttribName(Ra::Engine::Data::Mesh::VERTEX_TEXCOORD),
-        //        tex_coords);
 
         // [Add missing texture coordonates for to the quad]
 
         //! [Creating a texture for the quad]
-        //        unsigned char data[192 * 512] = { 0 };
         unsigned char* data = new unsigned char[192 * 512];
         // fill with some function
         for ( int i = 0; i < 192; ++i ) {
@@ -492,27 +394,17 @@ void MainWindow::initScene() {
         geometrySystem->addComponent( e, c );
         //! [Register the entity/component association to the geometry system ]
 
-        //        //! [Tell the window that something is to be displayed]
-        //                app.m_mainWindow->prepareDisplay();
-        //        //! [Tell the window that something is to be displayed]
 
-        //        //![get the renderobject for further edition]
         auto ro =
             Ra::Engine::RadiumEngine::getInstance()->getRenderObjectManager()->getRenderObject(
                 c->m_renderObjects[0] );
-        //        auto ro =
-        //        m_engine->getInstance()->getRenderObjectManager()->getRenderObject(c->m_renderObjects[0]);
         Ra::Engine::Data::ShaderConfiguration shaderConfig( "myShader" );
         shaderConfig.addShaderSource( Ra::Engine::Data::ShaderType_VERTEX, _vertexShaderSource );
         shaderConfig.addShaderSource( Ra::Engine::Data::ShaderType_FRAGMENT,
                                       _fragmentShaderSource );
 
-        //    Ra::Engine::Data::ShaderConfiguration shaderConfig(
-        //        "myShader", vertexShaderFile, fragmentShaderFile );
         ro->getRenderTechnique()->setConfiguration( shaderConfig );
 
-        //        m_threadClient->m_scan = ro.get();
         m_scan = ro.get();
-        //        roQuad = ro;
     }
 }

@@ -20,10 +20,8 @@ class MainWindowFactory : public Ra::Gui::BaseApplication::WindowFactory
 };
 
 int main( int argc, char** argv ) {
-    //    Ra::MainApplication app( argc, argv );
     Ra::Gui::BaseApplication app( argc, argv );
     app.initialize( MainWindowFactory() );
-    //    app.setContinuousUpdate( false );
 
     //! [Creating the cube]
     auto cube = Ra::Core::Geometry::makeSharpBox( { 0.1f, 0.1f, 0.1f } );

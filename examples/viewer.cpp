@@ -35,7 +35,6 @@ int main() {
 
     auto viewer = hub::Viewer(
         onNewStreamer, onDelStreamer, onServerConnected, onServerDisconnected, onNewAcquisition );
-    //        onNewStreamer, onDelStreamer, onServerConnected, onServerDisconnected );
 
     while ( true ) {
         std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );

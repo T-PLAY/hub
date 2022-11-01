@@ -17,7 +17,6 @@ TEST_CASE( "Measures test" ) {
     constexpr int imageSize = 512 * 512 * 2;
 
     hub::OutputSensor outputSensor( sensorSpec, hub::io::Ram( cyclicBuff ) );
-    //    const hub::SensorSpec& outputSensorSpec = outputSensor.m_spec;
     hub::Dof6 dof6( 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0 );
     CHECK( dof6.m_x == 1.0 );
     CHECK( dof6.m_y == 2.0 );
@@ -36,7 +35,6 @@ TEST_CASE( "Measures test" ) {
                                                 << hub::Measure( imageData, imageSize ) );
 
     hub::InputSensor inputSensor( ( hub::io::Ram( cyclicBuff ) ) );
-    //    hub::SensorSpec inputSensorSpec = inputSensor.m_spec;
 
     auto acq = inputSensor.getAcquisition();
     CHECK( acq.getSize() == 28 + imageSize );

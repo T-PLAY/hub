@@ -9,7 +9,6 @@ namespace io {
 OutputStream::OutputStream( const std::string& streamName, net::ClientSocket&& clientSocket ) :
     net::ClientSocket( std::move( clientSocket ) ) {
 
-    //    std::cout << "\t[OutputStream] OutputStream(string, ClientSocket&&)" << std::endl;
 
     Interface::write( net::ClientSocket::Type::STREAMER );
 
@@ -18,7 +17,6 @@ OutputStream::OutputStream( const std::string& streamName, net::ClientSocket&& c
     net::ClientSocket::Message mess;
     Interface::read( mess );
     if ( mess == net::ClientSocket::Message::FOUND ) {
-        //        assert( false );
         throw net::Socket::exception(
             ( std::string( "sensor '" ) + streamName + "' is already attached to server" )
                 .c_str() );
@@ -28,19 +26,14 @@ OutputStream::OutputStream( const std::string& streamName, net::ClientSocket&& c
 
 #ifdef WIN32
 void OutputStream::write( const unsigned char* data, size_t len ) const {
-    //    std::cout << "[OutputStream] write(uchar*, len)" << std::endl;
-    //    Interface::write(data, len);
-    //    OutputInterface::write(data, len);
     net::ClientSocket::write( data, len );
 }
 
 void OutputStream::read( unsigned char* data, size_t len ) const {
-    //    Interface::read(data, len);
     net::ClientSocket::read( data, len );
 }
 
 void OutputStream::close() {
-    //    Interface::close();
     net::ClientSocket::close();
 }
 #endif
@@ -52,7 +45,6 @@ InputStream::InputStream( const std::string& streamName,
                           net::ClientSocket&& clientSocket ) :
     net::ClientSocket( std::move( clientSocket ) ) {
 
-    //    std::cout << "\t[InputStream] InputStream(string, string, ClientSocket&&)" << std::endl;
 
     Interface::write( net::ClientSocket::Type::STREAM_VIEWER );
 
@@ -78,8 +70,6 @@ InputStream::InputStream( const std::string& streamName,
     }
     assert( mess == ClientSocket::Message::OK );
 
-    //    std::cout << "\t[InputStream] InputStream(string, string, ClientSocket&&) end" <<
-    //    std::endl;
 }
 
 #ifdef WIN32
@@ -97,7 +87,6 @@ void InputStream::close() {
 #endif
 
 Acquisition InputStream::getAcquisition( int acquisitionSize ) const {
-    //    std::cout << "[InputStream **************************************" << std::endl;
     net::ClientSocket::Message message;
     do {
         Interface::read( message );

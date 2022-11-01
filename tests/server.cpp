@@ -24,7 +24,6 @@ TEST_CASE( "Server test : direct stream" ) {
         for ( int i = 0; i < dataSize; ++i ) {
             data[i] = iAcq + i;
         }
-        //        acqs.emplace_back( iAcq + 1, iAcq + 2, data, dataSize );
         acqs.emplace_back( iAcq + 1, iAcq + 2 ) << hub::Measure( data, dataSize );
     }
 
@@ -33,14 +32,11 @@ TEST_CASE( "Server test : direct stream" ) {
     server.setMaxClients( 2 * nLoop );
     server.setAcqPing( false );
     server.asyncRun();
-    //    std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
     std::cout << "[Test] server end ------------------------------" << std::endl;
 
     for ( int iLoop = 0; iLoop < nLoop; ++iLoop ) {
         {
             std::cout << "[Test] ############################### outputStream start" << std::endl;
-            //    INFO( "OutputStream" );
-            //    {
 
             hub::OutputSensor outputSensor(
                 { "sensorName", { { { 3 }, hub::SensorSpec::Format::BGR8 } } },
@@ -55,12 +51,9 @@ TEST_CASE( "Server test : direct stream" ) {
             CHECK( outputSensorSpec.m_resolutions[0].second == hub::SensorSpec::Format::BGR8 );
             std::cout << "[Test] outputStream end ---------------------------------" << std::endl;
 
-            //        std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
             {
                 std::cout << "[Test] ############################### inputStream start"
                           << std::endl;
-                //    INFO( "InputStream" );
-                //    {
                 hub::InputSensor inputSensor(
                     hub::io::InputStream( "stream", "", hub::net::ClientSocket( ipv4, port ) ) );
 
@@ -79,12 +72,8 @@ TEST_CASE( "Server test : direct stream" ) {
                 }
 
                 std::cout << "[Test] ############################### get acquisitions" << std::endl;
-                //        const auto& inputAcqs = inputSensor.getAllAcquisitions();
                 std::cout << "[Test] ############################### compare " << std::endl;
-                //        assert( inputAcqs.size() == nAcqs );
                 for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
-                    //                        std::cout << "[Test] compare acq " << iAcq <<
-                    //                        std::endl;
                     auto acq = inputSensor.getAcquisition();
                     CHECK( acq == acqs[iAcq] );
                 }
@@ -101,7 +90,6 @@ TEST_CASE( "Server test : direct stream" ) {
             << iLoop << std::endl;
     }
     std::cout << "[Test] outputStream deleted *******************************" << std::endl;
-    //    std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
 
     server.stop();
 }

@@ -21,7 +21,6 @@ ViewerClient::ViewerClient( Server& server, int iClient, hub::net::ClientSocket&
             while ( true ) {
                 m_socket.write( hub::net::ClientSocket::Message::PING );
                 std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
-                //                std::cout << headerMsg() << "ping viewer" << std::endl;
             }
         }
         catch ( std::exception& e ) {
@@ -38,7 +37,6 @@ std::string ViewerClient::headerMsg() const {
 }
 
 void ViewerClient::notifyNewStreamer( const StreamerClient& streamer ) const {
-    //    mSock->write( Socket::Message::NEW_STREAMER );
 
     m_socket.write( hub::net::ClientSocket::Message::NEW_STREAMER );
     m_socket.write( streamer.getStreamName() );
@@ -57,7 +55,6 @@ void ViewerClient::notifyNewStreamer( const StreamerClient& streamer ) const {
 
     mSock->write(streamer.mhub::InputSensor.getMetaData());*/
 
-    //    mSock->write( streamer.mInputSensor );
 }
 
 void ViewerClient::notifyDelStreamer( const std::string& streamerName,

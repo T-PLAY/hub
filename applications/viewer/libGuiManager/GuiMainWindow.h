@@ -26,7 +26,6 @@ class GuiMainWindow : public QMainWindow
   private:
     Ui::GuiMainWindow* ui;
 
-    //    MinimalApp* m_app = nullptr;
 
     GuiManager m_guiManager;
 };

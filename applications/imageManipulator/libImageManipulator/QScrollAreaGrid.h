@@ -11,7 +11,6 @@ class QScrollAreaGrid : public QScrollArea
   public:
     QScrollAreaGrid( QWidget* parent = nullptr );
 
-    //    const double & getCanvasPixelPerUnit() const;
 
     void setScrollAreaTop( QScrollArea* newScrollAreaTop );
 

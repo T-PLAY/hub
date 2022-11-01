@@ -18,8 +18,6 @@
 namespace hub {
 namespace io {
 
-//    enum class AnyType;
-//    std::ostream& operator<<( std::ostream& os, const AnyType& type );
 
 ///
 /// \brief The Interface class
@@ -40,7 +38,6 @@ class SRC_API Interface
     Interface&& operator=( Interface&& ioStream )     = delete;
 
     virtual ~Interface() = default;
-    //    virtual ~Interface();
 
     virtual void close() = 0;
 
@@ -84,7 +81,6 @@ class SRC_API Interface
 
     void read( std::string& str ) const;
     void read( SensorSpec& sensorSpec ) const;
-    //    void read( Measure& measure ) const;
 
     Measure getMeasure() const;
     SensorSpec getSensorSpec() const;
@@ -111,8 +107,6 @@ class SRC_API InputOutputInterface : public InputInterface, public OutputInterfa
 template <class T>
 void Interface::write( const T& t ) const {
     //#ifdef DEBUG_IOSTREAM
-    //    std::cout << "[Interface] write " << typeid( T ).name() << " '" << t << "' : start"
-    //              << std::endl;
     //#endif
 
     write( reinterpret_cast<const unsigned char*>( &t ), sizeof( T ) );
@@ -165,14 +159,9 @@ void Interface::write( const std::map<T, U>& map ) const {
 
     for ( const std::pair<T, U>& pair : map ) {
         write( pair );
-        //        const T& first = pair.first;
         //#ifdef DEBUG_IOSTREAM
-        //        std::cout << "[Interface] map : name = " << first << std::endl;
         //#endif
-        //        const U& second = pair.second;
 
-        //        write( first );
-        //        write( second );
     }
 }
 
@@ -250,16 +239,8 @@ void Interface::read( std::map<T, U>& map ) const {
     map.clear();
 
     for ( int i = 0; i < nbEl; ++i ) {
-        //        T name;
-        //        read( name );
         //#ifdef DEBUG_IOSTREAM
-        //        std::cout << "[Interface] map : name = " << name << std::endl;
         //#endif
-        //        U val;
-        //        read( val );
-        //        //        std::cout << "[Interface] map : val = " << val << std::endl;
-        //        map[name] = val;
-        //        assert( map.find( name ) == map.end() );
         std::pair<T, U> pair;
         read( pair );
         assert( map.find( pair.first ) == map.end() );

@@ -16,8 +16,6 @@
 #define ULA_STREAMER
 
 int main( int argc, char* argv[] ) {
-    //    std::cout << typeid(int).operator==( << std::endl;
-    //    return 0;
     int port = hub::net::s_defaultServicePort;
     if ( argc == 2 ) { port = atoi( argv[1] ); }
 
@@ -26,16 +24,7 @@ int main( int argc, char* argv[] ) {
     constexpr int height = 512;
 
     hub::SensorSpec::MetaData metaData;
-    //    metaData["scanDepth"] = 35.0; // mm
-    //    metaData["scanWidth"] = 50.0; // mm
-    //    const float transform[16] = {0.000000, -0.000000, -50.000000, 0.000000,
-    //                            -0.000000, -1.000000, 0.000000, 0.000000,
-    //                            -35.000000, 0.000000, -0.000000, 0.000000,
-    //                            0.000000, 0.000000, 0.000000, 1.000000 };
-    //    metaData["transform"] = transform;
     metaData["parent"] = "Keyboard";
-    //    metaData["parent"] = "Polhemus Patriot (sensor 2)";
-    //    metaData["parent"] = "calibrator";
     metaData["scanWidth"]          = 50.0;
     metaData["scanDepth"]          = 35.0;
     const float localTransform[16] = { 17.5,
@@ -56,9 +45,6 @@ int main( int argc, char* argv[] ) {
                                        1.000000 };
     metaData["transform"]          = localTransform;
 
-    //        hub::OutputSensor proceduralStream(
-    //            { "ProceduralStreamer", { { { width, height }, hub::SensorSpec::Format::Y8 } },
-    //            metaData }, hub::io::OutputStream( "ProceduralStreamer" ) );
 
     hub::Streamer streamer( hub::net::s_defaultServiceIp, port );
     streamer.addStream( "ProceduralStreamer",
@@ -66,13 +52,10 @@ int main( int argc, char* argv[] ) {
                           { { { width, height }, hub::SensorSpec::Format::Y8 } },
                           metaData } );
 
-    //    return 0;
 
-    //    const size_t imgSize = proceduralStream.m_spec.m_acquisitionSize;
     const size_t imgSize = width * height;
     assert( imgSize == width * height );
 
-    //    unsigned char data[192 * 512];
     auto* data = new unsigned char[imgSize];
 
     int dec = 0;
@@ -80,16 +63,6 @@ int main( int argc, char* argv[] ) {
 
         const auto start = std::chrono::high_resolution_clock::now();
         // generate new image
-        //        for (size_t i = 0; i < imgSize; ++i) {
-        //        for ( int i = 0; i < width; ++i ) {
-        //            for ( int j = 0; j < height; ++j ) {
-        //                if ( std::abs( i - 20 ) < 5 || std::abs( j - 20) < 5 )
-        ////                if (true)
-        //                    data[i * height + j] = 0;
-        //                else
-        //                    data[i * height + j] = ( i + dec ) % 256;
-        //            }
-        //        }
 
         for ( int i = 0; i < height; ++i ) {
             for ( int j = 0; j < width; ++j ) {
@@ -97,25 +70,13 @@ int main( int argc, char* argv[] ) {
             }
         }
 
-        //        for ( int i = 0; i < height; ++i ) {
-        //            for ( int j = 0; j < width; ++j ) {
-        //                data[i * width + j] = ( dec ) % 256;
-        //            }
-        //        }
 
-        //            data[i] = (i / width + dec) % 256;
-        //            if (std::abs(i / (float)height - 20.0) < 5)
-        //                data[i] = 255;
-        //            else
         //		    data[i] = (i / height + dec) % 256;
-        //        }
 #    if defined( WIN32 )
         const auto maxFps = 60.0;
 #    else
         const auto maxFps = 40.0;
 #    endif
-        //        const auto maxFps = 10;
-        //        const auto maxFps = 2;
         const auto end = start + std::chrono::microseconds( (int)( 1'000'000 / maxFps ) );
 
         const auto& timestampStart =
@@ -125,18 +86,13 @@ int main( int argc, char* argv[] ) {
             std::chrono::duration_cast<std::chrono::microseconds>( end.time_since_epoch() ).count();
         ++dec;
 
-        //        std::cout << "new acquisition" << std::endl;
 
         streamer.newAcquisition( "ProceduralStreamer",
                                  std::move( hub::Acquisition { timestampStart, timestampEnd }
                                             << hub::Measure { data, imgSize } ) );
 
-        //                proceduralStream << ( hub::Acquisition { timestampStart, timestampEnd }
-        //                                      << hub::Measure { data, imgSize } );
 
         std::this_thread::sleep_until( end );
-        //        std::cout << "+" << std::flush;
-        //        break;
     }
 #else
 

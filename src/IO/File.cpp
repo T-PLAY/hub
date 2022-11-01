@@ -7,7 +7,6 @@ namespace hub {
 namespace io {
 
 File::File( std::fstream&& file ) :
-    //    m_file( *std::move( new std::fstream( std::move( file ) ) ) ) {
     m_file( new std::fstream( std::move( file ) ) ) {
 
     assert( m_file->is_open() );
@@ -17,10 +16,8 @@ File::~File() {
     std::cout << "[File:" << this << "] ~File()" << std::endl;
     if ( m_file != nullptr ) {
         std::cout << "[File:" << this << "] ~File() close file" << std::endl;
-        //        m_file->close();
         assert( !m_file->is_open() );
     }
-    //    assert(! m_file.is_open());
 }
 
 void File::close() {

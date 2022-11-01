@@ -28,8 +28,5 @@ struct Dof6Component : SensorComponent {
 
   private:
     hub::SensorSpec::Format m_format;
-    //    Ra::Engine::Rendering::RenderObject* m_roGrid = nullptr;
-    //    Ra::Engine::Rendering::RenderObject* m_roAxes[3] = { nullptr };
 
-    //    Ra::Engine::Rendering::RenderObject* m_ro = nullptr;
 };

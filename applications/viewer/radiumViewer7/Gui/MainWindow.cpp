@@ -50,9 +50,7 @@ MainWindow::MainWindow( QWidget* parent ) : MainWindowInterface( parent ) {
 
     setupUi( this );
 
-    //        dockWidget->hide();
     dockWidget_2->hide(); // timeline
-                          //        toolBar->hide();
 
     m_viewer = new Viewer();
     // Registers the application dependant camera manipulators
@@ -65,10 +63,8 @@ MainWindow::MainWindow( QWidget* parent ) : MainWindowInterface( parent ) {
     m_viewer->setObjectName( QStringLiteral( "m_viewer" ) );
 
     QWidget* viewerwidget = QWidget::createWindowContainer( m_viewer );
-    //  viewerwidget->setMinimumSize( QSize( 800, 600 ) );
     viewerwidget->setAutoFillBackground( false );
 
-    //        setCentralWidget(viewerwidget);
     verticalLayout_3D->addWidget( viewerwidget );
 
     // Register the timeline
@@ -226,10 +222,6 @@ void MainWindow::createConnections() {
     connect( this, &MainWindow::selectedItem, mainApp, &MainApplication::onSelectedItem );
 
     // Enable changing shaders
-    //    connect(
-    //        m_currentShaderBox,
-    //        static_cast<void ( QComboBox::* )( const QString& )>( &QComboBox::currentIndexChanged
-    //        ), this, &MainWindow::changeRenderObjectShader );
 
     // RO Stuff
     connect( m_itemModel, &Gui::ItemModel::visibilityROChanged, this, &MainWindow::setROVisible );
@@ -241,16 +233,7 @@ void MainWindow::createConnections() {
     connect( m_showHideAllButton, &QPushButton::clicked, this, &MainWindow::showHideAllRO );
 
     // Renderer stuff
-    //    connect(
-    //        m_currentRendererCombo,
-    //        static_cast<void ( QComboBox::* )( const QString& )>( &QComboBox::currentIndexChanged
-    //        ),
-    //        [=]( const QString& ) { this->onCurrentRenderChangedInUI(); } );
 
-    //    connect(
-    //        m_displayedTextureCombo,
-    //        static_cast<void ( QComboBox::* )( const QString& )>( &QComboBox::currentIndexChanged
-    //        ), m_viewer, &Viewer::displayTexture );
 
     connect( m_enablePostProcess, &QCheckBox::stateChanged, m_viewer, &Viewer::enablePostProcess );
     connect(
@@ -547,7 +530,6 @@ void MainWindow::updateBackgroundColor( QColor c ) {
 void MainWindow::changeRenderObjectShader( const QString& shaderName ) {
     // FIXME : is this still a wanted feature. Commented out for now. if this feature is wanted,
     // need to find a
-    //  way to change the render-technique.
     /*
         std::string name = shaderName.toStdString();
         if ( name.empty() ) { return; }
@@ -872,11 +854,8 @@ void MainWindow::onGLInitialized() {
 
     ////////////////////////////////////////////// init gui Manager
     m_guiManager.m_mdiArea = mdiArea;
-    //        m_guiManager.m_engine = mainApp->m_engine.get();
     m_guiManager.m_engine = mainApp->m_engine;
     m_guiManager.m_viewer = m_viewer;
-    //        mainApp->m_mainWindow;
-    //        m_guiManager.m_system = sys;
 
     m_guiManager.m_mainWindow    = this;
     m_guiManager.m_stackedWidget = stackedWidget;

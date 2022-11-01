@@ -18,7 +18,6 @@ int main( int argc, char* argv[] ) {
 
     bool stopThread = false;
 
-    //    std::string posStreamName = "Polhemus Patriot (sensor 2)";
 
     const std::string rootPath = PROJECT_DIR "data/";
 
@@ -33,23 +32,12 @@ int main( int argc, char* argv[] ) {
     assert( !std::filesystem::exists( newRecordFolder ) );
     std::filesystem::create_directories( newRecordFolder );
 
-    //    const std::string imageStreamName = "ProceduralStreamer";
-    //    const std::string posStreamName = "Keyboard";
 
-    //    std::vector<std::string> streamNames { posStreamName, imageStreamName };
-    //    std::vector<std::string> streamNames { "Keyboard", "ProceduralStreamer" };
-    //    std::vector<std::string> streamNames { "Polhemus Patriot (sensor 2)" };
-    //    std::vector<std::string> streamNames { "Polhemus Patriot (sensor 1)", "Polhemus Patriot
-    //    (sensor 2)" };
     std::vector<std::pair<std::string, std::string>> streamNames {
-        //        { "Polhemus Patriot (sensor 2)", "" }, { "ULA-OP 256", "" }
         { "Polhemus Patriot (sensor 2)", "ULA-OP 256" } };
     std::vector<std::thread> threads;
-    //    threads.resize(streamNames.size());
 
-    //        std::string imageStreamName = "ULA-OP 256";
 
-    //    std::set<long long> starts;
 
     for ( const auto& streamName : streamNames ) {
 
@@ -70,8 +58,6 @@ int main( int argc, char* argv[] ) {
             long long previousStart = -1;
             while ( !stopThread ) {
                 auto acq = inputSensor.getAcquisition();
-                //                std::cout << "[" << streamName << "] record acq : " << acq <<
-                //                std::endl;
                 // ping acq
                 if ( acq.m_start == previousStart ) continue;
 
@@ -80,8 +66,6 @@ int main( int argc, char* argv[] ) {
                 outputSensor << acq;
                 std::cout << "+" << std::flush;
                 ++nAcq;
-                //                starts.emplace(acq.m_start);
-                //                starts.insert(acq.m_start);
                 previousStart = acq.m_start;
             }
             std::cout << std::endl;
@@ -89,7 +73,6 @@ int main( int argc, char* argv[] ) {
         } ) );
     }
 
-    //    std::this_thread::sleep_for(std::chrono::milliseconds(500));
     getchar();
     stopThread = true;
 
@@ -133,49 +116,18 @@ int main( int argc, char* argv[] ) {
 
 // void onEnter()
 //{
-//     while (true) {
-//         getchar();
-//         gStop = true;
-//         break;
-//     }
 // }
 
 // int main(int argc, char* argv[])
 //{
-//     std::cout << "[main]" << std::endl;
-//     //    std::thread keyBoardCommands(onEnter);
 
-//    //    const std::string sensorNames[2] = { g_probePoseSensorName, g_probeScanSensorName };
-//    //    const std::string sensorSyncNames[2] = { g_probeScanSensorName, "" };
 
-//    //    std::filesystem::current_path(PROJECT_DIR);
-//    //    std::filesystem::create_directories("data");
-//    //    std::filesystem::current_path("data");
 
-//    Recorder recorder(PROJECT_DIR "data/");
 
-//    //    recorder.record({{g_probePoseSensorName + " (record)", g_probeScanSensorName + "
-//    (record)"}, {g_probeScanSensorName + " (record)", ""}});
 
-////    recorder.record({ { g_probePoseSensorName, ""}, { g_probePoseSensorName,
 /// g_probeScanSensorName }, { g_probeScanSensorName, "" } });
-//    recorder.record({ { "L500 Depth Sensor (Depth)", ""}, { "L500 Depth Sensor (Infrared)", "" },
-//    { "L500 RGB Camera", "" } });
 
-////    recorder.record({ { g_probePoseSensorName, ""}, { g_probeScanSensorName, "" } });
 
-//    //    while (true) {
-//    //        int a;
-//    //        std::cin >> a;
-//    auto ret = getchar();
-//    (void)ret;
-//    ////        gStop = true;
-//    //        break;
-//    //    }
-//    //    std::this_thread::sleep_for(std::chrono::seconds(2));
 
-//    recorder.stop();
 
-//    //    if (keyBoardCommands.joinable())
-//    //        keyBoardCommands.join();
 //}

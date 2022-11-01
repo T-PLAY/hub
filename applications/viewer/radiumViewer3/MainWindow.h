@@ -52,7 +52,6 @@ class MainWindow : public QMainWindow
     // Our framerate
     uint m_target_fps = 60;
 
-    //    Thread_Client* m_threadClient = nullptr;
 
     InputStream* m_poseStream                            = nullptr;
     InputStream* m_scanStream                            = nullptr;

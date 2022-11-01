@@ -124,15 +124,11 @@ static void clearSocket( socket_fd& sock ) {
     std::cout << std::endl;
 #endif
     closesocket( sock );
-    //    size_t size = s_sockets.size();
-    //    assert( std::find( s_sockets.begin(), s_sockets.end(), sock ) != s_sockets.end() );
     s_sockets.remove( sock );
     // assert(s_sockets.size() == size - 1);
 
 #ifdef WIN32
     if ( s_sockets.empty() ) {
-        //            std::cout << "Net::clearSocket(" << sock << ") WSACleanup()" << std::endl;
-        //            WSACleanup();
         s_inited = false;
         // TODO: find a way to cleanup WSA when program ended
     }
@@ -171,7 +167,6 @@ static void signalHandler( int signum ) {
 #endif
 
 static void init() {
-    //        std::cout << getHeader() << "net::init()" << std::endl;
     if ( !s_inited ) {
 #ifdef DEBUG_NET
         std::cout << getHeader() << "init()" << std::endl;

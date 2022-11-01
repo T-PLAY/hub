@@ -29,7 +29,6 @@ struct Scan {
     Ra::Engine::Rendering::RenderObject* m_scanLine = nullptr;
     std::shared_ptr<CurrentMaterial> m_material;
 
-    //    ~Scan();
 };
 
 /// This is a very basic component which holds a spinning cube.
@@ -73,9 +72,6 @@ struct ScanComponent : public SensorComponent {
 
     double m_tune0 = 0.25;
     double m_tune1 = 1.0;
-    //    long long m_lastUpdateDate = 0;
-    //    bool m_firstUpdate         = true;
-    //    bool m_isLiveStream        = true;
 
     Eigen::Matrix4f m_localTransform = Eigen::Matrix4f::Identity();
 

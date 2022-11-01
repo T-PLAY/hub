@@ -16,7 +16,6 @@
 #include <Engine/Data/TextureManager.hpp>
 
 MinimalApp::MinimalApp() :
-    //    m_engine( nullptr ),
     m_task_queue( nullptr ),
     m_viewer( nullptr ),
     m_frame_timer( nullptr ),
@@ -28,25 +27,12 @@ MinimalApp::MinimalApp() :
     QCoreApplication::setApplicationName( "RadiumViewer" );
 
     // Initialize Engine.
-    //    m_engine.reset( Ra::Engine::RadiumEngine::createInstance() );
     m_engine = Ra::Engine::RadiumEngine::createInstance();
     m_engine->initialize();
 
-    //    m_engine->registerSystem(
-    //        "GeometrySystem", new Ra::Engine::Scene::GeometrySystem, defaultSystemPriority );
 
     // Register the TimeSystem managing time dependant systems
-    //    Scalar dt = ( m_targetFPS == 0 ? 1_ra / 60_ra : 1_ra / m_targetFPS );
-    //    m_engine->setConstantTimeStep( dt );
-    //    // Register the SkeletonBasedAnimationSystem converting loaded assets to
-    //    // skeletons and skinning data
-    //    m_engine->registerSystem( "SkeletonBasedAnimationSystem",
-    //                              new Ra::Engine::Scene::SkeletonBasedAnimationSystem,
-    //                              defaultSystemPriority );
 
-    //    m_engine->registerFileLoader(std::shared_ptr<Ra::Core::Asset::FileLoaderInterface>(new
-    //    Ra::IO::DicomLoader())); m_engine->loadFile(MRI_PATH
-    //    "AXT2_ligaments_uterosacres/D0010525.dcm");
 
     ///\todo update when a basic viewer is implemented ... (to call setupKeyMappingCallbacks)
     Ra::Gui::KeyMappingManager::createInstance();
@@ -74,14 +60,11 @@ MinimalApp::MinimalApp() :
 MinimalApp::~MinimalApp() {
     std::cout << "[MinimalApp] ~MinimalApp() start" << std::endl;
     m_frame_timer->stop();
-    //    disconnect( m_frame_timer, &QTimer::timeout, this, &MinimalApp::frame );
-    //    m_frame_timer = nullptr;
 
     // need to clean up everithing before engine is cleaned up.
     m_task_queue.reset( nullptr );
     m_viewer.reset( nullptr );
     m_engine->cleanup();
-    //    m_engine.reset( nullptr );
     std::cout << "[MinimalApp] ~MinimalApp() end" << std::endl;
 }
 
@@ -96,8 +79,6 @@ void MinimalApp::onGLInitialized() {
 }
 
 void MinimalApp::frame() {
-    //    if (m_frame_timer == nullptr)
-    //        return;
 
     // We use a fixed time step, but it is also possible
     // to check the time from last frame.

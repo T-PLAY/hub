@@ -122,16 +122,6 @@ void MinimalComponent::initialize() {
         addRenderObject( gridRo );
     }
 
-    //    auto xLine = RenderObject::createRenderObject(
-    //        "x_line",
-    //        this,
-    //        RenderObjectType::Geometry,
-    //        //        DrawPrimitives::Line(Vector3 { 0_ra, 0_ra, 0_ra }, Vector3 { 1_ra, 0_ra,
-    //        0_ra }, Color::Red()), DrawPrimitives::Ray(Ray(Vector3 { 0_ra, 0_ra, 0_ra }, Vector3 {
-    //        1_ra, 0_ra, 0_ra }), Color::Red(), 1_ra),
-    //        {});
-    //    xLine->setMaterial(plainMaterial);
-    //    addRenderObject(xLine);
 
     std::vector<std::shared_ptr<Engine::Data::Mesh>> meshAxis;
 
@@ -154,12 +144,6 @@ void MinimalComponent::initialize() {
                                               arrowScale * axisWidth / 2_ra,
                                               32,
                                               gizmoColors[i] );
-            //            Core::Geometry::TriangleMesh cone = Core::Geometry::makeCone(
-            //                arrowScale * cylinderEnd, arrowScale * arrowEnd, arrowScale *
-            //                arrowFrac / 2_ra, 32, gizmoColors[i]);
-            //            cylinder.append(cone);
-            //            cone.append(cylinder);
-            //            triangleMeshAxis.push_back(cylinder);
 
             std::shared_ptr<Engine::Data::Mesh> mesh(
                 new Engine::Data::Mesh( "Translate Gizmo Arrow" ) );
@@ -167,7 +151,6 @@ void MinimalComponent::initialize() {
 
             meshAxis.push_back( std::move( mesh ) );
 
-            //            mesh->loadGeometry(std::move(cone));
         }
 
         // origin axis
@@ -177,52 +160,39 @@ void MinimalComponent::initialize() {
 
             gizmo->setMaterial( plainMaterial );
             addRenderObject( gizmo );
-            //            const auto& entity = gizmo->getComponent()->getEntity();
         }
     }
 
     // ref cube
     {
         std::shared_ptr<Mesh> cube1( new Mesh( "Cube" ) );
-        //        auto coord = cellSize / 8_ra;
         auto cubeSize = Vector3 { 1_ra, 1_ra, 1_ra };
         auto box      = Core::Geometry::makeSharpBox( cubeSize * 0.7 / 2, Color::Grey() );
-        //        assert(ret);
         cube1->loadGeometry( std::move( box ) );
 
         auto renderObject1 = RenderObject::createRenderObject(
             "refCube", this, RenderObjectType::Geometry, cube1, {} );
-        //        renderObject1->setLocalTransform(Transform { Translation(cellCorner) });
         renderObject1->setMaterial( lambertianMaterial );
-        //        renderObject1->setMaterial(blinnPhongMaterial);
         addRenderObject( renderObject1 );
-        //        renderObject1->getComponent()->
     }
 
     // probe cube
     {
         std::shared_ptr<Mesh> cube2( new Mesh( "Cube" ) );
-        //        coord = cellSize / 4_ra;
-        //        coord = Vector3 {0_ra, 2_ra, 0_ra};
         auto cubeSize = Vector3 { 1_ra, 1_ra, 1_ra };
         cube2->loadGeometry( Geometry::makeSharpBox( cubeSize * 0.2 / 2 ) );
         cube2->getCoreGeometry().addAttrib(
             "in_color", Vector4Array { cube2->getNumVertices(), Color::Grey() } );
-        //        cube2->setAttribNameCorrespondance("colour", "in_color");
 
         auto renderObject2 = RenderObject::createRenderObject(
             "probeCube", this, RenderObjectType::Geometry, cube2, {} );
-        //        coord = cellSize / 2_ra;
         renderObject2->setLocalTransform(
             Transform { Translation( Vector3( 0_ra, 2_ra, 0_ra ) ) } );
         renderObject2->setMaterial( lambertianMaterial );
-        //        renderObject2->setMaterial(blinnPhongMaterial);
         addRenderObject( renderObject2 );
 
         g_probe = renderObject2;
     }
-    //    const auto& probeEntity = g_probe->getComponent()->getEntity();
-    //    auto& probeTransformationObservers = probeEntity->transformationObservers();
 
     // probe axis
     {
@@ -231,13 +201,7 @@ void MinimalComponent::initialize() {
                 "probeAxis" + std::to_string( i ), this, RenderObjectType::Geometry, meshAxis[i] );
             gizmo->setMaterial( plainMaterial );
             addRenderObject( gizmo );
-            //            gizmo->setLocalTransform(
-            //                Transform { Translation(Vector3(0_ra, 2_ra, 0_ra)) });
-            //            axis.push_back(gizmo);
 
-            //            const auto gizmoEntity = gizmo->getComponent()->getEntity();
-            //            probeTransformationObservers.attach(Core::Utils::Observable<const
-            //            Entity*>(gizmoEntity));
             g_probe_axis[i] = gizmo;
         }
     }
@@ -259,7 +223,6 @@ void MinimalComponent::initialize() {
 
 #endif
         //! [Creating a texture for the slice]
-        //        unsigned char data[192 * 512];
         unsigned char* data = new unsigned char[192 * 512];
         // fill with some function
         for ( int i = 0; i < 192; ++i ) {
@@ -286,14 +249,12 @@ void MinimalComponent::initialize() {
         auto slice = RenderObject::createRenderObject(
             "echoPlane", this, RenderObjectType::Geometry, meshQuad, renderTechnique );
 
-        //        auto myMat = make_shared<BlinnPhongMaterial>("Shaded Material");
         Ra::Core::Asset::BlinnPhongMaterialData matData( "myMaterialData" );
         // uncomment this to remove glossy highlight
         matData.m_specular      = Ra::Core::Utils::Color::Black();
         matData.m_hasSpecular   = true;
         matData.m_hasTexDiffuse = true;
         matData.m_texDiffuse    = "myTexture";
-        //        slice->setMaterial(matData);
 
         std::shared_ptr<Ra::Engine::Data::Material> roMaterial;
         auto converter =
@@ -305,15 +266,10 @@ void MinimalComponent::initialize() {
         slice->setMaterial( roMaterial );
 
         slice->getRenderTechnique()->setConfiguration( shaderConfig );
-        //        slice->setRenderTechnique(shaderConfig);
 
         addRenderObject( slice );
-        //        g_scan = &slice;
-        //        g_scan = std::make_shared<Ra::Engine::Rendering::RenderObject>(*slice);
         g_scan = slice;
 
-        //        auto blinnPhongMaterial2 = make_shared<BlinnPhongMaterial>("Shaded Material 2");
-        //        blinnPhongMaterial2->addTexture()
     }
 }
 
@@ -337,7 +293,6 @@ MinimalSystem::MinimalSystem( MinimalApp* app ) : m_app( app ) {
 
     try {
         if ( scanStream != nullptr ) {
-            //            posStream = new InputStream("Polhemus Patriot (probe)", "ULA-OP 256");
             posStream = new InputStream( "Polhemus Patriot (probe)" );
         }
         else { posStream = new InputStream( "Polhemus Patriot (probe)" ); }
@@ -351,19 +306,10 @@ MinimalSystem::MinimalSystem( MinimalApp* app ) : m_app( app ) {
 // static bool first = false;
 
 void MinimalSystem::generateTasks( Ra::Core::TaskQueue*, const Ra::Engine::FrameInfo& ) {
-    //    if (first) {
-    //        auto& renderTechnique = *g_scan->getRenderTechnique();
-    //        Ra::Engine::Data::ShaderConfiguration shaderConfig("myShader2", vertexShaderFile,
-    //        fragmentShaderFile); renderTechnique.setConfiguration(shaderConfig); first = true;
-    //    }
-    //    std::cout << "[MinimalSystem] generateTasks" << std::endl;
 
-    //    Ra::Engine::Scene::Entity* e = m_app->m_engine->getEntityManager()->getEntity("Cube");
 
     assert( g_scan != nullptr );
-    //    g_scan->setLocalTransform(Transform { Translation(Vector3(2_ra, 2_ra, 2_ra)) });
     // update position and orientation
-    //    if (posStream != nullptr) {
     if ( false ) {
         Stream::Acquisition posAcq;
         *posStream >> posAcq;
@@ -390,8 +336,6 @@ void MinimalSystem::generateTasks( Ra::Core::TaskQueue*, const Ra::Engine::Frame
         vecPos /= 5.0;
         TWorld.translate( vecPos );
 
-        //        g_scan->setLocalTransform(TRadium * TWorld * TOrientation * TLocal);
-        //        g_probe->setLocalTransform(TRadium * TWorld * TOrientation * TLocal);
         g_probe->setLocalTransform( TRadium * TWorld * TOrientation );
         for ( int i = 0; i < 3; ++i ) {
             g_probe_axis[i]->setLocalTransform( TRadium * TWorld * TOrientation );
@@ -405,32 +349,11 @@ void MinimalSystem::generateTasks( Ra::Core::TaskQueue*, const Ra::Engine::Frame
         g_scan->setLocalTransform( TRadium * TWorld * TOrientation * TLocal );
     }
 
-    //    e->setTransform(Transform { Translation(Vector3(2_ra, 2_ra, 2_ra)) });
 
     // update texture
     if ( scanStream != nullptr ) {
-        //            Ra::Engine::Data::TextureParameters textureParameters;
-        //            textureParameters.name = "myTexture";
-        //            auto texture =
-        //            m_app->m_engine->getTextureManager()->getOrLoadTexture(textureParameters);
-        //            auto& params = texture->getParameters();
-        //            unsigned char* data = new unsigned char[192 * 512];
-        //            for (int i = 0; i < 192; ++i) {
-        //                for (int j = 0; j < 512; j++) {
-        //                    if (std::abs(i - 20) < 3 || std::abs(j - 20) < 3) {
-        //                        data[(i * 512 + j)] = 0;
-        //                    } else {
 
-        //                        data[(i * 512 + j)] = (j / 2) % 256;
-        //                    }
-        //                }
-        //            }
-        //            memcpy(params.texels, data, 192 * 512);
-        //            //            memcpy(params.texels, scanAcq.mData, 192 * 512);
 
-        //            m_app->m_viewer->makeCurrent();
-        //            texture->initializeGL(false);
-        //            m_app->m_viewer->doneCurrent();
         Stream::Acquisition scanAcq;
         *scanStream >> scanAcq;
 

@@ -23,7 +23,6 @@ TEST_CASE( "Server test : speed test" ) {
     unsigned char* data       = new unsigned char[dataSize];
 
     for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
-        //        unsigned char data[dataSize];
         for ( int i = 0; i < dataSize; ++i ) {
             data[i] = iAcq;
         }
