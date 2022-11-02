@@ -1,5 +1,7 @@
 #pragma once
 
+#include <mutex>
+
 #include <QObject>
 #include <QThread>
 
@@ -67,7 +69,18 @@ class Sensor : public QObject
 {
     Q_OBJECT
   public:
-    Sensor( std::unique_ptr<hub::InputSensor> inputSensor,
+//    Sensor( std::unique_ptr<hub::InputSensor> inputSensor,
+//            QMdiArea& mdiArea,
+//            Ra::Engine::RadiumEngine* engine,
+//            Ra::Gui::Viewer* viewer,
+//            Ra::Engine::Scene::System* sys,
+//            Sensor* parentSensor,
+//            const std::string& streamName,
+//            QStandardItemModel& model,
+//            QTableView& view,
+//            QObject* parent = nullptr );
+
+    Sensor( const hub::SensorSpec & sensorSpec,
             QMdiArea& mdiArea,
             Ra::Engine::RadiumEngine* engine,
             Ra::Gui::Viewer* viewer,
@@ -77,9 +90,11 @@ class Sensor : public QObject
             QStandardItemModel& model,
             QTableView& view,
             QObject* parent = nullptr );
+
     ~Sensor();
 
     void updateTransform( const Ra::Engine::Scene::Entity* entity );
+    void update(const hub::Acquisition & acq);
 
 #ifdef ENABLE_IMAGE_VIEWER
     void detachFromImageManipulator();
@@ -105,7 +120,8 @@ class Sensor : public QObject
     friend class SensorCounterFpsThread;
 
   public:
-    std::unique_ptr<hub::InputSensor> m_inputSensor;
+//    std::unique_ptr<hub::InputSensor> m_inputSensor;
+    const hub::SensorSpec m_sensorSpec;
 
     Ra::Engine::RadiumEngine* m_engine = nullptr;
     Ra::Gui::Viewer* m_viewer          = nullptr;
@@ -123,7 +139,7 @@ class Sensor : public QObject
     QList<QStandardItem*> m_items;
     QStandardItem* m_itemFps = nullptr;
 
-    SensorThread m_thread;
+    SensorThread m_sensorThread;
     SensorCounterFpsThread m_counterFpsThread;
     int m_counterFrame = 0;
 
@@ -138,6 +154,9 @@ class Sensor : public QObject
     SensorComponent* m_component = nullptr;
     QStandardItemModel& m_model;
     QTableView& m_view;
+
+    bool m_lost = false;
+    std::mutex m_mtxUpdating;
 
   public:
     const QList<QStandardItem*>& getItems() const;

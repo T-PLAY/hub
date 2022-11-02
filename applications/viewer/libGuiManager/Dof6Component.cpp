@@ -42,12 +42,15 @@ using namespace Ra::Engine::Scene;
  * supported by Radium
  */
 
-Dof6Component::Dof6Component( const hub::InputSensor& inputStream,
+Dof6Component::Dof6Component(
+//        const hub::InputSensor& inputStream,
+        const hub::SensorSpec & sensorSpec,
                               Ra::Engine::Scene::Entity* entity ) :
-    SensorComponent( inputStream, entity ) {
+//    SensorComponent( inputStream, entity ) {
+    SensorComponent( sensorSpec, entity ) {
 
-    assert( m_inputSensor.m_spec.m_resolutions.size() == 1 );
-    m_format = m_inputSensor.m_spec.m_resolutions.at( 0 ).second;
+    assert( m_sensorSpec.m_resolutions.size() == 1 );
+    m_format = m_sensorSpec.m_resolutions.at( 0 ).second;
 }
 
 /// This function is called when the component is properly

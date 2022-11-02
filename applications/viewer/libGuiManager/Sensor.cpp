@@ -15,63 +15,28 @@ SensorThread::SensorThread( Sensor& sensor, QObject* parent ) :
     QThread { parent }, m_sensor( sensor ) {}
 
 SensorThread::~SensorThread() {
-    std::cout << "[SensorThread] ~SensorThread(" << m_sensor.m_inputSensor->m_spec.m_sensorName
-              << ")" << std::endl;
+    std::cout << "[SensorThread] ~SensorThread(" << m_sensor.m_sensorSpec.m_sensorName << ")"
+              << std::endl;
 }
 
 void SensorThread::run() {
     std::cout << "[SensorThread] run()" << std::endl;
 
-    auto& inputSensor = m_sensor.m_inputSensor;
+    //    auto& inputSensor = m_sensor.m_inputSensor;
 
-    try {
+    //    try {
 
-        while ( !this->isInterruptionRequested() ) {
+    //        while ( !this->isInterruptionRequested() ) {
 
-            const auto acq = inputSensor->getAcquisition();
+    //            const auto acq = inputSensor->getAcquisition();
+    //            m_sensor.update(acq);
 
-            const auto& sensorSpec  = inputSensor->m_spec;
-            const auto& resolutions = sensorSpec.m_resolutions;
-            const auto& measures    = acq.getMeasures();
-
-            // update 2D view
-            {
-                for ( int i = 0; i < resolutions.size(); ++i ) {
-                    const auto& resolution = resolutions.at( i );
-                    const auto& dims       = resolution.first;
-                    const auto& format     = resolution.second;
-                    const auto& measure    = measures.at( i );
-
-                    assert( measure.m_data != nullptr );
-
-                    m_sensor.m_widgetStreamViews[i]->setData(
-                        (unsigned char*)measure.m_data, measure.m_size, dims, format );
-
-                    if ( m_sensor.m_widgetStreamViewManipulator != nullptr ) {
-                        if ( dims.size() == 2 ) {
-                            m_sensor.m_widgetStreamViewManipulator->setData(
-                                (unsigned char*)measure.m_data, measure.m_size, dims, format );
-                        }
-                    }
-                }
-            }
-
-            // update 2D manipulator view
-            //// assert(m_sensor.m_widgetStreamViewManipulator != nullptr);
-
-            // update 3D component
-            if ( !this->isInterruptionRequested() ) {
-                assert( m_sensor.m_component != nullptr );
-                m_sensor.m_component->update( acq );
-            }
-
-            ++m_sensor.m_counterFrame;
-        }
-    }
-    catch ( std::exception& e ) {
-        std::cout << "[SensorThread] catch exception : " << e.what() << std::endl;
-        return;
-    }
+    //        }
+    //    }
+    //    catch ( std::exception& e ) {
+    //        std::cout << "[SensorThread] catch exception : " << e.what() << std::endl;
+    //        return;
+    //    }
 
     std::cout << "[SensorThread] run() end" << std::endl;
 }
@@ -124,7 +89,127 @@ void SensorCounterFpsThread::run() {
 //{
 //}
 
-Sensor::Sensor( std::unique_ptr<hub::InputSensor> inputSensor,
+// Sensor::Sensor( std::unique_ptr<hub::InputSensor> inputSensor,
+//                 QMdiArea& mdiArea,
+//                 Ra::Engine::RadiumEngine* engine,
+//                 Ra::Gui::Viewer* viewer,
+//                 Ra::Engine::Scene::System* sys,
+//                 Sensor* parentSensor,
+//                 const std::string& streamName,
+//                 QStandardItemModel& model,
+//                 QTableView& view,
+//                 QObject* parent ) :
+//     QObject( parent ),
+//     m_inputSensor( std::move( inputSensor ) ),
+//     m_engine( engine ),
+//     m_viewer( viewer ),
+//     m_sys( sys ),
+//     m_mdiArea( mdiArea ),
+//     m_sensorThread( *this, parent ),
+//     m_counterFpsThread( *this, parent ),
+//     m_model( model ),
+//     m_view( view )
+
+//{
+//    const auto& sensorSpec  = m_inputSensor->m_spec;
+//    const auto& resolutions = sensorSpec.m_resolutions;
+
+//    // create 2D viewers
+//    // mdiArea window
+//    for ( const auto& resolution : resolutions ) {
+//        const auto& dims   = resolution.first;
+//        const auto& format = resolution.second;
+
+//        WidgetStreamView* widgetStreamView = nullptr;
+
+//        if ( dims.size() == 1 ) {
+//            widgetStreamView = new WidgetStreamView1D( &m_mdiArea );
+//            widgetStreamView->setMinimumSize( 400, 35 );
+//        }
+//        else if ( dims.size() == 2 ) {
+//            widgetStreamView = new WidgetStreamView2D( &m_mdiArea );
+//            widgetStreamView->setMinimumWidth( dims.at( 0 ) );
+//            widgetStreamView->setMinimumHeight( dims.at( 1 ) );
+//        }
+//        assert( widgetStreamView != nullptr );
+
+//        QMdiSubWindow* subWindow = m_mdiArea.addSubWindow( widgetStreamView );
+//        subWindow->setVisible( true );
+//        subWindow->setWindowFlags( Qt::CustomizeWindowHint | Qt::WindowMinMaxButtonsHint |
+//                                   Qt::WindowTitleHint );
+
+//        subWindow->setWindowTitle( ( m_inputSensor->m_spec.m_sensorName + "   " +
+//                                     hub::SensorSpec::dims2string( dims ) + "   " +
+//                                     hub::SensorSpec::format2string( format ) )
+//                                       .c_str() );
+//        m_subWindows.push_back( subWindow );
+
+//        m_widgetStreamViews.push_back( widgetStreamView );
+//    }
+
+//    // create 3D scene object
+//    {
+//        assert( m_component == nullptr );
+//        m_entity = m_engine->getEntityManager()->createEntity( m_inputSensor->m_spec.m_sensorName
+//        +
+//                                                               " entity" );
+
+//        setParent( parentSensor );
+
+//        const int resolutionSize = resolutions.size();
+//        if ( resolutionSize == 1 ) {
+//            const auto& format = resolutions.at( 0 ).second;
+
+//            switch ( format ) {
+//            case hub::SensorSpec::Format::DOF6:
+//            case hub::SensorSpec::Format::MAT4:
+//                m_component = new Dof6Component( *m_inputSensor, m_entity );
+//                break;
+
+//            case hub::SensorSpec::Format::Y8:
+//            case hub::SensorSpec::Format::Y16:
+//                m_component = new ScanComponent( *m_inputSensor, m_entity, *m_engine, *m_viewer );
+//                break;
+
+//            default:
+//                assert( false );
+//            }
+//        }
+//        else if ( resolutionSize == 2 ) {
+//            const auto& format  = resolutions.at( 0 ).second;
+//            const auto& format2 = resolutions.at( 1 ).second;
+
+//            assert( format == hub::SensorSpec::Format::DOF6 );
+
+//            m_component = new ScanComponent( *m_inputSensor, m_entity, *m_engine, *m_viewer );
+//        }
+
+//        assert( m_component != nullptr );
+//        m_sys->addComponent( m_entity, m_component );
+//        m_component->initialize();
+
+//        auto renderer = m_viewer->getRenderer();
+//        assert( renderer != nullptr );
+//        m_viewer->makeCurrent();
+//        renderer->buildAllRenderTechniques();
+//        auto aabb = Ra::Engine::RadiumEngine::getInstance()->computeSceneAabb();
+//        m_viewer->doneCurrent();
+//    }
+
+//    m_items.append( new QStandardItem( streamName.c_str() ) );
+//    m_items.append( new QStandardItem( m_inputSensor->m_spec.m_sensorName.c_str() ) );
+//    m_items.append(
+//        new QStandardItem( hub::SensorSpec::resolutions2string( resolutions ).c_str() ) );
+//    m_items.append(
+//        new QStandardItem( std::to_string( m_inputSensor->m_spec.m_acquisitionSize ).c_str() ) );
+//    m_itemFps = new QStandardItem( "0" );
+//    m_items.append( m_itemFps );
+
+//    m_counterFpsThread.start();
+//    m_sensorThread.start();
+//}
+
+Sensor::Sensor( const hub::SensorSpec& sensorSpec,
                 QMdiArea& mdiArea,
                 Ra::Engine::RadiumEngine* engine,
                 Ra::Gui::Viewer* viewer,
@@ -135,18 +220,19 @@ Sensor::Sensor( std::unique_ptr<hub::InputSensor> inputSensor,
                 QTableView& view,
                 QObject* parent ) :
     QObject( parent ),
-    m_inputSensor( std::move( inputSensor ) ),
+    //    m_inputSensor( std::move( inputSensor ) ),
+    m_sensorSpec( sensorSpec ),
     m_engine( engine ),
     m_viewer( viewer ),
     m_sys( sys ),
     m_mdiArea( mdiArea ),
-    m_thread( *this, parent ),
+    m_sensorThread( *this, parent ),
     m_counterFpsThread( *this, parent ),
     m_model( model ),
     m_view( view )
 
 {
-    const auto& sensorSpec  = m_inputSensor->m_spec;
+    //    const auto& sensorSpec  = sensorSpec;
     const auto& resolutions = sensorSpec.m_resolutions;
 
     // create 2D viewers
@@ -173,7 +259,7 @@ Sensor::Sensor( std::unique_ptr<hub::InputSensor> inputSensor,
         subWindow->setWindowFlags( Qt::CustomizeWindowHint | Qt::WindowMinMaxButtonsHint |
                                    Qt::WindowTitleHint );
 
-        subWindow->setWindowTitle( ( m_inputSensor->m_spec.m_sensorName + "   " +
+        subWindow->setWindowTitle( ( m_sensorSpec.m_sensorName + "   " +
                                      hub::SensorSpec::dims2string( dims ) + "   " +
                                      hub::SensorSpec::format2string( format ) )
                                        .c_str() );
@@ -185,8 +271,8 @@ Sensor::Sensor( std::unique_ptr<hub::InputSensor> inputSensor,
     // create 3D scene object
     {
         assert( m_component == nullptr );
-        m_entity = m_engine->getEntityManager()->createEntity( m_inputSensor->m_spec.m_sensorName +
-                                                               " entity" );
+        m_entity =
+            m_engine->getEntityManager()->createEntity( m_sensorSpec.m_sensorName + " entity" );
 
         setParent( parentSensor );
 
@@ -197,12 +283,15 @@ Sensor::Sensor( std::unique_ptr<hub::InputSensor> inputSensor,
             switch ( format ) {
             case hub::SensorSpec::Format::DOF6:
             case hub::SensorSpec::Format::MAT4:
-                m_component = new Dof6Component( *m_inputSensor, m_entity );
+                //                m_component = new Dof6Component( *m_inputSensor, m_entity );
+                m_component = new Dof6Component( m_sensorSpec, m_entity );
                 break;
 
             case hub::SensorSpec::Format::Y8:
             case hub::SensorSpec::Format::Y16:
-                m_component = new ScanComponent( *m_inputSensor, m_entity, *m_engine, *m_viewer );
+                //                m_component = new ScanComponent( *m_inputSensor, m_entity,
+                //                *m_engine, *m_viewer );
+                m_component = new ScanComponent( m_sensorSpec, m_entity, *m_engine, *m_viewer );
                 break;
 
             default:
@@ -215,7 +304,9 @@ Sensor::Sensor( std::unique_ptr<hub::InputSensor> inputSensor,
 
             assert( format == hub::SensorSpec::Format::DOF6 );
 
-            m_component = new ScanComponent( *m_inputSensor, m_entity, *m_engine, *m_viewer );
+            //            m_component = new ScanComponent( *m_inputSensor, m_entity, *m_engine,
+            //            *m_viewer );
+            m_component = new ScanComponent( m_sensorSpec, m_entity, *m_engine, *m_viewer );
         }
 
         assert( m_component != nullptr );
@@ -231,26 +322,28 @@ Sensor::Sensor( std::unique_ptr<hub::InputSensor> inputSensor,
     }
 
     m_items.append( new QStandardItem( streamName.c_str() ) );
-    m_items.append( new QStandardItem( m_inputSensor->m_spec.m_sensorName.c_str() ) );
+    m_items.append( new QStandardItem( m_sensorSpec.m_sensorName.c_str() ) );
     m_items.append(
         new QStandardItem( hub::SensorSpec::resolutions2string( resolutions ).c_str() ) );
-    m_items.append(
-        new QStandardItem( std::to_string( m_inputSensor->m_spec.m_acquisitionSize ).c_str() ) );
+    m_items.append( new QStandardItem( std::to_string( m_sensorSpec.m_acquisitionSize ).c_str() ) );
     m_itemFps = new QStandardItem( "0" );
     m_items.append( m_itemFps );
 
     m_counterFpsThread.start();
-    m_thread.start();
+    //    m_sensorThread.start();
 }
 
 Sensor::~Sensor() {
 
-    std::cout << "[Sensor] ~Sensor(" << m_inputSensor->m_spec.m_sensorName << ") start"
-              << std::endl;
+    std::cout << "[Sensor] ~Sensor(" << m_sensorSpec.m_sensorName << ") start" << std::endl;
 
-    if ( m_thread.isRunning() ) {
-        m_thread.requestInterruption();
-        m_thread.wait();
+    m_mtxUpdating.lock();
+    m_lost = true;
+    m_mtxUpdating.unlock();
+
+    if ( m_sensorThread.isRunning() ) {
+        m_sensorThread.requestInterruption();
+        m_sensorThread.wait();
     }
     if ( m_counterFpsThread.isRunning() ) {
         m_counterFpsThread.requestInterruption();
@@ -295,11 +388,57 @@ Sensor::~Sensor() {
 #ifdef ENABLE_IMAGE_VIEWER
     detachFromImageManipulator();
 #endif
-    std::cout << "[Sensor] ~Sensor(" << m_inputSensor->m_spec.m_sensorName << ") end" << std::endl;
+    std::cout << "[Sensor] ~Sensor(" << m_sensorSpec.m_sensorName << ") end" << std::endl;
 }
 
 void Sensor::updateTransform( const Ra::Engine::Scene::Entity* entity ) {
     m_entity->setTransform( entity->getTransform() );
+}
+
+void Sensor::update( const hub::Acquisition& acq ) {
+    if (m_lost)
+        return;
+    m_mtxUpdating.lock();
+    assert(! m_lost);
+    //            const auto& sensorSpec  = inputSensor->m_spec;
+    const auto& resolutions = m_sensorSpec.m_resolutions;
+    const auto& measures    = acq.getMeasures();
+
+    // update 2D view
+    {
+        for ( int i = 0; i < resolutions.size(); ++i ) {
+            const auto& resolution = resolutions.at( i );
+            const auto& dims       = resolution.first;
+            const auto& format     = resolution.second;
+            const auto& measure    = measures.at( i );
+
+    assert(! m_lost);
+            assert( measure.m_data != nullptr );
+
+            m_widgetStreamViews[i]->setData(
+                (unsigned char*)measure.m_data, measure.m_size, dims, format );
+
+            if ( m_widgetStreamViewManipulator != nullptr ) {
+                if ( dims.size() == 2 ) {
+                    m_widgetStreamViewManipulator->setData(
+                        (unsigned char*)measure.m_data, measure.m_size, dims, format );
+                }
+            }
+        }
+    }
+
+    // update 2D manipulator view
+    //// assert(m_sensor.m_widgetStreamViewManipulator != nullptr);
+
+    // update 3D component
+    //            if ( !this->isInterruptionRequested() ) {
+    assert( m_component != nullptr );
+    m_component->update( acq );
+    //            }
+
+    ++m_counterFrame;
+
+    m_mtxUpdating.unlock();
 }
 
 #ifdef ENABLE_IMAGE_VIEWER
@@ -316,10 +455,10 @@ void Sensor::attachFromImageManipulator() {
 
     assert( m_widgetStreamViewManipulator == nullptr );
 
-    const auto& resolutions = m_inputSensor->m_spec.m_resolutions;
+    const auto& resolutions = m_sensorSpec.m_resolutions;
     const auto& dims        = resolutions.at( resolutions.size() - 1 ).first;
     if ( dims.size() != 2 ) return;
-    const auto& metaData = m_inputSensor->m_spec.m_metaData;
+    const auto& metaData = m_sensorSpec.m_metaData;
     double scanWidth     = 1.0;
     if ( metaData.find( "scanWidth" ) != metaData.end() ) {
         scanWidth = std::any_cast<double>( metaData.at( "scanWidth" ) );
@@ -368,9 +507,8 @@ void Sensor::setParent( Sensor* parent ) {
         m_observerId = transformObservers.attach( m_observer );
 
         m_parent->m_sons.push_back( this );
-        std::cout << "[Sensor] ----> link '" << m_inputSensor->m_spec.m_sensorName
-                  << "' to parent '" << m_parent->m_inputSensor->m_spec.m_sensorName << "'"
-                  << std::endl;
+        std::cout << "[Sensor] ----> link '" << m_sensorSpec.m_sensorName << "' to parent '"
+                  << m_parent->m_sensorSpec.m_sensorName << "'" << std::endl;
     }
 }
 

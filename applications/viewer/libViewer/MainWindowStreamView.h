@@ -1,13 +1,8 @@
-#ifndef MAINWINDOWSTREAMVIEW_H
-#define MAINWINDOWSTREAMVIEW_H
+#pragma once
 
 #include <QMainWindow>
-//#include <QThread>
-//#include <chrono>
 
 #include <InputSensor.hpp>
-
-/////////////////////////////////////////////////////////////////////////////
 
 namespace Ui {
 class MainWindowStreamView;
@@ -33,5 +28,3 @@ class MainWindowStreamView : public QMainWindow
 
     const hub::InputSensor& m_inputStream;
 };
-
-#endif // MAINWINDOWSTREAMVIEW_H

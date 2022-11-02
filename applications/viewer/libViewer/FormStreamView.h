@@ -1,20 +1,14 @@
-#ifndef FORMSENSORVIEW_H
-#define FORMSENSORVIEW_H
+#pragma once
 
-#include <MainWindowStreamView.h>
 #include <QMdiArea>
+#include <QSortFilterProxyModel>
+#include <QStringListModel>
 #include <QThread>
 #include <QWidget>
 
-#include <QSortFilterProxyModel>
-//#include <FormInputStreamViews.h>
+#include <MainWindowStreamView.h>
 
-// class Thread_InputStream : public QThread
-//{
-
-//};
-
-#include <QStringListModel>
+#define USE_COMPLETE_VIEWER
 
 namespace Ui {
 class FormStreamView;
@@ -31,8 +25,10 @@ class FormStreamView : public QWidget
                     QWidget* parent = nullptr );
     ~FormStreamView();
 
-    void setRadioButtonOff();
+//    void setRadioButtonOff();
 
+//#ifdef USE_COMPLETE_VIEWER
+#ifndef USE_COMPLETE_VIEWER
   signals:
     void streamingStarted( const std::string& streamName, const std::string& syncSensorName );
     void streamingStopped( const std::string& streamName, const hub::SensorSpec& sensorSpec );
@@ -40,17 +36,14 @@ class FormStreamView : public QWidget
   public slots:
     void on_startStreaming();
     void on_radioButtonOnOff_clicked( bool checked );
-
-  private slots:
-
-  public:
-    const hub::SensorSpec m_sensorSpec;
+#endif
 
   private:
     Ui::FormStreamView* ui;
+#ifndef USE_COMPLETE_VIEWER
+    const hub::SensorSpec m_sensorSpec;
     const std::string m_streamName;
     QStringListModel& mSensorModel;
     QSortFilterProxyModel mProxySensorModel;
+#endif
 };
-
-#endif // FORMSENSORVIEW_H

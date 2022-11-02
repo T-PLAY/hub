@@ -42,11 +42,15 @@ using namespace Ra::Engine::Scene;
 // Scan::~Scan() {
 // }
 
-ScanComponent::ScanComponent( const hub::InputSensor& inputSensor,
+ScanComponent::ScanComponent(
+//        const hub::InputSensor& inputSensor,
+        const hub::SensorSpec & sensorSpec,
                               Ra::Engine::Scene::Entity* entity,
                               Ra::Engine::RadiumEngine& engine,
                               Ra::Gui::Viewer& viewer ) :
-    SensorComponent( inputSensor, entity ), m_engine( engine ), m_viewer( viewer ) {}
+//    SensorComponent( inputSensor, entity ),
+    SensorComponent( sensorSpec, entity ),
+    m_engine( engine ), m_viewer( viewer ) {}
 
 void ScanComponent::initialize() {
     SensorComponent::initialize();
@@ -56,9 +60,9 @@ void ScanComponent::initialize() {
 
     //// setup ////
 
-    const auto& sensorSpec  = m_inputSensor.m_spec;
-    const auto& metaData    = sensorSpec.m_metaData;
-    const auto& resolutions = sensorSpec.m_resolutions;
+//    const auto& sensorSpec  = m_inputSensor.m_spec;
+    const auto& metaData    = m_sensorSpec.m_metaData;
+    const auto& resolutions = m_sensorSpec.m_resolutions;
 
     if ( metaData.find( "nAcqs" ) != metaData.end() ) {
         m_nMaxScans = std::any_cast<unsigned int>( metaData.at( "nAcqs" ) );
@@ -236,9 +240,9 @@ void ScanComponent::addScan() {
         quadTriangle.addAttrib(
             Ra::Core::Geometry::getAttribName( Ra::Core::Geometry::VERTEX_TEXCOORD ), tex_coords );
 
-        const auto& sensorName  = m_inputSensor.m_spec.m_sensorName;
-        const auto& sensorSpec  = m_inputSensor.m_spec;
-        const auto& resolutions = sensorSpec.m_resolutions;
+        const auto& sensorName  = m_sensorSpec.m_sensorName;
+//        const auto& sensorSpec  = m_inputSensor.m_spec;
+        const auto& resolutions = m_sensorSpec.m_resolutions;
         int width;
         int height;
         int imageSize;
@@ -250,7 +254,7 @@ void ScanComponent::addScan() {
             format    = resolutions.at( 0 ).second;
             width     = dims.at( 0 );
             height    = dims.at( 1 );
-            imageSize = sensorSpec.m_acquisitionSize;
+            imageSize = m_sensorSpec.m_acquisitionSize;
         }
         else if ( resolutionsSize == 2 ) {
             assert( resolutions.at( 0 ).second == hub::SensorSpec::Format::DOF6 );

@@ -1,51 +1,40 @@
-#ifndef FORMSENSORVIEWS_H
-#define FORMSENSORVIEWS_H
+#pragma once
 
-#include <QThread>
-#include <QWidget>
-
-#include <FormStreamView.h>
-#include <MainWindowStreamView.h>
-#include <QComboBox>
-#include <QMdiArea>
-#include <QVBoxLayout>
-//#include <SensorView.h>
 #include <map>
 
+#include <QComboBox>
+#include <QMdiArea>
 #include <QStringListModel>
+#include <QThread>
+#include <QVBoxLayout>
+#include <QWidget>
 
 #include <Viewer.hpp>
 
-//#include <DialogServerConnect.h>
+#include <FormStreamView.h>
+#include <MainWindowStreamView.h>
 
-class FormStreamViews;
 
-class ViewerQt : public QObject
-{
-    Q_OBJECT
-  public:
-    ViewerQt( const std::string& ipv4, const int& port );
-    ~ViewerQt();
-  signals:
-    void serverConnected();
-    void serverDisconnected();
-    void addStreamSignal( const std::string& streamName, const hub::SensorSpec& sensorSpec );
-    void delStreamSignal( const std::string& streamName, const hub::SensorSpec& sensorSpec );
+//class FormStreamViews;
 
-  public:
-    // private:
-    hub::Viewer* m_viewer = nullptr;
-};
+//class ViewerQt : public QObject
+//{
+//    Q_OBJECT
+//  public:
+//    ViewerQt( FormStreamViews & streamViews, const std::string& ipv4, const int& port );
+//    ~ViewerQt();
 
-// class Thread_Client : public QThread {
-// public:
+//  signals:
+//    void serverConnected();
+//    void serverDisconnected();
+//    void newStreamer( const std::string& streamName, const hub::SensorSpec& sensorSpec );
+//    void delStreamer( const std::string& streamName, const hub::SensorSpec& sensorSpec );
+////    void newAcquisition( const std::string& streamName, hub::Acquisition&& acq );
 
-// signals:
-
-// public:
-
-// private:
-// };
+//  public:
+//    hub::Viewer* m_viewer = nullptr;
+//    FormStreamViews & m_streamViews;
+//};
 
 namespace Ui {
 class FormStreamViews;
@@ -59,44 +48,56 @@ class FormStreamViews : public QWidget
     explicit FormStreamViews( QWidget* parent = nullptr );
     ~FormStreamViews();
 
-  signals:
-    void streamingStarted( const std::string& streamName, const std::string& syncSensorName );
-    void streamingStopped( const std::string& streamName, const hub::SensorSpec& sensorSpec );
-    void serverDisconnected();
-    void serverConnected();
+    void initViewer(std::function<void (const char *, const hub::Acquisition &)> onNewAcquisition);
 
-  public slots:
-    void onServerConnect();
-    void onServerDisconnect();
-    void addStream( const std::string& streamName, const hub::SensorSpec& sensorSpec );
-    void delStream( const std::string& streamName, const hub::SensorSpec& sensorSpec );
+  signals:
+    void newStreamer( const std::string& streamName, const hub::SensorSpec& sensorSpec );
+    void delStreamer( const std::string& streamName, const hub::SensorSpec& sensorSpec );
+    void serverConnected(const std::string & ipv4, int port);
+    void serverDisconnected(const std::string & ipv4, int port);
+//#ifndef USE_COMPLETE_VIEWER
+//    void streamingStarted( const std::string& streamName, const std::string& syncSensorName );
+    void streamingStarted( const std::string& streamName, const hub::SensorSpec& sensorSpec );
+    void streamingStopped( const std::string& streamName, const hub::SensorSpec& sensorSpec );
+//#endif
+//    void newAcquisition(const std::string& streamName, const hub::Acquisition & acq);
+
+  private slots:
+    bool onNewStreamer( const std::string& streamName, const hub::SensorSpec& sensorSpec );
+    void onDelStreamer( const std::string& streamName, const hub::SensorSpec& sensorSpec );
+    void onServerConnected(const std::string& ipv4, int port);
+    void onServerDisconnected(const std::string& ipv4, int port);
+//    void onNewAcquisition( const std::string& streamName, const hub::Acquisition& acq );
 
   private:
     Ui::FormStreamViews* ui;
 
-    ViewerQt* m_viewerQt = nullptr;
+//    ViewerQt* m_viewerQt = nullptr;
+    hub::Viewer* m_viewer = nullptr;
+
     std::string m_ipv4;
     int m_port;
     const QRegularExpression m_ipv4RegularExpression =
         QRegularExpression( "[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}" );
 
-    std::map<std::string, FormStreamView*> m_sensorViews;
-    QStringListModel m_sensorModel;
+    std::map<std::string, FormStreamView*> m_streamViews;
 
     bool m_serverConnected = false;
     bool m_serverPing      = false;
 
+    QStringListModel m_sensorModel;
+
+#ifndef USE_COMPLETE_VIEWER
     bool m_autoStartStream = true;
+#endif
 
   public:
-    const FormStreamView& getSensorView( const std::string& streamName ) const;
+//    const FormStreamView& getStreamView( const std::string& streamName ) const;
 
     const std::string& getIpv4() const;
     const int& getPort() const;
 
-  private slots:
+private slots:
     void on_lineEdit_ip_textChanged( const QString& ipv4 );
     void on_spinBox_port_valueChanged( int port );
 };
-
-#endif // FORMSENSORVIEWS_H

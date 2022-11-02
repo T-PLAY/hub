@@ -1,9 +1,9 @@
 #include "MainWindowStreamView.h"
 #include "ui_MainWindowStreamView.h"
 
-#include <WidgetStreamView.h>
 #include <cmath>
-//#include <socket.h>
+
+#include <WidgetStreamView.h>
 
 //////////////////////////////////////////////////////////////////////
 
@@ -58,6 +58,3 @@ void MainWindowStreamView::setData( unsigned char* img_ptr,
         ->setData( img_ptr, 192 * 512, dims, format );
 }
 
-// std::string MainWindowStreamView::getStreamerSensorName() const
-//{
-// }

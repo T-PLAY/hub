@@ -150,7 +150,7 @@
        </layout>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_4">
+       <layout class="QHBoxLayout" name="horizontalLayout_syncStream">
         <item>
          <widget class="QLabel" name="label_syncStream">
           <property name="sizePolicy">

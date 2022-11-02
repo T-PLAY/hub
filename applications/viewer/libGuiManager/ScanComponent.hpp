@@ -33,7 +33,9 @@ struct Scan {
 /// This is a very basic component which holds a spinning cube.
 struct ScanComponent : public SensorComponent {
 
-    ScanComponent( const hub::InputSensor& inputSensor,
+    ScanComponent(
+//            const hub::InputSensor& inputSensor,
+            const hub::SensorSpec & sensorSpec,
                    Ra::Engine::Scene::Entity* entity,
                    Ra::Engine::RadiumEngine& engine,
                    Ra::Gui::Viewer& viewer );

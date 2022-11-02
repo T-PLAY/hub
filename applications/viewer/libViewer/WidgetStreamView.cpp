@@ -1,25 +1,14 @@
 #include "WidgetStreamView.h"
 
-#include <QPainter>
+#include <cassert>
+#include <cmath>
 #include <iostream>
 
-// static constexpr QImage::Format * streamFormat2QtFormat[(int)hub::SensorSpec::Format::COUNT] = {
-// };
-//#include <qmatrix4x4.h>
 #include <QPainter>
 #include <QPixmap>
 #include <QTransform>
-#include <cassert>
-#include <cmath>
-
-#include <constants.h>
 
 WidgetStreamView::WidgetStreamView( QWidget* parent ) : QWidget( parent ) {}
-
-// void WidgetStreamView::setData(unsigned char* img_ptr, std::vector<int> dims,
-// hub::SensorSpec::Format format)
-//{
-// }
 
 void WidgetStreamView::setData( unsigned char* img_ptr,
                                 size_t size,
@@ -27,6 +16,7 @@ void WidgetStreamView::setData( unsigned char* img_ptr,
                                 hub::SensorSpec::Format format ) {}
 
 ///////////////////////////////////////////////////////////////////////////////
+
 WidgetStreamView2D::WidgetStreamView2D( QWidget* parent ) : WidgetStreamView( parent ) {}
 
 void WidgetStreamView2D::init( int imagePixelWidth,
@@ -85,18 +75,6 @@ void WidgetStreamView2D::clear() {
     update();
 }
 
-// WidgetStreamView2D::WidgetStreamView2D(int imagePixelWidth, int imagePixelHeight, double
-// imageUnitWidth, double imageUnitHeight, QWidget* parent)
-//{
-
-//}
-
-// void WidgetStreamView2D::setData(unsigned char* img_ptr, std::vector<int> dims,
-// hub::SensorSpec::Format format)
-//{
-
-//}
-
 void WidgetStreamView2D::setData( unsigned char* img_ptr,
                                   size_t size,
                                   std::vector<int> dims,
@@ -137,11 +115,6 @@ void WidgetStreamView2D::onPixelPerUnitChanged() {
 
     update();
 }
-
-// void WidgetStreamView2D::canvasUpdated()
-//{
-
-//}
 
 void WidgetStreamView2D::updateImage() {
 
@@ -256,12 +229,6 @@ void WidgetStreamView2D::paintEvent( QPaintEvent* event ) {
     painter.end();
 }
 
-// void WidgetStreamView2D::resizeEvent(QResizeEvent* event)
-//{
-///" + QString::number(this->size().height()) + " pixels");
-
-//}
-
 const double& WidgetStreamView2D::getImageUnitHeight() const {
     return mImageUnitHeight;
 }
@@ -273,15 +240,6 @@ const double& WidgetStreamView2D::getImageUnitWidth() const {
 void WidgetStreamView2D::setShowGrid( bool newShowGrid ) {
     mShowGrid = newShowGrid;
 }
-
-// void WidgetStreamView2D::setRatio(double newRatio)
-//{
-// }
-
-// void WidgetStreamView2D::setRealSize(double realWidth, double realHeight)
-//{
-
-//}
 
 double& WidgetStreamView2D::getCanvasPixelPerUnit() {
     return mCanvasPixelPerUnit;
@@ -295,17 +253,9 @@ const int& WidgetStreamView2D::getCanvasPixelWidth() const {
     return mCanvasPixelWidth;
 }
 
-// void WidgetStreamView2D::setCanvasPixelPerUnit(const double& newCanvasPixelPerUnit)
-//{
-// }
-
 void WidgetStreamView2D::setRotateDeg( double newRotateDeg ) {
     mRotateDeg = newRotateDeg;
 }
-
-// const double& WidgetStreamView2D::getPixelPerUnit() const
-//{
-// }
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -318,12 +268,6 @@ WidgetStreamView1D::WidgetStreamView1D( QWidget* parent ) : WidgetStreamView( pa
 WidgetStreamView1D::~WidgetStreamView1D() {
     delete mLabel;
 }
-
-// void WidgetStreamView1D::setData(unsigned char* img_ptr, std::vector<int> dims,
-// hub::SensorSpec::Format format)
-//{
-
-//}
 
 void WidgetStreamView1D::setData( unsigned char* img_ptr,
                                   size_t size,
