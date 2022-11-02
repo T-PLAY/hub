@@ -1,6 +1,7 @@
 #include "Viewer.hpp"
 
 #include "IO/Stream.hpp"
+#include "InputSensor.hpp"
 #include "Net/ClientSocket.hpp"
 
 //#define DEBUG_VIEWER
@@ -36,20 +37,22 @@ Viewer::Viewer( std::function<bool( const char*, const SensorSpec& )> onNewStrea
 #endif
                 net::ClientSocket sock( m_ipv4, m_port );
 
+                assert( !m_serverConnected );
                 m_serverConnected = true;
                 sock.write( net::ClientSocket::Type::VIEWER );
 
                 if ( m_onServerConnected ) m_onServerConnected( m_ipv4.c_str(), m_port );
 
                 while ( !m_stopThread ) {
+
                     net::ClientSocket::Message serverMessage;
                     sock.read( serverMessage );
 
                     switch ( serverMessage ) {
 
                     case net::ClientSocket::Message::PING: {
-                        // server check client connection
-                        // nothing to do
+                        // server checking if client is connected (only way to know if client viewer
+                        // still alive) nothing to do
 #ifdef DEBUG_VIEWER
                         DEBUG_MSG( "[Viewer] receive ping " );
 #endif
@@ -58,12 +61,11 @@ Viewer::Viewer( std::function<bool( const char*, const SensorSpec& )> onNewStrea
                     case net::ClientSocket::Message::NEW_STREAMER: {
                         std::string streamName;
                         sock.read( streamName );
+                        SensorSpec sensorSpec;
+                        sock.read( sensorSpec );
 #ifdef DEBUG_VIEWER
                         DEBUG_MSG( "[Viewer] new streamer '" << streamName << "'" );
 #endif
-
-                        SensorSpec sensorSpec;
-                        sock.read( sensorSpec );
 
                         assert( m_streamName2sensorSpec.find( streamName ) ==
                                 m_streamName2sensorSpec.end() );
@@ -77,6 +79,7 @@ Viewer::Viewer( std::function<bool( const char*, const SensorSpec& )> onNewStrea
                             }
                         }
                         // wait for client init sensorSpec with main thread context (async)
+                        // for unity side (update context different of static event function)
                         std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
 
                     } break;
@@ -98,26 +101,29 @@ Viewer::Viewer( std::function<bool( const char*, const SensorSpec& )> onNewStrea
 
                             if ( m_onNewAcquisition ) { stopStream( streamName, sensorSpec ); }
                         }
+                        // wait for client init sensorSpec with main thread context (async)
+                        // for unity side (update context different of static event function)
                         std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
 
                     } break;
 
                     default: {
-                        assert( false );
 #ifdef DEBUG_VIEWER
                         DEBUG_MSG( "[Viewer] unknown message from server" );
 #endif
+                        assert( false );
                     }
                     } // switch (serverMessage)
 
                 } // while (! m_stopThread)
             }
-            catch ( std::exception& e ) {
+            catch ( net::ClientSocket::exception& e ) {
 #ifdef DEBUG_VIEWER
                 DEBUG_MSG( "[Viewer] server disconnected, catch exception " << e.what() );
 #endif
                 std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
             }
+
             if ( m_serverConnected ) {
                 m_serverConnected = false;
 
