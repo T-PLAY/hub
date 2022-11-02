@@ -4,12 +4,6 @@
 #include "Macros.hpp"
 #include "Viewer.hpp"
 
-//#include <iostream>
-//#include <stdlib.h>
-//#include <stdio.h>
-//#include <windows.h>
-//#include <winbase.h>
-
 namespace hub {
 namespace native {
 

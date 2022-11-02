@@ -38,6 +38,8 @@ class SRC_API Viewer
     void setIpv4( const std::string& ipv4 );
     void setPort( int port );
 
+    ////////////////////////////////////////////////////////////////////////////////
+
   private:
     std::thread m_thread;
     bool m_stopThread = false;

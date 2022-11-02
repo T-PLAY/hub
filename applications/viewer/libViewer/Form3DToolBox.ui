@@ -45,20 +45,6 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton_fitSelected">
-       <property name="text">
-        <string>Fit selected</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pushButton_fitTrace">
-       <property name="text">
-        <string>Fit trace</string>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QCheckBox" name="checkBox_showGrid">
        <property name="text">
         <string>grid</string>

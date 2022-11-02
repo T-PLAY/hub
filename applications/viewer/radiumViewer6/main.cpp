@@ -27,6 +27,7 @@ int main( int argc, char* argv[] ) {
     QApplication a( argc, argv );
     qRegisterMetaType<std::string>( "std::string" );
     qRegisterMetaType<hub::SensorSpec>( "hub::SensorSpec" );
+//    qRegisterMetaType<hub::Acquisition>( "hub::Acquisition&&" );
     MainWindow w;
     w.show();
     return a.exec();

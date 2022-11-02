@@ -67,10 +67,6 @@ void acquisition_getMeasure( const Acquisition* acquisition, unsigned char* data
     memcpy( data, measure.m_data, measure.m_size );
 }
 
-// bool getData( const InputSensor* inputSensor, unsigned char* data, int iMeasure ) {
-
-//}
-
 Viewer* createViewer( onNewStreamerFunc onNewStreamer,
                       onDelStreamerFunc onDelStreamer,
                       onServerConnectedFunc onServerConnected,
@@ -115,9 +111,6 @@ void sensorSpec_getSensorName( const SensorSpec* sensorSpec, char* sensorName, i
     memcpy( sensorName, sensorSpec->m_sensorName.c_str(), *strLen + 1 );
     sensorName[*strLen] = 0;
 }
-////void passString([out] LPStr *str);
-// const char * sensorSpec_getSensorName(const SensorSpec* sensorSpec) {
-//}
 
 int sensorSpec_getResolutionSize( const SensorSpec* sensorSpec, int iResolution ) {
     return SensorSpec::computeAcquisitionSize( sensorSpec->m_resolutions.at( iResolution ) );
@@ -212,10 +205,6 @@ unsigned int metaData_getUInt( const SensorSpec::MetaData* metaData, const char*
     assert( metaData->find( metaName ) != metaData->end() );
     return std::any_cast<unsigned int>( metaData->at( metaName ) );
 }
-
-// bool getAcquisition( InputSensor* inputSensor,
-
-//}
 
 } // namespace native
 } // namespace hub

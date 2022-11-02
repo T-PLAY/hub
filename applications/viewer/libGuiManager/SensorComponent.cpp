@@ -32,10 +32,14 @@ using namespace Ra::Engine::Rendering;
 using namespace Ra::Engine::Data;
 using namespace Ra::Engine::Scene;
 
-SensorComponent::SensorComponent( const hub::InputSensor& inputSensor,
+SensorComponent::SensorComponent(
+//        const hub::InputSensor& inputSensor,
+        const hub::SensorSpec & sensorSpec,
                                   Ra::Engine::Scene::Entity* entity ) :
-    Ra::Engine::Scene::Component( inputSensor.m_spec.m_sensorName, entity ),
-    m_inputSensor( inputSensor ) {}
+    Ra::Engine::Scene::Component( sensorSpec.m_sensorName, entity ),
+//    m_inputSensor( inputSensor )
+  m_sensorSpec(sensorSpec)
+{}
 
 void SensorComponent::initialize() {
     auto plainMaterial              = make_shared<PlainMaterial>( "Plain Material" );

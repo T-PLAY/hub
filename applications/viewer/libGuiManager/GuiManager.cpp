@@ -1,50 +1,37 @@
 #include "GuiManager.h"
 
-#include <IO/Stream.hpp>
-
-#include <Engine/Scene/EntityManager.hpp>
-#include <Gui/Viewer/RotateAroundCameraManipulator.hpp>
-
-//#include "./ui_MainWindow.h"
-//#include <cassert>
-//#include <Engine/Rendering/ForwardRenderer.hpp>
-
-#include <MinimalComponent.hpp>
-//#include <MinimalSystem.hpp>
-#include <QDoubleSpinBox>
-#include <QOpenGLContext>
-
-#include <constants.h>
 #include <filesystem>
 
-#include <FormStreamViews.h>
+#include <QAction>
+#include <QDockWidget>
+#include <QDoubleSpinBox>
+#include <QHeaderView>
+#include <QItemSelectionModel>
+#include <QOpenGLContext>
+#include <QPushButton>
+#include <QTableView>
+#include <QToolBar>
 
 #include <Core/Asset/FileLoaderInterface.hpp>
-//#include <DicomLoader/DicomLoader.hpp>
+#include <Core/Utils/Color.hpp>
+#include <Engine/Rendering/RenderObject.hpp>
+#include <Engine/Rendering/RenderObjectManager.hpp>
+#include <Engine/Scene/Component.hpp>
+#include <Engine/Scene/EntityManager.hpp>
 #include <Engine/Scene/GeometrySystem.hpp>
+#include <Gui/TreeModel/EntityTreeModel.hpp>
+#include <Gui/Viewer/RotateAroundCameraManipulator.hpp>
 
-//#include <FormInputStreamViews.h>
+#include <IO/Stream.hpp>
+
+#include <FormStreamViews.h>
+#include <MinimalComponent.hpp>
+
 #ifdef ENABLE_LOADER
 #    include <FormWidgetLoader.h>
 #endif
 
-#include <Gui/TreeModel/EntityTreeModel.hpp>
-
-#include <Engine/Rendering/RenderObject.hpp>
-#include <Engine/Rendering/RenderObjectManager.hpp>
-#include <Engine/Scene/Component.hpp>
-#include <QItemSelectionModel>
-
-#include <QHeaderView>
-#include <QPushButton>
-#include <QTableView>
-
 GuiManager::GuiManager( QObject* parent ) : QObject { parent } {}
-
-// GuiManager::GuiManager()
-//{
-
-//}
 
 GuiManager::~GuiManager() {
     std::cout << "[GuiManager] ~GuiManager() start" << std::endl;
@@ -69,10 +56,6 @@ GuiManager::~GuiManager() {
 void GuiManager::clear() {
     m_sceneManager.clear();
 }
-
-#include <QAction>
-#include <QDockWidget>
-#include <QToolBar>
 
 void GuiManager::init() {
     assert( !m_initialized );
@@ -117,21 +100,17 @@ void GuiManager::init() {
     m_toolBarTopRight->addAction( m_action2D );
     m_mainWindow->addToolBar( m_toolBarTopRight );
 
-    //////////////////////////////////////// 3D VIEW
+    //////////////////////////////////////// TOOL BOX
 
     m_3DToolBox = new Form3DToolBox( m_mainWindow );
     QObject::connect( m_3DToolBox,
                       &Form3DToolBox::pushButton_fitScene_clicked,
                       this,
                       &GuiManager::on_toolButton_fitScene_clicked );
-    QObject::connect( m_3DToolBox,
-                      &Form3DToolBox::pushButton_fitSelected_clicked,
-                      this,
-                      &GuiManager::on_toolButton_fitSelected_clicked );
-    QObject::connect( m_3DToolBox,
-                      &Form3DToolBox::pushButton_fitTrace_clicked,
-                      this,
-                      &GuiManager::on_toolButton_fitTrace_clicked );
+    //    QObject::connect( m_3DToolBox,
+    //                      &Form3DToolBox::pushButton_fitSelected_clicked,
+    //                      this,
+    //                      &GuiManager::on_toolButton_fitSelected_clicked );
     QObject::connect( m_3DToolBox,
                       &Form3DToolBox::checkBox_showTrace_toggled,
                       this,
@@ -175,12 +154,27 @@ void GuiManager::init() {
                       &m_sceneManager,
                       &SceneManager::on_setTransparency );
 
-    m_viewer->enableDebugDraw( 0 );
+    m_comboBoxDisplayedTexture = m_3DToolBox->m_comboBoxDisplayedTexture;
+    auto texs                  = m_viewer->getRenderer()->getAvailableTextures();
+    for ( const auto& tex : texs ) {
+        m_comboBoxDisplayedTexture->addItem( tex.c_str() );
+    }
+    QObject::connect( m_comboBoxDisplayedTexture,
+                      &QComboBox::currentTextChanged,
+                      m_viewer,
+                      &Ra::Gui::Viewer::displayTexture );
+    QObject::connect( m_3DToolBox,
+                      &Form3DToolBox::pushButton_reloadShaders_clicked,
+                      m_viewer,
+                      &Ra::Gui::Viewer::reloadShaders );
 
     m_layout3DView->insertWidget( 0, m_3DToolBox );
 
-    //////////////////////////////////////// RIGHT
-    //////////////////////////////////////////////////////
+    //////////////////////////////////////// 3D VIEW
+
+    m_viewer->enableDebugDraw( 0 );
+
+    //////////////////////////////////////// RIGHT DOCKER
 
 #ifdef ENABLE_IMAGE_VIEWER
 
@@ -197,12 +191,7 @@ void GuiManager::init() {
 
 #endif
 
-    //////////////////////////////////////// TOP
-    //////////////////////////////////////////////////////////
-    assert( m_mdiArea != nullptr );
-
-    //////////////////////////////////////// LEFT
-    /////////////////////////////////////////////////////////////////
+    //////////////////////////////////////// LEFT DOCKER
 
     m_formStreamViews = new FormStreamViews( m_dockLeft );
 
@@ -225,9 +214,16 @@ void GuiManager::init() {
                       &FormStreamViews::serverConnected,
                       this,
                       &GuiManager::onServerConnected );
+//    QObject::connect(
+//        m_formStreamViews, &FormStreamViews::newAcquisition, this, &GuiManager::onNewAcquisition );
 
-    //////////////////////////////////////// BOTTOM
-    //////////////////////////////////////////////////////////////
+    auto _onNewAcquisition = [this]( const std::string& streamerName,
+                                     const hub::Acquisition& acq ) {
+        onNewAcquisition( streamerName, acq );
+    };
+    m_formStreamViews->initViewer( std::move(_onNewAcquisition ));
+
+    //////////////////////////////////////// BOTTOM DOCKER
 
     QWidget* bottomContainer = new QWidget( m_dockBottom );
     m_dockBottom->setWidget( bottomContainer );
@@ -274,6 +270,7 @@ void GuiManager::init() {
 
     //////////////////////////////////////// INIT 3D ENVIRONMENT
     // Create and initialize entity and component
+    // init scene manager
 
     m_sceneManager.m_engine  = m_engine;
     m_sceneManager.m_sys     = m_system;
@@ -286,32 +283,8 @@ void GuiManager::init() {
 
     ///////////////////////////////////////////////////////
 
-    m_comboBoxDisplayedTexture = m_3DToolBox->m_comboBoxDisplayedTexture;
-    auto texs                  = m_viewer->getRenderer()->getAvailableTextures();
-    for ( const auto& tex : texs ) {
-        m_comboBoxDisplayedTexture->addItem( tex.c_str() );
-    }
-    QObject::connect( m_comboBoxDisplayedTexture,
-                      &QComboBox::currentTextChanged,
-                      m_viewer,
-                      &Ra::Gui::Viewer::displayTexture );
-    QObject::connect( m_3DToolBox,
-                      &Form3DToolBox::pushButton_reloadShaders_clicked,
-                      m_viewer,
-                      &Ra::Gui::Viewer::reloadShaders );
-
     m_initialized = true;
 }
-
-// void GuiManager::incIter()
-//{
-// }
-// void GuiManager::onRecordLoaderPathUnloaded() {
-//}
-
-void GuiManager::onRecordLoaderPathLoaded() {}
-
-void GuiManager::onSnapshotLoaderPathLoaded() {}
 
 void GuiManager::on_action2D_triggered() {
     m_stackedWidget->setCurrentIndex( 0 );
@@ -321,17 +294,22 @@ void GuiManager::on_action3D_triggered() {
     m_stackedWidget->setCurrentIndex( 1 );
 }
 
+//void GuiManager::onServerStreamStarted( const std::string& streamName,
+//                                        const std::string& syncStreamName ) {
 void GuiManager::onServerStreamStarted( const std::string& streamName,
-                                        const std::string& syncStreamName ) {
-    std::cout << "[GuiManager] onServerStreamStarted(" << streamName << ", " << syncStreamName
+                                        const hub::SensorSpec& sensorSpec ) {
+//    std::cout << "[GuiManager] onServerStreamStarted(" << streamName << ", " << syncStreamName
+    std::cout << "[GuiManager] onServerStreamStarted(" << streamName << ", " << sensorSpec
               << ")" << std::endl;
 
     const auto& ipv4 = m_formStreamViews->getIpv4();
     const auto port  = m_formStreamViews->getPort();
 
-    m_sceneManager.addSensor(
-        hub::io::InputStream( streamName, syncStreamName, hub::net::ClientSocket( ipv4, port ) ),
-        streamName );
+//    m_sceneManager.addSensor(
+//        hub::io::InputStream( streamName, syncStreamName, hub::net::ClientSocket( ipv4, port ) ),
+//        streamName );
+
+    m_sceneManager.addSensor(streamName, sensorSpec);
 }
 
 void GuiManager::onServerStreamStopped( const std::string& streamName,
@@ -353,44 +331,11 @@ void GuiManager::onServerDisconnected() {
 #endif
 }
 
-void GuiManager::onInit( const std::string& streamName ) {}
-
-// void GuiManager::onInitPose()
-//{
-//}
-
-// void GuiManager::onInitScan()
-//{
-//}
-
-void GuiManager::onNewAcquisition( const std::string& streamName, const std::string& sourceType ) {}
-
-void GuiManager::onSelectedSourceChanged( const std::string& streamName,
-                                          const std::string& sourceType ) {}
-
-// void GuiManager::onUpdatePose()
-//{
-//}
-
-// void GuiManager::onUpdateScan()
-//{
-//}
-
-// void GuiManager::on_comboBox_scan_currentTextChanged(const QString& sourceType)
-//{
-// }
-
-// void GuiManager::on_comboBox_pose_currentTextChanged(const QString& sourceType)
-//{
-// }
-
-// void GuiManager::onNewScanAcquisition()
-//{
-// }
-
-// void GuiManager::onNewPoseAcquisition()
-//{
-// }
+void GuiManager::onNewAcquisition( const std::string& streamName, const hub::Acquisition& acq ) {
+//    std::cout << "[GuiManager] GuiManager::onNewAcquisition '" << streamName << "' : " << acq
+//              << std::endl;
+    m_sceneManager.newAcquisition(streamName, acq);
+}
 
 void GuiManager::on_checkBox_grid_toggled( bool checked ) {
     m_sceneManager.m_sceneComponent->setVisible( checked );
@@ -408,39 +353,32 @@ void GuiManager::on_toolButton_fitScene_clicked() {
     m_viewer->fitCamera();
 }
 
-void GuiManager::on_toolButton_fitSelected_clicked() {
-    const auto& indexes = m_sensorsView->selectionModel()->selectedIndexes();
+// void GuiManager::on_toolButton_fitSelected_clicked() {
+//     const auto& indexes = m_sensorsView->selectionModel()->selectedIndexes();
 
-    if ( !indexes.empty() ) {
+//    if ( !indexes.empty() ) {
 
-        const auto& current = indexes.first();
+//        const auto& current = indexes.first();
 
-        const int row = current.row();
+//        const int row = current.row();
 
-        std::cout << "[GuiManager] row clicked " << row << std::endl;
+//        std::cout << "[GuiManager] row clicked " << row << std::endl;
 
-        const std::string streamName = m_sensorsView->model()
-                                           ->data( m_sensorsView->model()->index( row, 0 ) )
-                                           .toString()
-                                           .toStdString();
-        m_sceneManager.fitView( streamName );
-    }
-}
+//        const std::string streamName = m_sensorsView->model()
+//                                           ->data( m_sensorsView->model()->index( row, 0 ) )
+//                                           .toString()
+//                                           .toStdString();
+//        m_sceneManager.fitView( streamName );
+//    }
+//}
 
-#include <Core/Utils/Color.hpp>
-void GuiManager::on_toolButton_fitTrace_clicked() {}
+// void GuiManager::loadFile( QString path ) {
+//     std::string filename = path.toLocal8Bit().data();
+//     bool res             = m_engine->loadFile( filename );
 
-void GuiManager::loadFile( QString path ) {
-    std::string filename = path.toLocal8Bit().data();
-    bool res             = m_engine->loadFile( filename );
+//    if ( !res ) { std::cout << "Aborting file loading !"; }
 
-    if ( !res ) { std::cout << "Aborting file loading !"; }
-
-    m_engine->releaseFile();
-}
-
-// void GuiManager::on_sensorsView_clicked(const QModelIndex& index)
-//{
+//    m_engine->releaseFile();
 //}
 
 void GuiManager::on_sensorsView_selectionChanged( const QItemSelection& selected,
@@ -481,9 +419,7 @@ void GuiManager::on_sensorsView_selectionChanged( const QItemSelection& selected
 void GuiManager::on_sensorsView_doubleClicked( const QModelIndex& index ) {
 
     const int row = index.row();
-
     std::cout << "[GuiManager] row clicked " << row << std::endl;
-
     const std::string streamName = m_sensorsView->model()
                                        ->data( m_sensorsView->model()->index( row, 0 ) )
                                        .toString()

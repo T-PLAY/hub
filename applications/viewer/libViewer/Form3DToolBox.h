@@ -36,8 +36,6 @@ class Form3DToolBox : public QWidget
 
   public slots:
     void on_pushButton_fitScene_clicked();
-    void on_pushButton_fitSelected_clicked();
-    void on_pushButton_fitTrace_clicked();
 
     void on_checkBox_showGrid_toggled( bool checked );
     void on_checkBox_showTrace_toggled( bool checked );

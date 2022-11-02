@@ -1,5 +1,4 @@
-#ifndef WIDGETSTREAMVIEW_H
-#define WIDGETSTREAMVIEW_H
+#pragma once
 
 #include <QImage>
 #include <QLabel>
@@ -9,7 +8,7 @@
 
 #include <SensorSpec.hpp>
 
-const std::vector<double> g_stepSizes = { 1.0, 2.0, 5.0, 10.0, 20.0, 25.0, 50.0, 75.0, 100.0 };
+static const std::vector<double> g_stepSizes { 1.0, 2.0, 5.0, 10.0, 20.0, 25.0, 50.0, 75.0, 100.0 };
 
 class WidgetStreamView : public QWidget
 {
@@ -108,5 +107,3 @@ class WidgetStreamView1D : public WidgetStreamView
   private:
     QLabel* mLabel = nullptr;
 };
-
-#endif // WIDGETSTREAMVIEW_H

@@ -1,23 +1,13 @@
 #include "FormStreamView.h"
 #include "ui_FormStreamView.h"
 
-#include <QMdiSubWindow>
-#include <WidgetStreamView.h>
 #include <cmath>
-#include <constants.h>
 #include <iostream>
 
-// Thread_InputStream::Thread_InputStream( std::string streamName, QObject* parent ) :
-// }
+#include <QMdiSubWindow>
+#include <QLineEdit>
 
-// Thread_InputStream::~Thread_InputStream() {
-// }
-
-// void Thread_InputStream::run() {
-
-//}
-
-///////////////////////////////////////////////////////////////////////////////////
+#include <WidgetStreamView.h>
 
 FormStreamView::FormStreamView( std::string streamName,
                                 const hub::SensorSpec& sensorSpec,
@@ -26,11 +16,31 @@ FormStreamView::FormStreamView( std::string streamName,
 
     :
     QWidget( parent ),
-    ui( new Ui::FormStreamView ),
+    ui( new Ui::FormStreamView )
+#ifndef USE_COMPLETE_VIEWER
+    ,
     m_streamName( streamName ),
     m_sensorSpec( sensorSpec ),
-    mSensorModel( sensorModel ) {
+    mSensorModel( sensorModel )
+#endif
+{
     ui->setupUi( this );
+
+#ifdef USE_COMPLETE_VIEWER
+    ui->frameButtonOnOff->setVisible(false);
+//    ui->comboBox_syncSensor->setCurrentText("none");
+//    QLineEdit * lineEdit = new QLineEdit("none");
+//    lineEdit->setReadOnly(true);
+//    ui->comboBox_syncSensor->setLineEdit(lineEdit);
+//    ui->comboBox_syncSensor->setEnabled(false);
+//    ui->comboBox_syncSensor->setVisible(false);
+    QLabel * label = new QLabel("none");
+    label->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Preferred);
+//    label->setAlignment(Qt::AlignLeft);
+    ui->horizontalLayout_syncStream->insertWidget(1, label);
+    ui->horizontalLayout_syncStream->removeWidget(ui->comboBox_syncSensor);
+    delete ui->comboBox_syncSensor;
+#endif
 
     ui->labelStreamName->setText( streamName.c_str() );
     ui->labelSensorName->setText( sensorSpec.m_sensorName.c_str() );
@@ -51,17 +61,25 @@ FormStreamView::FormStreamView( std::string streamName,
             hub::SensorSpec::metaData2string( sensorSpec.m_metaData, true ).c_str() );
     }
 
+#ifndef USE_COMPLETE_VIEWER
     mProxySensorModel.setSourceModel( &mSensorModel );
     QString sensorNameMod =
         QString( streamName.c_str() ).replace( "(", "\\(" ).replace( ")", "\\)" );
     mProxySensorModel.setFilterRegularExpression(
         QRegularExpression( QString( "^(?!" + sensorNameMod + "$)" ) ) );
     ui->comboBox_syncSensor->setModel( &mProxySensorModel );
+#endif
 }
 
 FormStreamView::~FormStreamView() {
 
     delete ui;
+}
+
+#ifndef USE_COMPLETE_VIEWER
+void FormStreamView::on_startStreaming() {
+
+    ui->radioButtonOnOff->click();
 }
 
 void FormStreamView::on_radioButtonOnOff_clicked( bool checked ) {
@@ -85,45 +103,10 @@ void FormStreamView::on_radioButtonOnOff_clicked( bool checked ) {
     }
 }
 
-void FormStreamView::setRadioButtonOff() {
-    ui->radioButtonOnOff->setChecked( false );
-    ui->radioButtonOnOff->setText( "off" );
-    ui->frameButtonOnOff->setStyleSheet( "border-radius: 10px; background-color: red" );
-}
-
-void FormStreamView::on_startStreaming() {
-
-    ui->radioButtonOnOff->click();
-}
-
-// void FormStreamView::on_startStreamingPrivate() {
-
-///&FormStreamView::streamingStopped );
-
-//}
-
-//#include <typeinfo>
-
-// void FormStreamView::on_stopStreaming() {
-
-//}
-
-// void FormStreamView::on_closeStreamView() {
-
-//}
-
-// void FormStreamView::on_newAcquisition() {
-
-//}
-
-// const InputStream &FormStreamView::getInputStream() const
-//{
+// void FormStreamView::setRadioButtonOff() {
+//     ui->radioButtonOnOff->setChecked( false );
+//     ui->radioButtonOnOff->setText( "off" );
+//     ui->frameButtonOnOff->setStyleSheet( "border-radius: 10px; background-color: red" );
 // }
 
-// const Thread_InputStream *FormStreamView::getInputStreamThread() const
-//{
-// }
-
-// void FormStreamView::on_comboBox_syncSensor_currentTextChanged(const QString& syncSensorName)
-//{
-// }
+#endif

@@ -15,13 +15,6 @@ void Form3DToolBox::on_pushButton_fitScene_clicked() {
     emit pushButton_fitScene_clicked();
 }
 
-void Form3DToolBox::on_pushButton_fitSelected_clicked() {
-    emit pushButton_fitSelected_clicked();
-}
-
-void Form3DToolBox::on_pushButton_fitTrace_clicked() {
-    emit pushButton_fitTrace_clicked();
-}
 
 void Form3DToolBox::on_checkBox_showGrid_toggled( bool checked ) {
     emit checkBox_showGrid_toggled( checked );

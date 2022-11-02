@@ -18,7 +18,8 @@
 /// This is a very basic component which holds a spinning cube.
 struct SensorComponent : public Ra::Engine::Scene::Component {
 
-    SensorComponent( const hub::InputSensor& inputSensor, Ra::Engine::Scene::Entity* entity );
+//    SensorComponent( const hub::InputSensor& inputSensor, Ra::Engine::Scene::Entity* entity );
+    SensorComponent( const hub::SensorSpec& sensorSpec, Ra::Engine::Scene::Entity* entity );
 
     /// This function is called when the component is properly
     /// setup, i.e. it has an entity.
@@ -41,6 +42,7 @@ struct SensorComponent : public Ra::Engine::Scene::Component {
     Ra::Engine::Rendering::RenderObject* m_roAxes[3] = { nullptr };
     Ra::Engine::Rendering::RenderObject* m_ro        = nullptr;
 
-    const hub::InputSensor& m_inputSensor;
+//    const hub::InputSensor& m_inputSensor;
+    const hub::SensorSpec & m_sensorSpec;
     std::vector<std::shared_ptr<Ra::Engine::Data::Mesh>> m_meshAxis;
 };

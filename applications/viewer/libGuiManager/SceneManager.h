@@ -24,10 +24,12 @@ class SceneManager : public QObject
 
     void init();
 
-    template <class InterfaceT>
-    void addSensor( InterfaceT&& interfaceT, const std::string streamName );
+//    template <class InterfaceT>
+//    void addSensor( InterfaceT&& interfaceT, const std::string streamName );
 
+    void addSensor(const std::string & streamName, const hub::SensorSpec & sensorSpec);
     void delSensor( const std::string& streamName );
+    void newAcquisition(const std::string & streamName, const hub::Acquisition & acq);
 
     void clear();
 
@@ -76,72 +78,72 @@ class SceneManager : public QObject
     bool m_initialized = false;
 };
 
-template <class InterfaceT>
-void SceneManager::addSensor( InterfaceT&& interfaceT, const std::string streamName ) {
+//template <class InterfaceT>
+//void SceneManager::addSensor( InterfaceT&& interfaceT, const std::string streamName ) {
 
-    auto&& inputSensor     = std::make_unique<hub::InputSensor>( std::move( interfaceT ) );
-    const auto& sensorName = inputSensor->m_spec.m_sensorName;
-    const auto& metaData   = inputSensor->m_spec.m_metaData;
+//    auto&& inputSensor     = std::make_unique<hub::InputSensor>( std::move( interfaceT ) );
+//    const auto& sensorName = inputSensor->m_spec.m_sensorName;
+//    const auto& metaData   = inputSensor->m_spec.m_metaData;
 
-    const char* parentName = nullptr;
-    if ( metaData.find( "parent" ) != metaData.end() ) {
-        parentName = std::any_cast<const char*>( metaData.at( "parent" ) );
-    }
+//    const char* parentName = nullptr;
+//    if ( metaData.find( "parent" ) != metaData.end() ) {
+//        parentName = std::any_cast<const char*>( metaData.at( "parent" ) );
+//    }
 
-    Sensor* parentSensor = nullptr;
+//    Sensor* parentSensor = nullptr;
 
-    // if parent exist in scene, link to it
-    if ( parentName != nullptr ) {
-        std::cout << "[SceneManager] searching parent in 3D scene = '" << parentName << "'"
-                  << std::endl;
-        for ( auto& pair : m_streamName2sensor ) {
-            auto& sensor = *pair.second;
-            if ( sensor.m_inputSensor->m_spec.m_sensorName == parentName ) {
-                parentSensor = &sensor;
-                break;
-            }
-        }
+//    // if parent exist in scene, link to it
+//    if ( parentName != nullptr ) {
+//        std::cout << "[SceneManager] searching parent in 3D scene = '" << parentName << "'"
+//                  << std::endl;
+//        for ( auto& pair : m_streamName2sensor ) {
+//            auto& sensor = *pair.second;
+//            if ( sensor.m_inputSensor->m_spec.m_sensorName == parentName ) {
+//                parentSensor = &sensor;
+//                break;
+//            }
+//        }
 
-        if ( parentSensor == nullptr ) {
-            std::cout << "[SceneManager] the parent is not alive" << std::endl;
-        }
-    }
+//        if ( parentSensor == nullptr ) {
+//            std::cout << "[SceneManager] the parent is not alive" << std::endl;
+//        }
+//    }
 
-    assert( m_streamName2sensor.find( streamName ) == m_streamName2sensor.end() );
-    assert( m_sensorsView != nullptr );
-    m_streamName2sensor[streamName] = std::make_unique<Sensor>( std::move( inputSensor ),
-                                                                *m_mdiArea,
-                                                                m_engine,
-                                                                m_viewer,
-                                                                m_sys,
-                                                                parentSensor,
-                                                                streamName,
-                                                                m_sensorModel,
-                                                                *m_sensorsView,
-                                                                this );
+//    assert( m_streamName2sensor.find( streamName ) == m_streamName2sensor.end() );
+//    assert( m_sensorsView != nullptr );
+//    m_streamName2sensor[streamName] = std::make_unique<Sensor>( std::move( inputSensor ),
+//                                                                *m_mdiArea,
+//                                                                m_engine,
+//                                                                m_viewer,
+//                                                                m_sys,
+//                                                                parentSensor,
+//                                                                streamName,
+//                                                                m_sensorModel,
+//                                                                *m_sensorsView,
+//                                                                this );
 
-    auto& newSensor = *m_streamName2sensor.at( streamName );
-    newSensor.getSensorComponent()->enableTrace( m_enableTrace );
-    newSensor.getSensorComponent()->enableLive( m_enableLive );
-    newSensor.on_tune_valueChanged( m_tune0 );
-    newSensor.on_tune2_valueChanged( m_tune1 );
-#ifdef ENABLE_IMAGE_VIEWER
-    newSensor.m_imageManipulator = m_imageManipulator;
-#endif
-    m_sensorModel.appendRow( newSensor.getItems() );
+//    auto& newSensor = *m_streamName2sensor.at( streamName );
+//    newSensor.getSensorComponent()->enableTrace( m_enableTrace );
+//    newSensor.getSensorComponent()->enableLive( m_enableLive );
+//    newSensor.on_tune_valueChanged( m_tune0 );
+//    newSensor.on_tune2_valueChanged( m_tune1 );
+//#ifdef ENABLE_IMAGE_VIEWER
+//    newSensor.m_imageManipulator = m_imageManipulator;
+//#endif
+//    m_sensorModel.appendRow( newSensor.getItems() );
 
-    // prevent all father's sons, the father is coming
-    for ( auto& pair : m_streamName2sensor ) {
-        auto& sensor            = *pair.second;
-        const auto& inputSensor = sensor.m_inputSensor;
-        const auto& metaData    = inputSensor->m_spec.m_metaData;
+//    // prevent all father's sons, the father is coming
+//    for ( auto& pair : m_streamName2sensor ) {
+//        auto& sensor            = *pair.second;
+//        const auto& inputSensor = sensor.m_inputSensor;
+//        const auto& metaData    = inputSensor->m_spec.m_metaData;
 
-        const char* parentName = nullptr;
-        if ( metaData.find( "parent" ) != metaData.end() ) {
-            parentName = std::any_cast<const char*>( metaData.at( "parent" ) );
-            if ( sensorName == parentName ) { sensor.setParent( &newSensor ); }
-        }
-    }
-}
+//        const char* parentName = nullptr;
+//        if ( metaData.find( "parent" ) != metaData.end() ) {
+//            parentName = std::any_cast<const char*>( metaData.at( "parent" ) );
+//            if ( sensorName == parentName ) { sensor.setParent( &newSensor ); }
+//        }
+//    }
+//}
 
 #endif // SCENEMANAGER_H

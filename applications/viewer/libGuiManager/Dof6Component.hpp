@@ -15,7 +15,10 @@ classic "Spinning Cube" demo. */
 // struct Dof6Component : public Ra::Engine::Scene::Component {
 struct Dof6Component : SensorComponent {
 
-    Dof6Component( const hub::InputSensor& inputStream, Ra::Engine::Scene::Entity* entity );
+    Dof6Component(
+//            const hub::InputSensor& inputStream,
+            const hub::SensorSpec & sensorSpec,
+            Ra::Engine::Scene::Entity* entity );
 
     /// This function is called when the component is properly
     /// setup, i.e. it has an entity.
