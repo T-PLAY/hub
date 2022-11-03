@@ -164,9 +164,3 @@ class Sensor : public QObject
     SensorComponent* getSensorComponent();
     Ra::Engine::Scene::Entity* getEntity() const;
 };
-
-// Sensor::Sensor(IOStreamT&& iostream, QObject* parent)
-// template <class IOStreamT>
-// Sensor::Sensor(IOStreamT&& iostream, QObject* parent)
-//{
-// }

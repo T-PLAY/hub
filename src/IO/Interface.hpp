@@ -26,10 +26,6 @@ namespace io {
 class SRC_API Interface
 {
   public:
-    static std::string anyValue2string( const std::any& any );
-    static const std::string& anyType2string( const std::any& any );
-
-  public:
     Interface()                                       = default;
     Interface( Interface&& ioStream )                 = default;
     Interface( const Interface& ioStream )            = delete;
@@ -37,8 +33,11 @@ class SRC_API Interface
     Interface&& operator=( Interface&& ioStream )     = delete;
 
     virtual ~Interface() = default;
+//    virtual ~Interface();
 
-    virtual void close() = 0;
+    virtual void close() const = 0;
+    virtual bool isOpen() const = 0;
+    virtual bool isEnd() const = 0;
 
     void write( const std::any& any ) const;
     virtual void write( const unsigned char* data, size_t len ) const = 0;
@@ -85,7 +84,8 @@ class SRC_API Interface
     SensorSpec getSensorSpec() const;
     virtual Acquisition getAcquisition( int acquisitionSize ) const;
 
-  private:
+    static std::string anyValue2string( const std::any& any );
+    static const std::string& anyType2string( const std::any& any );
 };
 
 class SRC_API InputInterface : public virtual Interface
@@ -97,16 +97,9 @@ class SRC_API OutputInterface : public virtual Interface
 class SRC_API InputOutputInterface : public InputInterface, public OutputInterface
 {};
 
-// template <class T>
-// auto Interface::getValue(const std::any& any) -> decltype (int)
-//{
-
-//}
-
 template <class T>
 void Interface::write( const T& t ) const {
-    //#ifdef DEBUG_IOSTREAM
-    //#endif
+    assert(isOpen());
 
     write( reinterpret_cast<const unsigned char*>( &t ), sizeof( T ) );
 
@@ -118,6 +111,8 @@ void Interface::write( const T& t ) const {
 
 template <class T>
 void Interface::write( const std::list<T>& list ) const {
+    assert(isOpen());
+
 #ifdef DEBUG_IOSTREAM
     std::cout << "[Interface] write(std::list) : start" << std::endl;
 #endif
@@ -132,6 +127,8 @@ void Interface::write( const std::list<T>& list ) const {
 
 template <class T>
 void Interface::write( const std::vector<T>& vector ) const {
+    assert(isOpen());
+
 #ifdef DEBUG_IOSTREAM
     std::cout << "[Interface] write(std::vector) : start" << std::endl;
 #endif
@@ -146,6 +143,8 @@ void Interface::write( const std::vector<T>& vector ) const {
 
 template <class T, class U>
 void Interface::write( const std::map<T, U>& map ) const {
+    assert(isOpen());
+
 #ifdef DEBUG_IOSTREAM
     std::cout << "[Interface] write(std::map) : start" << std::endl;
 #endif
@@ -158,13 +157,13 @@ void Interface::write( const std::map<T, U>& map ) const {
 
     for ( const std::pair<T, U>& pair : map ) {
         write( pair );
-        //#ifdef DEBUG_IOSTREAM
-        //#endif
     }
 }
 
 template <class T, class U>
 void Interface::write( const std::pair<T, U>& pair ) const {
+    assert(isOpen());
+
 #ifdef DEBUG_IOSTREAM
     std::cout << "[Interface] write(std::pair) : start" << std::endl;
 #endif
@@ -178,6 +177,7 @@ void Interface::write( const std::pair<T, U>& pair ) const {
 
 template <class T>
 void Interface::read( T& t ) const {
+    assert(isOpen());
 
     read( reinterpret_cast<unsigned char*>( &t ), sizeof( T ) );
 
@@ -189,6 +189,8 @@ void Interface::read( T& t ) const {
 
 template <class T>
 void Interface::read( std::list<T>& list ) const {
+    assert(isOpen());
+
 #ifdef DEBUG_IOSTREAM
     std::cout << "[Interface] read(std::list) : start" << std::endl;
 #endif
@@ -205,6 +207,8 @@ void Interface::read( std::list<T>& list ) const {
 
 template <class T>
 void Interface::read( std::vector<T>& vector ) const {
+    assert(isOpen());
+
 #ifdef DEBUG_IOSTREAM
     std::cout << "[Interface] read(std::vector) : start" << std::endl;
 #endif
@@ -222,9 +226,10 @@ void Interface::read( std::vector<T>& vector ) const {
     }
 }
 
-// template <class T = std::string, class U = std::any>
 template <class T, class U>
 void Interface::read( std::map<T, U>& map ) const {
+    assert(isOpen());
+
 #ifdef DEBUG_IOSTREAM
     std::cout << "[Interface] read(std::map) : start" << std::endl;
 #endif
@@ -237,8 +242,6 @@ void Interface::read( std::map<T, U>& map ) const {
     map.clear();
 
     for ( int i = 0; i < nbEl; ++i ) {
-        //#ifdef DEBUG_IOSTREAM
-        //#endif
         std::pair<T, U> pair;
         read( pair );
         assert( map.find( pair.first ) == map.end() );
@@ -248,6 +251,8 @@ void Interface::read( std::map<T, U>& map ) const {
 
 template <class T, class U>
 void Interface::read( std::pair<T, U>& pair ) const {
+    assert(isOpen());
+
 #ifdef DEBUG_IOSTREAM
     std::cout << "[Interface] read(std::pair) : start" << std::endl;
 #endif

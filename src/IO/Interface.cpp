@@ -23,120 +23,10 @@ enum class AnyType {
     CONST_FLOAT_PTR,
     COUNT
 };
-static const std::string s_anyType2string[static_cast<int>( AnyType::COUNT )] = {
-    "int",
-    "double",
-    "string",
-    "cst_char_ptr",
-    "vector_float",
-    "uint",
-    "cst_float_ptr",
-};
-static const std::map<size_t, AnyType> s_hash2anyType = {
-    { typeid( int ).hash_code(), AnyType::INT },
-    { typeid( double ).hash_code(), AnyType::DOUBLE },
-    { typeid( std::string ).hash_code(), AnyType::STRING },
-    { typeid( const char* ).hash_code(), AnyType::CONST_CHAR_PTR },
-    { typeid( std::vector<float> ).hash_code(), AnyType::VECTOR_FLOAT },
-    { typeid( unsigned int ).hash_code(), AnyType::UINT },
-    { typeid( const float* ).hash_code(), AnyType::CONST_FLOAT_PTR },
-};
-std::ostream& operator<<( std::ostream& os, const AnyType& type ) {
-    os << s_anyType2string[(int)type];
-    return os;
-}
-
-std::string Interface::anyValue2string( const std::any& any ) {
-    assert( any.has_value() );
-    const auto& hashCode = any.type().hash_code();
-
-    assert( s_hash2anyType.find( hashCode ) != s_hash2anyType.end() );
-    AnyType anyType = s_hash2anyType.at( hashCode );
-
-    switch ( anyType ) {
-    case AnyType::INT: {
-        const int* val = std::any_cast<int>( &any );
-        return std::to_string( *val );
-    } break;
-
-    case AnyType::DOUBLE: {
-        const double* val = std::any_cast<double>( &any );
-        return std::to_string( *val );
-    } break;
-
-    case AnyType::STRING: {
-        const std::string* val = std::any_cast<std::string>( &any );
-        return std::string( *val );
-    } break;
-
-    case AnyType::CONST_CHAR_PTR: {
-        const char* val = *std::any_cast<const char*>( &any );
-        return std::string( val );
-    } break;
-
-    case AnyType::VECTOR_FLOAT: {
-        const std::vector<float>* val = std::any_cast<std::vector<float>>( &any );
-        std::string str               = "";
-        const int n                   = 3;
-        for ( int i = 0; i < n; ++i ) {
-            for ( int j = 0; j < n; ++j ) {
-                char buff[32];
-                const int k = i * n + j;
-                // sprintf(buff, "%.1f", val->at(k));
-#ifdef WIN32
-                sprintf_s( buff, "%.1f", val->at( k ) );
-#else
-                sprintf( buff, "%.1f", val->at( k ) );
-#endif
-                str += buff;
-                if ( j != 2 ) str += " ";
-            }
-            if ( i != 2 ) str += "  ";
-        }
-        return str;
-    } break;
-
-    case AnyType::UINT: {
-        const unsigned int* val = std::any_cast<unsigned int>( &any );
-        return std::to_string( *val );
-    } break;
-
-    case AnyType::CONST_FLOAT_PTR: {
-        const float* val = *std::any_cast<const float*>( &any );
-        std::string str  = "";
-        for ( int i = 0; i < 4; ++i ) {
-            for ( int j = 0; j < 4; ++j ) {
-                char buff[32];
-#ifdef WIN32
-                sprintf_s( buff, "%.0f ", val[4 * i + j] );
-#else
-                sprintf( buff, "%.0f ", val[4 * i + j] );
-#endif
-                str += buff;
-            }
-            if ( i != 3 ) str += " ";
-        }
-        return str;
-    } break;
-
-    default:
-        assert( false );
-    }
-
-    return "";
-}
-
-const std::string& Interface::anyType2string( const std::any& any ) {
-    assert( any.has_value() );
-    const auto& hashCode = any.type().hash_code();
-
-    assert( s_hash2anyType.find( hashCode ) != s_hash2anyType.end() );
-    AnyType anyType = s_hash2anyType.at( hashCode );
-
-    return s_anyType2string[static_cast<int>( anyType )];
-}
 
 void Interface::write( const std::string& str ) const {
+    assert(isOpen());
+
 #ifdef DEBUG_IOSTREAM
     std::cout << "[Interface] write(std::string) : '" << str << "' start" << std::endl;
 #endif
@@ -151,6 +41,8 @@ void Interface::write( const std::string& str ) const {
 }
 
 void Interface::write( const SensorSpec& sensorSpec ) const {
+    assert(isOpen());
+
 #ifdef DEBUG_IOSTREAM
     std::cout << "[Interface] write(SensorSpec) : start" << std::endl;
 #endif
@@ -161,6 +53,8 @@ void Interface::write( const SensorSpec& sensorSpec ) const {
 }
 
 void Interface::write( const Measure& measure ) const {
+    assert(isOpen());
+
 #ifdef DEBUG_IOSTREAM
     std::cout << "[Interface] write(Measure) : start" << std::endl;
 #endif
@@ -170,6 +64,8 @@ void Interface::write( const Measure& measure ) const {
 }
 
 void Interface::write( const Acquisition& acq ) const {
+    assert(isOpen());
+
 #ifdef DEBUG_IOSTREAM
     std::cout << "[Interface] write(Acquisition) : start" << std::endl;
 #endif
@@ -182,6 +78,8 @@ void Interface::write( const Acquisition& acq ) const {
 }
 
 void Interface::write( const char* str ) const {
+    assert(isOpen());
+
 #ifdef DEBUG_IOSTREAM
     std::cout << "[Interface] write(const char*) : start" << std::endl;
 #endif
@@ -192,19 +90,14 @@ void Interface::write( const char* str ) const {
     if ( strLen > 0 ) { write( (const unsigned char*)str, strLen ); }
 }
 
-// enum class ANY_TYPE {
-// };
-
-// hash of type info for 64 bit only, no conversion for 32 bits (same value in uint64_t)
-// uint64_t typeInfoHash64( const char _DecoratedName[1] ) {
-
+//Interface::~Interface()
+//{
+//    assert(! isOpen());
 //}
 
-// Interface::~Interface()
-//{
-// }
-
 void Interface::write( const std::any& any ) const {
+    assert(isOpen());
+
 #ifdef DEBUG_IOSTREAM
     std::cout << "[Interface] write(std::any) : start" << std::endl;
 #    ifdef WIN32
@@ -259,12 +152,10 @@ void Interface::write( const std::any& any ) const {
     else { assert( false ); }
 }
 
-// void Interface::write(const std::map<std::string, std::any> &map) const
-//{
-
-//}
+/////////////////////////////////////////////////////////////////////////////
 
 void Interface::read( std::string& str ) const {
+    assert(isOpen());
 
     int strLen = 0;
     read( strLen );
@@ -284,6 +175,8 @@ void Interface::read( std::string& str ) const {
 }
 
 void Interface::read( SensorSpec& sensorSpec ) const {
+    assert(isOpen());
+
 #ifdef DEBUG_IOSTREAM
     std::cout << "[Interface] read(SensorSpec) : start" << std::endl;
 #endif
@@ -296,6 +189,8 @@ void Interface::read( SensorSpec& sensorSpec ) const {
 }
 
 Measure Interface::getMeasure() const {
+    assert(isOpen());
+
 #ifdef DEBUG_IOSTREAM
     std::cout << "[Interface] getMeasure() : start" << std::endl;
 #endif
@@ -309,11 +204,9 @@ Measure Interface::getMeasure() const {
     return measure;
 }
 
-// void Interface::read(Measure &measure) const
-//{
-// }
-
 SensorSpec Interface::getSensorSpec() const {
+    assert(isOpen());
+
 #ifdef DEBUG_IOSTREAM
     std::cout << "[Interface] getSensorSpec() : start" << std::endl;
 #endif
@@ -324,6 +217,8 @@ SensorSpec Interface::getSensorSpec() const {
 }
 
 Acquisition Interface::getAcquisition( int acquisitionSize ) const {
+    assert(isOpen());
+
 #ifdef DEBUG_IOSTREAM
     std::cout << "[Interface] getAcquisition() : start" << std::endl;
 #endif
@@ -349,6 +244,8 @@ Acquisition Interface::getAcquisition( int acquisitionSize ) const {
 }
 
 void Interface::read( char* str ) const {
+    assert(isOpen());
+
 #ifdef DEBUG_IOSTREAM
     std::cout << "[Interface] read char* : start" << std::endl;
 #endif
@@ -364,7 +261,10 @@ void Interface::read( char* str ) const {
     }
 }
 
+
 void Interface::read( std::any& any ) const {
+    assert(isOpen());
+
 #ifdef DEBUG_IOSTREAM
     std::cout << "[Interface] read(std::any) : start" << std::endl;
 #endif
@@ -434,6 +334,120 @@ void Interface::read( std::any& any ) const {
         assert( false );
     }
     assert( any.has_value() );
+}
+
+/////////////////////////////////////////////////////////////////////////////
+
+static const std::string s_anyType2string[static_cast<int>( AnyType::COUNT )] = {
+    "int",
+    "double",
+    "string",
+    "cst_char_ptr",
+    "vector_float",
+    "uint",
+    "cst_float_ptr",
+};
+static const std::map<size_t, AnyType> s_hash2anyType = {
+    { typeid( int ).hash_code(), AnyType::INT },
+    { typeid( double ).hash_code(), AnyType::DOUBLE },
+    { typeid( std::string ).hash_code(), AnyType::STRING },
+    { typeid( const char* ).hash_code(), AnyType::CONST_CHAR_PTR },
+    { typeid( std::vector<float> ).hash_code(), AnyType::VECTOR_FLOAT },
+    { typeid( unsigned int ).hash_code(), AnyType::UINT },
+    { typeid( const float* ).hash_code(), AnyType::CONST_FLOAT_PTR },
+};
+std::ostream& operator<<( std::ostream& os, const AnyType& type ) {
+    os << s_anyType2string[(int)type];
+    return os;
+}
+
+std::string Interface::anyValue2string( const std::any& any ) {
+    assert( any.has_value() );
+    const auto& hashCode = any.type().hash_code();
+
+    assert( s_hash2anyType.find( hashCode ) != s_hash2anyType.end() );
+    AnyType anyType = s_hash2anyType.at( hashCode );
+
+    switch ( anyType ) {
+    case AnyType::INT: {
+        const int* val = std::any_cast<int>( &any );
+        return std::to_string( *val );
+    } break;
+
+    case AnyType::DOUBLE: {
+        const double* val = std::any_cast<double>( &any );
+        return std::to_string( *val );
+    } break;
+
+    case AnyType::STRING: {
+        const std::string* val = std::any_cast<std::string>( &any );
+        return std::string( *val );
+    } break;
+
+    case AnyType::CONST_CHAR_PTR: {
+        const char* val = *std::any_cast<const char*>( &any );
+        return std::string( val );
+    } break;
+
+    case AnyType::VECTOR_FLOAT: {
+        const std::vector<float>* val = std::any_cast<std::vector<float>>( &any );
+        std::string str               = "";
+        const int n                   = 3;
+        for ( int i = 0; i < n; ++i ) {
+            for ( int j = 0; j < n; ++j ) {
+                char buff[32];
+                const int k = i * n + j;
+#ifdef WIN32
+                sprintf_s( buff, "%.1f", val->at( k ) );
+#else
+                sprintf( buff, "%.1f", val->at( k ) );
+#endif
+                str += buff;
+                if ( j != 2 ) str += " ";
+            }
+            if ( i != 2 ) str += "  ";
+        }
+        return str;
+    } break;
+
+    case AnyType::UINT: {
+        const unsigned int* val = std::any_cast<unsigned int>( &any );
+        return std::to_string( *val );
+    } break;
+
+    case AnyType::CONST_FLOAT_PTR: {
+        const float* val = *std::any_cast<const float*>( &any );
+        std::string str  = "";
+        for ( int i = 0; i < 4; ++i ) {
+            for ( int j = 0; j < 4; ++j ) {
+                char buff[32];
+#ifdef WIN32
+                sprintf_s( buff, "%.0f ", val[4 * i + j] );
+#else
+                sprintf( buff, "%.0f ", val[4 * i + j] );
+#endif
+                str += buff;
+            }
+            if ( i != 3 ) str += " ";
+        }
+        return str;
+    } break;
+
+    default:
+        assert( false );
+    }
+
+    return "";
+}
+
+const std::string& Interface::anyType2string( const std::any& any ) {
+    assert( any.has_value() );
+    const auto& hashCode = any.type().hash_code();
+
+    assert( s_hash2anyType.find( hashCode ) != s_hash2anyType.end() );
+    AnyType anyType = s_hash2anyType.at( hashCode );
+
+    return s_anyType2string[static_cast<int>( anyType )];
 }
 
 } // namespace io

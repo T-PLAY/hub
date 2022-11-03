@@ -89,11 +89,7 @@ void Server::delStreamer( StreamerClient* streamer ) {
     m_mtxStreamers.lock();
 
     const auto streamerName = streamer->getStreamName();
-    const auto& sensorSpec  = streamer->getInputSensor().m_spec;
-
-    for ( const auto* viewer : m_viewers ) {
-        viewer->notifyDelStreamer( streamerName, sensorSpec );
-    }
+    const auto sensorSpec  = streamer->getInputSensor().m_spec;
 
     auto streamViewers = m_streamViewers[streamerName];
     for ( auto* streamViewer : streamViewers ) {
@@ -104,13 +100,18 @@ void Server::delStreamer( StreamerClient* streamer ) {
     assert( m_streamers.find( streamerName ) != m_streamers.end() );
     m_streamers.erase( m_streamers.find( streamerName ) );
 
+    delete streamer;
+
     std::cout << std::left << std::setw( g_margin2 ) << headerMsg() << std::setw( g_margin )
               << "del streamer" << getStatus() << std::endl;
     std::cout << "-------------------------------------------------------------------------"
                  "--------------------"
               << std::endl;
 
-    delete streamer;
+    for ( const auto* viewer : m_viewers ) {
+        viewer->notifyDelStreamer( streamerName, sensorSpec );
+    }
+
     m_mtxStreamers.unlock();
 }
 
@@ -163,7 +164,7 @@ void Server::newAcquisition( StreamerClient* streamer, const hub::Acquisition& a
         streamViewer->update( acq );
     }
 
-    // broadcast acquisition for each synchronize stream
+    // broadcast acquisition for all streamer
     for ( const auto& pair : m_streamers ) {
         const auto& streamer = pair.second;
 
@@ -171,9 +172,6 @@ void Server::newAcquisition( StreamerClient* streamer, const hub::Acquisition& a
     }
 }
 
-// const std::vector<std::shared_ptr<hub::Acquisition>>&
-// Server::getLastAcqs( const std::string& streamName ) {
-// }
 
 void Server::setAcqPing( bool newAcqPing ) {
     m_acqPing = newAcqPing;
@@ -240,24 +238,11 @@ Client* Server::initClient( hub::net::ClientSocket&& sock, int iClient ) {
     }
 }
 
-void Server::setMaxClients( int maxThreads ) {
-    m_maxClients = maxThreads;
+void Server::setMaxClients( int maxClients ) {
+    m_maxClients = maxClients;
 }
 
-//////////////////////////////////////// old ///////////////////////////////////
-
-//#ifdef WIN32
-//#else
-//#endif
-
-//}
-
-// std::string Server::getStatus() const {
-///+ /                            "," + std::to_string( streamer->mSensor2syncViewers.size() ) +
-///")";
-
-//}
-
-// void Viewer::notifyNewStreamer( const Streamer& streamer ) const {
-
-//}
+bool Server::getAcqPing() const
+{
+    return m_acqPing;
+}

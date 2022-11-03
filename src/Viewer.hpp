@@ -8,6 +8,7 @@
 #include "Acquisition.hpp"
 #include "Configurations.hpp"
 #include "SensorSpec.hpp"
+#include "Net/ClientSocket.hpp"
 
 namespace hub {
 
@@ -50,10 +51,11 @@ class SRC_API Viewer
     std::function<void( const char* ipv4, int port )> m_onServerDisconnected;
     std::function<void( const char* streamName, const hub::Acquisition& )> m_onNewAcquisition;
 
-    std::string m_ipv4;
-    int m_port;
+    net::ClientSocket m_sock;
+//    std::string m_ipv4;
+//    int m_port;
     bool m_serverConnected = false;
-    std::regex m_ipv4Regex;
+//    std::regex m_ipv4Regex;
 
     std::map<std::string, SensorSpec> m_streamName2sensorSpec;
     std::map<std::string, std::thread> m_streamName2thread;

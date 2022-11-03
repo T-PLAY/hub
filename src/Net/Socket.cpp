@@ -37,19 +37,35 @@ Socket::Socket( Socket&& socket ) {
     socket.m_fdSock = INVALID_SOCKET;
 }
 
+//void Socket::clear() const {
+//    assert(m_fdSock != INVALID_SOCKET);
+
+//    if ( m_fdSock != INVALID_SOCKET ) {
+//#ifdef DEBUG_SOCKET
+//        DEBUG_MSG( getHeader( m_fdSock ) << "close socket" );
+//#endif
+//        net::clearSocket( m_fdSock );
+//        m_fdSock = INVALID_SOCKET;
+//    }
+//}
+
 Socket::~Socket() {
 #ifdef DEBUG_SOCKET
     DEBUG_MSG( getHeader( m_fdSock ) << "~Socket()" );
 #endif
+
     if ( m_fdSock != INVALID_SOCKET ) {
 #ifdef DEBUG_SOCKET
         DEBUG_MSG( getHeader( m_fdSock ) << "close socket" );
 #endif
         net::clearSocket( m_fdSock );
+        m_fdSock = INVALID_SOCKET;
     }
 }
 
 bool Socket::isConnected() const {
+    assert(m_fdSock != INVALID_SOCKET);
+
 #ifdef WIN32
     // not sure how to check this in windows
     return true;
@@ -60,7 +76,18 @@ bool Socket::isConnected() const {
     int optval;
     socklen_t optlen = sizeof( optval );
 
-    int res = getsockopt( m_fdSock, SOL_SOCKET, SO_ERROR, &optval, &optlen );
+    int res;
+//    try {
+        res = getsockopt( m_fdSock, SOL_SOCKET, SO_ERROR, &optval, &optlen );
+//    }
+//    catch ( std::exception& e ) {
+//        std::cout << "[Socket] isConnected() catch exception : " << e.what() << std::endl;
+//        return false;
+//    }
+//    catch ( std::runtime_error& e ) {
+//        std::cout << "[Socket] isConnected() catch runtime error : " << e.what() << std::endl;
+//        return false;
+//    }
 
     if ( optval == 0 && res == 0 ) return true;
 #endif

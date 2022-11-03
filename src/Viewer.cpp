@@ -1,11 +1,12 @@
 #include "Viewer.hpp"
 
+#include <regex>
+
 #include "IO/Stream.hpp"
 #include "InputSensor.hpp"
 #include "Net/ClientSocket.hpp"
 
-//#define DEBUG_VIEWER
-#include <regex>
+#define DEBUG_VIEWER
 
 namespace hub {
 
@@ -22,47 +23,48 @@ Viewer::Viewer( std::function<bool( const char*, const SensorSpec& )> onNewStrea
     m_onServerConnected( onServerConnected ),
     m_onServerDisconnected( onServerDisconnected ),
     m_onNewAcquisition( onNewAcquisition ),
-    m_ipv4( ipv4 ),
-    m_port( port ),
-    m_ipv4Regex( std::regex( "^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$" ) ) {
-
-    assert( std::regex_match( m_ipv4, m_ipv4Regex ) );
-    assert( 0 <= m_port && m_port <= 65535 );
+    //    m_ipv4( ipv4 ),
+    //    m_port( port ),
+    m_sock( ipv4, port, false )
+//    m_ipv4Regex( std::regex( "^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$" ) ) {
+{
 
     m_thread = std::thread( [this]() {
+        //        net::ClientSocket sock( m_ipv4, m_port );
+
         while ( !m_stopThread ) {
             try {
-#ifdef DEBUG_VIEWER
-                DEBUG_MSG( "[Viewer] unable to connect to server : " << m_ipv4 << " " << m_port );
-#endif
-                net::ClientSocket sock( m_ipv4, m_port );
 
-                assert( !m_serverConnected );
+                assert( !m_sock.isOpen() );
+                m_sock.connect();
                 m_serverConnected = true;
-                sock.write( net::ClientSocket::Type::VIEWER );
+                assert( m_sock.isOpen() );
 
-                if ( m_onServerConnected ) m_onServerConnected( m_ipv4.c_str(), m_port );
+                m_sock.write( net::ClientSocket::Type::VIEWER );
+
+                if ( m_onServerConnected )
+                    m_onServerConnected( m_sock.getIpv4().c_str(), m_sock.getPort() );
 
                 while ( !m_stopThread ) {
 
                     net::ClientSocket::Message serverMessage;
-                    sock.read( serverMessage );
+                    m_sock.read( serverMessage );
 
                     switch ( serverMessage ) {
 
                     case net::ClientSocket::Message::PING: {
                         // server checking if client is connected (only way to know if client viewer
                         // still alive) nothing to do
-#ifdef DEBUG_VIEWER
-                        DEBUG_MSG( "[Viewer] receive ping " );
-#endif
+                        //#ifdef DEBUG_VIEWER
+                        //                        DEBUG_MSG( "[Viewer] receive ping " );
+                        //#endif
                     } break;
 
                     case net::ClientSocket::Message::NEW_STREAMER: {
                         std::string streamName;
-                        sock.read( streamName );
+                        m_sock.read( streamName );
                         SensorSpec sensorSpec;
-                        sock.read( sensorSpec );
+                        m_sock.read( sensorSpec );
 #ifdef DEBUG_VIEWER
                         DEBUG_MSG( "[Viewer] new streamer '" << streamName << "'" );
 #endif
@@ -86,9 +88,9 @@ Viewer::Viewer( std::function<bool( const char*, const SensorSpec& )> onNewStrea
 
                     case net::ClientSocket::Message::DEL_STREAMER: {
                         std::string streamName;
-                        sock.read( streamName );
+                        m_sock.read( streamName );
                         SensorSpec sensorSpec;
-                        sock.read( sensorSpec );
+                        m_sock.read( sensorSpec );
 #ifdef DEBUG_VIEWER
                         DEBUG_MSG( "[Viewer] del streamer '" << streamName << "'" );
 #endif
@@ -121,13 +123,14 @@ Viewer::Viewer( std::function<bool( const char*, const SensorSpec& )> onNewStrea
 #ifdef DEBUG_VIEWER
                 DEBUG_MSG( "[Viewer] server disconnected, catch exception " << e.what() );
 #endif
-                std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
+                std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
             }
 
             if ( m_serverConnected ) {
                 m_serverConnected = false;
 
-                if ( m_onServerDisconnected ) m_onServerDisconnected( m_ipv4.c_str(), m_port );
+                if ( m_onServerDisconnected )
+                    m_onServerDisconnected( m_sock.getIpv4().c_str(), m_sock.getPort() );
 
                 for ( const auto& pair : m_streamName2sensorSpec ) {
                     const auto& streamName = pair.first;
@@ -139,7 +142,14 @@ Viewer::Viewer( std::function<bool( const char*, const SensorSpec& )> onNewStrea
                 m_streamName2sensorSpec.clear();
 
 #ifdef OS_LINUX
-                ++m_port;
+                if ( !m_stopThread ) { m_sock.setPort( m_sock.getPort() + 1 ); }
+//                ++m_port;
+#endif
+            }
+            else {
+#ifdef DEBUG_VIEWER
+                DEBUG_MSG( "[Viewer] unable to connect to server : " << m_sock.getIpv4() << " "
+                                                                     << m_sock.getPort() );
 #endif
             }
 
@@ -170,14 +180,16 @@ Viewer::~Viewer() {
 
 void Viewer::setIpv4( const std::string& ipv4 ) {
     assert( !m_serverConnected );
-    assert( std::regex_match( ipv4, m_ipv4Regex ) );
-    m_ipv4 = ipv4;
+    //    assert( std::regex_match( ipv4, m_ipv4Regex ) );
+    //    m_ipv4 = ipv4;
+    m_sock.setIpv4( ipv4 );
 }
 
 void Viewer::setPort( int port ) {
     assert( !m_serverConnected );
-    assert( 0 <= m_port && m_port <= 65535 );
-    m_port = port;
+    //    assert( 0 <= port && port <= 65535 );
+    //    m_port = port;
+    m_sock.setPort( port );
 }
 
 void Viewer::startStream( const std::string& streamName, const SensorSpec& sensorSpec ) {
@@ -187,8 +199,8 @@ void Viewer::startStream( const std::string& streamName, const SensorSpec& senso
     assert( m_streamName2thread.find( streamName ) == m_streamName2thread.end() );
     m_streamName2thread[streamName] = std::thread( [this, streamName, sensorSpec]() {
         try {
-            InputSensor inputSensor = InputSensor(
-                io::InputStream( streamName, "", net::ClientSocket( m_ipv4, m_port ) ) );
+            InputSensor inputSensor = InputSensor( io::InputStream(
+                streamName, "", net::ClientSocket( m_sock.getIpv4(), m_sock.getPort() ) ) );
 
             while ( !m_streamName2stopThread.at( streamName ) ) {
                 auto acq = inputSensor.getAcquisition();
@@ -196,7 +208,7 @@ void Viewer::startStream( const std::string& streamName, const SensorSpec& senso
             }
         }
         catch ( net::Socket::exception& e ) {
-            DEBUG_MSG( "[Viewer] startStream() inputStream '"
+            DEBUG_MSG( "[Viewer] startStream() streamer '"
                        << streamName << "' disconnected, catch exception " << e.what() );
         }
     } );

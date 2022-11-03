@@ -35,7 +35,9 @@ class SRC_API File : public InputOutputInterface
 
     ~File();
 
-    void close() override;
+    void close() const override;
+    bool isOpen() const override;
+    bool isEnd() const override;
 
     void write( const unsigned char* data, size_t len ) const override;
     void read( unsigned char* data, size_t len ) const override;

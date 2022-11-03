@@ -35,17 +35,19 @@ std::vector<Acquisition> InputSensor::getAllAcquisitions() {
 
     try {
         int nReadAcqs = 0;
-        while ( true ) {
+//        while ( true ) {
+        while ( ! m_interface.isEnd() ) {
             acqs.emplace_back( getAcquisition() );
             ++nReadAcqs;
         }
     }
-    catch ( Sensor::exception& e ) {
-        std::cout << "[InputSensor] catch sensor exception : " << e.what() << std::endl;
-        throw;
-    }
+//    catch ( Sensor::exception& e ) {
+//        std::cout << "[InputSensor] catch sensor exception : " << e.what() << std::endl;
+//        throw e;
+//    }
     catch ( std::exception& e ) {
         std::cout << "[InputSensor] catch exception : " << e.what() << std::endl;
+        throw;
     }
 
     return acqs;

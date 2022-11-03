@@ -4,17 +4,14 @@
 #include <functional>
 #include <map>
 #include <mutex>
-//#include <semaphore.h>
-//#include <semaphore>
+#include <memory>
 
 #include <Acquisition.hpp>
 #include <InputSensor.hpp>
 #include <Net/ClientSocket.hpp>
 #include <OutputSensor.hpp>
+#include <ServerSocket.hpp>
 
-#include "ServerSocket.hpp"
-#include <memory>
-//#include "Client.hpp"
 #include "StreamViewerClient.hpp"
 #include "StreamerClient.hpp"
 #include "ViewerClient.hpp"
@@ -48,17 +45,15 @@ class Server
 
     void newAcquisition( StreamerClient* streamer, const hub::Acquisition& acq );
 
-  public:
+  private:
     bool m_acqPing = true;
 
-  private:
     std::map<std::string, StreamerClient*> m_streamers;
     std::mutex m_mtxStreamers;
 
     std::list<ViewerClient*> m_viewers;
     std::map<std::string, std::list<StreamViewerClient*>> m_streamViewers;
 
-  private:
     hub::net::ServerSocket mServerSock;
     std::list<Client*> m_clients;
 
@@ -66,21 +61,8 @@ class Server
     int m_maxClients = 1000;
 
   public:
-    void setMaxClients( int maxThreads );
+    void setMaxClients( int maxClients );
     const std::map<std::string, StreamerClient*>& getStreamers() const;
     void setAcqPing( bool newAcqPing );
+    bool getAcqPing() const;
 };
-
-/////////////////////////// old ///////////////////////////////
-
-// class StreamViewerClient : public io::InputInterface, public net::ClientSocket
-//{
-// };
-
-// struct Streamer {
-
-//};
-
-// struct Viewer {
-
-//};

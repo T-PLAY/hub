@@ -19,8 +19,22 @@ File::~File() {
     }
 }
 
-void File::close() {
+void File::close() const {
+    assert(isOpen());
     m_file->close();
+    assert(!isOpen());
+}
+
+bool File::isOpen() const
+{
+    return m_file->is_open();
+}
+
+bool File::isEnd() const
+{
+    assert(isOpen());
+//    return m_file->eof();
+    return m_file->peek() == EOF;
 }
 
 void File::write( const unsigned char* data, size_t len ) const {
