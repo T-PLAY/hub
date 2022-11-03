@@ -89,12 +89,37 @@ void CyclicBuff::read( unsigned char* data, size_t len ) {
     } while ( len != downloadSize );
 }
 
-void CyclicBuff::close() {}
+void CyclicBuff::close() const {
+    m_outputSensorWantsToClose = true;
+}
+
+bool CyclicBuff::isOpen() const
+{
+    return true;
+}
+
+bool CyclicBuff::isEnd() const
+{
+    return m_writeHead == m_readHead;
+}
 
 Ram::Ram( CyclicBuff& buff ) : m_buff( buff ) {}
 
-void Ram::close() {
+void Ram::close() const {
+    assert(isOpen());
     m_buff.close();
+    assert(! isOpen());
+}
+
+bool Ram::isOpen() const
+{
+    return m_buff.isOpen();
+}
+
+bool Ram::isEnd() const
+{
+    assert(isOpen());
+    return m_buff.isEnd();
 }
 
 void Ram::write( const unsigned char* data, size_t len ) const {

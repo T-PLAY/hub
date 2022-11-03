@@ -1,12 +1,11 @@
 
 #pragma once
 
+#include <mutex>
+
 #include "Client.hpp"
 
-//#include <Acquisition.hpp>
-//#include <InputSensor.hpp>
 #include <Net/ClientSocket.hpp>
-//#include <OutputSensor.hpp>
 
 class StreamerClient;
 
@@ -23,4 +22,5 @@ class ViewerClient : public Client
 
   private:
     hub::net::ClientSocket m_socket;
+    mutable std::mutex m_mtxSocket;
 };

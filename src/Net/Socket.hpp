@@ -29,7 +29,6 @@ class SRC_API Socket
         const char* what() const throw() { return std::runtime_error::what(); }
     };
 
-    bool isConnected() const;
 #ifdef DEBUG_SOCKET
     std::string getHeader( socket_fd iSock ) const;
 #endif
@@ -42,8 +41,11 @@ class SRC_API Socket
     Socket( Socket&& socket );
     Socket& operator=( const Socket& socket ) = delete;
 
+    bool isConnected() const;
+//    void clear() const;
+
   protected:
-    socket_fd m_fdSock = INVALID_SOCKET;
+    mutable socket_fd m_fdSock = INVALID_SOCKET;
     bool m_serverSide  = false;
 };
 

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <regex>
+
 #include "IO/Interface.hpp"
 #include "Socket.hpp"
 
@@ -33,7 +35,7 @@ class SRC_API ClientSocket : public Socket, public virtual io::Interface
     SRC_API friend std::ostream& operator<<( std::ostream& os, const Message& msg );
 
     ClientSocket();
-    ClientSocket( const std::string& ipv4, int port );
+    ClientSocket( const std::string& ipv4, int port, bool autoConnect = true );
     ClientSocket( socket_fd fdSock ); // server side client (bind and listen)
 
     ClientSocket( const ClientSocket& sock ) = delete;
@@ -51,30 +53,49 @@ class SRC_API ClientSocket : public Socket, public virtual io::Interface
     template <class T>
     void read( T& t ) const;
 
+    void initSocket();
+    void connect();
+
+    void setIpv4( const std::string& newIpv4 );
+
+    void setPort( int newPort );
+
+    bool isOpen() const override;
+
   protected:
     void write( const unsigned char* data, size_t len ) const override;
 
     void read( unsigned char* data, size_t len ) const override;
 
-    void close() override;
+    void close() const override;
+    bool isEnd() const override;
 
-    void clear();
-
-  private:
-    void connectToServer();
+    //    void clear() const;
 
   private:
-    const std::string m_ipv4;
+    //    void connectToServer();
+
+  private:
+    std::string m_ipv4;
     int m_port;
+    struct sockaddr_in m_serverAddress;
+    mutable bool m_connected = false;
+
+  public:
+    const std::string& getIpv4() const;
+    int getPort() const;
 };
 
 template <class T>
 void ClientSocket::write( const T& t ) const {
+    assert( isOpen() );
     io::Interface::write( t );
 }
 
 template <class T>
 void ClientSocket::read( T& t ) const {
+    assert( isOpen() );
+    assert( isConnected() );
     io::Interface::read( t );
 }
 

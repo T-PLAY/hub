@@ -6,9 +6,7 @@ Sensor::Sensor( const SensorSpec&& sensorSpec, io::Interface& interface_ ) :
     m_spec( std::move( sensorSpec ) ), m_interface( interface_ ) {}
 
 Sensor::~Sensor() {
-    //#ifdef DEBUG_MSG
-    //#endif
-    m_interface.close();
+    if ( m_interface.isOpen() ) m_interface.close();
     delete &m_interface;
 }
 

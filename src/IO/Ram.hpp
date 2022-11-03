@@ -32,7 +32,10 @@ class SRC_API CyclicBuff
 
     void write( const unsigned char* data, size_t len );
     void read( unsigned char* data, size_t len );
-    void close();
+
+    void close() const;
+    bool isOpen() const;
+    bool isEnd() const;
 
   private:
     unsigned char* const m_buff;
@@ -41,7 +44,7 @@ class SRC_API CyclicBuff
     size_t m_writeHead = 0;
     size_t m_readHead  = 0;
 
-    bool m_outputSensorWantsToClose = false;
+    mutable bool m_outputSensorWantsToClose = false;
     bool m_inputSensorClose         = false;
 };
 
@@ -61,7 +64,9 @@ class SRC_API Ram : public InputOutputInterface
   public:
     Ram( CyclicBuff& buff );
 
-    void close() override;
+    void close() const override;
+    bool isOpen() const override;
+    bool isEnd() const override;
 
     void write( const unsigned char* data, size_t len ) const override;
     void read( unsigned char* data, size_t len ) const override;

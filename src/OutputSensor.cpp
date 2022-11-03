@@ -6,17 +6,7 @@
 #include <numeric>
 
 namespace hub {
-//#define DEBUG_STREAM
 
-// OutputSensor::OutputSensor( const SensorSpec& sensorSpec, ClientSocket&& outputInterface ) :
-
-//}
-
-// OutputSensor::OutputSensor( const SensorSpec& sensorSpec, io::Output&& output ) :
-
-//}
-
-// OutputSensor &OutputSensor::operator <<( const Acquisition& acquisition ) {
 void OutputSensor::operator<<( const Acquisition& acquisition ) const {
     assert( acquisition.getSize() == m_spec.m_acquisitionSize );
 
@@ -32,8 +22,5 @@ void OutputSensor::operator<<( const Acquisition& acquisition ) const {
 
     m_interface.write( acquisition );
 }
-
-// OutputSensor & OutputSensor::operator<<( const Measure& measure ) {
-// }
 
 } // namespace hub

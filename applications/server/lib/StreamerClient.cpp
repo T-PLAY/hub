@@ -7,6 +7,8 @@
 #include <iomanip>
 //#include <iterator>
 
+std::mutex StreamerClient::s_mtxCout;
+
 class StreamViewerInterface : public hub::io::InputInterface, public hub::net::ClientSocket
 {
   public:
@@ -82,21 +84,21 @@ StreamerClient::StreamerClient( Server& server, int iClient, hub::net::ClientSoc
         std::cout << headerMsg() << "metaData: " << hub::SensorSpec::metaData2string( pair )
                   << std::endl;
     }
-    if ( metaData.find( "type" ) != metaData.end() ) {
-        std::cout << headerMsg() << "type detected : record stream" << std::endl;
-        const char* type = std::any_cast<const char*>( metaData.at( "type" ) );
-        if ( strcmp( type, "record" ) == 0 ) { m_isRecordStream = true; }
-    }
+//    if ( metaData.find( "type" ) != metaData.end() ) {
+//        std::cout << headerMsg() << "type detected : record stream" << std::endl;
+//        const char* type = std::any_cast<const char*>( metaData.at( "type" ) );
+//        if ( strcmp( type, "record" ) == 0 ) { m_isRecordStream = true; }
+//    }
 
     m_lastAcq[""];
 
     std::thread thread( [this]() {
         try {
-            while ( 1 ) {
+            while ( true ) {
                 auto masterAcq = m_inputSensor->getAcquisition();
 
                 if ( masterAcq.m_start == -1 ) {
-                    std::cout << headerMsg() << "receive reset acq : " << masterAcq << std::endl;
+                    std::cout << headerMsg() << "receive (history) reset acq : " << masterAcq << std::endl;
                     m_lastAcq[""].reset();
                     m_streamName2saveAcqs[""].clear();
                     m_server.newAcquisition( this, masterAcq );
@@ -116,9 +118,9 @@ StreamerClient::StreamerClient( Server& server, int iClient, hub::net::ClientSoc
                         while ( syncAcqs.size() < 2 ) {
                             std::this_thread::sleep_for( std::chrono::milliseconds( 1 ) );
                         }
-
                         assert( syncAcqs.size() >= 2 );
 
+                        // do not synchronize ping acq
                         if ( syncAcqs.begin()->m_start == std::next( syncAcqs.begin() )->m_start ) {
                             syncAcqs.pop_front();
                             continue;
@@ -126,6 +128,7 @@ StreamerClient::StreamerClient( Server& server, int iClient, hub::net::ClientSoc
                         assert( syncAcqs.begin()->m_start !=
                                 std::next( syncAcqs.begin() )->m_start );
 
+                        // autoloop detected (player)
                         if ( syncAcqs.begin()->m_start >= std::next( syncAcqs.begin() )->m_start ) {
                             syncAcqs.pop_front();
                             isSyncthing = false;
@@ -134,6 +137,7 @@ StreamerClient::StreamerClient( Server& server, int iClient, hub::net::ClientSoc
                         assert( syncAcqs.begin()->m_start <
                                 std::next( syncAcqs.begin() )->m_start );
 
+                        // unable to synchronize these acquisitions (too far from master acq)
                         if ( syncAcqs.begin()->m_start >= masterAcq.m_start ) {
                             if ( !isSyncthing ) { break; }
                             syncAcqs.pop_front();
@@ -164,6 +168,7 @@ StreamerClient::StreamerClient( Server& server, int iClient, hub::net::ClientSoc
                     const auto dist       = std::abs( closestAcq->m_start - masterAcq.m_start );
 
                     // assert(minDist < 20'000); // 20 ms
+                    // if too far then abort synchronize
                     const auto maxDist = ( itRightAcq->m_start - itLeftAcq->m_start ) / 2;
                     if ( dist > maxDist ) {
                         std::cout << headerMsg() << "sync dist = abs( "
@@ -201,16 +206,20 @@ StreamerClient::StreamerClient( Server& server, int iClient, hub::net::ClientSoc
                     m_lastAcq[""] = std::make_shared<hub::Acquisition>( std::move( masterAcq ) );
                 }
                 else { saveNewAcq( "", std::move( masterAcq ) ); }
-            }
+
+            } // while (true)
         }
         catch ( hub::net::Socket::exception& e ) {
+            s_mtxCout.lock();
             std::cout << headerMsg() << "in : catch inputSensor exception : " << e.what()
                       << std::endl;
+//            s_mtxCout.unlock();
         }
-        std::cout << headerMsg() << "end (" << m_inputSensor->m_spec.m_sensorName << ")"
+        std::cout << headerMsg() << "end  streamer : '" << m_inputSensor->m_spec.m_sensorName << "'"
                   << std::endl;
 
         std::cout << headerMsg() << "thread end" << std::endl;
+        s_mtxCout.unlock();
 
         m_server.delStreamer( this );
     } );
@@ -246,7 +255,7 @@ StreamerClient::~StreamerClient() {
 
     m_syncAcqs.clear();
     m_isSyncthing.clear();
-    std::cout << headerMsg() << "deleted" << std::endl;
+    std::cout << headerMsg() << "streamer : " << m_streamName << " ended" << std::endl;
 
     m_mtx.unlock();
 }
@@ -313,11 +322,6 @@ StreamerClient::getSyncViewers() const {
     return m_syncViewers;
 }
 
-// const std::vector<std::unique_ptr<hub::Acquisition>>& StreamerClient::getLastAcqs() const {
-// const std::vector<std::shared_ptr<hub::Acquisition>>&
-// StreamerClient::getLastAcqs( const std::string& streamName ) const {
-//}
-
 const std::shared_ptr<hub::Acquisition>
 StreamerClient::getLastAcq( const std::string& streamName ) const {
     assert( m_lastAcq.find( streamName ) != m_lastAcq.end() );
@@ -350,7 +354,3 @@ void StreamerClient::saveNewAcq( const std::string& streamName, hub::Acquisition
     auto& lastAcq = m_lastAcq[streamName];
     if ( lastAcq.get() != newAcqPtr.get() ) { lastAcq = newAcqPtr; }
 }
-
-/// std::make_unique<hub::Acquisition>(std::move(*rightAcq)); }
-
-/// syncAcqs.back() );
