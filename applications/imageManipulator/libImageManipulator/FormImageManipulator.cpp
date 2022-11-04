@@ -9,7 +9,6 @@
 
 FormImageManipulator::FormImageManipulator( QWidget* parent ) :
     QWidget( parent ), ui( new Ui::FormImageManipulator ) {
-    std::cout << "[FormImageManipulator] create start" << std::endl;
     ui->setupUi( this );
 
     ui->frame_top_2->setPixelPerUnit( &ui->widgetStreamView_2->getCanvasPixelPerUnit() );
@@ -62,20 +61,13 @@ FormImageManipulator::FormImageManipulator( QWidget* parent ) :
                       this,
                       &FormImageManipulator::onStreamViewInited );
 
-    /// imgHeight)) % 255; /            } /        }
 
-    std::cout << "[FormImageManipulator] create end" << std::endl;
 }
 
 FormImageManipulator::~FormImageManipulator() {
     delete ui;
 }
 
-// void FormImageManipulator::update(const hub::Acquisition &acquisition)
-//{
-/// Stream::Format::Y8);
-
-//}
 
 void FormImageManipulator::init() {
     ui->widgetStreamView_2->setData(
@@ -86,15 +78,8 @@ void FormImageManipulator::onStreamViewInited() {
     emit ui->scrollArea->pixelPerUnitChanged();
 }
 
-// void FormImageManipulator::update()
-//{
-//}
 
 WidgetStreamView2D& FormImageManipulator::getWidgetStreamView() {
     return *ui->widgetStreamView_2;
 }
 
-// void FormImageManipulator::paintEvent(QPaintEvent* event)
-//{
-
-//}

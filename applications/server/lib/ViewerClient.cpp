@@ -17,10 +17,11 @@ ViewerClient::ViewerClient( Server& server, int iClient, hub::net::ClientSocket&
     std::thread thread( [this]() {
         try {
             // check client still alive
-            while ( true ) {
+            while ( m_socket.isOpen() ) {
                 m_mtxSocket.lock();
                 m_socket.write( hub::net::ClientSocket::Message::PING );
                 m_mtxSocket.unlock();
+                // ping viewer client to know if the connection of this one still alive
                 std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
             }
         }
@@ -64,5 +65,4 @@ void ViewerClient::notifyDelStreamer( const std::string& streamerName,
                      "viewer/streamer process was stopped in same time : "
                   << e.what() << std::endl;
     }
-
 }

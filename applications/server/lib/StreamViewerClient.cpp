@@ -83,11 +83,13 @@ StreamViewerClient::StreamViewerClient( Server& server,
 
     if ( m_syncStreamName == "" && m_outputSensor->m_spec.m_resolutions.size() == 2 ) {
         m_mtxOutputSensor.lock();
-        const auto& lastAcqs = streamer->getSaveAcqs( lastAcqsName );
+        const auto& saveAcqs = streamer->getSaveAcqs( lastAcqsName );
         try {
-            for ( const auto& [start, acq] : lastAcqs ) {
+            for ( const auto& [start, acq] : saveAcqs ) {
                 *m_outputSensor << *acq;
             }
+            std::cout << headerMsg() << "sended " << saveAcqs.size() << " saved acqs"
+                      << std::endl;
         }
         catch ( std::exception& e ) {
             m_mtxOutputSensor.unlock();
@@ -108,11 +110,10 @@ StreamViewerClient::StreamViewerClient( Server& server,
 
     m_thread = new std::thread( [this, streamer, lastAcqsName]() {
         try {
-            if (!m_updateFailed )
-                m_mtxOutputSensor.lock();
+            if ( !m_updateFailed ) m_mtxOutputSensor.lock();
             // check client still alive
             while ( !m_updateFailed || !m_isKilled ) {
-//                m_mtxOutputSensor.lock();
+                //                m_mtxOutputSensor.lock();
                 if ( m_updateFailed || m_isKilled ) {
                     m_mtxOutputSensor.unlock();
                     break;
@@ -157,7 +158,7 @@ StreamViewerClient::StreamViewerClient( Server& server,
 
 StreamViewerClient::~StreamViewerClient() {
     std::cout << headerMsg() << "deleted" << std::endl;
-    assert(m_thread == nullptr);
+    //    assert(m_thread == nullptr);
     if ( m_thread != nullptr ) { m_thread->detach(); }
 }
 

@@ -99,9 +99,9 @@ Viewer::Viewer( std::function<bool( const char*, const SensorSpec& )> onNewStrea
                         m_streamName2sensorSpec.erase( streamName );
 
                         if ( m_onDelStreamer ) {
-                            m_onDelStreamer( streamName.c_str(), sensorSpec );
-
                             if ( m_onNewAcquisition ) { stopStream( streamName, sensorSpec ); }
+
+                            m_onDelStreamer( streamName.c_str(), sensorSpec );
                         }
                         // wait for client init sensorSpec with main thread context (async)
                         // for unity side (update context different of static event function)
@@ -121,8 +121,16 @@ Viewer::Viewer( std::function<bool( const char*, const SensorSpec& )> onNewStrea
             }
             catch ( net::ClientSocket::exception& e ) {
 #ifdef DEBUG_VIEWER
+                if (m_serverConnected) {
                 DEBUG_MSG( "[Viewer] server disconnected, catch exception " << e.what() );
+                }
+//                else {
+//                DEBUG_MSG( "[Viewer] unable to connect to server, catch exception " << e.what() );
+
+//                }
 #endif
+                // ping the server when this one is not started or visible in the network
+                // able the viewer clients to be aware of the starting of server less than 100 milliseconds.
                 std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
             }
 
@@ -147,10 +155,10 @@ Viewer::Viewer( std::function<bool( const char*, const SensorSpec& )> onNewStrea
 #endif
             }
             else {
-#ifdef DEBUG_VIEWER
-                DEBUG_MSG( "[Viewer] unable to connect to server : " << m_sock.getIpv4() << " "
-                                                                     << m_sock.getPort() );
-#endif
+//#ifdef DEBUG_VIEWER
+//                DEBUG_MSG( "[Viewer] unable to connect to server : " << m_sock.getIpv4() << " "
+//                                                                     << m_sock.getPort() );
+//#endif
             }
 
         } // while (! m_stopThread)

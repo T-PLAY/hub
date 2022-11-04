@@ -29,6 +29,8 @@ class SceneManager : public QObject
 
     void addSensor(const std::string & streamName, const hub::SensorSpec & sensorSpec);
     void delSensor( const std::string& streamName );
+    const Sensor * getSensor(const std::string & streamName) const;
+
     void newAcquisition(const std::string & streamName, const hub::Acquisition & acq);
 
     void clear();

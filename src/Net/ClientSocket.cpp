@@ -111,7 +111,7 @@ void ClientSocket::connect() {
 #endif
         throw Socket::exception(
             ( ( std::string(
-                    "[ClientSocket] connectToServer() Failed to connect to server at address " ) +
+                    "[ClientSocket] connect() Failed to connect to server at address " ) +
                 m_ipv4 + " and port " + std::to_string( m_port ) ) )
                 .c_str() );
     }

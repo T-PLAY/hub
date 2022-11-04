@@ -115,30 +115,47 @@ FormStreamViews::~FormStreamViews() {
     std::cout << "[FormStreamViews] ~FormStreamViews() end" << std::endl;
 }
 
+// void FormStreamViews::initViewer(
+//     std::function<void( const std::string& streamName, const hub::Acquisition& )>
+//         onNewAcquisition ) {
 void FormStreamViews::initViewer(
-    std::function<void( const char* streamName, const hub::Acquisition& )> onNewAcquisition ) {
+//    std::function<bool( const std::string& streamName, const hub::SensorSpec& )> onNewStreamer,
+//    std::function<void( const std::string& streamName, const hub::SensorSpec& )> onDelStreamer,
+//    std::function<void( const std::string& ipv4, int port )> onServerConnected,
+//    std::function<void( const std::string& ipv4, int port )> onServerDisconnected,
+        std::function<bool(const std::string & streamName, const hub::SensorSpec&)> newStreamerAdded,
+    std::function<void( const std::string& streamName, const hub::Acquisition& )>
+        onNewAcquisition
+        ) {
+
     assert( m_viewer == nullptr );
     // init viewer
     {
-        auto _onNewStreamer = [this]( const std::string& streamerName,
+        auto _onNewStreamer = [=]( const std::string& streamerName,
                                       const hub::SensorSpec& sensorSpec ) {
-            emit newStreamer( streamerName, sensorSpec );
-            return true;
+//            onNewStreamer(streamerName, sensorSpec); // no needs of gui main thread, direct call to update 3D scene
+            emit newStreamer( streamerName, sensorSpec ); // gui update needs gui main thread
+            return newStreamerAdded(streamerName, sensorSpec);
+//            return true;
         };
-        auto _onDelStreamer = [this]( const std::string& streamerName,
+        auto _onDelStreamer = [=]( const std::string& streamerName,
                                       const hub::SensorSpec& sensorSpec ) {
+//            onDelStreamer(streamerName, sensorSpec);
             emit delStreamer( streamerName, sensorSpec );
         };
-        auto _onServerConnected = [this]( const std::string& ipv4, int port ) {
-            emit serverConnected(ipv4, port);
+        auto _onServerConnected = [=]( const std::string& ipv4, int port ) {
+//            onServerConnected(ipv4, port);
+            emit serverConnected( ipv4, port );
         };
-        auto _onServerDisconnected = [this]( const std::string& ipv4, int port ) {
-            emit serverDisconnected(ipv4, port);
+        auto _onServerDisconnected = [=]( const std::string& ipv4, int port ) {
+//            onServerDisconnected(ipv4, port);
+            emit serverDisconnected( ipv4, port );
         };
-        //        auto _onNewAcquisition = [this]( const std::string& streamerName, const
-        //        hub::Acquisition& acq ) {
-        //            onNewAcquisition( streamerName, acq);
-        //        };
+        auto _onNewAcquisition = [=]( const std::string& streamerName,
+                                      const hub::Acquisition& acq ) {
+            onNewAcquisition( streamerName, acq );
+//            emit newAcquisition( streamerName, acq );
+        };
 
         m_viewer = new hub::Viewer(
             //        _addStreamer, _delStreamer, _onServerConnected, _onServerDisconnected, {},
@@ -148,7 +165,7 @@ void FormStreamViews::initViewer(
             _onServerConnected,
             _onServerDisconnected,
             //                _onNewAcquisition,
-            onNewAcquisition,
+            _onNewAcquisition,
             m_ipv4,
             m_port );
     }
@@ -178,7 +195,7 @@ bool FormStreamViews::onNewStreamer( const std::string& streamName,
     if ( m_autoStartStream ) { sensorView->on_startStreaming(); }
 #endif
 
-    emit streamingStarted(streamName, sensorSpec);
+    //    emit streamingStarted(streamName, sensorSpec);
 
     std::cout << "[FormStreamViews] FormStreamViews::onNewStreamer '" << streamName << "' done."
               << std::endl;
@@ -188,6 +205,7 @@ bool FormStreamViews::onNewStreamer( const std::string& streamName,
 void FormStreamViews::onDelStreamer( const std::string& streamName,
                                      const hub::SensorSpec& sensorSpec ) {
     assert( QThread::currentThread() == this->thread() );
+
     std::cout << "[FormStreamViews] FormStreamViews::onDelStreamer '" << streamName << "'"
               << std::endl;
 
@@ -199,9 +217,9 @@ void FormStreamViews::onDelStreamer( const std::string& streamName,
     m_sensorModel.setStringList( stringList );
     delete sensorView;
 
-//#ifndef USE_COMPLETE_VIEWER
-    emit streamingStopped( streamName, sensorSpec );
-//#endif
+    //#ifndef USE_COMPLETE_VIEWER
+    //    emit streamingStopped( streamName, sensorSpec );
+    //#endif
 
     std::cout << "[FormStreamViews] FormStreamViews::onDelStreamer end '" << streamName << "'"
               << std::endl;
@@ -209,6 +227,7 @@ void FormStreamViews::onDelStreamer( const std::string& streamName,
 
 void FormStreamViews::onServerConnected( const std::string& ipv4, int port ) {
     assert( QThread::currentThread() == this->thread() );
+
     std::cout << "[FormStreamViews] connected to server : " << ipv4 << " " << port << std::endl;
     m_serverConnected = true;
     ui->lineEdit_ip->setEnabled( false );
@@ -218,11 +237,12 @@ void FormStreamViews::onServerConnected( const std::string& ipv4, int port ) {
     ui->verticalLayout->addWidget( new QLabel( "hello" ) );
     ui->verticalLayout->update();
 
-//    emit serverConnected();
+    //    emit serverConnected();
 }
 
 void FormStreamViews::onServerDisconnected( const std::string& ipv4, int port ) {
     assert( QThread::currentThread() == this->thread() );
+
     std::cout << "[FormStreamViews] disconnected from server : " << ipv4 << " " << port
               << std::endl;
     m_serverConnected = false;
@@ -235,8 +255,14 @@ void FormStreamViews::onServerDisconnected( const std::string& ipv4, int port ) 
 #endif
     ui->spinBox_port->setValue( m_port );
 
-//    emit serverDisconnected();
+    //    emit serverDisconnected();
 }
+
+//void FormStreamViews::onNewAcquisition( const std::string& streamName,
+//                                        const hub::Acquisition& acq ) {
+//    assert( QThread::currentThread() == this->thread() );
+
+//}
 
 // void FormStreamViews::onNewAcquisition( const std::string& streamName, const hub::Acquisition&
 // acq ) {

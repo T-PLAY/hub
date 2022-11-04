@@ -196,16 +196,11 @@ void GuiManager::init() {
     m_formStreamViews = new FormStreamViews( m_dockLeft );
 
     m_dockLeft->setWidget( m_formStreamViews );
-    QObject::connect( m_formStreamViews,
-                      &FormStreamViews::streamingStarted,
-                      this,
-                      &GuiManager::onServerStreamStarted );
+    QObject::connect(
+        m_formStreamViews, &FormStreamViews::newStreamer, this, &GuiManager::onNewStreamer );
 
-    QObject::connect( m_formStreamViews,
-                      &FormStreamViews::streamingStopped,
-                      this,
-                      &GuiManager::onServerStreamStopped );
-
+    QObject::connect(
+        m_formStreamViews, &FormStreamViews::delStreamer, this, &GuiManager::onDelStreamer );
     QObject::connect( m_formStreamViews,
                       &FormStreamViews::serverDisconnected,
                       this,
@@ -214,14 +209,43 @@ void GuiManager::init() {
                       &FormStreamViews::serverConnected,
                       this,
                       &GuiManager::onServerConnected );
-//    QObject::connect(
-//        m_formStreamViews, &FormStreamViews::newAcquisition, this, &GuiManager::onNewAcquisition );
+    //    QObject::connect(
+    //        m_formStreamViews, &FormStreamViews::newAcquisition, this,
+    //        &GuiManager::onNewAcquisition );
 
-    auto _onNewAcquisition = [this]( const std::string& streamerName,
+    //    auto _onNewStreamer = [this]( const std::string& streamerName,
+    //                               const hub::SensorSpec& sensorSpec ) {
+    //        return onNewStreamer( streamerName,
+    //                       sensorSpec ); // no needs of gui main thread, direct call to update 3D
+    //                       scene
+    ////        emit newStreamer( streamerName, sensorSpec ); // gui update needs gui main thread
+    ////        return true;
+    //    };
+    //    auto _onDelStreamer = [this]( const std::string& streamerName,
+    //                               const hub::SensorSpec& sensorSpec ) {
+    //        onDelStreamer( streamerName, sensorSpec );
+    //    };
+    //    auto _onServerConnected = [this]( const std::string& ipv4, int port ) {
+    //        onServerConnected( ipv4, port );
+    //    };
+    //    auto _onServerDisconnected = [this]( const std::string& ipv4, int port ) {
+    //        onServerDisconnected( ipv4, port );
+    //    };
+    //        auto _onNewAcquisition = [=]( const std::string& streamerName,
+    //                                      const hub::Acquisition& acq ) {
+    //            onNewAcquisition( streamerName, acq );
+    //            emit newAcquisition( streamerName, acq );
+    //        };
+    auto _onNewAcquisition = [this]( const std::string& streamName,
                                      const hub::Acquisition& acq ) {
-        onNewAcquisition( streamerName, acq );
+        onNewAcquisition( streamName, acq );
     };
-    m_formStreamViews->initViewer( std::move(_onNewAcquisition ));
+    auto _newStreamerAdded = [this]( const std::string& streamName,
+                                     const hub::SensorSpec& ) {
+        m_sceneManager.getSensor(streamName);
+        return true;
+    };
+    m_formStreamViews->initViewer( _newStreamerAdded, _onNewAcquisition );
 
     //////////////////////////////////////// BOTTOM DOCKER
 
@@ -294,47 +318,73 @@ void GuiManager::on_action3D_triggered() {
     m_stackedWidget->setCurrentIndex( 1 );
 }
 
-//void GuiManager::onServerStreamStarted( const std::string& streamName,
-//                                        const std::string& syncStreamName ) {
-void GuiManager::onServerStreamStarted( const std::string& streamName,
-                                        const hub::SensorSpec& sensorSpec ) {
-//    std::cout << "[GuiManager] onServerStreamStarted(" << streamName << ", " << syncStreamName
-    std::cout << "[GuiManager] onServerStreamStarted(" << streamName << ", " << sensorSpec
-              << ")" << std::endl;
+// void GuiManager::onServerStreamStarted( const std::string& streamName,
+//                                         const std::string& syncStreamName ) {
+// void GuiManager::onServerStreamStarted( const std::string& streamName,
+//                                        const hub::SensorSpec& sensorSpec ) {
+//    //    std::cout << "[GuiManager] onServerStreamStarted(" << streamName << ", " <<
+//    syncStreamName std::cout << "[GuiManager] onServerStreamStarted(" << streamName << ", " <<
+//    sensorSpec << ")"
+//              << std::endl;
 
-    const auto& ipv4 = m_formStreamViews->getIpv4();
-    const auto port  = m_formStreamViews->getPort();
+//    const auto& ipv4 = m_formStreamViews->getIpv4();
+//    const auto port  = m_formStreamViews->getPort();
 
-//    m_sceneManager.addSensor(
-//        hub::io::InputStream( streamName, syncStreamName, hub::net::ClientSocket( ipv4, port ) ),
-//        streamName );
+//    //    m_sceneManager.addSensor(
+//    //        hub::io::InputStream( streamName, syncStreamName, hub::net::ClientSocket( ipv4, port
+//    )
+//    //        ), streamName );
 
-    m_sceneManager.addSensor(streamName, sensorSpec);
+//    m_sceneManager.addSensor( streamName, sensorSpec );
+//}
+
+// void GuiManager::onServerStreamStopped( const std::string& streamName,
+//                                         const hub::SensorSpec& sensorSpec ) {
+//     std::cout << "[GuiManager] onServerStreamStopped()" << std::endl;
+
+//    m_sceneManager.delSensor( streamName );
+//}
+
+// void GuiManager::onServerConnected() {
+//#ifdef ENABLE_LOADER
+//     m_formWidgetLoader->setEnabled( true );
+//#endif
+// }
+
+bool GuiManager::onNewStreamer( const std::string& streamName, const hub::SensorSpec& sensorSpec ) {
+    //    std::cout << "[GuiManager] onNewStreamer(" << streamName << ", " << sensorSpec << ")"
+    //              << std::endl;
+
+    m_sceneManager.addSensor( streamName, sensorSpec );
+    return true;
 }
 
-void GuiManager::onServerStreamStopped( const std::string& streamName,
-                                        const hub::SensorSpec& sensorSpec ) {
-    std::cout << "[GuiManager] onServerStreamStopped()" << std::endl;
-
+void GuiManager::onDelStreamer( const std::string& streamName, const hub::SensorSpec& sensorSpec ) {
     m_sceneManager.delSensor( streamName );
 }
 
-void GuiManager::onServerConnected() {
+void GuiManager::onServerConnected( const std::string& ipv4, int port ) {
 #ifdef ENABLE_LOADER
     m_formWidgetLoader->setEnabled( true );
 #endif
 }
 
-void GuiManager::onServerDisconnected() {
+void GuiManager::onServerDisconnected( const std::string& ipv4, int port ) {
 #ifdef ENABLE_LOADER
     m_formWidgetLoader->setEnabled( false );
 #endif
 }
 
+// void GuiManager::onServerDisconnected() {
+//#ifdef ENABLE_LOADER
+//     m_formWidgetLoader->setEnabled( false );
+//#endif
+// }
+
 void GuiManager::onNewAcquisition( const std::string& streamName, const hub::Acquisition& acq ) {
-//    std::cout << "[GuiManager] GuiManager::onNewAcquisition '" << streamName << "' : " << acq
-//              << std::endl;
-    m_sceneManager.newAcquisition(streamName, acq);
+    //    std::cout << "[GuiManager] GuiManager::onNewAcquisition '" << streamName << "' : " << acq
+    //              << std::endl;
+    m_sceneManager.newAcquisition( streamName, acq );
 }
 
 void GuiManager::on_checkBox_grid_toggled( bool checked ) {

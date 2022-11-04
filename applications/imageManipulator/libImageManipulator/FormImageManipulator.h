@@ -1,5 +1,4 @@
-#ifndef FORMIMAGEMANIPULATOR_H
-#define FORMIMAGEMANIPULATOR_H
+#pragma once
 
 #include <QWidget>
 #include <WidgetStreamView.h>
@@ -30,5 +29,3 @@ class FormImageManipulator : public QWidget
   private:
     Ui::FormImageManipulator* ui;
 };
-
-#endif // FORMIMAGEMANIPULATOR_H

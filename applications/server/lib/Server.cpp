@@ -102,15 +102,15 @@ void Server::delStreamer( StreamerClient* streamer ) {
 
     delete streamer;
 
+    for ( const auto* viewer : m_viewers ) {
+        viewer->notifyDelStreamer( streamerName, sensorSpec );
+    }
+
     std::cout << std::left << std::setw( g_margin2 ) << headerMsg() << std::setw( g_margin )
               << "del streamer" << getStatus() << std::endl;
     std::cout << "-------------------------------------------------------------------------"
                  "--------------------"
               << std::endl;
-
-    for ( const auto* viewer : m_viewers ) {
-        viewer->notifyDelStreamer( streamerName, sensorSpec );
-    }
 
     m_mtxStreamers.unlock();
 }
@@ -226,12 +226,16 @@ Client* Server::initClient( hub::net::ClientSocket&& sock, int iClient ) {
     sock.read( clientType );
 
     switch ( clientType ) {
+
     case hub::net::ClientSocket::Type::STREAMER:
         return new StreamerClient( *this, iClient, std::move( sock ) );
+
     case hub::net::ClientSocket::Type::VIEWER:
         return new ViewerClient( *this, iClient, std::move( sock ) );
+
     case hub::net::ClientSocket::Type::STREAM_VIEWER:
         return new StreamViewerClient( *this, iClient, std::move( sock ) );
+
     default:
         assert( false );
         return nullptr;
