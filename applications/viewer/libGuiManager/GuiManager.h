@@ -87,10 +87,15 @@ class GuiManager : public QObject
 
     // server view
 //    void onServerStreamStarted( const std::string& streamName, const std::string& syncStreamName );
-    void onServerStreamStarted( const std::string& streamName, const hub::SensorSpec& sensorSpec );
-    void onServerStreamStopped( const std::string& streamName, const hub::SensorSpec& sensorSpec );
-    void onServerDisconnected();
-    void onServerConnected();
+//    void onServerStreamStarted( const std::string& streamName, const hub::SensorSpec& sensorSpec );
+//    void onServerStreamStopped( const std::string& streamName, const hub::SensorSpec& sensorSpec );
+//    void onServerDisconnected();
+//    void onServerConnected();
+
+    bool onNewStreamer( const std::string& streamName, const hub::SensorSpec& sensorSpec );
+    void onDelStreamer( const std::string& streamName, const hub::SensorSpec& sensorSpec );
+    void onServerConnected(const std::string& ipv4, int port);
+    void onServerDisconnected(const std::string& ipv4, int port);
     void onNewAcquisition( const std::string& sensorName, const hub::Acquisition& acq );
 
 //    void on_toolButton_fitSelected_clicked();

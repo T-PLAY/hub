@@ -395,9 +395,11 @@ void Sensor::updateTransform( const Ra::Engine::Scene::Entity* entity ) {
 }
 
 void Sensor::update( const hub::Acquisition& acq ) {
-    if (m_lost)
-        return;
     m_mtxUpdating.lock();
+    if (m_lost) {
+        m_mtxUpdating.unlock();
+        return;
+    }
     assert(! m_lost);
     //            const auto& sensorSpec  = inputSensor->m_spec;
     const auto& resolutions = m_sensorSpec.m_resolutions;

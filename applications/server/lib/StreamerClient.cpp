@@ -340,9 +340,9 @@ void StreamerClient::saveNewAcq( const std::string& streamName, hub::Acquisition
     auto& saveAcqs = m_streamName2saveAcqs[streamName];
     // save new acq
     if ( saveAcqs.find( newAcq.m_start ) == saveAcqs.end() ) {
-        std::cout << headerMsg() << " save new acq : [ ";
+        std::cout << headerMsg() << "save new acq : [ ";
         for ( const auto& [streamName, saveAcqs] : m_streamName2saveAcqs ) {
-            std::cout << streamName << ":" << saveAcqs.size() << ", ";
+            std::cout << "'" << streamName << "':" << saveAcqs.size() << ", ";
         }
         std::cout << " ] ";
         std::cout << std::endl;

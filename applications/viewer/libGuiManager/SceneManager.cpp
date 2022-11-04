@@ -125,6 +125,19 @@ void SceneManager::delSensor( const std::string& streamName ) {
     }
 }
 
+const Sensor *SceneManager::getSensor(const std::string &streamName) const
+{
+    while ( m_streamName2sensor.find( streamName ) == m_streamName2sensor.end() ) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        std::cout << "[SceneManager] getSensor() waiting for stream '" << streamName << "' inited" << std::endl;
+    }
+//    if ( m_streamName2sensor.find( streamName ) != m_streamName2sensor.end() ) {
+        assert( m_streamName2sensor.find( streamName ) != m_streamName2sensor.end() );
+        return m_streamName2sensor.at(streamName).get();
+//        m_streamName2sensor.at( streamName )->update( acq );
+//    }
+}
+
 void SceneManager::newAcquisition( const std::string& streamName, const hub::Acquisition& acq ) {
     if ( m_streamName2sensor.find( streamName ) != m_streamName2sensor.end() ) {
         assert( m_streamName2sensor.find( streamName ) != m_streamName2sensor.end() );

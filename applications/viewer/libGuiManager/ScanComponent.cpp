@@ -129,7 +129,7 @@ void ScanComponent::update( const hub::Acquisition& acq ) {
             else {
                 m_iScan                        = m_nScans++;
                 m_startScan2iScan[acq.m_start] = m_iScan;
-                std::cout << "[ScanComponent] update() show new scan " << m_nScans << std::endl;
+                std::cout << "[ScanComponent] update() show new scan " << m_iScan << std::endl;
             }
         }
         else { assert( false ); }
