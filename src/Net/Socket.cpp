@@ -58,7 +58,8 @@ Socket::~Socket() {
 #ifdef DEBUG_SOCKET
         DEBUG_MSG( getHeader( m_fdSock ) << "close socket" );
 #endif
-        net::clearSocket( m_fdSock );
+//        net::clearSocket( m_fdSock );
+        close(m_fdSock);
         m_fdSock = INVALID_SOCKET;
     }
 }

@@ -35,8 +35,6 @@ GuiManager::GuiManager( QObject* parent ) : QObject { parent } {}
 
 GuiManager::~GuiManager() {
     std::cout << "[GuiManager] ~GuiManager() start" << std::endl;
-    delete m_formStreamViews;
-    m_formStreamViews = nullptr;
 
 #ifdef ENABLE_IMAGE_VIEWER
     delete m_imageManipulator;
@@ -49,6 +47,9 @@ GuiManager::~GuiManager() {
 #endif
 
     m_sceneManager.clear();
+
+    delete m_formStreamViews;
+    m_formStreamViews = nullptr;
 
     std::cout << "[GuiManager] ~GuiManager() end" << std::endl;
 }

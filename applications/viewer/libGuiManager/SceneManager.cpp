@@ -11,7 +11,9 @@ SceneManager::SceneManager( QObject* parent ) : QObject { parent } {}
 SceneManager::~SceneManager() {
     std::cout << "[SceneManager] ~SceneManager() start" << std::endl;
 
+    m_mtxSensors.lock();
     m_streamName2sensor.clear();
+    m_mtxSensors.unlock();
 
     std::cout << "[SceneManager] ~SceneManager() end" << std::endl;
 }
@@ -57,6 +59,7 @@ void SceneManager::addSensor( const std::string& streamName, const hub::SensorSp
         parentName = std::any_cast<const char*>( metaData.at( "parent" ) );
     }
 
+//    m_mtxSensors.lock();
     Sensor* parentSensor = nullptr;
 
     // if parent exist in scene, link to it
@@ -111,10 +114,12 @@ void SceneManager::addSensor( const std::string& streamName, const hub::SensorSp
             if ( sensorName == parentName ) { sensor.setParent( &newSensor ); }
         }
     }
+//    m_mtxSensors.unlock();
 }
 
 void SceneManager::delSensor( const std::string& streamName ) {
 
+    m_mtxSensors.lock();
     if ( m_streamName2sensor.find( streamName ) != m_streamName2sensor.end() ) {
         m_streamName2sensor.erase( streamName );
 
@@ -123,30 +128,39 @@ void SceneManager::delSensor( const std::string& streamName ) {
         assert( lst.size() == 1 );
         m_sensorModel.removeRow( lst.front()->index().row() );
     }
+    m_mtxSensors.unlock();
 }
 
 const Sensor *SceneManager::getSensor(const std::string &streamName) const
 {
+//    m_mtxSensors.lock();
     while ( m_streamName2sensor.find( streamName ) == m_streamName2sensor.end() ) {
+//    m_mtxSensors.unlock();
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
         std::cout << "[SceneManager] getSensor() waiting for stream '" << streamName << "' inited" << std::endl;
+//    m_mtxSensors.lock();
     }
 //    if ( m_streamName2sensor.find( streamName ) != m_streamName2sensor.end() ) {
         assert( m_streamName2sensor.find( streamName ) != m_streamName2sensor.end() );
+//    m_mtxSensors.unlock();
         return m_streamName2sensor.at(streamName).get();
 //        m_streamName2sensor.at( streamName )->update( acq );
 //    }
 }
 
 void SceneManager::newAcquisition( const std::string& streamName, const hub::Acquisition& acq ) {
+    m_mtxSensors.lock();
     if ( m_streamName2sensor.find( streamName ) != m_streamName2sensor.end() ) {
         assert( m_streamName2sensor.find( streamName ) != m_streamName2sensor.end() );
         m_streamName2sensor.at( streamName )->update( acq );
     }
+    m_mtxSensors.unlock();
 }
 
 void SceneManager::clear() {
+    m_mtxSensors.lock();
     m_streamName2sensor.clear();
+    m_mtxSensors.unlock();
 }
 
 // const std::list<Sensor>& SceneManager::getSensors() const {

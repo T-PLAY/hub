@@ -53,7 +53,7 @@ class SRC_API ClientSocket : public Socket, public virtual io::Interface
     template <class T>
     void read( T& t ) const;
 
-    void initSocket();
+    void initServerAddress();
     void connect();
 
     void setIpv4( const std::string& newIpv4 );
@@ -83,7 +83,7 @@ class SRC_API ClientSocket : public Socket, public virtual io::Interface
 
   public:
     const std::string& getIpv4() const;
-    int getPort() const;
+    const int &getPort() const;
 };
 
 template <class T>

@@ -6,15 +6,9 @@
 ViewerClient::ViewerClient( Server& server, int iClient, hub::net::ClientSocket&& sock ) :
     Client( server, iClient ), m_socket( std::move( sock ) ) {
 
-    // each already connected streamers prevent existence for this new viewer
-    for ( const auto& pair : server.getStreamers() ) {
-        const auto& streamer = *pair.second;
-        notifyNewStreamer( streamer );
-    }
-
     server.addViewer( this );
 
-    std::thread thread( [this]() {
+    m_thread = std::thread( [this]() {
         try {
             // check client still alive
             while ( m_socket.isOpen() ) {
@@ -28,11 +22,32 @@ ViewerClient::ViewerClient( Server& server, int iClient, hub::net::ClientSocket&
         catch ( std::exception& e ) {
             m_mtxSocket.unlock();
             std::cout << headerMsg() << "catch viewer exception : " << e.what() << std::endl;
+            //            delete this;
+//            m_server.delViewer( this );
+            std::thread( [this]() { delete this; } ).detach();
         }
-
-        m_server.delViewer( this );
     } );
-    thread.detach();
+    //    thread.detach();
+
+    printStatusMessage("new viewer");
+//    std::cout << std::left << std::setw( g_margin2 ) << headerMsg() << std::setw( g_margin )
+//              << "new viewer" << m_server.getStatus() << std::endl;
+//    std::cout << "-------------------------------------------------------------------------"
+//                 "--------------------"
+//              << std::endl;
+}
+
+ViewerClient::~ViewerClient() {
+    assert( m_thread.joinable() );
+    m_thread.join();
+
+    m_server.delViewer(this);
+    printStatusMessage("del viewer");
+//    std::cout << std::left << std::setw( g_margin2 ) << headerMsg() << std::setw( g_margin )
+//              << "del viewer" << m_server.getStatus() << std::endl;
+//    std::cout << "-------------------------------------------------------------------------"
+//                 "--------------------"
+//              << std::endl;
 }
 
 std::string ViewerClient::headerMsg() const {
@@ -64,5 +79,8 @@ void ViewerClient::notifyDelStreamer( const std::string& streamerName,
                   << "in : viewer is dead, this append when "
                      "viewer/streamer process was stopped in same time : "
                   << e.what() << std::endl;
+        //        delete this;
+        //    m_server.delViewer( this );
+            std::thread( [this]() { delete this; } ).detach();
     }
 }

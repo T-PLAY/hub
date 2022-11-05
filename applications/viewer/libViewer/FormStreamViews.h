@@ -12,7 +12,8 @@
 #include <Viewer.hpp>
 
 #include <FormStreamView.h>
-#include <MainWindowStreamView.h>
+#include <FormServerView.h>
+//#include <MainWindowStreamView.h>
 
 // class FormStreamViews;
 
@@ -71,25 +72,24 @@ class FormStreamViews : public QWidget
   private slots:
     bool onNewStreamer( const std::string& streamName, const hub::SensorSpec& sensorSpec );
     void onDelStreamer( const std::string& streamName, const hub::SensorSpec& sensorSpec );
-    void onServerConnected( const std::string& ipv4, int port );
-    void onServerDisconnected( const std::string& ipv4, int port );
+//    void onServerConnected( const std::string& ipv4, int port );
+//    void onServerDisconnected( const std::string& ipv4, int port );
 //    void onNewAcquisition( const std::string& streamName, const hub::Acquisition& acq );
 
   private:
     Ui::FormStreamViews* ui;
 
     //    ViewerQt* m_viewerQt = nullptr;
-    hub::Viewer* m_viewer = nullptr;
+//    hub::Viewer* m_viewer = nullptr;
 
-    std::string m_ipv4;
-    int m_port;
-    const QRegularExpression m_ipv4RegularExpression =
-        QRegularExpression( "[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}" );
+//    std::string m_ipv4;
+//    int m_port;
+    FormServerView * m_serverView = nullptr;
 
     std::map<std::string, FormStreamView*> m_streamViews;
 
-    bool m_serverConnected = false;
-    bool m_serverPing      = false;
+//    bool m_serverConnected = false;
+//    bool m_serverPing      = false;
 
     QStringListModel m_sensorModel;
 
@@ -104,6 +104,6 @@ class FormStreamViews : public QWidget
     const int& getPort() const;
 
   private slots:
-    void on_lineEdit_ip_textChanged( const QString& ipv4 );
-    void on_spinBox_port_valueChanged( int port );
+//    void on_lineEdit_ip_textChanged( const QString& ipv4 );
+//    void on_spinBox_port_valueChanged( int port );
 };

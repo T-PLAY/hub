@@ -294,7 +294,7 @@ void ScanComponent::addScan() {
             }
         }
 
-        scan.m_textureName      = sensorName + std::to_string( iScan );
+        scan.m_textureName      = sensorName + " " + std::to_string( iScan );
         auto& textureParameters = m_engine.getTextureManager()->addTexture(
             scan.m_textureName.c_str(), width, height, scan.m_textureData );
 

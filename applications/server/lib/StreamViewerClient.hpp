@@ -16,7 +16,7 @@ class StreamViewerClient : public Client
 
     const std::string& getSyncStreamName() const;
     const std::string& getStreamName() const;
-    void killThread();
+//    void killThread();
 
   private:
     std::unique_ptr<hub::OutputSensor> m_outputSensor;
@@ -25,7 +25,8 @@ class StreamViewerClient : public Client
 
     std::string m_syncStreamName;
 
-    std::thread* m_thread = nullptr;
+    std::thread m_thread;
+
     bool m_isKilled       = false;
     bool m_updateFailed   = false;
 };

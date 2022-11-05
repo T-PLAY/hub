@@ -124,14 +124,14 @@ Viewer::Viewer( std::function<bool( const char*, const SensorSpec& )> onNewStrea
                 if (m_serverConnected) {
                 DEBUG_MSG( "[Viewer] server disconnected, catch exception " << e.what() );
                 }
-//                else {
-//                DEBUG_MSG( "[Viewer] unable to connect to server, catch exception " << e.what() );
+                else {
+                DEBUG_MSG( "[Viewer] unable to connect to server, catch exception " << e.what() );
 
-//                }
+                }
 #endif
                 // ping the server when this one is not started or visible in the network
                 // able the viewer clients to be aware of the starting of server less than 100 milliseconds.
-                std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+                std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
             }
 
             if ( m_serverConnected ) {
@@ -150,18 +150,19 @@ Viewer::Viewer( std::function<bool( const char*, const SensorSpec& )> onNewStrea
                 m_streamName2sensorSpec.clear();
 
 #ifdef OS_LINUX
-                if ( !m_stopThread ) { m_sock.setPort( m_sock.getPort() + 1 ); }
+//                if ( !m_stopThread ) { m_sock.setPort( m_sock.getPort() + 1 ); }
 //                ++m_port;
 #endif
             }
             else {
 //#ifdef DEBUG_VIEWER
-//                DEBUG_MSG( "[Viewer] unable to connect to server : " << m_sock.getIpv4() << " "
-//                                                                     << m_sock.getPort() );
+                DEBUG_MSG( "[Viewer] unable to connect to server : " << m_sock.getIpv4() << " "
+                                                                     << m_sock.getPort() );
 //#endif
             }
 
         } // while (! m_stopThread)
+
     } );  // thread
 }
 
@@ -198,6 +199,16 @@ void Viewer::setPort( int port ) {
     //    assert( 0 <= port && port <= 65535 );
     //    m_port = port;
     m_sock.setPort( port );
+}
+
+const std::string &Viewer::getIpv4() const
+{
+    return m_sock.getIpv4();
+}
+
+const int &Viewer::getPort() const
+{
+    return m_sock.getPort();
 }
 
 void Viewer::startStream( const std::string& streamName, const SensorSpec& sensorSpec ) {

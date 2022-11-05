@@ -1,5 +1,6 @@
-#ifndef SCENEMANAGER_H
-#define SCENEMANAGER_H
+#pragma once
+
+#include <mutex>
 
 #include <Engine/RadiumEngine.hpp>
 #include <Engine/Scene/EntityManager.hpp>
@@ -76,6 +77,7 @@ class SceneManager : public QObject
 
   private:
     std::map<std::string, std::unique_ptr<Sensor>> m_streamName2sensor;
+    mutable std::mutex m_mtxSensors;
 
     bool m_initialized = false;
 };
@@ -147,5 +149,3 @@ class SceneManager : public QObject
 //        }
 //    }
 //}
-
-#endif // SCENEMANAGER_H
