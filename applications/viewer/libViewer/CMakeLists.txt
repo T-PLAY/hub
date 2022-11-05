@@ -16,9 +16,11 @@ file(GLOB_RECURSE sources *.cpp)
 file(GLOB_RECURSE forms *.ui)
 file(GLOB_RECURSE headers *.h)
 
+
 add_library(${PROJECT_NAME} ${sources} ${forms} ${headers})
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${SRC_DIR} ${PROJECT_SOURCE_DIR})
+
 
 if(WIN32)
 

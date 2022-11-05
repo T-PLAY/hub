@@ -82,38 +82,43 @@ using socket_fd = int;
 namespace hub {
 namespace net {
 
-static std::string getHeader() {
-    const unsigned int id =
-        static_cast<int>( std::hash<std::thread::id> {}( std::this_thread::get_id() ) );
-    std::string str = "[\033[31mNet\033[0m:\033[" + std::to_string( 31 + id % 7 ) + "m" +
-                      std::to_string( id ) + "]\033[0m ";
-    return str;
-}
+//static std::string getHeader() {
+//    const unsigned int id =
+//        static_cast<int>( std::hash<std::thread::id> {}( std::this_thread::get_id() ) );
+//    std::string str = "[\033[31mNet\033[0m:\033[" + std::to_string( 31 + id % 7 ) + "m" +
+//                      std::to_string( id ) + "]\033[0m ";
+//    return str;
+//}
 
 static bool s_inited = false;
-static std::list<socket_fd> s_sockets;
-static std::mutex s_mtx;
+//static std::list<socket_fd> s_sockets;
+//static std::mutex s_mtx;
 
-static void registerSocket( socket_fd socket ) {
-    s_mtx.lock();
+//static void registerSocket( socket_fd socket ) {
+//    s_mtx.lock();
 
-#ifdef DEBUG_NET
-    std::cout << getHeader() << "registerSocket(" << socket << ")" << std::endl;
-#endif
-    s_sockets.push_back( socket );
-#ifdef DEBUG_NET
-    std::cout << getHeader() << "s_sockets = ";
-    for ( const auto& socket : s_sockets ) {
-        std::cout << socket << " ";
-    }
-    std::cout << std::endl;
-#endif
+//            std::cout << getHeader() << "registerSocket(" << socket << ")" << std::endl;
 
-    s_mtx.unlock();
-}
+//#ifdef DEBUG_NET
+//    std::cout << getHeader() << "registerSocket(" << socket << ")" << std::endl;
+//#endif
+//    s_sockets.push_back( socket );
+//#ifdef DEBUG_NET
+//    std::cout << getHeader() << "s_sockets = ";
+//    for ( const auto& socket : s_sockets ) {
+//        std::cout << socket << " ";
+//    }
+//    std::cout << std::endl;
+//#endif
+
+//    s_mtx.unlock();
+//}
 
 static void clearSocket( socket_fd& sock ) {
-    s_mtx.lock();
+    assert(sock != INVALID_SOCKET);
+//    s_mtx.lock();
+
+//            std::cout << getHeader() << "clearSocket(" << sock << ")" << std::endl;
 
 #ifdef DEBUG_NET
     std::cout << getHeader() << "clearSocket(" << sock << ") close socket" << std::endl;
@@ -124,7 +129,7 @@ static void clearSocket( socket_fd& sock ) {
     std::cout << std::endl;
 #endif
     closesocket( sock );
-    s_sockets.remove( sock );
+//    s_sockets.remove( sock );
     // assert(s_sockets.size() == size - 1);
 
 #ifdef WIN32
@@ -136,35 +141,35 @@ static void clearSocket( socket_fd& sock ) {
 
     sock = INVALID_SOCKET;
 
-    s_mtx.unlock();
+//    s_mtx.unlock();
 }
 
-#ifndef WIN32
-static void signalHandler( int signum ) {
-#    ifdef DEBUG_NET
-    std::cout << getHeader() << "signalHandler() Interrupt signal (" << signum << ") received."
-              << std::endl;
-#    endif
+//#ifndef WIN32
+//static void signalHandler( int signum ) {
+//#    ifdef DEBUG_NET
+//    std::cout << getHeader() << "signalHandler() Interrupt signal (" << signum << ") received."
+//              << std::endl;
+//#    endif
 
-    assert( s_sockets.empty() );
-    std::cout << getHeader() << "signalHandler() Interrupt signal (" << signum << ") received."
-              << std::endl;
-    std::cout << getHeader() << "signalHandler() s_sockets size = " << s_sockets.size()
-              << std::endl;
+//    assert( s_sockets.empty() );
+//    std::cout << getHeader() << "signalHandler() Interrupt signal (" << signum << ") received."
+//              << std::endl;
+//    std::cout << getHeader() << "signalHandler() s_sockets size = " << s_sockets.size()
+//              << std::endl;
 
-    // cleanup and close up stuff here
-    // terminate program
-    for ( const socket_fd& sock : s_sockets ) {
-        if ( sock != INVALID_SOCKET ) {
-            //#ifdef DEBUG_NET
-            std::cout << getHeader() << "signalHandler() close socket" << sock << std::endl;
-            //#endif
-            closesocket( sock );
-        }
-    }
-    exit( signum );
-}
-#endif
+//    // cleanup and close up stuff here
+//    // terminate program
+//    for ( const socket_fd& sock : s_sockets ) {
+//        if ( sock != INVALID_SOCKET ) {
+//            //#ifdef DEBUG_NET
+//            std::cout << getHeader() << "signalHandler() close socket" << sock << std::endl;
+//            //#endif
+//            closesocket( sock );
+//        }
+//    }
+//    exit( signum );
+//}
+//#endif
 
 static void init() {
     if ( !s_inited ) {
@@ -179,7 +184,7 @@ static void init() {
             exit( 1 );
         }
 #else
-        signal( SIGINT, signalHandler );
+//        signal( SIGINT, signalHandler );
         signal( SIGPIPE, SIG_IGN );
 
 #endif

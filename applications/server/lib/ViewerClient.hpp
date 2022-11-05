@@ -13,6 +13,7 @@ class ViewerClient : public Client
 {
   public:
     ViewerClient( Server& server, int iClient, hub::net::ClientSocket&& sock );
+    ~ViewerClient();
 
     std::string headerMsg() const override;
 
@@ -21,6 +22,8 @@ class ViewerClient : public Client
                             const hub::SensorSpec& sensorSpec ) const;
 
   private:
+    std::thread m_thread;
+
     hub::net::ClientSocket m_socket;
     mutable std::mutex m_mtxSocket;
 };

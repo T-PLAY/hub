@@ -88,7 +88,7 @@ Acquisition InputStream::getAcquisition( int acquisitionSize ) const {
     do {
         Interface::read( message );
         if ( message == net::ClientSocket::Message::PING ) {
-            std::cout << "[InputStream] receive ping" << std::endl;
+            std::cout << "\033[32m[InputStream] receive ping\033[0m" << std::endl;
         }
     } while ( message == net::ClientSocket::Message::PING );
 

@@ -13,7 +13,9 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
-  <widget class="FormWidgetLoader" name="centralwidget"/>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout"/>
+  </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
@@ -26,14 +28,6 @@
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>FormWidgetLoader</class>
-   <extends>QWidget</extends>
-   <header location="global">FormWidgetLoader.h</header>
-   <container>1</container>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>

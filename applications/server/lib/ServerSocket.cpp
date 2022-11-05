@@ -27,12 +27,14 @@ ClientSocket ServerSocket::waitNewClient() {
     if ( new_socket == INVALID_SOCKET ) {
         perror( "not accept new socket" );
         net::clearSocket( new_socket );
+//        ::close(m_fdSock);
+//        m_fdSock = INVALID_SOCKET;
         exit( 1 );
     }
 #ifdef DEBUG_SOCKET
     DEBUG_MSG( getHeader( m_fdSock ) << "new client on socket " << new_socket );
 #endif
-    net::registerSocket( new_socket );
+//    net::registerSocket( new_socket );
 
     return ClientSocket( new_socket );
 }
@@ -43,12 +45,13 @@ void ServerSocket::initServer() {
     m_fdSock = socket( PF_INET, SOCK_STREAM, IPPROTO_TCP );
     if ( m_fdSock < 0 ) {
         perror( "socket creation failed.\n" );
+        exit(1);
         return;
     }
 #ifdef DEBUG_SOCKET
     DEBUG_MSG( getHeader( m_fdSock ) << "server started " );
 #endif
-    net::registerSocket( m_fdSock );
+//    net::registerSocket( m_fdSock );
 
     // Server address construction
     memset( &mAddress, 0, sizeof( mAddress ) );
@@ -59,11 +62,13 @@ void ServerSocket::initServer() {
     // Create server
     if ( bind( m_fdSock, (struct sockaddr*)&mAddress, sizeof( mAddress ) ) < 0 ) {
         perror( "Failed to bind.\n" );
+        exit(1);
         return;
     }
 
     if ( listen( m_fdSock, 3 ) < 0 ) {
         perror( "listen" );
+        exit(1);
         return;
     }
 
