@@ -4,11 +4,11 @@
 #include <QThread>
 
 FormServerView::FormServerView(
-    std::function<bool( const std::string&, const hub::SensorSpec& )> onNewStreamer,
-    std::function<void( const std::string&, const hub::SensorSpec& )> onDelStreamer,
-    std::function<void( const std::string&, int )> onServerConnected,
-    std::function<void( const std::string&, int )> onServerDisconnected,
-    std::function<void( const std::string&, const hub::Acquisition& )> onNewAcquisition,
+    std::function<bool( const std::string& streamName, const hub::SensorSpec&, const std::string & syncStreamName )> onNewStreamer,
+    std::function<void( const std::string& streamName, const hub::SensorSpec& )> onDelStreamer,
+    std::function<void( const std::string& ipv4, int port )> onServerConnected,
+    std::function<void( const std::string& ipv4, int  port)> onServerDisconnected,
+    std::function<void( const std::string& streamName, const hub::Acquisition& )> onNewAcquisition,
     QWidget* parent ) :
 
     QWidget( parent ), ui( new Ui::FormServerView ) {

@@ -30,6 +30,7 @@ class FormWidgetLoader : public QWidget
     void onSpace();
     void onPlayEnded();
 
+//    void onTreeView_record_currentChanged( const QModelIndex& current, const QModelIndex& previous);
     void onTreeView_record_selectionChanged( const QItemSelection& selected,
                                              const QItemSelection& deselected );
 

@@ -21,7 +21,7 @@ int main( int argc, char* argv[] ) {
     std::string recordPath = PROJECT_DIR "data/records/latest/";
 
     Loader loader;
-    loader.load( recordPath );
+    loader.load( {recordPath} );
 
     while ( true ) {
         std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );

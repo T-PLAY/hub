@@ -52,7 +52,7 @@ StreamViewerClient::StreamViewerClient( Server& server,
     sock.read( m_streamName );
     if ( streamers.find( m_streamName ) == streamers.end() ) {
         sock.write( hub::net::ClientSocket::Message::NOT_FOUND );
-        std::cout << headerMsg() << "unknown sensor name : '" << m_streamName << "'" << std::endl;
+        std::cout << headerMsg() << "unknown stream name : '" << m_streamName << "'" << std::endl;
         return;
     }
     else { sock.write( hub::net::ClientSocket::Message::OK ); }
@@ -61,7 +61,7 @@ StreamViewerClient::StreamViewerClient( Server& server,
     sock.read( m_syncStreamName );
     if ( m_syncStreamName != "" && streamers.find( m_syncStreamName ) == streamers.end() ) {
         sock.write( hub::net::ClientSocket::Message::NOT_FOUND );
-        std::cout << headerMsg() << "unknown sync sensor name : '" << m_syncStreamName << "'"
+        std::cout << headerMsg() << "unknown sync stream name : '" << m_syncStreamName << "'"
                   << std::endl;
         return;
     }

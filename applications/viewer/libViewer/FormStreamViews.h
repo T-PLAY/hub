@@ -57,7 +57,7 @@ class FormStreamViews : public QWidget
             );
 
   signals:
-    void newStreamer( const std::string& streamName, const hub::SensorSpec& sensorSpec );
+    void newStreamer( const std::string& streamName, const hub::SensorSpec& sensorSpec, const std::string & syncStreamName );
     void delStreamer( const std::string& streamName, const hub::SensorSpec& sensorSpec );
     void serverConnected( const std::string& ipv4, int port );
     void serverDisconnected( const std::string& ipv4, int port );
@@ -70,7 +70,7 @@ class FormStreamViews : public QWidget
     //#endif
 
   private slots:
-    bool onNewStreamer( const std::string& streamName, const hub::SensorSpec& sensorSpec );
+    bool onNewStreamer( const std::string& streamName, const hub::SensorSpec& sensorSpec, const std::string & syncStreamName );
     void onDelStreamer( const std::string& streamName, const hub::SensorSpec& sensorSpec );
 //    void onServerConnected( const std::string& ipv4, int port );
 //    void onServerDisconnected( const std::string& ipv4, int port );

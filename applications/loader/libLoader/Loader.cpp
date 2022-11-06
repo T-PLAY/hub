@@ -26,88 +26,94 @@ Loader::~Loader() {
     if ( isLoaded() ) unload();
 }
 
-void Loader::load( const std::string& path ) {
-    std::cout << "[Loader] load(" << path << ")" << std::endl;
+// void Loader::load( const std::string& path ) {
+void Loader::load( const std::set<std::string>& paths ) {
+
     if ( isPlaying() ) stop();
 
     assert( m_thread == nullptr );
     m_snaps.clear();
-    m_loadedPath = "";
+//    m_loadedPath = "";
+    m_loadedPaths.clear();
 
     //////////////////////////////////////
-
-    assert( std::filesystem::exists( path ) );
-    assert( m_loadedPath == "" );
-    assert( m_thread == nullptr );
-    assert( m_snaps.empty() );
-
-    assert( !path.empty() );
-    std::set<Snap> sortedSnaps;
 
     std::list<std::string> sensorNamesToRemove;
     for ( const auto& [key, value] : m_outputStreams ) {
         sensorNamesToRemove.push_back( key );
     }
+    std::set<Snap> sortedSnaps;
 
-    std::list<std::filesystem::path> filePaths;
-    if ( std::filesystem::is_directory( path ) ) {
-        for ( const auto& fileDir : std::filesystem::directory_iterator( path ) ) {
-            filePaths.push_back( fileDir );
-        }
-    }
-    else {
-        assert(std::filesystem::is_regular_file(path));
-        filePaths.push_back( path );
-    }
+    for ( const auto& path : paths ) {
+        std::cout << "[Loader] load(" << path << ")" << std::endl;
+        assert( std::filesystem::exists( path ) );
+//        assert( m_loadedPath == "" );
+        assert(m_loadedPaths.empty());
+        assert( m_thread == nullptr );
+        assert( m_snaps.empty() );
 
-    // read records in folder
-    //    for ( const auto& fileDir : std::filesystem::directory_iterator( path ) ) {
-    for ( const auto& fileDir : filePaths ) {
-        const auto& filepath = fileDir.string();
-        const auto& filename = fileDir.filename();
-        if ( filename == "export" ) continue;
-        std::cout << "[Loader] read '" << filename << "' record" << std::endl;
-        assert( std::filesystem::exists( filepath ) );
+        assert( !path.empty() );
 
-        std::fstream file( filepath, std::ios::binary | std::ios::in );
-
-        assert( !file.eof() );
-        hub::InputSensor inputSensor( hub::io::File( std::move( file ) ) );
-
-        const auto& sensorSpec        = inputSensor.m_spec;
-        const std::string& sensorName = sensorSpec.m_sensorName;
-
-        auto acqs = inputSensor.getAllAcquisitions();
-
-        if ( m_outputStreams.find( sensorName ) == m_outputStreams.end() ) {
-            assert( m_outputStreams.find( sensorName ) == m_outputStreams.end() );
-            m_outputStreams[sensorName] = std::make_unique<hub::OutputSensor>(
-                inputSensor.m_spec,
-                hub::io::OutputStream( sensorName, hub::net::ClientSocket( m_ipv4, m_port ) ) );
+        std::list<std::filesystem::path> filePaths;
+        if ( std::filesystem::is_directory( path ) ) {
+            for ( const auto& fileDir : std::filesystem::directory_iterator( path ) ) {
+                filePaths.push_back( fileDir );
+            }
         }
         else {
-            assert( std::find( sensorNamesToRemove.begin(),
-                               sensorNamesToRemove.end(),
-                               sensorName ) != sensorNamesToRemove.end() );
-            sensorNamesToRemove.remove( sensorName );
+            assert( std::filesystem::is_regular_file( path ) );
+            filePaths.push_back( path );
         }
 
-        for ( const auto& acq : acqs ) {
+        // read records in folder
+        //    for ( const auto& fileDir : std::filesystem::directory_iterator( path ) ) {
+        for ( const auto& fileDir : filePaths ) {
+            const auto& filepath = fileDir.string();
+            const auto& filename = fileDir.filename();
+            if ( filename == "export" ) continue;
+            std::cout << "[Loader] read '" << filename << "' record" << std::endl;
+            assert( std::filesystem::exists( filepath ) );
 
-            /// localTransform[3][1], localTransform[3][2]); // column major /            glm::vec3
-            /// translation = glm::vec3(localTransform[0][3], localTransform[1][3],
-            /// localTransform[2][3]); // row major
+            std::fstream file( filepath, std::ios::binary | std::ios::in );
 
-            ////			newAcq << hub::Measure(std::move(newDof6));
+            assert( !file.eof() );
+            hub::InputSensor inputSensor( hub::io::File( std::move( file ) ) );
 
-            Snap snap { acq.clone(), sensorName };
-            sortedSnaps.insert( std::move( snap ) );
-        }
+            const auto& sensorSpec        = inputSensor.m_spec;
+            const std::string& sensorName = sensorSpec.m_sensorName;
 
-        std::cout << "[Loader] read " << acqs.size() << " acquisitions from file sensor '"
-                  << sensorName << "'" << std::endl;
+            auto acqs = inputSensor.getAllAcquisitions();
 
-    } // for ( const auto& fileDir : std::filesystem::directory_iterator( path ) )
+            if ( m_outputStreams.find( sensorName ) == m_outputStreams.end() ) {
+                assert( m_outputStreams.find( sensorName ) == m_outputStreams.end() );
+                m_outputStreams[sensorName] = std::make_unique<hub::OutputSensor>(
+                    inputSensor.m_spec,
+                    hub::io::OutputStream( sensorName, hub::net::ClientSocket( m_ipv4, m_port ) ) );
+            }
+            else {
+                assert( std::find( sensorNamesToRemove.begin(),
+                                   sensorNamesToRemove.end(),
+                                   sensorName ) != sensorNamesToRemove.end() );
+                sensorNamesToRemove.remove( sensorName );
+            }
+
+            for ( const auto& acq : acqs ) {
+
+                /// localTransform[3][1], localTransform[3][2]); // column major / glm::vec3
+                /// translation = glm::vec3(localTransform[0][3], localTransform[1][3],
+                /// localTransform[2][3]); // row major
+
+                ////			newAcq << hub::Measure(std::move(newDof6));
+
+                Snap snap { acq.clone(), sensorName };
+                sortedSnaps.insert( std::move( snap ) );
+            }
+
+            std::cout << "[Loader] read " << acqs.size() << " acquisitions from file sensor '"
+                      << sensorName << "'" << std::endl;
+
+        } // for ( const auto& fileDir : std::filesystem::directory_iterator( path ) )
+    }
 
     for ( const auto& sensorNameToRemove : sensorNamesToRemove ) {
         assert( m_outputStreams.find( sensorNameToRemove ) != m_outputStreams.end() );
@@ -119,7 +125,10 @@ void Loader::load( const std::string& path ) {
         m_snaps.push_back( Snap { acq.m_acq.clone(), acq.m_sensorName } );
     }
 
-    m_loadedPath = path;
+    for (const auto & path : paths) {
+        m_loadedPaths.insert(path);
+    }
+//    m_loadedPath = paths;
     emit pathLoaded();
 
     for ( const auto& snap : m_snaps ) {
@@ -148,7 +157,7 @@ void Loader::unload() {
     assert( isLoaded() );
     assert( !m_outputStreams.empty() );
     m_snaps.clear();
-    m_loadedPath = "";
+    m_loadedPaths.clear();
 
     m_outputStreams.clear();
 }
@@ -208,7 +217,8 @@ bool Loader::isPlaying() const {
 }
 
 bool Loader::isLoaded() const {
-    return m_loadedPath != "";
+    return ! m_loadedPaths.empty();
+//    return m_loadedPath != "";
 }
 
 // const std::string& Loader::getLoadedPath() const {

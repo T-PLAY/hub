@@ -65,10 +65,11 @@ FormStreamViews::FormStreamViews( QWidget* parent ) :
 
     QObject::connect( this, &FormStreamViews::newStreamer, this, &FormStreamViews::onNewStreamer );
     QObject::connect( this, &FormStreamViews::delStreamer, this, &FormStreamViews::onDelStreamer );
-//    QObject::connect(
-//        this, &FormStreamViews::serverConnected, this, &FormStreamViews::onServerConnected );
-//    QObject::connect(
-//        this, &FormStreamViews::serverDisconnected, this, &FormStreamViews::onServerDisconnected );
+    //    QObject::connect(
+    //        this, &FormStreamViews::serverConnected, this, &FormStreamViews::onServerConnected );
+    //    QObject::connect(
+    //        this, &FormStreamViews::serverDisconnected, this,
+    //        &FormStreamViews::onServerDisconnected );
 
     //    std::cout << "[FormStreamViews] connect viewerQt start" << std::endl;
     //    {
@@ -100,7 +101,7 @@ FormStreamViews::~FormStreamViews() {
         auto* sensorView = pair.second;
         delete sensorView;
     }
-    assert(m_serverView != nullptr);
+    assert( m_serverView != nullptr );
     delete m_serverView;
 
     delete ui;
@@ -123,10 +124,12 @@ void FormStreamViews::initViewer(
     // init viewer
     {
         auto _onNewStreamer = [=]( const std::string& streamerName,
-                                   const hub::SensorSpec& sensorSpec ) {
+                                   const hub::SensorSpec& sensorSpec,
+                                   const std::string& syncStreamName ) {
             //            onNewStreamer(streamerName, sensorSpec); // no needs of gui main thread,
             //            direct call to update 3D scene
-            emit newStreamer( streamerName, sensorSpec ); // gui update needs gui main thread
+            emit newStreamer(
+                streamerName, sensorSpec, syncStreamName ); // gui update needs gui main thread
             return newStreamerAdded( streamerName, sensorSpec );
             //            return true;
         };
@@ -157,8 +160,8 @@ void FormStreamViews::initViewer(
                                            _onNewAcquisition,
                                            this );
 
-//        ui->verticalLayout_2->addWidget(m_serverView);
-        ui->verticalLayout_2->insertWidget(0, m_serverView);
+        //        ui->verticalLayout_2->addWidget(m_serverView);
+        ui->verticalLayout_2->insertWidget( 0, m_serverView );
     }
     //    assert( m_viewer == nullptr );
     //    // init viewer
@@ -166,7 +169,7 @@ void FormStreamViews::initViewer(
     //        auto _onNewStreamer = [=]( const std::string& streamerName,
     //                                      const hub::SensorSpec& sensorSpec ) {
     ////            onNewStreamer(streamerName, sensorSpec); // no needs of gui main thread, direct
-    ///call to update 3D scene
+    /// call to update 3D scene
     //            emit newStreamer( streamerName, sensorSpec ); // gui update needs gui main thread
     //            return newStreamerAdded(streamerName, sensorSpec);
     ////            return true;
@@ -206,14 +209,15 @@ void FormStreamViews::initViewer(
 }
 
 bool FormStreamViews::onNewStreamer( const std::string& streamName,
-                                     const hub::SensorSpec& sensorSpec ) {
+                                     const hub::SensorSpec& sensorSpec,
+                                     const std::string& syncStreamName ) {
     assert( QThread::currentThread() == this->thread() );
 
     std::cout << "[FormStreamViews] FormStreamViews::onNewStreamer '" << streamName << "'"
               << std::endl;
     assert( m_streamViews.find( streamName ) == m_streamViews.end() );
 
-    auto* sensorView = new FormStreamView( streamName, sensorSpec, m_sensorModel, nullptr );
+    auto* sensorView = new FormStreamView( streamName, sensorSpec, syncStreamName, m_sensorModel, nullptr );
     ui->verticalLayout->insertWidget( static_cast<int>( m_streamViews.size() ), sensorView );
 
     m_streamViews[streamName] = sensorView;
@@ -259,8 +263,8 @@ void FormStreamViews::onDelStreamer( const std::string& streamName,
               << std::endl;
 }
 
-//void FormStreamViews::onServerConnected( const std::string& ipv4, int port ) {
-//    assert( QThread::currentThread() == this->thread() );
+// void FormStreamViews::onServerConnected( const std::string& ipv4, int port ) {
+//     assert( QThread::currentThread() == this->thread() );
 
 //    std::cout << "[FormStreamViews] connected to server : " << ipv4 << " " << port << std::endl;
 //    //    m_serverConnected = true;
@@ -275,8 +279,8 @@ void FormStreamViews::onDelStreamer( const std::string& streamName,
 //    //    emit serverConnected();
 //}
 
-//void FormStreamViews::onServerDisconnected( const std::string& ipv4, int port ) {
-//    assert( QThread::currentThread() == this->thread() );
+// void FormStreamViews::onServerDisconnected( const std::string& ipv4, int port ) {
+//     assert( QThread::currentThread() == this->thread() );
 
 //    std::cout << "[FormStreamViews] disconnected from server : " << ipv4 << " " << port
 //              << std::endl;

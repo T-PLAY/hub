@@ -42,7 +42,7 @@ void StreamViewerInterface::close() {
 StreamerClient::StreamerClient( Server& server, int iClient, hub::net::ClientSocket&& sock ) :
     Client( server, iClient ) {
 
-//    m_mtx.lock();
+    //    m_mtx.lock();
 
     sock.read( m_streamName );
     const auto& streamers = m_server.getStreamers();
@@ -89,6 +89,10 @@ StreamerClient::StreamerClient( Server& server, int iClient, hub::net::ClientSoc
     //        const char* type = std::any_cast<const char*>( metaData.at( "type" ) );
     //        if ( strcmp( type, "record" ) == 0 ) { m_isRecordStream = true; }
     //    }
+    if ( metaData.find( "parent" ) != metaData.end() ) {
+        m_parent = std::any_cast<const char*>( metaData.at( "parent" ) );
+        std::cout << headerMsg() << "parent : '" << m_parent << "'" << std::endl;
+    }
 
     m_lastAcq[""];
 
@@ -248,16 +252,16 @@ StreamerClient::StreamerClient( Server& server, int iClient, hub::net::ClientSoc
     //                 "--------------------"
     //              << std::endl;
 
-//    m_mtx.unlock();
+    //    m_mtx.unlock();
 }
 
 StreamerClient::~StreamerClient() {
-//    m_mtx.lock();
+    //    m_mtx.lock();
 
     assert( m_thread.joinable() );
     m_thread.join();
-//    delete m_thread;
-//    m_thread = nullptr;
+    //    delete m_thread;
+    //    m_thread = nullptr;
 
     //    m_server.delStreamer(this);
 
@@ -266,12 +270,12 @@ StreamerClient::~StreamerClient() {
     s_mtxCout.lock();
 
     auto it = m_streamViewers.begin();
-    while (it != m_streamViewers.end()) {
-//    for ( auto* streamViewer : m_streamViewers ) {
+    while ( it != m_streamViewers.end() ) {
+        //    for ( auto* streamViewer : m_streamViewers ) {
         //        m_server.delStreamViewer( streamViewer );
-        auto * streamViewer = *it;
-        m_streamViewers.erase(it++);
-//        it = m_streamViewers.erase(it);
+        auto* streamViewer = *it;
+        m_streamViewers.erase( it++ );
+        //        it = m_streamViewers.erase(it);
         delete streamViewer;
     }
     m_streamViewers.clear();
@@ -280,11 +284,11 @@ StreamerClient::~StreamerClient() {
     auto syncViewers = m_syncViewers;
     for ( auto& pair : syncViewers ) {
         auto syncViewers = pair.second;
-        auto it = syncViewers.begin();
-        while (it != syncViewers.end()) {
-//        for ( auto* syncViewer : syncViewers ) {
-            auto * syncViewer = *it;
-            syncViewers.erase(it++);
+        auto it          = syncViewers.begin();
+        while ( it != syncViewers.end() ) {
+            //        for ( auto* syncViewer : syncViewers ) {
+            auto* syncViewer = *it;
+            syncViewers.erase( it++ );
             //            m_server.delStreamViewer( syncViewer );
             delete syncViewer;
         }
@@ -295,7 +299,7 @@ StreamerClient::~StreamerClient() {
     m_syncAcqs.clear();
     m_isSyncthing.clear();
 
-    m_server.delStreamer(this);
+    m_server.delStreamer( this );
     printStatusMessage( "del streamer" );
 
     s_mtxCout.unlock();
@@ -307,7 +311,7 @@ StreamerClient::~StreamerClient() {
     //                 "--------------------"
     //              << std::endl;
 
-//    m_mtx.unlock();
+    //    m_mtx.unlock();
 }
 
 std::string StreamerClient::headerMsg() const {
@@ -410,6 +414,11 @@ void StreamerClient::saveNewAcq( const std::string& streamName, hub::Acquisition
     auto& lastAcq = m_lastAcq[streamName];
     if ( lastAcq.get() != newAcqPtr.get() ) { lastAcq = newAcqPtr; }
     m_lastUpdateAcqDate[streamName] = std::chrono::high_resolution_clock::now();
+}
+
+const std::string &StreamerClient::getParent() const
+{
+    return m_parent;
 }
 
 const std::list<StreamViewerClient*>& StreamerClient::getStreamViewers() const {

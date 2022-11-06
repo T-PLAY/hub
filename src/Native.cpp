@@ -75,12 +75,12 @@ Viewer* createViewer( onNewStreamerFunc onNewStreamer,
                       const char* ipv4,
                       int port ) {
 
-    auto onNewStreamerCpp = [=]( const std::string& sensorName, const SensorSpec& sensorSpec ) {
-        onNewStreamer( sensorName.c_str(), &sensorSpec );
+    auto onNewStreamerCpp = [=]( const std::string& streamName, const SensorSpec& sensorSpec, const std::string & syncStreamName ) {
+        onNewStreamer( streamName.c_str(), &sensorSpec, syncStreamName.c_str() );
         return true;
     };
-    auto onDelStreamerCpp = [=]( const std::string& sensorName, const SensorSpec& sensorSpec ) {
-        onDelStreamer( sensorName.c_str(), &sensorSpec );
+    auto onDelStreamerCpp = [=]( const std::string& streamName, const SensorSpec& sensorSpec ) {
+        onDelStreamer( streamName.c_str(), &sensorSpec );
     };
     auto onServerConnectedCpp = [=]( const std::string& ipv4, int port ) {
         onServerConnected( ipv4.c_str(), port );
@@ -88,8 +88,8 @@ Viewer* createViewer( onNewStreamerFunc onNewStreamer,
     auto onServerDisconnectedCpp = [=]( const std::string& ipv4, int port ) {
         onServerDisconnected( ipv4.c_str(), port );
     };
-    auto onNewAcquisitionCpp = [=]( const std::string& sensorName, const Acquisition& acq ) {
-        onNewAcquisition( sensorName.c_str(), &acq );
+    auto onNewAcquisitionCpp = [=]( const std::string& streamName, const Acquisition& acq ) {
+        onNewAcquisition( streamName.c_str(), &acq );
     };
     Viewer* viewer = new Viewer( onNewStreamerCpp,
                                  onDelStreamerCpp,

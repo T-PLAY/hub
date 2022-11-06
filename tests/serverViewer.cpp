@@ -41,11 +41,11 @@ TEST_CASE( "Server test : viewer" ) {
     {
 
         auto onNewStreamer = [=]( const std::string& sensorName,
-                                  const hub::SensorSpec& sensorSpec ) {
+                                  const hub::SensorSpec& sensorSpec, const std::string & syncStreamName ) {
             std::cout << "[Test] ############################### onNewStreamer" << std::endl;
             {
                 hub::InputSensor inputSensor(
-                    hub::io::InputStream( sensorName, "", hub::net::ClientSocket( ipv4, port ) ) );
+                    hub::io::InputStream( sensorName, syncStreamName, hub::net::ClientSocket( ipv4, port ) ) );
 
                 const auto& inputSensorSpec = inputSensor.m_spec;
                 CHECK( inputSensorSpec.m_acquisitionSize == dataSize );
