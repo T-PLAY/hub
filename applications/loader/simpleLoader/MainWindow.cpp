@@ -49,7 +49,7 @@ MainWindow::MainWindow( QWidget* parent ) : QMainWindow( parent ), ui( new Ui::M
         //        ui->verticalLayout_2->addWidget(m_serverView);
         ui->verticalLayout->addWidget( m_serverView );
     }
-    //    ui->verticalLayout->addWidget(m_serverView);
+//        ui->verticalLayout->addWidget(m_serverView);
 
     m_widgetLoader = new FormWidgetLoader( m_serverView->getIpv4(), m_serverView->getPort() );
     m_widgetLoader->setEnabled( false );

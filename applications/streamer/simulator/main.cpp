@@ -196,7 +196,7 @@ int main( int argc, char* argv[] ) {
 
     ////////////////////////////////////////////////////////// INIT VIEWER
 
-    auto onNewStreamer = [=]( const std::string& streamName, const hub::SensorSpec& sensorSpec ) {
+    auto onNewStreamer = [=]( const std::string& streamName, const hub::SensorSpec& sensorSpec, const std::string & syncStreamName ) {
         std::cout << "[Simulator] onNewStreamer : " << streamName << std::endl;
         if ( streamName == "Keyboard" || streamName == "Polhemus Patriot (sensor 1)" ) return true;
         return false;

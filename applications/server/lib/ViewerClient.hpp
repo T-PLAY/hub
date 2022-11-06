@@ -17,9 +17,10 @@ class ViewerClient : public Client
 
     std::string headerMsg() const override;
 
-    void notifyNewStreamer( const StreamerClient& streamer ) const;
-    void notifyDelStreamer( const std::string& streamerName,
-                            const hub::SensorSpec& sensorSpec ) const;
+//    void notifyNewStreamer(const StreamerClient& streamer , const std::string &syncStream) const;
+    void notifyNewStreamer(const std::string & streamerName , const hub::SensorSpec & sensorSpec, const std::string &syncStream) const;
+    void notifyDelStreamer(const std::string& streamerName,
+                            const hub::SensorSpec& sensorSpec , const std::string &syncStream) const;
 
   private:
     std::thread m_thread;

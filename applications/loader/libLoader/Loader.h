@@ -35,7 +35,8 @@ class Loader : public QObject
 
     ~Loader();
 
-    void load( const std::string& path );
+//    void load( const std::string& path );
+    void load( const std::set<std::string> & paths);
     void unload();
 
     void play();
@@ -50,7 +51,7 @@ class Loader : public QObject
 
   private:
     std::vector<Snap> m_snaps;
-    std::string m_loadedPath = "";
+    std::set<std::string> m_loadedPaths;
 
     const std::string& m_ipv4;
     const int& m_port;

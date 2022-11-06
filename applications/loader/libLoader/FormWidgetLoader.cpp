@@ -36,6 +36,8 @@ FormWidgetLoader::FormWidgetLoader( const std::string& ipv4, const int& port, QW
         ui->treeView_record->setColumnHidden( 2, true );
         ui->treeView_record->setColumnHidden( 3, true );
 
+        ui->treeView_record->setSelectionMode(QAbstractItemView::MultiSelection);
+
         QObject::connect(
             ui->treeView_record, &TreeViewStream::onSpace, this, &FormWidgetLoader::onSpace );
 
@@ -59,46 +61,64 @@ FormWidgetLoader::~FormWidgetLoader() {
     delete ui;
 }
 
-// void FormWidgetLoader::onTreeView_record_currentChanged( const QModelIndex& current,
+//void FormWidgetLoader::onTreeView_record_currentChanged(const QModelIndex &current, const QModelIndex &previous)
+//{
 
+//        const std::string& mPath =
+//            m_recordFileModel->fileInfo( current ).absoluteFilePath().toStdString();
+//        std::cout << "[FormWidgetLoader] onTreeView_record_currentChanged : " << mPath << std::endl;
 //}
 
 void FormWidgetLoader::onTreeView_record_selectionChanged( const QItemSelection& selected,
                                                            const QItemSelection& deselected ) {
 
     const auto& indexes = ui->treeView_record->selectionModel()->selectedIndexes();
-//    std::cout << "start selected" << std::endl;
-//    for (const auto & index : indexes) {
-//        const std::string& mPath =
-//            m_recordFileModel->fileInfo( index ).absoluteFilePath().toStdString();
-//        std::cout << mPath << std::endl;
-////        std::cout << index.data() << std::endl;
-//    }
-//    std::cout << "end selected" << std::endl;
+    //    std::cout << "start selected" << std::endl;
+    //    for (const auto & index : indexes) {
+    //        const std::string& mPath =
+    //            m_recordFileModel->fileInfo( index ).absoluteFilePath().toStdString();
+    //        std::cout << mPath << std::endl;
+    ////        std::cout << index.data() << std::endl;
+    //    }
+    //    std::cout << "end selected" << std::endl;
 
     if ( indexes.empty() ) {
-        if ( m_recordLoader.isLoaded() ) {
-            m_recordLoader.unload();
-        }
+                if ( m_recordLoader.isLoaded() ) {
+                    m_recordLoader.unload();
+                }
     }
     else {
 
-        const auto& current = indexes.first();
+//        assert( indexes.size() == 1 );
+//        const auto& current = indexes.first();
+//        for ( const auto& index : selected.indexes() ) {
+        std::set<std::string> paths;
+        for ( const auto& index : indexes ) {
+            //            std::cout << "index : " << index << std::endl;
+            const std::string& mPath =
+                m_recordFileModel->fileInfo( index ).absoluteFilePath().toStdString();
+//            std::cout << mPath << std::endl;
+            paths.insert(mPath);
+        }
+        for (const auto & path : paths) {
+            std::cout << path << std::endl;
+        }
+//        return;
 
-        const std::string& mPath =
-            m_recordFileModel->fileInfo( current ).absoluteFilePath().toStdString();
+//        const std::string& mPath =
+//            m_recordFileModel->fileInfo( current ).absoluteFilePath().toStdString();
 
-        std::cout << "[FormWidgetLoader] on_treeView_record_selectionChanged : " << mPath
-                  << std::endl;
+//        std::cout << "[FormWidgetLoader] on_treeView_record_selectionChanged : " << mPath
+//                  << std::endl;
 
-//        if ( m_recordLoader.isLoaded() ) {
-//        }
+        //        if ( m_recordLoader.isLoaded() ) {
+        //        }
 
-        m_recordLoader.load( mPath );
-        const int nAcq = m_recordLoader.getNAcq();
-        ui->label_nAcq->setText( "/ " + QString::number( nAcq ) );
-        ui->horizontalSlider_iAcq->setMaximum( nAcq - 1 );
-        ui->spinBox_iAcq->setMaximum( nAcq - 1 );
+                m_recordLoader.load( paths );
+                const int nAcq = m_recordLoader.getNAcq();
+                ui->label_nAcq->setText( "/ " + QString::number( nAcq ) );
+                ui->horizontalSlider_iAcq->setMaximum( nAcq - 1 );
+                ui->spinBox_iAcq->setMaximum( nAcq - 1 );
     }
 }
 
@@ -118,6 +138,7 @@ void FormWidgetLoader::onSpace() {
 void FormWidgetLoader::onPlayEnded() {
     ui->pushButton_playPause->click();
 }
+
 
 void FormWidgetLoader::on_checkBox_autoLoop_toggled( bool checked ) {
     m_recordLoader.setAutoLoop( checked );

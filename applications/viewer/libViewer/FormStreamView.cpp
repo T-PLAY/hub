@@ -9,8 +9,8 @@
 
 #include <WidgetStreamView.h>
 
-FormStreamView::FormStreamView( std::string streamName,
-                                const hub::SensorSpec& sensorSpec,
+FormStreamView::FormStreamView(std::string streamName,
+                                const hub::SensorSpec& sensorSpec, const std::string &syncStreamName,
                                 QStringListModel& sensorModel,
                                 QWidget* parent )
 
@@ -34,7 +34,7 @@ FormStreamView::FormStreamView( std::string streamName,
 //    ui->comboBox_syncSensor->setLineEdit(lineEdit);
 //    ui->comboBox_syncSensor->setEnabled(false);
 //    ui->comboBox_syncSensor->setVisible(false);
-    QLabel * label = new QLabel("none");
+    QLabel * label = new QLabel((syncStreamName == "") ?("none") :(syncStreamName.c_str()));
     label->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Preferred);
 //    label->setAlignment(Qt::AlignLeft);
     ui->horizontalLayout_syncStream->insertWidget(1, label);

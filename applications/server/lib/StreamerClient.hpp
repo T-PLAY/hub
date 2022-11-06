@@ -48,6 +48,7 @@ private:
 //    std::mutex m_mtx;
     std::unique_ptr<hub::InputSensor> m_inputSensor;
     std::string m_streamName;
+    std::string m_parent = "";
 
     std::list<StreamViewerClient*> m_streamViewers;
 
@@ -70,4 +71,5 @@ private:
 public:
     const std::chrono::time_point<std::chrono::high_resolution_clock> &getLastUpdateAcqDate(const std::string & streamName) const;
     const std::list<StreamViewerClient *> &getStreamViewers() const;
+    const std::string &getParent() const;
 };

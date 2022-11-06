@@ -21,6 +21,7 @@ class FormStreamView : public QWidget
   public:
     FormStreamView( std::string streamName,
                     const hub::SensorSpec& sensorSpec,
+                    const std::string & syncStreamName,
                     QStringListModel& sensorModel,
                     QWidget* parent = nullptr );
     ~FormStreamView();
