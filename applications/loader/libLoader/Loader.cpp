@@ -49,10 +49,22 @@ void Loader::load( const std::string& path ) {
         sensorNamesToRemove.push_back( key );
     }
 
+    std::list<std::filesystem::path> filePaths;
+    if ( std::filesystem::is_directory( path ) ) {
+        for ( const auto& fileDir : std::filesystem::directory_iterator( path ) ) {
+            filePaths.push_back( fileDir );
+        }
+    }
+    else {
+        assert(std::filesystem::is_regular_file(path));
+        filePaths.push_back( path );
+    }
+
     // read records in folder
-    for ( const auto& fileDir : std::filesystem::directory_iterator( path ) ) {
-        const auto& filepath = fileDir.path().string();
-        const auto& filename = fileDir.path().filename();
+    //    for ( const auto& fileDir : std::filesystem::directory_iterator( path ) ) {
+    for ( const auto& fileDir : filePaths ) {
+        const auto& filepath = fileDir.string();
+        const auto& filename = fileDir.filename();
         if ( filename == "export" ) continue;
         std::cout << "[Loader] read '" << filename << "' record" << std::endl;
         assert( std::filesystem::exists( filepath ) );

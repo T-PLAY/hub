@@ -25,8 +25,8 @@ namespace hub {
 class SRC_API Viewer
 {
   public:
-    Viewer( std::function<bool( const char* streamName, const SensorSpec& )> onNewStreamer,
-            std::function<void( const char* streamName, const SensorSpec& )> onDelStreamer,
+    Viewer( std::function<bool( const char* streamName, const SensorSpec& )> onNewStreamer = {},
+            std::function<void( const char* streamName, const SensorSpec& )> onDelStreamer = {},
             std::function<void( const char* ipv4, int port )> onServerConnected    = {},
             std::function<void( const char* ipv4, int port )> onServerDisconnected = {},
             std::function<void( const char* streamName, const hub::Acquisition& )>

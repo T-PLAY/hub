@@ -39,11 +39,11 @@ MainWindow::MainWindow( QWidget* parent ) : QMainWindow( parent ), ui( new Ui::M
         };
 
         assert( m_serverView == nullptr );
-        m_serverView = new FormServerView( _onNewStreamer,
-                                           _onDelStreamer,
+        m_serverView = new FormServerView( {},
+                                           {},
                                            _onServerConnected,
                                            _onServerDisconnected,
-                                           _onNewAcquisition,
+                                           {},
                                            this );
 
         //        ui->verticalLayout_2->addWidget(m_serverView);
