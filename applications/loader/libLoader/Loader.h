@@ -10,7 +10,7 @@
 #include <QStringListModel>
 #include <QTreeView>
 
-#include <Frame.h>
+//#include <Frame.h>
 #include <IO/Ram.hpp>
 #include <IO/Stream.hpp>
 #include <InputSensor.hpp>

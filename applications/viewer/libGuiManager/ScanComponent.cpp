@@ -199,7 +199,7 @@ Aabb ScanComponent::getAabb() const {
     Aabb aabb;
     if ( m_nScans == 0 ) {
         aabb = m_entity->computeAabb();
-        aabb.transform( m_entity->getTransform() );
+//        aabb.transform( m_entity->getTransform() );
     }
     else {
         for ( int i = 0; i < m_nScans; ++i ) {
@@ -275,6 +275,9 @@ void ScanComponent::addScan() {
         case hub::SensorSpec::Format::Y16:
             nChannels = 2;
             break;
+        case hub::SensorSpec::Format::BGR8:
+            nChannels = 3;
+            break;
         case hub::SensorSpec::Format::RGBA8:
             nChannels = 4;
             break;
@@ -305,6 +308,10 @@ void ScanComponent::addScan() {
         else if ( nChannels == 2 ) {
             textureParameters.format         = gl::GLenum::GL_RG;
             textureParameters.internalFormat = gl::GLenum::GL_RG;
+        }
+        else if (nChannels == 3) {
+            textureParameters.format         = gl::GLenum::GL_RGB;
+            textureParameters.internalFormat = gl::GLenum::GL_RGB;
         }
         else if ( nChannels == 4 ) {
             textureParameters.format         = gl::GLenum::GL_RGBA;

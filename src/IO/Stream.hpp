@@ -29,7 +29,10 @@ class SRC_API OutputStream : public OutputInterface, public net::ClientSocket
   protected:
     void write( const unsigned char* data, size_t len ) const override;
     void read( unsigned char* data, size_t len ) const override;
-    void close() override;
+    void close() const override;
+    bool isOpen() const override;
+    bool isEnd() const override;
+
 #endif
 };
 
@@ -55,7 +58,9 @@ class SRC_API InputStream : public InputInterface, public net::ClientSocket
   protected:
     void write( const unsigned char* data, size_t len ) const override;
     void read( unsigned char* data, size_t len ) const override;
-    void close() override;
+    void close() const override;
+    bool isOpen() const override;
+    bool isEnd() const override;
 #endif
 
   protected:

@@ -3,13 +3,13 @@
 // ----------------------------------------------------------------------------
 // Compiler identification
 // ----------------------------------------------------------------------------
-#if defined( __clang__ )
-#    define COMPILER_CLANG
-#elif defined( __GNUC__ )
+#if defined( __GNUC__ )
 #    define COMPILER_GCC
 #elif defined( _MSC_VER )
 #    define COMPILER_MSVC
 #    define _USE_MATH_DEFINES
+#elif defined( __clang__ )
+#    define COMPILER_CLANG
 #else
 #    error unsupported compiler
 #endif
@@ -114,9 +114,9 @@
 #if defined( COMPILER_GCC )
 #endif
 #if defined( COMPILER_MSVC )
-//	#pragma warning(disable: 4244) // Conversion from double to float loses data.
-#    pragma warning( disable : 4251 ) // stl dllexports
-//	#pragma warning(disable: 4267) // conversion from size_t to uint
+    #pragma warning(disable: 4244) // Conversion from double to float loses data.
+    #pragma warning( disable : 4251 ) // stl dllexports
+    #pragma warning(disable: 4267) // conversion from size_t to uint
 //	#pragma warning(disable: 4275) // non - DLL-interface class 'class_1' used as base for
 // DLL-interface class 'class_2' 	#pragma warning(disable: 4577) // noexcept used with no
 // exception handling mode 	#pragma warning(disable: 4838) // conversion from enum to uint.

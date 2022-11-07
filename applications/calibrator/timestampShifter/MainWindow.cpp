@@ -127,7 +127,7 @@ void MainWindow::updateLatency() {
 
         auto it2Start = it2->m_start + latency * 1000;
 
-        assert( itStart <= acq2Start <= it2Start || it2Start <= acq2Start <= itStart );
+        assert( (itStart <= acq2Start && acq2Start <= it2Start) || (it2Start <= acq2Start && acq2Start <= itStart) );
 
         double t            = ( acq2Start - itStart ) / ( it2Start - itStart );
         auto acqInterpolate = hub::Dof6::slerp( dof6, dof62, t );

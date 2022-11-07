@@ -24,7 +24,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${SRC_DIR} ${PROJECT_SOURCE_DI
 
 if(WIN32)
 
-    message(STATUS ${QT_INSTALL_PATH})
+#    message(STATUS ${QT_INSTALL_PATH})
     add_custom_command(
         TARGET ${PROJECT_NAME}
         POST_BUILD
@@ -47,5 +47,5 @@ elseif(UNIX)
     set(UNIX_REQUIRED_LIBS Threads::Threads)
 endif()
 
-target_link_libraries(${PROJECT_NAME} PUBLIC ${SRC_TARGET} libApp ${REQUIRED_LIBS_QUALIFIED}
+target_link_libraries(${PROJECT_NAME} PUBLIC ${SRC_TARGET}  ${REQUIRED_LIBS_QUALIFIED}
                                              ${UNIX_REQUIRED_LIBS} ${WIN32_REQUIRED_LIBS})

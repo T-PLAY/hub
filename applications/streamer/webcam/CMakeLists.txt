@@ -16,7 +16,28 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${SRC_DIR} ${PROJECT_SOURCE_DI
                                                   ${OpenCV_INCLUDE_DIRS})
 
 if(WIN32)
+    add_custom_command(
+        TARGET ${PROJECT_NAME}
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${SRC_TARGET}>
+                $<TARGET_FILE_DIR:${PROJECT_NAME}>)
 
+            message(STATUS ${OpenCV_LIBS})
+            message(STATUS ${OpenCV_SHARED})
+
+    foreach(OpenCV_LIB ${OpenCV_LIBS})
+        add_custom_command(
+            TARGET ${PROJECT_NAME}
+            POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:${OpenCV_LIB}>
+                    $<TARGET_FILE_DIR:${PROJECT_NAME}>)
+    endforeach(OpenCV_LIB)
+
+#        add_custom_command(
+#            TARGET ${PROJECT_NAME}
+#            POST_BUILD
+#            COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:${OpenCV_LIBS}>
+#                    $<TARGET_FILE_DIR:${PROJECT_NAME}>)
 elseif(UNIX)
 
 endif()

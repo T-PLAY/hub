@@ -20,6 +20,7 @@
 #include <Engine/Rendering/RenderObjectManager.hpp>
 #include <Engine/Scene/GeometryComponent.hpp>
 
+#include <Eigen/Geometry>
 //#include <Eigen/Dense>
 
 #ifdef IO_USE_ASSIMP
@@ -90,7 +91,7 @@ void Dof6Component::update( const hub::Acquisition& acq ) {
 
 Aabb Dof6Component::getAabb() const {
     Aabb aabb = m_entity->computeAabb();
-    aabb.transform( m_entity->getTransform() );
+//    aabb.transform( m_entity->getTransform() );
     return aabb;
 }
 

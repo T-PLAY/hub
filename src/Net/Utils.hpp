@@ -132,12 +132,12 @@ static void clearSocket( socket_fd& sock ) {
 //    s_sockets.remove( sock );
     // assert(s_sockets.size() == size - 1);
 
-#ifdef WIN32
-    if ( s_sockets.empty() ) {
-        s_inited = false;
+//#ifdef WIN32
+//    if ( s_sockets.empty() ) {
+//        s_inited = false;
         // TODO: find a way to cleanup WSA when program ended
-    }
-#endif
+//    }
+//#endif
 
     sock = INVALID_SOCKET;
 

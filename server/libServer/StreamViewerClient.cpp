@@ -17,7 +17,9 @@ class StreamerInterface : public hub::io::OutputInterface, public hub::net::Clie
   protected:
     void write( const unsigned char* data, size_t len ) const override;
     void read( unsigned char* data, size_t len ) const override;
-    void close() override;
+    void close() const override;
+    bool isOpen() const override;
+    bool isEnd() const override;
 #endif
 };
 
@@ -35,9 +37,20 @@ void StreamerInterface::read( unsigned char* data, size_t len ) const {
     hub::net::ClientSocket::read( data, len );
 }
 
-void StreamerInterface::close() {
+void StreamerInterface::close() const {
     hub::net::ClientSocket::close();
 }
+
+bool StreamerInterface::isOpen() const
+{
+    return hub::net::ClientSocket::isOpen();
+}
+
+bool StreamerInterface::isEnd() const
+{
+    return hub::net::ClientSocket::isEnd();
+}
+
 #endif
 
 //////////////////////////////////////////////////////////////////////
@@ -189,7 +202,7 @@ StreamViewerClient::StreamViewerClient( Server& server,
             std::cout << headerMsg() << "thread : catch stream viewer exception : " << e.what()
                       << std::endl;
         }
-        catch ( std::exception& e ) {
+        catch ( std::exception&  ) {
             assert( false );
             //            m_mtxOutputSensor.unlock();
             //            std::cout << headerMsg() << "thread : catch stream viewer exception : " <<

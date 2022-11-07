@@ -21,7 +21,8 @@ void QScrollAreaGrid::wheelEvent( QWheelEvent* event ) {
 #elif QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
     double y = event->position().y();
 #else
-    double y = event->x();
+//    double y = event->x();
+    double y = event->position().y();
 #endif
     verticalScrollBar()->setValue( vScroll + y );
     m_scrollAreaLeft->verticalScrollBar()->setValue( vScroll + y );
@@ -32,7 +33,8 @@ void QScrollAreaGrid::wheelEvent( QWheelEvent* event ) {
 #elif QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
     double x = event->position().x();
 #else
-    double x = event->x();
+//    double x = event->x();
+    double x = event->position().x();
 #endif
     horizontalScrollBar()->setValue( hScroll + x );
     m_scrollAreaTop->horizontalScrollBar()->setValue( hScroll + x );
@@ -45,8 +47,13 @@ void QScrollAreaGrid::wheelEvent( QWheelEvent* event ) {
 void QScrollAreaGrid::mousePressEvent( QMouseEvent* event ) {
     if ( event->button() == Qt::LeftButton ) {
         setCursor( Qt::DragMoveCursor );
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
         mousePosX  = event->position().x();
         mousePosY  = event->position().y();
+#else
+        mousePosX  = event->pos().x();
+        mousePosY  = event->pos().y();
+#endif
         hSliderPos = this->horizontalScrollBar()->value();
         vSliderPos = this->verticalScrollBar()->value();
 
@@ -63,11 +70,16 @@ void QScrollAreaGrid::mouseReleaseEvent( QMouseEvent* event ) {
 
 void QScrollAreaGrid::mouseMoveEvent( QMouseEvent* event ) {
     if ( leftMouseDown ) {
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
         const int xPos = hSliderPos + mousePosX - event->position().x();
+        const int yPos = vSliderPos + mousePosY - event->position().y();
+#else
+        const int xPos = hSliderPos + mousePosX - event->pos().x();
+        const int yPos = vSliderPos + mousePosY - event->pos().y();
+#endif
         horizontalScrollBar()->setValue( xPos );
         m_scrollAreaTop->horizontalScrollBar()->setValue( xPos );
 
-        const int yPos = vSliderPos + mousePosY - event->position().y();
         verticalScrollBar()->setValue( yPos );
         m_scrollAreaLeft->verticalScrollBar()->setValue( yPos );
     }

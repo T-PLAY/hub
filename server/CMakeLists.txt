@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.8)
 
-project(runServer)
+project(server)
 
 set(WIN32_REQUIRED_LIBS)
 set(UNIX_REQUIRED_LIBS)
@@ -24,6 +24,6 @@ elseif(UNIX)
 endif()
 
 target_link_libraries(${PROJECT_NAME} ${SRC_TARGET} ${UNIX_REQUIRED_LIBS} ${WIN32_REQUIRED_LIBS}
-                      server)
+                      libServer)
 
-add_subdirectory(lib)
+add_subdirectory(libServer)

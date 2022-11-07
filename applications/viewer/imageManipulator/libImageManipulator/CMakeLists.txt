@@ -1,34 +1,28 @@
 cmake_minimum_required(VERSION 3.8)
 
-project(simpleImageManipulator)
+project(libImageManipulator)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
-set(REQUIRED_LIBS Core Network Gui Widgets)
-find_package(Qt${QT_VERSION} REQUIRED COMPONENTS ${REQUIRED_LIBS})
+find_package(Qt${QT_VERSION} REQUIRED COMPONENTS Widgets Gui)
 
-set(REQUIRED_LIBS_QUALIFIED Qt${QT_VERSION}::Gui Qt${QT_VERSION}::Widgets)
+set(REQUIRED_LIBS_QUALIFIED Qt${QT_VERSION}::Core Qt${QT_VERSION}::Gui Qt${QT_VERSION}::Widgets)
 set(WIN32_REQUIRED_LIBS)
 set(UNIX_REQUIRED_LIBS)
-
-find_package(
-    Qt${QT_VERSION}
-    COMPONENTS ${REQUIRED_LIBS}
-    REQUIRED)
 
 file(GLOB_RECURSE sources *.cpp)
 file(GLOB_RECURSE forms *.ui)
 file(GLOB_RECURSE headers *.h)
 
-add_executable(${PROJECT_NAME} ${sources} ${forms} ${headers})
+add_library(${PROJECT_NAME} ${sources} ${forms} ${headers})
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${SRC_DIR} ${PROJECT_SOURCE_DIR})
 
 if(WIN32)
 
-    message(STATUS ${QT_INSTALL_PATH})
+#    message(STATUS ${QT_INSTALL_PATH})
     add_custom_command(
         TARGET ${PROJECT_NAME}
         POST_BUILD
@@ -52,10 +46,5 @@ elseif(UNIX)
 endif()
 
 target_link_libraries(
-    ${PROJECT_NAME}
-    ${SRC_TARGET}
-    DicomUtils
-    libImageManipulator
-    ${REQUIRED_LIBS_QUALIFIED}
-    ${UNIX_REQUIRED_LIBS}
-    ${WIN32_REQUIRED_LIBS})
+    ${PROJECT_NAME} PUBLIC ${SRC_TARGET}  libViewer ${REQUIRED_LIBS_QUALIFIED}
+                           ${UNIX_REQUIRED_LIBS} ${WIN32_REQUIRED_LIBS})

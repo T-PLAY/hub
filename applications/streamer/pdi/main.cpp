@@ -131,11 +131,11 @@ int main( int argc, char* argv[] ) {
                                 for ( int i = 0; i < 3; ++i ) {
                                     if ( ucSensor == 1 ) {
                                         poses[i] =
-                                            10.0 * poses[i]; // convert centimeters to millimeters
+                                            10.0f * poses[i]; // convert centimeters to millimeters
                                     }
                                     else if ( ucSensor == 2 ) {
                                         poses[i] =
-                                            10.0 * poses[i]; // convert centimeters to millimeters
+                                            10.0f * poses[i]; // convert centimeters to millimeters
                                     }
                                 }
 
@@ -172,9 +172,9 @@ int main( int argc, char* argv[] ) {
                 catch ( const hub::net::ClientSocket::exception& e ) {
                     std::cerr << "[pdi] catch socket exception : " << e.what() << std::endl;
                 }
-                catch ( const hub::Sensor::exception& e ) {
-                    std::cerr << "[pdi] catch sensor exception : " << e.what() << std::endl;
-                }
+//                catch ( const hub::Sensor::exception& e ) {
+//                    std::cerr << "[pdi] catch sensor exception : " << e.what() << std::endl;
+//                }
                 catch ( const std::exception& e ) {
                     std::cerr << "[pdi] catch main exception : " << e.what() << std::endl;
                     return EXIT_FAILURE;

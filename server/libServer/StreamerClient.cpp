@@ -19,7 +19,9 @@ class StreamViewerInterface : public hub::io::InputInterface, public hub::net::C
   protected:
     void write( const unsigned char* data, size_t len ) const override;
     void read( unsigned char* data, size_t len ) const override;
-    void close() override;
+    void close() const override;
+    bool isOpen() const override;
+    bool isEnd() const override;
 #endif
 };
 
@@ -32,8 +34,18 @@ void StreamViewerInterface::read( unsigned char* data, size_t len ) const {
     hub::net::ClientSocket::read( data, len );
 }
 
-void StreamViewerInterface::close() {
+void StreamViewerInterface::close() const {
     hub::net::ClientSocket::close();
+}
+
+bool StreamViewerInterface::isOpen() const
+{
+    return hub::net::ClientSocket::isOpen();
+}
+
+bool StreamViewerInterface::isEnd() const
+{
+    return hub::net::ClientSocket::isEnd();
 }
 #endif
 
