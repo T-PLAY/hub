@@ -23,5 +23,5 @@ elseif(UNIX)
 
 endif()
 
-target_link_libraries(${PROJECT_NAME} ${SRC_TARGET} libApp ${UNIX_REQUIRED_LIBS}
+target_link_libraries(${PROJECT_NAME} ${SRC_TARGET}  ${UNIX_REQUIRED_LIBS}
                       ${WIN32_REQUIRED_LIBS})

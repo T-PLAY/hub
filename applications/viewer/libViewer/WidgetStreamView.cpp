@@ -160,15 +160,16 @@ void WidgetStreamView2D::updateImage() {
             break;
 
         case hub::SensorSpec::Format::BGR8:
-#if QT_VERSION <= QT_VERSION_CHECK( 5, 12, 0 )
-            m_image = new QImage(
-                (unsigned char*)mData, mImagePixelWidth, mImagePixelHeight, QImage::Format_BGR888 );
-#elif QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
+//#if QT_VERSION <= QT_VERSION_CHECK( 5, 12, 0 )
+//            m_image = new QImage(
+//                (unsigned char*)mData, mImagePixelWidth, mImagePixelHeight, QImage::Format_BGR888 );
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
             m_image = new QImage(
                 (unsigned char*)mData, mImagePixelWidth, mImagePixelHeight, QImage::Format_BGR888 );
 #else
             m_image = new QImage(
-                (unsigned char*)mData, mImagePixelWidth, mImagePixelHeight, QImage::Format_RGB888 );
+//                (unsigned char*)mData, mImagePixelWidth, mImagePixelHeight, QImage::Format_RGB888 );
+                (unsigned char*)mData, mImagePixelWidth, mImagePixelHeight, QImage::Format_BGR888 );
 #endif
             break;
 

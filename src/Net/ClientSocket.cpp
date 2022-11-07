@@ -17,6 +17,7 @@ ClientSocket::ClientSocket() : m_ipv4( s_defaultServiceIp ), m_port( s_defaultSe
     //    initSocket();
     initServerAddress();
     //    connectToServer();
+    connect();
 }
 
 ClientSocket::ClientSocket( const std::string& ipv4, int port, bool autoConnect ) :

@@ -41,8 +41,8 @@ void Streamer::addStream( const std::string& streamName,
         }
         if ( !m_serverConnected ) { onServerConnected(); }
     }
-    catch ( net::Socket::exception& ex ) {
-        std::cout << "[Streamer] unable to connect to server : " << m_ipv4 << " " << m_port
+    catch ( net::Socket::exception& e ) {
+        std::cout << "[Streamer] unable to connect to server : " << m_ipv4 << " " << m_port << ", catch exception : " << e.what()
                   << std::endl;
         if ( m_serverConnected ) { onServerDisconnected(); }
     }
@@ -70,8 +70,8 @@ void Streamer::newAcquisition( const std::string& streamName, Acquisition&& acqu
                 m_streamName2outputSensor[streamName] = std::move( outputSensor );
                 if ( !m_serverConnected ) { onServerConnected(); }
             }
-            catch ( net::Socket::exception& ex ) {
-                std::cout << "[Streamer] unable to connect to server : " << m_ipv4 << " " << m_port
+            catch ( net::Socket::exception& e ) {
+                std::cout << "[Streamer] unable to connect to server : " << m_ipv4 << " " << m_port << ", catch exception : " << e.what()
                           << std::endl;
                 m_streamName2lastLogout.at( streamName ) = now;
                 if ( m_serverConnected ) { onServerDisconnected(); }
@@ -85,9 +85,9 @@ void Streamer::newAcquisition( const std::string& streamName, Acquisition&& acqu
             outputSensor << acquisition;
             if ( !m_serverConnected ) { onServerConnected(); }
         }
-        catch ( net::Socket::exception& ex ) {
+        catch ( net::Socket::exception& e ) {
             m_streamName2outputSensor.clear();
-            std::cout << "[Streamer] catch outputSensor new acq exception" << std::endl;
+            std::cout << "[Streamer] catch outputSensor new acq exception : " << e.what() << std::endl;
             auto now = std::chrono::high_resolution_clock::now();
             for ( auto& pair : m_streamName2lastLogout ) {
                 pair.second = now;

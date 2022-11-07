@@ -30,7 +30,7 @@ target_include_directories(
     ${PROJECT_NAME} PRIVATE ${RADIUM_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR} # Moc
                             ${CMAKE_CURRENT_SOURCE_DIR} ${SRC_DIR})
 
-target_link_libraries(${PROJECT_NAME} PUBLIC ${SRC_TARGET} libApp Radium::Core Radium::Engine
+target_link_libraries(${PROJECT_NAME} PUBLIC ${SRC_TARGET}  Radium::Core Radium::Engine
                                              Radium::Gui ${Qt_LIBRARIES})
 
 configure_radium_app(NAME ${PROJECT_NAME})

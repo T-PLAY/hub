@@ -33,5 +33,5 @@ elseif(UNIX)
 
 endif()
 
-target_link_libraries(${PROJECT_NAME} ${SRC_TARGET} libApp libLoader ${UNIX_REQUIRED_LIBS}
+target_link_libraries(${PROJECT_NAME} ${SRC_TARGET}  libLoader ${UNIX_REQUIRED_LIBS}
                       ${WIN32_REQUIRED_LIBS})

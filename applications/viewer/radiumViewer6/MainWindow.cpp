@@ -12,7 +12,7 @@
 #include <QDoubleSpinBox>
 #include <QOpenGLContext>
 
-#include <constants.h>
+//#include <constants.h>
 #include <filesystem>
 
 //#include <FormSensorViews.h>

@@ -288,6 +288,7 @@ Sensor::Sensor( const hub::SensorSpec& sensorSpec,
 
             case hub::SensorSpec::Format::Y8:
             case hub::SensorSpec::Format::Y16:
+            case hub::SensorSpec::Format::BGR8:
                 //                m_component = new ScanComponent( *m_inputSensor, m_entity,
                 //                *m_engine, *m_viewer );
                 m_component = new ScanComponent( m_sensorSpec, m_entity, *m_engine, *m_viewer );

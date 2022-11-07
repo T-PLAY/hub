@@ -36,7 +36,7 @@ endif()
 target_link_libraries(
     ${PROJECT_NAME}
     ${SRC_TARGET}
-    libApp
+
     Scus
     ${UNIX_REQUIRED_LIBS}
     ${WIN32_REQUIRED_LIBS}

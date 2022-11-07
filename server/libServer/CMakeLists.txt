@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.8)
 
-project(server)
+project(libServer)
 
 set(WIN32_REQUIRED_LIBS)
 set(UNIX_REQUIRED_LIBS)

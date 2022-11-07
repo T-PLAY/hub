@@ -32,8 +32,18 @@ void OutputStream::read( unsigned char* data, size_t len ) const {
     net::ClientSocket::read( data, len );
 }
 
-void OutputStream::close() {
+void OutputStream::close() const {
     net::ClientSocket::close();
+}
+
+bool OutputStream::isOpen() const
+{
+    return net::ClientSocket::isOpen();
+}
+
+bool OutputStream::isEnd() const
+{
+    return net::ClientSocket::isEnd();
 }
 #endif
 
@@ -78,8 +88,16 @@ void InputStream::read( unsigned char* data, size_t len ) const {
     net::ClientSocket::read( data, len );
 }
 
-void InputStream::close() {
+void InputStream::close() const {
     net::ClientSocket::close();
+}
+bool InputStream::isOpen() const
+{
+    return net::ClientSocket::isOpen();
+}
+bool InputStream::isEnd() const
+{
+    return net::ClientSocket::isEnd();
 }
 #endif
 

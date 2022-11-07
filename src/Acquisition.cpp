@@ -131,6 +131,7 @@ Measure Measure::slerp( const Measure& left, const Measure& right, double t ) {
         assert( false );
         break;
     }
+    return left.clone(); // avoid non return warning
 }
 
 bool Measure::operator==( const Measure& measure ) const {
@@ -248,7 +249,7 @@ bool Acquisition::interpolable() const {
 
 Acquisition Acquisition::slerp( const Acquisition& left, const Acquisition& right, double t ) {
     assert( left.getMeasures().size() == right.getMeasures().size() );
-    assert( 0.0 <= t <= 1.0 );
+    assert( 0.0 <= t && t <= 1.0 );
     const long long start     = ( 1.0 - t ) * left.m_start + t * right.m_start;
     const long long end       = ( 1.0 - t ) * left.m_end + t * right.m_end;
     Acquisition ret           = Acquisition { start, end };
