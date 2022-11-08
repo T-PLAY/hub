@@ -28,8 +28,8 @@ class SceneManager : public QObject
 //    template <class InterfaceT>
 //    void addSensor( InterfaceT&& interfaceT, const std::string streamName );
 
-    void addSensor(const std::string & streamName, const hub::SensorSpec & sensorSpec);
-    void delSensor( const std::string& streamName );
+    void addSensor(const std::string & streamName, const hub::SensorSpec & sensorSpec, const std::string & syncStreamName);
+    void delSensor( const std::string& streamName, const hub::SensorSpec & sensorSpec, const std::string & syncStreamName );
     const Sensor * getSensor(const std::string & streamName) const;
 
     void newAcquisition(const std::string & streamName, const hub::Acquisition & acq);

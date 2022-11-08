@@ -25,7 +25,7 @@ namespace hub {
 class SRC_API Viewer
 {
   public:
-    Viewer( std::function<bool( const char* streamName, const SensorSpec&, const char * syncStreamName )> onNewStreamer = {},
+    Viewer( std::function<bool( const char* streamName, const SensorSpec& )> onNewStreamer = {},
             std::function<void( const char* streamName, const SensorSpec& )> onDelStreamer = {},
             std::function<void( const char* ipv4, int port )> onServerConnected    = {},
             std::function<void( const char* ipv4, int port )> onServerDisconnected = {},
@@ -48,7 +48,7 @@ class SRC_API Viewer
     std::thread m_thread;
     bool m_stopThread = false;
 
-    std::function<bool( const char* streamName, const SensorSpec&, const char * syncStreamName )> m_onNewStreamer;
+    std::function<bool( const char* streamName, const SensorSpec& )> m_onNewStreamer;
     std::function<void( const char* streamName, const SensorSpec& )> m_onDelStreamer;
     std::function<void( const char* ipv4, int port )> m_onServerConnected;
     std::function<void( const char* ipv4, int port )> m_onServerDisconnected;
@@ -94,6 +94,7 @@ class SRC_API Viewer
 
         std::thread * m_thread = nullptr;
         bool m_stopThread = true;
+        bool m_added = false;
 
         void startStream();
         void stopStream();

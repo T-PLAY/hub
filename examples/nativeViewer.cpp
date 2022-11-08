@@ -23,7 +23,7 @@
 
 int main() {
 
-    auto onNewStreamer = []( const char* streamName, const hub::SensorSpec* sensorSpec, const char * syncStreamName ) {
+    auto onNewStreamer = []( const char* streamName, const hub::SensorSpec* sensorSpec ) {
         std::cout << "[Example][Viewer] onNewStreamer : " << streamName << std::endl;
         char sensorName[80] = { 0 };
         int strLen          = 0;

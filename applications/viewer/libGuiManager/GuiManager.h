@@ -92,11 +92,12 @@ class GuiManager : public QObject
 //    void onServerDisconnected();
 //    void onServerConnected();
 
-    bool onNewStreamer( const std::string& streamName, const hub::SensorSpec& sensorSpec );
-    void onDelStreamer( const std::string& streamName, const hub::SensorSpec& sensorSpec );
     void onServerConnected(const std::string& ipv4, int port);
     void onServerDisconnected(const std::string& ipv4, int port);
     void onNewAcquisition( const std::string& sensorName, const hub::Acquisition& acq );
+
+    bool onStartStream( const std::string& streamName, const hub::SensorSpec& sensorSpec, const std::string & syncStreamName );
+    void onStopStream( const std::string& streamName, const hub::SensorSpec& sensorSpec, const std::string & syncStreamName );
 
 //    void on_toolButton_fitSelected_clicked();
 //    void loadFile( QString path );

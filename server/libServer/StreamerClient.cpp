@@ -101,10 +101,10 @@ StreamerClient::StreamerClient( Server& server, int iClient, hub::net::ClientSoc
     //        const char* type = std::any_cast<const char*>( metaData.at( "type" ) );
     //        if ( strcmp( type, "record" ) == 0 ) { m_isRecordStream = true; }
     //    }
-    if ( metaData.find( "parent" ) != metaData.end() ) {
-        m_parent = std::any_cast<const char*>( metaData.at( "parent" ) );
-        std::cout << headerMsg() << "parent : '" << m_parent << "'" << std::endl;
-    }
+//    if ( metaData.find( "parent" ) != metaData.end() ) {
+//        m_parent = std::any_cast<const char*>( metaData.at( "parent" ) );
+//        std::cout << headerMsg() << "parent : '" << m_parent << "'" << std::endl;
+//    }
 
     m_lastAcq[""];
 
@@ -286,7 +286,7 @@ StreamerClient::~StreamerClient() {
         //    for ( auto* streamViewer : m_streamViewers ) {
         //        m_server.delStreamViewer( streamViewer );
         auto* streamViewer = *it;
-        m_streamViewers.erase( it++ );
+        it = m_streamViewers.erase( it );
         //        it = m_streamViewers.erase(it);
         delete streamViewer;
     }
@@ -300,7 +300,7 @@ StreamerClient::~StreamerClient() {
         while ( it != syncViewers.end() ) {
             //        for ( auto* syncViewer : syncViewers ) {
             auto* syncViewer = *it;
-            syncViewers.erase( it++ );
+            it = syncViewers.erase( it );
             //            m_server.delStreamViewer( syncViewer );
             delete syncViewer;
         }
@@ -428,10 +428,10 @@ void StreamerClient::saveNewAcq( const std::string& streamName, hub::Acquisition
     m_lastUpdateAcqDate[streamName] = std::chrono::high_resolution_clock::now();
 }
 
-const std::string &StreamerClient::getParent() const
-{
-    return m_parent;
-}
+//const std::string &StreamerClient::getParent() const
+//{
+//    return m_parent;
+//}
 
 const std::list<StreamViewerClient*>& StreamerClient::getStreamViewers() const {
     return m_streamViewers;
@@ -439,6 +439,10 @@ const std::list<StreamViewerClient*>& StreamerClient::getStreamViewers() const {
 
 const std::chrono::time_point<std::chrono::high_resolution_clock>&
 StreamerClient::getLastUpdateAcqDate( const std::string& streamName ) const {
+    while ( m_lastUpdateAcqDate.find( streamName ) == m_lastUpdateAcqDate.end() ) {
+        std::cout << "[StreamerClient] wait for acq date of stream : " << streamName << std::endl;
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    }
     assert( m_lastUpdateAcqDate.find( streamName ) != m_lastUpdateAcqDate.end() );
     return m_lastUpdateAcqDate.at( streamName );
 }

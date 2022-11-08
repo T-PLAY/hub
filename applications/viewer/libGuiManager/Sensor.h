@@ -69,24 +69,16 @@ class Sensor : public QObject
 {
     Q_OBJECT
   public:
-//    Sensor( std::unique_ptr<hub::InputSensor> inputSensor,
-//            QMdiArea& mdiArea,
-//            Ra::Engine::RadiumEngine* engine,
-//            Ra::Gui::Viewer* viewer,
-//            Ra::Engine::Scene::System* sys,
-//            Sensor* parentSensor,
-//            const std::string& streamName,
-//            QStandardItemModel& model,
-//            QTableView& view,
-//            QObject* parent = nullptr );
 
-    Sensor( const hub::SensorSpec & sensorSpec,
+    Sensor(
+            const std::string& streamName,
+            const hub::SensorSpec & sensorSpec,
+            const std::string& syncStreamName,
             QMdiArea& mdiArea,
             Ra::Engine::RadiumEngine* engine,
             Ra::Gui::Viewer* viewer,
             Ra::Engine::Scene::System* sys,
             Sensor* parentSensor,
-            const std::string& streamName,
             QStandardItemModel& model,
             QTableView& view,
             QObject* parent = nullptr );
@@ -131,6 +123,10 @@ class Sensor : public QObject
     FormImageManipulator* m_imageManipulator = nullptr;
 #endif
   private:
+//        hub::SensorSpec &  sensorSpec;
+            const std::string m_streamName;
+            const std::string m_syncStreamName;
+
     QMdiArea& m_mdiArea;
     WidgetStreamView2D* m_widgetStreamViewManipulator = nullptr;
 

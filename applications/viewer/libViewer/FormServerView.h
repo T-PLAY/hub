@@ -16,7 +16,7 @@ class FormServerView : public QWidget
 
   public:
     explicit FormServerView(
-            std::function<bool( const std::string& streamName, const hub::SensorSpec&, const std::string & syncStreamName )> onNewStreamer = {},
+            std::function<bool( const std::string& streamName, const hub::SensorSpec& )> onNewStreamer = {},
         std::function<void( const std::string& streamName, const hub::SensorSpec& )> onDelStreamer= {},
         std::function<void( const std::string& ipv4, int port )> onServerConnected    = {},
         std::function<void( const std::string& ipv4, int port )> onServerDisconnected = {},
