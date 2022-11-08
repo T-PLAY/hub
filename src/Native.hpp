@@ -19,7 +19,7 @@ extern "C"
     acquisition_getMeasure( const Acquisition* acquisition, unsigned char* data, int iMeasure = 0 );
     SRC_API long long acquisition_getStart( const Acquisition* acquisition );
 
-    typedef bool ( *onNewStreamerFunc )( const char* streamName, const SensorSpec* sensorSpec, const char * syncStreamName );
+    typedef bool ( *onNewStreamerFunc )( const char* streamName, const SensorSpec* sensorSpec );
     typedef void ( *onDelStreamerFunc )( const char* streamName, const SensorSpec* sensorSpec );
     typedef void ( *onServerConnectedFunc )( const char* ipv4, int port );
     typedef void ( *onServerDisconnectedFunc )( const char* ipv4, int port );

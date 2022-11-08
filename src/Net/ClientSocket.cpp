@@ -115,7 +115,7 @@ void ClientSocket::connect() {
 #ifdef DEBUG_SOCKET
         DEBUG_MSG( "[ClienSocket] failed to connect to server ########################" );
 #endif
-        perror( "[ClientSocket] socket creation failed.\n" );
+//        perror( "[ClientSocket] socket connect failed.\n" );
                 clearSocket(m_fdSock);
 //        ::close( m_fdSock );
 //        m_fdSock = INVALID_SOCKET;

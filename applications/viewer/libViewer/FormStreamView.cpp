@@ -10,7 +10,7 @@
 #include <WidgetStreamView.h>
 
 FormStreamView::FormStreamView(std::string streamName,
-                                const hub::SensorSpec& sensorSpec, const std::string &syncStreamName,
+                                const hub::SensorSpec& sensorSpec,
                                 QStringListModel& sensorModel,
                                 QWidget* parent )
 
@@ -34,10 +34,12 @@ FormStreamView::FormStreamView(std::string streamName,
 //    ui->comboBox_syncSensor->setLineEdit(lineEdit);
 //    ui->comboBox_syncSensor->setEnabled(false);
 //    ui->comboBox_syncSensor->setVisible(false);
-    QLabel * label = new QLabel((syncStreamName == "") ?("none") :(syncStreamName.c_str()));
-    label->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Preferred);
+
+//    QLabel * label = new QLabel((syncStreamName == "") ?("none") :(syncStreamName.c_str()));
+//    label->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Preferred);
+
 //    label->setAlignment(Qt::AlignLeft);
-    ui->horizontalLayout_syncStream->insertWidget(1, label);
+//    ui->horizontalLayout_syncStream->insertWidget(1, label);
     ui->horizontalLayout_syncStream->removeWidget(ui->comboBox_syncSensor);
     delete ui->comboBox_syncSensor;
 #endif
@@ -76,32 +78,51 @@ FormStreamView::~FormStreamView() {
     delete ui;
 }
 
-#ifndef USE_COMPLETE_VIEWER
-void FormStreamView::on_startStreaming() {
+bool FormStreamView::isStarted() const
+{
+    return ui->radioButtonOnOff->isChecked();
+}
 
+std::string FormStreamView::getSyncStreamName() const
+{
+        std::string syncSensorName = ui->comboBox_syncSensor->currentText().toStdString();
+        if ( syncSensorName == "none" ) syncSensorName = "";
+        return syncSensorName;
+}
+
+#ifndef USE_COMPLETE_VIEWER
+void FormStreamView::onStartStream() {
+
+    assert(! isStarted());
     ui->radioButtonOnOff->click();
 }
 
 void FormStreamView::on_radioButtonOnOff_clicked( bool checked ) {
+        std::string syncSensorName = ui->comboBox_syncSensor->currentText().toStdString();
+        if ( syncSensorName == "none" ) syncSensorName = "";
     if ( checked ) {
         ui->radioButtonOnOff->setText( "on " );
         ui->frameButtonOnOff->setStyleSheet( "border-radius: 10px; background-color: lightgreen" );
 
-        std::string syncSensorName = ui->comboBox_syncSensor->currentText().toStdString();
-        if ( syncSensorName == "none" ) syncSensorName = "";
 
         ui->comboBox_syncSensor->setCurrentText( syncSensorName.c_str() );
 
-        emit streamingStarted( m_streamName, syncSensorName );
+        emit startStream( m_streamName, m_sensorSpec, syncSensorName );
         ui->comboBox_syncSensor->setEnabled( false );
     }
     else {
         ui->radioButtonOnOff->setText( "off" );
         ui->frameButtonOnOff->setStyleSheet( "border-radius: 10px; background-color: red" );
-        emit streamingStopped( m_streamName, m_sensorSpec );
+        emit stopStream( m_streamName, m_sensorSpec, syncSensorName );
         ui->comboBox_syncSensor->setEnabled( true );
     }
 }
+
+//void FormStreamView::onStopStream()
+//{
+//    assert(isStarted());
+//    ui->radioButtonOnOff->click();
+//}
 
 // void FormStreamView::setRadioButtonOff() {
 //     ui->radioButtonOnOff->setChecked( false );

@@ -137,7 +137,12 @@ StreamViewerClient::StreamViewerClient( Server& server,
             m_mtxOutputSensor.unlock();
             std::cout << headerMsg() << "thread : catch stream viewer exception : " << e.what()
                       << std::endl;
-            m_isKilled = true;
+//            m_isKilled = true;
+            if (m_isKilled) {
+                assert(false);
+            } else {
+                std::thread( [this]() { delete this; } ).detach();
+            }
             //            m_server.delStreamViewer( this );
             return;
         }
@@ -214,7 +219,11 @@ StreamViewerClient::StreamViewerClient( Server& server,
         if ( m_isKilled ) { std::cout << headerMsg() << "thread killed" << std::endl; }
         else {
             std::cout << headerMsg() << "thread end (update failed)" << std::endl;
-            m_isKilled = true;
+//            m_isKilled = true;
+//            delete this;
+
+            std::thread( [this]() { delete this; } ).detach();
+
             //            m_server.delStreamViewer( this );
         }
     } );
@@ -233,7 +242,7 @@ StreamViewerClient::~StreamViewerClient() {
     //    std::cout << headerMsg() << "deleted" << std::endl;
     //    assert(m_thread == nullptr);
     //    if ( m_thread != nullptr ) { m_thread->detach(); }
-
+    assert(m_isKilled == false);
     m_isKilled = true;
     assert( m_thread.joinable() );
     m_thread.join();

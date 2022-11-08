@@ -23,6 +23,7 @@
 #include <Core/Geometry/StandardAttribNames.hpp>
 #include <Engine/Data/TextureManager.hpp>
 #include <ScanMaterial/ScanMaterial.hpp>
+#include <Eigen/src/Geometry/AlignedBox.h>
 
 #ifdef IO_USE_ASSIMP
 #    include <IO/AssimpLoader/AssimpFileLoader.hpp>
@@ -153,9 +154,15 @@ void ScanComponent::update( const hub::Acquisition& acq ) {
         // update texture
         {
             memcpy( scan.m_textureData, imageData, imageSize );
+//            memset(scan.m_textureData, 127, imageSize);
 
+#ifdef USE_PR_UPDATE_TEXTURE
+            scan.m_textureScan->updateData(scan.m_textureData);
+#else
             auto* textureManager = m_engine.getTextureManager();
             textureManager->updateTextureContent( scan.m_textureName, (void*)scan.m_textureData );
+#endif
+//            std::cout << "[ScanComponent] update scan" << std::endl;
         }
 
         // update position and orientation
@@ -199,7 +206,7 @@ Aabb ScanComponent::getAabb() const {
     Aabb aabb;
     if ( m_nScans == 0 ) {
         aabb = m_entity->computeAabb();
-//        aabb.transform( m_entity->getTransform() );
+        aabb.transform( m_entity->getTransform() );
     }
     else {
         for ( int i = 0; i < m_nScans; ++i ) {

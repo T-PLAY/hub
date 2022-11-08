@@ -198,10 +198,11 @@ void GuiManager::init() {
 
     m_dockLeft->setWidget( m_formStreamViews );
     QObject::connect(
-        m_formStreamViews, &FormStreamViews::newStreamer, this, &GuiManager::onNewStreamer );
+        m_formStreamViews, &FormStreamViews::startStream, this, &GuiManager::onStartStream );
 
     QObject::connect(
-        m_formStreamViews, &FormStreamViews::delStreamer, this, &GuiManager::onDelStreamer );
+        m_formStreamViews, &FormStreamViews::stopStream, this, &GuiManager::onStopStream );
+
     QObject::connect( m_formStreamViews,
                       &FormStreamViews::serverDisconnected,
                       this,
@@ -243,6 +244,7 @@ void GuiManager::init() {
     };
     auto _newStreamerAdded = [this]( const std::string& streamName,
                                      const hub::SensorSpec& ) {
+//        return false;
         m_sceneManager.getSensor(streamName);
         return true;
     };
@@ -352,16 +354,29 @@ void GuiManager::on_action3D_triggered() {
 //#endif
 // }
 
-bool GuiManager::onNewStreamer( const std::string& streamName, const hub::SensorSpec& sensorSpec ) {
-    //    std::cout << "[GuiManager] onNewStreamer(" << streamName << ", " << sensorSpec << ")"
-    //              << std::endl;
+bool GuiManager::onStartStream( const std::string& streamName, const hub::SensorSpec& sensorSpec, const std::string & syncStreamName) {
+        std::cout << "[GuiManager] onStartStream(" << streamName << ", " << sensorSpec << ", " << syncStreamName << ")"
+                  << std::endl;
 
-    m_sceneManager.addSensor( streamName, sensorSpec );
+//    const auto& ipv4 = m_formStreamViews->getIpv4();
+//    const auto port  = m_formStreamViews->getPort();
+
+//    //    m_sceneManager.addSensor(
+//    //        hub::io::InputStream( streamName, syncStreamName, hub::net::ClientSocket( ipv4, port
+//    )
+//    //        ), streamName );
+
+
+    m_sceneManager.addSensor( streamName, sensorSpec, syncStreamName );
+//        return false;
     return true;
 }
 
-void GuiManager::onDelStreamer( const std::string& streamName, const hub::SensorSpec& sensorSpec ) {
-    m_sceneManager.delSensor( streamName );
+void GuiManager::onStopStream( const std::string& streamName, const hub::SensorSpec& sensorSpec, const std::string & syncStreamName ) {
+        std::cout << "[GuiManager] onStopStream(" << streamName << ", " << sensorSpec << ", " << syncStreamName << ")"
+                  << std::endl;
+
+    m_sceneManager.delSensor( streamName, sensorSpec, syncStreamName );
 }
 
 void GuiManager::onServerConnected( const std::string& ipv4, int port ) {

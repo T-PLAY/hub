@@ -85,12 +85,21 @@ void MinimalApp::frame() {
     m_task_queue->waitForTasks();
     m_task_queue->flushTaskQueue();
 
+#ifdef USE_PR_UPDATE_TEXTURE
+    m_viewer->makeCurrent();
+    m_engine->runGpuTasks();
+    m_viewer->doneCurrent();
+#endif
+
+
     // Starts the renderer
     m_viewer->startRendering( dt );
 
     //#ifdef NO_PR_976
+#ifndef USE_PR_UPDATE_TEXTURE
     auto* textureManager = m_engine->getTextureManager();
     textureManager->updatePendingTextures();
+#endif
     //#endif
 
     // Finish the frame

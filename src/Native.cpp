@@ -75,8 +75,8 @@ Viewer* createViewer( onNewStreamerFunc onNewStreamer,
                       const char* ipv4,
                       int port ) {
 
-    auto onNewStreamerCpp = [=]( const std::string& streamName, const SensorSpec& sensorSpec, const std::string & syncStreamName ) {
-        onNewStreamer( streamName.c_str(), &sensorSpec, syncStreamName.c_str() );
+    auto onNewStreamerCpp = [=]( const std::string& streamName, const SensorSpec& sensorSpec ) {
+        onNewStreamer( streamName.c_str(), &sensorSpec );
         return true;
     };
     auto onDelStreamerCpp = [=]( const std::string& streamName, const SensorSpec& sensorSpec ) {

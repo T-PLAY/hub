@@ -49,7 +49,8 @@ void SceneManager::init() {
     m_sensorModel.setHorizontalHeaderLabels( header );
 }
 
-void SceneManager::addSensor( const std::string& streamName, const hub::SensorSpec& sensorSpec ) {
+void SceneManager::addSensor(const std::string &streamName, const hub::SensorSpec &sensorSpec, const std::string &syncStreamName) {
+
     //    auto&& inputSensor     = std::make_unique<hub::InputSensor>( std::move( interfaceT ) );
     const auto& sensorName = sensorSpec.m_sensorName;
     const auto& metaData   = sensorSpec.m_metaData;
@@ -81,13 +82,15 @@ void SceneManager::addSensor( const std::string& streamName, const hub::SensorSp
 
     assert( m_streamName2sensor.find( streamName ) == m_streamName2sensor.end() );
     assert( m_sensorsView != nullptr );
-    m_streamName2sensor[streamName] = std::make_unique<Sensor>( sensorSpec,
+    m_streamName2sensor[streamName] = std::make_unique<Sensor>(
+                                                                streamName,
+                sensorSpec,
+                syncStreamName,
                                                                 *m_mdiArea,
                                                                 m_engine,
                                                                 m_viewer,
                                                                 m_sys,
                                                                 parentSensor,
-                                                                streamName,
                                                                 m_sensorModel,
                                                                 *m_sensorsView,
                                                                 this );
@@ -117,7 +120,7 @@ void SceneManager::addSensor( const std::string& streamName, const hub::SensorSp
 //    m_mtxSensors.unlock();
 }
 
-void SceneManager::delSensor( const std::string& streamName ) {
+void SceneManager::delSensor(const std::string &streamName, const hub::SensorSpec &sensorSpec, const std::string &syncStreamName) {
 
     m_mtxSensors.lock();
     if ( m_streamName2sensor.find( streamName ) != m_streamName2sensor.end() ) {

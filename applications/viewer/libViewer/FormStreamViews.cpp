@@ -11,6 +11,11 @@
 
 #include <FormStreamView.h>
 
+bool FormStreamViews::s_autoConnect = true;
+bool FormStreamViews::s_autoSync    = true;
+const std::string * FormStreamViews::s_ipv4    = nullptr;
+const int * FormStreamViews::s_port    = nullptr;
+
 // ViewerQt::ViewerQt(FormStreamViews &streamViews, const std::string &ipv4, const int &port) :
 //     m_streamViews(streamViews)
 //{
@@ -63,13 +68,16 @@ FormStreamViews::FormStreamViews( QWidget* parent ) :
 
     ui->setupUi( this );
 
+    s_autoConnect = ui->checkBox_connect->isChecked();
+    s_autoSync    = ui->checkBox_sync->isChecked();
+
     QObject::connect( this, &FormStreamViews::newStreamer, this, &FormStreamViews::onNewStreamer );
     QObject::connect( this, &FormStreamViews::delStreamer, this, &FormStreamViews::onDelStreamer );
-    //    QObject::connect(
-    //        this, &FormStreamViews::serverConnected, this, &FormStreamViews::onServerConnected );
-    //    QObject::connect(
-    //        this, &FormStreamViews::serverDisconnected, this,
-    //        &FormStreamViews::onServerDisconnected );
+
+    QObject::connect(
+        this, &FormStreamViews::serverConnected, this, &FormStreamViews::onServerConnected );
+    QObject::connect(
+        this, &FormStreamViews::serverDisconnected, this, &FormStreamViews::onServerDisconnected );
 
     //    std::cout << "[FormStreamViews] connect viewerQt start" << std::endl;
     //    {
@@ -124,13 +132,15 @@ void FormStreamViews::initViewer(
     // init viewer
     {
         auto _onNewStreamer = [=]( const std::string& streamerName,
-                                   const hub::SensorSpec& sensorSpec,
-                                   const std::string& syncStreamName ) {
+                                   const hub::SensorSpec& sensorSpec ) {
             //            onNewStreamer(streamerName, sensorSpec); // no needs of gui main thread,
             //            direct call to update 3D scene
-            emit newStreamer(
-                streamerName, sensorSpec, syncStreamName ); // gui update needs gui main thread
-            return newStreamerAdded( streamerName, sensorSpec );
+            emit newStreamer( streamerName, sensorSpec ); // gui update needs gui main thread
+            if (s_autoSync) {
+                newStreamerAdded( streamerName, sensorSpec );
+                return true;
+            }
+            return false;
             //            return true;
         };
         auto _onDelStreamer = [=]( const std::string& streamerName,
@@ -159,6 +169,9 @@ void FormStreamViews::initViewer(
                                            _onServerDisconnected,
                                            _onNewAcquisition,
                                            this );
+
+        s_ipv4 = &m_serverView->getIpv4();
+        s_port = &m_serverView->getPort();
 
         //        ui->verticalLayout_2->addWidget(m_serverView);
         ui->verticalLayout_2->insertWidget( 0, m_serverView );
@@ -209,15 +222,14 @@ void FormStreamViews::initViewer(
 }
 
 bool FormStreamViews::onNewStreamer( const std::string& streamName,
-                                     const hub::SensorSpec& sensorSpec,
-                                     const std::string& syncStreamName ) {
+                                     const hub::SensorSpec& sensorSpec ) {
     assert( QThread::currentThread() == this->thread() );
 
     std::cout << "[FormStreamViews] FormStreamViews::onNewStreamer '" << streamName << "'"
               << std::endl;
     assert( m_streamViews.find( streamName ) == m_streamViews.end() );
 
-    auto* sensorView = new FormStreamView( streamName, sensorSpec, syncStreamName, m_sensorModel, nullptr );
+    auto* sensorView = new FormStreamView( streamName, sensorSpec, m_sensorModel, nullptr );
     ui->verticalLayout->insertWidget( static_cast<int>( m_streamViews.size() ), sensorView );
 
     m_streamViews[streamName] = sensorView;
@@ -227,10 +239,13 @@ bool FormStreamViews::onNewStreamer( const std::string& streamName,
 
 #ifndef USE_COMPLETE_VIEWER
     QObject::connect(
-        sensorView, &FormStreamView::streamingStarted, this, &FormStreamViews::streamingStarted );
+        sensorView, &FormStreamView::startStream, this, &FormStreamViews::onStartStream );
     QObject::connect(
-        sensorView, &FormStreamView::streamingStopped, this, &FormStreamViews::streamingStopped );
-    if ( m_autoStartStream ) { sensorView->on_startStreaming(); }
+        sensorView, &FormStreamView::stopStream, this, &FormStreamViews::onStopStream );
+    //    QObject::connect(
+    //        sensorView, &FormStreamView::streamingStopped, this,
+    //        &FormStreamViews::streamingStopped );
+    if ( s_autoConnect ) { sensorView->onStartStream(); }
 #endif
 
     //    emit streamingStarted(streamName, sensorSpec);
@@ -249,6 +264,10 @@ void FormStreamViews::onDelStreamer( const std::string& streamName,
 
     assert( m_streamViews.find( streamName ) != m_streamViews.end() );
     auto* sensorView = m_streamViews.at( streamName );
+
+    const auto syncStreamName = sensorView->getSyncStreamName();
+    if ( sensorView->isStarted() ) { onStopStream( streamName, sensorSpec, syncStreamName ); }
+
     m_streamViews.erase( streamName );
     auto stringList = m_sensorModel.stringList();
     stringList.removeAll( streamName.c_str() );
@@ -257,10 +276,48 @@ void FormStreamViews::onDelStreamer( const std::string& streamName,
 
     //#ifndef USE_COMPLETE_VIEWER
     //    emit streamingStopped( streamName, sensorSpec );
+    //    emit stopStream(streamName, sensorSpec, )
     //#endif
 
     std::cout << "[FormStreamViews] FormStreamViews::onDelStreamer end '" << streamName << "'"
               << std::endl;
+}
+
+void FormStreamViews::onServerConnected( const std::string& ipv4, int port ) {
+    //    std::cout << "disable" << std::endl;
+    //    ui->horizontalLayout_auto->setEnabled(false);
+        ui->label->setEnabled(false);
+        ui->checkBox_connect->setEnabled(false);
+        ui->checkBox_sync->setEnabled(false);
+//    for ( auto&& child : ui->horizontalLayout_auto->findChildren<QWidget*>() ) {
+//        child->setEnabled( false );
+//    }
+}
+
+void FormStreamViews::onServerDisconnected( const std::string& ipv4, int port ) {
+    //    ui->horizontalLayout_auto->setEnabled(true);
+    ui->label->setEnabled( true );
+    ui->checkBox_connect->setEnabled( true );
+    ui->checkBox_sync->setEnabled( true );
+//    for ( auto&& child : ui->horizontalLayout_auto->findChildren<QWidget*>() ) {
+//        child->setEnabled( true );
+//    }
+}
+
+void FormStreamViews::onStartStream( const std::string& streamName,
+                                     const hub::SensorSpec& sensorSpec,
+                                     const std::string& syncSensorName ) {
+    assert( m_serverView != nullptr );
+    emit startStream(
+        streamName, sensorSpec, syncSensorName );
+}
+
+void FormStreamViews::onStopStream( const std::string& streamName,
+                                    const hub::SensorSpec& sensorSpec,
+                                    const std::string& syncSensorName ) {
+    assert( m_serverView != nullptr );
+    emit stopStream(
+        streamName, sensorSpec, syncSensorName );
 }
 
 // void FormStreamViews::onServerConnected( const std::string& ipv4, int port ) {
@@ -346,3 +403,11 @@ const int& FormStreamViews::getPort() const {
 ////        m_viewer->setPort( m_port );
 ////    }
 //}
+
+void FormStreamViews::on_checkBox_sync_toggled( bool checked ) {
+    s_autoSync = checked;
+}
+
+void FormStreamViews::on_checkBox_connect_toggled( bool checked ) {
+    s_autoConnect = checked;
+}

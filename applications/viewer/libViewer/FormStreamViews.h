@@ -45,6 +45,11 @@ class FormStreamViews : public QWidget
     Q_OBJECT
 
   public:
+    static bool s_autoConnect;
+    static bool s_autoSync;
+    static const std::string * s_ipv4;
+    static const int * s_port;
+
     explicit FormStreamViews( QWidget* parent = nullptr );
     ~FormStreamViews();
 
@@ -57,23 +62,27 @@ class FormStreamViews : public QWidget
             );
 
   signals:
-    void newStreamer( const std::string& streamName, const hub::SensorSpec& sensorSpec, const std::string & syncStreamName );
+    void newStreamer( const std::string& streamName, const hub::SensorSpec& sensorSpec );
     void delStreamer( const std::string& streamName, const hub::SensorSpec& sensorSpec );
     void serverConnected( const std::string& ipv4, int port );
     void serverDisconnected( const std::string& ipv4, int port );
 //    void newAcquisition( const std::string& streamName, const hub::Acquisition& acq );
 
-    //#ifndef USE_COMPLETE_VIEWER
-    //    void streamingStarted( const std::string& streamName, const std::string& syncSensorName );
+    #ifndef USE_COMPLETE_VIEWER
+        void startStream( const std::string& streamName, const hub::SensorSpec& sensorSpec, const std::string& syncSensorName );
+        void stopStream( const std::string& streamName, const hub::SensorSpec& sensorSpec, const std::string& syncSensorName );
     //    void streamingStarted( const std::string& streamName, const hub::SensorSpec& sensorSpec );
     //    void streamingStopped( const std::string& streamName, const hub::SensorSpec& sensorSpec );
-    //#endif
+    #endif
 
   private slots:
-    bool onNewStreamer( const std::string& streamName, const hub::SensorSpec& sensorSpec, const std::string & syncStreamName );
+    bool onNewStreamer( const std::string& streamName, const hub::SensorSpec& sensorSpec );
     void onDelStreamer( const std::string& streamName, const hub::SensorSpec& sensorSpec );
-//    void onServerConnected( const std::string& ipv4, int port );
-//    void onServerDisconnected( const std::string& ipv4, int port );
+    void onServerConnected( const std::string& ipv4, int port );
+    void onServerDisconnected( const std::string& ipv4, int port );
+
+    void onStartStream( const std::string& streamName, const hub::SensorSpec& sensorSpec, const std::string& syncSensorName );
+    void onStopStream( const std::string& streamName, const hub::SensorSpec& sensorSpec, const std::string& syncSensorName);
 //    void onNewAcquisition( const std::string& streamName, const hub::Acquisition& acq );
 
   private:
@@ -93,9 +102,6 @@ class FormStreamViews : public QWidget
 
     QStringListModel m_sensorModel;
 
-#ifndef USE_COMPLETE_VIEWER
-    bool m_autoStartStream = true;
-#endif
 
   public:
     //    const FormStreamView& getStreamView( const std::string& streamName ) const;
@@ -106,4 +112,6 @@ class FormStreamViews : public QWidget
   private slots:
 //    void on_lineEdit_ip_textChanged( const QString& ipv4 );
 //    void on_spinBox_port_valueChanged( int port );
+    void on_checkBox_sync_toggled(bool checked);
+    void on_checkBox_connect_toggled(bool checked);
 };

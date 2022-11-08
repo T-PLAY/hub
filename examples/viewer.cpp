@@ -15,7 +15,7 @@
 
 int main() {
 
-    auto onNewStreamer = [=]( const std::string& streamName, const hub::SensorSpec& sensorSpec, const std::string & syncStreamName ) {
+    auto onNewStreamer = [=]( const std::string& streamName, const hub::SensorSpec& sensorSpec ) {
         std::cout << "[Example][Viewer] onNewStreamer : " << streamName << std::endl;
         return true;
     };

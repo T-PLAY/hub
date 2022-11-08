@@ -54,26 +54,25 @@ std::string ViewerClient::headerMsg() const {
     return Client::headerMsg() + "[ViewerClient] ";
 }
 
-void ViewerClient::notifyNewStreamer(const std::string &streamerName, const hub::SensorSpec &sensorSpec, const std::string & syncStream ) const {
+void ViewerClient::notifyNewStreamer(const StreamerClient &streamer) const {
 
     m_mtxSocket.lock();
     m_socket.write( hub::net::ClientSocket::Message::NEW_STREAMER );
 //    m_socket.write( (syncStream == "") ?(streamer.getStreamName()) :(syncStream + " <- " + streamer.getStreamName()) );
-    m_socket.write( streamerName);
-    m_socket.write( sensorSpec );
-    m_socket.write( syncStream );
+    m_socket.write( streamer.getStreamName());
+    m_socket.write( streamer.getInputSensor().m_spec );
+//    m_socket.write( syncStream );
     m_mtxSocket.unlock();
 }
 
-void ViewerClient::notifyDelStreamer( const std::string& streamerName,
-                                      const hub::SensorSpec& sensorSpec, const std::string & syncStream ) const {
-    std::cout << headerMsg() << "notifyDelStreamer " << streamerName << std::endl;
+void ViewerClient::notifyDelStreamer(const StreamerClient &streamer) const {
+    std::cout << headerMsg() << "notifyDelStreamer " << streamer.getStreamName() << std::endl;
     try {
         m_mtxSocket.lock();
         m_socket.write( hub::net::ClientSocket::Message::DEL_STREAMER );
-        m_socket.write( streamerName );
-        m_socket.write( sensorSpec );
-        m_socket.write( syncStream );
+        m_socket.write( streamer.getStreamName() );
+        m_socket.write( streamer.getInputSensor().m_spec );
+//        m_socket.write( syncStream );
         m_mtxSocket.unlock();
     }
     catch ( std::exception& e ) {
