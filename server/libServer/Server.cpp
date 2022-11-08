@@ -124,7 +124,7 @@ void Server::delStreamer( StreamerClient* streamer ) {
     //    m_mtxStreamers.lock();
 
     const auto streamerName = streamer->getStreamName();
-    const auto sensorSpec   = streamer->getInputSensor().m_spec;
+//    const auto sensorSpec   = streamer->getInputSensor().m_spec;
 
     //    auto streamViewers = m_streamViewers[streamerName];
     //    for ( auto* streamViewer : streamViewers ) {

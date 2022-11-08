@@ -49,9 +49,9 @@ bool OutputStream::isEnd() const
 
 ///////////////////////////////////////////////////////////////
 
-InputStream::InputStream( const std::string& streamName,
+InputStream::InputStream(const std::string& streamName,
                           const std::string& syncStreamName,
-                          net::ClientSocket&& clientSocket ) :
+                          net::ClientSocket&& clientSocket , bool mergeSyncAcqs) :
     net::ClientSocket( std::move( clientSocket ) ) {
 
     Interface::write( net::ClientSocket::Type::STREAM_VIEWER );
@@ -77,6 +77,8 @@ InputStream::InputStream( const std::string& streamName,
                 .c_str() );
     }
     assert( mess == ClientSocket::Message::OK );
+
+    Interface::write(mergeSyncAcqs);
 }
 
 #ifdef WIN32
@@ -106,7 +108,7 @@ Acquisition InputStream::getAcquisition( int acquisitionSize ) const {
     do {
         Interface::read( message );
         if ( message == net::ClientSocket::Message::PING ) {
-            std::cout << "\033[32m[InputStream] receive ping\033[0m" << std::endl;
+            std::cout << "\033[32m[InputStream] receive ping from " << m_fdSock << "\033[0m" << std::endl;
         }
     } while ( message == net::ClientSocket::Message::PING );
 

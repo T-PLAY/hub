@@ -68,6 +68,8 @@ struct ScanComponent : public SensorComponent {
     int m_nScans    = 0;
     int m_nMaxScans = 500;
 
+    int m_iImage = 0;
+
     bool m_traceEnabled = true;
     bool m_liveEnabled  = true;
 

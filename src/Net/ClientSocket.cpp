@@ -155,7 +155,7 @@ void ClientSocket::write( const unsigned char* data, size_t len ) const {
                 << "write(const unsigned char* data, size_t len) : isConnected() client lost" );
 #endif
             close();
-            throw Socket::exception( "[ClientSocket] write(data, len) Server lost" );
+            throw Socket::exception( "[ClientSocket] write(data, len) Can't write packet, not connected" );
         }
         // winsock const char * data
         // winsock int len

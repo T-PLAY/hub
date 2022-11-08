@@ -107,7 +107,8 @@ SensorSpec SensorSpec::operator+( const SensorSpec& sensorSpec ) const {
 }
 
 SensorSpec& SensorSpec::operator+=( const SensorSpec& sensorSpec ) {
-    *this = *this + sensorSpec;
+    if ( m_sensorName == "" ) { *this = sensorSpec; }
+    else { *this = *this + sensorSpec; }
     return *this;
 }
 

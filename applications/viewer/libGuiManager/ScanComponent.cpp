@@ -21,9 +21,9 @@
 #include <Engine/Scene/GeometryComponent.hpp>
 
 #include <Core/Geometry/StandardAttribNames.hpp>
+#include <Eigen/src/Geometry/AlignedBox.h>
 #include <Engine/Data/TextureManager.hpp>
 #include <ScanMaterial/ScanMaterial.hpp>
-#include <Eigen/src/Geometry/AlignedBox.h>
 
 #ifdef IO_USE_ASSIMP
 #    include <IO/AssimpLoader/AssimpFileLoader.hpp>
@@ -44,14 +44,15 @@ using namespace Ra::Engine::Scene;
 // }
 
 ScanComponent::ScanComponent(
-//        const hub::InputSensor& inputSensor,
-        const hub::SensorSpec & sensorSpec,
-                              Ra::Engine::Scene::Entity* entity,
-                              Ra::Engine::RadiumEngine& engine,
-                              Ra::Gui::Viewer& viewer ) :
-//    SensorComponent( inputSensor, entity ),
+    //        const hub::InputSensor& inputSensor,
+    const hub::SensorSpec& sensorSpec,
+    Ra::Engine::Scene::Entity* entity,
+    Ra::Engine::RadiumEngine& engine,
+    Ra::Gui::Viewer& viewer ) :
+    //    SensorComponent( inputSensor, entity ),
     SensorComponent( sensorSpec, entity ),
-    m_engine( engine ), m_viewer( viewer ) {}
+    m_engine( engine ),
+    m_viewer( viewer ) {}
 
 void ScanComponent::initialize() {
     SensorComponent::initialize();
@@ -61,7 +62,7 @@ void ScanComponent::initialize() {
 
     //// setup ////
 
-//    const auto& sensorSpec  = m_inputSensor.m_spec;
+    //    const auto& sensorSpec  = m_inputSensor.m_spec;
     const auto& metaData    = m_sensorSpec.m_metaData;
     const auto& resolutions = m_sensorSpec.m_resolutions;
 
@@ -84,6 +85,15 @@ void ScanComponent::initialize() {
         m_nMaxScans = 1;
     }
     else if ( resolutions.size() == 2 ) {
+
+        const auto& format  = resolutions.at( 0 ).second;
+        const auto& format2 = resolutions.at( 1 ).second;
+        if ( format == hub::SensorSpec::Format::DOF6 ) { m_iImage = 1; }
+        else {
+            assert( format2 == hub::SensorSpec::Format::DOF6 );
+            m_iImage = 0;
+        }
+
         for ( int i = 0; i < m_nMaxScans; ++i ) {
             addScan();
         }
@@ -92,6 +102,8 @@ void ScanComponent::initialize() {
 }
 
 void ScanComponent::update( const hub::Acquisition& acq ) {
+
+    //    std::cout << "[ScanComponent] update(" << acq << ")" << std::endl;
 
     if ( acq.m_start == -1 ) {
         std::cout << "[ScanComponent] receive reset acq : " << acq << std::endl;
@@ -106,7 +118,8 @@ void ScanComponent::update( const hub::Acquisition& acq ) {
     }
 
     const auto& measures = acq.getMeasures();
-    const auto nMeasures = measures.size();
+    //    const auto nMeasures = measures.size();
+    const auto nMeasures = m_sensorSpec.m_resolutions.size();
 
     bool isNewScan = true;
 
@@ -147,29 +160,29 @@ void ScanComponent::update( const hub::Acquisition& acq ) {
     if ( isNewScan ) {
         // find image data
         // image is always the last measure by convention
-        const auto& image              = measures.at( nMeasures - 1 );
+        const auto& image              = measures.at( m_iImage );
         const unsigned char* imageData = image.m_data;
         int imageSize                  = image.m_size;
 
         // update texture
         {
             memcpy( scan.m_textureData, imageData, imageSize );
-//            memset(scan.m_textureData, 127, imageSize);
+            //            memset(scan.m_textureData, 127, imageSize);
 
 #ifdef USE_PR_UPDATE_TEXTURE
-            scan.m_textureScan->updateData(scan.m_textureData);
+            scan.m_textureScan->updateData( scan.m_textureData );
 #else
             auto* textureManager = m_engine.getTextureManager();
             textureManager->updateTextureContent( scan.m_textureName, (void*)scan.m_textureData );
 #endif
-//            std::cout << "[ScanComponent] update scan" << std::endl;
+            //            std::cout << "[ScanComponent] update scan" << std::endl;
         }
 
         // update position and orientation
         if ( nMeasures == 2 ) {
             // update quad
             {
-                const hub::Dof6& dof6 = measures.at( 0 );
+                const hub::Dof6& dof6 = measures.at( 1 - m_iImage );
                 Ra::Core::Vector3 pos( dof6.m_x, dof6.m_y, dof6.m_z );
                 Ra::Core::Quaternion orientation( dof6.m_w0, dof6.m_w1, dof6.m_w2, dof6.m_w3 );
                 auto TLocal = Transform::Identity();
@@ -189,7 +202,7 @@ void ScanComponent::update( const hub::Acquisition& acq ) {
         scan.m_quad->setVisible( true );
         scan.m_scanLine->setVisible( true );
 
-        const hub::Dof6& dof6 = measures.at( 0 );
+        const hub::Dof6& dof6 = measures.at( 1 - m_iImage );
         Ra::Core::Vector3 pos( dof6.m_x, dof6.m_y, dof6.m_z );
         Ra::Core::Quaternion orientation( dof6.m_w0, dof6.m_w1, dof6.m_w2, dof6.m_w3 );
         auto TLocal = Transform::Identity();
@@ -247,8 +260,8 @@ void ScanComponent::addScan() {
         quadTriangle.addAttrib(
             Ra::Core::Geometry::getAttribName( Ra::Core::Geometry::VERTEX_TEXCOORD ), tex_coords );
 
-        const auto& sensorName  = m_sensorSpec.m_sensorName;
-//        const auto& sensorSpec  = m_inputSensor.m_spec;
+        const auto& sensorName = m_sensorSpec.m_sensorName;
+        //        const auto& sensorSpec  = m_inputSensor.m_spec;
         const auto& resolutions = m_sensorSpec.m_resolutions;
         int width;
         int height;
@@ -264,13 +277,13 @@ void ScanComponent::addScan() {
             imageSize = m_sensorSpec.m_acquisitionSize;
         }
         else if ( resolutionsSize == 2 ) {
-            assert( resolutions.at( 0 ).second == hub::SensorSpec::Format::DOF6 );
-            assert( resolutions.at( 1 ).first.size() == 2 );
-            dims      = resolutions.at( 1 ).first;
-            format    = resolutions.at( 1 ).second;
+            assert( resolutions.at( 1 - m_iImage ).second == hub::SensorSpec::Format::DOF6 );
+            assert( resolutions.at( m_iImage ).first.size() == 2 );
+            dims      = resolutions.at( m_iImage ).first;
+            format    = resolutions.at( m_iImage ).second;
             width     = dims.at( 0 );
             height    = dims.at( 1 );
-            imageSize = hub::SensorSpec::computeAcquisitionSize( resolutions.at( 1 ) );
+            imageSize = hub::SensorSpec::computeAcquisitionSize( resolutions.at( m_iImage ) );
         }
         else { assert( false ); }
         assert( dims.size() == 2 );
@@ -316,7 +329,7 @@ void ScanComponent::addScan() {
             textureParameters.format         = gl::GLenum::GL_RG;
             textureParameters.internalFormat = gl::GLenum::GL_RG;
         }
-        else if (nChannels == 3) {
+        else if ( nChannels == 3 ) {
             textureParameters.format         = gl::GLenum::GL_RGB;
             textureParameters.internalFormat = gl::GLenum::GL_RGB;
         }
