@@ -24,18 +24,20 @@ SensorThread::~SensorThread() {
 void SensorThread::run() {
     std::cout << "[SensorThread] run()" << std::endl;
 
-    assert(FormStreamViews::s_ipv4 != nullptr);
-    assert(FormStreamViews::s_port != nullptr);
+    assert( FormStreamViews::s_ipv4 != nullptr );
+    assert( FormStreamViews::s_port != nullptr );
 
-    hub::InputSensor inputSensor(
-        hub::io::InputStream( m_sensor.m_streamName,
-                              m_sensor.m_syncStreamName,
-//                              hub::net::ClientSocket( m_sensor.m_ipv4, m_sensor.m_port ) ) );
-                              hub::net::ClientSocket( *FormStreamViews::s_ipv4, *FormStreamViews::s_port ) ) );
+    hub::InputSensor inputSensor( hub::io::InputStream(
+        m_sensor.m_streamName,
+        m_sensor.m_syncStreamName,
+        //                              hub::net::ClientSocket( m_sensor.m_ipv4, m_sensor.m_port ) )
+        //                              );
+        hub::net::ClientSocket( *FormStreamViews::s_ipv4, *FormStreamViews::s_port ) ) );
     //    auto& inputSensor = m_sensor.m_inputSensor;
     try {
         while ( !this->isInterruptionRequested() ) {
             const auto acq = inputSensor.getAcquisition();
+//            std::cout << "[Sensor] receive acq : " << acq << std::endl;
             m_sensor.update( acq );
         }
     }
@@ -179,7 +181,7 @@ Sensor::Sensor( const std::string& streamName,
             const auto& format  = resolutions.at( 0 ).second;
             const auto& format2 = resolutions.at( 1 ).second;
 
-            assert( format == hub::SensorSpec::Format::DOF6 );
+            assert( format == hub::SensorSpec::Format::DOF6 || format2 == hub::SensorSpec::Format::DOF6 );
 
             //            m_component = new ScanComponent( *m_inputSensor, m_entity, *m_engine,
             //            *m_viewer );

@@ -306,10 +306,22 @@ void FormStreamViews::onServerDisconnected( const std::string& ipv4, int port ) 
 
 void FormStreamViews::onStartStream( const std::string& streamName,
                                      const hub::SensorSpec& sensorSpec,
-                                     const std::string& syncSensorName ) {
+                                     const std::string& syncStreamName ) {
     assert( m_serverView != nullptr );
+
+
+//            hub::SensorSpec sensorSpecSum = (syncStreamName == "") ?(sensorSpec) :(m_streamViews.at(syncStreamName)->getSensorSpec() + sensorSpec);
+            hub::SensorSpec sensorSpecSum;
+            if ( syncStreamName != "" ) {
+                sensorSpecSum += m_streamViews.at(syncStreamName)->getSensorSpec();
+                //        m_streamer = streamers.at( m_syncStreamName );
+            }
+            sensorSpecSum += sensorSpec;
+
+
     emit startStream(
-        streamName, sensorSpec, syncSensorName );
+//        streamName, sensorSpec, syncStreamName );
+        streamName, sensorSpecSum, syncStreamName );
 }
 
 void FormStreamViews::onStopStream( const std::string& streamName,

@@ -52,7 +52,7 @@ class SRC_API InputStream : public InputInterface, public net::ClientSocket
     ///
     InputStream( const std::string& streamName,
                  const std::string& syncStreamName = "",
-                 net::ClientSocket&& clientSocket  = net::ClientSocket() );
+                 net::ClientSocket&& clientSocket  = net::ClientSocket(), bool mergeSyncAcqs = true );
 
 #ifdef WIN32 // msvc warning C4250
   protected:

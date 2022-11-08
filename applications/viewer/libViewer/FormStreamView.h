@@ -29,9 +29,11 @@ class FormStreamView : public QWidget
     bool isStarted() const;
     std::string  getSyncStreamName() const;
 
+
 //#ifdef USE_COMPLETE_VIEWER
 #ifndef USE_COMPLETE_VIEWER
-  signals:
+
+signals:
     void startStream( const std::string& streamName, const hub::SensorSpec& sensorSpec, const std::string& syncStreamName );
     void stopStream( const std::string& streamName, const hub::SensorSpec& sensorSpec, const std::string& syncStreamName );
 
@@ -49,4 +51,7 @@ class FormStreamView : public QWidget
     QStringListModel& mSensorModel;
     QSortFilterProxyModel mProxySensorModel;
 #endif
+
+public:
+    const hub::SensorSpec &getSensorSpec() const;
 };
