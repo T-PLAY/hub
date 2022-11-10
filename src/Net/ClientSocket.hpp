@@ -36,7 +36,7 @@ class SRC_API ClientSocket : public Socket, public virtual io::Interface
 
     ClientSocket();
     ClientSocket( const std::string& ipv4, int port, bool autoConnect = true );
-    ClientSocket( socket_fd fdSock ); // server side client (bind and listen)
+    ClientSocket( net::utils::socket_fd fdSock ); // server side client (bind and listen)
 
     ClientSocket( const ClientSocket& sock ) = delete;
     ClientSocket( ClientSocket&& sock )      = default;
@@ -78,7 +78,8 @@ class SRC_API ClientSocket : public Socket, public virtual io::Interface
   private:
     std::string m_ipv4;
     int m_port;
-    struct sockaddr_in m_serverAddress;
+//    struct sockaddr_in m_serverAddress;
+    net::utils::ClientAddr m_addr;
     mutable bool m_connected = false;
 
   public:

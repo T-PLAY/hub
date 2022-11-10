@@ -1,196 +1,111 @@
 #pragma once
 
-#ifdef WIN32
-
-//#define UDT_API // no dllimport/export
-
-//#include <winsock.h>
-//#pragma comment(lib, "ws2_32.lib") // Winsock Library
-//#include <WinSock2.h>
-//#pragma comment( lib, "Ws2_32.lib" )
-
-//#include <winsock2.h>
-//#ifndef WIN32_LEAN_AND_MEAN
-//#define WIN32_LEAN_AND_MEAN
-//#endif
-
-//#ifndef WIN32_LEAN_AND_MEAN
-//#define WIN32_LEAN_AND_MEAN
-//#endif
-//#include <WinSock2.h>
-//#include <WS2tcpip.h>
-//#include <Windows.h>
-////#include <WS2tcpip.h>
-
-//#include <winsock.h>
-//#include <windows.h>
-//#endif
-
-//#include <iphlpapi.h>
-//#include <stdio.h>
-//#include <windows.h>
-//#include <ws2tcpip.h>
-
-//#include <WS2tcpip.h>
-
-//#pragma comment(lib, "Ws2_32.lib")
-
-// source:
-// https://www.zachburlingame.com/2011/05/resolving-redefinition-errors-betwen-ws2def-h-and-winsock-h/
-#    ifndef _WINDOWS_
-#        define WIN32_LEAN_AND_MEAN
-#        define NOMINMAX
-#        include <windows.h>
-#        undef WIN32_LEAN_AND_MEAN
-#    endif
-
-#    include <WS2tcpip.h>
-#    include <winsock2.h>
-
-#    pragma comment( lib, "ws2_32.lib" )
-//// end source
-
-using socklen_t = int;
-using socket_fd = SOCKET;
-//#include <basetsd.h>
-// using socket_fd = UINT_PTR;
-
-#else // #ifdef WIN32
-#    define INVALID_SOCKET -1
-#    define closesocket close
-using socket_fd = int;
-#    include <arpa/inet.h>
-#    include <csignal>
-#    include <sys/socket.h>
-#    include <unistd.h>
-#endif // #ifdef WIN32
-
-//#include <cassert>
-//#include <cstring>
-#include <functional>
 #include <iostream>
-#include <list>
-//#include <set>
-//#include <stdio.h>
-#include <cassert>
-#include <mutex>
-#include <string>
-#include <thread>
 
-//#define DEBUG_NET
+#include "Macros.hpp"
 
 namespace hub {
 namespace net {
+namespace utils {
 
-//static std::string getHeader() {
-//    const unsigned int id =
-//        static_cast<int>( std::hash<std::thread::id> {}( std::this_thread::get_id() ) );
-//    std::string str = "[\033[31mNet\033[0m:\033[" + std::to_string( 31 + id % 7 ) + "m" +
-//                      std::to_string( id ) + "]\033[0m ";
-//    return str;
-//}
+    using socket_fd = uint64_t;
+//    using socklen_t = int;
 
-static bool s_inited = false;
-//static std::list<socket_fd> s_sockets;
-//static std::mutex s_mtx;
+    inline socket_fd SRC_API invalidSocket();
+//    inline void SRC_API init();
+    inline bool SRC_API isValid(socket_fd sock);
+    inline void SRC_API closeSocket(socket_fd& sock);
 
-//static void registerSocket( socket_fd socket ) {
-//    s_mtx.lock();
+    ///////////////////////////////////// SERVER ADDRESS ///////////////////////////////////////
 
-//            std::cout << getHeader() << "registerSocket(" << socket << ")" << std::endl;
+    class ServerAddrImpl;
+    class SRC_API ServerAddr {
+    public:
+        explicit ServerAddr();
+      ~ServerAddr();
+//          ~ServerAddr() = default;
 
-//#ifdef DEBUG_NET
-//    std::cout << getHeader() << "registerSocket(" << socket << ")" << std::endl;
-//#endif
-//    s_sockets.push_back( socket );
-//#ifdef DEBUG_NET
-//    std::cout << getHeader() << "s_sockets = ";
-//    for ( const auto& socket : s_sockets ) {
-//        std::cout << socket << " ";
-//    }
-//    std::cout << std::endl;
-//#endif
+        // movable
+//        ServerAddr(ServerAddr && serverAddr) noexcept;
+//        ServerAddr& operator=(ServerAddr && serverAddr) noexcept;
 
-//    s_mtx.unlock();
-//}
+        // not copyable
+//        ServerAddr(const ServerAddr& serverAddr) = delete;
+//        ServerAddr & operator=(const ServerAddr& serverAddr) = delete;
 
-static void clearSocket( socket_fd& sock ) {
-    assert(sock != INVALID_SOCKET);
-//    s_mtx.lock();
+        void init(int port);
+//        void setPort(int port);
+//      private:
+        std::unique_ptr<ServerAddrImpl> m_pimpl;
+    };
+    //socket_fd accept(socket_fd sock, struct sockaddr*, socklen_t*);
+    inline socket_fd SRC_API serverSocket();
+    inline int SRC_API bind(socket_fd sock, ServerAddr& addr);
+    inline int SRC_API listen(socket_fd sock, int backlog);
+    inline socket_fd SRC_API accept(socket_fd sock, ServerAddr& addr);
 
-//            std::cout << getHeader() << "clearSocket(" << sock << ")" << std::endl;
+    /////////////////////////////////////// CLIENT ADDRESS /////////////////////////////////////
 
-#ifdef DEBUG_NET
-    std::cout << getHeader() << "clearSocket(" << sock << ") close socket" << std::endl;
-    std::cout << getHeader() << "s_sockets = ";
-    for ( const auto& socket : s_sockets ) {
-        std::cout << socket << " ";
-    }
-    std::cout << std::endl;
-#endif
-    closesocket( sock );
-//    s_sockets.remove( sock );
-    // assert(s_sockets.size() == size - 1);
+    class ClientAddrImpl;
+    class SRC_API ClientAddr {
+    public:
+        explicit ClientAddr();
+        ~ClientAddr();
 
-//#ifdef WIN32
-//    if ( s_sockets.empty() ) {
-//        s_inited = false;
-        // TODO: find a way to cleanup WSA when program ended
-//    }
-//#endif
+        // movable
+        ClientAddr(ClientAddr && clientAddr) noexcept;
+//        ClientAddr& operator=(ClientAddr && clientAddr) noexcept;
 
-    sock = INVALID_SOCKET;
+//        // not copyable
+//        ClientAddr(const ClientAddr& clientAddr) = delete;
+//        ClientAddr & operator=(const ClientAddr& clientAddr) = delete;
 
-//    s_mtx.unlock();
-}
+        void init(const std::string& ipv4, int port);
+        void setPort(int port);
+        void setIpv4(const std::string& ipv4);
 
-//#ifndef WIN32
-//static void signalHandler( int signum ) {
-//#    ifdef DEBUG_NET
-//    std::cout << getHeader() << "signalHandler() Interrupt signal (" << signum << ") received."
-//              << std::endl;
-//#    endif
+        std::unique_ptr<ClientAddrImpl> m_pimpl;
+    };
+    inline socket_fd SRC_API clientSocket();
+    inline int SRC_API connect(socket_fd sock, ClientAddr& addr);
+    inline int SRC_API send(socket_fd sock, const char* buf, int len, int flags);
+    inline int SRC_API recv(socket_fd, char* buf, int len, int flags);
 
-//    assert( s_sockets.empty() );
-//    std::cout << getHeader() << "signalHandler() Interrupt signal (" << signum << ") received."
-//              << std::endl;
-//    std::cout << getHeader() << "signalHandler() s_sockets size = " << s_sockets.size()
-//              << std::endl;
 
-//    // cleanup and close up stuff here
-//    // terminate program
-//    for ( const socket_fd& sock : s_sockets ) {
-//        if ( sock != INVALID_SOCKET ) {
-//            //#ifdef DEBUG_NET
-//            std::cout << getHeader() << "signalHandler() close socket" << sock << std::endl;
-//            //#endif
-//            closesocket( sock );
-//        }
-//    }
-//    exit( signum );
-//}
-//#endif
 
-static void init() {
-    if ( !s_inited ) {
-#ifdef DEBUG_NET
-        std::cout << getHeader() << "init()" << std::endl;
-#endif
-#if defined WIN32
-        WSADATA wsaData;
-        int iResult = WSAStartup( MAKEWORD( 2, 2 ), &wsaData );
-        if ( iResult != 0 ) {
-            printf( "error at WSAStartup\n" );
-            exit( 1 );
-        }
-#else
-//        signal( SIGINT, signalHandler );
-        signal( SIGPIPE, SIG_IGN );
 
-#endif
-        s_inited = true;
-    }
-}
+    //static std::string getHeader() {
+    //    const unsigned int id =
+    //        static_cast<int>( std::hash<std::thread::id> {}( std::this_thread::get_id() ) );
+    //    std::string str = "[\033[31mNet\033[0m:\033[" + std::to_string( 31 + id % 7 ) + "m" +
+    //                      std::to_string( id ) + "]\033[0m ";
+    //    return str;
+    //}
 
+    //static bool s_inited = false;
+    //static std::list<socket_fd> s_sockets;
+    //static std::mutex s_mtx;
+
+    //static void registerSocket( socket_fd socket ) {
+    //    s_mtx.lock();
+
+    //            std::cout << getHeader() << "registerSocket(" << socket << ")" << std::endl;
+
+    //#ifdef DEBUG_NET
+    //    std::cout << getHeader() << "registerSocket(" << socket << ")" << std::endl;
+    //#endif
+    //    s_sockets.push_back( socket );
+    //#ifdef DEBUG_NET
+    //    std::cout << getHeader() << "s_sockets = ";
+    //    for ( const auto& socket : s_sockets ) {
+    //        std::cout << socket << " ";
+    //    }
+    //    std::cout << std::endl;
+    //#endif
+
+    //    s_mtx.unlock();
+    //}
+
+    } // namespace utils
 } // namespace net
 } // namespace hub

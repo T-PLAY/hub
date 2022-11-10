@@ -92,7 +92,8 @@ void Dof6Component::update( const hub::Acquisition& acq ) {
 
 Aabb Dof6Component::getAabb() const {
     Aabb aabb = m_entity->computeAabb();
-    aabb.transform( m_entity->getTransform() );
+//    aabb.transform( m_entity->getTransform() );
+//    aabb.translate(m_entity->getTransformAsMatrix());
     return aabb;
 }
 

@@ -4,23 +4,22 @@
 
 #include <QObject>
 #include <QThread>
-
-#include <Gui/Viewer/Viewer.hpp>
-
 #include <QMdiArea>
 #include <QStandardItem>
-#include <WidgetStreamView.h>
+
+#include <Gui/Viewer/Viewer.hpp>
 
 #include <Dof6Component.hpp>
 #include <ScanComponent.hpp>
 #include <SensorComponent.h>
-
 #ifdef ENABLE_IMAGE_VIEWER
 #    include <FormImageManipulator.h>
 #endif
 #include <WidgetStreamView.h>
+#include <FormStreamViews.h>
 
-#include <InputSensor.hpp>
+//#include <InputSensor.hpp>
+//#include <IO/Stream.hpp>
 
 class Sensor;
 

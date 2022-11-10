@@ -1,17 +1,19 @@
 #include "Sensor.h"
 
-#include <Engine/Scene/EntityManager.hpp>
+
 #include <QMdiSubWindow>
 #include <WidgetStreamView.h>
 
+#include <Engine/Scene/EntityManager.hpp>
 #include <Core/Utils/Observable.hpp>
 #include <Engine/Scene/Entity.hpp>
+#include <Gui/Viewer/RotateAroundCameraManipulator.hpp>
+
+#include <IO/Stream.hpp>
+//#include <InputSensor.hpp>
+#include <SensorSpec.hpp>
 
 #include <FormStreamViews.h>
-#include <Gui/Viewer/RotateAroundCameraManipulator.hpp>
-#include <IO/Stream.hpp>
-#include <InputSensor.hpp>
-#include <SensorSpec.hpp>
 
 SensorThread::SensorThread( Sensor& sensor, QObject* parent ) :
     QThread { parent }, m_sensor( sensor ) {}
