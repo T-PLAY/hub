@@ -32,10 +32,15 @@ int main( int argc, char* argv[] ) {
     std::filesystem::create_directories( newRecordFolder );
 
     std::vector<std::pair<std::string, std::string>> streamNames {
-        { "Polhemus Patriot (sensor 2)", "ULA-OP 256" } };
+          { "Polhemus Patriot (sensor 2)", ""}, { "ULA-OP 256", "" } };
+//        { "Polhemus Patriot (sensor 2)", ""}, {"ULA-OP 256", ""} };
+//        { "Polhemus Patriot (sensor 2)", ""}};
+//        { "Polhemus Patriot (sensor 2)", ""}, {"Polhemus Patriot (sensor 1)", ""}};
     std::vector<std::thread> threads;
 
     for ( const auto& streamName : streamNames ) {
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
         threads.push_back( std::thread( [=, &stopThread]() {
             hub::InputSensor inputSensor( hub::io::InputStream(
