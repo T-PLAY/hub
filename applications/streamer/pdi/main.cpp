@@ -12,7 +12,7 @@
 #include <IO/Stream.hpp>
 #include <OutputSensor.hpp>
 
-//#include <windows.h>
+#include <windows.h>
 //#include <windef.h>
 //#include <minwindef.h>
 #include <PDI.h>
