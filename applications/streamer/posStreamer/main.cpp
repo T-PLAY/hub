@@ -14,7 +14,8 @@
 #include <OutputSensor.hpp>
 
 #ifdef WIN32
-#    include <WinUser.h>
+    #include <windows.h>
+    #include <WinUser.h>
 #else
 //#include <ncurses.h>
 #endif

@@ -3,7 +3,7 @@
 #include <regex>
 
 #include "IO/Interface.hpp"
-#include "Socket.hpp"
+#include "Net/Socket.hpp"
 
 namespace hub {
 namespace net {
