@@ -219,7 +219,8 @@ Aabb ScanComponent::getAabb() const {
     Aabb aabb;
     if ( m_nScans == 0 ) {
         aabb = m_entity->computeAabb();
-        aabb.transform( m_entity->getTransform() );
+//        aabb.transform( m_entity->getTransform() );
+//        aabb.translate( m_entity->getTransformAsMatrix() );
     }
     else {
         for ( int i = 0; i < m_nScans; ++i ) {

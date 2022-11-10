@@ -29,12 +29,13 @@ Socket::Socket() {
 #ifdef DEBUG_SOCKET
     DEBUG_MSG( getHeader( m_fdSock ) << "Socket()" );
 #endif
-    net::init();
+//    net::utils::init();
 }
 
 Socket::Socket( Socket&& socket ) {
     m_fdSock        = socket.m_fdSock;
-    socket.m_fdSock = INVALID_SOCKET;
+//    socket.m_fdSock = INVALID_SOCKET;
+    socket.m_fdSock = net::utils::invalidSocket();
 }
 
 //void Socket::clear() const {
@@ -54,18 +55,21 @@ Socket::~Socket() {
     DEBUG_MSG( getHeader( m_fdSock ) << "~Socket()" );
 #endif
 
-    if ( m_fdSock != INVALID_SOCKET ) {
+//    if ( m_fdSock != INVALID_SOCKET ) {
+    if ( net::utils::isValid(m_fdSock) ) {
 #ifdef DEBUG_SOCKET
         DEBUG_MSG( getHeader( m_fdSock ) << "close socket" );
 #endif
-        net::clearSocket( m_fdSock );
+        net::utils::closeSocket( m_fdSock );
 //        close(m_fdSock);
-        m_fdSock = INVALID_SOCKET;
+//        m_fdSock = INVALID_SOCKET;
+        m_fdSock = net::utils::invalidSocket();
     }
 }
 
 bool Socket::isConnected() const {
-    assert(m_fdSock != INVALID_SOCKET);
+//    assert(m_fdSock != INVALID_SOCKET);
+    assert(net::utils::isValid(m_fdSock));
 
 #ifdef WIN32
     // not sure how to check this in windows

@@ -122,6 +122,9 @@
 // exception handling mode 	#pragma warning(disable: 4838) // conversion from enum to uint.
 // #pragma warning(disable: 4996) // sprintf unsafe 	#pragma warning(disable: 4503) // Truncated
 // decorated name
+    #ifndef NOMINMAX
+        #define NOMINMAX
+    #endif
 #endif
 
 // ----------------------------------------------------------------------------
@@ -166,6 +169,8 @@
 #    else
 #        define SRC_API __declspec( dllimport )
 #    endif
+
+//    #include <windows.h>
 
 #else
 #    define SRC_API
