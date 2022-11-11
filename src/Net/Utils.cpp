@@ -9,11 +9,11 @@
 #ifdef WIN32
 
 //#include <windows.h>
-#    include <winsock2.h>
-#    include <ws2tcpip.h>
+    #include <winsock2.h>
+    #include <ws2tcpip.h>
 //#include <WS2tcpip.h>
 
-#    pragma comment( lib, "ws2_32.lib" )
+    #pragma comment( lib, "ws2_32.lib" )
 //#pragma comment(lib, "Ws2_32.lib")
 
 // using socklen_t = int;
@@ -23,13 +23,13 @@
 // using socket_fd = UINT_PTR;
 
 #else // #ifdef WIN32
-#    define INVALID_SOCKET -1
-#    define closesocket close
+    #define INVALID_SOCKET -1ul
+    #define closesocket close
 //using socket_fd = int;
-#    include <arpa/inet.h>
-#    include <csignal>
-#    include <sys/socket.h>
-#    include <unistd.h>
+    #include <arpa/inet.h>
+    #include <csignal>
+    #include <sys/socket.h>
+    #include <unistd.h>
 #endif // #ifdef WIN32
 
 namespace hub {

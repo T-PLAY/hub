@@ -218,9 +218,22 @@ void ScanComponent::update( const hub::Acquisition& acq ) {
 Aabb ScanComponent::getAabb() const {
     Aabb aabb;
     if ( m_nScans == 0 ) {
-        aabb = m_entity->computeAabb();
-//        aabb.transform( m_entity->getTransform() );
-//        aabb.translate( m_entity->getTransformAsMatrix() );
+//        aabb                  = m_entity->computeAabb();
+        aabb = m_scans.at(0).m_quad->computeAabb();
+
+        const auto& transform = m_entity->getTransform();
+        //    aabb.transform( m_entity->getTransform() );
+        const Eigen::AlignedBox3f::VectorType rotated_extent_2 =
+            transform.linear().cwiseAbs() * aabb.sizes();
+        const Eigen::AlignedBox3f::VectorType rotated_center_2 =
+            transform.linear() * ( aabb.max() + aabb.min() ) +
+            Scalar( 2 ) * transform.translation();
+        Eigen::AlignedBox3f::VectorType min, max;
+        max = ( rotated_center_2 + rotated_extent_2 ) / Scalar( 2 );
+        min = ( rotated_center_2 - rotated_extent_2 ) / Scalar( 2 );
+        return Aabb( min, max );
+        //        aabb.transform( m_entity->getTransform() );
+        //        aabb.translate( m_entity->getTransformAsMatrix() );
     }
     else {
         for ( int i = 0; i < m_nScans; ++i ) {

@@ -91,10 +91,20 @@ void Dof6Component::update( const hub::Acquisition& acq ) {
 }
 
 Aabb Dof6Component::getAabb() const {
-    Aabb aabb = m_entity->computeAabb();
+    const Aabb aabb = m_entity->computeAabb();
+    const auto transform = m_entity->getTransform();
+
 //    aabb.transform( m_entity->getTransform() );
+    const Eigen::AlignedBox3f::VectorType rotated_extent_2 = transform.linear().cwiseAbs() * aabb.sizes();
+    const Eigen::AlignedBox3f::VectorType rotated_center_2 = transform.linear() * (aabb.max() + aabb.min()) +
+        Scalar(2) * transform.translation();
+    Eigen::AlignedBox3f::VectorType min, max;
+    max = (rotated_center_2 + rotated_extent_2) / Scalar(2);
+    min = (rotated_center_2 - rotated_extent_2) / Scalar(2);
+    return Aabb(min, max);
+
 //    aabb.translate(m_entity->getTransformAsMatrix());
-    return aabb;
+//    return aabb;
 }
 
 void Dof6Component::enableTrace( bool enable ) {}

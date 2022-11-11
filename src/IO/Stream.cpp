@@ -17,7 +17,7 @@ OutputStream::OutputStream( const std::string& streamName, net::ClientSocket&& c
     Interface::read( mess );
     if ( mess == net::ClientSocket::Message::FOUND ) {
         throw net::Socket::exception(
-            ( std::string( "sensor '" ) + streamName + "' is already attached to server" )
+            ( std::string( "stream '" ) + streamName + "' is already attached to server" )
                 .c_str() );
     }
     assert( mess == net::ClientSocket::Message::NOT_FOUND );
@@ -65,7 +65,7 @@ InputStream::InputStream(const std::string& streamName,
                                          << "' is not attached to server" );
 #endif
         throw ClientSocket::exception(
-            ( std::string( "sensor '" ) + streamName + "' is not attached to server" ).c_str() );
+            ( std::string( "stream '" ) + streamName + "' is not attached to server" ).c_str() );
     }
     assert( mess == ClientSocket::Message::OK );
 
@@ -73,7 +73,7 @@ InputStream::InputStream(const std::string& streamName,
     Interface::read( mess );
     if ( mess == ClientSocket::Message::NOT_FOUND ) {
         throw ClientSocket::exception(
-            ( std::string( "sync sensor '" ) + syncStreamName + "' is not attached to server" )
+            ( std::string( "sync stream '" ) + syncStreamName + "' is not attached to server" )
                 .c_str() );
     }
     assert( mess == ClientSocket::Message::OK );

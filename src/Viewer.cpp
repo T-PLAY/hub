@@ -62,6 +62,7 @@ Viewer::Viewer(
                     } break;
 
                     case net::ClientSocket::Message::NEW_STREAMER: {
+//                        std::cout << "[Viewer] new message : NEW_STREAMER" << std::endl;
 
                         //                        Stream newStream( *this );
 
@@ -70,6 +71,8 @@ Viewer::Viewer(
                         //                        m_sock.read( newStream.m_streamName );
                         SensorSpec sensorSpec;
                         m_sock.read( sensorSpec );
+                        std::cout << "[Viewer] new streamer '" << streamName << "'" << std::endl;
+
                         //                        m_sock.read( newStream.m_sensorSpec );
                         std::string syncStreamName = "";
 //                                                m_sock.read(syncStreamName);
@@ -99,16 +102,16 @@ Viewer::Viewer(
                         if ( m_onNewStreamer ) {
                             const bool added = m_onNewStreamer( streamId.c_str(), sensorSpec );
 
-                                m_streams[streamId] = std::make_unique<Stream>( *this );
-                                //                        = std::make_unique<Stream>( std::move(
-                                //                        newStream ) );
+                            m_streams[streamId] = std::make_unique<Stream>( *this );
+                            //                        = std::make_unique<Stream>( std::move(
+                            //                        newStream ) );
 
-                                auto& newStream            = *m_streams.at( streamId );
-                                newStream.m_streamId       = streamId;
-                                newStream.m_streamName     = streamName;
-                                newStream.m_sensorSpec     = sensorSpec;
-                                newStream.m_syncStreamName = syncStreamName;
-                                newStream.m_added = added;
+                            auto& newStream            = *m_streams.at( streamId );
+                            newStream.m_streamId       = streamId;
+                            newStream.m_streamName     = streamName;
+                            newStream.m_sensorSpec     = sensorSpec;
+                            newStream.m_syncStreamName = syncStreamName;
+                            newStream.m_added          = added;
 
                             if ( m_onNewAcquisition && added ) {
 
@@ -132,6 +135,8 @@ Viewer::Viewer(
                         m_sock.read( streamName );
                         SensorSpec sensorSpec;
                         m_sock.read( sensorSpec );
+                        std::cout << "[Viewer] del streamer '" << streamName << "'" << std::endl;
+
                         std::string syncStreamName = "";
 //                        m_sock.read( syncStreamName );
 //                        const auto& metaData = sensorSpec.m_metaData;
@@ -150,12 +155,13 @@ Viewer::Viewer(
                                                    ? ( streamName )
                                                    : ( streamName + " <- " + syncStreamName );
 
-
                         if ( m_onDelStreamer ) {
                             assert( m_streams.find( streamId ) != m_streams.end() );
                             auto& delStream = *m_streams.at( streamId );
 
-                            if ( m_onNewAcquisition && delStream.m_added ) { delStream.stopStream(); }
+                            if ( m_onNewAcquisition && delStream.m_added ) {
+                                delStream.stopStream();
+                            }
 
                             m_onDelStreamer( streamId.c_str(), sensorSpec );
                             m_streams.erase( streamId );
@@ -195,9 +201,11 @@ Viewer::Viewer(
 
             if ( m_serverConnected ) {
                 m_serverConnected = false;
+                    DEBUG_MSG( "[Viewer] server disconnected, close all client connections" );
 
                 if ( m_onServerDisconnected )
                     m_onServerDisconnected( m_sock.getIpv4().c_str(), m_sock.getPort() );
+
 
                 for ( const auto& [streamId, stream] : m_streams ) {
                     //                    const auto& streamId = pair.first;
@@ -207,7 +215,7 @@ Viewer::Viewer(
 
                     //                    if ( m_onNewAcquisition ) { stream->stopStream(); }
                     if ( m_onDelStreamer ) {
-                        if ( m_onNewAcquisition ) { stream->stopStream(); }
+                        if ( m_onNewAcquisition && stream->m_added ) { stream->stopStream(); }
 
                         m_onDelStreamer( streamId.c_str(), sensorSpec );
                     }
@@ -304,13 +312,19 @@ void Viewer::Stream::startStream() {
                        << m_streamId << "'" << m_streamName << "'" << m_syncStreamName
                        << "' disconnected, catch exception " << e.what() );
         }
+
+        if ( m_stopThread ) {
+            DEBUG_MSG( "[Viewer] streamer '" << m_streamId << "' thread killed " );
+        }
     } );
 
     DEBUG_MSG( "[Viewer] startStream() streamer '" << m_streamId << "' inited " );
 }
 
 void Viewer::Stream::stopStream() {
+    DEBUG_MSG( "[Stream] stopStream() streamer '" << m_streamId << "' started" );
 
+    assert(m_thread != nullptr);
     assert( m_stopThread == false );
     //    if ( m_streamName2stopThread.find( streamId ) != m_streamName2stopThread.end() ) {
     //        m_streamName2stopThread.at( streamId ) = true;
@@ -323,7 +337,7 @@ void Viewer::Stream::stopStream() {
     delete m_thread;
     m_thread = nullptr;
 
-    DEBUG_MSG( "[Viewer] stopStream() streamer '" << m_streamId << "' ended" );
+    DEBUG_MSG( "[Stream] stopStream() streamer '" << m_streamId << "' ended" );
     //        m_streamName2stopThread.erase( streamId );
     //        m_streamName2thread.erase( streamId );
     //    }

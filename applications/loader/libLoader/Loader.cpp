@@ -59,9 +59,7 @@ void Loader::load( const std::set<std::string>& paths ) {
 
         if ( std::filesystem::is_directory( path ) ) {
             for ( const auto& fileDir : std::filesystem::directory_iterator( path ) ) {
-                if ( std::filesystem::is_regular_file( fileDir ) ) {
-                    filePaths.insert( fileDir );
-                }
+                if ( std::filesystem::is_regular_file( fileDir ) ) { filePaths.insert( fileDir ); }
             }
         }
         else {
@@ -134,7 +132,14 @@ void Loader::load( const std::set<std::string>& paths ) {
         m_loadedPaths.insert( path );
     }
     //    m_loadedPath = paths;
+
+
     emit pathLoaded();
+
+    if ( m_snaps.empty() ) {
+        std::cout << "[Loader] unable to play : empty snaps" << std::endl;
+        return;
+    }
 
     for ( const auto& snap : m_snaps ) {
         if ( snap.m_acq.getMeasures().size() == 2 ) {
@@ -160,10 +165,9 @@ void Loader::unload() {
 
     assert( m_thread == nullptr );
     assert( isLoaded() );
-    assert( !m_outputStreams.empty() );
+//    assert( !m_outputStreams.empty() );
     m_snaps.clear();
     m_loadedPaths.clear();
-
     m_outputStreams.clear();
 }
 
@@ -175,6 +179,8 @@ void Loader::play() {
     std::cout << "[Loader] start playing" << std::endl;
     assert( m_thread == nullptr );
     assert( !m_isPlaying );
+
+    assert(! m_snaps.empty());
 
     m_isPlaying = true;
     m_thread    = new std::thread( [this]() {
