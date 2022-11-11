@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <memory>
 
 #include "Macros.hpp"
 
@@ -11,10 +12,11 @@ namespace utils {
     using socket_fd = uint64_t;
 //    using socklen_t = int;
 
-    inline socket_fd SRC_API invalidSocket();
-//    inline void SRC_API init();
-    inline bool SRC_API isValid(socket_fd sock);
-    inline void SRC_API closeSocket(socket_fd& sock);
+     socket_fd SRC_API invalidSocket();
+//     void SRC_API init();
+     bool SRC_API isValid(socket_fd sock);
+     void SRC_API closeSocket(socket_fd& sock);
+     bool SRC_API isConnected(socket_fd sock);
 
     ///////////////////////////////////// SERVER ADDRESS ///////////////////////////////////////
 
@@ -39,10 +41,10 @@ namespace utils {
         std::unique_ptr<ServerAddrImpl> m_pimpl;
     };
     //socket_fd accept(socket_fd sock, struct sockaddr*, socklen_t*);
-    inline socket_fd SRC_API serverSocket();
-    inline int SRC_API bind(socket_fd sock, ServerAddr& addr);
-    inline int SRC_API listen(socket_fd sock, int backlog);
-    inline socket_fd SRC_API accept(socket_fd sock, ServerAddr& addr);
+     socket_fd SRC_API serverSocket();
+     int SRC_API bind(socket_fd sock, ServerAddr& addr);
+     int SRC_API listen(socket_fd sock, int backlog);
+    socket_fd SRC_API accept(socket_fd sock, ServerAddr& addr);
 
     /////////////////////////////////////// CLIENT ADDRESS /////////////////////////////////////
 
@@ -66,10 +68,10 @@ namespace utils {
 
         std::unique_ptr<ClientAddrImpl> m_pimpl;
     };
-    inline socket_fd SRC_API clientSocket();
-    inline int SRC_API connect(socket_fd sock, ClientAddr& addr);
-    inline int SRC_API send(socket_fd sock, const char* buf, int len, int flags);
-    inline int SRC_API recv(socket_fd, char* buf, int len, int flags);
+     socket_fd SRC_API clientSocket();
+     int SRC_API connect(socket_fd sock, ClientAddr& addr);
+     int SRC_API send(socket_fd sock, const char* buf, int len, int flags);
+     int SRC_API recv(socket_fd, char* buf, int len, int flags);
 
 
 

@@ -3,6 +3,7 @@
 #include <cstring>
 
 #include <Configurations.hpp>
+#include <Net/Utils.hpp>
 
 
 namespace hub {

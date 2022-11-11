@@ -1,14 +1,15 @@
 #pragma once
 
-#include "Client.hpp"
-
-#include <InputSensor.hpp>
-#include <Net/ClientSocket.hpp>
-
 #include <deque>
 #include <memory>
 #include <mutex>
 #include <set>
+#include <thread>
+
+#include <InputSensor.hpp>
+#include <Net/ClientSocket.hpp>
+
+#include "Client.hpp"
 
 class Server;
 class StreamViewerClient;

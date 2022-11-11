@@ -2,276 +2,289 @@
 #include "Utils.hpp"
 
 #include <cassert>
+#include <cstring>
 #include <stdio.h>
 #include <stdlib.h>
 
 #ifdef WIN32
 
 //#include <windows.h>
-#include <winsock2.h>
-#include <ws2tcpip.h>
+#    include <winsock2.h>
+#    include <ws2tcpip.h>
 //#include <WS2tcpip.h>
 
-#pragma comment( lib, "ws2_32.lib" )
+#    pragma comment( lib, "ws2_32.lib" )
 //#pragma comment(lib, "Ws2_32.lib")
 
-//using socklen_t = int;
-//using socket_fd = SOCKET;
+// using socklen_t = int;
+// using socket_fd = SOCKET;
 
 //#include <basetsd.h>
 // using socket_fd = UINT_PTR;
 
 #else // #ifdef WIN32
-#define INVALID_SOCKET -1
-#define closesocket close
-using socket_fd = int;
-#include <arpa/inet.h>
-#include <csignal>
-#include <sys/socket.h>
-#include <unistd.h>
+#    define INVALID_SOCKET -1
+#    define closesocket close
+//using socket_fd = int;
+#    include <arpa/inet.h>
+#    include <csignal>
+#    include <sys/socket.h>
+#    include <unistd.h>
 #endif // #ifdef WIN32
 
 namespace hub {
 namespace net {
-    namespace utils {
+namespace utils {
 
-        static bool s_inited = false;
+static bool s_inited = false;
 
-        inline socket_fd invalidSocket()
-        {
-            return INVALID_SOCKET;
-        }
+ socket_fd invalidSocket() {
+    return INVALID_SOCKET;
+}
 
-        static inline void init()
-        {
-            if (!s_inited) {
+static inline  void init() {
+    if ( !s_inited ) {
 #ifdef DEBUG_NET
-                std::cout << getHeader() << "init()" << std::endl;
+        std::cout << getHeader() << "init()" << std::endl;
 #endif
 #if defined WIN32
-                WSADATA wsaData;
-                int iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
-                if (iResult != 0) {
-                    printf("error at WSAStartup\n");
-                    exit(1);
-                }
+        WSADATA wsaData;
+        int iResult = WSAStartup( MAKEWORD( 2, 2 ), &wsaData );
+        if ( iResult != 0 ) {
+            printf( "error at WSAStartup\n" );
+            exit( 1 );
+        }
 #else
-                //        signal( SIGINT, signalHandler );
-                signal(SIGPIPE, SIG_IGN);
+        //        signal( SIGINT, signalHandler );
+//        signal( SIGPIPE, SIG_IGN );
 
 #endif
-                s_inited = true;
-            }
-        }
+        s_inited = true;
+    }
+}
 
-        inline bool isValid(socket_fd sock)
-        {
-            return sock != INVALID_SOCKET;
-        }
+ bool isValid( socket_fd sock ) {
+    return sock != INVALID_SOCKET;
+}
 
-        inline void closeSocket(socket_fd& sock)
-        {
-            assert(sock != INVALID_SOCKET);
-            //    s_mtx.lock();
+ void closeSocket( socket_fd& sock ) {
+    assert( sock != INVALID_SOCKET );
+    //    s_mtx.lock();
 
-            //            std::cout << getHeader() << "closeSocket(" << sock << ")" << std::endl;
+    //            std::cout << getHeader() << "closeSocket(" << sock << ")" << std::endl;
 
 #ifdef DEBUG_NET
-            std::cout << getHeader() << "closeSocket(" << sock << ") close socket" << std::endl;
-            std::cout << getHeader() << "s_sockets = ";
-            for (const auto& socket : s_sockets) {
-                std::cout << socket << " ";
-            }
-            std::cout << std::endl;
+    std::cout << getHeader() << "closeSocket(" << sock << ") close socket" << std::endl;
+    std::cout << getHeader() << "s_sockets = ";
+    for ( const auto& socket : s_sockets ) {
+        std::cout << socket << " ";
+    }
+    std::cout << std::endl;
 #endif
-            ::closesocket(sock);
-            //    s_sockets.remove( sock );
-            // assert(s_sockets.size() == size - 1);
+    ::closesocket( sock );
+    //    s_sockets.remove( sock );
+    // assert(s_sockets.size() == size - 1);
 
-            //#ifdef WIN32
-            //    if ( s_sockets.empty() ) {
-            //        s_inited = false;
-            // TODO: find a way to cleanup WSA when program ended
-            //    }
-            //#endif
+    //#ifdef WIN32
+    //    if ( s_sockets.empty() ) {
+    //        s_inited = false;
+    // TODO: find a way to cleanup WSA when program ended
+    //    }
+    //#endif
 
-            sock = INVALID_SOCKET;
+    sock = INVALID_SOCKET;
 
-            //    s_mtx.unlock();
-        }
+    //    s_mtx.unlock();
+}
 
-        /////////////////////////////// SERVER ADDRESS /////////////////////////////////////////////
+bool isConnected( socket_fd sock ) {
+    //    assert(m_fdSock != INVALID_SOCKET);
+    assert( net::utils::isValid( sock ) );
 
-        class ServerAddrImpl {
-        public:
-            void init(int port)
-            {
-                //    // Server address construction
-                memset(&m_sockAddr, 0, sizeof(m_sockAddr));
-                m_sockAddr.sin_family = AF_INET;
-                m_sockAddr.sin_addr.s_addr = INADDR_ANY;
-                m_sockAddr.sin_port = htons(port); // Server port
-            }
-//            ~ServerAddrImpl() = default;
-            //            sockaddr_in & get();
-            //            void setPort(int port) {
-            //            }
+#ifdef WIN32
+    // not sure how to check this in windows
+    return true;
+#else
 
-            //          private:
-            struct sockaddr_in m_sockAddr;
-        };
+    // TODO - make this better, because its probably wrong (but seems to work)
 
-        ServerAddr::ServerAddr()
-            : m_pimpl(new ServerAddrImpl)
-        {
-        }
+    int optval;
+    socklen_t optlen = sizeof( optval );
 
-        ServerAddr::~ServerAddr() = default;
-        //        {
-        //            m_pimpl.release();
-        //            m_pimpl.release();
-        //            m_pimpl.reset();
-        //        }
+    int res;
+    //    try {
+    res = getsockopt( sock, SOL_SOCKET, SO_ERROR, &optval, &optlen );
+    //    }
+    //    catch ( std::exception& e ) {
+    //        std::cout << "[Socket] isConnected() catch exception : " << e.what() << std::endl;
+    //        return false;
+    //    }
+    //    catch ( std::runtime_error& e ) {
+    //        std::cout << "[Socket] isConnected() catch runtime error : " << e.what() << std::endl;
+    //        return false;
+    //    }
 
-        //        ServerAddr::ServerAddr(ServerAddr &&serverAddr) noexcept = default;
-        //        ServerAddr &ServerAddr::operator=(ServerAddr &&serverAddr) noexcept = default;
+    if ( optval == 0 && res == 0 ) return true;
+#endif
 
-        void ServerAddr::init(int port)
-        {
-            m_pimpl->init(port);
-        }
+    return false;
+}
 
-        //        void ServerAddr::setPort(int port)
-        //        {
-        //            m_pimpl->setPort(port);
-        //        }
+/////////////////////////////// SERVER ADDRESS /////////////////////////////////////////////
 
-        inline socket_fd serverSocket()
-        {
-            if (! s_inited) init();
-            return ::socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
-        }
+class ServerAddrImpl
+{
+  public:
+    void init( int port ) {
+        //    // Server address construction
+        memset( &m_sockAddr, 0, sizeof( m_sockAddr ) );
+        m_sockAddr.sin_family      = AF_INET;
+        m_sockAddr.sin_addr.s_addr = INADDR_ANY;
+        m_sockAddr.sin_port        = htons( port ); // Server port
+    }
+    //            ~ServerAddrImpl() = default;
+    //            sockaddr_in & get();
+    //            void setPort(int port) {
+    //            }
 
-        inline int bind(socket_fd sock, ServerAddr& addr)
-        {
-            //            return addr.bind(sock);
-            return ::bind(sock, (struct sockaddr*)&addr.m_pimpl->m_sockAddr, sizeof(struct sockaddr_in));
-            //                return ::bind(sock, addr, namelen);
-        }
+    //          private:
+    struct sockaddr_in m_sockAddr;
+};
 
-        inline int listen(socket_fd sock, int backlog)
-        {
-            return ::listen(sock, backlog);
-        }
+ServerAddr::ServerAddr() : m_pimpl( new ServerAddrImpl ) {}
 
-        inline socket_fd accept(socket_fd sock, ServerAddr& addr)
-        {
-            auto& sockAddr = addr.m_pimpl->m_sockAddr;
-            socklen_t addrlen = sizeof(sockAddr);
-            socket_fd new_socket = accept(sock, (struct sockaddr*)&sockAddr, &addrlen);
-            return new_socket;
-            //    socklen_t addrlen    = sizeof( mAddress );
-            //    return ::accept(sock, address, addrLen);
-        }
+ServerAddr::~ServerAddr() = default;
+//        {
+//            m_pimpl.release();
+//            m_pimpl.release();
+//            m_pimpl.reset();
+//        }
 
-        //socket_fd socket()
-        //{
-        //    return ::socket( PF_INET, SOCK_STREAM, 0 );
-        //}
+//        ServerAddr::ServerAddr(ServerAddr &&serverAddr) noexcept = default;
+//        ServerAddr &ServerAddr::operator=(ServerAddr &&serverAddr) noexcept = default;
 
-        ///////////////////////////////// CLIENT ADDRESS ///////////////////////////////////////////
+void ServerAddr::init( int port ) {
+    m_pimpl->init( port );
+}
 
-        class ClientAddrImpl {
-        public:
-//            ~ClientAddrImpl() = default;
-            void init(const std::string& ipv4, int port)
-            {
-                //    // Server address construction
-                //                memset( &m_sockAddr, 0, sizeof( m_sockAddr ) );
-                //                m_sockAddr.sin_family      = AF_INET;
-                //                m_sockAddr.sin_addr.s_addr = INADDR_ANY;
-                //                m_sockAddr.sin_port        = htons( port ); // Server port
-                // Server address construction
-                //                struct sockaddr_in serv_addr;
-                memset(&m_sockAddr, 0, sizeof(m_sockAddr));
-                m_sockAddr.sin_family = AF_INET;
-                // m_sockAddr.sin_addr.s_addr = inet_addr(m_ipv4.c_str()); // winsock 1.0
-                inet_pton(AF_INET, ipv4.c_str(), &m_sockAddr.sin_addr.s_addr); // winsock 2.0
-                m_sockAddr.sin_port = htons(port); // Server port
-            }
+//        void ServerAddr::setPort(int port)
+//        {
+//            m_pimpl->setPort(port);
+//        }
 
-            //            sockaddr_in & get();
-            //            void setPort(int port) {
-            //            }
-            void setPort(int port)
-            {
-                m_sockAddr.sin_port = htons(port); // Server port
-            }
-            void setIpv4(const std::string& ipv4)
-            {
-                inet_pton(AF_INET, ipv4.c_str(), &m_sockAddr.sin_addr.s_addr); // winsock 2.0
-            }
+ socket_fd serverSocket() {
+    if ( !s_inited ) init();
+    return ::socket( PF_INET, SOCK_STREAM, IPPROTO_TCP );
+}
 
-            //          private:
-            struct sockaddr_in m_sockAddr;
-        };
+ int bind( socket_fd sock, ServerAddr& addr ) {
+    //            return addr.bind(sock);
+    return ::bind(
+        sock, (struct sockaddr*)&addr.m_pimpl->m_sockAddr, sizeof( struct sockaddr_in ) );
+    //                return ::bind(sock, addr, namelen);
+}
 
-        ClientAddr::ClientAddr()
-            : m_pimpl(new ClientAddrImpl)
-        {
-        }
+ int listen( socket_fd sock, int backlog ) {
+    return ::listen( sock, backlog );
+}
 
-        ClientAddr::~ClientAddr() = default;
-        ClientAddr::ClientAddr(ClientAddr&& clientAddr) noexcept = default;
+socket_fd accept( socket_fd sock, ServerAddr& addr ) {
+    auto& sockAddr       = addr.m_pimpl->m_sockAddr;
+    socklen_t addrlen    = sizeof( sockAddr );
+    socket_fd new_socket = accept( sock, (struct sockaddr*)&sockAddr, &addrlen );
+    return new_socket;
+    //    socklen_t addrlen    = sizeof( mAddress );
+    //    return ::accept(sock, address, addrLen);
+}
+
+// socket_fd socket()
+//{
+//     return ::socket( PF_INET, SOCK_STREAM, 0 );
+// }
+
+///////////////////////////////// CLIENT ADDRESS ///////////////////////////////////////////
+
+class ClientAddrImpl
+{
+  public:
+    //            ~ClientAddrImpl() = default;
+    void init( const std::string& ipv4, int port ) {
+        //    // Server address construction
+        //                memset( &m_sockAddr, 0, sizeof( m_sockAddr ) );
+        //                m_sockAddr.sin_family      = AF_INET;
+        //                m_sockAddr.sin_addr.s_addr = INADDR_ANY;
+        //                m_sockAddr.sin_port        = htons( port ); // Server port
+        // Server address construction
+        //                struct sockaddr_in serv_addr;
+        memset( &m_sockAddr, 0, sizeof( m_sockAddr ) );
+        m_sockAddr.sin_family = AF_INET;
+        // m_sockAddr.sin_addr.s_addr = inet_addr(m_ipv4.c_str()); // winsock 1.0
+        inet_pton( AF_INET, ipv4.c_str(), &m_sockAddr.sin_addr.s_addr ); // winsock 2.0
+        m_sockAddr.sin_port = htons( port );                             // Server port
+    }
+
+    //            sockaddr_in & get();
+    //            void setPort(int port) {
+    //            }
+    void setPort( int port ) {
+        m_sockAddr.sin_port = htons( port ); // Server port
+    }
+    void setIpv4( const std::string& ipv4 ) {
+        inet_pton( AF_INET, ipv4.c_str(), &m_sockAddr.sin_addr.s_addr ); // winsock 2.0
+    }
+
+    //          private:
+    struct sockaddr_in m_sockAddr;
+};
+
+ClientAddr::ClientAddr() : m_pimpl( new ClientAddrImpl ) {}
+
+ClientAddr::~ClientAddr()                                  = default;
+ClientAddr::ClientAddr( ClientAddr&& clientAddr ) noexcept = default;
 //        ClientAddr& ClientAddr::operator=(ClientAddr&& clientAddr) noexcept = default;
 
-        //        ClientAddr::ClientAddr(const ClientAddr &clientAddr)
-        //            : m_pimpl(new ClientAddrImpl(*clientAddr.m_pimpl)) {}
+//        ClientAddr::ClientAddr(const ClientAddr &clientAddr)
+//            : m_pimpl(new ClientAddrImpl(*clientAddr.m_pimpl)) {}
 
-        //        ClientAddr &ClientAddr::operator=(const ClientAddr &clientAddr) {
-        //            if (this != &clientAddr)
-        //                m_pimpl.reset(new ClientAddrImpl(*clientAddr.m_pimpl));
-        //            return *this;
-        //        }
+//        ClientAddr &ClientAddr::operator=(const ClientAddr &clientAddr) {
+//            if (this != &clientAddr)
+//                m_pimpl.reset(new ClientAddrImpl(*clientAddr.m_pimpl));
+//            return *this;
+//        }
 
-        void ClientAddr::init(const std::string& ipv4, int port)
-        {
-            m_pimpl->init(ipv4, port);
-        }
+void ClientAddr::init( const std::string& ipv4, int port ) {
+    m_pimpl->init( ipv4, port );
+}
 
-        void ClientAddr::setPort(int port)
-        {
-            m_pimpl->setPort(port);
-        }
+void ClientAddr::setPort( int port ) {
+    m_pimpl->setPort( port );
+}
 
-        void ClientAddr::setIpv4(const std::string& ipv4)
-        {
-            m_pimpl->setIpv4(ipv4);
-        }
+void ClientAddr::setIpv4( const std::string& ipv4 ) {
+    m_pimpl->setIpv4( ipv4 );
+}
 
-        inline socket_fd clientSocket()
-        {
-            if (! s_inited) init();
-            return ::socket(PF_INET, SOCK_STREAM, 0);
-        }
+ socket_fd clientSocket() {
+    if ( !s_inited ) init();
+    return ::socket( PF_INET, SOCK_STREAM, 0 );
+}
 
-        inline int connect(socket_fd sock, ClientAddr& addr)
-        {
-            //            return  ::connect( sock, (struct sockaddr*)&m_serverAddress, sizeof( m_serverAddress ) ) <
-            return ::connect(sock, (struct sockaddr*)&addr.m_pimpl->m_sockAddr, sizeof(struct sockaddr_in));
-        }
+ int connect( socket_fd sock, ClientAddr& addr ) {
+    //            return  ::connect( sock, (struct sockaddr*)&m_serverAddress, sizeof(
+    //            m_serverAddress ) ) <
+    return ::connect(
+        sock, (struct sockaddr*)&addr.m_pimpl->m_sockAddr, sizeof( struct sockaddr_in ) );
+}
 
-        inline int send(socket_fd sock, const char* buf, int len, int flags)
-        {
-            return ::send(sock, buf, len, flags);
-        }
+ int send( socket_fd sock, const char* buf, int len, int flags ) {
+    return ::send( sock, buf, len, flags );
+}
 
-        inline int recv(socket_fd sock, char* buf, int len, int flags)
-        {
-            return ::recv(sock, buf, len, flags);
-        }
+ int recv( socket_fd sock, char* buf, int len, int flags ) {
+    return ::recv( sock, buf, len, flags );
+}
 
-    } // namespace utils
+} // namespace utils
 } // namespace net
 } // namespace hub
 
@@ -344,7 +357,7 @@ namespace net {
 //// end source
 ///
 //#ifndef WIN32
-//static void signalHandler( int signum ) {
+// static void signalHandler( int signum ) {
 //#    ifdef DEBUG_NET
 //    std::cout << getHeader() << "signalHandler() Interrupt signal (" << signum << ") received."
 //              << std::endl;
@@ -370,7 +383,7 @@ namespace net {
 //}
 //#endif
 
-//socket_fd createSocket(int af, int type, int protocol)
+// socket_fd createSocket(int af, int type, int protocol)
 //{
-//    return ::socket(af, type, protocol);
-//}
+//     return ::socket(af, type, protocol);
+// }

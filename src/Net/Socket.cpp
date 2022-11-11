@@ -68,36 +68,7 @@ Socket::~Socket() {
 }
 
 bool Socket::isConnected() const {
-//    assert(m_fdSock != INVALID_SOCKET);
-    assert(net::utils::isValid(m_fdSock));
-
-#ifdef WIN32
-    // not sure how to check this in windows
-    return true;
-#else
-
-    // TODO - make this better, because its probably wrong (but seems to work)
-
-    int optval;
-    socklen_t optlen = sizeof( optval );
-
-    int res;
-//    try {
-        res = getsockopt( m_fdSock, SOL_SOCKET, SO_ERROR, &optval, &optlen );
-//    }
-//    catch ( std::exception& e ) {
-//        std::cout << "[Socket] isConnected() catch exception : " << e.what() << std::endl;
-//        return false;
-//    }
-//    catch ( std::runtime_error& e ) {
-//        std::cout << "[Socket] isConnected() catch runtime error : " << e.what() << std::endl;
-//        return false;
-//    }
-
-    if ( optval == 0 && res == 0 ) return true;
-#endif
-
-    return false;
+    return net::utils::isConnected(m_fdSock);
 }
 
 } // namespace net
