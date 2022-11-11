@@ -1,20 +1,25 @@
 
-option(HUB_APPLICATION_ENABLE_RADIUM "Build Radium examples (depends of radium lib)" OFF)
-option(HUB_APPLICATION_ENABLE_LIDAR "Build Lidar examples (depends of realsense2 lib)" OFF)
-option(HUB_APPLICATION_ENABLE_OPENCV "Build OpenCV examples (depends of opencv lib)" OFF)
-option(HUB_APPLICATION_ENABLE_PDI "Build PDI examples (depends of polhemus lib)" OFF)
-option(HUB_APPLICATION_ENABLE_KEYBOARD "Build keyboard streamer (depends of glm lib)" OFF)
-option(HUB_USE_DCMTK "Build Dcmtk examples and libs" OFF)
-option(HUB_ENABLE_SCUS "Build Scus" OFF)
-
 
 # if(HUB_ENABLE_APPLICATIONS OR HUB_ENABLE_TESTS)
 #    add_subdirectory(server)
 # endif()
 
-set(Radium_DIR)
+option(HUB_ENABLE_APPLICATIONS "Enable applications" OFF)
+if(HUB_ENABLE_TESTS OR HUB_ENABLE_EXAMPLES OR HUB_ENABLE_APPLICATIONS)
+    add_subdirectory(server)
+endif()
 
 if(HUB_ENABLE_APPLICATIONS)
+
+    set(Radium_DIR)
+    option(HUB_APPLICATION_ENABLE_RADIUM "Build Radium examples (depends of radium lib)" OFF)
+    option(HUB_APPLICATION_ENABLE_LIDAR "Build Lidar examples (depends of realsense2 lib)" OFF)
+    option(HUB_APPLICATION_ENABLE_OPENCV "Build OpenCV examples (depends of opencv lib)" OFF)
+    option(HUB_APPLICATION_ENABLE_PDI "Build PDI examples (depends of polhemus lib)" OFF)
+    option(HUB_APPLICATION_ENABLE_KEYBOARD "Build keyboard streamer (depends of glm lib)" OFF)
+    option(HUB_USE_DCMTK "Build Dcmtk examples and libs" OFF)
+    option(HUB_ENABLE_SCUS "Build Scus" OFF)
+
 
     cmake_host_system_information(RESULT hostname QUERY HOSTNAME)
     if(${hostname} STREQUAL "brueghel") # work linux
@@ -49,6 +54,10 @@ if(HUB_ENABLE_APPLICATIONS)
     elseif(${hostname} STREQUAL "gigabyte")
         add_definitions(-DUSE_GOT_PR)
         set(MRI_PATH "/home/gauthier/tmpDicomViewer/MRI/")
+
+        set(Scus_DIR "/home/gauthier/document/boulot/irit/medical/scus/build/scus-install/lib/cmake/Scus")
+        set(Radium_DIR "/home/gauthier/tmpRadiumReleaseCandidate/Radium-Engine/Bundle-Clang-Debug/lib/cmake/Radium")
+        set(realsense2_DIR "/home/gauthier/document/boulot/irit/medical/librealsense/build/realsense-install/lib/cmake/realsense2")
 
     elseif(${hostname} STREQUAL "msi")
         set(MRI_PATH "/home/gauthier/Downloads/MRI/")

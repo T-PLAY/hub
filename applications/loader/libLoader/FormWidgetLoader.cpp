@@ -36,7 +36,7 @@ FormWidgetLoader::FormWidgetLoader( const std::string& ipv4, const int& port, QW
         ui->treeView_record->setColumnHidden( 2, true );
         ui->treeView_record->setColumnHidden( 3, true );
 
-        ui->treeView_record->setSelectionMode(QAbstractItemView::MultiSelection);
+//        ui->treeView_record->setSelectionMode(QAbstractItemView::MultiSelection);
 
         QObject::connect(
             ui->treeView_record, &TreeViewStream::onSpace, this, &FormWidgetLoader::onSpace );

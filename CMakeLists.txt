@@ -18,14 +18,7 @@ option(HUB_BUILD_STATIC_LIBRARY "Build static library" OFF)
 
 add_subdirectory(src)
 
-if(HUB_ENABLE_TESTS OR HUB_ENABLE_EXAMPLES OR HUB_ENABLE_APPLICATIONS)
-    add_subdirectory(server)
-endif()
-
-option(HUB_ENABLE_APPLICATIONS "Enable applications" OFF)
-if(HUB_ENABLE_APPLICATIONS)
-    add_subdirectory(applications)
-endif()
+add_subdirectory(applications)
 
 option(HUB_ENABLE_TESTS "Enable tests" OFF)
 if(HUB_ENABLE_TESTS)
