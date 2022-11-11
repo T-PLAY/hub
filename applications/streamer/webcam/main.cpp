@@ -5,6 +5,7 @@
 #include <opencv2/imgproc.hpp>
 #include <opencv2/videoio.hpp>
 #include <stdio.h>
+#include <thread>
 
 #include <IO/Stream.hpp>
 #include <OutputSensor.hpp>

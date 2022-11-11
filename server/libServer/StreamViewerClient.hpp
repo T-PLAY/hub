@@ -1,5 +1,7 @@
 #pragma once
 
+#include <thread>
+
 #include "Client.hpp"
 #include <Net/ClientSocket.hpp>
 #include <OutputSensor.hpp>

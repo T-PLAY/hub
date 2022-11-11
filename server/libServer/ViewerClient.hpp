@@ -2,10 +2,12 @@
 #pragma once
 
 #include <mutex>
+#include <thread>
+
+#include <Net/ClientSocket.hpp>
 
 #include "Client.hpp"
 
-#include <Net/ClientSocket.hpp>
 
 class StreamerClient;
 

@@ -1,6 +1,7 @@
 
 #include <cassert>
 #include <string>
+#include <thread>
 
 #include <Configurations.hpp>
 #include <DicomUtils/DicomUtils.hpp>
