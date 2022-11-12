@@ -247,7 +247,7 @@ void ClientSocket::read( unsigned char* data, size_t len ) const {
 
 void ClientSocket::close() const {
     assert( isOpen() );
-    assert( isConnected() );
+//    assert( isConnected() );
     //    clear();
     //            assert(m_fdSock != INVALID_SOCKET);
     net::utils::closeSocket(m_fdSock);

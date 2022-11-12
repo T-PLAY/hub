@@ -229,8 +229,8 @@ Aabb ScanComponent::getAabb() const {
             transform.linear() * ( aabb.max() + aabb.min() ) +
             Scalar( 2 ) * transform.translation();
         Eigen::AlignedBox3f::VectorType min, max;
-        max = ( rotated_center_2 + rotated_extent_2 ) / Scalar( 2 );
-        min = ( rotated_center_2 - rotated_extent_2 ) / Scalar( 2 );
+        max = ( rotated_center_2 + rotated_extent_2 * 4 ) / Scalar( 2 );
+        min = ( rotated_center_2 - rotated_extent_2 * 4 ) / Scalar( 2 );
         return Aabb( min, max );
         //        aabb.transform( m_entity->getTransform() );
         //        aabb.translate( m_entity->getTransformAsMatrix() );

@@ -34,6 +34,9 @@ class Form3DToolBox : public QWidget
     void horizontalSliderDynamic_valueChanged( int value );
     void checkBox_live_toggled( bool checked );
 
+    void record_start();
+    void record_stop();
+
   public slots:
     void on_pushButton_fitScene_clicked();
 
@@ -57,11 +60,12 @@ class Form3DToolBox : public QWidget
     QComboBox* m_comboBoxDisplayedTexture = nullptr;
 
   private slots:
-    void on_horizontalSliderDynamic_valueChanged( int value );
 
     void on_checkBox_live_toggled( bool checked );
 
-  private:
+    void on_pushButton_record_clicked();
+
+private:
     Ui::Form3DToolBox* ui;
 };
 

@@ -66,7 +66,7 @@ struct ScanComponent : public SensorComponent {
     std::map<long long, int> m_startScan2iScan;
     int m_iScan     = 0;
     int m_nScans    = 0;
-    int m_nMaxScans = 500;
+    int m_nMaxScans = 1'000;
 
     int m_iImage = 0;
 

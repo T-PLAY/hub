@@ -16,7 +16,7 @@ class StreamViewerClient : public Client
 
     std::string headerMsg() const override;
 
-    void update( const hub::Acquisition& acq );
+    bool update( const hub::Acquisition& acq );
 
     const std::string& getSyncStreamName() const;
     const std::string& getStreamName() const;

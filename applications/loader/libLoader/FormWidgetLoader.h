@@ -29,6 +29,8 @@ class FormWidgetLoader : public QWidget
     void onAcqChanged( int iAcq );
     void onSpace();
     void onPlayEnded();
+    void onPathLoaded();
+    void onPathUnloaded();
 
 //    void onTreeView_record_currentChanged( const QModelIndex& current, const QModelIndex& previous);
     void onTreeView_record_selectionChanged( const QItemSelection& selected,
@@ -39,7 +41,11 @@ class FormWidgetLoader : public QWidget
     void on_horizontalSlider_iAcq_valueChanged( int value );
     void on_spinBox_iAcq_valueChanged( int arg1 );
 
-  private:
+    void on_pushButton_backward_clicked();
+
+    void on_pushButton_forward_clicked();
+
+private:
     Ui::FormWidgetLoader* ui;
 
     QFileSystemModel* m_recordFileModel = nullptr;

@@ -99,8 +99,8 @@ Aabb Dof6Component::getAabb() const {
     const Eigen::AlignedBox3f::VectorType rotated_center_2 = transform.linear() * (aabb.max() + aabb.min()) +
         Scalar(2) * transform.translation();
     Eigen::AlignedBox3f::VectorType min, max;
-    max = (rotated_center_2 + rotated_extent_2) / Scalar(2);
-    min = (rotated_center_2 - rotated_extent_2) / Scalar(2);
+    max = (rotated_center_2 + rotated_extent_2 * 4) / Scalar(2);
+    min = (rotated_center_2 - rotated_extent_2 * 4) / Scalar(2);
     return Aabb(min, max);
 
 //    aabb.translate(m_entity->getTransformAsMatrix());
