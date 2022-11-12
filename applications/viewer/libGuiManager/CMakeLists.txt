@@ -46,4 +46,5 @@ target_link_libraries(
     Radium::Gui
     ${Qt_LIBRARIES}
     libViewer
+    libRecorder
     ${OTHER_LIBRARIES})

@@ -168,6 +168,14 @@ void GuiManager::init() {
                       &Form3DToolBox::pushButton_reloadShaders_clicked,
                       m_viewer,
                       &Ra::Gui::Viewer::reloadShaders );
+    QObject::connect( m_3DToolBox,
+                      &Form3DToolBox::record_start,
+                      this,
+                      &GuiManager::on_recordStart );
+    QObject::connect( m_3DToolBox,
+                      &Form3DToolBox::record_stop,
+                      this,
+                      &GuiManager::on_recordStop );
 
     m_layout3DView->insertWidget( 0, m_3DToolBox );
 
@@ -285,6 +293,8 @@ void GuiManager::init() {
     m_formWidgetLoader->setEnabled( false );
     hLayout->addWidget( m_formWidgetLoader );
 #endif
+
+    m_recorder = new Recorder(m_formStreamViews->getIpv4(), m_formStreamViews->getPort());
 
     //////////////////////////////////////// INIT DOCKERS
 
@@ -417,6 +427,19 @@ void GuiManager::on_checkBox_live_toggled( bool checked ) {
 
 void GuiManager::on_toolButton_fitScene_clicked() {
     m_viewer->fitCamera();
+}
+
+void GuiManager::on_recordStart()
+{
+    const auto & activeStreams = m_formStreamViews->getActiveStreams();
+    assert(m_recorder != nullptr);
+    m_recorder->record(activeStreams);
+}
+
+void GuiManager::on_recordStop()
+{
+    assert(m_recorder != nullptr);
+    m_recorder->stop();
 }
 
 // void GuiManager::on_toolButton_fitSelected_clicked() {

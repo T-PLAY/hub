@@ -133,7 +133,6 @@ void Loader::load( const std::set<std::string>& paths ) {
     }
     //    m_loadedPath = paths;
 
-
     emit pathLoaded();
 
     if ( m_snaps.empty() ) {
@@ -165,10 +164,42 @@ void Loader::unload() {
 
     assert( m_thread == nullptr );
     assert( isLoaded() );
-//    assert( !m_outputStreams.empty() );
+    //    assert( !m_outputStreams.empty() );
     m_snaps.clear();
     m_loadedPaths.clear();
     m_outputStreams.clear();
+
+    emit pathUnloaded();
+}
+
+void Loader::goStart() {
+    assert( !m_isPlaying );
+//    assert(m_iAcq > 0);
+    for (int i = m_iAcq; i >= 0; --i) {
+        m_iAcq = i;
+        const auto& snap = m_snaps.at( m_iAcq );
+        *m_outputStreams.at( snap.m_sensorName ) << snap.m_acq;
+        emit acqChanged( m_iAcq );
+        //        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
+//    m_iAcq = 0;
+//        *m_outputStreams.at( snap.m_sensorName ) << snap.m_acq;
+//    emit acqChanged( m_iAcq );
+    //    m_iAcq = 0;
+}
+
+void Loader::goEnd() {
+    assert( !m_isPlaying );
+//    assert(m_iAcq < m_snaps.size() - 1);
+    for (int i = m_iAcq; i < m_snaps.size(); ++i) {
+        m_iAcq = i;
+        const auto& snap = m_snaps.at( m_iAcq );
+        *m_outputStreams.at( snap.m_sensorName ) << snap.m_acq;
+        emit acqChanged( m_iAcq );
+        //        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
+    //    m_iAcq = m_snaps.size() - 1;
+//    emit acqChanged( m_iAcq );
 }
 
 // const std::vector<hub::Acquisition>&
@@ -180,7 +211,8 @@ void Loader::play() {
     assert( m_thread == nullptr );
     assert( !m_isPlaying );
 
-    assert(! m_snaps.empty());
+    assert( !m_snaps.empty() );
+    assert( isLoaded() );
 
     m_isPlaying = true;
     m_thread    = new std::thread( [this]() {
@@ -223,6 +255,10 @@ void Loader::stop() {
     m_thread = nullptr;
 }
 
+bool Loader::isAutoPlaying() const {
+    return m_autoPlay;
+}
+
 bool Loader::isPlaying() const {
     return m_isPlaying;
 }
@@ -247,6 +283,7 @@ int Loader::getNAcq() const {
 }
 
 void Loader::setIAcq( int newIAcq ) {
+    //    std::cout << "[Loader] setIAcq(" << newIAcq << ")" << std::endl;
     assert( 0 <= newIAcq && newIAcq < m_snaps.size() );
     m_iAcq           = newIAcq;
     const auto& snap = m_snaps.at( m_iAcq );

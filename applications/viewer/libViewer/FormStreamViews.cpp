@@ -11,10 +11,10 @@
 
 #include <FormStreamView.h>
 
-bool FormStreamViews::s_autoConnect = true;
-bool FormStreamViews::s_autoSync    = true;
-const std::string * FormStreamViews::s_ipv4    = nullptr;
-const int * FormStreamViews::s_port    = nullptr;
+bool FormStreamViews::s_autoConnect        = true;
+bool FormStreamViews::s_autoSync           = true;
+const std::string* FormStreamViews::s_ipv4 = nullptr;
+const int* FormStreamViews::s_port         = nullptr;
 
 // ViewerQt::ViewerQt(FormStreamViews &streamViews, const std::string &ipv4, const int &port) :
 //     m_streamViews(streamViews)
@@ -116,6 +116,16 @@ FormStreamViews::~FormStreamViews() {
     std::cout << "[FormStreamViews] ~FormStreamViews() end" << std::endl;
 }
 
+std::vector<std::pair<std::string, std::string>> FormStreamViews::getActiveStreams() {
+    std::vector<std::pair<std::string, std::string>> activeStreams;
+    for ( const auto& streamView : m_streamViews ) {
+        if ( streamView.second->isStarted() )
+            activeStreams.push_back( { streamView.first, streamView.second->getSyncStreamName() } );
+    }
+
+    return activeStreams;
+}
+
 // void FormStreamViews::initViewer(
 //     std::function<void( const std::string& streamName, const hub::Acquisition& )>
 //         onNewAcquisition ) {
@@ -136,7 +146,7 @@ void FormStreamViews::initViewer(
             //            onNewStreamer(streamerName, sensorSpec); // no needs of gui main thread,
             //            direct call to update 3D scene
             emit newStreamer( streamerName, sensorSpec ); // gui update needs gui main thread
-            if (s_autoSync) {
+            if ( s_autoSync ) {
                 newStreamerAdded( streamerName, sensorSpec );
                 return true;
             }
@@ -286,12 +296,12 @@ void FormStreamViews::onDelStreamer( const std::string& streamName,
 void FormStreamViews::onServerConnected( const std::string& ipv4, int port ) {
     //    std::cout << "disable" << std::endl;
     //    ui->horizontalLayout_auto->setEnabled(false);
-        ui->label->setEnabled(false);
-        ui->checkBox_connect->setEnabled(false);
-        ui->checkBox_sync->setEnabled(false);
-//    for ( auto&& child : ui->horizontalLayout_auto->findChildren<QWidget*>() ) {
-//        child->setEnabled( false );
-//    }
+    ui->label->setEnabled( false );
+    ui->checkBox_connect->setEnabled( false );
+    ui->checkBox_sync->setEnabled( false );
+    //    for ( auto&& child : ui->horizontalLayout_auto->findChildren<QWidget*>() ) {
+    //        child->setEnabled( false );
+    //    }
 }
 
 void FormStreamViews::onServerDisconnected( const std::string& ipv4, int port ) {
@@ -299,9 +309,9 @@ void FormStreamViews::onServerDisconnected( const std::string& ipv4, int port ) 
     ui->label->setEnabled( true );
     ui->checkBox_connect->setEnabled( true );
     ui->checkBox_sync->setEnabled( true );
-//    for ( auto&& child : ui->horizontalLayout_auto->findChildren<QWidget*>() ) {
-//        child->setEnabled( true );
-//    }
+    //    for ( auto&& child : ui->horizontalLayout_auto->findChildren<QWidget*>() ) {
+    //        child->setEnabled( true );
+    //    }
 }
 
 void FormStreamViews::onStartStream( const std::string& streamName,
@@ -309,27 +319,27 @@ void FormStreamViews::onStartStream( const std::string& streamName,
                                      const std::string& syncStreamName ) {
     assert( m_serverView != nullptr );
 
-
-//            hub::SensorSpec sensorSpecSum = (syncStreamName == "") ?(sensorSpec) :(m_streamViews.at(syncStreamName)->getSensorSpec() + sensorSpec);
-            hub::SensorSpec sensorSpecSum;
-            if ( syncStreamName != "" ) {
-                sensorSpecSum += m_streamViews.at(syncStreamName)->getSensorSpec();
-                //        m_streamer = streamers.at( m_syncStreamName );
-            }
-            sensorSpecSum += sensorSpec;
-
+    //            hub::SensorSpec sensorSpecSum = (syncStreamName == "") ?(sensorSpec)
+    //            :(m_streamViews.at(syncStreamName)->getSensorSpec() + sensorSpec);
+    hub::SensorSpec sensorSpecSum;
+    if ( syncStreamName != "" ) {
+        sensorSpecSum += m_streamViews.at( syncStreamName )->getSensorSpec();
+        //        m_streamer = streamers.at( m_syncStreamName );
+    }
+    sensorSpecSum += sensorSpec;
 
     emit startStream(
-//        streamName, sensorSpec, syncStreamName );
-        streamName, sensorSpecSum, syncStreamName );
+        //        streamName, sensorSpec, syncStreamName );
+        streamName,
+        sensorSpecSum,
+        syncStreamName );
 }
 
 void FormStreamViews::onStopStream( const std::string& streamName,
                                     const hub::SensorSpec& sensorSpec,
                                     const std::string& syncSensorName ) {
     assert( m_serverView != nullptr );
-    emit stopStream(
-        streamName, sensorSpec, syncSensorName );
+    emit stopStream( streamName, sensorSpec, syncSensorName );
 }
 
 // void FormStreamViews::onServerConnected( const std::string& ipv4, int port ) {

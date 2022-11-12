@@ -57,10 +57,23 @@ void Form3DToolBox::on_checkBox_transparency_toggled( bool checked ) {
     emit checkBox_transparency_toggled( checked );
 }
 
-void Form3DToolBox::on_horizontalSliderDynamic_valueChanged( int value ) {
-    emit horizontalSliderDynamic_valueChanged( value );
-}
 
 void Form3DToolBox::on_checkBox_live_toggled( bool checked ) {
     emit checkBox_live_toggled( checked );
 }
+
+void Form3DToolBox::on_pushButton_record_clicked()
+{
+    if (ui->pushButton_record->text() == "Record") {
+        ui->pushButton_record->setText("Stop recording");
+        ui->pushButton_record->setStyleSheet("background-color: red");
+        emit record_start();
+    }
+    else {
+        ui->pushButton_record->setText("Record");
+        ui->pushButton_record->setStyleSheet("");
+        emit record_stop();
+    }
+
+}
+

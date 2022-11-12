@@ -18,6 +18,8 @@
 #    include <FormImageManipulator.h>
 #endif
 
+#include <Recorder.hpp>
+
 class GuiManager : public QObject
 {
     Q_OBJECT
@@ -72,6 +74,9 @@ class GuiManager : public QObject
     FormWidgetLoader* m_formWidgetLoader = nullptr;
 #endif
 
+    Recorder * m_recorder = nullptr;
+
+
     bool m_initialized = false;
 
   private slots:
@@ -84,6 +89,8 @@ class GuiManager : public QObject
     void on_checkBox_trace_toggled( bool checked );
     void on_checkBox_live_toggled( bool checked );
     void on_toolButton_fitScene_clicked();
+    void on_recordStart();
+    void on_recordStop();
 
     // server view
 //    void onServerStreamStarted( const std::string& streamName, const std::string& syncStreamName );

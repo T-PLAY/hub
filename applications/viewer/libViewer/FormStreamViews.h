@@ -53,6 +53,7 @@ class FormStreamViews : public QWidget
     explicit FormStreamViews( QWidget* parent = nullptr );
     ~FormStreamViews();
 
+    std::vector<std::pair<std::string, std::string>>  getActiveStreams();
     void initViewer(std::function<bool (const std::string &streamName, const hub::SensorSpec &)> newStreamerAdded,
 //        std::function<bool( const std::string&, const hub::SensorSpec& )> onNewStreamer= {},
 //        std::function<void( const std::string&, const hub::SensorSpec& )> onDelStreamer= {},

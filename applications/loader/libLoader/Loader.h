@@ -38,12 +38,15 @@ class Loader : public QObject
 //    void load( const std::string& path );
     void load( const std::set<std::string> & paths);
     void unload();
+    void goStart();
+    void goEnd();
 
     void play();
     void stop();
 
   signals:
     void pathLoaded();
+    void pathUnloaded();
     void acqChanged( int nAcq );
     void playEnded();
 
@@ -72,4 +75,5 @@ class Loader : public QObject
     void setAutoPlay( bool newAutoPlay );
     int getNAcq() const;
     void setIAcq( int newIAcq );
+    bool isAutoPlaying() const;
 };

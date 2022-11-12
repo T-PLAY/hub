@@ -16,9 +16,9 @@
 std::string Server::getStatus() {
     std::string streamViewersStr = "[";
 
-    for ( const auto& pair : m_streamers ) {
-        const auto& streamerName = pair.first;
-        const auto& streamer     = pair.second;
+    for ( const auto& [streamerName, streamer] : m_streamers ) {
+//        const auto& streamerName = pair.first;
+//        const auto& streamer     = pair.second;
 
         //        auto& streamViewers     = m_streamViewers[streamerName];
         const auto& streamViewers = streamer->getStreamViewers();

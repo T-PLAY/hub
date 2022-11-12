@@ -36,7 +36,7 @@ FormWidgetLoader::FormWidgetLoader( const std::string& ipv4, const int& port, QW
         ui->treeView_record->setColumnHidden( 2, true );
         ui->treeView_record->setColumnHidden( 3, true );
 
-//        ui->treeView_record->setSelectionMode(QAbstractItemView::MultiSelection);
+        //        ui->treeView_record->setSelectionMode(QAbstractItemView::MultiSelection);
 
         QObject::connect(
             ui->treeView_record, &TreeViewStream::onSpace, this, &FormWidgetLoader::onSpace );
@@ -51,7 +51,17 @@ FormWidgetLoader::FormWidgetLoader( const std::string& ipv4, const int& port, QW
 
     QObject::connect( &m_recordLoader, &Loader::acqChanged, this, &FormWidgetLoader::onAcqChanged );
     QObject::connect( &m_recordLoader, &Loader::playEnded, this, &FormWidgetLoader::onPlayEnded );
-    m_recordLoader.setAutoPlay( ui->pushButton_playPause->text() == "Pause" );
+    QObject::connect( &m_recordLoader, &Loader::pathLoaded, this, &FormWidgetLoader::onPathLoaded );
+    QObject::connect(
+        &m_recordLoader, &Loader::pathUnloaded, this, &FormWidgetLoader::onPathUnloaded );
+
+    ui->pushButton_backward->setEnabled( false );
+    ui->pushButton_playPause->setEnabled( false );
+    ui->pushButton_forward->setEnabled( false );
+    ui->spinBox_iAcq->setEnabled( false );
+    ui->horizontalSlider_iAcq->setEnabled( false );
+
+    m_recordLoader.setAutoPlay( ui->pushButton_playPause->text() == "||" );
 }
 
 FormWidgetLoader::~FormWidgetLoader() {
@@ -61,12 +71,14 @@ FormWidgetLoader::~FormWidgetLoader() {
     delete ui;
 }
 
-//void FormWidgetLoader::onTreeView_record_currentChanged(const QModelIndex &current, const QModelIndex &previous)
+// void FormWidgetLoader::onTreeView_record_currentChanged(const QModelIndex &current, const
+// QModelIndex &previous)
 //{
 
 //        const std::string& mPath =
 //            m_recordFileModel->fileInfo( current ).absoluteFilePath().toStdString();
-//        std::cout << "[FormWidgetLoader] onTreeView_record_currentChanged : " << mPath << std::endl;
+//        std::cout << "[FormWidgetLoader] onTreeView_record_currentChanged : " << mPath <<
+//        std::endl;
 //}
 
 void FormWidgetLoader::onTreeView_record_selectionChanged( const QItemSelection& selected,
@@ -83,42 +95,40 @@ void FormWidgetLoader::onTreeView_record_selectionChanged( const QItemSelection&
     //    std::cout << "end selected" << std::endl;
 
     if ( indexes.empty() ) {
-                if ( m_recordLoader.isLoaded() ) {
-                    m_recordLoader.unload();
-                }
+        if ( m_recordLoader.isLoaded() ) { m_recordLoader.unload(); }
     }
     else {
 
-//        assert( indexes.size() == 1 );
-//        const auto& current = indexes.first();
-//        for ( const auto& index : selected.indexes() ) {
+        //        assert( indexes.size() == 1 );
+        //        const auto& current = indexes.first();
+        //        for ( const auto& index : selected.indexes() ) {
         std::set<std::string> paths;
         for ( const auto& index : indexes ) {
             //            std::cout << "index : " << index << std::endl;
             const std::string& mPath =
                 m_recordFileModel->fileInfo( index ).absoluteFilePath().toStdString();
-//            std::cout << mPath << std::endl;
-            paths.insert(mPath);
+            //            std::cout << mPath << std::endl;
+            paths.insert( mPath );
         }
-        for (const auto & path : paths) {
+        for ( const auto& path : paths ) {
             std::cout << path << std::endl;
         }
-//        return;
+        //        return;
 
-//        const std::string& mPath =
-//            m_recordFileModel->fileInfo( current ).absoluteFilePath().toStdString();
+        //        const std::string& mPath =
+        //            m_recordFileModel->fileInfo( current ).absoluteFilePath().toStdString();
 
-//        std::cout << "[FormWidgetLoader] on_treeView_record_selectionChanged : " << mPath
-//                  << std::endl;
+        //        std::cout << "[FormWidgetLoader] on_treeView_record_selectionChanged : " << mPath
+        //                  << std::endl;
 
         //        if ( m_recordLoader.isLoaded() ) {
         //        }
 
-                m_recordLoader.load( paths );
-                const int nAcq = m_recordLoader.getNAcq();
-                ui->label_nAcq->setText( "/ " + QString::number( nAcq ) );
-                ui->horizontalSlider_iAcq->setMaximum( nAcq - 1 );
-                ui->spinBox_iAcq->setMaximum( nAcq - 1 );
+        m_recordLoader.load( paths );
+        const int nAcq = m_recordLoader.getNAcq();
+        ui->label_nAcq->setText( "/ " + QString::number( nAcq ) );
+        ui->horizontalSlider_iAcq->setMaximum( nAcq - 1 );
+        ui->spinBox_iAcq->setMaximum( nAcq - 1 );
     }
 }
 
@@ -139,28 +149,79 @@ void FormWidgetLoader::onPlayEnded() {
     ui->pushButton_playPause->click();
 }
 
+void FormWidgetLoader::onPathLoaded() {
+    //    ui->horizontalLayout->setEnabled(true);
+    ui->pushButton_playPause->setEnabled( true );
+    if ( m_recordLoader.isAutoPlaying() ) {
+        ui->pushButton_backward->setEnabled( false );
+        ui->pushButton_forward->setEnabled( false );
+    }
+    else {
+        ui->pushButton_backward->setEnabled( true );
+        ui->pushButton_forward->setEnabled( true );
+    }
+    ui->spinBox_iAcq->setEnabled( true );
+    ui->horizontalSlider_iAcq->setEnabled( true );
+}
+
+void FormWidgetLoader::onPathUnloaded() {
+//    m_recordLoader.setIAcq( 0 );
+    ui->label_nAcq->setText( "/ 0" );
+    ui->horizontalSlider_iAcq->setValue(0);
+//    ui->horizontalSlider_iAcq->setSliderPosition(0);
+//    ui->horizontalSlider_iAcq->update();
+    ui->spinBox_iAcq->setValue(0);
+//    ui->spinBox_iAcq->update();
+        ui->horizontalSlider_iAcq->setMaximum( 0 );
+        ui->spinBox_iAcq->setMaximum( 0 );
+
+    //    ui->horizontalLayout->setEnabled(false);
+    ui->pushButton_backward->setEnabled( false );
+    ui->pushButton_playPause->setEnabled( false );
+    ui->pushButton_forward->setEnabled( false );
+    ui->spinBox_iAcq->setEnabled( false );
+    ui->horizontalSlider_iAcq->setEnabled( false );
+
+//        ui->horizontalSlider_iAcq->setMaximum( 0 );
+//        ui->spinBox_iAcq->setMaximum(  );
+}
 
 void FormWidgetLoader::on_checkBox_autoLoop_toggled( bool checked ) {
     m_recordLoader.setAutoLoop( checked );
 }
 
 void FormWidgetLoader::on_pushButton_playPause_clicked() {
-    if ( ui->pushButton_playPause->text() == "Play" ) {
+    if ( ui->pushButton_playPause->text() == "|>" ) {
         if ( m_recordLoader.isLoaded() ) { m_recordLoader.play(); }
-        ui->pushButton_playPause->setText( "Pause" );
+        ui->pushButton_playPause->setText( "||" );
         m_recordLoader.setAutoPlay( true );
+        ui->pushButton_backward->setEnabled( false );
+        ui->pushButton_forward->setEnabled( false );
     }
     else {
-        assert( ui->pushButton_playPause->text() == "Pause" );
+        assert( ui->pushButton_playPause->text() == "||" );
         if ( m_recordLoader.isLoaded() ) { m_recordLoader.stop(); }
-        ui->pushButton_playPause->setText( "Play" );
+        ui->pushButton_playPause->setText( "|>" );
         m_recordLoader.setAutoPlay( false );
+        ui->pushButton_backward->setEnabled( true );
+        ui->pushButton_forward->setEnabled( true );
     }
 }
 
+void FormWidgetLoader::on_pushButton_backward_clicked() {
+    assert( m_recordLoader.isLoaded() );
+    m_recordLoader.goStart();
+}
+
+void FormWidgetLoader::on_pushButton_forward_clicked() {
+    assert( m_recordLoader.isLoaded() );
+    m_recordLoader.goEnd();
+}
+
 void FormWidgetLoader::on_horizontalSlider_iAcq_valueChanged( int value ) {
-    if ( ui->pushButton_playPause->text() == "Play" ) {
-        m_recordLoader.setIAcq( value );
+    if ( ui->pushButton_playPause->text() == "|>" ) {
+        if (m_recordLoader.isLoaded())
+            m_recordLoader.setIAcq( value );
         ui->spinBox_iAcq->setValue( value );
     }
 }
