@@ -35,7 +35,9 @@ class SRC_API Measure
     bool operator!=( const Measure& measure ) const;
     SRC_API friend std::ostream& operator<<( std::ostream& os, const Measure& measure );
 
-  protected:
+    const hub::SensorSpec::Resolution &getResolution() const;
+
+protected:
     bool m_ownData = false;
     bool m_isMoved = false;
     hub::SensorSpec::Resolution m_resolution;

@@ -64,6 +64,9 @@
        <property name="text">
         <string>sync</string>
        </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
       </widget>
      </item>
     </layout>

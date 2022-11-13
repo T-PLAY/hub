@@ -51,6 +51,8 @@ void SceneManager::init() {
 
 void SceneManager::addSensor(const std::string &streamName, const hub::SensorSpec &sensorSpec, const std::string &syncStreamName) {
 
+        std::cout << "[SceneManager] addSensor(" << streamName << ")" << std::endl;
+
     //    auto&& inputSensor     = std::make_unique<hub::InputSensor>( std::move( interfaceT ) );
     const auto& sensorName = sensorSpec.m_sensorName;
     const auto& metaData   = sensorSpec.m_metaData;
@@ -122,6 +124,8 @@ void SceneManager::addSensor(const std::string &streamName, const hub::SensorSpe
 
 void SceneManager::delSensor(const std::string &streamName, const hub::SensorSpec &sensorSpec, const std::string &syncStreamName) {
 
+        std::cout << "[SceneManager] delSensor(" << streamName << ")" << std::endl;
+
     m_mtxSensors.lock();
     if ( m_streamName2sensor.find( streamName ) != m_streamName2sensor.end() ) {
         m_streamName2sensor.erase( streamName );
@@ -139,7 +143,7 @@ const Sensor *SceneManager::getSensor(const std::string &streamName) const
 //    m_mtxSensors.lock();
     while ( m_streamName2sensor.find( streamName ) == m_streamName2sensor.end() ) {
 //    m_mtxSensors.unlock();
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
         std::cout << "[SceneManager] getSensor() waiting for stream '" << streamName << "' inited" << std::endl;
 //    m_mtxSensors.lock();
     }

@@ -1,12 +1,11 @@
 #include "Sensor.h"
 
-
 #include <QMdiSubWindow>
 #include <WidgetStreamView.h>
 
-#include <Engine/Scene/EntityManager.hpp>
 #include <Core/Utils/Observable.hpp>
 #include <Engine/Scene/Entity.hpp>
+#include <Engine/Scene/EntityManager.hpp>
 #include <Gui/Viewer/RotateAroundCameraManipulator.hpp>
 
 #include <IO/Stream.hpp>
@@ -39,12 +38,13 @@ void SensorThread::run() {
     try {
         while ( !this->isInterruptionRequested() ) {
             const auto acq = inputSensor.getAcquisition();
-//            std::cout << "[Sensor] receive acq : " << acq << std::endl;
+            //            std::cout << "[Sensor] receive acq : " << acq << std::endl;
             m_sensor.update( acq );
         }
     }
     catch ( std::exception& e ) {
         std::cout << "[SensorThread] catch exception : " << e.what() << std::endl;
+//        throw e;
         return;
     }
 
@@ -115,6 +115,12 @@ Sensor::Sensor( const std::string& streamName,
     //    const auto& sensorSpec  = sensorSpec;
     const auto& resolutions = sensorSpec.m_resolutions;
 
+    if (resolutions.size() == 2) {
+        if (resolutions.at(0).second == hub::SensorSpec::Format::DOF6) {
+            m_iImage = 1;
+        }
+    }
+
     // create 2D viewers
     // mdiArea window
     for ( const auto& resolution : resolutions ) {
@@ -183,7 +189,8 @@ Sensor::Sensor( const std::string& streamName,
             const auto& format  = resolutions.at( 0 ).second;
             const auto& format2 = resolutions.at( 1 ).second;
 
-            assert( format == hub::SensorSpec::Format::DOF6 || format2 == hub::SensorSpec::Format::DOF6 );
+            assert( format == hub::SensorSpec::Format::DOF6 ||
+                    format2 == hub::SensorSpec::Format::DOF6 );
 
             //            m_component = new ScanComponent( *m_inputSensor, m_entity, *m_engine,
             //            *m_viewer );
@@ -286,6 +293,15 @@ void Sensor::update( const hub::Acquisition& acq ) {
     }
     m_mtxUpdating.lock();
     assert( !m_lost );
+
+    if ( acq.m_start == -1 && acq.m_end == -1 ) {
+        assert( m_component != nullptr );
+        m_component->update( acq );
+        //            }
+        ++m_counterFrame;
+        m_mtxUpdating.unlock();
+    }
+
     //            const auto& sensorSpec  = inputSensor->m_spec;
     const auto& resolutions = m_sensorSpec.m_resolutions;
     const auto& measures    = acq.getMeasures();
@@ -342,7 +358,7 @@ void Sensor::attachFromImageManipulator() {
     assert( m_widgetStreamViewManipulator == nullptr );
 
     const auto& resolutions = m_sensorSpec.m_resolutions;
-    const auto& dims        = resolutions.at( resolutions.size() - 1 ).first;
+    const auto& dims        = resolutions.at( m_iImage ).first;
     if ( dims.size() != 2 ) return;
     const auto& metaData = m_sensorSpec.m_metaData;
     double scanWidth     = 1.0;

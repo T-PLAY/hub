@@ -168,7 +168,9 @@ void FormStreamViews::initViewer(
         };
         auto _onNewAcquisition = [=]( const std::string& streamerName,
                                       const hub::Acquisition& acq ) {
+            assert(s_autoSync);
             onNewAcquisition( streamerName, acq );
+//            std::cout << "new acq : " << acq << std::endl;
             //            emit newAcquisition( streamerName, acq );
         };
 
@@ -178,6 +180,7 @@ void FormStreamViews::initViewer(
                                            _onServerConnected,
                                            _onServerDisconnected,
                                            _onNewAcquisition,
+                                           s_autoSync,
                                            this );
 
         s_ipv4 = &m_serverView->getIpv4();
@@ -296,9 +299,9 @@ void FormStreamViews::onDelStreamer( const std::string& streamName,
 void FormStreamViews::onServerConnected( const std::string& ipv4, int port ) {
     //    std::cout << "disable" << std::endl;
     //    ui->horizontalLayout_auto->setEnabled(false);
-    ui->label->setEnabled( false );
-    ui->checkBox_connect->setEnabled( false );
-    ui->checkBox_sync->setEnabled( false );
+//    ui->label->setEnabled( false );
+//    ui->checkBox_connect->setEnabled( false );
+//    ui->checkBox_sync->setEnabled( false );
     //    for ( auto&& child : ui->horizontalLayout_auto->findChildren<QWidget*>() ) {
     //        child->setEnabled( false );
     //    }
@@ -306,9 +309,9 @@ void FormStreamViews::onServerConnected( const std::string& ipv4, int port ) {
 
 void FormStreamViews::onServerDisconnected( const std::string& ipv4, int port ) {
     //    ui->horizontalLayout_auto->setEnabled(true);
-    ui->label->setEnabled( true );
-    ui->checkBox_connect->setEnabled( true );
-    ui->checkBox_sync->setEnabled( true );
+//    ui->label->setEnabled( true );
+//    ui->checkBox_connect->setEnabled( true );
+//    ui->checkBox_sync->setEnabled( true );
     //    for ( auto&& child : ui->horizontalLayout_auto->findChildren<QWidget*>() ) {
     //        child->setEnabled( true );
     //    }
@@ -321,12 +324,12 @@ void FormStreamViews::onStartStream( const std::string& streamName,
 
     //            hub::SensorSpec sensorSpecSum = (syncStreamName == "") ?(sensorSpec)
     //            :(m_streamViews.at(syncStreamName)->getSensorSpec() + sensorSpec);
-    hub::SensorSpec sensorSpecSum;
+    hub::SensorSpec sensorSpecSum = sensorSpec;
     if ( syncStreamName != "" ) {
         sensorSpecSum += m_streamViews.at( syncStreamName )->getSensorSpec();
         //        m_streamer = streamers.at( m_syncStreamName );
     }
-    sensorSpecSum += sensorSpec;
+//    sensorSpecSum += sensorSpec;
 
     emit startStream(
         //        streamName, sensorSpec, syncStreamName );
@@ -428,6 +431,7 @@ const int& FormStreamViews::getPort() const {
 
 void FormStreamViews::on_checkBox_sync_toggled( bool checked ) {
     s_autoSync = checked;
+    m_serverView->setAutoSync(checked);
 }
 
 void FormStreamViews::on_checkBox_connect_toggled( bool checked ) {

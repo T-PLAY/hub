@@ -8,6 +8,10 @@ Acquisition InputSensor::getAcquisition() const {
 
     Acquisition acq = m_interface.getAcquisition( static_cast<int>( m_spec.m_acquisitionSize ) );
 
+//    if (acq.m_start == -1 && acq.m_end == -1) {
+//        return acq;
+//    }
+
     assert( acq.getSize() == m_spec.m_acquisitionSize );
     const auto& resolutions = m_spec.m_resolutions;
     auto& measures          = acq.m_measures;

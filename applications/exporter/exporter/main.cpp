@@ -32,13 +32,16 @@
 
 int main( int argc, char* argv[] ) {
 
-    std::string recordPath = PROJECT_DIR "data/records/latest/";
+//    std::string recordPath = PROJECT_DIR "data/records/latest/";
+    std::string recordPath = PROJECT_DIR "data/records/40HzAxial3Sync/";
 
     for ( const auto& fileDir : std::filesystem::directory_iterator( recordPath ) ) {
 
         const auto& filepath = fileDir.path().string();
         const auto& filename = fileDir.path().filename();
         if ( filename == "export" ) continue;
+        if (fileDir.path().extension() != ".txt")
+            continue;
 
         std::cout << "read '" << filename << "' record" << std::endl;
         assert( std::filesystem::exists( filepath ) );

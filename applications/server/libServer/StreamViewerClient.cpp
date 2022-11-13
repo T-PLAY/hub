@@ -85,12 +85,13 @@ StreamViewerClient::StreamViewerClient( Server& server,
     m_streamer = streamers.at( m_streamName );
     //    const auto * syncStreamer = streamers.at(m_syncStreamName);
 
-    hub::SensorSpec sensorSpec;
+//    hub::SensorSpec sensorSpec;
+    hub::SensorSpec sensorSpec = m_streamer->getInputSensor().m_spec;
     if ( m_syncStreamName != "" && m_mergeSyncAcqs ) {
         sensorSpec += streamers.at( m_syncStreamName )->getInputSensor().m_spec;
         //        m_streamer = streamers.at( m_syncStreamName );
     }
-    sensorSpec += m_streamer->getInputSensor().m_spec;
+//    sensorSpec += m_streamer->getInputSensor().m_spec;
     m_outputSensor = std::make_unique<hub::OutputSensor>( std::move( sensorSpec ),
                                                           StreamerInterface( std::move( sock ) ) );
 

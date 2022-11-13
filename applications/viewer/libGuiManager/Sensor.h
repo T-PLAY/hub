@@ -152,6 +152,7 @@ class Sensor : public QObject
 
     bool m_lost = false;
     std::mutex m_mtxUpdating;
+    int m_iImage = 0;
 
   public:
     const QList<QStandardItem*>& getItems() const;

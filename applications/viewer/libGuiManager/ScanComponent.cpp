@@ -88,8 +88,12 @@ void ScanComponent::initialize() {
 
         const auto& format  = resolutions.at( 0 ).second;
         const auto& format2 = resolutions.at( 1 ).second;
-        if ( format == hub::SensorSpec::Format::DOF6 ) { m_iImage = 1; }
+        if ( format == hub::SensorSpec::Format::DOF6 ) {
+            m_iImage = 1;
+            assert(format2 == hub::SensorSpec::Format::Y8 || format2 == hub::SensorSpec::Format::Y16);
+        }
         else {
+            assert(format == hub::SensorSpec::Format::Y8 || format == hub::SensorSpec::Format::Y16);
             assert( format2 == hub::SensorSpec::Format::DOF6 );
             m_iImage = 0;
         }
@@ -103,9 +107,23 @@ void ScanComponent::initialize() {
 
 void ScanComponent::update( const hub::Acquisition& acq ) {
 
+    const auto & measures = acq.getMeasures();
+    if (measures.size() == 2) {
+        const auto & format = measures.at(0).getResolution().second;
+        const auto & format2 = measures.at(1).getResolution().second;
+        if (m_iImage == 0) {
+            assert(format == hub::SensorSpec::Format::Y8 || format == hub::SensorSpec::Format::Y16);
+            assert( format2 == hub::SensorSpec::Format::DOF6 );
+        }
+        else {
+            assert( format == hub::SensorSpec::Format::DOF6 );
+            assert(format2 == hub::SensorSpec::Format::Y8 || format2 == hub::SensorSpec::Format::Y16);
+        }
+//            assert(format == hub::SensorSpec::Format::Y8 || format == hub::SensorSpec::Format::Y16);
+    }
     //    std::cout << "[ScanComponent] update(" << acq << ")" << std::endl;
 
-    if ( acq.m_start == -1 ) {
+    if ( acq.m_start == 0 && acq.m_end == 0 ) {
         std::cout << "[ScanComponent] receive reset acq : " << acq << std::endl;
         for ( int iScan = 0; iScan < m_nScans; ++iScan ) {
             auto& scan = m_scans.at( iScan );
@@ -117,7 +135,7 @@ void ScanComponent::update( const hub::Acquisition& acq ) {
         return;
     }
 
-    const auto& measures = acq.getMeasures();
+//    const auto& measures = acq.getMeasures();
     //    const auto nMeasures = measures.size();
     const auto nMeasures = m_sensorSpec.m_resolutions.size();
 

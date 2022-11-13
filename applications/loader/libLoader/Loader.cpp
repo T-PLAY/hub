@@ -31,8 +31,27 @@ Loader::~Loader() {
 void Loader::load( const std::set<std::string>& paths ) {
 
     if ( isPlaying() ) stop();
-
     assert( m_thread == nullptr );
+
+    // reset all outputStream viewers
+    for ( auto& [outputStreamName, outputStream] : m_outputStreams ) {
+        //        auto acq = hub::Acquisition{-1, -1};
+        //        for (const auto & resolution : outputStream->m_spec.m_resolutions) {
+        //            acq << hub::Measure{nullptr,
+        //            hub::SensorSpec::computeAcquisitionSize(resolution)};
+        //        }
+        //        *outputStream << acq;
+        for ( const auto& snap : m_snaps ) {
+            if ( snap.m_sensorName == outputStreamName ) {
+                *outputStream << ( hub::Acquisition { 0, 0 } << snap.m_acq.getMeasures() );
+                std::cout << "[Loader] sended reset acq to sensor : " << snap.m_sensorName
+                          << std::endl;
+                break;
+            }
+        }
+        //        *outputStream << hub::Acquisition{-1, -1};
+    }
+
     m_snaps.clear();
     //    m_loadedPath = "";
     m_loadedPaths.clear();
@@ -59,12 +78,15 @@ void Loader::load( const std::set<std::string>& paths ) {
 
         if ( std::filesystem::is_directory( path ) ) {
             for ( const auto& fileDir : std::filesystem::directory_iterator( path ) ) {
-                if ( std::filesystem::is_regular_file( fileDir ) ) { filePaths.insert( fileDir ); }
+                if ( std::filesystem::is_regular_file( fileDir ) ) {
+                    if ( fileDir.path().extension() == ".txt" ) filePaths.insert( fileDir );
+                }
             }
         }
         else {
             assert( std::filesystem::is_regular_file( path ) );
-            filePaths.insert( path );
+            const auto & fileDir = std::filesystem::directory_entry(path);
+            if ( fileDir.path().extension() == ".txt" ) filePaths.insert( path );
         }
     }
 
@@ -140,6 +162,7 @@ void Loader::load( const std::set<std::string>& paths ) {
         return;
     }
 
+    // play all snaps once to init trace
     for ( const auto& snap : m_snaps ) {
         if ( snap.m_acq.getMeasures().size() == 2 ) {
             auto& outputStream = *m_outputStreams.at( snap.m_sensorName );
@@ -147,6 +170,7 @@ void Loader::load( const std::set<std::string>& paths ) {
         }
     }
 
+    // play acq selected
     m_iAcq = 0;
     if ( m_autoPlay )
         play();
@@ -174,32 +198,32 @@ void Loader::unload() {
 
 void Loader::goStart() {
     assert( !m_isPlaying );
-//    assert(m_iAcq > 0);
-    for (int i = m_iAcq; i >= 0; --i) {
-        m_iAcq = i;
+    //    assert(m_iAcq > 0);
+    for ( int i = m_iAcq; i >= 0; --i ) {
+        m_iAcq           = i;
         const auto& snap = m_snaps.at( m_iAcq );
         *m_outputStreams.at( snap.m_sensorName ) << snap.m_acq;
         emit acqChanged( m_iAcq );
         //        std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
-//    m_iAcq = 0;
-//        *m_outputStreams.at( snap.m_sensorName ) << snap.m_acq;
-//    emit acqChanged( m_iAcq );
+    //    m_iAcq = 0;
+    //        *m_outputStreams.at( snap.m_sensorName ) << snap.m_acq;
+    //    emit acqChanged( m_iAcq );
     //    m_iAcq = 0;
 }
 
 void Loader::goEnd() {
     assert( !m_isPlaying );
-//    assert(m_iAcq < m_snaps.size() - 1);
-    for (int i = m_iAcq; i < m_snaps.size(); ++i) {
-        m_iAcq = i;
+    //    assert(m_iAcq < m_snaps.size() - 1);
+    for ( int i = m_iAcq; i < m_snaps.size(); ++i ) {
+        m_iAcq           = i;
         const auto& snap = m_snaps.at( m_iAcq );
         *m_outputStreams.at( snap.m_sensorName ) << snap.m_acq;
         emit acqChanged( m_iAcq );
         //        std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
     //    m_iAcq = m_snaps.size() - 1;
-//    emit acqChanged( m_iAcq );
+    //    emit acqChanged( m_iAcq );
 }
 
 // const std::vector<hub::Acquisition>&

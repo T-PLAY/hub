@@ -211,7 +211,11 @@ void Server::addViewer( ViewerClient* viewer ) {
     // each already connected streamers prevent existence for this new viewer
     for ( const auto& [streamerName, streamer] : m_streamers ) {
         //        const auto& streamer = *pair.second;
+
+        // notify orphans first
+        if (streamer->getParent() == "") {
             viewer->notifyNewStreamer( *streamer );
+        }
 
 //        const auto& parentName = streamer->getParent();
 //        //        const auto& syncStream =
@@ -224,6 +228,13 @@ void Server::addViewer( ViewerClient* viewer ) {
 //            viewer->notifyNewStreamer( parentName, parent.getInputSensor().m_spec, streamerName );
 //        }
 //        else { viewer->notifyNewStreamer( streamerName, streamer->getInputSensor().m_spec, "" ); }
+    }
+
+    for ( const auto& [streamerName, streamer] : m_streamers ) {
+        // notify children to auto synchronize with already oppened parent
+        if (streamer->getParent() != "") {
+            viewer->notifyNewStreamer( *streamer );
+        }
     }
 
     m_viewers.push_back( viewer );

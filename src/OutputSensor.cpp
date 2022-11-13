@@ -8,6 +8,10 @@
 namespace hub {
 
 void OutputSensor::operator<<( const Acquisition& acquisition ) const {
+//    if (acquisition.m_start == -1 && acquisition.m_end == -1) {
+//        m_interface.write(acquisition);
+//        return;
+//    }
     assert( acquisition.getSize() == m_spec.m_acquisitionSize );
 
     assert( acquisition.m_start <= acquisition.m_end );
