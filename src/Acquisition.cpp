@@ -89,6 +89,7 @@ Mat4::Mat4( const float* array ) : Measure( (unsigned char*)array, 64 ) {
 
 Measure::Measure( const unsigned char* const data, uint64_t size ) :
     m_data( new unsigned char[size] ), m_size( size ), m_ownData( true ) {
+    assert(data != nullptr);
     memcpy( (unsigned char*)m_data, data, m_size );
     assert( m_size > 0 );
     assert( m_data != nullptr );
@@ -144,6 +145,11 @@ bool Measure::operator==( const Measure& measure ) const {
 
 bool Measure::operator!=( const Measure& measure ) const {
     return !( *this == measure );
+}
+
+const hub::SensorSpec::Resolution &Measure::getResolution() const
+{
+    return m_resolution;
 }
 
 std::ostream& operator<<( std::ostream& os, const Measure& measure ) {

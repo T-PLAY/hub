@@ -44,6 +44,7 @@ MainWindow::MainWindow( QWidget* parent ) : QMainWindow( parent ), ui( new Ui::M
                                            _onServerConnected,
                                            _onServerDisconnected,
                                            {},
+                                           false,
                                            this );
 
         //        ui->verticalLayout_2->addWidget(m_serverView);

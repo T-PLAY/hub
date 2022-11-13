@@ -22,6 +22,7 @@ class FormServerView : public QWidget
         std::function<void( const std::string& ipv4, int port )> onServerDisconnected = {},
         std::function<void( const std::string& streamName, const hub::Acquisition& )>
             onNewAcquisition = {},
+            bool autoSync = true,
         QWidget* parent      = nullptr );
     ~FormServerView();
 
@@ -56,4 +57,5 @@ class FormServerView : public QWidget
     //    void setPort( int newPort );
     const int& getPort() const;
     const std::string& getIpv4() const;
+    void setAutoSync(bool autoSync);
 };

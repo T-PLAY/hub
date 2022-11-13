@@ -99,10 +99,10 @@ StreamerClient::StreamerClient( Server& server, int iClient, hub::net::ClientSoc
     //        const char* type = std::any_cast<const char*>( metaData.at( "type" ) );
     //        if ( strcmp( type, "record" ) == 0 ) { m_isRecordStream = true; }
     //    }
-    //    if ( metaData.find( "parent" ) != metaData.end() ) {
-    //        m_parent = std::any_cast<const char*>( metaData.at( "parent" ) );
-    //        std::cout << headerMsg() << "parent : '" << m_parent << "'" << std::endl;
-    //    }
+        if ( metaData.find( "parent" ) != metaData.end() ) {
+            m_parent = std::any_cast<const char*>( metaData.at( "parent" ) );
+            std::cout << headerMsg() << "parent : '" << m_parent << "'" << std::endl;
+        }
 
     m_lastAcq[""];
 
@@ -118,14 +118,6 @@ StreamerClient::StreamerClient( Server& server, int iClient, hub::net::ClientSoc
                 const bool masterAcqLooped = lastMasterAcqStart > masterAcq.m_start;
                 lastMasterAcqStart = masterAcq.m_start;
 
-                if ( masterAcq.m_start == -1 ) {
-                    std::cout << headerMsg() << "receive (history) reset acq : " << masterAcq
-                              << std::endl;
-                    m_lastAcq[""].reset();
-                    m_streamName2saveAcqs[""].clear();
-                    m_server.newAcquisition( this, masterAcq );
-                    continue;
-                }
 
                 // broadcast acquisition for each stream viewers
                 m_mtxStreamViewers.lock();
@@ -140,6 +132,16 @@ StreamerClient::StreamerClient( Server& server, int iClient, hub::net::ClientSoc
                     m_mtxStreamViewers.lock();
                 }
                 m_mtxStreamViewers.unlock();
+
+                // receive reset acq
+                if ( masterAcq.m_start == 0 && masterAcq.m_end == 0 ) {
+                    std::cout << headerMsg() << "receive (history) reset acq : " << masterAcq
+                              << std::endl;
+                    m_lastAcq[""].reset();
+                    m_streamName2saveAcqs[""].clear();
+                    m_server.newAcquisition( this, masterAcq );
+                    continue;
+                }
 
                 // broadcast acquisition for each sync stream viewers
                 //                m_mtxSyncViewers.lock();
@@ -354,7 +356,8 @@ StreamerClient::StreamerClient( Server& server, int iClient, hub::net::ClientSoc
                     assert( masterAcq.getMeasures().size() == 1 );
                     assert( closestAcq->getMeasures().size() == 1 );
 
-                    hub::Acquisition mergedAcq { masterAcq.m_start, masterAcq.m_end };
+//                    hub::Acquisition mergedAcq { masterAcq.m_start, masterAcq.m_end };
+                    hub::Acquisition mergedAcq = masterAcq.clone();
                     if ( itLeftAcq->interpolable() ) {
                         const double t = ( masterAcq.m_start - itLeftAcq->m_start ) /
                                          (double)( itRightAcq->m_start - itLeftAcq->m_start );
@@ -362,7 +365,7 @@ StreamerClient::StreamerClient( Server& server, int iClient, hub::net::ClientSoc
                             << hub::Acquisition::slerp( *itLeftAcq, *itRightAcq, t ).getMeasures();
                     }
                     else { mergedAcq << closestAcq->getMeasures(); }
-                    mergedAcq << masterAcq.getMeasures();
+//                    mergedAcq << masterAcq.getMeasures();
 
                     //                    const auto syncViewers = pair.second;
                     assert( !syncViewers.empty() );
@@ -643,10 +646,10 @@ void StreamerClient::saveNewAcq( const std::string& streamName, hub::Acquisition
     if ( lastAcq.get() != newAcqPtr.get() ) { lastAcq = newAcqPtr; }
 }
 
-// const std::string &StreamerClient::getParent() const
-//{
-//     return m_parent;
-// }
+ const std::string &StreamerClient::getParent() const
+{
+     return m_parent;
+ }
 
 const std::list<StreamViewerClient*>& StreamerClient::getStreamViewers() const {
     return m_streamViewers;

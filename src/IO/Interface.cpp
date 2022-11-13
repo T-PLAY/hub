@@ -74,7 +74,9 @@ void Interface::write( const Acquisition& acq ) const {
     write( acq.m_end );
     const auto& measures = acq.getMeasures();
     assert( measures.size() > 0 );
+//    if (measures.size() > 0) {
     write( measures );
+//    }
 }
 
 void Interface::write( const char* str ) const {
@@ -239,6 +241,7 @@ Acquisition Interface::getAcquisition( int acquisitionSize ) const {
     }
 
     assert( acquisitionSize == acq.getSize() );
+//    assert( nMeasures == 0 || acquisitionSize == acq.getSize() );
 
     return acq;
 }

@@ -17,7 +17,8 @@ Viewer::Viewer(
     std::function<void( const char* ipv4, int port )> onServerDisconnected,
     std::function<void( const char* streamName, const hub::Acquisition& )> onNewAcquisition,
     const std::string& ipv4,
-    int port ) :
+    int port,
+    bool autoSync ) :
 
     m_onNewStreamer( onNewStreamer ),
     m_onDelStreamer( onDelStreamer ),
@@ -26,7 +27,8 @@ Viewer::Viewer(
     m_onNewAcquisition( onNewAcquisition ),
     //    m_ipv4( ipv4 ),
     //    m_port( port ),
-    m_sock( ipv4, port, false )
+    m_sock( ipv4, port, false ),
+    m_autoSync( autoSync )
 //    m_ipv4Regex( std::regex( "^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$" ) ) {
 {
 
@@ -62,7 +64,8 @@ Viewer::Viewer(
                     } break;
 
                     case net::ClientSocket::Message::NEW_STREAMER: {
-//                        std::cout << "[Viewer] new message : NEW_STREAMER" << std::endl;
+                        //                        std::cout << "[Viewer] new message : NEW_STREAMER"
+                        //                        << std::endl;
 
                         //                        Stream newStream( *this );
 
@@ -75,23 +78,38 @@ Viewer::Viewer(
 
                         //                        m_sock.read( newStream.m_sensorSpec );
                         std::string syncStreamName = "";
-//                                                m_sock.read(syncStreamName);
-//                        const auto& metaData = sensorSpec.m_metaData;
-//                        if ( metaData.find( "parent" ) != metaData.end() ) {
-//                            syncStreamName = std::any_cast<const char*>( metaData.at( "parent" )
-//                            );
-//                        //        std::cout << headerMsg() << "parent : '" << syncStreamName <<
-//                        "'" << std::endl;
-//                        }
+                        //                                                m_sock.read(syncStreamName);
+                        //        std::cout << headerMsg() << "parent : '" << syncStreamName <<
+                        //                        "'" << std::endl;
+                        //                        }
 
-//                        m_sock.read( newStream.m_syncStreamName );
+                        auto streamId     = streamName;
+                        auto sensorSpecId = sensorSpec;
+
+                        std::string parentName = "";
+                        if ( m_autoSync ) {
+                            const auto& metaData = sensorSpec.m_metaData;
+                            if ( metaData.find( "parent" ) != metaData.end() ) {
+                                parentName = std::any_cast<const char*>( metaData.at( "parent" ) );
+
+                                if ( m_streams.find( parentName ) != m_streams.end() ) {
+                                    streamId += " -> " + parentName;
+                                    sensorSpecId += m_streams.at( parentName )->m_sensorSpec;
+                                    syncStreamName = parentName;
+                                }
+                            }
+                        }
+
 #ifdef DEBUG_VIEWER
                         DEBUG_MSG( "[Viewer] new streamer '" << streamName << "', sync stream '"
                                                              << syncStreamName << "'" );
 #endif
-                        const auto& streamId = ( syncStreamName == "" )
-                                                   ? ( streamName )
-                                                   : ( streamName + " <- " + syncStreamName );
+
+                        //                        m_sock.read( newStream.m_syncStreamName );
+                        //                        const auto& streamId = ( syncStreamName == "" )
+                        //                                                   ? ( streamName )
+                        //                                                   : ( streamName + " -> "
+                        //                                                   + syncStreamName );
                         //                        newStream.m_streamId = streamId;
                         assert( m_streams.find( streamId ) == m_streams.end() );
                         //                        m_streams[streamId] = newStream;
@@ -100,7 +118,7 @@ Viewer::Viewer(
                         //                        std::make_unique<Stream>(std::move(newStream));
 
                         if ( m_onNewStreamer ) {
-                            const bool added = m_onNewStreamer( streamId.c_str(), sensorSpec );
+                            const bool added = m_onNewStreamer( streamId.c_str(), sensorSpecId );
 
                             m_streams[streamId] = std::make_unique<Stream>( *this );
                             //                        = std::make_unique<Stream>( std::move(
@@ -110,8 +128,10 @@ Viewer::Viewer(
                             newStream.m_streamId       = streamId;
                             newStream.m_streamName     = streamName;
                             newStream.m_sensorSpec     = sensorSpec;
+                            newStream.m_sensorSpecId   = sensorSpecId;
                             newStream.m_syncStreamName = syncStreamName;
                             newStream.m_added          = added;
+                            newStream.m_parentName     = parentName;
 
                             if ( m_onNewAcquisition && added ) {
 
@@ -123,7 +143,51 @@ Viewer::Viewer(
                             }
                         }
 
-                        //                        m_streams[streamId] = newStream;
+                        // prevent all son the father is comming
+                        std::list<std::shared_ptr<Stream>> streamsToAdd;
+                        if ( m_autoSync ) {
+                            auto it = m_streams.begin();
+                            while ( it != m_streams.end() ) {
+
+                                auto& sonStream = *it->second;
+
+                                if ( sonStream.m_parentName == streamId ) {
+                                    if ( m_onNewAcquisition && sonStream.m_added ) {
+                                        sonStream.stopStream();
+                                    }
+                                    m_onDelStreamer( sonStream.m_streamId.c_str(),
+                                                     sonStream.m_sensorSpec );
+
+                                    assert( m_streams.find( sonStream.m_parentName ) !=
+                                            m_streams.end() );
+                                    sonStream.m_streamId = sonStream.m_streamName + " -> " + sonStream.m_parentName;
+                                    sonStream.m_sensorSpecId = sonStream.m_sensorSpec +
+                                        m_streams.at( sonStream.m_parentName )->m_sensorSpec;
+                                    assert( sonStream.m_syncStreamName == "" );
+                                    sonStream.m_syncStreamName = sonStream.m_parentName;
+
+                                    if ( m_onNewStreamer ) {
+                                        const bool added = m_onNewStreamer(
+                                            sonStream.m_streamId.c_str(), sonStream.m_sensorSpecId );
+
+                                        if ( m_onNewAcquisition && added ) {
+                                            sonStream.startStream();
+                                        }
+                                    }
+
+                                    streamsToAdd.push_back( it->second );
+                                    it = m_streams.erase( it );
+                                    continue;
+                                }
+
+                                ++it;
+                            }
+                        }
+                        for ( const auto& streamToAdd : streamsToAdd ) {
+                            assert( m_streams.find( streamToAdd->m_streamId ) == m_streams.end() );
+                            m_streams[streamToAdd->m_streamId] = streamToAdd;
+                        }
+
                         // wait for client init sensorSpec with main thread context (async)
                         // for unity side (update context different of static event function)
                         std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
@@ -138,33 +202,114 @@ Viewer::Viewer(
                         std::cout << "[Viewer] del streamer '" << streamName << "'" << std::endl;
 
                         std::string syncStreamName = "";
-//                        m_sock.read( syncStreamName );
-//                        const auto& metaData = sensorSpec.m_metaData;
-//                        if ( metaData.find( "parent" ) != metaData.end() ) {
-//                            syncStreamName = std::any_cast<const char*>( metaData.at( "parent" )
-//                            );
-//                        //        std::cout << headerMsg() << "parent : '" << syncStreamName <<
-//                        "'" << std::endl;
-//                        }
+                        //                        m_sock.read( syncStreamName );
+                        //                        //        std::cout << headerMsg() << "parent : '"
+                        //                        << syncStreamName <<
+                        //                        "'" << std::endl;
+                        //                        }
+
+                        auto streamId = streamName;
+
+                        if ( m_autoSync ) {
+                            const auto& metaData = sensorSpec.m_metaData;
+                            if ( metaData.find( "parent" ) != metaData.end() ) {
+                                const std::string parentName =
+                                    std::any_cast<const char*>( metaData.at( "parent" ) );
+
+                                if ( m_streams.find( parentName ) != m_streams.end() ) {
+                                    streamId += " -> " + parentName;
+                                    //                                    sensorSpec +=
+                                    //                                    m_streams.at( parentName
+                                    //                                    )->m_sensorSpec;
+                                    //                                    syncStreamName =
+                                    //                                    parentName;
+                                }
+                            }
+                        }
+                        //                        if ( m_autoSync ) {
+                        //                            const auto& metaData = sensorSpec.m_metaData;
+                        //                            if ( metaData.find( "parent" ) !=
+                        //                            metaData.end() ) {
+                        //                                syncStreamName =
+                        //                                    std::any_cast<const char*>(
+                        //                                    metaData.at( "parent" ) );
+                        //                            }
+
+                        //                            if ( m_streams.find( syncStreamName ) !=
+                        //                            m_streams.end() ) {
+                        //                                streamId += " -> " + syncStreamName;
+                        //                                sensorSpec += m_streams.at( syncStreamName
+                        //                                )->m_sensorSpec;
+                        //                            }
+                        //                        }
+
 #ifdef DEBUG_VIEWER
                         DEBUG_MSG( "[Viewer] del streamer '" << streamName << "'" );
 #endif
                         //                        const auto& streamId = streamName +
                         //                        syncStreamName;
-                        const auto& streamId = ( syncStreamName == "" )
-                                                   ? ( streamName )
-                                                   : ( streamName + " <- " + syncStreamName );
+                        //                        const auto& streamId = ( syncStreamName == "" )
+                        //                                                   ? ( streamName )
+                        //                                                   : ( streamName + " -> "
+                        //                                                   + syncStreamName );
+
+                        // prevent all son the father is leaving
+                        std::list<std::shared_ptr<Stream>> streamsToAdd;
+                        if ( m_autoSync ) {
+                            auto it = m_streams.begin();
+                            while ( it != m_streams.end() ) {
+
+                                auto& sonStream = *it->second;
+
+                                if ( sonStream.m_parentName == streamId ) {
+                                    if ( m_onNewAcquisition && sonStream.m_added ) {
+                                        sonStream.stopStream();
+                                    }
+                                    m_onDelStreamer( sonStream.m_streamId.c_str(),
+                                                     sonStream.m_sensorSpec );
+
+                                    assert( m_streams.find( sonStream.m_parentName ) !=
+                                            m_streams.end() );
+                                    sonStream.m_streamId = sonStream.m_streamName;
+                                    sonStream.m_sensorSpecId = sonStream.m_sensorSpec;
+                                    assert( sonStream.m_syncStreamName != "" );
+                                    sonStream.m_syncStreamName = "";
+
+                                    if ( m_onNewStreamer ) {
+                                        const bool added = m_onNewStreamer(
+                                            sonStream.m_streamId.c_str(), sonStream.m_sensorSpecId );
+
+                                        if ( m_onNewAcquisition && added ) {
+                                            sonStream.startStream();
+                                        }
+                                    }
+
+                                    streamsToAdd.push_back( it->second );
+                                    it = m_streams.erase( it );
+                                    continue;
+                                }
+
+                                ++it;
+                            }
+                        }
+                        for ( const auto& streamToAdd : streamsToAdd ) {
+                            assert( m_streams.find( streamToAdd->m_streamId ) == m_streams.end() );
+                            m_streams[streamToAdd->m_streamId] = streamToAdd;
+                        }
 
                         if ( m_onDelStreamer ) {
-                            assert( m_streams.find( streamId ) != m_streams.end() );
-                            auto& delStream = *m_streams.at( streamId );
+                            delStreamer( streamId );
+                            //                            assert( m_streams.find( streamId ) !=
+                            //                            m_streams.end() ); auto& delStream =
+                            //                            *m_streams.at( streamId );
 
-                            if ( m_onNewAcquisition && delStream.m_added ) {
-                                delStream.stopStream();
-                            }
+                            //                            if ( m_onNewAcquisition &&
+                            //                            delStream.m_added ) {
+                            //                                delStream.stopStream();
+                            //                            }
 
-                            m_onDelStreamer( streamId.c_str(), sensorSpec );
-                            m_streams.erase( streamId );
+                            //                            m_onDelStreamer( streamId.c_str(),
+                            //                            sensorSpec ); m_streams.erase( streamId );
                         }
 
                         // wait for client init sensorSpec with main thread context (async)
@@ -201,26 +346,36 @@ Viewer::Viewer(
 
             if ( m_serverConnected ) {
                 m_serverConnected = false;
-                    DEBUG_MSG( "[Viewer] server disconnected, close all client connections" );
+                DEBUG_MSG( "[Viewer] server disconnected, close all client connections" );
 
                 if ( m_onServerDisconnected )
                     m_onServerDisconnected( m_sock.getIpv4().c_str(), m_sock.getPort() );
 
+                auto it = m_streams.begin();
+                while ( it != m_streams.end() ) {
+                    //                for ( const auto& [streamId, stream] : m_streams ) {
+                    auto& streamId = it->first;
+                    //                    auto & stream = it->second;
+                    ++it;
 
-                for ( const auto& [streamId, stream] : m_streams ) {
-                    //                    const auto& streamId = pair.first;
-                    const auto& sensorSpec = stream->m_sensorSpec;
-                    //                    if (m_onDelStreamer) m_onDelStreamer( streamId.c_str(),
-                    //                    sensorSpec );
+                    delStreamer( streamId );
 
-                    //                    if ( m_onNewAcquisition ) { stream->stopStream(); }
-                    if ( m_onDelStreamer ) {
-                        if ( m_onNewAcquisition && stream->m_added ) { stream->stopStream(); }
+                    //                    //                    const auto& streamId = pair.first;
+                    //                    const auto& sensorSpec = stream->m_sensorSpec;
+                    //                    //                    if (m_onDelStreamer)
+                    //                    m_onDelStreamer( streamId.c_str(),
+                    //                    //                    sensorSpec );
 
-                        m_onDelStreamer( streamId.c_str(), sensorSpec );
-                    }
+                    //                    //                    if ( m_onNewAcquisition ) {
+                    //                    stream->stopStream(); } if ( m_onDelStreamer ) {
+                    //                        if ( m_onNewAcquisition && stream->m_added ) {
+                    //                        stream->stopStream(); }
+
+                    //                        m_onDelStreamer( streamId.c_str(), sensorSpec );
+                    //                    }
                 }
-                m_streams.clear();
+                assert( m_streams.empty() );
+                //                m_streams.clear();
                 //                m_streamName2sensorSpec.clear();
 
                 //#ifdef OS_LINUX
@@ -287,6 +442,21 @@ const int& Viewer::getPort() const {
     return m_sock.getPort();
 }
 
+void Viewer::setAutoSync( bool newAutoSync ) {
+    m_autoSync = newAutoSync;
+}
+
+void Viewer::delStreamer( const std::string& streamId ) {
+    assert( m_onDelStreamer );
+    assert( m_streams.find( streamId ) != m_streams.end() );
+    auto& delStream = *m_streams.at( streamId );
+
+    if ( m_onNewAcquisition && delStream.m_added ) { delStream.stopStream(); }
+
+    m_onDelStreamer( streamId.c_str(), delStream.m_sensorSpecId );
+    m_streams.erase( streamId );
+}
+
 void Viewer::Stream::startStream() {
     //    const auto& streamId = streamName + syncStreamName;
 
@@ -324,7 +494,7 @@ void Viewer::Stream::startStream() {
 void Viewer::Stream::stopStream() {
     DEBUG_MSG( "[Stream] stopStream() streamer '" << m_streamId << "' started" );
 
-    assert(m_thread != nullptr);
+    assert( m_thread != nullptr );
     assert( m_stopThread == false );
     //    if ( m_streamName2stopThread.find( streamId ) != m_streamName2stopThread.end() ) {
     //        m_streamName2stopThread.at( streamId ) = true;

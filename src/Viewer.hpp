@@ -32,7 +32,8 @@ class SRC_API Viewer
             std::function<void( const char* streamName, const hub::Acquisition& )>
                 onNewAcquisition    = {},
             const std::string& ipv4 = net::s_defaultServiceIp,
-            int port                = net::s_defaultServicePort );
+            int port                = net::s_defaultServicePort,
+            bool autoSync           = true );
 
     ~Viewer();
 
@@ -41,6 +42,7 @@ class SRC_API Viewer
 
     const std::string& getIpv4() const;
     const int& getPort() const;
+    void setAutoSync( bool newAutoSync );
 
     ////////////////////////////////////////////////////////////////////////////////
 
@@ -54,10 +56,13 @@ class SRC_API Viewer
     std::function<void( const char* ipv4, int port )> m_onServerDisconnected;
     std::function<void( const char* streamName, const hub::Acquisition& )> m_onNewAcquisition;
 
+    void delStreamer( const std::string& streamId );
+
     net::ClientSocket m_sock;
     //    std::string m_ipv4;
     //    int m_port;
     bool m_serverConnected = false;
+    bool m_autoSync        = true;
     //    std::regex m_ipv4Regex;
 
     class Stream
@@ -70,12 +75,18 @@ class SRC_API Viewer
 
         Stream( Stream&& stream ) :
             m_viewer( stream.m_viewer ),
+
             m_streamName( std::move( stream.m_streamName ) ),
             m_sensorSpec( std::move( stream.m_sensorSpec ) ),
             m_syncStreamName( std::move( stream.m_syncStreamName ) ),
+            m_parentName( std::move( stream.m_parentName ) ),
+
             m_streamId( std::move( stream.m_streamId ) ),
+            m_sensorSpecId( std::move( stream.m_sensorSpecId ) ),
+
             m_thread( stream.m_thread ),
-            m_stopThread( stream.m_stopThread ) {
+            m_stopThread( stream.m_stopThread ),
+            m_added( stream.m_added ) {
             stream.m_thread = nullptr;
         }
 
@@ -88,7 +99,10 @@ class SRC_API Viewer
         std::string m_streamName;
         SensorSpec m_sensorSpec;
         std::string m_syncStreamName;
+        std::string m_parentName;
+
         std::string m_streamId;
+        SensorSpec m_sensorSpecId;
 
         std::thread* m_thread = nullptr;
         //        std::thread m_thread;
@@ -101,7 +115,7 @@ class SRC_API Viewer
         //        friend class Viewer;
     };
 
-    std::map<std::string, std::unique_ptr<Stream>> m_streams;
+    std::map<std::string, std::shared_ptr<Stream>> m_streams;
 
     //    std::map<std::string, SensorSpec> m_streamName2sensorSpec;
     //    std::map<std::string, std::thread> m_streamName2thread;

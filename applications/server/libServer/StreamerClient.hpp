@@ -49,7 +49,7 @@ class StreamerClient : public Client
     //    std::mutex m_mtx;
     std::unique_ptr<hub::InputSensor> m_inputSensor;
     std::string m_streamName;
-    //    std::string m_parent = "";
+        std::string m_parent = "";
 
     std::list<StreamViewerClient*> m_streamViewers;
     std::mutex m_mtxStreamViewers;
@@ -76,5 +76,5 @@ class StreamerClient : public Client
     const std::map<std::string, std::list<StreamViewerClient*>>&
     getSyncViewers() const; // use by server (printStatus)
     const std::string& getStreamName() const;
-    //    const std::string &getParent() const;
+        const std::string &getParent() const;
 };
