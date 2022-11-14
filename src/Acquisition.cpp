@@ -102,7 +102,7 @@ Measure::Measure(unsigned char *data, uint64_t size) :
     m_size( size )
 //    m_ownData( true )
 {
-    std::cout << "[Measure] steal data pointer of size : " << size << std::endl;
+//    std::cout << "[Measure] steal data pointer of size : " << size << std::endl;
     assert(data != nullptr);
     assert( m_size > 0 );
     assert( m_data != nullptr );
@@ -191,7 +191,7 @@ Measure::~Measure() {
 
 //    if ( m_ownData && !m_isMoved ) {
     if ( !m_isMoved ) {
-    std::cout << "[Measure] delete data pointer of size : " << m_size << std::endl;
+//    std::cout << "[Measure] delete data pointer of size : " << m_size << std::endl;
         delete[] m_data;
     }
 }
@@ -263,6 +263,18 @@ Acquisition& Acquisition::operator<<( Measure&& measure ) {
     m_measures.push_back( std::move( measure ) );
     return *this;
 }
+
+void Acquisition::addMeasure(unsigned char *data, uint64_t size) {
+    m_size += size;
+//    m_measures.push_back( std::move( measure ) );
+    m_measures.emplace_back(data, size);
+}
+
+//template<typename... Values>
+//void Acquisition::add(Values... values)
+//{
+//    m_measures.emplace_back(values);
+//}
 
 bool Acquisition::interpolable() const {
     for ( const auto& measure : m_measures ) {
@@ -340,5 +352,6 @@ std::ostream& operator<<( std::ostream& os, const Acquisition& acq ) {
     os << 1'000'000.0 / ( acq.m_end - acq.m_start ) << " fps.";
     return os;
 }
+
 
 } // namespace hub

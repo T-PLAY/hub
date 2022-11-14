@@ -396,11 +396,11 @@ StreamerClient::StreamerClient( Server& server, int iClient, hub::net::ClientSoc
                 m_server.newAcquisition( this, masterAcq );
 
                 if ( masterAcq.getMeasures().size() == 1 ) {
-                    auto & lastAcq = m_lastAcq[""];
-                    lastAcq.reset();
+//                    auto & lastAcq = m_lastAcq[""];
+//                    lastAcq.reset();
 //                    lastAcq. = std::move(masterAcq);
-                    lastAcq = std::make_shared<hub::Acquisition>( std::move( masterAcq ) );
-//                    m_lastAcq[""] = std::make_shared<hub::Acquisition>( std::move( masterAcq ) );
+//                    lastAcq = std::make_shared<hub::Acquisition>( std::move( masterAcq ) );
+                    m_lastAcq[""] = std::make_shared<hub::Acquisition>( std::move( masterAcq ) );
                 }
                 else { saveNewAcq( "", std::move( masterAcq ) ); }
                 //                m_lastUpdateAcqDate[""] =
@@ -409,6 +409,7 @@ StreamerClient::StreamerClient( Server& server, int iClient, hub::net::ClientSoc
             } // while (true)
         }
         catch ( hub::net::Socket::exception& e ) {
+//            m_guard = std::lock_guard<std::mutex>(s_mtxCout);
             s_mtxCout.lock();
             std::cout << headerMsg() << "in : catch inputSensor exception : " << e.what()
                       << std::endl;
@@ -420,6 +421,7 @@ StreamerClient::StreamerClient( Server& server, int iClient, hub::net::ClientSoc
         std::cout << headerMsg() << "thread end" << std::endl;
         //        s_mtxCout.unlock();
 
+    s_mtxCout.unlock();
         //        m_server.delStreamer( this );
         std::thread( [this]() { delete this; } ).detach();
         //        delete this;
@@ -442,6 +444,7 @@ StreamerClient::StreamerClient( Server& server, int iClient, hub::net::ClientSoc
 
 StreamerClient::~StreamerClient() {
     //    m_mtx.lock();
+        s_mtxCout.lock();
 
     assert( m_thread.joinable() );
     m_thread.join();
@@ -452,7 +455,6 @@ StreamerClient::~StreamerClient() {
 
     m_streamName2saveAcqs.clear();
 
-    //    s_mtxCout.lock();
 
     m_mtxStreamViewers.lock();
     auto it = m_streamViewers.begin();
@@ -502,8 +504,8 @@ StreamerClient::~StreamerClient() {
     //                 "--------------------"
     //              << std::endl;
 //    m_mtxStreamViewers.lock();
-    m_mtxSyncViewers.lock();
-    m_mtxSyncAcqs.lock();
+//    m_mtxSyncViewers.lock();
+//    m_mtxSyncAcqs.lock();
 
 
 //        m_mtx.unlock();
