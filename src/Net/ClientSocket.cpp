@@ -182,8 +182,8 @@ void ClientSocket::write( const unsigned char* data, size_t len ) const {
         if ( byteSent == -1 ) {
 #ifdef DEBUG_SOCKET
             DEBUG_MSG( getHeader( m_fdSock ) << "can't send packet " << byteSent << "/" << len );
-#endif
             perror( "[socket] send failed.\n" );
+#endif
             assert( isConnected() );
             close();
             throw Socket::exception(
@@ -219,8 +219,8 @@ void ClientSocket::read( unsigned char* data, size_t len ) const {
         if ( byteRead == -1 ) {
 #ifdef DEBUG_SOCKET
             DEBUG_MSG( "byte read == -1 error" );
-#endif
             perror( "[socket] receive failed.\n" );
+#endif
 #ifndef WIN32
             assert( !isConnected() );
 #endif

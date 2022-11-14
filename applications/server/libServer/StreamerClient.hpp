@@ -68,6 +68,7 @@ class StreamerClient : public Client
     std::map<std::string, std::map<long long, std::shared_ptr<hub::Acquisition>>>
         m_streamName2saveAcqs;
 
+//    std::lock_guard<std::mutex> m_guard;
     //    static std::mutex s_mtxCout;
     //    bool m_isRecordStream = false;
 

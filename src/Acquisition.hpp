@@ -121,6 +121,10 @@ class SRC_API Acquisition
     Acquisition& operator<<( Measure&& measure );
     Acquisition& operator<<( const Measures& measure );
 
+    void addMeasure( unsigned char * data, uint64_t size);
+//    template<typename... Values>
+//    void add(Values...);
+
     bool interpolable() const;
     static Acquisition slerp( const Acquisition& left, const Acquisition& right, double t );
 

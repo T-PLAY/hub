@@ -35,6 +35,7 @@ class SRC_API Interface
     virtual ~Interface() = default;
 //    virtual ~Interface();
 
+
     virtual void close() const = 0;
     virtual bool isOpen() const = 0;
     virtual bool isEnd() const = 0;
