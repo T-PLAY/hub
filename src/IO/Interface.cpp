@@ -202,8 +202,10 @@ Measure Interface::getMeasure() const {
     unsigned char* data = new unsigned char[size];
     read( data, size );
 
-    Measure measure( data, size );
-    return measure;
+    Measure && measure { data, size };
+//    delete [] data;
+
+    return std::move(measure);
 }
 
 SensorSpec Interface::getSensorSpec() const {
@@ -230,7 +232,7 @@ Acquisition Interface::getAcquisition( int acquisitionSize ) const {
     read( start );
     read( end );
 
-    Acquisition acq( start, end );
+    Acquisition && acq { start, end };
 
     int nMeasures;
     read( nMeasures );
@@ -243,7 +245,7 @@ Acquisition Interface::getAcquisition( int acquisitionSize ) const {
     assert( acquisitionSize == acq.getSize() );
 //    assert( nMeasures == 0 || acquisitionSize == acq.getSize() );
 
-    return acq;
+    return std::move(acq);
 }
 
 void Interface::read( char* str ) const {

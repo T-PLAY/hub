@@ -17,7 +17,7 @@ if(HUB_ENABLE_APPLICATIONS)
     option(HUB_APPLICATION_ENABLE_OPENCV "Build OpenCV examples (depends of opencv lib)" OFF)
     option(HUB_APPLICATION_ENABLE_PDI "Build PDI examples (depends of polhemus lib)" OFF)
     option(HUB_APPLICATION_ENABLE_KEYBOARD "Build keyboard streamer (depends of glm lib)" OFF)
-    option(HUB_USE_DCMTK "Build Dcmtk examples and libs" OFF)
+    option(HUB_APPLICATION_ENABLE_DCMTK "Build Dcmtk examples and libs" OFF)
     option(HUB_ENABLE_SCUS "Build Scus" OFF)
 
 
@@ -75,6 +75,8 @@ if(HUB_ENABLE_APPLICATIONS)
 
 #    add_subdirectory(libApp)
 
+    add_subdirectory(importer)
+
 #    if(HUB_ENABLE_QT)
         if(QT_VERSION)
             add_subdirectory(viewer)
@@ -86,7 +88,6 @@ if(HUB_ENABLE_APPLICATIONS)
     add_subdirectory(recorder)
     add_subdirectory(player)
     add_subdirectory(exporter)
-    add_subdirectory(importer)
     add_subdirectory(calibrator)
 
 

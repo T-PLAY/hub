@@ -20,6 +20,7 @@ if(WIN32)
 
     set(WIN32_REQUIRED_LIBS glm)
 
+
     add_custom_command(
         TARGET ${PROJECT_NAME}
         POST_BUILD

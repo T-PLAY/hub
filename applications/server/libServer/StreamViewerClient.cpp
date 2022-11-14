@@ -216,7 +216,7 @@ StreamViewerClient::StreamViewerClient( Server& server,
                 //                m_mtxOutputSensor.unlock();
                 //                std::this_thread::sleep_for( std::chrono::milliseconds( 500 ) );
                 //                m_mtxOutputSensor.lock();
-            } // while ( !m_updateFailed || !m_isKilled )
+            } // while ( !m_isKilled )
         }
         catch ( hub::net::Socket::exception& e ) {
             //            m_mtxOutputSensor.unlock();
@@ -234,7 +234,7 @@ StreamViewerClient::StreamViewerClient( Server& server,
 
         if ( m_isKilled ) {
             std::cout << headerMsg() << "thread killed" << std::endl;
-            m_mtxOutputSensor.unlock();
+//            m_mtxOutputSensor.unlock();
         }
         else {
             std::cout << headerMsg() << "thread end (update failed)" << std::endl;

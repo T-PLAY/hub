@@ -61,7 +61,10 @@ int main(int, char**)
             break;
         }
         // show live and wait for a key with timeout long enough to show images
-        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+        // esc
+//        if ((char)27 == cv::waitKey(1)) break;
+        if (cv::waitKey(10) > 0) break;
+//        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     }
     // the camera will be deinitialized automatically in VideoCapture destructor
     return 0;

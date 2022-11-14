@@ -8,7 +8,7 @@ add_subdirectory(streamViewer)
 add_subdirectory(simpleViewer)
 add_subdirectory(imageManipulator)
 
-#if(HUB_USE_DCMTK)
+#if(HUB_APPLICATION_ENABLE_DCMTK)
 #    add_subdirectory(libDicomUtils)
 #endif()
 
@@ -17,7 +17,7 @@ if(HUB_APPLICATION_ENABLE_RADIUM)
     option(HUB_APPLICATION_VIEWER_RADIUM_ENABLE_IMAGE_VIEWER "Enable image viewer" ON)
     option(HUB_APPLICATION_VIEWER_RADIUM_ENABLE_LOADER "Enable loader" ON)
 
-    if(HUB_USE_DCMTK)
+    if(HUB_APPLICATION_ENABLE_DCMTK)
         add_subdirectory(libDicomLoader)
         add_subdirectory(VolumeDemoApp)
         add_subdirectory(TexturedQuad)
