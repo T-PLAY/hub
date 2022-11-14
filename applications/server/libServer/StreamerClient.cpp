@@ -112,7 +112,7 @@ StreamerClient::StreamerClient( Server& server, int iClient, hub::net::ClientSoc
 
             while ( true ) {
 
-                auto masterAcq = m_inputSensor->getAcquisition();
+                auto && masterAcq = m_inputSensor->getAcquisition();
                 //                std::cout << "[StreamerClient] receive master acq : " << masterAcq
                 //                << std::endl;
                 const bool masterAcqLooped = lastMasterAcqStart > masterAcq.m_start;
@@ -211,7 +211,7 @@ StreamerClient::StreamerClient( Server& server, int iClient, hub::net::ClientSoc
                         while ( syncAcqs.size() < 2 ) {
                             m_mtxSyncAcqs.unlock();
                             std::this_thread::sleep_for( std::chrono::milliseconds( 1 ) );
-                            m_mtxSyncAcqs.unlock();
+                            m_mtxSyncAcqs.lock();
                         }
                         assert( syncAcqs.size() >= 2 );
                         m_mtxSyncAcqs.unlock();
@@ -396,7 +396,11 @@ StreamerClient::StreamerClient( Server& server, int iClient, hub::net::ClientSoc
                 m_server.newAcquisition( this, masterAcq );
 
                 if ( masterAcq.getMeasures().size() == 1 ) {
-                    m_lastAcq[""] = std::make_shared<hub::Acquisition>( std::move( masterAcq ) );
+                    auto & lastAcq = m_lastAcq[""];
+                    lastAcq.reset();
+//                    lastAcq. = std::move(masterAcq);
+                    lastAcq = std::make_shared<hub::Acquisition>( std::move( masterAcq ) );
+//                    m_lastAcq[""] = std::make_shared<hub::Acquisition>( std::move( masterAcq ) );
                 }
                 else { saveNewAcq( "", std::move( masterAcq ) ); }
                 //                m_lastUpdateAcqDate[""] =
@@ -479,7 +483,10 @@ StreamerClient::~StreamerClient() {
     m_syncViewers.clear();
     m_mtxSyncViewers.unlock();
 
+    m_mtxSyncAcqs.lock();
     m_syncAcqs.clear();
+    m_mtxSyncAcqs.unlock();
+
     m_isSyncthing.clear();
     m_isLooping.clear();
 
@@ -494,13 +501,18 @@ StreamerClient::~StreamerClient() {
     //    std::cout << "-------------------------------------------------------------------------"
     //                 "--------------------"
     //              << std::endl;
+//    m_mtxStreamViewers.lock();
+    m_mtxSyncViewers.lock();
+    m_mtxSyncAcqs.lock();
 
-    //    m_mtx.unlock();
+
+//        m_mtx.unlock();
 }
 
 std::string StreamerClient::headerMsg() const {
     return Client::headerMsg() + "[StreamerClient] ";
 }
+
 
 const hub::InputSensor& StreamerClient::getInputSensor() const {
     return *m_inputSensor.get();

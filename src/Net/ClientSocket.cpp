@@ -221,7 +221,9 @@ void ClientSocket::read( unsigned char* data, size_t len ) const {
             DEBUG_MSG( "byte read == -1 error" );
 #endif
             perror( "[socket] receive failed.\n" );
+#ifndef WIN32
             assert( !isConnected() );
+#endif
             close();
             throw Socket::exception(
                 "[ClientSocket] read(data, len) Can't read packet, peer connection lost" );

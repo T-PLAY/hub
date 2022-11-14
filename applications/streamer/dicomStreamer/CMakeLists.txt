@@ -12,6 +12,11 @@ find_package(glm REQUIRED)
 file(GLOB_RECURSE sources *.cpp)
 file(GLOB_RECURSE headers *.h)
 
+#find_library(var DicomUtils)
+#if(NOT var)
+#    message(FATAL_ERROR "DicomUtils not found")
+#endif()
+
 add_executable(${PROJECT_NAME} ${sources} ${headers})
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${SRC_DIR} ${PROJECT_SOURCE_DIR})
