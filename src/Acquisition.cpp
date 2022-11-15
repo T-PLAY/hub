@@ -192,6 +192,7 @@ Measure::~Measure() {
 //    if ( m_ownData && !m_isMoved ) {
     if ( !m_isMoved ) {
 //    std::cout << "[Measure] delete data pointer of size : " << m_size << std::endl;
+        assert(m_data != nullptr);
         delete[] m_data;
     }
 }
