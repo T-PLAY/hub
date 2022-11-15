@@ -320,6 +320,7 @@ void ScanComponent::addScan() {
         else { assert( false ); }
         assert( dims.size() == 2 );
         int nChannels = 0;
+        bool reverse = false;
         switch ( format ) {
         case hub::SensorSpec::Format::Y8:
             nChannels = 1;
@@ -328,6 +329,8 @@ void ScanComponent::addScan() {
             nChannels = 2;
             break;
         case hub::SensorSpec::Format::BGR8:
+            reverse = true;
+        case hub::SensorSpec::Format::RGB8:
             nChannels = 3;
             break;
         case hub::SensorSpec::Format::RGBA8:
@@ -390,6 +393,7 @@ void ScanComponent::addScan() {
         scan.m_material->m_pimp.x()  = m_tune0;
         scan.m_material->m_pimp.y()  = m_tune1;
         scan.m_material->m_nChannels = nChannels;
+        scan.m_material->m_reverse = true;
 #endif
         scan.m_material->addTexture( CurrentMaterial::TextureSemantic::TEX_DIFFUSE,
                                      textureParameters );
