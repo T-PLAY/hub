@@ -14,6 +14,7 @@ namespace Ui {
 class FormStreamView;
 }
 
+
 class FormStreamView : public QWidget
 {
     Q_OBJECT

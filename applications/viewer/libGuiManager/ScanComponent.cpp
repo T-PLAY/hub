@@ -74,7 +74,18 @@ void ScanComponent::initialize() {
         m_localTransform   = Eigen::Map<Eigen::Matrix4f>( (float*)array ); // Column-major
     }
     else if ( metaData.find( "parent" ) != metaData.end() ) {}
-    else { m_localTransform.block( 0, 0, 3, 3 ) = Eigen::Scaling( 100.0f, 100.0f, 100.0f ); }
+    else {
+        float width = 100.0f;
+        float height = 100.0f;
+        if (resolutions.size() == 1) {
+//            assert(resolutions.at(0).first.size() == 2);
+            const auto & dims = resolutions.at(0).first;
+            assert(dims.size() == 2);
+            width = dims.at(0) * 0.5f;
+            height = dims.at(1) * 0.5f;
+        }
+        m_localTransform.block( 0, 0, 3, 3 ) = Eigen::Scaling( height, 1.0f, width );
+    }
 
     // image only
     if ( resolutions.size() == 1 ) {

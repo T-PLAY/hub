@@ -120,6 +120,11 @@ void SceneManager::addSensor(const std::string &streamName, const hub::SensorSpe
         }
     }
 //    m_mtxSensors.unlock();
+
+    // auto attach if only one sensor is connected
+    if (m_streamName2sensor.size() == 1) {
+        attachSensorFromImageManipulator(streamName);
+    }
 }
 
 void SceneManager::delSensor(const std::string &streamName, const hub::SensorSpec &sensorSpec, const std::string &syncStreamName) {

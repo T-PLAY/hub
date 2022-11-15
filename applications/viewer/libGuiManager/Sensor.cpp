@@ -360,21 +360,25 @@ void Sensor::attachFromImageManipulator() {
     const auto& resolutions = m_sensorSpec.m_resolutions;
     const auto& dims        = resolutions.at( m_iImage ).first;
     if ( dims.size() != 2 ) return;
+    const auto & width = dims.at(0);
+    const auto & height = dims.at(1);
     const auto& metaData = m_sensorSpec.m_metaData;
-    double scanWidth     = 1.0;
+//    double realWidth     = 1.0;
+    double realWidth     = width;
     if ( metaData.find( "scanWidth" ) != metaData.end() ) {
-        scanWidth = std::any_cast<double>( metaData.at( "scanWidth" ) );
+        realWidth = std::any_cast<double>( metaData.at( "scanWidth" ) );
     }
 
-    double scanDepth = 1.0;
+//    double realHeight = 1.0;
+    double realHeight = height;
     if ( metaData.find( "scanDepth" ) != metaData.end() ) {
-        scanDepth = std::any_cast<double>( metaData.at( "scanDepth" ) );
+        realHeight = std::any_cast<double>( metaData.at( "scanDepth" ) );
     }
 
     assert( dims.size() == 2 );
     if ( m_imageManipulator != nullptr ) {
         m_widgetStreamViewManipulator = &m_imageManipulator->getWidgetStreamView();
-        m_widgetStreamViewManipulator->init( dims.at( 0 ), dims.at( 1 ), scanWidth, scanDepth );
+        m_widgetStreamViewManipulator->init( width, height, realWidth, realHeight );
     }
 }
 #endif
