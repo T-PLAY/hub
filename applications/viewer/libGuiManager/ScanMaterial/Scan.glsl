@@ -44,6 +44,7 @@ struct Material {
     int iPalette;
     int nChannels;
     bool isTransparent;
+    bool reverse;
 };
 
 // Implementation of the emissivity interface.
@@ -61,26 +62,37 @@ vec4 getDiffuseColor( Material material, vec3 texCoord ) {
         vec4 rgba = texture( material.tex.kd, texCoord.xy );
 //        dc.rgb = rgba.rgb;
 //        dc.a *= rgba.a;
-        float color;
+        float transparency;
         if (material.nChannels == 1) {
-            color = rgba.r;
+            transparency = rgba.r;
+            dc.rgb = vec3(transparency);
         }
         else if (material.nChannels == 2) {
-            color = (rgba.r + rgba.g * 256.0) / 256.0;
+            transparency = (rgba.r + rgba.g * 256.0) / 256.0;
+            dc.rgb = vec3(transparency);
         }
-        dc.rgb = vec3(color);
+        else if (material.nChannels == 3) {
+            transparency = (rgba.r + rgba.g + rgba.b) / 3.0;
+            if (material.reverse) {
+                dc.rgb = rgba.bgr;
+            }
+            else {
+                dc.rgb = rgba.rgb;
+            }
+        }
+//        dc.rgb = vec3(transparency);
 
         if (material.isTransparent) {
-            dc.a = color;
+            dc.a = transparency;
         }
         else {
             dc.a = 1.0;
         }
-//        dc.a = color;
+//        dc.a = transparency;
 //        dc.a = 1.0;
-//        float color = texture( material.tex.kd, texCoord.xy ).g;
-//        dc.rgb = vec3(color);
-//        dc.a *= color;
+//        float transparency = texture( material.tex.kd, texCoord.xy ).g;
+//        dc.rgb = vec3(transparency);
+//        dc.a *= transparency;
     }
     if ( material.tex.hasAlpha == 1 ) { dc.a *= texture( material.tex.alpha, texCoord.xy ).r; }
     if ( material.renderAsSplat == 1 ) { dc.a = ( dot( texCoord.xy, texCoord.xy ) > 1 ) ? 0 : 1; }

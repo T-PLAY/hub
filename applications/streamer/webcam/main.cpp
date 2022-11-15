@@ -51,12 +51,15 @@ int main( int, char** ) {
                            std::chrono::system_clock::now().time_since_epoch() )
                            .count();
 
-            cv::Mat grey;
-            cv::cvtColor( frame, grey, cv::COLOR_BGR2GRAY );
+//            cv::Mat grey;
+//            cv::cvtColor( frame, grey, cv::COLOR_BGR2GRAY );
+//            cv::Mat rgb;
+//            cv::cvtColor(frame, rgb, cv::COLOR_BGR2RGB);
             //        outputStream << Stream::Acquisition( start, end, frame.data, 3 * width *
             //        height );
             outputSensor << ( hub::Acquisition { start, end }
-                              << hub::Measure { (const unsigned char* const)frame.data,
+                              << hub::Measure { (const unsigned char*)frame.data, // copy data pointer
+//                              << hub::Measure { (const unsigned char*)rgb.data, // copy data pointer
                                                 (uint64_t)( 3 * width * height ) } );
 
             // check if we succeeded

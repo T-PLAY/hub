@@ -30,6 +30,7 @@ void ScanMaterial::updateRenderingParameters() {
     m_renderParameters.addParameter( "material.iPalette", m_iPalette );
     m_renderParameters.addParameter( "material.nChannels", m_nChannels );
     m_renderParameters.addParameter( "material.isTransparent", m_isTransparent );
+    m_renderParameters.addParameter( "material.reverse", m_reverse );
     m_renderParameters.addParameter( "material.kd", m_kd );
     m_renderParameters.addParameter( "material.hasPerVertexKd", m_perVertexColor );
     m_renderParameters.addParameter( "material.renderAsSplat", m_renderAsSplat );

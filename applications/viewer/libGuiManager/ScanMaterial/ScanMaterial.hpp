@@ -97,6 +97,7 @@ class RA_ENGINE_API ScanMaterial final : public Material
     int m_iPalette       = 0;
     int m_nChannels      = 1; // Y8 -> 1, Y16 -> 2
     bool m_isTransparent = false;
+    bool m_reverse = false;
 
     Core::Utils::Color m_pimp { 0.0, 0.0, 0.0, 0.0 };
 
