@@ -20,7 +20,9 @@ ViewerClient::ViewerClient( Server& server, int iClient, hub::net::ClientSocket&
             }
         }
         catch ( std::exception& e ) {
-            m_mtxSocket.unlock();
+//            m_mtxSocket.unlock();
+
+//            s_mtxCout.lock();
             std::cout << headerMsg() << "catch viewer exception : " << e.what() << std::endl;
             //            delete this;
 //            m_server.delViewer( this );
@@ -38,6 +40,8 @@ ViewerClient::ViewerClient( Server& server, int iClient, hub::net::ClientSocket&
 }
 
 ViewerClient::~ViewerClient() {
+//    s_mtxCout.lock();
+
     assert( m_thread.joinable() );
     m_thread.join();
 
@@ -48,6 +52,8 @@ ViewerClient::~ViewerClient() {
 //    std::cout << "-------------------------------------------------------------------------"
 //                 "--------------------"
 //              << std::endl;
+    m_mtxSocket.unlock();
+//    s_mtxCout.unlock();
 }
 
 std::string ViewerClient::headerMsg() const {
@@ -76,7 +82,7 @@ void ViewerClient::notifyDelStreamer(const StreamerClient &streamer) const {
         m_mtxSocket.unlock();
     }
     catch ( std::exception& e ) {
-        m_mtxSocket.unlock();
+//        m_mtxSocket.unlock();
         std::cout << headerMsg()
                   << "in : viewer is dead, this append when "
                      "viewer/streamer process was stopped in same time : "

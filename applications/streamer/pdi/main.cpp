@@ -116,7 +116,7 @@ int main( int argc, char* argv[] ) {
 
                                 int ucSensor = (int)pBuf[i + 2];
 
-                                unsigned char* data = &pBuf[i + 8]; // size of header = 8 bytes
+                                const unsigned char* data = &pBuf[i + 8]; // size of header = 8 bytes
                                 const auto timestampStart =
                                     std::chrono::duration_cast<std::chrono::microseconds>(
                                         ( end - std::chrono::microseconds( 18'500 ) )
