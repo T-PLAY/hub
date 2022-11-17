@@ -148,7 +148,7 @@ int main( int argc, char* argv[] ) {
         }
     } );
 
-    char c;
+//    char c;
 #ifdef WIN32
     HWND mainWindow = GetForegroundWindow(); // assume here, foregroundWindow is the window of this
                                              // console application
@@ -203,7 +203,7 @@ int main( int argc, char* argv[] ) {
 #else
         std::string inputKeyStr;
         auto getString = []( char c ) { return std::to_string( c ) + " "; };
-        c              = getchar();
+        char c              = getchar();
         inputKeyStr += getString( c );
         // terminate when "." is pressed
         if ( c == '\033' ) {

@@ -6,6 +6,7 @@
 //#include <Core/Containers/MakeShared.hpp>
 //#include <Core/Geometry/MeshPrimitives.hpp>
 //#include <Core/Geometry/TopologicalMesh.hpp>
+#include <Core/Geometry/StandardAttribNames.hpp>
 //#include <Core/Resources/Resources.hpp>
 //#include <Core/Tasks/Task.hpp>
 //#include <Core/Tasks/TaskQueue.hpp>
@@ -290,7 +291,8 @@ void MinimalComponent::addProbe() {
         tex_coords.push_back( { 0_ra, 1_ra, 0_ra } );
         tex_coords.push_back( { 1_ra, 1_ra, 0_ra } );
         quadTriangle.addAttrib(
-            Ra::Engine::Data::Mesh::getAttribName( Ra::Engine::Data::Mesh::VERTEX_TEXCOORD ),
+            Ra::Core::Geometry::getAttribName( Ra::Core::Geometry::VERTEX_TEXCOORD ),
+//            Ra::Engine::Data::Mesh::getAttribName( Ra::Engine::Data::Mesh::VERTEX_TEXCOORD ),
             tex_coords );
 #endif
 
