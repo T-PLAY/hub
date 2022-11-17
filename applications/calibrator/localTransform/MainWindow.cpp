@@ -26,16 +26,16 @@ MainWindow::MainWindow(QWidget* parent)
         static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
         this,
         &MainWindow::updateTransform);
-    QObject::connect(ui->spinBox_rx,
-        static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+    QObject::connect(ui->doubleSpinBox_rx,
+        static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
         this,
         &MainWindow::updateTransform);
-    QObject::connect(ui->spinBox_ry,
-        static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+    QObject::connect(ui->doubleSpinBox_ry,
+        static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
         this,
         &MainWindow::updateTransform);
-    QObject::connect(ui->spinBox_rz,
-        static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+    QObject::connect(ui->doubleSpinBox_rz,
+        static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
         this,
         &MainWindow::updateTransform);
     QObject::connect(ui->spinBox_sx,
@@ -52,7 +52,7 @@ MainWindow::MainWindow(QWidget* parent)
         &MainWindow::updateTransform);
 
     hub::SensorSpec::MetaData metaData;
-    metaData["parent"] = "Polhemus Patriot (sensor 2)";
+//    metaData["parent"] = "Polhemus Patriot (sensor 2)";
     m_outputSensor = new hub::OutputSensor(
         { "calibrator", { { { 1 }, hub::SensorSpec::Format::MAT4 } }, metaData },
         hub::io::OutputStream("calibrator"));
@@ -77,9 +77,9 @@ void MainWindow::updateTransform()
 
     transform = glm::translate(transform, translation);
 
-    int rx = ui->spinBox_rx->value();
-    int ry = ui->spinBox_ry->value();
-    int rz = ui->spinBox_rz->value();
+    double rx = ui->doubleSpinBox_rx->value();
+    double ry = ui->doubleSpinBox_ry->value();
+    double rz = ui->doubleSpinBox_rz->value();
     transform = glm::rotate(transform, glm::radians((float)rx), glm::vec3(1.0, 0.0, 0.0));
     transform = glm::rotate(transform, glm::radians((float)ry), glm::vec3(0.0, 1.0, 0.0));
     transform = glm::rotate(transform, glm::radians((float)rz), glm::vec3(0.0, 0.0, 1.0));
@@ -99,7 +99,7 @@ void MainWindow::updateTransform()
         matPrint += "\n";
     }
     matPrint += "\n";
-    float* array = glm::value_ptr(transform);
+    const float* array = glm::value_ptr(transform);
     matPrint += "array content (row major) : \n";
     for (int i = 0; i < 16; ++i) {
         matPrint += std::to_string(array[i]) + " ";
@@ -108,6 +108,7 @@ void MainWindow::updateTransform()
 
     ui->textBrowser->setText(matPrint.c_str());
 
+    // TODO: why data steal not work with output ?
     *m_outputSensor << (hub::Acquisition(0, 0)
-        << hub::Measure((unsigned char*)array, 16 * 4));
+        << hub::Measure((const unsigned char*)array, 16 * 4));
 }

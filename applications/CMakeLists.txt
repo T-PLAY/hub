@@ -76,7 +76,7 @@ if(HUB_ENABLE_APPLICATIONS)
 #        set(Scus_DIR "E:/Documents/medical/scus/out/install/x64-${CMAKE_BUILD_TYPE}/lib/cmake/Scus")
 #        set(TBB_DIR "E:/Documents/medical/oneTBB/out/install/x64-${CMAKE_BUILD_TYPE}/lib/cmake/TBB")
 #        set(DCMTK_DIR "E:/Documents/medical/dcmtk/out/install/x64-${CMAKE_BUILD_TYPE}/cmake")
-#        set(OpenCV_DIR "E:/Documents/medical/opencv/out/install/x64-${CMAKE_BUILD_TYPE}/")
+        set(OpenCV_DIR "D:/opencv/out/install/x64-${CMAKE_BUILD_TYPE}/")
 #        set(realsense2_DIR "E:/Documents/medical/lidar/librealsense/lidar-install/lib/cmake/realsense2")
 
         if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
