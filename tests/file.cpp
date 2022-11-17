@@ -16,7 +16,7 @@ TEST_CASE( "File test" ) {
     std::vector<hub::Acquisition> acqs;
     constexpr int nAcqs = 100;
     for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
-        unsigned char data[3] = {
+        const unsigned char data[3] = {
             (unsigned char)iAcq, (unsigned char)( iAcq + 1 ), (unsigned char)( iAcq + 2 ) };
         acqs.push_back( hub::Acquisition( iAcq, iAcq ) );
         acqs.back() << hub::Measure( data, 3 );

@@ -5,8 +5,8 @@ build*/
 .vs/
 CMakeSettings.json
 hub-install/
-data/records/*
-data/snapshots/*
 cpp.hint
 src/html/
 src/latex/
+out/
+data/

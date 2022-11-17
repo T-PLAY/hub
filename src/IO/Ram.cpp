@@ -91,11 +91,12 @@ void CyclicBuff::read( unsigned char* data, size_t len ) {
 
 void CyclicBuff::close() const {
     m_outputSensorWantsToClose = true;
+	m_inputSensorClose = true;
 }
 
 bool CyclicBuff::isOpen() const
 {
-    return true;
+    return ! m_inputSensorClose;
 }
 
 bool CyclicBuff::isEnd() const

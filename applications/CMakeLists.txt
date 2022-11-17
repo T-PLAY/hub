@@ -62,8 +62,34 @@ if(HUB_ENABLE_APPLICATIONS)
     elseif(${hostname} STREQUAL "msi")
         set(MRI_PATH "/home/gauthier/Downloads/MRI/")
 
+    elseif(${hostname} STREQUAL "DESKTOP-7IJI7R3") # home window
+#        set(MRI_PATH "E:/Downloads/MRI/")
+
+        set(QT_DIR "E:/Programs/Qt/5.15.2/msvc2019_64/lib/cmake/Qt5")
+        set(Qt5_DIR "E:/Programs/Qt/5.15.2/msvc2019_64/lib/cmake/Qt5")
+
+        set(Radium_ROOT_DIR "D:/medical/radium")
+        set(Radium_DIR
+#            "${Radium_ROOT_DIR}/Radium-Engine/out/install/x64-${CMAKE_BUILD_TYPE}/lib/cmake/Radium"
+            "${Radium_ROOT_DIR}/Radium-Engine/Bundle-MSVC-Debug/lib/cmake/Radium"
+        )
+#        set(Scus_DIR "E:/Documents/medical/scus/out/install/x64-${CMAKE_BUILD_TYPE}/lib/cmake/Scus")
+#        set(TBB_DIR "E:/Documents/medical/oneTBB/out/install/x64-${CMAKE_BUILD_TYPE}/lib/cmake/TBB")
+#        set(DCMTK_DIR "E:/Documents/medical/dcmtk/out/install/x64-${CMAKE_BUILD_TYPE}/cmake")
+#        set(OpenCV_DIR "E:/Documents/medical/opencv/out/install/x64-${CMAKE_BUILD_TYPE}/")
+#        set(realsense2_DIR "E:/Documents/medical/lidar/librealsense/lidar-install/lib/cmake/realsense2")
+
+        if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+            set(glm_DIR
+                "${Radium_ROOT_DIR}/installs/radium-external-d/lib/cmake/glm")
+        else()
+            set(glm_DIR
+                "${Radium_ROOT_DIR}/installs/radium-external-r/lib/cmake/glm")
+        endif()
+
     else()
-        message(WARNING "unknown system for finding MRI path")
+        message(WARNING "unknown system '${hostname}'")
+#        message(WARNING "unknown system for finding MRI path")
     endif()
     add_definitions(-DMRI_PATH=\"${MRI_PATH}\")
 

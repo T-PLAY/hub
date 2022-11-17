@@ -45,7 +45,7 @@ class SRC_API CyclicBuff
     size_t m_readHead  = 0;
 
     mutable bool m_outputSensorWantsToClose = false;
-    bool m_inputSensorClose         = false;
+    mutable bool m_inputSensorClose         = false;
 };
 
 ///

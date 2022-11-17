@@ -32,7 +32,7 @@ TEST_CASE( "Measures test" ) {
     }
 
     outputSensor << ( hub::Acquisition { 0, 0 } << std::move( dof6 )
-                                                << hub::Measure( imageData, imageSize ) );
+                                                << hub::Measure( (const unsigned char*)imageData, imageSize ) );
 
     hub::InputSensor inputSensor( ( hub::io::Ram( cyclicBuff ) ) );
 
