@@ -54,7 +54,7 @@ void Server::addStreamer( StreamerClient* streamer ) {
     assert( m_streamers.find( streamerName ) == m_streamers.end() );
     m_streamers[streamerName] = streamer;
 
-        std::cout << headerMsg() << "prevent viewers there is a new streamer : '" << streamerName
+        std::cout << headerMsg() << "prevent viewers there is a new streamer : '" << streamerName << "'"
                   << std::endl;
         for ( const auto& viewer : m_viewers ) {
             viewer->notifyNewStreamer( *streamer );
