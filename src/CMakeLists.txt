@@ -26,6 +26,9 @@ elseif(UNIX)
 endif()
 
 # if (MSVC) # Here I set the target System to WindowsStore, which *should* enable UWP-support
+## UWP compilation :
+## cmake -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0
+
 
 target_link_libraries(${PROJECT_NAME} ${UNIX_REQUIRED_LIBS} ${WIN32_REQUIRED_LIBS})
 

@@ -106,6 +106,15 @@ void freeViewer( Viewer* viewer ) {
     delete viewer;
 }
 
+void viewer_setIpv4(Viewer * viewer, const char * ipv4) {
+    viewer->setIpv4(ipv4);
+}
+
+void viewer_setPort(Viewer *viewer, int port)
+{
+    viewer->setPort(port);
+}
+
 void sensorSpec_getSensorName( const SensorSpec* sensorSpec, char* sensorName, int* strLen ) {
     *strLen = sensorSpec->m_sensorName.size();
     memcpy( sensorName, sensorSpec->m_sensorName.c_str(), *strLen + 1 );
@@ -205,6 +214,7 @@ unsigned int metaData_getUInt( const SensorSpec::MetaData* metaData, const char*
     assert( metaData->find( metaName ) != metaData->end() );
     return std::any_cast<unsigned int>( metaData->at( metaName ) );
 }
+
 
 } // namespace native
 } // namespace hub
