@@ -512,7 +512,7 @@ StreamerClient::~StreamerClient() {
 }
 
 std::string StreamerClient::headerMsg() const {
-    return Client::headerMsg() + "[StreamerClient] ";
+    return Client::headerMsg() + "[Streamer] ";
 }
 
 

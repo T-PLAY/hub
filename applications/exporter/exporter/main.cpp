@@ -32,8 +32,8 @@
 
 int main( int argc, char* argv[] ) {
 
-//    std::string recordPath = PROJECT_DIR "data/records/latest/";
-    std::string recordPath = PROJECT_DIR "data/records/40HzAxial3Sync/";
+    std::string recordPath = PROJECT_DIR "data/records/latest/";
+//    std::string recordPath = PROJECT_DIR "data/records/40HzAxial3Sync/";
 
     for ( const auto& fileDir : std::filesystem::directory_iterator( recordPath ) ) {
 
@@ -56,11 +56,13 @@ int main( int argc, char* argv[] ) {
         auto acqs = inputSensor.getAllAcquisitions();
 
         const auto& resolutions = inputSensor.m_spec.m_resolutions;
-        assert( resolutions.at( 0 ).second == hub::SensorSpec::Format::DOF6 );
-        assert( resolutions.at( 1 ).second == hub::SensorSpec::Format::Y8 );
+        assert( resolutions.at( 0 ).second == hub::SensorSpec::Format::DOF6 || resolutions.at( 1 ).second == hub::SensorSpec::Format::DOF6 );
+        assert( resolutions.at( 0 ).second == hub::SensorSpec::Format::Y8 || resolutions.at( 1 ).second == hub::SensorSpec::Format::Y8  );
 
-        const int width    = resolutions.at( 1 ).first.at( 0 );
-        const int height   = resolutions.at( 1 ).first.at( 1 );
+        const int iImage = (resolutions.at(0).second == hub::SensorSpec::Format::DOF6) ?(1) :(0);
+
+        const int width    = resolutions.at( iImage ).first.at( 0 );
+        const int height   = resolutions.at( iImage ).first.at( 1 );
         const int channels = 1;
 
         const auto& metaData = inputSensor.m_spec.m_metaData;
@@ -81,7 +83,7 @@ int main( int argc, char* argv[] ) {
             const auto& measures = acq.getMeasures();
 
             assert( measures.size() == 2 );
-            const hub::Dof6& dof6 = measures.at( 0 );
+            const hub::Dof6& dof6 = measures.at( 1 - iImage );
 
             std::cout << dof6 << std::endl;
             glm::vec3 position    = glm::vec3( dof6.m_x, dof6.m_y, dof6.m_z );
@@ -108,7 +110,7 @@ int main( int argc, char* argv[] ) {
             const std::string filePath = exportDir + filename;
             std::cout << filePath << std::endl;
             stbi_write_jpg(
-                filePath.c_str(), width, height, channels, measures.at( 1 ).m_data, 100 );
+                filePath.c_str(), width, height, channels, measures.at( iImage ).m_data, 100 );
 
             ++iAcq;
         }
