@@ -302,7 +302,7 @@ StreamViewerClient::~StreamViewerClient() {
 }
 
 std::string StreamViewerClient::headerMsg() const {
-    return Client::headerMsg() + "[StreamViewerClient] ";
+    return Client::headerMsg() + "[StreamViewer] ";
 }
 
 bool StreamViewerClient::update( const hub::Acquisition& acq ) {

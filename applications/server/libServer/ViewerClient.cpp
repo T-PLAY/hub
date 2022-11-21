@@ -57,7 +57,7 @@ ViewerClient::~ViewerClient() {
 }
 
 std::string ViewerClient::headerMsg() const {
-    return Client::headerMsg() + "[ViewerClient] ";
+    return Client::headerMsg() + "[Viewer] ";
 }
 
 void ViewerClient::notifyNewStreamer(const StreamerClient &streamer) const {
