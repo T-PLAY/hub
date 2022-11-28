@@ -39,7 +39,7 @@ class SRC_API Measure
     const hub::SensorSpec::Resolution &getResolution() const;
 
 protected:
-//    bool m_ownData = false;
+    bool m_ownData = false;
     bool m_isMoved = false;
     hub::SensorSpec::Resolution m_resolution;
 

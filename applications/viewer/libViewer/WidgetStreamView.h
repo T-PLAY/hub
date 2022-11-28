@@ -61,6 +61,7 @@ class WidgetStreamView2D : public WidgetStreamView
 
   private:
     QImage* m_image = nullptr;
+    size_t m_imageSize = 0;
 
     int mImagePixelWidth  = 0;
     int mImagePixelHeight = 0;

@@ -30,7 +30,7 @@ int main( int argc, char* argv[] ) {
     mriName                 = mriName.substr( 0, mriName.find_last_of( '/' ) );
     std::cout << "mriName = '" << mriName << "'" << std::endl;
 
-    auto* volumeData = DICOM::readDicomVolume( filename,
+    unsigned char * volumeData = DICOM::readDicomVolume( filename,
                                                &sliceWidth,
                                                &sliceHeight,
                                                &nSlices,
@@ -106,6 +106,10 @@ int main( int argc, char* argv[] ) {
         hub::Measure image( &texturesData[textureSize * iImage], textureSize );
         outputSensor << ( hub::Acquisition { iImage, iImage } << std::move( dof6 )
                                                               << std::move( image ) );
+    }
+
+    while (true ) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 
     hub::SensorSpec::MetaData metaData2;

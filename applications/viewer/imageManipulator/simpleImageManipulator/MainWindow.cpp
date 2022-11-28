@@ -50,10 +50,10 @@ MainWindow::MainWindow( QWidget* parent ) : QMainWindow( parent ), ui( new Ui::M
     /// sensorSpec.m_dims, sensorSpec.m_format);
 
     m_imageManipulator = new FormImageManipulator( this );
-    m_imageManipulator->setMinimumWidth( 400 );
-    m_imageManipulator->setMinimumHeight( 900 );
+    m_imageManipulator->setMinimumWidth( sliceWidth );
+    m_imageManipulator->setMinimumHeight( sliceHeight );
     auto& widgetStreamView = m_imageManipulator->getWidgetStreamView();
-    widgetStreamView.init( sliceWidth, sliceHeight, 35.0, 50.0 );
+    widgetStreamView.init( sliceWidth, sliceHeight );
     widgetStreamView.setData( texturesData,
                               sliceSize,
                               { (int)sliceWidth, (int)sliceHeight },
