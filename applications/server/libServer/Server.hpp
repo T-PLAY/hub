@@ -49,7 +49,7 @@ class Server
     std::thread m_thread;
 
     std::map<std::string, StreamerClient*> m_streamers;
-//    std::mutex m_mtxStreamers;
+    std::mutex m_mtxStreamers;
 
     std::list<ViewerClient*> m_viewers;
 //    std::mutex m_mtxViewers;

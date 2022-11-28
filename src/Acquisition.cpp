@@ -87,9 +87,16 @@ Mat4::Mat4( const float* array ) : Measure( (unsigned char*)array, 64 ) {
 
 //}
 
+
+// Measure::Measure( Measurement measurement ) : m_measurement( measurement ) {}
+
+// SensorSpec::Format Measure::getFormat()
+//{
+// }
+
 Measure::Measure( const unsigned char* const data, uint64_t size ) :
-    m_data( new unsigned char[size] ), m_size( size )
-//    m_ownData( true )
+    m_data( new unsigned char[size] ), m_size( size ),
+    m_ownData( true )
 {
     assert(data != nullptr);
     memcpy( (unsigned char*)m_data, data, m_size );
@@ -100,7 +107,7 @@ Measure::Measure( const unsigned char* const data, uint64_t size ) :
 Measure::Measure(unsigned char *data, uint64_t size) :
     m_data( data ),
     m_size( size )
-//    m_ownData( true )
+//    m_ownData( false )
 {
 //    std::cout << "[Measure] steal data pointer of size : " << size << std::endl;
     assert(data != nullptr);
@@ -108,6 +115,22 @@ Measure::Measure(unsigned char *data, uint64_t size) :
     assert( m_data != nullptr );
 }
 
+Measure::Measure( Measure&& measure ) :
+    m_data( measure.m_data ), m_size( measure.m_size ), m_ownData(measure.m_ownData), m_resolution( measure.m_resolution ) {
+    measure.m_isMoved = true;
+//    measure.m_data = nullptr;
+}
+
+Measure::~Measure() {
+
+//    if ( m_ownData && !m_isMoved ) {
+    if ( m_ownData && !m_isMoved ) {
+//    std::cout << "[Measure] delete data pointer of size : " << m_size << std::endl;
+        assert(m_data != nullptr);
+        delete[] m_data;
+//        m_data = nullptr;
+    }
+}
 // Measure::Measure( unsigned char* data, uint64_t size ) : m_data( data ), m_size( size ) {
 // }
 
@@ -181,27 +204,6 @@ std::ostream& operator<<( std::ostream& os, const Measure& measure ) {
     return os;
 }
 
-Measure::Measure( Measure&& measure ) :
-    m_data( measure.m_data ), m_size( measure.m_size ), m_resolution( measure.m_resolution ) {
-    measure.m_isMoved = true;
-//    measure.m_data = nullptr;
-}
-
-Measure::~Measure() {
-
-//    if ( m_ownData && !m_isMoved ) {
-    if ( !m_isMoved ) {
-//    std::cout << "[Measure] delete data pointer of size : " << m_size << std::endl;
-        assert(m_data != nullptr);
-        delete[] m_data;
-    }
-}
-
-// Measure::Measure( Measurement measurement ) : m_measurement( measurement ) {}
-
-// SensorSpec::Format Measure::getFormat()
-//{
-// }
 
 //// SensorSpec::Format Dof6::getFormat()
 ////{
