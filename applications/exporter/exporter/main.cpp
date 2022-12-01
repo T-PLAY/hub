@@ -55,7 +55,7 @@ int main( int argc, char* argv[] ) {
 
         auto acqs = inputSensor.getAllAcquisitions();
 
-        const auto& resolutions = inputSensor.m_spec.m_resolutions;
+        const auto& resolutions = inputSensor.m_spec.getResolutions();
         assert( resolutions.at( 0 ).second == hub::SensorSpec::Format::DOF6 || resolutions.at( 1 ).second == hub::SensorSpec::Format::DOF6 );
         assert( resolutions.at( 0 ).second == hub::SensorSpec::Format::Y8 || resolutions.at( 1 ).second == hub::SensorSpec::Format::Y8  );
 
@@ -65,7 +65,7 @@ int main( int argc, char* argv[] ) {
         const int height   = resolutions.at( iImage ).first.at( 1 );
         const int channels = 1;
 
-        const auto& metaData = inputSensor.m_spec.m_metaData;
+        const auto& metaData = inputSensor.m_spec.getMetaData();
         glm::mat4 localTransform;
         if ( metaData.find( "transform" ) != metaData.end() ) {
             const float* array = std::any_cast<const float*>( metaData.at( "transform" ) );

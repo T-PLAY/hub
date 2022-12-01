@@ -23,7 +23,7 @@ class SRC_API SensorSpec
 
     // clang-format off
     enum class Format {
-        NONE,
+        NONE = 0,
         Z16, 			/**< 16-bit linear depth values. The depth is meters is equal to depth scale pixel value. */
         DISPARITY16, 	/**< 16-bit float-point disparity values. Depth->Disparity conversion : Disparity = Baseline*FocalLength/Depth. */
         XYZ32F,      	/**< 32-bit floating point 3D coordinates. */
@@ -64,38 +64,54 @@ class SRC_API SensorSpec
 
     SensorSpec( const std::string& sensorName  = "",
                 const Resolutions& resolutions = {},
-                const MetaData& metaData       = {} ) :
-        m_sensorName( sensorName ),
-        m_resolutions( resolutions ),
-        m_metaData( metaData ),
-        m_acquisitionSize( computeAcquisitionSize( resolutions ) ) {};
+                const MetaData& metaData       = {} );
+
+    constexpr SensorSpec(
+//            const std::string_view& sensorName  = "",
+//                const Resolutions& resolutions = {},
+//                const MetaData& metaData       = {}
+            );
 
   public:
-    static size_t computeAcquisitionSize( const Resolutions& resolutions );
-    static size_t computeAcquisitionSize( const Resolution& resolution );
     SensorSpec operator+( const SensorSpec& sensorSpec ) const;
     SensorSpec& operator+=( const SensorSpec& sensorSpec );
-
-  private:
-    static size_t computeAcquisitionSize( Format format, const Dims& dims );
-
-  private:
-  public:
-    std::string m_sensorName;
-    Resolutions m_resolutions;
-    MetaData m_metaData;
-
-    size_t m_acquisitionSize;
+    SRC_API friend std::ostream& operator<<( std::ostream& os, const Format& format );
+    SRC_API friend std::ostream& operator<<( std::ostream& os, const SensorSpec& sensorSpec );
 
   public:
+    static inline size_t computeAcquisitionSize( const Resolutions& resolutions ) noexcept;
+    static inline size_t computeAcquisitionSize( const Resolution& resolution ) noexcept;
+    static inline constexpr int format2nByte( const Format& format ) noexcept;
+    static inline bool isInterpolable( const Format& format ) noexcept;
+
     static std::string dims2string( const Dims& dims );
     static std::string format2string( const Format& format );
     static std::string resolutions2string( const Resolutions& resolutions );
     static std::string metaData2string( const MetaData& metaData, bool expand = false );
     static std::string metaData2string( const std::pair<std::string, std::any>& metaData );
-    static bool interpolable( const Format& format );
-    SRC_API friend std::ostream& operator<<( std::ostream& os, const Format& format );
-    SRC_API friend std::ostream& operator<<( std::ostream& os, const SensorSpec& sensorSpec );
+
+  public:
+    inline const std::string& getSensorName() const noexcept;
+    inline const Resolutions& getResolutions() const noexcept;
+    inline const MetaData& getMetaData() const noexcept;
+    inline MetaData& getMetaData() noexcept;
+    inline size_t getAcquisitionSize() const noexcept;
+
+    inline void setMetaData( const MetaData& metaData ) noexcept;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+  private:
+    static inline size_t computeAcquisitionSize( Format format, const Dims& dims ) noexcept;
+
+  private:
+    std::string m_sensorName;
+    Resolutions m_resolutions;
+    MetaData m_metaData;
+
+    size_t m_acquisitionSize;
 };
 
 } // namespace hub
+
+#include <SensorSpec.inl>

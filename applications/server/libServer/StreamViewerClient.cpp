@@ -110,7 +110,7 @@ StreamViewerClient::StreamViewerClient( Server& server,
     //    if ( m_syncStreamName == "" ) {
 //    m_mtxOutputSensor.lock();
     try {
-        if ( m_outputSensor->m_spec.m_resolutions.size() == 2 && m_mergeSyncAcqs ) {
+        if ( m_outputSensor->m_spec.getResolutions().size() == 2 && m_mergeSyncAcqs ) {
                     std::lock_guard<std::mutex> guard(m_mtxOutputSensor);
             const auto& saveAcqs = m_streamer->getSaveAcqs( m_syncStreamName );
             for ( const auto& [start, acq] : saveAcqs ) {
@@ -127,7 +127,7 @@ StreamViewerClient::StreamViewerClient( Server& server,
             //                }
             //                else {
             if ( lastAcq != nullptr ) {
-                assert( lastAcq->getSize() == m_outputSensor->m_spec.m_acquisitionSize );
+                assert( lastAcq->getSize() == m_outputSensor->m_spec.getAcquisitionSize() );
                 //                    if ( m_server.getAcqPing() ) {
                 *m_outputSensor << *lastAcq;
             }

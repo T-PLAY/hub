@@ -51,8 +51,8 @@ Dof6Component::Dof6Component(
 //    SensorComponent( inputStream, entity ) {
     SensorComponent( sensorSpec, entity ) {
 
-    assert( m_sensorSpec.m_resolutions.size() == 1 );
-    m_format = m_sensorSpec.m_resolutions.at( 0 ).second;
+    assert( m_sensorSpec.getResolutions().size() == 1 );
+    m_format = m_sensorSpec.getResolutions().at( 0 ).second;
 }
 
 /// This function is called when the component is properly

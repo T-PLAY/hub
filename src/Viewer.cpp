@@ -88,7 +88,7 @@ Viewer::Viewer(
 
                         std::string parentName = "";
                         if ( m_autoSync ) {
-                            const auto& metaData = sensorSpec.m_metaData;
+                            const auto& metaData = sensorSpec.getMetaData();
                             if ( metaData.find( "parent" ) != metaData.end() ) {
                                 parentName = std::any_cast<const char*>( metaData.at( "parent" ) );
 
@@ -211,7 +211,7 @@ Viewer::Viewer(
                         auto streamId = streamName;
 
                         if ( m_autoSync ) {
-                            const auto& metaData = sensorSpec.m_metaData;
+                            const auto& metaData = sensorSpec.getMetaData();
                             if ( metaData.find( "parent" ) != metaData.end() ) {
                                 const std::string parentName =
                                     std::any_cast<const char*>( metaData.at( "parent" ) );
