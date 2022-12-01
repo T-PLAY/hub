@@ -1,13 +1,26 @@
 #pragma once
 
+#include <algorithm>
 #include <any>
 #include <map>
+#include <ranges>
 #include <string>
 #include <vector>
+#include <stdexcept>
+//#include <exception>
 
 #include "Macros.hpp"
+#if CPLUSPLUS_VERSION == 20
+#include "Map.hpp"
+#endif
+
+//#if ( __cplusplus >= 202001L )
+//#else
+//#    error "only C++20 accepted"
+//#endif
 
 namespace hub {
+
 
 ///
 /// \brief The SensorSpec class
@@ -15,11 +28,25 @@ namespace hub {
 /// allows to define how to visualize the data. Also the dimension of the data as well as the
 /// metadata.
 ///
+//template <int NDim>
 class SRC_API SensorSpec
 {
   public:
+#if CPLUSPLUS_VERSION == 20
+    using SensorNameType = std::stristring_view;
+    using MetaData = Map<std::string, std::any>; // any -> C++17
+#else
+    using SensorNameType = std::string;
     using MetaData = std::map<std::string, std::any>; // any -> C++17
-    using Dims     = std::vector<int>;
+#endif
+
+//    using MetaData = Map<std::string, std::any>; // any -> C++17
+    //    using MetaData = std::vector<std::pair<std::string, std::any>>;
+    //    using MetaData = std::vector<std::pair<std::string, std::any>>;
+
+    using Dims = std::vector<int>;
+//    using Dims = std::array<int, NDim>;
+//    typedef std::array<int, NDim> = Dims;
 
     // clang-format off
     enum class Format {
@@ -62,15 +89,23 @@ class SRC_API SensorSpec
     using Resolution  = std::pair<Dims, Format>;
     using Resolutions = std::vector<Resolution>;
 
-    SensorSpec( const std::string& sensorName  = "",
-                const Resolutions& resolutions = {},
-                const MetaData& metaData       = {} );
+//        SensorSpec( const std::string& sensorName  = "",
+//                    const Resolutions& resolutions = {},
+//                    const MetaData& metaData       = {} );
 
-    constexpr SensorSpec(
-//            const std::string_view& sensorName  = "",
-//                const Resolutions& resolutions = {},
-//                const MetaData& metaData       = {}
-            );
+    //    constexpr SensorSpec( const std::string& sensorName  = "",
+    CONSTEXPR20 SensorSpec( const SensorNameType& sensorName = "",
+                          const Resolutions& resolutions     = {},
+                          const MetaData& metaData           = {} );
+//    m_sensorName( sensorName ),
+//    m_resolutions( resolutions ),
+//    m_metaData( metaData ),
+//    m_acquisitionSize( computeAcquisitionSize( resolutions ) ) {}
+
+    //    constexpr SensorSpec( const std::string& sensorName,
+    //                          const Resolutions& resolutions) noexcept :
+    //        m_sensorName( sensorName ), m_resolutions( resolutions ) {};
+    //    //    ~SensorSpec() = default;
 
   public:
     SensorSpec operator+( const SensorSpec& sensorSpec ) const;
@@ -79,10 +114,10 @@ class SRC_API SensorSpec
     SRC_API friend std::ostream& operator<<( std::ostream& os, const SensorSpec& sensorSpec );
 
   public:
-    static inline size_t computeAcquisitionSize( const Resolutions& resolutions ) noexcept;
-    static inline size_t computeAcquisitionSize( const Resolution& resolution ) noexcept;
+    static inline CONSTEXPR20 size_t computeAcquisitionSize( const Resolutions& resolutions ) noexcept;
+    static inline constexpr size_t computeAcquisitionSize( const Resolution& resolution ) noexcept;
     static inline constexpr int format2nByte( const Format& format ) noexcept;
-    static inline bool isInterpolable( const Format& format ) noexcept;
+    static inline constexpr bool isInterpolable( const Format& format ) noexcept;
 
     static std::string dims2string( const Dims& dims );
     static std::string format2string( const Format& format );
@@ -91,21 +126,27 @@ class SRC_API SensorSpec
     static std::string metaData2string( const std::pair<std::string, std::any>& metaData );
 
   public:
+    //    inline const std::string& getSensorName() const noexcept;
+#if CPLUSPLUS_VERSION == 20
+    inline constexpr std::string_view getSensorName() const noexcept;
+#else
     inline const std::string& getSensorName() const noexcept;
-    inline const Resolutions& getResolutions() const noexcept;
-    inline const MetaData& getMetaData() const noexcept;
+#endif
+    inline constexpr Resolutions& getResolutions() const noexcept;
+    inline constexpr MetaData& getMetaData() const noexcept;
     inline MetaData& getMetaData() noexcept;
-    inline size_t getAcquisitionSize() const noexcept;
+    inline constexpr size_t getAcquisitionSize() const noexcept;
 
     inline void setMetaData( const MetaData& metaData ) noexcept;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
   private:
-    static inline size_t computeAcquisitionSize( Format format, const Dims& dims ) noexcept;
+    static inline constexpr size_t computeAcquisitionSize( Format format, const Dims& dims ) noexcept;
 
   private:
-    std::string m_sensorName;
+    //    static std::string m_sensorName2;
+    SensorNameType m_sensorName;
     Resolutions m_resolutions;
     MetaData m_metaData;
 

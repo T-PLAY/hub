@@ -7,32 +7,45 @@
 
 namespace hub {
 
-SensorSpec::SensorSpec( const std::string& sensorName,
-                        const Resolutions& resolutions,
-                        const MetaData& metaData ) :
-    m_sensorName( sensorName ),
-    m_resolutions( resolutions ),
-    m_metaData( metaData ),
-    m_acquisitionSize( computeAcquisitionSize( resolutions ) ) {}
+#if CPLUSPLUS_VERSION != 20
+SensorSpec::SensorSpec( const SensorNameType& sensorName,
+                         const Resolutions& resolutions,
+                         const MetaData& metaData ) :
+     m_sensorName( sensorName ),
+     m_resolutions( resolutions ),
+     m_metaData( metaData ),
+     m_acquisitionSize( computeAcquisitionSize( resolutions ) ) {}
+#endif
 
-constexpr SensorSpec::SensorSpec(
-//        const std::string_view &sensorName, const Resolutions &resolutions,
-//        const MetaData &metaData
-        )
-{
 
-}
+// constexpr SensorSpec::SensorSpec(
+////        const std::string_view &sensorName, const Resolutions &resolutions,
+////        const MetaData &metaData
+//        )
+//{
+
+//}
+
+//constexpr SensorSpec::SensorSpec( const std::string_view& sensorName,
+//                        const Resolutions& resolutions,
+//                        const MetaData& metaData ) :
+//    m_sensorName( sensorName ),
+//    m_resolutions( resolutions ),
+//    m_metaData( metaData ),
+//    m_acquisitionSize( computeAcquisitionSize( resolutions ) ) {}
 
 SensorSpec SensorSpec::operator+( const SensorSpec& sensorSpec ) const {
     //    SensorSpec ret;
     std::string sensorName;
     hub::SensorSpec::Resolutions resolutions;
     hub::SensorSpec::MetaData metaData;
-    sensorName  = m_sensorName + " + " + sensorSpec.m_sensorName;
+    // todo
+    //    sensorName  = m_sensorName + " + " + sensorSpec.m_sensorName;
     resolutions = m_resolutions;
     resolutions.insert(
         resolutions.end(), sensorSpec.m_resolutions.begin(), sensorSpec.m_resolutions.end() );
     metaData = m_metaData;
+
     metaData.insert( sensorSpec.m_metaData.begin(), sensorSpec.m_metaData.end() );
     metaData.erase( "parent" );
 

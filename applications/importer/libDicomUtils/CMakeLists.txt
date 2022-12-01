@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.8)
 
 project(DicomUtils)
 
-set(CMAKE_CXX_STANDARD 17)
+#set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(DCMTK REQUIRED)
@@ -13,7 +13,8 @@ file(GLOB_RECURSE headers *.h)
 add_library(${PROJECT_NAME} ${sources} ${headers} # ${app_uis}
 )
 
-target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
+#target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
+set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD ${CMAKE_CXX_STANDARD})
 target_include_directories(
     ${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
                            # PRIVATE ${RADIUM_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR} # Moc

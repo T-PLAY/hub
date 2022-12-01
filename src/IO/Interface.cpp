@@ -225,6 +225,7 @@ namespace io {
 
 //        SensorSpec sensorSpec;
 //        read(sensorSpec);
+
         std::string sensorName;
         hub::SensorSpec::Resolutions resolutions;
         hub::SensorSpec::MetaData metaData;

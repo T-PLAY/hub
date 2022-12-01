@@ -11,7 +11,7 @@
 #include <InputSensor.hpp>
 #include <OutputSensor.hpp>
 
-//#define USE_MRI
+#define USE_MRI
 
 MainWindow::MainWindow( QWidget* parent ) : QMainWindow( parent ), ui( new Ui::MainWindow ) {
     ui->setupUi( this );

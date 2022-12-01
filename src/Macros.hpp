@@ -175,3 +175,24 @@
 #else
 #    define SRC_API
 #endif
+
+
+#if (__cplusplus >= 202001L)
+#    define CPLUSPLUS_VERSION 20
+#    define CONSTEXPR17 constexpr
+#    define CONSTEXPR20 constexpr
+//    #error "C++20 not supported"
+#elif (__cplusplus >= 201703L)
+#    define CPLUSPLUS_VERSION 17
+#    define CONSTEXPR17 constexpr
+#    define CONSTEXPR20
+//	#error "C++17 not supported"
+#elif (__cplusplus >= 201402L) || (defined(_MSC_VER) && _MSC_VER >= 1914)
+#    define CPLUSPLUS_VERSION 14
+#    define CONSTEXPR17
+#    define CONSTEXPR20
+    #error "C++14 not supported"
+#else
+#    error "C++ version " __cplusplus " not supported"
+#endif
+

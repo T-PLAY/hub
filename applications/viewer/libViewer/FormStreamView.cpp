@@ -55,6 +55,7 @@ FormStreamView::FormStreamView( std::string streamName,
     //#endif
 
     ui->labelStreamName->setText( streamName.c_str() );
+//    ui->labelSensorName->setText( sensorSpec.getSensorName().c_str() );
     ui->labelSensorName->setText( sensorSpec.getSensorName().c_str() );
     ui->labelResolutions->setText(
         hub::SensorSpec::resolutions2string( sensorSpec.getResolutions() ).c_str() );
