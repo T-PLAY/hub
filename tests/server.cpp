@@ -43,12 +43,12 @@ TEST_CASE( "Server test : direct stream" ) {
                 hub::io::OutputStream( "stream", hub::net::ClientSocket( ipv4, port ) ) );
 
             auto& outputSensorSpec = outputSensor.m_spec;
-            CHECK( outputSensorSpec.m_acquisitionSize == dataSize );
-            CHECK( outputSensorSpec.m_sensorName == "sensorName" );
-            CHECK( outputSensorSpec.m_resolutions.size() == 1 );
-            CHECK( outputSensorSpec.m_resolutions[0].first.size() == 1 );
-            CHECK( outputSensorSpec.m_resolutions[0].first.at( 0 ) == 3 );
-            CHECK( outputSensorSpec.m_resolutions[0].second == hub::SensorSpec::Format::BGR8 );
+            CHECK( outputSensorSpec.getAcquisitionSize() == dataSize );
+            CHECK( outputSensorSpec.getSensorName() == "sensorName" );
+            CHECK( outputSensorSpec.getResolutions().size() == 1 );
+            CHECK( outputSensorSpec.getResolutions()[0].first.size() == 1 );
+            CHECK( outputSensorSpec.getResolutions()[0].first.at( 0 ) == 3 );
+            CHECK( outputSensorSpec.getResolutions()[0].second == hub::SensorSpec::Format::BGR8 );
             std::cout << "[Test] outputStream end ---------------------------------" << std::endl;
 
             {
@@ -58,12 +58,12 @@ TEST_CASE( "Server test : direct stream" ) {
                     hub::io::InputStream( "stream", "", hub::net::ClientSocket( ipv4, port ) ) );
 
                 const auto& inputSensorSpec = inputSensor.m_spec;
-                CHECK( inputSensorSpec.m_acquisitionSize == dataSize );
-                CHECK( inputSensorSpec.m_sensorName == "sensorName" );
-                CHECK( inputSensorSpec.m_resolutions.size() == 1 );
-                CHECK( inputSensorSpec.m_resolutions[0].first.size() == 1 );
-                CHECK( inputSensorSpec.m_resolutions[0].first.at( 0 ) == 3 );
-                CHECK( inputSensorSpec.m_resolutions[0].second == hub::SensorSpec::Format::BGR8 );
+                CHECK( inputSensorSpec.getAcquisitionSize() == dataSize );
+                CHECK( inputSensorSpec.getSensorName() == "sensorName" );
+                CHECK( inputSensorSpec.getResolutions().size() == 1 );
+                CHECK( inputSensorSpec.getResolutions()[0].first.size() == 1 );
+                CHECK( inputSensorSpec.getResolutions()[0].first.at( 0 ) == 3 );
+                CHECK( inputSensorSpec.getResolutions()[0].second == hub::SensorSpec::Format::BGR8 );
 
                 std::cout << "[Test] ############################### send acquisitions"
                           << std::endl;

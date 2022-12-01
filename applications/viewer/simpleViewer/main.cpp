@@ -20,7 +20,7 @@ int main( int argc, char* argv[] ) {
         hub::io::InputStream( sensorNames[iSensor], sensorMasterNames[iSensor] ) );
     std::cout << "proceduralStreamer inited" << std::endl;
     const auto& header                        = inputStream.m_spec;
-    const hub::SensorSpec::MetaData& metaData = header.m_metaData;
+    const hub::SensorSpec::MetaData& metaData = header.getMetaData();
 
     std::cout << "metadata : " << hub::SensorSpec::metaData2string( metaData ) << std::endl;
     if ( iSensor != 2 ) {
@@ -32,7 +32,7 @@ int main( int argc, char* argv[] ) {
 
     // hub::InputSensor inputStream("L500 Depth Sensor (Depth)");
 
-    const size_t acquisitionSize = header.m_acquisitionSize;
+    const size_t acquisitionSize = header.getAcquisitionSize();
     std::cout << "acquisitionSize = " << acquisitionSize << std::endl;
     // const int width = inputStream.getDims().at(0);
 

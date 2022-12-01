@@ -82,14 +82,14 @@ StreamerClient::StreamerClient( Server& server, int iClient, hub::net::ClientSoc
 
     const auto& sensorSpec = m_inputSensor->m_spec;
 
-    const size_t acquisitionSize = sensorSpec.m_acquisitionSize;
-    std::cout << headerMsg() << "sensor name:'" << sensorSpec.m_sensorName << "'" << std::endl;
+    const size_t acquisitionSize = sensorSpec.getAcquisitionSize();
+    std::cout << headerMsg() << "sensor name:'" << sensorSpec.getSensorName() << "'" << std::endl;
     std::cout << headerMsg() << "acquisitionSize:" << acquisitionSize << std::endl;
     std::cout << headerMsg()
-              << "resolutions:" << hub::SensorSpec::resolutions2string( sensorSpec.m_resolutions )
+              << "resolutions:" << hub::SensorSpec::resolutions2string( sensorSpec.getResolutions() )
               << std::endl;
 
-    const auto& metaData = sensorSpec.m_metaData;
+    const auto& metaData = sensorSpec.getMetaData();
     for ( const auto& pair : metaData ) {
         std::cout << headerMsg() << "metaData: " << hub::SensorSpec::metaData2string( pair )
                   << std::endl;
@@ -338,7 +338,7 @@ StreamerClient::StreamerClient( Server& server, int iClient, hub::net::ClientSoc
                     //                    if ( m_lastAcq.find( syncViewerName ) != m_lastAcq.end() )
                     //                    {
                     // find acceptable corresponding acquisition if interpolation is not possible
-                    if ( !itLeftAcq->interpolable() ) {
+                    if ( !itLeftAcq->isInterpolable() ) {
                         const auto& lastMasterAcq = getLastAcq( syncViewerName );
                         if ( lastMasterAcq != nullptr ) {
                             maxDist = std::min(
@@ -358,7 +358,7 @@ StreamerClient::StreamerClient( Server& server, int iClient, hub::net::ClientSoc
 
 //                    hub::Acquisition mergedAcq { masterAcq.m_start, masterAcq.m_end };
                     hub::Acquisition mergedAcq = masterAcq.clone();
-                    if ( itLeftAcq->interpolable() ) {
+                    if ( itLeftAcq->isInterpolable() ) {
                         const double t = ( masterAcq.m_start - itLeftAcq->m_start ) /
                                          (double)( itRightAcq->m_start - itLeftAcq->m_start );
                         mergedAcq
@@ -415,7 +415,7 @@ StreamerClient::StreamerClient( Server& server, int iClient, hub::net::ClientSoc
                       << std::endl;
             //            s_mtxCout.unlock();
         }
-        std::cout << headerMsg() << "end streamer : '" << m_inputSensor->m_spec.m_sensorName << "'"
+        std::cout << headerMsg() << "end streamer : '" << m_inputSensor->m_spec.getSensorName() << "'"
                   << std::endl;
 
         std::cout << headerMsg() << "thread end" << std::endl;

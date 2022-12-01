@@ -26,30 +26,30 @@ TEST_CASE( "Resolutions test" ) {
 
         hub::OutputSensor outputSensor( sensorSpec, hub::io::Ram( cyclicBuff ) );
         const hub::SensorSpec& outputSensorSpec = outputSensor.m_spec;
-        CHECK( outputSensorSpec.m_acquisitionSize == size );
-        CHECK( outputSensorSpec.m_sensorName == "sensorName" );
-        CHECK( outputSensorSpec.m_resolutions.size() == resolutions.size() );
+        CHECK( outputSensorSpec.getAcquisitionSize() == size );
+        CHECK( outputSensorSpec.getSensorName() == "sensorName" );
+        CHECK( outputSensorSpec.getResolutions().size() == resolutions.size() );
         for ( int i = 0; i < resolutions.size(); ++i ) {
-            CHECK( outputSensorSpec.m_resolutions[i].first.size() == resolutions[i].first.size() );
+            CHECK( outputSensorSpec.getResolutions()[i].first.size() == resolutions[i].first.size() );
             for ( int j = 0; j < resolutions[i].first.size(); ++j ) {
-                CHECK( outputSensorSpec.m_resolutions[i].first.at( j ) ==
+                CHECK( outputSensorSpec.getResolutions()[i].first.at( j ) ==
                        resolutions[i].first.at( j ) );
             }
-            CHECK( outputSensorSpec.m_resolutions[i].second == resolutions[i].second );
+            CHECK( outputSensorSpec.getResolutions()[i].second == resolutions[i].second );
         }
 
         hub::InputSensor inputSensor( ( hub::io::Ram( cyclicBuff ) ) );
         hub::SensorSpec inputSensorSpec = inputSensor.m_spec;
-        CHECK( inputSensorSpec.m_acquisitionSize == size );
-        CHECK( inputSensorSpec.m_sensorName == "sensorName" );
-        CHECK( inputSensorSpec.m_resolutions.size() == resolutions.size() );
+        CHECK( inputSensorSpec.getAcquisitionSize() == size );
+        CHECK( inputSensorSpec.getSensorName() == "sensorName" );
+        CHECK( inputSensorSpec.getResolutions().size() == resolutions.size() );
         for ( int i = 0; i < resolutions.size(); ++i ) {
-            CHECK( inputSensorSpec.m_resolutions[i].first.size() == resolutions[i].first.size() );
+            CHECK( inputSensorSpec.getResolutions()[i].first.size() == resolutions[i].first.size() );
             for ( int j = 0; j < resolutions[i].first.size(); ++j ) {
-                CHECK( inputSensorSpec.m_resolutions[i].first.at( j ) ==
+                CHECK( inputSensorSpec.getResolutions()[i].first.at( j ) ==
                        resolutions[i].first.at( j ) );
             }
-            CHECK( inputSensorSpec.m_resolutions[i].second == resolutions[i].second );
+            CHECK( inputSensorSpec.getResolutions()[i].second == resolutions[i].second );
         }
     }
 }

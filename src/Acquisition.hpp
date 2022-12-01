@@ -26,7 +26,7 @@ class SRC_API Measure
 
     Measure clone() const;
 
-    bool interpolable() const;
+    bool isInterpolable() const;
     static Measure slerp( const Measure& left, const Measure& right, double t );
 
     const unsigned char* const m_data;
@@ -125,7 +125,7 @@ class SRC_API Acquisition
 //    template<typename... Values>
 //    void add(Values...);
 
-    bool interpolable() const;
+    bool isInterpolable() const;
     static Acquisition slerp( const Acquisition& left, const Acquisition& right, double t );
 
   public:

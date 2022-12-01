@@ -106,7 +106,7 @@ void Loader::load( const std::set<std::string>& paths ) {
         hub::InputSensor inputSensor( hub::io::File( std::move( file ) ) );
 
         const auto& sensorSpec        = inputSensor.m_spec;
-        const std::string& sensorName = sensorSpec.m_sensorName;
+        const std::string& sensorName = sensorSpec.getSensorName();
 
         auto acqs = inputSensor.getAllAcquisitions();
 
