@@ -118,6 +118,7 @@ void viewer_setPort(Viewer *viewer, int port)
 void sensorSpec_getSensorName( const SensorSpec* sensorSpec, char* sensorName, int* strLen ) {
     *strLen = sensorSpec->getSensorName().size();
     memcpy( sensorName, sensorSpec->getSensorName().c_str(), *strLen + 1 );
+//    memcpy( sensorName, sensorSpec->getSensorName().data(), *strLen + 1 );
     sensorName[*strLen] = 0;
 }
 

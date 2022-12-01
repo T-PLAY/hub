@@ -6,6 +6,19 @@
 
 namespace hub {
 
+#if CPLUSPLUS_VERSION == 20
+CONSTEXPR20 SensorSpec::SensorSpec( const SensorNameType& sensorName,
+                         const Resolutions& resolutions,
+                         const MetaData& metaData ) :
+     m_sensorName( sensorName ),
+     m_resolutions( resolutions ),
+     m_metaData( metaData ),
+     m_acquisitionSize( computeAcquisitionSize( resolutions ) ) {}
+#endif
+
+
+//template <int NDim>
+//static constexpr int s_format2nByte[static_cast<int>( SensorSpec<NDim>::Format::COUNT )] = {
 static constexpr int s_format2nByte[static_cast<int>( SensorSpec::Format::COUNT )] = {
     0,       // NONE
     2,       // Z16
@@ -46,12 +59,12 @@ inline constexpr int SensorSpec::format2nByte(const Format &format) noexcept
     return s_format2nByte[static_cast<int>(format)];
 }
 
-inline size_t SensorSpec::computeAcquisitionSize( Format format, const Dims& dims ) noexcept {
+inline constexpr size_t SensorSpec::computeAcquisitionSize( Format format, const Dims& dims ) noexcept {
     return std::accumulate( dims.cbegin(), dims.cend(), 1, std::multiplies<int> {} ) *
             s_format2nByte[static_cast<int>( format )];
 }
 
-inline size_t SensorSpec::computeAcquisitionSize( const Resolutions& resolutions ) noexcept {
+inline size_t CONSTEXPR20 SensorSpec::computeAcquisitionSize( const Resolutions& resolutions ) noexcept {
     size_t size = 0;
     for ( const auto& resolution : resolutions ) {
         size += computeAcquisitionSize( resolution );
@@ -59,7 +72,7 @@ inline size_t SensorSpec::computeAcquisitionSize( const Resolutions& resolutions
     return size;
 }
 
-inline size_t SensorSpec::computeAcquisitionSize( const Resolution& resolution ) noexcept {
+inline constexpr size_t SensorSpec::computeAcquisitionSize( const Resolution& resolution ) noexcept {
     const auto& dims   = resolution.first;
     const auto& format = resolution.second;
     return computeAcquisitionSize( format, dims );
@@ -100,26 +113,35 @@ static constexpr bool format2isInterpolable[static_cast<int>( SensorSpec::Format
     false, // MAT4
 };
 
-inline bool SensorSpec::isInterpolable( const Format& format ) noexcept {
+inline constexpr bool SensorSpec::isInterpolable( const Format& format ) noexcept {
     return format2isInterpolable[(int)format];
 }
 
 
 // getters
 
-inline const std::string &SensorSpec::getSensorName() const noexcept
+//std::string tmp = "hello";
+
+//inline const std::string &SensorSpec::getSensorName() const noexcept
+//{
+////    return std::string("hello");
+//    return tmp; // todo
+//}
+
+inline CONSTEXPR20 const SensorSpec::SensorNameType& SensorSpec::getSensorName() const noexcept
 {
     return m_sensorName;
 }
 
-const SensorSpec::Resolutions &SensorSpec::getResolutions() const noexcept
+inline constexpr SensorSpec::Resolutions &SensorSpec::getResolutions() const noexcept
 {
-    return m_resolutions;
+//    return m_resolutions;
+    return const_cast<SensorSpec::Resolutions&>(m_resolutions);
 }
 
-inline const SensorSpec::MetaData &SensorSpec::getMetaData() const noexcept
+inline constexpr SensorSpec::MetaData &SensorSpec::getMetaData() const noexcept
 {
-    return m_metaData;
+    return const_cast<SensorSpec::MetaData&>(m_metaData);
 }
 
 inline SensorSpec::MetaData &SensorSpec::getMetaData() noexcept
@@ -127,7 +149,7 @@ inline SensorSpec::MetaData &SensorSpec::getMetaData() noexcept
     return m_metaData;
 }
 
-inline size_t SensorSpec::getAcquisitionSize() const noexcept
+inline constexpr size_t SensorSpec::getAcquisitionSize() const noexcept
 {
     return m_acquisitionSize;
 }

@@ -4,7 +4,7 @@ project(libGuiManager)
 
 set(CMAKE_AUTOMOC ON)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(Radium REQUIRED Core Engine Gui NO_DEFAULT_PATH)
@@ -21,7 +21,8 @@ qt_wrap_ui(app_uis_moc ${app_uis})
 
 add_library(${PROJECT_NAME} ${sources} ${headers} ${app_uis})
 
-target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
+#set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD ${CMAKE_CXX_STANDARD})
+target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_${CMAKE_CXX_STANDARD})
 target_include_directories(
     ${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
     # #    ${SRC_DIR} #    PRIVATE # ${RADIUM_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR} # Moc

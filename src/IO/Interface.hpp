@@ -79,7 +79,9 @@ class SRC_API Interface
     void read( std::pair<T, U>& pair ) const;
 
     void read( std::string& str ) const;
-//    void read( SensorSpec& sensorSpec ) const;
+    void read( SensorSpec& sensorSpec ) const = delete;
+    void read( Acquisition& acquisition) const = delete;
+    void read( Measure& measure) const = delete;
 
     Measure getMeasure() const;
     SensorSpec getSensorSpec() const;
