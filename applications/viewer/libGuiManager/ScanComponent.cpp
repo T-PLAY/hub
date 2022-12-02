@@ -63,8 +63,8 @@ void ScanComponent::initialize() {
     //// setup ////
 
     //    const auto& sensorSpec  = m_inputSensor.m_spec;
-    const auto& metaData    = m_sensorSpec.m_metaData;
-    const auto& resolutions = m_sensorSpec.m_resolutions;
+    const auto& metaData    = m_sensorSpec.getMetaData();
+    const auto& resolutions = m_sensorSpec.getResolutions();
 
     if ( metaData.find( "nAcqs" ) != metaData.end() ) {
         m_nMaxScans = std::any_cast<unsigned int>( metaData.at( "nAcqs" ) );
@@ -148,7 +148,7 @@ void ScanComponent::update( const hub::Acquisition& acq ) {
 
 //    const auto& measures = acq.getMeasures();
     //    const auto nMeasures = measures.size();
-    const auto nMeasures = m_sensorSpec.m_resolutions.size();
+    const auto nMeasures = m_sensorSpec.getResolutions().size();
 
     bool isNewScan = true;
 
@@ -303,9 +303,9 @@ void ScanComponent::addScan() {
         quadTriangle.addAttrib(
             Ra::Core::Geometry::getAttribName( Ra::Core::Geometry::VERTEX_TEXCOORD ), tex_coords );
 
-        const auto& sensorName = m_sensorSpec.m_sensorName;
+        const auto& sensorName = m_sensorSpec.getSensorName();
         //        const auto& sensorSpec  = m_inputSensor.m_spec;
-        const auto& resolutions = m_sensorSpec.m_resolutions;
+        const auto& resolutions = m_sensorSpec.getResolutions();
         int width;
         int height;
         int imageSize;
@@ -317,7 +317,7 @@ void ScanComponent::addScan() {
             format    = resolutions.at( 0 ).second;
             width     = dims.at( 0 );
             height    = dims.at( 1 );
-            imageSize = m_sensorSpec.m_acquisitionSize;
+            imageSize = m_sensorSpec.getAcquisitionSize();
         }
         else if ( resolutionsSize == 2 ) {
             assert( resolutions.at( 1 - m_iImage ).second == hub::SensorSpec::Format::DOF6 );

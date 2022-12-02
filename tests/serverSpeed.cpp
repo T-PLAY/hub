@@ -51,13 +51,13 @@ TEST_CASE( "Server test : speed test" ) {
             hub::io::InputStream( "stream", "", hub::net::ClientSocket( ipv4, port ) ) );
 
         const auto& inputSensorSpec = inputSensor.m_spec;
-        CHECK( inputSensorSpec.m_acquisitionSize == dataSize );
-        CHECK( inputSensorSpec.m_sensorName == "sensorName" );
-        CHECK( inputSensorSpec.m_resolutions.size() == 1 );
-        CHECK( inputSensorSpec.m_resolutions[0].first.size() == 2 );
-        CHECK( inputSensorSpec.m_resolutions[0].first.at( 0 ) == width );
-        CHECK( inputSensorSpec.m_resolutions[0].first.at( 1 ) == height );
-        CHECK( inputSensorSpec.m_resolutions[0].second == hub::SensorSpec::Format::BGR8 );
+        CHECK( inputSensorSpec.getAcquisitionSize() == dataSize );
+        CHECK( inputSensorSpec.getSensorName() == "sensorName" );
+        CHECK( inputSensorSpec.getResolutions().size() == 1 );
+        CHECK( inputSensorSpec.getResolutions()[0].first.size() == 2 );
+        CHECK( inputSensorSpec.getResolutions()[0].first.at( 0 ) == width );
+        CHECK( inputSensorSpec.getResolutions()[0].first.at( 1 ) == height );
+        CHECK( inputSensorSpec.getResolutions()[0].second == hub::SensorSpec::Format::BGR8 );
         std::cout << "[Test] inputStream end ---------------------------------" << std::endl;
 
         std::cout << "[Test] ############################### send acquisitions" << std::endl;

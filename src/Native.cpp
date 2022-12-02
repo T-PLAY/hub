@@ -34,7 +34,7 @@ void freeInputSensor( InputSensor* inputSensor ) {
 
 int getAcquisitionSize( const InputSensor* inputSensor ) {
     assert( inputSensor != nullptr );
-    return static_cast<int>( inputSensor->m_spec.m_acquisitionSize );
+    return static_cast<int>( inputSensor->m_spec.getAcquisitionSize() );
 }
 
 Acquisition* getAcquisition( const InputSensor* inputSensor ) {
@@ -122,55 +122,56 @@ bool viewer_isConnected(Viewer *viewer)
 }
 
 void sensorSpec_getSensorName( const SensorSpec* sensorSpec, char* sensorName, int* strLen ) {
-    *strLen = sensorSpec->m_sensorName.size();
-    memcpy( sensorName, sensorSpec->m_sensorName.c_str(), *strLen + 1 );
+    *strLen = sensorSpec->getSensorName().size();
+    memcpy( sensorName, sensorSpec->getSensorName().c_str(), *strLen + 1 );
+//    memcpy( sensorName, sensorSpec->getSensorName().data(), *strLen + 1 );
     sensorName[*strLen] = 0;
 }
 
 int sensorSpec_getResolutionSize( const SensorSpec* sensorSpec, int iResolution ) {
-    return SensorSpec::computeAcquisitionSize( sensorSpec->m_resolutions.at( iResolution ) );
+    return SensorSpec::computeAcquisitionSize( sensorSpec->getResolutions().at( iResolution ) );
 }
 
 int sensorSpec_getResolutionsSize( const SensorSpec* sensorSpec ) {
-    return sensorSpec->m_resolutions.size();
+    return sensorSpec->getResolutions().size();
 }
 
 int sensorSpec_getAcquisitionSize( const SensorSpec* sensorSpec ) {
-    return sensorSpec->m_acquisitionSize;
+    return sensorSpec->getAcquisitionSize();
 }
 
 int sensorSpec_getFormat( const SensorSpec* sensorSpec, int iResolution ) {
-    assert( iResolution < sensorSpec->m_resolutions.size() );
-    return static_cast<int>( sensorSpec->m_resolutions.at( iResolution ).second );
+    assert( iResolution < sensorSpec->getResolutions().size() );
+    return static_cast<int>( sensorSpec->getResolutions().at( iResolution ).second );
 }
 
 int sensorSpec_getDimensionsSize( const SensorSpec* sensorSpec, int iResolution ) {
-    assert( iResolution < sensorSpec->m_resolutions.size() );
-    return sensorSpec->m_resolutions.at( iResolution ).first.size();
+    assert( iResolution < sensorSpec->getResolutions().size() );
+    return sensorSpec->getResolutions().at( iResolution ).first.size();
 }
 
 int sensorSpec_getDimension( const SensorSpec* sensorSpec, int iResolution, int iDimension ) {
-    assert( iResolution < sensorSpec->m_resolutions.size() );
-    assert( iDimension < sensorSpec->m_resolutions.at( iResolution ).first.size() );
-    return sensorSpec->m_resolutions.at( iResolution ).first.at( iDimension );
+    assert( iResolution < sensorSpec->getResolutions().size() );
+    assert( iDimension < sensorSpec->getResolutions().at( iResolution ).first.size() );
+    return sensorSpec->getResolutions().at( iResolution ).first.at( iDimension );
 }
 
 void sensorSpec_getResolutionsStr( const SensorSpec* sensorSpec, char* resolutionsStr ) {
-    const auto& resolutionsString = SensorSpec::resolutions2string( sensorSpec->m_resolutions );
+    const auto& resolutionsString = SensorSpec::resolutions2string( sensorSpec->getResolutions() );
     const int len                 = resolutionsString.size();
     memcpy( resolutionsStr, resolutionsString.c_str(), len + 1 );
     resolutionsStr[len] = 0;
 }
 
 void sensorSpec_getMetaDataStr( const SensorSpec* sensorSpec, char* metaDataStr ) {
-    const auto& metaDataString = SensorSpec::metaData2string( sensorSpec->m_metaData, true );
+    const auto& metaDataString = SensorSpec::metaData2string( sensorSpec->getMetaData(), true );
     const int len              = metaDataString.size();
     memcpy( metaDataStr, metaDataString.c_str(), len + 1 );
     metaDataStr[len] = 0;
 }
 
 SensorSpec* sensorSpec_copy( const SensorSpec* source ) {
-    return new SensorSpec( source->m_sensorName, source->m_resolutions, source->m_metaData );
+    return new SensorSpec( source->getSensorName(), source->getResolutions(), source->getMetaData() );
 }
 
 void freeSensorSpec( SensorSpec* sensorSpec ) {
@@ -178,7 +179,7 @@ void freeSensorSpec( SensorSpec* sensorSpec ) {
 }
 
 const SensorSpec::MetaData* sensorSpec_getMetaData( const SensorSpec* sensorSpec ) {
-    return &sensorSpec->m_metaData;
+    return &sensorSpec->getMetaData();
 }
 
 bool metaData_getString( const SensorSpec::MetaData* metaData,

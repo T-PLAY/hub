@@ -34,12 +34,12 @@ TEST_CASE( "File test" ) {
                 std::fstream( filename, std::ios::out | std::ios::binary | std::ios::trunc ) ) );
 
         auto& sensorSpec = outputSensor.m_spec;
-        CHECK( sensorSpec.m_acquisitionSize == 3 );
-        CHECK( sensorSpec.m_sensorName == "sensorName" );
-        CHECK( sensorSpec.m_resolutions.size() == 1 );
-        CHECK( sensorSpec.m_resolutions[0].first.size() == 1 );
-        CHECK( sensorSpec.m_resolutions[0].first.at( 0 ) == 1 );
-        CHECK( sensorSpec.m_resolutions[0].second == hub::SensorSpec::Format::BGR8 );
+        CHECK( sensorSpec.getAcquisitionSize() == 3 );
+        CHECK( sensorSpec.getSensorName() == "sensorName" );
+        CHECK( sensorSpec.getResolutions().size() == 1 );
+        CHECK( sensorSpec.getResolutions()[0].first.size() == 1 );
+        CHECK( sensorSpec.getResolutions()[0].first.at( 0 ) == 1 );
+        CHECK( sensorSpec.getResolutions()[0].second == hub::SensorSpec::Format::BGR8 );
 
         for ( const auto& acq : acqs ) {
             outputSensor << acq;
@@ -56,12 +56,12 @@ TEST_CASE( "File test" ) {
             hub::io::File( std::fstream( filename, std::ios::in | std::ios::binary ) ) );
 
         const auto& sensorSpec = inputSensor.m_spec;
-        CHECK( sensorSpec.m_acquisitionSize == 3 );
-        CHECK( sensorSpec.m_sensorName == "sensorName" );
-        CHECK( sensorSpec.m_resolutions.size() == 1 );
-        CHECK( sensorSpec.m_resolutions[0].first.size() == 1 );
-        CHECK( sensorSpec.m_resolutions[0].first.at( 0 ) == 1 );
-        CHECK( sensorSpec.m_resolutions[0].second == hub::SensorSpec::Format::BGR8 );
+        CHECK( sensorSpec.getAcquisitionSize() == 3 );
+        CHECK( sensorSpec.getSensorName() == "sensorName" );
+        CHECK( sensorSpec.getResolutions().size() == 1 );
+        CHECK( sensorSpec.getResolutions()[0].first.size() == 1 );
+        CHECK( sensorSpec.getResolutions()[0].first.at( 0 ) == 1 );
+        CHECK( sensorSpec.getResolutions()[0].second == hub::SensorSpec::Format::BGR8 );
         std::cout << "####### compare acqs" << std::endl;
         for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
             auto acq = inputSensor.getAcquisition();

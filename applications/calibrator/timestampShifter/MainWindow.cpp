@@ -54,7 +54,7 @@ MainWindow::MainWindow( QWidget* parent ) : QMainWindow( parent ), ui( new Ui::M
 
     m_outputSensor = new hub::OutputSensor(
         inputSensor.m_spec + inputSensor2.m_spec,
-        hub::io::OutputStream( inputSensor.m_spec.m_sensorName + " (timeShifted)",
+        hub::io::OutputStream( inputSensor.m_spec.getSensorName() + " (timeShifted)",
                                hub::net::ClientSocket( hub::net::s_defaultServiceIp, 4042 ) ) );
 
     auto it = m_acqs.begin();

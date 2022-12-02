@@ -18,7 +18,7 @@ SensorThread::SensorThread( Sensor& sensor, QObject* parent ) :
     QThread { parent }, m_sensor( sensor ) {}
 
 SensorThread::~SensorThread() {
-    std::cout << "[SensorThread] ~SensorThread(" << m_sensor.m_sensorSpec.m_sensorName << ")"
+    std::cout << "[SensorThread] ~SensorThread(" << m_sensor.m_sensorSpec.getSensorName() << ")"
               << std::endl;
 }
 
@@ -113,7 +113,7 @@ Sensor::Sensor( const std::string& streamName,
 
 {
     //    const auto& sensorSpec  = sensorSpec;
-    const auto& resolutions = sensorSpec.m_resolutions;
+    const auto& resolutions = sensorSpec.getResolutions();
 
     if (resolutions.size() == 2) {
         if (resolutions.at(0).second == hub::SensorSpec::Format::DOF6) {
@@ -145,7 +145,7 @@ Sensor::Sensor( const std::string& streamName,
         subWindow->setWindowFlags( Qt::CustomizeWindowHint | Qt::WindowMinMaxButtonsHint |
                                    Qt::WindowTitleHint );
 
-        subWindow->setWindowTitle( ( m_sensorSpec.m_sensorName + "   " +
+        subWindow->setWindowTitle( ( m_sensorSpec.getSensorName() + "   " +
                                      hub::SensorSpec::dims2string( dims ) + "   " +
                                      hub::SensorSpec::format2string( format ) )
                                        .c_str() );
@@ -158,7 +158,7 @@ Sensor::Sensor( const std::string& streamName,
     {
         assert( m_component == nullptr );
         m_entity =
-            m_engine->getEntityManager()->createEntity( m_sensorSpec.m_sensorName + " entity" );
+            m_engine->getEntityManager()->createEntity( m_sensorSpec.getSensorName() + " entity" );
 
         setParent( parentSensor );
 
@@ -210,10 +210,10 @@ Sensor::Sensor( const std::string& streamName,
     }
 
     m_items.append( new QStandardItem( streamName.c_str() ) );
-    m_items.append( new QStandardItem( m_sensorSpec.m_sensorName.c_str() ) );
+    m_items.append( new QStandardItem( m_sensorSpec.getSensorName().c_str() ) );
     m_items.append(
         new QStandardItem( hub::SensorSpec::resolutions2string( resolutions ).c_str() ) );
-    m_items.append( new QStandardItem( std::to_string( m_sensorSpec.m_acquisitionSize ).c_str() ) );
+    m_items.append( new QStandardItem( std::to_string( m_sensorSpec.getAcquisitionSize() ).c_str() ) );
     m_itemFps = new QStandardItem( "0" );
     m_items.append( m_itemFps );
 
@@ -225,7 +225,7 @@ Sensor::Sensor( const std::string& streamName,
 
 Sensor::~Sensor() {
 
-    std::cout << "[Sensor] ~Sensor(" << m_sensorSpec.m_sensorName << ") start" << std::endl;
+    std::cout << "[Sensor] ~Sensor(" << m_sensorSpec.getSensorName() << ") start" << std::endl;
 
     m_mtxUpdating.lock();
     m_lost = true;
@@ -278,7 +278,7 @@ Sensor::~Sensor() {
 #ifdef ENABLE_IMAGE_VIEWER
     detachFromImageManipulator();
 #endif
-    std::cout << "[Sensor] ~Sensor(" << m_sensorSpec.m_sensorName << ") end" << std::endl;
+    std::cout << "[Sensor] ~Sensor(" << m_sensorSpec.getSensorName() << ") end" << std::endl;
 }
 
 void Sensor::updateTransform( const Ra::Engine::Scene::Entity* entity ) {
@@ -303,7 +303,7 @@ void Sensor::update( const hub::Acquisition& acq ) {
     }
 
     //            const auto& sensorSpec  = inputSensor->m_spec;
-    const auto& resolutions = m_sensorSpec.m_resolutions;
+    const auto& resolutions = m_sensorSpec.getResolutions();
     const auto& measures    = acq.getMeasures();
 
     // update 2D view
@@ -357,12 +357,12 @@ void Sensor::attachFromImageManipulator() {
 
     assert( m_widgetStreamViewManipulator == nullptr );
 
-    const auto& resolutions = m_sensorSpec.m_resolutions;
+    const auto& resolutions = m_sensorSpec.getResolutions();
     const auto& dims        = resolutions.at( m_iImage ).first;
     if ( dims.size() != 2 ) return;
     const auto & width = dims.at(0);
     const auto & height = dims.at(1);
-    const auto& metaData = m_sensorSpec.m_metaData;
+    const auto& metaData = m_sensorSpec.getMetaData();
 //    double realWidth     = 1.0;
     double realWidth     = width;
     if ( metaData.find( "scanWidth" ) != metaData.end() ) {
@@ -413,8 +413,8 @@ void Sensor::setParent( Sensor* parent ) {
         m_observerId = transformObservers.attach( m_observer );
 
         m_parent->m_sons.push_back( this );
-        std::cout << "[Sensor] ----> link '" << m_sensorSpec.m_sensorName << "' to parent '"
-                  << m_parent->m_sensorSpec.m_sensorName << "'" << std::endl;
+        std::cout << "[Sensor] ----> link '" << m_sensorSpec.getSensorName() << "' to parent '"
+                  << m_parent->m_sensorSpec.getSensorName() << "'" << std::endl;
     }
 }
 

@@ -36,7 +36,7 @@ SensorComponent::SensorComponent(
 //        const hub::InputSensor& inputSensor,
         const hub::SensorSpec & sensorSpec,
                                   Ra::Engine::Scene::Entity* entity ) :
-    Ra::Engine::Scene::Component( sensorSpec.m_sensorName, entity ),
+    Ra::Engine::Scene::Component( sensorSpec.getSensorName(), entity ),
 //    m_inputSensor( inputSensor )
   m_sensorSpec(sensorSpec)
 {}

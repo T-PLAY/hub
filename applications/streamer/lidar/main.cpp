@@ -71,7 +71,7 @@ int main(int argc, char* argv[])
                 // Try to get a frame of a depth image
                 rs2::depth_frame depth = frames.get_depth_frame();
                 const size_t& depthSize = depth.get_data_size();
-                assert(depthSize == depthStream.m_spec.m_acquisitionSize);
+                assert(depthSize == depthStream.m_spec.getAcquisitionSize());
                 depthStream << (hub::Acquisition { depth.get_frame_metadata(RS2_FRAME_METADATA_BACKEND_TIMESTAMP),
                                     depth.get_frame_metadata(RS2_FRAME_METADATA_TIME_OF_ARRIVAL) }
                     << hub::Measure { (unsigned char*)depth.get_data(), depthSize });
@@ -80,7 +80,7 @@ int main(int argc, char* argv[])
 #ifdef RGB_STREAM
                 rs2::video_frame color = frames.get_color_frame();
                 const size_t colorSize = color.get_data_size();
-                assert(colorSize == rgbStream.m_spec.m_acquisitionSize);
+                assert(colorSize == rgbStream.m_spec.getAcquisitionSize());
                 rgbStream << (hub::Acquisition {
                                   color.get_frame_metadata(RS2_FRAME_METADATA_BACKEND_TIMESTAMP),
                                   color.get_frame_metadata(RS2_FRAME_METADATA_TIME_OF_ARRIVAL) }
@@ -90,7 +90,7 @@ int main(int argc, char* argv[])
 #ifdef INFRARED_STREAM
                 rs2::video_frame ir = frames.get_infrared_frame();
                 const size_t infraredSize = ir.get_data_size();
-                assert(infraredSize == infraredStream.m_spec.m_acquisitionSize);
+                assert(infraredSize == infraredStream.m_spec.getAcquisitionSize());
                 infraredStream << (hub::Acquisition {
                                        ir.get_frame_metadata(RS2_FRAME_METADATA_BACKEND_TIMESTAMP),
                                        ir.get_frame_metadata(RS2_FRAME_METADATA_TIME_OF_ARRIVAL) }

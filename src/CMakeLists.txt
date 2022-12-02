@@ -6,7 +6,7 @@ set(WIN32_REQUIRED_LIBS)
 set(UNIX_REQUIRED_LIBS)
 
 file(GLOB_RECURSE sources *.cpp *.c)
-file(GLOB_RECURSE headers *.hpp *.h)
+file(GLOB_RECURSE headers *.hpp *.h *.inl)
 
 if(HUB_BUILD_STATIC_LIBRARY)
     add_library(${PROJECT_NAME} STATIC ${sources} ${headers})

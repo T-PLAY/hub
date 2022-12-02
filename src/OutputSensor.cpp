@@ -12,11 +12,11 @@ void OutputSensor::operator<<( const Acquisition& acquisition ) const {
 //        m_interface.write(acquisition);
 //        return;
 //    }
-    assert( acquisition.getSize() == m_spec.m_acquisitionSize );
+    assert( acquisition.getSize() == m_spec.getAcquisitionSize() );
 
     assert( acquisition.m_start <= acquisition.m_end );
 
-    const auto& resolutions = m_spec.m_resolutions;
+    const auto& resolutions = m_spec.getResolutions();
     const auto& measures    = acquisition.getMeasures();
     assert( resolutions.size() == measures.size() );
     for ( int i = 0; i < resolutions.size(); ++i ) {
