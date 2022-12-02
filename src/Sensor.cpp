@@ -11,7 +11,7 @@ Sensor::~Sensor() {
 }
 
 std::ostream& operator<<( std::ostream& os, const Sensor& sensor ) {
-    os << sensor.m_spec.m_sensorName;
+    os << sensor.m_spec.getSensorName();
     return os;
 }
 

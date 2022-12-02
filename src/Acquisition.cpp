@@ -146,18 +146,18 @@ Measure Measure::clone() const {
     return ret;
 }
 
-bool Measure::interpolable() const {
+bool Measure::isInterpolable() const {
     assert( m_resolution.second != SensorSpec::Format::NONE );
     assert( !m_resolution.first.empty() );
-    return SensorSpec::interpolable( m_resolution.second );
+    return SensorSpec::isInterpolable( m_resolution.second );
 }
 
 Measure Measure::slerp( const Measure& left, const Measure& right, double t ) {
     assert( left.m_size == right.m_size );
     assert( !left.m_resolution.first.empty() );
     assert( !right.m_resolution.first.empty() );
-    assert( left.interpolable() );
-    assert( right.interpolable() );
+    assert( left.isInterpolable() );
+    assert( right.isInterpolable() );
     assert( left.m_resolution == right.m_resolution );
 
     switch ( left.m_resolution.second ) {
@@ -279,9 +279,9 @@ void Acquisition::addMeasure(unsigned char *data, uint64_t size) {
 //    m_measures.emplace_back(values);
 //}
 
-bool Acquisition::interpolable() const {
+bool Acquisition::isInterpolable() const {
     for ( const auto& measure : m_measures ) {
-        if ( !measure.interpolable() ) return false;
+        if ( !measure.isInterpolable() ) return false;
     }
     return true;
 }

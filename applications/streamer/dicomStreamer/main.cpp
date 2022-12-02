@@ -115,7 +115,8 @@ int main( int argc, char* argv[] ) {
     hub::SensorSpec::MetaData metaData2;
     metaData2["parent"]    = "calibrator";
     metaData2["transform"] = array;
-    sensorSpec.m_metaData  = metaData2;
+//    sensorSpec.m_metaData  = metaData2;
+    sensorSpec.setMetaData(metaData2);
     hub::OutputSensor outputSensor2(
         std::move( sensorSpec ),
         hub::io::OutputStream( "dicomStream2",

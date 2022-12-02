@@ -77,7 +77,7 @@ int main( int argc, char* argv[] ) {
                                  std::ios::out | std::ios::binary | std::ios::trunc );
         assert( recordFile.is_open() );
 
-        auto& metaData    = sensorSpec.m_metaData;
+        auto& metaData    = sensorSpec.getMetaData();
         metaData["type"]  = "record";
         metaData["nAcqs"] = (unsigned int)acqs.size();
 

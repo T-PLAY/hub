@@ -49,9 +49,9 @@ namespace io {
         std::cout << "[Interface] write(SensorSpec) : start" << std::endl;
 #endif
 
-        write(sensorSpec.m_sensorName);
-        write(sensorSpec.m_resolutions);
-        write(sensorSpec.m_metaData);
+        write(sensorSpec.getSensorName());
+        write(sensorSpec.getResolutions());
+        write(sensorSpec.getMetaData());
     }
 
     void Interface::write(const Measure& measure) const
@@ -181,20 +181,20 @@ namespace io {
 #endif
     }
 
-    void Interface::read(SensorSpec& sensorSpec) const
-    {
-        assert(isOpen());
+//    void Interface::read(SensorSpec& sensorSpec) const
+//    {
+//        assert(isOpen());
 
-#ifdef DEBUG_IOSTREAM
-        std::cout << "[Interface] read(SensorSpec) : start" << std::endl;
-#endif
+//#ifdef DEBUG_IOSTREAM
+//        std::cout << "[Interface] read(SensorSpec) : start" << std::endl;
+//#endif
 
-        read(sensorSpec.m_sensorName);
-        read(sensorSpec.m_resolutions);
-        read(sensorSpec.m_metaData);
+//        read(sensorSpec.m_sensorName);
+//        read(sensorSpec.m_resolutions);
+//        read(sensorSpec.m_metaData);
 
-        sensorSpec.m_acquisitionSize = SensorSpec::computeAcquisitionSize(sensorSpec.m_resolutions);
-    }
+//        sensorSpec.m_acquisitionSize = SensorSpec::computeAcquisitionSize(sensorSpec.m_resolutions);
+//    }
 
     Measure Interface::getMeasure() const
     {
@@ -223,9 +223,19 @@ namespace io {
         std::cout << "[Interface] getSensorSpec() : start" << std::endl;
 #endif
 
-        SensorSpec sensorSpec;
-        read(sensorSpec);
-        return sensorSpec;
+//        SensorSpec sensorSpec;
+//        read(sensorSpec);
+
+        std::string sensorName;
+        hub::SensorSpec::Resolutions resolutions;
+        hub::SensorSpec::MetaData metaData;
+        read(sensorName);
+        read(resolutions);
+        read(metaData);
+
+//        sensorSpec.m_acquisitionSize = SensorSpec::computeAcquisitionSize(sensorSpec.m_resolutions);
+//        return sensorSpec;
+        return SensorSpec(std::move(sensorName), std::move(resolutions), std::move(metaData));
     }
 
     Acquisition Interface::getAcquisition(int acquisitionSize) const

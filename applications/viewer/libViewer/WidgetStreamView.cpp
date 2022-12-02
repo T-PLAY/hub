@@ -80,15 +80,9 @@ void WidgetStreamView2D::setData( unsigned char* img_ptr,
                                   std::vector<int> dims,
                                   hub::SensorSpec::Format format ) {
     m_imageSize = size;
-    int nChannel = 1;
-    switch ( format ) {
-    case hub::SensorSpec::Format::Y8:
-    nChannel = 1;
-        break;
-    case hub::SensorSpec::Format::Y16:
-        nChannel = 2;
-        break;
-    }
+
+    const auto nChannel = hub::SensorSpec::format2nByte(format);
+//    constexpr auto nChannel = hub::SensorSpec::format2nByte(hub::SensorSpec::Y16);
 
     assert( dims.size() == 2 );
     assert(size == dims.at(0) * dims.at(1) * nChannel);
@@ -135,16 +129,6 @@ void WidgetStreamView2D::updateImage() {
 //    std::cout << "[WidgetStreamView2D] updateImage() " << "mImagePixelWidth = " << mImagePixelWidth << ", mImagePixelHeight = " << mImagePixelHeight << ", mImageUnitWidth = " << mImageUnitWidth << ", mImageUnitHeight = " << mImageUnitHeight << ", mRatio = " << mRatio << ", mHPixelPerUnit = " << mHPixelPerUnit << ", mVPixelPerUnit = " << mVPixelPerUnit << ", mCanvasPixelPerUnit = " << mCanvasPixelPerUnit << ", mCanvasPixelWidth = "  << mCanvasPixelWidth << ", mCanvasPixelHeight = " << mCanvasPixelHeight  << std::endl;
     std::cout << "[WidgetStreamView2D] updateImage() " << std::endl;
 
-    assert(mFormat == hub::SensorSpec::Format::Y16);
-
-//    auto data = new unsigned char[512 * 512];
-    assert(m_imageSize == 512 * 512 * 2);
-    for (int i = 0; i <512; ++i) {
-        for (int j = 0; j <512; ++j) {
-            mData[(i * 512 + j) * 2] = i + j;
-            mData[(i * 512 + j) * 2 + 1] = i + j;
-        }
-    }
 
     if ( mData != nullptr ) {
         switch ( mFormat ) {
@@ -221,8 +205,8 @@ void WidgetStreamView2D::paintEvent( QPaintEvent* event ) {
     if ( mData != nullptr ) {
         const QPoint p = QPoint( 0, 0 );
 
-//        QImage image = m_image->scaled( QSize( mCanvasPixelWidth, mCanvasPixelHeight ) );
-        QImage image = m_image->scaled( QSize( 512, mCanvasPixelHeight ) );
+        QImage image = m_image->scaled( QSize( mCanvasPixelWidth, mCanvasPixelHeight ) );
+//        QImage image = m_image->scaled( QSize( 512, mCanvasPixelHeight ) );
 //        QImage image = *m_image;
         painter.drawImage( p, image );
     }

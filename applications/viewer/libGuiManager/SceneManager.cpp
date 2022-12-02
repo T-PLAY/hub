@@ -54,8 +54,8 @@ void SceneManager::addSensor(const std::string &streamName, const hub::SensorSpe
         std::cout << "[SceneManager] addSensor(" << streamName << ")" << std::endl;
 
     //    auto&& inputSensor     = std::make_unique<hub::InputSensor>( std::move( interfaceT ) );
-    const auto& sensorName = sensorSpec.m_sensorName;
-    const auto& metaData   = sensorSpec.m_metaData;
+    const auto& sensorName = sensorSpec.getSensorName();
+    const auto& metaData   = sensorSpec.getMetaData();
 
     const char* parentName = nullptr;
     if ( metaData.find( "parent" ) != metaData.end() ) {
@@ -71,7 +71,7 @@ void SceneManager::addSensor(const std::string &streamName, const hub::SensorSpe
                   << std::endl;
         for ( auto& pair : m_streamName2sensor ) {
             auto& sensor = *pair.second;
-            if ( sensor.m_sensorSpec.m_sensorName == parentName ) {
+            if ( sensor.m_sensorSpec.getSensorName() == parentName ) {
                 parentSensor = &sensor;
                 break;
             }
@@ -111,7 +111,7 @@ void SceneManager::addSensor(const std::string &streamName, const hub::SensorSpe
     for ( auto& pair : m_streamName2sensor ) {
         auto& sensor = *pair.second;
         //        const auto& inputSensor = sensor.m_inputSensor;
-        const auto& metaData = sensor.m_sensorSpec.m_metaData;
+        const auto& metaData = sensor.m_sensorSpec.getMetaData();
 
         const char* parentName = nullptr;
         if ( metaData.find( "parent" ) != metaData.end() ) {
