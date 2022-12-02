@@ -446,6 +446,11 @@ void Viewer::setAutoSync( bool newAutoSync ) {
     m_autoSync = newAutoSync;
 }
 
+bool Viewer::isConnected() const
+{
+    return m_serverConnected;
+}
+
 void Viewer::delStreamer( const std::string& streamId ) {
     assert( m_onDelStreamer );
     assert( m_streams.find( streamId ) != m_streams.end() );

@@ -43,6 +43,7 @@ class SRC_API Viewer
     const std::string& getIpv4() const;
     const int& getPort() const;
     void setAutoSync( bool newAutoSync );
+    bool isConnected() const;
 
     ////////////////////////////////////////////////////////////////////////////////
 

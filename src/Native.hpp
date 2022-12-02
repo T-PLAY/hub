@@ -35,6 +35,7 @@ extern "C"
     SRC_API void freeViewer( Viewer* viewer );
     SRC_API void viewer_setIpv4(Viewer * viewer, const char * ipv4);
     SRC_API void viewer_setPort(Viewer * viewer, int port);
+    SRC_API bool viewer_isConnected(Viewer * viewer);
 
     SRC_API void
     sensorSpec_getSensorName( const SensorSpec* sensorSpec, char* sensorName, int* strLen );
