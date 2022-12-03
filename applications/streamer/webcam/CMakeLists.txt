@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.8)
 
-project(webcam)
+project(app-streamer-webcam)
 
 set(WIN32_REQUIRED_LIBS)
 set(UNIX_REQUIRED_LIBS)

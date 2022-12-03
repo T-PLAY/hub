@@ -3,7 +3,7 @@ if(APPLE)
     cmake_policy(SET CMP0042 NEW)
 endif(APPLE)
 
-project(TexturedQuad VERSION 1.0.0)
+project(app-viewer-TexturedQuad VERSION 1.0.0)
 
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)

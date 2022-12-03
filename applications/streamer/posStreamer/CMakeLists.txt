@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.8)
 
-project(posStreamer)
+project(app-streamer-keyboard)
 
 set(WIN32_REQUIRED_LIBS)
 set(UNIX_REQUIRED_LIBS)

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.8)
 
-project(simulator)
+project(app-streamer-simulator)
 
 set(WIN32_REQUIRED_LIBS)
 set(UNIX_REQUIRED_LIBS)

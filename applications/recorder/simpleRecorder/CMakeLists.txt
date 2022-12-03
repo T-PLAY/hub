@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.8)
 
-project(simpleRecorder)
+project(app-recorder-simple)
 
 set(WIN32_REQUIRED_LIBS)
 set(UNIX_REQUIRED_LIBS)

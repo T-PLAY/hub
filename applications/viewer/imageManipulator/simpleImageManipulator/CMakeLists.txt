@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.8)
 
-project(simpleImageManipulator)
+project(app-viewer-simpleImageManipulator)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)

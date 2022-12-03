@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.8)
 
-project(simpleViewer)
+project(app-viewer-simple)
 
 file(GLOB_RECURSE sources *.cpp)
 file(GLOB_RECURSE headers *.h)

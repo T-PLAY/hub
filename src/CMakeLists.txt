@@ -16,6 +16,13 @@ else()
     target_compile_definitions(${PROJECT_NAME} PUBLIC -DSRC_EXPORTS)
 endif()
 
+
+if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+    target_compile_definitions(${PROJECT_NAME} PUBLIC -DDEBUG)
+else()
+    target_compile_definitions(${PROJECT_NAME} PUBLIC -DNDEBUG)
+endif()
+
 target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR})
 
 if(WIN32)
@@ -40,12 +47,3 @@ install(
     PATTERN "*.hpp")
 
 # set(CMAKE_CXX_STANDARD 14) #ULA-OP C++14 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-if(NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE "Debug")
-endif()
-if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
-    target_compile_definitions(${PROJECT_NAME} PUBLIC -DDEBUG)
-else()
-    target_compile_definitions(${PROJECT_NAME} PUBLIC -DNDEBUG)
-endif()

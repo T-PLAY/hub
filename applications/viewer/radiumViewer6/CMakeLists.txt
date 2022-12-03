@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.5)
 
 project(
-    radiumViewer6
+    app-viewer-radium
     VERSION 1.0
     LANGUAGES CXX)
 
