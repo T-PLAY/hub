@@ -22,7 +22,7 @@ if(HUB_APPLICATION_ENABLE_PATRIOT)
     add_subdirectory(patriot)
 endif()
 
-if(HUB_ENABLE_SCUS AND HUB_APPLICATION_ENABLE_DCMTK)
+if(HUB_APPLICATION_ENABLE_SCUS AND HUB_APPLICATION_ENABLE_DCMTK)
     add_subdirectory(testScus)
     add_subdirectory(simulator)
     add_subdirectory(simulatorOld)

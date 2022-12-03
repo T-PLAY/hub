@@ -115,7 +115,7 @@ class SRC_API SensorSpec
 
   public:
     static inline CONSTEXPR20 size_t computeAcquisitionSize( const Resolutions& resolutions ) noexcept;
-    static inline constexpr size_t computeAcquisitionSize( const Resolution& resolution ) noexcept;
+    static inline CONSTEXPR20 size_t computeAcquisitionSize( const Resolution& resolution ) noexcept;
     static inline constexpr int format2nByte( const Format& format ) noexcept;
     static inline constexpr bool isInterpolable( const Format& format ) noexcept;
 
@@ -142,7 +142,7 @@ class SRC_API SensorSpec
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
   private:
-    static inline constexpr size_t computeAcquisitionSize( Format format, const Dims& dims ) noexcept;
+    static inline CONSTEXPR20 size_t computeAcquisitionSize( Format format, const Dims& dims ) noexcept;
 
   private:
     //    static std::string m_sensorName2;
