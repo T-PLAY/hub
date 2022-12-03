@@ -18,7 +18,7 @@ if(HUB_ENABLE_APPLICATIONS)
     option(HUB_APPLICATION_ENABLE_PDI "Build PDI examples (depends of polhemus lib)" OFF)
     option(HUB_APPLICATION_ENABLE_KEYBOARD "Build keyboard streamer (depends of glm lib)" OFF)
     option(HUB_APPLICATION_ENABLE_DCMTK "Build Dcmtk examples and libs" OFF)
-    option(HUB_ENABLE_SCUS "Build Scus" OFF)
+    option(HUB_APPLICATION_ENABLE_SCUS "Build Scus" OFF)
 
 
     cmake_host_system_information(RESULT hostname QUERY HOSTNAME)

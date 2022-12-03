@@ -59,7 +59,7 @@ inline constexpr int SensorSpec::format2nByte(const Format &format) noexcept
     return s_format2nByte[static_cast<int>(format)];
 }
 
-inline constexpr size_t SensorSpec::computeAcquisitionSize( Format format, const Dims& dims ) noexcept {
+inline CONSTEXPR20 size_t SensorSpec::computeAcquisitionSize( Format format, const Dims& dims ) noexcept {
     return std::accumulate( dims.cbegin(), dims.cend(), 1, std::multiplies<int> {} ) *
             s_format2nByte[static_cast<int>( format )];
 }
@@ -72,7 +72,7 @@ inline size_t CONSTEXPR20 SensorSpec::computeAcquisitionSize( const Resolutions&
     return size;
 }
 
-inline constexpr size_t SensorSpec::computeAcquisitionSize( const Resolution& resolution ) noexcept {
+inline CONSTEXPR20 size_t SensorSpec::computeAcquisitionSize( const Resolution& resolution ) noexcept {
     const auto& dims   = resolution.first;
     const auto& format = resolution.second;
     return computeAcquisitionSize( format, dims );
