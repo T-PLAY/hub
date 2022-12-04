@@ -3,7 +3,6 @@
 #include <algorithm>
 #include <any>
 #include <map>
-#include <ranges>
 #include <string>
 #include <vector>
 #include <stdexcept>
@@ -11,6 +10,7 @@
 
 #include "Macros.hpp"
 #if CPLUSPLUS_VERSION == 20
+#include <ranges>
 #include "Map.hpp"
 #endif
 
