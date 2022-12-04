@@ -191,7 +191,7 @@
 #    define CPLUSPLUS_VERSION 14
 #    define CONSTEXPR17
 #    define CONSTEXPR20
-    #error "C++14 not supported"
+//    #error "C++14 not supported"
 #else
 #    error "C++ version " __cplusplus " not supported"
 #endif
