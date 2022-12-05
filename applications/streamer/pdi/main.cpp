@@ -76,16 +76,18 @@ int main( int argc, char* argv[] ) {
                     hub::SensorSpec sensorSpec( "Polhemus Patriot (sensor 1)",
                                                 { { { 1 }, hub::SensorSpec::Format::DOF6 } } );
                     outputSensors.push_back( std::make_unique<hub::OutputSensor>(
-                        sensorSpec, hub::io::OutputStream( sensorSpec.m_sensorName ) ) );
+                        sensorSpec, hub::io::OutputStream( sensorSpec.getSensorName() ) ) );
                     // outputSensors.push_back(std::make_unique<hub::OutputSensor>("Polhemus Patriot
                     // (confidence)", Stream::Format::DOF6, std::vector<int>({ 1 })));
-                    sensorSpec.m_sensorName = "Polhemus Patriot (sensor 2)";
+                    hub::SensorSpec sensorSpec2( "Polhemus Patriot (sensor 2)",
+                                                { { { 1 }, hub::SensorSpec::Format::DOF6 } } );
+//                    sensorSpec.m_sensorName = "Polhemus Patriot (sensor 2)";
                     outputSensors.push_back( std::make_unique<hub::OutputSensor>(
-                        sensorSpec, hub::io::OutputStream( sensorSpec.m_sensorName ) ) );
+                        sensorSpec2, hub::io::OutputStream( sensorSpec2.getSensorName() ) ) );
                     // outputSensors.push_back(std::make_unique<hub::OutputSensor>(g_probePoseSensorName,
                     // Stream::Format::DOF6, std::vector<int>({ 1 })));
                     constexpr int packetSize     = 8 + 12 + 16;
-                    const size_t acquisitionSize = outputSensors[0]->m_spec.m_acquisitionSize;
+                    const size_t acquisitionSize = outputSensors[0]->m_spec.getAcquisitionSize();
                     assert( packetSize ==
                             8 + acquisitionSize ); // header 8 bytes, frame count 4 bytes
 
