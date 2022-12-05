@@ -1,3 +1,12 @@
 
 CMakeLists.txt.user
-build/
+CMakeLists.txt.user.*
+build*/
+.vs/
+CMakeSettings.json
+hub-install/
+cpp.hint
+src/html/
+src/latex/
+out/
+data/
