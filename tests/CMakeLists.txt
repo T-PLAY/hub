@@ -36,3 +36,10 @@ add_custom_command(
     TARGET ${TARGET_NAME}
     POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${SRC_TARGET}> $<TARGET_FILE_DIR:${TARGET_NAME}>)
+
+
+enable_testing()
+add_test(NAME test-sensorSpec COMMAND test-sensorSpec)
+#add_test(NAME test COMMAND test-file)
+#add_test(test test-all)
+#add_test(NAME test COMMAND $<TARGET_FILE:test-all>)
