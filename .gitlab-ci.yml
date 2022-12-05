@@ -23,8 +23,11 @@ build:
   script:
     - mkdir build
     - cd build
-    - cmake -DCMAKE_BUILD_TYPE=Debug -DHUB_ENABLE_TESTS=ON ..
-    - cmake --build . --config Debug
+    - cmake -DCMAKE_BUILD_TYPE=Release -DHUB_ENABLE_TESTS=ON ..
+    - cmake --build . --config Release
+  cache:
+    paths:
+      - build/_deps/
   artifacts:
     expire_in: 2 hrs
     paths:
