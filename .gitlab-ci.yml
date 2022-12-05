@@ -3,17 +3,20 @@
 # This specific template is located at:
 # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/C++.gitlab-ci.yml
 
-# use the official gcc image, based on debian
-# can use verions as well, like gcc:5.2
-# see https://hub.docker.com/_/gcc/
+
+# using Radium development dedicated image
+image: stormirit/radium_dev:latest
+
+#https://docs.gitlab.com/ee/ci/yaml/#extends
+.branches_with_ci:
+  only:
+    - master
 
 stages:
   - build
 
-build:ubuntu:
+build:
   stage: build
-  tags:
-    - ubuntu
   before_script:
     - export PATH=$PATH:/opt/Qt/5.10.0/gcc_64/bin
   script:
