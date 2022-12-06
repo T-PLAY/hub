@@ -40,6 +40,8 @@ add_custom_command(
 
 enable_testing()
 add_test(NAME test-sensorSpec COMMAND test-sensorSpec)
+add_test(NAME test-file COMMAND test-file)
+add_test(NAME test-measures COMMAND test-measures)
 #add_test(NAME test COMMAND test-file)
 #add_test(test test-all)
 #add_test(NAME test COMMAND $<TARGET_FILE:test-all>)
