@@ -23,11 +23,11 @@ TEST_CASE( "Ram test" ) {
 
     std::cout << "outputStream start" << std::endl;
     INFO( "OutputStream" );
-    {
+//    {
 
         hub::OutputSensor outputSensor(
             { "sensorName", { { { 1 }, hub::Format::BGR8 } } },
-            hub::io::Ram( hub::io::Ram( cyclicBuff ) ) );
+            hub::io::Ram( cyclicBuff ) );
 
         auto& sensorSpec = outputSensor.m_spec;
         CHECK( sensorSpec.getAcquisitionSize() == 3 );
@@ -40,10 +40,10 @@ TEST_CASE( "Ram test" ) {
         for ( const auto& acq : acqs ) {
             outputSensor << acq;
         }
-    }
+//    }
     std::cout << "outputStream end ################################" << std::endl;
 
-    std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
+//    std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
 
     std::cout << "inputStream start" << std::endl;
     INFO( "InputStream" );
