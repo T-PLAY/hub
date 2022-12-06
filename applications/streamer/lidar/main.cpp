@@ -24,22 +24,22 @@ int main(int argc, char* argv[])
         try {
 #ifdef DEPTH_STREAM
             hub::OutputSensor depthStream(
-                { "L500 Depth Sensor (Depth)", { { { 640, 480 }, hub::SensorSpec::Format::Z16 } } },
+                { "L500 Depth Sensor (Depth)", { { { 640, 480 }, hub::Format::Z16 } } },
                 hub::io::OutputStream("L500 Depth Sensor (Depth)"));
 #endif
 
 #ifdef RGB_STREAM
-            //                hub::OutputSensor rgbStream("L500 RGB Camera", hub::SensorSpec::Format::RGB8, { 640, 480 });
+            //                hub::OutputSensor rgbStream("L500 RGB Camera", hub::Format::RGB8, { 640, 480 });
             hub::OutputSensor rgbStream(
-                { "L500 RGB Camera", { { { 640, 480 }, hub::SensorSpec::Format::RGB8 } } },
+                { "L500 RGB Camera", { { { 640, 480 }, hub::Format::RGB8 } } },
                 hub::io::OutputStream("L500 RGB Camera"));
 #endif
 
 #ifdef INFRARED_STREAM
             //                hub::OutputSensor infraredStream(
-            //                    "L500 Depth Sensor (Infrared)", hub::SensorSpec::Format::Y8, { 640, 480 });
+            //                    "L500 Depth Sensor (Infrared)", hub::Format::Y8, { 640, 480 });
             hub::OutputSensor infraredStream(
-                { "L500 Depth Sensor (Infrared)", { { { 640, 480 }, hub::SensorSpec::Format::Y8 } } },
+                { "L500 Depth Sensor (Infrared)", { { { 640, 480 }, hub::Format::Y8 } } },
                 hub::io::OutputStream("L500 Depth Sensor (Infrared)"));
 #endif
 
@@ -74,7 +74,7 @@ int main(int argc, char* argv[])
                 assert(depthSize == depthStream.m_spec.getAcquisitionSize());
                 depthStream << (hub::Acquisition { depth.get_frame_metadata(RS2_FRAME_METADATA_BACKEND_TIMESTAMP),
                                     depth.get_frame_metadata(RS2_FRAME_METADATA_TIME_OF_ARRIVAL) }
-                    << hub::Measure { (unsigned char*)depth.get_data(), depthSize });
+                                << hub::Measure { (unsigned char*)depth.get_data(), depthSize, {{640, 480}, hub::Format::Z16} });
 #endif
 
 #ifdef RGB_STREAM
@@ -84,7 +84,7 @@ int main(int argc, char* argv[])
                 rgbStream << (hub::Acquisition {
                                   color.get_frame_metadata(RS2_FRAME_METADATA_BACKEND_TIMESTAMP),
                                   color.get_frame_metadata(RS2_FRAME_METADATA_TIME_OF_ARRIVAL) }
-                    << hub::Measure { (unsigned char*)color.get_data(), colorSize });
+                              << hub::Measure { (unsigned char*)color.get_data(), colorSize, {{640, 480}, hub::Format::RGB8} });
 #endif
 
 #ifdef INFRARED_STREAM
@@ -94,7 +94,7 @@ int main(int argc, char* argv[])
                 infraredStream << (hub::Acquisition {
                                        ir.get_frame_metadata(RS2_FRAME_METADATA_BACKEND_TIMESTAMP),
                                        ir.get_frame_metadata(RS2_FRAME_METADATA_TIME_OF_ARRIVAL) }
-                    << hub::Measure { (unsigned char*)ir.get_data(), infraredSize });
+                    << hub::Measure { (unsigned char*)ir.get_data(), infraredSize, {{640, 480}, hub::Format::Y8}});
 #endif
 
                 ++iFrame;

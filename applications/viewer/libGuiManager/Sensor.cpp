@@ -116,7 +116,7 @@ Sensor::Sensor( const std::string& streamName,
     const auto& resolutions = sensorSpec.getResolutions();
 
     if (resolutions.size() == 2) {
-        if (resolutions.at(0).second == hub::SensorSpec::Format::DOF6) {
+        if (resolutions.at(0).second == hub::Format::DOF6) {
             m_iImage = 1;
         }
     }
@@ -146,8 +146,8 @@ Sensor::Sensor( const std::string& streamName,
                                    Qt::WindowTitleHint );
 
         subWindow->setWindowTitle( ( m_sensorSpec.getSensorName() + "   " +
-                                     hub::SensorSpec::dims2string( dims ) + "   " +
-                                     hub::SensorSpec::format2string( format ) )
+                                     hub::dims2string( dims ) + "   " +
+                                     hub::format2string( format ) )
                                        .c_str() );
         m_subWindows.push_back( subWindow );
 
@@ -167,15 +167,15 @@ Sensor::Sensor( const std::string& streamName,
             const auto& format = resolutions.at( 0 ).second;
 
             switch ( format ) {
-            case hub::SensorSpec::Format::DOF6:
-            case hub::SensorSpec::Format::MAT4:
+            case hub::Format::DOF6:
+            case hub::Format::MAT4:
                 //                m_component = new Dof6Component( *m_inputSensor, m_entity );
                 m_component = new Dof6Component( m_sensorSpec, m_entity );
                 break;
 
-            case hub::SensorSpec::Format::Y8:
-            case hub::SensorSpec::Format::Y16:
-            case hub::SensorSpec::Format::BGR8:
+            case hub::Format::Y8:
+            case hub::Format::Y16:
+            case hub::Format::BGR8:
                 //                m_component = new ScanComponent( *m_inputSensor, m_entity,
                 //                *m_engine, *m_viewer );
                 m_component = new ScanComponent( m_sensorSpec, m_entity, *m_engine, *m_viewer );
@@ -189,8 +189,8 @@ Sensor::Sensor( const std::string& streamName,
             const auto& format  = resolutions.at( 0 ).second;
             const auto& format2 = resolutions.at( 1 ).second;
 
-            assert( format == hub::SensorSpec::Format::DOF6 ||
-                    format2 == hub::SensorSpec::Format::DOF6 );
+            assert( format == hub::Format::DOF6 ||
+                    format2 == hub::Format::DOF6 );
 
             //            m_component = new ScanComponent( *m_inputSensor, m_entity, *m_engine,
             //            *m_viewer );
@@ -212,7 +212,7 @@ Sensor::Sensor( const std::string& streamName,
     m_items.append( new QStandardItem( streamName.c_str() ) );
     m_items.append( new QStandardItem( m_sensorSpec.getSensorName().c_str() ) );
     m_items.append(
-        new QStandardItem( hub::SensorSpec::resolutions2string( resolutions ).c_str() ) );
+        new QStandardItem( hub::resolutions2string( resolutions ).c_str() ) );
     m_items.append( new QStandardItem( std::to_string( m_sensorSpec.getAcquisitionSize() ).c_str() ) );
     m_itemFps = new QStandardItem( "0" );
     m_items.append( m_itemFps );

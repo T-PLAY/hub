@@ -51,7 +51,7 @@ int main(int argc, char* argv[])
     hub::Streamer streamer(hub::net::s_defaultServiceIp, port);
     streamer.addStream("ProceduralStreamer",
         { "ProceduralStreamer",
-            { { { width, height }, hub::SensorSpec::Format::Y8 } },
+            { { { width, height }, hub::Format::Y8 } },
             metaData });
 
     const size_t imgSize = width * height;
@@ -88,7 +88,7 @@ int main(int argc, char* argv[])
 
         streamer.newAcquisition("ProceduralStreamer",
             std::move(hub::Acquisition { timestampStart, timestampEnd }
-                << hub::Measure { data, imgSize }));
+                      << hub::Measure { data, imgSize, {{width, height}, hub::Format::Y8} }));
 
         std::this_thread::sleep_until(end);
     }

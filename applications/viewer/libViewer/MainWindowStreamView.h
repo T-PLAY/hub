@@ -16,7 +16,7 @@ class MainWindowStreamView : public QMainWindow
     MainWindowStreamView( const hub::InputSensor& inputStream, QWidget* parent = nullptr );
     ~MainWindowStreamView();
 
-    void setData( unsigned char* img_ptr, std::vector<int> dims, hub::SensorSpec::Format format );
+    void setData( unsigned char* img_ptr, std::vector<int> dims, hub::Format format );
 
   signals:
     void onCloseStreamViewSignal();

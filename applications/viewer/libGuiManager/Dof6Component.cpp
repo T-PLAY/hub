@@ -66,7 +66,7 @@ void Dof6Component::initialize() {
 void Dof6Component::update( const hub::Acquisition& acq ) {
     assert( acq.getMeasures().size() == 1 );
 
-    if ( m_format == hub::SensorSpec::Format::DOF6 ) {
+    if ( m_format == hub::Format::DOF6 ) {
 
         const hub::Dof6& dof6 = acq.getMeasures().at( 0 );
 
@@ -79,7 +79,7 @@ void Dof6Component::update( const hub::Acquisition& acq ) {
 
         m_entity->setTransform( TLocal );
     }
-    else if ( m_format == hub::SensorSpec::Format::MAT4 ) {
+    else if ( m_format == hub::Format::MAT4 ) {
 
         const hub::Measure& measure = acq.getMeasures().at( 0 );
         const auto& mat4 =

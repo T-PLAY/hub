@@ -68,8 +68,8 @@ int main( int argc, char* argv[] ) {
 #ifdef USE_RGBA
 
     hub::SensorSpec sensorSpec( "mri",
-                                { { { 1 }, hub::SensorSpec::Format::DOF6 },
-                                  { { sliceWidth, sliceHeight }, hub::SensorSpec::Format::RGBA8 } },
+                                { { { 1 }, hub::Format::DOF6 },
+                                  { { sliceWidth, sliceHeight }, hub::Format::RGBA8 } },
                                 std::move( metaData ) );
     const int volumeSize   = sliceSize * nSlices;
     const int textureSize  = sliceWidth * sliceHeight * 4;
@@ -92,8 +92,8 @@ int main( int argc, char* argv[] ) {
     const int textureSize       = sliceSize;
     hub::SensorSpec sensorSpec(
         "mri",
-        { { { 1 }, hub::SensorSpec::Format::DOF6 },
-          { { (int)sliceWidth, (int)sliceHeight }, hub::SensorSpec::Format::Y16 } },
+        { { { 1 }, hub::Format::DOF6 },
+          { { (int)sliceWidth, (int)sliceHeight }, hub::Format::Y16 } },
         std::move( metaData ) );
 #endif
 
@@ -103,7 +103,7 @@ int main( int argc, char* argv[] ) {
                                hub::net::ClientSocket( hub::net::s_defaultServiceIp, port ) ) );
     for ( int iImage = 0; iImage < nSlices; ++iImage ) {
         hub::Dof6 dof6( 0.0, iImage * sliceThickness, 0.0 );
-        hub::Measure image( &texturesData[textureSize * iImage], textureSize );
+        hub::Measure image( &texturesData[textureSize * iImage], textureSize, { { (int)sliceWidth, (int)sliceHeight }, hub::Format::Y16 } );
         outputSensor << ( hub::Acquisition { iImage, iImage } << std::move( dof6 )
                                                               << std::move( image ) );
     }
@@ -126,7 +126,7 @@ int main( int argc, char* argv[] ) {
 
         for ( int iImage = 0; iImage < nSlices; ++iImage ) {
             hub::Dof6 dof6( 0.0, iImage * sliceThickness, 0.0 );
-            hub::Measure image( &texturesData[textureSize * iImage], textureSize );
+            hub::Measure image( &texturesData[textureSize * iImage], textureSize, { { (int)sliceWidth, (int)sliceHeight }, hub::Format::Y16 } );
             outputSensor2 << ( hub::Acquisition { iImage, iImage } << std::move( dof6 )
                                                                    << std::move( image ) );
             std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
