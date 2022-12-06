@@ -51,6 +51,6 @@ test:
   
   script:
     - cd build/tests
-    - ctest
+    - ctest -V
 #    - ./runmytests.sh
 
