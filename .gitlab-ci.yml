@@ -25,14 +25,15 @@ build:
     - cd build
     - cmake -DCMAKE_BUILD_TYPE=Release -DHUB_ENABLE_TESTS=ON ..
     - cmake --build . --config Release
-  #cache:
-   # paths:
-    #  - build/_deps/
-  artifacts:
-    expire_in: 30 days
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
     paths:
       - build/_deps/
-      - build/
+#  artifacts:
+#    expire_in: 30 days
+#    paths:
+#      - build/_deps/
+#      - build/
 
 #  artifacts:
 #    paths:
