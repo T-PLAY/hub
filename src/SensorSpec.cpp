@@ -40,7 +40,7 @@ SensorSpec SensorSpec::operator+( const SensorSpec& sensorSpec ) const {
     Resolutions resolutions;
     SensorSpec::MetaData metaData;
     // todo
-    //    sensorName  = m_sensorName + " + " + sensorSpec.m_sensorName;
+    sensorName  = m_sensorName + " + " + sensorSpec.m_sensorName;
     resolutions = m_resolutions;
     resolutions.insert(
         resolutions.end(), sensorSpec.m_resolutions.begin(), sensorSpec.m_resolutions.end() );
