@@ -15,11 +15,11 @@ image: stormirit/radium_dev:latest
 stages:
   - build
   - test
-  
+
 cache:
     key: ${CI_COMMIT_REF_SLUG}
     paths:
-      - build/_deps/
+      - build/
 
 build:
   stage: build
