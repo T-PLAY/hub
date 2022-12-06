@@ -72,8 +72,8 @@ int main( int argc, char* argv[] ) {
 #ifdef USE_RGBA
 
     hub::SensorSpec sensorSpec( "mri",
-                                { { { 1 }, hub::SensorSpec::Format::DOF6 },
-                                  { { sliceWidth, sliceHeight }, hub::SensorSpec::Format::RGBA8 } },
+                                { { { 1 }, hub::Format::DOF6 },
+                                  { { sliceWidth, sliceHeight }, hub::Format::RGBA8 } },
                                 std::move( metaData ) );
     const int volumeSize   = sliceSize * nSlices;
     const int textureSize  = sliceWidth * sliceHeight * 4;
@@ -96,8 +96,8 @@ int main( int argc, char* argv[] ) {
     const int textureSize       = sliceSize;
     hub::SensorSpec sensorSpec(
         "mri",
-        { { { 1 }, hub::SensorSpec::Format::DOF6 },
-          { { (int)sliceWidth, (int)sliceHeight }, hub::SensorSpec::Format::Y16 } },
+        { { { 1 }, hub::Format::DOF6 },
+          { { (int)sliceWidth, (int)sliceHeight }, hub::Format::Y16 } },
         std::move( metaData ) );
 #endif
 
@@ -110,7 +110,7 @@ int main( int argc, char* argv[] ) {
     hub::OutputSensor outputSensor( sensorSpec, hub::io::File( std::move( recordFile ) ) );
     for ( int iImage = 0; iImage < nSlices; ++iImage ) {
         hub::Dof6 dof6( 0.0, iImage * sliceThickness, 0.0 );
-        hub::Measure image( &texturesData[textureSize * iImage], textureSize );
+        hub::Measure image( &texturesData[textureSize * iImage], textureSize, {{(int)sliceWidth, (int)sliceHeight}, hub::Format::Y16} );
         constexpr int period = 100'000; // 100 milliseconds for livestream
         hub::Acquisition acq { iImage * period, iImage * period };
         acq << std::move( dof6 ) << std::move( image );

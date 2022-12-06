@@ -20,11 +20,11 @@ class WidgetStreamView : public QWidget
     virtual void setData( unsigned char* img_ptr,
                           size_t size,
                           std::vector<int> dims,
-                          hub::SensorSpec::Format format ) = 0;
+                          hub::Format format ) = 0;
 
   protected:
   protected:
-    hub::SensorSpec::Format mFormat = hub::SensorSpec::Format::NONE;
+    hub::Format mFormat = hub::Format::NONE;
     unsigned char* mData            = nullptr;
 };
 
@@ -49,7 +49,7 @@ class WidgetStreamView2D : public WidgetStreamView
     void setData( unsigned char* img_ptr,
                   size_t size,
                   std::vector<int> dims,
-                  hub::SensorSpec::Format format ) override;
+                  hub::Format format ) override;
 
     void onPixelPerUnitChanged();
 
@@ -102,7 +102,7 @@ class WidgetStreamView1D : public WidgetStreamView
     void setData( unsigned char* img_ptr,
                   size_t size,
                   std::vector<int> dims,
-                  hub::SensorSpec::Format format ) override;
+                  hub::Format format ) override;
 
   protected:
   private:

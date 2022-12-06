@@ -119,7 +119,7 @@ int main( int argc, char* argv[] ) {
 
     hub::Streamer streamer( hub::net::s_defaultServiceIp, port );
     streamer.addStream( sensorName,
-                        { sensorName, { { { 1 }, hub::SensorSpec::Format::DOF6 } }, metaData } );
+                        { sensorName, { { { 1 }, hub::Format::DOF6 } }, metaData } );
 
     std::thread thread = std::thread( [&]() {
         while ( !s_exitApp ) {

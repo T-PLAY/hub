@@ -71,7 +71,7 @@ FormImageManipulator::~FormImageManipulator() {
 
 void FormImageManipulator::init() {
     ui->widgetStreamView_2->setData(
-        nullptr, 256 * 256, { 256, 256 }, hub::SensorSpec::Format::Y8 );
+        nullptr, 256 * 256, { 256, 256 }, hub::Format::Y8 );
 }
 
 void FormImageManipulator::onStreamViewInited() {

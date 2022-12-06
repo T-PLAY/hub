@@ -53,7 +53,7 @@ MainWindowStreamView::~MainWindowStreamView() {
 
 void MainWindowStreamView::setData( unsigned char* img_ptr,
                                     std::vector<int> dims,
-                                    hub::SensorSpec::Format format ) {
+                                    hub::Format format ) {
     ( static_cast<WidgetStreamView*>( ui->centralwidget ) )
         ->setData( img_ptr, 192 * 512, dims, format );
 }

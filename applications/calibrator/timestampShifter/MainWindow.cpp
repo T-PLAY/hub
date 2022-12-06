@@ -134,9 +134,11 @@ void MainWindow::updateLatency() {
 
         hub::Acquisition acq { acq2Start, acq2Start };
         if ( m_interpolate ) {
-            acq << hub::Measure { acqInterpolate.m_data, acqInterpolate.m_size };
+//            acq << acqInterpolate;
+//            acq << acqInterpolate.m
+            acq << hub::Measure { acqInterpolate.m_data, acqInterpolate.m_size, {{1}, hub::Format::DOF6} };
         }
-        else { acq << hub::Measure { dof6.m_data, dof6.m_size }; }
+        else { acq << hub::Measure { dof6.m_data, dof6.m_size, {{1}, hub::Format::DOF6} }; }
         acq << acq2.getMeasures();
         *m_outputSensor << acq;
     }
