@@ -31,7 +31,7 @@ build:
   artifacts:
     expire_in: 30 days
     paths:
-      #- build/_deps/
+      - build/_deps/
       - build/
 
 #  artifacts:
