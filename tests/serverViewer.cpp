@@ -27,7 +27,7 @@ TEST_CASE( "Server test : viewer" ) {
             data[i] = iAcq;
         }
         acqs.emplace_back( iAcq, iAcq );
-        acqs.back() << hub::Measure( data, dataSize );
+        acqs.back() << hub::Measure( data, dataSize, {{1}, hub::Format::BGR8} );
     }
 
     std::cout << "[Test] ############################### server start" << std::endl;
@@ -54,7 +54,7 @@ TEST_CASE( "Server test : viewer" ) {
                 CHECK( inputSensorSpec.getResolutions()[0].first.size() == 2 );
                 CHECK( inputSensorSpec.getResolutions()[0].first.at( 0 ) == width );
                 CHECK( inputSensorSpec.getResolutions()[0].first.at( 1 ) == height );
-                CHECK( inputSensorSpec.getResolutions()[0].second == hub::SensorSpec::Format::BGR8 );
+                CHECK( inputSensorSpec.getResolutions()[0].second == hub::Format::BGR8 );
             }
             std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
             std::cout << "[Test] ############################### onNewStreamer end" << std::endl;
@@ -86,7 +86,7 @@ TEST_CASE( "Server test : viewer" ) {
         {
             std::cout << "[Test] ############################### outputSensor start" << std::endl;
             hub::OutputSensor outputSensor(
-                { "sensorName", { { { width, height }, hub::SensorSpec::Format::BGR8 } } },
+                { "sensorName", { { { width, height }, hub::Format::BGR8 } } },
                 hub::io::OutputStream( "stream", hub::net::ClientSocket( ipv4, port ) ) );
             std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
         }

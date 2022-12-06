@@ -83,9 +83,10 @@ class SRC_API Interface
     void read( Acquisition& acquisition) const = delete;
     void read( Measure& measure) const = delete;
 
-    Measure getMeasure() const;
+//    Measure getMeasure() const;
     SensorSpec getSensorSpec() const;
-    virtual Acquisition getAcquisition( int acquisitionSize ) const;
+//    virtual Acquisition getAcquisition( int acquisitionSize ) const;
+    virtual Acquisition getAcquisition( const SensorSpec & sensorSpec ) const;
 
     static std::string anyValue2string( const std::any& any );
     static const std::string& anyType2string( const std::any& any );

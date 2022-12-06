@@ -24,7 +24,7 @@ TEST_CASE( "Server test : sync" ) {
             data[i] = iAcq * 2;
         }
         acqs.emplace_back( iAcq * 2, iAcq * 2 );
-        acqs.back() << hub::Measure( data, dataSize );
+        acqs.back() << hub::Measure( data, dataSize, {{3}, hub::Format::BGR8} );
     }
     std::vector<hub::Acquisition> acqs2;
     for ( int iAcq2 = 0; iAcq2 < nAcqs; ++iAcq2 ) {
@@ -33,7 +33,7 @@ TEST_CASE( "Server test : sync" ) {
             data[i] = iAcq2 * 10;
         }
         acqs2.emplace_back( iAcq2 * 10, iAcq2 * 10 );
-        acqs2.back() << hub::Measure( data, dataSize );
+        acqs2.back() << hub::Measure( data, dataSize, {{3}, hub::Format::BGR8} );
     }
 
     std::cout << "[Test] ############################### server start" << std::endl;
@@ -47,7 +47,7 @@ TEST_CASE( "Server test : sync" ) {
     {
         std::cout << "[Test] ############################### outputStream start" << std::endl;
         hub::OutputSensor outputSensor(
-            { "sensorName", { { { 3 }, hub::SensorSpec::Format::BGR8 } } },
+            { "sensorName", { { { 3 }, hub::Format::BGR8 } } },
             hub::io::OutputStream( "stream", hub::net::ClientSocket( ipv4, port ) ) );
 
         auto& outputSensorSpec = outputSensor.m_spec;
@@ -56,12 +56,12 @@ TEST_CASE( "Server test : sync" ) {
         CHECK( outputSensorSpec.getResolutions().size() == 1 );
         CHECK( outputSensorSpec.getResolutions()[0].first.size() == 1 );
         CHECK( outputSensorSpec.getResolutions()[0].first.at( 0 ) == 3 );
-        CHECK( outputSensorSpec.getResolutions()[0].second == hub::SensorSpec::Format::BGR8 );
+        CHECK( outputSensorSpec.getResolutions()[0].second == hub::Format::BGR8 );
         std::cout << "[Test] outputStream end ---------------------------------" << std::endl;
 
         std::cout << "[Test] ############################### outputStream2 start" << std::endl;
         hub::OutputSensor outputSensor2(
-            { "sensorName2", { { { 3 }, hub::SensorSpec::Format::BGR8 } } },
+            { "sensorName2", { { { 3 }, hub::Format::BGR8 } } },
             hub::io::OutputStream( "master", hub::net::ClientSocket( ipv4, port ) ) );
 
         auto& outputSensorSpec2 = outputSensor2.m_spec;
@@ -70,7 +70,7 @@ TEST_CASE( "Server test : sync" ) {
         CHECK( outputSensorSpec2.getResolutions().size() == 1 );
         CHECK( outputSensorSpec2.getResolutions()[0].first.size() == 1 );
         CHECK( outputSensorSpec2.getResolutions()[0].first.at( 0 ) == 3 );
-        CHECK( outputSensorSpec2.getResolutions()[0].second == hub::SensorSpec::Format::BGR8 );
+        CHECK( outputSensorSpec2.getResolutions()[0].second == hub::Format::BGR8 );
         std::cout << "[Test] outputStream2 end ---------------------------------" << std::endl;
 
         std::cout << "[Test] ############################### inputStream start" << std::endl;
@@ -83,7 +83,7 @@ TEST_CASE( "Server test : sync" ) {
         CHECK( inputSensorSpec.getResolutions().size() == 1 );
         CHECK( inputSensorSpec.getResolutions()[0].first.size() == 1 );
         CHECK( inputSensorSpec.getResolutions()[0].first.at( 0 ) == 3 );
-        CHECK( inputSensorSpec.getResolutions()[0].second == hub::SensorSpec::Format::BGR8 );
+        CHECK( inputSensorSpec.getResolutions()[0].second == hub::Format::BGR8 );
         std::cout << "[Test] inputStream end ---------------------------------" << std::endl;
 
         std::cout << "[Test] ############################### inputStream2 start" << std::endl;
@@ -96,7 +96,7 @@ TEST_CASE( "Server test : sync" ) {
         CHECK( inputSensorSpec2.getResolutions().size() == 1 );
         CHECK( inputSensorSpec2.getResolutions()[0].first.size() == 1 );
         CHECK( inputSensorSpec2.getResolutions()[0].first.at( 0 ) == 3 );
-        CHECK( inputSensorSpec2.getResolutions()[0].second == hub::SensorSpec::Format::BGR8 );
+        CHECK( inputSensorSpec2.getResolutions()[0].second == hub::Format::BGR8 );
         std::cout << "[Test] inputStream2 end ---------------------------------" << std::endl;
 
         std::cout << "[Test] ############################### inputStream3 start" << std::endl;
@@ -109,7 +109,7 @@ TEST_CASE( "Server test : sync" ) {
         CHECK( inputSensorSpec3.getResolutions().size() == 1 );
         CHECK( inputSensorSpec3.getResolutions()[0].first.size() == 1 );
         CHECK( inputSensorSpec3.getResolutions()[0].first.at( 0 ) == 3 );
-        CHECK( inputSensorSpec3.getResolutions()[0].second == hub::SensorSpec::Format::BGR8 );
+        CHECK( inputSensorSpec3.getResolutions()[0].second == hub::Format::BGR8 );
         std::cout << "[Test] inputStream2 end ---------------------------------" << std::endl;
 
         std::cout << "[Test] ############################### send acquisitions" << std::endl;

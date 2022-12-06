@@ -5,81 +5,13 @@
 #include <list>
 
 #include "Macros.hpp"
-#include "SensorSpec.hpp"
+//#include "SensorSpec.hpp"
+#include "Measure.hpp"
 
 namespace hub {
 
 // enum class Measurement { NONE, IMAGE, DOF6, COUNT };
 
-class SRC_API Measure
-{
-
-  public:
-    Measure( const unsigned char* const data, uint64_t size );
-    Measure( unsigned char* data, uint64_t size );
-    Measure( Measure&& measure );
-    Measure( const Measure& )            = delete;
-    Measure& operator=( const Measure& ) = delete;
-    Measure& operator=( Measure&& )      = delete;
-
-    ~Measure();
-
-    Measure clone() const;
-
-    bool isInterpolable() const;
-    static Measure slerp( const Measure& left, const Measure& right, double t );
-
-    const unsigned char* const m_data;
-    const uint64_t m_size; // compatibility 32/64 bits
-
-    bool operator==( const Measure& measure ) const;
-    bool operator!=( const Measure& measure ) const;
-    SRC_API friend std::ostream& operator<<( std::ostream& os, const Measure& measure );
-
-    const hub::SensorSpec::Resolution &getResolution() const;
-
-protected:
-    bool m_ownData = false;
-    bool m_isMoved = false;
-    hub::SensorSpec::Resolution m_resolution;
-
-  private:
-    friend class InputSensor;
-};
-using Measures = std::vector<Measure>;
-
-class SRC_API Dof6 : public Measure
-{
-  public:
-    Dof6( const Measure& measure );
-    Dof6( float x  = 0.0,
-          float y  = 0.0,
-          float z  = 0.0,
-          float w0 = 1.0,
-          float w1 = 0.0,
-          float w2 = 0.0,
-          float w3 = 0.0 );
-    // private:
-    const float m_x = 0.0, m_y = 0.0, m_z = 0.0;                // vec3
-    const float m_w0 = 1.0, m_w1 = 0.0, m_w2 = 0.0, m_w3 = 0.0; // quat : w, x, y, z
-
-    static Dof6 slerp( const Dof6& left, const Dof6& right, long long t );
-
-    SRC_API friend std::ostream& operator<<( std::ostream& os, const Dof6& dof6 );
-
-  private:
-};
-
-class Mat4 : public Measure
-{
-  public:
-    Mat4( const float* array );
-};
-
-// class Image : public Measure
-//{
-
-//};
 
 // measure_tag<Dof6> = SensorSpec::
 // template <typename T>
@@ -118,10 +50,22 @@ class SRC_API Acquisition
     bool operator==( const Acquisition& acq ) const;
     bool operator!=( const Acquisition& acq ) const;
 
+//    template <class Measure>
     Acquisition& operator<<( Measure&& measure );
+
+//    void addMeasure( Measure&& measure );
+
+//    template <class... Args>
+//    Acquisition& operator<<( Args&&... args );
+
     Acquisition& operator<<( const Measures& measure );
 
-    void addMeasure( unsigned char * data, uint64_t size);
+    template <class... Args>
+    void emplaceMeasure( Args&&... args );
+
+//    template <class ResolutionT>
+//    void addMeasure(unsigned char * data, uint64_t size, ResolutionT &&resolution);
+
 //    template<typename... Values>
 //    void add(Values...);
 
@@ -145,6 +89,50 @@ class SRC_API Acquisition
 
     friend class InputSensor;
 };
+
+//template <class... Args>
+//Acquisition& Acquisition::operator<<( Args&&... args ) {
+//    addMeasure(args...);
+
+////    static_assert(sizeof...(args) == 3);
+//////    static_assert(std::is_base_of<std::decay_t<hub::Measure>,std::decay_t<Args>>::value,
+//////                     "must be the same as Measure");
+//////    m_size += measure.m_size;
+////    m_measures.emplace_back( std::forward<Args>( args )... );
+////    m_size += m_measures.back().m_size;
+////    m_measures.push_back( std::move( measure ) );
+
+//    return *this;
+//}
+
+template <class... Args>
+void Acquisition::emplaceMeasure( Args&&... args ) {
+    static_assert(sizeof...(args) == 3);
+//    this << args;
+    m_measures.emplace_back( std::forward<Args>( args )... );
+    m_size += m_measures.back().m_size;
+}
+
+//template <class Measure>
+//Acquisition& Acquisition::operator<<( Measure&& measure ) {
+//    static_assert(std::is_base_of<std::decay_t<hub::Measure>,std::decay_t<Measure>>::value,
+//                     "must be the same as Measure");
+//    m_size += measure.m_size;
+//    m_measures.emplace_back( std::forward<Measure>( measure ) );
+////    m_measures.push_back( std::move( measure ) );
+//    return *this;
+//}
+
+//template <class ResolutionT>
+//void Acquisition::addMeasure(unsigned char* data, uint64_t size, ResolutionT &&resolution ) {
+//    m_size += size;
+//    static_assert(std::is_same<std::decay_t<Resolution>,std::decay_t<ResolutionT>>::value,
+//                     "must be the same as Resolution");
+
+//    //    m_measures.push_back( std::move( measure ) );
+////    m_measures.emplace_back( data, size, std::move(resolution) );
+//    m_measures.emplace_back( data, size, std::forward<ResolutionT>(resolution) );
+//}
 
 // template <>
 // inline const Dof6& Acquisition::get<Dof6>() const {

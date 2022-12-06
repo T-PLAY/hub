@@ -86,7 +86,7 @@ StreamerClient::StreamerClient( Server& server, int iClient, hub::net::ClientSoc
     std::cout << headerMsg() << "sensor name:'" << sensorSpec.getSensorName() << "'" << std::endl;
     std::cout << headerMsg() << "acquisitionSize:" << acquisitionSize << std::endl;
     std::cout << headerMsg()
-              << "resolutions:" << hub::SensorSpec::resolutions2string( sensorSpec.getResolutions() )
+              << "resolutions:" << hub::resolutions2string( sensorSpec.getResolutions() )
               << std::endl;
 
     const auto& metaData = sensorSpec.getMetaData();

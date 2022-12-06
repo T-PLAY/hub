@@ -24,7 +24,7 @@ TEST_CASE( "Server test : direct stream" ) {
         for ( int i = 0; i < dataSize; ++i ) {
             data[i] = iAcq + i;
         }
-        acqs.emplace_back( iAcq + 1, iAcq + 2 ) << hub::Measure( data, dataSize );
+        acqs.emplace_back( iAcq + 1, iAcq + 2 ) << hub::Measure( data, dataSize, {{1}, hub::Format::BGR8} );
     }
 
     std::cout << "[Test] ############################### server start" << std::endl;
@@ -39,7 +39,7 @@ TEST_CASE( "Server test : direct stream" ) {
             std::cout << "[Test] ############################### outputStream start" << std::endl;
 
             hub::OutputSensor outputSensor(
-                { "sensorName", { { { 3 }, hub::SensorSpec::Format::BGR8 } } },
+                { "sensorName", { { { 3 }, hub::Format::BGR8 } } },
                 hub::io::OutputStream( "stream", hub::net::ClientSocket( ipv4, port ) ) );
 
             auto& outputSensorSpec = outputSensor.m_spec;
@@ -48,7 +48,7 @@ TEST_CASE( "Server test : direct stream" ) {
             CHECK( outputSensorSpec.getResolutions().size() == 1 );
             CHECK( outputSensorSpec.getResolutions()[0].first.size() == 1 );
             CHECK( outputSensorSpec.getResolutions()[0].first.at( 0 ) == 3 );
-            CHECK( outputSensorSpec.getResolutions()[0].second == hub::SensorSpec::Format::BGR8 );
+            CHECK( outputSensorSpec.getResolutions()[0].second == hub::Format::BGR8 );
             std::cout << "[Test] outputStream end ---------------------------------" << std::endl;
 
             {
@@ -63,7 +63,7 @@ TEST_CASE( "Server test : direct stream" ) {
                 CHECK( inputSensorSpec.getResolutions().size() == 1 );
                 CHECK( inputSensorSpec.getResolutions()[0].first.size() == 1 );
                 CHECK( inputSensorSpec.getResolutions()[0].first.at( 0 ) == 3 );
-                CHECK( inputSensorSpec.getResolutions()[0].second == hub::SensorSpec::Format::BGR8 );
+                CHECK( inputSensorSpec.getResolutions()[0].second == hub::Format::BGR8 );
 
                 std::cout << "[Test] ############################### send acquisitions"
                           << std::endl;

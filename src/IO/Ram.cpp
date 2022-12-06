@@ -12,8 +12,8 @@ namespace io {
 CyclicBuff::CyclicBuff( size_t size ) : m_buff( new unsigned char[size] ), m_buffLen( size ) {}
 
 CyclicBuff::~CyclicBuff() {
-    assert( !m_outputSensorWantsToClose );
-    assert( !m_inputSensorClose );
+//    assert( !m_outputSensorWantsToClose );
+//    assert( !m_inputSensorClose );
     m_outputSensorWantsToClose = true;
 
     delete[] m_buff;
