@@ -21,16 +21,17 @@ build:
 #  before_script:
 #    - export PATH=$PATH:/opt/Qt/5.10.0/gcc_64/bin
   script:
-    - mkdir build
+    - mkdir -p build
     - cd build
     - cmake -DCMAKE_BUILD_TYPE=Release -DHUB_ENABLE_TESTS=ON ..
     - cmake --build . --config Release
-  cache:
-    paths:
-      - build/_deps/
+  #cache:
+   # paths:
+    #  - build/_deps/
   artifacts:
-    expire_in: 2 hrs
+    expire_in: 30 days
     paths:
+      #- build/_deps/
       - build/
 
 #  artifacts:
