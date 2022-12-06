@@ -24,7 +24,7 @@ TEST_CASE( "Server test : sync" ) {
             data[i] = iAcq * 2;
         }
         acqs.emplace_back( iAcq * 2, iAcq * 2 );
-        acqs.back() << hub::Measure( data, dataSize, {{3}, hub::Format::BGR8} );
+        acqs.back() << hub::Measure( (const unsigned char*)data, dataSize, {{3}, hub::Format::BGR8} );
     }
     std::vector<hub::Acquisition> acqs2;
     for ( int iAcq2 = 0; iAcq2 < nAcqs; ++iAcq2 ) {
@@ -33,7 +33,7 @@ TEST_CASE( "Server test : sync" ) {
             data[i] = iAcq2 * 10;
         }
         acqs2.emplace_back( iAcq2 * 10, iAcq2 * 10 );
-        acqs2.back() << hub::Measure( data, dataSize, {{3}, hub::Format::BGR8} );
+        acqs2.back() << hub::Measure( (const unsigned char*)data, dataSize, {{3}, hub::Format::BGR8} );
     }
 
     std::cout << "[Test] ############################### server start" << std::endl;

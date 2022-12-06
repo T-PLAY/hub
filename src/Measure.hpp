@@ -72,7 +72,7 @@ Measure::Measure( const unsigned char* const data,
     memcpy( (unsigned char*)m_data, data, m_size );
     assert( m_size > 0 );
     assert( m_data != nullptr );
-    assert(size == computeAcquisitionSize(resolution));
+    assert(size == computeAcquisitionSize(m_resolution));
 }
 
 template <class ResolutionT>
@@ -92,7 +92,7 @@ Measure::Measure( unsigned char* data, uint64_t size, ResolutionT&& resolution )
     assert( data != nullptr );
     assert( m_size > 0 );
     assert( m_data != nullptr );
-    assert(size == computeAcquisitionSize(resolution));
+    assert(size == computeAcquisitionSize(m_resolution));
 }
 
 const inline Resolution& Measure::getResolution() const {

@@ -27,7 +27,7 @@ TEST_CASE( "Server test : viewer" ) {
             data[i] = iAcq;
         }
         acqs.emplace_back( iAcq, iAcq );
-        acqs.back() << hub::Measure( data, dataSize, {{1}, hub::Format::BGR8} );
+        acqs.back() << hub::Measure( (const unsigned char*)data, dataSize, {{width, height}, hub::Format::BGR8} );
     }
 
     std::cout << "[Test] ############################### server start" << std::endl;
@@ -88,7 +88,7 @@ TEST_CASE( "Server test : viewer" ) {
             hub::OutputSensor outputSensor(
                 { "sensorName", { { { width, height }, hub::Format::BGR8 } } },
                 hub::io::OutputStream( "stream", hub::net::ClientSocket( ipv4, port ) ) );
-            std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+            std::this_thread::sleep_for( std::chrono::milliseconds( 500 ) );
         }
         std::cout << "[Test] ############################### outputSensor end" << std::endl;
         std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
