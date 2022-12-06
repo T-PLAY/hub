@@ -37,8 +37,8 @@ SensorSpec::SensorSpec( const SensorNameType& sensorName,
 SensorSpec SensorSpec::operator+( const SensorSpec& sensorSpec ) const {
     //    SensorSpec ret;
     std::string sensorName;
-    hub::SensorSpec::Resolutions resolutions;
-    hub::SensorSpec::MetaData metaData;
+    Resolutions resolutions;
+    SensorSpec::MetaData metaData;
     // todo
     //    sensorName  = m_sensorName + " + " + sensorSpec.m_sensorName;
     resolutions = m_resolutions;
@@ -74,48 +74,12 @@ SensorSpec& SensorSpec::operator+=( const SensorSpec& sensorSpec ) {
     return *this;
 }
 
-std::string SensorSpec::dims2string( const Dims& dims ) {
-    std::string str = "";
-    for ( unsigned int i = 0; i < dims.size(); ++i ) {
-        str += std::to_string( dims[i] );
-        if ( i != dims.size() - 1 ) { str += " x "; }
-    }
-    return str;
-}
-
-static std::string format2stringArray[static_cast<int>( SensorSpec::Format::COUNT )] = {
-    "NONE",        "Z16",   "DISPARITY16", "XYZ32F",     "YUYV",          "RGB8",
-    "BGR8",        "RGBA8", "BGRA8",       "Y8",         "Y16",           "RAW10",
-    "RAW16",       "RAW8",  "UYVY",        "MOTION_RAW", "MOTION_XYZ32F", "GPIO_RAW",
-    "DISPARITY32", "6DOF",  "Y10BPACK",    "DISTANCE",   "MJPEG",         "Y8I",
-    "Y12I",        "INZI",  "INVI",        "W10",        "Z16H",          "FG",
-    "Y411",        "MAT4",
-};
-
-std::string SensorSpec::format2string( const Format& format ) {
-    return format2stringArray[(int)format];
-}
 
 // constexpr int SensorSpec::format2nByte(const Format &format)
 //{
 //     return s_format2nByte[static_cast<int>(format)];
 // }
 
-std::string SensorSpec::resolutions2string( const Resolutions& resolutions ) {
-    const int size  = static_cast<int>( resolutions.size() );
-    std::string str = "";
-    if ( size > 1 ) str += "[";
-    for ( int i = 0; i < size; ++i ) {
-        const auto& dims   = resolutions[i].first;
-        const auto& format = resolutions[i].second;
-        if ( size > 1 ) str += "{";
-        str += dims2string( dims ) + " : " + format2string( format );
-        if ( size > 1 ) str += "}";
-        if ( i != size - 1 ) str += ", ";
-    }
-    if ( size > 1 ) str += "]";
-    return str;
-}
 
 std::string SensorSpec::metaData2string( const SensorSpec::MetaData& metaData, bool expand ) {
     std::string str = "";
@@ -150,14 +114,10 @@ std::string SensorSpec::metaData2string( const std::pair<std::string, std::any>&
     return str;
 }
 
-std::ostream& operator<<( std::ostream& os, const SensorSpec::Format& format ) {
-    os << format2stringArray[(int)format] << " (byte:" << s_format2nByte[(int)format] << ")";
-    return os;
-}
 
 std::ostream& operator<<( std::ostream& os, const SensorSpec& sensorSpec ) {
     os << sensorSpec.m_sensorName << ", "
-       << SensorSpec::resolutions2string( sensorSpec.m_resolutions ) << ", "
+       << resolutions2string( sensorSpec.m_resolutions ) << ", "
        << SensorSpec::metaData2string( sensorSpec.m_metaData ) << ", "
        << sensorSpec.m_acquisitionSize;
     return os;
@@ -173,7 +133,7 @@ std::ostream& operator<<( std::ostream& os, const SensorSpec& sensorSpec ) {
 //     return m_metaData;
 // }
 
-// hub::SensorSpec::Resolutions SensorSpec::getResolutions() const
+// hub::Resolutions SensorSpec::getResolutions() const
 //{
 //     return m_resolutions;
 // }

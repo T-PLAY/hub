@@ -9,11 +9,11 @@
 TEST_CASE( "SensorSpec test" ) {
 
     hub::SensorSpec::MetaData metaData;
-    hub::SensorSpec::Format format = hub::SensorSpec::Format::BGR8;
-    hub::SensorSpec::Dims dims     = { 1 };
-    hub::SensorSpec::Resolutions resolutions { { dims, format } };
+    hub::Format format = hub::Format::BGR8;
+    hub::Dims dims     = { 1 };
+    hub::Resolutions resolutions { { dims, format } };
     hub::SensorSpec sensorSpec {
-        "sensorName", { { dims, hub::SensorSpec::Format::BGR8 } }, metaData };
+        "sensorName", { { dims, hub::Format::BGR8 } }, metaData };
 
     CHECK(sensorSpec.getSensorName() == "sensorName");
     CHECK(sensorSpec.getAcquisitionSize() == 3);

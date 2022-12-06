@@ -196,24 +196,24 @@ namespace io {
 //        sensorSpec.m_acquisitionSize = SensorSpec::computeAcquisitionSize(sensorSpec.m_resolutions);
 //    }
 
-    Measure Interface::getMeasure() const
-    {
-        assert(isOpen());
+//    Measure Interface::getMeasure() const
+//    {
+//        assert(isOpen());
 
-#ifdef DEBUG_IOSTREAM
-        std::cout << "[Interface] getMeasure() : start" << std::endl;
-#endif
+//#ifdef DEBUG_IOSTREAM
+//        std::cout << "[Interface] getMeasure() : start" << std::endl;
+//#endif
 
-        uint64_t size; // compatibility 32/64 bits
-        read(size);
-        unsigned char* data = new unsigned char[size];
-        read(data, size);
+//        uint64_t size; // compatibility 32/64 bits
+//        read(size);
+//        unsigned char* data = new unsigned char[size];
+//        read(data, size);
 
-        Measure&& measure { data, size };
-        //    delete [] data;
+//        Measure&& measure { data, size };
+//        //    delete [] data;
 
-        return std::move(measure);
-    }
+//        return std::move(measure);
+//    }
 
     SensorSpec Interface::getSensorSpec() const
     {
@@ -227,7 +227,7 @@ namespace io {
 //        read(sensorSpec);
 
         std::string sensorName;
-        hub::SensorSpec::Resolutions resolutions;
+        Resolutions resolutions;
         hub::SensorSpec::MetaData metaData;
         read(sensorName);
         read(resolutions);
@@ -238,7 +238,8 @@ namespace io {
         return SensorSpec(std::move(sensorName), std::move(resolutions), std::move(metaData));
     }
 
-    Acquisition Interface::getAcquisition(int acquisitionSize) const
+    Acquisition Interface::getAcquisition(const SensorSpec &sensorSpec) const
+//    Acquisition Interface::getAcquisition(int acquisitionSize) const
     {
         assert(isOpen());
 
@@ -257,6 +258,9 @@ namespace io {
         read(nMeasures);
         assert(nMeasures > 0);
 
+        const auto & resolutions = sensorSpec.getResolutions();
+        assert(resolutions.size() == nMeasures);
+
         for (int iMeasure = 0; iMeasure < nMeasures; ++iMeasure) {
 //            acq << Interface::getMeasure();
             uint64_t size; // compatibility 32/64 bits
@@ -264,11 +268,19 @@ namespace io {
             unsigned char* data = new unsigned char[size];
             read(data, size);
 
-            acq.addMeasure(data, size);
+//             Measure measure {data, size, resolutions.at(iMeasure)};
+
+//            acq.op(data, size, resolutions.at(iMeasure));
+//            acq << Measure(data, size, resolutions.at(iMeasure));
+//            acq << (data, size, resolutions.at(iMeasure));
+//            Acquisition::operator<<(acq, data, size, resolutions.at(iMeasure));
+//            acq << measure;
+
+            acq.emplaceMeasure(data, size, resolutions.at(iMeasure));
             //    acq << { data, size};
         }
 
-        assert(acquisitionSize == acq.getSize());
+        assert(sensorSpec.getAcquisitionSize() == acq.getSize());
         //    assert( nMeasures == 0 || acquisitionSize == acq.getSize() );
 
         return std::move(acq);

@@ -123,13 +123,16 @@ bool viewer_isConnected(Viewer *viewer)
 
 void sensorSpec_getSensorName( const SensorSpec* sensorSpec, char* sensorName, int* strLen ) {
     *strLen = sensorSpec->getSensorName().size();
+#if CPLUSPLUS_VERSION == 20
+    memcpy( sensorName, sensorSpec->getSensorName().data(), *strLen + 1 );
+#else
     memcpy( sensorName, sensorSpec->getSensorName().c_str(), *strLen + 1 );
-//    memcpy( sensorName, sensorSpec->getSensorName().data(), *strLen + 1 );
+#endif
     sensorName[*strLen] = 0;
 }
 
 int sensorSpec_getResolutionSize( const SensorSpec* sensorSpec, int iResolution ) {
-    return SensorSpec::computeAcquisitionSize( sensorSpec->getResolutions().at( iResolution ) );
+    return computeAcquisitionSize( sensorSpec->getResolutions().at( iResolution ) );
 }
 
 int sensorSpec_getResolutionsSize( const SensorSpec* sensorSpec ) {
@@ -157,7 +160,7 @@ int sensorSpec_getDimension( const SensorSpec* sensorSpec, int iResolution, int 
 }
 
 void sensorSpec_getResolutionsStr( const SensorSpec* sensorSpec, char* resolutionsStr ) {
-    const auto& resolutionsString = SensorSpec::resolutions2string( sensorSpec->getResolutions() );
+    const auto& resolutionsString = resolutions2string( sensorSpec->getResolutions() );
     const int len                 = resolutionsString.size();
     memcpy( resolutionsStr, resolutionsString.c_str(), len + 1 );
     resolutionsStr[len] = 0;

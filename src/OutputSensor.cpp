@@ -20,7 +20,7 @@ void OutputSensor::operator<<( const Acquisition& acquisition ) const {
     const auto& measures    = acquisition.getMeasures();
     assert( resolutions.size() == measures.size() );
     for ( int i = 0; i < resolutions.size(); ++i ) {
-        assert( SensorSpec::computeAcquisitionSize( resolutions.at( i ) ) ==
+        assert( computeAcquisitionSize( resolutions.at( i ) ) ==
                 measures.at( i ).m_size );
     }
 
