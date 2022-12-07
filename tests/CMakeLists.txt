@@ -3,14 +3,14 @@ cmake_minimum_required(VERSION 3.5)
 project(tests LANGUAGES CXX)
 
 include(FetchContent)
-
 FetchContent_Declare(
     Catch2
     GIT_REPOSITORY https://github.com/catchorg/Catch2.git
     GIT_TAG v3.0.1 # or a later release
     GIT_PROGRESS TRUE)
-
 FetchContent_MakeAvailable(Catch2)
+
+find_package(Catch2 REQUIRED)
 
 file(GLOB_RECURSE TEST_SRC *.cpp)
 
@@ -21,7 +21,7 @@ foreach(name ${TEST_SRC_BASENAME})
     get_filename_component(basename ${name} NAME)
     set(TARGET_NAME test-${basename})
     add_executable(${TARGET_NAME} ${name}.cpp)
-    target_link_libraries(${TARGET_NAME} Catch2WithMain ${SRC_TARGET} libServer)
+    target_link_libraries(${TARGET_NAME} Catch2::Catch2WithMain ${SRC_TARGET} libServer)
 #    set_property(TARGET ${TARGET_NAME} PROPERTY CXX_STANDARD 17)
     set_property(TARGET ${TARGET_NAME} PROPERTY CXX_STANDARD ${CMAKE_CXX_STANDARD})
     set_property(TARGET ${TARGET_NAME} PROPERTY CXX_EXTENSIONS OFF)
@@ -29,7 +29,7 @@ foreach(name ${TEST_SRC_BASENAME})
 endforeach()
 
 add_executable(test-all ${TEST_SRC})
-target_link_libraries(test-all Catch2WithMain ${SRC_TARGET} libServer)
+target_link_libraries(test-all Catch2::Catch2WithMain ${SRC_TARGET} libServer)
 set_property(TARGET test-all PROPERTY CXX_STANDARD ${CMAKE_CXX_STANDARD})
 set_property(TARGET test-all PROPERTY CXX_EXTENSIONS OFF)
 add_custom_command(
