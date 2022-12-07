@@ -12,6 +12,7 @@ if(HUB_BUILD_STATIC_LIBRARY)
     add_library(${PROJECT_NAME} STATIC ${sources} ${headers})
     target_compile_definitions(${PROJECT_NAME} PUBLIC -DSRC_STATIC)
 else()
+#    message(FATAL_ERROR "hello")
     add_library(${PROJECT_NAME} SHARED ${sources} ${headers})
     target_compile_definitions(${PROJECT_NAME} PUBLIC -DSRC_EXPORTS)
 endif()
@@ -44,6 +45,8 @@ install(
     DIRECTORY ${SRC_DIR}
     DESTINATION include
     FILES_MATCHING
-    PATTERN "*.hpp")
+    PATTERN "*.hpp"
+    PATTERN "*.inl" 
+    )
 
 # set(CMAKE_CXX_STANDARD 14) #ULA-OP C++14 set(CMAKE_CXX_STANDARD_REQUIRED ON)

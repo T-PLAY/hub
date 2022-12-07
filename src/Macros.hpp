@@ -158,12 +158,13 @@
 // Dll import/export.
 // ----------------------------------------------------------------------------
 
-//#define SRC_STATIC
+//#define SRC_STATIC // force static link for external use
 //#undef SRC_EXPORTS
 
 #ifdef OS_WINDOWS
 #    if defined SRC_STATIC
-#        define SRC_API
+        #define SRC_API
+		#undef SRC_EXPORTS
 #    elif defined SRC_EXPORTS
 #        define SRC_API __declspec( dllexport )
 #    else
