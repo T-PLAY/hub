@@ -79,7 +79,8 @@ TEST_CASE( "Server test : speed test" ) {
 
         std::cout << "Mega byte wrote : " << bytes / 1000'000 << " Mo" << std::endl;
         std::cout << "Mega byte per second : " << megaBytesPerSeconds << " Mo/s" << std::endl;
-        CHECK( megaBytesPerSeconds >= 1000 );
+        CHECK( megaBytesPerSeconds >= 900 ); // server IRIT
+        // CHECK( megaBytesPerSeconds >= 2000 ); // home linux
     }
     std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
 
