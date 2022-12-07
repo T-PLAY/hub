@@ -74,13 +74,13 @@ int main( int argc, char* argv[] ) {
                 try {
                     std::vector<std::unique_ptr<hub::OutputSensor>> outputSensors;
                     hub::SensorSpec sensorSpec( "Polhemus Patriot (sensor 1)",
-                                                { { { 1 }, hub::SensorSpec::Format::DOF6 } } );
+                                                { { { 1 }, hub::Format::DOF6 } } );
                     outputSensors.push_back( std::make_unique<hub::OutputSensor>(
                         sensorSpec, hub::io::OutputStream( sensorSpec.getSensorName() ) ) );
                     // outputSensors.push_back(std::make_unique<hub::OutputSensor>("Polhemus Patriot
                     // (confidence)", Stream::Format::DOF6, std::vector<int>({ 1 })));
                     hub::SensorSpec sensorSpec2( "Polhemus Patriot (sensor 2)",
-                                                { { { 1 }, hub::SensorSpec::Format::DOF6 } } );
+                                                { { { 1 }, hub::Format::DOF6 } } );
 //                    sensorSpec.m_sensorName = "Polhemus Patriot (sensor 2)";
                     outputSensors.push_back( std::make_unique<hub::OutputSensor>(
                         sensorSpec2, hub::io::OutputStream( sensorSpec2.getSensorName() ) ) );
@@ -156,7 +156,7 @@ int main( int argc, char* argv[] ) {
                                 // Try to get a frame of a depth image
                                 *outputSensors[ucSensor - 1]
                                     << ( hub::Acquisition { timestampStart, timestampEnd }
-                                         << hub::Measure { data, acquisitionSize } );
+                                         << hub::Measure { data, acquisitionSize, {{1}, hub::Format::DOF6} } );
 
                                 i += packetSize;
                             }

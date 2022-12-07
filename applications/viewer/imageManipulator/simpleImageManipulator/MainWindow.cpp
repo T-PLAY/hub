@@ -55,7 +55,7 @@ MainWindow::MainWindow( QWidget* parent ) : QMainWindow( parent ), ui( new Ui::M
     constexpr int sliceHeight = sliceSideSize;
     constexpr auto format     = hub::Format::RGB8;
 //    constexpr auto format     = hub::Format::BGR8;
-    constexpr auto nChannel   = hub::SensorSpec::format2nByte( format );
+    constexpr auto nChannel   = hub::Format2nByte( format );
     assert(nChannel == 3);
     constexpr auto sliceSize  = sliceWidth * sliceHeight * nChannel;
     unsigned char data[sliceSize];
