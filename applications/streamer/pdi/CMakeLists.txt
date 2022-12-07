@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.8)
 
-project(pdiStreamer)
+project(app-streamer-pdi)
 
 set(UNIX_INCLUDE_DIRS)
 set(WIN32_REQUIRED_LIBS)

@@ -28,12 +28,12 @@ int main(int argc, char* argv[])
 
     hub::SensorSpec::MetaData metaData;
     //    metaData["parent"]             = "Keyboard";
-    metaData["parent"] = "Polhemus Patriot (sensor 2)";
 //    metaData["parent"] = "calibrator";
-    float scanWidth = 50.0;
-    float scanDepth = 35.0;
+    const float scanWidth = 50.0;
+    const float scanDepth = 35.0;
     metaData["scanWidth"] = (double)scanWidth;
     metaData["scanDepth"] = (double)scanDepth;
+    metaData["parent"] = "Polhemus Patriot (sensor 2)";
 //    const float localTransform[16] = {
 //        17.5, 		0.0, 	0.0, 	0.0,
 //        0.0, 			0.0, 	100.0, 	0.0,
@@ -49,9 +49,11 @@ int main(int argc, char* argv[])
     metaData["transform"] = localTransform;
 
     hub::Streamer streamer(hub::net::s_defaultServiceIp, port);
+    const auto imageResolution = hub::Resolution {{width, height}, hub::Format::Y8};
     streamer.addStream("ProceduralStreamer",
         { "ProceduralStreamer",
-            { { { width, height }, hub::Format::Y8 } },
+//            { { { width, height }, hub::Format::Y8 } },
+                          {imageResolution},
             metaData });
 
     const size_t imgSize = width * height;
@@ -88,7 +90,8 @@ int main(int argc, char* argv[])
 
         streamer.newAcquisition("ProceduralStreamer",
             std::move(hub::Acquisition { timestampStart, timestampEnd }
-                      << hub::Measure { data, imgSize, {{width, height}, hub::Format::Y8} }));
+//                      << hub::Measure { data, imgSize, {{width, height}, hub::Format::Y8} }));
+                                            << hub::Measure { data, imgSize, imageResolution }));
 
         std::this_thread::sleep_until(end);
     }
