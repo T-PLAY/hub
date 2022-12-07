@@ -2,15 +2,21 @@ cmake_minimum_required(VERSION 3.5)
 
 project(tests LANGUAGES CXX)
 
-include(FetchContent)
-FetchContent_Declare(
-    Catch2
-    GIT_REPOSITORY https://github.com/catchorg/Catch2.git
-    GIT_TAG v3.0.1 # or a later release
-    GIT_PROGRESS TRUE)
-FetchContent_MakeAvailable(Catch2)
+find_package(Catch2)
+#message("catch2 found : " ${Catch2_FOUND})
 
-find_package(Catch2 REQUIRED)
+if (NOT ${Catch2_FOUND})
+        include(FetchContent)
+        FetchContent_Declare(
+            Catch2
+            GIT_REPOSITORY https://github.com/catchorg/Catch2.git
+            GIT_TAG v3.0.1 # or a later release
+            GIT_PROGRESS TRUE)
+        FetchContent_MakeAvailable(Catch2)
+endif()
+
+#find_package(Catch2 REQUIRED)
+
 
 file(GLOB_RECURSE TEST_SRC *.cpp)
 

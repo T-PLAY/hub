@@ -82,7 +82,7 @@ void WidgetStreamView2D::setData( unsigned char* img_ptr,
     m_imageSize = size;
 
     const auto nChannel = hub::format2nByte(format);
-//    constexpr auto nChannel = hub::SensorSpec::format2nByte(hub::SensorSpec::Y16);
+//    constexpr auto nChannel = hub::Format2nByte(hub::SensorSpec::Y16);
 
     assert( dims.size() == 2 );
     assert(size == dims.at(0) * dims.at(1) * nChannel);
