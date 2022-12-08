@@ -127,7 +127,7 @@ void WidgetStreamView2D::onPixelPerUnitChanged() {
 
 void WidgetStreamView2D::updateImage() {
 //    std::cout << "[WidgetStreamView2D] updateImage() " << "mImagePixelWidth = " << mImagePixelWidth << ", mImagePixelHeight = " << mImagePixelHeight << ", mImageUnitWidth = " << mImageUnitWidth << ", mImageUnitHeight = " << mImageUnitHeight << ", mRatio = " << mRatio << ", mHPixelPerUnit = " << mHPixelPerUnit << ", mVPixelPerUnit = " << mVPixelPerUnit << ", mCanvasPixelPerUnit = " << mCanvasPixelPerUnit << ", mCanvasPixelWidth = "  << mCanvasPixelWidth << ", mCanvasPixelHeight = " << mCanvasPixelHeight  << std::endl;
-    std::cout << "[WidgetStreamView2D] updateImage() " << std::endl;
+//    std::cout << "[WidgetStreamView2D] updateImage() " << std::endl;
 
 
     if ( mData != nullptr ) {

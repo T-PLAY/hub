@@ -94,11 +94,11 @@ StreamerClient::StreamerClient( Server& server, int iClient, hub::net::ClientSoc
         std::cout << headerMsg() << "metaData: " << hub::SensorSpec::metaData2string( pair )
                   << std::endl;
     }
-    //    if ( metaData.find( "type" ) != metaData.end() ) {
-    //        std::cout << headerMsg() << "type detected : record stream" << std::endl;
-    //        const char* type = std::any_cast<const char*>( metaData.at( "type" ) );
-    //        if ( strcmp( type, "record" ) == 0 ) { m_isRecordStream = true; }
-    //    }
+        if ( metaData.find( "type" ) != metaData.end() ) {
+            std::cout << headerMsg() << "type detected : record stream" << std::endl;
+            const char* type = std::any_cast<const char*>( metaData.at( "type" ) );
+            if ( strcmp( type, "record" ) == 0 ) { m_isRecordStream = true; }
+        }
         if ( metaData.find( "parent" ) != metaData.end() ) {
             m_parent = std::any_cast<const char*>( metaData.at( "parent" ) );
             std::cout << headerMsg() << "parent : '" << m_parent << "'" << std::endl;
@@ -276,8 +276,9 @@ StreamerClient::StreamerClient( Server& server, int iClient, hub::net::ClientSoc
                         // unable to synchronize master acq, these acquisitions are too far in the
                         // future compare to acq
                         if ( syncAcqs.begin()->m_start >= masterAcq.m_start ) {
-                            std::cout << "[StreamerClient] unable to sync future acqs "
-                                      << syncAcqs.begin()->m_start - masterAcq.m_start << std::endl;
+                            std::cout << "[StreamerClient] unable to sync future acqs, syncAcq.start - masterAcq = "
+                                      << syncAcqs.begin()->m_start - masterAcq.m_start << ", syncAcq : " << *syncAcqs.begin() << ", masterAcq : "  << masterAcq
+                                      << std::endl;
                             //                            if ( isLooping ) {
                             //                                break;
                             //                            } // no match possible after loop with
@@ -384,7 +385,7 @@ StreamerClient::StreamerClient( Server& server, int iClient, hub::net::ClientSoc
                     }
                     m_mtxSyncViewers.unlock();
 
-                    if ( nMergedSyncViewers > 0 ) {
+                    if ( m_isRecordStream && nMergedSyncViewers > 0 ) {
                         saveNewAcq( syncViewerName, std::move( mergedAcq ) );
                     }
                     //                    m_lastUpdateAcqDate[syncViewerName] =
@@ -395,7 +396,8 @@ StreamerClient::StreamerClient( Server& server, int iClient, hub::net::ClientSoc
 
                 m_server.newAcquisition( this, masterAcq );
 
-                if ( masterAcq.getMeasures().size() == 1 ) {
+//                if ( masterAcq.getMeasures().size() == 1 ) {
+                if (! m_isRecordStream) {
 //                    auto & lastAcq = m_lastAcq[""];
 //                    lastAcq.reset();
 //                    lastAcq. = std::move(masterAcq);
@@ -640,6 +642,8 @@ StreamerClient::getSaveAcqs( const std::string& streamName ) const {
 }
 
 void StreamerClient::saveNewAcq( const std::string& streamName, hub::Acquisition&& newAcq ) {
+    assert(m_isRecordStream);
+
     auto newAcqPtr = std::make_shared<hub::Acquisition>( std::move( newAcq ) );
 
     auto& saveAcqs = m_streamName2saveAcqs[streamName];

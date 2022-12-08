@@ -50,7 +50,7 @@ class SceneManager : public QObject
 
     QStandardItemModel m_sensorModel;
     QTableView* m_sensorsView = nullptr;
-    bool m_enableTrace        = true;
+    bool m_enableTrace        = false;
     bool m_enableLive         = true;
     double m_tune0            = 0.25;
     double m_tune1            = 1.0;
