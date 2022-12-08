@@ -70,7 +70,7 @@ class StreamerClient : public Client
 
 //    std::lock_guard<std::mutex> m_guard;
     //    static std::mutex s_mtxCout;
-    //    bool m_isRecordStream = false;
+        bool m_isRecordStream = false;
 
   public:
     const std::list<StreamViewerClient*> & getStreamViewers() const; // use by server

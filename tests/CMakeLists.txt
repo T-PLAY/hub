@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.5)
 
 project(tests LANGUAGES CXX)
 
-find_package(Catch2)
+find_package(Catch2 QUIET)
 #message("catch2 found : " ${Catch2_FOUND})
 
 if (NOT ${Catch2_FOUND})

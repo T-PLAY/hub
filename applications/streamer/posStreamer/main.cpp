@@ -111,7 +111,8 @@ int main( int argc, char* argv[] ) {
     int port = hub::net::s_defaultServicePort;
     if ( argc == 2 ) { port = atoi( argv[1] ); }
 
-    char sensorName[80] = "Keyboard";
+//    char sensorName[80] = "Keyboard";
+    char sensorName[80] = "Polhemus Patriot (sensor 2)";
 
     std::cout << "sensor name = '" << sensorName << "'" << std::endl;
 
@@ -126,7 +127,8 @@ int main( int argc, char* argv[] ) {
             const auto start = std::chrono::high_resolution_clock::now();
             hub::Dof6 dof6( s_pos.x, s_pos.y, s_pos.z, s_quat.w, s_quat.x, s_quat.y, s_quat.z );
 
-#if defined( WIN32 )
+
+#if defined( WIN32 ) || defined( DEBUG )
             const auto maxFps = 70.0;
 #else
             const auto maxFps = 60.0;

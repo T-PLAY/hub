@@ -74,9 +74,10 @@ int main(int argc, char* argv[])
         }
 
         //		    data[i] = (i / height + dec) % 256;
-#if defined(WIN32)
+#if defined( WIN32 ) || defined( DEBUG )
         //        const auto maxFps = 60.0;
-        const auto maxFps = 1.0;
+//        const auto maxFps = 2.0;
+        const auto maxFps = 50.0;
 #else
         const auto maxFps = 40.0;
 #endif
@@ -87,6 +88,7 @@ int main(int argc, char* argv[])
                                          .count();
         const auto& timestampEnd = std::chrono::duration_cast<std::chrono::microseconds>(end.time_since_epoch()).count();
         ++dec;
+
 
         streamer.newAcquisition("ProceduralStreamer",
             std::move(hub::Acquisition { timestampStart, timestampEnd }
