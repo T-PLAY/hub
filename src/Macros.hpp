@@ -163,6 +163,7 @@
 
 #ifdef OS_WINDOWS
 #    if defined SRC_STATIC
+        // todo fix unable to link static lib from external project, only single dll (import) is possible
         #define SRC_API
 		#undef SRC_EXPORTS
 #    elif defined SRC_EXPORTS

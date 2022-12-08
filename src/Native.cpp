@@ -97,7 +97,8 @@ Viewer* createViewer( onNewStreamerFunc onNewStreamer,
                                  onServerDisconnectedCpp,
                                  onNewAcquisitionCpp,
                                  ipv4,
-                                 port );
+                                 port,
+                                 false );
     return viewer;
 }
 
