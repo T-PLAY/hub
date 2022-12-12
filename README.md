@@ -29,7 +29,8 @@ hub::OutputSensor outputSensor( sensorSpec, hub::io::OutputStream( "streamName",
 std::fstream outputFile( "filepath", std::ios::out | std::ios::binary | std::ios::trunc ); // use file
 hub::OutputSensor outputSensor2( sensorSpec, hub::io::File( std::move( outputFile ) ) );
 
-while ( 1 ) {}
+while ( 1 ) {
+    // get data and optional timestamp from the sensor api
     [start, end] = sensorAPI.getTimestamps(); // correspond of the acquisition date in microseconds
     [data, size] = sensorAPI.getData(); // get data from the sensor
 
@@ -59,11 +60,11 @@ if ( resolutions.size() == 1 ) {
         const auto& height = dims.at ( 1 );
 
         while ( 1 ) {
-            // get acquisition from the opening stream and perform something with the sensor data 
+            // receive data
             auto acq = inputSensor.getAcquisition();
-            const auto & measure = acq.getMeasures().at( 0 );
 
-            // draw image with acquisition data
+            // draw image
+            const auto & measure = acq.getMeasures().at( 0 );
             ClientApp.draw2DImage( measure.m_data, measure.m_size, width, height, ClientApp.Format.BGR888 );
         }
     }
