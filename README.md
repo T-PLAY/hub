@@ -20,7 +20,7 @@ const hub::Resolution imageResolution { { width, height }, hub::Format::BGR8 };
 hub::MetaData metaData;
 metaData["fov"] = 60.0;
 metaData["iso"] = 200;
-metaData["location"] = "here";
+metaData["date"] = "UTC+now";
 const hub::SensorSpec sensorSpec( "sensorName", { imageResolution }, metaData );
 
 hub::net::ClientSocket sock { "ipV4Server", port }; // use stream network with running server
@@ -30,8 +30,8 @@ std::fstream outputFile( "filepath", std::ios::out | std::ios::binary | std::ios
 hub::OutputSensor outputSensor2( sensorSpec, hub::io::File( std::move( outputFile ) ) );
 
 while ( 1 ) {}
-    [start, end] = sensorAPI.getTimestamps(); // correspond of the acquisition date in microseconds.
-    [data, size] = sensorAPI.getData(); // get data from the sensor.
+    [start, end] = sensorAPI.getTimestamps(); // correspond of the acquisition date in microseconds
+    [data, size] = sensorAPI.getData(); // get data from the sensor
 
     // send data
     outputSensor << ( hub::Acquisition { start, end } << hub::Measure { data, size, imageResolution } );
