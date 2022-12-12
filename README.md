@@ -16,23 +16,19 @@ cmake --build build
 ### Streamer
 ```cpp
 // init output sensor
-const hub::Resolution imageResolution { { width, height }, hub::Format::BGR8 };
-hub::MetaData metaData;
-metaData["fov"] = 60.0;
-metaData["iso"] = 200;
-metaData["date"] = "UTC+now";
+const hub::Resolution imageResolution { { imageWidth, imageHeight }, hub::Format::BGR8 };
+hub::SensorSpec::MetaData metaData;
+metaData["fov"]  = 60.0;
+metaData["iso"]  = 200;
+metaData["date"] = "now";
 const hub::SensorSpec sensorSpec( "sensorName", { imageResolution }, metaData );
 
-hub::net::ClientSocket sock { "ipV4Server", port }; // use stream network with running server
-hub::OutputSensor outputSensor( sensorSpec, hub::io::OutputStream( "streamName", std::move ( sock ) ) );
-
-std::fstream outputFile( "filepath", std::ios::out | std::ios::binary | std::ios::trunc ); // use file
-hub::OutputSensor outputSensor2( sensorSpec, hub::io::File( std::move( outputFile ) ) );
+hub::OutputSensor outputSensor {
+    sensorSpec, hub::io::OutputStream { "streamName", hub::net::ClientSocket { "serverIp", serverPort } } };
 
 while ( 1 ) {
-    // get data and optional timestamp from the sensor api
-    [start, end] = sensorAPI.getTimestamps(); // correspond of the acquisition date in microseconds
-    [data, size] = sensorAPI.getData(); // get data from the sensor
+    auto [start, end] = sensorAPI::getTimestamp();
+    auto [data, size] = sensorAPI::getData();
 
     // send data
     outputSensor << ( hub::Acquisition { start, end } << hub::Measure { data, size, imageResolution } );
@@ -42,30 +38,26 @@ while ( 1 ) {
 ### Viewer
 ```cpp
 // init input sensor
-hub::net::ClientSocket sock { "ipV4Server", port }; // use stream network with running server
-hub::InputSensor inputSensor( hub::io::InputStream( "streamName", "", std::move( sock ) ) );
+hub::InputSensor inputSensor {
+    hub::io::InputStream { "streamName", "", hub::net::ClientSocket { "serverIp", serverPort } } };
 
-std::fstream inputFile( "filepath", std::ios::in | std::ios::binary ); // use file
-hub::InputSensor inputSensor2( hub::io::File( std::move( inputFile ) ) );
-
-// A resolutions size strictly greater than 1 corresponds to sensors that measuring information at the same time with similar 
-// acquisition times or may correspond to a synchronization of different sensor streams that is proposed by our server.
 const auto& resolutions = inputSensor.m_spec.getResolutions();
 if ( resolutions.size() == 1 ) {
     const auto& [dims, format] = resolutions.at( 0 );
 
-    // get acquisition only if client application is able to use compatible data format and dimension of data.
+    // if compatible resolution for the client application
     if ( dims.size() == 2 && format == hub::Format::BGR8 ) {
-        const auto& width = dims.at( 0 );
-        const auto& height = dims.at ( 1 );
+        const auto& imageWidth  = dims.at( 0 );
+        const auto& imageHeight = dims.at( 1 );
 
         while ( 1 ) {
             // receive data
             auto acq = inputSensor.getAcquisition();
+            const auto& measure = acq.getMeasures().at( 0 );
 
             // draw image
-            const auto & measure = acq.getMeasures().at( 0 );
-            ClientApp.draw2DImage( measure.m_data, measure.m_size, width, height, ClientApp.Format.BGR888 );
+            clientApp::drawImage(
+                measure.m_data, measure.m_size, imageWidth, imageHeight, clientApp::Format::BGR888 );
         }
     }
 }
