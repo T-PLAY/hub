@@ -51,6 +51,8 @@ static void sigHandler( int sig ) {
     exit( 0 );
 };
 
+int g_reverses[2] = {1, 1};
+
 int main( int argc, char* argv[] ) {
     signal( SIGINT, sigHandler );
 #ifdef SIGBREAK
@@ -69,6 +71,8 @@ int main( int argc, char* argv[] ) {
     else {
         if ( !StartCont() ) {}
         else {
+
+            HWND mainWindow = GetForegroundWindow();
 
             while ( true ) { // each server connect
                 try {
@@ -130,15 +134,17 @@ int main( int argc, char* argv[] ) {
                                         .count();
 
                                 float* poses = (float*)data;
+                                // scale pose
                                 for ( int i = 0; i < 3; ++i ) {
-                                    if ( ucSensor == 1 ) {
-                                        poses[i] =
-                                            10.0f * poses[i]; // convert centimeters to millimeters
-                                    }
-                                    else if ( ucSensor == 2 ) {
-                                        poses[i] =
-                                            10.0f * poses[i]; // convert centimeters to millimeters
-                                    }
+                                    poses[i] = g_reverses[ucSensor - 1] * 10.0f * poses[i]; // convert centimeters to millimeters
+//                                    if ( ucSensor == 1 ) {
+//                                        poses[i] =
+//                                            g_reverses[0] * 10.0f * poses[i]; // convert centimeters to millimeters
+//                                    }
+//                                    else if ( ucSensor == 2 ) {
+//                                        poses[i] =
+//                                            g_reverses[1] * 10.0f * poses[i]; // convert centimeters to millimeters
+//                                    }
                                 }
 
                                 // float* translation = (float*)data;
@@ -166,6 +172,23 @@ int main( int argc, char* argv[] ) {
 
                         const auto maxFps = 60;
                         const auto end = start + std::chrono::nanoseconds( 1'000'000'000 / maxFps );
+
+                        HWND activeWindow = GetForegroundWindow();
+                        if ( activeWindow == mainWindow ) {
+                            if ( GetKeyState( VK_RIGHT ) & 0x8000 ) {
+                                g_reverses[0] = 1;
+                            }
+                            if ( GetKeyState( VK_LEFT ) & 0x8000 ) {
+                                g_reverses[0] = -1;
+                            }
+                            if ( GetKeyState( VK_UP ) & 0x8000 ) {
+                                g_reverses[1] = 1;
+                            }
+                            if ( GetKeyState( VK_DOWN ) & 0x8000 ) {
+                                g_reverses[1] = -1;
+                            }
+                        }
+
                         while ( std::chrono::high_resolution_clock::now() < end )
                             ;
 
