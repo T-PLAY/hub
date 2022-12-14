@@ -44,7 +44,7 @@ int main(int argc, char* argv[])
         scanDepth / 2.0f, 		0.0, 				0.0, 	0.0,
         0.0, 					0.0, 				-1.0, 	0.0,
         0.0, 					scanWidth / 2.0f, 	0.0, 	0.0,
-        295, 					0.0, 				8.0, 	1.0
+        295 + scanDepth / 2.0f + 2.5f, 5.0f, 				8.0 - 3.0, 	1.0
     };
     metaData["transform"] = localTransform;
 
@@ -76,8 +76,8 @@ int main(int argc, char* argv[])
         //		    data[i] = (i / height + dec) % 256;
 #if defined( WIN32 ) || defined( DEBUG )
         //        const auto maxFps = 60.0;
-//        const auto maxFps = 2.0;
-        const auto maxFps = 50.0;
+        const auto maxFps = 2.0;
+//        const auto maxFps = 50.0;
 #else
         const auto maxFps = 40.0;
 #endif
