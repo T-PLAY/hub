@@ -6,7 +6,32 @@
 #include "InputSensor.hpp"
 #include "Net/ClientSocket.hpp"
 
-#define DEBUG_VIEWER
+//#define DEBUG_VIEWER
+
+// show log message from native
+
+//#ifndef INTERNAL_BUILD
+
+#ifdef DEBUG_MSG
+#undef DEBUG_MSG
+#endif
+#define DEBUG_MSG( _params )               \
+        do {                               \
+            if ( m_onLogMessage ) { \
+            std::stringstream _sstr; \
+            _sstr << _params; \
+            m_onLogMessage(_sstr.str().c_str()); \
+            } else { \
+                std::cout << _params << std::endl; \
+            } \
+        } while ( false ); \
+
+//#endif
+
+//        }
+//            m_onLogMessage(_sstr.str().c_str()); \
+//        m_onLogMessage(_sstr.str().c_str()); \
+//#define DEBUG_MSG( str ) m_onLogMessage((str).c_str())
 
 namespace hub {
 
@@ -18,7 +43,10 @@ Viewer::Viewer(
     std::function<void( const char* streamName, const hub::Acquisition& )> onNewAcquisition,
     const std::string& ipv4,
     int port,
-    bool autoSync ) :
+    bool autoSync,
+            std::function<void( const char* logMessage )>
+                onLogMessage
+        ) :
 
     m_onNewStreamer( onNewStreamer ),
     m_onDelStreamer( onDelStreamer ),
@@ -28,7 +56,8 @@ Viewer::Viewer(
     //    m_ipv4( ipv4 ),
     //    m_port( port ),
     m_sock( ipv4, port, false ),
-    m_autoSync( autoSync )
+    m_autoSync( autoSync ),
+    m_onLogMessage(onLogMessage)
 //    m_ipv4Regex( std::regex( "^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$" ) ) {
 {
 
@@ -59,7 +88,7 @@ Viewer::Viewer(
                         // server checking if client is connected (only way to know if client viewer
                         // still alive) nothing to do
                         //#ifdef DEBUG_VIEWER
-                        //                        DEBUG_MSG( "[Viewer] receive ping " );
+//                        DEBUG_MSG( "[Viewer] receive ping " );
                         //#endif
                     } break;
 
@@ -100,10 +129,10 @@ Viewer::Viewer(
                             }
                         }
 
-#ifdef DEBUG_VIEWER
+//#ifdef DEBUG_VIEWER
                         DEBUG_MSG( "[Viewer] new streamer '" << streamName << "', sync stream '"
                                                              << syncStreamName << "'" );
-#endif
+//#endif
 
                         //                        m_sock.read( newStream.m_syncStreamName );
                         //                        const auto& streamId = ( syncStreamName == "" )
@@ -243,9 +272,9 @@ Viewer::Viewer(
                         //                            }
                         //                        }
 
-#ifdef DEBUG_VIEWER
+//#ifdef DEBUG_VIEWER
                         DEBUG_MSG( "[Viewer] del streamer '" << streamName << "'" );
-#endif
+//#endif
                         //                        const auto& streamId = streamName +
                         //                        syncStreamName;
                         //                        const auto& streamId = ( syncStreamName == "" )
@@ -319,9 +348,9 @@ Viewer::Viewer(
                     } break;
 
                     default: {
-#ifdef DEBUG_VIEWER
+//#ifdef DEBUG_VIEWER
                         DEBUG_MSG( "[Viewer] unknown message from server" );
-#endif
+//#endif
                         assert( false );
                     }
                     } // switch (serverMessage)
@@ -329,7 +358,7 @@ Viewer::Viewer(
                 } // while (! m_stopThread)
             }
             catch ( net::ClientSocket::exception& e ) {
-#ifdef DEBUG_VIEWER
+//#ifdef DEBUG_VIEWER
                 if ( m_serverConnected ) {
                     DEBUG_MSG( "[Viewer] server disconnected, catch exception " << e.what() );
                 }
@@ -337,7 +366,7 @@ Viewer::Viewer(
 //                    DEBUG_MSG( "[Viewer] unable to connect to server, catch exception "
 //                               << e.what() );
 //                }
-#endif
+//#endif
                 // ping the server when this one is not started or visible in the network
                 // able the viewer clients to be aware of the starting of server less than 100
                 // milliseconds.
@@ -398,9 +427,9 @@ Viewer::Viewer(
 }
 
 Viewer::~Viewer() {
-#ifdef DEBUG_VIEWER
+//#ifdef DEBUG_VIEWER
     DEBUG_MSG( "[Viewer] ~Viewer()" );
-#endif
+//#endif
     m_stopThread = true;
     assert( m_thread.joinable() );
     m_thread.join();
@@ -415,12 +444,13 @@ Viewer::~Viewer() {
 //        assert( thread.joinable() );
 //        thread.join();
 //    }
-#ifdef DEBUG_VIEWER
+//#ifdef DEBUG_VIEWER
     DEBUG_MSG( "[Viewer] ~Viewer() done" );
-#endif
+//#endif
 }
 
 void Viewer::setIpv4( const std::string& ipv4 ) {
+    DEBUG_MSG( "[Viewer] setIpv4 " << ipv4);
     assert( !m_serverConnected );
     //    assert( std::regex_match( ipv4, m_ipv4Regex ) );
     //    m_ipv4 = ipv4;
@@ -428,6 +458,7 @@ void Viewer::setIpv4( const std::string& ipv4 ) {
 }
 
 void Viewer::setPort( int port ) {
+    DEBUG_MSG( "[Viewer] setPort " << port);
     assert( !m_serverConnected );
     //    assert( 0 <= port && port <= 65535 );
     //    m_port = port;
@@ -443,6 +474,7 @@ const int& Viewer::getPort() const {
 }
 
 void Viewer::setAutoSync( bool newAutoSync ) {
+    DEBUG_MSG( "[Viewer] setAutoSync " << newAutoSync);
     m_autoSync = newAutoSync;
 }
 
@@ -452,6 +484,8 @@ bool Viewer::isConnected() const
 }
 
 void Viewer::delStreamer( const std::string& streamId ) {
+    DEBUG_MSG( "[Viewer] delStreamer " << streamId);
+
     assert( m_onDelStreamer );
     assert( m_streams.find( streamId ) != m_streams.end() );
     auto& delStream = *m_streams.at( streamId );
@@ -463,7 +497,11 @@ void Viewer::delStreamer( const std::string& streamId ) {
 }
 
 void Viewer::Stream::startStream() {
+    DEBUG_MSG( "[Viewer][Stream] startStream");
+
     //    const auto& streamId = streamName + syncStreamName;
+
+//    m_onLogMessage("hello");
 
     m_stopThread = false;
     //    assert( m_streamName2stopThread.find( streamId ) == m_streamName2stopThread.end() );
@@ -479,6 +517,7 @@ void Viewer::Stream::startStream() {
 
             while ( !m_stopThread ) {
                 auto acq = inputSensor.getAcquisition();
+//                DEBUG_MSG( "[Viewer] new acq " << acq);
                 m_viewer.m_onNewAcquisition( m_streamId.c_str(), acq );
             }
         }
@@ -491,6 +530,7 @@ void Viewer::Stream::startStream() {
         if ( m_stopThread ) {
             DEBUG_MSG( "[Viewer] streamer '" << m_streamId << "' thread killed " );
         }
+        DEBUG_MSG( "[Viewer] thread end ");
     } );
 
     DEBUG_MSG( "[Viewer] startStream() streamer '" << m_streamId << "' inited " );

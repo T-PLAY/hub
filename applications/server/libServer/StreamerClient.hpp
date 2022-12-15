@@ -77,5 +77,6 @@ class StreamerClient : public Client
     const std::map<std::string, std::list<StreamViewerClient*>>&
     getSyncViewers() const; // use by server (printStatus)
     const std::string& getStreamName() const;
-        const std::string &getParent() const;
+    const std::string &getParent() const;
+    bool isRecordStream() const;
 };

@@ -13,6 +13,8 @@
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#define USE_TRACE
+
 int main( int argc, char* argv[] ) {
 
     int port = hub::net::s_defaultServicePort;
@@ -97,6 +99,7 @@ int main( int argc, char* argv[] ) {
         std::move( metaData ) );
 #endif
 
+#ifdef USE_TRACE
     hub::OutputSensor outputSensor(
         sensorSpec,
         hub::io::OutputStream( "dicomStream",
@@ -104,17 +107,20 @@ int main( int argc, char* argv[] ) {
     for ( int iImage = 0; iImage < nSlices; ++iImage ) {
         hub::Dof6 dof6( 0.0, iImage * sliceThickness, 0.0 );
         hub::Measure image( &texturesData[textureSize * iImage], textureSize, { { (int)sliceWidth, (int)sliceHeight }, hub::Format::Y16 } );
-        outputSensor << ( hub::Acquisition { iImage, iImage } << std::move( dof6 )
+        outputSensor << ( hub::Acquisition { iImage + 1, iImage + 1 } << std::move( dof6 )
                                                               << std::move( image ) );
     }
 
     while (true ) {
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
+#endif
 
     hub::SensorSpec::MetaData metaData2;
     metaData2["parent"]    = "calibrator";
     metaData2["transform"] = array;
+//    metaData2["type"]      = "record";
+//    metaData2["nAcqs"]     = nSlices;
 //    sensorSpec.m_metaData  = metaData2;
     sensorSpec.setMetaData(metaData2);
     hub::OutputSensor outputSensor2(
@@ -127,10 +133,14 @@ int main( int argc, char* argv[] ) {
         for ( int iImage = 0; iImage < nSlices; ++iImage ) {
             hub::Dof6 dof6( 0.0, iImage * sliceThickness, 0.0 );
             hub::Measure image( &texturesData[textureSize * iImage], textureSize, { { (int)sliceWidth, (int)sliceHeight }, hub::Format::Y16 } );
-            outputSensor2 << ( hub::Acquisition { iImage, iImage } << std::move( dof6 )
+            outputSensor2 << ( hub::Acquisition { iImage + 1, iImage + 1 } << std::move( dof6 )
                                                                    << std::move( image ) );
             std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
         }
+    }
+
+    while (true ) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 
     delete[] texturesData;
