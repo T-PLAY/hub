@@ -22,7 +22,7 @@ stages:
       # - build/
 
 artifacts:
-    key: ${CI_COMMIT_REF_SLUG}
+    # key: ${CI_COMMIT_REF_SLUG}
     expire_in: 30 days
     paths:
 #      - build/_deps/
