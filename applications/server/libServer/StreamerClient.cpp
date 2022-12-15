@@ -588,6 +588,7 @@ void StreamerClient::delStreamViewer(StreamViewerClient* streamViewer)
         //    m_mtxSyncViewers.lock();
         m_mtxStreamViewers.lock();
         auto& streamViewers = m_streamViewers;
+        // todo fix assert
         assert(std::find(streamViewers.begin(), streamViewers.end(), streamViewer) != streamViewers.end());
         streamViewers.remove(streamViewer);
         m_mtxStreamViewers.unlock();
@@ -685,6 +686,11 @@ void StreamerClient::saveNewAcq(const std::string& streamName, hub::Acquisition&
     if (lastAcq.get() != newAcqPtr.get()) {
         lastAcq = newAcqPtr;
     }
+}
+
+bool StreamerClient::isRecordStream() const
+{
+    return m_isRecordStream;
 }
 
 const std::string& StreamerClient::getParent() const

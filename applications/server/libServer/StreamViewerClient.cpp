@@ -110,8 +110,9 @@ StreamViewerClient::StreamViewerClient( Server& server,
     //    if ( m_syncStreamName == "" ) {
 //    m_mtxOutputSensor.lock();
     try {
-        if ( m_outputSensor->m_spec.getResolutions().size() == 2 && m_mergeSyncAcqs ) {
-                    std::lock_guard<std::mutex> guard(m_mtxOutputSensor);
+//        if ( m_outputSensor->m_spec.getResolutions().size() == 2 && m_mergeSyncAcqs ) {
+        if (m_streamer->isRecordStream()) {
+            std::lock_guard<std::mutex> guard(m_mtxOutputSensor);
             const auto& saveAcqs = m_streamer->getSaveAcqs( m_syncStreamName );
             for ( const auto& [start, acq] : saveAcqs ) {
                 *m_outputSensor << *acq;
@@ -193,14 +194,21 @@ StreamViewerClient::StreamViewerClient( Server& server,
 //                    std::lock_guard<std::mutex> guard(m_mtxOutputSensor);
                     m_mtxOutputSensor.lock();
                     const auto& lastAcq = m_streamer->getLastAcq( m_syncStreamName );
+                    if (m_suicide)
+                        break;
                     assert(!m_suicide);
                     if ( lastAcq.get() == nullptr ) {
                         m_outputSensor->getInterface().write(
                             hub::net::ClientSocket::Message::PING );
+            std::cout << "[StreamViewerClient] empty ping " << std::endl;
                     }
-                    else { *m_outputSensor << *lastAcq; }
+                    else { *m_outputSensor << *lastAcq;
+
+            std::cout << "[StreamViewerClient] ping acq " << *lastAcq << std::endl;
+                    }
                     m_mtxOutputSensor.unlock();
                     std::this_thread::sleep_for( std::chrono::milliseconds( pingPeriod ) );
+
                 }
                 else {
                     std::this_thread::sleep_for(

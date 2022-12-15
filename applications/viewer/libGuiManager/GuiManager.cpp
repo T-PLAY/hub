@@ -408,8 +408,8 @@ void GuiManager::onServerDisconnected( const std::string& ipv4, int port ) {
 // }
 
 void GuiManager::onNewAcquisition( const std::string& streamName, const hub::Acquisition& acq ) {
-    //    std::cout << "[GuiManager] GuiManager::onNewAcquisition '" << streamName << "' : " << acq
-    //              << std::endl;
+        std::cout << "[GuiManager] GuiManager::onNewAcquisition '" << streamName << "' : " << acq
+                  << std::endl;
     m_sceneManager.newAcquisition( streamName, acq );
 }
 

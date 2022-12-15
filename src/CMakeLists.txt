@@ -8,6 +8,7 @@ set(UNIX_REQUIRED_LIBS)
 file(GLOB_RECURSE sources *.cpp *.c)
 file(GLOB_RECURSE headers *.hpp *.h *.inl)
 
+
 if(HUB_BUILD_STATIC_LIBRARY)
     add_library(${PROJECT_NAME} STATIC ${sources} ${headers})
     target_compile_definitions(${PROJECT_NAME} PUBLIC -DSRC_STATIC)
@@ -17,6 +18,7 @@ else()
     target_compile_definitions(${PROJECT_NAME} PUBLIC -DSRC_EXPORTS)
 endif()
 
+target_compile_definitions(${PROJECT_NAME} PUBLIC -DINTERNAL_BUILD)
 
 if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
     target_compile_definitions(${PROJECT_NAME} PUBLIC -DDEBUG)
