@@ -16,11 +16,18 @@ stages:
   - build
   - test
 
-cache:
-    key: ${CI_COMMIT_REF_SLUG}
-    paths:
-      - build/
+# cache:
+    # key: ${CI_COMMIT_REF_SLUG}
+    # paths:
+      # - build/
 
+artifacts:
+    key: ${CI_COMMIT_REF_SLUG}
+    expire_in: 30 days
+    paths:
+#      - build/_deps/
+      - build/
+      
 build:
   stage: build
 #  before_script:
@@ -31,11 +38,7 @@ build:
     - cmake -DCMAKE_BUILD_TYPE=Release -DHUB_ENABLE_TESTS=ON ..
     - cmake --build . --config Release
   
-#  artifacts:
-#    expire_in: 30 days
-#    paths:
-#      - build/_deps/
-#      - build/
+
 
 #  artifacts:
 #    paths:
