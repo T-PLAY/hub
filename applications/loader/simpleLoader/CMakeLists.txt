@@ -38,6 +38,12 @@ if(WIN32)
             $<TARGET_FILE:Qt${QT_VERSION}::QWindowsIntegrationPlugin>
             $<TARGET_FILE_DIR:${PROJECT_NAME}>/platforms/)
 
+    add_custom_command(
+        TARGET ${PROJECT_NAME}
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${SRC_TARGET}>
+                $<TARGET_FILE_DIR:${PROJECT_NAME}>)
+
     foreach(QT_LIB ${REQUIRED_LIBS})
         add_custom_command(
             TARGET ${PROJECT_NAME}

@@ -200,11 +200,11 @@ StreamViewerClient::StreamViewerClient( Server& server,
                     if ( lastAcq.get() == nullptr ) {
                         m_outputSensor->getInterface().write(
                             hub::net::ClientSocket::Message::PING );
-            std::cout << "[StreamViewerClient] empty ping " << std::endl;
+//            std::cout << "[StreamViewerClient] empty ping " << std::endl;
                     }
                     else { *m_outputSensor << *lastAcq;
 
-            std::cout << "[StreamViewerClient] ping acq " << *lastAcq << std::endl;
+//            std::cout << "[StreamViewerClient] ping acq " << *lastAcq << std::endl;
                     }
                     m_mtxOutputSensor.unlock();
                     std::this_thread::sleep_for( std::chrono::milliseconds( pingPeriod ) );
