@@ -8,6 +8,7 @@
 #include "IO/Stream.hpp"
 #include "Net/ClientSocket.hpp"
 #include <cstring>
+#include <sstream>
 
 namespace hub {
 namespace native {

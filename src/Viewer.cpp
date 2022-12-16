@@ -1,6 +1,7 @@
 #include "Viewer.hpp"
 
 #include <regex>
+#include <sstream>
 
 #include "IO/Stream.hpp"
 #include "InputSensor.hpp"

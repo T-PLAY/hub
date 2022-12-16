@@ -20,7 +20,8 @@ int main( int argc, char* argv[] ) {
 //              { "ULA-OP 256", "Polhemus Patriot (sensor 2)"} };
     std::string posStreamName = "Polhemus Patriot (sensor 2)";
 
-    std::string imageStreamName = "ProceduralStreamer";
+//    std::string imageStreamName = "ProceduralStreamer";
+    std::string imageStreamName = "ULA-OP 256";
 
     std::vector<hub::Acquisition> acqs;
 

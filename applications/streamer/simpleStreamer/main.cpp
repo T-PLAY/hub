@@ -42,7 +42,7 @@ int main(int argc, char* argv[])
 //    };
     const float localTransform[16] = {
         scanDepth / 2.0f, 		0.0, 				0.0, 	0.0,
-        0.0, 					0.0, 				-1.0, 	0.0,
+        0.0, 					0.0, 				-scanDepth / 2.0f, 	0.0,
         0.0, 					scanWidth / 2.0f, 	0.0, 	0.0,
         295 + scanDepth / 2.0f + 2.5f, 5.0f, 				8.0 - 3.0, 	1.0
     };
