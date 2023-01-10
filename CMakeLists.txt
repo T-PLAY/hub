@@ -16,7 +16,7 @@ project(Hub)
 add_definitions(-DPROJECT_DIR=\"${CMAKE_SOURCE_DIR}/\")
 
 set(SRC_DIR ${CMAKE_SOURCE_DIR}/src/)
-set(SRC_TARGET_NAME hub)
+set(SRC_TARGET hub)
 
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 if (NOT CMAKE_INSTALL_PREFIX)
