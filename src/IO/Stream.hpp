@@ -64,7 +64,8 @@ class SRC_API InputStream : public InputInterface, public net::ClientSocket
 #endif
 
   protected:
-    Acquisition getAcquisition( int acquisitionSize ) const override;
+//    Acquisition getAcquisition( int acquisitionSize ) const override;
+    Acquisition getAcquisition( const SensorSpec & sensorSpec ) const override;
 };
 
 } // namespace io

@@ -158,12 +158,14 @@
 // Dll import/export.
 // ----------------------------------------------------------------------------
 
-//#define SRC_STATIC
+//#define SRC_STATIC // force static link for external use
 //#undef SRC_EXPORTS
 
 #ifdef OS_WINDOWS
 #    if defined SRC_STATIC
-#        define SRC_API
+        // todo fix unable to link static lib from external project, only single dll (import) is possible
+        #define SRC_API
+		#undef SRC_EXPORTS
 #    elif defined SRC_EXPORTS
 #        define SRC_API __declspec( dllexport )
 #    else

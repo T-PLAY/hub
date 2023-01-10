@@ -103,7 +103,7 @@ bool InputStream::isEnd() const
 }
 #endif
 
-Acquisition InputStream::getAcquisition( int acquisitionSize ) const {
+Acquisition InputStream::getAcquisition(const SensorSpec &sensorSpec ) const {
     net::ClientSocket::Message message;
     do {
         Interface::read( message );
@@ -113,7 +113,7 @@ Acquisition InputStream::getAcquisition( int acquisitionSize ) const {
     } while ( message == net::ClientSocket::Message::PING );
 
     assert( message == net::ClientSocket::Message::NEW_ACQ );
-    auto acq = Interface::getAcquisition( acquisitionSize );
+    auto acq = Interface::getAcquisition( sensorSpec );
     return acq;
 }
 

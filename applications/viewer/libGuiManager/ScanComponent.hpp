@@ -70,7 +70,7 @@ struct ScanComponent : public SensorComponent {
 
     int m_iImage = 0;
 
-    bool m_traceEnabled = true;
+    bool m_traceEnabled = false;
     bool m_liveEnabled  = true;
 
     double m_tune0 = 0.25;

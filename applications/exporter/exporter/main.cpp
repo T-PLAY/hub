@@ -56,10 +56,10 @@ int main( int argc, char* argv[] ) {
         auto acqs = inputSensor.getAllAcquisitions();
 
         const auto& resolutions = inputSensor.m_spec.getResolutions();
-        assert( resolutions.at( 0 ).second == hub::SensorSpec::Format::DOF6 || resolutions.at( 1 ).second == hub::SensorSpec::Format::DOF6 );
-        assert( resolutions.at( 0 ).second == hub::SensorSpec::Format::Y8 || resolutions.at( 1 ).second == hub::SensorSpec::Format::Y8  );
+        assert( resolutions.at( 0 ).second == hub::Format::DOF6 || resolutions.at( 1 ).second == hub::Format::DOF6 );
+        assert( resolutions.at( 0 ).second == hub::Format::Y8 || resolutions.at( 1 ).second == hub::Format::Y8  );
 
-        const int iImage = (resolutions.at(0).second == hub::SensorSpec::Format::DOF6) ?(1) :(0);
+        const int iImage = (resolutions.at(0).second == hub::Format::DOF6) ?(1) :(0);
 
         const int width    = resolutions.at( iImage ).first.at( 0 );
         const int height   = resolutions.at( iImage ).first.at( 1 );

@@ -19,7 +19,7 @@ TEST_CASE( "File test" ) {
         const unsigned char data[3] = {
             (unsigned char)iAcq, (unsigned char)( iAcq + 1 ), (unsigned char)( iAcq + 2 ) };
         acqs.push_back( hub::Acquisition( iAcq, iAcq ) );
-        acqs.back() << hub::Measure( data, 3 );
+        acqs.back() << hub::Measure( data, 3, {{1}, hub::Format::BGR8} );
         CHECK( acqs.back().getSize() == 3 );
     }
     CHECK( acqs[0] != acqs[1] );
@@ -29,7 +29,7 @@ TEST_CASE( "File test" ) {
     {
 
         hub::OutputSensor outputSensor(
-            { "sensorName", { { { 1 }, hub::SensorSpec::Format::BGR8 } } },
+            { "sensorName", { { { 1 }, hub::Format::BGR8 } } },
             hub::io::File(
                 std::fstream( filename, std::ios::out | std::ios::binary | std::ios::trunc ) ) );
 
@@ -39,7 +39,7 @@ TEST_CASE( "File test" ) {
         CHECK( sensorSpec.getResolutions().size() == 1 );
         CHECK( sensorSpec.getResolutions()[0].first.size() == 1 );
         CHECK( sensorSpec.getResolutions()[0].first.at( 0 ) == 1 );
-        CHECK( sensorSpec.getResolutions()[0].second == hub::SensorSpec::Format::BGR8 );
+        CHECK( sensorSpec.getResolutions()[0].second == hub::Format::BGR8 );
 
         for ( const auto& acq : acqs ) {
             outputSensor << acq;
@@ -47,7 +47,7 @@ TEST_CASE( "File test" ) {
     }
     std::cout << "outputStream end ################################" << std::endl;
 
-    std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
+//    std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
 
     std::cout << "inputStream start" << std::endl;
     INFO( "InputStream" );
@@ -61,10 +61,11 @@ TEST_CASE( "File test" ) {
         CHECK( sensorSpec.getResolutions().size() == 1 );
         CHECK( sensorSpec.getResolutions()[0].first.size() == 1 );
         CHECK( sensorSpec.getResolutions()[0].first.at( 0 ) == 1 );
-        CHECK( sensorSpec.getResolutions()[0].second == hub::SensorSpec::Format::BGR8 );
+        CHECK( sensorSpec.getResolutions()[0].second == hub::Format::BGR8 );
         std::cout << "####### compare acqs" << std::endl;
         for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
             auto acq = inputSensor.getAcquisition();
+            assert(acq == acqs[iAcq]);
             CHECK( acq == acqs[iAcq] );
         }
     }

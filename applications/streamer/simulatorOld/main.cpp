@@ -61,8 +61,8 @@ int main( int argc, char* argv[] ) {
 #ifdef USE_RGBA
 
     hub::SensorSpec sensorSpec( "mri",
-                                { { { 1 }, hub::SensorSpec::Format::DOF6 },
-                                  { { sliceWidth, sliceHeight }, hub::SensorSpec::Format::RGBA8 } },
+                                { { { 1 }, hub::Format::DOF6 },
+                                  { { sliceWidth, sliceHeight }, hub::Format::RGBA8 } },
                                 std::move( metaData ) );
     const int volumeSize   = sliceSize * nSlices;
     const int textureSize  = sliceWidth * sliceHeight * 4;
@@ -86,8 +86,8 @@ int main( int argc, char* argv[] ) {
     const std::string dicomStreamName = "dicomStream";
     hub::SensorSpec sensorSpec(
         "mri",
-        { { { 1 }, hub::SensorSpec::Format::DOF6 },
-          { { (int)sliceWidth, (int)sliceHeight }, hub::SensorSpec::Format::Y16 } },
+        { { { 1 }, hub::Format::DOF6 },
+          { { (int)sliceWidth, (int)sliceHeight }, hub::Format::Y16 } },
         std::move( metaData ) );
 #endif
 
@@ -97,7 +97,7 @@ int main( int argc, char* argv[] ) {
         glm::quat quat( 1.0, 0.0, 0.0, 0.0 );
         hub::Dof6 dof6( 0.0, iImage * sliceThickness, 0.0, quat.w, quat.x, quat.y, quat.z );
 
-        hub::Measure image( &texturesData[textureSize * iImage], textureSize );
+        hub::Measure image( &texturesData[textureSize * iImage], textureSize,  { { (int)sliceWidth, (int)sliceHeight }, hub::Format::Y16 });
         outputSensor << ( hub::Acquisition { iImage, iImage } << std::move( dof6 )
                                                               << std::move( image ) );
 
@@ -125,8 +125,8 @@ int main( int argc, char* argv[] ) {
     metaData2["scanDepth"] = scanRealDepth;
     metaData2["series"]    = mriName;
     hub::SensorSpec sensorSpec2( "",
-                                 { { { 1 }, hub::SensorSpec::Format::DOF6 },
-                                   { { scanWidth, scanHeight }, hub::SensorSpec::Format::Y8 } },
+                                 { { { 1 }, hub::Format::DOF6 },
+                                   { { scanWidth, scanHeight }, hub::Format::Y8 } },
                                  std::move( metaData2 ) );
 
     const std::string simulatorStreamName = "simulator";
@@ -221,7 +221,7 @@ int main( int argc, char* argv[] ) {
         ////			unsigned char otherData[192 * 512];
 
         outputSensor2 << ( hub::Acquisition { acq.m_start, acq.m_end }
-                           << dof6.clone() << hub::Measure { imageData, scanSize } );
+                           << dof6.clone() << hub::Measure { imageData, scanSize,  { { scanWidth, scanHeight }, hub::Format::Y8 }} );
 
         std::cout << "Computed frame " << iFrame << std::endl;
         ++iFrame;

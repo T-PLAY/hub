@@ -32,7 +32,7 @@ int main( int, char** ) {
     const int height = cap.get( cv::CAP_PROP_FRAME_HEIGHT );
     //    OutputStream outputStream( "webcam", Stream::Format::BGR8, { width, height } );
     hub::SensorSpec sensorSpec( "Webcam",
-                                { { { width, height }, hub::SensorSpec::Format::BGR8 } } );
+                                { { { width, height }, hub::Format::BGR8 } } );
     hub::OutputSensor outputSensor( sensorSpec, hub::io::OutputStream( "Webcam" ) );
 
     //--- GRAB AND WRITE LOOP
@@ -60,7 +60,7 @@ int main( int, char** ) {
             outputSensor << ( hub::Acquisition { start, end }
                               << hub::Measure { (const unsigned char*)frame.data, // copy data pointer
 //                              << hub::Measure { (const unsigned char*)rgb.data, // copy data pointer
-                                                (uint64_t)( 3 * width * height ) } );
+                                                (uint64_t)( 3 * width * height ), {{width, height}, hub::Format::BGR8} } );
 
             // check if we succeeded
             if ( frame.empty() ) {

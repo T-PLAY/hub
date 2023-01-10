@@ -6,6 +6,14 @@ if [ $(basename `pwd`) != "hub" ]; then
 	exit 0
 fi
 
+for arch in "x64"; do
+	buildDir="build-$arch"
+	mkdir -p $buildDir
+	cmake -B $buildDir . -A $arch
+	cmake --build $buildDir --config Debug
+	cmake --build $buildDir --config Release
+done
+
 for arch in "x64" "ARM64"; do
 	buildDir="build-UWP-$arch"
 	mkdir -p $buildDir

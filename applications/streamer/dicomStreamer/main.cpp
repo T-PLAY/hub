@@ -13,6 +13,8 @@
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#define USE_TRACE
+
 int main( int argc, char* argv[] ) {
 
     int port = hub::net::s_defaultServicePort;
@@ -68,8 +70,8 @@ int main( int argc, char* argv[] ) {
 #ifdef USE_RGBA
 
     hub::SensorSpec sensorSpec( "mri",
-                                { { { 1 }, hub::SensorSpec::Format::DOF6 },
-                                  { { sliceWidth, sliceHeight }, hub::SensorSpec::Format::RGBA8 } },
+                                { { { 1 }, hub::Format::DOF6 },
+                                  { { sliceWidth, sliceHeight }, hub::Format::RGBA8 } },
                                 std::move( metaData ) );
     const int volumeSize   = sliceSize * nSlices;
     const int textureSize  = sliceWidth * sliceHeight * 4;
@@ -92,29 +94,33 @@ int main( int argc, char* argv[] ) {
     const int textureSize       = sliceSize;
     hub::SensorSpec sensorSpec(
         "mri",
-        { { { 1 }, hub::SensorSpec::Format::DOF6 },
-          { { (int)sliceWidth, (int)sliceHeight }, hub::SensorSpec::Format::Y16 } },
+        { { { 1 }, hub::Format::DOF6 },
+          { { (int)sliceWidth, (int)sliceHeight }, hub::Format::Y16 } },
         std::move( metaData ) );
 #endif
 
+#ifdef USE_TRACE
     hub::OutputSensor outputSensor(
         sensorSpec,
         hub::io::OutputStream( "dicomStream",
                                hub::net::ClientSocket( hub::net::s_defaultServiceIp, port ) ) );
     for ( int iImage = 0; iImage < nSlices; ++iImage ) {
         hub::Dof6 dof6( 0.0, iImage * sliceThickness, 0.0 );
-        hub::Measure image( &texturesData[textureSize * iImage], textureSize );
-        outputSensor << ( hub::Acquisition { iImage, iImage } << std::move( dof6 )
+        hub::Measure image( &texturesData[textureSize * iImage], textureSize, { { (int)sliceWidth, (int)sliceHeight }, hub::Format::Y16 } );
+        outputSensor << ( hub::Acquisition { iImage + 1, iImage + 1 } << std::move( dof6 )
                                                               << std::move( image ) );
     }
 
     while (true ) {
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
+#endif
 
     hub::SensorSpec::MetaData metaData2;
     metaData2["parent"]    = "calibrator";
     metaData2["transform"] = array;
+//    metaData2["type"]      = "record";
+//    metaData2["nAcqs"]     = nSlices;
 //    sensorSpec.m_metaData  = metaData2;
     sensorSpec.setMetaData(metaData2);
     hub::OutputSensor outputSensor2(
@@ -126,11 +132,15 @@ int main( int argc, char* argv[] ) {
 
         for ( int iImage = 0; iImage < nSlices; ++iImage ) {
             hub::Dof6 dof6( 0.0, iImage * sliceThickness, 0.0 );
-            hub::Measure image( &texturesData[textureSize * iImage], textureSize );
-            outputSensor2 << ( hub::Acquisition { iImage, iImage } << std::move( dof6 )
+            hub::Measure image( &texturesData[textureSize * iImage], textureSize, { { (int)sliceWidth, (int)sliceHeight }, hub::Format::Y16 } );
+            outputSensor2 << ( hub::Acquisition { iImage + 1, iImage + 1 } << std::move( dof6 )
                                                                    << std::move( image ) );
             std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
         }
+    }
+
+    while (true ) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 
     delete[] texturesData;

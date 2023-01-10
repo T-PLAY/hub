@@ -41,8 +41,8 @@ MainWindow::MainWindow( QWidget* parent ) : QMainWindow( parent ), ui( new Ui::M
     const int sliceSize         = sliceWidth * sliceHeight * 2;
     unsigned char* data = volumeData; // first slice in volume
 
-    constexpr auto format     = hub::SensorSpec::Format::Y16;
-//    assert( mFormat == hub::SensorSpec::Format::Y16 );
+    constexpr auto format     = hub::Format::Y16;
+//    assert( mFormat == hub::Format::Y16 );
 
 #else
 
@@ -53,9 +53,9 @@ MainWindow::MainWindow( QWidget* parent ) : QMainWindow( parent ), ui( new Ui::M
     constexpr auto sliceSideSize = 1024;
     constexpr int sliceWidth  = sliceSideSize;
     constexpr int sliceHeight = sliceSideSize;
-    constexpr auto format     = hub::SensorSpec::Format::RGB8;
-//    constexpr auto format     = hub::SensorSpec::Format::BGR8;
-    constexpr auto nChannel   = hub::SensorSpec::format2nByte( format );
+    constexpr auto format     = hub::Format::RGB8;
+//    constexpr auto format     = hub::Format::BGR8;
+    constexpr auto nChannel   = hub::Format2nByte( format );
     assert(nChannel == 3);
     constexpr auto sliceSize  = sliceWidth * sliceHeight * nChannel;
     unsigned char data[sliceSize];
