@@ -16,7 +16,7 @@ project(Hub)
 add_definitions(-DPROJECT_DIR=\"${CMAKE_SOURCE_DIR}/\")
 
 set(SRC_DIR ${CMAKE_SOURCE_DIR}/src/)
-set(SRC_TARGET hub)
+set(SRC_TARGET_NAME hub)
 
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 if (NOT CMAKE_INSTALL_PREFIX)
@@ -38,3 +38,8 @@ option(HUB_ENABLE_EXAMPLES "Enable examples" OFF)
 if(HUB_ENABLE_EXAMPLES)
     add_subdirectory(examples)
 endif()
+
+#install(EXPORT hub
+#  FILE hub.cmake
+#  DESTINATION lib/cmake/hub
+#)
