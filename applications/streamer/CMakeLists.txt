@@ -15,7 +15,7 @@ if(HUB_APPLICATION_ENABLE_OPENCV)
 endif()
 
 if(HUB_APPLICATION_ENABLE_PDI)
-    add_subdirectory(pdi)
+#    add_subdirectory(pdi)
 endif()
 
 if(HUB_APPLICATION_ENABLE_PATRIOT)
