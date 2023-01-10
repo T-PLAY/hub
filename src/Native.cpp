@@ -8,6 +8,7 @@
 #include "IO/Stream.hpp"
 #include "Net/ClientSocket.hpp"
 #include <cstring>
+#include <sstream>
 
 namespace hub {
 namespace native {
@@ -55,6 +56,8 @@ Acquisition* getAcquisition( const InputSensor* inputSensor ) {
     return ret;
 }
 
+///////////////////////////////////////////////////////////////////////
+
 void freeAcquisition( Acquisition* acquisition ) {
     delete acquisition;
 }
@@ -67,13 +70,36 @@ void acquisition_getMeasure( const Acquisition* acquisition, unsigned char* data
     memcpy( data, measure.m_data, measure.m_size );
 }
 
-Viewer* createViewer( onNewStreamerFunc onNewStreamer,
+long long acquisition_getStart( const Acquisition* acquisition ) {
+    return acquisition->m_start;
+}
+
+void acquisition_to_string(const Acquisition *acquisition, char *str, int *strLen)
+{
+    std::stringstream sstr;
+    sstr << *acquisition;
+    const std::string & stdString = sstr.str();
+//    std::string stdString = "hello";
+
+    *strLen = stdString.size();
+#if CPLUSPLUS_VERSION == 20
+    memcpy( sensorName, sensorSpec->getSensorName().data(), *strLen + 1 );
+#else
+    memcpy( str, stdString.c_str(), *strLen + 1 );
+#endif
+    str[*strLen] = 0;
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+Viewer* createViewer(onNewStreamerFunc onNewStreamer,
                       onDelStreamerFunc onDelStreamer,
                       onServerConnectedFunc onServerConnected,
                       onServerDisconnectedFunc onServerDisconnected,
                       onNewAcquisitionFunc onNewAcquisition,
                       const char* ipv4,
-                      int port ) {
+                      int port ,
+                     onLogMessageFunc onLogMessage) {
 
     auto onNewStreamerCpp = [=]( const std::string& streamName, const SensorSpec& sensorSpec ) {
         onNewStreamer( streamName.c_str(), &sensorSpec );
@@ -91,13 +117,19 @@ Viewer* createViewer( onNewStreamerFunc onNewStreamer,
     auto onNewAcquisitionCpp = [=]( const std::string& streamName, const Acquisition& acq ) {
         onNewAcquisition( streamName.c_str(), &acq );
     };
+    auto onLogMessageCpp = [=]( const std::string& logMessage) {
+        onLogMessage( logMessage.c_str() );
+    };
     Viewer* viewer = new Viewer( onNewStreamerCpp,
                                  onDelStreamerCpp,
                                  onServerConnectedCpp,
                                  onServerDisconnectedCpp,
                                  onNewAcquisitionCpp,
                                  ipv4,
-                                 port );
+                                 port,
+                                 false,
+                                 onLogMessageCpp
+                                 );
     return viewer;
 }
 
@@ -123,13 +155,16 @@ bool viewer_isConnected(Viewer *viewer)
 
 void sensorSpec_getSensorName( const SensorSpec* sensorSpec, char* sensorName, int* strLen ) {
     *strLen = sensorSpec->getSensorName().size();
+#if CPLUSPLUS_VERSION == 20
+    memcpy( sensorName, sensorSpec->getSensorName().data(), *strLen + 1 );
+#else
     memcpy( sensorName, sensorSpec->getSensorName().c_str(), *strLen + 1 );
-//    memcpy( sensorName, sensorSpec->getSensorName().data(), *strLen + 1 );
+#endif
     sensorName[*strLen] = 0;
 }
 
 int sensorSpec_getResolutionSize( const SensorSpec* sensorSpec, int iResolution ) {
-    return SensorSpec::computeAcquisitionSize( sensorSpec->getResolutions().at( iResolution ) );
+    return computeAcquisitionSize( sensorSpec->getResolutions().at( iResolution ) );
 }
 
 int sensorSpec_getResolutionsSize( const SensorSpec* sensorSpec ) {
@@ -157,7 +192,7 @@ int sensorSpec_getDimension( const SensorSpec* sensorSpec, int iResolution, int 
 }
 
 void sensorSpec_getResolutionsStr( const SensorSpec* sensorSpec, char* resolutionsStr ) {
-    const auto& resolutionsString = SensorSpec::resolutions2string( sensorSpec->getResolutions() );
+    const auto& resolutionsString = resolutions2string( sensorSpec->getResolutions() );
     const int len                 = resolutionsString.size();
     memcpy( resolutionsStr, resolutionsString.c_str(), len + 1 );
     resolutionsStr[len] = 0;
@@ -204,9 +239,8 @@ bool metaData_getMat4( const SensorSpec::MetaData* metaData, const char* metaNam
     return false;
 }
 
-long long acquisition_getStart( const Acquisition* acquisition ) {
-    return acquisition->m_start;
-}
+
+
 
 bool metaData_exists( const SensorSpec::MetaData* metaData, const char* metaName ) {
     return metaData->find( metaName ) != metaData->end();

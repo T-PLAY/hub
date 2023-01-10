@@ -73,6 +73,10 @@ int main() {
         std::cout << "[Example][Viewer] onNewAcquisition " << streamName << " " << *acq
                   << std::endl;
     };
+    auto onLogMessage = []( const char* logMessage) {
+        std::cout << "[Example][Viewer] onLogMessage " << logMessage << " " << *logMessage
+                  << std::endl;
+    };
 
     auto viewer = hub::native::createViewer( onNewStreamer,
                                              onDelStreamer,
@@ -80,7 +84,9 @@ int main() {
                                              onServerDisconnected,
                                              onNewAcquisition,
                                              hub::net::s_defaultServiceIp.c_str(),
-                                             hub::net::s_defaultServicePort );
+                                             hub::net::s_defaultServicePort,
+                                             onLogMessage
+                                             );
 
     while ( true ) {
         std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );

@@ -30,5 +30,5 @@ struct Dof6Component : SensorComponent {
     void enableLive( bool enable ) override;
 
   private:
-    hub::SensorSpec::Format m_format;
+    hub::Format m_format;
 };

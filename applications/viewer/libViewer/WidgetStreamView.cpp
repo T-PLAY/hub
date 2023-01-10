@@ -13,7 +13,7 @@ WidgetStreamView::WidgetStreamView( QWidget* parent ) : QWidget( parent ) {}
 void WidgetStreamView::setData( unsigned char* img_ptr,
                                 size_t size,
                                 std::vector<int> dims,
-                                hub::SensorSpec::Format format ) {}
+                                hub::Format format ) {}
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -78,11 +78,11 @@ void WidgetStreamView2D::clear() {
 void WidgetStreamView2D::setData( unsigned char* img_ptr,
                                   size_t size,
                                   std::vector<int> dims,
-                                  hub::SensorSpec::Format format ) {
+                                  hub::Format format ) {
     m_imageSize = size;
 
-    const auto nChannel = hub::SensorSpec::format2nByte(format);
-//    constexpr auto nChannel = hub::SensorSpec::format2nByte(hub::SensorSpec::Y16);
+    const auto nChannel = hub::format2nByte(format);
+//    constexpr auto nChannel = hub::Format2nByte(hub::SensorSpec::Y16);
 
     assert( dims.size() == 2 );
     assert(size == dims.at(0) * dims.at(1) * nChannel);
@@ -127,20 +127,20 @@ void WidgetStreamView2D::onPixelPerUnitChanged() {
 
 void WidgetStreamView2D::updateImage() {
 //    std::cout << "[WidgetStreamView2D] updateImage() " << "mImagePixelWidth = " << mImagePixelWidth << ", mImagePixelHeight = " << mImagePixelHeight << ", mImageUnitWidth = " << mImageUnitWidth << ", mImageUnitHeight = " << mImageUnitHeight << ", mRatio = " << mRatio << ", mHPixelPerUnit = " << mHPixelPerUnit << ", mVPixelPerUnit = " << mVPixelPerUnit << ", mCanvasPixelPerUnit = " << mCanvasPixelPerUnit << ", mCanvasPixelWidth = "  << mCanvasPixelWidth << ", mCanvasPixelHeight = " << mCanvasPixelHeight  << std::endl;
-    std::cout << "[WidgetStreamView2D] updateImage() " << std::endl;
+//    std::cout << "[WidgetStreamView2D] updateImage() " << std::endl;
 
 
     if ( mData != nullptr ) {
         switch ( mFormat ) {
-        case hub::SensorSpec::Format::Y8:
+        case hub::Format::Y8:
             m_image = new QImage( (unsigned char*)mData,
                                   mImagePixelWidth,
                                   mImagePixelHeight,
                                   QImage::Format_Grayscale8 );
             break;
 
-        case hub::SensorSpec::Format::Y16:
-        case hub::SensorSpec::Format::Z16:
+        case hub::Format::Y16:
+        case hub::Format::Z16:
 #if QT_VERSION <= QT_VERSION_CHECK( 5, 12, 0 )
             m_image = new QImage( (unsigned char*)mData,
                                   mImagePixelWidth,
@@ -160,19 +160,19 @@ void WidgetStreamView2D::updateImage() {
 #endif
             break;
 
-        case hub::SensorSpec::Format::RGB8:
+        case hub::Format::RGB8:
             m_image = new QImage(
                 (unsigned char*)mData, mImagePixelWidth, mImagePixelHeight, QImage::Format_RGB888 );
             break;
 
-        case hub::SensorSpec::Format::RGBA8:
+        case hub::Format::RGBA8:
             m_image = new QImage( (unsigned char*)mData,
                                   mImagePixelWidth,
                                   mImagePixelHeight,
                                   QImage::Format_RGBA8888 );
             break;
 
-        case hub::SensorSpec::Format::BGR8:
+        case hub::Format::BGR8:
 //#if QT_VERSION <= QT_VERSION_CHECK( 5, 12, 0 )
 //            m_image = new QImage(
 //                (unsigned char*)mData, mImagePixelWidth, mImagePixelHeight, QImage::Format_BGR888 );
@@ -288,7 +288,7 @@ WidgetStreamView1D::~WidgetStreamView1D() {
 void WidgetStreamView1D::setData( unsigned char* img_ptr,
                                   size_t size,
                                   std::vector<int> dims,
-                                  hub::SensorSpec::Format format ) {
+                                  hub::Format format ) {
 
     float* translation = (float*)img_ptr;
     float* quaternion  = (float*)&img_ptr[12];

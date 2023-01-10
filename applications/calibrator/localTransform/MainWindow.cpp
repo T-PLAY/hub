@@ -54,7 +54,7 @@ MainWindow::MainWindow(QWidget* parent)
     hub::SensorSpec::MetaData metaData;
 //    metaData["parent"] = "Polhemus Patriot (sensor 2)";
     m_outputSensor = new hub::OutputSensor(
-        { "calibrator", { { { 1 }, hub::SensorSpec::Format::MAT4 } }, metaData },
+        { "calibrator", { { { 1 }, hub::Format::MAT4 } }, metaData },
         hub::io::OutputStream("calibrator"));
     updateTransform();
 }
@@ -110,5 +110,5 @@ void MainWindow::updateTransform()
 
     // TODO: why data steal not work with output ?
     *m_outputSensor << (hub::Acquisition(0, 0)
-        << hub::Measure((const unsigned char*)array, 16 * 4));
+                        << hub::Measure((const unsigned char*)array, 16 * 4, {{1}, hub::Format::MAT4}));
 }

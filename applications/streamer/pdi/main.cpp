@@ -51,6 +51,8 @@ static void sigHandler( int sig ) {
     exit( 0 );
 };
 
+int g_reverses[2] = {1, 1};
+
 int main( int argc, char* argv[] ) {
     signal( SIGINT, sigHandler );
 #ifdef SIGBREAK
@@ -70,22 +72,26 @@ int main( int argc, char* argv[] ) {
         if ( !StartCont() ) {}
         else {
 
+            HWND mainWindow = GetForegroundWindow();
+
             while ( true ) { // each server connect
                 try {
                     std::vector<std::unique_ptr<hub::OutputSensor>> outputSensors;
                     hub::SensorSpec sensorSpec( "Polhemus Patriot (sensor 1)",
-                                                { { { 1 }, hub::SensorSpec::Format::DOF6 } } );
+                                                { { { 1 }, hub::Format::DOF6 } } );
                     outputSensors.push_back( std::make_unique<hub::OutputSensor>(
-                        sensorSpec, hub::io::OutputStream( sensorSpec.m_sensorName ) ) );
+                        sensorSpec, hub::io::OutputStream( sensorSpec.getSensorName() ) ) );
                     // outputSensors.push_back(std::make_unique<hub::OutputSensor>("Polhemus Patriot
                     // (confidence)", Stream::Format::DOF6, std::vector<int>({ 1 })));
-                    sensorSpec.m_sensorName = "Polhemus Patriot (sensor 2)";
+                    hub::SensorSpec sensorSpec2( "Polhemus Patriot (sensor 2)",
+                                                { { { 1 }, hub::Format::DOF6 } } );
+//                    sensorSpec.m_sensorName = "Polhemus Patriot (sensor 2)";
                     outputSensors.push_back( std::make_unique<hub::OutputSensor>(
-                        sensorSpec, hub::io::OutputStream( sensorSpec.m_sensorName ) ) );
+                        sensorSpec2, hub::io::OutputStream( sensorSpec2.getSensorName() ) ) );
                     // outputSensors.push_back(std::make_unique<hub::OutputSensor>(g_probePoseSensorName,
                     // Stream::Format::DOF6, std::vector<int>({ 1 })));
                     constexpr int packetSize     = 8 + 12 + 16;
-                    const size_t acquisitionSize = outputSensors[0]->m_spec.m_acquisitionSize;
+                    const size_t acquisitionSize = outputSensors[0]->m_spec.getAcquisitionSize();
                     assert( packetSize ==
                             8 + acquisitionSize ); // header 8 bytes, frame count 4 bytes
 
@@ -128,15 +134,17 @@ int main( int argc, char* argv[] ) {
                                         .count();
 
                                 float* poses = (float*)data;
+                                // scale pose
                                 for ( int i = 0; i < 3; ++i ) {
-                                    if ( ucSensor == 1 ) {
-                                        poses[i] =
-                                            10.0f * poses[i]; // convert centimeters to millimeters
-                                    }
-                                    else if ( ucSensor == 2 ) {
-                                        poses[i] =
-                                            10.0f * poses[i]; // convert centimeters to millimeters
-                                    }
+                                    poses[i] = g_reverses[ucSensor - 1] * 10.0f * poses[i]; // convert centimeters to millimeters
+//                                    if ( ucSensor == 1 ) {
+//                                        poses[i] =
+//                                            g_reverses[0] * 10.0f * poses[i]; // convert centimeters to millimeters
+//                                    }
+//                                    else if ( ucSensor == 2 ) {
+//                                        poses[i] =
+//                                            g_reverses[1] * 10.0f * poses[i]; // convert centimeters to millimeters
+//                                    }
                                 }
 
                                 // float* translation = (float*)data;
@@ -154,7 +162,7 @@ int main( int argc, char* argv[] ) {
                                 // Try to get a frame of a depth image
                                 *outputSensors[ucSensor - 1]
                                     << ( hub::Acquisition { timestampStart, timestampEnd }
-                                         << hub::Measure { data, acquisitionSize } );
+                                         << hub::Measure { data, acquisitionSize, {{1}, hub::Format::DOF6} } );
 
                                 i += packetSize;
                             }
@@ -164,6 +172,23 @@ int main( int argc, char* argv[] ) {
 
                         const auto maxFps = 60;
                         const auto end = start + std::chrono::nanoseconds( 1'000'000'000 / maxFps );
+
+                        HWND activeWindow = GetForegroundWindow();
+                        if ( activeWindow == mainWindow ) {
+                            if ( GetKeyState( VK_RIGHT ) & 0x8000 ) {
+                                g_reverses[0] = 1;
+                            }
+                            if ( GetKeyState( VK_LEFT ) & 0x8000 ) {
+                                g_reverses[0] = -1;
+                            }
+                            if ( GetKeyState( VK_UP ) & 0x8000 ) {
+                                g_reverses[1] = 1;
+                            }
+                            if ( GetKeyState( VK_DOWN ) & 0x8000 ) {
+                                g_reverses[1] = -1;
+                            }
+                        }
+
                         while ( std::chrono::high_resolution_clock::now() < end )
                             ;
 

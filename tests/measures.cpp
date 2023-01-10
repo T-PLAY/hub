@@ -8,9 +8,11 @@
 
 TEST_CASE( "Measures test" ) {
 
+    const auto imageResolution = hub::Resolution {{512, 512}, hub::Format::Y16};
+
     const hub::SensorSpec sensorSpec( "sensorName",
-                                      { { { 1 }, hub::SensorSpec::Format::DOF6 },
-                                        { { 512, 512 }, hub::SensorSpec::Format::Y16 } } );
+                                      { { { 1 }, hub::Format::DOF6 },
+                                        imageResolution} );
 
     hub::io::CyclicBuff cyclicBuff;
 
@@ -32,7 +34,7 @@ TEST_CASE( "Measures test" ) {
     }
 
     outputSensor << ( hub::Acquisition { 0, 0 } << std::move( dof6 )
-                                                << hub::Measure( (const unsigned char*)imageData, imageSize ) );
+                      << hub::Measure( (unsigned char*)imageData, imageSize, imageResolution ) );
 
     hub::InputSensor inputSensor( ( hub::io::Ram( cyclicBuff ) ) );
 
@@ -62,6 +64,7 @@ TEST_CASE( "Measures test" ) {
 
     const auto& image = measures.at( 1 );
     CHECK( image.m_size == imageSize );
+    CHECK(image.m_data != imageData);
 
     for ( int i = 0; i < imageSize; ++i ) {
         CHECK( image.m_data[i] == i % 256 );

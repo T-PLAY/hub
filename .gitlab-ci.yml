@@ -14,20 +14,31 @@ image: stormirit/radium_dev:latest
 
 stages:
   - build
+  - test
 
-build:
-  stage: build
-  before_script:
-    - export PATH=$PATH:/opt/Qt/5.10.0/gcc_64/bin
-  script:
-    - mkdir build
-    - cd build
-    - cmake -DCMAKE_BUILD_TYPE=Release ..
-    - make -j8
-  artifacts:
-    expire_in: 2 hrs
+cache:
+    key: ${CI_COMMIT_REF_SLUG}
     paths:
       - build/
+
+# artifacts:
+#     # key: ${CI_COMMIT_REF_SLUG}
+#     expire_in: 30 days
+#     paths:
+# #      - build/_deps/
+#       - build/
+      
+build:
+  stage: build
+#  before_script:
+#    - export PATH=$PATH:/opt/Qt/5.10.0/gcc_64/bin
+  script:
+    - mkdir -p build
+    - cd build
+    - cmake -DCMAKE_BUILD_TYPE=Release -DHUB_ENABLE_TESTS=ON ..
+    - cmake --build . --config Release
+  
+
 
 #  artifacts:
 #    paths:
@@ -38,8 +49,11 @@ build:
       #     - "*.o"
 
 # run tests using the binary built before
-#test:
-#  stage: test
-#  script:
+test:
+  stage: test
+  
+  script:
+    - cd build/tests
+    - ctest -V
 #    - ./runmytests.sh
 

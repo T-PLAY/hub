@@ -99,13 +99,13 @@ void ScanComponent::initialize() {
 
         const auto& format  = resolutions.at( 0 ).second;
         const auto& format2 = resolutions.at( 1 ).second;
-        if ( format == hub::SensorSpec::Format::DOF6 ) {
+        if ( format == hub::Format::DOF6 ) {
             m_iImage = 1;
-            assert(format2 == hub::SensorSpec::Format::Y8 || format2 == hub::SensorSpec::Format::Y16);
+            assert(format2 == hub::Format::Y8 || format2 == hub::Format::Y16);
         }
         else {
-            assert(format == hub::SensorSpec::Format::Y8 || format == hub::SensorSpec::Format::Y16);
-            assert( format2 == hub::SensorSpec::Format::DOF6 );
+            assert(format == hub::Format::Y8 || format == hub::Format::Y16);
+            assert( format2 == hub::Format::DOF6 );
             m_iImage = 0;
         }
 
@@ -123,14 +123,14 @@ void ScanComponent::update( const hub::Acquisition& acq ) {
         const auto & format = measures.at(0).getResolution().second;
         const auto & format2 = measures.at(1).getResolution().second;
         if (m_iImage == 0) {
-            assert(format == hub::SensorSpec::Format::Y8 || format == hub::SensorSpec::Format::Y16);
-            assert( format2 == hub::SensorSpec::Format::DOF6 );
+            assert(format == hub::Format::Y8 || format == hub::Format::Y16);
+            assert( format2 == hub::Format::DOF6 );
         }
         else {
-            assert( format == hub::SensorSpec::Format::DOF6 );
-            assert(format2 == hub::SensorSpec::Format::Y8 || format2 == hub::SensorSpec::Format::Y16);
+            assert( format == hub::Format::DOF6 );
+            assert(format2 == hub::Format::Y8 || format2 == hub::Format::Y16);
         }
-//            assert(format == hub::SensorSpec::Format::Y8 || format == hub::SensorSpec::Format::Y16);
+//            assert(format == hub::Format::Y8 || format == hub::Format::Y16);
     }
     //    std::cout << "[ScanComponent] update(" << acq << ")" << std::endl;
 
@@ -309,8 +309,8 @@ void ScanComponent::addScan() {
         int width;
         int height;
         int imageSize;
-        hub::SensorSpec::Dims dims;
-        hub::SensorSpec::Format format;
+        hub::Dims dims;
+        hub::Format format;
         const int resolutionsSize = resolutions.size();
         if ( resolutionsSize == 1 ) {
             dims      = resolutions.at( 0 ).first;
@@ -320,31 +320,31 @@ void ScanComponent::addScan() {
             imageSize = m_sensorSpec.getAcquisitionSize();
         }
         else if ( resolutionsSize == 2 ) {
-            assert( resolutions.at( 1 - m_iImage ).second == hub::SensorSpec::Format::DOF6 );
+            assert( resolutions.at( 1 - m_iImage ).second == hub::Format::DOF6 );
             assert( resolutions.at( m_iImage ).first.size() == 2 );
             dims      = resolutions.at( m_iImage ).first;
             format    = resolutions.at( m_iImage ).second;
             width     = dims.at( 0 );
             height    = dims.at( 1 );
-            imageSize = hub::SensorSpec::computeAcquisitionSize( resolutions.at( m_iImage ) );
+            imageSize = hub::computeAcquisitionSize( resolutions.at( m_iImage ) );
         }
         else { assert( false ); }
         assert( dims.size() == 2 );
         int nChannels = 0;
         bool reverse = false;
         switch ( format ) {
-        case hub::SensorSpec::Format::Y8:
+        case hub::Format::Y8:
             nChannels = 1;
             break;
-        case hub::SensorSpec::Format::Y16:
+        case hub::Format::Y16:
             nChannels = 2;
             break;
-        case hub::SensorSpec::Format::BGR8:
+        case hub::Format::BGR8:
             reverse = true;
-        case hub::SensorSpec::Format::RGB8:
+        case hub::Format::RGB8:
             nChannels = 3;
             break;
-        case hub::SensorSpec::Format::RGBA8:
+        case hub::Format::RGBA8:
             nChannels = 4;
             break;
         default:

@@ -30,10 +30,11 @@ class SRC_API Viewer
             std::function<void( const char* ipv4, int port )> onServerConnected            = {},
             std::function<void( const char* ipv4, int port )> onServerDisconnected         = {},
             std::function<void( const char* streamName, const hub::Acquisition& )>
-                onNewAcquisition    = {},
-            const std::string& ipv4 = net::s_defaultServiceIp,
-            int port                = net::s_defaultServicePort,
-            bool autoSync           = true );
+                onNewAcquisition                                       = {},
+            const std::string& ipv4                                    = net::s_defaultServiceIp,
+            int port                                                   = net::s_defaultServicePort,
+            bool autoSync                                              = true,
+            std::function<void( const char* logMessage )> onLogMessage = {} );
 
     ~Viewer();
 
@@ -65,6 +66,7 @@ class SRC_API Viewer
     bool m_serverConnected = false;
     bool m_autoSync        = true;
     //    std::regex m_ipv4Regex;
+    std::function<void( const char* logMessage )> m_onLogMessage;
 
     class Stream
     {
@@ -72,7 +74,7 @@ class SRC_API Viewer
         Viewer& m_viewer;
 
         //        Stream(Stream & stream) = default;
-        Stream( Viewer& viewer ) : m_viewer( viewer ) {}
+        Stream( Viewer& viewer ) : m_viewer( viewer ), m_onLogMessage( m_viewer.m_onLogMessage ) {}
 
         Stream( Stream&& stream ) :
             m_viewer( stream.m_viewer ),
@@ -87,7 +89,8 @@ class SRC_API Viewer
 
             m_thread( stream.m_thread ),
             m_stopThread( stream.m_stopThread ),
-            m_added( stream.m_added ) {
+            m_added( stream.m_added ),
+            m_onLogMessage( m_viewer.m_onLogMessage ) {
             stream.m_thread = nullptr;
         }
 
@@ -96,6 +99,8 @@ class SRC_API Viewer
             if ( m_thread != nullptr ) { stopStream(); }
             DEBUG_MSG( "[Stream] ~Stream() streamer '" << m_streamId << "' ended" );
         }
+
+        //        using m_onLogMessage = m_viewer.m_onLogMessage();
 
         std::string m_streamName;
         SensorSpec m_sensorSpec;
@@ -110,10 +115,11 @@ class SRC_API Viewer
         bool m_stopThread = false;
         bool m_added      = false;
         //        bool m_isStreaming = false;
+        std::function<void( const char* logMessage )> m_onLogMessage;
 
         void startStream();
         void stopStream();
-        //        friend class Viewer;
+        //                friend class Viewer;
     };
 
     std::map<std::string, std::shared_ptr<Stream>> m_streams;

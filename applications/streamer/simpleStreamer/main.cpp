@@ -28,12 +28,12 @@ int main(int argc, char* argv[])
 
     hub::SensorSpec::MetaData metaData;
     //    metaData["parent"]             = "Keyboard";
-    metaData["parent"] = "Polhemus Patriot (sensor 2)";
 //    metaData["parent"] = "calibrator";
-    float scanWidth = 50.0;
-    float scanDepth = 35.0;
+    const float scanWidth = 50.0;
+    const float scanDepth = 35.0;
     metaData["scanWidth"] = (double)scanWidth;
     metaData["scanDepth"] = (double)scanDepth;
+    metaData["parent"] = "Polhemus Patriot (sensor 2)";
 //    const float localTransform[16] = {
 //        17.5, 		0.0, 	0.0, 	0.0,
 //        0.0, 			0.0, 	100.0, 	0.0,
@@ -42,16 +42,18 @@ int main(int argc, char* argv[])
 //    };
     const float localTransform[16] = {
         scanDepth / 2.0f, 		0.0, 				0.0, 	0.0,
-        0.0, 					0.0, 				-1.0, 	0.0,
+        0.0, 					0.0, 				-scanDepth / 2.0f, 	0.0,
         0.0, 					scanWidth / 2.0f, 	0.0, 	0.0,
-        295, 					0.0, 				8.0, 	1.0
+        295 + scanDepth / 2.0f + 2.5f, 5.0f, 				8.0 - 3.0, 	1.0
     };
     metaData["transform"] = localTransform;
 
     hub::Streamer streamer(hub::net::s_defaultServiceIp, port);
+    const auto imageResolution = hub::Resolution {{width, height}, hub::Format::Y8};
     streamer.addStream("ProceduralStreamer",
         { "ProceduralStreamer",
-            { { { width, height }, hub::SensorSpec::Format::Y8 } },
+//            { { { width, height }, hub::Format::Y8 } },
+                          {imageResolution},
             metaData });
 
     const size_t imgSize = width * height;
@@ -72,9 +74,10 @@ int main(int argc, char* argv[])
         }
 
         //		    data[i] = (i / height + dec) % 256;
-#if defined(WIN32)
+#if defined( WIN32 ) || defined( DEBUG )
         //        const auto maxFps = 60.0;
-        const auto maxFps = 1.0;
+        const auto maxFps = 2.0;
+//        const auto maxFps = 50.0;
 #else
         const auto maxFps = 40.0;
 #endif
@@ -86,9 +89,11 @@ int main(int argc, char* argv[])
         const auto& timestampEnd = std::chrono::duration_cast<std::chrono::microseconds>(end.time_since_epoch()).count();
         ++dec;
 
+
         streamer.newAcquisition("ProceduralStreamer",
             std::move(hub::Acquisition { timestampStart, timestampEnd }
-                << hub::Measure { data, imgSize }));
+//                      << hub::Measure { data, imgSize, {{width, height}, hub::Format::Y8} }));
+                                            << hub::Measure { data, imgSize, imageResolution }));
 
         std::this_thread::sleep_until(end);
     }

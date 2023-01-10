@@ -6,6 +6,7 @@
 #include <IO/Stream.hpp>
 
 #include <Configurations.hpp>
+#include <filesystem>
 #include <thread>
 
 int main( int argc, char* argv[] ) {
@@ -15,9 +16,12 @@ int main( int argc, char* argv[] ) {
 
     bool stopThread = false;
 
-    std::string posStreamName = "Keyboard";
+//    std::string posStreamName = "Keyboard";
+//              { "ULA-OP 256", "Polhemus Patriot (sensor 2)"} };
+    std::string posStreamName = "Polhemus Patriot (sensor 2)";
 
-    std::string imageStreamName = "ProceduralStreamer";
+//    std::string imageStreamName = "ProceduralStreamer";
+    std::string imageStreamName = "ULA-OP 256";
 
     std::vector<hub::Acquisition> acqs;
 
@@ -28,8 +32,8 @@ int main( int argc, char* argv[] ) {
     {
 
         hub::InputSensor inputSensor(
-            hub::io::InputStream( posStreamName,
-                                  imageStreamName,
+            hub::io::InputStream( imageStreamName,
+                                  posStreamName,
                                   hub::net::ClientSocket( hub::net::s_defaultServiceIp, port ) ) );
 
         {
@@ -70,9 +74,11 @@ int main( int argc, char* argv[] ) {
 
     std::cout << "inputSensor closed" << std::endl;
 
+        const std::string recordPath = PROJECT_DIR "data/records/syncRecorder/";
+    std::filesystem::create_directory(recordPath);
+
     // record file
     {
-        std::string recordPath = PROJECT_DIR "data/";
         std::fstream recordFile( recordPath + "latest.txt",
                                  std::ios::out | std::ios::binary | std::ios::trunc );
         assert( recordFile.is_open() );
@@ -89,7 +95,6 @@ int main( int argc, char* argv[] ) {
 
     // play record
     {
-        std::string recordPath = PROJECT_DIR "data/";
         std::fstream recordFile( recordPath + "latest.txt", std::ios::in | std::ios::binary );
         assert( recordFile.is_open() );
 
@@ -105,9 +110,11 @@ int main( int argc, char* argv[] ) {
             outputSensor2 << acq;
         }
 
-        while ( true ) {
-            std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
-        }
+//        while ( true ) {
+//            std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+//        }
+        std::cout << "press key to escape." << std::endl;
+        auto ret = getchar();
     }
 }
 

@@ -84,6 +84,7 @@ void Streamer::newAcquisition( const std::string& streamName, Acquisition&& acqu
             auto& outputSensor = *m_streamName2outputSensor.at( streamName );
             outputSensor << acquisition;
             if ( !m_serverConnected ) { onServerConnected(); }
+//            std::cout << "[Streamer] send acq : " << acquisition << std::endl;
         }
         catch ( net::Socket::exception& e ) {
             m_streamName2outputSensor.clear();

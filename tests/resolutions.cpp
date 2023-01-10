@@ -8,12 +8,12 @@
 
 TEST_CASE( "Resolutions test" ) {
 
-    std::vector<std::pair<hub::SensorSpec::Resolutions, size_t>> m_resolutionss;
-    m_resolutionss.push_back( { { { { 1 }, hub::SensorSpec::Format::BGR8 } }, 3 } );
+    std::vector<std::pair<hub::Resolutions, size_t>> m_resolutionss;
+    m_resolutionss.push_back( { { { { 1 }, hub::Format::BGR8 } }, 3 } );
     m_resolutionss.push_back(
-        { { { { 192, 512 }, hub::SensorSpec::Format::BGR8 } }, 3 * 192 * 512 } );
-    m_resolutionss.push_back( { { { { 1, 2, 3, 4, 5 }, hub::SensorSpec::Format::Y8 },
-                                  { { 100 }, hub::SensorSpec::Format::BGR8 } },
+        { { { { 192, 512 }, hub::Format::BGR8 } }, 3 * 192 * 512 } );
+    m_resolutionss.push_back( { { { { 1, 2, 3, 4, 5 }, hub::Format::Y8 },
+                                  { { 100 }, hub::Format::BGR8 } },
                                 1 * 2 * 3 * 4 * 5 + 300 } );
 
     for ( const auto& pair : m_resolutionss ) {
