@@ -24,6 +24,6 @@ elseif(UNIX)
 endif()
 
 target_link_libraries(${PROJECT_NAME} hub ${UNIX_REQUIRED_LIBS} ${WIN32_REQUIRED_LIBS}
-                      libServer)
+                      server)
 
 add_subdirectory(libServer)
