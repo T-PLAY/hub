@@ -11,7 +11,7 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 set(CMAKE_DEBUG_POSTFIX d)
 
-#project(Hub)
+project(hub)
 
 #add_definitions(-DPROJECT_DIR=\"${CMAKE_SOURCE_DIR}/\")
 
@@ -26,6 +26,7 @@ set(CMAKE_DEBUG_POSTFIX d)
 option(HUB_BUILD_STATIC_LIBRARY "Build static library" OFF)
 
 add_subdirectory(src)
+add_subdirectory(server)
 
 option(HUB_ENABLE_TESTS "Enable tests" OFF)
 if(HUB_ENABLE_TESTS)
