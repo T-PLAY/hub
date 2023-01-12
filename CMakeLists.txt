@@ -11,23 +11,21 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 set(CMAKE_DEBUG_POSTFIX d)
 
-project(Hub)
+#project(Hub)
 
-add_definitions(-DPROJECT_DIR=\"${CMAKE_SOURCE_DIR}/\")
+#add_definitions(-DPROJECT_DIR=\"${CMAKE_SOURCE_DIR}/\")
 
-set(SRC_DIR ${CMAKE_SOURCE_DIR}/src/)
-set(SRC_TARGET hub)
+#set(SRC_DIR ${CMAKE_SOURCE_DIR}/src/)
+#set(SRC_TARGET hub)
 
-set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
-if (NOT CMAKE_INSTALL_PREFIX)
-	set(CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/install/${CMAKE_BUILD_TYPE})
-endif()
+#set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
+#if (NOT CMAKE_INSTALL_PREFIX)
+#	set(CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/install/${CMAKE_BUILD_TYPE})
+#endif()
 
 option(HUB_BUILD_STATIC_LIBRARY "Build static library" OFF)
 
 add_subdirectory(src)
-
-add_subdirectory(applications)
 
 option(HUB_ENABLE_TESTS "Enable tests" OFF)
 if(HUB_ENABLE_TESTS)
