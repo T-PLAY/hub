@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.8)
 
-project(${SRC_TARGET})
+project(hub)
 
 set(WIN32_REQUIRED_LIBS)
 set(UNIX_REQUIRED_LIBS)
@@ -45,7 +45,7 @@ target_link_libraries(${PROJECT_NAME} ${UNIX_REQUIRED_LIBS} ${WIN32_REQUIRED_LIB
 
 install(TARGETS ${PROJECT_NAME} DESTINATION lib)
 install(
-    DIRECTORY ${SRC_DIR}
+    DIRECTORY ${CMAKE_SOURCE_DIR}
     DESTINATION include
     FILES_MATCHING
     PATTERN "*.hpp"
