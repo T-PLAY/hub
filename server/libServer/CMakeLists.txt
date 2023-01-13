@@ -24,3 +24,9 @@ endif()
 target_link_libraries(${PROJECT_NAME} ${UNIX_REQUIRED_LIBS} ${WIN32_REQUIRED_LIBS} hub)
 
 # set(CMAKE_CXX_STANDARD 14) #ULA-OP C++14 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+
+#install(TARGETS ${PROJECT_NAME}
+#        EXPORT ${PROJECT_NAME}
+#        DESTINATION lib)
+
