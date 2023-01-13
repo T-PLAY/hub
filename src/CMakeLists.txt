@@ -43,19 +43,9 @@ endif()
 
 target_link_libraries(${PROJECT_NAME} ${UNIX_REQUIRED_LIBS} ${WIN32_REQUIRED_LIBS})
 
-install(TARGETS ${PROJECT_NAME} DESTINATION lib)
-install(
-    DIRECTORY ${CMAKE_SOURCE_DIR}
-    DESTINATION include
-    FILES_MATCHING
-    PATTERN "*.hpp"
-    PATTERN "*.inl" 
-    )
-
 # set(CMAKE_CXX_STANDARD 14) #ULA-OP C++14 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-#####################################################
-# export configuration
+############################ EXPORT ################################
 
 #set(installable_libs MathFunctions tutorial_compiler_flags)
 #if(TARGET SqrtLibrary)
@@ -65,6 +55,16 @@ install(
 install(TARGETS ${PROJECT_NAME}
         EXPORT ${PROJECT_NAME}
         DESTINATION lib)
+
+#install(TARGETS ${PROJECT_NAME} DESTINATION lib)
+install(
+    DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/
+    DESTINATION include
+    FILES_MATCHING
+    PATTERN "*.hpp"
+    PATTERN "*.inl" 
+    )
+
 
 # install include headers
 #install(FILES MathFunctions.h DESTINATION include)

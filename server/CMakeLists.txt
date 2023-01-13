@@ -27,3 +27,8 @@ target_link_libraries(${PROJECT_NAME} hub ${UNIX_REQUIRED_LIBS} ${WIN32_REQUIRED
                       server)
 
 add_subdirectory(libServer)
+
+#install(TARGETS ${PROJECT_NAME}
+#        EXPORT ${PROJECT_NAME}
+#        DESTINATION bin)
+
