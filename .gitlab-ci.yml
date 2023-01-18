@@ -20,19 +20,6 @@ stages:
   - doc
   - format
 
-
-# .before_script_template:
-# # # dep:
-# #   # stage: dep
-# #   # script:
-#   before_script:
-# #   # stage: ['build', 'doc']
-# #   # script:
-# #   # - apk update
-# #   # - apk add doxygen
-#     - apt update
-#     - apt install -y doxygen
-
 # cache:
 #     key: ${CI_COMMIT_REF_SLUG}
 #     paths:
@@ -43,41 +30,25 @@ cache:
   paths:
     - apt-cache/
     - build/
-    # files:
-      # - /usr/bin/doxygen
-      # - /usr/share/cmake-*/Modules/FindDoxygen.cmake
-  
 
 before_script:
-    # if [ -e apt-cache ]; then
     - mkdir -pv apt-cache
     - cp -r apt-cache/* /
 
     - find apt-cache
-    # fi
-
-      # cp apt-cache/doxygen /usr/bin/doxygen;
-      # cp apt-cache/FindDoxygen.cmake /usr/share/cmake-*/Modules/;
-    # fi
-  # - export APT_CACHE_DIR=`pwd`/apt-cache && mkdir -pv $APT_CACHE_DIR
 
 dep:
   stage: dep
   script:
-    # - apt update -yq && apt -o dir::cache::archives="$APT_CACHE_DIR" install -y doxygen
     - apt update
     - apt install -y doxygen
-    # - ls /usr/bin/
-    # - ls /usr/local/bin
-    # - ls ~
-    # - mkdir -pv apt-cache
+
     - mkdir -pv apt-cache/usr/bin/
     - cp /usr/bin/doxygen apt-cache/usr/bin/   
     - mkdir -pv apt-cache/usr/share/$(basename /usr/share/cmake-*)/Modules
     - cp /usr/share/cmake-*/Modules/FindDoxygen.cmake apt-cache/usr/share/$(basename /usr/share/cmake-*)/Modules/
     - mkdir -pv apt-cache/usr/lib/x86_64-linux-gnu/
     - cp /usr/lib/x86_64-linux-gnu/libclang-* apt-cache/usr/lib/x86_64-linux-gnu/
-
 
 # artifacts:
 #     # key: ${CI_COMMIT_REF_SLUG}
@@ -87,7 +58,6 @@ dep:
 #       - build/
       
 build:
-  # extends: .before_script_template
   stage: build
 #  before_script:
 #    - export PATH=$PATH:/opt/Qt/5.10.0/gcc_64/bin
@@ -99,17 +69,6 @@ build:
     - cmake -DCMAKE_BUILD_TYPE=Release -DHUB_ENABLE_TESTS=ON -DHUB_BUILD_DOC=ON ..
     - cmake --build . --config Release
   
-
-
-#  artifacts:
-#    paths:
-#      - mybinary
-      # depending on your build setup it's most likely a good idea to cache outputs to reduce the build time
-      # cache:
-      #   paths:
-      #     - "*.o"
-
-# run tests using the binary built before
 test:
   stage: test
   
@@ -119,9 +78,7 @@ test:
 #    - ./runmytests.sh
 
 pages:
-  # extends: .before_script_template
   # stage: doc
-
   script:
     # - apt update
     # - apt install -y doxygen
