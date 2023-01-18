@@ -99,7 +99,7 @@ doc:
   stage: doc
   script:
     - |-
-      if [ ! -e apt-cache/usr/bin/python3 ]; then
+      if [ ! -e apt-cache/usr/lib/python3 ]; then
         apt update
         apt install -y python3 python3-pip
         cp /usr/bin/pip3 apt-cache/usr/bin/
