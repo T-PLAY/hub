@@ -62,7 +62,9 @@ include(CPack)
 # Doxygen
 
 # look for Doxygen package
+#find_package(Doxygen REQUIRED dot OPTIONAL_COMPONENTS mscgen dia)
 find_package(Doxygen)
+
 
 if (DOXYGEN_FOUND)
     # set input and output files
@@ -72,6 +74,7 @@ if (DOXYGEN_FOUND)
     # request to configure the file
     configure_file(${DOXYGEN_IN} ${DOXYGEN_OUT} @ONLY)
     message("Doxygen build started")
+
 
     # Note: do not put "ALL" - this builds docs together with application EVERY TIME!
     add_custom_target( docs
