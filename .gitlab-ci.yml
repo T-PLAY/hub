@@ -13,10 +13,10 @@ image: stormirit/radium_dev:latest
     - master
 
 stages: 
-  # - dep
+  - dep
   # - build
   # - test
-  - doc
+  # - doc
   - format
 
 # cache:
