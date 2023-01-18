@@ -31,26 +31,37 @@ cache:
     - build/
 
 before_script:
+    - rm -r apt-cache
     - mkdir -pv apt-cache
     - cp -r apt-cache/* /
 
     - find apt-cache
 
-# dep:
-#   stage: dep
-#   script:
-#     - |-
-#       if [ ! -e apt-cache/usr/bin/doxygen ]; then
-#         apt update
-#         apt install -y doxygen
+dep:
+  stage: dep
+  script:
+    - |-
+        apt update
+        apt install -y doxygen cmake-format clang-format python3-pip
 
-#         mkdir -pv apt-cache/usr/bin/
-#         cp /usr/bin/doxygen apt-cache/usr/bin/   
-#         mkdir -pv apt-cache/usr/share/$(basename /usr/share/cmake-*)/Modules
-#         cp /usr/share/cmake-*/Modules/FindDoxygen.cmake apt-cache/usr/share/$(basename /usr/share/cmake-*)/Modules/
-#         mkdir -pv apt-cache/usr/lib/x86_64-linux-gnu/
-#         cp /usr/lib/x86_64-linux-gnu/libclang-* apt-cache/usr/lib/x86_64-linux-gnu/
-#       fi;
+        mkdir -pv apt-cache/usr/bin/
+        mkdir -pv apt-cache/usr/share/$(basename /usr/share/cmake-*)/Modules
+        mkdir -pv apt-cache/usr/lib/x86_64-linux-gnu/
+        mkdir -pv apt-cache/usr/lib/llvm-11/bin/
+        # mkdir -pv apt-cache/usr/lib/python3/
+
+        cp /usr/bin/doxygen apt-cache/usr/bin/   
+        cp /usr/share/cmake-*/Modules/FindDoxygen.cmake apt-cache/usr/share/$(basename /usr/share/cmake-*)/Modules/
+        cp /usr/lib/x86_64-linux-gnu/libclang-* apt-cache/usr/lib/x86_64-linux-gnu/
+        cp /usr/bin/cmake-format apt-cache/usr/bin/
+        cp /usr/bin/clang-format apt-cache/usr/bin/
+        cp /usr/bin/clang-format-11 apt-cache/usr/bin/
+        cp /usr/lib/llvm-11/bin/clang-format apt-cache/usr/lib/llvm-11/bin/
+        # cp -r /usr/lib/python3/dist-packages/cmake* apt-cache/usr/lib/python3/dist-packages/ 
+        cp /usr/bin/pip3 apt-cache/usr/bin/
+        # cp /usr/bin/python3* apt-cache/usr/bin/
+        # cp -r /usr/lib/python3* apt-cache/usr/lib/
+
 
 # # artifacts:
 # #     # key: ${CI_COMMIT_REF_SLUG}
@@ -95,43 +106,22 @@ before_script:
 #   # only:
 #     # - feature/add-gitlab-pages-support
 
-doc:
-  stage: doc
-  script:
-    - |-
-      if [ ! -e apt-cache/usr/lib/python3 ]; then
-        apt update
-        apt install -y python3-pip
-        cp /usr/bin/pip3 apt-cache/usr/bin/
-        cp /usr/bin/python3* apt-cache/usr/bin/
-        cp -r /usr/lib/python3* apt-cache/usr/lib/
-      fi;
-
-    - pip3 install breathe sphinx-sitemap sphinx-rtd-theme
-    - make -C doc/docs_sphinx html
-    - mv doc/docs_sphinx/_build/html public/
-  artifacts:
-    paths:
-      - public
-  # only:
-  # - master
+# doc:
+#   stage: doc
+#   script:
+#     - pip3 install breathe sphinx-sitemap sphinx-rtd-theme
+#     - make -C doc/docs_sphinx html
+#     - mv doc/docs_sphinx/_build/html public/
+#   artifacts:
+#     paths:
+#       - public
+#   # only:
+#   # - master
 
 
 format:
   stage: format
   script:
-    - |-
-      if [ ! -e apt-cache/usr/lib/python3/dist-packages/cmakelang ]; then
-        apt update
-        apt install -y cmake-format clang-format
-        cp /usr/bin/cmake-format apt-cache/usr/bin/
-        cp /usr/bin/clang-format apt-cache/usr/bin/
-        cp /usr/bin/clang-format-11 apt-cache/usr/bin/
-        mkdir -pv apt-cache/usr/lib/llvm-11/bin/
-        cp /usr/lib/llvm-11/bin/clang-format apt-cache/usr/lib/llvm-11/bin/
-        cp -r /usr/lib/python3/dist-packages/cmake* apt-cache/usr/lib/python3/dist-packages/
-      fi;
-
     - scripts/cleanup-project.sh
     - git diff --exit-code
   # only:
