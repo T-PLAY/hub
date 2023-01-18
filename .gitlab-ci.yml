@@ -129,7 +129,7 @@ format:
     # - apt update
     # - apt install -y cmake-format clang-format
     - scripts/cleanup-project.sh
-    - git diff --stat --exit-code
+    - git diff --exit-code
   # only:
   # - master
 
