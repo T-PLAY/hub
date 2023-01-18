@@ -14,18 +14,19 @@ image: stormirit/radium_dev:latest
   only:
     - master
 
-stages:
+stages: 
+  - format
   # - dep
   # - doc
   # - build
   # - test
   # - doc
-  - format
+
 
 format:
   stage: format
-    script:
-      - scripts/cleanup-project.sh
+  script:
+    - scripts/cleanup-project.sh
 
 # doc:
 #   stage: doc
