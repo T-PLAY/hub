@@ -101,9 +101,10 @@ doc:
     - |-
       if [ ! -e apt-cache/usr/bin/python3 ]; then
         apt update
-        apt install -y python3-pip
+        apt install -y python3 python3-pip
         cp /usr/bin/pip3 apt-cache/usr/bin/
         cp /usr/bin/python3* apt-cache/usr/bin/
+        cp -r /usr/lib/python3* apt-cache/usr/lib/
       fi;
 
     - pip3 install breathe sphinx-sitemap sphinx-rtd-theme
