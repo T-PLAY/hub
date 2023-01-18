@@ -42,6 +42,7 @@ cache:
   key: apt-cache
   paths:
     - apt-cache/
+    - build/
   
 
 before_script:
