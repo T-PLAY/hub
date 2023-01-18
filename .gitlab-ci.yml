@@ -15,6 +15,7 @@ image: stormirit/radium_dev:latest
 stages:
   - build
   - test
+  - doc
 
 cache:
     key: ${CI_COMMIT_REF_SLUG}
