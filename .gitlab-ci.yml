@@ -13,7 +13,7 @@ image: stormirit/radium_dev:latest
     - master
 
 stages: 
-  # - dep
+  - dep
   # - doc
   - build
   - test
@@ -47,7 +47,11 @@ cache:
 
 before_script:
   - export APT_CACHE_DIR=`pwd`/apt-cache && mkdir -pv $APT_CACHE_DIR
-  - apt update -yq && apt -o dir::cache::archives="$APT_CACHE_DIR" install -y doxygen
+
+dep:
+  stage: dep
+  script:
+    - apt update -yq && apt -o dir::cache::archives="$APT_CACHE_DIR" install -y doxygen
 
 
 # artifacts:
