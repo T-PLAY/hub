@@ -43,6 +43,7 @@ cache:
   paths:
     # - apt-cache/
     - build/
+  files:
     - /usr/bin/doxygen
     - /usr/share/cmake-*/Modules/FindDoxygen.cmake
   
@@ -56,6 +57,9 @@ dep:
     # - apt update -yq && apt -o dir::cache::archives="$APT_CACHE_DIR" install -y doxygen
     - apt update
     - apt install -y doxygen
+    - ls /usr/bin/
+    - ls /usr/local/bin
+    - ls ~
 
 
 # artifacts:
