@@ -79,9 +79,8 @@ pages:
   # stage: doc
 
   script:
-    - cd build
-    - cmake --build . --target docs
-    - mv doc/docs_doxygen/html/ public/
+    - cmake --build build --target docs
+    - mv build/doc/docs_doxygen/html/ public/
 #    - ./runmytests.sh
 
   artifacts:
