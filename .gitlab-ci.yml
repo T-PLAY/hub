@@ -28,7 +28,7 @@ doc:
     - apt install -y doxygen python3-pip
     - pip3 install breathe sphinx-sitemap sphinx-rtd-theme
     - make -C docs/docs_sphinx
-    - mv docs/docs_sphinx/_build/html public/
+    - mv doc/docs_sphinx/_build/html public/
   artifacts:
     paths:
       - public
