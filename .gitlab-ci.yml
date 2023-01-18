@@ -74,7 +74,7 @@ dep:
     - mkdir -pv apt-cache/usr/bin/
     - cp /usr/bin/doxygen apt-cache/usr/bin/   
     - mkdir -pv apt-cache/usr/share/$(basename /usr/share/cmake-*)/Modules
-    - cp /usr/share/cmake-*/Modules/FindDoxygen.cmake apt-cache/apt-cache/usr/share/$(basename /usr/share/cmake-*)/Modules/
+    - cp /usr/share/cmake-*/Modules/FindDoxygen.cmake apt-cache/usr/share/$(basename /usr/share/cmake-*)/Modules/
 
 
 # artifacts:
