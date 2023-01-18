@@ -19,13 +19,14 @@ stages:
   - test
   - doc
 
-before_script:
-  stage: ['build', 'doc']
-  script:
+.before_script_template:
+  before_script:
+  # stage: ['build', 'doc']
+  # script:
   # - apk update
   # - apk add doxygen
-  - apt update
-  - apt install -y doxygen
+    - apt update
+    - apt install -y doxygen
 
 cache:
     key: ${CI_COMMIT_REF_SLUG}
