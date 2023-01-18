@@ -16,22 +16,28 @@ image: stormirit/radium_dev:latest
 
 stages:
   # - dep
-  - doc
+  # - doc
   # - build
   # - test
   # - doc
+  - format
 
-doc:
-  stage: doc
-  script:
-    - apt update
-    - apt install -y doxygen python3-pip
-    - pip3 install breathe sphinx-sitemap sphinx-rtd-theme
-    - make -C doc/docs_sphinx html
-    - mv doc/docs_sphinx/_build/html public/
-  artifacts:
-    paths:
-      - public
+format:
+  stage: format
+    script:
+      - scripts/cleanup-project.sh
+
+# doc:
+#   stage: doc
+#   script:
+#     - apt update
+#     - apt install -y doxygen python3-pip
+#     - pip3 install breathe sphinx-sitemap sphinx-rtd-theme
+#     - make -C doc/docs_sphinx html
+#     - mv doc/docs_sphinx/_build/html public/
+#   artifacts:
+#     paths:
+#       - public
 
 # .before_script_template:
 # # # dep:
