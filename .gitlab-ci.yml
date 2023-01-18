@@ -18,7 +18,7 @@ stages:
   # - dep
   - build
   - test
-  - doc
+  # - doc
 
 .before_script_template:
 # # dep:
@@ -74,16 +74,19 @@ test:
     - ctest -V
 #    - ./runmytests.sh
 
-doc:
+pages:
   extends: .before_script_template
   stage: doc
 
-  artifacts:
-    paths:
-    - build/doc/docs_doxygen
-  
   script:
     - cd build
     - cmake --build . --target docs
+    - mv doc/docs_doxygen/html/ public/
 #    - ./runmytests.sh
 
+  artifacts:
+    paths:
+    - public
+  
+  only:
+    - feature/add-gitlab-pages-support
