@@ -10,6 +10,7 @@ image: stormirit/radium_dev:latest
 before_script:
   # - apk update
   # - apk add doxygen
+  - apt update
   - apt install doxygen
 
 #https://docs.gitlab.com/ee/ci/yaml/#extends
