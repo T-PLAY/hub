@@ -95,24 +95,25 @@ before_script:
 #   # only:
 #     # - feature/add-gitlab-pages-support
 
-# doc:
-#   stage: doc
-#   script:
-#     - |-
-#       if [ ! -e apt-cache/usr/bin/pip3 ]; then
-#         apt update
-#         apt install -y python3-pip
-#         cp /usr/bin/pip3 apt-cache/usr/bin/ 
-#       fi;
+doc:
+  stage: doc
+  script:
+    - |-
+      if [ ! -e apt-cache/usr/bin/python3 ]; then
+        apt update
+        apt install -y python3-pip
+        cp /usr/bin/pip3 apt-cache/usr/bin/
+        cp /usr/bin/python3* apt-cache/usr/bin/
+      fi;
 
-#     - pip3 install breathe sphinx-sitemap sphinx-rtd-theme
-#     - make -C doc/docs_sphinx html
-#     - mv doc/docs_sphinx/_build/html public/
-#   artifacts:
-#     paths:
-#       - public
-#   # only:
-#   # - master
+    - pip3 install breathe sphinx-sitemap sphinx-rtd-theme
+    - make -C doc/docs_sphinx html
+    - mv doc/docs_sphinx/_build/html public/
+  artifacts:
+    paths:
+      - public
+  # only:
+  # - master
 
 
 format:
