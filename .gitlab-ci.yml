@@ -36,7 +36,7 @@ build:
   script:
     - mkdir -p build
     - cd build
-    - cmake -DCMAKE_BUILD_TYPE=Release -DHUB_ENABLE_TESTS=ON ..
+    - cmake -DCMAKE_BUILD_TYPE=Release -DHUB_ENABLE_TESTS=ON -DHUB_BUILD_DOC=ON ..
     - cmake --build . --config Release
   
 
