@@ -33,10 +33,21 @@ stages:
 #     - apt update
 #     - apt install -y doxygen
 
+# cache:
+#     key: ${CI_COMMIT_REF_SLUG}
+#     paths:
+#       - build/
+
 cache:
-    key: ${CI_COMMIT_REF_SLUG}
-    paths:
-      - build/
+  key: apt-cache
+  paths:
+    - apt-cache/
+  
+
+before_script:
+  - export APT_CACHE_DIR=`pwd`/apt-cache && mkdir -pv $APT_CACHE_DIR
+  - sudo apt-get update -yq && sudo apt-get -o dir::cache::archives="$APT_CACHE_DIR" install -y doxygen
+
 
 # artifacts:
 #     # key: ${CI_COMMIT_REF_SLUG}
@@ -51,8 +62,8 @@ build:
 #  before_script:
 #    - export PATH=$PATH:/opt/Qt/5.10.0/gcc_64/bin
   script:
-    - apt update
-    - apt install -y doxygen
+    # - apt update
+    # - apt install -y doxygen
     - mkdir -p build
     - cd build
     - cmake -DCMAKE_BUILD_TYPE=Release -DHUB_ENABLE_TESTS=ON -DHUB_BUILD_DOC=ON ..
@@ -82,8 +93,8 @@ pages:
   # stage: doc
 
   script:
-    - apt update
-    - apt install -y doxygen
+    # - apt update
+    # - apt install -y doxygen
     - cmake --build build --target docs
     - mv build/doc/docs_doxygen/html/ public/
 #    - ./runmytests.sh
