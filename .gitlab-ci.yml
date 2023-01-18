@@ -15,12 +15,16 @@ image: stormirit/radium_dev:latest
     - master
 
 stages:
+  - dep
   - build
   - test
   - doc
 
-.before_script_template:
-  before_script:
+# .before_script_template:
+dep:
+  stage: dep
+  script:
+  # before_script:
   # stage: ['build', 'doc']
   # script:
   # - apk update
@@ -41,7 +45,7 @@ cache:
 #       - build/
       
 build:
-  extends: .before_script_template
+  # extends: .before_script_template
   stage: build
 #  before_script:
 #    - export PATH=$PATH:/opt/Qt/5.10.0/gcc_64/bin
@@ -71,7 +75,7 @@ test:
 #    - ./runmytests.sh
 
 doc:
-  extends: .before_script_template
+  # extends: .before_script_template
   stage: doc
   
   script:
