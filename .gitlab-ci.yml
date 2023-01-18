@@ -21,6 +21,11 @@ stages:
   - test
   # - doc
 
+doc:
+  script:
+    - cd doc/docs_sphinx
+    - make html
+
 .before_script_template:
 # # dep:
 #   # stage: dep
@@ -91,9 +96,6 @@ pages:
   # only:
     # - feature/add-gitlab-pages-support
 
-doc:
-  script:
-    cd doc/docs_sphinx
-    make html
+
 
 
