@@ -24,7 +24,8 @@ TEST_CASE( "Server test : close clients" ) {
             data[i] = iAcq * 2;
         }
         acqs.emplace_back( iAcq * 2, iAcq * 2 );
-        acqs.back() << hub::Measure( (const unsigned char*)data, dataSize, {{3}, hub::Format::BGR8} );
+        acqs.back() << hub::Measure(
+            (const unsigned char*)data, dataSize, { { 3 }, hub::Format::BGR8 } );
     }
     std::vector<hub::Acquisition> acqs2;
     for ( int iAcq2 = 0; iAcq2 < nAcqs; ++iAcq2 ) {
@@ -33,13 +34,14 @@ TEST_CASE( "Server test : close clients" ) {
             data[i] = iAcq2 * 10;
         }
         acqs2.push_back( hub::Acquisition( iAcq2 * 10, iAcq2 * 10 ) );
-        acqs2.back() << hub::Measure( (const unsigned char*)data, dataSize, {{3}, hub::Format::BGR8} );
+        acqs2.back() << hub::Measure(
+            (const unsigned char*)data, dataSize, { { 3 }, hub::Format::BGR8 } );
     }
 
     std::cout << "[Test] ############################### server start" << std::endl;
     Server server( port );
     server.setMaxClients( 8 );
-//    server.setAcqPing( false );
+    //    server.setAcqPing( false );
     server.asyncRun();
     std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
     std::cout << "[Test] server end ------------------------------" << std::endl;
@@ -113,9 +115,9 @@ TEST_CASE( "Server test : close clients" ) {
                     auto acq = inputSensor.getAcquisition();
                     std::cout << "[Test] acq = " << acq << std::endl;
                     std::cout << "ref acq : " << acqs[iAcq * 5] << std::endl;
-//                    assert( acq == acqs[iAcq * 5] );
-//                    CHECK( acq == acqs[iAcq * 5] );
-                    assert(acq.m_start == 10 * iAcq);
+                    //                    assert( acq == acqs[iAcq * 5] );
+                    //                    CHECK( acq == acqs[iAcq * 5] );
+                    assert( acq.m_start == 10 * iAcq );
                     CHECK( acq.m_start == 10 * iAcq );
                 }
             }
@@ -124,8 +126,7 @@ TEST_CASE( "Server test : close clients" ) {
             std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
             std::cout << "[Test] ############################### inputSensor(stream,)" << std::endl;
             continue;
-            if (false)
-            {
+            if ( false ) {
                 hub::InputSensor inputSensor(
                     hub::io::InputStream( "stream", "", hub::net::ClientSocket( ipv4, port ) ) );
 
@@ -157,8 +158,7 @@ TEST_CASE( "Server test : close clients" ) {
             outputSensor2 << acqs2.front();
             std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
             std::cout << "[Test] ############################### inputSensor(master,)" << std::endl;
-            if (false)
-            {
+            if ( false ) {
                 hub::InputSensor inputSensor(
                     hub::io::InputStream( "master", "", hub::net::ClientSocket( ipv4, port ) ) );
 

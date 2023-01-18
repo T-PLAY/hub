@@ -1,7 +1,7 @@
 #pragma once
 
-#include <string>
 #include <mutex>
+#include <string>
 
 class Server;
 
@@ -12,7 +12,7 @@ class Client
     virtual ~Client() = default;
 
     virtual std::string headerMsg() const;
-    void printStatusMessage(const std::string & message) const;
+    void printStatusMessage( const std::string& message ) const;
 
   protected:
     Server& m_server;

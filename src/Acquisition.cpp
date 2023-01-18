@@ -1,11 +1,11 @@
 #include "Acquisition.hpp"
 
 #include <cassert>
-#include <iomanip>
 #include <cmath>
 #include <cstring>
+#include <iomanip>
 
-//#include "Resolution.hpp"
+// #include "Resolution.hpp"
 
 namespace hub {
 
@@ -66,18 +66,18 @@ bool Acquisition::operator!=( const Acquisition& acq ) const {
 }
 
 Acquisition& Acquisition::operator<<( Measure&& measure ) {
-//void Acquisition::addMeasure( Measure&& measure ) {
-//    emplaceMeasure(measure.m_data, measure.m_size, measure.getResolution());
-//    m_size += m_measures.back().m_size;
+    // void Acquisition::addMeasure( Measure&& measure ) {
+    //     emplaceMeasure(measure.m_data, measure.m_size, measure.getResolution());
+    //     m_size += m_measures.back().m_size;
     m_size += measure.m_size;
     m_measures.push_back( std::move( measure ) );
     return *this;
 }
 
-//template <class ResolutionT>
-//void Acquisition::addMeasure(unsigned char* data, uint64_t size, ResolutionT &&resolution ) {
-//    m_size += size;
-//    //    m_measures.push_back( std::move( measure ) );
+// template <class ResolutionT>
+// void Acquisition::addMeasure(unsigned char* data, uint64_t size, ResolutionT &&resolution ) {
+//     m_size += size;
+//     //    m_measures.push_back( std::move( measure ) );
 ////    m_measures.emplace_back( data, size, std::move(resolution) );
 //    m_measures.emplace_back( data, size, std::forward<ResolutionT>(resolution) );
 //}
@@ -105,7 +105,8 @@ Acquisition Acquisition::slerp( const Acquisition& left, const Acquisition& righ
     const auto& rightMeasures = right.getMeasures();
     for ( int iMeasure = 0; iMeasure < leftMeasures.size(); ++iMeasure ) {
         ret << Measure::slerp( leftMeasures.at( iMeasure ), rightMeasures.at( iMeasure ), t );
-//        ret.addMeasure(Measure::slerp( leftMeasures.at( iMeasure ), rightMeasures.at( iMeasure ), t ));
+        //        ret.addMeasure(Measure::slerp( leftMeasures.at( iMeasure ), rightMeasures.at(
+        //        iMeasure ), t ));
     }
     return ret;
 }
@@ -117,8 +118,8 @@ Acquisition Acquisition::slerp( const Acquisition& left, const Acquisition& righ
 
 Acquisition& Acquisition::operator<<( const Measures& measures ) {
     for ( const auto& measure : measures ) {
-//        Acquisition::operator<<( measure.clone() );
-        emplaceMeasure(measure.m_data, measure.m_size, measure.getResolution());
+        //        Acquisition::operator<<( measure.clone() );
+        emplaceMeasure( measure.m_data, measure.m_size, measure.getResolution() );
     }
     return *this;
 }
@@ -134,10 +135,10 @@ Acquisition Acquisition::clone() const {
     Acquisition&& acq { m_start, m_end };
 
     acq << m_measures;
-//    for ( const auto& measure : m_measures ) {
-////        acq << measure.clone();
-////        acq.addMeasure(mea);
-//    }
+    //    for ( const auto& measure : m_measures ) {
+    ////        acq << measure.clone();
+    ////        acq.addMeasure(mea);
+    //    }
 
     return std::move( acq );
 }

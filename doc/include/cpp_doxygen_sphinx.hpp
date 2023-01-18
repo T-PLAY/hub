@@ -5,13 +5,12 @@
 ///
 /// \brief The Foo class
 ///
-class Foo {
-public:
-
+class Foo
+{
+  public:
     ///
     /// \brief say_hello
     /// \param message
     ///
-    void say_hello(std::string message) const;
-
+    void say_hello( std::string message ) const;
 };

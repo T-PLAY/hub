@@ -1,7 +1,7 @@
 #include "SensorSpec.hpp"
 
 #include <cassert>
-//#include <numeric>
+// #include <numeric>
 
 #include "IO/Interface.hpp"
 
@@ -9,14 +9,13 @@ namespace hub {
 
 #if CPLUSPLUS_VERSION != 20
 SensorSpec::SensorSpec( const SensorNameType& sensorName,
-                         const Resolutions& resolutions,
-                         const MetaData& metaData ) :
-     m_sensorName( sensorName ),
-     m_resolutions( resolutions ),
-     m_metaData( metaData ),
-     m_acquisitionSize( computeAcquisitionSize( resolutions ) ) {}
+                        const Resolutions& resolutions,
+                        const MetaData& metaData ) :
+    m_sensorName( sensorName ),
+    m_resolutions( resolutions ),
+    m_metaData( metaData ),
+    m_acquisitionSize( computeAcquisitionSize( resolutions ) ) {}
 #endif
-
 
 // constexpr SensorSpec::SensorSpec(
 ////        const std::string_view &sensorName, const Resolutions &resolutions,
@@ -26,13 +25,13 @@ SensorSpec::SensorSpec( const SensorNameType& sensorName,
 
 //}
 
-//constexpr SensorSpec::SensorSpec( const std::string_view& sensorName,
-//                        const Resolutions& resolutions,
-//                        const MetaData& metaData ) :
-//    m_sensorName( sensorName ),
-//    m_resolutions( resolutions ),
-//    m_metaData( metaData ),
-//    m_acquisitionSize( computeAcquisitionSize( resolutions ) ) {}
+// constexpr SensorSpec::SensorSpec( const std::string_view& sensorName,
+//                         const Resolutions& resolutions,
+//                         const MetaData& metaData ) :
+//     m_sensorName( sensorName ),
+//     m_resolutions( resolutions ),
+//     m_metaData( metaData ),
+//     m_acquisitionSize( computeAcquisitionSize( resolutions ) ) {}
 
 SensorSpec SensorSpec::operator+( const SensorSpec& sensorSpec ) const {
     //    SensorSpec ret;
@@ -74,12 +73,10 @@ SensorSpec& SensorSpec::operator+=( const SensorSpec& sensorSpec ) {
     return *this;
 }
 
-
 // constexpr int SensorSpec::format2nByte(const Format &format)
 //{
 //     return s_format2nByte[static_cast<int>(format)];
 // }
-
 
 std::string SensorSpec::metaData2string( const SensorSpec::MetaData& metaData, bool expand ) {
     std::string str = "";
@@ -106,18 +103,16 @@ std::string SensorSpec::metaData2string( const SensorSpec::MetaData& metaData, b
 std::string SensorSpec::metaData2string( const std::pair<std::string, std::any>& metaData ) {
     const auto& name = metaData.first;
     const auto& val  = metaData.second;
-    //#ifdef WIN32
-    //#else
+    // #ifdef WIN32
+    // #else
     std::string str = hub::io::Interface::anyType2string( val ) + " " + name + " = '" +
                       hub::io::Interface::anyValue2string( val ) + "'";
-    //#endif
+    // #endif
     return str;
 }
 
-
 std::ostream& operator<<( std::ostream& os, const SensorSpec& sensorSpec ) {
-    os << sensorSpec.m_sensorName << ", "
-       << resolutions2string( sensorSpec.m_resolutions ) << ", "
+    os << sensorSpec.m_sensorName << ", " << resolutions2string( sensorSpec.m_resolutions ) << ", "
        << SensorSpec::metaData2string( sensorSpec.m_metaData ) << ", "
        << sensorSpec.m_acquisitionSize;
     return os;

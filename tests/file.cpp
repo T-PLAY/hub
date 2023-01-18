@@ -19,7 +19,7 @@ TEST_CASE( "File test" ) {
         const unsigned char data[3] = {
             (unsigned char)iAcq, (unsigned char)( iAcq + 1 ), (unsigned char)( iAcq + 2 ) };
         acqs.push_back( hub::Acquisition( iAcq, iAcq ) );
-        acqs.back() << hub::Measure( data, 3, {{1}, hub::Format::BGR8} );
+        acqs.back() << hub::Measure( data, 3, { { 1 }, hub::Format::BGR8 } );
         CHECK( acqs.back().getSize() == 3 );
     }
     CHECK( acqs[0] != acqs[1] );
@@ -47,7 +47,7 @@ TEST_CASE( "File test" ) {
     }
     std::cout << "outputStream end ################################" << std::endl;
 
-//    std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
+    //    std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
 
     std::cout << "inputStream start" << std::endl;
     INFO( "InputStream" );
@@ -65,7 +65,7 @@ TEST_CASE( "File test" ) {
         std::cout << "####### compare acqs" << std::endl;
         for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
             auto acq = inputSensor.getAcquisition();
-            assert(acq == acqs[iAcq]);
+            assert( acq == acqs[iAcq] );
             CHECK( acq == acqs[iAcq] );
         }
     }

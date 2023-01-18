@@ -74,12 +74,11 @@ long long acquisition_getStart( const Acquisition* acquisition ) {
     return acquisition->m_start;
 }
 
-void acquisition_to_string(const Acquisition *acquisition, char *str, int *strLen)
-{
+void acquisition_to_string( const Acquisition* acquisition, char* str, int* strLen ) {
     std::stringstream sstr;
     sstr << *acquisition;
-    const std::string & stdString = sstr.str();
-//    std::string stdString = "hello";
+    const std::string& stdString = sstr.str();
+    //    std::string stdString = "hello";
 
     *strLen = stdString.size();
 #if CPLUSPLUS_VERSION == 20
@@ -92,14 +91,14 @@ void acquisition_to_string(const Acquisition *acquisition, char *str, int *strLe
 
 //////////////////////////////////////////////////////////////////////////
 
-Viewer* createViewer(onNewStreamerFunc onNewStreamer,
+Viewer* createViewer( onNewStreamerFunc onNewStreamer,
                       onDelStreamerFunc onDelStreamer,
                       onServerConnectedFunc onServerConnected,
                       onServerDisconnectedFunc onServerDisconnected,
                       onNewAcquisitionFunc onNewAcquisition,
                       const char* ipv4,
-                      int port ,
-                     onLogMessageFunc onLogMessage) {
+                      int port,
+                      onLogMessageFunc onLogMessage ) {
 
     auto onNewStreamerCpp = [=]( const std::string& streamName, const SensorSpec& sensorSpec ) {
         onNewStreamer( streamName.c_str(), &sensorSpec );
@@ -117,7 +116,7 @@ Viewer* createViewer(onNewStreamerFunc onNewStreamer,
     auto onNewAcquisitionCpp = [=]( const std::string& streamName, const Acquisition& acq ) {
         onNewAcquisition( streamName.c_str(), &acq );
     };
-    auto onLogMessageCpp = [=]( const std::string& logMessage) {
+    auto onLogMessageCpp = [=]( const std::string& logMessage ) {
         onLogMessage( logMessage.c_str() );
     };
     Viewer* viewer = new Viewer( onNewStreamerCpp,
@@ -128,8 +127,7 @@ Viewer* createViewer(onNewStreamerFunc onNewStreamer,
                                  ipv4,
                                  port,
                                  false,
-                                 onLogMessageCpp
-                                 );
+                                 onLogMessageCpp );
     return viewer;
 }
 
@@ -138,18 +136,16 @@ void freeViewer( Viewer* viewer ) {
     delete viewer;
 }
 
-void viewer_setIpv4(Viewer * viewer, const char * ipv4) {
-    viewer->setIpv4(ipv4);
+void viewer_setIpv4( Viewer* viewer, const char* ipv4 ) {
+    viewer->setIpv4( ipv4 );
 }
 
-void viewer_setPort(Viewer *viewer, int port)
-{
-    viewer->setPort(port);
+void viewer_setPort( Viewer* viewer, int port ) {
+    viewer->setPort( port );
 }
 
-bool viewer_isConnected(Viewer *viewer)
-{
-//    return viewer.
+bool viewer_isConnected( Viewer* viewer ) {
+    //    return viewer.
     return viewer->isConnected();
 }
 
@@ -206,7 +202,8 @@ void sensorSpec_getMetaDataStr( const SensorSpec* sensorSpec, char* metaDataStr 
 }
 
 SensorSpec* sensorSpec_copy( const SensorSpec* source ) {
-    return new SensorSpec( source->getSensorName(), source->getResolutions(), source->getMetaData() );
+    return new SensorSpec(
+        source->getSensorName(), source->getResolutions(), source->getMetaData() );
 }
 
 void freeSensorSpec( SensorSpec* sensorSpec ) {
@@ -239,9 +236,6 @@ bool metaData_getMat4( const SensorSpec::MetaData* metaData, const char* metaNam
     return false;
 }
 
-
-
-
 bool metaData_exists( const SensorSpec::MetaData* metaData, const char* metaName ) {
     return metaData->find( metaName ) != metaData->end();
 }
@@ -255,8 +249,6 @@ unsigned int metaData_getUInt( const SensorSpec::MetaData* metaData, const char*
     assert( metaData->find( metaName ) != metaData->end() );
     return std::any_cast<unsigned int>( metaData->at( metaName ) );
 }
-
-
 
 } // namespace native
 } // namespace hub

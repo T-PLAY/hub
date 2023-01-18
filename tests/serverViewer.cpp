@@ -27,13 +27,14 @@ TEST_CASE( "Server test : viewer" ) {
             data[i] = iAcq;
         }
         acqs.emplace_back( iAcq, iAcq );
-        acqs.back() << hub::Measure( (const unsigned char*)data, dataSize, {{width, height}, hub::Format::BGR8} );
+        acqs.back() << hub::Measure(
+            (const unsigned char*)data, dataSize, { { width, height }, hub::Format::BGR8 } );
     }
 
     std::cout << "[Test] ############################### server start" << std::endl;
     Server server( port );
     server.setMaxClients( 3 );
-//    server.setAcqPing( false );
+    //    server.setAcqPing( false );
     server.asyncRun();
     std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
     std::cout << "[Test] server end ------------------------------" << std::endl;

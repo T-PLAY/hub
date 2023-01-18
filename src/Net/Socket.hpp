@@ -1,17 +1,17 @@
 #pragma once
 
-//#define NOMINMAX
+// #define NOMINMAX
 
 #include <exception>
 #include <functional>
+#include <iostream>
 #include <list>
 #include <string>
-#include <iostream>
 
 #include "Macros.hpp"
 #include "Net/Utils.hpp"
 
-//#define DEBUG_SOCKET
+// #define DEBUG_SOCKET
 
 namespace hub {
 namespace net {
@@ -41,15 +41,15 @@ class SRC_API Socket
     Socket( const Socket& socket ) = delete;
     Socket( Socket&& socket );
     Socket& operator=( const Socket& socket ) = delete;
-    Socket&& operator=(Socket&& socket) = delete;
+    Socket&& operator=( Socket&& socket )     = delete;
 
     bool isConnected() const;
-//    void clear() const;
+    //    void clear() const;
 
   protected:
-//    mutable socket_fd m_fdSock = INVALID_SOCKET;
+    //    mutable socket_fd m_fdSock = INVALID_SOCKET;
     mutable net::utils::socket_fd m_fdSock = net::utils::invalidSocket();
-    bool m_serverSide  = false;
+    bool m_serverSide                      = false;
 };
 
 } // namespace net

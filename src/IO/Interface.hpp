@@ -13,7 +13,7 @@
 #include "Macros.hpp"
 #include "SensorSpec.hpp"
 
-//#define DEBUG_IOSTREAM
+// #define DEBUG_IOSTREAM
 
 namespace hub {
 namespace io {
@@ -33,12 +33,11 @@ class SRC_API Interface
     Interface&& operator=( Interface&& ioStream )     = delete;
 
     virtual ~Interface() = default;
-//    virtual ~Interface();
+    //    virtual ~Interface();
 
-
-    virtual void close() const = 0;
+    virtual void close() const  = 0;
     virtual bool isOpen() const = 0;
-    virtual bool isEnd() const = 0;
+    virtual bool isEnd() const  = 0;
 
     void write( const std::any& any ) const;
     virtual void write( const unsigned char* data, size_t len ) const = 0;
@@ -79,14 +78,14 @@ class SRC_API Interface
     void read( std::pair<T, U>& pair ) const;
 
     void read( std::string& str ) const;
-    void read( SensorSpec& sensorSpec ) const = delete;
-    void read( Acquisition& acquisition) const = delete;
-    void read( Measure& measure) const = delete;
+    void read( SensorSpec& sensorSpec ) const   = delete;
+    void read( Acquisition& acquisition ) const = delete;
+    void read( Measure& measure ) const         = delete;
 
-//    Measure getMeasure() const;
+    //    Measure getMeasure() const;
     SensorSpec getSensorSpec() const;
-//    virtual Acquisition getAcquisition( int acquisitionSize ) const;
-    virtual Acquisition getAcquisition( const SensorSpec & sensorSpec ) const;
+    //    virtual Acquisition getAcquisition( int acquisitionSize ) const;
+    virtual Acquisition getAcquisition( const SensorSpec& sensorSpec ) const;
 
     static std::string anyValue2string( const std::any& any );
     static const std::string& anyType2string( const std::any& any );
@@ -103,7 +102,7 @@ class SRC_API InputOutputInterface : public InputInterface, public OutputInterfa
 
 template <class T>
 void Interface::write( const T& t ) const {
-    assert(isOpen());
+    assert( isOpen() );
 
     write( reinterpret_cast<const unsigned char*>( &t ), sizeof( T ) );
 
@@ -115,7 +114,7 @@ void Interface::write( const T& t ) const {
 
 template <class T>
 void Interface::write( const std::list<T>& list ) const {
-    assert(isOpen());
+    assert( isOpen() );
 
 #ifdef DEBUG_IOSTREAM
     std::cout << "[Interface] write(std::list) : start" << std::endl;
@@ -131,7 +130,7 @@ void Interface::write( const std::list<T>& list ) const {
 
 template <class T>
 void Interface::write( const std::vector<T>& vector ) const {
-    assert(isOpen());
+    assert( isOpen() );
 
 #ifdef DEBUG_IOSTREAM
     std::cout << "[Interface] write(std::vector) : start" << std::endl;
@@ -147,7 +146,7 @@ void Interface::write( const std::vector<T>& vector ) const {
 
 template <class T, class U>
 void Interface::write( const std::map<T, U>& map ) const {
-    assert(isOpen());
+    assert( isOpen() );
 
 #ifdef DEBUG_IOSTREAM
     std::cout << "[Interface] write(std::map) : start" << std::endl;
@@ -166,7 +165,7 @@ void Interface::write( const std::map<T, U>& map ) const {
 
 template <class T, class U>
 void Interface::write( const std::pair<T, U>& pair ) const {
-    assert(isOpen());
+    assert( isOpen() );
 
 #ifdef DEBUG_IOSTREAM
     std::cout << "[Interface] write(std::pair) : start" << std::endl;
@@ -181,7 +180,7 @@ void Interface::write( const std::pair<T, U>& pair ) const {
 
 template <class T>
 void Interface::read( T& t ) const {
-    assert(isOpen());
+    assert( isOpen() );
 
     read( reinterpret_cast<unsigned char*>( &t ), sizeof( T ) );
 
@@ -193,7 +192,7 @@ void Interface::read( T& t ) const {
 
 template <class T>
 void Interface::read( std::list<T>& list ) const {
-    assert(isOpen());
+    assert( isOpen() );
 
 #ifdef DEBUG_IOSTREAM
     std::cout << "[Interface] read(std::list) : start" << std::endl;
@@ -211,7 +210,7 @@ void Interface::read( std::list<T>& list ) const {
 
 template <class T>
 void Interface::read( std::vector<T>& vector ) const {
-    assert(isOpen());
+    assert( isOpen() );
 
 #ifdef DEBUG_IOSTREAM
     std::cout << "[Interface] read(std::vector) : start" << std::endl;
@@ -232,7 +231,7 @@ void Interface::read( std::vector<T>& vector ) const {
 
 template <class T, class U>
 void Interface::read( std::map<T, U>& map ) const {
-    assert(isOpen());
+    assert( isOpen() );
 
 #ifdef DEBUG_IOSTREAM
     std::cout << "[Interface] read(std::map) : start" << std::endl;
@@ -255,7 +254,7 @@ void Interface::read( std::map<T, U>& map ) const {
 
 template <class T, class U>
 void Interface::read( std::pair<T, U>& pair ) const {
-    assert(isOpen());
+    assert( isOpen() );
 
 #ifdef DEBUG_IOSTREAM
     std::cout << "[Interface] read(std::pair) : start" << std::endl;

@@ -71,41 +71,41 @@
 // asserts are disabled except if explicitly required by
 // defining CORE_USE_ASSERT
 
-//#define DEBUG
+// #define DEBUG
 
 //// Make sure all "debug" macros are defined
-//#if defined (DEBUG) || defined(_DEBUG) || defined (CORE_DEBUG) // ------- Debug
-//#   undef CORE_DEBUG
-//#   define CORE_DEBUG
+// #if defined (DEBUG) || defined(_DEBUG) || defined (CORE_DEBUG) // ------- Debug
+// #   undef CORE_DEBUG
+// #   define CORE_DEBUG
 
-//#   undef _DEBUG
-//#   define _DEBUG
+// #   undef _DEBUG
+// #   define _DEBUG
 
-//#   undef DEBUG
-//#   define DEBUG
+// #   undef DEBUG
+// #   define DEBUG
 
-//#   undef NDEBUG
-//#   undef RELEASE
+// #   undef NDEBUG
+// #   undef RELEASE
 
-//#   define ON_DEBUG(CODE) CODE
-//#else // --------------------------------------------------------------- Release
+// #   define ON_DEBUG(CODE) CODE
+// #else // --------------------------------------------------------------- Release
 
-//#   define RELEASE
+// #   define RELEASE
 
-//#ifndef NO_DEBUG_INFO
-//#   define REL_DEB
-//#endif
+// #ifndef NO_DEBUG_INFO
+// #   define REL_DEB
+// #endif
 
-//#   undef CORE_DEBUG
-//#   undef DEBUG
-//#   undef _DEBUG
+// #   undef CORE_DEBUG
+// #   undef DEBUG
+// #   undef _DEBUG
 
-//#   if !defined (NDEBUG)
-//#       define NDEBUG
-//#   endif
+// #   if !defined (NDEBUG)
+// #       define NDEBUG
+// #   endif
 
-//#   define ON_DEBUG(CODE) /* Nothing */
-//#endif
+// #   define ON_DEBUG(CODE) /* Nothing */
+// #endif
 
 // ----------------------------------------------------------------------------
 // Explicit compiler warning disables.
@@ -114,17 +114,17 @@
 #if defined( COMPILER_GCC )
 #endif
 #if defined( COMPILER_MSVC )
-    #pragma warning(disable: 4244) // Conversion from double to float loses data.
-    #pragma warning( disable : 4251 ) // stl dllexports
-    #pragma warning(disable: 4267) // conversion from size_t to uint
+#    pragma warning( disable : 4244 ) // Conversion from double to float loses data.
+#    pragma warning( disable : 4251 ) // stl dllexports
+#    pragma warning( disable : 4267 ) // conversion from size_t to uint
 //	#pragma warning(disable: 4275) // non - DLL-interface class 'class_1' used as base for
 // DLL-interface class 'class_2' 	#pragma warning(disable: 4577) // noexcept used with no
 // exception handling mode 	#pragma warning(disable: 4838) // conversion from enum to uint.
 // #pragma warning(disable: 4996) // sprintf unsafe 	#pragma warning(disable: 4503) // Truncated
 // decorated name
-    #ifndef NOMINMAX
-        #define NOMINMAX
-    #endif
+#    ifndef NOMINMAX
+#        define NOMINMAX
+#    endif
 #endif
 
 // ----------------------------------------------------------------------------
@@ -136,9 +136,9 @@
 // 			} \
 // 			assert( s_logFile.is_open() ); \
 
-//#if SRC_EXPORTS
+// #if SRC_EXPORTS
 #define ENABLE_DEBUG_MSG
-//#endif
+// #endif
 
 #if defined( ENABLE_DEBUG_MSG ) && defined( DEBUG )
 #    define DEBUG_MSG( str )               \
@@ -158,14 +158,14 @@
 // Dll import/export.
 // ----------------------------------------------------------------------------
 
-//#define SRC_STATIC // force static link for external use
-//#undef SRC_EXPORTS
+// #define SRC_STATIC // force static link for external use
+// #undef SRC_EXPORTS
 
 #ifdef OS_WINDOWS
 #    if defined SRC_STATIC
-        // todo fix unable to link static lib from external project, only single dll (import) is possible
-        #define SRC_API
-		#undef SRC_EXPORTS
+// todo fix unable to link static lib from external project, only single dll (import) is possible
+#        define SRC_API
+#        undef SRC_EXPORTS
 #    elif defined SRC_EXPORTS
 #        define SRC_API __declspec( dllexport )
 #    else
@@ -178,18 +178,17 @@
 #    define SRC_API
 #endif
 
-
-#if (__cplusplus >= 202001L)
+#if ( __cplusplus >= 202001L )
 #    define CPLUSPLUS_VERSION 20
 #    define CONSTEXPR17 constexpr
 #    define CONSTEXPR20 constexpr
 //    #error "C++20 not supported"
-#elif (__cplusplus >= 201703L)
+#elif ( __cplusplus >= 201703L )
 #    define CPLUSPLUS_VERSION 17
 #    define CONSTEXPR17 constexpr
 #    define CONSTEXPR20
 //	#error "C++17 not supported"
-#elif (__cplusplus >= 201402L) || (defined(_MSC_VER) && _MSC_VER >= 1914)
+#elif ( __cplusplus >= 201402L ) || ( defined( _MSC_VER ) && _MSC_VER >= 1914 )
 #    define CPLUSPLUS_VERSION 14
 #    define CONSTEXPR17
 #    define CONSTEXPR20
@@ -197,4 +196,3 @@
 #else
 #    error "C++ version " __cplusplus " not supported"
 #endif
-

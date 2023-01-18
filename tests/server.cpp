@@ -4,7 +4,7 @@
 #include <IO/Stream.hpp>
 #include <InputSensor.hpp>
 #include <Net/ClientSocket.hpp>
-//#include <Net/Server.hpp>
+// #include <Net/Server.hpp>
 #include <OutputSensor.hpp>
 #include <Server.hpp>
 
@@ -85,14 +85,14 @@ TEST_CASE( "Server test : direct stream" ) {
                 }
                 std::cout << "[Test] inputStream end ---------------------------------"
                           << std::endl;
-//                std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+                //                std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
             }
             //            outputSensor << acqs[0];
 
         } // end outputSensor
 
         std::cout << "[Test] outputStream deleted *******************************" << std::endl;
-//        std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+        //        std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
 
         std::cout
             << "[Test] xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx "

@@ -22,63 +22,64 @@ ViewerClient::ViewerClient( Server& server, int iClient, hub::net::ClientSocket&
         catch ( std::exception& e ) {
             m_mtxSocket.unlock();
 
-//            s_mtxCout.lock();
+            //            s_mtxCout.lock();
             std::cout << headerMsg() << "catch viewer exception : " << e.what() << std::endl;
             //            delete this;
-//            m_server.delViewer( this );
+            //            m_server.delViewer( this );
             std::thread( [this]() { delete this; } ).detach();
         }
     } );
     //    thread.detach();
 
-    printStatusMessage("new viewer");
-//    std::cout << std::left << std::setw( g_margin2 ) << headerMsg() << std::setw( g_margin )
-//              << "new viewer" << m_server.getStatus() << std::endl;
-//    std::cout << "-------------------------------------------------------------------------"
-//                 "--------------------"
-//              << std::endl;
+    printStatusMessage( "new viewer" );
+    //    std::cout << std::left << std::setw( g_margin2 ) << headerMsg() << std::setw( g_margin )
+    //              << "new viewer" << m_server.getStatus() << std::endl;
+    //    std::cout << "-------------------------------------------------------------------------"
+    //                 "--------------------"
+    //              << std::endl;
 }
 
 ViewerClient::~ViewerClient() {
-//    s_mtxCout.lock();
+    //    s_mtxCout.lock();
 
     assert( m_thread.joinable() );
     m_thread.join();
 
-    m_server.delViewer(this);
-    printStatusMessage("del viewer");
-//    std::cout << std::left << std::setw( g_margin2 ) << headerMsg() << std::setw( g_margin )
-//              << "del viewer" << m_server.getStatus() << std::endl;
-//    std::cout << "-------------------------------------------------------------------------"
-//                 "--------------------"
-//              << std::endl;
-//    m_mtxSocket.unlock();
-//    s_mtxCout.unlock();
+    m_server.delViewer( this );
+    printStatusMessage( "del viewer" );
+    //    std::cout << std::left << std::setw( g_margin2 ) << headerMsg() << std::setw( g_margin )
+    //              << "del viewer" << m_server.getStatus() << std::endl;
+    //    std::cout << "-------------------------------------------------------------------------"
+    //                 "--------------------"
+    //              << std::endl;
+    //    m_mtxSocket.unlock();
+    //    s_mtxCout.unlock();
 }
 
 std::string ViewerClient::headerMsg() const {
     return Client::headerMsg() + "[Viewer] ";
 }
 
-void ViewerClient::notifyNewStreamer(const StreamerClient &streamer) const {
+void ViewerClient::notifyNewStreamer( const StreamerClient& streamer ) const {
 
     m_mtxSocket.lock();
     m_socket.write( hub::net::ClientSocket::Message::NEW_STREAMER );
-//    m_socket.write( (syncStream == "") ?(streamer.getStreamName()) :(syncStream + " <- " + streamer.getStreamName()) );
-    m_socket.write( streamer.getStreamName());
+    //    m_socket.write( (syncStream == "") ?(streamer.getStreamName()) :(syncStream + " <- " +
+    //    streamer.getStreamName()) );
+    m_socket.write( streamer.getStreamName() );
     m_socket.write( streamer.getInputSensor().m_spec );
-//    m_socket.write( syncStream );
+    //    m_socket.write( syncStream );
     m_mtxSocket.unlock();
 }
 
-void ViewerClient::notifyDelStreamer(const StreamerClient &streamer) const {
+void ViewerClient::notifyDelStreamer( const StreamerClient& streamer ) const {
     std::cout << headerMsg() << "notifyDelStreamer " << streamer.getStreamName() << std::endl;
     try {
         m_mtxSocket.lock();
         m_socket.write( hub::net::ClientSocket::Message::DEL_STREAMER );
         m_socket.write( streamer.getStreamName() );
         m_socket.write( streamer.getInputSensor().m_spec );
-//        m_socket.write( syncStream );
+        //        m_socket.write( syncStream );
         m_mtxSocket.unlock();
     }
     catch ( std::exception& e ) {
@@ -89,6 +90,6 @@ void ViewerClient::notifyDelStreamer(const StreamerClient &streamer) const {
                   << e.what() << std::endl;
         //        delete this;
         //    m_server.delViewer( this );
-            std::thread( [this]() { delete this; } ).detach();
+        std::thread( [this]() { delete this; } ).detach();
     }
 }

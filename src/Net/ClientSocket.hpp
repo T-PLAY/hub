@@ -78,13 +78,13 @@ class SRC_API ClientSocket : public Socket, public virtual io::Interface
   private:
     std::string m_ipv4;
     int m_port;
-//    struct sockaddr_in m_serverAddress;
+    //    struct sockaddr_in m_serverAddress;
     net::utils::ClientAddr m_addr;
     mutable bool m_connected = false;
 
   public:
     const std::string& getIpv4() const;
-    const int &getPort() const;
+    const int& getPort() const;
 };
 
 template <class T>

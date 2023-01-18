@@ -2,11 +2,11 @@
 
 #include "IO/Interface.hpp"
 #include "SensorSpec.hpp"
-//#include <memory>
+// #include <memory>
 
-//#ifdef interface
-//#undef interface
-//#endif
+// #ifdef interface
+// #undef interface
+// #endif
 
 namespace hub {
 
@@ -17,12 +17,12 @@ namespace hub {
 class SRC_API Sensor
 {
   public:
-//    class exception : public std::runtime_error
-//    {
-//      public:
-//        explicit exception( const char* const message ) throw() : std::runtime_error( message ) {}
-//        const char* what() const throw() { return std::runtime_error::what(); }
-//    };
+    //    class exception : public std::runtime_error
+    //    {
+    //      public:
+    //        explicit exception( const char* const message ) throw() : std::runtime_error( message
+    //        ) {} const char* what() const throw() { return std::runtime_error::what(); }
+    //    };
 
   protected:
     Sensor( const SensorSpec&& sensorSpec, io::Interface& interface_ );

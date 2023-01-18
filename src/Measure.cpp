@@ -17,7 +17,7 @@ Dof6::Dof6( const Measure& measure ) :
 Dof6::Dof6( float x, float y, float z, float w0, float w1, float w2, float w3 ) :
     Measure( (unsigned char*)new float[7] { x, y, z, w0, w1, w2, w3 },
              28,
-            Resolution { { 1 }, Format::DOF6 } ) {
+             Resolution { { 1 }, Format::DOF6 } ) {
     //    m_ownData = true;
     //    assert( m_ownData == true );
     assert( m_size == 28 );
@@ -78,7 +78,8 @@ std::ostream& operator<<( std::ostream& os, const Dof6& dof6 ) {
     return os;
 }
 
-Mat4::Mat4( const float* array ) : Measure( (unsigned char*)array, 64, Resolution { { 1 }, Format::MAT4 } ) {
+Mat4::Mat4( const float* array ) :
+    Measure( (unsigned char*)array, 64, Resolution { { 1 }, Format::MAT4 } ) {
     assert( m_size == 64 );
 }
 
@@ -206,7 +207,6 @@ bool Measure::operator==( const Measure& measure ) const {
 bool Measure::operator!=( const Measure& measure ) const {
     return !( *this == measure );
 }
-
 
 std::ostream& operator<<( std::ostream& os, const Measure& measure ) {
     if ( measure.m_size == 28 ) {

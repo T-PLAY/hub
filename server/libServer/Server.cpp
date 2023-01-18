@@ -2,7 +2,7 @@
 
 #include <cassert>
 #include <cstring>
-//#include <iomanip>
+// #include <iomanip>
 #include <iostream>
 #include <memory>
 #include <thread>
@@ -17,8 +17,8 @@ std::string Server::getStatus() {
     std::string streamViewersStr = "[";
 
     for ( const auto& [streamerName, streamer] : m_streamers ) {
-//        const auto& streamerName = pair.first;
-//        const auto& streamer     = pair.second;
+        //        const auto& streamerName = pair.first;
+        //        const auto& streamer     = pair.second;
 
         //        auto& streamViewers     = m_streamViewers[streamerName];
         const auto& streamViewers = streamer->getStreamViewers();
@@ -45,7 +45,7 @@ std::string Server::getStatus() {
     return str;
 }
 
-//void printStatus( const std::string& message ) {}
+// void printStatus( const std::string& message ) {}
 
 void Server::addStreamer( StreamerClient* streamer ) {
 
@@ -54,13 +54,13 @@ void Server::addStreamer( StreamerClient* streamer ) {
     assert( m_streamers.find( streamerName ) == m_streamers.end() );
     m_streamers[streamerName] = streamer;
 
-        std::cout << headerMsg() << "prevent viewers there is a new streamer : '" << streamerName << "'"
-                  << std::endl;
-        for ( const auto& viewer : m_viewers ) {
-            viewer->notifyNewStreamer( *streamer );
-        }
+    std::cout << headerMsg() << "prevent viewers there is a new streamer : '" << streamerName << "'"
+              << std::endl;
+    for ( const auto& viewer : m_viewers ) {
+        viewer->notifyNewStreamer( *streamer );
+    }
 
-//    const auto& parentName = streamer->getParent();
+    //    const auto& parentName = streamer->getParent();
     //    const auto& syncStream =
     //        ( m_streamers.find( parent ) != m_streamers.end() ) ? ( parent ) : ( "" );
     //    for ( const auto& viewer : m_viewers ) {
@@ -71,60 +71,66 @@ void Server::addStreamer( StreamerClient* streamer ) {
     //    std::cout << headerMsg() << "prevent viewers there is a new streamer : '" << streamerName
     //              << "' -> '" << streamerParent << "'" << std::endl;
 
-//    // if parent exist, attach parent to his child
-//    if ( m_streamers.find( parentName ) != m_streamers.end() ) {
-//        const auto& parent = m_streamers.at( parentName );
+    //    // if parent exist, attach parent to his child
+    //    if ( m_streamers.find( parentName ) != m_streamers.end() ) {
+    //        const auto& parent = m_streamers.at( parentName );
 
-//        std::cout << headerMsg()
-//                  << "prevent viewers there is a new father streamer linked to his child : '"
-//                  << parentName << "' (parent) <- '" << streamerName << "'" << std::endl;
-//        for ( const auto& viewer : m_viewers ) {
-//            //        viewer->notifyNewStreamer( *streamer, syncStream );
-//            viewer->notifyNewStreamer( parentName, parent->getInputSensor().m_spec, streamerName );
-//        }
-//    }
-//    // however prevent there is new orphan
-//    else {
-//        std::cout << headerMsg() << "prevent viewers there is a new streamer : '" << streamerName
-//                  << std::endl;
-//        for ( const auto& viewer : m_viewers ) {
-//            viewer->notifyNewStreamer( streamerName, streamer->getInputSensor().m_spec, "" );
-//        }
-//    }
+    //        std::cout << headerMsg()
+    //                  << "prevent viewers there is a new father streamer linked to his child : '"
+    //                  << parentName << "' (parent) <- '" << streamerName << "'" << std::endl;
+    //        for ( const auto& viewer : m_viewers ) {
+    //            //        viewer->notifyNewStreamer( *streamer, syncStream );
+    //            viewer->notifyNewStreamer( parentName, parent->getInputSensor().m_spec,
+    //            streamerName );
+    //        }
+    //    }
+    //    // however prevent there is new orphan
+    //    else {
+    //        std::cout << headerMsg() << "prevent viewers there is a new streamer : '" <<
+    //        streamerName
+    //                  << std::endl;
+    //        for ( const auto& viewer : m_viewers ) {
+    //            viewer->notifyNewStreamer( streamerName, streamer->getInputSensor().m_spec, "" );
+    //        }
+    //    }
 
-//    for ( const auto& pair : m_streamers ) {
-//        const auto& sonStreamer     = *pair.second;
-//        const auto& sonStreamerName = sonStreamer.getStreamName();
+    //    for ( const auto& pair : m_streamers ) {
+    //        const auto& sonStreamer     = *pair.second;
+    //        const auto& sonStreamerName = sonStreamer.getStreamName();
 
-//        const auto& parentOfChild = sonStreamer.getParent();
-//        // for each sons of the new streamer, synchronize it
-//        if ( parentOfChild == streamerName ) {
-//            std::cout << headerMsg()
-//                      << "prevent viewers there is a new father streamer linked to his child : '"
-//                      << streamerName << "' <- '" << sonStreamerName << "' (son)" << std::endl;
-//            for ( const auto* viewer : m_viewers ) {
-//                //                viewer->notifyDelStreamer( sonStreamer.getStreamName(),
-//                //                sonStreamer.getInputSensor().m_spec); viewer->notifyNewStreamer(
-//                //                sonStreamer, syncStream );
-//                //                viewer->notifyDelStreamer( streamerName,
-//                //                streamer->getInputSensor().m_spec);
-//                viewer->notifyDelStreamer(
-//                    sonStreamerName, sonStreamer.getInputSensor().m_spec, "" );
-//                viewer->notifyNewStreamer(
-//                    streamerName, streamer->getInputSensor().m_spec, sonStreamerName );
-//            }
-//        }
-//        //        const auto& syncStream =
-//        //            ( m_streamers.find( parentOfChild ) != m_streamers.end() ) ? ( parent ) : ( ""
-//        //            );
-//    }
+    //        const auto& parentOfChild = sonStreamer.getParent();
+    //        // for each sons of the new streamer, synchronize it
+    //        if ( parentOfChild == streamerName ) {
+    //            std::cout << headerMsg()
+    //                      << "prevent viewers there is a new father streamer linked to his child :
+    //                      '"
+    //                      << streamerName << "' <- '" << sonStreamerName << "' (son)" <<
+    //                      std::endl;
+    //            for ( const auto* viewer : m_viewers ) {
+    //                //                viewer->notifyDelStreamer( sonStreamer.getStreamName(),
+    //                //                sonStreamer.getInputSensor().m_spec);
+    //                viewer->notifyNewStreamer(
+    //                //                sonStreamer, syncStream );
+    //                //                viewer->notifyDelStreamer( streamerName,
+    //                //                streamer->getInputSensor().m_spec);
+    //                viewer->notifyDelStreamer(
+    //                    sonStreamerName, sonStreamer.getInputSensor().m_spec, "" );
+    //                viewer->notifyNewStreamer(
+    //                    streamerName, streamer->getInputSensor().m_spec, sonStreamerName );
+    //            }
+    //        }
+    //        //        const auto& syncStream =
+    //        //            ( m_streamers.find( parentOfChild ) != m_streamers.end() ) ? ( parent )
+    //        : ( ""
+    //        //            );
+    //    }
 }
 
 void Server::delStreamer( StreamerClient* streamer ) {
     //    m_mtxStreamers.lock();
 
     const std::string streamerName = streamer->getStreamName();
-//    const auto sensorSpec   = streamer->getInputSensor().m_spec;
+    //    const auto sensorSpec   = streamer->getInputSensor().m_spec;
 
     //    auto streamViewers = m_streamViewers[streamerName];
     //    for ( auto* streamViewer : streamViewers ) {
@@ -132,60 +138,65 @@ void Server::delStreamer( StreamerClient* streamer ) {
     //    }
     //    m_streamViewers.at( streamerName ).clear();
 
-        m_mtxStreamers.lock();
+    m_mtxStreamers.lock();
     assert( m_streamers.find( streamerName ) != m_streamers.end() );
-        m_streamers.erase(streamerName);
-//    m_streamers.erase( m_streamers.find( streamerName ) );
-        m_mtxStreamers.unlock();
+    m_streamers.erase( streamerName );
+    //    m_streamers.erase( m_streamers.find( streamerName ) );
+    m_mtxStreamers.unlock();
 
     //    std::thread thread( [streamer]() { delete streamer; } );
     //    thread.detach();
 
-        for ( const auto* viewer : m_viewers ) {
-            viewer->notifyDelStreamer( *streamer);
-        }
+    for ( const auto* viewer : m_viewers ) {
+        viewer->notifyDelStreamer( *streamer );
+    }
 
-//    const auto& parentName = streamer->getParent();
-//    //    const auto& syncStream =
-//    //        ( m_streamers.find( parent ) != m_streamers.end() ) ? ( parent ) : ( "" );
-//    //    for ( const auto& viewer : m_viewers ) {
-//    //        viewer->notifyNewStreamer( *streamer, "" );
-//    //    }
+    //    const auto& parentName = streamer->getParent();
+    //    //    const auto& syncStream =
+    //    //        ( m_streamers.find( parent ) != m_streamers.end() ) ? ( parent ) : ( "" );
+    //    //    for ( const auto& viewer : m_viewers ) {
+    //    //        viewer->notifyNewStreamer( *streamer, "" );
+    //    //    }
 
-//    // prevent the father to link to his child
-//    //    std::cout << headerMsg() << "prevent viewers there is a new streamer : '" << streamerName
-//    //              << "' -> '" << parentName << "'" << std::endl;
+    //    // prevent the father to link to his child
+    //    //    std::cout << headerMsg() << "prevent viewers there is a new streamer : '" <<
+    //    streamerName
+    //    //              << "' -> '" << parentName << "'" << std::endl;
 
-//    // if parent exist, attach parent to his child
-//    if ( m_streamers.find( parentName ) != m_streamers.end() ) {
-//        const auto& parent = m_streamers.at( parentName );
+    //    // if parent exist, attach parent to his child
+    //    if ( m_streamers.find( parentName ) != m_streamers.end() ) {
+    //        const auto& parent = m_streamers.at( parentName );
 
-//        std::cout << headerMsg()
-//                  << "prevent viewers there is a new father streamer linked to his child : '"
-//                  << parentName << "' (parent) <- '" << streamerName << "'" << std::endl;
-//        for ( const auto& viewer : m_viewers ) {
-//            //        viewer->notifyNewStreamer( *streamer, syncStream );
-//            //            viewer->notifyNewStreamer( *m_streamers.at( parentName ), streamerName );
-//            viewer->notifyDelStreamer( parentName, parent->getInputSensor().m_spec, streamerName );
-//        }
-//    }
-//    // however prevent there is new orphan
-//    else {
-//        std::cout << headerMsg() << "prevent viewers there is a new streamer : '" << streamerName
-//                  << std::endl;
-//        for ( const auto& viewer : m_viewers ) {
-//            //            viewer->notifyNewStreamer( *streamer, "" );
-//            viewer->notifyDelStreamer( streamerName, streamer->getInputSensor().m_spec, "" );
-//        }
-//    }
+    //        std::cout << headerMsg()
+    //                  << "prevent viewers there is a new father streamer linked to his child : '"
+    //                  << parentName << "' (parent) <- '" << streamerName << "'" << std::endl;
+    //        for ( const auto& viewer : m_viewers ) {
+    //            //        viewer->notifyNewStreamer( *streamer, syncStream );
+    //            //            viewer->notifyNewStreamer( *m_streamers.at( parentName ),
+    //            streamerName ); viewer->notifyDelStreamer( parentName,
+    //            parent->getInputSensor().m_spec, streamerName );
+    //        }
+    //    }
+    //    // however prevent there is new orphan
+    //    else {
+    //        std::cout << headerMsg() << "prevent viewers there is a new streamer : '" <<
+    //        streamerName
+    //                  << std::endl;
+    //        for ( const auto& viewer : m_viewers ) {
+    //            //            viewer->notifyNewStreamer( *streamer, "" );
+    //            viewer->notifyDelStreamer( streamerName, streamer->getInputSensor().m_spec, "" );
+    //        }
+    //    }
 
-//    //    std::cout << std::left << std::setw( g_margin2 ) << headerMsg() << std::setw( g_margin )
-//    //              << "del streamer" << getStatus() << std::endl;
-//    //    std::cout << "-------------------------------------------------------------------------"
-//    //                 "--------------------"
-//    //              << std::endl;
+    //    //    std::cout << std::left << std::setw( g_margin2 ) << headerMsg() << std::setw(
+    //    g_margin )
+    //    //              << "del streamer" << getStatus() << std::endl;
+    //    //    std::cout <<
+    //    "-------------------------------------------------------------------------"
+    //    //                 "--------------------"
+    //    //              << std::endl;
 
-//        m_mtxStreamers.unlock();
+    //        m_mtxStreamers.unlock();
 }
 
 // void Server::addStreamViewer( StreamViewerClient* streamViewer ) {
@@ -216,28 +227,27 @@ void Server::addViewer( ViewerClient* viewer ) {
         //        const auto& streamer = *pair.second;
 
         // notify orphans first
-        if (streamer->getParent() == "") {
-            viewer->notifyNewStreamer( *streamer );
-        }
+        if ( streamer->getParent() == "" ) { viewer->notifyNewStreamer( *streamer ); }
 
-//        const auto& parentName = streamer->getParent();
-//        //        const auto& syncStream =
-//        //            ( m_streamers.find( parentName ) != m_streamers.end() ) ? ( parentName ) : (
-//        //            "" );
+        //        const auto& parentName = streamer->getParent();
+        //        //        const auto& syncStream =
+        //        //            ( m_streamers.find( parentName ) != m_streamers.end() ) ? (
+        //        parentName ) : (
+        //        //            "" );
 
-//        if ( m_streamers.find( parentName ) != m_streamers.end() ) {
-//            const auto& parent = *m_streamers.at( parentName );
+        //        if ( m_streamers.find( parentName ) != m_streamers.end() ) {
+        //            const auto& parent = *m_streamers.at( parentName );
 
-//            viewer->notifyNewStreamer( parentName, parent.getInputSensor().m_spec, streamerName );
-//        }
-//        else { viewer->notifyNewStreamer( streamerName, streamer->getInputSensor().m_spec, "" ); }
+        //            viewer->notifyNewStreamer( parentName, parent.getInputSensor().m_spec,
+        //            streamerName );
+        //        }
+        //        else { viewer->notifyNewStreamer( streamerName, streamer->getInputSensor().m_spec,
+        //        "" ); }
     }
 
     for ( const auto& [streamerName, streamer] : m_streamers ) {
         // notify children to auto synchronize with already oppened parent
-        if (streamer->getParent() != "") {
-            viewer->notifyNewStreamer( *streamer );
-        }
+        if ( streamer->getParent() != "" ) { viewer->notifyNewStreamer( *streamer ); }
     }
 
     m_viewers.push_back( viewer );

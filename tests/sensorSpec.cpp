@@ -12,9 +12,8 @@ TEST_CASE( "SensorSpec test" ) {
     hub::Format format = hub::Format::BGR8;
     hub::Dims dims     = { 1 };
     hub::Resolutions resolutions { { dims, format } };
-    hub::SensorSpec sensorSpec {
-        "sensorName", { { dims, hub::Format::BGR8 } }, metaData };
+    hub::SensorSpec sensorSpec { "sensorName", { { dims, hub::Format::BGR8 } }, metaData };
 
-    CHECK(sensorSpec.getSensorName() == "sensorName");
-    CHECK(sensorSpec.getAcquisitionSize() == 3);
+    CHECK( sensorSpec.getSensorName() == "sensorName" );
+    CHECK( sensorSpec.getAcquisitionSize() == 3 );
 }

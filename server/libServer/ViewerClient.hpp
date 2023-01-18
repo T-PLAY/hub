@@ -8,7 +8,6 @@
 
 #include "Client.hpp"
 
-
 class StreamerClient;
 
 class ViewerClient : public Client
@@ -19,10 +18,10 @@ class ViewerClient : public Client
 
     std::string headerMsg() const override;
 
-//    void notifyNewStreamer(const StreamerClient& streamer , const std::string &syncStream) const;
-    void notifyNewStreamer(const StreamerClient& streamer) const;
-    void notifyDelStreamer(const StreamerClient& streamer
-                            ) const;
+    //    void notifyNewStreamer(const StreamerClient& streamer , const std::string &syncStream)
+    //    const;
+    void notifyNewStreamer( const StreamerClient& streamer ) const;
+    void notifyDelStreamer( const StreamerClient& streamer ) const;
 
   private:
     std::thread m_thread;

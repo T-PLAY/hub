@@ -29,8 +29,8 @@ class SRC_API OutputSensor : public Sensor
         Sensor( std::move( sensorSpec ),
                 *std::move( new OutputInterface( std::move( outputInterface ) ) ) ) {
 
-//        std::cout << "[OutputSensor] OutputSensor(const SensorSpec&&, OutputInterface&&)"
-//                  << std::endl;
+        //        std::cout << "[OutputSensor] OutputSensor(const SensorSpec&&, OutputInterface&&)"
+        //                  << std::endl;
 
         static_assert( std::is_base_of<io::OutputInterface, OutputInterface>::value,
                        "not a base class" );
