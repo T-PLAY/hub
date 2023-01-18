@@ -39,12 +39,13 @@ stages:
 #       - build/
 
 cache:
-  key: apt-cache
-  paths:
+  key:
+    paths:
     # - apt-cache/
-    - build/
-    - /usr/bin/doxygen
-    - /usr/share/cmake-*/Modules/FindDoxygen.cmake
+      - build/
+    files:
+      - /usr/bin/doxygen
+      - /usr/share/cmake-*/Modules/FindDoxygen.cmake
   
 
 # before_script:
