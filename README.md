@@ -22,7 +22,7 @@ We thus propose a central server (hub) allowing to separate the applications ret
 ## Installation
 ```
 mkdir build
-cmake -B build
+cmake -B build -DCMAKE_INSTALL_PREFIX=hub-install
 cmake --build build
 cmake --install build
 ```
