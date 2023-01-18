@@ -17,12 +17,14 @@ image: stormirit/radium_dev:latest
 stages:
   # - dep
   - doc
-  - build
-  - test
+  # - build
+  # - test
   # - doc
 
 doc:
   script:
+    - apt update
+    - apt install python-sphinx
     - cd doc/docs_sphinx
     - make html
 
@@ -80,14 +82,14 @@ test:
     - ctest -V
 #    - ./runmytests.sh
 
-pages:
-  extends: .before_script_template
-  # stage: doc
+# pages:
+#   extends: .before_script_template
+#   # stage: doc
 
-  script:
-    - cmake --build build --target docs
-    - mv build/doc/docs_doxygen/html/ public/
-#    - ./runmytests.sh
+#   script:
+#     - cmake --build build --target docs
+#     - mv build/doc/docs_doxygen/html/ public/
+# #    - ./runmytests.sh
 
   artifacts:
     paths:
