@@ -7,11 +7,7 @@
 # using Radium development dedicated image
 image: stormirit/radium_dev:latest
 
-before_script:
-  # - apk update
-  # - apk add doxygen
-  - apt update
-  - apt install -y doxygen
+
 
 #https://docs.gitlab.com/ee/ci/yaml/#extends
 .branches_with_ci:
@@ -22,6 +18,14 @@ stages:
   - build
   - test
   - doc
+
+before_script:
+  stage: ['build', 'doc']
+  script:
+  # - apk update
+  # - apk add doxygen
+  - apt update
+  - apt install -y doxygen
 
 cache:
     key: ${CI_COMMIT_REF_SLUG}
