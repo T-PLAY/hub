@@ -8,7 +8,7 @@ done
 
 cd $rootPath
 
-for file in $(find . -type f \( -name "*.cmake" -o -name "CMakeLists.txt" \)); do
+for file in $(find . -type f \( \( -name "CMakeLists.txt" -o -name "*.cmake" \) -not -path "*build*" -not -path "*install*" \)); do
 	echo $file
 	sed -i '/^ *#[^#]*$/d' $file
 done
