@@ -7,15 +7,30 @@
 # using Radium development dedicated image
 image: stormirit/radium_dev:latest
 
+
+
 #https://docs.gitlab.com/ee/ci/yaml/#extends
 .branches_with_ci:
   only:
     - master
 
 stages:
+  # - dep
   - build
   - test
   - doc
+
+.before_script_template:
+# # dep:
+#   # stage: dep
+#   # script:
+  before_script:
+#   # stage: ['build', 'doc']
+#   # script:
+#   # - apk update
+#   # - apk add doxygen
+    - apt update
+    - apt install -y doxygen
 
 cache:
     key: ${CI_COMMIT_REF_SLUG}
@@ -30,6 +45,7 @@ cache:
 #       - build/
       
 build:
+  extends: .before_script_template
   stage: build
 #  before_script:
 #    - export PATH=$PATH:/opt/Qt/5.10.0/gcc_64/bin
@@ -59,6 +75,7 @@ test:
 #    - ./runmytests.sh
 
 doc:
+  extends: .before_script_template
   stage: doc
   
   script:
