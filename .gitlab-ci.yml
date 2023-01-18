@@ -16,7 +16,7 @@ stages:
   # - dep
   # - build
   # - test
-  # - doc
+  - doc
   - format
 
 # cache:
