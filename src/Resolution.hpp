@@ -1,14 +1,14 @@
 
 #pragma once
 
-#include <vector>
 #include <string>
+#include <vector>
 
 #include "Macros.hpp"
 
 namespace hub {
 
-    // clang-format off
+// clang-format off
     enum class Format {
         NONE = 0,
         Z16, 			/**< 16-bit linear depth values. The depth is meters is equal to depth scale pixel value. */
@@ -45,30 +45,28 @@ namespace hub {
         MAT4,     		/**< Transform matrix 4x4 of float. */
         COUNT     		/**< Number of enumeration values. Not a valid input: intended to be used in for-loops. */
     };
-    // clang-format on
+// clang-format on
 
-    using Dims = std::vector<int>;
-    using Resolution  = std::pair<Dims, Format>;
-    using Resolutions = std::vector<Resolution>;
+using Dims        = std::vector<int>;
+using Resolution  = std::pair<Dims, Format>;
+using Resolutions = std::vector<Resolution>;
 
 //    static const Resolution s_Atomic_Resolution_Dof6 = Resolution {{1}, Format::DOF6};
 
-    static std::string dims2string( const Dims& dims );
-    static inline constexpr std::string & format2string( const Format& format );
-    static std::string resolutions2string( const Resolutions& resolutions );
+static std::string dims2string( const Dims& dims );
+static inline constexpr std::string& format2string( const Format& format );
+static std::string resolutions2string( const Resolutions& resolutions );
 
 //    static std::string metaData2string( const MetaData& metaData, bool expand = false );
 //    static std::string metaData2string( const std::pair<std::string, std::any>& metaData );
-    static inline CONSTEXPR20 size_t computeAcquisitionSize( const Resolutions& resolutions ) noexcept;
-    static inline CONSTEXPR20 size_t computeAcquisitionSize( const Resolution& resolution ) noexcept;
-    static inline CONSTEXPR20 size_t computeAcquisitionSize( Format format, const Dims& dims ) noexcept;
-    static inline constexpr int format2nByte( const Format& format ) noexcept;
-    static inline constexpr bool format2isInterpolable( const Format& format ) noexcept;
+static inline CONSTEXPR20 size_t computeAcquisitionSize( const Resolutions& resolutions ) noexcept;
+static inline CONSTEXPR20 size_t computeAcquisitionSize( const Resolution& resolution ) noexcept;
+static inline CONSTEXPR20 size_t computeAcquisitionSize( Format format, const Dims& dims ) noexcept;
+static inline constexpr int format2nByte( const Format& format ) noexcept;
+static inline constexpr bool format2isInterpolable( const Format& format ) noexcept;
 
-
-    SRC_API std::ostream& operator<<( std::ostream& os, const Format& format );
+SRC_API std::ostream& operator<<( std::ostream& os, const Format& format );
 //    SRC_API friend std::ostream& operator<<( std::ostream& os, const Format& format );
-
 
 } // namespace hub
 

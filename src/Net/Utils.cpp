@@ -8,28 +8,28 @@
 
 #ifdef WIN32
 
-//#include <windows.h>
-    #include <winsock2.h>
-    #include <ws2tcpip.h>
-//#include <WS2tcpip.h>
+// #include <windows.h>
+#    include <winsock2.h>
+#    include <ws2tcpip.h>
+// #include <WS2tcpip.h>
 
-    #pragma comment( lib, "ws2_32.lib" )
-//#pragma comment(lib, "Ws2_32.lib")
+#    pragma comment( lib, "ws2_32.lib" )
+// #pragma comment(lib, "Ws2_32.lib")
 
 // using socklen_t = int;
 // using socket_fd = SOCKET;
 
-//#include <basetsd.h>
-// using socket_fd = UINT_PTR;
+// #include <basetsd.h>
+//  using socket_fd = UINT_PTR;
 
 #else // #ifdef WIN32
-    #define INVALID_SOCKET -1ul
-    #define closesocket close
-//using socket_fd = int;
-    #include <arpa/inet.h>
-    #include <csignal>
-    #include <sys/socket.h>
-    #include <unistd.h>
+#    define INVALID_SOCKET -1ul
+#    define closesocket close
+// using socket_fd = int;
+#    include <arpa/inet.h>
+#    include <csignal>
+#    include <sys/socket.h>
+#    include <unistd.h>
 #endif // #ifdef WIN32
 
 namespace hub {
@@ -38,11 +38,11 @@ namespace utils {
 
 static bool s_inited = false;
 
- socket_fd invalidSocket() {
+socket_fd invalidSocket() {
     return INVALID_SOCKET;
 }
 
-static inline  void init() {
+static inline void init() {
     if ( !s_inited ) {
 #ifdef DEBUG_NET
         std::cout << getHeader() << "init()" << std::endl;
@@ -56,18 +56,18 @@ static inline  void init() {
         }
 #else
         //        signal( SIGINT, signalHandler );
-//        signal( SIGPIPE, SIG_IGN );
+        //        signal( SIGPIPE, SIG_IGN );
 
 #endif
         s_inited = true;
     }
 }
 
- bool isValid( socket_fd sock ) {
+bool isValid( socket_fd sock ) {
     return sock != INVALID_SOCKET;
 }
 
- void closeSocket( socket_fd& sock ) {
+void closeSocket( socket_fd& sock ) {
     assert( sock != INVALID_SOCKET );
     //    s_mtx.lock();
 
@@ -85,12 +85,12 @@ static inline  void init() {
     //    s_sockets.remove( sock );
     // assert(s_sockets.size() == size - 1);
 
-    //#ifdef WIN32
-    //    if ( s_sockets.empty() ) {
-    //        s_inited = false;
-    // TODO: find a way to cleanup WSA when program ended
-    //    }
-    //#endif
+    // #ifdef WIN32
+    //     if ( s_sockets.empty() ) {
+    //         s_inited = false;
+    //  TODO: find a way to cleanup WSA when program ended
+    //     }
+    // #endif
 
     sock = INVALID_SOCKET;
 
@@ -172,19 +172,19 @@ void ServerAddr::init( int port ) {
 //            m_pimpl->setPort(port);
 //        }
 
- socket_fd serverSocket() {
+socket_fd serverSocket() {
     if ( !s_inited ) init();
     return ::socket( PF_INET, SOCK_STREAM, IPPROTO_TCP );
 }
 
- int bind( socket_fd sock, ServerAddr& addr ) {
+int bind( socket_fd sock, ServerAddr& addr ) {
     //            return addr.bind(sock);
     return ::bind(
         sock, (struct sockaddr*)&addr.m_pimpl->m_sockAddr, sizeof( struct sockaddr_in ) );
     //                return ::bind(sock, addr, namelen);
 }
 
- int listen( socket_fd sock, int backlog ) {
+int listen( socket_fd sock, int backlog ) {
     return ::listen( sock, backlog );
 }
 
@@ -264,23 +264,23 @@ void ClientAddr::setIpv4( const std::string& ipv4 ) {
     m_pimpl->setIpv4( ipv4 );
 }
 
- socket_fd clientSocket() {
+socket_fd clientSocket() {
     if ( !s_inited ) init();
     return ::socket( PF_INET, SOCK_STREAM, 0 );
 }
 
- int connect( socket_fd sock, ClientAddr& addr ) {
+int connect( socket_fd sock, ClientAddr& addr ) {
     //            return  ::connect( sock, (struct sockaddr*)&m_serverAddress, sizeof(
     //            m_serverAddress ) ) <
     return ::connect(
         sock, (struct sockaddr*)&addr.m_pimpl->m_sockAddr, sizeof( struct sockaddr_in ) );
 }
 
- int send( socket_fd sock, const char* buf, int len, int flags ) {
+int send( socket_fd sock, const char* buf, int len, int flags ) {
     return ::send( sock, buf, len, flags );
 }
 
- int recv( socket_fd sock, char* buf, int len, int flags ) {
+int recv( socket_fd sock, char* buf, int len, int flags ) {
     return ::recv( sock, buf, len, flags );
 }
 
@@ -288,80 +288,80 @@ void ClientAddr::setIpv4( const std::string& ipv4 ) {
 } // namespace net
 } // namespace hub
 
-//#include <cassert>
-//#include <cstring>
-//#include <functional>
-//#include <iostream>
-//#include <list>
-//#include <set>
-//#include <mutex>
-//#include <string>
-//#include <thread>
+// #include <cassert>
+// #include <cstring>
+// #include <functional>
+// #include <iostream>
+// #include <list>
+// #include <set>
+// #include <mutex>
+// #include <string>
+// #include <thread>
 
-//#include <winsock2.h>
+// #include <winsock2.h>
 
-//#define UDT_API // no dllimport/export
+// #define UDT_API // no dllimport/export
 
-//#include <winsock.h>
-//#pragma comment(lib, "ws2_32.lib") // Winsock Library
-//#include <WinSock2.h>
-//#pragma comment( lib, "Ws2_32.lib" )
+// #include <winsock.h>
+// #pragma comment(lib, "ws2_32.lib") // Winsock Library
+// #include <WinSock2.h>
+// #pragma comment( lib, "Ws2_32.lib" )
 
-//#include <winsock2.h>
-//#ifndef WIN32_LEAN_AND_MEAN
-//#define WIN32_LEAN_AND_MEAN
-//#endif
+// #include <winsock2.h>
+// #ifndef WIN32_LEAN_AND_MEAN
+// #define WIN32_LEAN_AND_MEAN
+// #endif
 
-//#ifndef WIN32_LEAN_AND_MEAN
-//#define WIN32_LEAN_AND_MEAN
-//#endif
-//#include <WinSock2.h>
-//#include <WS2tcpip.h>
-//#include <Windows.h>
+// #ifndef WIN32_LEAN_AND_MEAN
+// #define WIN32_LEAN_AND_MEAN
+// #endif
+// #include <WinSock2.h>
+// #include <WS2tcpip.h>
+// #include <Windows.h>
 ////#include <WS2tcpip.h>
 
-//#include <winsock.h>
-//#include <windows.h>
-//#endif
+// #include <winsock.h>
+// #include <windows.h>
+// #endif
 
-//#include <iphlpapi.h>
-//#include <stdio.h>
-//#include <windows.h>
-//#include <ws2tcpip.h>
+// #include <iphlpapi.h>
+// #include <stdio.h>
+// #include <windows.h>
+// #include <ws2tcpip.h>
 
-//#include <WS2tcpip.h>
+// #include <WS2tcpip.h>
 
-//#pragma comment(lib, "Ws2_32.lib")
+// #pragma comment(lib, "Ws2_32.lib")
 
 // source:
 // https://www.zachburlingame.com/2011/05/resolving-redefinition-errors-betwen-ws2def-h-and-winsock-h/
-//#ifndef _WINDOWS_
+// #ifndef _WINDOWS_
 
-//#define WIN32_LEAN_AND_MEAN
-//#define NOMINMAX
-//#ifndef _WINDOWS_
-//#undef WIN32_LEAN_AND_MEAN
+// #define WIN32_LEAN_AND_MEAN
+// #define NOMINMAX
+// #ifndef _WINDOWS_
+// #undef WIN32_LEAN_AND_MEAN
 
-//#endif
-//#define _WINSOCKAPI_
-//#ifndef WIN32_LEAN_AND_MEAN
-//#define WIN32_LEAN_AND_MEAN
-//#undef WIN32_LEAN_AND_MEAN
-//#endif
+// #endif
+// #define _WINSOCKAPI_
+// #ifndef WIN32_LEAN_AND_MEAN
+// #define WIN32_LEAN_AND_MEAN
+// #undef WIN32_LEAN_AND_MEAN
+// #endif
 
-//#include <windows.h>
-//#include <ws2tcpip.h>
-//#include <WS2tcpip.h>
+// #include <windows.h>
+// #include <ws2tcpip.h>
+// #include <WS2tcpip.h>
 
-//#pragma comment( lib, "ws2_32.lib" )
+// #pragma comment( lib, "ws2_32.lib" )
 //// end source
 ///
-//#ifndef WIN32
-// static void signalHandler( int signum ) {
-//#    ifdef DEBUG_NET
-//    std::cout << getHeader() << "signalHandler() Interrupt signal (" << signum << ") received."
-//              << std::endl;
-//#    endif
+// #ifndef WIN32
+//  static void signalHandler( int signum ) {
+// #    ifdef DEBUG_NET
+//     std::cout << getHeader() << "signalHandler() Interrupt signal (" << signum << ") received."
+//               << std::endl;
+// #    endif
 
 //    assert( s_sockets.empty() );
 //    std::cout << getHeader() << "signalHandler() Interrupt signal (" << signum << ") received."
@@ -381,7 +381,7 @@ void ClientAddr::setIpv4( const std::string& ipv4 ) {
 //    }
 //    exit( signum );
 //}
-//#endif
+// #endif
 
 // socket_fd createSocket(int af, int type, int protocol)
 //{

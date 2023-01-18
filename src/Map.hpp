@@ -3,9 +3,9 @@
 
 #if CPLUSPLUS_VERSION == 20
 
-#include <algorithm>
-#include <stdexcept>
-#include <vector>
+#    include <algorithm>
+#    include <stdexcept>
+#    include <vector>
 
 namespace hub {
 
@@ -67,7 +67,6 @@ struct Map {
     //    template <typename Iterator>
     void insert( Iterator first, Iterator last ) { data.insert( data.end(), first, last ); }
 };
-
 
 } // namespace hub
 

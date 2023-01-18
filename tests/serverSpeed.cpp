@@ -26,14 +26,15 @@ TEST_CASE( "Server test : speed test" ) {
         for ( int i = 0; i < dataSize; ++i ) {
             data[i] = iAcq;
         }
-        acqs.emplace_back( iAcq, iAcq ) << hub::Measure( (unsigned const char*)data, dataSize, {{width, height}, hub::Format::BGR8} );
+        acqs.emplace_back( iAcq, iAcq ) << hub::Measure(
+            (unsigned const char*)data, dataSize, { { width, height }, hub::Format::BGR8 } );
     }
     delete[] data;
 
     std::cout << "[Test] ############################### server start" << std::endl;
     Server server( port );
     server.setMaxClients( 2 );
-//    server.setAcqPing( false );
+    //    server.setAcqPing( false );
     server.asyncRun();
     std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
     std::cout << "[Test] server end ------------------------------" << std::endl;
@@ -61,14 +62,14 @@ TEST_CASE( "Server test : speed test" ) {
         std::cout << "[Test] inputStream end ---------------------------------" << std::endl;
 
         std::cout << "[Test] ############################### send acquisitions" << std::endl;
-//        for ( int i = 0; i < nAcqs; ++i ) {
-//            outputSensor << acqs[i];
-//        }
+        //        for ( int i = 0; i < nAcqs; ++i ) {
+        //            outputSensor << acqs[i];
+        //        }
         const auto& start = std::chrono::high_resolution_clock::now();
         for ( int i = 0; i < nAcqs; ++i ) {
             outputSensor << acqs[i];
             auto acq = inputSensor.getAcquisition();
-//            CHECK( acq == acqs[i] );
+            //            CHECK( acq == acqs[i] );
         }
         const auto& end = std::chrono::high_resolution_clock::now();
         const auto& duration =

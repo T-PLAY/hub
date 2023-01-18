@@ -3,20 +3,19 @@ cmake_minimum_required(VERSION 3.5)
 project(tests LANGUAGES CXX)
 
 find_package(Catch2 QUIET)
-#message("catch2 found : " ${Catch2_FOUND})
+# message("catch2 found : " ${Catch2_FOUND})
 
-if (NOT ${Catch2_FOUND})
-        include(FetchContent)
-        FetchContent_Declare(
-            Catch2
-            GIT_REPOSITORY https://github.com/catchorg/Catch2.git
-            GIT_TAG v3.0.1 # or a later release
-            GIT_PROGRESS TRUE)
-        FetchContent_MakeAvailable(Catch2)
+if(NOT ${Catch2_FOUND})
+    include(FetchContent)
+    FetchContent_Declare(
+        Catch2
+        GIT_REPOSITORY https://github.com/catchorg/Catch2.git
+        GIT_TAG v3.0.1 # or a later release
+        GIT_PROGRESS TRUE)
+    FetchContent_MakeAvailable(Catch2)
 endif()
 
-#find_package(Catch2 REQUIRED)
-
+# find_package(Catch2 REQUIRED)
 
 file(GLOB_RECURSE TEST_SRC *.cpp)
 
@@ -28,7 +27,7 @@ foreach(name ${TEST_SRC_BASENAME})
     set(TARGET_NAME test-${basename})
     add_executable(${TARGET_NAME} ${name}.cpp)
     target_link_libraries(${TARGET_NAME} Catch2::Catch2WithMain hub server)
-#    set_property(TARGET ${TARGET_NAME} PROPERTY CXX_STANDARD 17)
+    # set_property(TARGET ${TARGET_NAME} PROPERTY CXX_STANDARD 17)
     set_property(TARGET ${TARGET_NAME} PROPERTY CXX_STANDARD ${CMAKE_CXX_STANDARD})
     set_property(TARGET ${TARGET_NAME} PROPERTY CXX_EXTENSIONS OFF)
 
@@ -43,15 +42,18 @@ add_custom_command(
     POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:hub> $<TARGET_FILE_DIR:${TARGET_NAME}>)
 
-
 enable_testing()
-foreach(test "file" "measures" "ram" "resolutions" "sensorSpec" "server" "serverSpeed")
+foreach(
+    test
+    "file"
+    "measures"
+    "ram"
+    "resolutions"
+    "sensorSpec"
+    "server"
+    "serverSpeed")
     add_test(NAME test-${test} COMMAND test-${test})
 endforeach()
-#add_test(NAME test-sensorSpec COMMAND test-sensorSpec)
-#add_test(NAME test-file COMMAND test-file)
-#add_test(NAME test-measures COMMAND test-measures)
-#add_test(NAME test-ram COMMAND test-ram)
-#add_test(NAME test COMMAND test-file)
-#add_test(test test-all)
-#add_test(NAME test COMMAND $<TARGET_FILE:test-all>)
+# add_test(NAME test-sensorSpec COMMAND test-sensorSpec) add_test(NAME test-file COMMAND test-file) add_test(NAME
+# test-measures COMMAND test-measures) add_test(NAME test-ram COMMAND test-ram) add_test(NAME test COMMAND test-file)
+# add_test(test test-all) add_test(NAME test COMMAND $<TARGET_FILE:test-all>)

@@ -18,8 +18,7 @@ extern "C"
     SRC_API void
     acquisition_getMeasure( const Acquisition* acquisition, unsigned char* data, int iMeasure = 0 );
     SRC_API long long acquisition_getStart( const Acquisition* acquisition );
-    SRC_API void
-    acquisition_to_string( const Acquisition* acquisition, char* str, int* strLen );
+    SRC_API void acquisition_to_string( const Acquisition* acquisition, char* str, int* strLen );
 
     typedef bool ( *onNewStreamerFunc )( const char* streamName, const SensorSpec* sensorSpec );
     typedef void ( *onDelStreamerFunc )( const char* streamName, const SensorSpec* sensorSpec );
@@ -35,12 +34,11 @@ extern "C"
                                   onNewAcquisitionFunc onNewAcquisition,
                                   const char* ipv4,
                                   int port,
-                                  onLogMessageFunc onLogMessage
-                                  );
+                                  onLogMessageFunc onLogMessage );
     SRC_API void freeViewer( Viewer* viewer );
-    SRC_API void viewer_setIpv4(Viewer * viewer, const char * ipv4);
-    SRC_API void viewer_setPort(Viewer * viewer, int port);
-    SRC_API bool viewer_isConnected(Viewer * viewer);
+    SRC_API void viewer_setIpv4( Viewer* viewer, const char* ipv4 );
+    SRC_API void viewer_setPort( Viewer* viewer, int port );
+    SRC_API bool viewer_isConnected( Viewer* viewer );
 
     SRC_API void
     sensorSpec_getSensorName( const SensorSpec* sensorSpec, char* sensorName, int* strLen );

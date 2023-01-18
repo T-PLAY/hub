@@ -1,6 +1,6 @@
 #include "Streamer.hpp"
 
-//#define DEBUG_VIEWER
+// #define DEBUG_VIEWER
 
 #include <chrono>
 #include <regex>
@@ -42,8 +42,8 @@ void Streamer::addStream( const std::string& streamName,
         if ( !m_serverConnected ) { onServerConnected(); }
     }
     catch ( net::Socket::exception& e ) {
-        std::cout << "[Streamer] unable to connect to server : " << m_ipv4 << " " << m_port << ", catch exception : " << e.what()
-                  << std::endl;
+        std::cout << "[Streamer] unable to connect to server : " << m_ipv4 << " " << m_port
+                  << ", catch exception : " << e.what() << std::endl;
         if ( m_serverConnected ) { onServerDisconnected(); }
     }
 
@@ -71,8 +71,8 @@ void Streamer::newAcquisition( const std::string& streamName, Acquisition&& acqu
                 if ( !m_serverConnected ) { onServerConnected(); }
             }
             catch ( net::Socket::exception& e ) {
-                std::cout << "[Streamer] unable to connect to server : " << m_ipv4 << " " << m_port << ", catch exception : " << e.what()
-                          << std::endl;
+                std::cout << "[Streamer] unable to connect to server : " << m_ipv4 << " " << m_port
+                          << ", catch exception : " << e.what() << std::endl;
                 m_streamName2lastLogout.at( streamName ) = now;
                 if ( m_serverConnected ) { onServerDisconnected(); }
             }
@@ -84,11 +84,12 @@ void Streamer::newAcquisition( const std::string& streamName, Acquisition&& acqu
             auto& outputSensor = *m_streamName2outputSensor.at( streamName );
             outputSensor << acquisition;
             if ( !m_serverConnected ) { onServerConnected(); }
-//            std::cout << "[Streamer] send acq : " << acquisition << std::endl;
+            //            std::cout << "[Streamer] send acq : " << acquisition << std::endl;
         }
         catch ( net::Socket::exception& e ) {
             m_streamName2outputSensor.clear();
-            std::cout << "[Streamer] catch outputSensor new acq exception : " << e.what() << std::endl;
+            std::cout << "[Streamer] catch outputSensor new acq exception : " << e.what()
+                      << std::endl;
             auto now = std::chrono::high_resolution_clock::now();
             for ( auto& pair : m_streamName2lastLogout ) {
                 pair.second = now;
@@ -138,20 +139,20 @@ void Streamer::onServerDisconnected() {
 
 //}
 
-//#ifdef DEBUG_VIEWER
-//#endif
+// #ifdef DEBUG_VIEWER
+// #endif
 
-//#ifdef DEBUG_VIEWER
-//#endif
+// #ifdef DEBUG_VIEWER
+// #endif
 
-//#ifdef DEBUG_VIEWER
-//#endif
+// #ifdef DEBUG_VIEWER
+// #endif
 
-//#ifdef DEBUG_VIEWER
-//#endif
+// #ifdef DEBUG_VIEWER
+// #endif
 
-//#ifdef DEBUG_VIEWER
-//#endif
+// #ifdef DEBUG_VIEWER
+// #endif
 
 Streamer::~Streamer() {
 #ifdef DEBUG_VIEWER

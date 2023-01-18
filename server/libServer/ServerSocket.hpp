@@ -18,7 +18,7 @@ class SRC_API ServerSocket : public Socket
 
   private:
     int mPort;
-//    struct sockaddr_in mAddress;
+    //    struct sockaddr_in mAddress;
     net::utils::ServerAddr m_addr;
 
   public:

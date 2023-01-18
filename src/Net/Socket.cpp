@@ -4,9 +4,9 @@
 #include <cassert>
 #include <exception>
 
-//#ifdef WIN32
-//#    include <WS2tcpip.h>
-//#endif
+// #ifdef WIN32
+// #    include <WS2tcpip.h>
+// #endif
 
 namespace hub {
 namespace net {
@@ -29,22 +29,22 @@ Socket::Socket() {
 #ifdef DEBUG_SOCKET
     DEBUG_MSG( getHeader( m_fdSock ) << "Socket()" );
 #endif
-//    net::utils::init();
+    //    net::utils::init();
 }
 
 Socket::Socket( Socket&& socket ) {
-    m_fdSock        = socket.m_fdSock;
-//    socket.m_fdSock = INVALID_SOCKET;
+    m_fdSock = socket.m_fdSock;
+    //    socket.m_fdSock = INVALID_SOCKET;
     socket.m_fdSock = net::utils::invalidSocket();
 }
 
-//void Socket::clear() const {
-//    assert(m_fdSock != INVALID_SOCKET);
+// void Socket::clear() const {
+//     assert(m_fdSock != INVALID_SOCKET);
 
 //    if ( m_fdSock != INVALID_SOCKET ) {
-//#ifdef DEBUG_SOCKET
+// #ifdef DEBUG_SOCKET
 //        DEBUG_MSG( getHeader( m_fdSock ) << "close socket" );
-//#endif
+// #endif
 //        net::clearSocket( m_fdSock );
 //        m_fdSock = INVALID_SOCKET;
 //    }
@@ -55,20 +55,20 @@ Socket::~Socket() {
     DEBUG_MSG( getHeader( m_fdSock ) << "~Socket()" );
 #endif
 
-//    if ( m_fdSock != INVALID_SOCKET ) {
-    if ( net::utils::isValid(m_fdSock) ) {
+    //    if ( m_fdSock != INVALID_SOCKET ) {
+    if ( net::utils::isValid( m_fdSock ) ) {
 #ifdef DEBUG_SOCKET
         DEBUG_MSG( getHeader( m_fdSock ) << "close socket" );
 #endif
         net::utils::closeSocket( m_fdSock );
-//        close(m_fdSock);
-//        m_fdSock = INVALID_SOCKET;
+        //        close(m_fdSock);
+        //        m_fdSock = INVALID_SOCKET;
         m_fdSock = net::utils::invalidSocket();
     }
 }
 
 bool Socket::isConnected() const {
-    return net::utils::isConnected(m_fdSock);
+    return net::utils::isConnected( m_fdSock );
 }
 
 } // namespace net

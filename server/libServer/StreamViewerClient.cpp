@@ -85,13 +85,13 @@ StreamViewerClient::StreamViewerClient( Server& server,
     m_streamer = streamers.at( m_streamName );
     //    const auto * syncStreamer = streamers.at(m_syncStreamName);
 
-//    hub::SensorSpec sensorSpec;
+    //    hub::SensorSpec sensorSpec;
     hub::SensorSpec sensorSpec = m_streamer->getInputSensor().m_spec;
     if ( m_syncStreamName != "" && m_mergeSyncAcqs ) {
         sensorSpec += streamers.at( m_syncStreamName )->getInputSensor().m_spec;
         //        m_streamer = streamers.at( m_syncStreamName );
     }
-//    sensorSpec += m_streamer->getInputSensor().m_spec;
+    //    sensorSpec += m_streamer->getInputSensor().m_spec;
     m_outputSensor = std::make_unique<hub::OutputSensor>( std::move( sensorSpec ),
                                                           StreamerInterface( std::move( sock ) ) );
 
@@ -108,11 +108,11 @@ StreamViewerClient::StreamViewerClient( Server& server,
     //    std::string lastAcqsName = ( m_syncStreamName == "" ) ? ( "" ) : ( m_syncStreamName );
 
     //    if ( m_syncStreamName == "" ) {
-//    m_mtxOutputSensor.lock();
+    //    m_mtxOutputSensor.lock();
     try {
-//        if ( m_outputSensor->m_spec.getResolutions().size() == 2 && m_mergeSyncAcqs ) {
-        if (m_streamer->isRecordStream()) {
-            std::lock_guard<std::mutex> guard(m_mtxOutputSensor);
+        //        if ( m_outputSensor->m_spec.getResolutions().size() == 2 && m_mergeSyncAcqs ) {
+        if ( m_streamer->isRecordStream() ) {
+            std::lock_guard<std::mutex> guard( m_mtxOutputSensor );
             const auto& saveAcqs = m_streamer->getSaveAcqs( m_syncStreamName );
             for ( const auto& [start, acq] : saveAcqs ) {
                 *m_outputSensor << *acq;
@@ -141,14 +141,14 @@ StreamViewerClient::StreamViewerClient( Server& server,
         }
     }
     catch ( std::exception& e ) {
-        assert(false);
+        assert( false );
         //            m_mtxOutputSensor.unlock();
         std::cout << headerMsg() << "thread : catch stream viewer exception : " << e.what()
                   << std::endl;
         //            m_isKilled = true;
         if ( m_isKilled ) { assert( false ); }
         else {
-            assert(false);
+            assert( false );
             m_suicide = true;
             s_mtxCout.lock();
             m_streamer->delStreamViewer( this );
@@ -158,7 +158,7 @@ StreamViewerClient::StreamViewerClient( Server& server,
         //            m_server.delStreamViewer( this );
         return;
     }
-//    m_mtxOutputSensor.unlock();
+    //    m_mtxOutputSensor.unlock();
     //    }
 
     m_thread = std::thread( [this]() {
@@ -191,24 +191,24 @@ StreamViewerClient::StreamViewerClient( Server& server,
 
                 constexpr int pingPeriod = 1'000; // ms
                 if ( idleDuration > pingPeriod ) {
-//                    std::lock_guard<std::mutex> guard(m_mtxOutputSensor);
+                    //                    std::lock_guard<std::mutex> guard(m_mtxOutputSensor);
                     m_mtxOutputSensor.lock();
                     const auto& lastAcq = m_streamer->getLastAcq( m_syncStreamName );
-                    if (m_suicide)
-                        break;
-                    assert(!m_suicide);
+                    if ( m_suicide ) break;
+                    assert( !m_suicide );
                     if ( lastAcq.get() == nullptr ) {
                         m_outputSensor->getInterface().write(
                             hub::net::ClientSocket::Message::PING );
-//            std::cout << "[StreamViewerClient] empty ping " << std::endl;
+                        //            std::cout << "[StreamViewerClient] empty ping " << std::endl;
                     }
-                    else { *m_outputSensor << *lastAcq;
+                    else {
+                        *m_outputSensor << *lastAcq;
 
-//            std::cout << "[StreamViewerClient] ping acq " << *lastAcq << std::endl;
+                        //            std::cout << "[StreamViewerClient] ping acq " << *lastAcq <<
+                        //            std::endl;
                     }
                     m_mtxOutputSensor.unlock();
                     std::this_thread::sleep_for( std::chrono::milliseconds( pingPeriod ) );
-
                 }
                 else {
                     std::this_thread::sleep_for(
@@ -233,7 +233,7 @@ StreamViewerClient::StreamViewerClient( Server& server,
             } // while ( !m_isKilled )
         }
         catch ( hub::net::Socket::exception& e ) {
-            assert(!m_suicide);
+            assert( !m_suicide );
             m_suicide = true;
             //            m_mtxOutputSensor.unlock();
             std::cout << headerMsg() << "thread : catch stream viewer exception : " << e.what()
@@ -248,24 +248,24 @@ StreamViewerClient::StreamViewerClient( Server& server,
             //            throw e;
         }
 
-//        s_mtxCout.lock();
+        //        s_mtxCout.lock();
         if ( m_isKilled ) {
             std::cout << headerMsg() << "thread killed" << std::endl;
-//            s_mtxCout.unlock();
-//            m_mtxOutputSensor.unlock();
+            //            s_mtxCout.unlock();
+            //            m_mtxOutputSensor.unlock();
         }
         else {
-//            s_mtxCout.lock();
-//        std::lock_guard<std::mutex> guard(s_mtxCout);
+            //            s_mtxCout.lock();
+            //        std::lock_guard<std::mutex> guard(s_mtxCout);
 
             std::cout << headerMsg() << "thread end (update failed)" << std::endl;
             //            m_isKilled = true;
             //            delete this;
 
-//            assert(!m_suicide);
-//            m_suicide = true;
+            //            assert(!m_suicide);
+            //            m_suicide = true;
             m_streamer->delStreamViewer( this );
-//            s_mtxCout.unlock();
+            //            s_mtxCout.unlock();
             std::thread( [this]() { delete this; } ).detach();
 
             //            m_server.delStreamViewer( this );
@@ -283,8 +283,8 @@ StreamViewerClient::StreamViewerClient( Server& server,
 }
 
 StreamViewerClient::~StreamViewerClient() {
-//        s_mtxCout.lock();
-//        std::lock_guard<std::mutex> guard(s_mtxCout);
+    //        s_mtxCout.lock();
+    //        std::lock_guard<std::mutex> guard(s_mtxCout);
     std::cout << headerMsg() << "delete start" << std::endl;
     //    assert(m_thread == nullptr);
     //    if ( m_thread != nullptr ) { m_thread->detach(); }
@@ -303,10 +303,10 @@ StreamViewerClient::~StreamViewerClient() {
     //    std::cout << "-------------------------------------------------------------------------"
     //                 "--------------------"
     //              << std::endl;
-//    if ( m_suicide ) {
-//        m_mtxOutputSensor.unlock();
-//        s_mtxCout.unlock();
-//    }
+    //    if ( m_suicide ) {
+    //        m_mtxOutputSensor.unlock();
+    //        s_mtxCout.unlock();
+    //    }
 }
 
 std::string StreamViewerClient::headerMsg() const {
@@ -319,21 +319,21 @@ bool StreamViewerClient::update( const hub::Acquisition& acq ) {
     if ( m_isKilled ) return false;
 
     try {
-//        std::lock_guard<std::mutex> guard(m_mtxOutputSensor);
+        //        std::lock_guard<std::mutex> guard(m_mtxOutputSensor);
         m_mtxOutputSensor.lock();
         assert( !m_isKilled );
-        assert(!m_suicide);
+        assert( !m_suicide );
         *m_outputSensor << acq;
         m_lastUpdateAcq = std::chrono::high_resolution_clock::now();
         m_mtxOutputSensor.unlock();
     }
     catch ( std::exception& e ) {
-        assert(! m_isKilled);
-            assert(!m_suicide);
-            m_suicide = true;
+        assert( !m_isKilled );
+        assert( !m_suicide );
+        m_suicide = true;
 
-//        s_mtxCout.lock();
-//        std::lock_guard<std::mutex> guard(s_mtxCout);
+        //        s_mtxCout.lock();
+        //        std::lock_guard<std::mutex> guard(s_mtxCout);
         std::cout << headerMsg()
                   << "update(Acquisition) : catch outputSensor exception : " << e.what()
                   << std::endl;
@@ -341,16 +341,16 @@ bool StreamViewerClient::update( const hub::Acquisition& acq ) {
                   << std::endl;
 
         //        m_updateFailed = true;
-//            s_mtxCout.unlock();
+        //            s_mtxCout.unlock();
 
-//        if ( !m_isKilled ) {
-            m_streamer->delStreamViewer( this );
-//            s_mtxCout.unlock();
-            std::thread( [this]() { delete this; } ).detach();
-//        }
-//        else {
-            m_mtxOutputSensor.unlock();
-//        }
+        //        if ( !m_isKilled ) {
+        m_streamer->delStreamViewer( this );
+        //            s_mtxCout.unlock();
+        std::thread( [this]() { delete this; } ).detach();
+        //        }
+        //        else {
+        m_mtxOutputSensor.unlock();
+        //        }
 
         return false;
     }

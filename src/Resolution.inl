@@ -1,19 +1,19 @@
 #pragma once
 #include "Resolution.hpp"
 
-//#include <algorithm>
-//#include <any>
-//#include <map>
-//#include <string>
-//#include <vector>
-//#include <stdexcept>
-#include <numeric>
+// #include <algorithm>
+// #include <any>
+// #include <map>
+// #include <string>
+// #include <vector>
+// #include <stdexcept>
 #include <iostream>
+#include <numeric>
 
 namespace hub {
 
-//template <int NDim>
-//static constexpr int s_format2nByte[static_cast<int>( SensorSpec<NDim>::Format::COUNT )] = {
+// template <int NDim>
+// static constexpr int s_format2nByte[static_cast<int>( SensorSpec<NDim>::Format::COUNT )] = {
 static constexpr int s_format2nByte[static_cast<int>( Format::COUNT )] = {
     0,       // NONE
     2,       // Z16
@@ -49,14 +49,13 @@ static constexpr int s_format2nByte[static_cast<int>( Format::COUNT )] = {
     64,      // MAT4
 };
 
-inline constexpr int format2nByte(const Format &format) noexcept
-{
-    return s_format2nByte[static_cast<int>(format)];
+inline constexpr int format2nByte( const Format& format ) noexcept {
+    return s_format2nByte[static_cast<int>( format )];
 }
 
 inline CONSTEXPR20 size_t computeAcquisitionSize( Format format, const Dims& dims ) noexcept {
     return std::accumulate( dims.cbegin(), dims.cend(), 1, std::multiplies<int> {} ) *
-            s_format2nByte[static_cast<int>( format )];
+           s_format2nByte[static_cast<int>( format )];
 }
 
 inline size_t CONSTEXPR20 computeAcquisitionSize( const Resolutions& resolutions ) noexcept {
@@ -132,7 +131,7 @@ static std::string format2stringArray[static_cast<int>( Format::COUNT )] = {
     "Y411",        "MAT4",
 };
 
-static inline constexpr std::string & format2string( const Format& format ) {
+static inline constexpr std::string& format2string( const Format& format ) {
     return format2stringArray[(int)format];
 }
 
@@ -151,6 +150,5 @@ static std::string resolutions2string( const Resolutions& resolutions ) {
     if ( size > 1 ) str += "]";
     return str;
 }
-
 
 } // namespace hub

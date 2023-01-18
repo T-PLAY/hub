@@ -7,30 +7,29 @@
 #include "InputSensor.hpp"
 #include "Net/ClientSocket.hpp"
 
-//#define DEBUG_VIEWER
+// #define DEBUG_VIEWER
 
 // show log message from native
 
-//#ifndef INTERNAL_BUILD
+// #ifndef INTERNAL_BUILD
 
 #ifdef DEBUG_MSG
-#undef DEBUG_MSG
+#    undef DEBUG_MSG
 #endif
-#define DEBUG_MSG( _params )               \
-        do {                               \
-            if ( m_onLogMessage ) { \
-            std::stringstream _sstr; \
-            _sstr << _params; \
-            m_onLogMessage(_sstr.str().c_str()); \
-            } else { \
-                std::cout << _params << std::endl; \
-            } \
-        } while ( false ); \
+#define DEBUG_MSG( _params )                        \
+    do {                                            \
+        if ( m_onLogMessage ) {                     \
+            std::stringstream _sstr;                \
+            _sstr << _params;                       \
+            m_onLogMessage( _sstr.str().c_str() );  \
+        }                                           \
+        else { std::cout << _params << std::endl; } \
+    } while ( false );
 
-//#endif
+// #endif
 
 //        }
-//            m_onLogMessage(_sstr.str().c_str()); \
+//              m_onLogMessage(_sstr.str().c_str()); \
 //        m_onLogMessage(_sstr.str().c_str()); \
 //#define DEBUG_MSG( str ) m_onLogMessage((str).c_str())
 
@@ -45,9 +44,7 @@ Viewer::Viewer(
     const std::string& ipv4,
     int port,
     bool autoSync,
-            std::function<void( const char* logMessage )>
-                onLogMessage
-        ) :
+    std::function<void( const char* logMessage )> onLogMessage ) :
 
     m_onNewStreamer( onNewStreamer ),
     m_onDelStreamer( onDelStreamer ),
@@ -58,7 +55,7 @@ Viewer::Viewer(
     //    m_port( port ),
     m_sock( ipv4, port, false ),
     m_autoSync( autoSync ),
-    m_onLogMessage(onLogMessage)
+    m_onLogMessage( onLogMessage )
 //    m_ipv4Regex( std::regex( "^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$" ) ) {
 {
 
@@ -88,9 +85,9 @@ Viewer::Viewer(
                     case net::ClientSocket::Message::PING: {
                         // server checking if client is connected (only way to know if client viewer
                         // still alive) nothing to do
-                        //#ifdef DEBUG_VIEWER
-//                        DEBUG_MSG( "[Viewer] receive ping " );
-                        //#endif
+                        // #ifdef DEBUG_VIEWER
+                        //                        DEBUG_MSG( "[Viewer] receive ping " );
+                        // #endif
                     } break;
 
                     case net::ClientSocket::Message::NEW_STREAMER: {
@@ -103,7 +100,7 @@ Viewer::Viewer(
                         m_sock.read( streamName );
                         //                        m_sock.read( newStream.m_streamName );
                         SensorSpec sensorSpec = m_sock.getSensorSpec();
-//                        m_sock.read( sensorSpec );
+                        //                        m_sock.read( sensorSpec );
                         std::cout << "[Viewer] new streamer '" << streamName << "'" << std::endl;
 
                         //                        m_sock.read( newStream.m_sensorSpec );
@@ -130,10 +127,10 @@ Viewer::Viewer(
                             }
                         }
 
-//#ifdef DEBUG_VIEWER
+                        // #ifdef DEBUG_VIEWER
                         DEBUG_MSG( "[Viewer] new streamer '" << streamName << "', sync stream '"
                                                              << syncStreamName << "'" );
-//#endif
+                        // #endif
 
                         //                        m_sock.read( newStream.m_syncStreamName );
                         //                        const auto& streamId = ( syncStreamName == "" )
@@ -190,15 +187,18 @@ Viewer::Viewer(
 
                                     assert( m_streams.find( sonStream.m_parentName ) !=
                                             m_streams.end() );
-                                    sonStream.m_streamId = sonStream.m_streamName + " -> " + sonStream.m_parentName;
-                                    sonStream.m_sensorSpecId = sonStream.m_sensorSpec +
+                                    sonStream.m_streamId =
+                                        sonStream.m_streamName + " -> " + sonStream.m_parentName;
+                                    sonStream.m_sensorSpecId =
+                                        sonStream.m_sensorSpec +
                                         m_streams.at( sonStream.m_parentName )->m_sensorSpec;
                                     assert( sonStream.m_syncStreamName == "" );
                                     sonStream.m_syncStreamName = sonStream.m_parentName;
 
                                     if ( m_onNewStreamer ) {
-                                        const bool added = m_onNewStreamer(
-                                            sonStream.m_streamId.c_str(), sonStream.m_sensorSpecId );
+                                        const bool added =
+                                            m_onNewStreamer( sonStream.m_streamId.c_str(),
+                                                             sonStream.m_sensorSpecId );
 
                                         if ( m_onNewAcquisition && added ) {
                                             sonStream.startStream();
@@ -228,7 +228,7 @@ Viewer::Viewer(
                         std::string streamName;
                         m_sock.read( streamName );
                         SensorSpec sensorSpec = m_sock.getSensorSpec();
-//                        m_sock.read( sensorSpec );
+                        //                        m_sock.read( sensorSpec );
                         std::cout << "[Viewer] del streamer '" << streamName << "'" << std::endl;
 
                         std::string syncStreamName = "";
@@ -273,15 +273,16 @@ Viewer::Viewer(
                         //                            }
                         //                        }
 
-//#ifdef DEBUG_VIEWER
+                        // #ifdef DEBUG_VIEWER
                         DEBUG_MSG( "[Viewer] del streamer '" << streamName << "'" );
-//#endif
-                        //                        const auto& streamId = streamName +
-                        //                        syncStreamName;
-                        //                        const auto& streamId = ( syncStreamName == "" )
-                        //                                                   ? ( streamName )
-                        //                                                   : ( streamName + " -> "
-                        //                                                   + syncStreamName );
+                        // #endif
+                        //                         const auto& streamId = streamName +
+                        //                         syncStreamName;
+                        //                         const auto& streamId = ( syncStreamName == "" )
+                        //                                                    ? ( streamName )
+                        //                                                    : ( streamName + " ->
+                        //                                                    "
+                        //                                                    + syncStreamName );
 
                         // prevent all son the father is leaving
                         std::list<std::shared_ptr<Stream>> streamsToAdd;
@@ -300,14 +301,15 @@ Viewer::Viewer(
 
                                     assert( m_streams.find( sonStream.m_parentName ) !=
                                             m_streams.end() );
-                                    sonStream.m_streamId = sonStream.m_streamName;
+                                    sonStream.m_streamId     = sonStream.m_streamName;
                                     sonStream.m_sensorSpecId = sonStream.m_sensorSpec;
                                     assert( sonStream.m_syncStreamName != "" );
                                     sonStream.m_syncStreamName = "";
 
                                     if ( m_onNewStreamer ) {
-                                        const bool added = m_onNewStreamer(
-                                            sonStream.m_streamId.c_str(), sonStream.m_sensorSpecId );
+                                        const bool added =
+                                            m_onNewStreamer( sonStream.m_streamId.c_str(),
+                                                             sonStream.m_sensorSpecId );
 
                                         if ( m_onNewAcquisition && added ) {
                                             sonStream.startStream();
@@ -349,9 +351,9 @@ Viewer::Viewer(
                     } break;
 
                     default: {
-//#ifdef DEBUG_VIEWER
+                        // #ifdef DEBUG_VIEWER
                         DEBUG_MSG( "[Viewer] unknown message from server" );
-//#endif
+                        // #endif
                         assert( false );
                     }
                     } // switch (serverMessage)
@@ -359,15 +361,16 @@ Viewer::Viewer(
                 } // while (! m_stopThread)
             }
             catch ( net::ClientSocket::exception& e ) {
-//#ifdef DEBUG_VIEWER
+                // #ifdef DEBUG_VIEWER
                 if ( m_serverConnected ) {
                     DEBUG_MSG( "[Viewer] server disconnected, catch exception " << e.what() );
                 }
-//                else {
-//                    DEBUG_MSG( "[Viewer] unable to connect to server, catch exception "
-//                               << e.what() );
-//                }
-//#endif
+                //                else {
+                //                    DEBUG_MSG( "[Viewer] unable to connect to server, catch
+                //                    exception "
+                //                               << e.what() );
+                //                }
+                // #endif
                 // ping the server when this one is not started or visible in the network
                 // able the viewer clients to be aware of the starting of server less than 100
                 // milliseconds.
@@ -408,19 +411,19 @@ Viewer::Viewer(
                 //                m_streams.clear();
                 //                m_streamName2sensorSpec.clear();
 
-                //#ifdef OS_LINUX
-                //                if ( !m_stopThread ) { m_sock.setPort( m_sock.getPort() + 1 ); }
-                //                ++m_port;
-                //#endif
+                // #ifdef OS_LINUX
+                //                 if ( !m_stopThread ) { m_sock.setPort( m_sock.getPort() + 1 ); }
+                //                 ++m_port;
+                // #endif
             }
             //            else {
-            //#ifdef DEBUG_VIEWER
+            // #ifdef DEBUG_VIEWER
             //                DEBUG_MSG( "[Viewer] unable to connect to server : " <<
             //                m_sock.getIpv4() << " "
             //                                                                     <<
             //                                                                     m_sock.getPort()
             //                                                                     );
-            //#endif
+            // #endif
             //            }
 
         } // while (! m_stopThread)
@@ -428,30 +431,30 @@ Viewer::Viewer(
 }
 
 Viewer::~Viewer() {
-//#ifdef DEBUG_VIEWER
+    // #ifdef DEBUG_VIEWER
     DEBUG_MSG( "[Viewer] ~Viewer()" );
-//#endif
+    // #endif
     m_stopThread = true;
     assert( m_thread.joinable() );
     m_thread.join();
 
     m_streams.clear();
-//    for ( auto& [streamName, stream] : m_streams ) {
-//        const auto& streamId = pair.first;
-//        stream.stopStream();
-//        assert( m_streamName2stopThread.find( streamId ) != m_streamName2stopThread.end() );
-//        m_streamName2stopThread.at( streamId ) = true;
-//        auto& thread                             = pair.second;
-//        assert( thread.joinable() );
-//        thread.join();
-//    }
-//#ifdef DEBUG_VIEWER
+    //    for ( auto& [streamName, stream] : m_streams ) {
+    //        const auto& streamId = pair.first;
+    //        stream.stopStream();
+    //        assert( m_streamName2stopThread.find( streamId ) != m_streamName2stopThread.end() );
+    //        m_streamName2stopThread.at( streamId ) = true;
+    //        auto& thread                             = pair.second;
+    //        assert( thread.joinable() );
+    //        thread.join();
+    //    }
+    // #ifdef DEBUG_VIEWER
     DEBUG_MSG( "[Viewer] ~Viewer() done" );
-//#endif
+    // #endif
 }
 
 void Viewer::setIpv4( const std::string& ipv4 ) {
-    DEBUG_MSG( "[Viewer] setIpv4 " << ipv4);
+    DEBUG_MSG( "[Viewer] setIpv4 " << ipv4 );
     assert( !m_serverConnected );
     //    assert( std::regex_match( ipv4, m_ipv4Regex ) );
     //    m_ipv4 = ipv4;
@@ -459,7 +462,7 @@ void Viewer::setIpv4( const std::string& ipv4 ) {
 }
 
 void Viewer::setPort( int port ) {
-    DEBUG_MSG( "[Viewer] setPort " << port);
+    DEBUG_MSG( "[Viewer] setPort " << port );
     assert( !m_serverConnected );
     //    assert( 0 <= port && port <= 65535 );
     //    m_port = port;
@@ -475,17 +478,16 @@ const int& Viewer::getPort() const {
 }
 
 void Viewer::setAutoSync( bool newAutoSync ) {
-    DEBUG_MSG( "[Viewer] setAutoSync " << newAutoSync);
+    DEBUG_MSG( "[Viewer] setAutoSync " << newAutoSync );
     m_autoSync = newAutoSync;
 }
 
-bool Viewer::isConnected() const
-{
+bool Viewer::isConnected() const {
     return m_serverConnected;
 }
 
 void Viewer::delStreamer( const std::string& streamId ) {
-    DEBUG_MSG( "[Viewer] delStreamer " << streamId);
+    DEBUG_MSG( "[Viewer] delStreamer " << streamId );
 
     assert( m_onDelStreamer );
     assert( m_streams.find( streamId ) != m_streams.end() );
@@ -498,11 +500,11 @@ void Viewer::delStreamer( const std::string& streamId ) {
 }
 
 void Viewer::Stream::startStream() {
-    DEBUG_MSG( "[Viewer][Stream] startStream");
+    DEBUG_MSG( "[Viewer][Stream] startStream" );
 
     //    const auto& streamId = streamName + syncStreamName;
 
-//    m_onLogMessage("hello");
+    //    m_onLogMessage("hello");
 
     m_stopThread = false;
     //    assert( m_streamName2stopThread.find( streamId ) == m_streamName2stopThread.end() );
@@ -518,7 +520,7 @@ void Viewer::Stream::startStream() {
 
             while ( !m_stopThread ) {
                 auto acq = inputSensor.getAcquisition();
-//                DEBUG_MSG( "[Viewer] new acq " << acq);
+                //                DEBUG_MSG( "[Viewer] new acq " << acq);
                 m_viewer.m_onNewAcquisition( m_streamId.c_str(), acq );
             }
         }
@@ -531,7 +533,7 @@ void Viewer::Stream::startStream() {
         if ( m_stopThread ) {
             DEBUG_MSG( "[Viewer] streamer '" << m_streamId << "' thread killed " );
         }
-        DEBUG_MSG( "[Viewer] thread end ");
+        DEBUG_MSG( "[Viewer] thread end " );
     } );
 
     DEBUG_MSG( "[Viewer] startStream() streamer '" << m_streamId << "' inited " );

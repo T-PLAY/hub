@@ -5,13 +5,12 @@
 #include <list>
 
 #include "Macros.hpp"
-//#include "SensorSpec.hpp"
+// #include "SensorSpec.hpp"
 #include "Measure.hpp"
 
 namespace hub {
 
 // enum class Measurement { NONE, IMAGE, DOF6, COUNT };
-
 
 // measure_tag<Dof6> = SensorSpec::
 // template <typename T>
@@ -50,24 +49,24 @@ class SRC_API Acquisition
     bool operator==( const Acquisition& acq ) const;
     bool operator!=( const Acquisition& acq ) const;
 
-//    template <class Measure>
+    //    template <class Measure>
     Acquisition& operator<<( Measure&& measure );
 
-//    void addMeasure( Measure&& measure );
+    //    void addMeasure( Measure&& measure );
 
-//    template <class... Args>
-//    Acquisition& operator<<( Args&&... args );
+    //    template <class... Args>
+    //    Acquisition& operator<<( Args&&... args );
 
     Acquisition& operator<<( const Measures& measure );
 
     template <class... Args>
     void emplaceMeasure( Args&&... args );
 
-//    template <class ResolutionT>
-//    void addMeasure(unsigned char * data, uint64_t size, ResolutionT &&resolution);
+    //    template <class ResolutionT>
+    //    void addMeasure(unsigned char * data, uint64_t size, ResolutionT &&resolution);
 
-//    template<typename... Values>
-//    void add(Values...);
+    //    template<typename... Values>
+    //    void add(Values...);
 
     bool isInterpolable() const;
     static Acquisition slerp( const Acquisition& left, const Acquisition& right, double t );
@@ -90,9 +89,9 @@ class SRC_API Acquisition
     friend class InputSensor;
 };
 
-//template <class... Args>
-//Acquisition& Acquisition::operator<<( Args&&... args ) {
-//    addMeasure(args...);
+// template <class... Args>
+// Acquisition& Acquisition::operator<<( Args&&... args ) {
+//     addMeasure(args...);
 
 ////    static_assert(sizeof...(args) == 3);
 //////    static_assert(std::is_base_of<std::decay_t<hub::Measure>,std::decay_t<Args>>::value,
@@ -107,27 +106,27 @@ class SRC_API Acquisition
 
 template <class... Args>
 void Acquisition::emplaceMeasure( Args&&... args ) {
-    static_assert(sizeof...(args) == 3);
-//    this << args;
+    static_assert( sizeof...( args ) == 3 );
+    //    this << args;
     m_measures.emplace_back( std::forward<Args>( args )... );
     m_size += m_measures.back().m_size;
 }
 
-//template <class Measure>
-//Acquisition& Acquisition::operator<<( Measure&& measure ) {
-//    static_assert(std::is_base_of<std::decay_t<hub::Measure>,std::decay_t<Measure>>::value,
-//                     "must be the same as Measure");
-//    m_size += measure.m_size;
-//    m_measures.emplace_back( std::forward<Measure>( measure ) );
+// template <class Measure>
+// Acquisition& Acquisition::operator<<( Measure&& measure ) {
+//     static_assert(std::is_base_of<std::decay_t<hub::Measure>,std::decay_t<Measure>>::value,
+//                      "must be the same as Measure");
+//     m_size += measure.m_size;
+//     m_measures.emplace_back( std::forward<Measure>( measure ) );
 ////    m_measures.push_back( std::move( measure ) );
 //    return *this;
 //}
 
-//template <class ResolutionT>
-//void Acquisition::addMeasure(unsigned char* data, uint64_t size, ResolutionT &&resolution ) {
-//    m_size += size;
-//    static_assert(std::is_same<std::decay_t<Resolution>,std::decay_t<ResolutionT>>::value,
-//                     "must be the same as Resolution");
+// template <class ResolutionT>
+// void Acquisition::addMeasure(unsigned char* data, uint64_t size, ResolutionT &&resolution ) {
+//     m_size += size;
+//     static_assert(std::is_same<std::decay_t<Resolution>,std::decay_t<ResolutionT>>::value,
+//                      "must be the same as Resolution");
 
 //    //    m_measures.push_back( std::move( measure ) );
 ////    m_measures.emplace_back( data, size, std::move(resolution) );

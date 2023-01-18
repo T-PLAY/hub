@@ -36,9 +36,9 @@ class StreamerClient : public Client
     const std::chrono::time_point<std::chrono::high_resolution_clock>&
     getLastUpdateAcqDate( const std::string& streamName ) const;
 
-//  public:
-//    mutable std::mutex m_mtxLastAcq;
-//    mutable std::mutex m_mtxSaveAcqs;
+    //  public:
+    //    mutable std::mutex m_mtxLastAcq;
+    //    mutable std::mutex m_mtxSaveAcqs;
 
   private:
     void saveNewAcq( const std::string& streamName, hub::Acquisition&& newAcq );
@@ -49,7 +49,7 @@ class StreamerClient : public Client
     //    std::mutex m_mtx;
     std::unique_ptr<hub::InputSensor> m_inputSensor;
     std::string m_streamName;
-        std::string m_parent = "";
+    std::string m_parent = "";
 
     std::list<StreamViewerClient*> m_streamViewers;
     std::mutex m_mtxStreamViewers;
@@ -63,20 +63,20 @@ class StreamerClient : public Client
     std::mutex m_mtxSyncAcqs;
 
     std::map<std::string, std::shared_ptr<hub::Acquisition>> m_lastAcq;
-//    std::map<std::string, std::chrono::time_point<std::chrono::high_resolution_clock>>
-//        m_lastUpdateAcqDate;
+    //    std::map<std::string, std::chrono::time_point<std::chrono::high_resolution_clock>>
+    //        m_lastUpdateAcqDate;
     std::map<std::string, std::map<long long, std::shared_ptr<hub::Acquisition>>>
         m_streamName2saveAcqs;
 
-//    std::lock_guard<std::mutex> m_guard;
+    //    std::lock_guard<std::mutex> m_guard;
     //    static std::mutex s_mtxCout;
-        bool m_isRecordStream = false;
+    bool m_isRecordStream = false;
 
   public:
-    const std::list<StreamViewerClient*> & getStreamViewers() const; // use by server
+    const std::list<StreamViewerClient*>& getStreamViewers() const; // use by server
     const std::map<std::string, std::list<StreamViewerClient*>>&
     getSyncViewers() const; // use by server (printStatus)
     const std::string& getStreamName() const;
-    const std::string &getParent() const;
+    const std::string& getParent() const;
     bool isRecordStream() const;
 };

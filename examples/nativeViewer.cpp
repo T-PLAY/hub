@@ -6,7 +6,7 @@
 #include <OutputSensor.hpp>
 #include <Viewer.hpp>
 
-//#include <Server.hpp>
+// #include <Server.hpp>
 
 #include <Native.hpp>
 #include <filesystem>
@@ -73,7 +73,7 @@ int main() {
         std::cout << "[Example][Viewer] onNewAcquisition " << streamName << " " << *acq
                   << std::endl;
     };
-    auto onLogMessage = []( const char* logMessage) {
+    auto onLogMessage = []( const char* logMessage ) {
         std::cout << "[Example][Viewer] onLogMessage " << logMessage << " " << *logMessage
                   << std::endl;
     };
@@ -85,8 +85,7 @@ int main() {
                                              onNewAcquisition,
                                              hub::net::s_defaultServiceIp.c_str(),
                                              hub::net::s_defaultServicePort,
-                                             onLogMessage
-                                             );
+                                             onLogMessage );
 
     while ( true ) {
         std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );

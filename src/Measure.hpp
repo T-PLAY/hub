@@ -1,23 +1,22 @@
 #pragma once
 
-#include <iostream>
 #include <cassert>
 #include <cstring>
+#include <iostream>
 
 #include "Macros.hpp"
 #include "Resolution.hpp"
 
 namespace hub {
 
-
 class SRC_API Measure
 {
 
   public:
     template <class ResolutionT = Resolution>
-    Measure( const unsigned char* const data, uint64_t size, ResolutionT && resolution );
+    Measure( const unsigned char* const data, uint64_t size, ResolutionT&& resolution );
     template <class ResolutionT = Resolution>
-    Measure( unsigned char* data, uint64_t size, ResolutionT && resolution );
+    Measure( unsigned char* data, uint64_t size, ResolutionT&& resolution );
 
     Measure( Measure&& measure );
     Measure( const Measure& )            = delete;
@@ -38,9 +37,9 @@ class SRC_API Measure
     bool operator!=( const Measure& measure ) const;
     SRC_API friend std::ostream& operator<<( std::ostream& os, const Measure& measure );
 
-    const inline Resolution &getResolution() const;
+    const inline Resolution& getResolution() const;
 
-protected:
+  protected:
     bool m_ownData = false;
     bool m_isMoved = false;
     Resolution m_resolution;
@@ -51,28 +50,26 @@ protected:
 using Measures = std::vector<Measure>;
 
 template <class ResolutionT>
-Measure::Measure( const unsigned char* const data,
-                  uint64_t size,
-                  ResolutionT&& resolution ) :
+Measure::Measure( const unsigned char* const data, uint64_t size, ResolutionT&& resolution ) :
     m_data( new unsigned char[size] ),
     m_size( size ),
     m_ownData( true ),
     m_resolution( std::move( resolution ) ) {
-//    m_resolution( std::forward<Resolution>( resolution ) ) {
-//    m_resolution( std::forward( resolution ) ) {
-//    m_resolution( std::forward<ResolutionT>( resolution ) ) {
+    //    m_resolution( std::forward<Resolution>( resolution ) ) {
+    //    m_resolution( std::forward( resolution ) ) {
+    //    m_resolution( std::forward<ResolutionT>( resolution ) ) {
 
-    static_assert(std::is_same<std::decay_t<Resolution>,std::decay_t<ResolutionT>>::value,
-                     "must be the same as Resolution");
-//    static_assert(std::is_base_of<Resolution, ResolutionT>::value, "not Resolution");
-//    static_assert(std::is_same<Resolution, ResolutionT>::value, "not Resolution");
-//    static_assert(std::is_same<ResolutionT, Resolution>::value, "not Resolution");
+    static_assert( std::is_same<std::decay_t<Resolution>, std::decay_t<ResolutionT>>::value,
+                   "must be the same as Resolution" );
+    //    static_assert(std::is_base_of<Resolution, ResolutionT>::value, "not Resolution");
+    //    static_assert(std::is_same<Resolution, ResolutionT>::value, "not Resolution");
+    //    static_assert(std::is_same<ResolutionT, Resolution>::value, "not Resolution");
 
     assert( data != nullptr );
     memcpy( (unsigned char*)m_data, data, m_size );
     assert( m_size > 0 );
     assert( m_data != nullptr );
-    assert(size == computeAcquisitionSize(m_resolution));
+    assert( size == computeAcquisitionSize( m_resolution ) );
 }
 
 template <class ResolutionT>
@@ -84,15 +81,15 @@ Measure::Measure( unsigned char* data, uint64_t size, ResolutionT&& resolution )
 //    m_resolution( std::forward<ResolutionT>( resolution ) )
 //    m_ownData( false )
 {
-//    static_assert(std::is_base_of<hub::Resolution, ResolutionT>::value, "not Resolution");
-    static_assert(std::is_same<std::decay_t<Resolution>,std::decay_t<ResolutionT>>::value,
-                     "must be the same as Resolution");
+    //    static_assert(std::is_base_of<hub::Resolution, ResolutionT>::value, "not Resolution");
+    static_assert( std::is_same<std::decay_t<Resolution>, std::decay_t<ResolutionT>>::value,
+                   "must be the same as Resolution" );
 
     //    std::cout << "[Measure] steal data pointer of size : " << size << std::endl;
     assert( data != nullptr );
     assert( m_size > 0 );
     assert( m_data != nullptr );
-    assert(size == computeAcquisitionSize(m_resolution));
+    assert( size == computeAcquisitionSize( m_resolution ) );
 }
 
 const inline Resolution& Measure::getResolution() const {

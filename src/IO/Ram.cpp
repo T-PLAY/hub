@@ -12,8 +12,8 @@ namespace io {
 CyclicBuff::CyclicBuff( size_t size ) : m_buff( new unsigned char[size] ), m_buffLen( size ) {}
 
 CyclicBuff::~CyclicBuff() {
-//    assert( !m_outputSensorWantsToClose );
-//    assert( !m_inputSensorClose );
+    //    assert( !m_outputSensorWantsToClose );
+    //    assert( !m_inputSensorClose );
     m_outputSensorWantsToClose = true;
 
     delete[] m_buff;
@@ -91,35 +91,31 @@ void CyclicBuff::read( unsigned char* data, size_t len ) {
 
 void CyclicBuff::close() const {
     m_outputSensorWantsToClose = true;
-	m_inputSensorClose = true;
+    m_inputSensorClose         = true;
 }
 
-bool CyclicBuff::isOpen() const
-{
-    return ! m_inputSensorClose;
+bool CyclicBuff::isOpen() const {
+    return !m_inputSensorClose;
 }
 
-bool CyclicBuff::isEnd() const
-{
+bool CyclicBuff::isEnd() const {
     return m_writeHead == m_readHead;
 }
 
 Ram::Ram( CyclicBuff& buff ) : m_buff( buff ) {}
 
 void Ram::close() const {
-    assert(isOpen());
+    assert( isOpen() );
     m_buff.close();
-    assert(! isOpen());
+    assert( !isOpen() );
 }
 
-bool Ram::isOpen() const
-{
+bool Ram::isOpen() const {
     return m_buff.isOpen();
 }
 
-bool Ram::isEnd() const
-{
-    assert(isOpen());
+bool Ram::isEnd() const {
+    assert( isOpen() );
     return m_buff.isEnd();
 }
 

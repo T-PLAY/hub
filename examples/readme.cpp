@@ -52,21 +52,24 @@ int main() {
         const hub::SensorSpec sensorSpec( "sensorName", { imageResolution }, metaData );
 
         hub::OutputSensor outputSensor {
-            sensorSpec, hub::io::OutputStream { "streamName", hub::net::ClientSocket { "serverIp", serverPort } } };
+            sensorSpec,
+            hub::io::OutputStream { "streamName",
+                                    hub::net::ClientSocket { "serverIp", serverPort } } };
 
         while ( 1 ) {
             auto [start, end] = sensorAPI::getTimestamp();
             auto [data, size] = sensorAPI::getData();
 
             // send data
-            outputSensor << ( hub::Acquisition { start, end } << hub::Measure { data, size, imageResolution } );
+            outputSensor << ( hub::Acquisition { start, end }
+                              << hub::Measure { data, size, imageResolution } );
         }
     }
 
     {
         // init input sensor
-        hub::InputSensor inputSensor {
-            hub::io::InputStream { "streamName", "", hub::net::ClientSocket { "serverIp", serverPort } } };
+        hub::InputSensor inputSensor { hub::io::InputStream {
+            "streamName", "", hub::net::ClientSocket { "serverIp", serverPort } } };
 
         const auto& resolutions = inputSensor.m_spec.getResolutions();
         if ( resolutions.size() == 1 ) {
@@ -79,12 +82,15 @@ int main() {
 
                 while ( 1 ) {
                     // receive data
-                    auto acq = inputSensor.getAcquisition();
+                    auto acq            = inputSensor.getAcquisition();
                     const auto& measure = acq.getMeasures().at( 0 );
 
                     // draw image
-                    clientApp::drawImage(
-                        measure.m_data, measure.m_size, imageWidth, imageHeight, clientApp::Format::BGR888 );
+                    clientApp::drawImage( measure.m_data,
+                                          measure.m_size,
+                                          imageWidth,
+                                          imageHeight,
+                                          clientApp::Format::BGR888 );
                 }
             }
         }

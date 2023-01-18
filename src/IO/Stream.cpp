@@ -36,22 +36,21 @@ void OutputStream::close() const {
     net::ClientSocket::close();
 }
 
-bool OutputStream::isOpen() const
-{
+bool OutputStream::isOpen() const {
     return net::ClientSocket::isOpen();
 }
 
-bool OutputStream::isEnd() const
-{
+bool OutputStream::isEnd() const {
     return net::ClientSocket::isEnd();
 }
 #endif
 
 ///////////////////////////////////////////////////////////////
 
-InputStream::InputStream(const std::string& streamName,
+InputStream::InputStream( const std::string& streamName,
                           const std::string& syncStreamName,
-                          net::ClientSocket&& clientSocket , bool mergeSyncAcqs) :
+                          net::ClientSocket&& clientSocket,
+                          bool mergeSyncAcqs ) :
     net::ClientSocket( std::move( clientSocket ) ) {
 
     Interface::write( net::ClientSocket::Type::STREAM_VIEWER );
@@ -78,7 +77,7 @@ InputStream::InputStream(const std::string& streamName,
     }
     assert( mess == ClientSocket::Message::OK );
 
-    Interface::write(mergeSyncAcqs);
+    Interface::write( mergeSyncAcqs );
 }
 
 #ifdef WIN32
@@ -93,22 +92,21 @@ void InputStream::read( unsigned char* data, size_t len ) const {
 void InputStream::close() const {
     net::ClientSocket::close();
 }
-bool InputStream::isOpen() const
-{
+bool InputStream::isOpen() const {
     return net::ClientSocket::isOpen();
 }
-bool InputStream::isEnd() const
-{
+bool InputStream::isEnd() const {
     return net::ClientSocket::isEnd();
 }
 #endif
 
-Acquisition InputStream::getAcquisition(const SensorSpec &sensorSpec ) const {
+Acquisition InputStream::getAcquisition( const SensorSpec& sensorSpec ) const {
     net::ClientSocket::Message message;
     do {
         Interface::read( message );
         if ( message == net::ClientSocket::Message::PING ) {
-            std::cout << "\033[32m[InputStream] receive ping from " << m_fdSock << "\033[0m" << std::endl;
+            std::cout << "\033[32m[InputStream] receive ping from " << m_fdSock << "\033[0m"
+                      << std::endl;
         }
     } while ( message == net::ClientSocket::Message::PING );
 
