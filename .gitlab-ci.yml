@@ -24,17 +24,17 @@ stages:
 #     paths:
 #       - build/
 
-# cache:
-#   key: cache
-#   paths:
-#     - apt-cache/
-#     - build/
+cache:
+  key: cache
+  paths:
+    - apt-cache/
+    - build/
 
-# before_script:
-#     - mkdir -pv apt-cache
-#     - cp -r apt-cache/* /
+before_script:
+    - mkdir -pv apt-cache
+    - cp -r apt-cache/* /
 
-#     - find apt-cache
+    - find apt-cache
 
 # dep:
 #   stage: dep
