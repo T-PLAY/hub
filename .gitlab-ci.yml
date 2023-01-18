@@ -60,7 +60,8 @@ dep:
         cp /usr/lib/llvm-11/bin/clang-format apt-cache/usr/lib/llvm-11/bin/
         # cp -r /usr/lib/python3/dist-packages/cmake* apt-cache/usr/lib/python3/dist-packages/ 
         cp /usr/bin/pip3 apt-cache/usr/bin/
-        # cp /usr/bin/python3* apt-cache/usr/bin/
+        cp /usr/bin/python3 apt-cache/usr/bin/
+        cp /usr/bin/python3.9 apt-cache/usr/bin/
         # cp -r /usr/lib/python3* apt-cache/usr/lib/
 
 
