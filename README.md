@@ -5,6 +5,20 @@ This library describes a data flow coming from a sensor by proposing an abstract
 
 We thus propose a central server (hub) allowing to separate the applications retrieving the data from each of the sensors from their APIs, which we called streamer. Different from the applications looking at the data that we will called viewer. In this project we focus on two 3D viewers which are Radium and Unity. We propose 2D viewers as well as codes allowing to treat the data streams. Our project consists in gathering all the information coming from the different sensors looking at a physical scene and thus to reconstitute this information in a virtual 3D scene. 
 
+## Supported platforms
+* Linux
+* Windows (10, 11)
+* UWP (Universal Windows)
+* OSX (11.6)
+
+## Supported compilers
+* Clang 15 and above
+* GCC 12 and above
+* VS2019 and above
+
+## Languages
+* C/C++ API documentation
+
 ## Installation
 ```
 mkdir build
