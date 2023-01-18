@@ -14,16 +14,15 @@ image: stormirit/radium_dev:latest
 
 stages: 
   - deps
-  # - build
-  # - test
-  # - doc
+  - build
+  - test
+  - doc
   - format
 
 # cache:
 #     key: ${CI_COMMIT_REF_SLUG}
 #     paths:
 #       - build/
-
 cache:
   key: cache
   paths:
@@ -37,8 +36,6 @@ before_script:
     if [ -e apt-cache ]; then
       cp -rT apt-cache/ /;
     fi
-
-
   # - find apt-cache
 
 deps:
@@ -73,60 +70,57 @@ deps:
       fi
 
 
-# # artifacts:
-# #     # key: ${CI_COMMIT_REF_SLUG}
-# #     expire_in: 30 days
-# #     paths:
-# # #      - build/_deps/
-# #       - build/
+# artifacts:
+#     # key: ${CI_COMMIT_REF_SLUG}
+#     expire_in: 30 days
+#     paths:
+# #      - build/_deps/
+#       - build/
       
-# build:
-#   stage: build
-# #  before_script:
-# #    - export PATH=$PATH:/opt/Qt/5.10.0/gcc_64/bin
-#   script:
-#     # - apt update
-#     # - apt install -y doxygen
-#     - mkdir -p build
-#     - cd build
-#     - cmake -DCMAKE_BUILD_TYPE=Release -DHUB_ENABLE_TESTS=ON -DHUB_BUILD_DOC=ON ..
-#     - cmake --build . --config Release
+build:
+  stage: build
+#  before_script:
+#    - export PATH=$PATH:/opt/Qt/5.10.0/gcc_64/bin
+  script:
+    # - apt update
+    # - apt install -y doxygen
+    - mkdir -p build
+    - cd build
+    - cmake -DCMAKE_BUILD_TYPE=Release -DHUB_ENABLE_TESTS=ON -DHUB_BUILD_DOC=ON ..
+    - cmake --build . --config Release
   
-# test:
-#   stage: test
-  
-#   script:
-#     - cd build/tests
-#     - ctest -V
-# #    - ./runmytests.sh
+test:
+  stage: test
+  script:
+    - cd build/tests
+    - ctest -V
+#    - ./runmytests.sh
 
-# pages:
-#   # stage: doc
-#   script:
-#     # - apt update
-#     # - apt install -y doxygen
-#     - cmake --build build --target docs
-#     - mv build/doc/docs_doxygen/html/ public/
-# #    - ./runmytests.sh
+pages:
+  # stage: doc
+  script:
+    # - apt update
+    # - apt install -y doxygen
+    - cmake --build build --target docs
+    - mv build/doc/docs_doxygen/html/ public/
+#    - ./runmytests.sh
+  artifacts:
+    paths:
+    - public
+  # only:
+    # - feature/add-gitlab-pages-support
 
-#   artifacts:
-#     paths:
-#     - public
-  
-#   # only:
-#     # - feature/add-gitlab-pages-support
-
-# doc:
-#   stage: doc
-#   script:
-#     - pip3 install breathe sphinx-sitemap sphinx-rtd-theme
-#     - make -C doc/docs_sphinx html
-#     - mv doc/docs_sphinx/_build/html public/
-#   artifacts:
-#     paths:
-#       - public
-#   # only:
-#   # - master
+doc:
+  stage: doc
+  script:
+    - pip3 install breathe sphinx-sitemap sphinx-rtd-theme
+    - make -C doc/docs_sphinx html
+    - mv doc/docs_sphinx/_build/html public/
+  artifacts:
+    paths:
+      - public
+  # only:
+  # - master
 
 
 format:
