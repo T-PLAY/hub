@@ -121,7 +121,7 @@ format:
   stage: format
   script:
     - |-
-      if [ ! -e apt-cache/usr/bin/clang-format-11 ]; then
+      if [ ! -e apt-cache/usr/lib/python3/dist-packages/cmakelang ]; then
         apt update
         apt install -y cmake-format clang-format
         cp /usr/bin/cmake-format apt-cache/usr/bin/
@@ -129,6 +129,7 @@ format:
         cp /usr/bin/clang-format-11 apt-cache/usr/bin/
         mkdir -pv apt-cache/usr/lib/llvm-11/bin/
         cp /usr/lib/llvm-11/bin/clang-format apt-cache/usr/lib/llvm-11/bin/
+        cp -r /usr/lib/python3/dist-packages/cmake* apt-cache/usr/lib/python3/dist-packages/
       fi;
 
     - scripts/cleanup-project.sh
