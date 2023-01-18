@@ -43,7 +43,6 @@ cache:
   paths:
     # - apt-cache/
     - build/
-  files:
     - /usr/bin/doxygen
     - /usr/share/cmake-*/Modules/FindDoxygen.cmake
   
