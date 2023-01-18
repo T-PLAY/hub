@@ -1,7 +1,7 @@
 # Hub
 
 ## Description
-This library describes what can be a data flow coming from a sensor by proposing an abstraction of what is a sensor flow using different communication devices (file, socket, memory) to the different applications using it. This allows the different client applications to avoid using directly the communication drivers of each sensor. 
+This library describes a data flow coming from a sensor by proposing an abstraction using different communication bus (file, socket, memory) to the different applications using it. This allows the different client applications to avoid using directly the communication drivers of each sensor.
 
 We thus propose a central server (hub) allowing to separate the applications retrieving the data from each of the sensors from their APIs, which we called streamer. Different from the applications looking at the data that we will called viewer. In this project we focus on two 3D viewers which are Radium and Unity. We propose 2D viewers as well as codes allowing to treat the data streams. Our project consists in gathering all the information coming from the different sensors looking at a physical scene and thus to reconstitute this information in a virtual 3D scene. 
 
@@ -10,6 +10,7 @@ We thus propose a central server (hub) allowing to separate the applications ret
 mkdir build
 cmake -B build
 cmake --build build
+cmake --install build
 ```
 
 ## Usage
