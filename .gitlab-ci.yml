@@ -39,16 +39,20 @@ stages:
 #       - build/
 
 cache:
-  key:
-    # paths:
-    # - apt-cache/
-      # - build/
-    files:
-      - /usr/bin/doxygen
-      - /usr/share/cmake-*/Modules/FindDoxygen.cmake
+  key: cache
+  paths:
+    - apt-cache/
+    - build/
+    # files:
+      # - /usr/bin/doxygen
+      # - /usr/share/cmake-*/Modules/FindDoxygen.cmake
   
 
-# before_script:
+before_script:
+  if [ -e apt-cache ]; then
+    cp apt-cache/doxygen /usr/bin/doxygen
+    cp apt-cache/FindDoxygen.cmake /usr/share/cmake-*/Modules/
+  endif
   # - export APT_CACHE_DIR=`pwd`/apt-cache && mkdir -pv $APT_CACHE_DIR
 
 dep:
@@ -57,9 +61,11 @@ dep:
     # - apt update -yq && apt -o dir::cache::archives="$APT_CACHE_DIR" install -y doxygen
     - apt update
     - apt install -y doxygen
-    - ls /usr/bin/
-    - ls /usr/local/bin
-    - ls ~
+    # - ls /usr/bin/
+    # - ls /usr/local/bin
+    # - ls ~
+    - cp /usr/bin/doxygen apt-cache/
+    - cp /usr/share/cmake-*/Modules/FindDoxygen.cmake apt-cache/
 
 
 # artifacts:
