@@ -26,7 +26,10 @@ stages:
 format:
   stage: format
   script:
+    - apt update
+    - apt install -y cmake-format clang-format
     - scripts/cleanup-project.sh
+    - git diff --exit-code
 
 # doc:
 #   stage: doc
