@@ -22,6 +22,7 @@ stages:
   # - doc
 
 doc:
+  stage: doc
   script:
     - apt update
     - apt install python-sphinx
