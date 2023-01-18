@@ -29,75 +29,75 @@ doc:
     - cd doc/docs_sphinx
     - make html
 
-.before_script_template:
-# # dep:
-#   # stage: dep
-#   # script:
-  before_script:
-#   # stage: ['build', 'doc']
-#   # script:
-#   # - apk update
-#   # - apk add doxygen
-    - apt update
-    - apt install -y doxygen
+# .before_script_template:
+# # # dep:
+# #   # stage: dep
+# #   # script:
+#   before_script:
+# #   # stage: ['build', 'doc']
+# #   # script:
+# #   # - apk update
+# #   # - apk add doxygen
+#     - apt update
+#     - apt install -y doxygen
 
-cache:
-    key: ${CI_COMMIT_REF_SLUG}
-    paths:
-      - build/
-
-# artifacts:
-#     # key: ${CI_COMMIT_REF_SLUG}
-#     expire_in: 30 days
+# cache:
+#     key: ${CI_COMMIT_REF_SLUG}
 #     paths:
-# #      - build/_deps/
 #       - build/
+
+# # artifacts:
+# #     # key: ${CI_COMMIT_REF_SLUG}
+# #     expire_in: 30 days
+# #     paths:
+# # #      - build/_deps/
+# #       - build/
       
-build:
-  extends: .before_script_template
-  stage: build
-#  before_script:
-#    - export PATH=$PATH:/opt/Qt/5.10.0/gcc_64/bin
-  script:
-    - mkdir -p build
-    - cd build
-    - cmake -DCMAKE_BUILD_TYPE=Release -DHUB_ENABLE_TESTS=ON -DHUB_BUILD_DOC=ON ..
-    - cmake --build . --config Release
-  
-
-
-#  artifacts:
-#    paths:
-#      - mybinary
-      # depending on your build setup it's most likely a good idea to cache outputs to reduce the build time
-      # cache:
-      #   paths:
-      #     - "*.o"
-
-# run tests using the binary built before
-test:
-  stage: test
-  
-  script:
-    - cd build/tests
-    - ctest -V
-#    - ./runmytests.sh
-
-# pages:
+# build:
 #   extends: .before_script_template
-#   # stage: doc
-
+#   stage: build
+# #  before_script:
+# #    - export PATH=$PATH:/opt/Qt/5.10.0/gcc_64/bin
 #   script:
-#     - cmake --build build --target docs
-#     - mv build/doc/docs_doxygen/html/ public/
+#     - mkdir -p build
+#     - cd build
+#     - cmake -DCMAKE_BUILD_TYPE=Release -DHUB_ENABLE_TESTS=ON -DHUB_BUILD_DOC=ON ..
+#     - cmake --build . --config Release
+  
+
+
+# #  artifacts:
+# #    paths:
+# #      - mybinary
+#       # depending on your build setup it's most likely a good idea to cache outputs to reduce the build time
+#       # cache:
+#       #   paths:
+#       #     - "*.o"
+
+# # run tests using the binary built before
+# test:
+#   stage: test
+  
+#   script:
+#     - cd build/tests
+#     - ctest -V
 # #    - ./runmytests.sh
 
-  artifacts:
-    paths:
-    - public
+# # pages:
+# #   extends: .before_script_template
+# #   # stage: doc
+
+# #   script:
+# #     - cmake --build build --target docs
+# #     - mv build/doc/docs_doxygen/html/ public/
+# # #    - ./runmytests.sh
+
+#   artifacts:
+#     paths:
+#     - public
   
-  # only:
-    # - feature/add-gitlab-pages-support
+#   # only:
+#     # - feature/add-gitlab-pages-support
 
 
 
