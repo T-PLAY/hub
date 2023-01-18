@@ -41,17 +41,21 @@ stages:
 cache:
   key: apt-cache
   paths:
-    - apt-cache/
+    # - apt-cache/
     - build/
+    - /usr/bin/doxygen
+    - /usr/share/cmake-*/Modules/FindDoxygen.cmake
   
 
-before_script:
-  - export APT_CACHE_DIR=`pwd`/apt-cache && mkdir -pv $APT_CACHE_DIR
+# before_script:
+  # - export APT_CACHE_DIR=`pwd`/apt-cache && mkdir -pv $APT_CACHE_DIR
 
 dep:
   stage: dep
   script:
-    - apt update -yq && apt -o dir::cache::archives="$APT_CACHE_DIR" install -y doxygen
+    # - apt update -yq && apt -o dir::cache::archives="$APT_CACHE_DIR" install -y doxygen
+    - apt update
+    - apt install -y doxygen
 
 
 # artifacts:
