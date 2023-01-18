@@ -25,7 +25,7 @@ doc:
   stage: doc
   script:
     - apt update
-    - apt install doxygen
+    - apt install -y doxygen
     - pip3 install sphinx-dox breathe sphinx-sitemap
     - cd doc/docs_sphinx
     - make html
