@@ -76,7 +76,7 @@ test:
 
 pages:
   extends: .before_script_template
-  stage: doc
+  # stage: doc
 
   script:
     - cd build
@@ -88,5 +88,5 @@ pages:
     paths:
     - public
   
-  only:
-    - feature/add-gitlab-pages-support
+  # only:
+    # - feature/add-gitlab-pages-support
