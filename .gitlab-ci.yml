@@ -20,17 +20,17 @@ stages:
   - test
   - doc
 
-.before_script_template:
-# dep:
-  # stage: dep
-  # script:
-  before_script:
-  # stage: ['build', 'doc']
-  # script:
-  # - apk update
-  # - apk add doxygen
-    - apt update
-    - apt install -y doxygen
+# .before_script_template:
+# # dep:
+#   # stage: dep
+#   # script:
+#   before_script:
+#   # stage: ['build', 'doc']
+#   # script:
+#   # - apk update
+#   # - apk add doxygen
+#     - apt update
+#     - apt install -y doxygen
 
 cache:
     key: ${CI_COMMIT_REF_SLUG}
@@ -45,14 +45,14 @@ cache:
 #       - build/
       
 build:
-  extends: .before_script_template
+  # extends: .before_script_template
   stage: build
 #  before_script:
 #    - export PATH=$PATH:/opt/Qt/5.10.0/gcc_64/bin
   script:
     - mkdir -p build
     - cd build
-    - cmake -DCMAKE_BUILD_TYPE=Release -DHUB_ENABLE_TESTS=ON -DHUB_BUILD_DOC=ON ..
+    - cmake -DCMAKE_BUILD_TYPE=Release -DHUB_ENABLE_TESTS=ON ..
     - cmake --build . --config Release
   
 
@@ -75,11 +75,14 @@ test:
 #    - ./runmytests.sh
 
 doc:
-  extends: .before_script_template
+  # extends: .before_script_template
   stage: doc
   
   script:
+    - apt update
+    - apt install -y doxygen
     - cd build
+    - cmake -DCMAKE_BUILD_TYPE=Release -DHUB_ENABLE_TESTS=ON -DHUB_BUILD_DOC=ON ..
     - cmake --build . --target docs
 #    - ./runmytests.sh
 
