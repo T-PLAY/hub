@@ -75,6 +75,8 @@ dep:
     - cp /usr/bin/doxygen apt-cache/usr/bin/   
     - mkdir -pv apt-cache/usr/share/$(basename /usr/share/cmake-*)/Modules
     - cp /usr/share/cmake-*/Modules/FindDoxygen.cmake apt-cache/usr/share/$(basename /usr/share/cmake-*)/Modules/
+    - mkdir -pv apt-cache/usr/lib/x86_64-linux-gnu/
+    - cp /usr/lib/x86_64-linux-gnu/libclang-* apt-cache/usr/lib/x86_64-linux-gnu/
 
 
 # artifacts:
