@@ -66,7 +66,9 @@ StreamViewerClient::StreamViewerClient( Server& server,
         std::cout << headerMsg() << "unknown stream name : '" << m_streamName << "'" << std::endl;
         return;
     }
-    else { sock.write( hub::net::ClientSocket::Message::OK ); }
+    else {
+        sock.write( hub::net::ClientSocket::Message::OK );
+    }
     assert( streamers.find( m_streamName ) != streamers.end() );
 
     sock.read( m_syncStreamName );
@@ -76,7 +78,9 @@ StreamViewerClient::StreamViewerClient( Server& server,
                   << std::endl;
         return;
     }
-    else { sock.write( hub::net::ClientSocket::Message::OK ); }
+    else {
+        sock.write( hub::net::ClientSocket::Message::OK );
+    }
     assert( m_syncStreamName == "" || streamers.find( m_syncStreamName ) != streamers.end() );
 
     sock.read( m_mergeSyncAcqs );

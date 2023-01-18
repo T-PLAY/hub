@@ -376,7 +376,9 @@ StreamerClient::StreamerClient( Server& server, int iClient, hub::net::ClientSoc
                         mergedAcq
                             << hub::Acquisition::slerp( *itLeftAcq, *itRightAcq, t ).getMeasures();
                     }
-                    else { mergedAcq << closestAcq->getMeasures(); }
+                    else {
+                        mergedAcq << closestAcq->getMeasures();
+                    }
                     //                    mergedAcq << masterAcq.getMeasures();
 
                     //                    const auto syncViewers = pair.second;
@@ -434,7 +436,9 @@ StreamerClient::StreamerClient( Server& server, int iClient, hub::net::ClientSoc
                     //                    masterAcq ) );
                     m_lastAcq[""] = std::make_shared<hub::Acquisition>( std::move( masterAcq ) );
                 }
-                else { saveNewAcq( "", std::move( masterAcq ) ); }
+                else {
+                    saveNewAcq( "", std::move( masterAcq ) );
+                }
                 //                m_lastUpdateAcqDate[""] =
                 //                std::chrono::high_resolution_clock::now();
 

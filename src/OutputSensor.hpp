@@ -41,7 +41,7 @@ class SRC_API OutputSensor : public Sensor
     template <class OutputInterface>
     OutputSensor( const SensorSpec&& sensorSpec, OutputInterface& outputInterface ) = delete;
 
-    OutputSensor( const OutputSensor& outputSensor )           = delete;
+    OutputSensor( const OutputSensor& outputSensor ) = delete;
     OutputSensor operator=( const OutputSensor& outputSensor ) = delete;
 
   public:
