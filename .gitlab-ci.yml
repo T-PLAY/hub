@@ -33,7 +33,7 @@ cache:
 before_script:
     - rm -r apt-cache
     - mkdir -pv apt-cache
-    - cp -rf apt-cache/* /
+    - cp -rT apt-cache/ /
 
     - find apt-cache
 
