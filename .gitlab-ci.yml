@@ -106,6 +106,8 @@ doc:
   artifacts:
     paths:
       - public
+  only:
+  - master
 
 
 format:
@@ -114,6 +116,8 @@ format:
     - apt update
     - apt install -y cmake-format clang-format
     - scripts/cleanup-project.sh
-    - git diff --exit-code
+    - git diff --stat --exit-code
+  only:
+  - master
 
 
