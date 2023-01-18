@@ -64,6 +64,7 @@ dep:
     # - ls /usr/bin/
     # - ls /usr/local/bin
     # - ls ~
+    - mkdir -pv apt-cache
     - cp /usr/bin/doxygen apt-cache/
     - cp /usr/share/cmake-*/Modules/FindDoxygen.cmake apt-cache/
 
