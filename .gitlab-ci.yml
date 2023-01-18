@@ -40,9 +40,9 @@ stages:
 
 cache:
   key:
-    paths:
+    # paths:
     # - apt-cache/
-      - build/
+      # - build/
     files:
       - /usr/bin/doxygen
       - /usr/share/cmake-*/Modules/FindDoxygen.cmake
