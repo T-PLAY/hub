@@ -77,6 +77,10 @@ test:
 doc:
   extends: .before_script_template
   stage: doc
+
+  artifacts:
+    paths:
+      build/doc/docs_doxygen
   
   script:
     - cd build
