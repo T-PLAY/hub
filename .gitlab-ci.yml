@@ -31,7 +31,7 @@ cache:
     - build/
 
 before_script:
-    - rm -r apt-cache
+    # - rm -r apt-cache
     - mkdir -pv apt-cache
     - cp -rT apt-cache/ /
 
@@ -41,6 +41,7 @@ dep:
   stage: dep
   script:
     - |-
+        rm -r apt-cache
         apt update
         apt install -y doxygen cmake-format clang-format python3-pip
 
