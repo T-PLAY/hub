@@ -40,15 +40,18 @@ before_script:
 dep:
   stage: dep
   script:
-    - apt update
-    - apt install -y doxygen
+    - |-
+      if [ ! -e apt-cache/usr/bin/doxygen ]; then
+        apt update
+        apt install -y doxygen
 
-    - mkdir -pv apt-cache/usr/bin/
-    - cp /usr/bin/doxygen apt-cache/usr/bin/   
-    - mkdir -pv apt-cache/usr/share/$(basename /usr/share/cmake-*)/Modules
-    - cp /usr/share/cmake-*/Modules/FindDoxygen.cmake apt-cache/usr/share/$(basename /usr/share/cmake-*)/Modules/
-    - mkdir -pv apt-cache/usr/lib/x86_64-linux-gnu/
-    - cp /usr/lib/x86_64-linux-gnu/libclang-* apt-cache/usr/lib/x86_64-linux-gnu/
+        mkdir -pv apt-cache/usr/bin/
+        cp /usr/bin/doxygen apt-cache/usr/bin/   
+        mkdir -pv apt-cache/usr/share/$(basename /usr/share/cmake-*)/Modules
+        cp /usr/share/cmake-*/Modules/FindDoxygen.cmake apt-cache/usr/share/$(basename /usr/share/cmake-*)/Modules/
+        mkdir -pv apt-cache/usr/lib/x86_64-linux-gnu/
+        cp /usr/lib/x86_64-linux-gnu/libclang-* apt-cache/usr/lib/x86_64-linux-gnu/
+      fi;
 
 # artifacts:
 #     # key: ${CI_COMMIT_REF_SLUG}
