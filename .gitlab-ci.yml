@@ -129,8 +129,6 @@ format:
         cp /usr/lib/llvm-11/bin/clang-format apt-cache/usr/lib/llvm-11/bin/
       fi;
 
-    # - apt update
-    # - apt install -y cmake-format clang-format
     - scripts/cleanup-project.sh
     - git diff --exit-code
   # only:
