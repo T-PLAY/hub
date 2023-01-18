@@ -57,3 +57,11 @@ test:
     - ctest -V
 #    - ./runmytests.sh
 
+doc:
+  stage: doc
+  
+  script:
+    - cd build
+    - cmake --build . --target docs
+#    - ./runmytests.sh
+
