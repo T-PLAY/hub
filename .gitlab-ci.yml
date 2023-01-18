@@ -7,6 +7,10 @@
 # using Radium development dedicated image
 image: stormirit/radium_dev:latest
 
+before_script:
+  - update
+  - apk add doxygen
+
 #https://docs.gitlab.com/ee/ci/yaml/#extends
 .branches_with_ci:
   only:
