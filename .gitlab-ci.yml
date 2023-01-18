@@ -46,7 +46,7 @@ cache:
 
 before_script:
   - export APT_CACHE_DIR=`pwd`/apt-cache && mkdir -pv $APT_CACHE_DIR
-  - apt update -yq && sudo apt -o dir::cache::archives="$APT_CACHE_DIR" install -y doxygen
+  - apt update -yq && apt -o dir::cache::archives="$APT_CACHE_DIR" install -y doxygen
 
 
 # artifacts:
