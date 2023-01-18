@@ -16,6 +16,7 @@ image: stormirit/radium_dev:latest
 
 stages:
   # - dep
+  - doc
   - build
   - test
   # - doc
@@ -89,3 +90,10 @@ pages:
   
   # only:
     # - feature/add-gitlab-pages-support
+
+doc:
+  script:
+    cd doc/docs_sphinx
+    make html
+
+
