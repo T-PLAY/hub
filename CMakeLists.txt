@@ -42,3 +42,5 @@ endif()
 #  FILE hub.cmake
 #  DESTINATION lib/cmake/hub
 #)
+
+add_subdirectory(doc)
