@@ -68,6 +68,8 @@ deps:
         cp /usr/bin/python3 apt-cache/usr/bin/
         cp -a /usr/bin/python3.9 apt-cache/usr/bin/
         # cp -r /usr/lib/python3* apt-cache/usr/lib/
+        
+        find apt-cache
       fi
 
 
