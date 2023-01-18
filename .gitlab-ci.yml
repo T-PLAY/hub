@@ -7,41 +7,19 @@
 # using Radium development dedicated image
 image: stormirit/radium_dev:latest
 
-
-
 #https://docs.gitlab.com/ee/ci/yaml/#extends
 .branches_with_ci:
   only:
     - master
 
 stages: 
-  - format
   # - dep
   # - doc
-  # - build
-  # - test
-  # - doc
+  - build
+  - test
+  - doc
+  - format
 
-
-format:
-  stage: format
-  script:
-    - apt update
-    - apt install -y cmake-format clang-format
-    - scripts/cleanup-project.sh
-    - git diff --exit-code
-
-# doc:
-#   stage: doc
-#   script:
-#     - apt update
-#     - apt install -y doxygen python3-pip
-#     - pip3 install breathe sphinx-sitemap sphinx-rtd-theme
-#     - make -C doc/docs_sphinx html
-#     - mv doc/docs_sphinx/_build/html public/
-#   artifacts:
-#     paths:
-#       - public
 
 # .before_script_template:
 # # # dep:
@@ -55,64 +33,87 @@ format:
 #     - apt update
 #     - apt install -y doxygen
 
-# cache:
-#     key: ${CI_COMMIT_REF_SLUG}
+cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - build/
+
+# artifacts:
+#     # key: ${CI_COMMIT_REF_SLUG}
+#     expire_in: 30 days
 #     paths:
+# #      - build/_deps/
 #       - build/
-
-# # artifacts:
-# #     # key: ${CI_COMMIT_REF_SLUG}
-# #     expire_in: 30 days
-# #     paths:
-# # #      - build/_deps/
-# #       - build/
       
-# build:
-#   extends: .before_script_template
-#   stage: build
-# #  before_script:
-# #    - export PATH=$PATH:/opt/Qt/5.10.0/gcc_64/bin
-#   script:
-#     - mkdir -p build
-#     - cd build
-#     - cmake -DCMAKE_BUILD_TYPE=Release -DHUB_ENABLE_TESTS=ON -DHUB_BUILD_DOC=ON ..
-#     - cmake --build . --config Release
+build:
+  # extends: .before_script_template
+  stage: build
+#  before_script:
+#    - export PATH=$PATH:/opt/Qt/5.10.0/gcc_64/bin
+  script:
+    - apt update
+    - apt install -y doxygen
+    - mkdir -p build
+    - cd build
+    - cmake -DCMAKE_BUILD_TYPE=Release -DHUB_ENABLE_TESTS=ON -DHUB_BUILD_DOC=ON ..
+    - cmake --build . --config Release
   
 
 
-# #  artifacts:
-# #    paths:
-# #      - mybinary
-#       # depending on your build setup it's most likely a good idea to cache outputs to reduce the build time
-#       # cache:
-#       #   paths:
-#       #     - "*.o"
+#  artifacts:
+#    paths:
+#      - mybinary
+      # depending on your build setup it's most likely a good idea to cache outputs to reduce the build time
+      # cache:
+      #   paths:
+      #     - "*.o"
 
-# # run tests using the binary built before
-# test:
-#   stage: test
+# run tests using the binary built before
+test:
+  stage: test
   
-#   script:
-#     - cd build/tests
-#     - ctest -V
-# #    - ./runmytests.sh
+  script:
+    - cd build/tests
+    - ctest -V
+#    - ./runmytests.sh
 
-# # pages:
-# #   extends: .before_script_template
-# #   # stage: doc
+pages:
+  # extends: .before_script_template
+  # stage: doc
 
-# #   script:
-# #     - cmake --build build --target docs
-# #     - mv build/doc/docs_doxygen/html/ public/
-# # #    - ./runmytests.sh
+  script:
+    - apt update
+    - apt install -y doxygen
+    - cmake --build build --target docs
+    - mv build/doc/docs_doxygen/html/ public/
+#    - ./runmytests.sh
 
-#   artifacts:
-#     paths:
-#     - public
+  artifacts:
+    paths:
+    - public
   
-#   # only:
-#     # - feature/add-gitlab-pages-support
+  # only:
+    # - feature/add-gitlab-pages-support
+
+doc:
+  stage: doc
+  script:
+    - apt update
+    - apt install -y doxygen python3-pip
+    - pip3 install breathe sphinx-sitemap sphinx-rtd-theme
+    - make -C doc/docs_sphinx html
+    - mv doc/docs_sphinx/_build/html public/
+  artifacts:
+    paths:
+      - public
 
 
+format:
+  stage: format
+  script:
+    - apt update
+    - apt install -y cmake-format clang-format
+    - scripts/cleanup-project.sh
+    - git diff --exit-code
 
 
