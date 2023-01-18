@@ -24,95 +24,95 @@ stages:
 #     paths:
 #       - build/
 
-cache:
-  key: cache
-  paths:
-    - apt-cache/
-    - build/
+# cache:
+#   key: cache
+#   paths:
+#     - apt-cache/
+#     - build/
 
-before_script:
-    - mkdir -pv apt-cache
-    - cp -r apt-cache/* /
+# before_script:
+#     - mkdir -pv apt-cache
+#     - cp -r apt-cache/* /
 
-    - find apt-cache
+#     - find apt-cache
 
-dep:
-  stage: dep
-  script:
-    - |-
-      if [ ! -e apt-cache/usr/bin/doxygen ]; then
-        apt update
-        apt install -y doxygen
+# dep:
+#   stage: dep
+#   script:
+#     - |-
+#       if [ ! -e apt-cache/usr/bin/doxygen ]; then
+#         apt update
+#         apt install -y doxygen
 
-        mkdir -pv apt-cache/usr/bin/
-        cp /usr/bin/doxygen apt-cache/usr/bin/   
-        mkdir -pv apt-cache/usr/share/$(basename /usr/share/cmake-*)/Modules
-        cp /usr/share/cmake-*/Modules/FindDoxygen.cmake apt-cache/usr/share/$(basename /usr/share/cmake-*)/Modules/
-        mkdir -pv apt-cache/usr/lib/x86_64-linux-gnu/
-        cp /usr/lib/x86_64-linux-gnu/libclang-* apt-cache/usr/lib/x86_64-linux-gnu/
-      fi;
+#         mkdir -pv apt-cache/usr/bin/
+#         cp /usr/bin/doxygen apt-cache/usr/bin/   
+#         mkdir -pv apt-cache/usr/share/$(basename /usr/share/cmake-*)/Modules
+#         cp /usr/share/cmake-*/Modules/FindDoxygen.cmake apt-cache/usr/share/$(basename /usr/share/cmake-*)/Modules/
+#         mkdir -pv apt-cache/usr/lib/x86_64-linux-gnu/
+#         cp /usr/lib/x86_64-linux-gnu/libclang-* apt-cache/usr/lib/x86_64-linux-gnu/
+#       fi;
 
-# artifacts:
-#     # key: ${CI_COMMIT_REF_SLUG}
-#     expire_in: 30 days
-#     paths:
-# #      - build/_deps/
-#       - build/
+# # artifacts:
+# #     # key: ${CI_COMMIT_REF_SLUG}
+# #     expire_in: 30 days
+# #     paths:
+# # #      - build/_deps/
+# #       - build/
       
-build:
-  stage: build
-#  before_script:
-#    - export PATH=$PATH:/opt/Qt/5.10.0/gcc_64/bin
-  script:
-    # - apt update
-    # - apt install -y doxygen
-    - mkdir -p build
-    - cd build
-    - cmake -DCMAKE_BUILD_TYPE=Release -DHUB_ENABLE_TESTS=ON -DHUB_BUILD_DOC=ON ..
-    - cmake --build . --config Release
+# build:
+#   stage: build
+# #  before_script:
+# #    - export PATH=$PATH:/opt/Qt/5.10.0/gcc_64/bin
+#   script:
+#     # - apt update
+#     # - apt install -y doxygen
+#     - mkdir -p build
+#     - cd build
+#     - cmake -DCMAKE_BUILD_TYPE=Release -DHUB_ENABLE_TESTS=ON -DHUB_BUILD_DOC=ON ..
+#     - cmake --build . --config Release
   
-test:
-  stage: test
+# test:
+#   stage: test
   
-  script:
-    - cd build/tests
-    - ctest -V
-#    - ./runmytests.sh
+#   script:
+#     - cd build/tests
+#     - ctest -V
+# #    - ./runmytests.sh
 
-pages:
-  # stage: doc
-  script:
-    # - apt update
-    # - apt install -y doxygen
-    - cmake --build build --target docs
-    - mv build/doc/docs_doxygen/html/ public/
-#    - ./runmytests.sh
+# pages:
+#   # stage: doc
+#   script:
+#     # - apt update
+#     # - apt install -y doxygen
+#     - cmake --build build --target docs
+#     - mv build/doc/docs_doxygen/html/ public/
+# #    - ./runmytests.sh
 
-  artifacts:
-    paths:
-    - public
+#   artifacts:
+#     paths:
+#     - public
   
-  # only:
-    # - feature/add-gitlab-pages-support
+#   # only:
+#     # - feature/add-gitlab-pages-support
 
-doc:
-  stage: doc
-  script:
-    - |-
-      if [ ! -e apt-cache/usr/bin/pip3 ]; then
-        apt update
-        apt install -y python3-pip
-        cp /usr/bin/pip3 apt-cache/usr/bin/ 
-      fi;
+# doc:
+#   stage: doc
+#   script:
+#     - |-
+#       if [ ! -e apt-cache/usr/bin/pip3 ]; then
+#         apt update
+#         apt install -y python3-pip
+#         cp /usr/bin/pip3 apt-cache/usr/bin/ 
+#       fi;
 
-    - pip3 install breathe sphinx-sitemap sphinx-rtd-theme
-    - make -C doc/docs_sphinx html
-    - mv doc/docs_sphinx/_build/html public/
-  artifacts:
-    paths:
-      - public
-  # only:
-  # - master
+#     - pip3 install breathe sphinx-sitemap sphinx-rtd-theme
+#     - make -C doc/docs_sphinx html
+#     - mv doc/docs_sphinx/_build/html public/
+#   artifacts:
+#     paths:
+#       - public
+#   # only:
+#   # - master
 
 
 format:
