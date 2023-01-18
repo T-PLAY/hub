@@ -80,7 +80,7 @@ doc:
 
   artifacts:
     paths:
-      build/doc/docs_doxygen
+    - build/doc/docs_doxygen
   
   script:
     - cd build
