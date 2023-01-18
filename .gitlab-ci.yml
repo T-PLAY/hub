@@ -45,7 +45,7 @@ dep:
   stage: deps
   script:
     - |-
-      # rm -r apt-cache
+      rm -r apt-cache
       if [ ! -e apt-cache ]; then
         apt update
         apt install -y doxygen cmake-format clang-format python3-pip
