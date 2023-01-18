@@ -41,6 +41,7 @@ cache:
 #       - build/
       
 build:
+  extends: .before_script_template
   stage: build
 #  before_script:
 #    - export PATH=$PATH:/opt/Qt/5.10.0/gcc_64/bin
@@ -70,6 +71,7 @@ test:
 #    - ./runmytests.sh
 
 doc:
+  extends: .before_script_template
   stage: doc
   
   script:
