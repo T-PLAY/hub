@@ -31,7 +31,9 @@ struct Map {
         //                                       [&key]( const auto& v ) { return v.first == key; }
         //                                       );
         if ( itr != std::end( data ) ) { return itr->second; }
-        else { throw std::range_error( "Not Found" ); }
+        else {
+            throw std::range_error( "Not Found" );
+        }
     }
 
     [[nodiscard]] Value& operator[]( const Key& key ) {
@@ -54,7 +56,9 @@ struct Map {
         //                                       [&key]( const auto& v ) { return v.first == key; }
         //                                       );
         if ( itr != std::end( data ) ) { data.erase( itr ); }
-        else { throw std::range_error( "Not Found" ); }
+        else {
+            throw std::range_error( "Not Found" );
+        }
     }
 
     [[nodiscard]] constexpr auto begin() const { return data.begin(); }

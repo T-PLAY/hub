@@ -42,7 +42,7 @@ class SRC_API ClientSocket : public Socket, public virtual io::Interface
     ClientSocket( ClientSocket&& sock )      = default;
 
     ClientSocket& operator=( const ClientSocket& sock ) = delete;
-    ClientSocket&& operator=( ClientSocket&& sock )     = delete;
+    ClientSocket&& operator=( ClientSocket&& sock ) = delete;
 
     ~ClientSocket();
 

@@ -26,11 +26,11 @@ namespace io {
 class SRC_API Interface
 {
   public:
-    Interface()                                       = default;
-    Interface( Interface&& ioStream )                 = default;
-    Interface( const Interface& ioStream )            = delete;
+    Interface()                            = default;
+    Interface( Interface&& ioStream )      = default;
+    Interface( const Interface& ioStream ) = delete;
     Interface& operator=( const Interface& ioStream ) = delete;
-    Interface&& operator=( Interface&& ioStream )     = delete;
+    Interface&& operator=( Interface&& ioStream ) = delete;
 
     virtual ~Interface() = default;
     //    virtual ~Interface();

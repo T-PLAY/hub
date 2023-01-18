@@ -34,7 +34,7 @@ class SRC_API InputSensor : public Sensor
     template <class InputInterface>
     InputSensor( InputInterface& inputInterface ) = delete;
 
-    InputSensor( const InputSensor& inputSensor )           = delete;
+    InputSensor( const InputSensor& inputSensor ) = delete;
     InputSensor operator=( const InputSensor& inputSensor ) = delete;
 
   public:

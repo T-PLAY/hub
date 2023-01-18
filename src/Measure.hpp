@@ -19,9 +19,9 @@ class SRC_API Measure
     Measure( unsigned char* data, uint64_t size, ResolutionT&& resolution );
 
     Measure( Measure&& measure );
-    Measure( const Measure& )            = delete;
+    Measure( const Measure& ) = delete;
     Measure& operator=( const Measure& ) = delete;
-    Measure& operator=( Measure&& )      = delete;
+    Measure& operator=( Measure&& ) = delete;
 
     ~Measure();
 

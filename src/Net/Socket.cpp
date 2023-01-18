@@ -18,7 +18,9 @@ namespace net {
 std::string Socket::getHeader( socket_fd iSock ) const {
     std::string str;
     if ( m_serverSide ) { str += "\t\033[1m[Server]\033[0m"; }
-    else { str += "[Client]"; }
+    else {
+        str += "[Client]";
+    }
     str += "\033[" + std::to_string( 31 + iSock % 7 ) + "m[socket:" + std::to_string( iSock ) +
            "]\033[0m ";
     return str;

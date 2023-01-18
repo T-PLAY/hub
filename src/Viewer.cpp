@@ -16,14 +16,16 @@
 #ifdef DEBUG_MSG
 #    undef DEBUG_MSG
 #endif
-#define DEBUG_MSG( _params )                        \
-    do {                                            \
-        if ( m_onLogMessage ) {                     \
-            std::stringstream _sstr;                \
-            _sstr << _params;                       \
-            m_onLogMessage( _sstr.str().c_str() );  \
-        }                                           \
-        else { std::cout << _params << std::endl; } \
+#define DEBUG_MSG( _params )                       \
+    do {                                           \
+        if ( m_onLogMessage ) {                    \
+            std::stringstream _sstr;               \
+            _sstr << _params;                      \
+            m_onLogMessage( _sstr.str().c_str() ); \
+        }                                          \
+        else {                                     \
+            std::cout << _params << std::endl;     \
+        }                                          \
     } while ( false );
 
 // #endif

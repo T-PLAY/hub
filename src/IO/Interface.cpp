@@ -151,7 +151,9 @@ void Interface::write( const std::any& any ) const {
         const float* val = *std::any_cast<const float*>( &any );
         write( (unsigned char*)val, 64 );
     }
-    else { assert( false ); }
+    else {
+        assert( false );
+    }
 }
 
 /////////////////////////////////////////////////////////////////////////////

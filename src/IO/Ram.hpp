@@ -26,7 +26,7 @@ class SRC_API CyclicBuff
     CyclicBuff( CyclicBuff&& buff )      = default;
 
     CyclicBuff& operator=( const CyclicBuff& buff ) = delete;
-    CyclicBuff& operator=( CyclicBuff&& buff )      = delete;
+    CyclicBuff& operator=( CyclicBuff&& buff ) = delete;
 
     ~CyclicBuff();
 

@@ -41,7 +41,7 @@ class SRC_API Socket
     Socket( const Socket& socket ) = delete;
     Socket( Socket&& socket );
     Socket& operator=( const Socket& socket ) = delete;
-    Socket&& operator=( Socket&& socket )     = delete;
+    Socket&& operator=( Socket&& socket ) = delete;
 
     bool isConnected() const;
     //    void clear() const;
