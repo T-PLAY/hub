@@ -49,11 +49,10 @@ cache:
   
 
 before_script:
-  script:
-    - if [ -e apt-cache ]; then
-    - cp apt-cache/doxygen /usr/bin/doxygen;
-    - cp apt-cache/FindDoxygen.cmake /usr/share/cmake-*/Modules/;
-    - fi
+    if [ -e apt-cache ]; then
+      cp apt-cache/doxygen /usr/bin/doxygen;
+      cp apt-cache/FindDoxygen.cmake /usr/share/cmake-*/Modules/;
+    fi
   # - export APT_CACHE_DIR=`pwd`/apt-cache && mkdir -pv $APT_CACHE_DIR
 
 dep:
