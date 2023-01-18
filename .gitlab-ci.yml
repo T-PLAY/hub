@@ -119,11 +119,14 @@ format:
   stage: format
   script:
     - |-
-      if [ ! -e apt-cache/usr/bin/cmake-format ]; then
+      if [ ! -e apt-cache/usr/bin/clang-format-11 ]; then
         apt update
         apt install -y cmake-format clang-format
         cp /usr/bin/cmake-format apt-cache/usr/bin/
         cp /usr/bin/clang-format apt-cache/usr/bin/
+        cp /usr/bin/clang-format-11 apt-cache/usr/bin/
+        mkdir -pv apt-cache/usr/lib/llvm-11/bin/
+        cp /usr/lib/llvm-11/bin/clang-format apt-cache/usr/lib/llvm-11/bin/
       fi;
 
     # - apt update
