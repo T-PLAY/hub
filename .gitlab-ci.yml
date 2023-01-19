@@ -276,6 +276,8 @@ cache-format:
 
         mkdir -pv format-cache/usr/bin/
         mkdir -pv format-cache/usr/lib/llvm-11/bin/
+        mkdir -pv format-cache/usr/lib/llvm-11/lib/
+        mkdir -pv format-cache/usr/lib/x86_64-linux-gnu/
 
         cp /usr/bin/cmake-format format-cache/usr/bin/
         cp /usr/bin/clang-format format-cache/usr/bin/
