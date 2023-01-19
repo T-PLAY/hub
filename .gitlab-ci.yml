@@ -294,7 +294,7 @@ format:
 
       scripts/cleanup-project.sh
       git diff --exit-code
-  only:
-  - master
+  # only:
+  # - master
 
 
