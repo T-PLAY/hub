@@ -14,10 +14,10 @@ image: stormirit/radium_dev:latest
 
 stages: 
   # - dep
-  - build
-  - test
+  # - build
+  # - test
   - doc
-  - format
+  # - format
 
 # cache:
 #     key: ${CI_COMMIT_REF_SLUG}
@@ -28,8 +28,8 @@ cache:
   paths:
     # - apt-cache/ 
     # - pip3-cache/
-    - build-gcc-release/
-    - build-clang-debug/
+    # - build-gcc-release/
+    # - build-clang-debug/
  
 
 # before_script:
