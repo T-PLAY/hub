@@ -16,8 +16,8 @@ stages:
   - dep
   - build
   # - test
-  # - doc
-  # - format
+  - doc
+  - format
 
 # cache:
 #     key: ${CI_COMMIT_REF_SLUG}
