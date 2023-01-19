@@ -70,6 +70,7 @@ dep:
         # cp /usr/bin/clang-format-11 apt-cache/usr/bin/
         cp /usr/lib/llvm-11/bin/clang-format apt-cache/usr/lib/llvm-11/bin/
         cp /usr/bin/clang* apt-cache/usr/bin/
+        cp /usr/lib/x86_64-linux-gnu/libpthread* apt-cache/usr/lib/x86_64-linux-gnu/
         
         cp -ar /usr/lib/python* apt-cache/usr/lib/
         cp /usr/bin/pip3 apt-cache/usr/bin/
