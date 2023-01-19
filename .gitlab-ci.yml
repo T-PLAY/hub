@@ -13,7 +13,7 @@ image: stormirit/radium_dev:latest
     - master
 
 stages: 
-  - deps
+  - dep
   - build
   - test
   - doc
@@ -42,8 +42,8 @@ before_script:
     fi
   # - find apt-cache
 
-deps:
-  stage: deps
+dep:
+  stage: dep
   script:
     - |-
       # rm -rf apt-cache
@@ -102,31 +102,41 @@ deps:
 # #      - build/_deps/
 #       - build/
       
-build:
+build-gcc-release:
   stage: build
 #  before_script:
 #    - export PATH=$PATH:/opt/Qt/5.10.0/gcc_64/bin
   script:
     # - apt update
     # - apt install -y doxygen
-    - mkdir -p build
-    - cd build
-    - cmake -DCMAKE_BUILD_TYPE=Release -DHUB_ENABLE_TESTS=ON -DHUB_BUILD_DOC=ON ..
-    - cmake --build . --config Release
+    - mkdir -p build-gcc-release
+    - cmake -B build-gcc-release -DCMAKE_CXX_COMPILER=g++ -DCMAKE_C_COMPILER=gcc -DCMAKE_BUILD_TYPE=Release -DHUB_ENABLE_TESTS=ON -DHUB_BUILD_DOC=ON
+    - cmake --build build-gcc-release --config Release
+    # - cd build
+
+build-clang-debug:
+  stage: build
+#  before_script:
+#    - export PATH=$PATH:/opt/Qt/5.10.0/gcc_64/bin
+  script:
+    - mkdir -p build-clang-debug
+    - cmake -B build-clang-debug -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON 
+    - cmake --build build-clang-debug --config Debug
+    - cmake --install build-clang-debug --config Debug
   
 test:
   stage: test
   script:
-    - cd build/tests
+    - cd build-gcc-release/tests
     - ctest -V
 #    - ./runmytests.sh
 
-pages:
-  # stage: doc
+doc-doxygen:
+  stage: doc
   script:
     # - apt update
     # - apt install -y doxygen
-    - cmake --build build --target docs
+    - cmake --build build-gcc-release --target docs
     - mv build/doc/docs_doxygen/html/ public/
 #    - ./runmytests.sh
   artifacts:
@@ -135,7 +145,7 @@ pages:
   # only:
     # - feature/add-gitlab-pages-support
 
-doc:
+doc-sphinx:
   stage: doc
   script:
     - make -C doc/docs_sphinx html
