@@ -176,8 +176,8 @@ cache-sphinx:
         apt install -y python3-pip doxygen
         pip3 install breathe sphinx sphinx-sitemap sphinx-rtd-theme
         # cp -r ~/.local/bin/* apt-cache/bin/
-        mkdir -pv pip3-cache/local/bin/
-        mkdir -pv pip3-cache/usr/lib/
+        mkdir -pv pip3-cache/usr/local/bin/
+        # mkdir -pv pip3-cache/usr/lib/
         mkdir -pv pip3-cache/usr/local/share/
 
         # ls /root/.local/bin/
