@@ -174,17 +174,18 @@ doc-sphinx:
       if [ -e pip3-cache ]; then
         cp -rT pip3-cache/ /;
       else
+        apt update
+        apt install -y python3-pip
         pip3 install breathe sphinx sphinx-sitemap sphinx-rtd-theme
         # cp -r ~/.local/bin/* apt-cache/bin/
         mkdir -pv pip3-cache/bin/
         mkdir -pv pip3-cache/usr/lib/
 
-        sleep 2
         # ls /root/.local/bin/
-        ls /usr/local/bin
-        find / -name "sphinx-build"
+        # ls /usr/local/bin
+        # find / -name "sphinx-build"
         # ls /usr/bin/sphinx*
-        ls /usr/local/bin/
+        # ls /usr/local/bin/
         # cp /usr/local/bin/sphinx-build pip3-cache/bin/
         cp -ar /usr/local/lib/python* pip3-cache/usr/lib/
         # python3 -m site --user-base
