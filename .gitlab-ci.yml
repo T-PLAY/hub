@@ -86,11 +86,11 @@ deps:
         mkdir -pv pip3-cache/usr/lib/
 
         cp /usr/local/bin/sphinx-build pip3-cache/bin/
-        cp /usr/local/lib/python* pip3-cache/usr/lib/
+        cp -ar /usr/local/lib/python* pip3-cache/usr/lib/
         # python3 -m site --user-base
         # ls /root/.local/
         # ls /usr/local/bin
-        ls /usr/local/lib
+        # ls /usr/local/lib
       fi
 
 
