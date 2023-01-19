@@ -181,7 +181,6 @@ cache-sphinx:
 
         # ls /root/.local/bin/
         # ls /usr/local/bin
-        # find / -name "sphinx-build"
         # ls /usr/bin/sphinx*
         # ls /usr/local/bin/
         # cp /usr/local/bin/sphinx-build pip3-cache/bin/
@@ -191,6 +190,8 @@ cache-sphinx:
         # ls /usr/local/bin
         # ls /usr/local/lib
         # find pip3-cache
+        find / -name "sphinx-build"
+
       fi
 
 
