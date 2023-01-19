@@ -82,7 +82,8 @@ deps:
       if [ ! -e pip3-cache ]; then
         pip3 install breathe sphinx-sitemap sphinx-rtd-theme
         # cp -r ~/.local/bin/* apt-cache/bin/
-        cp /usr/local/bin/sphinx-build apt-cache/bin/
+        mkdir -pv pip3-cache/bin/
+        cp /usr/local/bin/sphinx-build pi3-cache/bin/
         # python3 -m site --user-base
         # ls /root/.local/
         # ls /usr/local/bin
