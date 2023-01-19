@@ -65,7 +65,7 @@ dep:
         cp /usr/share/cmake-*/Modules/FindThreads.cmake apt-cache/usr/share/$(basename /usr/share/cmake-*)/Modules/
 
         cp /usr/lib/x86_64-linux-gnu/libclang-* apt-cache/usr/lib/x86_64-linux-gnu/
-        cp -ra /usr/lib/llvm-11/lib/* apt-cache/lib/llvm-11/lib/
+        cp -ra /usr/lib/llvm-11/lib/* apt-cache/usr/lib/llvm-11/lib/
         cp /usr/bin/cmake-format apt-cache/usr/bin/
         # cp /usr/bin/clang-format apt-cache/usr/bin/
         # cp /usr/bin/clang-format-11 apt-cache/usr/bin/
