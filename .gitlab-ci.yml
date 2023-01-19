@@ -128,7 +128,7 @@ cache-doxygen:
       rm -rf doxygen-cache
       if [ ! -e doxygen-cache ]; then
         apt update
-        apt install -y doxygen clang
+        apt install -y doxygen clang libclang-dev
 
         mkdir -pv doxygen-cache/usr/bin/
         mkdir -pv doxygen-cache/usr/share/$(basename /usr/share/cmake-*)/Modules
