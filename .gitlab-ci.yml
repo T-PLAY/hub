@@ -124,7 +124,7 @@ cache-sphinx:
     - |-
       cp -rT dep-cache/ /;
 
-      rm -rf sphinx-cache
+      # rm -rf sphinx-cache
       if [ ! -e sphinx-cache ]; then
         apt update
         apt install -y python3-pip clang
@@ -146,8 +146,8 @@ cache-sphinx:
 
         cp -ar /usr/local/lib/python* sphinx-cache/usr/local/lib/
       fi
-  # only:
-  # - master
+  only:
+  - master
 
 
 doc-sphinx:
@@ -166,14 +166,14 @@ doc-sphinx:
   artifacts:
     paths:
       - public
-  # only:
-  # - master
+  only:
+  - master
 
 cache-format:
   stage: format
   script:
     - |-
-      rm -rf format-cache
+      # rm -rf format-cache
       if [ ! -e format-cache ]; then
         apt update
         apt install -y cmake-format clang-format
@@ -192,8 +192,8 @@ cache-format:
         cp -a /usr/bin/python* format-cache/usr/bin/
         cp -ar /usr/lib/python* format-cache/usr/lib/
       fi
-  # only:
-  # - master
+  only:
+  - master
 
 format:
   stage: format
@@ -203,7 +203,7 @@ format:
 
       scripts/cleanup-project.sh
       git diff --exit-code
-  # only:
-  # - master
+  only:
+  - master
 
 
