@@ -13,11 +13,11 @@ image: stormirit/radium_dev:latest
     - master
 
 stages: 
-  # - dep
-  # - build
+  - dep
+  - build
   # - test
-  - doc
-  - format
+  # - doc
+  # - format
 
 # cache:
 #     key: ${CI_COMMIT_REF_SLUG}
@@ -30,8 +30,8 @@ cache:
     - doxygen-cache/
     - sphinx-cache/
     - format-cache/
-    # - build-gcc-release/
-    # - build-clang-debug/
+    - build-gcc-release/
+    - build-clang-debug/
  
 
 # before_script:
@@ -120,32 +120,51 @@ cache:
 #     paths:
 # #      - build/_deps/
 #       - build/
-      
-# build-gcc-release:
-#   stage: build
-# #  before_script:
-# #    - export PATH=$PATH:/opt/Qt/5.10.0/gcc_64/bin
-#   script:
-#     # - apt update
-#     # - apt install -y doxygen
-#     - mkdir -p build-gcc-release
-#     - cmake -B build-gcc-release -DCMAKE_CXX_COMPILER=g++ -DCMAKE_C_COMPILER=gcc -DCMAKE_BUILD_TYPE=Release -DHUB_ENABLE_TESTS=ON -DHUB_BUILD_DOC=ON
-#     # - cmake -B build-gcc-release -DCMAKE_CXX_COMPILER=g++ -DCMAKE_C_COMPILER=gcc -DCMAKE_BUILD_TYPE=Release
-#     - cmake --build build-gcc-release --config Release
-#     # - cd build
 
-# build-clang-debug:
-#   stage: build
-# #  before_script:
-# #    - export PATH=$PATH:/opt/Qt/5.10.0/gcc_64/bin
-#   script:
-#     # - apt update
-#     # - apt install -y libclang-dev
-#     - mkdir -p build-clang-debug
-#     - cmake -B build-clang-debug -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON 
-#     # - cmake -B build-clang-debug -DCMAKE_CXX_COMPILER=/usr/bin/clang++ -DCMAKE_C_COMPILER=/usr/bin/clang -DCMAKE_BUILD_TYPE=Debug
-#     - cmake --build build-clang-debug --config Debug
-#     - cmake --install build-clang-debug --config Debug
+cache-doxygen:
+  stage: dep
+  script:
+    - |-
+      # rm -rf doxygen-cache
+      if [ ! -e doxygen-cache ]; then
+        apt update
+        apt install -y doxygen
+
+        mkdir -pv doxygen-cache/usr/bin/
+        mkdir -pv doxygen-cache/usr/share/$(basename /usr/share/cmake-*)/Modules
+
+        cp /usr/bin/doxygen doxygen-cache/usr/bin/   
+        cp /usr/share/cmake-*/Modules/FindDoxygen.cmake doxygen-cache/usr/share/$(basename /usr/share/cmake-*)/Modules/
+      fi
+      
+build-gcc-release:
+  stage: build
+#  before_script:
+#    - export PATH=$PATH:/opt/Qt/5.10.0/gcc_64/bin
+  script:
+    - cp -rT doxygen-cache/ /;
+
+    # - apt update
+    # - apt install -y doxygen
+    - mkdir -p build-gcc-release
+    - cmake -B build-gcc-release -DCMAKE_CXX_COMPILER=g++ -DCMAKE_C_COMPILER=gcc -DCMAKE_BUILD_TYPE=Release -DHUB_ENABLE_TESTS=ON -DHUB_BUILD_DOC=ON
+    # - cmake -B build-gcc-release -DCMAKE_CXX_COMPILER=g++ -DCMAKE_C_COMPILER=gcc -DCMAKE_BUILD_TYPE=Release
+    - cmake --build build-gcc-release --config Release
+    # - cd build
+
+build-clang-debug:
+  stage: build
+#  before_script:
+#    - export PATH=$PATH:/opt/Qt/5.10.0/gcc_64/bin
+  script:
+    # - cp -rT doxygen-cache/ /;
+    # - apt update
+    # - apt install -y libclang-dev
+    - mkdir -p build-clang-debug
+    - cmake -B build-clang-debug -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON 
+    # - cmake -B build-clang-debug -DCMAKE_CXX_COMPILER=/usr/bin/clang++ -DCMAKE_C_COMPILER=/usr/bin/clang -DCMAKE_BUILD_TYPE=Debug
+    - cmake --build build-clang-debug --config Debug
+    - cmake --install build-clang-debug --config Debug
   
 # test:
 #   stage: test
@@ -168,21 +187,7 @@ cache:
 #   # only:
 #     # - feature/add-gitlab-pages-support
 
-# cache-doxygen:
-#   stage: doc
-#   script:
-#     - |-
-#       # rm -rf doxygen-cache
-#       if [ ! -e doxygen-cache ]; then
-#         apt update
-#         apt install -y doxygen
 
-#         mkdir -pv doxygen-cache/usr/bin/
-#         mkdir -pv doxygen-cache/usr/share/$(basename /usr/share/cmake-*)/Modules
-
-#         cp /usr/bin/doxygen doxygen-cache/usr/bin/   
-#         cp /usr/share/cmake-*/Modules/FindDoxygen.cmake doxygen-cache/usr/share/$(basename /usr/share/cmake-*)/Modules/
-#       fi
 
 cache-sphinx:
   stage: doc
@@ -309,7 +314,7 @@ format:
 
       scripts/cleanup-project.sh
       git diff --exit-code
-  # only:
-  # - master
+  only:
+  - master
 
 
