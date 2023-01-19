@@ -75,10 +75,10 @@ deps:
         cp -r /usr/share/python* apt-cache/usr/share/
         # cp -r /usr/lib/python3* apt-cache/usr/lib/
         
-        # find apt-cache
+        find apt-cache
       fi
-      
-      rm -rf pip3-cache
+ 
+      # rm -rf pip3-cache
       if [ ! -e pip3-cache ]; then
         pip3 install breathe sphinx-sitemap sphinx-rtd-theme
         # cp -r ~/.local/bin/* apt-cache/bin/
@@ -91,6 +91,7 @@ deps:
         # ls /root/.local/
         # ls /usr/local/bin
         # ls /usr/local/lib
+        find pip3-cache
       fi
 
 
