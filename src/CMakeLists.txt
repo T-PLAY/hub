@@ -29,7 +29,8 @@ endif()
 if(WIN32)
 
 elseif(UNIX)
-    # find_package(Threads REQUIRED) set(UNIX_REQUIRED_LIBS Threads::Threads)
+     find_package(Threads REQUIRED)
+     set(UNIX_REQUIRED_LIBS Threads::Threads)
 endif()
 
 # if (MSVC) # Here I set the target System to WindowsStore, which *should* enable UWP-support UWP compilation : cmake
