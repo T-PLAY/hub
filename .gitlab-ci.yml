@@ -142,6 +142,8 @@ cache-doxygen:
         cp -a /usr/lib/x86_64-linux-gnu/libclang* doxygen-cache/usr/lib/x86_64-linux-gnu/
         #         cp /usr/lib/x86_64-linux-gnu/libclang-* apt-cache/usr/lib/x86_64-linux-gnu/
         cp -ra /usr/lib/llvm-11/lib/* doxygen-cache/usr/lib/llvm-11/lib/
+
+        find doxygen-cache/
       fi
       
 build-gcc-release:
@@ -164,7 +166,7 @@ build-clang-debug:
 #  before_script:
 #    - export PATH=$PATH:/opt/Qt/5.10.0/gcc_64/bin
   script:
-    # - cp -rT doxygen-cache/ /;
+    - cp -rT doxygen-cache/ /;
     # - apt update
     # - apt install -y libclang-dev
     - mkdir -p build-clang-debug
