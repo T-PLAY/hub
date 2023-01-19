@@ -181,7 +181,7 @@ cache-sphinx:
         mkdir -pv pip3-cache/usr/local/bin/
         mkdir -pv pip3-cache/usr/lib/
         mkdir -pv pip3-cache/usr/bin/
-        mkdir -pv pip3-cache/usr/local/share/
+        mkdir -pv pip3-cache/usr/local/lib/
         
         # mkdir -pv apt-cache/usr/bin/
         # mkdir -pv apt-cache/usr/share/$(basename /usr/share/cmake-*)/Modules
@@ -204,8 +204,8 @@ cache-sphinx:
         # ls /usr/bin/sphinx*
         # ls /usr/local/bin/
         cp /usr/local/bin/sphinx-build pip3-cache/usr/local/bin/
-        ls -la /usr/local/bin/sphinx-build
-        cp -ra /usr/local/share/sphinx pip3-cache/usr/local/share/
+        # ls -la /usr/local/bin/sphinx-build
+        cp -ar /usr/local/lib/python* pip3-cache/usr/local/lib/
         # cp -ar /usr/local/lib/python* pip3-cache/usr/lib/
         # python3 -m site --user-base
 
