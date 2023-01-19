@@ -174,12 +174,30 @@ cache-sphinx:
       if [ ! -e pip3-cache ]; then
         apt update
         apt install -y python3-pip doxygen
+       
+
         pip3 install breathe sphinx sphinx-sitemap sphinx-rtd-theme
         # cp -r ~/.local/bin/* apt-cache/bin/
         mkdir -pv pip3-cache/usr/local/bin/
-        # mkdir -pv pip3-cache/usr/lib/
-        mkdir -pv pip3-cache/usr/share/
+        mkdir -pv pip3-cache/usr/lib/
+        mkdir -pv pip3-cache/usr/bin/
+        # mkdir -pv pip3-cache/usr/share/
+        # mkdir -pv apt-cache/usr/bin/
+        # mkdir -pv apt-cache/usr/share/$(basename /usr/share/cmake-*)/Modules
+        # mkdir -pv apt-cache/usr/lib/x86_64-linux-gnu/
+        # mkdir -pv apt-cache/usr/lib/llvm-11/bin/
+        # mkdir -pv apt-cache/usr/lib/llvm-11/lib/
 
+        cp -ar /usr/lib/python* pip3-cache/usr/lib/
+        # cp -ar /usr/lib/clang* apt-cache/usr/lib/
+        # cp -a /usr/lib/x86_64-linux-gnu/libclang* apt-cache/usr/lib/x86_64-linux-gnu/
+        # cp /usr/bin/pip3 apt-cache/usr/bin/
+        # cp /usr/bin/pip apt-cache/usr/bin/
+        cp -a /usr/bin/python* pip3-cache/usr/bin/
+        # cp -a /usr/bin/python3.9 pip3-cache/usr/bin/
+
+        # cp -r /usr/share/python* apt-cache/usr/share/
+             # cp -r /usr/lib/python3* apt-cache/usr/lib/
         # ls /root/.local/bin/
         # ls /usr/local/bin
         # ls /usr/bin/sphinx*
