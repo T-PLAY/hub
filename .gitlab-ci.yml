@@ -125,7 +125,7 @@ cache-doxygen:
   stage: dep
   script:
     - |-
-      # rm -rf doxygen-cache
+      rm -rf doxygen-cache
       if [ ! -e doxygen-cache ]; then
         apt update
         apt install -y doxygen clang
