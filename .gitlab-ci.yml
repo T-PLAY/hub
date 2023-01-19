@@ -177,10 +177,10 @@ cache-doxygen:
         apt install -y doxygen
 
         mkdir -pv doxygen-cache/usr/bin/
-        # mkdir -pv doxygen-cache/usr/share/$(basename /usr/share/cmake-*)/Modules)
+        mkdir -pv doxygen-cache/usr/share/$(basename /usr/share/cmake-*)/Modules
 
         cp /usr/bin/doxygen doxygen-cache/usr/bin/   
-        # cp /usr/share/cmake-*/Modules/FindDoxygen.cmake doxygen-cache/usr/share/$(basename /usr/share/cmake-*)/Modules/
+        cp /usr/share/cmake-*/Modules/FindDoxygen.cmake doxygen-cache/usr/share/$(basename /usr/share/cmake-*)/Modules/
       fi
 
 # cache-sphinx:
