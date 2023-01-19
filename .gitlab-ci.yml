@@ -230,7 +230,7 @@ doc-sphinx:
       find / -name "sphinx-build"
       echo $PATH
 
-      /usr/local/bin/sphinx-build
+      # /usr/local/bin/sphinx-build
 
       make -C doc/docs_sphinx html
       mv doc/docs_sphinx/_build/html public/
