@@ -139,9 +139,9 @@ cache-doxygen:
         cp /usr/share/cmake-*/Modules/FindDoxygen.cmake doxygen-cache/usr/share/$(basename /usr/share/cmake-*)/Modules/
 
         # cp -ar /usr/lib/clang* sphinx-cache/usr/lib/
-        cp -a /usr/lib/x86_64-linux-gnu/libclang* sphinx-cache/usr/lib/x86_64-linux-gnu/
+        cp -a /usr/lib/x86_64-linux-gnu/libclang* doxygen-cache/usr/lib/x86_64-linux-gnu/
         #         cp /usr/lib/x86_64-linux-gnu/libclang-* apt-cache/usr/lib/x86_64-linux-gnu/
-        cp -ra /usr/lib/llvm-11/lib/* sphinx-cache/usr/lib/llvm-11/lib/
+        cp -ra /usr/lib/llvm-11/lib/* doxygen-cache/usr/lib/llvm-11/lib/
       fi
       
 build-gcc-release:
