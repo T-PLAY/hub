@@ -28,7 +28,7 @@ cache:
   paths:
     # - apt-cache/ 
     - doxygen-cache/
-    - pip3-cache/
+    - sphinx-cache/
     # - build-gcc-release/
     # - build-clang-debug/
  
@@ -40,8 +40,8 @@ cache:
   #   if [ -e apt-cache ]; then
   #     cp -rT apt-cache/ /;
   #   fi
-  #   if [ -e pip3-cache ]; then
-  #     cp -rT pip3-cache/ /;
+  #   if [ -e sphinx-cache ]; then
+  #     cp -rT sphinx-cache/ /;
   #   fi
   # - find apt-cache
 
@@ -90,12 +90,12 @@ cache:
 #         # find apt-cache
 #       fi
  
-#       rm -rf pip3-cache
-#       if [ ! -e pip3-cache ]; then
-#         pip3 install breathe sphinx sphinx-sitemap sphinx-rtd-theme
+#       rm -rf sphinx-cache
+#       if [ ! -e sphinx-cache ]; then
+#         sphinx install breathe sphinx sphinx-sitemap sphinx-rtd-theme
 #         # cp -r ~/.local/bin/* apt-cache/bin/
-#         mkdir -pv pip3-cache/bin/
-#         mkdir -pv pip3-cache/usr/lib/
+#         mkdir -pv sphinx-cache/bin/
+#         mkdir -pv sphinx-cache/usr/lib/
 
 #         sleep 2
 #         # ls /root/.local/bin/
@@ -103,13 +103,13 @@ cache:
 #         find / -name "sphinx-build"
 #         # ls /usr/bin/sphinx*
 #         ls /usr/local/bin/
-#         # cp /usr/local/bin/sphinx-build pip3-cache/bin/
-#         cp -ar /usr/local/lib/python* pip3-cache/usr/lib/
+#         # cp /usr/local/bin/sphinx-build sphinx-cache/bin/
+#         cp -ar /usr/local/lib/python* sphinx-cache/usr/lib/
 #         # python3 -m site --user-base
 #         # ls /root/.local/
 #         # ls /usr/local/bin
 #         # ls /usr/local/lib
-#         # find pip3-cache
+#         # find sphinx-cache
 #       fi
 
 
@@ -189,8 +189,8 @@ cache-sphinx:
     - |-
       cp -rT doxygen-cache/ /;
 
-      rm -rf pip3-cache
-      if [ ! -e pip3-cache ]; then
+      rm -rf sphinx-cache
+      if [ ! -e sphinx-cache ]; then
         apt update
         apt install -y python3-pip clang
         #         apt install -y doxygen cmake-format clang-format python3-pip clang libclang-dev
@@ -198,29 +198,29 @@ cache-sphinx:
        
         pip3 install breathe sphinx sphinx-sitemap sphinx-rtd-theme
         # cp -r ~/.local/bin/* apt-cache/bin/
-        mkdir -pv pip3-cache/usr/local/bin/
-        mkdir -pv pip3-cache/usr/lib/
-        mkdir -pv pip3-cache/usr/bin/
-        mkdir -pv pip3-cache/usr/local/lib/
-        mkdir -pv pip3-cache/usr/lib/llvm-11/lib/
+        mkdir -pv sphinx-cache/usr/local/bin/
+        mkdir -pv sphinx-cache/usr/lib/
+        mkdir -pv sphinx-cache/usr/bin/
+        mkdir -pv sphinx-cache/usr/local/lib/
+        mkdir -pv sphinx-cache/usr/lib/llvm-11/lib/
         
         
         # mkdir -pv apt-cache/usr/bin/
         # mkdir -pv apt-cache/usr/share/$(basename /usr/share/cmake-*)/Modules
-        mkdir -pv pip3-cache/usr/lib/x86_64-linux-gnu/
+        mkdir -pv sphinx-cache/usr/lib/x86_64-linux-gnu/
         # mkdir -pv apt-cache/usr/lib/llvm-11/bin/
         # mkdir -pv apt-cache/usr/lib/llvm-11/lib/
 
-        cp -ar /usr/lib/python* pip3-cache/usr/lib/
-        cp -ar /usr/lib/clang* pip3-cache/usr/lib/
-        cp -a /usr/lib/x86_64-linux-gnu/libclang* pip3-cache/usr/lib/x86_64-linux-gnu/
+        cp -ar /usr/lib/python* sphinx-cache/usr/lib/
+        cp -ar /usr/lib/clang* sphinx-cache/usr/lib/
+        cp -a /usr/lib/x86_64-linux-gnu/libclang* sphinx-cache/usr/lib/x86_64-linux-gnu/
         #         cp /usr/lib/x86_64-linux-gnu/libclang-* apt-cache/usr/lib/x86_64-linux-gnu/
-        cp -ra /usr/lib/llvm-11/lib/* pip3-cache/usr/lib/llvm-11/lib/
+        cp -ra /usr/lib/llvm-11/lib/* sphinx-cache/usr/lib/llvm-11/lib/
 
         # cp /usr/bin/pip3 apt-cache/usr/bin/
         # cp /usr/bin/pip apt-cache/usr/bin/
-        cp -a /usr/bin/python* pip3-cache/usr/bin/
-        # cp -a /usr/bin/python3.9 pip3-cache/usr/bin/
+        cp -a /usr/bin/python* sphinx-cache/usr/bin/
+        # cp -a /usr/bin/python3.9 sphinx-cache/usr/bin/
 
         # cp -r /usr/share/python* apt-cache/usr/share/
              # cp -r /usr/lib/python3* apt-cache/usr/lib/
@@ -228,16 +228,16 @@ cache-sphinx:
         # ls /usr/local/bin
         # ls /usr/bin/sphinx*
         # ls /usr/local/bin/
-        cp /usr/local/bin/sphinx-build pip3-cache/usr/local/bin/
+        cp /usr/local/bin/sphinx-build sphinx-cache/usr/local/bin/
         # ls -la /usr/local/bin/sphinx-build
-        cp -ar /usr/local/lib/python* pip3-cache/usr/local/lib/
-        # cp -ar /usr/local/lib/python* pip3-cache/usr/lib/
+        cp -ar /usr/local/lib/python* sphinx-cache/usr/local/lib/
+        # cp -ar /usr/local/lib/python* sphinx-cache/usr/lib/
         # python3 -m site --user-base
 
         # ls /root/.local/
         # ls /usr/local/bin
         # ls /usr/local/lib
-        # find pip3-cache
+        # find sphinx-cache
         find / -name "sphinx-build"
 
       fi
@@ -248,7 +248,7 @@ doc-sphinx:
   script:
     - |-
       cp -rT doxygen-cache/ /;
-      cp -rT pip3-cache/ /;
+      cp -rT sphinx-cache/ /;
       
       ls -la /usr/local/bin/sphinx-build
       find / -name "sphinx-build"
