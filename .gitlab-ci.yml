@@ -292,6 +292,8 @@ cache-format:
         cp -ra /usr/lib/llvm-11/lib/* format-cache/usr/lib/llvm-11/lib/
 
         cp -a /usr/bin/python* format-cache/usr/bin/
+        # cp -ar /usr/local/lib/python* format-cache/usr/local/lib/
+        cp -ar /usr/lib/python* format-cache/usr/lib/
 
 
       fi
