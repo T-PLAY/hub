@@ -202,6 +202,8 @@ cache-sphinx:
         mkdir -pv pip3-cache/usr/lib/
         mkdir -pv pip3-cache/usr/bin/
         mkdir -pv pip3-cache/usr/local/lib/
+        mkdir -pv pip3-cache/usr/lib/llvm-11/lib/
+        
         
         # mkdir -pv apt-cache/usr/bin/
         # mkdir -pv apt-cache/usr/share/$(basename /usr/share/cmake-*)/Modules
@@ -212,6 +214,9 @@ cache-sphinx:
         cp -ar /usr/lib/python* pip3-cache/usr/lib/
         cp -ar /usr/lib/clang* pip3-cache/usr/lib/
         cp -a /usr/lib/x86_64-linux-gnu/libclang* pip3-cache/usr/lib/x86_64-linux-gnu/
+        #         cp /usr/lib/x86_64-linux-gnu/libclang-* apt-cache/usr/lib/x86_64-linux-gnu/
+        cp -ra /usr/lib/llvm-11/lib/* pip3-cache/usr/lib/llvm-11/lib/
+
         # cp /usr/bin/pip3 apt-cache/usr/bin/
         # cp /usr/bin/pip apt-cache/usr/bin/
         cp -a /usr/bin/python* pip3-cache/usr/bin/
