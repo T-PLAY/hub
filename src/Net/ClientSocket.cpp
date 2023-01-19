@@ -1,4 +1,4 @@
-#include "ClientSocket.hpp"
+#include "Net/ClientSocket.hpp"
 
 #include <cstring>
 #include <thread>
