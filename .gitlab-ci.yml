@@ -189,10 +189,12 @@ cache-sphinx:
     - |-
       cp -rT doxygen-cache/ /;
 
-      # rm -rf pip3-cache
+      rm -rf pip3-cache
       if [ ! -e pip3-cache ]; then
         apt update
-        apt install -y python3-pip
+        apt install -y python3-pip clang
+        #         apt install -y doxygen cmake-format clang-format python3-pip clang libclang-dev
+
        
         pip3 install breathe sphinx sphinx-sitemap sphinx-rtd-theme
         # cp -r ~/.local/bin/* apt-cache/bin/
@@ -203,13 +205,13 @@ cache-sphinx:
         
         # mkdir -pv apt-cache/usr/bin/
         # mkdir -pv apt-cache/usr/share/$(basename /usr/share/cmake-*)/Modules
-        # mkdir -pv apt-cache/usr/lib/x86_64-linux-gnu/
+        mkdir -pv pip3-cache/usr/lib/x86_64-linux-gnu/
         # mkdir -pv apt-cache/usr/lib/llvm-11/bin/
         # mkdir -pv apt-cache/usr/lib/llvm-11/lib/
 
         cp -ar /usr/lib/python* pip3-cache/usr/lib/
-        # cp -ar /usr/lib/clang* apt-cache/usr/lib/
-        # cp -a /usr/lib/x86_64-linux-gnu/libclang* apt-cache/usr/lib/x86_64-linux-gnu/
+        cp -ar /usr/lib/clang* pip3-cache/usr/lib/
+        cp -a /usr/lib/x86_64-linux-gnu/libclang* pip3-cache/usr/lib/x86_64-linux-gnu/
         # cp /usr/bin/pip3 apt-cache/usr/bin/
         # cp /usr/bin/pip apt-cache/usr/bin/
         cp -a /usr/bin/python* pip3-cache/usr/bin/
