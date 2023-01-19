@@ -96,6 +96,7 @@ dep:
         mkdir -pv pip3-cache/bin/
         mkdir -pv pip3-cache/usr/lib/
 
+        sleep 2
         # ls /root/.local/bin/
         ls /usr/local/bin
         find / -name "sphinx-build"
@@ -171,8 +172,8 @@ doc-sphinx:
   artifacts:
     paths:
       - public
-  only:
-  - master
+  # only:
+  # - master
 
 
 # format:
