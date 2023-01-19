@@ -86,7 +86,7 @@ dep:
         cp -r /usr/share/python* apt-cache/usr/share/
         # cp -r /usr/lib/python3* apt-cache/usr/lib/
         
-        find apt-cache
+        # find apt-cache
       fi
  
       rm -rf pip3-cache
@@ -103,7 +103,7 @@ dep:
         # ls /root/.local/
         # ls /usr/local/bin
         # ls /usr/local/lib
-        find pip3-cache
+        # find pip3-cache
       fi
 
 
@@ -137,7 +137,7 @@ build-clang-debug:
     - mkdir -p build-clang-debug
     - cmake -B build-clang-debug -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON 
     # - cmake -B build-clang-debug -DCMAKE_CXX_COMPILER=/usr/bin/clang++ -DCMAKE_C_COMPILER=/usr/bin/clang -DCMAKE_BUILD_TYPE=Debug
-    # - cmake --build build-clang-debug --config Debug
+    - cmake --build build-clang-debug --config Debug
     - cmake --install build-clang-debug --config Debug
   
 # test:
