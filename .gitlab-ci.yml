@@ -16,8 +16,8 @@ stages:
   # - dep
   # - build
   # - test
-  - doc
-  # - format
+  # - doc
+  - format
 
 # cache:
 #     key: ${CI_COMMIT_REF_SLUG}
@@ -266,7 +266,7 @@ cache:
 #   # - master
 
 cache-format:
-  stage: doc
+  stage: format
   script:
     - |-
       rm -rf format-cache
