@@ -83,7 +83,9 @@ deps:
         pip3 install breathe sphinx-sitemap sphinx-rtd-theme
         # cp -r ~/.local/bin/* apt-cache/bin/
         python3 -m site --user-base
-        ls /root/.local/
+        # ls /root/.local/
+        ls /usr/local/bin
+        ls /bin/sphinx*
       fi
 
 
