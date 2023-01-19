@@ -15,9 +15,9 @@ image: stormirit/radium_dev:latest
 stages: 
   - dep
   - build
-  # - test
-  # - doc
-  # - format
+  - test
+  - doc
+  - format
 
 # cache:
 #     key: ${CI_COMMIT_REF_SLUG}
@@ -26,10 +26,11 @@ stages:
 cache:
   key: cache
   paths:
-    - apt-cache/
-    # - build-gcc-release/
-    # - build-clang-debug/
+    - apt-cache/ 
     - pip3-cache/
+    - build-gcc-release/
+    - build-clang-debug/
+ 
 
 before_script:
   # - rm -r apt-cache
@@ -47,6 +48,8 @@ dep:
   stage: dep
   script:
     - |-
+      rm -rf build*
+
       rm -rf apt-cache
       if [ ! -e apt-cache ]; then
         apt update
@@ -86,7 +89,7 @@ dep:
         find apt-cache
       fi
  
-      # rm -rf pip3-cache
+      rm -rf pip3-cache
       if [ ! -e pip3-cache ]; then
         pip3 install breathe sphinx-sitemap sphinx-rtd-theme
         # cp -r ~/.local/bin/* apt-cache/bin/
@@ -110,18 +113,18 @@ dep:
 # #      - build/_deps/
 #       - build/
       
-# build-gcc-release:
-#   stage: build
-# #  before_script:
-# #    - export PATH=$PATH:/opt/Qt/5.10.0/gcc_64/bin
-#   script:
-#     # - apt update
-#     # - apt install -y doxygen
-#     - mkdir -p build-gcc-release
-#     # - cmake -B build-gcc-release -DCMAKE_CXX_COMPILER=g++ -DCMAKE_C_COMPILER=gcc -DCMAKE_BUILD_TYPE=Release -DHUB_ENABLE_TESTS=ON -DHUB_BUILD_DOC=ON
-#     - cmake -B build-gcc-release -DCMAKE_CXX_COMPILER=g++ -DCMAKE_C_COMPILER=gcc -DCMAKE_BUILD_TYPE=Release
-#     - cmake --build build-gcc-release --config Release
-#     # - cd build
+build-gcc-release:
+  stage: build
+#  before_script:
+#    - export PATH=$PATH:/opt/Qt/5.10.0/gcc_64/bin
+  script:
+    # - apt update
+    # - apt install -y doxygen
+    - mkdir -p build-gcc-release
+    - cmake -B build-gcc-release -DCMAKE_CXX_COMPILER=g++ -DCMAKE_C_COMPILER=gcc -DCMAKE_BUILD_TYPE=Release -DHUB_ENABLE_TESTS=ON -DHUB_BUILD_DOC=ON
+    # - cmake -B build-gcc-release -DCMAKE_CXX_COMPILER=g++ -DCMAKE_C_COMPILER=gcc -DCMAKE_BUILD_TYPE=Release
+    - cmake --build build-gcc-release --config Release
+    # - cd build
 
 build-clang-debug:
   stage: build
@@ -131,10 +134,10 @@ build-clang-debug:
     # - apt update
     # - apt install -y libclang-dev
     - mkdir -p build-clang-debug
-    # - cmake -B build-clang-debug -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON 
-    - cmake -B build-clang-debug -DCMAKE_CXX_COMPILER=/usr/bin/clang++ -DCMAKE_C_COMPILER=/usr/bin/clang -DCMAKE_BUILD_TYPE=Debug
-    - cmake --build build-clang-debug --config Debug
-    # - cmake --install build-clang-debug --config Debug
+    - cmake -B build-clang-debug -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON 
+    # - cmake -B build-clang-debug -DCMAKE_CXX_COMPILER=/usr/bin/clang++ -DCMAKE_C_COMPILER=/usr/bin/clang -DCMAKE_BUILD_TYPE=Debug
+    # - cmake --build build-clang-debug --config Debug
+    - cmake --install build-clang-debug --config Debug
   
 # test:
 #   stage: test
