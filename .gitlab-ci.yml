@@ -200,7 +200,7 @@ doc-sphinx:
     - |-
       if [ -e pip3-cache ]; then
         cp -rT pip3-cache/ /;
-      else
+      fi
 
       make -C doc/docs_sphinx html
       mv doc/docs_sphinx/_build/html public/
