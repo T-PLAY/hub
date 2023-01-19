@@ -28,6 +28,7 @@ cache:
   paths:
     - apt-cache/
     - build/
+    - pip3-cache/
 
 before_script:
   # - rm -r apt-cache
@@ -36,17 +37,19 @@ before_script:
     if [ -e apt-cache ]; then
       cp -rT apt-cache/ /;
     fi
+    if [ -e pip3-cache ]; then
+      cp -rT pip3-cache/ /;
+    fi
   # - find apt-cache
 
 deps:
   stage: deps
   script:
     - |-
-      rm -rf apt-cache
+      # rm -rf apt-cache
       if [ ! -e apt-cache ]; then
         apt update
         apt install -y doxygen cmake-format clang-format python3-pip
-        pip3 install breathe sphinx-sitemap sphinx-rtd-theme
 
 
         mkdir -pv apt-cache/usr/bin/
@@ -72,9 +75,15 @@ deps:
         cp -r /usr/share/python* apt-cache/usr/share/
         # cp -r /usr/lib/python3* apt-cache/usr/lib/
         
+        # find apt-cache
+      fi
+      
+       # rm -rf pip3-cache
+      if [ ! -e pip3-cache ]; then
+        pip3 install breathe sphinx-sitemap sphinx-rtd-theme
         # cp -r ~/.local/bin/* apt-cache/bin/
         python3 -m site --user-base
-        # find apt-cache
+        ls /root/.local/
       fi
 
 
