@@ -50,7 +50,7 @@ dep:
     - |-
       rm -rf build*
 
-      rm -rf apt-cache
+      # rm -rf apt-cache
       if [ ! -e apt-cache ]; then
         apt update
         apt install -y doxygen cmake-format clang-format python3-pip clang libclang-dev
@@ -96,7 +96,7 @@ dep:
         mkdir -pv pip3-cache/bin/
         mkdir -pv pip3-cache/usr/lib/
 
-        ls .local/bin/
+        ls /root/.local/bin/
         ls /usr/local/bin
         # cp /usr/local/bin/sphinx-build pip3-cache/bin/
         cp -ar /usr/local/lib/python* pip3-cache/usr/lib/
