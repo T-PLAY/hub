@@ -96,6 +96,7 @@ dep:
         mkdir -pv pip3-cache/bin/
         mkdir -pv pip3-cache/usr/lib/
 
+        ls .local/bin/
         ls /usr/local/bin
         # cp /usr/local/bin/sphinx-build pip3-cache/bin/
         cp -ar /usr/local/lib/python* pip3-cache/usr/lib/
@@ -114,31 +115,31 @@ dep:
 # #      - build/_deps/
 #       - build/
       
-build-gcc-release:
-  stage: build
-#  before_script:
-#    - export PATH=$PATH:/opt/Qt/5.10.0/gcc_64/bin
-  script:
-    # - apt update
-    # - apt install -y doxygen
-    - mkdir -p build-gcc-release
-    - cmake -B build-gcc-release -DCMAKE_CXX_COMPILER=g++ -DCMAKE_C_COMPILER=gcc -DCMAKE_BUILD_TYPE=Release -DHUB_ENABLE_TESTS=ON -DHUB_BUILD_DOC=ON
-    # - cmake -B build-gcc-release -DCMAKE_CXX_COMPILER=g++ -DCMAKE_C_COMPILER=gcc -DCMAKE_BUILD_TYPE=Release
-    - cmake --build build-gcc-release --config Release
-    # - cd build
+# build-gcc-release:
+#   stage: build
+# #  before_script:
+# #    - export PATH=$PATH:/opt/Qt/5.10.0/gcc_64/bin
+#   script:
+#     # - apt update
+#     # - apt install -y doxygen
+#     - mkdir -p build-gcc-release
+#     - cmake -B build-gcc-release -DCMAKE_CXX_COMPILER=g++ -DCMAKE_C_COMPILER=gcc -DCMAKE_BUILD_TYPE=Release -DHUB_ENABLE_TESTS=ON -DHUB_BUILD_DOC=ON
+#     # - cmake -B build-gcc-release -DCMAKE_CXX_COMPILER=g++ -DCMAKE_C_COMPILER=gcc -DCMAKE_BUILD_TYPE=Release
+#     - cmake --build build-gcc-release --config Release
+#     # - cd build
 
-build-clang-debug:
-  stage: build
-#  before_script:
-#    - export PATH=$PATH:/opt/Qt/5.10.0/gcc_64/bin
-  script:
-    # - apt update
-    # - apt install -y libclang-dev
-    - mkdir -p build-clang-debug
-    - cmake -B build-clang-debug -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON 
-    # - cmake -B build-clang-debug -DCMAKE_CXX_COMPILER=/usr/bin/clang++ -DCMAKE_C_COMPILER=/usr/bin/clang -DCMAKE_BUILD_TYPE=Debug
-    - cmake --build build-clang-debug --config Debug
-    - cmake --install build-clang-debug --config Debug
+# build-clang-debug:
+#   stage: build
+# #  before_script:
+# #    - export PATH=$PATH:/opt/Qt/5.10.0/gcc_64/bin
+#   script:
+#     # - apt update
+#     # - apt install -y libclang-dev
+#     - mkdir -p build-clang-debug
+#     - cmake -B build-clang-debug -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON 
+#     # - cmake -B build-clang-debug -DCMAKE_CXX_COMPILER=/usr/bin/clang++ -DCMAKE_C_COMPILER=/usr/bin/clang -DCMAKE_BUILD_TYPE=Debug
+#     - cmake --build build-clang-debug --config Debug
+#     - cmake --install build-clang-debug --config Debug
   
 # test:
 #   stage: test
@@ -161,16 +162,16 @@ build-clang-debug:
 #   # only:
 #     # - feature/add-gitlab-pages-support
 
-# doc-sphinx:
-#   stage: doc
-#   script:
-#     - make -C doc/docs_sphinx html
-#     - mv doc/docs_sphinx/_build/html public/
-#   artifacts:
-#     paths:
-#       - public
-#   only:
-#   - master
+doc-sphinx:
+  stage: doc
+  script:
+    - make -C doc/docs_sphinx html
+    - mv doc/docs_sphinx/_build/html public/
+  artifacts:
+    paths:
+      - public
+  only:
+  - master
 
 
 # format:
