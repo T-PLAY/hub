@@ -29,6 +29,7 @@ cache:
     # - apt-cache/ 
     - doxygen-cache/
     - sphinx-cache/
+    - format-cache/
     # - build-gcc-release/
     # - build-clang-debug/
  
@@ -167,110 +168,133 @@ cache:
 #   # only:
 #     # - feature/add-gitlab-pages-support
 
-cache-doxygen:
-  stage: doc
-  script:
-    - |-
-      # rm -rf doxygen-cache
-      if [ ! -e doxygen-cache ]; then
-        apt update
-        apt install -y doxygen
+# cache-doxygen:
+#   stage: doc
+#   script:
+#     - |-
+#       # rm -rf doxygen-cache
+#       if [ ! -e doxygen-cache ]; then
+#         apt update
+#         apt install -y doxygen
 
-        mkdir -pv doxygen-cache/usr/bin/
-        mkdir -pv doxygen-cache/usr/share/$(basename /usr/share/cmake-*)/Modules
+#         mkdir -pv doxygen-cache/usr/bin/
+#         mkdir -pv doxygen-cache/usr/share/$(basename /usr/share/cmake-*)/Modules
 
-        cp /usr/bin/doxygen doxygen-cache/usr/bin/   
-        cp /usr/share/cmake-*/Modules/FindDoxygen.cmake doxygen-cache/usr/share/$(basename /usr/share/cmake-*)/Modules/
-      fi
+#         cp /usr/bin/doxygen doxygen-cache/usr/bin/   
+#         cp /usr/share/cmake-*/Modules/FindDoxygen.cmake doxygen-cache/usr/share/$(basename /usr/share/cmake-*)/Modules/
+#       fi
 
-cache-sphinx:
-  stage: doc
-  script:
-    - |-
-      cp -rT doxygen-cache/ /;
+# cache-sphinx:
+#   stage: doc
+#   script:
+#     - |-
+#       cp -rT doxygen-cache/ /;
 
-      rm -rf sphinx-cache
-      if [ ! -e sphinx-cache ]; then
-        apt update
-        apt install -y python3-pip clang
-        #         apt install -y doxygen cmake-format clang-format python3-pip clang libclang-dev
+#       rm -rf sphinx-cache
+#       if [ ! -e sphinx-cache ]; then
+#         apt update
+#         apt install -y python3-pip clang
+#         #         apt install -y doxygen cmake-format clang-format python3-pip clang libclang-dev
 
        
-        pip3 install breathe sphinx sphinx-sitemap sphinx-rtd-theme
-        # cp -r ~/.local/bin/* apt-cache/bin/
-        mkdir -pv sphinx-cache/usr/local/bin/
-        mkdir -pv sphinx-cache/usr/lib/
-        mkdir -pv sphinx-cache/usr/bin/
-        mkdir -pv sphinx-cache/usr/local/lib/
-        mkdir -pv sphinx-cache/usr/lib/llvm-11/lib/
+#         pip3 install breathe sphinx sphinx-sitemap sphinx-rtd-theme
+#         # cp -r ~/.local/bin/* apt-cache/bin/
+#         mkdir -pv sphinx-cache/usr/local/bin/
+#         mkdir -pv sphinx-cache/usr/lib/
+#         mkdir -pv sphinx-cache/usr/bin/
+#         mkdir -pv sphinx-cache/usr/local/lib/
+#         mkdir -pv sphinx-cache/usr/lib/llvm-11/lib/
         
         
-        # mkdir -pv apt-cache/usr/bin/
-        # mkdir -pv apt-cache/usr/share/$(basename /usr/share/cmake-*)/Modules
-        mkdir -pv sphinx-cache/usr/lib/x86_64-linux-gnu/
-        # mkdir -pv apt-cache/usr/lib/llvm-11/bin/
-        # mkdir -pv apt-cache/usr/lib/llvm-11/lib/
+#         # mkdir -pv apt-cache/usr/bin/
+#         # mkdir -pv apt-cache/usr/share/$(basename /usr/share/cmake-*)/Modules
+#         mkdir -pv sphinx-cache/usr/lib/x86_64-linux-gnu/
+#         # mkdir -pv apt-cache/usr/lib/llvm-11/bin/
+#         # mkdir -pv apt-cache/usr/lib/llvm-11/lib/
 
-        cp -ar /usr/lib/python* sphinx-cache/usr/lib/
-        cp -ar /usr/lib/clang* sphinx-cache/usr/lib/
-        cp -a /usr/lib/x86_64-linux-gnu/libclang* sphinx-cache/usr/lib/x86_64-linux-gnu/
-        #         cp /usr/lib/x86_64-linux-gnu/libclang-* apt-cache/usr/lib/x86_64-linux-gnu/
-        cp -ra /usr/lib/llvm-11/lib/* sphinx-cache/usr/lib/llvm-11/lib/
+#         cp -ar /usr/lib/python* sphinx-cache/usr/lib/
+#         cp -ar /usr/lib/clang* sphinx-cache/usr/lib/
+#         cp -a /usr/lib/x86_64-linux-gnu/libclang* sphinx-cache/usr/lib/x86_64-linux-gnu/
+#         #         cp /usr/lib/x86_64-linux-gnu/libclang-* apt-cache/usr/lib/x86_64-linux-gnu/
+#         cp -ra /usr/lib/llvm-11/lib/* sphinx-cache/usr/lib/llvm-11/lib/
 
-        # cp /usr/bin/pip3 apt-cache/usr/bin/
-        # cp /usr/bin/pip apt-cache/usr/bin/
-        cp -a /usr/bin/python* sphinx-cache/usr/bin/
-        # cp -a /usr/bin/python3.9 sphinx-cache/usr/bin/
+#         # cp /usr/bin/pip3 apt-cache/usr/bin/
+#         # cp /usr/bin/pip apt-cache/usr/bin/
+#         cp -a /usr/bin/python* sphinx-cache/usr/bin/
+#         # cp -a /usr/bin/python3.9 sphinx-cache/usr/bin/
 
-        # cp -r /usr/share/python* apt-cache/usr/share/
-             # cp -r /usr/lib/python3* apt-cache/usr/lib/
-        # ls /root/.local/bin/
-        # ls /usr/local/bin
-        # ls /usr/bin/sphinx*
-        # ls /usr/local/bin/
-        cp /usr/local/bin/sphinx-build sphinx-cache/usr/local/bin/
-        # ls -la /usr/local/bin/sphinx-build
-        cp -ar /usr/local/lib/python* sphinx-cache/usr/local/lib/
-        # cp -ar /usr/local/lib/python* sphinx-cache/usr/lib/
-        # python3 -m site --user-base
+#         # cp -r /usr/share/python* apt-cache/usr/share/
+#              # cp -r /usr/lib/python3* apt-cache/usr/lib/
+#         # ls /root/.local/bin/
+#         # ls /usr/local/bin
+#         # ls /usr/bin/sphinx*
+#         # ls /usr/local/bin/
+#         cp /usr/local/bin/sphinx-build sphinx-cache/usr/local/bin/
+#         # ls -la /usr/local/bin/sphinx-build
+#         cp -ar /usr/local/lib/python* sphinx-cache/usr/local/lib/
+#         # cp -ar /usr/local/lib/python* sphinx-cache/usr/lib/
+#         # python3 -m site --user-base
 
-        # ls /root/.local/
-        # ls /usr/local/bin
-        # ls /usr/local/lib
-        # find sphinx-cache
-        find / -name "sphinx-build"
+#         # ls /root/.local/
+#         # ls /usr/local/bin
+#         # ls /usr/local/lib
+#         # find sphinx-cache
+#         find / -name "sphinx-build"
 
-      fi
+#       fi
 
 
-doc-sphinx:
+# doc-sphinx:
+#   stage: doc
+#   script:
+#     - |-
+#       cp -rT doxygen-cache/ /;
+#       cp -rT sphinx-cache/ /;
+      
+#       ls -la /usr/local/bin/sphinx-build
+#       find / -name "sphinx-build"
+#       echo $PATH
+
+#       # /usr/local/bin/sphinx-build
+
+#       make -C doc/docs_sphinx html
+#       mv doc/docs_sphinx/_build/html public/
+#   artifacts:
+#     paths:
+#       - public
+#   # only:
+#   # - master
+
+cache-format:
   stage: doc
   script:
     - |-
-      cp -rT doxygen-cache/ /;
-      cp -rT sphinx-cache/ /;
-      
-      ls -la /usr/local/bin/sphinx-build
-      find / -name "sphinx-build"
-      echo $PATH
+      rm -rf format-cache
+      if [ ! -e format-cache ]; then
+        apt update
+        apt install -y cmake-format clang-format
 
-      # /usr/local/bin/sphinx-build
+        mkdir -pv format-cache/usr/bin/
+        mkdir -pv format-cache/usr/lib/llvm-11/bin/
 
-      make -C doc/docs_sphinx html
-      mv doc/docs_sphinx/_build/html public/
-  artifacts:
-    paths:
-      - public
-  # only:
-  # - master
+        cp /usr/bin/cmake-format format-cache/usr/bin/
+        cp /usr/bin/clang-format format-cache/usr/bin/
+        cp /usr/bin/clang-format-11 format-cache/usr/bin/
+        cp /usr/lib/llvm-11/bin/clang-format format-cache/usr/lib/llvm-11/bin/
+      fi
+        #         apt install -y doxygen cmake-format clang-format python3-pip clang libclang-dev
+    
 
 
-# format:
-#   stage: format
-#   script:
-#     - scripts/cleanup-project.sh
-#     - git diff --exit-code
-#   only:
-#   - master
+format:
+  stage: format
+  script:
+    - |-
+      cp -rT format-cache/ /;
+
+      scripts/cleanup-project.sh
+      git diff --exit-code
+  only:
+  - master
 
 
