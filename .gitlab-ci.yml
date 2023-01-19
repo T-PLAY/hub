@@ -47,11 +47,10 @@ dep:
   stage: dep
   script:
     - |-
-      # rm -rf apt-cache
+      rm -rf apt-cache
       if [ ! -e apt-cache ]; then
         apt update
-        apt install -y doxygen cmake-format clang-format python3-pip clang
-
+        apt install -y doxygen cmake-format clang-format python3-pip clang libclang-dev
 
         mkdir -pv apt-cache/usr/bin/
         mkdir -pv apt-cache/usr/share/$(basename /usr/share/cmake-*)/Modules
@@ -73,6 +72,8 @@ dep:
         cp /usr/lib/x86_64-linux-gnu/libpthread* apt-cache/usr/lib/x86_64-linux-gnu/
         
         cp -ar /usr/lib/python* apt-cache/usr/lib/
+        cp -ar /usr/lib/clang* apt-cache/usr/lib/
+        cp -a /usr/lib/x86_64-linux-gnu/libclang* apt-cache/usr/lib/x86_64-linux-gnu/
         cp /usr/bin/pip3 apt-cache/usr/bin/
         cp /usr/bin/pip apt-cache/usr/bin/
         cp /usr/bin/python3 apt-cache/usr/bin/
@@ -125,8 +126,8 @@ build-clang-debug:
 #  before_script:
 #    - export PATH=$PATH:/opt/Qt/5.10.0/gcc_64/bin
   script:
-    - apt update
-    - apt install -y libclang-dev
+    # - apt update
+    # - apt install -y libclang-dev
     - mkdir -p build-clang-debug
     # - cmake -B build-clang-debug -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON 
     - cmake -B build-clang-debug -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang -DCMAKE_BUILD_TYPE=Debug
