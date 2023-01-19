@@ -27,6 +27,7 @@ cache:
   key: cache
   paths:
     # - apt-cache/ 
+    - doxygen-cache/
     - pip3-cache/
     # - build-gcc-release/
     # - build-clang-debug/
@@ -166,16 +167,33 @@ cache:
 #   # only:
 #     # - feature/add-gitlab-pages-support
 
+cache-doxygen:
+  stage: doc
+  script:
+    - |-
+      # rm -rf doxygen-cache
+      if [ ! -e doxygen-cache ]; then
+        apt update
+        apt install -y doxygen
+
+        mkdir -pv doxygen-cache/usr/bin/
+        mkdir -pv doxygen-cache/usr/share/$(basename /usr/share/cmake-*)/Modules)
+
+        cp /usr/bin/doxygen doxygen-cache/usr/bin/   
+        cp /usr/share/cmake-*/Modules/FindDoxygen.cmake doxygen-cache/usr/share/$(basename /usr/share/cmake-*)/Modules/
+      fi
+
 cache-sphinx:
   stage: doc
   script:
     - |-
+      cp -rT doxygen-cache/ /;
+
       rm -rf pip3-cache
       if [ ! -e pip3-cache ]; then
         apt update
-        apt install -y python3-pip doxygen
+        apt install -y python3-pip
        
-
         pip3 install breathe sphinx sphinx-sitemap sphinx-rtd-theme
         # cp -r ~/.local/bin/* apt-cache/bin/
         mkdir -pv pip3-cache/usr/local/bin/
@@ -222,9 +240,8 @@ doc-sphinx:
   stage: doc
   script:
     - |-
-      if [ -e pip3-cache ]; then
-        cp -rT pip3-cache/ /;
-      fi
+      cp doxygen-cache/ /;
+      cp -rT pip3-cache/ /;
       
       ls -la /usr/local/bin/sphinx-build
       find / -name "sphinx-build"
