@@ -27,7 +27,7 @@ cache:
   key: cache
   paths:
     # - apt-cache/ 
-    # - pip3-cache/
+    - pip3-cache/
     # - build-gcc-release/
     # - build-clang-debug/
  
@@ -166,14 +166,12 @@ cache:
 #   # only:
 #     # - feature/add-gitlab-pages-support
 
-doc-sphinx:
+cache-sphinx:
   stage: doc
   script:
     - |-
       rm -rf pip3-cache
-      if [ -e pip3-cache ]; then
-        cp -rT pip3-cache/ /;
-      else
+      if [ ! -e pip3-cache ]; then
         apt update
         apt install -y python3-pip doxygen
         pip3 install breathe sphinx sphinx-sitemap sphinx-rtd-theme
@@ -195,8 +193,17 @@ doc-sphinx:
         # find pip3-cache
       fi
 
-    - make -C doc/docs_sphinx html
-    - mv doc/docs_sphinx/_build/html public/
+
+doc-sphinx:
+  stage: doc
+  script:
+    - |-
+      if [ -e pip3-cache ]; then
+        cp -rT pip3-cache/ /;
+      else
+
+      make -C doc/docs_sphinx html
+      mv doc/docs_sphinx/_build/html public/
   artifacts:
     paths:
       - public
