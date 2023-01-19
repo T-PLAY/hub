@@ -186,9 +186,10 @@ cache-sphinx:
         # ls /usr/local/bin/
         cp /usr/local/bin/sphinx-build pip3-cache/usr/local/bin/
         ls -la /usr/local/bin/sphinx-build
-        cp -ra /usr/share/sphinx pip3-cache/usr/share/
+        # cp -ra /usr/share/sphinx pip3-cache/usr/share/
         # cp -ar /usr/local/lib/python* pip3-cache/usr/lib/
         # python3 -m site --user-base
+
         # ls /root/.local/
         # ls /usr/local/bin
         # ls /usr/local/lib
@@ -206,7 +207,9 @@ doc-sphinx:
         cp -rT pip3-cache/ /;
       fi
       
+      ls -la /usr/local/bin/sphinx-build
       find / -name "sphinx-build"
+      echo $PATH
 
       make -C doc/docs_sphinx html
       mv doc/docs_sphinx/_build/html public/
