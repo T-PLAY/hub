@@ -125,7 +125,7 @@ cache-doxygen:
   stage: dep
   script:
     - |-
-      rm -rf doxygen-cache
+      # rm -rf doxygen-cache
       if [ ! -e doxygen-cache ]; then
         apt update
         apt install -y doxygen clang
@@ -174,7 +174,7 @@ build-clang-debug:
     # - apt update
     # - apt install -y libclang-dev
     - mkdir -p build-clang-debug
-    - cmake -B build-clang-debug -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON 
+    - cmake -B build-clang-debug -DCMAKE_CXX_COMPILER=/usr/bin/clang++ -DCMAKE_C_COMPILER=/usr/bin/clang -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON 
     # - cmake -B build-clang-debug -DCMAKE_CXX_COMPILER=/usr/bin/clang++ -DCMAKE_C_COMPILER=/usr/bin/clang -DCMAKE_BUILD_TYPE=Debug
     - cmake --build build-clang-debug --config Debug
     - cmake --install build-clang-debug --config Debug
@@ -264,26 +264,26 @@ cache-sphinx:
   - master
 
 
-# doc-sphinx:
-#   stage: doc
-#   script:
-#     - |-
-#       cp -rT doxygen-cache/ /;
-#       cp -rT sphinx-cache/ /;
+doc-sphinx:
+  stage: doc
+  script:
+    - |-
+      cp -rT doxygen-cache/ /;
+      cp -rT sphinx-cache/ /;
       
-#       ls -la /usr/local/bin/sphinx-build
-#       find / -name "sphinx-build"
-#       echo $PATH
+      ls -la /usr/local/bin/sphinx-build
+      find / -name "sphinx-build"
+      echo $PATH
 
-#       # /usr/local/bin/sphinx-build
+      # /usr/local/bin/sphinx-build
 
-#       make -C doc/docs_sphinx html
-#       mv doc/docs_sphinx/_build/html public/
-#   artifacts:
-#     paths:
-#       - public
-#   # only:
-#   # - master
+      make -C doc/docs_sphinx html
+      mv doc/docs_sphinx/_build/html public/
+  artifacts:
+    paths:
+      - public
+  only:
+  - master
 
 cache-format:
   stage: format
@@ -315,6 +315,8 @@ cache-format:
 
 
       fi
+  only:
+  - master
         #         apt install -y doxygen cmake-format clang-format python3-pip clang libclang-dev
     
 
