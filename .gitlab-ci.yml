@@ -15,9 +15,9 @@ image: stormirit/radium_dev:latest
 stages: 
   - dep
   - build
-  - test
-  - doc
-  - format
+  # - test
+  # - doc
+  # - format
 
 # cache:
 #     key: ${CI_COMMIT_REF_SLUG}
@@ -27,7 +27,8 @@ cache:
   key: cache
   paths:
     - apt-cache/
-    - build/
+    - build-gcc-release/
+    - build-clang-debug/
     - pip3-cache/
 
 before_script:
@@ -49,7 +50,7 @@ dep:
       # rm -rf apt-cache
       if [ ! -e apt-cache ]; then
         apt update
-        apt install -y doxygen cmake-format clang-format python3-pip
+        apt install -y doxygen cmake-format clang-format python3-pip clang
 
 
         mkdir -pv apt-cache/usr/bin/
@@ -63,9 +64,10 @@ dep:
         cp /usr/share/cmake-*/Modules/FindDoxygen.cmake apt-cache/usr/share/$(basename /usr/share/cmake-*)/Modules/
         cp /usr/lib/x86_64-linux-gnu/libclang-* apt-cache/usr/lib/x86_64-linux-gnu/
         cp /usr/bin/cmake-format apt-cache/usr/bin/
-        cp /usr/bin/clang-format apt-cache/usr/bin/
-        cp /usr/bin/clang-format-11 apt-cache/usr/bin/
+        # cp /usr/bin/clang-format apt-cache/usr/bin/
+        # cp /usr/bin/clang-format-11 apt-cache/usr/bin/
         cp /usr/lib/llvm-11/bin/clang-format apt-cache/usr/lib/llvm-11/bin/
+        cp /usr/bin/clang* apt-cache/usr/bin/
         
         cp -ar /usr/lib/python* apt-cache/usr/lib/
         cp /usr/bin/pip3 apt-cache/usr/bin/
@@ -102,17 +104,17 @@ dep:
 # #      - build/_deps/
 #       - build/
       
-build-gcc-release:
-  stage: build
-#  before_script:
-#    - export PATH=$PATH:/opt/Qt/5.10.0/gcc_64/bin
-  script:
-    # - apt update
-    # - apt install -y doxygen
-    - mkdir -p build-gcc-release
-    - cmake -B build-gcc-release -DCMAKE_CXX_COMPILER=g++ -DCMAKE_C_COMPILER=gcc -DCMAKE_BUILD_TYPE=Release -DHUB_ENABLE_TESTS=ON -DHUB_BUILD_DOC=ON
-    - cmake --build build-gcc-release --config Release
-    # - cd build
+# build-gcc-release:
+#   stage: build
+# #  before_script:
+# #    - export PATH=$PATH:/opt/Qt/5.10.0/gcc_64/bin
+#   script:
+#     # - apt update
+#     # - apt install -y doxygen
+#     - mkdir -p build-gcc-release
+#     - cmake -B build-gcc-release -DCMAKE_CXX_COMPILER=g++ -DCMAKE_C_COMPILER=gcc -DCMAKE_BUILD_TYPE=Release -DHUB_ENABLE_TESTS=ON -DHUB_BUILD_DOC=ON
+#     - cmake --build build-gcc-release --config Release
+#     # - cd build
 
 build-clang-debug:
   stage: build
@@ -124,45 +126,45 @@ build-clang-debug:
     - cmake --build build-clang-debug --config Debug
     - cmake --install build-clang-debug --config Debug
   
-test:
-  stage: test
-  script:
-    - cd build-gcc-release/tests
-    - ctest -V
-#    - ./runmytests.sh
+# test:
+#   stage: test
+#   script:
+#     - cd build-gcc-release/tests
+#     - ctest -V
+# #    - ./runmytests.sh
 
-doc-doxygen:
-  stage: doc
-  script:
-    # - apt update
-    # - apt install -y doxygen
-    - cmake --build build-gcc-release --target docs
-    - mv build/doc/docs_doxygen/html/ public/
-#    - ./runmytests.sh
-  artifacts:
-    paths:
-    - public
-  # only:
-    # - feature/add-gitlab-pages-support
+# doc-doxygen:
+#   stage: doc
+#   script:
+#     # - apt update
+#     # - apt install -y doxygen
+#     - cmake --build build-gcc-release --target docs
+#     - mv build/doc/docs_doxygen/html/ public/
+# #    - ./runmytests.sh
+#   artifacts:
+#     paths:
+#     - public
+#   # only:
+#     # - feature/add-gitlab-pages-support
 
-doc-sphinx:
-  stage: doc
-  script:
-    - make -C doc/docs_sphinx html
-    - mv doc/docs_sphinx/_build/html public/
-  artifacts:
-    paths:
-      - public
-  only:
-  - master
+# doc-sphinx:
+#   stage: doc
+#   script:
+#     - make -C doc/docs_sphinx html
+#     - mv doc/docs_sphinx/_build/html public/
+#   artifacts:
+#     paths:
+#       - public
+#   only:
+#   - master
 
 
-format:
-  stage: format
-  script:
-    - scripts/cleanup-project.sh
-    - git diff --exit-code
-  only:
-  - master
+# format:
+#   stage: format
+#   script:
+#     - scripts/cleanup-project.sh
+#     - git diff --exit-code
+#   only:
+#   - master
 
 
