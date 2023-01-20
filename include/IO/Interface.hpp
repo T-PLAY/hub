@@ -27,6 +27,10 @@ class SRC_API Interface
 {
   public:
     Interface()                            = default;
+
+    ///
+    /// \param ioStream
+    ///
     Interface( Interface&& ioStream )      = default;
     Interface( const Interface& ioStream ) = delete;
     Interface& operator=( const Interface& ioStream ) = delete;
@@ -35,59 +39,209 @@ class SRC_API Interface
     virtual ~Interface() = default;
     //    virtual ~Interface();
 
+    ///
+    /// \brief close
+    ///
     virtual void close() const  = 0;
+
+    ///
+    /// \brief isOpen
+    /// \return
+    ///
     virtual bool isOpen() const = 0;
+
+    ///
+    /// \brief isEnd
+    /// \return
+    ///
     virtual bool isEnd() const  = 0;
 
+    ///
+    /// \brief write
+    /// \param any
+    ///
     void write( const std::any& any ) const;
+
+    ///
+    /// \brief write
+    /// \param data
+    /// \param len
+    ///
     virtual void write( const unsigned char* data, size_t len ) const = 0;
+
+    ///
+    /// \brief write
+    /// \param str
+    ///
     void write( const char* str ) const;
 
+    ///
+    /// \brief write
+    /// \param t
+    ///
     template <class T>
     void write( const T& t ) const;
+
+    ///
+    /// \brief write
+    /// \param list
+    ///
     template <class T>
     void write( const std::list<T>& list ) const;
+
+    ///
+    /// \brief write
+    /// \param vector
+    ///
     template <class T>
     void write( const std::vector<T>& vector ) const;
+
+    ///
+    /// \brief write
+    /// \param map
+    ///
     template <class T, class U>
     void write( const std::map<T, U>& map ) const;
+
+    ///
+    /// \brief write
+    /// \param pair
+    ///
     template <class T, class U>
     void write( const std::pair<T, U>& pair ) const;
 
+    ///
+    /// \brief write
+    /// \param str
+    ///
     void write( const std::string& str ) const;
+
+    ///
+    /// \brief write
+    /// \param sensorSpec
+    ///
     void write( const SensorSpec& sensorSpec ) const;
+
+    ///
+    /// \brief write
+    /// \param measure
+    ///
     void write( const Measure& measure ) const;
 
+    ///
+    /// \brief write
+    /// \param acq
+    ///
     virtual void write( const Acquisition& acq ) const;
 
     ////////////////////////////////////////////////////////////////////////////
 
+
+    ///
+    /// \brief read
+    /// \param any
+    ///
     void read( std::any& any ) const;
+
+    ///
+    /// \brief read
+    /// \param data
+    /// \param len
+    ///
     virtual void read( unsigned char* data, size_t len ) const = 0;
+
+    ///
+    /// \brief read
+    /// \param str
+    ///
     void read( char* str ) const;
 
+    ///
+    /// \brief read
+    /// \param t
+    ///
     template <class T>
     void read( T& t ) const;
+
+
+    ///
+    /// \brief read
+    /// \param list
+    ///
     template <class T>
     void read( std::list<T>& list ) const;
+
+    ///
+    /// \brief read
+    /// \param vector
+    ///
     template <class T>
     void read( std::vector<T>& vector ) const;
+
+    ///
+    /// \brief read
+    /// \param map
+    ///
     template <class T, class U>
     void read( std::map<T, U>& map ) const;
+
+    ///
+    /// \brief read
+    /// \param pair
+    ///
     template <class T, class U>
     void read( std::pair<T, U>& pair ) const;
 
+    ///
+    /// \brief read
+    /// \param str
+    ///
     void read( std::string& str ) const;
+
+    ///
+    /// \brief read
+    /// \param sensorSpec
+    ///
     void read( SensorSpec& sensorSpec ) const   = delete;
+
+    ///
+    /// \brief read
+    /// \param acquisition
+    ///
     void read( Acquisition& acquisition ) const = delete;
+
+    ///
+    /// \brief read
+    /// \param measure
+    ///
     void read( Measure& measure ) const         = delete;
 
     //    Measure getMeasure() const;
+    ///
+    /// \brief getSensorSpec
+    /// \return
+    ///
     SensorSpec getSensorSpec() const;
     //    virtual Acquisition getAcquisition( int acquisitionSize ) const;
+    ///
+    /// \brief getAcquisition
+    /// \param sensorSpec
+    /// \return
+    ///
     virtual Acquisition getAcquisition( const SensorSpec& sensorSpec ) const;
 
+    ///
+    /// \brief anyValue2string
+    /// \param any
+    /// \return
+    ///
     static std::string anyValue2string( const std::any& any );
+
+    ///
+    /// \brief anyType2string
+    /// \param any
+    /// \return
+    ///
     static const std::string& anyType2string( const std::any& any );
 };
 
