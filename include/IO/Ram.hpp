@@ -11,39 +11,96 @@ namespace io {
 ///
 class SRC_API CyclicBuff
 {
+    ///
+    /// \brief g_buffLen
+    ///
     static constexpr size_t g_buffLen = 1'000'000;
 
+    ///
+    /// \brief The exception class
+    ///
     class exception : public std::runtime_error
     {
       public:
+        ///
+        /// \brief exception
+        /// \param message
+        ///
         explicit exception( const char* const message ) throw() : std::runtime_error( message ) {}
+
+        ///
+        /// \brief what
+        /// \return
+        ///
         const char* what() const throw() { return std::runtime_error::what(); }
     };
 
   public:
+    ///
+    /// \brief CyclicBuff
+    /// \param size
+    ///
     CyclicBuff( size_t size = g_buffLen );
+
     CyclicBuff( const CyclicBuff& buff ) = delete;
+
+    ///
+    /// \param buff
+    ///
     CyclicBuff( CyclicBuff&& buff )      = default;
 
+    ///
+    /// \brief operator =
+    /// \param buff
+    /// \return
+    ///
     CyclicBuff& operator=( const CyclicBuff& buff ) = delete;
+
+    ///
+    /// \brief operator =
+    /// \param buff
+    /// \return
+    ///
     CyclicBuff& operator=( CyclicBuff&& buff ) = delete;
 
     ~CyclicBuff();
 
+    ///
+    /// \brief write
+    /// \param data
+    /// \param len
+    ///
     void write( const unsigned char* data, size_t len );
+
+    ///
+    /// \brief read
+    /// \param data
+    /// \param len
+    ///
     void read( unsigned char* data, size_t len );
 
+    ///
+    /// \brief close
+    ///
     void close() const;
+
+    ///
+    /// \brief isOpen
+    /// \return
+    ///
     bool isOpen() const;
+
+    ///
+    /// \brief isEnd
+    /// \return
+    ///
     bool isEnd() const;
 
   private:
     unsigned char* const m_buff;
     const size_t m_buffLen;
-
     size_t m_writeHead = 0;
     size_t m_readHead  = 0;
-
     mutable bool m_outputSensorWantsToClose = false;
     mutable bool m_inputSensorClose         = false;
 };
@@ -54,24 +111,69 @@ class SRC_API CyclicBuff
 ///
 class SRC_API Ram : public InputOutputInterface
 {
+    ///
+    /// \brief The exception class
+    ///
     class exception : public std::runtime_error
     {
       public:
+        ///
+        /// \brief exception
+        /// \param message
+        ///
         explicit exception( const char* const message ) throw() : std::runtime_error( message ) {}
+
+        ///
+        /// \brief what
+        /// \return
+        ///
         const char* what() const throw() { return std::runtime_error::what(); }
     };
 
   public:
+    ///
+    /// \brief Ram
+    /// \param buff
+    ///
     Ram( CyclicBuff& buff );
 
+  protected:
+    ///
+    /// \brief close
+//    /// @copydoc Interface::close()
+    ///
     void close() const override;
+
+//    /// @copydoc Interface::isOpen()
+    ///
+    /// \brief isOpen
+    /// \return
+    ///
     bool isOpen() const override;
+
+//    /// @copydoc Interface::isEnd()
+    ///
+    /// \brief isEnd
+    /// \return
+    ///
     bool isEnd() const override;
 
+//    /// @copydoc Interface::write()
+    ///
+    /// \brief write
+    /// \param data
+    /// \param len
+    ///
     void write( const unsigned char* data, size_t len ) const override;
+
+//    /// @copydoc Interface::read()
+    ///
+    /// \brief read
+    /// \param data
+    /// \param len
+    ///
     void read( unsigned char* data, size_t len ) const override;
 
-  protected:
   private:
     CyclicBuff& m_buff;
 };

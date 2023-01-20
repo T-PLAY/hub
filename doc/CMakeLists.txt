@@ -20,7 +20,36 @@ option(HUB_BUILD_DOC "Build documentation" OFF)
 
 if(HUB_BUILD_DOC)
     # look for Doxygen package find_package(Doxygen REQUIRED dot OPTIONAL_COMPONENTS mscgen dia)
-    find_package(Doxygen REQUIRED)
+
+    set(DOXYGEN_EXECUTABLE "E:/Documents/tmpMedical/doxygen/out/install/x64-Debug/bin/doxygen.exe")
+
+#    find_package(Doxygen REQUIRED)
+    find_package(Doxygen QUIET)
+
+#    if(NOT ${DOXYGEN_FOUND})
+#        include(FetchContent)
+
+#        FetchContent_Declare(
+#            Flex
+#            GIT_REPOSITORY https://github.com/lexxmark/winflexbison.git
+##            GIT_TAG Release_1_9_6 # or a later release
+#            GIT_PROGRESS TRUE)
+#        FetchContent_MakeAvailable(Flex)
+
+
+##        message(STATUS ${CMAKE_BINARY_DIR})
+
+#        set(FLEX_EXECUTABLE "${CMAKE_BINARY_DIR}/_deps/flex-build/flex/win_flex.exe")
+#        set(BISON_EXECUTABLE "${CMAKE_BINARY_DIR}/_deps/flex-build/bison/win_bison.exe")
+#        set(DOXYGEN_EXECUTABLE "${CMAKE_BINARY_DIR}/_deps/doxygen-build/")
+
+#        FetchContent_Declare(
+#            Doxygen
+#            GIT_REPOSITORY https://github.com/doxygen/doxygen.git
+##            GIT_TAG Release_1_9_6 # or a later release
+#            GIT_PROGRESS TRUE)
+#        FetchContent_MakeAvailable(Doxygen)
+#    endif()
 
     if(DOXYGEN_FOUND)
         # set input and output files
@@ -38,6 +67,7 @@ if(HUB_BUILD_DOC)
             WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
             COMMENT "Generating API documentation with Doxygen"
             VERBATIM)
+
     else(DOXYGEN_FOUND)
         message("Doxygen need to be installed to generate the doxygen documentation")
     endif(DOXYGEN_FOUND)
