@@ -210,10 +210,53 @@ class SRC_API Dof6 : public Measure
     ///
     SRC_API friend std::ostream& operator<<( std::ostream& os, const Dof6& dof6 );
 
-  private:
+    inline float x() const;
+    inline float y() const;
+    inline float z() const;
+    inline float w0() const;
+    inline float w1() const;
+    inline float w2() const;
+    inline float w3() const;
+
+private:
     const float m_x = 0.0, m_y = 0.0, m_z = 0.0;                // vec3
     const float m_w0 = 1.0, m_w1 = 0.0, m_w2 = 0.0, m_w3 = 0.0; // quat : w, x, y, z
 };
+
+inline float Dof6::x() const
+{
+    return m_x;
+}
+
+inline float Dof6::y() const
+{
+    return m_y;
+}
+
+inline float Dof6::z() const
+{
+    return m_z;
+}
+
+inline float Dof6::w0() const
+{
+    return m_w0;
+}
+
+inline float Dof6::w1() const
+{
+    return m_w1;
+}
+
+inline float Dof6::w2() const
+{
+    return m_w2;
+}
+
+inline float Dof6::w3() const
+{
+    return m_w3;
+}
 
 ///
 /// \brief The Mat4 class
