@@ -21,6 +21,10 @@ bool SRC_API isConnected( socket_fd sock );
 ///////////////////////////////////// SERVER ADDRESS ///////////////////////////////////////
 
 class ServerAddrImpl;
+
+///
+/// \brief The ServerAddr class
+///
 class SRC_API ServerAddr
 {
   public:
@@ -36,20 +40,57 @@ class SRC_API ServerAddr
     //        ServerAddr(const ServerAddr& serverAddr) = delete;
     //        ServerAddr & operator=(const ServerAddr& serverAddr) = delete;
 
+    ///
+    /// \brief init
+    /// \param port
+    ///
     void init( int port );
     //        void setPort(int port);
     //      private:
+
+    ///
+    /// \brief m_pimpl
+    ///
     std::unique_ptr<ServerAddrImpl> m_pimpl;
 };
 // socket_fd accept(socket_fd sock, struct sockaddr*, socklen_t*);
+///
+/// \brief serverSocket
+/// \return
+///
 socket_fd SRC_API serverSocket();
+
+///
+/// \brief bind
+/// \param sock
+/// \param addr
+/// \return
+///
 int SRC_API bind( socket_fd sock, ServerAddr& addr );
+
+///
+/// \brief listen
+/// \param sock
+/// \param backlog
+/// \return
+///
 int SRC_API listen( socket_fd sock, int backlog );
+
+///
+/// \brief accept
+/// \param sock
+/// \param addr
+/// \return
+///
 socket_fd SRC_API accept( socket_fd sock, ServerAddr& addr );
 
 /////////////////////////////////////// CLIENT ADDRESS /////////////////////////////////////
 
 class ClientAddrImpl;
+
+///
+/// \brief The ClientAddr class
+///
 class SRC_API ClientAddr
 {
   public:
@@ -57,6 +98,10 @@ class SRC_API ClientAddr
     ~ClientAddr();
 
     // movable
+    ///
+    /// \brief ClientAddr
+    /// \param clientAddr
+    ///
     ClientAddr( ClientAddr&& clientAddr ) noexcept;
     //        ClientAddr& operator=(ClientAddr && clientAddr) noexcept;
 
@@ -64,15 +109,62 @@ class SRC_API ClientAddr
     //        ClientAddr(const ClientAddr& clientAddr) = delete;
     //        ClientAddr & operator=(const ClientAddr& clientAddr) = delete;
 
+    ///
+    /// \brief init
+    /// \param ipv4
+    /// \param port
+    ///
     void init( const std::string& ipv4, int port );
+
+    ///
+    /// \brief setPort
+    /// \param port
+    ///
     void setPort( int port );
+
+    ///
+    /// \brief setIpv4
+    /// \param ipv4
+    ///
     void setIpv4( const std::string& ipv4 );
 
+    ///
+    /// \brief m_pimpl
+    ///
     std::unique_ptr<ClientAddrImpl> m_pimpl;
 };
+
+///
+/// \brief clientSocket
+/// \return
+///
 socket_fd SRC_API clientSocket();
+
+///
+/// \brief connect
+/// \param sock
+/// \param addr
+/// \return
+///
 int SRC_API connect( socket_fd sock, ClientAddr& addr );
+
+///
+/// \brief send
+/// \param sock
+/// \param buf
+/// \param len
+/// \param flags
+/// \return
+///
 int SRC_API send( socket_fd sock, const char* buf, int len, int flags );
+
+///
+/// \brief recv
+/// \param buf
+/// \param len
+/// \param flags
+/// \return
+///
 int SRC_API recv( socket_fd, char* buf, int len, int flags );
 
 // static std::string getHeader() {

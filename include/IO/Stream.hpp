@@ -49,6 +49,7 @@ class SRC_API InputStream : public InputInterface, public net::ClientSocket
     /// \param streamName
     /// \param syncStreamName
     /// \param clientSocket
+    /// \param mergeSyncAcqs
     ///
     InputStream( const std::string& streamName,
                  const std::string& syncStreamName = "",
@@ -66,6 +67,11 @@ class SRC_API InputStream : public InputInterface, public net::ClientSocket
 
   protected:
     //    Acquisition getAcquisition( int acquisitionSize ) const override;
+    ///
+    /// \brief getAcquisition
+    /// \param sensorSpec
+    /// \return
+    ///
     Acquisition getAcquisition( const SensorSpec& sensorSpec ) const override;
 };
 

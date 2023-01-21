@@ -37,7 +37,16 @@ class SRC_API SensorSpec
     //    using SensorNameType = std::string;
     using MetaData = Map<std::string, std::any>; // any -> C++17
 #else
+    ///
+    /// \brief
+    /// type of sensor name
+    ///
     using SensorNameType = std::string;
+
+    ///
+    /// \brief
+    /// type of metadata
+    ///
     using MetaData       = std::map<std::string, std::any>; // any -> C++17
 #endif
 
@@ -100,6 +109,13 @@ class SRC_API SensorSpec
     //                    const MetaData& metaData       = {} );
 
     //    constexpr SensorSpec( const std::string& sensorName  = "",
+
+    ///
+    /// \brief
+    /// \param sensorName
+    /// \param resolutions
+    /// \param metaData
+    ///
     CONSTEXPR20 SensorSpec( const SensorNameType& sensorName = "",
                             const Resolutions& resolutions   = {},
                             const MetaData& metaData         = {} );
@@ -114,9 +130,26 @@ class SRC_API SensorSpec
     //    //    ~SensorSpec() = default;
 
   public:
+    ///
+    /// \brief operator +
+    /// \param sensorSpec
+    /// \return
+    ///
     SensorSpec operator+( const SensorSpec& sensorSpec ) const;
+
+    ///
+    /// \brief operator +=
+    /// \param sensorSpec
+    /// \return
+    ///
     SensorSpec& operator+=( const SensorSpec& sensorSpec );
     //    SRC_API friend std::ostream& operator<<( std::ostream& os, const Format& format );
+    ///
+    /// \brief operator <<
+    /// \param os
+    /// \param sensorSpec
+    /// \return
+    ///
     SRC_API friend std::ostream& operator<<( std::ostream& os, const SensorSpec& sensorSpec );
 
   public:
@@ -128,7 +161,19 @@ class SRC_API SensorSpec
     //    static std::string dims2string( const Dims& dims );
     //    static std::string format2string( const Format& format );
     //    static std::string resolutions2string( const Resolutions& resolutions );
+    ///
+    /// \brief metaData2string
+    /// \param metaData
+    /// \param expand
+    /// \return
+    ///
     static std::string metaData2string( const MetaData& metaData, bool expand = false );
+
+    ///
+    /// \brief metaData2string
+    /// \param metaData
+    /// \return
+    ///
     static std::string metaData2string( const std::pair<std::string, std::any>& metaData );
 
   public:
@@ -136,13 +181,37 @@ class SRC_API SensorSpec
 #if CPLUSPLUS_VERSION == 20
     inline constexpr const SensorNameType& getSensorName() const noexcept;
 #else
+    ///
+    /// \brief getSensorName
+    /// \return
+    ///
     inline const std::string& getSensorName() const noexcept;
 #endif
+    ///
+    /// \brief getResolutions
+    /// \return
+    ///
     inline constexpr Resolutions& getResolutions() const noexcept;
+    ///
+    /// \brief getMetaData
+    /// \return
+    ///
     inline constexpr MetaData& getMetaData() const noexcept;
+    ///
+    /// \brief getMetaData
+    /// \return
+    ///
     inline MetaData& getMetaData() noexcept;
+    ///
+    /// \brief getAcquisitionSize
+    /// \return
+    ///
     inline constexpr size_t getAcquisitionSize() const noexcept;
 
+    ///
+    /// \brief setMetaData
+    /// \param metaData
+    ///
     inline void setMetaData( const MetaData& metaData ) noexcept;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////

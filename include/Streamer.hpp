@@ -18,15 +18,36 @@ namespace hub {
 class SRC_API Streamer
 {
   public:
+    ///
+    /// \brief Streamer
+    /// \param ipv4
+    /// \param port
+    ///
     Streamer( const std::string& ipv4 = net::s_defaultServiceIp,
               int port                = net::s_defaultServicePort );
     ~Streamer();
 
+    ///
+    /// \brief
+    /// \param streamName
+    /// \param sensorSpec
+    /// \param initAcqs
+    ///
     void addStream( const std::string& streamName,
                     SensorSpec&& sensorSpec,
                     const std::vector<Acquisition>& initAcqs = {} );
+
+    ///
+    /// \brief newAcquisition
+    /// \param streamName
+    /// \param acquisition
+    ///
     void newAcquisition( const std::string& streamName, Acquisition&& acquisition );
 
+    ///
+    /// \brief isConnected
+    /// \return
+    ///
     bool isConnected() const;
 
   private:

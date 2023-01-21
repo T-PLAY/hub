@@ -3,5 +3,8 @@
 Foo
 ===
 
-.. doxygenfile:: cpp_doxygen_sphinx.hpp
+.. doxygenfile:: Acquisition.hpp
+   :project: C++ Sphinx Doxygen Breathe
+
+.. doxygenfile:: Measure.hpp
    :project: C++ Sphinx Doxygen Breathe

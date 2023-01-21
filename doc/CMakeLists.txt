@@ -21,7 +21,7 @@ option(HUB_BUILD_DOC "Build documentation" OFF)
 if(HUB_BUILD_DOC)
     # look for Doxygen package find_package(Doxygen REQUIRED dot OPTIONAL_COMPONENTS mscgen dia)
 
-    set(DOXYGEN_EXECUTABLE "E:/Documents/tmpMedical/doxygen/out/install/x64-Debug/bin/doxygen.exe")
+#    set(DOXYGEN_EXECUTABLE "E:/Documents/tmpMedical/doxygen/out/install/x64-Debug/bin/doxygen.exe")
 
 #    find_package(Doxygen REQUIRED)
     find_package(Doxygen QUIET)
