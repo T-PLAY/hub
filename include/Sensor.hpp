@@ -25,6 +25,11 @@ class SRC_API Sensor
     //    };
 
   protected:
+    ///
+    /// \brief Sensor
+    /// \param sensorSpec
+    /// \param interface_
+    ///
     Sensor( const SensorSpec&& sensorSpec, io::Interface& interface_ );
     ~Sensor();
 
@@ -32,14 +37,30 @@ class SRC_API Sensor
     Sensor& operator=( const Sensor& sensor ) = delete;
 
   public:
+    ///
+    /// \brief m_spec
+    ///
     SensorSpec m_spec;
 
   protected:
+    ///
+    /// \brief m_interface
+    ///
     io::Interface& m_interface;
 
   public:
+    ///
+    /// \brief getInterface
+    /// \return
+    ///
     io::Interface& getInterface() const;
 
+    ///
+    /// \brief operator <<
+    /// \param os
+    /// \param sensor
+    /// \return
+    ///
     SRC_API friend std::ostream& operator<<( std::ostream& os, const Sensor& sensor );
 };
 

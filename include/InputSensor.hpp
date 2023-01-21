@@ -44,6 +44,11 @@ class SRC_API InputSensor : public Sensor
     /// the oldest acqusition
     ///
     Acquisition getAcquisition() const;
+
+    ///
+    /// \brief getAllAcquisitions
+    /// \return
+    ///
     std::vector<Acquisition> getAllAcquisitions();
 
   private:

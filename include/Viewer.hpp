@@ -25,6 +25,18 @@ namespace hub {
 class SRC_API Viewer
 {
   public:
+    ///
+    /// \brief
+    /// \param onNewStreamer
+    /// \param onDelStreamer
+    /// \param onServerConnected
+    /// \param onServerDisconnected
+    /// \param onNewAcquisition
+    /// \param ipv4
+    /// \param port
+    /// \param autoSync
+    /// \param onLogMessage
+    ///
     Viewer( std::function<bool( const char* streamName, const SensorSpec& )> onNewStreamer = {},
             std::function<void( const char* streamName, const SensorSpec& )> onDelStreamer = {},
             std::function<void( const char* ipv4, int port )> onServerConnected            = {},
@@ -38,17 +50,46 @@ class SRC_API Viewer
 
     ~Viewer();
 
+    ///
+    /// \brief setIpv4
+    /// \param ipv4
+    ///
     void setIpv4( const std::string& ipv4 );
+
+    ///
+    /// \brief setPort
+    /// \param port
+    ///
     void setPort( int port );
 
+    ///
+    /// \brief getIpv4
+    /// \return
+    ///
     const std::string& getIpv4() const;
+
+    ///
+    /// \brief getPort
+    /// \return
+    ///
     const int& getPort() const;
+
+    ///
+    /// \brief setAutoSync
+    /// \param newAutoSync
+    ///
     void setAutoSync( bool newAutoSync );
+
+    ///
+    /// \brief isConnected
+    /// \return
+    ///
     bool isConnected() const;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-  protected:
+//  protected:
+private:
     std::thread m_thread;
     bool m_stopThread = false;
 
@@ -120,7 +161,7 @@ class SRC_API Viewer
         void startStream();
         void stopStream();
         //                friend class Viewer;
-    };
+    }; // end class Stream
 
     std::map<std::string, std::shared_ptr<Stream>> m_streams;
 

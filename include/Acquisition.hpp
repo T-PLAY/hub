@@ -34,22 +34,40 @@ class SRC_API Acquisition
     /// timestamp in microseconds
     /// \param end
     /// timestamp in microseconds
-    /// \param data
-    /// \param size
     ///
     Acquisition( long long start, long long end );
     ~Acquisition();
 
     Acquisition( const Acquisition& acq ) = delete;
+
+    ///
+    /// \param acq
+    ///
     Acquisition( Acquisition&& acq )      = default;
 
     Acquisition& operator=( const Acquisition& acq ) = delete;
     Acquisition& operator=( Acquisition&& acq ) = delete;
 
+    ///
+    /// \brief operator ==
+    /// \param acq
+    /// \return
+    ///
     bool operator==( const Acquisition& acq ) const;
+
+    ///
+    /// \brief operator !=
+    /// \param acq
+    /// \return
+    ///
     bool operator!=( const Acquisition& acq ) const;
 
     //    template <class Measure>
+    ///
+    /// \brief operator <<
+    /// \param measure
+    /// \return
+    ///
     Acquisition& operator<<( Measure&& measure );
 
     //    void addMeasure( Measure&& measure );
@@ -57,8 +75,17 @@ class SRC_API Acquisition
     //    template <class... Args>
     //    Acquisition& operator<<( Args&&... args );
 
+    ///
+    /// \brief operator <<
+    /// \param measure
+    /// \return
+    ///
     Acquisition& operator<<( const Measures& measure );
 
+    ///
+    /// \brief emplaceMeasure
+    /// \param args
+    ///
     template <class... Args>
     void emplaceMeasure( Args&&... args );
 
@@ -68,22 +95,63 @@ class SRC_API Acquisition
     //    template<typename... Values>
     //    void add(Values...);
 
+    ///
+    /// \brief isInterpolable
+    /// \return
+    ///
     bool isInterpolable() const;
+
+    ///
+    /// \brief slerp
+    /// \param left
+    /// \param right
+    /// \param t
+    /// \return
+    ///
     static Acquisition slerp( const Acquisition& left, const Acquisition& right, double t );
 
   public:
+    ///
+    /// \brief clone
+    /// \return
+    ///
     Acquisition clone() const;
 
   public:
+
+    ///
+    /// \brief m_start
+    ///
     const long long m_start; // microseconds
+
+    ///
+    /// \brief m_end
+    ///
     const long long m_end;   // microseconds
+
   private:
     Measures m_measures;
     size_t m_size = 0;
 
   public:
+    ///
+    /// \brief operator <<
+    /// \param os
+    /// \param acq
+    /// \return
+    ///
     SRC_API friend std::ostream& operator<<( std::ostream& os, const Acquisition& acq );
+
+    ///
+    /// \brief getSize
+    /// \return
+    ///
     size_t getSize() const;
+
+    ///
+    /// \brief getMeasures
+    /// \return
+    ///
     const Measures& getMeasures() const;
 
     friend class InputSensor;
