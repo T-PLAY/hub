@@ -68,6 +68,7 @@ Dof6 Dof6::slerp( const Dof6& left, const Dof6& right, long long t ) {
     return Dof6( x, y, z, w0, w1, w2, w3 );
 }
 
+
 // Dof6 Dof6::operator*(const Dof6 &dof6) const
 //{
 // }

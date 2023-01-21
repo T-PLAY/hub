@@ -24,16 +24,17 @@ class SRC_API Sensor
     //        ) {} const char* what() const throw() { return std::runtime_error::what(); }
     //    };
 
-  protected:
     ///
     /// \brief Sensor
     /// \param sensorSpec
     /// \param interface_
     ///
     Sensor( const SensorSpec&& sensorSpec, io::Interface& interface_ );
+    Sensor( const Sensor& sensor ) = delete;
+
+  protected:
     ~Sensor();
 
-    Sensor( const Sensor& sensor ) = delete;
     Sensor& operator=( const Sensor& sensor ) = delete;
 
   public:

@@ -22,9 +22,12 @@ subprocess.call('doxygen Doxyfile.in', shell=True)
 
 # -- Project information -----------------------------------------------------
 
-project = 'C++ Sphinx Doxygen Breathe'
-copyright = '2020, me'
-author = 'me'
+project = 'hub'
+copyright = '2022-2023, Gauthier Bouyjou'
+author = 'Gauthier BOUYJOU'
+version = '1.0.0'
+
+root_doc = 'api/index'
 
 
 # -- General configuration ---------------------------------------------------
@@ -78,6 +81,7 @@ html_theme_options = {
     'includehidden': True,
     'titles_only': False
 }
+html_show_sphinx = False
 # html_logo = ''
 # github_url = ''
 #  html_baseurl = ''
@@ -90,9 +94,9 @@ html_static_path = ['_static']
 # -- Breathe configuration -------------------------------------------------
 
 breathe_projects = {
-	"C++ Sphinx Doxygen Breathe": "_build/xml/"
+	"hub": "_build/xml/"
 }
-breathe_default_project = "C++ Sphinx Doxygen Breathe"
+breathe_default_project = "hub"
 breathe_default_members = ('members', 'undoc-members')
 
 
