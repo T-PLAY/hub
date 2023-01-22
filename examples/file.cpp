@@ -15,7 +15,7 @@
 /// describes how use a file to init input/output sensor stream
 ///
 int main() {
-  /// Comments I would like to be documented in as well
+    /// Comments I would like to be documented in as well
 
     // do not execute this code, this is an example of how to use hub library
     {
