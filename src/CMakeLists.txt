@@ -1,34 +1,26 @@
 cmake_minimum_required(VERSION 3.8)
 
-# project(hub)
-#project(cpp_doxygen_sphinx VERSION 0.1.0)
+# project(hub) project(cpp_doxygen_sphinx VERSION 0.1.0)
 
-#include(CTest)
-#enable_testing()
+# include(CTest) enable_testing()
 
-# Source and header dir
-#set(PROJECT_SOURCE_DIR "src")
+# Source and header dir set(PROJECT_SOURCE_DIR "src")
 set(INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include")
 set(SOURCE_DIR "${CMAKE_SOURCE_DIR}/src")
 
+# Source files, without extensions or directory names Here assuming each file has both header and impl set(SRC_FILES
+# Acquisition InputSensor Measure Native OutputSensor Resolution Sensor SensorSpec Streamer Viewer) file(GLOB_RECURSE
+# SRC_FILES *.cpp)
 
-## Source files, without extensions or directory names Here assuming each file has both header and impl
-#set(SRC_FILES Acquisition InputSensor Measure Native OutputSensor Resolution Sensor SensorSpec Streamer Viewer)
-##file(GLOB_RECURSE SRC_FILES *.cpp)
+# Create SOURCE_FILES foreach(file ${SRC_FILES}) list(APPEND SOURCE_FILES ${PROJECT_SOURCE_DIR}/${file}.cpp
+# ${PROJECT_INCLUDE_DIR}/${file}.hpp) endforeach()
 
-### Create SOURCE_FILES
-#foreach(file ${SRC_FILES})
-#    list(APPEND SOURCE_FILES ${PROJECT_SOURCE_DIR}/${file}.cpp ${PROJECT_INCLUDE_DIR}/${file}.hpp)
-#endforeach()
+# Set up such that your IDE organizes the files correctly source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES
+# ${SOURCE_FILES})
 
-### Set up such that your IDE organizes the files correctly
-#source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SOURCE_FILES})
+# add_library(cpp_doxygen_sphinx ${SOURCE_FILES})
 
-#add_library(cpp_doxygen_sphinx ${SOURCE_FILES})
-
-#set(CPACK_PROJECT_NAME ${PROJECT_NAME})
-#set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
-#include(CPack)
+# set(CPACK_PROJECT_NAME ${PROJECT_NAME}) set(CPACK_PROJECT_VERSION ${PROJECT_VERSION}) include(CPack)
 
 set(WIN32_REQUIRED_LIBS)
 set(UNIX_REQUIRED_LIBS)
@@ -37,18 +29,17 @@ file(GLOB_RECURSE sources *.cpp)
 file(GLOB_RECURSE headers ${INCLUDE_DIR}/*.hpp ${INCLUDE_DIR}/*.inl)
 
 list(APPEND SOURCE_FILES ${sources} ${headers})
-#source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SOURCE_FILES} PREFIX ../include)
-source_group("Header Files\\" FILES     ${headers})
-source_group("Source Files\\" FILES     ${sources})
-
+# source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SOURCE_FILES} PREFIX ../include)
+source_group("Header Files\\" FILES ${headers})
+source_group("Source Files\\" FILES ${sources})
 
 if(HUB_BUILD_STATIC_LIBRARY)
     add_library(${PROJECT_NAME} STATIC ${sources} ${headers})
-#    add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})
+    # add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})
     target_compile_definitions(${PROJECT_NAME} PUBLIC -DSRC_STATIC)
 else()
     add_library(${PROJECT_NAME} SHARED ${sources} ${headers})
-#    add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
+    # add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
     target_compile_definitions(${PROJECT_NAME} PUBLIC -DSRC_EXPORTS)
 endif()
 
@@ -87,13 +78,8 @@ install(
     DESTINATION lib)
 
 # install(TARGETS ${PROJECT_NAME} DESTINATION lib)
-install(
-#    DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/
-    DIRECTORY ${INCLUDE_DIR}/
-    DESTINATION include
-#    FILES_MATCHING
-#    PATTERN "*.hpp"
-#    PATTERN "*.inl"
+install(# DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/
+        DIRECTORY ${INCLUDE_DIR}/ DESTINATION include # FILES_MATCHING PATTERN "*.hpp" PATTERN "*.inl"
 )
 
 # install include headers install(FILES MathFunctions.h DESTINATION include)
@@ -106,11 +92,8 @@ install(
 # get_target_property(properties ${PROJECT_NAME} INTERFACE_INCLUDE_DIRECTORIES) message(STATUS ${properties})
 
 target_include_directories(
-    ${PROJECT_NAME}
-    PUBLIC
-#	    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-            $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
-           $<INSTALL_INTERFACE:include>)
+    ${PROJECT_NAME} PUBLIC # $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+                           $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include> $<INSTALL_INTERFACE:include>)
 
 include(CMakePackageConfigHelpers)
 
