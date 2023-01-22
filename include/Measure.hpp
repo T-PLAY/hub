@@ -210,12 +210,46 @@ class SRC_API Dof6 : public Measure
     ///
     SRC_API friend std::ostream& operator<<( std::ostream& os, const Dof6& dof6 );
 
+    ///
+    /// \brief x
+    /// \return
+    ///
     inline float x() const;
+
+    ///
+    /// \brief y
+    /// \return
+    ///
     inline float y() const;
+
+    ///
+    /// \brief z
+    /// \return
+    ///
     inline float z() const;
+
+    ///
+    /// \brief w0
+    /// \return
+    ///
     inline float w0() const;
+
+    ///
+    /// \brief w1
+    /// \return
+    ///
     inline float w1() const;
+
+    ///
+    /// \brief w2
+    /// \return
+    ///
     inline float w2() const;
+
+    ///
+    /// \brief w3
+    /// \return
+    ///
     inline float w3() const;
 
 private:

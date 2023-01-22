@@ -38,6 +38,7 @@ class SRC_API OutputSensor : public Sensor
         m_interface.write( m_spec );
     }
 
+protected:
     template <class OutputInterface>
     OutputSensor( const SensorSpec&& sensorSpec, OutputInterface& outputInterface ) = delete;
 

@@ -5,6 +5,8 @@
 #include <IO/Stream.hpp>
 #include <OutputSensor.hpp>
 
+/// \file
+
 namespace sensorAPI {
 // class sensorAPI {
 // public:

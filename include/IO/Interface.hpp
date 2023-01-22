@@ -36,8 +36,34 @@ class SRC_API Interface
     Interface& operator=( const Interface& ioStream ) = delete;
     Interface&& operator=( Interface&& ioStream ) = delete;
 
+
     virtual ~Interface() = default;
     //    virtual ~Interface();
+
+protected:
+
+
+    ///
+    /// \brief write
+    /// \param data
+    /// \param len
+    ///
+    virtual void write( const unsigned char* data, size_t len ) const = 0;
+
+    ///
+    /// \brief read
+    /// \param data
+    /// \param len
+    ///
+    virtual void read( unsigned char* data, size_t len ) const = 0;
+
+public:
+
+    ///
+    /// \brief isEnd
+    /// \return
+    ///
+    virtual bool isEnd() const  = 0;
 
     ///
     /// \brief close
@@ -51,23 +77,11 @@ class SRC_API Interface
     virtual bool isOpen() const = 0;
 
     ///
-    /// \brief isEnd
-    /// \return
-    ///
-    virtual bool isEnd() const  = 0;
-
-    ///
     /// \brief write
     /// \param any
     ///
     void write( const std::any& any ) const;
 
-    ///
-    /// \brief write
-    /// \param data
-    /// \param len
-    ///
-    virtual void write( const unsigned char* data, size_t len ) const = 0;
 
     ///
     /// \brief write
@@ -143,12 +157,6 @@ class SRC_API Interface
     ///
     void read( std::any& any ) const;
 
-    ///
-    /// \brief read
-    /// \param data
-    /// \param len
-    ///
-    virtual void read( unsigned char* data, size_t len ) const = 0;
 
     ///
     /// \brief read

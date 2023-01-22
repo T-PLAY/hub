@@ -11,6 +11,8 @@
 
 #include <Acquisition.hpp>
 
+/// \file
+
 int main() {
 
 #if CPLUSPLUS_VERSION == 20
@@ -21,4 +23,6 @@ int main() {
 //    constexpr hub::SensorSpec::Resolution resolution = {{1}, hub::Format::BGR8};
 //    constexpr hub::Measure measure { data, 4, { { 1 }, hub::Format::BGR8 } };
 #endif
+
+    return 0;
 }

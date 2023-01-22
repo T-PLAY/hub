@@ -14,6 +14,8 @@
 // #    error "only C++20 accepted"
 // #endif
 
+/// \file
+
 int main() {
 
     hub::SensorSpec::MetaData metaData;
@@ -56,4 +58,6 @@ int main() {
     static_assert( sensorSpec5.getSensorName() == "sensorName" );
     static_assert( sensorSpec5.getAcquisitionSize() == 0 );
 #endif
+
+    return 0;
 }

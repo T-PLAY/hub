@@ -1,0 +1,48 @@
+Examples
+========
+
+Most of the examples in the examples path.
+
+
+`file <https://gitlab.irit.fr/storm/repos/projects/private/dcs/plateforme-experimentale/hub/-/blob/documentation/examples/file.cpp>`__
+--------------------------------------------------------------------------------------------------------------------------------------
+
+.. doxygenfile:: file.cpp
+   :show-sources:
+
+.. literalinclude:: file.cpp
+   :language: c
+   :linenos:
+
+.. doxygenfunction:: file.cpp
+   :show-sources:
+
+
+`measure <https://gitlab.irit.fr/storm/repos/projects/private/dcs/plateforme-experimentale/hub/-/blob/documentation/examples/measure.cpp>`__
+--------------------------------------------------------------------------------------------------------------------------------------------
+
+.. doxygenfile:: measure.cpp
+
+
+`nativeViewer <https://gitlab.irit.fr/storm/repos/projects/private/dcs/plateforme-experimentale/hub/-/blob/documentation/examples/nativeViewer.cpp>`__
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+.. doxygenfile:: nativeViewer.cpp
+
+
+`readme <https://gitlab.irit.fr/storm/repos/projects/private/dcs/plateforme-experimentale/hub/-/blob/documentation/examples/readme.cpp>`__
+------------------------------------------------------------------------------------------------------------------------------------------
+
+.. doxygenfile:: readme.cpp
+
+
+`sensorSpec <https://gitlab.irit.fr/storm/repos/projects/private/dcs/plateforme-experimentale/hub/-/blob/documentation/examples/sensorSpec.cpp>`__
+--------------------------------------------------------------------------------------------------------------------------------------------------
+
+.. doxygenfile:: sensorSpec.cpp
+
+
+`viewer <https://gitlab.irit.fr/storm/repos/projects/private/dcs/plateforme-experimentale/hub/-/blob/documentation/examples/viewer.cpp>`__
+------------------------------------------------------------------------------------------------------------------------------------------
+
+.. doxygenfile:: viewer.cpp

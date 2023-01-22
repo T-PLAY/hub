@@ -18,5 +18,4 @@ Contents
     examples
     hub
     tools
-    internals
     license
