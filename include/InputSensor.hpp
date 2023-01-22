@@ -31,6 +31,7 @@ class SRC_API InputSensor : public Sensor
         m_spec = m_interface.getSensorSpec();
     }
 
+protected:
     template <class InputInterface>
     InputSensor( InputInterface& inputInterface ) = delete;
 

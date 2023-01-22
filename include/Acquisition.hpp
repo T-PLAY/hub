@@ -45,6 +45,7 @@ class SRC_API Acquisition
     ///
     Acquisition( Acquisition&& acq )      = default;
 
+
     Acquisition& operator=( const Acquisition& acq ) = delete;
     Acquisition& operator=( Acquisition&& acq ) = delete;
 
