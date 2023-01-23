@@ -66,8 +66,11 @@ class SRC_API Acquisition
     //    template <class Measure>
     ///
     /// \brief operator <<
+    /// add new measure to current acquisition
     /// \param measure
+    /// [in] measure to add
     /// \return
+    /// modified acquisition with new measure.
     ///
     Acquisition& operator<<( Measure&& measure );
 
@@ -78,8 +81,11 @@ class SRC_API Acquisition
 
     ///
     /// \brief operator <<
+    /// add new measure to current acquisition
     /// \param measure
+    /// [in] measure to add
     /// \return
+    /// modified acquisition with new measure.
     ///
     Acquisition& operator<<( const Measures& measure );
 
@@ -98,23 +104,35 @@ class SRC_API Acquisition
 
     ///
     /// \brief isInterpolable
+    /// is used during synchronization with another acquisition stream to minimize
+    /// the error distance between 2 differents acquisition of differents sensor stream.
     /// \return
+    /// true if acquisition is interpolable
+    /// false otherwise
     ///
     bool isInterpolable() const;
 
     ///
     /// \brief slerp
+    /// is used during synchronization with another acquisition stream to minimize
+    /// the error distance between 2 differents acquisition of differents sensor stream.
     /// \param left
+    /// oldest acquisition
     /// \param right
+    /// newest acquisition
     /// \param t
+    /// to perform interpolation
     /// \return
+    /// interpolate new created acquisition.
     ///
     static Acquisition slerp( const Acquisition& left, const Acquisition& right, double t );
 
   public:
     ///
     /// \brief clone
+    /// make a copy of current acquisition.
     /// \return
+    /// copy of acquisition.
     ///
     Acquisition clone() const;
 
@@ -145,13 +163,17 @@ class SRC_API Acquisition
 
     ///
     /// \brief getSize
+    /// is used to serialize the acquisition into a constant buffer array (TCP communication).
     /// \return
+    /// size of acquisition in bytes.
     ///
     size_t getSize() const;
 
     ///
     /// \brief getMeasures
+    /// is used to process things for each measure separately.
     /// \return
+    /// all measures acquired during the acquisition.
     ///
     const Measures& getMeasures() const;
 

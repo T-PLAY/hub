@@ -10,6 +10,9 @@ namespace hub {
 
 ///
 /// \brief The Format enum
+/// describes the atomic unit measured by a sensor.
+/// This information is used to determine how this data can be viewed/used/processed.
+/// This unit has a fixed size in memory.
 ///
 // clang-format off
 enum class Format {
@@ -50,8 +53,25 @@ enum class Format {
 };
 // clang-format on
 
+///
+/// \brief
+/// Describes the N-dimensional lengths.
+///
 using Dims        = std::vector<int>;
+
+///
+/// \brief
+/// corresponds to n-dimensional lengths with a fixed format of the data.
+/// Therefore, the total vectorised data has a fixed size in memory (TCP datagram).
+///
 using Resolution  = std::pair<Dims, Format>;
+
+///
+/// \brief
+/// Package of resolution.
+/// A single sensor can provide several types of information at the same time,
+/// for the same acquisition time (data with the exact same time stamp).
+///
 using Resolutions = std::vector<Resolution>;
 
 //    static const Resolution s_Atomic_Resolution_Dof6 = Resolution {{1}, Format::DOF6};

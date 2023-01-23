@@ -20,8 +20,11 @@ namespace io {
 
 ///
 /// \brief The Interface class
-/// allows the inherited classes to serialize the data.
-/// This allows to send an acquisition flow on different peripherals (file, socket, RAM, etc).
+/// describes the features that must be implemented to define a communication bus.
+/// This class allows to abstract these functionalities in order to use different
+/// communication buses allowing the transfer of sensor data (file, socket, RAM, etc).
+/// This class serializes any type of data and is architecture independent (32/64 bits).
+/// \attention This class is an interface.
 ///
 class SRC_API Interface
 {
@@ -45,15 +48,21 @@ protected:
 
     ///
     /// \brief write
+    /// function describes how to write data through the communication bus.
     /// \param data
+    /// [in] array of bytes in memory
     /// \param len
+    /// [in] size of the data array to write
     ///
     virtual void write( const unsigned char* data, size_t len ) const = 0;
 
     ///
     /// \brief read
+    /// function describes how to read data through from the communication bus.
     /// \param data
+    /// [out] array of bytes in memory
     /// \param len
+    /// [in] size of the data array to read
     ///
     virtual void read( unsigned char* data, size_t len ) const = 0;
 
@@ -61,18 +70,26 @@ public:
 
     ///
     /// \brief isEnd
+    /// allows to know if the communication bus is no longer active,
+    /// no memory bandwidth, no more acquisition coming.
     /// \return
+    /// true if the bus is inactive
+    /// false otherwise
     ///
     virtual bool isEnd() const  = 0;
 
     ///
     /// \brief close
+    /// Capability to terminate communication at both ends if possible.
     ///
     virtual void close() const  = 0;
 
     ///
     /// \brief isOpen
+    /// allows to verify the good communication of the bus.
     /// \return
+    /// true if the bus is active
+    /// false otherwise
     ///
     virtual bool isOpen() const = 0;
 
@@ -253,12 +270,24 @@ public:
     static const std::string& anyType2string( const std::any& any );
 };
 
+///
+/// \brief The InputInterface class
+/// is used to instantiate an InputSensor.
+///
 class SRC_API InputInterface : public virtual Interface
 {};
 
+///
+/// \brief The OutputInterface class
+/// is used to instantiate an OutputSensor.
+///
 class SRC_API OutputInterface : public virtual Interface
 {};
 
+///
+/// \brief The InputOutputInterface class
+/// is used to instantiate both InputSensor and OutputSensor.
+///
 class SRC_API InputOutputInterface : public InputInterface, public OutputInterface
 {};
 

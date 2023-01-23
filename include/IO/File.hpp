@@ -11,7 +11,7 @@ namespace io {
 ///
 /// \brief The File class
 /// is an encloser of a std fstream allowing to record or play acquisition streams.\n
-/// This class can be use to create InputSensor (player) or Outputsensor (recorder).
+/// This class can be use to create InputSensor (player) or OutputSensor (recorder).
 ///
 class SRC_API File : public InputOutputInterface
 {
@@ -40,7 +40,7 @@ class SRC_API File : public InputOutputInterface
     /// constructor from a std::fstream, if you use an InputSensor uses the std::ios::in constructor option,
     /// if you use an OutputSensor the std::ios::out option when creating a std::fstream.
     /// \param file
-    /// is a movable fstream you want to use as a sensor bus.
+    /// is a movable fstream you want to use as a sensor communication bus.
     ///
     File( std::fstream&& file );
 

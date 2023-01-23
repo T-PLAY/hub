@@ -10,7 +10,8 @@ namespace net {
 
 ///
 /// \brief The ClientSocket class
-/// is an connected socket to the server
+/// allows connection to remote server hubs.
+/// This class describes the functionality needed to open a remote communication.
 ///
 class SRC_API ClientSocket : public Socket, public virtual io::Interface
 {
@@ -58,9 +59,13 @@ class SRC_API ClientSocket : public Socket, public virtual io::Interface
 
     ///
     /// \brief ClientSocket
+    /// is used to open a remote communication
     /// \param ipv4
+    /// [in] string corresponds to the server ip (ex: "127.0.0.1" for local server)
     /// \param port
+    /// [in] opened service of the running server
     /// \param autoConnect
+    /// [in] connect to the server
     ///
     ClientSocket( const std::string& ipv4, int port, bool autoConnect = true );
 

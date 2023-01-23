@@ -12,7 +12,8 @@ namespace hub {
 
 ///
 /// \brief The Sensor class
-/// communicate the data through an input/output interface.
+/// describes what a sensor can be, it's defined from the constant specifities of a sensor
+/// and uses a communication bus to transmit the data.
 ///
 class SRC_API Sensor
 {
@@ -27,7 +28,9 @@ class SRC_API Sensor
     ///
     /// \brief Sensor
     /// \param sensorSpec
+    /// [in] user defined sensor spec
     /// \param interface_
+    /// [in] given interface
     ///
     Sensor( const SensorSpec&& sensorSpec, io::Interface& interface_ );
     Sensor( const Sensor& sensor ) = delete;

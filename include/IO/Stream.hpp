@@ -10,17 +10,19 @@ namespace io {
 
 ///
 /// \brief The OutputStream class
-/// communicates with the server application, and create new streamer with the according stream
-/// name. A viewer connected with the server can show this new stream, and have the possibility to
-/// open an InputStream with the same stream name.
+/// Describes an output communication to the server.
 ///
 class SRC_API OutputStream : public OutputInterface, public net::ClientSocket
 {
   public:
     ///
     /// \brief OutputStream
+    /// is used to instantiate an OutputSensor.
     /// \param streamName
+    /// [in] is an unique identifier name of stream
+    /// \attention no stream with streamName id is present in the server hub.
     /// \param clientSocket
+    /// [in] is an existing connection to a hub server
     ///
     OutputStream( const std::string& streamName,
                   net::ClientSocket&& clientSocket = net::ClientSocket() );
@@ -38,18 +40,26 @@ class SRC_API OutputStream : public OutputInterface, public net::ClientSocket
 
 ///
 /// \brief The InputStream class
-/// Allows an user to retrieve the data from an already created OutputStream.
-/// An atream can be synchronize with an another stream.
+/// Describes an input communication from the server.
+/// The communication is only possible if the stream (with the same name) is active within the server.
+/// That implies an OutputStream communicating data through the hub.
 ///
 class SRC_API InputStream : public InputInterface, public net::ClientSocket
 {
   public:
     ///
     /// \brief InputStream
+    /// is used to instantiate an InputSensor.
     /// \param streamName
+    /// [in] is an unique identifier name of stream
+    /// \attention the stream with streamName id needs to be active in the server hub,
+    /// OutputStream with the same streamName is sharing.
     /// \param syncStreamName
+    /// [in] is an unique identifier name of stream
     /// \param clientSocket
+    /// [in] is an existing connection to a hub server
     /// \param mergeSyncAcqs
+    /// [in] if you want merge acq during the synchronization
     ///
     InputStream( const std::string& streamName,
                  const std::string& syncStreamName = "",
