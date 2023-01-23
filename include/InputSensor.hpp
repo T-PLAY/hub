@@ -8,14 +8,22 @@ namespace hub {
 
 ///
 /// \brief The InputSensor class
-/// is created directly by the input interface.
+/// represents the remote sensor.
+/// From any communication bus (file, RAM, socket) you have access to all the information specific
+/// to the sensors as well as the acquisition flow coming from the physical sensor.
+/// This class allows client applications to completely abstract from the notion
+/// of sensor and to be interested only in the carried data.
+/// This enables several applications to work simultaneously on the same data in real time.
+/// This also avoids the need to manage the drivers of each of the manufacturers of the sensors you wish to use.
 ///
 class SRC_API InputSensor : public Sensor
 {
   public:
     ///
     /// \brief InputSensor
+    /// is called when you want to get data sensor
     /// \param inputInterface
+    /// is the communication bus you want to use
     ///
     template <class InputInterface,
               typename = typename std::enable_if<
@@ -41,14 +49,17 @@ protected:
   public:
     ///
     /// \brief getAcquisition
+    /// can be an asynchronous function depending of the used interface.
     /// \return
-    /// the oldest acqusition
+    /// the oldest acquisition shared by the physical sensor.
     ///
     Acquisition getAcquisition() const;
 
     ///
     /// \brief getAllAcquisitions
+    /// can be an asynchronous function depending of the used interface.
     /// \return
+    /// all acquisitions coming from the interface.
     ///
     std::vector<Acquisition> getAllAcquisitions();
 

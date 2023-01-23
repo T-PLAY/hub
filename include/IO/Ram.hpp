@@ -14,7 +14,7 @@ class SRC_API CyclicBuff
     ///
     /// \brief g_buffLen
     ///
-    static constexpr size_t g_buffLen = 1'000'000;
+    static constexpr size_t g_buffLen = 1'000'000; // 1Mo
 
     ///
     /// \brief The exception class
@@ -38,7 +38,9 @@ class SRC_API CyclicBuff
   public:
     ///
     /// \brief CyclicBuff
+    /// is a buffer in memory.
     /// \param size
+    /// [in] is constant size of the granted buffer.
     ///
     CyclicBuff( size_t size = g_buffLen );
 
@@ -133,7 +135,9 @@ class SRC_API Ram : public InputOutputInterface
   public:
     ///
     /// \brief Ram
+    /// constructed from shared communication (InputSensor and OutputSensor) data container.
     /// \param buff
+    /// [in] is a cyclic buffer already instancied.
     ///
     Ram( CyclicBuff& buff );
 

@@ -18,18 +18,26 @@ class SRC_API Measure
   public:
     ///
     /// \brief Measure
+    /// is used when the data sensor is volatile
     /// \param data
+    /// we want to temporaly copy before share through the communication bus.
     /// \param size
+    /// of the data array in bytes.
     /// \param resolution
+    /// needs to be compatible with the sensorSpec when you send this measure through the OutputSensor.
     ///
     template <class ResolutionT = Resolution>
     Measure( const unsigned char* const data, uint64_t size, ResolutionT&& resolution );
 
     ///
     /// \brief Measure
+    /// is used when the data sensor is non-volatile
     /// \param data
+    /// we want to use as pointer data before share through the communication bus.
     /// \param size
+    /// of the data array in bytes.
     /// \param resolution
+    /// needs to be compatible with the sensorSpec when you send this measure through the OutputSensor.
     ///
     template <class ResolutionT = Resolution>
     Measure( unsigned char* data, uint64_t size, ResolutionT&& resolution );
@@ -48,22 +56,33 @@ class SRC_API Measure
 
     ///
     /// \brief clone
+    /// make a copy of current measure.
     /// \return
+    /// copy of current measure.
     ///
     Measure clone() const;
 
-    ///
     /// \brief isInterpolable
+    /// is used during synchronization with another acquisition stream to minimize
+    /// the error distance between 2 differents acquisition of differents sensor stream.
     /// \return
+    /// true if measure is interpolable
+    /// false otherwise
     ///
     bool isInterpolable() const;
 
     ///
     /// \brief slerp
+    /// is used during synchronization with another acquisition stream to minimize
+    /// the error distance between 2 differents acquisition of differents sensor stream.
     /// \param left
+    /// oldest measure
     /// \param right
+    /// newest measure
     /// \param t
+    /// to perform interpolation
     /// \return
+    /// interpolate new created measure.
     ///
     static Measure slerp( const Measure& left, const Measure& right, double t );
 
@@ -165,6 +184,7 @@ const inline Resolution& Measure::getResolution() const {
 
 ///
 /// \brief The Dof6 class
+/// represents a 6 degree of freedom measure that can be acquired with some tracking solution.
 ///
 class SRC_API Dof6 : public Measure
 {
@@ -177,13 +197,21 @@ class SRC_API Dof6 : public Measure
 
     ///
     /// \brief Dof6
+    /// corresponds to a position (x, y, z) and an orientation quaternion (w0, w1, w2, w3).
     /// \param x
+    /// position
     /// \param y
+    /// position
     /// \param z
+    /// position
     /// \param w0
+    /// orientation
     /// \param w1
+    /// orientation
     /// \param w2
+    /// orientation
     /// \param w3
+    /// orientation
     ///
     Dof6( float x  = 0.0,
           float y  = 0.0,
@@ -294,13 +322,16 @@ inline float Dof6::w3() const
 
 ///
 /// \brief The Mat4 class
+/// represents a transform matrix (row-major).
 ///
 class Mat4 : public Measure
 {
   public:
     ///
     /// \brief Mat4
+    /// is the 4x4 transformation matrix (row-major).
     /// \param array
+    /// of 4x4 float (size = 4x4x4 = 64 bytes)
     ///
     Mat4( const float* array );
 };

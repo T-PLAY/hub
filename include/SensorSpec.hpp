@@ -24,9 +24,10 @@ namespace hub {
 
 ///
 /// \brief The SensorSpec class
-/// defines the internal properties of a sensor as the format of the acquired data which
-/// allows to define how to visualize the data. Also the dimension of the data as well as the
-/// metadata.
+/// describes the sensor in its entirety, like the internal properties of a sensor.
+/// Such as the name of the sensor given by the manufacturer and the format/resolution of the measured data.
+/// This allows to describe how the data can be visualized and to standardize data that look similar.
+/// Optional information can be added but does not influence the flow communication process.
 ///
 // template <int NDim>
 class SRC_API SensorSpec
@@ -45,7 +46,7 @@ class SRC_API SensorSpec
 
     ///
     /// \brief
-    /// type of metadata
+    /// Definition of metadata
     ///
     using MetaData       = std::map<std::string, std::any>; // any -> C++17
 #endif
@@ -113,8 +114,11 @@ class SRC_API SensorSpec
     ///
     /// \brief
     /// \param sensorName
+    /// [in] given by the sensor manufacturer or user defined
     /// \param resolutions
+    /// [in] resolution of the corresponding sensor
     /// \param metaData
+    /// [in] additional informations of the sensor and acquisition
     ///
     CONSTEXPR20 SensorSpec( const SensorNameType& sensorName = "",
                             const Resolutions& resolutions   = {},
