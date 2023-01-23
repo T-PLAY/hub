@@ -91,12 +91,12 @@ set(UNIX_REQUIRED_LIBS)
 
 
 if(HUB_BUILD_STATIC_LIBRARY)
-    add_library(${PROJECT_NAME} STATIC ${sources} ${headers})
-#    add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})
+#    add_library(${PROJECT_NAME} STATIC ${sources} ${headers})
+    add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})
     target_compile_definitions(${PROJECT_NAME} PUBLIC -DSRC_STATIC)
 else()
-    add_library(${PROJECT_NAME} SHARED ${sources} ${headers})
-#    add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
+#    add_library(${PROJECT_NAME} SHARED ${sources} ${headers})
+    add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
     target_compile_definitions(${PROJECT_NAME} PUBLIC -DSRC_EXPORTS)
 endif()
 
