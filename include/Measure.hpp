@@ -44,7 +44,9 @@ class SRC_API Measure
 
     ///
     /// \brief Measure
+    /// movable constructor.
     /// \param measure
+    /// to move.
     ///
     Measure( Measure&& measure );
 
@@ -120,7 +122,9 @@ class SRC_API Measure
 
     ///
     /// \brief getResolution
+    /// is used to check compatible resolution with sensor specification of OutputSensor.
     /// \return
+    /// internal resolution.
     ///
     const inline Resolution& getResolution() const;
 
@@ -191,7 +195,9 @@ class SRC_API Dof6 : public Measure
   public:
     ///
     /// \brief Dof6
+    /// copy constructor.
     /// \param measure
+    /// to copy.
     ///
     Dof6( const Measure& measure );
 

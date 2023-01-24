@@ -20,9 +20,15 @@ class SRC_API OutputStream : public OutputInterface, public net::ClientSocket
     /// is used to instantiate an OutputSensor.
     /// \param streamName
     /// [in] is an unique identifier name of stream
-    /// \attention no stream with streamName id is present in the server hub.
     /// \param clientSocket
     /// [in] is an existing connection to a hub server
+    /// \warning The hub service must be accessible, that means the
+    /// server hub is running on a machine you know the ip and the oppened port of the service.
+    /// \warning Stream you want to start linking (by it name) needs to not exist in the server hub.
+    /// Streaming with most of one sender is not allowed.
+    /// \exception hub::net::Socket::exception
+    /// when the server is not found or by loosing connection to the server.
+    /// Also occur when stream you want to link is already started in the server.
     ///
     OutputStream( const std::string& streamName,
                   net::ClientSocket&& clientSocket = net::ClientSocket() );
@@ -51,15 +57,19 @@ class SRC_API InputStream : public InputInterface, public net::ClientSocket
     /// \brief InputStream
     /// is used to instantiate an InputSensor.
     /// \param streamName
-    /// [in] is an unique identifier name of stream
-    /// \attention the stream with streamName id needs to be active in the server hub,
-    /// OutputStream with the same streamName is sharing.
+    /// [in] is an unique identifier name of stream.
     /// \param syncStreamName
-    /// [in] is an unique identifier name of stream
+    /// [in] is an unique identifier name of stream.
     /// \param clientSocket
-    /// [in] is an existing connection to a hub server
+    /// [in] is an existing connection to a hub server.
     /// \param mergeSyncAcqs
-    /// [in] if you want merge acq during the synchronization
+    /// [in] if you want merge acq during the synchronization.
+    /// \warning The hub service must be accessible, that means the
+    /// server hub is running on a machine you know the ip and the oppened port of the service.
+    /// \warning Stream you want to link (by their names) needs to be active in the server hub.
+    /// \exception hub::net::Socket::exception
+    /// when the server is not found or by loosing connection to the server.
+    /// Also occur when stream you want to link is not connected to the server.
     ///
     InputStream( const std::string& streamName,
                  const std::string& syncStreamName = "",

@@ -10,8 +10,8 @@ namespace io {
 
 ///
 /// \brief The File class
-/// is an encloser of a std fstream allowing to record or play acquisition streams.\n
-/// This class can be use to create InputSensor (player) or OutputSensor (recorder).
+/// is an encloser of a std fstream allowing to record or play acquisition streams in offline.
+/// This class can be use to play recorded stream as a real sensor stream.
 ///
 class SRC_API File : public InputOutputInterface
 {

@@ -58,8 +58,14 @@ protected:
   public:
     ///
     /// \brief operator <<
+    /// is used when you want to share sensor data.
     /// \param acquisition
     /// to send through the communication bus.
+    /// \warning The acquisition needs to be compatible with
+    /// the internal sensor specification resolution and format.\n
+    /// sensorSpec.resolutions == { acq.measures[0].resolution, acq.measures[1].resolution, ... }
+    /// \exception "used interface exception"
+    /// when communication is broken.
     ///
     void operator<<( const Acquisition& acquisition ) const;
 

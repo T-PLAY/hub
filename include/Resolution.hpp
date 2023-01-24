@@ -16,7 +16,7 @@ namespace hub {
 ///
 // clang-format off
 enum class Format {
-    NONE = 0,
+    NONE = 0,		/**< Not a valid input : intended to check the non initialization */
     Z16, 			/**< 16-bit linear depth values. The depth is meters is equal to depth scale pixel value. */
     DISPARITY16, 	/**< 16-bit float-point disparity values. Depth->Disparity conversion : Disparity = Baseline*FocalLength/Depth. */
     XYZ32F,      	/**< 32-bit floating point 3D coordinates. */
@@ -61,7 +61,7 @@ using Dims        = std::vector<int>;
 
 ///
 /// \brief
-/// corresponds to n-dimensional lengths with a fixed format of the data.
+/// Corresponds to n-dimensional lengths with a fixed format of the data.
 /// Therefore, the total vectorised data has a fixed size in memory (TCP datagram).
 ///
 using Resolution  = std::pair<Dims, Format>;

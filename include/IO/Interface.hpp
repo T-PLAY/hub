@@ -24,7 +24,8 @@ namespace io {
 /// This class allows to abstract these functionalities in order to use different
 /// communication buses allowing the transfer of sensor data (file, socket, RAM, etc).
 /// This class serializes any type of data and is architecture independent (32/64 bits).
-/// \attention This class is an interface.
+/// \note This class is an interface.
+/// \warning Unable to perform write/read operations if communication is ended or closed.
 ///
 class SRC_API Interface
 {
@@ -73,23 +74,23 @@ public:
     /// allows to know if the communication bus is no longer active,
     /// no memory bandwidth, no more acquisition coming.
     /// \return
-    /// true if the bus is inactive
-    /// false otherwise
+    /// true if the bus is inactive.\n
+    /// false otherwise.
     ///
     virtual bool isEnd() const  = 0;
 
     ///
     /// \brief close
-    /// Capability to terminate communication at both ends if possible.
+    /// is the capability to terminate communication at both ends if possible.
     ///
     virtual void close() const  = 0;
 
     ///
     /// \brief isOpen
-    /// allows to verify the good communication of the bus.
+    /// allows to verify the still alive communication of the bus.
     /// \return
-    /// true if the bus is active
-    /// false otherwise
+    /// true if the bus is active.\n
+    /// false otherwise.
     ///
     virtual bool isOpen() const = 0;
 
