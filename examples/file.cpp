@@ -17,6 +17,16 @@
 int main() {
     /// Comments I would like to be documented in as well
 
+    {
+        // clang-format off
+        // startConstruction
+hub::io::File outputFile(
+    std::fstream( "file.txt", std::ios::binary | std::ios::out | std::ios::trunc ) );
+hub::io::File inputFile( std::fstream( "file.txt", std::ios::binary | std::ios::in ) );
+        // endConstruction
+        // clang-format on
+    }
+
     // do not execute this code, this is an example of how to use hub library
     {
 

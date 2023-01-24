@@ -52,6 +52,8 @@ protected:
     /// can be an asynchronous function depending of the used interface.
     /// \return
     /// the oldest acquisition shared by the physical sensor.
+    /// \exception "used interface exception"
+    /// when communication bus is broken.
     ///
     Acquisition getAcquisition() const;
 

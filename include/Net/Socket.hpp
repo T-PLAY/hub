@@ -18,7 +18,8 @@ namespace net {
 
 ///
 /// \brief The Socket class
-/// is an abstraction of socket use in (Windows, Linux).
+/// is an abstraction of different (Windows, Unix) network sockets
+/// allows the TCP communication.
 ///
 class SRC_API Socket
 {
@@ -26,19 +27,25 @@ class SRC_API Socket
 
     ///
     /// \brief The exception class
+    /// is used to launch exception when broken communication
+    /// through the internet.
     ///
     class exception : public std::runtime_error
     {
       public:
         ///
         /// \brief exception
+        /// launched when peer connection is lost or invalid.
         /// \param message
+        /// shown by the client application when exception has been launched.
         ///
         explicit exception( const char* const message ) throw() : std::runtime_error( message ) {}
 
         ///
         /// \brief what
+        /// allow the user to catch message exception.
         /// \return
+        /// message describe the exception.
         ///
         const char* what() const throw() { return std::runtime_error::what(); }
     };
@@ -46,6 +53,15 @@ class SRC_API Socket
 #ifdef DEBUG_SOCKET
     std::string getHeader( socket_fd iSock ) const;
 #endif
+
+    ///
+    /// \brief isConnected
+    /// is used to test if peer connection is valid.
+    /// \return
+    /// true if connection is alive.\n
+    /// false otherwise.
+    ///
+    bool isConnected() const;
 
   protected:
     Socket();
@@ -61,11 +77,6 @@ class SRC_API Socket
     Socket& operator=( const Socket& socket ) = delete;
     Socket&& operator=( Socket&& socket ) = delete;
 
-    ///
-    /// \brief isConnected
-    /// \return
-    ///
-    bool isConnected() const;
     //    void clear() const;
 
   protected:

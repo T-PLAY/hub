@@ -42,6 +42,7 @@ class SRC_API Acquisition
 
     ///
     /// \param acq
+    /// movable acquisition.
     ///
     Acquisition( Acquisition&& acq )      = default;
 
@@ -155,9 +156,13 @@ class SRC_API Acquisition
   public:
     ///
     /// \brief operator <<
+    /// print acquisition information.
     /// \param os
+    /// output to print.
     /// \param acq
+    /// acquisition to print.
     /// \return
+    /// std printed ostream.
     ///
     SRC_API friend std::ostream& operator<<( std::ostream& os, const Acquisition& acq );
 
