@@ -1,8 +1,7 @@
-#include "ServerSocket.hpp"
+#include "Net/ServerSocket.hpp"
 
 #include <cstring>
 
-#include <Configurations.hpp>
 #include <Net/Utils.hpp>
 
 namespace hub {

@@ -7,7 +7,6 @@
 #include <stdio.h>
 #include <thread>
 
-#include <IO/Stream.hpp>
 #include <OutputSensor.hpp>
 
 int main( int, char** ) {

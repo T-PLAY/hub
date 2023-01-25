@@ -1,12 +1,7 @@
 #include "Streamer.hpp"
 
-// #define DEBUG_VIEWER
-
 #include <chrono>
 #include <regex>
-
-#include "IO/Stream.hpp"
-#include "Net/ClientSocket.hpp"
 
 namespace hub {
 
@@ -134,39 +129,8 @@ void Streamer::onServerDisconnected() {
     } );
 }
 
-// void Streamer::onServerConnected(const std::string &streamName)
-//{
-
-//}
-
-// #ifdef DEBUG_VIEWER
-// #endif
-
-// #ifdef DEBUG_VIEWER
-// #endif
-
-// #ifdef DEBUG_VIEWER
-// #endif
-
-// #ifdef DEBUG_VIEWER
-// #endif
-
-// #ifdef DEBUG_VIEWER
-// #endif
-
 Streamer::~Streamer() {
-#ifdef DEBUG_VIEWER
     DEBUG_MSG( "[Streamer] ~Streamer()" );
-#endif
-#ifdef DEBUG_VIEWER
-    DEBUG_MSG( "[Streamer] ~Streamer() done" );
-#endif
 }
-
-// void Streamer::setIpv4( const std::string& ipv4 ) {
-// }
-
-// void Streamer::setPort( int port ) {
-// }
 
 } // namespace hub

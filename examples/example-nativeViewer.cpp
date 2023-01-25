@@ -1,8 +1,5 @@
 
-#include <IO/File.hpp>
-#include <IO/Stream.hpp>
 #include <InputSensor.hpp>
-#include <Net/ClientSocket.hpp>
 #include <OutputSensor.hpp>
 #include <Viewer.hpp>
 

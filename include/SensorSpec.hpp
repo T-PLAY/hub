@@ -1,24 +1,20 @@
 #pragma once
 
+
 #include <algorithm>
 #include <any>
 #include <map>
 #include <stdexcept>
 #include <string>
 #include <vector>
-// #include <exception>
 
 #include "Macros.hpp"
 #include "Resolution.hpp"
+
 #if CPLUSPLUS_VERSION == 20
 #    include "Map.hpp"
 #    include <ranges>
 #endif
-
-// #if ( __cplusplus >= 202001L )
-// #else
-// #    error "only C++20 accepted"
-// #endif
 
 namespace hub {
 
@@ -30,7 +26,6 @@ namespace hub {
 /// Optional information can be added but does not influence the flow communication process.
 /// \note The sensor specifications are shared between input and output sensor.
 ///
-// template <int NDim>
 class SRC_API SensorSpec
 {
   public:
@@ -52,10 +47,6 @@ class SRC_API SensorSpec
     using MetaData       = std::map<std::string, std::any>; // any -> C++17
 #endif
 
-    //    using MetaData = Map<std::string, std::any>; // any -> C++17
-    //    using MetaData = std::vector<std::pair<std::string, std::any>>;
-    //    using MetaData = std::vector<std::pair<std::string, std::any>>;
-
     ///
     /// \brief
     /// \param sensorName
@@ -68,15 +59,6 @@ class SRC_API SensorSpec
     CONSTEXPR20 SensorSpec( const SensorNameType& sensorName = "",
                             const Resolutions& resolutions   = {},
                             const MetaData& metaData         = {} );
-    //    m_sensorName( sensorName ),
-    //    m_resolutions( resolutions ),
-    //    m_metaData( metaData ),
-    //    m_acquisitionSize( computeAcquisitionSize( resolutions ) ) {}
-
-    //    constexpr SensorSpec( const std::string& sensorName,
-    //                          const Resolutions& resolutions) noexcept :
-    //        m_sensorName( sensorName ), m_resolutions( resolutions ) {};
-    //    //    ~SensorSpec() = default;
 
   public:
     ///
@@ -92,7 +74,7 @@ class SRC_API SensorSpec
     /// \return
     ///
     SensorSpec& operator+=( const SensorSpec& sensorSpec );
-    //    SRC_API friend std::ostream& operator<<( std::ostream& os, const Format& format );
+
     ///
     /// \brief operator <<
     /// \param os
@@ -102,14 +84,7 @@ class SRC_API SensorSpec
     SRC_API friend std::ostream& operator<<( std::ostream& os, const SensorSpec& sensorSpec );
 
   public:
-    //    static inline CONSTEXPR20 size_t computeAcquisitionSize( const Resolutions& resolutions )
-    //    noexcept; static inline CONSTEXPR20 size_t computeAcquisitionSize( const Resolution&
-    //    resolution ) noexcept; static inline constexpr int format2nByte( const Format& format )
-    //    noexcept; static inline constexpr bool isInterpolable( const Format& format ) noexcept;
 
-    //    static std::string dims2string( const Dims& dims );
-    //    static std::string format2string( const Format& format );
-    //    static std::string resolutions2string( const Resolutions& resolutions );
     ///
     /// \brief metaData2string
     /// \param metaData
@@ -126,7 +101,6 @@ class SRC_API SensorSpec
     static std::string metaData2string( const std::pair<std::string, std::any>& metaData );
 
   public:
-    //    inline const std::string& getSensorName() const noexcept;
 #if CPLUSPLUS_VERSION == 20
     inline constexpr const SensorNameType& getSensorName() const noexcept;
 #else
@@ -162,12 +136,6 @@ class SRC_API SensorSpec
     /// \param metaData
     ///
     inline void setMetaData( const MetaData& metaData ) noexcept;
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////
-
-    //  private:
-    //    static inline CONSTEXPR20 size_t computeAcquisitionSize( Format format, const Dims& dims )
-    //    noexcept;
 
   private:
     //    static std::string m_sensorName2;

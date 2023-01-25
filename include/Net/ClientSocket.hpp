@@ -9,6 +9,18 @@ namespace hub {
 namespace net {
 
 ///
+/// \brief s_defaultServicePort
+/// is the default opened for the hub service (server).
+///
+static constexpr int s_defaultServicePort = 4042;
+
+///
+/// \brief s_defaultServiceIp
+/// by default hub service is running localy.
+///
+static std::string s_defaultServiceIp = "127.0.0.1";
+
+///
 /// \brief The ClientSocket class
 /// allows connection to remote server hubs.
 /// This class describes the functionality needed to open a remote communication.
@@ -176,12 +188,8 @@ class SRC_API ClientSocket : public Socket, public virtual io::Interface
     ///
 
   private:
-    //    void connectToServer();
-
-  private:
     std::string m_ipv4;
     int m_port;
-    //    struct sockaddr_in m_serverAddress;
     net::utils::ClientAddr m_addr;
     mutable bool m_connected = false;
 

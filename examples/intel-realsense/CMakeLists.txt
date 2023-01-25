@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.8)
 
 project(example-realsense)
 
+find_package(hub REQUIRED)
 
 find_package(realsense2 QUIET)
 

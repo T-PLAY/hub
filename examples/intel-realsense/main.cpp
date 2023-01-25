@@ -6,10 +6,8 @@
 #include <librealsense2/rs.hpp> // Include RealSense Cross Platform API
 
 #include <cassert>
-//#include <stream.h>
-#include <IO/Stream.hpp>
+
 #include <OutputSensor.hpp>
-#include <Net/Socket.hpp>
 
 #define DEPTH_STREAM
 #define RGB_STREAM
