@@ -1,11 +1,8 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include <IO/File.hpp>
-#include <IO/Stream.hpp>
 #include <InputSensor.hpp>
-#include <Net/ClientSocket.hpp>
-// #include <Net/Server.hpp>
 #include <OutputSensor.hpp>
+
 #include <Server.hpp>
 
 #include <filesystem>

@@ -1,7 +1,5 @@
 #pragma once
 
-// #define NOMINMAX
-
 #include <exception>
 #include <functional>
 #include <iostream>
@@ -77,10 +75,7 @@ class SRC_API Socket
     Socket& operator=( const Socket& socket ) = delete;
     Socket&& operator=( Socket&& socket ) = delete;
 
-    //    void clear() const;
-
   protected:
-    //    mutable socket_fd m_fdSock = INVALID_SOCKET;
     ///
     /// \brief m_fdSock
     ///

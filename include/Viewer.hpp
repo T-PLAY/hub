@@ -6,7 +6,6 @@
 #include <thread>
 
 #include "Acquisition.hpp"
-#include "Configurations.hpp"
 #include "Net/ClientSocket.hpp"
 #include "SensorSpec.hpp"
 
@@ -102,11 +101,8 @@ private:
     void delStreamer( const std::string& streamId );
 
     net::ClientSocket m_sock;
-    //    std::string m_ipv4;
-    //    int m_port;
     bool m_serverConnected = false;
     bool m_autoSync        = true;
-    //    std::regex m_ipv4Regex;
     std::function<void( const char* logMessage )> m_onLogMessage;
 
     class Stream
@@ -114,7 +110,6 @@ private:
       public:
         Viewer& m_viewer;
 
-        //        Stream(Stream & stream) = default;
         Stream( Viewer& viewer ) : m_viewer( viewer ), m_onLogMessage( m_viewer.m_onLogMessage ) {}
 
         Stream( Stream&& stream ) :
@@ -141,8 +136,6 @@ private:
             DEBUG_MSG( "[Stream] ~Stream() streamer '" << m_streamId << "' ended" );
         }
 
-        //        using m_onLogMessage = m_viewer.m_onLogMessage();
-
         std::string m_streamName;
         SensorSpec m_sensorSpec;
         std::string m_syncStreamName;
@@ -152,22 +145,16 @@ private:
         SensorSpec m_sensorSpecId;
 
         std::thread* m_thread = nullptr;
-        //        std::thread m_thread;
         bool m_stopThread = false;
         bool m_added      = false;
-        //        bool m_isStreaming = false;
         std::function<void( const char* logMessage )> m_onLogMessage;
 
         void startStream();
         void stopStream();
-        //                friend class Viewer;
     }; // end class Stream
 
     std::map<std::string, std::shared_ptr<Stream>> m_streams;
 
-    //    std::map<std::string, SensorSpec> m_streamName2sensorSpec;
-    //    std::map<std::string, std::thread> m_streamName2thread;
-    //    std::map<std::string, bool> m_streamName2stopThread;
     friend class Stream;
 
   private:

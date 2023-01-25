@@ -7,11 +7,9 @@
 #include <iomanip>
 #include <memory>
 
-#include <Acquisition.hpp>
 #include <InputSensor.hpp>
-#include <Net/ClientSocket.hpp>
 #include <OutputSensor.hpp>
-#include <ServerSocket.hpp>
+#include <Net/ServerSocket.hpp>
 
 #include "StreamViewerClient.hpp"
 #include "StreamerClient.hpp"

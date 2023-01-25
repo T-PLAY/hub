@@ -26,6 +26,7 @@ namespace io {
 /// This class serializes any type of data and is architecture independent (32/64 bits).
 /// \note This class is an interface.
 /// \warning Unable to perform write/read operations if communication is ended or closed.
+/// TODO: split Interface -> Input and Output classes
 ///
 class SRC_API Interface
 {
@@ -40,12 +41,9 @@ class SRC_API Interface
     Interface& operator=( const Interface& ioStream ) = delete;
     Interface&& operator=( Interface&& ioStream ) = delete;
 
-
     virtual ~Interface() = default;
-    //    virtual ~Interface();
 
 protected:
-
 
     ///
     /// \brief write
@@ -99,7 +97,6 @@ public:
     /// \param any
     ///
     void write( const std::any& any ) const;
-
 
     ///
     /// \brief write
@@ -168,13 +165,11 @@ public:
 
     ////////////////////////////////////////////////////////////////////////////
 
-
     ///
     /// \brief read
     /// \param any
     ///
     void read( std::any& any ) const;
-
 
     ///
     /// \brief read
@@ -242,13 +237,8 @@ public:
     ///
     void read( Measure& measure ) const         = delete;
 
-    //    Measure getMeasure() const;
-    ///
-    /// \brief getSensorSpec
-    /// \return
-    ///
     SensorSpec getSensorSpec() const;
-    //    virtual Acquisition getAcquisition( int acquisitionSize ) const;
+
     ///
     /// \brief getAcquisition
     /// \param sensorSpec
@@ -292,171 +282,8 @@ class SRC_API OutputInterface : public virtual Interface
 class SRC_API InputOutputInterface : public InputInterface, public OutputInterface
 {};
 
-template <class T>
-void Interface::write( const T& t ) const {
-    assert( isOpen() );
-
-    write( reinterpret_cast<const unsigned char*>( &t ), sizeof( T ) );
-
-#ifdef DEBUG_IOSTREAM
-    std::cout << "[Interface] write(T) : " << typeid( T ).name() << " '" << t << "' : end"
-              << std::endl;
-#endif
-}
-
-template <class T>
-void Interface::write( const std::list<T>& list ) const {
-    assert( isOpen() );
-
-#ifdef DEBUG_IOSTREAM
-    std::cout << "[Interface] write(std::list) : start" << std::endl;
-#endif
-
-    int nbEl = list.size();
-    write( nbEl );
-
-    for ( const T& el : list ) {
-        write( el );
-    }
-}
-
-template <class T>
-void Interface::write( const std::vector<T>& vector ) const {
-    assert( isOpen() );
-
-#ifdef DEBUG_IOSTREAM
-    std::cout << "[Interface] write(std::vector) : start" << std::endl;
-#endif
-
-    int nbEl = static_cast<int>( vector.size() );
-    write( nbEl );
-
-    for ( const T& el : vector ) {
-        write( el );
-    }
-}
-
-template <class T, class U>
-void Interface::write( const std::map<T, U>& map ) const {
-    assert( isOpen() );
-
-#ifdef DEBUG_IOSTREAM
-    std::cout << "[Interface] write(std::map) : start" << std::endl;
-#endif
-
-    int nbKey = static_cast<int>( map.size() );
-    write( nbKey );
-#ifdef DEBUG_IOSTREAM
-    std::cout << "[Interface] map : nbEl = " << nbKey << std::endl;
-#endif
-
-    for ( const std::pair<T, U>& pair : map ) {
-        write( pair );
-    }
-}
-
-template <class T, class U>
-void Interface::write( const std::pair<T, U>& pair ) const {
-    assert( isOpen() );
-
-#ifdef DEBUG_IOSTREAM
-    std::cout << "[Interface] write(std::pair) : start" << std::endl;
-#endif
-    const T& first  = pair.first;
-    const U& second = pair.second;
-    write( first );
-    write( second );
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
-template <class T>
-void Interface::read( T& t ) const {
-    assert( isOpen() );
-
-    read( reinterpret_cast<unsigned char*>( &t ), sizeof( T ) );
-
-#ifdef DEBUG_IOSTREAM
-    std::cout << "[Interface] read(T) : " << typeid( T ).name() << " '" << t << "' : end"
-              << std::endl;
-#endif
-}
-
-template <class T>
-void Interface::read( std::list<T>& list ) const {
-    assert( isOpen() );
-
-#ifdef DEBUG_IOSTREAM
-    std::cout << "[Interface] read(std::list) : start" << std::endl;
-#endif
-
-    int nbEl;
-    read( nbEl );
-
-    for ( int i = 0; i < nbEl; ++i ) {
-        T el;
-        read( el );
-        list.push_back( std::move( el ) );
-    }
-}
-
-template <class T>
-void Interface::read( std::vector<T>& vector ) const {
-    assert( isOpen() );
-
-#ifdef DEBUG_IOSTREAM
-    std::cout << "[Interface] read(std::vector) : start" << std::endl;
-#endif
-
-    int nbEl;
-    read( nbEl );
-
-    vector.clear();
-    vector.reserve( nbEl );
-
-    for ( int i = 0; i < nbEl; ++i ) {
-        T el;
-        read( el );
-        vector.push_back( std::move( el ) );
-    }
-}
-
-template <class T, class U>
-void Interface::read( std::map<T, U>& map ) const {
-    assert( isOpen() );
-
-#ifdef DEBUG_IOSTREAM
-    std::cout << "[Interface] read(std::map) : start" << std::endl;
-#endif
-
-    int nbEl;
-    read( nbEl );
-#ifdef DEBUG_IOSTREAM
-    std::cout << "[Interface] map : nbEl = " << nbEl << std::endl;
-#endif
-    map.clear();
-
-    for ( int i = 0; i < nbEl; ++i ) {
-        std::pair<T, U> pair;
-        read( pair );
-        assert( map.find( pair.first ) == map.end() );
-        map.emplace( std::move( pair ) );
-    }
-}
-
-template <class T, class U>
-void Interface::read( std::pair<T, U>& pair ) const {
-    assert( isOpen() );
-
-#ifdef DEBUG_IOSTREAM
-    std::cout << "[Interface] read(std::pair) : start" << std::endl;
-#endif
-    T first;
-    read( first );
-    U second;
-    read( second );
-    pair = std::make_pair( first, second );
-}
 
 } // namespace io
 } // namespace hub
+
+#include "Interface.inl"

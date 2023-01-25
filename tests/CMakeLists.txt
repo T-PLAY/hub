@@ -3,7 +3,6 @@ cmake_minimum_required(VERSION 3.5)
 project(tests LANGUAGES CXX)
 
 find_package(Catch2 QUIET)
-# message("catch2 found : " ${Catch2_FOUND})
 
 if(NOT ${Catch2_FOUND})
     include(FetchContent)
@@ -15,8 +14,6 @@ if(NOT ${Catch2_FOUND})
     FetchContent_MakeAvailable(Catch2)
 endif()
 
-# find_package(Catch2 REQUIRED)
-
 file(GLOB_RECURSE TEST_SRC *.cpp)
 
 string(REPLACE ".cpp" "" TEST_SRC_BASENAME "${TEST_SRC}")
@@ -24,7 +21,7 @@ set(TEST_SRC_BASENAME ${TEST_SRC_BASENAME})
 
 foreach(name ${TEST_SRC_BASENAME})
     get_filename_component(basename ${name} NAME)
-    set(TARGET_NAME test-${basename})
+    set(TARGET_NAME ${basename})
     add_executable(${TARGET_NAME} ${name}.cpp)
     target_link_libraries(${TARGET_NAME} Catch2::Catch2WithMain hub server)
     # set_property(TARGET ${TARGET_NAME} PROPERTY CXX_STANDARD 17)
@@ -54,6 +51,7 @@ foreach(
     "serverSpeed")
     add_test(NAME test-${test} COMMAND test-${test})
 endforeach()
+
 # add_test(NAME test-sensorSpec COMMAND test-sensorSpec) add_test(NAME test-file COMMAND test-file) add_test(NAME
 # test-measures COMMAND test-measures) add_test(NAME test-ram COMMAND test-ram) add_test(NAME test COMMAND test-file)
 # add_test(test test-all) add_test(NAME test COMMAND $<TARGET_FILE:test-all>)

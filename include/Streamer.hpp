@@ -6,7 +6,6 @@
 #include <thread>
 
 #include "Acquisition.hpp"
-#include "Configurations.hpp"
 #include "OutputSensor.hpp"
 #include "SensorSpec.hpp"
 

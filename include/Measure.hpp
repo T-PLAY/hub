@@ -14,7 +14,6 @@ namespace hub {
 ///
 class SRC_API Measure
 {
-
   public:
     ///
     /// \brief Measure
@@ -49,13 +48,14 @@ class SRC_API Measure
     /// to move.
     ///
     Measure( Measure&& measure );
+    Measure& operator=( Measure&& ) = delete;
 
     Measure( const Measure& ) = delete;
     Measure& operator=( const Measure& ) = delete;
-    Measure& operator=( Measure&& ) = delete;
 
     ~Measure();
 
+  public:
     ///
     /// \brief clone
     /// make a copy of current measure.
@@ -89,16 +89,6 @@ class SRC_API Measure
     static Measure slerp( const Measure& left, const Measure& right, double t );
 
     ///
-    /// \brief m_data
-    ///
-    const unsigned char* const m_data;
-
-    ///
-    /// \brief m_size
-    ///
-    const uint64_t m_size; // compatibility 32/64 bits
-
-    ///
     /// \brief operator ==
     /// \param measure
     /// \return
@@ -120,6 +110,18 @@ class SRC_API Measure
     ///
     SRC_API friend std::ostream& operator<<( std::ostream& os, const Measure& measure );
 
+  public:
+    ///
+    /// \brief m_data
+    ///
+    const unsigned char* const m_data;
+
+    ///
+    /// \brief m_size
+    ///
+    const uint64_t m_size; // compatibility 32/64 bits
+
+  public: // getters
     ///
     /// \brief getResolution
     /// is used to check compatible resolution with sensor specification of OutputSensor.
@@ -128,13 +130,11 @@ class SRC_API Measure
     ///
     const inline Resolution& getResolution() const;
 
-  protected:
 private:
     bool m_ownData = false;
     bool m_isMoved = false;
     Resolution m_resolution;
 
-  private:
     friend class InputSensor;
 };
 using Measures = std::vector<Measure>;
@@ -341,10 +341,5 @@ class Mat4 : public Measure
     ///
     Mat4( const float* array );
 };
-
-// class Image : public Measure
-//{
-
-//};
 
 } // namespace hub

@@ -10,10 +10,18 @@
 // #include <Macros.hpp>
 
 #include <Acquisition.hpp>
+#include <ostream>
+#include <istream>
+#include <streambuf>
 
 /// \file
 
 int main() {
+
+//    std::basic_ostream<int> out;
+
+//    int buff[256];
+//    std::basic_istream<int> input();
 
 #if CPLUSPLUS_VERSION == 20
     // todo change char ptr into std::array

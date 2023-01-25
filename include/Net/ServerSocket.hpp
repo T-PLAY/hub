@@ -1,5 +1,6 @@
 #pragma once
 
+#include <Net/Socket.hpp>
 #include <Net/ClientSocket.hpp>
 
 namespace hub {
@@ -18,7 +19,6 @@ class SRC_API ServerSocket : public Socket
 
   private:
     int mPort;
-    //    struct sockaddr_in mAddress;
     net::utils::ServerAddr m_addr;
 
   public:

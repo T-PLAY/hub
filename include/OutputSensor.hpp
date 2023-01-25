@@ -7,6 +7,10 @@
 #include "Sensor.hpp"
 #include "SensorSpec.hpp"
 
+#include "IO/OutputStream.hpp"
+#include "IO/File.hpp"
+#include "IO/Ram.hpp"
+
 namespace hub {
 
 ///

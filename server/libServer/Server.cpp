@@ -9,8 +9,6 @@
 #include <utility>
 #include <vector>
 
-#include <IO/Stream.hpp>
-#include <Net/Socket.hpp>
 #include <Sensor.hpp>
 
 std::string Server::getStatus() {

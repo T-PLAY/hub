@@ -1,7 +1,6 @@
 #pragma once
 
 #include <fstream>
-#include <memory>
 
 #include "Interface.hpp"
 
@@ -10,7 +9,7 @@ namespace io {
 
 ///
 /// \brief The File class
-/// is an encloser of a std fstream allowing to record or play acquisition streams in offline.
+/// is an encloser of a std file stream allowing to record or play acquisition streams in offline.
 /// This class can be use to play recorded stream as a real sensor stream.
 ///
 class SRC_API File : public InputOutputInterface
@@ -58,6 +57,7 @@ class SRC_API File : public InputOutputInterface
     ///
     /// \brief close
     /// close the file
+    /// @copydoc Interface::close()
     ///
     void close() const override;
 
@@ -67,6 +67,7 @@ class SRC_API File : public InputOutputInterface
     /// \return
     /// true if file is openned.\n
     /// false if file is closed.
+    /// @copydoc Interface::isOpen()
     ///
     bool isOpen() const override;
 
@@ -74,6 +75,7 @@ class SRC_API File : public InputOutputInterface
     /// \brief isEnd
     /// check if end of file.
     /// \return
+    /// @copydoc Interface::isEnd()
     ///
     bool isEnd() const override;
 
@@ -81,6 +83,7 @@ class SRC_API File : public InputOutputInterface
     /// \brief write
     /// \param data
     /// \param len
+    /// @copydoc Interface::write()
     ///
     void write( const unsigned char* data, size_t len ) const override;
 
@@ -88,6 +91,7 @@ class SRC_API File : public InputOutputInterface
     /// \brief read
     /// \param data
     /// \param len
+    /// @copydoc Interface::read()
     ///
     void read( unsigned char* data, size_t len ) const override;
 
