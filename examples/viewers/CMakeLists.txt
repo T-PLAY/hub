@@ -18,16 +18,4 @@ foreach(name ${EXAMPLE_SRC_BASENAME})
 endforeach()
 
 
-cmake_host_system_information(RESULT hostname QUERY HOSTNAME)
-if(${hostname} STREQUAL "Brueghel") # work windows
-    set(OpenCV_DIR "E:/Documents/medical/opencv/out/install/x64-${CMAKE_BUILD_TYPE}/")
-    set(realsense2_DIR "E:/Documents/medical/lidar/librealsense/lidar-install/lib/cmake/realsense2")
-
-elseif(${hostname} STREQUAL "gigabyte2")
-    set(realsense2_DIR "/home/gauthier/tmpMedical/librealsense/build/realsense-install/lib/cmake/realsense2")
-endif()
-
-
-add_subdirectory(streamers)
-add_subdirectory(viewers)
 

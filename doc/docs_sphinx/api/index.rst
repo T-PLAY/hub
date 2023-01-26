@@ -14,8 +14,12 @@ Contents
     :maxdepth: 5
 
     overview
+    whyUseIt
+    whatDoYouWantToDo
     build
     examples
     hub
     tools
     license
+    whoIsUsingIt
+    FAQ
