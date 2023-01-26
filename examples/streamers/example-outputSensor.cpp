@@ -2,7 +2,6 @@
 
 #include <OutputSensor.hpp>
 
-
 #include <filesystem>
 #include <thread>
 // #include <cassert>
@@ -44,9 +43,10 @@ hub::OutputSensor outputSensor(
 
             // clang-format on
             // startFunctional
-outputSensor << (hub::Acquisition { start, end } << hub::Measure { data, size, resolution });
+            outputSensor << ( hub::Acquisition { start, end }
+                              << hub::Measure { data, size, resolution } );
             // endFunctional
-// assert( outputSensor.m_spec.getResolutions().at(0) == resolution );
+            // assert( outputSensor.m_spec.getResolutions().at(0) == resolution );
             // clang-format off
         }
 
@@ -69,7 +69,6 @@ hub::OutputSensor outputSensor( sensorSpec, hub::io::Ram( buff ) );
         }
         // clang-format on
     }
-
 
     return 0;
 }

@@ -2,8 +2,8 @@
 // code in README.md of this project
 // streamer code
 
-#include <IO/OutputStream.hpp>
 #include <IO/InputStream.hpp>
+#include <IO/OutputStream.hpp>
 #include <OutputSensor.hpp>
 
 /// \file

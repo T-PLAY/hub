@@ -46,6 +46,5 @@ bool OutputStream::isEnd() const {
 }
 #endif
 
-
 } // namespace io
 } // namespace hub
