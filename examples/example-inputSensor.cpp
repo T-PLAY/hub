@@ -31,6 +31,7 @@ auto acqs = inputSensor.getAllAcquisitions();
 
         {
             // startConstruction2
+// read saved acquisitions from file
 hub::InputSensor inputSensor(
     hub::io::File( std::fstream("file.txt", std::ios::binary | std::ios::in ) ) );
             // endConstruction2
@@ -38,6 +39,7 @@ hub::InputSensor inputSensor(
 
         {
             // startConstruction3
+// get acqusitions from different threads
 hub::io::CyclicBuff buff;
 auto inputSensor = hub::InputSensor( hub::io::Ram( buff ) );
             // endConstruction3

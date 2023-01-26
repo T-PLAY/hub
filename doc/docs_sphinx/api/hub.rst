@@ -19,17 +19,17 @@ SensorSpec
 
 **Instantiate examples :**
 
-.. literalinclude:: ../../../examples/sensorSpec.cpp
+.. literalinclude:: ../../../examples/example-sensorSpec.cpp
    :language: cpp
    :start-after: startConstruction
    :end-before: endConstruction
 
-.. literalinclude:: ../../../examples/sensorSpec.cpp
+.. literalinclude:: ../../../examples/example-sensorSpec.cpp
    :language: cpp
    :start-after: startConstruction2
    :end-before: endConstruction2
 
-.. literalinclude:: ../../../examples/sensorSpec.cpp
+.. literalinclude:: ../../../examples/example-sensorSpec.cpp
    :language: cpp
    :start-after: startConstruction3
    :end-before: endConstruction3
@@ -82,7 +82,7 @@ OutputStream
 
 **Instantiate example :**
 
-.. literalinclude:: ../../../examples/outputStream.cpp
+.. literalinclude:: ../../../examples/example-outputStream.cpp
    :language: cpp
    :start-after: startConstruction
    :end-before: endConstruction
@@ -105,7 +105,7 @@ InputStream
 
 **Instantiate example :**
 
-.. literalinclude:: ../../../examples/inputStream.cpp
+.. literalinclude:: ../../../examples/example-inputStream.cpp
    :language: cpp
    :start-after: startConstruction
    :end-before: endConstruction
@@ -145,7 +145,7 @@ File
 
 .. doxygenfunction:: hub::io::File::File(std::fstream && file)
 
-.. literalinclude:: ../../../examples/file.cpp
+.. literalinclude:: ../../../examples/example-file.cpp
    :language: cpp
    :start-after: startConstruction
    :end-before: endConstruction
@@ -160,7 +160,7 @@ Ram
 
 .. doxygenfunction:: hub::io::CyclicBuff::CyclicBuff(size_t)
 
-.. literalinclude:: ../../../examples/ram.cpp
+.. literalinclude:: ../../../examples/example-ram.cpp
    :language: cpp
    :start-after: startConstruction
    :end-before: endConstruction
@@ -172,24 +172,24 @@ OutputSensor
 
 **Instantiate examples :**
 
-.. literalinclude:: ../../../examples/outputSensor.cpp
+.. literalinclude:: ../../../examples/example-outputSensor.cpp
    :language: cpp
    :start-after: startConstruction
    :end-before: endConstruction
 
-.. literalinclude:: ../../../examples/outputSensor.cpp
+.. literalinclude:: ../../../examples/example-outputSensor.cpp
    :language: cpp
    :start-after: startConstruction2
    :end-before: endConstruction2
 
-.. literalinclude:: ../../../examples/outputSensor.cpp
+.. literalinclude:: ../../../examples/example-outputSensor.cpp
    :language: cpp
    :start-after: startConstruction3
    :end-before: endConstruction3
 
 **Functional example :**
 
-.. literalinclude:: ../../../examples/outputSensor.cpp
+.. literalinclude:: ../../../examples/example-outputSensor.cpp
    :language: cpp
    :start-after: startFunctional
    :end-before: endFunctional
@@ -200,24 +200,24 @@ InputSensor
 .. doxygenclass:: hub::InputSensor
    :members:
 
-.. literalinclude:: ../../../examples/inputSensor.cpp
+.. literalinclude:: ../../../examples/example-inputSensor.cpp
    :language: cpp
    :start-after: startConstruction
    :end-before: endConstruction
 
-.. literalinclude:: ../../../examples/inputSensor.cpp
+.. literalinclude:: ../../../examples/example-inputSensor.cpp
    :language: cpp
    :start-after: startConstruction2
    :end-before: endConstruction2
 
-.. literalinclude:: ../../../examples/inputSensor.cpp
+.. literalinclude:: ../../../examples/example-inputSensor.cpp
    :language: cpp
    :start-after: startConstruction3
    :end-before: endConstruction3
 
 **Functional example :**
 
-.. literalinclude:: ../../../examples/inputSensor.cpp
+.. literalinclude:: ../../../examples/example-inputSensor.cpp
    :language: cpp
    :start-after: startFunctional
    :end-before: endFunctional

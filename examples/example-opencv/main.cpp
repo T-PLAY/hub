@@ -9,6 +9,8 @@
 
 #include <OutputSensor.hpp>
 
+/// \file
+
 int main( int, char** ) {
     cv::Mat frame;
     //--- INITIALIZE VIDEOCAPTURE
