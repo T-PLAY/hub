@@ -33,10 +33,6 @@ if(HUB_ENABLE_TESTS)
     add_subdirectory(tests)
 endif()
 
-option(HUB_ENABLE_EXAMPLES "Enable examples" OFF)
-if(HUB_ENABLE_EXAMPLES)
-    add_subdirectory(examples)
-endif()
 
 #install(EXPORT hub
 #  FILE hub.cmake
@@ -123,6 +119,11 @@ endif()
 target_link_libraries(${PROJECT_NAME} ${UNIX_REQUIRED_LIBS} ${WIN32_REQUIRED_LIBS})
 
 # set(CMAKE_CXX_STANDARD 14) #ULA-OP C++14 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+option(HUB_ENABLE_EXAMPLES "Enable examples" OFF)
+if(HUB_ENABLE_EXAMPLES)
+    add_subdirectory(examples)
+endif()
 
 # ########################### EXPORT ################################
 

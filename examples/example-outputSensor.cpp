@@ -52,6 +52,7 @@ outputSensor << (hub::Acquisition { start, end } << hub::Measure { data, size, r
 
         {
             // startConstruction2
+// save acquisitions to file
 hub::OutputSensor outputSensor(
     sensorSpec,
     hub::io::File( std::fstream(
@@ -61,6 +62,7 @@ hub::OutputSensor outputSensor(
 
         {
             // startConstruction3
+// create pear buffer to shared data between different threads
 hub::io::CyclicBuff buff;
 hub::OutputSensor outputSensor( sensorSpec, hub::io::Ram( buff ) );
             // endConstruction3

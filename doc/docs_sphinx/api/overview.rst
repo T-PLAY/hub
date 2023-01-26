@@ -61,8 +61,10 @@ and `others <https://gitlab.irit.fr/storm/repos/projects/private/dcs/plateforme-
 Repository visualization
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
+
 .. raw:: html
 
-    <p>
-    <iframe width="694" height="390" src="https://youtu.be/hx0H1JKucro" frameborder="0" allowfullscreen></iframe>
-    </p>
+    <video controls width="694" height="390" src="../_static/hubGource.mp4" frameborder="0" allowfullscreen></video>
+
+
+|

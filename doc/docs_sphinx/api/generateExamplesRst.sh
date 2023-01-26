@@ -14,8 +14,22 @@ Most of the examples in the examples \`directory <https://gitlab.irit.fr/storm/r
 "
 
 
-for exampleFile in $(ls ../../../examples/*.cpp); do
-	exampleName=$(basename $exampleFile | cut -d. -f1)
+iExample=0
+for exampleFile in $(find ../../../examples -maxdepth 1 -mindepth 1 | sort); do
+	exampleName=$(basename $exampleFile | cut -d. -f1 | cut -d- -f1 --complement)
+	extension=$(basename $exampleFile | cut -d. -f2)
+
+	# echo $extension
+
+	if [ $extension == "txt" ]; then
+		continue
+	fi
+
+	# echo $exampleName
+
+	if [ -d $exampleFile ]; then
+		exampleFile=$exampleFile/main.cpp
+	fi
 
 	if ! cat $exampleFile | grep 'return 0' > /dev/null; then
 		echo "return 0 not found in $exampleFile"
@@ -26,30 +40,40 @@ for exampleFile in $(ls ../../../examples/*.cpp); do
 		exit 1
 	fi
 
+	exampleFile=$(echo $exampleFile | cut -c1-18 --complement)
+
+	# echo "exampleFile:$exampleFile"
+
+	index=$iExample
+	if [ $iExample -lt 10 ]; then
+		index="0$iExample"
+	fi
+
 	echo "
-\`example-$exampleName <https://gitlab.irit.fr/storm/repos/projects/private/dcs/plateforme-experimentale/hub/-/blob/documentation/examples/$exampleName.cpp>\`__
+\`$index-$exampleName <https://gitlab.irit.fr/storm/repos/projects/private/dcs/plateforme-experimentale/hub/-/blob/documentation/examples/$exampleFile>\`__
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 Includes
 ********
 
-.. literalinclude:: ../../../examples/$exampleName.cpp
+.. literalinclude:: ../../../examples/$exampleFile
    :language: cpp
-   :linenos:
    :end-before: \file
 
 Source Code
 ***********
 
-.. doxygenfile:: $exampleName.cpp
+.. doxygenfile:: $exampleFile
 
-.. literalinclude:: ../../../examples/$exampleName.cpp
+.. literalinclude:: ../../../examples/$exampleFile
    :language: cpp
-   :linenos:
-   :start-after: main()
+   :start-after: main(
    :end-before: return 0
    :tab-width: 2
 
 
 "
+
+	iExample=$(expr $iExample + 1)
+	
 done

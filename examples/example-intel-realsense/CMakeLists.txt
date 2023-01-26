@@ -1,8 +1,10 @@
 cmake_minimum_required(VERSION 3.8)
 
-project(example-realsense)
+project(example-intel-realsense)
 
-find_package(hub REQUIRED)
+if (NOT TARGET hub)
+    find_package(hub REQUIRED)
+endif()
 
 find_package(realsense2 QUIET)
 

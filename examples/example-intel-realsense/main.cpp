@@ -13,6 +13,8 @@
 #define RGB_STREAM
 #define INFRARED_STREAM
 
+/// \file
+
 // Hello RealSense example demonstrates the basics of connecting to a RealSense device
 // and taking advantage of depth data
 int main(int argc, char* argv[])
@@ -110,4 +112,6 @@ int main(int argc, char* argv[])
             return EXIT_FAILURE;
         }
     } // while (true)
+
+    return 0;
 }
