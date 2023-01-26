@@ -1,5 +1,4 @@
-doc
-examples
 server
 src
 tests
+examples

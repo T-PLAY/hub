@@ -200,6 +200,8 @@ InputSensor
 .. doxygenclass:: hub::InputSensor
    :members:
 
+**Instantiate examples :**
+
 .. literalinclude:: ../../../examples/example-inputSensor.cpp
    :language: cpp
    :start-after: startConstruction
@@ -246,4 +248,37 @@ Mat4
 .. doxygenclass:: hub::Mat4
 
 
+Streamer
+-----------
 
+.. doxygenclass:: hub::Streamer
+   :members:
+
+**Instantiate examples :**
+
+.. literalinclude:: ../../../examples/example-streamer.cpp
+   :language: cpp
+   :start-after: startConstruction
+   :end-before: endConstruction
+
+**Functional example :**
+
+.. literalinclude:: ../../../examples/example-streamer.cpp
+   :language: cpp
+   :start-after: startFunctional
+   :end-before: endFunctional
+ 
+
+Viewer
+-----------
+
+.. doxygenclass:: hub::Viewer
+   :members:
+
+**Instantiate examples :**
+
+.. literalinclude:: ../../../examples/example-viewer.cpp
+   :language: cpp
+   :start-after: startConstruction
+   :end-before: endConstruction
+ 
