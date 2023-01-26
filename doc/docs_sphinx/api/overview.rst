@@ -64,7 +64,9 @@ Repository visualization
 
 .. raw:: html
 
-    <video controls width="694" height="390" src="../_static/hubGource.mp4" frameborder="0" allowfullscreen></video>
+    <video poster="../_static/last.png"
+        controls width="694" height="390" src="../_static/gource.mp4" frameborder="0" allowfullscreen>
+    </video>
 
 
 |

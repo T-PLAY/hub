@@ -56,42 +56,26 @@ class SRC_API File : public InputOutputInterface
   protected:
 
     ///
-    /// \brief close
-    /// close the file
     /// @copydoc Interface::close()
     ///
     void close() const override;
 
     ///
-    /// \brief isOpen
-    /// check if file is openning.
-    /// \return
-    /// true if file is openned.\n
-    /// false if file is closed.
     /// @copydoc Interface::isOpen()
     ///
     bool isOpen() const override;
 
     ///
-    /// \brief isEnd
-    /// check if end of file.
-    /// \return
     /// @copydoc Interface::isEnd()
     ///
     bool isEnd() const override;
 
     ///
-    /// \brief write
-    /// \param data
-    /// \param len
     /// @copydoc Interface::write()
     ///
     void write( const unsigned char* data, size_t len ) const override;
 
     ///
-    /// \brief read
-    /// \param data
-    /// \param len
     /// @copydoc Interface::read()
     ///
     void read( unsigned char* data, size_t len ) const override;
