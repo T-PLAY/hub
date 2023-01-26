@@ -1,7 +1,6 @@
 
 #include "IO/InputStream.hpp"
 
-
 namespace hub {
 namespace io {
 

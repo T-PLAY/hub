@@ -32,8 +32,7 @@ int main( int, char** ) {
     const int width  = cap.get( cv::CAP_PROP_FRAME_WIDTH );
     const int height = cap.get( cv::CAP_PROP_FRAME_HEIGHT );
     //    OutputStream outputStream( "webcam", Stream::Format::BGR8, { width, height } );
-    hub::SensorSpec sensorSpec( "Webcam",
-                                { { { width, height }, hub::Format::BGR8 } } );
+    hub::SensorSpec sensorSpec( "Webcam", { { { width, height }, hub::Format::BGR8 } } );
     hub::OutputSensor outputSensor( sensorSpec, hub::io::OutputStream( "Webcam" ) );
 
     //--- GRAB AND WRITE LOOP
@@ -52,16 +51,19 @@ int main( int, char** ) {
                            std::chrono::system_clock::now().time_since_epoch() )
                            .count();
 
-//            cv::Mat grey;
-//            cv::cvtColor( frame, grey, cv::COLOR_BGR2GRAY );
-//            cv::Mat rgb;
-//            cv::cvtColor(frame, rgb, cv::COLOR_BGR2RGB);
+            //            cv::Mat grey;
+            //            cv::cvtColor( frame, grey, cv::COLOR_BGR2GRAY );
+            //            cv::Mat rgb;
+            //            cv::cvtColor(frame, rgb, cv::COLOR_BGR2RGB);
             //        outputStream << Stream::Acquisition( start, end, frame.data, 3 * width *
             //        height );
-            outputSensor << ( hub::Acquisition { start, end }
-                              << hub::Measure { (const unsigned char*)frame.data, // copy data pointer
-//                              << hub::Measure { (const unsigned char*)rgb.data, // copy data pointer
-                                                (uint64_t)( 3 * width * height ), {{width, height}, hub::Format::BGR8} } );
+            outputSensor
+                << ( hub::Acquisition { start, end } << hub::Measure {
+                         (const unsigned char*)frame.data, // copy data pointer
+                         //                              << hub::Measure { (const unsigned
+                         //                              char*)rgb.data, // copy data pointer
+                         ( uint64_t )( 3 * width * height ),
+                         { { width, height }, hub::Format::BGR8 } } );
 
             // check if we succeeded
             if ( frame.empty() ) {

@@ -8,8 +8,8 @@
 #include <memory>
 
 #include <InputSensor.hpp>
-#include <OutputSensor.hpp>
 #include <Net/ServerSocket.hpp>
+#include <OutputSensor.hpp>
 
 #include "StreamViewerClient.hpp"
 #include "StreamerClient.hpp"

@@ -20,7 +20,6 @@
         }                                          \
     } while ( false );
 
-
 namespace hub {
 
 Viewer::Viewer(
@@ -41,11 +40,9 @@ Viewer::Viewer(
     m_onNewAcquisition( onNewAcquisition ),
     m_sock( ipv4, port, false ),
     m_autoSync( autoSync ),
-    m_onLogMessage( onLogMessage )
-{
+    m_onLogMessage( onLogMessage ) {
 
     m_thread = std::thread( [this]() {
-
         while ( !m_stopThread ) {
             try {
 
@@ -114,10 +111,7 @@ Viewer::Viewer(
                             newStream.m_added          = added;
                             newStream.m_parentName     = parentName;
 
-                            if ( m_onNewAcquisition && added ) {
-
-                                newStream.startStream();
-                            }
+                            if ( m_onNewAcquisition && added ) { newStream.startStream(); }
                         }
 
                         // prevent all son the father is comming
@@ -244,9 +238,7 @@ Viewer::Viewer(
                             m_streams[streamToAdd->m_streamId] = streamToAdd;
                         }
 
-                        if ( m_onDelStreamer ) {
-                            delStreamer( streamId );
-                        }
+                        if ( m_onDelStreamer ) { delStreamer( streamId ); }
 
                         // wait for client init sensorSpec with main thread context (async)
                         // for unity side (update context different of static event function)
@@ -285,7 +277,6 @@ Viewer::Viewer(
                     ++it;
 
                     delStreamer( streamId );
-
                 }
                 assert( m_streams.empty() );
 

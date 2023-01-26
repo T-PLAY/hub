@@ -3,8 +3,6 @@
 #include <InputSensor.hpp>
 #include <OutputSensor.hpp>
 
-
-
 ///
 /// \file
 /// \brief  Main function
@@ -22,7 +20,6 @@ hub::io::Ram outputRam(buff);
         // endConstruction
         // clang-format on
     }
-
 
     return 0;
 }
