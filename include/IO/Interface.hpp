@@ -237,6 +237,10 @@ public:
     ///
     void read( Measure& measure ) const         = delete;
 
+    ///
+    /// \brief getSensorSpec
+    /// \return
+    ///
     SensorSpec getSensorSpec() const;
 
     ///

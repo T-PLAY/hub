@@ -1,0 +1,630 @@
+1674732002|2023-01-26 added gource video
+1674731961|2023-01-26 update docs
+1674664593|2023-01-25 cleanup project
+1674584608|2023-01-24 update doxygen + sphinx docs
+1674494800|2023-01-23 added doxygen documentation
+1674477356|2023-01-23 added examples
+1674408343|2023-01-22 Update .gitlab-ci.yml file
+1674408262|2023-01-22 cleanup project
+1674407027|2023-01-22 update sphinx doc
+1674326527|2023-01-21 WIP update sphinx breathe doc
+1674299506|2023-01-21 added complete doxygen documentation
+1674230945|2023-01-20 added doxygen comments
+1674151049|2023-01-19 split src and include files
+1674146917|2023-01-19 Update .gitlab-ci.yml file
+1674146294|2023-01-19 update ci
+1674145689|2023-01-19 Update .gitlab-ci.yml file
+1674145126|2023-01-19 add threads depends to cmake
+1674144845|2023-01-19 Update .gitlab-ci.yml file
+1674144630|2023-01-19 Update .gitlab-ci.yml file
+1674144495|2023-01-19 Update .gitlab-ci.yml file
+1674144161|2023-01-19 Update .gitlab-ci.yml file
+1674143673|2023-01-19 Update .gitlab-ci.yml file
+1674143605|2023-01-19 Update .gitlab-ci.yml file
+1674143312|2023-01-19 Update .gitlab-ci.yml file
+1674143119|2023-01-19 Update .gitlab-ci.yml file
+1674142900|2023-01-19 Update .gitlab-ci.yml file
+1674142819|2023-01-19 Update .gitlab-ci.yml file
+1674141542|2023-01-19 Update .gitlab-ci.yml file
+1674141500|2023-01-19 Update .gitlab-ci.yml file
+1674141135|2023-01-19 update cmake
+1674140968|2023-01-19 Update .gitlab-ci.yml file
+1674140786|2023-01-19 Update .gitlab-ci.yml file
+1674140517|2023-01-19 Update .gitlab-ci.yml file
+1674140426|2023-01-19 Update .gitlab-ci.yml file
+1674140360|2023-01-19 Update .gitlab-ci.yml file
+1674140319|2023-01-19 Update .gitlab-ci.yml file
+1674140093|2023-01-19 Update .gitlab-ci.yml file
+1674140053|2023-01-19 Update .gitlab-ci.yml file
+1674140047|2023-01-19 Update .gitlab-ci.yml file
+1674139505|2023-01-19 update cmake
+1674138975|2023-01-19 Update .gitlab-ci.yml file
+1674138627|2023-01-19 Update .gitlab-ci.yml file
+1674138400|2023-01-19 Update .gitlab-ci.yml file
+1674138273|2023-01-19 Update .gitlab-ci.yml file
+1674138183|2023-01-19 Update .gitlab-ci.yml file
+1674138080|2023-01-19 Update .gitlab-ci.yml file
+1674138031|2023-01-19 Update .gitlab-ci.yml file
+1674137954|2023-01-19 Update .gitlab-ci.yml file
+1674137723|2023-01-19 Update .gitlab-ci.yml file
+1674137141|2023-01-19 Update .gitlab-ci.yml file
+1674136989|2023-01-19 Update .gitlab-ci.yml file
+1674136832|2023-01-19 Update .gitlab-ci.yml file
+1674136726|2023-01-19 Update .gitlab-ci.yml file
+1674136481|2023-01-19 Update .gitlab-ci.yml file
+1674135912|2023-01-19 Update .gitlab-ci.yml file
+1674135665|2023-01-19 Update .gitlab-ci.yml file
+1674135404|2023-01-19 Update .gitlab-ci.yml file
+1674135294|2023-01-19 Update .gitlab-ci.yml file
+1674135162|2023-01-19 Update .gitlab-ci.yml file
+1674135035|2023-01-19 Update .gitlab-ci.yml file
+1674134832|2023-01-19 Update .gitlab-ci.yml file
+1674134685|2023-01-19 Update .gitlab-ci.yml file
+1674134411|2023-01-19 Update .gitlab-ci.yml file
+1674134213|2023-01-19 Update .gitlab-ci.yml file
+1674134092|2023-01-19 Update .gitlab-ci.yml file
+1674133972|2023-01-19 Update .gitlab-ci.yml file
+1674132990|2023-01-19 Update .gitlab-ci.yml file
+1674132889|2023-01-19 Update .gitlab-ci.yml file
+1674132730|2023-01-19 Update .gitlab-ci.yml file
+1674132632|2023-01-19 Update .gitlab-ci.yml file
+1674128954|2023-01-19 Update .gitlab-ci.yml file
+1674128912|2023-01-19 Update .gitlab-ci.yml file
+1674128674|2023-01-19 Update .gitlab-ci.yml file
+1674128368|2023-01-19 Update .gitlab-ci.yml file
+1674128269|2023-01-19 Update .gitlab-ci.yml file
+1674128113|2023-01-19 Update .gitlab-ci.yml file
+1674127792|2023-01-19 Update .gitlab-ci.yml file
+1674127406|2023-01-19 Update .gitlab-ci.yml file
+1674127254|2023-01-19 Update .gitlab-ci.yml file
+1674126929|2023-01-19 Update .gitlab-ci.yml file
+1674126494|2023-01-19 Update .gitlab-ci.yml file
+1674126382|2023-01-19 Update .gitlab-ci.yml file
+1674126129|2023-01-19 Update .gitlab-ci.yml file
+1674125824|2023-01-19 Update .gitlab-ci.yml file
+1674125668|2023-01-19 Update .gitlab-ci.yml file
+1674125071|2023-01-19 Update .gitlab-ci.yml file
+1674124933|2023-01-19 Update .gitlab-ci.yml file
+1674124558|2023-01-19 Update .gitlab-ci.yml file
+1674124298|2023-01-19 add threads depends into libServer
+1674124022|2023-01-19 Update .gitlab-ci.yml file
+1674124008|2023-01-19 no depends of Threads in cmake
+1674122920|2023-01-19 Update .gitlab-ci.yml file
+1674122721|2023-01-19 Update .gitlab-ci.yml file
+1674122085|2023-01-19 Update .gitlab-ci.yml file
+1674121654|2023-01-19 Update .gitlab-ci.yml file
+1674121607|2023-01-19 Update .gitlab-ci.yml file
+1674120699|2023-01-19 Update .gitlab-ci.yml file
+1674118114|2023-01-19 Update .gitlab-ci.yml file
+1674117780|2023-01-19 Update .gitlab-ci.yml file
+1674117575|2023-01-19 Update .gitlab-ci.yml file
+1674117509|2023-01-19 Update .gitlab-ci.yml file
+1674117226|2023-01-19 Update .gitlab-ci.yml file
+1674117183|2023-01-19 Update .gitlab-ci.yml file
+1674117106|2023-01-19 Update .gitlab-ci.yml file
+1674116995|2023-01-19 Update .gitlab-ci.yml file
+1674116968|2023-01-19 Update .gitlab-ci.yml file
+1674116771|2023-01-19 Update .gitlab-ci.yml file
+1674116510|2023-01-19 Update .gitlab-ci.yml file
+1674116272|2023-01-19 Update .gitlab-ci.yml file
+1674116215|2023-01-19 Update .gitlab-ci.yml file
+1674083512|2023-01-18 Update .gitlab-ci.yml file
+1674083347|2023-01-18 Update .gitlab-ci.yml file
+1674083248|2023-01-18 Update .gitlab-ci.yml file
+1674082787|2023-01-18 Update .gitlab-ci.yml file
+1674082598|2023-01-18 Update .gitlab-ci.yml file
+1674082292|2023-01-18 Update .gitlab-ci.yml file
+1674082148|2023-01-18 Update .gitlab-ci.yml file
+1674082032|2023-01-18 Update .gitlab-ci.yml file
+1674081852|2023-01-18 Update .gitlab-ci.yml file
+1674081812|2023-01-18 Update .gitlab-ci.yml file
+1674081684|2023-01-18 Update .gitlab-ci.yml file
+1674081230|2023-01-18 Update .gitlab-ci.yml file
+1674080865|2023-01-18 Update .gitlab-ci.yml file
+1674080669|2023-01-18 Update .gitlab-ci.yml file
+1674080491|2023-01-18 Update .gitlab-ci.yml file
+1674080217|2023-01-18 Update .gitlab-ci.yml file
+1674080153|2023-01-18 Update .gitlab-ci.yml file
+1674080129|2023-01-18 Update .gitlab-ci.yml file
+1674079629|2023-01-18 Update .gitlab-ci.yml file
+1674079401|2023-01-18 Update .gitlab-ci.yml file
+1674078835|2023-01-18 Update .gitlab-ci.yml file
+1674078790|2023-01-18 Update .gitlab-ci.yml file
+1674078480|2023-01-18 Update .gitlab-ci.yml file
+1674078445|2023-01-18 Update .gitlab-ci.yml file
+1674078266|2023-01-18 Update .gitlab-ci.yml file
+1674078183|2023-01-18 Update .gitlab-ci.yml file
+1674077934|2023-01-18 Update .gitlab-ci.yml file
+1674077833|2023-01-18 fix clang-format to debian stable version 11
+1674077354|2023-01-18 format sources
+1674077160|2023-01-18 update cleanup scripts
+1674076824|2023-01-18 update cleanup scripts
+1674076470|2023-01-18 Update .gitlab-ci.yml file
+1674076408|2023-01-18 Update .gitlab-ci.yml file
+1674076370|2023-01-18 Update .gitlab-ci.yml file
+1674075773|2023-01-18 Update .gitlab-ci.yml file
+1674075296|2023-01-18 Update .gitlab-ci.yml file
+1674074832|2023-01-18 Update .gitlab-ci.yml file
+1674074538|2023-01-18 Update .gitlab-ci.yml file
+1674074222|2023-01-18 Update .gitlab-ci.yml file
+1674074183|2023-01-18 Update .gitlab-ci.yml file
+1674074117|2023-01-18 Update .gitlab-ci.yml file
+1674074016|2023-01-18 Update .gitlab-ci.yml file
+1674073798|2023-01-18 Update .gitlab-ci.yml file
+1674073667|2023-01-18 Update .gitlab-ci.yml file
+1674073619|2023-01-18 Update .gitlab-ci.yml file
+1674070637|2023-01-18 Update .gitlab-ci.yml file
+1674070562|2023-01-18 Update .gitlab-ci.yml file
+1674070516|2023-01-18 Update .gitlab-ci.yml file
+1674070442|2023-01-18 Update .gitlab-ci.yml file
+1674070310|2023-01-18 Update .gitlab-ci.yml file
+1674069917|2023-01-18 Update .gitlab-ci.yml file
+1674069872|2023-01-18 Update .gitlab-ci.yml file
+1674069598|2023-01-18 Update .gitlab-ci.yml file
+1674069578|2023-01-18 Update .gitlab-ci.yml file
+1674069406|2023-01-18 Update .gitlab-ci.yml file
+1674066792|2023-01-18 Update .gitlab-ci.yml file
+1674066520|2023-01-18 Update .gitlab-ci.yml file
+1674066362|2023-01-18 Update .gitlab-ci.yml file
+1674066330|2023-01-18 Update .gitlab-ci.yml file
+1674066283|2023-01-18 Update .gitlab-ci.yml file
+1674065666|2023-01-18 Update .gitlab-ci.yml file
+1674065111|2023-01-18 Update .gitlab-ci.yml file
+1674064691|2023-01-18 Update .gitlab-ci.yml file
+1674064528|2023-01-18 Update .gitlab-ci.yml file
+1674064401|2023-01-18 Update .gitlab-ci.yml file
+1674064198|2023-01-18 Merge branch 'documentation' of gitlab.irit.fr:storm/repos/projects/private/dcs/plateforme-experimentale/hub into documentation
+1674064185|2023-01-18 update cleanup scripts
+1674062375|2023-01-18 Update README.md
+1674061734|2023-01-18 Update .gitlab-ci.yml file
+1674061570|2023-01-18 Update .gitlab-ci.yml file
+1674061508|2023-01-18 Update .gitlab-ci.yml file
+1674061386|2023-01-18 Update .gitlab-ci.yml file
+1674061317|2023-01-18 Update .gitlab-ci.yml file
+1674060992|2023-01-18 Update .gitlab-ci.yml file
+1674060852|2023-01-18 Update .gitlab-ci.yml file
+1674060803|2023-01-18 Update .gitlab-ci.yml file
+1674060765|2023-01-18 Update .gitlab-ci.yml file
+1674057517|2023-01-18 Update .gitlab-ci.yml file
+1674057478|2023-01-18 Update .gitlab-ci.yml file
+1674057419|2023-01-18 Update .gitlab-ci.yml file
+1674057225|2023-01-18 Update .gitlab-ci.yml file
+1674057090|2023-01-18 Update .gitlab-ci.yml file
+1674056289|2023-01-18 Update .gitlab-ci.yml file
+1674056145|2023-01-18 Update .gitlab-ci.yml file
+1674056037|2023-01-18 Update .gitlab-ci.yml file
+1674055576|2023-01-18 Update .gitlab-ci.yml file
+1674055539|2023-01-18 Update .gitlab-ci.yml file
+1674055229|2023-01-18 Merge branch 'documentation' of gitlab.irit.fr:storm/repos/projects/private/dcs/plateforme-experimentale/hub into documentation
+1674055224|2023-01-18 update doc
+1674055122|2023-01-18 Update .gitlab-ci.yml file
+1674054848|2023-01-18 Update .gitlab-ci.yml file
+1674053561|2023-01-18 Update .gitlab-ci.yml file
+1674053336|2023-01-18 Update .gitlab-ci.yml file
+1674052859|2023-01-18 Update .gitlab-ci.yml file
+1674052783|2023-01-18 Update .gitlab-ci.yml file
+1674052623|2023-01-18 Update .gitlab-ci.yml file
+1674052189|2023-01-18 Update .gitlab-ci.yml file
+1674052150|2023-01-18 Update .gitlab-ci.yml file
+1674052077|2023-01-18 Update .gitlab-ci.yml file
+1674051647|2023-01-18 Update .gitlab-ci.yml file
+1674051513|2023-01-18 Update .gitlab-ci.yml file
+1674051462|2023-01-18 Update .gitlab-ci.yml file
+1674051348|2023-01-18 update cmake doc
+1674051072|2023-01-18 Update .gitlab-ci.yml file
+1674050958|2023-01-18 Update .gitlab-ci.yml file
+1674050379|2023-01-18 update cmake doc
+1674041269|2023-01-18 Merge branch 'documentation' of gitlab.irit.fr:storm/repos/projects/private/dcs/plateforme-experimentale/hub into documentation
+1674041263|2023-01-18 added doc generation doxygen sphinx breathe
+1674033856|2023-01-18 Update README.md
+1674033190|2023-01-18 Update README.md
+1673802403|2023-01-15 find Threads from external
+1673604513|2023-01-13 cleanup cmake
+1673545443|2023-01-12 cleanup cmake
+1673544508|2023-01-12 add server source code to hub
+1673522004|2023-01-12 remove applications from hub
+1673365552|2023-01-10 remove pdi directory
+1673361449|2023-01-10 fix cmake error : wrong target name
+1673360016|2023-01-10 able to install and export hub
+1673342884|2023-01-10 Merge branch 'gauthier-dev2' into 'master'
+1673342294|2023-01-10 update speed test
+1671210065|2022-12-16 fix probe light
+1671144533|2022-12-15 Update .gitlab-ci.yml file
+1671144361|2022-12-15 Update .gitlab-ci.yml file
+1671144246|2022-12-15 Update .gitlab-ci.yml file
+1671143917|2022-12-15 fix unity bugs slices trace
+1671028654|2022-12-14 update example
+1670883676|2022-12-12 Merge branch 'gauthier-dev2' of gitlab.irit.fr:storm/repos/projects/private/dcs/plateforme-experimentale/hub into gauthier-dev2
+1670883673|2022-12-12 added readme.cpp
+1670882993|2022-12-12 Update README.md
+1670874338|2022-12-12 Update README.md
+1670874019|2022-12-12 Update README.md
+1670873614|2022-12-12 Update README.md
+1670870127|2022-12-12 Update README.md
+1670862301|2022-12-12 Add default template readme file
+1670532580|2022-12-08 update windows script
+1670514800|2022-12-08 [server] save acqs only with record stream
+1670433208|2022-12-07 added inl install
+1670404689|2022-12-07 decrease minimum speed condition test
+1670404316|2022-12-07 update cmake test (auto install Catch2) + fix win Measure example
+1670403334|2022-12-07 update cmake test
+1670358758|2022-12-06 update Measure constructor to all example
+1670350175|2022-12-06 Merge branch 'gauthier-dev2' of gitlab.irit.fr:storm/repos/projects/private/dcs/plateforme-experimentale/hub into gauthier-dev2
+1670350170|2022-12-06 update tests
+1670349855|2022-12-06 Update .gitlab-ci.yml file
+1670349660|2022-12-06 update tests
+1670345116|2022-12-06 added test to CI
+1670344187|2022-12-06 Update .gitlab-ci.yml file
+1670344173|2022-12-06 Update .gitlab-ci.yml file
+1670343843|2022-12-06 Update .gitlab-ci.yml file
+1670338523|2022-12-06 Update .gitlab-ci.yml file
+1670338365|2022-12-06 Update .gitlab-ci.yml file
+1670338186|2022-12-06 added test to CI
+1670337143|2022-12-06 move sensorSpec::Resolution to Resolution file
+1670255797|2022-12-05 Update .gitlab-ci.yml file
+1670250647|2022-12-05 Update .gitlab-ci.yml file
+1670250411|2022-12-05 add CTest
+1670247054|2022-12-05 update sensorSpec to pdi example
+1670236654|2022-12-05 Merge branch 'nmellado-master-patch-08268' into 'master'
+1670234368|2022-12-05 Update .gitlab-ci.yml
+1670234019|2022-12-05 Merge branch 'gauthier-dev' into 'master'
+1670173204|2022-12-04 added UWP build script for windows
+1670088414|2022-12-03 fix gcc linux compilation constexpr C++20
+1670076510|2022-12-03 refactor cmake app names
+1670000844|2022-12-02 Merge branch 'gauthier-dev' of gitlab.irit.fr:storm/repos/projects/private/dcs/plateforme-experimentale/hub into gauthier-dev
+1670000828|2022-12-02 added viewer isConnected method + native func
+1669928861|2022-12-01 added constexpr SensorSpec
+1669899084|2022-12-01 update sensorSpec
+1669655896|2022-11-28 WIP fix QImage display bug
+1669050322|2022-11-21 update example exporter + update server print log
+1668982204|2022-11-20 added native viewer functions
+1668721125|2022-11-17 [server] fix viewer mutex issue + update local transform calibrator
+1668707084|2022-11-17 install radium resources example
+1668616312|2022-11-16 WIP mutex error on win
+1668550041|2022-11-15 disable gui for smart viewer
+1668519894|2022-11-15 able to show rgb and bgr texture
+1668518642|2022-11-15 update opencv application
+1668444475|2022-11-14 fix win build (mutex error)
+1668440476|2022-11-14 fix win bugs + fix memory leak with big data stream
+1668380705|2022-11-14 auto sync with viewer done
+1668282483|2022-11-12 added recorder lib
+1668198951|2022-11-11 WIP update server features
+1668163432|2022-11-11 fix linux socket refactor
+1668097209|2022-11-10 update probe local transform to new prototype
+1668090375|2022-11-10 added windows include
+1668088607|2022-11-10 fix winsock and windows conflict, added net::utils for the abstraction of win/linux sockets
+1667951696|2022-11-09 WIP update server features
+1667920553|2022-11-08 cleanup server + added compatibility with Radium update texture PR
+1667841363|2022-11-07 fix win build + clear repositories
+1667774519|2022-11-06 improve viewer (sync live stream)
+1667726817|2022-11-06 able to load single file with loader
+1667683315|2022-11-05 fix/improve server communication
+1667569594|2022-11-04 fix/improve server communication
+1667510109|2022-11-03 WIP fix/improve server communication
+1667409203|2022-11-02 WIP use complete viewer interface within radiumViewer
+1667382861|2022-11-02 cleanup viewer class
+1667314519|2022-11-01 cleanup all project
+1667314108|2022-11-01 clean cmake files
+1667314003|2022-11-01 add cmake remove script
+1667313357|2022-11-01 format cmake files
+1667311466|2022-11-01 added cmake format script
+1667310595|2022-11-01 remove empty comments source lines
+1667310267|2022-11-01 added remove empty comments script
+1667302515|2022-11-01 format all source code
+1667302394|2022-11-01 format all source code
+1667302047|2022-11-01 added script to format code
+1667300700|2022-11-01 added loader macros
+1667300532|2022-11-01 fix smash deletion
+1667238270|2022-10-31 able to interpolate during the synchronize process with interpolable data
+1667169692|2022-10-30 update timeShifter
+1667147664|2022-10-30 cleanup server
+1667062383|2022-10-29 able to show trace slices in live stream
+1666961464|2022-10-28 update loader
+1666904471|2022-10-27 added exporter
+1666890650|2022-10-27 able to resync non sync records with player
+1666887560|2022-10-27 added smart player
+1666879916|2022-10-27 added loader in viewer
+1666802537|2022-10-26 added recorder
+1666734254|2022-10-25 added timestamp calibrator
+1666710028|2022-10-25 sync stream contains all data stream
+1666630006|2022-10-24 reverse poses sign of partiot
+1666255783|2022-10-20 fix for demo
+1666184624|2022-10-19 update applications
+1665950273|2022-10-16 split classes in server file
+1665932659|2022-10-16 fixed bug
+1665931169|2022-10-16 added radiumViewer8
+1665853706|2022-10-15 added player and recorder
+1665843189|2022-10-15 fixed server double lost streamer bug
+1665763603|2022-10-14 fix 32/64 compat + fix ULA-OP scan
+1665650427|2022-10-13 deleted createViewer2
+1665499743|2022-10-11 fix unity viewer errors on windows
+1665352354|2022-10-09 completed Streamer class
+1665242677|2022-10-08 added Streamer class
+1665093265|2022-10-06 return mri slice
+1665072104|2022-10-06 accept many stream of same sensor
+1665044234|2022-10-06 [App] update keyboard streamer (60Hz)
+1664985528|2022-10-05 update example
+1664918720|2022-10-04 added native functions
+1664746407|2022-10-02 WIP mri
+1664734687|2022-10-02 able to see MRI with unity
+1664641031|2022-10-01 fix server bug when streamViewer thread was killed
+1664556094|2022-09-30 update native (string)
+1664483881|2022-09-29 set quad orientation by default
+1664379156|2022-09-28 fix server mutex error
+1664307603|2022-09-27 able to visualize scan stream quad
+1664206623|2022-09-26 fix posSreamer bad output
+1664136273|2022-09-25 added native for unity sensorViews panel
+1664038885|2022-09-24 added native functions (sensorSpec)
+1663952023|2022-09-23 added native viewer
+1663062571|2022-09-13 update native
+1662714440|2022-09-09 config video demo simu
+1662556819|2022-09-07 update simulator application
+1662551330|2022-09-07 added fit selected sensor
+1662529832|2022-09-07 fix black texture looks grey due of the transparency, now : black is black
+1662462348|2022-09-06 fix release compilation
+1662381931|2022-09-05 simulate last position, no intermediate images computed
+1662322470|2022-09-04 before video
+1662116110|2022-09-02 cleanup code
+1662108350|2022-09-02 fix shared library compile on win
+1662033770|2022-09-01 fix win error socket (move(sock) and sock.getSensorSpec())
+1662028766|2022-09-01 fix win build
+1661951230|2022-08-31 fix qt5 build on linux
+1661890528|2022-08-30 added calibrator + use transform matrix to set depth and width of scans
+1661848258|2022-08-30 update ui
+1661803430|2022-08-29 added palettes to visualize mri scans
+1661777892|2022-08-29 commit before change plain material to more complex (transparency)
+1661721762|2022-08-28 able to visualize dicom volume using transparency of slices
+1661692715|2022-08-28 cleanup Measure and Acquisition
+1661637628|2022-08-28 added measure class to split acquisition format and dims
+1661610249|2022-08-27 auto start stream + clean exit
+1661602061|2022-08-27 commit before break stream viewer
+1661534478|2022-08-26 save last acquisition for pinging pending stream viewers
+1661524879|2022-08-26 update server (fix some bugs)
+1661443299|2022-08-25 WIP mri record stream
+1661425651|2022-08-25 deploy src update to radium application
+1661357772|2022-08-24 recursive doxygen
+1661357213|2022-08-24 added doxygen config file + added doxygen comments
+1661352796|2022-08-24 comments code
+1661349973|2022-08-24 cleanup all code
+1661335332|2022-08-24 commit before split client and server sides
+1661273251|2022-08-23 [Tests] viewer test done
+1661262637|2022-08-23 [Tests] update tests, added close stream sync (reset)
+1661201817|2022-08-22 [Test] server sync tests passed
+1661165384|2022-08-22 server direct stream done
+1661096359|2022-08-21 WIP server fix
+1661004817|2022-08-20 WIP sensor interface
+1660924292|2022-08-19 commit before destroy server threads routine
+1660840567|2022-08-18 WIP netLink interface
+1660837350|2022-08-18 before breaking clientSocket
+1660828811|2022-08-18 added tests (catch2)
+1660826737|2022-08-18 added namespace hub
+1660819709|2022-08-18 before rename files
+1660817666|2022-08-18 clean linux build
+1660766966|2022-08-17 cleanup code
+1660749942|2022-08-17 cleanup code
+1660293784|2022-08-12 hololens 2 emulator is able to connect local pc by settings the ipv4 parameter
+1660040797|2022-08-09 able to export with UWP
+1659526669|2022-08-03 able to use minimal examples with shared lib
+1659444903|2022-08-02 change Winsock to Winsock2 to be compatible with UWP
+1659354099|2022-08-01 fix win build + unable to build examples with shared src lib
+1659275356|2022-07-31 update native function
+1659111237|2022-07-29 update native lib
+1659014168|2022-07-28 update
+1659014155|2022-07-28 update
+1658997090|2022-07-28 added native viewer example
+1658851341|2022-07-26 added native lib to export functions to unity scripts by using external C functions
+1658772557|2022-07-25 no use of image class for the update
+1658684184|2022-07-24 update ui and 3D scene component + able to send 3x3 matrix as any
+1658596882|2022-07-23 able to connect sensor stream with parent stream
+1658582283|2022-07-23 update scan in sensor thread (main sensor/component loop removed) imply the use of getTextureByName PR allowing the texture update from different thread
+1658506670|2022-07-22 update minimal build + able to stream with computer different than viewer
+1658268119|2022-07-20 WIP link scene objects
+1658266124|2022-07-19 update 3D components
+1658248348|2022-07-19 added sensor view (table)
+1658237027|2022-07-19 added sceneManager
+1658149122|2022-07-18 keyboard streamer worked on win
+1658142363|2022-07-18 able to run DicomLoader on win
+1658138565|2022-07-18 fix win build
+1658144082|2022-07-18 fixup code
+1658052681|2022-07-17 cleanup applications
+1657730470|2022-07-13 fix laptop build
+1657607086|2022-07-12 fix win build
+1657553357|2022-07-11 depends of DCMTK, unable to import Scus dependency
+1657461064|2022-07-10 fix quat wxyz -> xyzw array of data
+1657286308|2022-07-08 support multiple gui
+1657126944|2022-07-06 added gui manager to allow many radium example to use same interface
+1656947740|2022-07-04 minimize radium sandbox app
+1656856181|2022-07-03 added simulator
+1656783770|2022-07-02 unable to load volume with non conventional radium app
+1656772548|2022-07-02 added pos streamer
+1656669330|2022-07-01 fix win build
+1656666328|2022-07-01 cleanup code
+1656665793|2022-07-01 fixup code
+1656607045|2022-06-30 able to load DICOM file as a volume in Radium
+1656534917|2022-06-29 added Scus library test and import
+1656423164|2022-06-28 added own material for scan
+1656422015|2022-06-28 added own material for scan
+1656337152|2022-06-27 added features such as automatic camera centring and activation of elements in the 3D scene
+1654696344|2022-06-08 fix qt compat 5 and 6
+1654695986|2022-06-08 fix qt compat 5 and 6
+1654530843|2022-06-06 Merge branch 'gauthier-dev' of gitlab.irit.fr:storm/repos/projects/private/dcs/plateforme-experimentale/hub into gauthier-dev
+1654530835|2022-06-06 able to synchronize non-sync record
+1654448180|2022-06-05 update
+1654281654|2022-06-03 fix qt5.12 + update patriot code (libusb)
+1654016358|2022-05-31 update findLibUsb
+1654002787|2022-05-31 added libusb on win, not connection
+1653996486|2022-05-31 fix lidar sample
+1654003661|2022-05-31 added patriot with libusb
+1653916422|2022-05-30 added PDI win headers
+1653918250|2022-05-30 fix linux storm build
+1653853912|2022-05-29 fix linux build
+1653842391|2022-05-29 fix win build
+1653845939|2022-05-29 added ImageManipulator to right dock
+1653843376|2022-05-29 commit before adding image viewer in 3D view
+1653842825|2022-05-29 grid view update
+1653764092|2022-05-28 grid view done
+1653750170|2022-05-28 commit before break grid view
+1653644991|2022-05-27 added ImageManipulator lib
+1653644294|2022-05-27 commit before add new lib image viewer
+1653641500|2022-05-27 auto use server ui if found
+1653639879|2022-05-27 fix record from webcam
+1653585619|2022-05-26 show image on mdiArea
+1653572713|2022-05-26 added trace route (Spline)
+1653553597|2022-05-26 fixed Acquisition
+1653501085|2022-05-25 WIP fix acquisition
+1653496538|2022-05-25 WIP fix acquisition
+1653484043|2022-05-25 merge
+1653483817|2022-05-25 record sync and non sync stream
+1653409293|2022-05-24 added multi scans
+1653391916|2022-05-24 refactor component
+1653319732|2022-05-23 do not use server view
+1653240546|2022-05-22 mkdir data dir
+1653237479|2022-05-22 update ui
+1653231824|2022-05-22 clean code
+1653149016|2022-05-21 commit before break sensorViews to sensorView
+1653053703|2022-05-20 resize window
+1653063116|2022-05-20 can remove stream from ui
+1653061284|2022-05-20 change to stream record without closing first
+1652968225|2022-05-19 fix win build
+1652971898|2022-05-19 increase buffer size
+1652909976|2022-05-18 update UI
+1652894750|2022-05-18 accept server
+1652891584|2022-05-18 commit before break sensorView
+1652888082|2022-05-18 fix bad destroy of loader
+1652883073|2022-05-18 play record from stream ram done
+1652876456|2022-05-18 commit before break IOStream
+1652862428|2022-05-18 CyclicBuff fix bad write/read operations
+1652824014|2022-05-17 wip ram stream
+1652777267|2022-05-17 refactor dock, enable to not use server view
+1652718680|2022-05-16 update loader
+1652706187|2022-05-16 added loader lib + test
+1652650301|2022-05-15 fix win build
+1652648527|2022-05-15 take snapshot and show as stream
+1652634377|2022-05-15 play record done with frame view
+1652618057|2022-05-15 commit before change ui
+1652459217|2022-05-13 fix linux build
+1652445930|2022-05-13 Radium viewer quit failed
+1652444071|2022-05-13 close dialog window when user closing main window
+1652447804|2022-05-13 added dialog when server not connected
+1652384817|2022-05-12 update UI + fix net SIGPIPE
+1652371240|2022-05-12 commit before change ui
+1652368893|2022-05-12 fix server del streamer concurrency
+1652359568|2022-05-12 update fileIO
+1652351036|2022-05-12 added Player class
+1652286863|2022-05-11 WIP record and snapshot
+1652278227|2022-05-11 added libApp for constants
+1652265238|2022-05-11 fix concurrent QT_VERSION from Radium and this project
+1652184569|2022-05-10 update record
+1652182424|2022-05-10 upadet 3D env + pounds -> centimeters
+1652096237|2022-05-09 update ui
+1652088543|2022-05-09 fix linux build
+1652043472|2022-05-08 clean code
+1652027366|2022-05-08 update stream view
+1651851684|2022-05-06 clean viewer lib + update ui
+1651844325|2022-05-06 update ui
+1651841907|2022-05-06 3D view + 2D view done
+1651839453|2022-05-06 update ui
+1651770774|2022-05-05 mainwindow worked
+1651762704|2022-05-05 cleanup code
+1651762693|2022-05-05 cleanup code
+1651741225|2022-05-05 cleanup code
+1651676574|2022-05-04 fix from realease-candidate
+1650810510|2022-04-24 update radiumViewer5
+1650809437|2022-04-24 update radiumViewer5
+1650733786|2022-04-23 example 5 good
+1650731878|2022-04-23 added radium example 4 and 5
+1650555980|2022-04-21 update radiumViewer3
+1650549371|2022-04-21 update radiumViewer2
+1650465481|2022-04-20 cannot update texture from another thread, context is accessible only for one thread
+1650319168|2022-04-18 radium view worked
+1650103834|2022-04-16 added radium example
+1650100426|2022-04-16 rearrange radium examples
+1649865042|2022-04-13 fix linux build
+1649852537|2022-04-13 fix metadata compatible 32/64 bit data
+1649783232|2022-04-12 WIP irm volume
+1649755674|2022-04-12 added radium example
+1649665289|2022-04-11 added output message exception
+1649600007|2022-04-10 cleanup code
+1649599167|2022-04-10 fix linux build + added ui metadata
+1649424490|2022-04-08 added metadata
+1649338735|2022-04-07 fix server design
+1649334474|2022-04-07 fix server design
+1649271355|2022-04-06 WIP fix server design
+1649230341|2022-04-06 WIP fix server design
+1649078762|2022-04-04 WIP metadata
+1648914459|2022-04-02 show gray texture
+1648825518|2022-04-01 WIP fix orientation
+1648645489|2022-03-30 Radium viewer worked on stream
+1648584509|2022-03-29 WIP Radium viewer
+1648502429|2022-03-28 fix from Mathias contrib
+1648481612|2022-03-28 WIP radium viewer
+1648467174|2022-03-28 WIP radium viewer
+1648048822|2022-03-23 added radium 3D viewer example
+1647964678|2022-03-22 fix win
+1647812063|2022-03-20 fix win
+1647812131|2022-03-20 cleanup
+1647809109|2022-03-20 fix win
+1647795104|2022-03-20 cleanup server
+1647789140|2022-03-20 added player
+1647639862|2022-03-18 added pdi on linux
+1647622894|2022-03-18 fix cmake linux pdi
+1647622884|2022-03-18 fix cmake linux pdi
+1647528769|2022-03-17 add new sensor to pdi
+1647524861|2022-03-17 added hemiTrack polhemus
+1647451240|2022-03-16 cleanup code
+1647451000|2022-03-16 improve sync
+1647361434|2022-03-15 added real time sync
+1647192230|2022-03-13 added recorder and player
+1647082833|2022-03-12 cleanup code
+1647006809|2022-03-11 cleanup code
+1646929366|2022-03-10 added 1D streamView
+1646836790|2022-03-09 check wrong acquisition
+1646826150|2022-03-09 added Polhemus streamer
+1646670434|2022-03-07 fix qt window resize bug
+1646568748|2022-03-06 fix win build
+1646571838|2022-03-06 cleanup code
+1646515314|2022-03-05 update client viewer (ui)
+1646496014|2022-03-05 fix acquisition nullptr data
+1646408277|2022-03-04 wip ULA-OP
+1646399169|2022-03-04 lidar rgb + depth + ir done
+1646345471|2022-03-03 added opencv webcam
+1646340770|2022-03-03 cleanup code
+1646331556|2022-03-03 wip cleanup
+1646322124|2022-03-03 wip cleanup
+1646304652|2022-03-03 client/server worked
+1646243146|2022-03-02 wip client/server
+1646059944|2022-02-28 update ui
+1645985502|2022-02-27 fix read/write socket function
+1645806882|2022-02-25 WIP fix bad packet data
+1645802943|2022-02-25 fix win socket
+1645740675|2022-02-24 WIP client/server communication
+1645482875|2022-02-21 WIP client/server communication
+1645201353|2022-02-18 WIP hub server
+1644773749|2022-02-13 fix linux interrupt + win socklen
+1644768818|2022-02-13 cleanup code + fix win build
+1644765944|2022-02-13 update server
+1644683578|2022-02-12 fix win build
+1644677780|2022-02-12 Update .gitlab-ci.yml file
+1644677505|2022-02-12 Update .gitlab-ci.yml file
+1644676493|2022-02-12 Update .gitlab-ci.yml file
+1644675770|2022-02-12 Update .gitlab-ci.yml file
+1644674607|2022-02-12 update cmake
+1644674600|2022-02-12 update cmake
+1644176804|2022-02-06 fix win build
+1644158972|2022-02-06 update cmake
+1643986913|2022-02-04 added bool consumePending parameter of image function
+1643807549|2022-02-02 Prepared before handing project
+1625582767|2021-07-06 Added record creation
+1623689641|2021-06-14 Updated ui title
+1623659071|2021-06-14 changed lidar port number for cohesion
+1623160505|2021-06-08 streaming real time rbg frames from lidar camera
+1622641557|2021-06-02 Improved usability for non standard ip
+1622640535|2021-06-02 Improved stability
+1621519933|2021-05-20 Streaming echos
+1621429608|2021-05-19 Merge branch 'fgaits-master-patch-73072' into 'master'
+1621429577|2021-05-19 Image streaming
+1620204328|2021-05-05 added Qt network
+1620141226|2021-05-04 from C sockets to QSockets, begin image streaming
+1619616920|2021-04-28 edited coords.txt
+1619616441|2021-04-28 strengthen the coord file parse
+1619550086|2021-04-27 first commit

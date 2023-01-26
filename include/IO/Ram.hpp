@@ -143,37 +143,26 @@ class SRC_API Ram : public InputOutputInterface
 
   protected:
     ///
-    /// \brief close
     /// @copydoc Interface::close()
     ///
     void close() const override;
 
     ///
-    /// \brief isOpen
-    /// \return
     /// @copydoc Interface::isOpen()
     ///
     bool isOpen() const override;
 
     ///
-    /// \brief isEnd
-    /// \return
     /// @copydoc Interface::isEnd()
     ///
     bool isEnd() const override;
 
     ///
-    /// \brief write
-    /// \param data
-    /// \param len
     /// @copydoc Interface::write()
     ///
     void write( const unsigned char* data, size_t len ) const override;
 
     ///
-    /// \brief read
-    /// \param data
-    /// \param len
     /// @copydoc Interface::read()
     ///
     void read( unsigned char* data, size_t len ) const override;
