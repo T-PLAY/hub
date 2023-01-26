@@ -172,24 +172,24 @@ OutputSensor
 
 **Instantiate examples :**
 
-.. literalinclude:: ../../../examples/example-outputSensor.cpp
+.. literalinclude:: ../../../examples/streamers/example-outputSensor.cpp
    :language: cpp
    :start-after: startConstruction
    :end-before: endConstruction
 
-.. literalinclude:: ../../../examples/example-outputSensor.cpp
+.. literalinclude:: ../../../examples/streamers/example-outputSensor.cpp
    :language: cpp
    :start-after: startConstruction2
    :end-before: endConstruction2
 
-.. literalinclude:: ../../../examples/example-outputSensor.cpp
+.. literalinclude:: ../../../examples/streamers/example-outputSensor.cpp
    :language: cpp
    :start-after: startConstruction3
    :end-before: endConstruction3
 
 **Functional example :**
 
-.. literalinclude:: ../../../examples/example-outputSensor.cpp
+.. literalinclude:: ../../../examples/streamers/example-outputSensor.cpp
    :language: cpp
    :start-after: startFunctional
    :end-before: endFunctional
@@ -202,24 +202,24 @@ InputSensor
 
 **Instantiate examples :**
 
-.. literalinclude:: ../../../examples/example-inputSensor.cpp
+.. literalinclude:: ../../../examples/viewers/example-inputSensor.cpp
    :language: cpp
    :start-after: startConstruction
    :end-before: endConstruction
 
-.. literalinclude:: ../../../examples/example-inputSensor.cpp
+.. literalinclude:: ../../../examples/viewers/example-inputSensor.cpp
    :language: cpp
    :start-after: startConstruction2
    :end-before: endConstruction2
 
-.. literalinclude:: ../../../examples/example-inputSensor.cpp
+.. literalinclude:: ../../../examples/viewers/example-inputSensor.cpp
    :language: cpp
    :start-after: startConstruction3
    :end-before: endConstruction3
 
 **Functional example :**
 
-.. literalinclude:: ../../../examples/example-inputSensor.cpp
+.. literalinclude:: ../../../examples/viewers/example-inputSensor.cpp
    :language: cpp
    :start-after: startFunctional
    :end-before: endFunctional
@@ -256,14 +256,14 @@ Streamer
 
 **Instantiate examples :**
 
-.. literalinclude:: ../../../examples/example-streamer.cpp
+.. literalinclude:: ../../../examples/streamers/example-streamer.cpp
    :language: cpp
    :start-after: startConstruction
    :end-before: endConstruction
 
 **Functional example :**
 
-.. literalinclude:: ../../../examples/example-streamer.cpp
+.. literalinclude:: ../../../examples/streamers/example-streamer.cpp
    :language: cpp
    :start-after: startFunctional
    :end-before: endFunctional
@@ -277,7 +277,7 @@ Viewer
 
 **Instantiate examples :**
 
-.. literalinclude:: ../../../examples/example-viewer.cpp
+.. literalinclude:: ../../../examples/viewers/example-viewer.cpp
    :language: cpp
    :start-after: startConstruction
    :end-before: endConstruction

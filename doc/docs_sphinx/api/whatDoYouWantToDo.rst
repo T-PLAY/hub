@@ -13,11 +13,15 @@ Check :ref:`Tools`.
 
 * **Stream sensor data to server ?**
 
+Look at the :ref:`OutputSensor` class.
+
 Check our :ref:`streamers` examples.
 
 ---------------------------
 
 * **Get sensor data from server ?**
+
+Look at the :ref:`InputSensor` class.
 
 Check our :ref:`viewers` examples.
 
