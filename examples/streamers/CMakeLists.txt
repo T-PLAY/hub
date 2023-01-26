@@ -17,8 +17,5 @@ foreach(name ${EXAMPLE_SRC_BASENAME})
     set_property(TARGET ${TARGET_NAME} PROPERTY CXX_EXTENSIONS OFF)
 endforeach()
 
-
-
 add_subdirectory(example-intel-realsense)
 add_subdirectory(example-opencv)
-
