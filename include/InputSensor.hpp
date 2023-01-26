@@ -4,6 +4,7 @@
 #include "IO/Interface.hpp"
 #include "Sensor.hpp"
 
+// user friendly useless includes
 #include "IO/InputStream.hpp"
 #include "IO/File.hpp"
 #include "IO/Ram.hpp"

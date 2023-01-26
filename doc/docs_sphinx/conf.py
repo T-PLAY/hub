@@ -25,7 +25,8 @@ subprocess.call('doxygen Doxyfile.in', shell=True)
 project = 'hub'
 copyright = '2022-2023, Gauthier Bouyjou'
 author = 'Gauthier BOUYJOU'
-version = '1.0.0'
+#  version = '1.0.0'
+version = 'latest'
 
 root_doc = 'api/index'
 

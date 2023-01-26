@@ -1,45 +1,51 @@
 
-#include <InputSensor.hpp>
-#include <OutputSensor.hpp>
+
+// #include <stdio.h>
+// #include <cstdio>
+// #include <stdlib.h>
+// #include <stdio.h>
+// #include <iostream>
 
 #include <Viewer.hpp>
 
-// #include <Server.hpp>
-
-#include <filesystem>
-#include <iostream>
-
-// needs server running
+// #include <filesystem>
+// #include <iostream>
 
 /// \file
+/// \warning
+/// Needs running server.
 
+//clang-format off
 int main() {
 
-    auto onNewStreamer = [=]( const std::string& streamName, const hub::SensorSpec& sensorSpec ) {
-        std::cout << "[Example][Viewer] onNewStreamer : " << streamName << std::endl;
-        return true;
-    };
-    auto onDelStreamer = []( const std::string& streamName, const hub::SensorSpec& sensorSpec ) {
-        std::cout << "[Example][Viewer] onDelStreamer : " << streamName << std::endl;
-    };
-    auto onServerConnected = []( const std::string& ipv4, int port ) {
-        std::cout << "[Example][Viewer] onServerConnected : " << ipv4 << " " << port << std::endl;
-    };
-    auto onServerDisconnected = []( const std::string& ipv4, int port ) {
-        std::cout << "[Example][Viewer] onServerDisconnected : " << ipv4 << " " << port
-                  << std::endl;
-    };
-    auto onNewAcquisition = []( const std::string& streamName, const hub::Acquisition& acq ) {
-        std::cout << "[Example][Viewer] onNewAcquisition : " << acq << std::endl;
-    };
+// startConstruction
+auto onNewStreamer = [=](const std::string& streamName, const hub::SensorSpec& sensorSpec) {
+    std::cout << "[example-viewer] onNewStreamer : " << streamName << std::endl;
+    // accept all stream to run
+    return true;
+};
+auto onDelStreamer = []( const std::string& streamName, const hub::SensorSpec& sensorSpec) {
+    std::cout << "[example-viewer] onDelStreamer : " << streamName << std::endl;
+};
+auto onServerConnected = []( const std::string& ipv4, int port ) {
+    std::cout << "[example-viewer] onServerConnected : " << ipv4 << " " << port << std::endl;
+};
+auto onServerDisconnected = []( const std::string& ipv4, int port ) {
+    std::cout << "[example-viewer] onServerDisconnected : " << ipv4 << " " << port
+          << std::endl;
+};
+auto onNewAcquisition = []( const std::string& streamName, const hub::Acquisition& acq ) {
+    std::cout << "[example-viewer] onNewAcquisition : " << acq << std::endl;
+};
 
-    auto viewer = hub::Viewer(
-        onNewStreamer, onDelStreamer, onServerConnected, onServerDisconnected, onNewAcquisition );
+auto viewer = hub::Viewer(
+    onNewStreamer, onDelStreamer, onServerConnected, onServerDisconnected, onNewAcquisition);
+// endConstruction
 
-    while ( true ) {
-        std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
-    }
-    std::this_thread::sleep_for( std::chrono::milliseconds( 2000 ) );
+std::cout << "Starting viewer listening" << std::endl
+      << "Press any key to terminate" << std::endl;
+getchar();
 
-    return 0;
+return 0;
 }
+//clang-format on

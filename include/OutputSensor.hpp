@@ -7,6 +7,7 @@
 #include "Sensor.hpp"
 #include "SensorSpec.hpp"
 
+// user friendly useless includes
 #include "IO/OutputStream.hpp"
 #include "IO/File.hpp"
 #include "IO/Ram.hpp"
