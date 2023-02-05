@@ -5,8 +5,12 @@
 #include <IO/Ram.hpp>
 #include <InputSensor.hpp>
 #include <OutputSensor.hpp>
+//#include <Streamer.hpp>
 
 TEST_CASE( "SensorSpec test" ) {
+
+//    hub::Streamer streamer;
+//    streamer.isConnected();
 
     hub::SensorSpec::MetaData metaData;
     hub::Format format = hub::Format::BGR8;
@@ -16,4 +20,5 @@ TEST_CASE( "SensorSpec test" ) {
 
     CHECK( sensorSpec.getSensorName() == "sensorName" );
     CHECK( sensorSpec.getAcquisitionSize() == 3 );
+
 }

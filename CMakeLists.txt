@@ -6,6 +6,10 @@ set(CMAKE_CXX_STANDARD 17) # depends of std::any for metadata representation
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_FIND_PACKAGE_NO_SYSTEM_PACKAGE_REGISTRY False)
 
+#set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -fprofile-arcs -ftest-coverage")
+#set(CMAKE_CXX_FLAGS_RELEASE "-O2")
+
+
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Debug")
 endif()
@@ -18,7 +22,7 @@ project(hub)
 #set(SRC_DIR ${CMAKE_SOURCE_DIR}/src/)
 #set(SRC_TARGET hub)
 
-#set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
 #if (NOT CMAKE_INSTALL_PREFIX)
 #	set(CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/install/${CMAKE_BUILD_TYPE})
 #endif()
@@ -28,10 +32,52 @@ option(HUB_BUILD_STATIC_LIBRARY "Build static library" OFF)
 #add_subdirectory(src)
 add_subdirectory(server)
 
-option(HUB_ENABLE_TESTS "Enable tests" OFF)
+option(HUB_ENABLE_TESTS "Enable tests" ON)
 if(HUB_ENABLE_TESTS)
+#    set(CMAKE_CXX_FLAGS "-g -fprofile-arcs -ftest-coverage -DBUILD_TEST")
+#    set(CMAKE_C_FLAGS "-g -fprofile-arcs -ftest-coverage -DBUILD_TEST")
     add_subdirectory(tests)
 endif()
+
+
+#set(ENABLE_COVERAGE "")
+#mark_as_advanced(ENABLE_COVERAGE)
+#if(HUB_ENABLE_COVERAGE)
+#    include(CoverageFunc)
+#    # sets ENABLE_COVERAGE to ON if ok
+#    setup_coverage()
+
+#    include(CodeCoverage)
+#    append_coverage_compiler_flags()
+#endif()
+
+#option(HUB_ENABLE_COVERAGE "Collect coverage from hub library" ON)
+#if (HUB_ENABLE_COVERAGE)
+#    include(CodeCoverage)
+#    APPEND_COVERAGE_COMPILER_FLAGS()
+#    SETUP_TARGET_FOR_COVERAGE_LCOV(
+#            NAME coverage
+##            BASE_DIRECTORY ".."
+#            BASE_DIRECTORY "${CMAKE_BINARY_DIR}"
+#            EXECUTABLE ctest -j ${n_cores} --test-dir tests # Executable in PROJECT_BINARY_DIR
+##            DEPENDENCIES
+##                test-file
+#                EXCLUDE "/usr/*" "${CMAKE_BINARY_DIR}/_deps/*" "${CMAKE_SOURCE_DIR}/tests/*" "_deps/"
+##                DEPENDENCIES test-sensorSpec
+##                test-file test-measures test-ram test-resolutions test-sensorSpec test-server test-serverSpeed
+#                )
+
+##            setup_target_for_coverage_gcovr_html(NAME coverage-html
+##                EXECUTABLE ctest --schedule-random -j ${n_cores} --test-dir tests
+##                EXCLUDE "/usr/*"
+##                DEPENDENCIES test-file test-measures test-ram test-resolutions test-sensorSpec test-server test-serverSpeed
+##            )
+
+
+##    append_coverage_compiler_flags()
+##    setup_target_for_coverage_lcov(NAME coverage EXECUTABLE ./bin/tests BASE_DIRECTORY ../coverage)
+#endif()
+
 
 
 #install(EXPORT hub
@@ -178,3 +224,114 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
               ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake DESTINATION lib/cmake/${PROJECT_NAME})
 
 export(EXPORT ${PROJECT_NAME} FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake")
+
+
+############################################### COVERAGE
+
+#include(code-coverage)
+#add_code_coverage()
+#target_code_coverage(${PROJECT_NAME})
+#add_code_coverage_all_targets(EXCLUDE tests/*)
+
+#target_code_coverage(test-sensorSpec AUTO ALL EXCLUDE tests/*) # As an executable target, adds to the 'ccov' and ccov-all' targets, and the reports will exclude the non-covered.cpp file, and any files in a test/ folder.
+
+
+option(HUB_ENABLE_COVERAGE "Collect coverage from hub library" ON)
+if (HUB_ENABLE_COVERAGE)
+    include(CodeCoverage)
+
+    append_coverage_compiler_flags()
+    setup_target_for_coverage_lcov(
+            NAME coverage
+#            BASE_DIRECTORY ".."
+            EXECUTABLE ctest
+            --test-dir tests
+            -j ${n_cores}
+            DEPENDENCIES
+            hub
+            server
+#            test-sensorSpec
+                test-all
+                DEPENDENCIES hub server test-sensorSpec
+                EXCLUDE
+                "/usr/*"
+#                "_deps"
+#                "catch2"
+#                "src"
+#                "${CMAKE_BINARY_DIR}/_deps/*"
+#                "${CMAKE_SOURCE_DIR}/tests/*"
+#                test-file test-measures test-ram test-resolutions test-sensorSpec test-server test-serverSpeed
+                )
+
+#            setup_target_for_coverage_gcovr_html(NAME coverage-html
+#                EXECUTABLE ctest --schedule-random -j ${n_cores} --test-dir tests
+#                EXCLUDE "/usr/*"
+#                DEPENDENCIES test-file test-measures test-ram test-resolutions test-sensorSpec test-server test-serverSpeed
+#            )
+
+endif()
+
+
+###    append_coverage_compiler_flags()
+###    setup_target_for_coverage_lcov(NAME coverage EXECUTABLE ./bin/tests BASE_DIRECTORY ../coverage)
+#endif()
+
+#if(ENABLE_COVERAGE)
+#    set(LCOV_REMOVES
+#        "'*catch_*.hpp';'catch_tostring.hpp';'/usr/*';'/home';'*examples*';'*server*';'*external*';'*install*';'*/Catch2/*';'*catch2*';'*_autogen/*';'*build*';'src/*'"
+#    )
+#    setup_coverage_targets(${ENABLE_COVERAGE} "${LCOV_REMOVES}")
+
+#    # Fastcov is not supported with gcov llvm: disabling for MacOS Source:
+#    # https://github.com/RPGillespie6/fastcov/issues/36
+#    if(UNIX AND NOT APPLE)
+##        setup_target_for_coverage_fastcov(
+#        setup_target_for_coverage_lcov(
+#            NAME
+#            coverage
+##            BASE_DIRECTORY "${PROJECT_SOURCE_DIR}"
+##            BASE_DIRECTORY "${CMAKE_BINARY_DIR}"
+##            BASE_DIRECTORY ../coverage
+#            EXECUTABLE
+#            ctest
+#            --test-dir tests
+#            -j $ENV{CMAKE_BUILD_PARALLEL_LEVEL}
+#            DEPENDENCIES
+#            hub
+#            server
+#            test-sensorSpec
+#            EXCLUDE
+#            "catch_tostring.hpp"
+#            "*deps*"
+#            "*catch_*.hpp"
+#            "*build*"
+#            "*catch2-src*"
+#            "*server*"
+#            "/usr/*"
+#            "*catch2*"
+#            "examples"
+#            "${CMAKE_BINARY_DIR}/_deps/*"
+#            "${CMAKE_SOURCE_DIR}/tests/*"
+#            "external"
+#            "install"
+#            "/Catch2/"
+#            "/catch2/"
+#            "/home"
+#            "_autogen/"
+#            "build"
+#            "mocs"
+#            "src"
+#            "*catch2/"
+#        )
+##        message(STATUS "Setup coverage")
+#    endif()
+
+#endif()
+
+
+#find_package(codecov REQUIRED)
+#add_coverage(${PROJECT_NAME})
+#coverage_evaluate()
+
+
+
