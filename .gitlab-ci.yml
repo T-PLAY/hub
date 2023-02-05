@@ -57,7 +57,7 @@ dep:
       # rm -rf dep-cache
       if [ ! -e dep-cache ]; then
         apt update
-        apt install -y doxygen clang libclang-dev
+        apt install -y doxygen clang libclang-dev lcov
 
         mkdir -pv dep-cache/usr/bin/
         mkdir -pv dep-cache/usr/share/$(basename /usr/share/cmake-*)/Modules
@@ -72,6 +72,7 @@ dep:
         cp -ra /usr/lib/llvm-11/lib/* dep-cache/usr/lib/llvm-11/lib/
         cp -ar /usr/bin/clang* dep-cache/usr/bin/
         cp -ar /usr/lib/llvm-11/bin/clang* dep-cache/usr/lib/llvm-11/bin/
+        cp /usr/bin/lcov dep-cache/usr/bin/
       fi
       
 build-gcc-release:
@@ -82,9 +83,10 @@ build-gcc-release:
     - cp -rT dep-cache/ /;
 
     - mkdir -p build-gcc-release
-    - cmake -B build-gcc-release -DCMAKE_CXX_COMPILER=g++ -DCMAKE_C_COMPILER=gcc -DCMAKE_BUILD_TYPE=Release -DHUB_ENABLE_TESTS=ON -DHUB_BUILD_DOC=ON
+    - cmake -B build-gcc-release -DCMAKE_CXX_COMPILER=g++ -DCMAKE_C_COMPILER=gcc -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DHUB_ENABLE_EXAMPLES=ON -DHUB_BUILD_DOC=ON
     # - cmake -B build-gcc-release -DCMAKE_CXX_COMPILER=g++ -DCMAKE_C_COMPILER=gcc -DCMAKE_BUILD_TYPE=Release
     - cmake --build build-gcc-release --config Release
+    - cmake --install build-gcc-release --config Release
 
 build-clang-debug:
   stage: build
@@ -92,10 +94,9 @@ build-clang-debug:
     - cp -rT dep-cache/ /;
 
     - mkdir -p build-clang-debug
-    - cmake -B build-clang-debug -DCMAKE_CXX_COMPILER=/usr/bin/clang++ -DCMAKE_C_COMPILER=/usr/bin/clang -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON 
+    - cmake -B build-clang-debug -DCMAKE_CXX_COMPILER=/usr/bin/clang++ -DCMAKE_C_COMPILER=/usr/bin/clang -DCMAKE_BUILD_TYPE=Debug -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_TESTS=ON -DHUB_ENABLE_COVERAGE=ON
     # - cmake -B build-clang-debug -DCMAKE_CXX_COMPILER=/usr/bin/clang++ -DCMAKE_C_COMPILER=/usr/bin/clang -DCMAKE_BUILD_TYPE=Debug
     - cmake --build build-clang-debug --config Debug
-    - cmake --install build-clang-debug --config Debug
   
 test:
   stage: test
