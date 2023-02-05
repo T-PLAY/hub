@@ -10,7 +10,7 @@ file(GLOB_RECURSE sources main.cpp)
 add_executable(${PROJECT_NAME} ${sources} # ${headers}
 )
 
-target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR} ${SRC_DIR})
+#target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR} ${SRC_DIR})
 
 if(WIN32)
     add_custom_command(
