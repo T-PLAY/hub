@@ -242,26 +242,25 @@ if (HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
 
     append_coverage_compiler_flags()
     setup_target_for_coverage_lcov(
-            NAME coverage
-#            BASE_DIRECTORY ".."
-            EXECUTABLE ctest
-            --test-dir tests
-            -j ${n_cores}
-            DEPENDENCIES
-            hub
-            server
-#            test-sensorSpec
-                test-all
-                DEPENDENCIES hub server test-sensorSpec
-                EXCLUDE
-                "/usr/*"
-#                "_deps"
-#                "catch2"
-#                "src"
-#                "${CMAKE_BINARY_DIR}/_deps/*"
-#                "${CMAKE_SOURCE_DIR}/tests/*"
-#                test-file test-measures test-ram test-resolutions test-sensorSpec test-server test-serverSpeed
-                )
+        NAME coverage
+        #            BASE_DIRECTORY ".."
+        EXECUTABLE ctest
+        --test-dir tests
+        -j ${n_cores}
+        DEPENDENCIES
+        hub
+        server
+        #            test-sensorSpec
+        test-all
+        EXCLUDE
+        "/usr/*"
+        #                "_deps"
+        #                "catch2"
+        #                "src"
+        #                "${CMAKE_BINARY_DIR}/_deps/*"
+        #                "${CMAKE_SOURCE_DIR}/tests/*"
+        #                test-file test-measures test-ram test-resolutions test-sensorSpec test-server test-serverSpeed
+    )
 
 #            setup_target_for_coverage_gcovr_html(NAME coverage-html
 #                EXECUTABLE ctest --schedule-random -j ${n_cores} --test-dir tests
