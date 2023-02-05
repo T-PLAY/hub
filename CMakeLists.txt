@@ -32,7 +32,7 @@ option(HUB_BUILD_STATIC_LIBRARY "Build static library" OFF)
 #add_subdirectory(src)
 add_subdirectory(server)
 
-option(HUB_ENABLE_TESTS "Enable tests" ON)
+option(HUB_ENABLE_TESTS "Enable tests" OFF)
 if(HUB_ENABLE_TESTS)
 #    set(CMAKE_CXX_FLAGS "-g -fprofile-arcs -ftest-coverage -DBUILD_TEST")
 #    set(CMAKE_C_FLAGS "-g -fprofile-arcs -ftest-coverage -DBUILD_TEST")
@@ -236,8 +236,8 @@ export(EXPORT ${PROJECT_NAME} FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}T
 #target_code_coverage(test-sensorSpec AUTO ALL EXCLUDE tests/*) # As an executable target, adds to the 'ccov' and ccov-all' targets, and the reports will exclude the non-covered.cpp file, and any files in a test/ folder.
 
 
-option(HUB_ENABLE_COVERAGE "Collect coverage from hub library" ON)
-if (HUB_ENABLE_COVERAGE)
+option(HUB_ENABLE_COVERAGE "Collect coverage from hub library" OFF)
+if (HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
     include(CodeCoverage)
 
     append_coverage_compiler_flags()
