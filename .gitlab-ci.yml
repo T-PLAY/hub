@@ -73,6 +73,7 @@ dep:
         cp -ar /usr/bin/clang* dep-cache/usr/bin/
         cp -ar /usr/lib/llvm-11/bin/clang* dep-cache/usr/lib/llvm-11/bin/
         cp /usr/bin/lcov dep-cache/usr/bin/
+        cp /usr/bin/genhtml dep-cache/usr/bin/
       fi
       
 build-gcc-release:
