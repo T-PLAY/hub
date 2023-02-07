@@ -49,13 +49,13 @@ TEST_CASE( "Ram test" ) {
     {
         hub::InputSensor inputSensor = hub::InputSensor( hub::io::Ram( cyclicBuff ) );
 
-        const auto& sensorSpec = inputSensor.m_spec;
-        CHECK( sensorSpec.getAcquisitionSize() == 3 );
-        CHECK( sensorSpec.getSensorName() == "sensorName" );
-        CHECK( sensorSpec.getResolutions().size() == 1 );
-        CHECK( sensorSpec.getResolutions()[0].first.size() == 1 );
-        CHECK( sensorSpec.getResolutions()[0].first.at( 0 ) == 1 );
-        CHECK( sensorSpec.getResolutions()[0].second == hub::Format::BGR8 );
+        const auto& sensorSpec2 = inputSensor.m_spec;
+        CHECK( sensorSpec2.getAcquisitionSize() == 3 );
+        CHECK( sensorSpec2.getSensorName() == "sensorName" );
+        CHECK( sensorSpec2.getResolutions().size() == 1 );
+        CHECK( sensorSpec2.getResolutions()[0].first.size() == 1 );
+        CHECK( sensorSpec2.getResolutions()[0].first.at( 0 ) == 1 );
+        CHECK( sensorSpec2.getResolutions()[0].second == hub::Format::BGR8 );
         std::cout << "####### compare acqs" << std::endl;
         for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
             auto acq = inputSensor.getAcquisition();

@@ -12,7 +12,7 @@
 class StreamViewerInterface : public hub::io::InputInterface, public hub::net::ClientSocket
 {
   public:
-    StreamViewerInterface( hub::net::ClientSocket&& clientSocket ) :
+    explicit StreamViewerInterface( hub::net::ClientSocket&& clientSocket ) :
         hub::net::ClientSocket( std::move( clientSocket ) ) {}
 
 #ifdef WIN32 // msvc warning C4250
@@ -506,13 +506,13 @@ StreamerClient::~StreamerClient() {
 
     m_mtxSyncViewers.lock();
     auto syncViewers = m_syncViewers;
-    for ( auto& pair : syncViewers ) {
-        auto syncViewers = pair.second;
-        auto it          = syncViewers.begin();
-        while ( it != syncViewers.end() ) {
+    for ( const auto& pair : syncViewers ) {
+        auto syncViewers2 = pair.second;
+        auto it2          = syncViewers2.begin();
+        while ( it2 != syncViewers2.end() ) {
             //        for ( auto* syncViewer : syncViewers ) {
-            auto* syncViewer = *it;
-            it               = syncViewers.erase( it );
+            auto* syncViewer = *it2;
+            it2               = syncViewers2.erase( it2 );
             //            m_server.delStreamViewer( syncViewer );
             delete syncViewer;
         }
@@ -682,8 +682,8 @@ void StreamerClient::saveNewAcq( const std::string& streamName, hub::Acquisition
     // save new acq
     if ( saveAcqs.find( newAcq.m_start ) == saveAcqs.end() ) {
         std::cout << headerMsg() << "'" << m_streamName << "' save new acq : [ ";
-        for ( const auto& [streamName, saveAcqs] : m_streamName2saveAcqs ) {
-            std::cout << "'" << streamName << "':" << saveAcqs.size() << ", ";
+        for ( const auto& [streamName2, saveAcqs2] : m_streamName2saveAcqs ) {
+            std::cout << "'" << streamName2 << "':" << saveAcqs2.size() << ", ";
         }
         std::cout << " ] ";
         std::cout << std::endl;

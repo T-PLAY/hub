@@ -168,12 +168,13 @@ void ClientSocket::write( const unsigned char* data, size_t len ) const {
         int byteSent;
         try {
             byteSent = net::utils::send(
-                m_fdSock, (const char*)data + uploadSize, static_cast<int>( len - uploadSize ), 0 );
+                m_fdSock, reinterpret_cast<const char*>(data) + uploadSize, static_cast<int>( len - uploadSize ), 0 );
             //            assert(isConnected());
         }
         catch ( std::exception& e ) {
             assert( false );
-            throw e;
+//            throw e;
+            throw;
         }
 
         if ( byteSent == -1 ) {
@@ -212,7 +213,7 @@ void ClientSocket::read( unsigned char* data, size_t len ) const {
     size_t downloadSize = 0;
     do {
         int byteRead = net::utils::recv(
-            m_fdSock, (char*)data + downloadSize, static_cast<int>( len - downloadSize ), 0 );
+            m_fdSock, reinterpret_cast<char*>(data) + downloadSize, static_cast<int>( len - downloadSize ), 0 );
         if ( byteRead == -1 ) {
 #ifdef DEBUG_SOCKET
             DEBUG_MSG( "byte read == -1 error" );
