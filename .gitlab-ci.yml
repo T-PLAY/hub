@@ -92,12 +92,13 @@ dep:
         cp -a /usr/lib/x86_64-linux-gnu/perl* dep-cache/usr/lib/x86_64-linux-gnu/
         cp -a /etc/perl dep-cache/etc/
         cp -a /usr/share/perl* dep-cache/usr/share/
-      fi
-        apt update
-        apt install -y npm
+      # fi
+        # apt update
+        # apt install -y npm
         cp /usr/bin/node dep-cache/usr/bin/
         cp /usr/lib/x86_64-linux-gnu/libnode* dep-cache/usr/lib/x86_64-linux-gnu/
         cp /usr/lib/x86_64-linux-gnu/libcares* dep-cache/usr/lib/x86_64-linux-gnu/
+      fi
 
       # fi
       # find dep-cache/usr/lib/x86_64-linux-gnu/perl/
@@ -155,7 +156,7 @@ coverage:
     # - cd build-gcc-release/
     - cmake --build cache/build-gcc-debug/ --target coverage
     - cache/node_modules/.bin/lcov-badge-generator cache/build-gcc-debug/coverage.capture
-    - cp cache/build-gcc-debug/badge.svg cache/build-gcc-debug/coverage/
+    - cp badge.svg cache/build-gcc-debug/coverage/
     - mv cache/build-gcc-debug/coverage public/
   artifacts:
     paths:
