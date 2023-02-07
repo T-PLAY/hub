@@ -90,7 +90,7 @@ dep:
         cp -a /etc/perl dep-cache/etc/
         cp -a /usr/share/perl dep-cache/usr/share/
       fi
-      ls dep-cache/usr/lib/x86_64-linux-gnu/perl5/5.32/PerlIO/gzip.pm
+      find dep-cache/usr/lib/x86_64-linux-gnu/perl5/
       # ls dep-cache/usr/share/
       # ls dep-cache/usr/share/*
   # only:
