@@ -2,6 +2,7 @@
 
 #include <chrono>
 #include <regex>
+#include <algorithm>
 
 namespace hub {
 
@@ -22,9 +23,10 @@ void Streamer::addStream( const std::string& streamName,
 
     assert( m_streamName2initAcqs.find( streamName ) == m_streamName2initAcqs.end() );
     std::vector<Acquisition> acqs;
-    for ( const auto& acq : initAcqs ) {
-        acqs.push_back( acq.clone() );
-    }
+//    for ( const auto& acq : initAcqs ) {
+//        acqs.push_back( acq.clone() );
+//    }
+    std::transform(initAcqs.crbegin(), initAcqs.crend(), std::back_inserter(acqs), [](const Acquisition & acq) { return acq.clone(); });
     m_streamName2initAcqs[streamName] = std::move( acqs );
 
     try {

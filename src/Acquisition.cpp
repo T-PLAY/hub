@@ -94,7 +94,7 @@ bool Acquisition::isInterpolable() const {
 //        if ( !measure.isInterpolable() ) return false;
 //    }
 //    return true;
-    return std::none_of(m_measures.begin(), m_measures.end(), [](const Measure & measure) { return ! measure.isInterpolable(); } );
+    return std::none_of(m_measures.crbegin(), m_measures.crend(), [](const Measure & measure) { return ! measure.isInterpolable(); } );
 }
 
 Acquisition Acquisition::slerp( const Acquisition& left, const Acquisition& right, double t ) {
