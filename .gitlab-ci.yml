@@ -64,7 +64,7 @@ dep:
   script:
     - |-
       cd cache
-      # rm -rf dep-cache
+      rm -rf dep-cache
       if [ ! -e dep-cache ]; then
         apt update
         apt install -y doxygen clang libclang-dev lcov
