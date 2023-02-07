@@ -54,7 +54,7 @@ dep:
   stage: dep
   script:
     - |-
-      rm -rf dep-cache
+      # rm -rf dep-cache
       if [ ! -e dep-cache ]; then
         apt update
         apt install -y doxygen clang libclang-dev lcov
@@ -75,8 +75,8 @@ dep:
         cp /usr/bin/lcov dep-cache/usr/bin/
         cp /usr/bin/genhtml dep-cache/usr/bin/
       fi
-  only:
-  - master
+  # only:
+  # - master
       
 build-gcc-release:
   stage: build
@@ -96,9 +96,9 @@ build-gcc-release:
 build-clang-debug:
   stage: build
   script:
-    # - cp -rT dep-cache/ /;
-    - apt update
-    - apt install -y doxygen clang libclang-dev lcov
+    - cp -rT dep-cache/ /;
+    # - apt update
+    # - apt install -y doxygen clang libclang-dev lcov
 
     - mkdir -p build-clang-debug
     - cmake -B build-clang-debug -DCMAKE_CXX_COMPILER=/usr/bin/clang++ -DCMAKE_C_COMPILER=/usr/bin/clang -DCMAKE_BUILD_TYPE=Debug -DHUB_ENABLE_TESTS=ON -DHUB_ENABLE_COVERAGE=ON
