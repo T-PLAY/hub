@@ -97,6 +97,7 @@ build-clang-debug:
   stage: build
   script:
     # - cp -rT dep-cache/ /;
+    - apt update
     - apt install -y doxygen clang libclang-dev lcov
 
     - mkdir -p build-clang-debug
