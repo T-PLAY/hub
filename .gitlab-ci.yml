@@ -182,8 +182,8 @@ doc-doxygen:
   script:
     - cp -rT cache/dep-cache/ /;
 
-    - cmake --build cache/build-gcc-release --target docs
-    - mv cache/build-gcc-release/doc/docs_doxygen/html/ public/
+    - cmake --build cache/build-clang-release --target docs
+    - mv cache/build-clang-release/doc/docs_doxygen/html/ public/
 #    - ./runmytests.sh
   artifacts:
     paths:
