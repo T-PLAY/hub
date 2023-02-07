@@ -323,7 +323,8 @@ StreamerClient::StreamerClient( Server& server, int iClient, hub::net::ClientSoc
                             isSyncthing = true;
                         }
 
-                    } while ( !foundLeft );
+//                    } while ( !foundLeft );
+                    } while ( false );
 
                     if ( !foundLeft ) continue;
                     //                    std::cout << "[StreamerClient] found corresponding" <<

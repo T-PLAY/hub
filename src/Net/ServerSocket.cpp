@@ -50,7 +50,7 @@ void ServerSocket::initServer() {
     if ( m_fdSock < 0 ) {
         perror( "socket creation failed.\n" );
         exit( 1 );
-        return;
+//        return;
     }
 #ifdef DEBUG_SOCKET
     DEBUG_MSG( getHeader( m_fdSock ) << "server started " );
