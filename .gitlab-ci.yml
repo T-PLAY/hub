@@ -86,7 +86,7 @@ dep:
         cp /usr/bin/lcov dep-cache/usr/bin/
         cp /usr/bin/genhtml dep-cache/usr/bin/
         cp /usr/bin/geninfo dep-cache/usr/bin/
-        cp -a /usr/lib/x86_64-linux-gnu/perl dep-cache/usr/lib/x86_64-linux-gnu/
+        cp -a /usr/lib/x86_64-linux-gnu/perl* dep-cache/usr/lib/x86_64-linux-gnu/
         cp -a /etc/perl dep-cache/etc/
         cp -a /usr/share/perl dep-cache/usr/share/
       fi
