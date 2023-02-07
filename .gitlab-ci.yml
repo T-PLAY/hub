@@ -64,7 +64,7 @@ dep:
   script:
     - |-
       cd cache
-      rm -rf dep-cache
+      # rm -rf dep-cache
       if [ ! -e dep-cache ]; then
         apt update
         apt install -y doxygen clang libclang-dev lcov
@@ -91,7 +91,7 @@ dep:
         cp -a /usr/share/perl dep-cache/usr/share/
       fi
       # find dep-cache/usr/lib/x86_64-linux-gnu/perl/
-      find / -name "gzip.pm"
+      # find / -name "gzip.pm"
       # ls dep-cache/usr/share/
       # ls dep-cache/usr/share/*
   # only:
@@ -139,17 +139,17 @@ coverage:
   stage: coverage
   script:
    
-    # - cp -rT cache/dep-cache/ /; 
-    - apt update
-    - apt install -y doxygen clang libclang-dev lcov
+    - cp -rT cache/dep-cache/ /; 
+    # - apt update
+    # - apt install -y doxygen clang libclang-dev lcov
     # - cd build-gcc-release/
     - cmake --build cache/build-gcc-debug/ --target coverage
     - mv cache/build-gcc-debug/coverage public/
   artifacts:
     paths:
       - public
-  only:
-    - master
+  # only:
+    # - master
 
 doc-doxygen:
   stage: doc
