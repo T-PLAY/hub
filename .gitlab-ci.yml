@@ -64,8 +64,8 @@ dep:
   script:
     - |-
       cd cache
-      rm -rf dep-cache
-      apt update
+      # rm -rf dep-cache
+      # apt update
       # apt install -y npm
       if [ ! -e dep-cache ]; then
         apt update
@@ -92,9 +92,12 @@ dep:
         cp -a /usr/lib/x86_64-linux-gnu/perl* dep-cache/usr/lib/x86_64-linux-gnu/
         cp -a /etc/perl dep-cache/etc/
         cp -a /usr/share/perl* dep-cache/usr/share/
-
-        cp /usr/bin/node dep-cache/usr/bin/
       fi
+        apt update
+        apt install -y npm
+        cp /usr/bin/node dep-cache/usr/bin/
+        cp /usr/lib/x86_64-linux-gnu/libnode* dep-cache/usr/lib/x86_64-linux-gnu/
+      # fi
       # find dep-cache/usr/lib/x86_64-linux-gnu/perl/
       # find / -name "gzip.pm"
       # ls dep-cache/usr/share/
