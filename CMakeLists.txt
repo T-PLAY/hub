@@ -127,8 +127,9 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SOURCE_FILES})
 #set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 #include(CPack)
 
-set(WIN32_REQUIRED_LIBS)
-set(UNIX_REQUIRED_LIBS)
+#set(WIN32_REQUIRED_LIBS)
+#set(UNIX_REQUIRED_LIBS)
+set(REQUIRED_LIBS)
 
 
 
@@ -156,13 +157,22 @@ if(WIN32)
 
 elseif(UNIX)
     find_package(Threads REQUIRED)
-    set(UNIX_REQUIRED_LIBS Threads::Threads)
+#    set(UNIX_REQUIRED_LIBS Threads::Threads)
+    set(REQUIRED_LIBS Threads::Threads)
 endif()
 
 # if (MSVC) # Here I set the target System to WindowsStore, which *should* enable UWP-support UWP compilation : cmake
 # -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0
 
-target_link_libraries(${PROJECT_NAME} ${UNIX_REQUIRED_LIBS} ${WIN32_REQUIRED_LIBS})
+if (HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
+    set(REQUIRED_LIBS ${REQUIRED_LIBS} "gcov")
+endif()
+
+#    target_link_libraries(${PROJECT_NAME} ${UNIX_REQUIRED_LIBS} ${WIN32_REQUIRED_LIBS} gcov)
+#else()
+#    target_link_libraries(${PROJECT_NAME} ${UNIX_REQUIRED_LIBS} ${WIN32_REQUIRED_LIBS})
+
+target_link_libraries(${PROJECT_NAME} ${REQUIRED_LIBS})
 
 # set(CMAKE_CXX_STANDARD 14) #ULA-OP C++14 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
