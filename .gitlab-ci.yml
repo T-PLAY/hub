@@ -64,7 +64,7 @@ dep:
   script:
     - |-
       cd cache
-      rm -rf dep-cache
+      # rm -rf dep-cache
       if [ ! -e dep-cache ]; then
         apt update
         apt install -y doxygen clang libclang-dev lcov
@@ -90,6 +90,8 @@ dep:
         cp -a /etc/perl dep-cache/etc/
         cp -a /usr/share/perl dep-cache/usr/share/
       fi
+      ls dep-cache/usr/share/
+      ls dep-cache/usr/share/*
   # only:
   # - master
       
@@ -119,6 +121,8 @@ build-gcc-debug:
     - cmake -B cache/build-gcc-debug -DCMAKE_CXX_COMPILER=/usr/bin/g++ -DCMAKE_C_COMPILER=/usr/bin/gcc -DCMAKE_BUILD_TYPE=Debug -DHUB_ENABLE_TESTS=ON -DHUB_ENABLE_COVERAGE=ON
     # - cmake -B build-gcc-debug -DCMAKE_CXX_COMPILER=/usr/bin/gcc++ -DCMAKE_C_COMPILER=/usr/bin/gcc -DCMAKE_BUILD_TYPE=Debug
     - cmake --build cache/build-gcc-debug --config Debug
+  only:
+    - master
   
 test:
   stage: test
@@ -139,6 +143,8 @@ coverage:
   artifacts:
     paths:
       - public
+  only:
+    - master
 
 doc-doxygen:
   stage: doc
