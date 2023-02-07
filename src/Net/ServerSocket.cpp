@@ -70,13 +70,13 @@ void ServerSocket::initServer() {
     if ( net::utils::bind( m_fdSock, m_addr ) < 0 ) {
         perror( "Failed to bind.\n" );
         exit( 1 );
-        return;
+//        return;
     }
 
     if ( net::utils::listen( m_fdSock, 3 ) < 0 ) {
         perror( "listen" );
         exit( 1 );
-        return;
+//        return;
     }
 
 #ifdef DEBUG_SOCKET
