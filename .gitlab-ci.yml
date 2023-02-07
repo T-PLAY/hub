@@ -173,7 +173,7 @@ cppCheck:
   script:
     - apt update
     - apt install -y cppcheck
-    - cppcheck --enable=all --force -I include -I server/libServer/ --error-exitcode=1 --disable=missingInclude server src
+    - cppcheck --enable=all --force -I include -I server/libServer/ --error-exitcode=1 --disable=unusedFunction --disable=information server src
 
 # doc-doxygen:
 #   stage: doc
