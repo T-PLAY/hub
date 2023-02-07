@@ -90,8 +90,8 @@ dep:
         cp -a /etc/perl dep-cache/etc/
         cp -a /usr/share/perl dep-cache/usr/share/
       fi
-      ls dep-cache/usr/share/
-      ls dep-cache/usr/share/*
+      # ls dep-cache/usr/share/
+      # ls dep-cache/usr/share/*
   # only:
   # - master
       
@@ -143,8 +143,8 @@ coverage:
   artifacts:
     paths:
       - public
-  only:
-    - master
+  # only:
+    # - master
 
 doc-doxygen:
   stage: doc
