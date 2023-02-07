@@ -19,7 +19,7 @@ class Server
 {
   public:
     Server();
-    Server( int port );
+    explicit Server( int port );
     ~Server();
 
     std::string headerMsg() const;

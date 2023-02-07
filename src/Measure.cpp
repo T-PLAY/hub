@@ -210,7 +210,7 @@ bool Measure::operator!=( const Measure& measure ) const {
 
 std::ostream& operator<<( std::ostream& os, const Measure& measure ) {
     if ( measure.m_size == 28 ) {
-        float* dof6 = (float*)measure.m_data;
+        const float* dof6 = reinterpret_cast<const float*>(measure.m_data);
         os << "dof6:";
         for ( auto i = 0; i < 7; ++i ) {
             os << std::setw( 3 ) << dof6[i] << " ";

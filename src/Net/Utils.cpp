@@ -43,24 +43,24 @@ socket_fd invalidSocket() {
 }
 
 static inline void init() {
-    if ( !s_inited ) {
 #ifdef DEBUG_NET
         std::cout << getHeader() << "init()" << std::endl;
 #endif
 #if defined WIN32
+    if ( !s_inited ) {
         WSADATA wsaData;
         int iResult = WSAStartup( MAKEWORD( 2, 2 ), &wsaData );
         if ( iResult != 0 ) {
             printf( "error at WSAStartup\n" );
             exit( 1 );
         }
+    }
 #else
         //        signal( SIGINT, signalHandler );
         //        signal( SIGPIPE, SIG_IGN );
 
 #endif
-        s_inited = true;
-    }
+    s_inited = true;
 }
 
 bool isValid( socket_fd sock ) {

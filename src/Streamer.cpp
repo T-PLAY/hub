@@ -52,7 +52,7 @@ void Streamer::newAcquisition( const std::string& streamName, Acquisition&& acqu
 
     if ( m_streamName2outputSensor.find( streamName ) == m_streamName2outputSensor.end() ) {
 
-        auto& lastLogout = m_streamName2lastLogout.at( streamName );
+        const auto& lastLogout = m_streamName2lastLogout.at( streamName );
         auto now         = std::chrono::high_resolution_clock::now();
         auto diff =
             std::chrono::duration_cast<std::chrono::milliseconds>( now - lastLogout ).count();

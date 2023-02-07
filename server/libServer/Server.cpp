@@ -302,9 +302,9 @@ void Server::newAcquisition( StreamerClient* streamer, const hub::Acquisition& a
 
     // broadcast acquisition for all streamer
     for ( const auto& pair : m_streamers ) {
-        const auto& streamer = pair.second;
+        const auto& streamer2 = pair.second;
 
-        streamer->newAcquisition( streamerName, acq );
+        streamer2->newAcquisition( streamerName, acq );
     }
 }
 

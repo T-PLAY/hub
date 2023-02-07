@@ -26,7 +26,7 @@ TEST_CASE( "Server test : viewer" ) {
         }
         acqs.emplace_back( iAcq, iAcq );
         acqs.back() << hub::Measure(
-            (const unsigned char*)data, dataSize, { { width, height }, hub::Format::BGR8 } );
+            reinterpret_cast<const unsigned char*>(data), dataSize, { { width, height }, hub::Format::BGR8 } );
     }
 
     std::cout << "[Test] ############################### server start" << std::endl;

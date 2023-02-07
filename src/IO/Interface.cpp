@@ -36,7 +36,7 @@ void Interface::write( const std::string& str ) const {
 
     if ( strLen > 0 ) {
         const char* data = str.data();
-        write( (const unsigned char*)data, strLen );
+        write( reinterpret_cast<const unsigned char*>(data), strLen );
     }
 }
 
@@ -89,7 +89,7 @@ void Interface::write( const char* str ) const {
     int strLen = static_cast<int>( strlen( str ) );
     write( strLen );
 
-    if ( strLen > 0 ) { write( (const unsigned char*)str, strLen ); }
+    if ( strLen > 0 ) { write( reinterpret_cast<const unsigned char*>(str), strLen ); }
 }
 
 // Interface::~Interface()
@@ -149,7 +149,7 @@ void Interface::write( const std::any& any ) const {
     else if ( anyType == typeid( const float* ) ) {
         write( AnyType::CONST_FLOAT_PTR );
         const float* val = *std::any_cast<const float*>( &any );
-        write( (unsigned char*)val, 64 );
+        write( reinterpret_cast<const unsigned char*>(val), 64 );
     }
     else {
         assert( false );
@@ -170,7 +170,7 @@ void Interface::read( std::string& str ) const {
         unsigned char* tmp = new unsigned char[buffSize];
         read( tmp, strLen );
         tmp[strLen] = 0;
-        str         = std::string( (char*)tmp );
+        str         = std::string( reinterpret_cast<char*>(tmp) );
         delete[] tmp;
     }
 #ifdef DEBUG_IOSTREAM
@@ -295,7 +295,7 @@ void Interface::read( char* str ) const {
 
     if ( strLen == 0 ) { str[0] = 0; }
     else {
-        read( (unsigned char*)str, strLen );
+        read( reinterpret_cast<unsigned char*>(str), strLen );
 
         str[strLen] = 0;
     }
@@ -345,7 +345,7 @@ void Interface::read( std::any& any ) const {
         str[len] = 0;
         delete[] buff;
 
-        any = std::any_cast<const char*>( (const char*)str );
+        any = std::any_cast<const char*>( reinterpret_cast<const char*>(str) );
 
     } break;
 
@@ -363,9 +363,9 @@ void Interface::read( std::any& any ) const {
 
     case AnyType::CONST_FLOAT_PTR: {
         float* buff = new float[16];
-        read( (unsigned char*)buff, 64 );
+        read( reinterpret_cast<unsigned char*>(buff), 64 );
 
-        any = std::any_cast<const float*>( (const float*)buff );
+        any = std::any_cast<const float*>( reinterpret_cast<const float*>(buff) );
 
     } break;
 

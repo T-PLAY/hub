@@ -22,7 +22,7 @@ TEST_CASE( "Server test : direct stream" ) {
             data[i] = iAcq + i;
         }
         acqs.emplace_back( iAcq + 1, iAcq + 2 )
-            << hub::Measure { (const unsigned char*)data, dataSize, { { 3 }, hub::Format::BGR8 } };
+            << hub::Measure { reinterpret_cast<const unsigned char*>(data), dataSize, { { 3 }, hub::Format::BGR8 } };
     }
 
     std::cout << "[Test] ############################### server start" << std::endl;

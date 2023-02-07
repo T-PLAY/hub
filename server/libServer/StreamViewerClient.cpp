@@ -7,7 +7,7 @@
 class StreamerInterface : public hub::io::OutputInterface, public hub::net::ClientSocket
 {
   public:
-    StreamerInterface( hub::net::ClientSocket&& clientSocket ) :
+    explicit StreamerInterface( hub::net::ClientSocket&& clientSocket ) :
         hub::net::ClientSocket( std::move( clientSocket ) ) {}
 
   protected:

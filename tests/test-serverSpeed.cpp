@@ -24,7 +24,7 @@ TEST_CASE( "Server test : speed test" ) {
             data[i] = iAcq;
         }
         acqs.emplace_back( iAcq, iAcq ) << hub::Measure(
-            (unsigned const char*)data, dataSize, { { width, height }, hub::Format::BGR8 } );
+            reinterpret_cast<unsigned const char*>(data), dataSize, { { width, height }, hub::Format::BGR8 } );
     }
     delete[] data;
 
