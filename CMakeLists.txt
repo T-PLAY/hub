@@ -164,8 +164,10 @@ endif()
 # if (MSVC) # Here I set the target System to WindowsStore, which *should* enable UWP-support UWP compilation : cmake
 # -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0
 
-if (HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
-    set(REQUIRED_LIBS ${REQUIRED_LIBS} "gcov")
+if (HUB_ENABLE_COVERAGE)
+    include(CodeCoverage)
+    append_coverage_compiler_flags()
+    set(REQUIRED_LIBS ${REQUIRED_LIBS} gcov)
 endif()
 
 #    target_link_libraries(${PROJECT_NAME} ${UNIX_REQUIRED_LIBS} ${WIN32_REQUIRED_LIBS} gcov)
@@ -248,9 +250,6 @@ export(EXPORT ${PROJECT_NAME} FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}T
 
 option(HUB_ENABLE_COVERAGE "Collect coverage from hub library" OFF)
 if (HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
-    include(CodeCoverage)
-
-    append_coverage_compiler_flags()
     setup_target_for_coverage_lcov(
         NAME coverage
         #            BASE_DIRECTORY ".."

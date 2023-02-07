@@ -2,8 +2,12 @@ cmake_minimum_required(VERSION 3.8)
 
 project(app-server)
 
-set(WIN32_REQUIRED_LIBS)
-set(UNIX_REQUIRED_LIBS)
+#set(WIN32_REQUIRED_LIBS)
+#set(UNIX_REQUIRED_LIBS)
+set(REQUIRED_LIBS)
+if (HUB_ENABLE_COVERAGE)
+    set(REQUIRED_LIBS ${REQUIRED_LIBS} "gcov")
+endif()
 
 file(GLOB_RECURSE sources main.cpp)
 
@@ -22,7 +26,8 @@ elseif(UNIX)
 
 endif()
 
-target_link_libraries(${PROJECT_NAME} hub ${UNIX_REQUIRED_LIBS} ${WIN32_REQUIRED_LIBS} server)
+#target_link_libraries(${PROJECT_NAME} hub ${UNIX_REQUIRED_LIBS} ${WIN32_REQUIRED_LIBS} server)
+target_link_libraries(${PROJECT_NAME} hub ${REQUIRED_LIBS} server)
 
 add_subdirectory(libServer)
 

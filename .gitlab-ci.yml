@@ -86,7 +86,7 @@ build-gcc-release:
     - cp -rT dep-cache/ /;
 
     - mkdir -p build-gcc-release
-    - cmake -B build-gcc-release -DCMAKE_CXX_COMPILER=g++ -DCMAKE_C_COMPILER=gcc -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DHUB_ENABLE_EXAMPLES=ON -DHUB_BUILD_DOC=ON
+    - cmake -B build-gcc-release -DCMAKE_CXX_COMPILER=g++ -DCMAKE_C_COMPILER=gcc -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON -DHUB_BUILD_DOC=ON
     # - cmake -B build-gcc-release -DCMAKE_CXX_COMPILER=g++ -DCMAKE_C_COMPILER=gcc -DCMAKE_BUILD_TYPE=Release
     - cmake --build build-gcc-release --config Release
     - cmake --install build-gcc-release --config Release
@@ -101,7 +101,7 @@ build-clang-debug:
     - apt install -y doxygen clang libclang-dev lcov
 
     - mkdir -p build-clang-debug
-    - cmake -B build-clang-debug -DCMAKE_CXX_COMPILER=/usr/bin/clang++ -DCMAKE_C_COMPILER=/usr/bin/clang -DCMAKE_BUILD_TYPE=Debug -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_TESTS=ON -DHUB_ENABLE_COVERAGE=ON
+    - cmake -B build-clang-debug -DCMAKE_CXX_COMPILER=/usr/bin/clang++ -DCMAKE_C_COMPILER=/usr/bin/clang -DCMAKE_BUILD_TYPE=Debug -DHUB_ENABLE_TESTS=ON -DHUB_ENABLE_COVERAGE=ON
     # - cmake -B build-clang-debug -DCMAKE_CXX_COMPILER=/usr/bin/clang++ -DCMAKE_C_COMPILER=/usr/bin/clang -DCMAKE_BUILD_TYPE=Debug
     - cmake --build build-clang-debug --config Debug
   
