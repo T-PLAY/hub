@@ -78,32 +78,32 @@ dep:
   # only:
   # - master
       
-build-gcc-release:
+build-clang-release:
   stage: build
 #  before_script:
 #    - export PATH=$PATH:/opt/Qt/5.10.0/gcc_64/bin
   script:
     - cp -rT dep-cache/ /;
 
-    - mkdir -p build-gcc-release
-    - cmake -B build-gcc-release -DCMAKE_CXX_COMPILER=g++ -DCMAKE_C_COMPILER=gcc -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON -DHUB_BUILD_DOC=ON
-    # - cmake -B build-gcc-release -DCMAKE_CXX_COMPILER=g++ -DCMAKE_C_COMPILER=gcc -DCMAKE_BUILD_TYPE=Release
-    - cmake --build build-gcc-release --config Release
-    - cmake --install build-gcc-release --config Release
+    - mkdir -p build-clang-release
+    - cmake -B build-clang-release -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON -DHUB_BUILD_DOC=ON
+    # - cmake -B build-clang-release -DCMAKE_CXX_COMPILER=g++ -DCMAKE_C_COMPILER=clang -DCMAKE_BUILD_TYPE=Release
+    - cmake --build build-clang-release --config Release
+    - cmake --install build-clang-release --config Release
   only:
   - master
 
-build-clang-debug:
+build-gcc-debug:
   stage: build
   script:
     - cp -rT dep-cache/ /;
     # - apt update
     # - apt install -y doxygen clang libclang-dev lcov
 
-    - mkdir -p build-clang-debug
-    - cmake -B build-clang-debug -DCMAKE_CXX_COMPILER=/usr/bin/clang++ -DCMAKE_C_COMPILER=/usr/bin/clang -DCMAKE_BUILD_TYPE=Debug -DHUB_ENABLE_TESTS=ON -DHUB_ENABLE_COVERAGE=ON
-    # - cmake -B build-clang-debug -DCMAKE_CXX_COMPILER=/usr/bin/clang++ -DCMAKE_C_COMPILER=/usr/bin/clang -DCMAKE_BUILD_TYPE=Debug
-    - cmake --build build-clang-debug --config Debug
+    - mkdir -p build-gcc-debug
+    - cmake -B build-gcc-debug -DCMAKE_CXX_COMPILER=/usr/bin/g++ -DCMAKE_C_COMPILER=/usr/bin/gcc -DCMAKE_BUILD_TYPE=Debug -DHUB_ENABLE_TESTS=ON -DHUB_ENABLE_COVERAGE=ON
+    # - cmake -B build-gcc-debug -DCMAKE_CXX_COMPILER=/usr/bin/gcc++ -DCMAKE_C_COMPILER=/usr/bin/gcc -DCMAKE_BUILD_TYPE=Debug
+    - cmake --build build-gcc-debug --config Debug
   
 test:
   stage: test
