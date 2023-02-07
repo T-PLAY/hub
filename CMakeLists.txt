@@ -271,11 +271,9 @@ if (HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
         #                test-file test-measures test-ram test-resolutions test-sensorSpec test-server test-serverSpeed
     )
     if(${CMAKE_VERSION} VERSION_LESS "3.20") # ctest --test-dir option
-#	message("Please consider to switch to CMake 3.8.0")
-        add_custom_command(
-            TARGET coverage
-            POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/tests/DartConfiguration.tcl ${CMAKE_BINARY_DIR}/DartConfiguration.tcl)
+        file(COPY ${CMAKE_BINARY_DIR}/tests/DartConfiguration.tcl
+            DESTINATION ${CMAKE_BINARY_DIR}/
+        )
     endif()
 
 #            setup_target_for_coverage_gcovr_html(NAME coverage-html
