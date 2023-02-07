@@ -64,7 +64,7 @@ dep:
   script:
     - |-
       cd cache
-      rm -rf dep-cache
+      # rm -rf dep-cache
       if [ ! -e dep-cache ]; then
         apt update
         apt install -y doxygen clang libclang-dev lcov
@@ -90,7 +90,7 @@ dep:
         cp -a /etc/perl dep-cache/etc/
         cp -a /usr/share/perl dep-cache/usr/share/
       fi
-      find /usr/lib/x86_64-linux-gnu/perl/
+      # find dep-cache/usr/lib/x86_64-linux-gnu/perl/
       # ls dep-cache/usr/share/
       # ls dep-cache/usr/share/*
   # only:
@@ -115,8 +115,8 @@ build-gcc-debug:
   stage: build
   script:
     - cp -rT cache/dep-cache/ /;
-    # - apt update
-    # - apt install -y doxygen clang libclang-dev lcov
+    - apt update
+    - apt install -y lcov
 
     - mkdir -p cache/build-gcc-debug
     - cmake -B cache/build-gcc-debug -DCMAKE_CXX_COMPILER=/usr/bin/g++ -DCMAKE_C_COMPILER=/usr/bin/gcc -DCMAKE_BUILD_TYPE=Debug -DHUB_ENABLE_TESTS=ON -DHUB_ENABLE_COVERAGE=ON
