@@ -173,7 +173,7 @@ cppCheck:
   script:
     - apt update
     - apt install -y cppcheck
-    - cppcheck --enable=all --force -I include src server --eror-exitcode=1
+    - cppcheck --enable=all --force -I include src server --error-exitcode=1
 
 # doc-doxygen:
 #   stage: doc
