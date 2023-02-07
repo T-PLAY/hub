@@ -64,7 +64,8 @@ dep:
   script:
     - |-
       cd cache
-      rm -rf dep-cache
+      # rm -rf dep-cache
+      npm install lcov-badge-generator
       if [ ! -e dep-cache ]; then
         apt update
         apt install -y doxygen clang libclang-dev lcov
@@ -144,6 +145,8 @@ coverage:
     # - apt install -y doxygen clang libclang-dev lcov
     # - cd build-gcc-release/
     - cmake --build cache/build-gcc-debug/ --target coverage
+    - cache/node_modules/.bin/lcov-badge-generator cache/build-gcc-debug/coverage.capture
+    - cp cache/build-gcc-debug/badge.svg cache/build-gcc-debug/coverage/
     - mv cache/build-gcc-debug/coverage public/
   artifacts:
     paths:
