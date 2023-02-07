@@ -63,6 +63,9 @@ dep:
   stage: dep
   script:
     - |-
+      if [ ! -e cache ]; then
+        mkdir cache
+      fi
       cd cache
       # rm -rf dep-cache
       # apt update
