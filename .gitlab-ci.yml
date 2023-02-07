@@ -75,6 +75,8 @@ dep:
         cp /usr/bin/lcov dep-cache/usr/bin/
         cp /usr/bin/genhtml dep-cache/usr/bin/
       fi
+  only:
+  - master
       
 build-gcc-release:
   stage: build
@@ -88,11 +90,14 @@ build-gcc-release:
     # - cmake -B build-gcc-release -DCMAKE_CXX_COMPILER=g++ -DCMAKE_C_COMPILER=gcc -DCMAKE_BUILD_TYPE=Release
     - cmake --build build-gcc-release --config Release
     - cmake --install build-gcc-release --config Release
+  only:
+  - master
 
 build-clang-debug:
   stage: build
   script:
-    - cp -rT dep-cache/ /;
+    # - cp -rT dep-cache/ /;
+    - apt install -y doxygen clang libclang-dev lcov
 
     - mkdir -p build-clang-debug
     - cmake -B build-clang-debug -DCMAKE_CXX_COMPILER=/usr/bin/clang++ -DCMAKE_C_COMPILER=/usr/bin/clang -DCMAKE_BUILD_TYPE=Debug -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_TESTS=ON -DHUB_ENABLE_COVERAGE=ON
@@ -105,6 +110,8 @@ test:
     - cd build-gcc-release/tests
     - ctest -V
 #    - ./runmytests.sh
+  only:
+  - master
 
 doc-doxygen:
   stage: doc
@@ -119,6 +126,8 @@ doc-doxygen:
     - public
   # only:
     # - feature/add-gitlab-pages-support
+  only:
+  - master
 
 cache-sphinx:
   stage: doc
