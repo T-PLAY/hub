@@ -85,6 +85,7 @@ dep:
         cp /usr/bin/lcov dep-cache/usr/bin/
         cp /usr/bin/genhtml dep-cache/usr/bin/
         cp /usr/bin/geninfo dep-cache/usr/bin/
+        cp -a /usr/lib/x86_64-linux-gnu/perl dep-cache/usr/lib/x86_64-linux-gnu/
       fi
   # only:
   # - master
