@@ -74,6 +74,7 @@ dep:
         mkdir -pv dep-cache/usr/lib/x86_64-linux-gnu/
         mkdir -pv dep-cache/usr/lib/llvm-11/lib/
         mkdir -pv dep-cache/usr/lib/llvm-11/bin/
+        mkdir -pv dep-cache/etc/
 
         cp /usr/bin/doxygen dep-cache/usr/bin/   
         cp /usr/share/cmake-*/Modules/FindDoxygen.cmake dep-cache/usr/share/$(basename /usr/share/cmake-*)/Modules/
@@ -86,6 +87,8 @@ dep:
         cp /usr/bin/genhtml dep-cache/usr/bin/
         cp /usr/bin/geninfo dep-cache/usr/bin/
         cp -a /usr/lib/x86_64-linux-gnu/perl dep-cache/usr/lib/x86_64-linux-gnu/
+        cp -a /etc/perl dep-cache/etc/
+        cp -a /usr/share/perl dep-cache/usr/share/
       fi
   # only:
   # - master
