@@ -16,6 +16,7 @@ stages:
   - build
   # - test
   - coverage
+  - code-analysis
   # - format
   # - doc
 
@@ -137,8 +138,8 @@ build-gcc-debug:
     - cmake -B cache/build-gcc-debug -DCMAKE_CXX_COMPILER=/usr/bin/g++ -DCMAKE_C_COMPILER=/usr/bin/gcc -DCMAKE_BUILD_TYPE=Debug -DHUB_ENABLE_TESTS=ON -DHUB_ENABLE_COVERAGE=ON
     # - cmake -B build-gcc-debug -DCMAKE_CXX_COMPILER=/usr/bin/gcc++ -DCMAKE_C_COMPILER=/usr/bin/gcc -DCMAKE_BUILD_TYPE=Debug
     - cmake --build cache/build-gcc-debug --config Debug
-  # only:
-    # - master
+  only:
+    - master
   
 # test:
 #   stage: test
@@ -164,8 +165,15 @@ coverage:
   artifacts:
     paths:
       - public
-  # only:
-    # - master
+  only:
+    - master
+
+cppCheck:
+  stage: code-analysis
+  script:
+    - apt update
+    - apt install -y cppcheck
+    - cppcheck --enable=all --force -I include src server --eror-exitcode=1
 
 # doc-doxygen:
 #   stage: doc
