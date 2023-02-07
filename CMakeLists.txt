@@ -251,6 +251,7 @@ export(EXPORT ${PROJECT_NAME} FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}T
 option(HUB_ENABLE_COVERAGE "Collect coverage from hub library" OFF)
 if (HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
     setup_target_for_coverage_lcov(
+#    setup_target_for_coverage_gcovr_xml(
         NAME coverage
         #            BASE_DIRECTORY ".."
         EXECUTABLE ctest
