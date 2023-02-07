@@ -15,6 +15,7 @@ stages:
   - dep
   - build
   - test
+  - coverage
   - format
   - doc
 
@@ -25,13 +26,21 @@ stages:
 cache:
   key: cache
   paths:
-    - dep-cache/    
-    - build-gcc-release/
-    - build-clang-debug/
-    - sphinx-cache/
-    - format-cache/
+    - cache/
+    # - dep-cache/    
+    # - build-gcc-release/
+    # - build-clang-debug/
+    # - sphinx-cache/
+    # - format-cache/
 
-# before_script:
+before_script:
+  - |-
+    if [ ! -e cache ]; then
+      mkdir cache
+    fi
+    cd cache
+  # - mkdir -pv cache
+  # - cd cache
   # - rm -r apt-cache
   # - mkdir -pv apt-cache
   # - |-
@@ -113,6 +122,16 @@ test:
 #    - ./runmytests.sh
   only:
   - master
+
+coverage:
+  stage: coverage
+  script:
+    # - cd build-gcc-release/
+    - cmake --build-gcc-release/ --target coverage
+    - mv build-gcc-release/coverage public/
+  artifacts:
+    paths:
+      - public
 
 doc-doxygen:
   stage: doc
