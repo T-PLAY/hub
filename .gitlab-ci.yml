@@ -65,6 +65,8 @@ dep:
     - |-
       cd cache
       # rm -rf dep-cache
+      apt update
+      apt install -y npm
       npm install lcov-badge-generator
       if [ ! -e dep-cache ]; then
         apt update
