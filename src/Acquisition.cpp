@@ -40,10 +40,12 @@ namespace hub {
 
 Acquisition::Acquisition( long long start, long long end ) : m_start( start ), m_end( end ) {
     assert( m_start <= m_end );
+//    std::cout << "[Acquisition] Acquisition(" << start << ", " << end << ")" << std::endl;
 }
 
 Acquisition::~Acquisition() {
     m_measures.clear();
+//    std::cout << "[Acquisition] ~Acquisition()" << std::endl;
 }
 
 // Acquisition::Acquisition( Acquisition&& acq ) noexcept :

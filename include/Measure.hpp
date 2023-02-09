@@ -23,7 +23,8 @@ class SRC_API Measure
     /// \param size
     /// of the data array in bytes.
     /// \param resolution
-    /// needs to be compatible with the sensorSpec when you send this measure through the OutputSensor.
+    /// needs to be compatible with the sensorSpec when you send this measure through the
+    /// OutputSensor.
     ///
     template <class ResolutionT = Resolution>
     Measure( const unsigned char* const data, uint64_t size, ResolutionT&& resolution );
@@ -36,10 +37,12 @@ class SRC_API Measure
     /// \param size
     /// of the data array in bytes.
     /// \param resolution
-    /// needs to be compatible with the sensorSpec when you send this measure through the OutputSensor.
+    /// needs to be compatible with the sensorSpec when you send this measure through the
+    /// OutputSensor. \param stealData is on when you want the measure to be the owner of the
+    /// external pointer data, that imply the deletion of data when measure is destruct.
     ///
     template <class ResolutionT = Resolution>
-    Measure( unsigned char* data, uint64_t size, ResolutionT&& resolution );
+    Measure( unsigned char* data, uint64_t size, ResolutionT&& resolution, bool stealData = false );
 
     ///
     /// \brief Measure
@@ -50,7 +53,7 @@ class SRC_API Measure
     Measure( Measure&& measure );
     Measure& operator=( Measure&& ) = delete;
 
-    Measure( const Measure& ) = delete;
+    Measure( const Measure& )            = delete;
     Measure& operator=( const Measure& ) = delete;
 
     ~Measure();
@@ -130,7 +133,7 @@ class SRC_API Measure
     ///
     const inline Resolution& getResolution() const;
 
-private:
+  private:
     bool m_ownData = false;
     bool m_isMoved = false;
     Resolution m_resolution;
@@ -156,16 +159,17 @@ Measure::Measure( const unsigned char* const data, uint64_t size, ResolutionT&& 
     //    static_assert(std::is_same<ResolutionT, Resolution>::value, "not Resolution");
 
     assert( data != nullptr );
-    memcpy( (unsigned char*)m_data, data, m_size );
+    memcpy( const_cast<unsigned char*>( m_data ), data, m_size );
     assert( m_size > 0 );
     assert( m_data != nullptr );
     assert( size == computeAcquisitionSize( m_resolution ) );
 }
 
 template <class ResolutionT>
-Measure::Measure( unsigned char* data, uint64_t size, ResolutionT&& resolution ) :
+Measure::Measure( unsigned char* data, uint64_t size, ResolutionT&& resolution, bool stealData ) :
     m_data( data ),
     m_size( size ),
+    m_ownData( stealData ),
     m_resolution( std::move( resolution ) )
 //    m_resolution( std::forward( resolution ) )
 //    m_resolution( std::forward<ResolutionT>( resolution ) )
@@ -286,43 +290,36 @@ class SRC_API Dof6 : public Measure
     ///
     inline float w3() const;
 
-private:
+  private:
     const float m_x = 0.0, m_y = 0.0, m_z = 0.0;                // vec3
     const float m_w0 = 1.0, m_w1 = 0.0, m_w2 = 0.0, m_w3 = 0.0; // quat : w, x, y, z
 };
 
-inline float Dof6::x() const
-{
+inline float Dof6::x() const {
     return m_x;
 }
 
-inline float Dof6::y() const
-{
+inline float Dof6::y() const {
     return m_y;
 }
 
-inline float Dof6::z() const
-{
+inline float Dof6::z() const {
     return m_z;
 }
 
-inline float Dof6::w0() const
-{
+inline float Dof6::w0() const {
     return m_w0;
 }
 
-inline float Dof6::w1() const
-{
+inline float Dof6::w1() const {
     return m_w1;
 }
 
-inline float Dof6::w2() const
-{
+inline float Dof6::w2() const {
     return m_w2;
 }
 
-inline float Dof6::w3() const
-{
+inline float Dof6::w3() const {
     return m_w3;
 }
 

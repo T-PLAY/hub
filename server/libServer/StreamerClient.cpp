@@ -428,6 +428,7 @@ StreamerClient::StreamerClient( Server& server, int iClient, hub::net::ClientSoc
 
                 m_server.newAcquisition( this, masterAcq );
 
+
                 //                if ( masterAcq.getMeasures().size() == 1 ) {
                 if ( !m_isRecordStream ) {
                     //                    auto & lastAcq = m_lastAcq[""];

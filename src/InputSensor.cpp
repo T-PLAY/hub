@@ -16,7 +16,7 @@ Acquisition InputSensor::getAcquisition() const {
 
     assert( acq.getSize() == m_spec.getAcquisitionSize() );
     const auto& resolutions = m_spec.getResolutions();
-    auto& measures          = acq.m_measures;
+    const auto& measures          = acq.m_measures;
     assert( resolutions.size() == measures.size() );
     assert( resolutions.size() > 0 );
     for ( size_t i = 0; i < resolutions.size(); ++i ) {
