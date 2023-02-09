@@ -97,8 +97,8 @@ add_subdirectory(doc)
 
 # Source and header dir
 #set(PROJECT_SOURCE_DIR "src")
-set(INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include")
-set(SOURCE_DIR "${CMAKE_SOURCE_DIR}/src")
+set(INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include")
+set(SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
 
 
 ## Source files, without extensions or directory names Here assuming each file has both header and impl
