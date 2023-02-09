@@ -273,7 +273,7 @@ Acquisition Interface::getAcquisition( const SensorSpec& sensorSpec ) const
         //            Acquisition::operator<<(acq, data, size, resolutions.at(iMeasure));
         //            acq << measure;
 
-        acq.emplaceMeasure( data, size, resolutions.at( iMeasure ) );
+        acq.emplaceMeasure( data, size, resolutions.at( iMeasure ), true );
         //    acq << { data, size};
     }
 
