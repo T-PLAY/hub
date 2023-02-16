@@ -13,7 +13,13 @@ set(CMAKE_FIND_PACKAGE_NO_SYSTEM_PACKAGE_REGISTRY False)
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Debug")
 endif()
+
 set(CMAKE_DEBUG_POSTFIX d)
+
+set(CMAKE_POSTFIX "")
+if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+    set(CMAKE_POSTFIX ${CMAKE_DEBUG_POSTFIX})
+endif()
 
 project(hub)
 
@@ -153,12 +159,23 @@ endif()
 
 # target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR})
 
-if(WIN32)
+if(MINGW)
+
+    set(REQUIRED_LIBS ws2_32)
+#    message( STATUS "    Installing system-libraries: MinGW DLLs." )
+    get_filename_component( Mingw_Path ${CMAKE_CXX_COMPILER} PATH )
+#    message( STATUS ${Mingw_Path})
+    set( CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS ${Mingw_Path}/libgcc_s_seh-1.dll ${Mingw_Path}/libstdc++-6.dll ${Mingw_Path}/libwinpthread-1.dll )
+    install( PROGRAMS ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS} DESTINATION bin COMPONENT System )
+
+elseif( WIN32 )
+
 
 elseif(UNIX)
     find_package(Threads REQUIRED)
 #    set(UNIX_REQUIRED_LIBS Threads::Threads)
     set(REQUIRED_LIBS Threads::Threads)
+
 endif()
 
 # if (MSVC) # Here I set the target System to WindowsStore, which *should* enable UWP-support UWP compilation : cmake
@@ -192,6 +209,12 @@ install(
     TARGETS ${PROJECT_NAME}
     EXPORT ${PROJECT_NAME}
     DESTINATION lib)
+
+#    set( CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS ${Mingw_Path}/libgcc_s_seh-1.dll ${Mingw_Path}/libstdc++-6.dll ${Mingw_Path}/libwinpthread-1.dll )
+#install( PROGRAMS ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS} DESTINATION bin COMPONENT System )
+install(
+    PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/libhub${CMAKE_POSTFIX}.dll
+    DESTINATION bin)
 
 # install(TARGETS ${PROJECT_NAME} DESTINATION lib)
 install(
