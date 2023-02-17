@@ -213,7 +213,7 @@ install(
 #    set( CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS ${Mingw_Path}/libgcc_s_seh-1.dll ${Mingw_Path}/libstdc++-6.dll ${Mingw_Path}/libwinpthread-1.dll )
 #install( PROGRAMS ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS} DESTINATION bin COMPONENT System )
 install(
-    PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/libhub${CMAKE_POSTFIX}.dll
+    PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/hub${CMAKE_POSTFIX}.dll
     DESTINATION bin)
 
 # install(TARGETS ${PROJECT_NAME} DESTINATION lib)
