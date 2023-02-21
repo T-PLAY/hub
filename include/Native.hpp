@@ -7,8 +7,11 @@
 namespace hub {
 namespace native {
 
+#ifdef __cplusplus
 extern "C"
 {
+#endif
+
     SRC_API InputSensor* createInputSensor( const char* streamName, const char* ipv4, int port );
     SRC_API void freeInputSensor( InputSensor* inputSensor );
     SRC_API int getAcquisitionSize( const InputSensor* inputSensor );
@@ -65,7 +68,9 @@ extern "C"
     SRC_API int metaData_getInt( const SensorSpec::MetaData* metaData, const char* metaName );
     SRC_API unsigned int metaData_getUInt( const SensorSpec::MetaData* metaData,
                                            const char* metaName );
-}
+#ifdef __cplusplus
+} // end extern "C"
+#endif
 
 } // namespace native
 } // namespace hub
