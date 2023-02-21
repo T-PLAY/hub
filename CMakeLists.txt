@@ -21,9 +21,13 @@ if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
     set(CMAKE_POSTFIX ${CMAKE_DEBUG_POSTFIX})
 endif()
 
+add_definitions(-DPROJECT_DIR=\"${CMAKE_SOURCE_DIR}/\")
+set(RESOURCES_DIR "${CMAKE_SOURCE_DIR}/resources/")
+#add_definitions(-DRESOURCES_DIR=\"${CMAKE_SOURCE_DIR}/resources/\")
+add_definitions(-DRESOURCES_DIR=\"${RESOURCES_DIR}\")
+
 project(hub)
 
-#add_definitions(-DPROJECT_DIR=\"${CMAKE_SOURCE_DIR}/\")
 
 #set(SRC_DIR ${CMAKE_SOURCE_DIR}/src/)
 #set(SRC_TARGET hub)

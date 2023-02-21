@@ -113,14 +113,14 @@ inline constexpr bool format2isInterpolable( const Format& format ) noexcept {
 
 //////////////////////////////////////////////////////////////////////////////
 
-static std::string dims2string( const Dims& dims ) {
-    std::string str = "";
-    for ( unsigned int i = 0; i < dims.size(); ++i ) {
-        str += std::to_string( dims[i] );
-        if ( i != dims.size() - 1 ) { str += " x "; }
-    }
-    return str;
-}
+//static std::string dims2string( const Dims& dims ) {
+//    std::string str = "";
+//    for ( unsigned int i = 0; i < dims.size(); ++i ) {
+//        str += std::to_string( dims[i] );
+//        if ( i != dims.size() - 1 ) { str += " x "; }
+//    }
+//    return str;
+//}
 
 static std::string format2stringArray[static_cast<int>( Format::COUNT )] = {
     "NONE",        "Z16",   "DISPARITY16", "XYZ32F",     "YUYV",          "RGB8",
@@ -131,24 +131,26 @@ static std::string format2stringArray[static_cast<int>( Format::COUNT )] = {
     "Y411",        "MAT4",
 };
 
-static inline constexpr std::string& format2string( const Format& format ) {
-    return format2stringArray[(int)format];
-}
+//static inline constexpr std::string& format2string( const Format& format ) {
+//    return format2stringArray[(int)format];
+//}
 
-static std::string resolutions2string( const Resolutions& resolutions ) {
-    const int size  = static_cast<int>( resolutions.size() );
-    std::string str = "";
-    if ( size > 1 ) str += "[";
-    for ( int i = 0; i < size; ++i ) {
-        const auto& dims   = resolutions[i].first;
-        const auto& format = resolutions[i].second;
-        if ( size > 1 ) str += "{";
-        str += dims2string( dims ) + " : " + format2string( format );
-        if ( size > 1 ) str += "}";
-        if ( i != size - 1 ) str += ", ";
-    }
-    if ( size > 1 ) str += "]";
-    return str;
-}
+//static std::string resolutions2string( const Resolutions& resolutions ) {
+//    const int size  = static_cast<int>( resolutions.size() );
+//    std::string str = "";
+//    if ( size > 1 ) str += "[";
+//    for ( int i = 0; i < size; ++i ) {
+////        const auto & resolution = resolutions.at(i);
+//        const auto& dims   = resolutions[i].first;
+//        const auto& format = resolutions[i].second;
+//        if ( size > 1 ) str += "{";
+//        str += dims2string( dims ) + " : " + format2string( format );
+////        str += resolution2string(resolution);
+//        if ( size > 1 ) str += "}";
+//        if ( i != size - 1 ) str += ", ";
+//    }
+//    if ( size > 1 ) str += "]";
+//    return str;
+//}
 
 } // namespace hub

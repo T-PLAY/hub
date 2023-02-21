@@ -114,7 +114,8 @@ std::string SensorSpec::metaData2string( const std::pair<std::string, std::any>&
 }
 
 std::ostream& operator<<( std::ostream& os, const SensorSpec& sensorSpec ) {
-    os << sensorSpec.m_sensorName << ", " << resolutions2string( sensorSpec.m_resolutions ) << ", "
+//    os << sensorSpec.m_sensorName << ", " << resolutions2string( sensorSpec.m_resolutions ) << ", "
+    os << sensorSpec.m_sensorName << ", " << sensorSpec.m_resolutions << ", "
        << SensorSpec::metaData2string( sensorSpec.m_metaData ) << ", "
        << sensorSpec.m_acquisitionSize;
     return os;
