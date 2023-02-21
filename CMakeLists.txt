@@ -33,10 +33,16 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
 #	set(CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/install/${CMAKE_BUILD_TYPE})
 #endif()
 
+set(HUB_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include")
+set(HUB_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
+
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fpic")
+
 option(HUB_BUILD_STATIC_LIBRARY "Build static library" OFF)
 
 #add_subdirectory(src)
 add_subdirectory(server)
+add_subdirectory(api)
 
 option(HUB_ENABLE_TESTS "Enable tests" OFF)
 if(HUB_ENABLE_TESTS)
@@ -103,15 +109,13 @@ add_subdirectory(doc)
 
 # Source and header dir
 #set(PROJECT_SOURCE_DIR "src")
-set(INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include")
-set(SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
 
 
 ## Source files, without extensions or directory names Here assuming each file has both header and impl
 #set(SRC_FILES Acquisition InputSensor Measure Native OutputSensor Resolution Sensor SensorSpec Streamer Viewer)
 ##file(GLOB_RECURSE SRC_FILES *.cpp)
-file(GLOB_RECURSE sources ${SOURCE_DIR}/*.cpp)
-file(GLOB_RECURSE headers ${INCLUDE_DIR}/*.hpp ${INCLUDE_DIR}/*.inl)
+file(GLOB_RECURSE sources ${HUB_SOURCE_DIR}/*.cpp)
+file(GLOB_RECURSE headers ${HUB_INCLUDE_DIR}/*.hpp ${HUB_INCLUDE_DIR}/*.inl)
 
 ### Create SOURCE_FILES
 #foreach(file ${SRC_FILES})
@@ -143,6 +147,7 @@ if(HUB_BUILD_STATIC_LIBRARY)
 #    add_library(${PROJECT_NAME} STATIC ${sources} ${headers})
     add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})
     target_compile_definitions(${PROJECT_NAME} PUBLIC -DSRC_STATIC)
+    set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE ON) #octave
 else()
 #    add_library(${PROJECT_NAME} SHARED ${sources} ${headers})
     add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
@@ -158,6 +163,8 @@ else()
 endif()
 
 # target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR})
+
+#find_package(Octave REQUIRED)
 
 if(MINGW)
 
@@ -219,7 +226,7 @@ install(
 # install(TARGETS ${PROJECT_NAME} DESTINATION lib)
 install(
 #    DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/
-    DIRECTORY ${INCLUDE_DIR}/
+    DIRECTORY ${HUB_INCLUDE_DIR}/
     DESTINATION include
 #    FILES_MATCHING
 #    PATTERN "*.hpp"
