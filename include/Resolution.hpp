@@ -76,9 +76,9 @@ using Resolutions = std::vector<Resolution>;
 
 //    static const Resolution s_Atomic_Resolution_Dof6 = Resolution {{1}, Format::DOF6};
 
-static std::string dims2string( const Dims& dims );
-static inline constexpr std::string& format2string( const Format& format );
-static std::string resolutions2string( const Resolutions& resolutions );
+//static std::string dims2string( const Dims& dims );
+//static inline constexpr std::string& format2string( const Format& format );
+//static std::string resolutions2string( const Resolutions& resolutions );
 
 //    static std::string metaData2string( const MetaData& metaData, bool expand = false );
 //    static std::string metaData2string( const std::pair<std::string, std::any>& metaData );
@@ -95,7 +95,11 @@ static inline constexpr bool format2isInterpolable( const Format& format ) noexc
 /// \return
 ///
 SRC_API std::ostream& operator<<( std::ostream& os, const Format& format );
+SRC_API std::ostream& operator<<( std::ostream& os, const Dims& dims );
 //    SRC_API friend std::ostream& operator<<( std::ostream& os, const Format& format );
+
+SRC_API std::ostream& operator<<( std::ostream& os, const Resolution& resolution );
+SRC_API std::ostream& operator<<( std::ostream& os, const Resolutions& resolutions );
 
 } // namespace hub
 

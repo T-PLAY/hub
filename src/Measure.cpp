@@ -209,6 +209,8 @@ bool Measure::operator!=( const Measure& measure ) const {
 }
 
 std::ostream& operator<<( std::ostream& os, const Measure& measure ) {
+    os << measure.getResolution() << ", [";
+
     if ( measure.m_size == 28 ) {
         const float* dof6 = reinterpret_cast<const float*>(measure.m_data);
         os << "dof6:";
@@ -221,6 +223,7 @@ std::ostream& operator<<( std::ostream& os, const Measure& measure ) {
             os << std::setw( 3 ) << (int)measure.m_data[i] << " ";
         }
     }
+    os << "]";
     return os;
 }
 

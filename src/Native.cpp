@@ -186,7 +186,11 @@ int sensorSpec_getDimension( const SensorSpec* sensorSpec, int iResolution, int 
 }
 
 void sensorSpec_getResolutionsStr( const SensorSpec* sensorSpec, char* resolutionsStr ) {
-    const auto& resolutionsString = resolutions2string( sensorSpec->getResolutions() );
+    const auto & resolutions = sensorSpec->getResolutions();
+    std::stringstream ss;
+    ss << resolutions;
+//    const auto& resolutionsString = resolutions2string( sensorSpec->getResolutions() );
+    const auto & resolutionsString = ss.str();
     const int len                 = resolutionsString.size();
     memcpy( resolutionsStr, resolutionsString.c_str(), len + 1 );
     resolutionsStr[len] = 0;

@@ -21,6 +21,7 @@ DEFUN_DLD(matpow, args, ,
     if (n == 1)
         return args(0);
 
+
     hub::SensorSpec sensorSpec;
 
     Matrix p(args(0).matrix_value());
