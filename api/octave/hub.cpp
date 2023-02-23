@@ -2,12 +2,10 @@
 
 // #include <octave/oct.h>
 #include <octave-7.3.0/octave/oct.h>
-
 #include <octave-7.3.0/octave/uint8NDArray.h>
 
 #include <InputSensor.hpp>
 
-static bool is_even( int n );
 
 DEFUN_DLD( hub, args, , "Return b = a^n for square matrix a, and non-negative, integral n." ) {
 
@@ -25,6 +23,7 @@ DEFUN_DLD( hub, args, , "Return b = a^n for square matrix a, and non-negative, i
 
     const auto & dims = resolution.first;
     const auto & format = resolution.second;
+
 
     const auto & dimX = dims.at(1);
     const auto & dimY = dims.at(0);

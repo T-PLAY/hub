@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.8)
 
-project(api-octave)
+project(octave-api)
 
 #set(WIN32_REQUIRED_LIBS)
 #set(UNIX_REQUIRED_LIBS)
@@ -16,7 +16,7 @@ add_library(${PROJECT_NAME} ${sources}) # ${headers}
 
 #set(TARGET_TEST "tests")
 #set(TARGET_TEST ${PROJECT_NAME})
-add_custom_target(tests SOURCES ${tests})
+add_custom_target(octave-tests SOURCES ${tests})
 #target_optional_sources(${PROJECT_NAME} PRIVATE ${tests})
 
 #target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR} ${SRC_DIR})
@@ -44,7 +44,8 @@ target_link_libraries(${PROJECT_NAME} hub ${REQUIRED_LIBS})
 add_custom_command(
     TARGET ${PROJECT_NAME}
     POST_BUILD
-    COMMAND mkoctfile ${sources} -I${HUB_INCLUDE_DIR} -L${PROJECT_BINARY_DIR} -lhubd
+#    COMMAND mkoctfile ${sources} -I${HUB_INCLUDE_DIR} -L${PROJECT_BINARY_DIR} -lhubd
+    COMMAND mkoctfile ${sources} -I${HUB_INCLUDE_DIR} -L${PROJECT_BINARY_DIR} -lhub${CMAKE_POSTFIX}
 )
 
 #message(STATUS ${RESOURCES_DIR})

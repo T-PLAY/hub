@@ -6,5 +6,15 @@ endif()
 
 option(HUB_API_MATLAB "Enable matlab api" OFF)
 if (HUB_API_MATLAB)
-    add_subdirectory(matlab)
+
+    set(MATLAB_ROOT_DIR
+        "<UNSET>"
+            CACHE PATH "Path of Matlab dir on your system")
+
+    if(MATLAB_ROOT_DIR STREQUAL "<UNSET>")
+            message(FATAL_ERROR "You must set MATLAB_ROOT_DIR path of your Matlab folder in your system containing <MATLAB_ROOT_DIR>/bin/{matlab,mex} executable files")
+    else()
+        add_subdirectory(matlab)
+    endif()
+
 endif()
