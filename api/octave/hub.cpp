@@ -1,8 +1,9 @@
 
 
 // #include <octave/oct.h>
-#include <octave-7.3.0/octave/oct.h>
-#include <octave-7.3.0/octave/uint8NDArray.h>
+//#include <octave-7.3.0/octave/oct.h>
+//#include <octave-7.3.0/octave/uint8NDArray.h>
+#include <oct.h>
 
 #include <InputSensor.hpp>
 

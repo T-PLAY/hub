@@ -42,7 +42,8 @@ IF(WIN32)
   SET(OCTAVE_PATHS_L2 )
   # Level 0
   FILE(GLOB OCTAVE_PATHS_L0A "c:/Octave*")
-  FILE(GLOB OCTAVE_PATHS_L0B "c:/Software/Octave*")
+  # FILE(GLOB OCTAVE_PATHS_L0B "c:/Software/Octave*")
+  FILE(GLOB OCTAVE_PATHS_L0B "C:/Program Files/GNU Octave/Octave-7.3.0/mingw64")
   SET(OCTAVE_PATHS_L0 ${OCTAVE_PATHS_L0A} ${OCTAVE_PATHS_L0B})
   # Level 1
   FOREACH(_file_ ${OCTAVE_PATHS_L0})
@@ -70,11 +71,12 @@ IF(WIN32)
       "project for more details")
   ENDIF(MSVC AND OCTAVE_USE_MINGW32)
   
-  FILE(GLOB OCTAVE_INCLUDE_PATHS "${OCTAVE_ROOT}/include/octave-*/octave")
-  FILE(GLOB OCTAVE_LIBRARIES_PATHS "${OCTAVE_ROOT}/lib/octave-*")
-  IF (NOT OCTAVE_LIBRARIES_PATHS)
-    FILE(GLOB OCTAVE_LIBRARIES_PATHS "${OCTAVE_ROOT}/lib/octave/*")
-  ENDIF (NOT OCTAVE_LIBRARIES_PATHS)
+  # FILE(GLOB OCTAVE_INCLUDE_PATHS "${OCTAVE_ROOT}/include/octave-*/octave")
+  FILE(GLOB OCTAVE_INCLUDE_PATHS "${OCTAVE_ROOT}/include/octave-7.3.0/octave")
+  # FILE(GLOB OCTAVE_LIBRARIES_PATHS "${OCTAVE_ROOT}/lib/octave-*")
+  # FILE(GLOB OCTAVE_LIBRARIES_PATHS "${OCTAVE_ROOT}/lib/octave/7.3.0/")
+  FILE(GLOB OCTAVE_LIBRARIES_PATHS "C:/Program Files/GNU Octave/Octave-7.3.0/mingw64/lib/octave/7.3.0")
+  # FILE(GLOB OCTAVE_LIBRARIES_PATHS "C:/Program Files/GNU Octave/Octave-7.3.0/mingw64/bin")
   
   # LIBOCTINTERP, LIBOCTAVE, LIBCRUFT names
   IF(OCTAVE_USE_MINGW32)
@@ -82,8 +84,9 @@ IF(WIN32)
     SET(LIBOCTAVE "liboctave")
     SET(LIBCRUFT "libcruft")
   ELSE(OCTAVE_USE_MINGW32)
-    SET(LIBOCTINTERP "octinterp")
-    SET(LIBOCTAVE "octave")
+    # SET(LIBOCTINTERP "octinterp")
+    SET(LIBOCTINTERP "octinterp-10")
+    SET(LIBOCTAVE "octave-9")
     SET(LIBCRUFT "cruft")
   ENDIF(OCTAVE_USE_MINGW32)
   
@@ -130,19 +133,52 @@ ELSE(WIN32)
   ENDIF(APPLE)
 ENDIF(WIN32)
 
+
+IF (NOT OCTAVE_INCLUDE_PATHS)
+  message(FATAL_ERROR "Could not find octave include path")
+endif()
+
+IF (NOT OCTAVE_LIBRARIES_PATHS)
+  message(FATAL_ERROR "Could not find octave library path")
+  # FILE(GLOB OCTAVE_LIBRARIES_PATHS "${OCTAVE_ROOT}/lib/octave/*")
+endif()
+
 FIND_PROGRAM(OCTAVE_EXECUTABLE
     "octave"
     PATHS ${OCTAVE_ROOT}
     PATH_SUFFIXES "bin" NO_DEFAULT_PATH
     )
+IF (NOT OCTAVE_EXECUTABLE)
+  message(FATAL_ERROR "Could not find octave executable")
+endif()
+
+FIND_PROGRAM(MKOCTFILE_EXECUTABLE
+    "mkoctfile"
+    PATHS ${OCTAVE_ROOT}
+    PATH_SUFFIXES "bin" NO_DEFAULT_PATH
+    )
+IF (NOT MKOCTFILE_EXECUTABLE)
+  message(FATAL_ERROR "Could not find mkoctfile executable")
+endif()
+
+
+FIND_LIBRARY(OCTAVE_OCTAVE_LIBRARY
+    # ${LIBOCTAVE}
+    "octave"
+    ${OCTAVE_LIBRARIES_PATHS} NO_DEFAULT_PATH
+    )
+IF (NOT OCTAVE_OCTAVE_LIBRARY)
+  message(FATAL_ERROR "Could not find octave library")
+endif()
+
 FIND_LIBRARY(OCTAVE_OCTINTERP_LIBRARY
     ${LIBOCTINTERP}
     ${OCTAVE_LIBRARIES_PATHS} NO_DEFAULT_PATH
     )
-FIND_LIBRARY(OCTAVE_OCTAVE_LIBRARY
-    ${LIBOCTAVE}
-    ${OCTAVE_LIBRARIES_PATHS} NO_DEFAULT_PATH
-    )
+IF (NOT OCTAVE_OCTINTERP_LIBRARY)
+  message(FATAL_ERROR "Could not find octave interp library")
+endif()
+
 # FIND_LIBRARY(OCTAVE_CRUFT_LIBRARY
 #     ${LIBCRUFT}
 #     ${OCTAVE_LIBRARIES_PATHS} NO_DEFAULT_PATH
