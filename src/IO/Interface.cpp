@@ -213,6 +213,9 @@ void Interface::read( std::string& str ) const {
 //        return std::move(measure);
 //    }
 
+
+
+
 SensorSpec Interface::getSensorSpec() const {
     assert( isOpen() );
 

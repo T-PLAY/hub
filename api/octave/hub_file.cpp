@@ -4,11 +4,12 @@
 //#include <octave-7.3.0/octave/oct.h>
 //#include <octave-7.3.0/octave/uint8NDArray.h>
 #include <oct.h>
+//#include <uint8NDArray.h>
 
 #include <InputSensor.hpp>
 
 
-DEFUN_DLD( hub, args, , "Return b = a^n for square matrix a, and non-negative, integral n." ) {
+DEFUN_DLD( hub_file, args, , "Return b = a^n for square matrix a, and non-negative, integral n." ) {
 
     hub::InputSensor inputSensor( hub::io::File(
         std::fstream( "anechoicTarget.txt", std::ios::binary | std::ios::in ) ) );

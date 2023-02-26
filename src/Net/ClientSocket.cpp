@@ -2,11 +2,12 @@
 
 #include <cstring>
 #include <thread>
+#include <regex>
 
 namespace hub {
 namespace net {
 
-static const std::regex m_ipv4Regex { "^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$" };
+//static const std::regex m_ipv4Regex { "^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$" };
 
 ClientSocket::ClientSocket() : m_ipv4( s_defaultServiceIp ), m_port( s_defaultServicePort ) {
 #ifdef DEBUG_SOCKET
@@ -42,16 +43,32 @@ ClientSocket::ClientSocket( net::utils::socket_fd fdSock ) {
 #endif
 }
 
+//ClientSocket::ClientSocket(ClientSocket &&sock) :
+//    m_ipv4(std::move(sock.m_ipv4)),
+//    m_port(std::move(sock.m_port)),
+//    m_addr(std::move(sock.m_addr)),
+//    m_connected(std::move(sock.m_connected)),
+//    m_moved(std::move(sock.m_moved))
+//{
+//    sock.m_connected = false;
+//    sock.m_moved = true;
+//}
+
 ClientSocket::~ClientSocket() {
 #ifdef DEBUG_SOCKET
     DEBUG_MSG( getHeader( m_fdSock ) << "~ClientSocket()" );
 #endif
     //    clear();
+//    if (! m_moved) {
+//        write(Message::CLOSE);
+//    }
 }
 
 void ClientSocket::initServerAddress() {
-    assert( std::regex_match( m_ipv4, m_ipv4Regex ) );
-    assert( 0 <= m_port && m_port <= 65535 );
+    assert(utils::isValid(m_ipv4));
+//    assert( std::regex_match( m_ipv4, m_ipv4Regex ) );
+    assert(utils::isValid(m_port));
+//    assert( 0 <= m_port && m_port <= 65535 );
 
     // Server address construction
     //    struct sockaddr_in serv_addr;
@@ -274,6 +291,7 @@ static constexpr std::string_view type2string[static_cast<int>( ClientSocket::Ty
     "STREAMER",
     "VIEWER",
     "STREAM_VIEWER",
+    "ASKER",
 };
 std::ostream& operator<<( std::ostream& os, const ClientSocket::Type& type ) {
     os << type2string[(int)type];
@@ -292,6 +310,10 @@ static constexpr std::string_view message2string[static_cast<int>( ClientSocket:
         "NEW_STREAMER",
         "NOT_FOUND",
         "FOUND",
+        "NEW_ACQ",
+        "LIST_STREAMS",
+        "GET_SENSOR_SPEC",
+        "GET_ACQUISITION",
 };
 std::ostream& operator<<( std::ostream& os, const ClientSocket::Message& msg ) {
     os << message2string[(int)msg];
@@ -333,7 +355,8 @@ void ClientSocket::setPort( int newPort ) {
 
 void ClientSocket::setIpv4( const std::string& newIpv4 ) {
     assert( !isOpen() );
-    assert( std::regex_match( newIpv4, m_ipv4Regex ) );
+//    assert( std::regex_match( newIpv4, m_ipv4Regex ) );
+    assert(utils::isValid(newIpv4));
     m_ipv4 = newIpv4;
     //    inet_pton( AF_INET, m_ipv4.c_str(), &m_serverAddress.sin_addr.s_addr ); // winsock 2.0
     m_addr.setIpv4( m_ipv4 );

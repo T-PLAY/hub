@@ -31,20 +31,19 @@ namespace io {
 class SRC_API Interface
 {
   public:
-    Interface()                            = default;
+    Interface() = default;
 
     ///
     /// \param ioStream
     ///
-    Interface( Interface&& ioStream )      = default;
-    Interface( const Interface& ioStream ) = delete;
+    Interface( Interface&& ioStream )                 = default;
+    Interface( const Interface& ioStream )            = delete;
     Interface& operator=( const Interface& ioStream ) = delete;
-    Interface&& operator=( Interface&& ioStream ) = delete;
+    Interface&& operator=( Interface&& ioStream )     = delete;
 
     virtual ~Interface() = default;
 
-protected:
-
+  protected:
     ///
     /// \brief write
     /// function describes how to write data through the communication bus.
@@ -65,8 +64,7 @@ protected:
     ///
     virtual void read( unsigned char* data, size_t len ) const = 0;
 
-public:
-
+  public:
     ///
     /// \brief isEnd
     /// allows to know if the communication bus is no longer active,
@@ -75,13 +73,13 @@ public:
     /// true if the bus is inactive.\n
     /// false otherwise.
     ///
-    virtual bool isEnd() const  = 0;
+    virtual bool isEnd() const = 0;
 
     ///
     /// \brief close
     /// is the capability to terminate communication at both ends if possible.
     ///
-    virtual void close() const  = 0;
+    virtual void close() const = 0;
 
     ///
     /// \brief isOpen
@@ -184,7 +182,6 @@ public:
     template <class T>
     void read( T& t ) const;
 
-
     ///
     /// \brief read
     /// \param list
@@ -211,7 +208,12 @@ public:
     /// \param pair
     ///
     template <class T, class U>
-    void read( std::pair<T, U>& pair ) const;
+    typename std::enable_if<( not std::is_same<U, hub::SensorSpec>::value ), void>::type
+    read( std::pair<T, U>& pair ) const;
+
+    template <class T, class U>
+    typename std::enable_if<( std::is_same<U, hub::SensorSpec>::value ), void>::type
+    read( std::pair<T, U>& pair ) const;
 
     ///
     /// \brief read
@@ -223,7 +225,9 @@ public:
     /// \brief read
     /// \param sensorSpec
     ///
-    void read( SensorSpec& sensorSpec ) const   = delete;
+    void read( SensorSpec& sensorSpec ) const = delete;
+
+    SensorSpec read() const { return getSensorSpec(); }
 
     ///
     /// \brief read
@@ -235,7 +239,7 @@ public:
     /// \brief read
     /// \param measure
     ///
-    void read( Measure& measure ) const         = delete;
+    void read( Measure& measure ) const = delete;
 
     ///
     /// \brief getSensorSpec
@@ -285,7 +289,6 @@ class SRC_API OutputInterface : public virtual Interface
 ///
 class SRC_API InputOutputInterface : public InputInterface, public OutputInterface
 {};
-
 
 } // namespace io
 } // namespace hub

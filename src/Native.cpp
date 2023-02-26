@@ -197,7 +197,7 @@ void sensorSpec_getResolutionsStr( const SensorSpec* sensorSpec, char* resolutio
 }
 
 void sensorSpec_getMetaDataStr( const SensorSpec* sensorSpec, char* metaDataStr ) {
-    const auto& metaDataString = SensorSpec::metaData2string( sensorSpec->getMetaData(), true );
+    const auto& metaDataString = SensorSpec::to_string(sensorSpec->getMetaData(), true );
     const int len              = metaDataString.size();
     memcpy( metaDataStr, metaDataString.c_str(), len + 1 );
     metaDataStr[len] = 0;

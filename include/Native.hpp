@@ -5,6 +5,11 @@
 #include "Viewer.hpp"
 
 namespace hub {
+
+///
+/// @brief native
+/// Export these "C" functions usable by Unity C++ plugin.
+///
 namespace native {
 
 #ifdef __cplusplus

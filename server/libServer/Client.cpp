@@ -9,6 +9,11 @@ std::mutex Client::s_mtxCout;
 
 Client::Client( Server& server, int iClient ) : m_server( server ), m_iClient( iClient ) {}
 
+Client::~Client()
+{
+    m_server.removeClient(this);
+}
+
 constexpr int g_margin  = 45;
 constexpr int g_margin2 = 20;
 

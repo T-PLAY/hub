@@ -2,6 +2,7 @@
 // #include "mex.hpp"
 // #include "mexAdapter.hpp"
 #include <MatlabDataArray.hpp> // ROW_MAJOR
+#undef DLL_EXPORT_SYM
 #include <mex.hpp>
 #include <mexAdapter.hpp>
 

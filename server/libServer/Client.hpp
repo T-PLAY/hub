@@ -9,7 +9,7 @@ class Client
 {
   public:
     Client( Server& server, int iClient );
-    virtual ~Client() = default;
+    virtual ~Client();
 
     virtual std::string headerMsg() const;
     void printStatusMessage( const std::string& message ) const;
