@@ -1,7 +1,8 @@
 
 
+disp("running hub test");
 
-img = hub();
+img = hub_file();
 
 size(img)
 

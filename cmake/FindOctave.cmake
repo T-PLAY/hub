@@ -214,9 +214,10 @@ MACRO(OCTAVE_EXTRACT_SOURCES_LIBRARIES sources thirdlibraries)
 ENDMACRO(OCTAVE_EXTRACT_SOURCES_LIBRARIES)
 
 # OCTAVE_MEX_CREATE(functionname inputfiles thridlibraries)
-MACRO(OCTAVE_MEX_CREATE functionname)
+MACRO(OCTAVE_MEX_CREATE functionname sources)
   OCTAVE_EXTRACT_SOURCES_LIBRARIES(sources thirdlibraries ${ARGN})
-  ADD_LIBRARY(${functionname} SHARED ${sources} mexFunction.def)
+#  ADD_LIBRARY(${functionname} SHARED ${sources} mexFunction.def)
+  ADD_LIBRARY(${functionname} SHARED ${sources})
   TARGET_LINK_LIBRARIES(${functionname} ${OCTAVE_LIBRARIES} ${thirdlibraries})
   SET_TARGET_PROPERTIES(${functionname} PROPERTIES
     PREFIX ""

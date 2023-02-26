@@ -17,7 +17,6 @@ extern "C"
 
 //    NATIVE_EXPORT void getAcquisition( const char* streamName, const char* ipv4, int port );
 //    NATIVE_EXPORT void getAcquisition( );
-    SRC_API const char * getFuck( );
 
 
 #ifdef __cplusplus

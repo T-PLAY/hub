@@ -83,22 +83,24 @@ class SRC_API SensorSpec
     ///
     SRC_API friend std::ostream& operator<<( std::ostream& os, const SensorSpec& sensorSpec );
 
+    std::string to_string() const;
+
   public:
 
     ///
-    /// \brief metaData2string
+    /// \brief to_string
     /// \param metaData
     /// \param expand
     /// \return
     ///
-    static std::string metaData2string( const MetaData& metaData, bool expand = false );
+    static std::string to_string( const MetaData& metaData, bool expand = false );
 
     ///
-    /// \brief metaData2string
+    /// \brief to_string
     /// \param metaData
     /// \return
     ///
-    static std::string metaData2string( const std::pair<std::string, std::any>& metaData );
+    static std::string to_string( const std::pair<std::string, std::any>& metaData );
 
   public:
 #if CPLUSPLUS_VERSION == 20

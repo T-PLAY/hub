@@ -11,13 +11,6 @@
 //namespace hub {
 //namespace native2 {
 
-//__declspec(dllexport)
-    const char *getFuck( ) {
-//    printf("fuck\n");
-//    std::cout << "fuck" << std::endl;
-    return "fuck";
-}
-
 //void createInputSensor( const char* streamName, const char* ipv4, int port ) {
 //    std::cout << "[Native] createInputSensor( " << streamName << ")" << std::endl;
 //    InputSensor* inputSensor = nullptr;

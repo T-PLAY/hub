@@ -5,6 +5,9 @@
 #include <cstring>
 #include <stdio.h>
 #include <stdlib.h>
+#include <regex>
+
+static const std::regex s_ipv4Regex { "^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$" };
 
 #ifdef WIN32
 
@@ -216,6 +219,9 @@ class ClientAddrImpl
 {
   public:
     //            ~ClientAddrImpl() = default;
+//    ClientAddrImpl() = default;
+//    ClientAddrImpl(ClientAddrImpl && clientAddr) = default;
+
     void init( const std::string& ipv4, int port ) {
         //    // Server address construction
         //                memset( &m_sockAddr, 0, sizeof( m_sockAddr ) );
@@ -290,6 +296,16 @@ int send( socket_fd sock, const char* buf, int len, int flags ) {
 
 int recv( socket_fd sock, char* buf, int len, int flags ) {
     return ::recv( sock, buf, len, flags );
+}
+
+bool isValid(const std::string &ipv4)
+{
+    return std::regex_match(ipv4, s_ipv4Regex);
+}
+
+bool isValid(int port)
+{
+    return ( 0 <= port && port <= 65535 );
 }
 
 } // namespace utils

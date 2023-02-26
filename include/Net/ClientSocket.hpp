@@ -1,6 +1,5 @@
 #pragma once
 
-#include <regex>
 
 #include "IO/Interface.hpp"
 #include "Net/Socket.hpp"
@@ -30,8 +29,10 @@ class SRC_API ClientSocket : public Socket, public virtual io::Interface
   public:
     ///
     /// \brief The Type enum
+    /// corresponds of the type of connection uses by the server to process
+    /// things corresponding of each type of new connected client.
     ///
-    enum class Type { NONE, STREAMER, VIEWER, STREAM_VIEWER, COUNT };
+    enum class Type { NONE, STREAMER, VIEWER, STREAM_VIEWER, ASKER, COUNT };
 
     ///
     /// \brief operator <<
@@ -43,6 +44,7 @@ class SRC_API ClientSocket : public Socket, public virtual io::Interface
 
     ///
     /// \brief The Message enum
+    /// define atomic message to communicate to the server.
     ///
     enum class Message {
         NONE,
@@ -50,12 +52,16 @@ class SRC_API ClientSocket : public Socket, public virtual io::Interface
         SYNC,
         DATA,
         OK,
-        CLOSE,
+        CLOSE, // connection
         DEL_STREAMER,
         NEW_STREAMER,
         NOT_FOUND,
         FOUND,
         NEW_ACQ,
+//        END_CONNECTION,
+        LIST_STREAMS,
+        GET_SENSOR_SPEC,
+        GET_ACQUISITION,
         COUNT
     };
 
@@ -92,7 +98,8 @@ class SRC_API ClientSocket : public Socket, public virtual io::Interface
     ///
     /// \param sock
     ///
-    ClientSocket( ClientSocket&& sock )      = default;
+    ClientSocket( ClientSocket&& sock ) = default;
+//    ClientSocket( ClientSocket&& sock );
 
     ClientSocket& operator=( const ClientSocket& sock ) = delete;
     ClientSocket&& operator=( ClientSocket&& sock ) = delete;
@@ -192,6 +199,7 @@ class SRC_API ClientSocket : public Socket, public virtual io::Interface
     int m_port;
     net::utils::ClientAddr m_addr;
     mutable bool m_connected = false;
+    bool m_moved = false;
 
 };
 

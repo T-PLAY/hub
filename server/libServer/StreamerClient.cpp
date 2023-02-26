@@ -92,7 +92,7 @@ StreamerClient::StreamerClient( Server& server, int iClient, hub::net::ClientSoc
 
     const auto& metaData = sensorSpec.getMetaData();
     for ( const auto& pair : metaData ) {
-        std::cout << headerMsg() << "metaData: " << hub::SensorSpec::metaData2string( pair )
+        std::cout << headerMsg() << "metaData: " << hub::SensorSpec::to_string(pair )
                   << std::endl;
     }
     if ( metaData.find( "type" ) != metaData.end() ) {

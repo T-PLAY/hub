@@ -14,6 +14,7 @@
 #include "StreamViewerClient.hpp"
 #include "StreamerClient.hpp"
 #include "ViewerClient.hpp"
+#include "AskerClient.hpp"
 
 class Server
 {
@@ -41,6 +42,12 @@ class Server
 
     void newAcquisition( StreamerClient* streamer, const hub::Acquisition& acq );
 
+    std::list<std::pair<std::string, hub::SensorSpec>> listStreams() const;
+    const hub::SensorSpec & getSensorSpec(const std::string & streamName);
+    const std::shared_ptr<hub::Acquisition> getAcquisition(const std::string & streamName);
+
+    void removeClient(const Client * client);
+
   private:
     //    bool m_acqPing = true;
     std::thread m_thread;
@@ -54,9 +61,9 @@ class Server
     //    std::map<std::string, std::list<StreamViewerClient*>> m_streamViewers;
 
     hub::net::ServerSocket m_serverSock;
-    std::list<Client*> m_clients;
+    std::list<const Client*> m_clients;
 
-    int m_maxClients = 1'000;
+    int m_maxClients = 1'000'000;
 
   public:
     void setMaxClients( int maxClients );
