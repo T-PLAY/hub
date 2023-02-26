@@ -173,8 +173,8 @@ void ClientSocket::write( const unsigned char* data, size_t len ) const {
         }
         catch ( std::exception& e ) {
             assert( false );
-//            throw e;
-            throw;
+            throw e;
+//            throw;
         }
 
         if ( byteSent == -1 ) {
