@@ -13,23 +13,26 @@ std::ostream& operator<<( std::ostream& os, const Format& format ) {
 std::ostream& operator<<( std::ostream& os, const Dims& dims ) {
 
 //    std::string str = "";
-    for ( unsigned int i = 0; i < dims.size(); ++i ) {
-        os << std::to_string( dims[i] );
-        if ( i != dims.size() - 1 ) { os << " x "; }
-    }
+//    for ( unsigned int i = 0; i < dims.size(); ++i ) {
+//        os << std::to_string( dims[i] );
+//        if ( i != dims.size() - 1 ) { os << " x "; }
+//    }
+    os << HUB_TO_STRING(dims);
     return os;
+//    return to_string(dims);
 //    return str;
 }
 
 std::ostream& operator<<( std::ostream& os, const Resolution& resolution ) {
 //    os << resolution.first;
-        const auto& dims   = resolution.first;
-        const auto& format = resolution.second;
-//        if ( size > 1 ) str += "{";
-//        os << dims2string( dims ) + " : " + format2string( format );
-//        os << dims2string( dims ) + " : " + format2string( format );
-//        os << dims2string( dims ) << " : " << format;
-        os << "{" << dims << " : " << format << "}";
+//        const auto& dims   = resolution.first;
+//        const auto& format = resolution.second;
+////        if ( size > 1 ) str += "{";
+////        os << dims2string( dims ) + " : " + format2string( format );
+////        os << dims2string( dims ) + " : " + format2string( format );
+////        os << dims2string( dims ) << " : " << format;
+//        os << "{" << dims << " : " << format << "}";
+        os << HUB_TO_STRING(resolution);
 //        if ( size > 1 ) str += "}";
 //        if ( i != size - 1 ) str += ", ";
     return os;
@@ -37,24 +40,24 @@ std::ostream& operator<<( std::ostream& os, const Resolution& resolution ) {
 
 
 std::ostream& operator<<( std::ostream& os, const Resolutions& resolutions ) {
-//    os << resolution.first;
-//    os << resolutions2string(resolutions);
-    const int size  = static_cast<int>( resolutions.size() );
-//    std::string str = "";
-    if ( size > 1 ) os << "[";
-    for ( int i = 0; i < size; ++i ) {
-        const auto & resolution = resolutions.at(i);
-//        const auto& dims   = resolutions[i].first;
-//        const auto& format = resolutions[i].second;
-//        if ( size > 1 ) os << "{";
-//        str += dims2string( dims ) + " : " + format2string( format );
-//        str += resolution2string(resolution);
-        os << resolution;
-//        if ( size > 1 ) os << "}";
-        if ( i != size - 1 ) os << ", ";
-    }
-    if ( size > 1 ) os << "]";
-//    os << str;
+////    os << resolution.first;
+////    os << resolutions2string(resolutions);
+//    const int size  = static_cast<int>( resolutions.size() );
+////    std::string str = "";
+//    if ( size > 1 ) os << "[";
+//    for ( int i = 0; i < size; ++i ) {
+//        const auto & resolution = resolutions.at(i);
+////        const auto& dims   = resolutions[i].first;
+////        const auto& format = resolutions[i].second;
+////        if ( size > 1 ) os << "{";
+////        str += dims2string( dims ) + " : " + format2string( format );
+////        str += resolution2string(resolution);
+//        os << resolution;
+////        if ( size > 1 ) os << "}";
+//        if ( i != size - 1 ) os << ", ";
+//    }
+//    if ( size > 1 ) os << "]";
+    os << HUB_TO_STRING(resolutions);
 //    return str;
     return os;
 }
