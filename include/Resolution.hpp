@@ -76,9 +76,13 @@ using Resolutions = std::vector<Resolution>;
 
 //    static const Resolution s_Atomic_Resolution_Dof6 = Resolution {{1}, Format::DOF6};
 
-//static std::string dims2string( const Dims& dims );
-//static inline constexpr std::string& format2string( const Format& format );
-//static std::string resolutions2string( const Resolutions& resolutions );
+#define HUB_TO_STRING to_string
+
+static std::string HUB_TO_STRING( const Dims& dims );
+static inline constexpr std::string& HUB_TO_STRING( const Format& format );
+static std::string HUB_TO_STRING( const Resolutions& resolutions );
+static std::string HUB_TO_STRING( const Resolution& resolution );
+//static std::string to_string( const std::string & string );
 
 //    static std::string metaData2string( const MetaData& metaData, bool expand = false );
 //    static std::string metaData2string( const std::pair<std::string, std::any>& metaData );
@@ -100,6 +104,16 @@ SRC_API std::ostream& operator<<( std::ostream& os, const Dims& dims );
 
 SRC_API std::ostream& operator<<( std::ostream& os, const Resolution& resolution );
 SRC_API std::ostream& operator<<( std::ostream& os, const Resolutions& resolutions );
+
+//template <class T = Dims>
+//SRC_API std::ostream& operator<<( std::ostream& os, const T& t ) {
+//    os << hub::to_stringe(t);
+//    return os;
+//}
+
+
+//static std::string(Resolutions & resolutions ) {
+//}
 
 } // namespace hub
 

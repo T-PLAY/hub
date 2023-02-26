@@ -9,6 +9,7 @@
 // #include <stdexcept>
 #include <iostream>
 #include <numeric>
+#include <sstream>
 
 namespace hub {
 
@@ -113,14 +114,14 @@ inline constexpr bool format2isInterpolable( const Format& format ) noexcept {
 
 //////////////////////////////////////////////////////////////////////////////
 
-//static std::string dims2string( const Dims& dims ) {
-//    std::string str = "";
-//    for ( unsigned int i = 0; i < dims.size(); ++i ) {
-//        str += std::to_string( dims[i] );
-//        if ( i != dims.size() - 1 ) { str += " x "; }
-//    }
-//    return str;
-//}
+static std::string HUB_TO_STRING( const Dims& dims ) {
+    std::string str = "";
+    for ( unsigned int i = 0; i < dims.size(); ++i ) {
+        str += std::to_string( dims[i] );
+        if ( i != dims.size() - 1 ) { str += " x "; }
+    }
+    return str;
+}
 
 static std::string format2stringArray[static_cast<int>( Format::COUNT )] = {
     "NONE",        "Z16",   "DISPARITY16", "XYZ32F",     "YUYV",          "RGB8",
@@ -131,26 +132,50 @@ static std::string format2stringArray[static_cast<int>( Format::COUNT )] = {
     "Y411",        "MAT4",
 };
 
-//static inline constexpr std::string& format2string( const Format& format ) {
-//    return format2stringArray[(int)format];
-//}
+static inline constexpr std::string& HUB_TO_STRING( const Format& format ) {
+    return format2stringArray[(int)format];
+}
 
+static std::string HUB_TO_STRING(const Resolution &resolution ) {
+        const auto& dims   = resolution.first;
+        const auto& format = resolution.second;
+        return "{" + HUB_TO_STRING(dims) + " : " + HUB_TO_STRING(format) + "}";
+}
+
+static std::string HUB_TO_STRING( const Resolutions& resolutions ) {
+//    std::stringstream sstream;
+//    sstream << resolutions;
+//    return sstream.str();
+//}
 //static std::string resolutions2string( const Resolutions& resolutions ) {
-//    const int size  = static_cast<int>( resolutions.size() );
-//    std::string str = "";
-//    if ( size > 1 ) str += "[";
-//    for ( int i = 0; i < size; ++i ) {
-////        const auto & resolution = resolutions.at(i);
+    const int size  = static_cast<int>( resolutions.size() );
+    std::string str = "";
+    if ( size > 1 ) str += "[";
+    for ( int i = 0; i < size; ++i ) {
+        const auto & resolution = resolutions.at(i);
+        str += HUB_TO_STRING(resolution);
+
 //        const auto& dims   = resolutions[i].first;
 //        const auto& format = resolutions[i].second;
 //        if ( size > 1 ) str += "{";
-//        str += dims2string( dims ) + " : " + format2string( format );
+////        str += dims2string( dims ) + " : " + format2string( format );
+//        str += to_string( dims ) + " : " + to_string( format );
 ////        str += resolution2string(resolution);
 //        if ( size > 1 ) str += "}";
-//        if ( i != size - 1 ) str += ", ";
-//    }
-//    if ( size > 1 ) str += "]";
-//    return str;
+
+        if ( i != size - 1 ) str += ", ";
+    }
+    if ( size > 1 ) str += "]";
+    return str;
+}
+
+//template <class T>
+//std::ostream& operator<<( std::ostream& os, const T& t ) {
+////    os << format2stringArray[(int)format] << " (" << s_format2nByte[(int)format] << "o)";
+////    os << format2stringArray[(int)format];
+//    os << to_string(t);
+//    return os;
 //}
+
 
 } // namespace hub
