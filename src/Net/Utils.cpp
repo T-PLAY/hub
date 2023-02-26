@@ -8,6 +8,14 @@
 
 #ifdef WIN32
 
+
+//#ifdef MIN
+#ifdef __MINGW64__
+    #undef _WIN32_WINNT
+    //#define _WIN32_WINNT _WIN32_WINNT_WS03 // Windows Server 2003
+    #define _WIN32_WINNT _WIN32_WINNT_VISTA // Windows Vista
+#endif
+
 // #include <windows.h>
 #include <winsock2.h>
 #include <ws2tcpip.h>
