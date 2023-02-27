@@ -13,11 +13,12 @@ firstStreamName = streams(1,:)
 
 #var = hub_getAcquisition("127.0.0.1", "bad type of argument");
 
-[start, End, n, X, Y, Z] = hub_getAcquisition(firstStreamName);
+[X, Y, Z, n, format, start, End] = hub_getAcquisition(firstStreamName);
 
 start
 End
 n
+format
 size(X)
 size(Y)
 size(Z)

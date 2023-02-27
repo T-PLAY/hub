@@ -114,6 +114,7 @@ foreach(name ${API_SRC_BASENAME})
         POST_BUILD
     #    COMMAND ${CMAKE_COMMAND} -E copy "${tests}" $<TARGET_FILE_DIR:${PROJECT_NAME}>
         COMMAND ${CMAKE_COMMAND} -E copy ${RESOURCES_DIR}/anechoicTarget.txt $<TARGET_FILE_DIR:${TARGET_NAME}>
+        COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_SOURCE_DIR}/OctaveViewer.m $<TARGET_FILE_DIR:${TARGET_NAME}>
         DEPENDS ${TARGET_NAME}
     )
 
