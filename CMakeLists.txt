@@ -134,6 +134,6 @@ foreach(target "tests" "coverage" "cppCheck" "doc-doxygen" "doc-sphinx" "format"
 endforeach()
 #add_dependencies(all-targets tests coverage cppCheck doc-doxygen doc-sphinx format)
 
-if(HUB_ENABLE_DOC OR HUB_ENABLE_COVERAGE)
-    set(HUB_BROWSER "ls" CACHE STRING "User browser to see html docs and coverage")
-endif()
+#if(HUB_ENABLE_DOC OR HUB_ENABLE_COVERAGE)
+#    set(HUB_BROWSER "ls" CACHE STRING "User browser to see html docs and coverage")
+#endif()

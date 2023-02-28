@@ -18,6 +18,11 @@ cmake_minimum_required(VERSION 3.0.0)
 option(HUB_BUILD_DOC "Build documentation" OFF)
 
 if(HUB_BUILD_DOC)
+
+    if (NOT HUB_BROWSER)
+        set(HUB_BROWSER "ls" CACHE STRING "User browser to see html docs and coverage")
+    endif()
+
     # look for Doxygen package find_package(Doxygen REQUIRED dot OPTIONAL_COMPONENTS mscgen dia)
 
     # set(DOXYGEN_EXECUTABLE "E:/Documents/tmpMedical/doxygen/out/install/x64-Debug/bin/doxygen.exe")
