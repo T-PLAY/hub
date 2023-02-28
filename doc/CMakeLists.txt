@@ -52,7 +52,7 @@ if(HUB_BUILD_DOC)
         add_custom_target(
             doc-doxygen
             COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_OUT}
-            COMMAND ${BROWSER} ${CMAKE_BINARY_DIR}/doc/docs_doxygen/html/annotated.html
+            COMMAND ${HUB_BROWSER} ${CMAKE_BINARY_DIR}/doc/docs_doxygen/html/annotated.html
             WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
             COMMENT "Generating API documentation with Doxygen"
             VERBATIM)
@@ -66,7 +66,7 @@ add_custom_target(
 #    COMMAND cp -r ${PROJECT_SOURCE_DIR}/doc/docs_sphinx ${CMAKE_CURRENT_BINARY_DIR}
     COMMAND make -C ${PROJECT_SOURCE_DIR}/doc/docs_sphinx html
 #    COMMAND make -C docs_sphinx html
-    COMMAND ${BROWSER} ${PROJECT_SOURCE_DIR}/doc/docs_sphinx/_build/html/api/index.html
+    COMMAND ${HUB_BROWSER} ${PROJECT_SOURCE_DIR}/doc/docs_sphinx/_build/html/api/index.html
 #    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     COMMENT "Generating API documentation with Sphinx"
 #    VERBATIM
