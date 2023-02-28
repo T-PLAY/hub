@@ -1,3 +1,4 @@
+#include <catch2/catch_test_macros.hpp>
 
 
 // #include <stdio.h>
@@ -14,7 +15,11 @@
 // #include <iostream>
 
 //clang-format off
-int main() {
+
+//#include <Streamer.hpp>
+
+//int main() {
+TEST_CASE( "Viewer" ) {
 
     const std::string ipv4 = "127.0.0.1";
     constexpr int port     = 9002;
@@ -54,6 +59,6 @@ int main() {
 //              << "Press any key to terminate" << std::endl;
 //    getchar();
 
-    return 0;
+//    return 0;
 }
 //clang-format on

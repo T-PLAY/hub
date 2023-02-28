@@ -19,13 +19,13 @@ TEST_CASE( "Measures test" ) {
 
     hub::OutputSensor outputSensor( sensorSpec, hub::io::Ram( cyclicBuff ) );
     hub::Dof6 dof6( 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0 );
-    CHECK( dof6.x() == 1.0 );
-    CHECK( dof6.y() == 2.0 );
-    CHECK( dof6.z() == 3.0 );
-    CHECK( dof6.w0() == 4.0 );
-    CHECK( dof6.w1() == 5.0 );
-    CHECK( dof6.w2() == 6.0 );
-    CHECK( dof6.w3() == 7.0 );
+    CHECK( dof6.get_x() == 1.0 );
+    CHECK( dof6.get_y() == 2.0 );
+    CHECK( dof6.get_z() == 3.0 );
+    CHECK( dof6.get_w0() == 4.0 );
+    CHECK( dof6.get_w1() == 5.0 );
+    CHECK( dof6.get_w2() == 6.0 );
+    CHECK( dof6.get_w3() == 7.0 );
 
     unsigned char imageData[imageSize] = { 0 };
     for ( int i = 0; i < imageSize; ++i ) {
@@ -44,23 +44,23 @@ TEST_CASE( "Measures test" ) {
 
     {
         const hub::Dof6& dof62 = measures.at( 0 );
-        CHECK( dof62.x() == 1.0 );
-        CHECK( dof62.y() == 2.0 );
-        CHECK( dof62.z() == 3.0 );
-        CHECK( dof62.w0() == 4.0 );
-        CHECK( dof62.w1() == 5.0 );
-        CHECK( dof62.w2() == 6.0 );
-        CHECK( dof62.w3() == 7.0 );
+        CHECK( dof62.get_x() == 1.0 );
+        CHECK( dof62.get_y() == 2.0 );
+        CHECK( dof62.get_z() == 3.0 );
+        CHECK( dof62.get_w0() == 4.0 );
+        CHECK( dof62.get_w1() == 5.0 );
+        CHECK( dof62.get_w2() == 6.0 );
+        CHECK( dof62.get_w3() == 7.0 );
     }
 
-    hub::Dof6 dof63 = measures.at( 0 );
-    CHECK( dof63.x() == 1.0 );
-    CHECK( dof63.y() == 2.0 );
-    CHECK( dof63.z() == 3.0 );
-    CHECK( dof63.w0() == 4.0 );
-    CHECK( dof63.w1() == 5.0 );
-    CHECK( dof63.w2() == 6.0 );
-    CHECK( dof63.w3() == 7.0 );
+    const hub::Dof6 & dof63 = measures.at( 0 );
+    CHECK( dof63.get_x() == 1.0 );
+    CHECK( dof63.get_y() == 2.0 );
+    CHECK( dof63.get_z() == 3.0 );
+    CHECK( dof63.get_w0() == 4.0 );
+    CHECK( dof63.get_w1() == 5.0 );
+    CHECK( dof63.get_w2() == 6.0 );
+    CHECK( dof63.get_w3() == 7.0 );
 
     const auto& image = measures.at( 1 );
     CHECK( image.m_size == imageSize );

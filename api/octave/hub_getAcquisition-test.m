@@ -2,9 +2,6 @@
 
 disp("running getAcquisition test");
 
-streams = hub_listStream;
-
-firstStreamName = streams(1,:)
 
 
 #var = hub_getAcquisition("hello", "my", "name", "is", "gauthier");
@@ -13,22 +10,28 @@ firstStreamName = streams(1,:)
 
 #var = hub_getAcquisition("127.0.0.1", "bad type of argument");
 
-[X, Y, Z, n, format, start, End] = hub_getAcquisition(firstStreamName);
+streams = hub_listStream;
 
-start
-End
-n
-format
-size(X)
-size(Y)
-size(Z)
+if (not(isempty(streams)))
+    firstStreamName = streams(1,:)
 
-#var = hub_getAcquisition;
+    [X, Y, Z, n, format, start, End] = hub_getAcquisition(firstStreamName);
 
-#size(var)
+    start
+    End
+    n
+    format
+    size(X)
+    size(Y)
+    size(Z)
 
-#typeinfo(var)
+    #var = hub_getAcquisition;
 
-# disp(var);
+    #size(var)
 
+    #typeinfo(var)
+
+    # disp(var);
+
+endif
 

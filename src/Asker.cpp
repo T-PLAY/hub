@@ -87,25 +87,25 @@ std::list<std::pair<std::string, SensorSpec> > Asker::listStreams() const
         return ret;
 }
 
-SensorSpec Asker::getSensorSpec(const std::string &streamName) const
-{
-        m_sock.write( net::ClientSocket::Message::GET_SENSOR_SPEC );
-        m_sock.write( streamName);
+//SensorSpec Asker::getSensorSpec(const std::string &streamName) const
+//{
+//        m_sock.write( net::ClientSocket::Message::GET_SENSOR_SPEC );
+//        m_sock.write( streamName);
 
-        net::ClientSocket::Message message;
-        m_sock.read(message);
+//        net::ClientSocket::Message message;
+//        m_sock.read(message);
 
-        if (message == net::ClientSocket::Message::NOT_FOUND) {
-            throw net::ClientSocket::exception(
-            ( std::string( "stream '" ) + streamName + "' is not attached to server" ).c_str() );
-        }
-        assert(message == net::ClientSocket::Message::FOUND);
+//        if (message == net::ClientSocket::Message::NOT_FOUND) {
+//            throw net::ClientSocket::exception(
+//            ( std::string( "stream '" ) + streamName + "' is not attached to server" ).c_str() );
+//        }
+//        assert(message == net::ClientSocket::Message::FOUND);
 
-//        hub::SensorSpec ret;
-//        m_sock.read(ret);
-        auto sensorSpec = m_sock.getSensorSpec();
-        return sensorSpec;
-}
+////        hub::SensorSpec ret;
+////        m_sock.read(ret);
+//        auto sensorSpec = m_sock.getSensorSpec();
+//        return sensorSpec;
+//}
 
 Acquisition Asker::getAcquisition(const std::string &streamName) const
 {

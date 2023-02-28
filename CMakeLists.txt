@@ -285,13 +285,21 @@ export(EXPORT ${PROJECT_NAME} FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}T
 
 #target_code_coverage(test-sensorSpec AUTO ALL EXCLUDE tests/*) # As an executable target, adds to the 'ccov' and ccov-all' targets, and the reports will exclude the non-covered.cpp file, and any files in a test/ folder.
 
+#        COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:realsense2::realsense2>
+
+#     BASE_DIRECTORY "../"                        # Base directory for report
+#                                                 #  (defaults to PROJECT_SOURCE_DIR)
+#     EXCLUDE "src/dir1/*" "src/dir2/*"           # Patterns to exclude (can be relative
+#                                                 #  to BASE_DIRECTORY, with CMake 3.4+)
+#     NO_DEMANGLE                                 # Don't demangle C++ symbols
+#                                                 #  even if c++filt is found
 
 option(HUB_ENABLE_COVERAGE "Collect coverage from hub library" OFF)
 if (HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
     setup_target_for_coverage_lcov(
 #    setup_target_for_coverage_gcovr_xml(
         NAME coverage
-        #            BASE_DIRECTORY ".."
+#        BASE_DIRECTORY "CMakeFiles"
         EXECUTABLE ctest
         --test-dir tests
         -j ${n_cores}
@@ -300,8 +308,11 @@ if (HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
         server
         #            test-sensorSpec
         test-all
+        NO_DEMANGLE
         EXCLUDE
         "/usr/*"
+        "examples/*"
+#        "include/*"
         #                "_deps"
         #                "catch2"
         #                "src"

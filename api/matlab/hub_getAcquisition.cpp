@@ -147,6 +147,7 @@ class MexFunction : public matlab::mex::Function
                         //                        quat( 0, 2 ) = dof6.w2();
                         //                        quat( 0, 3 ) = dof6.w3();
 
+
                         outputs[0] = pos;
                         outputs[1] = quat;
 
