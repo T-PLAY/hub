@@ -56,7 +56,7 @@ class SRC_API SensorSpec
     /// \param metaData
     /// [in] Additional informations of the sensor and acquisition.
     ///
-    CONSTEXPR20 SensorSpec( const SensorNameType& sensorName = "",
+    explicit CONSTEXPR20 SensorSpec( const SensorNameType& sensorName = "",
                             const Resolutions& resolutions   = {},
                             const MetaData& metaData         = {} );
 
@@ -83,6 +83,10 @@ class SRC_API SensorSpec
     ///
     SRC_API friend std::ostream& operator<<( std::ostream& os, const SensorSpec& sensorSpec );
 
+    ///
+    /// \brief to_string
+    /// \return
+    ///
     std::string to_string() const;
 
   public:

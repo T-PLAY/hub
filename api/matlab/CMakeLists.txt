@@ -28,8 +28,8 @@ find_package(Matlab COMPONENTS MAIN_PROGRAM REQUIRED)
 #    UNITTEST_FILE test_MexFunction.m
 #)
 
+# set(Matlab_INCLUDE_DIRS "${Matlab_ROOT_DIR}/extern/include")
 set(MATLAB_EXE "${Matlab_ROOT_DIR}/bin/matlab")
-
 
 
 file(GLOB API_SRC *.cpp)
@@ -89,6 +89,7 @@ foreach(name ${API_SRC_BASENAME})
     )
 
 endforeach()
+
 
 #
 # #add_custom_target(test DEPENDS ${tests})

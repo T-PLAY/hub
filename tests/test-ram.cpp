@@ -25,7 +25,7 @@ TEST_CASE( "Ram test" ) {
     INFO( "OutputStream" );
     //    {
 
-    hub::OutputSensor outputSensor( { "sensorName", { { { 1 }, hub::Format::BGR8 } } },
+    hub::OutputSensor outputSensor( hub::SensorSpec{ "sensorName", { { { 1 }, hub::Format::BGR8 } } },
                                     hub::io::Ram( cyclicBuff ) );
 
     const auto& sensorSpec = outputSensor.m_spec;

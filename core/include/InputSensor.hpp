@@ -35,7 +35,7 @@ class SRC_API InputSensor : public Sensor
                   std::is_base_of<io::InputInterface, InputInterface>::value>::type>
     explicit InputSensor( InputInterface&& inputInterface ) :
 
-        Sensor( {}, *std::move( new InputInterface( std::move( inputInterface ) ) ) ) {
+        Sensor( hub::SensorSpec{}, *std::move( new InputInterface( std::move( inputInterface ) ) ) ) {
 
         static_assert( std::is_base_of<io::InputInterface, InputInterface>::value,
                        "not a base class" );

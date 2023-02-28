@@ -203,7 +203,7 @@ class SRC_API Dof6 : public Measure
     /// \param measure
     /// to copy.
     ///
-    Dof6( const Measure& measure );
+    explicit Dof6( const Measure& measure );
 
     ///
     /// \brief Dof6
