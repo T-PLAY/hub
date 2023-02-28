@@ -128,8 +128,10 @@ export(EXPORT ${PROJECT_NAME} FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}T
 
 if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
 
-    if (NOT HUB_BROWSER)
-        set(HUB_BROWSER "ls" CACHE STRING "User browser to see html docs and coverage")
+    if(NOT HUB_BROWSER)
+        set(HUB_BROWSER
+            "ls"
+            CACHE STRING "User browser to see html docs and coverage")
     endif()
 
     setup_target_for_coverage_lcov(
@@ -150,22 +152,19 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
         NO_DEMANGLE
         EXCLUDE
         "/usr/*"
-        # "examples/*" "include/*"
-        # COMMAND ${HUB_BROWSER} ${CMAKE_BINARY_DIR}/coverage/index.html
+        # "examples/*" "include/*" COMMAND ${HUB_BROWSER} ${CMAKE_BINARY_DIR}/coverage/index.html
     )
 
     if(${CMAKE_VERSION} VERSION_LESS "3.20") # ctest --test-dir option
-#         add_custom_command( TARGET tests  POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/tests/DartConfiguration.tcl ${CMAKE_BINARY_DIR}/)
-         add_custom_command(
-             TARGET ${PROJECT_NAME}
-             POST_BUILD
-             COMMAND ${CMAKE_COMMAND} -E copy_if_different
-             ${CMAKE_BINARY_DIR}/tests/DartConfiguration.tcl
-             ${CMAKE_BINARY_DIR}/
-         )
+        # add_custom_command( TARGET tests  POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy
+        # ${CMAKE_BINARY_DIR}/tests/DartConfiguration.tcl ${CMAKE_BINARY_DIR}/)
+        add_custom_command(
+            TARGET ${PROJECT_NAME}
+            POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_BINARY_DIR}/tests/DartConfiguration.tcl
+                    ${CMAKE_BINARY_DIR}/)
 
-
-#        file(COPY ${CMAKE_BINARY_DIR}/tests/DartConfiguration.tcl DESTINATION ${CMAKE_BINARY_DIR}/ DEPENDS tests)
+        # file(COPY ${CMAKE_BINARY_DIR}/tests/DartConfiguration.tcl DESTINATION ${CMAKE_BINARY_DIR}/ DEPENDS tests)
     endif()
 
     add_custom_target(
