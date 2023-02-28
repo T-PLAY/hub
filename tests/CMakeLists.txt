@@ -67,6 +67,15 @@ foreach(
     add_test(NAME test-${test} COMMAND test-${test})
 endforeach()
 
+
+add_custom_target(
+    tests
+#    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+    COMMAND ctest -V
+#    COMMENT "Generating API documentation with Doxygen"
+#    VERBATIM
+)
+
 #find_package(codecov REQUIRED)
 #add_coverage(test-sensorSpec)
 

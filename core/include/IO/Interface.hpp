@@ -206,11 +206,17 @@ class SRC_API Interface
     ///
     /// \brief read
     /// \param pair
+    /// \return
     ///
     template <class T, class U>
     typename std::enable_if<( not std::is_same<U, hub::SensorSpec>::value ), void>::type
     read( std::pair<T, U>& pair ) const;
 
+    ///
+    /// \brief read
+    /// \param pair
+    /// \return
+    ///
     template <class T, class U>
     typename std::enable_if<( std::is_same<U, hub::SensorSpec>::value ), void>::type
     read( std::pair<T, U>& pair ) const;
@@ -227,6 +233,10 @@ class SRC_API Interface
     ///
     void read( SensorSpec& sensorSpec ) const = delete;
 
+    ///
+    /// \brief read
+    /// \return
+    ///
     SensorSpec read() const { return getSensorSpec(); }
 
     ///

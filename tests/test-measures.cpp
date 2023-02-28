@@ -43,7 +43,7 @@ TEST_CASE( "Measures test" ) {
     const auto& measures = acq.getMeasures();
 
     {
-        const hub::Dof6& dof62 = measures.at( 0 );
+        const hub::Dof6 dof62(measures.at( 0 ));
         CHECK( dof62.get_x() == 1.0 );
         CHECK( dof62.get_y() == 2.0 );
         CHECK( dof62.get_z() == 3.0 );
@@ -53,7 +53,7 @@ TEST_CASE( "Measures test" ) {
         CHECK( dof62.get_w3() == 7.0 );
     }
 
-    const hub::Dof6 & dof63 = measures.at( 0 );
+    const hub::Dof6 dof63(measures.at( 0 ));
     CHECK( dof63.get_x() == 1.0 );
     CHECK( dof63.get_y() == 2.0 );
     CHECK( dof63.get_z() == 3.0 );

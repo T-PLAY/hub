@@ -187,7 +187,7 @@ Measure Measure::slerp( const Measure& left, const Measure& right, double t ) {
 
     switch ( left.m_resolution.second ) {
     case Format::DOF6: {
-        return Dof6::slerp( left, right, t );
+        return Dof6::slerp( Dof6(left), Dof6(right), t );
     }
     default:
         assert( false );

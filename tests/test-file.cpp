@@ -29,7 +29,7 @@ TEST_CASE( "File test" ) {
     {
 
         hub::OutputSensor outputSensor(
-            { "sensorName", { { { 1 }, hub::Format::BGR8 } } },
+            hub::SensorSpec{ "sensorName", { { { 1 }, hub::Format::BGR8 } } },
             hub::io::File(
                 std::fstream( filename, std::ios::out | std::ios::binary | std::ios::trunc ) ) );
 

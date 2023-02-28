@@ -46,7 +46,7 @@ TEST_CASE( "Server test : sync" ) {
     {
         std::cout << "[Test] ############################### outputStream start" << std::endl;
         hub::OutputSensor outputSensor(
-            { "sensorName", { { { 3 }, hub::Format::BGR8 } } },
+            hub::SensorSpec{ "sensorName", { { { 3 }, hub::Format::BGR8 } } },
             hub::io::OutputStream( "stream", hub::net::ClientSocket( ipv4, port ) ) );
 
         const auto& outputSensorSpec = outputSensor.m_spec;
@@ -60,7 +60,7 @@ TEST_CASE( "Server test : sync" ) {
 
         std::cout << "[Test] ############################### outputStream2 start" << std::endl;
         hub::OutputSensor outputSensor2(
-            { "sensorName2", { { { 3 }, hub::Format::BGR8 } } },
+            hub::SensorSpec{ "sensorName2", { { { 3 }, hub::Format::BGR8 } } },
             hub::io::OutputStream( "master", hub::net::ClientSocket( ipv4, port ) ) );
 
         const auto& outputSensorSpec2 = outputSensor2.m_spec;

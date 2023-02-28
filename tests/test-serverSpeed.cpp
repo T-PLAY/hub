@@ -39,7 +39,7 @@ TEST_CASE( "Server test : speed test" ) {
     {
         std::cout << "[Test] ############################### outputStream start" << std::endl;
         hub::OutputSensor outputSensor(
-            { "sensorName", { { { width, height }, hub::Format::BGR8 } } },
+            hub::SensorSpec{ "sensorName", { { { width, height }, hub::Format::BGR8 } } },
             hub::io::OutputStream( "stream", hub::net::ClientSocket( ipv4, port ) ) );
 
         std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );

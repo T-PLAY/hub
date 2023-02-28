@@ -37,7 +37,7 @@ TEST_CASE( "Server test : direct stream" ) {
             std::cout << "[Test] ############################### outputStream start" << std::endl;
 
             hub::OutputSensor outputSensor(
-                { "sensorName", { { { 3 }, hub::Format::BGR8 } } },
+                hub::SensorSpec{ "sensorName", { { { 3 }, hub::Format::BGR8 } } },
                 hub::io::OutputStream( "stream", hub::net::ClientSocket( ipv4, port ) ) );
 
             const auto& outputSensorSpec = outputSensor.m_spec;

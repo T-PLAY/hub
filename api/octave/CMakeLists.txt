@@ -9,6 +9,9 @@ set(REQUIRED_LIBS)
 #file(GLOB_RECURSE sources *.cpp)
 file(GLOB_RECURSE tests *.m)
 
+if(NOT HUB_BUILD_STATIC_LIBRARY)
+    message(WARNING "you should build hub as static lib")
+endif()
 
 #add_custom_target(tests DEPENDS ${tests})
 #add_dependencies(${PROJECT_NAME} test)

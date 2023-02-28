@@ -50,7 +50,7 @@ if(HUB_BUILD_DOC)
 
         # Note: do not put "ALL" - this builds docs together with application EVERY TIME!
         add_custom_target(
-            docs
+            doc-doxygen
             COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_OUT}
             WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
             COMMENT "Generating API documentation with Doxygen"
@@ -59,5 +59,13 @@ if(HUB_BUILD_DOC)
     else(DOXYGEN_FOUND)
         message("Doxygen need to be installed to generate the doxygen documentation")
     endif(DOXYGEN_FOUND)
+
+add_custom_target(
+    doc-sphinx
+    COMMAND make -C ${PROJECT_SOURCE_DIR}/doc/docs_sphinx html
+#    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+    COMMENT "Generating API documentation with Sphinx"
+#    VERBATIM
+)
 
 endif()

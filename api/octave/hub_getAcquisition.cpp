@@ -96,7 +96,7 @@ DEFUN_DLD( hub_getAcquisition, args, , "Return list of streams connected to the 
                     Matrix pos( 1, 3 );
                     Matrix quat( 1, 4 );
 
-                    const hub::Dof6& dof6 = measure;
+                    const hub::Dof6 dof6(measure);
                     std::cout << "dof6: " << dof6 << std::endl;
 
                     pos( 0, 0 )  = dof6.get_x();

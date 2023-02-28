@@ -8,7 +8,7 @@ done
 
 cd $rootPath
 
-cppcheck --enable=all src tests server -I include -I server/libServer/ --suppress=toomanyconfigs --suppress=missingIncludeSystem
+cppcheck --enable=all --error-exitcode=1 core/src tests server -I core/include -I server/libServer/ --suppress=toomanyconfigs --suppress=missingIncludeSystem
 
 
 # for file in $(find $(cat scripts/sources.txt) -type f \( -name "CMakeLists.txt" -o -name "*.cmake" \)); do
