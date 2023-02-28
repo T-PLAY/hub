@@ -131,7 +131,7 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
         # setup_target_for_coverage_gcovr_xml(
         NAME
         coverage-lcov
-        # BASE_DIRECTORY "CMakeFiles"
+        BASE_DIRECTORY ${CMAKE_BINARY_DIR}
         EXECUTABLE
         ctest
         --test-dir
@@ -145,9 +145,10 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
         EXCLUDE
         "/usr/*"
         # "examples/*" "include/*"
-        COMMAND
-        ${HUB_BROWSER}
-        ${CMAKE_BINARY_DIR}/coverage/index.html)
+#        COMMAND
+#        ${HUB_BROWSER}
+#        ${CMAKE_BINARY_DIR}/coverage/index.html
+    )
 
     if(${CMAKE_VERSION} VERSION_LESS "3.20") # ctest --test-dir option
         file(COPY ${CMAKE_BINARY_DIR}/tests/DartConfiguration.tcl DESTINATION ${CMAKE_BINARY_DIR}/)
