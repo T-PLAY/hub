@@ -273,7 +273,7 @@ Viewer::Viewer(
 
                 auto it = m_streams.begin();
                 while ( it != m_streams.end() ) {
-                    auto& streamId = it->first;
+                    const auto& streamId = it->first;
                     ++it;
 
                     delStreamer( streamId );

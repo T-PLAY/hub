@@ -98,7 +98,6 @@ SensorSpec Asker::getSensorSpec(const std::string &streamName) const
         if (message == net::ClientSocket::Message::NOT_FOUND) {
             throw net::ClientSocket::exception(
             ( std::string( "stream '" ) + streamName + "' is not attached to server" ).c_str() );
-            assert(false);
         }
         assert(message == net::ClientSocket::Message::FOUND);
 
@@ -119,7 +118,6 @@ Acquisition Asker::getAcquisition(const std::string &streamName) const
         if (message == net::ClientSocket::Message::NOT_FOUND) {
             throw net::ClientSocket::exception(
             ( std::string( "stream '" ) + streamName + "' is not attached to server" ).c_str() );
-            assert(false);
         }
         assert(message == net::ClientSocket::Message::FOUND);
 

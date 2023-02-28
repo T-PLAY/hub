@@ -252,7 +252,7 @@ Acquisition Interface::getAcquisition( const SensorSpec& sensorSpec ) const
     read( start );
     read( end );
 
-    Acquisition&& acq { start, end };
+    Acquisition acq { start, end };
 
     int nMeasures;
     read( nMeasures );
@@ -283,7 +283,7 @@ Acquisition Interface::getAcquisition( const SensorSpec& sensorSpec ) const
     assert( sensorSpec.getAcquisitionSize() == acq.getSize() );
     //    assert( nMeasures == 0 || acquisitionSize == acq.getSize() );
 
-    return std::move( acq );
+    return acq;
 }
 
 void Interface::read( char* str ) const {

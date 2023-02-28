@@ -117,7 +117,8 @@ void ClientSocket::connect() {
     // Socket creation
     //    m_fdSock = socket( PF_INET, SOCK_STREAM, 0 );
     m_fdSock = net::utils::clientSocket();
-    if ( m_fdSock < 0 ) {
+//    if ( m_fdSock < 0 ) {
+    if ( net::utils::isValid(m_fdSock) ) {
         perror( "[socket] socket creation failed.\n" );
         return;
     }
@@ -190,8 +191,8 @@ void ClientSocket::write( const unsigned char* data, size_t len ) const {
         }
         catch ( std::exception& e ) {
             assert( false );
-            throw e;
-//            throw;
+//            throw e;
+            throw;
         }
 
         if ( byteSent == -1 ) {

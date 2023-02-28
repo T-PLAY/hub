@@ -8,7 +8,7 @@ Acquisition InputSensor::getAcquisition() const {
 
     //    Acquisition && acq = m_interface.getAcquisition( static_cast<int>(
     //    m_spec.getAcquisitionSize() ) );
-    Acquisition&& acq = m_interface.getAcquisition( m_spec );
+    Acquisition acq = m_interface.getAcquisition( m_spec );
 
     //    if (acq.m_start == -1 && acq.m_end == -1) {
     //        return acq;
@@ -32,7 +32,7 @@ Acquisition InputSensor::getAcquisition() const {
     std::cout << "[InputSensor] read acq :  " << acquisition << std::endl;
 #endif
 
-    return std::move( acq );
+    return acq;
 }
 
 std::vector<Acquisition> InputSensor::getAllAcquisitions() {

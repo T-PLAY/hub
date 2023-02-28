@@ -47,7 +47,8 @@ void ServerSocket::initServer() {
     // Socket creation
     //    m_fdSock = net::createSocket( PF_INET, SOCK_STREAM, IPPROTO_TCP );
     m_fdSock = net::utils::serverSocket();
-    if ( m_fdSock < 0 ) {
+//    if ( m_fdSock < 0 ) {
+    if ( net::utils::isValid(m_fdSock) ) {
         perror( "socket creation failed.\n" );
         exit( 1 );
 //        return;

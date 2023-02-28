@@ -15,7 +15,7 @@ Dof6::Dof6( const Measure& measure ) :
 }
 
 Dof6::Dof6( float x, float y, float z, float w0, float w1, float w2, float w3 ) :
-    Measure( (unsigned char*)new float[7] { x, y, z, w0, w1, w2, w3 },
+    Measure( reinterpret_cast<unsigned char*>(new float[7] { x, y, z, w0, w1, w2, w3 }),
              28,
              Resolution { { 1 }, Format::DOF6 } ) {
     //    m_ownData = true;
@@ -26,9 +26,9 @@ Dof6::Dof6( float x, float y, float z, float w0, float w1, float w2, float w3 ) 
 
 Dof6 Dof6::slerp( const Dof6& left, const Dof6& right, long long t ) {
 
-    float x = ( 1.0 - t ) * left.m_x + t * right.m_x;
-    float y = ( 1.0 - t ) * left.m_y + t * right.m_y;
-    float z = ( 1.0 - t ) * left.m_z + t * right.m_z;
+    const float x = ( 1.0 - t ) * left.m_x + t * right.m_x;
+    const float y = ( 1.0 - t ) * left.m_y + t * right.m_y;
+    const float z = ( 1.0 - t ) * left.m_z + t * right.m_z;
 
     float w0, w1, w2, w3;
 
@@ -79,7 +79,7 @@ std::ostream& operator<<( std::ostream& os, const Dof6& dof6 ) {
 }
 
 Mat4::Mat4( const float* array ) :
-    Measure( (unsigned char*)array, 64, Resolution { { 1 }, Format::MAT4 } ) {
+    Measure( reinterpret_cast<const unsigned char*>(array), 64, Resolution { { 1 }, Format::MAT4 } ) {
     assert( m_size == 64 );
 }
 
@@ -211,12 +211,14 @@ bool Measure::operator!=( const Measure& measure ) const {
 std::ostream& operator<<( std::ostream& os, const Measure& measure ) {
     os << measure.getResolution() << ", [";
 
-    if ( measure.m_size == 28 ) {
-        const float* dof6 = reinterpret_cast<const float*>(measure.m_data);
-        os << "dof6:";
-        for ( auto i = 0; i < 7; ++i ) {
-            os << std::setw( 3 ) << dof6[i] << " ";
-        }
+    if ( measure.m_resolution.second == Format::DOF6 ) {
+        const auto & dof6 = measure;
+        os << dof6;
+//        const float* const dof6 = reinterpret_cast<const float* const>(measure.m_data);
+//        os << "dof6:";
+//        for ( auto i = 0; i < 7; ++i ) {
+//            os << std::setw( 3 ) << dof6[i] << " ";
+//        }
     }
     else {
         for ( auto i = 0; i < std::min( (int)measure.m_size, 10 ); ++i ) {

@@ -60,11 +60,12 @@ inline CONSTEXPR20 size_t computeAcquisitionSize( Format format, const Dims& dim
 }
 
 inline size_t CONSTEXPR20 computeAcquisitionSize( const Resolutions& resolutions ) noexcept {
-    size_t size = 0;
-    for ( const auto& resolution : resolutions ) {
-        size += computeAcquisitionSize( resolution );
-    }
-    return size;
+//    size_t size = 0;
+//    for ( const auto& resolution : resolutions ) {
+//        size += computeAcquisitionSize( resolution );
+//    }
+//    return size;
+    return std::accumulate(resolutions.cbegin(), resolutions.cend(), 0, [](size_t size, const Resolution & res) { return size + computeAcquisitionSize(res); });
 }
 
 inline CONSTEXPR20 size_t computeAcquisitionSize( const Resolution& resolution ) noexcept {

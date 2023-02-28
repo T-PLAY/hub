@@ -56,7 +56,7 @@ class SRC_API SensorSpec
     /// \param metaData
     /// [in] Additional informations of the sensor and acquisition.
     ///
-    CONSTEXPR20 SensorSpec( const SensorNameType& sensorName = "",
+    explicit CONSTEXPR20 SensorSpec( const SensorNameType& sensorName = "",
                             const Resolutions& resolutions   = {},
                             const MetaData& metaData         = {} );
 

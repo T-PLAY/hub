@@ -30,7 +30,7 @@ class SRC_API OutputStream : public OutputInterface, public net::ClientSocket
     /// when the server is not found or by loosing connection to the server.
     /// Also occur when stream you want to link is already started in the server.
     ///
-    OutputStream( const std::string& streamName,
+    explicit OutputStream( const std::string& streamName,
                   net::ClientSocket&& clientSocket = net::ClientSocket() );
 
 #ifdef WIN32 // msvc warning C4250

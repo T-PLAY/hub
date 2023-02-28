@@ -91,7 +91,7 @@ class SRC_API ClientSocket : public Socket, public virtual io::Interface
     /// \brief ClientSocket
     /// \param fdSock
     ///
-    ClientSocket( net::utils::socket_fd fdSock ); // server side client (bind and listen)
+    explicit ClientSocket( net::utils::socket_fd fdSock ); // server side client (bind and listen)
 
     ClientSocket( const ClientSocket& sock ) = delete;
 
