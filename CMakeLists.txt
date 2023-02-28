@@ -8,6 +8,8 @@ set(CMAKE_CXX_STANDARD 17) # depends of std::any for metadata representation
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_FIND_PACKAGE_NO_SYSTEM_PACKAGE_REGISTRY False)
 
+set(BROWSER chromium)
+
 #set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -fprofile-arcs -ftest-coverage")
 #set(CMAKE_CXX_FLAGS_RELEASE "-O2")
 
@@ -105,7 +107,7 @@ if(HUB_ENABLE_EXAMPLES)
 endif()
 
 file(COPY
-    ${PROJECT_SOURCE_DIR}/scripts/run_targets.sh DESTINATION ${CMAKE_BINARY_DIR}/
+    ${PROJECT_SOURCE_DIR}/scripts/run_all_targets.sh DESTINATION ${CMAKE_BINARY_DIR}/
 )
 add_custom_target(
     cppCheck
@@ -113,6 +115,7 @@ add_custom_target(
     COMMAND cppcheck --enable=all --error-exitcode=1 core/src tests server -I core/include -I server/libServer/ --suppress=toomanyconfigs --suppress=missingIncludeSystem
 #    COMMENT "Generating API documentation with Doxygen"
 #    VERBATIM
+    COMMENT "Running cppCheck"
 )
 
 add_custom_target(
@@ -121,4 +124,8 @@ add_custom_target(
     COMMAND scripts/format-all.sh
 #    COMMENT "Generating API documentation with Doxygen"
 #    VERBATIM
+    COMMENT "Format sources"
 )
+
+add_custom_target(all-targets)
+add_dependencies(all-targets tests coverage cppCheck doc-doxygen doc-sphinx format)

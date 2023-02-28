@@ -130,7 +130,7 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
     setup_target_for_coverage_lcov(
         # setup_target_for_coverage_gcovr_xml(
         NAME
-        coverage
+        coverage-lcov
         # BASE_DIRECTORY "CMakeFiles"
         EXECUTABLE
         ctest
@@ -140,17 +140,28 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
         ${n_cores}
         DEPENDENCIES
         hub
-        # server
-        # test-sensorSpec
+        # server test-sensorSpec
         test-all
         NO_DEMANGLE
         EXCLUDE
         "/usr/*"
         # "examples/*" "include/*"
-    )
+        COMMAND
+        ${BROWSER}
+        ${CMAKE_BINARY_DIR}/coverage/index.html)
     if(${CMAKE_VERSION} VERSION_LESS "3.20") # ctest --test-dir option
         file(COPY ${CMAKE_BINARY_DIR}/tests/DartConfiguration.tcl DESTINATION ${CMAKE_BINARY_DIR}/)
     endif()
+
+    add_custom_target(
+        coverage
+        # COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_OUT}
+        COMMAND ${BROWSER} ${CMAKE_BINARY_DIR}/coverage/index.html
+        # WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+        # COMMENT "Generating API documentation with Doxygen"
+        # VERBATIM
+    )
+    add_dependencies(coverage coverage-lcov)
 
     # setup_target_for_coverage_gcovr_html(NAME coverage-html EXECUTABLE ctest --schedule-random -j ${n_cores}
     # --test-dir tests EXCLUDE "/usr/*" DEPENDENCIES test-file test-measures test-ram test-resolutions test-sensorSpec

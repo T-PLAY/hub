@@ -61,6 +61,7 @@ endforeach()
 add_custom_target(
     tests # WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
     COMMAND ctest -V # COMMENT "Generating API documentation with Doxygen"
+    COMMENT "Running tests"
     # VERBATIM
 )
 
