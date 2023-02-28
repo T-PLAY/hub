@@ -15,12 +15,11 @@ namespace hub {
 /// \brief The Streamer class
 /// simplifies the management of OutputSensors.
 /// Indeed when you use an OutputSensor you have to manage network interruptions
-/// (loss of connection to the server) by yourself when you use a network connection for your sensor.
-/// The streamer class automatically handles the disconnection and reconnection of the sensor to the server hub.
-/// For this you have to set the stream to be broadcasted.
-/// When the sensor is connected or reconnected, the sensor data can be shared in the network.
-/// If there is a network interruption,
-/// the data retrieved from the sensor will not be able to be shared during this time,
+/// (loss of connection to the server) by yourself when you use a network connection for your
+/// sensor. The streamer class automatically handles the disconnection and reconnection of the
+/// sensor to the server hub. For this you have to set the stream to be broadcasted. When the sensor
+/// is connected or reconnected, the sensor data can be shared in the network. If there is a network
+/// interruption, the data retrieved from the sensor will not be able to be shared during this time,
 /// waiting for the reconnection to the server.
 ///
 class SRC_API Streamer
@@ -35,7 +34,7 @@ class SRC_API Streamer
     /// is the port of the server hub service.
     ///
     explicit Streamer( const std::string& ipv4 = net::s_defaultServiceIp,
-              int port                = net::s_defaultServicePort );
+                       int port                = net::s_defaultServicePort );
 
     ~Streamer();
 
@@ -63,7 +62,8 @@ class SRC_API Streamer
     /// \param acquisition
     /// is the new acquisition received from sensor.
     /// \warning
-    /// The parameter stream with the param name 'streamName' has to be added before share acquisition.
+    /// The parameter stream with the param name 'streamName' has to be added before share
+    /// acquisition.
     ///
     void newAcquisition( const std::string& streamName, Acquisition&& acquisition );
 

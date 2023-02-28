@@ -49,7 +49,7 @@ class SRC_API CyclicBuff
     ///
     /// \param buff
     ///
-    CyclicBuff( CyclicBuff&& buff )      = default;
+    CyclicBuff( CyclicBuff&& buff ) = default;
 
     ///
     /// \brief operator =
@@ -101,8 +101,8 @@ class SRC_API CyclicBuff
   private:
     unsigned char* const m_buff;
     const size_t m_buffLen;
-    size_t m_writeHead = 0;
-    size_t m_readHead  = 0;
+    size_t m_writeHead                      = 0;
+    size_t m_readHead                       = 0;
     mutable bool m_outputSensorWantsToClose = false;
     mutable bool m_inputSensorClose         = false;
 };

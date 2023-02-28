@@ -1,6 +1,5 @@
 #include <catch2/catch_test_macros.hpp>
 
-
 // #include <stdio.h>
 // #include <cstdio>
 // #include <stdlib.h>
@@ -18,7 +17,7 @@
 
 //#include <Streamer.hpp>
 
-//int main() {
+// int main() {
 TEST_CASE( "Viewer" ) {
 
     const std::string ipv4 = "127.0.0.1";
@@ -52,13 +51,13 @@ TEST_CASE( "Viewer" ) {
     auto viewer = hub::Viewer(
         onNewStreamer, onDelStreamer, onServerConnected, onServerDisconnected, onNewAcquisition );
 
-    viewer.setAutoSync(false);
+    viewer.setAutoSync( false );
     // endConstruction
 
-//    std::cout << "Starting viewer listening" << std::endl
-//              << "Press any key to terminate" << std::endl;
-//    getchar();
+    //    std::cout << "Starting viewer listening" << std::endl
+    //              << "Press any key to terminate" << std::endl;
+    //    getchar();
 
-//    return 0;
+    //    return 0;
 }
 //clang-format on

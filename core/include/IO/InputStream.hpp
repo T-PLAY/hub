@@ -7,12 +7,11 @@
 namespace hub {
 namespace io {
 
-
 ///
 /// \brief The InputStream class
 /// Describes an input communication from the server.
-/// The communication is only possible if the stream (with the same name) is active within the server.
-/// That implies an OutputStream communicating data through the hub.
+/// The communication is only possible if the stream (with the same name) is active within the
+/// server. That implies an OutputStream communicating data through the hub.
 ///
 class SRC_API InputStream : public InputInterface, public net::ClientSocket
 {
@@ -36,9 +35,9 @@ class SRC_API InputStream : public InputInterface, public net::ClientSocket
     /// Also occur when stream you want to link is not connected to the server.
     ///
     explicit InputStream( const std::string& streamName,
-                 const std::string& syncStreamName = "",
-                 net::ClientSocket&& clientSocket  = net::ClientSocket(),
-                 bool mergeSyncAcqs                = true );
+                          const std::string& syncStreamName = "",
+                          net::ClientSocket&& clientSocket  = net::ClientSocket(),
+                          bool mergeSyncAcqs                = true );
 
 #ifdef WIN32 // msvc warning C4250
   protected:

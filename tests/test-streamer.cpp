@@ -2,7 +2,7 @@
 
 #include <Streamer.hpp>
 
-//int main() {
+// int main() {
 TEST_CASE( "Streamer" ) {
 
     // startConstruction
@@ -12,6 +12,5 @@ TEST_CASE( "Streamer" ) {
 
     hub::SensorSpec sensorSpec;
 
-    streamer.addStream("hello", std::move(sensorSpec));
-
+    streamer.addStream( "hello", std::move( sensorSpec ) );
 }

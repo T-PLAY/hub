@@ -27,34 +27,30 @@ class SRC_API Viewer
     ///
     /// \brief
     /// \param onNewStreamer
-    /// is an event handler called when new streamer (OutputStream) is recently connected to the server.
-    /// \param onDelStreamer
-    /// is an event handler called when connected streamer (OutputStream) is recently disconnected from the server.
-    /// \param onServerConnected
-    /// is an event handler called when viewer is recently connected to the server.
-    /// \param onServerDisconnected
-    /// is an event handler called when viewer is recently disconnected from the server.
-    /// \param onNewAcquisition
-    /// is an event handler called when new acquisition is sended from any connected OutputStream to the server.
-    /// \param ipv4
-    /// is the ip of the server you want to connect.
-    /// \param port
-    /// is the port server of the server you want to connect.
+    /// is an event handler called when new streamer (OutputStream) is recently connected to the
+    /// server. \param onDelStreamer is an event handler called when connected streamer
+    /// (OutputStream) is recently disconnected from the server. \param onServerConnected is an
+    /// event handler called when viewer is recently connected to the server. \param
+    /// onServerDisconnected is an event handler called when viewer is recently disconnected from
+    /// the server. \param onNewAcquisition is an event handler called when new acquisition is
+    /// sended from any connected OutputStream to the server. \param ipv4 is the ip of the server
+    /// you want to connect. \param port is the port server of the server you want to connect.
     /// \param autoSync
     /// server suggest auto synchronisation between OutputStream able to be synchronize if enable.
     /// \param onLogMessage
     /// is an event handler to receive debug message from server.
     ///
-    explicit Viewer( std::function<bool( const char* streamName, const SensorSpec& )> onNewStreamer = {},
-            std::function<void( const char* streamName, const SensorSpec& )> onDelStreamer = {},
-            std::function<void( const char* ipv4, int port )> onServerConnected            = {},
-            std::function<void( const char* ipv4, int port )> onServerDisconnected         = {},
-            std::function<void( const char* streamName, const hub::Acquisition& )>
-                onNewAcquisition                                       = {},
-            const std::string& ipv4                                    = net::s_defaultServiceIp,
-            int port                                                   = net::s_defaultServicePort,
-            bool autoSync                                              = true,
-            std::function<void( const char* logMessage )> onLogMessage = {} );
+    explicit Viewer(
+        std::function<bool( const char* streamName, const SensorSpec& )> onNewStreamer = {},
+        std::function<void( const char* streamName, const SensorSpec& )> onDelStreamer = {},
+        std::function<void( const char* ipv4, int port )> onServerConnected            = {},
+        std::function<void( const char* ipv4, int port )> onServerDisconnected         = {},
+        std::function<void( const char* streamName, const hub::Acquisition& )> onNewAcquisition =
+            {},
+        const std::string& ipv4                                    = net::s_defaultServiceIp,
+        int port                                                   = net::s_defaultServicePort,
+        bool autoSync                                              = true,
+        std::function<void( const char* logMessage )> onLogMessage = {} );
 
     ~Viewer();
 
@@ -114,8 +110,8 @@ class SRC_API Viewer
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-//  protected:
-private:
+    //  protected:
+  private:
     std::thread m_thread;
     bool m_stopThread = false;
 
@@ -137,7 +133,8 @@ private:
       public:
         Viewer& m_viewer;
 
-        explicit Stream( Viewer& viewer ) : m_viewer( viewer ), m_onLogMessage( m_viewer.m_onLogMessage ) {}
+        explicit Stream( Viewer& viewer ) :
+            m_viewer( viewer ), m_onLogMessage( m_viewer.m_onLogMessage ) {}
 
         Stream( Stream&& stream ) :
             m_viewer( stream.m_viewer ),
@@ -172,8 +169,8 @@ private:
         SensorSpec m_sensorSpecId;
 
         std::thread* m_thread = nullptr;
-        bool m_stopThread = false;
-        bool m_added      = false;
+        bool m_stopThread     = false;
+        bool m_added          = false;
         std::function<void( const char* logMessage )> m_onLogMessage;
 
         void startStream();

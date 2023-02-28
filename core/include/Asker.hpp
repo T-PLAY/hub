@@ -25,7 +25,7 @@ class SRC_API Asker
     /// \param port of the server you want to get information
     ///
     explicit Asker( const std::string& ipv4 = net::s_defaultServiceIp,
-           int port                = net::s_defaultServicePort );
+                    int port                = net::s_defaultServicePort );
 
     ~Asker();
 
@@ -36,12 +36,12 @@ class SRC_API Asker
     ///
     std::list<std::pair<std::string, hub::SensorSpec>> listStreams() const;
 
-//    ///
-//    /// \brief getSensorSpec
-//    /// \param streamName
-//    /// \return
-//    ///
-//    hub::SensorSpec getSensorSpec(const std::string & streamName) const;
+    //    ///
+    //    /// \brief getSensorSpec
+    //    /// \param streamName
+    //    /// \return
+    //    ///
+    //    hub::SensorSpec getSensorSpec(const std::string & streamName) const;
 
     ///
     /// \brief getAcquisition
@@ -49,8 +49,7 @@ class SRC_API Asker
     /// \param streamName
     /// \return
     ///
-    hub::Acquisition getAcquisition(const std::string & streamName) const ;
-
+    hub::Acquisition getAcquisition( const std::string& streamName ) const;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -47,11 +47,11 @@ void ServerSocket::initServer() {
     // Socket creation
     //    m_fdSock = net::createSocket( PF_INET, SOCK_STREAM, IPPROTO_TCP );
     m_fdSock = net::utils::serverSocket();
-//    if ( m_fdSock < 0 ) {
-    if ( ! net::utils::isValid(m_fdSock) ) {
+    //    if ( m_fdSock < 0 ) {
+    if ( !net::utils::isValid( m_fdSock ) ) {
         perror( "socket creation failed.\n" );
         exit( 1 );
-//        return;
+        //        return;
     }
 #ifdef DEBUG_SOCKET
     DEBUG_MSG( getHeader( m_fdSock ) << "server started " );
@@ -71,13 +71,13 @@ void ServerSocket::initServer() {
     if ( net::utils::bind( m_fdSock, m_addr ) < 0 ) {
         perror( "Failed to bind.\n" );
         exit( 1 );
-//        return;
+        //        return;
     }
 
     if ( net::utils::listen( m_fdSock, 3 ) < 0 ) {
         perror( "listen" );
         exit( 1 );
-//        return;
+        //        return;
     }
 
 #ifdef DEBUG_SOCKET

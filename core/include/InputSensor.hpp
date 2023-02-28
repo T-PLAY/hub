@@ -5,8 +5,8 @@
 #include "Sensor.hpp"
 
 // user friendly useless includes
-#include "IO/InputStream.hpp"
 #include "IO/File.hpp"
+#include "IO/InputStream.hpp"
 #include "IO/Ram.hpp"
 
 namespace hub {
@@ -19,7 +19,8 @@ namespace hub {
 /// This class allows client applications to completely abstract from the notion
 /// of sensor and to be interested only in the carried data.
 /// This enables several applications to work simultaneously on the same data in real time.
-/// This also avoids the need to manage the drivers of each of the manufacturers of the sensors you wish to use.
+/// This also avoids the need to manage the drivers of each of the manufacturers of the sensors you
+/// wish to use.
 ///
 class SRC_API InputSensor : public Sensor
 {
@@ -35,7 +36,8 @@ class SRC_API InputSensor : public Sensor
                   std::is_base_of<io::InputInterface, InputInterface>::value>::type>
     explicit InputSensor( InputInterface&& inputInterface ) :
 
-        Sensor( hub::SensorSpec{}, *std::move( new InputInterface( std::move( inputInterface ) ) ) ) {
+        Sensor( hub::SensorSpec {},
+                *std::move( new InputInterface( std::move( inputInterface ) ) ) ) {
 
         static_assert( std::is_base_of<io::InputInterface, InputInterface>::value,
                        "not a base class" );
@@ -43,7 +45,7 @@ class SRC_API InputSensor : public Sensor
         m_spec = m_interface.getSensorSpec();
     }
 
-protected:
+  protected:
     template <class InputInterface>
     InputSensor( InputInterface& inputInterface ) = delete;
 

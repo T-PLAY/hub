@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include <algorithm>
 #include <any>
 #include <map>
@@ -21,10 +20,11 @@ namespace hub {
 ///
 /// \brief The SensorSpec class
 /// describes the sensor in its entirety, like the internal properties of a sensor.
-/// Such as the name of the sensor given by the manufacturer and the format/resolution of the measured data.
-/// This allows to describe how the data can be visualized and to standardize data that looks similar.
-/// Optional information can be added but does not influence the flow communication process.
-/// \note The sensor specifications are shared between input and output sensor.
+/// Such as the name of the sensor given by the manufacturer and the format/resolution of the
+/// measured data. This allows to describe how the data can be visualized and to standardize data
+/// that looks similar. Optional information can be added but does not influence the flow
+/// communication process. \note The sensor specifications are shared between input and output
+/// sensor.
 ///
 class SRC_API SensorSpec
 {
@@ -44,7 +44,7 @@ class SRC_API SensorSpec
     /// \brief
     /// Definition of metadata
     ///
-    using MetaData       = std::map<std::string, std::any>; // any -> C++17
+    using MetaData = std::map<std::string, std::any>; // any -> C++17
 #endif
 
     ///
@@ -57,8 +57,8 @@ class SRC_API SensorSpec
     /// [in] Additional informations of the sensor and acquisition.
     ///
     explicit CONSTEXPR20 SensorSpec( const SensorNameType& sensorName = "",
-                            const Resolutions& resolutions   = {},
-                            const MetaData& metaData         = {} );
+                                     const Resolutions& resolutions   = {},
+                                     const MetaData& metaData         = {} );
 
   public:
     ///
@@ -90,7 +90,6 @@ class SRC_API SensorSpec
     std::string to_string() const;
 
   public:
-
     ///
     /// \brief to_string
     /// \param metaData

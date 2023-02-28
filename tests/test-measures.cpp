@@ -34,7 +34,9 @@ TEST_CASE( "Measures test" ) {
 
     outputSensor << ( hub::Acquisition { 0, 0 }
                       << std::move( dof6 )
-                      << hub::Measure( reinterpret_cast<unsigned char*>(imageData), imageSize, imageResolution ) );
+                      << hub::Measure( reinterpret_cast<unsigned char*>( imageData ),
+                                       imageSize,
+                                       imageResolution ) );
 
     hub::InputSensor inputSensor( ( hub::io::Ram( cyclicBuff ) ) );
 
@@ -43,7 +45,7 @@ TEST_CASE( "Measures test" ) {
     const auto& measures = acq.getMeasures();
 
     {
-        const hub::Dof6 dof62(measures.at( 0 ));
+        const hub::Dof6 dof62( measures.at( 0 ) );
         CHECK( dof62.get_x() == 1.0 );
         CHECK( dof62.get_y() == 2.0 );
         CHECK( dof62.get_z() == 3.0 );
@@ -53,7 +55,7 @@ TEST_CASE( "Measures test" ) {
         CHECK( dof62.get_w3() == 7.0 );
     }
 
-    const hub::Dof6 dof63(measures.at( 0 ));
+    const hub::Dof6 dof63( measures.at( 0 ) );
     CHECK( dof63.get_x() == 1.0 );
     CHECK( dof63.get_y() == 2.0 );
     CHECK( dof63.get_z() == 3.0 );

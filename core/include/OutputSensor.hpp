@@ -8,8 +8,8 @@
 #include "SensorSpec.hpp"
 
 // user friendly useless includes
-#include "IO/OutputStream.hpp"
 #include "IO/File.hpp"
+#include "IO/OutputStream.hpp"
 #include "IO/Ram.hpp"
 
 namespace hub {
@@ -53,7 +53,7 @@ class SRC_API OutputSensor : public Sensor
         m_interface.write( m_spec );
     }
 
-protected:
+  protected:
     template <class OutputInterface>
     OutputSensor( const SensorSpec&& sensorSpec, OutputInterface& outputInterface ) = delete;
 

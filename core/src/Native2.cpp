@@ -8,10 +8,10 @@
 //#include <cstring>
 //#include <sstream>
 
-//namespace hub {
-//namespace native2 {
+// namespace hub {
+// namespace native2 {
 
-//void createInputSensor( const char* streamName, const char* ipv4, int port ) {
+// void createInputSensor( const char* streamName, const char* ipv4, int port ) {
 //    std::cout << "[Native] createInputSensor( " << streamName << ")" << std::endl;
 //    InputSensor* inputSensor = nullptr;
 //    try {
@@ -24,7 +24,6 @@
 //    }
 //    return inputSensor;
 //}
-
 
 //} // namespace native2
 //} // namespace hub

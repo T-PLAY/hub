@@ -1,8 +1,8 @@
 #include "Streamer.hpp"
 
+#include <algorithm>
 #include <chrono>
 #include <regex>
-#include <algorithm>
 
 namespace hub {
 
@@ -23,10 +23,13 @@ void Streamer::addStream( const std::string& streamName,
 
     assert( m_streamName2initAcqs.find( streamName ) == m_streamName2initAcqs.end() );
     std::vector<Acquisition> acqs;
-//    for ( const auto& acq : initAcqs ) {
-//        acqs.push_back( acq.clone() );
-//    }
-    std::transform(initAcqs.crbegin(), initAcqs.crend(), std::back_inserter(acqs), [](const Acquisition & acq) { return acq.clone(); });
+    //    for ( const auto& acq : initAcqs ) {
+    //        acqs.push_back( acq.clone() );
+    //    }
+    std::transform( initAcqs.crbegin(),
+                    initAcqs.crend(),
+                    std::back_inserter( acqs ),
+                    []( const Acquisition& acq ) { return acq.clone(); } );
     m_streamName2initAcqs[streamName] = std::move( acqs );
 
     try {
@@ -55,7 +58,7 @@ void Streamer::newAcquisition( const std::string& streamName, Acquisition&& acqu
     if ( m_streamName2outputSensor.find( streamName ) == m_streamName2outputSensor.end() ) {
 
         const auto& lastLogout = m_streamName2lastLogout.at( streamName );
-        auto now         = std::chrono::high_resolution_clock::now();
+        auto now               = std::chrono::high_resolution_clock::now();
         auto diff =
             std::chrono::duration_cast<std::chrono::milliseconds>( now - lastLogout ).count();
         if ( diff > 1000 ) {

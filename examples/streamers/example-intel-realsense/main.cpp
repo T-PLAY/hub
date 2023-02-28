@@ -24,7 +24,8 @@ int main( int argc, char* argv[] )
         try {
 #ifdef DEPTH_STREAM
             hub::OutputSensor depthStream(
-                hub::SensorSpec{ "L500 Depth Sensor (Depth)", { { { 640, 480 }, hub::Format::Z16 } } },
+                hub::SensorSpec { "L500 Depth Sensor (Depth)",
+                                  { { { 640, 480 }, hub::Format::Z16 } } },
                 hub::io::OutputStream( "L500 Depth Sensor (Depth)" ) );
 #endif
 
@@ -32,7 +33,7 @@ int main( int argc, char* argv[] )
             //                hub::OutputSensor rgbStream("L500 RGB Camera", hub::Format::RGB8, {
             //                640, 480 });
             hub::OutputSensor rgbStream(
-                hub::SensorSpec{ "L500 RGB Camera", { { { 640, 480 }, hub::Format::RGB8 } } },
+                hub::SensorSpec { "L500 RGB Camera", { { { 640, 480 }, hub::Format::RGB8 } } },
                 hub::io::OutputStream( "L500 RGB Camera" ) );
 #endif
 
@@ -40,7 +41,8 @@ int main( int argc, char* argv[] )
             //                hub::OutputSensor infraredStream(
             //                    "L500 Depth Sensor (Infrared)", hub::Format::Y8, { 640, 480 });
             hub::OutputSensor infraredStream(
-                hub::SensorSpec{ "L500 Depth Sensor (Infrared)", { { { 640, 480 }, hub::Format::Y8 } } },
+                hub::SensorSpec { "L500 Depth Sensor (Infrared)",
+                                  { { { 640, 480 }, hub::Format::Y8 } } },
                 hub::io::OutputStream( "L500 Depth Sensor (Infrared)" ) );
 #endif
 

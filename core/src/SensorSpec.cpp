@@ -75,11 +75,9 @@ SensorSpec& SensorSpec::operator+=( const SensorSpec& sensorSpec ) {
     return *this;
 }
 
-std::string SensorSpec::to_string() const
-{
-    return m_sensorName + ", " + hub::to_string(m_resolutions) + ", "
-       + SensorSpec::to_string( m_metaData ) + ", "
-           + std::to_string(m_acquisitionSize);
+std::string SensorSpec::to_string() const {
+    return m_sensorName + ", " + hub::to_string( m_resolutions ) + ", " +
+           SensorSpec::to_string( m_metaData ) + ", " + std::to_string( m_acquisitionSize );
 }
 
 // constexpr int SensorSpec::format2nByte(const Format &format)
@@ -122,10 +120,10 @@ std::string SensorSpec::to_string( const std::pair<std::string, std::any>& metaD
 
 std::ostream& operator<<( std::ostream& os, const SensorSpec& sensorSpec ) {
     os << sensorSpec.to_string();
-//    os << sensorSpec.m_sensorName << ", " << resolutions2string( sensorSpec.m_resolutions ) << ", "
-//    os << sensorSpec.m_sensorName << ", " << sensorSpec.m_resolutions << ", "
-//       << SensorSpec::to_string( sensorSpec.m_metaData ) << ", "
-//       << sensorSpec.m_acquisitionSize;
+    //    os << sensorSpec.m_sensorName << ", " << resolutions2string( sensorSpec.m_resolutions ) <<
+    //    ", " os << sensorSpec.m_sensorName << ", " << sensorSpec.m_resolutions << ", "
+    //       << SensorSpec::to_string( sensorSpec.m_metaData ) << ", "
+    //       << sensorSpec.m_acquisitionSize;
     return os;
 }
 

@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include "IO/Interface.hpp"
 #include "Net/Socket.hpp"
 
@@ -58,7 +57,7 @@ class SRC_API ClientSocket : public Socket, public virtual io::Interface
         NOT_FOUND,
         FOUND,
         NEW_ACQ,
-//        END_CONNECTION,
+        //        END_CONNECTION,
         LIST_STREAMS,
         GET_SENSOR_SPEC,
         GET_ACQUISITION,
@@ -99,7 +98,7 @@ class SRC_API ClientSocket : public Socket, public virtual io::Interface
     /// \param sock
     ///
     ClientSocket( ClientSocket&& sock ) = default;
-//    ClientSocket( ClientSocket&& sock );
+    //    ClientSocket( ClientSocket&& sock );
 
     ClientSocket& operator=( const ClientSocket& sock ) = delete;
     ClientSocket&& operator=( ClientSocket&& sock ) = delete;
@@ -199,8 +198,7 @@ class SRC_API ClientSocket : public Socket, public virtual io::Interface
     int m_port;
     net::utils::ClientAddr m_addr;
     mutable bool m_connected = false;
-    bool m_moved = false;
-
+    bool m_moved             = false;
 };
 
 template <class T>

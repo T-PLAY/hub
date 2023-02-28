@@ -2,10 +2,9 @@ cmake_minimum_required(VERSION 3.8)
 
 project(server)
 
-#set(WIN32_REQUIRED_LIBS)
-#set(UNIX_REQUIRED_LIBS)
+# set(WIN32_REQUIRED_LIBS) set(UNIX_REQUIRED_LIBS)
 set(REQUIRED_LIBS)
-if (HUB_ENABLE_COVERAGE)
+if(HUB_ENABLE_COVERAGE)
     set(REQUIRED_LIBS ${REQUIRED_LIBS} "gcov")
 endif()
 
@@ -24,7 +23,7 @@ endif()
 
 # if (MSVC) # Here I set the target System to WindowsStore, which *should* enable UWP-support
 
-#target_link_libraries(${PROJECT_NAME} ${UNIX_REQUIRED_LIBS} ${WIN32_REQUIRED_LIBS} hub)
+# target_link_libraries(${PROJECT_NAME} ${UNIX_REQUIRED_LIBS} ${WIN32_REQUIRED_LIBS} hub)
 target_link_libraries(${PROJECT_NAME} ${REQUIRED_LIBS} hub)
 
 # set(CMAKE_CXX_STANDARD 14) #ULA-OP C++14 set(CMAKE_CXX_STANDARD_REQUIRED ON)

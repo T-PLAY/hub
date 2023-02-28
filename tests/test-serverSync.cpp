@@ -21,8 +21,9 @@ TEST_CASE( "Server test : sync" ) {
             data[i] = iAcq * 2;
         }
         acqs.emplace_back( iAcq * 2, iAcq * 2 );
-        acqs.back() << hub::Measure(
-            reinterpret_cast<const unsigned char*>(data), dataSize, { { 3 }, hub::Format::BGR8 } );
+        acqs.back() << hub::Measure( reinterpret_cast<const unsigned char*>( data ),
+                                     dataSize,
+                                     { { 3 }, hub::Format::BGR8 } );
     }
     std::vector<hub::Acquisition> acqs2;
     for ( int iAcq2 = 0; iAcq2 < nAcqs; ++iAcq2 ) {
@@ -31,8 +32,9 @@ TEST_CASE( "Server test : sync" ) {
             data[i] = iAcq2 * 10;
         }
         acqs2.emplace_back( iAcq2 * 10, iAcq2 * 10 );
-        acqs2.back() << hub::Measure(
-            reinterpret_cast<const unsigned char*>(data), dataSize, { { 3 }, hub::Format::BGR8 } );
+        acqs2.back() << hub::Measure( reinterpret_cast<const unsigned char*>( data ),
+                                      dataSize,
+                                      { { 3 }, hub::Format::BGR8 } );
     }
 
     std::cout << "[Test] ############################### server start" << std::endl;
@@ -46,7 +48,7 @@ TEST_CASE( "Server test : sync" ) {
     {
         std::cout << "[Test] ############################### outputStream start" << std::endl;
         hub::OutputSensor outputSensor(
-            hub::SensorSpec{ "sensorName", { { { 3 }, hub::Format::BGR8 } } },
+            hub::SensorSpec { "sensorName", { { { 3 }, hub::Format::BGR8 } } },
             hub::io::OutputStream( "stream", hub::net::ClientSocket( ipv4, port ) ) );
 
         const auto& outputSensorSpec = outputSensor.m_spec;
@@ -60,7 +62,7 @@ TEST_CASE( "Server test : sync" ) {
 
         std::cout << "[Test] ############################### outputStream2 start" << std::endl;
         hub::OutputSensor outputSensor2(
-            hub::SensorSpec{ "sensorName2", { { { 3 }, hub::Format::BGR8 } } },
+            hub::SensorSpec { "sensorName2", { { { 3 }, hub::Format::BGR8 } } },
             hub::io::OutputStream( "master", hub::net::ClientSocket( ipv4, port ) ) );
 
         const auto& outputSensorSpec2 = outputSensor2.m_spec;

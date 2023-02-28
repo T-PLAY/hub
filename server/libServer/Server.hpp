@@ -11,10 +11,10 @@
 #include <Net/ServerSocket.hpp>
 #include <OutputSensor.hpp>
 
+#include "AskerClient.hpp"
 #include "StreamViewerClient.hpp"
 #include "StreamerClient.hpp"
 #include "ViewerClient.hpp"
-#include "AskerClient.hpp"
 
 class Server
 {
@@ -43,10 +43,10 @@ class Server
     void newAcquisition( StreamerClient* streamer, const hub::Acquisition& acq );
 
     std::list<std::pair<std::string, hub::SensorSpec>> listStreams() const;
-    const hub::SensorSpec & getSensorSpec(const std::string & streamName);
-    const std::shared_ptr<hub::Acquisition> getAcquisition(const std::string & streamName);
+    const hub::SensorSpec& getSensorSpec( const std::string& streamName );
+    const std::shared_ptr<hub::Acquisition> getAcquisition( const std::string& streamName );
 
-    void removeClient(const Client * client);
+    void removeClient( const Client* client );
 
   private:
     //    bool m_acqPing = true;

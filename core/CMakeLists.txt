@@ -1,17 +1,15 @@
 cmake_minimum_required(VERSION 3.8)
 
-#set(HUB_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include")
-#set(HUB_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
+# set(HUB_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include") set(HUB_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
 
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fpic")
+# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fpic")
 
 option(HUB_ENABLE_COVERAGE "Collect coverage from hub library (required tests enable)" OFF)
-if (HUB_ENABLE_COVERAGE)
+if(HUB_ENABLE_COVERAGE)
     include(CodeCoverage)
     append_coverage_compiler_flags()
     set(REQUIRED_LIBS ${REQUIRED_LIBS} gcov)
 endif()
-
 
 option(HUB_BUILD_STATIC_LIBRARY "Build static library" OFF)
 
@@ -20,25 +18,22 @@ file(GLOB_RECURSE headers ${HUB_INCLUDE_DIR}/*.hpp ${HUB_INCLUDE_DIR}/*.inl)
 
 list(APPEND SOURCE_FILES ${sources} ${headers})
 
-#source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SOURCE_FILES} PREFIX ../include)
-#source_group("Header Files\\" FILES     ${headers})
-#source_group("Source Files\\" FILES     ${sources})
+# source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SOURCE_FILES} PREFIX ../include) source_group("Header Files\\"
+# FILES     ${headers}) source_group("Source Files\\" FILES     ${sources})
 
-### Set up such that your IDE organizes the files correctly
+# Set up such that your IDE organizes the files correctly
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SOURCE_FILES})
 
-#add_library(cpp_doxygen_sphinx ${SOURCE_FILES})
+# add_library(cpp_doxygen_sphinx ${SOURCE_FILES})
 
-#set(CPACK_PROJECT_NAME ${PROJECT_NAME})
-#set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
-#include(CPack)
+# set(CPACK_PROJECT_NAME ${PROJECT_NAME}) set(CPACK_PROJECT_VERSION ${PROJECT_VERSION}) include(CPack)
 
 set(REQUIRED_LIBS)
 
 if(HUB_BUILD_STATIC_LIBRARY)
     add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})
     target_compile_definitions(${PROJECT_NAME} PUBLIC -DSRC_STATIC)
-    set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE ON) #octave
+    set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE ON) # octave
 else()
     add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
     target_compile_definitions(${PROJECT_NAME} PUBLIC -DSRC_EXPORTS)
@@ -54,10 +49,14 @@ endif()
 
 if(MINGW)
     set(REQUIRED_LIBS ws2_32)
-    get_filename_component( Mingw_Path ${CMAKE_CXX_COMPILER} PATH )
-    set( CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS ${Mingw_Path}/libgcc_s_seh-1.dll ${Mingw_Path}/libstdc++-6.dll ${Mingw_Path}/libwinpthread-1.dll )
-    install( PROGRAMS ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS} DESTINATION bin COMPONENT System )
-elseif( WIN32 )
+    get_filename_component(Mingw_Path ${CMAKE_CXX_COMPILER} PATH)
+    set(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS ${Mingw_Path}/libgcc_s_seh-1.dll ${Mingw_Path}/libstdc++-6.dll
+                                          ${Mingw_Path}/libwinpthread-1.dll)
+    install(
+        PROGRAMS ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS}
+        DESTINATION bin
+        COMPONENT System)
+elseif(WIN32)
 
 elseif(UNIX)
     find_package(Threads REQUIRED)
@@ -78,24 +77,18 @@ install(
     EXPORT ${PROJECT_NAME}
     DESTINATION lib)
 
-#    set( CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS ${Mingw_Path}/libgcc_s_seh-1.dll ${Mingw_Path}/libstdc++-6.dll ${Mingw_Path}/libwinpthread-1.dll )
-#install( PROGRAMS ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS} DESTINATION bin COMPONENT System )
-if (NOT HUB_BUILD_STATIC_LIBRARY)
-        install(
-        #    PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/hub${CMAKE_POSTFIX}.dll
-        #    PROGRAMS $<TARGET_FILE:hub> $<TARGET_FILE_DIR:${PROJECT_NAME}>)
-            PROGRAMS $<TARGET_FILE:hub>
-            DESTINATION bin)
+# set( CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS ${Mingw_Path}/libgcc_s_seh-1.dll ${Mingw_Path}/libstdc++-6.dll
+# ${Mingw_Path}/libwinpthread-1.dll ) install( PROGRAMS ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS} DESTINATION bin COMPONENT
+# System )
+if(NOT HUB_BUILD_STATIC_LIBRARY)
+    install(# PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/hub${CMAKE_POSTFIX}.dll PROGRAMS $<TARGET_FILE:hub>
+            # $<TARGET_FILE_DIR:${PROJECT_NAME}>)
+            PROGRAMS $<TARGET_FILE:hub> DESTINATION bin)
 endif()
 
 # install(TARGETS ${PROJECT_NAME} DESTINATION lib)
-install(
-#    DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/
-    DIRECTORY ${HUB_INCLUDE_DIR}/
-    DESTINATION include
-#    FILES_MATCHING
-#    PATTERN "*.hpp"
-#    PATTERN "*.inl"
+install(# DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/
+        DIRECTORY ${HUB_INCLUDE_DIR}/ DESTINATION include # FILES_MATCHING PATTERN "*.hpp" PATTERN "*.inl"
 )
 
 # install include headers install(FILES MathFunctions.h DESTINATION include)
@@ -109,10 +102,8 @@ install(
 
 target_include_directories(
     ${PROJECT_NAME}
-    PUBLIC
-            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-#            $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
-#            $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+    PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+           # $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include> $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
            $<INSTALL_INTERFACE:include>)
 
 include(CMakePackageConfigHelpers)
@@ -135,37 +126,34 @@ export(EXPORT ${PROJECT_NAME} FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}T
 
 # ########################### COVERAGE ################################
 
-
-if (HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
+if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
     setup_target_for_coverage_lcov(
-#    setup_target_for_coverage_gcovr_xml(
-        NAME coverage
-#        BASE_DIRECTORY "CMakeFiles"
-        EXECUTABLE ctest
-        --test-dir tests
-        -j ${n_cores}
+        # setup_target_for_coverage_gcovr_xml(
+        NAME
+        coverage
+        # BASE_DIRECTORY "CMakeFiles"
+        EXECUTABLE
+        ctest
+        --test-dir
+        tests
+        -j
+        ${n_cores}
         DEPENDENCIES
         hub
-#        server
-        #            test-sensorSpec
+        # server
+        # test-sensorSpec
         test-all
         NO_DEMANGLE
         EXCLUDE
         "/usr/*"
-#        "examples/*"
-#        "include/*"
+        # "examples/*" "include/*"
     )
     if(${CMAKE_VERSION} VERSION_LESS "3.20") # ctest --test-dir option
-        file(COPY ${CMAKE_BINARY_DIR}/tests/DartConfiguration.tcl
-            DESTINATION ${CMAKE_BINARY_DIR}/
-        )
+        file(COPY ${CMAKE_BINARY_DIR}/tests/DartConfiguration.tcl DESTINATION ${CMAKE_BINARY_DIR}/)
     endif()
 
-#            setup_target_for_coverage_gcovr_html(NAME coverage-html
-#                EXECUTABLE ctest --schedule-random -j ${n_cores} --test-dir tests
-#                EXCLUDE "/usr/*"
-#                DEPENDENCIES test-file test-measures test-ram test-resolutions test-sensorSpec test-server test-serverSpeed
-#            )
+    # setup_target_for_coverage_gcovr_html(NAME coverage-html EXECUTABLE ctest --schedule-random -j ${n_cores}
+    # --test-dir tests EXCLUDE "/usr/*" DEPENDENCIES test-file test-measures test-ram test-resolutions test-sensorSpec
+    # test-server test-serverSpeed )
 
 endif()
-

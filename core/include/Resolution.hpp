@@ -57,14 +57,14 @@ enum class Format {
 /// \brief
 /// Describes the N-dimensional lengths.
 ///
-using Dims        = std::vector<int>;
+using Dims = std::vector<int>;
 
 ///
 /// \brief
 /// Corresponds to n-dimensional lengths with a fixed format of the data.
 /// Therefore, the total vectorised data has a fixed size in memory (TCP datagram).
 ///
-using Resolution  = std::pair<Dims, Format>;
+using Resolution = std::pair<Dims, Format>;
 
 ///
 /// \brief
@@ -82,7 +82,7 @@ static std::string HUB_TO_STRING( const Dims& dims );
 static inline constexpr std::string& HUB_TO_STRING( const Format& format );
 static std::string HUB_TO_STRING( const Resolutions& resolutions );
 static std::string HUB_TO_STRING( const Resolution& resolution );
-//static std::string to_string( const std::string & string );
+// static std::string to_string( const std::string & string );
 
 //    static std::string metaData2string( const MetaData& metaData, bool expand = false );
 //    static std::string metaData2string( const std::pair<std::string, std::any>& metaData );
@@ -105,14 +105,13 @@ SRC_API std::ostream& operator<<( std::ostream& os, const Dims& dims );
 SRC_API std::ostream& operator<<( std::ostream& os, const Resolution& resolution );
 SRC_API std::ostream& operator<<( std::ostream& os, const Resolutions& resolutions );
 
-//template <class T = Dims>
-//SRC_API std::ostream& operator<<( std::ostream& os, const T& t ) {
+// template <class T = Dims>
+// SRC_API std::ostream& operator<<( std::ostream& os, const T& t ) {
 //    os << hub::to_stringe(t);
 //    return os;
 //}
 
-
-//static std::string(Resolutions & resolutions ) {
+// static std::string(Resolutions & resolutions ) {
 //}
 
 } // namespace hub
