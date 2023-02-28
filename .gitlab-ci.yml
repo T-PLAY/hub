@@ -114,44 +114,44 @@ dep:
   # only:
   # - master
       
-# build-clang-release:
-#   stage: build
-# #  before_script:
-# #    - export PATH=$PATH:/opt/Qt/5.10.0/gcc_64/bin
-#   script:
-#     - cp -rT cache/dep-cache/ /;
+build-clang-release:
+  stage: build
+#  before_script:
+#    - export PATH=$PATH:/opt/Qt/5.10.0/gcc_64/bin
+  script:
+    - cp -rT cache/dep-cache/ /;
 
-#     - mkdir -p cache/build-clang-release
-#     - cmake -B cache/build-clang-release -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON -DHUB_BUILD_DOC=ON
-#     # - cmake -B build-clang-release -DCMAKE_CXX_COMPILER=g++ -DCMAKE_C_COMPILER=clang -DCMAKE_BUILD_TYPE=Release
-#     - cmake --build cache/build-clang-release --config Release
-#     - cmake --install cache/build-clang-release --config Release
-#   # only:
-#   # - master
+    - mkdir -p cache/build-clang-release
+    - cmake -B cache/build-clang-release -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON -DHUB_BUILD_DOC=ON
+    # - cmake -B build-clang-release -DCMAKE_CXX_COMPILER=g++ -DCMAKE_C_COMPILER=clang -DCMAKE_BUILD_TYPE=Release
+    - cmake --build cache/build-clang-release --config Release
+    - cmake --install cache/build-clang-release --config Release
+  # only:
+  # - master
 
-# build-gcc-debug:
-#   stage: build
-#   script:
-#     - cp -rT cache/dep-cache/ /;
-#     # - apt update
-#     # - apt install -y doxygen clang libclang-dev lcov
+build-gcc-debug:
+  stage: build
+  script:
+    - cp -rT cache/dep-cache/ /;
+    # - apt update
+    # - apt install -y doxygen clang libclang-dev lcov
 
-#     - mkdir -p cache/build-gcc-debug
-#     - cmake -B cache/build-gcc-debug -DCMAKE_CXX_COMPILER=/usr/bin/g++ -DCMAKE_C_COMPILER=/usr/bin/gcc -DCMAKE_BUILD_TYPE=Debug -DHUB_ENABLE_TESTS=ON -DHUB_ENABLE_COVERAGE=ON
-#     # - cmake -B build-gcc-debug -DCMAKE_CXX_COMPILER=/usr/bin/gcc++ -DCMAKE_C_COMPILER=/usr/bin/gcc -DCMAKE_BUILD_TYPE=Debug
-#     - cmake --build cache/build-gcc-debug --config Debug
-#   # only:
-#     # - master
-  
-# test:
-#   stage: test
-#   script:
-#     # - cd cache/build-gcc-debug/tests
-#     # - ctest -V
-#     - cmake --build cache/build-gcc-debug --target tests
-# #    - ./runmytests.sh
-#   # only:
-#   # - master
+    - mkdir -p cache/build-gcc-debug
+    - cmake -B cache/build-gcc-debug -DCMAKE_CXX_COMPILER=/usr/bin/g++ -DCMAKE_C_COMPILER=/usr/bin/gcc -DCMAKE_BUILD_TYPE=Debug -DHUB_ENABLE_TESTS=ON -DHUB_ENABLE_COVERAGE=ON
+    # - cmake -B build-gcc-debug -DCMAKE_CXX_COMPILER=/usr/bin/gcc++ -DCMAKE_C_COMPILER=/usr/bin/gcc -DCMAKE_BUILD_TYPE=Debug
+    - cmake --build cache/build-gcc-debug --config Debug
+  # only:
+    # - master
+
+test:
+  stage: test
+  script:
+    # - cd cache/build-gcc-debug/tests
+    # - ctest -V
+    - cmake --build cache/build-gcc-debug --target tests
+#    - ./runmytests.sh
+  # only:
+  # - master
 
 coverage:
   stage: coverage
