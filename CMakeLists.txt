@@ -126,7 +126,13 @@ add_custom_target(
 )
 
 add_custom_target(all-targets)
-add_dependencies(all-targets tests coverage cppCheck doc-doxygen doc-sphinx format)
+foreach(target "tests" "coverage" "cppCheck" "doc-doxygen" "doc-sphinx" "format")
+#    message(STATUS "${target}")
+    if (TARGET ${target})
+        add_dependencies(all-targets ${target})
+    endif()
+endforeach()
+#add_dependencies(all-targets tests coverage cppCheck doc-doxygen doc-sphinx format)
 
 if(HUB_ENABLE_DOC OR HUB_ENABLE_COVERAGE)
     set(HUB_BROWSER "chromium" CACHE STRING "User browser to see html docs and coverage")
