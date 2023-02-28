@@ -85,6 +85,7 @@ DEFUN_DLD( hub_getAcquisition, args, , "Return list of streams connected to the 
                     dimX = dims.at( 1 );
                     dimY = dims.at( 0 );
                 }
+
                 else
                     assert( false );
 
@@ -98,13 +99,13 @@ DEFUN_DLD( hub_getAcquisition, args, , "Return list of streams connected to the 
                     const hub::Dof6& dof6 = measure;
                     std::cout << "dof6: " << dof6 << std::endl;
 
-                    pos( 0, 0 )  = dof6.x();
-                    pos( 0, 1 )  = dof6.y();
-                    pos( 0, 2 )  = dof6.z();
-                    quat( 0, 0 ) = dof6.w0();
-                    quat( 0, 1 ) = dof6.w1();
-                    quat( 0, 2 ) = dof6.w2();
-                    quat( 0, 3 ) = dof6.w3();
+                    pos( 0, 0 )  = dof6.get_x();
+                    pos( 0, 1 )  = dof6.get_y();
+                    pos( 0, 2 )  = dof6.get_z();
+                    quat( 0, 0 ) = dof6.get_w0();
+                    quat( 0, 1 ) = dof6.get_w1();
+                    quat( 0, 2 ) = dof6.get_w2();
+                    quat( 0, 3 ) = dof6.get_w3();
 
                     retval = octave_value_list(
                         { pos, quat, "", 2, hub::to_string( format ), acq.m_start, acq.m_end } );

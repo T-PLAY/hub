@@ -65,6 +65,8 @@ foreach(name ${API_SRC_BASENAME})
     set(source ${name}.cpp)
     set(test ${name}-test.m)
 
+    get_filename_component(test-basename ${test} NAME)
+
     get_filename_component(basename ${name} NAME)
     set(TARGET_NAME octave-${basename})
 
@@ -127,7 +129,7 @@ foreach(name ${API_SRC_BASENAME})
         POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy ${test} $<TARGET_FILE_DIR:${TARGET_NAME}>
     #    COMMAND octave --no-gui --silent ${tests}
-        COMMAND ${OCTAVE_EXECUTABLE} --no-gui --silent ${test}
+        COMMAND ${OCTAVE_EXECUTABLE} --no-gui --silent ${test-basename}
     #    MAIN_DEPENDENCY test_matpow.m
         DEPENDS ${test}
         DEPFILE ${test}

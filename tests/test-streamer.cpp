@@ -1,7 +1,9 @@
+#include <catch2/catch_test_macros.hpp>
 
 #include <Streamer.hpp>
 
-int main() {
+//int main() {
+TEST_CASE( "Streamer" ) {
 
     // startConstruction
     // link to local server at port 4042
@@ -12,6 +14,4 @@ int main() {
 
     streamer.addStream("hello", std::move(sensorSpec));
 
-
-    return 0;
 }

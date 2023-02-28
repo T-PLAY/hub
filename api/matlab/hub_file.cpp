@@ -32,6 +32,7 @@ class MexFunction : public matlab::mex::Function
         const auto& dims   = resolution.first;
         const auto& format = resolution.second;
 
+
         const auto& dimX = dims.at( 1 );
         const auto& dimY = dims.at( 0 );
         //    int dimZ = hub::format2nByte(format);

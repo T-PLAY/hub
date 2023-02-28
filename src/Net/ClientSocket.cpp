@@ -118,7 +118,7 @@ void ClientSocket::connect() {
     //    m_fdSock = socket( PF_INET, SOCK_STREAM, 0 );
     m_fdSock = net::utils::clientSocket();
 //    if ( m_fdSock < 0 ) {
-    if ( net::utils::isValid(m_fdSock) ) {
+    if ( ! net::utils::isValid(m_fdSock) ) {
         perror( "[socket] socket creation failed.\n" );
         return;
     }
