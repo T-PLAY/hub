@@ -65,7 +65,7 @@ dep:
   script:
     - |-
       # rm -rf cache
-      rm -rf cache/build*
+      # rm -rf cache/build*
       if [ ! -e cache ]; then
         mkdir cache
       fi
@@ -163,8 +163,8 @@ coverage:
     # - cd build-gcc-release/
     # - cmake --build cache/build-gcc-debug/ --target coverage
     - cmake --build cache/build-gcc-debug --target coverage
-    - cache/node_modules/.bin/lcov-badge-generator cache/build-gcc-debug/coverage.capture
-    - cp badge.svg cache/build-gcc-debug/coverage/
+    # - cache/node_modules/.bin/lcov-badge-generator cache/build-gcc-debug/coverage.capture
+    # - cp badge.svg cache/build-gcc-debug/coverage/
     - mv cache/build-gcc-debug/coverage public/
   artifacts:
     paths:
