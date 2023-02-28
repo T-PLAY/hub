@@ -25,7 +25,7 @@ class SRC_API ServerSocket : public Socket
     /// \param port
     /// you want to open to listen.
     ///
-    ServerSocket( int port );
+    explicit ServerSocket( int port );
 
     ///
     /// \brief waitNewClient

@@ -15,7 +15,7 @@ namespace hub {
 class SRC_API Asker
 {
   public:
-    Asker( const std::string& ipv4 = net::s_defaultServiceIp,
+    explicit Asker( const std::string& ipv4 = net::s_defaultServiceIp,
            int port                = net::s_defaultServicePort );
 
     ~Asker();

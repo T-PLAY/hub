@@ -33,7 +33,7 @@ TEST_CASE( "File test" ) {
             hub::io::File(
                 std::fstream( filename, std::ios::out | std::ios::binary | std::ios::trunc ) ) );
 
-        auto& sensorSpec = outputSensor.m_spec;
+        const auto& sensorSpec = outputSensor.m_spec;
         CHECK( sensorSpec.getAcquisitionSize() == 3 );
         CHECK( sensorSpec.getSensorName() == "sensorName" );
         CHECK( sensorSpec.getResolutions().size() == 1 );

@@ -45,7 +45,7 @@ class SRC_API Viewer
     /// \param onLogMessage
     /// is an event handler to receive debug message from server.
     ///
-    Viewer( std::function<bool( const char* streamName, const SensorSpec& )> onNewStreamer = {},
+    explicit Viewer( std::function<bool( const char* streamName, const SensorSpec& )> onNewStreamer = {},
             std::function<void( const char* streamName, const SensorSpec& )> onDelStreamer = {},
             std::function<void( const char* ipv4, int port )> onServerConnected            = {},
             std::function<void( const char* ipv4, int port )> onServerDisconnected         = {},
@@ -137,7 +137,7 @@ private:
       public:
         Viewer& m_viewer;
 
-        Stream( Viewer& viewer ) : m_viewer( viewer ), m_onLogMessage( m_viewer.m_onLogMessage ) {}
+        explicit Stream( Viewer& viewer ) : m_viewer( viewer ), m_onLogMessage( m_viewer.m_onLogMessage ) {}
 
         Stream( Stream&& stream ) :
             m_viewer( stream.m_viewer ),

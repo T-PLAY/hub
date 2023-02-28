@@ -203,7 +203,7 @@ class SRC_API Dof6 : public Measure
     /// \param measure
     /// to copy.
     ///
-    Dof6( const Measure& measure );
+    explicit Dof6( const Measure& measure );
 
     ///
     /// \brief Dof6
@@ -223,7 +223,7 @@ class SRC_API Dof6 : public Measure
     /// \param w3
     /// orientation
     ///
-    Dof6( float x  = 0.0,
+    explicit Dof6( float x  = 0.0,
           float y  = 0.0,
           float z  = 0.0,
           float w0 = 1.0,
@@ -252,76 +252,77 @@ class SRC_API Dof6 : public Measure
     /// \brief x
     /// \return
     ///
-    inline float x() const;
+    inline float get_x() const;
 
     ///
     /// \brief y
     /// \return
     ///
-    inline float y() const;
+    inline float get_y() const;
 
     ///
     /// \brief z
     /// \return
     ///
-    inline float z() const;
+    inline float get_z() const;
 
     ///
     /// \brief w0
     /// \return
     ///
-    inline float w0() const;
+    inline float get_w0() const;
 
     ///
     /// \brief w1
     /// \return
     ///
-    inline float w1() const;
+    inline float get_w1() const;
 
     ///
     /// \brief w2
     /// \return
     ///
-    inline float w2() const;
+    inline float get_w2() const;
 
     ///
     /// \brief w3
     /// \return
     ///
-    inline float w3() const;
+    inline float get_w3() const;
 
   private:
     const float m_x = 0.0, m_y = 0.0, m_z = 0.0;                // vec3
     const float m_w0 = 1.0, m_w1 = 0.0, m_w2 = 0.0, m_w3 = 0.0; // quat : w, x, y, z
 };
 
-inline float Dof6::x() const {
+inline float Dof6::get_x() const {
     return m_x;
 }
 
-inline float Dof6::y() const {
+inline float Dof6::get_y() const {
     return m_y;
 }
 
-inline float Dof6::z() const {
+inline float Dof6::get_z() const {
     return m_z;
 }
 
-inline float Dof6::w0() const {
+inline float Dof6::get_w0() const {
     return m_w0;
 }
 
-inline float Dof6::w1() const {
+inline float Dof6::get_w1() const {
     return m_w1;
 }
 
-inline float Dof6::w2() const {
+inline float Dof6::get_w2() const {
     return m_w2;
 }
 
-inline float Dof6::w3() const {
+inline float Dof6::get_w3() const {
     return m_w3;
 }
+
 
 ///
 /// \brief The Mat4 class
@@ -336,7 +337,7 @@ class Mat4 : public Measure
     /// \param array
     /// of 4x4 float (size = 4x4x4 = 64 bytes)
     ///
-    Mat4( const float* array );
+    explicit Mat4( const float* array );
 };
 
 } // namespace hub

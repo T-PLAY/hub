@@ -33,7 +33,7 @@ class SRC_API InputSensor : public Sensor
     template <class InputInterface,
               typename = typename std::enable_if<
                   std::is_base_of<io::InputInterface, InputInterface>::value>::type>
-    InputSensor( InputInterface&& inputInterface ) :
+    explicit InputSensor( InputInterface&& inputInterface ) :
 
         Sensor( {}, *std::move( new InputInterface( std::move( inputInterface ) ) ) ) {
 

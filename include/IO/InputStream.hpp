@@ -35,7 +35,7 @@ class SRC_API InputStream : public InputInterface, public net::ClientSocket
     /// when the server is not found or by loosing connection to the server.
     /// Also occur when stream you want to link is not connected to the server.
     ///
-    InputStream( const std::string& streamName,
+    explicit InputStream( const std::string& streamName,
                  const std::string& syncStreamName = "",
                  net::ClientSocket&& clientSocket  = net::ClientSocket(),
                  bool mergeSyncAcqs                = true );

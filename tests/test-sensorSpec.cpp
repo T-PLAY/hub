@@ -13,9 +13,9 @@ TEST_CASE( "SensorSpec test" ) {
 //    streamer.isConnected();
 
     hub::SensorSpec::MetaData metaData;
-    hub::Format format = hub::Format::BGR8;
+//    hub::Format format = hub::Format::BGR8;
     hub::Dims dims     = { 1 };
-    hub::Resolutions resolutions { { dims, format } };
+//    hub::Resolutions resolutions { { dims, format } };
     hub::SensorSpec sensorSpec { "sensorName", { { dims, hub::Format::BGR8 } }, metaData };
 
     CHECK( sensorSpec.getSensorName() == "sensorName" );

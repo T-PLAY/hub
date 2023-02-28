@@ -34,7 +34,7 @@ class SRC_API Streamer
     /// \param port
     /// is the port of the server hub service.
     ///
-    Streamer( const std::string& ipv4 = net::s_defaultServiceIp,
+    explicit Streamer( const std::string& ipv4 = net::s_defaultServiceIp,
               int port                = net::s_defaultServicePort );
 
     ~Streamer();

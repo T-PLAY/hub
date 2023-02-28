@@ -136,7 +136,7 @@ Acquisition& Acquisition::operator<<( const Measures& measures ) {
 
 Acquisition Acquisition::clone() const {
 
-    Acquisition&& acq { m_start, m_end };
+    Acquisition acq { m_start, m_end };
 
     acq << m_measures;
     //    for ( const auto& measure : m_measures ) {
@@ -144,7 +144,7 @@ Acquisition Acquisition::clone() const {
     ////        acq.addMeasure(mea);
     //    }
 
-    return std::move( acq );
+    return acq;
 }
 
 // const std::list<Measure> &Acquisition::getMeasures() const

@@ -42,7 +42,7 @@ class SRC_API File : public InputOutputInterface
     /// \param file
     /// is a movable fstream you want to use as a sensor communication bus.
     ///
-    File( std::fstream&& file );
+    explicit File( std::fstream&& file );
 
     File( const File& fileIO ) = delete;
 

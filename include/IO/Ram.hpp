@@ -42,7 +42,7 @@ class SRC_API CyclicBuff
     /// \param size
     /// [in] is constant size of the granted buffer.
     ///
-    CyclicBuff( size_t size = g_buffLen );
+    explicit CyclicBuff( size_t size = g_buffLen );
 
     CyclicBuff( const CyclicBuff& buff ) = delete;
 
@@ -139,7 +139,7 @@ class SRC_API Ram : public InputOutputInterface
     /// \param buff
     /// [in] is a cyclic buffer already instancied.
     ///
-    Ram( CyclicBuff& buff );
+    explicit Ram( CyclicBuff& buff );
 
   protected:
     ///

@@ -28,7 +28,7 @@ TEST_CASE( "Ram test" ) {
     hub::OutputSensor outputSensor( { "sensorName", { { { 1 }, hub::Format::BGR8 } } },
                                     hub::io::Ram( cyclicBuff ) );
 
-    auto& sensorSpec = outputSensor.m_spec;
+    const auto& sensorSpec = outputSensor.m_spec;
     CHECK( sensorSpec.getAcquisitionSize() == 3 );
     CHECK( sensorSpec.getSensorName() == "sensorName" );
     CHECK( sensorSpec.getResolutions().size() == 1 );
@@ -57,9 +57,11 @@ TEST_CASE( "Ram test" ) {
         CHECK( sensorSpec2.getResolutions()[0].first.at( 0 ) == 1 );
         CHECK( sensorSpec2.getResolutions()[0].second == hub::Format::BGR8 );
         std::cout << "####### compare acqs" << std::endl;
+
+        auto acqs2 = inputSensor.getAllAcquisitions();
         for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
-            auto acq = inputSensor.getAcquisition();
-            CHECK( acq == acqs[iAcq] );
+//            auto acq = inputSensor.getAcquisition();
+            CHECK( acqs2[iAcq] == acqs[iAcq] );
         }
     }
     std::cout << "inputStream end #################################" << std::endl;
