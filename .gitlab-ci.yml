@@ -64,6 +64,7 @@ dep:
   stage: dep
   script:
     - |-
+      rm -rf cache
       if [ ! -e cache ]; then
         mkdir cache
       fi
