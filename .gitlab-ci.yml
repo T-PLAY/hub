@@ -177,9 +177,9 @@ cppCheck:
   script:
     - apt update
     - apt install -y cppcheck
-    # - cppcheck --enable=all --force -I include -I server/libServer/ --error-exitcode=1 --disable=unusedFunction --disable=information server src
+    - cppcheck --enable=all --error-exitcode=1 core/src tests server -I core/include -I server/libServer/ --suppress=toomanyconfigs --suppress=missingIncludeSystem --suppress=noValidConfiguration
     # - cppcheck --enable=all src server --error-exitcode=1 --suppress=unusedFunction --suppress=missingInclude
-    - cmake --build cache/build-clang-release --target cppCheck
+    # - cmake --build cache/build-clang-release --target cppCheck
 
 
 doc-doxygen:
