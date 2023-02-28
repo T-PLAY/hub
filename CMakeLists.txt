@@ -8,8 +8,6 @@ set(CMAKE_CXX_STANDARD 17) # depends of std::any for metadata representation
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_FIND_PACKAGE_NO_SYSTEM_PACKAGE_REGISTRY False)
 
-set(BROWSER chromium)
-
 #set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -fprofile-arcs -ftest-coverage")
 #set(CMAKE_CXX_FLAGS_RELEASE "-O2")
 
@@ -106,9 +104,9 @@ if(HUB_ENABLE_EXAMPLES)
     add_subdirectory(examples)
 endif()
 
-file(COPY
-    ${PROJECT_SOURCE_DIR}/scripts/run_all_targets.sh DESTINATION ${CMAKE_BINARY_DIR}/
-)
+#file(COPY
+#    ${PROJECT_SOURCE_DIR}/scripts/run_all_targets.sh DESTINATION ${CMAKE_BINARY_DIR}/
+#)
 add_custom_target(
     cppCheck
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
@@ -129,3 +127,7 @@ add_custom_target(
 
 add_custom_target(all-targets)
 add_dependencies(all-targets tests coverage cppCheck doc-doxygen doc-sphinx format)
+
+if(HUB_ENABLE_DOC OR HUB_ENABLE_COVERAGE)
+    set(HUB_BROWSER "chromium" CACHE STRING "User browser to see html docs and coverage")
+endif()
