@@ -3,25 +3,24 @@
 
 #include <cassert>
 #include <cstring>
+#include <regex>
 #include <stdio.h>
 #include <stdlib.h>
-#include <regex>
 
 static const std::regex s_ipv4Regex { "^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$" };
 
 #ifdef WIN32
 
-
 //#ifdef MIN
-#ifdef __MINGW64__
-    #undef _WIN32_WINNT
-    //#define _WIN32_WINNT _WIN32_WINNT_WS03 // Windows Server 2003
-    #define _WIN32_WINNT _WIN32_WINNT_VISTA // Windows Vista
-#endif
+#    ifdef __MINGW64__
+#        undef _WIN32_WINNT
+//#define _WIN32_WINNT _WIN32_WINNT_WS03 // Windows Server 2003
+#        define _WIN32_WINNT _WIN32_WINNT_VISTA // Windows Vista
+#    endif
 
 // #include <windows.h>
-#include <winsock2.h>
-#include <ws2tcpip.h>
+#    include <winsock2.h>
+#    include <ws2tcpip.h>
 // #include <WS2tcpip.h>
 
 #    pragma comment( lib, "ws2_32.lib" )
@@ -55,7 +54,7 @@ socket_fd invalidSocket() {
 
 static inline void init() {
 #ifdef DEBUG_NET
-        std::cout << getHeader() << "init()" << std::endl;
+    std::cout << getHeader() << "init()" << std::endl;
 #endif
 #if defined WIN32
     if ( !s_inited ) {
@@ -67,8 +66,8 @@ static inline void init() {
         }
     }
 #else
-        //        signal( SIGINT, signalHandler );
-        //        signal( SIGPIPE, SIG_IGN );
+    //        signal( SIGINT, signalHandler );
+    //        signal( SIGPIPE, SIG_IGN );
 
 #endif
     s_inited = true;
@@ -219,8 +218,8 @@ class ClientAddrImpl
 {
   public:
     //            ~ClientAddrImpl() = default;
-//    ClientAddrImpl() = default;
-//    ClientAddrImpl(ClientAddrImpl && clientAddr) = default;
+    //    ClientAddrImpl() = default;
+    //    ClientAddrImpl(ClientAddrImpl && clientAddr) = default;
 
     void init( const std::string& ipv4, int port ) {
         //    // Server address construction
@@ -298,13 +297,11 @@ int recv( socket_fd sock, char* buf, int len, int flags ) {
     return ::recv( sock, buf, len, flags );
 }
 
-bool isValid(const std::string &ipv4)
-{
-    return std::regex_match(ipv4, s_ipv4Regex);
+bool isValid( const std::string& ipv4 ) {
+    return std::regex_match( ipv4, s_ipv4Regex );
 }
 
-bool isValid(int port)
-{
+bool isValid( int port ) {
     return ( 0 <= port && port <= 65535 );
 }
 

@@ -85,15 +85,14 @@ StreamerClient::StreamerClient( Server& server, int iClient, hub::net::ClientSoc
     const size_t acquisitionSize = sensorSpec.getAcquisitionSize();
     std::cout << headerMsg() << "sensor name:'" << sensorSpec.getSensorName() << "'" << std::endl;
     std::cout << headerMsg() << "acquisitionSize:" << acquisitionSize << std::endl;
-    std::cout << headerMsg()
-//              << "resolutions:" << hub::resolutions2string( sensorSpec.getResolutions() )
-              << "resolutions:" << sensorSpec.getResolutions()
-              << std::endl;
+    std::cout
+        << headerMsg()
+        //              << "resolutions:" << hub::resolutions2string( sensorSpec.getResolutions() )
+        << "resolutions:" << sensorSpec.getResolutions() << std::endl;
 
     const auto& metaData = sensorSpec.getMetaData();
     for ( const auto& pair : metaData ) {
-        std::cout << headerMsg() << "metaData: " << hub::SensorSpec::to_string(pair )
-                  << std::endl;
+        std::cout << headerMsg() << "metaData: " << hub::SensorSpec::to_string( pair ) << std::endl;
     }
     if ( metaData.find( "type" ) != metaData.end() ) {
         std::cout << headerMsg() << "type detected : record stream" << std::endl;
@@ -324,7 +323,7 @@ StreamerClient::StreamerClient( Server& server, int iClient, hub::net::ClientSoc
                             isSyncthing = true;
                         }
 
-//                    } while ( !foundLeft );
+                        //                    } while ( !foundLeft );
                     } while ( false );
 
                     if ( !foundLeft ) continue;
@@ -429,7 +428,6 @@ StreamerClient::StreamerClient( Server& server, int iClient, hub::net::ClientSoc
 
                 m_server.newAcquisition( this, masterAcq );
 
-
                 //                if ( masterAcq.getMeasures().size() == 1 ) {
                 if ( !m_isRecordStream ) {
                     //                    auto & lastAcq = m_lastAcq[""];
@@ -515,7 +513,7 @@ StreamerClient::~StreamerClient() {
         while ( it2 != syncViewers2.end() ) {
             //        for ( auto* syncViewer : syncViewers ) {
             auto* syncViewer = *it2;
-            it2               = syncViewers2.erase( it2 );
+            it2              = syncViewers2.erase( it2 );
             //            m_server.delStreamViewer( syncViewer );
             delete syncViewer;
         }

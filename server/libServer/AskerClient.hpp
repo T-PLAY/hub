@@ -8,7 +8,6 @@
 
 #include "Client.hpp"
 
-
 class AskerClient : public Client
 {
   public:

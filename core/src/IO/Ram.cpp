@@ -30,24 +30,26 @@ void CyclicBuff::write( const unsigned char* data, size_t len ) {
         if ( spaceLeft <= 0 ) spaceLeft += m_buffLen;
 
         long byteWrote = spaceLeft;
-        assert(byteWrote >= 0);
+        assert( byteWrote >= 0 );
         if ( len > byteWrote ) {
             std::this_thread::sleep_for( std::chrono::milliseconds( 2 ) );
             continue;
-//            throw CyclicBuff::exception( "Buffer overflow, no space left" );
-//            assert( false );
+            //            throw CyclicBuff::exception( "Buffer overflow, no space left" );
+            //            assert( false );
         }
-        byteWrote = std::min( byteWrote, (long)len - (long)uploadSize );        // size of not copied user data
-        byteWrote = std::min( byteWrote, (long)m_buffLen - (long)m_writeHead ); // distance to buffer end
-        assert(byteWrote > 0);
+        byteWrote =
+            std::min( byteWrote, (long)len - (long)uploadSize ); // size of not copied user data
+        byteWrote =
+            std::min( byteWrote, (long)m_buffLen - (long)m_writeHead ); // distance to buffer end
+        assert( byteWrote > 0 );
 
         memcpy( &m_buff[m_writeHead], data + uploadSize, byteWrote );
         m_writeHead = ( m_writeHead + byteWrote ) % m_buffLen;
 
-//        if ( byteWrote <= 0 ) {
-//            assert( false );
-//            throw CyclicBuff::exception( "End of file" );
-//        }
+        //        if ( byteWrote <= 0 ) {
+        //            assert( false );
+        //            throw CyclicBuff::exception( "End of file" );
+        //        }
 
         uploadSize += byteWrote;
     } while ( len != uploadSize );
@@ -63,30 +65,32 @@ void CyclicBuff::read( unsigned char* data, size_t len ) {
                 m_inputSensorClose = true;
                 std::cout << "[CyclicBuff:" << this << "] read() : inputSensor close" << std::endl;
                 throw CyclicBuff::exception( "Connection closed" );
-//                assert( false );
+                //                assert( false );
             }
             if ( m_buff == nullptr ) {
                 m_inputSensorClose = true;
                 throw CyclicBuff::exception( "End of buffer (nullptr)" );
-//                assert( false );
+                //                assert( false );
             }
             // nb bytes ready to read
             byteRead = m_writeHead - m_readHead;
             if ( byteRead == 0 ) { std::this_thread::sleep_for( std::chrono::milliseconds( 16 ) ); }
             if ( byteRead < 0 ) byteRead = m_buffLen - m_readHead;
-            byteRead = std::min( byteRead, (long)len - (long)downloadSize );     // user copied bytes left
-            byteRead = std::min( byteRead, (long)m_buffLen - (long)m_readHead ); // distance to end of buffer
+            byteRead =
+                std::min( byteRead, (long)len - (long)downloadSize ); // user copied bytes left
+            byteRead = std::min( byteRead,
+                                 (long)m_buffLen - (long)m_readHead ); // distance to end of buffer
 
         } while ( byteRead == 0 );
 
         memcpy( data + downloadSize, &m_buff[m_readHead], byteRead );
         m_readHead = ( m_readHead + byteRead ) % m_buffLen;
 
-        assert(byteRead > 0);
-//        if ( byteRead <= 0 ) {
-//            assert( false );
-//            throw CyclicBuff::exception( "End of file" );
-//        }
+        assert( byteRead > 0 );
+        //        if ( byteRead <= 0 ) {
+        //            assert( false );
+        //            throw CyclicBuff::exception( "End of file" );
+        //        }
 
         downloadSize += byteRead;
     } while ( len != downloadSize );

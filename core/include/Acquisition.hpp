@@ -32,7 +32,7 @@ class SRC_API Acquisition
     /// \param acq
     /// movable acquisition.
     ///
-    Acquisition( Acquisition&& acq )      = default;
+    Acquisition( Acquisition&& acq ) = default;
     Acquisition& operator=( Acquisition&& acq ) = delete;
 
     ~Acquisition();
@@ -124,7 +124,6 @@ class SRC_API Acquisition
     ///
     SRC_API friend std::ostream& operator<<( std::ostream& os, const Acquisition& acq );
 
-
   public: // getters
     ///
     /// \brief getSize
@@ -151,7 +150,7 @@ class SRC_API Acquisition
     ///
     /// \brief m_end
     ///
-    const long long m_end;   // microseconds
+    const long long m_end; // microseconds
 
   private:
     Measures m_measures;

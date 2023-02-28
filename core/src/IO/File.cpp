@@ -36,7 +36,7 @@ bool File::isEnd() const {
 }
 
 void File::write( const unsigned char* data, size_t len ) const {
-    m_file->write( reinterpret_cast<const char*>(data), len );
+    m_file->write( reinterpret_cast<const char*>( data ), len );
 }
 
 void File::read( unsigned char* data, size_t len ) const {

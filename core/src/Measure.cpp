@@ -15,7 +15,7 @@ Dof6::Dof6( const Measure& measure ) :
 }
 
 Dof6::Dof6( float x, float y, float z, float w0, float w1, float w2, float w3 ) :
-    Measure( reinterpret_cast<unsigned char*>(new float[7] { x, y, z, w0, w1, w2, w3 }),
+    Measure( reinterpret_cast<unsigned char*>( new float[7] { x, y, z, w0, w1, w2, w3 } ),
              28,
              Resolution { { 1 }, Format::DOF6 } ) {
     //    m_ownData = true;
@@ -79,7 +79,9 @@ std::ostream& operator<<( std::ostream& os, const Dof6& dof6 ) {
 }
 
 Mat4::Mat4( const float* array ) :
-    Measure( reinterpret_cast<const unsigned char*>(array), 64, Resolution { { 1 }, Format::MAT4 } ) {
+    Measure( reinterpret_cast<const unsigned char*>( array ),
+             64,
+             Resolution { { 1 }, Format::MAT4 } ) {
     assert( m_size == 64 );
 }
 
@@ -187,7 +189,7 @@ Measure Measure::slerp( const Measure& left, const Measure& right, double t ) {
 
     switch ( left.m_resolution.second ) {
     case Format::DOF6: {
-        return Dof6::slerp( Dof6(left), Dof6(right), t );
+        return Dof6::slerp( Dof6( left ), Dof6( right ), t );
     }
     default:
         assert( false );
@@ -212,13 +214,13 @@ std::ostream& operator<<( std::ostream& os, const Measure& measure ) {
     os << measure.getResolution() << ", [";
 
     if ( measure.m_resolution.second == Format::DOF6 ) {
-        const auto & dof6 = measure;
+        const auto& dof6 = measure;
         os << dof6;
-//        const float* const dof6 = reinterpret_cast<const float* const>(measure.m_data);
-//        os << "dof6:";
-//        for ( auto i = 0; i < 7; ++i ) {
-//            os << std::setw( 3 ) << dof6[i] << " ";
-//        }
+        //        const float* const dof6 = reinterpret_cast<const float* const>(measure.m_data);
+        //        os << "dof6:";
+        //        for ( auto i = 0; i < 7; ++i ) {
+        //            os << std::setw( 3 ) << dof6[i] << " ";
+        //        }
     }
     else {
         for ( auto i = 0; i < std::min( (int)measure.m_size, 10 ); ++i ) {

@@ -53,7 +53,7 @@ class SRC_API Measure
     Measure( Measure&& measure );
     Measure& operator=( Measure&& ) = delete;
 
-    Measure( const Measure& )            = delete;
+    Measure( const Measure& ) = delete;
     Measure& operator=( const Measure& ) = delete;
 
     ~Measure();
@@ -224,12 +224,12 @@ class SRC_API Dof6 : public Measure
     /// orientation
     ///
     explicit Dof6( float x  = 0.0,
-          float y  = 0.0,
-          float z  = 0.0,
-          float w0 = 1.0,
-          float w1 = 0.0,
-          float w2 = 0.0,
-          float w3 = 0.0 );
+                   float y  = 0.0,
+                   float z  = 0.0,
+                   float w0 = 1.0,
+                   float w1 = 0.0,
+                   float w2 = 0.0,
+                   float w3 = 0.0 );
 
     ///
     /// \brief slerp
@@ -322,7 +322,6 @@ inline float Dof6::get_w2() const {
 inline float Dof6::get_w3() const {
     return m_w3;
 }
-
 
 ///
 /// \brief The Mat4 class

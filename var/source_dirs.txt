@@ -1,4 +1,4 @@
+core
 server
-src
 tests
 examples

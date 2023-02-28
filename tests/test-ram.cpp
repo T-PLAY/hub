@@ -25,8 +25,9 @@ TEST_CASE( "Ram test" ) {
     INFO( "OutputStream" );
     //    {
 
-    hub::OutputSensor outputSensor( hub::SensorSpec{ "sensorName", { { { 1 }, hub::Format::BGR8 } } },
-                                    hub::io::Ram( cyclicBuff ) );
+    hub::OutputSensor outputSensor(
+        hub::SensorSpec { "sensorName", { { { 1 }, hub::Format::BGR8 } } },
+        hub::io::Ram( cyclicBuff ) );
 
     const auto& sensorSpec = outputSensor.m_spec;
     CHECK( sensorSpec.getAcquisitionSize() == 3 );
@@ -60,7 +61,7 @@ TEST_CASE( "Ram test" ) {
 
         auto acqs2 = inputSensor.getAllAcquisitions();
         for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
-//            auto acq = inputSensor.getAcquisition();
+            //            auto acq = inputSensor.getAcquisition();
             CHECK( acqs2[iAcq] == acqs[iAcq] );
         }
     }

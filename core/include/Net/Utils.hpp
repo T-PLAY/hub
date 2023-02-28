@@ -15,7 +15,7 @@ socket_fd SRC_API invalidSocket();
 bool SRC_API isValid( socket_fd sock );
 void SRC_API closeSocket( socket_fd& sock );
 bool SRC_API isConnected( socket_fd sock );
-bool SRC_API isValid( const std::string & ipv4 );
+bool SRC_API isValid( const std::string& ipv4 );
 bool SRC_API isValid( int port );
 
 ///////////////////////////////////// SERVER ADDRESS ///////////////////////////////////////

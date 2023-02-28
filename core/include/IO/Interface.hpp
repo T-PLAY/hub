@@ -36,10 +36,10 @@ class SRC_API Interface
     ///
     /// \param ioStream
     ///
-    Interface( Interface&& ioStream )                 = default;
-    Interface( const Interface& ioStream )            = delete;
+    Interface( Interface&& ioStream )      = default;
+    Interface( const Interface& ioStream ) = delete;
     Interface& operator=( const Interface& ioStream ) = delete;
-    Interface&& operator=( Interface&& ioStream )     = delete;
+    Interface&& operator=( Interface&& ioStream ) = delete;
 
     virtual ~Interface() = default;
 

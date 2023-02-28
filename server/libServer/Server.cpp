@@ -308,36 +308,31 @@ void Server::newAcquisition( StreamerClient* streamer, const hub::Acquisition& a
     }
 }
 
-std::list<std::pair<std::string, hub::SensorSpec> > Server::listStreams() const
-{
+std::list<std::pair<std::string, hub::SensorSpec>> Server::listStreams() const {
     std::list<std::pair<std::string, hub::SensorSpec>> ret;
-    for (const auto& [streamName, streamer] : m_streamers) {
-//        ret.push_back(key);
-        const auto & sensorSpec = streamer->getInputSensor().m_spec;
-        ret.push_back(std::make_pair(streamName, sensorSpec));
+    for ( const auto& [streamName, streamer] : m_streamers ) {
+        //        ret.push_back(key);
+        const auto& sensorSpec = streamer->getInputSensor().m_spec;
+        ret.push_back( std::make_pair( streamName, sensorSpec ) );
     }
     return ret;
 }
 
-const hub::SensorSpec &Server::getSensorSpec(const std::string &streamName)
-{
-    assert(m_streamers.find(streamName) != m_streamers.end());
-    const auto & streamer = m_streamers.at(streamName);
+const hub::SensorSpec& Server::getSensorSpec( const std::string& streamName ) {
+    assert( m_streamers.find( streamName ) != m_streamers.end() );
+    const auto& streamer = m_streamers.at( streamName );
     return streamer->getInputSensor().m_spec;
 }
 
-const std::shared_ptr<hub::Acquisition> Server::getAcquisition(const std::string &streamName)
-{
-    assert(m_streamers.find(streamName) != m_streamers.end());
-    const auto & streamer = m_streamers.at(streamName);
-//    return streamer->getInputSensor().m_spec;
-    return streamer->getLastAcq("");
-
+const std::shared_ptr<hub::Acquisition> Server::getAcquisition( const std::string& streamName ) {
+    assert( m_streamers.find( streamName ) != m_streamers.end() );
+    const auto& streamer = m_streamers.at( streamName );
+    //    return streamer->getInputSensor().m_spec;
+    return streamer->getLastAcq( "" );
 }
 
-void Server::removeClient(const Client *client)
-{
-    m_clients.remove(client);
+void Server::removeClient( const Client* client ) {
+    m_clients.remove( client );
 }
 
 // void Server::setAcqPing( bool newAcqPing ) {
@@ -370,7 +365,7 @@ void Server::run() {
 
     int iClient = 0;
     while ( iClient < m_maxClients ) {
-//    while ( m_clients.size() < m_maxClients ) {
+        //    while ( m_clients.size() < m_maxClients ) {
 
         hub::net::ClientSocket sock = m_serverSock.waitNewClient();
 
@@ -401,7 +396,6 @@ Client* Server::initClient( hub::net::ClientSocket&& sock, int iClient ) {
 
     case hub::net::ClientSocket::Type::VIEWER:
         return new ViewerClient( *this, iClient, std::move( sock ) );
-
 
     case hub::net::ClientSocket::Type::STREAM_VIEWER:
         return new StreamViewerClient( *this, iClient, std::move( sock ) );

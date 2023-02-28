@@ -2,8 +2,8 @@
 
 #include "Macros.hpp"
 
-//namespace hub {
-//namespace native2 {
+// namespace hub {
+// namespace native2 {
 ///
 
 //#ifndef NATIVE_EXPORT
@@ -15,9 +15,8 @@ extern "C"
 {
 #endif
 
-//    NATIVE_EXPORT void getAcquisition( const char* streamName, const char* ipv4, int port );
-//    NATIVE_EXPORT void getAcquisition( );
-
+    //    NATIVE_EXPORT void getAcquisition( const char* streamName, const char* ipv4, int port );
+    //    NATIVE_EXPORT void getAcquisition( );
 
 #ifdef __cplusplus
 } // end extern "C"

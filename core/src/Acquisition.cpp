@@ -1,10 +1,10 @@
 #include "Acquisition.hpp"
 
+#include <algorithm>
 #include <cassert>
 #include <cmath>
 #include <cstring>
 #include <iomanip>
-#include <algorithm>
 
 // #include "Resolution.hpp"
 
@@ -40,12 +40,12 @@ namespace hub {
 
 Acquisition::Acquisition( long long start, long long end ) : m_start( start ), m_end( end ) {
     assert( m_start <= m_end );
-//    std::cout << "[Acquisition] Acquisition(" << start << ", " << end << ")" << std::endl;
+    //    std::cout << "[Acquisition] Acquisition(" << start << ", " << end << ")" << std::endl;
 }
 
 Acquisition::~Acquisition() {
     m_measures.clear();
-//    std::cout << "[Acquisition] ~Acquisition()" << std::endl;
+    //    std::cout << "[Acquisition] ~Acquisition()" << std::endl;
 }
 
 // Acquisition::Acquisition( Acquisition&& acq ) noexcept :
@@ -92,11 +92,13 @@ Acquisition& Acquisition::operator<<( Measure&& measure ) {
 // }
 
 bool Acquisition::isInterpolable() const {
-//    for ( const auto& measure : m_measures ) {
-//        if ( !measure.isInterpolable() ) return false;
-//    }
-//    return true;
-    return std::none_of(m_measures.crbegin(), m_measures.crend(), [](const Measure & measure) { return ! measure.isInterpolable(); } );
+    //    for ( const auto& measure : m_measures ) {
+    //        if ( !measure.isInterpolable() ) return false;
+    //    }
+    //    return true;
+    return std::none_of( m_measures.crbegin(), m_measures.crend(), []( const Measure& measure ) {
+        return !measure.isInterpolable();
+    } );
 }
 
 Acquisition Acquisition::slerp( const Acquisition& left, const Acquisition& right, double t ) {

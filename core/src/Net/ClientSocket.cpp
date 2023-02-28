@@ -1,13 +1,13 @@
 #include "Net/ClientSocket.hpp"
 
 #include <cstring>
-#include <thread>
 #include <regex>
+#include <thread>
 
 namespace hub {
 namespace net {
 
-//static const std::regex m_ipv4Regex { "^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$" };
+// static const std::regex m_ipv4Regex { "^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$" };
 
 ClientSocket::ClientSocket() : m_ipv4( s_defaultServiceIp ), m_port( s_defaultServicePort ) {
 #ifdef DEBUG_SOCKET
@@ -43,7 +43,7 @@ ClientSocket::ClientSocket( net::utils::socket_fd fdSock ) {
 #endif
 }
 
-//ClientSocket::ClientSocket(ClientSocket &&sock) :
+// ClientSocket::ClientSocket(ClientSocket &&sock) :
 //    m_ipv4(std::move(sock.m_ipv4)),
 //    m_port(std::move(sock.m_port)),
 //    m_addr(std::move(sock.m_addr)),
@@ -59,16 +59,16 @@ ClientSocket::~ClientSocket() {
     DEBUG_MSG( getHeader( m_fdSock ) << "~ClientSocket()" );
 #endif
     //    clear();
-//    if (! m_moved) {
-//        write(Message::CLOSE);
-//    }
+    //    if (! m_moved) {
+    //        write(Message::CLOSE);
+    //    }
 }
 
 void ClientSocket::initServerAddress() {
-    assert(utils::isValid(m_ipv4));
-//    assert( std::regex_match( m_ipv4, m_ipv4Regex ) );
-    assert(utils::isValid(m_port));
-//    assert( 0 <= m_port && m_port <= 65535 );
+    assert( utils::isValid( m_ipv4 ) );
+    //    assert( std::regex_match( m_ipv4, m_ipv4Regex ) );
+    assert( utils::isValid( m_port ) );
+    //    assert( 0 <= m_port && m_port <= 65535 );
 
     // Server address construction
     //    struct sockaddr_in serv_addr;
@@ -117,8 +117,8 @@ void ClientSocket::connect() {
     // Socket creation
     //    m_fdSock = socket( PF_INET, SOCK_STREAM, 0 );
     m_fdSock = net::utils::clientSocket();
-//    if ( m_fdSock < 0 ) {
-    if ( ! net::utils::isValid(m_fdSock) ) {
+    //    if ( m_fdSock < 0 ) {
+    if ( !net::utils::isValid( m_fdSock ) ) {
         perror( "[socket] socket creation failed.\n" );
         return;
     }
@@ -185,13 +185,15 @@ void ClientSocket::write( const unsigned char* data, size_t len ) const {
         // winsock int len
         int byteSent;
         try {
-            byteSent = net::utils::send(
-                m_fdSock, reinterpret_cast<const char*>(data) + uploadSize, static_cast<int>( len - uploadSize ), 0 );
+            byteSent = net::utils::send( m_fdSock,
+                                         reinterpret_cast<const char*>( data ) + uploadSize,
+                                         static_cast<int>( len - uploadSize ),
+                                         0 );
             //            assert(isConnected());
         }
         catch ( std::exception& e ) {
             assert( false );
-//            throw e;
+            //            throw e;
             throw;
         }
 
@@ -230,8 +232,10 @@ void ClientSocket::read( unsigned char* data, size_t len ) const {
 
     size_t downloadSize = 0;
     do {
-        int byteRead = net::utils::recv(
-            m_fdSock, reinterpret_cast<char*>(data) + downloadSize, static_cast<int>( len - downloadSize ), 0 );
+        int byteRead = net::utils::recv( m_fdSock,
+                                         reinterpret_cast<char*>( data ) + downloadSize,
+                                         static_cast<int>( len - downloadSize ),
+                                         0 );
         if ( byteRead == -1 ) {
 #ifdef DEBUG_SOCKET
             DEBUG_MSG( "byte read == -1 error" );
@@ -356,8 +360,8 @@ void ClientSocket::setPort( int newPort ) {
 
 void ClientSocket::setIpv4( const std::string& newIpv4 ) {
     assert( !isOpen() );
-//    assert( std::regex_match( newIpv4, m_ipv4Regex ) );
-    assert(utils::isValid(newIpv4));
+    //    assert( std::regex_match( newIpv4, m_ipv4Regex ) );
+    assert( utils::isValid( newIpv4 ) );
     m_ipv4 = newIpv4;
     //    inet_pton( AF_INET, m_ipv4.c_str(), &m_serverAddress.sin_addr.s_addr ); // winsock 2.0
     m_addr.setIpv4( m_ipv4 );

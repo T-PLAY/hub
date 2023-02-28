@@ -22,7 +22,9 @@ TEST_CASE( "Server test : direct stream" ) {
             data[i] = iAcq + i;
         }
         acqs.emplace_back( iAcq + 1, iAcq + 2 )
-            << hub::Measure { reinterpret_cast<const unsigned char*>(data), dataSize, { { 3 }, hub::Format::BGR8 } };
+            << hub::Measure { reinterpret_cast<const unsigned char*>( data ),
+                              dataSize,
+                              { { 3 }, hub::Format::BGR8 } };
     }
 
     std::cout << "[Test] ############################### server start" << std::endl;
@@ -37,7 +39,7 @@ TEST_CASE( "Server test : direct stream" ) {
             std::cout << "[Test] ############################### outputStream start" << std::endl;
 
             hub::OutputSensor outputSensor(
-                hub::SensorSpec{ "sensorName", { { { 3 }, hub::Format::BGR8 } } },
+                hub::SensorSpec { "sensorName", { { { 3 }, hub::Format::BGR8 } } },
                 hub::io::OutputStream( "stream", hub::net::ClientSocket( ipv4, port ) ) );
 
             const auto& outputSensorSpec = outputSensor.m_spec;

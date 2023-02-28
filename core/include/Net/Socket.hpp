@@ -22,7 +22,6 @@ namespace net {
 class SRC_API Socket
 {
   public:
-
     ///
     /// \brief The exception class
     /// is used to launch exception when broken communication
@@ -84,7 +83,7 @@ class SRC_API Socket
     ///
     /// \brief m_serverSide
     ///
-    bool m_serverSide                      = false;
+    bool m_serverSide = false;
 };
 
 } // namespace net

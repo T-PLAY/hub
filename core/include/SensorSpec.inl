@@ -16,8 +16,7 @@ CONSTEXPR20 SensorSpec::SensorSpec( const SensorNameType& sensorName,
     m_acquisitionSize( computeAcquisitionSize( resolutions ) ) {}
 #endif
 
-inline CONSTEXPR20 const SensorSpec::SensorNameType& SensorSpec::getSensorName() const noexcept
-{
+inline CONSTEXPR20 const SensorSpec::SensorNameType& SensorSpec::getSensorName() const noexcept {
     return m_sensorName;
 }
 

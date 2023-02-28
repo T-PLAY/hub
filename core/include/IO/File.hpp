@@ -37,8 +37,8 @@ class SRC_API File : public InputOutputInterface
   public:
     ///
     /// \brief File
-    /// constructor from a std::fstream, if you use an InputSensor uses the std::ios::in constructor option,
-    /// if you use an OutputSensor the std::ios::out option when creating a std::fstream.
+    /// constructor from a std::fstream, if you use an InputSensor uses the std::ios::in constructor
+    /// option, if you use an OutputSensor the std::ios::out option when creating a std::fstream.
     /// \param file
     /// is a movable fstream you want to use as a sensor communication bus.
     ///
@@ -49,12 +49,11 @@ class SRC_API File : public InputOutputInterface
     ///
     /// \param fileIO
     ///
-    File( File&& fileIO)      = default;
+    File( File&& fileIO ) = default;
 
     ~File();
 
   protected:
-
     ///
     /// @copydoc Interface::close()
     ///

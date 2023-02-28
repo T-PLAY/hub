@@ -21,8 +21,9 @@ TEST_CASE( "Server test : close clients" ) {
             data[i] = iAcq * 2;
         }
         acqs.emplace_back( iAcq * 2, iAcq * 2 );
-        acqs.back() << hub::Measure(
-            reinterpret_cast<const unsigned char*>(data), dataSize, { { 3 }, hub::Format::BGR8 } );
+        acqs.back() << hub::Measure( reinterpret_cast<const unsigned char*>( data ),
+                                     dataSize,
+                                     { { 3 }, hub::Format::BGR8 } );
     }
     std::vector<hub::Acquisition> acqs2;
     for ( int iAcq2 = 0; iAcq2 < nAcqs; ++iAcq2 ) {
@@ -31,8 +32,9 @@ TEST_CASE( "Server test : close clients" ) {
             data[i] = iAcq2 * 10;
         }
         acqs2.push_back( hub::Acquisition( iAcq2 * 10, iAcq2 * 10 ) );
-        acqs2.back() << hub::Measure(
-            reinterpret_cast<const unsigned char*>(data), dataSize, { { 3 }, hub::Format::BGR8 } );
+        acqs2.back() << hub::Measure( reinterpret_cast<const unsigned char*>( data ),
+                                      dataSize,
+                                      { { 3 }, hub::Format::BGR8 } );
     }
 
     std::cout << "[Test] ############################### server start" << std::endl;
@@ -46,7 +48,7 @@ TEST_CASE( "Server test : close clients" ) {
     {
         std::cout << "[Test] ############################### outputStream start" << std::endl;
         hub::OutputSensor outputSensor(
-            hub::SensorSpec{ "sensorName", { { { 3 }, hub::Format::BGR8 } } },
+            hub::SensorSpec { "sensorName", { { { 3 }, hub::Format::BGR8 } } },
             hub::io::OutputStream( "stream", hub::net::ClientSocket( ipv4, port ) ) );
 
         const auto& outputSensorSpec = outputSensor.m_spec;
@@ -60,7 +62,7 @@ TEST_CASE( "Server test : close clients" ) {
 
         std::cout << "[Test] ############################### outputStream2 start" << std::endl;
         hub::OutputSensor outputSensor2(
-            hub::SensorSpec{ "sensorName2", { { { 3 }, hub::Format::BGR8 } } },
+            hub::SensorSpec { "sensorName2", { { { 3 }, hub::Format::BGR8 } } },
             hub::io::OutputStream( "master", hub::net::ClientSocket( ipv4, port ) ) );
 
         const auto& outputSensorSpec2 = outputSensor2.m_spec;
@@ -123,69 +125,75 @@ TEST_CASE( "Server test : close clients" ) {
             std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
             std::cout << "[Test] ############################### inputSensor(stream,)" << std::endl;
             continue;
-//            if ( false ) {
-//                hub::InputSensor inputSensor(
-//                    hub::io::InputStream( "stream", "", hub::net::ClientSocket( ipv4, port ) ) );
+            //            if ( false ) {
+            //                hub::InputSensor inputSensor(
+            //                    hub::io::InputStream( "stream", "", hub::net::ClientSocket( ipv4,
+            //                    port ) ) );
 
-//                const auto& inputSensorSpec = inputSensor.m_spec;
-//                CHECK( inputSensorSpec.getAcquisitionSize() == dataSize );
-//                CHECK( inputSensorSpec.getSensorName() == "sensorName + sensorName2" );
-//                CHECK( inputSensorSpec.getResolutions().size() == 1 );
-//                CHECK( inputSensorSpec.getResolutions()[0].first.size() == 1 );
-//                CHECK( inputSensorSpec.getResolutions()[0].first.at( 0 ) == 3 );
-//                CHECK( inputSensorSpec.getResolutions()[0].second == hub::Format::BGR8 );
-//                std::cout << "[Test] inputStream end ---------------------------------"
-//                          << std::endl;
+            //                const auto& inputSensorSpec = inputSensor.m_spec;
+            //                CHECK( inputSensorSpec.getAcquisitionSize() == dataSize );
+            //                CHECK( inputSensorSpec.getSensorName() == "sensorName + sensorName2"
+            //                ); CHECK( inputSensorSpec.getResolutions().size() == 1 ); CHECK(
+            //                inputSensorSpec.getResolutions()[0].first.size() == 1 ); CHECK(
+            //                inputSensorSpec.getResolutions()[0].first.at( 0 ) == 3 ); CHECK(
+            //                inputSensorSpec.getResolutions()[0].second == hub::Format::BGR8 );
+            //                std::cout << "[Test] inputStream end
+            //                ---------------------------------"
+            //                          << std::endl;
 
-//                std::cout << "[Test] ############################### send acquisitions"
-//                          << std::endl;
-//                for ( const auto& acq : acqs ) {
-//                    outputSensor << acq;
-//                }
-//                std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+            //                std::cout << "[Test] ############################### send
+            //                acquisitions"
+            //                          << std::endl;
+            //                for ( const auto& acq : acqs ) {
+            //                    outputSensor << acq;
+            //                }
+            //                std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
 
-//                std::cout << "[Test] ############################### compare " << std::endl;
-//                for ( int iAcq = 0; iAcq < nAcqs * 5; ++iAcq ) {
-//                    auto acq = inputSensor.getAcquisition();
-//                    std::cout << "[Test] acq = " << acq << std::endl;
-//                    CHECK( acq == acqs[iAcq] );
-//                }
-//            }
-//            outputSensor << acqs.front();
-//            outputSensor2 << acqs2.front();
-//            std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
-//            std::cout << "[Test] ############################### inputSensor(master,)" << std::endl;
-//            if ( false ) {
-//                hub::InputSensor inputSensor(
-//                    hub::io::InputStream( "master", "", hub::net::ClientSocket( ipv4, port ) ) );
+            //                std::cout << "[Test] ############################### compare " <<
+            //                std::endl; for ( int iAcq = 0; iAcq < nAcqs * 5; ++iAcq ) {
+            //                    auto acq = inputSensor.getAcquisition();
+            //                    std::cout << "[Test] acq = " << acq << std::endl;
+            //                    CHECK( acq == acqs[iAcq] );
+            //                }
+            //            }
+            //            outputSensor << acqs.front();
+            //            outputSensor2 << acqs2.front();
+            //            std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+            //            std::cout << "[Test] ############################### inputSensor(master,)"
+            //            << std::endl; if ( false ) {
+            //                hub::InputSensor inputSensor(
+            //                    hub::io::InputStream( "master", "", hub::net::ClientSocket( ipv4,
+            //                    port ) ) );
 
-//                const auto& inputSensorSpec = inputSensor.m_spec;
-//                CHECK( inputSensorSpec.getAcquisitionSize() == dataSize );
-//                CHECK( inputSensorSpec.getSensorName() == "sensorName2" );
-//                CHECK( inputSensorSpec.getResolutions().size() == 1 );
-//                CHECK( inputSensorSpec.getResolutions()[0].first.size() == 1 );
-//                CHECK( inputSensorSpec.getResolutions()[0].first.at( 0 ) == 3 );
-//                CHECK( inputSensorSpec.getResolutions()[0].second == hub::Format::BGR8 );
-//                std::cout << "[Test] inputStream end ---------------------------------"
-//                          << std::endl;
+            //                const auto& inputSensorSpec = inputSensor.m_spec;
+            //                CHECK( inputSensorSpec.getAcquisitionSize() == dataSize );
+            //                CHECK( inputSensorSpec.getSensorName() == "sensorName2" );
+            //                CHECK( inputSensorSpec.getResolutions().size() == 1 );
+            //                CHECK( inputSensorSpec.getResolutions()[0].first.size() == 1 );
+            //                CHECK( inputSensorSpec.getResolutions()[0].first.at( 0 ) == 3 );
+            //                CHECK( inputSensorSpec.getResolutions()[0].second == hub::Format::BGR8
+            //                ); std::cout << "[Test] inputStream end
+            //                ---------------------------------"
+            //                          << std::endl;
 
-//                std::cout << "[Test] ############################### send acquisitions"
-//                          << std::endl;
-//                for ( const auto& acq2 : acqs2 ) {
-//                    outputSensor2 << acq2;
-//                }
-//                std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+            //                std::cout << "[Test] ############################### send
+            //                acquisitions"
+            //                          << std::endl;
+            //                for ( const auto& acq2 : acqs2 ) {
+            //                    outputSensor2 << acq2;
+            //                }
+            //                std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
 
-//                std::cout << "[Test] ############################### compare " << std::endl;
-//                for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
-//                    auto acq = inputSensor.getAcquisition();
-//                    std::cout << "[Test] acq = " << acq << std::endl;
-//                    CHECK( acq == acqs2[iAcq] );
-//                }
-//            }
-//            outputSensor << acqs.front();
-//            outputSensor2 << acqs2.front();
-//            std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
+            //                std::cout << "[Test] ############################### compare " <<
+            //                std::endl; for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
+            //                    auto acq = inputSensor.getAcquisition();
+            //                    std::cout << "[Test] acq = " << acq << std::endl;
+            //                    CHECK( acq == acqs2[iAcq] );
+            //                }
+            //            }
+            //            outputSensor << acqs.front();
+            //            outputSensor2 << acqs2.front();
+            //            std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
         }
     }
     std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );

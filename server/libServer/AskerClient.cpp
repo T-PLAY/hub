@@ -26,73 +26,74 @@ AskerClient::AskerClient( Server& server, int iClient, hub::net::ClientSocket&& 
                 case hub::net::ClientSocket::Message::LIST_STREAMS: {
                     std::cout << headerMsg() << "listing sensors" << std::endl;
 
-                    const auto & listStreams = m_server.listStreams();
+                    const auto& listStreams = m_server.listStreams();
                     m_socket.write( listStreams );
 
-////                    std::list<hub::SensorSpec> sensorSpecs;
-//                    const auto & streamers = m_server.getStreamers();
-////                    m_socket.write((int)streamers.size());
-//                    for (const auto & [streamName, streamer] : streamers) {
-//                        const auto & sensorSpec = streamer->getInputSensor().m_spec;
-//                        m_socket.write(sensorSpec);
-//                    }
-////                    m_socket.write(sensorSpecs);
+                    ////                    std::list<hub::SensorSpec> sensorSpecs;
+                    //                    const auto & streamers = m_server.getStreamers();
+                    ////                    m_socket.write((int)streamers.size());
+                    //                    for (const auto & [streamName, streamer] : streamers) {
+                    //                        const auto & sensorSpec =
+                    //                        streamer->getInputSensor().m_spec;
+                    //                        m_socket.write(sensorSpec);
+                    //                    }
+                    ////                    m_socket.write(sensorSpecs);
 
                 } break;
 
                 case hub::net::ClientSocket::Message::GET_SENSOR_SPEC: {
                     std::cout << headerMsg() << "get sensor spec" << std::endl;
                     std::string streamName;
-                    m_socket.read(streamName);
+                    m_socket.read( streamName );
 
-                    const auto & streamers = m_server.getStreamers();
-                    if (streamers.find(streamName) != streamers.end()) {
-                        m_socket.write(hub::net::ClientSocket::Message::FOUND);
+                    const auto& streamers = m_server.getStreamers();
+                    if ( streamers.find( streamName ) != streamers.end() ) {
+                        m_socket.write( hub::net::ClientSocket::Message::FOUND );
 
-                        const auto & streamer = streamers.at(streamName);
+                        const auto& streamer = streamers.at( streamName );
 
-//					    const auto & sensorSpec = m_server.getSensorSpec(streamName);
-                        const auto & sensorSpec = streamer->getInputSensor().m_spec;
+                        //					    const auto & sensorSpec =
+                        // m_server.getSensorSpec(streamName);
+                        const auto& sensorSpec = streamer->getInputSensor().m_spec;
                         m_socket.write( sensorSpec );
-
                     }
                     else {
-                        m_socket.write(hub::net::ClientSocket::Message::NOT_FOUND);
+                        m_socket.write( hub::net::ClientSocket::Message::NOT_FOUND );
                     }
 
-
-//                    const auto & sensorSpec = m_server.getSensorSpec(streamName);
-//                    m_socket.write( sensorSpec );
+                    //                    const auto & sensorSpec =
+                    //                    m_server.getSensorSpec(streamName); m_socket.write(
+                    //                    sensorSpec );
                 } break;
 
                 case hub::net::ClientSocket::Message::GET_ACQUISITION: {
                     std::cout << headerMsg() << "get sensor acquisition" << std::endl;
                     std::string streamName;
-                    m_socket.read(streamName);
+                    m_socket.read( streamName );
 
-                    const auto & streamers = m_server.getStreamers();
-                    if (streamers.find(streamName) != streamers.end()) {
-                        m_socket.write(hub::net::ClientSocket::Message::FOUND);
+                    const auto& streamers = m_server.getStreamers();
+                    if ( streamers.find( streamName ) != streamers.end() ) {
+                        m_socket.write( hub::net::ClientSocket::Message::FOUND );
 
-                        const auto & streamer = streamers.at(streamName);
+                        const auto& streamer = streamers.at( streamName );
 
-//					    const auto & sensorSpec = m_server.getSensorSpec(streamName);
-                        const auto & sensorSpec = streamer->getInputSensor().m_spec;
+                        //					    const auto & sensorSpec =
+                        // m_server.getSensorSpec(streamName);
+                        const auto& sensorSpec = streamer->getInputSensor().m_spec;
                         m_socket.write( sensorSpec );
 
-                        const hub::Acquisition & acq = *m_server.getAcquisition(streamName).get();
-                        m_socket.write(acq);
-
+                        const hub::Acquisition& acq = *m_server.getAcquisition( streamName ).get();
+                        m_socket.write( acq );
                     }
                     else {
-                        m_socket.write(hub::net::ClientSocket::Message::NOT_FOUND);
+                        m_socket.write( hub::net::ClientSocket::Message::NOT_FOUND );
                     }
-
 
                 } break;
 
                 default:
-                    std::cout << headerMsg() << "[AskerClient] unknown message : " << message << std::endl;
+                    std::cout << headerMsg() << "[AskerClient] unknown message : " << message
+                              << std::endl;
                     break;
                 }
 

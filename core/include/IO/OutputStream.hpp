@@ -31,7 +31,7 @@ class SRC_API OutputStream : public OutputInterface, public net::ClientSocket
     /// Also occur when stream you want to link is already started in the server.
     ///
     explicit OutputStream( const std::string& streamName,
-                  net::ClientSocket&& clientSocket = net::ClientSocket() );
+                           net::ClientSocket&& clientSocket = net::ClientSocket() );
 
 #ifdef WIN32 // msvc warning C4250
   protected:

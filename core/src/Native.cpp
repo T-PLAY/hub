@@ -186,18 +186,18 @@ int sensorSpec_getDimension( const SensorSpec* sensorSpec, int iResolution, int 
 }
 
 void sensorSpec_getResolutionsStr( const SensorSpec* sensorSpec, char* resolutionsStr ) {
-    const auto & resolutions = sensorSpec->getResolutions();
+    const auto& resolutions = sensorSpec->getResolutions();
     std::stringstream ss;
     ss << resolutions;
-//    const auto& resolutionsString = resolutions2string( sensorSpec->getResolutions() );
-    const auto & resolutionsString = ss.str();
+    //    const auto& resolutionsString = resolutions2string( sensorSpec->getResolutions() );
+    const auto& resolutionsString = ss.str();
     const int len                 = resolutionsString.size();
     memcpy( resolutionsStr, resolutionsString.c_str(), len + 1 );
     resolutionsStr[len] = 0;
 }
 
 void sensorSpec_getMetaDataStr( const SensorSpec* sensorSpec, char* metaDataStr ) {
-    const auto& metaDataString = SensorSpec::to_string(sensorSpec->getMetaData(), true );
+    const auto& metaDataString = SensorSpec::to_string( sensorSpec->getMetaData(), true );
     const int len              = metaDataString.size();
     memcpy( metaDataStr, metaDataString.c_str(), len + 1 );
     metaDataStr[len] = 0;
