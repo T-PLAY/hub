@@ -144,8 +144,9 @@ build-gcc-debug:
 test:
   stage: test
   script:
-    - cd cache/build-gcc-debug/tests
-    - ctest -V
+    # - cd cache/build-gcc-debug/tests
+    # - ctest -V
+    - cmake --build . --target tests
 #    - ./runmytests.sh
   # only:
   # - master
@@ -158,7 +159,8 @@ coverage:
     # - apt update
     # - apt install -y doxygen clang libclang-dev lcov
     # - cd build-gcc-release/
-    - cmake --build cache/build-gcc-debug/ --target coverage
+    # - cmake --build cache/build-gcc-debug/ --target coverage
+    - cmake --build . --target coverage
     - cache/node_modules/.bin/lcov-badge-generator cache/build-gcc-debug/coverage.capture
     - cp badge.svg cache/build-gcc-debug/coverage/
     - mv cache/build-gcc-debug/coverage public/
@@ -174,7 +176,8 @@ cppCheck:
     - apt update
     - apt install -y cppcheck
     # - cppcheck --enable=all --force -I include -I server/libServer/ --error-exitcode=1 --disable=unusedFunction --disable=information server src
-    - cppcheck --enable=all src server --error-exitcode=1 --suppress=unusedFunction --suppress=missingInclude
+    # - cppcheck --enable=all src server --error-exitcode=1 --suppress=unusedFunction --suppress=missingInclude
+    - cmake --build . --target cppCheck
 
 
 doc-doxygen:
@@ -182,7 +185,8 @@ doc-doxygen:
   script:
     - cp -rT cache/dep-cache/ /;
 
-    - cmake --build cache/build-clang-release --target docs
+    # - cmake --build cache/build-clang-release --target docs
+    - cmake --build . --target doc-doxygen
     - mv cache/build-clang-release/doc/docs_doxygen/html/ public/
 #    - ./runmytests.sh
   artifacts:
@@ -237,7 +241,8 @@ doc-sphinx:
       # find / -name "sphinx-build"
       # echo $PATH
 
-      make -C doc/docs_sphinx html
+      # make -C doc/docs_sphinx html
+      cmake --build . --target doc-sphinx
       mv doc/docs_sphinx/_build/html public/
   artifacts:
     paths:
@@ -278,7 +283,8 @@ format:
     - |-
       cp -rT cache/format-cache/ /;
 
-      scripts/cleanup-project.sh
+      # scripts/cleanup-project.sh
+      cmake --build . --target format
       git diff --exit-code
   only:
   - master
