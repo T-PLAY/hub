@@ -127,6 +127,11 @@ export(EXPORT ${PROJECT_NAME} FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}T
 # ########################### COVERAGE ################################
 
 if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
+
+    if (NOT HUB_BROWSER)
+        set(HUB_BROWSER "ls" CACHE STRING "User browser to see html docs and coverage")
+    endif()
+
     setup_target_for_coverage_lcov(
         # setup_target_for_coverage_gcovr_xml(
         NAME
