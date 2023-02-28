@@ -157,7 +157,7 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
     add_custom_target(
         coverage
         # COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_OUT}
-        COMMAND ${HUB_BROWSER} ${CMAKE_BINARY_DIR}/coverage/index.html
+        COMMAND ${HUB_BROWSER} ${CMAKE_BINARY_DIR}/coverage-lcov/index.html
         # WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
         # COMMENT "Generating API documentation with Doxygen"
         # VERBATIM
