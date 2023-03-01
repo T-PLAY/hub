@@ -138,8 +138,8 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
         # setup_target_for_coverage_gcovr_xml(
         NAME
         coverage-lcov
-        BASE_DIRECTORY
-        ${CMAKE_BINARY_DIR}
+#        BASE_DIRECTORY
+#        ${CMAKE_BINARY_DIR}
         EXECUTABLE
         ctest
         --test-dir
