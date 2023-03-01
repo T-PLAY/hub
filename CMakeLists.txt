@@ -49,7 +49,6 @@ set(HUB_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/core/src")
 add_subdirectory(core)
 add_subdirectory(server)
 add_subdirectory(doc)
-add_subdirectory(api)
 
 option(HUB_ENABLE_TESTS "Enable tests" OFF)
 if(HUB_ENABLE_TESTS)
