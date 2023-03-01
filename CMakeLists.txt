@@ -23,8 +23,9 @@ if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
 endif()
 
 add_definitions(-DPROJECT_DIR=\"${CMAKE_SOURCE_DIR}/\")
-set(RESOURCES_DIR "${CMAKE_SOURCE_DIR}/resources/")
-add_definitions(-DRESOURCES_DIR=\"${RESOURCES_DIR}\")
+
+#set(RESOURCES_DIR "${CMAKE_SOURCE_DIR}/resources/")
+#add_definitions(-DRESOURCES_DIR=\"${RESOURCES_DIR}\")
 
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
