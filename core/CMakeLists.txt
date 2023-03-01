@@ -14,7 +14,8 @@ endif()
 option(HUB_BUILD_STATIC_LIBRARY "Build static library" OFF)
 
 file(GLOB_RECURSE sources ${HUB_SOURCE_DIR}/*.cpp)
-file(GLOB_RECURSE headers ${HUB_INCLUDE_DIR}/*.hpp ${HUB_INCLUDE_DIR}/*.inl)
+#file(GLOB_RECURSE headers ${HUB_INCLUDE_DIR}/*.hpp ${HUB_INCLUDE_DIR}/*.inl)
+file(GLOB_RECURSE headers include/*.hpp include/*.inl)
 
 list(APPEND SOURCE_FILES ${sources} ${headers})
 
@@ -88,7 +89,8 @@ endif()
 
 # install(TARGETS ${PROJECT_NAME} DESTINATION lib)
 install(# DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/
-        DIRECTORY ${HUB_INCLUDE_DIR}/ DESTINATION include # FILES_MATCHING PATTERN "*.hpp" PATTERN "*.inl"
+#        DIRECTORY ${HUB_INCLUDE_DIR}/ DESTINATION include # FILES_MATCHING PATTERN "*.hpp" PATTERN "*.inl"
+        DIRECTORY include DESTINATION include # FILES_MATCHING PATTERN "*.hpp" PATTERN "*.inl"
 )
 
 # install include headers install(FILES MathFunctions.h DESTINATION include)
