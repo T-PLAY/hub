@@ -27,23 +27,23 @@ static constexpr int s_format2nByte[static_cast<int>( Format::COUNT )] = {
     4,       // BGRA8
     1,       // Y8
     2,       // Y16
-    0,       // RAW10
+    2,       // RAW10
     2,       // RAW16
     1,       // RAW8
-    0,       // UYVY
-    0,       // MOTION_RAW
-    0,       // MOTION_XYZ32F
-    0,       // GPIO_RAW
-    0,       // DISPARITY32
+    2,       // UYVY
+    1,       // MOTION_RAW
+    4,       // MOTION_XYZ32F
+    1,       // GPIO_RAW
+    4,       // DISPARITY32
     12 + 16, // DOF6
-    0,       // Y10BPACK
+    2,       // Y10BPACK
     4,       // DISTANCE
-    0,       // MJPEG
+    1,       // MJPEG
     2,       // Y8I
     3,       // Y12I
-    0,       // INZI
+    1,       // INZI
     1,       // INVI
-    0,       // W10
+    2,       // W10
     2,       // Z16H
     2,       // FG
     2,       // Y411

@@ -21,6 +21,7 @@ namespace hub {
 // Image::Image( Image&& image ) :
 // }
 
+
 // Image::~Image() {
 
 //}
@@ -92,6 +93,7 @@ Acquisition& Acquisition::operator<<( Measure&& measure ) {
 // }
 
 bool Acquisition::isInterpolable() const {
+    assert(! m_measures.empty());
     //    for ( const auto& measure : m_measures ) {
     //        if ( !measure.isInterpolable() ) return false;
     //    }
@@ -102,7 +104,10 @@ bool Acquisition::isInterpolable() const {
 }
 
 Acquisition Acquisition::slerp( const Acquisition& left, const Acquisition& right, double t ) {
+    assert(! left.m_measures.empty());
+//    assert(left.getMeasures().size() > 0);
     assert( left.getMeasures().size() == right.getMeasures().size() );
+    assert(left.isInterpolable() && right.isInterpolable());
     assert( 0.0 <= t && t <= 1.0 );
     const long long start     = ( 1.0 - t ) * left.m_start + t * right.m_start;
     const long long end       = ( 1.0 - t ) * left.m_end + t * right.m_end;
@@ -110,7 +115,11 @@ Acquisition Acquisition::slerp( const Acquisition& left, const Acquisition& righ
     const auto& leftMeasures  = left.getMeasures();
     const auto& rightMeasures = right.getMeasures();
     for ( int iMeasure = 0; iMeasure < leftMeasures.size(); ++iMeasure ) {
-        ret << Measure::slerp( leftMeasures.at( iMeasure ), rightMeasures.at( iMeasure ), t );
+        const auto & leftMeasure = leftMeasures.at(iMeasure);
+        const auto & rightMeasure = rightMeasures.at(iMeasure);
+//        ret << Measure::slerp( leftMeasures.at( iMeasure ), rightMeasures.at( iMeasure ), t );
+        assert(leftMeasure.getResolution() == rightMeasure.getResolution());
+        ret << Measure::slerp( leftMeasure, rightMeasure, t );
         //        ret.addMeasure(Measure::slerp( leftMeasures.at( iMeasure ), rightMeasures.at(
         //        iMeasure ), t ));
     }
@@ -137,6 +146,7 @@ Acquisition& Acquisition::operator<<( const Measures& measures ) {
 // }
 
 Acquisition Acquisition::clone() const {
+    assert(! m_measures.empty());
 
     Acquisition acq { m_start, m_end };
 
@@ -151,6 +161,7 @@ Acquisition Acquisition::clone() const {
 
 // const std::list<Measure> &Acquisition::getMeasures() const
 const Measures& Acquisition::getMeasures() const {
+    assert(! m_measures.empty());
     return m_measures;
 }
 
@@ -159,6 +170,7 @@ const Measures& Acquisition::getMeasures() const {
 // }
 
 size_t Acquisition::getSize() const {
+    assert(! m_measures.empty());
     return m_size;
 }
 

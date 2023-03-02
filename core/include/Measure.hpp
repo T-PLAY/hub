@@ -147,10 +147,10 @@ Measure::Measure( const unsigned char* const data, uint64_t size, ResolutionT&& 
     m_data( new unsigned char[size] ),
     m_size( size ),
     m_ownData( true ),
-    m_resolution( std::move( resolution ) ) {
+//    m_resolution( std::move( resolution ) ) {
     //    m_resolution( std::forward<Resolution>( resolution ) ) {
     //    m_resolution( std::forward( resolution ) ) {
-    //    m_resolution( std::forward<ResolutionT>( resolution ) ) {
+        m_resolution( std::forward<ResolutionT>( resolution ) ) {
 
     static_assert( std::is_same<std::decay_t<Resolution>, std::decay_t<ResolutionT>>::value,
                    "must be the same as Resolution" );
@@ -170,9 +170,9 @@ Measure::Measure( unsigned char* data, uint64_t size, ResolutionT&& resolution, 
     m_data( data ),
     m_size( size ),
     m_ownData( stealData ),
-    m_resolution( std::move( resolution ) )
+//    m_resolution( std::move( resolution ) ) // not worked with ResolutionT& (steal data)
 //    m_resolution( std::forward( resolution ) )
-//    m_resolution( std::forward<ResolutionT>( resolution ) )
+    m_resolution( std::forward<ResolutionT>( resolution ) )
 //    m_ownData( false )
 {
     //    static_assert(std::is_base_of<hub::Resolution, ResolutionT>::value, "not Resolution");
@@ -238,7 +238,7 @@ class SRC_API Dof6 : public Measure
     /// \param t
     /// \return
     ///
-    static Dof6 slerp( const Dof6& left, const Dof6& right, long long t );
+    static Dof6 slerp( const Dof6& left, const Dof6& right, double t );
 
     ///
     /// \brief operator <<

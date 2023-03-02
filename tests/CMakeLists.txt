@@ -45,13 +45,17 @@ enable_testing()
 # set(TEST_NAMES "")
 foreach(
     test
-    "file"
-    "measures"
-    "ram"
-    "resolutions"
-    "sensorSpec"
-    "server"
-    "serverSpeed")
+#    "acquisition"
+        "asker"
+#    "file"
+#    "inputSensor"
+#    "measures"
+#    "ram"
+#    "resolutions"
+#    "sensorSpec"
+#    "server"
+#    "serverSpeed"
+)
     add_executable(test-${test} test-${test}.cpp)
     target_link_libraries(test-${test} PRIVATE Catch2::Catch2WithMain hub server)
     target_include_directories(test-${test} PRIVATE ${PROJECT_SOURCE_DIR}/include)

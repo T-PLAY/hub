@@ -69,10 +69,38 @@ SensorSpec SensorSpec::operator+( const SensorSpec& sensorSpec ) const {
 
 SensorSpec& SensorSpec::operator+=( const SensorSpec& sensorSpec ) {
     if ( m_sensorName == "" ) { *this = sensorSpec; }
-    else {
-        *this = *this + sensorSpec;
-    }
+    else { *this = *this + sensorSpec; }
     return *this;
+}
+
+bool SensorSpec::operator==( const SensorSpec& sensorSpec ) const {
+
+    return  m_sensorName == sensorSpec.m_sensorName && m_resolutions == sensorSpec.m_resolutions &&
+           m_acquisitionSize == sensorSpec.m_acquisitionSize && m_metaData.size() == sensorSpec.m_metaData.size();
+    // todo any compare
+//    if ( m_sensorName == sensorSpec.m_sensorName && m_resolutions == sensorSpec.m_resolutions &&
+//         m_acquisitionSize == sensorSpec.m_acquisitionSize && m_metaData.size() == sensorSpec.m_metaData.size()) {
+
+//        for (const auto & pair : m_metaData) {
+//            const auto & name = pair.first;
+//            const std::any & value = pair.second;
+
+//            if (sensorSpec.m_metaData.find(name) != sensorSpec.m_metaData.end()) {
+//                const std::any & value2 = sensorSpec.m_metaData.at(name);
+//                if (value. value2) {
+
+//                }
+
+//            }
+//            else {
+//                return false;
+//            }
+//        }
+//    }
+//    else {
+//        return false;
+//    }
+//    return true;
 }
 
 std::string SensorSpec::to_string() const {

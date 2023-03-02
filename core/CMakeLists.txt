@@ -7,6 +7,7 @@ cmake_minimum_required(VERSION 3.8)
 option(HUB_ENABLE_COVERAGE "Collect coverage from hub library (required tests enable)" OFF)
 if(HUB_ENABLE_COVERAGE)
     include(CodeCoverage)
+    set(COVERAGE_COMPILER_FLAGS "-g --coverage -fno-elide-constructors -fno-default-inline")
     append_coverage_compiler_flags()
     set(REQUIRED_LIBS ${REQUIRED_LIBS} gcov)
 endif()
@@ -14,7 +15,7 @@ endif()
 option(HUB_BUILD_STATIC_LIBRARY "Build static library" OFF)
 
 file(GLOB_RECURSE sources ${HUB_SOURCE_DIR}/*.cpp)
-#file(GLOB_RECURSE headers ${HUB_INCLUDE_DIR}/*.hpp ${HUB_INCLUDE_DIR}/*.inl)
+# file(GLOB_RECURSE headers ${HUB_INCLUDE_DIR}/*.hpp ${HUB_INCLUDE_DIR}/*.inl)
 file(GLOB_RECURSE headers include/*.hpp include/*.inl)
 
 list(APPEND SOURCE_FILES ${sources} ${headers})
@@ -88,8 +89,8 @@ if(NOT HUB_BUILD_STATIC_LIBRARY)
 endif()
 
 # install(TARGETS ${PROJECT_NAME} DESTINATION lib)
-install(# DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/
-#        DIRECTORY ${HUB_INCLUDE_DIR}/ DESTINATION include # FILES_MATCHING PATTERN "*.hpp" PATTERN "*.inl"
+install(# DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/ # DIRECTORY ${HUB_INCLUDE_DIR}/ DESTINATION include # FILES_MATCHING
+        # PATTERN "*.hpp" PATTERN "*.inl"
         DIRECTORY include DESTINATION include # FILES_MATCHING PATTERN "*.hpp" PATTERN "*.inl"
 )
 
@@ -136,24 +137,18 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
             CACHE STRING "User browser to see html docs and coverage")
     endif()
 
-    setup_target_for_coverage_lcov(
+
         # setup_target_for_coverage_gcovr_xml(
-        NAME
-        coverage-lcov
-#        BASE_DIRECTORY
-#        ${CMAKE_BINARY_DIR}
-        EXECUTABLE
-        ctest
-        --test-dir
-        tests
-        -j
-        ${n_cores}
-        DEPENDENCIES
-        hub
-        test-all
-        NO_DEMANGLE
+        # BASE_DIRECTORY ${CMAKE_BINARY_DIR}
+    setup_target_for_coverage_lcov(
+        NAME coverage-lcov
+        EXECUTABLE ctest --test-dir tests -j ${n_cores}
+        DEPENDENCIES hub test-all
         EXCLUDE
+        "*.hpp"
+#        "*.inl"
         "/usr/*"
+#        NO_DEMANGLE
         # "examples/*" "include/*" COMMAND ${HUB_BROWSER} ${CMAKE_BINARY_DIR}/coverage/index.html
     )
 
