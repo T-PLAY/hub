@@ -16,6 +16,7 @@ namespace hub {
 class SRC_API Acquisition
 {
   public:
+
     ///
     /// \brief Acquisition
     /// \param start

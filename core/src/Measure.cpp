@@ -24,7 +24,7 @@ Dof6::Dof6( float x, float y, float z, float w0, float w1, float w2, float w3 ) 
     memcpy( (unsigned char*)&m_x, m_data, m_size );
 }
 
-Dof6 Dof6::slerp( const Dof6& left, const Dof6& right, long long t ) {
+Dof6 Dof6::slerp(const Dof6& left, const Dof6& right, double t ) {
 
     const float x = ( 1.0 - t ) * left.m_x + t * right.m_x;
     const float y = ( 1.0 - t ) * left.m_y + t * right.m_y;
@@ -214,7 +214,7 @@ std::ostream& operator<<( std::ostream& os, const Measure& measure ) {
     os << measure.getResolution() << ", [";
 
     if ( measure.m_resolution.second == Format::DOF6 ) {
-        const auto& dof6 = measure;
+        const hub::Dof6 dof6(measure);
         os << dof6;
         //        const float* const dof6 = reinterpret_cast<const float* const>(measure.m_data);
         //        os << "dof6:";
