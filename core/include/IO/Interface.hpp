@@ -203,23 +203,58 @@ class SRC_API Interface
     template <class T, class U>
     void read( std::map<T, U>& map ) const;
 
-    ///
-    /// \brief read
-    /// \param pair
-    /// \return
-    ///
-    template <class T, class U>
-    typename std::enable_if<( not std::is_same<U, hub::SensorSpec>::value ), void>::type
-    read( std::pair<T, U>& pair ) const;
+//    ///
+//    /// \brief read
+//    /// \param pair
+//    /// \return
+//    ///
+//    template <class T, class U>
+//    typename std::enable_if<( not std::is_same<U, hub::SensorSpec>::value ), void>::type
+//    read( std::pair<T, U>& pair ) const;
 
-    ///
-    /// \brief read
-    /// \param pair
-    /// \return
-    ///
+//    ///
+//    /// \brief read
+//    /// \param pair
+//    /// \return
+//    ///
+//    template <class T, class U>
+//    typename std::enable_if<( std::is_same<U, hub::SensorSpec>::value ), void>::type
+//    read( std::pair<T, U>& pair ) const;
+
     template <class T, class U>
-    typename std::enable_if<( std::is_same<U, hub::SensorSpec>::value ), void>::type
-    read( std::pair<T, U>& pair ) const;
+//	typename = typename std::enable_if<( not std::is_same<T, hub::SensorSpec>::value ), void>::type
+    void Interface::read( std::pair<T, U>& pair ) const {
+        assert( isOpen() );
+
+    #ifdef DEBUG_IOSTREAM
+        std::cout << "[Interface] read(std::pair) : start" << std::endl;
+    #endif
+        T first;
+        read( first );
+//        hub::SensorSpec sensorSpec;
+//        read(sensorSpec);
+        U second;
+        read( second );
+        pair = std::make_pair( first, second );
+    }
+
+//    template <class T, class U>
+//    typename std::enable_if<( std::is_same<U, hub::SensorSpec>::value ), void>::type
+//    Interface::read( std::pair<T, U>& pair ) const {
+//        assert( isOpen() );
+
+//    #ifdef DEBUG_IOSTREAM
+//        std::cout << "[Interface] read(std::pair) : start" << std::endl;
+//    #endif
+//        T first;
+//        read( first );
+//        //    hub::SensorSpec sensorSpec;
+//        U second;
+//        second = getSensorSpec();
+//        //    read( second );
+//        pair = std::make_pair( first, second );
+//    }
+
 
     ///
     /// \brief read

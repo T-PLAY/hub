@@ -157,37 +157,37 @@ void Interface::read( std::map<T, U>& map ) const {
     }
 }
 
-template <class T, class U>
-typename std::enable_if<( not std::is_same<U, hub::SensorSpec>::value ), void>::type
-Interface::read( std::pair<T, U>& pair ) const {
-    assert( isOpen() );
+//template <class T, class U>
+//typename std::enable_if<( not std::is_same<U, hub::SensorSpec>::value ), void>::type
+//Interface::read( std::pair<T, U>& pair ) const {
+//    assert( isOpen() );
 
-#ifdef DEBUG_IOSTREAM
-    std::cout << "[Interface] read(std::pair) : start" << std::endl;
-#endif
-    T first;
-    read( first );
-    U second;
-    read( second );
-    pair = std::make_pair( first, second );
-}
+//#ifdef DEBUG_IOSTREAM
+//    std::cout << "[Interface] read(std::pair) : start" << std::endl;
+//#endif
+//    T first;
+//    read( first );
+//    U second;
+//    read( second );
+//    pair = std::make_pair( first, second );
+//}
 
-template <class T, class U>
-typename std::enable_if<( std::is_same<U, hub::SensorSpec>::value ), void>::type
-Interface::read( std::pair<T, U>& pair ) const {
-    assert( isOpen() );
+//template <class T, class U>
+//typename std::enable_if<( std::is_same<U, hub::SensorSpec>::value ), void>::type
+//Interface::read( std::pair<T, U>& pair ) const {
+//    assert( isOpen() );
 
-#ifdef DEBUG_IOSTREAM
-    std::cout << "[Interface] read(std::pair) : start" << std::endl;
-#endif
-    T first;
-    read( first );
-    //    hub::SensorSpec sensorSpec;
-    U second;
-    second = getSensorSpec();
-    //    read( second );
-    pair = std::make_pair( first, second );
-}
+//#ifdef DEBUG_IOSTREAM
+//    std::cout << "[Interface] read(std::pair) : start" << std::endl;
+//#endif
+//    T first;
+//    read( first );
+//    //    hub::SensorSpec sensorSpec;
+//    U second;
+//    second = getSensorSpec();
+//    //    read( second );
+//    pair = std::make_pair( first, second );
+//}
 
 } // namespace io
 } // namespace hub
