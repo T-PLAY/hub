@@ -80,6 +80,9 @@ class SRC_API Acquisition
     template <class... Args>
     void emplaceMeasure( Args&&... args );
 
+//    [[ deprecated ]]
+    void pushBack(Measure && measure);
+
     ///
     /// \brief isInterpolable
     /// is used during synchronization with another acquisition stream to minimize
@@ -152,6 +155,8 @@ class SRC_API Acquisition
     /// \brief m_end
     ///
     const long long m_end; // microseconds
+
+    bool hasFixedSize() const;
 
   private:
     Measures m_measures;

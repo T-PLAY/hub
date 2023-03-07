@@ -6,6 +6,10 @@
 #include <typeindex>
 #include <typeinfo>
 
+#include "Acquisition.hpp"
+#include "SensorSpec.hpp"
+#include "anyUtils.hpp"
+
 namespace hub {
 namespace io {
 
@@ -28,7 +32,7 @@ void Interface::write( const std::string& str ) const {
     assert( isOpen() );
 
 #ifdef DEBUG_IOSTREAM
-    std::cout << "[Interface] write(std::string) : '" << str << "' start" << std::endl;
+    std::cout << "[Interface] write(std::string) : '" << str << "'" << std::endl;
 #endif
 
     int strLen = static_cast<int>( str.size() );
@@ -44,7 +48,7 @@ void Interface::write( const SensorSpec& sensorSpec ) const {
     assert( isOpen() );
 
 #ifdef DEBUG_IOSTREAM
-    std::cout << "[Interface] write(SensorSpec) : start" << std::endl;
+    std::cout << "[Interface] write(SensorSpec)" << std::endl;
 #endif
 
     write( sensorSpec.getSensorName() );
@@ -56,18 +60,30 @@ void Interface::write( const Measure& measure ) const {
     assert( isOpen() );
 
 #ifdef DEBUG_IOSTREAM
-    std::cout << "[Interface] write(Measure) : start" << std::endl;
+    std::cout << "[Interface] write(Measure)" << std::endl;
 #endif
+
+//    const auto & format = measure.getResolution().second;
+    assert(measure.m_size != 0);
+    assert(measure.m_data != nullptr);
 
     write( measure.m_size );
     write( measure.m_data, measure.m_size );
+}
+
+void Interface::write(const UserData &userData) const
+{
+//    write(userData.m_data);
+//    write(userData.m_size);
+    write(userData.getName());
+    write(userData.getValue());
 }
 
 void Interface::write( const Acquisition& acq ) const {
     assert( isOpen() );
 
 #ifdef DEBUG_IOSTREAM
-    std::cout << "[Interface] write(Acquisition) : start" << std::endl;
+    std::cout << "[Interface] write(Acquisition)" << std::endl;
 #endif
 
     write( acq.m_start );
@@ -83,7 +99,7 @@ void Interface::write( const char* str ) const {
     assert( isOpen() );
 
 #ifdef DEBUG_IOSTREAM
-    std::cout << "[Interface] write(const char*) : start" << std::endl;
+    std::cout << "[Interface] write(const char*)" << std::endl;
 #endif
 
     int strLen = static_cast<int>( strlen( str ) );
@@ -101,11 +117,12 @@ void Interface::write( const std::any& any ) const {
     assert( isOpen() );
 
 #ifdef DEBUG_IOSTREAM
-    std::cout << "[Interface] write(std::any) : start" << std::endl;
 #    ifdef WIN32
-    std::cout << "any raw name = '" << any.type().raw_name() << "'" << std::endl;
+    std::cout << "[Interface] write(std::any) : '" << any.type().raw_name() << "'" << std::endl;
+//    std::cout << "any raw name = '" << any.type().raw_name() << "'" << std::endl;
 #    else
-    std::cout << "any raw name = '" << any.type().name() << "'" << std::endl;
+//    std::cout << "any raw name = '" << any.type().name() << "'" << std::endl;
+    std::cout << "[Interface] write(std::any) : '" << any.type().name() << "'" << std::endl;
 #    endif
 #endif
 
@@ -196,7 +213,7 @@ void Interface::read( std::string& str ) const {
 //        assert(isOpen());
 
 // #ifdef DEBUG_IOSTREAM
-//         std::cout << "[Interface] read(SensorSpec) : start" << std::endl;
+//         std::cout << "[Interface] read(SensorSpec)" << std::endl;
 // #endif
 
 //        read(sensorSpec.m_sensorName);
@@ -212,7 +229,7 @@ void Interface::read( std::string& str ) const {
 //        assert(isOpen());
 
 // #ifdef DEBUG_IOSTREAM
-//         std::cout << "[Interface] getMeasure() : start" << std::endl;
+//         std::cout << "[Interface] getMeasure()" << std::endl;
 // #endif
 
 //        uint64_t size; // compatibility 32/64 bits
@@ -230,7 +247,7 @@ SensorSpec Interface::getSensorSpec() const {
     assert( isOpen() );
 
 #ifdef DEBUG_IOSTREAM
-    std::cout << "[Interface] getSensorSpec() : start" << std::endl;
+    std::cout << "[Interface] getSensorSpec()" << std::endl;
 #endif
 
     //        SensorSpec sensorSpec;
@@ -248,13 +265,28 @@ SensorSpec Interface::getSensorSpec() const {
     return SensorSpec( std::move( sensorName ), std::move( resolutions ), std::move( metaData ) );
 }
 
+//UserData Interface::getUserData() const
+//{
+//#ifdef DEBUG_IOSTREAM
+//    std::cout << "[Interface] getUserData()" << std::endl;
+//#endif
+
+//    std::string name;
+//    std::any value;
+//    read(name);
+//    read(value);
+//    std::cout << "[name] " << name << std::endl;
+//    std::cout << "[any value]" << anyValue2string(value) << std::endl;
+//    return UserData(std::move(name), std::move(value));
+//}
+
 Acquisition Interface::getAcquisition( const SensorSpec& sensorSpec ) const
 //    Acquisition Interface::getAcquisition(int acquisitionSize) const
 {
     assert( isOpen() );
 
 #ifdef DEBUG_IOSTREAM
-    std::cout << "[Interface] getAcquisition() : start" << std::endl;
+    std::cout << "[Interface] getAcquisition()" << std::endl;
 #endif
 
     long long start, end;
@@ -272,6 +304,24 @@ Acquisition Interface::getAcquisition( const SensorSpec& sensorSpec ) const
     assert( resolutions.size() == nMeasures );
 
     for ( int iMeasure = 0; iMeasure < nMeasures; ++iMeasure ) {
+//        const auto & resolution = resolutions.at(iMeasure);
+//        const auto & format = resolution.second;
+
+//        if (format == Format::USER_DATA) {
+
+//            std::cout << "[Interface] getAcquisition: user_data" << std::endl;
+////            std::string name;
+////            read(name);
+////            std::any value;
+////            read(value);
+
+////            UserData userData(name, value);
+//            auto userData = get<UserData>();
+//            acq.pushBack(std::move(userData));
+
+//        }
+//        else {
+
         //            acq << Interface::getMeasure();
         uint64_t size; // compatibility 32/64 bits
         read( size );
@@ -288,9 +338,10 @@ Acquisition Interface::getAcquisition( const SensorSpec& sensorSpec ) const
 
         acq.emplaceMeasure( data, size, resolutions.at( iMeasure ), true );
         //    acq << { data, size};
+//        }
     }
 
-    assert( sensorSpec.getAcquisitionSize() == acq.getSize() );
+    assert( ! acq.hasFixedSize() || sensorSpec.getAcquisitionSize() == acq.getSize() );
     //    assert( nMeasures == 0 || acquisitionSize == acq.getSize() );
 
     return acq;
@@ -300,7 +351,7 @@ void Interface::read( char* str ) const {
     assert( isOpen() );
 
 #ifdef DEBUG_IOSTREAM
-    std::cout << "[Interface] read char* : start" << std::endl;
+    std::cout << "[Interface] read char*" << std::endl;
 #endif
 
     int strLen = 0;
@@ -318,7 +369,7 @@ void Interface::read( std::any& any ) const {
     assert( isOpen() );
 
 #ifdef DEBUG_IOSTREAM
-    std::cout << "[Interface] read(std::any) : start" << std::endl;
+    std::cout << "[Interface] read(std::any)" << std::endl;
 #endif
 
     AnyType type;

@@ -1,11 +1,16 @@
 #pragma once
 
+#include <any>
 #include <cassert>
 #include <cstring>
 #include <iostream>
 
 #include "Macros.hpp"
 #include "Resolution.hpp"
+// #include "IO/Memory.hpp"
+// #include <Measure.hpp>
+// #include <IO/Memory.hpp>
+// #include <IO/File.hpp>
 
 namespace hub {
 
@@ -53,7 +58,7 @@ class SRC_API Measure
     Measure( Measure&& measure );
     Measure& operator=( Measure&& ) = delete;
 
-    Measure( const Measure& ) = delete;
+    Measure( const Measure& )            = delete;
     Measure& operator=( const Measure& ) = delete;
 
     ~Measure();
@@ -117,12 +122,12 @@ class SRC_API Measure
     ///
     /// \brief m_data
     ///
-    const unsigned char* const m_data;
+    unsigned char* m_data;
 
     ///
     /// \brief m_size
     ///
-    const uint64_t m_size; // compatibility 32/64 bits
+    uint64_t m_size; // compatibility 32/64 bits
 
   public: // getters
     ///
@@ -133,13 +138,23 @@ class SRC_API Measure
     ///
     const inline Resolution& getResolution() const;
 
-  private:
+  protected:
+    //  private:
+    template <class ResolutionT = Resolution>
+    Measure( uint64_t size, ResolutionT&& resolution );
     bool m_ownData = false;
+
+  private:
     bool m_isMoved = false;
     Resolution m_resolution;
 
     friend class InputSensor;
 };
+
+template <class ResolutionT>
+Measure::Measure( uint64_t size, ResolutionT&& resolution ) :
+    m_data( nullptr ), m_size( size ), m_resolution( std::forward<ResolutionT>( resolution ) ) {}
+
 using Measures = std::vector<Measure>;
 
 template <class ResolutionT>
@@ -147,10 +162,10 @@ Measure::Measure( const unsigned char* const data, uint64_t size, ResolutionT&& 
     m_data( new unsigned char[size] ),
     m_size( size ),
     m_ownData( true ),
-//    m_resolution( std::move( resolution ) ) {
+    //    m_resolution( std::move( resolution ) ) {
     //    m_resolution( std::forward<Resolution>( resolution ) ) {
     //    m_resolution( std::forward( resolution ) ) {
-        m_resolution( std::forward<ResolutionT>( resolution ) ) {
+    m_resolution( std::forward<ResolutionT>( resolution ) ) {
 
     static_assert( std::is_same<std::decay_t<Resolution>, std::decay_t<ResolutionT>>::value,
                    "must be the same as Resolution" );
@@ -170,8 +185,8 @@ Measure::Measure( unsigned char* data, uint64_t size, ResolutionT&& resolution, 
     m_data( data ),
     m_size( size ),
     m_ownData( stealData ),
-//    m_resolution( std::move( resolution ) ) // not worked with ResolutionT& (steal data)
-//    m_resolution( std::forward( resolution ) )
+    //    m_resolution( std::move( resolution ) ) // not worked with ResolutionT& (steal data)
+    //    m_resolution( std::forward( resolution ) )
     m_resolution( std::forward<ResolutionT>( resolution ) )
 //    m_ownData( false )
 {
@@ -183,7 +198,7 @@ Measure::Measure( unsigned char* data, uint64_t size, ResolutionT&& resolution, 
     assert( data != nullptr );
     assert( m_size > 0 );
     assert( m_data != nullptr );
-    assert( size == computeAcquisitionSize( m_resolution ) );
+    assert( ! format2hasFixedSize(m_resolution.second) || size == computeAcquisitionSize( m_resolution ) );
 }
 
 const inline Resolution& Measure::getResolution() const {
@@ -337,6 +352,24 @@ class Mat4 : public Measure
     /// of 4x4 float (size = 4x4x4 = 64 bytes)
     ///
     explicit Mat4( const float* array );
+};
+
+class UserData : public Measure
+{
+  public:
+    explicit UserData( const Measure& measure );
+    UserData( const std::string& name, const std::any& any );
+
+    const std::string& getName() const;
+    const std::any& getValue() const;
+
+    SRC_API friend std::ostream& operator<<( std::ostream& os, const UserData& userData );
+
+  private:
+    std::string m_name;
+    std::any m_value;
+
+    //    friend class InputSensor;
 };
 
 } // namespace hub

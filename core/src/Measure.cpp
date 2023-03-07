@@ -5,6 +5,10 @@
 #include <cstring>
 #include <iomanip>
 
+#include "IO/Interface.hpp"
+#include "IO/Memory.hpp"
+#include "IO/Ram.hpp"
+
 namespace hub {
 
 Dof6::Dof6( const Measure& measure ) :
@@ -24,7 +28,7 @@ Dof6::Dof6( float x, float y, float z, float w0, float w1, float w2, float w3 ) 
     memcpy( (unsigned char*)&m_x, m_data, m_size );
 }
 
-Dof6 Dof6::slerp(const Dof6& left, const Dof6& right, double t ) {
+Dof6 Dof6::slerp( const Dof6& left, const Dof6& right, double t ) {
 
     const float x = ( 1.0 - t ) * left.m_x + t * right.m_x;
     const float y = ( 1.0 - t ) * left.m_y + t * right.m_y;
@@ -214,7 +218,7 @@ std::ostream& operator<<( std::ostream& os, const Measure& measure ) {
     os << measure.getResolution() << ", [";
 
     if ( measure.m_resolution.second == Format::DOF6 ) {
-        const hub::Dof6 dof6(measure);
+        const hub::Dof6 dof6( measure );
         os << dof6;
         //        const float* const dof6 = reinterpret_cast<const float* const>(measure.m_data);
         //        os << "dof6:";
@@ -228,6 +232,53 @@ std::ostream& operator<<( std::ostream& os, const Measure& measure ) {
         }
     }
     os << "]";
+    return os;
+}
+
+const std::string& UserData::getName() const {
+    return m_name;
+}
+
+const std::any& UserData::getValue() const {
+    return m_value;
+}
+
+UserData::UserData( const Measure& measure ) :
+    Measure( measure.m_data, measure.m_size, Resolution { { 1 }, Format::USER_DATA } ) {
+    //    assert( measure.m_size == 28 );
+//    memcpy( (unsigned char*)&m_x, m_data, m_size );
+    assert( m_data != nullptr );
+    assert(m_size > 0);
+
+    std::vector<char> buff;
+    buff.insert(buff.begin(), m_data, m_data + m_size);
+
+    io::Memory<decltype(buff)> memory(buff);
+
+    m_name = memory.get<std::string>();
+    m_value = memory.get<std::any>();
+}
+
+UserData::UserData( const std::string& name, const std::any& value ) :
+    Measure( 0, Resolution { { 1 }, Format::USER_DATA } ), m_name( name ), m_value( value ) {
+
+    std::vector<char> buff;
+//    buff.erase(buff.begin(), buff.begin() + 2);
+
+    io::Memory<decltype( buff )> memory( buff );
+
+    memory.put( m_name );
+    memory.put( m_value );
+
+    assert( !buff.empty() );
+
+    m_size = buff.size();
+    m_data = new unsigned char[m_size];
+    memcpy( m_data, buff.data(), m_size );
+}
+
+std::ostream& operator<<( std::ostream& os, const UserData& userData ) {
+    os << "[\"" << userData.getName() << "\", '" << io::Interface::anyValue2string(userData.getValue()) << "']" ;
     return os;
 }
 

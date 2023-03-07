@@ -49,6 +49,7 @@ enum class Format {
     FG,       		/**< 16-bit per-pixel frame grabber format. */
     Y411,     		/**< 12-bit per-pixel. */
     MAT4,     		/**< Transform matrix 4x4 of float. */
+    USER_DATA,		/**< User data with name and any value */
     COUNT     		/**< Number of enumeration values. Not a valid input: intended to be used in for-loops. */
 };
 // clang-format on
@@ -91,6 +92,7 @@ static inline CONSTEXPR20 size_t computeAcquisitionSize( const Resolution& resol
 static inline CONSTEXPR20 size_t computeAcquisitionSize( Format format, const Dims& dims ) noexcept;
 static inline constexpr int format2nByte( const Format& format ) noexcept;
 static inline constexpr bool format2isInterpolable( const Format& format ) noexcept;
+static inline constexpr bool format2hasFixedSize( const Format& format) noexcept;
 
 ///
 /// \brief operator <<

@@ -14,13 +14,14 @@ Acquisition InputSensor::getAcquisition() const {
     //        return acq;
     //    }
 
-    assert( acq.getSize() == m_spec.getAcquisitionSize() );
+    assert( ! acq.hasFixedSize() || acq.getSize() == m_spec.getAcquisitionSize() );
     const auto& resolutions = m_spec.getResolutions();
     const auto& measures    = acq.m_measures;
     assert( resolutions.size() == measures.size() );
     assert( resolutions.size() > 0 );
     for ( size_t i = 0; i < resolutions.size(); ++i ) {
-        assert( computeAcquisitionSize( resolutions.at( i ) ) == measures.at( i ).m_size );
+//        const auto & format = resolutions.at(i).second;
+        assert(! format2hasFixedSize(resolutions.at(i).second) || computeAcquisitionSize( resolutions.at( i ) ) == measures.at( i ).m_size );
         //        measures.at( i ).m_resolution = resolutions.at( i );
         assert( measures.at( i ).m_resolution == resolutions.at( i ) );
         assert( !measures.at( i ).m_resolution.first.empty() );
