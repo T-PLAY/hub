@@ -178,6 +178,19 @@ void Interface::read( std::string& str ) const {
 #endif
 }
 
+//template <>
+//SensorSpec Interface::read<SensorSpec>() const {
+//    SensorSpec sensorSpec;
+//    return sensorSpec;
+//}
+
+
+//void Interface::read(SensorSpec &sensorSpec) const
+//{
+
+
+//}
+
 //    void Interface::read(SensorSpec& sensorSpec) const
 //    {
 //        assert(isOpen());

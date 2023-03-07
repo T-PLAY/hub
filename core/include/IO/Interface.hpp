@@ -221,9 +221,116 @@ class SRC_API Interface
 //    typename std::enable_if<( std::is_same<U, hub::SensorSpec>::value ), void>::type
 //    read( std::pair<T, U>& pair ) const;
 
+//    template <class T>
+//    T get() const {
+//        T t;
+//        read(t);
+//        return t;
+//    }
+
+////    template<class T>
+////    T get<T, std::enable_if_t<std::is_same_v<SensorSpec, T>>>() const {
+////    }
+//    template <>
+//    SensorSpec get<SensorSpec>() const {
+//        SensorSpec sensorSpec;
+//        return sensorSpec;
+//    }
+
+#ifdef OS_LINUX
+
+    template <class T>
+    typename std::enable_if<( not std::is_same<T, hub::SensorSpec>::value ), T>::type
+    get() const
+    {
+        T t;
+        read(t);
+        return t;
+    };
+
+    template <class T>
+    typename std::enable_if<( std::is_same<T, hub::SensorSpec>::value ), T>::type
+    get() const {
+        return getSensorSpec();
+    };
+
+//    template <class T, class = void>
+//    T get() const
+//    {
+//        T t;
+//        read(t);
+//        return t;
+//    };
+
+//    template <class T>
+//    typename std::enable_if_t<std::is_same_v<int, T>>::type
+//            get() const {
+//        return getSensorSpec();
+//    };
+
+#else
+
+#if CPLUSPLUS_VERSION == 20
+    template <class T>
+    T get() const
+    {
+        T t;
+        read(t);
+        return t;
+    };
+
+    template <std::same_as<SensorSpec> T>
+    T get() const {
+        return getSensorSpec();
+    };
+
+#elif CPLUSPLUS_VERSION == 17
+    template <class T, class = void>
+    T get() const
+    {
+        T t;
+        read(t);
+        return t;
+    };
+
+    template <class T>
+    T get<T, std::enable_if_t<std::is_same_v<int, T>>>() const {
+        return getSensorSpec();
+    };
+
+#else
+
+#endif
+
+#endif
+
+//    template <class T>
+//        typename std::enable_if<(std::is_same_v<SensorSpec, T>>)
+//        get<T> const {
+//    template <class T>
+//    typename std::enable_if<( not std::is_same<T, hub::SensorSpec>::value ), void>::type
+//    get<T>() const;
+//    read( std::pair<T, U>& pair ) const;
+
+
+//                                      };
+//    template <class T = SensorSpec>
+//    SensorSpec get<SensorSpec>() const {
+////    T get<T, std::enable_if<std::is_same_v<SensorSpec, T>>> () const {
+//        SensorSpec sensorSpec;
+//        return sensorSpec;
+//    }
+
+//template <>
+//SensorSpec read<SensorSpec>() const {
+
+//}
+
+
+
     template <class T, class U>
 //	typename = typename std::enable_if<( not std::is_same<T, hub::SensorSpec>::value ), void>::type
-    void Interface::read( std::pair<T, U>& pair ) const {
+    void read( std::pair<T, U>& pair ) const {
         assert( isOpen() );
 
     #ifdef DEBUG_IOSTREAM
@@ -233,9 +340,10 @@ class SRC_API Interface
         read( first );
 //        hub::SensorSpec sensorSpec;
 //        read(sensorSpec);
-        U second;
-        read( second );
-        pair = std::make_pair( first, second );
+//        U second;
+//        read( second );
+        auto second = get<U>();
+        pair = std::make_pair( first, std::move(second) );
     }
 
 //    template <class T, class U>
@@ -267,12 +375,13 @@ class SRC_API Interface
     /// \param sensorSpec
     ///
     void read( SensorSpec& sensorSpec ) const = delete;
+//    void read( SensorSpec& sensorSpec ) const;
 
-    ///
-    /// \brief read
-    /// \return
-    ///
-    SensorSpec read() const { return getSensorSpec(); }
+//    ///
+//    /// \brief read
+//    /// \return
+//    ///
+//    SensorSpec read() const { return getSensorSpec(); }
 
     ///
     /// \brief read
@@ -313,6 +422,21 @@ class SRC_API Interface
     ///
     static const std::string& anyType2string( const std::any& any );
 };
+
+//template <class T>
+//T Interface::get() const
+//{
+//    T t;
+//    read(t);
+//    return t;
+//}
+
+//template <>
+//SensorSpec Interface::get<SensorSpec>() const {
+//    SensorSpec sensorSpec;
+//    return sensorSpec;
+//}
+
 
 ///
 /// \brief The InputInterface class
