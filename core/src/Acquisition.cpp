@@ -73,9 +73,13 @@ Acquisition& Acquisition::operator<<( Measure&& measure ) {
     // void Acquisition::addMeasure( Measure&& measure ) {
     //     emplaceMeasure(measure.m_data, measure.m_size, measure.getResolution());
     //     m_size += m_measures.back().m_size;
-    m_size += measure.m_size;
     m_measures.push_back( std::move( measure ) );
     return *this;
+}
+
+void Acquisition::pushBack(Measure &&measure)
+{
+    m_measures.push_back(std::move(measure));
 }
 
 // template <class ResolutionT>
@@ -163,6 +167,16 @@ Acquisition Acquisition::clone() const {
 const Measures& Acquisition::getMeasures() const {
     assert(! m_measures.empty());
     return m_measures;
+}
+
+bool Acquisition::hasFixedSize() const
+{
+    for (const auto & measure : m_measures) {
+        const auto & format = measure.getResolution().second;
+        if (! format2hasFixedSize(format))
+            return false;
+    }
+    return true;
 }
 
 // const std::vector<Measure> &Acquisition::getMeasures() const

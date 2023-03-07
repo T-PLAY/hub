@@ -2,6 +2,10 @@
 #pragma once
 #include "Interface.hpp"
 
+#ifdef DEBUG_IOSTREAM
+#include <boost/type_index.hpp>
+#endif
+
 namespace hub {
 namespace io {
 
@@ -12,7 +16,7 @@ void Interface::write( const T& t ) const {
     write( reinterpret_cast<const unsigned char*>( &t ), sizeof( T ) );
 
 #ifdef DEBUG_IOSTREAM
-    std::cout << "[Interface] write(T) : " << typeid( T ).name() << " '" << t << "' : end"
+    std::cout << "[Interface] write(T) : " << typeid( T ).name() << " (" << boost::typeindex::type_id<T>().pretty_name() << ") '" << t << "'"
               << std::endl;
 #endif
 }
@@ -22,7 +26,7 @@ void Interface::write( const std::list<T>& list ) const {
     assert( isOpen() );
 
 #ifdef DEBUG_IOSTREAM
-    std::cout << "[Interface] write(std::list) : start" << std::endl;
+    std::cout << "[Interface] write(std::list)" << std::endl;
 #endif
 
     int nbEl = list.size();
@@ -38,7 +42,7 @@ void Interface::write( const std::vector<T>& vector ) const {
     assert( isOpen() );
 
 #ifdef DEBUG_IOSTREAM
-    std::cout << "[Interface] write(std::vector) : start" << std::endl;
+    std::cout << "[Interface] write(std::vector)" << std::endl;
 #endif
 
     int nbEl = static_cast<int>( vector.size() );
@@ -54,7 +58,7 @@ void Interface::write( const std::map<T, U>& map ) const {
     assert( isOpen() );
 
 #ifdef DEBUG_IOSTREAM
-    std::cout << "[Interface] write(std::map) : start" << std::endl;
+    std::cout << "[Interface] write(std::map)" << std::endl;
 #endif
 
     int nbKey = static_cast<int>( map.size() );
@@ -73,7 +77,7 @@ void Interface::write( const std::pair<T, U>& pair ) const {
     assert( isOpen() );
 
 #ifdef DEBUG_IOSTREAM
-    std::cout << "[Interface] write(std::pair) : start" << std::endl;
+    std::cout << "[Interface] write(std::pair)" << std::endl;
 #endif
     const T& first  = pair.first;
     const U& second = pair.second;
@@ -90,7 +94,7 @@ void Interface::read( T& t ) const {
     read( reinterpret_cast<unsigned char*>( &t ), sizeof( T ) );
 
 #ifdef DEBUG_IOSTREAM
-    std::cout << "[Interface] read(T) : " << typeid( T ).name() << " '" << t << "' : end"
+    std::cout << "[Interface] read(T) : " << typeid( T ).name() << " (" << boost::typeindex::type_id<T>().pretty_name()  << ") '" << t << "'"
               << std::endl;
 #endif
 }
@@ -100,7 +104,7 @@ void Interface::read( std::list<T>& list ) const {
     assert( isOpen() );
 
 #ifdef DEBUG_IOSTREAM
-    std::cout << "[Interface] read(std::list) : start" << std::endl;
+    std::cout << "[Interface] read(std::list)" << std::endl;
 #endif
 
     int nbEl;
@@ -118,7 +122,7 @@ void Interface::read( std::vector<T>& vector ) const {
     assert( isOpen() );
 
 #ifdef DEBUG_IOSTREAM
-    std::cout << "[Interface] read(std::vector) : start" << std::endl;
+    std::cout << "[Interface] read(std::vector)" << std::endl;
 #endif
 
     int nbEl;
@@ -139,7 +143,7 @@ void Interface::read( std::map<T, U>& map ) const {
     assert( isOpen() );
 
 #ifdef DEBUG_IOSTREAM
-    std::cout << "[Interface] read(std::map) : start" << std::endl;
+    std::cout << "[Interface] read(std::map)" << std::endl;
 #endif
 
     int nbEl;
@@ -163,7 +167,7 @@ void Interface::read( std::map<T, U>& map ) const {
 //    assert( isOpen() );
 
 //#ifdef DEBUG_IOSTREAM
-//    std::cout << "[Interface] read(std::pair) : start" << std::endl;
+//    std::cout << "[Interface] read(std::pair)" << std::endl;
 //#endif
 //    T first;
 //    read( first );
@@ -178,7 +182,7 @@ void Interface::read( std::map<T, U>& map ) const {
 //    assert( isOpen() );
 
 //#ifdef DEBUG_IOSTREAM
-//    std::cout << "[Interface] read(std::pair) : start" << std::endl;
+//    std::cout << "[Interface] read(std::pair)" << std::endl;
 //#endif
 //    T first;
 //    read( first );
