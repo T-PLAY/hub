@@ -3,7 +3,10 @@
 #include "Interface.hpp"
 
 #ifdef DEBUG_IOSTREAM
-#include <boost/type_index.hpp>
+#endif
+
+#ifdef USE_BOOST
+//#include <boost/type_index.hpp>
 #endif
 
 namespace hub {
@@ -16,8 +19,13 @@ void Interface::write( const T& t ) const {
     write( reinterpret_cast<const unsigned char*>( &t ), sizeof( T ) );
 
 #ifdef DEBUG_IOSTREAM
+#ifdef USE_BOOST
     std::cout << "[Interface] write(T) : " << typeid( T ).name() << " (" << boost::typeindex::type_id<T>().pretty_name() << ") '" << t << "'"
               << std::endl;
+#else
+    std::cout << "[Interface] write(T) : " << typeid( T ).name() << " '" << t << "'"
+              << std::endl;
+#endif
 #endif
 }
 
@@ -94,8 +102,17 @@ void Interface::read( T& t ) const {
     read( reinterpret_cast<unsigned char*>( &t ), sizeof( T ) );
 
 #ifdef DEBUG_IOSTREAM
+#ifdef USE_BOOST
     std::cout << "[Interface] read(T) : " << typeid( T ).name() << " (" << boost::typeindex::type_id<T>().pretty_name()  << ") '" << t << "'"
               << std::endl;
+#else
+//    std::cout << "[Interface] read(T) : " << typeid( T ).name() << " '" << t << "'"
+//              << std::endl;
+//    std::cout << "[Interface] read(T) : " << typeid( T ).name() << " '" << t << "' : end"
+//              << std::endl;
+    std::cout << "[Interface] read(T) : '" << t << "' : end"
+              << std::endl;
+#endif
 #endif
 }
 

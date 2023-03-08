@@ -354,7 +354,7 @@ class Mat4 : public Measure
     explicit Mat4( const float* array );
 };
 
-class UserData : public Measure
+class SRC_API UserData : public Measure
 {
   public:
     explicit UserData( const Measure& measure );
