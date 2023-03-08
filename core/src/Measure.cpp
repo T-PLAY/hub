@@ -255,8 +255,12 @@ UserData::UserData( const Measure& measure ) :
 
     io::Memory<decltype(buff)> memory(buff);
 
-    m_name = memory.get<std::string>();
-    m_value = memory.get<std::any>();
+//    hub::io::Interface::get<std::string>();
+    memory.read(m_name);
+//    m_name = memory.get<std::string>();
+//    m_name = memory.get();
+    memory.read(m_value);
+//    m_value = memory.get<std::any>();
 }
 
 UserData::UserData( const std::string& name, const std::any& value ) :

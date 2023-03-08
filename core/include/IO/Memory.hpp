@@ -41,7 +41,17 @@ class SRC_API Memory : public InputOutputInterface
     //    template <class Container>
     explicit Memory( Container& buff ) : m_container( buff ) {}
 
+//    ///
+//    /// \brief read
+//    /// \param t
+//    ///
+    template <class T>
+    void read( T& t ) const {
+        Interface::read(t);
+    }
+
   protected:
+//  public:
     ///
     /// @copydoc Interface::close()
     ///
