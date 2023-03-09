@@ -5,9 +5,9 @@
 #include <cstring>
 #include <iomanip>
 
-#include "IO/Interface.hpp"
+//#include "IO/Interface.hpp"
 #include "IO/Memory.hpp"
-#include "IO/Ram.hpp"
+//#include "IO/Ram.hpp"
 
 namespace hub {
 
@@ -282,7 +282,7 @@ UserData::UserData( const std::string& name, const std::any& value ) :
 }
 
 std::ostream& operator<<( std::ostream& os, const UserData& userData ) {
-    os << "[\"" << userData.getName() << "\", '" << io::Interface::anyValue2string(userData.getValue()) << "']" ;
+    os << "[\"" << userData.getName() << "\", '" << Any::anyValue2string(userData.getValue()) << "']" ;
     return os;
 }
 

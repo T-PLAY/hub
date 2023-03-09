@@ -2,7 +2,7 @@
 
 #include <mutex>
 
-#include "Interface.hpp"
+#include "Output.hpp"
 #include "Net/ClientSocket.hpp"
 
 namespace hub {
@@ -12,7 +12,7 @@ namespace io {
 /// \brief The OutputStream class
 /// Describes an output communication to the server.
 ///
-class SRC_API OutputStream : public OutputInterface, public net::ClientSocket
+class SRC_API OutputStream : public Output
 {
   public:
     ///
@@ -33,16 +33,48 @@ class SRC_API OutputStream : public OutputInterface, public net::ClientSocket
     explicit OutputStream( const std::string& streamName,
                            net::ClientSocket&& clientSocket = net::ClientSocket() );
 
-#ifdef WIN32 // msvc warning C4250
+//#ifdef WIN32 // msvc warning C4250
   protected:
     void write( const unsigned char* data, size_t len ) const override;
-    void read( unsigned char* data, size_t len ) const override;
+//    void read( unsigned char* data, size_t len ) const override;
     void close() const override;
     bool isOpen() const override;
     bool isEnd() const override;
 
-#endif
+//#endif
+
+  private:
+    net::ClientSocket m_clientSocket;
 };
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//#ifdef WIN32
+inline void OutputStream::write( const unsigned char* data, size_t len ) const {
+//    net::ClientSocket::write( data, len );
+    m_clientSocket.write(data, len);
+}
+
+//void OutputStream::read( unsigned char* data, size_t len ) const {
+//    net::ClientSocket::read( data, len );
+//    m_clientSocket.read(data, len);
+//}
+
+inline void OutputStream::close() const {
+//    net::ClientSocket::close();
+    m_clientSocket.close();
+}
+
+inline bool OutputStream::isOpen() const {
+//    return net::ClientSocket::isOpen();
+    return m_clientSocket.isOpen();
+}
+
+inline bool OutputStream::isEnd() const {
+//    return net::ClientSocket::isEnd();
+    return m_clientSocket.isEnd();
+}
+//#endif
 
 } // namespace io
 } // namespace hub

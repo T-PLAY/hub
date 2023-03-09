@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "Interface.hpp"
+#include "Input.hpp"
 #include "Net/ClientSocket.hpp"
 
 namespace hub {
@@ -13,7 +13,8 @@ namespace io {
 /// The communication is only possible if the stream (with the same name) is active within the
 /// server. That implies an OutputStream communicating data through the hub.
 ///
-class SRC_API InputStream : public InputInterface, public net::ClientSocket
+//class SRC_API InputStream : public Input, public net::ClientSocket
+class SRC_API InputStream : public Input
 {
   public:
     ///
@@ -50,12 +51,69 @@ class SRC_API InputStream : public InputInterface, public net::ClientSocket
 
   protected:
     ///
+    /// \brief isOpen
+    /// \return
+    ///
+    bool isOpen() const override;
+
+//    ///
+//    /// \brief write
+//    /// \param data
+//    /// \param len
+//    ///
+//    void write( const unsigned char* data, size_t len ) const override;
+
+    ///
+    /// \brief read
+    /// \param data
+    /// \param len
+    ///
+    void read( unsigned char* data, size_t len ) const override;
+
+    ///
+    /// \brief close
+    ///
+    void close() const override;
+
+    ///
+    /// \brief isEnd
+    /// \return
+    ///
+    bool isEnd() const override;
+
+    //    void clear() const;
+    ///
     /// \brief getAcquisition
     /// \param sensorSpec
     /// \return
     ///
     Acquisition getAcquisition( const SensorSpec& sensorSpec ) const override;
+
+  private:
+    net::ClientSocket m_clientSocket;
 };
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+inline bool InputStream::isOpen() const
+{
+    return m_clientSocket.isOpen();
+}
+
+inline void InputStream::read(unsigned char *data, size_t len) const
+{
+    m_clientSocket.read(data, len);
+}
+
+inline void InputStream::close() const
+{
+    m_clientSocket.close();
+}
+
+inline bool InputStream::isEnd() const
+{
+    return m_clientSocket.isEnd();
+}
 
 } // namespace io
 } // namespace hub

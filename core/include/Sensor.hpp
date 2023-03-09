@@ -1,6 +1,6 @@
 #pragma once
 
-#include "IO/Interface.hpp"
+//#include "IO/IO.hpp"
 #include "SensorSpec.hpp"
 
 namespace hub {
@@ -18,10 +18,10 @@ class SRC_API Sensor
     /// \brief Sensor
     /// \param sensorSpec
     /// [in] user defined sensor spec
-    /// \param interface_
+    /// \param io
     /// [in] given interface
     ///
-    Sensor( const SensorSpec&& sensorSpec, io::Interface& interface_ );
+    Sensor( const SensorSpec& sensorSpec );
     Sensor( const Sensor& sensor ) = delete;
 
   protected:
@@ -37,16 +37,16 @@ class SRC_API Sensor
 
   protected:
     ///
-    /// \brief m_interface
+    /// \brief m_io
     ///
-    io::Interface& m_interface;
+//    io::IO& m_io;
 
   public:
     ///
     /// \brief getInterface
     /// \return
     ///
-    io::Interface& getInterface() const;
+//    io::IO& getInterface() const;
 
     ///
     /// \brief operator <<

@@ -40,6 +40,11 @@ Socket::Socket( Socket&& socket ) {
     socket.m_fdSock = net::utils::invalidSocket();
 }
 
+net::utils::socket_fd Socket::getFdSock() const
+{
+    return m_fdSock;
+}
+
 // void Socket::clear() const {
 //     assert(m_fdSock != INVALID_SOCKET);
 

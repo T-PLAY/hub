@@ -3,6 +3,7 @@
 #include <cstring>
 #include <regex>
 #include <thread>
+#include <cassert>
 
 namespace hub {
 namespace net {
