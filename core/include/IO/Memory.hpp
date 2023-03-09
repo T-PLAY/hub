@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface.hpp"
+#include "InputOutput.hpp"
 
 namespace hub {
 namespace io {
@@ -10,7 +10,7 @@ namespace io {
 /// allows user to transfer sensor data through the memory (pipe tube).
 ///
 template <class Container>
-class SRC_API Memory : public InputOutputInterface
+class SRC_API Memory : public InputOutput
 {
     ///
     /// \brief The exception class
@@ -47,7 +47,7 @@ class SRC_API Memory : public InputOutputInterface
 //    ///
     template <class T>
     void read( T& t ) const {
-        Interface::read(t);
+        Input::read(t);
     }
 
   protected:

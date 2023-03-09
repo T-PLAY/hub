@@ -8,7 +8,7 @@ Acquisition InputSensor::getAcquisition() const {
 
     //    Acquisition && acq = m_interface.getAcquisition( static_cast<int>(
     //    m_spec.getAcquisitionSize() ) );
-    Acquisition acq = m_interface.getAcquisition( m_spec );
+    Acquisition acq = m_input->getAcquisition( m_spec );
 
     //    if (acq.m_start == -1 && acq.m_end == -1) {
     //        return acq;
@@ -42,7 +42,7 @@ std::vector<Acquisition> InputSensor::getAllAcquisitions() {
     try {
         int nReadAcqs = 0;
         //        while ( true ) {
-        while ( !m_interface.isEnd() ) {
+        while ( !m_input->isEnd() ) {
             acqs.emplace_back( getAcquisition() );
             ++nReadAcqs;
         }

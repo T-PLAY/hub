@@ -3,7 +3,7 @@
 #include <fstream>
 #include <memory>
 
-#include "Interface.hpp"
+#include "InputOutput.hpp"
 
 namespace hub {
 namespace io {
@@ -13,7 +13,7 @@ namespace io {
 /// is an encloser of a std file stream allowing to record or play acquisition streams in offline.
 /// This class can be use to play recorded stream as a real sensor stream.
 ///
-class SRC_API File : public InputOutputInterface
+class SRC_API File : public InputOutput
 {
     ///
     /// \brief The exception class

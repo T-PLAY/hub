@@ -25,7 +25,12 @@ void OutputSensor::operator<<( const Acquisition& acquisition ) const {
         assert( ! format2hasFixedSize(format)  || computeAcquisitionSize( resolutions.at( i ) ) == measures.at( i ).m_size );
     }
 
-    m_interface.write( acquisition );
+    m_output->write( acquisition );
+}
+
+const io::Output &OutputSensor::getOutput() const
+{
+    return *m_output;
 }
 
 } // namespace hub

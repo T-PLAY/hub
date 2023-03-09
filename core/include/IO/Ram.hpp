@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface.hpp"
+#include "InputOutput.hpp"
 
 namespace hub {
 namespace io {
@@ -111,7 +111,7 @@ class SRC_API CyclicBuff
 /// \brief The Ram class
 /// allows user to transfer sensor data through the memory (pipe tube).
 ///
-class SRC_API Ram : public InputOutputInterface
+class SRC_API Ram : public InputOutput
 {
     ///
     /// \brief The exception class

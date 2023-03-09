@@ -3,7 +3,8 @@
 #include <cassert>
 // #include <numeric>
 
-#include "IO/Interface.hpp"
+//#include "IO/Interface.hpp"
+#include "AnyUtils.hpp"
 
 namespace hub {
 
@@ -140,8 +141,8 @@ std::string SensorSpec::to_string( const std::pair<std::string, std::any>& metaD
     const auto& val  = metaData.second;
     // #ifdef WIN32
     // #else
-    std::string str = hub::io::Interface::anyType2string( val ) + " " + name + " = '" +
-                      hub::io::Interface::anyValue2string( val ) + "'";
+    std::string str = hub::Any::anyType2string( val ) + " " + name + " = '" +
+                      hub::Any::anyValue2string( val ) + "'";
     // #endif
     return str;
 }

@@ -60,6 +60,8 @@ class SRC_API Socket
     ///
     bool isConnected() const;
 
+    net::utils::socket_fd getFdSock() const;
+
   protected:
     Socket();
     ~Socket();
@@ -78,7 +80,8 @@ class SRC_API Socket
     ///
     /// \brief m_fdSock
     ///
-    mutable net::utils::socket_fd m_fdSock = net::utils::invalidSocket();
+//    mutable net::utils::socket_fd m_fdSock = net::utils::invalidSocket();
+    net::utils::socket_fd m_fdSock = net::utils::invalidSocket();
 
     ///
     /// \brief m_serverSide

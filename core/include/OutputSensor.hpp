@@ -3,9 +3,9 @@
 #include <type_traits>
 
 #include "Acquisition.hpp"
-#include "IO/Interface.hpp"
 #include "Sensor.hpp"
 #include "SensorSpec.hpp"
+#include "IO/Output.hpp"
 
 // user friendly useless includes
 #include "IO/File.hpp"
@@ -27,40 +27,58 @@ namespace hub {
 class SRC_API OutputSensor : public Sensor
 {
   public:
-    ///
-    /// \brief OutputSensor
-    /// is called when you want to share data sensor
-    /// \param sensorSpec
-    /// able client application to understand the data
-    /// \param outputInterface
-    /// is the communication bus you want to use
-    ///
+
+//    OutputSensor(const SensorSpec & sensorSpec, io::Output && output) :
+////        io::Output(std::move(output)),
+//        Sensor(sensorSpec),
+//        m_output(std::move(output))
+//    {
+//        write(m_spec);
+//    }
+
+//  protected:
+//    void write(const unsigned char * data, size_t len) const override {
+//        io::Output::write(data, len);
+//    }
+
+//    ///
+//    /// \brief OutputSensor
+//    /// is called when you want to share data sensor
+//    /// \param sensorSpec
+//    /// able client application to understand the data
+//    /// \param outputInterface
+//    /// is the communication bus you want to use
+//    ///
     template <class SensorSpec = hub::SensorSpec,
-              class OutputInterface,
+              class Output,
               typename = typename std::enable_if<
-                  std::is_base_of<io::OutputInterface, OutputInterface>::value>::type>
-    OutputSensor( SensorSpec&& sensorSpec, OutputInterface&& outputInterface ) :
+                  std::is_base_of<io::Output, Output>::value>::type>
+    OutputSensor( SensorSpec&& sensorSpec, Output&& output ) :
 
-        Sensor( std::move( sensorSpec ),
-                *std::move( new OutputInterface( std::move( outputInterface ) ) ) ) {
+        Sensor( std::move( sensorSpec )),
+//        m_output(*std::move( new Output( std::move( output ) ) ) )
+//        m_output(*std::move( new Output( std::move( output ) ) ) )
+        m_output(new Output( std::move( output ) ) )
+    {
 
-        //        std::cout << "[OutputSensor] OutputSensor(const SensorSpec&&, OutputInterface&&)"
+        //        std::cout << "[OutputSensor] OutputSensor(const SensorSpec&&, Output&&)"
         //                  << std::endl;
 
-        static_assert( std::is_base_of<io::OutputInterface, OutputInterface>::value,
+        static_assert( std::is_base_of<io::Output, Output>::value,
                        "not a base class" );
 
-        m_interface.write( m_spec );
+        m_output->write(m_spec);
+//        m_io.write( m_spec );
     }
 
-  protected:
-    template <class OutputInterface>
-    OutputSensor( const SensorSpec&& sensorSpec, OutputInterface& outputInterface ) = delete;
+//  protected:
+    template <class Output>
+    OutputSensor( const SensorSpec&& sensorSpec, Output& output ) = delete;
 
     OutputSensor( const OutputSensor& outputSensor ) = delete;
     OutputSensor operator=( const OutputSensor& outputSensor ) = delete;
 
-  public:
+//  public:
     ///
     /// \brief operator <<
     /// is used when you want to share sensor data.
@@ -74,7 +92,11 @@ class SRC_API OutputSensor : public Sensor
     ///
     void operator<<( const Acquisition& acquisition ) const;
 
+    const io::Output &getOutput() const;
+
   private:
+//    io::Output & m_output;
+    std::unique_ptr<io::Output> m_output;
 };
 
 } // namespace hub

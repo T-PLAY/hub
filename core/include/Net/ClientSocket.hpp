@@ -1,6 +1,7 @@
 #pragma once
 
-#include "IO/Interface.hpp"
+//#include "IO/Input.hpp"
+#include "IO/InputOutput.hpp"
 #include "Net/Socket.hpp"
 
 namespace hub {
@@ -23,7 +24,9 @@ static std::string s_defaultServiceIp = "127.0.0.1";
 /// allows connection to remote server hubs.
 /// This class describes the functionality needed to open a remote communication.
 ///
-class SRC_API ClientSocket : public Socket, public virtual io::Interface
+//class SRC_API ClientSocket : public Socket, public io::Input, public io::Output
+class SRC_API ClientSocket : public Socket, public io::InputOutput
+//class SRC_API ClientSocket : public Socket
 {
   public:
     ///
@@ -106,6 +109,7 @@ class SRC_API ClientSocket : public Socket, public virtual io::Interface
     ~ClientSocket();
 
   public:
+//  protected:
     ///
     /// \brief write
     /// \param t
@@ -142,13 +146,16 @@ class SRC_API ClientSocket : public Socket, public virtual io::Interface
     ///
     void setPort( int newPort );
 
+
+//  protected:
+  public:
     ///
     /// \brief isOpen
     /// \return
     ///
     bool isOpen() const override;
 
-  protected:
+//  protected:
     ///
     /// \brief write
     /// \param data
@@ -162,6 +169,8 @@ class SRC_API ClientSocket : public Socket, public virtual io::Interface
     /// \param len
     ///
     void read( unsigned char* data, size_t len ) const override;
+
+  public:
 
     ///
     /// \brief close
@@ -189,10 +198,6 @@ class SRC_API ClientSocket : public Socket, public virtual io::Interface
     ///
     const int& getPort() const;
 
-    ///
-    /////////////////////////////////// PRIVATE SECTION ///////////////////////////////////////////
-    ///
-
   private:
     std::string m_ipv4;
     int m_port;
@@ -201,17 +206,19 @@ class SRC_API ClientSocket : public Socket, public virtual io::Interface
     bool m_moved             = false;
 };
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 template <class T>
 void ClientSocket::write( const T& t ) const {
     assert( isOpen() );
-    io::Interface::write( t );
+    io::Output::write( t );
 }
 
 template <class T>
 void ClientSocket::read( T& t ) const {
     assert( isOpen() );
     assert( isConnected() );
-    io::Interface::read( t );
+    io::Input::read( t );
 }
 
 } // namespace net

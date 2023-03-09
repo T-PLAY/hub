@@ -4,52 +4,61 @@
 
 #include <iomanip>
 
-class StreamerInterface : public hub::io::OutputInterface, public hub::net::ClientSocket
+//class OutputStream : public hub::net::ClientSocket
+class OutputStream : public hub::io::Output
 {
   public:
-    explicit StreamerInterface( hub::net::ClientSocket&& clientSocket ) :
-        hub::net::ClientSocket( std::move( clientSocket ) ) {}
+    explicit OutputStream( hub::net::ClientSocket&& clientSocket ) :
+//        hub::net::ClientSocket( std::move( clientSocket ) )
+        m_clientSocket( std::move( clientSocket ) )
+    {}
 
   protected:
     void write( const hub::Acquisition& acq ) const override;
 
-#ifdef WIN32 // msvc warning C4250
-  protected:
+//#ifdef WIN32 // msvc warning C4250
+//  protected:
     void write( const unsigned char* data, size_t len ) const override;
-    void read( unsigned char* data, size_t len ) const override;
+//    void read( unsigned char* data, size_t len ) const override;
     void close() const override;
     bool isOpen() const override;
     bool isEnd() const override;
-#endif
+//#endif
+  private:
+    hub::net::ClientSocket m_clientSocket;
 };
 
-void StreamerInterface::write( const hub::Acquisition& acq ) const {
-    hub::io::Interface::write( hub::net::ClientSocket::Message::NEW_ACQ );
-    hub::io::Interface::write( acq );
+void OutputStream::write( const hub::Acquisition& acq ) const {
+    hub::io::Output::write( hub::net::ClientSocket::Message::NEW_ACQ );
+    hub::io::Output::write( acq );
 }
 
-#ifdef WIN32 // msvc warning C4250
-void StreamerInterface::write( const unsigned char* data, size_t len ) const {
-    hub::net::ClientSocket::write( data, len );
+//#ifdef WIN32 // msvc warning C4250
+void OutputStream::write( const unsigned char* data, size_t len ) const {
+//    hub::net::ClientSocket::write( data, len );
+    m_clientSocket.write(data, len);
 }
 
-void StreamerInterface::read( unsigned char* data, size_t len ) const {
-    hub::net::ClientSocket::read( data, len );
+//void OutputStream::read( unsigned char* data, size_t len ) const {
+//    hub::net::ClientSocket::read( data, len );
+//}
+
+void OutputStream::close() const {
+//    hub::net::ClientSocket::close();
+    m_clientSocket.close();
 }
 
-void StreamerInterface::close() const {
-    hub::net::ClientSocket::close();
+bool OutputStream::isOpen() const {
+//    return hub::net::ClientSocket::isOpen();
+    return m_clientSocket.isOpen();
 }
 
-bool StreamerInterface::isOpen() const {
-    return hub::net::ClientSocket::isOpen();
+bool OutputStream::isEnd() const {
+//    return hub::net::ClientSocket::isEnd();
+    return m_clientSocket.isEnd();
 }
 
-bool StreamerInterface::isEnd() const {
-    return hub::net::ClientSocket::isEnd();
-}
-
-#endif
+//#endif
 
 //////////////////////////////////////////////////////////////////////
 
@@ -96,8 +105,9 @@ StreamViewerClient::StreamViewerClient( Server& server,
         //        m_streamer = streamers.at( m_syncStreamName );
     }
     //    sensorSpec += m_streamer->getInputSensor().m_spec;
+//    hub::OutputSensor outputSensor(std::move(sensorSpec), OutputStream(std::move(sock)));
     m_outputSensor = std::make_unique<hub::OutputSensor>( std::move( sensorSpec ),
-                                                          StreamerInterface( std::move( sock ) ) );
+                                                          OutputStream( std::move( sock ) ) );
 
     //    m_server.addStreamViewer( this );
     m_streamer->addStreamViewer( this );
@@ -201,7 +211,7 @@ StreamViewerClient::StreamViewerClient( Server& server,
                     if ( m_suicide ) break;
                     assert( !m_suicide );
                     if ( lastAcq.get() == nullptr ) {
-                        m_outputSensor->getInterface().write(
+                        m_outputSensor->getOutput().write(
                             hub::net::ClientSocket::Message::PING );
                         //            std::cout << "[StreamViewerClient] empty ping " << std::endl;
                     }

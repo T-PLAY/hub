@@ -5,9 +5,9 @@
 #include <string>
 // #include <thread>
 
-// #include "Acquisition.hpp"
+ #include "Acquisition.hpp"
 #include "Net/ClientSocket.hpp"
-// #include "SensorSpec.hpp"
+ #include "SensorSpec.hpp"
 #include "Macros.hpp"
 
 namespace hub {

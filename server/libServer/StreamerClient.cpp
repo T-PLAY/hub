@@ -9,43 +9,52 @@
 
 // std::mutex StreamerClient::s_mtxCout;
 
-class StreamViewerInterface : public hub::io::InputInterface, public hub::net::ClientSocket
+class InputStream : public hub::io::Input
 {
   public:
-    explicit StreamViewerInterface( hub::net::ClientSocket&& clientSocket ) :
-        hub::net::ClientSocket( std::move( clientSocket ) ) {}
+    explicit InputStream( hub::net::ClientSocket&& clientSocket ) :
+//        hub::net::ClientSocket( std::move( clientSocket ) )
+        m_clientSocket(std::move(clientSocket))
+    {}
 
-#ifdef WIN32 // msvc warning C4250
+//#ifdef WIN32 // msvc warning C4250
   protected:
-    void write( const unsigned char* data, size_t len ) const override;
+//    void write( const unsigned char* data, size_t len ) const override;
     void read( unsigned char* data, size_t len ) const override;
     void close() const override;
     bool isOpen() const override;
     bool isEnd() const override;
-#endif
+//#endif
+  private:
+    hub::net::ClientSocket m_clientSocket;
 };
 
-#ifdef WIN32 // msvc warning C4250
-void StreamViewerInterface::write( const unsigned char* data, size_t len ) const {
-    hub::net::ClientSocket::write( data, len );
+//#ifdef WIN32 // msvc warning C4250
+//void InputStream::write( const unsigned char* data, size_t len ) const {
+////    hub::net::ClientSocket::write( data, len );
+//    m_clientSocket.write(data, len);
+//}
+
+void InputStream::read( unsigned char* data, size_t len ) const {
+//    hub::net::ClientSocket::read( data, len );
+    m_clientSocket.read(data, len);
 }
 
-void StreamViewerInterface::read( unsigned char* data, size_t len ) const {
-    hub::net::ClientSocket::read( data, len );
+void InputStream::close() const {
+//    hub::net::ClientSocket::close();
+    m_clientSocket.close();
 }
 
-void StreamViewerInterface::close() const {
-    hub::net::ClientSocket::close();
+bool InputStream::isOpen() const {
+//    return hub::net::ClientSocket::isOpen();
+    return m_clientSocket.isOpen();
 }
 
-bool StreamViewerInterface::isOpen() const {
-    return hub::net::ClientSocket::isOpen();
+bool InputStream::isEnd() const {
+//    return hub::net::ClientSocket::isEnd();
+    return m_clientSocket.isEnd();
 }
-
-bool StreamViewerInterface::isEnd() const {
-    return hub::net::ClientSocket::isEnd();
-}
-#endif
+//#endif
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -69,7 +78,7 @@ StreamerClient::StreamerClient( Server& server, int iClient, hub::net::ClientSoc
 
     try {
         m_inputSensor =
-            std::make_unique<hub::InputSensor>( StreamViewerInterface( std::move( sock ) ) );
+            std::make_unique<hub::InputSensor>( InputStream( std::move( sock ) ) );
     }
     catch ( hub::net::Socket::exception& e ) {
         std::cout << headerMsg() << "InputSensor() : catch exception : " << e.what() << std::endl;
