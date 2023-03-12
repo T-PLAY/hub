@@ -140,6 +140,7 @@ static const std::string s_anyType2string[static_cast<int>( Any::Type::COUNT )] 
     "vector_float",
     "uint",
     "cst_float_ptr",
+    "cst_double_ptr",
 };
 
 //const std::string& Any::anyType2string( const std::any& any ) {
