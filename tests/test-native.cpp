@@ -24,7 +24,9 @@
 
 int main() {
     const std::string ipv4 = "127.0.0.1";
-    constexpr int port     = 10'001;
+    //    constexpr int port     = 10'001;
+    srand( (unsigned)time( NULL ) );
+    const int port = rand() % 65535;
     std::cout << "[Test] ############################### server start" << std::endl;
     Server server( port );
     server.setMaxClients( 8 );

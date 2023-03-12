@@ -45,20 +45,34 @@ enable_testing()
 # set(TEST_NAMES "")
 foreach(
     test
-#    "acquisition"
-        "asker"
-#    "file"
-#    "inputSensor"
-#    "measures"
-#    "ram"
-#    "resolutions"
-#    "sensorSpec"
-#    "server"
-#    "serverSpeed"
+    "acquisition"
+    "asker"
+    "inputSensor"
+    "measure"
+    # "native"
+    "outputSensor"
+    "resolution"
+    "sensor"
+    "sensorSpec"
+    # "streamer"
+    "viewer"
+    "io-file"
+    "io-input"
+    "io-inputStream"
+    "io-output"
+    "io-outputStream"
+    "io-ram"
+    "io-memory"
+    "net-clientSocket"
+    "net-serverSocket"
+    "net-socket"
+    "net-utils"
+    # "file" "inputSensor" "measures" "ram" "resolutions" "sensorSpec" "server" "serverSpeed"
 )
     add_executable(test-${test} test-${test}.cpp)
     target_link_libraries(test-${test} PRIVATE Catch2::Catch2WithMain hub server)
-    target_include_directories(test-${test} PRIVATE ${PROJECT_SOURCE_DIR}/include)
+    # target_include_directories(test-${test} PRIVATE ${PROJECT_SOURCE_DIR}/include)
+    target_include_directories(test-${test} PRIVATE ${HUB_INCLUDE_DIR})
     add_test(NAME test-${test} COMMAND test-${test})
 endforeach()
 
