@@ -115,14 +115,14 @@ class SRC_API ClientSocket : public Socket, public io::InputOutput
     /// \param t
     ///
     template <class T>
-    void write( const T& t ) const;
+    void write( const T& t ) ;
 
     ///
     /// \brief read
     /// \param t
     ///
     template <class T>
-    void read( T& t ) const;
+    void read( T& t ) ;
 
     ///
     /// \brief initServerAddress
@@ -161,21 +161,21 @@ class SRC_API ClientSocket : public Socket, public io::InputOutput
     /// \param data
     /// \param len
     ///
-    void write( const unsigned char* data, size_t len ) const override;
+    void write( const unsigned char* data, size_t len )  override;
 
     ///
     /// \brief read
     /// \param data
     /// \param len
     ///
-    void read( unsigned char* data, size_t len ) const override;
+    void read( unsigned char* data, size_t len )  override;
 
   public:
 
     ///
     /// \brief close
     ///
-    void close() const override;
+    void close()  override;
 
     ///
     /// \brief isEnd
@@ -202,20 +202,20 @@ class SRC_API ClientSocket : public Socket, public io::InputOutput
     std::string m_ipv4;
     int m_port;
     net::utils::ClientAddr m_addr;
-    mutable bool m_connected = false;
+    bool m_connected = false;
     bool m_moved             = false;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 template <class T>
-void ClientSocket::write( const T& t ) const {
+void ClientSocket::write( const T& t )  {
     assert( isOpen() );
     io::Output::write( t );
 }
 
 template <class T>
-void ClientSocket::read( T& t ) const {
+void ClientSocket::read( T& t )  {
     assert( isOpen() );
     assert( isConnected() );
     io::Input::read( t );

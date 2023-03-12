@@ -53,15 +53,15 @@ InputStream::InputStream( const std::string& streamName,
 }
 
 #ifdef WIN32
-void InputStream::write( const unsigned char* data, size_t len ) const {
+void InputStream::write( const unsigned char* data, size_t len )  {
     net::ClientSocket::write( data, len );
 }
 
-void InputStream::read( unsigned char* data, size_t len ) const {
+void InputStream::read( unsigned char* data, size_t len )  {
     net::ClientSocket::read( data, len );
 }
 
-void InputStream::close() const {
+void InputStream::close()  {
     net::ClientSocket::close();
 }
 bool InputStream::isOpen() const {
@@ -72,7 +72,7 @@ bool InputStream::isEnd() const {
 }
 #endif
 
-Acquisition InputStream::getAcquisition( const SensorSpec& sensorSpec ) const {
+Acquisition InputStream::getAcquisition( const SensorSpec& sensorSpec )  {
     net::ClientSocket::Message message;
     do {
         Input::read( message );

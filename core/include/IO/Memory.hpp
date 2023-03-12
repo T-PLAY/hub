@@ -46,7 +46,7 @@ class SRC_API Memory : public InputOutput
 //    /// \param t
 //    ///
     template <class T>
-    void read( T& t ) const {
+    void read( T& t )  {
         Input::read(t);
     }
 
@@ -55,7 +55,7 @@ class SRC_API Memory : public InputOutput
     ///
     /// @copydoc Interface::close()
     ///
-    void close() const override {}
+    void close()  override {}
 
     ///
     /// @copydoc Interface::isOpen()
@@ -70,14 +70,14 @@ class SRC_API Memory : public InputOutput
     ///
     /// @copydoc Interface::write()
     ///
-    void write( const unsigned char* data, size_t len ) const override {
+    void write( const unsigned char* data, size_t len )  override {
         m_container.insert(m_container.end(), data, data + len);
     }
 
     ///
     /// @copydoc Interface::read()
     ///
-    void read( unsigned char* data, size_t len ) const override {
+    void read( unsigned char* data, size_t len )  override {
         memcpy(data, m_container.data(), len);
         m_container.erase(m_container.begin(), m_container.begin() + len);
     }

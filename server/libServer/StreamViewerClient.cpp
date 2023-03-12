@@ -14,27 +14,27 @@ class OutputStream : public hub::io::Output
     {}
 
   protected:
-    void write( const hub::Acquisition& acq ) const override;
+    void write( const hub::Acquisition& acq ) override;
 
 //#ifdef WIN32 // msvc warning C4250
 //  protected:
-    void write( const unsigned char* data, size_t len ) const override;
+    void write( const unsigned char* data, size_t len ) override;
 //    void read( unsigned char* data, size_t len ) const override;
-    void close() const override;
+    void close() override;
     bool isOpen() const override;
-    bool isEnd() const override;
+//    bool isEnd() const override;
 //#endif
   private:
     hub::net::ClientSocket m_clientSocket;
 };
 
-void OutputStream::write( const hub::Acquisition& acq ) const {
+void OutputStream::write( const hub::Acquisition& acq ) {
     hub::io::Output::write( hub::net::ClientSocket::Message::NEW_ACQ );
     hub::io::Output::write( acq );
 }
 
 //#ifdef WIN32 // msvc warning C4250
-void OutputStream::write( const unsigned char* data, size_t len ) const {
+void OutputStream::write( const unsigned char* data, size_t len ) {
 //    hub::net::ClientSocket::write( data, len );
     m_clientSocket.write(data, len);
 }
@@ -43,7 +43,7 @@ void OutputStream::write( const unsigned char* data, size_t len ) const {
 //    hub::net::ClientSocket::read( data, len );
 //}
 
-void OutputStream::close() const {
+void OutputStream::close() {
 //    hub::net::ClientSocket::close();
     m_clientSocket.close();
 }
@@ -53,10 +53,10 @@ bool OutputStream::isOpen() const {
     return m_clientSocket.isOpen();
 }
 
-bool OutputStream::isEnd() const {
-//    return hub::net::ClientSocket::isEnd();
-    return m_clientSocket.isEnd();
-}
+//bool OutputStream::isEnd() const {
+////    return hub::net::ClientSocket::isEnd();
+//    return m_clientSocket.isEnd();
+//}
 
 //#endif
 

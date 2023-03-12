@@ -61,7 +61,7 @@ class SRC_API Input
     /// \param len
     /// [in] size of the data array to read
     ///
-    virtual void read( unsigned char* data, size_t len ) const = 0;
+    virtual void read( unsigned char* data, size_t len ) = 0;
 
   public:
 
@@ -79,7 +79,7 @@ class SRC_API Input
     /// \brief close
     /// is the capability to terminate communication at both ends if possible.
     ///
-    virtual void close() const = 0;
+    virtual void close() = 0;
 
     ///
     /// \brief isOpen
@@ -97,41 +97,41 @@ class SRC_API Input
     /// \brief read
     /// \param any
     ///
-    void read( std::any& any ) const;
+    void read( std::any& any );
 
     ///
     /// \brief read
     /// \param str
     ///
-    void read( char* str ) const;
+    void read( char* str ) ;
 
     ///
     /// \brief read
     /// \param t
     ///
     template <class T>
-    void read( T& t ) const;
+    void read( T& t ) ;
 
     ///
     /// \brief read
     /// \param list
     ///
     template <class T>
-    void read( std::list<T>& list ) const;
+    void read( std::list<T>& list ) ;
 
     ///
     /// \brief read
     /// \param vector
     ///
     template <class T>
-    void read( std::vector<T>& vector ) const;
+    void read( std::vector<T>& vector ) ;
 
     ///
     /// \brief read
     /// \param map
     ///
     template <class T, class U>
-    void read( std::map<T, U>& map ) const;
+    void read( std::map<T, U>& map ) ;
 
 
 //    template <class T, class U>
@@ -140,7 +140,7 @@ class SRC_API Input
               typename = typename std::enable_if<( not std::is_same<U, hub::SensorSpec>::value )>::type>
               void
 //    void
-        read( std::pair<T, U>& pair ) const {
+        read( std::pair<T, U>& pair )  {
 
 //        template <class T, class U>
 //        typename std::enable_if<( not std::is_same<U, hub::SensorSpec>::value ), void>::type
@@ -163,7 +163,7 @@ class SRC_API Input
 
         template <class T, class U>
         typename std::enable_if<( std::is_same<U, hub::SensorSpec>::value ), void>::type
-        read( std::pair<T, U>& pair ) const {
+        read( std::pair<T, U>& pair )  {
             assert( isOpen() );
 
         #ifdef DEBUG_IOSTREAM
@@ -183,13 +183,13 @@ class SRC_API Input
     /// \brief read
     /// \param str
     ///
-    void read( std::string& str ) const;
+    void read( std::string& str ) ;
 
     ///
     /// \brief read
     /// \param sensorSpec
     ///
-    void read( SensorSpec& sensorSpec ) const = delete;
+    void read( SensorSpec& sensorSpec )  = delete;
     //    void read( SensorSpec& sensorSpec ) const;
 
     //    ///
@@ -202,21 +202,21 @@ class SRC_API Input
     /// \brief read
     /// \param acquisition
     ///
-    void read( Acquisition& acquisition ) const = delete;
+    void read( Acquisition& acquisition )  = delete;
 
     ///
     /// \brief read
     /// \param measure
     ///
-    void read( Measure& measure ) const = delete;
+    void read( Measure& measure )  = delete;
 
-    void read( UserData& userData ) const = delete;
+    void read( UserData& userData )  = delete;
 
     ///
     /// \brief getSensorSpec
     /// \return
     ///
-    SensorSpec getSensorSpec() const;
+    SensorSpec getSensorSpec() ;
 
 //    UserData getUserData() const;
 
@@ -225,7 +225,7 @@ class SRC_API Input
     /// \param sensorSpec
     /// \return
     ///
-    virtual Acquisition getAcquisition( const SensorSpec& sensorSpec ) const;
+    virtual Acquisition getAcquisition( const SensorSpec& sensorSpec ) ;
 
 
 };
@@ -233,7 +233,7 @@ class SRC_API Input
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 template <class T>
-void Input::read( T& t ) const {
+void Input::read( T& t )  {
     assert( isOpen() );
 
     read( reinterpret_cast<unsigned char*>( &t ), sizeof( T ) );
@@ -254,7 +254,7 @@ void Input::read( T& t ) const {
 }
 
 template <class T>
-void Input::read( std::list<T>& list ) const {
+void Input::read( std::list<T>& list )  {
     assert( isOpen() );
 
 #ifdef DEBUG_IOSTREAM
@@ -272,7 +272,7 @@ void Input::read( std::list<T>& list ) const {
 }
 
 template <class T>
-void Input::read( std::vector<T>& vector ) const {
+void Input::read( std::vector<T>& vector )  {
     assert( isOpen() );
 
 #ifdef DEBUG_IOSTREAM
@@ -293,7 +293,7 @@ void Input::read( std::vector<T>& vector ) const {
 }
 
 template <class T, class U>
-void Input::read( std::map<T, U>& map ) const {
+void Input::read( std::map<T, U>& map )  {
     assert( isOpen() );
 
 #ifdef DEBUG_IOSTREAM

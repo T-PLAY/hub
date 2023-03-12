@@ -19,7 +19,7 @@ File::~File() {
     }
 }
 
-void File::close() const {
+void File::close()  {
     assert( isOpen() );
     m_file->close();
     assert( !isOpen() );
@@ -35,11 +35,11 @@ bool File::isEnd() const {
     return m_file->peek() == EOF;
 }
 
-void File::write( const unsigned char* data, size_t len ) const {
+void File::write( const unsigned char* data, size_t len )  {
     m_file->write( reinterpret_cast<const char*>( data ), len );
 }
 
-void File::read( unsigned char* data, size_t len ) const {
+void File::read( unsigned char* data, size_t len )  {
     size_t downloadSize = 0;
     do {
 

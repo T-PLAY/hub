@@ -96,7 +96,7 @@ void CyclicBuff::read( unsigned char* data, size_t len ) {
     } while ( len != downloadSize );
 }
 
-void CyclicBuff::close() const {
+void CyclicBuff::close()  {
     m_outputSensorWantsToClose = true;
     m_inputSensorClose         = true;
 }
@@ -111,7 +111,7 @@ bool CyclicBuff::isEnd() const {
 
 Ram::Ram( CyclicBuff& buff ) : m_buff( buff ) {}
 
-void Ram::close() const {
+void Ram::close()  {
     assert( isOpen() );
     m_buff.close();
     assert( !isOpen() );
@@ -126,11 +126,11 @@ bool Ram::isEnd() const {
     return m_buff.isEnd();
 }
 
-void Ram::write( const unsigned char* data, size_t len ) const {
+void Ram::write( const unsigned char* data, size_t len )  {
     m_buff.write( data, len );
 }
 
-void Ram::read( unsigned char* data, size_t len ) const {
+void Ram::read( unsigned char* data, size_t len )  {
     try {
         m_buff.read( data, len );
     }

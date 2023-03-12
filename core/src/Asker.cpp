@@ -58,7 +58,7 @@ Asker::~Asker() {
     m_sock.write( net::ClientSocket::Message::CLOSE );
 }
 
-std::list<std::pair<std::string, SensorSpec>> Asker::listStreams() const {
+std::list<std::pair<std::string, SensorSpec>> Asker::listStreams() {
     m_sock.write( net::ClientSocket::Message::LIST_STREAMS );
 
     //        std::list<std::string> streams;
@@ -101,7 +101,7 @@ std::list<std::pair<std::string, SensorSpec>> Asker::listStreams() const {
 //        return sensorSpec;
 //}
 
-Acquisition Asker::getAcquisition( const std::string& streamName ) const {
+Acquisition Asker::getAcquisition( const std::string& streamName ) {
     m_sock.write( net::ClientSocket::Message::GET_ACQUISITION );
     m_sock.write( streamName );
 

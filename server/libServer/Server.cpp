@@ -145,7 +145,7 @@ void Server::delStreamer( StreamerClient* streamer ) {
     //    std::thread thread( [streamer]() { delete streamer; } );
     //    thread.detach();
 
-    for ( const auto* viewer : m_viewers ) {
+    for ( auto* viewer : m_viewers ) {
         viewer->notifyDelStreamer( *streamer );
     }
 
