@@ -28,7 +28,7 @@ void OutputSensor::operator<<( const Acquisition& acquisition ) const {
     m_output->write( acquisition );
 }
 
-const io::Output &OutputSensor::getOutput() const
+io::Output &OutputSensor::getOutput() const
 {
     return *m_output;
 }

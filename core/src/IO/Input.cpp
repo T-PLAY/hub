@@ -16,7 +16,7 @@ namespace io {
 
 /////////////////////////////////////////////////////////////////////////////
 
-void Input::read( std::string& str ) const {
+void Input::read( std::string& str )  {
     assert( isOpen() );
 
     int strLen = 0;
@@ -37,7 +37,7 @@ void Input::read( std::string& str ) const {
 }
 
 
-SensorSpec Input::getSensorSpec() const {
+SensorSpec Input::getSensorSpec()  {
     assert( isOpen() );
 
 #ifdef DEBUG_IOSTREAM
@@ -58,7 +58,7 @@ SensorSpec Input::getSensorSpec() const {
 }
 
 
-Acquisition Input::getAcquisition( const SensorSpec& sensorSpec ) const
+Acquisition Input::getAcquisition( const SensorSpec& sensorSpec )
 //    Acquisition Input::getAcquisition(int acquisitionSize) const
 {
     assert( isOpen() );
@@ -125,7 +125,7 @@ Acquisition Input::getAcquisition( const SensorSpec& sensorSpec ) const
     return acq;
 }
 
-void Input::read( char* str ) const {
+void Input::read( char* str )  {
     assert( isOpen() );
 
 #ifdef DEBUG_IOSTREAM
@@ -143,7 +143,7 @@ void Input::read( char* str ) const {
     }
 }
 
-void Input::read( std::any& any ) const {
+void Input::read( std::any& any )  {
     assert( isOpen() );
 
 #ifdef DEBUG_IOSTREAM

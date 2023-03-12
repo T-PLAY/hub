@@ -20,8 +20,8 @@ class InputStream : public hub::io::Input
 //#ifdef WIN32 // msvc warning C4250
   protected:
 //    void write( const unsigned char* data, size_t len ) const override;
-    void read( unsigned char* data, size_t len ) const override;
-    void close() const override;
+    void read( unsigned char* data, size_t len ) override;
+    void close() override;
     bool isOpen() const override;
     bool isEnd() const override;
 //#endif
@@ -35,12 +35,12 @@ class InputStream : public hub::io::Input
 //    m_clientSocket.write(data, len);
 //}
 
-void InputStream::read( unsigned char* data, size_t len ) const {
+void InputStream::read( unsigned char* data, size_t len ) {
 //    hub::net::ClientSocket::read( data, len );
     m_clientSocket.read(data, len);
 }
 
-void InputStream::close() const {
+void InputStream::close() {
 //    hub::net::ClientSocket::close();
     m_clientSocket.close();
 }

@@ -34,7 +34,7 @@ class SRC_API Asker
     /// \return
     /// list of connected sensors to the server
     ///
-    std::list<std::pair<std::string, hub::SensorSpec>> listStreams() const;
+    std::list<std::pair<std::string, hub::SensorSpec>> listStreams();
 
     //    ///
     //    /// \brief getSensorSpec
@@ -49,7 +49,7 @@ class SRC_API Asker
     /// \param streamName
     /// \return
     ///
-    hub::Acquisition getAcquisition( const std::string& streamName ) const;
+    hub::Acquisition getAcquisition( const std::string& streamName );
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
 

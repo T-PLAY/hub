@@ -92,7 +92,7 @@ class SRC_API OutputSensor : public Sensor
     ///
     void operator<<( const Acquisition& acquisition ) const;
 
-    const io::Output &getOutput() const;
+    io::Output &getOutput() const;
 
   private:
 //    io::Output & m_output;

@@ -20,12 +20,12 @@ class ViewerClient : public Client
 
     //    void notifyNewStreamer(const StreamerClient& streamer , const std::string &syncStream)
     //    const;
-    void notifyNewStreamer( const StreamerClient& streamer ) const;
-    void notifyDelStreamer( const StreamerClient& streamer ) const;
+    void notifyNewStreamer( const StreamerClient& streamer );
+    void notifyDelStreamer( const StreamerClient& streamer );
 
   private:
     std::thread m_thread;
 
     hub::net::ClientSocket m_socket;
-    mutable std::mutex m_mtxSocket;
+    std::mutex m_mtxSocket;
 };

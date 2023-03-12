@@ -60,7 +60,7 @@ std::string ViewerClient::headerMsg() const {
     return Client::headerMsg() + "[Viewer] ";
 }
 
-void ViewerClient::notifyNewStreamer( const StreamerClient& streamer ) const {
+void ViewerClient::notifyNewStreamer( const StreamerClient& streamer ) {
 
     m_mtxSocket.lock();
     m_socket.write( hub::net::ClientSocket::Message::NEW_STREAMER );
@@ -72,7 +72,7 @@ void ViewerClient::notifyNewStreamer( const StreamerClient& streamer ) const {
     m_mtxSocket.unlock();
 }
 
-void ViewerClient::notifyDelStreamer( const StreamerClient& streamer ) const {
+void ViewerClient::notifyDelStreamer( const StreamerClient& streamer ) {
     std::cout << headerMsg() << "notifyDelStreamer " << streamer.getStreamName() << std::endl;
     try {
         m_mtxSocket.lock();

@@ -14,7 +14,7 @@ namespace hub {
 namespace io {
 
 
-void Output::write( const std::string& str ) const {
+void Output::write( const std::string& str )  {
     assert( isOpen() );
 
 #ifdef DEBUG_IOSTREAM
@@ -30,7 +30,7 @@ void Output::write( const std::string& str ) const {
     }
 }
 
-void Output::write( const SensorSpec& sensorSpec ) const {
+void Output::write( const SensorSpec& sensorSpec )  {
     assert( isOpen() );
 
 #ifdef DEBUG_IOSTREAM
@@ -42,7 +42,7 @@ void Output::write( const SensorSpec& sensorSpec ) const {
     write( sensorSpec.getMetaData() );
 }
 
-void Output::write( const Measure& measure ) const {
+void Output::write( const Measure& measure )  {
     assert( isOpen() );
 
 #ifdef DEBUG_IOSTREAM
@@ -57,7 +57,7 @@ void Output::write( const Measure& measure ) const {
     write( measure.m_data, measure.m_size );
 }
 
-void Output::write(const UserData &userData) const
+void Output::write(const UserData &userData)
 {
 //    write(userData.m_data);
 //    write(userData.m_size);
@@ -65,7 +65,7 @@ void Output::write(const UserData &userData) const
     write(userData.getValue());
 }
 
-void Output::write( const Acquisition& acq ) const {
+void Output::write( const Acquisition& acq )  {
     assert( isOpen() );
 
 #ifdef DEBUG_IOSTREAM
@@ -81,7 +81,7 @@ void Output::write( const Acquisition& acq ) const {
     //    }
 }
 
-void Output::write( const char* str ) const {
+void Output::write( const char* str )  {
     assert( isOpen() );
 
 #ifdef DEBUG_IOSTREAM
@@ -99,7 +99,7 @@ void Output::write( const char* str ) const {
 //     assert(! isOpen());
 // }
 
-void Output::write( const std::any& any ) const {
+void Output::write( const std::any& any )  {
     assert( isOpen() );
 
 #ifdef DEBUG_IOSTREAM

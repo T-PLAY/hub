@@ -161,7 +161,7 @@ void ClientSocket::connect() {
 #endif
 }
 
-void ClientSocket::write( const unsigned char* data, size_t len ) const {
+void ClientSocket::write( const unsigned char* data, size_t len ) {
     //        assert( m_connected );
     assert( isOpen() );
     //    assert(isConnected());
@@ -227,7 +227,7 @@ void ClientSocket::write( const unsigned char* data, size_t len ) const {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void ClientSocket::read( unsigned char* data, size_t len ) const {
+void ClientSocket::read( unsigned char* data, size_t len ) {
     assert( isOpen() );
     assert( isConnected() );
 
@@ -268,7 +268,7 @@ void ClientSocket::read( unsigned char* data, size_t len ) const {
 #endif
 }
 
-void ClientSocket::close() const {
+void ClientSocket::close() {
     assert( isOpen() );
     //    assert( isConnected() );
     //    clear();
