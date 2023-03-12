@@ -140,7 +140,8 @@ std::string SensorSpec::to_string( const SensorSpec::MetaData& metaData, bool ex
     return str;
 }
 
-std::string SensorSpec::to_string( const std::pair<std::string, std::any>& metaData ) {
+//std::string SensorSpec::to_string( const std::pair<std::string, std::any>& metaData ) {
+std::string SensorSpec::to_string( const std::pair<std::string, Any>& metaData ) {
     const auto& name = metaData.first;
     const auto& val  = metaData.second;
     // #ifdef WIN32

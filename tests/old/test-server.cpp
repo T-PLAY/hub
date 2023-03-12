@@ -23,10 +23,11 @@ TEST_CASE( "Server test : direct stream" ) {
         for ( int i = 0; i < dataSize; ++i ) {
             data[i] = iAcq + i;
         }
-        acqs.emplace_back( iAcq + 1, iAcq + 2 )
-            << hub::Measure { reinterpret_cast<const unsigned char*>( data ),
+        hub::Acquisition acq( iAcq + 1, iAcq + 2 );
+          acq  << hub::Measure { reinterpret_cast<const unsigned char*>( data ),
                               dataSize,
                               { { 3 }, hub::Format::BGR8 } };
+        acqs.push_back(std::move(acq));
     }
 
     std::cout << "[Test] ############################### server start" << std::endl;

@@ -222,7 +222,9 @@ bool metaData_getString( const SensorSpec::MetaData* metaData,
                          int* strLen ) {
     if ( metaData->find( metaName ) == metaData->end() ) return false;
 
-    const char* meta = std::any_cast<const char*>( metaData->at( metaName ) );
+    // todo any
+//    const char* meta = std::any_cast<const char*>( metaData->at( metaName ) );
+    const char* meta = metaData->at(metaName).getConstCharPtr();
     *strLen          = strlen( meta );
     memcpy( output, meta, *strLen + 1 );
     output[*strLen] = 0;
@@ -231,7 +233,9 @@ bool metaData_getString( const SensorSpec::MetaData* metaData,
 
 bool metaData_getMat4( const SensorSpec::MetaData* metaData, const char* metaName, float* output ) {
     if ( metaData->find( metaName ) != metaData->end() ) {
-        const float* array = std::any_cast<const float*>( metaData->at( metaName ) );
+        // todo any
+//        const float* array = std::any_cast<const float*>( metaData->at( metaName ) );
+        const float* array = metaData->at(metaName).getConstFloatPtr();
         memcpy( output, array, 64 );
         return true;
     }
@@ -244,12 +248,16 @@ bool metaData_exists( const SensorSpec::MetaData* metaData, const char* metaName
 
 int metaData_getInt( const SensorSpec::MetaData* metaData, const char* metaName ) {
     assert( metaData->find( metaName ) != metaData->end() );
-    return std::any_cast<int>( metaData->at( metaName ) );
+    // todo any
+//    return std::any_cast<int>( metaData->at( metaName ) );
+    return metaData->at(metaName).getInt();
 }
 
 unsigned int metaData_getUInt( const SensorSpec::MetaData* metaData, const char* metaName ) {
     assert( metaData->find( metaName ) != metaData->end() );
-    return std::any_cast<unsigned int>( metaData->at( metaName ) );
+    // todo any
+//    return std::any_cast<unsigned int>( metaData->at( metaName ) );
+    return metaData->at(metaName).getUnsignedInt();
 }
 
 } // namespace native

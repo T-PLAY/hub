@@ -7,11 +7,20 @@
 #include <filesystem>
 #include <thread>
 
+#if CPLUSPLUS_VERSION <= 14
+#include <boost/filesystem.hpp>
+#endif
+
 TEST_CASE( "File test" ) {
 
     const std::string filename = "file.txt";
 
+#if CPLUSPLUS_VERSION <= 14
+    // todo cpp 17 -> 14
+//    boost::filesystem::remove( filename );
+#else
     std::filesystem::remove( filename );
+#endif
 
     std::vector<hub::Acquisition> acqs;
     constexpr int nAcqs = 100;

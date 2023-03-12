@@ -28,7 +28,7 @@ TEST_CASE( "InputSensor test" ) {
     outputSensor << acq;
     outputSensor << acq;
 
-    hub::InputSensor inputSensor = hub::InputSensor( hub::io::Ram( buff ) );
+    hub::InputSensor inputSensor{ hub::io::Ram( buff ) };
 
     auto acq2 = inputSensor.getAcquisition();
     CHECK( acq == acq2 );

@@ -45,8 +45,8 @@ TEST_CASE( "Viewer" ) {
     };
 
     std::cout << "[Test] ############################### viewer start" << std::endl;
-    auto viewer = hub::Viewer(
-        onNewStreamer, onDelStreamer, onServerConnected, onServerDisconnected, onNewAcquisition );
+    hub::Viewer viewer{
+        onNewStreamer, onDelStreamer, onServerConnected, onServerDisconnected, onNewAcquisition };
 
     viewer.setIpv4( ipv4 );
     viewer.setPort( port );

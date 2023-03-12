@@ -3,6 +3,7 @@
 #include <cassert>
 #include <map>
 #include <vector>
+#include <typeinfo>
 
 //using namespace Any;
 
@@ -10,46 +11,55 @@ namespace hub {
 //namespace any {
 
 
-static const std::map<size_t, Any::Type> s_hash2anyType = {
-    { typeid( int ).hash_code(), Any::Type::INT },
-    { typeid( double ).hash_code(), Any::Type::DOUBLE },
-    { typeid( std::string ).hash_code(), Any::Type::STRING },
-    { typeid( const char* ).hash_code(), Any::Type::CONST_CHAR_PTR },
-    { typeid( std::vector<float> ).hash_code(), Any::Type::VECTOR_FLOAT },
-    { typeid( unsigned int ).hash_code(), Any::Type::UINT },
-    { typeid( const float* ).hash_code(), Any::Type::CONST_FLOAT_PTR },
-};
+//static const std::map<size_t, Any::Type> s_hash2anyType = {
+//    { typeid( int ).hash_code(), Any::Type::INT },
+//    { typeid( double ).hash_code(), Any::Type::DOUBLE },
+//    { typeid( std::string ).hash_code(), Any::Type::STRING },
+//    { typeid( const char* ).hash_code(), Any::Type::CONST_CHAR_PTR },
+//    { typeid( std::vector<float> ).hash_code(), Any::Type::VECTOR_FLOAT },
+//    { typeid( unsigned int ).hash_code(), Any::Type::UINT },
+//    { typeid( const float* ).hash_code(), Any::Type::CONST_FLOAT_PTR },
+//};
 
-std::string Any::anyValue2string( const std::any& any ) {
+//std::string Any::anyValue2string( const std::any& any ) {
+std::string Any::anyValue2string( const Any& any ) {
+
     assert( any.has_value() );
-    const auto& hashCode = any.type().hash_code();
+//    const auto& hashCode = any.type().hash_code();
 
-    assert( s_hash2anyType.find( hashCode ) != s_hash2anyType.end() );
-    Any::Type anyType = s_hash2anyType.at( hashCode );
+//    assert( s_hash2anyType.find( hashCode ) != s_hash2anyType.end() );
+//    Any::Type anyType = s_hash2anyType.at( hashCode );
 
-    switch ( anyType ) {
+
+    switch ( any.m_type ) {
     case Any::Type::INT: {
-        const int* val = std::any_cast<int>( &any );
-        return std::to_string( *val );
+//        const int* val = std::any_cast<int>( &any );
+        const auto & val = any.getInt();
+        return std::to_string( val );
     } break;
 
     case Any::Type::DOUBLE: {
-        const double* val = std::any_cast<double>( &any );
-        return std::to_string( *val );
+//        const double* val = std::any_cast<double>( &any );
+        const auto & val = any.getDouble();
+        return std::to_string( val );
     } break;
 
     case Any::Type::STRING: {
-        const std::string* val = std::any_cast<std::string>( &any );
-        return std::string( *val );
+//        const std::string* val = std::any_cast<std::string>( &any );
+        const auto & val = any.getStdString();
+        return val;
+//        return std::string( *val );
     } break;
 
     case Any::Type::CONST_CHAR_PTR: {
-        const char* val = *std::any_cast<const char*>( &any );
+//        const char* val = *std::any_cast<const char*>( &any );
+        const auto & val = any.getConstCharPtr();
         return std::string( val );
     } break;
 
     case Any::Type::VECTOR_FLOAT: {
-        const std::vector<float>* val = std::any_cast<std::vector<float>>( &any );
+//        const std::vector<float>* val = std::any_cast<std::vector<float>>( &any );
+        const auto & val = any.getStdVectorFloat();
         std::string str               = "";
         const int n                   = 3;
         for ( int i = 0; i < n; ++i ) {
@@ -59,7 +69,7 @@ std::string Any::anyValue2string( const std::any& any ) {
 #ifdef WIN32
                 sprintf_s( buff, "%.1f", val->at( k ) );
 #else
-                sprintf( buff, "%.1f", val->at( k ) );
+                sprintf( buff, "%.1f", val.at( k ) );
 #endif
                 str += buff;
                 if ( j != 2 ) str += " ";
@@ -70,12 +80,14 @@ std::string Any::anyValue2string( const std::any& any ) {
     } break;
 
     case Any::Type::UINT: {
-        const unsigned int* val = std::any_cast<unsigned int>( &any );
-        return std::to_string( *val );
+//        const unsigned int* val = std::any_cast<unsigned int>( &any );
+        const auto & val = any.getUnsignedInt();
+        return std::to_string( val );
     } break;
 
     case Any::Type::CONST_FLOAT_PTR: {
-        const float* val = *std::any_cast<const float*>( &any );
+//        const float* val = *std::any_cast<const float*>( &any );
+        const auto & val = any.getConstFloatPtr();
         std::string str  = "";
         for ( int i = 0; i < 4; ++i ) {
             for ( int j = 0; j < 4; ++j ) {
@@ -92,6 +104,26 @@ std::string Any::anyValue2string( const std::any& any ) {
         return str;
     } break;
 
+    case Any::Type::CONST_DOUBLE_PTR: {
+//        const float* val = *std::any_cast<const float*>( &any );
+        const auto & val = any.getConstDoublePtr();
+        std::string str  = "";
+        for ( int i = 0; i < 4; ++i ) {
+            for ( int j = 0; j < 4; ++j ) {
+                char buff[32];
+#ifdef WIN32
+                sprintf_s( buff, "%.0f ", val[4 * i + j] );
+#else
+                sprintf( buff, "%.0f ", val[4 * i + j] );
+#endif
+                str += buff;
+            }
+            if ( i != 3 ) str += " ";
+        }
+        return str;
+    } break;
+
+
     default:
         assert( false );
     }
@@ -100,6 +132,7 @@ std::string Any::anyValue2string( const std::any& any ) {
 }
 
 static const std::string s_anyType2string[static_cast<int>( Any::Type::COUNT )] = {
+    "none",
     "int",
     "double",
     "string",
@@ -109,14 +142,17 @@ static const std::string s_anyType2string[static_cast<int>( Any::Type::COUNT )] 
     "cst_float_ptr",
 };
 
-const std::string& Any::anyType2string( const std::any& any ) {
-    assert( any.has_value() );
-    const auto& hashCode = any.type().hash_code();
+//const std::string& Any::anyType2string( const std::any& any ) {
+const std::string& Any::anyType2string( const Any& any ) {
+//    assert( any.has_value() );
+//    const auto& hashCode = any.type().hash_code();
 
-    assert( s_hash2anyType.find( hashCode ) != s_hash2anyType.end() );
-    Any::Type anyType = s_hash2anyType.at( hashCode );
+//    assert( s_hash2anyType.find( hashCode ) != s_hash2anyType.end() );
+//    Any::Type anyType = s_hash2anyType.at( hashCode );
 
-    return s_anyType2string[static_cast<int>( anyType )];
+//    return s_anyType2string[static_cast<int>( anyType )];
+    return s_anyType2string[static_cast<int>( any.m_type )];
+//    return nullptr;
 }
 
 std::ostream& operator<<( std::ostream& os, const Any::Type& type ) {
@@ -126,3 +162,72 @@ std::ostream& operator<<( std::ostream& os, const Any::Type& type ) {
 
 //} // any
 } // hub
+
+//    switch ( anyType ) {
+//    case Any::Type::INT: {
+//        const int* val = std::any_cast<int>( &any );
+//        return std::to_string( *val );
+//    } break;
+
+//    case Any::Type::DOUBLE: {
+//        const double* val = std::any_cast<double>( &any );
+//        return std::to_string( *val );
+//    } break;
+
+//    case Any::Type::STRING: {
+//        const std::string* val = std::any_cast<std::string>( &any );
+//        return std::string( *val );
+//    } break;
+
+//    case Any::Type::CONST_CHAR_PTR: {
+//        const char* val = *std::any_cast<const char*>( &any );
+//        return std::string( val );
+//    } break;
+
+//    case Any::Type::VECTOR_FLOAT: {
+//        const std::vector<float>* val = std::any_cast<std::vector<float>>( &any );
+//        std::string str               = "";
+//        const int n                   = 3;
+//        for ( int i = 0; i < n; ++i ) {
+//            for ( int j = 0; j < n; ++j ) {
+//                char buff[32];
+//                const int k = i * n + j;
+//#ifdef WIN32
+//                sprintf_s( buff, "%.1f", val->at( k ) );
+//#else
+//                sprintf( buff, "%.1f", val->at( k ) );
+//#endif
+//                str += buff;
+//                if ( j != 2 ) str += " ";
+//            }
+//            if ( i != 2 ) str += "  ";
+//        }
+//        return str;
+//    } break;
+
+//    case Any::Type::UINT: {
+//        const unsigned int* val = std::any_cast<unsigned int>( &any );
+//        return std::to_string( *val );
+//    } break;
+
+//    case Any::Type::CONST_FLOAT_PTR: {
+//        const float* val = *std::any_cast<const float*>( &any );
+//        std::string str  = "";
+//        for ( int i = 0; i < 4; ++i ) {
+//            for ( int j = 0; j < 4; ++j ) {
+//                char buff[32];
+//#ifdef WIN32
+//                sprintf_s( buff, "%.0f ", val[4 * i + j] );
+//#else
+//                sprintf( buff, "%.0f ", val[4 * i + j] );
+//#endif
+//                str += buff;
+//            }
+//            if ( i != 3 ) str += " ";
+//        }
+//        return str;
+//    } break;
+
+//    default:
+//        assert( false );
+//    }

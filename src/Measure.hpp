@@ -7,6 +7,7 @@
 
 #include "Macros.hpp"
 #include "Resolution.hpp"
+#include "AnyUtils.hpp"
 // #include "IO/Memory.hpp"
 // #include <Measure.hpp>
 // #include <IO/Memory.hpp>
@@ -360,16 +361,19 @@ class SRC_API UserData : public Measure
 {
   public:
     explicit UserData( const Measure& measure );
-    UserData( const std::string& name, const std::any& any );
+//    UserData( const std::string& name, const std::any& any );
+    UserData( const std::string& name, const hub::Any& any );
 
     const std::string& getName() const;
-    const std::any& getValue() const;
+//    const std::any& getValue() const;
+    const hub::Any& getValue() const;
 
     SRC_API friend std::ostream& operator<<( std::ostream& os, const UserData& userData );
 
   private:
     std::string m_name;
-    std::any m_value;
+//    std::any m_value;
+    Any m_value;
 
     //    friend class InputSensor;
 };

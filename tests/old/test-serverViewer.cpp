@@ -75,13 +75,13 @@ TEST_CASE( "Server test : viewer" ) {
         auto onNewAcquisition = []( const std::string& sensorName, const hub::Acquisition& acq ) {
             std::cout << "[Test] ############################### onNewAcquisition" << std::endl;
         };
-        auto viewer = hub::Viewer( onNewStreamer,
+        hub::Viewer viewer { onNewStreamer,
                                    onDelStreamer,
                                    onServerConnected,
                                    onServerDisconnected,
                                    onNewAcquisition,
                                    ipv4,
-                                   port );
+                                   port };
         std::cout << "[Test] ############################### viewer created" << std::endl;
         std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
 
