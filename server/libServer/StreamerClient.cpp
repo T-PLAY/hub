@@ -13,45 +13,44 @@ class InputStream : public hub::io::Input
 {
   public:
     explicit InputStream( hub::net::ClientSocket&& clientSocket ) :
-//        hub::net::ClientSocket( std::move( clientSocket ) )
-        m_clientSocket(std::move(clientSocket))
-    {}
+        //        hub::net::ClientSocket( std::move( clientSocket ) )
+        m_clientSocket( std::move( clientSocket ) ) {}
 
-//#ifdef WIN32 // msvc warning C4250
+    //#ifdef WIN32 // msvc warning C4250
   protected:
-//    void write( const unsigned char* data, size_t len ) const override;
+    //    void write( const unsigned char* data, size_t len ) const override;
     void read( unsigned char* data, size_t len ) override;
     void close() override;
     bool isOpen() const override;
     bool isEnd() const override;
-//#endif
+    //#endif
   private:
     hub::net::ClientSocket m_clientSocket;
 };
 
 //#ifdef WIN32 // msvc warning C4250
-//void InputStream::write( const unsigned char* data, size_t len ) const {
+// void InputStream::write( const unsigned char* data, size_t len ) const {
 ////    hub::net::ClientSocket::write( data, len );
 //    m_clientSocket.write(data, len);
 //}
 
 void InputStream::read( unsigned char* data, size_t len ) {
-//    hub::net::ClientSocket::read( data, len );
-    m_clientSocket.read(data, len);
+    //    hub::net::ClientSocket::read( data, len );
+    m_clientSocket.read( data, len );
 }
 
 void InputStream::close() {
-//    hub::net::ClientSocket::close();
+    //    hub::net::ClientSocket::close();
     m_clientSocket.close();
 }
 
 bool InputStream::isOpen() const {
-//    return hub::net::ClientSocket::isOpen();
+    //    return hub::net::ClientSocket::isOpen();
     return m_clientSocket.isOpen();
 }
 
 bool InputStream::isEnd() const {
-//    return hub::net::ClientSocket::isEnd();
+    //    return hub::net::ClientSocket::isEnd();
     return m_clientSocket.isEnd();
 }
 //#endif
@@ -77,8 +76,7 @@ StreamerClient::StreamerClient( Server& server, int iClient, hub::net::ClientSoc
     assert( streamers.find( m_streamName ) == streamers.end() );
 
     try {
-        m_inputSensor =
-            std::make_unique<hub::InputSensor>( InputStream( std::move( sock ) ) );
+        m_inputSensor = std::make_unique<hub::InputSensor>( InputStream( std::move( sock ) ) );
     }
     catch ( hub::net::Socket::exception& e ) {
         std::cout << headerMsg() << "InputSensor() : catch exception : " << e.what() << std::endl;

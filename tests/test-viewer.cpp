@@ -15,19 +15,15 @@
 
 //clang-format off
 
-//#include <Streamer.hpp>
+// #include <Streamer.hpp>
 
 // int main() {
 TEST_CASE( "Viewer" ) {
 
     const std::string ipv4 = "127.0.0.1";
-    constexpr int port     = 9002;
-
-    std::cout << "[Test] ############################### server start" << std::endl;
-    Server server( port );
-    server.setMaxClients( 1 );
-    //    server.setAcqPing( false );
-    server.asyncRun();
+    //    constexpr int port     = 9002;
+    srand( (unsigned)time( NULL ) );
+    const int port = rand() % 65535;
 
     // startConstruction
     auto onNewStreamer = [=]( const std::string& streamName, const hub::SensorSpec& sensorSpec ) {
@@ -48,11 +44,51 @@ TEST_CASE( "Viewer" ) {
         std::cout << "[example-viewer] onNewAcquisition : " << acq << std::endl;
     };
 
+    std::cout << "[Test] ############################### viewer start" << std::endl;
     auto viewer = hub::Viewer(
         onNewStreamer, onDelStreamer, onServerConnected, onServerDisconnected, onNewAcquisition );
 
+    viewer.setIpv4( ipv4 );
+    viewer.setPort( port );
+    CHECK( viewer.getIpv4() == ipv4 );
+    CHECK( viewer.getPort() == port );
+    CHECK( !viewer.isConnected() );
+
     viewer.setAutoSync( false );
     // endConstruction
+
+    std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
+
+    {
+        std::cout << "[Test] ############################### server start" << std::endl;
+        Server server( port );
+        server.setMaxClients( 2 );
+        //    server.setAcqPing( false );
+        server.asyncRun();
+        std::this_thread::sleep_for( std::chrono::milliseconds( 2000 ) );
+        CHECK( viewer.isConnected() );
+
+        {
+            std::cout << "[Test] ############################### outputSensor start" << std::endl;
+
+            const auto resolution = hub::Resolution { { 1 }, hub::Format::BGR8 };
+            hub::SensorSpec sensorSpec( "sensorName", { resolution } );
+            hub::OutputSensor outputSensor(
+                sensorSpec,
+                hub::io::OutputStream( "streamName", hub::net::ClientSocket( ipv4, port ) ) );
+            std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
+
+            unsigned char data[3] { 1, 2, 3 };
+            hub::Acquisition acq =
+                std::move( hub::Acquisition( 0, 1 ) << hub::Measure( data, 3, resolution ) );
+            outputSensor << acq;
+            std::cout << "[Test] ############################### outputSensor end" << std::endl;
+        }
+        std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
+    }
+    std::cout << "[Test] ############################### server end" << std::endl;
+
+    std::this_thread::sleep_for( std::chrono::milliseconds( 2000 ) );
 
     //    std::cout << "Starting viewer listening" << std::endl
     //              << "Press any key to terminate" << std::endl;

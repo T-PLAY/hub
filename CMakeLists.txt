@@ -35,7 +35,8 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
 
 #set(HUB_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/core/include")
 #set(HUB_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/core/include" PARENT_SCOPE)
-set(HUB_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/core/src")
+set(HUB_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
+set(HUB_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
 
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fpic")
 
@@ -48,9 +49,13 @@ set(HUB_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/core/src")
 #    set(REQUIRED_LIBS ${REQUIRED_LIBS} gcov)
 #endif()
 
-add_subdirectory(core)
+add_subdirectory(src)
 add_subdirectory(server)
-add_subdirectory(doc)
+
+option(HUB_BUILD_DOC "Build documentation" OFF)
+if (HUB_BUILD_DOC)
+    add_subdirectory(doc)
+endif()
 
 option(HUB_ENABLE_TESTS "Enable tests" OFF)
 if(HUB_ENABLE_TESTS)
@@ -108,10 +113,11 @@ endif()
 #file(COPY
 #    ${PROJECT_SOURCE_DIR}/scripts/run_all_targets.sh DESTINATION ${CMAKE_BINARY_DIR}/
 #)
+
 add_custom_target(
     cppCheck
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-    COMMAND cppcheck --enable=all --error-exitcode=1 core/src tests server -I core/include -I server/libServer/ --suppress=toomanyconfigs --suppress=missingIncludeSystem
+    COMMAND cppcheck --enable=all --error-exitcode=1 src tests server -I src -I server/libServer/ --suppress=toomanyconfigs --suppress=missingIncludeSystem
 #    COMMENT "Generating API documentation with Doxygen"
 #    VERBATIM
     COMMENT "Running cppCheck"
@@ -133,6 +139,7 @@ foreach(target "tests" "coverage" "cppCheck" "doc-doxygen" "doc-sphinx" "format"
         add_dependencies(all-targets ${target})
     endif()
 endforeach()
+
 #add_dependencies(all-targets tests coverage cppCheck doc-doxygen doc-sphinx format)
 
 #if(HUB_ENABLE_DOC OR HUB_ENABLE_COVERAGE)

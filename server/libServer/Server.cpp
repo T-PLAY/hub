@@ -293,10 +293,10 @@ void Server::newAcquisition( StreamerClient* streamer, const hub::Acquisition& a
 
     const auto& streamerName = streamer->getStreamName();
 
-//    const auto & measure = acq.getMeasures().front();
-//    std::cout << "receive measure : " << measure << std::endl;
-//    hub::UserData userData(measure);
-//    std::cout << userData << std::endl;
+    //    const auto & measure = acq.getMeasures().front();
+    //    std::cout << "receive measure : " << measure << std::endl;
+    //    hub::UserData userData(measure);
+    //    std::cout << userData << std::endl;
 
     //    // broadcast acquisition for each live viewer (no sync)
     //    auto streamViewers = m_streamViewers[streamerName];

@@ -12,7 +12,9 @@ TEST_CASE( "Asker test" ) {
     const hub::SensorSpec sensorSpec( "hello", { resolution } );
     const std::string streamName = "streamName";
     const std::string ipv4       = "127.0.0.1";
-    const int port               = 12004;
+    //    const int port               = 12004;
+    srand( (unsigned)time( NULL ) );
+    const int port = rand() % 65535;
 
     Server server( port );
     server.setMaxClients( 2 );
@@ -57,7 +59,7 @@ TEST_CASE( "Asker test" ) {
                 CHECK( false );
             }
             catch ( std::exception& ex ) {
-                CHECK(true);
+                CHECK( true );
             }
 
         } // end asker
