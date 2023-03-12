@@ -41,7 +41,7 @@ hub::InputSensor inputSensor(
             // startConstruction3
 // get acqusitions from different threads
 hub::io::CyclicBuff buff;
-auto inputSensor = hub::InputSensor( hub::io::Ram( buff ) );
+hub::InputSensor inputSensor{ hub::io::Ram( buff ) };
             // endConstruction3
         }
         // clang-format on

@@ -82,7 +82,9 @@ Viewer::Viewer(
                         if ( m_autoSync ) {
                             const auto& metaData = sensorSpec.getMetaData();
                             if ( metaData.find( "parent" ) != metaData.end() ) {
-                                parentName = std::any_cast<const char*>( metaData.at( "parent" ) );
+                                // todo any
+//                                parentName = std::any_cast<const char*>( metaData.at( "parent" ) );
+                                parentName = metaData.at("parent").getConstCharPtr();
 
                                 if ( m_streams.find( parentName ) != m_streams.end() ) {
                                     streamId += " -> " + parentName;
@@ -182,8 +184,10 @@ Viewer::Viewer(
                         if ( m_autoSync ) {
                             const auto& metaData = sensorSpec.getMetaData();
                             if ( metaData.find( "parent" ) != metaData.end() ) {
-                                const std::string parentName =
-                                    std::any_cast<const char*>( metaData.at( "parent" ) );
+                                // todo any
+//                                const std::string parentName = "";
+//                                    std::any_cast<const char*>( metaData.at( "parent" ) );
+                                const std::string parentName = metaData.at("parent").getConstCharPtr();
 
                                 if ( m_streams.find( parentName ) != m_streams.end() ) {
                                     streamId += " -> " + parentName;
@@ -349,7 +353,7 @@ void Viewer::Stream::startStream() {
     assert( m_thread == nullptr );
     m_thread = new std::thread( [this]() {
         try {
-            InputSensor inputSensor = InputSensor( io::InputStream(
+            InputSensor inputSensor( io::InputStream(
                 m_streamName,
                 m_syncStreamName,
                 net::ClientSocket( m_viewer.m_sock.getIpv4(), m_viewer.m_sock.getPort() ) ) );

@@ -90,7 +90,8 @@ class SRC_API Output
     /// \brief write
     /// \param any
     ///
-    void write( const std::any& any ) ;
+//    void write( const std::any& any ) ;
+    void write( const Any& any ) ;
 
     ///
     /// \brief write

@@ -239,7 +239,8 @@ const std::string& UserData::getName() const {
     return m_name;
 }
 
-const std::any& UserData::getValue() const {
+//const std::any& UserData::getValue() const {
+const Any& UserData::getValue() const {
     return m_value;
 }
 
@@ -263,7 +264,8 @@ UserData::UserData( const Measure& measure ) :
 //    m_value = memory.get<std::any>();
 }
 
-UserData::UserData( const std::string& name, const std::any& value ) :
+//UserData::UserData( const std::string& name, const std::any& value ) :
+UserData::UserData( const std::string& name, const Any& value ) :
     Measure( (unsigned char*)nullptr, 0, Resolution { { 1 }, Format::USER_DATA } ), m_name( name ), m_value( value ) {
 
     std::vector<char> buff;

@@ -97,7 +97,8 @@ class SRC_API Input
     /// \brief read
     /// \param any
     ///
-    void read( std::any& any );
+//    void read( std::any& any );
+    void read( Any& any );
 
     ///
     /// \brief read

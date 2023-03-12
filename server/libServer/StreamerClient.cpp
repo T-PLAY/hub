@@ -103,11 +103,15 @@ StreamerClient::StreamerClient( Server& server, int iClient, hub::net::ClientSoc
     }
     if ( metaData.find( "type" ) != metaData.end() ) {
         std::cout << headerMsg() << "type detected : record stream" << std::endl;
-        const char* type = std::any_cast<const char*>( metaData.at( "type" ) );
+        // todo any
+//        const char* type = std::any_cast<const char*>( metaData.at( "type" ) );
+        const char* type = metaData.at("type").getConstCharPtr();
         if ( strcmp( type, "record" ) == 0 ) { m_isRecordStream = true; }
     }
     if ( metaData.find( "parent" ) != metaData.end() ) {
-        m_parent = std::any_cast<const char*>( metaData.at( "parent" ) );
+        // todo any
+//        m_parent = std::any_cast<const char*>( metaData.at( "parent" ) );
+        m_parent = metaData.at("parent").getConstCharPtr();
         std::cout << headerMsg() << "parent : '" << m_parent << "'" << std::endl;
     }
 

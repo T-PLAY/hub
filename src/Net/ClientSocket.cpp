@@ -292,7 +292,14 @@ bool ClientSocket::isEnd() const {
     return false;
 }
 
-static constexpr std::string_view type2string[static_cast<int>( ClientSocket::Type::COUNT )] = {
+#if ( __cplusplus >= 201703L )
+#define ConstString constexpr std::string_view
+//using ConstString = constexpr std::string_view;
+#else
+using ConstString = const std::string;
+#endif
+
+static ConstString type2string[static_cast<int>( ClientSocket::Type::COUNT )] = {
     "NONE",
     "STREAMER",
     "VIEWER",
@@ -304,7 +311,7 @@ std::ostream& operator<<( std::ostream& os, const ClientSocket::Type& type ) {
     return os;
 }
 
-static constexpr std::string_view message2string[static_cast<int>( ClientSocket::Message::COUNT )] =
+static ConstString message2string[static_cast<int>( ClientSocket::Message::COUNT )] =
     {
         "NONE",
         "PING",

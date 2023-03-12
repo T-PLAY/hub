@@ -143,35 +143,36 @@ void Input::read( char* str )  {
     }
 }
 
-void Input::read( std::any& any )  {
+//void Input::read( std::any& any )  {
+void Input::read( Any & any )  {
     assert( isOpen() );
 
 #ifdef DEBUG_INPUT
     std::cout << "[Input] read(std::any)" << std::endl;
 #endif
 
+    assert(! any.has_value());
+
     Any::Type type;
     read( type );
-
     switch ( type ) {
+
     case Any::Type::INT: {
-        assert( sizeof( int ) == 4 );
         int val;
         read( val );
-        any = std::any_cast<int>( val );
+        any = Any(val);
     } break;
 
     case Any::Type::DOUBLE: {
         double val;
-        assert( sizeof( double ) == 8 );
         read( val );
-        any = std::any_cast<double>( val );
+        any = Any(val);
     } break;
 
     case Any::Type::STRING: {
         std::string val;
         read( val );
-        any = std::any_cast<std::string>( val );
+        any = Any(val);
     } break;
 
     case Any::Type::CONST_CHAR_PTR: {
@@ -187,35 +188,113 @@ void Input::read( std::any& any )  {
         str[len] = 0;
         delete[] buff;
 
-        any = std::any_cast<const char*>( reinterpret_cast<const char*>( str ) );
+//        any = std::any_cast<const char*>( reinterpret_cast<const char*>( str ) );
+        any = Any(str);
 
     } break;
 
     case Any::Type::VECTOR_FLOAT: {
         std::vector<float> val;
         read( val );
-        any = std::any_cast<std::vector<float>>( val );
+        any = Any(val);
     } break;
 
     case Any::Type::UINT: {
         unsigned int val;
         read( val );
-        any = std::any_cast<unsigned int>( val );
+        any = Any(val);
     } break;
 
     case Any::Type::CONST_FLOAT_PTR: {
         float* buff = new float[16];
         read( reinterpret_cast<unsigned char*>( buff ), 64 );
 
-        any = std::any_cast<const float*>( reinterpret_cast<const float*>( buff ) );
+//        any = std::any_cast<const float*>( reinterpret_cast<const float*>( buff ) );
+        any = Any(buff);
 
     } break;
+
+    case Any::Type::CONST_DOUBLE_PTR: {
+        float* buff = new float[16];
+        read( reinterpret_cast<unsigned char*>( buff ), 64 );
+
+//        any = std::any_cast<const float*>( reinterpret_cast<const float*>( buff ) );
+        any = Any(buff);
+
+    } break;
+
 
     default:
 //        std::cerr << "non supported type : '" << type. << "'" << std::endl;
         assert( false );
     }
     assert( any.has_value() );
+
+
+//    switch ( type ) {
+//    case Any::Type::INT: {
+//        assert( sizeof( int ) == 4 );
+//        int val;
+//        read( val );
+//        any = std::any_cast<int>( val );
+//    } break;
+
+//    case Any::Type::DOUBLE: {
+//        double val;
+//        assert( sizeof( double ) == 8 );
+//        read( val );
+//        any = std::any_cast<double>( val );
+//    } break;
+
+//    case Any::Type::STRING: {
+//        std::string val;
+//        read( val );
+//        any = std::any_cast<std::string>( val );
+//    } break;
+
+//    case Any::Type::CONST_CHAR_PTR: {
+//        assert( sizeof( char ) == 1 );
+//        char* buff = new char[256];
+//        memset( buff, 0, 256 );
+//        read( buff );
+//        int len = static_cast<int>( strlen( buff ) );
+
+//        const int buffSize = len + 1;
+//        char* str          = new char[buffSize];
+//        memcpy( str, buff, len );
+//        str[len] = 0;
+//        delete[] buff;
+
+//        any = std::any_cast<const char*>( reinterpret_cast<const char*>( str ) );
+
+//    } break;
+
+//    case Any::Type::VECTOR_FLOAT: {
+//        std::vector<float> val;
+//        read( val );
+//        any = std::any_cast<std::vector<float>>( val );
+//    } break;
+
+//    case Any::Type::UINT: {
+//        unsigned int val;
+//        read( val );
+//        any = std::any_cast<unsigned int>( val );
+//    } break;
+
+//    case Any::Type::CONST_FLOAT_PTR: {
+//        float* buff = new float[16];
+//        read( reinterpret_cast<unsigned char*>( buff ), 64 );
+
+//        any = std::any_cast<const float*>( reinterpret_cast<const float*>( buff ) );
+
+//    } break;
+
+//    default:
+////        std::cerr << "non supported type : '" << type. << "'" << std::endl;
+//        assert( false );
+//    }
+//    assert( any.has_value() );
+
 }
 
 /////////////////////////////////////////////////////////////////////////////

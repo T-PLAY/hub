@@ -37,8 +37,8 @@ int main() {
         std::cout << "[example-viewer] onNewAcquisition : " << acq << std::endl;
     };
 
-    auto viewer = hub::Viewer(
-        onNewStreamer, onDelStreamer, onServerConnected, onServerDisconnected, onNewAcquisition );
+    hub::Viewer viewer{
+                                onNewStreamer, onDelStreamer, onServerConnected, onServerDisconnected, onNewAcquisition };
     // endConstruction
 
     std::cout << "Starting viewer listening" << std::endl
