@@ -2,8 +2,8 @@
 // code in README.md of this project
 // streamer code
 
-#include <IO/InputStream.hpp>
-#include <IO/OutputStream.hpp>
+#include <io/InputStream.hpp>
+#include <io/OutputStream.hpp>
 #include <OutputSensor.hpp>
 
 /// \file
@@ -65,7 +65,7 @@ int main() {
 
             // send data
             outputSensor << ( hub::Acquisition { start, end }
-                              << hub::Measure { data, size, imageResolution } );
+                              << hub::data::Measure { data, size, imageResolution } );
         }
     }
 

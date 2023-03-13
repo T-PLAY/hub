@@ -5,7 +5,12 @@
 #include <list>
 
 #include "Macros.hpp"
-#include "Measure.hpp"
+#include "data/Measure.hpp"
+
+// user friendly useless includes
+#include "data/UserData.hpp"
+#include "data/Dof6.hpp"
+#include "data/Mat4.hpp"
 
 namespace hub {
 
@@ -61,7 +66,7 @@ class SRC_API Acquisition
     /// \return
     /// modified acquisition with new measure.
     ///
-    Acquisition& operator<<( Measure&& measure );
+    Acquisition& operator<<( data::Measure&& measure );
 
     ///
     /// \brief operator <<
@@ -71,7 +76,7 @@ class SRC_API Acquisition
     /// \return
     /// modified acquisition with new measure.
     ///
-    Acquisition& operator<<( const Measures& measure );
+    Acquisition& operator<<( const data::Measures& measure );
 
     ///
     /// \brief emplaceMeasure
@@ -81,7 +86,7 @@ class SRC_API Acquisition
     void emplaceMeasure( Args&&... args );
 
 //    [[ deprecated ]]
-    void pushBack(Measure && measure);
+    void pushBack(data::Measure && measure);
 
     ///
     /// \brief isInterpolable
@@ -143,7 +148,7 @@ class SRC_API Acquisition
     /// \return
     /// all measures acquired during the acquisition.
     ///
-    const Measures& getMeasures() const;
+    const data::Measures& getMeasures() const;
 
   public:
     ///
@@ -159,7 +164,7 @@ class SRC_API Acquisition
     bool hasFixedSize() const;
 
   private:
-    Measures m_measures;
+    data::Measures m_measures;
     size_t m_size = 0;
     friend class InputSensor;
 };

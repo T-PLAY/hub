@@ -6,7 +6,15 @@
 #include <vector>
 #include <cassert>
 
+//#include "data/Mat4.hpp"
+#include <memory>
+
 namespace hub {
+
+namespace data {
+class Mat4;
+}
+
 
 
 class Any {
@@ -25,6 +33,7 @@ enum class Type {
     UINT,
     CONST_FLOAT_PTR,
     CONST_DOUBLE_PTR,
+    MAT4,
     COUNT
 };
     ///
@@ -53,83 +62,30 @@ enum class Type {
 //    An(())
     Any() = default;
 
-    Any(int value) {
-        m_type = Type::INT;
-        m_int = value;
-        m_hasValue = true;
-    }
-     Any(double value) {
-        m_type = Type::DOUBLE;
-        m_double = value;
-        m_hasValue = true;
-    }
-     Any(const std::string & value) {
-        m_type = Type::STRING;
-        m_std_string = value;
-        m_hasValue = true;
-    }
-     Any(const char * value) {
-        m_type = Type::CONST_CHAR_PTR;
-        m_const_char_ptr = value;
-        m_hasValue = true;
-    }
-     Any(const std::vector<float> & value) {
-        m_type = Type::VECTOR_FLOAT;
-        m_std_vector_float = value;
-        m_hasValue = true;
-    }
-     Any(unsigned int value) {
-        m_type = Type::UINT;
-        m_unsigned_int = value;
-        m_hasValue = true;
-    }
-     Any(const float * value) {
-        m_type = Type::CONST_FLOAT_PTR;
-        m_const_float_ptr = value;
-        m_hasValue = true;
-    }
-     Any(const double * value) {
-        m_type = Type::CONST_DOUBLE_PTR;
-        m_const_double_ptr = value;
-        m_hasValue = true;
-    }
+    Any(int value);
+    Any(double value);
+     Any(const std::string & value);
+     Any(const char * value);
+     Any(const std::vector<float> & value);
+     Any(unsigned int value);
+     Any(const float * value);
+     Any(const double * value);
+     Any(const data::Mat4 & value);
+
 
 //    template <class T>
 //    T get() const = delete;
 
 //    template <>
-    const int & getInt() const {
-        assert(m_type == Type::INT);
-        return m_int;
-    }
-    const double & getDouble() const {
-        assert(m_type == Type::DOUBLE);
-        return m_double;
-    }
-    const std::string & getStdString() const {
-        assert(m_type == Type::STRING);
-        return m_std_string;
-    }
-    const char * const getConstCharPtr() const {
-        assert(m_type == Type::CONST_CHAR_PTR);
-        return m_const_char_ptr;
-    }
-    const std::vector<float> & getStdVectorFloat() const {
-        assert(m_type == Type::VECTOR_FLOAT);
-        return m_std_vector_float;
-    }
-    const unsigned int & getUnsignedInt() const {
-        assert(m_type == Type::UINT);
-        return m_unsigned_int;
-    }
-    const float * const getConstFloatPtr() const {
-        assert(m_type == Type::CONST_FLOAT_PTR);
-        return m_const_float_ptr;
-    }
-    const double * const getConstDoublePtr() const {
-        assert(m_type == Type::CONST_DOUBLE_PTR);
-        return m_const_double_ptr;
-    }
+     const int & getInt() const;
+    const double & getDouble() const;
+    const std::string & getStdString() const;
+    const char * const getConstCharPtr() const;
+    const std::vector<float> & getStdVectorFloat() const;
+    const unsigned int & getUnsignedInt() const;
+    const float * const getConstFloatPtr() const;
+    const double * const getConstDoublePtr() const;
+    const data::Mat4 & getMat4() const;
 
     const bool & has_value() const {
         return m_hasValue;
@@ -144,7 +100,7 @@ enum class Type {
     }
 
   private:
-    Type m_type;
+    Type m_type = Type::NONE;
     bool m_hasValue = false;
 
     int m_int;
@@ -155,6 +111,7 @@ enum class Type {
     unsigned int m_unsigned_int;
     const float* m_const_float_ptr;
     const double* m_const_double_ptr;
+    hub::data::Mat4 * m_mat4;
 
 
 

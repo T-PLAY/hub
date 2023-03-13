@@ -3,7 +3,7 @@
 #include <thread>
 
 #include "Client.hpp"
-#include <Net/ClientSocket.hpp>
+#include <net/ClientSocket.hpp>
 #include <OutputSensor.hpp>
 
 class StreamerClient;

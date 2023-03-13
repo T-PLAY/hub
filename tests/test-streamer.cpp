@@ -1,18 +1,20 @@
 #include <catch2/catch_test_macros.hpp>
+#include "test-common.hpp"
 
 #include <Server.hpp>
-#include <Streamer.hpp>
+#include <client/Streamer.hpp>
 
 // int main() {
 TEST_CASE( "Streamer" ) {
     const std::string ipv4 = "127.0.0.1";
-    srand( (unsigned)time( NULL ) );
-    const int port = rand() % 65535;
+//    srand( (unsigned)time( NULL ) );
+//    const int port = rand() % 65535;
+    const int port = getRandomPort();
 
     {
         // startConstruction
         // link to local server at port 4042
-        hub::Streamer streamer( ipv4, port );
+        hub::client::Streamer streamer( ipv4, port );
         // endConstruction
 
         const hub::Resolution resolution( { { 1 }, hub::Format::BGR8 } );
@@ -31,7 +33,7 @@ TEST_CASE( "Streamer" ) {
 
             unsigned char data[3] { 1, 2, 3 };
             hub::Acquisition acq =
-                std::move( hub::Acquisition( 0, 1 ) << hub::Measure( data, 3, resolution ) );
+                std::move( hub::Acquisition( 0, 1 ) << hub::data::Measure( data, 3, resolution ) );
 
             streamer.newAcquisition( "hello", std::move( acq ) );
             std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );

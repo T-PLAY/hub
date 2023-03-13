@@ -23,9 +23,9 @@ Acquisition InputSensor::getAcquisition() const {
 //        const auto & format = resolutions.at(i).second;
         assert(! format2hasFixedSize(resolutions.at(i).second) || computeAcquisitionSize( resolutions.at( i ) ) == measures.at( i ).m_size );
         //        measures.at( i ).m_resolution = resolutions.at( i );
-        assert( measures.at( i ).m_resolution == resolutions.at( i ) );
-        assert( !measures.at( i ).m_resolution.first.empty() );
-        assert( measures.at( i ).m_resolution.second != Format::NONE );
+        assert( measures.at( i ).getResolution() == resolutions.at( i ) );
+        assert( !measures.at( i ).getResolution().first.empty() );
+        assert( measures.at( i ).getResolution().second != Format::NONE );
     }
 
 #ifdef DEBUG_STREAM

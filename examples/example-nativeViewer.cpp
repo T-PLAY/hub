@@ -1,7 +1,7 @@
 
 #include <InputSensor.hpp>
 #include <OutputSensor.hpp>
-#include <Viewer.hpp>
+#include <client/Viewer.hpp>
 
 // #include <Server.hpp>
 

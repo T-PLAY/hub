@@ -69,7 +69,7 @@ bool Acquisition::operator!=( const Acquisition& acq ) const {
     return !( *this == acq );
 }
 
-Acquisition& Acquisition::operator<<( Measure&& measure ) {
+Acquisition& Acquisition::operator<<( data::Measure&& measure ) {
     // void Acquisition::addMeasure( Measure&& measure ) {
     //     emplaceMeasure(measure.m_data, measure.m_size, measure.getResolution());
     //     m_size += m_measures.back().m_size;
@@ -78,7 +78,7 @@ Acquisition& Acquisition::operator<<( Measure&& measure ) {
     return *this;
 }
 
-void Acquisition::pushBack(Measure &&measure)
+void Acquisition::pushBack(data::Measure &&measure)
 {
     m_measures.push_back(std::move(measure));
     m_size += m_measures.back().m_size;
@@ -104,7 +104,7 @@ bool Acquisition::isInterpolable() const {
     //        if ( !measure.isInterpolable() ) return false;
     //    }
     //    return true;
-    return std::none_of( m_measures.crbegin(), m_measures.crend(), []( const Measure& measure ) {
+    return std::none_of( m_measures.crbegin(), m_measures.crend(), []( const data::Measure& measure ) {
         return !measure.isInterpolable();
     } );
 }
@@ -125,7 +125,7 @@ Acquisition Acquisition::slerp( const Acquisition& left, const Acquisition& righ
         const auto & rightMeasure = rightMeasures.at(iMeasure);
 //        ret << Measure::slerp( leftMeasures.at( iMeasure ), rightMeasures.at( iMeasure ), t );
         assert(leftMeasure.getResolution() == rightMeasure.getResolution());
-        ret << Measure::slerp( leftMeasure, rightMeasure, t );
+        ret << data::Measure::slerp( leftMeasure, rightMeasure, t );
         //        ret.addMeasure(Measure::slerp( leftMeasures.at( iMeasure ), rightMeasures.at(
         //        iMeasure ), t ));
     }
@@ -137,7 +137,7 @@ Acquisition Acquisition::slerp( const Acquisition& left, const Acquisition& righ
 
 //}
 
-Acquisition& Acquisition::operator<<( const Measures& measures ) {
+Acquisition& Acquisition::operator<<( const data::Measures& measures ) {
     for ( const auto& measure : measures ) {
         //        Acquisition::operator<<( measure.clone() );
         emplaceMeasure( measure.m_data, measure.m_size, measure.getResolution() );
@@ -166,7 +166,7 @@ Acquisition Acquisition::clone() const {
 }
 
 // const std::list<Measure> &Acquisition::getMeasures() const
-const Measures& Acquisition::getMeasures() const {
+const data::Measures& Acquisition::getMeasures() const {
     assert(! m_measures.empty());
     return m_measures;
 }

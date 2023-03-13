@@ -1,13 +1,13 @@
 #pragma once
 
 #include "Acquisition.hpp"
-#include "IO/Input.hpp"
+#include "io/Input.hpp"
 #include "Sensor.hpp"
 
 // user friendly useless includes
-#include "IO/File.hpp"
-#include "IO/InputStream.hpp"
-#include "IO/Ram.hpp"
+#include "io/File.hpp"
+#include "io/InputStream.hpp"
+#include "io/Ram.hpp"
 
 namespace hub {
 

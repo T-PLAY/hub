@@ -6,7 +6,7 @@
 // #include <stdio.h>
 // #include <iostream>
 
-#include <Viewer.hpp>
+#include <client/Viewer.hpp>
 
 // #include <filesystem>
 // #include <iostream>
@@ -37,7 +37,7 @@ int main() {
         std::cout << "[example-viewer] onNewAcquisition : " << acq << std::endl;
     };
 
-    hub::Viewer viewer{
+    hub::client::Viewer viewer{
                                 onNewStreamer, onDelStreamer, onServerConnected, onServerDisconnected, onNewAcquisition };
     // endConstruction
 

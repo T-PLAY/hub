@@ -26,7 +26,7 @@ TEST_CASE( "Server test : speed test" ) {
             data[i] = iAcq;
         }
         hub::Acquisition acq( iAcq, iAcq );
-            acq << hub::Measure( reinterpret_cast<unsigned const char*>( data ),
+            acq << hub::data::Measure( reinterpret_cast<unsigned const char*>( data ),
                              dataSize,
                              { { width, height }, hub::Format::BGR8 } );
     }
