@@ -8,7 +8,7 @@ namespace hub {
 
 ///
 /// @brief native
-/// Export these "C" functions usable by Unity C++ plugin.
+/// Export these "C" functions usable by Unity C++ plugin or Matlab (loadlibrary).
 ///
 namespace native {
 
@@ -291,6 +291,7 @@ extern "C"
     ///
     SRC_API unsigned int metaData_getUInt( const SensorSpec::MetaData* metaData,
                                            const char* metaName );
+
 #ifdef __cplusplus
 } // end extern "C"
 #endif
