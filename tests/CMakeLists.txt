@@ -40,12 +40,17 @@ set_property(TARGET test-all PROPERTY CXX_EXTENSIONS OFF)
 # add_custom_command( TARGET ${TARGET_NAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:hub>
 # $<TARGET_FILE_DIR:${TARGET_NAME}>)
 
+
+#file(GLOB_RECURSE tests test-*.cpp)
+file(GLOB testFiles test-*.cpp)
+
 include(CTest)
 enable_testing()
 # set(TEST_NAMES "")
 foreach(
-    test
-    "acquisition"
+    testFile
+    ${testFiles}
+#    "acquisition"
 #    "any"
 #    "asker"
 #    "inputSensor"
@@ -73,11 +78,30 @@ foreach(
 #    "net-utils"
     # "file" "inputSensor" "measures" "ram" "resolutions" "sensorSpec" "server" "serverSpeed"
 )
-    add_executable(test-${test} test-${test}.cpp)
-    target_link_libraries(test-${test} PRIVATE Catch2::Catch2WithMain hub server)
+#        get_filename_component(basename ${header} NAME)
+#        get_filename_component(parentDir ${header} DIRECTORY)
+#        get_filename_component(parentName ${parentDir} NAME)
+        get_filename_component(test ${testFile} NAME_WE)
+#        message(STATUS "${test}")
+
+    add_executable(${test} ${test}.cpp)
+    target_link_libraries(${test} PRIVATE Catch2::Catch2WithMain hub server)
     # target_include_directories(test-${test} PRIVATE ${PROJECT_SOURCE_DIR}/include)
-    target_include_directories(test-${test} PRIVATE ${HUB_INCLUDE_DIR})
-    add_test(NAME test-${test} COMMAND test-${test})
+    target_include_directories(${test} PRIVATE ${HUB_INCLUDE_DIR})
+    add_test(NAME ${test} COMMAND ${test})
+
+#    setup_target_for_coverage_lcov(
+#        NAME coverage-${test}
+#        EXECUTABLE test-${test}
+#        DEPENDENCIES hub
+##        EXCLUDE
+##        "*.hpp"
+##        "*.inl"
+##        "/usr/*"
+##        NO_DEMANGLE
+#        # "examples/*" "include/*" COMMAND ${HUB_BROWSER} ${CMAKE_BINARY_DIR}/coverage/index.html
+#    )
+
 endforeach()
 
 add_custom_target(

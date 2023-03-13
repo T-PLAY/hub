@@ -153,6 +153,8 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
         # "examples/*" "include/*" COMMAND ${HUB_BROWSER} ${CMAKE_BINARY_DIR}/coverage/index.html
     )
 
+
+
     if(${CMAKE_VERSION} VERSION_LESS "3.20") # ctest --test-dir option
         # add_custom_command( TARGET tests  POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy
         # ${CMAKE_BINARY_DIR}/tests/DartConfiguration.tcl ${CMAKE_BINARY_DIR}/)
@@ -178,6 +180,64 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
     # setup_target_for_coverage_gcovr_html(NAME coverage-html EXECUTABLE ctest --schedule-random -j ${n_cores}
     # --test-dir tests EXCLUDE "/usr/*" DEPENDENCIES test-file test-measures test-ram test-resolutions test-sensorSpec
     # test-server test-serverSpeed )
+
+    add_custom_target(coverage-all)
+
+#    foreach(header ${headers})
+    foreach(file ${sources})
+#        message(STATUS ${file})
+        get_filename_component(basename ${file} NAME)
+#        message(STATUS ${basename})
+        get_filename_component(parentDir ${file} DIRECTORY)
+#        message(STATUS ${parentDir})
+        get_filename_component(parentName ${parentDir} NAME)
+        get_filename_component(name ${basename} NAME_WE)
+        set(parentMacro "")
+        if (parentName STREQUAL src)
+            set(parentMacro "")
+        else()
+            set(parentMacro "${parentName}-")
+        endif()
+#        message(STATUS ${parentName})
+        if (NOT EXISTS "${PROJECT_SOURCE_DIR}/tests/test-${parentMacro}${name}.cpp")
+            message(FATAL_ERROR "test-${parentMacro}${name}.cpp not found in tests directory")
+        endif()
+
+        #set(sources2 ${sources})
+        set(sourcesTmp ${SOURCE_FILES})
+#        list(FILTER sourcesTmp EXCLUDE REGEX ".*Macros\\.hpp$")
+        #list(REMOVE_ITEM sources2 "Acquisition.cpp")
+        list(FILTER sourcesTmp EXCLUDE REGEX ".*/${name}\\.cpp$")
+#        list(FILTER sourcesTmp EXCLUDE REGEX ".*/${name}\\.hpp$")
+
+            setup_target_for_coverage_lcov(
+                NAME coverage-lcov-${name}
+                EXECUTABLE tests/test-${parentMacro}${name}
+                DEPENDENCIES hub test-${parentMacro}${name}
+                EXCLUDE
+                "/usr/*"
+                ${sourcesTmp}
+        #        "*.hpp"
+        #        "*.inl"
+        #        NO_DEMANGLE
+        #        "*.cpp"
+                # "examples/*" "include/*" COMMAND ${HUB_BROWSER} ${CMAKE_BINARY_DIR}/coverage/index.html
+            )
+#        message(STATUS "coverage-lcov-${name}")
+
+
+        add_custom_target(
+            coverage-${name}
+            COMMAND ls ${CMAKE_BINARY_DIR}/coverage-lcov-${name}/index.html
+            && \(head -n 40 ${CMAKE_BINARY_DIR}/coverage-lcov-${name}/index.html | grep '100.0 %'
+                || ${HUB_BROWSER} ${CMAKE_BINARY_DIR}/coverage-lcov-${name}/index.html\)
+        )
+        add_dependencies(coverage-${name} coverage-lcov-${name})
+
+        add_dependencies(coverage-all coverage-${name})
+
+#        message(STATUS "coverage-${name}")
+    endforeach()
 
 endif()
 
