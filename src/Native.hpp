@@ -2,7 +2,7 @@
 
 #include "InputSensor.hpp"
 #include "Macros.hpp"
-#include "Viewer.hpp"
+#include "client/Viewer.hpp"
 
 namespace hub {
 
@@ -117,7 +117,7 @@ extern "C"
     /// \param onLogMessage
     /// \return
     ///
-    SRC_API Viewer* createViewer( onNewStreamerFunc onNewStreamer,
+    SRC_API client::Viewer* createViewer( onNewStreamerFunc onNewStreamer,
                                   onDelStreamerFunc onDelStreamer,
                                   onServerConnectedFunc onServerConnected,
                                   onServerDisconnectedFunc onServerDisconnected,
@@ -130,28 +130,28 @@ extern "C"
     /// \brief freeViewer
     /// \param viewer
     ///
-    SRC_API void freeViewer( Viewer* viewer );
+    SRC_API void freeViewer( client::Viewer* viewer );
 
     ///
     /// \brief viewer_setIpv4
     /// \param viewer
     /// \param ipv4
     ///
-    SRC_API void viewer_setIpv4( Viewer* viewer, const char* ipv4 );
+    SRC_API void viewer_setIpv4( client::Viewer* viewer, const char* ipv4 );
 
     ///
     /// \brief viewer_setPort
     /// \param viewer
     /// \param port
     ///
-    SRC_API void viewer_setPort( Viewer* viewer, int port );
+    SRC_API void viewer_setPort( client::Viewer* viewer, int port );
 
     ///
     /// \brief viewer_isConnected
     /// \param viewer
     /// \return
     ///
-    SRC_API bool viewer_isConnected( Viewer* viewer );
+    SRC_API bool viewer_isConnected( client::Viewer* viewer );
 
     ///
     /// \brief sensorSpec_getSensorName
@@ -235,7 +235,7 @@ extern "C"
     /// \brief freeSensorSpec
     /// \param dest
     ///
-    SRC_API void freeSensorSpec( SensorSpec* dest );
+//    SRC_API void freeSensorSpec( SensorSpec* dest );
 
     ///
     /// \brief sensorSpec_getMetaData

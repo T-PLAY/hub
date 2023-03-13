@@ -9,7 +9,7 @@
 //#include <chrono>
 #include <thread>
 
-#include <Asker.hpp>
+#include <client/Asker.hpp>
 
 /// \file
 /// \warning
@@ -17,7 +17,7 @@
 
 int main() {
 
-    hub::Asker asker;
+    hub::client::Asker asker;
 
     auto listStreams = asker.listStreams();
 

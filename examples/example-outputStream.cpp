@@ -1,5 +1,5 @@
 
-#include <IO/OutputStream.hpp>
+#include <io/OutputStream.hpp>
 
 /// \file
 

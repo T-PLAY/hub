@@ -30,9 +30,9 @@ hub::OutputSensor outputSensor(
             unsigned char * data = nullptr;
             uint64_t size = 0;
             hub::Resolution resolution;
-            hub::Measure measure(data, size, resolution);
-            hub::Measure measure2(data, size, resolution);
-            hub::Measure measure3(data, size, resolution);
+            hub::data::Measure measure(data, size, resolution);
+            hub::data::Measure measure2(data, size, resolution);
+            hub::data::Measure measure3(data, size, resolution);
 //            for ( int i = 0; i < acq.getMeasures().size(); ++i ) {
 //                const auto& measure = acq.getMeasures().at( i );
 //                assert( measure.getResolution() == sensorSpec.getResolutions().at( i ) );
@@ -44,7 +44,7 @@ hub::OutputSensor outputSensor(
             // clang-format on
             // startFunctional
             outputSensor << ( hub::Acquisition { start, end }
-                              << hub::Measure { data, size, resolution } );
+                              << hub::data::Measure { data, size, resolution } );
             // endFunctional
             // assert( outputSensor.m_spec.getResolutions().at(0) == resolution );
             // clang-format off

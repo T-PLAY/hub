@@ -1,8 +1,8 @@
 
 #include <catch2/catch_test_macros.hpp>
 
-//#include <IO/File.hpp>
-//#include <IO/Ram.hpp>
+//#include <io/File.hpp>
+//#include <io/Ram.hpp>
 //#include <InputSensor.hpp>
 //#include <OutputSensor.hpp>
 #include <Resolution.hpp>

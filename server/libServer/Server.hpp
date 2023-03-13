@@ -8,7 +8,7 @@
 #include <memory>
 
 #include <InputSensor.hpp>
-#include <Net/ServerSocket.hpp>
+#include <net/ServerSocket.hpp>
 #include <OutputSensor.hpp>
 
 #include "AskerClient.hpp"

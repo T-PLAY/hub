@@ -89,7 +89,7 @@ void acquisition_to_string( const Acquisition* acquisition, char* str, int* strL
 
 //////////////////////////////////////////////////////////////////////////
 
-Viewer* createViewer( onNewStreamerFunc onNewStreamer,
+client::Viewer* createViewer( onNewStreamerFunc onNewStreamer,
                       onDelStreamerFunc onDelStreamer,
                       onServerConnectedFunc onServerConnected,
                       onServerDisconnectedFunc onServerDisconnected,
@@ -117,7 +117,7 @@ Viewer* createViewer( onNewStreamerFunc onNewStreamer,
     auto onLogMessageCpp = [=]( const std::string& logMessage ) {
         onLogMessage( logMessage.c_str() );
     };
-    Viewer* viewer = new Viewer( onNewStreamerCpp,
+    client::Viewer* viewer = new client::Viewer( onNewStreamerCpp,
                                  onDelStreamerCpp,
                                  onServerConnectedCpp,
                                  onServerDisconnectedCpp,
@@ -129,20 +129,20 @@ Viewer* createViewer( onNewStreamerFunc onNewStreamer,
     return viewer;
 }
 
-void freeViewer( Viewer* viewer ) {
+void freeViewer( client::Viewer* viewer ) {
     assert( viewer != nullptr );
     delete viewer;
 }
 
-void viewer_setIpv4( Viewer* viewer, const char* ipv4 ) {
+void viewer_setIpv4( client::Viewer* viewer, const char* ipv4 ) {
     viewer->setIpv4( ipv4 );
 }
 
-void viewer_setPort( Viewer* viewer, int port ) {
+void viewer_setPort( client::Viewer* viewer, int port ) {
     viewer->setPort( port );
 }
 
-bool viewer_isConnected( Viewer* viewer ) {
+bool viewer_isConnected( client::Viewer* viewer ) {
     //    return viewer.
     return viewer->isConnected();
 }
@@ -208,9 +208,9 @@ SensorSpec* sensorSpec_copy( const SensorSpec* source ) {
         source->getSensorName(), source->getResolutions(), source->getMetaData() );
 }
 
-void freeSensorSpec( SensorSpec* sensorSpec ) {
-    delete sensorSpec;
-}
+//void freeSensorSpec( SensorSpec* sensorSpec ) {
+//    delete sensorSpec;
+//}
 
 const SensorSpec::MetaData* sensorSpec_getMetaData( const SensorSpec* sensorSpec ) {
     return &sensorSpec->getMetaData();
@@ -235,8 +235,9 @@ bool metaData_getMat4( const SensorSpec::MetaData* metaData, const char* metaNam
     if ( metaData->find( metaName ) != metaData->end() ) {
         // todo any
 //        const float* array = std::any_cast<const float*>( metaData->at( metaName ) );
-        const float* array = metaData->at(metaName).getConstFloatPtr();
-        memcpy( output, array, 64 );
+        const auto & mat4 = metaData->at(metaName).getMat4();
+//        const float* array = mat4.m_data;
+        memcpy( output, mat4.m_data, 64 );
         return true;
     }
     return false;

@@ -4,7 +4,7 @@
 #include <mutex>
 #include <thread>
 
-#include <Net/ClientSocket.hpp>
+#include <net/ClientSocket.hpp>
 
 #include "Client.hpp"
 

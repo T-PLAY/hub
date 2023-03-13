@@ -1,5 +1,5 @@
 
-#include <Streamer.hpp>
+#include <client/Streamer.hpp>
 
 /// \file
 
@@ -26,7 +26,7 @@ int main() {
 
 // startConstruction
 // link to local server at port 4042
-hub::Streamer streamer( "127.0.0.1", 4042 );
+hub::client::Streamer streamer( "127.0.0.1", 4042 );
 // endConstruction
 
 hub::SensorSpec sensorSpec;
@@ -42,7 +42,7 @@ while ( receivingDataFromSensor ) {
     auto [start, end] = sensorAPI::getTimestamp();
     auto [data, size] = sensorAPI::getData();
 
-    auto&& acq {hub::Acquisition { start, end } << hub::Measure { data, size, resolution }};
+    auto&& acq {hub::Acquisition { start, end } << hub::data::Measure { data, size, resolution }};
     // share new sensor data (only if connected to the server)
     streamer.newAcquisition( "myStream", std::move( acq ) );
 }

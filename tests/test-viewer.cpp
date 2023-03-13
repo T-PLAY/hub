@@ -1,4 +1,5 @@
 #include <catch2/catch_test_macros.hpp>
+#include "test-common.hpp"
 
 // #include <stdio.h>
 // #include <cstdio>
@@ -6,7 +7,7 @@
 // #include <stdio.h>
 // #include <iostream>
 
-#include <Viewer.hpp>
+#include <client/Viewer.hpp>
 
 #include <Server.hpp>
 
@@ -22,8 +23,9 @@ TEST_CASE( "Viewer" ) {
 
     const std::string ipv4 = "127.0.0.1";
     //    constexpr int port     = 9002;
-    srand( (unsigned)time( NULL ) );
-    const int port = rand() % 65535;
+//    srand( (unsigned)time( NULL ) );
+//    const int port = rand() % 65535;
+    const int port = getRandomPort();
 
     // startConstruction
     auto onNewStreamer = [=]( const std::string& streamName, const hub::SensorSpec& sensorSpec ) {
@@ -45,7 +47,7 @@ TEST_CASE( "Viewer" ) {
     };
 
     std::cout << "[Test] ############################### viewer start" << std::endl;
-    hub::Viewer viewer{
+    hub::client::Viewer viewer{
         onNewStreamer, onDelStreamer, onServerConnected, onServerDisconnected, onNewAcquisition };
 
     viewer.setIpv4( ipv4 );
@@ -80,7 +82,7 @@ TEST_CASE( "Viewer" ) {
 
             unsigned char data[3] { 1, 2, 3 };
             hub::Acquisition acq =
-                std::move( hub::Acquisition( 0, 1 ) << hub::Measure( data, 3, resolution ) );
+                std::move( hub::Acquisition( 0, 1 ) << hub::data::Measure( data, 3, resolution ) );
             outputSensor << acq;
             std::cout << "[Test] ############################### outputSensor end" << std::endl;
         }

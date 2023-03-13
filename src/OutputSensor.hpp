@@ -5,12 +5,12 @@
 #include "Acquisition.hpp"
 #include "Sensor.hpp"
 #include "SensorSpec.hpp"
-#include "IO/Output.hpp"
+#include "io/Output.hpp"
 
 // user friendly useless includes
-#include "IO/File.hpp"
-#include "IO/OutputStream.hpp"
-#include "IO/Ram.hpp"
+#include "io/File.hpp"
+#include "io/OutputStream.hpp"
+#include "io/Ram.hpp"
 
 namespace hub {
 

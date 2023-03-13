@@ -3,7 +3,7 @@
 #include <InputSensor.hpp>
 #include <OutputSensor.hpp>
 
-#include <Viewer.hpp>
+#include <client/Viewer.hpp>
 
 #include <Server.hpp>
 
@@ -27,7 +27,7 @@ TEST_CASE( "Server test : viewer" ) {
             data[i] = iAcq;
         }
         acqs.emplace_back( iAcq, iAcq );
-        acqs.back() << hub::Measure( reinterpret_cast<const unsigned char*>( data ),
+        acqs.back() << hub::data::Measure( reinterpret_cast<const unsigned char*>( data ),
                                      dataSize,
                                      { { width, height }, hub::Format::BGR8 } );
     }
@@ -75,7 +75,7 @@ TEST_CASE( "Server test : viewer" ) {
         auto onNewAcquisition = []( const std::string& sensorName, const hub::Acquisition& acq ) {
             std::cout << "[Test] ############################### onNewAcquisition" << std::endl;
         };
-        hub::Viewer viewer { onNewStreamer,
+        hub::client::Viewer viewer { onNewStreamer,
                                    onDelStreamer,
                                    onServerConnected,
                                    onServerDisconnected,

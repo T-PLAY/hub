@@ -23,7 +23,7 @@ TEST_CASE( "Server test : close clients" ) {
             data[i] = iAcq * 2;
         }
         acqs.emplace_back( iAcq * 2, iAcq * 2 );
-        acqs.back() << hub::Measure( reinterpret_cast<const unsigned char*>( data ),
+        acqs.back() << hub::data::Measure( reinterpret_cast<const unsigned char*>( data ),
                                      dataSize,
                                      { { 3 }, hub::Format::BGR8 } );
     }
@@ -34,7 +34,7 @@ TEST_CASE( "Server test : close clients" ) {
             data[i] = iAcq2 * 10;
         }
         acqs2.push_back( hub::Acquisition( iAcq2 * 10, iAcq2 * 10 ) );
-        acqs2.back() << hub::Measure( reinterpret_cast<const unsigned char*>( data ),
+        acqs2.back() << hub::data::Measure( reinterpret_cast<const unsigned char*>( data ),
                                       dataSize,
                                       { { 3 }, hub::Format::BGR8 } );
     }

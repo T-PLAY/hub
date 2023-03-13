@@ -1,12 +1,13 @@
 
 #include <catch2/catch_test_macros.hpp>
+#include "test-common.hpp"
 
 #include <InputSensor.hpp>
 #include <OutputSensor.hpp>
 
 #include <Server.hpp>
 
-// #include <IO/Interface.hpp>
+// #include <io/Interface.hpp>
 
 TEST_CASE( "InputSensor test" ) {
 
@@ -22,7 +23,7 @@ TEST_CASE( "InputSensor test" ) {
     hub::OutputSensor outputSensor( sensorSpec, hub::io::Ram( buff ) );
     auto& output = outputSensor.getOutput();
 
-    auto acq = std::move( hub::Acquisition { 0, 1 } << hub::Measure { data, 3, resolution } );
+    auto acq = std::move( hub::Acquisition { 0, 1 } << hub::data::Measure { data, 3, resolution } );
     //    acq << hub::Measure{data, 3, resolution};
     outputSensor << acq;
     outputSensor << acq;
@@ -50,8 +51,9 @@ TEST_CASE( "InputSensor test" ) {
         const hub::SensorSpec sensorSpec( "hello", { resolution } );
         const std::string streamName = "streamName";
         const std::string ipv4       = "127.0.0.1";
-        srand( (unsigned)time( NULL ) );
-        const int port = rand() % 65535;
+//        srand( (unsigned)time( NULL ) );
+//        const int port = rand() % 65535;
+    const int port = getRandomPort();
 
         Server server( port );
         server.setMaxClients( 2 );
@@ -62,7 +64,7 @@ TEST_CASE( "InputSensor test" ) {
 
         unsigned char data[3] = { 0, 1, 2 };
         const hub::Acquisition acq =
-            std::move( hub::Acquisition( 0, 1 ) << hub::Measure( data, 3, resolution ) );
+            std::move( hub::Acquisition( 0, 1 ) << hub::data::Measure( data, 3, resolution ) );
         *outputSensor << acq;
 
         hub::InputSensor inputSensor(

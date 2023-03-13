@@ -1,6 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include <IO/Ram.hpp>
+#include <io/Ram.hpp>
 #include <InputSensor.hpp>
 #include <OutputSensor.hpp>
 
@@ -16,7 +16,7 @@ TEST_CASE( "Ram test" ) {
         unsigned char data[3] = {
             (unsigned char)iAcq, (unsigned char)( iAcq + 1 ), (unsigned char)( iAcq + 2 ) };
         acqs.push_back( hub::Acquisition( iAcq, iAcq ) );
-        acqs.back() << hub::Measure( data, 3, { { 1 }, hub::Format::BGR8 } );
+        acqs.back() << hub::data::Measure( data, 3, { { 1 }, hub::Format::BGR8 } );
         CHECK( acqs.back().getSize() == 3 );
     }
     CHECK( acqs[0] != acqs[1] );
