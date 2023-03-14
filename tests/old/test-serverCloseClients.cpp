@@ -122,7 +122,7 @@ TEST_CASE( "Server test : close clients" ) {
             outputSensor2 << acqs2.front();
             std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
             std::cout << "[Test] ############################### inputSensor(stream,)" << std::endl;
-            continue;
+//            continue;
         }
     }
     std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
