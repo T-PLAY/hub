@@ -4,6 +4,5 @@
 
 TEST_CASE( "Net utils test" ) {
 
-//    hub::net::utils::
-
+    //    hub::net::utils::
 }

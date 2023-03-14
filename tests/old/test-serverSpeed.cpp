@@ -14,7 +14,6 @@ TEST_CASE( "Server test : speed test" ) {
     srand( (unsigned)time( NULL ) );
     const int port = rand() % 65535;
 
-    std::vector<hub::Acquisition> acqs;
     constexpr int nAcqs       = 100;
     constexpr int width       = 1920;
     constexpr int height      = 1080;
@@ -26,9 +25,9 @@ TEST_CASE( "Server test : speed test" ) {
             data[i] = iAcq;
         }
         hub::Acquisition acq( iAcq, iAcq );
-            acq << hub::data::Measure( reinterpret_cast<unsigned const char*>( data ),
-                             dataSize,
-                             { { width, height }, hub::Format::BGR8 } );
+        acq << hub::data::Measure( reinterpret_cast<unsigned const char*>( data ),
+                                   dataSize,
+                                   { { width, height }, hub::Format::BGR8 } );
     }
     delete[] data;
 
@@ -42,9 +41,9 @@ TEST_CASE( "Server test : speed test" ) {
 
     {
         std::cout << "[Test] ############################### outputStream start" << std::endl;
-        hub::OutputSensor outputSensor(
-            hub::SensorSpec { "sensorName", { { { width, height }, hub::Format::BGR8 } } },
-            hub::io::OutputStream( "stream", hub::net::ClientSocket( ipv4, port ) ) );
+        //        hub::OutputSensor outputSensor(
+        //            hub::SensorSpec { "sensorName", { { { width, height }, hub::Format::BGR8 } }
+        //            }, hub::io::OutputStream( "stream", hub::net::ClientSocket( ipv4, port ) ) );
 
         std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
 
@@ -63,12 +62,13 @@ TEST_CASE( "Server test : speed test" ) {
         std::cout << "[Test] inputStream end ---------------------------------" << std::endl;
 
         std::cout << "[Test] ############################### send acquisitions" << std::endl;
-        //        for ( int i = 0; i < nAcqs; ++i ) {
-        //            outputSensor << acqs[i];
-        //        }
+        //    std::vector<hub::Acquisition> acqs;
+        //                for ( int i = 0; i < nAcqs; ++i ) {
+        //                    outputSensor << acqs[i];
+        //                }
         const auto& start = std::chrono::high_resolution_clock::now();
         for ( int i = 0; i < nAcqs; ++i ) {
-            outputSensor << acqs[i];
+            //            outputSensor << acqs[i];
             auto acq = inputSensor.getAcquisition();
             //            CHECK( acq == acqs[i] );
         }

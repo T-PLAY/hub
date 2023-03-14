@@ -1,10 +1,10 @@
 
 #include <catch2/catch_test_macros.hpp>
 
-#include <io/File.hpp>
-#include <io/Ram.hpp>
 #include <InputSensor.hpp>
 #include <OutputSensor.hpp>
+#include <io/File.hpp>
+#include <io/Ram.hpp>
 //#include <Streamer.hpp>
 
 TEST_CASE( "SensorSpec test" ) {
@@ -43,4 +43,6 @@ TEST_CASE( "SensorSpec test" ) {
 
     hub::SensorSpec sensorSpec5( "sensorName" );
     sensorSpec5 += hub::SensorSpec();
+
+    std::cout << sensorSpec5 << std::endl;
 }

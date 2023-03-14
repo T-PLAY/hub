@@ -1,14 +1,14 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include <io/File.hpp>
 #include <InputSensor.hpp>
 #include <OutputSensor.hpp>
+#include <io/File.hpp>
 
 #include <filesystem>
 #include <thread>
 
 #if CPLUSPLUS_VERSION <= 14
-#include <boost/filesystem.hpp>
+#    include <boost/filesystem.hpp>
 #endif
 
 TEST_CASE( "File test" ) {
@@ -63,7 +63,7 @@ TEST_CASE( "File test" ) {
     {
         hub::InputSensor inputSensor(
             hub::io::File( std::fstream( filename, std::ios::in | std::ios::binary ) ) );
-        auto & input = inputSensor.getInput();
+        const auto& input = inputSensor.getInput();
 
         const auto& sensorSpec = inputSensor.m_spec;
         CHECK( sensorSpec.getAcquisitionSize() == 3 );
@@ -78,7 +78,7 @@ TEST_CASE( "File test" ) {
             assert( acq == acqs[iAcq] );
             CHECK( acq == acqs[iAcq] );
         }
-        CHECK(input.isEnd());
+        CHECK( input.isEnd() );
     }
     std::cout << "inputStream end #################################" << std::endl;
 }

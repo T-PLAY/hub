@@ -4,7 +4,6 @@
 
 TEST_CASE( "Socket test" ) {
 
-//    hub::net::Socket socket;
-//    socket.isConnected();
-
+    //    hub::net::Socket socket;
+    //    socket.isConnected();
 }

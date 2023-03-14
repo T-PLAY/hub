@@ -2,13 +2,13 @@
 
 #include <deque>
 #include <functional>
-#include <map>
 #include <iomanip>
+#include <map>
 #include <memory>
 
 #include <InputSensor.hpp>
-#include <net/ServerSocket.hpp>
 #include <OutputSensor.hpp>
+#include <net/ServerSocket.hpp>
 
 #include "AskerClient.hpp"
 #include "StreamViewerClient.hpp"
@@ -40,7 +40,7 @@ class Server
     void newAcquisition( StreamerClient* streamer, const hub::Acquisition& acq );
 
     std::list<std::pair<std::string, hub::SensorSpec>> listStreams() const;
-    const hub::SensorSpec& getSensorSpec( const std::string& streamName );
+    //    const hub::SensorSpec& getSensorSpec( const std::string& streamName );
     const std::shared_ptr<hub::Acquisition> getAcquisition( const std::string& streamName );
 
     void removeClient( Client* client );

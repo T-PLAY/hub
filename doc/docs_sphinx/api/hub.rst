@@ -12,7 +12,7 @@ Sensor
 
 
 SensorSpec
-~~~~~~~~~~
+***********
 
 .. doxygenclass:: hub::SensorSpec
    :members: SensorNameType, MetaData, SensorSpec
@@ -51,29 +51,39 @@ Format
 
 .. doxygenenum:: hub::Format
 
-Interface
-~~~~~~~~~
-
-
-
-.. doxygenclass:: hub::io::Interface
-    :members: isOpen, isEnd, close
-    :protected-members:
-
+.. InputOutput
+.. ~~~~~~~~~~~
 ..
+..
+..
+.. .. doxygenclass:: hub::io::InputOutput
+..     :members: isOpen, isEnd, close
+..     :protected-members:
+..
+.. ..
     .. doxygenclass:: hub::io::OutputInterface
     .. doxygenclass:: hub::io::InputInterface
     .. doxygenclass:: hub::io::InputOutputInterface
 
-OutputInterface
-***************
+InputOutput
+********************
 
-.. image:: ../_build/html/classhub_1_1io_1_1OutputInterface.png
+.. image:: ../_build/html/classhub_1_1io_1_1InputOutput.png
    :align: center
 
 |
 
-.. doxygenclass:: hub::io::OutputInterface
+.. .. doxygenclass:: hub::io::InputOutput
+
+Output
+~~~~~~
+
+.. image:: ../_build/html/classhub_1_1io_1_1Output.png
+   :align: center
+
+|
+
+.. .. doxygenclass:: hub::io::Output
 
 OutputStream
 ############
@@ -87,15 +97,15 @@ OutputStream
    :start-after: startConstruction
    :end-before: endConstruction
 
-InputInterface
-**************
+Input
+~~~~~
 
-.. image:: ../_build/html/classhub_1_1io_1_1InputInterface.png
+.. image:: ../_build/html/classhub_1_1io_1_1Input.png
    :align: center
 
 |
 
-.. doxygenclass:: hub::io::InputInterface
+.. .. doxygenclass:: hub::io::InputInterface
 
 
 InputStream
@@ -127,15 +137,6 @@ ClientSocket
 
 .. doxygenfunction:: hub::net::ClientSocket::ClientSocket(const std::string &, int, bool)
 
-InputOutputInterface
-********************
-
-.. image:: ../_build/html/classhub_1_1io_1_1InputOutputInterface.png
-   :align: center
-
-|
-
-.. doxygenclass:: hub::io::InputOutputInterface
 
 File
 ####
@@ -230,40 +231,49 @@ Acquisition
 .. doxygenclass:: hub::Acquisition
    :members: Acquisition, isInterpolable, clone, getSize, getMeasures, slerp, operator<<
 
-Measure
-~~~~~~~
+Data
+~~~~~
 
-.. doxygenclass:: hub::Measure
+.. .. doxygenclass:: hub::data
+
+Measure
+********
+
+.. doxygenclass:: hub::data::Measure
    :members: Measure, clone, isInterpolable, getResolution, slerp
 
 Dof6
 ****
 
-.. doxygenclass:: hub::Dof6
+.. doxygenclass:: hub::data::Dof6
    :members: Dof6
 
 Mat4
 ****
 
-.. doxygenclass:: hub::Mat4
+.. doxygenclass:: hub::data::Mat4
 
+Client
+~~~~~~~
+
+.. .. doxygennamespace:: hub::client
 
 Streamer
 -----------
 
-.. doxygenclass:: hub::Streamer
+.. doxygenclass:: hub::client::Streamer
    :members:
 
 **Instantiate examples :**
 
-.. literalinclude:: ../../../examples/streamers/example-streamer.cpp
+.. literalinclude:: ../../../examples/example-streamer.cpp
    :language: cpp
    :start-after: startConstruction
    :end-before: endConstruction
 
 **Functional example :**
 
-.. literalinclude:: ../../../examples/streamers/example-streamer.cpp
+.. literalinclude:: ../../../examples/example-streamer.cpp
    :language: cpp
    :start-after: startFunctional
    :end-before: endFunctional
@@ -272,13 +282,26 @@ Streamer
 Viewer
 -----------
 
-.. doxygenclass:: hub::Viewer
+.. doxygenclass:: hub::client::Viewer
    :members:
 
 **Instantiate examples :**
 
-.. literalinclude:: ../../../examples/viewers/example-viewer.cpp
+.. literalinclude:: ../../../examples/example-viewer.cpp
    :language: cpp
    :start-after: startConstruction
    :end-before: endConstruction
  
+Asker
+-----------
+
+.. doxygenclass:: hub::client::Asker
+   :members:
+
+**Instantiate examples :**
+
+.. literalinclude:: ../../../examples/viewers/example-asker.cpp
+   :language: cpp
+   :start-after: startConstruction
+   :end-before: endConstruction
+

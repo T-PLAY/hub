@@ -1,29 +1,25 @@
 #pragma once
 
-//#include <any>
-//#include <cassert>
-//#include <iostream>
-//#include <list>
-//#include <map>
-//#include <string>
-//#include <typeinfo>
-//#include <vector>
+// #include <any>
+// #include <cassert>
+// #include <iostream>
+// #include <list>
+// #include <map>
+// #include <string>
+// #include <typeinfo>
+// #include <vector>
 
-#include "Macros.hpp"
 #include "Acquisition.hpp"
-#include "SensorSpec.hpp"
 #include "Any.hpp"
+#include "Macros.hpp"
+#include "SensorSpec.hpp"
 
 #ifdef USE_BOOST
-#include <boost/type_index.hpp>
+#    include <boost/type_index.hpp>
 #endif
-
-
-
 
 namespace hub {
 namespace io {
-
 
 ///
 /// \brief The Input class
@@ -39,7 +35,7 @@ class SRC_API Input
 {
   public:
     Input() = default;
-//    Input() = delete;
+    //    Input() = delete;
 
     ///
     /// \param input
@@ -63,7 +59,6 @@ class SRC_API Input
     virtual void read( unsigned char* data, size_t len ) = 0;
 
   public:
-
     ///
     /// \brief isEnd
     /// allows to know if the communication bus is no longer active,
@@ -96,55 +91,57 @@ class SRC_API Input
     /// \brief read
     /// \param any
     ///
-//    void read( std::any& any );
+    //    void read( std::any& any );
     void read( Any& any );
 
     ///
     /// \brief read
     /// \param str
     ///
-    void read( char* str ) ;
+    void read( char* str );
 
     ///
     /// \brief read
     /// \param t
     ///
     template <class T>
-    void read( T& t ) ;
+    void read( T& t );
 
     ///
     /// \brief read
     /// \param list
     ///
     template <class T>
-    void read( std::list<T>& list ) ;
+    void read( std::list<T>& list );
 
     ///
     /// \brief read
     /// \param vector
     ///
     template <class T>
-    void read( std::vector<T>& vector ) ;
+    void read( std::vector<T>& vector );
 
     ///
     /// \brief read
     /// \param map
     ///
     template <class T, class U>
-    void read( std::map<T, U>& map ) ;
+    void read( std::map<T, U>& map );
 
+    //    template <class T, class U>
+    //        typename std::enable_if<( not std::is_same<U, hub::SensorSpec>::value ), void>::type
+    //    template <class T, class U,
+    //              typename = typename std::enable_if<( not std::is_same<U, hub::SensorSpec>::value
+    //              )>::type> void
+    ///
+    /// \brief read
+    /// \param pair
+    ///
+    template <class T, class U>
+    void read( std::pair<T, U>& pair ) {
 
-//    template <class T, class U>
-//        typename std::enable_if<( not std::is_same<U, hub::SensorSpec>::value ), void>::type
-//    template <class T, class U,
-//              typename = typename std::enable_if<( not std::is_same<U, hub::SensorSpec>::value )>::type>
-//              void
-        template <class T, class U>
-    void
-        read( std::pair<T, U>& pair )  {
-
-//        typename std::enable_if<( not std::is_same<U, hub::SensorSpec>::value ), void>::type
-//        read( std::pair<T, U>& pair ) const {
+        //        typename std::enable_if<( not std::is_same<U, hub::SensorSpec>::value ),
+        //        void>::type read( std::pair<T, U>& pair ) const {
 
         assert( isOpen() );
 
@@ -157,39 +154,39 @@ class SRC_API Input
         //        read(sensorSpec);
         U second;
         read( second );
-//        auto second = get<U>();
-        pair        = std::make_pair( first, std::move( second ) );
+        //        auto second = get<U>();
+        pair = std::make_pair( first, std::move( second ) );
     }
 
-//        template <class T, class U>
-//        typename std::enable_if<( std::is_same<U, hub::SensorSpec>::value ), void>::type
-//        read( std::pair<T, U>& pair )  {
-//            assert( isOpen() );
+    //        template <class T, class U>
+    //        typename std::enable_if<( std::is_same<U, hub::SensorSpec>::value ), void>::type
+    //        read( std::pair<T, U>& pair )  {
+    //            assert( isOpen() );
 
-//        #ifdef DEBUG_INPUT
-//            std::cout << "[Input] read(std::pair)" << std::endl;
-//        #endif
-//            T first;
-//            read( first );
-//            //    hub::SensorSpec sensorSpec;
-//            U second;
-//            second = getSensorSpec();
-//            //    read( second );
-//            pair = std::make_pair( first, second );
-//        }
+    //        #ifdef DEBUG_INPUT
+    //            std::cout << "[Input] read(std::pair)" << std::endl;
+    //        #endif
+    //            T first;
+    //            read( first );
+    //            //    hub::SensorSpec sensorSpec;
+    //            U second;
+    //            second = getSensorSpec();
+    //            //    read( second );
+    //            pair = std::make_pair( first, second );
+    //        }
 
   public:
     ///
     /// \brief read
     /// \param str
     ///
-    void read( std::string& str ) ;
+    void read( std::string& str );
 
     ///
     /// \brief read
     /// \param sensorSpec
     ///
-//    void read( SensorSpec& sensorSpec )  = delete;
+    //    void read( SensorSpec& sensorSpec )  = delete;
     void read( SensorSpec& sensorSpec );
 
     //    ///
@@ -202,59 +199,58 @@ class SRC_API Input
     /// \brief read
     /// \param acquisition
     ///
-    void read( Acquisition& acquisition )  = delete;
+    void read( Acquisition& acquisition ) = delete;
 
     ///
     /// \brief read
     /// \param measure
     ///
-    void read( data::Measure& measure )  = delete;
+    void read( data::Measure& measure ) = delete;
 
-//    void read( data::UserData& userData );
+    //    void read( data::UserData& userData );
 
-//    ///
-//    /// \brief getSensorSpec
-//    /// \return
-//    ///
-//    SensorSpec getSensorSpec() ;
+    //    ///
+    //    /// \brief getSensorSpec
+    //    /// \return
+    //    ///
+    //    SensorSpec getSensorSpec() ;
 
-//    UserData getUserData() const;
+    //    UserData getUserData() const;
 
     ///
     /// \brief getAcquisition
     /// \param sensorSpec
     /// \return
     ///
-    virtual Acquisition getAcquisition( const SensorSpec& sensorSpec ) ;
+    virtual Acquisition getAcquisition( const SensorSpec& sensorSpec );
 
-//    friend class SensorSpec;
+    //    friend class SensorSpec;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 template <class T>
-void Input::read( T& t )  {
+void Input::read( T& t ) {
     assert( isOpen() );
 
     read( reinterpret_cast<unsigned char*>( &t ), sizeof( T ) );
 
 #ifdef DEBUG_INPUT
-#ifdef USE_BOOST
-    std::cout << "[Input] read(T) : " << typeid( T ).name() << " (" << boost::typeindex::type_id<T>().pretty_name()  << ") '" << t << "'"
-              << std::endl;
-#else
-//    std::cout << "[Input] read(T) : " << typeid( T ).name() << " '" << t << "'"
-//              << std::endl;
-//    std::cout << "[Input] read(T) : " << typeid( T ).name() << " '" << t << "' : end"
-//              << std::endl;
-    std::cout << "[Input] read(T) : '" << t << "' : end"
-              << std::endl;
-#endif
+#    ifdef USE_BOOST
+    std::cout << "[Input] read(T) : " << typeid( T ).name() << " ("
+              << boost::typeindex::type_id<T>().pretty_name() << ") '" << t << "'" << std::endl;
+#    else
+    //    std::cout << "[Input] read(T) : " << typeid( T ).name() << " '" << t << "'"
+    //              << std::endl;
+    //    std::cout << "[Input] read(T) : " << typeid( T ).name() << " '" << t << "' : end"
+    //              << std::endl;
+    std::cout << "[Input] read(T) : '" << t << "' : end" << std::endl;
+#    endif
 #endif
 }
 
 template <class T>
-void Input::read( std::list<T>& list )  {
+void Input::read( std::list<T>& list ) {
     assert( isOpen() );
 
 #ifdef DEBUG_INPUT
@@ -272,7 +268,7 @@ void Input::read( std::list<T>& list )  {
 }
 
 template <class T>
-void Input::read( std::vector<T>& vector )  {
+void Input::read( std::vector<T>& vector ) {
     assert( isOpen() );
 
 #ifdef DEBUG_INPUT
@@ -293,7 +289,7 @@ void Input::read( std::vector<T>& vector )  {
 }
 
 template <class T, class U>
-void Input::read( std::map<T, U>& map )  {
+void Input::read( std::map<T, U>& map ) {
     assert( isOpen() );
 
 #ifdef DEBUG_INPUT
@@ -314,7 +310,6 @@ void Input::read( std::map<T, U>& map )  {
         map.emplace( std::move( pair ) );
     }
 }
-
 
 } // namespace io
 } // namespace hub

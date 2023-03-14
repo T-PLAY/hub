@@ -1,5 +1,5 @@
-#include <catch2/catch_test_macros.hpp>
 #include "test-common.hpp"
+#include <catch2/catch_test_macros.hpp>
 
 #include <OutputSensor.hpp>
 #include <SensorSpec.hpp>
@@ -14,8 +14,8 @@ TEST_CASE( "Asker test" ) {
     const std::string streamName = "streamName";
     const std::string ipv4       = "127.0.0.1";
     //    const int port               = 12004;
-//    srand( (unsigned)time( NULL ) );
-//    const int port = rand() % 65535;
+    //    srand( (unsigned)time( NULL ) );
+    //    const int port = rand() % 65535;
     const int port = getRandomPort();
 
     Server server( port );

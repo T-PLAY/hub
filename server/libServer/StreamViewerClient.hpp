@@ -3,15 +3,15 @@
 #include <thread>
 
 #include "Client.hpp"
-#include <net/ClientSocket.hpp>
 #include <OutputSensor.hpp>
+#include <net/ClientSocket.hpp>
 
 class StreamerClient;
 
 class StreamViewerClient : public Client
 {
   public:
-    StreamViewerClient( Server * server, int iClient, hub::net::ClientSocket&& sock );
+    StreamViewerClient( Server* server, int iClient, hub::net::ClientSocket&& sock );
     ~StreamViewerClient();
 
     std::string headerMsg() const override;

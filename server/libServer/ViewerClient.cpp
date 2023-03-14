@@ -3,10 +3,10 @@
 #include "Server.hpp"
 #include "StreamerClient.hpp"
 
-ViewerClient::ViewerClient( Server * server, int iClient, hub::net::ClientSocket&& sock ) :
+ViewerClient::ViewerClient( Server* server, int iClient, hub::net::ClientSocket&& sock ) :
     Client( server, iClient ), m_socket( std::move( sock ) ) {
 
-    assert(m_server != nullptr);
+    assert( m_server != nullptr );
     m_server->addViewer( this );
 
     m_thread = std::thread( [this]() {
@@ -36,7 +36,7 @@ ViewerClient::~ViewerClient() {
     assert( m_thread.joinable() );
     m_thread.join();
 
-    assert(m_server != nullptr);
+    assert( m_server != nullptr );
     m_server->delViewer( this );
     printStatusMessage( "del viewer" );
 }

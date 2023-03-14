@@ -49,6 +49,9 @@ class SRC_API Output
     Output&& operator=( Output&& output )     = delete;
 
     virtual ~Output() = default;
+//    virtual ~Output() {
+//        close();
+//    }
 
   protected:
     ///
@@ -156,7 +159,11 @@ class SRC_API Output
     ///
     void write( const data::Measure& measure ) ;
 
-    void write( const data::UserData& userData) ;
+//    ///
+//    /// \brief write
+//    /// \param userData
+//    ///
+//    void write( const data::UserData& userData) ;
 
     ///
     /// \brief write

@@ -82,6 +82,11 @@ class SRC_API SensorSpec
     ///
     SensorSpec& operator+=( const SensorSpec& sensorSpec );
 
+    ///
+    /// \brief operator ==
+    /// \param sensorSpec
+    /// \return
+    ///
     bool operator ==(const SensorSpec& sensorSpec) const;
 
     ///

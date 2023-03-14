@@ -28,8 +28,8 @@ TEST_CASE( "Server test : viewer" ) {
         }
         acqs.emplace_back( iAcq, iAcq );
         acqs.back() << hub::data::Measure( reinterpret_cast<const unsigned char*>( data ),
-                                     dataSize,
-                                     { { width, height }, hub::Format::BGR8 } );
+                                           dataSize,
+                                           { { width, height }, hub::Format::BGR8 } );
     }
 
     std::cout << "[Test] ############################### server start" << std::endl;
@@ -76,12 +76,12 @@ TEST_CASE( "Server test : viewer" ) {
             std::cout << "[Test] ############################### onNewAcquisition" << std::endl;
         };
         hub::client::Viewer viewer { onNewStreamer,
-                                   onDelStreamer,
-                                   onServerConnected,
-                                   onServerDisconnected,
-                                   onNewAcquisition,
-                                   ipv4,
-                                   port };
+                                     onDelStreamer,
+                                     onServerConnected,
+                                     onServerDisconnected,
+                                     onNewAcquisition,
+                                     ipv4,
+                                     port };
         std::cout << "[Test] ############################### viewer created" << std::endl;
         std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
 

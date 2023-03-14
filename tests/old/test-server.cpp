@@ -24,10 +24,10 @@ TEST_CASE( "Server test : direct stream" ) {
             data[i] = iAcq + i;
         }
         hub::Acquisition acq( iAcq + 1, iAcq + 2 );
-          acq  << hub::data::Measure { reinterpret_cast<const unsigned char*>( data ),
-                              dataSize,
-                              { { 3 }, hub::Format::BGR8 } };
-        acqs.push_back(std::move(acq));
+        acq << hub::data::Measure { reinterpret_cast<const unsigned char*>( data ),
+                                    dataSize,
+                                    { { 3 }, hub::Format::BGR8 } };
+        acqs.push_back( std::move( acq ) );
     }
 
     std::cout << "[Test] ############################### server start" << std::endl;

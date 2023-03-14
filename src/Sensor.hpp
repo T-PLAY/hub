@@ -18,10 +18,8 @@ class SRC_API Sensor
     /// \brief Sensor
     /// \param sensorSpec
     /// [in] user defined sensor spec
-    /// \param io
-    /// [in] given interface
     ///
-    Sensor( const SensorSpec& sensorSpec );
+    explicit Sensor( const SensorSpec& sensorSpec );
     Sensor( const Sensor& sensor ) = delete;
 
   protected:

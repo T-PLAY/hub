@@ -2,9 +2,9 @@
 // code in README.md of this project
 // streamer code
 
+#include <OutputSensor.hpp>
 #include <io/InputStream.hpp>
 #include <io/OutputStream.hpp>
-#include <OutputSensor.hpp>
 
 /// \file
 

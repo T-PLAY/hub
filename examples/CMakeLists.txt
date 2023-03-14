@@ -13,7 +13,7 @@ string(REPLACE ".cpp" "" EXAMPLE_SRC_BASENAME "${EXAMPLE_SRC}")
 set(EXAMPLE_SRC_BASENAME ${EXAMPLE_SRC_BASENAME})
 
 foreach(name ${EXAMPLE_SRC_BASENAME})
-#     foreach(name "example-metaData")
+    # foreach(name "example-metaData")
     get_filename_component(basename ${name} NAME)
     set(TARGET_NAME ${basename})
     add_executable(${TARGET_NAME} ${name}.cpp)

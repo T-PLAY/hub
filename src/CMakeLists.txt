@@ -146,9 +146,9 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
         EXECUTABLE ctest --test-dir tests -j ${n_cores}
         DEPENDENCIES hub test-all
         EXCLUDE
-        "*.hpp"
-#        "*.inl"
         "/usr/*"
+#        "*.hpp"
+#        "*.inl"
 #        NO_DEMANGLE
         # "examples/*" "include/*" COMMAND ${HUB_BROWSER} ${CMAKE_BINARY_DIR}/coverage/index.html
     )

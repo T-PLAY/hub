@@ -11,6 +11,72 @@
 namespace hub {
 // namespace any {
 
+Any::Any(const Any &any) :
+    m_type(any.m_type),
+    m_hasValue(any.m_hasValue)
+{
+    assert(any.m_hasValue);
+
+        switch ( m_type ) {
+        case Any::Type::INT: {
+            m_int = any.m_int;
+        } break;
+
+        case Any::Type::DOUBLE: {
+            m_double = any.m_double;
+        } break;
+
+        case Any::Type::STRING: {
+            m_std_string = any.m_std_string;
+        } break;
+
+        case Any::Type::CONST_CHAR_PTR: {
+            m_const_char_ptr = any.m_const_char_ptr;
+        } break;
+
+        case Any::Type::MAT4: {
+            m_mat4 = new data::Mat4(*any.m_mat4);
+        } break;
+
+        default:
+        assert( false );
+        }
+}
+
+Any &Any::operator=(const Any &any)
+{
+        m_type = any.m_type;
+        m_hasValue = any.m_hasValue;
+    assert(any.m_hasValue);
+
+        switch ( m_type ) {
+        case Any::Type::INT: {
+            m_int = any.m_int;
+        } break;
+
+        case Any::Type::DOUBLE: {
+            m_double = any.m_double;
+        } break;
+
+        case Any::Type::STRING: {
+            m_std_string = any.m_std_string;
+        } break;
+
+        case Any::Type::CONST_CHAR_PTR: {
+            m_const_char_ptr = any.m_const_char_ptr;
+        } break;
+
+        case Any::Type::MAT4: {
+            m_mat4 = any.m_mat4;
+        } break;
+
+        default:
+        assert( false );
+        }
+
+        return *this;
+}
+
 Any::Any( int value ) {
     assert( m_type == Type::NONE );
     assert( !m_hasValue );

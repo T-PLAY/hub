@@ -118,7 +118,12 @@ endif()
 add_custom_target(
     cppCheck
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-    COMMAND cppcheck --enable=all --error-exitcode=1 src tests server -I src -I server/libServer/ --suppress=toomanyconfigs --suppress=missingIncludeSystem
+    COMMAND cppcheck --enable=all --error-exitcode=1 src tests server -I src -I server/libServer/
+    --inline-suppr
+    --suppress=toomanyconfigs
+    --suppress=missingIncludeSystem
+#    --suppress=noExplicitConstructor
+#    --suppress=invalidPointerCast
 #    COMMENT "Generating API documentation with Doxygen"
 #    VERBATIM
     COMMENT "Running cppCheck"

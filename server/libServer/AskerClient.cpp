@@ -2,7 +2,7 @@
 
 #include "Server.hpp"
 
-AskerClient::AskerClient( Server * server, int iClient, hub::net::ClientSocket&& sock ) :
+AskerClient::AskerClient( Server* server, int iClient, hub::net::ClientSocket&& sock ) :
     Client( server, iClient ), m_socket( std::move( sock ) ) {
 
     m_thread = std::thread( [this]() {
@@ -23,10 +23,9 @@ AskerClient::AskerClient( Server * server, int iClient, hub::net::ClientSocket&&
                 case hub::net::ClientSocket::Message::LIST_STREAMS: {
                     std::cout << headerMsg() << "listing sensors" << std::endl;
 
-    assert(m_server != nullptr);
+                    assert( m_server != nullptr );
                     const auto& listStreams = m_server->listStreams();
                     m_socket.write( listStreams );
-
 
                 } break;
 
@@ -35,7 +34,7 @@ AskerClient::AskerClient( Server * server, int iClient, hub::net::ClientSocket&&
                     std::string streamName;
                     m_socket.read( streamName );
 
-    assert(m_server != nullptr);
+                    assert( m_server != nullptr );
                     const auto& streamers = m_server->getStreamers();
                     if ( streamers.find( streamName ) != streamers.end() ) {
                         m_socket.write( hub::net::ClientSocket::Message::FOUND );
@@ -56,7 +55,7 @@ AskerClient::AskerClient( Server * server, int iClient, hub::net::ClientSocket&&
                     std::string streamName;
                     m_socket.read( streamName );
 
-    assert(m_server != nullptr);
+                    assert( m_server != nullptr );
                     const auto& streamers = m_server->getStreamers();
                     if ( streamers.find( streamName ) != streamers.end() ) {
                         m_socket.write( hub::net::ClientSocket::Message::FOUND );
@@ -66,7 +65,7 @@ AskerClient::AskerClient( Server * server, int iClient, hub::net::ClientSocket&&
                         const auto& sensorSpec = streamer->getInputSensor().m_spec;
                         m_socket.write( sensorSpec );
 
-    assert(m_server != nullptr);
+                        assert( m_server != nullptr );
                         const hub::Acquisition& acq = *m_server->getAcquisition( streamName ).get();
                         m_socket.write( acq );
                     }
@@ -81,7 +80,6 @@ AskerClient::AskerClient( Server * server, int iClient, hub::net::ClientSocket&&
                               << std::endl;
                     break;
                 }
-
             }
             std::thread( [this]() { delete this; } ).detach();
         }
@@ -93,7 +91,6 @@ AskerClient::AskerClient( Server * server, int iClient, hub::net::ClientSocket&&
     } );
 
     printStatusMessage( "new asker" );
-
 }
 
 AskerClient::~AskerClient() {

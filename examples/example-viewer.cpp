@@ -37,8 +37,8 @@ int main() {
         std::cout << "[example-viewer] onNewAcquisition : " << acq << std::endl;
     };
 
-    hub::client::Viewer viewer{
-                                onNewStreamer, onDelStreamer, onServerConnected, onServerDisconnected, onNewAcquisition };
+    hub::client::Viewer viewer {
+        onNewStreamer, onDelStreamer, onServerConnected, onServerDisconnected, onNewAcquisition };
     // endConstruction
 
     std::cout << "Starting viewer listening" << std::endl

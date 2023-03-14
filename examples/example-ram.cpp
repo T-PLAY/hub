@@ -1,7 +1,7 @@
 
-#include <io/Ram.hpp>
 #include <InputSensor.hpp>
 #include <OutputSensor.hpp>
+#include <io/Ram.hpp>
 
 ///
 /// \file

@@ -1,6 +1,6 @@
 
-#include <catch2/catch_test_macros.hpp>
 #include "test-common.hpp"
+#include <catch2/catch_test_macros.hpp>
 
 #include <InputSensor.hpp>
 #include <OutputSensor.hpp>
@@ -21,7 +21,7 @@ TEST_CASE( "InputSensor test" ) {
     hub::SensorSpec sensorSpec( "sensorName", { resolution } );
     unsigned char data[3] { 1, 2, 3 };
     hub::OutputSensor outputSensor( sensorSpec, hub::io::Ram( buff ) );
-    auto& output = outputSensor.getOutput();
+    //    const auto& output = outputSensor.getOutput();
 
     auto acq = std::move( hub::Acquisition { 0, 1 } << hub::data::Measure { data, 3, resolution } );
     //    acq << hub::Measure{data, 3, resolution};
@@ -29,13 +29,13 @@ TEST_CASE( "InputSensor test" ) {
     outputSensor << acq;
     outputSensor << acq;
 
-    hub::InputSensor inputSensor{ hub::io::Ram( buff ) };
+    hub::InputSensor inputSensor { hub::io::Ram( buff ) };
 
     auto acq2 = inputSensor.getAcquisition();
     CHECK( acq == acq2 );
 
     //    CHECK(inputSensor.)
-    auto& input = inputSensor.getInput();
+    const auto& input = inputSensor.getInput();
     CHECK( !input.isEnd() );
 
     //    output.close();
@@ -46,44 +46,44 @@ TEST_CASE( "InputSensor test" ) {
 
     CHECK( input.isEnd() );
 
-    {
-        const hub::Resolution resolution( { 1 }, hub::Format::BGR8 );
-        const hub::SensorSpec sensorSpec( "hello", { resolution } );
-        const std::string streamName = "streamName";
-        const std::string ipv4       = "127.0.0.1";
-//        srand( (unsigned)time( NULL ) );
-//        const int port = rand() % 65535;
+    //    {
+    const hub::Resolution resolution2( { 1 }, hub::Format::BGR8 );
+    const hub::SensorSpec sensorSpec2( "hello", { resolution2 } );
+    const std::string streamName = "streamName";
+    const std::string ipv4       = "127.0.0.1";
+    //        srand( (unsigned)time( NULL ) );
+    //        const int port = rand() % 65535;
     const int port = getRandomPort();
 
-        Server server( port );
-        server.setMaxClients( 2 );
-        server.asyncRun();
+    Server server( port );
+    server.setMaxClients( 2 );
+    server.asyncRun();
 
-        hub::OutputSensor* outputSensor = new hub::OutputSensor(
-            sensorSpec, hub::io::OutputStream( streamName, hub::net::ClientSocket( ipv4, port ) ) );
+    hub::OutputSensor* outputSensor2 = new hub::OutputSensor(
+        sensorSpec2, hub::io::OutputStream( streamName, hub::net::ClientSocket( ipv4, port ) ) );
 
-        unsigned char data[3] = { 0, 1, 2 };
-        const hub::Acquisition acq =
-            std::move( hub::Acquisition( 0, 1 ) << hub::data::Measure( data, 3, resolution ) );
-        *outputSensor << acq;
+    unsigned char data2[3] = { 0, 1, 2 };
+    const hub::Acquisition acq3 =
+        std::move( hub::Acquisition( 0, 1 ) << hub::data::Measure( data2, 3, resolution2 ) );
+    *outputSensor2 << acq3;
 
-        hub::InputSensor inputSensor(
-            hub::io::InputStream( streamName, "", hub::net::ClientSocket( ipv4, port ) ) );
+    hub::InputSensor inputSensor2(
+        hub::io::InputStream( streamName, "", hub::net::ClientSocket( ipv4, port ) ) );
 
-        //        output.close();
+    //        output.close();
 
-        auto acq2 = inputSensor.getAcquisition();
-        CHECK( acq == acq2 );
+    auto acq4 = inputSensor2.getAcquisition();
+    CHECK( acq3 == acq4 );
 
-        delete outputSensor;
+    delete outputSensor2;
 
-        try {
+    try {
 
-            auto acqs = inputSensor.getAllAcquisitions();
-            CHECK( false );
-        }
-        catch ( std::exception& ex ) {
-            CHECK( true );
-        }
+        auto acqs2 = inputSensor2.getAllAcquisitions();
+        CHECK( false );
     }
+    catch ( std::exception& ex ) {
+        CHECK( true );
+    }
+    //    }
 }

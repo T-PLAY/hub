@@ -16,7 +16,8 @@ TEST_CASE( "Acquisition test" ) {
         acq.emplaceMeasure( data, 3, hub::Resolution { { 1 }, hub::Format::BGR8 } );
         CHECK( acq.getSize() == 6 );
 
-        acq.pushBack( hub::data::Measure { data, 3, hub::Resolution { { 1 }, hub::Format::BGR8 } } );
+        acq.pushBack(
+            hub::data::Measure { data, 3, hub::Resolution { { 1 }, hub::Format::BGR8 } } );
         CHECK( acq.getSize() == 9 );
 
         //        acq << hub::Measure{ data, 3, hub::Resolution{{1}, hub::Format::USER_DATA}};
@@ -61,15 +62,15 @@ TEST_CASE( "Acquisition test" ) {
 
     //    hub::s_format2isInterpolable
     for ( int i = 1; i < (int)hub::Format::COUNT; ++i ) {
-        const auto& format     = hub::Format( i );
-        const auto& resolution = hub::Resolution( { 1 }, format );
-        hub::Acquisition acq   = std::move(
-            hub::Acquisition( 0, 0 )
-            << hub::data::Measure( data, hub::computeAcquisitionSize( resolution ), resolution ) );
-        CHECK( acq.isInterpolable() == hub::s_format2isInterpolable[(int)format] );
+        const auto& format      = hub::Format( i );
+        const auto& resolution2 = hub::Resolution( { 1 }, format );
+        hub::Acquisition acq22 =
+            std::move( hub::Acquisition( 0, 0 ) << hub::data::Measure(
+                           data, hub::computeAcquisitionSize( resolution2 ), resolution2 ) );
+        CHECK( acq22.isInterpolable() == hub::s_format2isInterpolable[(int)format] );
     }
 
-    const hub::Resolution resolution2( { 1 }, hub::Format::DOF6 );
+    //    const hub::Resolution resolution2( { 1 }, hub::Format::DOF6 );
     //    hub::Dof6 dof6(0, 0, 0, 1, 0, 0, 0);
 
     hub::Acquisition acq4 =
@@ -98,20 +99,21 @@ TEST_CASE( "Acquisition test" ) {
 
     // hasFixedSize
     {
-        hub::Acquisition acq { 0, 0 };
-        CHECK( acq.hasFixedSize() );
+        hub::Acquisition acq8 { 0, 0 };
+        CHECK( acq8.hasFixedSize() );
 
-        unsigned char data[3] { 1, 2, 3 };
-        acq << hub::data::Measure { data, 3, hub::Resolution { { 1 }, hub::Format::BGR8 } };
-        CHECK( acq.hasFixedSize() );
+        unsigned char data3[3] { 1, 2, 3 };
+        acq8 << hub::data::Measure { data3, 3, hub::Resolution { { 1 }, hub::Format::BGR8 } };
+        CHECK( acq8.hasFixedSize() );
 
-        acq.emplaceMeasure( data, 3, hub::Resolution { { 1 }, hub::Format::BGR8 } );
-        CHECK( acq.hasFixedSize() );
+        acq8.emplaceMeasure( data3, 3, hub::Resolution { { 1 }, hub::Format::BGR8 } );
+        CHECK( acq8.hasFixedSize() );
 
-        acq.pushBack( hub::data::Measure { data, 3, hub::Resolution { { 1 }, hub::Format::USER_DATA } } );
-        CHECK( !acq.hasFixedSize() );
+        acq8.pushBack(
+            hub::data::Measure { data3, 3, hub::Resolution { { 1 }, hub::Format::USER_DATA } } );
+        CHECK( !acq8.hasFixedSize() );
 
-        //        acq << hub::Measure{ data, 3, hub::Resolution{{1}, hub::Format::USER_DATA}};
-        //        CHECK(acq.getSize() == 12);
+        //        acq8 << hub::Measure{ data, 3, hub::Resolution{{1}, hub::Format::USER_DATA}};
+        //        CHECK(acq8.getSize() == 12);
     }
 }

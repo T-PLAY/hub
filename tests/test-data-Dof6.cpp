@@ -1,8 +1,8 @@
 
 #include <catch2/catch_test_macros.hpp>
 
-#include <iostream>
 #include <cmath>
+#include <iostream>
 
 #include <data/Dof6.hpp>
 
@@ -11,7 +11,7 @@ TEST_CASE( "Dof6 test" ) {
     unsigned char data[28] { 0 };
     const auto& resolution = hub::Resolution { { 1 }, hub::Format::DOF6 };
     hub::data::Measure measure( data, 28, resolution );
-    const auto sqrt22 = sqrt(2.0) / 2.0;
+    const auto sqrt22 = sqrt( 2.0 ) / 2.0;
 
     hub::data::Dof6 dof6( measure );
 
@@ -43,14 +43,13 @@ TEST_CASE( "Dof6 test" ) {
     hub::data::Dof6 dof64( 1, 2, 3, 0, 1, 0, 0 );
     //    auto dof624 = hub::Dof6::slerp(dof62, dof64, 1.0);
     CHECK( hub::data::Dof6::slerp( dof62, dof64, 0.0 ) == dof62 );
-    CHECK(hub::data::Dof6::slerp(dof62, dof64, 1.0)  == dof64);
+    CHECK( hub::data::Dof6::slerp( dof62, dof64, 1.0 ) == dof64 );
     //    CHECK(dof624 == dof64);
 
-    hub::data::Measure& measure2 = dof62;
-    hub::data::Measure& measure3 = dof63;
+    const hub::data::Measure& measure2 = dof62;
+    const hub::data::Measure& measure3 = dof63;
     CHECK( measure2.isInterpolable() );
     auto measure23 = hub::data::Measure::slerp( measure2, measure3, 0.5 );
 
     std::cout << dof6 << std::endl;
-
 }
