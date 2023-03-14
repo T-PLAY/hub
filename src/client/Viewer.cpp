@@ -71,7 +71,6 @@ Viewer::Viewer(
 
                         std::string streamName;
                         m_sock.read( streamName );
-                        //                        SensorSpec sensorSpec = m_sock.getSensorSpec();
                         SensorSpec sensorSpec;
                         m_sock.read( sensorSpec );
                         std::cout << "[Viewer] new streamer '" << streamName << "'" << std::endl;
@@ -86,8 +85,6 @@ Viewer::Viewer(
                             const auto& metaData = sensorSpec.getMetaData();
                             if ( metaData.find( "parent" ) != metaData.end() ) {
                                 // todo any
-                                //                                parentName = std::any_cast<const
-                                //                                char*>( metaData.at( "parent" ) );
                                 parentName = metaData.at( "parent" ).getConstCharPtr();
 
                                 if ( m_streams.find( parentName ) != m_streams.end() ) {
@@ -177,10 +174,8 @@ Viewer::Viewer(
                     case net::ClientSocket::Message::DEL_STREAMER: {
                         std::string streamName;
                         m_sock.read( streamName );
-                        //                        SensorSpec sensorSpec = m_sock.getSensorSpec();
                         SensorSpec sensorSpec;
                         m_sock.read( sensorSpec );
-                        //                        m_sock.read( sensorSpec );
                         std::cout << "[Viewer] del streamer '" << streamName << "'" << std::endl;
 
                         std::string syncStreamName = "";
@@ -191,9 +186,6 @@ Viewer::Viewer(
                             const auto& metaData = sensorSpec.getMetaData();
                             if ( metaData.find( "parent" ) != metaData.end() ) {
                                 // todo any
-                                //                                const std::string parentName = "";
-                                //                                    std::any_cast<const char*>(
-                                //                                    metaData.at( "parent" ) );
                                 const std::string parentName =
                                     metaData.at( "parent" ).getConstCharPtr();
 
@@ -293,8 +285,6 @@ Viewer::Viewer(
                 assert( m_streams.empty() );
 
                 // #ifdef OS_LINUX
-                //                 if ( !m_stopThread ) { m_sock.setPort( m_sock.getPort() + 1 ); }
-                //                 ++m_port;
                 // #endif
             }
 

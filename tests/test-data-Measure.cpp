@@ -30,14 +30,10 @@ TEST_CASE( "Measure test" ) {
     CHECK( measure != measure5 );
 
     unsigned char data3[3] { 1 };
-    //    const auto& resolution = hub::Resolution { { 1 }, hub::Format::DOF6 };
     hub::data::Measure measure6( data3, 3, resolution );
 
     CHECK( hub::data::Measure::slerp( measure, measure6, 0.5 ) == measure );
 
-    //    unsigned char data[28] { 0 };
-    //    const auto& resolution = hub::Resolution { { 1 }, hub::Format::DOF6 };
-    //    hub::data::Measure measure( data, 28, resolution );
     const auto sqrt22 = sqrt( 2.0 ) / 2.0;
 
     hub::data::Dof6 dof62( 0, 0, 0, 1, 0, 0, 0 );

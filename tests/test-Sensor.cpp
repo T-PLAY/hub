@@ -3,8 +3,4 @@
 
 #include <Sensor.hpp>
 
-TEST_CASE( "Sensor test" ) {
-
-    //        hub::SensorSpec sensorSpec;
-    //        hub::Sensor sensor(sensorSpec);
-}
+TEST_CASE( "Sensor test" ) {}

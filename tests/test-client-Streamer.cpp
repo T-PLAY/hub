@@ -42,10 +42,6 @@ TEST_CASE( "Streamer" ) {
         std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
 
         CHECK( streamer.isConnected() );
-        //        streamer.newAcquisition( "streamName", acq );
-        //        streamer.newAcquisition( "streamName", acq );
-        //        std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
-        //        CHECK( ! streamer.isConnected() );
     }
     std::cout << "[Test] ############################### streamer end" << std::endl;
     std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );

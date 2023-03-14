@@ -17,7 +17,6 @@ TEST_CASE( "File test" ) {
 
 #if CPLUSPLUS_VERSION <= 14
     // todo cpp 17 -> 14
-//    boost::filesystem::remove( filename );
 #else
     std::filesystem::remove( filename );
 #endif
@@ -55,8 +54,6 @@ TEST_CASE( "File test" ) {
         }
     }
     std::cout << "outputStream end ################################" << std::endl;
-
-    //    std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
 
     std::cout << "inputStream start" << std::endl;
     INFO( "InputStream" );

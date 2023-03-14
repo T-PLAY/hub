@@ -37,8 +37,7 @@ class SRC_API SensorSpec
   public:
 #if CPLUSPLUS_VERSION == 20
     using SensorNameType = std::string_view;
-    //    using SensorNameType = std::string;
-    using MetaData = Map<std::string, std::any>; // any -> C++17
+    using MetaData       = Map<std::string, std::any>; // any -> C++17
 #else
     ///
     /// \brief
@@ -50,7 +49,6 @@ class SRC_API SensorSpec
     /// \brief
     /// Definition of metadata
     ///
-    //    using MetaData = std::map<std::string, std::any>; // any -> C++17
     using MetaData = std::map<std::string, hub::Any>;
 #endif
 
@@ -117,7 +115,6 @@ class SRC_API SensorSpec
     /// \param metaData
     /// \return
     ///
-    //    static std::string to_string( const std::pair<std::string, std::any>& metaData );
     static std::string to_string( const std::pair<std::string, Any>& metaData );
 
   public:
@@ -158,7 +155,6 @@ class SRC_API SensorSpec
     inline void setMetaData( const MetaData& metaData ) noexcept;
 
   private:
-    //    static std::string m_sensorName2;
     SensorNameType m_sensorName;
     Resolutions m_resolutions;
     MetaData m_metaData;

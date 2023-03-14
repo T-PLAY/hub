@@ -8,7 +8,6 @@ namespace hub {
 namespace io {
 
 OutputStream::OutputStream( const std::string& streamName, net::ClientSocket&& clientSocket ) :
-    //    net::ClientSocket( std::move( clientSocket ) )
     m_clientSocket( std::move( clientSocket ) ) {
 
     Output::write( net::ClientSocket::Type::STREAMER );
@@ -16,8 +15,6 @@ OutputStream::OutputStream( const std::string& streamName, net::ClientSocket&& c
     Output::write( streamName );
 
     net::ClientSocket::Message mess;
-    //    Input::read( mess );
-    //    net::ClientSocket::read( mess );
     m_clientSocket.read( mess );
     if ( mess == net::ClientSocket::Message::FOUND ) {
         throw net::Socket::exception(

@@ -15,9 +15,7 @@ ClientSocket::ClientSocket() : m_ipv4( s_defaultServiceIp ), m_port( s_defaultSe
     DEBUG_MSG( getHeader( m_fdSock ) << "ClientSocket()" );
 #endif
 
-    //    initSocket();
     initServerAddress();
-    //    connectToServer();
     connect();
 }
 
@@ -27,11 +25,9 @@ ClientSocket::ClientSocket( const std::string& ipv4, int port, bool autoConnect 
     DEBUG_MSG( getHeader( m_fdSock ) << "ClientSocket(std::string ipv4, int port)" );
 #endif
 
-    //    initSocket();
     initServerAddress();
 
     if ( autoConnect ) connect();
-    //    connectToServer();
 }
 
 ClientSocket::ClientSocket( net::utils::socket_fd fdSock ) {
@@ -45,39 +41,20 @@ ClientSocket::ClientSocket( net::utils::socket_fd fdSock ) {
 }
 
 // ClientSocket::ClientSocket(ClientSocket &&sock) :
-//    m_ipv4(std::move(sock.m_ipv4)),
-//    m_port(std::move(sock.m_port)),
-//    m_addr(std::move(sock.m_addr)),
-//    m_connected(std::move(sock.m_connected)),
-//    m_moved(std::move(sock.m_moved))
 //{
-//    sock.m_connected = false;
-//    sock.m_moved = true;
 //}
 
 ClientSocket::~ClientSocket() {
 #ifdef DEBUG_SOCKET
     DEBUG_MSG( getHeader( m_fdSock ) << "~ClientSocket()" );
 #endif
-    //    clear();
-    //    if (! m_moved) {
-    //        write(Message::CLOSE);
-    //    }
 }
 
 void ClientSocket::initServerAddress() {
     assert( utils::isValid( m_ipv4 ) );
-    //    assert( std::regex_match( m_ipv4, m_ipv4Regex ) );
     assert( utils::isValid( m_port ) );
-    //    assert( 0 <= m_port && m_port <= 65535 );
 
     // Server address construction
-    //    struct sockaddr_in serv_addr;
-    //    memset( &m_serverAddress, 0, sizeof( m_serverAddress ) );
-    //    m_serverAddress.sin_family = AF_INET;
-    //    // m_serverAddress.sin_addr.s_addr = inet_addr(m_ipv4.c_str()); // winsock 1.0
-    //    inet_pton( AF_INET, m_ipv4.c_str(), &m_serverAddress.sin_addr.s_addr ); // winsock 2.0
-    //    m_serverAddress.sin_port = htons( m_port );                             // Server port
 
     m_addr.init( m_ipv4, m_port );
 }
@@ -108,41 +85,24 @@ void ClientSocket::connect() {
         return;
     }*/
 
-    //    assert( m_fdSock == INVALID_SOCKET );
     assert( !net::utils::isValid( m_fdSock ) );
 
-    //            assert(! isConnected());
-
-    //    const auto tmp = m_fdSock;
-
     // Socket creation
-    //    m_fdSock = socket( PF_INET, SOCK_STREAM, 0 );
     m_fdSock = net::utils::clientSocket();
-    //    if ( m_fdSock < 0 ) {
     if ( !net::utils::isValid( m_fdSock ) ) {
         perror( "[socket] socket creation failed.\n" );
         return;
     }
-    //    net::registerSocket( m_fdSock );
-
-    //    assert(tmp == INVALID_SOCKET || m_fdSock == tmp);
 
     assert( !isOpen() );
     assert( isConnected() );
 
-    //    assert(isConnected());
-
     // Connect to server
-    //    if ( ::connect( m_fdSock, (struct sockaddr*)&m_serverAddress, sizeof( m_serverAddress ) )
-    //    <
     if ( net::utils::connect( m_fdSock, m_addr ) < 0 ) {
 #ifdef DEBUG_SOCKET
         DEBUG_MSG( "[ClienSocket] failed to connect to server ########################" );
 #endif
-        //        perror( "[ClientSocket] socket connect failed.\n" );
         net::utils::closeSocket( m_fdSock );
-        //        ::close( m_fdSock );
-        //        m_fdSock = INVALID_SOCKET;
         throw Socket::exception(
             ( ( std::string( "[ClientSocket] connect() Failed to connect to server at address " ) +
                 m_ipv4 + " and port " + std::to_string( m_port ) ) )
@@ -152,7 +112,6 @@ void ClientSocket::connect() {
     m_connected = true;
     assert( isOpen() );
     assert( isConnected() );
-    //    assert(isConnected());
 
 #ifdef DEBUG_SOCKET
     DEBUG_MSG( getHeader( m_fdSock )
@@ -162,9 +121,7 @@ void ClientSocket::connect() {
 }
 
 void ClientSocket::write( const unsigned char* data, size_t len ) {
-    //        assert( m_connected );
     assert( isOpen() );
-    //    assert(isConnected());
 
 #ifdef DEBUG_SOCKET
     // DEBUG_MSG(getHeader(m_fdSock) << "write message ");
@@ -190,11 +147,9 @@ void ClientSocket::write( const unsigned char* data, size_t len ) {
                                          reinterpret_cast<const char*>( data ) + uploadSize,
                                          static_cast<int>( len - uploadSize ),
                                          0 );
-            //            assert(isConnected());
         }
         catch ( std::exception& e ) {
             assert( false );
-            //            throw e;
             throw;
         }
 
@@ -221,8 +176,6 @@ void ClientSocket::write( const unsigned char* data, size_t len ) {
                    << "byteSent = " << byteSent << " (" << uploadSize << "/" << len << ")" );
 #endif
     } while ( len != uploadSize );
-
-    //    assert( isOpen() );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -243,7 +196,6 @@ void ClientSocket::read( unsigned char* data, size_t len ) {
             perror( "[socket] receive failed.\n" );
 #endif
 #ifndef WIN32
-//            assert( !isConnected() );
 #endif
             close();
             throw Socket::exception(
@@ -270,19 +222,12 @@ void ClientSocket::read( unsigned char* data, size_t len ) {
 
 void ClientSocket::close() {
     assert( isOpen() );
-    //    assert( isConnected() );
-    //    clear();
-    //            assert(m_fdSock != INVALID_SOCKET);
     net::utils::closeSocket( m_fdSock );
-    //    ::close( m_fdSock );
-    //    m_fdSock    = INVALID_SOCKET;
     m_connected = false;
     assert( !isOpen() );
 }
 
 bool ClientSocket::isOpen() const {
-    //    assert( isConnected() );
-    //    return m_fdSock != INVALID_SOCKET;
     return m_connected;
 }
 
@@ -333,13 +278,8 @@ std::ostream& operator<<( std::ostream& os, const ClientSocket::Message& msg ) {
 }
 
 // void ClientSocket::clear() const {
-//     if ( m_fdSock != INVALID_SOCKET ) {
 // #ifdef DEBUG_SOCKET
-//         DEBUG_MSG( getHeader( m_fdSock ) << "close socket" );
 // #endif
-//         net::clearSocket( m_fdSock );
-//         m_fdSock = INVALID_SOCKET;
-//     }
 // }
 
 const int& ClientSocket::getPort() const {
@@ -354,23 +294,13 @@ void ClientSocket::setPort( int newPort ) {
     assert( !isOpen() );
     assert( 0 <= newPort && newPort <= 65535 );
     m_port = newPort;
-    //    m_serverAddress.sin_port = htons( m_port ); // Server port
     m_addr.setPort( m_port );
-
-    //    initSocket();
-    //    memset( &m_serverAddress, 0, sizeof( m_serverAddress ) );
-    //    m_serverAddress.sin_family = AF_INET;
-    //    // m_serverAddress.sin_addr.s_addr = inet_addr(m_ipv4.c_str()); // winsock 1.0
-    //    inet_pton( AF_INET, m_ipv4.c_str(), &m_serverAddress.sin_addr.s_addr ); // winsock 2.0
-    //    m_serverAddress.sin_port = htons( m_port );                             // Server port
 }
 
 void ClientSocket::setIpv4( const std::string& newIpv4 ) {
     assert( !isOpen() );
-    //    assert( std::regex_match( newIpv4, m_ipv4Regex ) );
     assert( utils::isValid( newIpv4 ) );
     m_ipv4 = newIpv4;
-    //    inet_pton( AF_INET, m_ipv4.c_str(), &m_serverAddress.sin_addr.s_addr ); // winsock 2.0
     m_addr.setIpv4( m_ipv4 );
 }
 

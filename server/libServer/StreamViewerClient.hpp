@@ -20,7 +20,6 @@ class StreamViewerClient : public Client
 
     const std::string& getSyncStreamName() const;
     const std::string& getStreamName() const;
-    //    void killThread();
 
     bool shoudMergeSyncAcqs() const;
 
@@ -34,10 +33,8 @@ class StreamViewerClient : public Client
     bool m_mergeSyncAcqs;
 
     std::thread m_thread;
-    //    bool m_neverAcqUpdate = true;
     std::chrono::time_point<std::chrono::high_resolution_clock> m_lastUpdateAcq;
 
     bool m_isKilled = false;
     bool m_suicide  = false;
-    //    bool m_updateFailed   = false;
 };

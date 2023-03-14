@@ -37,13 +37,6 @@ class SRC_API Asker
     ///
     std::list<std::pair<std::string, hub::SensorSpec>> listStreams();
 
-    //    ///
-    //    /// \brief getSensorSpec
-    //    /// \param streamName
-    //    /// \return
-    //    ///
-    //    hub::SensorSpec getSensorSpec(const std::string & streamName) const;
-
     ///
     /// \brief getAcquisition
     /// allow to get last acquired data from connected sensor to the server

@@ -28,7 +28,6 @@ enum class Format {
     BGRA8,       	/**< 8-bit blue, green, and red channels + constant alpha channel equal to FF */
     Y8,          	/**< 8-bit per-pixel grayscale image */
     Y16,         	/**< 16-bit per-pixel grayscale image */
-    //        Y16 = Z16,         	/**< 16-bit per-pixel grayscale image */
     RAW10,       	/**< Four 10 bits per pixel luminance values packed into a 5-byte macropixel */
     RAW16,       	/**< 16-bit raw image */
     RAW8,        	/**< 8-bit raw image */
@@ -76,8 +75,6 @@ using Resolution = std::pair<Dims, Format>;
 ///
 using Resolutions = std::vector<Resolution>;
 
-//    static const Resolution s_Atomic_Resolution_Dof6 = Resolution {{1}, Format::DOF6};
-
 #define HUB_TO_STRING to_string
 
 static std::string HUB_TO_STRING( const Dims& dims );
@@ -86,8 +83,6 @@ static std::string HUB_TO_STRING( const Resolutions& resolutions );
 static std::string HUB_TO_STRING( const Resolution& resolution );
 // static std::string to_string( const std::string & string );
 
-//    static std::string metaData2string( const MetaData& metaData, bool expand = false );
-//    static std::string metaData2string( const std::pair<std::string, std::any>& metaData );
 static inline CONSTEXPR20 size_t computeAcquisitionSize( const Resolutions& resolutions ) noexcept;
 static inline CONSTEXPR20 size_t computeAcquisitionSize( const Resolution& resolution ) noexcept;
 static inline CONSTEXPR20 size_t computeAcquisitionSize( Format format, const Dims& dims ) noexcept;
@@ -103,15 +98,12 @@ static inline constexpr bool format2hasFixedSize( const Format& format ) noexcep
 ///
 SRC_API std::ostream& operator<<( std::ostream& os, const Format& format );
 SRC_API std::ostream& operator<<( std::ostream& os, const Dims& dims );
-//    SRC_API friend std::ostream& operator<<( std::ostream& os, const Format& format );
 
 SRC_API std::ostream& operator<<( std::ostream& os, const Resolution& resolution );
 SRC_API std::ostream& operator<<( std::ostream& os, const Resolutions& resolutions );
 
 // template <class T = Dims>
 // SRC_API std::ostream& operator<<( std::ostream& os, const T& t ) {
-//    os << hub::to_stringe(t);
-//    return os;
 //}
 
 // static std::string(Resolutions & resolutions ) {
@@ -161,9 +153,7 @@ static constexpr int s_format2nByte[static_cast<int>( Format::COUNT )] = {
 };
 
 inline constexpr int format2nByte( const Format& format ) noexcept {
-    //    assert(s_nFormat == static_cast<int>(Format::COUNT));
 
-    //    static_assert(s_format2nByte[s_nFormat - 1] != 0);
     return s_format2nByte[static_cast<int>( format )];
 }
 
@@ -173,11 +163,6 @@ inline CONSTEXPR20 size_t computeAcquisitionSize( Format format, const Dims& dim
 }
 
 inline size_t CONSTEXPR20 computeAcquisitionSize( const Resolutions& resolutions ) noexcept {
-    //    size_t size = 0;
-    //    for ( const auto& resolution : resolutions ) {
-    //        size += computeAcquisitionSize( resolution );
-    //    }
-    //    return size;
     return std::accumulate(
         resolutions.cbegin(), resolutions.cend(), 0, []( size_t size, const Resolution& res ) {
             return size + computeAcquisitionSize( res );
@@ -227,7 +212,6 @@ static constexpr bool s_format2isInterpolable[static_cast<int>( Format::COUNT )]
 };
 
 inline constexpr bool format2isInterpolable( const Format& format ) noexcept {
-    //    static_assert(s_format2isInterpolable[s_nFormat - 1] != false);
     return s_format2isInterpolable[(int)format];
 }
 
@@ -252,7 +236,6 @@ static std::string format2stringArray[static_cast<int>( Format::COUNT )] = {
 };
 
 static inline constexpr std::string& HUB_TO_STRING( const Format& format ) {
-    //    static_assert(format2stringArray[s_nFormat - 1]);
     return format2stringArray[(int)format];
 }
 
@@ -263,9 +246,6 @@ static std::string HUB_TO_STRING( const Resolution& resolution ) {
 }
 
 static std::string HUB_TO_STRING( const Resolutions& resolutions ) {
-    //    std::stringstream sstream;
-    //    sstream << resolutions;
-    //    return sstream.str();
     //}
     // static std::string resolutions2string( const Resolutions& resolutions ) {
     const int size  = static_cast<int>( resolutions.size() );
@@ -274,14 +254,6 @@ static std::string HUB_TO_STRING( const Resolutions& resolutions ) {
     for ( int i = 0; i < size; ++i ) {
         const auto& resolution = resolutions.at( i );
         str += HUB_TO_STRING( resolution );
-
-        //        const auto& dims   = resolutions[i].first;
-        //        const auto& format = resolutions[i].second;
-        //        if ( size > 1 ) str += "{";
-        ////        str += dims2string( dims ) + " : " + format2string( format );
-        //        str += to_string( dims ) + " : " + to_string( format );
-        ////        str += resolution2string(resolution);
-        //        if ( size > 1 ) str += "}";
 
         if ( i != size - 1 ) str += ", ";
     }
@@ -326,16 +298,11 @@ static constexpr bool s_format2hasFixedSize[static_cast<int>( Format::COUNT )] =
 };
 
 inline constexpr bool format2hasFixedSize( const Format& format ) noexcept {
-    //    static_assert(s_format2isInterpolable[s_nFormat - 1] != false);
     return s_format2hasFixedSize[(int)format];
 }
 
 // template <class T>
 // std::ostream& operator<<( std::ostream& os, const T& t ) {
-////    os << format2stringArray[(int)format] << " (" << s_format2nByte[(int)format] << "o)";
-////    os << format2stringArray[(int)format];
-//    os << to_string(t);
-//    return os;
 //}
 
 } // namespace hub

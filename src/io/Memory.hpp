@@ -38,7 +38,6 @@ class SRC_API Memory : public InputOutput
     /// \param buff
     /// [in] is a cyclic buffer already instancied.
     ///
-    //    template <class Container>
     explicit Memory( Container& buff ) : m_container( buff ) {}
 
     ///
@@ -59,7 +58,6 @@ class SRC_API Memory : public InputOutput
         Output::write( t );
     }
 
-    //  protected:
   public:
     ///
     /// @copydoc InputOutput::close()
@@ -74,10 +72,7 @@ class SRC_API Memory : public InputOutput
     ///
     /// @copydoc InputOutput::isEnd()
     ///
-    bool isEnd() const override {
-        return m_container.empty();
-        //        return false;
-    }
+    bool isEnd() const override { return m_container.empty(); }
 
     ///
     /// @copydoc InputOutput::write()

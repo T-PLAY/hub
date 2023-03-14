@@ -10,7 +10,6 @@
 TEST_CASE( "Server test : direct stream" ) {
 
     const std::string ipv4 = "127.0.0.1";
-    //    constexpr int port     = 5000;
     srand( (unsigned)time( NULL ) );
     const int port      = rand() % 65535;
     constexpr int nLoop = 1;
@@ -33,7 +32,6 @@ TEST_CASE( "Server test : direct stream" ) {
     std::cout << "[Test] ############################### server start" << std::endl;
     Server server( port );
     server.setMaxClients( 2 * nLoop );
-    //    server.setAcqPing( false );
     server.asyncRun();
     std::cout << "[Test] server end ------------------------------" << std::endl;
 
@@ -53,13 +51,6 @@ TEST_CASE( "Server test : direct stream" ) {
             CHECK( outputSensorSpec.getResolutions()[0].first.at( 0 ) == 3 );
             CHECK( outputSensorSpec.getResolutions()[0].second == hub::Format::BGR8 );
             std::cout << "[Test] outputStream end ---------------------------------" << std::endl;
-
-            //                std::cout << "[Test] ############################### send
-            //                acquisitions"
-            //                          << std::endl;
-            //                for ( const auto& acq : acqs ) {
-            //                    outputSensor << acq;
-            //                }
 
             for ( int iInput = 0; iInput < 1; ++iInput ) {
                 {
@@ -87,14 +78,11 @@ TEST_CASE( "Server test : direct stream" ) {
                 }
                 std::cout << "[Test] inputStream end ---------------------------------"
                           << std::endl;
-                //                std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
             }
-            //            outputSensor << acqs[0];
 
         } // end outputSensor
 
         std::cout << "[Test] outputStream deleted *******************************" << std::endl;
-        //        std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
 
         std::cout
             << "[Test] xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx "

@@ -12,7 +12,6 @@
 TEST_CASE( "Server test : viewer" ) {
 
     const std::string ipv4 = "127.0.0.1";
-    //    constexpr int port     = 9002;
     srand( (unsigned)time( NULL ) );
     const int port = rand() % 65535;
 
@@ -35,7 +34,6 @@ TEST_CASE( "Server test : viewer" ) {
     std::cout << "[Test] ############################### server start" << std::endl;
     Server server( port );
     server.setMaxClients( 3 );
-    //    server.setAcqPing( false );
     server.asyncRun();
     std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
     std::cout << "[Test] server end ------------------------------" << std::endl;

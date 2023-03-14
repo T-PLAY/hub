@@ -25,7 +25,6 @@ int main() {
     for ( const auto& [streamName, sensorSpec] : listStreams ) {
         std::cout << streamName << std::endl;
 
-        //        const auto & sensorSpec = asker.getSensorSpec(streamName);
         std::cout << sensorSpec << std::endl;
 
         auto acq = asker.getAcquisition( streamName );
@@ -33,8 +32,6 @@ int main() {
 
         std::cout << "--------------------------------" << std::endl;
     }
-
-    //    std::this_thread::sleep_for(std::chrono::milliseconds(2000));
 
     return 0;
 }

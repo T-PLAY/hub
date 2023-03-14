@@ -15,13 +15,8 @@ File::~File() {
     std::cout << "[File:" << this << "] ~File()" << std::endl;
     if ( m_file != nullptr ) {
         std::cout << "[File:" << this << "] ~File() close file" << std::endl;
-        //        close();
         File::close();
         assert( !File::isOpen() );
-        //        Input::close();
-        //        m_file->close();
-        //        assert(! isOpen());
-        //        assert( !m_file->is_open() );
     }
 }
 
@@ -37,7 +32,6 @@ bool File::isOpen() const {
 
 bool File::isEnd() const {
     assert( isOpen() );
-    //    return m_file->eof();
     return m_file->peek() == EOF;
 }
 

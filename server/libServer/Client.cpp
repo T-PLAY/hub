@@ -12,7 +12,6 @@ Client::Client( Server* server, int iClient ) : m_server( server ), m_iClient( i
 }
 
 Client::~Client() {
-    //    assert(m_server != nullptr);
     if ( m_server != nullptr ) m_server->removeClient( this );
 }
 
@@ -26,7 +25,6 @@ std::string Client::headerMsg() const {
 }
 
 void Client::printStatusMessage( const std::string& message ) const {
-    //    assert(m_server != nullptr);
     if ( m_server == nullptr ) {
         std::cout << std::left << std::setw( g_margin ) << headerMsg() << std::setw( g_margin2 )
                   << message << "status : server exited" << std::endl

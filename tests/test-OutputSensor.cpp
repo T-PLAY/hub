@@ -12,19 +12,13 @@
 TEST_CASE( "InputSensor test" ) {
 
     hub::io::CyclicBuff buff;
-    //    hub::io::Memory<
-    //    hub::io::Ram ram(buff);
-
-    //    hub::InputSensor inputSensor(hub::io::Ram(buff));
 
     const auto resolution = hub::Resolution { { 1 }, hub::Format::BGR8 };
     hub::SensorSpec sensorSpec( "sensorName", { resolution } );
     unsigned char data[3] { 1, 2, 3 };
     hub::OutputSensor outputSensor( sensorSpec, hub::io::Ram( buff ) );
-    //    const auto& output = outputSensor.getOutput();
 
     auto acq = std::move( hub::Acquisition { 0, 1 } << hub::data::Measure { data, 3, resolution } );
-    //    acq << hub::Measure{data, 3, resolution};
     outputSensor << acq;
     outputSensor << acq;
     outputSensor << acq;
@@ -34,11 +28,9 @@ TEST_CASE( "InputSensor test" ) {
     auto acq2 = inputSensor.getAcquisition();
     CHECK( acq == acq2 );
 
-    //    CHECK(inputSensor.)
     const auto& input = inputSensor.getInput();
     CHECK( !input.isEnd() );
 
-    //    output.close();
     auto acqs = inputSensor.getAllAcquisitions();
     CHECK( acqs.size() == 2 );
     CHECK( acqs[0] == acq );
@@ -46,14 +38,11 @@ TEST_CASE( "InputSensor test" ) {
 
     CHECK( input.isEnd() );
 
-    //    {
     const hub::Resolution resolution2( { 1 }, hub::Format::BGR8 );
     const hub::SensorSpec sensorSpec2( "hello", { resolution2 } );
     const std::string streamName = "streamName";
     const std::string ipv4       = "127.0.0.1";
-    //        srand( (unsigned)time( NULL ) );
-    //        const int port = rand() % 65535;
-    const int port = getRandomPort();
+    const int port               = getRandomPort();
 
     Server server( port );
     server.setMaxClients( 2 );
@@ -70,8 +59,6 @@ TEST_CASE( "InputSensor test" ) {
     hub::InputSensor inputSensor2(
         hub::io::InputStream( streamName, "", hub::net::ClientSocket( ipv4, port ) ) );
 
-    //        output.close();
-
     auto acq4 = inputSensor2.getAcquisition();
     CHECK( acq3 == acq4 );
 
@@ -85,5 +72,4 @@ TEST_CASE( "InputSensor test" ) {
     catch ( std::exception& ex ) {
         CHECK( true );
     }
-    //    }
 }

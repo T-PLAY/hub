@@ -25,13 +25,6 @@ namespace hub {
 class SRC_API InputSensor : public Sensor
 {
   public:
-    //    InputSensor(io::Input && input) :
-    //        Sensor(hub::SensorSpec {}),
-    //        m_input(std::move(input))
-    //    {
-    //        m_spec = m_input.getSensorSpec();
-    //    }
-
     ///
     /// \brief InputSensor
     /// is called when you want to get data sensor
@@ -42,19 +35,12 @@ class SRC_API InputSensor : public Sensor
               typename = typename std::enable_if<std::is_base_of<io::Input, Input>::value>::type>
     explicit InputSensor( Input&& input ) :
 
-        //        Sensor( hub::SensorSpec {},
-        //                *std::move( new Input( std::move( input ) ) ) ) {
-        Sensor( hub::SensorSpec {} ),
-        //        m_input(*std::move( new Input( std::move( input ) ) ) )
-        m_input( new Input( std::move( input ) ) ) {
+        Sensor( hub::SensorSpec {} ), m_input( new Input( std::move( input ) ) ) {
         static_assert( std::is_base_of<io::Input, Input>::value, "not a base class" );
 
-        //        m_spec = m_interface.getSensorSpec();
         m_input->read( m_spec );
-        //        m_spec = m_input->getSensorSpec();
     }
 
-    //  protected:
     template <class Input>
     InputSensor( Input& input ) = delete;
 
@@ -87,7 +73,6 @@ class SRC_API InputSensor : public Sensor
     io::Input& getInput() const;
 
   private:
-    //    io::Input & m_input;
     std::unique_ptr<io::Input> m_input;
 };
 

@@ -19,9 +19,6 @@ TEST_CASE( "Acquisition test" ) {
         acq.pushBack(
             hub::data::Measure { data, 3, hub::Resolution { { 1 }, hub::Format::BGR8 } } );
         CHECK( acq.getSize() == 9 );
-
-        //        acq << hub::Measure{ data, 3, hub::Resolution{{1}, hub::Format::USER_DATA}};
-        //        CHECK(acq.getSize() == 12);
     }
 
     hub::Acquisition acq( 0, 1 );
@@ -31,18 +28,13 @@ TEST_CASE( "Acquisition test" ) {
     CHECK( acq2.m_start == 0 );
     CHECK( acq2.m_end == 1 );
 
-    //    hub::Acquisition acq3(std::move(hub::Acquisition(0, 1)));
-
-    //    const hub::Resolution resolution({1}, hub::Format::RGB8);
     hub::Resolution resolution( { 1 }, hub::Format::RGB8 );
     unsigned char data[3] { 0, 1, 2 };
-    //    acq2.emplaceMeasure(std::move(measure));
 
     hub::data::Measure measure( data, 3, resolution );
 
     acq2.emplaceMeasure( data, 3, resolution );
 
-    //    CHECK(acq2.getMeasures())
     const auto& measures = acq2.getMeasures();
     CHECK( measures.size() == 1 );
 
@@ -57,10 +49,6 @@ TEST_CASE( "Acquisition test" ) {
 
     CHECK( !acq2.isInterpolable() );
 
-    //    hub::Acquisition acq4 = std::move(hub::Acquisition(0, 0) << hub::Measure(data2, 3,
-    //    resolution)); CHECK ( ! acq4.isInterpolable());
-
-    //    hub::s_format2isInterpolable
     for ( int i = 1; i < (int)hub::Format::COUNT; ++i ) {
         const auto& format      = hub::Format( i );
         const auto& resolution2 = hub::Resolution( { 1 }, format );
@@ -69,9 +57,6 @@ TEST_CASE( "Acquisition test" ) {
                            data, hub::computeAcquisitionSize( resolution2 ), resolution2 ) );
         CHECK( acq22.isInterpolable() == hub::s_format2isInterpolable[(int)format] );
     }
-
-    //    const hub::Resolution resolution2( { 1 }, hub::Format::DOF6 );
-    //    hub::Dof6 dof6(0, 0, 0, 1, 0, 0, 0);
 
     hub::Acquisition acq4 =
         std::move( hub::Acquisition( 0, 0 ) << hub::data::Dof6( 0, 0, 0, 1, 0, 0, 0 ) );
@@ -84,10 +69,8 @@ TEST_CASE( "Acquisition test" ) {
     std::cout << acq45 << std::endl;
     CHECK( acq45 == ( hub::Acquisition( 1, 1 ) << hub::data::Dof6( 0.5, 0.5, 0.5, 1, 0, 0, 0 ) ) );
 
-    //    const hub::Measure measure2(data, 3, resolution);
     hub::Acquisition acq6( acq2.m_start, acq2.m_end );
     acq6 << measures;
-    //    CHECK(measures.size() == 2);
     CHECK( acq6 == acq2 );
 
     hub::Acquisition acq7 = acq6.clone();
@@ -112,8 +95,5 @@ TEST_CASE( "Acquisition test" ) {
         acq8.pushBack(
             hub::data::Measure { data3, 3, hub::Resolution { { 1 }, hub::Format::USER_DATA } } );
         CHECK( !acq8.hasFixedSize() );
-
-        //        acq8 << hub::Measure{ data, 3, hub::Resolution{{1}, hub::Format::USER_DATA}};
-        //        CHECK(acq8.getSize() == 12);
     }
 }

@@ -22,10 +22,7 @@
 TEST_CASE( "Viewer" ) {
 
     const std::string ipv4 = "127.0.0.1";
-    //    constexpr int port     = 9002;
-    //    srand( (unsigned)time( NULL ) );
-    //    const int port = rand() % 65535;
-    const int port = getRandomPort();
+    const int port         = getRandomPort();
 
     // startConstruction
     auto onNewStreamer = [=]( const std::string& streamName, const hub::SensorSpec& sensorSpec ) {
@@ -65,7 +62,6 @@ TEST_CASE( "Viewer" ) {
         std::cout << "[Test] ############################### server start" << std::endl;
         Server server( port );
         server.setMaxClients( 2 );
-        //    server.setAcqPing( false );
         server.asyncRun();
         std::this_thread::sleep_for( std::chrono::milliseconds( 2000 ) );
         CHECK( viewer.isConnected() );
@@ -91,11 +87,5 @@ TEST_CASE( "Viewer" ) {
     std::cout << "[Test] ############################### server end" << std::endl;
 
     std::this_thread::sleep_for( std::chrono::milliseconds( 2000 ) );
-
-    //    std::cout << "Starting viewer listening" << std::endl
-    //              << "Press any key to terminate" << std::endl;
-    //    getchar();
-
-    //    return 0;
 }
 //clang-format on

@@ -12,8 +12,6 @@ namespace io {
 CyclicBuff::CyclicBuff( size_t size ) : m_buff( new unsigned char[size] ), m_buffLen( size ) {}
 
 CyclicBuff::~CyclicBuff() {
-    //    assert( !m_outputSensorWantsToClose );
-    //    assert( !m_inputSensorClose );
     m_outputSensorWantsToClose = true;
 
     delete[] m_buff;
@@ -34,8 +32,6 @@ void CyclicBuff::write( const unsigned char* data, size_t len ) {
         if ( len > byteWrote ) {
             std::this_thread::sleep_for( std::chrono::milliseconds( 2 ) );
             continue;
-            //            throw CyclicBuff::exception( "Buffer overflow, no space left" );
-            //            assert( false );
         }
         byteWrote =
             std::min( byteWrote, (long)len - (long)uploadSize ); // size of not copied user data
@@ -45,11 +41,6 @@ void CyclicBuff::write( const unsigned char* data, size_t len ) {
 
         memcpy( &m_buff[m_writeHead], data + uploadSize, byteWrote );
         m_writeHead = ( m_writeHead + byteWrote ) % m_buffLen;
-
-        //        if ( byteWrote <= 0 ) {
-        //            assert( false );
-        //            throw CyclicBuff::exception( "End of file" );
-        //        }
 
         uploadSize += byteWrote;
     } while ( len != uploadSize );
@@ -65,12 +56,10 @@ void CyclicBuff::read( unsigned char* data, size_t len ) {
                 m_inputSensorClose = true;
                 std::cout << "[CyclicBuff:" << this << "] read() : inputSensor close" << std::endl;
                 throw CyclicBuff::exception( "Connection closed" );
-                //                assert( false );
             }
             if ( m_buff == nullptr ) {
                 m_inputSensorClose = true;
                 throw CyclicBuff::exception( "End of buffer (nullptr)" );
-                //                assert( false );
             }
             // nb bytes ready to read
             byteRead = m_writeHead - m_readHead;
@@ -87,10 +76,6 @@ void CyclicBuff::read( unsigned char* data, size_t len ) {
         m_readHead = ( m_readHead + byteRead ) % m_buffLen;
 
         assert( byteRead > 0 );
-        //        if ( byteRead <= 0 ) {
-        //            assert( false );
-        //            throw CyclicBuff::exception( "End of file" );
-        //        }
 
         downloadSize += byteRead;
     } while ( len != downloadSize );

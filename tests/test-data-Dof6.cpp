@@ -41,10 +41,8 @@ TEST_CASE( "Dof6 test" ) {
     CHECK( dof6 == dof6Clone );
 
     hub::data::Dof6 dof64( 1, 2, 3, 0, 1, 0, 0 );
-    //    auto dof624 = hub::Dof6::slerp(dof62, dof64, 1.0);
     CHECK( hub::data::Dof6::slerp( dof62, dof64, 0.0 ) == dof62 );
     CHECK( hub::data::Dof6::slerp( dof62, dof64, 1.0 ) == dof64 );
-    //    CHECK(dof624 == dof64);
 
     const hub::data::Measure& measure2 = dof62;
     const hub::data::Measure& measure3 = dof63;

@@ -2,8 +2,4 @@
 
 #include <net/Socket.hpp>
 
-TEST_CASE( "Socket test" ) {
-
-    //    hub::net::Socket socket;
-    //    socket.isConnected();
-}
+TEST_CASE( "Socket test" ) {}

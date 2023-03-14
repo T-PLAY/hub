@@ -25,7 +25,6 @@ hub::OutputSensor outputSensor(
     hub::io::OutputStream( "myStream", hub::net::ClientSocket( "127.0.0.1", 4042 ) ) );
             // endConstruction
 
-//            hub::Acquisition acq(0, 0);
             long long start = 0, end = 0;
             unsigned char * data = nullptr;
             uint64_t size = 0;
@@ -33,13 +32,6 @@ hub::OutputSensor outputSensor(
             hub::data::Measure measure(data, size, resolution);
             hub::data::Measure measure2(data, size, resolution);
             hub::data::Measure measure3(data, size, resolution);
-//            for ( int i = 0; i < acq.getMeasures().size(); ++i ) {
-//                const auto& measure = acq.getMeasures().at( i );
-//                assert( measure.getResolution() == sensorSpec.getResolutions().at( i ) );
-//            }
-//            hub::Acquisition acq = std::move( hub::Acquisition { start, end }
-//                                              << hub::Measure { data, size, resolution } );
-//            outputSensor << acq;
 
             // clang-format on
             // startFunctional

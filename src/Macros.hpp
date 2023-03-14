@@ -172,8 +172,6 @@
 #        define SRC_API __declspec( dllimport )
 #    endif
 
-//    #include <windows.h>
-
 #else
 #    define SRC_API
 #endif
@@ -182,7 +180,6 @@
 #    define CPLUSPLUS_VERSION 20
 #    define CONSTEXPR17 constexpr
 #    define CONSTEXPR20 constexpr
-//    #error "C++20 not supported"
 #elif ( __cplusplus >= 201703L )
 #    define CPLUSPLUS_VERSION 17
 #    define CONSTEXPR17 constexpr
@@ -192,7 +189,6 @@
 #    define CPLUSPLUS_VERSION 14
 #    define CONSTEXPR17
 #    define CONSTEXPR20
-//    #error "C++14 not supported"
 #else
 #    error "C++ version " __cplusplus " not supported"
 #endif

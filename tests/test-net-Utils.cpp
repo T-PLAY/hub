@@ -2,7 +2,4 @@
 
 #include <net/Utils.hpp>
 
-TEST_CASE( "Net utils test" ) {
-
-    //    hub::net::utils::
-}
+TEST_CASE( "Net utils test" ) {}
