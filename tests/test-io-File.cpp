@@ -7,9 +7,9 @@
 #include <filesystem>
 #include <thread>
 
-#if CPLUSPLUS_VERSION <= 14
-#    include <boost/filesystem.hpp>
-#endif
+//#if CPLUSPLUS_VERSION <= 14
+//#    include <boost/filesystem.hpp>
+//#endif
 
 TEST_CASE( "File test" ) {
 
@@ -17,6 +17,7 @@ TEST_CASE( "File test" ) {
 
 #if CPLUSPLUS_VERSION <= 14
     // todo cpp 17 -> 14
+    // std::filesystem::remove( filename ); not worked
 #else
     std::filesystem::remove( filename );
 #endif
