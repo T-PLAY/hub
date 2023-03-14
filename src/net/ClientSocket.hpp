@@ -60,7 +60,6 @@ class SRC_API ClientSocket : public Socket, public io::InputOutput
         NOT_FOUND,
         FOUND,
         NEW_ACQ,
-        //        END_CONNECTION,
         LIST_STREAMS,
         GET_SENSOR_SPEC,
         GET_ACQUISITION,
@@ -101,7 +100,6 @@ class SRC_API ClientSocket : public Socket, public io::InputOutput
     /// \param sock
     ///
     ClientSocket( ClientSocket&& sock ) = default;
-    //    ClientSocket( ClientSocket&& sock );
 
     ClientSocket& operator=( const ClientSocket& sock ) = delete;
     ClientSocket&& operator=( ClientSocket&& sock ) = delete;
@@ -109,7 +107,6 @@ class SRC_API ClientSocket : public Socket, public io::InputOutput
     ~ClientSocket();
 
   public:
-    //  protected:
     ///
     /// \brief write
     /// \param t
@@ -146,7 +143,6 @@ class SRC_API ClientSocket : public Socket, public io::InputOutput
     ///
     void setPort( int newPort );
 
-    //  protected:
   public:
     ///
     /// \brief isOpen
@@ -154,7 +150,6 @@ class SRC_API ClientSocket : public Socket, public io::InputOutput
     ///
     bool isOpen() const override;
 
-    //  protected:
     ///
     /// \brief write
     /// \param data
@@ -180,8 +175,6 @@ class SRC_API ClientSocket : public Socket, public io::InputOutput
     /// \return
     ///
     bool isEnd() const override;
-
-    //    void clear() const;
 
   public:
     ///

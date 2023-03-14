@@ -35,7 +35,6 @@ class SRC_API Input
 {
   public:
     Input() = default;
-    //    Input() = delete;
 
     ///
     /// \param input
@@ -91,7 +90,6 @@ class SRC_API Input
     /// \brief read
     /// \param any
     ///
-    //    void read( std::any& any );
     void read( Any& any );
 
     ///
@@ -128,20 +126,12 @@ class SRC_API Input
     template <class T, class U>
     void read( std::map<T, U>& map );
 
-    //    template <class T, class U>
-    //        typename std::enable_if<( not std::is_same<U, hub::SensorSpec>::value ), void>::type
-    //    template <class T, class U,
-    //              typename = typename std::enable_if<( not std::is_same<U, hub::SensorSpec>::value
-    //              )>::type> void
     ///
     /// \brief read
     /// \param pair
     ///
     template <class T, class U>
     void read( std::pair<T, U>& pair ) {
-
-        //        typename std::enable_if<( not std::is_same<U, hub::SensorSpec>::value ),
-        //        void>::type read( std::pair<T, U>& pair ) const {
 
         assert( isOpen() );
 
@@ -150,30 +140,10 @@ class SRC_API Input
 #endif
         T first;
         read( first );
-        //        hub::SensorSpec sensorSpec;
-        //        read(sensorSpec);
         U second;
         read( second );
-        //        auto second = get<U>();
         pair = std::make_pair( first, std::move( second ) );
     }
-
-    //        template <class T, class U>
-    //        typename std::enable_if<( std::is_same<U, hub::SensorSpec>::value ), void>::type
-    //        read( std::pair<T, U>& pair )  {
-    //            assert( isOpen() );
-
-    //        #ifdef DEBUG_INPUT
-    //            std::cout << "[Input] read(std::pair)" << std::endl;
-    //        #endif
-    //            T first;
-    //            read( first );
-    //            //    hub::SensorSpec sensorSpec;
-    //            U second;
-    //            second = getSensorSpec();
-    //            //    read( second );
-    //            pair = std::make_pair( first, second );
-    //        }
 
   public:
     ///
@@ -186,14 +156,7 @@ class SRC_API Input
     /// \brief read
     /// \param sensorSpec
     ///
-    //    void read( SensorSpec& sensorSpec )  = delete;
     void read( SensorSpec& sensorSpec );
-
-    //    ///
-    //    /// \brief read
-    //    /// \return
-    //    ///
-    //    SensorSpec read() const { return getSensorSpec(); }
 
     ///
     /// \brief read
@@ -207,24 +170,12 @@ class SRC_API Input
     ///
     void read( data::Measure& measure ) = delete;
 
-    //    void read( data::UserData& userData );
-
-    //    ///
-    //    /// \brief getSensorSpec
-    //    /// \return
-    //    ///
-    //    SensorSpec getSensorSpec() ;
-
-    //    UserData getUserData() const;
-
     ///
     /// \brief getAcquisition
     /// \param sensorSpec
     /// \return
     ///
     virtual Acquisition getAcquisition( const SensorSpec& sensorSpec );
-
-    //    friend class SensorSpec;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -240,10 +191,6 @@ void Input::read( T& t ) {
     std::cout << "[Input] read(T) : " << typeid( T ).name() << " ("
               << boost::typeindex::type_id<T>().pretty_name() << ") '" << t << "'" << std::endl;
 #    else
-    //    std::cout << "[Input] read(T) : " << typeid( T ).name() << " '" << t << "'"
-    //              << std::endl;
-    //    std::cout << "[Input] read(T) : " << typeid( T ).name() << " '" << t << "' : end"
-    //              << std::endl;
     std::cout << "[Input] read(T) : '" << t << "' : end" << std::endl;
 #    endif
 #endif

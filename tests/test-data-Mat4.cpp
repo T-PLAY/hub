@@ -7,8 +7,6 @@
 
 TEST_CASE( "Mat4 test" ) {
 
-    //    float matData[16] = { 0 };
-    //    hub::data::Mat4 mat4( matData );
     hub::data::Mat4 mat4;
 
     float data[16] { 0.0 };
@@ -18,8 +16,4 @@ TEST_CASE( "Mat4 test" ) {
     CHECK( mat43 == mat42 );
 
     std::cout << mat43 << std::endl;
-
-    //    CHECK( mat4 != measure2 );
-    //    CHECK(measure23 == dof623);
-    //    std::cout << mat4 << std::endl;
 }

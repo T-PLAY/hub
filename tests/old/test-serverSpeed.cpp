@@ -10,7 +10,6 @@
 TEST_CASE( "Server test : speed test" ) {
 
     const std::string ipv4 = "127.0.0.1";
-    //    constexpr int port     = 7000;
     srand( (unsigned)time( NULL ) );
     const int port = rand() % 65535;
 
@@ -34,16 +33,12 @@ TEST_CASE( "Server test : speed test" ) {
     std::cout << "[Test] ############################### server start" << std::endl;
     Server server( port );
     server.setMaxClients( 2 );
-    //    server.setAcqPing( false );
     server.asyncRun();
     std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
     std::cout << "[Test] server end ------------------------------" << std::endl;
 
     {
         std::cout << "[Test] ############################### outputStream start" << std::endl;
-        //        hub::OutputSensor outputSensor(
-        //            hub::SensorSpec { "sensorName", { { { width, height }, hub::Format::BGR8 } }
-        //            }, hub::io::OutputStream( "stream", hub::net::ClientSocket( ipv4, port ) ) );
 
         std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
 
@@ -62,15 +57,9 @@ TEST_CASE( "Server test : speed test" ) {
         std::cout << "[Test] inputStream end ---------------------------------" << std::endl;
 
         std::cout << "[Test] ############################### send acquisitions" << std::endl;
-        //    std::vector<hub::Acquisition> acqs;
-        //                for ( int i = 0; i < nAcqs; ++i ) {
-        //                    outputSensor << acqs[i];
-        //                }
         const auto& start = std::chrono::high_resolution_clock::now();
         for ( int i = 0; i < nAcqs; ++i ) {
-            //            outputSensor << acqs[i];
             auto acq = inputSensor.getAcquisition();
-            //            CHECK( acq == acqs[i] );
         }
         const auto& end = std::chrono::high_resolution_clock::now();
         const auto& duration =

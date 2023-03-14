@@ -34,7 +34,6 @@ class SRC_API Output
 {
   public:
     Output() = default;
-    //    Output() = delete;
 
     ///
     /// \param output
@@ -45,9 +44,6 @@ class SRC_API Output
     Output&& operator=( Output&& output ) = delete;
 
     virtual ~Output() = default;
-    //    virtual ~Output() {
-    //        close();
-    //    }
 
   protected:
     ///
@@ -61,16 +57,6 @@ class SRC_API Output
     virtual void write( const unsigned char* data, size_t len ) = 0;
 
   public:
-    //    ///
-    //    /// \brief isEnd
-    //    /// allows to know if the communication bus is no longer active,
-    //    /// no memory bandwidth, no more acquisition coming.
-    //    /// \return
-    //    /// true if the bus is inactive.\n
-    //    /// false otherwise.
-    //    ///
-    //    virtual bool isEnd() const = 0;
-
     ///
     /// \brief close
     /// is the capability to terminate communication at both ends if possible.
@@ -90,7 +76,6 @@ class SRC_API Output
     /// \brief write
     /// \param any
     ///
-    //    void write( const std::any& any ) ;
     void write( const Any& any );
 
     ///
@@ -153,12 +138,6 @@ class SRC_API Output
     ///
     void write( const data::Measure& measure );
 
-    //    ///
-    //    /// \brief write
-    //    /// \param userData
-    //    ///
-    //    void write( const data::UserData& userData) ;
-
     ///
     /// \brief write
     /// \param acq
@@ -166,11 +145,6 @@ class SRC_API Output
     virtual void write( const Acquisition& acq );
 
     ////////////////////////////////////////////////////////////////////////////
-
-    //    template <class T>
-    //    void put( const T& t )  {
-    //        write(t);
-    //    }
 };
 
 template <class T>

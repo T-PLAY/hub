@@ -40,12 +40,10 @@ namespace hub {
 
 Acquisition::Acquisition( long long start, long long end ) : m_start( start ), m_end( end ) {
     assert( m_start <= m_end );
-    //    std::cout << "[Acquisition] Acquisition(" << start << ", " << end << ")" << std::endl;
 }
 
 Acquisition::~Acquisition() {
     m_measures.clear();
-    //    std::cout << "[Acquisition] ~Acquisition()" << std::endl;
 }
 
 // Acquisition::Acquisition( Acquisition&& acq ) noexcept :
@@ -70,8 +68,6 @@ bool Acquisition::operator!=( const Acquisition& acq ) const {
 
 Acquisition& Acquisition::operator<<( data::Measure&& measure ) {
     // void Acquisition::addMeasure( Measure&& measure ) {
-    //     emplaceMeasure(measure.m_data, measure.m_size, measure.getResolution());
-    //     m_size += m_measures.back().m_size;
     m_measures.push_back( std::move( measure ) );
     m_size += m_measures.back().m_size;
     return *this;
@@ -84,24 +80,15 @@ void Acquisition::pushBack( data::Measure&& measure ) {
 
 // template <class ResolutionT>
 // void Acquisition::addMeasure(unsigned char* data, uint64_t size, ResolutionT &&resolution ) {
-//     m_size += size;
-//     //    m_measures.push_back( std::move( measure ) );
-////    m_measures.emplace_back( data, size, std::move(resolution) );
-//    m_measures.emplace_back( data, size, std::forward<ResolutionT>(resolution) );
 //}
 
 // template<typename... Values>
 // void Acquisition::add(Values... values)
 //{
-//     m_measures.emplace_back(values);
 // }
 
 bool Acquisition::isInterpolable() const {
     assert( !m_measures.empty() );
-    //    for ( const auto& measure : m_measures ) {
-    //        if ( !measure.isInterpolable() ) return false;
-    //    }
-    //    return true;
     return std::none_of( m_measures.crbegin(),
                          m_measures.crend(),
                          []( const data::Measure& measure ) { return !measure.isInterpolable(); } );
@@ -109,7 +96,6 @@ bool Acquisition::isInterpolable() const {
 
 Acquisition Acquisition::slerp( const Acquisition& left, const Acquisition& right, double t ) {
     assert( !left.m_measures.empty() );
-    //    assert(left.getMeasures().size() > 0);
     assert( left.getMeasures().size() == right.getMeasures().size() );
     assert( left.isInterpolable() && right.isInterpolable() );
     assert( 0.0 <= t && t <= 1.0 );
@@ -121,12 +107,8 @@ Acquisition Acquisition::slerp( const Acquisition& left, const Acquisition& righ
     for ( int iMeasure = 0; iMeasure < leftMeasures.size(); ++iMeasure ) {
         const auto& leftMeasure  = leftMeasures.at( iMeasure );
         const auto& rightMeasure = rightMeasures.at( iMeasure );
-        //        ret << Measure::slerp( leftMeasures.at( iMeasure ), rightMeasures.at( iMeasure ),
-        //        t );
         assert( leftMeasure.getResolution() == rightMeasure.getResolution() );
         ret << data::Measure::slerp( leftMeasure, rightMeasure, t );
-        //        ret.addMeasure(Measure::slerp( leftMeasures.at( iMeasure ), rightMeasures.at(
-        //        iMeasure ), t ));
     }
     return ret;
 }
@@ -138,7 +120,6 @@ Acquisition Acquisition::slerp( const Acquisition& left, const Acquisition& righ
 
 Acquisition& Acquisition::operator<<( const data::Measures& measures ) {
     for ( const auto& measure : measures ) {
-        //        Acquisition::operator<<( measure.clone() );
         emplaceMeasure( measure.m_data, measure.m_size, measure.getResolution() );
     }
     return *this;
@@ -156,10 +137,6 @@ Acquisition Acquisition::clone() const {
     Acquisition acq { m_start, m_end };
 
     acq << m_measures;
-    //    for ( const auto& measure : m_measures ) {
-    ////        acq << measure.clone();
-    ////        acq.addMeasure(mea);
-    //    }
 
     return acq;
 }
@@ -183,7 +160,6 @@ bool Acquisition::hasFixedSize() const {
 // }
 
 size_t Acquisition::getSize() const {
-    //    assert(! m_measures.empty());
     return m_size;
 }
 

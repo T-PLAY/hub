@@ -84,7 +84,6 @@ class SRC_API Socket
     ///
     /// \brief m_fdSock
     ///
-    //    mutable net::utils::socket_fd m_fdSock = net::utils::invalidSocket();
     net::utils::socket_fd m_fdSock = net::utils::invalidSocket();
 
     ///

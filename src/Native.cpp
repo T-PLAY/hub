@@ -76,7 +76,6 @@ void acquisition_to_string( const Acquisition* acquisition, char* str, int* strL
     std::stringstream sstr;
     sstr << *acquisition;
     const std::string& stdString = sstr.str();
-    //    std::string stdString = "hello";
 
     *strLen = stdString.size();
 #if CPLUSPLUS_VERSION == 20
@@ -143,7 +142,6 @@ void viewer_setPort( client::Viewer* viewer, int port ) {
 }
 
 bool viewer_isConnected( client::Viewer* viewer ) {
-    //    return viewer.
     return viewer->isConnected();
 }
 
@@ -189,7 +187,6 @@ void sensorSpec_getResolutionsStr( const SensorSpec* sensorSpec, char* resolutio
     const auto& resolutions = sensorSpec->getResolutions();
     std::stringstream ss;
     ss << resolutions;
-    //    const auto& resolutionsString = resolutions2string( sensorSpec->getResolutions() );
     const auto& resolutionsString = ss.str();
     const int len                 = resolutionsString.size();
     memcpy( resolutionsStr, resolutionsString.c_str(), len + 1 );
@@ -209,7 +206,6 @@ SensorSpec* sensorSpec_copy( const SensorSpec* source ) {
 }
 
 // void freeSensorSpec( SensorSpec* sensorSpec ) {
-//    delete sensorSpec;
 //}
 
 const SensorSpec::MetaData* sensorSpec_getMetaData( const SensorSpec* sensorSpec ) {
@@ -223,7 +219,6 @@ bool metaData_getString( const SensorSpec::MetaData* metaData,
     if ( metaData->find( metaName ) == metaData->end() ) return false;
 
     // todo any
-    //    const char* meta = std::any_cast<const char*>( metaData->at( metaName ) );
     const char* meta = metaData->at( metaName ).getConstCharPtr();
     *strLen          = strlen( meta );
     memcpy( output, meta, *strLen + 1 );
@@ -234,9 +229,7 @@ bool metaData_getString( const SensorSpec::MetaData* metaData,
 bool metaData_getMat4( const SensorSpec::MetaData* metaData, const char* metaName, float* output ) {
     if ( metaData->find( metaName ) != metaData->end() ) {
         // todo any
-        //        const float* array = std::any_cast<const float*>( metaData->at( metaName ) );
         const auto& mat4 = metaData->at( metaName ).getMat4();
-        //        const float* array = mat4.m_data;
         memcpy( output, mat4.m_data, 64 );
         return true;
     }
@@ -250,14 +243,12 @@ bool metaData_exists( const SensorSpec::MetaData* metaData, const char* metaName
 int metaData_getInt( const SensorSpec::MetaData* metaData, const char* metaName ) {
     assert( metaData->find( metaName ) != metaData->end() );
     // todo any
-    //    return std::any_cast<int>( metaData->at( metaName ) );
     return metaData->at( metaName ).getInt();
 }
 
 double metaData_getDouble( const SensorSpec::MetaData* metaData, const char* metaName ) {
     assert( metaData->find( metaName ) != metaData->end() );
     // todo any
-    //    return std::any_cast<unsigned int>( metaData->at( metaName ) );
     return metaData->at( metaName ).getDouble();
 }
 

@@ -6,13 +6,7 @@ namespace hub {
 
 Acquisition InputSensor::getAcquisition() const {
 
-    //    Acquisition && acq = m_interface.getAcquisition( static_cast<int>(
-    //    m_spec.getAcquisitionSize() ) );
     Acquisition acq = m_input->getAcquisition( m_spec );
-
-    //    if (acq.m_start == -1 && acq.m_end == -1) {
-    //        return acq;
-    //    }
 
     assert( !acq.hasFixedSize() || acq.getSize() == m_spec.getAcquisitionSize() );
     const auto& resolutions = m_spec.getResolutions();
@@ -20,10 +14,8 @@ Acquisition InputSensor::getAcquisition() const {
     assert( resolutions.size() == measures.size() );
     assert( resolutions.size() > 0 );
     for ( size_t i = 0; i < resolutions.size(); ++i ) {
-        //        const auto & format = resolutions.at(i).second;
         assert( !format2hasFixedSize( resolutions.at( i ).second ) ||
                 computeAcquisitionSize( resolutions.at( i ) ) == measures.at( i ).m_size );
-        //        measures.at( i ).m_resolution = resolutions.at( i );
         assert( measures.at( i ).getResolution() == resolutions.at( i ) );
         assert( !measures.at( i ).getResolution().first.empty() );
         assert( measures.at( i ).getResolution().second != Format::NONE );
@@ -42,16 +34,11 @@ std::vector<Acquisition> InputSensor::getAllAcquisitions() {
 
     try {
         int nReadAcqs = 0;
-        //        while ( true ) {
         while ( !m_input->isEnd() ) {
             acqs.emplace_back( getAcquisition() );
             ++nReadAcqs;
         }
     }
-    //    catch ( Sensor::exception& e ) {
-    //        std::cout << "[InputSensor] catch sensor exception : " << e.what() << std::endl;
-    //        throw e;
-    //    }
     catch ( std::exception& e ) {
         std::cout << "[InputSensor] catch exception : " << e.what() << std::endl;
         throw;

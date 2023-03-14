@@ -23,7 +23,6 @@ TEST_CASE( "Ram test" ) {
 
     std::cout << "outputStream start" << std::endl;
     INFO( "OutputStream" );
-    //    {
 
     hub::OutputSensor outputSensor(
         hub::SensorSpec { "sensorName", { { { 1 }, hub::Format::BGR8 } } },
@@ -40,10 +39,7 @@ TEST_CASE( "Ram test" ) {
     for ( const auto& acq : acqs ) {
         outputSensor << acq;
     }
-    //    }
     std::cout << "outputStream end ################################" << std::endl;
-
-    //    std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
 
     std::cout << "inputStream start" << std::endl;
     INFO( "InputStream" );
@@ -61,7 +57,6 @@ TEST_CASE( "Ram test" ) {
 
         auto acqs2 = inputSensor.getAllAcquisitions();
         for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
-            //            auto acq = inputSensor.getAcquisition();
             CHECK( acqs2[iAcq] == acqs[iAcq] );
         }
     }

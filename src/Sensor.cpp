@@ -4,10 +4,7 @@ namespace hub {
 
 Sensor::Sensor( const SensorSpec& sensorSpec ) : m_spec( std::move( sensorSpec ) ) {}
 
-Sensor::~Sensor() {
-    //    if ( m_io.isOpen() ) m_io.close();
-    //    delete &m_io;
-}
+Sensor::~Sensor() {}
 
 std::ostream& operator<<( std::ostream& os, const Sensor& sensor ) {
     os << sensor.m_spec.getSensorName();
@@ -15,7 +12,6 @@ std::ostream& operator<<( std::ostream& os, const Sensor& sensor ) {
 }
 
 // io::IO& Sensor::getInterface() const {
-//    return m_io;
 //}
 
 } // namespace hub

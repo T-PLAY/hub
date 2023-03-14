@@ -13,15 +13,11 @@ TEST_CASE( "Asker test" ) {
     const hub::SensorSpec sensorSpec( "hello", { resolution } );
     const std::string streamName = "streamName";
     const std::string ipv4       = "127.0.0.1";
-    //    const int port               = 12004;
-    //    srand( (unsigned)time( NULL ) );
-    //    const int port = rand() % 65535;
-    const int port = getRandomPort();
+    const int port               = getRandomPort();
 
     Server server( port );
     server.setMaxClients( 2 );
     server.asyncRun();
-    //    server.ad
 
     {
         hub::OutputSensor outputSensor(
@@ -36,8 +32,6 @@ TEST_CASE( "Asker test" ) {
 
         {
             hub::client::Asker asker( ipv4, port );
-            //            std::list<std::pair<std::string, hub::SensorSpec>> listStreams =
-            //            asker.listStreams();
             auto listStreams = asker.listStreams();
 
             std::cout << "nb stream : " << listStreams.size() << std::endl;
@@ -45,7 +39,6 @@ TEST_CASE( "Asker test" ) {
                 std::cout << streamName2 << std::endl;
                 CHECK( streamName == streamName2 );
 
-                //        const auto & sensorSpec2 = asker.getSensorSpec(streamName2);
                 std::cout << sensorSpec2 << std::endl;
                 CHECK( sensorSpec == sensorSpec2 );
 

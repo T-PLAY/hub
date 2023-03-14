@@ -31,12 +31,10 @@ Socket::Socket() {
 #ifdef DEBUG_SOCKET
     DEBUG_MSG( getHeader( m_fdSock ) << "Socket()" );
 #endif
-    //    net::utils::init();
 }
 
 Socket::Socket( Socket&& socket ) {
-    m_fdSock = socket.m_fdSock;
-    //    socket.m_fdSock = INVALID_SOCKET;
+    m_fdSock        = socket.m_fdSock;
     socket.m_fdSock = net::utils::invalidSocket();
 }
 
@@ -45,15 +43,9 @@ net::utils::socket_fd Socket::getFdSock() const {
 }
 
 // void Socket::clear() const {
-//     assert(m_fdSock != INVALID_SOCKET);
 
-//    if ( m_fdSock != INVALID_SOCKET ) {
 // #ifdef DEBUG_SOCKET
-//        DEBUG_MSG( getHeader( m_fdSock ) << "close socket" );
 // #endif
-//        net::clearSocket( m_fdSock );
-//        m_fdSock = INVALID_SOCKET;
-//    }
 //}
 
 Socket::~Socket() {
@@ -61,14 +53,11 @@ Socket::~Socket() {
     DEBUG_MSG( getHeader( m_fdSock ) << "~Socket()" );
 #endif
 
-    //    if ( m_fdSock != INVALID_SOCKET ) {
     if ( net::utils::isValid( m_fdSock ) ) {
 #ifdef DEBUG_SOCKET
         DEBUG_MSG( getHeader( m_fdSock ) << "close socket" );
 #endif
         net::utils::closeSocket( m_fdSock );
-        //        close(m_fdSock);
-        //        m_fdSock = INVALID_SOCKET;
         m_fdSock = net::utils::invalidSocket();
     }
 }

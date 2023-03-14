@@ -84,7 +84,6 @@ class SRC_API Acquisition
     template <class... Args>
     void emplaceMeasure( Args&&... args );
 
-    //    [[ deprecated ]]
     ///
     /// \brief pushBack
     /// \param measure

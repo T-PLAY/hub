@@ -9,22 +9,13 @@ InputStream::InputStream( const std::string& streamName,
                           net::ClientSocket&& clientSocket,
                           bool mergeSyncAcqs ) :
 
-    m_clientSocket( std::move( clientSocket ) )
-//    Input(std::move(m_clientSocket))
-//    net::ClientSocket( std::move( clientSocket ) )
-{
+    m_clientSocket( std::move( clientSocket ) ) {
 
-    //    Output::write( net::ClientSocket::Type::STREAM_VIEWER );
-    //    m_clientSocket.write( net::ClientSocket::Type::STREAM_VIEWER );
     m_clientSocket.write( net::ClientSocket::Type::STREAM_VIEWER );
 
-    //    Output::write( streamName );
-    //    net::ClientSocket::write( streamName );
     m_clientSocket.write( streamName );
 
     net::ClientSocket::Message mess;
-    //    Input::read( mess );
-    //    read( mess );
     Input::read( mess );
     if ( mess == net::ClientSocket::Message::NOT_FOUND ) {
 #ifdef DEBUG_SOCKET
@@ -36,8 +27,6 @@ InputStream::InputStream( const std::string& streamName,
     }
     assert( mess == net::ClientSocket::Message::OK );
 
-    //    Output::write( syncStreamName );
-    //    net::ClientSocket::write( syncStreamName );
     m_clientSocket.write( syncStreamName );
     Input::read( mess );
     if ( mess == net::ClientSocket::Message::NOT_FOUND ) {
@@ -47,8 +36,6 @@ InputStream::InputStream( const std::string& streamName,
     }
     assert( mess == net::ClientSocket::Message::OK );
 
-    //    Output::write( mergeSyncAcqs );
-    //    net::ClientSocket::write( mergeSyncAcqs );
     m_clientSocket.write( mergeSyncAcqs );
 }
 

@@ -21,10 +21,6 @@ Server::~Server() {
     assert( m_thread.joinable() );
     m_thread.join();
 
-    //    while (! m_clients.empty()) {
-    //        std::cout << "client still alive : " << m_clients.size() << std::endl;
-    //        std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
-    //    }
     for ( auto& client : m_clients ) {
         client->setServer( nullptr );
     }
@@ -189,9 +185,6 @@ std::list<std::pair<std::string, hub::SensorSpec>> Server::listStreams() const {
 }
 
 // const hub::SensorSpec& Server::getSensorSpec( const std::string& streamName ) {
-//    assert( m_streamers.find( streamName ) != m_streamers.end() );
-//    const auto& streamer = m_streamers.at( streamName );
-//    return streamer->getInputSensor().m_spec;
 //}
 
 const std::shared_ptr<hub::Acquisition> Server::getAcquisition( const std::string& streamName ) {

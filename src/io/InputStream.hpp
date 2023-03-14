@@ -56,13 +56,6 @@ class SRC_API InputStream : public Input
     ///
     bool isOpen() const override;
 
-    //    ///
-    //    /// \brief write
-    //    /// \param data
-    //    /// \param len
-    //    ///
-    //    void write( const unsigned char* data, size_t len ) const override;
-
     ///
     /// \brief read
     /// \param data
@@ -81,7 +74,6 @@ class SRC_API InputStream : public Input
     ///
     bool isEnd() const override;
 
-    //    void clear() const;
     ///
     /// \brief getAcquisition
     /// \param sensorSpec

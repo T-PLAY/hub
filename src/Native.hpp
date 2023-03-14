@@ -231,12 +231,6 @@ extern "C"
     ///
     SRC_API SensorSpec* sensorSpec_copy( const SensorSpec* source );
 
-    //    /
-    //    / \brief freeSensorSpec
-    //    / \param dest
-    //    /
-    //    SRC_API void freeSensorSpec( SensorSpec* dest );
-
     ///
     /// \brief sensorSpec_getMetaData
     /// \param sensorSpec

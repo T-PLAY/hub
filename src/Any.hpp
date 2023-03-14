@@ -26,19 +26,7 @@ class Any
     /// \brief The AnyType enum
     /// allows to unify the data according to the different architecture (32, 64 bits).
     ///
-    enum class Type {
-        NONE = 0,
-        INT,
-        DOUBLE,
-        STRING,
-        CONST_CHAR_PTR,
-        MAT4,
-        COUNT
-        //        VECTOR_FLOAT,
-        //        UINT,
-        //        CONST_FLOAT_PTR,
-        //        CONST_DOUBLE_PTR,
-    };
+    enum class Type { NONE = 0, INT, DOUBLE, STRING, CONST_CHAR_PTR, MAT4, COUNT };
 
     ///
     /// \brief Any
@@ -90,11 +78,6 @@ class Any
     ///
     Any( const data::Mat4& value );
 
-    //    Any( const std::vector<float>& value );
-    //    Any( unsigned int value );
-    //    Any( const float* value );
-    //    Any( const double* value );
-
     ///
     /// \brief getInt
     /// \return
@@ -124,10 +107,6 @@ class Any
     /// \return
     ///
     const data::Mat4& getMat4() const;
-    //    const std::vector<float>& getStdVectorFloat() const;
-    //    const unsigned int& getUnsignedInt() const;
-    //    const float* const getConstFloatPtr() const;
-    //    const double* const getConstDoublePtr() const;
 
     ///
     /// \brief has_value
@@ -153,19 +132,6 @@ class Any
     ///
     std::string to_string() const;
 
-    //    ///
-    //    /// \brief anyValue2string
-    //    /// \param any
-    //    /// \return
-    //    ///
-    //    static std::string anyValue2string( const Any& any );
-
-    //    ///
-    //    /// \brief anyType2string
-    //    /// \param any
-    //    /// \return
-    //    ///
-    //    static const std::string& anyType2string( const Any& any );
     ///
     /// \brief operator ==
     /// \param any
@@ -198,10 +164,6 @@ class Any
     std::string m_std_string     = "";
     const char* m_const_char_ptr = nullptr;
     hub::data::Mat4* m_mat4      = nullptr;
-    //    std::vector<float> m_std_vector_float;
-    //    unsigned int m_unsigned_int;
-    //    const float* m_const_float_ptr;
-    //    const double* m_const_double_ptr;
 
     // T m_value;
 };
@@ -217,7 +179,6 @@ inline Any::Type Any::type() const {
 }
 
 // inline std::string Any::typeName() const {
-//    return anyType2string( *this );
 //}
 
 } // namespace hub

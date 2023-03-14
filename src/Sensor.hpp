@@ -37,14 +37,12 @@ class SRC_API Sensor
     ///
     /// \brief m_io
     ///
-    //    io::IO& m_io;
 
   public:
     ///
     /// \brief getInterface
     /// \return
     ///
-    //    io::IO& getInterface() const;
 
     ///
     /// \brief operator <<
