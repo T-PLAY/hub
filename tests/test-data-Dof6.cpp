@@ -50,4 +50,5 @@ TEST_CASE( "Dof6 test" ) {
     auto measure23 = hub::data::Measure::slerp( measure2, measure3, 0.5 );
 
     std::cout << dof6 << std::endl;
+    std::cout << measure23 << std::endl;
 }
