@@ -3,7 +3,6 @@ cmake_minimum_required(VERSION 3.8)
 project(hub)
 
 set(CMAKE_CXX_STANDARD 14)
-# set(CMAKE_CXX_STANDARD 17) # depends of std::any for metadata representation set(CMAKE_CXX_STANDARD 20) # experimental
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_FIND_PACKAGE_NO_SYSTEM_PACKAGE_REGISTRY False)
 
@@ -37,15 +36,6 @@ option(HUB_ENABLE_TESTS "Enable tests" OFF)
 if(HUB_ENABLE_TESTS)
     add_subdirectory(tests)
 endif()
-
-# if (MSVC) # Here I set the target System to WindowsStore, which *should* enable UWP-support UWP compilation : cmake
-
-# ############################################## COVERAGE
-
-# NAME coverage BASE_DIRECTORY "CMakeFiles" EXECUTABLE ctest --test-dir tests -j ${n_cores} DEPENDENCIES hub server #
-# "3.20") # ctest --test-dir option file(COPY ${CMAKE_BINARY_DIR}/tests/DartConfiguration.tcl DESTINATION
-
-# ############################################## EXAMPLES
 
 option(HUB_ENABLE_EXAMPLES "Enable examples" OFF)
 if(HUB_ENABLE_EXAMPLES)

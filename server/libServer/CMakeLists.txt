@@ -20,8 +20,4 @@ elseif(UNIX)
 
 endif()
 
-# if (MSVC) # Here I set the target System to WindowsStore, which *should* enable UWP-support
-
 target_link_libraries(${PROJECT_NAME} ${REQUIRED_LIBS} hub)
-
-# set(CMAKE_CXX_STANDARD 14) #ULA-OP C++14 set(CMAKE_CXX_STANDARD_REQUIRED ON)

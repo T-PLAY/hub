@@ -53,11 +53,7 @@ elseif(UNIX)
     set(REQUIRED_LIBS Threads::Threads)
 endif()
 
-# if (MSVC) # Here I set the target System to WindowsStore, which *should* enable UWP-support UWP compilation : cmake
-
 target_link_libraries(${PROJECT_NAME} ${REQUIRED_LIBS})
-
-# set(CMAKE_CXX_STANDARD 14) #ULA-OP C++14 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # ########################### INSTALL/EXPORT ################################
 
@@ -67,12 +63,10 @@ install(
     DESTINATION lib)
 
 if(NOT HUB_BUILD_STATIC_LIBRARY)
-    install(# PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/hub${CMAKE_POSTFIX}.dll PROGRAMS $<TARGET_FILE:hub>
-            PROGRAMS $<TARGET_FILE:hub> DESTINATION bin)
+    install(PROGRAMS $<TARGET_FILE:hub> DESTINATION bin)
 endif()
 
 install(
-    # DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/ # DIRECTORY ${HUB_INCLUDE_DIR}/ DESTINATION include # FILES_MATCHING
     DIRECTORY ${HUB_INCLUDE_DIR}
     DESTINATION include
     FILES_MATCHING
@@ -172,12 +166,15 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
             "/usr/*"
             ${sourcesTmp})
 
-         add_custom_target( coverage-${name} COMMAND ls ${CMAKE_BINARY_DIR}/coverage-lcov-${name}/index.html && \(head
-         -n 40 ${CMAKE_BINARY_DIR}/coverage-lcov-${name}/index.html | grep '100.0 %' || ${HUB_BROWSER}
-         ${CMAKE_BINARY_DIR}/coverage-lcov-${name}/index.html\) )
+        add_custom_target(
+            coverage-${name}
+            COMMAND
+                ls ${CMAKE_BINARY_DIR}/coverage-lcov-${name}/index.html && head -n 40
+                ${CMAKE_BINARY_DIR}/coverage-lcov-${name}/index.html | grep '100.0 %' || ${HUB_BROWSER}
+                ${CMAKE_BINARY_DIR}/coverage-lcov-${name}/index.html)
 
-         add_dependencies(coverage-${name} coverage-lcov-${name})
-         add_dependencies(coverage-all coverage-${name})
+        add_dependencies(coverage-${name} coverage-lcov-${name})
+        add_dependencies(coverage-all coverage-${name})
 
     endforeach()
 

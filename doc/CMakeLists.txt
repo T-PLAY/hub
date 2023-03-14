@@ -1,8 +1,3 @@
-# check if Doxygen is installed find_package(Doxygen) if (DOXYGEN_FOUND) # set input and output files # set(DOXYGEN_IN
-# ${CMAKE_CURRENT_SOURCE_DIR}/../docs/Doxyfile.in) # set(DOXYGEN_OUT ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile) # request to
-# configure the file configure_file(${DOXYGEN_IN} ${DOXYGEN_OUT} @ONLY) message("Doxygen build started") # note the
-# option ALL which allows to build the docs together with the application add_custom_target( doc_doxygen ALL
-
 cmake_minimum_required(VERSION 3.0.0)
 
 if(HUB_BUILD_DOC)
@@ -14,10 +9,6 @@ if(HUB_BUILD_DOC)
     endif()
 
     find_package(Doxygen QUIET)
-
-    # FetchContent_Declare( Flex GIT_REPOSITORY https://github.com/lexxmark/winflexbison.git GIT_TAG Release_1_9_6 # or
-
-    # FetchContent_Declare( Doxygen GIT_REPOSITORY https://github.com/doxygen/doxygen.git GIT_TAG Release_1_9_6 # or a
 
     if(DOXYGEN_FOUND)
         set(DOXYGEN_IN ${CMAKE_CURRENT_SOURCE_DIR}/docs_doxygen/Doxyfile.in)
