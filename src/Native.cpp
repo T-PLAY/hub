@@ -90,13 +90,13 @@ void acquisition_to_string( const Acquisition* acquisition, char* str, int* strL
 //////////////////////////////////////////////////////////////////////////
 
 client::Viewer* createViewer( onNewStreamerFunc onNewStreamer,
-                      onDelStreamerFunc onDelStreamer,
-                      onServerConnectedFunc onServerConnected,
-                      onServerDisconnectedFunc onServerDisconnected,
-                      onNewAcquisitionFunc onNewAcquisition,
-                      const char* ipv4,
-                      int port,
-                      onLogMessageFunc onLogMessage ) {
+                              onDelStreamerFunc onDelStreamer,
+                              onServerConnectedFunc onServerConnected,
+                              onServerDisconnectedFunc onServerDisconnected,
+                              onNewAcquisitionFunc onNewAcquisition,
+                              const char* ipv4,
+                              int port,
+                              onLogMessageFunc onLogMessage ) {
 
     auto onNewStreamerCpp = [=]( const std::string& streamName, const SensorSpec& sensorSpec ) {
         onNewStreamer( streamName.c_str(), &sensorSpec );
@@ -118,14 +118,14 @@ client::Viewer* createViewer( onNewStreamerFunc onNewStreamer,
         onLogMessage( logMessage.c_str() );
     };
     client::Viewer* viewer = new client::Viewer( onNewStreamerCpp,
-                                 onDelStreamerCpp,
-                                 onServerConnectedCpp,
-                                 onServerDisconnectedCpp,
-                                 onNewAcquisitionCpp,
-                                 ipv4,
-                                 port,
-                                 false,
-                                 onLogMessageCpp );
+                                                 onDelStreamerCpp,
+                                                 onServerConnectedCpp,
+                                                 onServerDisconnectedCpp,
+                                                 onNewAcquisitionCpp,
+                                                 ipv4,
+                                                 port,
+                                                 false,
+                                                 onLogMessageCpp );
     return viewer;
 }
 
@@ -208,7 +208,7 @@ SensorSpec* sensorSpec_copy( const SensorSpec* source ) {
         source->getSensorName(), source->getResolutions(), source->getMetaData() );
 }
 
-//void freeSensorSpec( SensorSpec* sensorSpec ) {
+// void freeSensorSpec( SensorSpec* sensorSpec ) {
 //    delete sensorSpec;
 //}
 
@@ -223,8 +223,8 @@ bool metaData_getString( const SensorSpec::MetaData* metaData,
     if ( metaData->find( metaName ) == metaData->end() ) return false;
 
     // todo any
-//    const char* meta = std::any_cast<const char*>( metaData->at( metaName ) );
-    const char* meta = metaData->at(metaName).getConstCharPtr();
+    //    const char* meta = std::any_cast<const char*>( metaData->at( metaName ) );
+    const char* meta = metaData->at( metaName ).getConstCharPtr();
     *strLen          = strlen( meta );
     memcpy( output, meta, *strLen + 1 );
     output[*strLen] = 0;
@@ -234,9 +234,9 @@ bool metaData_getString( const SensorSpec::MetaData* metaData,
 bool metaData_getMat4( const SensorSpec::MetaData* metaData, const char* metaName, float* output ) {
     if ( metaData->find( metaName ) != metaData->end() ) {
         // todo any
-//        const float* array = std::any_cast<const float*>( metaData->at( metaName ) );
-        const auto & mat4 = metaData->at(metaName).getMat4();
-//        const float* array = mat4.m_data;
+        //        const float* array = std::any_cast<const float*>( metaData->at( metaName ) );
+        const auto& mat4 = metaData->at( metaName ).getMat4();
+        //        const float* array = mat4.m_data;
         memcpy( output, mat4.m_data, 64 );
         return true;
     }
@@ -250,15 +250,15 @@ bool metaData_exists( const SensorSpec::MetaData* metaData, const char* metaName
 int metaData_getInt( const SensorSpec::MetaData* metaData, const char* metaName ) {
     assert( metaData->find( metaName ) != metaData->end() );
     // todo any
-//    return std::any_cast<int>( metaData->at( metaName ) );
-    return metaData->at(metaName).getInt();
+    //    return std::any_cast<int>( metaData->at( metaName ) );
+    return metaData->at( metaName ).getInt();
 }
 
 double metaData_getDouble( const SensorSpec::MetaData* metaData, const char* metaName ) {
     assert( metaData->find( metaName ) != metaData->end() );
     // todo any
-//    return std::any_cast<unsigned int>( metaData->at( metaName ) );
-    return metaData->at(metaName).getDouble();
+    //    return std::any_cast<unsigned int>( metaData->at( metaName ) );
+    return metaData->at( metaName ).getDouble();
 }
 
 } // namespace native

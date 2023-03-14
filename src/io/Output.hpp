@@ -8,21 +8,17 @@
 //#include <typeinfo>
 //#include <vector>
 
-#include "Macros.hpp"
 #include "Acquisition.hpp"
-#include "SensorSpec.hpp"
 #include "Any.hpp"
-
+#include "Macros.hpp"
+#include "SensorSpec.hpp"
 
 #ifdef USE_BOOST
-#include <boost/type_index.hpp>
+#    include <boost/type_index.hpp>
 #endif
-
-
 
 namespace hub {
 namespace io {
-
 
 ///
 /// \brief The Output class
@@ -38,20 +34,20 @@ class SRC_API Output
 {
   public:
     Output() = default;
-//    Output() = delete;
+    //    Output() = delete;
 
     ///
     /// \param output
     ///
-    Output( Output&& output )                 = default;
-    Output( const Output& output )            = delete;
+    Output( Output&& output )      = default;
+    Output( const Output& output ) = delete;
     Output& operator=( const Output& output ) = delete;
-    Output&& operator=( Output&& output )     = delete;
+    Output&& operator=( Output&& output ) = delete;
 
     virtual ~Output() = default;
-//    virtual ~Output() {
-//        close();
-//    }
+    //    virtual ~Output() {
+    //        close();
+    //    }
 
   protected:
     ///
@@ -62,25 +58,24 @@ class SRC_API Output
     /// \param len
     /// [in] size of the data array to write
     ///
-    virtual void write( const unsigned char* data, size_t len )  = 0;
-
+    virtual void write( const unsigned char* data, size_t len ) = 0;
 
   public:
-//    ///
-//    /// \brief isEnd
-//    /// allows to know if the communication bus is no longer active,
-//    /// no memory bandwidth, no more acquisition coming.
-//    /// \return
-//    /// true if the bus is inactive.\n
-//    /// false otherwise.
-//    ///
-//    virtual bool isEnd() const = 0;
+    //    ///
+    //    /// \brief isEnd
+    //    /// allows to know if the communication bus is no longer active,
+    //    /// no memory bandwidth, no more acquisition coming.
+    //    /// \return
+    //    /// true if the bus is inactive.\n
+    //    /// false otherwise.
+    //    ///
+    //    virtual bool isEnd() const = 0;
 
     ///
     /// \brief close
     /// is the capability to terminate communication at both ends if possible.
     ///
-    virtual void close()  = 0;
+    virtual void close() = 0;
 
     ///
     /// \brief isOpen
@@ -89,118 +84,113 @@ class SRC_API Output
     /// true if the bus is active.\n
     /// false otherwise.
     ///
-    virtual bool isOpen() const  = 0;
+    virtual bool isOpen() const = 0;
 
     ///
     /// \brief write
     /// \param any
     ///
-//    void write( const std::any& any ) ;
-    void write( const Any& any ) ;
+    //    void write( const std::any& any ) ;
+    void write( const Any& any );
 
     ///
     /// \brief write
     /// \param str
     ///
-    void write( const char* str ) ;
+    void write( const char* str );
 
     ///
     /// \brief write
     /// \param t
     ///
     template <class T>
-    void write( const T& t ) ;
+    void write( const T& t );
 
     ///
     /// \brief write
     /// \param list
     ///
     template <class T>
-    void write( const std::list<T>& list ) ;
+    void write( const std::list<T>& list );
 
     ///
     /// \brief write
     /// \param vector
     ///
     template <class T>
-    void write( const std::vector<T>& vector ) ;
+    void write( const std::vector<T>& vector );
 
     ///
     /// \brief write
     /// \param map
     ///
     template <class T, class U>
-    void write( const std::map<T, U>& map ) ;
+    void write( const std::map<T, U>& map );
 
     ///
     /// \brief write
     /// \param pair
     ///
     template <class T, class U>
-    void write( const std::pair<T, U>& pair ) ;
+    void write( const std::pair<T, U>& pair );
 
   public:
     ///
     /// \brief write
     /// \param str
     ///
-    void write( const std::string& str ) ;
+    void write( const std::string& str );
 
     ///
     /// \brief write
     /// \param sensorSpec
     ///
-    void write( const SensorSpec& sensorSpec ) ;
-
+    void write( const SensorSpec& sensorSpec );
 
     ///
     /// \brief write
     /// \param measure
     ///
-    void write( const data::Measure& measure ) ;
+    void write( const data::Measure& measure );
 
-//    ///
-//    /// \brief write
-//    /// \param userData
-//    ///
-//    void write( const data::UserData& userData) ;
+    //    ///
+    //    /// \brief write
+    //    /// \param userData
+    //    ///
+    //    void write( const data::UserData& userData) ;
 
     ///
     /// \brief write
     /// \param acq
     ///
-    virtual void write( const Acquisition& acq ) ;
+    virtual void write( const Acquisition& acq );
 
     ////////////////////////////////////////////////////////////////////////////
 
-
-//    template <class T>
-//    void put( const T& t )  {
-//        write(t);
-//    }
-
+    //    template <class T>
+    //    void put( const T& t )  {
+    //        write(t);
+    //    }
 };
 
-
 template <class T>
-void Output::write( const T& t )  {
+void Output::write( const T& t ) {
     assert( isOpen() );
 
     write( reinterpret_cast<const unsigned char*>( &t ), sizeof( T ) );
 
 #ifdef DEBUG_OUTPUT
-#ifdef USE_BOOST
-    std::cout << "[Output] write(T) : " << typeid( T ).name() << " (" << boost::typeindex::type_id<T>().pretty_name() << ") '" << t << "'"
-              << std::endl;
-#else
-    std::cout << "[Output] write(T) : " << typeid( T ).name() << " '" << t << "'"
-              << std::endl;
-#endif
+#    ifdef USE_BOOST
+    std::cout << "[Output] write(T) : " << typeid( T ).name() << " ("
+              << boost::typeindex::type_id<T>().pretty_name() << ") '" << t << "'" << std::endl;
+#    else
+    std::cout << "[Output] write(T) : " << typeid( T ).name() << " '" << t << "'" << std::endl;
+#    endif
 #endif
 }
 
 template <class T>
-void Output::write( const std::list<T>& list )  {
+void Output::write( const std::list<T>& list ) {
     assert( isOpen() );
 
 #ifdef DEBUG_OUTPUT
@@ -216,7 +206,7 @@ void Output::write( const std::list<T>& list )  {
 }
 
 template <class T>
-void Output::write( const std::vector<T>& vector )  {
+void Output::write( const std::vector<T>& vector ) {
     assert( isOpen() );
 
 #ifdef DEBUG_OUTPUT
@@ -232,7 +222,7 @@ void Output::write( const std::vector<T>& vector )  {
 }
 
 template <class T, class U>
-void Output::write( const std::map<T, U>& map )  {
+void Output::write( const std::map<T, U>& map ) {
     assert( isOpen() );
 
 #ifdef DEBUG_OUTPUT
@@ -251,7 +241,7 @@ void Output::write( const std::map<T, U>& map )  {
 }
 
 template <class T, class U>
-void Output::write( const std::pair<T, U>& pair )  {
+void Output::write( const std::pair<T, U>& pair ) {
     assert( isOpen() );
 
 #ifdef DEBUG_OUTPUT
@@ -262,7 +252,6 @@ void Output::write( const std::pair<T, U>& pair )  {
     write( first );
     write( second );
 }
-
 
 } // namespace io
 } // namespace hub

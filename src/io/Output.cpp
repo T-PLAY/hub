@@ -56,7 +56,7 @@ void Output::write( const data::Measure& measure ) {
     write( measure.m_data, measure.m_size );
 }
 
-//void Output::write( const data::UserData& userData ) {
+// void Output::write( const data::UserData& userData ) {
 //    //    write(userData.m_data);
 //    //    write(userData.m_size);
 //    write( userData.getName() );
@@ -113,7 +113,7 @@ void Output::write( const Any& any ) {
 
     assert( any.has_value() );
     const auto& anyType = any.type();
-    write(anyType);
+    write( anyType );
     switch ( anyType ) {
 
     case Any::Type::INT: {
@@ -143,41 +143,40 @@ void Output::write( const Any& any ) {
     case Any::Type::MAT4: {
         const auto& val = any.getMat4();
         write( reinterpret_cast<const unsigned char*>( val.m_data ), 64 );
-//        write(val);
+        //        write(val);
         break;
     }
 
     default:
-//        std::cerr << "non supported type : '" << any.typeName() << "'" << std::endl;
+        //        std::cerr << "non supported type : '" << any.typeName() << "'" << std::endl;
         std::cerr << "non supported type : '" << any.type() << "'" << std::endl;
         assert( false );
     }
 
+    //    case Any::Type::VECTOR_FLOAT: {
+    //        const auto& val = any.getStdVectorFloat();
+    //        assert( val.size() == 9 );
+    //        write( val );
+    //        break;
+    //    }
 
-//    case Any::Type::VECTOR_FLOAT: {
-//        const auto& val = any.getStdVectorFloat();
-//        assert( val.size() == 9 );
-//        write( val );
-//        break;
-//    }
+    //    case Any::Type::UINT: {
+    //        const auto& val = any.getUnsignedInt();
+    //        write( val );
+    //        break;
+    //    }
 
-//    case Any::Type::UINT: {
-//        const auto& val = any.getUnsignedInt();
-//        write( val );
-//        break;
-//    }
+    //    case Any::Type::CONST_FLOAT_PTR: {
+    //        const auto& val = any.getConstFloatPtr();
+    //        write( reinterpret_cast<const unsigned char*>( val ), 64 );
+    //        break;
+    //    }
 
-//    case Any::Type::CONST_FLOAT_PTR: {
-//        const auto& val = any.getConstFloatPtr();
-//        write( reinterpret_cast<const unsigned char*>( val ), 64 );
-//        break;
-//    }
-
-//    case Any::Type::CONST_DOUBLE_PTR: {
-//        const auto& val = any.getConstDoublePtr();
-//        write( reinterpret_cast<const unsigned char*>( val ), 64 );
-//        break;
-//    }
+    //    case Any::Type::CONST_DOUBLE_PTR: {
+    //        const auto& val = any.getConstDoublePtr();
+    //        write( reinterpret_cast<const unsigned char*>( val ), 64 );
+    //        break;
+    //    }
 
     //    if ( anyType == typeid( int ) ) {
     //        write( hub::Any::Type::INT );

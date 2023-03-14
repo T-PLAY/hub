@@ -116,8 +116,8 @@ Acquisition Asker::getAcquisition( const std::string& streamName ) {
     assert( message == net::ClientSocket::Message::FOUND );
 
     hub::SensorSpec sensorSpec;
-    m_sock.read(sensorSpec);
-//    auto sensorSpec = m_sock.getSensorSpec();
+    m_sock.read( sensorSpec );
+    //    auto sensorSpec = m_sock.getSensorSpec();
 
     auto acq = m_sock.getAcquisition( sensorSpec );
 

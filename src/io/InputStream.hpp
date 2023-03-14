@@ -13,7 +13,7 @@ namespace io {
 /// The communication is only possible if the stream (with the same name) is active within the
 /// server. That implies an OutputStream communicating data through the hub.
 ///
-//class SRC_API InputStream : public Input, public net::ClientSocket
+// class SRC_API InputStream : public Input, public net::ClientSocket
 class SRC_API InputStream : public Input
 {
   public:
@@ -56,24 +56,24 @@ class SRC_API InputStream : public Input
     ///
     bool isOpen() const override;
 
-//    ///
-//    /// \brief write
-//    /// \param data
-//    /// \param len
-//    ///
-//    void write( const unsigned char* data, size_t len ) const override;
+    //    ///
+    //    /// \brief write
+    //    /// \param data
+    //    /// \param len
+    //    ///
+    //    void write( const unsigned char* data, size_t len ) const override;
 
     ///
     /// \brief read
     /// \param data
     /// \param len
     ///
-    void read( unsigned char* data, size_t len )  override;
+    void read( unsigned char* data, size_t len ) override;
 
     ///
     /// \brief close
     ///
-    void close()  override;
+    void close() override;
 
     ///
     /// \brief isEnd
@@ -87,7 +87,7 @@ class SRC_API InputStream : public Input
     /// \param sensorSpec
     /// \return
     ///
-    Acquisition getAcquisition( const SensorSpec& sensorSpec )  override;
+    Acquisition getAcquisition( const SensorSpec& sensorSpec ) override;
 
   private:
     net::ClientSocket m_clientSocket;
@@ -95,23 +95,19 @@ class SRC_API InputStream : public Input
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-inline bool InputStream::isOpen() const
-{
+inline bool InputStream::isOpen() const {
     return m_clientSocket.isOpen();
 }
 
-inline void InputStream::read(unsigned char *data, size_t len)
-{
-    m_clientSocket.read(data, len);
+inline void InputStream::read( unsigned char* data, size_t len ) {
+    m_clientSocket.read( data, len );
 }
 
-inline void InputStream::close()
-{
+inline void InputStream::close() {
     m_clientSocket.close();
 }
 
-inline bool InputStream::isEnd() const
-{
+inline bool InputStream::isEnd() const {
     return m_clientSocket.isEnd();
 }
 

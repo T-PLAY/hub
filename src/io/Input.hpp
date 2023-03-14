@@ -40,10 +40,10 @@ class SRC_API Input
     ///
     /// \param input
     ///
-    Input( Input&& input )                 = default;
-    Input( const Input& input )            = delete;
+    Input( Input&& input )      = default;
+    Input( const Input& input ) = delete;
     Input& operator=( const Input& input ) = delete;
-    Input&& operator=( Input&& input )     = delete;
+    Input&& operator=( Input&& input ) = delete;
 
     virtual ~Input() = default;
 

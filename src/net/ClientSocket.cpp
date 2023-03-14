@@ -1,9 +1,9 @@
 #include "net/ClientSocket.hpp"
 
+#include <cassert>
 #include <cstring>
 #include <regex>
 #include <thread>
-#include <cassert>
 
 namespace hub {
 namespace net {
@@ -293,8 +293,8 @@ bool ClientSocket::isEnd() const {
 }
 
 #if ( __cplusplus >= 201703L )
-#define ConstString constexpr std::string_view
-//using ConstString = constexpr std::string_view;
+#    define ConstString constexpr std::string_view
+// using ConstString = constexpr std::string_view;
 #else
 using ConstString = const std::string;
 #endif
@@ -311,22 +311,21 @@ std::ostream& operator<<( std::ostream& os, const ClientSocket::Type& type ) {
     return os;
 }
 
-static ConstString message2string[static_cast<int>( ClientSocket::Message::COUNT )] =
-    {
-        "NONE",
-        "PING",
-        "SYNC",
-        "DATA",
-        "OK",
-        "CLOSE",
-        "DEL_STREAMER",
-        "NEW_STREAMER",
-        "NOT_FOUND",
-        "FOUND",
-        "NEW_ACQ",
-        "LIST_STREAMS",
-        "GET_SENSOR_SPEC",
-        "GET_ACQUISITION",
+static ConstString message2string[static_cast<int>( ClientSocket::Message::COUNT )] = {
+    "NONE",
+    "PING",
+    "SYNC",
+    "DATA",
+    "OK",
+    "CLOSE",
+    "DEL_STREAMER",
+    "NEW_STREAMER",
+    "NOT_FOUND",
+    "FOUND",
+    "NEW_ACQ",
+    "LIST_STREAMS",
+    "GET_SENSOR_SPEC",
+    "GET_ACQUISITION",
 };
 std::ostream& operator<<( std::ostream& os, const ClientSocket::Message& msg ) {
     os << message2string[(int)msg];

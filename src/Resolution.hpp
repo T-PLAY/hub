@@ -1,9 +1,9 @@
 
 #pragma once
 
+#include <numeric>
 #include <string>
 #include <vector>
-#include <numeric>
 
 #include "Macros.hpp"
 
@@ -93,7 +93,7 @@ static inline CONSTEXPR20 size_t computeAcquisitionSize( const Resolution& resol
 static inline CONSTEXPR20 size_t computeAcquisitionSize( Format format, const Dims& dims ) noexcept;
 static inline constexpr int format2nByte( const Format& format ) noexcept;
 static inline constexpr bool format2isInterpolable( const Format& format ) noexcept;
-static inline constexpr bool format2hasFixedSize( const Format& format) noexcept;
+static inline constexpr bool format2hasFixedSize( const Format& format ) noexcept;
 
 ///
 /// \brief operator <<
@@ -119,11 +119,11 @@ SRC_API std::ostream& operator<<( std::ostream& os, const Resolutions& resolutio
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-//constexpr int s_nFormat = 33;
+// constexpr int s_nFormat = 33;
 
 // template <int NDim>
 // static constexpr int s_format2nByte[static_cast<int>( SensorSpec<NDim>::Format::COUNT )] = {
-//static constexpr int s_format2nByte[static_cast<int>( Format::COUNT )] = {
+// static constexpr int s_format2nByte[static_cast<int>( Format::COUNT )] = {
 static constexpr int s_format2nByte[static_cast<int>( Format::COUNT )] = {
     0,       // NONE
     2,       // Z16
@@ -161,9 +161,9 @@ static constexpr int s_format2nByte[static_cast<int>( Format::COUNT )] = {
 };
 
 inline constexpr int format2nByte( const Format& format ) noexcept {
-//    assert(s_nFormat == static_cast<int>(Format::COUNT));
+    //    assert(s_nFormat == static_cast<int>(Format::COUNT));
 
-//    static_assert(s_format2nByte[s_nFormat - 1] != 0);
+    //    static_assert(s_format2nByte[s_nFormat - 1] != 0);
     return s_format2nByte[static_cast<int>( format )];
 }
 
@@ -227,7 +227,7 @@ static constexpr bool s_format2isInterpolable[static_cast<int>( Format::COUNT )]
 };
 
 inline constexpr bool format2isInterpolable( const Format& format ) noexcept {
-//    static_assert(s_format2isInterpolable[s_nFormat - 1] != false);
+    //    static_assert(s_format2isInterpolable[s_nFormat - 1] != false);
     return s_format2isInterpolable[(int)format];
 }
 
@@ -252,7 +252,7 @@ static std::string format2stringArray[static_cast<int>( Format::COUNT )] = {
 };
 
 static inline constexpr std::string& HUB_TO_STRING( const Format& format ) {
-//    static_assert(format2stringArray[s_nFormat - 1]);
+    //    static_assert(format2stringArray[s_nFormat - 1]);
     return format2stringArray[(int)format];
 }
 
@@ -290,44 +290,43 @@ static std::string HUB_TO_STRING( const Resolutions& resolutions ) {
 }
 
 static constexpr bool s_format2hasFixedSize[static_cast<int>( Format::COUNT )] = {
-    true, // NONE
-    true, // Z16
-    true, // DISPARITY16
-    true, // XYZ32F
-    true, // YUYV
-    true, // RGB8
-    true, // BGR8
-    true, // RGBA8
-    true, // BGRA8
-    true, // Y8
-    true, // Y16
-    true, // RAW10
-    true, // RAW16
-    true, // RAW8
-    true, // UYVY
-    true, // MOTION_RAW
-    true, // MOTION_XYZ32F
-    true, // GPIO_RAW
-    true, // DISPARITY32
+    true,  // NONE
+    true,  // Z16
+    true,  // DISPARITY16
+    true,  // XYZ32F
+    true,  // YUYV
+    true,  // RGB8
+    true,  // BGR8
+    true,  // RGBA8
+    true,  // BGRA8
+    true,  // Y8
+    true,  // Y16
+    true,  // RAW10
+    true,  // RAW16
+    true,  // RAW8
+    true,  // UYVY
+    true,  // MOTION_RAW
+    true,  // MOTION_XYZ32F
+    true,  // GPIO_RAW
+    true,  // DISPARITY32
     true,  // DOF6
-    true, // Y10BPACK
-    true, // DISTANCE
-    true, // MJPEG
-    true, // Y8I
-    true, // Y12I
-    true, // INZI
-    true, // INVI
-    true, // W10
-    true, // Z16H
-    true, // FG
-    true, // Y411
-    true, // MAT4
+    true,  // Y10BPACK
+    true,  // DISTANCE
+    true,  // MJPEG
+    true,  // Y8I
+    true,  // Y12I
+    true,  // INZI
+    true,  // INVI
+    true,  // W10
+    true,  // Z16H
+    true,  // FG
+    true,  // Y411
+    true,  // MAT4
     false, // USER_DATA
 };
 
-
 inline constexpr bool format2hasFixedSize( const Format& format ) noexcept {
-//    static_assert(s_format2isInterpolable[s_nFormat - 1] != false);
+    //    static_assert(s_format2isInterpolable[s_nFormat - 1] != false);
     return s_format2hasFixedSize[(int)format];
 }
 
@@ -340,4 +339,3 @@ inline constexpr bool format2hasFixedSize( const Format& format ) noexcept {
 //}
 
 } // namespace hub
-

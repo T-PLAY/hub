@@ -84,7 +84,7 @@ class SRC_API CyclicBuff
     ///
     /// \brief close
     ///
-    void close() ;
+    void close();
 
     ///
     /// \brief isOpen
@@ -101,8 +101,8 @@ class SRC_API CyclicBuff
   private:
     unsigned char* const m_buff;
     const size_t m_buffLen;
-    size_t m_writeHead                      = 0;
-    size_t m_readHead                       = 0;
+    size_t m_writeHead              = 0;
+    size_t m_readHead               = 0;
     bool m_outputSensorWantsToClose = false;
     bool m_inputSensorClose         = false;
 };
@@ -145,7 +145,7 @@ class SRC_API Ram : public InputOutput
     ///
     /// @copydoc InputOutput::close()
     ///
-    void close()  override;
+    void close() override;
 
     ///
     /// @copydoc InputOutput::isOpen()
@@ -160,12 +160,12 @@ class SRC_API Ram : public InputOutput
     ///
     /// @copydoc InputOutput::write()
     ///
-    void write( const unsigned char* data, size_t len )  override;
+    void write( const unsigned char* data, size_t len ) override;
 
     ///
     /// @copydoc InputOutput::read()
     ///
-    void read( unsigned char* data, size_t len )  override;
+    void read( unsigned char* data, size_t len ) override;
 
   private:
     CyclicBuff& m_buff;

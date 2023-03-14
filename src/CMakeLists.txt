@@ -1,9 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
 
-# set(HUB_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include") set(HUB_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
-
-# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fpic")
-
 option(HUB_ENABLE_COVERAGE "Collect coverage from hub library (required tests enable)" OFF)
 if(HUB_ENABLE_COVERAGE)
     include(CodeCoverage)
@@ -15,21 +11,12 @@ endif()
 option(HUB_BUILD_STATIC_LIBRARY "Build static library" OFF)
 
 file(GLOB_RECURSE sources ${HUB_SOURCE_DIR}/*.cpp)
-# file(GLOB_RECURSE headers ${HUB_INCLUDE_DIR}/*.hpp ${HUB_INCLUDE_DIR}/*.inl)
 file(GLOB_RECURSE headers ${HUB_INCLUDE_DIR}/*.hpp ${HUB_INCLUDE_DIR}/*.inl)
 
 list(APPEND SOURCE_FILES ${sources} ${headers})
 
-# source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SOURCE_FILES})
-source_group("Header Files\\" FILES     ${headers})
-source_group("Source Files\\" FILES     ${sources})
-
-# Set up such that your IDE organizes the files correctly
-#source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SOURCE_FILES})
-
-# add_library(cpp_doxygen_sphinx ${SOURCE_FILES})
-
-# set(CPACK_PROJECT_NAME ${PROJECT_NAME}) set(CPACK_PROJECT_VERSION ${PROJECT_VERSION}) include(CPack)
+source_group("Header Files\\" FILES ${headers})
+source_group("Source Files\\" FILES ${sources})
 
 set(REQUIRED_LIBS)
 
@@ -67,7 +54,6 @@ elseif(UNIX)
 endif()
 
 # if (MSVC) # Here I set the target System to WindowsStore, which *should* enable UWP-support UWP compilation : cmake
-# -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0
 
 target_link_libraries(${PROJECT_NAME} ${REQUIRED_LIBS})
 
@@ -80,39 +66,28 @@ install(
     EXPORT ${PROJECT_NAME}
     DESTINATION lib)
 
-# set( CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS ${Mingw_Path}/libgcc_s_seh-1.dll ${Mingw_Path}/libstdc++-6.dll
-# ${Mingw_Path}/libwinpthread-1.dll ) install( PROGRAMS ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS} DESTINATION bin COMPONENT
-# System )
 if(NOT HUB_BUILD_STATIC_LIBRARY)
     install(# PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/hub${CMAKE_POSTFIX}.dll PROGRAMS $<TARGET_FILE:hub>
-            # $<TARGET_FILE_DIR:${PROJECT_NAME}>)
             PROGRAMS $<TARGET_FILE:hub> DESTINATION bin)
 endif()
 
-# install(TARGETS ${PROJECT_NAME} DESTINATION lib)
-install(# DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/ # DIRECTORY ${HUB_INCLUDE_DIR}/ DESTINATION include # FILES_MATCHING
-        # PATTERN "*.hpp" PATTERN "*.inl"
-        DIRECTORY ${HUB_INCLUDE_DIR} DESTINATION include FILES_MATCHING PATTERN "*.hpp" PATTERN "*.inl"
-)
-
-# install include headers install(FILES MathFunctions.h DESTINATION include)
+install(
+    # DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/ # DIRECTORY ${HUB_INCLUDE_DIR}/ DESTINATION include # FILES_MATCHING
+    DIRECTORY ${HUB_INCLUDE_DIR}
+    DESTINATION include
+    FILES_MATCHING
+    PATTERN "*.hpp"
+    PATTERN "*.inl")
 
 install(
     EXPORT ${PROJECT_NAME}
     FILE ${PROJECT_NAME}Targets.cmake
     DESTINATION lib/cmake/${PROJECT_NAME})
 
-# get_target_property(properties ${PROJECT_NAME} INTERFACE_INCLUDE_DIRECTORIES) message(STATUS ${properties})
-
-target_include_directories(
-    ${PROJECT_NAME}
-    PUBLIC $<BUILD_INTERFACE:${HUB_INCLUDE_DIR}>
-           # $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include> $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
-           $<INSTALL_INTERFACE:include>)
+target_include_directories(${PROJECT_NAME} PUBLIC $<BUILD_INTERFACE:${HUB_INCLUDE_DIR}> $<INSTALL_INTERFACE:include>)
 
 include(CMakePackageConfigHelpers)
 
-# generate the config file that is includes the exports
 configure_package_config_file(
     ${CMAKE_CURRENT_SOURCE_DIR}/Config.cmake.in "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
     INSTALL_DESTINATION "lib/cmake/${PROJECT_NAME}"
@@ -138,106 +113,75 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
             CACHE STRING "User browser to see html docs and coverage")
     endif()
 
-
-        # setup_target_for_coverage_gcovr_xml(
-        # BASE_DIRECTORY ${CMAKE_BINARY_DIR}
     setup_target_for_coverage_lcov(
-        NAME coverage-lcov
-        EXECUTABLE ctest --test-dir tests -j ${n_cores}
-        DEPENDENCIES hub test-all
+        NAME
+        coverage-lcov
+        EXECUTABLE
+        ctest
+        --test-dir
+        tests
+        -j
+        ${n_cores}
+        DEPENDENCIES
+        hub
+        test-all
         EXCLUDE
-        "/usr/*"
-#        "*.hpp"
-#        "*.inl"
-#        NO_DEMANGLE
-        # "examples/*" "include/*" COMMAND ${HUB_BROWSER} ${CMAKE_BINARY_DIR}/coverage/index.html
-    )
-
-
+        "/usr/*")
 
     if(${CMAKE_VERSION} VERSION_LESS "3.20") # ctest --test-dir option
-        # add_custom_command( TARGET tests  POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy
-        # ${CMAKE_BINARY_DIR}/tests/DartConfiguration.tcl ${CMAKE_BINARY_DIR}/)
         add_custom_command(
             TARGET ${PROJECT_NAME}
             POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_BINARY_DIR}/tests/DartConfiguration.tcl
                     ${CMAKE_BINARY_DIR}/)
 
-        # file(COPY ${CMAKE_BINARY_DIR}/tests/DartConfiguration.tcl DESTINATION ${CMAKE_BINARY_DIR}/ DEPENDS tests)
     endif()
 
-    add_custom_target(
-        coverage
-        # COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_OUT}
-        COMMAND ${HUB_BROWSER} ${CMAKE_BINARY_DIR}/coverage-lcov/index.html
-        # WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-        # COMMENT "Generating API documentation with Doxygen"
-        # VERBATIM
-    )
+    add_custom_target(coverage COMMAND ${HUB_BROWSER} ${CMAKE_BINARY_DIR}/coverage-lcov/index.html)
     add_dependencies(coverage coverage-lcov)
-
-    # setup_target_for_coverage_gcovr_html(NAME coverage-html EXECUTABLE ctest --schedule-random -j ${n_cores}
-    # --test-dir tests EXCLUDE "/usr/*" DEPENDENCIES test-file test-measures test-ram test-resolutions test-sensorSpec
-    # test-server test-serverSpeed )
 
     add_custom_target(coverage-all)
 
-#    foreach(header ${headers})
     foreach(file ${sources})
-#        message(STATUS ${file})
         get_filename_component(basename ${file} NAME)
-#        message(STATUS ${basename})
         get_filename_component(parentDir ${file} DIRECTORY)
-#        message(STATUS ${parentDir})
         get_filename_component(parentName ${parentDir} NAME)
         get_filename_component(name ${basename} NAME_WE)
         set(parentMacro "")
-        if (parentName STREQUAL src)
+        if(parentName STREQUAL src)
             set(parentMacro "")
         else()
             set(parentMacro "${parentName}-")
         endif()
-#        message(STATUS ${parentName})
-        if (NOT EXISTS "${PROJECT_SOURCE_DIR}/tests/test-${parentMacro}${name}.cpp")
+        if(NOT EXISTS "${PROJECT_SOURCE_DIR}/tests/test-${parentMacro}${name}.cpp")
             message(FATAL_ERROR "test-${parentMacro}${name}.cpp not found in tests directory")
         endif()
 
-        #set(sources2 ${sources})
         set(sourcesTmp ${SOURCE_FILES})
-#        list(FILTER sourcesTmp EXCLUDE REGEX ".*Macros\\.hpp$")
-        #list(REMOVE_ITEM sources2 "Acquisition.cpp")
         list(FILTER sourcesTmp EXCLUDE REGEX ".*/${name}\\.cpp$")
-#        list(FILTER sourcesTmp EXCLUDE REGEX ".*/${name}\\.hpp$")
 
-            setup_target_for_coverage_lcov(
-                NAME coverage-lcov-${name}
-                EXECUTABLE tests/test-${parentMacro}${name}
-                DEPENDENCIES hub test-${parentMacro}${name}
-                EXCLUDE
-                "/usr/*"
-                ${sourcesTmp}
-        #        "*.hpp"
-        #        "*.inl"
-        #        NO_DEMANGLE
-        #        "*.cpp"
-                # "examples/*" "include/*" COMMAND ${HUB_BROWSER} ${CMAKE_BINARY_DIR}/coverage/index.html
-            )
-#        message(STATUS "coverage-lcov-${name}")
-
+        setup_target_for_coverage_lcov(
+            NAME
+            coverage-lcov-${name}
+            EXECUTABLE
+            tests/test-${parentMacro}${name}
+            DEPENDENCIES
+            hub
+            test-${parentMacro}${name}
+            EXCLUDE
+            "/usr/*"
+            ${sourcesTmp})
 
         add_custom_target(
             coverage-${name}
             COMMAND ls ${CMAKE_BINARY_DIR}/coverage-lcov-${name}/index.html
-            && \(head -n 40 ${CMAKE_BINARY_DIR}/coverage-lcov-${name}/index.html | grep '100.0 %'
-                || ${HUB_BROWSER} ${CMAKE_BINARY_DIR}/coverage-lcov-${name}/index.html\)
-        )
-        add_dependencies(coverage-${name} coverage-lcov-${name})
+             && \(head -n 40 ${CMAKE_BINARY_DIR}/coverage-lcov-${name}/index.html | grep '100.0 %'
+                 || ${HUB_BROWSER} ${CMAKE_BINARY_DIR}/coverage-lcov-${name}/index.html\)
+         )
 
-        add_dependencies(coverage-all coverage-${name})
+         add_dependencies(coverage-${name} coverage-lcov-${name})
+         add_dependencies(coverage-all coverage-${name})
 
-#        message(STATUS "coverage-${name}")
     endforeach()
 
 endif()
-
