@@ -17,7 +17,7 @@ class StreamViewerClient;
 class StreamerClient : public Client
 {
   public:
-    StreamerClient( Server& server, int iClient, hub::net::ClientSocket&& sock );
+    StreamerClient( Server * server, int iClient, hub::net::ClientSocket&& sock );
     ~StreamerClient();
 
     std::string headerMsg() const override;
@@ -25,7 +25,7 @@ class StreamerClient : public Client
     const hub::InputSensor& getInputSensor() const;
 
     void addStreamViewer( StreamViewerClient* streamViewer );
-    //    void addSyncStreamViewer( StreamViewerClient* streamViewer );
+
     void delStreamViewer( StreamViewerClient* streamViewer );
     void newAcquisition( const std::string& streamerName, const hub::Acquisition& acq );
 
@@ -36,9 +36,6 @@ class StreamerClient : public Client
     const std::chrono::time_point<std::chrono::high_resolution_clock>&
     getLastUpdateAcqDate( const std::string& streamName ) const;
 
-    //  public:
-    //    mutable std::mutex m_mtxLastAcq;
-    //    mutable std::mutex m_mtxSaveAcqs;
 
   private:
     void saveNewAcq( const std::string& streamName, hub::Acquisition&& newAcq );
@@ -46,7 +43,6 @@ class StreamerClient : public Client
   private:
     std::thread m_thread;
 
-    //    std::mutex m_mtx;
     std::unique_ptr<hub::InputSensor> m_inputSensor;
     std::string m_streamName;
     std::string m_parent = "";
@@ -63,13 +59,10 @@ class StreamerClient : public Client
     std::mutex m_mtxSyncAcqs;
 
     std::map<std::string, std::shared_ptr<hub::Acquisition>> m_lastAcq;
-    //    std::map<std::string, std::chrono::time_point<std::chrono::high_resolution_clock>>
-    //        m_lastUpdateAcqDate;
+
     std::map<std::string, std::map<long long, std::shared_ptr<hub::Acquisition>>>
         m_streamName2saveAcqs;
 
-    //    std::lock_guard<std::mutex> m_guard;
-    //    static std::mutex s_mtxCout;
     bool m_isRecordStream = false;
 
   public:

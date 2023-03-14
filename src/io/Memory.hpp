@@ -70,7 +70,10 @@ class SRC_API Memory : public InputOutput
     ///
     /// @copydoc Interface::isEnd()
     ///
-    bool isEnd() const override { return false; }
+    bool isEnd() const override {
+        return m_container.empty();
+//        return false;
+    }
 
     ///
     /// @copydoc Interface::write()

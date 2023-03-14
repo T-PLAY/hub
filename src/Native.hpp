@@ -289,7 +289,7 @@ extern "C"
     /// \param metaName
     /// \return
     ///
-    SRC_API unsigned int metaData_getUInt( const SensorSpec::MetaData* metaData,
+    SRC_API double metaData_getDouble( const SensorSpec::MetaData* metaData,
                                            const char* metaName );
 
 #ifdef __cplusplus

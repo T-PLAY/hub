@@ -1,12 +1,12 @@
 
 #pragma once
 
-#include <string>
 #include <any>
-#include <vector>
 #include <cassert>
+#include <string>
+#include <vector>
 
-//#include "data/Mat4.hpp"
+// #include "data/Mat4.hpp"
 #include <memory>
 
 namespace hub {
@@ -15,109 +15,103 @@ namespace data {
 class Mat4;
 }
 
-
-
-class Any {
+class Any
+{
   public:
-///
-/// \brief The AnyType enum
-/// allows to unify the data according to the different architecture (32, 64 bits).
-///
-enum class Type {
-    NONE = 0,
-    INT,
-    DOUBLE,
-    STRING,
-    CONST_CHAR_PTR,
-    VECTOR_FLOAT,
-    UINT,
-    CONST_FLOAT_PTR,
-    CONST_DOUBLE_PTR,
-    MAT4,
-    COUNT
-};
     ///
-    /// \brief anyValue2string
-    /// \param any
-    /// \return
+    /// \brief The AnyType enum
+    /// allows to unify the data according to the different architecture (32, 64 bits).
     ///
-//    static std::string anyValue2string( const std::any& any );
-    static std::string anyValue2string( const Any& any );
+    enum class Type {
+        NONE = 0,
+        INT,
+        DOUBLE,
+        STRING,
+        CONST_CHAR_PTR,
+        MAT4,
+        COUNT
+//        VECTOR_FLOAT,
+//        UINT,
+//        CONST_FLOAT_PTR,
+//        CONST_DOUBLE_PTR,
+    };
 
-    ///
-    /// \brief anyType2string
-    /// \param any
-    /// \return
-    ///
-//    static const std::string& anyType2string( const std::any& any );
-    static const std::string& anyType2string( const Any& any );
-
-    friend std::ostream& operator<<( std::ostream& os, const Type& type );
-
-
-//    template <class T>
-//    Any(T value) {
-
-//    }
-//    An(())
     Any() = default;
 
-    Any(int value);
-    Any(double value);
-     Any(const std::string & value);
-     Any(const char * value);
-     Any(const std::vector<float> & value);
-     Any(unsigned int value);
-     Any(const float * value);
-     Any(const double * value);
-     Any(const data::Mat4 & value);
+    Any( int value );
+    Any( double value );
+    Any( const std::string& value );
+    Any( const char* value );
+    Any( const data::Mat4& value );
+//    Any( const std::vector<float>& value );
+//    Any( unsigned int value );
+//    Any( const float* value );
+//    Any( const double* value );
+
+    const int& getInt() const;
+    const double& getDouble() const;
+    const std::string& getStdString() const;
+    const char* const getConstCharPtr() const;
+    const data::Mat4& getMat4() const;
+//    const std::vector<float>& getStdVectorFloat() const;
+//    const unsigned int& getUnsignedInt() const;
+//    const float* const getConstFloatPtr() const;
+//    const double* const getConstDoublePtr() const;
+
+    const bool& has_value() const;
+    Type type() const;
+    const std::string & typeName() const;
 
 
-//    template <class T>
-//    T get() const = delete;
+    std::string to_string() const;
 
-//    template <>
-     const int & getInt() const;
-    const double & getDouble() const;
-    const std::string & getStdString() const;
-    const char * const getConstCharPtr() const;
-    const std::vector<float> & getStdVectorFloat() const;
-    const unsigned int & getUnsignedInt() const;
-    const float * const getConstFloatPtr() const;
-    const double * const getConstDoublePtr() const;
-    const data::Mat4 & getMat4() const;
+//    ///
+//    /// \brief anyValue2string
+//    /// \param any
+//    /// \return
+//    ///
+//    static std::string anyValue2string( const Any& any );
 
-    const bool & has_value() const {
-        return m_hasValue;
-    }
+//    ///
+//    /// \brief anyType2string
+//    /// \param any
+//    /// \return
+//    ///
+//    static const std::string& anyType2string( const Any& any );
+    bool operator==( const Any& any) const;
 
-    Type type() const {
-        return m_type;
-    }
-
-    std::string typeName() const {
-        return anyType2string(*this);
-    }
+    friend std::ostream& operator<<( std::ostream& os, const Type& type );
+    friend std::ostream& operator<<( std::ostream& os, const Any& any );
 
   private:
-    Type m_type = Type::NONE;
+    Type m_type     = Type::NONE;
     bool m_hasValue = false;
 
     int m_int;
     double m_double;
     std::string m_std_string;
-    const char * m_const_char_ptr;
-    std::vector<float> m_std_vector_float;
-    unsigned int m_unsigned_int;
-    const float* m_const_float_ptr;
-    const double* m_const_double_ptr;
-    hub::data::Mat4 * m_mat4;
+    const char* m_const_char_ptr;
+    hub::data::Mat4* m_mat4;
+//    std::vector<float> m_std_vector_float;
+//    unsigned int m_unsigned_int;
+//    const float* m_const_float_ptr;
+//    const double* m_const_double_ptr;
 
-
-
-//T m_value;
-
-
+    // T m_value;
 };
 
-    } // hub
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+inline const bool& Any::has_value() const {
+    return m_hasValue;
+}
+
+inline Any::Type Any::type() const {
+    return m_type;
+}
+
+//inline std::string Any::typeName() const {
+//    return anyType2string( *this );
+//}
+
+} // namespace hub

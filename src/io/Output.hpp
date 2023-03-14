@@ -14,7 +14,10 @@
 #include "Any.hpp"
 
 
-//#define DEBUG_OUTPUT
+#ifdef USE_BOOST
+#include <boost/type_index.hpp>
+#endif
+
 
 
 namespace hub {
