@@ -15,11 +15,10 @@
 #include "Any.hpp"
 
 #ifdef USE_BOOST
-//#include <boost/type_index.hpp>
+#include <boost/type_index.hpp>
 #endif
 
 
-// #define DEBUG_INPUT
 
 
 namespace hub {
@@ -137,13 +136,13 @@ class SRC_API Input
 
 //    template <class T, class U>
 //        typename std::enable_if<( not std::is_same<U, hub::SensorSpec>::value ), void>::type
-    template <class T, class U,
-              typename = typename std::enable_if<( not std::is_same<U, hub::SensorSpec>::value )>::type>
-              void
-//    void
+//    template <class T, class U,
+//              typename = typename std::enable_if<( not std::is_same<U, hub::SensorSpec>::value )>::type>
+//              void
+        template <class T, class U>
+    void
         read( std::pair<T, U>& pair )  {
 
-//        template <class T, class U>
 //        typename std::enable_if<( not std::is_same<U, hub::SensorSpec>::value ), void>::type
 //        read( std::pair<T, U>& pair ) const {
 
@@ -162,22 +161,22 @@ class SRC_API Input
         pair        = std::make_pair( first, std::move( second ) );
     }
 
-        template <class T, class U>
-        typename std::enable_if<( std::is_same<U, hub::SensorSpec>::value ), void>::type
-        read( std::pair<T, U>& pair )  {
-            assert( isOpen() );
+//        template <class T, class U>
+//        typename std::enable_if<( std::is_same<U, hub::SensorSpec>::value ), void>::type
+//        read( std::pair<T, U>& pair )  {
+//            assert( isOpen() );
 
-        #ifdef DEBUG_INPUT
-            std::cout << "[Input] read(std::pair)" << std::endl;
-        #endif
-            T first;
-            read( first );
-            //    hub::SensorSpec sensorSpec;
-            U second;
-            second = getSensorSpec();
-            //    read( second );
-            pair = std::make_pair( first, second );
-        }
+//        #ifdef DEBUG_INPUT
+//            std::cout << "[Input] read(std::pair)" << std::endl;
+//        #endif
+//            T first;
+//            read( first );
+//            //    hub::SensorSpec sensorSpec;
+//            U second;
+//            second = getSensorSpec();
+//            //    read( second );
+//            pair = std::make_pair( first, second );
+//        }
 
   public:
     ///
@@ -190,8 +189,8 @@ class SRC_API Input
     /// \brief read
     /// \param sensorSpec
     ///
-    void read( SensorSpec& sensorSpec )  = delete;
-    //    void read( SensorSpec& sensorSpec ) const;
+//    void read( SensorSpec& sensorSpec )  = delete;
+    void read( SensorSpec& sensorSpec );
 
     //    ///
     //    /// \brief read
@@ -211,13 +210,13 @@ class SRC_API Input
     ///
     void read( data::Measure& measure )  = delete;
 
-    void read( data::UserData& userData )  = delete;
+//    void read( data::UserData& userData );
 
-    ///
-    /// \brief getSensorSpec
-    /// \return
-    ///
-    SensorSpec getSensorSpec() ;
+//    ///
+//    /// \brief getSensorSpec
+//    /// \return
+//    ///
+//    SensorSpec getSensorSpec() ;
 
 //    UserData getUserData() const;
 
@@ -228,7 +227,7 @@ class SRC_API Input
     ///
     virtual Acquisition getAcquisition( const SensorSpec& sensorSpec ) ;
 
-
+//    friend class SensorSpec;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

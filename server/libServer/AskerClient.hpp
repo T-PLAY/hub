@@ -11,7 +11,7 @@
 class AskerClient : public Client
 {
   public:
-    AskerClient( Server& server, int iClient, hub::net::ClientSocket&& sock );
+    AskerClient( Server * server, int iClient, hub::net::ClientSocket&& sock );
     ~AskerClient();
 
     std::string headerMsg() const override;

@@ -56,12 +56,12 @@ void Output::write( const data::Measure& measure ) {
     write( measure.m_data, measure.m_size );
 }
 
-void Output::write( const data::UserData& userData ) {
-    //    write(userData.m_data);
-    //    write(userData.m_size);
-    write( userData.getName() );
-    write( userData.getValue() );
-}
+//void Output::write( const data::UserData& userData ) {
+//    //    write(userData.m_data);
+//    //    write(userData.m_size);
+//    write( userData.getName() );
+//    write( userData.getValue() );
+//}
 
 void Output::write( const Acquisition& acq ) {
     assert( isOpen() );
@@ -107,7 +107,7 @@ void Output::write( const Any& any ) {
 //    std::cout << "any raw name = '" << any.type().raw_name() << "'" << std::endl;
 #    else
     //    std::cout << "any raw name = '" << any.type().name() << "'" << std::endl;
-    std::cout << "[Output] write(std::any) : '" << any.type().name() << "'" << std::endl;
+    std::cout << "[Output] write(std::any) : '" << any << "'" << std::endl;
 #    endif
 #endif
 
@@ -140,31 +140,6 @@ void Output::write( const Any& any ) {
         break;
     }
 
-    case Any::Type::VECTOR_FLOAT: {
-        const auto& val = any.getStdVectorFloat();
-        assert( val.size() == 9 );
-        write( val );
-        break;
-    }
-
-    case Any::Type::UINT: {
-        const auto& val = any.getUnsignedInt();
-        write( val );
-        break;
-    }
-
-    case Any::Type::CONST_FLOAT_PTR: {
-        const auto& val = any.getConstFloatPtr();
-        write( reinterpret_cast<const unsigned char*>( val ), 64 );
-        break;
-    }
-
-    case Any::Type::CONST_DOUBLE_PTR: {
-        const auto& val = any.getConstDoublePtr();
-        write( reinterpret_cast<const unsigned char*>( val ), 64 );
-        break;
-    }
-
     case Any::Type::MAT4: {
         const auto& val = any.getMat4();
         write( reinterpret_cast<const unsigned char*>( val.m_data ), 64 );
@@ -173,9 +148,36 @@ void Output::write( const Any& any ) {
     }
 
     default:
-        std::cerr << "non supported type : '" << any.typeName() << "'" << std::endl;
+//        std::cerr << "non supported type : '" << any.typeName() << "'" << std::endl;
+        std::cerr << "non supported type : '" << any.type() << "'" << std::endl;
         assert( false );
     }
+
+
+//    case Any::Type::VECTOR_FLOAT: {
+//        const auto& val = any.getStdVectorFloat();
+//        assert( val.size() == 9 );
+//        write( val );
+//        break;
+//    }
+
+//    case Any::Type::UINT: {
+//        const auto& val = any.getUnsignedInt();
+//        write( val );
+//        break;
+//    }
+
+//    case Any::Type::CONST_FLOAT_PTR: {
+//        const auto& val = any.getConstFloatPtr();
+//        write( reinterpret_cast<const unsigned char*>( val ), 64 );
+//        break;
+//    }
+
+//    case Any::Type::CONST_DOUBLE_PTR: {
+//        const auto& val = any.getConstDoublePtr();
+//        write( reinterpret_cast<const unsigned char*>( val ), 64 );
+//        break;
+//    }
 
     //    if ( anyType == typeid( int ) ) {
     //        write( hub::Any::Type::INT );

@@ -63,6 +63,7 @@ TEST_CASE( "File test" ) {
     {
         hub::InputSensor inputSensor(
             hub::io::File( std::fstream( filename, std::ios::in | std::ios::binary ) ) );
+        auto & input = inputSensor.getInput();
 
         const auto& sensorSpec = inputSensor.m_spec;
         CHECK( sensorSpec.getAcquisitionSize() == 3 );
@@ -77,6 +78,7 @@ TEST_CASE( "File test" ) {
             assert( acq == acqs[iAcq] );
             CHECK( acq == acqs[iAcq] );
         }
+        CHECK(input.isEnd());
     }
     std::cout << "inputStream end #################################" << std::endl;
 }

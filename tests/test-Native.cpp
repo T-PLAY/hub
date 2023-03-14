@@ -40,7 +40,7 @@ TEST_CASE( "Native test" ) {
     hub::SensorSpec::MetaData ref_metaData;
     ref_metaData["a"] = 0;
     ref_metaData["b"] = "string";
-    ref_metaData["c"] = 2u;
+    ref_metaData["c"] = 2.0;
     const hub::data::Mat4 ref_mat4(0.0);
     std::cout << "ref_mat4: " << ref_mat4 << std::endl;
     ref_metaData["d"] = ref_mat4;
@@ -56,7 +56,7 @@ TEST_CASE( "Native test" ) {
         hub::SensorSpec::MetaData ref_metaData;
         ref_metaData["a"] = 0;
         ref_metaData["b"] = "string";
-        ref_metaData["c"] = 2u;
+        ref_metaData["c"] = 2.0;
     const hub::data::Mat4 ref_mat4(0.0);
         ref_metaData["d"] = ref_mat4;
 
@@ -129,8 +129,8 @@ TEST_CASE( "Native test" ) {
             hub::native::sensorSpec_getMetaData( sensorSpec );
         CHECK( hub::native::metaData_exists( metaData, "a" ) );
         CHECK( hub::native::metaData_getInt( metaData, "a" ) == ref_metaData.at( "a" ).getInt() );
-        CHECK( hub::native::metaData_getUInt( metaData, "c" ) ==
-               ref_metaData.at( "c" ).getUnsignedInt() );
+        CHECK( hub::native::metaData_getDouble( metaData, "c" ) ==
+               ref_metaData.at( "c" ).getDouble() );
         CHECK( !hub::native::metaData_exists( metaData, "z" ) );
         //        CHECK(ref_metaData == metaData);
         float * data_mat4 = new float[16];

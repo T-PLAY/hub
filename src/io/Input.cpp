@@ -36,14 +36,9 @@ void Input::read( std::string& str )  {
 #endif
 }
 
-
-SensorSpec Input::getSensorSpec()  {
-    assert( isOpen() );
-
-#ifdef DEBUG_INPUT
-    std::cout << "[Input] getSensorSpec()" << std::endl;
-#endif
-
+void Input::read(SensorSpec &sensorSpec)
+{
+//     read(sensorSpec.m)
 
     std::string sensorName;
     Resolutions resolutions;
@@ -52,10 +47,30 @@ SensorSpec Input::getSensorSpec()  {
     read( resolutions );
     read( metaData );
 
-    //        sensorSpec.m_acquisitionSize =
-    //        SensorSpec::computeAcquisitionSize(sensorSpec.m_resolutions); return sensorSpec;
-    return SensorSpec( std::move( sensorName ), std::move( resolutions ), std::move( metaData ) );
+//    sensorSpec = SensorSpec()
+    sensorSpec = SensorSpec( std::move( sensorName ), std::move( resolutions ), std::move( metaData ) );
 }
+
+
+//SensorSpec Input::getSensorSpec()  {
+//    assert( isOpen() );
+
+//#ifdef DEBUG_INPUT
+//    std::cout << "[Input] getSensorSpec()" << std::endl;
+//#endif
+
+
+//    std::string sensorName;
+//    Resolutions resolutions;
+//    hub::SensorSpec::MetaData metaData;
+//    read( sensorName );
+//    read( resolutions );
+//    read( metaData );
+
+//    //        sensorSpec.m_acquisitionSize =
+//    //        SensorSpec::computeAcquisitionSize(sensorSpec.m_resolutions); return sensorSpec;
+//    return SensorSpec( std::move( sensorName ), std::move( resolutions ), std::move( metaData ) );
+//}
 
 
 Acquisition Input::getAcquisition( const SensorSpec& sensorSpec )
@@ -129,7 +144,7 @@ void Input::read( char* str )  {
     assert( isOpen() );
 
 #ifdef DEBUG_INPUT
-    std::cout << "[Input] read char*" << std::endl;
+    std::cout << "[Input] read(char*)" << std::endl;
 #endif
 
     int strLen = 0;
@@ -193,39 +208,9 @@ void Input::read( Any & any )  {
 
     } break;
 
-    case Any::Type::VECTOR_FLOAT: {
-        std::vector<float> val;
-        read( val );
-        any = Any(val);
-    } break;
-
-    case Any::Type::UINT: {
-        unsigned int val;
-        read( val );
-        any = Any(val);
-    } break;
-
-    case Any::Type::CONST_FLOAT_PTR: {
-        float* buff = new float[16];
-        read( reinterpret_cast<unsigned char*>( buff ), 64 );
-
-//        any = std::any_cast<const float*>( reinterpret_cast<const float*>( buff ) );
-        any = Any(buff);
-
-    } break;
-
-    case Any::Type::CONST_DOUBLE_PTR: {
-        float* buff = new float[16];
-        read( reinterpret_cast<unsigned char*>( buff ), 64 );
-
-//        any = std::any_cast<const float*>( reinterpret_cast<const float*>( buff ) );
-        any = Any(buff);
-
-    } break;
-
     case Any::Type::MAT4: {
-        float* buff = new float[16];
-//        float buff[16];
+//        float* buff = new float[16];
+        float buff[16];
         read( reinterpret_cast<unsigned char*>( buff ), 64 );
 
         data::Mat4 mat4(buff);
@@ -241,6 +226,37 @@ void Input::read( Any & any )  {
         assert( false );
     }
     assert( any.has_value() );
+
+//    case Any::Type::VECTOR_FLOAT: {
+//        std::vector<float> val;
+//        read( val );
+//        any = Any(val);
+//    } break;
+
+//    case Any::Type::UINT: {
+//        unsigned int val;
+//        read( val );
+//        any = Any(val);
+//    } break;
+
+//    case Any::Type::CONST_FLOAT_PTR: {
+//        float* buff = new float[16];
+//        read( reinterpret_cast<unsigned char*>( buff ), 64 );
+
+////        any = std::any_cast<const float*>( reinterpret_cast<const float*>( buff ) );
+//        any = Any(buff);
+
+//    } break;
+
+//    case Any::Type::CONST_DOUBLE_PTR: {
+//        float* buff = new float[16];
+//        read( reinterpret_cast<unsigned char*>( buff ), 64 );
+
+////        any = std::any_cast<const float*>( reinterpret_cast<const float*>( buff ) );
+//        any = Any(buff);
+
+//    } break;
+
 
 
 //    switch ( type ) {
@@ -308,6 +324,16 @@ void Input::read( Any & any )  {
 //    assert( any.has_value() );
 
 }
+
+//void Input::read(data::UserData &userData)
+//{
+//    std::string name;
+//    hub::Any value;
+//    read(name);
+//    read(value);
+
+//    userData = data::UserData(name, value);
+//}
 
 /////////////////////////////////////////////////////////////////////////////
 

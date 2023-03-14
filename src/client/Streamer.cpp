@@ -24,9 +24,6 @@ void Streamer::addStream(const std::string& streamName,
 
     assert( m_streamName2initAcqs.find( streamName ) == m_streamName2initAcqs.end() );
     std::vector<Acquisition> acqs;
-    //    for ( const auto& acq : initAcqs ) {
-    //        acqs.push_back( acq.clone() );
-    //    }
     std::transform( initAcqs.crbegin(),
                     initAcqs.crend(),
                     std::back_inserter( acqs ),
@@ -56,12 +53,15 @@ void Streamer::addStream(const std::string& streamName,
 
 void Streamer::newAcquisition(const std::string& streamName, const Acquisition &acquisition ) {
 
+    std::cout << "[Streamer] newAcquisition" << std::endl;
+
     if ( m_streamName2outputSensor.find( streamName ) == m_streamName2outputSensor.end() ) {
 
         const auto& lastLogout = m_streamName2lastLogout.at( streamName );
         auto now               = std::chrono::high_resolution_clock::now();
         auto diff =
             std::chrono::duration_cast<std::chrono::milliseconds>( now - lastLogout ).count();
+        std::cout << "diff = " << diff << std::endl;
         if ( diff > 1000 ) {
             try {
                 auto& sensorSpec  = m_streamName2sensorSpec.at( streamName );
@@ -82,10 +82,10 @@ void Streamer::newAcquisition(const std::string& streamName, const Acquisition &
 
     if ( m_streamName2outputSensor.find( streamName ) != m_streamName2outputSensor.end() ) {
         try {
+            std::cout << "[Streamer] send acq" << std::endl;
             auto& outputSensor = *m_streamName2outputSensor.at( streamName );
             outputSensor << acquisition;
             if ( !m_serverConnected ) { onServerConnected(); }
-            //            std::cout << "[Streamer] send acq : " << acquisition << std::endl;
         }
         catch ( net::Socket::exception& e ) {
             m_streamName2outputSensor.clear();

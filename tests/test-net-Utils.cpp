@@ -2,4 +2,8 @@
 
 #include <net/Utils.hpp>
 
-TEST_CASE( "Net utils test" ) {}
+TEST_CASE( "Net utils test" ) {
+
+//    hub::net::utils::
+
+}

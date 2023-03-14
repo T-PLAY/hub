@@ -53,7 +53,8 @@ class SRC_API InputSensor : public Sensor
                        "not a base class" );
 
 //        m_spec = m_interface.getSensorSpec();
-        m_spec = m_input->getSensorSpec();
+        m_input->read(m_spec);
+//        m_spec = m_input->getSensorSpec();
     }
 
 //  protected:

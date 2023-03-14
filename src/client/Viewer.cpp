@@ -71,7 +71,9 @@ Viewer::Viewer(
 
                         std::string streamName;
                         m_sock.read( streamName );
-                        SensorSpec sensorSpec = m_sock.getSensorSpec();
+//                        SensorSpec sensorSpec = m_sock.getSensorSpec();
+                        SensorSpec sensorSpec;
+                        m_sock.read(sensorSpec);
                         std::cout << "[Viewer] new streamer '" << streamName << "'" << std::endl;
 
                         std::string syncStreamName = "";
@@ -174,7 +176,9 @@ Viewer::Viewer(
                     case net::ClientSocket::Message::DEL_STREAMER: {
                         std::string streamName;
                         m_sock.read( streamName );
-                        SensorSpec sensorSpec = m_sock.getSensorSpec();
+//                        SensorSpec sensorSpec = m_sock.getSensorSpec();
+                        SensorSpec sensorSpec;
+                        m_sock.read(sensorSpec);
                         //                        m_sock.read( sensorSpec );
                         std::cout << "[Viewer] del streamer '" << streamName << "'" << std::endl;
 

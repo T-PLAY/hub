@@ -254,11 +254,11 @@ int metaData_getInt( const SensorSpec::MetaData* metaData, const char* metaName 
     return metaData->at(metaName).getInt();
 }
 
-unsigned int metaData_getUInt( const SensorSpec::MetaData* metaData, const char* metaName ) {
+double metaData_getDouble( const SensorSpec::MetaData* metaData, const char* metaName ) {
     assert( metaData->find( metaName ) != metaData->end() );
     // todo any
 //    return std::any_cast<unsigned int>( metaData->at( metaName ) );
-    return metaData->at(metaName).getUnsignedInt();
+    return metaData->at(metaName).getDouble();
 }
 
 } // namespace native

@@ -1,12 +1,13 @@
 
 #include <catch2/catch_test_macros.hpp>
 
+#include <iostream>
+
 //#include <io/File.hpp>
 //#include <io/Ram.hpp>
 //#include <InputSensor.hpp>
 //#include <OutputSensor.hpp>
 #include <Resolution.hpp>
-#include <iostream>
 
 TEST_CASE( "Resolutions test" ) {
 
@@ -20,8 +21,8 @@ TEST_CASE( "Resolutions test" ) {
     hub::Resolution resolution { { 1 }, format };
     std::cout << resolution << std::endl;
 
-    //    hub::Dims dims({1});
-    //    std::cout << dims << std::endl;
+    hub::Dims dims = resolution.first;
+//        std::cout << dims << std::endl;
 
     //    std::vector<std::pair<hub::Resolutions, size_t>> m_resolutionss;
     //    m_resolutionss.push_back( { { { { 1 }, hub::Format::BGR8 } }, 3 } );

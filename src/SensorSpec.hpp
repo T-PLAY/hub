@@ -11,6 +11,11 @@
 #include "Resolution.hpp"
 #include "Any.hpp"
 
+// user friendly useless includes
+#include "data/UserData.hpp"
+#include "data/Dof6.hpp"
+#include "data/Mat4.hpp"
+
 #if CPLUSPLUS_VERSION == 20
 #    include "Map.hpp"
 #    include <ranges>
