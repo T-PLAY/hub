@@ -15,8 +15,6 @@ endif()
 
 file(GLOB_RECURSE TEST_SRC *.cpp)
 
-# GTest::gtest GTest::gtest_main) target_link_libraries(${TARGET_NAME} Catch2::Catch2WithMain hub server) #
-
 add_executable(test-all ${TEST_SRC})
 target_link_libraries(test-all Catch2::Catch2WithMain hub server)
 set_property(TARGET test-all PROPERTY CXX_STANDARD ${CMAKE_CXX_STANDARD})
@@ -42,7 +40,3 @@ add_custom_target(
     tests # WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
     COMMAND ctest -V # COMMENT "Generating API documentation with Doxygen"
     COMMENT "Running tests")
-
-# ############################################## COVERAGE
-
-# target_code_coverage(test-sensorSpec AUTO ALL EXCLUDE tests/*) # As an executable target, adds to the 'ccov' and
