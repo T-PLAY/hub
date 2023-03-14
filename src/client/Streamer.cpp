@@ -61,7 +61,7 @@ void Streamer::newAcquisition( const std::string& streamName, const Acquisition&
         auto now               = std::chrono::high_resolution_clock::now();
         auto diff =
             std::chrono::duration_cast<std::chrono::milliseconds>( now - lastLogout ).count();
-        std::cout << "diff = " << diff << std::endl;
+//        std::cout << "diff = " << diff << std::endl;
         if ( diff > 1000 ) {
             try {
                 auto& sensorSpec  = m_streamName2sensorSpec.at( streamName );
