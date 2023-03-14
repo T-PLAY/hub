@@ -5,14 +5,13 @@
 #include <string>
 // #include <thread>
 
- #include "Acquisition.hpp"
-#include "net/ClientSocket.hpp"
- #include "SensorSpec.hpp"
+#include "Acquisition.hpp"
 #include "Macros.hpp"
+#include "SensorSpec.hpp"
+#include "net/ClientSocket.hpp"
 
 namespace hub {
 namespace client {
-
 
 ///
 /// \brief The Asker class

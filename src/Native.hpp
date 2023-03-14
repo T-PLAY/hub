@@ -118,13 +118,13 @@ extern "C"
     /// \return
     ///
     SRC_API client::Viewer* createViewer( onNewStreamerFunc onNewStreamer,
-                                  onDelStreamerFunc onDelStreamer,
-                                  onServerConnectedFunc onServerConnected,
-                                  onServerDisconnectedFunc onServerDisconnected,
-                                  onNewAcquisitionFunc onNewAcquisition,
-                                  const char* ipv4,
-                                  int port,
-                                  onLogMessageFunc onLogMessage );
+                                          onDelStreamerFunc onDelStreamer,
+                                          onServerConnectedFunc onServerConnected,
+                                          onServerDisconnectedFunc onServerDisconnected,
+                                          onNewAcquisitionFunc onNewAcquisition,
+                                          const char* ipv4,
+                                          int port,
+                                          onLogMessageFunc onLogMessage );
 
     ///
     /// \brief freeViewer
@@ -231,11 +231,11 @@ extern "C"
     ///
     SRC_API SensorSpec* sensorSpec_copy( const SensorSpec* source );
 
-//    /
-//    / \brief freeSensorSpec
-//    / \param dest
-//    /
-//    SRC_API void freeSensorSpec( SensorSpec* dest );
+    //    /
+    //    / \brief freeSensorSpec
+    //    / \param dest
+    //    /
+    //    SRC_API void freeSensorSpec( SensorSpec* dest );
 
     ///
     /// \brief sensorSpec_getMetaData
@@ -289,8 +289,7 @@ extern "C"
     /// \param metaName
     /// \return
     ///
-    SRC_API double metaData_getDouble( const SensorSpec::MetaData* metaData,
-                                           const char* metaName );
+    SRC_API double metaData_getDouble( const SensorSpec::MetaData* metaData, const char* metaName );
 
 #ifdef __cplusplus
 } // end extern "C"

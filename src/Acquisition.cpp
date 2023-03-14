@@ -21,7 +21,6 @@ namespace hub {
 // Image::Image( Image&& image ) :
 // }
 
-
 // Image::~Image() {
 
 //}
@@ -78,9 +77,8 @@ Acquisition& Acquisition::operator<<( data::Measure&& measure ) {
     return *this;
 }
 
-void Acquisition::pushBack(data::Measure &&measure)
-{
-    m_measures.push_back(std::move(measure));
+void Acquisition::pushBack( data::Measure&& measure ) {
+    m_measures.push_back( std::move( measure ) );
     m_size += m_measures.back().m_size;
 }
 
@@ -99,21 +97,21 @@ void Acquisition::pushBack(data::Measure &&measure)
 // }
 
 bool Acquisition::isInterpolable() const {
-    assert(! m_measures.empty());
+    assert( !m_measures.empty() );
     //    for ( const auto& measure : m_measures ) {
     //        if ( !measure.isInterpolable() ) return false;
     //    }
     //    return true;
-    return std::none_of( m_measures.crbegin(), m_measures.crend(), []( const data::Measure& measure ) {
-        return !measure.isInterpolable();
-    } );
+    return std::none_of( m_measures.crbegin(),
+                         m_measures.crend(),
+                         []( const data::Measure& measure ) { return !measure.isInterpolable(); } );
 }
 
 Acquisition Acquisition::slerp( const Acquisition& left, const Acquisition& right, double t ) {
-    assert(! left.m_measures.empty());
-//    assert(left.getMeasures().size() > 0);
+    assert( !left.m_measures.empty() );
+    //    assert(left.getMeasures().size() > 0);
     assert( left.getMeasures().size() == right.getMeasures().size() );
-    assert(left.isInterpolable() && right.isInterpolable());
+    assert( left.isInterpolable() && right.isInterpolable() );
     assert( 0.0 <= t && t <= 1.0 );
     const long long start     = ( 1.0 - t ) * left.m_start + t * right.m_start;
     const long long end       = ( 1.0 - t ) * left.m_end + t * right.m_end;
@@ -121,10 +119,11 @@ Acquisition Acquisition::slerp( const Acquisition& left, const Acquisition& righ
     const auto& leftMeasures  = left.getMeasures();
     const auto& rightMeasures = right.getMeasures();
     for ( int iMeasure = 0; iMeasure < leftMeasures.size(); ++iMeasure ) {
-        const auto & leftMeasure = leftMeasures.at(iMeasure);
-        const auto & rightMeasure = rightMeasures.at(iMeasure);
-//        ret << Measure::slerp( leftMeasures.at( iMeasure ), rightMeasures.at( iMeasure ), t );
-        assert(leftMeasure.getResolution() == rightMeasure.getResolution());
+        const auto& leftMeasure  = leftMeasures.at( iMeasure );
+        const auto& rightMeasure = rightMeasures.at( iMeasure );
+        //        ret << Measure::slerp( leftMeasures.at( iMeasure ), rightMeasures.at( iMeasure ),
+        //        t );
+        assert( leftMeasure.getResolution() == rightMeasure.getResolution() );
         ret << data::Measure::slerp( leftMeasure, rightMeasure, t );
         //        ret.addMeasure(Measure::slerp( leftMeasures.at( iMeasure ), rightMeasures.at(
         //        iMeasure ), t ));
@@ -152,7 +151,7 @@ Acquisition& Acquisition::operator<<( const data::Measures& measures ) {
 // }
 
 Acquisition Acquisition::clone() const {
-    assert(! m_measures.empty());
+    assert( !m_measures.empty() );
 
     Acquisition acq { m_start, m_end };
 
@@ -167,16 +166,14 @@ Acquisition Acquisition::clone() const {
 
 // const std::list<Measure> &Acquisition::getMeasures() const
 const data::Measures& Acquisition::getMeasures() const {
-    assert(! m_measures.empty());
+    assert( !m_measures.empty() );
     return m_measures;
 }
 
-bool Acquisition::hasFixedSize() const
-{
-    for (const auto & measure : m_measures) {
-        const auto & format = measure.getResolution().second;
-        if (! format2hasFixedSize(format))
-            return false;
+bool Acquisition::hasFixedSize() const {
+    for ( const auto& measure : m_measures ) {
+        const auto& format = measure.getResolution().second;
+        if ( !format2hasFixedSize( format ) ) return false;
     }
     return true;
 }
@@ -186,7 +183,7 @@ bool Acquisition::hasFixedSize() const
 // }
 
 size_t Acquisition::getSize() const {
-//    assert(! m_measures.empty());
+    //    assert(! m_measures.empty());
     return m_size;
 }
 

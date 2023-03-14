@@ -9,23 +9,23 @@ InputStream::InputStream( const std::string& streamName,
                           net::ClientSocket&& clientSocket,
                           bool mergeSyncAcqs ) :
 
-    m_clientSocket(std::move(clientSocket))
+    m_clientSocket( std::move( clientSocket ) )
 //    Input(std::move(m_clientSocket))
 //    net::ClientSocket( std::move( clientSocket ) )
 {
 
-//    Output::write( net::ClientSocket::Type::STREAM_VIEWER );
-//    m_clientSocket.write( net::ClientSocket::Type::STREAM_VIEWER );
+    //    Output::write( net::ClientSocket::Type::STREAM_VIEWER );
+    //    m_clientSocket.write( net::ClientSocket::Type::STREAM_VIEWER );
     m_clientSocket.write( net::ClientSocket::Type::STREAM_VIEWER );
 
-//    Output::write( streamName );
-//    net::ClientSocket::write( streamName );
-    m_clientSocket.write(streamName);
+    //    Output::write( streamName );
+    //    net::ClientSocket::write( streamName );
+    m_clientSocket.write( streamName );
 
     net::ClientSocket::Message mess;
-//    Input::read( mess );
-//    read( mess );
-    Input::read(mess);
+    //    Input::read( mess );
+    //    read( mess );
+    Input::read( mess );
     if ( mess == net::ClientSocket::Message::NOT_FOUND ) {
 #ifdef DEBUG_SOCKET
         DEBUG_MSG( getHeader( m_fdSock ) << "[InputStream] exception sensor '" << streamName
@@ -36,9 +36,9 @@ InputStream::InputStream( const std::string& streamName,
     }
     assert( mess == net::ClientSocket::Message::OK );
 
-//    Output::write( syncStreamName );
-//    net::ClientSocket::write( syncStreamName );
-    m_clientSocket.write(syncStreamName);
+    //    Output::write( syncStreamName );
+    //    net::ClientSocket::write( syncStreamName );
+    m_clientSocket.write( syncStreamName );
     Input::read( mess );
     if ( mess == net::ClientSocket::Message::NOT_FOUND ) {
         throw net::ClientSocket::exception(
@@ -47,21 +47,21 @@ InputStream::InputStream( const std::string& streamName,
     }
     assert( mess == net::ClientSocket::Message::OK );
 
-//    Output::write( mergeSyncAcqs );
-//    net::ClientSocket::write( mergeSyncAcqs );
-    m_clientSocket.write(mergeSyncAcqs);
+    //    Output::write( mergeSyncAcqs );
+    //    net::ClientSocket::write( mergeSyncAcqs );
+    m_clientSocket.write( mergeSyncAcqs );
 }
 
 #ifdef WIN32
-void InputStream::write( const unsigned char* data, size_t len )  {
+void InputStream::write( const unsigned char* data, size_t len ) {
     net::ClientSocket::write( data, len );
 }
 
-void InputStream::read( unsigned char* data, size_t len )  {
+void InputStream::read( unsigned char* data, size_t len ) {
     net::ClientSocket::read( data, len );
 }
 
-void InputStream::close()  {
+void InputStream::close() {
     net::ClientSocket::close();
 }
 bool InputStream::isOpen() const {
@@ -72,13 +72,13 @@ bool InputStream::isEnd() const {
 }
 #endif
 
-Acquisition InputStream::getAcquisition( const SensorSpec& sensorSpec )  {
+Acquisition InputStream::getAcquisition( const SensorSpec& sensorSpec ) {
     net::ClientSocket::Message message;
     do {
         Input::read( message );
         if ( message == net::ClientSocket::Message::PING ) {
-            std::cout << "\033[32m[InputStream] receive ping from " << m_clientSocket.getFdSock() << "\033[0m"
-                      << std::endl;
+            std::cout << "\033[32m[InputStream] receive ping from " << m_clientSocket.getFdSock()
+                      << "\033[0m" << std::endl;
         }
     } while ( message == net::ClientSocket::Message::PING );
 

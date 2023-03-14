@@ -15,17 +15,17 @@ File::~File() {
     std::cout << "[File:" << this << "] ~File()" << std::endl;
     if ( m_file != nullptr ) {
         std::cout << "[File:" << this << "] ~File() close file" << std::endl;
-//        close();
+        //        close();
         File::close();
-        assert(! File::isOpen());
-//        Input::close();
-//        m_file->close();
-//        assert(! isOpen());
-//        assert( !m_file->is_open() );
+        assert( !File::isOpen() );
+        //        Input::close();
+        //        m_file->close();
+        //        assert(! isOpen());
+        //        assert( !m_file->is_open() );
     }
 }
 
-void File::close()  {
+void File::close() {
     assert( isOpen() );
     m_file->close();
     assert( !isOpen() );
@@ -41,11 +41,11 @@ bool File::isEnd() const {
     return m_file->peek() == EOF;
 }
 
-void File::write( const unsigned char* data, size_t len )  {
+void File::write( const unsigned char* data, size_t len ) {
     m_file->write( reinterpret_cast<const char*>( data ), len );
 }
 
-void File::read( unsigned char* data, size_t len )  {
+void File::read( unsigned char* data, size_t len ) {
     size_t downloadSize = 0;
     do {
 

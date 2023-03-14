@@ -12,7 +12,7 @@ void OutputSensor::operator<<( const Acquisition& acquisition ) const {
     //        m_interface.write(acquisition);
     //        return;
     //    }
-    assert( ! acquisition.hasFixedSize() || acquisition.getSize() == m_spec.getAcquisitionSize() );
+    assert( !acquisition.hasFixedSize() || acquisition.getSize() == m_spec.getAcquisitionSize() );
 
     assert( acquisition.m_start <= acquisition.m_end );
 
@@ -20,16 +20,16 @@ void OutputSensor::operator<<( const Acquisition& acquisition ) const {
     const auto& measures    = acquisition.getMeasures();
     assert( resolutions.size() == measures.size() );
     for ( int i = 0; i < resolutions.size(); ++i ) {
-        const auto & resolution = resolutions.at(i);
-        const auto & format = resolution.second;
-        assert( ! format2hasFixedSize(format)  || computeAcquisitionSize( resolutions.at( i ) ) == measures.at( i ).m_size );
+        const auto& resolution = resolutions.at( i );
+        const auto& format     = resolution.second;
+        assert( !format2hasFixedSize( format ) ||
+                computeAcquisitionSize( resolutions.at( i ) ) == measures.at( i ).m_size );
     }
 
     m_output->write( acquisition );
 }
 
-io::Output &OutputSensor::getOutput() const
-{
+io::Output& OutputSensor::getOutput() const {
     return *m_output;
 }
 

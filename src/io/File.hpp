@@ -57,7 +57,7 @@ class SRC_API File : public InputOutput
     ///
     /// @copydoc InputOutput::close()
     ///
-    void close()  override;
+    void close() override;
 
     ///
     /// @copydoc InputOutput::isOpen()
@@ -72,12 +72,12 @@ class SRC_API File : public InputOutput
     ///
     /// @copydoc InputOutput::write()
     ///
-    void write( const unsigned char* data, size_t len )  override;
+    void write( const unsigned char* data, size_t len ) override;
 
     ///
     /// @copydoc InputOutput::read()
     ///
-    void read( unsigned char* data, size_t len )  override;
+    void read( unsigned char* data, size_t len ) override;
 
   private:
     ///

@@ -34,24 +34,24 @@ class Any
         CONST_CHAR_PTR,
         MAT4,
         COUNT
-//        VECTOR_FLOAT,
-//        UINT,
-//        CONST_FLOAT_PTR,
-//        CONST_DOUBLE_PTR,
+        //        VECTOR_FLOAT,
+        //        UINT,
+        //        CONST_FLOAT_PTR,
+        //        CONST_DOUBLE_PTR,
     };
 
     ///
     /// \brief Any
     /// \param any
     ///
-    Any(const Any & any);
+    Any( const Any& any );
 
     ///
     /// \brief operator =
     /// \param any
     /// \return
     ///
-    Any & operator=(const Any & any);
+    Any& operator=( const Any& any );
 
     Any() = default;
 
@@ -90,10 +90,10 @@ class Any
     ///
     Any( const data::Mat4& value );
 
-//    Any( const std::vector<float>& value );
-//    Any( unsigned int value );
-//    Any( const float* value );
-//    Any( const double* value );
+    //    Any( const std::vector<float>& value );
+    //    Any( unsigned int value );
+    //    Any( const float* value );
+    //    Any( const double* value );
 
     ///
     /// \brief getInt
@@ -124,10 +124,10 @@ class Any
     /// \return
     ///
     const data::Mat4& getMat4() const;
-//    const std::vector<float>& getStdVectorFloat() const;
-//    const unsigned int& getUnsignedInt() const;
-//    const float* const getConstFloatPtr() const;
-//    const double* const getConstDoublePtr() const;
+    //    const std::vector<float>& getStdVectorFloat() const;
+    //    const unsigned int& getUnsignedInt() const;
+    //    const float* const getConstFloatPtr() const;
+    //    const double* const getConstDoublePtr() const;
 
     ///
     /// \brief has_value
@@ -145,7 +145,7 @@ class Any
     /// \brief typeName
     /// \return
     ///
-    const std::string & typeName() const;
+    const std::string& typeName() const;
 
     ///
     /// \brief to_string
@@ -153,25 +153,25 @@ class Any
     ///
     std::string to_string() const;
 
-//    ///
-//    /// \brief anyValue2string
-//    /// \param any
-//    /// \return
-//    ///
-//    static std::string anyValue2string( const Any& any );
+    //    ///
+    //    /// \brief anyValue2string
+    //    /// \param any
+    //    /// \return
+    //    ///
+    //    static std::string anyValue2string( const Any& any );
 
-//    ///
-//    /// \brief anyType2string
-//    /// \param any
-//    /// \return
-//    ///
-//    static const std::string& anyType2string( const Any& any );
+    //    ///
+    //    /// \brief anyType2string
+    //    /// \param any
+    //    /// \return
+    //    ///
+    //    static const std::string& anyType2string( const Any& any );
     ///
     /// \brief operator ==
     /// \param any
     /// \return
     ///
-    bool operator==( const Any& any) const;
+    bool operator==( const Any& any ) const;
 
     ///
     /// \brief operator <<
@@ -193,15 +193,15 @@ class Any
     Type m_type     = Type::NONE;
     bool m_hasValue = false;
 
-    int m_int = 0;
-    double m_double = 0.0;
-    std::string m_std_string = "";
+    int m_int                    = 0;
+    double m_double              = 0.0;
+    std::string m_std_string     = "";
     const char* m_const_char_ptr = nullptr;
-    hub::data::Mat4* m_mat4 = nullptr;
-//    std::vector<float> m_std_vector_float;
-//    unsigned int m_unsigned_int;
-//    const float* m_const_float_ptr;
-//    const double* m_const_double_ptr;
+    hub::data::Mat4* m_mat4      = nullptr;
+    //    std::vector<float> m_std_vector_float;
+    //    unsigned int m_unsigned_int;
+    //    const float* m_const_float_ptr;
+    //    const double* m_const_double_ptr;
 
     // T m_value;
 };
@@ -216,7 +216,7 @@ inline Any::Type Any::type() const {
     return m_type;
 }
 
-//inline std::string Any::typeName() const {
+// inline std::string Any::typeName() const {
 //    return anyType2string( *this );
 //}
 

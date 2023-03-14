@@ -8,9 +8,9 @@
 #include "data/Measure.hpp"
 
 // user friendly useless includes
-#include "data/UserData.hpp"
 #include "data/Dof6.hpp"
 #include "data/Mat4.hpp"
+#include "data/UserData.hpp"
 
 namespace hub {
 
@@ -21,7 +21,6 @@ namespace hub {
 class SRC_API Acquisition
 {
   public:
-
     ///
     /// \brief Acquisition
     /// \param start
@@ -85,12 +84,12 @@ class SRC_API Acquisition
     template <class... Args>
     void emplaceMeasure( Args&&... args );
 
-//    [[ deprecated ]]
+    //    [[ deprecated ]]
     ///
     /// \brief pushBack
     /// \param measure
     ///
-    void pushBack(data::Measure && measure);
+    void pushBack( data::Measure&& measure );
 
     ///
     /// \brief isInterpolable
@@ -189,4 +188,3 @@ void Acquisition::emplaceMeasure( Args&&... args ) {
 }
 
 } // namespace hub
-

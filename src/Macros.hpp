@@ -197,14 +197,13 @@
 #    error "C++ version " __cplusplus " not supported"
 #endif
 
-
 //#define DEBUG_INPUT_OUTPUT
 
 #ifdef DEBUG_INPUT_OUTPUT
-    #define DEBUG_INPUT
-    #define DEBUG_OUTPUT
+#    define DEBUG_INPUT
+#    define DEBUG_OUTPUT
 
-#ifdef OS_LINUX
-    #define USE_BOOST
-#endif
+#    ifdef OS_LINUX
+#        define USE_BOOST
+#    endif
 #endif

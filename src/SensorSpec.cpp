@@ -17,8 +17,7 @@ SensorSpec::SensorSpec( const SensorNameType& sensorName,
     m_metaData( metaData ),
     m_acquisitionSize( computeAcquisitionSize( resolutions ) ) {
 
-//    assert(! m_resolutions.empty());
-
+    //    assert(! m_resolutions.empty());
 }
 #endif
 
@@ -74,38 +73,43 @@ SensorSpec SensorSpec::operator+( const SensorSpec& sensorSpec ) const {
 
 SensorSpec& SensorSpec::operator+=( const SensorSpec& sensorSpec ) {
     if ( m_sensorName == "" ) { *this = sensorSpec; }
-    else { *this = *this + sensorSpec; }
+    else {
+        *this = *this + sensorSpec;
+    }
     return *this;
 }
 
 bool SensorSpec::operator==( const SensorSpec& sensorSpec ) const {
 
-    return  m_sensorName == sensorSpec.m_sensorName && m_resolutions == sensorSpec.m_resolutions &&
-           m_acquisitionSize == sensorSpec.m_acquisitionSize && m_metaData.size() == sensorSpec.m_metaData.size();
+    return m_sensorName == sensorSpec.m_sensorName && m_resolutions == sensorSpec.m_resolutions &&
+           m_acquisitionSize == sensorSpec.m_acquisitionSize &&
+           m_metaData.size() == sensorSpec.m_metaData.size();
     // todo any compare
-//    if ( m_sensorName == sensorSpec.m_sensorName && m_resolutions == sensorSpec.m_resolutions &&
-//         m_acquisitionSize == sensorSpec.m_acquisitionSize && m_metaData.size() == sensorSpec.m_metaData.size()) {
+    //    if ( m_sensorName == sensorSpec.m_sensorName && m_resolutions == sensorSpec.m_resolutions
+    //    &&
+    //         m_acquisitionSize == sensorSpec.m_acquisitionSize && m_metaData.size() ==
+    //         sensorSpec.m_metaData.size()) {
 
-//        for (const auto & pair : m_metaData) {
-//            const auto & name = pair.first;
-//            const std::any & value = pair.second;
+    //        for (const auto & pair : m_metaData) {
+    //            const auto & name = pair.first;
+    //            const std::any & value = pair.second;
 
-//            if (sensorSpec.m_metaData.find(name) != sensorSpec.m_metaData.end()) {
-//                const std::any & value2 = sensorSpec.m_metaData.at(name);
-//                if (value. value2) {
+    //            if (sensorSpec.m_metaData.find(name) != sensorSpec.m_metaData.end()) {
+    //                const std::any & value2 = sensorSpec.m_metaData.at(name);
+    //                if (value. value2) {
 
-//                }
+    //                }
 
-//            }
-//            else {
-//                return false;
-//            }
-//        }
-//    }
-//    else {
-//        return false;
-//    }
-//    return true;
+    //            }
+    //            else {
+    //                return false;
+    //            }
+    //        }
+    //    }
+    //    else {
+    //        return false;
+    //    }
+    //    return true;
 }
 
 std::string SensorSpec::to_string() const {
@@ -140,14 +144,14 @@ std::string SensorSpec::to_string( const SensorSpec::MetaData& metaData, bool ex
     return str;
 }
 
-//std::string SensorSpec::to_string( const std::pair<std::string, std::any>& metaData ) {
+// std::string SensorSpec::to_string( const std::pair<std::string, std::any>& metaData ) {
 std::string SensorSpec::to_string( const std::pair<std::string, Any>& metaData ) {
     const auto& name = metaData.first;
     const auto& val  = metaData.second;
     // #ifdef WIN32
     // #else
-//    std::string str = hub::Any::anyType2string( val ) + " " + name + " = '" +
-//                      hub::Any::anyValue2string( val ) + "'";
+    //    std::string str = hub::Any::anyType2string( val ) + " " + name + " = '" +
+    //                      hub::Any::anyValue2string( val ) + "'";
     std::string str = name + " = '" + val.to_string();
     // #endif
     return str;

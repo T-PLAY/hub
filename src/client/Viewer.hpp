@@ -6,8 +6,8 @@
 #include <thread>
 
 #include "Acquisition.hpp"
-#include "net/ClientSocket.hpp"
 #include "SensorSpec.hpp"
+#include "net/ClientSocket.hpp"
 
 namespace hub {
 namespace client {

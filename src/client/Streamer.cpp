@@ -16,8 +16,8 @@ Streamer::Streamer( const std::string& ipv4, int port ) :
     assert( 0 <= m_port && m_port <= 65535 );
 }
 
-void Streamer::addStream(const std::string& streamName,
-                          const SensorSpec &sensorSpec,
+void Streamer::addStream( const std::string& streamName,
+                          const SensorSpec& sensorSpec,
                           const std::vector<Acquisition>& initAcqs ) {
     std::cout << "[Streamer] addStream " << streamName << std::endl;
     assert( m_streamName2outputSensor.find( streamName ) == m_streamName2outputSensor.end() );
@@ -51,7 +51,7 @@ void Streamer::addStream(const std::string& streamName,
     m_streamName2sensorSpec[streamName] = std::move( sensorSpec );
 }
 
-void Streamer::newAcquisition(const std::string& streamName, const Acquisition &acquisition ) {
+void Streamer::newAcquisition( const std::string& streamName, const Acquisition& acquisition ) {
 
     std::cout << "[Streamer] newAcquisition" << std::endl;
 

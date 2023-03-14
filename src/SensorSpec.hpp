@@ -7,14 +7,14 @@
 #include <string>
 #include <vector>
 
+#include "Any.hpp"
 #include "Macros.hpp"
 #include "Resolution.hpp"
-#include "Any.hpp"
 
 // user friendly useless includes
-#include "data/UserData.hpp"
 #include "data/Dof6.hpp"
 #include "data/Mat4.hpp"
+#include "data/UserData.hpp"
 
 #if CPLUSPLUS_VERSION == 20
 #    include "Map.hpp"
@@ -50,7 +50,7 @@ class SRC_API SensorSpec
     /// \brief
     /// Definition of metadata
     ///
-//    using MetaData = std::map<std::string, std::any>; // any -> C++17
+    //    using MetaData = std::map<std::string, std::any>; // any -> C++17
     using MetaData = std::map<std::string, hub::Any>;
 #endif
 
@@ -87,7 +87,7 @@ class SRC_API SensorSpec
     /// \param sensorSpec
     /// \return
     ///
-    bool operator ==(const SensorSpec& sensorSpec) const;
+    bool operator==( const SensorSpec& sensorSpec ) const;
 
     ///
     /// \brief operator <<
@@ -117,7 +117,7 @@ class SRC_API SensorSpec
     /// \param metaData
     /// \return
     ///
-//    static std::string to_string( const std::pair<std::string, std::any>& metaData );
+    //    static std::string to_string( const std::pair<std::string, std::any>& metaData );
     static std::string to_string( const std::pair<std::string, Any>& metaData );
 
   public:
@@ -203,4 +203,3 @@ inline void SensorSpec::setMetaData( const MetaData& metaData ) noexcept {
 }
 
 } // namespace hub
-

@@ -46,8 +46,8 @@ class SRC_API Memory : public InputOutput
     /// \param t
     ///
     template <class T>
-    void read( T& t )  {
-        Input::read(t);
+    void read( T& t ) {
+        Input::read( t );
     }
 
     ///
@@ -55,16 +55,16 @@ class SRC_API Memory : public InputOutput
     /// \param t
     ///
     template <class T>
-    void write( T& t )  {
-        Output::write(t);
+    void write( T& t ) {
+        Output::write( t );
     }
 
-//  protected:
+    //  protected:
   public:
     ///
     /// @copydoc InputOutput::close()
     ///
-    void close()  override {}
+    void close() override {}
 
     ///
     /// @copydoc InputOutput::isOpen()
@@ -76,22 +76,22 @@ class SRC_API Memory : public InputOutput
     ///
     bool isEnd() const override {
         return m_container.empty();
-//        return false;
+        //        return false;
     }
 
     ///
     /// @copydoc InputOutput::write()
     ///
-    void write( const unsigned char* data, size_t len )  override {
-        m_container.insert(m_container.end(), data, data + len);
+    void write( const unsigned char* data, size_t len ) override {
+        m_container.insert( m_container.end(), data, data + len );
     }
 
     ///
     /// @copydoc InputOutput::read()
     ///
-    void read( unsigned char* data, size_t len )  override {
-        memcpy(data, m_container.data(), len);
-        m_container.erase(m_container.begin(), m_container.begin() + len);
+    void read( unsigned char* data, size_t len ) override {
+        memcpy( data, m_container.data(), len );
+        m_container.erase( m_container.begin(), m_container.begin() + len );
     }
 
   private:

@@ -13,10 +13,9 @@
 namespace hub {
 namespace io {
 
-
 /////////////////////////////////////////////////////////////////////////////
 
-void Input::read( std::string& str )  {
+void Input::read( std::string& str ) {
     assert( isOpen() );
 
     int strLen = 0;
@@ -36,9 +35,8 @@ void Input::read( std::string& str )  {
 #endif
 }
 
-void Input::read(SensorSpec &sensorSpec)
-{
-//     read(sensorSpec.m)
+void Input::read( SensorSpec& sensorSpec ) {
+    //     read(sensorSpec.m)
 
     std::string sensorName;
     Resolutions resolutions;
@@ -47,18 +45,17 @@ void Input::read(SensorSpec &sensorSpec)
     read( resolutions );
     read( metaData );
 
-//    sensorSpec = SensorSpec()
-    sensorSpec = SensorSpec( std::move( sensorName ), std::move( resolutions ), std::move( metaData ) );
+    //    sensorSpec = SensorSpec()
+    sensorSpec =
+        SensorSpec( std::move( sensorName ), std::move( resolutions ), std::move( metaData ) );
 }
 
-
-//SensorSpec Input::getSensorSpec()  {
+// SensorSpec Input::getSensorSpec()  {
 //    assert( isOpen() );
 
 //#ifdef DEBUG_INPUT
 //    std::cout << "[Input] getSensorSpec()" << std::endl;
 //#endif
-
 
 //    std::string sensorName;
 //    Resolutions resolutions;
@@ -71,7 +68,6 @@ void Input::read(SensorSpec &sensorSpec)
 //    //        SensorSpec::computeAcquisitionSize(sensorSpec.m_resolutions); return sensorSpec;
 //    return SensorSpec( std::move( sensorName ), std::move( resolutions ), std::move( metaData ) );
 //}
-
 
 Acquisition Input::getAcquisition( const SensorSpec& sensorSpec )
 //    Acquisition Input::getAcquisition(int acquisitionSize) const
@@ -97,23 +93,23 @@ Acquisition Input::getAcquisition( const SensorSpec& sensorSpec )
     assert( resolutions.size() == nMeasures );
 
     for ( int iMeasure = 0; iMeasure < nMeasures; ++iMeasure ) {
-//        const auto & resolution = resolutions.at(iMeasure);
-//        const auto & format = resolution.second;
+        //        const auto & resolution = resolutions.at(iMeasure);
+        //        const auto & format = resolution.second;
 
-//        if (format == Format::USER_DATA) {
+        //        if (format == Format::USER_DATA) {
 
-//            std::cout << "[Input] getAcquisition: user_data" << std::endl;
-////            std::string name;
-////            read(name);
-////            std::any value;
-////            read(value);
+        //            std::cout << "[Input] getAcquisition: user_data" << std::endl;
+        ////            std::string name;
+        ////            read(name);
+        ////            std::any value;
+        ////            read(value);
 
-////            UserData userData(name, value);
-//            auto userData = get<UserData>();
-//            acq.pushBack(std::move(userData));
+        ////            UserData userData(name, value);
+        //            auto userData = get<UserData>();
+        //            acq.pushBack(std::move(userData));
 
-//        }
-//        else {
+        //        }
+        //        else {
 
         //            acq << Input::getMeasure();
         uint64_t size; // compatibility 32/64 bits
@@ -131,16 +127,16 @@ Acquisition Input::getAcquisition( const SensorSpec& sensorSpec )
 
         acq.emplaceMeasure( data, size, resolutions.at( iMeasure ), true );
         //    acq << { data, size};
-//        }
+        //        }
     }
 
-    assert( ! acq.hasFixedSize() || sensorSpec.getAcquisitionSize() == acq.getSize() );
+    assert( !acq.hasFixedSize() || sensorSpec.getAcquisitionSize() == acq.getSize() );
     //    assert( nMeasures == 0 || acquisitionSize == acq.getSize() );
 
     return acq;
 }
 
-void Input::read( char* str )  {
+void Input::read( char* str ) {
     assert( isOpen() );
 
 #ifdef DEBUG_INPUT
@@ -158,15 +154,15 @@ void Input::read( char* str )  {
     }
 }
 
-//void Input::read( std::any& any )  {
-void Input::read( Any & any )  {
+// void Input::read( std::any& any )  {
+void Input::read( Any& any ) {
     assert( isOpen() );
 
 #ifdef DEBUG_INPUT
     std::cout << "[Input] read(std::any)" << std::endl;
 #endif
 
-    assert(! any.has_value());
+    assert( !any.has_value() );
 
     Any::Type anyType;
     read( anyType );
@@ -175,19 +171,19 @@ void Input::read( Any & any )  {
     case Any::Type::INT: {
         int val;
         read( val );
-        any = Any(val);
+        any = Any( val );
     } break;
 
     case Any::Type::DOUBLE: {
         double val;
         read( val );
-        any = Any(val);
+        any = Any( val );
     } break;
 
     case Any::Type::STRING: {
         std::string val;
         read( val );
-        any = Any(val);
+        any = Any( val );
     } break;
 
     case Any::Type::CONST_CHAR_PTR: {
@@ -203,129 +199,125 @@ void Input::read( Any & any )  {
         str[len] = 0;
         delete[] buff;
 
-//        any = std::any_cast<const char*>( reinterpret_cast<const char*>( str ) );
-        any = Any(str);
+        //        any = std::any_cast<const char*>( reinterpret_cast<const char*>( str ) );
+        any = Any( str );
 
     } break;
 
     case Any::Type::MAT4: {
-//        float* buff = new float[16];
+        //        float* buff = new float[16];
         float buff[16];
         read( reinterpret_cast<unsigned char*>( buff ), 64 );
 
-        data::Mat4 mat4(buff);
-//        assert(buff == nullptr);
-//        any = std::any_cast<const float*>( reinterpret_cast<const float*>( buff ) );
-        any = Any(mat4);
+        data::Mat4 mat4( buff );
+        //        assert(buff == nullptr);
+        //        any = std::any_cast<const float*>( reinterpret_cast<const float*>( buff ) );
+        any = Any( mat4 );
 
     } break;
 
-
     default:
-//        std::cerr << "non supported type : '" << type. << "'" << std::endl;
+        //        std::cerr << "non supported type : '" << type. << "'" << std::endl;
         assert( false );
     }
     assert( any.has_value() );
 
-//    case Any::Type::VECTOR_FLOAT: {
-//        std::vector<float> val;
-//        read( val );
-//        any = Any(val);
-//    } break;
+    //    case Any::Type::VECTOR_FLOAT: {
+    //        std::vector<float> val;
+    //        read( val );
+    //        any = Any(val);
+    //    } break;
 
-//    case Any::Type::UINT: {
-//        unsigned int val;
-//        read( val );
-//        any = Any(val);
-//    } break;
+    //    case Any::Type::UINT: {
+    //        unsigned int val;
+    //        read( val );
+    //        any = Any(val);
+    //    } break;
 
-//    case Any::Type::CONST_FLOAT_PTR: {
-//        float* buff = new float[16];
-//        read( reinterpret_cast<unsigned char*>( buff ), 64 );
+    //    case Any::Type::CONST_FLOAT_PTR: {
+    //        float* buff = new float[16];
+    //        read( reinterpret_cast<unsigned char*>( buff ), 64 );
 
-////        any = std::any_cast<const float*>( reinterpret_cast<const float*>( buff ) );
-//        any = Any(buff);
+    ////        any = std::any_cast<const float*>( reinterpret_cast<const float*>( buff ) );
+    //        any = Any(buff);
 
-//    } break;
+    //    } break;
 
-//    case Any::Type::CONST_DOUBLE_PTR: {
-//        float* buff = new float[16];
-//        read( reinterpret_cast<unsigned char*>( buff ), 64 );
+    //    case Any::Type::CONST_DOUBLE_PTR: {
+    //        float* buff = new float[16];
+    //        read( reinterpret_cast<unsigned char*>( buff ), 64 );
 
-////        any = std::any_cast<const float*>( reinterpret_cast<const float*>( buff ) );
-//        any = Any(buff);
+    ////        any = std::any_cast<const float*>( reinterpret_cast<const float*>( buff ) );
+    //        any = Any(buff);
 
-//    } break;
+    //    } break;
 
+    //    switch ( type ) {
+    //    case Any::Type::INT: {
+    //        assert( sizeof( int ) == 4 );
+    //        int val;
+    //        read( val );
+    //        any = std::any_cast<int>( val );
+    //    } break;
 
+    //    case Any::Type::DOUBLE: {
+    //        double val;
+    //        assert( sizeof( double ) == 8 );
+    //        read( val );
+    //        any = std::any_cast<double>( val );
+    //    } break;
 
-//    switch ( type ) {
-//    case Any::Type::INT: {
-//        assert( sizeof( int ) == 4 );
-//        int val;
-//        read( val );
-//        any = std::any_cast<int>( val );
-//    } break;
+    //    case Any::Type::STRING: {
+    //        std::string val;
+    //        read( val );
+    //        any = std::any_cast<std::string>( val );
+    //    } break;
 
-//    case Any::Type::DOUBLE: {
-//        double val;
-//        assert( sizeof( double ) == 8 );
-//        read( val );
-//        any = std::any_cast<double>( val );
-//    } break;
+    //    case Any::Type::CONST_CHAR_PTR: {
+    //        assert( sizeof( char ) == 1 );
+    //        char* buff = new char[256];
+    //        memset( buff, 0, 256 );
+    //        read( buff );
+    //        int len = static_cast<int>( strlen( buff ) );
 
-//    case Any::Type::STRING: {
-//        std::string val;
-//        read( val );
-//        any = std::any_cast<std::string>( val );
-//    } break;
+    //        const int buffSize = len + 1;
+    //        char* str          = new char[buffSize];
+    //        memcpy( str, buff, len );
+    //        str[len] = 0;
+    //        delete[] buff;
 
-//    case Any::Type::CONST_CHAR_PTR: {
-//        assert( sizeof( char ) == 1 );
-//        char* buff = new char[256];
-//        memset( buff, 0, 256 );
-//        read( buff );
-//        int len = static_cast<int>( strlen( buff ) );
+    //        any = std::any_cast<const char*>( reinterpret_cast<const char*>( str ) );
 
-//        const int buffSize = len + 1;
-//        char* str          = new char[buffSize];
-//        memcpy( str, buff, len );
-//        str[len] = 0;
-//        delete[] buff;
+    //    } break;
 
-//        any = std::any_cast<const char*>( reinterpret_cast<const char*>( str ) );
+    //    case Any::Type::VECTOR_FLOAT: {
+    //        std::vector<float> val;
+    //        read( val );
+    //        any = std::any_cast<std::vector<float>>( val );
+    //    } break;
 
-//    } break;
+    //    case Any::Type::UINT: {
+    //        unsigned int val;
+    //        read( val );
+    //        any = std::any_cast<unsigned int>( val );
+    //    } break;
 
-//    case Any::Type::VECTOR_FLOAT: {
-//        std::vector<float> val;
-//        read( val );
-//        any = std::any_cast<std::vector<float>>( val );
-//    } break;
+    //    case Any::Type::CONST_FLOAT_PTR: {
+    //        float* buff = new float[16];
+    //        read( reinterpret_cast<unsigned char*>( buff ), 64 );
 
-//    case Any::Type::UINT: {
-//        unsigned int val;
-//        read( val );
-//        any = std::any_cast<unsigned int>( val );
-//    } break;
+    //        any = std::any_cast<const float*>( reinterpret_cast<const float*>( buff ) );
 
-//    case Any::Type::CONST_FLOAT_PTR: {
-//        float* buff = new float[16];
-//        read( reinterpret_cast<unsigned char*>( buff ), 64 );
+    //    } break;
 
-//        any = std::any_cast<const float*>( reinterpret_cast<const float*>( buff ) );
-
-//    } break;
-
-//    default:
-////        std::cerr << "non supported type : '" << type. << "'" << std::endl;
-//        assert( false );
-//    }
-//    assert( any.has_value() );
-
+    //    default:
+    ////        std::cerr << "non supported type : '" << type. << "'" << std::endl;
+    //        assert( false );
+    //    }
+    //    assert( any.has_value() );
 }
 
-//void Input::read(data::UserData &userData)
+// void Input::read(data::UserData &userData)
 //{
 //    std::string name;
 //    hub::Any value;
@@ -336,8 +328,6 @@ void Input::read( Any & any )  {
 //}
 
 /////////////////////////////////////////////////////////////////////////////
-
-
 
 } // namespace io
 } // namespace hub

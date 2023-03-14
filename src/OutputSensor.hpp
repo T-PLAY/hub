@@ -27,19 +27,18 @@ namespace hub {
 class SRC_API OutputSensor : public Sensor
 {
   public:
+    //    OutputSensor(const SensorSpec & sensorSpec, io::Output && output) :
+    ////        io::Output(std::move(output)),
+    //        Sensor(sensorSpec),
+    //        m_output(std::move(output))
+    //    {
+    //        write(m_spec);
+    //    }
 
-//    OutputSensor(const SensorSpec & sensorSpec, io::Output && output) :
-////        io::Output(std::move(output)),
-//        Sensor(sensorSpec),
-//        m_output(std::move(output))
-//    {
-//        write(m_spec);
-//    }
-
-//  protected:
-//    void write(const unsigned char * data, size_t len) const override {
-//        io::Output::write(data, len);
-//    }
+    //  protected:
+    //    void write(const unsigned char * data, size_t len) const override {
+    //        io::Output::write(data, len);
+    //    }
 
     ///
     /// \brief OutputSensor
@@ -51,34 +50,31 @@ class SRC_API OutputSensor : public Sensor
     ///
     template <class SensorSpec = hub::SensorSpec,
               class Output,
-              typename = typename std::enable_if<
-                  std::is_base_of<io::Output, Output>::value>::type>
+              typename = typename std::enable_if<std::is_base_of<io::Output, Output>::value>::type>
     OutputSensor( SensorSpec&& sensorSpec, Output&& output ) :
 
-        Sensor( std::move( sensorSpec )),
-//        m_output(*std::move( new Output( std::move( output ) ) ) )
-//        m_output(*std::move( new Output( std::move( output ) ) ) )
-        m_output(new Output( std::move( output ) ) )
-    {
+        Sensor( std::move( sensorSpec ) ),
+        //        m_output(*std::move( new Output( std::move( output ) ) ) )
+        //        m_output(*std::move( new Output( std::move( output ) ) ) )
+        m_output( new Output( std::move( output ) ) ) {
 
         //        std::cout << "[OutputSensor] OutputSensor(const SensorSpec&&, Output&&)"
         //                  << std::endl;
 
-        static_assert( std::is_base_of<io::Output, Output>::value,
-                       "not a base class" );
+        static_assert( std::is_base_of<io::Output, Output>::value, "not a base class" );
 
-        m_output->write(m_spec);
-//        m_io.write( m_spec );
+        m_output->write( m_spec );
+        //        m_io.write( m_spec );
     }
 
-//  protected:
+    //  protected:
     template <class Output>
     OutputSensor( const SensorSpec&& sensorSpec, Output& output ) = delete;
 
     OutputSensor( const OutputSensor& outputSensor ) = delete;
     OutputSensor operator=( const OutputSensor& outputSensor ) = delete;
 
-//  public:
+    //  public:
     ///
     /// \brief operator <<
     /// is used when you want to share sensor data.
@@ -96,10 +92,10 @@ class SRC_API OutputSensor : public Sensor
     /// \brief getOutput
     /// \return
     ///
-    io::Output &getOutput() const;
+    io::Output& getOutput() const;
 
   private:
-//    io::Output & m_output;
+    //    io::Output & m_output;
     std::unique_ptr<io::Output> m_output;
 };
 
