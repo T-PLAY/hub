@@ -135,6 +135,8 @@ class SRC_API Measure
     ///
     const inline Resolution& getResolution() const;
 
+//    const unsigned char *getData() const;
+
   protected:
     ///
     /// \brief m_ownData

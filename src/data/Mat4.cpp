@@ -15,6 +15,15 @@ Mat4::Mat4( float* array ) :
     assert( m_size == 64 );
 }
 
+Mat4::Mat4(const float *array) :
+    Measure( reinterpret_cast<unsigned char*>( new float[16] ),
+             64,
+             Resolution { { 1 }, Format::MAT4 },
+             true ) {
+    memcpy( m_data, array, 64 );
+    assert( m_size == 64 );
+}
+
 Mat4::Mat4( float r0c0,
             float r0c1,
             float r0c2,

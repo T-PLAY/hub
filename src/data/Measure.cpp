@@ -74,6 +74,11 @@ bool Measure::operator!=( const Measure& measure ) const {
     return !( *this == measure );
 }
 
+//const unsigned char *Measure::getData() const
+//{
+//    return m_data;
+//}
+
 std::ostream& operator<<( std::ostream& os, const Measure& measure ) {
     os << measure.getResolution() << ", [";
 
