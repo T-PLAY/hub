@@ -2,3 +2,5 @@ src
 server
 tests
 examples
+CMakeLists.txt
+doc
