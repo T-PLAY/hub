@@ -53,7 +53,7 @@ void Streamer::addStream( const std::string& streamName,
 
 void Streamer::newAcquisition( const std::string& streamName, const Acquisition& acquisition ) {
 
-    std::cout << "[Streamer] newAcquisition" << std::endl;
+//    std::cout << "[Streamer] newAcquisition" << std::endl;
 
     if ( m_streamName2outputSensor.find( streamName ) == m_streamName2outputSensor.end() ) {
 
@@ -82,7 +82,7 @@ void Streamer::newAcquisition( const std::string& streamName, const Acquisition&
 
     if ( m_streamName2outputSensor.find( streamName ) != m_streamName2outputSensor.end() ) {
         try {
-            std::cout << "[Streamer] send acq" << std::endl;
+//            std::cout << "[Streamer] send acq" << std::endl;
             auto& outputSensor = *m_streamName2outputSensor.at( streamName );
             outputSensor << acquisition;
             if ( !m_serverConnected ) { onServerConnected(); }

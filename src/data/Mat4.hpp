@@ -22,6 +22,13 @@ class Mat4 : public Measure
     /// of 4x4 float (size = 4x4x4 = 64 bytes)
     ///
     explicit Mat4( float* array );
+
+    ///
+    /// \brief Mat4
+    /// \param array
+    ///
+    explicit Mat4( const float* array );
+
     // clang-format off
         ///
         /// \brief Mat4
@@ -48,8 +55,8 @@ class Mat4 : public Measure
         float r2c0 = 0.0, float r2c1 = 0.0, float r2c2 = 1.0, float r2c3 = 0.0,
         float r3c0 = 0.0, float r3c1 = 0.0, float r3c2 = 0.0, float r3c3 = 1.0
     );
-
     // clang-format on
+
     ///
     /// \brief Mat4
     /// \param mat4
