@@ -172,12 +172,9 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
             "/usr/*"
             ${sourcesTmp})
 
-        add_custom_target(
-            coverage-${name}
-            COMMAND ls ${CMAKE_BINARY_DIR}/coverage-lcov-${name}/index.html
-             && \(head -n 40 ${CMAKE_BINARY_DIR}/coverage-lcov-${name}/index.html | grep '100.0 %'
-                 || ${HUB_BROWSER} ${CMAKE_BINARY_DIR}/coverage-lcov-${name}/index.html\)
-         )
+         add_custom_target( coverage-${name} COMMAND ls ${CMAKE_BINARY_DIR}/coverage-lcov-${name}/index.html && \(head
+         -n 40 ${CMAKE_BINARY_DIR}/coverage-lcov-${name}/index.html | grep '100.0 %' || ${HUB_BROWSER}
+         ${CMAKE_BINARY_DIR}/coverage-lcov-${name}/index.html\) )
 
          add_dependencies(coverage-${name} coverage-lcov-${name})
          add_dependencies(coverage-all coverage-${name})
