@@ -17,7 +17,7 @@ class StreamViewerClient;
 class StreamerClient : public Client
 {
   public:
-    StreamerClient( Server * server, int iClient, hub::net::ClientSocket&& sock );
+    StreamerClient( Server* server, int iClient, hub::net::ClientSocket&& sock );
     ~StreamerClient();
 
     std::string headerMsg() const override;
@@ -35,7 +35,6 @@ class StreamerClient : public Client
 
     const std::chrono::time_point<std::chrono::high_resolution_clock>&
     getLastUpdateAcqDate( const std::string& streamName ) const;
-
 
   private:
     void saveNewAcq( const std::string& streamName, hub::Acquisition&& newAcq );

@@ -1,5 +1,5 @@
-#include <catch2/catch_test_macros.hpp>
 #include "test-common.hpp"
+#include <catch2/catch_test_macros.hpp>
 
 // #include <stdio.h>
 // #include <cstdio>
@@ -23,8 +23,8 @@ TEST_CASE( "Viewer" ) {
 
     const std::string ipv4 = "127.0.0.1";
     //    constexpr int port     = 9002;
-//    srand( (unsigned)time( NULL ) );
-//    const int port = rand() % 65535;
+    //    srand( (unsigned)time( NULL ) );
+    //    const int port = rand() % 65535;
     const int port = getRandomPort();
 
     // startConstruction
@@ -47,7 +47,7 @@ TEST_CASE( "Viewer" ) {
     };
 
     std::cout << "[Test] ############################### viewer start" << std::endl;
-    hub::client::Viewer viewer{
+    hub::client::Viewer viewer {
         onNewStreamer, onDelStreamer, onServerConnected, onServerDisconnected, onNewAcquisition };
 
     viewer.setIpv4( ipv4 );

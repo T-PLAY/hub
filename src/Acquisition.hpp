@@ -86,6 +86,10 @@ class SRC_API Acquisition
     void emplaceMeasure( Args&&... args );
 
 //    [[ deprecated ]]
+    ///
+    /// \brief pushBack
+    /// \param measure
+    ///
     void pushBack(data::Measure && measure);
 
     ///
@@ -161,6 +165,12 @@ class SRC_API Acquisition
     ///
     const long long m_end; // microseconds
 
+    ///
+    /// \brief hasFixedSize
+    /// \return
+    /// true if the acquisition size is constant,
+    /// false otherwise.
+    ///
     bool hasFixedSize() const;
 
   private:

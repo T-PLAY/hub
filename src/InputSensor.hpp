@@ -83,6 +83,10 @@ class SRC_API InputSensor : public Sensor
     ///
     std::vector<Acquisition> getAllAcquisitions();
 
+    ///
+    /// \brief getInput
+    /// \return
+    ///
     io::Input & getInput() const;
 
   private:

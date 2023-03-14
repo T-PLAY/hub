@@ -1,7 +1,6 @@
 
 #include <io/InputStream.hpp>
 
-
 /// \file
 
 int main() {

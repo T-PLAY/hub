@@ -7,14 +7,12 @@
 
 TEST_CASE( "ClientSocket test" ) {
 
+    //    const std::string ipv4 = "127.0.0.1";
+    //    const int port         = getRandomPort();
 
-    const std::string ipv4 = "127.0.0.1";
-    const int port         = getRandomPort();
+    //    Server server( port );
+    //    server.setMaxClients( 1 );
+    //    server.asyncRun();
 
-//    Server server( port );
-//    server.setMaxClients( 1 );
-//    server.asyncRun();
-
-//    hub::net::ClientSocket clientSocket(ipv4, port);
-
+    //    hub::net::ClientSocket clientSocket(ipv4, port);
 }

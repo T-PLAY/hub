@@ -15,8 +15,13 @@ File::~File() {
     std::cout << "[File:" << this << "] ~File()" << std::endl;
     if ( m_file != nullptr ) {
         std::cout << "[File:" << this << "] ~File() close file" << std::endl;
-        close();
-        assert( !m_file->is_open() );
+//        close();
+        File::close();
+        assert(! File::isOpen());
+//        Input::close();
+//        m_file->close();
+//        assert(! isOpen());
+//        assert( !m_file->is_open() );
     }
 }
 

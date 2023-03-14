@@ -38,11 +38,11 @@ bool InputStream::isEnd() const {
 
 //////////////////////////////////////////////////////////////////////////////
 
-StreamerClient::StreamerClient( Server * server, int iClient, hub::net::ClientSocket&& sock ) :
+StreamerClient::StreamerClient( Server* server, int iClient, hub::net::ClientSocket&& sock ) :
     Client( server, iClient ) {
 
     sock.read( m_streamName );
-    assert(m_server != nullptr);
+    assert( m_server != nullptr );
     const auto& streamers = m_server->getStreamers();
     if ( streamers.find( m_streamName ) == streamers.end() ) {
         sock.write( hub::net::ClientSocket::Message::NOT_FOUND );
@@ -94,7 +94,7 @@ StreamerClient::StreamerClient( Server * server, int iClient, hub::net::ClientSo
         try {
             long long lastMasterAcqStart = 0;
 
-//            while ( true ) {
+            //            while ( true ) {
             while ( m_server != nullptr ) {
 
                 auto&& masterAcq           = m_inputSensor->getAcquisition();
@@ -120,7 +120,7 @@ StreamerClient::StreamerClient( Server * server, int iClient, hub::net::ClientSo
                               << std::endl;
                     m_lastAcq[""].reset();
                     m_streamName2saveAcqs[""].clear();
-    assert(m_server != nullptr);
+                    assert( m_server != nullptr );
                     m_server->newAcquisition( this, masterAcq );
                     continue;
                 }
@@ -292,7 +292,9 @@ StreamerClient::StreamerClient( Server * server, int iClient, hub::net::ClientSo
                         mergedAcq
                             << hub::Acquisition::slerp( *itLeftAcq, *itRightAcq, t ).getMeasures();
                     }
-                    else { mergedAcq << closestAcq->getMeasures(); }
+                    else {
+                        mergedAcq << closestAcq->getMeasures();
+                    }
 
                     assert( !syncViewers.empty() );
                     int nMergedSyncViewers = 0;
@@ -327,14 +329,15 @@ StreamerClient::StreamerClient( Server * server, int iClient, hub::net::ClientSo
 
                 } // for ( auto& pair : syncViewers )
 
-//                assert(m_server != nullptr);
-                if (m_server != nullptr)
-                    m_server->newAcquisition( this, masterAcq );
+                //                assert(m_server != nullptr);
+                if ( m_server != nullptr ) m_server->newAcquisition( this, masterAcq );
 
                 if ( !m_isRecordStream ) {
                     m_lastAcq[""] = std::make_shared<hub::Acquisition>( std::move( masterAcq ) );
                 }
-                else { saveNewAcq( "", std::move( masterAcq ) ); }
+                else {
+                    saveNewAcq( "", std::move( masterAcq ) );
+                }
 
             } // while (true)
         }
@@ -343,10 +346,10 @@ StreamerClient::StreamerClient( Server * server, int iClient, hub::net::ClientSo
             std::cout << headerMsg() << "in : catch inputSensor exception : " << e.what()
                       << std::endl;
         }
-//        std::cout << headerMsg() << "end streamer : '" << m_inputSensor->m_spec.getSensorName()
-//                  << "'" << std::endl;
-        std::cout << headerMsg() << "end streamer : '" << m_streamName
-                  << "'" << std::endl;
+        //        std::cout << headerMsg() << "end streamer : '" <<
+        //        m_inputSensor->m_spec.getSensorName()
+        //                  << "'" << std::endl;
+        std::cout << headerMsg() << "end streamer : '" << m_streamName << "'" << std::endl;
 
         std::cout << headerMsg() << "thread end" << std::endl;
 
@@ -356,7 +359,7 @@ StreamerClient::StreamerClient( Server * server, int iClient, hub::net::ClientSo
 
     // get record acqs before prevent viewer
     std::this_thread::sleep_for( std::chrono::milliseconds( 200 ) );
-    assert(m_server != nullptr);
+    assert( m_server != nullptr );
     m_server->addStreamer( this );
 
     printStatusMessage( "new streamer" );
@@ -401,9 +404,8 @@ StreamerClient::~StreamerClient() {
     m_isSyncthing.clear();
     m_isLooping.clear();
 
-//    assert(m_server != nullptr);
-    if (m_server != nullptr)
-        m_server->delStreamer( this );
+    //    assert(m_server != nullptr);
+    if ( m_server != nullptr ) m_server->delStreamer( this );
     printStatusMessage( "del streamer" );
 
     s_mtxCout.unlock();

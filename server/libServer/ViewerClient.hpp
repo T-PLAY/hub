@@ -13,7 +13,7 @@ class StreamerClient;
 class ViewerClient : public Client
 {
   public:
-    ViewerClient( Server * server, int iClient, hub::net::ClientSocket&& sock );
+    ViewerClient( Server* server, int iClient, hub::net::ClientSocket&& sock );
     ~ViewerClient();
 
     std::string headerMsg() const override;

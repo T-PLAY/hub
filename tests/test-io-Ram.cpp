@@ -1,8 +1,8 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include <io/Ram.hpp>
 #include <InputSensor.hpp>
 #include <OutputSensor.hpp>
+#include <io/Ram.hpp>
 
 #include <thread>
 
@@ -48,7 +48,7 @@ TEST_CASE( "Ram test" ) {
     std::cout << "inputStream start" << std::endl;
     INFO( "InputStream" );
     {
-        hub::InputSensor inputSensor{ hub::io::Ram( cyclicBuff ) };
+        hub::InputSensor inputSensor { hub::io::Ram( cyclicBuff ) };
 
         const auto& sensorSpec2 = inputSensor.m_spec;
         CHECK( sensorSpec2.getAcquisitionSize() == 3 );

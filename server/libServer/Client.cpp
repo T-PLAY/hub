@@ -8,13 +8,12 @@
 std::mutex Client::s_mtxCout;
 
 Client::Client( Server* server, int iClient ) : m_server( server ), m_iClient( iClient ) {
-    assert(m_server != nullptr);
+    assert( m_server != nullptr );
 }
 
 Client::~Client() {
-//    assert(m_server != nullptr);
-    if (m_server != nullptr)
-        m_server->removeClient( this );
+    //    assert(m_server != nullptr);
+    if ( m_server != nullptr ) m_server->removeClient( this );
 }
 
 constexpr int g_margin  = 45;
@@ -45,6 +44,6 @@ void Client::printStatusMessage( const std::string& message ) const {
 }
 
 void Client::setServer( Server* newServer ) {
-    assert(m_server != nullptr);
+    assert( m_server != nullptr );
     m_server = newServer;
 }

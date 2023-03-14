@@ -1,6 +1,6 @@
 
-#include <catch2/catch_test_macros.hpp>
 #include "test-common.hpp"
+#include <catch2/catch_test_macros.hpp>
 
 // #include <InputSensor.hpp>
 // #include <OutputSensor.hpp>
@@ -31,8 +31,8 @@ TEST_CASE( "Native test" ) {
 
     const std::string ipv4 = "127.0.0.1";
     //    constexpr int port     = 10'001;
-//    srand( (unsigned)time( NULL ) );
-//    const int port = 6000 + rand() % (65535 - 6000);
+    //    srand( (unsigned)time( NULL ) );
+    //    const int port = 6000 + rand() % (65535 - 6000);
     const int port = getRandomPort();
 
     const hub::Resolution ref_resolution( { 1 }, hub::Format::BGR8 );
@@ -41,7 +41,7 @@ TEST_CASE( "Native test" ) {
     ref_metaData["a"] = 0;
     ref_metaData["b"] = "string";
     ref_metaData["c"] = 2.0;
-    const hub::data::Mat4 ref_mat4(0.0);
+    const hub::data::Mat4 ref_mat4( 0.0 );
     std::cout << "ref_mat4: " << ref_mat4 << std::endl;
     ref_metaData["d"] = ref_mat4;
     const hub::SensorSpec ref_sensorSpec( ref_sensorName, { ref_resolution }, ref_metaData );
@@ -57,7 +57,7 @@ TEST_CASE( "Native test" ) {
         ref_metaData["a"] = 0;
         ref_metaData["b"] = "string";
         ref_metaData["c"] = 2.0;
-    const hub::data::Mat4 ref_mat4(0.0);
+        const hub::data::Mat4 ref_mat4( 0.0 );
         ref_metaData["d"] = ref_mat4;
 
         std::cout << "[Example][Viewer] onNewStreamer : " << streamName << std::endl;
@@ -76,9 +76,9 @@ TEST_CASE( "Native test" ) {
         CHECK( resolutions.size() == resolutionsSize );
 
         for ( int iResolution = 0; iResolution < resolutionsSize; ++iResolution ) {
-            const auto& ref_resolution = resolutions.at( iResolution );
-            const auto& ref_format     = ref_resolution.second;
-            const auto& ref_dims       = ref_resolution.first;
+            const auto& ref_resolution2 = resolutions.at( iResolution );
+            const auto& ref_format      = ref_resolution2.second;
+            const auto& ref_dims        = ref_resolution2.first;
 
             const auto& format = hub::native::sensorSpec_getFormat( sensorSpec, iResolution );
             std::cout << "[Example][Viewer] resolutions[" << iResolution << "] format : " << format
@@ -133,12 +133,12 @@ TEST_CASE( "Native test" ) {
                ref_metaData.at( "c" ).getDouble() );
         CHECK( !hub::native::metaData_exists( metaData, "z" ) );
         //        CHECK(ref_metaData == metaData);
-        float * data_mat4 = new float[16];
-        hub::native::metaData_getMat4(metaData, "d", data_mat4);
-        hub::data::Mat4 mat4(data_mat4);
-        CHECK(mat4 == ref_mat4);
+        float* data_mat4 = new float[16];
+        hub::native::metaData_getMat4( metaData, "d", data_mat4 );
+        hub::data::Mat4 mat4( data_mat4 );
+        CHECK( mat4 == ref_mat4 );
 
-        CHECK(! hub::native::metaData_getMat4(metaData, "fake", nullptr));
+        CHECK( !hub::native::metaData_getMat4( metaData, "fake", nullptr ) );
 
         char metaDataString[80] = { 0 };
         int len;
@@ -180,7 +180,7 @@ TEST_CASE( "Native test" ) {
     hub::native::viewer_setIpv4( viewer, ipv4.c_str() );
     hub::native::viewer_setPort( viewer, port );
     CHECK( !viewer->isConnected() );
-    CHECK(! hub::native::viewer_isConnected(viewer));
+    CHECK( !hub::native::viewer_isConnected( viewer ) );
 
     std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
 
@@ -192,7 +192,7 @@ TEST_CASE( "Native test" ) {
         server.asyncRun();
         std::this_thread::sleep_for( std::chrono::milliseconds( 2000 ) );
         CHECK( viewer->isConnected() );
-        CHECK(hub::native::viewer_isConnected(viewer));
+        CHECK( hub::native::viewer_isConnected( viewer ) );
         {
             std::cout << "[Test] ############################### outputSensor start" << std::endl;
 
@@ -241,21 +241,22 @@ TEST_CASE( "Native test" ) {
                 //                    CHECK( true );
                 //                }
 
-                auto & output = outputSensor->getOutput();
+                auto& output = outputSensor->getOutput();
                 output.close();
                 delete outputSensor;
 
-            std::this_thread::sleep_for( std::chrono::milliseconds( 2000 ) );
+                std::this_thread::sleep_for( std::chrono::milliseconds( 2000 ) );
 
-//                try {
-            // todo native
-//                    hub::Acquisition* acq2 = hub::native::getAcquisition( inputSensor );
-//                CHECK(acq2 == nullptr);
-//                    CHECK( false );
-//                }
-//                catch ( std::exception& ex ) {
-//                    CHECK( true );
-//                }
+                //                try {
+                // todo native
+                //                    hub::Acquisition* acq2 = hub::native::getAcquisition(
+                //                    inputSensor );
+                //                CHECK(acq2 == nullptr);
+                //                    CHECK( false );
+                //                }
+                //                catch ( std::exception& ex ) {
+                //                    CHECK( true );
+                //                }
 
                 std::cout << "[Test] ############################### inputSensor end" << std::endl;
             }

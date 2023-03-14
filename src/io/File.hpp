@@ -55,27 +55,27 @@ class SRC_API File : public InputOutput
 
   protected:
     ///
-    /// @copydoc Interface::close()
+    /// @copydoc InputOutput::close()
     ///
     void close()  override;
 
     ///
-    /// @copydoc Interface::isOpen()
+    /// @copydoc InputOutput::isOpen()
     ///
     bool isOpen() const override;
 
     ///
-    /// @copydoc Interface::isEnd()
+    /// @copydoc InputOutput::isEnd()
     ///
     bool isEnd() const override;
 
     ///
-    /// @copydoc Interface::write()
+    /// @copydoc InputOutput::write()
     ///
     void write( const unsigned char* data, size_t len )  override;
 
     ///
-    /// @copydoc Interface::read()
+    /// @copydoc InputOutput::read()
     ///
     void read( unsigned char* data, size_t len )  override;
 

@@ -15,14 +15,14 @@ TEST_CASE( "Resolutions test" ) {
     resolutions.push_back( hub::Resolution { { 1 }, hub::Format::DISPARITY16 } );
     std::cout << resolutions << std::endl;
 
-    hub::Format format;
+    hub::Format format = hub::Format::NONE;
     std::cout << format << std::endl;
 
     hub::Resolution resolution { { 1 }, format };
     std::cout << resolution << std::endl;
 
-    hub::Dims dims = resolution.first;
-//        std::cout << dims << std::endl;
+    //    hub::Dims dims = resolution.first;
+    //        std::cout << dims << std::endl;
 
     //    std::vector<std::pair<hub::Resolutions, size_t>> m_resolutionss;
     //    m_resolutionss.push_back( { { { { 1 }, hub::Format::BGR8 } }, 3 } );

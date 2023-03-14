@@ -40,12 +40,12 @@ bool OutputStream::isOpen() const {
 
 //////////////////////////////////////////////////////////////////////
 
-StreamViewerClient::StreamViewerClient( Server * server,
+StreamViewerClient::StreamViewerClient( Server* server,
                                         int iClient,
                                         hub::net::ClientSocket&& sock ) :
     Client( server, iClient ) {
 
-    assert(m_server != nullptr);
+    assert( m_server != nullptr );
     const auto& streamers = m_server->getStreamers();
 
     sock.read( m_streamName );
@@ -54,7 +54,9 @@ StreamViewerClient::StreamViewerClient( Server * server,
         std::cout << headerMsg() << "unknown stream name : '" << m_streamName << "'" << std::endl;
         return;
     }
-    else { sock.write( hub::net::ClientSocket::Message::OK ); }
+    else {
+        sock.write( hub::net::ClientSocket::Message::OK );
+    }
     assert( streamers.find( m_streamName ) != streamers.end() );
 
     sock.read( m_syncStreamName );
@@ -64,7 +66,9 @@ StreamViewerClient::StreamViewerClient( Server * server,
                   << std::endl;
         return;
     }
-    else { sock.write( hub::net::ClientSocket::Message::OK ); }
+    else {
+        sock.write( hub::net::ClientSocket::Message::OK );
+    }
     assert( m_syncStreamName == "" || streamers.find( m_syncStreamName ) != streamers.end() );
 
     sock.read( m_mergeSyncAcqs );
@@ -135,7 +139,9 @@ StreamViewerClient::StreamViewerClient( Server * server,
                     if ( lastAcq.get() == nullptr ) {
                         m_outputSensor->getOutput().write( hub::net::ClientSocket::Message::PING );
                     }
-                    else { *m_outputSensor << *lastAcq; }
+                    else {
+                        *m_outputSensor << *lastAcq;
+                    }
                     m_mtxOutputSensor.unlock();
                     std::this_thread::sleep_for( std::chrono::milliseconds( pingPeriod ) );
                 }

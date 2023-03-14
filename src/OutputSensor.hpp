@@ -41,14 +41,14 @@ class SRC_API OutputSensor : public Sensor
 //        io::Output::write(data, len);
 //    }
 
-//    ///
-//    /// \brief OutputSensor
-//    /// is called when you want to share data sensor
-//    /// \param sensorSpec
-//    /// able client application to understand the data
-//    /// \param outputInterface
-//    /// is the communication bus you want to use
-//    ///
+    ///
+    /// \brief OutputSensor
+    /// is called when you want to share data sensor
+    /// \param sensorSpec
+    /// able client application to understand the data
+    /// \param output
+    /// is the communication bus you want to use
+    ///
     template <class SensorSpec = hub::SensorSpec,
               class Output,
               typename = typename std::enable_if<
@@ -92,6 +92,10 @@ class SRC_API OutputSensor : public Sensor
     ///
     void operator<<( const Acquisition& acquisition ) const;
 
+    ///
+    /// \brief getOutput
+    /// \return
+    ///
     io::Output &getOutput() const;
 
   private:
