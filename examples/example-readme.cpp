@@ -60,8 +60,15 @@ int main() {
                                     hub::net::ClientSocket { "serverIp", serverPort } } };
 
         while ( 1 ) {
+#if ( __cplusplus >= 201703L )
             auto [start, end] = sensorAPI::getTimestamp();
             auto [data, size] = sensorAPI::getData();
+#else
+            auto start = sensorAPI::getTimestamp().start;
+            auto end = sensorAPI::getTimestamp().end;
+            auto data = sensorAPI::getData().data;
+            auto size = sensorAPI::getData().size;
+#endif
 
             // send data
             outputSensor << ( hub::Acquisition { start, end }
@@ -76,7 +83,12 @@ int main() {
 
         const auto& resolutions = inputSensor.m_spec.getResolutions();
         if ( resolutions.size() == 1 ) {
+#if ( __cplusplus >= 201703L )
             const auto& [dims, format] = resolutions.at( 0 );
+#else
+            const auto& dims = resolutions.at( 0 ).first;
+            const auto& format = resolutions.at( 0 ).second;
+#endif
 
             // if compatible resolution for the client application
             if ( dims.size() == 2 && format == hub::Format::BGR8 ) {

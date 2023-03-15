@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.5)
 project(examples LANGUAGES CXX)
 
 if(MINGW)
-    set(CMAKE_CXX_STANDARD 14) # filesystem error with c++17
+    # set(CMAKE_CXX_STANDARD 14) # filesystem error with c++17
 endif()
 
 file(GLOB EXAMPLE_SRC *.cpp)

@@ -70,6 +70,7 @@ TEST_CASE( "InputSensor test" ) {
         CHECK( false );
     }
     catch ( std::exception& ex ) {
+        std::cout << "[test] catch execption : " << ex.what() << std::endl;
         CHECK( true );
     }
 }

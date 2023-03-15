@@ -1,6 +1,7 @@
 #include "SensorSpec.hpp"
 
 #include <cassert>
+#include <iostream>
 // #include <numeric>
 
 //#include "io/Interface.hpp"

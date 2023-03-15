@@ -40,14 +40,14 @@ class SRC_API InputStream : public Input
                           net::ClientSocket&& clientSocket  = net::ClientSocket(),
                           bool mergeSyncAcqs                = true );
 
-#ifdef WIN32 // msvc warning C4250
-  protected:
-    void write( const unsigned char* data, size_t len ) const override;
-    void read( unsigned char* data, size_t len ) const override;
-    void close() const override;
-    bool isOpen() const override;
-    bool isEnd() const override;
-#endif
+//#ifdef WIN32 // msvc warning C4250
+//  protected:
+//    void write( const unsigned char* data, size_t len ) const override;
+//    void read( unsigned char* data, size_t len ) const override;
+//    void close() const override;
+//    bool isOpen() const override;
+//    bool isEnd() const override;
+//#endif
 
   protected:
     ///

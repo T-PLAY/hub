@@ -86,7 +86,13 @@ void Server::setMaxClients( int maxClients ) {
 std::string Server::getStatus() {
     std::string streamViewersStr = "[";
 
+#if ( __cplusplus >= 201703L )
     for ( const auto& [streamerName, streamer] : m_streamers ) {
+#else
+    for ( const auto& pair : m_streamers ) {
+        const auto & streamerName = pair.first;
+        const auto & streamer = pair.second;
+#endif
 
         const auto& streamViewers = streamer->getStreamViewers();
         const auto& syncViewers   = streamer->getSyncViewers();
@@ -143,13 +149,28 @@ void Server::delStreamer( StreamerClient* streamer ) {
 void Server::addViewer( ViewerClient* viewer ) {
 
     // each already connected streamers prevent existence for this new viewer
+//    for ( const auto& [streamerName, streamer] : m_streamers ) {
+#if ( __cplusplus >= 201703L )
     for ( const auto& [streamerName, streamer] : m_streamers ) {
+#else
+    for ( const auto& pair : m_streamers ) {
+        const auto & streamerName = pair.first;
+        const auto & streamer = pair.second;
+#endif
 
         // notify orphans first
         if ( streamer->getParent() == "" ) { viewer->notifyNewStreamer( *streamer ); }
     }
 
+//    for ( const auto& [streamerName, streamer] : m_streamers ) {
+#if ( __cplusplus >= 201703L )
     for ( const auto& [streamerName, streamer] : m_streamers ) {
+#else
+    for ( const auto& pair : m_streamers ) {
+        const auto & streamerName = pair.first;
+        const auto & streamer = pair.second;
+#endif
+
         // notify children to auto synchronize with already oppened parent
         if ( streamer->getParent() != "" ) { viewer->notifyNewStreamer( *streamer ); }
     }
@@ -177,9 +198,17 @@ void Server::newAcquisition( StreamerClient* streamer, const hub::Acquisition& a
 
 std::list<std::pair<std::string, hub::SensorSpec>> Server::listStreams() const {
     std::list<std::pair<std::string, hub::SensorSpec>> ret;
-    for ( const auto& [streamName, streamer] : m_streamers ) {
+//    for ( const auto& [streamName, streamer] : m_streamers ) {
+#if ( __cplusplus >= 201703L )
+    for ( const auto& [streamerName, streamer] : m_streamers ) {
+#else
+    for ( const auto& pair : m_streamers ) {
+        const auto & streamerName = pair.first;
+        const auto & streamer = pair.second;
+#endif
+
         const auto& sensorSpec = streamer->getInputSensor().m_spec;
-        ret.push_back( std::make_pair( streamName, sensorSpec ) );
+        ret.push_back( std::make_pair( streamerName, sensorSpec ) );
     }
     return ret;
 }

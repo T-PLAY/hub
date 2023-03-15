@@ -5,9 +5,11 @@
 #include <cassert>
 #include <string>
 #include <vector>
+#include <memory>
+//#include <iostream>
 
 // #include "data/Mat4.hpp"
-#include <memory>
+#include "Macros.hpp"
 
 namespace hub {
 
@@ -19,7 +21,7 @@ class Mat4;
 /// \brief The Any class
 /// represents any value.
 ///
-class Any
+class SRC_API Any
 {
   public:
     ///
@@ -145,7 +147,7 @@ class Any
     /// \param type
     /// \return
     ///
-    friend std::ostream& operator<<( std::ostream& os, const Type& type );
+    SRC_API friend std::ostream& operator<<( std::ostream& os, const Type& type );
 
     ///
     /// \brief operator <<
@@ -153,7 +155,7 @@ class Any
     /// \param any
     /// \return
     ///
-    friend std::ostream& operator<<( std::ostream& os, const Any& any );
+    SRC_API friend std::ostream& operator<<( std::ostream& os, const Any& any );
 
   private:
     Type m_type     = Type::NONE;

@@ -11,7 +11,7 @@ namespace data {
 /// \brief The Mat4 class
 /// represents a transform matrix (row-major).
 ///
-class Mat4 : public Measure
+class SRC_API Mat4 : public Measure
 {
 
   public:

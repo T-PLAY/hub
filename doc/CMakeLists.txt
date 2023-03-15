@@ -8,7 +8,8 @@ if(HUB_BUILD_DOC)
             CACHE STRING "User browser to see html docs and coverage")
     endif()
 
-    find_package(Doxygen QUIET)
+#    find_package(Doxygen QUIET)
+    find_package(Doxygen REQUIRED)
 
     if(DOXYGEN_FOUND)
         set(DOXYGEN_IN ${CMAKE_CURRENT_SOURCE_DIR}/docs_doxygen/Doxyfile.in)

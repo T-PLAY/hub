@@ -6,7 +6,7 @@
 namespace hub {
 namespace io {
 
-class InputOutput : public Input, public Output
+class SRC_API InputOutput : public Input, public Output
 {};
 
 } // namespace io
