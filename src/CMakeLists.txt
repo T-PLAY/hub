@@ -54,6 +54,8 @@ elseif(UNIX)
 endif()
 
 target_link_libraries(${PROJECT_NAME} ${REQUIRED_LIBS})
+#set(CMAKE_CXX_STANDARD 11)
+#set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD ${CMAKE_CXX_STANDARD})
 
 # ########################### INSTALL/EXPORT ################################
 
