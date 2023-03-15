@@ -120,10 +120,14 @@ std::string Server::getStatus() {
 
 void Server::addStreamer( StreamerClient* streamer ) {
 
+    std::cout << "[Server] addStreamer(" << streamer << ")" << std::endl;
+
     const auto& streamerName = streamer->getStreamName();
 
+    m_mtxStreamers.lock();
     assert( m_streamers.find( streamerName ) == m_streamers.end() );
     m_streamers[streamerName] = streamer;
+    m_mtxStreamers.unlock();
 
     std::cout << headerMsg() << "prevent viewers there is a new streamer : '" << streamerName << "'"
               << std::endl;
@@ -134,11 +138,17 @@ void Server::addStreamer( StreamerClient* streamer ) {
 
 void Server::delStreamer( StreamerClient* streamer ) {
 
-    const std::string streamerName = streamer->getStreamName();
+    std::cout << "[Server] delStreamer(" << streamer << ")" << std::endl;
 
     m_mtxStreamers.lock();
+    int startSize = m_streamers.size();
+    const std::string streamerName = streamer->getStreamName();
+//    assert(m_streamers.at(streamerName) == streamer);
+    assert(! m_streamers.empty());
     assert( m_streamers.find( streamerName ) != m_streamers.end() );
     m_streamers.erase( streamerName );
+    int endSize = m_streamers.size();
+    assert(startSize - endSize == 1);
     m_mtxStreamers.unlock();
 
     for ( auto* viewer : m_viewers ) {

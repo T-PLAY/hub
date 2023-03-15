@@ -353,7 +353,7 @@ StreamerClient::StreamerClient( Server* server, int iClient, hub::net::ClientSoc
     } );
 
     // get record acqs before prevent viewer
-    std::this_thread::sleep_for( std::chrono::milliseconds( 200 ) );
+    // std::this_thread::sleep_for( std::chrono::milliseconds( 200 ) );
     assert( m_server != nullptr );
     m_server->addStreamer( this );
 
@@ -457,11 +457,14 @@ void StreamerClient::delStreamViewer( StreamViewerClient* streamViewer ) {
 
     if ( syncStreamName == "" ) {
         m_mtxStreamViewers.lock();
+        const auto startSize = m_streamViewers.size();
         auto& streamViewers = m_streamViewers;
         // todo fix assert
         assert( std::find( streamViewers.begin(), streamViewers.end(), streamViewer ) !=
                 streamViewers.end() );
         streamViewers.remove( streamViewer );
+        const auto endSize = m_streamViewers.size();
+        assert(startSize - endSize == 1);
         m_mtxStreamViewers.unlock();
     }
     else {
