@@ -137,6 +137,8 @@ class SRC_API Measure
 
 //    const unsigned char *getData() const;
 
+    bool ownData() const;
+
   protected:
     ///
     /// \brief m_ownData

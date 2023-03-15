@@ -120,7 +120,8 @@ Acquisition Acquisition::slerp( const Acquisition& left, const Acquisition& righ
 
 Acquisition& Acquisition::operator<<( const data::Measures& measures ) {
     for ( const auto& measure : measures ) {
-        emplaceMeasure( measure.m_data, measure.m_size, measure.getResolution() );
+        emplaceMeasure( (const unsigned char*)measure.m_data, measure.m_size, measure.getResolution() );
+//        emplaceMeasure( measure.m_data, measure.m_size, measure.getResolution() );
     }
     return *this;
 }

@@ -201,6 +201,10 @@ class SRC_API ClientSocket : public Socket, public io::InputOutput
 
 template <class T>
 void ClientSocket::write( const T& t ) {
+    // todo fix
+    // server side
+    // Assertion failed: isOpen()
+    // D:\a\_work\1\s\src\vctools\crt\github\stl\src\mutex.cpp(64): mutex destroyed while busy
     assert( isOpen() );
     io::Output::write( t );
 }
