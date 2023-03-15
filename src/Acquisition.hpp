@@ -181,7 +181,9 @@ class SRC_API Acquisition
 
 template <class... Args>
 void Acquisition::emplaceMeasure( Args&&... args ) {
+#if ( __cplusplus >= 201703L )
     static_assert( 3 <= sizeof...( args ) && sizeof...( args ) <= 4 );
+#endif
     m_measures.emplace_back( std::forward<Args>( args )... );
     m_size += m_measures.back().m_size;
 }

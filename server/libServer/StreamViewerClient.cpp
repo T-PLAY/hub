@@ -87,7 +87,12 @@ StreamViewerClient::StreamViewerClient( Server* server,
         if ( m_streamer->isRecordStream() ) {
             std::lock_guard<std::mutex> guard( m_mtxOutputSensor );
             const auto& saveAcqs = m_streamer->getSaveAcqs( m_syncStreamName );
-            for ( const auto& [start, acq] : saveAcqs ) {
+#if ( __cplusplus >= 201703L )
+             for ( const auto& [start, acq] : saveAcqs ) {
+#else
+            for ( const auto& pair : saveAcqs ) {
+                const auto & acq = pair.second;
+#endif
                 *m_outputSensor << *acq;
             }
             std::cout << headerMsg() << "sended " << saveAcqs.size() << " saved acqs" << std::endl;

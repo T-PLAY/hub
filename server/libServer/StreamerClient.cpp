@@ -127,7 +127,12 @@ StreamerClient::StreamerClient( Server* server, int iClient, hub::net::ClientSoc
                 // broadcast acquisition for each sync stream viewers
                 auto it2 = m_syncViewers.begin();
                 while ( it2 != m_syncViewers.end() ) {
+#if ( __cplusplus >= 201703L )
                     auto& [syncViewerName, syncViewers] = *it2++;
+#else
+                    auto & syncViewerName = it2->first;
+                    auto & syncViewers = it2->second;
+#endif
 
                     auto& syncAcqs = m_syncAcqs.at( syncViewerName );
 
@@ -520,7 +525,13 @@ void StreamerClient::saveNewAcq( const std::string& streamName, hub::Acquisition
     // save new acq
     if ( saveAcqs.find( newAcq.m_start ) == saveAcqs.end() ) {
         std::cout << headerMsg() << "'" << m_streamName << "' save new acq : [ ";
+#if ( __cplusplus >= 201703L )
         for ( const auto& [streamName2, saveAcqs2] : m_streamName2saveAcqs ) {
+#else
+        for ( const auto& pair : m_streamName2saveAcqs ) {
+            const auto & streamName2 = pair.first;
+            const auto & saveAcqs2 = pair.second;
+#endif
             std::cout << "'" << streamName2 << "':" << saveAcqs2.size() << ", ";
         }
         std::cout << " ] ";

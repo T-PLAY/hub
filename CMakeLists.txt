@@ -2,7 +2,8 @@ cmake_minimum_required(VERSION 3.8)
 
 project(hub)
 
-set(CMAKE_CXX_STANDARD 14)
+#set(CMAKE_CXX_STANDARD 11 CACHE STRING "C++ standard to be used")
+set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_FIND_PACKAGE_NO_SYSTEM_PACKAGE_REGISTRY False)
 
@@ -42,12 +43,14 @@ if(HUB_ENABLE_EXAMPLES)
     add_subdirectory(examples)
 endif()
 
-add_custom_target(
-    cppCheck
-    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-    COMMAND cppcheck --enable=all --error-exitcode=1 src tests server -I src -I server/libServer/ --inline-suppr
-            --suppress=toomanyconfigs --suppress=missingIncludeSystem
-    COMMENT "Running cppCheck")
+if (NOT WIN32)
+        add_custom_target(
+            cppCheck
+            WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+            COMMAND cppcheck --enable=all --error-exitcode=1 src tests server -I src -I server/libServer/ --inline-suppr
+                    --suppress=toomanyconfigs --suppress=missingIncludeSystem
+            COMMENT "Running cppCheck")
+endif()
 
 add_custom_target(
     format

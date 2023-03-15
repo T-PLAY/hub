@@ -39,25 +39,25 @@ InputStream::InputStream( const std::string& streamName,
     m_clientSocket.write( mergeSyncAcqs );
 }
 
-#ifdef WIN32
-void InputStream::write( const unsigned char* data, size_t len ) {
-    net::ClientSocket::write( data, len );
-}
+//#ifdef WIN32
+//void InputStream::write( const unsigned char* data, size_t len ) {
+//    net::ClientSocket::write( data, len );
+//}
 
-void InputStream::read( unsigned char* data, size_t len ) {
-    net::ClientSocket::read( data, len );
-}
+//void InputStream::read( unsigned char* data, size_t len ) {
+//    net::ClientSocket::read( data, len );
+//}
 
-void InputStream::close() {
-    net::ClientSocket::close();
-}
-bool InputStream::isOpen() const {
-    return net::ClientSocket::isOpen();
-}
-bool InputStream::isEnd() const {
-    return net::ClientSocket::isEnd();
-}
-#endif
+//void InputStream::close() {
+//    net::ClientSocket::close();
+//}
+//bool InputStream::isOpen() const {
+//    return net::ClientSocket::isOpen();
+//}
+//bool InputStream::isEnd() const {
+//    return net::ClientSocket::isEnd();
+//}
+//#endif
 
 Acquisition InputStream::getAcquisition( const SensorSpec& sensorSpec ) {
     net::ClientSocket::Message message;

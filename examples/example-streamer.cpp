@@ -39,8 +39,15 @@ streamer.addStream( "myStream", std::move( sensorSpec ) );
 
 while ( receivingDataFromSensor ) {
 
+#if ( __cplusplus >= 201703L )
     auto [start, end] = sensorAPI::getTimestamp();
     auto [data, size] = sensorAPI::getData();
+#else
+    auto start = sensorAPI::getTimestamp().start;
+    auto end = sensorAPI::getTimestamp().end;
+    auto data = sensorAPI::getData().data;
+    auto size = sensorAPI::getData().size;
+#endif
 
     auto&& acq {hub::Acquisition { start, end } << hub::data::Measure { data, size, resolution }};
     // share new sensor data (only if connected to the server)

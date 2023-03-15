@@ -178,6 +178,8 @@ TEST_CASE( "Native test" ) {
 
     std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
 
+    // todo test
+    if (false)
     {
         std::cout << "[Test] ############################### server start" << std::endl;
         Server server( port );

@@ -22,6 +22,14 @@ set_property(TARGET test-all PROPERTY CXX_EXTENSIONS OFF)
 
 file(GLOB testFiles test-*.cpp)
 
+if(WIN32)
+    add_custom_command(
+        TARGET test-all
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:hub> $<TARGET_FILE_DIR:test-all>)
+endif()
+
+
 include(CTest)
 enable_testing()
 foreach(testFile ${testFiles})

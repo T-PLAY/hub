@@ -2,4 +2,4 @@
 
 #include <io/Input.hpp>
 
-TEST_CASE( "Input test" ) {}
+TEST_CASE( "Memory test" ) {}

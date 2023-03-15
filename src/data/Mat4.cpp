@@ -84,7 +84,7 @@ std::string Mat4::to_string() const {
         for ( int j = 0; j < 4; ++j ) {
             char buff[32];
 #ifdef WIN32
-            sprintf_s( buff, "%.0f ", val[4 * i + j] );
+            sprintf_s( buff, "%.0f ", data[4 * i + j] );
 #else
             sprintf( buff, "%.0f", data[4 * i + j] );
 #endif

@@ -35,7 +35,13 @@ TEST_CASE( "Asker test" ) {
             auto listStreams = asker.listStreams();
 
             std::cout << "nb stream : " << listStreams.size() << std::endl;
+#if ( __cplusplus >= 201703L )
             for ( const auto& [streamName2, sensorSpec2] : listStreams ) {
+#else
+            for ( const auto& pair : listStreams ) {
+                const auto & streamName2 = pair.first;
+                const auto & sensorSpec2 = pair.second;
+#endif
                 std::cout << streamName2 << std::endl;
                 CHECK( streamName == streamName2 );
 
@@ -54,6 +60,7 @@ TEST_CASE( "Asker test" ) {
                 CHECK( false );
             }
             catch ( std::exception& ex ) {
+        std::cout << "[test] catch execption : " << ex.what() << std::endl;
                 CHECK( true );
             }
 

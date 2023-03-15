@@ -149,6 +149,7 @@ void ClientSocket::write( const unsigned char* data, size_t len ) {
                                          0 );
         }
         catch ( std::exception& e ) {
+            std::cout << "[ClientSocket] catch exception : " << e.what() << std::endl;
             assert( false );
             throw;
         }
