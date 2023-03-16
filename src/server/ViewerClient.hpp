@@ -8,11 +8,19 @@
 
 #include "Client.hpp"
 
+namespace hub {
+namespace server {
+
 class StreamerClient;
 
+///
+/// \brief The ViewerClient class
+///
 class ViewerClient : public Client
 {
-  public:
+//  public:
+//  protected:
+private:
     ViewerClient( Server* server, int iClient, hub::net::ClientSocket&& sock );
     ~ViewerClient();
 
@@ -26,4 +34,10 @@ class ViewerClient : public Client
 
     hub::net::ClientSocket m_socket;
     std::mutex m_mtxSocket;
+
+    friend class Server;
 };
+
+
+} // server
+} // hub

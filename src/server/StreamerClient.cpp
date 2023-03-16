@@ -4,6 +4,9 @@
 #include <cstring>
 #include <iomanip>
 
+namespace hub {
+namespace server {
+
 class InputStream : public hub::io::Input
 {
   public:
@@ -562,3 +565,6 @@ const std::list<StreamViewerClient*>& StreamerClient::getStreamViewers() const {
 // const std::chrono::time_point<std::chrono::high_resolution_clock>&
 // StreamerClient::getLastUpdateAcqDate( const std::string& streamName ) const {
 // }
+
+} // server
+} // hub

@@ -25,7 +25,7 @@ TEST_CASE( "Streamer" ) {
         {
 
             std::cout << "[Test] ############################### server start" << std::endl;
-            Server server( port );
+            hub::server::Server server( port );
             server.setMaxClients( 1 );
             server.asyncRun();
             std::this_thread::sleep_for( std::chrono::milliseconds( 2000 ) );

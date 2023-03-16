@@ -11,12 +11,20 @@
 
 #include "Client.hpp"
 
+namespace hub {
+namespace server {
+
 class Server;
 class StreamViewerClient;
 
+///
+/// \brief The StreamerClient class
+///
 class StreamerClient : public Client
 {
-  public:
+//  public:
+//    protected:
+private:
     StreamerClient( Server* server, int iClient, hub::net::ClientSocket&& sock );
     ~StreamerClient();
 
@@ -36,8 +44,15 @@ class StreamerClient : public Client
     const std::chrono::time_point<std::chrono::high_resolution_clock>&
     getLastUpdateAcqDate( const std::string& streamName ) const;
 
-  private:
+//  private:
     void saveNewAcq( const std::string& streamName, hub::Acquisition&& newAcq );
+
+    const std::list<StreamViewerClient*>& getStreamViewers() const; // use by server
+    const std::map<std::string, std::list<StreamViewerClient*>>&
+    getSyncViewers() const; // use by server (printStatus)
+    const std::string& getStreamName() const;
+    const std::string& getParent() const;
+    bool isRecordStream() const;
 
   private:
     std::thread m_thread;
@@ -64,11 +79,16 @@ class StreamerClient : public Client
 
     bool m_isRecordStream = false;
 
-  public:
-    const std::list<StreamViewerClient*>& getStreamViewers() const; // use by server
-    const std::map<std::string, std::list<StreamViewerClient*>>&
-    getSyncViewers() const; // use by server (printStatus)
-    const std::string& getStreamName() const;
-    const std::string& getParent() const;
-    bool isRecordStream() const;
+//  public:
+//  private:
+//  protected:
+
+    friend class Server;
+    friend class ViewerClient;
+    friend class AskerClient;
+    friend class StreamViewerClient;
 };
+
+
+} // server
+} // hub

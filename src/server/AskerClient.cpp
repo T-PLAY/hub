@@ -2,6 +2,9 @@
 
 #include "Server.hpp"
 
+namespace hub {
+namespace server {
+
 AskerClient::AskerClient( Server* server, int iClient, hub::net::ClientSocket&& sock ) :
     Client( server, iClient ), m_socket( std::move( sock ) ) {
 
@@ -104,3 +107,6 @@ AskerClient::~AskerClient() {
 std::string AskerClient::headerMsg() const {
     return Client::headerMsg() + "[Asker] ";
 }
+
+} // server
+} // hub

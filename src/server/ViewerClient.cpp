@@ -3,6 +3,9 @@
 #include "Server.hpp"
 #include "StreamerClient.hpp"
 
+namespace hub {
+namespace server {
+
 ViewerClient::ViewerClient( Server* server, int iClient, hub::net::ClientSocket&& sock ) :
     Client( server, iClient ), m_socket( std::move( sock ) ) {
 
@@ -72,3 +75,6 @@ void ViewerClient::notifyDelStreamer( const StreamerClient& streamer ) {
         std::thread( [this]() { delete this; } ).detach();
     }
 }
+
+} // server
+} // hub

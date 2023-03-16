@@ -6,11 +6,20 @@
 #include <OutputSensor.hpp>
 #include <net/ClientSocket.hpp>
 
+
+namespace hub {
+namespace server {
+
 class StreamerClient;
 
+///
+/// \brief The StreamViewerClient class
+///
 class StreamViewerClient : public Client
 {
-  public:
+//  public:
+//  protected:
+private:
     StreamViewerClient( Server* server, int iClient, hub::net::ClientSocket&& sock );
     ~StreamViewerClient();
 
@@ -37,4 +46,11 @@ class StreamViewerClient : public Client
 
     bool m_isKilled = false;
     bool m_suicide  = false;
+
+    friend class Server;
+    friend class StreamerClient;
 };
+
+
+} // server
+} // hub

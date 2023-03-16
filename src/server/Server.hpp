@@ -15,18 +15,48 @@
 #include "StreamerClient.hpp"
 #include "ViewerClient.hpp"
 
+namespace hub {
+namespace server {
+
+///
+/// \brief The Server class
+///
 class Server
 {
   public:
     Server();
+    ///
+    /// \brief Server
+    /// \param port
+    ///
     explicit Server( int port );
     ~Server();
 
+    ///
+    /// \brief run
+    ///
+    void run();
+
+    ///
+    /// \brief asyncRun
+    ///
+    void asyncRun();
+
+    ///
+    /// \brief stop
+    /// \warning need async running
+    ///
+    void stop();
+
+    ///
+    /// \brief setMaxClients
+    /// \param maxClients
+    ///
+    void setMaxClients( int maxClients );
+
+  private:
     std::string headerMsg() const;
 
-    void run();
-    void asyncRun();
-    void stop();
 
     Client* initClient( hub::net::ClientSocket&& sock, int iClient );
     std::string getStatus();
@@ -43,6 +73,7 @@ class Server
     const std::shared_ptr<hub::Acquisition> getAcquisition( const std::string& streamName );
 
     void removeClient( Client* client );
+    const std::map<std::string, StreamerClient*>& getStreamers() const;
 
   private:
     std::thread m_thread;
@@ -57,7 +88,14 @@ class Server
 
     int m_maxClients = 1'000'000;
 
-  public:
-    void setMaxClients( int maxClients );
-    const std::map<std::string, StreamerClient*>& getStreamers() const;
+//  private:
+    friend class Client;
+    friend class StreamerClient;
+    friend class StreamViewerClient;
+    friend class ViewerClient;
+    friend class AskerClient;
 };
+
+
+} // server
+} // hub
