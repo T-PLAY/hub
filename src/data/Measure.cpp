@@ -39,7 +39,7 @@ Measure Measure::clone() const {
 bool Measure::isInterpolable() const {
     assert( m_resolution.second != Format::NONE );
     assert( !m_resolution.first.empty() );
-    return format2isInterpolable( m_resolution.second );
+    return res::format2isInterpolable( m_resolution.second );
 }
 
 

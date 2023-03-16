@@ -18,8 +18,8 @@ void OutputSensor::operator<<( const Acquisition& acquisition ) const {
     for ( int i = 0; i < resolutions.size(); ++i ) {
         const auto& resolution = resolutions.at( i );
         const auto& format     = resolution.second;
-        assert( !format2hasFixedSize( format ) ||
-                computeAcquisitionSize( resolutions.at( i ) ) == measures.at( i ).m_size );
+        assert( !res::format2hasFixedSize( format ) ||
+                res::computeAcquisitionSize( resolutions.at( i ) ) == measures.at( i ).m_size );
     }
 
     m_output->write( acquisition );

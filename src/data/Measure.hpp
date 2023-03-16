@@ -170,7 +170,7 @@ Measure::Measure( const unsigned char* const data, uint64_t size, ResolutionT&& 
     memcpy( const_cast<unsigned char*>( m_data ), data, m_size );
     assert( m_size > 0 );
     assert( m_data != nullptr );
-    assert( size == computeAcquisitionSize( m_resolution ) );
+    assert( size == res::computeAcquisitionSize( m_resolution ) );
 }
 
 template <class ResolutionT>
@@ -183,12 +183,12 @@ Measure::Measure( unsigned char* data, uint64_t size, ResolutionT&& resolution, 
     static_assert( std::is_same<std::decay_t<Resolution>, std::decay_t<ResolutionT>>::value,
                    "must be the same as Resolution" );
 
-    if ( !format2hasFixedSize( m_resolution.second ) ) return;
+    if ( !res::format2hasFixedSize( m_resolution.second ) ) return;
     assert( data != nullptr );
     assert( m_size > 0 );
     assert( m_data != nullptr );
-    assert( !format2hasFixedSize( m_resolution.second ) ||
-            size == computeAcquisitionSize( m_resolution ) );
+    assert( !res::format2hasFixedSize( m_resolution.second ) ||
+            size == res::computeAcquisitionSize( m_resolution ) );
 }
 
 const inline Resolution& Measure::getResolution() const {

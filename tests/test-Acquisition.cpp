@@ -54,8 +54,8 @@ TEST_CASE( "Acquisition test" ) {
         const auto& resolution2 = hub::Resolution( { 1 }, format );
         hub::Acquisition acq22 =
             std::move( hub::Acquisition( 0, 0 ) << hub::data::Measure(
-                           data, hub::computeAcquisitionSize( resolution2 ), resolution2 ) );
-        CHECK( acq22.isInterpolable() == hub::s_format2isInterpolable[(int)format] );
+                           data, hub::res::computeAcquisitionSize( resolution2 ), resolution2 ) );
+        CHECK( acq22.isInterpolable() == hub::res::s_format2isInterpolable[(int)format] );
     }
 
     hub::Acquisition acq4 =
