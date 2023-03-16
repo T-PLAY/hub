@@ -3,7 +3,7 @@
 
 #include <OutputSensor.hpp>
 #include <SensorSpec.hpp>
-#include <Server.hpp>
+#include <server/Server.hpp>
 
 #include <client/Asker.hpp>
 

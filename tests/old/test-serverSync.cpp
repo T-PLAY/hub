@@ -3,7 +3,7 @@
 #include <InputSensor.hpp>
 #include <OutputSensor.hpp>
 
-#include <Server.hpp>
+#include <server/Server.hpp>
 
 #include <filesystem>
 

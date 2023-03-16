@@ -26,7 +26,6 @@ set(HUB_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
 set(HUB_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
 
 add_subdirectory(src)
-add_subdirectory(server)
 
 option(HUB_BUILD_DOC "Build documentation" OFF)
 if(HUB_BUILD_DOC)
@@ -47,7 +46,7 @@ if (NOT WIN32)
         add_custom_target(
             cppCheck
             WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-            COMMAND cppcheck --enable=all --error-exitcode=1 src tests server -I src -I server/libServer/ --inline-suppr
+            COMMAND cppcheck --enable=all --error-exitcode=1 src tests -I src --inline-suppr
                     --suppress=toomanyconfigs --suppress=missingIncludeSystem
             COMMENT "Running cppCheck")
 endif()
