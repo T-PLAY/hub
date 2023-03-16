@@ -3,6 +3,8 @@
 #include "test-common.hpp"
 
 #include <server/Server.hpp>
-#include <net/ClientSocket.hpp>
+#include <server/Client.hpp>
 
-TEST_CASE( "ClientSocket test" ) {}
+TEST_CASE( "Client test" ) {
+
+}

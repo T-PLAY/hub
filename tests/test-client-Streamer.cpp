@@ -1,7 +1,7 @@
 #include "test-common.hpp"
 #include <catch2/catch_test_macros.hpp>
 
-#include <Server.hpp>
+#include <server/Server.hpp>
 #include <client/Streamer.hpp>
 
 TEST_CASE( "Streamer" ) {

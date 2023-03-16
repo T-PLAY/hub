@@ -9,7 +9,7 @@
 
 #include <client/Viewer.hpp>
 
-#include <Server.hpp>
+#include <server/Server.hpp>
 
 // #include <filesystem>
 // #include <iostream>

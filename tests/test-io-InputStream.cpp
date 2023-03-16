@@ -2,7 +2,7 @@
 
 #include "test-common.hpp"
 
-#include <Server.hpp>
+#include <server/Server.hpp>
 #include <io/InputStream.hpp>
 #include <io/OutputStream.hpp>
 

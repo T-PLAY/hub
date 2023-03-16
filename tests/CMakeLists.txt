@@ -16,7 +16,7 @@ endif()
 file(GLOB_RECURSE TEST_SRC *.cpp)
 
 add_executable(test-all ${TEST_SRC})
-target_link_libraries(test-all Catch2::Catch2WithMain hub server)
+target_link_libraries(test-all Catch2::Catch2WithMain hub)
 set_property(TARGET test-all PROPERTY CXX_STANDARD ${CMAKE_CXX_STANDARD})
 set_property(TARGET test-all PROPERTY CXX_EXTENSIONS OFF)
 
@@ -36,7 +36,7 @@ foreach(testFile ${testFiles})
     get_filename_component(test ${testFile} NAME_WE)
 
     add_executable(${test} ${test}.cpp)
-    target_link_libraries(${test} PRIVATE Catch2::Catch2WithMain hub server)
+    target_link_libraries(${test} PRIVATE Catch2::Catch2WithMain hub)
     target_include_directories(${test} PRIVATE ${HUB_INCLUDE_DIR})
     add_test(NAME ${test} COMMAND ${test})
 
