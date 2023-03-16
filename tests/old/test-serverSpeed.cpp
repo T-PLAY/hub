@@ -31,7 +31,7 @@ TEST_CASE( "Server test : speed test" ) {
     delete[] data;
 
     std::cout << "[Test] ############################### server start" << std::endl;
-    Server server( port );
+    hub::server::Server server( port );
     server.setMaxClients( 2 );
     server.asyncRun();
     std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );

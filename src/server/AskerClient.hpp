@@ -8,9 +8,18 @@
 
 #include "Client.hpp"
 
+namespace hub {
+namespace server {
+
+
+///
+/// \brief The AskerClient class
+///
 class AskerClient : public Client
 {
-  public:
+//  public:
+//  protected:
+private:
     AskerClient( Server* server, int iClient, hub::net::ClientSocket&& sock );
     ~AskerClient();
 
@@ -19,4 +28,9 @@ class AskerClient : public Client
   private:
     std::thread m_thread;
     hub::net::ClientSocket m_socket;
+
+    friend class Server;
 };
+
+} // server
+} // hub

@@ -5,6 +5,9 @@
 #include "Client.hpp"
 #include "Server.hpp"
 
+namespace hub {
+namespace server {
+
 std::mutex Client::s_mtxCout;
 
 Client::Client( Server* server, int iClient ) : m_server( server ), m_iClient( iClient ) {
@@ -45,3 +48,6 @@ void Client::setServer( Server* newServer ) {
     assert( m_server != nullptr );
     m_server = newServer;
 }
+
+} // server
+} // hub

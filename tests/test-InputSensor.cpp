@@ -44,7 +44,7 @@ TEST_CASE( "InputSensor test" ) {
     const std::string ipv4       = "127.0.0.1";
     const int port               = getRandomPort();
 
-    Server server( port );
+    hub::server::Server server( port );
     server.setMaxClients( 2 );
     server.asyncRun();
 

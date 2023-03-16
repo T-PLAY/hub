@@ -10,6 +10,9 @@
 
 #include <Sensor.hpp>
 
+namespace hub {
+namespace server {
+
 Server::Server() {
     assert( !m_thread.joinable() );
 }
@@ -240,3 +243,6 @@ void Server::removeClient( Client* client ) {
 const std::map<std::string, StreamerClient*>& Server::getStreamers() const {
     return m_streamers;
 }
+
+} // server
+} // hub

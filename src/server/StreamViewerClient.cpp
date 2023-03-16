@@ -4,6 +4,9 @@
 
 #include <iomanip>
 
+namespace hub {
+namespace server {
+
 class OutputStream : public hub::io::Output
 {
   public:
@@ -241,3 +244,6 @@ const std::string& StreamViewerClient::getStreamName() const {
 bool StreamViewerClient::shoudMergeSyncAcqs() const {
     return m_mergeSyncAcqs;
 }
+
+} // server
+} // hub
