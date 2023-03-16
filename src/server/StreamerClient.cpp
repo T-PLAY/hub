@@ -100,8 +100,8 @@ StreamerClient::StreamerClient( Server* server, int iClient, hub::net::ClientSoc
             while ( m_server != nullptr ) {
 
                 auto&& masterAcq           = m_inputSensor->getAcquisition();
-                const bool masterAcqLooped = lastMasterAcqStart > masterAcq.m_start;
-                lastMasterAcqStart         = masterAcq.m_start;
+                const bool masterAcqLooped = lastMasterAcqStart > masterAcq.getStart();
+                lastMasterAcqStart         = masterAcq.getStart();
 
                 // broadcast acquisition for each stream viewers
                 m_mtxStreamViewers.lock();
@@ -117,7 +117,7 @@ StreamerClient::StreamerClient( Server* server, int iClient, hub::net::ClientSoc
                 m_mtxStreamViewers.unlock();
 
                 // receive reset acq
-                if ( masterAcq.m_start == 0 && masterAcq.m_end == 0 ) {
+                if ( masterAcq.getStart() == 0 && masterAcq.getEnd() == 0 ) {
                     std::cout << headerMsg() << "receive (history) reset acq : " << masterAcq
                               << std::endl;
                     m_lastAcq[""].reset();
@@ -175,16 +175,16 @@ StreamerClient::StreamerClient( Server* server, int iClient, hub::net::ClientSoc
                         m_mtxSyncAcqs.unlock();
 
                         // do not synchronize ping acq
-                        if ( syncAcqs.begin()->m_start == std::next( syncAcqs.begin() )->m_start ) {
+                        if ( syncAcqs.begin()->getStart() == std::next( syncAcqs.begin() )->getStart() ) {
                             std::cout << "[StreamerClient] receive ping acq" << std::endl;
                             syncAcqs.pop_front();
                             continue;
                         }
-                        assert( syncAcqs.begin()->m_start !=
-                                std::next( syncAcqs.begin() )->m_start );
+                        assert( syncAcqs.begin()->getStart() !=
+                                std::next( syncAcqs.begin() )->getStart() );
 
                         // autoloop detected (player)
-                        if ( syncAcqs.begin()->m_start >= std::next( syncAcqs.begin() )->m_start ) {
+                        if ( syncAcqs.begin()->getStart() >= std::next( syncAcqs.begin() )->getStart() ) {
                             std::cout << "[StreamerClient] sync acq loop deteted" << std::endl;
                             syncAcqs.pop_front();
 
@@ -206,8 +206,8 @@ StreamerClient::StreamerClient( Server* server, int iClient, hub::net::ClientSoc
                                 break;
                             }
                         }
-                        assert( syncAcqs.begin()->m_start <
-                                std::next( syncAcqs.begin() )->m_start );
+                        assert( syncAcqs.begin()->getStart() <
+                                std::next( syncAcqs.begin() )->getStart() );
 
                         if ( isLooping ) {
                             std::cout
@@ -219,10 +219,10 @@ StreamerClient::StreamerClient( Server* server, int iClient, hub::net::ClientSoc
 
                         // unable to synchronize master acq, these acquisitions are too far in the
                         // future compare to acq
-                        if ( syncAcqs.begin()->m_start >= masterAcq.m_start ) {
+                        if ( syncAcqs.begin()->getStart() >= masterAcq.getStart() ) {
                             std::cout << "[StreamerClient] unable to sync future acqs, "
                                          "syncAcq.start - masterAcq = "
-                                      << syncAcqs.begin()->m_start - masterAcq.m_start
+                                      << syncAcqs.begin()->getStart() - masterAcq.getStart()
                                       << ", syncAcq : " << *syncAcqs.begin()
                                       << ", masterAcq : " << masterAcq << std::endl;
 
@@ -230,15 +230,15 @@ StreamerClient::StreamerClient( Server* server, int iClient, hub::net::ClientSoc
                             syncAcqs.pop_front();
                             continue;
                         }
-                        assert( syncAcqs.begin()->m_start < masterAcq.m_start );
+                        assert( syncAcqs.begin()->getStart() < masterAcq.getStart() );
 
                         // unable to synchronize master acq, these acquisitions are too far in the
                         // past compare to master acq
-                        if ( std::next( syncAcqs.begin() )->m_start <= masterAcq.m_start ) {
+                        if ( std::next( syncAcqs.begin() )->getStart() <= masterAcq.getStart() ) {
                             syncAcqs.pop_front();
                             continue;
                         }
-                        assert( std::next( syncAcqs.begin() )->m_start > masterAcq.m_start );
+                        assert( std::next( syncAcqs.begin() )->getStart() > masterAcq.getStart() );
 
                         foundLeft = true;
 
@@ -254,32 +254,32 @@ StreamerClient::StreamerClient( Server* server, int iClient, hub::net::ClientSoc
                     const auto itLeftAcq  = syncAcqs.begin();
                     const auto itRightAcq = std::next( itLeftAcq );
 
-                    assert( itLeftAcq->m_start < masterAcq.m_start );
-                    assert( itRightAcq->m_start >= masterAcq.m_start );
+                    assert( itLeftAcq->getStart() < masterAcq.getStart() );
+                    assert( itRightAcq->getStart() >= masterAcq.getStart() );
 
-                    const auto closestAcq = ( std::abs( itLeftAcq->m_start - masterAcq.m_start ) >
-                                              std::abs( itRightAcq->m_start - masterAcq.m_start ) )
+                    const auto closestAcq = ( std::abs( itLeftAcq->getStart() - masterAcq.getStart() ) >
+                                              std::abs( itRightAcq->getStart() - masterAcq.getStart() ) )
                                                 ? ( itRightAcq )
                                                 : ( itLeftAcq );
 
-                    const auto dist = std::abs( closestAcq->m_start - masterAcq.m_start );
+                    const auto dist = std::abs( closestAcq->getStart() - masterAcq.getStart() );
 
                     // assert(minDist < 20'000); // 20 ms
                     // if too far then abort synchronize
                     // consider constant period of acquistion rate
-                    auto maxDist = ( itRightAcq->m_start - itLeftAcq->m_start ) / 2;
+                    auto maxDist = ( itRightAcq->getStart() - itLeftAcq->getStart() ) / 2;
 
                     // find acceptable corresponding acquisition if interpolation is not possible
                     if ( !itLeftAcq->isInterpolable() ) {
                         const auto& lastMasterAcq = getLastAcq( syncViewerName );
                         if ( lastMasterAcq != nullptr ) {
                             maxDist = std::min(
-                                dist, std::abs( lastMasterAcq->m_start - masterAcq.m_start ) );
+                                dist, std::abs( lastMasterAcq->getStart() - masterAcq.getStart() ) );
                         }
                     }
                     if ( dist > maxDist ) {
                         std::cout << headerMsg() << "sync dist = abs( "
-                                  << closestAcq->m_start - masterAcq.m_start << " ) > " << maxDist
+                                  << closestAcq->getStart() - masterAcq.getStart() << " ) > " << maxDist
                                   << std::endl;
                         continue;
                     }
@@ -289,8 +289,8 @@ StreamerClient::StreamerClient( Server* server, int iClient, hub::net::ClientSoc
 
                     hub::Acquisition mergedAcq = masterAcq.clone();
                     if ( itLeftAcq->isInterpolable() ) {
-                        const double t = ( masterAcq.m_start - itLeftAcq->m_start ) /
-                                         (double)( itRightAcq->m_start - itLeftAcq->m_start );
+                        const double t = ( masterAcq.getStart() - itLeftAcq->getStart() ) /
+                                         (double)( itRightAcq->getStart() - itLeftAcq->getStart() );
                         mergedAcq
                             << hub::Acquisition::slerp( *itLeftAcq, *itRightAcq, t ).getMeasures();
                     }
@@ -529,7 +529,7 @@ void StreamerClient::saveNewAcq( const std::string& streamName, hub::Acquisition
 
     auto& saveAcqs = m_streamName2saveAcqs[streamName];
     // save new acq
-    if ( saveAcqs.find( newAcq.m_start ) == saveAcqs.end() ) {
+    if ( saveAcqs.find( newAcq.getStart() ) == saveAcqs.end() ) {
         std::cout << headerMsg() << "'" << m_streamName << "' save new acq : [ ";
 #if ( __cplusplus >= 201703L )
         for ( const auto& [streamName2, saveAcqs2] : m_streamName2saveAcqs ) {
@@ -542,7 +542,7 @@ void StreamerClient::saveNewAcq( const std::string& streamName, hub::Acquisition
         }
         std::cout << " ] ";
         std::cout << std::endl;
-        saveAcqs[newAcq.m_start] = newAcqPtr;
+        saveAcqs[newAcq.getStart()] = newAcqPtr;
     }
     // acq already saved
 

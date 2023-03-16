@@ -5,6 +5,7 @@
 #include "io/Input.hpp"
 
 // user friendly useless includes
+#include "io/Input.hpp"
 #include "io/File.hpp"
 #include "io/InputStream.hpp"
 #include "io/Ram.hpp"
@@ -41,11 +42,24 @@ class SRC_API InputSensor : public Sensor
         m_input->read( m_spec );
     }
 
-    template <class Input>
-    InputSensor( Input& input ) = delete;
+//    template <class Input>
+//    InputSensor( Input& input ) = delete;
+    template <class Input,
+              typename = typename std::enable_if<std::is_base_of<io::Input, Input>::value>::type>
+    explicit InputSensor( Input& input ) = delete;
 
-    InputSensor( const InputSensor& inputSensor ) = delete;
     InputSensor operator=( const InputSensor& inputSensor ) = delete;
+
+
+//    InputSensor( const InputSensor& inputSensor ) = delete;
+    InputSensor( const InputSensor& inputSensor ) :
+        Sensor(inputSensor.m_spec),
+        m_input(inputSensor.m_input)
+    {
+    }
+
+//    InputSensor(io::Input & input, ) {
+//    }
 
   public:
     ///
@@ -57,6 +71,10 @@ class SRC_API InputSensor : public Sensor
     /// when communication bus is broken.
     ///
     Acquisition getAcquisition() const;
+
+    void operator>>(Acquisition & acquisition);
+
+    Acquisition operator>>(InputSensor & inputSensor) const;
 
     ///
     /// \brief getAllAcquisitions
@@ -73,7 +91,10 @@ class SRC_API InputSensor : public Sensor
     io::Input& getInput() const;
 
   private:
-    std::unique_ptr<io::Input> m_input;
+//    std::unique_ptr<io::Input> m_input;
+    std::shared_ptr<io::Input> m_input;
+//    Acquisition m_lastAcq;
+    std::list<Acquisition> m_lastAcqs;
 };
 
 } // namespace hub

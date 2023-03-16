@@ -25,8 +25,8 @@ TEST_CASE( "Acquisition test" ) {
 
     hub::Acquisition acq2( std::move( acq ) );
 
-    CHECK( acq2.m_start == 0 );
-    CHECK( acq2.m_end == 1 );
+    CHECK( acq2.getStart() == 0 );
+    CHECK( acq2.getEnd() == 1 );
 
     hub::Resolution resolution( { 1 }, hub::Format::RGB8 );
     unsigned char data[3] { 0, 1, 2 };
@@ -69,7 +69,7 @@ TEST_CASE( "Acquisition test" ) {
     std::cout << acq45 << std::endl;
     CHECK( acq45 == ( hub::Acquisition( 1, 1 ) << hub::data::Dof6( 0.5, 0.5, 0.5, 1, 0, 0, 0 ) ) );
 
-    hub::Acquisition acq6( acq2.m_start, acq2.m_end );
+    hub::Acquisition acq6( acq2.getStart(), acq2.getEnd() );
     acq6 << measures;
     CHECK( acq6 == acq2 );
 

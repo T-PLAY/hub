@@ -115,17 +115,6 @@ class SRC_API Measure
     ///
     SRC_API friend std::ostream& operator<<( std::ostream& os, const Measure& measure );
 
-  public:
-    ///
-    /// \brief m_data
-    ///
-    unsigned char* m_data;
-
-    ///
-    /// \brief m_size
-    ///
-    uint64_t m_size; // compatibility 32/64 bits
-
   public: // getters
     ///
     /// \brief getResolution
@@ -139,12 +128,20 @@ class SRC_API Measure
 
 //    bool ownData() const;
 
+    unsigned char *getData() const;
+
+    uint64_t getSize() const;
+
+
   protected:
     ///
     /// \brief m_ownData
     /// indicated if this class is the owner of the data.
     ///
     bool m_ownData = false;
+
+    unsigned char* m_data;
+    uint64_t m_size; // compatibility 32/64 bits
 
   private:
     bool m_isMoved = false;
@@ -153,8 +150,19 @@ class SRC_API Measure
     friend class InputSensor;
 };
 
-
 using Measures = std::vector<Measure>;
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+inline unsigned char *Measure::getData() const
+{
+    return m_data;
+}
+
+inline uint64_t Measure::getSize() const
+{
+    return m_size;
+}
 
 template <class ResolutionT>
 Measure::Measure( const unsigned char* const data, uint64_t size, ResolutionT&& resolution ) :

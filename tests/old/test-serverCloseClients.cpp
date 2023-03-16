@@ -114,8 +114,8 @@ TEST_CASE( "Server test : close clients" ) {
                     auto acq = inputSensor.getAcquisition();
                     std::cout << "[Test] acq = " << acq << std::endl;
                     std::cout << "ref acq : " << acqs[iAcq * 5] << std::endl;
-                    assert( acq.m_start == 10 * iAcq );
-                    CHECK( acq.m_start == 10 * iAcq );
+                    assert( acq.getStart() == 10 * iAcq );
+                    CHECK( acq.getStart() == 10 * iAcq );
                 }
             }
             outputSensor << acqs.front();

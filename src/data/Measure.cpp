@@ -74,6 +74,7 @@ bool Measure::operator!=( const Measure& measure ) const {
     return !( *this == measure );
 }
 
+
 //bool Measure::ownData() const
 //{
 //    return m_ownData;

@@ -65,11 +65,11 @@ void acquisition_getMeasure( const Acquisition* acquisition, unsigned char* data
 
     assert( iMeasure < acquisition->getMeasures().size() );
     const auto& measure = acquisition->getMeasures().at( iMeasure );
-    memcpy( data, measure.m_data, measure.m_size );
+    memcpy( data, measure.getData(), measure.getSize() );
 }
 
 long long acquisition_getStart( const Acquisition* acquisition ) {
-    return acquisition->m_start;
+    return acquisition->getStart();
 }
 
 void acquisition_to_string( const Acquisition* acquisition, char* str, int* strLen ) {
@@ -230,7 +230,7 @@ bool metaData_getMat4( const SensorSpec::MetaData* metaData, const char* metaNam
     if ( metaData->find( metaName ) != metaData->end() ) {
         // todo any
         const auto& mat4 = metaData->at( metaName ).getMat4();
-        memcpy( output, mat4.m_data, 64 );
+        memcpy( output, mat4.getData(), 64 );
         return true;
     }
     return false;

@@ -15,7 +15,7 @@ const Any& UserData::getValue() const {
 }
 
 UserData::UserData( const Measure& measure ) :
-    Measure( measure.m_data, measure.m_size, Resolution { { 1 }, Format::USER_DATA } ) {
+    Measure( measure.getData(), measure.getSize(), Resolution { { 1 }, Format::USER_DATA } ) {
     assert( m_data != nullptr );
     assert( m_size > 0 );
 
