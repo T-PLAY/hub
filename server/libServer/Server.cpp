@@ -120,7 +120,7 @@ std::string Server::getStatus() {
 
 void Server::addStreamer( StreamerClient* streamer ) {
 
-    std::cout << "[Server] addStreamer(" << streamer << ")" << std::endl;
+//    std::cout << "[Server] addStreamer(" << streamer << ")" << std::endl;
 
     const auto& streamerName = streamer->getStreamName();
 
@@ -138,7 +138,7 @@ void Server::addStreamer( StreamerClient* streamer ) {
 
 void Server::delStreamer( StreamerClient* streamer ) {
 
-    std::cout << "[Server] delStreamer(" << streamer << ")" << std::endl;
+//    std::cout << "[Server] delStreamer(" << streamer << ")" << std::endl;
 
     m_mtxStreamers.lock();
     int startSize = m_streamers.size();
