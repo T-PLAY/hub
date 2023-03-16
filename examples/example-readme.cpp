@@ -101,8 +101,8 @@ int main() {
                     const auto& measure = acq.getMeasures().at( 0 );
 
                     // draw image
-                    clientApp::drawImage( measure.m_data,
-                                          measure.m_size,
+                    clientApp::drawImage( measure.getData(),
+                                          measure.getSize(),
                                           imageWidth,
                                           imageHeight,
                                           clientApp::Format::BGR888 );

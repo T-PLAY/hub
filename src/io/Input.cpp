@@ -57,6 +57,7 @@ void Input::read( SensorSpec& sensorSpec ) {
 
 Acquisition Input::getAcquisition( const SensorSpec& sensorSpec ) {
     assert( isOpen() );
+    assert(! isEnd());
 
 #ifdef DEBUG_INPUT
     std::cout << "[Input] getAcquisition()" << std::endl;

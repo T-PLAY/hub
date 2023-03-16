@@ -21,6 +21,9 @@ namespace hub {
 class SRC_API Acquisition
 {
   public:
+
+    Acquisition() = default;
+
     ///
     /// \brief Acquisition
     /// \param start
@@ -38,7 +41,8 @@ class SRC_API Acquisition
     /// movable acquisition.
     ///
     Acquisition( Acquisition&& acq ) = default;
-    Acquisition& operator=( Acquisition&& acq ) = delete;
+//    Acquisition& operator=( Acquisition&& acq ) = delete;
+    Acquisition& operator=( Acquisition&& acq );
 
     ~Acquisition();
 
@@ -76,6 +80,8 @@ class SRC_API Acquisition
     /// modified acquisition with new measure.
     ///
     Acquisition& operator<<( const data::Measures& measure );
+
+    void operator>>(Acquisition & acq);
 
     ///
     /// \brief emplaceMeasure
@@ -124,6 +130,14 @@ class SRC_API Acquisition
     Acquisition clone() const;
 
     ///
+    /// \brief hasFixedSize
+    /// \return
+    /// true if the acquisition size is constant,
+    /// false otherwise.
+    ///
+    bool hasFixedSize() const;
+
+    ///
     /// \brief operator <<
     /// print acquisition information.
     /// \param os
@@ -152,32 +166,38 @@ class SRC_API Acquisition
     ///
     const data::Measures& getMeasures() const;
 
-  public:
-    ///
-    /// \brief m_start
-    ///
-    const long long m_start; // microseconds
 
-    ///
-    /// \brief m_end
-    ///
-    const long long m_end; // microseconds
+    long long getStart() const;
 
-    ///
-    /// \brief hasFixedSize
-    /// \return
-    /// true if the acquisition size is constant,
-    /// false otherwise.
-    ///
-    bool hasFixedSize() const;
+    long long getEnd() const;
+
+    bool isEmpty() const;
 
   private:
+    long long m_start = 0; // microseconds
+    long long m_end = 0; // microseconds
     data::Measures m_measures;
     size_t m_size = 0;
+
     friend class InputSensor;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+inline long long Acquisition::getStart() const
+{
+    return m_start;
+}
+
+inline long long Acquisition::getEnd() const
+{
+    return m_end;
+}
+
+inline bool Acquisition::isEmpty() const
+{
+    return m_measures.empty();
+}
 
 template <class... Args>
 void Acquisition::emplaceMeasure( Args&&... args ) {
@@ -185,7 +205,7 @@ void Acquisition::emplaceMeasure( Args&&... args ) {
     static_assert( 3 <= sizeof...( args ) && sizeof...( args ) <= 4 );
 #endif
     m_measures.emplace_back( std::forward<Args>( args )... );
-    m_size += m_measures.back().m_size;
+    m_size += m_measures.back().getSize();
 }
 
 } // namespace hub

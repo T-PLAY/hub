@@ -48,11 +48,11 @@ void Output::write( const data::Measure& measure ) {
     std::cout << "[Output] write(Measure)" << std::endl;
 #endif
 
-    assert( measure.m_size != 0 );
-    assert( measure.m_data != nullptr );
+    assert( measure.getSize() != 0 );
+    assert( measure.getData() != nullptr );
 
-    write( measure.m_size );
-    write( measure.m_data, measure.m_size );
+    write( measure.getSize() );
+    write( measure.getData(), measure.getSize() );
 }
 
 // void Output::write( const data::UserData& userData ) {
@@ -65,8 +65,8 @@ void Output::write( const Acquisition& acq ) {
     std::cout << "[Output] write(Acquisition)" << std::endl;
 #endif
 
-    write( acq.m_start );
-    write( acq.m_end );
+    write( acq.getStart() );
+    write( acq.getEnd() );
     const auto& measures = acq.getMeasures();
     assert( measures.size() > 0 );
     write( measures );
@@ -132,7 +132,7 @@ void Output::write( const Any& any ) {
 
     case Any::Type::MAT4: {
         const auto& val = any.getMat4();
-        write( reinterpret_cast<const unsigned char*>( val.m_data ), 64 );
+        write( reinterpret_cast<const unsigned char*>( val.getData() ), 64 );
         break;
     }
 

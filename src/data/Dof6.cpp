@@ -8,8 +8,8 @@ namespace hub {
 namespace data {
 
 Dof6::Dof6( const Measure& measure ) :
-    Measure( measure.m_data, measure.m_size, Resolution { { 1 }, Format::DOF6 } ) {
-    assert( measure.m_size == 28 );
+    Measure( measure.getData(), measure.getSize(), Resolution { { 1 }, Format::DOF6 } ) {
+    assert( measure.getSize() == 28 );
     memcpy( (unsigned char*)&m_x, m_data, m_size );
     assert( m_data != nullptr );
 }

@@ -216,7 +216,7 @@ TEST_CASE( "Native test" ) {
                 CHECK( !memcmp( ref_data, data, 3 ) );
 
                 auto start = hub::native::acquisition_getStart( acq );
-                CHECK( start == ref_acq.m_start );
+                CHECK( start == ref_acq.getStart() );
 
                 hub::native::freeAcquisition( acq );
 

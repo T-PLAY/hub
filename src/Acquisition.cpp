@@ -42,6 +42,21 @@ Acquisition::Acquisition( long long start, long long end ) : m_start( start ), m
     assert( m_start <= m_end );
 }
 
+Acquisition &Acquisition::operator=(Acquisition &&acq)
+{
+//    assert(m_measures.empty());
+    m_measures.clear();
+
+    m_start = acq.m_start;
+    m_end = acq.m_end;
+    m_measures = std::move(acq.m_measures);
+    m_size = acq.m_size;
+
+    assert(acq.m_measures.empty());
+
+    return *this;
+}
+
 Acquisition::~Acquisition() {
     m_measures.clear();
 }
@@ -69,13 +84,26 @@ bool Acquisition::operator!=( const Acquisition& acq ) const {
 Acquisition& Acquisition::operator<<( data::Measure&& measure ) {
     // void Acquisition::addMeasure( Measure&& measure ) {
     m_measures.push_back( std::move( measure ) );
-    m_size += m_measures.back().m_size;
+    m_size += m_measures.back().getSize();
     return *this;
+}
+
+void Acquisition::operator>>(Acquisition &acq)
+{
+//    assert(acq.m_measures.empty());
+
+//    acq.m_start = m_start;
+//    acq.m_end = m_end;
+//    acq.m_measures = std::move(m_measures);
+//    acq.m_size = m_size;
+    acq = std::move(*this);
+
+    assert(m_measures.empty());
 }
 
 void Acquisition::pushBack( data::Measure&& measure ) {
     m_measures.push_back( std::move( measure ) );
-    m_size += m_measures.back().m_size;
+    m_size += m_measures.back().getSize();
 }
 
 // template <class ResolutionT>
@@ -120,7 +148,7 @@ Acquisition Acquisition::slerp( const Acquisition& left, const Acquisition& righ
 
 Acquisition& Acquisition::operator<<( const data::Measures& measures ) {
     for ( const auto& measure : measures ) {
-        emplaceMeasure( (const unsigned char*)measure.m_data, measure.m_size, measure.getResolution() );
+        emplaceMeasure( (const unsigned char*)measure.getData(), measure.getSize(), measure.getResolution() );
 //        emplaceMeasure( measure.m_data, measure.m_size, measure.getResolution() );
     }
     return *this;

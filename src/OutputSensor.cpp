@@ -10,7 +10,7 @@ namespace hub {
 void OutputSensor::operator<<( const Acquisition& acquisition ) const {
     assert( !acquisition.hasFixedSize() || acquisition.getSize() == m_spec.getAcquisitionSize() );
 
-    assert( acquisition.m_start <= acquisition.m_end );
+    assert( acquisition.getStart() <= acquisition.getEnd() );
 
     const auto& resolutions = m_spec.getResolutions();
     const auto& measures    = acquisition.getMeasures();
@@ -19,7 +19,7 @@ void OutputSensor::operator<<( const Acquisition& acquisition ) const {
         const auto& resolution = resolutions.at( i );
         const auto& format     = resolution.second;
         assert( !res::format2hasFixedSize( format ) ||
-                res::computeAcquisitionSize( resolutions.at( i ) ) == measures.at( i ).m_size );
+                res::computeAcquisitionSize( resolutions.at( i ) ) == measures.at( i ).getSize() );
     }
 
     m_output->write( acquisition );
