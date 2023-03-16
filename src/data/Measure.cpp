@@ -74,10 +74,10 @@ bool Measure::operator!=( const Measure& measure ) const {
     return !( *this == measure );
 }
 
-bool Measure::ownData() const
-{
-    return m_ownData;
-}
+//bool Measure::ownData() const
+//{
+//    return m_ownData;
+//}
 
 //const unsigned char *Measure::getData() const
 //{
