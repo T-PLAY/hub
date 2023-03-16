@@ -14,8 +14,8 @@ Acquisition InputSensor::getAcquisition() const {
     assert( resolutions.size() == measures.size() );
     assert( resolutions.size() > 0 );
     for ( size_t i = 0; i < resolutions.size(); ++i ) {
-        assert( !format2hasFixedSize( resolutions.at( i ).second ) ||
-                computeAcquisitionSize( resolutions.at( i ) ) == measures.at( i ).m_size );
+        assert( !res::format2hasFixedSize( resolutions.at( i ).second ) ||
+                res::computeAcquisitionSize( resolutions.at( i ) ) == measures.at( i ).m_size );
         assert( measures.at( i ).getResolution() == resolutions.at( i ) );
         assert( !measures.at( i ).getResolution().first.empty() );
         assert( measures.at( i ).getResolution().second != Format::NONE );

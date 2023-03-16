@@ -151,7 +151,7 @@ const data::Measures& Acquisition::getMeasures() const {
 bool Acquisition::hasFixedSize() const {
     for ( const auto& measure : m_measures ) {
         const auto& format = measure.getResolution().second;
-        if ( !format2hasFixedSize( format ) ) return false;
+        if ( !res::format2hasFixedSize( format ) ) return false;
     }
     return true;
 }

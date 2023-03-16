@@ -16,7 +16,7 @@ SensorSpec::SensorSpec( const SensorNameType& sensorName,
     m_sensorName( sensorName ),
     m_resolutions( resolutions ),
     m_metaData( metaData ),
-    m_acquisitionSize( computeAcquisitionSize( resolutions ) ) {}
+    m_acquisitionSize( res::computeAcquisitionSize( resolutions ) ) {}
 #endif
 
 // constexpr SensorSpec::SensorSpec(
@@ -60,7 +60,7 @@ bool SensorSpec::operator==( const SensorSpec& sensorSpec ) const {
 }
 
 std::string SensorSpec::to_string() const {
-    return m_sensorName + ", " + hub::to_string( m_resolutions ) + ", " +
+    return m_sensorName + ", " + hub::res::to_string( m_resolutions ) + ", " +
            SensorSpec::to_string( m_metaData ) + ", " + std::to_string( m_acquisitionSize );
 }
 

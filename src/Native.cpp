@@ -156,7 +156,7 @@ void sensorSpec_getSensorName( const SensorSpec* sensorSpec, char* sensorName, i
 }
 
 int sensorSpec_getResolutionSize( const SensorSpec* sensorSpec, int iResolution ) {
-    return computeAcquisitionSize( sensorSpec->getResolutions().at( iResolution ) );
+    return res::computeAcquisitionSize( sensorSpec->getResolutions().at( iResolution ) );
 }
 
 int sensorSpec_getResolutionsSize( const SensorSpec* sensorSpec ) {

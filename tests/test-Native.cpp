@@ -83,14 +83,14 @@ TEST_CASE( "Native test" ) {
 
             const int resolutionSize =
                 hub::native::sensorSpec_getResolutionSize( sensorSpec, iResolution );
-            CHECK( resolutionSize == hub::computeAcquisitionSize( ref_resolution ) );
+            CHECK( resolutionSize == hub::res::computeAcquisitionSize( ref_resolution ) );
 
             const int dimensionsSize =
                 hub::native::sensorSpec_getDimensionsSize( sensorSpec, iResolution );
             std::cout << "[Example][Viewer] resolutions[" << iResolution
                       << "] dimensions size : " << dimensionsSize << std::endl;
-            CHECK( hub::computeAcquisitionSize( ref_resolution ) ==
-                   hub::computeAcquisitionSize( ref_format, ref_dims ) );
+            CHECK( hub::res::computeAcquisitionSize( ref_resolution ) ==
+                   hub::res::computeAcquisitionSize( ref_format, ref_dims ) );
             CHECK( dimensionsSize == ref_dims.size() );
 
             for ( int iDimension = 0; iDimension < dimensionsSize; ++iDimension ) {

@@ -16,5 +16,10 @@ TEST_CASE( "Server test" ) {
 
 //    hub::server::StreamerClient streamerClient(&server, 0, hub::net::ClientSocket());
 //    server.addStreamer(&streamerClient);
+//    hub::
+//    const hub::SensorSpec sensorSpec;
+//    hub::Sensor sensor(sensorSpec);
+
+//    hub::S
 
 }

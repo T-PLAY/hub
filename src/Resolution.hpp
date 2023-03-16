@@ -9,6 +9,13 @@
 
 namespace hub {
 
+
+///
+/// \brief
+/// Describes the N-dimensional lengths.
+///
+using Dims = std::vector<int>;
+
 ///
 /// \brief The Format enum
 /// describes the atomic unit measured by a sensor.
@@ -54,11 +61,6 @@ enum class Format {
 };
 // clang-format on
 
-///
-/// \brief
-/// Describes the N-dimensional lengths.
-///
-using Dims = std::vector<int>;
 
 ///
 /// \brief
@@ -75,6 +77,24 @@ using Resolution = std::pair<Dims, Format>;
 ///
 using Resolutions = std::vector<Resolution>;
 
+///
+/// \brief operator <<
+/// \param os
+/// \param format
+/// \return
+///
+SRC_API std::ostream& operator<<( std::ostream& os, const Format& format );
+SRC_API std::ostream& operator<<( std::ostream& os, const Dims& dims );
+
+SRC_API std::ostream& operator<<( std::ostream& os, const Resolution& resolution );
+SRC_API std::ostream& operator<<( std::ostream& os, const Resolutions& resolutions );
+
+
+namespace res {
+
+
+
+
 #define HUB_TO_STRING to_string
 
 static std::string HUB_TO_STRING( const Dims& dims );
@@ -89,18 +109,6 @@ static inline CONSTEXPR20 size_t computeAcquisitionSize( Format format, const Di
 static inline constexpr int format2nByte( const Format& format ) noexcept;
 static inline constexpr bool format2isInterpolable( const Format& format ) noexcept;
 static inline constexpr bool format2hasFixedSize( const Format& format ) noexcept;
-
-///
-/// \brief operator <<
-/// \param os
-/// \param format
-/// \return
-///
-SRC_API std::ostream& operator<<( std::ostream& os, const Format& format );
-SRC_API std::ostream& operator<<( std::ostream& os, const Dims& dims );
-
-SRC_API std::ostream& operator<<( std::ostream& os, const Resolution& resolution );
-SRC_API std::ostream& operator<<( std::ostream& os, const Resolutions& resolutions );
 
 // template <class T = Dims>
 // SRC_API std::ostream& operator<<( std::ostream& os, const T& t ) {
@@ -304,5 +312,8 @@ inline constexpr bool format2hasFixedSize( const Format& format ) noexcept {
 // template <class T>
 // std::ostream& operator<<( std::ostream& os, const T& t ) {
 //}
+
+} // namespace res
+
 
 } // namespace hub

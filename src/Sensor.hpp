@@ -13,7 +13,8 @@ namespace hub {
 ///
 class SRC_API Sensor
 {
-  public:
+//  public:
+  protected:
     ///
     /// \brief Sensor
     /// \param sensorSpec
