@@ -68,7 +68,7 @@ bool Acquisition::operator==( const Acquisition& acq ) const {
     if ( m_start == acq.m_start && m_end == acq.m_end && m_size == acq.m_size &&
          m_measures.size() == acq.m_measures.size() ) {
 
-        for ( int i = 0; i < m_measures.size(); ++i ) {
+        for ( size_t i = 0; i < m_measures.size(); ++i ) {
             if ( m_measures.at( i ) != acq.m_measures.at( i ) ) { return false; }
         }
 
@@ -132,7 +132,7 @@ Acquisition Acquisition::slerp( const Acquisition& left, const Acquisition& righ
     Acquisition ret           = Acquisition { start, end };
     const auto& leftMeasures  = left.getMeasures();
     const auto& rightMeasures = right.getMeasures();
-    for ( int iMeasure = 0; iMeasure < leftMeasures.size(); ++iMeasure ) {
+    for ( size_t iMeasure = 0; iMeasure < leftMeasures.size(); ++iMeasure ) {
         const auto& leftMeasure  = leftMeasures.at( iMeasure );
         const auto& rightMeasure = rightMeasures.at( iMeasure );
         assert( leftMeasure.getResolution() == rightMeasure.getResolution() );

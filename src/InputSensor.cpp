@@ -6,10 +6,14 @@ namespace hub {
 
 Acquisition InputSensor::getAcquisition() const {
 
+#ifdef DEBUG
     assert( m_input->isOpen() );
     assert( !m_input->isEnd() );
+#endif
+
     Acquisition acq = m_input->getAcquisition( m_spec );
 
+#ifdef DEBUG
     assert( !acq.hasFixedSize() || acq.getSize() == m_spec.getAcquisitionSize() );
     const auto& resolutions = m_spec.getResolutions();
     const auto& measures    = acq.m_measures;
@@ -26,6 +30,7 @@ Acquisition InputSensor::getAcquisition() const {
 #ifdef DEBUG_STREAM
     Acquisition acquisition( start, end, data, spec.m_acquisitonSize );
     std::cout << "[InputSensor] read acq :  " << acquisition << std::endl;
+#endif
 #endif
 
     return acq;

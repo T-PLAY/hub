@@ -27,16 +27,16 @@ void CyclicBuff::write( const unsigned char* data, size_t len ) {
         long spaceLeft = m_readHead - m_writeHead;
         if ( spaceLeft <= 0 ) spaceLeft += m_buffLen;
 
-        long byteWrote = spaceLeft;
+        size_t byteWrote = spaceLeft;
         assert( byteWrote >= 0 );
         if ( len > byteWrote ) {
             std::this_thread::sleep_for( std::chrono::milliseconds( 2 ) );
             continue;
         }
         byteWrote =
-            std::min( byteWrote, (long)len - (long)uploadSize ); // size of not copied user data
+            std::min( byteWrote, len - uploadSize ); // size of not copied user data
         byteWrote =
-            std::min( byteWrote, (long)m_buffLen - (long)m_writeHead ); // distance to buffer end
+            std::min( byteWrote, m_buffLen - m_writeHead ); // distance to buffer end
         assert( byteWrote > 0 );
 
         memcpy( &m_buff[m_writeHead], data + uploadSize, byteWrote );
