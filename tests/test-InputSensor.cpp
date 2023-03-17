@@ -16,10 +16,12 @@ TEST_CASE( "InputSensor test" ) {
     const int port         = getRandomPort();
 
     //    {
-    const int ref_offset    = 0;
+//    const int ref_offset    = 0;
+    const int ref_offset    = 5;
     constexpr int ref_nAcqs = 10;
 
-    const int ref2_offset    = 5;
+//    const int ref2_offset    = 5;
+    const int ref2_offset    = 0;
     constexpr int ref_nAcqs2 = 10;
 
     const int ref3_offset    = 0;
@@ -30,8 +32,9 @@ TEST_CASE( "InputSensor test" ) {
     const hub::SensorSpec ref_sensorSpec( "sensorName", { ref_resolution } );
     std::vector<hub::Acquisition> ref_acqs;
     const int ref_dataSize = hub::res::computeAcquisitionSize( ref_resolution );
+    unsigned char * data = new unsigned char[ref_dataSize];
     for ( int iAcq = 0; iAcq < ref_nAcqs; ++iAcq ) {
-        unsigned char data[ref_dataSize];
+//        unsigned char data[ref_dataSize];
         for ( int i = 0; i < ref_dataSize; ++i ) {
 //            data[i] = rand();
             data[i] = ref_offset + iAcq + 1;
@@ -41,6 +44,7 @@ TEST_CASE( "InputSensor test" ) {
             reinterpret_cast<const unsigned char*>( data ), ref_dataSize, ref_resolution );
         std::cout << ref_acqs.back() << std::endl;
     }
+    delete [] data;
     std::vector<char> buff;
     hub::io::Memory<decltype( buff )> memory( buff );
     hub::OutputSensor outputSensor( ref_sensorSpec, std::move( memory ) );
@@ -56,17 +60,19 @@ TEST_CASE( "InputSensor test" ) {
     const hub::SensorSpec ref_sensorSpec2( "sensorName2", { ref_resolution2 } );
     std::vector<hub::Acquisition> ref_acqs2;
     const int ref_dataSize2 = hub::res::computeAcquisitionSize( ref_resolution2 );
+    unsigned char * data2 = new unsigned char[ref_dataSize2];
     for ( int iAcq = 0; iAcq < ref_nAcqs2; ++iAcq ) {
-        unsigned char data[ref_dataSize2];
+//        unsigned char data[ref_dataSize2];
         for ( int i = 0; i < ref_dataSize2; ++i ) {
 //            data[i] = rand();
-            data[i] = ref2_offset + iAcq + 1;
+            data2[i] = ref2_offset + iAcq + 1;
         }
         ref_acqs2.emplace_back( ref2_offset + iAcq + 1, ref2_offset + iAcq + 2 );
         ref_acqs2.back() << hub::data::Measure(
-            reinterpret_cast<const unsigned char*>( data ), ref_dataSize2, ref_resolution2 );
+            reinterpret_cast<const unsigned char*>( data2 ), ref_dataSize2, ref_resolution2 );
         std::cout << ref_acqs2.back() << std::endl;
     }
+    delete [] data2;
     std::vector<char> buff2;
     hub::io::Memory<decltype( buff2 )> memory2( buff2 );
     hub::OutputSensor outputSensor2( ref_sensorSpec2, std::move( memory2 ) );
@@ -80,15 +86,17 @@ TEST_CASE( "InputSensor test" ) {
     const hub::SensorSpec ref_sensorSpec3( "sensorName2", { ref_resolution3 } );
     std::vector<hub::Acquisition> ref_acqs3;
     const int ref_dataSize3 = hub::res::computeAcquisitionSize( ref_resolution3 );
+    unsigned char * data3 = new unsigned char[ref_dataSize3];
     for ( int iAcq = 0; iAcq < ref_nAcqs3; ++iAcq ) {
-        unsigned char data[ref_dataSize3];
+//        unsigned char data[ref_dataSize3];
         for ( int i = 0; i < ref_dataSize3; ++i ) {
-            data[i] = rand();
+            data3[i] = rand();
         }
         ref_acqs3.emplace_back( ref3_offset + iAcq + 1, ref3_offset + iAcq + 2 );
         ref_acqs3.back() << hub::data::Measure(
-            reinterpret_cast<const unsigned char*>( data ), ref_dataSize3, ref_resolution3 );
+            reinterpret_cast<const unsigned char*>( data3 ), ref_dataSize3, ref_resolution3 );
     }
+    delete [] data3;
     std::vector<char> buff3;
     hub::io::Memory<decltype( buff3 )> memory3( buff3 );
     hub::OutputSensor outputSensor3( ref_sensorSpec3, std::move( memory3 ) );

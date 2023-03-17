@@ -55,7 +55,7 @@ hub::io::File inputFile( std::fstream( "file.txt", std::ios::binary | std::ios::
 
             std::fstream file( "file.txt", std::ios::in );
             hub::InputSensor inputSensor( hub::io::File( std::move( file ) ) );
-            const hub::Resolutions& resolutions = inputSensor.m_spec.getResolutions();
+            const hub::Resolutions& resolutions = inputSensor.getSpec().getResolutions();
 
             auto acq = inputSensor.getAcquisition();
 

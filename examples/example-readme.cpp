@@ -81,7 +81,7 @@ int main() {
         hub::InputSensor inputSensor { hub::io::InputStream {
             "streamName", "", hub::net::ClientSocket { "serverIp", serverPort } } };
 
-        const auto& resolutions = inputSensor.m_spec.getResolutions();
+        const auto& resolutions = inputSensor.getSpec().getResolutions();
         if ( resolutions.size() == 1 ) {
 #if ( __cplusplus >= 201703L )
             const auto& [dims, format] = resolutions.at( 0 );

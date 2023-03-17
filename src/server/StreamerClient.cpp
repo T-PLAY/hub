@@ -70,7 +70,7 @@ StreamerClient::StreamerClient( Server* server, int iClient, hub::net::ClientSoc
 
     std::cout << headerMsg() << "stream name = '" << m_streamName << "'" << std::endl;
 
-    const auto& sensorSpec = m_inputSensor->m_spec;
+    const auto& sensorSpec = m_inputSensor->getSpec();
 
     const size_t acquisitionSize = sensorSpec.getAcquisitionSize();
     std::cout << headerMsg() << "sensor name:'" << sensorSpec.getSensorName() << "'" << std::endl;

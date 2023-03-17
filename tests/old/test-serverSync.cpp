@@ -51,7 +51,7 @@ TEST_CASE( "Server test : sync" ) {
             hub::SensorSpec { "sensorName", { { { 3 }, hub::Format::BGR8 } } },
             hub::io::OutputStream( "stream", hub::net::ClientSocket( ipv4, port ) ) );
 
-        const auto& outputSensorSpec = outputSensor.m_spec;
+        const auto& outputSensorSpec = outputSensor.getSpec();
         CHECK( outputSensorSpec.getAcquisitionSize() == dataSize );
         CHECK( outputSensorSpec.getSensorName() == "sensorName" );
         CHECK( outputSensorSpec.getResolutions().size() == 1 );
@@ -65,7 +65,7 @@ TEST_CASE( "Server test : sync" ) {
             hub::SensorSpec { "sensorName2", { { { 3 }, hub::Format::BGR8 } } },
             hub::io::OutputStream( "master", hub::net::ClientSocket( ipv4, port ) ) );
 
-        const auto& outputSensorSpec2 = outputSensor2.m_spec;
+        const auto& outputSensorSpec2 = outputSensor2.getSpec();
         CHECK( outputSensorSpec2.getAcquisitionSize() == dataSize );
         CHECK( outputSensorSpec2.getSensorName() == "sensorName2" );
         CHECK( outputSensorSpec2.getResolutions().size() == 1 );
@@ -78,7 +78,7 @@ TEST_CASE( "Server test : sync" ) {
         hub::InputSensor inputSensor(
             hub::io::InputStream( "stream", "master", hub::net::ClientSocket( ipv4, port ) ) );
 
-        const auto& inputSensorSpec = inputSensor.m_spec;
+        const auto& inputSensorSpec = inputSensor.getSpec();
         CHECK( inputSensorSpec.getAcquisitionSize() == dataSize );
         CHECK( inputSensorSpec.getSensorName() == "sensorName" );
         CHECK( inputSensorSpec.getResolutions().size() == 1 );
@@ -91,7 +91,7 @@ TEST_CASE( "Server test : sync" ) {
         hub::InputSensor inputSensor2(
             hub::io::InputStream( "stream", "", hub::net::ClientSocket( ipv4, port ) ) );
 
-        const auto& inputSensorSpec2 = inputSensor2.m_spec;
+        const auto& inputSensorSpec2 = inputSensor2.getSpec();
         CHECK( inputSensorSpec2.getAcquisitionSize() == dataSize );
         CHECK( inputSensorSpec2.getSensorName() == "sensorName" );
         CHECK( inputSensorSpec2.getResolutions().size() == 1 );
@@ -104,7 +104,7 @@ TEST_CASE( "Server test : sync" ) {
         hub::InputSensor inputSensor3(
             hub::io::InputStream( "master", "", hub::net::ClientSocket( ipv4, port ) ) );
 
-        const auto& inputSensorSpec3 = inputSensor3.m_spec;
+        const auto& inputSensorSpec3 = inputSensor3.getSpec();
         CHECK( inputSensorSpec3.getAcquisitionSize() == dataSize );
         CHECK( inputSensorSpec3.getSensorName() == "sensorName2" );
         CHECK( inputSensorSpec3.getResolutions().size() == 1 );

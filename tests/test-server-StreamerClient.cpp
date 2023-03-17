@@ -22,8 +22,10 @@ TEST_CASE( "StreamerClient test" ) {
     std::vector<hub::Acquisition> ref_acqs;
     constexpr int ref_nAcqs = 10;
     const int ref_dataSize  = hub::res::computeAcquisitionSize( ref_resolution );
+
+    unsigned char * data = new unsigned char[ref_dataSize];
     for ( int iAcq = 0; iAcq < ref_nAcqs; ++iAcq ) {
-        unsigned char data[ref_dataSize];
+//        unsigned char data[ref_dataSize];
         for ( int i = 0; i < ref_dataSize; ++i ) {
             data[i] = rand();
         }
@@ -31,6 +33,7 @@ TEST_CASE( "StreamerClient test" ) {
         ref_acqs.back() << hub::data::Measure(
             reinterpret_cast<const unsigned char*>( data ), ref_dataSize, ref_resolution );
     }
+    delete [] data;
     hub::OutputSensor outputSensor(
         ref_sensorSpec, hub::io::OutputStream( "streamName", hub::net::ClientSocket( ipv4, port ) ) );
 
@@ -41,15 +44,17 @@ TEST_CASE( "StreamerClient test" ) {
     std::vector<hub::Acquisition> ref_acqs2;
     constexpr int ref_nAcqs2 = 20;
     const int ref_dataSize2  = hub::res::computeAcquisitionSize( ref_resolution );
+    unsigned char * data2 = new unsigned char[ref_dataSize2];
     for ( int iAcq = 0; iAcq < ref_nAcqs2; ++iAcq ) {
-        unsigned char data[ref_dataSize2];
+//        unsigned char data[ref_dataSize2];
         for ( int i = 0; i < ref_dataSize2; ++i ) {
-            data[i] = rand();
+            data2[i] = rand();
         }
         ref_acqs2.emplace_back( iAcq + 1, iAcq + 2 );
         ref_acqs2.back() << hub::data::Measure(
-            reinterpret_cast<const unsigned char*>( data ), ref_dataSize2, ref_resolution );
+            reinterpret_cast<const unsigned char*>( data2 ), ref_dataSize2, ref_resolution );
     }
+    delete [] data2;
     hub::OutputSensor outputSensor2(
         ref_sensorSpec2, hub::io::OutputStream( "streamName2", hub::net::ClientSocket( ipv4, port ) ) );
 
