@@ -220,7 +220,7 @@ std::list<std::pair<std::string, hub::SensorSpec>> Server::listStreams() const {
         const auto & streamer = pair.second;
 #endif
 
-        const auto& sensorSpec = streamer->getInputSensor().m_spec;
+        const auto& sensorSpec = streamer->getInputSensor().getSpec();
         ret.push_back( std::make_pair( streamerName, sensorSpec ) );
     }
     return ret;

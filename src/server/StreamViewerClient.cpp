@@ -78,9 +78,9 @@ StreamViewerClient::StreamViewerClient( Server* server,
 
     m_streamer = streamers.at( m_streamName );
 
-    hub::SensorSpec sensorSpec = m_streamer->getInputSensor().m_spec;
+    hub::SensorSpec sensorSpec = m_streamer->getInputSensor().getSpec();
     if ( m_syncStreamName != "" && m_mergeSyncAcqs ) {
-        sensorSpec += streamers.at( m_syncStreamName )->getInputSensor().m_spec;
+        sensorSpec += streamers.at( m_syncStreamName )->getInputSensor().getSpec();
     }
     m_outputSensor = std::make_unique<hub::OutputSensor>( std::move( sensorSpec ),
                                                           OutputStream( std::move( sock ) ) );
@@ -103,7 +103,7 @@ StreamViewerClient::StreamViewerClient( Server* server,
         else {
             const auto& lastAcq = m_streamer->getLastAcq( m_syncStreamName );
             if ( lastAcq != nullptr ) {
-                assert( lastAcq->getSize() == m_outputSensor->m_spec.getAcquisitionSize() );
+                assert( lastAcq->getSize() == m_outputSensor->getSpec().getAcquisitionSize() );
                 *m_outputSensor << *lastAcq;
             }
         }

@@ -21,7 +21,7 @@ namespace server {
 ///
 /// \brief The Server class
 ///
-class Server
+class SRC_API Server
 {
   public:
     Server();

@@ -51,7 +51,7 @@ TEST_CASE( "Server test : close clients" ) {
             hub::SensorSpec { "sensorName", { { { 3 }, hub::Format::BGR8 } } },
             hub::io::OutputStream( "stream", hub::net::ClientSocket( ipv4, port ) ) );
 
-        const auto& outputSensorSpec = outputSensor.m_spec;
+        const auto& outputSensorSpec = outputSensor.getSpec();
         CHECK( outputSensorSpec.getAcquisitionSize() == dataSize );
         CHECK( outputSensorSpec.getSensorName() == "sensorName" );
         CHECK( outputSensorSpec.getResolutions().size() == 1 );
@@ -65,7 +65,7 @@ TEST_CASE( "Server test : close clients" ) {
             hub::SensorSpec { "sensorName2", { { { 3 }, hub::Format::BGR8 } } },
             hub::io::OutputStream( "master", hub::net::ClientSocket( ipv4, port ) ) );
 
-        const auto& outputSensorSpec2 = outputSensor2.m_spec;
+        const auto& outputSensorSpec2 = outputSensor2.getSpec();
         CHECK( outputSensorSpec2.getAcquisitionSize() == dataSize );
         CHECK( outputSensorSpec2.getSensorName() == "sensorName2" );
         CHECK( outputSensorSpec2.getResolutions().size() == 1 );
@@ -81,7 +81,7 @@ TEST_CASE( "Server test : close clients" ) {
                 hub::InputSensor inputSensor( hub::io::InputStream(
                     "stream", "master", hub::net::ClientSocket( ipv4, port ) ) );
 
-                const auto& inputSensorSpec = inputSensor.m_spec;
+                const auto& inputSensorSpec = inputSensor.getSpec();
                 CHECK( inputSensorSpec.getAcquisitionSize() == dataSize * 2 );
                 CHECK( inputSensorSpec.getSensorName() == "sensorName + sensorName2" );
                 CHECK( inputSensorSpec.getResolutions().size() == 2 );

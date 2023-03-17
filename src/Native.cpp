@@ -33,7 +33,7 @@ void freeInputSensor( InputSensor* inputSensor ) {
 
 int getAcquisitionSize( const InputSensor* inputSensor ) {
     assert( inputSensor != nullptr );
-    return static_cast<int>( inputSensor->m_spec.getAcquisitionSize() );
+    return static_cast<int>( inputSensor->getSpec().getAcquisitionSize() );
 }
 
 Acquisition* getAcquisition( const InputSensor* inputSensor ) {

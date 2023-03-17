@@ -46,7 +46,7 @@ TEST_CASE( "Server test : speed test" ) {
         hub::InputSensor inputSensor(
             hub::io::InputStream( "stream", "", hub::net::ClientSocket( ipv4, port ) ) );
 
-        const auto& inputSensorSpec = inputSensor.m_spec;
+        const auto& inputSensorSpec = inputSensor.getSpec();
         CHECK( inputSensorSpec.getAcquisitionSize() == dataSize );
         CHECK( inputSensorSpec.getSensorName() == "sensorName" );
         CHECK( inputSensorSpec.getResolutions().size() == 1 );

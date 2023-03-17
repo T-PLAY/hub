@@ -44,7 +44,7 @@ AskerClient::AskerClient( Server* server, int iClient, hub::net::ClientSocket&& 
 
                         const auto& streamer = streamers.at( streamName );
 
-                        const auto& sensorSpec = streamer->getInputSensor().m_spec;
+                        const auto& sensorSpec = streamer->getInputSensor().getSpec();
                         m_socket.write( sensorSpec );
                     }
                     else {
@@ -65,7 +65,7 @@ AskerClient::AskerClient( Server* server, int iClient, hub::net::ClientSocket&& 
 
                         const auto& streamer = streamers.at( streamName );
 
-                        const auto& sensorSpec = streamer->getInputSensor().m_spec;
+                        const auto& sensorSpec = streamer->getInputSensor().getSpec();
                         m_socket.write( sensorSpec );
 
                         assert( m_server != nullptr );

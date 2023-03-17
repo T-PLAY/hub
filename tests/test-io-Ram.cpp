@@ -28,7 +28,7 @@ TEST_CASE( "Ram test" ) {
         hub::SensorSpec { "sensorName", { { { 1 }, hub::Format::BGR8 } } },
         hub::io::Ram( cyclicBuff ) );
 
-    const auto& sensorSpec = outputSensor.m_spec;
+    const auto& sensorSpec = outputSensor.getSpec();
     CHECK( sensorSpec.getAcquisitionSize() == 3 );
     CHECK( sensorSpec.getSensorName() == "sensorName" );
     CHECK( sensorSpec.getResolutions().size() == 1 );
@@ -46,7 +46,7 @@ TEST_CASE( "Ram test" ) {
     {
         hub::InputSensor inputSensor { hub::io::Ram( cyclicBuff ) };
 
-        const auto& sensorSpec2 = inputSensor.m_spec;
+        const auto& sensorSpec2 = inputSensor.getSpec();
         CHECK( sensorSpec2.getAcquisitionSize() == 3 );
         CHECK( sensorSpec2.getSensorName() == "sensorName" );
         CHECK( sensorSpec2.getResolutions().size() == 1 );

@@ -23,27 +23,11 @@ class SRC_API Sensor
     explicit Sensor( const SensorSpec& sensorSpec );
     Sensor( const Sensor& sensor ) = delete;
 
-  protected:
-    ~Sensor();
-
     Sensor& operator=( const Sensor& sensor ) = delete;
 
-  public:
-    ///
-    /// \brief m_spec
-    ///
-    SensorSpec m_spec;
-
-  protected:
-    ///
-    /// \brief m_io
-    ///
+    ~Sensor();
 
   public:
-    ///
-    /// \brief getInterface
-    /// \return
-    ///
 
     ///
     /// \brief operator <<
@@ -52,6 +36,23 @@ class SRC_API Sensor
     /// \return
     ///
     SRC_API friend std::ostream& operator<<( std::ostream& os, const Sensor& sensor );
+
+    const SensorSpec &getSpec() const;
+
+  protected:
+
+    ///
+    /// \brief m_spec
+    ///
+    SensorSpec m_spec;
+
 };
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+inline const SensorSpec &Sensor::getSpec() const
+{
+    return m_spec;
+}
 
 } // namespace hub

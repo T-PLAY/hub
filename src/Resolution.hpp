@@ -9,13 +9,6 @@
 
 namespace hub {
 
-
-///
-/// \brief
-/// Describes the N-dimensional lengths.
-///
-using Dims = std::vector<int>;
-
 ///
 /// \brief The Format enum
 /// describes the atomic unit measured by a sensor.
@@ -61,6 +54,11 @@ enum class Format {
 };
 // clang-format on
 
+///
+/// \brief
+/// Describes the N-dimensional lengths.
+///
+using Dims = std::vector<int>;
 
 ///
 /// \brief
@@ -91,8 +89,6 @@ SRC_API std::ostream& operator<<( std::ostream& os, const Resolutions& resolutio
 
 
 namespace res {
-
-
 
 
 #define HUB_TO_STRING to_string
