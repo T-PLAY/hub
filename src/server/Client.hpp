@@ -30,7 +30,7 @@ private:
     Server* m_server = nullptr;
     int m_iClient;
 
-    static std::mutex s_mtxCout;
+//    static std::mutex s_mtxCout;
 
     friend class Server;
     friend class StreamerClient;

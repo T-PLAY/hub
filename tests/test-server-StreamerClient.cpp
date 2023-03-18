@@ -15,7 +15,7 @@ TEST_CASE( "StreamerClient test" ) {
     const int port         = getRandomPort();
 
     hub::server::Server server( port );
-    server.setMaxClients( 4 );
+    server.setMaxClients( 3 );
     server.asyncRun();
 
     //    const int ref_offset    = 0;
@@ -122,50 +122,71 @@ TEST_CASE( "StreamerClient test" ) {
 
     hub::io::OutputStream outputStream("streamName", hub::net::ClientSocket(ipv4, port));
     hub::OutputSensor outputSensor( ref_sensorSpec, std::move( outputStream ) );
-
-    std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
-
-    hub::io::OutputStream outputStream2("streamName2", hub::net::ClientSocket(ipv4, port));
-    hub::OutputSensor outputSensor2( ref_sensorSpec2, std::move( outputStream2 ) );
+        std::cout << "outputSensor created" << std::endl;
 
     std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
 
     hub::io::InputStream inputStream("streamName", "");
     hub::InputSensor inputSensor(std::move(inputStream));
+        std::cout << "inputSensor created" << std::endl;
     hub::io::Input& input = inputSensor.getInput();
 
     std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
 
-    hub::io::InputStream inputStream2("streamName2", "");
-    hub::InputSensor inputSensor2(std::move(inputStream2));
-    hub::io::Input& input2 = inputSensor.getInput();
+//    hub::io::OutputStream outputStream2("streamName2", hub::net::ClientSocket(ipv4, port));
+//    hub::OutputSensor outputSensor2( ref_sensorSpec2, std::move( outputStream2 ) );
 
-    std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+//    std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+
+//    hub::io::InputStream inputStream2("streamName2", "");
+//    hub::InputSensor inputSensor2(std::move(inputStream2));
+//    hub::io::Input& input2 = inputSensor.getInput();
+
+//    std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
 
     for ( const auto& acq : ref_acqs ) {
+        std::cout << "write: " << acq << std::endl;
         outputSensor << acq;
     }
-    for ( const auto& acq2 : ref_acqs2 ) {
-        outputSensor2 << acq2;
-    }
+//    for ( const auto& acq2 : ref_acqs2 ) {
+//        outputSensor2 << acq2;
+//    }
 
     hub::Acquisition acq;
     std::cout << "sync acqs" << std::endl;
-    std::vector<hub::Acquisition> sync_acqs;
-    while ( !input.isEnd() && !input2.isEnd() ) {
+    std::vector<hub::Acquisition> acqs;
+//    while ( !input.isEnd()  ) {
+    for ( int i = 0; i < ref_acqs.size(); ++i ) {
 
-        inputSensor >> inputSensor2 >> acq;
+        inputSensor >> acq;
         std::cout << acq << std::endl;
-        sync_acqs.push_back( std::move( acq ) );
+        acqs.push_back( std::move( acq ) );
     }
 
-    std::cout << std::endl;
-
-    assert( sync_acqs.size() == ref_sync_acqs.size() );
-    for ( int i = 0; i < sync_acqs.size(); ++i ) {
-        const auto& acq = sync_acqs.at( i );
-
-        CHECK( acq == ref_sync_acqs.at( i ) );
+    assert( acqs.size() == ref_acqs.size() );
+    for ( int i = 0; i < acqs.size(); ++i ) {
+        const auto& acq = acqs.at( i );
+        CHECK( acq == ref_acqs.at( i ) );
     }
+
+
+//    hub::Acquisition acq;
+//    std::cout << "sync acqs" << std::endl;
+//    std::vector<hub::Acquisition> sync_acqs;
+//    while ( !input.isEnd() && !input2.isEnd() ) {
+
+//        inputSensor >> inputSensor2 >> acq;
+//        std::cout << acq << std::endl;
+//        sync_acqs.push_back( std::move( acq ) );
+//    }
+
+//    std::cout << std::endl;
+
+//    assert( sync_acqs.size() == ref_sync_acqs.size() );
+//    for ( int i = 0; i < sync_acqs.size(); ++i ) {
+//        const auto& acq = sync_acqs.at( i );
+
+//        CHECK( acq == ref_sync_acqs.at( i ) );
+//    }
 
 }

@@ -8,7 +8,7 @@
 namespace hub {
 namespace server {
 
-std::mutex Client::s_mtxCout;
+//std::mutex Client::s_mtxCout;
 
 Client::Client( Server* server, int iClient ) : m_server( server ), m_iClient( iClient ) {
     assert( m_server != nullptr );

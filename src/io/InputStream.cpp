@@ -6,8 +6,8 @@ namespace io {
 
 InputStream::InputStream( const std::string& streamName,
                           const std::string& syncStreamName,
-                          net::ClientSocket&& clientSocket,
-                          bool mergeSyncAcqs ) :
+                          net::ClientSocket&& clientSocket) :
+//                          bool mergeSyncAcqs ) :
 
     m_clientSocket( std::move( clientSocket ) ) {
 
@@ -27,16 +27,16 @@ InputStream::InputStream( const std::string& streamName,
     }
     assert( mess == net::ClientSocket::Message::OK );
 
-    m_clientSocket.write( syncStreamName );
-    Input::read( mess );
-    if ( mess == net::ClientSocket::Message::NOT_FOUND ) {
-        throw net::ClientSocket::exception(
-            ( std::string( "sync stream '" ) + syncStreamName + "' is not attached to server" )
-                .c_str() );
-    }
-    assert( mess == net::ClientSocket::Message::OK );
+//    m_clientSocket.write( syncStreamName );
+//    Input::read( mess );
+//    if ( mess == net::ClientSocket::Message::NOT_FOUND ) {
+//        throw net::ClientSocket::exception(
+//            ( std::string( "sync stream '" ) + syncStreamName + "' is not attached to server" )
+//                .c_str() );
+//    }
+//    assert( mess == net::ClientSocket::Message::OK );
 
-    m_clientSocket.write( mergeSyncAcqs );
+//    m_clientSocket.write( mergeSyncAcqs );
 }
 
 //#ifdef WIN32

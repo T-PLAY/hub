@@ -25,30 +25,32 @@ private:
 
     std::string headerMsg() const override;
 
-    bool update( const hub::Acquisition& acq );
+//    bool update( const hub::Acquisition& acq );
 
-    const std::string& getSyncStreamName() const;
-    const std::string& getStreamName() const;
+//    const std::string& getSyncStreamName() const;
+//    const std::string& getStreamName() const;
 
-    bool shoudMergeSyncAcqs() const;
+//    bool shoudMergeSyncAcqs() const;
 
   private:
-    StreamerClient* m_streamer = nullptr;
+//    StreamerClient* m_streamer = nullptr;
     std::unique_ptr<hub::OutputSensor> m_outputSensor;
-    std::mutex m_mtxOutputSensor;
+//    std::mutex m_mtxOutputSensor;
 
     std::string m_streamName;
-    std::string m_syncStreamName;
-    bool m_mergeSyncAcqs;
+//    std::string m_syncStreamName;
+//    bool m_mergeSyncAcqs;
 
     std::thread m_thread;
-    std::chrono::time_point<std::chrono::high_resolution_clock> m_lastUpdateAcq;
+//    std::chrono::time_point<std::chrono::high_resolution_clock> m_lastUpdateAcq;
 
-    bool m_isKilled = false;
-    bool m_suicide  = false;
+//    bool m_pingFailed = false;
+//    bool m_updateFailed  = false;
+
+//    hub::Acquisition m_lastAcq;
 
     friend class Server;
-    friend class StreamerClient;
+//    friend class StreamerClient;
 };
 
 

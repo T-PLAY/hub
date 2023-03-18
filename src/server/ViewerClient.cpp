@@ -52,18 +52,18 @@ void ViewerClient::notifyNewStreamer( const StreamerClient& streamer ) {
 
     m_mtxSocket.lock();
     m_socket.write( hub::net::ClientSocket::Message::NEW_STREAMER );
-    m_socket.write( streamer.getStreamName() );
-    m_socket.write( streamer.getInputSensor().getSpec() );
+//    m_socket.write( streamer.getStreamName() );
+//    m_socket.write( streamer.getInputSensor().getSpec() );
     m_mtxSocket.unlock();
 }
 
 void ViewerClient::notifyDelStreamer( const StreamerClient& streamer ) {
-    std::cout << headerMsg() << "notifyDelStreamer " << streamer.getStreamName() << std::endl;
+//    std::cout << headerMsg() << "notifyDelStreamer " << streamer.getStreamName() << std::endl;
     try {
         m_mtxSocket.lock();
         m_socket.write( hub::net::ClientSocket::Message::DEL_STREAMER );
-        m_socket.write( streamer.getStreamName() );
-        m_socket.write( streamer.getInputSensor().getSpec() );
+//        m_socket.write( streamer.getStreamName() );
+//        m_socket.write( streamer.getInputSensor().getSpec() );
         m_mtxSocket.unlock();
     }
     catch ( std::exception& e ) {
