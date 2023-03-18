@@ -21,12 +21,20 @@ Server::Server( int port ) : m_serverSock( port ) {}
 
 Server::~Server() {
     std::cout << headerMsg() << "~Server()" << std::endl;
+    assert(m_nClient == m_maxClients);
     assert( m_thread.joinable() );
     m_thread.join();
 
-    for ( auto& client : m_clients ) {
-        client->setServer( nullptr );
+    while ( !m_clients.empty() ) {
+        std::cout << headerMsg() << "waiting for clients ended (" << m_clients.size() << ")"
+                  << std::endl;
+        std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
     }
+
+    //    for ( auto& client : m_clients ) {
+    //        client->setServer( nullptr );
+    //    }
+    std::cout << headerMsg() << "server ended" << std::endl;
 }
 
 std::string Server::headerMsg() const {
@@ -37,14 +45,14 @@ std::string Server::headerMsg() const {
 void Server::run() {
     std::cout << headerMsg() << "listening port " << m_serverSock.getPort() << std::endl;
 
-    int iClient = 0;
-    while ( iClient < m_maxClients ) {
+//    int iClient = 0;
+    while ( m_nClient < m_maxClients ) {
 
         hub::net::ClientSocket sock = m_serverSock.waitNewClient();
 
         std::cout << headerMsg() << "new client" << std::endl;
 
-        Client* newClient = initClient( std::move( sock ), ++iClient );
+        Client* newClient = initClient( std::move( sock ), ++m_nClient );
         m_clients.push_back( newClient );
     }
     std::cout << headerMsg() << "run() max clients attempt" << std::endl;
@@ -90,98 +98,96 @@ std::string Server::getStatus() {
     std::string streamViewersStr = "[";
 
 #if ( __cplusplus >= 201703L )
-    for ( const auto& [streamerName, streamer] : m_streamers ) {
+    for ( const auto& [streamerName, streamer] : m_streamName2streamer ) {
 #else
-    for ( const auto& pair : m_streamers ) {
-        const auto & streamerName = pair.first;
-        const auto & streamer = pair.second;
+    //    for ( const auto& pair : m_streamName2streamer ) {
+
+    for ( const auto& pair : m_streamName2streamViewers ) {
+        const auto& streamerName  = pair.first;
+        const auto& streamViewers = pair.second;
 #endif
 
-        const auto& streamViewers = streamer->getStreamViewers();
-        const auto& syncViewers   = streamer->getSyncViewers();
+        //        const auto& streamViewers = streamer->getStreamViewers();
+        //        const auto& streamViewers = m_streamName2streamViewers;
+        //        const auto& syncViewers   = streamer->getSyncViewers();
 
         std::string str = streamerName.substr( 0, 3 );
-        if ( !streamViewers.empty() || !syncViewers.empty() ) {
-            size_t nbViewers = 0;
-            for ( const auto& pair : syncViewers ) {
-                const auto& viewers = pair.second;
-                nbViewers += viewers.size();
-            }
-            streamViewersStr += "(" + str + "," + std::to_string( streamViewers.size() ) + "," +
-                                std::to_string( syncViewers.size() ) + "," +
-                                std::to_string( nbViewers ) + ")";
+        //        if ( !streamViewers.empty() || !syncViewers.empty() ) {
+        if ( !streamViewers.empty() ) {
+            //            size_t nbViewers = 0;
+            //            for ( const auto& pair : syncViewers ) {
+            //                const auto& viewers = pair.second;
+            //                nbViewers += viewers.size();
+            //            }
+            streamViewersStr += "(" + str + "," + std::to_string( streamViewers.size() ) + ")";
+            //+ "," +
+            //                                std::to_string( syncViewers.size() ) + "," +
+            //                                std::to_string( nbViewers ) + ")";
 
-            streamViewersStr += ",";
+            //            streamViewersStr += ",";
         }
     }
     streamViewersStr += "]";
 
-    std::string str = std::string( "status : nbStreamer:" ) + std::to_string( m_streamers.size() ) +
+    std::string str = std::string( "status : nbStreamer:" ) +
+                      std::to_string( m_streamName2streamer.size() ) +
                       ", nbViewer:" + std::to_string( m_viewers.size() ) + " " + streamViewersStr;
     return str;
 }
 
 void Server::addStreamer( StreamerClient* streamer ) {
 
-//    std::cout << "[Server] addStreamer(" << streamer << ")" << std::endl;
+    //    std::cout << "[Server] addStreamer(" << streamer << ")" << std::endl;
 
     const auto& streamerName = streamer->getStreamName();
 
-    m_mtxStreamers.lock();
-    assert( m_streamers.find( streamerName ) == m_streamers.end() );
-    m_streamers[streamerName] = streamer;
-    m_mtxStreamers.unlock();
+    //    m_mtxStreamers.lock();
+    assert( m_streamName2streamer.find( streamerName ) == m_streamName2streamer.end() );
+    m_streamName2streamer[streamerName] = streamer;
+    //    m_mtxStreamers.unlock();
 
     std::cout << headerMsg() << "prevent viewers there is a new streamer : '" << streamerName << "'"
               << std::endl;
     for ( const auto& viewer : m_viewers ) {
         viewer->notifyNewStreamer( *streamer );
     }
+
+    streamer->printStatusMessage("new streamer");
 }
 
-void Server::delStreamer( StreamerClient* streamer ) {
+void Server::addStreamViewer( StreamViewerClient* streamViewer ) {
+    const auto& streamName = streamViewer->m_streamName;
+    m_streamName2streamViewers[streamName].push_back( streamViewer );
 
-//    std::cout << "[Server] delStreamer(" << streamer << ")" << std::endl;
-
-    m_mtxStreamers.lock();
-    int startSize = m_streamers.size();
-    const std::string streamerName = streamer->getStreamName();
-//    assert(m_streamers.at(streamerName) == streamer);
-    assert(! m_streamers.empty());
-    assert( m_streamers.find( streamerName ) != m_streamers.end() );
-    m_streamers.erase( streamerName );
-    int endSize = m_streamers.size();
-    assert(startSize - endSize == 1);
-    m_mtxStreamers.unlock();
-
-    for ( auto* viewer : m_viewers ) {
-        viewer->notifyDelStreamer( *streamer );
-    }
+    m_mtxPrint.lock();
+    std::cout << streamViewer->headerMsg() << "new stream viewer watching '" << streamName << "'" << std::endl;
+    streamViewer->printStatusMessage( "new streamViewer" );
+    m_mtxPrint.unlock();
 }
 
 void Server::addViewer( ViewerClient* viewer ) {
 
     // each already connected streamers prevent existence for this new viewer
-//    for ( const auto& [streamerName, streamer] : m_streamers ) {
+//    for ( const auto& [streamerName, streamer] : m_streamName2streamer ) {
 #if ( __cplusplus >= 201703L )
-    for ( const auto& [streamerName, streamer] : m_streamers ) {
+    for ( const auto& [streamerName, streamer] : m_streamName2streamer ) {
 #else
-    for ( const auto& pair : m_streamers ) {
-        const auto & streamerName = pair.first;
-        const auto & streamer = pair.second;
+    for ( const auto& pair : m_streamName2streamer ) {
+        const auto& streamerName = pair.first;
+        const auto& streamer     = pair.second;
 #endif
 
         // notify orphans first
         if ( streamer->getParent() == "" ) { viewer->notifyNewStreamer( *streamer ); }
     }
 
-//    for ( const auto& [streamerName, streamer] : m_streamers ) {
+//    for ( const auto& [streamerName, streamer] : m_streamName2streamer ) {
 #if ( __cplusplus >= 201703L )
-    for ( const auto& [streamerName, streamer] : m_streamers ) {
+    for ( const auto& [streamerName, streamer] : m_streamName2streamer ) {
 #else
-    for ( const auto& pair : m_streamers ) {
-        const auto & streamerName = pair.first;
-        const auto & streamer = pair.second;
+    for ( const auto& pair : m_streamName2streamer ) {
+        const auto& streamerName = pair.first;
+        const auto& streamer     = pair.second;
 #endif
 
         // notify children to auto synchronize with already oppened parent
@@ -191,33 +197,90 @@ void Server::addViewer( ViewerClient* viewer ) {
     m_viewers.push_back( viewer );
 }
 
+void Server::delStreamer( StreamerClient* streamer ) {
+
+    //    std::cout << "[Server] delStreamer(" << streamer << ")" << std::endl;
+
+    //    m_mtxStreamers.lock();
+    int startSize                  = m_streamName2streamer.size();
+    const std::string streamName = streamer->getStreamName();
+    //    assert(m_streamName2streamer.at(streamName) == streamer);
+    assert( !m_streamName2streamer.empty() );
+    assert( m_streamName2streamer.find( streamName ) != m_streamName2streamer.end() );
+    m_streamName2streamer.erase( streamName );
+    int endSize = m_streamName2streamer.size();
+    assert( startSize - endSize == 1 );
+    //    m_mtxStreamers.unlock();
+
+    for ( auto* viewer : m_viewers ) {
+        viewer->notifyDelStreamer( *streamer );
+    }
+
+    m_mtxPrint.lock();
+    std::cout << streamer->headerMsg() << "end streamer : '" << streamName << "'" << std::endl;
+    streamer->printStatusMessage("del streamer");
+    m_mtxPrint.unlock();
+}
+
+void Server::delStreamViewer( StreamViewerClient* streamViewer ) {
+    const auto& streamName = streamViewer->m_streamName;
+    auto& streamViewers    = m_streamName2streamViewers.at( streamName );
+    assert( std::find( streamViewers.begin(), streamViewers.end(), streamViewer ) !=
+            streamViewers.end() );
+    streamViewers.remove( streamViewer );
+
+    m_mtxPrint.lock();
+    std::cout << streamViewer->headerMsg() << "end streamViewer watched : '" << streamName << "'" << std::endl;
+    streamViewer->printStatusMessage("del streamViewer");
+    m_mtxPrint.unlock();
+}
+
 void Server::delViewer( ViewerClient* viewer ) {
 
     assert( std::find( m_viewers.begin(), m_viewers.end(), viewer ) != m_viewers.end() );
     m_viewers.remove( viewer );
 }
 
-void Server::newAcquisition( StreamerClient* streamer, const hub::Acquisition& acq ) {
+void Server::newAcquisition( StreamerClient* streamer, Acquisition&& acq ) {
 
-    const auto& streamerName = streamer->getStreamName();
+    const auto& streamName = streamer->getStreamName();
 
     // broadcast acquisition for all streamer
-    for ( const auto& pair : m_streamers ) {
-        const auto& streamer2 = pair.second;
+    //    for ( auto& streamViewer : m_streamName2streamViewers[streamName] ) {
+    ////        const auto& streamer2 = pair.second;
+    //        streamViewer->update(acq);
+    ////        streamer2->newAcquisition( streamName, acq );
+    //    }
 
-        streamer2->newAcquisition( streamerName, acq );
+    auto& streamViewers = m_streamName2streamViewers[streamName];
+    auto it             = streamViewers.begin();
+    while ( it != streamViewers.end() ) {
+        auto& streamViewer = *it;
+        try {
+            *( streamViewer->m_outputSensor ) << acq;
+            ++it;
+        }
+        catch ( std::exception& ex ) {
+            std::cout << streamViewer->headerMsg()
+                      << "update(Acquisition) : catch outputSensor exception : " << ex.what()
+                      << std::endl;
+            std::cout << streamViewer->headerMsg() << "update(Acquisition) failed with stream '" << streamName
+                      << "'" << std::endl;
+
+            it = streamViewers.erase( it );
+        }
     }
 }
 
 std::list<std::pair<std::string, hub::SensorSpec>> Server::listStreams() const {
     std::list<std::pair<std::string, hub::SensorSpec>> ret;
-//    for ( const auto& [streamName, streamer] : m_streamers ) {
+//    for ( const auto& [streamName, streamer] : m_streamName2streamer ) {
 #if ( __cplusplus >= 201703L )
-    for ( const auto& [streamerName, streamer] : m_streamers ) {
+    for ( const auto& [streamerName, streamer] : m_streamName2streamer ) {
 #else
-    for ( const auto& pair : m_streamers ) {
-        const auto & streamerName = pair.first;
-        const auto & streamer = pair.second;
+    for ( const auto& pair : m_streamName2streamer ) {
+        const auto& streamerName = pair.first;
+        const auto& streamer     = pair.second;
 #endif
 
         const auto& sensorSpec = streamer->getInputSensor().getSpec();
@@ -230,19 +293,27 @@ std::list<std::pair<std::string, hub::SensorSpec>> Server::listStreams() const {
 //}
 
 const std::shared_ptr<hub::Acquisition> Server::getAcquisition( const std::string& streamName ) {
-    assert( m_streamers.find( streamName ) != m_streamers.end() );
-    const auto& streamer = m_streamers.at( streamName );
-    return streamer->getLastAcq( "" );
+    assert( m_streamName2streamer.find( streamName ) != m_streamName2streamer.end() );
+    const auto& streamer = m_streamName2streamer.at( streamName );
+    //    return hub::Acquisition();
+    //    return streamer->getLastAcq( "" );
 }
 
 void Server::removeClient( Client* client ) {
+    m_mtxClients.lock();
     assert( std::find( m_clients.begin(), m_clients.end(), client ) != m_clients.end() );
     m_clients.remove( client );
+    m_mtxClients.unlock();
 }
 
 const std::map<std::string, StreamerClient*>& Server::getStreamers() const {
-    return m_streamers;
+    return m_streamName2streamer;
 }
 
-} // server
-} // hub
+SensorSpec Server::getSensorSpec( const std::string& streamName ) const {
+    assert( m_streamName2streamer.find( streamName ) != m_streamName2streamer.end() );
+    return m_streamName2streamer.at( streamName )->m_inputSensor->getSpec();
+}
+
+} // namespace server
+} // namespace hub

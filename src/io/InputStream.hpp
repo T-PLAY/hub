@@ -26,8 +26,6 @@ class SRC_API InputStream : public Input
     /// [in] is an unique identifier name of stream.
     /// \param clientSocket
     /// [in] is an existing connection to a hub server.
-    /// \param mergeSyncAcqs
-    /// [in] if you want merge acq during the synchronization.
     /// \warning The hub service must be accessible, that means the
     /// server hub is running on a machine you know the ip and the oppened port of the service.
     /// \warning Stream you want to link (by their names) needs to be active in the server hub.
@@ -37,8 +35,8 @@ class SRC_API InputStream : public Input
     ///
     explicit InputStream( const std::string& streamName,
                           const std::string& syncStreamName = "",
-                          net::ClientSocket&& clientSocket  = net::ClientSocket(),
-                          bool mergeSyncAcqs                = true );
+                          net::ClientSocket&& clientSocket  = net::ClientSocket());
+//                          bool mergeSyncAcqs                = true );
 
 //#ifdef WIN32 // msvc warning C4250
 //  protected:

@@ -62,12 +62,14 @@ class SRC_API Server
     std::string getStatus();
 
     void addStreamer( StreamerClient* streamer );
+    void addStreamViewer ( StreamViewerClient * streamViewer );
     void addViewer( ViewerClient* viewer );
 
     void delStreamer( StreamerClient* streamer );
+    void delStreamViewer ( StreamViewerClient * streamViewer );
     void delViewer( ViewerClient* viewer );
 
-    void newAcquisition( StreamerClient* streamer, const hub::Acquisition& acq );
+    void newAcquisition( StreamerClient* streamer, hub::Acquisition&& acq );
 
     std::list<std::pair<std::string, hub::SensorSpec>> listStreams() const;
     const std::shared_ptr<hub::Acquisition> getAcquisition( const std::string& streamName );
@@ -75,18 +77,25 @@ class SRC_API Server
     void removeClient( Client* client );
     const std::map<std::string, StreamerClient*>& getStreamers() const;
 
+    hub::SensorSpec getSensorSpec(const std::string & streamName) const;
+
   private:
     std::thread m_thread;
 
-    std::map<std::string, StreamerClient*> m_streamers;
-    std::mutex m_mtxStreamers;
+    std::map<std::string, StreamerClient*> m_streamName2streamer;
+    std::map<std::string, std::list<StreamViewerClient*>> m_streamName2streamViewers;
+//    std::mutex m_mtxStreamers;
 
     std::list<ViewerClient*> m_viewers;
 
     hub::net::ServerSocket m_serverSock;
     std::list<Client*> m_clients;
+    std::mutex m_mtxClients;
 
+    int m_nClient = 0;
     int m_maxClients = 1'000'000;
+
+    std::mutex m_mtxPrint;
 
 //  private:
     friend class Client;
