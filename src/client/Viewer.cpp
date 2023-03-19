@@ -176,7 +176,8 @@ Viewer::Viewer(
                         m_sock.read( streamName );
                         SensorSpec sensorSpec;
                         m_sock.read( sensorSpec );
-                        std::cout << "[Viewer] del streamer '" << streamName << "'" << std::endl;
+//                        std::cout << "[Viewer] del streamer '" << streamName << "'" << std::endl;
+                        DEBUG_MSG( "[Viewer] del streamer '" << streamName << "'" );
 
                         std::string syncStreamName = "";
 
@@ -195,7 +196,6 @@ Viewer::Viewer(
                             }
                         }
 
-                        DEBUG_MSG( "[Viewer] del streamer '" << streamName << "'" );
 
                         // prevent all son the father is leaving
                         std::list<std::shared_ptr<Stream>> streamsToAdd;
@@ -351,13 +351,24 @@ void Viewer::Stream::startStream() {
     assert( m_thread == nullptr );
     m_thread = new std::thread( [this]() {
         try {
-            InputSensor inputSensor( io::InputStream(
+//            const io::Input & inputStream = (m_syncStreamName == "") ?(io::InputStream(m_streamName, net::ClientSocket(m_viewer.m_sock.getIpv4(), m_viewer.m_sock.getPort())))
+//                                                               :(io::InputSyncStream(m_streamName, m_syncStreamName, net::ClientSocket(m_viewer.m_sock.getIpv4(), m_viewer.m_sock.getPort())));
+
+            if (m_syncStreamName == "") {
+                m_inputSensor = std::make_unique<InputSensor>( io::InputStream(
+                m_streamName,
+                net::ClientSocket( m_viewer.m_sock.getIpv4(), m_viewer.m_sock.getPort() ) ) );
+
+            }
+            else {
+                m_inputSensor = std::make_unique<InputSensor>( io::InputSyncStream(
                 m_streamName,
                 m_syncStreamName,
                 net::ClientSocket( m_viewer.m_sock.getIpv4(), m_viewer.m_sock.getPort() ) ) );
+            }
 
             while ( !m_stopThread ) {
-                auto acq = inputSensor.getAcquisition();
+                auto acq = m_inputSensor->getAcquisition();
                 m_viewer.m_onNewAcquisition( m_streamId.c_str(), acq );
             }
         }

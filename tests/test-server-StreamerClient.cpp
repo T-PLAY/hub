@@ -11,20 +11,14 @@
 
 TEST_CASE( "StreamerClient test" ) {
 
-    const std::string ipv4 = "127.0.0.1";
-    const int port         = getRandomPort();
-
-    hub::server::Server server( port );
-    server.setMaxClients( 3 );
-    server.asyncRun();
 
     //    const int ref_offset    = 0;
     const int ref_offset    = 5;
     constexpr int ref_nAcqs = 10;
 
     //    const int ref2_offset    = 5;
-    const int ref2_offset    = 0;
-    constexpr int ref_nAcqs2 = 10;
+//    const int ref2_offset    = 0;
+//    constexpr int ref_nAcqs2 = 10;
 
     std::cout << "ref_acqs" << std::endl;
     const hub::Resolution ref_resolution( { { 1 }, hub::Format::Y8 } );
@@ -47,78 +41,85 @@ TEST_CASE( "StreamerClient test" ) {
 
     //////////////////////
 
-    std::cout << "ref2_acqs" << std::endl;
-    const hub::Resolution ref_resolution2( { { 1 }, hub::Format::DOF6 } );
-    const hub::SensorSpec ref_sensorSpec2( "sensorName2", { ref_resolution2 } );
-    std::vector<hub::Acquisition> ref_acqs2;
-    const int ref_dataSize2 = hub::res::computeAcquisitionSize( ref_resolution2 );
-    unsigned char* data2    = new unsigned char[ref_dataSize2];
-    for ( int iAcq = 0; iAcq < ref_nAcqs2; ++iAcq ) {
-        for ( int i = 0; i < ref_dataSize2; ++i ) {
-            data2[i] = ref2_offset + iAcq + 1;
-        }
-        ref_acqs2.emplace_back( ref2_offset + iAcq + 1, ref2_offset + iAcq + 2 );
-        ref_acqs2.back() << hub::data::Measure(
-            reinterpret_cast<const unsigned char*>( data2 ), ref_dataSize2, ref_resolution2 );
-        std::cout << ref_acqs2.back() << std::endl;
-    }
-    delete[] data2;
-    std::cout << std::endl;
+//    std::cout << "ref2_acqs" << std::endl;
+//    const hub::Resolution ref_resolution2( { { 1 }, hub::Format::DOF6 } );
+//    const hub::SensorSpec ref_sensorSpec2( "sensorName2", { ref_resolution2 } );
+//    std::vector<hub::Acquisition> ref_acqs2;
+//    const int ref_dataSize2 = hub::res::computeAcquisitionSize( ref_resolution2 );
+//    unsigned char* data2    = new unsigned char[ref_dataSize2];
+//    for ( int iAcq = 0; iAcq < ref_nAcqs2; ++iAcq ) {
+//        for ( int i = 0; i < ref_dataSize2; ++i ) {
+//            data2[i] = ref2_offset + iAcq + 1;
+//        }
+//        ref_acqs2.emplace_back( ref2_offset + iAcq + 1, ref2_offset + iAcq + 2 );
+//        ref_acqs2.back() << hub::data::Measure(
+//            reinterpret_cast<const unsigned char*>( data2 ), ref_dataSize2, ref_resolution2 );
+//        std::cout << ref_acqs2.back() << std::endl;
+//    }
+//    delete[] data2;
+//    std::cout << std::endl;
 
-    //////////////////////
+//    //////////////////////
 
-    std::cout << "ref_sync_acqs" << std::endl;
-    std::vector<hub::Acquisition> ref_sync_acqs;
-    std::vector<int> min_dists( ref_acqs2.size(), 999999 );
-    std::vector<int> iMin_dists( ref_acqs2.size(), -1 );
+//    std::cout << "ref_sync_acqs" << std::endl;
+//    std::vector<hub::Acquisition> ref_sync_acqs;
+//    std::vector<int> min_dists( ref_acqs2.size(), 999999 );
+//    std::vector<int> iMin_dists( ref_acqs2.size(), -1 );
 
-    int iAcq = 0;
-    for ( const auto& acq : ref_acqs ) {
-        int iMinDist = 0;
-        int minDist  = computeDist( acq, ref_acqs2.front() );
-        for ( int iAcq2 = 1; iAcq2 < ref_acqs2.size(); ++iAcq2 ) {
-            const auto& acq2 = ref_acqs2.at( iAcq2 );
-            const auto dist  = computeDist( acq, acq2 );
-            if ( dist <= minDist ) {
-                minDist  = dist;
-                iMinDist = iAcq2;
-            }
-        }
+//    int iAcq = 0;
+//    for ( const auto& acq : ref_acqs ) {
+//        int iMinDist = 0;
+//        int minDist  = computeDist( acq, ref_acqs2.front() );
+//        for ( int iAcq2 = 1; iAcq2 < ref_acqs2.size(); ++iAcq2 ) {
+//            const auto& acq2 = ref_acqs2.at( iAcq2 );
+//            const auto dist  = computeDist( acq, acq2 );
+//            if ( dist <= minDist ) {
+//                minDist  = dist;
+//                iMinDist = iAcq2;
+//            }
+//        }
 
-        if ( minDist < min_dists.at( iMinDist ) ) {
-            min_dists[iMinDist]  = minDist;
-            iMin_dists[iMinDist] = iAcq;
-        }
-        ++iAcq;
-    }
+//        if ( minDist < min_dists.at( iMinDist ) ) {
+//            min_dists[iMinDist]  = minDist;
+//            iMin_dists[iMinDist] = iAcq;
+//        }
+//        ++iAcq;
+//    }
 
-    for ( int i = 0; i < ref_acqs2.size(); ++i ) {
-        if ( iMin_dists[i] != -1 ) {
-            const auto& acq  = ref_acqs.at( iMin_dists.at( i ) );
-            const auto& acq2 = ref_acqs2.at( i );
-            ref_sync_acqs.push_back( acq.clone() );
+//    for ( int i = 0; i < ref_acqs2.size(); ++i ) {
+//        if ( iMin_dists[i] != -1 ) {
+//            const auto& acq  = ref_acqs.at( iMin_dists.at( i ) );
+//            const auto& acq2 = ref_acqs2.at( i );
+//            ref_sync_acqs.push_back( acq.clone() );
 
-            auto& syncAcq = ref_sync_acqs.back();
-            syncAcq << acq2.getMeasures();
+//            auto& syncAcq = ref_sync_acqs.back();
+//            syncAcq << acq2.getMeasures();
 
-            std::cout << ref_sync_acqs.back() << std::endl;
+//            std::cout << ref_sync_acqs.back() << std::endl;
 
-            CHECK( syncAcq.getStart() == acq.getStart() );
-            CHECK( syncAcq.getEnd() == acq.getEnd() );
-            CHECK( syncAcq.getMeasures().size() == 2 );
+//            CHECK( syncAcq.getStart() == acq.getStart() );
+//            CHECK( syncAcq.getEnd() == acq.getEnd() );
+//            CHECK( syncAcq.getMeasures().size() == 2 );
 
-            CHECK( acq.getMeasures().size() == 1 );
-            const auto& measure = acq.getMeasures().front();
-            CHECK( syncAcq.getMeasures().at( 0 ) == measure );
+//            CHECK( acq.getMeasures().size() == 1 );
+//            const auto& measure = acq.getMeasures().front();
+//            CHECK( syncAcq.getMeasures().at( 0 ) == measure );
 
-            CHECK( acq2.getMeasures().size() == 1 );
-            const auto& measure2 = acq2.getMeasures().front();
-            CHECK( syncAcq.getMeasures().at( 1 ) == measure2 );
-        }
-    }
-    std::cout << std::endl;
+//            CHECK( acq2.getMeasures().size() == 1 );
+//            const auto& measure2 = acq2.getMeasures().front();
+//            CHECK( syncAcq.getMeasures().at( 1 ) == measure2 );
+//        }
+//    }
+//    std::cout << std::endl;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const std::string ipv4 = "127.0.0.1";
+    const int port         = getRandomPort() + 2;
+
+    hub::server::Server server( port );
+    server.setMaxClients( 2 );
+    server.asyncRun();
 
     hub::io::OutputStream outputStream("streamName", hub::net::ClientSocket(ipv4, port));
     hub::OutputSensor outputSensor( ref_sensorSpec, std::move( outputStream ) );
@@ -126,10 +127,10 @@ TEST_CASE( "StreamerClient test" ) {
 
     std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
 
-    hub::io::InputStream inputStream("streamName", "");
+        hub::io::InputStream inputStream("streamName", hub::net::ClientSocket(ipv4, port));
     hub::InputSensor inputSensor(std::move(inputStream));
         std::cout << "inputSensor created" << std::endl;
-    hub::io::Input& input = inputSensor.getInput();
+//    hub::io::Input& input = inputSensor.getInput();
 
     std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
 
@@ -165,8 +166,8 @@ TEST_CASE( "StreamerClient test" ) {
 
     assert( acqs.size() == ref_acqs.size() );
     for ( int i = 0; i < acqs.size(); ++i ) {
-        const auto& acq = acqs.at( i );
-        CHECK( acq == ref_acqs.at( i ) );
+        const auto& acq2 = acqs.at( i );
+        CHECK( acq2 == ref_acqs.at( i ) );
     }
 
 

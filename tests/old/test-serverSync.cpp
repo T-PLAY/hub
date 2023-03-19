@@ -76,7 +76,7 @@ TEST_CASE( "Server test : sync" ) {
 
         std::cout << "[Test] ############################### inputStream start" << std::endl;
         hub::InputSensor inputSensor(
-            hub::io::InputStream( "stream", "master", hub::net::ClientSocket( ipv4, port ) ) );
+            hub::io::InputStream( "stream", hub::net::ClientSocket( ipv4, port ) ) );
 
         const auto& inputSensorSpec = inputSensor.getSpec();
         CHECK( inputSensorSpec.getAcquisitionSize() == dataSize );
@@ -89,7 +89,7 @@ TEST_CASE( "Server test : sync" ) {
 
         std::cout << "[Test] ############################### inputStream2 start" << std::endl;
         hub::InputSensor inputSensor2(
-            hub::io::InputStream( "stream", "", hub::net::ClientSocket( ipv4, port ) ) );
+            hub::io::InputStream( "stream", hub::net::ClientSocket( ipv4, port ) ) );
 
         const auto& inputSensorSpec2 = inputSensor2.getSpec();
         CHECK( inputSensorSpec2.getAcquisitionSize() == dataSize );
@@ -102,7 +102,7 @@ TEST_CASE( "Server test : sync" ) {
 
         std::cout << "[Test] ############################### inputStream3 start" << std::endl;
         hub::InputSensor inputSensor3(
-            hub::io::InputStream( "master", "", hub::net::ClientSocket( ipv4, port ) ) );
+            hub::io::InputStream( "master", hub::net::ClientSocket( ipv4, port ) ) );
 
         const auto& inputSensorSpec3 = inputSensor3.getSpec();
         CHECK( inputSensorSpec3.getAcquisitionSize() == dataSize );

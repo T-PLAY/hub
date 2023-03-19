@@ -60,11 +60,7 @@ class SRC_API Socket
     ///
     bool isConnected() const;
 
-    ///
-    /// \brief getFdSock
-    /// \return
-    ///
-    net::utils::socket_fd getFdSock() const;
+//    net::utils::socket_fd getFdSock() const;
 
   protected:
     Socket();

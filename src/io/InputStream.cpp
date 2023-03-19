@@ -5,7 +5,7 @@ namespace hub {
 namespace io {
 
 InputStream::InputStream( const std::string& streamName,
-                          const std::string& syncStreamName,
+//                          const std::string& syncStreamName,
                           net::ClientSocket&& clientSocket) :
 //                          bool mergeSyncAcqs ) :
 
@@ -59,20 +59,20 @@ InputStream::InputStream( const std::string& streamName,
 //}
 //#endif
 
-Acquisition InputStream::getAcquisition( const SensorSpec& sensorSpec ) {
-    net::ClientSocket::Message message;
-    do {
-        Input::read( message );
-        if ( message == net::ClientSocket::Message::PING ) {
-            std::cout << "\033[32m[InputStream] receive ping from " << m_clientSocket.getFdSock()
-                      << "\033[0m" << std::endl;
-        }
-    } while ( message == net::ClientSocket::Message::PING );
+//Acquisition InputStream::getAcquisition( const SensorSpec& sensorSpec ) {
+//    net::ClientSocket::Message message;
+//    do {
+//        Input::read( message );
+//        if ( message == net::ClientSocket::Message::PING ) {
+//            std::cout << "\033[32m[InputStream] receive ping from " << m_clientSocket.getFdSock()
+//                      << "\033[0m" << std::endl;
+//        }
+//    } while ( message == net::ClientSocket::Message::PING );
 
-    assert( message == net::ClientSocket::Message::NEW_ACQ );
-    auto acq = Input::getAcquisition( sensorSpec );
-    return acq;
-}
+//    assert( message == net::ClientSocket::Message::NEW_ACQ );
+//    auto acq = Input::getAcquisition( sensorSpec );
+//    return acq;
+//}
 
 } // namespace io
 } // namespace hub

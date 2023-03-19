@@ -79,7 +79,7 @@ int main() {
     {
         // init input sensor
         hub::InputSensor inputSensor { hub::io::InputStream {
-            "streamName", "", hub::net::ClientSocket { "serverIp", serverPort } } };
+            "streamName", hub::net::ClientSocket { "serverIp", serverPort } } };
 
         const auto& resolutions = inputSensor.getSpec().getResolutions();
         if ( resolutions.size() == 1 ) {

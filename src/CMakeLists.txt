@@ -122,7 +122,9 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
         hub
         test-all
         EXCLUDE
-        "/usr/*")
+        "/usr/*"
+        "*.hpp"
+    )
 
     if(${CMAKE_VERSION} VERSION_LESS "3.20") # ctest --test-dir option
         add_custom_command(

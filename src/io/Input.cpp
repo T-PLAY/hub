@@ -46,6 +46,8 @@ void Input::read( SensorSpec& sensorSpec ) {
 
     sensorSpec =
         SensorSpec( std::move( sensorName ), std::move( resolutions ), std::move( metaData ) );
+
+    m_sensorSpec = sensorSpec;
 }
 
 // SensorSpec Input::getSensorSpec()  {
@@ -55,9 +57,12 @@ void Input::read( SensorSpec& sensorSpec ) {
 
 //}
 
-Acquisition Input::getAcquisition( const SensorSpec& sensorSpec ) {
+Acquisition Input::getAcquisition( ) {
+#ifdef DEBUG
+    assert(! m_sensorSpec.isEmpty());
     assert( isOpen() );
     assert(! isEnd());
+#endif
 
 #ifdef DEBUG_INPUT
     std::cout << "[Input] getAcquisition()" << std::endl;
@@ -72,10 +77,14 @@ Acquisition Input::getAcquisition( const SensorSpec& sensorSpec ) {
 
     int nMeasures;
     read( nMeasures );
+#ifdef DEBUG
     assert( nMeasures > 0 );
+#endif
 
-    const auto& resolutions = sensorSpec.getResolutions();
+    const auto& resolutions = m_sensorSpec.getResolutions();
+#ifdef DEBUG
     assert( resolutions.size() == nMeasures );
+#endif
 
     for ( int iMeasure = 0; iMeasure < nMeasures; ++iMeasure ) {
 
@@ -87,9 +96,114 @@ Acquisition Input::getAcquisition( const SensorSpec& sensorSpec ) {
         acq.emplaceMeasure( data, size, resolutions.at( iMeasure ), true );
     }
 
-    assert( !acq.hasFixedSize() || sensorSpec.getAcquisitionSize() == acq.getSize() );
+//    assert( !acq.hasFixedSize() || m_sensorSpec.getAcquisitionSize() == acq.getSize() );
+#ifdef DEBUG
+    assert( !acq.hasFixedSize() || acq.getSize() == m_sensorSpec.getAcquisitionSize() );
+//    const auto& resolutions = m_sensorSpec.getResolutions();
+    const auto& measures    = acq.getMeasures();
+    assert( resolutions.size() == measures.size() );
+    assert( resolutions.size() > 0 );
+    for ( size_t i = 0; i < resolutions.size(); ++i ) {
+        assert( !res::format2hasFixedSize( resolutions.at( i ).second ) ||
+                res::computeAcquisitionSize( resolutions.at( i ) ) == measures.at( i ).getSize() );
+        assert( measures.at( i ).getResolution() == resolutions.at( i ) );
+        assert( !measures.at( i ).getResolution().first.empty() );
+        assert( measures.at( i ).getResolution().second != Format::NONE );
+    }
+#endif
+
 
     return acq;
+}
+
+Acquisition Input::operator>>(Input &input)
+{
+    //        InputSensor ret(*this);
+    //        InputSensor ret(inputSensor);
+#ifdef DEBUG
+    assert(! isEnd());
+    assert(! input.isEnd());
+#endif
+    auto masterAcq = getAcquisition();
+
+//    const auto & input = inputSensor.getInput();
+
+    //    auto & left = inputSensor.m_lastAcq;
+    auto& lastAcqs = input.m_lastAcqs;
+    assert( lastAcqs.size() < 20 );
+
+    if ( lastAcqs.empty() ) {
+        //        left = input.getAcquisition();
+        lastAcqs.push_back( input.getAcquisition() );
+        //        lastAcqs.push_back(input.getAcquisition());
+    }
+
+    while ( masterAcq.getStart() < lastAcqs.front().getStart() ) {
+        masterAcq = getAcquisition();
+        std::cout << "[InputSensor] operator>>(InputSensor&) shift masterAcq : " << masterAcq
+                  << std::endl;
+    }
+
+    //    auto right =
+    while ( lastAcqs.back().getStart() < masterAcq.getStart() ) {
+        lastAcqs.push_back( input.getAcquisition() );
+    }
+
+    if (lastAcqs.back().getStart() == masterAcq.getStart()) {
+        masterAcq << lastAcqs.back().getMeasures();
+        return masterAcq;
+    }
+
+
+    while ( lastAcqs.size() > 2 ) {
+        lastAcqs.pop_front();
+    }
+
+
+//    assert( lastAcqs.size() == 2 );
+    const auto& left  = lastAcqs.front();
+    const auto& right = lastAcqs.back();
+
+    assert( left.getStart() <= masterAcq.getStart() );
+    assert( masterAcq.getStart() <= right.getStart() );
+
+//    if ( lastAcqs.back().getStart() == masterAcq.getStart() ) {
+//        masterAcq << right.getMeasures();
+//        return masterAcq;
+//    }
+
+    const auto& closestAcq = ( std::abs( left.getStart() - masterAcq.getStart() ) >
+                               std::abs( right.getStart() - masterAcq.getStart() ) )
+                                 ? ( right )
+                                 : ( left );
+
+//    if (input.isEnd())
+//        lastAcqs.pop_front();
+
+//    if (lastAcqs.empty())
+//        return Acquisition();
+
+    masterAcq << closestAcq.getMeasures();
+    return masterAcq;
+
+    //    const auto dist = std::abs( closestAcq.m_start - masterAcq.m_start );
+
+    //    // assert(minDist < 20'000); // 20 ms
+    //    // if too far then abort synchronize
+    //    // consider constant period of acquistion rate
+    //    auto maxDist = ( right.m_start - left.m_start ) / 2;
+
+    //    // find acceptable corresponding acquisition if interpolation is not possible
+    //    if ( !left.isInterpolable() ) {
+    //        const auto& lastMasterAcq = getLastAcq( syncViewerName );
+    //        if ( lastMasterAcq != nullptr ) {
+    //            maxDist =
+    //                std::min( dist, std::abs( lastMasterAcq->m_start() - masterAcq.m_start() ) );
+    //        }
+    //    }
+
+    //        return ret;
+    //        return *this;
 }
 
 void Input::read( char* str ) {

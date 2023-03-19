@@ -25,6 +25,8 @@ private:
 
     std::string headerMsg() const override;
 
+    void end() override;
+
   private:
     std::thread m_thread;
     hub::net::ClientSocket m_socket;

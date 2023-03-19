@@ -6,6 +6,9 @@
 namespace hub {
 namespace io {
 
+///
+/// \brief The InputOutput class
+///
 class SRC_API InputOutput : public Input, public Output
 {};
 

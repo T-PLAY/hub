@@ -142,7 +142,8 @@ TEST_CASE( "Native test" ) {
         CHECK( len == strlen( ref_str ) );
         CHECK( !strcmp( ref_str, metaDataString ) );
 
-        return true;
+        return false;
+//        return true;
     };
     auto onDelStreamer = []( const char* streamName, const hub::SensorSpec* sensorSpec ) {
         std::cout << "[Example][Viewer] onDelStreamer " << streamName << std::endl;
@@ -179,11 +180,11 @@ TEST_CASE( "Native test" ) {
     std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
 
     // todo test
-    if (false)
+    //    if (false)
     {
         std::cout << "[Test] ############################### server start" << std::endl;
         hub::server::Server server( port );
-        server.setMaxClients( 5 );
+        server.setMaxClients( 4 );
         server.asyncRun();
         std::this_thread::sleep_for( std::chrono::milliseconds( 2000 ) );
         CHECK( viewer->isConnected() );
@@ -195,9 +196,12 @@ TEST_CASE( "Native test" ) {
                 ref_sensorSpec,
                 hub::io::OutputStream( ref_streamName, hub::net::ClientSocket( ipv4, port ) ) );
 
+            std::this_thread::sleep_for( std::chrono::milliseconds( 2000 ) );
+
+            *outputSensor << ref_acq;
+
             std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
             {
-                *outputSensor << ref_acq;
 
                 std::cout << "[Test] ############################### inputSensor start"
                           << std::endl;
@@ -207,6 +211,8 @@ TEST_CASE( "Native test" ) {
 
                 auto acquisitionSize = hub::native::getAcquisitionSize( inputSensor );
                 CHECK( ref_acq.getSize() == acquisitionSize );
+
+                *outputSensor << ref_acq;
 
                 auto* acq = hub::native::getAcquisition( inputSensor );
                 CHECK( ref_acq == *acq );
@@ -244,6 +250,7 @@ TEST_CASE( "Native test" ) {
             std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
 
             std::cout << "[Test] ############################### outputSensor end" << std::endl;
+            server.detach();
         }
         std::cout << "[Test] ############################### server end" << std::endl;
     }

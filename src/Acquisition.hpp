@@ -42,6 +42,12 @@ class SRC_API Acquisition
     ///
     Acquisition( Acquisition&& acq ) = default;
 //    Acquisition& operator=( Acquisition&& acq ) = delete;
+
+    ///
+    /// \brief operator =
+    /// \param acq
+    /// \return
+    ///
     Acquisition& operator=( Acquisition&& acq );
 
     ~Acquisition();
@@ -81,6 +87,10 @@ class SRC_API Acquisition
     ///
     Acquisition& operator<<( const data::Measures& measure );
 
+    ///
+    /// \brief operator >>
+    /// \param acq
+    ///
     void operator>>(Acquisition & acq);
 
     ///
@@ -167,10 +177,22 @@ class SRC_API Acquisition
     const data::Measures& getMeasures() const;
 
 
+    ///
+    /// \brief getStart
+    /// \return
+    ///
     long long getStart() const;
 
+    ///
+    /// \brief getEnd
+    /// \return
+    ///
     long long getEnd() const;
 
+    ///
+    /// \brief isEmpty
+    /// \return
+    ///
     bool isEmpty() const;
 
   private:
@@ -179,7 +201,7 @@ class SRC_API Acquisition
     data::Measures m_measures;
     size_t m_size = 0;
 
-    friend class InputSensor;
+//    friend class InputSensor;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

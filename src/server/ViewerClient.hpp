@@ -26,14 +26,17 @@ private:
 
     std::string headerMsg() const override;
 
-    void notifyNewStreamer( const StreamerClient& streamer );
-    void notifyDelStreamer( const StreamerClient& streamer );
+    void notifyNewStreamer( const std::string & streamName, const SensorSpec & sensorSpec );
+    void notifyDelStreamer( const std::string & streamName, const SensorSpec & sensorSpec );
+//    void notifyDelStreamer( const StreamerClient& streamer );
+
+    void end() override;
 
   private:
     std::thread m_thread;
 
     hub::net::ClientSocket m_socket;
-    std::mutex m_mtxSocket;
+//    std::mutex m_mtxSocket;
 
     friend class Server;
 };

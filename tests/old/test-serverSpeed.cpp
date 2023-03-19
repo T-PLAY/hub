@@ -44,7 +44,7 @@ TEST_CASE( "Server test : speed test" ) {
 
         std::cout << "[Test] ############################### inputStream start" << std::endl;
         hub::InputSensor inputSensor(
-            hub::io::InputStream( "stream", "", hub::net::ClientSocket( ipv4, port ) ) );
+            hub::io::InputStream( "stream", hub::net::ClientSocket( ipv4, port ) ) );
 
         const auto& inputSensorSpec = inputSensor.getSpec();
         CHECK( inputSensorSpec.getAcquisitionSize() == dataSize );

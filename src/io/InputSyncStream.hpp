@@ -8,19 +8,21 @@ namespace hub {
 namespace io {
 
 ///
-/// \brief The InputStream class
+/// \brief The InputSyncStream class
 /// Describes an input communication from the server.
 /// The communication is only possible if the stream (with the same name) is active within the
 /// server. That implies an OutputStream communicating data through the hub.
 ///
-// class SRC_API InputStream : public Input, public net::ClientSocket
-class SRC_API InputStream : public Input
+// class SRC_API InputSyncStream : public Input, public net::ClientSocket
+class SRC_API InputSyncStream : public Input
 {
   public:
     ///
-    /// \brief InputStream
+    /// \brief InputSyncStream
     /// is used to instantiate an InputSensor.
     /// \param streamName
+    /// [in] is an unique identifier name of stream.
+    /// \param syncStreamName
     /// [in] is an unique identifier name of stream.
     /// \param clientSocket
     /// [in] is an existing connection to a hub server.
@@ -31,8 +33,8 @@ class SRC_API InputStream : public Input
     /// when the server is not found or by loosing connection to the server.
     /// Also occur when stream you want to link is not connected to the server.
     ///
-    explicit InputStream( const std::string& streamName,
-//                          const std::string& syncStreamName = "",
+    explicit InputSyncStream( const std::string& streamName,
+                          const std::string& syncStreamName,
                           net::ClientSocket&& clientSocket  = net::ClientSocket());
 //                          bool mergeSyncAcqs                = true );
 
@@ -70,33 +72,40 @@ class SRC_API InputStream : public Input
     ///
     bool isEnd() const override;
 
-//    ///
-//    /// \brief getAcquisition
-//    /// \param sensorSpec
-//    /// \return
-//    ///
-//    Acquisition getAcquisition( const SensorSpec& sensorSpec ) override;
+    ///
+    /// \brief getAcquisition
+    /// \return
+    ///
+    Acquisition getAcquisition( ) override;
+
+    void read( SensorSpec& sensorSpec) override;
 
   private:
     net::ClientSocket m_clientSocket;
+    net::ClientSocket m_clientSocket2;
+
+    SensorSpec m_sensorSpec;
+    SensorSpec m_sensorSpec2;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-inline bool InputStream::isOpen() const {
-    return m_clientSocket.isOpen();
+inline bool InputSyncStream::isOpen() const {
+    return m_clientSocket.isOpen() && m_clientSocket2.isOpen();
 }
 
-inline void InputStream::read( unsigned char* data, size_t len ) {
+inline void InputSyncStream::read( unsigned char* data, size_t len ) {
+    assert(false);
     m_clientSocket.read( data, len );
 }
 
-inline void InputStream::close() {
+inline void InputSyncStream::close() {
     m_clientSocket.close();
+    m_clientSocket2.close();
 }
 
-inline bool InputStream::isEnd() const {
-    return m_clientSocket.isEnd();
+inline bool InputSyncStream::isEnd() const {
+    return m_clientSocket.isEnd() || m_clientSocket2.isEnd();
 }
 
 } // namespace io

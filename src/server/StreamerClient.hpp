@@ -49,16 +49,18 @@ private:
 //    const std::list<StreamViewerClient*>& getStreamViewers() const; // use by server
 //    const std::map<std::string, std::list<StreamViewerClient*>>&
 //    getSyncViewers() const; // use by server (printStatus)
-    const std::string& getStreamName() const;
-    const std::string& getParent() const;
-    bool isRecordStream() const;
+//    const std::string& getStreamName() const;
+//    const std::string& getParent() const;
+//    bool isRecordStream() const;
+
+    void end() override;
 
   private:
     std::thread m_thread;
 
     std::unique_ptr<hub::InputSensor> m_inputSensor;
     std::string m_streamName;
-    std::string m_parent = "";
+//    std::string m_parent = "";
 
 //    std::list<StreamViewerClient*> m_streamViewers;
 //    std::mutex m_mtxStreamViewers;
@@ -71,12 +73,14 @@ private:
 //    std::map<std::string, bool> m_isLooping;
 //    std::mutex m_mtxSyncAcqs;
 
+    hub::Acquisition m_lastAcq;
+
 //    std::map<std::string, std::shared_ptr<hub::Acquisition>> m_lastAcq;
 
 //    std::map<std::string, std::map<long long, std::shared_ptr<hub::Acquisition>>>
 //        m_streamName2saveAcqs;
 
-    bool m_isRecordStream = false;
+//    bool m_isRecordStream = false;
 
 //  public:
 //  private:

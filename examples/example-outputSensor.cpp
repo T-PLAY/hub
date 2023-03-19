@@ -55,8 +55,8 @@ hub::OutputSensor outputSensor(
         {
             // startConstruction3
 // create pear buffer to shared data between different threads
-hub::io::CyclicBuff buff;
-hub::OutputSensor outputSensor( sensorSpec, hub::io::Ram( buff ) );
+//hub::io::CyclicBuff buff;
+//hub::OutputSensor outputSensor( sensorSpec, hub::io::Ram( buff ) );
             // endConstruction3
         }
         // clang-format on

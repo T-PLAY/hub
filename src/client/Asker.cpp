@@ -53,7 +53,7 @@ Acquisition Asker::getAcquisition( const std::string& streamName ) {
     hub::SensorSpec sensorSpec;
     m_sock.read( sensorSpec );
 
-    auto acq = m_sock.getAcquisition( sensorSpec );
+    auto acq = m_sock.getAcquisition();
 
     return acq;
 }

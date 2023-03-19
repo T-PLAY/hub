@@ -7,8 +7,10 @@
 // user friendly useless includes
 #include "io/Input.hpp"
 #include "io/File.hpp"
+#include "io/Memory.hpp"
 #include "io/InputStream.hpp"
-#include "io/Ram.hpp"
+#include "io/InputSyncStream.hpp"
+//#include "io/Ram.hpp"
 
 namespace hub {
 
@@ -52,11 +54,11 @@ class SRC_API InputSensor : public Sensor
 
 
 //    InputSensor( const InputSensor& inputSensor ) = delete;
-    InputSensor( const InputSensor& inputSensor ) :
-        Sensor(inputSensor.m_spec),
-        m_input(inputSensor.m_input)
-    {
-    }
+//    InputSensor( const InputSensor& inputSensor ) :
+//        Sensor(inputSensor.m_spec),
+//        m_input(inputSensor.m_input)
+//    {
+//    }
 
 //    InputSensor(io::Input & input, ) {
 //    }
@@ -72,9 +74,19 @@ class SRC_API InputSensor : public Sensor
     ///
     Acquisition getAcquisition() const;
 
+    ///
+    /// \brief operator >>
+    /// \param acquisition
+    ///
     void operator>>(Acquisition & acquisition);
 
-    Acquisition operator>>(InputSensor & inputSensor) const;
+    ///
+    /// \brief operator >>
+    /// \param inputSensor
+    /// \return
+    ///
+    Acquisition operator>>(InputSensor & inputSensor);
+
 
     ///
     /// \brief getAllAcquisitions
@@ -96,5 +108,11 @@ class SRC_API InputSensor : public Sensor
 //    Acquisition m_lastAcq;
     std::list<Acquisition> m_lastAcqs;
 };
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+inline Acquisition InputSensor::getAcquisition() const {
+    return m_input->getAcquisition();
+}
 
 } // namespace hub

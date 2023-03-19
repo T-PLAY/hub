@@ -79,7 +79,7 @@ TEST_CASE( "Server test : close clients" ) {
                       << std::endl;
             {
                 hub::InputSensor inputSensor( hub::io::InputStream(
-                    "stream", "master", hub::net::ClientSocket( ipv4, port ) ) );
+                    "stream", hub::net::ClientSocket( ipv4, port ) ) );
 
                 const auto& inputSensorSpec = inputSensor.getSpec();
                 CHECK( inputSensorSpec.getAcquisitionSize() == dataSize * 2 );
