@@ -81,15 +81,15 @@ StreamerClient::StreamerClient( Server* server, int iClient, hub::net::ClientSoc
     for ( const auto& pair : metaData ) {
         std::cout << headerMsg() << "metaData: " << hub::SensorSpec::to_string( pair ) << std::endl;
     }
-    if ( metaData.find( "type" ) != metaData.end() ) {
-        std::cout << headerMsg() << "type detected : record stream" << std::endl;
-        const char* type = metaData.at( "type" ).getConstCharPtr();
-        if ( strcmp( type, "record" ) == 0 ) { m_isRecordStream = true; }
-    }
-    if ( metaData.find( "parent" ) != metaData.end() ) {
-        m_parent = metaData.at( "parent" ).getConstCharPtr();
-        std::cout << headerMsg() << "parent : '" << m_parent << "'" << std::endl;
-    }
+//    if ( metaData.find( "type" ) != metaData.end() ) {
+//        std::cout << headerMsg() << "type detected : record stream" << std::endl;
+//        const char* type = metaData.at( "type" ).getConstCharPtr();
+//        if ( strcmp( type, "record" ) == 0 ) { m_isRecordStream = true; }
+//    }
+//    if ( metaData.find( "parent" ) != metaData.end() ) {
+//        m_parent = metaData.at( "parent" ).getConstCharPtr();
+//        std::cout << headerMsg() << "parent : '" << m_parent << "'" << std::endl;
+//    }
 
 //    m_lastAcq[""];
     // get record acqs before prevent viewer
@@ -102,19 +102,21 @@ StreamerClient::StreamerClient( Server* server, int iClient, hub::net::ClientSoc
 //            long long lastMasterAcqStart = 0;
 
 //            while ( m_server != nullptr ) {
-            while ( true ) {
+//            while ( true ) {
+            while ( m_inputSensor->getInput().isOpen() ) {
 
-                auto acq           = m_inputSensor->getAcquisition();
+//                auto acq           = m_inputSensor->getAcquisition();
+                m_lastAcq = m_inputSensor->getAcquisition();
 //                std::cout << "[StreamerClient] get acq : " << acq << std::endl;
-                m_server->newAcquisition( this, std::move(acq) );
+                m_server->newAcquisition( this, m_lastAcq );
 
 
             } // while (true)
         }
-        catch ( hub::net::Socket::exception& e ) {
+        catch ( hub::net::Socket::exception& ex ) {
 //            s_mtxCout.lock();
-//            std::cout << headerMsg() << "thread : catch exception : " << e.what()
-//                      << std::endl;
+            std::cout << headerMsg() << "catch exception : " << ex.what()
+                      << std::endl;
         }
 //        std::cout << headerMsg() << "end streamer : '" << m_streamName << "'" << std::endl;
 //        std::cout << headerMsg() << "thread end" << std::endl;
@@ -166,9 +168,9 @@ StreamerClient::~StreamerClient() {
 //    m_isSyncthing.clear();
 //    m_isLooping.clear();
 
-//    if ( m_server != nullptr ) m_server->delStreamer( this );
+    if ( m_server != nullptr ) m_server->delStreamer( this );
 
-    m_server->delStreamer(this);
+//    m_server->delStreamer(this);
 //    printStatusMessage( "del streamer" );
 
 //    s_mtxCout.unlock();
@@ -180,6 +182,11 @@ std::string StreamerClient::headerMsg() const {
 
 const hub::InputSensor& StreamerClient::getInputSensor() const {
     return *m_inputSensor.get();
+}
+
+void StreamerClient::end()
+{
+//    m_inputSensor->getInput().close();
 }
 
 //void StreamerClient::addStreamViewer( StreamViewerClient* streamViewer ) {
@@ -267,9 +274,9 @@ const hub::InputSensor& StreamerClient::getInputSensor() const {
 //    }
 //}
 
-const std::string& StreamerClient::getStreamName() const {
-    return m_streamName;
-}
+//const std::string& StreamerClient::getStreamName() const {
+//    return m_streamName;
+//}
 
 //const std::map<std::string, std::list<StreamViewerClient*>>&
 //StreamerClient::getSyncViewers() const {
@@ -316,13 +323,13 @@ const std::string& StreamerClient::getStreamName() const {
 //    if ( lastAcq.get() != newAcqPtr.get() ) { lastAcq = newAcqPtr; }
 //}
 
-bool StreamerClient::isRecordStream() const {
-    return m_isRecordStream;
-}
+//bool StreamerClient::isRecordStream() const {
+//    return m_isRecordStream;
+//}
 
-const std::string& StreamerClient::getParent() const {
-    return m_parent;
-}
+//const std::string& StreamerClient::getParent() const {
+//    return m_parent;
+//}
 
 //const std::list<StreamViewerClient*>& StreamerClient::getStreamViewers() const {
 //    return m_streamViewers;

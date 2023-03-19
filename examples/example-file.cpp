@@ -66,10 +66,10 @@ hub::io::File inputFile( std::fstream( "file.txt", std::ios::binary | std::ios::
         {
             const hub::SensorSpec sensorSpec(
                 "sensorName", { { { 1 }, hub::Format::BGR8 } }, metaData );
-            hub::io::CyclicBuff cyclicBuff;
-            hub::OutputSensor outputSensor( sensorSpec, hub::io::Ram( cyclicBuff ) );
+//            hub::io::CyclicBuff cyclicBuff;
+//            hub::OutputSensor outputSensor( sensorSpec, hub::io::Ram( cyclicBuff ) );
 
-            hub::InputSensor inputSensor( ( hub::io::Ram( cyclicBuff ) ) );
+//            hub::InputSensor inputSensor( ( hub::io::Ram( cyclicBuff ) ) );
         }
 
         {
@@ -77,7 +77,7 @@ hub::io::File inputFile( std::fstream( "file.txt", std::ios::binary | std::ios::
             hub::OutputSensor outputSensor(
                 sensorSpec, hub::io::OutputStream( "streamName", hub::net::ClientSocket() ) );
             hub::InputSensor inputSensor(
-                hub::io::InputStream( "streamName", "", hub::net::ClientSocket() ) );
+                hub::io::InputStream( "streamName", hub::net::ClientSocket() ) );
         }
     }
 

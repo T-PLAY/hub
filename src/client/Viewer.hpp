@@ -8,6 +8,7 @@
 #include "Acquisition.hpp"
 #include "SensorSpec.hpp"
 #include "net/ClientSocket.hpp"
+#include "InputSensor.hpp"
 
 namespace hub {
 namespace client {
@@ -172,6 +173,8 @@ class SRC_API Viewer
         bool m_stopThread     = false;
         bool m_added          = false;
         std::function<void( const char* logMessage )> m_onLogMessage;
+
+        std::unique_ptr<InputSensor> m_inputSensor;
 
         void startStream();
         void stopStream();

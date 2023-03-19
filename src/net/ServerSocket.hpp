@@ -2,6 +2,7 @@
 
 #include <net/ClientSocket.hpp>
 #include <net/Socket.hpp>
+//#include <server/Server.hpp>
 
 namespace hub {
 namespace net {
@@ -13,6 +14,7 @@ namespace net {
 class SRC_API ServerSocket : public Socket
 {
   public:
+//  protected:
     ///
     /// \brief ServerSocket
     /// create server socket with the default service port.
@@ -50,6 +52,8 @@ class SRC_API ServerSocket : public Socket
     /// service port.
     ///
     int getPort() const;
+
+//    friend class hub::server::Server;
 };
 
 } // namespace net

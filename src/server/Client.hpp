@@ -25,6 +25,8 @@ private:
 
     void setServer( Server* newServer );
 
+    virtual void end() = 0;
+
 //  protected:
   private:
     Server* m_server = nullptr;

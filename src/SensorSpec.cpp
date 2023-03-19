@@ -64,6 +64,11 @@ std::string SensorSpec::to_string() const {
            SensorSpec::to_string( m_metaData ) + ", " + std::to_string( m_acquisitionSize );
 }
 
+bool SensorSpec::isEmpty() const
+{
+    return m_sensorName == "" && m_resolutions.empty() && m_metaData.empty();
+}
+
 // constexpr int SensorSpec::format2nByte(const Format &format)
 //{
 // }

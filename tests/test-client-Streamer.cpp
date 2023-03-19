@@ -8,6 +8,8 @@ TEST_CASE( "Streamer" ) {
     const std::string ipv4 = "127.0.0.1";
     const int port         = getRandomPort();
 
+    constexpr int delay = 100;
+
     {
         hub::client::Streamer streamer( ipv4, port );
 
@@ -21,28 +23,29 @@ TEST_CASE( "Streamer" ) {
         streamer.addStream( "streamName", sensorSpec );
         CHECK( !streamer.isConnected() );
 
-        std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+        std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
         {
 
             std::cout << "[Test] ############################### server start" << std::endl;
             hub::server::Server server( port );
             server.setMaxClients( 1 );
             server.asyncRun();
-            std::this_thread::sleep_for( std::chrono::milliseconds( 2000 ) );
+            std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
 
             CHECK( !streamer.isConnected() );
             streamer.newAcquisition( "streamName", acq );
-            std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
+            std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
 
             CHECK( streamer.isConnected() );
-            std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
+            std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
 
+            server.detach();
             std::cout << "[Test] ############################### server end" << std::endl;
         }
-        std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
+        std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
 
         CHECK( streamer.isConnected() );
     }
     std::cout << "[Test] ############################### streamer end" << std::endl;
-    std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
+    std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
 }

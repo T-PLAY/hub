@@ -134,7 +134,7 @@ int main() {
 
 //        {
             hub::io::InputStream inputStream(
-                "streamName", "", hub::net::ClientSocket( ipv4, port ) );
+                "streamName", hub::net::ClientSocket( ipv4, port ) );
             hub::InputSensor inputSensor( std::move( inputStream ) );
             std::cout << "inputSensor created" << std::endl;
 //            hub::io::Input& input = inputSensor.getInput();

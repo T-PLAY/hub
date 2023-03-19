@@ -16,7 +16,7 @@ InputSensor* createInputSensor( const char* streamName, const char* ipv4, int po
     InputSensor* inputSensor = nullptr;
     try {
         inputSensor =
-            new InputSensor( io::InputStream( streamName, "", net::ClientSocket( ipv4, port ) ) );
+            new InputSensor( io::InputStream( streamName, net::ClientSocket( ipv4, port ) ) );
     }
     catch ( std::exception& e ) {
         std::cout << "[Native] createInputSensor : catch exception : " << e.what() << std::endl;
@@ -98,8 +98,8 @@ client::Viewer* createViewer( onNewStreamerFunc onNewStreamer,
                               onLogMessageFunc onLogMessage ) {
 
     auto onNewStreamerCpp = [=]( const std::string& streamName, const SensorSpec& sensorSpec ) {
-        onNewStreamer( streamName.c_str(), &sensorSpec );
-        return true;
+        return onNewStreamer( streamName.c_str(), &sensorSpec );
+//        return true;
     };
     auto onDelStreamerCpp = [=]( const std::string& streamName, const SensorSpec& sensorSpec ) {
         onDelStreamer( streamName.c_str(), &sensorSpec );

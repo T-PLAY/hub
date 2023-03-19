@@ -31,6 +31,7 @@ private:
 //    const std::string& getStreamName() const;
 
 //    bool shoudMergeSyncAcqs() const;
+    void end() override;
 
   private:
 //    StreamerClient* m_streamer = nullptr;

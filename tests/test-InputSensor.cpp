@@ -12,8 +12,6 @@
 
 TEST_CASE( "InputSensor test" ) {
 
-    const std::string ipv4 = "127.0.0.1";
-    const int port         = getRandomPort();
 
     //    const int ref_offset    = 0;
     const int ref_offset    = 5;
@@ -89,6 +87,9 @@ TEST_CASE( "InputSensor test" ) {
             reinterpret_cast<const unsigned char*>( data3 ), ref_dataSize3, ref_resolution3 );
     }
     delete[] data3;
+
+//    const std::string ipv4 = "127.0.0.1";
+//    const int port         = getRandomPort();
     std::vector<char> buff3;
     hub::io::Memory<decltype( buff3 )> memory3( buff3 );
     hub::OutputSensor outputSensor3( ref_sensorSpec3, std::move( memory3 ) );
@@ -160,15 +161,15 @@ TEST_CASE( "InputSensor test" ) {
 
     hub::io::Memory<decltype( buff )> memoryIn( buff );
     hub::InputSensor inputSensor( std::move( memoryIn ) );
-    hub::io::Input& input = inputSensor.getInput();
+    const hub::io::Input& input = inputSensor.getInput();
 
     hub::io::Memory<decltype( buff2 )> memoryIn2( buff2 );
     hub::InputSensor inputSensor2( std::move( memoryIn2 ) );
-    hub::io::Input& input2 = inputSensor2.getInput();
+    const hub::io::Input& input2 = inputSensor2.getInput();
 
-    hub::io::Memory<decltype( buff3 )> memoryIn3( buff3 );
-    hub::InputSensor inputSensor3( std::move( memoryIn3 ) );
-    hub::io::Input& input3 = inputSensor3.getInput();
+//    hub::io::Memory<decltype( buff3 )> memoryIn3( buff3 );
+//    hub::InputSensor inputSensor3( std::move( memoryIn3 ) );
+//    hub::io::Input& input3 = inputSensor3.getInput();
 
     hub::Acquisition acq;
     std::cout << "sync acqs" << std::endl;
@@ -184,9 +185,9 @@ TEST_CASE( "InputSensor test" ) {
 
     assert( sync_acqs.size() == ref_sync_acqs.size() );
     for ( int i = 0; i < sync_acqs.size(); ++i ) {
-        const auto& acq = sync_acqs.at( i );
+        const auto& acq2 = sync_acqs.at( i );
 
-        CHECK( acq == ref_sync_acqs.at( i ) );
+        CHECK( acq2 == ref_sync_acqs.at( i ) );
     }
 
     //    while (! input.isEnd()) {

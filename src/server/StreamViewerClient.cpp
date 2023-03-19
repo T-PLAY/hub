@@ -27,7 +27,7 @@ class OutputStream : public hub::io::Output
 };
 
 void OutputStream::write( const hub::Acquisition& acq ) {
-    hub::io::Output::write( hub::net::ClientSocket::Message::NEW_ACQ );
+//    hub::io::Output::write( hub::net::ClientSocket::Message::NEW_ACQ );
     hub::io::Output::write( acq );
 }
 
@@ -82,8 +82,8 @@ StreamViewerClient::StreamViewerClient( Server* server,
     //    if ( m_syncStreamName != "" && m_mergeSyncAcqs ) {
     //        sensorSpec += streamers.at( m_syncStreamName )->getInputSensor().getSpec();
     //    }
-    auto sensorSpec = m_server->getSensorSpec( m_streamName );
-    m_outputSensor  = std::make_unique<hub::OutputSensor>( std::move( sensorSpec ),
+    const auto & sensorSpec = m_server->getSensorSpec( m_streamName );
+    m_outputSensor  = std::make_unique<hub::OutputSensor>( sensorSpec,
                                                           OutputStream( std::move( sock ) ) );
 
     //    m_streamer->addStreamViewer( this );
@@ -179,12 +179,12 @@ StreamViewerClient::StreamViewerClient( Server* server,
 
 //            } // while ( !m_updateFailed )
         }
-        catch ( hub::net::Socket::exception& e ) {
+        catch ( hub::net::Socket::exception& ex ) {
 //            assert( !m_updateFailed );
 //            assert( !m_pingFailed );
 //            m_pingFailed = true;
-//            std::cout << headerMsg() << "thread : catch exception : " << e.what()
-//                      << std::endl;
+            std::cout << headerMsg() << "catch exception : " << ex.what()
+                      << std::endl;
         }
         catch ( std::exception& ) {
             assert( false );
@@ -222,6 +222,11 @@ StreamViewerClient::~StreamViewerClient() {
 
 std::string StreamViewerClient::headerMsg() const {
     return Client::headerMsg() + "[StreamViewer] ";
+}
+
+void StreamViewerClient::end()
+{
+//    m_outputSensor->getOutput().close();
 }
 
 //bool StreamViewerClient::update( const hub::Acquisition& acq ) {

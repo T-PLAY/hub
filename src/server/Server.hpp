@@ -6,8 +6,8 @@
 #include <map>
 #include <memory>
 
-#include <InputSensor.hpp>
-#include <OutputSensor.hpp>
+//#include <InputSensor.hpp>
+//#include <OutputSensor.hpp>
 #include <net/ServerSocket.hpp>
 
 #include "AskerClient.hpp"
@@ -49,6 +49,11 @@ class SRC_API Server
     void stop();
 
     ///
+    /// \brief detach
+    ///
+    void detach();
+
+    ///
     /// \brief setMaxClients
     /// \param maxClients
     ///
@@ -69,20 +74,21 @@ class SRC_API Server
     void delStreamViewer ( StreamViewerClient * streamViewer );
     void delViewer( ViewerClient* viewer );
 
-    void newAcquisition( StreamerClient* streamer, hub::Acquisition&& acq );
+    void newAcquisition(StreamerClient* streamer, const Acquisition &acq );
 
     std::list<std::pair<std::string, hub::SensorSpec>> listStreams() const;
-    const std::shared_ptr<hub::Acquisition> getAcquisition( const std::string& streamName );
+    const hub::Acquisition & getAcquisition( const std::string& streamName ) const;
 
     void removeClient( Client* client );
     const std::map<std::string, StreamerClient*>& getStreamers() const;
 
-    hub::SensorSpec getSensorSpec(const std::string & streamName) const;
+    const hub::SensorSpec & getSensorSpec(const std::string & streamName) const;
 
   private:
     std::thread m_thread;
 
     std::map<std::string, StreamerClient*> m_streamName2streamer;
+//    std::mutex m_mtxStreamName2streamer;
     std::map<std::string, std::list<StreamViewerClient*>> m_streamName2streamViewers;
 //    std::mutex m_mtxStreamers;
 
@@ -97,12 +103,16 @@ class SRC_API Server
 
     std::mutex m_mtxPrint;
 
+    bool m_detached = false;
+//    bool m_isRunning = false;
+
 //  private:
     friend class Client;
     friend class StreamerClient;
     friend class StreamViewerClient;
     friend class ViewerClient;
     friend class AskerClient;
+//    friend class hub::net::ServerSocket;
 };
 
 

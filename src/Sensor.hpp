@@ -29,14 +29,12 @@ class SRC_API Sensor
 
   public:
 
+//    SRC_API friend std::ostream& operator<<( std::ostream& os, const Sensor& sensor );
+
     ///
-    /// \brief operator <<
-    /// \param os
-    /// \param sensor
+    /// \brief getSpec
     /// \return
     ///
-    SRC_API friend std::ostream& operator<<( std::ostream& os, const Sensor& sensor );
-
     const SensorSpec &getSpec() const;
 
   protected:

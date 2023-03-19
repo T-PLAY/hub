@@ -128,8 +128,16 @@ class SRC_API Measure
 
 //    bool ownData() const;
 
+    ///
+    /// \brief getData
+    /// \return
+    ///
     unsigned char *getData() const;
 
+    ///
+    /// \brief getSize
+    /// \return
+    ///
     uint64_t getSize() const;
 
 
@@ -140,7 +148,14 @@ class SRC_API Measure
     ///
     bool m_ownData = false;
 
+    ///
+    /// \brief m_data
+    ///
     unsigned char* m_data;
+
+    ///
+    /// \brief m_size
+    ///
     uint64_t m_size; // compatibility 32/64 bits
 
   private:

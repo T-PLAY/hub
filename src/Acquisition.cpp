@@ -148,7 +148,8 @@ Acquisition Acquisition::slerp( const Acquisition& left, const Acquisition& righ
 
 Acquisition& Acquisition::operator<<( const data::Measures& measures ) {
     for ( const auto& measure : measures ) {
-        emplaceMeasure( (const unsigned char*)measure.getData(), measure.getSize(), measure.getResolution() );
+//        emplaceMeasure( (const unsigned char*)measure.getData(), measure.getSize(), measure.getResolution() );
+        emplaceMeasure( reinterpret_cast<const unsigned char*>(measure.getData()), measure.getSize(), measure.getResolution() );
 //        emplaceMeasure( measure.m_data, measure.m_size, measure.getResolution() );
     }
     return *this;

@@ -51,8 +51,9 @@ void ServerSocket::initServer() {
 
     // Create server
     if ( net::utils::bind( m_fdSock, m_addr ) < 0 ) {
-        perror( "Failed to bind.\n" );
-        exit( 1 );
+//        perror( "Failed to bind.\n" );
+        throw Socket::exception("Failed to bind because address already in use");
+//        exit( 1 );
     }
 
     if ( net::utils::listen( m_fdSock, 3 ) < 0 ) {

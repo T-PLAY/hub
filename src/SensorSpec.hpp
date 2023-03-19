@@ -101,6 +101,12 @@ class SRC_API SensorSpec
     ///
     std::string to_string() const;
 
+    ///
+    /// \brief isEmpty
+    /// \return
+    ///
+    bool isEmpty() const;
+
   public:
     ///
     /// \brief to_string

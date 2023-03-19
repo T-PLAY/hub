@@ -156,7 +156,7 @@ class SRC_API Input
     /// \brief read
     /// \param sensorSpec
     ///
-    void read( SensorSpec& sensorSpec );
+    virtual void read( SensorSpec& sensorSpec );
 
     ///
     /// \brief read
@@ -170,12 +170,24 @@ class SRC_API Input
     ///
     void read( data::Measure& measure ) = delete;
 
+   ///
+//    virtual Acquisition getAcquisition( const SensorSpec& sensorSpec );
     ///
     /// \brief getAcquisition
-    /// \param sensorSpec
     /// \return
     ///
-    virtual Acquisition getAcquisition( const SensorSpec& sensorSpec );
+    virtual Acquisition getAcquisition();
+
+    ///
+    /// \brief operator >>
+    /// \param input
+    /// \return
+    ///
+    Acquisition operator>>(Input & input);
+
+  private:
+    std::list<Acquisition> m_lastAcqs;
+    hub::SensorSpec m_sensorSpec;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

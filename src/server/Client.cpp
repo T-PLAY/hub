@@ -15,7 +15,9 @@ Client::Client( Server* server, int iClient ) : m_server( server ), m_iClient( i
 }
 
 Client::~Client() {
-    if ( m_server != nullptr ) m_server->removeClient( this );
+//    std::cout << "[Client] ~Client()" << std::endl;
+    if ( m_server != nullptr )
+    m_server->removeClient( this );
 }
 
 constexpr int g_margin  = 45;
