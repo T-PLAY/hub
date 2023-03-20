@@ -57,6 +57,9 @@ Measure Measure::slerp( const Measure& left, const Measure& right, double t ) {
         case Format::DOF6: {
             return Dof6::slerp( Dof6( left ), Dof6( right ), t );
         }
+        default:
+            assert(false);
+            // do nothing
         }
     }
     return left.clone(); // avoid non return warning

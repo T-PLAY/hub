@@ -38,20 +38,42 @@ else()
 endif()
 
 if(MINGW)
-    set(REQUIRED_LIBS ws2_32)
-    get_filename_component(Mingw_Path ${CMAKE_CXX_COMPILER} PATH)
-    set(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS ${Mingw_Path}/libgcc_s_seh-1.dll ${Mingw_Path}/libstdc++-6.dll
-                                          ${Mingw_Path}/libwinpthread-1.dll)
-    install(
-        PROGRAMS ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS}
-        DESTINATION bin
-        COMPONENT System)
+    if (CLANG)
+            find_package(Threads REQUIRED)
+            set(REQUIRED_LIBS Threads::Threads)
+
+    elseif(GCC)
+            set(REQUIRED_LIBS ws2_32)
+            get_filename_component(Mingw_Path ${CMAKE_CXX_COMPILER} PATH)
+            message(STATUS "${Mingw_Path}")
+            set(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS ${Mingw_Path}/libgcc_s_seh-1.dll ${Mingw_Path}/libstdc++-6.dll
+                                                  ${Mingw_Path}/libwinpthread-1.dll)
+
+            install(
+                PROGRAMS ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS}
+                DESTINATION bin
+                COMPONENT System)
+    else()
+        message(FATAL_ERROR "unsupported compiler ${CMAKE_CXX_COMPILER_ID}")
+    endif()
 elseif(WIN32)
+    if (MSVC)
+    else()
+        message(FATAL_ERROR "unsupported compiler ${CMAKE_CXX_COMPILER_ID}")
+    endif()
+
+elseif(APPLE)
+    message(FATAL_ERROR "apple detected")
 
 elseif(UNIX)
     find_package(Threads REQUIRED)
     set(REQUIRED_LIBS Threads::Threads)
+else()
+    message(FATAL_ERROR "unknown system")
 endif()
+
+#    find_package(Threads REQUIRED)
+#    set(REQUIRED_LIBS Threads::Threads)
 
 target_link_libraries(${PROJECT_NAME} ${REQUIRED_LIBS})
 #set(CMAKE_CXX_STANDARD 11)

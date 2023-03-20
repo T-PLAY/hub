@@ -177,6 +177,8 @@ std::string anyValue2string( const Any& any ) {
             const auto& val = any.getMat4();
             return val.to_string();
         } break;
+        default:
+            assert(false);
         }
     }
 
