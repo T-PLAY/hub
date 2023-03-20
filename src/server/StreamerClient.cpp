@@ -115,8 +115,8 @@ StreamerClient::StreamerClient( Server* server, int iClient, hub::net::ClientSoc
         }
         catch ( hub::net::Socket::exception& ex ) {
 //            s_mtxCout.lock();
-            std::cout << headerMsg() << "catch exception : " << ex.what()
-                      << std::endl;
+//            std::cout << headerMsg() << "catch exception : " << ex.what()
+//                      << std::endl;
         }
 //        std::cout << headerMsg() << "end streamer : '" << m_streamName << "'" << std::endl;
 //        std::cout << headerMsg() << "thread end" << std::endl;

@@ -183,8 +183,9 @@ StreamViewerClient::StreamViewerClient( Server* server,
 //            assert( !m_updateFailed );
 //            assert( !m_pingFailed );
 //            m_pingFailed = true;
-            std::cout << headerMsg() << "catch exception : " << ex.what()
-                      << std::endl;
+
+//            std::cout << headerMsg() << "catch exception : " << ex.what()
+//                      << std::endl;
         }
         catch ( std::exception& ) {
             assert( false );
