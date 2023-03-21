@@ -54,6 +54,8 @@ class SRC_API OutputSensor : public Sensor
     OutputSensor( const OutputSensor& outputSensor ) = delete;
     OutputSensor operator=( const OutputSensor& outputSensor ) = delete;
 
+    ~OutputSensor();
+
     ///
     /// \brief operator <<
     /// is used when you want to share sensor data.
@@ -65,6 +67,7 @@ class SRC_API OutputSensor : public Sensor
     /// \exception "used interface exception"
     /// when communication is broken.
     ///
+
     void operator<<( const Acquisition& acquisition ) const;
 
     ///

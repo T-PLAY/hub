@@ -43,7 +43,7 @@ Acquisition* getAcquisition( const InputSensor* inputSensor ) {
     Acquisition* ret = nullptr;
 
     try {
-        auto acq = inputSensor->getAcquisition();
+        auto acq = inputSensor->getAcq();
         std::cout << "[Native] get acq : " << acq << std::endl;
         ret = new Acquisition( std::move( acq ) );
     }

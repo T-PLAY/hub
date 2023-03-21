@@ -52,7 +52,7 @@ void ServerSocket::initServer() {
     // Create server
     if ( net::utils::bind( m_fdSock, m_addr ) < 0 ) {
 //        perror( "Failed to bind.\n" );
-        throw Socket::exception("Failed to bind because address already in use");
+        throw Socket::exception((std::string("Failed to bind because port ") + std::to_string(mPort) + " already in use").c_str());
 //        exit( 1 );
     }
 

@@ -7,8 +7,18 @@
 
 namespace hub {
 
+OutputSensor::~OutputSensor()
+{
+//    assert(m_output->isOpen());
+    if (m_output->isOpen())
+        m_output->close();
+    assert(! m_output->isOpen());
+//    m_output.release();
+}
+
 void OutputSensor::operator<<( const Acquisition& acquisition ) const {
 #ifdef DEBUG
+    assert(m_output->isOpen());
     assert( !acquisition.hasFixedSize() || acquisition.getSize() == m_spec.getAcquisitionSize() );
     assert( acquisition.getStart() <= acquisition.getEnd() );
 

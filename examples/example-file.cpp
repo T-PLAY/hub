@@ -57,7 +57,7 @@ hub::io::File inputFile( std::fstream( "file.txt", std::ios::binary | std::ios::
             hub::InputSensor inputSensor( hub::io::File( std::move( file ) ) );
             const hub::Resolutions& resolutions = inputSensor.getSpec().getResolutions();
 
-            auto acq = inputSensor.getAcquisition();
+            auto acq = inputSensor.getAcq();
 
             const hub::data::Measure& measure = acq.getMeasures().at( 0 );
             const hub::data::Dof6 dof62( measure );
@@ -83,7 +83,7 @@ hub::io::File inputFile( std::fstream( "file.txt", std::ios::binary | std::ios::
 
     {
         hub::InputSensor inputSensor( hub::io::File( std::fstream( "file.txt", std::ios::in ) ) );
-        const auto& acq = inputSensor.getAcquisition();
+        const auto& acq = inputSensor.getAcq();
 
         std::cout << "acq = " << acq << std::endl;
 

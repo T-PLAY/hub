@@ -90,6 +90,12 @@ void Output::write( const char* str ) {
 // }
 
 // void Output::write( const std::any& any )  {
+//Output::~Output()
+//{
+////    assert(Output::isOpen());
+//    Output::close();
+//}
+
 void Output::write( const Any& any ) {
     assert( isOpen() );
 

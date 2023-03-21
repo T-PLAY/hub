@@ -111,7 +111,7 @@ TEST_CASE( "InputSyncStream test" ) {
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const std::string ipv4 = "127.0.0.1";
-    const int port         = getRandomPort();
+    const int port         = getRandomPort(__FILE_NAME__);
 
     hub::server::Server server( port );
     server.setMaxClients( 4 );
@@ -124,7 +124,7 @@ TEST_CASE( "InputSyncStream test" ) {
     hub::OutputSensor outputSensor2( ref_sensorSpec2, std::move( outputStream2 ) );
     std::cout << "outputSensors created" << std::endl;
 
-    hub::io::InputSyncStream inputStream( "streamName", "streamName2", hub::net::ClientSocket( ipv4, port ) );
+    hub::io::InputSyncStream inputStream( "streamName", "streamName2", ipv4, port );
     hub::InputSensor inputSensor( std::move( inputStream ) );
     std::cout << "inputSensor created" << std::endl;
     CHECK( inputSensor.getSpec() == ref_sensorSpec + ref_sensorSpec2 );

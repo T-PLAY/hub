@@ -44,6 +44,7 @@ class SRC_API Output
     Output&& operator=( Output&& output ) = delete;
 
     virtual ~Output() = default;
+//    virtual ~Output();
 
   protected:
     ///

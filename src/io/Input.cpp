@@ -1,13 +1,13 @@
 #include "io/Input.hpp"
 
-//#include <any>
-//#include <cstring>
-//#include <iostream>
-//#include <typeindex>
-//#include <typeinfo>
+// #include <any>
+// #include <cstring>
+// #include <iostream>
+// #include <typeindex>
+// #include <typeinfo>
 
-//#include "Acquisition.hpp"
-//#include "SensorSpec.hpp"
+// #include "Acquisition.hpp"
+// #include "SensorSpec.hpp"
 #include "Any.hpp"
 
 namespace hub {
@@ -47,25 +47,28 @@ void Input::read( SensorSpec& sensorSpec ) {
     sensorSpec =
         SensorSpec( std::move( sensorName ), std::move( resolutions ), std::move( metaData ) );
 
-    m_sensorSpec = sensorSpec;
+    assert(! sensorSpec.isEmpty());
+
+    //    m_sensorSpec = sensorSpec;
+    //    assert(! m_sensorSpec.isEmpty());
 }
 
 // SensorSpec Input::getSensorSpec()  {
 
-//#ifdef DEBUG_INPUT
-//#endif
+// #ifdef DEBUG_INPUT
+// #endif
 
 //}
 
-Acquisition Input::getAcquisition( ) {
+Acquisition Input::getAcq( const SensorSpec& sensorSpec ) {
 #ifdef DEBUG
-    assert(! m_sensorSpec.isEmpty());
+    //    assert(! m_sensorSpec.isEmpty());
     assert( isOpen() );
-    assert(! isEnd());
+    assert( !isEnd() );
 #endif
 
 #ifdef DEBUG_INPUT
-    std::cout << "[Input] getAcquisition()" << std::endl;
+    std::cout << "[Input] getAcq()" << std::endl;
 #endif
 
     long long start, end;
@@ -81,7 +84,8 @@ Acquisition Input::getAcquisition( ) {
     assert( nMeasures > 0 );
 #endif
 
-    const auto& resolutions = m_sensorSpec.getResolutions();
+    //    const auto& resolutions = m_sensorSpec.getResolutions();
+    const auto& resolutions = sensorSpec.getResolutions();
 #ifdef DEBUG
     assert( resolutions.size() == nMeasures );
 #endif
@@ -98,9 +102,10 @@ Acquisition Input::getAcquisition( ) {
 
 //    assert( !acq.hasFixedSize() || m_sensorSpec.getAcquisitionSize() == acq.getSize() );
 #ifdef DEBUG
-    assert( !acq.hasFixedSize() || acq.getSize() == m_sensorSpec.getAcquisitionSize() );
-//    const auto& resolutions = m_sensorSpec.getResolutions();
-    const auto& measures    = acq.getMeasures();
+    //    assert( !acq.hasFixedSize() || acq.getSize() == m_sensorSpec.getAcquisitionSize() );
+    assert( !acq.hasFixedSize() || acq.getSize() == sensorSpec.getAcquisitionSize() );
+    //    const auto& resolutions = m_sensorSpec.getResolutions();
+    const auto& measures = acq.getMeasures();
     assert( resolutions.size() == measures.size() );
     assert( resolutions.size() > 0 );
     for ( size_t i = 0; i < resolutions.size(); ++i ) {
@@ -112,76 +117,82 @@ Acquisition Input::getAcquisition( ) {
     }
 #endif
 
-
     return acq;
 }
 
-Acquisition Input::operator>>(Input &input)
-{
+// Acquisition Input::operator>>(Input &input)
+//{
+// Acquisition
+// Input::getSyncAcq( const SensorSpec& sensorSpec,
+//                   Input& input, std::list<Acquisition>& lastAcqs ) {
+Acquisition Input::getSyncAcq( const SensorSpec& sensorSpec,
+                        Input& input2,
+                        const SensorSpec& sensorSpec2,
+                        std::list<Acquisition>& lastAcqs2 ) {
+
     //        InputSensor ret(*this);
     //        InputSensor ret(inputSensor);
 #ifdef DEBUG
-    assert(! isEnd());
-    assert(! input.isEnd());
+    assert( !isEnd() );
+    assert( !input2.isEnd() );
 #endif
-    auto masterAcq = getAcquisition();
+    auto masterAcq = getAcq( sensorSpec );
 
-//    const auto & input = inputSensor.getInput();
+    //    const auto & input2 = inputSensor.getInput();
 
     //    auto & left = inputSensor.m_lastAcq;
-    auto& lastAcqs = input.m_lastAcqs;
-    assert( lastAcqs.size() < 20 );
+    //    auto& lastAcqs = input2.m_lastAcqs;
+    //    auto& lastAcqs = input2.m_lastAcqs;
+    assert( lastAcqs2.size() < 20 );
 
-    if ( lastAcqs.empty() ) {
-        //        left = input.getAcquisition();
-        lastAcqs.push_back( input.getAcquisition() );
-        //        lastAcqs.push_back(input.getAcquisition());
+    if ( lastAcqs2.empty() ) {
+        //        left = input2.getAcq();
+        lastAcqs2.push_back( input2.getAcq(sensorSpec2) );
+        //        lastAcqs2.push_back(input2.getAcq());
     }
 
-    while ( masterAcq.getStart() < lastAcqs.front().getStart() ) {
-        masterAcq = getAcquisition();
+    while ( masterAcq.getStart() < lastAcqs2.front().getStart() ) {
+        masterAcq = getAcq(sensorSpec);
         std::cout << "[InputSensor] operator>>(InputSensor&) shift masterAcq : " << masterAcq
                   << std::endl;
     }
 
     //    auto right =
-    while ( lastAcqs.back().getStart() < masterAcq.getStart() ) {
-        lastAcqs.push_back( input.getAcquisition() );
+    while ( lastAcqs2.back().getStart() < masterAcq.getStart() ) {
+        lastAcqs2.push_back( input2.getAcq(sensorSpec2) );
     }
 
-    if (lastAcqs.back().getStart() == masterAcq.getStart()) {
-        masterAcq << lastAcqs.back().getMeasures();
+    if ( lastAcqs2.back().getStart() == masterAcq.getStart() ) {
+        masterAcq << lastAcqs2.back().getMeasures();
         return masterAcq;
     }
 
-
-    while ( lastAcqs.size() > 2 ) {
-        lastAcqs.pop_front();
+    while ( lastAcqs2.size() > 2 ) {
+        lastAcqs2.pop_front();
     }
 
-
-//    assert( lastAcqs.size() == 2 );
-    const auto& left  = lastAcqs.front();
-    const auto& right = lastAcqs.back();
+    //    assert( lastAcqs2.size() == 2 );
+    const auto& left  = lastAcqs2.front();
+    const auto& right = lastAcqs2.back();
 
     assert( left.getStart() <= masterAcq.getStart() );
     assert( masterAcq.getStart() <= right.getStart() );
 
-//    if ( lastAcqs.back().getStart() == masterAcq.getStart() ) {
-//        masterAcq << right.getMeasures();
-//        return masterAcq;
-//    }
+    //    if ( lastAcqs2.back().getStart() == masterAcq.getStart() ) {
+    //        masterAcq << right.getMeasures();
+    //        return masterAcq;
+    //    }
 
     const auto& closestAcq = ( std::abs( left.getStart() - masterAcq.getStart() ) >
                                std::abs( right.getStart() - masterAcq.getStart() ) )
                                  ? ( right )
                                  : ( left );
 
-//    if (input.isEnd())
-//        lastAcqs.pop_front();
+    //    if (input2.isEnd())
+    //        lastAcqs2.pop_front();
 
-//    if (lastAcqs.empty())
-//        return Acquisition();
+    //    if (lastAcqs2.empty())
+    //        return Acquisition();
 
     masterAcq << closestAcq.getMeasures();
     return masterAcq;
@@ -206,6 +217,11 @@ Acquisition Input::operator>>(Input &input)
     //        return *this;
 }
 
+// hub::SensorSpec Input::getSensorSpec() const
+//{
+//     return m_sensorSpec;
+// }
+
 void Input::read( char* str ) {
     assert( isOpen() );
 
@@ -225,6 +241,12 @@ void Input::read( char* str ) {
 }
 
 // void Input::read( std::any& any )  {
+// Input::Input(Input &&input)
+//    : m_lastAcqs(std::move(input.m_lastAcqs))
+//    , m_sensorSpec(std::move(input.m_sensorSpec))
+//{
+//}
+
 void Input::read( Any& any ) {
     assert( isOpen() );
 

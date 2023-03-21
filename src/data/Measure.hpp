@@ -28,8 +28,11 @@ class SRC_API Measure
     /// needs to be compatible with the sensorSpec when you send this measure through the
     /// OutputSensor.
     ///
-    template <class ResolutionT = Resolution>
-    Measure( const unsigned char* const data, uint64_t size, ResolutionT&& resolution );
+//    template <class Resolution = hub::Resolution>
+    template <class Resolution = Resolution>
+//    template <class Resolution>
+//    template <typename Resolution>
+    Measure( const unsigned char* const data, uint64_t size, Resolution&& resolution );
 
     ///
     /// \brief Measure
@@ -43,8 +46,9 @@ class SRC_API Measure
     /// OutputSensor. \param stealData is on when you want the measure to be the owner of the
     /// external pointer data, that imply the deletion of data when measure is destruct.
     ///
-    template <class ResolutionT = Resolution>
-    Measure( unsigned char* data, uint64_t size, ResolutionT&& resolution, bool stealData = false );
+//    template <class Resolution = Resolution>
+    template <class Resolution>
+    Measure( unsigned char* data, uint64_t size, Resolution&& resolution, bool stealData = false );
 
     ///
     /// \brief Measure
@@ -179,14 +183,14 @@ inline uint64_t Measure::getSize() const
     return m_size;
 }
 
-template <class ResolutionT>
-Measure::Measure( const unsigned char* const data, uint64_t size, ResolutionT&& resolution ) :
+template <class Resolution>
+Measure::Measure( const unsigned char* const data, uint64_t size, Resolution&& resolution ) :
     m_data( new unsigned char[size] ),
     m_size( size ),
     m_ownData( true ),
-    m_resolution( std::forward<ResolutionT>( resolution ) ) {
+    m_resolution( std::forward<Resolution>( resolution ) ) {
 
-    static_assert( std::is_same<std::decay_t<Resolution>, std::decay_t<ResolutionT>>::value,
+    static_assert( std::is_same<std::decay_t<Resolution>, std::decay_t<hub::Resolution>>::value,
                    "must be the same as Resolution" );
 
     assert( data != nullptr );
@@ -196,14 +200,14 @@ Measure::Measure( const unsigned char* const data, uint64_t size, ResolutionT&& 
     assert( size == res::computeAcquisitionSize( m_resolution ) );
 }
 
-template <class ResolutionT>
-Measure::Measure( unsigned char* data, uint64_t size, ResolutionT&& resolution, bool stealData ) :
+template <class Resolution>
+Measure::Measure( unsigned char* data, uint64_t size, Resolution&& resolution, bool stealData ) :
     m_data( data ),
     m_size( size ),
     m_ownData( stealData ),
-    m_resolution( std::forward<ResolutionT>( resolution ) ) {
+    m_resolution( std::forward<Resolution>( resolution ) ) {
 
-    static_assert( std::is_same<std::decay_t<Resolution>, std::decay_t<ResolutionT>>::value,
+    static_assert( std::is_same<std::decay_t<Resolution>, std::decay_t<hub::Resolution>>::value,
                    "must be the same as Resolution" );
 
     if ( !res::format2hasFixedSize( m_resolution.second ) ) return;

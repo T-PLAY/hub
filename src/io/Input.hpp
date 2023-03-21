@@ -40,6 +40,7 @@ class SRC_API Input
     /// \param input
     ///
     Input( Input&& input )      = default;
+//    Input( Input&& input );
     Input( const Input& input ) = delete;
     Input& operator=( const Input& input ) = delete;
     Input&& operator=( Input&& input ) = delete;
@@ -171,23 +172,27 @@ class SRC_API Input
     void read( data::Measure& measure ) = delete;
 
    ///
-//    virtual Acquisition getAcquisition( const SensorSpec& sensorSpec );
+//    virtual Acquisition getAcq( const SensorSpec& sensorSpec );
     ///
-    /// \brief getAcquisition
+    /// \brief getAcq
     /// \return
     ///
-    virtual Acquisition getAcquisition();
+    virtual Acquisition getAcq(const SensorSpec & sensorSpec);
 
     ///
     /// \brief operator >>
     /// \param input
     /// \return
     ///
-    Acquisition operator>>(Input & input);
+//    Acquisition operator>>(Input & input);
+
+    Acquisition getSyncAcq(const SensorSpec & sensorSpec, Input & input2, const SensorSpec & sensorSpec2, std::list<Acquisition> & lastAcqs2);
+
+//    hub::SensorSpec getSensorSpec() const;
 
   private:
-    std::list<Acquisition> m_lastAcqs;
-    hub::SensorSpec m_sensorSpec;
+//    std::list<Acquisition> m_lastAcqs;
+//    hub::SensorSpec m_sensorSpec;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -66,7 +66,7 @@ std::string SensorSpec::to_string() const {
 
 bool SensorSpec::isEmpty() const
 {
-    return m_sensorName == "" && m_resolutions.empty() && m_metaData.empty();
+    return m_sensorName == "" && m_resolutions.empty();
 }
 
 // constexpr int SensorSpec::format2nByte(const Format &format)

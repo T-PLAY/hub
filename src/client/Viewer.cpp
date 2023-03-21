@@ -364,11 +364,11 @@ void Viewer::Stream::startStream() {
                 m_inputSensor = std::make_unique<InputSensor>( io::InputSyncStream(
                 m_streamName,
                 m_syncStreamName,
-                net::ClientSocket( m_viewer.m_sock.getIpv4(), m_viewer.m_sock.getPort() ) ) );
+                m_viewer.m_sock.getIpv4(), m_viewer.m_sock.getPort()) );
             }
 
             while ( !m_stopThread ) {
-                auto acq = m_inputSensor->getAcquisition();
+                auto acq = m_inputSensor->getAcq();
                 m_viewer.m_onNewAcquisition( m_streamId.c_str(), acq );
             }
         }
