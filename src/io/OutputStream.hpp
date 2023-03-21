@@ -33,6 +33,11 @@ class SRC_API OutputStream : public Output
     explicit OutputStream( const std::string& streamName,
                            net::ClientSocket&& clientSocket = net::ClientSocket() );
 
+//    OutputStream(OutputStream&& outputStream) = default;
+//    ~OutputStream();
+
+    void write(const Acquisition & acq) override;
+
     //#ifdef WIN32 // msvc warning C4250
   protected:
     void write( const unsigned char* data, size_t len ) override;
@@ -47,6 +52,12 @@ class SRC_API OutputStream : public Output
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+inline void OutputStream::write(const Acquisition &acq)
+{
+    m_clientSocket.write(net::ClientSocket::Message::NEW_ACQ);
+    Output::write(acq);
+}
+
 //#ifdef WIN32
 inline void OutputStream::write( const unsigned char* data, size_t len ) {
     m_clientSocket.write( data, len );
@@ -56,6 +67,13 @@ inline void OutputStream::write( const unsigned char* data, size_t len ) {
 //}
 
 inline void OutputStream::close() {
+//    std::cout << "[OutputStream] close()" << std::endl;
+    net::ClientSocket::Message mess;
+    m_clientSocket.write(net::ClientSocket::Message::OUTPUT_STREAM_CLOSED);
+    assert(m_clientSocket.isOpen());
+    m_clientSocket.read( mess );
+    assert ( mess == net::ClientSocket::Message::STREAMER_CLOSED );
+//    assert(false);
     m_clientSocket.close();
 }
 

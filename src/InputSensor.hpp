@@ -42,13 +42,16 @@ class SRC_API InputSensor : public Sensor
         static_assert( std::is_base_of<io::Input, Input>::value, "not a base class" );
 
         m_input->read( m_spec );
+//        assert(! m_spec.isEmpty());
     }
 
 //    template <class Input>
 //    InputSensor( Input& input ) = delete;
     template <class Input,
               typename = typename std::enable_if<std::is_base_of<io::Input, Input>::value>::type>
-    explicit InputSensor( Input& input ) = delete;
+    explicit InputSensor( const Input& input ) = delete;
+
+    ~InputSensor();
 
     InputSensor operator=( const InputSensor& inputSensor ) = delete;
 
@@ -72,7 +75,7 @@ class SRC_API InputSensor : public Sensor
     /// \exception "used interface exception"
     /// when communication bus is broken.
     ///
-    Acquisition getAcquisition() const;
+    Acquisition getAcq() const;
 
     ///
     /// \brief operator >>
@@ -111,8 +114,8 @@ class SRC_API InputSensor : public Sensor
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-inline Acquisition InputSensor::getAcquisition() const {
-    return m_input->getAcquisition();
+inline Acquisition InputSensor::getAcq() const {
+    return m_input->getAcq(m_spec);
 }
 
 } // namespace hub

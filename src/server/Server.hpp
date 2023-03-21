@@ -42,11 +42,11 @@ class SRC_API Server
     ///
     void asyncRun();
 
-    ///
-    /// \brief stop
-    /// \warning need async running
-    ///
-    void stop();
+//    ///
+//    /// \brief stop
+//    /// \warning need async running
+//    ///
+//    void stop();
 
     ///
     /// \brief detach
@@ -90,7 +90,7 @@ class SRC_API Server
     std::map<std::string, StreamerClient*> m_streamName2streamer;
 //    std::mutex m_mtxStreamName2streamer;
     std::map<std::string, std::list<StreamViewerClient*>> m_streamName2streamViewers;
-//    std::mutex m_mtxStreamers;
+    std::mutex m_mtxSreamName2streamViewers;
 
     std::list<ViewerClient*> m_viewers;
 

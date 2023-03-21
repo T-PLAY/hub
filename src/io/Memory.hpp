@@ -62,12 +62,16 @@ class SRC_API Memory : public InputOutput
     ///
     /// @copydoc InputOutput::close()
     ///
-    void close() override {}
+    void close() override {
+        m_closed = true;
+    }
 
     ///
     /// @copydoc InputOutput::isOpen()
     ///
-    bool isOpen() const override { return true; }
+    bool isOpen() const override {
+        return ! m_closed;
+    }
 
     ///
     /// @copydoc InputOutput::isEnd()
@@ -91,6 +95,7 @@ class SRC_API Memory : public InputOutput
 
   private:
     Container& m_container;
+    bool m_closed = false;
 };
 
 } // namespace io

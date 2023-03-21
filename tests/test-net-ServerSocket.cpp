@@ -9,7 +9,7 @@ TEST_CASE( "ServerSocket test" ) {
 
     //    hub::server::Server server()
 //    const std::string ipv4 = "127.0.0.1";
-    const int port         = getRandomPort() + 3;
+    const int port         = getRandomPort(__FILE_NAME__);
     hub::server::Server server( port );
         server.setMaxClients( 0 );
         server.asyncRun();

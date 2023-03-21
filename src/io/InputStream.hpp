@@ -32,18 +32,25 @@ class SRC_API InputStream : public Input
     /// Also occur when stream you want to link is not connected to the server.
     ///
     explicit InputStream( const std::string& streamName,
-//                          const std::string& syncStreamName = "",
-                          net::ClientSocket&& clientSocket  = net::ClientSocket());
-//                          bool mergeSyncAcqs                = true );
+                          //                          const std::string& syncStreamName = "",
+                          net::ClientSocket&& clientSocket = net::ClientSocket() );
+    //                          bool mergeSyncAcqs                = true );
 
-//#ifdef WIN32 // msvc warning C4250
-//  protected:
-//    void write( const unsigned char* data, size_t len ) const override;
-//    void read( unsigned char* data, size_t len ) const override;
-//    void close() const override;
-//    bool isOpen() const override;
-//    bool isEnd() const override;
-//#endif
+    //    InputStream(InputStream&& inputStream) = default;
+    //    InputStream( const InputStream& inputStream ) = delete;
+    //    InputStream& operator=( const InputStream& inputStream ) = delete;
+    //    InputStream&& operator=( InputStream&& inputStream ) = delete;
+    //    virtual ~InputStream() override;
+    //    ~InputStream();
+
+    // #ifdef WIN32 // msvc warning C4250
+    //   protected:
+    //     void write( const unsigned char* data, size_t len ) const override;
+    //     void read( unsigned char* data, size_t len ) const override;
+    //     void close() const override;
+    //     bool isOpen() const override;
+    //     bool isEnd() const override;
+    // #endif
 
   protected:
     ///
@@ -70,15 +77,21 @@ class SRC_API InputStream : public Input
     ///
     bool isEnd() const override;
 
-//    ///
-//    /// \brief getAcquisition
-//    /// \param sensorSpec
-//    /// \return
-//    ///
-//    Acquisition getAcquisition( const SensorSpec& sensorSpec ) override;
+    //    ///
+    //    /// \brief getAcquisition
+    //    /// \param sensorSpec
+    //    /// \return
+    //    ///
+    Acquisition getAcq( const SensorSpec& sensorSpec ) override;
+
+    void read( SensorSpec& sensorSpec ) override;
 
   private:
     net::ClientSocket m_clientSocket;
+    SensorSpec m_sensorSpec;
+    bool m_streamViewerClosed = false;
+
+    friend class InputSyncStream;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -92,7 +105,39 @@ inline void InputStream::read( unsigned char* data, size_t len ) {
 }
 
 inline void InputStream::close() {
+//    assert( !m_streamViewerClosed );
+    if ( m_streamViewerClosed ) {}
+    else {
+        m_clientSocket.write( net::ClientSocket::Message::INPUT_STREAM_CLOSED );
+        //    std::cout << "[InputStream] close()" << std::endl;
+        //    m_clientSocket.write( net::ClientSocket::Message::INPUT_STREAM_CLOSED );
+        //    assert( m_clientSocket.isOpen() );
+        //    if (m_)
+        //        net::ClientSocket::Message mess;
+        //        m_clientSocket.read( mess );
+        //        assert(mess == net::ClientSocket::Message::STREAM_VIEWER_CLOSED);
+
+        try {
+            while ( true ) {
+                auto acq = getAcq( m_sensorSpec );
+            }
+        }
+        catch ( std::exception& ex ) {
+            //        std::cout << "[InputStream] closing connection, all acqs received
+            //        (streamViewer is done)" << std::endl;
+            std::cout << ex.what() << std::endl;
+        }
+    }
+
+    //    while (mess == net::ClientSocket::Message::NEW_ACQ) {
+    //        auto acq = m_clientSocket.getAcq(m_sensorSpec);
+    //        m_clientSocket.read( mess );
+    //    }
+    //    m_clientSocket.read( mess );
+    //    assert ( mess == net::ClientSocket::Message::CLOSED );
+
     m_clientSocket.close();
+    std::cout << "[InputStream] close()" << std::endl;
 }
 
 inline bool InputStream::isEnd() const {

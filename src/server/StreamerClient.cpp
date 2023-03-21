@@ -13,6 +13,8 @@ class InputStream : public hub::io::Input
     explicit InputStream( hub::net::ClientSocket&& clientSocket ) :
         m_clientSocket( std::move( clientSocket ) ) {}
 
+    Acquisition getAcq(const SensorSpec & sensorSpec) override;
+
   protected:
     void read( unsigned char* data, size_t len ) override;
     void close() override;
@@ -21,13 +23,31 @@ class InputStream : public hub::io::Input
 
   private:
     hub::net::ClientSocket m_clientSocket;
+    bool m_outputStreamClosed = false;
 };
+
+Acquisition InputStream::getAcq(const SensorSpec &sensorSpec)
+{
+    net::ClientSocket::Message mess;
+    m_clientSocket.read( mess );
+    if ( mess == net::ClientSocket::Message::OUTPUT_STREAM_CLOSED ) {
+        m_outputStreamClosed = true;
+        throw net::Socket::exception("client closed connection");
+    }
+    assert( mess == net::ClientSocket::Message::NEW_ACQ );
+    return Input::getAcq(sensorSpec);
+}
 
 void InputStream::read( unsigned char* data, size_t len ) {
     m_clientSocket.read( data, len );
 }
 
 void InputStream::close() {
+//    std::cout << "[InputStream] close()" << std::endl;
+//    m_clientSocket.write(net::ClientSocket::Message::CLOSED);
+    assert(m_outputStreamClosed);
+    m_clientSocket.write(net::ClientSocket::Message::STREAMER_CLOSED);
+//     std::this_thread::sleep_for( std::chrono::milliseconds( 200 ) );
     m_clientSocket.close();
 }
 
@@ -106,7 +126,7 @@ StreamerClient::StreamerClient( Server* server, int iClient, hub::net::ClientSoc
             while ( m_inputSensor->getInput().isOpen() ) {
 
 //                auto acq           = m_inputSensor->getAcquisition();
-                m_lastAcq = m_inputSensor->getAcquisition();
+                m_lastAcq = m_inputSensor->getAcq();
 //                std::cout << "[StreamerClient] get acq : " << acq << std::endl;
                 m_server->newAcquisition( this, m_lastAcq );
 
@@ -115,8 +135,8 @@ StreamerClient::StreamerClient( Server* server, int iClient, hub::net::ClientSoc
         }
         catch ( hub::net::Socket::exception& ex ) {
 //            s_mtxCout.lock();
-//            std::cout << headerMsg() << "catch exception : " << ex.what()
-//                      << std::endl;
+            std::cout << headerMsg() << "catch exception : " << ex.what()
+                      << std::endl;
         }
 //        std::cout << headerMsg() << "end streamer : '" << m_streamName << "'" << std::endl;
 //        std::cout << headerMsg() << "thread end" << std::endl;

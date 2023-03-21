@@ -30,7 +30,7 @@ TEST_CASE( "Native test" ) {
     constexpr int delay = 1000; // ms
 
     const std::string ipv4 = "127.0.0.1";
-    const int port         = getRandomPort();
+    const int port         = getRandomPort(__FILE_NAME__);
 
     const hub::Resolution ref_resolution( { 1 }, hub::Format::BGR8 );
     const std::string ref_sensorName = "sensorName";
@@ -177,7 +177,7 @@ TEST_CASE( "Native test" ) {
     CHECK( !viewer->isConnected() );
     CHECK( !hub::native::viewer_isConnected( viewer ) );
 
-    std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
+//    std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
 
     // todo test
     //    if (false)
@@ -186,7 +186,7 @@ TEST_CASE( "Native test" ) {
         hub::server::Server server( port );
         server.setMaxClients( 4 );
         server.asyncRun();
-        std::this_thread::sleep_for( std::chrono::milliseconds( 2000 ) );
+        std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
         CHECK( viewer->isConnected() );
         CHECK( hub::native::viewer_isConnected( viewer ) );
         {
@@ -196,11 +196,11 @@ TEST_CASE( "Native test" ) {
                 ref_sensorSpec,
                 hub::io::OutputStream( ref_streamName, hub::net::ClientSocket( ipv4, port ) ) );
 
-            std::this_thread::sleep_for( std::chrono::milliseconds( 2000 ) );
+//            std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
 
             *outputSensor << ref_acq;
 
-            std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
+//            std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
             {
 
                 std::cout << "[Test] ############################### inputSensor start"
@@ -240,21 +240,21 @@ TEST_CASE( "Native test" ) {
                 output.close();
                 delete outputSensor;
 
-                std::this_thread::sleep_for( std::chrono::milliseconds( 2000 ) );
+//                std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
 
                 // todo native
 
                 std::cout << "[Test] ############################### inputSensor end" << std::endl;
             }
 
-            std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
+//            std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
 
             std::cout << "[Test] ############################### outputSensor end" << std::endl;
             server.detach();
         }
         std::cout << "[Test] ############################### server end" << std::endl;
     }
-    std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
+//    std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
 
     hub::native::freeViewer( viewer );
 }

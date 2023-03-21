@@ -42,7 +42,7 @@ TEST_CASE( "Output test" ) {
     memory.read( sensorSpec );
     CHECK( ref_sensorSpec == sensorSpec );
 
-    hub::Acquisition acq = memory.getAcquisition( );
+    hub::Acquisition acq = memory.getAcq( sensorSpec );
     CHECK( ref_acq == acq );
 
     char str[80];

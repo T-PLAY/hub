@@ -2,6 +2,7 @@
 #pragma once
 
 #include "Input.hpp"
+#include "InputStream.hpp"
 #include "net/ClientSocket.hpp"
 
 namespace hub {
@@ -35,7 +36,9 @@ class SRC_API InputSyncStream : public Input
     ///
     explicit InputSyncStream( const std::string& streamName,
                           const std::string& syncStreamName,
-                          net::ClientSocket&& clientSocket  = net::ClientSocket());
+                          const std::string& ipv4,
+                              int port);
+//                          net::ClientSocket&& clientSocket  = net::ClientSocket());
 //                          bool mergeSyncAcqs                = true );
 
 //#ifdef WIN32 // msvc warning C4250
@@ -73,39 +76,46 @@ class SRC_API InputSyncStream : public Input
     bool isEnd() const override;
 
     ///
-    /// \brief getAcquisition
+    /// \brief getAcq
     /// \return
     ///
-    Acquisition getAcquisition( ) override;
+    Acquisition getAcq( const SensorSpec & sensorSpec ) override;
 
     void read( SensorSpec& sensorSpec) override;
 
   private:
-    net::ClientSocket m_clientSocket;
-    net::ClientSocket m_clientSocket2;
-
-    SensorSpec m_sensorSpec;
-    SensorSpec m_sensorSpec2;
+//    net::ClientSocket m_clientSocket;
+//    net::ClientSocket m_clientSocket2;
+    InputStream m_inputStream;
+    InputStream m_inputStream2;
+//    SensorSpec m_sensorSpec;
+//    SensorSpec m_sensorSpec2;
+    std::list<Acquisition> m_lastAcqs;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 inline bool InputSyncStream::isOpen() const {
-    return m_clientSocket.isOpen() && m_clientSocket2.isOpen();
+    return m_inputStream.isOpen() || m_inputStream2.isOpen();
+//    return m_clientSocket.isOpen() && m_clientSocket2.isOpen();
 }
 
 inline void InputSyncStream::read( unsigned char* data, size_t len ) {
     assert(false);
-    m_clientSocket.read( data, len );
+//    m_clientSocket.read( data, len );
 }
 
 inline void InputSyncStream::close() {
-    m_clientSocket.close();
-    m_clientSocket2.close();
+    std::cout << "[InputSyncStream] close()" << std::endl;
+    if (m_inputStream.isOpen())
+        m_inputStream.close();
+    if (m_inputStream2.isOpen())
+        m_inputStream2.close();
 }
 
 inline bool InputSyncStream::isEnd() const {
-    return m_clientSocket.isEnd() || m_clientSocket2.isEnd();
+    assert(false);
+    return m_inputStream.isEnd() || m_inputStream2.isEnd();
 }
 
 } // namespace io

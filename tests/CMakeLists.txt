@@ -13,14 +13,15 @@ if(NOT ${Catch2_FOUND})
     FetchContent_MakeAvailable(Catch2)
 endif()
 
-file(GLOB_RECURSE TEST_SRC *.cpp)
+file(GLOB_RECURSE test_srcs *.cpp)
 
-add_executable(test-all ${TEST_SRC})
+add_executable(test-all ${test_srcs})
 target_link_libraries(test-all Catch2::Catch2WithMain hub)
+target_include_directories(test-all PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 set_property(TARGET test-all PROPERTY CXX_STANDARD ${CMAKE_CXX_STANDARD})
 set_property(TARGET test-all PROPERTY CXX_EXTENSIONS OFF)
 
-file(GLOB testFiles test-*.cpp)
+#file(GLOB testFiles *.cpp)
 
 if(WIN32)
     add_custom_command(
@@ -32,12 +33,16 @@ endif()
 
 include(CTest)
 enable_testing()
-foreach(testFile ${testFiles})
+foreach(testFile ${test_srcs})
+#    message(STATUS ${testFile})
     get_filename_component(test ${testFile} NAME_WE)
 
-    add_executable(${test} ${test}.cpp)
+#    add_executable(${test} ${test}.cpp)
+    add_executable(${test} ${testFile})
     target_link_libraries(${test} PRIVATE Catch2::Catch2WithMain hub)
-    target_include_directories(${test} PRIVATE ${HUB_INCLUDE_DIR})
+#    target_include_directories(${test} PRIVATE ${HUB_INCLUDE_DIR})
+    target_include_directories(${test} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+
     add_test(NAME ${test} COMMAND ${test})
 
     # "*.inl" "/usr/*" NO_DEMANGLE # "examples/*" "include/*" COMMAND ${HUB_BROWSER}

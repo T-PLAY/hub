@@ -203,10 +203,16 @@ void ClientSocket::read( unsigned char* data, size_t len ) {
                 "[ClientSocket] read(data, len) Can't read packet, peer connection lost" );
         }
         else if ( byteRead == 0 ) {
-            assert( isConnected() );
-            close();
-            throw Socket::exception(
-                "[ClientSocket] read(data, len) 0 byte received, peer connection lost" );
+            //            assert( isConnected() );
+            if ( isConnected() ) {
+                close();
+                throw Socket::exception(
+                    "[ClientSocket] read(data, len) 0 byte received, peer connection lost" );
+            }
+            else {
+                throw Socket::exception(
+                    "[ClientSocket] read(data, len) 0 byte received, connection already broken by write operation" );
+            }
         }
 
         downloadSize += byteRead;

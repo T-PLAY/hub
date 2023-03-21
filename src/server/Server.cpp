@@ -10,6 +10,13 @@
 
 #include <Sensor.hpp>
 
+#define SERVER_MSG( str )                             \
+    do {                                              \
+        m_mtxPrint.lock();                            \
+        std::cout << headerMsg() << str << std::endl; \
+        m_mtxPrint.unlock();                          \
+    } while ( false )
+
 namespace hub {
 namespace server {
 
@@ -17,38 +24,43 @@ Server::Server() {
     assert( !m_thread.joinable() );
 }
 
-Server::Server( int port ) : m_serverSock( port ) {
-
-}
+Server::Server( int port ) : m_serverSock( port ) {}
 
 Server::~Server() {
-    std::cout << headerMsg() << "~Server()" << std::endl;
+    //    m_mtxPrint.lock();
+    //    std::cout << headerMsg() << "~Server()" << std::endl;
+    //    m_mtxPrint.unlock();
+    SERVER_MSG( "~Server()" );
+
     assert( m_nClient == 0 || m_nClient == m_maxClients );
-//    if (m_isRunning) {
-        assert( m_thread.joinable() );
-        m_thread.join();
-//    }
+    //    if (m_isRunning) {
+    assert( m_thread.joinable() );
+    m_thread.join();
+    //    }
 
-//    if ( !m_detached ) {
-        for ( auto* client : m_clients ) {
-            //        client->setServer( nullptr );
-            //        delete client;
-            client->end();
-        }
+    //    if ( !m_detached ) {
+            for ( auto* client : m_clients ) {
+                //        client->setServer( nullptr );
+                //        delete client;
+                client->end();
+            }
 
-        //    if ( !m_detached ) {
-        while ( !m_clients.empty() ) {
-            std::cout << headerMsg() << "waiting for clients ended (" << m_clients.size() << ")"
-                      << std::endl;
-            std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
-        }
-//    }
+    //    if ( !m_detached ) {
+    m_mtxClients.lock();
+    while ( !m_clients.empty() ) {
+        SERVER_MSG( "waiting for clients ended (" << m_clients.size() << ")" );
+        m_mtxClients.unlock();
+        std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+        m_mtxClients.lock();
+    }
+    m_mtxClients.unlock();
+    //    }
     //    }
 
     //    for ( auto& client : m_clients ) {
     //        client->setServer( nullptr );
     //    }
-    std::cout << headerMsg() << "server ended" << std::endl;
+    SERVER_MSG( "server ended" );
 }
 
 std::string Server::headerMsg() const {
@@ -57,38 +69,42 @@ std::string Server::headerMsg() const {
 }
 
 void Server::run() {
-//    m_isRunning = true;
-    std::cout << headerMsg() << "listening port " << m_serverSock.getPort() << std::endl;
+    //    m_isRunning = true;
+    SERVER_MSG( "listening port " << m_serverSock.getPort() );
 
     //    int iClient = 0;
     while ( m_nClient < m_maxClients ) {
 
         hub::net::ClientSocket sock = m_serverSock.waitNewClient();
 
-        std::cout << headerMsg() << "new client" << std::endl;
+        SERVER_MSG( "new client" );
 
+    m_mtxClients.lock();
         Client* newClient = initClient( std::move( sock ), ++m_nClient );
         m_clients.push_back( newClient );
+    m_mtxClients.unlock();
     }
-    std::cout << headerMsg() << "run() max clients attempt" << std::endl;
-//    m_isRunning = false;
+    SERVER_MSG( "run() max clients attempt" );
+    //    m_isRunning = false;
 }
 
 void Server::asyncRun() {
-    std::cout << headerMsg() << "asyncRun()" << std::endl;
+    SERVER_MSG( "asyncRun()" );
     m_thread = std::thread( [this]() { run(); } );
 }
 
-void Server::stop() {}
+// void Server::stop() {}
 
 void Server::detach() {
-    std::cout << headerMsg() << "detach()" << std::endl;
+    SERVER_MSG( "detach()" );
     assert( !m_detached );
     m_detached = true;
+    m_mtxClients.lock();
     for ( auto& client : m_clients ) {
         client->setServer( nullptr );
     }
     m_clients.clear();
+    m_mtxClients.unlock();
 }
 
 Client* Server::initClient( hub::net::ClientSocket&& sock, int iClient ) {
@@ -172,8 +188,7 @@ void Server::addStreamer( StreamerClient* streamer ) {
     m_streamName2streamer[streamName] = streamer;
     //    m_mtxStreamers.unlock();
 
-    std::cout << headerMsg() << "prevent viewers there is a new streamer : '" << streamName << "'"
-              << std::endl;
+    SERVER_MSG( "prevent viewers there is a new streamer : '" << streamName << "'" );
     for ( const auto& viewer : m_viewers ) {
         viewer->notifyNewStreamer( streamName, streamer->m_inputSensor->getSpec() );
     }
@@ -183,7 +198,9 @@ void Server::addStreamer( StreamerClient* streamer ) {
 
 void Server::addStreamViewer( StreamViewerClient* streamViewer ) {
     const auto& streamName = streamViewer->m_streamName;
+    m_mtxSreamName2streamViewers.lock();
     m_streamName2streamViewers[streamName].push_back( streamViewer );
+    m_mtxSreamName2streamViewers.unlock();
 
     m_mtxPrint.lock();
     std::cout << streamViewer->headerMsg() << "new stream viewer watching '" << streamName << "'"
@@ -243,6 +260,19 @@ void Server::delStreamer( StreamerClient* streamer ) {
     //    assert( startSize - endSize == 1 );
     //    m_mtxStreamers.unlock();
 
+    m_mtxSreamName2streamViewers.lock();
+    auto& streamViewers = m_streamName2streamViewers.at( streamName );
+    for ( auto& streamViewer : streamViewers ) {
+        streamViewer->end();
+    }
+    m_mtxSreamName2streamViewers.unlock();
+
+    while ( !streamViewers.empty() ) {
+        SERVER_MSG( "waiting for streamViewers closing : " << streamViewers.size()
+                                                           << " still alive" );
+        std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+    }
+
     for ( auto* viewer : m_viewers ) {
         viewer->notifyDelStreamer( streamName, streamer->m_inputSensor->getSpec() );
     }
@@ -255,10 +285,14 @@ void Server::delStreamer( StreamerClient* streamer ) {
 
 void Server::delStreamViewer( StreamViewerClient* streamViewer ) {
     const auto& streamName = streamViewer->m_streamName;
-    auto& streamViewers    = m_streamName2streamViewers.at( streamName );
-    assert( std::find( streamViewers.begin(), streamViewers.end(), streamViewer ) !=
-            streamViewers.end() );
-    streamViewers.remove( streamViewer );
+
+    m_mtxSreamName2streamViewers.lock();
+    auto& streamViewers = m_streamName2streamViewers.at( streamName );
+    if ( std::find( streamViewers.begin(), streamViewers.end(), streamViewer ) !=
+         streamViewers.end() ) {
+        streamViewers.remove( streamViewer );
+    }
+    m_mtxSreamName2streamViewers.unlock();
 
     m_mtxPrint.lock();
     std::cout << streamViewer->headerMsg() << "end streamViewer watched : '" << streamName << "'"
@@ -289,24 +323,30 @@ void Server::newAcquisition( StreamerClient* streamer, const Acquisition& acq ) 
     ////        streamer2->newAcquisition( streamName, acq );
     //    }
 
+    m_mtxSreamName2streamViewers.lock();
     auto& streamViewers = m_streamName2streamViewers[streamName];
     auto it             = streamViewers.begin();
     while ( it != streamViewers.end() ) {
         auto& streamViewer = *it;
         try {
-            *( streamViewer->m_outputSensor ) << acq;
+            streamViewer->update( acq );
+            //            *( streamViewer->m_outputSensor ) << acq;
             ++it;
         }
         catch ( std::exception& ex ) {
-            std::cout << streamViewer->headerMsg()
-                      << "update(Acquisition) : catch outputSensor exception : " << ex.what()
-                      << std::endl;
-            std::cout << streamViewer->headerMsg() << "update(Acquisition) failed with stream '"
-                      << streamName << "'" << std::endl;
+            SERVER_MSG( "catch exception : " << ex.what() );
+            //            std::cout << streamViewer->headerMsg()
+            //                      << "update(Acquisition) : catch outputSensor exception : " <<
+            //                      ex.what()
+            //                      << std::endl;
+            //            std::cout << streamViewer->headerMsg() << "update(Acquisition) failed with
+            //            stream '"
+            //                      << streamName << "'" << std::endl;
 
             it = streamViewers.erase( it );
         }
     }
+    m_mtxSreamName2streamViewers.unlock();
     assert( !acq.isEmpty() );
 }
 

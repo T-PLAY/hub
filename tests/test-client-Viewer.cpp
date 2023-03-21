@@ -22,7 +22,7 @@
 TEST_CASE( "Viewer" ) {
 
     const std::string ipv4 = "127.0.0.1";
-    const int port         = getRandomPort();
+    const int port         = getRandomPort(__FILE_NAME__);
 
     // startConstruction
     auto onNewStreamer = [=]( const std::string& streamName, const hub::SensorSpec& sensorSpec ) {
@@ -57,7 +57,7 @@ TEST_CASE( "Viewer" ) {
     viewer.setAutoSync( false );
     // endConstruction
 
-    constexpr int delay = 2000;
+    constexpr int delay = 1000;
 
     //    std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
 

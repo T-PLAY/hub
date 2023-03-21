@@ -97,7 +97,7 @@ int main() {
 
                 while ( 1 ) {
                     // receive data
-                    auto acq            = inputSensor.getAcquisition();
+                    auto acq            = inputSensor.getAcq();
                     const auto& measure = acq.getMeasures().at( 0 );
 
                     // draw image

@@ -145,7 +145,7 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
         test-all
         EXCLUDE
         "/usr/*"
-        "*.hpp"
+#        "*.hpp"
     )
 
     if(${CMAKE_VERSION} VERSION_LESS "3.20") # ctest --test-dir option

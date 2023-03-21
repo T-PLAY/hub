@@ -25,7 +25,7 @@ private:
 
     std::string headerMsg() const override;
 
-//    bool update( const hub::Acquisition& acq );
+    void update( const hub::Acquisition& acq );
 
 //    const std::string& getSyncStreamName() const;
 //    const std::string& getStreamName() const;
@@ -49,6 +49,8 @@ private:
 //    bool m_updateFailed  = false;
 
 //    hub::Acquisition m_lastAcq;
+    bool m_ending = false;
+//    bool m_inputStreamClosed = false;
 
     friend class Server;
 //    friend class StreamerClient;
