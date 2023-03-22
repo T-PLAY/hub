@@ -18,10 +18,14 @@ int main()
     constexpr int height = 1080;
     constexpr size_t dataSize = width * height * 3;
     //    unsigned char datas[nAcqs][dataSize];
+#ifdef WIN32
     unsigned char** datas = new unsigned char*[nAcqs];
     for (int i = 0; i < nAcqs; ++i) {
         datas[i] = new unsigned char[dataSize];
     }
+#else
+    unsigned char datas[nAcqs][dataSize];
+#endif
 
     //    return 0;
     std::vector<hub::Acquisition> acqs(nAcqs);
@@ -45,7 +49,11 @@ int main()
     const std::string ipv4 = "127.0.0.1";
     const int port = GET_RANDOM_PORT;
     //    std::vector<unsigned char> data(dataSize);
+#ifdef WIN32
     unsigned char* data = new unsigned char[dataSize];
+#else
+    unsigned char data[dataSize];
+#endif
     //    std::mutex mtx;
 
     std::cout << "[test][ClientSocket] start streaming" << std::endl;
@@ -92,12 +100,14 @@ int main()
     std::cout << "[test][ClientSocket] Mega byte wrote : " << bytes / 1000'000 << " Mo" << std::endl;
     std::cout << "[test][ClientSocket] Mega byte per second : " << megaBytesPerSeconds << " Mo/s" << std::endl;
 
+#ifdef WIN32
     delete[] data;
 
     for (int i = 0; i < nAcqs; ++i) {
         delete[] datas[i];
     }
     delete[] datas;
+#endif
 
     //    return 0;
 
