@@ -14,7 +14,8 @@ TEST_CASE( "Server test : sync" ) {
     const std::string ipv4 = "127.0.0.1";
 //    srand( (unsigned)time( NULL ) );
 //    const int port = rand() % 65535;
-    const int port = getRandomPort(__FILE_NAME__);
+    const int port = GET_RANDOM_PORT;
+
 
     constexpr int nAcqs    = 5;
     constexpr int dataSize = 9;

@@ -30,7 +30,7 @@ TEST_CASE( "Native test" ) {
     constexpr int delay = 1000; // ms
 
     const std::string ipv4 = "127.0.0.1";
-    const int port         = getRandomPort(__FILE_NAME__);
+    const int port         = GET_RANDOM_PORT;
 
     const hub::Resolution ref_resolution( { 1 }, hub::Format::BGR8 );
     const std::string ref_sensorName = "sensorName";
@@ -142,8 +142,8 @@ TEST_CASE( "Native test" ) {
         CHECK( len == strlen( ref_str ) );
         CHECK( !strcmp( ref_str, metaDataString ) );
 
-        return false;
-//        return true;
+//        return false;
+        return true;
     };
     auto onDelStreamer = []( const char* streamName, const hub::SensorSpec* sensorSpec ) {
         std::cout << "[Example][Viewer] onDelStreamer " << streamName << std::endl;
