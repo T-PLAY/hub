@@ -142,8 +142,8 @@ TEST_CASE( "Native test" ) {
         CHECK( len == strlen( ref_str ) );
         CHECK( !strcmp( ref_str, metaDataString ) );
 
-//        return false;
-        return true;
+        return false;
+//        return true;
     };
     auto onDelStreamer = []( const char* streamName, const hub::SensorSpec* sensorSpec ) {
         std::cout << "[Example][Viewer] onDelStreamer " << streamName << std::endl;
