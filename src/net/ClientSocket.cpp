@@ -48,6 +48,11 @@ ClientSocket::~ClientSocket() {
 #ifdef DEBUG_SOCKET
     DEBUG_MSG( getHeader( m_fdSock ) << "~ClientSocket()" );
 #endif
+//    if (isOpen())
+//        close();
+//    if (! m_moved && ClientSocket::isOpen()) {
+//        ClientSocket::close();
+//    }
 }
 
 void ClientSocket::initServerAddress() {

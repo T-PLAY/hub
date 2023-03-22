@@ -34,10 +34,10 @@ class SRC_API InputSyncStream : public Input
     /// when the server is not found or by loosing connection to the server.
     /// Also occur when stream you want to link is not connected to the server.
     ///
-    explicit InputSyncStream( const std::string& streamName,
+    InputSyncStream( const std::string& streamName,
                           const std::string& syncStreamName,
-                          const std::string& ipv4,
-                              int port);
+                          const std::string& ipv4 = net::s_defaultServiceIp,
+                              int port = net::s_defaultServicePort);
 //                          net::ClientSocket&& clientSocket  = net::ClientSocket());
 //                          bool mergeSyncAcqs                = true );
 

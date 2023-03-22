@@ -6,7 +6,7 @@
 
 TEST_CASE( "Streamer" ) {
     const std::string ipv4 = "127.0.0.1";
-    const int port         = getRandomPort(__FILE_NAME__);
+    const int port         = GET_RANDOM_PORT;
 
     constexpr int delay = 100;
 

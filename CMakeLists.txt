@@ -19,7 +19,7 @@ set(MSVC_MINIMAL_VERSION 19)
 
 set(COMPILER_FOUND)
 foreach (SUPPORTED_COMPILER ${SUPPORTED_COMPILERS})
-    if(${CMAKE_CXX_COMPILER_ID} MATCHES "${SUPPORTED_COMPILER}")
+    if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "${SUPPORTED_COMPILER}")
       if (COMPILER_FOUND)
         message(FATAL_ERROR "too many compilers founded ${COMPILER_FOUND} and ${SUPPORTED_COMPILER}")
       endif()
@@ -36,7 +36,6 @@ endforeach()
 if (NOT COMPILER_FOUND)
     message(FATAL_ERROR "no compiler founded")
 endif()
-
 
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Debug")

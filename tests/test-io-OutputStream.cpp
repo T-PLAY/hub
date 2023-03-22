@@ -38,7 +38,7 @@ TEST_CASE( "OutputStream test" ) {
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const std::string ipv4 = "127.0.0.1";
-    const int port         = getRandomPort(__FILE_NAME__);
+    const int port         = GET_RANDOM_PORT;
     hub::server::Server server( port );
     server.setMaxClients( 2 );
     server.asyncRun();

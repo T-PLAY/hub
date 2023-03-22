@@ -15,15 +15,16 @@ TEST_CASE( "Server test : viewer" ) {
     const std::string ipv4 = "127.0.0.1";
 //    srand( (unsigned)time( NULL ) );
 //    const int port = rand() % 65535;
-    const int port = getRandomPort(__FILE_NAME__);
+    const int port = GET_RANDOM_PORT;
 
     std::vector<hub::Acquisition> acqs;
     constexpr int nAcqs       = 100;
     constexpr int width       = 1920;
     constexpr int height      = 1080;
     constexpr size_t dataSize = width * height * 3;
+    unsigned char * data = new unsigned char[dataSize];
     for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
-        unsigned char data[dataSize];
+//        unsigned char data[dataSize];
         for ( int i = 0; i < dataSize; ++i ) {
             data[i] = iAcq;
         }
@@ -32,6 +33,7 @@ TEST_CASE( "Server test : viewer" ) {
                                            dataSize,
                                            { { width, height }, hub::Format::BGR8 } );
     }
+    delete [] data;
 
     std::cout << "[Test] ############################### server start" << std::endl;
     hub::server::Server server( port );
