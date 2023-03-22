@@ -93,6 +93,7 @@ class SRC_API Server
     std::mutex m_mtxSreamName2streamViewers;
 
     std::list<ViewerClient*> m_viewers;
+    std::mutex m_mtxViewers;
 
     hub::net::ServerSocket m_serverSock;
     std::list<Client*> m_clients;

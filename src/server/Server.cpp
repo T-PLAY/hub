@@ -189,9 +189,11 @@ void Server::addStreamer( StreamerClient* streamer ) {
     //    m_mtxStreamers.unlock();
 
     SERVER_MSG( "prevent viewers there is a new streamer : '" << streamName << "'" );
+    m_mtxViewers.lock();
     for ( const auto& viewer : m_viewers ) {
         viewer->notifyNewStreamer( streamName, streamer->m_inputSensor->getSpec() );
     }
+    m_mtxViewers.unlock();
 
     streamer->printStatusMessage( "new streamer" );
 }
@@ -242,7 +244,9 @@ void Server::addViewer( ViewerClient* viewer ) {
     ////        }
     //    }
 
+    m_mtxViewers.lock();
     m_viewers.push_back( viewer );
+    m_mtxViewers.unlock();
 }
 
 void Server::delStreamer( StreamerClient* streamer ) {
@@ -273,9 +277,11 @@ void Server::delStreamer( StreamerClient* streamer ) {
         std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
     }
 
+    m_mtxViewers.lock();
     for ( auto* viewer : m_viewers ) {
         viewer->notifyDelStreamer( streamName, streamer->m_inputSensor->getSpec() );
     }
+    m_mtxViewers.unlock();
 
     m_mtxPrint.lock();
     std::cout << streamer->headerMsg() << "end streamer : '" << streamName << "'" << std::endl;
@@ -303,8 +309,10 @@ void Server::delStreamViewer( StreamViewerClient* streamViewer ) {
 
 void Server::delViewer( ViewerClient* viewer ) {
 
+    m_mtxViewers.lock();
     assert( std::find( m_viewers.begin(), m_viewers.end(), viewer ) != m_viewers.end() );
     m_viewers.remove( viewer );
+    m_mtxViewers.unlock();
 
     m_mtxPrint.lock();
     viewer->printStatusMessage( "del viewer" );
