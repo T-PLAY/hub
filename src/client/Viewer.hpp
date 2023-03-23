@@ -13,6 +13,8 @@
 namespace hub {
 namespace client {
 
+class Stream;
+
 ///
 /// \brief The Viewer class (event dispatcher)
 /// can be use by client application to be aware of the events comming from server
@@ -110,6 +112,9 @@ class SRC_API Viewer
     ///
     bool isConnected() const;
 
+    void startStream( const std::string& streamName );
+    void stopStream( const std::string& streamName );
+
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
   private:
@@ -122,63 +127,12 @@ class SRC_API Viewer
     std::function<void( const char* ipv4, int port )> m_onServerDisconnected;
     std::function<void( const char* streamName, const hub::Acquisition& )> m_onNewAcquisition;
 
-    void delStreamer( const std::string& streamId );
 
     net::ClientSocket m_sock;
     bool m_serverConnected = false;
-    bool m_autoSync        = true;
+//    bool m_autoSync        = true;
     std::function<void( const char* logMessage )> m_onLogMessage;
 
-    class Stream
-    {
-      public:
-        Viewer& m_viewer;
-
-        explicit Stream( Viewer& viewer ) :
-            m_viewer( viewer ), m_onLogMessage( m_viewer.m_onLogMessage ) {}
-
-        Stream( Stream&& stream ) :
-            m_viewer( stream.m_viewer ),
-
-            m_streamName( std::move( stream.m_streamName ) ),
-            m_sensorSpec( std::move( stream.m_sensorSpec ) ),
-            m_syncStreamName( std::move( stream.m_syncStreamName ) ),
-            m_parentName( std::move( stream.m_parentName ) ),
-
-            m_streamId( std::move( stream.m_streamId ) ),
-            m_sensorSpecId( std::move( stream.m_sensorSpecId ) ),
-
-            m_thread( stream.m_thread ),
-            m_stopThread( stream.m_stopThread ),
-            m_added( stream.m_added ),
-            m_onLogMessage( m_viewer.m_onLogMessage ) {
-            stream.m_thread = nullptr;
-        }
-
-        ~Stream() {
-            DEBUG_MSG( "[Stream] ~Stream() streamer '" << m_streamId << "' started" );
-            if ( m_thread != nullptr ) { stopStream(); }
-            DEBUG_MSG( "[Stream] ~Stream() streamer '" << m_streamId << "' ended" );
-        }
-
-        std::string m_streamName;
-        SensorSpec m_sensorSpec;
-        std::string m_syncStreamName;
-        std::string m_parentName;
-
-        std::string m_streamId;
-        SensorSpec m_sensorSpecId;
-
-        std::thread* m_thread = nullptr;
-        bool m_stopThread     = false;
-        bool m_added          = false;
-        std::function<void( const char* logMessage )> m_onLogMessage;
-
-        std::unique_ptr<InputSensor> m_inputSensor;
-
-        void startStream();
-        void stopStream();
-    }; // end class Stream
 
     std::map<std::string, std::shared_ptr<Stream>> m_streams;
 
