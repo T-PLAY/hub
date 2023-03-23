@@ -68,6 +68,8 @@ class SRC_API ClientSocket : public Socket, public io::InputOutput
         STREAMER_CLOSED,
         INPUT_STREAM_CLOSED,
         OUTPUT_STREAM_CLOSED,
+        VIEWER_CLOSED,
+        VIEWER_CLIENT_CLOSED,
         COUNT
     };
 

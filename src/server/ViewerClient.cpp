@@ -15,13 +15,20 @@ ViewerClient::ViewerClient( Server* server, int iClient, hub::net::ClientSocket&
     m_thread = std::thread( [this]() {
         try {
             // check client still alive
-            while ( m_socket.isOpen() ) {
+//            while ( m_socket.isOpen() ) {
 //                m_mtxSocket.lock();
-                m_socket.write( hub::net::ClientSocket::Message::PING );
+//                m_socket.write( hub::net::ClientSocket::Message::PING );
 //                m_mtxSocket.unlock();
                 // ping viewer client to know if the connection of this one still alive
-                std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
-            }
+//                std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+
+
+                net::ClientSocket::Message message;
+                m_socket.read(message);
+                assert(message == net::ClientSocket::Message::VIEWER_CLOSED);
+
+                m_socket.write(net::ClientSocket::Message::VIEWER_CLIENT_CLOSED);
+//            }
         }
         catch ( std::exception& ex ) {
 //            m_mtxSocket.unlock();
@@ -41,6 +48,9 @@ ViewerClient::~ViewerClient() {
 
     assert( m_server != nullptr );
     m_server->delViewer( this );
+
+    if (m_socket.isOpen())
+        m_socket.close();
 //    printStatusMessage( "del viewer" );
 }
 
