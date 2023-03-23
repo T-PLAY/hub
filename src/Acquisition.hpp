@@ -147,6 +147,8 @@ class SRC_API Acquisition
     ///
     bool hasFixedSize() const;
 
+    bool operator<( const Acquisition& right ) const;
+
     ///
     /// \brief operator <<
     /// print acquisition information.
@@ -206,6 +208,7 @@ class SRC_API Acquisition
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
 inline long long Acquisition::getStart() const
 {
     return m_start;
@@ -229,5 +232,7 @@ void Acquisition::emplaceMeasure( Args&&... args ) {
     m_measures.emplace_back( std::forward<Args>( args )... );
     m_size += m_measures.back().getSize();
 }
+
+inline bool Acquisition::operator<(const Acquisition &right) const { return m_start < right.m_start; }
 
 } // namespace hub

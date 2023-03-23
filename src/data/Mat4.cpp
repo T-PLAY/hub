@@ -6,6 +6,14 @@
 namespace hub {
 namespace data {
 
+Mat4::Mat4(const Measure &measure)
+    : Measure( measure.getData(), measure.getSize(), Resolution { { 1 }, Format::MAT4 } ) {
+    assert( measure.getSize() == 64 );
+//    memcpy( (unsigned char*)&m_x, m_data, m_size );
+    assert( m_data != nullptr );
+
+}
+
 Mat4::Mat4( float* array ) :
     Measure( reinterpret_cast<unsigned char*>( new float[16] ),
              64,

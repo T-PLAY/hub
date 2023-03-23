@@ -14,6 +14,8 @@ namespace hub {
 namespace io {
 
 void Output::write( const std::string& str ) {
+    if (! isOpen())
+        throw std::runtime_error("[Output] closed, unable to write");
     assert( isOpen() );
 
 #ifdef DEBUG_OUTPUT
@@ -30,6 +32,8 @@ void Output::write( const std::string& str ) {
 }
 
 void Output::write( const SensorSpec& sensorSpec ) {
+    if (! isOpen())
+        throw std::runtime_error("[Output] closed, unable to write");
     assert( isOpen() );
 
 #ifdef DEBUG_OUTPUT
@@ -42,6 +46,8 @@ void Output::write( const SensorSpec& sensorSpec ) {
 }
 
 void Output::write( const data::Measure& measure ) {
+    if (! isOpen())
+        throw std::runtime_error("[Output] closed, unable to write");
     assert( isOpen() );
 
 #ifdef DEBUG_OUTPUT
@@ -59,6 +65,8 @@ void Output::write( const data::Measure& measure ) {
 //}
 
 void Output::write( const Acquisition& acq ) {
+    if (! isOpen())
+        throw std::runtime_error("[Output] closed, unable to write");
     assert( isOpen() );
 
 #ifdef DEBUG_OUTPUT
@@ -73,6 +81,8 @@ void Output::write( const Acquisition& acq ) {
 }
 
 void Output::write( const char* str ) {
+    if (! isOpen())
+        throw std::runtime_error("[Output] closed, unable to write");
     assert( isOpen() );
 
 #ifdef DEBUG_OUTPUT
@@ -97,6 +107,8 @@ void Output::write( const char* str ) {
 //}
 
 void Output::write( const Any& any ) {
+    if (! isOpen())
+        throw std::runtime_error("[Output] closed, unable to write");
     assert( isOpen() );
 
 #ifdef DEBUG_OUTPUT

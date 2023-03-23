@@ -15,6 +15,8 @@ class SRC_API Mat4 : public Measure
 {
 
   public:
+    explicit Mat4(const Measure & measure);
+
     ///
     /// \brief Mat4
     /// is the 4x4 transformation matrix (row-major).

@@ -200,6 +200,12 @@ void Server::addStreamer( StreamerClient* streamer ) {
 
 void Server::addStreamViewer( StreamViewerClient* streamViewer ) {
     const auto& streamName = streamViewer->m_streamName;
+
+    auto & streamer = m_streamName2streamer.at(streamName);
+    for (const auto & packedAcq : streamer->m_packedAcqs) {
+        streamViewer->update(packedAcq);
+    }
+
     m_mtxSreamName2streamViewers.lock();
     m_streamName2streamViewers[streamName].push_back( streamViewer );
     m_mtxSreamName2streamViewers.unlock();

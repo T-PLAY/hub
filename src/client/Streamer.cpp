@@ -24,10 +24,13 @@ void Streamer::addStream( const std::string& streamName,
 
     assert( m_streamName2initAcqs.find( streamName ) == m_streamName2initAcqs.end() );
     std::vector<Acquisition> acqs;
-    std::transform( initAcqs.crbegin(),
-                    initAcqs.crend(),
-                    std::back_inserter( acqs ),
-                    []( const Acquisition& acq ) { return acq.clone(); } );
+    for (const auto & initAcq : initAcqs) {
+        acqs.push_back(initAcq.clone());
+    }
+//    std::transform( initAcqs.crbegin(),
+//                    initAcqs.crend(),
+//                    std::back_inserter( acqs ),
+//                    []( const Acquisition& acq ) { return acq.clone(); } );
     m_streamName2initAcqs[streamName] = std::move( acqs );
 
     try {

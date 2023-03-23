@@ -105,6 +105,8 @@ class SRC_API InputSensor : public Sensor
     ///
     io::Input& getInput() const;
 
+    void close();
+
   private:
 //    std::unique_ptr<io::Input> m_input;
     std::shared_ptr<io::Input> m_input;

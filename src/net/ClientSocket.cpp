@@ -126,6 +126,10 @@ void ClientSocket::connect() {
 }
 
 void ClientSocket::write( const unsigned char* data, size_t len ) {
+    if (! isOpen()) {
+            throw Socket::exception(
+                "[ClientSocket] write(data, len) Unable to write because output is closed" );
+    }
     assert( isOpen() );
 
 #ifdef DEBUG_SOCKET
@@ -164,7 +168,7 @@ void ClientSocket::write( const unsigned char* data, size_t len ) {
             DEBUG_MSG( getHeader( m_fdSock ) << "can't send packet " << byteSent << "/" << len );
             perror( "[socket] send failed.\n" );
 #endif
-            assert( isConnected() );
+//            assert( isConnected() );
             close();
             throw Socket::exception(
                 "[ClientSocket] write(data, len) Can't write packet, peer connection lost" );
@@ -210,7 +214,8 @@ void ClientSocket::read( unsigned char* data, size_t len ) {
         else if ( byteRead == 0 ) {
             //            assert( isConnected() );
             if ( isConnected() ) {
-                close();
+                if (isOpen())
+                    close();
                 throw Socket::exception(
                     "[ClientSocket] read(data, len) 0 byte received, peer connection lost" );
             }

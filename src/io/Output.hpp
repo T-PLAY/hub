@@ -7,6 +7,7 @@
 //#include <string>
 //#include <typeinfo>
 //#include <vector>
+#include <exception>
 
 #include "Acquisition.hpp"
 #include "Any.hpp"
@@ -150,6 +151,8 @@ class SRC_API Output
 
 template <class T>
 void Output::write( const T& t ) {
+    if (! isOpen())
+        throw std::runtime_error("[Output] closed, unable to write");
     assert( isOpen() );
 
     write( reinterpret_cast<const unsigned char*>( &t ), sizeof( T ) );
@@ -166,6 +169,8 @@ void Output::write( const T& t ) {
 
 template <class T>
 void Output::write( const std::list<T>& list ) {
+    if (! isOpen())
+        throw std::runtime_error("[Output] closed, unable to write");
     assert( isOpen() );
 
 #ifdef DEBUG_OUTPUT
@@ -182,6 +187,8 @@ void Output::write( const std::list<T>& list ) {
 
 template <class T>
 void Output::write( const std::vector<T>& vector ) {
+    if (! isOpen())
+        throw std::runtime_error("[Output] closed, unable to write");
     assert( isOpen() );
 
 #ifdef DEBUG_OUTPUT
@@ -198,6 +205,8 @@ void Output::write( const std::vector<T>& vector ) {
 
 template <class T, class U>
 void Output::write( const std::map<T, U>& map ) {
+    if (! isOpen())
+        throw std::runtime_error("[Output] closed, unable to write");
     assert( isOpen() );
 
 #ifdef DEBUG_OUTPUT
@@ -217,6 +226,8 @@ void Output::write( const std::map<T, U>& map ) {
 
 template <class T, class U>
 void Output::write( const std::pair<T, U>& pair ) {
+    if (! isOpen())
+        throw std::runtime_error("[Output] closed, unable to write");
     assert( isOpen() );
 
 #ifdef DEBUG_OUTPUT

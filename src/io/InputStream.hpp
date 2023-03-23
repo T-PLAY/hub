@@ -118,7 +118,8 @@ inline void InputStream::close() {
         //        assert(mess == net::ClientSocket::Message::STREAM_VIEWER_CLOSED);
 
         try {
-            while ( true ) {
+//            while ( true ) {
+            while ( m_clientSocket.isOpen() ) {
                 auto acq = getAcq( m_sensorSpec );
             }
         }
@@ -136,7 +137,8 @@ inline void InputStream::close() {
     //    m_clientSocket.read( mess );
     //    assert ( mess == net::ClientSocket::Message::CLOSED );
 
-    m_clientSocket.close();
+    if (m_clientSocket.isOpen())
+        m_clientSocket.close();
     std::cout << "[InputStream] close()" << std::endl;
 }
 

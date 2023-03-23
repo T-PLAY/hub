@@ -101,11 +101,13 @@ StreamerClient::StreamerClient( Server* server, int iClient, hub::net::ClientSoc
     for ( const auto& pair : metaData ) {
         std::cout << headerMsg() << "metaData: " << hub::SensorSpec::to_string( pair ) << std::endl;
     }
-//    if ( metaData.find( "type" ) != metaData.end() ) {
-//        std::cout << headerMsg() << "type detected : record stream" << std::endl;
+    if ( metaData.find( "nAcq" ) != metaData.end() ) {
+        std::cout << headerMsg() << "type detected : packed stream" << std::endl;
 //        const char* type = metaData.at( "type" ).getConstCharPtr();
 //        if ( strcmp( type, "record" ) == 0 ) { m_isRecordStream = true; }
-//    }
+        m_nAcq = metaData.at("nAcq").getInt();
+        m_isPackedStream = true;
+    }
 //    if ( metaData.find( "parent" ) != metaData.end() ) {
 //        m_parent = metaData.at( "parent" ).getConstCharPtr();
 //        std::cout << headerMsg() << "parent : '" << m_parent << "'" << std::endl;
@@ -130,6 +132,11 @@ StreamerClient::StreamerClient( Server* server, int iClient, hub::net::ClientSoc
 //                std::cout << "[StreamerClient] get acq : " << acq << std::endl;
                 m_server->newAcquisition( this, m_lastAcq );
 
+                if (m_isPackedStream) {
+                    auto it = m_packedAcqs.insert(m_lastAcq.clone());
+                    assert(m_packedAcqs.size() <= m_nAcq);
+                    std::cout << headerMsg() << "save acq " << std::distance(m_packedAcqs.begin(), it.first) << std::endl;
+                }
 
             } // while (true)
         }
