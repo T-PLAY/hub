@@ -167,4 +167,12 @@ io::Input& InputSensor::getInput() const {
     return *m_input;
 }
 
+void InputSensor::close()
+{
+//    assert(m_input->isOpen());
+    if (m_input->isOpen())
+        m_input->close();
+}
+
+
 } // namespace hub

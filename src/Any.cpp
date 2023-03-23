@@ -221,7 +221,7 @@ std::ostream& operator<<( std::ostream& os, const Any::Type& type ) {
 }
 
 std::string Any::to_string() const {
-    std::string ret = typeName() + " : " + anyValue2string( *this );
+    std::string ret = typeName() + " = " + anyValue2string( *this );
     return ret;
 }
 

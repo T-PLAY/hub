@@ -199,6 +199,8 @@ class SRC_API Input
 
 template <class T>
 void Input::read( T& t ) {
+//    if (! isOpen())
+//        throw std::runtime_error("[Input] closed, unable to read");
     assert( isOpen() );
 
     read( reinterpret_cast<unsigned char*>( &t ), sizeof( T ) );

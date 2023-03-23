@@ -394,6 +394,8 @@ void Viewer::Stream::stopStream() {
     assert( m_stopThread == false );
     m_stopThread = true;
 
+    m_inputSensor->getInput().close();
+
     assert( m_thread->joinable() );
     m_thread->join();
     delete m_thread;
