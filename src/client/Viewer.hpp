@@ -4,6 +4,7 @@
 #include <regex>
 #include <string>
 #include <thread>
+#include <mutex>
 
 #include "Acquisition.hpp"
 #include "SensorSpec.hpp"
@@ -129,6 +130,7 @@ class SRC_API Viewer
 
 
     net::ClientSocket m_sock;
+//    std::mutex m_mtxSockRead;
     bool m_serverConnected = false;
 //    bool m_autoSync        = true;
     std::function<void( const char* logMessage )> m_onLogMessage;

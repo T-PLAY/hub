@@ -28,10 +28,7 @@ class SRC_API Measure
     /// needs to be compatible with the sensorSpec when you send this measure through the
     /// OutputSensor.
     ///
-//    template <class Resolution = hub::Resolution>
     template <class Resolution = Resolution>
-//    template <class Resolution>
-//    template <typename Resolution>
     Measure( const unsigned char* const data, uint64_t size, Resolution&& resolution );
 
     ///
@@ -46,7 +43,6 @@ class SRC_API Measure
     /// OutputSensor. \param stealData is on when you want the measure to be the owner of the
     /// external pointer data, that imply the deletion of data when measure is destruct.
     ///
-//    template <class Resolution = Resolution>
     template <class Resolution>
     Measure( unsigned char* data, uint64_t size, Resolution&& resolution, bool stealData = false );
 
@@ -146,11 +142,6 @@ class SRC_API Measure
 
 
   protected:
-    ///
-    /// \brief m_ownData
-    /// indicated if this class is the owner of the data.
-    ///
-    bool m_ownData = false;
 
     ///
     /// \brief m_data
@@ -161,6 +152,13 @@ class SRC_API Measure
     /// \brief m_size
     ///
     uint64_t m_size; // compatibility 32/64 bits
+
+  private:
+    ///
+    /// \brief m_ownData
+    /// indicated if this class is the owner of the data.
+    ///
+    bool m_ownData = false;
 
   private:
     bool m_isMoved = false;

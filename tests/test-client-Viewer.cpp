@@ -54,6 +54,7 @@ TEST_CASE( "Viewer" ) {
     CHECK( viewer.getPort() == port );
     CHECK( !viewer.isConnected() );
 
+
     viewer.setAutoSync( false );
     // endConstruction
 
