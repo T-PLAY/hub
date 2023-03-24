@@ -23,6 +23,7 @@ set_property(TARGET test-all PROPERTY CXX_EXTENSIONS OFF)
 
 #file(GLOB testFiles *.cpp)
 
+
 if(WIN32)
     add_custom_command(
         TARGET test-all

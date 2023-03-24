@@ -207,7 +207,8 @@ void ClientSocket::read( unsigned char* data, size_t len ) {
 #endif
 #ifndef WIN32
 #endif
-            close();
+            if (isOpen())
+                close();
             throw Socket::exception(
                 "[ClientSocket] read(data, len) Can't read packet, peer connection lost" );
         }
@@ -238,10 +239,17 @@ void ClientSocket::read( unsigned char* data, size_t len ) {
 }
 
 void ClientSocket::close() {
+    if (! isOpen()) {
+        throw Socket::exception("unable to close non openned socket");
+    }
+    else {
     assert( isOpen() );
-    net::utils::closeSocket( m_fdSock );
-    m_connected = false;
+//    if (isOpen()) {
+        net::utils::closeSocket( m_fdSock );
+        m_connected = false;
+//    }
     assert( !isOpen() );
+    }
 }
 
 bool ClientSocket::isOpen() const {

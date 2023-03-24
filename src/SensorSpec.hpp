@@ -12,6 +12,7 @@
 #include "Resolution.hpp"
 
 // user friendly useless includes
+#include "data/Measure.hpp"
 #include "data/Dof6.hpp"
 #include "data/Mat4.hpp"
 #include "data/UserData.hpp"

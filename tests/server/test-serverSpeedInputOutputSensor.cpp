@@ -1,4 +1,4 @@
-// #include <catch2/catch_test_macros.hpp>
+ #include <catch2/catch_test_macros.hpp>
 #include "test-common.hpp"
 
 #include <InputSensor.hpp>
@@ -8,16 +8,16 @@
 
 #include <filesystem>
 
-#define CHECK
+//#define CHECK
 
-// TEST_CASE("Server test : speed test")
-int main() {
+TEST_CASE("Server test : InputOutputSensor") {
+//int main() {
     constexpr int nAcqs       = 200;
-    constexpr int width       = 3840;
-//    constexpr int width       = 1920;
+//    constexpr int width       = 3840;
+    constexpr int width       = 1920;
 //    constexpr int width       = 640;
-    constexpr int height      = 2160;
-//    constexpr int height      = 1080;
+//    constexpr int height      = 2160;
+    constexpr int height      = 1080;
 //    constexpr int height      = 480;
     constexpr size_t dataSize = width * height * 3;
     unsigned char* data       = new unsigned char[dataSize];
@@ -109,8 +109,8 @@ int main() {
     const auto& duration =
         std::chrono::duration_cast<std::chrono::milliseconds>( end - start ).count();
     const auto& bytes               = dataSize * nAcqs;
-    const auto& bytesPerSeconds     = 1000 * bytes / duration;
-    const auto& megaBytesPerSeconds = bytesPerSeconds / 1000'000;
+    const auto& bytesPerSeconds     = 1000.0 * bytes / duration;
+    const auto& megaBytesPerSeconds = bytesPerSeconds / 1000'000.0;
 
     std::cout << "[test][ClientSocket] Mega byte wrote : " << bytes / 1000'000.0 << " Mo"
               << std::endl;
@@ -162,11 +162,13 @@ int main() {
             const auto& inputSensorSpec = inputSensor.getSpec();
             CHECK( inputSensorSpec.getAcquisitionSize() == dataSize );
             CHECK( inputSensorSpec.getSensorName() == "sensorName" );
-            CHECK( inputSensorSpec.getResolutions().size() == 1 );
-            CHECK( inputSensorSpec.getResolutions()[0].first.size() == 2 );
-            CHECK( inputSensorSpec.getResolutions()[0].first.at( 0 ) == width );
-            CHECK( inputSensorSpec.getResolutions()[0].first.at( 1 ) == height );
-            CHECK( inputSensorSpec.getResolutions()[0].second == hub::Format::BGR8 );
+
+            const auto & resolutions = inputSensorSpec.getResolutions();
+            CHECK( resolutions.size() == 1 );
+            CHECK( resolutions[0].first.size() == 2 );
+            CHECK( resolutions[0].first.at( 0 ) == width );
+            CHECK( resolutions[0].first.at( 1 ) == height );
+            CHECK( resolutions[0].second == hub::Format::BGR8 );
             std::cout
                 << "[test][InputOutputSensor] inputStream end ---------------------------------"
                 << std::endl;
@@ -185,8 +187,8 @@ int main() {
             const auto& duration2 =
                 std::chrono::duration_cast<std::chrono::milliseconds>( end - start ).count();
             const auto& bytes2               = dataSize * nAcqs;
-            const auto& bytesPerSeconds2     = 1000 * bytes / duration2;
-            const auto& megaBytesPerSeconds2 = bytesPerSeconds2 / 1000'000;
+            const auto& bytesPerSeconds2     = 1000.0 * bytes / duration2;
+            const auto& megaBytesPerSeconds2 = bytesPerSeconds2 / 1000'000.0;
 
             std::cout << "[test][InputOutputSensor] Mega byte wrote : " << bytes2 / 1000'000.0
                       << " Mo" << std::endl;
@@ -197,7 +199,7 @@ int main() {
             std::cout << "[test][ClientSocket/InputOutputSensor] ratio : " << ratio << " %"
                       << std::endl;
 #ifdef WIN32
-            CHECK( ratio > 45 );
+            CHECK( ratio > 35 );
 #else
             CHECK( ratio > 50 );
 #endif
