@@ -143,7 +143,8 @@ void InputSensor::operator>>( Acquisition& acq ) {
     //    assert(acquisition.m_measures.empty());
     //    assert(acquisition.m_size == 0);
 
-       m_input->read(acq);
+    *m_input >> acq;
+//       m_input->read(acq);
 
 
     assert( !acq.hasFixedSize() || m_spec.getAcquisitionSize() == acq.getSize() );
@@ -168,23 +169,29 @@ void InputSensor::operator>>( Acquisition& acq ) {
 }
 
 std::vector<Acquisition> InputSensor::getAllAcquisitions() {
-    std::vector<Acquisition> acqs;
-
-    try {
-        //        int nReadAcqs = 0;
-        while ( !m_input->isEnd() ) {
-            Acquisition acq;
-            m_input->read(acq);
-            acqs.emplace_back( std::move(acq) );
-            //            ++nReadAcqs;
-        }
-    }
-    catch ( std::exception& e ) {
-        std::cout << "[InputSensor] catch exception : " << e.what() << std::endl;
-        throw;
-    }
-
+//    return m_input->readAll<std::vector<Acquisition>, Acquisition>();
+//    std::vector<Acquisition> acqs;
+    auto acqs = m_input->getAll<std::vector<hub::Acquisition>>();
+//    using T = decltype (acqs.front());
+    m_input->readAll(acqs);
+//    acqs = m_input->readAll();
     return acqs;
+
+//    try {
+//        //        int nReadAcqs = 0;
+//        while ( !m_input->isEnd() ) {
+//            Acquisition acq;
+//            m_input->read(acq);
+//            acqs.emplace_back( std::move(acq) );
+//            //            ++nReadAcqs;
+//        }
+//    }
+//    catch ( std::exception& e ) {
+//        std::cout << "[InputSensor] catch exception : " << e.what() << std::endl;
+//        throw;
+//    }
+
+//    return acqs;
 }
 
 io::Input& InputSensor::getInput() const {
