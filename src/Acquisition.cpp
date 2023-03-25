@@ -42,17 +42,16 @@ Acquisition::Acquisition( long long start, long long end ) : m_start( start ), m
     assert( m_start <= m_end );
 }
 
-Acquisition &Acquisition::operator=(Acquisition &&acq)
-{
-//    assert(m_measures.empty());
+Acquisition& Acquisition::operator=( Acquisition&& acq ) {
+    //    assert(m_measures.empty());
     m_measures.clear();
 
-    m_start = acq.m_start;
-    m_end = acq.m_end;
-    m_measures = std::move(acq.m_measures);
-    m_size = acq.m_size;
+    m_start    = acq.m_start;
+    m_end      = acq.m_end;
+    m_measures = std::move( acq.m_measures );
+    m_size     = acq.m_size;
 
-    assert(acq.m_measures.empty());
+    assert( acq.m_measures.empty() );
 
     return *this;
 }
@@ -88,17 +87,16 @@ Acquisition& Acquisition::operator<<( data::Measure&& measure ) {
     return *this;
 }
 
-void Acquisition::operator>>(Acquisition &acq)
-{
-//    assert(acq.m_measures.empty());
+void Acquisition::operator>>( Acquisition& acq ) {
+    //    assert(acq.m_measures.empty());
 
-//    acq.m_start = m_start;
-//    acq.m_end = m_end;
-//    acq.m_measures = std::move(m_measures);
-//    acq.m_size = m_size;
-    acq = std::move(*this);
+    //    acq.m_start = m_start;
+    //    acq.m_end = m_end;
+    //    acq.m_measures = std::move(m_measures);
+    //    acq.m_size = m_size;
+    acq = std::move( *this );
 
-    assert(m_measures.empty());
+    assert( m_measures.empty() );
 }
 
 void Acquisition::pushBack( data::Measure&& measure ) {
@@ -148,9 +146,12 @@ Acquisition Acquisition::slerp( const Acquisition& left, const Acquisition& righ
 
 Acquisition& Acquisition::operator<<( const data::Measures& measures ) {
     for ( const auto& measure : measures ) {
-//        emplaceMeasure( (const unsigned char*)measure.getData(), measure.getSize(), measure.getResolution() );
-        emplaceMeasure( reinterpret_cast<const unsigned char*>(measure.getData()), measure.getSize(), measure.getResolution() );
-//        emplaceMeasure( measure.m_data, measure.m_size, measure.getResolution() );
+        //        emplaceMeasure( (const unsigned char*)measure.getData(), measure.getSize(),
+        //        measure.getResolution() );
+        emplaceMeasure( reinterpret_cast<const unsigned char*>( measure.getData() ),
+                        measure.getSize(),
+                        measure.getResolution() );
+        //        emplaceMeasure( measure.m_data, measure.m_size, measure.getResolution() );
     }
     return *this;
 }
@@ -199,8 +200,11 @@ std::ostream& operator<<( std::ostream& os, const Acquisition& acq ) {
        << ", end:" << ( acq.m_end / 1'000'000 ) % 1'000 << " " << ( acq.m_end / 1'000 ) % 1'000
        << " " << acq.m_end % 1'000;
     os << ", measures:[";
-    for ( const auto& measure : acq.m_measures ) {
-        os << "[" << measure << "], ";
+    for ( int i = 0; i < acq.m_measures.size(); ++i ) {
+        //    for ( const auto& measure : acq.m_measures ) {
+        const auto& measure = acq.m_measures.at( i );
+        os << "[" << measure << "]";
+        if ( i != acq.m_measures.size() - 1 ) { os << ", "; }
     }
     os << "], ";
     os << 1'000'000.0 / ( acq.m_end - acq.m_start ) << " fps.";

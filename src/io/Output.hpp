@@ -74,17 +74,13 @@ class SRC_API Output
     ///
     virtual bool isOpen() const = 0;
 
-    ///
-    /// \brief write
-    /// \param any
-    ///
-    void write( const Any& any );
+  public:
 
-    ///
-    /// \brief write
-    /// \param str
-    ///
-    void write( const char* str );
+    template <class T>
+    void operator<<(T & t);
+
+    template <class T>
+    void put(const T & t);
 
     ///
     /// \brief write
@@ -121,7 +117,21 @@ class SRC_API Output
     template <class T, class U>
     void write( const std::pair<T, U>& pair );
 
+
+
   public:
+    ///
+    /// \brief write
+    /// \param any
+    ///
+    void write( const Any& any );
+
+    ///
+    /// \brief write
+    /// \param str
+    ///
+    void write( const char* str );
+
     ///
     /// \brief write
     /// \param str
@@ -146,11 +156,23 @@ class SRC_API Output
     ///
     virtual void write( const Acquisition& acq );
 
-    ////////////////////////////////////////////////////////////////////////////
+           ////////////////////////////////////////////////////////////////////////////
 };
 
+template<class T>
+inline void Output::put(const T &t)
+{
+    write(t);
+}
+
+template<class T>
+inline void Output::operator<<(T &t)
+{
+    write(t);
+}
+
 template <class T>
-void Output::write( const T& t ) {
+inline void Output::write( const T& t ) {
 //    if (! isOpen())
 //        throw std::runtime_error("[Output] closed, unable to write");
     assert( isOpen() );
@@ -168,7 +190,7 @@ void Output::write( const T& t ) {
 }
 
 template <class T>
-void Output::write( const std::list<T>& list ) {
+inline void Output::write( const std::list<T>& list ) {
 //    if (! isOpen())
 //        throw std::runtime_error("[Output] closed, unable to write");
     assert( isOpen() );
@@ -186,7 +208,7 @@ void Output::write( const std::list<T>& list ) {
 }
 
 template <class T>
-void Output::write( const std::vector<T>& vector ) {
+inline void Output::write( const std::vector<T>& vector ) {
 //    if (! isOpen())
 //        throw std::runtime_error("[Output] closed, unable to write");
     assert( isOpen() );
@@ -204,7 +226,7 @@ void Output::write( const std::vector<T>& vector ) {
 }
 
 template <class T, class U>
-void Output::write( const std::map<T, U>& map ) {
+inline void Output::write( const std::map<T, U>& map ) {
 //    if (! isOpen())
 //        throw std::runtime_error("[Output] closed, unable to write");
     assert( isOpen() );
@@ -225,7 +247,7 @@ void Output::write( const std::map<T, U>& map ) {
 }
 
 template <class T, class U>
-void Output::write( const std::pair<T, U>& pair ) {
+inline void Output::write( const std::pair<T, U>& pair ) {
 //    if (! isOpen())
 //        throw std::runtime_error("[Output] closed, unable to write");
     assert( isOpen() );
@@ -238,6 +260,7 @@ void Output::write( const std::pair<T, U>& pair ) {
     write( first );
     write( second );
 }
+
 
 } // namespace io
 } // namespace hub
