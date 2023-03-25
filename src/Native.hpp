@@ -44,7 +44,7 @@ extern "C"
     /// \param inputSensor
     /// \return
     ///
-    SRC_API Acquisition* getAcquisition( const InputSensor* inputSensor );
+    SRC_API Acquisition* getAcquisition( InputSensor* inputSensor );
 
     ///
     /// \brief freeAcquisition

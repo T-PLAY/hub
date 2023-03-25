@@ -72,7 +72,9 @@ TEST_CASE( "File test" ) {
         CHECK( sensorSpec.getResolutions()[0].second == hub::Format::BGR8 );
         std::cout << "####### compare acqs" << std::endl;
         for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
-            auto acq = inputSensor.getAcq();
+//            auto acq = inputSensor.getAcq();
+            hub::Acquisition acq;
+            inputSensor >> acq;
             assert( acq == acqs[iAcq] );
             CHECK( acq == acqs[iAcq] );
         }

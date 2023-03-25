@@ -76,7 +76,9 @@ TEST_CASE( "Server test : direct stream" ) {
 //                    std::cout << "[Test] ############################### compare " << std::endl;
                     for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
                         outputSensor << acqs[iAcq];
-                        auto acq = inputSensor.getAcq();
+                        hub::Acquisition acq;
+                        inputSensor >> acq;
+//                        auto acq = inputSensor.getAcq();
                         CHECK( acq == acqs[iAcq] );
                     }
                 }

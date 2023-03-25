@@ -16,6 +16,7 @@
 #include "data/Dof6.hpp"
 #include "data/Mat4.hpp"
 #include "data/UserData.hpp"
+#include "data/Mesh.hpp"
 
 #if CPLUSPLUS_VERSION == 20
 #    include "Map.hpp"
@@ -159,7 +160,7 @@ class SRC_API SensorSpec
     /// \brief setMetaData
     /// \param metaData
     ///
-    inline void setMetaData( const MetaData& metaData ) noexcept;
+//    inline void setMetaData( const MetaData& metaData ) noexcept;
 
   private:
     SensorNameType m_sensorName;
@@ -201,8 +202,8 @@ inline constexpr size_t SensorSpec::getAcquisitionSize() const noexcept {
     return m_acquisitionSize;
 }
 
-inline void SensorSpec::setMetaData( const MetaData& metaData ) noexcept {
-    m_metaData = metaData;
-}
+//inline void SensorSpec::setMetaData( const MetaData& metaData ) noexcept {
+//    m_metaData = metaData;
+//}
 
 } // namespace hub

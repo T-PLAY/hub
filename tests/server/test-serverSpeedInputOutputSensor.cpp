@@ -179,7 +179,9 @@ TEST_CASE("Server test : InputOutputSensor") {
             const auto& start = std::chrono::high_resolution_clock::now();
             for ( int i = 0; i < nAcqs; ++i ) {
                 outputSensor << acqs.at( i );
-                auto acq = inputSensor.getAcq();
+                hub::Acquisition acq;
+                inputSensor >> acq;
+//                auto acq = inputSensor.getAcq();
                 CHECK( acq == acqs.at( i ) );
             }
 //            std::this_thread::sleep_for( std::chrono::milliseconds( 1 ) );

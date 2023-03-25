@@ -186,8 +186,10 @@ TEST_CASE("Server test : viewer")
 //                outputSensor << acqs.at(i);
                 const auto & acq = acqs.at(i);
                 streamer.newAcquisition( "streamName", acq );
-                auto acq2 = inputSensor.getAcq();
-                CHECK( acq == acqs.at( i ) );
+                hub::Acquisition acq2;
+                inputSensor >> acq2;
+//                auto acq2 = inputSensor.getAcq();
+                CHECK( acq2 == acqs.at( i ) );
             }
 
 //            while (iAcq != nAcqs) {

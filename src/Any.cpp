@@ -7,6 +7,7 @@
 #include <iostream>
 
 #include "data/Mat4.hpp"
+#include "data/Mesh.hpp"
 // using namespace Any;
 
 namespace hub {
@@ -34,6 +35,10 @@ Any::Any( const Any& any ) : m_type( any.m_type ), m_hasValue( any.m_hasValue ) 
 
     case Any::Type::MAT4: {
         m_mat4 = new data::Mat4( *any.m_mat4 );
+    } break;
+
+    case Any::Type::MESH: {
+        m_mesh = new data::Mesh( *any.m_mesh );
     } break;
 
     default:
@@ -65,6 +70,10 @@ Any& Any::operator=( const Any& any ) {
 
     case Any::Type::MAT4: {
         m_mat4 = any.m_mat4;
+    } break;
+
+    case Any::Type::MESH: {
+        m_mesh = any.m_mesh;
     } break;
 
     default:
@@ -109,6 +118,16 @@ Any::Any( const data::Mat4& value ) : m_mat4( new data::Mat4( value ) ) {
     m_hasValue = true;
 }
 
+Any::Any(const data::Mesh &value)
+    : m_mesh(new data::Mesh(value))
+{
+    assert( m_type == Type::NONE );
+    assert( !m_hasValue );
+    m_type     = Type::MESH;
+    m_hasValue = true;
+
+}
+
 // Any::Any( const std::vector<float>& value ) {
 // }
 // Any::Any( unsigned int value ) {
@@ -137,6 +156,12 @@ const char* const Any::getConstCharPtr() const {
 const data::Mat4& Any::getMat4() const {
     assert( m_type == Type::MAT4 );
     return *m_mat4;
+}
+
+const data::Mesh &Any::getMesh() const
+{
+    assert( m_type == Type::MESH );
+    return *m_mesh;
 }
 // const std::vector<float>& Any::getStdVectorFloat() const {
 // }
@@ -177,6 +202,12 @@ std::string anyValue2string( const Any& any ) {
             const auto& val = any.getMat4();
             return val.to_string();
         } break;
+
+        case Any::Type::MESH: {
+            const auto& val = any.getMesh();
+            return val.to_string();
+        } break;
+
         default:
             assert(false);
         }

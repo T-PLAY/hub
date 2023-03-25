@@ -13,7 +13,8 @@ class InputStream : public hub::io::Input
     explicit InputStream( hub::net::ClientSocket&& clientSocket ) :
         m_clientSocket( std::move( clientSocket ) ) {}
 
-    Acquisition getAcq(const SensorSpec & sensorSpec) override;
+    void read(Acquisition & acq) override;
+//    Acquisition getAcq() override;
 
   protected:
     void read( unsigned char* data, size_t len ) override;
@@ -26,7 +27,8 @@ class InputStream : public hub::io::Input
     bool m_outputStreamClosed = false;
 };
 
-Acquisition InputStream::getAcq(const SensorSpec &sensorSpec)
+void InputStream::read(Acquisition &acq)
+//Acquisition InputStream::getAcq()
 {
     net::ClientSocket::Message mess;
     m_clientSocket.read( mess );
@@ -35,8 +37,10 @@ Acquisition InputStream::getAcq(const SensorSpec &sensorSpec)
         throw net::Socket::exception("client closed connection");
     }
     assert( mess == net::ClientSocket::Message::NEW_ACQ );
-    return Input::getAcq(sensorSpec);
+    Input::read(acq);
+//    return Input::getAcq();
 }
+
 
 void InputStream::read( unsigned char* data, size_t len ) {
     m_clientSocket.read( data, len );
@@ -128,7 +132,9 @@ StreamerClient::StreamerClient( Server* server, int iClient, hub::net::ClientSoc
             while ( m_inputSensor->getInput().isOpen() ) {
 
 //                auto acq           = m_inputSensor->getAcquisition();
-                m_lastAcq = m_inputSensor->getAcq();
+//                hub::Acquisition acq;
+                *m_inputSensor >> m_lastAcq;
+//                m_lastAcq = m_inputSensor->getAcq();
 //                std::cout << "[StreamerClient] get acq : " << acq << std::endl;
                 m_server->newAcquisition( this, m_lastAcq );
 

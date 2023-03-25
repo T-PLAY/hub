@@ -9,6 +9,7 @@
 // #include "Acquisition.hpp"
 // #include "SensorSpec.hpp"
 #include "Any.hpp"
+#include "data/Measure.hpp"
 
 namespace hub {
 namespace io {
@@ -53,6 +54,31 @@ void Input::read( SensorSpec& sensorSpec ) {
     //    assert(! m_sensorSpec.isEmpty());
 }
 
+void Input::read(data::Measure &measure)
+{
+    assert(measure.m_data == nullptr);
+    read(measure.m_size);
+    measure.m_data = new unsigned char[measure.m_size];
+    read(measure.m_data, measure.m_size);
+    read(measure.m_resolution);
+    measure.m_ownData = true;
+
+    assert(measure.m_size != 0);
+    assert(measure.m_data != nullptr);
+}
+
+void Input::read(Acquisition &acq)
+{
+    read(acq.m_start);
+    read(acq.m_end);
+    read(acq.m_measures);
+    read(acq.m_size);
+
+    assert(acq.m_start <= acq.m_end);
+    assert(!acq.m_measures.empty());
+    assert(acq.m_size > 0);
+}
+
 // SensorSpec Input::getSensorSpec()  {
 
 // #ifdef DEBUG_INPUT
@@ -60,125 +86,121 @@ void Input::read( SensorSpec& sensorSpec ) {
 
 //}
 
-Acquisition Input::getAcq( const SensorSpec& sensorSpec ) {
-#ifdef DEBUG
-    //    assert(! m_sensorSpec.isEmpty());
-    assert( isOpen() );
-    assert( !isEnd() );
-#endif
+//Acquisition Input::getAcq() {
+//#ifdef DEBUG
+//    //    assert(! m_sensorSpec.isEmpty());
+//    assert( isOpen() );
+//    assert( !isEnd() );
+//#endif
 
-#ifdef DEBUG_INPUT
-    std::cout << "[Input] getAcq()" << std::endl;
-#endif
+//#ifdef DEBUG_INPUT
+//    std::cout << "[Input] getAcq()" << std::endl;
+//#endif
 
-    long long start, end;
+//    Acquisition acq;
+//    read(acq);
+//    return acq;
 
-    read( start );
-    read( end );
+////    long long start, end;
 
-    Acquisition acq { start, end };
+////    read( start );
+////    read( end );
 
-    int nMeasures;
-    read( nMeasures );
-#ifdef DEBUG
-    assert( nMeasures > 0 );
-#endif
+//////    Acquisition acq { start, end };
 
-    //    const auto& resolutions = m_sensorSpec.getResolutions();
-    const auto& resolutions = sensorSpec.getResolutions();
-#ifdef DEBUG
-    assert( resolutions.size() == nMeasures );
-#endif
+////    int nMeasures;
+////    read( nMeasures );
+////#ifdef DEBUG
+////    assert( nMeasures > 0 );
+////#endif
+//#ifdef DEBUG
+//    assert( resolutions.size() == nMeasures );
+//#endif
 
-    for ( int iMeasure = 0; iMeasure < nMeasures; ++iMeasure ) {
+//    for ( int iMeasure = 0; iMeasure < nMeasures; ++iMeasure ) {
 
-        uint64_t size; // compatibility 32/64 bits
-        read( size );
-        unsigned char* data = new unsigned char[size];
-        read( data, size );
+//        uint64_t size; // compatibility 32/64 bits
+//        read( size );
+//        unsigned char* data = new unsigned char[size];
+//        read( data, size );
 
-        acq.emplaceMeasure( data, size, resolutions.at( iMeasure ), true );
-    }
+//        acq.emplaceMeasure( data, size, resolutions.at( iMeasure ), true );
+//    }
 
-//    assert( !acq.hasFixedSize() || m_sensorSpec.getAcquisitionSize() == acq.getSize() );
-#ifdef DEBUG
-    //    assert( !acq.hasFixedSize() || acq.getSize() == m_sensorSpec.getAcquisitionSize() );
-    assert( !acq.hasFixedSize() || acq.getSize() == sensorSpec.getAcquisitionSize() );
-    //    const auto& resolutions = m_sensorSpec.getResolutions();
-    const auto& measures = acq.getMeasures();
-    assert( resolutions.size() == measures.size() );
-    assert( resolutions.size() > 0 );
-    for ( size_t i = 0; i < resolutions.size(); ++i ) {
-        assert( !res::format2hasFixedSize( resolutions.at( i ).second ) ||
-                res::computeAcquisitionSize( resolutions.at( i ) ) == measures.at( i ).getSize() );
-        assert( measures.at( i ).getResolution() == resolutions.at( i ) );
-        assert( !measures.at( i ).getResolution().first.empty() );
-        assert( measures.at( i ).getResolution().second != Format::NONE );
-    }
-#endif
+//    //    const auto& resolutions = m_sensorSpec.getResolutions();
 
-    return acq;
-}
+
+//    return acq;
+//}
 
 // Acquisition Input::operator>>(Input &input)
 //{
 // Acquisition
 // Input::getSyncAcq( const SensorSpec& sensorSpec,
 //                   Input& input, std::list<Acquisition>& lastAcqs ) {
-Acquisition Input::getSyncAcq( const SensorSpec& sensorSpec,
-                        Input& input2,
-                        const SensorSpec& sensorSpec2,
-                        std::list<Acquisition>& lastAcqs2 ) {
+Acquisition Input::operator>>(Input &input) {
+
+//Acquisition Input::getSyncAcq(Input& input2,
+//                        std::list<Acquisition>& lastAcqs ) {
 
     //        InputSensor ret(*this);
     //        InputSensor ret(inputSensor);
 #ifdef DEBUG
     assert( !isEnd() );
-    assert( !input2.isEnd() );
+    assert( !input.isEnd() );
 #endif
-    auto masterAcq = getAcq( sensorSpec );
+//    auto masterAcq = getAcq( );
+    Acquisition masterAcq;
+    read(masterAcq);
 
-    //    const auto & input2 = inputSensor.getInput();
+    auto & lastAcqs = input.m_lastAcqs;
+    //    const auto & input = inputSensor.getInput();
 
     //    auto & left = inputSensor.m_lastAcq;
-    //    auto& lastAcqs = input2.m_lastAcqs;
-    //    auto& lastAcqs = input2.m_lastAcqs;
-    assert( lastAcqs2.size() < 20 );
+    //    auto& lastAcqs = input.m_lastAcqs;
+    //    auto& lastAcqs = input.m_lastAcqs;
+    assert( lastAcqs.size() < 20 );
 
-    if ( lastAcqs2.empty() ) {
-        //        left = input2.getAcq();
-        lastAcqs2.push_back( input2.getAcq(sensorSpec2) );
-        //        lastAcqs2.push_back(input2.getAcq());
+    Acquisition acq2;
+
+    if ( lastAcqs.empty() ) {
+        //        left = input.getAcq();
+        input.read(acq2);
+//        lastAcqs.push_back( input.getAcq() );
+        lastAcqs.push_back( std::move(acq2) );
+        //        lastAcqs.push_back(input.getAcq());
     }
 
-    while ( masterAcq.getStart() < lastAcqs2.front().getStart() ) {
-        masterAcq = getAcq(sensorSpec);
+    while ( masterAcq.getStart() < lastAcqs.front().getStart() ) {
+//        masterAcq = getAcq();
+        read(masterAcq);
         std::cout << "[InputSensor] operator>>(InputSensor&) shift masterAcq : " << masterAcq
                   << std::endl;
     }
 
     //    auto right =
-    while ( lastAcqs2.back().getStart() < masterAcq.getStart() ) {
-        lastAcqs2.push_back( input2.getAcq(sensorSpec2) );
+    while ( lastAcqs.back().getStart() < masterAcq.getStart() ) {
+        read(acq2);
+        lastAcqs.push_back( std::move(acq2) );
     }
 
-    if ( lastAcqs2.back().getStart() == masterAcq.getStart() ) {
-        masterAcq << lastAcqs2.back().getMeasures();
+    if ( lastAcqs.back().getStart() == masterAcq.getStart() ) {
+        masterAcq << lastAcqs.back().getMeasures();
         return masterAcq;
     }
 
-    while ( lastAcqs2.size() > 2 ) {
-        lastAcqs2.pop_front();
+    while ( lastAcqs.size() > 2 ) {
+        lastAcqs.pop_front();
     }
 
-    //    assert( lastAcqs2.size() == 2 );
-    const auto& left  = lastAcqs2.front();
-    const auto& right = lastAcqs2.back();
+    //    assert( lastAcqs.size() == 2 );
+    const auto& left  = lastAcqs.front();
+    const auto& right = lastAcqs.back();
 
     assert( left.getStart() <= masterAcq.getStart() );
     assert( masterAcq.getStart() <= right.getStart() );
 
-    //    if ( lastAcqs2.back().getStart() == masterAcq.getStart() ) {
+    //    if ( lastAcqs.back().getStart() == masterAcq.getStart() ) {
     //        masterAcq << right.getMeasures();
     //        return masterAcq;
     //    }
@@ -188,10 +210,10 @@ Acquisition Input::getSyncAcq( const SensorSpec& sensorSpec,
                                  ? ( right )
                                  : ( left );
 
-    //    if (input2.isEnd())
-    //        lastAcqs2.pop_front();
+    //    if (input.isEnd())
+    //        lastAcqs.pop_front();
 
-    //    if (lastAcqs2.empty())
+    //    if (lastAcqs.empty())
     //        return Acquisition();
 
     masterAcq << closestAcq.getMeasures();
@@ -246,6 +268,8 @@ void Input::read( char* str ) {
 //    , m_sensorSpec(std::move(input.m_sensorSpec))
 //{
 //}
+
+
 
 void Input::read( Any& any ) {
     assert( isOpen() );
@@ -303,6 +327,23 @@ void Input::read( Any& any ) {
         any = Any( mat4 );
 
     } break;
+
+    case Any::Type::MESH: {
+//        float buff[16];
+//        read( reinterpret_cast<unsigned char*>( buff ), 64 );
+//        std::string objTxt;
+//        read(objTxt);
+//        std::string objMtl;
+//        read(objMtl);
+        data::Measure measure;
+//        data::Measure measure(nullptr, 0, {{1}, Format::MESH});
+        read(measure);
+
+//        data::Mesh mesh( objTxt, objMtl );
+        any = Any( data::Mesh(measure) );
+
+    } break;
+
 
     default:
         assert( false );

@@ -18,15 +18,20 @@ InputSyncStream::InputSyncStream( const std::string& streamName,
 {
 }
 
-Acquisition InputSyncStream::getAcq( const SensorSpec& sensorSpec ) {
+void InputSyncStream::read(Acquisition &acq)
+{
+
+//}
+
+//Acquisition InputSyncStream::getAcq( ) {
 
     Input& masterInput = m_inputStream;
     Input& input       = m_inputStream2;
 
-    hub::Acquisition acq = masterInput.getSyncAcq( m_inputStream.m_sensorSpec, input, m_inputStream2.m_sensorSpec, m_lastAcqs );
-    //    masterInput >> input >> acq;
+//    acq = masterInput.getSyncAcq( m_inputStream.m_sensorSpec, input, m_inputStream2.m_sensorSpec, m_lastAcqs );
+        masterInput >> input >> acq;
 
-    return acq;
+//    return acq;
 }
 
 void InputSyncStream::read( SensorSpec& sensorSpec ) {

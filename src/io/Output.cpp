@@ -14,8 +14,8 @@ namespace hub {
 namespace io {
 
 void Output::write( const std::string& str ) {
-    if (! isOpen())
-        throw std::runtime_error("[Output] closed, unable to write");
+//    if (! isOpen())
+//        throw std::runtime_error("[Output] closed, unable to write");
     assert( isOpen() );
 
 #ifdef DEBUG_OUTPUT
@@ -32,8 +32,8 @@ void Output::write( const std::string& str ) {
 }
 
 void Output::write( const SensorSpec& sensorSpec ) {
-    if (! isOpen())
-        throw std::runtime_error("[Output] closed, unable to write");
+//    if (! isOpen())
+//        throw std::runtime_error("[Output] closed, unable to write");
     assert( isOpen() );
 
 #ifdef DEBUG_OUTPUT
@@ -46,43 +46,56 @@ void Output::write( const SensorSpec& sensorSpec ) {
 }
 
 void Output::write( const data::Measure& measure ) {
-    if (! isOpen())
-        throw std::runtime_error("[Output] closed, unable to write");
+//    if (! isOpen())
+//        throw std::runtime_error("[Output] closed, unable to write");
     assert( isOpen() );
 
 #ifdef DEBUG_OUTPUT
     std::cout << "[Output] write(Measure)" << std::endl;
 #endif
 
-    assert( measure.getSize() != 0 );
-    assert( measure.getData() != nullptr );
+//    assert( measure.getSize() != 0 );
+//    assert( measure.getData() != nullptr );
+    assert(measure.m_size != 0);
+    assert(measure.m_data != nullptr);
 
-    write( measure.getSize() );
-    write( measure.getData(), measure.getSize() );
+//    write( measure.getSize() );
+//    write( measure.getData(), measure.getSize() );
+    write (measure.m_size);
+    write (measure.m_data, measure.m_size);
+    write (measure.m_resolution);
 }
 
 // void Output::write( const data::UserData& userData ) {
 //}
 
 void Output::write( const Acquisition& acq ) {
-    if (! isOpen())
-        throw std::runtime_error("[Output] closed, unable to write");
+//    if (! isOpen())
+//        throw std::runtime_error("[Output] closed, unable to write");
     assert( isOpen() );
 
 #ifdef DEBUG_OUTPUT
     std::cout << "[Output] write(Acquisition)" << std::endl;
 #endif
 
-    write( acq.getStart() );
-    write( acq.getEnd() );
-    const auto& measures = acq.getMeasures();
-    assert( measures.size() > 0 );
-    write( measures );
+    assert(acq.m_start <= acq.m_end);
+    assert(!acq.m_measures.empty());
+    assert(acq.m_size > 0);
+
+    write(acq.m_start);
+    write(acq.m_end);
+    write(acq.m_measures);
+    write(acq.m_size);
+//    write( acq.getStart() );
+//    write( acq.getEnd() );
+//    const auto& measures = acq.getMeasures();
+//    assert( measures.size() > 0 );
+//    write( measures );
 }
 
 void Output::write( const char* str ) {
-    if (! isOpen())
-        throw std::runtime_error("[Output] closed, unable to write");
+//    if (! isOpen())
+//        throw std::runtime_error("[Output] closed, unable to write");
     assert( isOpen() );
 
 #ifdef DEBUG_OUTPUT
@@ -107,8 +120,8 @@ void Output::write( const char* str ) {
 //}
 
 void Output::write( const Any& any ) {
-    if (! isOpen())
-        throw std::runtime_error("[Output] closed, unable to write");
+//    if (! isOpen())
+//        throw std::runtime_error("[Output] closed, unable to write");
     assert( isOpen() );
 
 #ifdef DEBUG_OUTPUT
@@ -151,6 +164,12 @@ void Output::write( const Any& any ) {
     case Any::Type::MAT4: {
         const auto& val = any.getMat4();
         write( reinterpret_cast<const unsigned char*>( val.getData() ), 64 );
+        break;
+    }
+
+    case Any::Type::MESH: {
+        const data::Measure& measure = any.getMesh();
+        write(measure);
         break;
     }
 

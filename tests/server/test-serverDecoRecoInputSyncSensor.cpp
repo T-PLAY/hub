@@ -121,7 +121,9 @@ TEST_CASE( "Server test : close clients" ) {
 
                 std::cout << "[Test] ############################### compare " << std::endl;
                 for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
-                    auto acq = inputSensor.getAcq();
+                    hub::Acquisition acq;
+                    inputSensor >> acq;
+//                    auto acq = inputSensor.getAcq();
                     std::cout << "[Test] acq = " << acq << std::endl;
                     std::cout << "ref acq : " << acqs2[iAcq * 5] << std::endl;
                     assert( acq.getStart() == 10 * iAcq );

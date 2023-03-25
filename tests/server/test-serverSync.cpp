@@ -120,19 +120,25 @@ TEST_CASE( "Server test : sync" ) {
 
         std::cout << "[Test] ############################### compare " << std::endl;
         for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
-            auto acq = inputSensor.getAcq();
+            hub::Acquisition acq;
+            inputSensor >> acq;
+//            auto acq = inputSensor.getAcq();
             std::cout << "[Test] acq = " << acq << std::endl;
             CHECK( acq == acqs[iAcq] );
         }
         std::cout << "[Test] ############################### compare2 " << std::endl;
         for ( int iAcq = 0; iAcq < nAcqs * 5; ++iAcq ) {
-            auto acq = inputSensor2.getAcq();
+            hub::Acquisition acq;
+            inputSensor2 >> acq;
+//            auto acq = inputSensor2.getAcq();
             std::cout << "[Test] acq2 = " << acq << std::endl;
             CHECK( acq == acqs2[iAcq] );
         }
         std::cout << "[Test] ############################### compare3 " << std::endl;
         for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
-            auto acq = inputSensor3.getAcq();
+            hub::Acquisition acq;
+            inputSensor3 >> acq;
+//            auto acq = inputSensor3.getAcq();
             std::cout << "[Test] acq3 = " << acq << std::endl;
             hub::Acquisition acqSync = acqs.at(iAcq).clone();
             acqSync << acqs2[iAcq * 5].getMeasures();

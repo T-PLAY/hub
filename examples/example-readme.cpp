@@ -97,7 +97,9 @@ int main() {
 
                 while ( 1 ) {
                     // receive data
-                    auto acq            = inputSensor.getAcq();
+                    hub::Acquisition acq;
+                    inputSensor >> acq;
+//                    auto acq            = inputSensor.getAcq();
                     const auto& measure = acq.getMeasures().at( 0 );
 
                     // draw image
