@@ -11,6 +11,7 @@
 #include "data/Dof6.hpp"
 #include "data/Mat4.hpp"
 #include "data/UserData.hpp"
+#include "data/Mesh.hpp"
 
 namespace hub {
 
@@ -203,6 +204,8 @@ class SRC_API Acquisition
     data::Measures m_measures;
     size_t m_size = 0;
 
+    friend class io::Input;
+    friend class io::Output;
 //    friend class InputSensor;
 };
 

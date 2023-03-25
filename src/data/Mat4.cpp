@@ -14,6 +14,14 @@ Mat4::Mat4(const Measure &measure)
 
 }
 
+Mat4::Mat4( const Mat4& mat4 ) :
+    Measure( reinterpret_cast<unsigned char*>( new float[16] ),
+             64,
+             Resolution { { 1 }, Format::MAT4 },
+             true ) {
+    memcpy( m_data, mat4.m_data, 64 );
+}
+
 Mat4::Mat4( float* array ) :
     Measure( reinterpret_cast<unsigned char*>( new float[16] ),
              64,
@@ -75,13 +83,6 @@ Mat4::Mat4( float r0c0,
     assert( m_size == 64 );
 }
 
-Mat4::Mat4( const Mat4& mat4 ) :
-    Measure( reinterpret_cast<unsigned char*>( new float[16] ),
-             64,
-             Resolution { { 1 }, Format::MAT4 },
-             true ) {
-    memcpy( m_data, mat4.m_data, 64 );
-}
 
 std::string Mat4::to_string() const {
     float data[16];

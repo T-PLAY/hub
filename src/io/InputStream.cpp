@@ -37,10 +37,14 @@ InputStream::InputStream( const std::string& streamName,
 //    }
 //    assert( mess == net::ClientSocket::Message::OK );
 
-    //    m_clientSocket.write( mergeSyncAcqs );
+           //    m_clientSocket.write( mergeSyncAcqs );
 }
 
-Acquisition InputStream::getAcq(const SensorSpec &sensorSpec) {
+void InputStream::read(Acquisition &acq) {
+//{
+
+//}
+//Acquisition InputStream::getAcq() {
     net::ClientSocket::Message message;
 //    do {
 //        Input::read( message );
@@ -69,8 +73,9 @@ Acquisition InputStream::getAcq(const SensorSpec &sensorSpec) {
 
 //    assert( message == net::ClientSocket::Message::NEW_ACQ );
 //    auto acq = Input::getAcq( );
-    auto acq = m_clientSocket.getAcq(sensorSpec);
-    return acq;
+    m_clientSocket.read(acq);
+//    auto acq = m_clientSocket.getAcq();
+//    return acq;
 }
 
 void InputStream::read(SensorSpec &sensorSpec)

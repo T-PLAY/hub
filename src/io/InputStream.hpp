@@ -82,7 +82,8 @@ class SRC_API InputStream : public Input
     //    /// \param sensorSpec
     //    /// \return
     //    ///
-    Acquisition getAcq( const SensorSpec& sensorSpec ) override;
+//    Acquisition getAcq() override;
+    void read(Acquisition & acq) override;
 
     void read( SensorSpec& sensorSpec ) override;
 
@@ -120,7 +121,9 @@ inline void InputStream::close() {
         try {
 //            while ( true ) {
             while ( m_clientSocket.isOpen() ) {
-                auto acq = getAcq( m_sensorSpec );
+    Acquisition acq;
+                m_clientSocket.read(acq);
+//                auto acq = getAcq( );
             }
         }
         catch ( std::exception& ex ) {

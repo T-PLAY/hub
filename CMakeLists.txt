@@ -48,7 +48,7 @@ if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
     set(CMAKE_POSTFIX ${CMAKE_DEBUG_POSTFIX})
 endif()
 
-add_definitions(-DPROJECT_DIR=\"${CMAKE_SOURCE_DIR}/\")
+add_definitions(-DHUB_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/\")
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
 

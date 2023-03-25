@@ -28,7 +28,9 @@ TEST_CASE( "OutputSensor test" ) {
 //    hub::InputSensor inputSensor { hub::io::Ram( buff ) };
     hub::InputSensor inputSensor { hub::io::Memory<decltype(buff)>( buff ) };
 
-    auto acq2 = inputSensor.getAcq();
+//    auto acq2 = inputSensor.getAcq();
+    hub::Acquisition acq2;
+    inputSensor >> acq2;
     CHECK( acq == acq2 );
 
     const auto& input = inputSensor.getInput();

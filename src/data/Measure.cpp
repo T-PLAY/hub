@@ -5,6 +5,7 @@
 #include "data/Dof6.hpp"
 #include "data/Mat4.hpp"
 #include "data/UserData.hpp"
+#include "data/Mesh.hpp"
 
 namespace hub {
 namespace data {
@@ -97,6 +98,12 @@ std::ostream& operator<<( std::ostream& os, const Measure& measure ) {
         //        const data::Dof6 & dof6 = dynamic_cast<const data::Dof6&>(measure);
         const data::UserData userData(measure);
         os << userData;
+        break; }
+
+    case Format::MESH: {
+        //        const data::Dof6 & dof6 = dynamic_cast<const data::Dof6&>(measure);
+        const data::Mesh mesh(measure);
+        os << mesh;
         break; }
 
     default:

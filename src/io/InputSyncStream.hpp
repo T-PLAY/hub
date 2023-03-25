@@ -79,7 +79,8 @@ class SRC_API InputSyncStream : public Input
     /// \brief getAcq
     /// \return
     ///
-    Acquisition getAcq( const SensorSpec & sensorSpec ) override;
+//    Acquisition getAcq( ) override;
+    void read(Acquisition & acq) override;
 
     void read( SensorSpec& sensorSpec) override;
 

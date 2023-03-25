@@ -19,6 +19,12 @@ class SRC_API Mat4 : public Measure
 
     ///
     /// \brief Mat4
+    /// \param mat4
+    ///
+    Mat4( const Mat4& mat4 );
+
+    ///
+    /// \brief Mat4
     /// is the 4x4 transformation matrix (row-major).
     /// \param array
     /// of 4x4 float (size = 4x4x4 = 64 bytes)
@@ -59,11 +65,6 @@ class SRC_API Mat4 : public Measure
     );
     // clang-format on
 
-    ///
-    /// \brief Mat4
-    /// \param mat4
-    ///
-    Mat4( const Mat4& mat4 );
 
     ///
     /// \brief to_string

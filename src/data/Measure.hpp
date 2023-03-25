@@ -8,6 +8,12 @@
 
 
 namespace hub {
+
+namespace io {
+    class Input;
+    class Output;
+}
+
 namespace data {
 
 
@@ -17,6 +23,9 @@ namespace data {
 class SRC_API Measure
 {
   public:
+
+    Measure() {};
+
     ///
     /// \brief Measure
     /// is used when the data sensor is volatile
@@ -146,25 +155,21 @@ class SRC_API Measure
     ///
     /// \brief m_data
     ///
-    unsigned char* m_data;
+    unsigned char* m_data = nullptr;
 
     ///
     /// \brief m_size
     ///
-    uint64_t m_size; // compatibility 32/64 bits
+    uint64_t m_size = 0; // compatibility 32/64 bits
 
   private:
-    ///
-    /// \brief m_ownData
-    /// indicated if this class is the owner of the data.
-    ///
-    bool m_ownData = false;
-
-  private:
-    bool m_isMoved = false;
     Resolution m_resolution;
+    bool m_ownData = false;
+    bool m_isMoved = false;
 
-    friend class InputSensor;
+    friend class hub::io::Input;
+    friend class hub::io::Output;
+//    friend class InputSensor;
 };
 
 using Measures = std::vector<Measure>;

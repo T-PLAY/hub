@@ -47,7 +47,8 @@ Acquisition InputSensor::operator>>( InputSensor& inputSensor ) {
     io::Input& masterInput = *m_input;
     io::Input& input       = inputSensor.getInput();
 //    Acquisition acq =
-       return  masterInput.getSyncAcq( m_spec, input, inputSensor.m_spec, inputSensor.m_lastAcqs );
+    return masterInput >> input;
+//       return  masterInput.getSyncAcq( m_spec, input, inputSensor.m_spec, inputSensor.m_lastAcqs );
     //    masterInput >> input >> acq;
 
 //    return acq;
@@ -135,14 +136,35 @@ Acquisition InputSensor::operator>>( InputSensor& inputSensor ) {
     //        return *this;
 }
 
-void InputSensor::operator>>( Acquisition& acquisition ) {
+void InputSensor::operator>>( Acquisition& acq ) {
     //    assert(acquisition.m_start == 0);
     //    assert(acquisition.m_end == 0);
 
     //    assert(acquisition.m_measures.empty());
     //    assert(acquisition.m_size == 0);
 
-       acquisition = m_input->getAcq(m_spec);
+       m_input->read(acq);
+
+
+    assert( !acq.hasFixedSize() || m_spec.getAcquisitionSize() == acq.getSize() );
+
+#ifdef DEBUG
+    const auto& resolutions = m_spec.getResolutions();
+    //    assert( !acq.hasFixedSize() || acq.getSize() == m_sensorSpec.getAcquisitionSize() );
+    assert( !acq.hasFixedSize() || acq.getSize() == m_spec.getAcquisitionSize() );
+    //    const auto& resolutions = m_sensorSpec.getResolutions();
+    const auto& measures = acq.getMeasures();
+    assert( resolutions.size() == measures.size() );
+    assert( resolutions.size() > 0 );
+    for ( size_t i = 0; i < resolutions.size(); ++i ) {
+        assert( !res::format2hasFixedSize( resolutions.at( i ).second ) ||
+                res::computeAcquisitionSize( resolutions.at( i ) ) == measures.at( i ).getSize() );
+        assert( measures.at( i ).getResolution() == resolutions.at( i ) );
+        assert( !measures.at( i ).getResolution().first.empty() );
+        assert( measures.at( i ).getResolution().second != Format::NONE );
+    }
+#endif
+//       acquisition = m_input->getAcq();
 }
 
 std::vector<Acquisition> InputSensor::getAllAcquisitions() {
@@ -151,7 +173,9 @@ std::vector<Acquisition> InputSensor::getAllAcquisitions() {
     try {
         //        int nReadAcqs = 0;
         while ( !m_input->isEnd() ) {
-            acqs.emplace_back( m_input->getAcq(m_spec) );
+            Acquisition acq;
+            m_input->read(acq);
+            acqs.emplace_back( std::move(acq) );
             //            ++nReadAcqs;
         }
     }

@@ -75,7 +75,7 @@ class SRC_API InputSensor : public Sensor
     /// \exception "used interface exception"
     /// when communication bus is broken.
     ///
-    Acquisition getAcq() const;
+//    Acquisition getAcq() const;
 
     ///
     /// \brief operator >>
@@ -90,6 +90,8 @@ class SRC_API InputSensor : public Sensor
     ///
     Acquisition operator>>(InputSensor & inputSensor);
 
+
+//    void operator>>>(std::vector<Acquisition> & acqs);
 
     ///
     /// \brief getAllAcquisitions
@@ -111,13 +113,13 @@ class SRC_API InputSensor : public Sensor
 //    std::unique_ptr<io::Input> m_input;
     std::shared_ptr<io::Input> m_input;
 //    Acquisition m_lastAcq;
-    std::list<Acquisition> m_lastAcqs;
+//    std::list<Acquisition> m_lastAcqs;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-inline Acquisition InputSensor::getAcq() const {
-    return m_input->getAcq(m_spec);
-}
+//inline Acquisition InputSensor::getAcq() const {
+//    return m_input->getAcq();
+//}
 
 } // namespace hub

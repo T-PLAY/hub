@@ -36,14 +36,16 @@ int getAcquisitionSize( const InputSensor* inputSensor ) {
     return static_cast<int>( inputSensor->getSpec().getAcquisitionSize() );
 }
 
-Acquisition* getAcquisition( const InputSensor* inputSensor ) {
+Acquisition* getAcquisition( InputSensor* inputSensor ) {
     assert( inputSensor != nullptr );
 
     std::cout << "[Native] getAcquisition( " << inputSensor << ")" << std::endl;
     Acquisition* ret = nullptr;
 
     try {
-        auto acq = inputSensor->getAcq();
+        hub::Acquisition acq;
+        *inputSensor >> acq;
+//        auto acq = inputSensor->getAcq();
         std::cout << "[Native] get acq : " << acq << std::endl;
         ret = new Acquisition( std::move( acq ) );
     }

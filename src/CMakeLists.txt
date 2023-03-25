@@ -145,6 +145,7 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
         test-all
         EXCLUDE
         "/usr/*"
+        "*tiny_obj_loader.h"
 #        "*.hpp"
     )
 
@@ -152,12 +153,12 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
         add_custom_command(
             TARGET ${PROJECT_NAME}
             POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_BINARY_DIR}/tests/DartConfiguration.tcl
-                    ${CMAKE_BINARY_DIR}/)
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_BINARY_DIR}/tests/DartConfiguration.tcl
+                    ${CMAKE_CURRENT_BINARY_DIR}/)
 
     endif()
 
-    add_custom_target(coverage COMMAND ${HUB_BROWSER} ${CMAKE_BINARY_DIR}/coverage-lcov/index.html)
+    add_custom_target(coverage COMMAND ${HUB_BROWSER} ${CMAKE_CURRENT_BINARY_DIR}/../coverage-lcov/index.html)
     add_dependencies(coverage coverage-lcov)
 
     add_custom_target(coverage-all)
@@ -179,10 +180,12 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
 
         set(sourcesTmp ${SOURCE_FILES})
         list(FILTER sourcesTmp EXCLUDE REGEX ".*/${name}\\.cpp$")
+        list(FILTER sourcesTmp EXCLUDE REGEX ".*/${name}\\.hpp$")
 
         setup_target_for_coverage_lcov(
             NAME
             coverage-lcov-${name}
+#            BASE_DIRECTORY "src/"                        # Base directory for report
             EXECUTABLE
             tests/test-${parentMacro}${name}
             DEPENDENCIES
@@ -190,14 +193,15 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
             test-${parentMacro}${name}
             EXCLUDE
             "/usr/*"
+            "*tiny_obj_loader.h"
             ${sourcesTmp})
 
         add_custom_target(
             coverage-${name}
             COMMAND
-                ls ${CMAKE_BINARY_DIR}/coverage-lcov-${name}/index.html && head -n 40
-                ${CMAKE_BINARY_DIR}/coverage-lcov-${name}/index.html | grep '100.0 %' || ${HUB_BROWSER}
-                ${CMAKE_BINARY_DIR}/coverage-lcov-${name}/index.html)
+                ls ${CMAKE_CURRENT_BINARY_DIR}/../coverage-lcov-${name}/index.html && head -n 40
+                ${CMAKE_CURRENT_BINARY_DIR}/../coverage-lcov-${name}/index.html | grep '100.0 %' || ${HUB_BROWSER}
+                ${CMAKE_CURRENT_BINARY_DIR}/../coverage-lcov-${name}/index.html)
 
         add_dependencies(coverage-${name} coverage-lcov-${name})
         add_dependencies(coverage-all coverage-${name})

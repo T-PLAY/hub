@@ -15,6 +15,7 @@ namespace hub {
 
 namespace data {
 class Mat4;
+class Mesh;
 }
 
 ///
@@ -28,7 +29,7 @@ class SRC_API Any
     /// \brief The AnyType enum
     /// allows to unify the data according to the different architecture (32, 64 bits).
     ///
-    enum class Type { NONE = 0, INT, DOUBLE, STRING, CONST_CHAR_PTR, MAT4, COUNT };
+    enum class Type { NONE = 0, INT, DOUBLE, STRING, CONST_CHAR_PTR, MAT4, MESH, COUNT };
 
     ///
     /// \brief Any
@@ -80,6 +81,10 @@ class SRC_API Any
     ///
     Any( const data::Mat4& value );
 
+    Any( const data::Mesh& value );
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     ///
     /// \brief getInt
     /// \return
@@ -109,6 +114,8 @@ class SRC_API Any
     /// \return
     ///
     const data::Mat4& getMat4() const;
+
+    const data::Mesh &getMesh() const;
 
     ///
     /// \brief has_value
@@ -166,6 +173,7 @@ class SRC_API Any
     std::string m_std_string     = "";
     const char* m_const_char_ptr = nullptr;
     hub::data::Mat4* m_mat4      = nullptr;
+    hub::data::Mesh* m_mesh = nullptr;
 
     // T m_value;
 };
