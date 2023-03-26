@@ -18,6 +18,9 @@ TEST_CASE( "Output test" ) {
     hub::Any ref_any_string( std::string( "hello" ) );
     hub::Any ref_any_constCharPtr( "hello" );
     hub::Any ref_any_mat4( hub::data::Mat4( 0.0 ) );
+        const std::string meshPath = HUB_DIR "tests/data/meshes/";
+        hub::data::Mesh ref_mesh( meshPath + "quad.obj" );
+        hub::Any ref_any_mesh( ref_mesh );
 
     std::vector<char> buff;
 
@@ -33,6 +36,7 @@ TEST_CASE( "Output test" ) {
     memory.write( ref_any_string );
     memory.write( ref_any_constCharPtr );
     memory.write( ref_any_mat4 );
+    memory.write(ref_any_mesh);
 
     std::string string;
     memory.read( string );
@@ -73,6 +77,10 @@ TEST_CASE( "Output test" ) {
     std::cout << "mat4: " << any_mat4 << std::endl;
     assert( ref_any_mat4 == any_mat4 );
     CHECK( ref_any_mat4 == any_mat4 );
+
+        hub::Any any_mesh;
+        memory.read( any_mesh );
+        CHECK( ref_any_mesh == any_mesh );
 
     CHECK( memory.isEnd() );
 }

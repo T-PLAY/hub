@@ -25,6 +25,8 @@ class InputStream : public hub::io::Input
   private:
     hub::net::ClientSocket m_clientSocket;
     bool m_outputStreamClosed = false;
+
+    friend class StreamerClient;
 };
 
 void InputStream::read(Acquisition &acq)
@@ -52,6 +54,7 @@ void InputStream::close() {
     assert(m_outputStreamClosed);
     m_clientSocket.write(net::ClientSocket::Message::STREAMER_CLOSED);
 //     std::this_thread::sleep_for( std::chrono::milliseconds( 200 ) );
+    assert(m_clientSocket.isOpen());
     m_clientSocket.close();
 }
 
@@ -219,6 +222,11 @@ const hub::InputSensor& StreamerClient::getInputSensor() const {
 
 void StreamerClient::end()
 {
+//    InputStream& input = dynamic_cast<InputStream&>(m_inputSensor->getInput());
+//    if (input.m_clientSocket.isOpen()) {
+//    assert(input.m_clientSocket.isOpen());
+//    input.m_clientSocket.write( hub::net::ClientSocket::Message::STREAMER_CLOSED );
+//    }
 //    m_inputSensor->getInput().close();
 }
 

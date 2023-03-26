@@ -155,12 +155,14 @@ const char* const Any::getConstCharPtr() const {
 }
 const data::Mat4& Any::getMat4() const {
     assert( m_type == Type::MAT4 );
+    assert(m_mat4 != nullptr);
     return *m_mat4;
 }
 
 const data::Mesh &Any::getMesh() const
 {
     assert( m_type == Type::MESH );
+    assert(m_mesh != nullptr);
     return *m_mesh;
 }
 // const std::vector<float>& Any::getStdVectorFloat() const {
@@ -283,6 +285,11 @@ bool Any::operator==( const Any& any ) const {
         case Any::Type::MAT4: {
             return *m_mat4 == *any.m_mat4;
         } break;
+
+        case Any::Type::MESH: {
+            return *m_mesh == *any.m_mesh;
+        } break;
+
 
         default:
             assert( false );

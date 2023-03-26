@@ -462,6 +462,8 @@ Viewer::Viewer(
 
                     case net::ClientSocket::Message::VIEWER_CLIENT_CLOSED: {
                         DEBUG_MSG( "[Viewer] viewer client closed" );
+                        assert(m_sock.isOpen());
+                        m_sock.close();
                         throw net::ClientSocket::exception( "[viewer] client closed from server" );
                     }
 

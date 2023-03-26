@@ -38,7 +38,9 @@ class SRC_API InputSensor : public Sensor
               typename = typename std::enable_if<std::is_base_of<io::Input, Input>::value>::type>
     explicit InputSensor( Input&& input ) :
 
-        Sensor( hub::SensorSpec {} ), m_input( new Input( std::move( input ) ) ) {
+        Sensor( hub::SensorSpec {} ),
+//        Sensor( input.get<hub::SensorSpec>() ),
+        m_input( new Input( std::move( input ) ) ) {
         static_assert( std::is_base_of<io::Input, Input>::value, "not a base class" );
 
         m_input->read( m_spec );
@@ -51,9 +53,11 @@ class SRC_API InputSensor : public Sensor
               typename = typename std::enable_if<std::is_base_of<io::Input, Input>::value>::type>
     explicit InputSensor( const Input& input ) = delete;
 
+    InputSensor(InputSensor && inputSensor);
     ~InputSensor();
 
     InputSensor operator=( const InputSensor& inputSensor ) = delete;
+
 
 
 //    InputSensor( const InputSensor& inputSensor ) = delete;
@@ -110,10 +114,11 @@ class SRC_API InputSensor : public Sensor
     void close();
 
   private:
-//    std::unique_ptr<io::Input> m_input;
-    std::shared_ptr<io::Input> m_input;
+    std::unique_ptr<io::Input> m_input;
+//    std::shared_ptr<io::Input> m_input;
 //    Acquisition m_lastAcq;
 //    std::list<Acquisition> m_lastAcqs;
+    bool m_moved = false;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -47,6 +47,7 @@ private:
 
 //    bool m_pingFailed = false;
 //    bool m_updateFailed  = false;
+//    std::mutex m_mtx;
 
 //    hub::Acquisition m_lastAcq;
     bool m_ending = false;

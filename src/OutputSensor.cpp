@@ -7,18 +7,25 @@
 
 namespace hub {
 
-OutputSensor::~OutputSensor()
-{
-//    assert(m_output->isOpen());
-    if (m_output->isOpen())
-        m_output->close();
-    assert(! m_output->isOpen());
-//    m_output.release();
+OutputSensor::OutputSensor( OutputSensor&& outputSensor ) :
+    Sensor( outputSensor.m_spec ), m_output( std::move( outputSensor.m_output ) ) {
+    outputSensor.m_moved = true;
+}
+
+OutputSensor::~OutputSensor() {
+//    std::cout << "[OutputSensor] ~OutputSensor() " << this << " started" << std::endl;
+    //    assert(m_output->isOpen());
+    if ( !m_moved ) {
+        if ( m_output->isOpen() ) m_output->close();
+        assert( !m_output->isOpen() );
+    }
+    //    m_output.release();
+    std::cout << "[OutputSensor] ~OutputSensor() " << this << " ended" << std::endl;
 }
 
 void OutputSensor::operator<<( const Acquisition& acquisition ) const {
 #ifdef DEBUG
-    assert(m_output->isOpen());
+    assert( m_output->isOpen() );
     assert( !acquisition.hasFixedSize() || acquisition.getSize() == m_spec.getAcquisitionSize() );
     assert( acquisition.getStart() <= acquisition.getEnd() );
 

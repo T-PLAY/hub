@@ -54,6 +54,7 @@ class SRC_API OutputSensor : public Sensor
     OutputSensor( const OutputSensor& outputSensor ) = delete;
     OutputSensor operator=( const OutputSensor& outputSensor ) = delete;
 
+    OutputSensor(OutputSensor && outputSensor);
     ~OutputSensor();
 
     ///
@@ -78,6 +79,8 @@ class SRC_API OutputSensor : public Sensor
 
   private:
     std::unique_ptr<io::Output> m_output;
+
+    bool m_moved = false;
 };
 
 } // namespace hub

@@ -59,7 +59,7 @@ TEST_CASE( "InputStream test" ) {
         outputSensor << acq;
     }
 
-        std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+//        std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
 
     hub::Acquisition acq;
     std::cout << "acqs" << std::endl;

@@ -46,6 +46,7 @@ class SRC_API Input
     Input&& operator=( Input&& input )     = delete;
 
     virtual ~Input() = default;
+//    ~Input();
 
   protected:
     ///
@@ -174,45 +175,30 @@ class SRC_API Input
     //    void read( data::Measure& measure ) = delete;
     void read( data::Measure& measure );
 
-    ///
-    //    virtual Acquisition getAcq( const SensorSpec& sensorSpec );
-    ///
-    /// \brief getAcq
-    /// \return
-    ///
-    //    virtual Acquisition getAcq();
 
-    ///
-    /// \brief operator >>
-    /// \param input
-    /// \return
-    ///
-    template <class T = Acquisition>
-    //    typename std::enable_if<std::is_same<T, void>::value, T&>::type
-    T operator>>( Input& input );
-    //        return ret;
-    //        return *this;
-    //    Acquisition operator>>( Input& input );
+  public:
 
-    //    Acquisition getSyncAcq(Input & input2, std::list<Acquisition> & lastAcqs2);
-
-    //    hub::SensorSpec getSensorSpec() const;
+    Acquisition operator>>( Input& input );
 
   private:
     std::list<Acquisition> m_lastAcqs;
-    //    hub::SensorSpec m_sensorSpec;
-    //    friend class data::Measure;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 template <class T>
 inline void Input::operator>>( T& t ) {
+    assert(isOpen());
+    assert(!isEnd());
+
     read( t );
 }
 
 template <class T>
 inline T Input::get() {
+    assert(isOpen());
+    assert(!isEnd());
+
     T t;
     read( t );
     return t;
@@ -220,6 +206,8 @@ inline T Input::get() {
 
 template <template <typename, typename...> class Container, typename T>
 void Input::readAll( Container<T>& ts ) {
+    assert(isOpen());
+    assert(!isEnd());
 
     try {
         while ( !isEnd() ) {
@@ -234,6 +222,9 @@ void Input::readAll( Container<T>& ts ) {
 
 template <class T>
 T Input::getAll() {
+    assert(isOpen());
+    assert(!isEnd());
+
     T ts;
     readAll( ts );
     return ts;
@@ -241,9 +232,10 @@ T Input::getAll() {
 
 template <class T>
 inline void Input::read( T& t ) {
+    assert(isOpen());
+    assert(!isEnd());
     //    if (! isOpen())
     //        throw std::runtime_error("[Input] closed, unable to read");
-    assert( isOpen() );
 
     read( reinterpret_cast<unsigned char*>( &t ), sizeof( T ) );
 
@@ -260,6 +252,7 @@ inline void Input::read( T& t ) {
 template <class T>
 inline void Input::read( std::list<T>& list ) {
     assert( isOpen() );
+    assert(!isEnd());
 
 #ifdef DEBUG_INPUT
     std::cout << "[InpuInput] read(std::list)" << std::endl;
@@ -278,6 +271,7 @@ inline void Input::read( std::list<T>& list ) {
 template <class T>
 inline void Input::read( std::vector<T>& vector ) {
     assert( isOpen() );
+    assert(!isEnd());
 
 #ifdef DEBUG_INPUT
     std::cout << "[Input] read(std::vector)" << std::endl;
@@ -299,6 +293,7 @@ inline void Input::read( std::vector<T>& vector ) {
 template <class T, class U>
 inline void Input::read( std::map<T, U>& map ) {
     assert( isOpen() );
+    assert(!isEnd());
 
 #ifdef DEBUG_INPUT
     std::cout << "[Input] read(std::map)" << std::endl;
@@ -319,10 +314,11 @@ inline void Input::read( std::map<T, U>& map ) {
     }
 }
 
+
 template <class T, class U>
 inline void Input::read( std::pair<T, U>& pair ) {
-
     assert( isOpen() );
+    assert(!isEnd());
 
 #ifdef DEBUG_INPUT
     std::cout << "[Input] read(std::pair)" << std::endl;
@@ -332,79 +328,6 @@ inline void Input::read( std::pair<T, U>& pair ) {
     U second;
     read( second );
     pair = std::make_pair( first, std::move( second ) );
-}
-
-template <class T>
-//    typename std::enable_if<std::is_same<T, void>::value, T&>::type
-T Input::operator>>( Input& input ) {
-
-#ifdef DEBUG
-    assert( !isEnd() );
-    assert( !input.isEnd() );
-#endif
-
-    T t;
-    read( t );
-
-    auto& lastAcqs = input.m_lastAcqs;
-
-    assert( lastAcqs.size() < 20 );
-
-    T t2;
-
-    if ( lastAcqs.empty() ) {
-        input.read( t2 );
-        lastAcqs.push_back( std::move( t2 ) );
-    }
-
-    while ( t.getStart() < lastAcqs.front().getStart() ) {
-        read( t );
-        std::cout << "[InputSensor] operator>>(InputSensor&) shift t : " << t << std::endl;
-    }
-
-    while ( lastAcqs.back().getStart() < t.getStart() ) {
-        input.read( t2 );
-        lastAcqs.push_back( std::move( t2 ) );
-    }
-
-    if ( lastAcqs.back().getStart() == t.getStart() ) {
-        t << lastAcqs.back().getMeasures();
-        return t;
-    }
-
-    while ( lastAcqs.size() > 2 ) {
-        lastAcqs.pop_front();
-    }
-
-    const auto& left  = lastAcqs.front();
-    const auto& right = lastAcqs.back();
-
-    assert( left.getStart() <= t.getStart() );
-    assert( t.getStart() <= right.getStart() );
-
-    const auto& closestAcq =
-        ( std::abs( left.getStart() - t.getStart() ) > std::abs( right.getStart() - t.getStart() ) )
-            ? ( right )
-            : ( left );
-
-    t << closestAcq.getMeasures();
-    return t;
-
-    //    const auto dist = std::abs( closestAcq.m_start - masterAcq.m_start );
-
-    //    // assert(minDist < 20'000); // 20 ms
-    //    // if too far then abort synchronize
-    //    // consider constant period of acquistion rate
-    //    auto maxDist = ( right.m_start - left.m_start ) / 2;
-
-    //    // find acceptable corresponding acquisition if interpolation is not possible
-    //    if ( !left.isInterpolable() ) {
-    //        const auto& lastMasterAcq = getLastAcq( syncViewerName );
-    //        if ( lastMasterAcq != nullptr ) {
-    //            maxDist =
-    //                std::min( dist, std::abs( lastMasterAcq->m_start() - masterAcq.m_start() ) );
-    //        }
-    //    }
 }
 
 } // namespace io

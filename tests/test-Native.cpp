@@ -177,7 +177,7 @@ int main()
     //    std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
 
     // todo test
-    //    if (false)
+        if (false)
     {
         std::cout << "[Test] ############################### server start" << std::endl;
         hub::server::Server server(port);
@@ -196,7 +196,7 @@ int main()
                 ref_sensorSpec,
                 hub::io::OutputStream(ref_streamName, hub::net::ClientSocket(ipv4, port)));
 
-            std::this_thread::sleep_for(std::chrono::milliseconds(delay));
+            std::this_thread::sleep_for(std::chrono::milliseconds(2000));
 
             //            *outputSensor << ref_acq;
 
@@ -244,6 +244,8 @@ int main()
 
                 std::cout << "[Test] ############################### inputSensor end" << std::endl;
             }
+
+            delete outputSensor;
 
             //            std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
 

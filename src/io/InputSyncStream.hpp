@@ -49,6 +49,8 @@ class SRC_API InputSyncStream : public Input
 //    bool isOpen() const override;
 //    bool isEnd() const override;
 //#endif
+//    InputSyncStream(InputSyncStream&& inputSyncStream);
+//    ~InputSyncStream();
 
   protected:
     ///
@@ -92,6 +94,8 @@ class SRC_API InputSyncStream : public Input
 //    SensorSpec m_sensorSpec;
 //    SensorSpec m_sensorSpec2;
     std::list<Acquisition> m_lastAcqs;
+
+//    bool m_moved = false;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -112,10 +116,12 @@ inline void InputSyncStream::close() {
         m_inputStream.close();
     if (m_inputStream2.isOpen())
         m_inputStream2.close();
+
+    assert(! m_inputStream.isOpen() && ! m_inputStream2.isOpen());
 }
 
 inline bool InputSyncStream::isEnd() const {
-    assert(false);
+//    assert(false);
     return m_inputStream.isEnd() || m_inputStream2.isEnd();
 }
 

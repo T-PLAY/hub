@@ -13,10 +13,14 @@
 namespace hub {
 namespace io {
 
+Output::~Output() {
+//    std::cout << "[Output] ~Output() " << this << std::endl;
+}
+
 void Output::write( const std::string& str ) {
+    assert( isOpen() );
 //    if (! isOpen())
 //        throw std::runtime_error("[Output] closed, unable to write");
-    assert( isOpen() );
 
 #ifdef DEBUG_OUTPUT
     std::cout << "[Output] write(std::string) : '" << str << "'" << std::endl;
@@ -32,9 +36,9 @@ void Output::write( const std::string& str ) {
 }
 
 void Output::write( const SensorSpec& sensorSpec ) {
+    assert( isOpen() );
 //    if (! isOpen())
 //        throw std::runtime_error("[Output] closed, unable to write");
-    assert( isOpen() );
 
 #ifdef DEBUG_OUTPUT
     std::cout << "[Output] write(SensorSpec)" << std::endl;
@@ -46,9 +50,9 @@ void Output::write( const SensorSpec& sensorSpec ) {
 }
 
 void Output::write( const data::Measure& measure ) {
+    assert( isOpen() );
 //    if (! isOpen())
 //        throw std::runtime_error("[Output] closed, unable to write");
-    assert( isOpen() );
 
 #ifdef DEBUG_OUTPUT
     std::cout << "[Output] write(Measure)" << std::endl;
@@ -70,9 +74,9 @@ void Output::write( const data::Measure& measure ) {
 //}
 
 void Output::write( const Acquisition& acq ) {
+    assert( isOpen() );
 //    if (! isOpen())
 //        throw std::runtime_error("[Output] closed, unable to write");
-    assert( isOpen() );
 
 #ifdef DEBUG_OUTPUT
     std::cout << "[Output] write(Acquisition)" << std::endl;
@@ -94,9 +98,9 @@ void Output::write( const Acquisition& acq ) {
 }
 
 void Output::write( const char* str ) {
+    assert( isOpen() );
 //    if (! isOpen())
 //        throw std::runtime_error("[Output] closed, unable to write");
-    assert( isOpen() );
 
 #ifdef DEBUG_OUTPUT
     std::cout << "[Output] write(const char*)" << std::endl;
@@ -120,9 +124,9 @@ void Output::write( const char* str ) {
 //}
 
 void Output::write( const Any& any ) {
+    assert( isOpen() );
 //    if (! isOpen())
 //        throw std::runtime_error("[Output] closed, unable to write");
-    assert( isOpen() );
 
 #ifdef DEBUG_OUTPUT
 #    ifdef WIN32
@@ -173,9 +177,11 @@ void Output::write( const Any& any ) {
         break;
     }
 
+#ifndef COVERAGE
     default:
         std::cerr << "non supported type : '" << any.type() << "'" << std::endl;
         assert( false );
+#endif
     }
 }
 

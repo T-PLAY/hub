@@ -37,6 +37,10 @@ else()
     target_compile_definitions(${PROJECT_NAME} PUBLIC -DNDEBUG)
 endif()
 
+if (HUB_ENABLE_COVERAGE)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC -DCOVERAGE)
+endif()
+
 if(MINGW)
     if (CLANG)
             find_package(Threads REQUIRED)
@@ -180,7 +184,7 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
 
         set(sourcesTmp ${SOURCE_FILES})
         list(FILTER sourcesTmp EXCLUDE REGEX ".*/${name}\\.cpp$")
-        list(FILTER sourcesTmp EXCLUDE REGEX ".*/${name}\\.hpp$")
+#        list(FILTER sourcesTmp EXCLUDE REGEX ".*/${name}\\.hpp$")
 
         setup_target_for_coverage_lcov(
             NAME
