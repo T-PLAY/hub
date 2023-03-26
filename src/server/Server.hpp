@@ -97,7 +97,7 @@ class SRC_API Server
 
     hub::net::ServerSocket m_serverSock;
     std::list<Client*> m_clients;
-    std::mutex m_mtxClients;
+//    std::mutex m_mtxClients;
 
     int m_nClient = 0;
     int m_maxClients = 1'000'000;

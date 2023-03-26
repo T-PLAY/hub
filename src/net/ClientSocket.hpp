@@ -103,7 +103,8 @@ class SRC_API ClientSocket : public Socket, public io::InputOutput
 
     ClientSocket( const ClientSocket& sock ) = delete;
 
-    ClientSocket( ClientSocket&& sock ) = default;
+//    ClientSocket( ClientSocket&& sock ) = default;
+    ClientSocket( ClientSocket&& sock );
 
     ClientSocket& operator=( const ClientSocket& sock ) = delete;
     ClientSocket&& operator=( ClientSocket&& sock ) = delete;
@@ -198,7 +199,7 @@ class SRC_API ClientSocket : public Socket, public io::InputOutput
     int m_port;
     net::utils::ClientAddr m_addr;
     bool m_connected = false;
-//    bool m_moved     = false;
+    bool m_moved     = false;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -13,6 +13,9 @@ class OutputStream : public hub::io::Output
     explicit OutputStream( hub::net::ClientSocket&& clientSocket ) :
         m_clientSocket( std::move( clientSocket ) ) {}
 
+    OutputStream( OutputStream&& outputStream );
+    ~OutputStream();
+
   protected:
     void write( const hub::Acquisition& acq ) override;
 
@@ -24,9 +27,24 @@ class OutputStream : public hub::io::Output
     hub::net::ClientSocket m_clientSocket;
     //    bool m_closing = false;
     bool m_inputStreamClosed = false;
+    bool m_moved             = false;
 
     friend class StreamViewerClient;
 };
+
+OutputStream::OutputStream( OutputStream&& outputStream ) :
+    m_clientSocket( std::move( outputStream.m_clientSocket ) ),
+    m_inputStreamClosed( outputStream.m_inputStreamClosed ) {
+    outputStream.m_moved = true;
+}
+
+OutputStream::~OutputStream() {
+    if ( !m_moved ) {
+//        std::cout << "[StreamViewerClient][OutputStream] close()" << std::endl;
+        assert(!isOpen());
+//        assert( !isOpen() );
+    }
+}
 
 void OutputStream::write( const hub::Acquisition& acq ) {
     //    if (m_closing) {
@@ -43,13 +61,13 @@ void OutputStream::write( const unsigned char* data, size_t len ) {
 
 void OutputStream::close() {
     //    if ( isOpen() )
-    assert(m_inputStreamClosed);
-//    assert(isOpen());
-//    m_clientSocket.write( hub::net::ClientSocket::Message::STREAM_VIEWER_CLOSED );
-//    m_clientSocket.write( hub::net::ClientSocket::Message::STREAM_VIEWER_CLOSED );
+    //    assert(m_inputStreamClosed);
+    //    assert(isOpen());
+    //    m_clientSocket.write( hub::net::ClientSocket::Message::STREAM_VIEWER_CLOSED );
+    //    m_clientSocket.write( hub::net::ClientSocket::Message::STREAM_VIEWER_CLOSED );
     //            output.write( hub::net::ClientSocket::Message::CLOSE );
-    assert(isOpen());
-    assert(m_clientSocket.isOpen());
+    //    assert(isOpen());
+    //    assert(m_clientSocket.isOpen());
     m_clientSocket.close();
 }
 
@@ -143,108 +161,116 @@ StreamViewerClient::StreamViewerClient( Server* server,
     //        return;
     //    }
 
-    m_thread = std::thread( [this]() {
-        try {
+    //    m_thread = std::thread( [this]() {
+    //        try {
 
-            OutputStream& outputStream = dynamic_cast<OutputStream&>( m_outputSensor->getOutput() );
-            hub::net::ClientSocket::Message message;
-            // wait for lost connection
-            outputStream.m_clientSocket.read( message );
-            assert( message == net::ClientSocket::Message::INPUT_STREAM_CLOSED );
-//            m_inputStreamClosed = true;
-            outputStream.m_inputStreamClosed = true;
+    //            OutputStream& outputStream = dynamic_cast<OutputStream&>(
+    //            m_outputSensor->getOutput() ); hub::net::ClientSocket::Message message;
+    //            // wait for lost connection
+    //            outputStream.m_clientSocket.read( message );
+    //            assert( message == net::ClientSocket::Message::INPUT_STREAM_CLOSED );
+    ////            m_inputStreamClosed = true;
+    //            outputStream.m_inputStreamClosed = true;
+    //            std::cout << headerMsg() << "input stream closed by client " << std::endl;
 
-            //            assert( false );
-            //            std::cout << headerMsg() << "receive message : " << message << std::endl;
+    //            //            assert( false );
+    //            //            std::cout << headerMsg() << "receive message : " << message <<
+    //            std::endl;
 
-            //            m_outputSensor->getOutput();
+    //            //            m_outputSensor->getOutput();
 
-            //            m_lastUpdateAcq = std::chrono::high_resolution_clock::now();
+    //            //            m_lastUpdateAcq = std::chrono::high_resolution_clock::now();
 
-            //            while ( !m_updateFailed ) {
+    //            //            while ( !m_updateFailed ) {
 
-            //                const std::chrono::time_point<std::chrono::high_resolution_clock> now
-            //                =
-            //                    std::chrono::high_resolution_clock::now();
+    //            //                const
+    //            std::chrono::time_point<std::chrono::high_resolution_clock> now
+    //            //                =
+    //            //                    std::chrono::high_resolution_clock::now();
 
-            //                const int idleDuration =
-            //                    std::chrono::duration_cast<std::chrono::milliseconds>( now -
-            //                    m_lastUpdateAcq )
-            //                        .count();
+    //            //                const int idleDuration =
+    //            //                    std::chrono::duration_cast<std::chrono::milliseconds>( now -
+    //            //                    m_lastUpdateAcq )
+    //            //                        .count();
 
-            //                constexpr int pingPeriod = 1'000; // ms
-            //                if ( idleDuration > pingPeriod ) {
-            //                    //                    m_mtxOutputSensor.lock();
-            //                    //                    const auto& lastAcq =
-            //                    m_streamer->getLastAcq(
-            //                    //                    m_syncStreamName );
-            //                    if ( m_updateFailed ) break;
-            //                    assert( !m_updateFailed );
-            //                    //                    if ( lastAcq.get() == nullptr ) {
-            //                    if ( m_lastAcq.isEmpty() ) {
-            //                        m_outputSensor->getOutput().write(
-            //                        hub::net::ClientSocket::Message::PING ); std::cout <<
-            //                        headerMsg() << "send ping " << std::endl;
-            //                    }
-            //                    else {
-            //                        std::cout << headerMsg() << "send last acq ping " <<
-            //                        std::endl; *m_outputSensor << m_lastAcq;
-            //                    }
-            //                    //                    m_mtxOutputSensor.unlock();
-            //                    std::this_thread::sleep_for( std::chrono::milliseconds( pingPeriod
-            //                    ) );
-            //                }
-            //                else {
-            //                    std::this_thread::sleep_for(
-            //                        std::chrono::milliseconds( pingPeriod - idleDuration ) );
-            //                }
+    //            //                constexpr int pingPeriod = 1'000; // ms
+    //            //                if ( idleDuration > pingPeriod ) {
+    //            //                    //                    m_mtxOutputSensor.lock();
+    //            //                    //                    const auto& lastAcq =
+    //            //                    m_streamer->getLastAcq(
+    //            //                    //                    m_syncStreamName );
+    //            //                    if ( m_updateFailed ) break;
+    //            //                    assert( !m_updateFailed );
+    //            //                    //                    if ( lastAcq.get() == nullptr ) {
+    //            //                    if ( m_lastAcq.isEmpty() ) {
+    //            //                        m_outputSensor->getOutput().write(
+    //            //                        hub::net::ClientSocket::Message::PING ); std::cout <<
+    //            //                        headerMsg() << "send ping " << std::endl;
+    //            //                    }
+    //            //                    else {
+    //            //                        std::cout << headerMsg() << "send last acq ping " <<
+    //            //                        std::endl; *m_outputSensor << m_lastAcq;
+    //            //                    }
+    //            //                    //                    m_mtxOutputSensor.unlock();
+    //            //                    std::this_thread::sleep_for( std::chrono::milliseconds(
+    //            pingPeriod
+    //            //                    ) );
+    //            //                }
+    //            //                else {
+    //            //                    std::this_thread::sleep_for(
+    //            //                        std::chrono::milliseconds( pingPeriod - idleDuration )
+    //            );
+    //            //                }
 
-            //            } // while ( !m_updateFailed )
-        }
-        catch ( hub::net::Socket::exception& ex ) {
-            //            assert( !m_updateFailed );
-            //            assert( !m_pingFailed );
-            //            m_pingFailed = true;
+    //            //            } // while ( !m_updateFailed )
+    //        }
+    //        catch ( hub::net::Socket::exception& ex ) {
+    //            //            assert( !m_updateFailed );
+    //            //            assert( !m_pingFailed );
+    //            //            m_pingFailed = true;
 
-                        std::cout << headerMsg() << "catch exception : " << ex.what()
-                                  << std::endl;
-        }
-        catch ( std::exception& ) {
-            assert( false );
-        }
+    //                        std::cout << headerMsg() << "catch exception : " << ex.what()
+    //                                  << std::endl;
+    //        }
+    //        catch ( std::exception& ) {
+    //            assert( false );
+    //        }
 
-        //        if ( m_updateFailed ) {
-        //            std::cout << headerMsg() << "thread ended (update failed)" << std::endl;
-        //        }
-        //        else {
-        //            std::cout << headerMsg() << "thread ended (lost connection)" << std::endl;
-        //            //            m_streamer->delStreamViewer( this );
-        //            //            m_server->delStreamViewer( this );
+    //        //        if ( m_updateFailed ) {
+    //        //            std::cout << headerMsg() << "thread ended (update failed)" << std::endl;
+    //        //        }
+    //        //        else {
+    //        //            std::cout << headerMsg() << "thread ended (lost connection)" <<
+    //        std::endl;
+    //        //            //            m_streamer->delStreamViewer( this );
+    //        //            //            m_server->delStreamViewer( this );
 
-        //            //            m_mtxOutputSensor.unlock();
-        //        }
-        std::thread( [this]() { delete this; } ).detach();
-    } );
+    //        //            //            m_mtxOutputSensor.unlock();
+    //        //        }
+    //        std::thread( [this]() { delete this; } ).detach();
+    //    } );
 
     //    std::cout << headerMsg() << "new stream viewer watching '" << m_streamName << "'" <<
     //    std::endl; printStatusMessage( "new streamViewer" );
 }
 
 StreamViewerClient::~StreamViewerClient() {
-    //    std::cout << headerMsg() << "delete start" << std::endl;
+        std::cout << headerMsg() << "delete start" << std::endl;
     //    assert(! m_ending);
-//    m_mtx.lock();
-    m_ending = true;
+    //    m_mtx.lock();
+//    m_ending = true;
 
     //    assert( m_pingFailed == false );
     //    m_pingFailed = true;
-    assert( m_thread.joinable() );
-    m_thread.join();
+
+    //    assert( m_thread.joinable() );
+    //    m_thread.join();
 
     //    std::cout << headerMsg() << "delete ended" << std::endl;
     m_server->delStreamViewer( this );
     //    printStatusMessage( "del streamViewer" );
-//    m_mtx.unlock();
+    //    m_mtx.unlock();
+        std::cout << headerMsg() << "delete ended" << std::endl;
 }
 
 std::string StreamViewerClient::headerMsg() const {
@@ -252,11 +278,15 @@ std::string StreamViewerClient::headerMsg() const {
 }
 
 void StreamViewerClient::update( const Acquisition& acq ) {
-//    assert(m_outputSensor->getOutput().isOpen());
-    if ( m_ending || ! m_outputSensor->getOutput().isOpen() ) {
-        throw net::ClientSocket::exception("stream viewer is ending");
-    }
-    else { *m_outputSensor << acq; }
+    //    assert(m_outputSensor->getOutput().isOpen());
+    //    if ( m_ending || ! m_outputSensor->getOutput().isOpen() ) {
+    //	    auto& output = m_outputSensor->getOutput();
+    //        output.write( hub::net::ClientSocket::Message::STREAM_VIEWER_CLOSED );
+    //        throw net::ClientSocket::exception("stream viewer is ending");
+    //    }
+    //    else {
+    *m_outputSensor << acq;
+    //    }
 }
 
 void StreamViewerClient::end() {
@@ -264,16 +294,18 @@ void StreamViewerClient::end() {
     //    if ( !m_ending ) {
     //        m_ending = true;
 
-//	OutputStream& outputStream = dynamic_cast<OutputStream&>( m_outputSensor->getOutput() );
-//    m_mtx.lock();
-    auto& output = m_outputSensor->getOutput();
-    if (output.isOpen()) {
-        output.write( hub::net::ClientSocket::Message::STREAM_VIEWER_CLOSED );
-    }
-//    m_mtx.unlock();
-//    else {
-//        assert(m_inputStreamClosed);
-//    }
+    //	OutputStream& outputStream = dynamic_cast<OutputStream&>( m_outputSensor->getOutput() );
+    //    m_mtx.lock();
+
+    //    auto& output = m_outputSensor->getOutput();
+    //    if (output.isOpen()) {
+    //        output.write( hub::net::ClientSocket::Message::STREAM_VIEWER_CLOSED );
+    //    }
+
+    //    m_mtx.unlock();
+    //    else {
+    //        assert(m_inputStreamClosed);
+    //    }
     //        if (output.isOpen())
     //            output.write( hub::net::ClientSocket::Message::CLOSE );
     //        m_outputSensor->getOutput().close();

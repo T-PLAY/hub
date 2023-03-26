@@ -40,17 +40,17 @@ ClientSocket::ClientSocket( net::utils::socket_fd fdSock ) {
 #endif
 }
 
-//ClientSocket::ClientSocket( ClientSocket&& sock ) :
-//    m_ipv4( sock.m_ipv4 ),
-//    m_port( sock.m_port ),
-//    m_addr( std::move( sock.m_addr ) ),
-//    m_connected( sock.m_connected ) {
+ClientSocket::ClientSocket( ClientSocket&& sock ) :
+    m_ipv4( sock.m_ipv4 ),
+    m_port( sock.m_port ),
+    m_addr( std::move( sock.m_addr ) ),
+    m_connected( sock.m_connected ) {
 
-//    m_fdSock = sock.m_fdSock;
-//    m_serverSide = sock.m_serverSide;
-//    sock.m_fdSock = net::utils::invalidSocket();
-//    sock.m_moved = true;
-//}
+    m_fdSock      = sock.m_fdSock;
+    m_serverSide  = sock.m_serverSide;
+    sock.m_fdSock = net::utils::invalidSocket();
+    sock.m_moved  = true;
+}
 
 // ClientSocket::ClientSocket(ClientSocket &&sock) :
 //{
@@ -60,10 +60,13 @@ ClientSocket::~ClientSocket() {
 #ifdef DEBUG_SOCKET
     DEBUG_MSG( getHeader( m_fdSock ) << "~ClientSocket()" );
 #endif
-//    if ( !m_moved ) {
+    if ( !m_moved ) {
+//        std::cout << "[ClientSocket] ~ClientSocket() started" << std::endl;
+        assert(! ClientSocket::isOpen());
 //        if ( ClientSocket::isOpen() ) ClientSocket::close();
 //        assert( !ClientSocket::isOpen() );
-//    }
+//        std::cout << "[ClientSocket] ~ClientSocket() ended" << std::endl;
+    }
 }
 
 void ClientSocket::initServerAddress() {
@@ -248,15 +251,15 @@ void ClientSocket::read( unsigned char* data, size_t len ) {
 }
 
 void ClientSocket::close() {
-//    if ( !isOpen() ) { throw Socket::exception( "unable to close non openned socket" ); }
-//    else {
-        assert( isOpen() );
-        //    if (isOpen()) {
-        net::utils::closeSocket( m_fdSock );
-        m_connected = false;
-        //    }
-        assert( !isOpen() );
-//    }
+    //    if ( !isOpen() ) { throw Socket::exception( "unable to close non openned socket" ); }
+    //    else {
+    assert( isOpen() );
+    //    if (isOpen()) {
+    net::utils::closeSocket( m_fdSock );
+    m_connected = false;
+    //    }
+    assert( !isOpen() );
+    //    }
 }
 
 bool ClientSocket::isOpen() const {

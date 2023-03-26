@@ -237,6 +237,7 @@ static const std::string s_anyType2string[static_cast<int>( Any::Type::COUNT )] 
     "string",
     "cst_char_ptr",
     "mat4",
+    "mesh",
 };
 
 const std::string& Any::typeName() const {
@@ -254,7 +255,7 @@ std::ostream& operator<<( std::ostream& os, const Any::Type& type ) {
 }
 
 std::string Any::to_string() const {
-    std::string ret = typeName() + " = " + anyValue2string( *this );
+    std::string ret = "'" + Any::typeName() + "' = " + anyValue2string( *this );
     return ret;
 }
 

@@ -41,19 +41,22 @@ InputStream::InputStream( const std::string& streamName,
     //    m_clientSocket.write( mergeSyncAcqs );
 }
 
-//InputStream::InputStream( InputStream&& inputStream ) :
-//    m_clientSocket( std::move( inputStream.m_clientSocket ) ),
+InputStream::InputStream( InputStream&& inputStream ) :
+    m_clientSocket( std::move( inputStream.m_clientSocket ) ),
 //    m_sensorSpec( inputStream.m_sensorSpec ),
-//    m_streamViewerClosed( inputStream.m_streamViewerClosed ) {
-//    inputStream.m_moved = true;
-//}
+    m_streamViewerClosed( inputStream.m_streamViewerClosed ) {
+    inputStream.m_moved = true;
+}
 
-//InputStream::~InputStream() {
-//    if ( !m_moved ) {
+InputStream::~InputStream() {
+    if ( !m_moved ) {
+//        std::cout << "[InputStream] ~InputStream() started" << std::endl;
+        assert( ! InputStream::isOpen() );
 //        if ( InputStream::isOpen() ) InputStream::close();
-//        assert( InputStream::isOpen() );
-//    }
-//}
+//        assert( !InputStream::isOpen() );
+//        std::cout << "[InputStream] ~InputStream() ended" << std::endl;
+    }
+}
 
 void InputStream::read( Acquisition& acq ) {
     //{
@@ -76,16 +79,21 @@ void InputStream::read( Acquisition& acq ) {
     //    if (message == net::ClientSocket::Message::CLOSE) {
     //        throw net::ClientSocket::exception("[InputStream] streamer disconnected from server");
     //    }
-    if ( message == net::ClientSocket::Message::STREAM_VIEWER_CLOSED ) {
-        //        throw net::ClientSocket::exception("[InputStream] closing connection, all acqs
-        //        received (streamViewer is done)");
-        assert( !m_streamViewerClosed );
-        m_streamViewerClosed = true;
-        m_clientSocket.write( net::ClientSocket::Message::INPUT_STREAM_CLOSED );
-        throw net::ClientSocket::exception( "streamer closed connection" );
-    }
+
+    //    if ( message == net::ClientSocket::Message::STREAM_VIEWER_CLOSED ) {
+    //        //        throw net::ClientSocket::exception("[InputStream] closing connection, all
+    //        acqs
+    //        //        received (streamViewer is done)");
+    //        assert( !m_streamViewerClosed );
+    //        m_streamViewerClosed = true;
+    //        m_clientSocket.write( net::ClientSocket::Message::INPUT_STREAM_CLOSED );
+    //        throw net::ClientSocket::exception( "streamer closed connection" );
+    //    }
 
     assert( message == net::ClientSocket::Message::NEW_ACQ );
+    if (! m_clientSocket.isOpen()) {
+            throw net::ClientSocket::exception( "link broken by peer" );
+    }
 
     //    assert( message == net::ClientSocket::Message::NEW_ACQ );
     //    auto acq = Input::getAcq( );
@@ -96,7 +104,7 @@ void InputStream::read( Acquisition& acq ) {
 
 void InputStream::read( SensorSpec& sensorSpec ) {
     m_clientSocket.read( sensorSpec );
-    m_sensorSpec = sensorSpec;
+//    m_sensorSpec = sensorSpec;
 }
 
 //    std::cout << "[InputStream] ~InputStream()" << std::endl;

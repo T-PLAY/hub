@@ -30,10 +30,16 @@ class SRC_API Mesh : public Measure
     const std::vector<tinyobj::shape_t> & getShapes() const;
     const std::vector<tinyobj::material_t> & getMaterials() const;
 
+    SRC_API friend std::ostream& operator<<( std::ostream& os, const Mesh& mesh );
+
   private:
+    void unpack();
+    void pack();
+
     tinyobj::attrib_t m_attrib;
     std::vector<tinyobj::shape_t> m_shapes;
     std::vector<tinyobj::material_t> m_materials;
+
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

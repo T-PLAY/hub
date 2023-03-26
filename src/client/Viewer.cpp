@@ -84,7 +84,7 @@ class Stream
 
                 while ( !m_stopThread ) {
                     hub::Acquisition acq;
-//                    auto acq = m_inputSensor->getAcq();
+                    //                    auto acq = m_inputSensor->getAcq();
                     *m_inputSensor >> acq;
                     //                std::cout << "[Viewer][Stream] getAcq : " << acq << std::endl;
                     //                    m_viewer.m_onNewAcquisition( m_streamId.c_str(), acq );
@@ -462,7 +462,7 @@ Viewer::Viewer(
 
                     case net::ClientSocket::Message::VIEWER_CLIENT_CLOSED: {
                         DEBUG_MSG( "[Viewer] viewer client closed" );
-                        assert(m_sock.isOpen());
+                        assert( m_sock.isOpen() );
                         m_sock.close();
                         throw net::ClientSocket::exception( "[viewer] client closed from server" );
                     }
@@ -489,7 +489,11 @@ Viewer::Viewer(
                 // ping the server when this one is not started or visible in the network
                 // able the viewer clients to be aware of the starting of server less than 100
                 // milliseconds.
-                std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
+                int i = 0;
+                while ( !m_stopThread && i < 10 ) {
+                    std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+                    ++i;
+                }
             }
 
             if ( m_serverConnected ) {

@@ -41,8 +41,8 @@ class SRC_API InputStream : public Input
     //    InputStream&& operator=( InputStream&& inputStream ) = delete;
     //    virtual ~InputStream() override;
 
-//        InputStream(InputStream&& inputStream);
-//        ~InputStream();
+        InputStream(InputStream&& inputStream);
+        ~InputStream();
 
     // #ifdef WIN32 // msvc warning C4250
     //   protected:
@@ -90,10 +90,10 @@ class SRC_API InputStream : public Input
 
   private:
     net::ClientSocket m_clientSocket;
-    SensorSpec m_sensorSpec;
+//    SensorSpec m_sensorSpec;
     bool m_streamViewerClosed = false;
 
-//    bool m_moved = false;
+    bool m_moved = false;
 
     friend class InputSyncStream;
 };
@@ -109,13 +109,13 @@ inline void InputStream::read( unsigned char* data, size_t len ) {
 }
 
 inline void InputStream::close() {
-    std::cout << "[InputStream] close()" << std::endl;
+    std::cout << "[InputStream] close() started" << std::endl;
 //    assert( !m_streamViewerClosed );
 //    if ( m_streamViewerClosed ) {}
 //    else {
-        m_clientSocket.write( net::ClientSocket::Message::INPUT_STREAM_CLOSED );
+//    m_clientSocket.write( net::ClientSocket::Message::INPUT_STREAM_CLOSED );
 
-    assert(m_clientSocket.isOpen());
+//    assert(m_clientSocket.isOpen());
     m_clientSocket.close();
 
         //    std::cout << "[InputStream] close()" << std::endl;
@@ -150,6 +150,7 @@ inline void InputStream::close() {
 
 //    if (m_clientSocket.isOpen())
 //        m_clientSocket.close();
+    std::cout << "[InputStream] close() ended" << std::endl;
 }
 
 inline bool InputStream::isEnd() const {

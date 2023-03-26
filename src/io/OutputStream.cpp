@@ -23,34 +23,35 @@ OutputStream::OutputStream( const std::string& streamName, net::ClientSocket&& c
     }
     assert( mess == net::ClientSocket::Message::NOT_FOUND );
 
-//    m_thread = std::thread( [this]() {
+    //    m_thread = std::thread( [this]() {
 
-//            hub::net::ClientSocket::Message message;
-//            m_clientSocket.read( message );
-//            assert( message == net::ClientSocket::Message::STREAMER_CLOSED );
-//            std::cout << "[OutputStream] streamer closed from server" << std::endl;
+    //            hub::net::ClientSocket::Message message;
+    //            m_clientSocket.read( message );
+    //            assert( message == net::ClientSocket::Message::STREAMER_CLOSED );
+    //            std::cout << "[OutputStream] streamer closed from server" << std::endl;
 
-//            m_serverClosed = true;
+    //            m_serverClosed = true;
 
-////            assert(OutputStream::isOpen());
-////            OutputStream::close();
-//    });
-
-
+    ////            assert(OutputStream::isOpen());
+    ////            OutputStream::close();
+    //    });
 }
 
-//OutputStream::OutputStream( OutputStream&& outputStream ) :
-//    m_clientSocket( std::move( outputStream.m_clientSocket ) ) {
-//    outputStream.m_moved = true;
-//}
+OutputStream::OutputStream( OutputStream&& outputStream ) :
+    m_clientSocket( std::move( outputStream.m_clientSocket ) ) {
+    outputStream.m_moved = true;
+}
 
-//OutputStream::~OutputStream() {
+OutputStream::~OutputStream() {
 
-//    if ( !m_moved ) {
+    if ( !m_moved ) {
+//        std::cout << "[OutputStream] ~OutputStream() started" << std::endl;
+        assert( ! OutputStream::isOpen() );
 //        if ( OutputStream::isOpen() ) OutputStream::close();
 //        assert( !OutputStream::isOpen() );
-//    }
-//}
+//        std::cout << "[OutputStream] ~OutputStream() ended" << std::endl;
+    }
+}
 
 //    std::cout << "[OutputStream] ~OutputStream()" << std::endl;
 //    net::ClientSocket::Message mess;

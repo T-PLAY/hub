@@ -34,8 +34,8 @@ class SRC_API OutputStream : public Output
     explicit OutputStream( const std::string& streamName,
                            net::ClientSocket&& clientSocket = net::ClientSocket() );
 
-    //    OutputStream(OutputStream&& outputStream);
-    //    ~OutputStream();
+        OutputStream(OutputStream&& outputStream);
+        ~OutputStream();
 
     void write( const Acquisition& acq ) override;
 
@@ -50,15 +50,15 @@ class SRC_API OutputStream : public Output
   private:
     net::ClientSocket m_clientSocket;
 
-//    std::thread m_thread;
-    //    bool m_moved = false;
+    //    std::thread m_thread;
+        bool m_moved = false;
     bool m_serverClosed = false;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 inline void OutputStream::write( const Acquisition& acq ) {
-    m_clientSocket.write( net::ClientSocket::Message::NEW_ACQ );
+    Output::write( net::ClientSocket::Message::NEW_ACQ );
     Output::write( acq );
 }
 
@@ -71,19 +71,20 @@ inline void OutputStream::write( const unsigned char* data, size_t len ) {
 //}
 
 inline void OutputStream::close() {
-    //    std::cout << "[OutputStream] close()" << std::endl;
+    std::cout << "[OutputStream] close() started" << std::endl;
     //    net::ClientSocket::Message mess;
-    assert( m_clientSocket.isOpen() );
-//    if ( !m_serverClosed ) {
-    m_clientSocket.write( net::ClientSocket::Message::OUTPUT_STREAM_CLOSED );
-        //    m_clientSocket.read( mess );
-        //    assert ( mess == net::ClientSocket::Message::STREAMER_CLOSED );
-//        assert( m_thread.joinable() );
-//        m_thread.join();
-//    }
-    //    assert(false);
-    assert( m_clientSocket.isOpen() );
+//    assert( m_clientSocket.isOpen() );
+//    //    if ( !m_serverClosed ) {
+//    m_clientSocket.write( net::ClientSocket::Message::OUTPUT_STREAM_CLOSED );
+//    //    m_clientSocket.read( mess );
+//    //    assert ( mess == net::ClientSocket::Message::STREAMER_CLOSED );
+//    //        assert( m_thread.joinable() );
+//    //        m_thread.join();
+//    //    }
+//    //    assert(false);
+//    assert( m_clientSocket.isOpen() );
     m_clientSocket.close();
+    std::cout << "[OutputStream] close() ended" << std::endl;
 }
 
 inline bool OutputStream::isOpen() const {
