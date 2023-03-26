@@ -17,7 +17,7 @@ TEST_CASE( "File test" ) {
 
 #if CPLUSPLUS_VERSION <= 14
     // todo cpp 17 -> 14
-    // std::filesystem::remove( filename ); not worked
+//     std::filesystem::remove( filename ); //  not worked
 #else
     std::filesystem::remove( filename );
 #endif
@@ -53,6 +53,8 @@ TEST_CASE( "File test" ) {
         for ( const auto& acq : acqs ) {
             outputSensor << acq;
         }
+        assert(outputSensor.getOutput().isOpen());
+    std::cout << "outputStream start end" << std::endl;
     }
     std::cout << "outputStream end ################################" << std::endl;
 

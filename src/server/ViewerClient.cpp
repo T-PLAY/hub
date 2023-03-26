@@ -97,6 +97,7 @@ void ViewerClient::notifyDelStreamer(const std::string &streamName, const Sensor
 void ViewerClient::end()
 {
     assert(m_socket.isOpen());
+    m_socket.write(net::ClientSocket::Message::VIEWER_CLIENT_CLOSED);
 //	m_socket.write( hub::net::ClientSocket::Message::PING );
     m_socket.close();
 }

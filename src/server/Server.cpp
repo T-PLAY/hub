@@ -39,18 +39,20 @@ Server::~Server() {
     //    }
 
     //    if ( !m_detached ) {
+    m_mtxClients.lock();
             for ( auto* client : m_clients ) {
                 //        client->setServer( nullptr );
                 //        delete client;
                 client->end();
             }
+    m_mtxClients.unlock();
 
     //    if ( !m_detached ) {
     m_mtxClients.lock();
     while ( !m_clients.empty() ) {
         SERVER_MSG( "waiting for clients ended (" << m_clients.size() << ")" );
         m_mtxClients.unlock();
-        std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+        std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
         m_mtxClients.lock();
     }
     m_mtxClients.unlock();
@@ -61,6 +63,18 @@ Server::~Server() {
     //        client->setServer( nullptr );
     //    }
     SERVER_MSG( "server ended" );
+}
+
+void Server::detach() {
+    SERVER_MSG( "detach()" );
+    assert( !m_detached );
+    m_detached = true;
+    m_mtxClients.lock();
+    for ( auto& client : m_clients ) {
+        client->setServer( nullptr );
+    }
+    m_clients.clear();
+    m_mtxClients.unlock();
 }
 
 std::string Server::headerMsg() const {
@@ -95,17 +109,6 @@ void Server::asyncRun() {
 
 // void Server::stop() {}
 
-void Server::detach() {
-    SERVER_MSG( "detach()" );
-    assert( !m_detached );
-    m_detached = true;
-    m_mtxClients.lock();
-    for ( auto& client : m_clients ) {
-        client->setServer( nullptr );
-    }
-    m_clients.clear();
-    m_mtxClients.unlock();
-}
 
 Client* Server::initClient( hub::net::ClientSocket&& sock, int iClient ) {
 
@@ -256,6 +259,7 @@ void Server::addViewer( ViewerClient* viewer ) {
 }
 
 void Server::delStreamer( StreamerClient* streamer ) {
+    m_mtxClients.lock();
 
     //    std::cout << "[Server] delStreamer(" << streamer << ")" << std::endl;
 
@@ -293,9 +297,11 @@ void Server::delStreamer( StreamerClient* streamer ) {
     std::cout << streamer->headerMsg() << "end streamer : '" << streamName << "'" << std::endl;
     streamer->printStatusMessage( "del streamer" );
     m_mtxPrint.unlock();
+    m_mtxClients.unlock();
 }
 
 void Server::delStreamViewer( StreamViewerClient* streamViewer ) {
+    m_mtxClients.lock();
     const auto& streamName = streamViewer->m_streamName;
 
     m_mtxSreamName2streamViewers.lock();
@@ -311,9 +317,11 @@ void Server::delStreamViewer( StreamViewerClient* streamViewer ) {
               << std::endl;
     streamViewer->printStatusMessage( "del streamViewer" );
     m_mtxPrint.unlock();
+    m_mtxClients.unlock();
 }
 
 void Server::delViewer( ViewerClient* viewer ) {
+    m_mtxClients.lock();
 
     m_mtxViewers.lock();
     assert( std::find( m_viewers.begin(), m_viewers.end(), viewer ) != m_viewers.end() );
@@ -323,6 +331,9 @@ void Server::delViewer( ViewerClient* viewer ) {
     m_mtxPrint.lock();
     viewer->printStatusMessage( "del viewer" );
     m_mtxPrint.unlock();
+
+
+    m_mtxClients.lock();
 }
 
 void Server::newAcquisition( StreamerClient* streamer, const Acquisition& acq ) {

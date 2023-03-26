@@ -15,32 +15,46 @@ InputSyncStream::InputSyncStream( const std::string& streamName,
 
 //    m_clientSocket( std::move( clientSocket ) ),
 //    m_clientSocket2(m_clientSocket.getIpv4(), m_clientSocket.getPort())
-{
-}
+{}
 
-void InputSyncStream::read(Acquisition &acq)
-{
+//InputSyncStream::InputSyncStream( InputSyncStream&& inputSyncStream ) :
+//    m_inputStream( std::move( inputSyncStream.m_inputStream ) ),
+//    m_inputStream2( std::move( inputSyncStream.m_inputStream2 ) ),
+//    m_lastAcqs( std::move( inputSyncStream.m_lastAcqs ) ) {
 
+//    inputSyncStream.m_moved = true;
 //}
 
-//Acquisition InputSyncStream::getAcq( ) {
+//InputSyncStream::~InputSyncStream() {
+//    if ( !m_moved ) {
+//        if ( InputSyncStream::isOpen() ) InputSyncStream::close();
+//        assert( InputSyncStream::isOpen() );
+//    }
+//}
+
+void InputSyncStream::read( Acquisition& acq ) {
+
+    //}
+
+    // Acquisition InputSyncStream::getAcq( ) {
 
     Input& masterInput = m_inputStream;
     Input& input       = m_inputStream2;
 
-//    acq = masterInput.getSyncAcq( m_inputStream.m_sensorSpec, input, m_inputStream2.m_sensorSpec, m_lastAcqs );
-        masterInput >> input >> acq;
+    //    acq = masterInput.getSyncAcq( m_inputStream.m_sensorSpec, input,
+    //    m_inputStream2.m_sensorSpec, m_lastAcqs );
+    masterInput >> input >> acq;
 
-//    return acq;
+    //    return acq;
 }
 
 void InputSyncStream::read( SensorSpec& sensorSpec ) {
-//    m_clientSocket.read( m_sensorSpec );
-    m_inputStream.read(sensorSpec);
-//    m_clientSocket2.read( m_sensorSpec2 );
-    m_inputStream2.read(sensorSpec);
+    //    m_clientSocket.read( m_sensorSpec );
+    m_inputStream.read( sensorSpec );
+    //    m_clientSocket2.read( m_sensorSpec2 );
+    m_inputStream2.read( sensorSpec );
 
-//    sensorSpec = m_sensorSpec + m_sensorSpec2;
+    //    sensorSpec = m_sensorSpec + m_sensorSpec2;
     sensorSpec = m_inputStream.m_sensorSpec + m_inputStream2.m_sensorSpec;
 }
 

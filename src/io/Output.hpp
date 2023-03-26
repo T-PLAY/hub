@@ -44,8 +44,8 @@ class SRC_API Output
     Output& operator=( const Output& output ) = delete;
     Output&& operator=( Output&& output ) = delete;
 
-    virtual ~Output() = default;
-//    virtual ~Output();
+//    virtual ~Output() = default;
+    virtual ~Output();
 
   protected:
     ///
@@ -162,20 +162,22 @@ class SRC_API Output
 template<class T>
 inline void Output::put(const T &t)
 {
+    assert( isOpen() );
     write(t);
 }
 
 template<class T>
 inline void Output::operator<<(T &t)
 {
+    assert( isOpen() );
     write(t);
 }
 
 template <class T>
 inline void Output::write( const T& t ) {
+    assert( isOpen() );
 //    if (! isOpen())
 //        throw std::runtime_error("[Output] closed, unable to write");
-    assert( isOpen() );
 
     write( reinterpret_cast<const unsigned char*>( &t ), sizeof( T ) );
 
@@ -191,9 +193,9 @@ inline void Output::write( const T& t ) {
 
 template <class T>
 inline void Output::write( const std::list<T>& list ) {
+    assert( isOpen() );
 //    if (! isOpen())
 //        throw std::runtime_error("[Output] closed, unable to write");
-    assert( isOpen() );
 
 #ifdef DEBUG_OUTPUT
     std::cout << "[Output] write(std::list)" << std::endl;
@@ -209,9 +211,9 @@ inline void Output::write( const std::list<T>& list ) {
 
 template <class T>
 inline void Output::write( const std::vector<T>& vector ) {
+    assert( isOpen() );
 //    if (! isOpen())
 //        throw std::runtime_error("[Output] closed, unable to write");
-    assert( isOpen() );
 
 #ifdef DEBUG_OUTPUT
     std::cout << "[Output] write(std::vector)" << std::endl;
@@ -227,9 +229,9 @@ inline void Output::write( const std::vector<T>& vector ) {
 
 template <class T, class U>
 inline void Output::write( const std::map<T, U>& map ) {
+    assert( isOpen() );
 //    if (! isOpen())
 //        throw std::runtime_error("[Output] closed, unable to write");
-    assert( isOpen() );
 
 #ifdef DEBUG_OUTPUT
     std::cout << "[Output] write(std::map)" << std::endl;
@@ -248,9 +250,9 @@ inline void Output::write( const std::map<T, U>& map ) {
 
 template <class T, class U>
 inline void Output::write( const std::pair<T, U>& pair ) {
+    assert( isOpen() );
 //    if (! isOpen())
 //        throw std::runtime_error("[Output] closed, unable to write");
-    assert( isOpen() );
 
 #ifdef DEBUG_OUTPUT
     std::cout << "[Output] write(std::pair)" << std::endl;

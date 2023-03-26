@@ -44,9 +44,12 @@ void OutputStream::write( const unsigned char* data, size_t len ) {
 void OutputStream::close() {
     //    if ( isOpen() )
     assert(m_inputStreamClosed);
-    m_clientSocket.write( hub::net::ClientSocket::Message::STREAM_VIEWER_CLOSED );
+//    assert(isOpen());
+//    m_clientSocket.write( hub::net::ClientSocket::Message::STREAM_VIEWER_CLOSED );
 //    m_clientSocket.write( hub::net::ClientSocket::Message::STREAM_VIEWER_CLOSED );
     //            output.write( hub::net::ClientSocket::Message::CLOSE );
+    assert(isOpen());
+    assert(m_clientSocket.isOpen());
     m_clientSocket.close();
 }
 
@@ -230,6 +233,7 @@ StreamViewerClient::StreamViewerClient( Server* server,
 StreamViewerClient::~StreamViewerClient() {
     //    std::cout << headerMsg() << "delete start" << std::endl;
     //    assert(! m_ending);
+//    m_mtx.lock();
     m_ending = true;
 
     //    assert( m_pingFailed == false );
@@ -240,6 +244,7 @@ StreamViewerClient::~StreamViewerClient() {
     //    std::cout << headerMsg() << "delete ended" << std::endl;
     m_server->delStreamViewer( this );
     //    printStatusMessage( "del streamViewer" );
+//    m_mtx.unlock();
 }
 
 std::string StreamViewerClient::headerMsg() const {
@@ -247,8 +252,8 @@ std::string StreamViewerClient::headerMsg() const {
 }
 
 void StreamViewerClient::update( const Acquisition& acq ) {
-    assert(m_outputSensor->getOutput().isOpen());
-    if ( m_ending ) {
+//    assert(m_outputSensor->getOutput().isOpen());
+    if ( m_ending || ! m_outputSensor->getOutput().isOpen() ) {
         throw net::ClientSocket::exception("stream viewer is ending");
     }
     else { *m_outputSensor << acq; }
@@ -260,10 +265,12 @@ void StreamViewerClient::end() {
     //        m_ending = true;
 
 //	OutputStream& outputStream = dynamic_cast<OutputStream&>( m_outputSensor->getOutput() );
+//    m_mtx.lock();
     auto& output = m_outputSensor->getOutput();
     if (output.isOpen()) {
         output.write( hub::net::ClientSocket::Message::STREAM_VIEWER_CLOSED );
     }
+//    m_mtx.unlock();
 //    else {
 //        assert(m_inputStreamClosed);
 //    }

@@ -35,23 +35,29 @@ namespace hub {
 //    return acq;
 //}
 
-InputSensor::~InputSensor()
-{
-    if (m_input->isOpen())
-        m_input->close();
-    assert(! m_input->isOpen());
+InputSensor::InputSensor( InputSensor&& inputSensor ) :
+    Sensor( inputSensor.m_spec ), m_input( std::move( inputSensor.m_input ) ) {
+    inputSensor.m_moved = true;
+}
+
+InputSensor::~InputSensor() {
+    if ( !m_moved ) {
+        if ( m_input->isOpen() ) m_input->close();
+        assert( !m_input->isOpen() );
+    }
 }
 
 Acquisition InputSensor::operator>>( InputSensor& inputSensor ) {
 
     io::Input& masterInput = *m_input;
     io::Input& input       = inputSensor.getInput();
-//    Acquisition acq =
+    //    Acquisition acq =
     return masterInput >> input;
-//       return  masterInput.getSyncAcq( m_spec, input, inputSensor.m_spec, inputSensor.m_lastAcqs );
+    //       return  masterInput.getSyncAcq( m_spec, input, inputSensor.m_spec,
+    //       inputSensor.m_lastAcqs );
     //    masterInput >> input >> acq;
 
-//    return acq;
+    //    return acq;
 
     //    //        InputSensor ret(*this);
     //    //        InputSensor ret(inputSensor);
@@ -144,8 +150,7 @@ void InputSensor::operator>>( Acquisition& acq ) {
     //    assert(acquisition.m_size == 0);
 
     *m_input >> acq;
-//       m_input->read(acq);
-
+    //       m_input->read(acq);
 
     assert( !acq.hasFixedSize() || m_spec.getAcquisitionSize() == acq.getSize() );
 
@@ -165,45 +170,42 @@ void InputSensor::operator>>( Acquisition& acq ) {
         assert( measures.at( i ).getResolution().second != Format::NONE );
     }
 #endif
-//       acquisition = m_input->getAcq();
+    //       acquisition = m_input->getAcq();
 }
 
 std::vector<Acquisition> InputSensor::getAllAcquisitions() {
-//    return m_input->readAll<std::vector<Acquisition>, Acquisition>();
-//    std::vector<Acquisition> acqs;
+    //    return m_input->readAll<std::vector<Acquisition>, Acquisition>();
+    //    std::vector<Acquisition> acqs;
     auto acqs = m_input->getAll<std::vector<hub::Acquisition>>();
-//    using T = decltype (acqs.front());
-    m_input->readAll(acqs);
-//    acqs = m_input->readAll();
+    //    using T = decltype (acqs.front());
+//    m_input->readAll( acqs );
+    //    acqs = m_input->readAll();
     return acqs;
 
-//    try {
-//        //        int nReadAcqs = 0;
-//        while ( !m_input->isEnd() ) {
-//            Acquisition acq;
-//            m_input->read(acq);
-//            acqs.emplace_back( std::move(acq) );
-//            //            ++nReadAcqs;
-//        }
-//    }
-//    catch ( std::exception& e ) {
-//        std::cout << "[InputSensor] catch exception : " << e.what() << std::endl;
-//        throw;
-//    }
+    //    try {
+    //        //        int nReadAcqs = 0;
+    //        while ( !m_input->isEnd() ) {
+    //            Acquisition acq;
+    //            m_input->read(acq);
+    //            acqs.emplace_back( std::move(acq) );
+    //            //            ++nReadAcqs;
+    //        }
+    //    }
+    //    catch ( std::exception& e ) {
+    //        std::cout << "[InputSensor] catch exception : " << e.what() << std::endl;
+    //        throw;
+    //    }
 
-//    return acqs;
+    //    return acqs;
 }
 
 io::Input& InputSensor::getInput() const {
     return *m_input;
 }
 
-void InputSensor::close()
-{
-//    assert(m_input->isOpen());
-    if (m_input->isOpen())
-        m_input->close();
+void InputSensor::close() {
+    //    assert(m_input->isOpen());
+    if ( m_input->isOpen() ) m_input->close();
 }
-
 
 } // namespace hub

@@ -8,8 +8,15 @@ namespace io {
 
 /////////////////////////////////////////////////////////////////////////////
 
+//Input::~Input()
+//{
+//    assert(isOpen());
+//    close();
+//}
+
 void Input::read( std::string& str ) {
     assert( isOpen() );
+    assert(!isEnd());
 
     int strLen = 0;
     read( strLen );
@@ -29,6 +36,8 @@ void Input::read( std::string& str ) {
 }
 
 void Input::read( SensorSpec& sensorSpec ) {
+    assert(isOpen());
+    assert(!isEnd());
 
     std::string sensorName;
     Resolutions resolutions;
@@ -46,6 +55,9 @@ void Input::read( SensorSpec& sensorSpec ) {
 
 void Input::read(data::Measure &measure)
 {
+    assert(isOpen());
+    assert(!isEnd());
+
     assert(measure.m_data == nullptr);
     read(measure.m_size);
     measure.m_data = new unsigned char[measure.m_size];
@@ -59,6 +71,9 @@ void Input::read(data::Measure &measure)
 
 void Input::read(Acquisition &acq)
 {
+    assert(isOpen());
+    assert(!isEnd());
+
     read(acq.m_start);
     read(acq.m_end);
     read(acq.m_measures);
@@ -69,85 +84,10 @@ void Input::read(Acquisition &acq)
     assert(acq.m_size > 0);
 }
 
-//Acquisition Input::operator>>(Input &input) {
-
-//#ifdef DEBUG
-//    assert( !isEnd() );
-//    assert( !input.isEnd() );
-//#endif
-
-//    Acquisition masterAcq;
-//    read(masterAcq);
-
-//    auto & lastAcqs = input.m_lastAcqs;
-
-//    assert( lastAcqs.size() < 20 );
-
-//    Acquisition acq2;
-
-//    if ( lastAcqs.empty() ) {
-//        input.read(acq2);
-//        lastAcqs.push_back( std::move(acq2) );
-//    }
-
-//    while ( masterAcq.getStart() < lastAcqs.front().getStart() ) {
-//        read(masterAcq);
-//        std::cout << "[InputSensor] operator>>(InputSensor&) shift masterAcq : " << masterAcq
-//                  << std::endl;
-//    }
-
-//    while ( lastAcqs.back().getStart() < masterAcq.getStart() ) {
-//        input.read(acq2);
-//        lastAcqs.push_back( std::move(acq2) );
-//    }
-
-//    if ( lastAcqs.back().getStart() == masterAcq.getStart() ) {
-//        masterAcq << lastAcqs.back().getMeasures();
-//        return masterAcq;
-//    }
-
-//    while ( lastAcqs.size() > 2 ) {
-//        lastAcqs.pop_front();
-//    }
-
-//    const auto& left  = lastAcqs.front();
-//    const auto& right = lastAcqs.back();
-
-//    assert( left.getStart() <= masterAcq.getStart() );
-//    assert( masterAcq.getStart() <= right.getStart() );
-
-
-//    const auto& closestAcq = ( std::abs( left.getStart() - masterAcq.getStart() ) >
-//                               std::abs( right.getStart() - masterAcq.getStart() ) )
-//                                 ? ( right )
-//                                 : ( left );
-
-
-//    masterAcq << closestAcq.getMeasures();
-//    return masterAcq;
-
-//    //    const auto dist = std::abs( closestAcq.m_start - masterAcq.m_start );
-
-//    //    // assert(minDist < 20'000); // 20 ms
-//    //    // if too far then abort synchronize
-//    //    // consider constant period of acquistion rate
-//    //    auto maxDist = ( right.m_start - left.m_start ) / 2;
-
-//    //    // find acceptable corresponding acquisition if interpolation is not possible
-//    //    if ( !left.isInterpolable() ) {
-//    //        const auto& lastMasterAcq = getLastAcq( syncViewerName );
-//    //        if ( lastMasterAcq != nullptr ) {
-//    //            maxDist =
-//    //                std::min( dist, std::abs( lastMasterAcq->m_start() - masterAcq.m_start() ) );
-//    //        }
-//    //    }
-
-//    //        return ret;
-//    //        return *this;
-//}
 
 void Input::read( char* str ) {
     assert( isOpen() );
+    assert(!isEnd());
 
 #ifdef DEBUG_INPUT
     std::cout << "[Input] read(char*)" << std::endl;
@@ -165,8 +105,10 @@ void Input::read( char* str ) {
 }
 
 
+
 void Input::read( Any& any ) {
     assert( isOpen() );
+    assert(!isEnd());
 
 #ifdef DEBUG_INPUT
     std::cout << "[Input] read(std::any)" << std::endl;
@@ -229,12 +171,87 @@ void Input::read( Any& any ) {
         any = Any( data::Mesh(measure) );
 
     } break;
-
-
+#ifndef COVERAGE
     default:
         assert( false );
+#endif
     }
     assert( any.has_value() );
+}
+
+//template <class T>
+//    typename std::enable_if<std::is_same<T, void>::value, T&>::type
+Acquisition Input::operator>>( Input& input ) {
+    assert(isOpen());
+    assert( !isEnd() );
+    assert(input.isOpen());
+    assert( !input.isEnd() );
+
+    Acquisition t;
+    read( t );
+
+    auto& lastAcqs = input.m_lastAcqs;
+
+    assert( lastAcqs.size() < 20 );
+
+    Acquisition t2;
+
+    if ( lastAcqs.empty() ) {
+        input.read( t2 );
+        lastAcqs.push_back( std::move( t2 ) );
+    }
+
+    while ( t.getStart() < lastAcqs.front().getStart() ) {
+        std::cout << "[InputSensor] operator>>(InputSensor&) shift t : " << t << std::endl;
+        assert(!isEnd());
+        read( t );
+    }
+
+    while ( lastAcqs.back().getStart() < t.getStart() && ! input.isEnd() ) {
+        assert( !input.isEnd() );
+        input.read( t2 );
+        lastAcqs.push_back( std::move( t2 ) );
+    }
+
+//    if ( lastAcqs.back().getStart() == t.getStart() ) {
+//        t << lastAcqs.back().getMeasures();
+//        return t;
+//    }
+
+    while ( lastAcqs.size() > 2 ) {
+        lastAcqs.pop_front();
+    }
+
+    const auto& left  = lastAcqs.front();
+    const auto& right = lastAcqs.back();
+
+    assert( input.isEnd() || left.getStart() <= t.getStart() );
+    assert(  input.isEnd() || t.getStart() <= right.getStart() );
+
+    const auto& closestAcq =
+        ( std::abs( left.getStart() - t.getStart() ) > std::abs( right.getStart() - t.getStart() ) )
+            ? ( right )
+            : ( left );
+
+    t << closestAcq.getMeasures();
+//    lastAcqs.pop_front();
+    return t;
+
+    //    const auto dist = std::abs( closestAcq.m_start - masterAcq.m_start );
+
+    //    // assert(minDist < 20'000); // 20 ms
+    //    // if too far then abort synchronize
+    //    // consider constant period of acquistion rate
+    //    auto maxDist = ( right.m_start - left.m_start ) / 2;
+
+    //    // find acceptable corresponding acquisition if interpolation is not possible
+    //    if ( !left.isInterpolable() ) {
+    //        const auto& lastMasterAcq = getLastAcq( syncViewerName );
+    //        if ( lastMasterAcq != nullptr ) {
+    //            maxDist =
+    //                std::min( dist, std::abs( lastMasterAcq->m_start() - masterAcq.m_start() ) );
+    //        }
+    //    }
 }
 
 

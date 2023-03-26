@@ -28,7 +28,7 @@ TEST_CASE( "Viewer" ) {
     auto onNewStreamer = [=]( const std::string& streamName, const hub::SensorSpec& sensorSpec ) {
         std::cout << "[example-viewer] onNewStreamer : " << streamName << std::endl;
         // accept all stream to run
-//        return true;
+        //        return true;
         return false;
     };
     auto onDelStreamer = []( const std::string& streamName, const hub::SensorSpec& sensorSpec ) {
@@ -54,11 +54,11 @@ TEST_CASE( "Viewer" ) {
     CHECK( viewer.getPort() == port );
     CHECK( !viewer.isConnected() );
 
-
     viewer.setAutoSync( false );
     // endConstruction
+    // todo delay -> 0
 
-    constexpr int delay = 1000;
+    constexpr int delay = 100;
 
     //    std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
 
@@ -68,6 +68,11 @@ TEST_CASE( "Viewer" ) {
         server.setMaxClients( 2 );
         server.asyncRun();
         std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
+
+        while ( !viewer.isConnected() ) {
+            std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+        }
+
         CHECK( viewer.isConnected() );
 
         {
@@ -82,7 +87,7 @@ TEST_CASE( "Viewer" ) {
                 hub::io::OutputStream( "streamName", hub::net::ClientSocket( ipv4, port ) ) );
             std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
 
-//            std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
+            //            std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
 
             unsigned char data[3] { 1, 2, 3 };
             hub::Acquisition acq =
@@ -94,7 +99,7 @@ TEST_CASE( "Viewer" ) {
         }
         std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
 
-//        server.detach();
+        //        server.detach();
     }
     std::cout << "[Test] ############################### server end" << std::endl;
 

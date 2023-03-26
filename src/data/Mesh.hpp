@@ -22,7 +22,7 @@ class SRC_API Mesh : public Measure
 
     explicit Mesh(const std::string & fileObjPath);
 
-    Mesh(const std::string & objTxt, const std::string & mtlTxt);
+//    Mesh(const std::string & objTxt, const std::string & mtlTxt);
 
     std::string to_string() const;
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <mutex>
+#include <thread>
 
 #include "Output.hpp"
 #include "net/ClientSocket.hpp"
@@ -33,32 +34,35 @@ class SRC_API OutputStream : public Output
     explicit OutputStream( const std::string& streamName,
                            net::ClientSocket&& clientSocket = net::ClientSocket() );
 
-//    OutputStream(OutputStream&& outputStream) = default;
-//    ~OutputStream();
+    //    OutputStream(OutputStream&& outputStream);
+    //    ~OutputStream();
 
-    void write(const Acquisition & acq) override;
+    void write( const Acquisition& acq ) override;
 
-    //#ifdef WIN32 // msvc warning C4250
+    // #ifdef WIN32 // msvc warning C4250
   protected:
     void write( const unsigned char* data, size_t len ) override;
     void close() override;
     bool isOpen() const override;
 
-    //#endif
+    // #endif
 
   private:
     net::ClientSocket m_clientSocket;
+
+//    std::thread m_thread;
+    //    bool m_moved = false;
+    bool m_serverClosed = false;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-inline void OutputStream::write(const Acquisition &acq)
-{
-    m_clientSocket.write(net::ClientSocket::Message::NEW_ACQ);
-    Output::write(acq);
+inline void OutputStream::write( const Acquisition& acq ) {
+    m_clientSocket.write( net::ClientSocket::Message::NEW_ACQ );
+    Output::write( acq );
 }
 
-//#ifdef WIN32
+// #ifdef WIN32
 inline void OutputStream::write( const unsigned char* data, size_t len ) {
     m_clientSocket.write( data, len );
 }
@@ -67,13 +71,18 @@ inline void OutputStream::write( const unsigned char* data, size_t len ) {
 //}
 
 inline void OutputStream::close() {
-//    std::cout << "[OutputStream] close()" << std::endl;
-    net::ClientSocket::Message mess;
-    m_clientSocket.write(net::ClientSocket::Message::OUTPUT_STREAM_CLOSED);
-    assert(m_clientSocket.isOpen());
-    m_clientSocket.read( mess );
-    assert ( mess == net::ClientSocket::Message::STREAMER_CLOSED );
-//    assert(false);
+    //    std::cout << "[OutputStream] close()" << std::endl;
+    //    net::ClientSocket::Message mess;
+    assert( m_clientSocket.isOpen() );
+//    if ( !m_serverClosed ) {
+    m_clientSocket.write( net::ClientSocket::Message::OUTPUT_STREAM_CLOSED );
+        //    m_clientSocket.read( mess );
+        //    assert ( mess == net::ClientSocket::Message::STREAMER_CLOSED );
+//        assert( m_thread.joinable() );
+//        m_thread.join();
+//    }
+    //    assert(false);
+    assert( m_clientSocket.isOpen() );
     m_clientSocket.close();
 }
 
@@ -84,7 +93,7 @@ inline bool OutputStream::isOpen() const {
 // inline bool OutputStream::isEnd() const {
 //}
 
-//#endif
+// #endif
 
 } // namespace io
 } // namespace hub

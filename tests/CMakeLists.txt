@@ -15,6 +15,7 @@ endif()
 
 file(GLOB_RECURSE test_srcs *.cpp)
 
+
 add_executable(test-all ${test_srcs})
 target_link_libraries(test-all Catch2::Catch2WithMain hub)
 target_include_directories(test-all PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
@@ -35,7 +36,12 @@ endif()
 include(CTest)
 enable_testing()
 foreach(testFile ${test_srcs})
+
+  if("${testFile}" MATCHES "test-server*|test-client*")
 #    message(STATUS ${testFile})
+    continue()
+  endif()
+
     get_filename_component(test ${testFile} NAME_WE)
 
 #    add_executable(${test} ${test}.cpp)

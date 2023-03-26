@@ -14,6 +14,7 @@ Mesh::Mesh(const Measure &measure)
 //    assert( measure.getSize() == 64 );
 //    memcpy( (unsigned char*)&m_x, m_data, m_size );
     assert( m_data != nullptr );
+//    memcpy( m_data, measure.getData(), m_size );
 
 }
 
@@ -61,15 +62,15 @@ Mesh::Mesh( const std::string& fileObjPath ) :
     const std::string fileMtlTxt = strStreamMtl.str();
 
     std::vector<char> buff;
-    m_data = new unsigned char[buff.size()];
-    m_size = buff.size();
-    memcpy(m_data, buff.data(), m_size);
 
     io::Memory<decltype( buff )> memory( buff );
     memory.write(fileObjTxt);
     memory.write(fileMtlTxt);
 
     assert(buff.size() == fileObjTxt.size() + fileMtlTxt.size() + 8);
+    m_data = new unsigned char[buff.size()];
+    m_size = buff.size();
+    memcpy(m_data, buff.data(), m_size);
 
     std::string fileObjTxtReaded;
     memory.read(fileObjTxtReaded);
@@ -102,28 +103,32 @@ Mesh::Mesh( const std::string& fileObjPath ) :
     m_materials = reader.GetMaterials();
 }
 
-Mesh::Mesh(const std::string &objTxt, const std::string &mtlTxt)
-    : Measure( (unsigned char*)nullptr, 0, Resolution { { 1 }, Format::MESH } )
-{
-    tinyobj::ObjReader reader;
+//Mesh::Mesh(const std::string &objTxt, const std::string &mtlTxt)
+//    : Measure( (unsigned char*)nullptr, 0, Resolution { { 1 }, Format::MESH } )
+//{
+//    tinyobj::ObjReader reader;
 
-    //    if ( !reader.ParseFromFile( fileObjPath, reader_config ) ) {
-    //        if ( !reader.Error().empty() ) { std::cerr << "TinyObjReader: " << reader.Error(); }
-    //        exit( 1 );
-    //    }
-    if ( !reader.ParseFromString( objTxt, mtlTxt ) ) {
-        if ( !reader.Error().empty() ) { std::cerr << "TinyObjReader: " << reader.Error(); }
-        exit( 1 );
-    }
+//    //    if ( !reader.ParseFromFile( fileObjPath, reader_config ) ) {
+//    //        if ( !reader.Error().empty() ) { std::cerr << "TinyObjReader: " << reader.Error(); }
+//    //        exit( 1 );
+//    //    }
+//    if ( !reader.ParseFromString( objTxt, mtlTxt ) ) {
+//        if ( !reader.Error().empty() ) { std::cerr << "TinyObjReader: " << reader.Error(); }
+//        exit( 1 );
+//    }
 
-    if ( !reader.Warning().empty() ) { std::cout << "TinyObjReader: " << reader.Warning(); }
+//    if ( !reader.Warning().empty() ) { std::cout << "TinyObjReader: " << reader.Warning(); }
 
-    m_attrib = reader.GetAttrib();
-    m_shapes = reader.GetShapes();
+//    m_attrib = reader.GetAttrib();
+//    m_shapes = reader.GetShapes();
 
-    m_materials = reader.GetMaterials();
+//    m_materials = reader.GetMaterials();
 
-}
+//    auto size = objTxt.size() + mtlTxt.size() + 8;
+//    m_data = new unsigned char[size];
+//    m_size = size;
+//    memcpy(m_data, buff.data(), m_size);
+//}
 
 std::string Mesh::to_string() const
 {

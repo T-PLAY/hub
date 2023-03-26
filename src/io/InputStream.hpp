@@ -36,12 +36,13 @@ class SRC_API InputStream : public Input
                           net::ClientSocket&& clientSocket = net::ClientSocket() );
     //                          bool mergeSyncAcqs                = true );
 
-    //    InputStream(InputStream&& inputStream) = default;
     //    InputStream( const InputStream& inputStream ) = delete;
     //    InputStream& operator=( const InputStream& inputStream ) = delete;
     //    InputStream&& operator=( InputStream&& inputStream ) = delete;
     //    virtual ~InputStream() override;
-    //    ~InputStream();
+
+//        InputStream(InputStream&& inputStream);
+//        ~InputStream();
 
     // #ifdef WIN32 // msvc warning C4250
     //   protected:
@@ -92,6 +93,8 @@ class SRC_API InputStream : public Input
     SensorSpec m_sensorSpec;
     bool m_streamViewerClosed = false;
 
+//    bool m_moved = false;
+
     friend class InputSyncStream;
 };
 
@@ -106,10 +109,15 @@ inline void InputStream::read( unsigned char* data, size_t len ) {
 }
 
 inline void InputStream::close() {
+    std::cout << "[InputStream] close()" << std::endl;
 //    assert( !m_streamViewerClosed );
-    if ( m_streamViewerClosed ) {}
-    else {
+//    if ( m_streamViewerClosed ) {}
+//    else {
         m_clientSocket.write( net::ClientSocket::Message::INPUT_STREAM_CLOSED );
+
+    assert(m_clientSocket.isOpen());
+    m_clientSocket.close();
+
         //    std::cout << "[InputStream] close()" << std::endl;
         //    m_clientSocket.write( net::ClientSocket::Message::INPUT_STREAM_CLOSED );
         //    assert( m_clientSocket.isOpen() );
@@ -118,20 +126,20 @@ inline void InputStream::close() {
         //        m_clientSocket.read( mess );
         //        assert(mess == net::ClientSocket::Message::STREAM_VIEWER_CLOSED);
 
-        try {
-//            while ( true ) {
-            while ( m_clientSocket.isOpen() ) {
-    Acquisition acq;
-                m_clientSocket.read(acq);
-//                auto acq = getAcq( );
-            }
-        }
-        catch ( std::exception& ex ) {
-            //        std::cout << "[InputStream] closing connection, all acqs received
-            //        (streamViewer is done)" << std::endl;
-            std::cout << ex.what() << std::endl;
-        }
-    }
+//        try {
+////            while ( true ) {
+//            while ( m_clientSocket.isOpen() ) {
+//    Acquisition acq;
+//                m_clientSocket.read(acq);
+////                auto acq = getAcq( );
+//            }
+//        }
+//        catch ( std::exception& ex ) {
+//            //        std::cout << "[InputStream] closing connection, all acqs received
+//            //        (streamViewer is done)" << std::endl;
+//            std::cout << ex.what() << std::endl;
+//        }
+//    }
 
     //    while (mess == net::ClientSocket::Message::NEW_ACQ) {
     //        auto acq = m_clientSocket.getAcq(m_sensorSpec);
@@ -140,9 +148,8 @@ inline void InputStream::close() {
     //    m_clientSocket.read( mess );
     //    assert ( mess == net::ClientSocket::Message::CLOSED );
 
-    if (m_clientSocket.isOpen())
-        m_clientSocket.close();
-    std::cout << "[InputStream] close()" << std::endl;
+//    if (m_clientSocket.isOpen())
+//        m_clientSocket.close();
 }
 
 inline bool InputStream::isEnd() const {
