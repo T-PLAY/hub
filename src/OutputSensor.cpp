@@ -13,7 +13,7 @@ OutputSensor::OutputSensor( OutputSensor&& outputSensor ) :
 }
 
 OutputSensor::~OutputSensor() {
-//    std::cout << "[OutputSensor] ~OutputSensor() " << this << " started" << std::endl;
+    std::cout << "[OutputSensor] ~OutputSensor() " << this << " started" << std::endl;
     //    assert(m_output->isOpen());
     if ( !m_moved ) {
         if ( m_output->isOpen() ) m_output->close();

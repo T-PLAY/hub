@@ -42,8 +42,10 @@ InputSensor::InputSensor( InputSensor&& inputSensor ) :
 
 InputSensor::~InputSensor() {
     if ( !m_moved ) {
+        std::cout << "[InputSensor] ~InputSensor() " << this << " started" << std::endl;
         if ( m_input->isOpen() ) m_input->close();
         assert( !m_input->isOpen() );
+        std::cout << "[InputSensor] ~InputSensor() " << this << " ended" << std::endl;
     }
 }
 
@@ -178,7 +180,7 @@ std::vector<Acquisition> InputSensor::getAllAcquisitions() {
     //    std::vector<Acquisition> acqs;
     auto acqs = m_input->getAll<std::vector<hub::Acquisition>>();
     //    using T = decltype (acqs.front());
-//    m_input->readAll( acqs );
+    //    m_input->readAll( acqs );
     //    acqs = m_input->readAll();
     return acqs;
 

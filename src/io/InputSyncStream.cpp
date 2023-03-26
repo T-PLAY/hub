@@ -52,10 +52,11 @@ void InputSyncStream::read( SensorSpec& sensorSpec ) {
     //    m_clientSocket.read( m_sensorSpec );
     m_inputStream.read( sensorSpec );
     //    m_clientSocket2.read( m_sensorSpec2 );
-    m_inputStream2.read( sensorSpec );
+    SensorSpec sensorSpec2;
+    m_inputStream2.read( sensorSpec2 );
 
-    //    sensorSpec = m_sensorSpec + m_sensorSpec2;
-    sensorSpec = m_inputStream.m_sensorSpec + m_inputStream2.m_sensorSpec;
+    sensorSpec = sensorSpec + sensorSpec2;
+//    sensorSpec = m_inputStream.m_sensorSpec + m_inputStream2.m_sensorSpec;
 }
 
 } // namespace io

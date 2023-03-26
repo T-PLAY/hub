@@ -13,8 +13,11 @@ class InputStream : public hub::io::Input
     explicit InputStream( hub::net::ClientSocket&& clientSocket ) :
         m_clientSocket( std::move( clientSocket ) ) {}
 
-    void read(Acquisition & acq) override;
-//    Acquisition getAcq() override;
+    void read( Acquisition& acq ) override;
+    //    Acquisition getAcq() override;
+
+    InputStream( InputStream&& inputStream );
+    ~InputStream();
 
   protected:
     void read( unsigned char* data, size_t len ) override;
@@ -26,35 +29,49 @@ class InputStream : public hub::io::Input
     hub::net::ClientSocket m_clientSocket;
     bool m_outputStreamClosed = false;
 
+    bool m_moved = false;
+
     friend class StreamerClient;
 };
 
-void InputStream::read(Acquisition &acq)
-//Acquisition InputStream::getAcq()
+InputStream::InputStream( InputStream&& inputStream ) :
+    m_clientSocket( std::move( inputStream.m_clientSocket ) ),
+    m_outputStreamClosed( inputStream.m_outputStreamClosed ) {
+    inputStream.m_moved = true;
+}
+
+InputStream::~InputStream() {
+    if ( !m_moved ) {
+//        std::cout << "[StreamerClient][InputStream] close()" << std::endl;
+        assert( !isOpen() );
+    }
+}
+
+void InputStream::read( Acquisition& acq )
+// Acquisition InputStream::getAcq()
 {
     net::ClientSocket::Message mess;
     m_clientSocket.read( mess );
-    if ( mess == net::ClientSocket::Message::OUTPUT_STREAM_CLOSED ) {
-        m_outputStreamClosed = true;
-        throw net::Socket::exception("client closed connection");
-    }
+//    if ( mess == net::ClientSocket::Message::OUTPUT_STREAM_CLOSED ) {
+//        m_outputStreamClosed = true;
+//        throw net::Socket::exception( "client closed connection" );
+//    }
     assert( mess == net::ClientSocket::Message::NEW_ACQ );
-    Input::read(acq);
-//    return Input::getAcq();
+    Input::read( acq );
+    //    return Input::getAcq();
 }
-
 
 void InputStream::read( unsigned char* data, size_t len ) {
     m_clientSocket.read( data, len );
 }
 
 void InputStream::close() {
-//    std::cout << "[InputStream] close()" << std::endl;
-//    m_clientSocket.write(net::ClientSocket::Message::CLOSED);
-    assert(m_outputStreamClosed);
-    m_clientSocket.write(net::ClientSocket::Message::STREAMER_CLOSED);
-//     std::this_thread::sleep_for( std::chrono::milliseconds( 200 ) );
-    assert(m_clientSocket.isOpen());
+    //    std::cout << "[InputStream] close()" << std::endl;
+    //    m_clientSocket.write(net::ClientSocket::Message::CLOSED);
+    //    assert(m_outputStreamClosed);
+    //    m_clientSocket.write(net::ClientSocket::Message::STREAMER_CLOSED);
+    //     std::this_thread::sleep_for( std::chrono::milliseconds( 200 ) );
+    //    assert(m_clientSocket.isOpen());
     m_clientSocket.close();
 }
 
@@ -106,21 +123,22 @@ StreamerClient::StreamerClient( Server* server, int iClient, hub::net::ClientSoc
 
     const auto& metaData = sensorSpec.getMetaData();
     for ( const auto& pair : metaData ) {
+//        std::cout << headerMsg() << "metaData: " << hub::SensorSpec::to_string( pair ) << std::endl;
         std::cout << headerMsg() << "metaData: " << hub::SensorSpec::to_string( pair ) << std::endl;
     }
     if ( metaData.find( "nAcq" ) != metaData.end() ) {
         std::cout << headerMsg() << "type detected : packed stream" << std::endl;
-//        const char* type = metaData.at( "type" ).getConstCharPtr();
-//        if ( strcmp( type, "record" ) == 0 ) { m_isRecordStream = true; }
-        m_nAcq = metaData.at("nAcq").getInt();
+        //        const char* type = metaData.at( "type" ).getConstCharPtr();
+        //        if ( strcmp( type, "record" ) == 0 ) { m_isRecordStream = true; }
+        m_nAcq           = metaData.at( "nAcq" ).getInt();
         m_isPackedStream = true;
     }
-//    if ( metaData.find( "parent" ) != metaData.end() ) {
-//        m_parent = metaData.at( "parent" ).getConstCharPtr();
-//        std::cout << headerMsg() << "parent : '" << m_parent << "'" << std::endl;
-//    }
+    //    if ( metaData.find( "parent" ) != metaData.end() ) {
+    //        m_parent = metaData.at( "parent" ).getConstCharPtr();
+    //        std::cout << headerMsg() << "parent : '" << m_parent << "'" << std::endl;
+    //    }
 
-//    m_lastAcq[""];
+    //    m_lastAcq[""];
     // get record acqs before prevent viewer
     // std::this_thread::sleep_for( std::chrono::milliseconds( 200 ) );
     assert( m_server != nullptr );
@@ -128,88 +146,91 @@ StreamerClient::StreamerClient( Server* server, int iClient, hub::net::ClientSoc
 
     m_thread = std::thread( [this]() {
         try {
-//            long long lastMasterAcqStart = 0;
+            //            long long lastMasterAcqStart = 0;
 
-//            while ( m_server != nullptr ) {
-//            while ( true ) {
+            //            while ( m_server != nullptr ) {
+            //            while ( true ) {
             while ( m_inputSensor->getInput().isOpen() ) {
 
-//                auto acq           = m_inputSensor->getAcquisition();
-//                hub::Acquisition acq;
+                //                auto acq           = m_inputSensor->getAcquisition();
+                //                hub::Acquisition acq;
                 *m_inputSensor >> m_lastAcq;
-//                m_lastAcq = m_inputSensor->getAcq();
-//                std::cout << "[StreamerClient] get acq : " << acq << std::endl;
+                //                m_lastAcq = m_inputSensor->getAcq();
+                //                std::cout << "[StreamerClient] get acq : " << acq << std::endl;
                 m_server->newAcquisition( this, m_lastAcq );
 
-                if (m_isPackedStream) {
-                    auto it = m_packedAcqs.insert(m_lastAcq.clone());
-                    assert(m_packedAcqs.size() <= m_nAcq);
-                    std::cout << headerMsg() << "save acq " << std::distance(m_packedAcqs.begin(), it.first) << std::endl;
+                if ( m_isPackedStream ) {
+                    auto it = m_packedAcqs.insert( m_lastAcq.clone() );
+                    assert( m_packedAcqs.size() <= m_nAcq );
+                    std::cout << headerMsg() << "save acq "
+                              << std::distance( m_packedAcqs.begin(), it.first ) << std::endl;
                 }
 
             } // while (true)
+            assert( false );
         }
         catch ( hub::net::Socket::exception& ex ) {
-//            s_mtxCout.lock();
-            std::cout << headerMsg() << "catch exception : " << ex.what()
-                      << std::endl;
+            //            s_mtxCout.lock();
+            std::cout << headerMsg() << "catch exception : " << ex.what() << std::endl;
         }
-//        std::cout << headerMsg() << "end streamer : '" << m_streamName << "'" << std::endl;
-//        std::cout << headerMsg() << "thread end" << std::endl;
 
-//        s_mtxCout.unlock();
+        //        std::cout << headerMsg() << "end streamer : '" << m_streamName << "'" <<
+        //        std::endl; std::cout << headerMsg() << "thread end" << std::endl;
+
+        //        s_mtxCout.unlock();
         std::thread( [this]() { delete this; } ).detach();
     } );
 
-
-//    printStatusMessage( "new streamer" );
+    //    printStatusMessage( "new streamer" );
 }
 
 StreamerClient::~StreamerClient() {
-//    s_mtxCout.lock();
+    //    s_mtxCout.lock();
+    std::cout << headerMsg() << " delete start" << std::endl;
 
     assert( m_thread.joinable() );
     m_thread.join();
 
-//    m_streamName2saveAcqs.clear();
+    //    m_streamName2saveAcqs.clear();
 
-//    m_mtxStreamViewers.lock();
-//    auto it = m_streamViewers.begin();
-//    while ( it != m_streamViewers.end() ) {
-//        auto* streamViewer = *it;
-//        it                 = m_streamViewers.erase( it );
-//        delete streamViewer;
-//    }
-//    m_streamViewers.clear();
-//    m_mtxStreamViewers.unlock();
+    //    m_mtxStreamViewers.lock();
+    //    auto it = m_streamViewers.begin();
+    //    while ( it != m_streamViewers.end() ) {
+    //        auto* streamViewer = *it;
+    //        it                 = m_streamViewers.erase( it );
+    //        delete streamViewer;
+    //    }
+    //    m_streamViewers.clear();
+    //    m_mtxStreamViewers.unlock();
 
-//    m_mtxSyncViewers.lock();
-//    auto syncViewers = m_syncViewers;
-//    for ( const auto& pair : syncViewers ) {
-//        auto syncViewers2 = pair.second;
-//        auto it2          = syncViewers2.begin();
-//        while ( it2 != syncViewers2.end() ) {
-//            auto* syncViewer = *it2;
-//            it2              = syncViewers2.erase( it2 );
-//            delete syncViewer;
-//        }
-//    }
-//    m_syncViewers.clear();
-//    m_mtxSyncViewers.unlock();
+    //    m_mtxSyncViewers.lock();
+    //    auto syncViewers = m_syncViewers;
+    //    for ( const auto& pair : syncViewers ) {
+    //        auto syncViewers2 = pair.second;
+    //        auto it2          = syncViewers2.begin();
+    //        while ( it2 != syncViewers2.end() ) {
+    //            auto* syncViewer = *it2;
+    //            it2              = syncViewers2.erase( it2 );
+    //            delete syncViewer;
+    //        }
+    //    }
+    //    m_syncViewers.clear();
+    //    m_mtxSyncViewers.unlock();
 
-//    m_mtxSyncAcqs.lock();
-//    m_syncAcqs.clear();
-//    m_mtxSyncAcqs.unlock();
+    //    m_mtxSyncAcqs.lock();
+    //    m_syncAcqs.clear();
+    //    m_mtxSyncAcqs.unlock();
 
-//    m_isSyncthing.clear();
-//    m_isLooping.clear();
+    //    m_isSyncthing.clear();
+    //    m_isLooping.clear();
 
     if ( m_server != nullptr ) m_server->delStreamer( this );
 
-//    m_server->delStreamer(this);
-//    printStatusMessage( "del streamer" );
+    //    m_server->delStreamer(this);
+    //    printStatusMessage( "del streamer" );
 
-//    s_mtxCout.unlock();
+    //    s_mtxCout.unlock();
+    std::cout << headerMsg() << " delete ended" << std::endl;
 }
 
 std::string StreamerClient::headerMsg() const {
@@ -220,17 +241,16 @@ const hub::InputSensor& StreamerClient::getInputSensor() const {
     return *m_inputSensor.get();
 }
 
-void StreamerClient::end()
-{
-//    InputStream& input = dynamic_cast<InputStream&>(m_inputSensor->getInput());
-//    if (input.m_clientSocket.isOpen()) {
-//    assert(input.m_clientSocket.isOpen());
-//    input.m_clientSocket.write( hub::net::ClientSocket::Message::STREAMER_CLOSED );
-//    }
-//    m_inputSensor->getInput().close();
+void StreamerClient::end() {
+    //    InputStream& input = dynamic_cast<InputStream&>(m_inputSensor->getInput());
+    //    if (input.m_clientSocket.isOpen()) {
+    //    assert(input.m_clientSocket.isOpen());
+    //    input.m_clientSocket.write( hub::net::ClientSocket::Message::STREAMER_CLOSED );
+    //    }
+    //    m_inputSensor->getInput().close();
 }
 
-//void StreamerClient::addStreamViewer( StreamViewerClient* streamViewer ) {
+// void StreamerClient::addStreamViewer( StreamViewerClient* streamViewer ) {
 
 //    const auto& streamName = streamViewer->getStreamName();
 //    assert( m_streamName == streamName );
@@ -266,7 +286,7 @@ void StreamerClient::end()
 
 //}
 
-//void StreamerClient::delStreamViewer( StreamViewerClient* streamViewer ) {
+// void StreamerClient::delStreamViewer( StreamViewerClient* streamViewer ) {
 
 //    const auto& streamName = streamViewer->getStreamName();
 //    assert( m_streamName == streamName );
@@ -303,8 +323,8 @@ void StreamerClient::end()
 //    }
 //}
 
-//void StreamerClient::newAcquisition( const std::string& streamerName,
-//                                     const hub::Acquisition& acq ) {
+// void StreamerClient::newAcquisition( const std::string& streamerName,
+//                                      const hub::Acquisition& acq ) {
 
 //    // no conflict queue
 
@@ -315,29 +335,29 @@ void StreamerClient::end()
 //    }
 //}
 
-//const std::string& StreamerClient::getStreamName() const {
-//    return m_streamName;
-//}
+// const std::string& StreamerClient::getStreamName() const {
+//     return m_streamName;
+// }
 
-//const std::map<std::string, std::list<StreamViewerClient*>>&
-//StreamerClient::getSyncViewers() const {
-//    return m_syncViewers;
-//}
+// const std::map<std::string, std::list<StreamViewerClient*>>&
+// StreamerClient::getSyncViewers() const {
+//     return m_syncViewers;
+// }
 
-//const std::shared_ptr<hub::Acquisition>
-//StreamerClient::getLastAcq( const std::string& streamName ) const {
-//    assert( m_lastAcq.find( streamName ) != m_lastAcq.end() );
-//    return m_lastAcq.at( streamName );
-//}
+// const std::shared_ptr<hub::Acquisition>
+// StreamerClient::getLastAcq( const std::string& streamName ) const {
+//     assert( m_lastAcq.find( streamName ) != m_lastAcq.end() );
+//     return m_lastAcq.at( streamName );
+// }
 
-//const std::map<long long, std::shared_ptr<hub::Acquisition>>&
-//StreamerClient::getSaveAcqs( const std::string& streamName ) const {
-//    assert( m_streamName2saveAcqs.find( streamName ) != m_streamName2saveAcqs.end() );
-//    return m_streamName2saveAcqs.at( streamName );
-//}
+// const std::map<long long, std::shared_ptr<hub::Acquisition>>&
+// StreamerClient::getSaveAcqs( const std::string& streamName ) const {
+//     assert( m_streamName2saveAcqs.find( streamName ) != m_streamName2saveAcqs.end() );
+//     return m_streamName2saveAcqs.at( streamName );
+// }
 
-//void StreamerClient::saveNewAcq( const std::string& streamName, hub::Acquisition&& newAcq ) {
-//    assert( m_isRecordStream );
+// void StreamerClient::saveNewAcq( const std::string& streamName, hub::Acquisition&& newAcq ) {
+//     assert( m_isRecordStream );
 
 //    auto newAcqPtr = std::make_shared<hub::Acquisition>( std::move( newAcq ) );
 
@@ -345,13 +365,13 @@ void StreamerClient::end()
 //    // save new acq
 //    if ( saveAcqs.find( newAcq.getStart() ) == saveAcqs.end() ) {
 //        std::cout << headerMsg() << "'" << m_streamName << "' save new acq : [ ";
-//#if ( __cplusplus >= 201703L )
+// #if ( __cplusplus >= 201703L )
 //        for ( const auto& [streamName2, saveAcqs2] : m_streamName2saveAcqs ) {
-//#else
+// #else
 //        for ( const auto& pair : m_streamName2saveAcqs ) {
 //            const auto & streamName2 = pair.first;
 //            const auto & saveAcqs2 = pair.second;
-//#endif
+// #endif
 //            std::cout << "'" << streamName2 << "':" << saveAcqs2.size() << ", ";
 //        }
 //        std::cout << " ] ";
@@ -364,24 +384,24 @@ void StreamerClient::end()
 //    if ( lastAcq.get() != newAcqPtr.get() ) { lastAcq = newAcqPtr; }
 //}
 
-//bool StreamerClient::isRecordStream() const {
-//    return m_isRecordStream;
-//}
+// bool StreamerClient::isRecordStream() const {
+//     return m_isRecordStream;
+// }
 
-//const std::string& StreamerClient::getParent() const {
-//    return m_parent;
-//}
+// const std::string& StreamerClient::getParent() const {
+//     return m_parent;
+// }
 
-//const std::list<StreamViewerClient*>& StreamerClient::getStreamViewers() const {
-//    return m_streamViewers;
-//}
+// const std::list<StreamViewerClient*>& StreamerClient::getStreamViewers() const {
+//     return m_streamViewers;
+// }
 
 // const std::chrono::time_point<std::chrono::high_resolution_clock>&
 // StreamerClient::getLastUpdateAcqDate( const std::string& streamName ) const {
 // }
 
-} // server
-} // hub
+} // namespace server
+} // namespace hub
 
 //                const bool masterAcqLooped = lastMasterAcqStart > masterAcq.getStart();
 //                lastMasterAcqStart         = masterAcq.getStart();
@@ -413,12 +433,12 @@ void StreamerClient::end()
 //                // broadcast acquisition for each sync stream viewers
 //                auto it2 = m_syncViewers.begin();
 //                while ( it2 != m_syncViewers.end() ) {
-//#if ( __cplusplus >= 201703L )
+// #if ( __cplusplus >= 201703L )
 //                    auto& [syncViewerName, syncViewers] = *it2++;
-//#else
+// #else
 //                    auto & syncViewerName = it2->first;
 //                    auto & syncViewers = it2->second;
-//#endif
+// #endif
 
 //                    auto& syncAcqs = m_syncAcqs.at( syncViewerName );
 
@@ -435,8 +455,8 @@ void StreamerClient::end()
 //                            isLooping = false;
 //                        }
 //                        else {
-//                            std::cout << "[StreamerClient] searching master acq loop" << std::endl;
-//                            break;
+//                            std::cout << "[StreamerClient] searching master acq loop" <<
+//                            std::endl; break;
 //                        }
 //                    }
 //                    if ( masterAcqLooped ) {
@@ -458,7 +478,8 @@ void StreamerClient::end()
 //                        m_mtxSyncAcqs.unlock();
 
 //                        // do not synchronize ping acq
-//                        if ( syncAcqs.begin()->getStart() == std::next( syncAcqs.begin() )->getStart() ) {
+//                        if ( syncAcqs.begin()->getStart() == std::next( syncAcqs.begin()
+//                        )->getStart() ) {
 //                            std::cout << "[StreamerClient] receive ping acq" << std::endl;
 //                            syncAcqs.pop_front();
 //                            continue;
@@ -467,7 +488,8 @@ void StreamerClient::end()
 //                                std::next( syncAcqs.begin() )->getStart() );
 
 //                        // autoloop detected (player)
-//                        if ( syncAcqs.begin()->getStart() >= std::next( syncAcqs.begin() )->getStart() ) {
+//                        if ( syncAcqs.begin()->getStart() >= std::next( syncAcqs.begin()
+//                        )->getStart() ) {
 //                            std::cout << "[StreamerClient] sync acq loop deteted" << std::endl;
 //                            syncAcqs.pop_front();
 
@@ -521,7 +543,8 @@ void StreamerClient::end()
 //                            syncAcqs.pop_front();
 //                            continue;
 //                        }
-//                        assert( std::next( syncAcqs.begin() )->getStart() > masterAcq.getStart() );
+//                        assert( std::next( syncAcqs.begin() )->getStart() > masterAcq.getStart()
+//                        );
 
 //                        foundLeft = true;
 
@@ -540,8 +563,10 @@ void StreamerClient::end()
 //                    assert( itLeftAcq->getStart() < masterAcq.getStart() );
 //                    assert( itRightAcq->getStart() >= masterAcq.getStart() );
 
-//                    const auto closestAcq = ( std::abs( itLeftAcq->getStart() - masterAcq.getStart() ) >
-//                                              std::abs( itRightAcq->getStart() - masterAcq.getStart() ) )
+//                    const auto closestAcq = ( std::abs( itLeftAcq->getStart() -
+//                    masterAcq.getStart() ) >
+//                                              std::abs( itRightAcq->getStart() -
+//                                              masterAcq.getStart() ) )
 //                                                ? ( itRightAcq )
 //                                                : ( itLeftAcq );
 
@@ -557,12 +582,14 @@ void StreamerClient::end()
 //                        const auto& lastMasterAcq = getLastAcq( syncViewerName );
 //                        if ( lastMasterAcq != nullptr ) {
 //                            maxDist = std::min(
-//                                dist, std::abs( lastMasterAcq->getStart() - masterAcq.getStart() ) );
+//                                dist, std::abs( lastMasterAcq->getStart() - masterAcq.getStart() )
+//                                );
 //                        }
 //                    }
 //                    if ( dist > maxDist ) {
 //                        std::cout << headerMsg() << "sync dist = abs( "
-//                                  << closestAcq->getStart() - masterAcq.getStart() << " ) > " << maxDist
+//                                  << closestAcq->getStart() - masterAcq.getStart() << " ) > " <<
+//                                  maxDist
 //                                  << std::endl;
 //                        continue;
 //                    }
@@ -573,9 +600,11 @@ void StreamerClient::end()
 //                    hub::Acquisition mergedAcq = masterAcq.clone();
 //                    if ( itLeftAcq->isInterpolable() ) {
 //                        const double t = ( masterAcq.getStart() - itLeftAcq->getStart() ) /
-//                                         (double)( itRightAcq->getStart() - itLeftAcq->getStart() );
+//                                         (double)( itRightAcq->getStart() - itLeftAcq->getStart()
+//                                         );
 //                        mergedAcq
-//                            << hub::Acquisition::slerp( *itLeftAcq, *itRightAcq, t ).getMeasures();
+//                            << hub::Acquisition::slerp( *itLeftAcq, *itRightAcq, t
+//                            ).getMeasures();
 //                    }
 //                    else {
 //                        mergedAcq << closestAcq->getMeasures();

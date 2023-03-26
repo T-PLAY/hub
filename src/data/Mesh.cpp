@@ -16,6 +16,7 @@ Mesh::Mesh(const Measure &measure)
     assert( m_data != nullptr );
 //    memcpy( m_data, measure.getData(), m_size );
 
+    unpack();
 }
 
 Mesh::Mesh( const Mesh& mesh ) :
@@ -25,6 +26,9 @@ Mesh::Mesh( const Mesh& mesh ) :
              true
               ) {
     memcpy( m_data, mesh.m_data, m_size );
+//    Measure( mesh.getData(), mesh.getSize(), Resolution { { 1 }, Format::MESH } ) {
+//    assert( m_data != nullptr );
+    unpack();
 }
 
 
@@ -72,6 +76,15 @@ Mesh::Mesh( const std::string& fileObjPath ) :
     m_size = buff.size();
     memcpy(m_data, buff.data(), m_size);
 
+    unpack();
+}
+
+void Mesh::unpack()
+{
+    std::vector<char> buff;
+    buff.insert(buff.begin(), m_data, m_data + m_size);
+    io::Memory<decltype( buff )> memory( buff );
+
     std::string fileObjTxtReaded;
     memory.read(fileObjTxtReaded);
     std::string fileMtlTxtReaded;
@@ -101,7 +114,15 @@ Mesh::Mesh( const std::string& fileObjPath ) :
     m_shapes = reader.GetShapes();
 
     m_materials = reader.GetMaterials();
+
 }
+
+void Mesh::pack()
+{
+
+}
+
+
 
 //Mesh::Mesh(const std::string &objTxt, const std::string &mtlTxt)
 //    : Measure( (unsigned char*)nullptr, 0, Resolution { { 1 }, Format::MESH } )
@@ -132,19 +153,28 @@ Mesh::Mesh( const std::string& fileObjPath ) :
 
 std::string Mesh::to_string() const
 {
-    std::string str = "[";
+//    std::string str = "[";
 //    return
+    size_t nTriangle = 0;
     for ( size_t s = 0; s < m_shapes.size(); s++ ) {
         const auto & shape = m_shapes.at(s);
-        str += shape.name + ": nb points = " + std::to_string(shape.points.indices.size());
-        if (s != m_shapes.size() - 1) {
-            str += ", ";
-        }
+//        str += shape.name + ": nb points = " + std::to_string(shape.points.indices.size());
+        const int nFace = shape.mesh.num_face_vertices.size();
+        nTriangle += nFace;
+//        str += shape.name + ": nTriangle = " + std::to_string(nFace);
+//        if (s != m_shapes.size() - 1) {
+//            str += ", ";
+//        }
     }
-    str += "]";
+    std::string str = "[nShape = " + std::to_string(m_shapes.size()) + ", nTriangle = " + std::to_string(nTriangle) + "]";
+//    str += "]";
     return str;
 }
 
+std::ostream& operator<<( std::ostream& os, const Mesh& mesh ) {
+    os << mesh.to_string();
+    return os;
+}
 
 } // namespace data
 } // namespace hub
