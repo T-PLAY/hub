@@ -177,11 +177,12 @@ void InputSensor::operator>>( Acquisition& acq ) {
 
 std::vector<Acquisition> InputSensor::getAllAcquisitions() {
     //    return m_input->readAll<std::vector<Acquisition>, Acquisition>();
-    //    std::vector<Acquisition> acqs;
-    auto acqs = m_input->getAll<std::vector<hub::Acquisition>>();
+        std::vector<Acquisition> acqs;
+        m_input->readAll(acqs);
+//    auto acqs = m_input->getAll<std::vector<hub::Acquisition>>();
+//    auto acqs = m_input->getAll<std::vector, hub::Acquisition>();
     //    using T = decltype (acqs.front());
     //    m_input->readAll( acqs );
-    //    acqs = m_input->readAll();
     return acqs;
 
     //    try {

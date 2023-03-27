@@ -1,6 +1,6 @@
 
+#include <catch2/catch_test_macros.hpp>
 #include "test-common.hpp"
-//#include <catch2/catch_test_macros.hpp>
 
 // #include <InputSensor.hpp>
 // #include <OutputSensor.hpp>
@@ -25,11 +25,11 @@
 
 /// \file
 
-#define CHECK
+//#define CHECK
 
-int main()
-{
-    //TEST_CASE( "Native test" ) {
+//int main()
+//{
+TEST_CASE( "Native test" ) {
     constexpr int delay = 1000; // ms
 
     const std::string ipv4 = "127.0.0.1";

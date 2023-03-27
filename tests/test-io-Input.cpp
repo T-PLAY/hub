@@ -262,6 +262,10 @@ TEST_CASE( "Input test" ) {
         auto acq2 = input.get<hub::Acquisition>();
         //    assert(acq2 == ref_acqs.at())
         auto acqs = input.getAll<std::vector<hub::Acquisition>>();
+//        std::vector<hub::Acquisition> acqs;
+//        input.readAll<std::vector, hub::Acquisition>(acqs);
+//        input.readAll(acqs);
+//        input.readAll<std::vector>(acqs);
         CHECK( acqs.size() == ref_acqs.size() - ref_sync_acqs.size() - 1 );
         assert( input.isEnd() );
 

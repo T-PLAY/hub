@@ -101,11 +101,27 @@ class SRC_API Input
     template <class T>
     T get();
 
-    template <template <typename, typename...> class Container, typename T>
-    void readAll( Container<T>& ts );
+//    template <template <typename, typename...> class Container, typename T>
+//    void readAll( Container<T>& ts );
+//    template <class T>
+//    void readAll( T & ts );
 
-    template <class T>
-    T getAll();
+//template <template <typename, typename...> class Container, typename T>
+//void Input::readAll( Container<T>& ts ) {
+//template <class Container, class T>
+//template <template <typename, typename...> class Container, typename T>
+
+template <typename Container,
+          typename T = std::decay_t<decltype(*begin(std::declval<Container>()))>>
+//void readAll( Container<T> & ts ) {
+void readAll( Container & ts );
+
+//    template <class T>
+//void readAll( Container<T> & ts ) {
+//template <template <typename, typename...> class Container, typename T>
+//template <template <class...> class Container, class T>
+template <typename Container>
+Container getAll();
 
     ///
     /// \brief read
@@ -204,8 +220,22 @@ inline T Input::get() {
     return t;
 }
 
-template <template <typename, typename...> class Container, typename T>
-void Input::readAll( Container<T>& ts ) {
+//template <class T>
+//template <template <class...> class Container, class T>
+template <typename Container>
+Container Input::getAll() {
+    assert(isOpen());
+    assert(!isEnd());
+
+    Container ts;
+//    std::vector<T> ts;
+    readAll( ts );
+    return ts;
+}
+
+template <typename Container,
+          typename T>
+void Input::readAll( Container & ts ) {
     assert(isOpen());
     assert(!isEnd());
 
@@ -220,15 +250,6 @@ void Input::readAll( Container<T>& ts ) {
     }
 }
 
-template <class T>
-T Input::getAll() {
-    assert(isOpen());
-    assert(!isEnd());
-
-    T ts;
-    readAll( ts );
-    return ts;
-}
 
 template <class T>
 inline void Input::read( T& t ) {
