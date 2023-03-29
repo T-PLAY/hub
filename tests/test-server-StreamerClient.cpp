@@ -121,8 +121,9 @@ TEST_CASE( "StreamerClient test" ) {
     server.setMaxClients( 2 );
     server.asyncRun();
 
-    hub::io::OutputStream outputStream("streamName", hub::net::ClientSocket(ipv4, port));
-    hub::OutputSensor outputSensor( ref_sensorSpec, std::move( outputStream ) );
+//    hub::io::OutputStream outputStream("streamName", hub::net::ClientSocket(ipv4, port));
+//    hub::OutputSensor outputSensor( ref_sensorSpec, std::move( outputStream ) );
+    hub::OutputSensor outputSensor( ref_sensorSpec, "streamName", hub::net::ClientSocket(ipv4, port) );
         std::cout << "outputSensor created" << std::endl;
 
     std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );

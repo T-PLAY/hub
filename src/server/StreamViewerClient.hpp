@@ -31,7 +31,7 @@ private:
 //    const std::string& getStreamName() const;
 
 //    bool shoudMergeSyncAcqs() const;
-    void end() override;
+    void end(net::ClientSocket::Message message) override;
 
   private:
 //    StreamerClient* m_streamer = nullptr;

@@ -190,8 +190,9 @@ template <class Resolution>
 Measure::Measure( const unsigned char* const data, uint64_t size, Resolution&& resolution ) :
     m_data( new unsigned char[size] ),
     m_size( size ),
-    m_ownData( true ),
-    m_resolution( std::forward<Resolution>( resolution ) ) {
+    m_resolution( std::forward<Resolution>( resolution ) ),
+    m_ownData( true )
+{
 
     static_assert( std::is_same<std::decay_t<Resolution>, std::decay_t<hub::Resolution>>::value,
                    "must be the same as Resolution" );
@@ -207,8 +208,9 @@ template <class Resolution>
 Measure::Measure( unsigned char* data, uint64_t size, Resolution&& resolution, bool stealData ) :
     m_data( data ),
     m_size( size ),
-    m_ownData( stealData ),
-    m_resolution( std::forward<Resolution>( resolution ) ) {
+    m_resolution( std::forward<Resolution>( resolution ) ),
+    m_ownData( stealData )
+{
 
     static_assert( std::is_same<std::decay_t<Resolution>, std::decay_t<hub::Resolution>>::value,
                    "must be the same as Resolution" );

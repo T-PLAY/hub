@@ -102,7 +102,8 @@ TEST_CASE("Server test : viewer")
                 << std::endl;
             hub::OutputSensor outputSensor(
                 hub::SensorSpec("sensorName", { { { width, height }, hub::Format::BGR8 } }),
-                hub::io::OutputStream("streamName", hub::net::ClientSocket(ipv4, port2)));
+//                hub::io::OutputStream("streamName", hub::net::ClientSocket(ipv4, port2)));
+                "streamName", hub::net::ClientSocket(ipv4, port2));
 
 //                        std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
@@ -193,7 +194,7 @@ TEST_CASE("Server test : viewer")
 #ifdef WIN32
             CHECK(ratio > 22);
 #else
-            CHECK(ratio > 35);
+            CHECK(ratio > 60);
 #endif
             } // end viewer
 //                std::this_thread::sleep_for(std::chrono::milliseconds(100));

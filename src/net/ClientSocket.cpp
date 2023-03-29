@@ -15,6 +15,8 @@ ClientSocket::ClientSocket() : m_ipv4( s_defaultServiceIp ), m_port( s_defaultSe
     DEBUG_MSG( getHeader( m_fdSock ) << "ClientSocket()" );
 #endif
 
+//    std::cout << "[ClientSocket] ClientSocket() " << std::endl;
+
     initServerAddress();
     connect();
 }
@@ -24,6 +26,7 @@ ClientSocket::ClientSocket( const std::string& ipv4, int port, bool autoConnect 
 #ifdef DEBUG_SOCKET
     DEBUG_MSG( getHeader( m_fdSock ) << "ClientSocket(std::string ipv4, int port)" );
 #endif
+//    std::cout << "[ClientSocket] ClientSocket() " << std::endl;
 
     initServerAddress();
 
@@ -38,6 +41,7 @@ ClientSocket::ClientSocket( net::utils::socket_fd fdSock ) {
 #ifdef DEBUG_SOCKET
     DEBUG_MSG( getHeader( m_fdSock ) << "ClientSocket(socket_fd fdSock)" );
 #endif
+//    std::cout << "[ClientSocket] ClientSocket() " << std::endl;
 }
 
 ClientSocket::ClientSocket( ClientSocket&& sock ) :
@@ -45,11 +49,13 @@ ClientSocket::ClientSocket( ClientSocket&& sock ) :
     m_port( sock.m_port ),
     m_addr( std::move( sock.m_addr ) ),
     m_connected( sock.m_connected ) {
+//    std::cout << "[Socket] ClientSocket(ClientSocket&&) " << &sock << " -> " << this << std::endl;
 
     m_fdSock      = sock.m_fdSock;
     m_serverSide  = sock.m_serverSide;
     sock.m_fdSock = net::utils::invalidSocket();
     sock.m_moved  = true;
+    sock.m_connected = false;
 }
 
 // ClientSocket::ClientSocket(ClientSocket &&sock) :
@@ -62,8 +68,9 @@ ClientSocket::~ClientSocket() {
 #endif
     if ( !m_moved ) {
 //        std::cout << "[ClientSocket] ~ClientSocket() started" << std::endl;
+        if ( ClientSocket::isOpen() )
+            ClientSocket::close();
         assert(! ClientSocket::isOpen());
-//        if ( ClientSocket::isOpen() ) ClientSocket::close();
 //        assert( !ClientSocket::isOpen() );
 //        std::cout << "[ClientSocket] ~ClientSocket() ended" << std::endl;
     }
@@ -129,6 +136,7 @@ void ClientSocket::connect() {
     }
 
     m_connected = true;
+    std::cout << "[ClientSocket] connect() " << std::endl;
     assert( isOpen() );
     assert( isConnected() );
 
@@ -140,11 +148,12 @@ void ClientSocket::connect() {
 }
 
 void ClientSocket::write( const unsigned char* data, size_t len ) {
-    if ( !isOpen() ) {
-        throw Socket::exception(
-            "[ClientSocket] write(data, len) Unable to write because output is closed" );
-    }
-    assert( isOpen() );
+    assert(isOpen());
+//    if ( !isOpen() ) {
+//        throw Socket::exception(
+//            "[ClientSocket] write(data, len) Unable to write because output is closed" );
+//    }
+//    assert( isOpen() );
 
 #ifdef DEBUG_SOCKET
     // DEBUG_MSG(getHeader(m_fdSock) << "write message ");
@@ -174,7 +183,7 @@ void ClientSocket::write( const unsigned char* data, size_t len ) {
         catch ( std::exception& e ) {
             std::cout << "[ClientSocket] catch exception : " << e.what() << std::endl;
             assert( false );
-            throw;
+            throw e;
         }
 
         if ( byteSent == -1 ) {
@@ -192,7 +201,7 @@ void ClientSocket::write( const unsigned char* data, size_t len ) {
 #ifdef DEBUG_SOCKET
             DEBUG_MSG( "byteSent == 0, sleep" );
 #endif
-            std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
+//            std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
         }
         uploadSize += byteSent;
 #ifdef DEBUG_SOCKET
@@ -221,21 +230,23 @@ void ClientSocket::read( unsigned char* data, size_t len ) {
 #endif
 #ifndef WIN32
 #endif
-            if ( isOpen() ) close();
+//            if ( isOpen() ) close();
+            close();
             throw Socket::exception(
                 "[ClientSocket] read(data, len) Can't read packet, peer connection lost" );
         }
         else if ( byteRead == 0 ) {
             //            assert( isConnected() );
-            if ( isConnected() ) {
-                if ( isOpen() ) close();
+//            if ( isConnected() ) {
+//                if ( isOpen() ) close();
+                close();
                 throw Socket::exception(
                     "[ClientSocket] read(data, len) 0 byte received, peer connection lost" );
-            }
-            else {
-                throw Socket::exception( "[ClientSocket] read(data, len) 0 byte received, "
-                                         "connection already broken by write operation" );
-            }
+//            }
+//            else {
+//                throw Socket::exception( "[ClientSocket] read(data, len) 0 byte received, "
+//                                         "connection already broken by write operation" );
+//            }
         }
 
         downloadSize += byteRead;
@@ -251,6 +262,7 @@ void ClientSocket::read( unsigned char* data, size_t len ) {
 }
 
 void ClientSocket::close() {
+//    std::cout << "[ClientSocket] close()" << std::endl;
     //    if ( !isOpen() ) { throw Socket::exception( "unable to close non openned socket" ); }
     //    else {
     assert( isOpen() );
@@ -263,6 +275,7 @@ void ClientSocket::close() {
 }
 
 bool ClientSocket::isOpen() const {
+//    return m_connected && isConnected();
     return m_connected;
 }
 

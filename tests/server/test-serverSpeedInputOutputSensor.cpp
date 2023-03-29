@@ -149,7 +149,8 @@ TEST_CASE("Server test : InputOutputSensor") {
                 << std::endl;
             hub::OutputSensor outputSensor(
                 hub::SensorSpec( "sensorName", { { { width, height }, hub::Format::BGR8 } } ),
-                hub::io::OutputStream( "streamName", hub::net::ClientSocket( ipv4, port2 ) ) );
+//                hub::io::OutputStream( "streamName", hub::net::ClientSocket( ipv4, port2 ) ) );
+                "streamName", hub::net::ClientSocket( ipv4, port2 ) );
 
             //            std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
@@ -203,7 +204,7 @@ TEST_CASE("Server test : InputOutputSensor") {
 #ifdef WIN32
             CHECK( ratio > 35 );
 #else
-            CHECK( ratio > 50 );
+            CHECK( ratio > 65 );
 #endif
             //            CHECK(megaBytesPerSeconds >= 800); // server IRIT
             // CHECK( megaBytesPerSeconds >= 2700 ); // home linux

@@ -56,8 +56,10 @@ int main() {
 
         hub::OutputSensor outputSensor {
             sensorSpec,
-            hub::io::OutputStream { "streamName",
-                                    hub::net::ClientSocket { "serverIp", serverPort } } };
+            "streamName",
+                                    hub::net::ClientSocket { "serverIp", serverPort } };
+//            hub::io::OutputStream { "streamName",
+//                                    hub::net::ClientSocket { "serverIp", serverPort } } };
 
         while ( 1 ) {
 #if ( __cplusplus >= 201703L )

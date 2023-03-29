@@ -14,7 +14,9 @@
 namespace hub {
 namespace client {
 
+namespace viewer {
 class Stream;
+} // end namespace
 
 ///
 /// \brief The Viewer class (event dispatcher)
@@ -136,9 +138,9 @@ class SRC_API Viewer
     std::function<void( const char* logMessage )> m_onLogMessage;
 
 
-    std::map<std::string, std::shared_ptr<Stream>> m_streams;
+    std::map<std::string, std::shared_ptr<viewer::Stream>> m_streams;
 
-    friend class Stream;
+    friend class viewer::Stream;
 
   private:
 };

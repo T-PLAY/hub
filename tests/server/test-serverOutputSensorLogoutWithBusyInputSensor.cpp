@@ -24,7 +24,8 @@ TEST_CASE( "Server test" ) {
         {
             hub::OutputSensor outputSensor(
                 hub::SensorSpec( "sensorName", { { { 1 }, hub::Format::BGR8 } } ),
-                hub::io::OutputStream( "streamName", hub::net::ClientSocket( ipv4, port ) ) );
+//                hub::io::OutputStream( "streamName", hub::net::ClientSocket( ipv4, port ) ) );
+                "streamName", hub::net::ClientSocket( ipv4, port ) );
             std::cout << "[test] outputSensor created" << std::endl;
 
 //            for (int i = 0; i <10; ++i) {

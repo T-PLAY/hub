@@ -96,9 +96,12 @@ void closeSocket( socket_fd& sock ) {
 }
 
 bool isConnected( socket_fd sock ) {
+
     if (! net::utils::isValid(sock))
         return false;
 //    assert( net::utils::isValid( sock ) );
+
+//    return true;
 
 #ifdef WIN32
     // not sure how to check this in windows

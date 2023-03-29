@@ -25,7 +25,7 @@ class StreamerClient : public Client
 //  public:
 //    protected:
 private:
-    StreamerClient( Server* server, int iClient, hub::net::ClientSocket&& sock );
+StreamerClient( Server* server, int iClient, hub::net::ClientSocket&& sock, std::string streamName );
     ~StreamerClient();
 
     std::string headerMsg() const override;
@@ -53,7 +53,7 @@ private:
 //    const std::string& getParent() const;
 //    bool isRecordStream() const;
 
-    void end() override;
+    void end(net::ClientSocket::Message message) override;
 
   private:
     std::thread m_thread;

@@ -43,23 +43,30 @@ InputStream::InputStream( const std::string& streamName,
 
 InputStream::InputStream( InputStream&& inputStream ) :
     m_clientSocket( std::move( inputStream.m_clientSocket ) ),
-//    m_sensorSpec( inputStream.m_sensorSpec ),
-    m_streamViewerClosed( inputStream.m_streamViewerClosed ) {
+    //    m_sensorSpec( inputStream.m_sensorSpec ),
+    m_streamViewerClientClosed( inputStream.m_streamViewerClientClosed ),
+    m_streamerClosed(inputStream.m_streamerClosed),
+    m_readAcqWaiting(inputStream.m_readAcqWaiting)
+{
     inputStream.m_moved = true;
 }
 
 InputStream::~InputStream() {
     if ( !m_moved ) {
-//        std::cout << "[InputStream] ~InputStream() started" << std::endl;
-        assert( ! InputStream::isOpen() );
-//        if ( InputStream::isOpen() ) InputStream::close();
-//        assert( !InputStream::isOpen() );
-//        std::cout << "[InputStream] ~InputStream() ended" << std::endl;
+        //        std::cout << "[InputStream] ~InputStream() started" << std::endl;
+        assert( !InputStream::isOpen() );
+        //        if ( InputStream::isOpen() ) InputStream::close();
+        //        assert( !InputStream::isOpen() );
+        //        std::cout << "[InputStream] ~InputStream() ended" << std::endl;
     }
 }
 
 void InputStream::read( Acquisition& acq ) {
+    assert(! m_readAcqWaiting);
+    m_readAcqWaiting = true;
     //{
+    //    m_mtxRead.lock();
+    assert( !m_streamerClosed );
 
     //}
     // Acquisition InputStream::getAcq() {
@@ -74,7 +81,14 @@ void InputStream::read( Acquisition& acq ) {
     //    } while ( message == net::ClientSocket::Message::PING );
     //    Input::read(message);
     //    Input & input = m_clientSocket;
-    m_clientSocket.read( message );
+    try {
+        m_clientSocket.read( message );
+    }
+    catch ( const std::exception& ex ) {
+        m_streamerClosed = true;
+        m_readAcqWaiting         = false;
+        throw new std::exception( ex );
+    }
 
     //    if (message == net::ClientSocket::Message::CLOSE) {
     //        throw net::ClientSocket::exception("[InputStream] streamer disconnected from server");
@@ -90,21 +104,49 @@ void InputStream::read( Acquisition& acq ) {
     //        throw net::ClientSocket::exception( "streamer closed connection" );
     //    }
 
-    assert( message == net::ClientSocket::Message::NEW_ACQ );
-    if (! m_clientSocket.isOpen()) {
-            throw net::ClientSocket::exception( "link broken by peer" );
-    }
+    if ( message == net::ClientSocket::Message::STREAMER_CLOSED ) {
+        std::cout << "[InputStream] streamer closed" << std::endl;
 
-    //    assert( message == net::ClientSocket::Message::NEW_ACQ );
-    //    auto acq = Input::getAcq( );
-    m_clientSocket.read( acq );
-    //    auto acq = m_clientSocket.getAcq();
-    //    return acq;
+        m_streamerClosed = true;
+        //        close();
+        m_clientSocket.write( net::ClientSocket::Message::INPUT_STREAM_CLOSED );
+        //        m_clientSocket.close();
+        m_readAcqWaiting = false;
+        throw net::ClientSocket::exception( "sreamer closed from server" );
+    }
+    else if ( message == net::ClientSocket::Message::STREAM_VIEWER_CLIENT_CLOSED ) {
+        std::cout << "[InputStream] stream viewer client closed" << std::endl;
+
+//        m_streamerClosed = true;
+        m_streamViewerClientClosed = true;
+        //        close();
+        m_clientSocket.write( net::ClientSocket::Message::INPUT_STREAM_CLOSED );
+        //        m_clientSocket.close();
+        m_readAcqWaiting = false;
+        throw net::ClientSocket::exception( "sream viewer client closed from server" );
+    }
+    else if ( message == net::ClientSocket::Message::NEW_ACQ ) {
+        //        assert( message == net::ClientSocket::Message::NEW_ACQ );
+        //        if ( !m_clientSocket.isOpen() ) {
+        //            throw net::ClientSocket::exception( "link broken by peer" );
+        //        }
+        assert( m_clientSocket.isOpen() );
+
+        //    assert( message == net::ClientSocket::Message::NEW_ACQ );
+        //    auto acq = Input::getAcq( );
+        m_clientSocket.read( acq );
+        //    auto acq = m_clientSocket.getAcq();
+        //    return acq;
+    }
+    else { assert( false ); }
+
+    m_readAcqWaiting = false;
+    //    m_mtxRead.unlock();
 }
 
 void InputStream::read( SensorSpec& sensorSpec ) {
     m_clientSocket.read( sensorSpec );
-//    m_sensorSpec = sensorSpec;
+    //    m_sensorSpec = sensorSpec;
 }
 
 //    std::cout << "[InputStream] ~InputStream()" << std::endl;
