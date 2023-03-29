@@ -129,13 +129,15 @@ TEST_CASE( "InputSyncStream test" ) {
         server.asyncRun();
 
         {
-            hub::io::OutputStream outputStream( "streamName",
-                                                hub::net::ClientSocket( ipv4, port ) );
-            hub::OutputSensor outputSensor( ref_sensorSpec, std::move( outputStream ) );
+//            hub::io::OutputStream outputStream( "streamName",
+//                                                hub::net::ClientSocket( ipv4, port ) );
+//            hub::OutputSensor outputSensor( ref_sensorSpec, std::move( outputStream ) );
+            hub::OutputSensor outputSensor( ref_sensorSpec, "streamName", hub::net::ClientSocket(ipv4, port) );
 
-            hub::io::OutputStream outputStream2( "streamName2",
-                                                 hub::net::ClientSocket( ipv4, port ) );
-            hub::OutputSensor outputSensor2( ref_sensorSpec2, std::move( outputStream2 ) );
+//            hub::io::OutputStream outputStream2( "streamName2",
+//                                                 hub::net::ClientSocket( ipv4, port ) );
+//            hub::OutputSensor outputSensor2( ref_sensorSpec2, std::move( outputStream2 ) );
+            hub::OutputSensor outputSensor2( ref_sensorSpec2, "streamName2", hub::net::ClientSocket(ipv4, port) );
             std::cout << "outputSensors created" << std::endl;
 
             hub::io::InputSyncStream inputStream( "streamName", "streamName2", ipv4, port );

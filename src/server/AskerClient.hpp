@@ -25,11 +25,11 @@ private:
 
     std::string headerMsg() const override;
 
-    void end() override;
+    void end(net::ClientSocket::Message message) override;
 
   private:
     std::thread m_thread;
-    hub::net::ClientSocket m_socket;
+    hub::net::ClientSocket m_sock;
 
     friend class Server;
 };

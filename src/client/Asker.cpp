@@ -19,6 +19,9 @@ Asker::Asker( const std::string& ipv4, int port ) :
 
 Asker::~Asker() {
     m_sock.write( net::ClientSocket::Message::CLOSE );
+    assert(m_sock.isOpen());
+    m_sock.close();
+    assert(! m_sock.isOpen());
 }
 
 std::list<std::pair<std::string, SensorSpec>> Asker::listStreams() {

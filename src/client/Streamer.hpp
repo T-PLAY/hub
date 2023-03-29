@@ -12,6 +12,12 @@
 namespace hub {
 namespace client {
 
+namespace streamer {
+
+class Stream;
+
+} // end namespace streamer
+
 ///
 /// \brief The Streamer class
 /// simplifies the management of OutputSensors.
@@ -52,7 +58,7 @@ class SRC_API Streamer
     ///
     void addStream( const std::string& streamName,
                     const SensorSpec& sensorSpec,
-                    const std::vector<Acquisition>& initAcqs = {} );
+                    std::vector<Acquisition>&& initAcqs = {} );
 
     ///
     /// \brief newAcquisition
@@ -80,21 +86,28 @@ class SRC_API Streamer
   private:
     void onServerConnected();
     void onServerDisconnected();
+    void waitingForServer();
 
     std::thread m_thread;
 
-    std::map<std::string, SensorSpec> m_streamName2sensorSpec;
-    std::map<std::string, std::unique_ptr<OutputSensor>> m_streamName2outputSensor;
-    std::map<std::string, std::vector<Acquisition>> m_streamName2initAcqs;
-    std::map<std::string, std::chrono::time_point<std::chrono::high_resolution_clock>>
-        m_streamName2lastLogout;
-    bool m_stopThread = false;
+    std::map<std::string, std::unique_ptr<streamer::Stream>> m_streams;
+//    std::map<std::string, SensorSpec> m_streamName2sensorSpec;
+//    std::map<std::string, std::unique_ptr<OutputSensor>> m_streamName2outputSensor;
+//    std::map<std::string, std::vector<Acquisition>> m_streamName2initAcqs;
+//    std::map<std::string, std::chrono::time_point<std::chrono::high_resolution_clock>>
+//        m_streamName2lastLogout;
+//    bool m_stopThread = false;
 
-    std::string m_ipv4;
-    int m_port;
+
+    const std::string m_ipv4;
+    const int m_port;
 
     bool m_serverConnected = false;
-    std::regex m_ipv4Regex;
+    const std::regex m_ipv4Regex;
+
+    bool m_exitThread = false;
+
+    friend class streamer::Stream;
 };
 
 } // namespace client

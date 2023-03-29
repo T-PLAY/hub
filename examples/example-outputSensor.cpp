@@ -22,7 +22,8 @@ int main() {
 // the stream id name 'myStream' is not used within the server
 hub::OutputSensor outputSensor(
     sensorSpec,
-    hub::io::OutputStream( "myStream", hub::net::ClientSocket( "127.0.0.1", 4042 ) ) );
+//    hub::io::OutputStream( "myStream", hub::net::ClientSocket( "127.0.0.1", 4042 ) ) );
+    "myStream", hub::net::ClientSocket( "127.0.0.1", 4042 ) );
             // endConstruction
 
             long long start = 0, end = 0;

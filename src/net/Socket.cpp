@@ -34,6 +34,7 @@ Socket::Socket() {
 }
 
 Socket::Socket( Socket&& socket ) {
+    std::cout << "[Socket] Socket(Socket&&)" << std::endl;
     m_fdSock        = socket.m_fdSock;
     socket.m_fdSock = net::utils::invalidSocket();
 }

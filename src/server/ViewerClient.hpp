@@ -30,13 +30,15 @@ private:
     void notifyDelStreamer( const std::string & streamName, const SensorSpec & sensorSpec );
 //    void notifyDelStreamer( const StreamerClient& streamer );
 
-    void end() override;
+    void end(net::ClientSocket::Message message) override;
 
   private:
     std::thread m_thread;
 
     hub::net::ClientSocket m_socket;
 //    std::mutex m_mtxSocket;
+
+    bool m_viewerClosed = false;
 
     friend class Server;
 };

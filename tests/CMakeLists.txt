@@ -38,10 +38,10 @@ enable_testing()
 foreach(testFile ${test_srcs})
 
 #  if("${testFile}" MATCHES "test-server*|test-client*")
-  if("${testFile}" MATCHES "test-server*")
-#    message(STATUS ${testFile})
-    continue()
-  endif()
+#  if("${testFile}" MATCHES "test-server*")
+##    message(STATUS ${testFile})
+#    continue()
+#  endif()
 
     get_filename_component(test ${testFile} NAME_WE)
 

@@ -3,6 +3,8 @@
 #include <mutex>
 #include <string>
 
+#include <net/ClientSocket.hpp>
+
 
 namespace hub {
 namespace server {
@@ -25,7 +27,7 @@ private:
 
     void setServer( Server* newServer );
 
-    virtual void end() = 0;
+    virtual void end(net::ClientSocket::Message message) = 0;
 
 //  protected:
   private:

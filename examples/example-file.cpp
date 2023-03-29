@@ -77,7 +77,8 @@ hub::io::File inputFile( std::fstream( "file.txt", std::ios::binary | std::ios::
         {
             hub::SensorSpec sensorSpec( "sensorName", { { { 1 }, hub::Format::BGR8 } }, metaData );
             hub::OutputSensor outputSensor(
-                sensorSpec, hub::io::OutputStream( "streamName", hub::net::ClientSocket() ) );
+//                sensorSpec, hub::io::OutputStream( "streamName", hub::net::ClientSocket() ) );
+                sensorSpec, "streamName", hub::net::ClientSocket() );
             hub::InputSensor inputSensor(
                 hub::io::InputStream( "streamName", hub::net::ClientSocket() ) );
         }

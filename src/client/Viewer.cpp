@@ -21,6 +21,8 @@
 namespace hub {
 namespace client {
 
+namespace viewer {
+
 class Stream
 {
   public:
@@ -97,6 +99,8 @@ class Stream
                            //                           << m_syncStreamName
                            << "'" << m_streamName << "' disconnected, catch exception "
                            << e.what() );
+//                stopStream();
+//                m_inputSensor->getInput().close();
             }
 
             if ( m_stopThread ) {
@@ -170,6 +174,8 @@ class Stream
     //    void startStream();
     //    void stopStream();
 }; // end class Stream
+
+} // end namespace viewer
 
 Viewer::Viewer(
     std::function<bool( const char* streamName, const SensorSpec& )> onNewStreamer,
@@ -271,7 +277,7 @@ Viewer::Viewer(
                             //                            m_streams.end() ); Stream newStream(*this,
                             //                            streamName, sensorSpec);
                             m_streams[streamName] =
-                                std::make_unique<Stream>( *this, streamName, sensorSpec );
+                                std::make_unique<viewer::Stream>( *this, streamName, sensorSpec );
 
                             //                            auto& newStream = *m_streams.at(
                             //                            streamName ); newStream.m_streamId       =
@@ -460,11 +466,21 @@ Viewer::Viewer(
 
                     } break;
 
+//                    case net::ClientSocket::Message::VIEWER_CLIENT_CLOSED: {
+                    case net::ClientSocket::Message::SERVER_CLOSED: {
+                        DEBUG_MSG( "[Viewer] server closed" );
+                        assert( m_sock.isOpen() );
+                        m_sock.write(net::ClientSocket::Message::VIEWER_CLOSED);
+//                        m_sock.close();
+                        throw net::ClientSocket::exception( "[viewer] server closed" );
+                    }
+
                     case net::ClientSocket::Message::VIEWER_CLIENT_CLOSED: {
                         DEBUG_MSG( "[Viewer] viewer client closed" );
                         assert( m_sock.isOpen() );
-                        m_sock.close();
-                        throw net::ClientSocket::exception( "[viewer] client closed from server" );
+                        m_sock.write(net::ClientSocket::Message::VIEWER_CLOSED);
+//                        m_sock.close();
+                        throw net::ClientSocket::exception( "[viewer] viewer client closed" );
                     }
 
                     default: {

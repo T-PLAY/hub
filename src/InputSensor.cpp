@@ -42,10 +42,10 @@ InputSensor::InputSensor( InputSensor&& inputSensor ) :
 
 InputSensor::~InputSensor() {
     if ( !m_moved ) {
-        std::cout << "[InputSensor] ~InputSensor() " << this << " started" << std::endl;
+//        std::cout << "[InputSensor] ~InputSensor() " << this << " started" << std::endl;
         if ( m_input->isOpen() ) m_input->close();
         assert( !m_input->isOpen() );
-        std::cout << "[InputSensor] ~InputSensor() " << this << " ended" << std::endl;
+//        std::cout << "[InputSensor] ~InputSensor() " << this << " ended" << std::endl;
     }
 }
 

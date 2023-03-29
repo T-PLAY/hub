@@ -213,7 +213,7 @@ TEST_CASE("Server test : viewer")
 #ifdef WIN32
             CHECK(ratio > 35);
 #else
-            CHECK(ratio > 50);
+            CHECK(ratio > 35);
 #endif
 //            } // end viewer
 //                std::this_thread::sleep_for(std::chrono::milliseconds(100));

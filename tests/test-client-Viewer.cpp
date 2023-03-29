@@ -58,7 +58,7 @@ TEST_CASE( "Viewer" ) {
     // endConstruction
     // todo delay -> 0
 
-    constexpr int delay = 100;
+    constexpr int delay = 0;
 
     //    std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
 
@@ -70,7 +70,8 @@ TEST_CASE( "Viewer" ) {
         std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
 
         while ( !viewer.isConnected() ) {
-            std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+            std::cout << "[test] waiting for viewer connected" << std::endl;
+            std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
         }
 
         CHECK( viewer.isConnected() );
@@ -84,7 +85,8 @@ TEST_CASE( "Viewer" ) {
             hub::SensorSpec sensorSpec( "sensorName", { resolution } );
             hub::OutputSensor outputSensor(
                 sensorSpec,
-                hub::io::OutputStream( "streamName", hub::net::ClientSocket( ipv4, port ) ) );
+//                hub::io::OutputStream( "streamName", hub::net::ClientSocket( ipv4, port ) ) );
+                "streamName", hub::net::ClientSocket( ipv4, port ) );
             std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
 
             //            std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
