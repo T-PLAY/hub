@@ -89,6 +89,9 @@ void ViewerClient::notifyDelStreamer( const std::string& streamName,
     // void ViewerClient::notifyDelStreamer( const StreamerClient& streamer ) {
     //     std::cout << headerMsg() << "notifyDelStreamer " << streamer.getStreamName() <<
     //     std::endl;
+    if (m_viewerClosed)
+        return;
+
     try {
         //        m_mtxSocket.lock();
         m_socket.write( hub::net::ClientSocket::Message::DEL_STREAMER );

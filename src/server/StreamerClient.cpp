@@ -52,11 +52,11 @@ void InputStream::read( Acquisition& acq )
 {
     net::ClientSocket::Message mess;
     m_clientSocket.read( mess );
-        if ( mess == net::ClientSocket::Message::OUTPUT_STREAM_CLOSED ) {
-//            m_clientSocket.write(net::ClientSocket::Message::STREAMER_CLOSED);
-    //        m_outputStreamClosed = true;
-            throw net::Socket::exception( "output stream closed" );
-        }
+    if ( mess == net::ClientSocket::Message::OUTPUT_STREAM_CLOSED ) {
+        //            m_clientSocket.write(net::ClientSocket::Message::STREAMER_CLOSED);
+        //        m_outputStreamClosed = true;
+        throw net::Socket::exception( "output stream closed" );
+    }
     assert( mess == net::ClientSocket::Message::NEW_ACQ );
     Input::read( acq );
     //    return Input::getAcq();
@@ -70,7 +70,7 @@ void InputStream::close() {
     //    std::cout << "[InputStream] close()" << std::endl;
     //    m_clientSocket.write(net::ClientSocket::Message::CLOSED);
     //    assert(m_outputStreamClosed);
-    m_clientSocket.write(net::ClientSocket::Message::STREAMER_CLOSED);
+    m_clientSocket.write( net::ClientSocket::Message::STREAMER_CLOSED );
     //     std::this_thread::sleep_for( std::chrono::milliseconds( 200 ) );
     //    assert(m_clientSocket.isOpen());
     m_clientSocket.close();
@@ -99,7 +99,7 @@ StreamerClient::StreamerClient( Server* server,
 
     //    sock.read( m_streamName );
     //    assert( m_server != nullptr );
-//    const auto& streamers = m_server->getStreamers();
+    //    const auto& streamers = m_server->getStreamers();
     //    if ( streamers.find( m_streamName ) == streamers.end() ) {
     //        sock.write( hub::net::ClientSocket::Message::NOT_FOUND );
     //    }
@@ -113,15 +113,15 @@ StreamerClient::StreamerClient( Server* server,
     //    }
     //    assert( streamers.find( m_streamName ) == streamers.end() );
 
-    //    try {
-    m_inputSensor = std::make_unique<hub::InputSensor>( InputStream( std::move( sock ) ) );
-    //    }
-    //    catch ( hub::net::Socket::exception& e ) {
-    //        std::cout << headerMsg() << "InputSensor() : catch exception : " << e.what() <<
-    //        std::endl; return;
-    //    }
+    try {
+        m_inputSensor = std::make_unique<hub::InputSensor>( InputStream( std::move( sock ) ) );
+    }
+    catch ( hub::net::Socket::exception& e ) {
+        std::cout << headerMsg() << "InputSensor() : catch exception : " << e.what() << std::endl;
+        throw e;
+    }
 
-//    assert( streamers.find( m_streamName ) == streamers.end() );
+    //    assert( streamers.find( m_streamName ) == streamers.end() );
 
     std::cout << headerMsg() << "stream name = '" << m_streamName << "'" << std::endl;
 
@@ -163,11 +163,13 @@ StreamerClient::StreamerClient( Server* server,
             //            while ( m_server != nullptr ) {
             //            while ( true ) {
             while ( m_inputSensor->getInput().isOpen() ) {
-//                while (true) {
+                //                while (true) {
 
                 //                auto acq           = m_inputSensor->getAcquisition();
                 //                hub::Acquisition acq;
                 *m_inputSensor >> m_lastAcq;
+//                std::cout << headerMsg() << "save last acq " << m_lastAcq << std::endl;
+
                 //                m_lastAcq = m_inputSensor->getAcq();
                 //                std::cout << "[StreamerClient] get acq : " << acq << std::endl;
                 m_server->newAcquisition( this, m_lastAcq );
@@ -175,8 +177,10 @@ StreamerClient::StreamerClient( Server* server,
                 if ( m_isPackedStream ) {
                     auto it = m_packedAcqs.insert( m_lastAcq.clone() );
                     assert( m_packedAcqs.size() <= m_nAcq );
-                    std::cout << headerMsg() << "save acq "
-                              << std::distance( m_packedAcqs.begin(), it.first ) << std::endl;
+                    if (m_packedAcqs.size() == m_nAcq) {
+                        std::cout << headerMsg() << "save all " << m_nAcq << " acquisitions " << std::endl;
+//                              << std::distance( m_packedAcqs.begin(), it.first ) << std::endl;
+                    }
                 }
 
             } // while (true)
@@ -255,12 +259,12 @@ const hub::InputSensor& StreamerClient::getInputSensor() const {
 }
 
 void StreamerClient::end( net::ClientSocket::Message message ) {
-        InputStream& input = dynamic_cast<InputStream&>(m_inputSensor->getInput());
+    InputStream& input = dynamic_cast<InputStream&>( m_inputSensor->getInput() );
     //    if (input.m_clientSocket.isOpen()) {
-        assert(input.m_clientSocket.isOpen());
-        input.m_clientSocket.write(message);
-//        input.m_clientSocket.write( hub::net::ClientSocket::Message::STREAMER_CLOSED );
-//            std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+    assert( input.m_clientSocket.isOpen() );
+    input.m_clientSocket.write( message );
+    //        input.m_clientSocket.write( hub::net::ClientSocket::Message::STREAMER_CLOSED );
+    //            std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
     //    }
     //    m_inputSensor->getInput().close();
 }
