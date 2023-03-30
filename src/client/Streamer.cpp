@@ -115,6 +115,7 @@ class Stream
             //                    m_streams[streamName] = std::move( outputSensor );
 
             for ( const auto& acq : m_initAcqs ) {
+//                std::cout << "[Streamer:Stream] " << m_streamName << " init acq " << std::endl;
                 //            newAcquisition( acq );
                 *m_outputSensor << acq;
             }
@@ -131,14 +132,14 @@ class Stream
 
         assert( m_streamer.m_serverConnected );
 
-        assert(m_outputSensor != nullptr);
+        assert( m_outputSensor != nullptr );
         //        m_mtxOutputSensor.lock();
         try {
             *m_outputSensor << acquisition;
         }
         catch ( std::exception& ex ) {
             m_outputSensor.release();
-            m_outputSensor.reset(nullptr);
+            m_outputSensor.reset( nullptr );
             throw ex;
         }
 
@@ -254,18 +255,20 @@ void Streamer::addStream( const std::string& streamName,
 void Streamer::newAcquisition( const std::string& streamName, const Acquisition& acquisition ) {
 
     //    std::cout << "[Streamer] newAcquisition" << std::endl;
-    assert( m_serverConnected );
+    //    assert( m_serverConnected );
+    if ( m_serverConnected ) {
 
-    assert( m_streams.find( streamName ) != m_streams.end() );
+        assert( m_streams.find( streamName ) != m_streams.end() );
 
-    auto& stream = m_streams.at( streamName );
-    try {
-        stream->newAcquisition( acquisition );
-    }
-    catch ( std::exception& ex ) {
-        std::cout << "[Streamer] loosing server connection " << std::endl;
-        std::cout << "[Streamer] catch exception : " << ex.what() << std::endl;
-        onServerDisconnected();
+        auto& stream = m_streams.at( streamName );
+        try {
+            stream->newAcquisition( acquisition );
+        }
+        catch ( std::exception& ex ) {
+            std::cout << "[Streamer] loosing server connection " << std::endl;
+            std::cout << "[Streamer] catch exception : " << ex.what() << std::endl;
+            onServerDisconnected();
+        }
     }
 }
 
@@ -296,35 +299,38 @@ void Streamer::waitingForServer() {
 
     if ( m_thread.joinable() ) m_thread.join();
     assert( !m_thread.joinable() );
-    assert( !m_serverConnected );
+    //    assert( !m_serverConnected );
+    if ( !m_serverConnected ) {
 
-    m_thread = std::thread( [this]() {
-        while ( !m_exitThread && !m_serverConnected ) {
-            try {
-                assert( !m_streams.empty() );
-                for ( const auto& pair : m_streams ) {
-                    auto& stream = pair.second;
-                    //                for ( auto& stream : m_streams ) {
-                    stream->init();
+        m_thread = std::thread( [this]() {
+            while ( !m_exitThread && !m_serverConnected ) {
+                try {
+                    assert( !m_streams.empty() );
+                    for ( const auto& pair : m_streams ) {
+                        auto& stream = pair.second;
+                        //                for ( auto& stream : m_streams ) {
+                        stream->init();
+                    }
+                    onServerConnected();
                 }
-                onServerConnected();
+                catch ( std::exception& ex ) {
+                    std::cout << "[Streamer] unable to init streams, server is not running "
+                              << std::endl;
+                    std::cout << "[Streamer] catch exception : " << ex.what() << std::endl;
+                    //                    const auto& streamName = pair.first;
+                    //                    const auto& initAcqs   = pair.second;
+                    //                    if ( !initAcqs.empty() ) {
+                    //                        assert( initAcqs.size() > 0 );
+                    //                        newAcquisition( streamName, initAcqs.front().clone()
+                    //                        );
+                    //                    }
+                    //                }
+                    std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
+                }
             }
-            catch ( std::exception& ex ) {
-                std::cout << "[Streamer] unable to init streams, server is not running "
-                          << std::endl;
-                std::cout << "[Streamer] catch exception : " << ex.what() << std::endl;
-                //                    const auto& streamName = pair.first;
-                //                    const auto& initAcqs   = pair.second;
-                //                    if ( !initAcqs.empty() ) {
-                //                        assert( initAcqs.size() > 0 );
-                //                        newAcquisition( streamName, initAcqs.front().clone() );
-                //                    }
-                //                }
-                std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
-            }
-        }
-        std::cout << "[Streamer] waiting for server ended " << std::endl;
-    } );
+            std::cout << "[Streamer] waiting for server ended " << std::endl;
+        } );
+    }
 }
 
 Streamer::~Streamer() {

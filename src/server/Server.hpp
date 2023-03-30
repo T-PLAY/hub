@@ -88,7 +88,8 @@ class SRC_API Server
     std::thread m_thread;
 
     std::map<std::string, StreamerClient*> m_streamName2streamer;
-//    std::mutex m_mtxStreamName2streamer;
+    mutable std::mutex m_mtxStreamName2streamer;
+
     std::map<std::string, std::list<StreamViewerClient*>> m_streamName2streamViewers;
     std::mutex m_mtxSreamName2streamViewers;
 

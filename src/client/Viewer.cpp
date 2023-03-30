@@ -88,7 +88,7 @@ class Stream
                     hub::Acquisition acq;
                     //                    auto acq = m_inputSensor->getAcq();
                     *m_inputSensor >> acq;
-                    //                std::cout << "[Viewer][Stream] getAcq : " << acq << std::endl;
+//                std::cout << "[Viewer][Stream] getAcq : " << acq << std::endl;
                     //                    m_viewer.m_onNewAcquisition( m_streamId.c_str(), acq );
                     m_viewer.m_onNewAcquisition( m_streamName.c_str(), acq );
                 }

@@ -80,8 +80,8 @@ StreamerClient( Server* server, int iClient, hub::net::ClientSocket&& sock, std:
 //    std::map<std::string, std::map<long long, std::shared_ptr<hub::Acquisition>>>
 //        m_streamName2saveAcqs;
 
-    bool m_isPackedStream = false;
     int m_nAcq = 0;
+    bool m_isPackedStream = false;
     std::set<hub::Acquisition> m_packedAcqs;
 
 //  public:
