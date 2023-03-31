@@ -265,7 +265,7 @@ void ClientSocket::close() {
 //    std::cout << "[ClientSocket] close()" << std::endl;
     //    if ( !isOpen() ) { throw Socket::exception( "unable to close non openned socket" ); }
     //    else {
-    assert( isOpen() );
+    assert( isOpen() ); // todo fix
     //    if (isOpen()) {
     net::utils::closeSocket( m_fdSock );
     m_connected = false;
