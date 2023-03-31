@@ -126,7 +126,7 @@ static constexpr int s_format2nByte[static_cast<int>( Format::COUNT )] = {
     0,       // NONE
     2,       // Z16
     2,       // DISPARITY16
-    4,       // XYZ32F
+    3 * 4,   // XYZ32F
     4,       // YUYV
     3,       // RGB8
     3,       // BGR8
