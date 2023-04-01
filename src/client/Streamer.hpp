@@ -90,6 +90,7 @@ class SRC_API Streamer
 
     std::thread m_thread;
 
+
     std::map<std::string, std::unique_ptr<streamer::Stream>> m_streams;
 //    std::map<std::string, SensorSpec> m_streamName2sensorSpec;
 //    std::map<std::string, std::unique_ptr<OutputSensor>> m_streamName2outputSensor;
@@ -97,6 +98,7 @@ class SRC_API Streamer
 //    std::map<std::string, std::chrono::time_point<std::chrono::high_resolution_clock>>
 //        m_streamName2lastLogout;
 //    bool m_stopThread = false;
+
 
 
     const std::string m_ipv4;
