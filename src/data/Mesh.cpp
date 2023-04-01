@@ -155,18 +155,20 @@ std::string Mesh::to_string() const
 {
 //    std::string str = "[";
 //    return
-    size_t nTriangle = 0;
-    for ( size_t s = 0; s < m_shapes.size(); s++ ) {
-        const auto & shape = m_shapes.at(s);
-//        str += shape.name + ": nb points = " + std::to_string(shape.points.indices.size());
-        const int nFace = shape.mesh.num_face_vertices.size();
-        nTriangle += nFace;
-//        str += shape.name + ": nTriangle = " + std::to_string(nFace);
-//        if (s != m_shapes.size() - 1) {
-//            str += ", ";
-//        }
-    }
-    std::string str = "[nShape = " + std::to_string(m_shapes.size()) + ", nTriangle = " + std::to_string(nTriangle) + "]";
+//    size_t nTriangle = 0;
+    size_t nVertice = m_attrib.vertices.size() / 3;
+//    for ( size_t s = 0; s < m_shapes.size(); s++ ) {
+//        const auto & shape = m_shapes.at(s);
+////        str += shape.name + ": nb points = " + std::to_string(shape.points.indices.size());
+//        const int nFace = shape.mesh.num_face_vertices.size();
+//        nTriangle += nFace;
+////        str += shape.name + ": nTriangle = " + std::to_string(nFace);
+////        if (s != m_shapes.size() - 1) {
+////            str += ", ";
+////        }
+//    }
+//    std::string str = "[nShape = " + std::to_string(m_shapes.size()) + ", nTriangle = " + std::to_string(nTriangle) + "]";
+    std::string str = "[nShape = " + std::to_string(m_shapes.size()) + ", nVertice = " + std::to_string(nVertice) + "]";
 //    str += "]";
     return str;
 }
