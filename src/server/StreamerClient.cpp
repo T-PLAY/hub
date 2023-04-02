@@ -178,7 +178,7 @@ StreamerClient::StreamerClient( Server* server,
                     auto it = m_packedAcqs.insert( m_lastAcq.clone() );
                     assert( m_packedAcqs.size() <= m_nAcq );
                     if (m_packedAcqs.size() == m_nAcq) {
-                        std::cout << headerMsg() << "save all " << m_nAcq << " acquisitions " << std::endl;
+                        std::cout << headerMsg() << "updating saved acq " << std::distance(m_packedAcqs.begin(), it.first) << "/" << m_nAcq << std::endl;
 //                              << std::distance( m_packedAcqs.begin(), it.first ) << std::endl;
                     }
                 }
