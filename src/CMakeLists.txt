@@ -11,7 +11,7 @@ endif()
 option(HUB_BUILD_STATIC_LIBRARY "Build static library" OFF)
 
 file(GLOB_RECURSE sources ${HUB_SOURCE_DIR}/*.cpp)
-file(GLOB_RECURSE headers ${HUB_INCLUDE_DIR}/*.hpp ${HUB_INCLUDE_DIR}/*.inl)
+file(GLOB_RECURSE headers ${HUB_INCLUDE_DIR}/*.hpp ${HUB_INCLUDE_DIR}/*.h ${HUB_INCLUDE_DIR}/*.inl)
 
 list(APPEND SOURCE_FILES ${sources} ${headers})
 
@@ -99,6 +99,7 @@ install(
     DESTINATION include
     FILES_MATCHING
     PATTERN "*.hpp"
+    PATTERN "*.h"
     PATTERN "*.inl")
 
 install(
