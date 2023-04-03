@@ -265,7 +265,7 @@ inline void Input::read( T& t ) {
     std::cout << "[Input] read(T) : " << typeid( T ).name() << " ("
               << boost::typeindex::type_id<T>().pretty_name() << ") '" << t << "'" << std::endl;
 #    else
-    std::cout << "[Input] read(T) : '" << t << "' : end" << std::endl;
+    std::cout << "[Input] read(T) : " << typeid(T).name() << " '" << t << "'" << std::endl;
 #    endif
 #endif
 }

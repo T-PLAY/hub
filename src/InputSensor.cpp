@@ -36,7 +36,7 @@ namespace hub {
 //}
 
 InputSensor::InputSensor( InputSensor&& inputSensor ) :
-    Sensor( inputSensor.m_spec ), m_input( std::move( inputSensor.m_input ) ) {
+    Sensor( std::move(inputSensor.m_spec) ), m_input( std::move( inputSensor.m_input ) ) {
     inputSensor.m_moved = true;
 }
 
@@ -150,6 +150,8 @@ void InputSensor::operator>>( Acquisition& acq ) {
 
     //    assert(acquisition.m_measures.empty());
     //    assert(acquisition.m_size == 0);
+
+    assert(m_input->isOpen());
 
     *m_input >> acq;
     //       m_input->read(acq);

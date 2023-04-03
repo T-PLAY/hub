@@ -130,7 +130,8 @@ void Output::write( const Any& any ) {
 
 #ifdef DEBUG_OUTPUT
 #    ifdef WIN32
-    std::cout << "[Output] write(std::any) : '" << any.type().raw_name() << "'" << std::endl;
+//    std::cout << "[Output] write(std::any) : '" << any.type().raw_name() << "'" << std::endl;
+    std::cout << "[Output] write(std::any) : '" << any << "'" << std::endl;
 #    else
     std::cout << "[Output] write(std::any) : '" << any << "'" << std::endl;
 #    endif
