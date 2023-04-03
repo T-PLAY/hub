@@ -156,6 +156,10 @@ class SRC_API Output
     ///
     virtual void write( const Acquisition& acq );
 
+#ifdef ARCH_X86
+    void write(size_t size) = delete; // non compatible format 32/64 bit
+#endif
+
            ////////////////////////////////////////////////////////////////////////////
 };
 
@@ -178,6 +182,7 @@ inline void Output::write( const T& t ) {
     assert( isOpen() );
 //    if (! isOpen())
 //        throw std::runtime_error("[Output] closed, unable to write");
+//    assert(sizeof(int) == 4);
 
     write( reinterpret_cast<const unsigned char*>( &t ), sizeof( T ) );
 

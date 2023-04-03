@@ -87,7 +87,6 @@ class SRC_API InputStream : public Input
     //    ///
     //    Acquisition getAcq() override;
     void read( Acquisition& acq ) override;
-
     void read( SensorSpec& sensorSpec ) override;
 
   private:
@@ -114,6 +113,7 @@ inline bool InputStream::isOpen() const {
 inline void InputStream::read( unsigned char* data, size_t len ) {
     m_clientSocket.read( data, len );
 }
+
 
 inline void InputStream::close() {
     std::cout << "[InputStream] close() started" << std::endl;

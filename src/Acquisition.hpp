@@ -202,7 +202,7 @@ class SRC_API Acquisition
     long long m_start = 0; // microseconds
     long long m_end = 0; // microseconds
     data::Measures m_measures;
-    size_t m_size = 0;
+    uint64_t m_size = 0;
 
     friend class io::Input;
     friend class io::Output;

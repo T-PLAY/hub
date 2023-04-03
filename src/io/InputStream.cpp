@@ -62,8 +62,10 @@ InputStream::~InputStream() {
 }
 
 void InputStream::read( Acquisition& acq ) {
+//    std::cout << "[InputStream] read(Acq&) started" << std::endl;
     assert(! m_readAcqWaiting);
     m_readAcqWaiting = true;
+
     //{
     //    m_mtxRead.lock();
     assert( !m_streamerClosed );
@@ -89,6 +91,7 @@ void InputStream::read( Acquisition& acq ) {
         m_readAcqWaiting         = false;
         throw new std::exception( ex );
     }
+//    std::cout << "[InputStream] read(Acq&) message : " << message << std::endl;
 
     //    if (message == net::ClientSocket::Message::CLOSE) {
     //        throw net::ClientSocket::exception("[InputStream] streamer disconnected from server");
@@ -142,6 +145,7 @@ void InputStream::read( Acquisition& acq ) {
 
     m_readAcqWaiting = false;
     //    m_mtxRead.unlock();
+//    std::cout << "[InputStream] read(Acq&) ended" << std::endl;
 }
 
 void InputStream::read( SensorSpec& sensorSpec ) {
