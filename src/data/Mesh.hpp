@@ -36,6 +36,7 @@ class SRC_API Mesh : public Measure
     void unpack();
     void pack();
 
+    std::string m_rawName;
     tinyobj::attrib_t m_attrib;
     std::vector<tinyobj::shape_t> m_shapes;
     std::vector<tinyobj::material_t> m_materials;
