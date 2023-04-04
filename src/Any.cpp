@@ -259,6 +259,11 @@ std::string Any::to_string() const {
     return ret;
 }
 
+std::string Any::value_to_string() const
+{
+    return anyValue2string(*this);
+}
+
 bool Any::operator==( const Any& any ) const {
     assert( m_hasValue );
     assert( m_type == any.m_type );

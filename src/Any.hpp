@@ -141,6 +141,8 @@ class SRC_API Any
     ///
     std::string to_string() const;
 
+    std::string value_to_string() const;
+
     ///
     /// \brief operator ==
     /// \param any

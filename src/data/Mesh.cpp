@@ -48,7 +48,10 @@ Mesh::Mesh( const std::string& fileObjPath ) :
     std::string rawname = fileObjPath.substr(0, lastindex);
     const std::string fileMtlPath = rawname + ".mtl";
 
+    size_t lastindex2 = fileObjPath.find_last_of("/");
+    std::string rawname2 = fileObjPath.substr(lastindex2 + 1, lastindex - lastindex2 - 1);
 
+//    m_rawName = rawname;
     //    std::cout << "[Mesh] dirPath = " << dirPath << std::endl;
 
     std::ifstream inFileObj;
@@ -68,10 +71,12 @@ Mesh::Mesh( const std::string& fileObjPath ) :
     std::vector<char> buff;
 
     io::Memory<decltype( buff )> memory( buff );
+//    memory.write(rawname2);
     memory.write(fileObjTxt);
     memory.write(fileMtlTxt);
 
-    assert(buff.size() == fileObjTxt.size() + fileMtlTxt.size() + 8);
+    assert(buff.size() == fileObjTxt.size() + fileMtlTxt.size() + 8 );
+//    assert(buff.size() == fileObjTxt.size() + fileMtlTxt.size() + 8 + rawname2.size() + 4);
     m_data = new unsigned char[buff.size()];
     m_size = buff.size();
     memcpy(m_data, buff.data(), m_size);
@@ -85,6 +90,7 @@ void Mesh::unpack()
     buff.insert(buff.begin(), m_data, m_data + m_size);
     io::Memory<decltype( buff )> memory( buff );
 
+//    memory.read(m_rawName);
     std::string fileObjTxtReaded;
     memory.read(fileObjTxtReaded);
     std::string fileMtlTxtReaded;
@@ -168,7 +174,7 @@ std::string Mesh::to_string() const
 ////        }
 //    }
 //    std::string str = "[nShape = " + std::to_string(m_shapes.size()) + ", nTriangle = " + std::to_string(nTriangle) + "]";
-    std::string str = "[nShape = " + std::to_string(m_shapes.size()) + ", nVertice = " + std::to_string(nVertice) + "]";
+    std::string str = "['" + m_rawName + "', nShape = " + std::to_string(m_shapes.size()) + ", nVertice = " + std::to_string(nVertice) + "]";
 //    str += "]";
     return str;
 }
