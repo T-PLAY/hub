@@ -9,7 +9,7 @@
 namespace hub {
 namespace data {
 
-Mesh_::Mesh_(const Measure &measure)
+Mesh::Mesh(const Measure &measure)
     : Measure( measure.getData(), measure.getSize(), Resolution { { 1 }, Format::MESH } ) {
 //    assert( measure.getSize() == 64 );
 //    memcpy( (unsigned char*)&m_x, m_data, m_size );
@@ -19,7 +19,7 @@ Mesh_::Mesh_(const Measure &measure)
     unpack();
 }
 
-Mesh_::Mesh_( const Mesh_& mesh ) :
+Mesh::Mesh( const Mesh& mesh ) :
     Measure( new unsigned char[mesh.m_size],
              mesh.m_size,
              Resolution { { 1 }, Format::MESH },
@@ -33,7 +33,7 @@ Mesh_::Mesh_( const Mesh_& mesh ) :
 
 
 
-Mesh_::Mesh_( const std::string& fileObjPath ) :
+Mesh::Mesh( const std::string& fileObjPath ) :
     Measure( (unsigned char*)nullptr, 0, Resolution { { 1 }, Format::MESH } ) {
 
     //    std::filesystem::path path(fileObjPath);
@@ -45,14 +45,14 @@ Mesh_::Mesh_( const std::string& fileObjPath ) :
     //    std::string dirPath = ( slash != std::string::npos ) ? fileObjPath.substr( 0, slash ) :
     //    fileObjPath;
     size_t lastindex = fileObjPath.find_last_of(".");
-    std::string rawname = fileObjPath.substr(0, lastindex);
-    const std::string fileMtlPath = rawname + ".mtl";
+    std::string filename = fileObjPath.substr(0, lastindex);
+    const std::string fileMtlPath = filename + ".mtl";
 
     size_t lastindex2 = fileObjPath.find_last_of("/");
-    std::string rawname2 = fileObjPath.substr(lastindex2 + 1, lastindex - lastindex2 - 1);
+    std::string rawname = fileObjPath.substr(lastindex2 + 1, lastindex - lastindex2 - 1);
 
 //    m_rawName = rawname;
-    //    std::cout << "[Mesh_] dirPath = " << dirPath << std::endl;
+    //    std::cout << "[Mesh] dirPath = " << dirPath << std::endl;
 
     std::ifstream inFileObj;
     inFileObj.open( fileObjPath );
@@ -71,12 +71,12 @@ Mesh_::Mesh_( const std::string& fileObjPath ) :
     std::vector<char> buff;
 
     io::Memory<decltype( buff )> memory( buff );
-//    memory.write(rawname2);
+    memory.write(rawname);
     memory.write(fileObjTxt);
     memory.write(fileMtlTxt);
 
-    assert(buff.size() == fileObjTxt.size() + fileMtlTxt.size() + 8 );
-//    assert(buff.size() == fileObjTxt.size() + fileMtlTxt.size() + 8 + rawname2.size() + 4);
+//    assert(buff.size() == fileObjTxt.size() + fileMtlTxt.size() + 8 );
+    assert(buff.size() == fileObjTxt.size() + fileMtlTxt.size() + 8 + rawname.size() + 4);
     m_data = new unsigned char[buff.size()];
     m_size = buff.size();
     memcpy(m_data, buff.data(), m_size);
@@ -84,13 +84,13 @@ Mesh_::Mesh_( const std::string& fileObjPath ) :
     unpack();
 }
 
-void Mesh_::unpack()
+void Mesh::unpack()
 {
     std::vector<char> buff;
     buff.insert(buff.begin(), m_data, m_data + m_size);
     io::Memory<decltype( buff )> memory( buff );
 
-//    memory.read(m_rawName);
+    memory.read(m_rawName);
     std::string fileObjTxtReaded;
     memory.read(fileObjTxtReaded);
     std::string fileMtlTxtReaded;
@@ -123,14 +123,14 @@ void Mesh_::unpack()
 
 }
 
-void Mesh_::pack()
+void Mesh::pack()
 {
 
 }
 
 
 
-//Mesh_::Mesh_(const std::string &objTxt, const std::string &mtlTxt)
+//Mesh::Mesh(const std::string &objTxt, const std::string &mtlTxt)
 //    : Measure( (unsigned char*)nullptr, 0, Resolution { { 1 }, Format::MESH } )
 //{
 //    tinyobj::ObjReader reader;
@@ -157,7 +157,7 @@ void Mesh_::pack()
 //    memcpy(m_data, buff.data(), m_size);
 //}
 
-std::string Mesh_::to_string() const
+std::string Mesh::to_string() const
 {
 //    std::string str = "[";
 //    return
@@ -179,7 +179,7 @@ std::string Mesh_::to_string() const
     return str;
 }
 
-std::ostream& operator<<( std::ostream& os, const Mesh_& mesh ) {
+std::ostream& operator<<( std::ostream& os, const Mesh& mesh ) {
     os << mesh.to_string();
     return os;
 }
