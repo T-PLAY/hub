@@ -9,7 +9,7 @@
 namespace hub {
 namespace data {
 
-Mesh::Mesh(const Measure &measure)
+Mesh_::Mesh_(const Measure &measure)
     : Measure( measure.getData(), measure.getSize(), Resolution { { 1 }, Format::MESH } ) {
 //    assert( measure.getSize() == 64 );
 //    memcpy( (unsigned char*)&m_x, m_data, m_size );
@@ -19,7 +19,7 @@ Mesh::Mesh(const Measure &measure)
     unpack();
 }
 
-Mesh::Mesh( const Mesh& mesh ) :
+Mesh_::Mesh_( const Mesh_& mesh ) :
     Measure( new unsigned char[mesh.m_size],
              mesh.m_size,
              Resolution { { 1 }, Format::MESH },
@@ -33,7 +33,7 @@ Mesh::Mesh( const Mesh& mesh ) :
 
 
 
-Mesh::Mesh( const std::string& fileObjPath ) :
+Mesh_::Mesh_( const std::string& fileObjPath ) :
     Measure( (unsigned char*)nullptr, 0, Resolution { { 1 }, Format::MESH } ) {
 
     //    std::filesystem::path path(fileObjPath);
@@ -52,7 +52,7 @@ Mesh::Mesh( const std::string& fileObjPath ) :
     std::string rawname2 = fileObjPath.substr(lastindex2 + 1, lastindex - lastindex2 - 1);
 
 //    m_rawName = rawname;
-    //    std::cout << "[Mesh] dirPath = " << dirPath << std::endl;
+    //    std::cout << "[Mesh_] dirPath = " << dirPath << std::endl;
 
     std::ifstream inFileObj;
     inFileObj.open( fileObjPath );
@@ -84,7 +84,7 @@ Mesh::Mesh( const std::string& fileObjPath ) :
     unpack();
 }
 
-void Mesh::unpack()
+void Mesh_::unpack()
 {
     std::vector<char> buff;
     buff.insert(buff.begin(), m_data, m_data + m_size);
@@ -123,14 +123,14 @@ void Mesh::unpack()
 
 }
 
-void Mesh::pack()
+void Mesh_::pack()
 {
 
 }
 
 
 
-//Mesh::Mesh(const std::string &objTxt, const std::string &mtlTxt)
+//Mesh_::Mesh_(const std::string &objTxt, const std::string &mtlTxt)
 //    : Measure( (unsigned char*)nullptr, 0, Resolution { { 1 }, Format::MESH } )
 //{
 //    tinyobj::ObjReader reader;
@@ -157,7 +157,7 @@ void Mesh::pack()
 //    memcpy(m_data, buff.data(), m_size);
 //}
 
-std::string Mesh::to_string() const
+std::string Mesh_::to_string() const
 {
 //    std::string str = "[";
 //    return
@@ -179,7 +179,7 @@ std::string Mesh::to_string() const
     return str;
 }
 
-std::ostream& operator<<( std::ostream& os, const Mesh& mesh ) {
+std::ostream& operator<<( std::ostream& os, const Mesh_& mesh ) {
     os << mesh.to_string();
     return os;
 }

@@ -15,7 +15,7 @@ namespace hub {
 
 namespace data {
 class Mat4;
-class Mesh;
+class Mesh_;
 }
 
 ///
@@ -81,7 +81,7 @@ class SRC_API Any
     ///
     Any( const data::Mat4& value );
 
-    Any( const data::Mesh& value );
+    Any( const data::Mesh_& value );
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -115,7 +115,7 @@ class SRC_API Any
     ///
     const data::Mat4& getMat4() const;
 
-    const data::Mesh &getMesh() const;
+    const data::Mesh_ &getMesh() const;
 
     ///
     /// \brief has_value
@@ -175,7 +175,7 @@ class SRC_API Any
     std::string m_std_string     = "";
     const char* m_const_char_ptr = nullptr;
     hub::data::Mat4* m_mat4      = nullptr;
-    hub::data::Mesh* m_mesh = nullptr;
+    hub::data::Mesh_* m_mesh = nullptr;
 
     // T m_value;
 };

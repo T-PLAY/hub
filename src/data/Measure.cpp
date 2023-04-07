@@ -102,7 +102,7 @@ std::ostream& operator<<( std::ostream& os, const Measure& measure ) {
 
     case Format::MESH: {
         //        const data::Dof6 & dof6 = dynamic_cast<const data::Dof6&>(measure);
-        const data::Mesh mesh(measure);
+        const data::Mesh_ mesh(measure);
         os << mesh;
         break; }
 
