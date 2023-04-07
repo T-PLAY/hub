@@ -168,7 +168,7 @@ void Input::read( Any& any ) {
         data::Measure measure;
         read(measure);
 
-        any = Any( data::Mesh(measure) );
+        any = Any( data::Mesh_(measure) );
 
     } break;
 #ifndef COVERAGE

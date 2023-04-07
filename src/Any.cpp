@@ -38,7 +38,7 @@ Any::Any( const Any& any ) : m_type( any.m_type ), m_hasValue( any.m_hasValue ) 
     } break;
 
     case Any::Type::MESH: {
-        m_mesh = new data::Mesh( *any.m_mesh );
+        m_mesh = new data::Mesh_( *any.m_mesh );
     } break;
 
     default:
@@ -118,8 +118,8 @@ Any::Any( const data::Mat4& value ) : m_mat4( new data::Mat4( value ) ) {
     m_hasValue = true;
 }
 
-Any::Any(const data::Mesh &value)
-    : m_mesh(new data::Mesh(value))
+Any::Any(const data::Mesh_ &value)
+    : m_mesh(new data::Mesh_(value))
 {
     assert( m_type == Type::NONE );
     assert( !m_hasValue );
@@ -159,7 +159,7 @@ const data::Mat4& Any::getMat4() const {
     return *m_mat4;
 }
 
-const data::Mesh &Any::getMesh() const
+const data::Mesh_ &Any::getMesh() const
 {
     assert( m_type == Type::MESH );
     assert(m_mesh != nullptr);
