@@ -23,6 +23,8 @@ class SRC_API Mat4 : public Measure
     ///
     Mat4( const Mat4& mat4 );
 
+//    Mat4 & operator=(Mat4 && mat4) = default;
+
     ///
     /// \brief Mat4
     /// is the 4x4 transformation matrix (row-major).
