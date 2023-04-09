@@ -70,6 +70,12 @@ bool Measure::operator!=( const Measure& measure ) const {
     return !( *this == measure );
 }
 
+//void Measure::setData(unsigned char *newData, uint64_t size )
+//{
+//    assert(size == m_size);
+//    m_data = newData;
+//}
+
 // bool Measure::ownData() const
 //{
 //     return m_ownData;

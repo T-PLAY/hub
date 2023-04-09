@@ -150,6 +150,8 @@ class SRC_API Measure
     uint64_t getSize() const;
 
 
+//    void setData(unsigned char *newData, uint64_t size);
+
   protected:
 
     ///
