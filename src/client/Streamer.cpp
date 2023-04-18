@@ -100,7 +100,7 @@ class Stream
 
     void init() {
 
-        std::cout << "[Stream] " << m_streamName << " init start " << std::endl;
+//        std::cout << "[Stream] " << m_streamName << " init start " << std::endl;
 
         assert( m_outputSensor == nullptr );
 
@@ -155,7 +155,7 @@ class Stream
             throw ex;
         }
 
-        std::cout << "[Stream] " << m_streamName << " init end " << std::endl;
+        std::cout << "[Stream] " << m_streamName << " inited " << std::endl;
     }
 
     void newAcquisition( const Acquisition& acquisition ) {
@@ -283,7 +283,8 @@ Streamer::Streamer( const std::string& ipv4, int port ) :
 void Streamer::addStream( const std::string& streamName,
                           const SensorSpec& sensorSpec,
                           std::vector<Acquisition>&& initAcqs ) {
-    std::cout << "[Streamer] addStream " << streamName << " started" << std::endl;
+//    std::cout << "[Streamer] addStream " << streamName << " started" << std::endl;
+    std::cout << "[Streamer] addStream '" << streamName << "'" << std::endl;
     assert( m_streams.find( streamName ) == m_streams.end() );
 
     //    streamer::Stream stream( *this, streamName, sensorSpec, std::move( initAcqs ) );
@@ -293,7 +294,7 @@ void Streamer::addStream( const std::string& streamName,
 
     if ( !m_serverConnected ) { waitingForServer(); }
 
-    std::cout << "[Streamer] addStream " << streamName << " ended" << std::endl;
+//    std::cout << "[Streamer] addStream " << streamName << " ended" << std::endl;
 }
 
 void Streamer::newAcquisition( const std::string& streamName, const Acquisition& acquisition ) {
@@ -322,7 +323,7 @@ bool Streamer::isConnected() const {
 
 void Streamer::onServerConnected() {
     assert( !m_serverConnected );
-    std::cout << "[Streamer] onServerConnected" << std::endl;
+    std::cout << "[Streamer] server connected" << std::endl;
     m_serverConnected = true;
 
     assert( m_thread.joinable() );
@@ -339,7 +340,7 @@ void Streamer::onServerDisconnected() {
 }
 
 void Streamer::waitingForServer() {
-    std::cout << "[Streamer] waiting for server started " << std::endl;
+    std::cout << "[Streamer] waiting for server ..." << std::endl;
 
     if ( m_thread.joinable() ) m_thread.join();
     assert( !m_thread.joinable() );
@@ -372,7 +373,7 @@ void Streamer::waitingForServer() {
                     std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
                 }
             }
-            std::cout << "[Streamer] waiting for server ended " << std::endl;
+//            std::cout << "[Streamer] waiting for server ended " << std::endl;
         } );
     }
 }
