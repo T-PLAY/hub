@@ -1,5 +1,25 @@
 cmake_minimum_required(VERSION 3.8)
 
+#include(FetchContent)
+#FetchContent_Declare(meshoptimizer
+#    GIT_REPOSITORY    https://github.com/zeux/meshoptimizer.git
+#    GIT_TAG v0.18 # or a later release
+#    GIT_PROGRESS TRUE
+##    SOURCE_DIR        ${CMAKE_CURRENT_SOURCE_DIR}/external/meshoptimizer
+##    SUBBUILD_DIR      subbuild
+##    BINARY_DIR        build
+#)
+##FetchContent_QUIET(meshoptimizer ON)
+##option(WITH_GFLAGS "" OFF)
+##option(WITH_GTEST "" OFF)
+##option(WITH_GMOCK "" OFF)
+##option(WITH_UNWIND "" OFF)
+##option(BUILD_SHARED_LIBS "" OFF)
+##option(BUILD_TESTING "" OFF)
+#FetchContent_MakeAvailable(meshoptimizer)
+
+
+
 option(HUB_ENABLE_COVERAGE "Collect coverage from hub library (required tests enable)" OFF)
 if(HUB_ENABLE_COVERAGE)
     include(CodeCoverage)
@@ -10,8 +30,10 @@ endif()
 
 option(HUB_BUILD_STATIC_LIBRARY "Build static library" OFF)
 
-file(GLOB_RECURSE sources ${HUB_SOURCE_DIR}/*.cpp)
-file(GLOB_RECURSE headers ${HUB_INCLUDE_DIR}/*.hpp ${HUB_INCLUDE_DIR}/*.h ${HUB_INCLUDE_DIR}/*.inl)
+file(GLOB_RECURSE sources ${HUB_SOURCE_DIR}/*.cpp ${HUB_EXTERNAL_DIR}/*.cpp)
+file(GLOB_RECURSE headers ${HUB_INCLUDE_DIR}/*.hpp ${HUB_INCLUDE_DIR}/*.h ${HUB_INCLUDE_DIR}/*.inl
+                          ${HUB_EXTERNAL_DIR}/*.hpp ${HUB_EXTERNAL_DIR}/*.h ${HUB_EXTERNAL_DIR}/*.inl
+)
 
 list(APPEND SOURCE_FILES ${sources} ${headers})
 
@@ -79,7 +101,8 @@ endif()
 #    find_package(Threads REQUIRED)
 #    set(REQUIRED_LIBS Threads::Threads)
 
-target_link_libraries(${PROJECT_NAME} ${REQUIRED_LIBS})
+target_link_libraries(${PROJECT_NAME} PUBLIC ${REQUIRED_LIBS})
+#target_link_libraries(${PROJECT_NAME} PUBLIC ${REQUIRED_LIBS} PRIVATE meshoptimizer)
 #set(CMAKE_CXX_STANDARD 11)
 #set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD ${CMAKE_CXX_STANDARD})
 
@@ -107,7 +130,17 @@ install(
     FILE ${PROJECT_NAME}Targets.cmake
     DESTINATION lib/cmake/${PROJECT_NAME})
 
-target_include_directories(${PROJECT_NAME} PUBLIC $<BUILD_INTERFACE:${HUB_INCLUDE_DIR}> $<INSTALL_INTERFACE:include>)
+target_include_directories(${PROJECT_NAME}
+    PUBLIC
+    $<BUILD_INTERFACE:${HUB_INCLUDE_DIR}>
+    $<INSTALL_INTERFACE:include>
+    PRIVATE
+    ${HUB_EXTERNAL_DIR}
+)
+
+#target_include_directories(${PROJECT_NAME} PRIVATE
+#    ${HUB_EXTERNAL_DIR}
+#)
 
 include(CMakePackageConfigHelpers)
 
