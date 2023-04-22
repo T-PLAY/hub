@@ -76,7 +76,7 @@ static void finalizeBufferViews(std::string& json, std::vector<BufferView>& view
 	}
 }
 
-static void printMeshStats(const std::vector<Mesh>& meshes, const char* name)
+void printMeshStats(const std::vector<Mesh>& meshes, const char* name)
 {
 	size_t mesh_triangles = 0;
 	size_t mesh_vertices = 0;

@@ -31,7 +31,8 @@ TEST_CASE( "heavy data" ) {
     hub::SensorSpec::MetaData metaData;
     metaData["parent"]            = "Polhemus Patriot (sensor 1)";
     const std::string m_assetPath = APPLICATIONS_DIR "data/assets/";
-    metaData["model"]             = hub::data::Mesh( m_assetPath + "Intel_RS_L500.obj" );
+    // todo mesh
+//    metaData["model"]             = hub::data::Mesh( "L500", m_assetPath + "Intel_RS_L500.obj" );
 
     hub::OutputSensor outputSensor( hub::SensorSpec { "L500", resolutions, metaData }, "L500", hub::net::ClientSocket(ipv4, port) );
 

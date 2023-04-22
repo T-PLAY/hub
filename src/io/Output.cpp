@@ -186,6 +186,11 @@ void Output::write( const Any& any ) {
     }
 }
 
+//void Output::write(uint64_t value)
+//{
+//    write(value);
+//}
+
 /////////////////////////////////////////////////////////////////////////////
 
 } // namespace io

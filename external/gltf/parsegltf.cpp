@@ -454,8 +454,8 @@ cgltf_data* parseGltf(const char* path, std::vector<Mesh>& meshes, std::vector<A
 		*error = getError(result, data);
 	else if (requiresExtension(data, "KHR_draco_mesh_compression"))
 		*error = "file requires Draco mesh compression support";
-	else if (requiresExtension(data, "EXT_meshopt_compression"))
-		*error = "file has already been compressed using gltfpack";
+    else if (requiresExtension(data, "EXT_meshopt_compression"))
+        *error = "file has already been compressed using gltfpack";
 	else if (requiresExtension(data, "KHR_texture_basisu"))
 		*error = "file requires BasisU texture support";
 	else if (requiresExtension(data, "EXT_mesh_gpu_instancing"))
@@ -484,4 +484,121 @@ cgltf_data* parseGltf(const char* path, std::vector<Mesh>& meshes, std::vector<A
 		freeFile(data);
 
 	return data;
+}
+
+
+cgltf_data* parseGlb(const char* path, std::vector<Mesh>& meshes, std::vector<Animation>& animations, const char** error)
+{
+    cgltf_data* data = 0;
+
+    cgltf_options options = {};
+    cgltf_result result = cgltf_parse_file(&options, path, &data);
+
+    if (data && !data->bin)
+        freeFile(data);
+
+    result = (result == cgltf_result_success) ? cgltf_load_buffers(&options, data, path) : result;
+    result = (result == cgltf_result_success) ? cgltf_validate(data) : result;
+
+    *error = NULL;
+
+    if (result != cgltf_result_success)
+        *error = getError(result, data);
+    else if (requiresExtension(data, "KHR_draco_mesh_compression"))
+        *error = "file requires Draco mesh compression support";
+    else if (requiresExtension(data, "EXT_meshopt_compression")) {
+        *error = "file has already been compressed using gltfpack";
+        *error = nullptr;
+    }
+    else if (requiresExtension(data, "KHR_texture_basisu"))
+        *error = "file requires BasisU texture support";
+    else if (requiresExtension(data, "EXT_mesh_gpu_instancing"))
+        *error = "file requires mesh instancing support";
+    else if (needsDummyBuffers(data))
+        *error = "buffer has no data";
+
+    if (*error)
+    {
+        cgltf_free(data);
+        return 0;
+    }
+
+//    if (requiresExtension(data, "KHR_mesh_quantization"))
+//        fprintf(stderr, "Warning: file uses quantized geometry; repacking may result in increased quantization error\n");
+
+    std::vector<std::pair<size_t, size_t> > mesh_remap;
+
+    parseMeshesGltf(data, meshes, mesh_remap);
+    parseMeshNodesGltf(data, meshes, mesh_remap);
+    parseAnimationsGltf(data, animations);
+
+    bool free_bin = freeUnusedBuffers(data);
+
+    if (data->bin && free_bin)
+        freeFile(data);
+
+    return data;
+}
+
+//cgltf_result cgltf_parse(
+//		const cgltf_options* options,
+//		const void* data,
+//		cgltf_size size,
+//		cgltf_data** out_data);
+
+//cgltf_result cgltf_load_buffer_base64(const cgltf_options* options, cgltf_size size, const char* base64, void** out_data);
+
+cgltf_data* readGlb(const char * inData, size_t size, std::vector<Mesh>& meshes, std::vector<Animation>& animations, const char** error)
+{
+    cgltf_data* data = 0;
+
+    cgltf_options options = {};
+//    cgltf_result result = cgltf_parse_file(&options, path, &data);
+    cgltf_result result = cgltf_parse(&options, inData, size, &data);
+
+    if (data && !data->bin)
+        freeFile(data);
+
+//    result = (result == cgltf_result_success) ? cgltf_load_buffers(&options, data, path) : result;
+//    result = (result == cgltf_result_success) ? cgltf_load_buffer_base64(&options, size, inData, (void**)&data) : result;
+    result = (result == cgltf_result_success) ? cgltf_validate(data) : result;
+
+    *error = NULL;
+
+    if (result != cgltf_result_success)
+        *error = getError(result, data);
+    else if (requiresExtension(data, "KHR_draco_mesh_compression"))
+        *error = "file requires Draco mesh compression support";
+    else if (requiresExtension(data, "EXT_meshopt_compression")) {
+        *error = "file has already been compressed using gltfpack";
+        *error = nullptr;
+    }
+    else if (requiresExtension(data, "KHR_texture_basisu"))
+        *error = "file requires BasisU texture support";
+    else if (requiresExtension(data, "EXT_mesh_gpu_instancing"))
+        *error = "file requires mesh instancing support";
+    else if (needsDummyBuffers(data))
+        *error = "buffer has no data";
+
+    if (*error)
+    {
+        cgltf_free(data);
+        return 0;
+    }
+
+//    if (requiresExtension(data, "KHR_mesh_quantization"))
+//        fprintf(stderr, "Warning: file uses quantized geometry; repacking may result in increased quantization error\n");
+
+    std::vector<std::pair<size_t, size_t> > mesh_remap;
+
+    parseMeshesGltf(data, meshes, mesh_remap);
+    parseMeshNodesGltf(data, meshes, mesh_remap);
+    parseAnimationsGltf(data, animations);
+
+    bool free_bin = freeUnusedBuffers(data);
+
+    if (data->bin && free_bin)
+        freeFile(data);
+
+    return data;
 }
