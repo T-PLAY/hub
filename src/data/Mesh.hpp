@@ -3,6 +3,7 @@
 #include <string>
 
 #include "Measure.hpp"
+#include <initializer_list>
 
 // #define TINYOBJLOADER_IMPLEMENTATION // define this in only *one* .cc
 //  Optional. define TINYOBJLOADER_USE_MAPBOX_EARCUT gives robust trinagulation. Requires C++11
@@ -12,16 +13,16 @@
 namespace hub {
 namespace data {
 
-struct Vertex {
-    float px, py, pz;
-    float nx, ny, nz;
-    float tx, ty;
-};
+//struct Vertex {
+//    float px, py, pz;
+//    float nx, ny, nz;
+//    float tx, ty;
+//};
 
-struct Mesh_internal {
-    std::vector<Vertex> vertices;
-    std::vector<unsigned int> indices;
-};
+//struct Mesh_internal {
+//    std::vector<Vertex> vertices;
+//    std::vector<unsigned int> indices;
+//};
 
 // class SRC_API Mesh : public Measure
 class SRC_API Mesh : public Measure
@@ -31,9 +32,11 @@ class SRC_API Mesh : public Measure
 
     explicit Mesh( const Mesh& mesh );
 
-    explicit Mesh( const std::string& name );
+//    explicit Mesh(const std::string & name, const std::vector<std::string> &filePaths);
+    Mesh(const std::string & name, std::initializer_list<std::string> filePaths);
+    Mesh(const std::string & name, std::string filePath);
 
-    void load( const std::string& fileObjPath );
+//    void load( const std::string& filePath );
 
     //    Mesh(const std::string & objTxt, const std::string & mtlTxt);
 
@@ -47,10 +50,10 @@ class SRC_API Mesh : public Measure
 
   private:
     void unpack();
-    void pack();
+//    void pack();
 
     std::string m_name;
-    Mesh_internal m_internal;
+//    Mesh_internal m_internal;
 
     //    std::vector<Vertex> vertices;
     //    std::vector<unsigned int> indices;

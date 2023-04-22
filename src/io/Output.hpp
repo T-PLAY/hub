@@ -126,6 +126,8 @@ class SRC_API Output
     ///
     void write( const Any& any );
 
+//    void write ( uint64_t value);
+
     ///
     /// \brief write
     /// \param str

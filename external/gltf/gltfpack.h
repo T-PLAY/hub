@@ -392,3 +392,9 @@ void writeScene(std::string& json, const cgltf_scene& scene, const std::string& 
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+
+// gauthier's additions
+int gltfpack(const char* input, const char* output, const char* report, Settings settings);
+cgltf_data* parseGlb(const char* path, std::vector<Mesh>& meshes, std::vector<Animation>& animations, const char** error);
+cgltf_data* readGlb(const char * inData, size_t size, std::vector<Mesh>& meshes, std::vector<Animation>& animations, const char** error);
+void printMeshStats(const std::vector<Mesh>& meshes, const char* name);
