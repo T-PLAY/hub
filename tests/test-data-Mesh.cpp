@@ -10,7 +10,7 @@ TEST_CASE( "Mesh test" ) {
 
     const std::string meshPath = HUB_DIR "tests/data/meshes/";
 
-    hub::data::Mesh mesh( "mesh", {meshPath + "quad.gltf", meshPath + "cube.gltf"} );
+    hub::data::Mesh mesh( {meshPath + "quad.gltf", meshPath + "cube.gltf"} );
 //    hub::data::Mesh mesh("mesh", meshPath + "quad.gltf");
 //    hub::data::Mesh mesh("mesh", meshPath + "cube.gltf");
 //    mesh.load(meshPath + "quad.gltf");
