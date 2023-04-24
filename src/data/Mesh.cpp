@@ -78,8 +78,10 @@ Mesh::Mesh( const Mesh& mesh ) :
 }
 
 // Mesh::Mesh( const std::string& name, const std::vector<std::string>& filePaths ) :
-Mesh::Mesh( const std::string& name, std::initializer_list<std::string> filePaths ) :
-    Measure( (unsigned char*)nullptr, 0, Resolution { { 1 }, Format::MESH } ), m_name( name ) {
+Mesh::Mesh( std::initializer_list<std::string> filePaths ) :
+    Measure( (unsigned char*)nullptr, 0, Resolution { { 1 }, Format::MESH } )
+//    m_name( name )
+{
 
     //}
 
@@ -87,6 +89,9 @@ Mesh::Mesh( const std::string& name, std::initializer_list<std::string> filePath
     std::vector<uint64_t> compressedFilePathSizes;
     size_t size = 0;
     //    std::vector<uns
+
+    std::vector<std::string> filenames;
+
     for ( const auto& filePath : filePaths ) {
 // void Mesh::load( const std::string& filePath ) {
 //         std::filesystem::path path(filePath);
@@ -104,6 +109,9 @@ Mesh::Mesh( const std::string& name, std::initializer_list<std::string> filePath
 
         size_t lastindex2    = filePath.find_last_of( "/" );
         std::string filename = filePath.substr( lastindex2 + 1, lastindex - lastindex2 - 1 );
+        filenames.emplace_back(filename);
+
+//        m_name = filename;
 
         //        std::cout << "[Mesh] file path = '" << filePath << "'" << std::endl;
 
@@ -172,6 +180,13 @@ Mesh::Mesh( const std::string& name, std::initializer_list<std::string> filePath
         const auto fileSize = getFileSize( compressedFilePath );
         compressedFilePathSizes.emplace_back( fileSize );
         size += fileSize;
+    }
+
+    for (int i = 0; i <filenames.size(); ++i) {
+        const auto & filename = filenames.at(i);
+        m_name += filename;
+        if (i != filenames.size() - 1)
+            m_name += " + ";
     }
     //        cgltf_data* s_data = 0;
     //    std::vector<::Mesh> meshes;
@@ -346,7 +361,7 @@ Mesh::Mesh( const std::string& name, std::initializer_list<std::string> filePath
     //    unpack();
 }
 
-Mesh::Mesh( const std::string& name, std::string filePath ) : Mesh( name, { filePath } ) {}
+Mesh::Mesh( const std::string & filePath ) : Mesh( { filePath } ) {}
 
 void Mesh::unpack() {
 

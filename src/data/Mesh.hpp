@@ -33,8 +33,8 @@ class SRC_API Mesh : public Measure
     explicit Mesh( const Mesh& mesh );
 
 //    explicit Mesh(const std::string & name, const std::vector<std::string> &filePaths);
-    Mesh(const std::string & name, std::initializer_list<std::string> filePaths);
-    Mesh(const std::string & name, std::string filePath);
+    Mesh(std::initializer_list<std::string> filePaths);
+    Mesh(const std::string & filePath);
 
 //    void load( const std::string& filePath );
 
