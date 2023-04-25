@@ -85,6 +85,10 @@ class SRC_API Memory : public InputOutput
         m_container.insert( m_container.end(), data, data + len );
     }
 
+//    void write( const char* data, size_t len ) {
+//        m_container.insert( m_container.end(), data, data + len );
+//    }
+
     ///
     /// @copydoc InputOutput::read()
     ///

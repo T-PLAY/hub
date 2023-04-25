@@ -445,7 +445,7 @@ cgltf_data* parseGltf(const char* path, std::vector<Mesh>& meshes, std::vector<A
 	if (data && !data->bin)
 		freeFile(data);
 
-	result = (result == cgltf_result_success) ? cgltf_load_buffers(&options, data, path) : result;
+    result = (result == cgltf_result_success) ? cgltf_load_buffers(&options, data, path) : result;
 	result = (result == cgltf_result_success) ? cgltf_validate(data) : result;
 
 	*error = NULL;
@@ -476,12 +476,12 @@ cgltf_data* parseGltf(const char* path, std::vector<Mesh>& meshes, std::vector<A
 
 	parseMeshesGltf(data, meshes, mesh_remap);
 	parseMeshNodesGltf(data, meshes, mesh_remap);
-	parseAnimationsGltf(data, animations);
+    parseAnimationsGltf(data, animations);
 
-	bool free_bin = freeUnusedBuffers(data);
+    bool free_bin = freeUnusedBuffers(data);
 
-	if (data->bin && free_bin)
-		freeFile(data);
+    if (data->bin && free_bin)
+        freeFile(data);
 
 	return data;
 }
@@ -499,6 +499,7 @@ cgltf_data* parseGlb(const char* path, std::vector<Mesh>& meshes, std::vector<An
 
     result = (result == cgltf_result_success) ? cgltf_load_buffers(&options, data, path) : result;
     result = (result == cgltf_result_success) ? cgltf_validate(data) : result;
+//    assert(data->buffers[0].data != nullptr);
 
     *error = NULL;
 
@@ -532,10 +533,10 @@ cgltf_data* parseGlb(const char* path, std::vector<Mesh>& meshes, std::vector<An
     parseMeshNodesGltf(data, meshes, mesh_remap);
     parseAnimationsGltf(data, animations);
 
-    bool free_bin = freeUnusedBuffers(data);
+//    bool free_bin = freeUnusedBuffers(data);
 
-    if (data->bin && free_bin)
-        freeFile(data);
+//    if (data->bin && free_bin)
+//        freeFile(data);
 
     return data;
 }
@@ -559,7 +560,7 @@ cgltf_data* readGlb(const char * inData, size_t size, std::vector<Mesh>& meshes,
     if (data && !data->bin)
         freeFile(data);
 
-//    result = (result == cgltf_result_success) ? cgltf_load_buffers(&options, data, path) : result;
+    result = (result == cgltf_result_success) ? cgltf_read_buffers(&options, data, inData, size) : result;
 //    result = (result == cgltf_result_success) ? cgltf_load_buffer_base64(&options, size, inData, (void**)&data) : result;
     result = (result == cgltf_result_success) ? cgltf_validate(data) : result;
 

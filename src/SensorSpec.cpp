@@ -101,7 +101,7 @@ std::string SensorSpec::to_string( const std::pair<std::string, Any>& metaData )
     const auto& val  = metaData.second;
     // #ifdef WIN32
     // #else
-    std::string str = name + " = " + val.to_string();
+    std::string str = name + " : " + val.to_string();
     // #endif
     return str;
 }

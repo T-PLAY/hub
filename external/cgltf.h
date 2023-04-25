@@ -89,10 +89,14 @@
 #define CGLTF_H_INCLUDED__
 
 #include <stddef.h>
+#include <cassert>
+#include <iostream>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+//#define CGLTF_IMPLEMENTATION
 
 typedef size_t cgltf_size;
 typedef long long int cgltf_ssize;
@@ -817,6 +821,14 @@ cgltf_result cgltf_load_buffers(
 		cgltf_data* data,
 		const char* gltf_path);
 
+cgltf_result cgltf_read_buffers(
+        const cgltf_options* options,
+        cgltf_data* data,
+        const void* dataIn,
+        cgltf_size size
+    );
+
+
 cgltf_result cgltf_load_buffer_base64(const cgltf_options* options, cgltf_size size, const char* base64, void** out_data);
 
 cgltf_size cgltf_decode_string(char* string);
@@ -1425,6 +1437,7 @@ cgltf_result cgltf_load_buffers(const cgltf_options* options, cgltf_data* data, 
 
 	if (data->buffers_count && data->buffers[0].data == NULL && data->buffers[0].uri == NULL && data->bin)
 	{
+        std::cout << "cgltf_load_buffers first" << std::endl;
 		if (data->bin_size < data->buffers[0].size)
 		{
 			return cgltf_result_data_too_short;
@@ -1434,9 +1447,12 @@ cgltf_result cgltf_load_buffers(const cgltf_options* options, cgltf_data* data, 
 		data->buffers[0].data_free_method = cgltf_data_free_method_none;
 	}
 
+//    assert(data->buffers[0].data != nullptr);
+
 	for (cgltf_size i = 0; i < data->buffers_count; ++i)
 	{
-		if (data->buffers[i].data)
+        std::cout << "cgltf_load_buffers " << i << std::endl;
+        if (data->buffers[i].data)
 		{
 			continue;
 		}
@@ -1481,10 +1497,93 @@ cgltf_result cgltf_load_buffers(const cgltf_options* options, cgltf_data* data, 
 		{
 			return cgltf_result_unknown_format;
 		}
-	}
+        assert(data->buffers[i].data != nullptr);
+    }
 
 	return cgltf_result_success;
 }
+
+cgltf_result cgltf_read_buffers(
+        const cgltf_options* options,
+        cgltf_data* data,
+        const void* dataIn,
+        cgltf_size size
+    ) {
+
+
+    if (options == NULL)
+    {
+        return cgltf_result_invalid_options;
+    }
+
+    if (data->buffers_count && data->buffers[0].data == NULL && data->buffers[0].uri == NULL && data->bin)
+    {
+        if (data->bin_size < data->buffers[0].size)
+        {
+            return cgltf_result_data_too_short;
+        }
+
+        data->buffers[0].data = (void*)data->bin;
+        data->buffers[0].data_free_method = cgltf_data_free_method_none;
+    }
+
+    for (cgltf_size i = 0; i < data->buffers_count; ++i)
+    {
+        if (data->buffers[i].data)
+        {
+            continue;
+        }
+
+        const char* uri = data->buffers[i].uri;
+
+        if (uri == NULL)
+        {
+            continue;
+        }
+
+        if (strncmp(uri, "data:", 5) == 0)
+        {
+            const char* comma = strchr(uri, ',');
+
+            if (comma && comma - uri >= 7 && strncmp(comma - 7, ";base64", 7) == 0)
+            {
+                cgltf_result res = cgltf_load_buffer_base64(options, data->buffers[i].size, comma + 1, &data->buffers[i].data);
+                data->buffers[i].data_free_method = cgltf_data_free_method_memory_free;
+
+                if (res != cgltf_result_success)
+                {
+                    return res;
+                }
+            }
+            else
+            {
+                return cgltf_result_unknown_format;
+            }
+        }
+//        else if (strstr(uri, "://") == NULL && gltf_path)
+        else if (strstr(uri, "://") == NULL)
+        {
+            assert(false);
+//            cgltf_result res = cgltf_load_buffer_file(options, data->buffers[i].size, uri, gltf_path, &data->buffers[i].data);
+//            cgltf_result res = cgltf_read_buffer(options, data->buffers[i].size, uri, gltf_path, &data->buffers[i].data);
+//            data->buffers[i].data_free_method = cgltf_data_free_method_file_release;
+
+//            if (res != cgltf_result_success)
+//            {
+//                return res;
+//            }
+        }
+        else
+        {
+            return cgltf_result_unknown_format;
+        }
+    }
+
+    return cgltf_result_success;
+
+}
+
+
 
 static cgltf_size cgltf_calc_size(cgltf_type type, cgltf_component_type component_type);
 
