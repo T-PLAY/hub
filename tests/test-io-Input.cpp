@@ -27,12 +27,12 @@ TEST_CASE( "Input test" ) {
         hub::Any ref_any_constCharPtr( "hello" );
         hub::Any ref_any_mat4( hub::data::Mat4( 0.0 ) );
         //    hub::Any ref_any_mesh(hub::data::Mesh);
-        const std::string meshPath = HUB_DIR "tests/data/meshes/";
-        // todo mesh
-//        hub::data::Mesh ref_mesh( meshPath + "quad.obj" );
-//        hub::Any ref_any_mesh( ref_mesh );
+        const std::string meshPath = HUB_DIR "tests/data/mesh/";
+        hub::data::Mesh ref_mesh( meshPath + "quad.gltf" );
+        hub::Any ref_any_mesh( ref_mesh );
 
         std::vector<char> buff;
+
 
         hub::io::Memory<decltype( buff )> memory( buff );
 
@@ -46,8 +46,7 @@ TEST_CASE( "Input test" ) {
         memory.write( ref_any_string );
         memory.write( ref_any_constCharPtr );
         memory.write( ref_any_mat4 );
-        // todo mesh
-//        memory.write( ref_any_mesh );
+        memory.write( ref_any_mesh );
 
         std::string string;
         memory.read( string );
@@ -92,8 +91,7 @@ TEST_CASE( "Input test" ) {
 
         hub::Any any_mesh;
         memory.read( any_mesh );
-        // todo mesh
-//        assert( ref_any_mesh == any_mesh );
+        assert( ref_any_mesh == any_mesh );
 
         CHECK( memory.isEnd() );
     }
