@@ -53,6 +53,12 @@ endif()
 
 target_compile_definitions(${PROJECT_NAME} PUBLIC -DINTERNAL_BUILD)
 
+set_target_properties(${PROJECT_NAME} PROPERTIES
+#        VERSION ${PROJECT_VERSION}
+        SOVERSION 1
+        VERSION 1.0.0
+)
+
 if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
     target_compile_definitions(${PROJECT_NAME} PUBLIC -DDEBUG)
 else()
@@ -77,7 +83,7 @@ if(MINGW)
 
             install(
                 PROGRAMS ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS}
-                DESTINATION bin
+                DESTINATION ${CMAKE_INSTALL_BINDIR}/${ARCHITECTURE}
                 COMPONENT System)
     else()
         message(FATAL_ERROR "unsupported compiler ${CMAKE_CXX_COMPILER_ID}")
@@ -108,14 +114,58 @@ target_link_libraries(${PROJECT_NAME} PUBLIC ${REQUIRED_LIBS})
 
 # ########################### INSTALL/EXPORT ################################
 
-install(
-    TARGETS ${PROJECT_NAME}
-    EXPORT ${PROJECT_NAME}
-    DESTINATION lib)
 
-if(NOT HUB_BUILD_STATIC_LIBRARY)
-    install(PROGRAMS $<TARGET_FILE:hub> DESTINATION bin)
+if (HUB_BUILD_STATIC_LIBRARY)
+        install(
+            TARGETS ${PROJECT_NAME}
+            EXPORT ${PROJECT_NAME}
+            DESTINATION lib/${ARCHITECTURE}
+        )
+
+else()
+        install(
+            TARGETS ${PROJECT_NAME}
+            EXPORT ${PROJECT_NAME}
+            RUNTIME DESTINATION bin/${ARCHITECTURE}
+        )
 endif()
+
+#if(NOT HUB_BUILD_STATIC_LIBRARY)
+#else()
+#install(
+#    TARGETS ${PROJECT_NAME}
+#    EXPORT ${PROJECT_NAME}
+#    DESTINATION ${ARCHITECTURE}/bin)
+
+
+#install(TARGETS ${PROJECT_NAME}
+#        EXPORT ${PROJECT_NAME}
+#        LIBRARY DESTINATION lib/${ARCHITECTURE}
+#        ARCHIVE DESTINATION lib/${ARCHITECTURE}
+#        RUNTIME DESTINATION bin/${ARCHITECTURE}
+#        INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+#)
+
+
+#install(TARGETS ${PROJECT_NAME}
+#        EXPORT ${PROJECT_NAME}
+#        LIBRARY DESTINATION ${ARCHITECTURE}/lib
+##        ARCHIVE DESTINATION share
+#        RUNTIME DESTINATION ${ARCHITECTURE}/bin
+#        INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+#)
+
+#install(TARGETS ${PROJECT_NAME}
+#        EXPORT ${PROJECT_NAME}
+#        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}/${ARCHITECTURE}
+##        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+#        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}/${ARCHITECTURE}
+#        INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+#)
+
+#    install(PROGRAMS $<TARGET_FILE:hub> DESTINATION ${ARCHITECTURE}/bin)
+#    install(PROGRAMS hub DESTINATION ${ARCHITECTURE}/bin)
+#endif()
 
 install(
     DIRECTORY ${HUB_INCLUDE_DIR}/
@@ -128,7 +178,8 @@ install(
 install(
     EXPORT ${PROJECT_NAME}
     FILE ${PROJECT_NAME}Targets.cmake
-    DESTINATION lib/cmake/${PROJECT_NAME})
+#    DESTINATION lib/cmake/${PROJECT_NAME})
+    DESTINATION share/${PROJECT_NAME}/cmake)
 
 target_include_directories(${PROJECT_NAME}
     PUBLIC
@@ -146,7 +197,8 @@ include(CMakePackageConfigHelpers)
 
 configure_package_config_file(
     ${CMAKE_CURRENT_SOURCE_DIR}/Config.cmake.in "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
-    INSTALL_DESTINATION "lib/cmake/${PROJECT_NAME}"
+#    INSTALL_DESTINATION "lib/cmake/${PROJECT_NAME}"
+    INSTALL_DESTINATION "share/${PROJECT_NAME}/cmake/"
     NO_SET_AND_CHECK_MACRO NO_CHECK_REQUIRED_COMPONENTS_MACRO)
 
 write_basic_package_version_file(
@@ -155,7 +207,8 @@ write_basic_package_version_file(
     COMPATIBILITY AnyNewerVersion)
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
-              ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake DESTINATION lib/cmake/${PROJECT_NAME})
+#              ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake DESTINATION lib/cmake/${PROJECT_NAME})
+              ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake DESTINATION share/${PROJECT_NAME}/cmake)
 
 export(EXPORT ${PROJECT_NAME} FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake")
 

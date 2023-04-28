@@ -27,7 +27,7 @@
 #        define ARCH_X64
 #    elif defined( i386 ) || defined( __i386__ ) || defined( __i386 ) || defined( _M_IX86 )
 #        define ARCH_X86
-#    elif defined( __arm__ ) || defined( __arm )
+#    elif defined( __arm__ ) || defined( __arm ) || defined( _M_ARM )
 #        define ARCH_ARM32
 #    elif defined( __aarch64__ ) || defined( _M_ARM64 )
 #        define ARCH_ARM64
