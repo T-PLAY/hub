@@ -188,7 +188,7 @@ Mesh::Mesh( std::initializer_list<std::string> filePaths ) :
                                 settings.verbose               = 2;
                                 settings.simplify_aggressive   = true;
                                 settings.simplify_lock_borders = true;
-                                settings.simplify_threshold    = 0.1;
+                                settings.simplify_threshold    = 0.1f;
                                 settings.keep_nodes            = true;
 //                                settings.pos_float = true;
 //                            settings.keep_extras           = true;
