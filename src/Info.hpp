@@ -7,7 +7,7 @@
 ///
 /// @author Gauthier Bouyjou
 /// @date 2022-2023
-/// If you have any questions please send me message to my mailbox.
+/// If you have any questions please do not hesitate to send me message to my mailbox.
 /// @email : gauthierbouyjou@aol.com
 /// @brief
 ///

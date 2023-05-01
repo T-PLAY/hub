@@ -1,4 +1,11 @@
-#pragma once
 
-#define HUB_AUTHOR "Gauthier Bouyjou" /** 2022-2023 */
-#define HUB_AUTHOR_EMAIL "gauthierbouyjou@aol.com"
+/**
+
+Primary POC:
+* Gauthier Bouyjou <gauthierbouyjou@aol.com>, 2022-2023
+
+Other Contributors:
+* Francois Gaits - Proof of concept tcp communication, 2021
+* Chems Eddine Himeur - Proof of concept sensor communication, 2020
+
+*/
