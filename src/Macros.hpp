@@ -210,5 +210,3 @@
 #    endif
 #endif
 
-
-#include "Version.hpp"
