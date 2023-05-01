@@ -18,6 +18,15 @@ cmake_minimum_required(VERSION 3.8)
 ##option(BUILD_TESTING "" OFF)
 #FetchContent_MakeAvailable(meshoptimizer)
 
+find_package(Git)
+set(VERSION_UPDATE_FROM_GIT 1)
+include(GetVersionFromGitTag)
+
+#set (${PROJECT_NAME}_VERSION_MAJOR 1)
+#set (${PROJECT_NAME}_VERSION_MINOR 0)
+#set (${PROJECT_NAME}_VERSION_PATCH 0)
+#set (${PROJECT_NAME}_VERSION "${${PROJECT_NAME}_VERSION_MAJOR}.${${PROJECT_NAME}_VERSION_MINOR}.${${PROJECT_NAME}_VERSION_PATCH}")
+message(STATUS "Version: ${${PROJECT_NAME}_VERSION}")
 
 
 option(HUB_ENABLE_COVERAGE "Collect coverage from hub library (required tests enable)" OFF)
@@ -56,7 +65,8 @@ target_compile_definitions(${PROJECT_NAME} PUBLIC -DINTERNAL_BUILD)
 set_target_properties(${PROJECT_NAME} PROPERTIES
 #        VERSION ${PROJECT_VERSION}
         SOVERSION 1
-        VERSION 1.0.0
+#        VERSION 1.0.0
+        VERSION ${${PROJECT_NAME}_VERSION}
 )
 
 if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
@@ -190,7 +200,7 @@ install(
 target_include_directories(${PROJECT_NAME}
     PUBLIC
     $<BUILD_INTERFACE:${HUB_INCLUDE_DIR}>
-#    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.h (autogenerate)
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.h (autogenerate)
     $<INSTALL_INTERFACE:include>
     PRIVATE
     ${HUB_EXTERNAL_DIR}
@@ -200,31 +210,25 @@ target_include_directories(${PROJECT_NAME}
 #    ${HUB_EXTERNAL_DIR}
 #)
 
-include(CMakePackageConfigHelpers)
 
-set (${PROJECT_NAME}_VERSION_MAJOR 1)
-set (${PROJECT_NAME}_VERSION_MINOR 0)
-set (${PROJECT_NAME}_VERSION_PATCH 0)
-set (${PROJECT_NAME}_VERSION "${${PROJECT_NAME}_VERSION_MAJOR}.${${PROJECT_NAME}_VERSION_MINOR}.${${PROJECT_NAME}_VERSION_PATCH}")
-message(STATUS "Version: ${${PROJECT_NAME}_VERSION}")
 #add_definitions(-DHUB_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/\")
-target_compile_definitions(${PROJECT_NAME} PUBLIC -DHUB_VERSION_MAJOR=${hub_VERSION_MAJOR})
-target_compile_definitions(${PROJECT_NAME} PUBLIC -DHUB_VERSION_MINOR=${hub_VERSION_MINOR})
-target_compile_definitions(${PROJECT_NAME} PUBLIC -DHUB_VERSION_PATCH=${hub_VERSION_PATCH})
-target_compile_definitions(${PROJECT_NAME} PUBLIC -DHUB_VERSION=\"${hub_VERSION}\")
+#target_compile_definitions(${PROJECT_NAME} PUBLIC -DHUB_VERSION_MAJOR=${hub_VERSION_MAJOR})
+#target_compile_definitions(${PROJECT_NAME} PUBLIC -DHUB_VERSION_MINOR=${hub_VERSION_MINOR})
+#target_compile_definitions(${PROJECT_NAME} PUBLIC -DHUB_VERSION_PATCH=${hub_VERSION_PATCH})
+#target_compile_definitions(${PROJECT_NAME} PUBLIC -DHUB_VERSION=\"${hub_VERSION}\")
 #set (HUB_VERSION STRING ${hub_VERSION})
 
-#configure_file (
-#    "${CMAKE_CURRENT_SOURCE_DIR}/Version.h.in"
-#    "${CMAKE_CURRENT_BINARY_DIR}/Version.h"
-#    @ONLY
-#)
-#install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Version.h
-#    DESTINATION include
-#)
+configure_file (
+    "${CMAKE_CURRENT_SOURCE_DIR}/Version.h.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/Version.h"
+    @ONLY
+)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Version.h
+    DESTINATION include
+)
 
-include(GetGitVersion)
-get_git_version(GIT_VERSION)
+
+include(CMakePackageConfigHelpers)
 
 configure_package_config_file(
     ${CMAKE_CURRENT_SOURCE_DIR}/Config.cmake.in "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"

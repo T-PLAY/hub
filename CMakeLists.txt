@@ -12,6 +12,8 @@ set(CMAKE_FIND_PACKAGE_NO_SYSTEM_PACKAGE_REGISTRY False)
 message(STATUS "CXX compiler: ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}")
 message(STATUS "Processor: ${CMAKE_SYSTEM_PROCESSOR}")
 message(STATUS "CMake generator: ${CMAKE_GENERATOR}")
+
+# Finding archictecture
 set (ARCHITECTURE "")
 if (CMAKE_GENERATOR_PLATFORM)
 	message(STATUS "CMake generator platform: ${CMAKE_GENERATOR_PLATFORM}")
@@ -20,9 +22,9 @@ if (CMAKE_GENERATOR_PLATFORM)
 	elseif (${CMAKE_GENERATOR_PLATFORM} STREQUAL "Win32")
 		set(ARCHITECTURE "x86")
 	elseif (${CMAKE_GENERATOR_PLATFORM} STREQUAL "ARM64")
-		set(ARCHITECTURE "ARM64")
+                set(ARCHITECTURE "arm64")
 	elseif (${CMAKE_GENERATOR_PLATFORM} STREQUAL "ARM")
-		set(ARCHITECTURE "ARM")
+                set(ARCHITECTURE "arm")
 	else()
             message(FATAL_ERROR "unknown platform")
 	endif()
@@ -35,6 +37,7 @@ else()
 endif()
 message(STATUS "Architecture: ${ARCHITECTURE}")
 
+# Looking for compatible compiler
 set(SUPPORTED_COMPILERS "Clang" "GNU" "LLVM" "MSVC")
 set(Clang_MINIMAL_VERSION 11.0.0)
 set(GNU_MINIMAL_VERSION 8.1.0)
@@ -61,8 +64,14 @@ if (NOT COMPILER_FOUND)
     message(FATAL_ERROR "no compiler founded")
 endif()
 
+# set default value of CMake variables
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Debug")
+endif()
+
+if(NOT CMAKE_INSTALL_PREFIX OR CMAKE_INSTALL_PREFIX STREQUAL "/usr/local")
+#if(NOT CMAKE_INSTALL_PREFIX)
+    set(CMAKE_INSTALL_PREFIX "install" CACHE PATH "Install path prefix." FORCE)
 endif()
 
 set(CMAKE_DEBUG_POSTFIX d)

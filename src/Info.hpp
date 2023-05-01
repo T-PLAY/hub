@@ -1,18 +1,12 @@
-
 #pragma once
-
-//#include "Version.h"
 
 #include <string>
 
-//#define HUB_VERSION_MAJOR 1
-//#define HUB_VERSION_MINOR 0
-//#define HUB_VERSION_PATCH 0
-//#define HUB_VERSION "1.0.0"
+#include "Version.h"
 
 ///
 /// @author Gauthier Bouyjou
-/// @date 2021-2023
+/// @date 2022-2023
 /// If you have any questions please send me message to my mailbox.
 /// @email : gauthierbouyjou@aol.com
 /// @brief
@@ -27,5 +21,35 @@ static constexpr int s_versionMinor = HUB_VERSION_MINOR;
 static constexpr int s_versionPatch = HUB_VERSION_PATCH; // Revision
 /** @sa getMajorVersion, getMinorVersion, getRevisionVersion */
 static const std::string s_version = HUB_VERSION;
+
+///
+/// @brief
+///
+namespace client {
+}
+
+///
+/// @brief
+///
+namespace data {
+}
+
+///
+/// @brief
+///
+namespace io {
+}
+
+///
+/// @brief
+///
+namespace net {
+}
+
+///
+/// @brief
+///
+namespace server {
+}
 
 } // namespace hub
