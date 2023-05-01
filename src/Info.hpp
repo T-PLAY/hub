@@ -19,7 +19,7 @@ static constexpr int s_versionMajor = HUB_VERSION_MAJOR;
 static constexpr int s_versionMinor = HUB_VERSION_MINOR;
 /** @brief Returns revision field of the library version */
 static constexpr int s_versionPatch = HUB_VERSION_PATCH; // Revision
-/** @sa getMajorVersion, getMinorVersion, getRevisionVersion */
+/** @sa MajorVersion.MinorVersion.PatchVersion */
 static const std::string s_version = HUB_VERSION;
 
 ///
