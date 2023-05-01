@@ -190,6 +190,7 @@ install(
 target_include_directories(${PROJECT_NAME}
     PUBLIC
     $<BUILD_INTERFACE:${HUB_INCLUDE_DIR}>
+#    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.h (autogenerate)
     $<INSTALL_INTERFACE:include>
     PRIVATE
     ${HUB_EXTERNAL_DIR}
@@ -206,16 +207,21 @@ set (${PROJECT_NAME}_VERSION_MINOR 0)
 set (${PROJECT_NAME}_VERSION_PATCH 0)
 set (${PROJECT_NAME}_VERSION "${${PROJECT_NAME}_VERSION_MAJOR}.${${PROJECT_NAME}_VERSION_MINOR}.${${PROJECT_NAME}_VERSION_PATCH}")
 message(STATUS "Version: ${${PROJECT_NAME}_VERSION}")
+#add_definitions(-DHUB_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/\")
+target_compile_definitions(${PROJECT_NAME} PUBLIC -DHUB_VERSION_MAJOR=${hub_VERSION_MAJOR})
+target_compile_definitions(${PROJECT_NAME} PUBLIC -DHUB_VERSION_MINOR=${hub_VERSION_MINOR})
+target_compile_definitions(${PROJECT_NAME} PUBLIC -DHUB_VERSION_PATCH=${hub_VERSION_PATCH})
+target_compile_definitions(${PROJECT_NAME} PUBLIC -DHUB_VERSION=\"${hub_VERSION}\")
 #set (HUB_VERSION STRING ${hub_VERSION})
 
-configure_file (
-    "${CMAKE_CURRENT_SOURCE_DIR}/Version.h.in"
-    "${CMAKE_CURRENT_BINARY_DIR}/Version.h"
-    @ONLY
-)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Version.h
-    DESTINATION include
-)
+#configure_file (
+#    "${CMAKE_CURRENT_SOURCE_DIR}/Version.h.in"
+#    "${CMAKE_CURRENT_BINARY_DIR}/Version.h"
+#    @ONLY
+#)
+#install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Version.h
+#    DESTINATION include
+#)
 
 include(GetGitVersion)
 get_git_version(GIT_VERSION)
