@@ -12,3 +12,11 @@ endif()
 
 set(HUB_INCLUDE_DIR ${PACKAGE_PREFIX_DIR}/include)
 
+
+set (HUB_VERSION_MAJOR "@hub_VERSION_MAJOR@")
+set (HUB_VERSION_MINOR "@hub_VERSION_MINOR@")
+set (HUB_VERSION_PATCH "@hub_VERSION_PATCH@")
+set (HUB_VERSION "@hub_VERSION@")
+
+#message(STATUS "Found hub: ${PACKAGE_PREFIX_DIR} (version \"${PACKAGE_VERSION}\")")
+message(STATUS "Found hub: ${PACKAGE_PREFIX_DIR} (version \"${HUB_VERSION}\")")
