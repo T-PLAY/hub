@@ -2,6 +2,11 @@ cmake_minimum_required(VERSION 3.8)
 
 project(hub)
 
+set(HUB_ONLY 0)
+if (CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
+    set(HUB_ONLY 1)
+endif()
+
 #set(CMAKE_CXX_STANDARD 11 CACHE STRING "C++ standard to be used")
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -35,7 +40,9 @@ else()
 		set(ARCHITECTURE "x64")
 	endif()
 endif()
-message(STATUS "Architecture: ${ARCHITECTURE}")
+#if (HUB_ONLY)
+    message(STATUS "Architecture: ${ARCHITECTURE}")
+#endif()
 
 # Looking for compatible compiler
 set(SUPPORTED_COMPILERS "Clang" "GNU" "LLVM" "MSVC")
