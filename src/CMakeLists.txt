@@ -26,7 +26,7 @@ include(GetVersionFromGitTag)
 #set (${PROJECT_NAME}_VERSION_MINOR 0)
 #set (${PROJECT_NAME}_VERSION_PATCH 0)
 #set (${PROJECT_NAME}_VERSION "${${PROJECT_NAME}_VERSION_MAJOR}.${${PROJECT_NAME}_VERSION_MINOR}.${${PROJECT_NAME}_VERSION_PATCH}")
-message(STATUS "Version: ${${PROJECT_NAME}_VERSION}")
+message(STATUS "Hub version: ${${PROJECT_NAME}_VERSION}")
 
 
 option(HUB_ENABLE_COVERAGE "Collect coverage from hub library (required tests enable)" OFF)
@@ -135,14 +135,17 @@ if (HUB_BUILD_STATIC_LIBRARY)
         install(
             TARGETS ${PROJECT_NAME}
             EXPORT ${PROJECT_NAME}
-            DESTINATION lib/${ARCHITECTURE}
+#            DESTINATION lib/${ARCHITECTURE}
+            DESTINATION ${ARCHITECTURE}/lib
         )
 
 else()
         install(
             TARGETS ${PROJECT_NAME}
             EXPORT ${PROJECT_NAME}
-            RUNTIME DESTINATION bin/${ARCHITECTURE}
+#            RUNTIME DESTINATION bin/${ARCHITECTURE}
+#            DESTINATION bin/${ARCHITECTURE}
+            DESTINATION ${ARCHITECTURE}/bin
         )
 endif()
 
@@ -217,6 +220,9 @@ target_include_directories(${PROJECT_NAME}
 #target_compile_definitions(${PROJECT_NAME} PUBLIC -DHUB_VERSION_PATCH=${hub_VERSION_PATCH})
 #target_compile_definitions(${PROJECT_NAME} PUBLIC -DHUB_VERSION=\"${hub_VERSION}\")
 #set (HUB_VERSION STRING ${hub_VERSION})
+
+string(TIMESTAMP DATE "%Y/%m/%d %H:%M UTC%z")
+#message(STATUS ${DATE})
 
 configure_file (
     "${CMAKE_CURRENT_SOURCE_DIR}/Version.h.in"

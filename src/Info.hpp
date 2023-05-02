@@ -22,6 +22,8 @@ static constexpr int s_versionPatch = HUB_VERSION_PATCH; // Revision
 /** @sa MajorVersion.MinorVersion.PatchVersion */
 static const std::string s_version = HUB_VERSION;
 
+/// @date
+
 ///
 /// @brief
 ///

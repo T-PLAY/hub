@@ -1,5 +1,7 @@
 #pragma once
 
+// Generated on @DATE@
+
 #define HUB_VERSION_MAJOR @hub_VERSION_MAJOR@
 #define HUB_VERSION_MINOR @hub_VERSION_MINOR@
 #define HUB_VERSION_PATCH @hub_VERSION_PATCH@
