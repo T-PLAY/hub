@@ -95,6 +95,7 @@ if(MINGW)
                 PROGRAMS ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS}
                 DESTINATION ${CMAKE_INSTALL_BINDIR}/${ARCHITECTURE}
                 COMPONENT System)
+#    elseif(GNU)
     else()
         message(FATAL_ERROR "unsupported compiler ${CMAKE_CXX_COMPILER_ID}")
     endif()
