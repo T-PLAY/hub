@@ -44,6 +44,12 @@ endif()
     message(STATUS "Architecture: ${ARCHITECTURE}")
 #endif()
 
+foreach(SYSTEM_INFO IN ITEMS "HOSTNAME" "TOTAL_PHYSICAL_MEMORY" "PROCESSOR_DESCRIPTION" "OS_NAME" "OS_RELEASE" "OS_VERSION" "OS_PLATFORM")
+    cmake_host_system_information(RESULT tmp QUERY ${SYSTEM_INFO})
+#    message(STATUS "${SYSTEM_INFO} : ${tmp}")
+    set(${SYSTEM_INFO} ${tmp})
+endforeach()
+
 # Looking for compatible compiler
 set(SUPPORTED_COMPILERS "Clang" "GNU" "LLVM" "MSVC")
 set(Clang_MINIMAL_VERSION 11.0.0)
