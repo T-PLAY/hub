@@ -1,6 +1,18 @@
 #pragma once
 
 // Generated on @DATE@
+// CXX compiler: @CMAKE_CXX_COMPILER_ID@ @CMAKE_CXX_COMPILER_VERSION@
+// Processor: @CMAKE_SYSTEM_PROCESSOR@
+// CMake generator: @CMAKE_GENERATOR@
+// Architecture: @ARCHITECTURE@
+
+// Hostname: @HOSTNAME@
+// Physical memory: @TOTAL_PHYSICAL_MEMORY@ MiB
+// Processor description: @PROCESSOR_DESCRIPTION@
+// OS: @OS_NAME@
+// OS Release: @OS_RELEASE@
+// OS Version: @OS_VERSION@
+
 
 #define HUB_VERSION_MAJOR @hub_VERSION_MAJOR@
 #define HUB_VERSION_MINOR @hub_VERSION_MINOR@
