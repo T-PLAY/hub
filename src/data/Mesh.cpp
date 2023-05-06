@@ -350,6 +350,7 @@ void Mesh::unpack() {
         //            (const char*)m_rawData.data(), dataSize, m_pimpl->m_meshes,
         //            m_pimpl->m_animations, &error );
 
+        std::cout << "readGlb size = " << dataSize << std::endl;
         gltfData = readGlb(
             (const char*)data, dataSize, m_pimpl->m_meshes, m_pimpl->m_animations, &error );
         //        assert( m_compressedFilePaths.size() == 1 );
