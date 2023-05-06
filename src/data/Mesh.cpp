@@ -127,13 +127,15 @@ Mesh::Mesh( std::initializer_list<std::string> filePaths ) :
         }
         //        assert ( !std::ifstream { filePath } );
 
-#ifdef WIN32
-        size_t slash = filePath.find_last_of( "\\" );
-#else
+//#ifdef WIN32
+//        size_t slash = filePath.find_last_of( "\\" );
+//#else
+//        size_t slash = filePath.find_last_of( "/" );
+//#endif
         size_t slash = filePath.find_last_of( "/" );
-#endif
         std::string parentPath =
             ( slash != std::string::npos ) ? filePath.substr( 0, slash ) : filePath;
+        std::cout << "parentPath : " << parentPath << std::endl;
 
         //        size_t lastindex               = filePath.find_last_of( "." );
         //        std::string filePathWithoutExt = filePath.substr( 0, lastindex );
@@ -162,8 +164,8 @@ Mesh::Mesh( std::initializer_list<std::string> filePaths ) :
         //        if ( iext == ".gltf" && !
         //        std::experimental::filesystem::exists(compressedFilePath) ) {
 
-        if ( true || !std::ifstream { compressedFilePath } ) {
-            //        if ( !std::ifstream { compressedFilePath } ) {
+//        if ( true || !std::ifstream { compressedFilePath } ) {
+                    if ( !std::ifstream { compressedFilePath } ) {
             if ( iext == ".gltf" ) {
 
                 meshopt_encodeIndexVersion( 1 );
@@ -337,10 +339,12 @@ void Mesh::unpack() {
         //            (const char*)data, dataSize, m_pimpl->m_meshes, m_pimpl->m_animations, &error
         //            );
         assert( m_compressedFilePaths.size() == 1 );
+        std::cout << "parseGlb started" << std::endl;
         gltfData = parseGlb( m_compressedFilePaths.at( 0 ).c_str(),
                              m_pimpl->m_meshes,
                              m_pimpl->m_animations,
                              &error );
+        std::cout << "parseGlb ended" << std::endl;
         //        gltfData = parseGltf(
         //            m_gltfPaths.at(0).c_str(), m_pimpl->m_meshes, m_pimpl->m_animations, &error );
 
@@ -357,32 +361,35 @@ void Mesh::unpack() {
         //        gltfData->buffer_views;
         //        const auto & buffer = gltfData->buffers;
         //        assert(gltfData->buffer_views->name != nullptr);
-        std::cout << m_pimpl->m_cgltfData.size() << std::endl;
+
+//        std::cout << m_pimpl->m_cgltfData.size() << std::endl;
+
         //        assert(buffer->name != nullptr);
         //        std::cout << "buffer " << " size = " << buffer->size << std::endl;
         //        assert(buffer->data != nullptr);
         //        float * bufferFloat = (float*)buffer->data;
 
-        std::cout << "buffer view count : " << gltfData->buffer_views_count << std::endl;
-        for ( int i = 0; i < gltfData->buffer_views_count; ++i ) {
-            const auto& buffer_view = gltfData->buffer_views[i];
-            std::cout << "buffer view " << i << "size = " << buffer_view.size << std::endl;
+//        std::cout << "buffer view count : " << gltfData->buffer_views_count << std::endl;
+//        for ( int i = 0; i < gltfData->buffer_views_count; ++i ) {
+//            const auto& buffer_view = gltfData->buffer_views[i];
+//            std::cout << "buffer view " << i << "size = " << buffer_view.size << std::endl;
+
 //            assert(buffer_view.meshopt_compression.buffer != nullptr);
             //            assert(buffer_view.data != nullptr);
             //            for (int j = 0; j < buffer_view.size; ++j) {
             //                std::cout << ((float*)buffer_view.data)[j] << " ";
             //            }
             //            std::cout << std::endl;
-        }
-        std::cout << "buffer count : " << gltfData->buffers_count << std::endl;
-        for ( int i = 0; i < gltfData->buffers_count; ++i ) {
-            std::cout << "buffer " << i << "size = " << gltfData->buffers[i].size << std::endl;
-            const auto& buffer = gltfData->buffers[i];
+//        }
+//        std::cout << "buffer count : " << gltfData->buffers_count << std::endl;
+//        for ( int i = 0; i < gltfData->buffers_count; ++i ) {
+//            std::cout << "buffer " << i << "size = " << gltfData->buffers[i].size << std::endl;
+//            const auto& buffer = gltfData->buffers[i];
 
             //            assert(buffer.data != nullptr);
-        }
+//        }
 
-        std::cout << "nNodes : " << gltfData->nodes_count << std::endl;
+//        std::cout << "nNodes : " << gltfData->nodes_count << std::endl;
         //    std::vector<std::string> nodeNames;
         m_pimpl->m_nodeNames.reserve( gltfData->nodes_count );
         for ( int i = 0; i < gltfData->nodes_count; ++i ) {
@@ -394,21 +401,21 @@ void Mesh::unpack() {
 
                 //            assert(node.has_mesh_gpu_instancing);
                 //            assert(node.mesh != nullptr);
-                if ( node.mesh != nullptr ) {
-                    const auto& mesh = *node.mesh;
-                    std::cout << "node " << i << ", nPrimitive : " << mesh.primitives_count
-                              << std::endl;
+//                if ( node.mesh != nullptr ) {
+//                    const auto& mesh = *node.mesh;
+//                    std::cout << "node " << i << ", nPrimitive : " << mesh.primitives_count
+//                              << std::endl;
                     //				gltfData->memory.free_func(gltfData->memory.user_data,
                     // gltfData->meshes[i].primitives[j].attributes[k].name);
                     //        std::cout << i << " nTriangle : " << mesh.indices.size() / 3 <<
                     //        std::endl; std::cout << i << " nVertice : " <<
                     //        mesh.streams[0].gltfData.size() << std::endl;
-                }
+//                }
             }
         }
         m_pimpl->m_cgltfData.push_back( gltfData );
         //        m_pimpl->m_cgltfData = gltfData;
-        std::cout << "end loop" << std::endl;
+//        std::cout << "end loop" << std::endl;
 
         //        delete[] data;
     }
@@ -422,7 +429,7 @@ void Mesh::unpack() {
 
     //    printMeshStats( s_meshes, m_name.c_str() );
 
-    std::cout << "mesh" << std::endl;
+//    std::cout << "mesh" << std::endl;
     // get mesh info
     int iMesh = 0;
     for ( const auto& mesh : m_pimpl->m_meshes ) {
@@ -459,7 +466,7 @@ void Mesh::unpack() {
         ++iMesh;
     }
 
-    std::cout << "material" << std::endl;
+//    std::cout << "material" << std::endl;
     // unpack to internal material representation
     //    std::vector<Material> materials;
     //    std::cout << "nMaterial : " << s_data->materials_count << std::endl;
@@ -485,11 +492,11 @@ void Mesh::unpack() {
 
     //    std::vector<Shape> shapes( m_pimpl->m_meshes.size() );
 
-    std::cout << "shape total : " << m_pimpl->m_meshes.size() << std::endl;
+//    std::cout << "shape total : " << m_pimpl->m_meshes.size() << std::endl;
     // unpack to internal shape representation
     iMesh = 0;
     for ( const auto& mesh : m_pimpl->m_meshes ) {
-        std::cout << "mesh " << iMesh << std::endl;
+//        std::cout << "mesh " << iMesh << std::endl;
 
         m_shapes.push_back( Shape() );
         //        auto& shape          = shapes.at( iMesh );
@@ -503,7 +510,7 @@ void Mesh::unpack() {
         bool hasVertex = false;
         assert( mesh.nodes.size() == 1 );
         for ( int i = 0; i < mesh.streams.size(); ++i ) {
-            std::cout << "stream " << i << std::endl;
+//            std::cout << "stream " << i << std::endl;
             //            assert(mesh.streams.size() == 1);
             const auto& stream = mesh.streams[i];
             assert( shapeVertices.empty() || shapeVertices.size() == stream.data.size() );
@@ -514,8 +521,8 @@ void Mesh::unpack() {
                 for ( int iVertice = 0; iVertice < stream.data.size(); ++iVertice ) {
                     auto& vertice    = shapeVertices.at( iVertice );
                     const auto& attr = stream.data.at( iVertice );
-                    std::cout << iVertice << "attr: " << attr.f[0] << attr.f[1] << attr.f[2]
-                              << std::endl;
+//                    std::cout << iVertice << "attr: " << attr.f[0] << attr.f[1] << attr.f[2]
+//                              << std::endl;
                     vertice.px = attr.f[0];
                     vertice.py = attr.f[1];
                     vertice.pz = attr.f[2];
@@ -526,8 +533,8 @@ void Mesh::unpack() {
                 for ( int iVertice = 0; iVertice < stream.data.size(); ++iVertice ) {
                     auto& vertice    = shapeVertices.at( iVertice );
                     const auto& attr = stream.data.at( iVertice );
-                    std::cout << iVertice << "attr: " << attr.f[0] << attr.f[1] << attr.f[2]
-                              << std::endl;
+//                    std::cout << iVertice << "attr: " << attr.f[0] << attr.f[1] << attr.f[2]
+//                              << std::endl;
                     vertice.nx = attr.f[0];
                     vertice.ny = attr.f[1];
                     vertice.nz = attr.f[2];
@@ -561,7 +568,7 @@ void Mesh::unpack() {
         ++iMesh;
     }
 
-    std::cout << "end" << std::endl;
+//    std::cout << "end" << std::endl;
 
     //    memory.read( m_name );
     //    std::string fileObjTxtReaded;
@@ -654,7 +661,9 @@ std::string Mesh::to_string() const {
 }
 
 void Mesh::printStats() const {
+    std::cout << "mesh statistics:" << std::endl;
     printMeshStats( m_pimpl->m_meshes, m_name.c_str() );
+    std::cout << "-----------------" << std::endl;
 }
 
 std::ostream& operator<<( std::ostream& os, const Mesh& mesh ) {
