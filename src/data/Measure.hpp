@@ -2,6 +2,7 @@
 
 #include <cassert>
 #include <cstring>
+#include <cstdint>
 
 #include "Macros.hpp"
 #include "Resolution.hpp"

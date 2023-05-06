@@ -8,7 +8,8 @@ if(NOT ${Catch2_FOUND})
     FetchContent_Declare(
         Catch2
         GIT_REPOSITORY https://github.com/catchorg/Catch2.git
-        GIT_TAG v3.0.1 # or a later release
+#        GIT_TAG v3.0.1 # or a later release
+        GIT_TAG v3.3.2 # or a later release
         GIT_PROGRESS TRUE)
     FetchContent_MakeAvailable(Catch2)
 endif()

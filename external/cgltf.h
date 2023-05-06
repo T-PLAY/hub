@@ -1437,7 +1437,7 @@ cgltf_result cgltf_load_buffers(const cgltf_options* options, cgltf_data* data, 
 
 	if (data->buffers_count && data->buffers[0].data == NULL && data->buffers[0].uri == NULL && data->bin)
 	{
-        std::cout << "cgltf_load_buffers first" << std::endl;
+//        std::cout << "cgltf_load_buffers first" << std::endl;
 		if (data->bin_size < data->buffers[0].size)
 		{
 			return cgltf_result_data_too_short;
@@ -1451,7 +1451,7 @@ cgltf_result cgltf_load_buffers(const cgltf_options* options, cgltf_data* data, 
 
 	for (cgltf_size i = 0; i < data->buffers_count; ++i)
 	{
-        std::cout << "cgltf_load_buffers " << i << std::endl;
+//        std::cout << "cgltf_load_buffers " << i << std::endl;
         if (data->buffers[i].data)
 		{
 			continue;
