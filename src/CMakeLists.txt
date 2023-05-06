@@ -144,8 +144,8 @@ else()
         install(
             TARGETS ${PROJECT_NAME}
             EXPORT ${PROJECT_NAME}
-            RUNTIME DESTINATION ${ARCHITECTURE}/bin
-#            DESTINATION bin/${ARCHITECTURE}
+            DESTINATION ${ARCHITECTURE}/bin # Linux
+            RUNTIME DESTINATION ${ARCHITECTURE}/bin # Windows
 #            DESTINATION ${ARCHITECTURE}/bin
         )
 endif()
