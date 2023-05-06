@@ -77,22 +77,24 @@ class SRC_API Mesh : public Measure
     SRC_API friend std::ostream& operator<<( std::ostream& os, const Mesh& mesh );
 
     void printStats() const;
+    void printInfo() const;
 
   private:
     void unpack();
 //    void pack();
 
-    std::string m_name;
+//    std::string m_name;
 //    Mesh_internal m_internal;
 
-    std::unique_ptr<MeshImpl> m_pimpl;
+//    std::unique_ptr<MeshImpl> m_pimpl;
+    std::shared_ptr<MeshImpl> m_pimpl;
 //    MeshImpl * m_pimpl = nullptr;
 
-    std::vector<Shape> m_shapes;
-    std::vector<Material> m_materials;
 
-    std::vector<std::string> m_compressedFilePaths;
-    std::vector<std::string> m_gltfPaths;
+
+//    std::vector<std::string> m_compressedFilePaths;
+//    std::vector<std::string> m_gltfPaths;
+
 //    std::string m_fileData;
 //    std::string m_rawData;
 //    std::vector<int> m_fileData;
@@ -110,16 +112,16 @@ class SRC_API Mesh : public Measure
 //     return m_attrib;
 // }
 
-inline const std::vector<Shape> &Mesh::getShapes() const {
-    return m_shapes;
-    //    return shapes;
-}
+//inline const std::vector<Shape> &Mesh::getShapes() const {
+//    return m_shapes;
+//    //    return shapes;
+//}
 
-inline const std::vector<Material> &Mesh::getMaterials() const {
-    return m_materials;
+//inline const std::vector<Material> &Mesh::getMaterials() const {
+//    return m_materials;
 
-           //    return materials;
-}
+//           //    return materials;
+//}
 
 // inline const std::vector<tinyobj::shape_t> & Mesh::getShapes() const
 //{
