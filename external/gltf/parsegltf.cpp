@@ -28,10 +28,10 @@ static const char* getError(cgltf_result result, cgltf_data* data)
 		return "legacy GLTF";
 
 	case cgltf_result_data_too_short:
-		return data ? "buffer too short" : "not a GLTF file";
+        return data ? "buffer too short" : "not a GLTF file (too short)";
 
 	case cgltf_result_unknown_format:
-		return data ? "unknown resource format" : "not a GLTF file";
+        return data ? "unknown resource format" : "not a GLTF file (format)";
 
 	default:
 		return "unknown error";

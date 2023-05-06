@@ -13,6 +13,7 @@ TEST_CASE( "Mesh test" ) {
     //    constexpr int nMesh = 2;
     //    hub::data::Mesh mesh( {meshPath + "quad", meshPath + "cube"} );
     hub::data::Mesh mesh( meshPath + "quad" );
+//    hub::data::Mesh mesh( meshPath + "sensor" );
     //    hub::data::Mesh mesh("mesh", meshPath + "quad.gltf");
     //    hub::data::Mesh mesh("mesh", meshPath + "cube.gltf");
     //    mesh.load(meshPath + "quad.gltf");
