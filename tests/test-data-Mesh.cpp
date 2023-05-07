@@ -12,8 +12,8 @@ TEST_CASE( "Mesh test" ) {
 
     //    constexpr int nMesh = 2;
     //    hub::data::Mesh mesh( {meshPath + "quad", meshPath + "cube"} );
-    hub::data::Mesh mesh( meshPath + "quad" );
-//    hub::data::Mesh mesh( meshPath + "sensor" );
+//    hub::data::Mesh mesh( meshPath + "quad" );
+    hub::data::Mesh mesh( meshPath + "sensor" );
     //    hub::data::Mesh mesh("mesh", meshPath + "quad.gltf");
     //    hub::data::Mesh mesh("mesh", meshPath + "cube.gltf");
     //    mesh.load(meshPath + "quad.gltf");
@@ -56,10 +56,10 @@ TEST_CASE( "Mesh test" ) {
         std::cout << "material id " << shape.material << std::endl;
         std::cout << "has normal " << shape.hasNormal << std::endl;
 
-        for (int i = 0; i < shape.vertices.size(); ++i) {
-            const auto & vertex = shape.vertices.at(i);
-            std::cout << "v: " << vertex.px << " " << vertex.py << " " << vertex.pz << std::endl;
-        }
+//        for (int i = 0; i < shape.vertices.size(); ++i) {
+//            const auto & vertex = shape.vertices.at(i);
+//            std::cout << "v: " << vertex.px << " " << vertex.py << " " << vertex.pz << std::endl;
+//        }
 
         //        //        std::cout << "[Mesh] shape " << s << std::endl;
         //        // Loop over faces(polygon)

@@ -16,6 +16,7 @@
 // #include <filesystem>
 #include <fstream>
 #include <sstream>
+#include <thread>
 // #include <stdio.h>
 // #include <stdlib.h>
 // #include <filesystem>
@@ -670,6 +671,8 @@ Mesh::Mesh( std::initializer_list<std::string> filePaths ) :
 
     //    unpack();
     //    m_unpacked = true;
+    m_pimpl->m_shapes.clear();
+    m_pimpl->m_materials.clear();
 }
 
 //{
@@ -726,6 +729,8 @@ void Mesh::unpack( bool headerOnly ) const {
             memory.read( shape.material );
         }
 
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
         m_pimpl->m_materials.clear();
         decltype( m_pimpl->m_materials.size() ) nMaterial;
         memory.read( nMaterial );
@@ -736,9 +741,11 @@ void Mesh::unpack( bool headerOnly ) const {
             memory.read( material );
         }
         const auto end = std::chrono::high_resolution_clock::now();
-        const auto& duration =
-            std::chrono::duration_cast<std::chrono::milliseconds>( end - start ).count();
-        std::cout << "[Mesh] unpack scene " << int(m_size / 1'000'000.0) << " Mo in " << duration << " ms" << std::endl;
+        const auto duration =
+            std::chrono::duration_cast<std::chrono::microseconds>( end - start ).count();
+//        const auto speed = 1'000'000 * m_size / duration; // Byte/s
+        const double speed = (double)m_size / duration;
+        std::cout << "[Mesh] unpack scene " << int(m_size / 1'000.0) << " Ko in " << duration / 1000.0 << " ms (" << speed << " Mo/s)" << std::endl;
         assert( memory.isEnd() );
     }
     //    }
