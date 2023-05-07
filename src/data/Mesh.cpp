@@ -2,6 +2,7 @@
 #include "Mesh.hpp"
 
 // #include <filesystem>
+#include <chrono>
 #include <iostream>
 
 #include "io/Memory.hpp"
@@ -55,25 +56,117 @@ class MeshImpl
     ~MeshImpl();
 
   private:
-    std::vector<cgltf_data*> m_cgltfData;
-    std::vector<::Mesh> m_meshes;
-    std::vector<Animation> m_animations;
-    std::vector<std::string> m_nodeNames;
-    size_t m_nVertice  = 0;
-    size_t m_nTriangle = 0;
-    size_t m_nDraw     = 0;
+    //    std::vector<cgltf_data*> m_cgltfData;
+    //    std::vector<::Mesh> m_meshes;
+    //    std::vector<Animation> m_animations;
+    //    std::vector<std::string> m_nodeNames;
+    uint64_t m_nVertice  = 0;
+    uint64_t m_nTriangle = 0;
+    uint64_t m_nDraw     = 0;
 
-    std::string m_name;
+    uint64_t m_nMesh           = 0;
+    uint64_t m_mesh_triangles  = 0;
+    uint64_t m_mesh_vertices   = 0;
+    uint64_t m_total_triangles = 0;
+    uint64_t m_total_instances = 0;
+    uint64_t m_total_draws     = 0;
+
+    std::string m_name = "";
+
     std::vector<Shape> m_shapes;
     std::vector<Material> m_materials;
+
+    void write( hub::io::Output& output ) {
+        output.write( m_nVertice );
+        output.write( m_nTriangle );
+        output.write( m_nDraw );
+
+        output.write( m_nMesh );
+        output.write( m_mesh_triangles );
+        output.write( m_mesh_vertices );
+        output.write( m_total_triangles );
+        output.write( m_total_instances );
+        output.write( m_total_draws );
+
+        output.write( m_name );
+        output.write( m_shapes.size() );
+        for ( const auto& shape : m_shapes ) {
+            uint64_t size = shape.vertices.size();
+            output.write( size );
+            output.write( (const unsigned char*)shape.vertices.data(),
+                          shape.vertices.size() * sizeof( Vertex ) );
+//                        output.write( shape.vertices );
+
+            output.write( shape.hasNormal );
+            size = shape.indices.size();
+            output.write( size );
+            output.write( (const unsigned char*)shape.indices.data(),
+                          shape.indices.size() * sizeof( unsigned int ) );
+//                        output.write( shape.indices );
+
+            output.write( shape.name );
+            output.write( shape.material );
+        }
+        output.write( m_materials.size() );
+        for ( const auto& material : m_materials ) {
+            output.write( material );
+        }
+    }
+
+    //    void read( hub::io::Input& input ) {
+    //        input.read( m_nVertice );
+    //        input.read( m_nTriangle );
+    //        input.read( m_nDraw );
+
+    //        input.read( m_name );
+
+    //        m_shapes.clear();
+    //        decltype( m_shapes.size() ) nShape;
+    //        input.read( nShape );
+    //        for ( int iShape = 0; iShape < nShape; ++iShape ) {
+    //            m_shapes.push_back( Shape() );
+    //            auto& shape = m_shapes.back();
+    //            //        for ( const auto& shape : m_shapes ) {
+    //            input.read( shape.vertices );
+    //            input.read( shape.hasNormal );
+    //            input.read( shape.indices );
+    //            input.read( shape.name );
+    //            input.read( shape.material );
+    //        }
+
+    //        m_materials.clear();
+    //        decltype( m_materials.size() ) nMaterial;
+    //        input.read( nMaterial );
+    //        for ( int iMaterial = 0; iMaterial < nMaterial; ++iMaterial ) {
+    //            //        for ( const auto& material : m_materials ) {
+    //            m_materials.push_back( Material() );
+    //            auto& material = m_materials.back();
+    //            input.read( material );
+    //        }
+
+    //        input.read( m_nMesh );
+    //        input.read( m_mesh_triangles );
+    //        input.read( m_mesh_vertices );
+    //        input.read( m_total_triangles );
+    //        input.read( m_total_instances );
+    //        input.read( m_total_draws );
+    //    }
+
+    //    friend void write(hub::io::Output & output, MeshImpl& meshImpl) {
+
+    //    }
 
     friend class Mesh;
 };
 
+// void write( hub::io::Output& output, MeshImpl& meshImpl ) {
+//     output.write(meshImpl.)
+// }
+
 MeshImpl::~MeshImpl() {
-    for ( cgltf_data* cgltfData : m_cgltfData ) {
-        delete cgltfData;
-    }
+    //    for ( cgltf_data* cgltfData : m_cgltfData ) {
+    //        delete cgltfData;
+    //    }
 }
 
 Mesh::Mesh( const Measure& measure ) :
@@ -85,7 +178,7 @@ Mesh::Mesh( const Measure& measure ) :
     assert( m_data != nullptr );
     //    memcpy( m_data, measure.getData(), m_size );
 
-    unpack();
+    //    unpack();
 }
 
 Mesh::Mesh( const Mesh& mesh ) :
@@ -127,6 +220,7 @@ Mesh::Mesh( std::initializer_list<std::string> filePaths ) :
     std::vector<std::string> filenames;
     std::vector<std::string> compressedFilePaths;
 
+    //  pack gltf files to glb (simplify and bake meshes with gltfPack)
     for ( const auto& filePath : filePaths ) {
         // void Mesh::load( const std::string& filePath ) {
         //         std::filesystem::path path(filePath);
@@ -174,7 +268,7 @@ Mesh::Mesh( std::initializer_list<std::string> filePaths ) :
         //        if ( iext == ".gltf" && !
         //        std::experimental::filesystem::exists(compressedFilePath) ) {
 
-        //        if ( true || !std::ifstream { compressedFilePath } ) {
+//        if ( true || !std::ifstream { compressedFilePath } ) {
         if ( !std::ifstream { compressedFilePath } ) {
             if ( iext == ".gltf" ) {
 
@@ -233,94 +327,49 @@ Mesh::Mesh( std::initializer_list<std::string> filePaths ) :
         if ( i != filenames.size() - 1 ) m_pimpl->m_name += " + ";
     }
 
-    std::vector<unsigned char> buff;
+    //    for ( const auto& compressedFilePath : compressedFilePaths ) {
+    //        std::ostringstream buf;
+    //        std::ifstream input( compressedFilePath.c_str() );
+    //        buf << input.rdbuf();
+    //        input.close();
+    //        const auto& fileData = buf.str();
 
-    io::Memory<decltype( buff )> memory( buff );
-    memory.write( m_pimpl->m_name );
+    //        m_rawData = fileData;
+    //        std::cout << "write " << fileData.size() << " bytes to " << cur << " position" <<
+    //        const char * data = fileData.data();
 
-    uint64_t nData = compressedFilePaths.size();
-    memory.write( nData );
+    //        m_fileData.resize(fileData.size());
+    //        for (int i = 0; i < fileData.size(); ++i) {
+    //            m_fileData[i] = fileData.data()[i];
+    //        }
 
-    for ( const auto& compressedFilePath : compressedFilePaths ) {
-        std::ostringstream buf;
-        std::ifstream input( compressedFilePath.c_str() );
-        buf << input.rdbuf();
-        input.close();
-        const auto& fileData = buf.str();
-        //        m_rawData = fileData;
-        //        std::cout << "write " << fileData.size() << " bytes to " << cur << " position" <<
-        //        const char * data = fileData.data();
-
-        //        m_fileData.resize(fileData.size());
-        //        for (int i = 0; i < fileData.size(); ++i) {
-        //            m_fileData[i] = fileData.data()[i];
-        //        }
-
-        //        m_fileData = fileData;
-        //        std::endl;
-        uint64_t dataSize = fileData.size();
-        memory.write( dataSize );
-        memory.write( (unsigned char*)fileData.data(), dataSize );
-        //        memcpy( m_data + cur, fileData.data(), fileData.size() );
-        //        cur += fileData.size();
-    }
-
-    m_data = new unsigned char[buff.size()];
-    m_size = buff.size();
-    memcpy( m_data, buff.data(), m_size );
-
-    unpack();
-}
-
-//{
-//}
-
-void Mesh::unpack() {
-    //    std::cout << "[Mesh] unpack" << std::endl;
-
-    const char* error = 0;
-    //    s_data = readGlb(fileData.c_str(), fileData.size(), s_meshes, s_animations, &error);
-    //    size_t cur               = 0;
-    //    const uint64_t* dataLong = (uint64_t*)m_data;
-    //    const auto nData         = dataLong[cur++];
-    //    //    std::cout << "nData : " << nData << std::endl;
-    //    std::vector<uint64_t> dataSizes( nData );
-    //    //    std::cout << "dataSizes : ";
-    //    for ( int i = 0; i < nData; ++i ) {
-    //        dataSizes[i] = dataLong[cur++];
-    //        //        std::cout << dataSizes[i] << ", ";
+    //        m_fileData = fileData;
+    //        std::endl;
+    //        uint64_t dataSize = fileData.size();
+    //        memory.write( dataSize );
+    //        memory.write( (unsigned char*)fileData.data(), dataSize );
+    //        memcpy( m_data + cur, fileData.data(), fileData.size() );
+    //        cur += fileData.size();
     //    }
 
-    std::vector<unsigned char> buff;
-    buff.insert( buff.begin(), m_data, m_data + m_size );
-    io::Memory<decltype( buff )> memory( buff );
+    std::vector<cgltf_data*> glbCgltfData;
+    std::vector<::Mesh> glbMeshes;
+    std::vector<Animation> glbAnimations;
+    std::vector<std::string> glbNodeNames;
+    const char* error = 0;
 
-    memory.read( m_pimpl->m_name );
-
-    uint64_t nData;
-    memory.read( nData );
-
-    //    std::cout << "[Mesh] unpack " << nData << " data" << std::endl;
-
-    //    uint64_t strLen = dataLong[cur++];
-    //    //    std::cout << std::endl;
-    //    cur = sizeof( uint64_t ) * ( nData + 2 );
-
-    //    unsigned char strBuff[80] = { 0 };
-
-    //    memcpy( strBuff, m_data + cur, strLen );
-    //    m_name = std::string( strBuff, strBuff + strLen );
-    //    cur += m_name.size();
-
-    // unpack gltf data
-    for ( int i = 0; i < nData; ++i ) {
+    // parse glb data
+    //    for ( int i = 0; i < nData; ++i ) {
+    for ( const auto& compressedFilePath : compressedFilePaths ) {
         //        dataSizes[i] = dataLong[cur++];
-        uint64_t dataSize;
-        memory.read( dataSize );
-        char* data = new char[dataSize];
-        memory.read( (unsigned char*)data, dataSize );
+        //        uint64_t dataSize;
+        //        memory.read( dataSize );
+        //        char* data = new char[dataSize];
+        //        memory.read( (unsigned char*)data, dataSize );
 
-        std::cout << "[Mesh] unpack " << dataSize << " bytes from data " << i << std::endl;
+        //        std::cout << "[Mesh] unpack " << dataSize << " bytes from data " << i <<
+        //        std::endl;
+        std::cout << "[Mesh] parse " << compressedFilePath << " file" << std::endl;
 
         //        std::vector<int> fileData;
         //        fileData.resize(dataSize);
@@ -350,16 +399,14 @@ void Mesh::unpack() {
         //            (const char*)m_rawData.data(), dataSize, m_pimpl->m_meshes,
         //            m_pimpl->m_animations, &error );
 
-        std::cout << "readGlb size = " << dataSize << std::endl;
-        gltfData = readGlb(
-            (const char*)data, dataSize, m_pimpl->m_meshes, m_pimpl->m_animations, &error );
+        //        std::cout << "readGlb size = " << dataSize << std::endl;
+        //        gltfData = readGlb(
+        //            (const char*)data, dataSize, m_pimpl->m_meshes, m_pimpl->m_animations, &error
+        //            );
         //        assert( m_compressedFilePaths.size() == 1 );
         //        std::cout << "parseGlb started" << std::endl;
 
-        //        gltfData = parseGlb( m_compressedFilePaths.at( 0 ).c_str(),
-        //                             m_pimpl->m_meshes,
-        //                             m_pimpl->m_animations,
-        //                             &error );
+        gltfData = parseGlb( compressedFilePath.c_str(), glbMeshes, glbAnimations, &error );
 
         //        std::cout << "parseGlb ended" << std::endl;
         //        gltfData = parseGltf(
@@ -409,37 +456,23 @@ void Mesh::unpack() {
 
         //        std::cout << "nNodes : " << gltfData->nodes_count << std::endl;
         //    std::vector<std::string> nodeNames;
-        m_pimpl->m_nodeNames.reserve( gltfData->nodes_count );
+        glbNodeNames.reserve( gltfData->nodes_count );
         for ( int i = 0; i < gltfData->nodes_count; ++i ) {
             const auto& node = gltfData->nodes[i];
             if ( node.name != nullptr ) {
                 //                std::cout << "node " << i << ", name : " << node.name <<
                 //                std::endl;
-                m_pimpl->m_nodeNames.emplace_back( node.name );
-
-                //            assert(node.has_mesh_gpu_instancing);
-                //            assert(node.mesh != nullptr);
-                //                if ( node.mesh != nullptr ) {
-                //                    const auto& mesh = *node.mesh;
-                //                    std::cout << "node " << i << ", nPrimitive : " <<
-                //                    mesh.primitives_count
-                //                              << std::endl;
-                //				gltfData->memory.free_func(gltfData->memory.user_data,
-                // gltfData->meshes[i].primitives[j].attributes[k].name);
-                //        std::cout << i << " nTriangle : " << mesh.indices.size() / 3 <<
-                //        std::endl; std::cout << i << " nVertice : " <<
-                //        mesh.streams[0].gltfData.size() << std::endl;
-                //                }
+                glbNodeNames.emplace_back( node.name );
             }
         }
-        m_pimpl->m_cgltfData.push_back( gltfData );
+        glbCgltfData.push_back( gltfData );
         //        m_pimpl->m_cgltfData = gltfData;
         //        std::cout << "end loop" << std::endl;
 
         //        delete[] data;
     }
 
-    assert( memory.isEnd() );
+    //    assert( memory.isEnd() );
 
     if ( error ) {
         fprintf( stderr, "Error loading: %s\n", error );
@@ -451,7 +484,7 @@ void Mesh::unpack() {
     //    std::cout << "mesh" << std::endl;
     // get mesh info
     int iMesh = 0;
-    for ( const auto& mesh : m_pimpl->m_meshes ) {
+    for ( const auto& mesh : glbMeshes ) {
 
         //        const std::string header = "[Mesh:" + std::to_string( iMesh ) + "] ";
         assert( mesh.nodes.size() == 1 );
@@ -488,18 +521,19 @@ void Mesh::unpack() {
     //    std::cout << "material" << std::endl;
     // unpack to internal material representation
     //    std::vector<Material> materials;
-//    std::cout << "nMaterial : " << s_data->materials_count << std::endl;
-    for ( int g = 0; g < m_pimpl->m_cgltfData.size(); ++g ) {
-        const auto* gltfData = m_pimpl->m_cgltfData.at( g );
+    //    std::cout << "nMaterial : " << s_data->materials_count << std::endl;
+    for ( int g = 0; g < glbCgltfData.size(); ++g ) {
+        const auto* gltfData = glbCgltfData.at( g );
 
-//    std::cout << "nMaterial : " << gltfData->materials_count << std::endl;
+        //    std::cout << "nMaterial : " << gltfData->materials_count << std::endl;
         for ( int i = 0; i < gltfData->materials_count; ++i ) {
             const auto& gltfMaterial = gltfData->materials[i];
             m_pimpl->m_materials.push_back( Material() );
             //            auto& material           = materials.at( i );
             auto& material = m_pimpl->m_materials.back();
             material.name  = gltfMaterial.name;
-//            std::cout << "[Mesh] gltfMaterial " << i << " = " << material.name << std::endl;
+            //            std::cout << "[Mesh] gltfMaterial " << i << " = " << material.name <<
+            //            std::endl;
             for ( int j = 0; j < 3; ++j ) {
                 material.Kd[j] = gltfMaterial.pbr_metallic_roughness.base_color_factor[j];
                 //                gltfMaterial.clearcoat;
@@ -511,17 +545,17 @@ void Mesh::unpack() {
         }
     }
 
-//        for ( int i = 0; i < m_pimpl->m_materials.size(); ++i ) {
-//            const auto& material = m_pimpl->m_materials.at( i );
-//            std::cout << "[Mesh] material " << i << " = " << material.name << std::endl;
-//        }
+    //        for ( int i = 0; i < m_pimpl->m_materials.size(); ++i ) {
+    //            const auto& material = m_pimpl->m_materials.at( i );
+    //            std::cout << "[Mesh] material " << i << " = " << material.name << std::endl;
+    //        }
 
     //    std::vector<Shape> shapes( m_pimpl->m_meshes.size() );
 
     //    std::cout << "shape total : " << m_pimpl->m_meshes.size() << std::endl;
     // unpack to internal shape representation
     iMesh = 0;
-    for ( const auto& mesh : m_pimpl->m_meshes ) {
+    for ( const auto& mesh : glbMeshes ) {
         //        std::cout << "mesh " << iMesh << std::endl;
 
         m_pimpl->m_shapes.push_back( Shape() );
@@ -530,8 +564,8 @@ void Mesh::unpack() {
         shape.hasNormal     = false;
         auto& shapeVertices = shape.vertices;
         auto& shapeIndices  = shape.indices;
-        assert( iMesh < m_pimpl->m_nodeNames.size() );
-        const auto& nodeName = m_pimpl->m_nodeNames.at( iMesh );
+        assert( iMesh < glbNodeNames.size() );
+        const auto& nodeName = glbNodeNames.at( iMesh );
 
         bool hasVertex = false;
         assert( mesh.nodes.size() == 1 );
@@ -581,57 +615,236 @@ void Mesh::unpack() {
         //    }
 
         //        shape.material = std::distance( m_pimpl->m_cgltfData->materials, mesh.material );
-//        std::cout << "[Mesh] mesh " << iMesh << " material name = " << mesh.material->name << std::endl;
+        //        std::cout << "[Mesh] mesh " << iMesh << " material name = " << mesh.material->name
+        //        << std::endl;
         shape.material = -1;
-        for ( int iMaterial = 0; iMaterial < m_pimpl->m_materials.size(); ++iMaterial ) {
-            const auto& material = m_pimpl->m_materials.at( iMaterial );
-//            if ( material.name == mesh.material->name ) {
-            if ( ! strcmp(material.name, mesh.material->name) ) {
-//                std::cout << "[Mesh] found match '" << material.name << "'" << std::endl;
-                shape.material = iMaterial;
-                break;
+        if ( mesh.material != nullptr ) {
+            for ( int iMaterial = 0; iMaterial < m_pimpl->m_materials.size(); ++iMaterial ) {
+                const auto& material = m_pimpl->m_materials.at( iMaterial );
+                //            if ( material.name == mesh.material->name ) {
+                if ( !strcmp( material.name, mesh.material->name ) ) {
+                    //                std::cout << "[Mesh] found match '" << material.name << "'" <<
+                    //                std::endl;
+                    shape.material = iMaterial;
+                    break;
+                }
             }
+            assert( shape.material != -1 );
         }
-        assert( shape.material != -1 );
         //        shape.material = mesh.material->name;
         //        m_pimpl->m_nTriangle += mesh.indices.size() / 3;
-//        std::cout << "[Mesh] mesh " << iMesh << " material id = " << shape.material  << std::endl;
+        //        std::cout << "[Mesh] mesh " << iMesh << " material id = " << shape.material  <<
+        //        std::endl;
         ++iMesh;
     }
 
-    //    std::cout << "end" << std::endl;
+    for ( size_t i = 0; i < glbMeshes.size(); ++i ) {
+        const ::Mesh& mesh = glbMeshes[i];
 
-    //    memory.read( m_name );
-    //    std::string fileObjTxtReaded;
-    //    memory.read( fileObjTxtReaded );
-    //    std::string fileMtlTxtReaded;
-    //    memory.read( fileMtlTxtReaded );
+        m_pimpl->m_mesh_triangles += mesh.indices.size() / 3;
+        m_pimpl->m_mesh_vertices += mesh.streams.empty() ? 0 : mesh.streams[0].data.size();
 
+        size_t instances = std::max( size_t( 1 ), mesh.nodes.size() + mesh.instances.size() );
+
+        m_pimpl->m_total_triangles += mesh.indices.size() / 3 * instances;
+        m_pimpl->m_total_instances += instances;
+        m_pimpl->m_total_draws += std::max( size_t( 1 ), mesh.nodes.size() );
+    }
+    m_pimpl->m_nMesh = glbMeshes.size();
+
+    std::vector<unsigned char> buff;
+
+    io::Memory<decltype( buff )> memory( buff );
+    //    memory.write( m_pimpl->m_name );
+    //    memory.write(m_pimpl);
+    //    write( memory, *m_pimpl );
+    //    memory.write(*m_pimpl);
+    m_pimpl->write( memory );
+
+    //    //    uint64_t nData = compressedFilePaths.size();
+    //    //    memory.write( nData );
+
+    m_data = new unsigned char[buff.size()];
+    m_size = buff.size();
+    memcpy( m_data, buff.data(), m_size );
+
+    //    unpack();
+    //    m_unpacked = true;
+}
+
+//{
+//}
+
+void Mesh::unpack( bool headerOnly ) const {
+    //    memcpy(m_pimpl.get(), m_data, sizeof(size_t) * 9);
+
+    const auto start = std::chrono::high_resolution_clock::now();
+
+    std::vector<unsigned char> buff;
+    buff.insert( buff.begin(), m_data, m_data + m_size );
+    io::Memory<decltype( buff )> memory( buff );
+
+    //    void read( hub::io::Input& input ) {
+    memory.read( m_pimpl->m_nVertice );
+    memory.read( m_pimpl->m_nTriangle );
+    memory.read( m_pimpl->m_nDraw );
+
+    memory.read( m_pimpl->m_nMesh );
+    memory.read( m_pimpl->m_mesh_triangles );
+    memory.read( m_pimpl->m_mesh_vertices );
+    memory.read( m_pimpl->m_total_triangles );
+    memory.read( m_pimpl->m_total_instances );
+    memory.read( m_pimpl->m_total_draws );
+
+    memory.read( m_pimpl->m_name );
+
+    if ( !headerOnly ) {
+        m_pimpl->m_shapes.clear();
+        decltype( m_pimpl->m_shapes.size() ) nShape;
+        memory.read( nShape );
+        for ( int iShape = 0; iShape < nShape; ++iShape ) {
+            m_pimpl->m_shapes.push_back( Shape() );
+            auto& shape = m_pimpl->m_shapes.back();
+            //        for ( const auto& shape : m_shapes ) {
+
+            uint64_t size;
+            memory.read( size );
+            shape.vertices.resize( size );
+            memory.read( (unsigned char*)shape.vertices.data(),
+                         shape.vertices.size() * sizeof( Vertex ) );
+//            memory.read( shape.vertices );
+
+            memory.read( shape.hasNormal );
+
+            memory.read( size );
+            shape.indices.resize( size );
+            memory.read( (unsigned char*)shape.indices.data(),
+                         shape.indices.size() * sizeof( unsigned int ) );
+//            memory.read( shape.indices );
+
+            memory.read( shape.name );
+            memory.read( shape.material );
+        }
+
+        m_pimpl->m_materials.clear();
+        decltype( m_pimpl->m_materials.size() ) nMaterial;
+        memory.read( nMaterial );
+        for ( int iMaterial = 0; iMaterial < nMaterial; ++iMaterial ) {
+            //        for ( const auto& material : m_materials ) {
+            m_pimpl->m_materials.push_back( Material() );
+            auto& material = m_pimpl->m_materials.back();
+            memory.read( material );
+        }
+        const auto end = std::chrono::high_resolution_clock::now();
+        const auto& duration =
+            std::chrono::duration_cast<std::chrono::milliseconds>( end - start ).count();
+        std::cout << "[Mesh] unpack scene " << int(m_size / 1'000'000.0) << " Mo in " << duration << " ms" << std::endl;
+        assert( memory.isEnd() );
+    }
+    //    }
+    //        memory.read( *m_pimpl );
+    //    m_pimpl->read( memory );
+    //    m_pimpl->readFull( memory );
     //    assert( memory.isEnd() );
 
-    //    //    std::string inputfile = "cornell_box.obj";
-    //    tinyobj::ObjReaderConfig reader_config;
-    //    //    reader_config.mtl_search_path = "./"; // Path to material files
-    //    reader_config.mtl_search_path = dirPath; // Path to material files
+    //    uint64_t nData;
+    //    memory.read( nData );
 
-    //    tinyobj::ObjReader reader;
-
-    //    if ( !reader.ParseFromFile( fileObjPath, reader_config ) ) {
-    //        if ( !reader.Error().empty() ) { std::cerr << "TinyObjReader: " << reader.Error(); }
-    //        exit( 1 );
-    //    }
-    //    if ( !reader.ParseFromString( fileObjTxtReaded, fileMtlTxtReaded ) ) {
-    //        if ( !reader.Error().empty() ) { std::cerr << "TinyObjReader: " << reader.Error(); }
-    //        exit( 1 );
-    //    }
-
-    //    if ( !reader.Warning().empty() ) { std::cout << "TinyObjReader: " << reader.Warning(); }
-
-    //    m_attrib = reader.GetAttrib();
-    //    m_shapes = reader.GetShapes();
-
-    //    m_materials = reader.GetMaterials();
+    //    std::cout << "[Mesh] unpack " << m_size << " bytes" << std::endl;
+    //    m_unpacked = true;
 }
+
+// void Mesh::unpackScene() const {
+//     std::vector<unsigned char> buff;
+//     buff.insert( buff.begin(), m_data, m_data + m_size );
+//     io::Memory<decltype( buff )> memory( buff );
+
+//    //        memory.read( *m_pimpl );
+//    m_pimpl->read( memory );
+//    //    m_pimpl->readFull( memory );
+//    assert( memory.isEnd() );
+
+//    //    uint64_t nData;
+//    //    memory.read( nData );
+
+//    std::cout << "[Mesh] unpack " << m_size << " bytes" << std::endl;
+//    m_unpacked = true;
+//}
+
+// void Mesh::unpack() const {
+//     //    std::cout << "[Mesh] unpack" << std::endl;
+
+//    //    const char* error = 0;
+//    //    s_data = readGlb(fileData.c_str(), fileData.size(), s_meshes, s_animations, &error);
+//    //    size_t cur               = 0;
+//    //    const uint64_t* dataLong = (uint64_t*)m_data;
+//    //    const auto nData         = dataLong[cur++];
+//    //    //    std::cout << "nData : " << nData << std::endl;
+//    //    std::vector<uint64_t> dataSizes( nData );
+//    //    //    std::cout << "dataSizes : ";
+//    //    for ( int i = 0; i < nData; ++i ) {
+//    //        dataSizes[i] = dataLong[cur++];
+//    //        //        std::cout << dataSizes[i] << ", ";
+//    //    }
+
+//    std::vector<unsigned char> buff;
+//    buff.insert( buff.begin(), m_data, m_data + m_size );
+//    io::Memory<decltype( buff )> memory( buff );
+
+//    //        memory.read( *m_pimpl );
+//    m_pimpl->read( memory );
+////    m_pimpl->readFull( memory );
+//    assert( memory.isEnd() );
+
+//    //    uint64_t nData;
+//    //    memory.read( nData );
+
+//    std::cout << "[Mesh] unpack " << m_size << " bytes" << std::endl;
+//    m_unpacked = true;
+
+//    //    uint64_t strLen = dataLong[cur++];
+//    //    //    std::cout << std::endl;
+//    //    cur = sizeof( uint64_t ) * ( nData + 2 );
+
+//    //    unsigned char strBuff[80] = { 0 };
+
+//    //    memcpy( strBuff, m_data + cur, strLen );
+//    //    m_name = std::string( strBuff, strBuff + strLen );
+//    //    cur += m_name.size();
+
+//    //    std::cout << "end" << std::endl;
+
+//    //    memory.read( m_name );
+//    //    std::string fileObjTxtReaded;
+//    //    memory.read( fileObjTxtReaded );
+//    //    std::string fileMtlTxtReaded;
+//    //    memory.read( fileMtlTxtReaded );
+
+//    //    assert( memory.isEnd() );
+
+//    //    //    std::string inputfile = "cornell_box.obj";
+//    //    tinyobj::ObjReaderConfig reader_config;
+//    //    //    reader_config.mtl_search_path = "./"; // Path to material files
+//    //    reader_config.mtl_search_path = dirPath; // Path to material files
+
+//    //    tinyobj::ObjReader reader;
+
+//    //    if ( !reader.ParseFromFile( fileObjPath, reader_config ) ) {
+//    //        if ( !reader.Error().empty() ) { std::cerr << "TinyObjReader: " << reader.Error(); }
+//    //        exit( 1 );
+//    //    }
+//    //    if ( !reader.ParseFromString( fileObjTxtReaded, fileMtlTxtReaded ) ) {
+//    //        if ( !reader.Error().empty() ) { std::cerr << "TinyObjReader: " << reader.Error(); }
+//    //        exit( 1 );
+//    //    }
+
+//    //    if ( !reader.Warning().empty() ) { std::cout << "TinyObjReader: " << reader.Warning(); }
+
+//    //    m_attrib = reader.GetAttrib();
+//    //    m_shapes = reader.GetShapes();
+
+//    //    m_materials = reader.GetMaterials();
+//}
 
 // void Mesh::pack() {}
 
@@ -663,6 +876,10 @@ void Mesh::unpack() {
 //}
 
 std::string Mesh::to_string() const {
+    //    if ( !m_unpacked ) unpack();
+    if ( m_pimpl->m_name == "" ) unpack();
+    assert( m_pimpl->m_name != "" );
+
     std::string str = "";
     str += "'" + m_pimpl->m_name + "'";
     str += ", draw:" + std::to_string( m_pimpl->m_nDraw );
@@ -692,20 +909,42 @@ std::string Mesh::to_string() const {
 }
 
 const std::vector<Shape>& Mesh::getShapes() const {
+    //    if ( !m_unpacked ) unpack();
+    if ( m_pimpl->m_shapes.empty() ) unpack( false );
+    assert( !m_pimpl->m_shapes.empty() );
+
     return m_pimpl->m_shapes;
 }
 
 const std::vector<Material>& Mesh::getMaterials() const {
+    if ( m_pimpl->m_shapes.empty() ) unpack( false );
+    assert( !m_pimpl->m_shapes.empty() );
+
     return m_pimpl->m_materials;
 }
 
 void Mesh::printStats() const {
+    if ( m_pimpl->m_name == "" ) unpack();
+    assert( m_pimpl->m_name != "" );
+
     std::cout << "mesh statistics:" << std::endl;
-    printMeshStats( m_pimpl->m_meshes, m_pimpl->m_name.c_str() );
+    //    printMeshStats( m_pimpl->m_meshes, m_pimpl->m_name.c_str() );
+    printf( "%s: %d mesh primitives (%d triangles, %d vertices); %d draw calls (%d instances, %lld "
+            "triangles)\n",
+            m_pimpl->m_name.c_str(),
+            int( m_pimpl->m_nMesh ),
+            int( m_pimpl->m_mesh_triangles ),
+            int( m_pimpl->m_mesh_vertices ),
+            int( m_pimpl->m_total_draws ),
+            int( m_pimpl->m_total_instances ),
+            (long long)m_pimpl->m_total_triangles );
     std::cout << "-----------------" << std::endl;
 }
 
 void Mesh::printInfo() const {
+    if ( m_pimpl->m_shapes.empty() ) unpack( false );
+    assert( !m_pimpl->m_shapes.empty() );
+
     const auto& shapes    = getShapes();
     const auto& materials = getMaterials();
 
@@ -727,10 +966,11 @@ void Mesh::printInfo() const {
         std::cout << "material id " << shape.material << std::endl;
         std::cout << "has normal " << shape.hasNormal << std::endl;
 
-//        for ( int i = 0; i < shape.vertices.size(); ++i ) {
-//            const auto& vertex = shape.vertices.at( i );
-//            std::cout << "v: " << vertex.px << " " << vertex.py << " " << vertex.pz << std::endl;
-//        }
+        //        for ( int i = 0; i < shape.vertices.size(); ++i ) {
+        //            const auto& vertex = shape.vertices.at( i );
+        //            std::cout << "v: " << vertex.px << " " << vertex.py << " " << vertex.pz <<
+        //            std::endl;
+        //        }
     }
 }
 

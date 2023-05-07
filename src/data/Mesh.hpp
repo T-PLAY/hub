@@ -79,13 +79,16 @@ class SRC_API Mesh : public Measure
     void printInfo() const;
 
   private:
-    void unpack();
+    void unpack(bool headerOnly = true) const;
+//    void unpackHeader() const;
+//    void unpackScene() const;
+//    mutable bool m_unpacked = false;
 //    void pack();
 
 //    std::string m_name;
 //    Mesh_internal m_internal;
-
 //    std::unique_ptr<MeshImpl> m_pimpl;
+
     std::shared_ptr<MeshImpl> m_pimpl;
 //    MeshImpl * m_pimpl = nullptr;
 
