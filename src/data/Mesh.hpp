@@ -11,7 +11,6 @@
 // #define TINYOBJLOADER_USE_MAPBOX_EARCUT
 // #include "tiny_obj_loader.h"
 
-
 namespace hub {
 namespace data {
 
@@ -89,6 +88,7 @@ class SRC_API Mesh : public Measure
 //    std::string m_name;
 //    Mesh_internal m_internal;
 //    std::unique_ptr<MeshImpl> m_pimpl;
+
 
     std::shared_ptr<MeshImpl> m_pimpl;
 //    MeshImpl * m_pimpl = nullptr;

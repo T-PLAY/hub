@@ -4,6 +4,7 @@
 // #include <filesystem>
 #include <chrono>
 #include <iostream>
+#include <set>
 
 #include "io/Memory.hpp"
 
@@ -555,6 +556,7 @@ Mesh::Mesh( std::initializer_list<std::string> filePaths ) :
 
     //    std::cout << "shape total : " << m_pimpl->m_meshes.size() << std::endl;
     // unpack to internal shape representation
+    std::set<std::string> dejaVu;
     iMesh = 0;
     for ( const auto& mesh : glbMeshes ) {
         //        std::cout << "mesh " << iMesh << std::endl;
@@ -565,8 +567,21 @@ Mesh::Mesh( std::initializer_list<std::string> filePaths ) :
         shape.hasNormal     = false;
         auto& shapeVertices = shape.vertices;
         auto& shapeIndices  = shape.indices;
-        assert( iMesh < glbNodeNames.size() );
-        const auto& nodeName = glbNodeNames.at( iMesh );
+//        assert( iMesh < glbNodeNames.size() );
+//        const auto& nodeName = glbNodeNames.at( iMesh );
+        const auto* nodeName = mesh.nodes.at(0)->name;
+        assert(nodeName != nullptr);
+        std::string shapeName = nodeName;
+
+        if (dejaVu.find(nodeName) != dejaVu.end()) {
+            int iShapeDejaVu = 2;
+            while (dejaVu.find(shapeName + std::to_string(iShapeDejaVu)) != dejaVu.end()) {
+                ++iShapeDejaVu;
+            }
+            shapeName = shapeName + std::to_string(iShapeDejaVu);
+        }
+
+        dejaVu.insert(shapeName);
 
         bool hasVertex = false;
         assert( mesh.nodes.size() == 1 );
@@ -607,7 +622,7 @@ Mesh::Mesh( std::initializer_list<std::string> filePaths ) :
         assert( hasVertex );
 
         shapeIndices = mesh.indices;
-        shape.name   = nodeName;
+        shape.name   = shapeName;
         //    std::cout << "nMaterial : " << s_data->materials_count << std::endl;
         //    for ( int i = 0; i < s_data->materials_count; ++i ) {
         //        const auto& material = s_data->materials[i];
