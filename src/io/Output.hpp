@@ -47,7 +47,8 @@ class SRC_API Output
 //    virtual ~Output() = default;
     virtual ~Output();
 
-  protected:
+//  protected:
+  public:
     ///
     /// \brief write
     /// function describes how to write data through the communication bus.
@@ -226,7 +227,7 @@ inline void Output::write( const std::vector<T>& vector ) {
     std::cout << "[Output] write(std::vector)" << std::endl;
 #endif
 
-    int nbEl = static_cast<int>( vector.size() );
+    uint64_t nbEl = static_cast<uint64_t>( vector.size() );
     write( nbEl );
 
     for ( const T& el : vector ) {

@@ -9,6 +9,8 @@
 // #include <typeinfo>
 // #include <vector>
 
+#include <cstdlib>
+
 #include "Acquisition.hpp"
 #include "Any.hpp"
 #include "Macros.hpp"
@@ -136,6 +138,10 @@ Container getAll();
     ///
     template <class T>
     void read( std::vector<T>& vector );
+
+//    template <class T>
+//    void readBuffer( s ) {
+//    }
 
     ///
     /// \brief read
@@ -298,7 +304,7 @@ inline void Input::read( std::vector<T>& vector ) {
     std::cout << "[Input] read(std::vector)" << std::endl;
 #endif
 
-    int nbEl;
+    uint64_t nbEl;
     read( nbEl );
 
     vector.clear();
