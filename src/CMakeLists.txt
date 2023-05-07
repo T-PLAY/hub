@@ -101,6 +101,10 @@ if(MINGW)
     endif()
 elseif(WIN32)
     if (MSVC)
+#        get_target_property(rname ${PROJECT_NAME} RUNTIME_OUTPUT_NAME)
+#        get_target_property(rdir ${PROJECT_NAME} RUNTIME_OUTPUT_DIRECTORY)
+#        message("rname: ${rname}")  # rname: rname-NOTFOUND
+#        message("rdir: ${rdir}")  # rdir: rdir-NOTFOUND
     else()
         message(FATAL_ERROR "unsupported compiler ${CMAKE_CXX_COMPILER_ID}")
     endif()
@@ -144,7 +148,7 @@ else()
         install(
             TARGETS ${PROJECT_NAME}
             EXPORT ${PROJECT_NAME}
-            DESTINATION ${ARCHITECTURE}/bin # Linux
+#            DESTINATION ${ARCHITECTURE}/bin # Linux
             RUNTIME DESTINATION ${ARCHITECTURE}/bin # Windows
 #            DESTINATION ${ARCHITECTURE}/bin
         )
@@ -343,3 +347,28 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
     endforeach()
 
 endif()
+
+#        install(CODE [[
+#        file(GET_RUNTIME_DEPENDENCIES
+#            LIBRARIES $<TARGET_FILE:hubd>
+#            RESOLVED_DEPENDENCIES_VAR _r_deps
+#            UNRESOLVED_DEPENDENCIES_VAR _u_deps
+#            CONFLICTING_DEPENDENCIES_PREFIX conflict
+#            DIRECTORIES $<TARGET_PROPERTY:hubd,RUNTIME_OUTPUT_DIRECTORY>
+#            PRE_INCLUDE_REGEXES "^.*([Hh][Dd][Ff][5]|[Hh][5][Gg][Ee][Oo]).*$"
+#            PRE_EXCLUDE_REGEXES "[^\n]+"
+#          )
+#          foreach(_file ${_r_deps})
+#            message(STATUS "Dependency R: ${_file}")
+#          endforeach()
+
+#          foreach(_file ${_u_deps})
+#            message(STATUS "Dependency U: ${_file}")
+#          endforeach()
+
+#          foreach(_file ${conflict_FILENAMES})
+#            message(STATUS "Conflict: ${_file}")
+#          endforeach()
+
+#          message("RUNTIME_OUTPUT_DIRECTORY: $<TARGET_PROPERTY:hubd,RUNTIME_OUTPUT_DIRECTORY>")    # shows empty
+#          ]])
