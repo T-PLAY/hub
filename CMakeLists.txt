@@ -2,9 +2,9 @@ cmake_minimum_required(VERSION 3.8)
 
 project(hub)
 
-set(HUB_ONLY 0)
+set(HUB_IS_ROOT 0)
 if (CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
-    set(HUB_ONLY 1)
+    set(HUB_IS_ROOT 1)
 endif()
 
 #set(CMAKE_CXX_STANDARD 11 CACHE STRING "C++ standard to be used")
@@ -40,7 +40,7 @@ else()
 		set(ARCHITECTURE "x64")
 	endif()
 endif()
-#if (HUB_ONLY)
+#if (HUB_IS_ROOT)
     message(STATUS "Architecture: ${ARCHITECTURE}")
 #endif()
 
@@ -82,9 +82,10 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Debug")
 endif()
 
-if(NOT CMAKE_INSTALL_PREFIX OR CMAKE_INSTALL_PREFIX STREQUAL "/usr/local")
+#if(NOT CMAKE_INSTALL_PREFIX OR CMAKE_INSTALL_PREFIX STREQUAL "/usr/local")
 #if(NOT CMAKE_INSTALL_PREFIX)
-    set(CMAKE_INSTALL_PREFIX "install" CACHE PATH "Install path prefix." FORCE)
+if (HUB_IS_ROOT)
+    set(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}/install" CACHE PATH "Install path prefix." FORCE)
 endif()
 
 set(CMAKE_DEBUG_POSTFIX d)

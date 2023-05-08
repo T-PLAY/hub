@@ -197,6 +197,10 @@ Container getAll();
     //    void read( data::Measure& measure ) = delete;
     void read( data::Measure& measure );
 
+#ifdef ARCH_X86
+    void read(size_t size) = delete; // non compatible format 32/64 bit
+#endif
+
 
   public:
 

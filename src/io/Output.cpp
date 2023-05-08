@@ -9,6 +9,7 @@
 // #include "Acquisition.hpp"
 // #include "SensorSpec.hpp"
 #include "Any.hpp"
+#include "Info.hpp"
 
 namespace hub {
 namespace io {
@@ -43,6 +44,14 @@ void Output::write( const SensorSpec& sensorSpec ) {
 #ifdef DEBUG_OUTPUT
     std::cout << "[Output] write(SensorSpec)" << std::endl;
 #endif
+
+    char magicNumber[80] = {0};
+    constexpr char joker = ' ';
+    memset(magicNumber, joker, 80);
+    sprintf (magicNumber, "%c%c%c %d.%d.%d", 'H', 'U', 'B', hub::s_versionMajor, hub::s_versionMinor, hub::s_versionPatch);
+    assert(strlen(magicNumber) < 80);
+    magicNumber[strlen(magicNumber)] = joker;
+    write((unsigned char*)magicNumber, 80);
 
     write( sensorSpec.getSensorName() );
     write( sensorSpec.getResolutions() );
