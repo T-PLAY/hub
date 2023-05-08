@@ -63,6 +63,7 @@ class MeshImpl
     //    std::vector<Animation> m_animations;
     //    std::vector<std::string> m_nodeNames;
     uint64_t m_nVertice  = 0;
+//    size_t m_nVertice = 0;
     uint64_t m_nTriangle = 0;
     uint64_t m_nDraw     = 0;
 
@@ -91,7 +92,8 @@ class MeshImpl
         output.write( m_total_draws );
 
         output.write( m_name );
-        output.write( m_shapes.size() );
+//        uint64_t shapeSize = m_shapes.size();
+        output.write( (uint64_t)m_shapes.size() );
         for ( const auto& shape : m_shapes ) {
             uint64_t size = shape.vertices.size();
             output.write( size );
@@ -109,7 +111,7 @@ class MeshImpl
             output.write( shape.name );
             output.write( shape.material );
         }
-        output.write( m_materials.size() );
+        output.write( (uint64_t)m_materials.size() );
         for ( const auto& material : m_materials ) {
             output.write( material );
         }
@@ -718,7 +720,8 @@ void Mesh::unpack( bool headerOnly ) const {
 
     if ( !headerOnly ) {
         m_pimpl->m_shapes.clear();
-        decltype( m_pimpl->m_shapes.size() ) nShape;
+//        decltype( m_pimpl->m_shapes.size() ) nShape;
+        uint64_t nShape;
         memory.read( nShape );
         for ( int iShape = 0; iShape < nShape; ++iShape ) {
             m_pimpl->m_shapes.push_back( Shape() );
@@ -747,7 +750,8 @@ void Mesh::unpack( bool headerOnly ) const {
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
         m_pimpl->m_materials.clear();
-        decltype( m_pimpl->m_materials.size() ) nMaterial;
+//        decltype( m_pimpl->m_materials.size() ) nMaterial;
+        uint64_t nMaterial;
         memory.read( nMaterial );
         for ( int iMaterial = 0; iMaterial < nMaterial; ++iMaterial ) {
             //        for ( const auto& material : m_materials ) {

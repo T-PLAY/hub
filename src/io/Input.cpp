@@ -2,6 +2,7 @@
 
 #include "Any.hpp"
 #include "data/Measure.hpp"
+#include "Info.hpp"
 
 namespace hub {
 namespace io {
@@ -38,6 +39,26 @@ void Input::read( std::string& str ) {
 void Input::read( SensorSpec& sensorSpec ) {
     assert(isOpen());
     assert(!isEnd());
+
+    char magicNumber[80] = {0};
+    read((unsigned char*)magicNumber, 80);
+    int versionMajor;
+    int versionMinor;
+    int versionPatch;
+    char h;
+    char u;
+    char b;
+    sscanf(magicNumber, "%c%c%c %d.%d.%d", &h, &u, &b, &versionMajor, &versionMinor, &versionPatch);
+//    assert(! strcmp(header, "HUB"));
+    assert(h == 'H');
+    assert(u == 'U');
+    assert(b == 'B');
+    assert(versionMajor <= hub::s_versionMajor);
+    assert(versionMinor <= hub::s_versionMinor);
+    assert(versionPatch <= hub::s_versionPatch);
+//    assert(versionMajor == hub::s_versionMajor);
+//    assert(versionMinor == hub::s_versionMinor);
+//    assert(versionPatch == hub::s_versionPatch);
 
     std::string sensorName;
     Resolutions resolutions;
