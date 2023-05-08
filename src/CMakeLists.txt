@@ -226,8 +226,8 @@ target_include_directories(${PROJECT_NAME}
 #target_compile_definitions(${PROJECT_NAME} PUBLIC -DHUB_VERSION=\"${hub_VERSION}\")
 #set (HUB_VERSION STRING ${hub_VERSION})
 
-string(TIMESTAMP DATE "%Y/%m/%d %H:%M UTC%z")
-#message(STATUS ${DATE})
+string(TIMESTAMP DATE "%Y/%m/%d %H:%M UTC+0" UTC)
+#message(STATUS "###############${DATE}")
 
 configure_file (
     "${CMAKE_CURRENT_SOURCE_DIR}/Version.h.in"
