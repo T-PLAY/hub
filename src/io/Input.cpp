@@ -48,7 +48,10 @@ void Input::read( SensorSpec& sensorSpec ) {
     char h;
     char u;
     char b;
-    sscanf(magicNumber, "%c%c%c %d.%d.%d", &h, &u, &b, &versionMajor, &versionMinor, &versionPatch);
+//    wchar_t wc;
+//    sscanf(magicNumber, "%c%c%c %d.%d.%d", &h, &u, &b, &versionMajor, &versionMinor, &versionPatch);
+    sscanf_s(magicNumber, "%c%c%c %d.%d.%d", &h, 1, &u, 1, &b, 1, &versionMajor, &versionMinor, &versionPatch);
+//    sscanf_s(magicNumber, "%c%c%c %d.%d.%d", &h, &u, &b, &versionMajor, &versionMinor, &versionPatch, (unsigned)_countof(magicNumber));
 //    assert(! strcmp(header, "HUB"));
     assert(h == 'H');
     assert(u == 'U');
