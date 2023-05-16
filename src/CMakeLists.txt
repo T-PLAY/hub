@@ -55,6 +55,7 @@ if(HUB_BUILD_STATIC_LIBRARY)
     add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})
     target_compile_definitions(${PROJECT_NAME} PUBLIC -DSRC_STATIC)
     set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE ON) # octave
+
 else()
     add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
     target_compile_definitions(${PROJECT_NAME} PUBLIC -DSRC_EXPORTS)
@@ -62,12 +63,16 @@ endif()
 
 target_compile_definitions(${PROJECT_NAME} PUBLIC -DINTERNAL_BUILD)
 
+#set (${PROJECT_NAME}_VERSION "${${PROJECT_NAME}_VERSION_MAJOR}.${${PROJECT_NAME}_VERSION_MINOR}.${${PROJECT_NAME}_VERSION_PATCH}")
 set_target_properties(${PROJECT_NAME} PROPERTIES
 #        VERSION ${PROJECT_VERSION}
-        SOVERSION 1
+        #SOVERSION 1
+        SOVERSION ${${PROJECT_NAME}_VERSION_MAJOR}
 #        VERSION 1.0.0
         VERSION ${${PROJECT_NAME}_VERSION}
 )
+
+#if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC" AND CMAKE_BUILD_TYPE MATCHES "Release")
 
 if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
     target_compile_definitions(${PROJECT_NAME} PUBLIC -DDEBUG)
@@ -143,8 +148,24 @@ if (HUB_BUILD_STATIC_LIBRARY)
 #            DESTINATION lib/${ARCHITECTURE}
             DESTINATION ${ARCHITECTURE}/lib
         )
+    if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+            target_compile_options(${PROJECT_NAME} PRIVATE /Zi)
+            # Tell linker to include symbol data
+            set_target_properties(${PROJECT_NAME} PROPERTIES
+                    LINK_FLAGS "/INCREMENTAL:NO /DEBUG /OPT:REF /OPT:ICF"
+            )
 
-else()
+            # Set file name & location
+            set_target_properties(${PROJECT_NAME} PROPERTIES
+                    COMPILE_PDB_NAME ${PROJECT_NAME}${CMAKE_POSTFIX}
+                    COMPILE_PDB_OUTPUT_DIR ${CMAKE_BINARY_DIR}
+                    DEBUG_POSTFIX "${CMAKE_DEBUG_POSTFIX}"
+            )
+#        install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.pdb DESTINATION ${ARCHITECTURE}/lib)
+            install(FILES $<TARGET_PDB_FILE:${PROJECT_NAME}> DESTINATION ${ARCHITECTURE}/lib)
+    endif()
+
+else() # Shared library
         install(
             TARGETS ${PROJECT_NAME}
             EXPORT ${PROJECT_NAME}
@@ -152,7 +173,10 @@ else()
             RUNTIME DESTINATION ${ARCHITECTURE}/bin # Windows
 #            DESTINATION ${ARCHITECTURE}/bin
         )
+#        install(FILES $<TARGET_PDB_FILE:${PROJECT_NAME}> DESTINATION ${ARCHITECTURE}/bin OPTIONAL)
+        install(FILES $<TARGET_PDB_FILE:${PROJECT_NAME}> DESTINATION ${ARCHITECTURE}/bin)
 endif()
+
 
 #if(NOT HUB_BUILD_STATIC_LIBRARY)
 #else()

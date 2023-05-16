@@ -49,6 +49,7 @@ foreach(SYSTEM_INFO IN ITEMS "HOSTNAME" "TOTAL_PHYSICAL_MEMORY" "PROCESSOR_DESCR
 #    message(STATUS "${SYSTEM_INFO} : ${tmp}")
     set(${SYSTEM_INFO} ${tmp})
 endforeach()
+set(USERNAME $ENV{USERNAME})
 
 # Looking for compatible compiler
 set(SUPPORTED_COMPILERS "Clang" "GNU" "LLVM" "MSVC")
@@ -85,7 +86,11 @@ endif()
 #if(NOT CMAKE_INSTALL_PREFIX OR CMAKE_INSTALL_PREFIX STREQUAL "/usr/local")
 #if(NOT CMAKE_INSTALL_PREFIX)
 if (HUB_IS_ROOT)
-    set(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}/install" CACHE PATH "Install path prefix." FORCE)
+	if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+	  #set(CMAKE_INSTALL_PREFIX "/my/default" CACHE PATH "..." FORCE)
+	  set(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}/install" CACHE PATH "Install path prefix." FORCE)
+	  #unset(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+	endif()
 endif()
 
 set(CMAKE_DEBUG_POSTFIX d)
@@ -142,3 +147,4 @@ foreach(target "tests" "coverage" "cppCheck" "doc-doxygen" "doc-sphinx")
         add_dependencies(all-targets ${target})
     endif()
 endforeach()
+

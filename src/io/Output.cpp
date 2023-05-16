@@ -48,7 +48,8 @@ void Output::write( const SensorSpec& sensorSpec ) {
     char magicNumber[80] = {0};
     constexpr char joker = ' ';
     memset(magicNumber, joker, 79);
-    sprintf (magicNumber, "%c%c%c %d.%d.%d", 'H', 'U', 'B', hub::s_versionMajor, hub::s_versionMinor, hub::s_versionPatch);
+//    sprintf (magicNumber, "%c%c%c %d.%d.%d", 'H', 'U', 'B', hub::s_versionMajor, hub::s_versionMinor, hub::s_versionPatch);
+    sprintf_s (magicNumber, "%c%c%c %d.%d.%d", 'H', 'U', 'B', hub::s_versionMajor, hub::s_versionMinor, hub::s_versionPatch);
     assert(strlen(magicNumber) < 79);
     magicNumber[strlen(magicNumber)] = joker;
     write((unsigned char*)magicNumber, 80);
