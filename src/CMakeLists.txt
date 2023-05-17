@@ -104,12 +104,14 @@ if(MINGW)
     else()
         message(FATAL_ERROR "unsupported compiler ${CMAKE_CXX_COMPILER_ID}")
     endif()
+
 elseif(WIN32)
     if (MSVC)
 #        get_target_property(rname ${PROJECT_NAME} RUNTIME_OUTPUT_NAME)
 #        get_target_property(rdir ${PROJECT_NAME} RUNTIME_OUTPUT_DIRECTORY)
 #        message("rname: ${rname}")  # rname: rname-NOTFOUND
 #        message("rdir: ${rdir}")  # rdir: rdir-NOTFOUND
+    elseif (Clang)
     else()
         message(FATAL_ERROR "unsupported compiler ${CMAKE_CXX_COMPILER_ID}")
     endif()
@@ -120,6 +122,7 @@ elseif(APPLE)
 elseif(UNIX)
     find_package(Threads REQUIRED)
     set(REQUIRED_LIBS Threads::Threads)
+
 else()
     message(FATAL_ERROR "unknown system")
 endif()
@@ -149,6 +152,8 @@ if (HUB_BUILD_STATIC_LIBRARY)
             DESTINATION ${ARCHITECTURE}/lib
         )
     if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+		#if(${CMAKE_BUILD_TYPE} STREQUAL "Release" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
+		if(${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
             target_compile_options(${PROJECT_NAME} PRIVATE /Zi)
             # Tell linker to include symbol data
             set_target_properties(${PROJECT_NAME} PROPERTIES
@@ -157,12 +162,25 @@ if (HUB_BUILD_STATIC_LIBRARY)
 
             # Set file name & location
             set_target_properties(${PROJECT_NAME} PROPERTIES
-                    COMPILE_PDB_NAME ${PROJECT_NAME}${CMAKE_POSTFIX}
+                    #COMPILE_PDB_NAME ${PROJECT_NAME}${CMAKE_POSTFIX}
+                    COMPILE_PDB_NAME ${PROJECT_NAME}
                     COMPILE_PDB_OUTPUT_DIR ${CMAKE_BINARY_DIR}
-                    DEBUG_POSTFIX "${CMAKE_DEBUG_POSTFIX}"
+                    #DEBUG_POSTFIX "${CMAKE_DEBUG_POSTFIX}"
             )
-#        install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.pdb DESTINATION ${ARCHITECTURE}/lib)
-            install(FILES $<TARGET_PDB_FILE:${PROJECT_NAME}> DESTINATION ${ARCHITECTURE}/lib)
+		endif()
+
+#        message(STATUS "#############$<TARGET_COMPILE_PDB_FILE:${PROJECT_NAME}>")
+        #if (EXISTS "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}${CMAKE_POSTFIX}.pdb")
+		#if(${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo" OR ${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+		if(NOT ${CMAKE_BUILD_TYPE} STREQUAL "Release")
+			install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}${CMAKE_POSTFIX}.pdb DESTINATION ${ARCHITECTURE}/lib OPTIONAL)
+        #elseif (EXISTS "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${PROJECT_NAME}${CMAKE_POSTFIX}.pdb")
+			install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${PROJECT_NAME}${CMAKE_POSTFIX}.pdb DESTINATION ${ARCHITECTURE}/lib OPTIONAL)
+		endif()
+		#else()
+        #    message(FATAL_ERROR "pdb not found")
+		#endif()
+#            install(FILES $<TARGET_PDB_FILE:${PROJECT_NAME}> DESTINATION ${ARCHITECTURE}/lib)
     endif()
 
 else() # Shared library
@@ -173,8 +191,11 @@ else() # Shared library
             RUNTIME DESTINATION ${ARCHITECTURE}/bin # Windows
 #            DESTINATION ${ARCHITECTURE}/bin
         )
-#        install(FILES $<TARGET_PDB_FILE:${PROJECT_NAME}> DESTINATION ${ARCHITECTURE}/bin OPTIONAL)
-        install(FILES $<TARGET_PDB_FILE:${PROJECT_NAME}> DESTINATION ${ARCHITECTURE}/bin)
+
+		if(NOT ${CMAKE_BUILD_TYPE} STREQUAL "Release")
+	#        install(FILES $<TARGET_PDB_FILE:${PROJECT_NAME}> DESTINATION ${ARCHITECTURE}/bin OPTIONAL)
+			install(FILES $<TARGET_PDB_FILE:${PROJECT_NAME}> DESTINATION ${ARCHITECTURE}/bin)
+        endif()
 endif()
 
 
