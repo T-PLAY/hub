@@ -270,7 +270,7 @@ struct BufferView
 	size_t bytes;
 };
 
-std::string getTempPrefix();
+//std::string getTempPrefix();
 
 std::string getFullPath(const char* path, const char* base_path);
 std::string getFileName(const char* path);

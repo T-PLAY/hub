@@ -11,22 +11,22 @@
 #include <unistd.h>
 #endif
 
-std::string getTempPrefix()
-{
-#if defined(_WIN32)
-	const char* temp_dir = getenv("TEMP");
-	std::string path = temp_dir ? temp_dir : ".";
-	path += "\\gltfpack-temp";
-	path += std::to_string(_getpid());
-	return path;
-#elif defined(__wasi__)
-	return "gltfpack-temp";
-#else
-	std::string path = "/tmp/gltfpack-temp";
-	path += std::to_string(getpid());
-	return path;
-#endif
-}
+//std::string getTempPrefix()
+//{
+//#if defined(_WIN32)
+//	const char* temp_dir = getenv("TEMP");
+//	std::string path = temp_dir ? temp_dir : ".";
+//	path += "\\gltfpack-temp";
+//	path += std::to_string(_getpid());
+//	return path;
+//#elif defined(__wasi__)
+//	return "gltfpack-temp";
+//#else
+//	std::string path = "/tmp/gltfpack-temp";
+//	path += std::to_string(getpid());
+//	return path;
+//#endif
+//}
 
 std::string getFullPath(const char* path, const char* base_path)
 {
