@@ -151,7 +151,8 @@ if (HUB_BUILD_STATIC_LIBRARY)
 #            DESTINATION lib/${ARCHITECTURE}
             DESTINATION ${ARCHITECTURE}/lib
         )
-    if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+#    if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+        if (MSVC)
 		#if(${CMAKE_BUILD_TYPE} STREQUAL "Release" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
 		if(${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
             target_compile_options(${PROJECT_NAME} PRIVATE /Zi)
@@ -192,10 +193,13 @@ else() # Shared library
 #            DESTINATION ${ARCHITECTURE}/bin
         )
 
-		if(NOT ${CMAKE_BUILD_TYPE} STREQUAL "Release")
+    if(MSVC)
+#    if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+                if(NOT ${CMAKE_BUILD_TYPE} STREQUAL "Release")
 	#        install(FILES $<TARGET_PDB_FILE:${PROJECT_NAME}> DESTINATION ${ARCHITECTURE}/bin OPTIONAL)
 			install(FILES $<TARGET_PDB_FILE:${PROJECT_NAME}> DESTINATION ${ARCHITECTURE}/bin)
         endif()
+    endif()
 endif()
 
 
