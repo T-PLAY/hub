@@ -223,6 +223,7 @@ Mesh::Mesh( std::initializer_list<std::string> filePaths ) :
 
     std::vector<std::string> filenames;
     std::vector<std::string> compressedFilePaths;
+    std::vector<std::string> gltfFilePaths;
 
     //  pack gltf files to glb (simplify and bake meshes with gltfPack)
     for ( const auto& filePath : filePaths ) {
@@ -264,6 +265,7 @@ Mesh::Mesh( std::initializer_list<std::string> filePaths ) :
         //        std::cout << "[Mesh] extension : " << iext << std::endl;
         std::string filePathWithExtension = parentPath + "/" + filename + ".gltf";
         //        m_gltfPaths.emplace_back( filePathWithExtension );
+        gltfFilePaths.emplace_back(filePathWithExtension);
 
         //    std::string reportFilePath = parentPath + "/" + filename + ".txt";
         std::string compressedFilePath = parentPath + "/" + filename + ".glb";
@@ -274,6 +276,7 @@ Mesh::Mesh( std::initializer_list<std::string> filePaths ) :
 
 //        if ( true || !std::ifstream { compressedFilePath } ) {
         if ( !std::ifstream { compressedFilePath } ) {
+//        if (false) {
             if ( iext == ".gltf" ) {
 
                 meshopt_encodeIndexVersion( 1 );
@@ -298,7 +301,7 @@ Mesh::Mesh( std::initializer_list<std::string> filePaths ) :
                 settings.verbose               = 2;
                 settings.simplify_aggressive   = true;
                 settings.simplify_lock_borders = true;
-                settings.simplify_threshold    = 1.0f;
+                settings.simplify_threshold    = 0.5f;
                 settings.keep_nodes            = true;
                 //                                settings.pos_float = true;
                 //                            settings.keep_extras           = true;
@@ -364,7 +367,10 @@ Mesh::Mesh( std::initializer_list<std::string> filePaths ) :
 
     // parse glb data
     //    for ( int i = 0; i < nData; ++i ) {
-    for ( const auto& compressedFilePath : compressedFilePaths ) {
+
+    for ( const auto& filePath : compressedFilePaths ) {
+//        for (const auto & filePath : gltfFilePaths) {
+
         //        dataSizes[i] = dataLong[cur++];
         //        uint64_t dataSize;
         //        memory.read( dataSize );
@@ -373,7 +379,7 @@ Mesh::Mesh( std::initializer_list<std::string> filePaths ) :
 
         //        std::cout << "[Mesh] unpack " << dataSize << " bytes from data " << i <<
         //        std::endl;
-        std::cout << "[Mesh] parse " << compressedFilePath << " file" << std::endl;
+        std::cout << "[Mesh] parse " << filePath << " file" << std::endl;
 
         //        std::vector<int> fileData;
         //        fileData.resize(dataSize);
@@ -410,7 +416,8 @@ Mesh::Mesh( std::initializer_list<std::string> filePaths ) :
         //        assert( m_compressedFilePaths.size() == 1 );
         //        std::cout << "parseGlb started" << std::endl;
 
-        gltfData = parseGlb( compressedFilePath.c_str(), glbMeshes, glbAnimations, &error );
+//        gltfData = parseGlb( filePath.c_str(), glbMeshes, glbAnimations, &error );
+        gltfData = parseGltf( filePath.c_str(), glbMeshes, glbAnimations, &error );
 
         //        std::cout << "parseGlb ended" << std::endl;
         //        gltfData = parseGltf(
@@ -683,6 +690,7 @@ Mesh::Mesh( std::initializer_list<std::string> filePaths ) :
     //    //    memory.write( nData );
 
     m_data = new unsigned char[buff.size()];
+    m_ownData = true;
     m_size = buff.size();
     memcpy( m_data, buff.data(), m_size );
 

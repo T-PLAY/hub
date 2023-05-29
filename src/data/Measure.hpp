@@ -165,9 +165,10 @@ class SRC_API Measure
     ///
     uint64_t m_size = 0; // compatibility 32/64 bits
 
+    bool m_ownData = false;
+
   private:
     Resolution m_resolution;
-    bool m_ownData = false;
     bool m_isMoved = false;
 
     friend class hub::io::Input;
