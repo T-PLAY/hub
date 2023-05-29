@@ -93,7 +93,7 @@ static cgltf_data* parseSceneObj(fastObjMesh* obj)
 	return data;
 }
 
-static void parseMeshObj(fastObjMesh* obj, unsigned int face_offset, unsigned int face_vertex_offset, unsigned int face_count, unsigned int face_vertex_count, unsigned int index_count, Mesh& mesh)
+static void parseMeshObj(fastObjMesh* obj, unsigned int face_offset, unsigned int face_vertex_offset, unsigned int face_count, unsigned int face_vertex_count, unsigned int index_count, _Mesh& mesh)
 {
 	std::vector<unsigned int> remap(face_vertex_count);
 	size_t unique_vertices = meshopt_generateVertexRemap(remap.data(), nullptr, face_vertex_count, &obj->indices[face_vertex_offset], face_vertex_count, sizeof(fastObjIndex));
@@ -168,7 +168,7 @@ static void parseMeshObj(fastObjMesh* obj, unsigned int face_offset, unsigned in
 	assert(index_offset == index_count);
 }
 
-static void parseMeshesObj(fastObjMesh* obj, cgltf_data* data, std::vector<Mesh>& meshes)
+static void parseMeshesObj(fastObjMesh* obj, cgltf_data* data, std::vector<_Mesh>& meshes)
 {
 	unsigned int face_vertex_offset = 0;
 
@@ -187,8 +187,8 @@ static void parseMeshesObj(fastObjMesh* obj, cgltf_data* data, std::vector<Mesh>
 			index_count += (obj->face_vertices[fj] - 2) * 3;
 		}
 
-		meshes.push_back(Mesh());
-		Mesh& mesh = meshes.back();
+		meshes.push_back(_Mesh());
+		_Mesh& mesh = meshes.back();
 
 		if (data->materials_count)
 		{
@@ -206,7 +206,7 @@ static void parseMeshesObj(fastObjMesh* obj, cgltf_data* data, std::vector<Mesh>
 	}
 }
 
-cgltf_data* parseObj(const char* path, std::vector<Mesh>& meshes, const char** error)
+cgltf_data* parseObj(const char* path, std::vector<_Mesh>& meshes, const char** error)
 {
 	fastObjMesh* obj = fast_obj_read(path);
 

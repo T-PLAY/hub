@@ -299,7 +299,7 @@ static bool areMaterialsEqual(const cgltf_material& lhs, const cgltf_material& r
 	return true;
 }
 
-void mergeMeshMaterials(cgltf_data* data, std::vector<Mesh>& meshes, const Settings& settings)
+void mergeMeshMaterials(cgltf_data* data, std::vector<_Mesh>& meshes, const Settings& settings)
 {
 	std::vector<cgltf_material*> material_remap(data->materials_count);
 
@@ -325,7 +325,7 @@ void mergeMeshMaterials(cgltf_data* data, std::vector<Mesh>& meshes, const Setti
 
 	for (size_t i = 0; i < meshes.size(); ++i)
 	{
-		Mesh& mesh = meshes[i];
+        _Mesh& mesh = meshes[i];
 
 		if (mesh.material)
 			mesh.material = material_remap[mesh.material - data->materials];
@@ -335,12 +335,12 @@ void mergeMeshMaterials(cgltf_data* data, std::vector<Mesh>& meshes, const Setti
 	}
 }
 
-void markNeededMaterials(cgltf_data* data, std::vector<MaterialInfo>& materials, const std::vector<Mesh>& meshes, const Settings& settings)
+void markNeededMaterials(cgltf_data* data, std::vector<MaterialInfo>& materials, const std::vector<_Mesh>& meshes, const Settings& settings)
 {
 	// mark all used materials as kept
 	for (size_t i = 0; i < meshes.size(); ++i)
 	{
-		const Mesh& mesh = meshes[i];
+        const _Mesh& mesh = meshes[i];
 
 		if (mesh.material)
 		{

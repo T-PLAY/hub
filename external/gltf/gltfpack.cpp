@@ -76,7 +76,7 @@ static void finalizeBufferViews(std::string& json, std::vector<BufferView>& view
 	}
 }
 
-void printMeshStats(const std::vector<Mesh>& meshes, const char* name)
+void printMeshStats(const std::vector<_Mesh>& meshes, const char* name)
 {
 	size_t mesh_triangles = 0;
 	size_t mesh_vertices = 0;
@@ -86,7 +86,7 @@ void printMeshStats(const std::vector<Mesh>& meshes, const char* name)
 
 	for (size_t i = 0; i < meshes.size(); ++i)
 	{
-		const Mesh& mesh = meshes[i];
+		const _Mesh& mesh = meshes[i];
 
 		mesh_triangles += mesh.indices.size() / 3;
 		mesh_vertices += mesh.streams.empty() ? 0 : mesh.streams[0].data.size();
@@ -103,7 +103,7 @@ void printMeshStats(const std::vector<Mesh>& meshes, const char* name)
 	    int(total_draws), int(total_instances), (long long)total_triangles);
 }
 
-static void printSceneStats(const std::vector<BufferView>& views, const std::vector<Mesh>& meshes, size_t node_offset, size_t mesh_offset, size_t material_offset, size_t json_size, size_t bin_size)
+static void printSceneStats(const std::vector<BufferView>& views, const std::vector<_Mesh>& meshes, size_t node_offset, size_t mesh_offset, size_t material_offset, size_t json_size, size_t bin_size)
 {
 	size_t bytes[BufferView::Kind_Count] = {};
 
@@ -182,7 +182,7 @@ static void printImageStats(const std::vector<BufferView>& views, TextureKind ki
 		printf("stats: image %s: %d bytes in %d images\n", name, int(bytes), int(count));
 }
 
-static bool printReport(const char* path, cgltf_data* data, const std::vector<BufferView>& views, const std::vector<Mesh>& meshes, size_t node_count, size_t mesh_count, size_t material_count, size_t animation_count, size_t json_size, size_t bin_size)
+static bool printReport(const char* path, cgltf_data* data, const std::vector<BufferView>& views, const std::vector<_Mesh>& meshes, size_t node_count, size_t mesh_count, size_t material_count, size_t animation_count, size_t json_size, size_t bin_size)
 {
 	size_t bytes[BufferView::Kind_Count] = {};
 
@@ -198,7 +198,7 @@ static bool printReport(const char* path, cgltf_data* data, const std::vector<Bu
 
 	for (size_t i = 0; i < meshes.size(); ++i)
 	{
-		const Mesh& mesh = meshes[i];
+		const _Mesh& mesh = meshes[i];
 
 		size_t instances = std::max(size_t(1), mesh.nodes.size() + mesh.instances.size());
 
@@ -242,7 +242,7 @@ static bool printReport(const char* path, cgltf_data* data, const std::vector<Bu
 	return rc == 0;
 }
 
-static bool canTransformMesh(const Mesh& mesh)
+static bool canTransformMesh(const _Mesh& mesh)
 {
 	// volume thickness is specified in mesh coordinate space; to avoid modifying materials we prohibit transforming meshes with volume materials
 	if (mesh.material && mesh.material->has_volume && mesh.material->volume.thickness_factor > 0.f)
@@ -251,7 +251,7 @@ static bool canTransformMesh(const Mesh& mesh)
 	return true;
 }
 
-static void process(cgltf_data* data, const char* input_path, const char* output_path, const char* report_path, std::vector<Mesh>& meshes, std::vector<Animation>& animations, const Settings& settings, std::string& json, std::string& bin, std::string& fallback, size_t& fallback_size)
+static void process(cgltf_data* data, const char* input_path, const char* output_path, const char* report_path, std::vector<_Mesh>& meshes, std::vector<Animation>& animations, const Settings& settings, std::string& json, std::string& bin, std::string& fallback, size_t& fallback_size)
 {
 	if (settings.verbose)
 	{
@@ -272,7 +272,7 @@ static void process(cgltf_data* data, const char* input_path, const char* output
 
 	for (size_t i = 0; i < meshes.size(); ++i)
 	{
-		Mesh& mesh = meshes[i];
+		_Mesh& mesh = meshes[i];
 		assert(mesh.instances.empty());
 
 		// mesh is already world space, skip
@@ -342,7 +342,7 @@ static void process(cgltf_data* data, const char* input_path, const char* output
 	// streams need to be filtered before mesh merging (or processing) to make sure we can merge meshes with redundant streams
 	for (size_t i = 0; i < meshes.size(); ++i)
 	{
-		Mesh& mesh = meshes[i];
+		_Mesh& mesh = meshes[i];
 		MaterialInfo mi = mesh.material ? materials[mesh.material - data->materials] : MaterialInfo();
 
 		// merge material requirements across all variants
@@ -365,16 +365,16 @@ static void process(cgltf_data* data, const char* input_path, const char* output
 	markNeededMaterials(data, materials, meshes, settings);
 
 #ifndef NDEBUG
-	std::vector<Mesh> debug_meshes;
+	std::vector<_Mesh> debug_meshes;
 
 	for (size_t i = 0; i < meshes.size(); ++i)
 	{
-		const Mesh& mesh = meshes[i];
+		const _Mesh& mesh = meshes[i];
 
 		if (settings.simplify_debug > 0)
 		{
-			Mesh kinds = {};
-			Mesh loops = {};
+            _Mesh kinds = {};
+            _Mesh loops = {};
 			debugSimplify(mesh, kinds, loops, settings.simplify_debug);
 			debug_meshes.push_back(kinds);
 			debug_meshes.push_back(loops);
@@ -382,8 +382,8 @@ static void process(cgltf_data* data, const char* input_path, const char* output
 
 		if (settings.meshlet_debug > 0)
 		{
-			Mesh meshlets = {};
-			Mesh bounds = {};
+            _Mesh meshlets = {};
+            _Mesh bounds = {};
 			debugMeshlets(mesh, meshlets, bounds, settings.meshlet_debug, /* scan= */ false);
 			debug_meshes.push_back(meshlets);
 			debug_meshes.push_back(bounds);
@@ -531,7 +531,7 @@ static void process(cgltf_data* data, const char* input_path, const char* output
 
 	for (size_t i = 0; i < meshes.size(); ++i)
 	{
-		const Mesh& mesh = meshes[i];
+		const _Mesh& mesh = meshes[i];
 
 		comma(json_meshes);
 		append(json_meshes, "{\"primitives\":[");
@@ -539,7 +539,7 @@ static void process(cgltf_data* data, const char* input_path, const char* output
 		size_t pi = i;
 		for (; pi < meshes.size(); ++pi)
 		{
-			const Mesh& prim = meshes[pi];
+			const _Mesh& prim = meshes[pi];
 
 			if (prim.skin != mesh.skin || prim.targets != mesh.targets)
 				break;
@@ -947,7 +947,7 @@ static std::string getBufferSpec(const char* bin_path, size_t bin_size, const ch
 int gltfpack(const char* input, const char* output, const char* report, Settings settings)
 {
 	cgltf_data* data = 0;
-	std::vector<Mesh> meshes;
+	std::vector<_Mesh> meshes;
 	std::vector<Animation> animations;
 
 	std::string iext = getExtension(input);

@@ -66,7 +66,7 @@ static void transformNormal(float* res, const float* ptr, const float* transform
 }
 
 // assumes mesh & target are structurally identical
-static void transformMesh(Mesh& target, const Mesh& mesh, const cgltf_node* node)
+static void transformMesh(_Mesh& target, const _Mesh& mesh, const cgltf_node* node)
 {
 	assert(target.streams.size() == mesh.streams.size());
 	assert(target.indices.size() == mesh.indices.size());
@@ -113,7 +113,7 @@ static void transformMesh(Mesh& target, const Mesh& mesh, const cgltf_node* node
 	}
 }
 
-bool compareMeshTargets(const Mesh& lhs, const Mesh& rhs)
+bool compareMeshTargets(const _Mesh& lhs, const _Mesh& rhs)
 {
 	if (lhs.targets != rhs.targets)
 		return false;
@@ -135,7 +135,7 @@ bool compareMeshTargets(const Mesh& lhs, const Mesh& rhs)
 	return true;
 }
 
-bool compareMeshVariants(const Mesh& lhs, const Mesh& rhs)
+bool compareMeshVariants(const _Mesh& lhs, const _Mesh& rhs)
 {
 	if (lhs.variants.size() != rhs.variants.size())
 		return false;
@@ -152,7 +152,7 @@ bool compareMeshVariants(const Mesh& lhs, const Mesh& rhs)
 	return true;
 }
 
-bool compareMeshNodes(const Mesh& lhs, const Mesh& rhs)
+bool compareMeshNodes(const _Mesh& lhs, const _Mesh& rhs)
 {
 	if (lhs.nodes.size() != rhs.nodes.size())
 		return false;
@@ -192,7 +192,7 @@ static bool canMergeMeshNodes(cgltf_node* lhs, cgltf_node* rhs, const Settings& 
 	return true;
 }
 
-static bool canMergeMeshes(const Mesh& lhs, const Mesh& rhs, const Settings& settings)
+static bool canMergeMeshes(const _Mesh& lhs, const _Mesh& rhs, const Settings& settings)
 {
 	if (lhs.scene != rhs.scene)
 		return false;
@@ -235,7 +235,7 @@ static bool canMergeMeshes(const Mesh& lhs, const Mesh& rhs, const Settings& set
 	return true;
 }
 
-static void mergeMeshes(Mesh& target, const Mesh& mesh)
+static void mergeMeshes(_Mesh& target, const _Mesh& mesh)
 {
 	assert(target.streams.size() == mesh.streams.size());
 
@@ -253,7 +253,7 @@ static void mergeMeshes(Mesh& target, const Mesh& mesh)
 		target.indices[index_offset + i] = unsigned(vertex_offset + mesh.indices[i]);
 }
 
-void mergeMeshInstances(Mesh& mesh)
+void mergeMeshInstances(_Mesh& mesh)
 {
 	if (mesh.nodes.empty())
 		return;
@@ -266,8 +266,8 @@ void mergeMeshInstances(Mesh& mesh)
 		return;
 	}
 
-	Mesh base = mesh;
-	Mesh transformed = base;
+    _Mesh base = mesh;
+    _Mesh transformed = base;
 
 	for (size_t i = 0; i < mesh.streams.size(); ++i)
 	{
@@ -287,11 +287,11 @@ void mergeMeshInstances(Mesh& mesh)
 	mesh.nodes.clear();
 }
 
-void mergeMeshes(std::vector<Mesh>& meshes, const Settings& settings)
+void mergeMeshes(std::vector<_Mesh>& meshes, const Settings& settings)
 {
 	for (size_t i = 0; i < meshes.size(); ++i)
 	{
-		Mesh& target = meshes[i];
+		_Mesh& target = meshes[i];
 
 		if (target.streams.empty())
 			continue;
@@ -303,7 +303,7 @@ void mergeMeshes(std::vector<Mesh>& meshes, const Settings& settings)
 
 		for (size_t j = i + 1; j < meshes.size(); ++j)
 		{
-			Mesh& mesh = meshes[j];
+			_Mesh& mesh = meshes[j];
 
 			if (!mesh.streams.empty() && canMergeMeshes(target, mesh, settings))
 			{
@@ -320,7 +320,7 @@ void mergeMeshes(std::vector<Mesh>& meshes, const Settings& settings)
 
 		for (size_t j = i + 1; j <= last_merged; ++j)
 		{
-			Mesh& mesh = meshes[j];
+			_Mesh& mesh = meshes[j];
 
 			if (!mesh.streams.empty() && canMergeMeshes(target, mesh, settings))
 			{
@@ -338,13 +338,13 @@ void mergeMeshes(std::vector<Mesh>& meshes, const Settings& settings)
 	}
 }
 
-void filterEmptyMeshes(std::vector<Mesh>& meshes)
+void filterEmptyMeshes(std::vector<_Mesh>& meshes)
 {
 	size_t write = 0;
 
 	for (size_t i = 0; i < meshes.size(); ++i)
 	{
-		Mesh& mesh = meshes[i];
+		_Mesh& mesh = meshes[i];
 
 		if (mesh.streams.empty())
 			continue;
@@ -402,7 +402,7 @@ static bool hasDeltas(const std::vector<Attr>& data)
 	return false;
 }
 
-void filterStreams(Mesh& mesh, const MaterialInfo& mi)
+void filterStreams(_Mesh& mesh, const MaterialInfo& mi)
 {
 	bool morph_normal = false;
 	bool morph_tangent = false;
@@ -461,7 +461,7 @@ void filterStreams(Mesh& mesh, const MaterialInfo& mi)
 	mesh.streams.resize(write);
 }
 
-static void reindexMesh(Mesh& mesh)
+static void reindexMesh(_Mesh& mesh)
 {
 	size_t total_vertices = mesh.streams[0].data.size();
 	size_t total_indices = mesh.indices.size();
@@ -496,7 +496,7 @@ static void reindexMesh(Mesh& mesh)
 	}
 }
 
-static void filterTriangles(Mesh& mesh)
+static void filterTriangles(_Mesh& mesh)
 {
 	assert(mesh.type == cgltf_primitive_type_triangles);
 
@@ -521,7 +521,7 @@ static void filterTriangles(Mesh& mesh)
 	mesh.indices.resize(write);
 }
 
-static Stream* getStream(Mesh& mesh, cgltf_attribute_type type, int index = 0)
+static Stream* getStream(_Mesh& mesh, cgltf_attribute_type type, int index = 0)
 {
 	for (size_t i = 0; i < mesh.streams.size(); ++i)
 		if (mesh.streams[i].type == type && mesh.streams[i].index == index)
@@ -530,7 +530,7 @@ static Stream* getStream(Mesh& mesh, cgltf_attribute_type type, int index = 0)
 	return 0;
 }
 
-static void simplifyMesh(Mesh& mesh, float threshold, bool aggressive, bool lock_borders)
+static void simplifyMesh(_Mesh& mesh, float threshold, bool aggressive, bool lock_borders)
 {
 	assert(mesh.type == cgltf_primitive_type_triangles);
 
@@ -566,7 +566,7 @@ static void simplifyMesh(Mesh& mesh, float threshold, bool aggressive, bool lock
 	}
 }
 
-static void optimizeMesh(Mesh& mesh, bool compressmore)
+static void optimizeMesh(_Mesh& mesh, bool compressmore)
 {
 	assert(mesh.type == cgltf_primitive_type_triangles);
 
@@ -609,7 +609,7 @@ struct BoneInfluenceWeightPredicate
 	}
 };
 
-static void filterBones(Mesh& mesh)
+static void filterBones(_Mesh& mesh)
 {
 	const int kMaxGroups = 8;
 
@@ -691,7 +691,7 @@ static void filterBones(Mesh& mesh)
 	}
 }
 
-static void simplifyPointMesh(Mesh& mesh, float threshold)
+static void simplifyPointMesh(_Mesh& mesh, float threshold)
 {
 	assert(mesh.type == cgltf_primitive_type_points);
 
@@ -727,7 +727,7 @@ static void simplifyPointMesh(Mesh& mesh, float threshold)
 	}
 }
 
-static void sortPointMesh(Mesh& mesh)
+static void sortPointMesh(_Mesh& mesh)
 {
 	assert(mesh.type == cgltf_primitive_type_points);
 
@@ -748,7 +748,7 @@ static void sortPointMesh(Mesh& mesh)
 	}
 }
 
-void processMesh(Mesh& mesh, const Settings& settings)
+void processMesh(_Mesh& mesh, const Settings& settings)
 {
 	switch (mesh.type)
 	{
@@ -780,9 +780,9 @@ extern MESHOPTIMIZER_API unsigned char* meshopt_simplifyDebugKind;
 extern MESHOPTIMIZER_API unsigned int* meshopt_simplifyDebugLoop;
 extern MESHOPTIMIZER_API unsigned int* meshopt_simplifyDebugLoopBack;
 
-void debugSimplify(const Mesh& source, Mesh& kinds, Mesh& loops, float ratio)
+void debugSimplify(const _Mesh& source, _Mesh& kinds, _Mesh& loops, float ratio)
 {
-	Mesh mesh = source;
+    _Mesh mesh = source;
 	assert(mesh.type == cgltf_primitive_type_triangles);
 
 	// note: it's important to follow the same pipeline as processMesh
@@ -876,9 +876,9 @@ void debugSimplify(const Mesh& source, Mesh& kinds, Mesh& loops, float ratio)
 		}
 }
 
-void debugMeshlets(const Mesh& source, Mesh& meshlets, Mesh& bounds, int max_vertices, bool scan)
+void debugMeshlets(const _Mesh& source, _Mesh& meshlets, _Mesh& bounds, int max_vertices, bool scan)
 {
-	Mesh mesh = source;
+    _Mesh mesh = source;
 	assert(mesh.type == cgltf_primitive_type_triangles);
 
 	reindexMesh(mesh);

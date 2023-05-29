@@ -27,7 +27,7 @@ struct Bounds
 	}
 };
 
-static void updateAttributeBounds(const Mesh& mesh, cgltf_attribute_type type, Bounds& b)
+static void updateAttributeBounds(const _Mesh& mesh, cgltf_attribute_type type, Bounds& b)
 {
 	Attr pad = {};
 
@@ -76,7 +76,7 @@ static void updateAttributeBounds(const Mesh& mesh, cgltf_attribute_type type, B
 	}
 }
 
-QuantizationPosition prepareQuantizationPosition(const std::vector<Mesh>& meshes, const Settings& settings)
+QuantizationPosition prepareQuantizationPosition(const std::vector<_Mesh>& meshes, const Settings& settings)
 {
 	QuantizationPosition result = {};
 
@@ -114,7 +114,7 @@ static size_t follow(std::vector<size_t>& parents, size_t index)
 	return index;
 }
 
-void prepareQuantizationTexture(cgltf_data* data, std::vector<QuantizationTexture>& result, std::vector<size_t>& indices, const std::vector<Mesh>& meshes, const Settings& settings)
+void prepareQuantizationTexture(cgltf_data* data, std::vector<QuantizationTexture>& result, std::vector<size_t>& indices, const std::vector<_Mesh>& meshes, const Settings& settings)
 {
 	// use union-find to associate each material with a canonical material
 	// this is necessary because any set of materials that are used on the same mesh must use the same quantization
@@ -125,7 +125,7 @@ void prepareQuantizationTexture(cgltf_data* data, std::vector<QuantizationTextur
 
 	for (size_t i = 0; i < meshes.size(); ++i)
 	{
-		const Mesh& mesh = meshes[i];
+		const _Mesh& mesh = meshes[i];
 
 		if (!mesh.material && mesh.variants.empty())
 			continue;
@@ -147,7 +147,7 @@ void prepareQuantizationTexture(cgltf_data* data, std::vector<QuantizationTextur
 
 	for (size_t i = 0; i < meshes.size(); ++i)
 	{
-		const Mesh& mesh = meshes[i];
+		const _Mesh& mesh = meshes[i];
 
 		if (!mesh.material && mesh.variants.empty())
 			continue;

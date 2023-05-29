@@ -59,7 +59,7 @@ void markAnimated(cgltf_data* data, std::vector<NodeInfo>& nodes, const std::vec
 	}
 }
 
-void markNeededNodes(cgltf_data* data, std::vector<NodeInfo>& nodes, const std::vector<Mesh>& meshes, const std::vector<Animation>& animations, const Settings& settings)
+void markNeededNodes(cgltf_data* data, std::vector<NodeInfo>& nodes, const std::vector<_Mesh>& meshes, const std::vector<Animation>& animations, const Settings& settings)
 {
 	// mark all joints as kept
 	for (size_t i = 0; i < data->skins_count; ++i)
@@ -96,7 +96,7 @@ void markNeededNodes(cgltf_data* data, std::vector<NodeInfo>& nodes, const std::
 	// mark all mesh nodes as kept
 	for (size_t i = 0; i < meshes.size(); ++i)
 	{
-		const Mesh& mesh = meshes[i];
+		const _Mesh& mesh = meshes[i];
 
 		for (size_t j = 0; j < mesh.nodes.size(); ++j)
 		{
