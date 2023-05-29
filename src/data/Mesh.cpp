@@ -360,7 +360,7 @@ Mesh::Mesh( std::initializer_list<std::string> filePaths ) :
     //    }
 
     std::vector<cgltf_data*> glbCgltfData;
-    std::vector<::Mesh> glbMeshes;
+    std::vector<_Mesh> glbMeshes;
     std::vector<Animation> glbAnimations;
     std::vector<std::string> glbNodeNames;
     const char* error = 0;
@@ -664,7 +664,7 @@ Mesh::Mesh( std::initializer_list<std::string> filePaths ) :
     }
 
     for ( size_t i = 0; i < glbMeshes.size(); ++i ) {
-        const ::Mesh& mesh = glbMeshes[i];
+        const _Mesh& mesh = glbMeshes[i];
 
         m_pimpl->m_mesh_triangles += mesh.indices.size() / 3;
         m_pimpl->m_mesh_vertices += mesh.streams.empty() ? 0 : mesh.streams[0].data.size();

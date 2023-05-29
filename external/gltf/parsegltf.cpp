@@ -136,7 +136,7 @@ static void fixupIndices(std::vector<unsigned int>& indices, cgltf_primitive_typ
 	}
 }
 
-static void parseMeshesGltf(cgltf_data* data, std::vector<Mesh>& meshes, std::vector<std::pair<size_t, size_t> >& mesh_remap)
+static void parseMeshesGltf(cgltf_data* data, std::vector<_Mesh>& meshes, std::vector<std::pair<size_t, size_t> >& mesh_remap)
 {
 	size_t total_primitives = 0;
 
@@ -162,8 +162,8 @@ static void parseMeshesGltf(cgltf_data* data, std::vector<Mesh>& meshes, std::ve
 				continue;
 			}
 
-			meshes.push_back(Mesh());
-			Mesh& result = meshes.back();
+            meshes.push_back(_Mesh());
+            _Mesh& result = meshes.back();
 
 			result.scene = -1;
 
@@ -252,7 +252,7 @@ static void parseMeshesGltf(cgltf_data* data, std::vector<Mesh>& meshes, std::ve
 	}
 }
 
-static void parseMeshNodesGltf(cgltf_data* data, std::vector<Mesh>& meshes, const std::vector<std::pair<size_t, size_t> >& mesh_remap)
+static void parseMeshNodesGltf(cgltf_data* data, std::vector<_Mesh>& meshes, const std::vector<std::pair<size_t, size_t> >& mesh_remap)
 {
 	for (size_t i = 0; i < data->nodes_count; ++i)
 	{
@@ -264,7 +264,7 @@ static void parseMeshNodesGltf(cgltf_data* data, std::vector<Mesh>& meshes, cons
 
 		for (size_t mi = range.first; mi < range.second; ++mi)
 		{
-			Mesh* mesh = &meshes[mi];
+            _Mesh* mesh = &meshes[mi];
 
 			if (!mesh->nodes.empty() && mesh->skin != node.skin)
 			{
@@ -282,7 +282,7 @@ static void parseMeshNodesGltf(cgltf_data* data, std::vector<Mesh>& meshes, cons
 
 	for (size_t i = 0; i < meshes.size(); ++i)
 	{
-		Mesh& mesh = meshes[i];
+        _Mesh& mesh = meshes[i];
 
 		// because the rest of gltfpack assumes that empty nodes array = world-space mesh, we need to filter unused meshes
 		if (mesh.nodes.empty())
@@ -435,7 +435,7 @@ static bool freeUnusedBuffers(cgltf_data* data)
 	return free_bin;
 }
 
-cgltf_data* parseGltf(const char* path, std::vector<Mesh>& meshes, std::vector<Animation>& animations, const char** error)
+cgltf_data* parseGltf(const char* path, std::vector<_Mesh>& meshes, std::vector<Animation>& animations, const char** error)
 {
 	cgltf_data* data = 0;
 
@@ -487,7 +487,7 @@ cgltf_data* parseGltf(const char* path, std::vector<Mesh>& meshes, std::vector<A
 }
 
 
-cgltf_data* parseGlb(const char* path, std::vector<Mesh>& meshes, std::vector<Animation>& animations, const char** error)
+cgltf_data* parseGlb(const char* path, std::vector<_Mesh>& meshes, std::vector<Animation>& animations, const char** error)
 {
     cgltf_data* data = 0;
 
@@ -549,7 +549,7 @@ cgltf_data* parseGlb(const char* path, std::vector<Mesh>& meshes, std::vector<An
 
 //cgltf_result cgltf_load_buffer_base64(const cgltf_options* options, cgltf_size size, const char* base64, void** out_data);
 
-cgltf_data* readGlb(const char * inData, size_t size, std::vector<Mesh>& meshes, std::vector<Animation>& animations, const char** error)
+cgltf_data* readGlb(const char * inData, size_t size, std::vector<_Mesh>& meshes, std::vector<Animation>& animations, const char** error)
 {
     cgltf_data* data = 0;
 

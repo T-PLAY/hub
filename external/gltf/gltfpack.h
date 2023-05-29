@@ -41,7 +41,7 @@ struct Transform
 	float data[16];
 };
 
-struct Mesh
+struct _Mesh
 {
 	int scene;
 	std::vector<cgltf_node*> nodes;
@@ -280,26 +280,26 @@ bool readFile(const char* path, std::string& data);
 bool writeFile(const char* path, const std::string& data);
 void removeFile(const char* path);
 
-cgltf_data* parseObj(const char* path, std::vector<Mesh>& meshes, const char** error);
-cgltf_data* parseGltf(const char* path, std::vector<Mesh>& meshes, std::vector<Animation>& animations, const char** error);
+cgltf_data* parseObj(const char* path, std::vector<_Mesh>& meshes, const char** error);
+cgltf_data* parseGltf(const char* path, std::vector<_Mesh>& meshes, std::vector<Animation>& animations, const char** error);
 
 void processAnimation(Animation& animation, const Settings& settings);
-void processMesh(Mesh& mesh, const Settings& settings);
+void processMesh(_Mesh& mesh, const Settings& settings);
 
-void debugSimplify(const Mesh& mesh, Mesh& kinds, Mesh& loops, float ratio);
-void debugMeshlets(const Mesh& mesh, Mesh& meshlets, Mesh& bounds, int max_vertices, bool scan);
+void debugSimplify(const _Mesh& mesh, _Mesh& kinds, _Mesh& loops, float ratio);
+void debugMeshlets(const _Mesh& mesh, _Mesh& meshlets, _Mesh& bounds, int max_vertices, bool scan);
 
-bool compareMeshTargets(const Mesh& lhs, const Mesh& rhs);
-bool compareMeshVariants(const Mesh& lhs, const Mesh& rhs);
-bool compareMeshNodes(const Mesh& lhs, const Mesh& rhs);
+bool compareMeshTargets(const _Mesh& lhs, const _Mesh& rhs);
+bool compareMeshVariants(const _Mesh& lhs, const _Mesh& rhs);
+bool compareMeshNodes(const _Mesh& lhs, const _Mesh& rhs);
 
-void mergeMeshInstances(Mesh& mesh);
-void mergeMeshes(std::vector<Mesh>& meshes, const Settings& settings);
-void filterEmptyMeshes(std::vector<Mesh>& meshes);
-void filterStreams(Mesh& mesh, const MaterialInfo& mi);
+void mergeMeshInstances(_Mesh& mesh);
+void mergeMeshes(std::vector<_Mesh>& meshes, const Settings& settings);
+void filterEmptyMeshes(std::vector<_Mesh>& meshes);
+void filterStreams(_Mesh& mesh, const MaterialInfo& mi);
 
-void mergeMeshMaterials(cgltf_data* data, std::vector<Mesh>& meshes, const Settings& settings);
-void markNeededMaterials(cgltf_data* data, std::vector<MaterialInfo>& materials, const std::vector<Mesh>& meshes, const Settings& settings);
+void mergeMeshMaterials(cgltf_data* data, std::vector<_Mesh>& meshes, const Settings& settings);
+void markNeededMaterials(cgltf_data* data, std::vector<MaterialInfo>& materials, const std::vector<_Mesh>& meshes, const Settings& settings);
 
 bool hasValidTransform(const cgltf_texture_view& view);
 
@@ -318,12 +318,12 @@ void encodeImages(std::string* encoded, const cgltf_data* data, const std::vecto
 
 void markScenes(cgltf_data* data, std::vector<NodeInfo>& nodes);
 void markAnimated(cgltf_data* data, std::vector<NodeInfo>& nodes, const std::vector<Animation>& animations);
-void markNeededNodes(cgltf_data* data, std::vector<NodeInfo>& nodes, const std::vector<Mesh>& meshes, const std::vector<Animation>& animations, const Settings& settings);
+void markNeededNodes(cgltf_data* data, std::vector<NodeInfo>& nodes, const std::vector<_Mesh>& meshes, const std::vector<Animation>& animations, const Settings& settings);
 void remapNodes(cgltf_data* data, std::vector<NodeInfo>& nodes, size_t& node_offset);
 void decomposeTransform(float translation[3], float rotation[4], float scale[3], const float* transform);
 
-QuantizationPosition prepareQuantizationPosition(const std::vector<Mesh>& meshes, const Settings& settings);
-void prepareQuantizationTexture(cgltf_data* data, std::vector<QuantizationTexture>& result, std::vector<size_t>& indices, const std::vector<Mesh>& meshes, const Settings& settings);
+QuantizationPosition prepareQuantizationPosition(const std::vector<_Mesh>& meshes, const Settings& settings);
+void prepareQuantizationTexture(cgltf_data* data, std::vector<QuantizationTexture>& result, std::vector<size_t>& indices, const std::vector<_Mesh>& meshes, const Settings& settings);
 void getPositionBounds(float min[3], float max[3], const Stream& stream, const QuantizationPosition& qp, const Settings& settings);
 
 StreamFormat writeVertexStream(std::string& bin, const Stream& stream, const QuantizationPosition& qp, const QuantizationTexture& qt, const Settings& settings);
@@ -353,8 +353,8 @@ void writeSampler(std::string& json, const cgltf_sampler& sampler);
 void writeImage(std::string& json, std::vector<BufferView>& views, const cgltf_image& image, const ImageInfo& info, size_t index, const char* input_path, const Settings& settings);
 void writeEncodedImage(std::string& json, std::vector<BufferView>& views, const cgltf_image& image, const std::string& encoded, const ImageInfo& info, const char* output_path, const Settings& settings);
 void writeTexture(std::string& json, const cgltf_texture& texture, const ImageInfo* info, cgltf_data* data, const Settings& settings);
-void writeMeshAttributes(std::string& json, std::vector<BufferView>& views, std::string& json_accessors, size_t& accr_offset, const Mesh& mesh, int target, const QuantizationPosition& qp, const QuantizationTexture& qt, const Settings& settings);
-size_t writeMeshIndices(std::vector<BufferView>& views, std::string& json_accessors, size_t& accr_offset, const Mesh& mesh, const Settings& settings);
+void writeMeshAttributes(std::string& json, std::vector<BufferView>& views, std::string& json_accessors, size_t& accr_offset, const _Mesh& mesh, int target, const QuantizationPosition& qp, const QuantizationTexture& qt, const Settings& settings);
+size_t writeMeshIndices(std::vector<BufferView>& views, std::string& json_accessors, size_t& accr_offset, const _Mesh& mesh, const Settings& settings);
 size_t writeJointBindMatrices(std::vector<BufferView>& views, std::string& json_accessors, size_t& accr_offset, const cgltf_skin& skin, const QuantizationPosition& qp, const Settings& settings);
 size_t writeInstances(std::vector<BufferView>& views, std::string& json_accessors, size_t& accr_offset, const std::vector<Transform>& transforms, const QuantizationPosition& qp, const Settings& settings);
 void writeMeshNode(std::string& json, size_t mesh_offset, cgltf_node* node, cgltf_skin* skin, cgltf_data* data, const QuantizationPosition* qp);
@@ -396,6 +396,6 @@ void writeScene(std::string& json, const cgltf_scene& scene, const std::string& 
 
 // gauthier's additions
 int gltfpack(const char* input, const char* output, const char* report, Settings settings);
-cgltf_data* parseGlb(const char* path, std::vector<Mesh>& meshes, std::vector<Animation>& animations, const char** error);
-cgltf_data* readGlb(const char * inData, size_t size, std::vector<Mesh>& meshes, std::vector<Animation>& animations, const char** error);
-void printMeshStats(const std::vector<Mesh>& meshes, const char* name);
+cgltf_data* parseGlb(const char* path, std::vector<_Mesh>& meshes, std::vector<Animation>& animations, const char** error);
+cgltf_data* readGlb(const char * inData, size_t size, std::vector<_Mesh>& meshes, std::vector<Animation>& animations, const char** error);
+void printMeshStats(const std::vector<_Mesh>& meshes, const char* name);

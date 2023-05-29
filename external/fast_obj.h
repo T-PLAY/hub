@@ -136,11 +136,11 @@ typedef struct
     unsigned int                material_count;
     fastObjMaterial*            materials;
 
-    /* Mesh objects ('o' tag in .obj file) */
+    /* _Mesh objects ('o' tag in .obj file) */
     unsigned int                object_count;
     fastObjGroup*               objects;
 
-    /* Mesh groups ('g' tag in .obj file) */
+    /* _Mesh groups ('g' tag in .obj file) */
     unsigned int                group_count;
     fastObjGroup*               groups;
 

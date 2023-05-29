@@ -331,7 +331,7 @@ enum
 };
 
 /**
- * Mesh simplifier
+ * _Mesh simplifier
  * Reduces the number of triangles in the mesh, attempting to preserve mesh appearance as much as possible
  * The algorithm tries to preserve mesh topology and can stop short of the target goal based on topology constraints or target error.
  * If not all attributes from the input mesh are required, it's recommended to reindex the mesh using meshopt_generateShadowIndexBuffer prior to simplification.
@@ -348,7 +348,7 @@ enum
 MESHOPTIMIZER_API size_t meshopt_simplify(unsigned int* destination, const unsigned int* indices, size_t index_count, const float* vertex_positions, size_t vertex_count, size_t vertex_positions_stride, size_t target_index_count, float target_error, unsigned int options, float* result_error);
 
 /**
- * Experimental: Mesh simplifier (sloppy)
+ * Experimental: _Mesh simplifier (sloppy)
  * Reduces the number of triangles in the mesh, sacrificing mesh appearance for simplification performance
  * The algorithm doesn't preserve mesh topology but can stop short of the target goal based on target error.
  * Returns the number of indices after simplification, with destination containing new index data
@@ -383,7 +383,7 @@ MESHOPTIMIZER_EXPERIMENTAL size_t meshopt_simplifyPoints(unsigned int* destinati
 MESHOPTIMIZER_API float meshopt_simplifyScale(const float* vertex_positions, size_t vertex_count, size_t vertex_positions_stride);
 
 /**
- * Mesh stripifier
+ * _Mesh stripifier
  * Converts a previously vertex cache optimized triangle list to triangle strip, stitching strips using restart index or degenerate triangles
  * Returns the number of indices in the resulting strip, with destination containing new index data
  * For maximum efficiency the index buffer being converted has to be optimized for vertex cache first.
@@ -396,7 +396,7 @@ MESHOPTIMIZER_API size_t meshopt_stripify(unsigned int* destination, const unsig
 MESHOPTIMIZER_API size_t meshopt_stripifyBound(size_t index_count);
 
 /**
- * Mesh unstripifier
+ * _Mesh unstripifier
  * Converts a triangle strip to a triangle list
  * Returns the number of indices in the resulting list, with destination containing new index data
  *
@@ -461,7 +461,7 @@ struct meshopt_Meshlet
 };
 
 /**
- * Meshlet builder
+ * _Meshlet builder
  * Splits the mesh into a set of meshlets where each meshlet has a micro index buffer indexing into meshlet vertices that refer to the original vertex buffer
  * The resulting data can be used to render meshes using NVidia programmable mesh shading pipeline, or in other cluster-based renderers.
  * When using buildMeshlets, vertex positions need to be provided to minimize the size of the resulting clusters.
