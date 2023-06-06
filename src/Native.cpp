@@ -143,6 +143,11 @@ void viewer_setPort( client::Viewer* viewer, int port ) {
     viewer->setPort( port );
 }
 
+int viewer_getPort( client::Viewer* viewer) {
+    assert(viewer != nullptr);
+    return viewer->getPort();
+}
+
 bool viewer_isConnected( client::Viewer* viewer ) {
     return viewer->isConnected();
 }
@@ -207,8 +212,12 @@ SensorSpec* sensorSpec_copy( const SensorSpec* source ) {
         source->getSensorName(), source->getResolutions(), source->getMetaData() );
 }
 
-// void freeSensorSpec( SensorSpec* sensorSpec ) {
-//}
+ void freeSensorSpec( SensorSpec* sensorSpec ) {
+    assert( sensorSpec != nullptr );
+    std::cout << "[Native] freeSensorSpec( " << sensorSpec << ")" << std::endl;
+    delete sensorSpec;
+    sensorSpec = nullptr;
+}
 
 const SensorSpec::MetaData* sensorSpec_getMetaData( const SensorSpec* sensorSpec ) {
     return &sensorSpec->getMetaData();
@@ -253,6 +262,7 @@ double metaData_getDouble( const SensorSpec::MetaData* metaData, const char* met
     // todo any
     return metaData->at( metaName ).getDouble();
 }
+
 
 } // namespace native
 } // namespace hub

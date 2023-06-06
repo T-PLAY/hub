@@ -146,12 +146,16 @@ extern "C"
     ///
     SRC_API void viewer_setPort( client::Viewer* viewer, int port );
 
+    SRC_API int viewer_getPort( client::Viewer* viewer);
+
     ///
     /// \brief viewer_isConnected
     /// \param viewer
     /// \return
     ///
     SRC_API bool viewer_isConnected( client::Viewer* viewer );
+
+    SRC_API void freeSensorSpec( SensorSpec* sensorSpec );
 
     ///
     /// \brief sensorSpec_getSensorName
