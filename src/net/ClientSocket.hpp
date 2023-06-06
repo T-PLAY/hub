@@ -74,6 +74,7 @@ class SRC_API ClientSocket : public Socket, public io::InputOutput
         VIEWER_CLIENT_CLOSED,
         SERVER_CLOSED,
         STREAM_VIEWER_CLIENT_CLOSED,
+        SET_PROPERTY,
         COUNT
     };
 

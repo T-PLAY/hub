@@ -128,6 +128,14 @@ Any::Any(const data::Mesh &value)
 
 }
 
+//Any::Any(bool value) : m_bool(value)
+//{
+//    assert( m_type == Type::NONE );
+//    assert( !m_hasValue );
+//    m_type = Type::BOOL;
+//    m_hasValue = true;
+//}
+
 // Any::Any( const std::vector<float>& value ) {
 // }
 // Any::Any( unsigned int value ) {
@@ -165,6 +173,13 @@ const data::Mesh &Any::getMesh() const
     assert(m_mesh != nullptr);
     return *m_mesh;
 }
+
+//bool Any::getBool() const
+//{
+//    assert( m_type == Type::BOOL );
+//    return m_bool;
+//}
+
 // const std::vector<float>& Any::getStdVectorFloat() const {
 // }
 // const unsigned int& Any::getUnsignedInt() const {

@@ -6,8 +6,8 @@
 #include <map>
 #include <memory>
 
-//#include <InputSensor.hpp>
-//#include <OutputSensor.hpp>
+// #include <InputSensor.hpp>
+// #include <OutputSensor.hpp>
 #include <net/ServerSocket.hpp>
 
 #include "AskerClient.hpp"
@@ -42,11 +42,11 @@ class SRC_API Server
     ///
     void asyncRun();
 
-//    ///
-//    /// \brief stop
-//    /// \warning need async running
-//    ///
-//    void stop();
+    //    ///
+    //    /// \brief stop
+    //    /// \warning need async running
+    //    ///
+    //    void stop();
 
     ///
     /// \brief detach
@@ -62,27 +62,31 @@ class SRC_API Server
   private:
     std::string headerMsg() const;
 
-
     Client* initClient( hub::net::ClientSocket&& sock, int iClient );
     std::string getStatus();
 
     void addStreamer( StreamerClient* streamer );
-    void addStreamViewer ( StreamViewerClient * streamViewer );
+    void addStreamViewer( StreamViewerClient* streamViewer );
     void addViewer( ViewerClient* viewer );
 
     void delStreamer( StreamerClient* streamer );
-    void delStreamViewer ( StreamViewerClient * streamViewer );
+    void delStreamViewer( StreamViewerClient* streamViewer );
     void delViewer( ViewerClient* viewer );
 
-    void newAcquisition(StreamerClient* streamer, const Acquisition &acq );
+    void newAcquisition( StreamerClient* streamer, const Acquisition& acq );
 
     std::list<std::pair<std::string, hub::SensorSpec>> listStreams() const;
-    const hub::Acquisition & getAcquisition( const std::string& streamName ) const;
+    const hub::Acquisition& getAcquisition( const std::string& streamName ) const;
 
     void removeClient( Client* client );
     const std::map<std::string, StreamerClient*>& getStreamers() const;
 
-    const hub::SensorSpec & getSensorSpec(const std::string & streamName) const;
+    const hub::SensorSpec& getSensorSpec( const std::string& streamName ) const;
+
+    void setProperty( const std::string& streamName,
+                      const std::string& objectName,
+                      int property,
+                      const Any& value );
 
   private:
     std::thread m_thread;
@@ -100,23 +104,22 @@ class SRC_API Server
     std::list<Client*> m_clients;
     std::mutex m_mtxClients;
 
-    int m_nClient = 0;
+    int m_nClient    = 0;
     int m_maxClients = 1'000'000;
 
     std::mutex m_mtxPrint;
 
     bool m_detached = false;
-//    bool m_isRunning = false;
+    //    bool m_isRunning = false;
 
-//  private:
+    //  private:
     friend class Client;
     friend class StreamerClient;
     friend class StreamViewerClient;
     friend class ViewerClient;
     friend class AskerClient;
-//    friend class hub::net::ServerSocket;
+    //    friend class hub::net::ServerSocket;
 };
 
-
-} // server
-} // hub
+} // namespace server
+} // namespace hub

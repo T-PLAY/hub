@@ -88,7 +88,7 @@ class Stream
                     hub::Acquisition acq;
                     //                    auto acq = m_inputSensor->getAcq();
                     *m_inputSensor >> acq;
-//                std::cout << "[Viewer][Stream] getAcq : " << acq << std::endl;
+                    //                std::cout << "[Viewer][Stream] getAcq : " << acq << std::endl;
                     //                    m_viewer.m_onNewAcquisition( m_streamId.c_str(), acq );
                     m_viewer.m_onNewAcquisition( m_streamName.c_str(), acq );
                 }
@@ -99,8 +99,8 @@ class Stream
                            //                           << m_syncStreamName
                            << "'" << m_streamName << "' disconnected, catch exception "
                            << e.what() );
-//                stopStream();
-//                m_inputSensor->getInput().close();
+                //                stopStream();
+                //                m_inputSensor->getInput().close();
             }
 
             if ( m_stopThread ) {
@@ -183,6 +183,7 @@ Viewer::Viewer(
     std::function<void( const char* ipv4, int port )> onServerConnected,
     std::function<void( const char* ipv4, int port )> onServerDisconnected,
     std::function<void( const char* streamName, const hub::Acquisition& )> onNewAcquisition,
+    std::function<void( const char* streamName, const char* objectName, int property, const Any& value )> onSetProperty,
     const std::string& ipv4,
     int port,
     bool autoSync,
@@ -193,6 +194,7 @@ Viewer::Viewer(
     m_onServerConnected( onServerConnected ),
     m_onServerDisconnected( onServerDisconnected ),
     m_onNewAcquisition( onNewAcquisition ),
+    m_onSetProperty(onSetProperty),
     m_sock( ipv4, port, false ),
     //    m_autoSync( autoSync ),
     m_onLogMessage( onLogMessage ) {
@@ -466,22 +468,48 @@ Viewer::Viewer(
 
                     } break;
 
-//                    case net::ClientSocket::Message::VIEWER_CLIENT_CLOSED: {
+                        //                    case net::ClientSocket::Message::VIEWER_CLIENT_CLOSED:
+                        //                    {
                     case net::ClientSocket::Message::SERVER_CLOSED: {
                         DEBUG_MSG( "[Viewer] server closed" );
                         assert( m_sock.isOpen() );
-                        m_sock.write(net::ClientSocket::Message::VIEWER_CLOSED);
-//                        m_sock.close();
+                        m_sock.write( net::ClientSocket::Message::VIEWER_CLOSED );
+                        //                        m_sock.close();
                         throw net::ClientSocket::exception( "[viewer] server closed" );
                     }
 
                     case net::ClientSocket::Message::VIEWER_CLIENT_CLOSED: {
                         DEBUG_MSG( "[Viewer] viewer client closed" );
                         assert( m_sock.isOpen() );
-                        m_sock.write(net::ClientSocket::Message::VIEWER_CLOSED);
-//                        m_sock.close();
+                        m_sock.write( net::ClientSocket::Message::VIEWER_CLOSED );
+                        //                        m_sock.close();
                         throw net::ClientSocket::exception( "[viewer] viewer client closed" );
                     }
+
+                    case net::ClientSocket::Message::SET_PROPERTY: {
+                        DEBUG_MSG( "[Viewer] viewer client set property" );
+                        assert( m_sock.isOpen() );
+                        std::string streamName;
+                        std::string objectName;
+                        int property;
+                        Any value;
+                        m_sock.read( streamName );
+                        m_sock.read( objectName );
+                        m_sock.read( property );
+                        m_sock.read( value );
+
+                        std::cout << "[ViewerClient] setProperty streamName: '" << streamName
+                                  << "', objectName: '" << objectName << "', property: " << property
+                                  << ", value: " << value << std::endl;
+
+                        if ( m_onSetProperty )
+                            m_onSetProperty( streamName.c_str(), objectName.c_str(), property, value );
+
+                        //                        m_sock.write(net::ClientSocket::Message::VIEWER_CLOSED);
+                        //                        m_sock.close();
+                        //                        throw net::ClientSocket::exception( "[viewer]
+                        //                        viewer client closed" );
+                    } break;
 
                     default: {
                         assert( false );
@@ -610,6 +638,19 @@ void Viewer::stopStream( const std::string& streamName ) {
 
     //    m_onDelStreamer( streamName.c_str(), delStream.m_sensorSpecId );
     //    m_streams.erase( streamName );
+}
+
+void Viewer::setProperty( const std::string& streamName,
+                          const std::string& objectName,
+                          int property,
+                          const Any& value ) {
+    if ( m_sock.isOpen() ) {
+        m_sock.write( net::ClientSocket::Message::SET_PROPERTY );
+        m_sock.write( streamName );
+        m_sock.write( objectName );
+        m_sock.write( property );
+        m_sock.write( value );
+    }
 }
 
 } // namespace client

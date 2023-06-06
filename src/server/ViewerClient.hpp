@@ -18,31 +18,34 @@ class StreamerClient;
 ///
 class ViewerClient : public Client
 {
-//  public:
-//  protected:
-private:
+    //  public:
+    //  protected:
+  private:
     ViewerClient( Server* server, int iClient, hub::net::ClientSocket&& sock );
     ~ViewerClient();
 
     std::string headerMsg() const override;
 
-    void notifyNewStreamer( const std::string & streamName, const SensorSpec & sensorSpec );
-    void notifyDelStreamer( const std::string & streamName, const SensorSpec & sensorSpec );
-//    void notifyDelStreamer( const StreamerClient& streamer );
+    void notifyNewStreamer( const std::string& streamName, const SensorSpec& sensorSpec );
+    void notifyDelStreamer( const std::string& streamName, const SensorSpec& sensorSpec );
+    //    void notifyDelStreamer( const StreamerClient& streamer );
 
-    void end(net::ClientSocket::Message message) override;
+    void end( net::ClientSocket::Message message ) override;
+    void notifyProperty( const std::string& streamName,
+                         const std::string& objectName,
+                         int property,
+                         const Any& value );
 
   private:
     std::thread m_thread;
 
     hub::net::ClientSocket m_socket;
-//    std::mutex m_mtxSocket;
+    //    std::mutex m_mtxSocket;
 
     bool m_viewerClosed = false;
 
     friend class Server;
 };
 
-
-} // server
-} // hub
+} // namespace server
+} // namespace hub

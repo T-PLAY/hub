@@ -1,22 +1,22 @@
 #pragma once
 
 #include <functional>
+#include <mutex>
 #include <regex>
 #include <string>
 #include <thread>
-#include <mutex>
 
 #include "Acquisition.hpp"
+#include "InputSensor.hpp"
 #include "SensorSpec.hpp"
 #include "net/ClientSocket.hpp"
-#include "InputSensor.hpp"
 
 namespace hub {
 namespace client {
 
 namespace viewer {
 class Stream;
-} // end namespace
+} // namespace viewer
 
 ///
 /// \brief The Viewer class (event dispatcher)
@@ -54,6 +54,9 @@ class SRC_API Viewer
         std::function<void( const char* ipv4, int port )> onServerDisconnected         = {},
         std::function<void( const char* streamName, const hub::Acquisition& )> onNewAcquisition =
             {},
+        std::function<
+            void( const char* streamName, const char* objectName, int property, const Any& value )>
+            onSetProperty                                          = {},
         const std::string& ipv4                                    = net::s_defaultServiceIp,
         int port                                                   = net::s_defaultServicePort,
         bool autoSync                                              = true,
@@ -118,6 +121,11 @@ class SRC_API Viewer
     void startStream( const std::string& streamName );
     void stopStream( const std::string& streamName );
 
+    void setProperty( const std::string& streamName,
+                      const std::string& objectName,
+                      int property,
+                      const hub::Any& value );
+
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
   private:
@@ -129,14 +137,15 @@ class SRC_API Viewer
     std::function<void( const char* ipv4, int port )> m_onServerConnected;
     std::function<void( const char* ipv4, int port )> m_onServerDisconnected;
     std::function<void( const char* streamName, const hub::Acquisition& )> m_onNewAcquisition;
-
+    std::function<
+        void( const char* streamName, const char* objectName, int property, const Any& value )>
+        m_onSetProperty;
 
     net::ClientSocket m_sock;
-//    std::mutex m_mtxSockRead;
+    //    std::mutex m_mtxSockRead;
     bool m_serverConnected = false;
-//    bool m_autoSync        = true;
+    //    bool m_autoSync        = true;
     std::function<void( const char* logMessage )> m_onLogMessage;
-
 
     std::map<std::string, std::shared_ptr<viewer::Stream>> m_streams;
 

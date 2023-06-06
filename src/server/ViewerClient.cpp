@@ -24,6 +24,23 @@ ViewerClient::ViewerClient( Server* server, int iClient, hub::net::ClientSocket&
 
             net::ClientSocket::Message message;
             m_socket.read( message );
+            while ( message == net::ClientSocket::Message::SET_PROPERTY ) {
+                std::string streamName;
+                std::string objectName;
+                int property;
+                Any value;
+                m_socket.read( streamName );
+                m_socket.read( objectName );
+                m_socket.read( property );
+                m_socket.read( value );
+
+//                std::cout << "[ViewerClient] setProperty streamName: " << streamName
+//                          << ", objectName:" << objectName << ", property:" << property
+//                          << ", value:" << value << std::endl;
+                m_server->setProperty( streamName, objectName, property, value );
+
+                m_socket.read( message );
+            };
             assert( message == net::ClientSocket::Message::VIEWER_CLOSED );
             m_viewerClosed = true;
 
@@ -50,7 +67,7 @@ ViewerClient::~ViewerClient() {
     assert( m_server != nullptr );
     m_server->delViewer( this );
 
-//    assert( m_socket.isOpen() );
+    //    assert( m_socket.isOpen() );
     if ( m_socket.isOpen() ) {
         if ( !m_viewerClosed ) {
             m_socket.write( net::ClientSocket::Message::VIEWER_CLIENT_CLOSED );
@@ -89,8 +106,7 @@ void ViewerClient::notifyDelStreamer( const std::string& streamName,
     // void ViewerClient::notifyDelStreamer( const StreamerClient& streamer ) {
     //     std::cout << headerMsg() << "notifyDelStreamer " << streamer.getStreamName() <<
     //     std::endl;
-    if (m_viewerClosed)
-        return;
+    if ( m_viewerClosed ) return;
 
     try {
         //        m_mtxSocket.lock();
@@ -118,6 +134,19 @@ void ViewerClient::end( net::ClientSocket::Message message ) {
     m_socket.write( message );
     //	m_socket.write( hub::net::ClientSocket::Message::PING );
     //    m_socket.close();
+}
+
+void ViewerClient::notifyProperty( const std::string& streamName,
+                                   const std::string& objectName,
+                                   int property,
+                                   const Any& value ) {
+
+    assert(m_socket.isOpen());
+    m_socket.write( net::ClientSocket::Message::SET_PROPERTY );
+    m_socket.write( streamName );
+    m_socket.write( objectName );
+    m_socket.write( property );
+    m_socket.write( value );
 }
 
 } // namespace server
