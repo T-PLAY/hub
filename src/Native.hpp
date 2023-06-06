@@ -101,6 +101,9 @@ extern "C"
     /// \param acq
     typedef void ( *onNewAcquisitionFunc )( const char* streamName, const Acquisition* acq );
 
+    typedef void (*onSetPropertyFunc)
+        ( const char* streamName, const char* objectName, int property, const Any* value );
+
     /// \brief onLogMessageFunc
     /// \param logMessage
     typedef void ( *onLogMessageFunc )( const char* logMessage );
@@ -122,6 +125,7 @@ extern "C"
                                           onServerConnectedFunc onServerConnected,
                                           onServerDisconnectedFunc onServerDisconnected,
                                           onNewAcquisitionFunc onNewAcquisition,
+                                          onSetPropertyFunc onSetProperty,
                                           const char* ipv4,
                                           int port,
                                           onLogMessageFunc onLogMessage );

@@ -95,6 +95,7 @@ client::Viewer* createViewer( onNewStreamerFunc onNewStreamer,
                               onServerConnectedFunc onServerConnected,
                               onServerDisconnectedFunc onServerDisconnected,
                               onNewAcquisitionFunc onNewAcquisition,
+                              onSetPropertyFunc onSetProperty,
                               const char* ipv4,
                               int port,
                               onLogMessageFunc onLogMessage ) {
@@ -115,6 +116,9 @@ client::Viewer* createViewer( onNewStreamerFunc onNewStreamer,
     auto onNewAcquisitionCpp = [=]( const std::string& streamName, const Acquisition& acq ) {
         onNewAcquisition( streamName.c_str(), &acq );
     };
+    auto onSetPropertyCpp = [=]( const std::string& streamName, const std::string& objectName, int property, const Any& value ) {
+        onSetProperty(streamName.c_str(), objectName.c_str(), property, &value);
+    };
     auto onLogMessageCpp = [=]( const std::string& logMessage ) {
         onLogMessage( logMessage.c_str() );
     };
@@ -123,6 +127,7 @@ client::Viewer* createViewer( onNewStreamerFunc onNewStreamer,
                                                  onServerConnectedCpp,
                                                  onServerDisconnectedCpp,
                                                  onNewAcquisitionCpp,
+                                                 onSetPropertyCpp,
                                                  ipv4,
                                                  port,
                                                  false,

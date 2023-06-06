@@ -72,6 +72,10 @@ int main() {
         std::cout << "[Example][Viewer] onNewAcquisition " << streamName << " " << *acq
                   << std::endl;
     };
+    auto onSetProperty = []( const char* streamName, const char* objectName, int property, const hub::Any* value ) {
+//        std::cout << "[Example][Viewer] onSetProperty " << streamName << " " << *acq
+//                  << std::endl;
+    };
     auto onLogMessage = []( const char* logMessage ) {
         std::cout << "[Example][Viewer] onLogMessage " << logMessage << " " << *logMessage
                   << std::endl;
@@ -82,6 +86,7 @@ int main() {
                                              onServerConnected,
                                              onServerDisconnected,
                                              onNewAcquisition,
+                                             onSetProperty,
                                              hub::net::s_defaultServiceIp.c_str(),
                                              hub::net::s_defaultServicePort,
                                              onLogMessage );

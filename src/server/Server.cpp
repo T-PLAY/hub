@@ -465,5 +465,12 @@ const SensorSpec& Server::getSensorSpec( const std::string& streamName ) const {
     return m_streamName2streamer.at( streamName )->m_inputSensor->getSpec();
 }
 
+void Server::setProperty(const std::string &streamName, const std::string &objectName, int property, const Any &value)
+{
+    for ( const auto& viewer : m_viewers ) {
+        viewer->notifyProperty( streamName, objectName, property, value);
+    }
+}
+
 } // namespace server
 } // namespace hub
