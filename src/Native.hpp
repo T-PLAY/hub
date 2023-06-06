@@ -293,6 +293,8 @@ extern "C"
     ///
     SRC_API double metaData_getDouble( const SensorSpec::MetaData* metaData, const char* metaName );
 
+    SRC_API double any_getDouble( const hub::Any* any );
+
 #ifdef __cplusplus
 } // end extern "C"
 #endif

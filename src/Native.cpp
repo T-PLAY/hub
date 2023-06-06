@@ -268,6 +268,11 @@ double metaData_getDouble( const SensorSpec::MetaData* metaData, const char* met
     return metaData->at( metaName ).getDouble();
 }
 
+double any_getDouble(const Any *any)
+{
+    return any->getDouble();
+}
+
 
 } // namespace native
 } // namespace hub
