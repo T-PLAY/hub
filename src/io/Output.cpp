@@ -28,6 +28,7 @@ void Output::write( const std::string& str ) {
 #endif
 
     int strLen = static_cast<int>( str.size() );
+    assert(sizeof(int) == 4);
     write( strLen );
 
     if ( strLen > 0 ) {
@@ -112,6 +113,7 @@ void Output::write( const Acquisition& acq ) {
 }
 
 void Output::write( const char* str ) {
+    assert(str != nullptr);
     assert( isOpen() );
 //    if (! isOpen())
 //        throw std::runtime_error("[Output] closed, unable to write");

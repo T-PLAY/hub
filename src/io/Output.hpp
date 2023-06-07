@@ -135,6 +135,8 @@ class SRC_API Output
     ///
     void write( const char* str );
 
+    void write(char * str) = delete; // non compatible format 32/64 bit
+
     ///
     /// \brief write
     /// \param str

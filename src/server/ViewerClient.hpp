@@ -13,6 +13,7 @@ namespace server {
 
 class StreamerClient;
 
+
 ///
 /// \brief The ViewerClient class
 ///

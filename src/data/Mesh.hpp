@@ -28,10 +28,12 @@ struct Shape {
     int material;
 };
 
+
 struct Material
 {
     /* Material name */
-    char*                       name;
+//    char*                       name = nullptr;
+    std::string name;
 
     /* Parameters */
     float                       Ka[3];  /* Ambient */
@@ -107,6 +109,7 @@ class SRC_API Mesh : public Measure
     //    std::vector<tinyobj::shape_t> m_shapes;
     //    std::vector<tinyobj::material_t> m_materials;
 };
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

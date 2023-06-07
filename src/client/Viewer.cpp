@@ -498,9 +498,9 @@ Viewer::Viewer(
                         m_sock.read( property );
                         m_sock.read( value );
 
-                        std::cout << "[ViewerClient] setProperty streamName: '" << streamName
-                                  << "', objectName: '" << objectName << "', property: " << property
-                                  << ", value: " << value << std::endl;
+//                        std::cout << "[ViewerClient] setProperty streamName: '" << streamName
+//                                  << "', objectName: '" << objectName << "', property: " << property
+//                                  << ", value: " << value << std::endl;
 
                         if ( m_onSetProperty )
                             m_onSetProperty( streamName.c_str(), objectName.c_str(), property, value );

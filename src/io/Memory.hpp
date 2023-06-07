@@ -82,6 +82,7 @@ class SRC_API Memory : public InputOutput
     /// @copydoc InputOutput::write()
     ///
     void write( const unsigned char* data, size_t len ) override {
+        assert(data != nullptr);
         m_container.insert( m_container.end(), data, data + len );
     }
 
@@ -93,6 +94,7 @@ class SRC_API Memory : public InputOutput
     /// @copydoc InputOutput::read()
     ///
     void read( unsigned char* data, size_t len ) override {
+        assert(data != nullptr);
         memcpy( data, m_container.data(), len );
         m_container.erase( m_container.begin(), m_container.begin() + len );
     }
