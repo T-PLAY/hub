@@ -6,14 +6,20 @@ if [ $(basename `pwd`) != "hub" ]; then
 	exit 0
 fi
 
-for arch in "Win32"; do
-	buildDir="build-$arch"
-	mkdir -p $buildDir
-	cmake -B $buildDir . -A $arch -DHUB_BUILD_STATIC_LIBRARY=ON
-	cmake --build $buildDir --config Debug
-	cmake -B $buildDir --install --config Debug
+installDir="install"
 
-	cmake --build $buildDir --config Release
-	cmake -B $buildDir --install --config Release
+for mode in "Debug" "Release"; do
+	for arch in "Win32"; do
+		buildDir="build-$arch-$mode"
+		mkdir -p $buildDir
+		cmake -B $buildDir . -A $arch -DCMAKE_BUILD_TYPE=$mode -DHUB_BUILD_STATIC_LIBRARY=ON -DCMAKE_INSTALL_PREFIX=$installDir
+
+		cmake --build $buildDir --config $mode
+		cmake -B $buildDir --install --config $mode --parallel
+		cmake --install $buildDir --config $mode
+
+		# cmake --build $buildDir --config Release
+		# cmake -B $buildDir --install --config Release
+	done
 done
 
