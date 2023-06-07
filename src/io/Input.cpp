@@ -116,6 +116,7 @@ void Input::read(Acquisition &acq)
 
 
 void Input::read( char* str ) {
+    assert(str != nullptr);
     assert( isOpen() );
     assert(!isEnd());
 
@@ -124,6 +125,7 @@ void Input::read( char* str ) {
 #endif
 
     int strLen = 0;
+    assert(sizeof(int) == 4);
     read( strLen );
 
     if ( strLen == 0 ) { str[0] = 0; }

@@ -137,6 +137,12 @@ StreamerClient::StreamerClient( Server* server,
         //        std::cout << headerMsg() << "metaData: " << hub::SensorSpec::to_string( pair ) <<
         //        std::endl;
         std::cout << headerMsg() << "metaData: " << hub::SensorSpec::to_string( pair ) << std::endl;
+//        const auto& any  = pair.second;
+//        if (any.type() == Any::Type::MESH) {
+//            const auto& mesh = any.getMesh();
+//            mesh.printInfo();
+////            mesh.printStats();
+//        }
     }
     if ( metaData.find( "nAcq" ) != metaData.end() ) {
         std::cout << headerMsg() << "type detected : packed stream" << std::endl;
