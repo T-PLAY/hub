@@ -381,8 +381,9 @@ void Streamer::waitingForServer() {
 Streamer::~Streamer() {
     DEBUG_MSG( "[Streamer] ~Streamer() started" );
     m_exitThread = true;
-    assert( m_thread.joinable() );
-    m_thread.join();
+//    assert( m_thread.joinable() );
+    if (m_thread.joinable())
+        m_thread.join();
     DEBUG_MSG( "[Streamer] ~Streamer() ended" );
 }
 

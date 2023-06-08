@@ -95,8 +95,10 @@ void Input::read(data::Measure &measure)
     read(measure.m_resolution);
     measure.m_ownData = true;
 
-    assert(measure.m_size != 0);
+    assert(measure.m_size > 0);
     assert(measure.m_data != nullptr);
+    assert(! measure.m_resolution.first.empty());
+    assert(measure.m_resolution.second != Format::NONE);
 }
 
 void Input::read(Acquisition &acq)
