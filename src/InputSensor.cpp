@@ -156,22 +156,26 @@ void InputSensor::operator>>( Acquisition& acq ) {
     *m_input >> acq;
     //       m_input->read(acq);
 
+#ifdef DEBUG
     assert( !acq.hasFixedSize() || m_spec.getAcquisitionSize() == acq.getSize() );
 
-#ifdef DEBUG
     const auto& resolutions = m_spec.getResolutions();
     //    assert( !acq.hasFixedSize() || acq.getSize() == m_sensorSpec.getAcquisitionSize() );
     assert( !acq.hasFixedSize() || acq.getSize() == m_spec.getAcquisitionSize() );
     //    const auto& resolutions = m_sensorSpec.getResolutions();
-    const auto& measures = acq.getMeasures();
-    assert( resolutions.size() == measures.size() );
+    const auto& acqMeasures = acq.getMeasures();
+    assert( resolutions.size() == acqMeasures.size() );
     assert( resolutions.size() > 0 );
     for ( size_t i = 0; i < resolutions.size(); ++i ) {
-        assert( !res::format2hasFixedSize( resolutions.at( i ).second ) ||
-                res::computeAcquisitionSize( resolutions.at( i ) ) == measures.at( i ).getSize() );
-        assert( measures.at( i ).getResolution() == resolutions.at( i ) );
-        assert( !measures.at( i ).getResolution().first.empty() );
-        assert( measures.at( i ).getResolution().second != Format::NONE );
+        const auto & resolution = resolutions.at(i);
+        const auto & acqMeasure = acqMeasures.at(i);
+        const auto & acqResolution = acqMeasure.getResolution();
+
+        assert( !res::format2hasFixedSize( resolution.second ) ||
+                res::computeAcquisitionSize( resolution ) == acqMeasure.getSize() );
+        assert( !acqResolution.first.empty() );
+        assert( acqResolution.second != Format::NONE );
+        assert( acqResolution == resolution);
     }
 #endif
     //       acquisition = m_input->getAcq();
