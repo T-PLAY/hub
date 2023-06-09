@@ -180,6 +180,7 @@ class Stream
 Viewer::Viewer(
     std::function<bool( const char* streamName, const SensorSpec& )> onNewStreamer,
     std::function<void( const char* streamName, const SensorSpec& )> onDelStreamer,
+    std::function<void( const char* ipv4, int port )> onServerNotFound,
     std::function<void( const char* ipv4, int port )> onServerConnected,
     std::function<void( const char* ipv4, int port )> onServerDisconnected,
     std::function<void( const char* streamName, const hub::Acquisition& )> onNewAcquisition,
@@ -191,6 +192,7 @@ Viewer::Viewer(
 
     m_onNewStreamer( onNewStreamer ),
     m_onDelStreamer( onDelStreamer ),
+    m_onServerNotFound( onServerNotFound),
     m_onServerConnected( onServerConnected ),
     m_onServerDisconnected( onServerDisconnected ),
     m_onNewAcquisition( onNewAcquisition ),
@@ -529,6 +531,10 @@ Viewer::Viewer(
                 //                        m_mtxSockRead.unlock();
                 if ( m_serverConnected ) {
                     DEBUG_MSG( "[Viewer] server disconnected, catch exception " << e.what() );
+                }
+                else {
+//                    DEBUG_MSG( "[Viewer] server not found at ipv4 " << m_sock.getIpv4() << " and port " << m_sock.getPort() << std::endl);
+                    m_onServerNotFound(m_sock.getIpv4().c_str(), m_sock.getPort());
                 }
                 // ping the server when this one is not started or visible in the network
                 // able the viewer clients to be aware of the starting of server less than 100
