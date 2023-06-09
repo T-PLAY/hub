@@ -91,6 +91,8 @@ extern "C"
     /// \param port
     typedef void ( *onServerConnectedFunc )( const char* ipv4, int port );
 
+    typedef void ( *onServerNotFoundFunc )( const char* ipv4, int port );
+
     /// \brief onServerDisconnectedFunc
     /// \param ipv4
     /// \param port
@@ -122,6 +124,7 @@ extern "C"
     ///
     SRC_API client::Viewer* createViewer( onNewStreamerFunc onNewStreamer,
                                           onDelStreamerFunc onDelStreamer,
+                                          onServerNotFoundFunc onServerNotFound,
                                           onServerConnectedFunc onServerConnected,
                                           onServerDisconnectedFunc onServerDisconnected,
                                           onNewAcquisitionFunc onNewAcquisition,

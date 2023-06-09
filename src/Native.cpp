@@ -92,6 +92,7 @@ void acquisition_to_string( const Acquisition* acquisition, char* str, int* strL
 
 client::Viewer* createViewer( onNewStreamerFunc onNewStreamer,
                               onDelStreamerFunc onDelStreamer,
+                              onServerNotFoundFunc onServerNotFound,
                               onServerConnectedFunc onServerConnected,
                               onServerDisconnectedFunc onServerDisconnected,
                               onNewAcquisitionFunc onNewAcquisition,
@@ -106,6 +107,9 @@ client::Viewer* createViewer( onNewStreamerFunc onNewStreamer,
     };
     auto onDelStreamerCpp = [=]( const std::string& streamName, const SensorSpec& sensorSpec ) {
         onDelStreamer( streamName.c_str(), &sensorSpec );
+    };
+    auto onServerNotFoundCpp = [=]( const std::string& ipv4, int port ) {
+        onServerNotFound( ipv4.c_str(), port );
     };
     auto onServerConnectedCpp = [=]( const std::string& ipv4, int port ) {
         onServerConnected( ipv4.c_str(), port );
@@ -124,6 +128,7 @@ client::Viewer* createViewer( onNewStreamerFunc onNewStreamer,
     };
     client::Viewer* viewer = new client::Viewer( onNewStreamerCpp,
                                                  onDelStreamerCpp,
+                                                 onServerNotFoundCpp,
                                                  onServerConnectedCpp,
                                                  onServerDisconnectedCpp,
                                                  onNewAcquisitionCpp,
