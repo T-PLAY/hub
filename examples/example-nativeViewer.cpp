@@ -62,6 +62,9 @@ int main() {
     auto onDelStreamer = []( const char* streamName, const hub::SensorSpec* sensorSpec ) {
         std::cout << "[Example][Viewer] onDelStreamer " << streamName << std::endl;
     };
+    auto onServerNotFound = []( const char* ipv4, int port ) {
+        std::cout << "[Example][Viewer] onServerNotFound " << ipv4 << " " << port << std::endl;
+    };
     auto onServerConnected = []( const char* ipv4, int port ) {
         std::cout << "[Example][Viewer] onServerConnected " << ipv4 << " " << port << std::endl;
     };
@@ -77,23 +80,37 @@ int main() {
 //                  << std::endl;
     };
     auto onLogMessage = []( const char* logMessage ) {
-        std::cout << "[Example][Viewer] onLogMessage " << logMessage << " " << *logMessage
+        std::cout << "[Example][Viewer] onLogMessage '" << logMessage << "' "
+//                  << *logMessage
                   << std::endl;
     };
 
+//    std::string ipServer = "127.0.0.1";
+    std::string ipServer = "192.168.2.17";
+//    std::string ipServer = "192.168.2.99";
+//    std::string ipServer = "192.168.2.1";
+//    std::string ipServer = "192.168.2.255";
+//    std::string ipServer = "255.255.255.255";
+
     auto viewer = hub::native::createViewer( onNewStreamer,
                                              onDelStreamer,
+                                             onServerNotFound,
                                              onServerConnected,
                                              onServerDisconnected,
                                              onNewAcquisition,
                                              onSetProperty,
-                                             hub::net::s_defaultServiceIp.c_str(),
+                                             ipServer.c_str(),
+//                                             hub::net::s_defaultServiceIp.c_str(),
                                              hub::net::s_defaultServicePort,
                                              onLogMessage );
 
     while ( true ) {
         std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
     }
+    std::cout << "Starting viewer listening" << std::endl
+              << "Press any key to terminate" << std::endl;
+    getchar();
+
 
     return 0;
 }

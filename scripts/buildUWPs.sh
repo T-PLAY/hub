@@ -10,8 +10,8 @@ rootDir="builds"
 mkdir -p $rootDir
 installDir="install"
 
-# for mode in "Debug" "Release"; do
-for mode in "Debug"; do
+for mode in "Debug" "Release"; do
+#for mode in "Debug"; do
 	for arch in "x64"; do
 		#buildDir="build-$arch"
 		buildDir="$rootDir/$arch-$mode"
@@ -22,6 +22,7 @@ for mode in "Debug"; do
 	done
 
 	for arch in "x64" "ARM64"; do
+	#for arch in "x64"; do
 			buildDir="$rootDir/UWP-$arch-$mode"
 			mkdir -p $buildDir
 			# cmake -B $buildDir . -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0 -A $arch
