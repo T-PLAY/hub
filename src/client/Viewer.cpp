@@ -205,6 +205,8 @@ Viewer::Viewer(
         while ( !m_stopThread ) {
             try {
 
+                DEBUG_MSG( "[Viewer] trying to connect to server at ipv4 " << m_sock.getIpv4() << " and port " << m_sock.getPort());
+
                 assert( !m_sock.isOpen() );
                 m_sock.connect();
                 m_serverConnected = true;
@@ -533,8 +535,9 @@ Viewer::Viewer(
                     DEBUG_MSG( "[Viewer] server disconnected, catch exception " << e.what() );
                 }
                 else {
-//                    DEBUG_MSG( "[Viewer] server not found at ipv4 " << m_sock.getIpv4() << " and port " << m_sock.getPort() << std::endl);
-                    m_onServerNotFound(m_sock.getIpv4().c_str(), m_sock.getPort());
+                    DEBUG_MSG( "[Viewer] server not found at ipv4 " << m_sock.getIpv4() << " and port " << m_sock.getPort());
+                    if (m_onServerNotFound)
+                        m_onServerNotFound(m_sock.getIpv4().c_str(), m_sock.getPort());
                 }
                 // ping the server when this one is not started or visible in the network
                 // able the viewer clients to be aware of the starting of server less than 100

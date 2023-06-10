@@ -18,4 +18,15 @@ foreach(name ${EXAMPLE_SRC_BASENAME})
     target_link_libraries(${TARGET_NAME} hub)
     set_property(TARGET ${TARGET_NAME} PROPERTY CXX_STANDARD ${CMAKE_CXX_STANDARD})
     set_property(TARGET ${TARGET_NAME} PROPERTY CXX_EXTENSIONS OFF)
+
+    if(WIN32)
+         add_custom_command(
+#	     TARGET ${PROJECT_NAME}
+             TARGET ${TARGET_NAME}
+             POST_BUILD
+             COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:hub>
+                     $<TARGET_FILE_DIR:${TARGET_NAME}>)
+    endif()
 endforeach()
+
+
