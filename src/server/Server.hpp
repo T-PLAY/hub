@@ -15,9 +15,9 @@
 #include "StreamerClient.hpp"
 #include "ViewerClient.hpp"
 
-
 namespace hub {
 namespace server {
+
 
 ///
 /// \brief The Server class
@@ -77,7 +77,7 @@ class SRC_API Server
     void newAcquisition( StreamerClient* streamer, const Acquisition& acq );
 
     std::list<std::pair<std::string, hub::SensorSpec>> listStreams() const;
-    const hub::Acquisition& getAcquisition( const std::string& streamName ) const;
+    hub::Acquisition getAcquisition( const std::string& streamName ) const;
 
     void removeClient( Client* client );
     const std::map<std::string, StreamerClient*>& getStreamers() const;

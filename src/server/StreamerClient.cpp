@@ -173,7 +173,14 @@ StreamerClient::StreamerClient( Server* server,
 
                 //                auto acq           = m_inputSensor->getAcquisition();
                 //                hub::Acquisition acq;
+                while (m_getLastAcqPending) {
+                    std::cout << headerMsg() << "waiting for pending getAcq " << std::endl;
+                    std::this_thread::sleep_for(std::chrono::milliseconds(10));
+                }
+                m_mtxLastAcq.lock();
                 *m_inputSensor >> m_lastAcq;
+                m_mtxLastAcq.unlock();
+//                std::cout << headerMsg() << "receive acq " << std::endl;
 //                std::cout << headerMsg() << "save last acq " << m_lastAcq << std::endl;
 
                 //                m_lastAcq = m_inputSensor->getAcq();
@@ -188,6 +195,7 @@ StreamerClient::StreamerClient( Server* server,
 //                              << std::distance( m_packedAcqs.begin(), it.first ) << std::endl;
                     }
                 }
+
 
             } // while (true)
             assert( false );
@@ -264,6 +272,23 @@ const hub::InputSensor& StreamerClient::getInputSensor() const {
     return *m_inputSensor.get();
 }
 
+Acquisition StreamerClient::getLastAcq() const
+{
+//    std::cout << headerMsg() << "getLastAcq() start" << std::endl;
+
+    assert(!m_getLastAcqPending);
+    m_getLastAcqPending = true;
+    m_mtxLastAcq.lock();
+    m_getLastAcqPending = false;
+
+    assert(! m_lastAcq.isEmpty());
+    auto acq = m_lastAcq.clone();
+    m_mtxLastAcq.unlock();
+
+//    std::cout << headerMsg() << "getLastAcq() end" << std::endl;
+    return acq;
+}
+
 void StreamerClient::end( net::ClientSocket::Message message ) {
     InputStream& input = dynamic_cast<InputStream&>( m_inputSensor->getInput() );
     //    if (input.m_clientSocket.isOpen()) {
@@ -273,6 +298,22 @@ void StreamerClient::end( net::ClientSocket::Message message ) {
     //            std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
     //    }
     //    m_inputSensor->getInput().close();
+}
+
+const std::string &StreamerClient::getStreamName() const
+{
+    return m_streamName;
+}
+
+bool StreamerClient::isPackedStream() const
+{
+    return m_isPackedStream;
+}
+
+const std::set<hub::Acquisition> & StreamerClient::getPackedAcqs() const
+{
+    assert (m_packedAcqs.size() == m_nAcq);
+    return m_packedAcqs;
 }
 
 // void StreamerClient::addStreamViewer( StreamViewerClient* streamViewer ) {

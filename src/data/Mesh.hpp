@@ -34,7 +34,6 @@ struct Material
     /* Material name */
 //    char*                       name = nullptr;
     std::string name;
-
     /* Parameters */
     float                       Ka[3];  /* Ambient */
     float                       Kd[3];  /* Diffuse */
