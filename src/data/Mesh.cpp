@@ -563,6 +563,9 @@ namespace data {
                     //                gltfMaterial.clearcoat;
                     //                material.Kd[j] = gltfMaterial.
                 }
+//                material.d = gltfMaterial.transmission.transmission_factor;
+//                material.d = gltfMaterial.alpha_cutoff;
+                material.d = 1.0 - gltfMaterial.transmission.transmission_factor;
                 //            if ( material.name != nullptr )
                 //                std::cout << "material " << i << ", name : " << material.name <<
                 //                std::endl;

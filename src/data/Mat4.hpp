@@ -81,6 +81,8 @@ class SRC_API Mat4 : public Measure
     /// \return
     ///
     SRC_API friend std::ostream& operator<<( std::ostream& os, const Mat4& mat4 );
+
+    const float * operator[](int idx) const;
 };
 
 } // namespace data

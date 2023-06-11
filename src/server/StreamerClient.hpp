@@ -14,6 +14,7 @@
 namespace hub {
 namespace server {
 
+
 class Server;
 class StreamViewerClient;
 
@@ -23,15 +24,17 @@ class StreamViewerClient;
 ///
 class StreamerClient : public Client
 {
-//  public:
+  public:
 //    protected:
-private:
+//private:
 StreamerClient( Server* server, int iClient, hub::net::ClientSocket&& sock, std::string streamName );
     ~StreamerClient();
 
     std::string headerMsg() const override;
 
     const hub::InputSensor& getInputSensor() const;
+
+    hub::Acquisition getLastAcq() const;
 
 //    void addStreamViewer( StreamViewerClient* streamViewer );
 //    void delStreamViewer( StreamViewerClient* streamViewer );
@@ -56,7 +59,13 @@ StreamerClient( Server* server, int iClient, hub::net::ClientSocket&& sock, std:
 
     void end(net::ClientSocket::Message message) override;
 
-  private:
+    const std::string & getStreamName() const;
+    bool isPackedStream() const;
+
+
+    const std::set<hub::Acquisition> & getPackedAcqs() const;
+
+private:
     std::thread m_thread;
 
     std::unique_ptr<hub::InputSensor> m_inputSensor;
@@ -75,6 +84,8 @@ StreamerClient( Server* server, int iClient, hub::net::ClientSocket&& sock, std:
 //    std::mutex m_mtxSyncAcqs;
 
     hub::Acquisition m_lastAcq;
+    mutable std::mutex m_mtxLastAcq;
+    mutable bool m_getLastAcqPending = false;
 
 //    std::map<std::string, std::shared_ptr<hub::Acquisition>> m_lastAcq;
 
@@ -89,7 +100,7 @@ StreamerClient( Server* server, int iClient, hub::net::ClientSocket&& sock, std:
 //  private:
 //  protected:
 
-    friend class Server;
+//    friend class Server;
 //    friend class ViewerClient;
 //    friend class AskerClient;
 //    friend class StreamViewerClient;

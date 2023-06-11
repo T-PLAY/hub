@@ -205,7 +205,8 @@ void Server::addStreamer( StreamerClient* streamer ) {
 
     //    std::cout << "[Server] addStreamer(" << streamer << ")" << std::endl;
 
-    const auto& streamName = streamer->m_streamName;
+//    const auto& streamName = streamer->m_streamName;
+    const auto& streamName = streamer->getStreamName();
 
     //    m_mtxStreamers.lock();
     assert( m_streamName2streamer.find( streamName ) == m_streamName2streamer.end() );
@@ -215,7 +216,7 @@ void Server::addStreamer( StreamerClient* streamer ) {
     SERVER_MSG( "prevent viewers there is a new streamer : '" << streamName << "'" );
     m_mtxViewers.lock();
     for ( const auto& viewer : m_viewers ) {
-        viewer->notifyNewStreamer( streamName, streamer->m_inputSensor->getSpec() );
+        viewer->notifyNewStreamer( streamName, streamer->getInputSensor().getSpec() );
     }
     m_mtxViewers.unlock();
 
@@ -226,17 +227,18 @@ void Server::addStreamViewer( StreamViewerClient* streamViewer ) {
     const auto& streamName = streamViewer->m_streamName;
 
     auto& streamer = m_streamName2streamer.at( streamName );
-    if ( streamer->m_isPackedStream ) {
-        for ( const auto& packedAcq : streamer->m_packedAcqs ) {
+    if ( streamer->isPackedStream() ) {
+        for ( const auto& packedAcq : streamer->getPackedAcqs() ) {
             streamViewer->update( packedAcq );
         }
     }
     else {
-        const auto& lastAcq = streamer->m_lastAcq;
-//        assert( !lastAcq.isEmpty() );
-        if (! lastAcq.isEmpty()) {
-        streamViewer->update( streamer->m_lastAcq );
-        }
+        const auto& lastAcq = streamer->getLastAcq();
+        assert( !lastAcq.isEmpty() );
+//        if (! lastAcq.isEmpty()) {
+//        streamViewer->update( streamer->getLastAcq() );
+            streamViewer->update( lastAcq );
+//        }
     }
 
     m_mtxSreamName2streamViewers.lock();
@@ -264,7 +266,7 @@ void Server::addViewer( ViewerClient* viewer ) {
 
         // notify orphans first
         //        if ( streamer->getParent() == "" ) {
-        viewer->notifyNewStreamer( streamName, streamer->m_inputSensor->getSpec() );
+        viewer->notifyNewStreamer( streamName, streamer->getInputSensor().getSpec() );
         //        }
     }
 
@@ -295,7 +297,7 @@ void Server::delStreamer( StreamerClient* streamer ) {
 
     //    m_mtxStreamers.lock();
     //    int startSize                  = m_streamName2streamer.size();
-    const std::string streamName = streamer->m_streamName;
+    const std::string streamName = streamer->getStreamName();
     //    assert(m_streamName2streamer.at(streamName) == streamer);
     m_mtxStreamName2streamer.lock();
     assert( !m_streamName2streamer.empty() );
@@ -327,7 +329,7 @@ void Server::delStreamer( StreamerClient* streamer ) {
 
     m_mtxViewers.lock();
     for ( auto* viewer : m_viewers ) {
-        viewer->notifyDelStreamer( streamName, streamer->m_inputSensor->getSpec() );
+        viewer->notifyDelStreamer( streamName, streamer->getInputSensor().getSpec() );
     }
     m_mtxViewers.unlock();
 
@@ -378,7 +380,8 @@ void Server::delViewer( ViewerClient* viewer ) {
 void Server::newAcquisition( StreamerClient* streamer, const Acquisition& acq ) {
     assert( !acq.isEmpty() );
 
-    const auto& streamName = streamer->m_streamName;
+//    const auto& streamName = streamer->m_streamName;
+    const auto& streamName = streamer->getStreamName();
 
     // broadcast acquisition for all streamer
     //    for ( auto& streamViewer : m_streamName2streamViewers[streamName] ) {
@@ -438,15 +441,16 @@ std::list<std::pair<std::string, hub::SensorSpec>> Server::listStreams() const {
 // const hub::SensorSpec& Server::getSensorSpec( const std::string& streamName ) {
 //}
 
-const hub::Acquisition& Server::getAcquisition( const std::string& streamName ) const {
+hub::Acquisition Server::getAcquisition( const std::string& streamName ) const {
     m_mtxStreamName2streamer.lock();
     assert( m_streamName2streamer.find( streamName ) != m_streamName2streamer.end() );
     const auto& streamer = m_streamName2streamer.at( streamName );
     m_mtxStreamName2streamer.unlock();
     //    return hub::Acquisition();
-    assert( !streamer->m_lastAcq.isEmpty() );
+//    assert( !streamer->m_lastAcq.isEmpty() );
     //    return streamer->getLastAcq( "" );
-    return streamer->m_lastAcq;
+//    return streamer->m_lastAcq;
+    return streamer->getLastAcq();
 }
 
 void Server::removeClient( Client* client ) {
@@ -462,7 +466,8 @@ const std::map<std::string, StreamerClient*>& Server::getStreamers() const {
 
 const SensorSpec& Server::getSensorSpec( const std::string& streamName ) const {
     assert( m_streamName2streamer.find( streamName ) != m_streamName2streamer.end() );
-    return m_streamName2streamer.at( streamName )->m_inputSensor->getSpec();
+//    return m_streamName2streamer.at( streamName )->m_inputSensor->getSpec();
+    return m_streamName2streamer.at( streamName )->getInputSensor().getSpec();
 }
 
 void Server::setProperty(const std::string &streamName, const std::string &objectName, int property, const Any &value)

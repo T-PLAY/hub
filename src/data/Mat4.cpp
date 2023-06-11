@@ -106,6 +106,12 @@ std::string Mat4::to_string() const {
     return str + "]";
 }
 
+const float *Mat4::operator[](int idx) const
+{
+    assert(0 <= idx && idx < 4);
+    return &((float*)m_data)[idx * 4];
+}
+
 
 std::ostream& operator<<( std::ostream& os, const Mat4& mat4 ) {
     os << mat4.getResolution() << ", [" << mat4.to_string() << "]";
