@@ -83,8 +83,9 @@ private:
 //    std::map<std::string, bool> m_isLooping;
 //    std::mutex m_mtxSyncAcqs;
 
+
     hub::Acquisition m_lastAcq;
-    mutable std::mutex m_mtxLastAcq;
+//    mutable std::mutex m_mtxLastAcq;
     mutable bool m_getLastAcqPending = false;
 
 //    std::map<std::string, std::shared_ptr<hub::Acquisition>> m_lastAcq;
