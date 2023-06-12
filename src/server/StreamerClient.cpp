@@ -177,9 +177,10 @@ StreamerClient::StreamerClient( Server* server,
                     std::cout << headerMsg() << "waiting for pending getAcq " << std::endl;
                     std::this_thread::sleep_for(std::chrono::milliseconds(10));
                 }
-                m_mtxLastAcq.lock();
+//                m_mtxLastAcq.lock();
                 *m_inputSensor >> m_lastAcq;
-                m_mtxLastAcq.unlock();
+//                m_mtxLastAcq.unlock();
+
 //                std::cout << headerMsg() << "receive acq " << std::endl;
 //                std::cout << headerMsg() << "save last acq " << m_lastAcq << std::endl;
 
@@ -257,6 +258,9 @@ StreamerClient::~StreamerClient() {
 
     if ( m_server != nullptr ) m_server->delStreamer( this );
 
+//    m_mtxLastAcq.lock();
+//    m_mtxLastAcq.unlock();
+
     //    m_server->delStreamer(this);
     //    printStatusMessage( "del streamer" );
 
@@ -278,12 +282,12 @@ Acquisition StreamerClient::getLastAcq() const
 
     assert(!m_getLastAcqPending);
     m_getLastAcqPending = true;
-    m_mtxLastAcq.lock();
+//    m_mtxLastAcq.lock();
     m_getLastAcqPending = false;
 
     assert(! m_lastAcq.isEmpty());
     auto acq = m_lastAcq.clone();
-    m_mtxLastAcq.unlock();
+//    m_mtxLastAcq.unlock();
 
 //    std::cout << headerMsg() << "getLastAcq() end" << std::endl;
     return acq;
