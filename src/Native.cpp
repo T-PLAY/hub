@@ -45,7 +45,7 @@ Acquisition* getAcquisition( InputSensor* inputSensor ) {
     try {
         hub::Acquisition acq;
         *inputSensor >> acq;
-//        auto acq = inputSensor->getAcq();
+        //        auto acq = inputSensor->getAcq();
         std::cout << "[Native] get acq : " << acq << std::endl;
         ret = new Acquisition( std::move( acq ) );
     }
@@ -54,6 +54,48 @@ Acquisition* getAcquisition( InputSensor* inputSensor ) {
         return nullptr;
     }
     return ret;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+OutputSensor* createMat4OutputSensor( const char* sensorName, const char* ipv4, int port ) {
+    std::cout << "[Native] createOutputSensor( " << sensorName << ")" << std::endl;
+    OutputSensor* outputSensor = nullptr;
+    try {
+        SensorSpec sensorSpec( sensorName, { { { 1 }, hub::Format::MAT4 } } );
+        outputSensor =
+            //            new OutputSensor( std::move(sensorSpec), io::OutputStream( sensorName,
+            //            net::ClientSocket( ipv4, port ) ) );
+            new OutputSensor(
+                std::move( sensorSpec ), sensorName, net::ClientSocket( ipv4, port ) );
+    }
+    catch ( std::exception& e ) {
+        std::cout << "[Native] createOutputSensor : catch exception : " << e.what() << std::endl;
+        return nullptr;
+    }
+    return outputSensor;
+}
+
+bool mat4OutputSensorSendAcq( OutputSensor* outputSensor, const float* input ) {
+    assert( input != nullptr );
+    try {
+        hub::Acquisition acq( 1, 1 );
+        hub::data::Mat4 mat4( input );
+        acq << std::move( mat4 );
+        *outputSensor << acq;
+        std::cout << "[Native] send acq : " << acq << std::endl;
+    }
+    catch ( std::exception& e ) {
+        std::cout << "[Native] getAcquisition : catch exception : " << e.what() << std::endl;
+        return false;
+    }
+    return true;
+}
+
+void freeOutputSensor( OutputSensor* outputSensor ) {
+    assert( outputSensor != nullptr );
+    std::cout << "[Native] freeOutputSensor( " << outputSensor << ")" << std::endl;
+    delete outputSensor;
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -103,7 +145,7 @@ client::Viewer* createViewer( onNewStreamerFunc onNewStreamer,
 
     auto onNewStreamerCpp = [=]( const std::string& streamName, const SensorSpec& sensorSpec ) {
         return onNewStreamer( streamName.c_str(), &sensorSpec );
-//        return true;
+        //        return true;
     };
     auto onDelStreamerCpp = [=]( const std::string& streamName, const SensorSpec& sensorSpec ) {
         onDelStreamer( streamName.c_str(), &sensorSpec );
@@ -120,8 +162,11 @@ client::Viewer* createViewer( onNewStreamerFunc onNewStreamer,
     auto onNewAcquisitionCpp = [=]( const std::string& streamName, const Acquisition& acq ) {
         onNewAcquisition( streamName.c_str(), &acq );
     };
-    auto onSetPropertyCpp = [=]( const std::string& streamName, const std::string& objectName, int property, const Any& value ) {
-        onSetProperty(streamName.c_str(), objectName.c_str(), property, &value);
+    auto onSetPropertyCpp = [=]( const std::string& streamName,
+                                 const std::string& objectName,
+                                 int property,
+                                 const Any& value ) {
+        onSetProperty( streamName.c_str(), objectName.c_str(), property, &value );
     };
     auto onLogMessageCpp = [=]( const std::string& logMessage ) {
         onLogMessage( logMessage.c_str() );
@@ -153,9 +198,17 @@ void viewer_setPort( client::Viewer* viewer, int port ) {
     viewer->setPort( port );
 }
 
-int viewer_getPort( client::Viewer* viewer) {
-    assert(viewer != nullptr);
+int viewer_getPort( client::Viewer* viewer ) {
+    assert( viewer != nullptr );
     return viewer->getPort();
+}
+
+void viewer_getIpv4(client::Viewer *viewer, char *ipv4)
+{
+    const auto & ipv4Str = viewer->getIpv4();
+    const int len              = ipv4Str.size();
+    memcpy( ipv4, ipv4Str.data(), len + 1 );
+    ipv4[len] = 0;
 }
 
 bool viewer_isConnected( client::Viewer* viewer ) {
@@ -222,7 +275,7 @@ SensorSpec* sensorSpec_copy( const SensorSpec* source ) {
         source->getSensorName(), source->getResolutions(), source->getMetaData() );
 }
 
- void freeSensorSpec( SensorSpec* sensorSpec ) {
+void freeSensorSpec( SensorSpec* sensorSpec ) {
     assert( sensorSpec != nullptr );
     std::cout << "[Native] freeSensorSpec( " << sensorSpec << ")" << std::endl;
     delete sensorSpec;
@@ -273,9 +326,12 @@ double metaData_getDouble( const SensorSpec::MetaData* metaData, const char* met
     return metaData->at( metaName ).getDouble();
 }
 
-double any_getDouble(const Any *any)
-{
+double any_getDouble( const Any* any ) {
     return any->getDouble();
+}
+
+int any_getInt( const Any* any ) {
+    return any->getInt();
 }
 
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "InputSensor.hpp"
+#include "OutputSensor.hpp"
 #include "Macros.hpp"
 #include "client/Viewer.hpp"
 
@@ -45,6 +46,15 @@ extern "C"
     /// \return
     ///
     SRC_API Acquisition* getAcquisition( InputSensor* inputSensor );
+
+    /////////////////////////////////////////////////
+
+//    SRC_API InputSensor* createOutputSensor( const char* streamName, const char* ipv4, int port );
+    SRC_API OutputSensor* createMat4OutputSensor( const char* sensorName, const char* ipv4, int port );
+
+    SRC_API bool mat4OutputSensorSendAcq( OutputSensor* outputSensor, const float* input );
+
+    SRC_API void freeOutputSensor( OutputSensor* outputSensor );
 
     ///
     /// \brief freeAcquisition
@@ -154,6 +164,8 @@ extern "C"
     SRC_API void viewer_setPort( client::Viewer* viewer, int port );
 
     SRC_API int viewer_getPort( client::Viewer* viewer);
+
+    SRC_API void viewer_getIpv4( client::Viewer* viewer, char * ipv4);
 
     ///
     /// \brief viewer_isConnected
@@ -297,6 +309,8 @@ extern "C"
     SRC_API double metaData_getDouble( const SensorSpec::MetaData* metaData, const char* metaName );
 
     SRC_API double any_getDouble( const hub::Any* any );
+
+    SRC_API int any_getInt( const hub::Any* any );
 
 #ifdef __cplusplus
 } // end extern "C"
