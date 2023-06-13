@@ -173,10 +173,10 @@ StreamerClient::StreamerClient( Server* server,
 
                 //                auto acq           = m_inputSensor->getAcquisition();
                 //                hub::Acquisition acq;
-                while (m_getLastAcqPending) {
-                    std::cout << headerMsg() << "waiting for pending getAcq " << std::endl;
-                    std::this_thread::sleep_for(std::chrono::milliseconds(10));
-                }
+//                while (m_getLastAcqPending) {
+//                    std::cout << headerMsg() << "waiting for pending getAcq " << std::endl;
+//                    std::this_thread::sleep_for(std::chrono::milliseconds(10));
+//                }
 //                m_mtxLastAcq.lock();
                 *m_inputSensor >> m_lastAcq;
 //                m_mtxLastAcq.unlock();
@@ -280,13 +280,14 @@ Acquisition StreamerClient::getLastAcq() const
 {
 //    std::cout << headerMsg() << "getLastAcq() start" << std::endl;
 
-    assert(!m_getLastAcqPending);
-    m_getLastAcqPending = true;
+//    assert(!m_getLastAcqPending);
+//    m_getLastAcqPending = true;
 //    m_mtxLastAcq.lock();
-    m_getLastAcqPending = false;
+//    m_getLastAcqPending = false;
 
     assert(! m_lastAcq.isEmpty());
     auto acq = m_lastAcq.clone();
+
 //    m_mtxLastAcq.unlock();
 
 //    std::cout << headerMsg() << "getLastAcq() end" << std::endl;
