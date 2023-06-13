@@ -14,7 +14,6 @@
 namespace hub {
 namespace server {
 
-
 class Server;
 class StreamViewerClient;
 

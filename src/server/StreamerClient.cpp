@@ -317,6 +317,10 @@ bool StreamerClient::isPackedStream() const
 
 const std::set<hub::Acquisition> & StreamerClient::getPackedAcqs() const
 {
+    while (m_packedAcqs.size() != m_nAcq) {
+        std::cout << headerMsg() << "waiting for all packed acqs" << std::endl;
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    }
     assert (m_packedAcqs.size() == m_nAcq);
     return m_packedAcqs;
 }
