@@ -3,6 +3,8 @@
 #include <cassert>
 #include <iostream>
 // #include <numeric>
+#include <cmath>
+//#include <iomanip>
 
 //#include "io/Interface.hpp"
 #include "Any.hpp"
@@ -59,9 +61,63 @@ bool SensorSpec::operator==( const SensorSpec& sensorSpec ) const {
     // todo any compare
 }
 
+// source : https://www.mbeckler.org/blog/?p=114
+// Prints to the provided buffer a nice number of bytes (KB, MB, GB, etc)
+void pretty_bytes(char* buf, uint bytes)
+{
+    const char* suffixes[7];
+    suffixes[0] = "B";
+    suffixes[1] = "KB";
+    suffixes[2] = "MB";
+    suffixes[3] = "GB";
+    suffixes[4] = "TB";
+    suffixes[5] = "PB";
+    suffixes[6] = "EB";
+    uint s = 0; // which suffix to use
+    double count = bytes;
+    while (count >= 1024 && s < 7)
+    {
+        s++;
+        count /= 1024;
+    }
+    if (count - floor(count) == 0.0)
+        sprintf(buf, "%d %s", (int)count, suffixes[s]);
+    else
+        sprintf(buf, "%.1f %s", count, suffixes[s]);
+}
+
 std::string SensorSpec::to_string() const {
-    return m_sensorName + ", " + hub::res::to_string( m_resolutions ) + ", " +
-           SensorSpec::to_string( m_metaData ) + ", " + std::to_string( m_acquisitionSize );
+//    const int nDec = std::log10(m_acquisitionSize);
+//    std::string acqSizeStr = "";
+    char acqSizeStr[80];
+    pretty_bytes(acqSizeStr, m_acquisitionSize);
+//    for (int i = nDec / 3; i >= 0; --i) {
+//        const int hundred = (int)(m_acquisitionSize / std::pow(10, 3 * i)) % 1'000;
+////        acqSizeStr += std::to_string((int)(m_acquisitionSize / std::pow(10, 3 * i)) % 1'000);
+////        acqSizeStr += std::to_string(hundred);
+//            char buff[32];
+//#ifdef WIN32
+//            sprintf_s( buff, "%3d ", hundred );
+//#else
+//            sprintf( buff, "%3d", hundred );
+//#endif
+//            acqSizeStr += buff;
+//        if (i > 1)
+//            acqSizeStr += ",";
+//        else if (i == 1)
+//            acqSizeStr += ".";
+////        else if (i == 0) {
+////            std::stringstream ss;
+////            ss << std::fixed << std::setprecision(1) << hundred / 1000.0;
+////            acqSizeStr += ss.str();
+////            acqSizeStr += std::to_string(hundred);
+////        }
+
+//    }
+    return "'" + m_sensorName + "', " + hub::res::to_string( m_resolutions ) + ", " +
+//           SensorSpec::to_string( m_metaData ) + ", " + std::to_string( m_acquisitionSize );
+           SensorSpec::to_string( m_metaData ) + ", " + acqSizeStr;
+//           SensorSpec::to_string( m_metaData ) + ", " + stringifyFileSize<1000>(m_acquisitionSize, 0);
 }
 
 bool SensorSpec::isEmpty() const
