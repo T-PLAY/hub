@@ -160,3 +160,5 @@ foreach(target "tests" "coverage" "cppCheck" "doc-doxygen" "doc-sphinx")
     endif()
 endforeach()
 
+
+add_subdirectory(wrapper)

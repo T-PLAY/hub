@@ -92,9 +92,11 @@ inline void OutputStream::close() {
     if ( !m_serverClosed && ! m_streamerClosed ) {
         m_clientSocket.write( net::ClientSocket::Message::OUTPUT_STREAM_CLOSED );
     }
-    while (! m_serverClosed && ! m_streamerClosed) {
+    int iSleep = 0;
+    while (! m_serverClosed && ! m_streamerClosed && iSleep < 10) {
         std::cout << "[OutputStream] close() waiting for server/streamer closing" << std::endl;
         std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+        ++iSleep;
     }
     m_clientSocket.close();
     std::cout << "[OutputStream] close() ended" << std::endl;

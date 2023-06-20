@@ -52,6 +52,7 @@ enum class Format {
     USER_DATA,		/**< User data with name and any value */
     MESH,			/**< Mesh consist of shapes of vertices with indexes */
     POINT,			/**< Point consist of x, y and z position, rgb color and depth  */
+    DENSITY,		/**< 32-bit density values. For MRI, CT scan and US representations. */
     COUNT     		/**< Number of enumeration values. Not a valid input: intended to be used in for-loops. */
 };
 // clang-format on
@@ -157,7 +158,9 @@ static constexpr int s_format2nByte[static_cast<int>( Format::COUNT )] = {
     64,      // MAT4
     80 + 4,  // USER_DATA (non constant), string size ~= 80 and 4 bytes for common use int value
     80 + 4,  // MESH (non constant), string size ~= 80 and 4 bytes for common use int value
-    12 + 16,  // POINT
+    12 + 16, // POINT
+    4,		 // DENSITY
+
 };
 
 inline constexpr int format2nByte( const Format& format ) noexcept {
@@ -218,7 +221,8 @@ static constexpr bool s_format2isInterpolable[static_cast<int>( Format::COUNT )]
     false, // MAT4
     false, // USER_DATA
     false, // MESH
-    true, // POINT
+    true,  // POINT
+    false, // DENSITY
 };
 
 inline constexpr bool format2isInterpolable( const Format& format ) noexcept {
@@ -242,7 +246,7 @@ static std::string format2stringArray[static_cast<int>( Format::COUNT )] = {
     "RAW16",       "RAW8",  "UYVY",        "MOTION_RAW", "MOTION_XYZ32F", "GPIO_RAW",
     "DISPARITY32", "6DOF",  "Y10BPACK",    "DISTANCE",   "MJPEG",         "Y8I",
     "Y12I",        "INZI",  "INVI",        "W10",        "Z16H",          "FG",
-    "Y411",        "MAT4",  "USER_DATA",   "MESH",		 "POINT",
+    "Y411",        "MAT4",  "USER_DATA",   "MESH",		 "POINT",		  "DENSITY",
 };
 
 static inline constexpr std::string& HUB_TO_STRING( const Format& format ) {
@@ -260,14 +264,16 @@ static std::string HUB_TO_STRING( const Resolutions& resolutions ) {
     // static std::string resolutions2string( const Resolutions& resolutions ) {
     const int size  = static_cast<int>( resolutions.size() );
     std::string str = "";
-    if ( size > 1 ) str += "[";
+//    if ( size > 1 ) str += "(";
+    str += "(";
     for ( int i = 0; i < size; ++i ) {
         const auto& resolution = resolutions.at( i );
         str += HUB_TO_STRING( resolution );
 
         if ( i != size - 1 ) str += ", ";
     }
-    if ( size > 1 ) str += "]";
+//    if ( size > 1 ) str += ")";
+    str += ")";
     return str;
 }
 
@@ -306,7 +312,8 @@ static constexpr bool s_format2hasFixedSize[static_cast<int>( Format::COUNT )] =
     true,  // MAT4
     false, // USER_DATA
     false, // MESH
-    true, // POINT
+    true,  // POINT
+    true,  // DENSITY
 };
 
 inline constexpr bool format2hasFixedSize( const Format& format ) noexcept {

@@ -13,6 +13,17 @@
 int main() {
     /// Comments I would like to be documented in as well
 
+    hub::Format format = hub::Format::DENSITY;
+    hub::Dims dims = {100, 100, 50};
+    hub::Resolution resolution({dims, format});
+    hub::Resolutions resolutions({resolution});
+//    hub::SensorSpec::MetaData metaData;
+//    metaData["xRealSize"] = 100; // mm
+//    hub::SensorSpec sensorSpec2("sensorName", resolutions, metaData);
+    hub::SensorSpec sensorSpec2("sensorName", resolutions);
+    std::cout << sensorSpec2.to_string() << std::endl;
+    return 0;
+
     {
         hub::SensorSpec sensorSpec;
         // clang-format off
