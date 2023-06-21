@@ -25,6 +25,7 @@ namespace hub {
 /// This also avoids the need to manage the drivers of each of the manufacturers of the sensors you
 /// wish to use.
 ///
+/// todo: template class
 class SRC_API InputSensor : public Sensor
 {
   public:

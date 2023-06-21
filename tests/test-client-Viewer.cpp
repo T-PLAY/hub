@@ -34,6 +34,9 @@ TEST_CASE( "Viewer" ) {
     auto onDelStreamer = []( const std::string& streamName, const hub::SensorSpec& sensorSpec ) {
         std::cout << "[example-viewer] onDelStreamer : " << streamName << std::endl;
     };
+    auto onServerNotFound = []( const std::string& ipv4, int port ) {
+        std::cout << "[example-viewer] onServerNotFound : " << ipv4 << " " << port << std::endl;
+    };
     auto onServerConnected = []( const std::string& ipv4, int port ) {
         std::cout << "[example-viewer] onServerConnected : " << ipv4 << " " << port << std::endl;
     };
@@ -43,10 +46,18 @@ TEST_CASE( "Viewer" ) {
     auto onNewAcquisition = []( const std::string& streamName, const hub::Acquisition& acq ) {
         std::cout << "[example-viewer] onNewAcquisition : " << acq << std::endl;
     };
+    auto onSetProperty = []( const std::string& streamName, const std::string & objectName, int property, const hub::Any& value ) {
+        std::cout << "[example-viewer] onSetProperty " << streamName
+                  << std::endl;
+    };
+    auto onLogMessage = []( const std::string& logMessage ) {
+        std::cout << "[example-viewer] onLogMessage '" << logMessage << "'"
+                  << std::endl;
+    };
 
     std::cout << "[Test] ############################### viewer start" << std::endl;
     hub::client::Viewer viewer {
-        onNewStreamer, onDelStreamer, onServerConnected, onServerDisconnected, onNewAcquisition };
+        onNewStreamer, onDelStreamer, onServerNotFound, onServerConnected, onServerDisconnected, onNewAcquisition, onSetProperty };
 
     viewer.setIpv4( ipv4 );
     viewer.setPort( port );

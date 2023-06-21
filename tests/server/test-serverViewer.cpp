@@ -68,6 +68,9 @@ TEST_CASE( "Server test : viewer" ) {
                                  const hub::SensorSpec& sensorSpec ) {
             std::cout << "[Test] ############################### onDelStreamer" << std::endl;
         };
+    auto onServerNotFound = []( const std::string& ipv4, int port ) {
+        std::cout << "[example-viewer] onServerNotFound : " << ipv4 << " " << port << std::endl;
+    };
         auto onServerConnected = []( const std::string& ipv4, int port ) {
             std::cout << "[Test] ############################### onServerConnected" << std::endl;
         };
@@ -77,11 +80,17 @@ TEST_CASE( "Server test : viewer" ) {
         auto onNewAcquisition = []( const std::string& sensorName, const hub::Acquisition& acq ) {
             std::cout << "[Test] ############################### onNewAcquisition" << std::endl;
         };
+    auto onSetProperty = []( const std::string& streamName, const std::string & objectName, int property, const hub::Any& value ) {
+        std::cout << "[example-viewer] onSetProperty " << streamName
+                  << std::endl;
+    };
         hub::client::Viewer viewer { onNewStreamer,
                                      onDelStreamer,
+                                 onServerNotFound,
                                      onServerConnected,
                                      onServerDisconnected,
                                      onNewAcquisition,
+                                 onSetProperty,
                                      ipv4,
                                      port };
         std::cout << "[Test] ############################### viewer created" << std::endl;

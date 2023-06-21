@@ -63,7 +63,7 @@ bool SensorSpec::operator==( const SensorSpec& sensorSpec ) const {
 
 // source : https://www.mbeckler.org/blog/?p=114
 // Prints to the provided buffer a nice number of bytes (KB, MB, GB, etc)
-void pretty_bytes(char* buf, uint bytes)
+void pretty_bytes(char* buf, uint64_t bytes)
 {
     const char* suffixes[7];
     suffixes[0] = "B";
@@ -73,7 +73,7 @@ void pretty_bytes(char* buf, uint bytes)
     suffixes[4] = "TB";
     suffixes[5] = "PB";
     suffixes[6] = "EB";
-    uint s = 0; // which suffix to use
+    uint64_t s = 0; // which suffix to use
     double count = bytes;
     while (count >= 1024 && s < 7)
     {
@@ -81,9 +81,23 @@ void pretty_bytes(char* buf, uint bytes)
         count /= 1024;
     }
     if (count - floor(count) == 0.0)
+#ifdef WIN32
+//            sprintf_s( buff, "%3d ", hundred );
+    sprintf_s(buf, 80, "%d %s", (int)count, suffixes[s]);
+#else
+//            sprintf( buff, "%3d", hundred );
         sprintf(buf, "%d %s", (int)count, suffixes[s]);
+#endif
     else
+//        sprintf(buf, "%.1f %s", count, suffixes[s]);
+#ifdef WIN32
+//            sprintf_s( buff, "%3d ", hundred );
+        sprintf_s(buf, 80, "%.1f %s", count, suffixes[s]);
+//        sprintf(buf, "%.1f %s", count, suffixes[s]);
+#else
+//            sprintf( buff, "%3d", hundred );
         sprintf(buf, "%.1f %s", count, suffixes[s]);
+#endif
 }
 
 std::string SensorSpec::to_string() const {
