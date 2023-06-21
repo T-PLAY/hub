@@ -1,6 +1,7 @@
 
 
 #include <OutputSensor.hpp>
+#include <client/Streamer.hpp>
 
 #include <filesystem>
 #include <thread>
@@ -13,8 +14,12 @@
 int main() {
     /// Comments I would like to be documented in as well
 
+    constexpr int width = 512;
+    constexpr int depth = 512;
+    constexpr int height = 100;
+
     hub::Format format = hub::Format::DENSITY;
-    hub::Dims dims = {100, 100, 50};
+    hub::Dims dims = {width, depth, height};
     hub::Resolution resolution({dims, format});
     hub::Resolutions resolutions({resolution});
 //    hub::SensorSpec::MetaData metaData;
@@ -22,6 +27,23 @@ int main() {
 //    hub::SensorSpec sensorSpec2("sensorName", resolutions, metaData);
     hub::SensorSpec sensorSpec2("sensorName", resolutions);
     std::cout << sensorSpec2.to_string() << std::endl;
+
+    hub::client::Streamer streamer("127.0.0.1", 4042);
+    streamer.addStream("streamName", sensorSpec2);
+
+    hub::Acquisition acq(1, 1);
+    const int dataSize = width * depth * height;
+    float * data = new float[dataSize];
+    for (int i = 0; i < dataSize; ++i) {
+        data[i] = 1.0;
+    }
+    hub::data::Measure measure((unsigned char*)data, dataSize * 4, resolution);
+    delete [] data;
+    acq << std::move(measure);
+
+    streamer.newAcquisition("streamName", acq);
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     return 0;
 
     {

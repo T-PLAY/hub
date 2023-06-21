@@ -103,6 +103,7 @@ class Stream
 //        std::cout << "[Stream] " << m_streamName << " init start " << std::endl;
 
         assert( m_outputSensor == nullptr );
+        m_mtxOutputSensor.lock();
 
 //        bool sockInited = false;
         try {
@@ -138,7 +139,6 @@ class Stream
 
             //                    m_streams[streamName] = std::move( outputSensor );
 
-            m_mtxOutputSensor.lock();
             for ( const auto& acq : m_initAcqs ) {
                 //                std::cout << "[Streamer:Stream] " << m_streamName << " init acq "
                 //                << std::endl;

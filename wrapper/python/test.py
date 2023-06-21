@@ -2,6 +2,8 @@
 import time
 #import ctypes
 
+import Hub
+
 from Hub import *
 
 import numpy as np

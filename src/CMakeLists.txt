@@ -54,7 +54,7 @@ set(REQUIRED_LIBS)
 if(HUB_BUILD_STATIC_LIBRARY)
     add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})
     target_compile_definitions(${PROJECT_NAME} PUBLIC -DSRC_STATIC)
-    set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE ON) # octave
+    set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE ON) # octave, python
 
 else()
     add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})

@@ -145,6 +145,9 @@ TEST_CASE( "Native test" ) {
     auto onDelStreamer = [](const char* streamName, const hub::SensorSpec* sensorSpec) {
         std::cout << "[Example][Viewer] onDelStreamer " << streamName << std::endl;
     };
+    auto onServerNotFound = []( const char* ipv4, int port ) {
+        std::cout << "[Example][Viewer] onServerNotFound " << ipv4 << " " << port << std::endl;
+    };
     auto onServerConnected = [](const char* ipv4, int port) {
         std::cout << "[Example][Viewer] onServerConnected " << ipv4 << " " << port << std::endl;
     };
@@ -156,6 +159,10 @@ TEST_CASE( "Native test" ) {
         std::cout << "[Example][Viewer] onNewAcquisition " << streamName << " " << *acq
                   << std::endl;
     };
+    auto onSetProperty = []( const char* streamName, const char* objectName, int property, const hub::Any* value ) {
+        std::cout << "[Example][Viewer] onSetProperty " << streamName << " " << value
+                  << std::endl;
+    };
     auto onLogMessage = [](const char* logMessage) {
         std::cout << "[Example][Viewer] onLogMessage " << logMessage << " " << *logMessage
                   << std::endl;
@@ -163,9 +170,11 @@ TEST_CASE( "Native test" ) {
 
     auto* viewer = hub::native::createViewer(onNewStreamer,
         onDelStreamer,
+        onServerNotFound,
         onServerConnected,
         onServerDisconnected,
         onNewAcquisition,
+        onSetProperty,
         ipv4.c_str(),
         port,
         onLogMessage);

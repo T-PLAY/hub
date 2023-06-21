@@ -31,6 +31,7 @@ namespace hub {
 /// This class allows the data to be transmitted without being recorded
 /// so that it can be used in real time on various network machines.
 ///
+/// todo: template class
 class SRC_API OutputSensor : public Sensor
 {
   public:
