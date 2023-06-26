@@ -61,6 +61,8 @@ else()
     target_compile_definitions(${PROJECT_NAME} PUBLIC -DSRC_EXPORTS)
 endif()
 
+
+
 target_compile_definitions(${PROJECT_NAME} PUBLIC -DINTERNAL_BUILD)
 
 #set (${PROJECT_NAME}_VERSION "${${PROJECT_NAME}_VERSION_MAJOR}.${${PROJECT_NAME}_VERSION_MINOR}.${${PROJECT_NAME}_VERSION_PATCH}")
@@ -140,6 +142,23 @@ target_link_libraries(${PROJECT_NAME} PUBLIC ${REQUIRED_LIBS})
 #  ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_SOURCE_DIR}/VersionHeader.cmake
 #)
 #add_dependencies(${PROJECT_NAME} VersionHeader)
+
+# ########################### STATIC BUILD ################################
+
+# static build for python, octave, matlab APIs
+add_library(${PROJECT_NAME}_static STATIC ${SOURCE_FILES})
+target_compile_definitions(${PROJECT_NAME}_static PUBLIC -DSRC_STATIC)
+set_property(TARGET ${PROJECT_NAME}_static PROPERTY POSITION_INDEPENDENT_CODE ON) # octave, python
+target_compile_definitions(${PROJECT_NAME}_static PUBLIC -DINTERNAL_BUILD)
+target_link_libraries(${PROJECT_NAME}_static PUBLIC ${REQUIRED_LIBS})
+target_include_directories(${PROJECT_NAME}_static
+    PUBLIC
+    $<BUILD_INTERFACE:${HUB_INCLUDE_DIR}>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.h (autogenerate)
+    $<INSTALL_INTERFACE:include>
+    PRIVATE
+    ${HUB_EXTERNAL_DIR}
+)
 
 # ########################### INSTALL/EXPORT ################################
 
