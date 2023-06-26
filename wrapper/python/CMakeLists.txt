@@ -43,7 +43,7 @@ pybind11_add_module(${PROJECT_NAME} pywrap.cpp test.py)
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE VERSION_INFO=${EXAMPLE_VERSION_INFO})
 target_include_directories(${PROJECT_NAME} PRIVATE ${PYBIND11_INCLUDE_DIRS})
-target_link_libraries(${PROJECT_NAME} PRIVATE Eigen3::Eigen hub)
+target_link_libraries(${PROJECT_NAME} PRIVATE Eigen3::Eigen hub_static)
 
 #set(CMAKE_CXX_FLAGS "-Wall -Wextra -fPIC")
 #if(MSVC)
@@ -66,3 +66,7 @@ file(GLOB_RECURSE tests *.py)
 
 
 # add_custom_target(pybind-tests SOURCES ${tests})
+add_custom_target(
+    wrapper-python-test # WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+    COMMAND ${PYTHON_EXECUTABLE} test.py
+    COMMENT "Running python tests")
