@@ -161,4 +161,7 @@ foreach(target "tests" "coverage" "cppCheck" "doc-doxygen" "doc-sphinx")
 endforeach()
 
 
-add_subdirectory(wrapper)
+option(HUB_ENABLE_WRAPPER "Enable wrapper" OFF)
+if (HUB_ENABLE_WRAPPER)
+        add_subdirectory(wrapper)
+endif()

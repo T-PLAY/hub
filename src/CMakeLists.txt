@@ -146,19 +146,22 @@ target_link_libraries(${PROJECT_NAME} PUBLIC ${REQUIRED_LIBS})
 # ########################### STATIC BUILD ################################
 
 # static build for python, octave, matlab APIs
-add_library(${PROJECT_NAME}_static STATIC ${SOURCE_FILES})
-target_compile_definitions(${PROJECT_NAME}_static PUBLIC -DSRC_STATIC)
-set_property(TARGET ${PROJECT_NAME}_static PROPERTY POSITION_INDEPENDENT_CODE ON) # octave, python
-target_compile_definitions(${PROJECT_NAME}_static PUBLIC -DINTERNAL_BUILD)
-target_link_libraries(${PROJECT_NAME}_static PUBLIC ${REQUIRED_LIBS})
-target_include_directories(${PROJECT_NAME}_static
-    PUBLIC
-    $<BUILD_INTERFACE:${HUB_INCLUDE_DIR}>
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.h (autogenerate)
-    $<INSTALL_INTERFACE:include>
-    PRIVATE
-    ${HUB_EXTERNAL_DIR}
-)
+
+if (HUB_ENABLE_WRAPPER)
+        add_library(${PROJECT_NAME}_static STATIC ${SOURCE_FILES})
+        target_compile_definitions(${PROJECT_NAME}_static PUBLIC -DSRC_STATIC)
+        set_property(TARGET ${PROJECT_NAME}_static PROPERTY POSITION_INDEPENDENT_CODE ON) # octave, python
+        target_compile_definitions(${PROJECT_NAME}_static PUBLIC -DINTERNAL_BUILD)
+        target_link_libraries(${PROJECT_NAME}_static PUBLIC ${REQUIRED_LIBS})
+        target_include_directories(${PROJECT_NAME}_static
+            PUBLIC
+            $<BUILD_INTERFACE:${HUB_INCLUDE_DIR}>
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.h (autogenerate)
+            $<INSTALL_INTERFACE:include>
+            PRIVATE
+            ${HUB_EXTERNAL_DIR}
+        )
+endif()
 
 # ########################### INSTALL/EXPORT ################################
 
