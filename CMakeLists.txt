@@ -7,12 +7,10 @@ if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
     set(HUB_IS_ROOT 1)
 endif()
 
-# set(CMAKE_CXX_STANDARD 11 CACHE STRING "C++ standard to be used")
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_FIND_PACKAGE_NO_SYSTEM_PACKAGE_REGISTRY False)
 
-# get_property(LANGUAGES GLOBAL PROPERTY ENABLED_LANGUAGES) message(STATUS "CMAKE_CXX_COMPILER ${CMAKE_CXX_COMPILER}" )
 message(STATUS "CXX compiler: ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}")
 message(STATUS "Processor: ${CMAKE_SYSTEM_PROCESSOR}")
 message(STATUS "CMake generator: ${CMAKE_GENERATOR}")
@@ -22,7 +20,7 @@ message(STATUS "CMake system version: ${CMAKE_SYSTEM_VERSION}")
 # Finding archictecture
 set(ARCHITECTURE "")
 if(CMAKE_GENERATOR_PLATFORM)
-   message(STATUS "CMake generator platform: ${CMAKE_GENERATOR_PLATFORM}")
+    message(STATUS "CMake generator platform: ${CMAKE_GENERATOR_PLATFORM}")
     if(${CMAKE_GENERATOR_PLATFORM} STREQUAL "x64")
         set(ARCHITECTURE "x64")
     elseif(${CMAKE_GENERATOR_PLATFORM} STREQUAL "Win32")
@@ -45,9 +43,7 @@ endif()
 if("${CMAKE_SYSTEM_NAME}" STREQUAL "WindowsStore")
     set(ARCHITECTURE "UWP-${ARCHITECTURE}")
 endif()
-# if (HUB_IS_ROOT)
 message(STATUS "Architecture: ${ARCHITECTURE}")
-# endif()
 
 foreach(
     SYSTEM_INFO IN
@@ -59,7 +55,6 @@ foreach(
           "OS_VERSION"
           "OS_PLATFORM")
     cmake_host_system_information(RESULT tmp QUERY ${SYSTEM_INFO})
-    # message(STATUS "${SYSTEM_INFO} : ${tmp}")
     set(${SYSTEM_INFO} ${tmp})
 endforeach()
 set(USERNAME $ENV{USERNAME})
@@ -101,14 +96,11 @@ endif()
 
 message(STATUS "CMake build type: ${CMAKE_BUILD_TYPE}")
 
-# if(NOT CMAKE_INSTALL_PREFIX OR CMAKE_INSTALL_PREFIX STREQUAL "/usr/local") if(NOT CMAKE_INSTALL_PREFIX)
 if(HUB_IS_ROOT)
     if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-        # set(CMAKE_INSTALL_PREFIX "/my/default" CACHE PATH "..." FORCE)
         set(CMAKE_INSTALL_PREFIX
             "${CMAKE_SOURCE_DIR}/install"
             CACHE PATH "Install path prefix." FORCE)
-        # unset(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     endif()
 endif()
 
