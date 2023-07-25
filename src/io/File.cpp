@@ -11,27 +11,22 @@ File::File( std::fstream&& file ) : m_file( new std::fstream( std::move( file ) 
     assert( m_file->is_open() );
 }
 
-File::File(File &&fileIO)
-    : m_file(std::move(fileIO.m_file))
-{
+File::File( File&& fileIO ) : m_file( std::move( fileIO.m_file ) ) {
     fileIO.m_file = nullptr;
 }
 
 File::~File() {
     if ( m_file != nullptr ) {
-    std::cout << "[File:" << this << "] ~File() started" << std::endl;
+        std::cout << "[File:" << this << "] ~File() started" << std::endl;
         // todo fix this bug
-//        assert(File::isOpen());
         File::close();
         assert( !File::isOpen() );
         std::cout << "[File:" << this << "] ~File() close file" << std::endl;
-//        m_file.release();
-    std::cout << "[File:" << this << "] ~File() ended" << std::endl;
+        std::cout << "[File:" << this << "] ~File() ended" << std::endl;
     }
 }
 
 void File::close() {
-//    assert( isOpen() );
     m_file->close();
     assert( !isOpen() );
 }

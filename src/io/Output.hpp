@@ -1,12 +1,5 @@
 #pragma once
 
-//#include <cassert>
-//#include <iostream>
-//#include <list>
-//#include <map>
-//#include <string>
-//#include <typeinfo>
-//#include <vector>
 #include <exception>
 
 #include "Acquisition.hpp"
@@ -44,10 +37,8 @@ class SRC_API Output
     Output& operator=( const Output& output ) = delete;
     Output&& operator=( Output&& output ) = delete;
 
-//    virtual ~Output() = default;
     virtual ~Output();
 
-//  protected:
   public:
     ///
     /// \brief write
@@ -76,12 +67,11 @@ class SRC_API Output
     virtual bool isOpen() const = 0;
 
   public:
+    template <class T>
+    void operator<<( T& t );
 
     template <class T>
-    void operator<<(T & t);
-
-    template <class T>
-    void put(const T & t);
+    void put( const T& t );
 
     ///
     /// \brief write
@@ -118,8 +108,6 @@ class SRC_API Output
     template <class T, class U>
     void write( const std::pair<T, U>& pair );
 
-
-
   public:
     ///
     /// \brief write
@@ -127,15 +115,13 @@ class SRC_API Output
     ///
     void write( const Any& any );
 
-//    void write ( uint64_t value);
-
     ///
     /// \brief write
     /// \param str
     ///
     void write( const char* str );
 
-    void write(char * str) = delete; // non compatible format 32/64 bit
+    void write( char* str ) = delete; // non compatible format 32/64 bit
 
     ///
     /// \brief write
@@ -162,32 +148,27 @@ class SRC_API Output
     virtual void write( const Acquisition& acq );
 
 #ifdef ARCH_X86
-    void write(size_t size) = delete; // non compatible format 32/64 bit
+    void write( size_t size ) = delete; // non compatible format 32/64 bit
 #endif
 
-           ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
 };
 
-template<class T>
-inline void Output::put(const T &t)
-{
+template <class T>
+inline void Output::put( const T& t ) {
     assert( isOpen() );
-    write(t);
+    write( t );
 }
 
-template<class T>
-inline void Output::operator<<(T &t)
-{
+template <class T>
+inline void Output::operator<<( T& t ) {
     assert( isOpen() );
-    write(t);
+    write( t );
 }
 
 template <class T>
 inline void Output::write( const T& t ) {
     assert( isOpen() );
-//    if (! isOpen())
-//        throw std::runtime_error("[Output] closed, unable to write");
-//    assert(sizeof(int) == 4);
 
     write( reinterpret_cast<const unsigned char*>( &t ), sizeof( T ) );
 
@@ -204,8 +185,6 @@ inline void Output::write( const T& t ) {
 template <class T>
 inline void Output::write( const std::list<T>& list ) {
     assert( isOpen() );
-//    if (! isOpen())
-//        throw std::runtime_error("[Output] closed, unable to write");
 
 #ifdef DEBUG_OUTPUT
     std::cout << "[Output] write(std::list)" << std::endl;
@@ -222,8 +201,6 @@ inline void Output::write( const std::list<T>& list ) {
 template <class T>
 inline void Output::write( const std::vector<T>& vector ) {
     assert( isOpen() );
-//    if (! isOpen())
-//        throw std::runtime_error("[Output] closed, unable to write");
 
 #ifdef DEBUG_OUTPUT
     std::cout << "[Output] write(std::vector)" << std::endl;
@@ -240,8 +217,6 @@ inline void Output::write( const std::vector<T>& vector ) {
 template <class T, class U>
 inline void Output::write( const std::map<T, U>& map ) {
     assert( isOpen() );
-//    if (! isOpen())
-//        throw std::runtime_error("[Output] closed, unable to write");
 
 #ifdef DEBUG_OUTPUT
     std::cout << "[Output] write(std::map)" << std::endl;
@@ -261,8 +236,6 @@ inline void Output::write( const std::map<T, U>& map ) {
 template <class T, class U>
 inline void Output::write( const std::pair<T, U>& pair ) {
     assert( isOpen() );
-//    if (! isOpen())
-//        throw std::runtime_error("[Output] closed, unable to write");
 
 #ifdef DEBUG_OUTPUT
     std::cout << "[Output] write(std::pair)" << std::endl;
@@ -272,7 +245,6 @@ inline void Output::write( const std::pair<T, U>& pair ) {
     write( first );
     write( second );
 }
-
 
 } // namespace io
 } // namespace hub

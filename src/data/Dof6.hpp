@@ -1,12 +1,9 @@
 #pragma once
 
-
-
 #include "Measure.hpp"
 
 namespace hub {
 namespace data {
-
 
 ///
 /// \brief The Dof6 class

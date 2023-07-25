@@ -1,7 +1,5 @@
 #pragma once
 
-
-
 #include "Any.hpp"
 #include "Measure.hpp"
 

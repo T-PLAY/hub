@@ -3,10 +3,6 @@
 
 #include <iostream>
 
-//#include <io/File.hpp>
-//#include <io/Ram.hpp>
-//#include <InputSensor.hpp>
-//#include <OutputSensor.hpp>
 #include <Resolution.hpp>
 
 TEST_CASE( "Resolutions test" ) {

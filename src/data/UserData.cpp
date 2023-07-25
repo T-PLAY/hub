@@ -1,6 +1,5 @@
 #include "UserData.hpp"
 
-
 #include "io/Memory.hpp"
 
 namespace hub {

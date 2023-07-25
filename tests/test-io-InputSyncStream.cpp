@@ -8,11 +8,9 @@
 
 TEST_CASE( "InputSyncStream test" ) {
 
-    //    const int ref_offset    = 0;
     const int ref_offset    = 5;
     constexpr int ref_nAcqs = 10;
 
-    //    const int ref2_offset    = 5;
     const int ref2_offset    = 0;
     constexpr int ref_nAcqs2 = 10;
 
@@ -42,27 +40,17 @@ TEST_CASE( "InputSyncStream test" ) {
     const hub::SensorSpec ref_sensorSpec2( "sensorName2", { ref_resolution2 } );
     std::vector<hub::Acquisition> ref_acqs2;
     const int ref_dataSize2 = hub::res::computeAcquisitionSize( ref_resolution2 );
-    //    float* data2    = new float[ref_dataSize2];
     float data2[7];
     for ( int iAcq = 0; iAcq < ref_nAcqs2; ++iAcq ) {
         for ( int i = 0; i < 7; ++i ) {
             data2[i] = ref2_offset + iAcq + 1;
         }
-        //        float value = ref2_offset + iAcq + 1;
-        //        hub::data::Dof6 dof6()
         ref_acqs2.emplace_back( ref2_offset + iAcq + 1, ref2_offset + iAcq + 1 );
         ref_acqs2.back() << hub::data::Measure(
             reinterpret_cast<const unsigned char*>( data2 ), ref_dataSize2, ref_resolution2 );
 
-        //        const auto & lastAcq = ref_acqs2.back();
-        //        assert(lastAcq.getMeasures().size() == 1);
-        //        const auto & measure = lastAcq.getMeasures().front();
-        //        for ( int i = 0; i < ref_dataSize2; ++i ) {
-        //            assert(measure.getData()[i] == ref2_offset + iAcq + 1);
-        //        }
         std::cout << ref_acqs2.back() << std::endl;
     }
-    //    delete[] data2;
     std::cout << std::endl;
 
     //////////////////////
@@ -129,37 +117,29 @@ TEST_CASE( "InputSyncStream test" ) {
         server.asyncRun();
 
         {
-//            hub::io::OutputStream outputStream( "streamName",
-//                                                hub::net::ClientSocket( ipv4, port ) );
-//            hub::OutputSensor outputSensor( ref_sensorSpec, std::move( outputStream ) );
-            hub::OutputSensor outputSensor( ref_sensorSpec, "streamName", hub::net::ClientSocket(ipv4, port) );
+            hub::OutputSensor outputSensor(
+                ref_sensorSpec, "streamName", hub::net::ClientSocket( ipv4, port ) );
 
-//            hub::io::OutputStream outputStream2( "streamName2",
-//                                                 hub::net::ClientSocket( ipv4, port ) );
-//            hub::OutputSensor outputSensor2( ref_sensorSpec2, std::move( outputStream2 ) );
-            hub::OutputSensor outputSensor2( ref_sensorSpec2, "streamName2", hub::net::ClientSocket(ipv4, port) );
+            hub::OutputSensor outputSensor2(
+                ref_sensorSpec2, "streamName2", hub::net::ClientSocket( ipv4, port ) );
             std::cout << "outputSensors created" << std::endl;
 
             hub::io::InputSyncStream inputStream( "streamName", "streamName2", ipv4, port );
             hub::InputSensor inputSensor( std::move( inputStream ) );
             std::cout << "inputSensor created" << std::endl;
             CHECK( inputSensor.getSpec() == ref_sensorSpec + ref_sensorSpec2 );
-            //            const hub::io::Input& input = inputSensor.getInput();
 
             for ( const auto& acq : ref_acqs ) {
-                //            std::cout << "write: " << acq << std::endl;
                 outputSensor << acq;
             }
 
             for ( const auto& acq2 : ref_acqs2 ) {
-                //            std::cout << "write: " << acq << std::endl;
                 outputSensor2 << acq2;
             }
 
             hub::Acquisition acq;
             std::cout << "sync acqs" << std::endl;
             std::vector<hub::Acquisition> sync_acqs;
-            //        while ( !input.isEnd()  ) {
             for ( int i = 0; i < ref_sync_acqs.size(); ++i ) {
 
                 inputSensor >> acq;

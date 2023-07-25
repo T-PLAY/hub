@@ -50,7 +50,7 @@ class SRC_API Viewer
     explicit Viewer(
         std::function<bool( const char* streamName, const SensorSpec& )> onNewStreamer = {},
         std::function<void( const char* streamName, const SensorSpec& )> onDelStreamer = {},
-        std::function<void( const char* ipv4, int port )> onServerNotFound = {},
+        std::function<void( const char* ipv4, int port )> onServerNotFound             = {},
         std::function<void( const char* ipv4, int port )> onServerConnected            = {},
         std::function<void( const char* ipv4, int port )> onServerDisconnected         = {},
         std::function<void( const char* streamName, const hub::Acquisition& )> onNewAcquisition =
@@ -144,9 +144,7 @@ class SRC_API Viewer
         m_onSetProperty;
 
     net::ClientSocket m_sock;
-    //    std::mutex m_mtxSockRead;
     bool m_serverConnected = false;
-    //    bool m_autoSync        = true;
     std::function<void( const char* logMessage )> m_onLogMessage;
 
     std::map<std::string, std::shared_ptr<viewer::Stream>> m_streams;

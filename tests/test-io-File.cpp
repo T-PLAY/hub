@@ -7,17 +7,12 @@
 #include <filesystem>
 #include <thread>
 
-//#if CPLUSPLUS_VERSION <= 14
-//#    include <boost/filesystem.hpp>
-//#endif
-
 TEST_CASE( "File test" ) {
 
     const std::string filename = "file.txt";
 
 #if CPLUSPLUS_VERSION <= 14
     // todo cpp 17 -> 14
-//     std::filesystem::remove( filename ); //  not worked
 #else
     std::filesystem::remove( filename );
 #endif
@@ -53,8 +48,8 @@ TEST_CASE( "File test" ) {
         for ( const auto& acq : acqs ) {
             outputSensor << acq;
         }
-        assert(outputSensor.getOutput().isOpen());
-    std::cout << "outputStream start end" << std::endl;
+        assert( outputSensor.getOutput().isOpen() );
+        std::cout << "outputStream start end" << std::endl;
     }
     std::cout << "outputStream end ################################" << std::endl;
 
@@ -74,7 +69,6 @@ TEST_CASE( "File test" ) {
         CHECK( sensorSpec.getResolutions()[0].second == hub::Format::BGR8 );
         std::cout << "####### compare acqs" << std::endl;
         for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
-//            auto acq = inputSensor.getAcq();
             hub::Acquisition acq;
             inputSensor >> acq;
             assert( acq == acqs[iAcq] );

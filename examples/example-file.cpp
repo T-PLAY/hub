@@ -57,7 +57,6 @@ hub::io::File inputFile( std::fstream( "file.txt", std::ios::binary | std::ios::
             hub::InputSensor inputSensor( hub::io::File( std::move( file ) ) );
             const hub::Resolutions& resolutions = inputSensor.getSpec().getResolutions();
 
-//            auto acq = inputSensor.getAcq();
             hub::Acquisition acq;
             inputSensor >> acq;
 
@@ -68,17 +67,11 @@ hub::io::File inputFile( std::fstream( "file.txt", std::ios::binary | std::ios::
         {
             const hub::SensorSpec sensorSpec(
                 "sensorName", { { { 1 }, hub::Format::BGR8 } }, metaData );
-//            hub::io::CyclicBuff cyclicBuff;
-//            hub::OutputSensor outputSensor( sensorSpec, hub::io::Ram( cyclicBuff ) );
-
-//            hub::InputSensor inputSensor( ( hub::io::Ram( cyclicBuff ) ) );
         }
 
         {
             hub::SensorSpec sensorSpec( "sensorName", { { { 1 }, hub::Format::BGR8 } }, metaData );
-            hub::OutputSensor outputSensor(
-//                sensorSpec, hub::io::OutputStream( "streamName", hub::net::ClientSocket() ) );
-                sensorSpec, "streamName", hub::net::ClientSocket() );
+            hub::OutputSensor outputSensor( sensorSpec, "streamName", hub::net::ClientSocket() );
             hub::InputSensor inputSensor(
                 hub::io::InputStream( "streamName", hub::net::ClientSocket() ) );
         }
@@ -88,7 +81,6 @@ hub::io::File inputFile( std::fstream( "file.txt", std::ios::binary | std::ios::
         hub::InputSensor inputSensor( hub::io::File( std::fstream( "file.txt", std::ios::in ) ) );
         hub::Acquisition acq;
         inputSensor >> acq;
-//        const auto& acq = inputSensor.getAcq();
 
         std::cout << "acq = " << acq << std::endl;
 

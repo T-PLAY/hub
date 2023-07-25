@@ -1,8 +1,7 @@
-#include <catch2/catch_test_macros.hpp>
 #include "test-common.hpp"
+#include <catch2/catch_test_macros.hpp>
 
 #include <InputSensor.hpp>
-//#include <io/InputSyncStream.hpp>
 #include <OutputSensor.hpp>
 
 #include <server/Server.hpp>
@@ -12,14 +11,10 @@
 TEST_CASE( "Server test : sync" ) {
 
     const std::string ipv4 = "127.0.0.1";
-//    srand( (unsigned)time( NULL ) );
-//    const int port = rand() % 65535;
-    const int port = GET_RANDOM_PORT;
-
+    const int port         = GET_RANDOM_PORT;
 
     constexpr int nAcqs    = 5;
     constexpr int dataSize = 9;
-
 
     std::cout << "ref_acqs:" << std::endl;
     std::vector<hub::Acquisition> acqs;
@@ -30,8 +25,8 @@ TEST_CASE( "Server test : sync" ) {
         }
         acqs.emplace_back( iAcq * 10, iAcq * 10 );
         acqs.back() << hub::data::Measure( reinterpret_cast<const unsigned char*>( data ),
-                                            dataSize,
-                                            { { 3 }, hub::Format::BGR8 } );
+                                           dataSize,
+                                           { { 3 }, hub::Format::BGR8 } );
         std::cout << acqs.back() << std::endl;
     }
 
@@ -44,8 +39,8 @@ TEST_CASE( "Server test : sync" ) {
         }
         acqs2.emplace_back( iAcq * 2, iAcq * 2 );
         acqs2.back() << hub::data::Measure( reinterpret_cast<const unsigned char*>( data ),
-                                           dataSize,
-                                           { { 3 }, hub::Format::BGR8 } );
+                                            dataSize,
+                                            { { 3 }, hub::Format::BGR8 } );
         std::cout << acqs2.back() << std::endl;
     }
     std::cout << std::endl;
@@ -61,8 +56,8 @@ TEST_CASE( "Server test : sync" ) {
         std::cout << "[Test] ############################### outputStream start" << std::endl;
         hub::OutputSensor outputSensor(
             hub::SensorSpec { "sensorName", { { { 3 }, hub::Format::BGR8 } } },
-//            hub::io::OutputStream( "stream", hub::net::ClientSocket( ipv4, port ) ) );
-            "stream", hub::net::ClientSocket( ipv4, port ) );
+            "stream",
+            hub::net::ClientSocket( ipv4, port ) );
 
         const auto& outputSensorSpec = outputSensor.getSpec();
         CHECK( outputSensorSpec.getAcquisitionSize() == dataSize );
@@ -76,8 +71,8 @@ TEST_CASE( "Server test : sync" ) {
         std::cout << "[Test] ############################### outputStream2 start" << std::endl;
         hub::OutputSensor outputSensor2(
             hub::SensorSpec { "sensorName2", { { { 3 }, hub::Format::BGR8 } } },
-//            hub::io::OutputStream( "stream2", hub::net::ClientSocket( ipv4, port ) ) );
-            "stream2", hub::net::ClientSocket( ipv4, port ) );
+            "stream2",
+            hub::net::ClientSocket( ipv4, port ) );
 
         const auto& outputSensorSpec2 = outputSensor2.getSpec();
         CHECK( outputSensorSpec2.getAcquisitionSize() == dataSize );
@@ -104,7 +99,7 @@ TEST_CASE( "Server test : sync" ) {
 
         std::cout << "[Test] ############################### inputStream3 start" << std::endl;
         hub::InputSensor inputSensor3(
-            hub::io::InputSyncStream( "stream", "stream2", ipv4, port) );
+            hub::io::InputSyncStream( "stream", "stream2", ipv4, port ) );
 
         const auto& inputSensorSpec3 = inputSensor3.getSpec();
         std::cout << "[Test] inputStream2 end ---------------------------------" << std::endl;
@@ -124,7 +119,6 @@ TEST_CASE( "Server test : sync" ) {
         for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
             hub::Acquisition acq;
             inputSensor >> acq;
-//            auto acq = inputSensor.getAcq();
             std::cout << "[Test] acq = " << acq << std::endl;
             CHECK( acq == acqs[iAcq] );
         }
@@ -132,7 +126,6 @@ TEST_CASE( "Server test : sync" ) {
         for ( int iAcq = 0; iAcq < nAcqs * 5; ++iAcq ) {
             hub::Acquisition acq;
             inputSensor2 >> acq;
-//            auto acq = inputSensor2.getAcq();
             std::cout << "[Test] acq2 = " << acq << std::endl;
             CHECK( acq == acqs2[iAcq] );
         }
@@ -140,14 +133,11 @@ TEST_CASE( "Server test : sync" ) {
         for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
             hub::Acquisition acq;
             inputSensor3 >> acq;
-//            auto acq = inputSensor3.getAcq();
             std::cout << "[Test] acq3 = " << acq << std::endl;
-            hub::Acquisition acqSync = acqs.at(iAcq).clone();
+            hub::Acquisition acqSync = acqs.at( iAcq ).clone();
             acqSync << acqs2[iAcq * 5].getMeasures();
-            CHECK( acq == acqSync);
+            CHECK( acq == acqSync );
         }
     }
     std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
-
-//    server.stop();
 }

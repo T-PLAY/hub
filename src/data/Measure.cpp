@@ -4,8 +4,8 @@
 
 #include "data/Dof6.hpp"
 #include "data/Mat4.hpp"
-#include "data/UserData.hpp"
 #include "data/Mesh.hpp"
+#include "data/UserData.hpp"
 
 namespace hub {
 namespace data {
@@ -70,20 +70,10 @@ bool Measure::operator!=( const Measure& measure ) const {
     return !( *this == measure );
 }
 
-//void Measure::setData(unsigned char *newData, uint64_t size )
-//{
-//    assert(size == m_size);
-//    m_data = newData;
-//}
-
 // bool Measure::ownData() const
-//{
-//     return m_ownData;
 // }
 
 // const unsigned char *Measure::getData() const
-//{
-//     return m_data;
 // }
 
 std::ostream& operator<<( std::ostream& os, const Measure& measure ) {
@@ -91,26 +81,26 @@ std::ostream& operator<<( std::ostream& os, const Measure& measure ) {
     const auto& format = measure.getResolution().second;
     switch ( format ) {
     case Format::DOF6: {
-        //        const data::Dof6 & dof6 = dynamic_cast<const data::Dof6&>(measure);
-        const data::Dof6 dof6(measure);
+        const data::Dof6 dof6( measure );
         os << dof6;
-        break; }
+        break;
+    }
     case Format::MAT4: {
-        //        const data::Dof6 & dof6 = dynamic_cast<const data::Dof6&>(measure);
-        const data::Mat4 mat4(measure);
+        const data::Mat4 mat4( measure );
         os << mat4;
-        break; }
+        break;
+    }
     case Format::USER_DATA: {
-        //        const data::Dof6 & dof6 = dynamic_cast<const data::Dof6&>(measure);
-        const data::UserData userData(measure);
+        const data::UserData userData( measure );
         os << userData;
-        break; }
+        break;
+    }
 
     case Format::MESH: {
-        //        const data::Dof6 & dof6 = dynamic_cast<const data::Dof6&>(measure);
-        const data::Mesh mesh(measure);
+        const data::Mesh mesh( measure );
         os << mesh;
-        break; }
+        break;
+    }
 
     default:
         os << measure.getResolution() << ", [";

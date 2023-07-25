@@ -18,7 +18,6 @@
 namespace hub {
 namespace server {
 
-
 ///
 /// \brief The Server class
 ///
@@ -42,12 +41,6 @@ class SRC_API Server
     /// \brief asyncRun
     ///
     void asyncRun();
-
-    //    ///
-    //    /// \brief stop
-    //    /// \warning need async running
-    //    ///
-    //    void stop();
 
     ///
     /// \brief detach
@@ -111,15 +104,12 @@ class SRC_API Server
     std::mutex m_mtxPrint;
 
     bool m_detached = false;
-    //    bool m_isRunning = false;
 
-    //  private:
     friend class Client;
     friend class StreamerClient;
     friend class StreamViewerClient;
     friend class ViewerClient;
     friend class AskerClient;
-    //    friend class hub::net::ServerSocket;
 };
 
 } // namespace server

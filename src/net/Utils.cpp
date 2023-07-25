@@ -7,15 +7,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
 static const std::regex s_ipv4Regex { "^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$" };
 
 #ifdef WIN32
 
-//#ifdef MIN
 #    ifdef __MINGW64__
 #        undef _WIN32_WINNT
-//#define _WIN32_WINNT _WIN32_WINNT_WS03 // Windows Server 2003
 #        define _WIN32_WINNT _WIN32_WINNT_VISTA // Windows Vista
 #    endif
 
@@ -97,11 +94,7 @@ void closeSocket( socket_fd& sock ) {
 
 bool isConnected( socket_fd sock ) {
 
-    if (! net::utils::isValid(sock))
-        return false;
-//    assert( net::utils::isValid( sock ) );
-
-//    return true;
+    if ( !net::utils::isValid( sock ) ) return false;
 
 #ifdef WIN32
     // not sure how to check this in windows
@@ -167,7 +160,6 @@ socket_fd accept( socket_fd sock, ServerAddr& addr ) {
 }
 
 // socket_fd socket()
-//{
 // }
 
 ///////////////////////////////// CLIENT ADDRESS ///////////////////////////////////////////
@@ -313,9 +305,7 @@ bool isValid( int port ) {
 // #    ifdef DEBUG_NET
 // #    endif
 
-//}
 // #endif
 
 // socket_fd createSocket(int af, int type, int protocol)
-//{
 // }

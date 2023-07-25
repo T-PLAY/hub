@@ -51,9 +51,9 @@ void ServerSocket::initServer() {
 
     // Create server
     if ( net::utils::bind( m_fdSock, m_addr ) < 0 ) {
-//        perror( "Failed to bind.\n" );
-        throw Socket::exception((std::string("Failed to bind because port ") + std::to_string(mPort) + " already in use").c_str());
-//        exit( 1 );
+        throw Socket::exception( ( std::string( "Failed to bind because port " ) +
+                                   std::to_string( mPort ) + " already in use" )
+                                     .c_str() );
     }
 
     if ( net::utils::listen( m_fdSock, 3 ) < 0 ) {

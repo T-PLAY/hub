@@ -4,9 +4,7 @@
 #include <iostream>
 // #include <numeric>
 #include <cmath>
-//#include <iomanip>
 
-//#include "io/Interface.hpp"
 #include "Any.hpp"
 
 namespace hub {
@@ -22,9 +20,6 @@ SensorSpec::SensorSpec( const SensorNameType& sensorName,
 #endif
 
 // constexpr SensorSpec::SensorSpec(
-//{
-
-//}
 
 // constexpr SensorSpec::SensorSpec( const std::string_view& sensorName,
 
@@ -63,84 +58,53 @@ bool SensorSpec::operator==( const SensorSpec& sensorSpec ) const {
 
 // source : https://www.mbeckler.org/blog/?p=114
 // Prints to the provided buffer a nice number of bytes (KB, MB, GB, etc)
-void pretty_bytes(char* buf, uint64_t bytes)
-{
+void pretty_bytes( char* buf, uint64_t bytes ) {
     const char* suffixes[7];
-    suffixes[0] = "B";
-    suffixes[1] = "KB";
-    suffixes[2] = "MB";
-    suffixes[3] = "GB";
-    suffixes[4] = "TB";
-    suffixes[5] = "PB";
-    suffixes[6] = "EB";
-    uint64_t s = 0; // which suffix to use
+    suffixes[0]  = "B";
+    suffixes[1]  = "KB";
+    suffixes[2]  = "MB";
+    suffixes[3]  = "GB";
+    suffixes[4]  = "TB";
+    suffixes[5]  = "PB";
+    suffixes[6]  = "EB";
+    uint64_t s   = 0; // which suffix to use
     double count = bytes;
-    while (count >= 1024 && s < 7)
-    {
+    while ( count >= 1024 && s < 7 ) {
         s++;
         count /= 1024;
     }
-    if (count - floor(count) == 0.0)
+    if ( count - floor( count ) == 0.0 )
 #ifdef WIN32
-//            sprintf_s( buff, "%3d ", hundred );
-    sprintf_s(buf, 80, "%d %s", (int)count, suffixes[s]);
+        sprintf_s( buf, 80, "%d %s", (int)count, suffixes[s] );
 #else
-//            sprintf( buff, "%3d", hundred );
-        sprintf(buf, "%d %s", (int)count, suffixes[s]);
+        sprintf( buf, "%d %s", (int)count, suffixes[s] );
 #endif
     else
-//        sprintf(buf, "%.1f %s", count, suffixes[s]);
 #ifdef WIN32
-//            sprintf_s( buff, "%3d ", hundred );
-        sprintf_s(buf, 80, "%.1f %s", count, suffixes[s]);
-//        sprintf(buf, "%.1f %s", count, suffixes[s]);
+        sprintf_s( buf, 80, "%.1f %s", count, suffixes[s] );
 #else
-//            sprintf( buff, "%3d", hundred );
-        sprintf(buf, "%.1f %s", count, suffixes[s]);
+        sprintf( buf, "%.1f %s", count, suffixes[s] );
 #endif
 }
 
 std::string SensorSpec::to_string() const {
-//    const int nDec = std::log10(m_acquisitionSize);
-//    std::string acqSizeStr = "";
     char acqSizeStr[80];
-    pretty_bytes(acqSizeStr, m_acquisitionSize);
-//    for (int i = nDec / 3; i >= 0; --i) {
-//        const int hundred = (int)(m_acquisitionSize / std::pow(10, 3 * i)) % 1'000;
-////        acqSizeStr += std::to_string((int)(m_acquisitionSize / std::pow(10, 3 * i)) % 1'000);
-////        acqSizeStr += std::to_string(hundred);
-//            char buff[32];
-//#ifdef WIN32
-//            sprintf_s( buff, "%3d ", hundred );
-//#else
-//            sprintf( buff, "%3d", hundred );
-//#endif
-//            acqSizeStr += buff;
-//        if (i > 1)
-//            acqSizeStr += ",";
-//        else if (i == 1)
-//            acqSizeStr += ".";
-////        else if (i == 0) {
-////            std::stringstream ss;
-////            ss << std::fixed << std::setprecision(1) << hundred / 1000.0;
-////            acqSizeStr += ss.str();
-////            acqSizeStr += std::to_string(hundred);
-////        }
+    pretty_bytes( acqSizeStr, m_acquisitionSize );
+    ////        acqSizeStr += std::to_string((int)(m_acquisitionSize / std::pow(10, 3 * i)) %
+    ///1'000); /        acqSizeStr += std::to_string(hundred); /        else if (i == 0) { /
+    ///std::stringstream ss; /            ss << std::fixed << std::setprecision(1) << hundred /
+    ///1000.0; /            acqSizeStr += ss.str(); /            acqSizeStr +=
+    ///std::to_string(hundred); /        }
 
-//    }
     return "'" + m_sensorName + "', " + hub::res::to_string( m_resolutions ) + ", " +
-//           SensorSpec::to_string( m_metaData ) + ", " + std::to_string( m_acquisitionSize );
            SensorSpec::to_string( m_metaData ) + ", " + acqSizeStr;
-//           SensorSpec::to_string( m_metaData ) + ", " + stringifyFileSize<1000>(m_acquisitionSize, 0);
 }
 
-bool SensorSpec::isEmpty() const
-{
+bool SensorSpec::isEmpty() const {
     return m_sensorName == "" && m_resolutions.empty();
 }
 
 // constexpr int SensorSpec::format2nByte(const Format &format)
-//{
 // }
 
 std::string SensorSpec::to_string( const SensorSpec::MetaData& metaData, bool expand ) {
@@ -182,15 +146,12 @@ std::ostream& operator<<( std::ostream& os, const SensorSpec& sensorSpec ) {
 }
 
 // std::string SensorSpec::getSensorName() const
-//{
 // }
 
 // hub::SensorSpec::MetaData SensorSpec::getMetaData() const
-//{
 // }
 
 // hub::Resolutions SensorSpec::getResolutions() const
-//{
 // }
 
 } // namespace hub

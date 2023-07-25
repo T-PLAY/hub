@@ -1,14 +1,11 @@
 
 #pragma once
 
-//#include <any>
 #include <cassert>
+#include <memory>
 #include <string>
 #include <vector>
-#include <memory>
-//#include <iostream>
 
-// #include "data/Mat4.hpp"
 #include "Macros.hpp"
 
 namespace hub {
@@ -83,8 +80,6 @@ class SRC_API Any
 
     Any( const data::Mesh& value );
 
-//    Any( bool value);
-
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ///
@@ -117,9 +112,7 @@ class SRC_API Any
     ///
     const data::Mat4& getMat4() const;
 
-    const data::Mesh &getMesh() const;
-
-//    bool getBool() const;
+    const data::Mesh& getMesh() const;
 
     ///
     /// \brief has_value
@@ -179,10 +172,9 @@ class SRC_API Any
     std::string m_std_string     = "";
     const char* m_const_char_ptr = nullptr;
     hub::data::Mat4* m_mat4      = nullptr;
-    hub::data::Mesh* m_mesh = nullptr;
-    bool m_bool = false;
+    hub::data::Mesh* m_mesh      = nullptr;
+    bool m_bool                  = false;
 
-    // T m_value;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -195,7 +187,5 @@ inline Any::Type Any::type() const {
     return m_type;
 }
 
-// inline std::string Any::typeName() const {
-//}
 
 } // namespace hub

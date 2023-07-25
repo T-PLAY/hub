@@ -27,7 +27,6 @@ auto getData() {
     return s_ret { 0, 0 };
 }
 } // namespace sensorAPI
-//;
 
 namespace clientApp {
 enum class Format { BGR888, NONE };
@@ -55,21 +54,17 @@ int main() {
         const hub::SensorSpec sensorSpec( "sensorName", { imageResolution }, metaData );
 
         hub::OutputSensor outputSensor {
-            sensorSpec,
-            "streamName",
-                                    hub::net::ClientSocket { "serverIp", serverPort } };
-//            hub::io::OutputStream { "streamName",
-//                                    hub::net::ClientSocket { "serverIp", serverPort } } };
+            sensorSpec, "streamName", hub::net::ClientSocket { "serverIp", serverPort } };
 
         while ( 1 ) {
 #if ( __cplusplus >= 201703L )
             auto [start, end] = sensorAPI::getTimestamp();
             auto [data, size] = sensorAPI::getData();
 #else
-            auto start = sensorAPI::getTimestamp().start;
-            auto end = sensorAPI::getTimestamp().end;
-            auto data = sensorAPI::getData().data;
-            auto size = sensorAPI::getData().size;
+            auto start         = sensorAPI::getTimestamp().start;
+            auto end           = sensorAPI::getTimestamp().end;
+            auto data          = sensorAPI::getData().data;
+            auto size          = sensorAPI::getData().size;
 #endif
 
             // send data
@@ -88,7 +83,7 @@ int main() {
 #if ( __cplusplus >= 201703L )
             const auto& [dims, format] = resolutions.at( 0 );
 #else
-            const auto& dims = resolutions.at( 0 ).first;
+            const auto& dims   = resolutions.at( 0 ).first;
             const auto& format = resolutions.at( 0 ).second;
 #endif
 
@@ -101,7 +96,6 @@ int main() {
                     // receive data
                     hub::Acquisition acq;
                     inputSensor >> acq;
-//                    auto acq            = inputSensor.getAcq();
                     const auto& measure = acq.getMeasures().at( 0 );
 
                     // draw image

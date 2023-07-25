@@ -21,11 +21,7 @@ TEST_CASE( "Asker test" ) {
 
     {
         hub::OutputSensor outputSensor(
-            //            sensorSpec, hub::io::OutputStream( streamName, hub::net::ClientSocket(
-            //            ipv4, port ) ) );
-            sensorSpec,
-            streamName,
-            hub::net::ClientSocket( ipv4, port ) );
+            sensorSpec, streamName, hub::net::ClientSocket( ipv4, port ) );
 
         unsigned char data[3] = { 0, 1, 2 };
         const hub::Acquisition acq =

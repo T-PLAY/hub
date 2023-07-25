@@ -35,22 +35,9 @@ class SRC_API InputSyncStream : public Input
     /// Also occur when stream you want to link is not connected to the server.
     ///
     InputSyncStream( const std::string& streamName,
-                          const std::string& syncStreamName,
-                          const std::string& ipv4 = net::s_defaultServiceIp,
-                              int port = net::s_defaultServicePort);
-//                          net::ClientSocket&& clientSocket  = net::ClientSocket());
-//                          bool mergeSyncAcqs                = true );
-
-//#ifdef WIN32 // msvc warning C4250
-//  protected:
-//    void write( const unsigned char* data, size_t len ) const override;
-//    void read( unsigned char* data, size_t len ) const override;
-//    void close() const override;
-//    bool isOpen() const override;
-//    bool isEnd() const override;
-//#endif
-//    InputSyncStream(InputSyncStream&& inputSyncStream);
-//    ~InputSyncStream();
+                     const std::string& syncStreamName,
+                     const std::string& ipv4 = net::s_defaultServiceIp,
+                     int port                = net::s_defaultServicePort );
 
   protected:
     ///
@@ -81,47 +68,35 @@ class SRC_API InputSyncStream : public Input
     /// \brief getAcq
     /// \return
     ///
-//    Acquisition getAcq( ) override;
-    void read(Acquisition & acq) override;
+    void read( Acquisition& acq ) override;
 
-    void read( SensorSpec& sensorSpec) override;
+    void read( SensorSpec& sensorSpec ) override;
 
   private:
-//    net::ClientSocket m_clientSocket;
-//    net::ClientSocket m_clientSocket2;
     InputStream m_inputStream;
     InputStream m_inputStream2;
-//    SensorSpec m_sensorSpec;
-//    SensorSpec m_sensorSpec2;
     std::list<Acquisition> m_lastAcqs;
-
-//    bool m_moved = false;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 inline bool InputSyncStream::isOpen() const {
     return m_inputStream.isOpen() || m_inputStream2.isOpen();
-//    return m_clientSocket.isOpen() && m_clientSocket2.isOpen();
 }
 
 inline void InputSyncStream::read( unsigned char* data, size_t len ) {
-    assert(false);
-//    m_clientSocket.read( data, len );
+    assert( false );
 }
 
 inline void InputSyncStream::close() {
     std::cout << "[InputSyncStream] close()" << std::endl;
-    if (m_inputStream.isOpen())
-        m_inputStream.close();
-    if (m_inputStream2.isOpen())
-        m_inputStream2.close();
+    if ( m_inputStream.isOpen() ) m_inputStream.close();
+    if ( m_inputStream2.isOpen() ) m_inputStream2.close();
 
-    assert(! m_inputStream.isOpen() && ! m_inputStream2.isOpen());
+    assert( !m_inputStream.isOpen() && !m_inputStream2.isOpen() );
 }
 
 inline bool InputSyncStream::isEnd() const {
-//    assert(false);
     return m_inputStream.isEnd() || m_inputStream2.isEnd();
 }
 

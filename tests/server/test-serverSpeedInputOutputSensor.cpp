@@ -1,5 +1,5 @@
- #include <catch2/catch_test_macros.hpp>
 #include "test-common.hpp"
+#include <catch2/catch_test_macros.hpp>
 
 #include <InputSensor.hpp>
 #include <OutputSensor.hpp>
@@ -8,23 +8,14 @@
 
 #include <filesystem>
 
-//#define CHECK
-
-TEST_CASE("Server test : InputOutputSensor") {
-//int main() {
+TEST_CASE( "Server test : InputOutputSensor" ) {
     constexpr int nAcqs       = 200;
-//    constexpr int width       = 3840;
     constexpr int width       = 1920;
-//    constexpr int width       = 640;
-//    constexpr int height      = 2160;
     constexpr int height      = 1080;
-//    constexpr int height      = 480;
     constexpr size_t dataSize = width * height * 3;
     unsigned char* data       = new unsigned char[dataSize];
     unsigned char* data2      = new unsigned char[dataSize];
-    //    unsigned char datas[nAcqs][dataSize];
 
-    //    return 0;
     std::vector<hub::Acquisition> acqs( nAcqs );
     for ( int i = 0; i < dataSize; ++i ) {
         data[i] = i % 256;
@@ -37,59 +28,27 @@ TEST_CASE("Server test : InputOutputSensor") {
                                    { { width, height }, hub::Format::BGR8 } );
         acqs.at( iAcq ) = std::move( acq );
     }
-    //    delete[] data;
-
-    //    return 0;
-
-    //    /////////////////////////////////////////////////
 
     const std::string ipv4 = "127.0.0.1";
     const int port         = GET_RANDOM_PORT;
-    //    std::vector<unsigned char> data(dataSize);
     // #ifdef WIN32
     // #else
-    //     unsigned char data[dataSize];
     // #endif
-    //     std::mutex mtx;
 
     std::cout << "[test][ClientSocket] start streaming" << std::endl;
     const auto& start = std::chrono::high_resolution_clock::now();
-    //    if (false)
     {
-        //        unsigned char data[dataSize];
-        //        std::thread threadServer = std::thread([&]() {
-        //            for (int iAcq = 0; iAcq < nAcqs; ++iAcq) {
-        //                clientSocket.read(data, dataSize);
-        //                mtx.lock();
-        //                std::cout << "[ServerSocket] read data : ";
-        //                for (int i = 0; i <dataSize; ++i) {
-        //                    std::cout << (int)data[i] << " ";
-        //                }
-        //                std::cout << std::endl;
-        //                mtx.unlock();
-        //            }
-        //        });
         hub::net::ServerSocket serverSocket( port );
         hub::net::ClientSocket clientSocket( ipv4, port );
         auto clientServerSocket = serverSocket.waitNewClient();
-        const int packetSize = 2'000'000; // 2Go network memory buffer
-        const int nPart = dataSize / packetSize;
+        const int packetSize    = 2'000'000; // 2Go network memory buffer
+        const int nPart         = dataSize / packetSize;
         for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
-//            std::cout << "iAcq : " << iAcq << std::endl;
-            //                mtx.lock();
-            //                std::cout << "[ClientSocket] write data : ";
-            //                for (int i = 0; i <dataSize; ++i) {
-            //                    std::cout << (int)datas[iAcq][i] << " ";
-            //                }
-            //                std::cout << std::endl;
-            //                mtx.unlock();
-//            const int len = dataSize;
             int uploadSize = 0;
 
             for ( int i = 0; i < nPart - 1; ++i ) {
                 clientSocket.write( data + uploadSize, packetSize );
                 clientServerSocket.read( data2 + uploadSize, packetSize );
-//                assert( !memcmp( data + uploadSize, data2 + uploadSize, packetSize ) );
 
                 uploadSize += packetSize;
             }
@@ -98,12 +57,8 @@ TEST_CASE("Server test : InputOutputSensor") {
             clientServerSocket.read( data2 + uploadSize, dataSize - uploadSize );
 
             assert( !memcmp( data, data2, dataSize ) );
-
         }
-        //        threadServer.join();
     }
-    //    std::this_thread::sleep_for(std::chrono::duration())
-//    std::this_thread::sleep_for( std::chrono::milliseconds( 1 ) );
     const auto& end = std::chrono::high_resolution_clock::now();
     std::cout << "[test][ClientSocket] end streaming" << std::endl;
     const auto& duration =
@@ -118,19 +73,9 @@ TEST_CASE("Server test : InputOutputSensor") {
               << std::endl;
 
     // #ifdef WIN32
-    //     delete[] data;
 
-    //    for (int i = 0; i < nAcqs; ++i) {
-    //        delete[] datas[i];
-    //    }
-    //    delete[] datas;
     // #endif
 
-    //    return 0;
-
-    //    const std::string ipv4 = "127.0.0.1";
-    //    srand( (unsigned)time( NULL ) );
-    //    const int port = rand() % 65535;
     {
         const int port2 = port + 1;
 
@@ -139,7 +84,6 @@ TEST_CASE("Server test : InputOutputSensor") {
         hub::server::Server server( port2 );
         server.setMaxClients( 2 );
         server.asyncRun();
-        //        std::this_thread::sleep_for(std::chrono::milliseconds(10));
         std::cout << "[test][InputOutputSensor] server end ------------------------------"
                   << std::endl;
 
@@ -149,10 +93,8 @@ TEST_CASE("Server test : InputOutputSensor") {
                 << std::endl;
             hub::OutputSensor outputSensor(
                 hub::SensorSpec( "sensorName", { { { width, height }, hub::Format::BGR8 } } ),
-//                hub::io::OutputStream( "streamName", hub::net::ClientSocket( ipv4, port2 ) ) );
-                "streamName", hub::net::ClientSocket( ipv4, port2 ) );
-
-            //            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                "streamName",
+                hub::net::ClientSocket( ipv4, port2 ) );
 
             std::cout
                 << "[test][InputOutputSensor] ############################### inputStream start"
@@ -164,7 +106,7 @@ TEST_CASE("Server test : InputOutputSensor") {
             CHECK( inputSensorSpec.getAcquisitionSize() == dataSize );
             CHECK( inputSensorSpec.getSensorName() == "sensorName" );
 
-            const auto & resolutions = inputSensorSpec.getResolutions();
+            const auto& resolutions = inputSensorSpec.getResolutions();
             CHECK( resolutions.size() == 1 );
             CHECK( resolutions[0].first.size() == 2 );
             CHECK( resolutions[0].first.at( 0 ) == width );
@@ -182,10 +124,8 @@ TEST_CASE("Server test : InputOutputSensor") {
                 outputSensor << acqs.at( i );
                 hub::Acquisition acq;
                 inputSensor >> acq;
-//                auto acq = inputSensor.getAcq();
                 CHECK( acq == acqs.at( i ) );
             }
-//            std::this_thread::sleep_for( std::chrono::milliseconds( 1 ) );
             const auto& end = std::chrono::high_resolution_clock::now();
             const auto& duration2 =
                 std::chrono::duration_cast<std::chrono::milliseconds>( end - start ).count();
@@ -206,14 +146,10 @@ TEST_CASE("Server test : InputOutputSensor") {
 #else
             CHECK( ratio > 65 );
 #endif
-            //            CHECK(megaBytesPerSeconds >= 800); // server IRIT
             // CHECK( megaBytesPerSeconds >= 2700 ); // home linux
         }
-        //        std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 
     delete[] data;
     delete[] data2;
-
-    //    server.stop();
 }

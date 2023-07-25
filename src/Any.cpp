@@ -1,10 +1,10 @@
 #include "Any.hpp"
 
 #include <cassert>
+#include <iostream>
 #include <map>
 #include <typeinfo>
 #include <vector>
-#include <iostream>
 
 #include "data/Mat4.hpp"
 #include "data/Mesh.hpp"
@@ -118,23 +118,12 @@ Any::Any( const data::Mat4& value ) : m_mat4( new data::Mat4( value ) ) {
     m_hasValue = true;
 }
 
-Any::Any(const data::Mesh &value)
-    : m_mesh(new data::Mesh(value))
-{
+Any::Any( const data::Mesh& value ) : m_mesh( new data::Mesh( value ) ) {
     assert( m_type == Type::NONE );
     assert( !m_hasValue );
     m_type     = Type::MESH;
     m_hasValue = true;
-
 }
-
-//Any::Any(bool value) : m_bool(value)
-//{
-//    assert( m_type == Type::NONE );
-//    assert( !m_hasValue );
-//    m_type = Type::BOOL;
-//    m_hasValue = true;
-//}
 
 // Any::Any( const std::vector<float>& value ) {
 // }
@@ -163,22 +152,15 @@ const char* const Any::getConstCharPtr() const {
 }
 const data::Mat4& Any::getMat4() const {
     assert( m_type == Type::MAT4 );
-    assert(m_mat4 != nullptr);
+    assert( m_mat4 != nullptr );
     return *m_mat4;
 }
 
-const data::Mesh &Any::getMesh() const
-{
+const data::Mesh& Any::getMesh() const {
     assert( m_type == Type::MESH );
-    assert(m_mesh != nullptr);
+    assert( m_mesh != nullptr );
     return *m_mesh;
 }
-
-//bool Any::getBool() const
-//{
-//    assert( m_type == Type::BOOL );
-//    return m_bool;
-//}
 
 // const std::vector<float>& Any::getStdVectorFloat() const {
 // }
@@ -226,7 +208,7 @@ std::string anyValue2string( const Any& any ) {
         } break;
 
         default:
-            assert(false);
+            assert( false );
         }
     }
 
@@ -262,8 +244,6 @@ const std::string& Any::typeName() const {
 //// const std::string& Any::anyType2string( const std::any& any ) {
 // const std::string& anyType2string( const Any& any ) {
 
-//}
-
 std::ostream& operator<<( std::ostream& os, const Any::Type& type ) {
     os << s_anyType2string[(int)type];
     return os;
@@ -274,9 +254,8 @@ std::string Any::to_string() const {
     return ret;
 }
 
-std::string Any::value_to_string() const
-{
-    return anyValue2string(*this);
+std::string Any::value_to_string() const {
+    return anyValue2string( *this );
 }
 
 bool Any::operator==( const Any& any ) const {
@@ -311,7 +290,6 @@ bool Any::operator==( const Any& any ) const {
             return *m_mesh == *any.m_mesh;
         } break;
 
-
         default:
             assert( false );
         }
@@ -325,7 +303,6 @@ std::ostream& operator<<( std::ostream& os, const Any& any ) {
     return os;
 }
 
-//} // any
 } // namespace hub
 
 // #ifdef WIN32

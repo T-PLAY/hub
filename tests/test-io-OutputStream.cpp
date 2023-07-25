@@ -8,11 +8,9 @@
 
 TEST_CASE( "OutputStream test" ) {
 
-    //    const int ref_offset    = 0;
     const int ref_offset    = 5;
     constexpr int ref_nAcqs = 10;
 
-    //    const int ref2_offset    = 5;
     const int ref2_offset    = 0;
     constexpr int ref_nAcqs2 = 10;
 
@@ -43,31 +41,22 @@ TEST_CASE( "OutputStream test" ) {
     server.setMaxClients( 2 );
     server.asyncRun();
 
-//    hub::io::OutputStream outputStream( "streamName", hub::net::ClientSocket( ipv4, port ) );
-//    hub::OutputSensor outputSensor( ref_sensorSpec, std::move( outputStream ) );
-    hub::OutputSensor outputSensor( ref_sensorSpec, "streamName", hub::net::ClientSocket(ipv4, port) );
+    hub::OutputSensor outputSensor(
+        ref_sensorSpec, "streamName", hub::net::ClientSocket( ipv4, port ) );
     std::cout << "outputSensor created" << std::endl;
-
-//    std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
 
     {
         try {
             // unable to open same stream name twice
             hub::io::OutputStream outputStream2( "streamName",
                                                  hub::net::ClientSocket( ipv4, port ) );
-            CHECK(false);
-//            hub::OutputSensor outputSensor2( ref_sensorSpec, std::move( outputStream2 ) );
-            hub::OutputSensor outputSensor2( ref_sensorSpec, "streamName", hub::net::ClientSocket(ipv4, port) );
+            CHECK( false );
+            hub::OutputSensor outputSensor2(
+                ref_sensorSpec, "streamName", hub::net::ClientSocket( ipv4, port ) );
             std::cout << "outputSensor2 created" << std::endl;
-//            std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
         }
         catch ( std::exception& ex ) {
             std::cout << "[test] catch exception : " << ex.what() << std::endl;
         }
     }
-
-//    server.detach();
-//    std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
-
-    //    exit(0);
 }

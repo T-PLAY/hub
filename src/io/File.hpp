@@ -84,7 +84,6 @@ class SRC_API File : public InputOutput
     /// \brief m_file
     ///
     std::unique_ptr<std::fstream> m_file;
-//    std::fstream m_file;
 };
 
 } // namespace io

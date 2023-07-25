@@ -27,31 +27,26 @@ static const std::string s_version = HUB_VERSION;
 ///
 /// @brief
 ///
-namespace client {
-}
+namespace client {}
 
 ///
 /// @brief
 ///
-namespace data {
-}
+namespace data {}
 
 ///
 /// @brief
 ///
-namespace io {
-}
+namespace io {}
 
 ///
 /// @brief
 ///
-namespace net {
-}
+namespace net {}
 
 ///
 /// @brief
 ///
-namespace server {
-}
+namespace server {}
 
 } // namespace hub
