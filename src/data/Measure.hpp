@@ -1,22 +1,20 @@
 #pragma once
 
 #include <cassert>
-#include <cstring>
 #include <cstdint>
+#include <cstring>
 
 #include "Macros.hpp"
 #include "Resolution.hpp"
 
-
 namespace hub {
 
 namespace io {
-    class Input;
-    class Output;
-}
+class Input;
+class Output;
+} // namespace io
 
 namespace data {
-
 
 ///
 /// \brief The Measure class
@@ -24,7 +22,6 @@ namespace data {
 class SRC_API Measure
 {
   public:
-
     Measure() {};
 
     ///
@@ -134,15 +131,11 @@ class SRC_API Measure
     ///
     const inline Resolution& getResolution() const;
 
-//    const unsigned char *getData() const;
-
-//    bool ownData() const;
-
     ///
     /// \brief getData
     /// \return
     ///
-    unsigned char *getData() const;
+    unsigned char* getData() const;
 
     ///
     /// \brief getSize
@@ -150,11 +143,7 @@ class SRC_API Measure
     ///
     uint64_t getSize() const;
 
-
-//    void setData(unsigned char *newData, uint64_t size);
-
   protected:
-
     ///
     /// \brief m_data
     ///
@@ -173,20 +162,17 @@ class SRC_API Measure
 
     friend class hub::io::Input;
     friend class hub::io::Output;
-//    friend class InputSensor;
 };
 
 using Measures = std::vector<Measure>;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-inline unsigned char *Measure::getData() const
-{
+inline unsigned char* Measure::getData() const {
     return m_data;
 }
 
-inline uint64_t Measure::getSize() const
-{
+inline uint64_t Measure::getSize() const {
     return m_size;
 }
 
@@ -195,8 +181,7 @@ Measure::Measure( const unsigned char* const data, uint64_t size, Resolution&& r
     m_data( new unsigned char[size] ),
     m_size( size ),
     m_resolution( std::forward<Resolution>( resolution ) ),
-    m_ownData( true )
-{
+    m_ownData( true ) {
 
     static_assert( std::is_same<std::decay_t<Resolution>, std::decay_t<hub::Resolution>>::value,
                    "must be the same as Resolution" );
@@ -213,8 +198,7 @@ Measure::Measure( unsigned char* data, uint64_t size, Resolution&& resolution, b
     m_data( data ),
     m_size( size ),
     m_resolution( std::forward<Resolution>( resolution ) ),
-    m_ownData( stealData )
-{
+    m_ownData( stealData ) {
 
     static_assert( std::is_same<std::decay_t<Resolution>, std::decay_t<hub::Resolution>>::value,
                    "must be the same as Resolution" );

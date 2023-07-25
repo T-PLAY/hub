@@ -6,9 +6,6 @@
 #include <Any.hpp>
 
 #include <data/Mat4.hpp>
-//#include <string>
-//#include <iostream>
-//#include <cstring>
 
 TEST_CASE( "Any test" ) {
 

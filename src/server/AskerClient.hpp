@@ -11,21 +11,18 @@
 namespace hub {
 namespace server {
 
-
 ///
 /// \brief The AskerClient class
 ///
 class AskerClient : public Client
 {
-//  public:
-//  protected:
-private:
+  private:
     AskerClient( Server* server, int iClient, hub::net::ClientSocket&& sock );
     ~AskerClient();
 
     std::string headerMsg() const override;
 
-    void end(net::ClientSocket::Message message) override;
+    void end( net::ClientSocket::Message message ) override;
 
   private:
     std::thread m_thread;
@@ -34,5 +31,5 @@ private:
     friend class Server;
 };
 
-} // server
-} // hub
+} // namespace server
+} // namespace hub

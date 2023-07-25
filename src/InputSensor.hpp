@@ -5,12 +5,11 @@
 #include "io/Input.hpp"
 
 // user friendly useless includes
-#include "io/Input.hpp"
 #include "io/File.hpp"
-#include "io/Memory.hpp"
+#include "io/Input.hpp"
 #include "io/InputStream.hpp"
 #include "io/InputSyncStream.hpp"
-//#include "io/Ram.hpp"
+#include "io/Memory.hpp"
 
 namespace hub {
 
@@ -39,37 +38,20 @@ class SRC_API InputSensor : public Sensor
               typename = typename std::enable_if<std::is_base_of<io::Input, Input>::value>::type>
     explicit InputSensor( Input&& input ) :
 
-        Sensor( hub::SensorSpec {} ),
-//        Sensor( input.get<hub::SensorSpec>() ),
-        m_input( new Input( std::move( input ) ) ) {
+        Sensor( hub::SensorSpec {} ), m_input( new Input( std::move( input ) ) ) {
         static_assert( std::is_base_of<io::Input, Input>::value, "not a base class" );
 
         m_input->read( m_spec );
-//        assert(! m_spec.isEmpty());
     }
 
-//    template <class Input>
-//    InputSensor( Input& input ) = delete;
     template <class Input,
               typename = typename std::enable_if<std::is_base_of<io::Input, Input>::value>::type>
     explicit InputSensor( const Input& input ) = delete;
 
-    InputSensor(InputSensor && inputSensor);
+    InputSensor( InputSensor&& inputSensor );
     ~InputSensor();
 
     InputSensor operator=( const InputSensor& inputSensor ) = delete;
-
-
-
-//    InputSensor( const InputSensor& inputSensor ) = delete;
-//    InputSensor( const InputSensor& inputSensor ) :
-//        Sensor(inputSensor.m_spec),
-//        m_input(inputSensor.m_input)
-//    {
-//    }
-
-//    InputSensor(io::Input & input, ) {
-//    }
 
   public:
     ///
@@ -80,23 +62,19 @@ class SRC_API InputSensor : public Sensor
     /// \exception "used interface exception"
     /// when communication bus is broken.
     ///
-//    Acquisition getAcq() const;
 
     ///
     /// \brief operator >>
     /// \param acquisition
     ///
-    void operator>>(Acquisition & acquisition);
+    void operator>>( Acquisition& acquisition );
 
     ///
     /// \brief operator >>
     /// \param inputSensor
     /// \return
     ///
-    Acquisition operator>>(InputSensor & inputSensor);
-
-
-//    void operator>>>(std::vector<Acquisition> & acqs);
+    Acquisition operator>>( InputSensor& inputSensor );
 
     ///
     /// \brief getAllAcquisitions
@@ -116,16 +94,9 @@ class SRC_API InputSensor : public Sensor
 
   private:
     std::unique_ptr<io::Input> m_input;
-//    std::shared_ptr<io::Input> m_input;
-//    Acquisition m_lastAcq;
-//    std::list<Acquisition> m_lastAcqs;
     bool m_moved = false;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-//inline Acquisition InputSensor::getAcq() const {
-//    return m_input->getAcq();
-//}
 
 } // namespace hub

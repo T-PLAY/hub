@@ -1,23 +1,17 @@
 #include "io/Input.hpp"
 
 #include "Any.hpp"
-#include "data/Measure.hpp"
 #include "Info.hpp"
+#include "data/Measure.hpp"
 
 namespace hub {
 namespace io {
 
 /////////////////////////////////////////////////////////////////////////////
 
-//Input::~Input()
-//{
-//    assert(isOpen());
-//    close();
-//}
-
 void Input::read( std::string& str ) {
     assert( isOpen() );
-    assert(!isEnd());
+    assert( !isEnd() );
 
     int strLen = 0;
     read( strLen );
@@ -37,34 +31,39 @@ void Input::read( std::string& str ) {
 }
 
 void Input::read( SensorSpec& sensorSpec ) {
-    assert(isOpen());
-    assert(!isEnd());
+    assert( isOpen() );
+    assert( !isEnd() );
 
-    char magicNumber[80] = {0};
-    read((unsigned char*)magicNumber, 80);
+    char magicNumber[80] = { 0 };
+    read( (unsigned char*)magicNumber, 80 );
     int versionMajor;
     int versionMinor;
     int versionPatch;
     char h;
     char u;
     char b;
-//    wchar_t wc;
 #ifdef WIN32
-    sscanf_s(magicNumber, "%c%c%c %d.%d.%d", &h, 1, &u, 1, &b, 1, &versionMajor, &versionMinor, &versionPatch);
+    sscanf_s( magicNumber,
+              "%c%c%c %d.%d.%d",
+              &h,
+              1,
+              &u,
+              1,
+              &b,
+              1,
+              &versionMajor,
+              &versionMinor,
+              &versionPatch );
 #else
-    sscanf(magicNumber, "%c%c%c %d.%d.%d", &h, &u, &b, &versionMajor, &versionMinor, &versionPatch);
+    sscanf(
+        magicNumber, "%c%c%c %d.%d.%d", &h, &u, &b, &versionMajor, &versionMinor, &versionPatch );
 #endif
-//    sscanf_s(magicNumber, "%c%c%c %d.%d.%d", &h, &u, &b, &versionMajor, &versionMinor, &versionPatch, (unsigned)_countof(magicNumber));
-//    assert(! strcmp(header, "HUB"));
-    assert(h == 'H');
-    assert(u == 'U');
-    assert(b == 'B');
-    assert(versionMajor <= hub::s_versionMajor);
-    assert(versionMinor <= hub::s_versionMinor);
-    assert(versionPatch <= hub::s_versionPatch);
-//    assert(versionMajor == hub::s_versionMajor);
-//    assert(versionMinor == hub::s_versionMinor);
-//    assert(versionPatch == hub::s_versionPatch);
+    assert( h == 'H' );
+    assert( u == 'U' );
+    assert( b == 'B' );
+    assert( versionMajor <= hub::s_versionMajor );
+    assert( versionMinor <= hub::s_versionMinor );
+    assert( versionPatch <= hub::s_versionPatch );
 #ifdef DEBUG
     std::cout << "[Input] read(magic number) : '" << magicNumber << "'" << std::endl;
 #endif
@@ -79,55 +78,51 @@ void Input::read( SensorSpec& sensorSpec ) {
     sensorSpec =
         SensorSpec( std::move( sensorName ), std::move( resolutions ), std::move( metaData ) );
 
-    assert(! sensorSpec.isEmpty());
-
+    assert( !sensorSpec.isEmpty() );
 }
 
-void Input::read(data::Measure &measure)
-{
-    assert(isOpen());
-    assert(!isEnd());
+void Input::read( data::Measure& measure ) {
+    assert( isOpen() );
+    assert( !isEnd() );
 
-    assert(measure.m_data == nullptr);
-    read(measure.m_size);
+    assert( measure.m_data == nullptr );
+    read( measure.m_size );
     measure.m_data = new unsigned char[measure.m_size];
-    read(measure.m_data, measure.m_size);
-    read(measure.m_resolution);
+    read( measure.m_data, measure.m_size );
+    read( measure.m_resolution );
     measure.m_ownData = true;
 
-    assert(measure.m_size > 0);
-    assert(measure.m_data != nullptr);
-    assert(! measure.m_resolution.first.empty());
-    assert(measure.m_resolution.second != Format::NONE);
+    assert( measure.m_size > 0 );
+    assert( measure.m_data != nullptr );
+    assert( !measure.m_resolution.first.empty() );
+    assert( measure.m_resolution.second != Format::NONE );
 }
 
-void Input::read(Acquisition &acq)
-{
-    assert(isOpen());
-    assert(!isEnd());
+void Input::read( Acquisition& acq ) {
+    assert( isOpen() );
+    assert( !isEnd() );
 
-    read(acq.m_start);
-    read(acq.m_end);
-    read(acq.m_measures);
-    read(acq.m_size);
+    read( acq.m_start );
+    read( acq.m_end );
+    read( acq.m_measures );
+    read( acq.m_size );
 
-    assert(acq.m_start <= acq.m_end);
-    assert(!acq.m_measures.empty());
-    assert(acq.m_size > 0);
+    assert( acq.m_start <= acq.m_end );
+    assert( !acq.m_measures.empty() );
+    assert( acq.m_size > 0 );
 }
-
 
 void Input::read( char* str ) {
-    assert(str != nullptr);
+    assert( str != nullptr );
     assert( isOpen() );
-    assert(!isEnd());
+    assert( !isEnd() );
 
 #ifdef DEBUG_INPUT
     std::cout << "[Input] read(char*)" << std::endl;
 #endif
 
     int strLen = 0;
-    assert(sizeof(int) == 4);
+    assert( sizeof( int ) == 4 );
     read( strLen );
 
     if ( strLen == 0 ) { str[0] = 0; }
@@ -138,11 +133,9 @@ void Input::read( char* str ) {
     }
 }
 
-
-
 void Input::read( Any& any ) {
     assert( isOpen() );
-    assert(!isEnd());
+    assert( !isEnd() );
 
 #ifdef DEBUG_INPUT
     std::cout << "[Input] read(std::any)" << std::endl;
@@ -200,9 +193,9 @@ void Input::read( Any& any ) {
 
     case Any::Type::MESH: {
         data::Measure measure;
-        read(measure);
+        read( measure );
 
-        any = Any( data::Mesh(measure) );
+        any = Any( data::Mesh( measure ) );
 
     } break;
 #ifndef COVERAGE
@@ -213,12 +206,10 @@ void Input::read( Any& any ) {
     assert( any.has_value() );
 }
 
-//template <class T>
-//    typename std::enable_if<std::is_same<T, void>::value, T&>::type
 Acquisition Input::operator>>( Input& input ) {
-    assert(isOpen());
+    assert( isOpen() );
     assert( !isEnd() );
-    assert(input.isOpen());
+    assert( input.isOpen() );
     assert( !input.isEnd() );
 
     Acquisition t;
@@ -237,20 +228,15 @@ Acquisition Input::operator>>( Input& input ) {
 
     while ( t.getStart() < lastAcqs.front().getStart() ) {
         std::cout << "[InputSensor] operator>>(InputSensor&) shift t : " << t << std::endl;
-        assert(!isEnd());
+        assert( !isEnd() );
         read( t );
     }
 
-    while ( lastAcqs.back().getStart() < t.getStart() && ! input.isEnd() ) {
+    while ( lastAcqs.back().getStart() < t.getStart() && !input.isEnd() ) {
         assert( !input.isEnd() );
         input.read( t2 );
         lastAcqs.push_back( std::move( t2 ) );
     }
-
-//    if ( lastAcqs.back().getStart() == t.getStart() ) {
-//        t << lastAcqs.back().getMeasures();
-//        return t;
-//    }
 
     while ( lastAcqs.size() > 2 ) {
         lastAcqs.pop_front();
@@ -260,7 +246,7 @@ Acquisition Input::operator>>( Input& input ) {
     const auto& right = lastAcqs.back();
 
     assert( input.isEnd() || left.getStart() <= t.getStart() );
-    assert(  input.isEnd() || t.getStart() <= right.getStart() );
+    assert( input.isEnd() || t.getStart() <= right.getStart() );
 
     const auto& closestAcq =
         ( std::abs( left.getStart() - t.getStart() ) > std::abs( right.getStart() - t.getStart() ) )
@@ -268,26 +254,8 @@ Acquisition Input::operator>>( Input& input ) {
             : ( left );
 
     t << closestAcq.getMeasures();
-//    lastAcqs.pop_front();
     return t;
-
-    //    const auto dist = std::abs( closestAcq.m_start - masterAcq.m_start );
-
-    //    // assert(minDist < 20'000); // 20 ms
-    //    // if too far then abort synchronize
-    //    // consider constant period of acquistion rate
-    //    auto maxDist = ( right.m_start - left.m_start ) / 2;
-
-    //    // find acceptable corresponding acquisition if interpolation is not possible
-    //    if ( !left.isInterpolable() ) {
-    //        const auto& lastMasterAcq = getLastAcq( syncViewerName );
-    //        if ( lastMasterAcq != nullptr ) {
-    //            maxDist =
-    //                std::min( dist, std::abs( lastMasterAcq->m_start() - masterAcq.m_start() ) );
-    //        }
-    //    }
 }
-
 
 /////////////////////////////////////////////////////////////////////////////
 

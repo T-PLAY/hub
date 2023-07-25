@@ -18,10 +18,9 @@ TEST_CASE( "OutputSensor with closed server" ) {
         hub::Acquisition acq =
             std::move( hub::Acquisition( 0, 1 ) << hub::data::Measure( data, 3, resolution ) );
         std::vector<hub::Acquisition> acqs;
-        acqs.push_back(acq.clone());
+        acqs.push_back( acq.clone() );
 
-
-        hub::OutputSensor * outputSensor = nullptr;
+        hub::OutputSensor* outputSensor = nullptr;
 
         std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
         {
@@ -31,25 +30,20 @@ TEST_CASE( "OutputSensor with closed server" ) {
             server.setMaxClients( 1 );
             server.asyncRun();
 
-//            outputSensor = new hub::OutputSensor(sensorSpec, hub::io::OutputStream("streamName", hub::net::ClientSocket(ipv4, port)));
-            outputSensor = new hub::OutputSensor(sensorSpec, "streamName", hub::net::ClientSocket(ipv4, port));
-//            outputSensor = new hub::OutputSensor(hub::SensorSpec("sensorName", { resolution }), "streamName", hub::net::ClientSocket(ipv4, port));
-//            hub::OutputSensor outputSensor2(sensorSpec, "hello");
+            outputSensor = new hub::OutputSensor(
+                sensorSpec, "streamName", hub::net::ClientSocket( ipv4, port ) );
 
             std::cout << "[Test] ############################### output sensor start" << std::endl;
             std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
             *outputSensor << acq;
             std::cout << "[Test] ############################### sended acq" << std::endl;
             std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
-
-//            server.detach();
         }
         std::cout << "[Test] ############################### server end" << std::endl;
         std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
 
         delete outputSensor;
         std::cout << "[Test] ############################### output sensor end" << std::endl;
-
     }
     std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
 }

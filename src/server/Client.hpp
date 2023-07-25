@@ -5,7 +5,6 @@
 
 #include <net/ClientSocket.hpp>
 
-
 namespace hub {
 namespace server {
 
@@ -16,9 +15,7 @@ class Server;
 ///
 class Client
 {
-//  public:
-//  protected:
-private:
+  private:
     Client( Server* server, int iClient );
     virtual ~Client();
 
@@ -27,14 +24,11 @@ private:
 
     void setServer( Server* newServer );
 
-    virtual void end(net::ClientSocket::Message message) = 0;
+    virtual void end( net::ClientSocket::Message message ) = 0;
 
-//  protected:
   private:
     Server* m_server = nullptr;
     int m_iClient;
-
-//    static std::mutex s_mtxCout;
 
     friend class Server;
     friend class StreamerClient;
@@ -43,6 +37,5 @@ private:
     friend class AskerClient;
 };
 
-
-} // server
-} // hub
+} // namespace server
+} // namespace hub

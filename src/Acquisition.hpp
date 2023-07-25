@@ -7,11 +7,11 @@
 #include "Macros.hpp"
 
 // user friendly useless includes
-#include "data/Measure.hpp"
 #include "data/Dof6.hpp"
 #include "data/Mat4.hpp"
-#include "data/UserData.hpp"
+#include "data/Measure.hpp"
 #include "data/Mesh.hpp"
+#include "data/UserData.hpp"
 
 namespace hub {
 
@@ -22,7 +22,6 @@ namespace hub {
 class SRC_API Acquisition
 {
   public:
-
     Acquisition() = default;
 
     ///
@@ -42,7 +41,6 @@ class SRC_API Acquisition
     /// movable acquisition.
     ///
     Acquisition( Acquisition&& acq ) = default;
-//    Acquisition& operator=( Acquisition&& acq ) = delete;
 
     ///
     /// \brief operator =
@@ -92,7 +90,7 @@ class SRC_API Acquisition
     /// \brief operator >>
     /// \param acq
     ///
-    void operator>>(Acquisition & acq);
+    void operator>>( Acquisition& acq );
 
     ///
     /// \brief emplaceMeasure
@@ -179,7 +177,6 @@ class SRC_API Acquisition
     ///
     const data::Measures& getMeasures() const;
 
-
     ///
     /// \brief getStart
     /// \return
@@ -200,30 +197,25 @@ class SRC_API Acquisition
 
   private:
     long long m_start = 0; // microseconds
-    long long m_end = 0; // microseconds
+    long long m_end   = 0; // microseconds
     data::Measures m_measures;
     uint64_t m_size = 0;
 
     friend class io::Input;
     friend class io::Output;
-//    friend class InputSensor;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-inline long long Acquisition::getStart() const
-{
+inline long long Acquisition::getStart() const {
     return m_start;
 }
 
-inline long long Acquisition::getEnd() const
-{
+inline long long Acquisition::getEnd() const {
     return m_end;
 }
 
-inline bool Acquisition::isEmpty() const
-{
+inline bool Acquisition::isEmpty() const {
     return m_measures.empty();
 }
 
@@ -236,6 +228,8 @@ void Acquisition::emplaceMeasure( Args&&... args ) {
     m_size += m_measures.back().getSize();
 }
 
-inline bool Acquisition::operator<(const Acquisition &right) const { return m_start < right.m_start; }
+inline bool Acquisition::operator<( const Acquisition& right ) const {
+    return m_start < right.m_start;
+}
 
 } // namespace hub

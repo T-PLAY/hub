@@ -13,14 +13,11 @@ namespace server {
 
 class StreamerClient;
 
-
 ///
 /// \brief The ViewerClient class
 ///
 class ViewerClient : public Client
 {
-    //  public:
-    //  protected:
   private:
     ViewerClient( Server* server, int iClient, hub::net::ClientSocket&& sock );
     ~ViewerClient();
@@ -29,7 +26,6 @@ class ViewerClient : public Client
 
     void notifyNewStreamer( const std::string& streamName, const SensorSpec& sensorSpec );
     void notifyDelStreamer( const std::string& streamName, const SensorSpec& sensorSpec );
-    //    void notifyDelStreamer( const StreamerClient& streamer );
 
     void end( net::ClientSocket::Message message ) override;
     void notifyProperty( const std::string& streamName,
@@ -41,7 +37,6 @@ class ViewerClient : public Client
     std::thread m_thread;
 
     hub::net::ClientSocket m_socket;
-    //    std::mutex m_mtxSocket;
 
     bool m_viewerClosed = false;
 

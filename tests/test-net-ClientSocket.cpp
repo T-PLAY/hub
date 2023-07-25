@@ -2,7 +2,7 @@
 
 #include "test-common.hpp"
 
-#include <server/Server.hpp>
 #include <net/ClientSocket.hpp>
+#include <server/Server.hpp>
 
 TEST_CASE( "ClientSocket test" ) {}

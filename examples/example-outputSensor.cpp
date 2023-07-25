@@ -14,36 +14,33 @@
 int main() {
     /// Comments I would like to be documented in as well
 
-    constexpr int width = 512;
-    constexpr int depth = 512;
+    constexpr int width  = 512;
+    constexpr int depth  = 512;
     constexpr int height = 100;
 
     hub::Format format = hub::Format::DENSITY;
-    hub::Dims dims = {width, depth, height};
-    hub::Resolution resolution({dims, format});
-    hub::Resolutions resolutions({resolution});
-//    hub::SensorSpec::MetaData metaData;
-//    metaData["xRealSize"] = 100; // mm
-//    hub::SensorSpec sensorSpec2("sensorName", resolutions, metaData);
-    hub::SensorSpec sensorSpec2("sensorName", resolutions);
+    hub::Dims dims     = { width, depth, height };
+    hub::Resolution resolution( { dims, format } );
+    hub::Resolutions resolutions( { resolution } );
+    hub::SensorSpec sensorSpec2( "sensorName", resolutions );
     std::cout << sensorSpec2.to_string() << std::endl;
 
-    hub::client::Streamer streamer("127.0.0.1", 4042);
-    streamer.addStream("streamName", sensorSpec2);
+    hub::client::Streamer streamer( "127.0.0.1", 4042 );
+    streamer.addStream( "streamName", sensorSpec2 );
 
-    hub::Acquisition acq(1, 1);
+    hub::Acquisition acq( 1, 1 );
     const int dataSize = width * depth * height;
-    float * data = new float[dataSize];
-    for (int i = 0; i < dataSize; ++i) {
+    float* data        = new float[dataSize];
+    for ( int i = 0; i < dataSize; ++i ) {
         data[i] = 1.0;
     }
-    hub::data::Measure measure((unsigned char*)data, dataSize * 4, resolution);
-    delete [] data;
-    acq << std::move(measure);
+    hub::data::Measure measure( (unsigned char*)data, dataSize * 4, resolution );
+    delete[] data;
+    acq << std::move( measure );
 
-    streamer.newAcquisition("streamName", acq);
+    streamer.newAcquisition( "streamName", acq );
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
     return 0;
 
     {
@@ -55,7 +52,6 @@ int main() {
 // the stream id name 'myStream' is not used within the server
 hub::OutputSensor outputSensor(
     sensorSpec,
-//    hub::io::OutputStream( "myStream", hub::net::ClientSocket( "127.0.0.1", 4042 ) ) );
     "myStream", hub::net::ClientSocket( "127.0.0.1", 4042 ) );
             // endConstruction
 
@@ -89,8 +85,6 @@ hub::OutputSensor outputSensor(
         {
             // startConstruction3
 // create pear buffer to shared data between different threads
-//hub::io::CyclicBuff buff;
-//hub::OutputSensor outputSensor( sensorSpec, hub::io::Ram( buff ) );
             // endConstruction3
         }
         // clang-format on

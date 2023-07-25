@@ -1,6 +1,5 @@
 #pragma once
 
-//#include "io/IO.hpp"
 #include "SensorSpec.hpp"
 
 namespace hub {
@@ -13,7 +12,6 @@ namespace hub {
 ///
 class SRC_API Sensor
 {
-//  public:
   protected:
     ///
     /// \brief Sensor
@@ -28,28 +26,22 @@ class SRC_API Sensor
     ~Sensor();
 
   public:
-
-//    SRC_API friend std::ostream& operator<<( std::ostream& os, const Sensor& sensor );
-
     ///
     /// \brief getSpec
     /// \return
     ///
-    const SensorSpec &getSpec() const;
+    const SensorSpec& getSpec() const;
 
   protected:
-
     ///
     /// \brief m_spec
     ///
     SensorSpec m_spec;
-
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-inline const SensorSpec &Sensor::getSpec() const
-{
+inline const SensorSpec& Sensor::getSpec() const {
     return m_spec;
 }
 

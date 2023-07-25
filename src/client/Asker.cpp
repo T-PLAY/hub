@@ -1,10 +1,5 @@
 #include "Asker.hpp"
 
-//#include <regex>
-//#include <sstream>
-
-//#include "InputSensor.hpp"
-
 namespace hub {
 namespace client {
 
@@ -19,9 +14,9 @@ Asker::Asker( const std::string& ipv4, int port ) :
 
 Asker::~Asker() {
     m_sock.write( net::ClientSocket::Message::CLOSE );
-    assert(m_sock.isOpen());
+    assert( m_sock.isOpen() );
     m_sock.close();
-    assert(! m_sock.isOpen());
+    assert( !m_sock.isOpen() );
 }
 
 std::list<std::pair<std::string, SensorSpec>> Asker::listStreams() {
@@ -36,9 +31,6 @@ std::list<std::pair<std::string, SensorSpec>> Asker::listStreams() {
 }
 
 // SensorSpec Asker::getSensorSpec(const std::string &streamName) const
-//{
-
-//}
 
 Acquisition Asker::getAcquisition( const std::string& streamName ) {
     m_sock.write( net::ClientSocket::Message::GET_ACQUISITION );
@@ -57,8 +49,7 @@ Acquisition Asker::getAcquisition( const std::string& streamName ) {
     m_sock.read( sensorSpec );
 
     hub::Acquisition acq;
-    m_sock.read(acq);
-//    auto acq = m_sock.getAcq();
+    m_sock.read( acq );
     return acq;
 }
 

@@ -4,10 +4,7 @@
 #include <client/Streamer.hpp>
 #include <server/Server.hpp>
 
-//#define CHECK
-
 TEST_CASE( "Streamer" ) {
-//int main() {
     const std::string ipv4 = "127.0.0.1";
     const int port         = GET_RANDOM_PORT;
 
@@ -24,13 +21,12 @@ TEST_CASE( "Streamer" ) {
         hub::Acquisition acq =
             std::move( hub::Acquisition( 0, 1 ) << hub::data::Measure( data, 3, resolution ) );
         std::vector<hub::Acquisition> acqs;
-        acqs.push_back(acq.clone());
+        acqs.push_back( acq.clone() );
 
-
-        streamer.addStream( "streamName", sensorSpec, std::move(acqs) );
+        streamer.addStream( "streamName", sensorSpec, std::move( acqs ) );
         std::cout << "[Test] ############################### streamer add stream" << std::endl;
 
-        assert(! streamer.isConnected());
+        assert( !streamer.isConnected() );
         CHECK( !streamer.isConnected() );
 
         std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
@@ -46,31 +42,23 @@ TEST_CASE( "Streamer" ) {
                 std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
             }
             assert( streamer.isConnected() );
-            //            std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
-            //            std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
             std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
 
             CHECK( streamer.isConnected() );
-//            streamer.newAcquisition( "streamName", acq );
-//            std::cout << "[Test] ############################### send acq" << std::endl;
-//            std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
 
-//            CHECK( streamer.isConnected() );
             std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
-
-//            server.detach();
         }
         std::cout << "[Test] ############################### server end" << std::endl;
         std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
 
-        streamer.newAcquisition("streamName", acq);
+        streamer.newAcquisition( "streamName", acq );
 
-        while (streamer.isConnected()) {
-                std::cout << "[test] waiting for streamer disconnected" << std::endl;
-                std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
+        while ( streamer.isConnected() ) {
+            std::cout << "[test] waiting for streamer disconnected" << std::endl;
+            std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
         }
-        assert(! streamer.isConnected());
-        CHECK( ! streamer.isConnected() );
+        assert( !streamer.isConnected() );
+        CHECK( !streamer.isConnected() );
     }
     std::cout << "[Test] ############################### streamer end" << std::endl;
     std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );

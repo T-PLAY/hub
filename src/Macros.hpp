@@ -118,7 +118,6 @@
 #    pragma warning( disable : 4251 ) // stl dllexports
 #    pragma warning( disable : 4267 ) // conversion from size_t to uint
 #    pragma warning( disable : 4018 ) // signed/unsigned mismatch
-//	#pragma warning(disable: 4275) // non - DLL-interface class 'class_1' used as base for
 // DLL-interface class 'class_2' 	#pragma warning(disable: 4577) // noexcept used with no
 // exception handling mode 	#pragma warning(disable: 4838) // conversion from enum to uint.
 // #pragma warning(disable: 4996) // sprintf unsafe 	#pragma warning(disable: 4503) // Truncated
@@ -133,7 +132,6 @@
 // ----------------------------------------------------------------------------
 
 // if ( !s_logFile.is_open() ){ \
-// 				s_logFile.open( "log.txt", std::ios_base::beg ); \
 // 			} \
 // 			assert( s_logFile.is_open() ); \
 
@@ -190,7 +188,6 @@
 #    define CPLUSPLUS_VERSION 17
 #    define CONSTEXPR17 constexpr
 #    define CONSTEXPR20
-//	#error "C++17 not supported"
 #elif ( __cplusplus >= 201402L ) || ( defined( _MSC_VER ) && _MSC_VER >= 1914 )
 #    define CPLUSPLUS_VERSION 14
 #    define CONSTEXPR17
@@ -209,4 +206,3 @@
 #        define USE_BOOST
 #    endif
 #endif
-

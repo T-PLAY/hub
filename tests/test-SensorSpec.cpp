@@ -4,8 +4,6 @@
 #include <InputSensor.hpp>
 #include <OutputSensor.hpp>
 #include <io/File.hpp>
-//#include <io/Ram.hpp>
-//#include <Streamer.hpp>
 
 TEST_CASE( "SensorSpec test" ) {
 

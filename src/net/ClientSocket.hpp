@@ -108,11 +108,10 @@ class SRC_API ClientSocket : public Socket, public io::InputOutput
 
     ClientSocket( const ClientSocket& sock ) = delete;
 
-    //    ClientSocket( ClientSocket&& sock ) = default;
     ClientSocket( ClientSocket&& sock );
 
     ClientSocket& operator=( const ClientSocket& sock ) = delete;
-    ClientSocket&& operator=( ClientSocket&& sock )     = delete;
+    ClientSocket&& operator=( ClientSocket&& sock ) = delete;
 
     ~ClientSocket();
 
@@ -205,49 +204,24 @@ class SRC_API ClientSocket : public Socket, public io::InputOutput
     net::utils::ClientAddr m_addr;
     bool m_connected = false;
     bool m_moved     = false;
-
-//    std::mutex m_mtxInput;
-//    std::mutex m_mtxOutput;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 template <class T>
 void ClientSocket::write( const T& t ) {
-//    m_mtxOutput.lock();
-//    assert(ClientSocket::isOpen());
-    assert(m_connected);
-//    try {
-        // todo fix
-        // server side
-        // Assertion failed: isOpen()
-        // D:\a\_work\1\s\src\vctools\crt\github\stl\src\mutex.cpp(64): mutex destroyed while busy
-        //    assert( isOpen() );
-        io::Output::write( t );
-//    }
-//    catch ( std::exception& ex ) {
-//        m_mtxOutput.unlock();
-//        throw ex;
-//    }
-
-//    m_mtxOutput.unlock();
+    assert( m_connected );
+    // todo fix
+    // server side
+    // Assertion failed: isOpen()
+    // D:\a\_work\1\s\src\vctools\crt\github\stl\src\mutex.cpp(64): mutex destroyed while busy
+    io::Output::write( t );
 }
 
 template <class T>
 void ClientSocket::read( T& t ) {
-//    m_mtxInput.lock();
-    assert(isOpen());
-//    try {
-        //    assert( isOpen() );
-        //    assert( isConnected() );
-        io::Input::read( t );
-//    }
-//    catch ( std::exception& ex ) {
-//        m_mtxInput.unlock();
-//        throw ex;
-//    }
-
-//    m_mtxInput.unlock();
+    assert( isOpen() );
+    io::Input::read( t );
 }
 
 } // namespace net

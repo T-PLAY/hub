@@ -13,10 +13,7 @@
 
 // void onNewStreamer( const char* sensorName, const hub::SensorSpec* sensorSpec ) {
 
-//}
 // void onDelStreamer( const char* sensorName, const hub::SensorSpec* sensorSpec ) {
-
-//}
 
 /// \file
 
@@ -75,22 +72,14 @@ int main() {
         std::cout << "[Example][Viewer] onNewAcquisition " << streamName << " " << *acq
                   << std::endl;
     };
-    auto onSetProperty = []( const char* streamName, const char* objectName, int property, const hub::Any* value ) {
-//        std::cout << "[Example][Viewer] onSetProperty " << streamName << " " << *acq
-//                  << std::endl;
-    };
+    auto onSetProperty =
+        []( const char* streamName, const char* objectName, int property, const hub::Any* value ) {
+        };
     auto onLogMessage = []( const char* logMessage ) {
-        std::cout << "[Example][Viewer] onLogMessage '" << logMessage << "' "
-//                  << *logMessage
-                  << std::endl;
+        std::cout << "[Example][Viewer] onLogMessage '" << logMessage << "' " << std::endl;
     };
 
-//    std::string ipServer = "127.0.0.1";
     std::string ipServer = "192.168.2.17";
-//    std::string ipServer = "192.168.2.99";
-//    std::string ipServer = "192.168.2.1";
-//    std::string ipServer = "192.168.2.255";
-//    std::string ipServer = "255.255.255.255";
 
     auto viewer = hub::native::createViewer( onNewStreamer,
                                              onDelStreamer,
@@ -100,7 +89,6 @@ int main() {
                                              onNewAcquisition,
                                              onSetProperty,
                                              ipServer.c_str(),
-//                                             hub::net::s_defaultServiceIp.c_str(),
                                              hub::net::s_defaultServicePort,
                                              onLogMessage );
 
@@ -110,7 +98,6 @@ int main() {
     std::cout << "Starting viewer listening" << std::endl
               << "Press any key to terminate" << std::endl;
     getchar();
-
 
     return 0;
 }

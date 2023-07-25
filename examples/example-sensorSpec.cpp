@@ -45,7 +45,6 @@ hub::SensorSpec trackingSystemSpec2 {
 // example of sensor with many cameras (RGB and Infrared lenses in the same medium)
 // cameras acquiring data at the same time (hardware synchronized timestamp)
 hub::SensorSpec::MetaData metaData;
-//const double offsetRGBLens[16] = {
 hub::data::Mat4 offsetRGBLens {
     1.0,  0.0,  0.0,  0.0,
     0.0,  1.0,  0.0,  0.0,

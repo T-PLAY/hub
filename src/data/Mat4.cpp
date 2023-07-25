@@ -2,16 +2,13 @@
 
 #include <iostream>
 
-
 namespace hub {
 namespace data {
 
-Mat4::Mat4(const Measure &measure)
-    : Measure( measure.getData(), measure.getSize(), Resolution { { 1 }, Format::MAT4 } ) {
+Mat4::Mat4( const Measure& measure ) :
+    Measure( measure.getData(), measure.getSize(), Resolution { { 1 }, Format::MAT4 } ) {
     assert( measure.getSize() == 64 );
-//    memcpy( (unsigned char*)&m_x, m_data, m_size );
     assert( m_data != nullptr );
-
 }
 
 Mat4::Mat4( const Mat4& mat4 ) :
@@ -31,7 +28,7 @@ Mat4::Mat4( float* array ) :
     assert( m_size == 64 );
 }
 
-Mat4::Mat4(const float *array) :
+Mat4::Mat4( const float* array ) :
     Measure( reinterpret_cast<unsigned char*>( new float[16] ),
              64,
              Resolution { { 1 }, Format::MAT4 },
@@ -83,7 +80,6 @@ Mat4::Mat4( float r0c0,
     assert( m_size == 64 );
 }
 
-
 std::string Mat4::to_string() const {
     float data[16];
     memcpy( data, m_data, 64 );
@@ -106,12 +102,10 @@ std::string Mat4::to_string() const {
     return str + "]";
 }
 
-const float *Mat4::operator[](int idx) const
-{
-    assert(0 <= idx && idx < 4);
-    return &((float*)m_data)[idx * 4];
+const float* Mat4::operator[]( int idx ) const {
+    assert( 0 <= idx && idx < 4 );
+    return &( (float*)m_data )[idx * 4];
 }
-
 
 std::ostream& operator<<( std::ostream& os, const Mat4& mat4 ) {
     os << mat4.getResolution() << ", [" << mat4.to_string() << "]";

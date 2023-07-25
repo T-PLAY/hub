@@ -28,7 +28,6 @@ TEST_CASE( "Viewer" ) {
     auto onNewStreamer = [=]( const std::string& streamName, const hub::SensorSpec& sensorSpec ) {
         std::cout << "[example-viewer] onNewStreamer : " << streamName << std::endl;
         // accept all stream to run
-        //        return true;
         return false;
     };
     auto onDelStreamer = []( const std::string& streamName, const hub::SensorSpec& sensorSpec ) {
@@ -71,7 +70,6 @@ TEST_CASE( "Viewer" ) {
 
     constexpr int delay = 0;
 
-    //    std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
 
     {
         std::cout << "[Test] ############################### server start" << std::endl;
@@ -96,11 +94,9 @@ TEST_CASE( "Viewer" ) {
             hub::SensorSpec sensorSpec( "sensorName", { resolution } );
             hub::OutputSensor outputSensor(
                 sensorSpec,
-//                hub::io::OutputStream( "streamName", hub::net::ClientSocket( ipv4, port ) ) );
                 "streamName", hub::net::ClientSocket( ipv4, port ) );
             std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
 
-            //            std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
 
             unsigned char data[3] { 1, 2, 3 };
             hub::Acquisition acq =
@@ -112,7 +108,6 @@ TEST_CASE( "Viewer" ) {
         }
         std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
 
-        //        server.detach();
     }
     std::cout << "[Test] ############################### server end" << std::endl;
 

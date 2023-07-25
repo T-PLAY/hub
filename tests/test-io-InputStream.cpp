@@ -8,13 +8,8 @@
 
 TEST_CASE( "InputStream test" ) {
 
-    //    const int ref_offset    = 0;
     const int ref_offset    = 5;
     constexpr int ref_nAcqs = 10;
-
-    //    const int ref2_offset    = 5;
-    //    const int ref2_offset    = 0;
-    //    constexpr int ref_nAcqs2 = 10;
 
     std::cout << "[test] ref_acqs" << std::endl;
     const hub::Resolution ref_resolution( { { 1 }, hub::Format::Y8 } );
@@ -37,7 +32,6 @@ TEST_CASE( "InputStream test" ) {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    //    {
     const std::string ipv4 = "127.0.0.1";
     const int port         = GET_RANDOM_PORT;
     hub::server::Server server( port );
@@ -45,9 +39,8 @@ TEST_CASE( "InputStream test" ) {
     server.asyncRun();
 
     {
-//        hub::io::OutputStream outputStream( "streamName", hub::net::ClientSocket( ipv4, port ) );
-//        hub::OutputSensor outputSensor( ref_sensorSpec, std::move( outputStream ) );
-        hub::OutputSensor outputSensor( ref_sensorSpec, "streamName", hub::net::ClientSocket(ipv4, port) );
+        hub::OutputSensor outputSensor(
+            ref_sensorSpec, "streamName", hub::net::ClientSocket( ipv4, port ) );
         std::cout << "[test] outputSensor created" << std::endl;
 
         {
@@ -55,19 +48,15 @@ TEST_CASE( "InputStream test" ) {
             hub::InputSensor inputSensor( std::move( inputStream ) );
             CHECK( inputSensor.getSpec() == ref_sensorSpec );
             std::cout << "[test] inputSensor created" << std::endl;
-            //        hub::io::Input& input = inputSensor.getInput();
 
             for ( const auto& acq : ref_acqs ) {
                 assert( !acq.isEmpty() );
                 outputSensor << acq;
             }
 
-            //        std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
-
             hub::Acquisition acq;
             std::cout << "[test] acqs" << std::endl;
             std::vector<hub::Acquisition> acqs;
-            //    while ( !input.isEnd()  ) {
             for ( int i = 0; i < ref_acqs.size(); ++i ) {
 
                 inputSensor >> acq;
@@ -83,11 +72,7 @@ TEST_CASE( "InputStream test" ) {
             }
         }
         std::cout << "[test] end inputStream" << std::endl;
-
-//        std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
     }
     std::cout << "[test] end outputStream" << std::endl;
-//    std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
     std::cout << "[test] end server" << std::endl;
-    //    }
 }

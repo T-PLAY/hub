@@ -8,16 +8,12 @@
 namespace hub {
 namespace server {
 
-//std::mutex Client::s_mtxCout;
-
 Client::Client( Server* server, int iClient ) : m_server( server ), m_iClient( iClient ) {
     assert( m_server != nullptr );
 }
 
 Client::~Client() {
-//    std::cout << "[Client] ~Client()" << std::endl;
-    if ( m_server != nullptr )
-    m_server->removeClient( this );
+    if ( m_server != nullptr ) m_server->removeClient( this );
 }
 
 constexpr int g_margin  = 45;
@@ -51,5 +47,5 @@ void Client::setServer( Server* newServer ) {
     m_server = newServer;
 }
 
-} // server
-} // hub
+} // namespace server
+} // namespace hub

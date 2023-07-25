@@ -18,9 +18,9 @@ TEST_CASE( "Output test" ) {
     hub::Any ref_any_string( std::string( "hello" ) );
     hub::Any ref_any_constCharPtr( "hello" );
     hub::Any ref_any_mat4( hub::data::Mat4( 0.0 ) );
-        const std::string meshPath = HUB_DIR "tests/data/mesh/";
-        hub::data::Mesh ref_mesh( meshPath + "quad.gltf" );
-        hub::Any ref_any_mesh( ref_mesh );
+    const std::string meshPath = HUB_DIR "tests/data/mesh/";
+    hub::data::Mesh ref_mesh( meshPath + "quad.gltf" );
+    hub::Any ref_any_mesh( ref_mesh );
 
     std::vector<char> buff;
 
@@ -36,7 +36,7 @@ TEST_CASE( "Output test" ) {
     memory.write( ref_any_string );
     memory.write( ref_any_constCharPtr );
     memory.write( ref_any_mat4 );
-    memory.write(ref_any_mesh);
+    memory.write( ref_any_mesh );
 
     std::string string;
     memory.read( string );
@@ -47,7 +47,7 @@ TEST_CASE( "Output test" ) {
     CHECK( ref_sensorSpec == sensorSpec );
 
     hub::Acquisition acq;
-    memory.read(acq);
+    memory.read( acq );
     CHECK( ref_acq == acq );
 
     char str[80];
@@ -78,9 +78,9 @@ TEST_CASE( "Output test" ) {
     assert( ref_any_mat4 == any_mat4 );
     CHECK( ref_any_mat4 == any_mat4 );
 
-        hub::Any any_mesh;
-        memory.read( any_mesh );
-        CHECK( ref_any_mesh == any_mesh );
+    hub::Any any_mesh;
+    memory.read( any_mesh );
+    CHECK( ref_any_mesh == any_mesh );
 
     CHECK( memory.isEnd() );
 }

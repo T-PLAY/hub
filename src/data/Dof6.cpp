@@ -3,7 +3,6 @@
 #include <cmath>
 #include <iostream>
 
-
 namespace hub {
 namespace data {
 
@@ -66,7 +65,6 @@ Dof6 Dof6::slerp( const Dof6& left, const Dof6& right, double t ) {
     return Dof6( x, y, z, w0, w1, w2, w3 );
 }
 
-
 std::ostream& operator<<( std::ostream& os, const Dof6& dof6 ) {
     os << dof6.getResolution() << ", [";
     os << "x:" << dof6.m_x << " y:" << dof6.m_y << " z:" << dof6.m_z << ", w0:" << dof6.m_w0
@@ -74,10 +72,6 @@ std::ostream& operator<<( std::ostream& os, const Dof6& dof6 ) {
     os << "]";
     return os;
 }
-
-
-
-
 
 } // namespace data
 } // namespace hub

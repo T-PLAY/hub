@@ -48,15 +48,12 @@ int main() {
                   << std::endl;
     };
 
-//    std::string ipServer = "127.0.0.1";
-//    std::string ipServer = "192.168.2.99";
     std::string ipServer = "192.168.2.1";
 
     hub::client::Viewer viewer {
         onNewStreamer, onDelStreamer, onServerNotFound, onServerConnected, onServerDisconnected, onNewAcquisition,
                                              onSetProperty,
                                              ipServer.c_str(),
-//                                             hub::net::s_defaultServiceIp.c_str(),
                                              hub::net::s_defaultServicePort,
                                             false,
                                              onLogMessage };

@@ -14,21 +14,17 @@
 namespace hub {
 namespace io {
 
-Output::~Output() {
-//    std::cout << "[Output] ~Output() " << this << std::endl;
-}
+Output::~Output() {}
 
 void Output::write( const std::string& str ) {
     assert( isOpen() );
-//    if (! isOpen())
-//        throw std::runtime_error("[Output] closed, unable to write");
 
 #ifdef DEBUG_OUTPUT
     std::cout << "[Output] write(std::string) : '" << str << "'" << std::endl;
 #endif
 
     int strLen = static_cast<int>( str.size() );
-    assert(sizeof(int) == 4);
+    assert( sizeof( int ) == 4 );
     write( strLen );
 
     if ( strLen > 0 ) {
@@ -39,25 +35,36 @@ void Output::write( const std::string& str ) {
 
 void Output::write( const SensorSpec& sensorSpec ) {
     assert( isOpen() );
-//    if (! isOpen())
-//        throw std::runtime_error("[Output] closed, unable to write");
 
 #ifdef DEBUG_OUTPUT
     std::cout << "[Output] write(SensorSpec)" << std::endl;
 #endif
 
-    char magicNumber[80] = {0};
+    char magicNumber[80] = { 0 };
     constexpr char joker = ' ';
-    memset(magicNumber, joker, 79);
-//    sprintf (magicNumber, "%c%c%c %d.%d.%d", 'H', 'U', 'B', hub::s_versionMajor, hub::s_versionMinor, hub::s_versionPatch);
+    memset( magicNumber, joker, 79 );
 #ifdef WIN32
-    sprintf_s (magicNumber, "%c%c%c %d.%d.%d", 'H', 'U', 'B', hub::s_versionMajor, hub::s_versionMinor, hub::s_versionPatch);
+    sprintf_s( magicNumber,
+               "%c%c%c %d.%d.%d",
+               'H',
+               'U',
+               'B',
+               hub::s_versionMajor,
+               hub::s_versionMinor,
+               hub::s_versionPatch );
 #else
-    sprintf (magicNumber, "%c%c%c %d.%d.%d", 'H', 'U', 'B', hub::s_versionMajor, hub::s_versionMinor, hub::s_versionPatch);
+    sprintf( magicNumber,
+             "%c%c%c %d.%d.%d",
+             'H',
+             'U',
+             'B',
+             hub::s_versionMajor,
+             hub::s_versionMinor,
+             hub::s_versionPatch );
 #endif
-    assert(strlen(magicNumber) < 79);
-    magicNumber[strlen(magicNumber)] = joker;
-    write((unsigned char*)magicNumber, 80);
+    assert( strlen( magicNumber ) < 79 );
+    magicNumber[strlen( magicNumber )] = joker;
+    write( (unsigned char*)magicNumber, 80 );
 
     write( sensorSpec.getSensorName() );
     write( sensorSpec.getResolutions() );
@@ -66,57 +73,41 @@ void Output::write( const SensorSpec& sensorSpec ) {
 
 void Output::write( const data::Measure& measure ) {
     assert( isOpen() );
-//    if (! isOpen())
-//        throw std::runtime_error("[Output] closed, unable to write");
 
 #ifdef DEBUG_OUTPUT
     std::cout << "[Output] write(Measure)" << std::endl;
 #endif
 
-//    assert( measure.getSize() != 0 );
-//    assert( measure.getData() != nullptr );
-    assert(measure.m_size != 0);
-    assert(measure.m_data != nullptr);
+    assert( measure.m_size != 0 );
+    assert( measure.m_data != nullptr );
 
-//    write( measure.getSize() );
-//    write( measure.getData(), measure.getSize() );
-    write (measure.m_size);
-    write (measure.m_data, measure.m_size);
-    write (measure.m_resolution);
+    write( measure.m_size );
+    write( measure.m_data, measure.m_size );
+    write( measure.m_resolution );
 }
 
 // void Output::write( const data::UserData& userData ) {
-//}
 
 void Output::write( const Acquisition& acq ) {
     assert( isOpen() );
-//    if (! isOpen())
-//        throw std::runtime_error("[Output] closed, unable to write");
 
 #ifdef DEBUG_OUTPUT
     std::cout << "[Output] write(Acquisition)" << std::endl;
 #endif
 
-    assert(acq.m_start <= acq.m_end);
-    assert(!acq.m_measures.empty());
-    assert(acq.m_size > 0);
+    assert( acq.m_start <= acq.m_end );
+    assert( !acq.m_measures.empty() );
+    assert( acq.m_size > 0 );
 
-    write(acq.m_start);
-    write(acq.m_end);
-    write(acq.m_measures);
-    write(acq.m_size);
-//    write( acq.getStart() );
-//    write( acq.getEnd() );
-//    const auto& measures = acq.getMeasures();
-//    assert( measures.size() > 0 );
-//    write( measures );
+    write( acq.m_start );
+    write( acq.m_end );
+    write( acq.m_measures );
+    write( acq.m_size );
 }
 
 void Output::write( const char* str ) {
-    assert(str != nullptr);
+    assert( str != nullptr );
     assert( isOpen() );
-//    if (! isOpen())
-//        throw std::runtime_error("[Output] closed, unable to write");
 
 #ifdef DEBUG_OUTPUT
     std::cout << "[Output] write(const char*)" << std::endl;
@@ -129,24 +120,16 @@ void Output::write( const char* str ) {
 }
 
 // Output::~Output()
-//{
 // }
 
 // void Output::write( const std::any& any )  {
-//Output::~Output()
-//{
 ////    assert(Output::isOpen());
-//    Output::close();
-//}
 
 void Output::write( const Any& any ) {
     assert( isOpen() );
-//    if (! isOpen())
-//        throw std::runtime_error("[Output] closed, unable to write");
 
 #ifdef DEBUG_OUTPUT
 #    ifdef WIN32
-//    std::cout << "[Output] write(std::any) : '" << any.type().raw_name() << "'" << std::endl;
     std::cout << "[Output] write(std::any) : '" << any << "'" << std::endl;
 #    else
     std::cout << "[Output] write(std::any) : '" << any << "'" << std::endl;
@@ -190,7 +173,7 @@ void Output::write( const Any& any ) {
 
     case Any::Type::MESH: {
         const data::Measure& measure = any.getMesh();
-        write(measure);
+        write( measure );
         break;
     }
 
@@ -201,11 +184,6 @@ void Output::write( const Any& any ) {
 #endif
     }
 }
-
-//void Output::write(uint64_t value)
-//{
-//    write(value);
-//}
 
 /////////////////////////////////////////////////////////////////////////////
 

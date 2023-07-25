@@ -32,9 +32,7 @@ class SRC_API OutputStream : public Output
     /// Also occur when stream you want to link is already started in the server.
     ///
     explicit OutputStream( const std::string& streamName,
-                           net::ClientSocket&& clientSocket = net::ClientSocket()
-                           //        std::function<void( )> onServerClosed         = {}
-    );
+                           net::ClientSocket&& clientSocket = net::ClientSocket() );
 
     OutputStream( OutputStream&& outputStream );
     ~OutputStream();
@@ -55,9 +53,8 @@ class SRC_API OutputStream : public Output
     std::unique_ptr<std::thread> m_thread;
     bool m_moved = false;
 
-    bool m_serverClosed = false;
+    bool m_serverClosed   = false;
     bool m_streamerClosed = false;
-    //    std::function<void( )> m_onServerClosed;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -73,27 +70,15 @@ inline void OutputStream::write( const unsigned char* data, size_t len ) {
 }
 
 // void OutputStream::read( unsigned char* data, size_t len ) const {
-//}
 
 inline void OutputStream::close() {
-    //    Output::close();
     std::cout << "[OutputStream] close() started" << std::endl;
-    //    net::ClientSocket::Message mess;
-    //    assert( m_clientSocket.isOpen() );
-    //    //    if ( !m_serverClosed ) {
-    //    m_clientSocket.write( net::ClientSocket::Message::OUTPUT_STREAM_CLOSED );
-    //    //    m_clientSocket.read( mess );
-    //    //    assert ( mess == net::ClientSocket::Message::STREAMER_CLOSED );
-    //    //        assert( m_thread.joinable() );
-    //    //        m_thread.join();
-    //    //    }
-    //    //    assert(false);
     assert( m_clientSocket.isOpen() );
-    if ( !m_serverClosed && ! m_streamerClosed ) {
+    if ( !m_serverClosed && !m_streamerClosed ) {
         m_clientSocket.write( net::ClientSocket::Message::OUTPUT_STREAM_CLOSED );
     }
     int iSleep = 0;
-    while (! m_serverClosed && ! m_streamerClosed && iSleep < 10) {
+    while ( !m_serverClosed && !m_streamerClosed && iSleep < 10 ) {
         std::cout << "[OutputStream] close() waiting for server/streamer closing" << std::endl;
         std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
         ++iSleep;
@@ -107,7 +92,6 @@ inline bool OutputStream::isOpen() const {
 }
 
 // inline bool OutputStream::isEnd() const {
-//}
 
 // #endif
 

@@ -1,7 +1,5 @@
 #pragma once
 
-
-
 #include "Measure.hpp"
 
 namespace hub {
@@ -15,15 +13,13 @@ class SRC_API Mat4 : public Measure
 {
 
   public:
-    explicit Mat4(const Measure & measure);
+    explicit Mat4( const Measure& measure );
 
     ///
     /// \brief Mat4
     /// \param mat4
     ///
     Mat4( const Mat4& mat4 );
-
-//    Mat4 & operator=(Mat4 && mat4) = default;
 
     ///
     /// \brief Mat4
@@ -67,7 +63,6 @@ class SRC_API Mat4 : public Measure
     );
     // clang-format on
 
-
     ///
     /// \brief to_string
     /// \return
@@ -82,7 +77,7 @@ class SRC_API Mat4 : public Measure
     ///
     SRC_API friend std::ostream& operator<<( std::ostream& os, const Mat4& mat4 );
 
-    const float * operator[](int idx) const;
+    const float* operator[]( int idx ) const;
 };
 
 } // namespace data

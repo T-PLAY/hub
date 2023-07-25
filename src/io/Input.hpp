@@ -41,14 +41,12 @@ class SRC_API Input
     ///
     /// \param input
     ///
-    Input( Input&& input ) = default;
-    //    Input( Input&& input );
-    Input( const Input& input )            = delete;
+    Input( Input&& input )      = default;
+    Input( const Input& input ) = delete;
     Input& operator=( const Input& input ) = delete;
-    Input&& operator=( Input&& input )     = delete;
+    Input&& operator=( Input&& input ) = delete;
 
     virtual ~Input() = default;
-//    ~Input();
 
   protected:
     ///
@@ -103,27 +101,12 @@ class SRC_API Input
     template <class T>
     T get();
 
-//    template <template <typename, typename...> class Container, typename T>
-//    void readAll( Container<T>& ts );
-//    template <class T>
-//    void readAll( T & ts );
+    template <typename Container,
+              typename T = std::decay_t<decltype( *begin( std::declval<Container>() ) )>>
+    void readAll( Container& ts );
 
-//template <template <typename, typename...> class Container, typename T>
-//void Input::readAll( Container<T>& ts ) {
-//template <class Container, class T>
-//template <template <typename, typename...> class Container, typename T>
-
-template <typename Container,
-          typename T = std::decay_t<decltype(*begin(std::declval<Container>()))>>
-//void readAll( Container<T> & ts ) {
-void readAll( Container & ts );
-
-//    template <class T>
-//void readAll( Container<T> & ts ) {
-//template <template <typename, typename...> class Container, typename T>
-//template <template <class...> class Container, class T>
-template <typename Container>
-Container getAll();
+    template <typename Container>
+    Container getAll();
 
     ///
     /// \brief read
@@ -139,10 +122,6 @@ Container getAll();
     template <class T>
     void read( std::vector<T>& vector );
 
-//    template <class T>
-//    void readBuffer( s ) {
-//    }
-
     ///
     /// \brief read
     /// \param map
@@ -156,7 +135,6 @@ Container getAll();
     ///
     template <class T, class U>
     void read( std::pair<T, U>& pair );
-
 
   public:
     ///
@@ -187,23 +165,19 @@ Container getAll();
     /// \brief read
     /// \param acquisition
     ///
-    //    void read( Acquisition& acquisition ) = delete;
     virtual void read( Acquisition& acq );
 
     ///
     /// \brief read
     /// \param measure
     ///
-    //    void read( data::Measure& measure ) = delete;
     void read( data::Measure& measure );
 
 #ifdef ARCH_X86
-    void read(size_t size) = delete; // non compatible format 32/64 bit
+    void read( size_t size ) = delete; // non compatible format 32/64 bit
 #endif
 
-
   public:
-
     Acquisition operator>>( Input& input );
 
   private:
@@ -214,40 +188,36 @@ Container getAll();
 
 template <class T>
 inline void Input::operator>>( T& t ) {
-    assert(isOpen());
-    assert(!isEnd());
+    assert( isOpen() );
+    assert( !isEnd() );
 
     read( t );
 }
 
 template <class T>
 inline T Input::get() {
-    assert(isOpen());
-    assert(!isEnd());
+    assert( isOpen() );
+    assert( !isEnd() );
 
     T t;
     read( t );
     return t;
 }
 
-//template <class T>
-//template <template <class...> class Container, class T>
 template <typename Container>
 Container Input::getAll() {
-    assert(isOpen());
-    assert(!isEnd());
+    assert( isOpen() );
+    assert( !isEnd() );
 
     Container ts;
-//    std::vector<T> ts;
     readAll( ts );
     return ts;
 }
 
-template <typename Container,
-          typename T>
-void Input::readAll( Container & ts ) {
-    assert(isOpen());
-    assert(!isEnd());
+template <typename Container, typename T>
+void Input::readAll( Container& ts ) {
+    assert( isOpen() );
+    assert( !isEnd() );
 
     try {
         while ( !isEnd() ) {
@@ -260,13 +230,10 @@ void Input::readAll( Container & ts ) {
     }
 }
 
-
 template <class T>
 inline void Input::read( T& t ) {
-    assert(isOpen());
-    assert(!isEnd());
-    //    if (! isOpen())
-    //        throw std::runtime_error("[Input] closed, unable to read");
+    assert( isOpen() );
+    assert( !isEnd() );
 
     read( reinterpret_cast<unsigned char*>( &t ), sizeof( T ) );
 
@@ -275,7 +242,7 @@ inline void Input::read( T& t ) {
     std::cout << "[Input] read(T) : " << typeid( T ).name() << " ("
               << boost::typeindex::type_id<T>().pretty_name() << ") '" << t << "'" << std::endl;
 #    else
-    std::cout << "[Input] read(T) : " << typeid(T).name() << " '" << t << "'" << std::endl;
+    std::cout << "[Input] read(T) : " << typeid( T ).name() << " '" << t << "'" << std::endl;
 #    endif
 #endif
 }
@@ -283,7 +250,7 @@ inline void Input::read( T& t ) {
 template <class T>
 inline void Input::read( std::list<T>& list ) {
     assert( isOpen() );
-    assert(!isEnd());
+    assert( !isEnd() );
 
 #ifdef DEBUG_INPUT
     std::cout << "[InpuInput] read(std::list)" << std::endl;
@@ -302,7 +269,7 @@ inline void Input::read( std::list<T>& list ) {
 template <class T>
 inline void Input::read( std::vector<T>& vector ) {
     assert( isOpen() );
-    assert(!isEnd());
+    assert( !isEnd() );
 
 #ifdef DEBUG_INPUT
     std::cout << "[Input] read(std::vector)" << std::endl;
@@ -324,7 +291,7 @@ inline void Input::read( std::vector<T>& vector ) {
 template <class T, class U>
 inline void Input::read( std::map<T, U>& map ) {
     assert( isOpen() );
-    assert(!isEnd());
+    assert( !isEnd() );
 
 #ifdef DEBUG_INPUT
     std::cout << "[Input] read(std::map)" << std::endl;
@@ -345,11 +312,10 @@ inline void Input::read( std::map<T, U>& map ) {
     }
 }
 
-
 template <class T, class U>
 inline void Input::read( std::pair<T, U>& pair ) {
     assert( isOpen() );
-    assert(!isEnd());
+    assert( !isEnd() );
 
 #ifdef DEBUG_INPUT
     std::cout << "[Input] read(std::pair)" << std::endl;

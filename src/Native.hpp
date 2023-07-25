@@ -1,8 +1,8 @@
 #pragma once
 
 #include "InputSensor.hpp"
-#include "OutputSensor.hpp"
 #include "Macros.hpp"
+#include "OutputSensor.hpp"
 #include "client/Viewer.hpp"
 
 namespace hub {
@@ -49,8 +49,8 @@ extern "C"
 
     /////////////////////////////////////////////////
 
-//    SRC_API InputSensor* createOutputSensor( const char* streamName, const char* ipv4, int port );
-    SRC_API OutputSensor* createMat4OutputSensor( const char* sensorName, const char* ipv4, int port );
+    SRC_API OutputSensor*
+    createMat4OutputSensor( const char* sensorName, const char* ipv4, int port );
 
     SRC_API bool mat4OutputSensorSendAcq( OutputSensor* outputSensor, const float* input );
 
@@ -113,8 +113,10 @@ extern "C"
     /// \param acq
     typedef void ( *onNewAcquisitionFunc )( const char* streamName, const Acquisition* acq );
 
-    typedef void (*onSetPropertyFunc)
-        ( const char* streamName, const char* objectName, int property, const Any* value );
+    typedef void ( *onSetPropertyFunc )( const char* streamName,
+                                         const char* objectName,
+                                         int property,
+                                         const Any* value );
 
     /// \brief onLogMessageFunc
     /// \param logMessage
@@ -163,9 +165,9 @@ extern "C"
     ///
     SRC_API void viewer_setPort( client::Viewer* viewer, int port );
 
-    SRC_API int viewer_getPort( client::Viewer* viewer);
+    SRC_API int viewer_getPort( client::Viewer* viewer );
 
-    SRC_API void viewer_getIpv4( client::Viewer* viewer, char * ipv4);
+    SRC_API void viewer_getIpv4( client::Viewer* viewer, char* ipv4 );
 
     ///
     /// \brief viewer_isConnected

@@ -90,9 +90,7 @@ SRC_API std::ostream& operator<<( std::ostream& os, const Dims& dims );
 SRC_API std::ostream& operator<<( std::ostream& os, const Resolution& resolution );
 SRC_API std::ostream& operator<<( std::ostream& os, const Resolutions& resolutions );
 
-
 namespace res {
-
 
 #define HUB_TO_STRING to_string
 
@@ -111,10 +109,8 @@ static inline constexpr bool format2hasFixedSize( const Format& format ) noexcep
 
 // template <class T = Dims>
 // SRC_API std::ostream& operator<<( std::ostream& os, const T& t ) {
-//}
 
 // static std::string(Resolutions & resolutions ) {
-//}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -159,7 +155,7 @@ static constexpr int s_format2nByte[static_cast<int>( Format::COUNT )] = {
     80 + 4,  // USER_DATA (non constant), string size ~= 80 and 4 bytes for common use int value
     80 + 4,  // MESH (non constant), string size ~= 80 and 4 bytes for common use int value
     12 + 16, // POINT
-    4,		 // DENSITY
+    4,       // DENSITY
 
 };
 
@@ -246,7 +242,7 @@ static std::string format2stringArray[static_cast<int>( Format::COUNT )] = {
     "RAW16",       "RAW8",  "UYVY",        "MOTION_RAW", "MOTION_XYZ32F", "GPIO_RAW",
     "DISPARITY32", "6DOF",  "Y10BPACK",    "DISTANCE",   "MJPEG",         "Y8I",
     "Y12I",        "INZI",  "INVI",        "W10",        "Z16H",          "FG",
-    "Y411",        "MAT4",  "USER_DATA",   "MESH",		 "POINT",		  "DENSITY",
+    "Y411",        "MAT4",  "USER_DATA",   "MESH",       "POINT",         "DENSITY",
 };
 
 static inline constexpr std::string& HUB_TO_STRING( const Format& format ) {
@@ -260,11 +256,9 @@ static std::string HUB_TO_STRING( const Resolution& resolution ) {
 }
 
 static std::string HUB_TO_STRING( const Resolutions& resolutions ) {
-    //}
     // static std::string resolutions2string( const Resolutions& resolutions ) {
     const int size  = static_cast<int>( resolutions.size() );
     std::string str = "";
-//    if ( size > 1 ) str += "(";
     str += "(";
     for ( int i = 0; i < size; ++i ) {
         const auto& resolution = resolutions.at( i );
@@ -272,7 +266,6 @@ static std::string HUB_TO_STRING( const Resolutions& resolutions ) {
 
         if ( i != size - 1 ) str += ", ";
     }
-//    if ( size > 1 ) str += ")";
     str += ")";
     return str;
 }
@@ -322,9 +315,7 @@ inline constexpr bool format2hasFixedSize( const Format& format ) noexcept {
 
 // template <class T>
 // std::ostream& operator<<( std::ostream& os, const T& t ) {
-//}
 
 } // namespace res
-
 
 } // namespace hub

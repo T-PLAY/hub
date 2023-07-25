@@ -1,7 +1,6 @@
 #pragma once
 
 #include <algorithm>
-//#include <any>
 #include <map>
 #include <stdexcept>
 #include <string>
@@ -12,11 +11,11 @@
 #include "Resolution.hpp"
 
 // user friendly useless includes
-#include "data/Measure.hpp"
 #include "data/Dof6.hpp"
 #include "data/Mat4.hpp"
-#include "data/UserData.hpp"
+#include "data/Measure.hpp"
 #include "data/Mesh.hpp"
+#include "data/UserData.hpp"
 
 #if CPLUSPLUS_VERSION == 20
 #    include "Map.hpp"
@@ -160,7 +159,6 @@ class SRC_API SensorSpec
     /// \brief setMetaData
     /// \param metaData
     ///
-//    inline void setMetaData( const MetaData& metaData ) noexcept;
 
   private:
     SensorNameType m_sensorName;
@@ -201,9 +199,5 @@ inline SensorSpec::MetaData& SensorSpec::getMetaData() noexcept {
 inline constexpr size_t SensorSpec::getAcquisitionSize() const noexcept {
     return m_acquisitionSize;
 }
-
-//inline void SensorSpec::setMetaData( const MetaData& metaData ) noexcept {
-//    m_metaData = metaData;
-//}
 
 } // namespace hub

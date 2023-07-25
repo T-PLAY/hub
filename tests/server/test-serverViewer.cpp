@@ -1,5 +1,5 @@
-#include <catch2/catch_test_macros.hpp>
 #include "test-common.hpp"
+#include <catch2/catch_test_macros.hpp>
 
 #include <InputSensor.hpp>
 #include <OutputSensor.hpp>
@@ -13,18 +13,15 @@
 TEST_CASE( "Server test : viewer" ) {
 
     const std::string ipv4 = "127.0.0.1";
-//    srand( (unsigned)time( NULL ) );
-//    const int port = rand() % 65535;
-    const int port = GET_RANDOM_PORT;
+    const int port         = GET_RANDOM_PORT;
 
     std::vector<hub::Acquisition> acqs;
     constexpr int nAcqs       = 100;
     constexpr int width       = 1920;
     constexpr int height      = 1080;
     constexpr size_t dataSize = width * height * 3;
-    unsigned char * data = new unsigned char[dataSize];
+    unsigned char* data       = new unsigned char[dataSize];
     for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
-//        unsigned char data[dataSize];
         for ( int i = 0; i < dataSize; ++i ) {
             data[i] = iAcq;
         }
@@ -33,7 +30,7 @@ TEST_CASE( "Server test : viewer" ) {
                                            dataSize,
                                            { { width, height }, hub::Format::BGR8 } );
     }
-    delete [] data;
+    delete[] data;
 
     std::cout << "[Test] ############################### server start" << std::endl;
     hub::server::Server server( port );
@@ -68,9 +65,9 @@ TEST_CASE( "Server test : viewer" ) {
                                  const hub::SensorSpec& sensorSpec ) {
             std::cout << "[Test] ############################### onDelStreamer" << std::endl;
         };
-    auto onServerNotFound = []( const std::string& ipv4, int port ) {
-        std::cout << "[example-viewer] onServerNotFound : " << ipv4 << " " << port << std::endl;
-    };
+        auto onServerNotFound = []( const std::string& ipv4, int port ) {
+            std::cout << "[example-viewer] onServerNotFound : " << ipv4 << " " << port << std::endl;
+        };
         auto onServerConnected = []( const std::string& ipv4, int port ) {
             std::cout << "[Test] ############################### onServerConnected" << std::endl;
         };
@@ -80,17 +77,19 @@ TEST_CASE( "Server test : viewer" ) {
         auto onNewAcquisition = []( const std::string& sensorName, const hub::Acquisition& acq ) {
             std::cout << "[Test] ############################### onNewAcquisition" << std::endl;
         };
-    auto onSetProperty = []( const std::string& streamName, const std::string & objectName, int property, const hub::Any& value ) {
-        std::cout << "[example-viewer] onSetProperty " << streamName
-                  << std::endl;
-    };
+        auto onSetProperty = []( const std::string& streamName,
+                                 const std::string& objectName,
+                                 int property,
+                                 const hub::Any& value ) {
+            std::cout << "[example-viewer] onSetProperty " << streamName << std::endl;
+        };
         hub::client::Viewer viewer { onNewStreamer,
                                      onDelStreamer,
-                                 onServerNotFound,
+                                     onServerNotFound,
                                      onServerConnected,
                                      onServerDisconnected,
                                      onNewAcquisition,
-                                 onSetProperty,
+                                     onSetProperty,
                                      ipv4,
                                      port };
         std::cout << "[Test] ############################### viewer created" << std::endl;
@@ -100,15 +99,12 @@ TEST_CASE( "Server test : viewer" ) {
             std::cout << "[Test] ############################### outputSensor start" << std::endl;
             hub::OutputSensor outputSensor(
                 hub::SensorSpec { "sensorName", { { { width, height }, hub::Format::BGR8 } } },
-//                hub::io::OutputStream( "stream", hub::net::ClientSocket( ipv4, port ) ) );
-                "stream", hub::net::ClientSocket( ipv4, port ) );
+                "stream",
+                hub::net::ClientSocket( ipv4, port ) );
             std::this_thread::sleep_for( std::chrono::milliseconds( 500 ) );
         }
         std::cout << "[Test] ############################### outputSensor end" << std::endl;
         std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
     }
     std::cout << "[Test] ############################### viewer end" << std::endl;
-//    std::this_thread::sleep_for( std::chrono::milliseconds( 2000 ) );
-
-//    server.stop();
 }

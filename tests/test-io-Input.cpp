@@ -26,13 +26,11 @@ TEST_CASE( "Input test" ) {
         hub::Any ref_any_string( std::string( "hello" ) );
         hub::Any ref_any_constCharPtr( "hello" );
         hub::Any ref_any_mat4( hub::data::Mat4( 0.0 ) );
-        //    hub::Any ref_any_mesh(hub::data::Mesh);
         const std::string meshPath = HUB_DIR "tests/data/mesh/";
         hub::data::Mesh ref_mesh( meshPath + "quad.gltf" );
         hub::Any ref_any_mesh( ref_mesh );
 
         std::vector<char> buff;
-
 
         hub::io::Memory<decltype( buff )> memory( buff );
 
@@ -99,11 +97,9 @@ TEST_CASE( "Input test" ) {
     /////////////////////////////////////////////////////////////////////////////////////
 
     {
-        //    const int ref_offset    = 0;
         const int ref_offset    = 5;
         constexpr int ref_nAcqs = 10;
 
-        //    const int ref2_offset    = 5;
         const int ref2_offset    = 0;
         constexpr int ref_nAcqs2 = 10;
 
@@ -133,27 +129,17 @@ TEST_CASE( "Input test" ) {
         const hub::SensorSpec ref_sensorSpec2( "sensorName2", { ref_resolution2 } );
         std::vector<hub::Acquisition> ref_acqs2;
         const int ref_dataSize2 = hub::res::computeAcquisitionSize( ref_resolution2 );
-        //    float* data2    = new float[ref_dataSize2];
         float data2[7];
         for ( int iAcq = 0; iAcq < ref_nAcqs2; ++iAcq ) {
             for ( int i = 0; i < 7; ++i ) {
                 data2[i] = ref2_offset + iAcq + 1;
             }
-            //        float value = ref2_offset + iAcq + 1;
-            //        hub::data::Dof6 dof6()
             ref_acqs2.emplace_back( ref2_offset + iAcq + 1, ref2_offset + iAcq + 1 );
             ref_acqs2.back() << hub::data::Measure(
                 reinterpret_cast<const unsigned char*>( data2 ), ref_dataSize2, ref_resolution2 );
 
-            //        const auto & lastAcq = ref_acqs2.back();
-            //        assert(lastAcq.getMeasures().size() == 1);
-            //        const auto & measure = lastAcq.getMeasures().front();
-            //        for ( int i = 0; i < ref_dataSize2; ++i ) {
-            //            assert(measure.getData()[i] == ref2_offset + iAcq + 1);
-            //        }
             std::cout << ref_acqs2.back() << std::endl;
         }
-        //    delete[] data2;
         std::cout << std::endl;
 
         //////////////////////
@@ -220,53 +206,36 @@ TEST_CASE( "Input test" ) {
         hub::io::Input& input  = memory;
         hub::io::Input& input2 = memory2;
 
-        //    hub::Acquisition acq;
-        //    output << acq;
         for ( int i = 0; i < ref_acqs.size(); ++i ) {
             const auto& acq = ref_acqs.at( i );
-            //    for ( const auto& acq : ref_acqs ) {
-            //        output << acq;
             if ( i % 3 == 0 ) { output << acq; }
-            else if ( i % 3 == 1 ) { output.write( acq ); }
-            else { output.put( acq ); }
-            //        output.put(acq);
-            //        output.write(acq);
+            else if ( i % 3 == 1 ) {
+                output.write( acq );
+            }
+            else {
+                output.put( acq );
+            }
         }
 
         for ( const auto& acq2 : ref_acqs2 ) {
             output2 << acq2;
-            //        output2.put(acq2);
         }
 
-        //    auto acq2 = input.get<hub::Acquisition>();
-        //    input >> acq;
-
-        //    hub::Acquisition acq;
         std::cout << "sync acqs" << std::endl;
         std::vector<hub::Acquisition> sync_acqs;
-        //        while ( !input.isEnd()  ) {
-        //    for ( int i = 0; i < ref_sync_acqs.size(); ++i ) {
         while ( !input.isEnd() && !input2.isEnd() ) {
 
             hub::Acquisition acq;
-            //        input >> acq;
-            //        input2 >> acq;
             input >> input2 >> acq;
             std::cout << acq << std::endl;
             sync_acqs.push_back( std::move( acq ) );
         }
 
-        //    assert(input.isEnd());
         assert( input2.isEnd() );
         assert( !input.isEnd() );
 
         auto acq2 = input.get<hub::Acquisition>();
-        //    assert(acq2 == ref_acqs.at())
         auto acqs = input.getAll<std::vector<hub::Acquisition>>();
-//        std::vector<hub::Acquisition> acqs;
-//        input.readAll<std::vector, hub::Acquisition>(acqs);
-//        input.readAll(acqs);
-//        input.readAll<std::vector>(acqs);
         CHECK( acqs.size() == ref_acqs.size() - ref_sync_acqs.size() - 1 );
         assert( input.isEnd() );
 
@@ -297,18 +266,18 @@ TEST_CASE( "Input test" ) {
         }
     }
 
-    std::cout << "--------------------------------------------------------------------------------------------------------" << std::endl;
+    std::cout << "---------------------------------------------------------------------------------"
+                 "-----------------------"
+              << std::endl;
 
     {
-        //    const int ref_offset    = 0;
         const int ref_offset    = 2;
         constexpr int ref_nAcqs = 10;
-        constexpr int ref_step = 3;
+        constexpr int ref_step  = 3;
 
-        //    const int ref2_offset    = 5;
         const int ref2_offset    = 5;
         constexpr int ref_nAcqs2 = 10;
-        constexpr int ref_step2 = 1;
+        constexpr int ref_step2  = 1;
 
         std::cout << "ref_acqs" << std::endl;
         const hub::Resolution ref_resolution( { { 1 }, hub::Format::Y8 } );
@@ -320,7 +289,8 @@ TEST_CASE( "Input test" ) {
             for ( int i = 0; i < ref_dataSize; ++i ) {
                 data[i] = ref_offset + iAcq * ref_step + 1;
             }
-            ref_acqs.emplace_back( ref_offset + iAcq * ref_step + 1, ref_offset + iAcq * ref_step + 1 );
+            ref_acqs.emplace_back( ref_offset + iAcq * ref_step + 1,
+                                   ref_offset + iAcq * ref_step + 1 );
             ref_acqs.back() << hub::data::Measure(
                 reinterpret_cast<const unsigned char*>( data ), ref_dataSize, ref_resolution );
             std::cout << ref_acqs.back() << std::endl;
@@ -336,27 +306,18 @@ TEST_CASE( "Input test" ) {
         const hub::SensorSpec ref_sensorSpec2( "sensorName2", { ref_resolution2 } );
         std::vector<hub::Acquisition> ref_acqs2;
         const int ref_dataSize2 = hub::res::computeAcquisitionSize( ref_resolution2 );
-        //    float* data2    = new float[ref_dataSize2];
         float data2[7];
         for ( int iAcq = 0; iAcq < ref_nAcqs2; ++iAcq ) {
             for ( int i = 0; i < 7; ++i ) {
                 data2[i] = ref2_offset + iAcq * ref_step2 + 1;
             }
-            //        float value = ref2_offset + iAcq + 1;
-            //        hub::data::Dof6 dof6()
-            ref_acqs2.emplace_back( ref2_offset + iAcq * ref_step2 + 1, ref2_offset + iAcq * ref_step2 + 1 );
+            ref_acqs2.emplace_back( ref2_offset + iAcq * ref_step2 + 1,
+                                    ref2_offset + iAcq * ref_step2 + 1 );
             ref_acqs2.back() << hub::data::Measure(
                 reinterpret_cast<const unsigned char*>( data2 ), ref_dataSize2, ref_resolution2 );
 
-            //        const auto & lastAcq = ref_acqs2.back();
-            //        assert(lastAcq.getMeasures().size() == 1);
-            //        const auto & measure = lastAcq.getMeasures().front();
-            //        for ( int i = 0; i < ref_dataSize2; ++i ) {
-            //            assert(measure.getData()[i] == ref2_offset + iAcq + 1);
-            //        }
             std::cout << ref_acqs2.back() << std::endl;
         }
-        //    delete[] data2;
         std::cout << std::endl;
 
         //////////////////////
@@ -423,51 +384,30 @@ TEST_CASE( "Input test" ) {
         hub::io::Input& input  = memory;
         hub::io::Input& input2 = memory2;
 
-        //    hub::Acquisition acq;
-        //    output << acq;
         for ( int i = 0; i < ref_acqs.size(); ++i ) {
             const auto& acq = ref_acqs.at( i );
-            //    for ( const auto& acq : ref_acqs ) {
-            //        output << acq;
             if ( i % 3 == 0 ) { output << acq; }
-            else if ( i % 3 == 1 ) { output.write( acq ); }
-            else { output.put( acq ); }
-            //        output.put(acq);
-            //        output.write(acq);
+            else if ( i % 3 == 1 ) {
+                output.write( acq );
+            }
+            else {
+                output.put( acq );
+            }
         }
 
         for ( const auto& acq2 : ref_acqs2 ) {
             output2 << acq2;
-            //        output2.put(acq2);
         }
 
-        //    auto acq2 = input.get<hub::Acquisition>();
-        //    input >> acq;
-
-        //    hub::Acquisition acq;
         std::cout << "sync acqs" << std::endl;
         std::vector<hub::Acquisition> sync_acqs;
-        //        while ( !input.isEnd()  ) {
-        //    for ( int i = 0; i < ref_sync_acqs.size(); ++i ) {
         while ( !input.isEnd() && !input2.isEnd() ) {
 
             hub::Acquisition acq;
-            //        input >> acq;
-            //        input2 >> acq;
             input >> input2 >> acq;
             std::cout << acq << std::endl;
             sync_acqs.push_back( std::move( acq ) );
         }
-
-        //    assert(input.isEnd());
-//        assert( !input2.isEnd() );
-//        assert( input.isEnd() );
-
-//        auto acq2 = input2.get<hub::Acquisition>();
-//        //    assert(acq2 == ref_acqs.at())
-//        auto acqs = input2.getAll<std::vector<hub::Acquisition>>();
-//        CHECK( acqs.size() == ref_acqs2.size() - ref_sync_acqs.size() - 1 );
-//        assert( input2.isEnd() );
 
         assert( sync_acqs.size() == ref_sync_acqs.size() );
         for ( int i = 0; i < ref_sync_acqs.size(); ++i ) {
@@ -475,7 +415,6 @@ TEST_CASE( "Input test" ) {
             CHECK( sync_acq == ref_sync_acqs.at( i ) );
         }
     }
-
 
     std::cout << "end test" << std::endl;
 }

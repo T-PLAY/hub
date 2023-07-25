@@ -5,8 +5,6 @@
 // #include <stdlib.h>
 // #include <stdio.h>
 // #include <iostream>
-//#include <Viewer.hpp>
-//#include <chrono>
 #include <thread>
 
 #include <client/Asker.hpp>
@@ -26,8 +24,8 @@ int main() {
     for ( const auto& [streamName, sensorSpec] : listStreams ) {
 #else
     for ( const auto& pair : listStreams ) {
-        const auto & streamName = pair.first;
-        const auto & sensorSpec = pair.second;
+        const auto& streamName = pair.first;
+        const auto& sensorSpec = pair.second;
 #endif
         std::cout << streamName << std::endl;
 

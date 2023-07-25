@@ -45,7 +45,6 @@ Acquisition* getAcquisition( InputSensor* inputSensor ) {
     try {
         hub::Acquisition acq;
         *inputSensor >> acq;
-        //        auto acq = inputSensor->getAcq();
         std::cout << "[Native] get acq : " << acq << std::endl;
         ret = new Acquisition( std::move( acq ) );
     }
@@ -63,11 +62,8 @@ OutputSensor* createMat4OutputSensor( const char* sensorName, const char* ipv4, 
     OutputSensor* outputSensor = nullptr;
     try {
         SensorSpec sensorSpec( sensorName, { { { 1 }, hub::Format::MAT4 } } );
-        outputSensor =
-            //            new OutputSensor( std::move(sensorSpec), io::OutputStream( sensorName,
-            //            net::ClientSocket( ipv4, port ) ) );
-            new OutputSensor(
-                std::move( sensorSpec ), sensorName, net::ClientSocket( ipv4, port ) );
+        outputSensor = new OutputSensor(
+            std::move( sensorSpec ), sensorName, net::ClientSocket( ipv4, port ) );
     }
     catch ( std::exception& e ) {
         std::cout << "[Native] createOutputSensor : catch exception : " << e.what() << std::endl;
@@ -145,7 +141,6 @@ client::Viewer* createViewer( onNewStreamerFunc onNewStreamer,
 
     auto onNewStreamerCpp = [=]( const std::string& streamName, const SensorSpec& sensorSpec ) {
         return onNewStreamer( streamName.c_str(), &sensorSpec );
-        //        return true;
     };
     auto onDelStreamerCpp = [=]( const std::string& streamName, const SensorSpec& sensorSpec ) {
         onDelStreamer( streamName.c_str(), &sensorSpec );
@@ -203,10 +198,9 @@ int viewer_getPort( client::Viewer* viewer ) {
     return viewer->getPort();
 }
 
-void viewer_getIpv4(client::Viewer *viewer, char *ipv4)
-{
-    const auto & ipv4Str = viewer->getIpv4();
-    const int len              = ipv4Str.size();
+void viewer_getIpv4( client::Viewer* viewer, char* ipv4 ) {
+    const auto& ipv4Str = viewer->getIpv4();
+    const int len       = ipv4Str.size();
     memcpy( ipv4, ipv4Str.data(), len + 1 );
     ipv4[len] = 0;
 }
@@ -333,7 +327,6 @@ double any_getDouble( const Any* any ) {
 int any_getInt( const Any* any ) {
     return any->getInt();
 }
-
 
 } // namespace native
 } // namespace hub

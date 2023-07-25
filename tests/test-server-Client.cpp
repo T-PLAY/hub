@@ -2,17 +2,7 @@
 
 #include "test-common.hpp"
 
-#include <server/Server.hpp>
 #include <server/Client.hpp>
+#include <server/Server.hpp>
 
-TEST_CASE( "Client test" ) {
-
-//    const std::string ipv4 = "127.0.0.1";
-//    const int port         = getRandomPort();
-
-//    Server server( port );
-//    server.setMaxClients( 1 );
-//    server.asyncRun();
-
-
-}
+TEST_CASE( "Client test" ) {}

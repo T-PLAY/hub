@@ -16,34 +16,24 @@ namespace hub {
 
 // Image::Image( const unsigned char* const data, size_t size, Format format ) :
 
-//}
-
 // Image::Image( Image&& image ) :
 // }
 
 // Image::~Image() {
 
-//}
-
 // SensorSpec::Format Image::getFormat()
-//{
 // }
 
 // Acquisition::Acquisition(long long start, long long end , hub::Acquisition::Args args) : m_start(
 // start ), m_end( end ) {
 
-//}
-
 // Acquisition::Acquisition( long long start,
-
-//}
 
 Acquisition::Acquisition( long long start, long long end ) : m_start( start ), m_end( end ) {
     assert( m_start <= m_end );
 }
 
 Acquisition& Acquisition::operator=( Acquisition&& acq ) {
-    //    assert(m_measures.empty());
     m_measures.clear();
 
     m_start    = acq.m_start;
@@ -61,7 +51,6 @@ Acquisition::~Acquisition() {
 }
 
 // Acquisition::Acquisition( Acquisition&& acq ) noexcept :
-//}
 
 bool Acquisition::operator==( const Acquisition& acq ) const {
     if ( m_start == acq.m_start && m_end == acq.m_end && m_size == acq.m_size &&
@@ -88,12 +77,7 @@ Acquisition& Acquisition::operator<<( data::Measure&& measure ) {
 }
 
 void Acquisition::operator>>( Acquisition& acq ) {
-    //    assert(acq.m_measures.empty());
 
-    //    acq.m_start = m_start;
-    //    acq.m_end = m_end;
-    //    acq.m_measures = std::move(m_measures);
-    //    acq.m_size = m_size;
     acq = std::move( *this );
 
     assert( m_measures.empty() );
@@ -106,11 +90,9 @@ void Acquisition::pushBack( data::Measure&& measure ) {
 
 // template <class ResolutionT>
 // void Acquisition::addMeasure(unsigned char* data, uint64_t size, ResolutionT &&resolution ) {
-//}
 
 // template<typename... Values>
 // void Acquisition::add(Values... values)
-//{
 // }
 
 bool Acquisition::isInterpolable() const {
@@ -140,18 +122,12 @@ Acquisition Acquisition::slerp( const Acquisition& left, const Acquisition& righ
 }
 
 // Acquisition Acquisition::lerp(const Acquisition &left, const Acquisition &right, long long time)
-//{
-
-//}
 
 Acquisition& Acquisition::operator<<( const data::Measures& measures ) {
     for ( const auto& measure : measures ) {
-        //        emplaceMeasure( (const unsigned char*)measure.getData(), measure.getSize(),
-        //        measure.getResolution() );
         emplaceMeasure( reinterpret_cast<const unsigned char*>( measure.getData() ),
                         measure.getSize(),
                         measure.getResolution() );
-        //        emplaceMeasure( measure.m_data, measure.m_size, measure.getResolution() );
     }
     return *this;
 }
@@ -187,7 +163,6 @@ bool Acquisition::hasFixedSize() const {
 }
 
 // const std::vector<Measure> &Acquisition::getMeasures() const
-//{
 // }
 
 size_t Acquisition::getSize() const {
@@ -201,7 +176,6 @@ std::ostream& operator<<( std::ostream& os, const Acquisition& acq ) {
        << " " << acq.m_end % 1'000;
     os << ", measures:[";
     for ( int i = 0; i < acq.m_measures.size(); ++i ) {
-        //    for ( const auto& measure : acq.m_measures ) {
         const auto& measure = acq.m_measures.at( i );
         os << "[" << measure << "]";
         if ( i != acq.m_measures.size() - 1 ) { os << ", "; }

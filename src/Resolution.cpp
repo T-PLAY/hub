@@ -25,7 +25,6 @@ std::ostream& operator<<( std::ostream& os, const Resolutions& resolutions ) {
     return os;
 }
 
-namespace res {
-} // namespace res
+namespace res {} // namespace res
 
 } // namespace hub
