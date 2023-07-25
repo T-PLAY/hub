@@ -13,7 +13,7 @@ for file in $(find $(cat scripts/source_dirs.txt) -type f \( -name "CMakeLists.t
 	# cat $file | grep '^#' || sleep 0
 	# cat $file | grep '^ *#[^#].*$' || sleep 0
 	
-	cat $file | grep -n '^ *# [^A-Z^#].*$' || sleep 0
 	cat $file | grep -n '^ *#[^ ].*$' || sleep 0
+	cat $file | grep -n '^ *# [^A-Z^#].*$' || sleep 0
 done
 
