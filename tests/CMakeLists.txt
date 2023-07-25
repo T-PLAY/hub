@@ -8,7 +8,7 @@ if(NOT ${Catch2_FOUND})
     FetchContent_Declare(
         Catch2
         GIT_REPOSITORY https://github.com/catchorg/Catch2.git
-#        GIT_TAG v3.0.1 # or a later release
+        # GIT_TAG v3.0.1 # or a later release
         GIT_TAG v3.3.2 # or a later release
         GIT_PROGRESS TRUE)
     FetchContent_MakeAvailable(Catch2)
@@ -16,15 +16,13 @@ endif()
 
 file(GLOB_RECURSE test_srcs *.cpp)
 
-
 add_executable(test-all ${test_srcs})
 target_link_libraries(test-all Catch2::Catch2WithMain hub)
 target_include_directories(test-all PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 set_property(TARGET test-all PROPERTY CXX_STANDARD ${CMAKE_CXX_STANDARD})
 set_property(TARGET test-all PROPERTY CXX_EXTENSIONS OFF)
 
-#file(GLOB testFiles *.cpp)
-
+# file(GLOB testFiles *.cpp)
 
 if(WIN32)
     add_custom_command(
@@ -33,23 +31,19 @@ if(WIN32)
         COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:hub> $<TARGET_FILE_DIR:test-all>)
 endif()
 
-
 include(CTest)
 enable_testing()
 foreach(testFile ${test_srcs})
 
-#  if("${testFile}" MATCHES "test-server*|test-client*")
-#  if("${testFile}" MATCHES "test-server*")
-##    message(STATUS ${testFile})
-#    continue()
-#  endif()
+    # if("${testFile}" MATCHES "test-server*|test-client*") if("${testFile}" MATCHES "test-server*") message(STATUS
+    # ${testFile}) continue() endif()
 
     get_filename_component(test ${testFile} NAME_WE)
 
-#    add_executable(${test} ${test}.cpp)
+    # add_executable(${test} ${test}.cpp)
     add_executable(${test} ${testFile})
     target_link_libraries(${test} PRIVATE Catch2::Catch2WithMain hub)
-#    target_include_directories(${test} PRIVATE ${HUB_INCLUDE_DIR})
+    # target_include_directories(${test} PRIVATE ${HUB_INCLUDE_DIR})
     target_include_directories(${test} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 
     add_test(NAME ${test} COMMAND ${test})
