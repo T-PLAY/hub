@@ -8,7 +8,6 @@ if(HUB_BUILD_DOC)
             CACHE STRING "User browser to see html docs and coverage")
     endif()
 
-    # find_package(Doxygen QUIET)
     find_package(Doxygen REQUIRED)
 
     if(DOXYGEN_FOUND)
