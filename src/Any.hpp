@@ -13,7 +13,7 @@ namespace hub {
 namespace data {
 class Mat4;
 class Mesh;
-}
+} // namespace data
 
 ///
 /// \brief The Any class
@@ -174,7 +174,6 @@ class SRC_API Any
     hub::data::Mat4* m_mat4      = nullptr;
     hub::data::Mesh* m_mesh      = nullptr;
     bool m_bool                  = false;
-
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -186,6 +185,5 @@ inline const bool& Any::has_value() const {
 inline Any::Type Any::type() const {
     return m_type;
 }
-
 
 } // namespace hub

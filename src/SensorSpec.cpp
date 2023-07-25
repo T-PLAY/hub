@@ -91,10 +91,10 @@ std::string SensorSpec::to_string() const {
     char acqSizeStr[80];
     pretty_bytes( acqSizeStr, m_acquisitionSize );
     ////        acqSizeStr += std::to_string((int)(m_acquisitionSize / std::pow(10, 3 * i)) %
-    ///1'000); /        acqSizeStr += std::to_string(hundred); /        else if (i == 0) { /
-    ///std::stringstream ss; /            ss << std::fixed << std::setprecision(1) << hundred /
-    ///1000.0; /            acqSizeStr += ss.str(); /            acqSizeStr +=
-    ///std::to_string(hundred); /        }
+    /// 1'000); /        acqSizeStr += std::to_string(hundred); /        else if (i == 0) { /
+    /// std::stringstream ss; /            ss << std::fixed << std::setprecision(1) << hundred /
+    /// 1000.0; /            acqSizeStr += ss.str(); /            acqSizeStr +=
+    /// std::to_string(hundred); /        }
 
     return "'" + m_sensorName + "', " + hub::res::to_string( m_resolutions ) + ", " +
            SensorSpec::to_string( m_metaData ) + ", " + acqSizeStr;

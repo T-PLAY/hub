@@ -87,7 +87,7 @@ TEST_CASE( "Server test : viewer" ) {
                 << std::endl;
 
             ////                std::cout << "[example-viewer] onNewAcquisition : " << acq <<
-            ///std::endl;
+            /// std::endl;
 
             hub::SensorSpec sensorSpec( "sensorName",
                                         { { { width, height }, hub::Format::BGR8 } } );
