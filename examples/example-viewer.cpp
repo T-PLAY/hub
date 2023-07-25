@@ -15,7 +15,7 @@
 /// \warning
 /// Needs running server.
 
-//clang-format off
+// clang-format off
 int main() {
 
     // startConstruction
@@ -71,4 +71,4 @@ int main() {
 
     return 0;
 }
-//clang-format on
+// clang-format on

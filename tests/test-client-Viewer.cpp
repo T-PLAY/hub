@@ -14,7 +14,7 @@
 // #include <filesystem>
 // #include <iostream>
 
-//clang-format off
+// clang-format off
 
 // #include <Streamer.hpp>
 
@@ -118,4 +118,4 @@ TEST_CASE( "Viewer" ) {
 
     std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
 }
-//clang-format on
+// clang-format on
