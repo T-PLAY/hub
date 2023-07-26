@@ -2,11 +2,6 @@ cmake_minimum_required(VERSION 3.8)
 
 project(hub)
 
-set(HUB_IS_ROOT 0)
-if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
-    set(HUB_IS_ROOT 1)
-endif()
-
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_FIND_PACKAGE_NO_SYSTEM_PACKAGE_REGISTRY False)
@@ -17,7 +12,7 @@ message(STATUS "CMake generator: ${CMAKE_GENERATOR}")
 message(STATUS "CMake system name: ${CMAKE_SYSTEM_NAME}")
 message(STATUS "CMake system version: ${CMAKE_SYSTEM_VERSION}")
 
-# Finding archictecture
+# Looking for current system archictecture
 set(ARCHITECTURE "")
 if(CMAKE_GENERATOR_PLATFORM)
     message(STATUS "CMake generator platform: ${CMAKE_GENERATOR_PLATFORM}")
@@ -59,7 +54,7 @@ foreach(
 endforeach()
 set(USERNAME $ENV{USERNAME})
 
-# Looking for compatible compiler
+# Looking for supported compiler
 set(SUPPORTED_COMPILERS "Clang" "GNU" "LLVM" "MSVC")
 set(Clang_MINIMAL_VERSION 11.0.0)
 set(GNU_MINIMAL_VERSION 8.1.0)
@@ -86,23 +81,20 @@ foreach(SUPPORTED_COMPILER ${SUPPORTED_COMPILERS})
 endforeach()
 
 if(NOT COMPILER_FOUND)
-    message(FATAL_ERROR "no compiler founded")
+    message(FATAL_ERROR "no supported compiler founded")
+endif()
+
+if(NOT DEFINED CMAKE_INSTALL_PREFIX)
+    set(CMAKE_INSTALL_PREFIX
+        "${CMAKE_SOURCE_DIR}/install"
+        CACHE PATH "Install path prefix." FORCE)
 endif()
 
 # Set default value of CMake variables
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Debug")
 endif()
-
 message(STATUS "CMake build type: ${CMAKE_BUILD_TYPE}")
-
-if(HUB_IS_ROOT)
-    if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-        set(CMAKE_INSTALL_PREFIX
-            "${CMAKE_SOURCE_DIR}/install"
-            CACHE PATH "Install path prefix." FORCE)
-    endif()
-endif()
 
 set(CMAKE_DEBUG_POSTFIX d)
 set(CMAKE_RELWITHDEBINFO_POSTFIX rd)

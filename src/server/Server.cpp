@@ -350,8 +350,6 @@ std::list<std::pair<std::string, hub::SensorSpec>> Server::listStreams() const {
     return ret;
 }
 
-// const hub::SensorSpec& Server::getSensorSpec( const std::string& streamName ) {
-
 hub::Acquisition Server::getAcquisition( const std::string& streamName ) const {
     m_mtxStreamName2streamer.lock();
     assert( m_streamName2streamer.find( streamName ) != m_streamName2streamer.end() );

@@ -6,28 +6,7 @@
 #include <cstring>
 #include <iomanip>
 
-// #include "Resolution.hpp"
-
 namespace hub {
-
-//// SensorSpec::Format Dof6::getFormat()
-////{
-//// }
-
-// Image::Image( const unsigned char* const data, size_t size, Format format ) :
-
-// Image::Image( Image&& image ) :
-// }
-
-// Image::~Image() {
-
-// SensorSpec::Format Image::getFormat()
-// }
-
-// Acquisition::Acquisition(long long start, long long end , hub::Acquisition::Args args) : m_start(
-// start ), m_end( end ) {
-
-// Acquisition::Acquisition( long long start,
 
 Acquisition::Acquisition( long long start, long long end ) : m_start( start ), m_end( end ) {
     assert( m_start <= m_end );
@@ -50,8 +29,6 @@ Acquisition::~Acquisition() {
     m_measures.clear();
 }
 
-// Acquisition::Acquisition( Acquisition&& acq ) noexcept :
-
 bool Acquisition::operator==( const Acquisition& acq ) const {
     if ( m_start == acq.m_start && m_end == acq.m_end && m_size == acq.m_size &&
          m_measures.size() == acq.m_measures.size() ) {
@@ -70,7 +47,6 @@ bool Acquisition::operator!=( const Acquisition& acq ) const {
 }
 
 Acquisition& Acquisition::operator<<( data::Measure&& measure ) {
-    // void Acquisition::addMeasure( Measure&& measure ) {
     m_measures.push_back( std::move( measure ) );
     m_size += m_measures.back().getSize();
     return *this;
@@ -87,13 +63,6 @@ void Acquisition::pushBack( data::Measure&& measure ) {
     m_measures.push_back( std::move( measure ) );
     m_size += m_measures.back().getSize();
 }
-
-// template <class ResolutionT>
-// void Acquisition::addMeasure(unsigned char* data, uint64_t size, ResolutionT &&resolution ) {
-
-// template<typename... Values>
-// void Acquisition::add(Values... values)
-// }
 
 bool Acquisition::isInterpolable() const {
     assert( !m_measures.empty() );
@@ -121,8 +90,6 @@ Acquisition Acquisition::slerp( const Acquisition& left, const Acquisition& righ
     return ret;
 }
 
-// Acquisition Acquisition::lerp(const Acquisition &left, const Acquisition &right, long long time)
-
 Acquisition& Acquisition::operator<<( const data::Measures& measures ) {
     for ( const auto& measure : measures ) {
         emplaceMeasure( reinterpret_cast<const unsigned char*>( measure.getData() ),
@@ -131,12 +98,6 @@ Acquisition& Acquisition::operator<<( const data::Measures& measures ) {
     }
     return *this;
 }
-
-// Acquisition& Acquisition::operator<<( Measure&& measure ) {
-// }
-
-// const Measure& Acquisition::get( SensorSpec::Format format ) const {
-// }
 
 Acquisition Acquisition::clone() const {
     assert( !m_measures.empty() );
@@ -148,7 +109,6 @@ Acquisition Acquisition::clone() const {
     return acq;
 }
 
-// const std::list<Measure> &Acquisition::getMeasures() const
 const data::Measures& Acquisition::getMeasures() const {
     assert( !m_measures.empty() );
     return m_measures;
@@ -161,9 +121,6 @@ bool Acquisition::hasFixedSize() const {
     }
     return true;
 }
-
-// const std::vector<Measure> &Acquisition::getMeasures() const
-// }
 
 size_t Acquisition::getSize() const {
     return m_size;

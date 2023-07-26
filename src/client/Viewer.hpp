@@ -7,7 +7,6 @@
 #include <thread>
 
 #include "Acquisition.hpp"
-#include "InputSensor.hpp"
 #include "SensorSpec.hpp"
 #include "net/ClientSocket.hpp"
 
@@ -16,7 +15,7 @@ namespace client {
 
 namespace viewer {
 class Stream;
-} // namespace viewer
+}
 
 ///
 /// \brief The Viewer class (event dispatcher)

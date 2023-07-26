@@ -64,12 +64,9 @@ inline void OutputStream::write( const Acquisition& acq ) {
     Output::write( acq );
 }
 
-// #ifdef WIN32
 inline void OutputStream::write( const unsigned char* data, size_t len ) {
     m_clientSocket.write( data, len );
 }
-
-// void OutputStream::read( unsigned char* data, size_t len ) const {
 
 inline void OutputStream::close() {
     std::cout << "[OutputStream] close() started" << std::endl;
@@ -90,10 +87,6 @@ inline void OutputStream::close() {
 inline bool OutputStream::isOpen() const {
     return m_clientSocket.isOpen();
 }
-
-// inline bool OutputStream::isEnd() const {
-
-// #endif
 
 } // namespace io
 } // namespace hub

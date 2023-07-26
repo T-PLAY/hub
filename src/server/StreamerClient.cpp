@@ -1,8 +1,9 @@
 
-#include "StreamerClient.hpp"
-#include "Server.hpp"
 #include <cstring>
 #include <iomanip>
+
+#include "Server.hpp"
+#include "StreamerClient.hpp"
 
 namespace hub {
 namespace server {

@@ -3,8 +3,8 @@
 #include <thread>
 
 #include "Client.hpp"
-#include <OutputSensor.hpp>
-#include <net/ClientSocket.hpp>
+#include "OutputSensor.hpp"
+#include "net/ClientSocket.hpp"
 
 namespace hub {
 namespace server {

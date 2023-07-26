@@ -6,7 +6,6 @@
 
 // user friendly useless includes
 #include "io/File.hpp"
-#include "io/Input.hpp"
 #include "io/InputStream.hpp"
 #include "io/InputSyncStream.hpp"
 #include "io/Memory.hpp"
@@ -96,7 +95,5 @@ class SRC_API InputSensor : public Sensor
     std::unique_ptr<io::Input> m_input;
     bool m_moved = false;
 };
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 } // namespace hub

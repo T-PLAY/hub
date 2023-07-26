@@ -6,14 +6,11 @@
 #include <map>
 #include <memory>
 
-// #include <InputSensor.hpp>
-// #include <OutputSensor.hpp>
-#include <net/ServerSocket.hpp>
-
 #include "AskerClient.hpp"
 #include "StreamViewerClient.hpp"
 #include "StreamerClient.hpp"
 #include "ViewerClient.hpp"
+#include "net/ServerSocket.hpp"
 
 namespace hub {
 namespace server {

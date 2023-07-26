@@ -87,29 +87,5 @@ void InputStream::read( SensorSpec& sensorSpec ) {
     m_clientSocket.read( sensorSpec );
 }
 
-////    if ( mess != net::ClientSocket::Message::CLOSED ) {
-////#ifdef DEBUG_SOCKET
-////        DEBUG_MSG( getHeader( m_fdSock ) << "[InputStream] exception sensor '" << streamName
-////                                         << "' is not attached to server" );
-////#endif
-////        throw net::ClientSocket::exception(
-////            ( std::string( "stream '" ) + streamName + "' is not attached to server" ).c_str()
-///); /    } /    assert( mess == net::ClientSocket::Message::OK );
-
-// #ifdef WIN32
-// void InputStream::write( const unsigned char* data, size_t len ) {
-// }
-
-// void InputStream::read( unsigned char* data, size_t len ) {
-// }
-
-// void InputStream::close() {
-// }
-// bool InputStream::isOpen() const {
-// }
-// bool InputStream::isEnd() const {
-// }
-// #endif
-
 } // namespace io
 } // namespace hub

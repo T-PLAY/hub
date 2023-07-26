@@ -32,10 +32,6 @@ AskerClient::AskerClient( Server* server, int iClient, hub::net::ClientSocket&& 
 
                 } break;
 
-                    ////                        const auto& sensorSpec =
-                    /// streamer->getInputSensor().getSpec(); /                        m_sock.write(
-                    /// sensorSpec );
-
                 case hub::net::ClientSocket::Message::GET_ACQUISITION: {
                     std::cout << headerMsg() << "get sensor acquisition" << std::endl;
                     std::string streamName;

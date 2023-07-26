@@ -3,11 +3,11 @@
 #include <algorithm>
 #include <chrono>
 #include <regex>
-// #include <mutex>
+
+#include "OutputSensor.hpp"
 
 namespace hub {
 namespace client {
-
 namespace streamer {
 
 class Stream
@@ -101,9 +101,6 @@ class Stream
                 throw ex;
             }
         }
-
-        // #ifdef OS_LINUX
-        // #endif
     }
 
   private:

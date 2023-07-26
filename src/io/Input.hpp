@@ -1,14 +1,5 @@
 #pragma once
 
-// #include <any>
-// #include <cassert>
-// #include <iostream>
-// #include <list>
-// #include <map>
-// #include <string>
-// #include <typeinfo>
-// #include <vector>
-
 #include <cstdlib>
 
 #include "Acquisition.hpp"

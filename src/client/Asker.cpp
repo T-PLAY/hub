@@ -30,8 +30,6 @@ std::list<std::pair<std::string, SensorSpec>> Asker::listStreams() {
     return ret;
 }
 
-// SensorSpec Asker::getSensorSpec(const std::string &streamName) const
-
 Acquisition Asker::getAcquisition( const std::string& streamName ) {
     m_sock.write( net::ClientSocket::Message::GET_ACQUISITION );
     m_sock.write( streamName );

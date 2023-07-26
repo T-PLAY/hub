@@ -15,7 +15,6 @@ namespace io {
 /// The communication is only possible if the stream (with the same name) is active within the
 /// server. That implies an OutputStream communicating data through the hub.
 ///
-// class SRC_API InputStream : public Input, public net::ClientSocket
 class SRC_API InputStream : public Input
 {
   public:
@@ -38,9 +37,6 @@ class SRC_API InputStream : public Input
 
     InputStream( InputStream&& inputStream );
     ~InputStream();
-
-    // #ifdef WIN32 // msvc warning C4250
-    // #endif
 
   protected:
     ///
@@ -119,9 +115,6 @@ inline void InputStream::close() {
     }
 
     if ( m_clientSocket.isOpen() ) m_clientSocket.close();
-
-    ////            while ( true ) {
-    ////                auto acq = getAcq( );
 
     std::cout << "[InputStream] close() ended" << std::endl;
 }

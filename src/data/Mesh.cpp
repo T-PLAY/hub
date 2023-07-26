@@ -1,34 +1,19 @@
-// #define TINYOBJLOADER_IMPLEMENTATION
 #include "Mesh.hpp"
 
-// #include <filesystem>
 #include <chrono>
+#include <fstream>
 #include <iostream>
 #include <set>
-
-#include "io/Memory.hpp"
+#include <sstream>
+#include <thread>
 
 #include <cgltf.h>
 #include <gltf/gltfpack.h>
 #include <meshoptimizer/meshoptimizer.h>
 
-// #include <filesystem>
-// #include <experimental/filesystem>
-// #include <filesystem>
-#include <fstream>
-#include <sstream>
-#include <thread>
-// #include <stdio.h>
-// #include <stdlib.h>
-// #include <filesystem>
+#include "io/Memory.hpp"
 
 constexpr int s_materialSize = 4 * 3 * 6 + 4 * 3 + 4;
-
-// #ifdef __unix
-// #    def ine fopen_s( pFile, filename, mode ) \
-// #endif
-
-// int getFileSize( std::string path ) {
 
 namespace hub {
 namespace data {
@@ -96,9 +81,6 @@ class MeshImpl
     friend class Mesh;
 };
 
-// void write( hub::io::Output& output, MeshImpl& meshImpl ) {
-// }
-
 MeshImpl::~MeshImpl() {}
 
 Mesh::Mesh( const Measure& measure ) :
@@ -134,15 +116,11 @@ Mesh::Mesh( std::initializer_list<std::string> filePaths ) :
     std::vector<std::string> gltfFilePaths;
 
     for ( const auto& filePath : filePaths ) {
-        // void Mesh::load( const std::string& filePath ) {
         if ( std::ifstream { filePath } ) {
             std::cerr << "[Mesh] please refer filepath without extension" << std::endl;
             assert( false );
         }
 
-        // #ifdef WIN32
-        // #else
-        // #endif
         size_t slash = filePath.find_last_of( "/" );
         std::string parentPath =
             ( slash != std::string::npos ) ? filePath.substr( 0, slash ) : filePath;
@@ -444,16 +422,6 @@ void Mesh::unpack( bool headerOnly ) const {
         assert( memory.isEnd() );
     }
 }
-
-// void Mesh::unpackScene() const {
-
-// void Mesh::unpack() const {
-
-////    m_pimpl->readFull( memory );
-
-// void Mesh::pack() {}
-
-// Mesh::Mesh(const std::string &objTxt, const std::string &mtlTxt)
 
 std::string Mesh::to_string() const {
     if ( m_pimpl->m_name == "" ) unpack();

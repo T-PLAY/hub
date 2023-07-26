@@ -15,8 +15,6 @@ InputSyncStream::InputSyncStream( const std::string& streamName,
 
 void InputSyncStream::read( Acquisition& acq ) {
 
-    // Acquisition InputSyncStream::getAcq( ) {
-
     Input& masterInput = m_inputStream;
     Input& input       = m_inputStream2;
 
