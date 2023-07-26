@@ -123,7 +123,6 @@ set(HUB_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
 set(HUB_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
 set(HUB_EXTERNAL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/external")
 
-add_subdirectory(external)
 add_subdirectory(src)
 
 option(HUB_BUILD_DOC "Build documentation" OFF)
