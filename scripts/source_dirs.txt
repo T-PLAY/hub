@@ -1,5 +1,6 @@
-src
-tests
-examples
+src/
+tests/
+examples/
 CMakeLists.txt
-doc
+doc/
+wrapper/
