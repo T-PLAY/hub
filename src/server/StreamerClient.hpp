@@ -6,10 +6,9 @@
 #include <set>
 #include <thread>
 
-#include <InputSensor.hpp>
-#include <net/ClientSocket.hpp>
-
 #include "Client.hpp"
+#include "InputSensor.hpp"
+#include "net/ClientSocket.hpp"
 
 namespace hub {
 namespace server {

@@ -4,15 +4,8 @@
 #include <cassert>
 #include <exception>
 
-// #ifdef WIN32
-// #    include <WS2tcpip.h>
-// #endif
-
 namespace hub {
 namespace net {
-
-// constexpr int Socket::s_defaultServicePort       = 4041;
-// const char* const Socket::s_defaultServiceIp = "127.0.0.1";
 
 #ifdef DEBUG_SOCKET
 std::string Socket::getHeader( socket_fd iSock ) const {
@@ -38,11 +31,6 @@ Socket::Socket( Socket&& socket ) {
     m_fdSock        = socket.m_fdSock;
     socket.m_fdSock = net::utils::invalidSocket();
 }
-
-// void Socket::clear() const {
-
-// #ifdef DEBUG_SOCKET
-// #endif
 
 Socket::~Socket() {
 #ifdef DEBUG_SOCKET

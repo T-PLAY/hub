@@ -1,13 +1,5 @@
 #include "io/Output.hpp"
 
-// #include <any>
-// #include <cstring>
-// #include <iostream>
-// #include <typeindex>
-// #include <typeinfo>
-
-// #include "Acquisition.hpp"
-// #include "SensorSpec.hpp"
 #include "Any.hpp"
 #include "Info.hpp"
 
@@ -86,8 +78,6 @@ void Output::write( const data::Measure& measure ) {
     write( measure.m_resolution );
 }
 
-// void Output::write( const data::UserData& userData ) {
-
 void Output::write( const Acquisition& acq ) {
     assert( isOpen() );
 
@@ -118,12 +108,6 @@ void Output::write( const char* str ) {
 
     if ( strLen > 0 ) { write( reinterpret_cast<const unsigned char*>( str ), strLen ); }
 }
-
-// Output::~Output()
-// }
-
-// void Output::write( const std::any& any )  {
-////    assert(Output::isOpen());
 
 void Output::write( const Any& any ) {
     assert( isOpen() );
@@ -184,8 +168,6 @@ void Output::write( const Any& any ) {
 #endif
     }
 }
-
-/////////////////////////////////////////////////////////////////////////////
 
 } // namespace io
 } // namespace hub

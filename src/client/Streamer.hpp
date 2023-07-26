@@ -6,17 +6,15 @@
 #include <thread>
 
 #include "Acquisition.hpp"
-#include "OutputSensor.hpp"
 #include "SensorSpec.hpp"
+#include "net/ClientSocket.hpp"
 
 namespace hub {
 namespace client {
 
 namespace streamer {
-
 class Stream;
-
-} // end namespace streamer
+}
 
 ///
 /// \brief The Streamer class

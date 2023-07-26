@@ -4,9 +4,8 @@
 #include <mutex>
 #include <thread>
 
-#include <net/ClientSocket.hpp>
-
 #include "Client.hpp"
+#include "net/ClientSocket.hpp"
 
 namespace hub {
 namespace server {

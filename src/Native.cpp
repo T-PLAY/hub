@@ -1,8 +1,5 @@
 #include "Native.hpp"
 
-/* Native.cpp : Defines the exported functions for the DLL.
- */
-
 #include <iostream>
 
 #include <cstring>

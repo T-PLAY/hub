@@ -1,8 +1,8 @@
 
-#include "StreamViewerClient.hpp"
-#include "Server.hpp"
-
 #include <iomanip>
+
+#include "Server.hpp"
+#include "StreamViewerClient.hpp"
 
 namespace hub {
 namespace server {
@@ -58,7 +58,7 @@ bool OutputStream::isOpen() const {
     return m_clientSocket.isOpen();
 }
 
-//////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////// StreamViewerClient /////////////////////
 
 StreamViewerClient::StreamViewerClient( Server* server,
                                         int iClient,
@@ -133,22 +133,6 @@ void StreamViewerClient::end( net::ClientSocket::Message message ) {
     assert( output.isOpen() );
     output.write( message );
 }
-
-// bool StreamViewerClient::update( const hub::Acquisition& acq ) {
-////    if ( m_pingFailed ) return false;
-
-////        m_lastUpdateAcq = std::chrono::high_resolution_clock::now();
-
-////        std::thread( [this]() { delete this; } ).detach();
-
-// const std::string& StreamViewerClient::getSyncStreamName() const {
-// }
-
-// const std::string& StreamViewerClient::getStreamName() const {
-// }
-
-// bool StreamViewerClient::shoudMergeSyncAcqs() const {
-// }
 
 } // namespace server
 } // namespace hub

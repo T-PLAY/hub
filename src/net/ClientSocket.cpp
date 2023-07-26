@@ -8,8 +8,6 @@
 namespace hub {
 namespace net {
 
-// static const std::regex m_ipv4Regex { "^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$" };
-
 ClientSocket::ClientSocket() : m_ipv4( s_defaultServiceIp ), m_port( s_defaultServicePort ) {
 #ifdef DEBUG_SOCKET
     DEBUG_MSG( getHeader( m_fdSock ) << "ClientSocket()" );
@@ -69,12 +67,9 @@ void ClientSocket::initServerAddress() {
     assert( utils::isValid( m_ipv4 ) );
     assert( utils::isValid( m_port ) );
 
-    // Server address construction
-
     m_addr.init( m_ipv4, m_port );
 }
 
-// void ClientSocket::connectToServer() {
 void ClientSocket::connect() {
     assert( !m_connected );
     assert( !isOpen() );
@@ -84,21 +79,6 @@ void ClientSocket::connect() {
     DEBUG_MSG( getHeader( m_fdSock )
                << "[ClientSocket] ClientSocket('" << m_ipv4 << ", " << m_port << ")" );
 #endif
-
-    /*   struct addrinfo *result = NULL, *ptr = NULL, hints;
-
-       ZeroMemory( &hints, sizeof( hints ) );
-       hints.ai_family   = AF_UNSPEC;
-       hints.ai_socktype = SOCK_STREAM;
-       hints.ai_protocol = IPPROTO_TCP;*/
-
-    // Resolve the server address and port
-    /*const int iResult = getaddrinfo(m_ipv4.c_str(), m_port, &hints, &result );
-    if ( iResult != 0 ) {
-        printf( "getaddrinfo failed: %d\n", iResult );
-        WSACleanup();
-        return;
-    }*/
 
     assert( !net::utils::isValid( m_fdSock ) );
 

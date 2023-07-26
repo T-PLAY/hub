@@ -2,7 +2,6 @@
 
 #include <mutex>
 
-// #include "io/Input.hpp"
 #include "io/InputOutput.hpp"
 #include "net/Socket.hpp"
 
@@ -26,9 +25,7 @@ static std::string s_defaultServiceIp = "127.0.0.1";
 /// allows connection to remote server hubs.
 /// This class describes the functionality needed to open a remote communication.
 ///
-// class SRC_API ClientSocket : public Socket, public io::Input, public io::Output
 class SRC_API ClientSocket : public Socket, public io::InputOutput
-// class SRC_API ClientSocket : public Socket
 {
   public:
     ///

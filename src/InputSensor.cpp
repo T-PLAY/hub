@@ -1,17 +1,6 @@
 #include "InputSensor.hpp"
 
-// #define DEBUG_STREAM
-
 namespace hub {
-
-// #ifdef DEBUG
-// #endif
-
-// #ifdef DEBUG
-
-// #ifdef DEBUG_STREAM
-// #endif
-// #endif
 
 InputSensor::InputSensor( InputSensor&& inputSensor ) :
     Sensor( std::move( inputSensor.m_spec ) ), m_input( std::move( inputSensor.m_input ) ) {
@@ -30,21 +19,6 @@ Acquisition InputSensor::operator>>( InputSensor& inputSensor ) {
     io::Input& masterInput = *m_input;
     io::Input& input       = inputSensor.getInput();
     return masterInput >> input;
-
-    ////    const auto & input = inputSensor.getInput();
-
-    ////    assert( lastAcqs.size() == 2 );
-
-    ////    if ( lastAcqs.back().m_start == masterAcq.m_start ) {
-    ////        masterAcq << right.getMeasures();
-    ////        return masterAcq;
-    ////    }
-
-    ////    if (input.isEnd())
-    ////        lastAcqs.pop_front();
-
-    ////    if (lastAcqs.empty())
-    ////        return Acquisition();
 }
 
 void InputSensor::operator>>( Acquisition& acq ) {

@@ -29,10 +29,9 @@ static const std::regex s_ipv4Regex { "^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$" };
 
 // #include <basetsd.h>
 
-#else // #ifdef WIN32
+#else
 #    define INVALID_SOCKET -1ul
 #    define closesocket close
-// using socket_fd = int;
 #    include <arpa/inet.h>
 #    include <csignal>
 #    include <sys/socket.h>
@@ -84,10 +83,6 @@ void closeSocket( socket_fd& sock ) {
     std::cout << std::endl;
 #endif
     ::closesocket( sock );
-    // assert(s_sockets.size() == size - 1);
-
-    // #ifdef WIN32
-    // #endif
 
     sock = INVALID_SOCKET;
 }
@@ -232,80 +227,3 @@ bool isValid( int port ) {
 } // namespace utils
 } // namespace net
 } // namespace hub
-
-// #include <cassert>
-// #include <cstring>
-// #include <functional>
-// #include <iostream>
-// #include <list>
-// #include <set>
-// #include <mutex>
-// #include <string>
-// #include <thread>
-
-// #include <winsock2.h>
-
-// #define UDT_API // no dllimport/export
-
-// #include <winsock.h>
-// #pragma comment(lib, "ws2_32.lib") // Winsock Library
-// #include <WinSock2.h>
-// #pragma comment( lib, "Ws2_32.lib" )
-
-// #include <winsock2.h>
-// #ifndef WIN32_LEAN_AND_MEAN
-// #define WIN32_LEAN_AND_MEAN
-// #endif
-
-// #ifndef WIN32_LEAN_AND_MEAN
-// #define WIN32_LEAN_AND_MEAN
-// #endif
-// #include <WinSock2.h>
-// #include <WS2tcpip.h>
-// #include <Windows.h>
-////#include <WS2tcpip.h>
-
-// #include <winsock.h>
-// #include <windows.h>
-// #endif
-
-// #include <iphlpapi.h>
-// #include <stdio.h>
-// #include <windows.h>
-// #include <ws2tcpip.h>
-
-// #include <WS2tcpip.h>
-
-// #pragma comment(lib, "Ws2_32.lib")
-
-// source:
-// https://www.zachburlingame.com/2011/05/resolving-redefinition-errors-betwen-ws2def-h-and-winsock-h/
-// #ifndef _WINDOWS_
-
-// #define WIN32_LEAN_AND_MEAN
-// #define NOMINMAX
-// #ifndef _WINDOWS_
-// #undef WIN32_LEAN_AND_MEAN
-
-// #endif
-// #define _WINSOCKAPI_
-// #ifndef WIN32_LEAN_AND_MEAN
-// #define WIN32_LEAN_AND_MEAN
-// #undef WIN32_LEAN_AND_MEAN
-// #endif
-
-// #include <windows.h>
-// #include <ws2tcpip.h>
-// #include <WS2tcpip.h>
-
-// #pragma comment( lib, "ws2_32.lib" )
-//// end source
-///
-// #ifndef WIN32
-// #    ifdef DEBUG_NET
-// #    endif
-
-// #endif
-
-// socket_fd createSocket(int af, int type, int protocol)
-// }

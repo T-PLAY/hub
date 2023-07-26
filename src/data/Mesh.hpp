@@ -1,14 +1,10 @@
 #pragma once
 
+#include <initializer_list>
 #include <memory>
 #include <string>
 
 #include "Measure.hpp"
-#include <initializer_list>
-
-// #define TINYOBJLOADER_IMPLEMENTATION // define this in only *one* .cc
-// #define TINYOBJLOADER_USE_MAPBOX_EARCUT
-// #include "tiny_obj_loader.h"
 
 namespace hub {
 namespace data {
@@ -73,17 +69,6 @@ class SRC_API Mesh : public Measure
 
     std::shared_ptr<MeshImpl> m_pimpl;
 };
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-// inline const tinyobj::attrib_t & Mesh::getAttrib() const
-// }
-
-// inline const std::vector<tinyobj::shape_t> & Mesh::getShapes() const
-// }
-
-// inline const std::vector<tinyobj::material_t> & Mesh::getMaterials() const
-// }
 
 } // namespace data
 } // namespace hub

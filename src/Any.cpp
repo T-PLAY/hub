@@ -8,10 +8,8 @@
 
 #include "data/Mat4.hpp"
 #include "data/Mesh.hpp"
-// using namespace Any;
 
 namespace hub {
-// namespace any {
 
 Any::Any( const Any& any ) : m_type( any.m_type ), m_hasValue( any.m_hasValue ) {
     assert( any.m_hasValue );
@@ -125,15 +123,6 @@ Any::Any( const data::Mesh& value ) : m_mesh( new data::Mesh( value ) ) {
     m_hasValue = true;
 }
 
-// Any::Any( const std::vector<float>& value ) {
-// }
-// Any::Any( unsigned int value ) {
-// }
-// Any::Any( const float* value ) {
-// }
-// Any::Any( const double* value ) {
-// }
-
 const int& Any::getInt() const {
     assert( m_type == Type::INT );
     return m_int;
@@ -162,16 +151,6 @@ const data::Mesh& Any::getMesh() const {
     return *m_mesh;
 }
 
-// const std::vector<float>& Any::getStdVectorFloat() const {
-// }
-// const unsigned int& Any::getUnsignedInt() const {
-// }
-// const float* const Any::getConstFloatPtr() const {
-// }
-// const double* const Any::getConstDoublePtr() const {
-// }
-
-// std::string Any::anyValue2string( const std::any& any ) {
 std::string anyValue2string( const Any& any ) {
 
     if ( any.has_value() ) {
@@ -213,18 +192,6 @@ std::string anyValue2string( const Any& any ) {
     }
 
     return "";
-
-    // #ifdef WIN32
-    // #else
-    // #endif
-
-    // #ifdef WIN32
-    // #else
-    // #endif
-
-    // #ifdef WIN32
-    // #else
-    // #endif
 }
 
 static const std::string s_anyType2string[static_cast<int>( Any::Type::COUNT )] = {
@@ -240,9 +207,6 @@ static const std::string s_anyType2string[static_cast<int>( Any::Type::COUNT )] 
 const std::string& Any::typeName() const {
     return s_anyType2string[static_cast<int>( m_type )];
 }
-
-//// const std::string& Any::anyType2string( const std::any& any ) {
-// const std::string& anyType2string( const Any& any ) {
 
 std::ostream& operator<<( std::ostream& os, const Any::Type& type ) {
     os << s_anyType2string[(int)type];
@@ -304,11 +268,3 @@ std::ostream& operator<<( std::ostream& os, const Any& any ) {
 }
 
 } // namespace hub
-
-// #ifdef WIN32
-// #else
-// #endif
-
-// #ifdef WIN32
-// #else
-// #endif

@@ -14,7 +14,6 @@ namespace io {
 /// The communication is only possible if the stream (with the same name) is active within the
 /// server. That implies an OutputStream communicating data through the hub.
 ///
-// class SRC_API InputSyncStream : public Input, public net::ClientSocket
 class SRC_API InputSyncStream : public Input
 {
   public:

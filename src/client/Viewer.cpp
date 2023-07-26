@@ -108,14 +108,6 @@ class Stream
         DEBUG_MSG( "[Stream] stopStream() streamer '" << m_streamName << "' ended" );
     }
 
-    ////            m_streamName( std::move( stream.m_streamName ) ),
-    ////            m_sensorSpec( std::move( stream.m_sensorSpec ) ),
-    ////            m_syncStreamName( std::move( stream.m_syncStreamName ) ),
-    ////            m_parentName( std::move( stream.m_parentName ) ),
-
-    ////            m_streamId( std::move( stream.m_streamId ) ),
-    ////            m_sensorSpecId( std::move( stream.m_sensorSpecId ) ),
-
     Viewer& m_viewer;
     std::string m_streamName;
     SensorSpec m_sensorSpec;

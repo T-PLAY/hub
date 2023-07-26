@@ -98,7 +98,6 @@ static std::string HUB_TO_STRING( const Dims& dims );
 static inline constexpr std::string& HUB_TO_STRING( const Format& format );
 static std::string HUB_TO_STRING( const Resolutions& resolutions );
 static std::string HUB_TO_STRING( const Resolution& resolution );
-// static std::string to_string( const std::string & string );
 
 static inline CONSTEXPR20 size_t computeAcquisitionSize( const Resolutions& resolutions ) noexcept;
 static inline CONSTEXPR20 size_t computeAcquisitionSize( const Resolution& resolution ) noexcept;
@@ -107,18 +106,6 @@ static inline constexpr int format2nByte( const Format& format ) noexcept;
 static inline constexpr bool format2isInterpolable( const Format& format ) noexcept;
 static inline constexpr bool format2hasFixedSize( const Format& format ) noexcept;
 
-// template <class T = Dims>
-// SRC_API std::ostream& operator<<( std::ostream& os, const T& t ) {
-
-// static std::string(Resolutions & resolutions ) {
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-// constexpr int s_nFormat = 33;
-
-// template <int NDim>
-// static constexpr int s_format2nByte[static_cast<int>( SensorSpec<NDim>::Format::COUNT )] = {
-// static constexpr int s_format2nByte[static_cast<int>( Format::COUNT )] = {
 static constexpr int s_format2nByte[static_cast<int>( Format::COUNT )] = {
     0,       // NONE
     2,       // Z16
@@ -313,9 +300,5 @@ inline constexpr bool format2hasFixedSize( const Format& format ) noexcept {
     return s_format2hasFixedSize[(int)format];
 }
 
-// template <class T>
-// std::ostream& operator<<( std::ostream& os, const T& t ) {
-
 } // namespace res
-
 } // namespace hub

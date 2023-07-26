@@ -1,9 +1,6 @@
 #pragma once
 
-// #include <functional>
-// #include <regex>
 #include <string>
-// #include <thread>
 
 #include "Acquisition.hpp"
 #include "Macros.hpp"
