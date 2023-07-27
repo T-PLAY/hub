@@ -215,9 +215,11 @@ void ClientSocket::read( unsigned char* data, size_t len ) {
 }
 
 void ClientSocket::close() {
-    assert( isOpen() ); // todo fix
-    net::utils::closeSocket( m_fdSock );
-    m_connected = false;
+    // assert( isOpen() ); // todo fix
+    if (isOpen()) {
+        net::utils::closeSocket( m_fdSock );
+        m_connected = false;
+    }
     assert( !isOpen() );
 }
 
