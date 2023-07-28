@@ -167,6 +167,8 @@ const hub::InputSensor& StreamerClient::getInputSensor() const {
 
 Acquisition StreamerClient::getLastAcq() const {
 
+    while (m_lastAcq.isEmpty())
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
     assert( !m_lastAcq.isEmpty() );
     auto acq = m_lastAcq.clone();
 
