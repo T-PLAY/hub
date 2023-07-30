@@ -188,9 +188,9 @@ void Server::addStreamViewer( StreamViewerClient* streamViewer ) {
         }
     }
     else {
-        const auto& lastAcq = streamer->getLastAcq();
-        assert( !lastAcq.isEmpty() );
-        streamViewer->update( lastAcq );
+//        const auto& lastAcq = streamer->getLastAcq();
+//        assert( !lastAcq.isEmpty() );
+//        streamViewer->update( lastAcq );
     }
 
     m_mtxSreamName2streamViewers.lock();

@@ -125,6 +125,8 @@ StreamerClient::StreamerClient( Server* server,
             while ( m_inputSensor->getInput().isOpen() ) {
 
                 *m_inputSensor >> m_lastAcq;
+//                std::cout << "get acq " << m_lastAcq << std::endl;
+                assert(!m_lastAcq.isEmpty());
 
                 m_server->newAcquisition( this, m_lastAcq );
 
@@ -167,8 +169,10 @@ const hub::InputSensor& StreamerClient::getInputSensor() const {
 
 Acquisition StreamerClient::getLastAcq() const {
 
-    while (m_lastAcq.isEmpty())
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    while (m_lastAcq.isEmpty()) {
+        std::cout << "last acq empty" << std::endl;
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    }
     assert( !m_lastAcq.isEmpty() );
     auto acq = m_lastAcq.clone();
 
