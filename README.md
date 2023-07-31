@@ -82,7 +82,9 @@ if ( resolutions.size() == 1 ) {
 Gauthier BOUYJOU (IRIT).
 
 ## License
-No license.
+Mozilla Public License Version 2.0
+
+
 
 ## Project status
 Under development (2022-2023).
