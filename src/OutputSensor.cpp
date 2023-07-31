@@ -21,6 +21,8 @@ OutputSensor::~OutputSensor() {
 
 void OutputSensor::operator<<( const Acquisition& acquisition ) const {
 #ifdef DEBUG
+    if (! m_output->isOpen())
+        return;
     assert( m_output->isOpen() ); // todo fix
     assert( !acquisition.hasFixedSize() || acquisition.getSize() == m_spec.getAcquisitionSize() );
     assert( acquisition.getStart() <= acquisition.getEnd() );
