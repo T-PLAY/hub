@@ -5,6 +5,7 @@
 
 # using Radium development dedicated image
 # image: stormirit/radium_dev:latest
+image: linux
 
 #https://docs.gitlab.com/ee/ci/yaml/#extends
 .branches_with_ci:
