@@ -4,7 +4,7 @@
 # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/C++.gitlab-ci.yml
 
 # using Radium development dedicated image
-image: stormirit/radium_dev:latest
+# image: stormirit/radium_dev:latest
 
 #https://docs.gitlab.com/ee/ci/yaml/#extends
 .branches_with_ci:
@@ -12,7 +12,7 @@ image: stormirit/radium_dev:latest
     - master
 
 stages: 
-  - dep
+  # - dep
   - build
   - test
   - coverage
@@ -60,59 +60,59 @@ cache:
 # #      - build/_deps/
 #       - build/
 
-dep:
-  stage: dep
-  script:
-    - |-
-      # rm -rf cache
-      # rm -rf cache/build*
-      if [ ! -e cache ]; then
-        mkdir cache
-      fi
-      cd cache
-      # rm -rf dep-cache
-      # apt update
-      # apt install -y npm
-      if [ ! -e dep-cache ]; then
-        apt update
-        apt install -y doxygen clang libclang-dev lcov npm
-        npm install lcov-badge-generator
-
-        mkdir -pv dep-cache/usr/bin/
-        mkdir -pv dep-cache/usr/share/$(basename /usr/share/cmake-*)/Modules
-        mkdir -pv dep-cache/usr/lib/x86_64-linux-gnu/
-        mkdir -pv dep-cache/usr/lib/llvm-11/lib/
-        mkdir -pv dep-cache/usr/lib/llvm-11/bin/
-        mkdir -pv dep-cache/etc/
-
-        cp /usr/bin/doxygen dep-cache/usr/bin/   
-        cp /usr/share/cmake-*/Modules/FindDoxygen.cmake dep-cache/usr/share/$(basename /usr/share/cmake-*)/Modules/
-        cp -ar /usr/lib/clang* dep-cache/usr/lib/
-        cp -a /usr/lib/x86_64-linux-gnu/libclang* dep-cache/usr/lib/x86_64-linux-gnu/
-        cp -ra /usr/lib/llvm-11/lib/* dep-cache/usr/lib/llvm-11/lib/
-        cp -ar /usr/bin/clang* dep-cache/usr/bin/
-        cp -ar /usr/lib/llvm-11/bin/clang* dep-cache/usr/lib/llvm-11/bin/
-        cp /usr/bin/lcov dep-cache/usr/bin/
-        cp /usr/bin/genhtml dep-cache/usr/bin/
-        cp /usr/bin/geninfo dep-cache/usr/bin/
-        cp -a /usr/lib/x86_64-linux-gnu/perl* dep-cache/usr/lib/x86_64-linux-gnu/
-        cp -a /etc/perl dep-cache/etc/
-        cp -a /usr/share/perl* dep-cache/usr/share/
-      # fi
-        # apt update
-        # apt install -y npm
-        cp /usr/bin/node dep-cache/usr/bin/
-        cp /usr/lib/x86_64-linux-gnu/libnode* dep-cache/usr/lib/x86_64-linux-gnu/
-        cp /usr/lib/x86_64-linux-gnu/libcares* dep-cache/usr/lib/x86_64-linux-gnu/
-      fi
-
-      # fi
-      # find dep-cache/usr/lib/x86_64-linux-gnu/perl/
-      # find / -name "gzip.pm"
-      # ls dep-cache/usr/share/
-      # ls dep-cache/usr/share/*
-  # only:
-  # - master
+# dep:
+#   stage: dep
+#   script:
+#     - |-
+#       # rm -rf cache
+#       # rm -rf cache/build*
+#       if [ ! -e cache ]; then
+#         mkdir cache
+#       fi
+#       cd cache
+#       # rm -rf dep-cache
+#       # apt update
+#       # apt install -y npm
+#       if [ ! -e dep-cache ]; then
+#         apt update
+#         apt install -y doxygen clang libclang-dev lcov npm
+#         npm install lcov-badge-generator
+#
+#         mkdir -pv dep-cache/usr/bin/
+#         mkdir -pv dep-cache/usr/share/$(basename /usr/share/cmake-*)/Modules
+#         mkdir -pv dep-cache/usr/lib/x86_64-linux-gnu/
+#         mkdir -pv dep-cache/usr/lib/llvm-11/lib/
+#         mkdir -pv dep-cache/usr/lib/llvm-11/bin/
+#         mkdir -pv dep-cache/etc/
+#
+#         cp /usr/bin/doxygen dep-cache/usr/bin/
+#         cp /usr/share/cmake-*/Modules/FindDoxygen.cmake dep-cache/usr/share/$(basename /usr/share/cmake-*)/Modules/
+#         cp -ar /usr/lib/clang* dep-cache/usr/lib/
+#         cp -a /usr/lib/x86_64-linux-gnu/libclang* dep-cache/usr/lib/x86_64-linux-gnu/
+#         cp -ra /usr/lib/llvm-11/lib/* dep-cache/usr/lib/llvm-11/lib/
+#         cp -ar /usr/bin/clang* dep-cache/usr/bin/
+#         cp -ar /usr/lib/llvm-11/bin/clang* dep-cache/usr/lib/llvm-11/bin/
+#         cp /usr/bin/lcov dep-cache/usr/bin/
+#         cp /usr/bin/genhtml dep-cache/usr/bin/
+#         cp /usr/bin/geninfo dep-cache/usr/bin/
+#         cp -a /usr/lib/x86_64-linux-gnu/perl* dep-cache/usr/lib/x86_64-linux-gnu/
+#         cp -a /etc/perl dep-cache/etc/
+#         cp -a /usr/share/perl* dep-cache/usr/share/
+#       # fi
+#         # apt update
+#         # apt install -y npm
+#         cp /usr/bin/node dep-cache/usr/bin/
+#         cp /usr/lib/x86_64-linux-gnu/libnode* dep-cache/usr/lib/x86_64-linux-gnu/
+#         cp /usr/lib/x86_64-linux-gnu/libcares* dep-cache/usr/lib/x86_64-linux-gnu/
+#       fi
+#
+#       # fi
+#       # find dep-cache/usr/lib/x86_64-linux-gnu/perl/
+#       # find / -name "gzip.pm"
+#       # ls dep-cache/usr/share/
+#       # ls dep-cache/usr/share/*
+#   # only:
+#   # - master
       
 build-clang-release:
   stage: build
@@ -199,37 +199,37 @@ doc-doxygen:
   # only:
   # - master
 
-cache-sphinx:
-  stage: doc
-  script:
-    - |-
-      cd cache
-      cp -rT dep-cache/ /;
-
-      # rm -rf sphinx-cache
-      if [ ! -e sphinx-cache ]; then
-        apt update
-        apt install -y python3-pip clang
-        pip3 install breathe sphinx sphinx-sitemap sphinx-rtd-theme
-
-        mkdir -pv sphinx-cache/usr/local/bin/
-        mkdir -pv sphinx-cache/usr/lib/
-        mkdir -pv sphinx-cache/usr/bin/
-        mkdir -pv sphinx-cache/usr/local/lib/
-        mkdir -pv sphinx-cache/usr/lib/llvm-11/lib/
-        mkdir -pv sphinx-cache/usr/lib/x86_64-linux-gnu/
-        
-        cp -ar /usr/lib/python* sphinx-cache/usr/lib/
-        cp -ar /usr/lib/clang* sphinx-cache/usr/lib/
-        cp -a /usr/lib/x86_64-linux-gnu/libclang* sphinx-cache/usr/lib/x86_64-linux-gnu/
-        cp -ra /usr/lib/llvm-11/lib/* sphinx-cache/usr/lib/llvm-11/lib/
-        cp -a /usr/bin/python* sphinx-cache/usr/bin/
-        cp /usr/local/bin/sphinx-build sphinx-cache/usr/local/bin/
-
-        cp -ar /usr/local/lib/python* sphinx-cache/usr/local/lib/
-      fi
-  only:
-  - master
+# cache-sphinx:
+#   stage: doc
+#   script:
+#     - |-
+#       cd cache
+#       cp -rT dep-cache/ /;
+#
+#       # rm -rf sphinx-cache
+#       if [ ! -e sphinx-cache ]; then
+#         apt update
+#         apt install -y python3-pip clang
+#         pip3 install breathe sphinx sphinx-sitemap sphinx-rtd-theme
+#
+#         mkdir -pv sphinx-cache/usr/local/bin/
+#         mkdir -pv sphinx-cache/usr/lib/
+#         mkdir -pv sphinx-cache/usr/bin/
+#         mkdir -pv sphinx-cache/usr/local/lib/
+#         mkdir -pv sphinx-cache/usr/lib/llvm-11/lib/
+#         mkdir -pv sphinx-cache/usr/lib/x86_64-linux-gnu/
+#
+#         cp -ar /usr/lib/python* sphinx-cache/usr/lib/
+#         cp -ar /usr/lib/clang* sphinx-cache/usr/lib/
+#         cp -a /usr/lib/x86_64-linux-gnu/libclang* sphinx-cache/usr/lib/x86_64-linux-gnu/
+#         cp -ra /usr/lib/llvm-11/lib/* sphinx-cache/usr/lib/llvm-11/lib/
+#         cp -a /usr/bin/python* sphinx-cache/usr/bin/
+#         cp /usr/local/bin/sphinx-build sphinx-cache/usr/local/bin/
+#
+#         cp -ar /usr/local/lib/python* sphinx-cache/usr/local/lib/
+#       fi
+#   only:
+#   - master
 
 
 doc-sphinx:
@@ -252,32 +252,32 @@ doc-sphinx:
   only:
   - master
 
-cache-format:
-  stage: format
-  script:
-    - |-
-      cd cache
-      # rm -rf format-cache
-      if [ ! -e format-cache ]; then
-        apt update
-        apt install -y cmake-format clang-format
-
-        mkdir -pv format-cache/usr/bin/
-        mkdir -pv format-cache/usr/lib/llvm-11/bin/
-        mkdir -pv format-cache/usr/lib/llvm-11/lib/
-        mkdir -pv format-cache/usr/lib/x86_64-linux-gnu/
-
-        cp /usr/bin/cmake-format format-cache/usr/bin/
-        cp /usr/bin/clang-format format-cache/usr/bin/
-        cp /usr/bin/clang-format-11 format-cache/usr/bin/
-        cp /usr/lib/llvm-11/bin/clang-format format-cache/usr/lib/llvm-11/bin/
-        cp -a /usr/lib/x86_64-linux-gnu/libclang* format-cache/usr/lib/x86_64-linux-gnu/
-        cp -ra /usr/lib/llvm-11/lib/* format-cache/usr/lib/llvm-11/lib/
-        cp -a /usr/bin/python* format-cache/usr/bin/
-        cp -ar /usr/lib/python* format-cache/usr/lib/
-      fi
-  only:
-  - master
+# cache-format:
+#   stage: format
+#   script:
+#     - |-
+#       cd cache
+#       # rm -rf format-cache
+#       if [ ! -e format-cache ]; then
+#         apt update
+#         apt install -y cmake-format clang-format
+#
+#         mkdir -pv format-cache/usr/bin/
+#         mkdir -pv format-cache/usr/lib/llvm-11/bin/
+#         mkdir -pv format-cache/usr/lib/llvm-11/lib/
+#         mkdir -pv format-cache/usr/lib/x86_64-linux-gnu/
+#
+#         cp /usr/bin/cmake-format format-cache/usr/bin/
+#         cp /usr/bin/clang-format format-cache/usr/bin/
+#         cp /usr/bin/clang-format-11 format-cache/usr/bin/
+#         cp /usr/lib/llvm-11/bin/clang-format format-cache/usr/lib/llvm-11/bin/
+#         cp -a /usr/lib/x86_64-linux-gnu/libclang* format-cache/usr/lib/x86_64-linux-gnu/
+#         cp -ra /usr/lib/llvm-11/lib/* format-cache/usr/lib/llvm-11/lib/
+#         cp -a /usr/bin/python* format-cache/usr/bin/
+#         cp -ar /usr/lib/python* format-cache/usr/lib/
+#       fi
+#   only:
+#   - master
 
 format:
   stage: format
