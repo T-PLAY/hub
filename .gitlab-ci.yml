@@ -120,7 +120,7 @@ build-clang-release:
 #  before_script:
 #    - export PATH=$PATH:/opt/Qt/5.10.0/gcc_64/bin
   script:
-    - cp -rT cache/dep-cache/ /;
+    # - cp -rT cache/dep-cache/ /;
 
     - mkdir -p cache/build-clang-release
     - cmake -B cache/build-clang-release -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON -DHUB_BUILD_DOC=ON
@@ -133,7 +133,7 @@ build-clang-release:
 build-gcc-debug:
   stage: build
   script:
-    - cp -rT cache/dep-cache/ /;
+    # - cp -rT cache/dep-cache/ /;
     # - apt update
     # - apt install -y doxygen clang libclang-dev lcov
 
@@ -158,7 +158,7 @@ coverage:
   stage: coverage
   script:
    
-    - cp -rT cache/dep-cache/ /; 
+    # - cp -rT cache/dep-cache/ /; 
     # - apt update
     # - apt install -y doxygen clang libclang-dev lcov
     # - cd build-gcc-release/
@@ -186,7 +186,7 @@ cppCheck:
 doc-doxygen:
   stage: doc
   script:
-    - cp -rT cache/dep-cache/ /;
+    # - cp -rT cache/dep-cache/ /;
 
     # - cmake --build cache/build-clang-release --target docs
     - cmake --build cache/build-clang-release --target doc-doxygen
@@ -237,8 +237,8 @@ doc-sphinx:
   stage: doc
   script:
     - |-
-      cp -rT cache/dep-cache/ /;
-      cp -rT cache/sphinx-cache/ /;
+      # cp -rT cache/dep-cache/ /;
+      # cp -rT cache/sphinx-cache/ /;
       
       # ls -la /usr/local/bin/sphinx-build
       # find / -name "sphinx-build"
@@ -284,7 +284,7 @@ format:
   stage: format
   script:
     - |-
-      cp -rT cache/format-cache/ /;
+      # cp -rT cache/format-cache/ /;
 
       # scripts/cleanup-project.sh
       cmake --build cache/build-gcc-debug --target format
