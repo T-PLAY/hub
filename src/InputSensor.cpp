@@ -17,6 +17,7 @@ InputSensor::~InputSensor() {
 Acquisition InputSensor::operator>>( InputSensor& inputSensor ) {
 
     io::Input& masterInput = *m_input;
+    /* cppcheck-suppress constVariableReference */
     io::Input& input       = inputSensor.getInput();
     return masterInput >> input;
 }

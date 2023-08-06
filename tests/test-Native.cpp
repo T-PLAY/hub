@@ -44,7 +44,7 @@ TEST_CASE( "Native test" ) {
         std::move( hub::Acquisition( 0, 1 ) << hub::data::Measure( ref_data, 3, ref_resolution ) );
 
     auto onNewStreamer = []( const char* streamName, const hub::SensorSpec* sensorSpec ) {
-        return false;
+//        return false;
         const hub::Resolution ref_resolution( { 1 }, hub::Format::BGR8 );
         const std::string ref_sensorName = "sensorName";
         hub::SensorSpec::MetaData ref_metaData;
@@ -114,7 +114,7 @@ TEST_CASE( "Native test" ) {
         hub::native::sensorSpec_getMetaDataStr( sensorSpec, metaDataStr );
         std::cout << "[Example][Viewer] metaDataStr : '" << metaDataStr << "'" << std::endl;
 
-        hub::SensorSpec* sensorSpecCopy = hub::native::sensorSpec_copy( sensorSpec );
+        const hub::SensorSpec* sensorSpecCopy = hub::native::sensorSpec_copy( sensorSpec );
         CHECK( *sensorSpecCopy == *sensorSpec );
 
         const hub::SensorSpec::MetaData* metaData =
@@ -234,7 +234,7 @@ TEST_CASE( "Native test" ) {
 
                 hub::native::freeInputSensor( inputSensor );
 
-                auto* inputSensor2 =
+                const auto* inputSensor2 =
                     hub::native::createInputSensor( "nonConnected", ipv4.c_str(), port );
                 CHECK( inputSensor2 == nullptr );
 

@@ -35,7 +35,12 @@ class SRC_API InputStream : public Input
     explicit InputStream( const std::string& streamName,
                           net::ClientSocket&& clientSocket = net::ClientSocket() );
 
+    ///
+    /// \brief InputStream
+    /// \param inputStream
+    ///
     InputStream( InputStream&& inputStream );
+
     ~InputStream();
 
   protected:

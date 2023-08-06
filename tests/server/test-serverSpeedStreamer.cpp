@@ -109,7 +109,7 @@ TEST_CASE( "Server test : viewer" ) {
             std::cout
                 << "[test][InputOutputSensor] ############################### send acquisitions"
                 << std::endl;
-            const auto& start = std::chrono::high_resolution_clock::now();
+            const auto& start2 = std::chrono::high_resolution_clock::now();
             for ( int i = 0; i < nAcqs; ++i ) {
                 const auto& acq = acqs.at( i );
                 streamer.newAcquisition( "streamName", acq );
@@ -118,9 +118,9 @@ TEST_CASE( "Server test : viewer" ) {
                 CHECK( acq2 == acqs.at( i ) );
             }
 
-            const auto& end = std::chrono::high_resolution_clock::now();
+            const auto& end2 = std::chrono::high_resolution_clock::now();
             const auto& duration2 =
-                std::chrono::duration_cast<std::chrono::milliseconds>( end - start ).count();
+                std::chrono::duration_cast<std::chrono::milliseconds>( end2 - start2 ).count();
             const auto& bytes2               = dataSize * nAcqs;
             const auto& bytesPerSeconds2     = 1000.0 * bytes / duration2;
             const auto& megaBytesPerSeconds2 = bytesPerSeconds2 / 1000'000.0;

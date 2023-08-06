@@ -2,13 +2,14 @@
 
 #include <string>
 
+/* cppcheck-suppress missingInclude */
 #include "Version.h"
 
 ///
 /// @author Gauthier Bouyjou
 /// @date 2022-2023
 /// If you have any questions please do not hesitate to send me message to my mailbox.
-/// @email : gauthierbouyjou@aol.com
+/// email : gauthierbouyjou@aol.com
 /// @brief
 ///
 namespace hub {

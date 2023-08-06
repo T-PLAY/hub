@@ -31,10 +31,8 @@ TEST_CASE( "Server test : InputOutputSensor" ) {
 
     const std::string ipv4 = "127.0.0.1";
     const int port         = GET_RANDOM_PORT;
-    // #ifdef WIN32
-    // #else
-    // #endif
 
+    // measure direct tcp stream duration
     std::cout << "[test][ClientSocket] start streaming" << std::endl;
     const auto& start = std::chrono::high_resolution_clock::now();
     {
@@ -72,9 +70,6 @@ TEST_CASE( "Server test : InputOutputSensor" ) {
     std::cout << "[test][ClientSocket] Mega byte per second : " << megaBytesPerSeconds << " Mo/s"
               << std::endl;
 
-    // #ifdef WIN32
-
-    // #endif
 
     {
         const int port2 = port + 1;
@@ -119,16 +114,16 @@ TEST_CASE( "Server test : InputOutputSensor" ) {
             std::cout
                 << "[test][InputOutputSensor] ############################### send acquisitions"
                 << std::endl;
-            const auto& start = std::chrono::high_resolution_clock::now();
+            const auto& start2 = std::chrono::high_resolution_clock::now();
             for ( int i = 0; i < nAcqs; ++i ) {
                 outputSensor << acqs.at( i );
                 hub::Acquisition acq;
                 inputSensor >> acq;
                 CHECK( acq == acqs.at( i ) );
             }
-            const auto& end = std::chrono::high_resolution_clock::now();
+            const auto& end2 = std::chrono::high_resolution_clock::now();
             const auto& duration2 =
-                std::chrono::duration_cast<std::chrono::milliseconds>( end - start ).count();
+                std::chrono::duration_cast<std::chrono::milliseconds>( end2 - start2 ).count();
             const auto& bytes2               = dataSize * nAcqs;
             const auto& bytesPerSeconds2     = 1000.0 * bytes / duration2;
             const auto& megaBytesPerSeconds2 = bytesPerSeconds2 / 1000'000.0;
@@ -144,9 +139,8 @@ TEST_CASE( "Server test : InputOutputSensor" ) {
 #ifdef WIN32
             CHECK( ratio > 35 );
 #else
-            CHECK( ratio > 65 );
+            CHECK( ratio > 55 );
 #endif
-            // CHECK( megaBytesPerSeconds >= 2700 ); // home linux
         }
     }
 

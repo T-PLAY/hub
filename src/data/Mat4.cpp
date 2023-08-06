@@ -104,7 +104,8 @@ std::string Mat4::to_string() const {
 
 const float* Mat4::operator[]( int idx ) const {
     assert( 0 <= idx && idx < 4 );
-    return &( (float*)m_data )[idx * 4];
+    /* cppcheck-suppress invalidPointerCast */
+    return &( reinterpret_cast<const float*>(m_data) )[idx * 4];
 }
 
 std::ostream& operator<<( std::ostream& os, const Mat4& mat4 ) {

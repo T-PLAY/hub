@@ -24,8 +24,8 @@ class SRC_API InputSyncStream : public Input
     /// [in] is an unique identifier name of stream.
     /// \param syncStreamName
     /// [in] is an unique identifier name of stream.
-    /// \param clientSocket
-    /// [in] is an existing connection to a hub server.
+    /// \param ipv4
+    /// \param port
     /// \warning The hub service must be accessible, that means the
     /// server hub is running on a machine you know the ip and the oppened port of the service.
     /// \warning Stream you want to link (by their names) needs to be active in the server hub.
@@ -65,10 +65,14 @@ class SRC_API InputSyncStream : public Input
 
     ///
     /// \brief getAcq
-    /// \return
+    /// \param acq
     ///
     void read( Acquisition& acq ) override;
 
+    ///
+    /// \brief read
+    /// \param sensorSpec
+    ///
     void read( SensorSpec& sensorSpec ) override;
 
   private:

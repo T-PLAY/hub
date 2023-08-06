@@ -56,7 +56,7 @@ void Output::write( const SensorSpec& sensorSpec ) {
 #endif
     assert( strlen( magicNumber ) < 79 );
     magicNumber[strlen( magicNumber )] = joker;
-    write( (unsigned char*)magicNumber, 80 );
+    write( reinterpret_cast<unsigned char*>(magicNumber), 80 );
 
     write( sensorSpec.getSensorName() );
     write( sensorSpec.getResolutions() );

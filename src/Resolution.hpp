@@ -85,9 +85,29 @@ using Resolutions = std::vector<Resolution>;
 /// \return
 ///
 SRC_API std::ostream& operator<<( std::ostream& os, const Format& format );
+
+///
+/// \brief operator <<
+/// \param os
+/// \param dims
+/// \return
+///
 SRC_API std::ostream& operator<<( std::ostream& os, const Dims& dims );
 
+///
+/// \brief operator <<
+/// \param os
+/// \param resolution
+/// \return
+///
 SRC_API std::ostream& operator<<( std::ostream& os, const Resolution& resolution );
+
+///
+/// \brief operator <<
+/// \param os
+/// \param resolutions
+/// \return
+///
 SRC_API std::ostream& operator<<( std::ostream& os, const Resolutions& resolutions );
 
 namespace res {

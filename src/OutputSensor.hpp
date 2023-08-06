@@ -59,7 +59,6 @@ class SRC_API OutputSensor : public Sensor
     /// To prevent non movable pointers within the thread,
     /// we construct OutputStream in OutputSensor place to instanciate correctly.
     /// \param sensorSpec
-    /// \param arg
     /// \param args
     ///
     template <class SensorSpec = hub::SensorSpec,
@@ -93,7 +92,12 @@ class SRC_API OutputSensor : public Sensor
     OutputSensor( const OutputSensor& outputSensor ) = delete;
     OutputSensor operator=( const OutputSensor& outputSensor ) = delete;
 
+    ///
+    /// \brief OutputSensor
+    /// \param outputSensor
+    ///
     OutputSensor( OutputSensor&& outputSensor );
+
     ~OutputSensor();
 
     ///

@@ -146,6 +146,11 @@ class SRC_API Acquisition
     ///
     bool hasFixedSize() const;
 
+    ///
+    /// \brief operator <
+    /// \param right
+    /// \return
+    ///
     bool operator<( const Acquisition& right ) const;
 
     ///

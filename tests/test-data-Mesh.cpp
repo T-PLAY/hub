@@ -8,7 +8,7 @@
 
 TEST_CASE( "Mesh test" ) {
 
-    const std::string meshPath = HUB_DIR "tests/data/mesh/";
+    const std::string meshPath = HUB_DIR "assets/";
 
     hub::data::Mesh mesh( meshPath + "quad" );
 
@@ -37,4 +37,6 @@ TEST_CASE( "Mesh test" ) {
         std::cout << "material id " << shape.material << std::endl;
         std::cout << "has normal " << shape.hasNormal << std::endl;
     }
+
+    mesh.printInfo();
 }

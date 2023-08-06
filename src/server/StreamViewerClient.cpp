@@ -36,7 +36,9 @@ OutputStream::OutputStream( OutputStream&& outputStream ) :
 }
 
 OutputStream::~OutputStream() {
+#ifdef DEBUG
     if ( !m_moved ) { assert( !isOpen() ); }
+#endif
 }
 
 void OutputStream::write( const hub::Acquisition& acq ) {

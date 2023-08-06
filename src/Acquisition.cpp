@@ -1,6 +1,9 @@
 #include "Acquisition.hpp"
 
 #include <algorithm>
+//#include <functional>
+//#include <iterator>
+#include <numeric>
 #include <cassert>
 #include <cmath>
 #include <cstring>
@@ -115,11 +118,15 @@ const data::Measures& Acquisition::getMeasures() const {
 }
 
 bool Acquisition::hasFixedSize() const {
-    for ( const auto& measure : m_measures ) {
+    return std::all_of(m_measures.cbegin(), m_measures.cend(), [](const hub::data::Measure & measure) {
         const auto& format = measure.getResolution().second;
-        if ( !res::format2hasFixedSize( format ) ) return false;
-    }
-    return true;
+        return res::format2hasFixedSize(format);
+    });
+//    for ( const auto& measure : m_measures ) {
+//        const auto& format = measure.getResolution().second;
+//        if ( !res::format2hasFixedSize( format ) ) return false;
+//    }
+//    return true;
 }
 
 size_t Acquisition::getSize() const {

@@ -154,6 +154,9 @@ class SRC_API Measure
     ///
     uint64_t m_size = 0; // compatibility 32/64 bits
 
+    ///
+    /// \brief m_ownData
+    ///
     bool m_ownData = false;
 
   private:

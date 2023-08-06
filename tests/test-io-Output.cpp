@@ -18,8 +18,8 @@ TEST_CASE( "Output test" ) {
     hub::Any ref_any_string( std::string( "hello" ) );
     hub::Any ref_any_constCharPtr( "hello" );
     hub::Any ref_any_mat4( hub::data::Mat4( 0.0 ) );
-    const std::string meshPath = HUB_DIR "tests/data/mesh/";
-    hub::data::Mesh ref_mesh( meshPath + "quad.gltf" );
+    const std::string meshPath = HUB_DIR "assets/";
+    hub::data::Mesh ref_mesh( meshPath + "quad" );
     hub::Any ref_any_mesh( ref_mesh );
 
     std::vector<char> buff;

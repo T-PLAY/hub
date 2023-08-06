@@ -190,19 +190,19 @@ void viewer_setPort( client::Viewer* viewer, int port ) {
     viewer->setPort( port );
 }
 
-int viewer_getPort( client::Viewer* viewer ) {
+int viewer_getPort( const client::Viewer* viewer ) {
     assert( viewer != nullptr );
     return viewer->getPort();
 }
 
-void viewer_getIpv4( client::Viewer* viewer, char* ipv4 ) {
+void viewer_getIpv4(const client::Viewer *viewer, char* ipv4 ) {
     const auto& ipv4Str = viewer->getIpv4();
     const int len       = ipv4Str.size();
     memcpy( ipv4, ipv4Str.data(), len + 1 );
     ipv4[len] = 0;
 }
 
-bool viewer_isConnected( client::Viewer* viewer ) {
+bool viewer_isConnected(const client::Viewer *viewer ) {
     return viewer->isConnected();
 }
 
@@ -270,7 +270,6 @@ void freeSensorSpec( SensorSpec* sensorSpec ) {
     assert( sensorSpec != nullptr );
     std::cout << "[Native] freeSensorSpec( " << sensorSpec << ")" << std::endl;
     delete sensorSpec;
-    sensorSpec = nullptr;
 }
 
 const SensorSpec::MetaData* sensorSpec_getMetaData( const SensorSpec* sensorSpec ) {

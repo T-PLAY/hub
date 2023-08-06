@@ -34,7 +34,12 @@ class SRC_API OutputStream : public Output
     explicit OutputStream( const std::string& streamName,
                            net::ClientSocket&& clientSocket = net::ClientSocket() );
 
+    ///
+    /// \brief OutputStream
+    /// \param outputStream
+    ///
     OutputStream( OutputStream&& outputStream );
+
     ~OutputStream();
 
     void write( const Acquisition& acq ) override;

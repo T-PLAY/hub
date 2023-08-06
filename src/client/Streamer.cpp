@@ -54,7 +54,7 @@ class Stream
         }
     }
 
-    void onServerClosed() { std::cout << "[Stream] outputStream closed by server" << std::endl; }
+//    void onServerClosed() { std::cout << "[Stream] outputStream closed by server" << std::endl; }
 
     void init() {
 
@@ -98,7 +98,8 @@ class Stream
                 delete m_outputSensor;
                 m_outputSensor = nullptr;
                 m_mtxOutputSensor.unlock();
-                throw ex;
+//                throw ex;
+                throw;
             }
         }
     }

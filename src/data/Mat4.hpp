@@ -13,6 +13,10 @@ class SRC_API Mat4 : public Measure
 {
 
   public:
+    ///
+    /// \brief Mat4
+    /// \param measure
+    ///
     explicit Mat4( const Measure& measure );
 
     ///
@@ -77,6 +81,11 @@ class SRC_API Mat4 : public Measure
     ///
     SRC_API friend std::ostream& operator<<( std::ostream& os, const Mat4& mat4 );
 
+    ///
+    /// \brief operator []
+    /// \param idx
+    /// \return
+    ///
     const float* operator[]( int idx ) const;
 };
 

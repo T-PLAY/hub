@@ -105,6 +105,10 @@ class SRC_API ClientSocket : public Socket, public io::InputOutput
 
     ClientSocket( const ClientSocket& sock ) = delete;
 
+    ///
+    /// \brief ClientSocket
+    /// \param sock
+    ///
     ClientSocket( ClientSocket&& sock );
 
     ClientSocket& operator=( const ClientSocket& sock ) = delete;

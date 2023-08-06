@@ -67,9 +67,17 @@ class SRC_API Output
     virtual bool isOpen() const = 0;
 
   public:
+    ///
+    /// \brief operator <<
+    /// \param t
+    ///
     template <class T>
     void operator<<( T& t );
 
+    ///
+    /// \brief put
+    /// \param t
+    ///
     template <class T>
     void put( const T& t );
 

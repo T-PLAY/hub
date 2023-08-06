@@ -136,7 +136,7 @@ if(NOT WIN32)
     add_custom_target(
         cppCheck
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-        COMMAND cppcheck --enable=all --error-exitcode=1 src tests -I src --inline-suppr --suppress=toomanyconfigs
+        COMMAND cppcheck --enable=all --error-exitcode=1 src tests -I src -I tests --inline-suppr --suppress=toomanyconfigs
                 --suppress=missingIncludeSystem
         COMMENT "Running cppCheck")
 endif()
@@ -153,6 +153,7 @@ foreach(target "tests" "coverage" "cppCheck" "doc-doxygen" "doc-sphinx")
         add_dependencies(all-targets ${target})
     endif()
 endforeach()
+message(STATUS "custom targets: cppCheck format doc-doxygen doc-sphinx coverage coverage-lcov coverage-all tests")
 
 option(HUB_ENABLE_WRAPPER "Enable wrapper" OFF)
 if(HUB_ENABLE_WRAPPER)

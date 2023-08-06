@@ -41,7 +41,9 @@ InputStream::InputStream( InputStream&& inputStream ) :
 }
 
 InputStream::~InputStream() {
+#ifdef DEBUG
     if ( !m_moved ) { assert( !isOpen() ); }
+#endif
 }
 
 void InputStream::read( Acquisition& acq )

@@ -49,11 +49,28 @@ extern "C"
 
     /////////////////////////////////////////////////
 
+    ///
+    /// \brief createMat4OutputSensor
+    /// \param sensorName
+    /// \param ipv4
+    /// \param port
+    /// \return
+    ///
     SRC_API OutputSensor*
     createMat4OutputSensor( const char* sensorName, const char* ipv4, int port );
 
+    ///
+    /// \brief mat4OutputSensorSendAcq
+    /// \param outputSensor
+    /// \param input
+    /// \return
+    ///
     SRC_API bool mat4OutputSensorSendAcq( OutputSensor* outputSensor, const float* input );
 
+    ///
+    /// \brief freeOutputSensor
+    /// \param outputSensor
+    ///
     SRC_API void freeOutputSensor( OutputSensor* outputSensor );
 
     ///
@@ -101,6 +118,9 @@ extern "C"
     /// \param port
     typedef void ( *onServerConnectedFunc )( const char* ipv4, int port );
 
+    /// \brief onServerNotFoundFunc
+    /// \param ipv4
+    /// \param port
     typedef void ( *onServerNotFoundFunc )( const char* ipv4, int port );
 
     /// \brief onServerDisconnectedFunc
@@ -113,6 +133,11 @@ extern "C"
     /// \param acq
     typedef void ( *onNewAcquisitionFunc )( const char* streamName, const Acquisition* acq );
 
+    /// \brief onSetPropertyFunc
+    /// \param streamName
+    /// \param objectName
+    /// \param property
+    /// \param value
     typedef void ( *onSetPropertyFunc )( const char* streamName,
                                          const char* objectName,
                                          int property,
@@ -126,9 +151,11 @@ extern "C"
     /// \brief createViewer
     /// \param onNewStreamer
     /// \param onDelStreamer
+    /// \param onServerNotFound
     /// \param onServerConnected
     /// \param onServerDisconnected
     /// \param onNewAcquisition
+    /// \param onSetProperty
     /// \param ipv4
     /// \param port
     /// \param onLogMessage
@@ -165,17 +192,31 @@ extern "C"
     ///
     SRC_API void viewer_setPort( client::Viewer* viewer, int port );
 
-    SRC_API int viewer_getPort( client::Viewer* viewer );
+    ///
+    /// \brief viewer_getPort
+    /// \param viewer
+    /// \return
+    ///
+    SRC_API int viewer_getPort( const client::Viewer* viewer );
 
-    SRC_API void viewer_getIpv4( client::Viewer* viewer, char* ipv4 );
+    ///
+    /// \brief viewer_getIpv4
+    /// \param viewer
+    /// \param ipv4
+    ///
+    SRC_API void viewer_getIpv4( const client::Viewer* viewer, char* ipv4 );
 
     ///
     /// \brief viewer_isConnected
     /// \param viewer
     /// \return
     ///
-    SRC_API bool viewer_isConnected( client::Viewer* viewer );
+    SRC_API bool viewer_isConnected( const client::Viewer* viewer );
 
+    ///
+    /// \brief freeSensorSpec
+    /// \param sensorSpec
+    ///
     SRC_API void freeSensorSpec( SensorSpec* sensorSpec );
 
     ///
@@ -310,8 +351,18 @@ extern "C"
     ///
     SRC_API double metaData_getDouble( const SensorSpec::MetaData* metaData, const char* metaName );
 
+    ///
+    /// \brief any_getDouble
+    /// \param any
+    /// \return
+    ///
     SRC_API double any_getDouble( const hub::Any* any );
 
+    ///
+    /// \brief any_getInt
+    /// \param any
+    /// \return
+    ///
     SRC_API int any_getInt( const hub::Any* any );
 
 #ifdef __cplusplus

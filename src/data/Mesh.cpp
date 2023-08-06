@@ -57,13 +57,13 @@ class MeshImpl
         for ( const auto& shape : m_shapes ) {
             uint64_t size = shape.vertices.size();
             output.write( size );
-            output.write( (const unsigned char*)shape.vertices.data(),
+            output.write( reinterpret_cast<const unsigned char*>(shape.vertices.data()),
                           shape.vertices.size() * sizeof( Vertex ) );
 
             output.write( shape.hasNormal );
             size = shape.indices.size();
             output.write( size );
-            output.write( (const unsigned char*)shape.indices.data(),
+            output.write( reinterpret_cast<const unsigned char*>(shape.indices.data()),
                           shape.indices.size() * sizeof( unsigned int ) );
 
             output.write( shape.name );
@@ -74,7 +74,7 @@ class MeshImpl
             output.write( material.name );
             assert( sizeof( float ) == 4 );
             assert( sizeof( int ) == 4 );
-            output.write( (unsigned char*)&material.Ka, s_materialSize );
+            output.write( reinterpret_cast<const unsigned char*>(&material.Ka), s_materialSize );
         }
     }
 
@@ -132,7 +132,7 @@ Mesh::Mesh( std::initializer_list<std::string> filePaths ) :
 
         std::cout << "filename : " << filename << std::endl;
 
-        std::string iext                  = ".gltf";
+//        std::string iext                  = ".gltf";
         std::string filePathWithExtension = parentPath + "/" + filename + ".gltf";
         gltfFilePaths.emplace_back( filePathWithExtension );
 
@@ -140,7 +140,7 @@ Mesh::Mesh( std::initializer_list<std::string> filePaths ) :
         compressedFilePaths.emplace_back( compressedFilePath );
 
         if ( !std::ifstream { compressedFilePath } ) {
-            if ( iext == ".gltf" ) {
+//            if ( iext == ".gltf" ) {
 
                 meshopt_encodeIndexVersion( 1 );
 
@@ -153,7 +153,7 @@ Mesh::Mesh( std::initializer_list<std::string> filePaths ) :
                 settings.rot_bits           = 12;
                 settings.scl_bits           = 16;
                 settings.anim_freq          = 30;
-                settings.simplify_threshold = 1.f;
+//                settings.simplify_threshold = 1.f;
                 settings.texture_scale      = 1.f;
                 for ( int kind = 0; kind < TextureKind__Count; ++kind )
                     settings.texture_quality[kind] = 8;
@@ -172,12 +172,12 @@ Mesh::Mesh( std::initializer_list<std::string> filePaths ) :
 
                 int ret = gltfpack( input, output, report, settings );
                 assert( ret == 0 );
-            }
-            else {
-                std::cerr << "[Mesh] unable to open " << iext << " extension, please use glb."
-                          << std::endl;
-                assert( false );
-            }
+//            }
+//            else {
+//                std::cerr << "[Mesh] unable to open " << iext << " extension, please use glb."
+//                          << std::endl;
+//                assert( false );
+//            }
         }
 
     } // for ( const auto& filePath : filePaths )
@@ -387,14 +387,14 @@ void Mesh::unpack( bool headerOnly ) const {
             uint64_t size;
             memory.read( size );
             shape.vertices.resize( size );
-            memory.read( (unsigned char*)shape.vertices.data(),
+            memory.read( reinterpret_cast<unsigned char*>(shape.vertices.data()),
                          shape.vertices.size() * sizeof( Vertex ) );
 
             memory.read( shape.hasNormal );
 
             memory.read( size );
             shape.indices.resize( size );
-            memory.read( (unsigned char*)shape.indices.data(),
+            memory.read( reinterpret_cast<unsigned char*>(shape.indices.data()),
                          shape.indices.size() * sizeof( unsigned int ) );
 
             memory.read( shape.name );
@@ -411,7 +411,7 @@ void Mesh::unpack( bool headerOnly ) const {
             auto& material = m_pimpl->m_materials.back();
             memory.read( material.name );
             std::cout << "[Mesh] read material name: " << material.name << std::endl;
-            memory.read( (unsigned char*)&material.Ka, s_materialSize );
+            memory.read( reinterpret_cast<unsigned char*>(&material.Ka), s_materialSize );
         }
         const auto end = std::chrono::high_resolution_clock::now();
         const auto duration =

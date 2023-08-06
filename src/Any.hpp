@@ -78,6 +78,11 @@ class SRC_API Any
     ///
     Any( const data::Mat4& value );
 
+    /* cppcheck-suppress noExplicitConstructor */
+    ///
+    /// \brief Any
+    /// \param value
+    ///
     Any( const data::Mesh& value );
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -112,6 +117,10 @@ class SRC_API Any
     ///
     const data::Mat4& getMat4() const;
 
+    ///
+    /// \brief getMesh
+    /// \return
+    ///
     const data::Mesh& getMesh() const;
 
     ///
@@ -138,6 +147,11 @@ class SRC_API Any
     ///
     std::string to_string() const;
 
+
+    ///
+    /// \brief value_to_string
+    /// \return
+    ///
     std::string value_to_string() const;
 
     ///

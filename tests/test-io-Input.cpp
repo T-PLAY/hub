@@ -26,8 +26,8 @@ TEST_CASE( "Input test" ) {
         hub::Any ref_any_string( std::string( "hello" ) );
         hub::Any ref_any_constCharPtr( "hello" );
         hub::Any ref_any_mat4( hub::data::Mat4( 0.0 ) );
-        const std::string meshPath = HUB_DIR "tests/data/mesh/";
-        hub::data::Mesh ref_mesh( meshPath + "quad.gltf" );
+        const std::string meshPath = HUB_DIR "assets/";
+        hub::data::Mesh ref_mesh( meshPath + "quad" );
         hub::Any ref_any_mesh( ref_mesh );
 
         std::vector<char> buff;
@@ -105,7 +105,7 @@ TEST_CASE( "Input test" ) {
 
         std::cout << "ref_acqs" << std::endl;
         const hub::Resolution ref_resolution( { { 1 }, hub::Format::Y8 } );
-        const hub::SensorSpec ref_sensorSpec( "sensorName", { ref_resolution } );
+//        const hub::SensorSpec ref_sensorSpec( "sensorName", { ref_resolution } );
         std::vector<hub::Acquisition> ref_acqs;
         const int ref_dataSize = hub::res::computeAcquisitionSize( ref_resolution );
         unsigned char* data    = new unsigned char[ref_dataSize];
@@ -126,7 +126,7 @@ TEST_CASE( "Input test" ) {
 
         std::cout << "ref2_acqs" << std::endl;
         const hub::Resolution ref_resolution2( { { 1 }, hub::Format::DOF6 } );
-        const hub::SensorSpec ref_sensorSpec2( "sensorName2", { ref_resolution2 } );
+//        const hub::SensorSpec ref_sensorSpec2( "sensorName2", { ref_resolution2 } );
         std::vector<hub::Acquisition> ref_acqs2;
         const int ref_dataSize2 = hub::res::computeAcquisitionSize( ref_resolution2 );
         float data2[7];
@@ -281,7 +281,7 @@ TEST_CASE( "Input test" ) {
 
         std::cout << "ref_acqs" << std::endl;
         const hub::Resolution ref_resolution( { { 1 }, hub::Format::Y8 } );
-        const hub::SensorSpec ref_sensorSpec( "sensorName", { ref_resolution } );
+//        const hub::SensorSpec ref_sensorSpec( "sensorName", { ref_resolution } );
         std::vector<hub::Acquisition> ref_acqs;
         const int ref_dataSize = hub::res::computeAcquisitionSize( ref_resolution );
         unsigned char* data    = new unsigned char[ref_dataSize];
@@ -303,7 +303,7 @@ TEST_CASE( "Input test" ) {
 
         std::cout << "ref2_acqs" << std::endl;
         const hub::Resolution ref_resolution2( { { 1 }, hub::Format::DOF6 } );
-        const hub::SensorSpec ref_sensorSpec2( "sensorName2", { ref_resolution2 } );
+//        const hub::SensorSpec ref_sensorSpec2( "sensorName2", { ref_resolution2 } );
         std::vector<hub::Acquisition> ref_acqs2;
         const int ref_dataSize2 = hub::res::computeAcquisitionSize( ref_resolution2 );
         float data2[7];

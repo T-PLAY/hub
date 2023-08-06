@@ -22,23 +22,60 @@ class StreamViewerClient;
 class StreamerClient : public Client
 {
   public:
+    ///
+    /// \brief StreamerClient
+    /// \param server
+    /// \param iClient
+    /// \param sock
+    /// \param streamName
+    ///
     StreamerClient( Server* server,
                     int iClient,
                     hub::net::ClientSocket&& sock,
                     std::string streamName );
+
     ~StreamerClient();
 
+    ///
+    /// \brief headerMsg
+    /// \return
+    ///
     std::string headerMsg() const override;
 
+    ///
+    /// \brief getInputSensor
+    /// \return
+    ///
     const hub::InputSensor& getInputSensor() const;
 
+    ///
+    /// \brief getLastAcq
+    /// \return
+    ///
     hub::Acquisition getLastAcq() const;
 
+    ///
+    /// \brief end
+    /// \param message
+    ///
     void end( net::ClientSocket::Message message ) override;
 
+    ///
+    /// \brief getStreamName
+    /// \return
+    ///
     const std::string& getStreamName() const;
+
+    ///
+    /// \brief isPackedStream
+    /// \return
+    ///
     bool isPackedStream() const;
 
+    ///
+    /// \brief getPackedAcqs
+    /// \return
+    ///
     const std::set<hub::Acquisition>& getPackedAcqs() const;
 
   private:

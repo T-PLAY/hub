@@ -181,7 +181,7 @@ void Server::addStreamer( StreamerClient* streamer ) {
 void Server::addStreamViewer( StreamViewerClient* streamViewer ) {
     const auto& streamName = streamViewer->m_streamName;
 
-    auto& streamer = m_streamName2streamer.at( streamName );
+    const auto* streamer = m_streamName2streamer.at( streamName );
     if ( streamer->isPackedStream() ) {
         for ( const auto& packedAcq : streamer->getPackedAcqs() ) {
             streamViewer->update( packedAcq );
@@ -304,7 +304,7 @@ void Server::delViewer( ViewerClient* viewer ) {
     m_mtxPrint.unlock();
 }
 
-void Server::newAcquisition( StreamerClient* streamer, const Acquisition& acq ) {
+void Server::newAcquisition(const StreamerClient *streamer, const Acquisition& acq ) {
     assert( !acq.isEmpty() );
 
     const auto& streamName = streamer->getStreamName();
@@ -353,7 +353,7 @@ std::list<std::pair<std::string, hub::SensorSpec>> Server::listStreams() const {
 hub::Acquisition Server::getAcquisition( const std::string& streamName ) const {
     m_mtxStreamName2streamer.lock();
     assert( m_streamName2streamer.find( streamName ) != m_streamName2streamer.end() );
-    const auto& streamer = m_streamName2streamer.at( streamName );
+    const auto* streamer = m_streamName2streamer.at( streamName );
     m_mtxStreamName2streamer.unlock();
     return streamer->getLastAcq();
 }

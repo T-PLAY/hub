@@ -98,8 +98,8 @@ class SRC_API Dof6 : public Measure
     inline float get_w3() const;
 
   private:
-    const float m_x = 0.0, m_y = 0.0, m_z = 0.0;                // vec3
-    const float m_w0 = 1.0, m_w1 = 0.0, m_w2 = 0.0, m_w3 = 0.0; // quat : w, x, y, z
+    float m_x = 0.0, m_y = 0.0, m_z = 0.0;                // vec3
+    float m_w0 = 1.0, m_w1 = 0.0, m_w2 = 0.0, m_w3 = 0.0; // quat : w, x, y, z
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -79,6 +79,10 @@ class SRC_API Input
     ////////////////////////////////////////////////////////////////////////////
 
   public:
+    ///
+    /// \brief operator >>
+    /// \param t
+    ///
     template <class T>
     void operator>>( T& t );
 
@@ -89,13 +93,25 @@ class SRC_API Input
     template <class T>
     void read( T& t );
 
+    ///
+    /// \brief get
+    /// \return
+    ///
     template <class T>
     T get();
 
+    ///
+    /// \brief readAll
+    /// \param ts
+    ///
     template <typename Container,
               typename T = std::decay_t<decltype( *begin( std::declval<Container>() ) )>>
     void readAll( Container& ts );
 
+    ///
+    /// \brief getAll
+    /// \return
+    ///
     template <typename Container>
     Container getAll();
 
@@ -154,7 +170,7 @@ class SRC_API Input
 
     ///
     /// \brief read
-    /// \param acquisition
+    /// \param acq
     ///
     virtual void read( Acquisition& acq );
 
@@ -169,6 +185,11 @@ class SRC_API Input
 #endif
 
   public:
+    ///
+    /// \brief operator >>
+    /// \param input
+    /// \return
+    ///
     Acquisition operator>>( Input& input );
 
   private:

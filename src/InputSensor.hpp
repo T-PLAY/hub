@@ -47,20 +47,17 @@ class SRC_API InputSensor : public Sensor
               typename = typename std::enable_if<std::is_base_of<io::Input, Input>::value>::type>
     explicit InputSensor( const Input& input ) = delete;
 
+    ///
+    /// \brief InputSensor
+    /// \param inputSensor
+    ///
     InputSensor( InputSensor&& inputSensor );
+
     ~InputSensor();
 
     InputSensor operator=( const InputSensor& inputSensor ) = delete;
 
   public:
-    ///
-    /// \brief getAcquisition
-    /// can be an asynchronous function depending of the used interface.
-    /// \return
-    /// the oldest acquisition shared by the physical sensor.
-    /// \exception "used interface exception"
-    /// when communication bus is broken.
-    ///
 
     ///
     /// \brief operator >>
@@ -89,6 +86,9 @@ class SRC_API InputSensor : public Sensor
     ///
     io::Input& getInput() const;
 
+    ///
+    /// \brief close
+    ///
     void close();
 
   private:

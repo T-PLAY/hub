@@ -140,7 +140,7 @@ socket_fd serverSocket() {
 
 int bind( socket_fd sock, ServerAddr& addr ) {
     return ::bind(
-        sock, (struct sockaddr*)&addr.m_pimpl->m_sockAddr, sizeof( struct sockaddr_in ) );
+        sock, reinterpret_cast<struct sockaddr*>(&addr.m_pimpl->m_sockAddr), sizeof( struct sockaddr_in ) );
 }
 
 int listen( socket_fd sock, int backlog ) {
@@ -150,7 +150,7 @@ int listen( socket_fd sock, int backlog ) {
 socket_fd accept( socket_fd sock, ServerAddr& addr ) {
     auto& sockAddr       = addr.m_pimpl->m_sockAddr;
     socklen_t addrlen    = sizeof( sockAddr );
-    socket_fd new_socket = accept( sock, (struct sockaddr*)&sockAddr, &addrlen );
+    socket_fd new_socket = accept( sock, reinterpret_cast<struct sockaddr*>(&sockAddr), &addrlen );
     return new_socket;
 }
 
@@ -205,7 +205,7 @@ socket_fd clientSocket() {
 
 int connect( socket_fd sock, ClientAddr& addr ) {
     return ::connect(
-        sock, (struct sockaddr*)&addr.m_pimpl->m_sockAddr, sizeof( struct sockaddr_in ) );
+        sock, reinterpret_cast<struct sockaddr*>(&addr.m_pimpl->m_sockAddr), sizeof( struct sockaddr_in ) );
 }
 
 int send( socket_fd sock, const char* buf, int len, int flags ) {

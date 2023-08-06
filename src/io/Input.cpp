@@ -35,7 +35,7 @@ void Input::read( SensorSpec& sensorSpec ) {
     assert( !isEnd() );
 
     char magicNumber[80] = { 0 };
-    read( (unsigned char*)magicNumber, 80 );
+    read( reinterpret_cast<unsigned char*>(magicNumber), 80 );
     int versionMajor;
     int versionMinor;
     int versionPatch;

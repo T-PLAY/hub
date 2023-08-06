@@ -9,7 +9,7 @@ message(STATUS "Hub version: ${${PROJECT_NAME}_VERSION}")
 option(HUB_ENABLE_COVERAGE "Collect coverage from hub library (required tests enable)" OFF)
 if(HUB_ENABLE_COVERAGE)
     include(CodeCoverage)
-    set(COVERAGE_COMPILER_FLAGS "-g --coverage -fno-elide-constructors -fno-default-inline")
+    set(COVERAGE_COMPILER_FLAGS "-g --coverage -fno-elide-constructors -fno-default-inline -fprofile-update=atomic")
     append_coverage_compiler_flags()
     set(REQUIRED_LIBS ${REQUIRED_LIBS} gcov)
 endif()
@@ -234,8 +234,11 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
         hub
         test-all
         EXCLUDE
+        "external/*.h"
+        "external/*.cpp"
         "/usr/*"
-        "*tiny_obj_loader.h")
+    )
+#        "*tiny_obj_loader.h"
 
     if(${CMAKE_VERSION} VERSION_LESS "3.20") # ctest --test-dir option
         add_custom_command(
@@ -284,9 +287,11 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
             hub
             test-${parentMacro}${name}
             EXCLUDE
+            "external/*.h"
+            "external/*.cpp"
             "/usr/*"
-            "*tiny_obj_loader.h"
             ${sourcesTmp})
+#            "*tiny_obj_loader.h"
 
         add_custom_target(
             coverage-${name}

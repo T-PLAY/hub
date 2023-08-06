@@ -37,5 +37,7 @@ TEST_CASE( "Any test" ) {
     const auto& i = any.getMat4();
     CHECK( i == hub::data::Mat4() );
 
+    std::cout << any.value_to_string() << std::endl;
+
     std::cout << any.type() << std::endl;
 }

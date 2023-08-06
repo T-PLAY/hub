@@ -9,7 +9,7 @@ namespace data {
 Dof6::Dof6( const Measure& measure ) :
     Measure( measure.getData(), measure.getSize(), Resolution { { 1 }, Format::DOF6 } ) {
     assert( measure.getSize() == 28 );
-    memcpy( (unsigned char*)&m_x, m_data, m_size );
+    memcpy( reinterpret_cast<unsigned char*>(&m_x), m_data, m_size );
     assert( m_data != nullptr );
 }
 
@@ -18,7 +18,7 @@ Dof6::Dof6( float x, float y, float z, float w0, float w1, float w2, float w3 ) 
              28,
              Resolution { { 1 }, Format::DOF6 } ) {
     assert( m_size == 28 );
-    memcpy( (unsigned char*)&m_x, m_data, m_size );
+    memcpy( reinterpret_cast<unsigned char*>(&m_x), m_data, m_size );
 }
 
 Dof6 Dof6::slerp( const Dof6& left, const Dof6& right, double t ) {

@@ -64,7 +64,7 @@ class SRC_API Server
     void delStreamViewer( StreamViewerClient* streamViewer );
     void delViewer( ViewerClient* viewer );
 
-    void newAcquisition( StreamerClient* streamer, const Acquisition& acq );
+    void newAcquisition( const StreamerClient* streamer, const Acquisition& acq );
 
     std::list<std::pair<std::string, hub::SensorSpec>> listStreams() const;
     hub::Acquisition getAcquisition( const std::string& streamName ) const;
