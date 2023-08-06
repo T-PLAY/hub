@@ -242,8 +242,8 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
             TARGET ${PROJECT_NAME}
             POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_BINARY_DIR}/tests/DartConfiguration.tcl
-                    ${CMAKE_CURRENT_BINARY_DIR}/)
-
+                    ${CMAKE_CURRENT_BINARY_DIR}/
+                )
     endif()
 
     add_custom_target(coverage COMMAND ${HUB_BROWSER} ${CMAKE_CURRENT_BINARY_DIR}/../coverage-lcov/index.html)
@@ -251,7 +251,12 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
 
     add_custom_target(coverage-all)
 
-    foreach(file ${sources})
+    file(
+        GLOB_RECURSE
+        src_headers
+        ${HUB_INCLUDE_DIR}/*.cpp)
+
+    foreach(file ${src_headers})
         get_filename_component(basename ${file} NAME)
         get_filename_component(parentDir ${file} DIRECTORY)
         get_filename_component(parentName ${parentDir} NAME)
