@@ -11,6 +11,7 @@
 #include <filesystem>
 
 TEST_CASE( "Server test : viewer" ) {
+    // todo sometimes failed
 
     const std::string ipv4 = "127.0.0.1";
     const int port         = GET_RANDOM_PORT;

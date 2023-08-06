@@ -9,6 +9,7 @@
 #include <filesystem>
 
 TEST_CASE( "Server test : InputOutputSensor" ) {
+    // todo sometimes failed
     constexpr int nAcqs       = 200;
     constexpr int width       = 1920;
     constexpr int height      = 1080;
