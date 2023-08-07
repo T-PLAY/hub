@@ -102,6 +102,7 @@ void ViewerClient::notifyDelStreamer( const std::string& streamName,
 }
 
 void ViewerClient::end( net::ClientSocket::Message message ) {
+    std::cout << headerMsg() << "end(" << message << ")" << std::endl;
     assert( m_socket.isOpen() );
     m_socket.write( message );
 }

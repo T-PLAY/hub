@@ -305,8 +305,6 @@ Viewer::~Viewer() {
 
     if ( m_sock.isOpen() ) { m_sock.write( net::ClientSocket::Message::VIEWER_CLOSED ); }
 
-    ////        m_mtxSockRead.lock();
-    ////        if (m_sock.isOpen()) {
 
     assert( m_thread.joinable() );
     m_thread.join();
