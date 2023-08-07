@@ -33,11 +33,13 @@ Server::~Server() {
     assert( m_thread.joinable() );
     m_thread.join();
 
+    SERVER_MSG( "~Server() ending connected clients" );
     m_mtxClients.lock();
     for ( auto* client : m_clients ) {
         client->end( net::ClientSocket::Message::SERVER_CLOSED );
     }
     m_mtxClients.unlock();
+    SERVER_MSG( "~Server() connected clients are ending" );
 
     m_mtxClients.lock();
     while ( !m_clients.empty() ) {
@@ -47,6 +49,7 @@ Server::~Server() {
         m_mtxClients.lock();
     }
     m_mtxClients.unlock();
+    SERVER_MSG( "~Server() clients disconnected" );
 
     SERVER_MSG( "~Server() ended" );
 }

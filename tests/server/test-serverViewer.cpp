@@ -17,6 +17,7 @@ TEST_CASE( "Server test : viewer" ) {
     const int port         = GET_RANDOM_PORT;
 
     std::vector<hub::Acquisition> acqs;
+    constexpr int sleepTime = 200;
     constexpr int nAcqs       = 100;
     constexpr int width       = 1920;
     constexpr int height      = 1080;
@@ -58,7 +59,7 @@ TEST_CASE( "Server test : viewer" ) {
                 CHECK( inputSensorSpec.getResolutions()[0].first.at( 1 ) == height );
                 CHECK( inputSensorSpec.getResolutions()[0].second == hub::Format::BGR8 );
             }
-            std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+            std::this_thread::sleep_for( std::chrono::milliseconds( sleepTime ) );
             std::cout << "[Test] ############################### onNewStreamer end" << std::endl;
             return true;
         };
@@ -94,7 +95,7 @@ TEST_CASE( "Server test : viewer" ) {
                                      ipv4,
                                      port };
         std::cout << "[Test] ############################### viewer created" << std::endl;
-        std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+        std::this_thread::sleep_for( std::chrono::milliseconds( sleepTime ) );
 
         {
             std::cout << "[Test] ############################### outputSensor start" << std::endl;
@@ -105,7 +106,7 @@ TEST_CASE( "Server test : viewer" ) {
             std::this_thread::sleep_for( std::chrono::milliseconds( 500 ) );
         }
         std::cout << "[Test] ############################### outputSensor end" << std::endl;
-        std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+        std::this_thread::sleep_for( std::chrono::milliseconds( sleepTime ) );
     }
     std::cout << "[Test] ############################### viewer end" << std::endl;
 }

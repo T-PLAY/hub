@@ -153,7 +153,7 @@ foreach(target "tests" "coverage" "cppCheck" "doc-doxygen" "doc-sphinx")
         add_dependencies(all-targets ${target})
     endif()
 endforeach()
-message(STATUS "custom targets: cppCheck format doc-doxygen doc-sphinx coverage coverage-lcov coverage-all tests")
+message(STATUS "Custom targets: cppCheck format doc-doxygen doc-sphinx coverage coverage-lcov coverage-all tests")
 
 option(HUB_ENABLE_WRAPPER "Enable wrapper" OFF)
 if(HUB_ENABLE_WRAPPER)
