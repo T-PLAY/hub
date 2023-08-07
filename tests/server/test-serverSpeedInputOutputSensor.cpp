@@ -140,7 +140,8 @@ TEST_CASE( "Server test : InputOutputSensor" ) {
 #ifdef WIN32
             CHECK( ratio > 35 );
 #else
-            CHECK( ratio > 55 );
+            // CHECK( ratio > 55 ); // arch
+            CHECK( ratio > 45 ); // debian
 #endif
         }
     }
