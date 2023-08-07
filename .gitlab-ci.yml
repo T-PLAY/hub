@@ -170,6 +170,7 @@ coverage:
   artifacts:
     paths:
       - public
+    expire_in: 1 week
   # only:
     # - master
 
@@ -195,6 +196,7 @@ doc-doxygen:
   artifacts:
     paths:
     - public
+    expire_in: 1 week
   # only:
     # - feature/add-gitlab-pages-support
   # only:
@@ -250,6 +252,7 @@ doc-sphinx:
   artifacts:
     paths:
       - public
+    expire_in: 1 week
   only:
   - master
 
