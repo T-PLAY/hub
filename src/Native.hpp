@@ -351,19 +351,19 @@ extern "C"
     ///
     SRC_API double metaData_getDouble( const SensorSpec::MetaData* metaData, const char* metaName );
 
-    ///
-    /// \brief any_getDouble
-    /// \param any
-    /// \return
-    ///
-    SRC_API double any_getDouble( const hub::Any* any );
+//    ///
+//    /// \brief any_getDouble
+//    /// \param any
+//    /// \return
+//    ///
+//    SRC_API double any_getDouble( const hub::Any* any );
 
-    ///
-    /// \brief any_getInt
-    /// \param any
-    /// \return
-    ///
-    SRC_API int any_getInt( const hub::Any* any );
+//    ///
+//    /// \brief any_getInt
+//    /// \param any
+//    /// \return
+//    ///
+//    SRC_API int any_getInt( const hub::Any* any );
 
 #ifdef __cplusplus
 } // end extern "C"

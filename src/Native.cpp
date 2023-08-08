@@ -316,13 +316,13 @@ double metaData_getDouble( const SensorSpec::MetaData* metaData, const char* met
     return metaData->at( metaName ).getDouble();
 }
 
-double any_getDouble( const Any* any ) {
-    return any->getDouble();
-}
+//double any_getDouble( const Any* any ) {
+//    return any->getDouble();
+//}
 
-int any_getInt( const Any* any ) {
-    return any->getInt();
-}
+//int any_getInt( const Any* any ) {
+//    return any->getInt();
+//}
 
 } // namespace native
 } // namespace hub
