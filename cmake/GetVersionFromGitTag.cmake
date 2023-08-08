@@ -31,16 +31,20 @@
 #
 # Author: Nuno Fachada
 
+set(LATEST_VERSION_MAJOR 1)
+set(LATEST_VERSION_MINOR 2)
+set(LATEST_VERSION_PATCH 0)
+
 # Check if git is found...
 #if (GIT_FOUND AND VERSION_UPDATE_FROM_GIT)
 if (GIT_FOUND)
 
-        # Get last tag from git
-        execute_process(COMMAND ${GIT_EXECUTABLE} describe --abbrev=0 --tags --always
-                WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-                OUTPUT_VARIABLE ${PROJECT_NAME}_VERSION_STRING
-                OUTPUT_STRIP_TRAILING_WHITESPACE)
-            message(STATUS "Version string ${${PROJECT_NAME}_VERSION_STRING}")
+#        # Get last tag from git
+#        execute_process(COMMAND ${GIT_EXECUTABLE} describe --abbrev=0 --tags
+#                WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+#                OUTPUT_VARIABLE ${PROJECT_NAME}_VERSION_STRING
+#                OUTPUT_STRIP_TRAILING_WHITESPACE)
+#            message(STATUS "Version string ${${PROJECT_NAME}_VERSION_STRING}")
 
         #How many commits since last tag
         # execute_process(COMMAND ${GIT_EXECUTABLE} rev-list master ${${PROJECT_NAME}_VERSION_STRING}^..HEAD --count
@@ -58,17 +62,20 @@ if (GIT_FOUND)
 #            message(STATUS "version git sha ${${PROJECT_NAME}_VERSION_GIT_SHA}")
 
     execute_process(
-        COMMAND ${GIT_EXECUTABLE} describe --tags --dirty --match "v*" --always
+#        COMMAND ${GIT_EXECUTABLE} describe --tags --dirty --match "v*"
+        COMMAND ${GIT_EXECUTABLE} describe
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
         OUTPUT_VARIABLE ${PROJECT_NAME}_VERSION_STRING
         RESULT_VARIABLE GIT_DESCRIBE_ERROR_CODE
         OUTPUT_STRIP_TRAILING_WHITESPACE
     )
+#    message(STATUS "Version describe ${${PROJECT_NAME}_VERSION_STRING}")
     if (GIT_DESCRIBE_ERROR_CODE)
-        message(STATUS "##################### git error")
-    endif()
+        set(${PROJECT_NAME}_VERSION_MAJOR ${LATEST_VERSION_MAJOR})
+        set(${PROJECT_NAME}_VERSION_MINOR ${LATEST_VERSION_MINOR})
+        set(${PROJECT_NAME}_VERSION_PATCH ${LATEST_VERSION_PATCH})
+    else()
 
-        message(STATUS "Version describe ${${PROJECT_NAME}_VERSION_STRING}")
 
         # Get partial versions into a list
         string(REGEX MATCHALL "-.*$|[0-9]+" ${PROJECT_NAME}_PARTIAL_VERSION_LIST
@@ -81,6 +88,13 @@ if (GIT_FOUND)
                 1 ${PROJECT_NAME}_VERSION_MINOR)
         list(GET ${PROJECT_NAME}_PARTIAL_VERSION_LIST
                 2 ${PROJECT_NAME}_VERSION_PATCH)
+
+        if (NOT ${LATEST_VERSION_MAJOR} EQUAL ${${PROJECT_NAME}_VERSION_MAJOR} OR
+        NOT ${LATEST_VERSION_MINOR} EQUAL ${${PROJECT_NAME}_VERSION_MINOR} OR
+        NOT ${LATEST_VERSION_PATCH} EQUAL ${${PROJECT_NAME}_VERSION_PATCH}
+            )
+            message(FATAL_ERROR "You must update the latest version for offline use")
+        endif()
 
 #            foreach(MATCH ${${PROJECT_NAME}_PARTIAL_VERSION_LIST})
 #                message(STATUS "list: ${MATCH}")
@@ -110,21 +124,25 @@ if (GIT_FOUND)
 #		"*" ${${PROJECT_NAME}_VERSION_TWEAK}
 #		"*" ${${PROJECT_NAME}_VERSION_AHEAD}
 #		"*" ${${PROJECT_NAME}_VERSION_GIT_SHA})
+    endif()
 
 else()
+        set(${PROJECT_NAME}_VERSION_MAJOR ${LATEST_VERSION_MAJOR})
+        set(${PROJECT_NAME}_VERSION_MINOR ${LATEST_VERSION_MINOR})
+        set(${PROJECT_NAME}_VERSION_PATCH ${LATEST_VERSION_PATCH})
 
-        # Git not available, get version from file
-        file(STRINGS ${CMAKE_CURRENT_SOURCE_DIR}/VERSION ${PROJECT_NAME}_VERSION_LIST)
-        string(REPLACE "*" ";" ${PROJECT_NAME}_VERSION_LIST ${${PROJECT_NAME}_VERSION_LIST})
-        # Set partial versions
-        list(GET ${PROJECT_NAME}_VERSION_LIST 0 ${PROJECT_NAME}_VERSION_STRING_FULL)
-        list(GET ${PROJECT_NAME}_VERSION_LIST 1 ${PROJECT_NAME}_VERSION_STRING)
-        list(GET ${PROJECT_NAME}_VERSION_LIST 2 ${PROJECT_NAME}_VERSION_MAJOR)
-        list(GET ${PROJECT_NAME}_VERSION_LIST 3 ${PROJECT_NAME}_VERSION_MINOR)
-        list(GET ${PROJECT_NAME}_VERSION_LIST 4 ${PROJECT_NAME}_VERSION_PATCH)
-        list(GET ${PROJECT_NAME}_VERSION_LIST 5 ${PROJECT_NAME}_VERSION_TWEAK)
-        list(GET ${PROJECT_NAME}_VERSION_LIST 6 ${PROJECT_NAME}_VERSION_AHEAD)
-        list(GET ${PROJECT_NAME}_VERSION_LIST 7 ${PROJECT_NAME}_VERSION_GIT_SHA)
+#        # Git not available, get version from file
+#        file(STRINGS ${CMAKE_CURRENT_SOURCE_DIR}/VERSION ${PROJECT_NAME}_VERSION_LIST)
+#        string(REPLACE "*" ";" ${PROJECT_NAME}_VERSION_LIST ${${PROJECT_NAME}_VERSION_LIST})
+#        # Set partial versions
+#        list(GET ${PROJECT_NAME}_VERSION_LIST 0 ${PROJECT_NAME}_VERSION_STRING_FULL)
+#        list(GET ${PROJECT_NAME}_VERSION_LIST 1 ${PROJECT_NAME}_VERSION_STRING)
+#        list(GET ${PROJECT_NAME}_VERSION_LIST 2 ${PROJECT_NAME}_VERSION_MAJOR)
+#        list(GET ${PROJECT_NAME}_VERSION_LIST 3 ${PROJECT_NAME}_VERSION_MINOR)
+#        list(GET ${PROJECT_NAME}_VERSION_LIST 4 ${PROJECT_NAME}_VERSION_PATCH)
+#        list(GET ${PROJECT_NAME}_VERSION_LIST 5 ${PROJECT_NAME}_VERSION_TWEAK)
+#        list(GET ${PROJECT_NAME}_VERSION_LIST 6 ${PROJECT_NAME}_VERSION_AHEAD)
+#        list(GET ${PROJECT_NAME}_VERSION_LIST 7 ${PROJECT_NAME}_VERSION_GIT_SHA)
 
 endif()
 
