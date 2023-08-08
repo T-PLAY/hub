@@ -180,8 +180,8 @@ coverage:
 cppCheck:
   stage: code-analysis
   script:
-    - apt update
-    - apt install -y cppcheck
+    # - apt update
+    # - apt install -y cppcheck
     - cppcheck --enable=all --error-exitcode=1 src tests server -I src -I server/libServer/ --inline-suppr --suppress=toomanyconfigs --suppress=missingIncludeSystem --suppress=noValidConfiguration
     # - cppcheck --enable=all src server --error-exitcode=1 --suppress=unusedFunction --suppress=missingInclude
     # - cmake --build cache/build-clang-release --target cppCheck
@@ -252,12 +252,12 @@ doc-sphinx:
       # make -C doc/docs_sphinx html
       cmake --build $CACHE_PATH/build-clang-release --target doc-sphinx
       mv doc/docs_sphinx/_build/html public/
-  artifacts:
-    paths:
-      - public
-    expire_in: 1 week
-  only:
-  - master
+  # artifacts:
+    # paths:
+      # - public
+    # expire_in: 1 week
+  # only:
+  # - master
 
 # cache-format:
 #   stage: format
