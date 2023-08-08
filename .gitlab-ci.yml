@@ -73,7 +73,7 @@ dep:
       if [ ! -e $CACHE_PATH ]; then
         mkdir $CACHE_PATH
       fi
-      git pull
+      git fetch
       git status
   #     cd $CACHE_PATH
   #     # rm -rf dep-cache
