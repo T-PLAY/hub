@@ -36,7 +36,7 @@
 if (GIT_FOUND)
 
         # Get last tag from git
-        execute_process(COMMAND ${GIT_EXECUTABLE} describe --abbrev=0 --tags
+        execute_process(COMMAND ${GIT_EXECUTABLE} describe --abbrev=0 --tags --always
                 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
                 OUTPUT_VARIABLE ${PROJECT_NAME}_VERSION_STRING
                 OUTPUT_STRIP_TRAILING_WHITESPACE)
@@ -57,17 +57,18 @@ if (GIT_FOUND)
 #                OUTPUT_STRIP_TRAILING_WHITESPACE)
 #            message(STATUS "version git sha ${${PROJECT_NAME}_VERSION_GIT_SHA}")
 
-  execute_process(
-    COMMAND ${GIT_EXECUTABLE} describe --tags --dirty --match "v*"
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-    OUTPUT_VARIABLE ${PROJECT_NAME}_VERSION_STRING
-    RESULT_VARIABLE GIT_DESCRIBE_ERROR_CODE
-    OUTPUT_STRIP_TRAILING_WHITESPACE
+    execute_process(
+        COMMAND ${GIT_EXECUTABLE} describe --tags --dirty --match "v*" --always
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        OUTPUT_VARIABLE ${PROJECT_NAME}_VERSION_STRING
+        RESULT_VARIABLE GIT_DESCRIBE_ERROR_CODE
+        OUTPUT_STRIP_TRAILING_WHITESPACE
     )
     if (GIT_DESCRIBE_ERROR_CODE)
         message(STATUS "##################### git error")
     endif()
-            message(STATUS "Version describe ${${PROJECT_NAME}_VERSION_STRING}")
+
+        message(STATUS "Version describe ${${PROJECT_NAME}_VERSION_STRING}")
 
         # Get partial versions into a list
         string(REGEX MATCHALL "-.*$|[0-9]+" ${PROJECT_NAME}_PARTIAL_VERSION_LIST
