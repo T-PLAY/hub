@@ -16,7 +16,7 @@ variables:
 
 
 stages: 
-  - dep
+  # - dep
   - build
   - test
   - coverage
@@ -64,18 +64,18 @@ cache:
 # #      - build/_deps/
 #       - build/
 
-dep:
-  stage: dep
-  script:
-    - |-
-      # rm -rf cache
-      # rm -rf cache/build*
-      if [ ! -e $CACHE_PATH ]; then
-        mkdir $CACHE_PATH
-      fi
-      git fetch
-      git status
-  #     cd $CACHE_PATH
+# dep:
+#   stage: dep
+#   script:
+#     - |-
+#       # rm -rf cache
+#       # rm -rf cache/build*
+#       if [ ! -e $CACHE_PATH ]; then
+#         mkdir $CACHE_PATH
+#       fi
+#       git fetch
+#       git status
+#   #     cd $CACHE_PATH
   #     # rm -rf dep-cache
   #     # apt update
   #     # apt install -y npm

@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.8)
 
 find_package(Git)
-set(VERSION_UPDATE_FROM_GIT 1)
+#set(VERSION_UPDATE_FROM_GIT 1)
 include(GetVersionFromGitTag)
 
 message(STATUS "Hub version: ${${PROJECT_NAME}_VERSION}")
