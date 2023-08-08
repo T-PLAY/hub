@@ -184,9 +184,9 @@ cppCheck:
   script:
     # - apt update
     # - apt install -y cppcheck
-    - cppcheck --enable=all --error-exitcode=1 src tests server -I src -I server/libServer/ --inline-suppr --suppress=toomanyconfigs --suppress=missingIncludeSystem --suppress=noValidConfiguration
+    # - cppcheck --enable=all --error-exitcode=1 src tests server -I src -I server/libServer/ --inline-suppr --suppress=toomanyconfigs --suppress=missingIncludeSystem --suppress=noValidConfiguration
     # - cppcheck --enable=all src server --error-exitcode=1 --suppress=unusedFunction --suppress=missingInclude
-    # - cmake --build cache/build-clang-release --target cppCheck
+    - cmake --build cache/build-clang-release --target cppCheck
 
 
 doc-doxygen:
