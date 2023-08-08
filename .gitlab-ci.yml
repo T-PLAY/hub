@@ -169,11 +169,11 @@ coverage:
     - cmake --build $CACHE_PATH/build-gcc-debug --target coverage
     # - cache/node_modules/.bin/lcov-badge-generator cache/build-gcc-debug/coverage.capture
     # - cp badge.svg cache/build-gcc-debug/coverage/
-    - mv $CACHE_PATH/build-gcc-debug/coverage-lcov public/
-  artifacts:
-    paths:
-      - public
-    expire_in: 1 week
+    # - mv $CACHE_PATH/build-gcc-debug/coverage-lcov public/
+  # artifacts:
+    # paths:
+      # - public
+    # expire_in: 1 week
   # only:
     # - master
 
@@ -194,12 +194,12 @@ doc-doxygen:
 
     # - cmake --build cache/build-clang-release --target docs
     - cmake --build $CACHE_PATH/build-clang-release --target doc-doxygen
-    - mv $CACHE_PATH/build-clang-release/doc/docs_doxygen/html/ public/
+    # - mv $CACHE_PATH/build-clang-release/doc/docs_doxygen/html/ public/
 #    - ./runmytests.sh
-  artifacts:
-    paths:
-    - public
-    expire_in: 1 week
+  # artifacts:
+    # paths:
+    # - public
+    # expire_in: 1 week
   # only:
     # - feature/add-gitlab-pages-support
   # only:
