@@ -16,7 +16,7 @@ variables:
 
 
 stages: 
-  # - dep
+  - dep
   - build
   - test
   - coverage
@@ -64,59 +64,61 @@ cache:
 # #      - build/_deps/
 #       - build/
 
-# dep:
-#   stage: dep
-#   script:
-#     - |-
-#       # rm -rf cache
-#       # rm -rf cache/build*
-#       if [ ! -e cache ]; then
-#         mkdir cache
-#       fi
-#       cd cache
-#       # rm -rf dep-cache
-#       # apt update
-#       # apt install -y npm
-#       if [ ! -e dep-cache ]; then
-#         apt update
-#         apt install -y doxygen clang libclang-dev lcov npm
-#         npm install lcov-badge-generator
-#
-#         mkdir -pv dep-cache/usr/bin/
-#         mkdir -pv dep-cache/usr/share/$(basename /usr/share/cmake-*)/Modules
-#         mkdir -pv dep-cache/usr/lib/x86_64-linux-gnu/
-#         mkdir -pv dep-cache/usr/lib/llvm-11/lib/
-#         mkdir -pv dep-cache/usr/lib/llvm-11/bin/
-#         mkdir -pv dep-cache/etc/
-#
-#         cp /usr/bin/doxygen dep-cache/usr/bin/
-#         cp /usr/share/cmake-*/Modules/FindDoxygen.cmake dep-cache/usr/share/$(basename /usr/share/cmake-*)/Modules/
-#         cp -ar /usr/lib/clang* dep-cache/usr/lib/
-#         cp -a /usr/lib/x86_64-linux-gnu/libclang* dep-cache/usr/lib/x86_64-linux-gnu/
-#         cp -ra /usr/lib/llvm-11/lib/* dep-cache/usr/lib/llvm-11/lib/
-#         cp -ar /usr/bin/clang* dep-cache/usr/bin/
-#         cp -ar /usr/lib/llvm-11/bin/clang* dep-cache/usr/lib/llvm-11/bin/
-#         cp /usr/bin/lcov dep-cache/usr/bin/
-#         cp /usr/bin/genhtml dep-cache/usr/bin/
-#         cp /usr/bin/geninfo dep-cache/usr/bin/
-#         cp -a /usr/lib/x86_64-linux-gnu/perl* dep-cache/usr/lib/x86_64-linux-gnu/
-#         cp -a /etc/perl dep-cache/etc/
-#         cp -a /usr/share/perl* dep-cache/usr/share/
-#       # fi
-#         # apt update
-#         # apt install -y npm
-#         cp /usr/bin/node dep-cache/usr/bin/
-#         cp /usr/lib/x86_64-linux-gnu/libnode* dep-cache/usr/lib/x86_64-linux-gnu/
-#         cp /usr/lib/x86_64-linux-gnu/libcares* dep-cache/usr/lib/x86_64-linux-gnu/
-#       fi
-#
-#       # fi
-#       # find dep-cache/usr/lib/x86_64-linux-gnu/perl/
-#       # find / -name "gzip.pm"
-#       # ls dep-cache/usr/share/
-#       # ls dep-cache/usr/share/*
-#   # only:
-#   # - master
+dep:
+  stage: dep
+  script:
+    - |-
+      # rm -rf cache
+      # rm -rf cache/build*
+      if [ ! -e $CACHE_PATH ]; then
+        mkdir $CACHE_PATH
+      fi
+      git pull
+      git status
+  #     cd $CACHE_PATH
+  #     # rm -rf dep-cache
+  #     # apt update
+  #     # apt install -y npm
+  #     if [ ! -e dep-cache ]; then
+  #       apt update
+  #       apt install -y doxygen clang libclang-dev lcov npm
+  #       npm install lcov-badge-generator
+  #
+  #       mkdir -pv dep-cache/usr/bin/
+  #       mkdir -pv dep-cache/usr/share/$(basename /usr/share/cmake-*)/Modules
+  #       mkdir -pv dep-cache/usr/lib/x86_64-linux-gnu/
+  #       mkdir -pv dep-cache/usr/lib/llvm-11/lib/
+  #       mkdir -pv dep-cache/usr/lib/llvm-11/bin/
+  #       mkdir -pv dep-cache/etc/
+  #
+  #       cp /usr/bin/doxygen dep-cache/usr/bin/
+  #       cp /usr/share/cmake-*/Modules/FindDoxygen.cmake dep-cache/usr/share/$(basename /usr/share/cmake-*)/Modules/
+  #       cp -ar /usr/lib/clang* dep-cache/usr/lib/
+  #       cp -a /usr/lib/x86_64-linux-gnu/libclang* dep-cache/usr/lib/x86_64-linux-gnu/
+  #       cp -ra /usr/lib/llvm-11/lib/* dep-cache/usr/lib/llvm-11/lib/
+  #       cp -ar /usr/bin/clang* dep-cache/usr/bin/
+  #       cp -ar /usr/lib/llvm-11/bin/clang* dep-cache/usr/lib/llvm-11/bin/
+  #       cp /usr/bin/lcov dep-cache/usr/bin/
+  #       cp /usr/bin/genhtml dep-cache/usr/bin/
+  #       cp /usr/bin/geninfo dep-cache/usr/bin/
+  #       cp -a /usr/lib/x86_64-linux-gnu/perl* dep-cache/usr/lib/x86_64-linux-gnu/
+  #       cp -a /etc/perl dep-cache/etc/
+  #       cp -a /usr/share/perl* dep-cache/usr/share/
+  #     # fi
+  #       # apt update
+  #       # apt install -y npm
+  #       cp /usr/bin/node dep-cache/usr/bin/
+  #       cp /usr/lib/x86_64-linux-gnu/libnode* dep-cache/usr/lib/x86_64-linux-gnu/
+  #       cp /usr/lib/x86_64-linux-gnu/libcares* dep-cache/usr/lib/x86_64-linux-gnu/
+  #     fi
+  #
+  #     # fi
+  #     # find dep-cache/usr/lib/x86_64-linux-gnu/perl/
+  #     # find / -name "gzip.pm"
+  #     # ls dep-cache/usr/share/
+  #     # ls dep-cache/usr/share/*
+  # # only:
+  # # - master
       
 build-clang-release:
   stage: build
