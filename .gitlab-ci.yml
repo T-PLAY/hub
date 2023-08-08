@@ -253,7 +253,7 @@ doc-sphinx:
 
       # make -C doc/docs_sphinx html
       cmake --build $CACHE_PATH/build-clang-release --target doc-sphinx
-      mv doc/docs_sphinx/_build/html public/
+      # mv doc/docs_sphinx/_build/html public/
   # artifacts:
     # paths:
       # - public
