@@ -58,12 +58,15 @@ if (GIT_FOUND)
 #            message(STATUS "version git sha ${${PROJECT_NAME}_VERSION_GIT_SHA}")
 
   execute_process(
-    COMMAND ${GIT_EXECUTABLE} describe
+    COMMAND ${GIT_EXECUTABLE} describe --tags --dirty --match "v*"
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     OUTPUT_VARIABLE ${PROJECT_NAME}_VERSION_STRING
     RESULT_VARIABLE GIT_DESCRIBE_ERROR_CODE
     OUTPUT_STRIP_TRAILING_WHITESPACE
     )
+    if (GIT_DESCRIBE_ERROR_CODE)
+        message(STATUS "##################### git error")
+    endif()
             message(STATUS "Version describe ${${PROJECT_NAME}_VERSION_STRING}")
 
         # Get partial versions into a list
