@@ -18,11 +18,11 @@ variables:
 stages: 
   # - dep
   - build
-  - test
-  - coverage
-  - code-analysis
-  - format
-  - doc
+  # - test
+  # - coverage
+  # - code-analysis
+  # - format
+  # - doc
 
 # cache:
 #     key: ${CI_COMMIT_REF_SLUG}
@@ -149,155 +149,155 @@ build-gcc-debug:
   # only:
     # - master
 
-test:
-  stage: test
-  script:
-    # - cd cache/build-gcc-debug/tests
-    # - ctest -V
-    - cmake --build $CACHE_PATH/build-gcc-debug --target tests
-#    - ./runmytests.sh
-  # only:
-  # - master
-
-coverage:
-  stage: coverage
-  script:
-   
-    # - cp -rT cache/dep-cache/ /; 
-    # - apt update
-    # - apt install -y doxygen clang libclang-dev lcov
-    # - cd build-gcc-release/
-    # - cmake --build cache/build-gcc-debug/ --target coverage
-    - cmake --build $CACHE_PATH/build-gcc-debug --target coverage
-    # - cache/node_modules/.bin/lcov-badge-generator cache/build-gcc-debug/coverage.capture
-    # - cp badge.svg cache/build-gcc-debug/coverage/
-    # - mv $CACHE_PATH/build-gcc-debug/coverage-lcov public/
-  # artifacts:
-    # paths:
-      # - public
-    # expire_in: 1 week
-  # only:
-    # - master
-
-cppCheck:
-  stage: code-analysis
-  script:
-    # - apt update
-    # - apt install -y cppcheck
-    # - cppcheck --enable=all --error-exitcode=1 src tests server -I src -I server/libServer/ --inline-suppr --suppress=toomanyconfigs --suppress=missingIncludeSystem --suppress=noValidConfiguration
-    # - cppcheck --enable=all src server --error-exitcode=1 --suppress=unusedFunction --suppress=missingInclude
-    - cmake --build ${CACHE_PATH}/build-clang-release --target cppCheck
-
-
-doc-doxygen:
-  stage: doc
-  script:
-    # - cp -rT cache/dep-cache/ /;
-
-    # - cmake --build cache/build-clang-release --target docs
-    - cmake --build $CACHE_PATH/build-clang-release --target doc-doxygen
-    # - mv $CACHE_PATH/build-clang-release/doc/docs_doxygen/html/ public/
-#    - ./runmytests.sh
-  # artifacts:
-    # paths:
-    # - public
-    # expire_in: 1 week
-  # only:
-    # - feature/add-gitlab-pages-support
-  # only:
-  # - master
-
-# cache-sphinx:
+# test:
+#   stage: test
+#   script:
+#     # - cd cache/build-gcc-debug/tests
+#     # - ctest -V
+#     - cmake --build $CACHE_PATH/build-gcc-debug --target tests
+# #    - ./runmytests.sh
+#   # only:
+#   # - master
+#
+# coverage:
+#   stage: coverage
+#   script:
+#
+#     # - cp -rT cache/dep-cache/ /;
+#     # - apt update
+#     # - apt install -y doxygen clang libclang-dev lcov
+#     # - cd build-gcc-release/
+#     # - cmake --build cache/build-gcc-debug/ --target coverage
+#     - cmake --build $CACHE_PATH/build-gcc-debug --target coverage
+#     # - cache/node_modules/.bin/lcov-badge-generator cache/build-gcc-debug/coverage.capture
+#     # - cp badge.svg cache/build-gcc-debug/coverage/
+#     # - mv $CACHE_PATH/build-gcc-debug/coverage-lcov public/
+#   # artifacts:
+#     # paths:
+#       # - public
+#     # expire_in: 1 week
+#   # only:
+#     # - master
+#
+# cppCheck:
+#   stage: code-analysis
+#   script:
+#     # - apt update
+#     # - apt install -y cppcheck
+#     # - cppcheck --enable=all --error-exitcode=1 src tests server -I src -I server/libServer/ --inline-suppr --suppress=toomanyconfigs --suppress=missingIncludeSystem --suppress=noValidConfiguration
+#     # - cppcheck --enable=all src server --error-exitcode=1 --suppress=unusedFunction --suppress=missingInclude
+#     - cmake --build ${CACHE_PATH}/build-clang-release --target cppCheck
+#
+#
+# doc-doxygen:
+#   stage: doc
+#   script:
+#     # - cp -rT cache/dep-cache/ /;
+#
+#     # - cmake --build cache/build-clang-release --target docs
+#     - cmake --build $CACHE_PATH/build-clang-release --target doc-doxygen
+#     # - mv $CACHE_PATH/build-clang-release/doc/docs_doxygen/html/ public/
+# #    - ./runmytests.sh
+#   # artifacts:
+#     # paths:
+#     # - public
+#     # expire_in: 1 week
+#   # only:
+#     # - feature/add-gitlab-pages-support
+#   # only:
+#   # - master
+#
+# # cache-sphinx:
+# #   stage: doc
+# #   script:
+# #     - |-
+# #       cd cache
+# #       cp -rT dep-cache/ /;
+# #
+# #       # rm -rf sphinx-cache
+# #       if [ ! -e sphinx-cache ]; then
+# #         apt update
+# #         apt install -y python3-pip clang
+# #         pip3 install breathe sphinx sphinx-sitemap sphinx-rtd-theme
+# #
+# #         mkdir -pv sphinx-cache/usr/local/bin/
+# #         mkdir -pv sphinx-cache/usr/lib/
+# #         mkdir -pv sphinx-cache/usr/bin/
+# #         mkdir -pv sphinx-cache/usr/local/lib/
+# #         mkdir -pv sphinx-cache/usr/lib/llvm-11/lib/
+# #         mkdir -pv sphinx-cache/usr/lib/x86_64-linux-gnu/
+# #
+# #         cp -ar /usr/lib/python* sphinx-cache/usr/lib/
+# #         cp -ar /usr/lib/clang* sphinx-cache/usr/lib/
+# #         cp -a /usr/lib/x86_64-linux-gnu/libclang* sphinx-cache/usr/lib/x86_64-linux-gnu/
+# #         cp -ra /usr/lib/llvm-11/lib/* sphinx-cache/usr/lib/llvm-11/lib/
+# #         cp -a /usr/bin/python* sphinx-cache/usr/bin/
+# #         cp /usr/local/bin/sphinx-build sphinx-cache/usr/local/bin/
+# #
+# #         cp -ar /usr/local/lib/python* sphinx-cache/usr/local/lib/
+# #       fi
+# #   only:
+# #   - master
+#
+#
+# doc-sphinx:
 #   stage: doc
 #   script:
 #     - |-
-#       cd cache
-#       cp -rT dep-cache/ /;
+#       # cp -rT cache/dep-cache/ /;
+#       # cp -rT cache/sphinx-cache/ /;
 #
-#       # rm -rf sphinx-cache
-#       if [ ! -e sphinx-cache ]; then
-#         apt update
-#         apt install -y python3-pip clang
-#         pip3 install breathe sphinx sphinx-sitemap sphinx-rtd-theme
+#       # ls -la /usr/local/bin/sphinx-build
+#       # find / -name "sphinx-build"
+#       # echo $PATH
 #
-#         mkdir -pv sphinx-cache/usr/local/bin/
-#         mkdir -pv sphinx-cache/usr/lib/
-#         mkdir -pv sphinx-cache/usr/bin/
-#         mkdir -pv sphinx-cache/usr/local/lib/
-#         mkdir -pv sphinx-cache/usr/lib/llvm-11/lib/
-#         mkdir -pv sphinx-cache/usr/lib/x86_64-linux-gnu/
+#       # make -C doc/docs_sphinx html
+#       cmake --build $CACHE_PATH/build-clang-release --target doc-sphinx
+#       # mv doc/docs_sphinx/_build/html public/
+#   # artifacts:
+#     # paths:
+#       # - public
+#     # expire_in: 1 week
+#   # only:
+#   # - master
 #
-#         cp -ar /usr/lib/python* sphinx-cache/usr/lib/
-#         cp -ar /usr/lib/clang* sphinx-cache/usr/lib/
-#         cp -a /usr/lib/x86_64-linux-gnu/libclang* sphinx-cache/usr/lib/x86_64-linux-gnu/
-#         cp -ra /usr/lib/llvm-11/lib/* sphinx-cache/usr/lib/llvm-11/lib/
-#         cp -a /usr/bin/python* sphinx-cache/usr/bin/
-#         cp /usr/local/bin/sphinx-build sphinx-cache/usr/local/bin/
+# # cache-format:
+# #   stage: format
+# #   script:
+# #     - |-
+# #       cd cache
+# #       # rm -rf format-cache
+# #       if [ ! -e format-cache ]; then
+# #         apt update
+# #         apt install -y cmake-format clang-format
+# #
+# #         mkdir -pv format-cache/usr/bin/
+# #         mkdir -pv format-cache/usr/lib/llvm-11/bin/
+# #         mkdir -pv format-cache/usr/lib/llvm-11/lib/
+# #         mkdir -pv format-cache/usr/lib/x86_64-linux-gnu/
+# #
+# #         cp /usr/bin/cmake-format format-cache/usr/bin/
+# #         cp /usr/bin/clang-format format-cache/usr/bin/
+# #         cp /usr/bin/clang-format-11 format-cache/usr/bin/
+# #         cp /usr/lib/llvm-11/bin/clang-format format-cache/usr/lib/llvm-11/bin/
+# #         cp -a /usr/lib/x86_64-linux-gnu/libclang* format-cache/usr/lib/x86_64-linux-gnu/
+# #         cp -ra /usr/lib/llvm-11/lib/* format-cache/usr/lib/llvm-11/lib/
+# #         cp -a /usr/bin/python* format-cache/usr/bin/
+# #         cp -ar /usr/lib/python* format-cache/usr/lib/
+# #       fi
+# #   only:
+# #   - master
 #
-#         cp -ar /usr/local/lib/python* sphinx-cache/usr/local/lib/
-#       fi
-#   only:
-#   - master
-
-
-doc-sphinx:
-  stage: doc
-  script:
-    - |-
-      # cp -rT cache/dep-cache/ /;
-      # cp -rT cache/sphinx-cache/ /;
-      
-      # ls -la /usr/local/bin/sphinx-build
-      # find / -name "sphinx-build"
-      # echo $PATH
-
-      # make -C doc/docs_sphinx html
-      cmake --build $CACHE_PATH/build-clang-release --target doc-sphinx
-      # mv doc/docs_sphinx/_build/html public/
-  # artifacts:
-    # paths:
-      # - public
-    # expire_in: 1 week
-  # only:
-  # - master
-
-# cache-format:
+# format:
 #   stage: format
 #   script:
 #     - |-
-#       cd cache
-#       # rm -rf format-cache
-#       if [ ! -e format-cache ]; then
-#         apt update
-#         apt install -y cmake-format clang-format
+#       # cp -rT cache/format-cache/ /;
 #
-#         mkdir -pv format-cache/usr/bin/
-#         mkdir -pv format-cache/usr/lib/llvm-11/bin/
-#         mkdir -pv format-cache/usr/lib/llvm-11/lib/
-#         mkdir -pv format-cache/usr/lib/x86_64-linux-gnu/
-#
-#         cp /usr/bin/cmake-format format-cache/usr/bin/
-#         cp /usr/bin/clang-format format-cache/usr/bin/
-#         cp /usr/bin/clang-format-11 format-cache/usr/bin/
-#         cp /usr/lib/llvm-11/bin/clang-format format-cache/usr/lib/llvm-11/bin/
-#         cp -a /usr/lib/x86_64-linux-gnu/libclang* format-cache/usr/lib/x86_64-linux-gnu/
-#         cp -ra /usr/lib/llvm-11/lib/* format-cache/usr/lib/llvm-11/lib/
-#         cp -a /usr/bin/python* format-cache/usr/bin/
-#         cp -ar /usr/lib/python* format-cache/usr/lib/
-#       fi
+#       # scripts/cleanup-project.sh
+#       cmake --build $CACHE_PATH/build-gcc-debug --target format
+#       git diff --exit-code
 #   only:
 #   - master
-
-format:
-  stage: format
-  script:
-    - |-
-      # cp -rT cache/format-cache/ /;
-
-      # scripts/cleanup-project.sh
-      cmake --build $CACHE_PATH/build-gcc-debug --target format
-      git diff --exit-code
-  only:
-  - master
-
-
+#
+#
