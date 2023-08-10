@@ -124,6 +124,8 @@ build-clang-release:
   stage: build
 #  before_script:
 #    - export PATH=$PATH:/opt/Qt/5.10.0/gcc_64/bin
+  tags:
+    - win10
   script:
     # - cp -rT cache/dep-cache/ /;
 
@@ -137,6 +139,8 @@ build-clang-release:
 
 build-gcc-debug:
   stage: build
+  tags:
+    - win10
   script:
     # - cp -rT cache/dep-cache/ /;
     # - apt update
