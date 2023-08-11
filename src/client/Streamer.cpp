@@ -94,11 +94,10 @@ class Stream
                 *m_outputSensor << acquisition;
                 m_mtxOutputSensor.unlock();
             }
-            catch ( std::exception& ex ) {
+            catch ( std::exception& ) {
                 delete m_outputSensor;
                 m_outputSensor = nullptr;
                 m_mtxOutputSensor.unlock();
-//                throw ex;
                 throw;
             }
         }
