@@ -8,7 +8,7 @@
 #image: docker-linux
 variables:
   CACHE_PATH: "cache2"
-  GIT_STRATEGY: none
+  # GIT_STRATEGY: none
 
 #https://docs.gitlab.com/ee/ci/yaml/#extends
 .branches_with_ci:
@@ -17,7 +17,7 @@ variables:
 
 stages: 
   # - dep
-  - fetch
+  # - fetch
   - build
   # - build-debug
   # - build-release
@@ -41,22 +41,22 @@ cache:
     # - sphinx-cache/
     # - format-cache/
     
-fetching:
-  # stage: build-release
-  stage: fetch
-#  before_script:
-#    - export PATH=$PATH:/opt/Qt/5.10.0/gcc_64/bin
-  # parallel:
-    # matrix:
-      # - ARCH: [amd64, arm64, ppc64le]
-  tags:
-    - win10
-  script:
-    - git pull
-    # - cp -rT cache/dep-cache/ /;
-    # - cmake -B $CACHE_PATH/build-clang-release -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON -DHUB_BUILD_DOC=ON
-    # - cmake -B build-clang-release -DCMAKE_CXX_COMPILER=g++ -DCMAKE_C_COMPILER=clang -DCMAKE_BUILD_TYPE=Release
-  # only:
+# fetching:
+#   # stage: build-release
+#   stage: fetch
+# #  before_script:
+# #    - export PATH=$PATH:/opt/Qt/5.10.0/gcc_64/bin
+#   # parallel:
+#     # matrix:
+#       # - ARCH: [amd64, arm64, ppc64le]
+#   tags:
+#     - win10
+#   script:
+#     - git pull
+#     # - cp -rT cache/dep-cache/ /;
+#     # - cmake -B $CACHE_PATH/build-clang-release -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON -DHUB_BUILD_DOC=ON
+#     # - cmake -B build-clang-release -DCMAKE_CXX_COMPILER=g++ -DCMAKE_C_COMPILER=clang -DCMAKE_BUILD_TYPE=Release
+#   # only:
 
 # before_script:
 #   - |-
