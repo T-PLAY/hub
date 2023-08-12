@@ -17,9 +17,9 @@ variables:
 
 stages: 
   # - dep
-  - build
-  # - build-release
-  # - build-debug
+  # - build
+  - build-debug
+  - build-release
   # - test
   # - coverage
   # - code-analysis
