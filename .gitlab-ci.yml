@@ -7,7 +7,7 @@
 # image: stormirit/radium_dev:latest
 #image: docker-linux
 variables:
-  CACHE_PATH: "cache2"
+  CACHE_PATH: "cache3"
   # GIT_STRATEGY: none
 
 #https://docs.gitlab.com/ee/ci/yaml/#extends
