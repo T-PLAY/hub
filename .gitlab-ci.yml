@@ -123,8 +123,8 @@ cache:
   # # - master
       
 build-cl-release:
-  # stage: build-release
-  stage: build
+  stage: build-release
+  # stage: build
 #  before_script:
 #    - export PATH=$PATH:/opt/Qt/5.10.0/gcc_64/bin
   # parallel:
@@ -145,8 +145,8 @@ build-cl-release:
   # - master
 
 build-cl-debug:
-  # stage: build-debug
-  stage: build
+  stage: build-debug
+  # stage: build
   # parallel:
   #   matrix:
   #     - ARCH: [amd64, arm64, ppc64le]
