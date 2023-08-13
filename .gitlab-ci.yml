@@ -147,7 +147,8 @@ build-cl-release:
 #    - export PATH=$PATH:/opt/Qt/5.10.0/gcc_64/bin
   parallel:
     matrix:
-      - OS: [windows, linux]
+      # - OS: [windows, linux]
+      - OS: [windows]
       # - PLATFORM: [windows, linux]
       # - ARCH: [amd64, arm64, ppc64le]
       #
