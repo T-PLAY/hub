@@ -187,7 +187,7 @@ build-clang-release:
 build-gcc-debug:
   stage: build
   tags:
-    - win10
+    - linux
   script:
     - mkdir -p $CACHE_PATH/build-gcc-debug
     - cmake -B $CACHE_PATH/build-gcc-debug -DCMAKE_CXX_COMPILER=/usr/bin/g++ -DCMAKE_C_COMPILER=/usr/bin/gcc -DCMAKE_BUILD_TYPE=Debug -DHUB_ENABLE_TESTS=ON -DHUB_ENABLE_COVERAGE=ON
