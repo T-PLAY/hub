@@ -148,7 +148,7 @@ build-cl-release:
   parallel:
     matrix:
       # - OS: [windows, linux]
-      - OS: [windows]
+      - OPERATING_SYSTEM: [windows]
       # - PLATFORM: [windows, linux]
       # - ARCH: [amd64, arm64, ppc64le]
       #
