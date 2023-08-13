@@ -41,113 +41,15 @@ cache:
     # - sphinx-cache/
     # - format-cache/
     
-# fetching:
-#   # stage: build-release
-#   stage: fetch
-# #  before_script:
-# #    - export PATH=$PATH:/opt/Qt/5.10.0/gcc_64/bin
-#   # parallel:
-#     # matrix:
-#       # - ARCH: [amd64, arm64, ppc64le]
-#   tags:
-#     - win10
-#   script:
-#     - git pull
-#     # - cp -rT cache/dep-cache/ /;
-#     # - cmake -B $CACHE_PATH/build-clang-release -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON -DHUB_BUILD_DOC=ON
-#     # - cmake -B build-clang-release -DCMAKE_CXX_COMPILER=g++ -DCMAKE_C_COMPILER=clang -DCMAKE_BUILD_TYPE=Release
-#   # only:
-
-# before_script:
-#   - |-
-#     if [ ! -e cache ]; then
-#       mkdir cache
-#     fi
-#     cd cache
-  # - mkdir -pv cache
-  # - cd cache
-  # - rm -r apt-cache
-  # - mkdir -pv apt-cache
-  # - |-
-  #   if [ -e apt-cache ]; then
-  #     cp -rT apt-cache/ /;
-  #   fi
-  #   if [ -e sphinx-cache ]; then
-  #     cp -rT sphinx-cache/ /;
-  #   fi
-  # - find apt-cache
-
-# artifacts:
-#     # key: ${CI_COMMIT_REF_SLUG}
-#     expire_in: 30 days
-#     paths:
-# #      - build/_deps/
-#       - build/
-
-# dep:
-#   stage: dep
-#   script:
-#     - |-
-#       # rm -rf cache
-#       # rm -rf cache/build*
-#       if [ ! -e $CACHE_PATH ]; then
-#         mkdir $CACHE_PATH
-#       fi
-#       git fetch
-#       git status
-#   #     cd $CACHE_PATH
-  #     # rm -rf dep-cache
-  #     # apt update
-  #     # apt install -y npm
-  #     if [ ! -e dep-cache ]; then
-  #       apt update
-  #       apt install -y doxygen clang libclang-dev lcov npm
-  #       npm install lcov-badge-generator
-  #
-  #       mkdir -pv dep-cache/usr/bin/
-  #       mkdir -pv dep-cache/usr/share/$(basename /usr/share/cmake-*)/Modules
-  #       mkdir -pv dep-cache/usr/lib/x86_64-linux-gnu/
-  #       mkdir -pv dep-cache/usr/lib/llvm-11/lib/
-  #       mkdir -pv dep-cache/usr/lib/llvm-11/bin/
-  #       mkdir -pv dep-cache/etc/
-  #
-  #       cp /usr/bin/doxygen dep-cache/usr/bin/
-  #       cp /usr/share/cmake-*/Modules/FindDoxygen.cmake dep-cache/usr/share/$(basename /usr/share/cmake-*)/Modules/
-  #       cp -ar /usr/lib/clang* dep-cache/usr/lib/
-  #       cp -a /usr/lib/x86_64-linux-gnu/libclang* dep-cache/usr/lib/x86_64-linux-gnu/
-  #       cp -ra /usr/lib/llvm-11/lib/* dep-cache/usr/lib/llvm-11/lib/
-  #       cp -ar /usr/bin/clang* dep-cache/usr/bin/
-  #       cp -ar /usr/lib/llvm-11/bin/clang* dep-cache/usr/lib/llvm-11/bin/
-  #       cp /usr/bin/lcov dep-cache/usr/bin/
-  #       cp /usr/bin/genhtml dep-cache/usr/bin/
-  #       cp /usr/bin/geninfo dep-cache/usr/bin/
-  #       cp -a /usr/lib/x86_64-linux-gnu/perl* dep-cache/usr/lib/x86_64-linux-gnu/
-  #       cp -a /etc/perl dep-cache/etc/
-  #       cp -a /usr/share/perl* dep-cache/usr/share/
-  #     # fi
-  #       # apt update
-  #       # apt install -y npm
-  #       cp /usr/bin/node dep-cache/usr/bin/
-  #       cp /usr/lib/x86_64-linux-gnu/libnode* dep-cache/usr/lib/x86_64-linux-gnu/
-  #       cp /usr/lib/x86_64-linux-gnu/libcares* dep-cache/usr/lib/x86_64-linux-gnu/
-  #     fi
-  #
-  #     # fi
-  #     # find dep-cache/usr/lib/x86_64-linux-gnu/perl/
-  #     # find / -name "gzip.pm"
-  #     # ls dep-cache/usr/share/
-  #     # ls dep-cache/usr/share/*
-  # # only:
-  # # - master
 
 .build_any:
   script:
-    - buildDir=$CACHE_PATH/$PLATFORM/build-release
+    - buildDir=$CACHE_PATH/build-$BUILD_TYPE
     - mkdir -p $buildDir
     # - cmake -B $CACHE_PATH/build-cl-release -DCMAKE_CXX_COMPILER=cl -DCMAKE_C_COMPILER=cl -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON
-    - cmake -B $buildDir -DCMAKE_BUILD_TYPE=Release
+    - cmake -B $buildDir -DCMAKE_BUILD_TYPE=$BUILD_TYPE
     # - cmake -B $CACHE_PATH/build-release -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON
-    - cmake --build $buildDir --config Release --parallel
+    - cmake --build $buildDir --config $BUILD_TYPE --parallel
 
   
 build-cl-release:
@@ -156,8 +58,8 @@ build-cl-release:
 #  before_script:
 #    - export PATH=$PATH:/opt/Qt/5.10.0/gcc_64/bin
   tags:
-    # - win10
-    - linux
+    - win10
+    # - linux
   # parallel:
     # matrix:
       # - OS: [windows, linux]
@@ -166,6 +68,7 @@ build-cl-release:
       # - ARCH: [amd64, arm64, ppc64le]
       #
   script:
+    - BUILD_TYPE=Release
     - &build_any
   #   - buildDir=$CACHE_PATH/$PLATFORM/build-release
   #   - mkdir -p $buildDir
@@ -384,3 +287,101 @@ build-cl-release:
 #   - master
 #
 #
+# fetching:
+#   # stage: build-release
+#   stage: fetch
+# #  before_script:
+# #    - export PATH=$PATH:/opt/Qt/5.10.0/gcc_64/bin
+#   # parallel:
+#     # matrix:
+#       # - ARCH: [amd64, arm64, ppc64le]
+#   tags:
+#     - win10
+#   script:
+#     - git pull
+#     # - cp -rT cache/dep-cache/ /;
+#     # - cmake -B $CACHE_PATH/build-clang-release -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON -DHUB_BUILD_DOC=ON
+#     # - cmake -B build-clang-release -DCMAKE_CXX_COMPILER=g++ -DCMAKE_C_COMPILER=clang -DCMAKE_BUILD_TYPE=Release
+#   # only:
+
+# before_script:
+#   - |-
+#     if [ ! -e cache ]; then
+#       mkdir cache
+#     fi
+#     cd cache
+  # - mkdir -pv cache
+  # - cd cache
+  # - rm -r apt-cache
+  # - mkdir -pv apt-cache
+  # - |-
+  #   if [ -e apt-cache ]; then
+  #     cp -rT apt-cache/ /;
+  #   fi
+  #   if [ -e sphinx-cache ]; then
+  #     cp -rT sphinx-cache/ /;
+  #   fi
+  # - find apt-cache
+
+# artifacts:
+#     # key: ${CI_COMMIT_REF_SLUG}
+#     expire_in: 30 days
+#     paths:
+# #      - build/_deps/
+#       - build/
+
+# dep:
+#   stage: dep
+#   script:
+#     - |-
+#       # rm -rf cache
+#       # rm -rf cache/build*
+#       if [ ! -e $CACHE_PATH ]; then
+#         mkdir $CACHE_PATH
+#       fi
+#       git fetch
+#       git status
+#   #     cd $CACHE_PATH
+  #     # rm -rf dep-cache
+  #     # apt update
+  #     # apt install -y npm
+  #     if [ ! -e dep-cache ]; then
+  #       apt update
+  #       apt install -y doxygen clang libclang-dev lcov npm
+  #       npm install lcov-badge-generator
+  #
+  #       mkdir -pv dep-cache/usr/bin/
+  #       mkdir -pv dep-cache/usr/share/$(basename /usr/share/cmake-*)/Modules
+  #       mkdir -pv dep-cache/usr/lib/x86_64-linux-gnu/
+  #       mkdir -pv dep-cache/usr/lib/llvm-11/lib/
+  #       mkdir -pv dep-cache/usr/lib/llvm-11/bin/
+  #       mkdir -pv dep-cache/etc/
+  #
+  #       cp /usr/bin/doxygen dep-cache/usr/bin/
+  #       cp /usr/share/cmake-*/Modules/FindDoxygen.cmake dep-cache/usr/share/$(basename /usr/share/cmake-*)/Modules/
+  #       cp -ar /usr/lib/clang* dep-cache/usr/lib/
+  #       cp -a /usr/lib/x86_64-linux-gnu/libclang* dep-cache/usr/lib/x86_64-linux-gnu/
+  #       cp -ra /usr/lib/llvm-11/lib/* dep-cache/usr/lib/llvm-11/lib/
+  #       cp -ar /usr/bin/clang* dep-cache/usr/bin/
+  #       cp -ar /usr/lib/llvm-11/bin/clang* dep-cache/usr/lib/llvm-11/bin/
+  #       cp /usr/bin/lcov dep-cache/usr/bin/
+  #       cp /usr/bin/genhtml dep-cache/usr/bin/
+  #       cp /usr/bin/geninfo dep-cache/usr/bin/
+  #       cp -a /usr/lib/x86_64-linux-gnu/perl* dep-cache/usr/lib/x86_64-linux-gnu/
+  #       cp -a /etc/perl dep-cache/etc/
+  #       cp -a /usr/share/perl* dep-cache/usr/share/
+  #     # fi
+  #       # apt update
+  #       # apt install -y npm
+  #       cp /usr/bin/node dep-cache/usr/bin/
+  #       cp /usr/lib/x86_64-linux-gnu/libnode* dep-cache/usr/lib/x86_64-linux-gnu/
+  #       cp /usr/lib/x86_64-linux-gnu/libcares* dep-cache/usr/lib/x86_64-linux-gnu/
+  #     fi
+  #
+  #     # fi
+  #     # find dep-cache/usr/lib/x86_64-linux-gnu/perl/
+  #     # find / -name "gzip.pm"
+  #     # ls dep-cache/usr/share/
+  #     # ls dep-cache/usr/share/*
+  # # only:
+  # # - master
