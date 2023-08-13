@@ -140,17 +140,19 @@ cache:
   # # only:
   # # - master
   
+  
 build-release:
   # stage: build-release
   stage: build
 #  before_script:
 #    - export PATH=$PATH:/opt/Qt/5.10.0/gcc_64/bin
-  # parallel:
-    # matrix:
+  parallel:
+    matrix:
+      - PLATFORM: [windows, linux]
       # - ARCH: [amd64, arm64, ppc64le]
       #
-  tags:
-    - linux
+  # tags:
+    # - linux
     # - win10
   script:
     # - cp -rT cache/dep-cache/ /;
@@ -163,27 +165,27 @@ build-release:
   # only:
   # - master
 
-build-debug:
-  # stage: build-debug
-  stage: build
-  # parallel:
-  #   matrix:
-  #     - ARCH: [amd64, arm64, ppc64le]
-  tags:
-    # - linux
-    - win10
-  script:
-    # - cp -rT cache/dep-cache/ /;
-    # - apt update
-    # - apt install -y doxygen clang libclang-dev lcov
-
-    - mkdir -p $CACHE_PATH/build-debug
-    - cmake -B $CACHE_PATH/build-debug -DCMAKE_BUILD_TYPE=Debug -DHUB_ENABLE_TESTS=ON -DHUB_ENABLE_COVERAGE=ON
-    # - cmake -B $CACHE_PATH/build-gcc-debug -DCMAKE_CXX_COMPILER=cl -DCMAKE_C_COMPILER=cl -DCMAKE_BUILD_TYPE=Debug -DHUB_ENABLE_TESTS=ON
-    # - cmake -B build-gcc-debug -DCMAKE_CXX_COMPILER=/usr/bin/gcc++ -DCMAKE_C_COMPILER=/usr/bin/gcc -DCMAKE_BUILD_TYPE=Debug
-    - cmake --build $CACHE_PATH/build-debug --config Debug --parallel
-  # only:
-    # - master
+# build-debug:
+#   # stage: build-debug
+#   stage: build
+#   # parallel:
+#   #   matrix:
+#   #     - ARCH: [amd64, arm64, ppc64le]
+#   tags:
+#     # - linux
+#     - win10
+#   script:
+#     # - cp -rT cache/dep-cache/ /;
+#     # - apt update
+#     # - apt install -y doxygen clang libclang-dev lcov
+#
+#     - mkdir -p $CACHE_PATH/build-debug
+#     - cmake -B $CACHE_PATH/build-debug -DCMAKE_BUILD_TYPE=Debug -DHUB_ENABLE_TESTS=ON -DHUB_ENABLE_COVERAGE=ON
+#     # - cmake -B $CACHE_PATH/build-gcc-debug -DCMAKE_CXX_COMPILER=cl -DCMAKE_C_COMPILER=cl -DCMAKE_BUILD_TYPE=Debug -DHUB_ENABLE_TESTS=ON
+#     # - cmake -B build-gcc-debug -DCMAKE_CXX_COMPILER=/usr/bin/gcc++ -DCMAKE_C_COMPILER=/usr/bin/gcc -DCMAKE_BUILD_TYPE=Debug
+#     - cmake --build $CACHE_PATH/build-debug --config Debug --parallel
+#   # only:
+#     # - master
       
 # build-cl-release:
 #   # stage: build-release
