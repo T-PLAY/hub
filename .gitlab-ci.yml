@@ -145,14 +145,14 @@ build-cl-release:
   stage: build
 #  before_script:
 #    - export PATH=$PATH:/opt/Qt/5.10.0/gcc_64/bin
-  tags:
-    - win10
-    - linux
+  # tags:
+    # - win10
+    # - linux
   parallel:
     matrix:
       # - OS: [windows, linux]
-      - OPERATING_SYSTEM: [windows]
-      # - PLATFORM: [windows, linux]
+      # - OPERATING_SYSTEM: [windows]
+      - PLATFORM: [windows, linux]
       # - ARCH: [amd64, arm64, ppc64le]
       #
   script:
