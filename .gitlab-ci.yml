@@ -68,8 +68,7 @@ build-cl-release:
       # - ARCH: [amd64, arm64, ppc64le]
       #
   script:
-    - BUILD_TYPE=Release
-    - &build_any
+    - !reference [.build_any, script]
   #   - buildDir=$CACHE_PATH/$PLATFORM/build-release
   #   - mkdir -p $buildDir
   #   # - cmake -B $CACHE_PATH/build-cl-release -DCMAKE_CXX_COMPILER=cl -DCMAKE_C_COMPILER=cl -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON
