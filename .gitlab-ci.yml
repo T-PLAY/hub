@@ -44,7 +44,7 @@ cache:
 
 .build_any: &build_any
   script:
-    - buildDir=$CACHE_PATH/build-$BUILD_TYPE
+    - buildDir=$CACHE_PATH/build-$CMAKE_CXX_COMPILER-$BUILD_TYPE
     - mkdir -p $buildDir
     # - cmake -B $CACHE_PATH/build-cl-release -DCMAKE_CXX_COMPILER=cl -DCMAKE_C_COMPILER=cl -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON
     - cmake -B $buildDir -DCMAKE_BUILD_TYPE=$BUILD_TYPE
@@ -67,8 +67,10 @@ build-gcc-debug:
     - linux
   script:
     - BUILD_TYPE=Debug
-    - CMAKE_C_COMPILER=/usr/bin/gcc
-    - CMAKE_CXX_COMPILER=/usr/bin/g++
+    # - CMAKE_C_COMPILER=/usr/bin/gcc
+    - CMAKE_C_COMPILER=gcc
+    # - CMAKE_CXX_COMPILER=/usr/bin/g++
+    - CMAKE_CXX_COMPILER=g++
     - !reference [.build_any, script]
   
 build-cl-release:
