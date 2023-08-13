@@ -152,13 +152,15 @@ build-cl-release:
       # - ARCH: [amd64, arm64, ppc64le]
       #
   tags:
+    - linux
     - win10
   script:
     - mkdir -p $CACHE_PATH/build-release
     # - cmake -B $CACHE_PATH/build-cl-release -DCMAKE_CXX_COMPILER=cl -DCMAKE_C_COMPILER=cl -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON
-    - cmake -B $CACHE_PATH/build-release -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON
+    - cmake -B $CACHE_PATH/build-release -DCMAKE_BUILD_TYPE=Release
+    # - cmake -B $CACHE_PATH/build-release -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON
     - cmake --build $CACHE_PATH/build-release --config Release --parallel
-    - cmake --install $CACHE_PATH/build-release --config Release
+    # - cmake --install $CACHE_PATH/build-release --config Release
   # only:
   # - master
   
