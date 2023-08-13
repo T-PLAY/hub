@@ -150,7 +150,7 @@ build-cl-release:
       # - ARCH: [amd64, arm64, ppc64le]
   tags:
     - linux
-    - win10
+    # - win10
   script:
     # - cp -rT cache/dep-cache/ /;
     - mkdir -p $CACHE_PATH/build-cl-release
@@ -170,7 +170,7 @@ build-cl-debug:
   #     - ARCH: [amd64, arm64, ppc64le]
   tags:
     - linux
-    - win10
+    # - win10
   script:
     # - cp -rT cache/dep-cache/ /;
     # - apt update
