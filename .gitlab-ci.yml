@@ -139,22 +139,8 @@ cache:
   #     # ls dep-cache/usr/share/*
   # # only:
   # # - master
-  
-build-cl-release:
-  # stage: build-release
-  stage: build
-#  before_script:
-#    - export PATH=$PATH:/opt/Qt/5.10.0/gcc_64/bin
-  # tags:
-    # - win10
-    # - linux
-  parallel:
-    matrix:
-      # - OS: [windows, linux]
-      # - OPERATING_SYSTEM: [windows]
-      - PLATFORM: [windows, linux]
-      # - ARCH: [amd64, arm64, ppc64le]
-      #
+
+.build_any:
   script:
     - buildDir=$CACHE_PATH/$PLATFORM/build-release
     - mkdir -p $buildDir
@@ -162,9 +148,34 @@ build-cl-release:
     - cmake -B $buildDir -DCMAKE_BUILD_TYPE=Release
     # - cmake -B $CACHE_PATH/build-release -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON
     - cmake --build $buildDir --config Release --parallel
-    # - cmake --install $CACHE_PATH/build-release --config Release
-  # only:
-  # - master
+
+  
+build-cl-release:
+  # stage: build-release
+  stage: build
+#  before_script:
+#    - export PATH=$PATH:/opt/Qt/5.10.0/gcc_64/bin
+  tags:
+    # - win10
+    - linux
+  # parallel:
+    # matrix:
+      # - OS: [windows, linux]
+      # - OPERATING_SYSTEM: [windows]
+      # - PLATFORM: [windows, linux]
+      # - ARCH: [amd64, arm64, ppc64le]
+      #
+  script:
+    - &build_any
+  #   - buildDir=$CACHE_PATH/$PLATFORM/build-release
+  #   - mkdir -p $buildDir
+  #   # - cmake -B $CACHE_PATH/build-cl-release -DCMAKE_CXX_COMPILER=cl -DCMAKE_C_COMPILER=cl -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON
+  #   - cmake -B $buildDir -DCMAKE_BUILD_TYPE=Release
+  #   # - cmake -B $CACHE_PATH/build-release -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON
+  #   - cmake --build $buildDir --config Release --parallel
+  #   # - cmake --install $CACHE_PATH/build-release --config Release
+  # # only:
+  # # - master
   
   
 # build-cl-release:
