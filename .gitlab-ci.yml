@@ -151,7 +151,7 @@ build-release:
       #
   tags:
     - linux
-    - win10
+    # - win10
   script:
     # - cp -rT cache/dep-cache/ /;
     - mkdir -p $CACHE_PATH/build-release
@@ -170,7 +170,7 @@ build-debug:
   #   matrix:
   #     - ARCH: [amd64, arm64, ppc64le]
   tags:
-    - linux
+    # - linux
     - win10
   script:
     # - cp -rT cache/dep-cache/ /;
