@@ -149,6 +149,7 @@ build-cl-release:
     # matrix:
       # - ARCH: [amd64, arm64, ppc64le]
   tags:
+    - linux
     - win10
   script:
     # - cp -rT cache/dep-cache/ /;
@@ -168,6 +169,7 @@ build-cl-debug:
   #   matrix:
   #     - ARCH: [amd64, arm64, ppc64le]
   tags:
+    - linux
     - win10
   script:
     # - cp -rT cache/dep-cache/ /;
