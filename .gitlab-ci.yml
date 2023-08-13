@@ -148,6 +148,7 @@ build-release:
   # parallel:
     # matrix:
       # - ARCH: [amd64, arm64, ppc64le]
+      #
   tags:
     - linux
     - win10
