@@ -42,7 +42,7 @@ cache:
     # - format-cache/
     
 
-.build_any:
+.build_any: &build_any
   script:
     - buildDir=$CACHE_PATH/build-$BUILD_TYPE
     - mkdir -p $buildDir
