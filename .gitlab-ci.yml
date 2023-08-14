@@ -11,9 +11,9 @@ variables:
   # GIT_STRATEGY: none
 
 #https://docs.gitlab.com/ee/ci/yaml/#extends
-.branches_with_ci:
-  only:
-    - master
+# .branches_with_ci:
+  # only:
+    # - master
 
 stages: 
   # - dep
