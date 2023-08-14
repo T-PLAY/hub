@@ -59,7 +59,9 @@ build-clang-release:
     - BUILD_TYPE=Release
     - CMAKE_C_COMPILER=clang
     - CMAKE_CXX_COMPILER=clang++
-    - CMAKE_CONFIGURE_ARGS="-DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON"
+    # - CMAKE_CONFIGURE_ARGS="-DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON"
+    # - CMAKE_CONFIGURE_ARGS="-DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON"
+    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON"
     - !reference [.build_any, script]
 
 build-gcc-debug:
@@ -70,7 +72,7 @@ build-gcc-debug:
     - BUILD_TYPE=Debug
     - CMAKE_C_COMPILER=gcc
     - CMAKE_CXX_COMPILER=g++
-    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -DHUB_ENABLE_COVERAGE=ON"
+    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON"
     - !reference [.build_any, script]
   
 build-cl-release:
@@ -81,6 +83,18 @@ build-cl-release:
     - BUILD_TYPE=Release
     - CMAKE_C_COMPILER=cl
     - CMAKE_CXX_COMPILER=cl
+    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON"
+    - !reference [.build_any, script]
+
+build-cl-debug:
+  stage: build
+  tags:
+    - win10
+  script:
+    - BUILD_TYPE=Debug
+    - CMAKE_C_COMPILER=cl
+    - CMAKE_CXX_COMPILER=cl
+    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON"
     - !reference [.build_any, script]
   
   
