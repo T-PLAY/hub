@@ -9,7 +9,7 @@
 variables:
   CACHE_PATH: "cache7"
   GIT_STRATEGY: fetch
-  GIT_CLONE_PATH: $CACHE_PATH/$CI_CONCURRENT_ID/$CI_PROJECT_PATH
+  GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_CONCURRENT_ID/$CI_PROJECT_PATH
 
 #https://docs.gitlab.com/ee/ci/yaml/#extends
 # .branches_with_ci:
