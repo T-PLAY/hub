@@ -8,7 +8,7 @@
 #image: docker-linux
 variables:
   CACHE_PATH: "cache7"
-  # GIT_STRATEGY: none
+  GIT_STRATEGY: none
 
 #https://docs.gitlab.com/ee/ci/yaml/#extends
 # .branches_with_ci:
@@ -17,11 +17,11 @@ variables:
 
 stages: 
   # - dep
-  # - fetch
+  - fetch
   - build
   # - build-debug
   # - build-release
-  - test
+  # - test
   # - coverage
   # - code-analysis
   # - format
@@ -55,6 +55,24 @@ cache:
   script:
     - cmake --build $CACHE_PATH/build-$CMAKE_C_COMPILER-$BUILD_TYPE --config $BUILD_TYPE --target tests
 
+#############################################
+
+fetch-win10:
+  stage: fetch
+  tags:
+    - win10
+  script:
+    - git pull
+
+fetch-linux:
+  stage: fetch
+  tags:
+    - linux
+  script:
+    - git pull
+
+#############################################
+
 build-clang-release:
   stage: build
   tags:
@@ -68,16 +86,6 @@ build-clang-release:
     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON"
     - !reference [.build_any, script]
 
-test-clang-release:
-  stage: test
-  tags: 
-    - linux
-  script: 
-    - BUILD_TYPE=Release
-    - CMAKE_C_COMPILER=clang
-    - !reference [.test_any, script]
-
-
 build-gcc-debug:
   stage: build
   tags:
@@ -88,16 +96,6 @@ build-gcc-debug:
     - CMAKE_CXX_COMPILER=g++
     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON"
     - !reference [.build_any, script]
-
-test-gcc-debug:
-  stage: test
-  tags: 
-    - linux
-  script: 
-    - BUILD_TYPE=Debug
-    - CMAKE_C_COMPILER=gcc
-    - !reference [.test_any, script]
-
   
 build-cl-release:
   stage: build
@@ -110,16 +108,6 @@ build-cl-release:
     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON"
     - !reference [.build_any, script]
 
-test-cl-release:
-  stage: test
-  tags: 
-    - win10
-  script: 
-    - BUILD_TYPE=Release
-    - CMAKE_C_COMPILER=cl
-    - !reference [.test_any, script]
-
-
 build-cl-debug:
   stage: build
   tags:
@@ -130,15 +118,44 @@ build-cl-debug:
     - CMAKE_CXX_COMPILER=cl
     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON"
     - !reference [.build_any, script]
-  
-test-cl-debug:
-  stage: test
-  tags: 
-    - win10
-  script: 
-    - BUILD_TYPE=Debug
-    - CMAKE_C_COMPILER=cl
-    - !reference [.test_any, script]
+
+##########################################################
+
+# test-clang-release:
+#   stage: test
+#   tags:
+#     - linux
+#   script:
+#     - BUILD_TYPE=Release
+#     - CMAKE_C_COMPILER=clang
+#     - !reference [.test_any, script]
+#
+# test-gcc-debug:
+#   stage: test
+#   tags:
+#     - linux
+#   script:
+#     - BUILD_TYPE=Debug
+#     - CMAKE_C_COMPILER=gcc
+#     - !reference [.test_any, script]
+#
+# test-cl-release:
+#   stage: test
+#   tags:
+#     - win10
+#   script:
+#     - BUILD_TYPE=Release
+#     - CMAKE_C_COMPILER=cl
+#     - !reference [.test_any, script]
+#
+# test-cl-debug:
+#   stage: test
+#   tags:
+#     - win10
+#   script:
+#     - BUILD_TYPE=Debug
+#     - CMAKE_C_COMPILER=cl
+#     - !reference [.test_any, script]
 
 
 # build-cl-release:
@@ -347,22 +364,6 @@ test-cl-debug:
 #   - master
 #
 #
-# fetching:
-#   # stage: build-release
-#   stage: fetch
-# #  before_script:
-# #    - export PATH=$PATH:/opt/Qt/5.10.0/gcc_64/bin
-#   # parallel:
-#     # matrix:
-#       # - ARCH: [amd64, arm64, ppc64le]
-#   tags:
-#     - win10
-#   script:
-#     - git pull
-#     # - cp -rT cache/dep-cache/ /;
-#     # - cmake -B $CACHE_PATH/build-clang-release -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON -DHUB_BUILD_DOC=ON
-#     # - cmake -B build-clang-release -DCMAKE_CXX_COMPILER=g++ -DCMAKE_C_COMPILER=clang -DCMAKE_BUILD_TYPE=Release
-#   # only:
 
 # before_script:
 #   - |-
