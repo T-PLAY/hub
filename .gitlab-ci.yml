@@ -97,7 +97,6 @@ build-cl-debug:
     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON"
     - !reference [.build_any, script]
   
-  
 # build-cl-release:
 #   # stage: build-release
 #   stage: build
