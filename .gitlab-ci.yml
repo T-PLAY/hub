@@ -62,14 +62,14 @@ fetch-win10:
   tags:
     - win10
   script:
-    - git pull
+    - git fetch
 
 fetch-linux:
   stage: fetch
   tags:
     - linux
   script:
-    - git pull
+    - git fetch
 
 #############################################
 
