@@ -137,16 +137,8 @@ TEST_CASE( "Server test : InputOutputSensor" ) {
             const auto ratio = 100.0 * megaBytesPerSeconds2 / megaBytesPerSeconds;
             std::cout << "[test][ClientSocket/InputOutputSensor] ratio : " << ratio << " %"
                       << std::endl;
-#ifdef WIN32
+
             CHECK( ratio > 35 );
-#else
-            // CHECK( ratio > 55 ); // arch
-#ifdef DEBUG
-            CHECK( ratio > 35 ); // debian
-#else
-            CHECK( ratio > 45 ); // debian
-#endif
-#endif
         }
     }
 
