@@ -9,6 +9,7 @@
 variables:
   CACHE_PATH: "cache7"
   GIT_STRATEGY: fetch
+  GIT_CLONE_PATH: $CACHE_PATH/$CI_CONCURRENT_ID/$CI_PROJECT_PATH
 
 #https://docs.gitlab.com/ee/ci/yaml/#extends
 # .branches_with_ci:
@@ -17,7 +18,7 @@ variables:
 
 stages: 
   # - dep
-  - fetch
+  # - fetch
   - build
   # - build-debug
   # - build-release
@@ -44,12 +45,13 @@ cache:
 
 .build_any: &build_any
   script:
-    - buildDir=$CACHE_PATH/build-$CMAKE_C_COMPILER-$BUILD_TYPE
-    - mkdir -p $buildDir
-    # - cmake -B $CACHE_PATH/build-cl-release -DCMAKE_CXX_COMPILER=cl -DCMAKE_C_COMPILER=cl -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON
-    - cmake -B $buildDir -DCMAKE_BUILD_TYPE=$BUILD_TYPE $CMAKE_CONFIGURE_ARGS
-    # - cmake -B $CACHE_PATH/build-release -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON
-    - cmake --build $buildDir --config $BUILD_TYPE --parallel
+    - pwd -P
+    # - buildDir=$CACHE_PATH/build-$CMAKE_C_COMPILER-$BUILD_TYPE
+    # - mkdir -p $buildDir
+    # # - cmake -B $CACHE_PATH/build-cl-release -DCMAKE_CXX_COMPILER=cl -DCMAKE_C_COMPILER=cl -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON
+    # - cmake -B $buildDir -DCMAKE_BUILD_TYPE=$BUILD_TYPE $CMAKE_CONFIGURE_ARGS
+    # # - cmake -B $CACHE_PATH/build-release -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON
+    # - cmake --build $buildDir --config $BUILD_TYPE --parallel
 
 .test_any:
   script:
@@ -57,19 +59,19 @@ cache:
 
 #############################################
 
-fetch-win10:
-  stage: fetch
-  tags:
-    - win10
-  script:
-    - git fetch
-
-fetch-linux:
-  stage: fetch
-  tags:
-    - linux
-  script:
-    - git fetch
+# fetch-win10:
+#   stage: fetch
+#   tags:
+#     - win10
+#   script:
+#     - git fetch
+#
+# fetch-linux:
+#   stage: fetch
+#   tags:
+#     - linux
+#   script:
+#     - git fetch
 
 #############################################
 
