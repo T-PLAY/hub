@@ -141,7 +141,11 @@ TEST_CASE( "Server test : InputOutputSensor" ) {
             CHECK( ratio > 35 );
 #else
             // CHECK( ratio > 55 ); // arch
+#ifdef DEBUG
+            CHECK( ratio > 35 ); // debian
+#else
             CHECK( ratio > 45 ); // debian
+#endif
 #endif
         }
     }

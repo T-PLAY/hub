@@ -113,7 +113,7 @@ build-cl-release:
 test-cl-release:
   stage: test
   tags: 
-    - linux
+    - win10
   script: 
     - BUILD_TYPE=Release
     - CMAKE_C_COMPILER=cl
@@ -134,7 +134,7 @@ build-cl-debug:
 test-cl-debug:
   stage: test
   tags: 
-    - linux
+    - win10
   script: 
     - BUILD_TYPE=Debug
     - CMAKE_C_COMPILER=cl
