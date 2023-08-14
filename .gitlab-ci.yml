@@ -21,7 +21,7 @@ stages:
   - build
   # - build-debug
   # - build-release
-  # - test
+  - test
   # - coverage
   # - code-analysis
   # - format
@@ -51,6 +51,10 @@ cache:
     # - cmake -B $CACHE_PATH/build-release -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON
     - cmake --build $buildDir --config $BUILD_TYPE --parallel
 
+.test_any:
+  script:
+    - cmake --build $CACHE_PATH/build-$CMAKE_C_COMPILER-$BUILD_TYPE --target tests
+
 build-clang-release:
   stage: build
   tags:
@@ -64,6 +68,16 @@ build-clang-release:
     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON"
     - !reference [.build_any, script]
 
+test-clang-release:
+  stage: test
+  tags: 
+    - linux
+  script: 
+    - BUILD_TYPE=Release
+    - CMAKE_C_COMPILER=clang
+    - !reference [.test_any, script]
+
+
 build-gcc-debug:
   stage: build
   tags:
@@ -74,6 +88,16 @@ build-gcc-debug:
     - CMAKE_CXX_COMPILER=g++
     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON"
     - !reference [.build_any, script]
+
+test-gcc-debug:
+  stage: test
+  tags: 
+    - linux
+  script: 
+    - BUILD_TYPE=Debug
+    - CMAKE_C_COMPILER=gcc
+    - !reference [.test_any, script]
+
   
 build-cl-release:
   stage: build
@@ -86,6 +110,16 @@ build-cl-release:
     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON"
     - !reference [.build_any, script]
 
+test-cl-release:
+  stage: test
+  tags: 
+    - linux
+  script: 
+    - BUILD_TYPE=Release
+    - CMAKE_C_COMPILER=cl
+    - !reference [.test_any, script]
+
+
 build-cl-debug:
   stage: build
   tags:
@@ -97,6 +131,16 @@ build-cl-debug:
     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON"
     - !reference [.build_any, script]
   
+test-cl-debug:
+  stage: test
+  tags: 
+    - linux
+  script: 
+    - BUILD_TYPE=Debug
+    - CMAKE_C_COMPILER=cl
+    - !reference [.test_any, script]
+
+
 # build-cl-release:
 #   # stage: build-release
 #   stage: build
