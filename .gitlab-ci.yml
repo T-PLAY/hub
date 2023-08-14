@@ -8,7 +8,7 @@
 #image: docker-linux
 variables:
   CACHE_PATH: "cache7"
-  GIT_STRATEGY: none
+  GIT_STRATEGY: fetch
 
 #https://docs.gitlab.com/ee/ci/yaml/#extends
 # .branches_with_ci:
