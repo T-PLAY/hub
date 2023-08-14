@@ -47,7 +47,7 @@ cache:
     - buildDir=$CACHE_PATH/build-$CMAKE_C_COMPILER-$BUILD_TYPE
     - mkdir -p $buildDir
     # - cmake -B $CACHE_PATH/build-cl-release -DCMAKE_CXX_COMPILER=cl -DCMAKE_C_COMPILER=cl -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON
-    - cmake -B $buildDir -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+    - cmake -B $buildDir -DCMAKE_BUILD_TYPE=$BUILD_TYPE $CMAKE_CONFIGURE_ARGS
     # - cmake -B $CACHE_PATH/build-release -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON
     - cmake --build $buildDir --config $BUILD_TYPE --parallel
 
@@ -59,6 +59,7 @@ build-clang-release:
     - BUILD_TYPE=Release
     - CMAKE_C_COMPILER=clang
     - CMAKE_CXX_COMPILER=clang++
+    - CMAKE_CONFIGURE_ARGS="-DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON"
     - !reference [.build_any, script]
 
 build-gcc-debug:
@@ -69,6 +70,7 @@ build-gcc-debug:
     - BUILD_TYPE=Debug
     - CMAKE_C_COMPILER=gcc
     - CMAKE_CXX_COMPILER=g++
+    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -DHUB_ENABLE_COVERAGE=ON"
     - !reference [.build_any, script]
   
 build-cl-release:
