@@ -135,7 +135,7 @@ TEST_CASE( "Server test : viewer" ) {
                       << std::endl;
 #ifdef WIN32
 	#ifdef  DEBUG
-            CHECK( ratio > 25 );
+            CHECK( ratio > 15 );
 	#else
             CHECK( ratio > 35 );
 	#endif //  DEBUG

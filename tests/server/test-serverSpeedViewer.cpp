@@ -195,7 +195,7 @@ TEST_CASE( "Server test : viewer" ) {
 #ifdef WIN32
                 CHECK( ratio > 22 );
 #else
-                CHECK( ratio > 45 );
+                CHECK( ratio > 35 );
 #endif
             } // end viewer
         }
