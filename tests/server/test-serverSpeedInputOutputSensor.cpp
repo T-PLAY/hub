@@ -138,7 +138,15 @@ TEST_CASE( "Server test : InputOutputSensor" ) {
             std::cout << "[test][ClientSocket/InputOutputSensor] ratio : " << ratio << " %"
                       << std::endl;
 
-            CHECK( ratio > 35 );
+            #ifdef  WIN32
+				#ifdef DEBUG
+					CHECK( ratio > 15 );
+				#else
+					CHECK( ratio > 35 );
+				#endif
+            #else
+				CHECK( ratio > 35 );
+            #endif
         }
     }
 

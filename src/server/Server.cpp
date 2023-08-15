@@ -51,6 +51,20 @@ Server::~Server() {
     m_mtxClients.unlock();
     SERVER_MSG( "~Server() clients disconnected" );
 
+
+    //m_mtxPrint.lock();
+    //m_mtxPrint.unlock();
+    //SERVER_MSG( "~Server() unlock mtxPrint" );
+    //m_mtxSreamName2streamViewers.lock();
+    //m_mtxSreamName2streamViewers.unlock();
+    //SERVER_MSG( "~Server() unlock mtxStreamName2streamViewers" );
+    //m_mtxStreamName2streamer.lock();
+    //m_mtxStreamName2streamer.unlock();
+    //SERVER_MSG( "~Server() unlock mtxStreamName2streamer" );
+    //m_mtxViewers.lock();
+    //m_mtxViewers.unlock();
+    //SERVER_MSG( "~Server() unlock mtxViewers" );
+
     SERVER_MSG( "~Server() ended" );
 }
 
@@ -260,8 +274,8 @@ void Server::delStreamer( StreamerClient* streamer ) {
             std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
             m_mtxSreamName2streamViewers.lock();
         }
-        m_mtxSreamName2streamViewers.unlock();
     }
+	m_mtxSreamName2streamViewers.unlock();
 
     m_mtxViewers.lock();
     for ( auto* viewer : m_viewers ) {

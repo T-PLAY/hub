@@ -50,6 +50,7 @@ class SRC_API Server
     ///
     void setMaxClients( int maxClients );
 
+
   private:
     std::string headerMsg() const;
 
