@@ -192,11 +192,15 @@ TEST_CASE( "Server test : viewer" ) {
                 const auto ratio = 100.0 * megaBytesPerSeconds2 / megaBytesPerSeconds;
                 std::cout << "[test][ClientSocket/InputOutputSensor] ratio : " << ratio << " %"
                           << std::endl;
-#ifdef WIN32
-                CHECK( ratio > 15 );
-#else
+            #ifdef  WIN32
+                #ifdef DEBUG
+                    CHECK( ratio > 15 );
+                #else
+                    CHECK( ratio > 35 );
+                #endif
+            #else
                 CHECK( ratio > 35 );
-#endif
+            #endif
             } // end viewer
         }
     }

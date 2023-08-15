@@ -10,3 +10,4 @@ src/html/
 src/latex/
 out/
 install/
+*.glb

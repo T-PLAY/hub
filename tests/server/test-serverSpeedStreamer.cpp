@@ -138,7 +138,7 @@ TEST_CASE( "Server test : viewer" ) {
             CHECK( ratio > 15 );
 	#else
             CHECK( ratio > 35 );
-	#endif //  DEBUG
+    #endif
 #else
             CHECK( ratio > 35 );
 #endif
