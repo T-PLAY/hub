@@ -7,7 +7,7 @@
 # image: stormirit/radium_dev:latest
 #image: docker-linux
 variables:
-  # CACHE_PATH: "cache8"
+  CACHE_PATH: "cache9"
   GIT_STRATEGY: fetch
   GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_CONCURRENT_ID/$CI_PROJECT_PATH
 
@@ -32,22 +32,22 @@ stages:
 #     key: ${CI_COMMIT_REF_SLUG}
 #     paths:
 #       - build/
-# cache:
-#   key: cache
-#   paths:
-#     - $CACHE_PATH/
-#     # - dep-cache/
-#     # - build-gcc-release/
-#     # - build-clang-debug/
-#     # - sphinx-cache/
-#     # - format-cache/
-#
+cache:
+  key: cache
+  paths:
+    - $CACHE_PATH/
+    # - dep-cache/
+    # - build-gcc-release/
+    # - build-clang-debug/
+    # - sphinx-cache/
+    # - format-cache/
+
 
 .build_any: &build_any
   script:
     # - pwd -P
-    # - buildDir=$CACHE_PATH/build-$CMAKE_C_COMPILER-$BUILD_TYPE
-    - buildDir=build-$CMAKE_C_COMPILER-$BUILD_TYPE
+    - buildDir=$CACHE_PATH/build-$CMAKE_C_COMPILER-$BUILD_TYPE
+    # - buildDir=build-$CMAKE_C_COMPILER-$BUILD_TYPE
     - mkdir -p $buildDir
     # - cmake -B $CACHE_PATH/build-cl-release -DCMAKE_CXX_COMPILER=cl -DCMAKE_C_COMPILER=cl -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON
     - cmake -B $buildDir -DCMAKE_BUILD_TYPE=$BUILD_TYPE $CMAKE_CONFIGURE_ARGS
@@ -56,8 +56,8 @@ stages:
 
 .test_any:
   script:
-    # - cmake --build $CACHE_PATH/build-$CMAKE_C_COMPILER-$BUILD_TYPE --config $BUILD_TYPE --target tests
-    - cmake --build build-$CMAKE_C_COMPILER-$BUILD_TYPE --config $BUILD_TYPE --target tests
+    - cmake --build $CACHE_PATH/build-$CMAKE_C_COMPILER-$BUILD_TYPE --config $BUILD_TYPE --target tests
+    # - cmake --build build-$CMAKE_C_COMPILER-$BUILD_TYPE --config $BUILD_TYPE --target tests
 
 #############################################
 
