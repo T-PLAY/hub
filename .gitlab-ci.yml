@@ -138,9 +138,9 @@ test-clang-release:
     - CMAKE_C_COMPILER=clang
     - !reference [.test_any, script]
   # when: manual
-  # needs:
-    # - job: build-clang-release
-      # optional: true
+  needs:
+    - job: build-clang-release
+      optional: true
 
 test-gcc-debug:
   stage: test
@@ -151,9 +151,9 @@ test-gcc-debug:
     - CMAKE_C_COMPILER=gcc
     - !reference [.test_any, script]
   # when: manual
-  # needs:
-    # - job: build-gcc-debug
-      # optional: true
+  needs:
+    - job: build-gcc-debug
+      optional: true
 
 test-cl-release:
   stage: test
@@ -164,9 +164,9 @@ test-cl-release:
     - CMAKE_C_COMPILER=cl
     - !reference [.test_any, script]
   # when: manual
-  # needs:
-    # - job: build-cl-release
-      # optional: true
+  needs:
+    - job: build-cl-release
+      optional: true
 
 test-cl-debug:
   stage: test
@@ -177,9 +177,9 @@ test-cl-debug:
     - CMAKE_C_COMPILER=cl
     - !reference [.test_any, script]
   # when: manual
-  # needs:
-    # - job: build-cl-debug
-      # optional: true
+  needs:
+    - job: build-cl-debug
+      optional: true
 
 
 # build-cl-release:
