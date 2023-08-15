@@ -80,7 +80,7 @@ cache:
 build-clang-release:
   stage: build
   tags:
-    - linux
+    - linux-arch
   script:
     - BUILD_TYPE=Release
     - CMAKE_C_COMPILER=clang
@@ -94,7 +94,7 @@ build-clang-release:
 build-gcc-debug:
   stage: build
   tags:
-    - linux
+    - linux-arch
   script:
     - BUILD_TYPE=Debug
     - CMAKE_C_COMPILER=gcc
@@ -132,7 +132,7 @@ build-cl-debug:
 test-clang-release:
   stage: test
   tags:
-    - linux
+    - linux-arch
   script:
     - BUILD_TYPE=Release
     - CMAKE_C_COMPILER=clang
@@ -145,7 +145,7 @@ test-clang-release:
 test-gcc-debug:
   stage: test
   tags:
-    - linux
+    - linux-arch
   script:
     - BUILD_TYPE=Debug
     - CMAKE_C_COMPILER=gcc
