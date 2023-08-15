@@ -22,7 +22,7 @@ stages:
   - build
   # - build-debug
   # - build-release
-  # - test
+  - test
   # - coverage
   # - code-analysis
   # - format
