@@ -2,6 +2,10 @@ cmake_minimum_required(VERSION 3.8)
 
 project(hub)
 
+include(cmake/Functions.cmake)
+set_property(GLOBAL PROPERTY CUSTOM_TARGETS_FOUNDED "")
+
+
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_FIND_PACKAGE_NO_SYSTEM_PACKAGE_REGISTRY False)
@@ -139,6 +143,7 @@ if(NOT WIN32)
         COMMAND cppcheck --enable=all --error-exitcode=1 src tests -I src -I tests --inline-suppr --suppress=toomanyconfigs
                 --suppress=missingIncludeSystem
         COMMENT "Running cppCheck")
+    custom_target_added(cppCheck)
 endif()
 
 add_custom_target(
@@ -146,16 +151,22 @@ add_custom_target(
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
     COMMAND scripts/format-all.sh
     COMMENT "Format sources")
+custom_target_added(format)
 
 add_custom_target(all-targets)
+custom_target_added(all-targets)
 foreach(target "tests" "coverage" "cppCheck" "doc-doxygen" "doc-sphinx")
     if(TARGET ${target})
         add_dependencies(all-targets ${target})
     endif()
 endforeach()
-message(STATUS "Custom targets: cppCheck format doc-doxygen doc-sphinx coverage coverage-lcov coverage-all tests")
+
 
 option(HUB_ENABLE_WRAPPER "Enable wrapper" OFF)
 if(HUB_ENABLE_WRAPPER)
     add_subdirectory(wrapper)
 endif()
+
+get_property(TMP GLOBAL PROPERTY CUSTOM_TARGETS_FOUNDED)
+#message(STATUS "Custom targets: cppCheck format doc-doxygen doc-sphinx coverage coverage-lcov coverage-all tests")
+message(STATUS "Custom targets:${TMP}")

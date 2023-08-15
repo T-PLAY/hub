@@ -47,3 +47,4 @@ add_custom_target(
     tests # WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
     COMMAND ctest -C ${CMAKE_BUILD_TYPE} -V # COMMENT "Generating API documentation with Doxygen"
     COMMENT "Running tests")
+custom_target_added(tests)

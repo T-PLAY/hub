@@ -2,10 +2,6 @@ cmake_minimum_required(VERSION 3.5)
 
 project(examples LANGUAGES CXX)
 
-if(MINGW)
-
-endif()
-
 file(GLOB EXAMPLE_SRC *.cpp)
 
 string(REPLACE ".cpp" "" EXAMPLE_SRC_BASENAME "${EXAMPLE_SRC}")

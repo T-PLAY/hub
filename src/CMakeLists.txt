@@ -250,9 +250,11 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
     endif()
 
     add_custom_target(coverage COMMAND ${HUB_BROWSER} ${CMAKE_CURRENT_BINARY_DIR}/../coverage-lcov/index.html)
+    custom_target_added(coverage)
     add_dependencies(coverage coverage-lcov)
 
     add_custom_target(coverage-all)
+    custom_target_added(coverage-all)
 
     file(
         GLOB_RECURSE
@@ -299,6 +301,7 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
                 ls ${CMAKE_CURRENT_BINARY_DIR}/../coverage-lcov-${name}/index.html && head -n 40
                 ${CMAKE_CURRENT_BINARY_DIR}/../coverage-lcov-${name}/index.html | grep '100.0 %' || ${HUB_BROWSER}
                 ${CMAKE_CURRENT_BINARY_DIR}/../coverage-lcov-${name}/index.html)
+#        custom_target_added(coverage-${name})
 
         add_dependencies(coverage-${name} coverage-lcov-${name})
         add_dependencies(coverage-all coverage-${name})
