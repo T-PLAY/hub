@@ -89,6 +89,7 @@ build-clang-release:
     # - CMAKE_CONFIGURE_ARGS="-DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON"
     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON"
     - !reference [.build_any, script]
+  when: manual
 
 build-gcc-debug:
   stage: build
@@ -100,6 +101,7 @@ build-gcc-debug:
     - CMAKE_CXX_COMPILER=g++
     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON"
     - !reference [.build_any, script]
+  when: manual
   
 build-cl-release:
   stage: build
@@ -111,6 +113,7 @@ build-cl-release:
     - CMAKE_CXX_COMPILER=cl
     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON"
     - !reference [.build_any, script]
+  when: manual
 
 build-cl-debug:
   stage: build
@@ -122,44 +125,61 @@ build-cl-debug:
     - CMAKE_CXX_COMPILER=cl
     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON"
     - !reference [.build_any, script]
+  when: manual
 
 ##########################################################
 
-# test-clang-release:
-#   stage: test
-#   tags:
-#     - linux
-#   script:
-#     - BUILD_TYPE=Release
-#     - CMAKE_C_COMPILER=clang
-#     - !reference [.test_any, script]
-#
-# test-gcc-debug:
-#   stage: test
-#   tags:
-#     - linux
-#   script:
-#     - BUILD_TYPE=Debug
-#     - CMAKE_C_COMPILER=gcc
-#     - !reference [.test_any, script]
-#
-# test-cl-release:
-#   stage: test
-#   tags:
-#     - win10
-#   script:
-#     - BUILD_TYPE=Release
-#     - CMAKE_C_COMPILER=cl
-#     - !reference [.test_any, script]
-#
-# test-cl-debug:
-#   stage: test
-#   tags:
-#     - win10
-#   script:
-#     - BUILD_TYPE=Debug
-#     - CMAKE_C_COMPILER=cl
-#     - !reference [.test_any, script]
+test-clang-release:
+  stage: test
+  tags:
+    - linux
+  script:
+    - BUILD_TYPE=Release
+    - CMAKE_C_COMPILER=clang
+    - !reference [.test_any, script]
+  when: manual
+  needs:
+    - job: build-clang-release
+      optional: true
+
+test-gcc-debug:
+  stage: test
+  tags:
+    - linux
+  script:
+    - BUILD_TYPE=Debug
+    - CMAKE_C_COMPILER=gcc
+    - !reference [.test_any, script]
+  when: manual
+  needs:
+    - job: build-gcc-debug
+      optional: true
+
+test-cl-release:
+  stage: test
+  tags:
+    - win10
+  script:
+    - BUILD_TYPE=Release
+    - CMAKE_C_COMPILER=cl
+    - !reference [.test_any, script]
+  when: manual
+  needs:
+    - job: build-cl-release
+      optional: true
+
+test-cl-debug:
+  stage: test
+  tags:
+    - win10
+  script:
+    - BUILD_TYPE=Debug
+    - CMAKE_C_COMPILER=cl
+    - !reference [.test_any, script]
+  when: manual
+  needs:
+    - job: build-cl-debug
+      optional: true
 
 
 # build-cl-release:
