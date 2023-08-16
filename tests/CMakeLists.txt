@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.5)
 project(tests LANGUAGES CXX)
 
 set(LINK_LIBRARIES Catch2::Catch2WithMain hub)
+#set(LINK_LIBRARIES Catch2::Catch2WithMain hub PahoMqttCpp::paho-mqttpp3)
 
 find_package(Catch2 QUIET)
 if(NOT ${Catch2_FOUND})
@@ -16,13 +17,38 @@ if(NOT ${Catch2_FOUND})
     FetchContent_MakeAvailable(Catch2)
 endif()
 
-find_package(PahoMqttCpp QUIET)
-if (PahoMqttCpp_FOUND)
-	set(LINK_LIBRARIES ${LINK_LIBRARIES} PahoMqttCpp::paho-mqttpp3)
-endif()
-
+#find_package(PahoMqttCpp QUIET)
+#if (NOT ${PahoMqttCpp_FOUND})
+#    include(FetchContent)
+#    FetchContent_Declare(
+#        PahoMqttCpp
+#        GIT_REPOSITORY https://github.com/eclipse/paho.mqtt.cpp.git
+#        GIT_TAG v1.2.0 # or a later release
+#        GIT_PROGRESS TRUE)
+#    FetchContent_MakeAvailable(PahoMqttCpp)
+#    set(LINK_LIBRARIES "${LINK_LIBRARIES} PahoMqttCpp::paho-mqttpp3")
+#endif()
+#find_package(PahoMqttCpp REQUIRED)
 
 file(GLOB_RECURSE test_srcs *.cpp)
+#file(GLOB test_srcs *.cpp)
+
+find_package(PahoMqttCpp QUIET)
+#find_package(PahoMqttCpp QUIET NO_DEFAULT_PATH)
+if (PahoMqttCpp_FOUND)
+
+#    file(GLOB EXAMPLE_SRC mqtt/*.cpp)
+#    string(REPLACE ".cpp" "" EXAMPLE_SRC_BASENAME2 "${EXAMPLE_SRC}")
+#    set(EXAMPLE_SRC_BASENAME ${EXAMPLE_SRC_BASENAME} ${EXAMPLE_SRC_BASENAME2})
+#    set(LINK_LIBRARIES "${LINK_LIBRARIES} PahoMqttCpp::paho-mqttpp3")
+    set(LINK_LIBRARIES ${LINK_LIBRARIES} PahoMqttCpp::paho-mqttpp3)
+else()
+    file(GLOB mqtt_srcs mqtt/*.cpp)
+    list(REMOVE_ITEM test_srcs ${mqtt_srcs})
+#    message(STATUS "#################### ${mqtt_srcs}")
+endif()
+#message(STATUS "#################### ${test_srcs}")
+
 
 
 add_executable(test-all ${test_srcs})

@@ -126,7 +126,7 @@ class SRC_API SensorSpec
 
   public:
 #if CPLUSPLUS_VERSION == 20
-    inline constexpr const SensorNameType& getSensorName() const noexcept;
+    inline CONSTEXPR const SensorNameType& getSensorName() const noexcept;
 #else
     ///
     /// \brief getSensorName
@@ -138,12 +138,12 @@ class SRC_API SensorSpec
     /// \brief getResolutions
     /// \return
     ///
-    inline constexpr Resolutions& getResolutions() const noexcept;
+    inline CONSTEXPR Resolutions& getResolutions() const noexcept;
     ///
     /// \brief getMetaData
     /// \return
     ///
-    inline constexpr MetaData& getMetaData() const noexcept;
+    inline CONSTEXPR MetaData& getMetaData() const noexcept;
     ///
     /// \brief getMetaData
     /// \return
@@ -153,7 +153,7 @@ class SRC_API SensorSpec
     /// \brief getAcquisitionSize
     /// \return
     ///
-    inline constexpr size_t getAcquisitionSize() const noexcept;
+    inline CONSTEXPR size_t getAcquisitionSize() const noexcept;
 
     ///
     /// \brief setMetaData
@@ -185,11 +185,11 @@ inline CONSTEXPR20 const SensorSpec::SensorNameType& SensorSpec::getSensorName()
     return m_sensorName;
 }
 
-inline constexpr Resolutions& SensorSpec::getResolutions() const noexcept {
+inline CONSTEXPR Resolutions& SensorSpec::getResolutions() const noexcept {
     return const_cast<Resolutions&>( m_resolutions );
 }
 
-inline constexpr SensorSpec::MetaData& SensorSpec::getMetaData() const noexcept {
+inline CONSTEXPR SensorSpec::MetaData& SensorSpec::getMetaData() const noexcept {
     return const_cast<SensorSpec::MetaData&>( m_metaData );
 }
 
@@ -197,7 +197,7 @@ inline SensorSpec::MetaData& SensorSpec::getMetaData() noexcept {
     return m_metaData;
 }
 
-inline constexpr size_t SensorSpec::getAcquisitionSize() const noexcept {
+inline CONSTEXPR size_t SensorSpec::getAcquisitionSize() const noexcept {
     return m_acquisitionSize;
 }
 

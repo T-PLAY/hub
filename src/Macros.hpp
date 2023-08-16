@@ -192,8 +192,13 @@
 #    define CPLUSPLUS_VERSION 14
 #    define CONSTEXPR17
 #    define CONSTEXPR20
+#    define CONSTEXPR constexpr
 #else
-#    error "C++ version " __cplusplus " not supported"
+#    define CPLUSPLUS_VERSION 14
+#    define CONSTEXPR17
+#    define CONSTEXPR20
+// #    error "C++ version " __cplusplus " not supported"
+#define CONSTEXPR const
 #endif
 
 // #define DEBUG_INPUT_OUTPUT

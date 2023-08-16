@@ -2,11 +2,15 @@
 
 #include <cassert>
 #include <iostream>
+#include <memory>
 
 namespace hub {
 namespace io {
 
 File::File( std::fstream&& file ) : m_file( new std::fstream( std::move( file ) ) ) {
+//File::File( std::fstream&& file ) {
+//File::File( std::fstream&& file ) : m_file(std::move(file)) {
+//File::File( std::fstream&& file ) : m_file( std::make_unique<std::fstream>(std::move(file)) ) {
 
     assert( m_file->is_open() );
 }

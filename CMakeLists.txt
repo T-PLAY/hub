@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.8)
 
 project(hub)
 
+#set(CMAKE_FIND_PACKAGE_NO_SYSTEM_PACKAGE_REGISTRY False)
+
 include(cmake/Functions.cmake)
 set_property(GLOBAL PROPERTY CUSTOM_TARGETS_FOUNDED "")
 
@@ -61,7 +63,9 @@ set(USERNAME $ENV{USERNAME})
 # Looking for supported compiler
 set(SUPPORTED_COMPILERS "Clang" "GNU" "LLVM" "MSVC")
 set(Clang_MINIMAL_VERSION 11.0.0)
+#set(Clang_MINIMAL_VERSION 7.0.1)
 set(GNU_MINIMAL_VERSION 8.1.0)
+#set(GNU_MINIMAL_VERSION 4.9.4)
 set(LLVM_MINIMAL_VERSION 0)
 set(MSVC_MINIMAL_VERSION 19)
 
@@ -88,7 +92,7 @@ if(NOT COMPILER_FOUND)
     message(FATAL_ERROR "no supported compiler founded")
 endif()
 
-if(NOT DEFINED CMAKE_INSTALL_PREFIX)
+if(NOT DEFINED CMAKE_INSTALL_PREFIX OR UNIX)
     set(CMAKE_INSTALL_PREFIX
         "${CMAKE_SOURCE_DIR}/install"
         CACHE PATH "Install path prefix." FORCE)
@@ -131,6 +135,7 @@ if(HUB_ENABLE_TESTS)
     add_subdirectory(tests)
 endif()
 
+#option(HUB_ENABLE_EXAMPLES "Enable examples" OFF)
 option(HUB_ENABLE_EXAMPLES "Enable examples" OFF)
 if(HUB_ENABLE_EXAMPLES)
     add_subdirectory(examples)

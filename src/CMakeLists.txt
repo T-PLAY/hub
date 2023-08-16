@@ -4,7 +4,14 @@ find_package(Git)
 #set(VERSION_UPDATE_FROM_GIT 1)
 include(GetVersionFromGitTag)
 
+set(REQUIRED_LIBS "")
+
 message(STATUS "Hub version: ${${PROJECT_NAME}_VERSION}")
+
+find_package(PahoMqttCpp QUIET)
+if (PahoMqttCpp_FOUND)
+    set(REQUIRED_LIBS ${REQUIRED_LIBS} PahoMqttCpp::paho-mqttpp3)
+endif()
 
 option(HUB_ENABLE_COVERAGE "Collect coverage from hub library (required tests enable)" OFF)
 if(HUB_ENABLE_COVERAGE)
@@ -14,9 +21,20 @@ if(HUB_ENABLE_COVERAGE)
     set(REQUIRED_LIBS ${REQUIRED_LIBS} gcov)
 endif()
 
-option(HUB_BUILD_STATIC_LIBRARY "Build static library" OFF)
+#if(WIN32)
+#          add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+#    set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+#    set(LIBS_SYSTEM ws2_32)
+#elseif(UNIX)
+#    set(LIBS_SYSTEM c stdc++)
+#endif()
 
-file(GLOB_RECURSE sources ${HUB_SOURCE_DIR}/*.cpp ${HUB_EXTERNAL_DIR}/*.cpp)
+
+############################# COMPILING SOURCES
+
+file(GLOB_RECURSE sources ${HUB_SOURCE_DIR}/*.cpp ${HUB_EXTERNAL_DIR}/*.cpp ${HUB_EXTERNAL_DIR}/*.c)
+#list(REMOVE_ITEM sources ${HUB_EXTERNAL_DIR}/mqtt/MQTTAsync.c)
+#list(REMOVE_ITEM sources ${HUB_EXTERNAL_DIR}/mqtt/MQTTAsyncUtils.c)
 file(
     GLOB_RECURSE
     headers
@@ -26,28 +44,35 @@ file(
     ${HUB_EXTERNAL_DIR}/*.hpp
     ${HUB_EXTERNAL_DIR}/*.h
     ${HUB_EXTERNAL_DIR}/*.inl)
+#list(REMOVE_ITEM headers ${HUB_EXTERNAL_DIR}/mqtt/MQTTAsync.h)
+#list(REMOVE_ITEM headers ${HUB_EXTERNAL_DIR}/mqtt/MQTTAsyncUtils.h)
 
 list(APPEND SOURCE_FILES ${sources} ${headers})
 
 source_group("Header Files\\" FILES ${headers})
 source_group("Source Files\\" FILES ${sources})
 
-set(REQUIRED_LIBS)
+#set(REQUIRED_LIBS)
 
-if(HUB_BUILD_STATIC_LIBRARY)
-    add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})
-    target_compile_definitions(${PROJECT_NAME} PUBLIC -DSRC_STATIC)
-    set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE ON) # octave, python
+add_library(${PROJECT_NAME} OBJECT ${sources} ${headers})
 
-else()
-    add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
-    target_compile_definitions(${PROJECT_NAME} PUBLIC -DSRC_EXPORTS)
-endif()
+target_include_directories(${PROJECT_NAME}
+    PUBLIC
+        $<BUILD_INTERFACE:${HUB_INCLUDE_DIR}>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.h
+        $<INSTALL_INTERFACE:include>
+    PRIVATE
+        ${HUB_EXTERNAL_DIR}
+)
 
 target_compile_definitions(${PROJECT_NAME} PUBLIC -DINTERNAL_BUILD)
 
-set_target_properties(${PROJECT_NAME} PROPERTIES SOVERSION ${${PROJECT_NAME}_VERSION_MAJOR} VERSION
-                                                                                            ${${PROJECT_NAME}_VERSION})
+#set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "-fvisibility=hidden -fvisibility-inlines-hidden")
+#set_target_properties(${PROJECT_NAME} PROPERTIES SOVERSION ${${PROJECT_NAME}_VERSION_MAJOR} VERSION
+#                                                                                            ${${PROJECT_NAME}_VERSION})
+
+
+############################# COMPILER SPECIFICS
 
 if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
     target_compile_definitions(${PROJECT_NAME} PUBLIC -DDEBUG)
@@ -61,11 +86,15 @@ endif()
 
 if(MINGW)
     if(CLANG)
+        set (THREADS_PREFER_PTHREAD_FLAG ON)
         find_package(Threads REQUIRED)
-        set(REQUIRED_LIBS Threads::Threads)
+        set(REQUIRED_LIBS ${REQUIRED_LIBS} Threads::Threads)
+
+    elseif(GNU)
+        message(FATAL_ERROR "eee")
 
     elseif(GCC)
-        set(REQUIRED_LIBS ws2_32)
+        set(REQUIRED_LIBS ${REQUIRED_LIBS} ws2_32)
         get_filename_component(Mingw_Path ${CMAKE_CXX_COMPILER} PATH)
         message(STATUS "${Mingw_Path}")
         set(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS ${Mingw_Path}/libgcc_s_seh-1.dll ${Mingw_Path}/libstdc++-6.dll
@@ -92,48 +121,125 @@ elseif(APPLE)
     message(FATAL_ERROR "apple detected")
 
 elseif(UNIX)
+    set (THREADS_PREFER_PTHREAD_FLAG ON)
     find_package(Threads REQUIRED)
-    set(REQUIRED_LIBS Threads::Threads)
+    set(REQUIRED_LIBS ${REQUIRED_LIBS} Threads::Threads)
+    set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE ON) # gltfpack
+
+    if (Clang)
+    elseif (GCC)
+        message(FATAL_ERROR "eee")
+    elseif(GNU)
+    else()
+        message(FATAL_ERROR "unknown linux system")
+    endif()
 
 else()
     message(FATAL_ERROR "unknown system")
 endif()
 
-target_link_libraries(${PROJECT_NAME} PUBLIC ${REQUIRED_LIBS})
+#target_link_libraries(${PROJECT_NAME} PUBLIC ${REQUIRED_LIBS})
+target_link_libraries(${PROJECT_NAME} PRIVATE ${REQUIRED_LIBS})
 
-# ########################### STATIC BUILD ################################
-# Static build for python, octave, matlab APIs
+install(
+    DIRECTORY ${HUB_INCLUDE_DIR}/
+    DESTINATION include
+    FILES_MATCHING
+    PATTERN "*.hpp"
+    PATTERN "*.h"
+    PATTERN "*.inl")
 
-if(HUB_ENABLE_WRAPPER)
-    add_library(${PROJECT_NAME}_static STATIC ${SOURCE_FILES})
-    target_compile_definitions(${PROJECT_NAME}_static PUBLIC -DSRC_STATIC)
-    set_property(TARGET ${PROJECT_NAME}_static PROPERTY POSITION_INDEPENDENT_CODE ON) # octave, python
-    target_compile_definitions(${PROJECT_NAME}_static PUBLIC -DINTERNAL_BUILD)
-    target_link_libraries(${PROJECT_NAME}_static PUBLIC ${REQUIRED_LIBS})
-    target_include_directories(
-        ${PROJECT_NAME}_static
-        PUBLIC $<BUILD_INTERFACE:${HUB_INCLUDE_DIR}> $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.h
-               $<INSTALL_INTERFACE:include>
-        PRIVATE ${HUB_EXTERNAL_DIR})
-endif()
 
-# ########################### INSTALL/EXPORT ################################
 
-if(HUB_BUILD_STATIC_LIBRARY)
+############################# SHARED LIBRARY
+
+#option(HUB_BUILD_SHARED "Build shared library" ON)
+#if (HUB_BUILD_SHARED)
+    add_library(${PROJECT_NAME}_shared SHARED $<TARGET_OBJECTS:${PROJECT_NAME}>)
+    target_compile_definitions(${PROJECT_NAME}_shared PRIVATE -DSRC_EXPORTS)
+#	target_compile_options(${PROJECT_NAME} PRIVATE "-fpic")
+#    target_link_libraries(${PROJECT_NAME} PRIVATE ${REQUIRED_LIBS})
+#    target_link_libraries(${PROJECT_NAME} PUBLIC Threads::Threads)
+#    set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE ON) # gltfpack
+#    target_include_directories(${PROJECT_NAME}
+#        PUBLIC
+#            $<BUILD_INTERFACE:${HUB_INCLUDE_DIR}>
+#            $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.h
+#            $<INSTALL_INTERFACE:include>
+#        PRIVATE
+#        ${HUB_EXTERNAL_DIR}
+#    )
+    set_target_properties(${PROJECT_NAME}_shared PROPERTIES
+        VERSION ${${PROJECT_NAME}_VERSION}
+        SOVERSION ${${PROJECT_NAME}_VERSION_MAJOR}
+    )
+
     install(
-        TARGETS ${PROJECT_NAME}
-        EXPORT ${PROJECT_NAME}
+        TARGETS ${PROJECT_NAME}_shared
+        EXPORT ${PROJECT_NAME}_shared
+         DESTINATION ${ARCHITECTURE}/bin # Linux
+#        DESTINATION ${ARCHITECTURE}/lib)
+        RUNTIME DESTINATION ${ARCHITECTURE}/bin # Windows
+    )
+
+    if(MSVC)
+        if(NOT ${CMAKE_BUILD_TYPE} STREQUAL "Release")
+            install(FILES $<TARGET_PDB_FILE:${PROJECT_NAME}_shared> DESTINATION ${ARCHITECTURE}/bin)
+        endif()
+    endif()
+
+    install(
+        EXPORT ${PROJECT_NAME}_shared
+        FILE ${PROJECT_NAME}Targets.cmake
+        # DESTINATION lib/cmake/${PROJECT_NAME})
+        DESTINATION share/${PROJECT_NAME}/cmake)
+    export(EXPORT ${PROJECT_NAME}_shared FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake")
+
+    if (UNIX)
+        set_target_properties(${PROJECT_NAME}_shared PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
+    endif()
+#endif()
+
+############################# STATIC LIBRARY
+
+#option(HUB_BUILD_STATIC "Build static library" OFF)
+#if (HUB_BUILD_STATIC)
+    #if(HUB_BUILD_STATIC_LIBRARY)
+    #    add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})
+    add_library(${PROJECT_NAME}_static STATIC $<TARGET_OBJECTS:${PROJECT_NAME}>)
+    target_compile_definitions(${PROJECT_NAME}_static PUBLIC -DSRC_STATIC)
+    #target_link_libraries(${PROJECT_NAME}_static PRIVATE ${REQUIRED_LIBS})
+#    target_include_directories(${PROJECT_NAME}_static
+#        PUBLIC
+#            $<BUILD_INTERFACE:${HUB_INCLUDE_DIR}>
+#            $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.h
+#            $<INSTALL_INTERFACE:include>
+#        PRIVATE
+#        ${HUB_EXTERNAL_DIR}
+#    )
+#    set_property(TARGET ${PROJECT_NAME}_static PROPERTY POSITION_INDEPENDENT_CODE ON) # octave, python
+
+    #install(
+    #    TARGETS ${PROJECT_NAME}_static
+    #    EXPORT ${PROJECT_NAME}
+    #    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    #    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    #)
+
+    install(
+        TARGETS ${PROJECT_NAME}_static
+        EXPORT ${PROJECT_NAME}_static
         # DESTINATION lib/${ARCHITECTURE}
         DESTINATION ${ARCHITECTURE}/lib)
     if(MSVC)
         if(${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
-            target_compile_options(${PROJECT_NAME} PRIVATE /Zi)
+            target_compile_options(${PROJECT_NAME}_static PRIVATE /Zi)
             # Tell linker to include symbol data
-            set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "/INCREMENTAL:NO /DEBUG /OPT:REF /OPT:ICF")
+            set_target_properties(${PROJECT_NAME}_static PROPERTIES LINK_FLAGS "/INCREMENTAL:NO /DEBUG /OPT:REF /OPT:ICF")
 
             # Set file name & location
             set_target_properties(
-                ${PROJECT_NAME}
+                ${PROJECT_NAME}_static
                 PROPERTIES # COMPILE_PDB_NAME ${PROJECT_NAME}${CMAKE_POSTFIX}
                            COMPILE_PDB_NAME ${PROJECT_NAME} COMPILE_PDB_OUTPUT_DIR ${CMAKE_BINARY_DIR}
                            # DEBUG_POSTFIX "${CMAKE_DEBUG_POSTFIX}"
@@ -152,40 +258,53 @@ if(HUB_BUILD_STATIC_LIBRARY)
         endif()
     endif()
 
-else()
-    install(
-        TARGETS ${PROJECT_NAME}
-        EXPORT ${PROJECT_NAME}
-        # DESTINATION ${ARCHITECTURE}/bin # Linux
-        RUNTIME DESTINATION ${ARCHITECTURE}/bin # Windows
-    )
-
-    if(MSVC)
-        if(NOT ${CMAKE_BUILD_TYPE} STREQUAL "Release")
-            install(FILES $<TARGET_PDB_FILE:${PROJECT_NAME}> DESTINATION ${ARCHITECTURE}/bin)
-        endif()
+    if (UNIX)
+        set_target_properties(${PROJECT_NAME}_static PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
     endif()
-endif()
 
-install(
-    DIRECTORY ${HUB_INCLUDE_DIR}/
-    DESTINATION include
-    FILES_MATCHING
-    PATTERN "*.hpp"
-    PATTERN "*.h"
-    PATTERN "*.inl")
+#endif()
 
-install(
-    EXPORT ${PROJECT_NAME}
-    FILE ${PROJECT_NAME}Targets.cmake
-    # DESTINATION lib/cmake/${PROJECT_NAME})
-    DESTINATION share/${PROJECT_NAME}/cmake)
+#else()
+#    add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
+#    target_compile_definitions(${PROJECT_NAME} PRIVATE -DSRC_EXPORTS)
+#endif()
 
-target_include_directories(
-    ${PROJECT_NAME}
-    PUBLIC $<BUILD_INTERFACE:${HUB_INCLUDE_DIR}> $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.h
-           $<INSTALL_INTERFACE:include>
-    PRIVATE ${HUB_EXTERNAL_DIR})
+
+# ########################### STATIC BUILD ################################
+# Static build for python, octave, matlab APIs
+
+#if(HUB_ENABLE_WRAPPER)
+#    add_library(${PROJECT_NAME}_static STATIC ${SOURCE_FILES})
+#    target_compile_definitions(${PROJECT_NAME}_static PUBLIC -DSRC_STATIC)
+#    set_property(TARGET ${PROJECT_NAME}_static PROPERTY POSITION_INDEPENDENT_CODE ON) # octave, python
+#    target_compile_definitions(${PROJECT_NAME}_static PUBLIC -DINTERNAL_BUILD)
+#    target_link_libraries(${PROJECT_NAME}_static PUBLIC ${REQUIRED_LIBS})
+#    target_include_directories(
+#        ${PROJECT_NAME}_static
+#        PUBLIC $<BUILD_INTERFACE:${HUB_INCLUDE_DIR}> $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.h
+#               $<INSTALL_INTERFACE:include>
+#        PRIVATE ${HUB_EXTERNAL_DIR})
+#endif()
+
+# ########################### INSTALL/EXPORT ################################
+
+#if(HUB_BUILD_STATIC_LIBRARY)
+
+#else()
+#    install(
+#        TARGETS ${PROJECT_NAME}
+#        EXPORT ${PROJECT_NAME}
+#        # DESTINATION ${ARCHITECTURE}/bin # Linux
+#        RUNTIME DESTINATION ${ARCHITECTURE}/bin # Windows
+#    )
+
+#    if(MSVC)
+#        if(NOT ${CMAKE_BUILD_TYPE} STREQUAL "Release")
+#            install(FILES $<TARGET_PDB_FILE:${PROJECT_NAME}> DESTINATION ${ARCHITECTURE}/bin)
+#        endif()
+#    endif()
+#endif()
+
 
 string(TIMESTAMP DATE "%Y/%m/%d %H:%M UTC+0" UTC)
 
@@ -209,7 +328,6 @@ write_basic_package_version_file(
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
               ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake DESTINATION share/${PROJECT_NAME}/cmake)
 
-export(EXPORT ${PROJECT_NAME} FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake")
 
 # ########################### COVERAGE ################################
 
