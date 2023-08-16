@@ -9,6 +9,7 @@
 variables:
   CACHE_PATH: "cache10"
   GIT_STRATEGY: fetch
+  LINUX_TAG: "linux"
   # GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_CONCURRENT_ID/$CI_PROJECT_PATH
 
 #https://docs.gitlab.com/ee/ci/yaml/#extends
@@ -80,7 +81,7 @@ cache:
 build-clang-release:
   stage: build
   tags:
-    - linux-arch
+    - $LINUX_TAG
   script:
     - BUILD_TYPE=Release
     - CMAKE_C_COMPILER=clang
@@ -94,7 +95,7 @@ build-clang-release:
 build-gcc-debug:
   stage: build
   tags:
-    - linux-arch
+    - $LINUX_TAG
   script:
     - BUILD_TYPE=Debug
     - CMAKE_C_COMPILER=gcc
@@ -132,7 +133,7 @@ build-cl-debug:
 test-clang-release:
   stage: test
   tags:
-    - linux-arch
+    - $LINUX_TAG
   script:
     - BUILD_TYPE=Release
     - CMAKE_C_COMPILER=clang
@@ -145,7 +146,7 @@ test-clang-release:
 test-gcc-debug:
   stage: test
   tags:
-    - linux-arch
+    - $LINUX_TAG
   script:
     - BUILD_TYPE=Debug
     - CMAKE_C_COMPILER=gcc
