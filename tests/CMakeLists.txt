@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.5)
 
 project(tests LANGUAGES CXX)
 
+set(LINK_LIBRARIES Catch2::Catch2WithMain hub)
+
 find_package(Catch2 QUIET)
 if(NOT ${Catch2_FOUND})
     include(FetchContent)
@@ -15,11 +17,17 @@ if(NOT ${Catch2_FOUND})
 endif()
 
 find_package(PahoMqttCpp QUIET)
+if (PahoMqttCpp_FOUND)
+	set(LINK_LIBRARIES ${LINK_LIBRARIES} PahoMqttCpp::paho-mqttpp3)
+endif()
+
 
 file(GLOB_RECURSE test_srcs *.cpp)
 
+
 add_executable(test-all ${test_srcs})
-target_link_libraries(test-all Catch2::Catch2WithMain hub PahoMqttCpp::paho-mqttpp3)
+# target_link_libraries(test-all Catch2::Catch2WithMain hub PahoMqttCpp::paho-mqttpp3)
+target_link_libraries(test-all ${LINK_LIBRARIES})
 target_include_directories(test-all PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 set_property(TARGET test-all PROPERTY CXX_STANDARD ${CMAKE_CXX_STANDARD})
 set_property(TARGET test-all PROPERTY CXX_EXTENSIONS OFF)
@@ -38,7 +46,8 @@ foreach(testFile ${test_srcs})
     get_filename_component(test ${testFile} NAME_WE)
 
     add_executable(${test} ${testFile})
-    target_link_libraries(${test} PRIVATE Catch2::Catch2WithMain hub PahoMqttCpp::paho-mqttpp3)
+    # target_link_libraries(${test} PRIVATE Catch2::Catch2WithMain hub PahoMqttCpp::paho-mqttpp3)
+	target_link_libraries(${test} PRIVATE ${LINK_LIBRARIES})
     target_include_directories(${test} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 
     add_test(NAME ${test} COMMAND ${test})
