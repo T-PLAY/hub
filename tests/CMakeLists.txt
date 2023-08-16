@@ -14,10 +14,12 @@ if(NOT ${Catch2_FOUND})
     FetchContent_MakeAvailable(Catch2)
 endif()
 
+find_package(PahoMqttCpp QUIET)
+
 file(GLOB_RECURSE test_srcs *.cpp)
 
 add_executable(test-all ${test_srcs})
-target_link_libraries(test-all Catch2::Catch2WithMain hub)
+target_link_libraries(test-all Catch2::Catch2WithMain hub PahoMqttCpp::paho-mqttpp3)
 target_include_directories(test-all PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 set_property(TARGET test-all PROPERTY CXX_STANDARD ${CMAKE_CXX_STANDARD})
 set_property(TARGET test-all PROPERTY CXX_EXTENSIONS OFF)
@@ -36,7 +38,7 @@ foreach(testFile ${test_srcs})
     get_filename_component(test ${testFile} NAME_WE)
 
     add_executable(${test} ${testFile})
-    target_link_libraries(${test} PRIVATE Catch2::Catch2WithMain hub)
+    target_link_libraries(${test} PRIVATE Catch2::Catch2WithMain hub PahoMqttCpp::paho-mqttpp3)
     target_include_directories(${test} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 
     add_test(NAME ${test} COMMAND ${test})
