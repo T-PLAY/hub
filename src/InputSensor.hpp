@@ -81,15 +81,15 @@ class SRC_API InputSensor : public Sensor
     std::vector<Acquisition> getAllAcquisitions();
 
     ///
+    /// \brief close
+    ///
+    void close();
+
+    ///
     /// \brief getInput
     /// \return
     ///
     io::Input& getInput() const;
-
-    ///
-    /// \brief close
-    ///
-    void close();
 
   private:
     std::unique_ptr<io::Input> m_input;

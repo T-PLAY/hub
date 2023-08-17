@@ -41,7 +41,9 @@ class SRC_API OutputSensor : public Sensor
         class SensorSpec = hub::SensorSpec,
         class Output,
         typename = typename std::enable_if<std::is_base_of<io::Output, Output>::value &&
-                                           !std::is_same<Output, io::OutputStream>::value>::type>
+                                           !std::is_same<Output, io::OutputStream>::value &&
+                                           !std::is_same<Output, net::ClientSocket>::value
+                                           >::type>
     OutputSensor( SensorSpec&& sensorSpec, Output&& output ) :
 
         Sensor( std::forward<SensorSpec>( sensorSpec ) ),
@@ -122,7 +124,6 @@ class SRC_API OutputSensor : public Sensor
 
   private:
     std::unique_ptr<io::Output> m_output;
-
     bool m_moved = false;
 };
 
