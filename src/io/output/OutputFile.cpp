@@ -9,6 +9,7 @@ OutputFile::OutputFile(const std::string &filePath)
     , m_file(filePath, std::ios::out | std::ios::binary | std::ios::trunc)
 //                std::fstream( filename, std::ios::out | std::ios::binary | std::ios::trunc ) ) );
 {
+    assert(m_file.is_open());
 
 }
 
@@ -16,6 +17,7 @@ OutputFile::OutputFile(const char *filePath)
     : File(filePath)
     , m_file(filePath, std::ios::out | std::ios::binary | std::ios::trunc)
 {
+    assert(m_file.is_open());
 
 }
 

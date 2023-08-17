@@ -184,10 +184,12 @@
 #    define CPLUSPLUS_VERSION 20
 #    define CONSTEXPR17 constexpr
 #    define CONSTEXPR20 constexpr
+#    define CONSTEXPR constexpr
 #elif ( __cplusplus >= 201703L )
 #    define CPLUSPLUS_VERSION 17
 #    define CONSTEXPR17 constexpr
 #    define CONSTEXPR20
+#    define CONSTEXPR constexpr
 #elif ( __cplusplus >= 201402L ) || ( defined( _MSC_VER ) && _MSC_VER >= 1914 )
 #    define CPLUSPLUS_VERSION 14
 #    define CONSTEXPR17

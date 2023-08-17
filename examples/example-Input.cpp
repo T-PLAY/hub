@@ -6,6 +6,8 @@
 #include <io/input/InputStreamInterface.hpp>
 #include <io/input/InputStreamServer.hpp>
 #include <io/input/InputSyncStream.hpp>
+#include <io/input/InputFile.hpp>
+#include <io/input/InputMemory.hpp>
 
 int main() {
     return 0;
@@ -19,5 +21,11 @@ int main() {
     const hub::io::Input & input3 = hub::input::InputStreamServer("streamName", ipv4, port);
 //    const hub::io::Input & input4 = hub::input::InputStreamInterface("streamName", ipv4, port); // abstract class
     const hub::io::Input & input5 = hub::input::InputSyncStream("streamName", "streamName2", ipv4, port);
-
+    const hub::io::Input & input6 = hub::input::InputFile("filePath");
+    std::vector<int> vs;
+#if CPLUSPLUS_VERSION < 17
+    const hub::io::Input & input7 = hub::input::InputMemory<decltype(vs)>(vs);
+#else
+    const hub::io::Input & input7 = hub::input::InputMemory(vs);
+#endif
 }

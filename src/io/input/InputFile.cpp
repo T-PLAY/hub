@@ -1,5 +1,7 @@
 #include "InputFile.hpp"
 
+//#include <filesystem>
+
 namespace hub {
 using namespace io;
 namespace input {
@@ -14,7 +16,7 @@ InputFile::InputFile(const std::string &filePath)
     : File(filePath)
     , m_file(filePath, std::ios::in | std::ios::binary)
 {
-
+    assert(m_file.is_open());
 }
 
 InputFile::InputFile(const char *filePath)
@@ -22,6 +24,7 @@ InputFile::InputFile(const char *filePath)
     , m_file(filePath, std::ios::in | std::ios::binary)
 //            hub::io::File( std::fstream( filename, std::ios::in | std::ios::binary ) ) );
 {
+    assert(m_file.is_open());
 
 }
 

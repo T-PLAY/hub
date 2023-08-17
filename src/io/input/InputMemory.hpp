@@ -18,6 +18,7 @@ class InputMemory : public Input, public MemoryInterface<Container>
 //  protected:
     explicit InputMemory( Container& buff ) : MemoryInterface<Container>(buff) {}
 
+
     ///
     /// \brief read
     /// \param t
@@ -60,6 +61,7 @@ class InputMemory : public Input, public MemoryInterface<Container>
 
   private:
 };
+
 
 
 } // namespace input

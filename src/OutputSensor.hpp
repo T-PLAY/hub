@@ -14,6 +14,7 @@
 #include "io/output/OutputFile.hpp"
 #include "io/output/OutputStream.hpp"
 #include "io/output/OutputStreamServer.hpp"
+#include "io/output/OutputMemory.hpp"
 
 namespace hub {
 
