@@ -5,8 +5,8 @@
 #include "Acquisition.hpp"
 #include "Sensor.hpp"
 #include "SensorSpec.hpp"
-#include "Traits.hpp"
 #include "io/Output.hpp"
+#include "Traits.hpp"
 
 // user friendly useless includes
 // #include "io/Output.hpp"
@@ -41,7 +41,7 @@ class SRC_API OutputSensor : public Sensor
         class SensorSpec = hub::SensorSpec,
         class Output,
         typename = typename std::enable_if<std::is_base_of<io::Output, Output>::value &&
-                                           !std::is_same<Output, io::OutputStream>::value &&
+                                           !std::is_same<Output, io::OutputStreamServer>::value &&
                                            !std::is_same<Output, net::ClientSocket>::value
                                            >::type>
     OutputSensor( SensorSpec&& sensorSpec, Output&& output ) :
@@ -50,7 +50,8 @@ class SRC_API OutputSensor : public Sensor
         m_output( new Output( std::move( output ) ) ) {
 
         static_assert( std::is_base_of<io::Output, Output>::value, "not a base class" );
-        static_assert( !std::is_same<io::OutputStream, Output>::value, "not outputStream class" );
+        static_assert( !std::is_same<io::OutputStreamServer, Output>::value, "not outputStream class" );
+        static_assert( !std::is_same<net::ClientSocket, Output>::value, "not clientSocket class" );
 
         m_output->write( m_spec );
     }
@@ -79,6 +80,7 @@ class SRC_API OutputSensor : public Sensor
         Sensor( std::forward<SensorSpec>( sensorSpec ) ),
         m_output( new Output( std::forward<Args>( args )... ) ) {
         static_assert( std::is_base_of<io::Output, Output>::value, "not a base class" );
+        static_assert( !std::is_same<net::ClientSocket, Output>::value, "not clientSocket class" );
 
         m_output->write( m_spec );
     }

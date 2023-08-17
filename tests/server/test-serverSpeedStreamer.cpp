@@ -101,7 +101,8 @@ TEST_CASE( "Server test : viewer" ) {
             CHECK( streamer.isConnected() );
 
             hub::InputSensor inputSensor(
-                hub::io::InputStream( "streamName", hub::net::ClientSocket( ipv4, port2 ) ) );
+//                hub::io::InputStream( "streamName", hub::net::ClientSocket( ipv4, port2 ) ) );
+                hub::io::InputStream( "streamName", ipv4, port2 ) );
 
             const auto& sensorSpec2 = inputSensor.getSpec();
             CHECK( sensorSpec == sensorSpec2 );

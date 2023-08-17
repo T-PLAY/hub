@@ -57,7 +57,8 @@ TEST_CASE( "Server test : sync" ) {
         hub::OutputSensor outputSensor(
             hub::SensorSpec { "sensorName", { { { 3 }, hub::Format::BGR8 } } },
             "stream",
-            hub::net::ClientSocket( ipv4, port ) );
+//            hub::net::ClientSocket( ipv4, port ) );
+            ipv4, port );
 
         const auto& outputSensorSpec = outputSensor.getSpec();
         CHECK( outputSensorSpec.getAcquisitionSize() == dataSize );
@@ -72,7 +73,8 @@ TEST_CASE( "Server test : sync" ) {
         hub::OutputSensor outputSensor2(
             hub::SensorSpec { "sensorName2", { { { 3 }, hub::Format::BGR8 } } },
             "stream2",
-            hub::net::ClientSocket( ipv4, port ) );
+//            hub::net::ClientSocket( ipv4, port ) );
+            ipv4, port );
 
         const auto& outputSensorSpec2 = outputSensor2.getSpec();
         CHECK( outputSensorSpec2.getAcquisitionSize() == dataSize );
@@ -85,14 +87,17 @@ TEST_CASE( "Server test : sync" ) {
 
         std::cout << "[Test] ############################### inputStream start" << std::endl;
         hub::InputSensor inputSensor(
-            hub::io::InputStream( "stream", hub::net::ClientSocket( ipv4, port ) ) );
+//            hub::io::InputStream( "stream", hub::net::ClientSocket( ipv4, port ) ) );
+            hub::io::InputStream( "stream", ipv4, port ) );
 
         const auto& inputSensorSpec = inputSensor.getSpec();
         std::cout << "[Test] inputStream end ---------------------------------" << std::endl;
 
         std::cout << "[Test] ############################### inputStream2 start" << std::endl;
         hub::InputSensor inputSensor2(
-            hub::io::InputStream( "stream2", hub::net::ClientSocket( ipv4, port ) ) );
+//            hub::io::InputStream( "stream2", hub::net::ClientSocket( ipv4, port ) ) );
+            hub::io::InputStream( "stream2", ipv4, port ) );
+
 
         const auto& inputSensorSpec2 = inputSensor2.getSpec();
         std::cout << "[Test] inputStream2 end ---------------------------------" << std::endl;

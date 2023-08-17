@@ -42,17 +42,20 @@ TEST_CASE( "OutputStream test" ) {
     server.asyncRun();
 
     hub::OutputSensor outputSensor(
-        ref_sensorSpec, "streamName", hub::net::ClientSocket( ipv4, port ) );
+//        ref_sensorSpec, "streamName", hub::net::ClientSocket( ipv4, port ) );
+        ref_sensorSpec, "streamName",ipv4, port );
     std::cout << "outputSensor created" << std::endl;
 
     {
         try {
             // unable to open same stream name twice
             hub::io::OutputStream outputStream2( "streamName",
-                                                 hub::net::ClientSocket( ipv4, port ) );
+//                                                 hub::net::ClientSocket( ipv4, port ) );
+                                                 ipv4, port );
             CHECK( false );
             hub::OutputSensor outputSensor2(
-                ref_sensorSpec, "streamName", hub::net::ClientSocket( ipv4, port ) );
+//                ref_sensorSpec, "streamName", hub::net::ClientSocket( ipv4, port ) );
+                ref_sensorSpec, "streamName", ipv4, port );
             std::cout << "outputSensor2 created" << std::endl;
         }
         catch ( std::exception& ex ) {

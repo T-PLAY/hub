@@ -62,12 +62,13 @@ class Stream
         m_mtxOutputSensor.lock();
 
         try {
-            hub::net::ClientSocket sock( m_streamer.m_ipv4, m_streamer.m_port );
-            assert( sock.isConnected() );
-            assert( sock.isOpen() );
+//            hub::net::ClientSocket sock( m_streamer.m_ipv4, m_streamer.m_port );
+//            assert( sock.isConnected() );
+//            assert( sock.isOpen() );
 
             assert( m_outputSensor == nullptr );
-            m_outputSensor = new OutputSensor( m_sensorSpec, m_streamName, std::move( sock ) );
+//            m_outputSensor = new OutputSensor( m_sensorSpec, m_streamName, std::move( sock ) );
+            m_outputSensor = new OutputSensor( m_sensorSpec, m_streamName, m_streamer.m_ipv4, m_streamer.m_port );
 
             for ( const auto& acq : m_initAcqs ) {
                 *m_outputSensor << acq;

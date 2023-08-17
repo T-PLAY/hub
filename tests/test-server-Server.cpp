@@ -42,10 +42,12 @@ TEST_CASE( "Server test" ) {
 
     {
         hub::OutputSensor outputSensor(
-            ref_sensorSpec, "streamName", hub::net::ClientSocket( ipv4, port ) );
+//            ref_sensorSpec, "streamName", hub::net::ClientSocket( ipv4, port ) );
+            ref_sensorSpec, "streamName",  ipv4, port );
         std::cout << "outputSensor created" << std::endl;
 
-        hub::io::InputStream inputStream( "streamName", hub::net::ClientSocket( ipv4, port ) );
+//        hub::io::InputStream inputStream( "streamName", hub::net::ClientSocket( ipv4, port ) );
+        hub::io::InputStream inputStream( "streamName", ipv4, port );
         hub::InputSensor inputSensor( std::move( inputStream ) );
         std::cout << "inputSensor created" << std::endl;
 

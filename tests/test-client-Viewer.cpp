@@ -94,7 +94,8 @@ TEST_CASE( "Viewer" ) {
             hub::SensorSpec sensorSpec( "sensorName", { resolution } );
             hub::OutputSensor outputSensor(
                 sensorSpec,
-                "streamName", hub::net::ClientSocket( ipv4, port ) );
+//                "streamName", hub::net::ClientSocket( ipv4, port ) );
+                "streamName", ipv4, port );
             std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
 
 

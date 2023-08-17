@@ -31,7 +31,8 @@ TEST_CASE( "OutputSensor with closed server" ) {
             server.asyncRun();
 
             outputSensor = new hub::OutputSensor(
-                sensorSpec, "streamName", hub::net::ClientSocket( ipv4, port ) );
+//                sensorSpec, "streamName", hub::net::ClientSocket( ipv4, port ) );
+                sensorSpec, "streamName", ipv4, port );
 
             std::cout << "[Test] ############################### output sensor start" << std::endl;
             std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );

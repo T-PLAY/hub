@@ -118,10 +118,12 @@ TEST_CASE( "InputSyncStream test" ) {
 
         {
             hub::OutputSensor outputSensor(
-                ref_sensorSpec, "streamName", hub::net::ClientSocket( ipv4, port ) );
+//                ref_sensorSpec, "streamName", hub::net::ClientSocket( ipv4, port ) );
+                ref_sensorSpec, "streamName", ipv4, port );
 
             hub::OutputSensor outputSensor2(
-                ref_sensorSpec2, "streamName2", hub::net::ClientSocket( ipv4, port ) );
+//                ref_sensorSpec2, "streamName2", hub::net::ClientSocket( ipv4, port ) );
+                ref_sensorSpec2, "streamName2", ipv4, port );
             std::cout << "outputSensors created" << std::endl;
 
             hub::io::InputSyncStream inputStream( "streamName", "streamName2", ipv4, port );

@@ -13,7 +13,8 @@ InputSensor* createInputSensor( const char* streamName, const char* ipv4, int po
     InputSensor* inputSensor = nullptr;
     try {
         inputSensor =
-            new InputSensor( io::InputStream( streamName, net::ClientSocket( ipv4, port ) ) );
+//            new InputSensor( io::InputStream( streamName, net::ClientSocket( ipv4, port ) ) );
+            new InputSensor( io::InputStream( streamName,  ipv4, port ) );
     }
     catch ( std::exception& e ) {
         std::cout << "[Native] createInputSensor : catch exception : " << e.what() << std::endl;
@@ -60,7 +61,8 @@ OutputSensor* createMat4OutputSensor( const char* sensorName, const char* ipv4, 
     try {
         SensorSpec sensorSpec( sensorName, { { { 1 }, hub::Format::MAT4 } } );
         outputSensor = new OutputSensor(
-            std::move( sensorSpec ), sensorName, net::ClientSocket( ipv4, port ) );
+//            std::move( sensorSpec ), sensorName, net::ClientSocket( ipv4, port ) );
+            std::move( sensorSpec ), sensorName, ipv4, port );
     }
     catch ( std::exception& e ) {
         std::cout << "[Native] createOutputSensor : catch exception : " << e.what() << std::endl;

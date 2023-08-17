@@ -88,7 +88,8 @@ TEST_CASE( "Server test : viewer" ) {
             hub::OutputSensor outputSensor(
                 hub::SensorSpec( "sensorName", { { { width, height }, hub::Format::BGR8 } } ),
                 "streamName",
-                hub::net::ClientSocket( ipv4, port2 ) );
+//                hub::net::ClientSocket( ipv4, port2 ) );
+                 ipv4, port2 );
 
             std::cout
                 << "[test][InputOutputSensor] ############################### inputStream start"

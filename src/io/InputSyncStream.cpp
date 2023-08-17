@@ -8,9 +8,10 @@ InputSyncStream::InputSyncStream( const std::string& streamName,
                                   const std::string& syncStreamName,
                                   const std::string& ipv4,
                                   int port ) :
-    m_inputStream( streamName, hub::net::ClientSocket( ipv4, port ) ),
-    m_inputStream2( syncStreamName, hub::net::ClientSocket( ipv4, port ) )
-
+//    m_inputStream( streamName, hub::net::ClientSocket( ipv4, port ) ),
+//    m_inputStream2( syncStreamName, hub::net::ClientSocket( ipv4, port ) )
+    m_inputStream( streamName, ipv4, port ),
+    m_inputStream2( syncStreamName, ipv4, port )
 {}
 
 void InputSyncStream::read( Acquisition& acq ) {

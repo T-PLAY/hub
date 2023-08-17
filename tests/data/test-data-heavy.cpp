@@ -35,11 +35,13 @@ TEST_CASE( "heavy data" ) {
 
     hub::OutputSensor outputSensor( hub::SensorSpec { "Sensor", resolutions, metaData },
                                     "Sensor",
-                                    hub::net::ClientSocket( ipv4, port ) );
+//                                    hub::net::ClientSocket( ipv4, port ) );
+                                    ipv4, port );
 
     std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
     hub::InputSensor inputSensor(
-        hub::io::InputStream( "Sensor", hub::net::ClientSocket( ipv4, port ) ) );
+//        hub::io::InputStream( "Sensor", hub::net::ClientSocket( ipv4, port ) ) );
+        hub::io::InputStream( "Sensor", ipv4, port ) );
 
     std::vector<hub::Acquisition> acqs;
     constexpr size_t nAcq = 100;

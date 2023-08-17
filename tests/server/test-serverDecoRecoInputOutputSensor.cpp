@@ -42,7 +42,8 @@ TEST_CASE( "Server test : direct stream" ) {
             hub::OutputSensor outputSensor(
                 hub::SensorSpec { "sensorName", { { { 3 }, hub::Format::BGR8 } } },
                 "stream",
-                hub::net::ClientSocket( ipv4, port ) );
+//                hub::net::ClientSocket( ipv4, port ) );
+                ipv4, port  );
 
             const auto& outputSensorSpec = outputSensor.getSpec();
             CHECK( outputSensorSpec.getAcquisitionSize() == dataSize );
@@ -56,7 +57,8 @@ TEST_CASE( "Server test : direct stream" ) {
             for ( int iInput = 0; iInput < nInput; ++iInput ) {
                 {
                     hub::InputSensor inputSensor(
-                        hub::io::InputStream( "stream", hub::net::ClientSocket( ipv4, port ) ) );
+//                        hub::io::InputStream( "stream", hub::net::ClientSocket( ipv4, port ) ) );
+                        hub::io::InputStream( "stream", ipv4, port ) );
 
                     const auto& inputSensorSpec = inputSensor.getSpec();
                     CHECK( inputSensorSpec.getAcquisitionSize() == dataSize );

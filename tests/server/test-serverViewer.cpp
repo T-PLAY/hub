@@ -48,7 +48,8 @@ TEST_CASE( "Server test : viewer" ) {
             std::cout << "[Test] ############################### onNewStreamer" << std::endl;
             {
                 hub::InputSensor inputSensor(
-                    hub::io::InputStream( sensorName, hub::net::ClientSocket( ipv4, port ) ) );
+//                    hub::io::InputStream( sensorName, hub::net::ClientSocket( ipv4, port ) ) );
+                    hub::io::InputStream( sensorName, ipv4, port ) );
 
                 const auto& inputSensorSpec = inputSensor.getSpec();
                 CHECK( inputSensorSpec.getAcquisitionSize() == dataSize );
@@ -102,7 +103,8 @@ TEST_CASE( "Server test : viewer" ) {
             hub::OutputSensor outputSensor(
                 hub::SensorSpec { "sensorName", { { { width, height }, hub::Format::BGR8 } } },
                 "stream",
-                hub::net::ClientSocket( ipv4, port ) );
+//                hub::net::ClientSocket( ipv4, port ) );
+                ipv4, port );
             std::this_thread::sleep_for( std::chrono::milliseconds( 500 ) );
         }
         std::cout << "[Test] ############################### outputSensor end" << std::endl;

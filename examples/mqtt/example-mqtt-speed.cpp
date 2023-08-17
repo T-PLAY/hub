@@ -162,13 +162,15 @@ int main() {
             hub::OutputSensor outputSensor(
                 hub::SensorSpec( "sensorName", { { { width, height }, hub::Format::BGR8 } } ),
                 "streamName",
-                hub::net::ClientSocket( ipv4, port2 ) );
+//                hub::net::ClientSocket( ipv4, port2 ) );
+                ipv4, port2 );
 
             std::cout
                 << "[test][InputOutputSensor] ############################### inputStream start"
                 << std::endl;
             hub::InputSensor inputSensor(
-                hub::io::InputStream( "streamName", hub::net::ClientSocket( ipv4, port2 ) ) );
+//                hub::io::InputStream( "streamName", hub::net::ClientSocket( ipv4, port2 ) ) );
+                hub::io::InputStream( "streamName", ipv4, port2 ) );
 
             const auto& inputSensorSpec = inputSensor.getSpec();
             assert( inputSensorSpec.getAcquisitionSize() == dataSize );

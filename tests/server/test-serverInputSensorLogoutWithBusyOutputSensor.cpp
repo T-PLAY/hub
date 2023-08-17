@@ -20,7 +20,8 @@ TEST_CASE( "Server test : inputSensorLogoutWithBusyOutputSensor" ) {
         hub::OutputSensor outputSensor(
             hub::SensorSpec( "sensorName", { { { 1 }, hub::Format::BGR8 } } ),
             "streamName",
-            hub::net::ClientSocket( ipv4, port ) );
+//            hub::net::ClientSocket( ipv4, port ) );
+            ipv4, port );
         std::cout << "[test] outputSensor created" << std::endl;
 
         std::thread thread;
@@ -42,7 +43,8 @@ TEST_CASE( "Server test : inputSensorLogoutWithBusyOutputSensor" ) {
 
         {
 
-            hub::io::InputStream inputStream( "streamName", hub::net::ClientSocket( ipv4, port ) );
+//            hub::io::InputStream inputStream( "streamName", hub::net::ClientSocket( ipv4, port ) );
+            hub::io::InputStream inputStream( "streamName", ipv4, port );
             hub::InputSensor inputSensor( std::move( inputStream ) );
             assert( !inputSensor.getSpec().isEmpty() );
 

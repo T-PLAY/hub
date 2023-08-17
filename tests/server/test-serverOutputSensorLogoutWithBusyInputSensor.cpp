@@ -23,11 +23,13 @@ TEST_CASE( "Server test" ) {
             hub::OutputSensor outputSensor(
                 hub::SensorSpec( "sensorName", { { { 1 }, hub::Format::BGR8 } } ),
                 "streamName",
-                hub::net::ClientSocket( ipv4, port ) );
+//                hub::net::ClientSocket( ipv4, port ) );
+                ipv4, port );
             std::cout << "[test] outputSensor created" << std::endl;
 
             inputSensor = std::make_unique<hub::InputSensor>(
-                hub::io::InputStream( "streamName", hub::net::ClientSocket( ipv4, port ) ) );
+//                hub::io::InputStream( "streamName", hub::net::ClientSocket( ipv4, port ) ) );
+                hub::io::InputStream( "streamName", ipv4, port ) );
             std::cout << "[test] inputSensor created" << std::endl;
 
             thread = std::thread( [&inputSensor]() {

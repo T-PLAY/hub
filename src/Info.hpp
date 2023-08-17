@@ -38,7 +38,8 @@ namespace data {}
 ///
 /// @brief
 ///
-namespace io {}
+namespace io {
+}
 
 ///
 /// @brief

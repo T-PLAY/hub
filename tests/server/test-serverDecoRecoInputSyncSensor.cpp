@@ -56,7 +56,8 @@ TEST_CASE( "Server test : close clients" ) {
         hub::OutputSensor outputSensor(
             hub::SensorSpec { "sensorName", { { { 3 }, hub::Format::BGR8 } } },
             "stream",
-            hub::net::ClientSocket( ipv4, port ) );
+//            hub::net::ClientSocket( ipv4, port ) );
+            ipv4, port );
 
         const auto& outputSensorSpec = outputSensor.getSpec();
         CHECK( outputSensorSpec.getAcquisitionSize() == dataSize );
@@ -71,7 +72,8 @@ TEST_CASE( "Server test : close clients" ) {
         hub::OutputSensor outputSensor2(
             hub::SensorSpec { "sensorName2", { { { 3 }, hub::Format::BGR8 } } },
             "stream2",
-            hub::net::ClientSocket( ipv4, port ) );
+//            hub::net::ClientSocket( ipv4, port ) );
+            ipv4, port );
 
         const auto& outputSensorSpec2 = outputSensor2.getSpec();
         CHECK( outputSensorSpec2.getAcquisitionSize() == dataSize );

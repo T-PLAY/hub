@@ -64,7 +64,8 @@ class Stream
 
                 m_inputSensor = std::make_unique<InputSensor>( io::InputStream(
                     m_streamName,
-                    net::ClientSocket( m_viewer.m_sock.getIpv4(), m_viewer.m_sock.getPort() ) ) );
+//                    net::ClientSocket( m_viewer.m_sock.getIpv4(), m_viewer.m_sock.getPort() ) ) );
+                    m_viewer.m_sock.getIpv4(), m_viewer.m_sock.getPort() ) );
 
                 while ( !m_stopThread ) {
                     hub::Acquisition acq;

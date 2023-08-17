@@ -19,6 +19,12 @@ SensorSpec::SensorSpec( const SensorNameType& sensorName,
     m_acquisitionSize( res::computeAcquisitionSize( resolutions ) ) {}
 #endif
 
+SensorSpec::SensorSpec(const char *sensorName, const Resolutions &resolutions, const MetaData &metaData) :
+    m_sensorName( sensorName ),
+    m_resolutions( resolutions ),
+    m_metaData( metaData ),
+    m_acquisitionSize( res::computeAcquisitionSize( resolutions ) ) {}
+
 SensorSpec SensorSpec::operator+( const SensorSpec& sensorSpec ) const {
     std::string sensorName;
     Resolutions resolutions;
