@@ -12,6 +12,7 @@
 #include "io/Memory.hpp"
 #include "io/input/InputStreamServer.hpp"
 #include "io/input/InputFile.hpp"
+#include "io/input/InputStreamMqtt.hpp"
 
 namespace hub {
 

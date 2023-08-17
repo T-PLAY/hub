@@ -15,6 +15,7 @@
 #include "io/output/OutputStream.hpp"
 #include "io/output/OutputStreamServer.hpp"
 #include "io/output/OutputMemory.hpp"
+#include "io/output/OutputStreamMqtt.hpp"
 
 namespace hub {
 
