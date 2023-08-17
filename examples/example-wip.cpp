@@ -2,7 +2,12 @@
 #include <OutputSensor.hpp>
 #include <server/Server.hpp>
 
-#include <io/InputStreamInterface.hpp>
+//#include <io/InputStreamInterface.hpp>
+
+#include <io/Memory.hpp>
+#include <io/MemoryInterface.hpp>
+#include <io/input/InputMemory.hpp>
+#include <io/output/OutputMemory.hpp>
 
 
 int main() {
@@ -12,7 +17,7 @@ int main() {
     int port = rand() % 60000;
 
 
-    hub::server::Server server(port);
+    hub::Server server(port);
     server.setMaxClients(2);
     server.asyncRun();
 
@@ -35,7 +40,7 @@ int main() {
 
 //    hub::io::InputStream inputStream("streamName", "127.0.0.1", port);
 //    hub::InputSensor inputSensor(std::move(inputStream));
-    hub::InputSensor inputSensor(hub::io::InputStream("streamName", "127.0.0.1", port));
+    hub::InputSensor inputSensor(hub::input::InputStream("streamName", "127.0.0.1", port));
 //    hub::InputSensor inputSensor("streamName", "127.0.0.1", port);
 //    hub::InputSensor inputSensor(std::move(clientSocket));
 
@@ -56,6 +61,25 @@ int main() {
     inputSensor >> acq2;
 
     std::cout << acq2 << std::endl;
+
+    std::vector<char> buff;
+    hub::input::InputMemory<std::vector<char>> memory(buff);
+    hub::output::OutputMemory<std::vector<char>> memory2(buff);
+    hub::io::Memory<std::vector<char>> memory3( buff );
+
+    assert(memory.isEnd());
+    assert(memory3.isEnd());
+
+    int a = 5;
+    memory2.put(a);
+
+    assert(! memory.isEnd());
+    assert(! memory3.isEnd());
+
+    int b;
+    memory.read(b);
+    assert(b == a);
+
 
 	return 0;
 }

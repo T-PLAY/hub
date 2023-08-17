@@ -8,12 +8,12 @@
 TEST_CASE( "ServerSocket test" ) {
 
     const int port = GET_RANDOM_PORT;
-    hub::server::Server server( port );
+    hub::Server server( port );
     server.setMaxClients( 0 );
     server.asyncRun();
 
     try {
-        hub::server::Server server2( port );
+        hub::Server server2( port );
         CHECK( false );
     }
     catch ( hub::net::Socket::exception& ex ) {

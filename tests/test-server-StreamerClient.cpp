@@ -5,7 +5,7 @@
 #include <server/Server.hpp>
 #include <server/StreamerClient.hpp>
 
-#include <io/OutputStream.hpp>
+#include <io/output/OutputStream.hpp>
 
 TEST_CASE( "StreamerClient test" ) {
 
@@ -38,7 +38,7 @@ TEST_CASE( "StreamerClient test" ) {
     const std::string ipv4 = "127.0.0.1";
     const int port         = GET_RANDOM_PORT;
 
-    hub::server::Server server( port );
+    hub::Server server( port );
     server.setMaxClients( 2 );
     server.asyncRun();
 
@@ -50,7 +50,7 @@ TEST_CASE( "StreamerClient test" ) {
     std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
 
 //    hub::io::InputStream inputStream( "streamName", hub::net::ClientSocket( ipv4, port ) );
-    hub::io::InputStream inputStream( "streamName", ipv4, port );
+    hub::input::InputStream inputStream( "streamName", ipv4, port );
     hub::InputSensor inputSensor( std::move( inputStream ) );
     std::cout << "inputSensor created" << std::endl;
 

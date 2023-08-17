@@ -75,7 +75,7 @@ TEST_CASE( "Server test : viewer" ) {
 
         std::cout << "[test][InputOutputSensor] ############################### server start"
                   << std::endl;
-        hub::server::Server server( port2 );
+        hub::Server server( port2 );
         server.setMaxClients( 2 );
         server.asyncRun();
         std::cout << "[test][InputOutputSensor] server end ------------------------------"
@@ -102,7 +102,7 @@ TEST_CASE( "Server test : viewer" ) {
 
             hub::InputSensor inputSensor(
 //                hub::io::InputStream( "streamName", hub::net::ClientSocket( ipv4, port2 ) ) );
-                hub::io::InputStream( "streamName", ipv4, port2 ) );
+                hub::input::InputStream( "streamName", ipv4, port2 ) );
 
             const auto& sensorSpec2 = inputSensor.getSpec();
             CHECK( sensorSpec == sensorSpec2 );

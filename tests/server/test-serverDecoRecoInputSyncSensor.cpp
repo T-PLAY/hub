@@ -46,7 +46,7 @@ TEST_CASE( "Server test : close clients" ) {
     }
 
     std::cout << "[Test] ############################### server start" << std::endl;
-    hub::server::Server server( port );
+    hub::Server server( port );
     server.setMaxClients( 2 + 2 * nInput );
     server.asyncRun();
     std::cout << "[Test] server end ------------------------------" << std::endl;
@@ -89,7 +89,7 @@ TEST_CASE( "Server test : close clients" ) {
                       << std::endl;
             {
                 hub::InputSensor inputSensor(
-                    hub::io::InputSyncStream( "stream", "stream2", ipv4, port ) );
+                    hub::input::InputSyncStream( "stream", "stream2", ipv4, port ) );
 
                 const auto& inputSensorSpec = inputSensor.getSpec();
                 CHECK( inputSensorSpec.getAcquisitionSize() == dataSize * 2 );

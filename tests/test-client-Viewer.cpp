@@ -73,7 +73,7 @@ TEST_CASE( "Viewer" ) {
 
     {
         std::cout << "[Test] ############################### server start" << std::endl;
-        hub::server::Server server( port );
+        hub::Server server( port );
         server.setMaxClients( 2 );
         server.asyncRun();
         std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );

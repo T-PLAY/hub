@@ -11,9 +11,11 @@
 #include "net/ClientSocket.hpp"
 
 namespace hub {
-namespace server {
 
 class Server;
+
+namespace server {
+
 class StreamViewerClient;
 
 ///

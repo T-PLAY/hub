@@ -8,7 +8,8 @@
 #include "net/ClientSocket.hpp"
 
 namespace hub {
-namespace io {
+using namespace io;
+namespace output {
 
 ///
 /// \brief The OutputStreamServer class
@@ -96,5 +97,5 @@ inline bool OutputStreamServer::isOpen() const {
     return m_clientSocket.isOpen();
 }
 
-} // namespace io
+} // namespace output
 } // namespace hub

@@ -39,7 +39,7 @@ class ViewerClient : public Client
 
     bool m_viewerClosed = false;
 
-    friend class Server;
+    friend class hub::Server;
 };
 
 } // namespace server

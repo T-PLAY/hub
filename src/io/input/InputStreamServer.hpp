@@ -8,7 +8,7 @@
 #include "net/ClientSocket.hpp"
 
 namespace hub {
-namespace io {
+namespace input {
 
 ///
 /// \brief The InputStreamServer class
@@ -131,5 +131,5 @@ inline bool InputStreamServer::isEnd() const {
     return m_clientSocket.isEnd();
 }
 
-} // namespace io
+} // namespace input
 } // namespace hub

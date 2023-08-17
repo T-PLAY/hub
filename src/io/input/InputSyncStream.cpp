@@ -1,8 +1,9 @@
 
-#include "io/InputSyncStream.hpp"
+#include "InputSyncStream.hpp"
 
 namespace hub {
-namespace io {
+using namespace io;
+namespace input {
 
 InputSyncStream::InputSyncStream( const std::string& streamName,
                                   const std::string& syncStreamName,
@@ -30,5 +31,5 @@ void InputSyncStream::read( SensorSpec& sensorSpec ) {
     sensorSpec = sensorSpec + sensorSpec2;
 }
 
-} // namespace io
+} // namespace input
 } // namespace hub

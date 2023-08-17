@@ -2,7 +2,8 @@
 #include "OutputStreamInterface.hpp"
 
 namespace hub {
-namespace io {
+using namespace io;
+namespace output {
 
 
 OutputStreamInterface::OutputStreamInterface(const std::string & streamName, const std::string & ipv4, int port)
@@ -16,5 +17,5 @@ OutputStreamInterface::OutputStreamInterface(const char *streamName, const char 
 {
 }
 
-} // namespace io
+} // namespace output
 } // namespace hub

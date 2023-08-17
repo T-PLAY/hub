@@ -186,7 +186,7 @@ TEST_CASE( "Native test" ) {
     // todo test
     if ( false ) {
         std::cout << "[Test] ############################### server start" << std::endl;
-        hub::server::Server server( port );
+        hub::Server server( port );
         server.setMaxClients( 2 );
         server.asyncRun();
         while ( !viewer->isConnected() ) {

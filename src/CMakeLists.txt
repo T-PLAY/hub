@@ -55,8 +55,11 @@ source_group("Source Files\\" FILES ${sources})
 #set(REQUIRED_LIBS)
 
 add_library(${PROJECT_NAME} OBJECT ${sources} ${headers}
-    io/Stream.hpp io/Stream.cpp
-    io/InputStreamInterface.hpp)
+    io/input/InputFile.hpp io/input/InputFile.cpp
+    io/MemoryInterface.hpp
+#    io/Stream.hpp io/Stream.cpp
+#    io/InputStreamInterface.hpp
+)
 
 target_include_directories(${PROJECT_NAME}
     PUBLIC

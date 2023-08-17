@@ -2,15 +2,16 @@
 
 #include "Acquisition.hpp"
 #include "Sensor.hpp"
-#include "io/Input.hpp"
+#include "io/input/Input.hpp"
 #include "Traits.hpp"
 
 // user friendly useless includes
-#include "io/File.hpp"
-#include "io/InputStream.hpp"
-#include "io/InputSyncStream.hpp"
+//#include "io/File.hpp"
+#include "io/input/InputStream.hpp"
+#include "io/input/InputSyncStream.hpp"
 #include "io/Memory.hpp"
-#include "io/InputStreamServer.hpp"
+#include "io/input/InputStreamServer.hpp"
+#include "io/input/InputFile.hpp"
 
 namespace hub {
 
@@ -48,9 +49,9 @@ class SRC_API InputSensor : public Sensor
         m_input->read( m_spec );
     }
 
-    template <class Input = io::InputStream,
+    template <class Input = input::InputStream,
               class... Args,
-              typename = typename std::enable_if<std::is_same<io::InputStream, Input>::value
+              typename = typename std::enable_if<std::is_same<input::InputStream, Input>::value
 #if ( __cplusplus < 201703L )
                                                  && ( sizeof...( Args ) != 1 ||
                                                       !is_one_of<Input, Args...>::value )

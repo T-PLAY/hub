@@ -28,7 +28,7 @@ class AskerClient : public Client
     std::thread m_thread;
     hub::net::ClientSocket m_sock;
 
-    friend class Server;
+    friend class hub::Server;
 };
 
 } // namespace server

@@ -7,7 +7,7 @@ namespace io {
 
 class Stream
 {
-  public:
+  protected:
     Stream( const std::string& name, const std::string& ipv4, int port );
     Stream( const char * name, const char * ipv4, int port );
 

@@ -5,12 +5,13 @@
 
 
 namespace hub {
-namespace io {
+using namespace io;
+namespace output {
 
 using OutputStream = OutputStreamServer;
 
 static_assert( std::is_base_of<OutputStreamInterface, OutputStream>::value,
                "OutputStreamInterface is base class of OutputStream" );
 
-} // namespace io
+} // namespace output
 } // namespace hub

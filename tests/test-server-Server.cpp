@@ -10,7 +10,7 @@ TEST_CASE( "Server test" ) {
     const std::string ipv4 = "127.0.0.1";
     const int port         = GET_RANDOM_PORT;
 
-    hub::server::Server server( port );
+    hub::Server server( port );
     server.setMaxClients( 2 );
     server.asyncRun();
 
@@ -47,7 +47,7 @@ TEST_CASE( "Server test" ) {
         std::cout << "outputSensor created" << std::endl;
 
 //        hub::io::InputStream inputStream( "streamName", hub::net::ClientSocket( ipv4, port ) );
-        hub::io::InputStream inputStream( "streamName", ipv4, port );
+        hub::input::InputStream inputStream( "streamName", ipv4, port );
         hub::InputSensor inputSensor( std::move( inputStream ) );
         std::cout << "inputSensor created" << std::endl;
 

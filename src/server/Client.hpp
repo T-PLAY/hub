@@ -6,9 +6,11 @@
 #include <net/ClientSocket.hpp>
 
 namespace hub {
-namespace server {
 
 class Server;
+
+namespace server {
+
 
 ///
 /// \brief The Client class
@@ -30,7 +32,7 @@ class Client
     Server* m_server = nullptr;
     int m_iClient;
 
-    friend class Server;
+    friend class hub::Server;
     friend class StreamerClient;
     friend class StreamViewerClient;
     friend class ViewerClient;

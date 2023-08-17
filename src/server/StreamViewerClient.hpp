@@ -35,7 +35,7 @@ class StreamViewerClient : public Client
 
     bool m_ending = false;
 
-    friend class Server;
+    friend class hub::Server;
 };
 
 } // namespace server

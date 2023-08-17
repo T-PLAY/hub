@@ -75,7 +75,7 @@ TEST_CASE( "Server test : viewer" ) {
 
         std::cout << "[test][InputOutputSensor] ############################### server start"
                   << std::endl;
-        hub::server::Server server( port2 );
+        hub::Server server( port2 );
         server.setMaxClients( 3 );
         server.asyncRun();
         std::cout << "[test][InputOutputSensor] server end ------------------------------"

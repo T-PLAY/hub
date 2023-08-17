@@ -1,4 +1,4 @@
-#include "io/Input.hpp"
+#include "Input.hpp"
 
 #include "Any.hpp"
 #include "Info.hpp"

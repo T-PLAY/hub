@@ -1,8 +1,9 @@
 
-#include "io/InputStreamServer.hpp"
+#include "InputStreamServer.hpp"
 
 namespace hub {
-namespace io {
+using namespace io;
+namespace input {
 
 //InputStreamServer::InputStreamServer( const std::string& streamName, net::ClientSocket&& clientSocket ) :
 InputStreamServer::InputStreamServer(const std::string &streamName, const std::string &ipv4, int port) :
@@ -92,5 +93,5 @@ void InputStreamServer::read( SensorSpec& sensorSpec ) {
     m_clientSocket.read( sensorSpec );
 }
 
-} // namespace io
+} // namespace input
 } // namespace hub

@@ -1,10 +1,11 @@
 #pragma once
 
 #include "Output.hpp"
-#include "Stream.hpp"
+#include "io/Stream.hpp"
 
 namespace hub {
-namespace io {
+using namespace io;
+namespace output {
 
 class OutputStreamInterface : public Output, public Stream {
   public:
@@ -16,5 +17,5 @@ class OutputStreamInterface : public Output, public Stream {
   private:
 };
 
-} // namespace io
+} // namespace output
 } // namespace hub

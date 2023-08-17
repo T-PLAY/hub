@@ -6,7 +6,10 @@
 #include "net/ClientSocket.hpp"
 
 namespace hub {
-namespace io {
+
+using namespace io;
+
+namespace input {
 
 ///
 /// \brief The InputSyncStream class
@@ -103,5 +106,5 @@ inline bool InputSyncStream::isEnd() const {
     return m_inputStream.isEnd() || m_inputStream2.isEnd();
 }
 
-} // namespace io
+} // namespace input
 } // namespace hub

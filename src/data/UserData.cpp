@@ -1,6 +1,7 @@
 #include "UserData.hpp"
 
 #include "io/Memory.hpp"
+//#include "io/input/InputMemory.hpp"
 
 namespace hub {
 namespace data {
@@ -21,7 +22,8 @@ UserData::UserData( const Measure& measure ) :
     std::vector<char> buff;
     buff.insert( buff.begin(), m_data, m_data + m_size );
 
-    io::Memory<decltype( buff )> memory( buff );
+//    io::Memory<decltype( buff )> memory( buff );
+    input::InputMemory<decltype( buff )> memory( buff );
 
     memory.read( m_name );
     memory.read( m_value );
@@ -34,7 +36,8 @@ UserData::UserData( const std::string& name, const Any& value ) :
 
     std::vector<char> buff;
 
-    io::Memory<decltype( buff )> memory( buff );
+//    io::Memory<decltype( buff )> memory( buff );
+    output::OutputMemory<decltype( buff )> memory( buff );
 
     memory.write( m_name );
     memory.write( m_value );

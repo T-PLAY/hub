@@ -13,7 +13,9 @@
 #include "net/ServerSocket.hpp"
 
 namespace hub {
-namespace server {
+//namespace server {
+
+using namespace server;
 
 ///
 /// \brief The Server class
@@ -103,12 +105,12 @@ class SRC_API Server
 
     bool m_detached = false;
 
-    friend class Client;
-    friend class StreamerClient;
-    friend class StreamViewerClient;
-    friend class ViewerClient;
-    friend class AskerClient;
+    friend class server::Client;
+    friend class server::StreamerClient;
+    friend class server::StreamViewerClient;
+    friend class server::ViewerClient;
+    friend class server::AskerClient;
 };
 
-} // namespace server
+//} // namespace server
 } // namespace hub

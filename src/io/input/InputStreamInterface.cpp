@@ -2,7 +2,8 @@
 #include "InputStreamInterface.hpp"
 
 namespace hub {
-namespace io {
+using namespace io;
+namespace input {
 
 
 InputStreamInterface::InputStreamInterface(const std::string & streamName, const std::string & ipv4, int port)
@@ -16,5 +17,5 @@ InputStreamInterface::InputStreamInterface(const char *streamName, const char *i
 {
 }
 
-} // namespace io
+} // namespace input
 } // namespace hub

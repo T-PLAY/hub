@@ -2,8 +2,8 @@
 
 #include "test-common.hpp"
 
-#include <io/InputStream.hpp>
-#include <io/OutputStream.hpp>
+#include <io/input/InputStream.hpp>
+#include <io/output/OutputStream.hpp>
 #include <server/Server.hpp>
 
 TEST_CASE( "InputStream test" ) {
@@ -34,7 +34,7 @@ TEST_CASE( "InputStream test" ) {
 
     const std::string ipv4 = "127.0.0.1";
     const int port         = GET_RANDOM_PORT;
-    hub::server::Server server( port );
+    hub::Server server( port );
     server.setMaxClients( 2 );
     server.asyncRun();
 
@@ -46,7 +46,7 @@ TEST_CASE( "InputStream test" ) {
 
         {
 //            hub::io::InputStream inputStream( "streamName", hub::net::ClientSocket( ipv4, port ) );
-            hub::io::InputStream inputStream( "streamName", ipv4, port );
+            hub::input::InputStream inputStream( "streamName", ipv4, port );
             hub::InputSensor inputSensor( std::move( inputStream ) );
             CHECK( inputSensor.getSpec() == ref_sensorSpec );
             std::cout << "[test] inputSensor created" << std::endl;

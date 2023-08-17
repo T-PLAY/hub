@@ -5,7 +5,7 @@
 #include <iostream>
 #include <string>
 
-#include <io/Input.hpp>
+#include <io/input/Input.hpp>
 
 #include <io/Memory.hpp>
 

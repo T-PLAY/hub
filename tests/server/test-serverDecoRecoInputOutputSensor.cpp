@@ -31,7 +31,7 @@ TEST_CASE( "Server test : direct stream" ) {
         acqs.push_back( std::move( acq ) );
     }
 
-    hub::server::Server server( port );
+    hub::Server server( port );
     server.setMaxClients( nOutput + nOutput * nInput );
     server.asyncRun();
     std::cout << "[Test] server end ------------------------------" << std::endl;
@@ -58,7 +58,7 @@ TEST_CASE( "Server test : direct stream" ) {
                 {
                     hub::InputSensor inputSensor(
 //                        hub::io::InputStream( "stream", hub::net::ClientSocket( ipv4, port ) ) );
-                        hub::io::InputStream( "stream", ipv4, port ) );
+                        hub::input::InputStream( "stream", ipv4, port ) );
 
                     const auto& inputSensorSpec = inputSensor.getSpec();
                     CHECK( inputSensorSpec.getAcquisitionSize() == dataSize );

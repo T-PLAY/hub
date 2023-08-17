@@ -35,7 +35,7 @@ TEST_CASE( "Server test : viewer" ) {
     delete[] data;
 
     std::cout << "[Test] ############################### server start" << std::endl;
-    hub::server::Server server( port );
+    hub::Server server( port );
     server.setMaxClients( 4 );
     server.asyncRun();
     std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
@@ -49,7 +49,7 @@ TEST_CASE( "Server test : viewer" ) {
             {
                 hub::InputSensor inputSensor(
 //                    hub::io::InputStream( sensorName, hub::net::ClientSocket( ipv4, port ) ) );
-                    hub::io::InputStream( sensorName, ipv4, port ) );
+                    hub::input::InputStream( sensorName, ipv4, port ) );
 
                 const auto& inputSensorSpec = inputSensor.getSpec();
                 CHECK( inputSensorSpec.getAcquisitionSize() == dataSize );

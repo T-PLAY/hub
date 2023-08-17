@@ -14,7 +14,7 @@ InputSensor* createInputSensor( const char* streamName, const char* ipv4, int po
     try {
         inputSensor =
 //            new InputSensor( io::InputStream( streamName, net::ClientSocket( ipv4, port ) ) );
-            new InputSensor( io::InputStream( streamName,  ipv4, port ) );
+            new InputSensor( input::InputStream( streamName,  ipv4, port ) );
     }
     catch ( std::exception& e ) {
         std::cout << "[Native] createInputSensor : catch exception : " << e.what() << std::endl;

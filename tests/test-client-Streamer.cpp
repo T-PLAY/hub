@@ -32,7 +32,7 @@ TEST_CASE( "Streamer" ) {
         std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
         {
 
-            hub::server::Server server( port );
+            hub::Server server( port );
             std::cout << "[Test] ############################### server start" << std::endl;
             server.setMaxClients( 1 );
             server.asyncRun();

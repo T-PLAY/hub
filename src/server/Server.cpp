@@ -18,7 +18,9 @@
     } while ( false )
 
 namespace hub {
-namespace server {
+//namespace server {
+
+using namespace server;
 
 Server::Server() {
     assert( !m_thread.joinable() );
@@ -400,5 +402,5 @@ void Server::setProperty( const std::string& streamName,
     }
 }
 
-} // namespace server
+//} // namespace server
 } // namespace hub

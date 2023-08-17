@@ -1,9 +1,14 @@
 #pragma once
 
-#include <fstream>
-#include <memory>
+//#include <fstream>
+//#include <memory>
+#include <exception>
 
-#include "InputOutput.hpp"
+#include <string>
+#include <stdexcept>
+
+#include "Macros.hpp"
+//#include "InputOutput.hpp"
 
 namespace hub {
 namespace io {
@@ -13,8 +18,34 @@ namespace io {
 /// is an encloser of a std file stream allowing to record or play acquisition streams in offline.
 /// This class can be use to play recorded stream as a real sensor stream.
 ///
-class SRC_API File : public InputOutput
+//class SRC_API File : public InputOutput
+class SRC_API File
 {
+//  public:
+  protected:
+    ///
+    /// \brief File
+    /// constructor from a std::fstream, if you use an InputSensor uses the std::ios::in constructor
+    /// option, if you use an OutputSensor the std::ios::out option when creating a std::fstream.
+    /// \param file
+    /// is a movable fstream you want to use as a sensor communication bus.
+    ///
+//    explicit File( std::fstream&& file );
+//    explicit File( std::basic_ios<char>&& file );
+    explicit File( const std::string & filePath );
+
+    explicit File( const char * filePath);
+
+//    File( const File& ) = delete;
+
+    ///
+    /// \param fileIO
+    ///
+//    File( File&& file ) = default;
+
+//    ~File();
+
+  protected:
     ///
     /// \brief The exception class
     ///
@@ -33,57 +64,12 @@ class SRC_API File : public InputOutput
         ///
         const char* what() const throw() { return std::runtime_error::what(); }
     };
-
-  public:
-    ///
-    /// \brief File
-    /// constructor from a std::fstream, if you use an InputSensor uses the std::ios::in constructor
-    /// option, if you use an OutputSensor the std::ios::out option when creating a std::fstream.
-    /// \param file
-    /// is a movable fstream you want to use as a sensor communication bus.
-    ///
-    explicit File( std::fstream&& file );
-
-    File( const File& fileIO ) = delete;
-
-    ///
-    /// \param fileIO
-    ///
-    File( File&& fileIO );
-
-    ~File();
-
-  protected:
-    ///
-    /// @copydoc InputOutput::close()
-    ///
-    void close() override;
-
-    ///
-    /// @copydoc InputOutput::isOpen()
-    ///
-    bool isOpen() const override;
-
-    ///
-    /// @copydoc InputOutput::isEnd()
-    ///
-    bool isEnd() const override;
-
-    ///
-    /// @copydoc InputOutput::write()
-    ///
-    void write( const unsigned char* data, size_t len ) override;
-
-    ///
-    /// @copydoc InputOutput::read()
-    ///
-    void read( unsigned char* data, size_t len ) override;
-
-  private:
     ///
     /// \brief m_file
     ///
-    std::unique_ptr<std::fstream> m_file;
+//    std::unique_ptr<std::fstream> m_file;
+//    std::unique_ptr<std::basic_ios<char>> m_file;
+    const std::string m_filePath;
 };
 
 } // namespace io

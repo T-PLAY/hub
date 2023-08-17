@@ -5,13 +5,15 @@
 #include "Acquisition.hpp"
 #include "Sensor.hpp"
 #include "SensorSpec.hpp"
-#include "io/Output.hpp"
+#include "io/output/Output.hpp"
 #include "Traits.hpp"
 
 // user friendly useless includes
 // #include "io/Output.hpp"
-#include "io/File.hpp"
-#include "io/OutputStream.hpp"
+//#include "io/File.hpp"
+#include "io/output/OutputFile.hpp"
+#include "io/output/OutputStream.hpp"
+#include "io/output/OutputStreamServer.hpp"
 
 namespace hub {
 
@@ -41,7 +43,7 @@ class SRC_API OutputSensor : public Sensor
         class SensorSpec = hub::SensorSpec,
         class Output,
         typename = typename std::enable_if<std::is_base_of<io::Output, Output>::value &&
-                                           !std::is_same<Output, io::OutputStreamServer>::value &&
+                                           !std::is_same<Output, output::OutputStreamServer>::value &&
                                            !std::is_same<Output, net::ClientSocket>::value
                                            >::type>
     OutputSensor( SensorSpec&& sensorSpec, Output&& output ) :
@@ -50,7 +52,7 @@ class SRC_API OutputSensor : public Sensor
         m_output( new Output( std::move( output ) ) ) {
 
         static_assert( std::is_base_of<io::Output, Output>::value, "not a base class" );
-        static_assert( !std::is_same<io::OutputStreamServer, Output>::value, "not outputStream class" );
+        static_assert( !std::is_same<output::OutputStreamServer, Output>::value, "not outputStream class" );
         static_assert( !std::is_same<net::ClientSocket, Output>::value, "not clientSocket class" );
 
         m_output->write( m_spec );
@@ -65,9 +67,9 @@ class SRC_API OutputSensor : public Sensor
     /// \param args
     ///
     template <class SensorSpec = hub::SensorSpec,
-              class Output     = io::OutputStream,
+              class Output     = output::OutputStream,
               class... Args,
-              typename = typename std::enable_if<std::is_same<io::OutputStream, Output>::value
+              typename = typename std::enable_if<std::is_same<output::OutputStream, Output>::value
 #if ( __cplusplus < 201703L )
                                                  && ( sizeof...( Args ) != 1 ||
                                                       !is_one_of<Output, Args...>::value )

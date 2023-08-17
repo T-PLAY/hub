@@ -1,11 +1,12 @@
 
-#include "io/OutputStreamServer.hpp"
+#include "OutputStreamServer.hpp"
 
 #include <iostream>
 #include <typeinfo>
 
 namespace hub {
-namespace io {
+using namespace io;
+namespace output {
 
 OutputStreamServer::OutputStreamServer(const std::string &streamName, const std::string &ipv4, int port) :
 //OutputStreamServer::OutputStreamServer( const std::string& streamName, net::ClientSocket&& clientSocket ) :
@@ -67,5 +68,5 @@ OutputStreamServer::~OutputStreamServer() {
     }
 }
 
-} // namespace io
+} // namespace output
 } // namespace hub

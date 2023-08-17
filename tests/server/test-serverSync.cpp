@@ -46,7 +46,7 @@ TEST_CASE( "Server test : sync" ) {
     std::cout << std::endl;
 
     std::cout << "[Test] ############################### server start" << std::endl;
-    hub::server::Server server( port );
+    hub::Server server( port );
     server.setMaxClients( 6 );
     server.asyncRun();
     std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
@@ -88,7 +88,7 @@ TEST_CASE( "Server test : sync" ) {
         std::cout << "[Test] ############################### inputStream start" << std::endl;
         hub::InputSensor inputSensor(
 //            hub::io::InputStream( "stream", hub::net::ClientSocket( ipv4, port ) ) );
-            hub::io::InputStream( "stream", ipv4, port ) );
+            hub::input::InputStream( "stream", ipv4, port ) );
 
         const auto& inputSensorSpec = inputSensor.getSpec();
         std::cout << "[Test] inputStream end ---------------------------------" << std::endl;
@@ -96,7 +96,7 @@ TEST_CASE( "Server test : sync" ) {
         std::cout << "[Test] ############################### inputStream2 start" << std::endl;
         hub::InputSensor inputSensor2(
 //            hub::io::InputStream( "stream2", hub::net::ClientSocket( ipv4, port ) ) );
-            hub::io::InputStream( "stream2", ipv4, port ) );
+            hub::input::InputStream( "stream2", ipv4, port ) );
 
 
         const auto& inputSensorSpec2 = inputSensor2.getSpec();
@@ -104,7 +104,7 @@ TEST_CASE( "Server test : sync" ) {
 
         std::cout << "[Test] ############################### inputStream3 start" << std::endl;
         hub::InputSensor inputSensor3(
-            hub::io::InputSyncStream( "stream", "stream2", ipv4, port ) );
+            hub::input::InputSyncStream( "stream", "stream2", ipv4, port ) );
 
         const auto& inputSensorSpec3 = inputSensor3.getSpec();
         std::cout << "[Test] inputStream2 end ---------------------------------" << std::endl;

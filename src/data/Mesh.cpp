@@ -343,7 +343,8 @@ Mesh::Mesh( std::initializer_list<std::string> filePaths ) :
 
     std::vector<unsigned char> buff;
 
-    io::Memory<decltype( buff )> memory( buff );
+//    io::Memory<decltype( buff )> memory( buff );
+    output::OutputMemory<decltype( buff )> memory( buff );
     m_pimpl->write( memory );
 
     m_data    = new unsigned char[buff.size()];
@@ -361,7 +362,8 @@ void Mesh::unpack( bool headerOnly ) const {
 
     std::vector<unsigned char> buff;
     buff.insert( buff.begin(), m_data, m_data + m_size );
-    io::Memory<decltype( buff )> memory( buff );
+//    io::Memory<decltype( buff )> memory( buff );
+    input::InputMemory<decltype( buff )> memory( buff );
 
     memory.read( m_pimpl->m_nVertice );
     memory.read( m_pimpl->m_nTriangle );
