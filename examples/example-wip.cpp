@@ -45,16 +45,17 @@ int main() {
 
     hub::InputSensor inputSensor(hub::input::InputStreamMqtt("streamName", "127.0.0.1", port));
 
+//    assert(outputSensor.getSpec() == inputSensor.getSpec());
+
 //    hub::io::InputStream inputStream("streamName", "127.0.0.1", port);
 //    hub::InputSensor inputSensor(std::move(inputStream));
 //    hub::InputSensor inputSensor(hub::input::InputStream("streamName", "127.0.0.1", port));
 //    hub::InputSensor inputSensor("streamName", "127.0.0.1", port);
 //    hub::InputSensor inputSensor(std::move(clientSocket));
 
-//    hub::io::InputStreamInterface inputStreamInterface("streamName", "fuck", 5);
 //    hub::InputSensor inputSensor("streamName", "127.0.0.1", port);
     auto & input = inputSensor.getInput();
-    assert(input.isEnd());
+//    assert(input.isEnd());
 
 
     hub::Acquisition acq(1, 1);
@@ -62,12 +63,19 @@ int main() {
     hub::data::Measure measure(data, 3, res);
     acq << std::move(measure);
 
+    outputSensor << acq;
 
-//    assert(! input.isEnd());
-//    hub::Acquisition acq2;
-//    inputSensor >> acq2;
 
-//    std::cout << acq2 << std::endl;
+
+    assert(! input.isEnd());
+    hub::Acquisition acq2;
+    inputSensor >> acq2;
+
+    std::cout << acq2 << std::endl;
+
+    assert(acq == acq2);
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(2000));
 
 //    std::vector<char> buff;
 //    hub::input::InputMemory<std::vector<char>> memory(buff);

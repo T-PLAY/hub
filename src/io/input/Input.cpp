@@ -3,6 +3,7 @@
 #include "Any.hpp"
 #include "Info.hpp"
 #include "data/Measure.hpp"
+#include "InputMemory.hpp"
 
 namespace hub {
 namespace io {
@@ -26,7 +27,7 @@ void Input::read( std::string& str ) {
         delete[] tmp;
     }
 #ifdef DEBUG_INPUT
-    std::cout << "[Input] read(std::string) : '" << str << "'" << std::endl;
+    std::cout << HEADER_INPUT_MSG "read(std::string) : '" << str << "'" << std::endl;
 #endif
 }
 
@@ -34,8 +35,16 @@ void Input::read( SensorSpec& sensorSpec ) {
     assert( isOpen() );
     assert( !isEnd() );
 
+    uint64_t packetSize;
+    read(packetSize);
+
+    std::vector<char> buff(packetSize);
+    read((unsigned char*)buff.data(), packetSize);
+
+    input::InputMemory<decltype(buff)> memory(buff);
+
     char magicNumber[80] = { 0 };
-    read( reinterpret_cast<unsigned char*>(magicNumber), 80 );
+    memory.read( reinterpret_cast<unsigned char*>(magicNumber), 80 );
     int versionMajor;
     int versionMinor;
     int versionPatch;
@@ -65,15 +74,17 @@ void Input::read( SensorSpec& sensorSpec ) {
     assert( versionMinor <= hub::s_versionMinor );
     assert( versionPatch <= hub::s_versionPatch );
 #ifdef DEBUG
-    std::cout << "[Input] read(magic number) : '" << magicNumber << "'" << std::endl;
+    std::cout << HEADER_INPUT_MSG "read(magic number) : '" << magicNumber << "'" << std::endl;
 #endif
 
     std::string sensorName;
     Resolutions resolutions;
     hub::SensorSpec::MetaData metaData;
-    read( sensorName );
-    read( resolutions );
-    read( metaData );
+    memory.read( sensorName );
+    memory.read( resolutions );
+    memory.read( metaData );
+
+    assert(memory.isEnd());
 
     sensorSpec =
         SensorSpec( std::move( sensorName ), std::move( resolutions ), std::move( metaData ) );
@@ -102,10 +113,21 @@ void Input::read( Acquisition& acq ) {
     assert( isOpen() );
     assert( !isEnd() );
 
-    read( acq.m_start );
-    read( acq.m_end );
-    read( acq.m_measures );
-    read( acq.m_size );
+
+    uint64_t packetSize;
+    read(packetSize);
+
+    std::vector<char> buff(packetSize);
+    read((unsigned char*)buff.data(), packetSize);
+
+    input::InputMemory<decltype(buff)> memory(buff);
+
+    memory.read( acq.m_start );
+    memory.read( acq.m_end );
+    memory.read( acq.m_measures );
+    memory.read( acq.m_size );
+
+    assert(memory.isEnd());
 
     assert( acq.m_start <= acq.m_end );
     assert( !acq.m_measures.empty() );
@@ -118,7 +140,7 @@ void Input::read( char* str ) {
     assert( !isEnd() );
 
 #ifdef DEBUG_INPUT
-    std::cout << "[Input] read(char*)" << std::endl;
+    std::cout << HEADER_INPUT_MSG "read(char*)" << std::endl;
 #endif
 
     int strLen = 0;
@@ -138,7 +160,7 @@ void Input::read( Any& any ) {
     assert( !isEnd() );
 
 #ifdef DEBUG_INPUT
-    std::cout << "[Input] read(std::any)" << std::endl;
+    std::cout << HEADER_INPUT_MSG "read(std::any)" << std::endl;
 #endif
 
     assert( !any.has_value() );

@@ -3,6 +3,8 @@
 #include "Any.hpp"
 #include "Info.hpp"
 
+#include "OutputMemory.hpp"
+
 namespace hub {
 namespace io {
 
@@ -12,7 +14,7 @@ void Output::write( const std::string& str ) {
     assert( isOpen() );
 
 #ifdef DEBUG_OUTPUT
-    std::cout << "[Output] write(std::string) : '" << str << "'" << std::endl;
+    std::cout << HEADER_OUTPUT_MSG "write(std::string) : '" << str << "'" << std::endl;
 #endif
 
     int strLen = static_cast<int>( str.size() );
@@ -25,12 +27,19 @@ void Output::write( const std::string& str ) {
     }
 }
 
+
 void Output::write( const SensorSpec& sensorSpec ) {
     assert( isOpen() );
 
 #ifdef DEBUG_OUTPUT
-    std::cout << "[Output] write(SensorSpec)" << std::endl;
+//    std::cout << "[Output:" << this << "] write(SensorSpec)" << std::endl;
+    std::cout << HEADER_OUTPUT_MSG "write(SensorSpec)" << std::endl;
 #endif
+
+    std::vector<char> buff;
+    constexpr int maxBuffLen = 512;
+    buff.reserve(maxBuffLen);
+    output::OutputMemory<decltype(buff)> memory(buff);
 
     char magicNumber[80] = { 0 };
     constexpr char joker = ' ';
@@ -56,18 +65,24 @@ void Output::write( const SensorSpec& sensorSpec ) {
 #endif
     assert( strlen( magicNumber ) < 79 );
     magicNumber[strlen( magicNumber )] = joker;
-    write( reinterpret_cast<unsigned char*>(magicNumber), 80 );
+    memory.write( reinterpret_cast<unsigned char*>(magicNumber), 80 );
 
-    write( sensorSpec.getSensorName() );
-    write( sensorSpec.getResolutions() );
-    write( sensorSpec.getMetaData() );
+    memory.write( sensorSpec.getSensorName() );
+    memory.write( sensorSpec.getResolutions() );
+    memory.write( sensorSpec.getMetaData() );
+
+    uint64_t packetSize = buff.size();
+    assert(packetSize < maxBuffLen);
+    write(packetSize);
+
+    write((unsigned char*)buff.data(), packetSize);
 }
 
 void Output::write( const data::Measure& measure ) {
     assert( isOpen() );
 
 #ifdef DEBUG_OUTPUT
-    std::cout << "[Output] write(Measure)" << std::endl;
+    std::cout << HEADER_OUTPUT_MSG "write(Measure)" << std::endl;
 #endif
 
     assert( measure.m_size != 0 );
@@ -82,25 +97,43 @@ void Output::write( const Acquisition& acq ) {
     assert( isOpen() );
 
 #ifdef DEBUG_OUTPUT
-    std::cout << "[Output] write(Acquisition)" << std::endl;
+    std::cout << HEADER_OUTPUT_MSG "write(Acquisition)" << std::endl;
 #endif
 
     assert( acq.m_start <= acq.m_end );
     assert( !acq.m_measures.empty() );
     assert( acq.m_size > 0 );
 
-    write( acq.m_start );
-    write( acq.m_end );
-    write( acq.m_measures );
-    write( acq.m_size );
+    std::vector<char> buff;
+    buff.reserve(acq.m_size);
+    output::OutputMemory<decltype(buff)> memory(buff);
+
+    memory.write( acq.m_start );
+    memory.write( acq.m_end );
+    memory.write( acq.m_measures );
+    memory.write( acq.m_size );
+
+//    assert(acq.m_size == buff.size());
+    const uint64_t packetSize = buff.size();
+    write(packetSize);
+
+    write((unsigned char*)buff.data(), packetSize);
 }
+
+//void Output::write(uint64_t size)
+//{
+//#ifdef DEBUG_OUTPUT
+//    std::cout << HEADER_OUTPUT_MSG "write(uint64_t)" << std::endl;
+//#endif
+//    write((unsigned char*)&size, sizeof(uint64_t));
+//}
 
 void Output::write( const char* str ) {
     assert( str != nullptr );
     assert( isOpen() );
 
 #ifdef DEBUG_OUTPUT
-    std::cout << "[Output] write(const char*)" << std::endl;
+    std::cout << HEADER_OUTPUT_MSG "write(const char*)" << std::endl;
 #endif
 
     int strLen = static_cast<int>( strlen( str ) );
@@ -114,9 +147,9 @@ void Output::write( const Any& any ) {
 
 #ifdef DEBUG_OUTPUT
 #    ifdef WIN32
-    std::cout << "[Output] write(std::any) : '" << any << "'" << std::endl;
+    std::cout << HEADER_OUTPUT_MSG "write(std::any) : '" << any << "'" << std::endl;
 #    else
-    std::cout << "[Output] write(std::any) : '" << any << "'" << std::endl;
+    std::cout << HEADER_OUTPUT_MSG "write(std::any) : '" << any << "'" << std::endl;
 #    endif
 #endif
 

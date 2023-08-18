@@ -11,6 +11,10 @@
 #    include <boost/type_index.hpp>
 #endif
 
+#ifdef DEBUG_OUTPUT
+#define HEADER_OUTPUT_MSG "\033[" << std::to_string(31 + (long)this % 7) << "m[Output:" << this << "]\033[0m "
+#endif
+
 namespace hub {
 namespace io {
 
@@ -141,7 +145,7 @@ class SRC_API Output
     /// \brief write
     /// \param sensorSpec
     ///
-    void write( const SensorSpec& sensorSpec );
+    virtual void write( const SensorSpec& sensorSpec );
 
     ///
     /// \brief write
@@ -154,6 +158,8 @@ class SRC_API Output
     /// \param acq
     ///
     virtual void write( const Acquisition& acq );
+
+//    virtual void write(uint64_t size);
 
 #ifdef ARCH_X86
     void write( size_t size ) = delete; // non compatible format 32/64 bit
@@ -182,10 +188,10 @@ inline void Output::write( const T& t ) {
 
 #ifdef DEBUG_OUTPUT
 #    ifdef USE_BOOST
-    std::cout << "[Output] write(T) : " << typeid( T ).name() << " ("
+    std::cout << HEADER_OUTPUT_MSG "write(T) : " << typeid( T ).name() << " ("
               << boost::typeindex::type_id<T>().pretty_name() << ") '" << t << "'" << std::endl;
 #    else
-    std::cout << "[Output] write(T) : " << typeid( T ).name() << " '" << t << "'" << std::endl;
+    std::cout << HEADER_OUTPUT_MSG "write(T) : " << typeid( T ).name() << " '" << t << "'" << std::endl;
 #    endif
 #endif
 }
@@ -195,7 +201,7 @@ inline void Output::write( const std::list<T>& list ) {
     assert( isOpen() );
 
 #ifdef DEBUG_OUTPUT
-    std::cout << "[Output] write(std::list)" << std::endl;
+    std::cout << HEADER_OUTPUT_MSG "write(std::list)" << std::endl;
 #endif
 
     int nbEl = list.size();
@@ -211,7 +217,7 @@ inline void Output::write( const std::vector<T>& vector ) {
     assert( isOpen() );
 
 #ifdef DEBUG_OUTPUT
-    std::cout << "[Output] write(std::vector)" << std::endl;
+    std::cout << HEADER_OUTPUT_MSG "write(std::vector)" << std::endl;
 #endif
 
     uint64_t nbEl = static_cast<uint64_t>( vector.size() );
@@ -227,13 +233,13 @@ inline void Output::write( const std::map<T, U>& map ) {
     assert( isOpen() );
 
 #ifdef DEBUG_OUTPUT
-    std::cout << "[Output] write(std::map)" << std::endl;
+    std::cout << HEADER_OUTPUT_MSG "write(std::map)" << std::endl;
 #endif
 
     int nbKey = static_cast<int>( map.size() );
     write( nbKey );
 #ifdef DEBUG_OUTPUT
-    std::cout << "[Output] map : nbEl = " << nbKey << std::endl;
+    std::cout << HEADER_OUTPUT_MSG "map : nbEl = " << nbKey << std::endl;
 #endif
 
     for ( const std::pair<T, U>& pair : map ) {
@@ -246,7 +252,7 @@ inline void Output::write( const std::pair<T, U>& pair ) {
     assert( isOpen() );
 
 #ifdef DEBUG_OUTPUT
-    std::cout << "[Output] write(std::pair)" << std::endl;
+    std::cout << HEADER_OUTPUT_MSG "write(std::pair)" << std::endl;
 #endif
     const T& first  = pair.first;
     const U& second = pair.second;

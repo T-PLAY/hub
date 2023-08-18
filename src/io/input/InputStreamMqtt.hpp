@@ -28,12 +28,13 @@ class SRC_API InputStreamMqtt : public InputStreamInterface
 
     bool isEnd() const override;
 
-//    void read( Acquisition& acq ) override;
-//    void read( SensorSpec& sensorSpec ) override;
+    void read( Acquisition& acq ) override;
+    void read( SensorSpec& sensorSpec ) override;
 
   private:
     std::unique_ptr<mqtt::client> m_client;
     mqtt::const_message_ptr m_msgPtr;
+//    mqtt::message_ptr m_msgPtr;
 
     friend class InputSyncStream;
 };
@@ -45,12 +46,15 @@ inline bool InputStreamMqtt::isOpen() const {
 }
 
 inline void InputStreamMqtt::read( unsigned char* data, size_t len ) {
+#ifdef DEBUG_INPUT
+    std::cout << HEADER_INPUT_MSG "read(data, len = " << len << ")" << std::endl;
+#endif
     assert(m_client->is_connected());
     m_client->start_consuming();
-    bool consumed = m_client->try_consume_message(&m_msgPtr);
+//    bool consumed = m_client->try_consume_message(&m_msgPtr);
+//    assert(consumed);
+    m_msgPtr = m_client->consume_message();
     m_client->stop_consuming();
-    assert(consumed);
-//    m_msgPtr = m_client->consume_message();
     assert(m_msgPtr != nullptr);
     const auto & payload = m_msgPtr->get_payload();
     assert(payload.length() == len);
@@ -68,6 +72,13 @@ inline void InputStreamMqtt::close() {
 }
 
 inline bool InputStreamMqtt::isEnd() const {
+//    return ! m_client->is_connected();
+//    m_client->start_consuming();
+//    bool consumed = m_client->try_consume_message(&m_msgPtr);
+////    assert(consumed);
+////    m_msgPtr = m_client->consume_message();
+//    m_client->stop_consuming();
+//    return ! consumed;
     return false;
 }
 

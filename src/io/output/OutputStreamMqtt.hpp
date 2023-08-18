@@ -21,7 +21,9 @@ class SRC_API OutputStreamMqtt : public OutputStreamInterface
 
 //    ~OutputStreamMqtt();
 
-//    void write( const Acquisition& acq ) override;
+    void write( const Acquisition& acq ) override;
+    void write( const SensorSpec& sensorSpec ) override;
+//    void write(uint64_t packetSize);
 
   protected:
     void write( const unsigned char* data, size_t len ) override;
@@ -40,15 +42,44 @@ class SRC_API OutputStreamMqtt : public OutputStreamInterface
 //}
 
 inline void OutputStreamMqtt::write( const unsigned char* data, size_t len ) {
+#ifdef DEBUG_OUTPUT
+    std::cout << HEADER_OUTPUT_MSG "write(data, len = " << len << ")" << std::endl;
+#endif
     assert(m_client->is_connected());
     assert(m_msgPtr != nullptr);
     m_msgPtr->set_payload((char*)data, len);
+//    m_msgPtr->set_retained(true);
     m_client->publish(m_msgPtr);
     assert(m_client->is_connected());
 }
 
 inline void OutputStreamMqtt::close() {
     assert(m_client->is_connected());
+
+
+//    m_msgPtr->set_retained(false);
+//    m_msgPtr->set_qos(2);
+//    m_msgPtr->set_payload("none");
+//    m_msgPtr->set_topic(m_name + "/header/size");
+////    m_msgPtr->clear_payload();
+//    m_msgPtr->set_payload("none");
+//    m_client->publish(m_msgPtr);
+
+//    m_msgPtr->set_topic(m_name + "/header/data");
+////    m_msgPtr->clear_payload();
+//    m_msgPtr->set_payload("none");
+//    m_client->publish(m_msgPtr);
+
+//    m_msgPtr->set_topic(m_name + "/acq/size");
+////    m_msgPtr->clear_payload();
+//    m_msgPtr->set_payload("none");
+//    m_client->publish(m_msgPtr);
+
+//    m_msgPtr->set_topic(m_name + "/acq/data");
+////    m_msgPtr->clear_payload();
+////    m_msgPtr->set_payload("none");
+//    m_client->publish(m_msgPtr);
+
     m_client->disconnect();
     assert(! m_client->is_connected());
 }

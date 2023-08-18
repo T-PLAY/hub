@@ -11,6 +11,10 @@
 #    include <boost/type_index.hpp>
 #endif
 
+#ifdef DEBUG_INPUT
+#define HEADER_INPUT_MSG "\t\033[" << std::to_string(31 + (long)this % 7) << "m[Input:" << this << "]\033[0m "
+#endif
+
 namespace hub {
 namespace io {
 
@@ -237,7 +241,7 @@ void Input::readAll( Container& ts ) {
         }
     }
     catch ( std::exception& e ) {
-        std::cout << "[Input] catch exception : " << e.what() << std::endl;
+        std::cout << HEADER_INPUT_MSG "catch exception : " << e.what() << std::endl;
         throw;
     }
 }
@@ -251,10 +255,10 @@ inline void Input::read( T& t ) {
 
 #ifdef DEBUG_INPUT
 #    ifdef USE_BOOST
-    std::cout << "[Input] read(T) : " << typeid( T ).name() << " ("
+    std::cout << HEADER_INPUT_MSG "read(T) : " << typeid( T ).name() << " ("
               << boost::typeindex::type_id<T>().pretty_name() << ") '" << t << "'" << std::endl;
 #    else
-    std::cout << "[Input] read(T) : " << typeid( T ).name() << " '" << t << "'" << std::endl;
+    std::cout << HEADER_INPUT_MSG "read(T) : " << typeid( T ).name() << " '" << t << "'" << std::endl;
 #    endif
 #endif
 }
@@ -284,7 +288,7 @@ inline void Input::read( std::vector<T>& vector ) {
     assert( !isEnd() );
 
 #ifdef DEBUG_INPUT
-    std::cout << "[Input] read(std::vector)" << std::endl;
+    std::cout << HEADER_INPUT_MSG "read(std::vector)" << std::endl;
 #endif
 
     uint64_t nbEl;
@@ -306,13 +310,13 @@ inline void Input::read( std::map<T, U>& map ) {
     assert( !isEnd() );
 
 #ifdef DEBUG_INPUT
-    std::cout << "[Input] read(std::map)" << std::endl;
+    std::cout << HEADER_INPUT_MSG "read(std::map)" << std::endl;
 #endif
 
     int nbEl;
     read( nbEl );
 #ifdef DEBUG_INPUT
-    std::cout << "[Input] map : nbEl = " << nbEl << std::endl;
+    std::cout << HEADER_INPUT_MSG "map : nbEl = " << nbEl << std::endl;
 #endif
     map.clear();
 
@@ -330,7 +334,7 @@ inline void Input::read( std::pair<T, U>& pair ) {
     assert( !isEnd() );
 
 #ifdef DEBUG_INPUT
-    std::cout << "[Input] read(std::pair)" << std::endl;
+    std::cout << HEADER_INPUT_MSG "read(std::pair)" << std::endl;
 #endif
     T first;
     read( first );
