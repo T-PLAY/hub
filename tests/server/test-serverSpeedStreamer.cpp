@@ -102,7 +102,7 @@ TEST_CASE( "Server test : viewer" ) {
 
             hub::InputSensor inputSensor(
 //                hub::io::InputStream( "streamName", hub::net::ClientSocket( ipv4, port2 ) ) );
-                hub::input::InputStream( "streamName", ipv4, port2 ) );
+                hub::input::InputStreamServer( "streamName", ipv4, port2 ) );
 
             const auto& sensorSpec2 = inputSensor.getSpec();
             CHECK( sensorSpec == sensorSpec2 );

@@ -126,7 +126,7 @@ TEST_CASE( "InputSyncStream test" ) {
                 ref_sensorSpec2, "streamName2", ipv4, port );
             std::cout << "outputSensors created" << std::endl;
 
-            hub::input::InputSyncStream inputStream( "streamName", "streamName2", ipv4, port );
+            hub::input::InputSyncStream<hub::input::InputStreamServer> inputStream( "streamName", "streamName2", ipv4, port );
             hub::InputSensor inputSensor( std::move( inputStream ) );
             std::cout << "inputSensor created" << std::endl;
             CHECK( inputSensor.getSpec() == ref_sensorSpec + ref_sensorSpec2 );

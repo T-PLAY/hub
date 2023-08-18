@@ -20,6 +20,7 @@ class SRC_API InputStreamMqtt : public InputStreamInterface
 //    ~InputStreamMqtt();
 
   protected:
+  public:
     bool isOpen() const override;
 
     void read( unsigned char* data, size_t len ) override;
@@ -36,7 +37,7 @@ class SRC_API InputStreamMqtt : public InputStreamInterface
     mqtt::const_message_ptr m_msgPtr;
 //    mqtt::message_ptr m_msgPtr;
 
-    friend class InputSyncStream;
+//    friend class InputSyncStream;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

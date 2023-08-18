@@ -13,13 +13,15 @@ int main() {
     hub::InputSensor inputSensor2(hub::input::InputStream("streamName", ipv4, port));
     hub::InputSensor inputSensor3(hub::input::InputStreamServer("streamName", ipv4, port));
 //    const hub::io::Input & input4 = hub::input::InputStreamInterface("streamName", ipv4, port); // abstract class
-    hub::InputSensor inputSensor5(hub::input::InputSyncStream("streamName", "streamName2", ipv4, port));
-    hub::InputSensor inputSensor6(hub::input::InputFile("filePath"));
+    hub::InputSensor inputSensor5(hub::input::InputSyncStream<>("streamName", "streamName2", ipv4, port));
+    hub::InputSensor inputSensor6(hub::input::InputSyncStream<hub::input::InputStreamServer>("streamName", "streamName2", ipv4, port));
+    hub::InputSensor inputSensor7(hub::input::InputSyncStream<hub::input::InputStreamMqtt>("streamName", "streamName2", ipv4, port));
+    hub::InputSensor inputSensor8(hub::input::InputFile("filePath"));
     std::vector<int> vs;
 #if CPLUSPLUS_VERSION < 17
-    const auto & inputSensor7 = hub::InputSensor(hub::input::InputMemory<decltype(vs)>(vs));
+    const auto & inputSensor9 = hub::InputSensor(hub::input::InputMemory<decltype(vs)>(vs));
 #else
-    const auto & inputSensor7 = hub::InputSensor(hub::input::InputMemory(vs));
+    const auto & inputSensor9 = hub::InputSensor(hub::input::InputMemory(vs));
 #endif
 
 }

@@ -3,7 +3,10 @@
 
 #include "Input.hpp"
 #include "InputStream.hpp"
-#include "net/ClientSocket.hpp"
+
+//#include "InputStreamMqtt.hpp"
+//#include "InputStreamServer.hpp"
+//#include "net/ClientSocket.hpp"
 
 namespace hub {
 
@@ -17,6 +20,8 @@ namespace input {
 /// The communication is only possible if the stream (with the same name) is active within the
 /// server. That implies an OutputStream communicating data through the hub.
 ///
+template <class InputStream = InputStream>
+//template <class InputStream>
 class SRC_API InputSyncStream : public Input
 {
   public:
@@ -42,6 +47,7 @@ class SRC_API InputSyncStream : public Input
                      int port                = net::s_defaultServicePort );
 
   protected:
+  public:
     ///
     /// \brief isOpen
     /// \return
@@ -78,6 +84,8 @@ class SRC_API InputSyncStream : public Input
     ///
     void read( SensorSpec& sensorSpec ) override;
 
+
+
   private:
     InputStream m_inputStream;
     InputStream m_inputStream2;
@@ -86,15 +94,27 @@ class SRC_API InputSyncStream : public Input
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-inline bool InputSyncStream::isOpen() const {
+template <class InputStream>
+InputSyncStream<InputStream>::InputSyncStream( const std::string& streamName,
+                                  const std::string& syncStreamName,
+                                  const std::string& ipv4,
+                                  int port ) :
+    m_inputStream( streamName, ipv4, port ),
+    m_inputStream2( syncStreamName, ipv4, port )
+{}
+
+template <class InputStream>
+inline bool InputSyncStream<InputStream>::isOpen() const {
     return m_inputStream.isOpen() || m_inputStream2.isOpen();
 }
 
-inline void InputSyncStream::read( unsigned char* data, size_t len ) {
+template <class InputStream>
+inline void InputSyncStream<InputStream>::read( unsigned char* data, size_t len ) {
     assert( false );
 }
 
-inline void InputSyncStream::close() {
+template <class InputStream>
+inline void InputSyncStream<InputStream>::close() {
     std::cout << "[InputSyncStream] close()" << std::endl;
     if ( m_inputStream.isOpen() ) m_inputStream.close();
     if ( m_inputStream2.isOpen() ) m_inputStream2.close();
@@ -102,8 +122,28 @@ inline void InputSyncStream::close() {
     assert( !m_inputStream.isOpen() && !m_inputStream2.isOpen() );
 }
 
-inline bool InputSyncStream::isEnd() const {
+template <class InputStream>
+inline bool InputSyncStream<InputStream>::isEnd() const {
     return m_inputStream.isEnd() || m_inputStream2.isEnd();
+}
+
+
+template <class InputStream>
+inline void InputSyncStream<InputStream>::read( Acquisition& acq ) {
+
+    Input& masterInput = m_inputStream;
+    Input& input       = m_inputStream2;
+
+    masterInput >> input >> acq;
+}
+
+template <class InputStream>
+inline void InputSyncStream<InputStream>::read( SensorSpec& sensorSpec ) {
+    m_inputStream.read( sensorSpec );
+    SensorSpec sensorSpec2;
+    m_inputStream2.read( sensorSpec2 );
+
+    sensorSpec = sensorSpec + sensorSpec2;
 }
 
 } // namespace input

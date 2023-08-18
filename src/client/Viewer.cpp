@@ -62,7 +62,7 @@ class Stream
         m_thread = new std::thread( [this]() {
             try {
 
-                m_inputSensor = std::make_unique<InputSensor>( input::InputStream(
+                m_inputSensor = std::make_unique<InputSensor>( input::InputStreamServer(
                     m_streamName,
 //                    net::ClientSocket( m_viewer.m_sock.getIpv4(), m_viewer.m_sock.getPort() ) ) );
                     m_viewer.m_sock.getIpv4(), m_viewer.m_sock.getPort() ) );

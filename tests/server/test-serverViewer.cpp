@@ -49,7 +49,7 @@ TEST_CASE( "Server test : viewer" ) {
             {
                 hub::InputSensor inputSensor(
 //                    hub::io::InputStream( sensorName, hub::net::ClientSocket( ipv4, port ) ) );
-                    hub::input::InputStream( sensorName, ipv4, port ) );
+                    hub::input::InputStreamServer( sensorName, ipv4, port ) );
 
                 const auto& inputSensorSpec = inputSensor.getSpec();
                 CHECK( inputSensorSpec.getAcquisitionSize() == dataSize );

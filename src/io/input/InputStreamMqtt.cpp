@@ -35,11 +35,12 @@ void InputStreamMqtt::read( Acquisition& acq ) {
     m_client->subscribe(m_name + "/acq/size");
     Input::read(packetSize);
 
-    std::vector<char> buff(sizeof(uint64_t) + packetSize);
-    auto * data = buff.data();
-    ((uint64_t*)data)[0] = packetSize;
+    std::vector<char> buff(packetSize);
+//    auto * data = buff.data();
+//    ((uint64_t*)data)[0] = packetSize;
     m_client->subscribe(m_name + "/acq/data");
-    read((unsigned char*)&data[sizeof(uint64_t)], packetSize);
+//    read((unsigned char*)&data[sizeof(uint64_t)], packetSize);
+    read((unsigned char*)buff.data(), packetSize);
 
     io::Memory<decltype(buff)> memory(buff);
     memory.read(acq);

@@ -36,10 +36,10 @@ void OutputStreamMqtt::write(const Acquisition &acq)
 
     ///////////////////////////////////////
 
-    uint64_t packetSize;
-    memory.read(packetSize);
+    uint64_t packetSize = buff.size();
+//    memory.read(packetSize);
 
-    assert(buff.size() == packetSize);
+//    assert(buff.size() == packetSize);
 
 
     m_msgPtr->set_topic(m_name + "/acq/size");
@@ -76,6 +76,8 @@ void OutputStreamMqtt::write(const SensorSpec &sensorSpec)
     m_msgPtr->set_topic(m_name + "/header/data");
     write((unsigned char*)buff.data(), packetSize);
 
+//    m_msgPtr->set_retained(false);
+//    m_msgPtr->set_qos(0);
     std::cout << "[OutputStreamMqtt] end write(SensorSpec)" << std::endl;
 }
 

@@ -59,26 +59,32 @@ inline void OutputStreamMqtt::close() {
 
 //    m_msgPtr->set_retained(false);
 //    m_msgPtr->set_qos(2);
-//    m_msgPtr->set_payload("none");
-//    m_msgPtr->set_topic(m_name + "/header/size");
-////    m_msgPtr->clear_payload();
-//    m_msgPtr->set_payload("none");
+    m_msgPtr->set_payload("none");
+//    m_msgPtr->set_topic(m_name + "/#");
 //    m_client->publish(m_msgPtr);
 
-//    m_msgPtr->set_topic(m_name + "/header/data");
-////    m_msgPtr->clear_payload();
+    m_msgPtr->set_topic(m_name + "/header/size");
+//    m_msgPtr->clear_payload();
 //    m_msgPtr->set_payload("none");
-//    m_client->publish(m_msgPtr);
+    m_client->publish(m_msgPtr);
 
-//    m_msgPtr->set_topic(m_name + "/acq/size");
-////    m_msgPtr->clear_payload();
+    m_msgPtr->set_topic(m_name + "/header/data");
+//    m_msgPtr->clear_payload();
 //    m_msgPtr->set_payload("none");
-//    m_client->publish(m_msgPtr);
+    m_client->publish(m_msgPtr);
 
-//    m_msgPtr->set_topic(m_name + "/acq/data");
-////    m_msgPtr->clear_payload();
-////    m_msgPtr->set_payload("none");
-//    m_client->publish(m_msgPtr);
+    m_msgPtr->set_topic(m_name + "/acq/size");
+//    m_msgPtr->clear_payload();
+//    m_msgPtr->set_payload("none");
+    m_client->publish(m_msgPtr);
+
+    m_msgPtr->set_topic(m_name + "/acq/data");
+//    m_msgPtr->clear_payload();
+//    m_msgPtr->set_payload("none");
+    m_client->publish(m_msgPtr);
+
+    m_msgPtr->set_topic(m_name);
+    m_client->publish(m_msgPtr);
 
     m_client->disconnect();
     assert(! m_client->is_connected());

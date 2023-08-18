@@ -46,7 +46,7 @@ TEST_CASE( "InputStream test" ) {
 
         {
 //            hub::io::InputStream inputStream( "streamName", hub::net::ClientSocket( ipv4, port ) );
-            hub::input::InputStream inputStream( "streamName", ipv4, port );
+            hub::input::InputStreamServer inputStream( "streamName", ipv4, port );
             hub::InputSensor inputSensor( std::move( inputStream ) );
             CHECK( inputSensor.getSpec() == ref_sensorSpec );
             std::cout << "[test] inputSensor created" << std::endl;

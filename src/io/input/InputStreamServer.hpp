@@ -47,6 +47,7 @@ class SRC_API InputStreamServer : public InputStreamInterface
     ~InputStreamServer();
 
   protected:
+  public:
     ///
     /// \brief isOpen
     /// \return
@@ -83,7 +84,8 @@ class SRC_API InputStreamServer : public InputStreamInterface
 
     bool m_readAcqWaiting = false;
 
-    friend class InputSyncStream;
+//    friend class InputSyncStream;
+//    friend class InputSyncStream<InputStreamServer>;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -41,7 +41,7 @@ int main() {
 //    hub::OutputSensor outputSensor(sensorSpec, "streamName", "127.0.0.1", port);
 //    hub::OutputSensor outputSensor({"sensorName", {{{1}, hub::Format::BGR8}}}, "streamName", "127.0.0.1", port);
 
-    hub::OutputSensor outputSensor(sensorSpec, hub::output::OutputStreamMqtt("streamName", "127.0.0.1", port));
+//    hub::OutputSensor outputSensor(sensorSpec, hub::output::OutputStreamMqtt("streamName", "127.0.0.1", port));
 
     hub::InputSensor inputSensor(hub::input::InputStreamMqtt("streamName", "127.0.0.1", port));
 
@@ -63,7 +63,7 @@ int main() {
     hub::data::Measure measure(data, 3, res);
     acq << std::move(measure);
 
-    outputSensor << acq;
+//    outputSensor << acq;
 
 
 

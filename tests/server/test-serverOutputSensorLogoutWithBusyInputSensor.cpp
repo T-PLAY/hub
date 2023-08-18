@@ -29,7 +29,7 @@ TEST_CASE( "Server test" ) {
 
             inputSensor = std::make_unique<hub::InputSensor>(
 //                hub::io::InputStream( "streamName", hub::net::ClientSocket( ipv4, port ) ) );
-                hub::input::InputStream( "streamName", ipv4, port ) );
+                hub::input::InputStreamServer( "streamName", ipv4, port ) );
             std::cout << "[test] inputSensor created" << std::endl;
 
             thread = std::thread( [&inputSensor]() {

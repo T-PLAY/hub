@@ -47,7 +47,7 @@ TEST_CASE( "Server test" ) {
         std::cout << "outputSensor created" << std::endl;
 
 //        hub::io::InputStream inputStream( "streamName", hub::net::ClientSocket( ipv4, port ) );
-        hub::input::InputStream inputStream( "streamName", ipv4, port );
+        hub::input::InputStreamServer inputStream( "streamName", ipv4, port );
         hub::InputSensor inputSensor( std::move( inputStream ) );
         std::cout << "inputSensor created" << std::endl;
 

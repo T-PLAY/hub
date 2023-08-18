@@ -241,7 +241,7 @@ void Input::readAll( Container& ts ) {
         }
     }
     catch ( std::exception& e ) {
-        std::cout << HEADER_INPUT_MSG "catch exception : " << e.what() << std::endl;
+        std::cout <<  "[Input] catch exception : " << e.what() << std::endl;
         throw;
     }
 }

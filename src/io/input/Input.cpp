@@ -74,7 +74,7 @@ void Input::read( SensorSpec& sensorSpec ) {
     assert( versionMinor <= hub::s_versionMinor );
     assert( versionPatch <= hub::s_versionPatch );
 #ifdef DEBUG
-    std::cout << HEADER_INPUT_MSG "read(magic number) : '" << magicNumber << "'" << std::endl;
+    std::cout <<  "[Input] read(magic number) : '" << magicNumber << "'" << std::endl;
 #endif
 
     std::string sensorName;
@@ -114,20 +114,20 @@ void Input::read( Acquisition& acq ) {
     assert( !isEnd() );
 
 
-    uint64_t packetSize;
-    read(packetSize);
+//    uint64_t packetSize;
+//    read(packetSize);
 
-    std::vector<char> buff(packetSize);
-    read((unsigned char*)buff.data(), packetSize);
+//    std::vector<char> buff(packetSize);
+//    read((unsigned char*)buff.data(), packetSize);
 
-    input::InputMemory<decltype(buff)> memory(buff);
+//    input::InputMemory<decltype(buff)> memory(buff);
 
-    memory.read( acq.m_start );
-    memory.read( acq.m_end );
-    memory.read( acq.m_measures );
-    memory.read( acq.m_size );
+    read( acq.m_start );
+    read( acq.m_end );
+    read( acq.m_measures );
+    read( acq.m_size );
 
-    assert(memory.isEnd());
+//    assert(memory.isEnd());
 
     assert( acq.m_start <= acq.m_end );
     assert( !acq.m_measures.empty() );

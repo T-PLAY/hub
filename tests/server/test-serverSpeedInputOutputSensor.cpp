@@ -98,7 +98,7 @@ TEST_CASE( "Server test : InputOutputSensor" ) {
                 << std::endl;
             hub::InputSensor inputSensor(
 //                hub::io::InputStream( "streamName", hub::net::ClientSocket( ipv4, port2 ) ) );
-                hub::input::InputStream( "streamName", ipv4, port2 ) );
+                hub::input::InputStreamServer( "streamName", ipv4, port2 ) );
 
             const auto& inputSensorSpec = inputSensor.getSpec();
             CHECK( inputSensorSpec.getAcquisitionSize() == dataSize );

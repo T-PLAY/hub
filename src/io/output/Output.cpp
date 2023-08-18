@@ -72,7 +72,7 @@ void Output::write( const SensorSpec& sensorSpec ) {
     memory.write( sensorSpec.getMetaData() );
 
     uint64_t packetSize = buff.size();
-    assert(packetSize < maxBuffLen);
+//    assert(packetSize < maxBuffLen);
     write(packetSize);
 
     write((unsigned char*)buff.data(), packetSize);
@@ -104,20 +104,20 @@ void Output::write( const Acquisition& acq ) {
     assert( !acq.m_measures.empty() );
     assert( acq.m_size > 0 );
 
-    std::vector<char> buff;
-    buff.reserve(acq.m_size);
-    output::OutputMemory<decltype(buff)> memory(buff);
+//    std::vector<char> buff;
+//    buff.reserve(acq.m_size);
+//    output::OutputMemory<decltype(buff)> memory(buff);
 
-    memory.write( acq.m_start );
-    memory.write( acq.m_end );
-    memory.write( acq.m_measures );
-    memory.write( acq.m_size );
+    write( acq.m_start );
+    write( acq.m_end );
+    write( acq.m_measures );
+    write( acq.m_size );
 
 //    assert(acq.m_size == buff.size());
-    const uint64_t packetSize = buff.size();
-    write(packetSize);
+//    const uint64_t packetSize = buff.size();
+//    write(packetSize);
 
-    write((unsigned char*)buff.data(), packetSize);
+//    write((unsigned char*)buff.data(), packetSize);
 }
 
 //void Output::write(uint64_t size)

@@ -58,7 +58,7 @@ TEST_CASE( "Server test : direct stream" ) {
                 {
                     hub::InputSensor inputSensor(
 //                        hub::io::InputStream( "stream", hub::net::ClientSocket( ipv4, port ) ) );
-                        hub::input::InputStream( "stream", ipv4, port ) );
+                        hub::input::InputStreamServer( "stream", ipv4, port ) );
 
                     const auto& inputSensorSpec = inputSensor.getSpec();
                     CHECK( inputSensorSpec.getAcquisitionSize() == dataSize );

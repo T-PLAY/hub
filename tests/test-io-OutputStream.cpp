@@ -49,13 +49,13 @@ TEST_CASE( "OutputStream test" ) {
     {
         try {
             // unable to open same stream name twice
-            hub::output::OutputStream outputStream2( "streamName",
+//            hub::output::OutputStream outputStream2( "streamName",
 //                                                 hub::net::ClientSocket( ipv4, port ) );
-                                                 ipv4, port );
-            CHECK( false );
+//                                                 ipv4, port );
             hub::OutputSensor outputSensor2(
 //                ref_sensorSpec, "streamName", hub::net::ClientSocket( ipv4, port ) );
                 ref_sensorSpec, "streamName", ipv4, port );
+            CHECK( false );
             std::cout << "outputSensor2 created" << std::endl;
         }
         catch ( std::exception& ex ) {

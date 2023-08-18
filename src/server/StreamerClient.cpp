@@ -8,16 +8,16 @@
 namespace hub {
 namespace server {
 
-class InputStream : public hub::io::Input
+class InputStreamClient : public hub::io::Input
 {
   public:
-    explicit InputStream( hub::net::ClientSocket&& clientSocket ) :
+    explicit InputStreamClient( hub::net::ClientSocket&& clientSocket ) :
         m_clientSocket( std::move( clientSocket ) ) {}
 
     void read( Acquisition& acq ) override;
 
-    InputStream( InputStream&& inputStream );
-    ~InputStream();
+    InputStreamClient( InputStreamClient&& inputStream );
+    ~InputStreamClient();
 
   protected:
     void read( unsigned char* data, size_t len ) override;
@@ -34,20 +34,20 @@ class InputStream : public hub::io::Input
     friend class StreamerClient;
 };
 
-InputStream::InputStream( InputStream&& inputStream ) :
+InputStreamClient::InputStreamClient( InputStreamClient&& inputStream ) :
     m_clientSocket( std::move( inputStream.m_clientSocket ) ),
     m_outputStreamClosed( inputStream.m_outputStreamClosed ) {
     inputStream.m_moved = true;
 }
 
-InputStream::~InputStream() {
+InputStreamClient::~InputStreamClient() {
 #ifdef DEBUG
     if ( !m_moved ) { assert( !isOpen() ); }
 #endif
 }
 
-void InputStream::read( Acquisition& acq )
-// Acquisition InputStream::getAcq()
+void InputStreamClient::read( Acquisition& acq )
+// Acquisition InputStreamClient::getAcq()
 {
     net::ClientSocket::Message mess;
     m_clientSocket.read( mess );
@@ -58,20 +58,20 @@ void InputStream::read( Acquisition& acq )
     Input::read( acq );
 }
 
-void InputStream::read( unsigned char* data, size_t len ) {
+void InputStreamClient::read( unsigned char* data, size_t len ) {
     m_clientSocket.read( data, len );
 }
 
-void InputStream::close() {
+void InputStreamClient::close() {
     m_clientSocket.write( net::ClientSocket::Message::STREAMER_CLOSED );
     m_clientSocket.close();
 }
 
-bool InputStream::isOpen() const {
+bool InputStreamClient::isOpen() const {
     return m_clientSocket.isOpen();
 }
 
-bool InputStream::isEnd() const {
+bool InputStreamClient::isEnd() const {
     return m_clientSocket.isEnd();
 }
 
@@ -89,7 +89,7 @@ StreamerClient::StreamerClient( Server* server,
     std::cout << headerMsg() << "StreamerClient() start" << std::endl;
 
     try {
-        m_inputSensor = std::make_unique<hub::InputSensor>( InputStream( std::move( sock ) ) );
+        m_inputSensor = std::make_unique<hub::InputSensor>( InputStreamClient( std::move( sock ) ) );
     }
     catch ( hub::net::Socket::exception& e ) {
         std::cout << headerMsg() << "InputSensor() : catch exception : " << e.what() << std::endl;
@@ -182,7 +182,7 @@ Acquisition StreamerClient::getLastAcq() const {
 }
 
 void StreamerClient::end( net::ClientSocket::Message message ) {
-    InputStream& input = dynamic_cast<InputStream&>( m_inputSensor->getInput() );
+    InputStreamClient& input = dynamic_cast<InputStreamClient&>( m_inputSensor->getInput() );
     assert( input.m_clientSocket.isOpen() );
     input.m_clientSocket.write( message );
 }

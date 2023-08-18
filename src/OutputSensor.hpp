@@ -69,9 +69,9 @@ class SRC_API OutputSensor : public Sensor
     /// \param args
     ///
     template <class SensorSpec = hub::SensorSpec,
-              class Output     = output::OutputStream,
+              class Output     = output::OutputStreamServer,
               class... Args,
-              typename = typename std::enable_if<std::is_same<output::OutputStream, Output>::value
+              typename = typename std::enable_if<std::is_same<output::OutputStreamServer, Output>::value
 #if ( __cplusplus < 201703L )
                                                  && ( sizeof...( Args ) != 1 ||
                                                       !is_one_of<Output, Args...>::value )

@@ -7,14 +7,14 @@
 namespace hub {
 namespace server {
 
-class OutputStream : public hub::io::Output
+class OutputStreamClient : public hub::io::Output
 {
   public:
-    explicit OutputStream( hub::net::ClientSocket&& clientSocket ) :
+    explicit OutputStreamClient( hub::net::ClientSocket&& clientSocket ) :
         m_clientSocket( std::move( clientSocket ) ) {}
 
-    OutputStream( OutputStream&& outputStream );
-    ~OutputStream();
+    OutputStreamClient( OutputStreamClient&& outputStream );
+    ~OutputStreamClient();
 
   protected:
     void write( const hub::Acquisition& acq ) override;
@@ -30,33 +30,33 @@ class OutputStream : public hub::io::Output
     friend class StreamViewerClient;
 };
 
-OutputStream::OutputStream( OutputStream&& outputStream ) :
+OutputStreamClient::OutputStreamClient( OutputStreamClient&& outputStream ) :
     m_clientSocket( std::move( outputStream.m_clientSocket ) ) {
     outputStream.m_moved = true;
 }
 
-OutputStream::~OutputStream() {
+OutputStreamClient::~OutputStreamClient() {
 #ifdef DEBUG
     if ( !m_moved ) { assert( !isOpen() ); }
 #endif
 }
 
-void OutputStream::write( const hub::Acquisition& acq ) {
+void OutputStreamClient::write( const hub::Acquisition& acq ) {
     hub::io::Output::write( hub::net::ClientSocket::Message::NEW_ACQ );
     hub::io::Output::write( acq );
 }
 
-void OutputStream::write( const unsigned char* data, size_t len ) {
+void OutputStreamClient::write( const unsigned char* data, size_t len ) {
     m_clientSocket.write( data, len );
 }
 
-void OutputStream::close() {
+void OutputStreamClient::close() {
     assert( isOpen() );
     m_clientSocket.write( hub::net::ClientSocket::Message::STREAM_VIEWER_CLIENT_CLOSED );
     m_clientSocket.close();
 }
 
-bool OutputStream::isOpen() const {
+bool OutputStreamClient::isOpen() const {
     return m_clientSocket.isOpen();
 }
 
@@ -83,14 +83,14 @@ StreamViewerClient::StreamViewerClient( Server* server,
 
     const auto& sensorSpec = m_server->getSensorSpec( m_streamName );
     m_outputSensor =
-        std::make_unique<hub::OutputSensor>( sensorSpec, OutputStream( std::move( sock ) ) );
+        std::make_unique<hub::OutputSensor>( sensorSpec, OutputStreamClient( std::move( sock ) ) );
 
     m_server->addStreamViewer( this );
 
     m_thread = std::thread( [this]() {
         try {
 
-            OutputStream& outputStream = dynamic_cast<OutputStream&>( m_outputSensor->getOutput() );
+            OutputStreamClient& outputStream = dynamic_cast<OutputStreamClient&>( m_outputSensor->getOutput() );
 
             hub::net::ClientSocket::Message message;
             // wait for client connection closed
