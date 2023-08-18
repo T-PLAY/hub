@@ -13,7 +13,7 @@ if (PahoMqttCpp_FOUND)
     set(REQUIRED_LIBS ${REQUIRED_LIBS} PahoMqttCpp::paho-mqttpp3)
 endif()
 
-option(HUB_ENABLE_COVERAGE "Collect coverage from hub library (required tests enable)" OFF)
+option(HUB_ENABLE_COVERAGE "Collect coverage from hub library (required tests enable)" ON)
 if(HUB_ENABLE_COVERAGE)
     include(CodeCoverage)
     set(COVERAGE_COMPILER_FLAGS "-g --coverage -fno-elide-constructors -fno-default-inline -fprofile-update=atomic")
@@ -55,8 +55,8 @@ source_group("Source Files\\" FILES ${sources})
 #set(REQUIRED_LIBS)
 
 add_library(${PROJECT_NAME} OBJECT ${sources} ${headers}
-    io/input/InputFile.hpp io/input/InputFile.cpp
-    io/MemoryInterface.hpp
+#    io/input/InputFile.hpp io/input/InputFile.cpp
+#    io/MemoryInterface.hpp
 #    io/Stream.hpp io/Stream.cpp
 #    io/InputStreamInterface.hpp
 )
@@ -361,6 +361,7 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
         "external/*.cpp"
         "/usr/*"
     )
+    custom_target_added(coverage-lcov)
 #        "*tiny_obj_loader.h"
 
     if(${CMAKE_VERSION} VERSION_LESS "3.20") # ctest --test-dir option
@@ -396,6 +397,8 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
             set(parentMacro "${parentName}-")
         endif()
         if(NOT EXISTS "${PROJECT_SOURCE_DIR}/tests/test-${parentMacro}${name}.cpp")
+            message("parentMacro :${parentMacro}")
+            message("name :${name}")
             message(FATAL_ERROR "test-${parentMacro}${name}.cpp not found in tests directory")
         endif()
 
