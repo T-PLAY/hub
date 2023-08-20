@@ -11,11 +11,51 @@
 //#include <io/input/InputMemory.hpp>
 //#include <io/output/OutputMemory.hpp>
 
+class user_callback : public virtual mqtt::callback
+{
+    void connected(const std::string & cause) override {
+        std::cout << "connected" << std::endl;
+    }
+    void connection_lost(const std::string& cause) override {
+        std::cout << "\nConnection lost" << std::endl;
+        if (!cause.empty())
+            std::cout << "\tcause: " << cause << std::endl;
+    }
+
+    void message_arrived(mqtt::const_message_ptr msg) override {
+        std::cout << "message_arrived" << std::endl;
+    }
+
+    void delivery_complete(mqtt::delivery_token_ptr tok) override {
+        std::cout << "\n\t[Delivery complete for token: "
+                  << (tok ? tok->get_message_id() : -1) << "]" << std::endl;
+    }
+
+
+  public:
+};
+
 
 int main() {
 
+//    mqtt::client client("tcp://localhost:1883", "viewer", mqtt::create_options(MQTTVERSION_5));
+    mqtt::async_client client("tcp://localhost:1883", "viewer", mqtt::create_options(MQTTVERSION_5));
+//    mqtt::async_client client()
 
-//    srand( (unsigned)time( NULL ) );
+    user_callback cb;
+    client.set_callback(cb);
+
+    client.connect();
+
+    std::cout << "press key to quit" << std::endl;
+    getchar();
+
+    client.disconnect();
+
+    return 0;
+
+
+    srand( (unsigned)time( NULL ) );
 //    int port = rand() % 60000;
     const int port = 1883;
 
@@ -41,7 +81,7 @@ int main() {
 //    hub::OutputSensor outputSensor(sensorSpec, "streamName", "127.0.0.1", port);
 //    hub::OutputSensor outputSensor({"sensorName", {{{1}, hub::Format::BGR8}}}, "streamName", "127.0.0.1", port);
 
-//    hub::OutputSensor outputSensor(sensorSpec, hub::output::OutputStreamMqtt("streamName", "127.0.0.1", port));
+    hub::OutputSensor outputSensor(sensorSpec, hub::output::OutputStreamMqtt("streamName", "127.0.0.1", port));
 
     hub::InputSensor inputSensor(hub::input::InputStreamMqtt("streamName", "127.0.0.1", port));
 
@@ -59,11 +99,14 @@ int main() {
 
 
     hub::Acquisition acq(1, 1);
-    unsigned char data[3] = { 1, 2, 3};
+    unsigned char data[3];
+    for (int i= 0; i <3; ++i) {
+        data[i] = rand();
+    }
     hub::data::Measure measure(data, 3, res);
     acq << std::move(measure);
 
-//    outputSensor << acq;
+    outputSensor << acq;
 
 
 
@@ -75,7 +118,7 @@ int main() {
 
     assert(acq == acq2);
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+//    std::this_thread::sleep_for(std::chrono::milliseconds(2000));
 
 //    std::vector<char> buff;
 //    hub::input::InputMemory<std::vector<char>> memory(buff);

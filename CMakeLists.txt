@@ -131,7 +131,7 @@ if(HUB_BUILD_DOC)
     add_subdirectory(doc)
 endif()
 
-option(HUB_ENABLE_TESTS "Enable tests" ON)
+option(HUB_ENABLE_TESTS "Enable tests" OFF)
 if(HUB_ENABLE_TESTS)
     add_subdirectory(tests)
 endif()

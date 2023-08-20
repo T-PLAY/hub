@@ -13,7 +13,7 @@ if (PahoMqttCpp_FOUND)
     set(REQUIRED_LIBS ${REQUIRED_LIBS} PahoMqttCpp::paho-mqttpp3)
 endif()
 
-option(HUB_ENABLE_COVERAGE "Collect coverage from hub library (required tests enable)" ON)
+option(HUB_ENABLE_COVERAGE "Collect coverage from hub library (required tests enable)" OFF)
 if(HUB_ENABLE_COVERAGE)
     include(CodeCoverage)
     set(COVERAGE_COMPILER_FLAGS "-g --coverage -fno-elide-constructors -fno-default-inline -fprofile-update=atomic")

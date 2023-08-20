@@ -76,6 +76,10 @@ void OutputStreamMqtt::write(const SensorSpec &sensorSpec)
     m_msgPtr->set_topic(m_name + "/header/data");
     write((unsigned char*)buff.data(), packetSize);
 
+    m_msgPtr->set_topic(m_name);
+    m_msgPtr->set_payload("active");
+    m_client->publish(m_msgPtr);
+
 //    m_msgPtr->set_retained(false);
 //    m_msgPtr->set_qos(0);
     std::cout << "[OutputStreamMqtt] end write(SensorSpec)" << std::endl;

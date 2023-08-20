@@ -54,6 +54,17 @@ void InputStreamMqtt::read( SensorSpec& sensorSpec ) {
     std::cout << "[InputStreamMqtt] start read(SensorSpec)" << std::endl;
     assert(m_client->is_connected());
 
+    m_client->subscribe(m_name);
+    m_client->start_consuming();
+    bool consumed = m_client->try_consume_message_for(&m_msgPtr, std::chrono::milliseconds(100));
+    assert(consumed);
+    const auto & payload = m_msgPtr->get_payload_str();
+    assert(payload == "active");
+    m_client->stop_consuming();
+//    auto topic = m_client->get_topic(m_name);
+//    assert(topic.to_string() == "active");
+
+
     uint64_t packetSize;
 //    auto topic = m_client->get_topic(m_name + "/header/size");
     m_client->subscribe(m_name + "/header/size");

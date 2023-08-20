@@ -53,6 +53,7 @@ inline void InputStreamMqtt::read( unsigned char* data, size_t len ) {
     assert(m_client->is_connected());
     m_client->start_consuming();
 //    bool consumed = m_client->try_consume_message(&m_msgPtr);
+//    bool consumed = m_client->try_consume_message_for(&m_msgPtr, std::chrono::milliseconds(100));
 //    assert(consumed);
     m_msgPtr = m_client->consume_message();
     m_client->stop_consuming();
