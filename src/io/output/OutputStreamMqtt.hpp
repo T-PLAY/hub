@@ -11,6 +11,7 @@ namespace hub {
 using namespace io;
 namespace output {
 
+
 class SRC_API OutputStreamMqtt : public OutputStreamInterface
 {
   public:
@@ -34,6 +35,7 @@ class SRC_API OutputStreamMqtt : public OutputStreamInterface
   private:
     std::unique_ptr<mqtt::client> m_client;
     mqtt::message_ptr m_msgPtr;
+    std::string m_streamName;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -56,35 +58,46 @@ inline void OutputStreamMqtt::write( const unsigned char* data, size_t len ) {
 inline void OutputStreamMqtt::close() {
     assert(m_client->is_connected());
 
-
 //    m_msgPtr->set_retained(false);
 //    m_msgPtr->set_qos(2);
     m_msgPtr->set_payload("none");
 //    m_msgPtr->set_topic(m_name + "/#");
 //    m_client->publish(m_msgPtr);
 
-    m_msgPtr->set_topic(m_name + "/header/size");
+    m_msgPtr->set_topic(s_topicStream + m_name + "/header/size");
 //    m_msgPtr->clear_payload();
 //    m_msgPtr->set_payload("none");
     m_client->publish(m_msgPtr);
 
-    m_msgPtr->set_topic(m_name + "/header/data");
+    m_msgPtr->set_topic(s_topicStream + m_name + "/header/data");
 //    m_msgPtr->clear_payload();
 //    m_msgPtr->set_payload("none");
     m_client->publish(m_msgPtr);
 
-    m_msgPtr->set_topic(m_name + "/acq/size");
+    m_msgPtr->set_topic(s_topicStream + m_name + "/acq/size");
 //    m_msgPtr->clear_payload();
 //    m_msgPtr->set_payload("none");
     m_client->publish(m_msgPtr);
 
-    m_msgPtr->set_topic(m_name + "/acq/data");
+    m_msgPtr->set_topic(s_topicStream + m_name + "/acq/data");
 //    m_msgPtr->clear_payload();
 //    m_msgPtr->set_payload("none");
     m_client->publish(m_msgPtr);
 
-    m_msgPtr->set_topic(m_name);
+    m_msgPtr->set_payload("inactive");
+    m_msgPtr->set_topic(s_topicStream + m_name);
     m_client->publish(m_msgPtr);
+
+    // prevent viewers there is streamer done
+    m_msgPtr->set_retained(false);
+    m_msgPtr->set_topic(s_topicEvents);
+    m_msgPtr->set_payload(Stream::to_string(Stream::Message::DEL_STREAM) + m_streamName);
+//    m_msgPtr->set_payload("del sensor");
+    m_client->publish(m_msgPtr);
+
+//    m_msgPtr->set_topic(s_topicEvents + "/streamName");
+//    m_msgPtr->set_payload(m_streamName);
+//    m_client->publish(m_msgPtr);
 
     m_client->disconnect();
     assert(! m_client->is_connected());

@@ -1,15 +1,57 @@
 #include "ViewerMqtt.hpp"
 
-//#include <regex>
-//#include <sstream>
+// #include <regex>
+// #include <sstream>
+#include <algorithm>
+#include <functional>
+#include <mqtt/client.h>
+#include <string>
 
-//#include "InputSensor.hpp"
-#include <io/input/InputStream.hpp>
+// #include "InputSensor.hpp"
 #include <client/StreamViewer.hpp>
+#include <io/input/InputStream.hpp>
+
+#ifndef WIN32
+#    include <unistd.h>
+#endif
 
 namespace hub {
 namespace client {
-namespace viewer {}
+// namespace viewer {}
+
+std::string getHostname() {
+    char* temp = 0;
+    std::string computerName;
+
+#if defined( WIN32 ) || defined( _WIN32 ) || defined( _WIN64 )
+    temp = getenv( "COMPUTERNAME" );
+    if ( temp != 0 ) {
+        computerName = temp;
+        temp         = 0;
+    }
+#else
+    temp = getenv( "HOSTNAME" );
+    if ( temp != 0 ) {
+        computerName = temp;
+        temp         = 0;
+    }
+    else {
+        temp = new char[512];
+        if ( gethostname( temp, 512 ) == 0 ) { // success = 0, failure = -1
+            computerName = temp;
+        }
+        delete[] temp;
+        temp = 0;
+    }
+#endif
+    return computerName;
+}
+
+// const std::string TOPIC_VIEWER {"viewer"};
+// const std::string TOPIC_VIEWER { "streamName" };
+// const int QOS              = 1;
+// const int N_RETRY_ATTEMPTS = 5;
+// const std::string CLIENT_ID( "viewer" );
 
 ViewerMqtt::ViewerMqtt(
     const std::string& ipv4,
@@ -22,198 +64,195 @@ ViewerMqtt::ViewerMqtt(
     std::function<void( const char*, const hub::Acquisition& )> onNewAcquisition,
     std::function<void( const char*, const char*, int, const Any& )> onSetProperty,
     std::function<void( const char* )> onLogMessage ) :
-    ViewerInterface(ipv4, port, onNewStreamer, onDelStreamer, onServerNotFound, onServerConnected, onServerDisconnected, onNewAcquisition, onSetProperty, onLogMessage)
-{}
+    ViewerInterface( ipv4,
+                     port,
+                     onNewStreamer,
+                     onDelStreamer,
+                     onServerNotFound,
+                     onServerConnected,
+                     onServerDisconnected,
+                     onNewAcquisition,
+                     onSetProperty,
+                     onLogMessage ),
+    m_hostName( getHostname() ),
+    m_client( new mqtt::client( ipv4 + ":" + std::to_string( port ),
+                                std::string( "viewer" ) + m_hostName,
+                                mqtt::create_options( MQTTVERSION_5 ) ) )
+//    m_client(new mqtt::async_client(ipv4 + ":" + std::to_string(port), CLIENT_ID +
+//    std::to_string((long)this), mqtt::create_options(MQTTVERSION_5))) m_client(new
+//    mqtt::async_client(ipv4 + ":" + std::to_string(port), CLIENT_ID + std::to_string((long)this)))
 
-ViewerMqtt::~ViewerMqtt()
 {
-    DEBUG_MSG( "[ViewerMqtt] ~ViewerMqtt()" );
 
-    assert(! m_stopThread);
+    m_thread = std::thread( [this]() {
+        //            try {
+        DEBUG_MSG( "[ViewerMqtt] trying to connect to server at ipv4 " << m_ipv4 << " and port "
+                                                                       << m_port );
+
+        m_client->connect();
+        assert( m_client->is_connected() );
+
+        //    m_client->start_consuming();
+
+        //    user_callback cb;
+        //    m_client->set_callback(cb);
+
+        //    auto tok = m_client->connect();
+        //    auto rsp = tok->get_connect_response();
+        //    if (!rsp.is_session_present())
+        //        m_client->subscribe(TOPIC_VIEWER, 2)->wait();
+        ////    assert(rsp.is_session_present());
+        //    assert(m_client->is_connected());
+        //    assert(m_msgPtr == nullptr);
+
+        m_onServerConnected( m_ipv4.c_str(), m_port );
+
+        DEBUG_MSG( "[ViewerMqtt] connected to server at ipv4 " << m_ipv4 << " and port "
+                                                                       << m_port );
+
+        //        const auto hostName = getHostname();
+        m_outputMsgPtr = mqtt::make_message( s_topicViewer + m_hostName, "active" );
+        //        m_outputMsgPtr->set_payload("active");
+        //        m_client->subscribe( "viewer/" + hostName );
+        m_client->publish( m_outputMsgPtr );
+
+        m_client->subscribe( s_topicEvents );
+
+        m_client->start_consuming();
+        while ( !m_stopThread ) {
+            //            while (true) {
+            if ( m_client->try_consume_message_for( &m_inputMsgPtr,
+                                                    std::chrono::milliseconds( 100 ) ) ) {
+                //            if ( m_msgPtr != nullptr ) {
+                //                assert(readed);
+                //                m_msgPtr = m_client->consume_message();
+                assert( m_inputMsgPtr != nullptr );
+                const auto& payload = m_inputMsgPtr->get_payload_str();
+                //                DEBUG_MSG( "[ViewerMqtt] receive message : '" << payload << "'" );
+                //                m_inputMsgPtr.reset();
+
+                const Stream::Message message = Stream::Message( payload.at( 0 ) - '0' );
+
+                switch ( message ) {
+                case Stream::Message::NEW_STREAM: {
+                    //                    m_client->subscribe( s_topicEvents + "/streamName" );
+                    //                    m_inputMsgPtr = m_client->consume_message();
+                    //                    assert( m_inputMsgPtr != nullptr );
+                    const std::string streamName = payload.substr( 1, payload.size() - 1 );
+                    //                    std::cout << "[ViewerMqtt] new streamer '" << streamName
+                    //                    << "'" << std::endl;
+                    DEBUG_MSG( "[ViewerMqtt] new streamer '" << streamName << "'" );
+
+                    //                std::string streamName;
+                    SensorSpec sensorSpec;
+                    input::InputStreamMqtt inputStream( streamName, m_ipv4, m_port );
+                    try {
+                        inputStream.read( sensorSpec );
+                    }
+                    catch ( io::Stream::exception& ex ) {
+                        //                        DEBUG_MSG( "[ViewerMqtt] catch Stream exception '"
+                        //                        << ex.what() << "'" );
+                        DEBUG_MSG( "[ViewerMqtt] unable to connect with new stream '"
+                                   << streamName << "' suddenly close after registration" );
+                        continue;
+                    }
+
+                    //                    std::cout << "[ViewerMqtt] sensorSpec '" << sensorSpec <<
+                    //                    "'"  << std::endl;
+                    DEBUG_MSG( "[ViewerMqtt] sensorSpec '" << sensorSpec << "'" );
+
+                    assert( m_streams.find( streamName ) == m_streams.end() );
+
+                    if ( m_onNewStreamer ) {
+                        //                    assert(m_onDelStreamer);
+
+                        m_streams[streamName] =
+                            std::make_unique<StreamViewer<input::InputStreamMqtt>>(
+                                m_ipv4,
+                                m_port,
+                                streamName,
+                                sensorSpec,
+                                m_onNewStreamer,
+                                m_onDelStreamer,
+                                m_onNewAcquisition,
+                                m_onLogMessage );
+                    }
+
+                    // prevent all son the father is comming
+
+                    // wait for client init sensorSpec with main thread context (async)
+                    // for unity side (update context different of static event function)
+                    //                std::this_thread::sleep_for( std::chrono::milliseconds( 100 )
+                    //                );
+                } break;
+                case Stream::Message::DEL_STREAM: {
+                    //                    std::string streamName;
+                    const std::string streamName = payload.substr( 1, payload.size() - 1 );
+                    //                    m_sock.read( streamName );
+                    //                    assert( m_streams.find( streamName ) != m_streams.end() );
+                    //                    const SensorSpec & sensorSpec =
+                    //                    m_streams.at(streamName).getSensorSpec(); m_sock.read(
+                    //                    sensorSpec );
+                    DEBUG_MSG( "[ViewerServer] del streamer '" << streamName << "'" );
+
+                    if ( m_onNewStreamer ) {
+                        assert( m_onDelStreamer );
+                        //                        assert( m_streams.find( streamName ) !=
+                        //                        m_streams.end() );
+                        if ( m_streams.find( streamName ) != m_streams.end() ) {
+                            m_streams.erase( streamName );
+                        }
+                    }
+
+                    // prevent all son the father is leaving
+
+                    // wait for client init sensorSpec with main thread context (async)
+                    // for unity side (update context different of static event function)
+                    //                    std::this_thread::sleep_for( std::chrono::milliseconds(
+                    //                    100 ) );
+                } break;
+                case Stream::Message::SET_PROPERTY: {
+                } break;
+                default:
+                    assert( false );
+                    break;
+                }
+            }
+
+        } // while ( !m_stopThread )
+        m_client->stop_consuming();
+
+        m_outputMsgPtr->set_payload( "inactive" );
+        //        m_client->subscribe( "viewer/" + hostName );
+        m_client->publish( m_outputMsgPtr );
+    } ); // m_thread
+}
+
+ViewerMqtt::~ViewerMqtt() {
+    //    DEBUG_MSG( "[ViewerMqtt] ~ViewerMqtt()" );
+
+    //    m_client->unsubscribe(TOPIC_VIEWER)->wait();
+    //    m_client->stop_consuming();
+    //    assert(m_client->is_connected());
+    //    m_client->disconnect();
+
+    //    try {
+    //        std::cout << "\nDisconnecting from the MQTT server..." << std::flush;
+    //        m_client->disconnect()->wait();
+    //        std::cout << "OK" << std::endl;
+    //    }
+    //    catch (const mqtt::exception& exc) {
+    //        std::cerr << exc << std::endl;
+    //        return;
+    //    }
+
+    m_onServerDisconnected( m_ipv4.c_str(), m_port );
+
+    assert( !m_stopThread );
     m_stopThread = true;
     assert( m_thread.joinable() );
     m_thread.join();
-
 }
-
-void ViewerMqtt::routine()
-{
-        while ( !m_stopThread ) {
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
-            continue;
-
-            try {
-
-                DEBUG_MSG( "[ViewerServer] trying to connect to server at ipv4 "
-                           << m_ipv4 << " and port " << m_port );
-
-//                assert( !m_sock.isOpen() );
-//                m_sock.connect();
-                m_serverConnected = true;
-//                assert( m_sock.isOpen() );
-
-//                m_sock.write( net::ClientSocket::Type::VIEWER );
-
-                if ( m_onServerConnected )
-                    m_onServerConnected( m_ipv4.c_str(), m_port );
-
-                while ( !m_stopThread ) {
-
-                    net::ClientSocket::Message serverMessage;
-//                    m_sock.read( serverMessage );
-
-                    switch ( serverMessage ) {
-
-                    case net::ClientSocket::Message::NEW_STREAMER: {
-
-                        std::string streamName;
-//                        m_sock.read( streamName );
-                        SensorSpec sensorSpec;
-//                        m_sock.read( sensorSpec );
-                        std::cout << "[ViewerServer] new streamer '" << streamName << "'" << std::endl;
-
-                        DEBUG_MSG( "[ViewerServer] new streamer '" << streamName << "'" );
-
-                        assert( m_streams.find( streamName ) == m_streams.end() );
-
-                        if ( m_onNewStreamer ) {
-
-//                            StreamViewer streamViewer<InputStreamT>( m_ipv4, m_port, streamName, sensorSpec, m_onNewStreamer, m_onDelStreamer, m_onNewAcquisition, m_onLogMessage );
-//                            auto streamViewer = StreamViewer<input::InputStreamMqtt>( m_ipv4, m_port, streamName, sensorSpec, m_onNewStreamer, m_onDelStreamer, m_onNewAcquisition, m_onLogMessage );
-
-
-                            m_streams[streamName] =
-                                std::make_unique<StreamViewer<input::InputStreamMqtt>>( m_ipv4, m_port, streamName, sensorSpec, m_onNewStreamer, m_onDelStreamer, m_onNewAcquisition, m_onLogMessage );
-                        }
-
-                        // prevent all son the father is comming
-
-                        // wait for client init sensorSpec with main thread context (async)
-                        // for unity side (update context different of static event function)
-                        std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
-
-                    } break;
-
-                    case net::ClientSocket::Message::DEL_STREAMER: {
-                        std::string streamName;
-//                        m_sock.read( streamName );
-                        SensorSpec sensorSpec;
-//                        m_sock.read( sensorSpec );
-                        DEBUG_MSG( "[ViewerServer] del streamer '" << streamName << "'" );
-
-                        if ( m_onNewStreamer ) {
-                            assert( m_onDelStreamer );
-                            assert( m_streams.find( streamName ) != m_streams.end() );
-                            m_streams.erase( streamName );
-                        }
-
-                        // prevent all son the father is leaving
-
-                        // wait for client init sensorSpec with main thread context (async)
-                        // for unity side (update context different of static event function)
-                        std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
-
-                    } break;
-
-                    case net::ClientSocket::Message::SERVER_CLOSED: {
-                        DEBUG_MSG( "[ViewerServer] server closed" );
-//                        assert( m_sock.isOpen() );
-//                        m_sock.write( net::ClientSocket::Message::VIEWER_CLOSED );
-                        throw net::ClientSocket::exception( "[viewer] server closed" );
-                    }
-
-                    case net::ClientSocket::Message::VIEWER_CLIENT_CLOSED: {
-                        DEBUG_MSG( "[ViewerServer] viewer client closed" );
-//                        assert( m_sock.isOpen() );
-//                        m_sock.write( net::ClientSocket::Message::VIEWER_CLOSED );
-                        throw net::ClientSocket::exception( "[viewer] viewer client closed" );
-                    }
-
-                    case net::ClientSocket::Message::SET_PROPERTY: {
-                        DEBUG_MSG( "[ViewerServer] viewer client set property" );
-//                        assert( m_sock.isOpen() );
-                        std::string streamName;
-                        std::string objectName;
-                        int property;
-                        Any value;
-//                        m_sock.read( streamName );
-//                        m_sock.read( objectName );
-//                        m_sock.read( property );
-//                        m_sock.read( value );
-
-                        if ( m_onSetProperty )
-                            m_onSetProperty(
-                                streamName.c_str(), objectName.c_str(), property, value );
-
-                    } break;
-
-                    default: {
-                        assert( false );
-                        DEBUG_MSG( "[ViewerServer] unknown message from server" );
-                        throw net::ClientSocket::exception(
-                            "[viewer] unknown message from server " );
-                    }
-                    } // switch (serverMessage)
-
-                } // while (! m_stopThread)
-            }
-            catch ( net::ClientSocket::exception& e ) {
-                if ( m_serverConnected ) {
-                    DEBUG_MSG( "[ViewerServer] server disconnected, catch exception " << e.what() );
-                }
-                else {
-                    DEBUG_MSG( "[ViewerServer] server not found at ipv4 "
-                               << m_ipv4 << " and port " << m_port );
-                    if ( m_onServerNotFound )
-                        m_onServerNotFound( m_ipv4.c_str(), m_port );
-                }
-                // ping the server when this one is not started or visible in the network
-                // able the viewer clients to be aware of the starting of server less than 100
-                // milliseconds.
-                int i = 0;
-                while ( !m_stopThread && i < 10 ) {
-                    std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
-                    ++i;
-                }
-            }
-
-            if ( m_serverConnected ) {
-                m_serverConnected = false;
-                DEBUG_MSG( "[ViewerServer] server disconnected, close all client connections" );
-
-                if ( m_onServerDisconnected )
-                    m_onServerDisconnected( m_ipv4.c_str(), m_port );
-
-                m_streams.clear();
-                assert( m_streams.empty() );
-
-                // #ifdef OS_LINUX
-                // #endif
-            }
-
-        } // while (! m_stopThread)
-
-}
-
-// end namespace viewer
-
-// ViewerMqtt::ViewerMqtt(
-//     std::function<bool( const char* streamName, const SensorSpec& )> onNewStreamer,
-//     std::function<void( const char* streamName, const SensorSpec& )> onDelStreamer,
-//     std::function<void( const char* ipv4, int port )> onServerNotFound,
-//     std::function<void( const char* ipv4, int port )> onServerConnected,
-//     std::function<void( const char* ipv4, int port )> onServerDisconnected,
-//     std::function<void( const char* streamName, const hub::Acquisition& )> onNewAcquisition,
-//     std::function<
-//         void( const char* streamName, const char* objectName, int property, const Any& value )>
-//         onSetProperty,
-//     const std::string& ipv4,
-//     int port,
-//     bool autoSync,
-//     std::function<void( const char* logMessage )> onLogMessage ) :
-
-//{
-//}
 
 } // namespace client
 } // namespace hub

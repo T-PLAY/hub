@@ -13,8 +13,9 @@ namespace output {
 
 OutputStreamMqtt::OutputStreamMqtt(const std::string &streamName, const std::string &ipv4, int port) :
     OutputStreamInterface(streamName, ipv4, port)
-    , m_client(new mqtt::client(ipv4 + ":" + std::to_string(port), std::string("publisher") + std::to_string((long)this), mqtt::create_options(MQTTVERSION_5)))
+    , m_client(new mqtt::client(ipv4 + ":" + std::to_string(port), std::string("publisher:") + streamName, mqtt::create_options(MQTTVERSION_5)))
     , m_msgPtr(mqtt::make_message(streamName, ""))
+    , m_streamName(streamName)
 {
     m_client->connect();
     assert(m_client->is_connected());
@@ -42,17 +43,17 @@ void OutputStreamMqtt::write(const Acquisition &acq)
 //    assert(buff.size() == packetSize);
 
 
-    m_msgPtr->set_topic(m_name + "/acq/size");
+    m_msgPtr->set_topic(s_topicStream + m_name + "/acq/size");
     Output::write(packetSize);
 //    Output::write((unsigned char*)buff.data(), packetSize);
-    m_msgPtr->set_topic(m_name + "/acq/data");
+    m_msgPtr->set_topic(s_topicStream + m_name + "/acq/data");
     write((unsigned char*)buff.data(), packetSize);
 
 }
 
 void OutputStreamMqtt::write(const SensorSpec &sensorSpec)
 {
-    std::cout << "[OutputStreamMqtt] start write(SensorSpec)" << std::endl;
+//    std::cout << "[OutputStreamMqtt] start write(SensorSpec)" << std::endl;
 //    Output::write(sensorSpec);
 //    uint64_t packetSize;
 //    std::list<char> buff;
@@ -70,19 +71,30 @@ void OutputStreamMqtt::write(const SensorSpec &sensorSpec)
 
     assert(buff.size() == packetSize);
 
-    m_msgPtr->set_topic(m_name + "/header/size");
+    m_msgPtr->set_topic(s_topicStream + m_name + "/header/size");
     Output::write(packetSize);
 //    Output::write((unsigned char*)buff.data(), packetSize);
-    m_msgPtr->set_topic(m_name + "/header/data");
+    m_msgPtr->set_topic(s_topicStream + m_name + "/header/data");
     write((unsigned char*)buff.data(), packetSize);
 
-    m_msgPtr->set_topic(m_name);
+    m_msgPtr->set_topic(s_topicStream + m_name);
     m_msgPtr->set_payload("active");
     m_client->publish(m_msgPtr);
 
+    // prevent viewers there is new streamer
+    m_msgPtr->set_retained(false);
+    m_msgPtr->set_topic(s_topicEvents);
+    m_msgPtr->set_payload(Stream::to_string(Stream::Message::NEW_STREAM) + m_streamName);
+    m_client->publish(m_msgPtr);
+
+//    m_msgPtr->set_topic(s_topicEvents + "/streamName");
+//    m_msgPtr->set_payload(m_streamName);
+//    m_client->publish(m_msgPtr);
+    m_msgPtr->set_retained(true);
+
 //    m_msgPtr->set_retained(false);
 //    m_msgPtr->set_qos(0);
-    std::cout << "[OutputStreamMqtt] end write(SensorSpec)" << std::endl;
+//    std::cout << "[OutputStreamMqtt] end write(SensorSpec)" << std::endl;
 }
 
 //void OutputStreamMqtt::write(uint64_t packetSize)

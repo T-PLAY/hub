@@ -26,15 +26,24 @@ class SRC_API ViewerMqtt : public ViewerInterface<input::InputStreamMqtt>
         std::function<void( const char* logMessage )> onLogMessage = {} );
 
 
+
     ~ViewerMqtt();
 
-    void routine() override;
+//    void routine() override;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
   private:
+    std::string m_hostName;
 
-  private:
+
+    std::thread m_thread;
+    bool m_stopThread = false;
+//    std::unique_ptr<mqtt::async_client> m_client;
+    std::unique_ptr<mqtt::client> m_client;
+    mqtt::const_message_ptr m_inputMsgPtr;
+    mqtt::message_ptr m_outputMsgPtr;
+
 };
 
 } // namespace client

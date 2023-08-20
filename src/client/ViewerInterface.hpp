@@ -8,10 +8,9 @@
 
 #include "Acquisition.hpp"
 #include "SensorSpec.hpp"
-//#include "net/ClientSocket.hpp"
+// #include "net/ClientSocket.hpp"
 #include "StreamViewer.hpp"
 
-namespace hide {
 #ifdef DEBUG_MSG
 #    undef DEBUG_MSG
 #endif
@@ -24,17 +23,15 @@ namespace hide {
         }                                           \
         else { std::cout << _params << std::endl; } \
     } while ( false );
-}
 
 namespace hub {
 namespace client {
 
-
 using namespace viewer;
 
-//namespace viewer {
-//class Stream;
-//}
+// namespace viewer {
+// class Stream;
+// }
 
 ///
 /// \brief The ViewerInterface class (event dispatcher)
@@ -58,19 +55,18 @@ class SRC_API ViewerInterface
     /// \param onDelStreamer is an event handler called when connected streamer
     /// (OutputStream) is recently disconnected from the server.
     /// \param onServerNotFound
-    /// \param onServerConnected is an event handler called when viewer is recently connected to the server.
-    /// \param onServerDisconnected is an event handler called when viewer is recently disconnected from
-    /// the server.
-    /// \param onNewAcquisition is an event handler called when new acquisition is
-    /// sended from any connected OutputStream to the server.
-    /// \param onSetProperty
+    /// \param onServerConnected is an event handler called when viewer is recently connected to the
+    /// server. \param onServerDisconnected is an event handler called when viewer is recently
+    /// disconnected from the server. \param onNewAcquisition is an event handler called when new
+    /// acquisition is sended from any connected OutputStream to the server. \param onSetProperty
     /// \param ipv4 is the ip of the server you want to connect.
     /// \param port is the port server of the server you want to connect.
-    /// \param autoSync server suggest auto synchronisation between OutputStream able to be synchronize if enable.
-    /// \param onLogMessage is an event handler to receive debug message from server.
+    /// \param autoSync server suggest auto synchronisation between OutputStream able to be
+    /// synchronize if enable. \param onLogMessage is an event handler to receive debug message from
+    /// server.
     ///
     explicit ViewerInterface(
-        const std::string & ipv4,
+        const std::string& ipv4,
         int port,
         std::function<bool( const char* streamName, const SensorSpec& )> onNewStreamer = {},
         std::function<void( const char* streamName, const SensorSpec& )> onDelStreamer = {},
@@ -81,16 +77,16 @@ class SRC_API ViewerInterface
             {},
         std::function<
             void( const char* streamName, const char* id, int property, const Any& value )>
-            onSetProperty                                          = {},
-//        bool autoSync                                              = true,
+            onSetProperty = {},
+        //        bool autoSync                                              = true,
         std::function<void( const char* logMessage )> onLogMessage = {} );
 
     virtual ~ViewerInterface();
 
-//    virtual void connectToServer() = 0;
-//    template <class InputStream>
-//    virtual void routine() = 0;
-    virtual void routine() = 0;
+    //    virtual void connectToServer() = 0;
+    //    template <class InputStream>
+    //    virtual void routine() = 0;
+    //    virtual void routine() = 0;
 
     ///
     /// \brief setIpv4
@@ -128,14 +124,14 @@ class SRC_API ViewerInterface
     ///
     const int& getPort() const;
 
-//    ///
-//    /// \brief setAutoSync
-//    /// is used to use or not the auto synchronization suggestion when
-//    /// new sensor is connecting to the server.
-//    /// \param newAutoSync
-//    /// enable/disable auto synchronization.
-//    ///
-//    void setAutoSync( bool newAutoSync );
+    //    ///
+    //    /// \brief setAutoSync
+    //    /// is used to use or not the auto synchronization suggestion when
+    //    /// new sensor is connecting to the server.
+    //    /// \param newAutoSync
+    //    /// enable/disable auto synchronization.
+    //    ///
+    //    void setAutoSync( bool newAutoSync );
 
     ///
     /// \brief isConnected
@@ -150,8 +146,8 @@ class SRC_API ViewerInterface
     /// \brief startStream
     /// \param streamName
     ///
-//    template <class InputStream>
-//    template <class InputStream>
+    //    template <class InputStream>
+    //    template <class InputStream>
     void startStream( const std::string& streamName );
 
     ///
@@ -176,8 +172,8 @@ class SRC_API ViewerInterface
 
   private:
   protected:
-    std::thread m_thread;
-    bool m_stopThread = false;
+    //    std::thread m_thread;
+    //    bool m_stopThread = false;
 
     std::string m_ipv4;
     int m_port;
@@ -192,22 +188,21 @@ class SRC_API ViewerInterface
         void( const char* streamName, const char* objectName, int property, const Any& value )>
         m_onSetProperty;
 
-//    net::ClientSocket m_sock;
-//    hub::Input& m_input;
+    //    net::ClientSocket m_sock;
+    //    hub::Input& m_input;
     bool m_serverConnected = false;
     std::function<void( const char* logMessage )> m_onLogMessage;
 
-//    std::map<std::string, std::unique_ptr<StreamViewer>> m_streams;
+    //    std::map<std::string, std::unique_ptr<StreamViewer>> m_streams;
     std::map<std::string, std::unique_ptr<StreamViewer<InputStream>>> m_streams;
-//    std::map<std::string, StreamViewer> m_streams;
+    //    std::map<std::string, StreamViewer> m_streams;
 
-//    friend class viewer::StreamViewer;
+    //    friend class viewer::StreamViewer;
 
   private:
 };
 
 ////////////////////////////////////////////////////////////////////////////
-
 
 template <class InputStream>
 ViewerInterface<InputStream>::ViewerInterface(
@@ -222,8 +217,8 @@ ViewerInterface<InputStream>::ViewerInterface(
     std::function<void( const char*, const char*, int, const Any& )> onSetProperty,
     std::function<void( const char* )> onLogMessage ) :
 
-    m_ipv4(ipv4),
-    m_port(port),
+    m_ipv4( ipv4 ),
+    m_port( port ),
     m_onNewStreamer( onNewStreamer ),
     m_onDelStreamer( onDelStreamer ),
     m_onServerNotFound( onServerNotFound ),
@@ -231,29 +226,28 @@ ViewerInterface<InputStream>::ViewerInterface(
     m_onServerDisconnected( onServerDisconnected ),
     m_onNewAcquisition( onNewAcquisition ),
     m_onSetProperty( onSetProperty ),
-//    m_sock( ipv4, port, false ),
+    //    m_sock( ipv4, port, false ),
     m_onLogMessage( onLogMessage ) {
 
-    m_thread = std::thread( [this]() {
-        routine();
-    } );  // thread
-//    m_thread.detach();
+    //    m_thread = std::thread( [this]() {
+    //    routine();
+    //    } );  // thread
+    //    m_thread.detach();
 }
-
 
 template <class InputStream>
 ViewerInterface<InputStream>::~ViewerInterface() {
-    DEBUG_MSG( "[ViewerInterface] ~ViewerInterface()" );
-//    assert(! m_stopThread);
-//    m_stopThread = true;
+//    DEBUG_MSG( "[ViewerInterface] ~ViewerInterface()" );
+    //    assert(! m_stopThread);
+    //    m_stopThread = true;
 
-//    if ( m_sock.isOpen() ) { m_sock.write( net::ClientSocket::Message::VIEWER_CLOSED ); }
+    //    if ( m_sock.isOpen() ) { m_sock.write( net::ClientSocket::Message::VIEWER_CLOSED ); }
 
-//    assert( m_thread.joinable() );
-//    m_thread.join();
+    //    assert( m_thread.joinable() );
+    //    m_thread.join();
 
     m_streams.clear();
-    DEBUG_MSG( "[ViewerInterface] ~ViewerInterface() done" );
+//    DEBUG_MSG( "[ViewerInterface] ~ViewerInterface() done" );
 }
 
 template <class InputStream>
@@ -276,25 +270,24 @@ void ViewerInterface<InputStream>::stopStream( const std::string& streamName ) {
 
 template <class InputStream>
 void ViewerInterface<InputStream>::setProperty( const std::string& streamName,
-                                   const std::string& id,
-                                   int property,
-                                   const Any& value ) {
-//    if ( m_sock.isOpen() ) {
-//        m_sock.write( net::ClientSocket::Message::SET_PROPERTY );
-//        m_sock.write( streamName );
-//        m_sock.write( id );
-//        m_sock.write( property );
-//        m_sock.write( value );
-//    }
+                                                const std::string& id,
+                                                int property,
+                                                const Any& value ) {
+    //    if ( m_sock.isOpen() ) {
+    //        m_sock.write( net::ClientSocket::Message::SET_PROPERTY );
+    //        m_sock.write( streamName );
+    //        m_sock.write( id );
+    //        m_sock.write( property );
+    //        m_sock.write( value );
+    //    }
 }
-
 
 template <class InputStream>
 void ViewerInterface<InputStream>::setIpv4( const std::string& ipv4 ) {
     DEBUG_MSG( "[ViewerInterface] setIpv4 " << ipv4 );
     assert( !m_serverConnected );
     m_ipv4 = ipv4;
-//    m_sock.setIpv4( ipv4 );
+    //    m_sock.setIpv4( ipv4 );
 }
 
 template <class InputStream>
@@ -302,19 +295,19 @@ void ViewerInterface<InputStream>::setPort( int port ) {
     DEBUG_MSG( "[ViewerInterface] setPort " << port );
     assert( !m_serverConnected );
     m_port = port;
-//    m_sock.setPort( port );
+    //    m_sock.setPort( port );
 }
 
 template <class InputStream>
 const std::string& ViewerInterface<InputStream>::getIpv4() const {
     return m_ipv4;
-//    return m_sock.getIpv4();
+    //    return m_sock.getIpv4();
 }
 
 template <class InputStream>
 const int& ViewerInterface<InputStream>::getPort() const {
     return m_port;
-//    return m_sock.getPort();
+    //    return m_sock.getPort();
 }
 
 // void ViewerInterface::setAutoSync( bool newAutoSync ) {
@@ -325,8 +318,6 @@ template <class InputStream>
 bool ViewerInterface<InputStream>::isConnected() const {
     return m_serverConnected;
 }
-
-
 
 } // namespace client
 } // namespace hub

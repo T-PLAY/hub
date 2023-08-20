@@ -35,6 +35,8 @@ class SRC_API InputStreamMqtt : public InputStreamInterface
   private:
     std::unique_ptr<mqtt::client> m_client;
     mqtt::const_message_ptr m_msgPtr;
+
+    std::string m_currentTopic;
 //    mqtt::message_ptr m_msgPtr;
 
 //    friend class InputSyncStream;
@@ -59,6 +61,10 @@ inline void InputStreamMqtt::read( unsigned char* data, size_t len ) {
     m_client->stop_consuming();
     assert(m_msgPtr != nullptr);
     const auto & payload = m_msgPtr->get_payload();
+    if (payload.length() != len) {
+//        std::cerr << "[InputStreamMqtt] payload is corrupted : '" << payload << "', topic : '" << m_currentTopic << "'" << std::endl;
+        throw Stream::exception((std::string("[InputStreamMqtt] payload is corrupted : '") + payload + "', topic : '" + m_currentTopic + "'").c_str());
+    }
     assert(payload.length() == len);
     memcpy(data, payload.data(), len);
 //    assert(m_msgPtr != nullptr);
