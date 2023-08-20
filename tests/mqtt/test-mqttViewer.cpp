@@ -1,5 +1,5 @@
-// #include "test_common.hpp"
-// #include <catch2/catch_test_macros.hpp>
+ #include "test_common.hpp"
+ #include <catch2/catch_test_macros.hpp>
 
 // #include <stdio.h>
 // #include <cstdio>
@@ -17,8 +17,8 @@
 #include <OutputSensor.hpp>
 #include <client/Viewer.hpp>
 
-int main() {
-    // TEST_CASE( "Viewer" ) {
+//int main() {
+TEST_CASE( "MqttViewer" ) {
 
     const std::string ipv4 = "127.0.0.1";
     //    const int port         = GET_RANDOM_PORT;

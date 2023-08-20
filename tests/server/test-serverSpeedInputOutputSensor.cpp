@@ -1,4 +1,4 @@
-#include "test-common.hpp"
+#include "test_common.hpp"
 #include <catch2/catch_test_macros.hpp>
 
 #include <InputSensor.hpp>
@@ -148,7 +148,7 @@ TEST_CASE( "Server test : InputOutputSensor" ) {
             checkRatio( ratio, 40 );
 #    endif
 #else
-            checkRatio( ratio, 60 );
+            checkRatio( ratio, 64 );
 #endif
         }
     }

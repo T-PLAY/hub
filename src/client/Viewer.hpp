@@ -9,8 +9,8 @@
 namespace hub {
 namespace client {
 
-//using Viewer = ViewerServer;
-using Viewer = ViewerMqtt;
+using Viewer = ViewerServer;
+//using Viewer = ViewerMqtt;
 
 //using Viewer = ViewerInterface<InputStream>;
 
