@@ -26,7 +26,8 @@ TEST_CASE( "Native test" ) {
     constexpr int delay = 1000; // ms
 
     const std::string ipv4 = "127.0.0.1";
-    const int port         = GET_RANDOM_PORT;
+//    const int port         = GET_RANDOM_PORT;
+    const int port         = 1883;
 
     const hub::Resolution ref_resolution( { 1 }, hub::Format::BGR8 );
     const std::string ref_sensorName = "sensorName";
@@ -168,15 +169,16 @@ TEST_CASE( "Native test" ) {
                   << std::endl;
     };
 
-    auto* viewer = hub::native::createViewer( onNewStreamer,
+    auto* viewer = hub::native::createViewer(
+                                              ipv4.c_str(),
+                                              port,
+        onNewStreamer,
                                               onDelStreamer,
                                               onServerNotFound,
                                               onServerConnected,
                                               onServerDisconnected,
                                               onNewAcquisition,
                                               onSetProperty,
-                                              ipv4.c_str(),
-                                              port,
                                               onLogMessage );
     hub::native::viewer_setIpv4( viewer, ipv4.c_str() );
     hub::native::viewer_setPort( viewer, port );

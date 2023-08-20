@@ -86,7 +86,7 @@ TEST_CASE( "Server test : viewer" ) {
                                  const hub::Any& value ) {
             std::cout << "[example-viewer] onSetProperty " << streamName << std::endl;
         };
-        hub::client::Viewer viewer { onNewStreamer,
+        hub::client::ViewerServer viewer { onNewStreamer,
                                      onDelStreamer,
                                      onServerNotFound,
                                      onServerConnected,

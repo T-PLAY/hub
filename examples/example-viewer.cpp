@@ -40,7 +40,8 @@ int main() {
         std::cout << "\t[example-viewer] onServerConnected : " << ipv4 << " " << port << std::endl;
     };
     auto onServerDisconnected = []( const std::string& ipv4, int port ) {
-        std::cout << "\t[example-viewer] onServerDisconnected : " << ipv4 << " " << port << std::endl;
+        std::cout << "\t[example-viewer] onServerDisconnected : " << ipv4 << " " << port
+                  << std::endl;
     };
     auto onNewAcquisition = []( const std::string& streamName, const hub::Acquisition& acq ) {
         std::cout << "\t[example-viewer] onNewAcquisition : " << acq << std::endl;
@@ -51,9 +52,9 @@ int main() {
                              const hub::Any& value ) {
         std::cout << "\t[example-viewer] onSetProperty " << streamName << std::endl;
     };
-//    auto onLogMessage = []( const std::string& logMessage ) {
-//        std::cout << "[example-viewer] onLogMessage '" << logMessage << "'" << std::endl;
-//    };
+    //    auto onLogMessage = []( const std::string& logMessage ) {
+    //        std::cout << "[example-viewer] onLogMessage '" << logMessage << "'" << std::endl;
+    //    };
 
     {
         std::cout << "\t[example-viewer] creating viewer" << std::endl;
@@ -66,8 +67,8 @@ int main() {
                                         onServerDisconnected,
                                         onNewAcquisition,
                                         onSetProperty
-//                                        ,onLogMessage
-                                        );
+                                        //                                        ,onLogMessage
+        );
         //    hub::client::Viewer viewer {
         //        onNewStreamer, onDelStreamer, onServerNotFound, onServerConnected,
         //        onServerDisconnected, onNewAcquisition, onSetProperty };
@@ -81,13 +82,15 @@ int main() {
             hub::OutputSensor outputSensor(
                 sensorSpec, hub::output::OutputStreamMqtt( "streamName", ipv4, port ) );
 
-//            std::this_thread::sleep_for( std::chrono::milliseconds( 3000 ) );
-            std::cout << "\t----------------------------------------------------------------------" << std::endl;
+            //            std::this_thread::sleep_for( std::chrono::milliseconds( 3000 ) );
+            std::cout << "\t----------------------------------------------------------------------"
+                      << std::endl;
         }
         std::cout << "\t[example-viewer] outputSensor ended" << std::endl;
 
         std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
-        std::cout << "\t----------------------------------------------------------------------" << std::endl;
+        std::cout << "\t----------------------------------------------------------------------"
+                  << std::endl;
     }
     std::cout << "\t[example-viewer] viewer ended" << std::endl;
     std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
@@ -152,5 +155,6 @@ int main() {
     //    std::cout << "[Test] ############################### server end" << std::endl;
 
     //    std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
-    std::cout << "\t----------------------------------------------------------------------" << std::endl;
+    std::cout << "\t----------------------------------------------------------------------"
+              << std::endl;
 }

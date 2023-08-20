@@ -55,7 +55,7 @@ TEST_CASE( "Viewer" ) {
     };
 
     std::cout << "[Test] ############################### viewer start" << std::endl;
-    hub::client::Viewer viewer {
+    hub::client::ViewerServer viewer {
         onNewStreamer, onDelStreamer, onServerNotFound, onServerConnected, onServerDisconnected, onNewAcquisition, onSetProperty };
 
     viewer.setIpv4( ipv4 );

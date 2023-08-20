@@ -71,7 +71,6 @@ TEST_CASE( "Server test : InputOutputSensor" ) {
     std::cout << "[test][ClientSocket] Mega byte per second : " << megaBytesPerSeconds << " Mo/s"
               << std::endl;
 
-
     {
         const int port2 = port + 1;
 
@@ -90,14 +89,16 @@ TEST_CASE( "Server test : InputOutputSensor" ) {
             hub::OutputSensor outputSensor(
                 hub::SensorSpec( "sensorName", { { { width, height }, hub::Format::BGR8 } } ),
                 "streamName",
-//                hub::net::ClientSocket( ipv4, port2 ) );
-                ipv4, port2 );
+                //                hub::net::ClientSocket( ipv4, port2 ) );
+                ipv4,
+                port2 );
 
             std::cout
                 << "[test][InputOutputSensor] ############################### inputStream start"
                 << std::endl;
             hub::InputSensor inputSensor(
-//                hub::io::InputStream( "streamName", hub::net::ClientSocket( ipv4, port2 ) ) );
+                //                hub::io::InputStream( "streamName", hub::net::ClientSocket( ipv4,
+                //                port2 ) ) );
                 hub::input::InputStreamServer( "streamName", ipv4, port2 ) );
 
             const auto& inputSensorSpec = inputSensor.getSpec();
@@ -140,15 +141,15 @@ TEST_CASE( "Server test : InputOutputSensor" ) {
             std::cout << "[test][ClientSocket/InputOutputSensor] ratio : " << ratio << " %"
                       << std::endl;
 
-            #ifdef  WIN32
-				#ifdef DEBUG
-					CHECK( ratio > 15 );
-				#else
-					CHECK( ratio > 35 );
-				#endif
-            #else
-				CHECK( ratio > 35 );
-            #endif
+#ifdef WIN32
+#    ifdef DEBUG
+            checkRatio( ratio, 20 );
+#    else
+            checkRatio( ratio, 40 );
+#    endif
+#else
+            checkRatio( ratio, 60 );
+#endif
         }
     }
 

@@ -13,8 +13,9 @@ InputSensor* createInputSensor( const char* streamName, const char* ipv4, int po
     InputSensor* inputSensor = nullptr;
     try {
         inputSensor =
-//            new InputSensor( io::InputStream( streamName, net::ClientSocket( ipv4, port ) ) );
-            new InputSensor( input::InputStream( streamName,  ipv4, port ) );
+            //            new InputSensor( io::InputStream( streamName, net::ClientSocket( ipv4,
+            //            port ) ) );
+            new InputSensor( input::InputStream( streamName, ipv4, port ) );
     }
     catch ( std::exception& e ) {
         std::cout << "[Native] createInputSensor : catch exception : " << e.what() << std::endl;
@@ -61,8 +62,11 @@ OutputSensor* createMat4OutputSensor( const char* sensorName, const char* ipv4, 
     try {
         SensorSpec sensorSpec( sensorName, { { { 1 }, hub::Format::MAT4 } } );
         outputSensor = new OutputSensor(
-//            std::move( sensorSpec ), sensorName, net::ClientSocket( ipv4, port ) );
-            std::move( sensorSpec ), sensorName, ipv4, port );
+            //            std::move( sensorSpec ), sensorName, net::ClientSocket( ipv4, port ) );
+            std::move( sensorSpec ),
+            sensorName,
+            ipv4,
+            port );
     }
     catch ( std::exception& e ) {
         std::cout << "[Native] createOutputSensor : catch exception : " << e.what() << std::endl;
@@ -127,15 +131,16 @@ void acquisition_to_string( const Acquisition* acquisition, char* str, int* strL
 
 //////////////////////////////////////////////////////////////////////////
 
-client::Viewer* createViewer( onNewStreamerFunc onNewStreamer,
+//template <class InputStream>
+client::Viewer* createViewer( const char* ipv4,
+                              int port,
+                              onNewStreamerFunc onNewStreamer,
                               onDelStreamerFunc onDelStreamer,
                               onServerNotFoundFunc onServerNotFound,
                               onServerConnectedFunc onServerConnected,
                               onServerDisconnectedFunc onServerDisconnected,
                               onNewAcquisitionFunc onNewAcquisition,
                               onSetPropertyFunc onSetProperty,
-                              const char* ipv4,
-                              int port,
                               onLogMessageFunc onLogMessage ) {
 
     auto onNewStreamerCpp = [=]( const std::string& streamName, const SensorSpec& sensorSpec ) {
@@ -165,17 +170,18 @@ client::Viewer* createViewer( onNewStreamerFunc onNewStreamer,
     auto onLogMessageCpp = [=]( const std::string& logMessage ) {
         onLogMessage( logMessage.c_str() );
     };
-    client::Viewer* viewer = new client::Viewer( onNewStreamerCpp,
-                                                 onDelStreamerCpp,
-                                                 onServerNotFoundCpp,
-                                                 onServerConnectedCpp,
-                                                 onServerDisconnectedCpp,
-                                                 onNewAcquisitionCpp,
-                                                 onSetPropertyCpp,
-                                                 ipv4,
-                                                 port,
-                                                 false,
-                                                 onLogMessageCpp );
+    client::Viewer* viewer =
+        new client::Viewer( ipv4,
+                            port,
+                            onNewStreamerCpp,
+                            onDelStreamerCpp,
+                            onServerNotFoundCpp,
+                            onServerConnectedCpp,
+                            onServerDisconnectedCpp,
+                            onNewAcquisitionCpp,
+                            onSetPropertyCpp,
+                            //                                                 false,
+                            onLogMessageCpp );
     return viewer;
 }
 
@@ -197,14 +203,14 @@ int viewer_getPort( const client::Viewer* viewer ) {
     return viewer->getPort();
 }
 
-void viewer_getIpv4(const client::Viewer *viewer, char* ipv4 ) {
+void viewer_getIpv4( const client::Viewer* viewer, char* ipv4 ) {
     const auto& ipv4Str = viewer->getIpv4();
     const int len       = ipv4Str.size();
     memcpy( ipv4, ipv4Str.data(), len + 1 );
     ipv4[len] = 0;
 }
 
-bool viewer_isConnected(const client::Viewer *viewer ) {
+bool viewer_isConnected( const client::Viewer* viewer ) {
     return viewer->isConnected();
 }
 
@@ -318,13 +324,13 @@ double metaData_getDouble( const SensorSpec::MetaData* metaData, const char* met
     return metaData->at( metaName ).getDouble();
 }
 
-//double any_getDouble( const Any* any ) {
-//    return any->getDouble();
-//}
+// double any_getDouble( const Any* any ) {
+//     return any->getDouble();
+// }
 
-//int any_getInt( const Any* any ) {
-//    return any->getInt();
-//}
+// int any_getInt( const Any* any ) {
+//     return any->getInt();
+// }
 
 } // namespace native
 } // namespace hub

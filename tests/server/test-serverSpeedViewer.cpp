@@ -88,8 +88,9 @@ TEST_CASE( "Server test : viewer" ) {
             hub::OutputSensor outputSensor(
                 hub::SensorSpec( "sensorName", { { { width, height }, hub::Format::BGR8 } } ),
                 "streamName",
-//                hub::net::ClientSocket( ipv4, port2 ) );
-                 ipv4, port2 );
+                //                hub::net::ClientSocket( ipv4, port2 ) );
+                ipv4,
+                port2 );
 
             std::cout
                 << "[test][InputOutputSensor] ############################### inputStream start"
@@ -150,7 +151,7 @@ TEST_CASE( "Server test : viewer" ) {
                 };
 
                 std::cout << "[Test] ############################### viewer start" << std::endl;
-                hub::client::Viewer viewer { onNewStreamer,
+                hub::client::ViewerServer viewer { onNewStreamer,
                                              onDelStreamer,
                                              onServerNotFound,
                                              onServerConnected,
@@ -193,15 +194,15 @@ TEST_CASE( "Server test : viewer" ) {
                 const auto ratio = 100.0 * megaBytesPerSeconds2 / megaBytesPerSeconds;
                 std::cout << "[test][ClientSocket/InputOutputSensor] ratio : " << ratio << " %"
                           << std::endl;
-            #ifdef  WIN32
-//                #ifdef DEBUG
-                    CHECK( ratio > 15 );
-//                #else
-//                    CHECK( ratio > 35 );
-//                #endif
-            #else
-                CHECK( ratio > 35 );
-            #endif
+#ifdef WIN32
+#    ifdef DEBUG
+                checkRatio( ratio, 20 );
+#    else
+                checkRatio( ratio, 40 );
+#    endif
+#else
+                checkRatio( ratio, 55 );
+#endif
             } // end viewer
         }
     }

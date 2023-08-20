@@ -1,4 +1,5 @@
 
+#include <catch2/catch_test_macros.hpp>
 
 #include <ctime>
 #include <random>
@@ -18,4 +19,12 @@ static int getRandomPort( const char* filename ) {
 
 static int computeDist( const hub::Acquisition& acq, const hub::Acquisition& acq2 ) {
     return std::abs( acq.getStart() - acq2.getStart() );
+}
+
+static void checkRatio(double ratio, int compare) {
+    const int gap = 5;
+    CHECK((compare - gap <= ratio && ratio <= compare + gap));
+    if (! (compare - gap <= ratio && ratio <= compare + gap)) {
+        std::cout << "---------------------------------------------------------------------------------------------------------------------> checkRatio: " << compare - gap << " <= " << ratio << " <= " << compare + gap << std::endl;
+    }
 }

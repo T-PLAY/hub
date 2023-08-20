@@ -101,7 +101,8 @@ TEST_CASE( "Server test : viewer" ) {
             CHECK( streamer.isConnected() );
 
             hub::InputSensor inputSensor(
-//                hub::io::InputStream( "streamName", hub::net::ClientSocket( ipv4, port2 ) ) );
+                //                hub::io::InputStream( "streamName", hub::net::ClientSocket( ipv4,
+                //                port2 ) ) );
                 hub::input::InputStreamServer( "streamName", ipv4, port2 ) );
 
             const auto& sensorSpec2 = inputSensor.getSpec();
@@ -135,13 +136,13 @@ TEST_CASE( "Server test : viewer" ) {
             std::cout << "[test][ClientSocket/InputOutputSensor] ratio : " << ratio << " %"
                       << std::endl;
 #ifdef WIN32
-	#ifdef  DEBUG
-            CHECK( ratio > 15 );
-	#else
-            CHECK( ratio > 35 );
-    #endif
+#    ifdef DEBUG
+            checkRatio( ratio, 20 );
+#    else
+            checkRatio( ratio, 40 );
+#    endif
 #else
-            CHECK( ratio > 35 );
+            checkRatio( ratio, 60 );
 #endif
         }
     }
