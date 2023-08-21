@@ -36,42 +36,48 @@ TEST_CASE( "Server test : viewer" ) {
     const std::string ipv4 = "127.0.0.1";
     const int port         = GET_RANDOM_PORT;
 
-    std::cout << "[test][ClientSocket] start streaming" << std::endl;
-    const auto& start = std::chrono::high_resolution_clock::now();
+    double megaBytesPerSeconds;
+    double megaBytesPerSeconds2;
+
     {
+        std::cout << "[test][ClientSocket] start streaming" << std::endl;
         hub::net::ServerSocket serverSocket( port );
         hub::net::ClientSocket clientSocket( ipv4, port );
         auto clientServerSocket = serverSocket.waitNewClient();
         const int packetSize    = 2'000'000; // 2Go network memory buffer
         const int nPart         = dataSize / packetSize;
-        for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
-            int uploadSize = 0;
 
-            for ( int i = 0; i < nPart - 1; ++i ) {
-                clientSocket.write( data + uploadSize, packetSize );
-                clientServerSocket.read( data2 + uploadSize, packetSize );
+        const auto& start = std::chrono::high_resolution_clock::now();
+        {
+            for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
+                int uploadSize = 0;
 
-                uploadSize += packetSize;
+                for ( int i = 0; i < nPart - 1; ++i ) {
+                    clientSocket.write( data + uploadSize, packetSize );
+                    clientServerSocket.read( data2 + uploadSize, packetSize );
+
+                    uploadSize += packetSize;
+                }
+
+                clientSocket.write( data + uploadSize, dataSize - uploadSize );
+                clientServerSocket.read( data2 + uploadSize, dataSize - uploadSize );
+
+                assert( !memcmp( data, data2, dataSize ) );
             }
-
-            clientSocket.write( data + uploadSize, dataSize - uploadSize );
-            clientServerSocket.read( data2 + uploadSize, dataSize - uploadSize );
-
-            assert( !memcmp( data, data2, dataSize ) );
         }
-    }
-    const auto& end = std::chrono::high_resolution_clock::now();
-    std::cout << "[test][ClientSocket] end streaming" << std::endl;
-    const auto& duration =
-        std::chrono::duration_cast<std::chrono::milliseconds>( end - start ).count();
-    const auto& bytes               = dataSize * nAcqs;
-    const auto& bytesPerSeconds     = 1000.0 * bytes / duration;
-    const auto& megaBytesPerSeconds = bytesPerSeconds / 1000'000.0;
+        const auto& end = std::chrono::high_resolution_clock::now();
+        std::cout << "[test][ClientSocket] end streaming" << std::endl;
+        const auto& duration =
+            std::chrono::duration_cast<std::chrono::milliseconds>( end - start ).count();
+        const auto& bytes           = dataSize * nAcqs;
+        const auto& bytesPerSeconds = 1000.0 * bytes / duration;
+        megaBytesPerSeconds         = bytesPerSeconds / 1000'000.0;
 
-    std::cout << "[test][ClientSocket] Mega byte wrote : " << bytes / 1000'000.0 << " Mo"
-              << std::endl;
-    std::cout << "[test][ClientSocket] Mega byte per second : " << megaBytesPerSeconds << " Mo/s"
-              << std::endl;
+        std::cout << "[test][ClientSocket] Mega byte wrote : " << bytes / 1000'000.0 << " Mo"
+                  << std::endl;
+        std::cout << "[test][ClientSocket] Mega byte per second : " << megaBytesPerSeconds
+                  << " Mo/s" << std::endl;
+    }
 
     {
         const int port2 = port + 1;
@@ -89,8 +95,6 @@ TEST_CASE( "Server test : viewer" ) {
                 << "[test][InputOutputSensor] ############################### outputStream start"
                 << std::endl;
 
-            ////                std::cout << "[example-viewer] onNewAcquisition : " << acq <<
-            /// std::endl;
 
             hub::SensorSpec sensorSpec( "sensorName",
                                         { { { width, height }, hub::Format::BGR8 } } );
@@ -126,30 +130,40 @@ TEST_CASE( "Server test : viewer" ) {
             const auto& end2 = std::chrono::high_resolution_clock::now();
             const auto& duration2 =
                 std::chrono::duration_cast<std::chrono::milliseconds>( end2 - start2 ).count();
-            const auto& bytes2               = dataSize * nAcqs;
-            const auto& bytesPerSeconds2     = 1000.0 * bytes / duration2;
-            const auto& megaBytesPerSeconds2 = bytesPerSeconds2 / 1000'000.0;
+            const auto& bytes2           = dataSize * nAcqs;
+            const auto& bytesPerSeconds2 = 1000.0 * bytes2 / duration2;
+            megaBytesPerSeconds2         = bytesPerSeconds2 / 1000'000.0;
 
             std::cout << "[test][InputOutputSensor] Mega byte wrote : " << bytes2 / 1000'000.0
                       << " Mo" << std::endl;
             std::cout << "[test][InputOutputSensor] Mega byte per second : " << megaBytesPerSeconds2
                       << " Mo/s" << std::endl;
-
-            const auto ratio = 100.0 * megaBytesPerSeconds2 / megaBytesPerSeconds;
-            std::cout << "[test][ClientSocket/InputOutputSensor] ratio : " << ratio << " %"
-                      << std::endl;
-#ifdef WIN32
-#    ifdef DEBUG
-            checkRatio( ratio, 20 );
-#    else
-            checkRatio( ratio, 40 );
-#    endif
-#else
-        if ( hostname == "msi" ) { checkRatio( ratio, 60, 10 ); }
-        else { checkRatio( ratio, 35, 5 ); }
-#endif
         }
     }
+
+    std::cout << std::endl;
+
+    std::cout << "[test][ClientSocket] Mega byte per second : " << megaBytesPerSeconds << " Mo/s"
+              << std::endl;
+    std::cout << "[test][InputOutputSensor] Mega byte per second : " << megaBytesPerSeconds2
+              << " Mo/s" << std::endl;
+
+    std::cout << std::endl;
+
+    const auto ratio = 100.0 * megaBytesPerSeconds2 / megaBytesPerSeconds;
+    std::cout << "[test][ClientSocket/InputOutputSensor] ratio : " << ratio << " %" << std::endl;
+#ifdef WIN32
+#    ifdef DEBUG
+    checkRatio( ratio, 20 );
+#    else
+    checkRatio( ratio, 40 );
+#    endif
+#else
+    if ( hostname == "msi" ) { checkRatio( ratio, 60, 10 ); }
+    else { checkRatio( ratio, 35, 5 ); }
+#endif
+
+    std::cout << "[test] tested on machine: '" << hostname << "'" << std::endl;
 
     delete[] data;
     delete[] data2;
