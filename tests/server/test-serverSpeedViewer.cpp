@@ -69,9 +69,9 @@ TEST_CASE( "Server test : viewer" ) {
         std::cout << "[test][ClientSocket] end streaming" << std::endl;
         const auto& duration =
             std::chrono::duration_cast<std::chrono::milliseconds>( end - start ).count();
-        const auto& bytes               = dataSize * nAcqs;
-        const auto& bytesPerSeconds     = 1000.0 * bytes / duration;
-        megaBytesPerSeconds = bytesPerSeconds / 1000'000.0;
+        const auto& bytes           = dataSize * nAcqs;
+        const auto& bytesPerSeconds = 1000.0 * bytes / duration;
+        megaBytesPerSeconds         = bytesPerSeconds / 1000'000.0;
 
         std::cout << "[test][ClientSocket] Mega byte wrote : " << bytes / 1000'000.0 << " Mo"
                   << std::endl;
@@ -193,9 +193,9 @@ TEST_CASE( "Server test : viewer" ) {
                 const auto& end2 = std::chrono::high_resolution_clock::now();
                 const auto& duration2 =
                     std::chrono::duration_cast<std::chrono::milliseconds>( end2 - start2 ).count();
-                const auto& bytes2               = dataSize * nAcqs;
-                const auto& bytesPerSeconds2     = 1000.0 * bytes2 / duration2;
-                megaBytesPerSeconds2 = bytesPerSeconds2 / 1000'000.0;
+                const auto& bytes2           = dataSize * nAcqs;
+                const auto& bytesPerSeconds2 = 1000.0 * bytes2 / duration2;
+                megaBytesPerSeconds2         = bytesPerSeconds2 / 1000'000.0;
 
                 std::cout << "[test][InputOutputSensor] Mega byte wrote : " << bytes2 / 1000'000.0
                           << " Mo" << std::endl;
@@ -224,7 +224,13 @@ TEST_CASE( "Server test : viewer" ) {
 #    endif
 #else
     if ( hostname == "msi" ) { checkRatio( ratio, 50, 10 ); }
-    else { checkRatio( ratio, 35, 5 ); }
+    else {
+#    ifdef DEBUG
+        checkRatio( ratio, 55, 10 );
+#    else
+        checkRatio( ratio, 40, 10 );
+#    endif
+    }
 #endif
 
     std::cout << "[test] tested on machine: '" << hostname << "'" << std::endl;

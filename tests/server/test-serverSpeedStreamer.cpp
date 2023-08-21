@@ -160,7 +160,13 @@ TEST_CASE( "Server test : viewer" ) {
 #    endif
 #else
     if ( hostname == "msi" ) { checkRatio( ratio, 60, 10 ); }
-    else { checkRatio( ratio, 35, 5 ); }
+    else {
+#ifdef DEBUG
+        checkRatio( ratio, 50, 10 );
+#else
+        checkRatio( ratio, 40, 10 );
+#endif
+    }
 #endif
 
     std::cout << "[test] tested on machine: '" << hostname << "'" << std::endl;

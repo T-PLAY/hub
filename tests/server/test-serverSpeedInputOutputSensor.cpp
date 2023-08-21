@@ -168,7 +168,13 @@ TEST_CASE( "Server test : InputOutputSensor" ) {
 #    endif
 #else
         if ( hostname == "msi" ) { checkRatio( ratio, 50, 15 ); }
-        else { checkRatio( ratio, 40, 10 ); }
+        else {
+#ifdef DEBUG
+            checkRatio( ratio, 50, 10 );
+#else
+            checkRatio( ratio, 40, 10 );
+#endif
+        }
 #endif
     }
 
