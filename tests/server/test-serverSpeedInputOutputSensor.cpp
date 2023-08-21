@@ -7,9 +7,12 @@
 #include <server/Server.hpp>
 
 #include <filesystem>
+#include <utils/Utils.hpp>
 
 TEST_CASE( "Server test : InputOutputSensor" ) {
     // todo sometimes failed
+    auto hostname = hub::utils::getHostname();
+
     constexpr int nAcqs       = 200;
     constexpr int width       = 1920;
     constexpr int height      = 1080;
@@ -144,6 +147,15 @@ TEST_CASE( "Server test : InputOutputSensor" ) {
                       << " Mo/s" << std::endl;
         }
 
+        std::cout << std::endl;
+
+        std::cout << "[test][ClientSocket] Mega byte per second : " << megaBytesPerSeconds
+                  << " Mo/s" << std::endl;
+        std::cout << "[test][InputOutputSensor] Mega byte per second : " << megaBytesPerSeconds2
+                  << " Mo/s" << std::endl;
+
+        std::cout << std::endl;
+
         const auto ratio = 100.0 * megaBytesPerSeconds2 / megaBytesPerSeconds;
         std::cout << "[test][ClientSocket/InputOutputSensor] ratio : " << ratio << " %"
                   << std::endl;
@@ -155,9 +167,12 @@ TEST_CASE( "Server test : InputOutputSensor" ) {
         checkRatio( ratio, 40 );
 #    endif
 #else
-        checkRatio( ratio, 50, 15 );
+        if ( hostname == "msi" ) { checkRatio( ratio, 50, 15 ); }
+        else { checkRatio( ratio, 35, 5 ); }
 #endif
     }
+
+    std::cout << "[test] tested on machine: '" << hostname << "'" << std::endl;
 
     delete[] data;
     delete[] data2;
