@@ -1,17 +1,22 @@
 #pragma once
 
 #include "ViewerInterface.hpp"
-#include "ViewerServer.hpp"
 
+#include "ViewerServer.hpp"
+#ifdef USE_MQTT
 //#include "ViewerMqtt.hpp"
+#endif
 
 #include "io/input/InputStream.hpp"
 
 namespace hub {
 namespace client {
 
+#ifdef USE_MQTT
+using Viewer = ViewerMqtt;
+#else
 using Viewer = ViewerServer;
-//using Viewer = ViewerMqtt;
+#endif
 
 //using Viewer = ViewerInterface<InputStream>;
 

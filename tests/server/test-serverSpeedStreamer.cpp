@@ -8,8 +8,11 @@
 #include <server/Server.hpp>
 
 #include <filesystem>
+#include <utils/Utils.hpp>
 
 TEST_CASE( "Server test : viewer" ) {
+    const auto hostname = hub::utils::getHostname();
+
     constexpr int nAcqs       = 200;
     constexpr int width       = 1920;
     constexpr int height      = 1080;
@@ -142,7 +145,8 @@ TEST_CASE( "Server test : viewer" ) {
             checkRatio( ratio, 40 );
 #    endif
 #else
-            checkRatio( ratio, 60, 10 );
+        if ( hostname == "msi" ) { checkRatio( ratio, 60, 10 ); }
+        else { checkRatio( ratio, 35, 5 ); }
 #endif
         }
     }

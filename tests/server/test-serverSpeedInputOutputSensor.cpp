@@ -11,7 +11,7 @@
 
 TEST_CASE( "Server test : InputOutputSensor" ) {
     // todo sometimes failed
-    auto hostname = hub::utils::getHostname();
+    const auto hostname = hub::utils::getHostname();
 
     constexpr int nAcqs       = 200;
     constexpr int width       = 1920;

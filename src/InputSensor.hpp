@@ -7,13 +7,12 @@
 
 // user friendly useless includes
 //#include "io/File.hpp"
+#include "io/input/InputFile.hpp"
 #include "io/input/InputStream.hpp"
 #include "io/input/InputSyncStream.hpp"
-#include "io/Memory.hpp"
-#include "io/input/InputStreamServer.hpp"
-#include "io/input/InputFile.hpp"
+#include "io/input/InputMemory.hpp"
 
-//#include "io/input/InputStreamMqtt.hpp"
+#include "io/Memory.hpp"
 
 namespace hub {
 

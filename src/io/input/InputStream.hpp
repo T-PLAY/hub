@@ -2,15 +2,20 @@
 #pragma once
 
 #include "InputStreamServer.hpp"
-//#include "InputStreamMqtt.hpp"
+#ifdef USE_MQTT
+#include "InputStreamMqtt.hpp"
+#endif
 
 namespace hub {
 using namespace io;
 namespace input {
 
 
+#ifdef USE_MQTT
+using InputStream = InputStreamMqtt;
+#else
 using InputStream = InputStreamServer;
-//using InputStream = InputStreamMqtt;
+#endif
 
 static_assert( std::is_base_of<InputStreamInterface, InputStream>::value,
                "InputStreamInterface is base class of InputStream" );

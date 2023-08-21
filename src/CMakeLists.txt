@@ -79,7 +79,7 @@ target_include_directories(${PROJECT_NAME}
 target_compile_definitions(${PROJECT_NAME} PUBLIC -DINTERNAL_BUILD)
 
 if (PahoMqttCpp_FOUND)
-    target_compile_definitions(${PROJECT_NAME} PUBLIC -DHAS_MQTT)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC -DUSE_MQTT)
 endif()
 
 #set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "-fvisibility=hidden -fvisibility-inlines-hidden")
