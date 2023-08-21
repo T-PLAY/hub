@@ -43,6 +43,8 @@ if (PahoMqttCpp_FOUND)
 #    set(LINK_LIBRARIES "${LINK_LIBRARIES} PahoMqttCpp::paho-mqttpp3")
     set(LINK_LIBRARIES ${LINK_LIBRARIES} PahoMqttCpp::paho-mqttpp3)
 else()
+    list(FILTER test_srcs EXCLUDE REGEX ".*Mqtt\\.cpp$")
+
     file(GLOB mqtt_srcs mqtt/*.cpp)
     list(REMOVE_ITEM test_srcs ${mqtt_srcs})
 #    message(STATUS "#################### ${mqtt_srcs}")

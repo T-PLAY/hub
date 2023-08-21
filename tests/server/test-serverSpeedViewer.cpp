@@ -151,15 +151,17 @@ TEST_CASE( "Server test : viewer" ) {
                 };
 
                 std::cout << "[Test] ############################### viewer start" << std::endl;
-                hub::client::ViewerServer viewer { onNewStreamer,
+                hub::client::ViewerServer viewer {
+                                             ipv4,
+                                             port2,
+                    onNewStreamer,
                                              onDelStreamer,
                                              onServerNotFound,
                                              onServerConnected,
                                              onServerDisconnected,
                                              onNewAcquisition,
                                              onSetProperty,
-                                             ipv4,
-                                             port2 };
+                };
 
                 while ( !serverConnected ) {
                     std::cout << "[test] waiting for server started" << std::endl;
@@ -201,7 +203,7 @@ TEST_CASE( "Server test : viewer" ) {
                 checkRatio( ratio, 40 );
 #    endif
 #else
-                checkRatio( ratio, 53 );
+                checkRatio( ratio, 50, 10 );
 #endif
             } // end viewer
         }

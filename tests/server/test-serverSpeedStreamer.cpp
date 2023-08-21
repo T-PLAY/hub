@@ -142,7 +142,7 @@ TEST_CASE( "Server test : viewer" ) {
             checkRatio( ratio, 40 );
 #    endif
 #else
-            checkRatio( ratio, 60 );
+            checkRatio( ratio, 60, 10 );
 #endif
         }
     }

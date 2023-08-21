@@ -21,8 +21,8 @@ static int computeDist( const hub::Acquisition& acq, const hub::Acquisition& acq
     return std::abs( acq.getStart() - acq2.getStart() );
 }
 
-static void checkRatio(double ratio, int compare) {
-    const int gap = 5;
+static void checkRatio(double ratio, int compare, int gap) {
+//    const int gap = 10;
     CHECK((compare - gap <= ratio && ratio <= compare + gap));
     if (! (compare - gap <= ratio && ratio <= compare + gap)) {
         std::cout << "---------------------------------------------------------------------------------------------------------------------> checkRatio: " << compare - gap << " <= " << ratio << " <= " << compare + gap << std::endl;

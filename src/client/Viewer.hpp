@@ -2,7 +2,8 @@
 
 #include "ViewerInterface.hpp"
 #include "ViewerServer.hpp"
-#include "ViewerMqtt.hpp"
+
+//#include "ViewerMqtt.hpp"
 
 #include "io/input/InputStream.hpp"
 

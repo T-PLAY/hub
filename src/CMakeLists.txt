@@ -33,6 +33,7 @@ endif()
 ############################# COMPILING SOURCES
 
 file(GLOB_RECURSE sources ${HUB_SOURCE_DIR}/*.cpp ${HUB_EXTERNAL_DIR}/*.cpp ${HUB_EXTERNAL_DIR}/*.c)
+
 #list(REMOVE_ITEM sources ${HUB_EXTERNAL_DIR}/mqtt/MQTTAsync.c)
 #list(REMOVE_ITEM sources ${HUB_EXTERNAL_DIR}/mqtt/MQTTAsyncUtils.c)
 file(
@@ -46,6 +47,11 @@ file(
     ${HUB_EXTERNAL_DIR}/*.inl)
 #list(REMOVE_ITEM headers ${HUB_EXTERNAL_DIR}/mqtt/MQTTAsync.h)
 #list(REMOVE_ITEM headers ${HUB_EXTERNAL_DIR}/mqtt/MQTTAsyncUtils.h)
+
+if (NOT PahoMqttCpp_FOUND)
+    list(FILTER sources EXCLUDE REGEX ".*Mqtt\\.cpp$")
+    list(FILTER headers EXCLUDE REGEX ".*Mqtt\\.hpp$")
+endif()
 
 list(APPEND SOURCE_FILES ${sources} ${headers})
 
@@ -71,6 +77,10 @@ target_include_directories(${PROJECT_NAME}
 )
 
 target_compile_definitions(${PROJECT_NAME} PUBLIC -DINTERNAL_BUILD)
+
+if (PahoMqttCpp_FOUND)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC -DHAS_MQTT)
+endif()
 
 #set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "-fvisibility=hidden -fvisibility-inlines-hidden")
 #set_target_properties(${PROJECT_NAME} PROPERTIES SOVERSION ${${PROJECT_NAME}_VERSION_MAJOR} VERSION

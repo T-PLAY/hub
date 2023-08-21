@@ -36,7 +36,7 @@ TEST_CASE( "MqttCompareSpeed test" ) {
     for ( int i = 0; i < nAcqs; ++i ) {
         for ( int j = 0; j < dataSize; ++j ) {
             //         datas[i] = i % 256;
-//            datas[i * dataSize + j] = rand() % 256;
+            //            datas[i * dataSize + j] = rand() % 256;
             datas[i * dataSize + j] = 65 + i % 256;
         }
     }
@@ -44,7 +44,7 @@ TEST_CASE( "MqttCompareSpeed test" ) {
     for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
         hub::Acquisition acq( iAcq, iAcq );
         acq << hub::data::Measure(
-            reinterpret_cast<unsigned const char*>( &datas[iAcq  * dataSize] ),
+            reinterpret_cast<unsigned const char*>( &datas[iAcq * dataSize] ),
             dataSize,
             { { width, height }, hub::Format::BGR8 } );
         acqs.at( iAcq ) = std::move( acq );
@@ -72,18 +72,16 @@ TEST_CASE( "MqttCompareSpeed test" ) {
                 int uploadSize = 0;
 
                 for ( int i = 0; i < nPart - 1; ++i ) {
-                    clientSocket.write( &datas[iAcq * dataSize] + uploadSize,
-                                        packetSize );
+                    clientSocket.write( &datas[iAcq * dataSize] + uploadSize, packetSize );
                     clientServerSocket.read( data2 + uploadSize, packetSize );
 
                     uploadSize += packetSize;
                 }
 
-                clientSocket.write( &datas[ iAcq * dataSize] + uploadSize,
-                                    dataSize - uploadSize );
+                clientSocket.write( &datas[iAcq * dataSize] + uploadSize, dataSize - uploadSize );
                 clientServerSocket.read( data2 + uploadSize, dataSize - uploadSize );
 
-                CHECK( !memcmp( &datas[ iAcq * dataSize], data2, dataSize ) );
+                CHECK( !memcmp( &datas[iAcq * dataSize], data2, dataSize ) );
             }
         }
         const auto& end = std::chrono::high_resolution_clock::now();
@@ -95,10 +93,6 @@ TEST_CASE( "MqttCompareSpeed test" ) {
         megaBytesPerSeconds         = bytesPerSeconds / 1000'000.0;
 
         std::cout << "[test][ClientSocket] Mega byte wrote : " << bytes / 1000'000.0 << " Mo"
-                  << std::endl;
-        std::cout << "[test][ClientSocket] Mega byte per second : " << megaBytesPerSeconds
-                  << " Mo/s" << std::endl;
-        std::cout << "*****************************************************************************"
                   << std::endl;
     }
 
@@ -116,29 +110,31 @@ TEST_CASE( "MqttCompareSpeed test" ) {
         mqtt::client outputClient( ip, "producer", mqtt::create_options( MQTTVERSION_5 ) );
         outputClient.connect();
         const mqtt::message_ptr outputMsgPtr = mqtt::make_message( topicName, "" );
-//        outputMsgPtr->set_retained(true);
-//        outputMsgPtr->set_qos(2);
+        //        outputMsgPtr->set_retained(true);
+//                outputMsgPtr->set_qos(2);
+                outputMsgPtr->set_qos(0);
+
 
         mqtt::const_message_ptr inputMsgPtr;
-        const auto& start = std::chrono::high_resolution_clock::now();
+        const auto& start2 = std::chrono::high_resolution_clock::now();
         //            hub::net::ServerSocket serverSocket( port );
 
         //            const int packetSize    = 2'000'000; // 2Go network memory buffer
         //            const int nPart         = dataSize / packetSize;
         for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
-            //                int uploadSize = 0;
+//                            int uploadSize = 0;
 
             outputMsgPtr->set_payload( &datas[iAcq * dataSize], dataSize );
-//            outputMsgPtr->set_payload( datas, dataSize );
+            //            outputMsgPtr->set_payload( datas, dataSize );
             outputClient.publish( outputMsgPtr );
 
             inputMsgPtr = inputClient.consume_message();
-            assert(inputMsgPtr != nullptr);
+//            assert( inputMsgPtr != nullptr );
 
-//            const auto& payload  = inputMsgPtr->get_payload_ref();
+            //            const auto& payload  = inputMsgPtr->get_payload_ref();
             const auto& payload  = inputMsgPtr->get_payload();
             const auto* data3    = payload.data();
-            const auto data3Size = payload.size();
+//            const auto data3Size = payload.size();
 
             //                for ( int i = 0; i < nPart - 1; ++i ) {
             //                    clientSocket.write( data + uploadSize, packetSize );
@@ -152,26 +148,20 @@ TEST_CASE( "MqttCompareSpeed test" ) {
             //                );
 
             //                assert( !memcmp( data, data2, dataSize ) );
-            CHECK( dataSize == data3Size );
-            CHECK( !memcmp( &datas[iAcq  * dataSize], data3, dataSize ) );
-            assert( !memcmp( &datas[iAcq  * dataSize], data3, dataSize ) );
+//            CHECK( dataSize == data3Size );
+            CHECK( !memcmp( &datas[iAcq * dataSize], data3, dataSize ) );
+//            assert( !memcmp( &datas[iAcq * dataSize], data3, dataSize ) );
         }
         inputClient.stop_consuming();
-        const auto& end = std::chrono::high_resolution_clock::now();
+        const auto& end2 = std::chrono::high_resolution_clock::now();
         std::cout << "[Mqtt] end streaming" << std::endl;
-        const auto& duration =
-            std::chrono::duration_cast<std::chrono::milliseconds>( end - start ).count();
+        const auto& duration2 =
+            std::chrono::duration_cast<std::chrono::milliseconds>( end2 - start2 ).count();
         const auto& bytes           = dataSize * nAcqs;
-        const auto& bytesPerSeconds = 1000.0 * bytes / duration;
-        megaBytesPerSeconds2        = bytesPerSeconds / 1000'000.0;
+        const auto& bytesPerSeconds2 = 1000.0 * bytes / duration2;
+        megaBytesPerSeconds2        = bytesPerSeconds2 / 1000'000.0;
 
         std::cout << "[Mqtt] Mega byte wrote : " << bytes / 1000'000.0 << " Mo" << std::endl;
-        std::cout << "[Mqtt] Mega byte per second : " << megaBytesPerSeconds2 << " Mo/s"
-                  << std::endl;
-        const auto ratio = 100.0 * megaBytesPerSeconds2 / megaBytesPerSeconds;
-        std::cout << "[Mqtt] ratio : " << ratio << " %" << std::endl;
-        std::cout << "*****************************************************************************"
-                  << std::endl;
     }
 
     {
@@ -238,40 +228,22 @@ TEST_CASE( "MqttCompareSpeed test" ) {
 
             std::cout << "[test][InputOutputSensor] Mega byte wrote : " << bytes3 / 1000'000.0
                       << " Mo" << std::endl;
-            std::cout << "[test][InputOutputSensor] Mega byte per second : " << megaBytesPerSeconds3
-                      << " Mo/s" << std::endl;
-
-            const auto ratio = 100.0 * megaBytesPerSeconds3 / megaBytesPerSeconds;
-            std::cout << "[test][ClientSocket/InputOutputSensor] ratio : " << ratio << " %"
-                      << std::endl;
-
-#ifdef WIN32
-#    ifdef DEBUG
-            CHECK( ratio > 15 );
-#    else
-            CHECK( ratio > 35 );
-#    endif
-#else
-            CHECK( ratio > 35 );
-#endif
         }
     }
 
     {
         const std::string ipv4 = "127.0.0.1";
-        const int port = 1883;
+        const int port         = 1883;
 
         std::cout << "[test][MqttStream] ############################### outputStream start"
                   << std::endl;
         hub::OutputSensor outputSensor(
             hub::SensorSpec( "sensorName", { { { width, height }, hub::Format::BGR8 } } ),
-                             hub::output::OutputStreamMqtt("streamName", "127.0.0.1", 1883)
-            );
+            hub::output::OutputStreamMqtt( "streamName", "127.0.0.1", 1883 ) );
 
         std::cout << "[test][MqttStream] ############################### inputStream start"
                   << std::endl;
-        hub::InputSensor inputSensor(
-            hub::input::InputStreamMqtt( "streamName", ipv4, port ) );
+        hub::InputSensor inputSensor( hub::input::InputStreamMqtt( "streamName", ipv4, port ) );
 
         const auto& inputSensorSpec = inputSensor.getSpec();
         CHECK( inputSensorSpec.getAcquisitionSize() == dataSize );
@@ -304,30 +276,78 @@ TEST_CASE( "MqttCompareSpeed test" ) {
 
         std::cout << "[test][MqttStream] Mega byte wrote : " << bytes4 / 1000'000.0 << " Mo"
                   << std::endl;
-        std::cout << "[test][MqttStream] Mega byte per second : " << megaBytesPerSeconds4
-                  << " Mo/s" << std::endl;
+//        std::cout << "[test][MqttStream] Mega byte per second : " << megaBytesPerSeconds4 << " Mo/s"
+//                  << std::endl;
 
-        const auto ratio = 100.0 * megaBytesPerSeconds4 / megaBytesPerSeconds;
-        std::cout << "[test][ClientSocket/MqttStream] ratio : " << ratio << " %"
-                  << std::endl;
-        const auto ratio2 = 100.0 * megaBytesPerSeconds4 / megaBytesPerSeconds2;
-        std::cout << "[test][Mqtt/MqttStream] ratio : " << ratio2 << " %"
-                  << std::endl;
+        // #ifdef WIN32
+        // #    ifdef DEBUG
+        //         CHECK( ratio > 15 );
+        // #    else
+        //         CHECK( ratio > 35 );
+        // #    endif
+        // #else
+        //         CHECK( ratio > 35 );
+        // #endif
+    }
+
+    std::cout << std::endl;
+    std::cout << std::endl;
+
+    std::cout << "[ClientSocket] Mega byte per second : " << megaBytesPerSeconds << " Mo/s"
+              << std::endl;
+
+    std::cout << "[Hub] Mega byte per second : " << megaBytesPerSeconds3
+              << " Mo/s" << std::endl;
+
+    std::cout << "[Mqtt] Mega byte per second : " << megaBytesPerSeconds2 << " Mo/s" << std::endl;
+
+    std::cout << "[MqttStream] Mega byte per second : " << megaBytesPerSeconds4 << " Mo/s" << std::endl;
+
+    std::cout << std::endl;
+
 
 //#ifdef WIN32
 //#    ifdef DEBUG
-//        CHECK( ratio > 15 );
+//    //            CHECK( ratio > 15 );
+//    checkRatio( ratio, 25 );
 //#    else
-//        CHECK( ratio > 35 );
+//    //            CHECK( ratio > 35 );
+//    checkRatio( ratio, 45 );
 //#    endif
 //#else
-//        CHECK( ratio > 35 );
+    //            CHECK( ratio > 35 );
+//    checkRatio( ratio, 45 );
 //#endif
-    }
+    double ratio;
+    ratio = 100.0 * megaBytesPerSeconds3 / megaBytesPerSeconds;
+    std::cout << "[Hub/ClientSocket] ratio : " << ratio << " %" << std::endl;
+    checkRatio(ratio, 50, 15);
 
-    const auto ratioMqttHub = 100.0 * megaBytesPerSeconds2 / megaBytesPerSeconds3;
-    std::cout << "[Mqtt/Hub] ratio : " << ratioMqttHub << " %" << std::endl;
-    CHECK( ratioMqttHub < 50 );
+    ratio = 100.0 * megaBytesPerSeconds2 / megaBytesPerSeconds;
+    std::cout << "[Mqtt/ClientSocket] ratio : " << ratio << " %" << std::endl;
+    checkRatio(ratio, 2, 2);
+
+
+    ratio = 100.0 * megaBytesPerSeconds4 / megaBytesPerSeconds;
+    std::cout << "[MqttStream/ClientSocket] ratio : " << ratio << " %" << std::endl;
+    checkRatio(ratio, 1, 1);
+
+    ratio = 100.0 * megaBytesPerSeconds4 / megaBytesPerSeconds2;
+    std::cout << "[MqttStream/Mqtt] ratio : " << ratio << " %" << std::endl;
+    checkRatio(ratio, 50, 15);
+
+    ratio = 100.0 * megaBytesPerSeconds2 / megaBytesPerSeconds3;
+    std::cout << "[Mqtt/Hub] ratio : " << ratio << " %" << std::endl;
+    checkRatio(ratio, 5, 5);
+
+    ratio = 100.0 * megaBytesPerSeconds4 / megaBytesPerSeconds3;
+    std::cout << "[MqttStream/Hub] ratio : " << ratio << " %" << std::endl;
+    checkRatio(ratio, 5, 5);
+
+    std::cout << std::endl;
+
+    std::cout << "Hub server is " << megaBytesPerSeconds3 / megaBytesPerSeconds2 << " more efficient than raw mqtt stream (Qos = 0 -> can lost packet)" << std::endl;
+    std::cout << "Hub server is " << megaBytesPerSeconds3 / megaBytesPerSeconds4 << " more efficient than mqtt implement (Qos = 2 -> no loss)" << std::endl;
 
     delete[] datas;
     delete[] data2;

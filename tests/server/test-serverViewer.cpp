@@ -86,15 +86,17 @@ TEST_CASE( "Server test : viewer" ) {
                                  const hub::Any& value ) {
             std::cout << "[example-viewer] onSetProperty " << streamName << std::endl;
         };
-        hub::client::ViewerServer viewer { onNewStreamer,
+        hub::client::ViewerServer viewer {
+                                     ipv4,
+                                     port,
+                                           onNewStreamer,
                                      onDelStreamer,
                                      onServerNotFound,
                                      onServerConnected,
                                      onServerDisconnected,
                                      onNewAcquisition,
                                      onSetProperty,
-                                     ipv4,
-                                     port };
+        };
         std::cout << "[Test] ############################### viewer created" << std::endl;
         std::this_thread::sleep_for( std::chrono::milliseconds( sleepTime ) );
 

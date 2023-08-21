@@ -5,126 +5,127 @@
 
 #include "InputSensor.hpp"
 
-#ifdef DEBUG_MSG
-#    undef DEBUG_MSG
-#endif
-#define DEBUG_MSG( _params )                       \
-    do {                                           \
-        if ( m_onLogMessage ) {                    \
-            std::stringstream _sstr;               \
-            _sstr << _params;                      \
-            m_onLogMessage( _sstr.str().c_str() ); \
-        }                                          \
-        else {                                     \
-            std::cout << _params << std::endl;     \
-        }                                          \
-    } while ( false );
+//#ifdef DEBUG_MSG
+//#    undef DEBUG_MSG
+//#endif
+//#define DEBUG_MSG( _params )                       \
+//    do {                                           \
+//        if ( m_onLogMessage ) {                    \
+//            std::stringstream _sstr;               \
+//            _sstr << _params;                      \
+//            m_onLogMessage( _sstr.str().c_str() ); \
+//        }                                          \
+//        else {                                     \
+//            std::cout << _params << std::endl;     \
+//        }                                          \
+//    } while ( false );
 
 namespace hub {
 namespace client {
 
-namespace viewer {
+//namespace viewer {
 
-class Stream
-{
-  public:
-    explicit Stream( ViewerServer& viewer, const std::string& streamName, const SensorSpec& sensorSpec ) :
-        m_viewer( viewer ),
-        m_streamName( streamName ),
-        m_sensorSpec( sensorSpec ),
-        m_onLogMessage( m_viewer.m_onLogMessage ) {
+//class Stream
+//{
+//  public:
+//    explicit Stream( ViewerServer& viewer, const std::string& streamName, const SensorSpec& sensorSpec ) :
+//        m_viewer( viewer ),
+//        m_streamName( streamName ),
+//        m_sensorSpec( sensorSpec ),
+//        m_onLogMessage( m_viewer.m_onLogMessage ) {
 
-        assert( m_viewer.m_onNewStreamer );
-        m_streaming = m_viewer.m_onNewStreamer( streamName.c_str(), sensorSpec );
-        if ( m_viewer.m_onNewAcquisition && m_streaming ) { startStream(); }
-    }
+//        assert( m_viewer.m_onNewStreamer );
+//        m_streaming = m_viewer.m_onNewStreamer( streamName.c_str(), sensorSpec );
+//        if ( m_viewer.m_onNewAcquisition && m_streaming ) { startStream(); }
+//    }
 
-    ~Stream() {
-        DEBUG_MSG( "[Stream] ~Stream() streamer '" << m_streamName << "' started" );
-        if ( m_viewer.m_onNewAcquisition && m_streaming ) {
-            assert( m_thread != nullptr );
-            if ( m_viewer.m_onDelStreamer ) {
-                m_viewer.m_onDelStreamer( m_streamName.c_str(), m_sensorSpec );
-            }
-            stopStream();
-        }
+//    ~Stream() {
+//        DEBUG_MSG( "[Stream] ~Stream() streamer '" << m_streamName << "' started" );
+//        if ( m_viewer.m_onNewAcquisition && m_streaming ) {
+//            assert( m_thread != nullptr );
+//            if ( m_viewer.m_onDelStreamer ) {
+//                m_viewer.m_onDelStreamer( m_streamName.c_str(), m_sensorSpec );
+//            }
+//            stopStream();
+//        }
 
-        DEBUG_MSG( "[Stream] ~Stream() streamer '" << m_streamName << "' ended" );
-    }
+//        DEBUG_MSG( "[Stream] ~Stream() streamer '" << m_streamName << "' ended" );
+//    }
 
-    void startStream() {
-        DEBUG_MSG( "[ViewerServer][Stream] startStream" );
+//    void startStream() {
+//        DEBUG_MSG( "[ViewerServer][Stream] startStream" );
 
-        assert( m_thread == nullptr );
+//        assert( m_thread == nullptr );
 
-        m_stopThread = false;
-        assert( m_thread == nullptr );
-        m_thread = new std::thread( [this]() {
-            try {
+//        m_stopThread = false;
+//        assert( m_thread == nullptr );
+//        m_thread = new std::thread( [this]() {
+//            try {
 
-                m_inputSensor = std::make_unique<InputSensor>( input::InputStreamServer(
-                    m_streamName,
-//                    net::ClientSocket( m_viewer.m_sock.getIpv4(), m_viewer.m_sock.getPort() ) ) );
-                    m_viewer.m_sock.getIpv4(), m_viewer.m_sock.getPort() ) );
+//                m_inputSensor = std::make_unique<InputSensor>( input::InputStreamServer(
+//                    m_streamName,
+////                    net::ClientSocket( m_viewer.m_sock.getIpv4(), m_viewer.m_sock.getPort() ) ) );
+//                    m_viewer.m_sock.getIpv4(), m_viewer.m_sock.getPort() ) );
 
-                while ( !m_stopThread ) {
-                    hub::Acquisition acq;
-                    *m_inputSensor >> acq;
-                    m_viewer.m_onNewAcquisition( m_streamName.c_str(), acq );
-                }
-            }
-            catch ( net::Socket::exception& e ) {
-                DEBUG_MSG( "[ViewerServer] startStream() streamer '"
-                           << "'" << m_streamName << "' disconnected, catch exception "
-                           << e.what() );
-            }
+//                while ( !m_stopThread ) {
+//                    hub::Acquisition acq;
+//                    *m_inputSensor >> acq;
+//                    m_viewer.m_onNewAcquisition( m_streamName.c_str(), acq );
+//                }
+//            }
+//            catch ( net::Socket::exception& e ) {
+//                DEBUG_MSG( "[ViewerServer] startStream() streamer '"
+//                           << "'" << m_streamName << "' disconnected, catch exception "
+//                           << e.what() );
+//            }
 
-            if ( m_stopThread ) {
-                DEBUG_MSG( "[ViewerServer] streamer '" << m_streamName << "' thread killed " );
-            }
-            DEBUG_MSG( "[ViewerServer] thread end " );
-        } );
+//            if ( m_stopThread ) {
+//                DEBUG_MSG( "[ViewerServer] streamer '" << m_streamName << "' thread killed " );
+//            }
+//            DEBUG_MSG( "[ViewerServer] thread end " );
+//        } );
 
-        m_streaming = true;
+//        m_streaming = true;
 
-        DEBUG_MSG( "[ViewerServer] startStream() streamer '" << m_streamName << "' inited " );
-    }
+//        DEBUG_MSG( "[ViewerServer] startStream() streamer '" << m_streamName << "' inited " );
+//    }
 
-    void stopStream() {
-        DEBUG_MSG( "[Stream] stopStream() streamer '" << m_streamName << "' started" );
+//    void stopStream() {
+//        DEBUG_MSG( "[Stream] stopStream() streamer '" << m_streamName << "' started" );
 
-        assert( m_thread != nullptr );
-        assert( m_stopThread == false );
-        m_stopThread = true;
+//        assert( m_thread != nullptr );
+//        assert( m_stopThread == false );
+//        m_stopThread = true;
 
-        m_inputSensor->getInput().close();
+//        m_inputSensor->getInput().close();
 
-        assert( m_thread->joinable() );
-        m_thread->join();
-        delete m_thread;
-        m_thread = nullptr;
+//        assert( m_thread->joinable() );
+//        m_thread->join();
+//        delete m_thread;
+//        m_thread = nullptr;
 
-        m_streaming = false;
+//        m_streaming = false;
 
-        DEBUG_MSG( "[Stream] stopStream() streamer '" << m_streamName << "' ended" );
-    }
+//        DEBUG_MSG( "[Stream] stopStream() streamer '" << m_streamName << "' ended" );
+//    }
 
-    ViewerServer& m_viewer;
-    std::string m_streamName;
-    SensorSpec m_sensorSpec;
+//    ViewerServer& m_viewer;
+//    std::string m_streamName;
+//    SensorSpec m_sensorSpec;
 
-    std::thread* m_thread = nullptr;
-    bool m_stopThread     = false;
-    bool m_streaming      = false;
-    std::function<void( const char* logMessage )> m_onLogMessage;
+//    std::thread* m_thread = nullptr;
+//    bool m_stopThread     = false;
+//    bool m_streaming      = false;
+//    std::function<void( const char* logMessage )> m_onLogMessage;
 
-    std::unique_ptr<InputSensor> m_inputSensor;
+//    std::unique_ptr<InputSensor> m_inputSensor;
 
-}; // end class Stream
+//}; // end class Stream
 
-} // end namespace viewer
+//} // end namespace viewer
 
-ViewerServer::ViewerServer(
+ViewerServer::ViewerServer(const std::string& ipv4,
+    int port,
     std::function<bool( const char* streamName, const SensorSpec& )> onNewStreamer,
     std::function<void( const char* streamName, const SensorSpec& )> onDelStreamer,
     std::function<void( const char* ipv4, int port )> onServerNotFound,
@@ -134,20 +135,28 @@ ViewerServer::ViewerServer(
     std::function<
         void( const char* streamName, const char* objectName, int property, const Any& value )>
         onSetProperty,
-    const std::string& ipv4,
-    int port,
-    bool autoSync,
     std::function<void( const char* logMessage )> onLogMessage ) :
 
-    m_onNewStreamer( onNewStreamer ),
-    m_onDelStreamer( onDelStreamer ),
-    m_onServerNotFound( onServerNotFound ),
-    m_onServerConnected( onServerConnected ),
-    m_onServerDisconnected( onServerDisconnected ),
-    m_onNewAcquisition( onNewAcquisition ),
-    m_onSetProperty( onSetProperty ),
-    m_sock( ipv4, port, false ),
-    m_onLogMessage( onLogMessage ) {
+    ViewerInterface( ipv4,
+                     port,
+                     onNewStreamer,
+                     onDelStreamer,
+                     onServerNotFound,
+                     onServerConnected,
+                     onServerDisconnected,
+                     onNewAcquisition,
+                     onSetProperty,
+                     onLogMessage ),
+//    m_onNewStreamer( onNewStreamer ),
+//    m_onDelStreamer( onDelStreamer ),
+//    m_onServerNotFound( onServerNotFound ),
+//    m_onServerConnected( onServerConnected ),
+//    m_onServerDisconnected( onServerDisconnected ),
+//    m_onNewAcquisition( onNewAcquisition ),
+//    m_onSetProperty( onSetProperty ),
+    m_sock( ipv4, port, false )
+//    m_onLogMessage( onLogMessage )
+{
 
     m_thread = std::thread( [this]() {
         while ( !m_stopThread ) {
@@ -188,7 +197,16 @@ ViewerServer::ViewerServer(
                         if ( m_onNewStreamer ) {
 
                             m_streams[streamName] =
-                                std::make_unique<viewer::Stream>( *this, streamName, sensorSpec );
+//                                std::make_unique<StreamViewer<input::InputStreamServer>>( *this, streamName, sensorSpec );
+                            std::make_unique<StreamViewer<input::InputStreamServer>>(
+                                m_ipv4,
+                                m_port,
+                                streamName,
+                                sensorSpec,
+                                m_onNewStreamer,
+                                m_onDelStreamer,
+                                m_onNewAcquisition,
+                                m_onLogMessage );
                         }
 
                         // prevent all son the father is comming

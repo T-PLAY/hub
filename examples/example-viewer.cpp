@@ -28,7 +28,8 @@ int main() {
     auto onNewStreamer = [=]( const std::string& streamName, const hub::SensorSpec& sensorSpec ) {
         std::cout << "\t[example-viewer] onNewStreamer : " << streamName << std::endl;
         // accept all stream to run
-        return false;
+        return true;
+//        return false;
     };
     auto onDelStreamer = []( const std::string& streamName, const hub::SensorSpec& sensorSpec ) {
         std::cout << "\t[example-viewer] onDelStreamer : " << streamName << std::endl;
@@ -82,7 +83,14 @@ int main() {
             hub::OutputSensor outputSensor(
                 sensorSpec, hub::output::OutputStreamMqtt( "streamName", ipv4, port ) );
 
-            //            std::this_thread::sleep_for( std::chrono::milliseconds( 3000 ) );
+            std::this_thread::sleep_for( std::chrono::milliseconds( 3000 ) );
+
+            unsigned char data[3] {1, 2, 3};
+            hub::Acquisition acq = std::move(hub::Acquisition(1, 1) << hub::data::Measure(data, 3, res));
+            outputSensor << acq;
+
+            std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
+
             std::cout << "\t----------------------------------------------------------------------"
                       << std::endl;
         }
