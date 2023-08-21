@@ -2,10 +2,11 @@
 
 #include "test_common.hpp"
 
-#include <server/Server.hpp>
+//#include <server/Server.hpp>
 #include <server/StreamerClient.hpp>
 
 #include <io/output/OutputStream.hpp>
+#include <OutputSensor.hpp>
 
 TEST_CASE( "StreamerClient test" ) {
 
@@ -38,19 +39,21 @@ TEST_CASE( "StreamerClient test" ) {
     const std::string ipv4 = "127.0.0.1";
     const int port         = GET_RANDOM_PORT;
 
-    hub::Server server( port );
-    server.setMaxClients( 2 );
-    server.asyncRun();
+//    hub::Server server( port );
+//    server.setMaxClients( 2 );
+//    server.asyncRun();
 
     hub::OutputSensor outputSensor(
 //        ref_sensorSpec, "streamName", hub::net::ClientSocket( ipv4, port ) );
-        ref_sensorSpec, "streamName", ipv4, port );
+//        ref_sensorSpec, "streamName", ipv4, port );
+        ref_sensorSpec, OutputStream("streamName", ipv4, port) );
     std::cout << "outputSensor created" << std::endl;
 
     std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
 
 //    hub::io::InputStream inputStream( "streamName", hub::net::ClientSocket( ipv4, port ) );
-    hub::input::InputStreamServer inputStream( "streamName", ipv4, port );
+//    hub::input::InputStreamServer inputStream( "streamName", ipv4, port );
+    hub::input::InputStream inputStream( "streamName", ipv4, port );
     hub::InputSensor inputSensor( std::move( inputStream ) );
     std::cout << "inputSensor created" << std::endl;
 

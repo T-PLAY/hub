@@ -1,28 +1,31 @@
 #pragma once
 
-#include "ViewerInterface.hpp"
+// #include "ViewerInterface.hpp"
 
-#include "ViewerServer.hpp"
-#ifdef USE_MQTT
-//#include "ViewerMqtt.hpp"
+#ifdef BUILD_SERVER
+#    include "ViewerServer.hpp"
 #endif
 
-#include "io/input/InputStream.hpp"
+#    ifdef USE_MQTT
+#        include "ViewerMqtt.hpp"
+#    endif
+
+// #include "io/input/InputStream.hpp"
+#include "SensorSpec.hpp"
 
 namespace hub {
 namespace client {
 
-#ifdef USE_MQTT
-using Viewer = ViewerMqtt;
-#else
+#ifdef BUILD_SERVER
 using Viewer = ViewerServer;
+#else
+using Viewer = ViewerMqtt;
 #endif
 
-//using Viewer = ViewerInterface<InputStream>;
+// using Viewer = ViewerInterface<InputStream>;
 
-//static_assert( std::is_base_of<ViewerInterface, Viewer>::value,
-//               "ViewerInterface is base class of Viewer" );
-
+// static_assert( std::is_base_of<ViewerInterface, Viewer>::value,
+//                "ViewerInterface is base class of Viewer" );
 
 } // namespace client
 } // namespace hub

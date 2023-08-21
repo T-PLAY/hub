@@ -61,12 +61,14 @@ OutputSensor* createMat4OutputSensor( const char* sensorName, const char* ipv4, 
     OutputSensor* outputSensor = nullptr;
     try {
         SensorSpec sensorSpec( sensorName, { { { 1 }, hub::Format::MAT4 } } );
+        //        outputSensor = new OutputSensor(
+        //            //            std::move( sensorSpec ), sensorName, net::ClientSocket( ipv4,
+        //            port ) ); std::move( sensorSpec ), sensorName, ipv4, port );
         outputSensor = new OutputSensor(
             //            std::move( sensorSpec ), sensorName, net::ClientSocket( ipv4, port ) );
             std::move( sensorSpec ),
-            sensorName,
-            ipv4,
-            port );
+//            hub::output::OutputStream( sensorName, ipv4, port ) );
+            OutputStream(sensorName, ipv4, port));
     }
     catch ( std::exception& e ) {
         std::cout << "[Native] createOutputSensor : catch exception : " << e.what() << std::endl;
@@ -131,7 +133,7 @@ void acquisition_to_string( const Acquisition* acquisition, char* str, int* strL
 
 //////////////////////////////////////////////////////////////////////////
 
-//template <class InputStream>
+// template <class InputStream>
 client::Viewer* createViewer( const char* ipv4,
                               int port,
                               onNewStreamerFunc onNewStreamer,
@@ -170,18 +172,18 @@ client::Viewer* createViewer( const char* ipv4,
     auto onLogMessageCpp = [=]( const std::string& logMessage ) {
         onLogMessage( logMessage.c_str() );
     };
-    client::Viewer* viewer =
-        new client::Viewer( ipv4,
-                            port,
-                            onNewStreamerCpp,
-                            onDelStreamerCpp,
-                            onServerNotFoundCpp,
-                            onServerConnectedCpp,
-                            onServerDisconnectedCpp,
-                            onNewAcquisitionCpp,
-                            onSetPropertyCpp,
-                            //                                                 false,
-                            onLogMessageCpp );
+    client::Viewer* viewer = new client::Viewer(
+        //            ipv4,
+        //                            port,
+        onNewStreamerCpp,
+        onDelStreamerCpp,
+        onServerNotFoundCpp,
+        onServerConnectedCpp,
+        onServerDisconnectedCpp,
+        onNewAcquisitionCpp,
+        onSetPropertyCpp,
+        //                                                 false,
+        onLogMessageCpp );
     return viewer;
 }
 

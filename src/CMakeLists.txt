@@ -53,6 +53,18 @@ if (NOT PahoMqttCpp_FOUND)
     list(FILTER headers EXCLUDE REGEX ".*Mqtt\\.hpp$")
 endif()
 
+option(HUB_BUILD_SERVER "Build implement server" OFF)
+if (NOT HUB_BUILD_SERVER)
+    list(FILTER sources EXCLUDE REGEX ".*Server\\.cpp$")
+    list(FILTER headers EXCLUDE REGEX ".*Server\\.hpp$")
+
+    file(GLOB server_srcs server/*.cpp)
+    list(REMOVE_ITEM sources ${server_srcs})
+
+    file(GLOB server_headers server/*.hpp)
+    list(REMOVE_ITEM headers ${server_headers})
+endif()
+
 list(APPEND SOURCE_FILES ${sources} ${headers})
 
 source_group("Header Files\\" FILES ${headers})
@@ -80,6 +92,10 @@ target_compile_definitions(${PROJECT_NAME} PUBLIC -DINTERNAL_BUILD)
 
 if (PahoMqttCpp_FOUND)
     target_compile_definitions(${PROJECT_NAME} PUBLIC -DUSE_MQTT)
+endif()
+
+if (HUB_BUILD_SERVER)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC -DBUILD_SERVER)
 endif()
 
 #set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "-fvisibility=hidden -fvisibility-inlines-hidden")

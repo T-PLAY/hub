@@ -9,7 +9,9 @@
 
 #include <client/Viewer.hpp>
 
-#include <server/Server.hpp>
+#include <OutputSensor.hpp>
+
+//#include <server/Server.hpp>
 
 // #include <filesystem>
 // #include <iostream>
@@ -55,8 +57,9 @@ TEST_CASE( "Viewer" ) {
     };
 
     std::cout << "[Test] ############################### viewer start" << std::endl;
-    hub::client::ViewerServer viewer {
-ipv4, port,
+//    hub::client::ViewerServer viewer {
+    hub::client::Viewer viewer {
+//ipv4, port,
         onNewStreamer, onDelStreamer, onServerNotFound, onServerConnected, onServerDisconnected, onNewAcquisition, onSetProperty };
 
     viewer.setIpv4( ipv4 );
@@ -65,7 +68,7 @@ ipv4, port,
     CHECK( viewer.getPort() == port );
     CHECK( !viewer.isConnected() );
 
-    viewer.setAutoSync( false );
+//    viewer.setAutoSync( false );
     // endConstruction
     // todo delay -> 0
 
@@ -74,9 +77,9 @@ ipv4, port,
 
     {
         std::cout << "[Test] ############################### server start" << std::endl;
-        hub::Server server( port );
-        server.setMaxClients( 2 );
-        server.asyncRun();
+//        hub::Server server( port );
+//        server.setMaxClients( 2 );
+//        server.asyncRun();
         std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
 
         while ( !viewer.isConnected() ) {
@@ -96,7 +99,8 @@ ipv4, port,
             hub::OutputSensor outputSensor(
                 sensorSpec,
 //                "streamName", hub::net::ClientSocket( ipv4, port ) );
-                "streamName", ipv4, port );
+//                "streamName", ipv4, port );
+                OutputStream("streamName", ipv4, port) );
             std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
 
 

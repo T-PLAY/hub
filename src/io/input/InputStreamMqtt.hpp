@@ -13,7 +13,7 @@ namespace input {
 class SRC_API InputStreamMqtt : public InputStreamInterface
 {
   public:
-    InputStreamMqtt( const std::string& streamName, const std::string & ipv4, int port);
+    explicit InputStreamMqtt( const std::string& streamName, const std::string & ipv4 = s_mqttDefaultIpv4, int port = s_mqttDefaultPort);
 
 //    InputStreamMqtt( InputStreamMqtt&& inputStream );
 

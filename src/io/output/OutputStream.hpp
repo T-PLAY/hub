@@ -1,20 +1,22 @@
 
 #pragma once
 
-#include "OutputStreamServer.hpp"
-#ifdef USE_MQTT
-//#include "OutputStreamMqtt.hpp"
+#ifdef BUILD_SERVER
+#    include "OutputStreamServer.hpp"
 #endif
 
+#    ifdef USE_MQTT
+#        include "OutputStreamMqtt.hpp"
+#    endif
 
 namespace hub {
 using namespace io;
 namespace output {
 
-#ifdef USE_MQTT
-using OutputStream = OutputStreamMqtt;
-#else
+#ifdef BUILD_SERVER
 using OutputStream = OutputStreamServer;
+#else
+using OutputStream = OutputStreamMqtt;
 #endif
 
 static_assert( std::is_base_of<OutputStreamInterface, OutputStream>::value,

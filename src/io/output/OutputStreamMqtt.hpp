@@ -16,7 +16,7 @@ class SRC_API OutputStreamMqtt : public OutputStreamInterface
 {
   public:
     explicit OutputStreamMqtt( const std::string& streamName,
-                                 const std::string & ipv4, int port);
+                                 const std::string & ipv4 = s_mqttDefaultIpv4, int port = s_mqttDefaultPort);
 
 //    OutputStreamMqtt( OutputStreamMqtt&& outputStream );
 

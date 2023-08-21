@@ -3,7 +3,7 @@
 
 #include <OutputSensor.hpp>
 #include <SensorSpec.hpp>
-#include <server/Server.hpp>
+//#include <server/Server.hpp>
 
 #include <client/Asker.hpp>
 
@@ -15,14 +15,15 @@ TEST_CASE( "Asker test" ) {
     const std::string ipv4       = "127.0.0.1";
     const int port               = GET_RANDOM_PORT;
 
-    hub::Server server( port );
-    server.setMaxClients( 2 );
-    server.asyncRun();
+//    hub::Server server( port );
+//    server.setMaxClients( 2 );
+//    server.asyncRun();
 
     {
         hub::OutputSensor outputSensor(
 //            sensorSpec, streamName, hub::net::ClientSocket( ipv4, port ) );
-            sensorSpec, streamName, ipv4, port );
+//            sensorSpec, streamName, ipv4, port );
+            sensorSpec, OutputStream(streamName, ipv4, port) );
 
         unsigned char data[3] = { 0, 1, 2 };
         const hub::Acquisition acq =

@@ -2,11 +2,14 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include <client/Streamer.hpp>
-#include <server/Server.hpp>
+//#include <server/Server.hpp>
+
+#include <io/Stream.hpp>
 
 TEST_CASE( "Streamer" ) {
-    const std::string ipv4 = "127.0.0.1";
-    const int port         = GET_RANDOM_PORT;
+//    const int port         = GET_RANDOM_PORT;
+    const std::string ipv4 = hub::io::s_serverDefaultIpv4;
+    const int port         = hub::io::s_serverDefaultPort;
 
     constexpr int delay = 0;
 
@@ -32,10 +35,10 @@ TEST_CASE( "Streamer" ) {
         std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
         {
 
-            hub::Server server( port );
-            std::cout << "[Test] ############################### server start" << std::endl;
-            server.setMaxClients( 1 );
-            server.asyncRun();
+//            hub::Server server( port );
+//            std::cout << "[Test] ############################### server start" << std::endl;
+//            server.setMaxClients( 1 );
+//            server.asyncRun();
 
             while ( !streamer.isConnected() ) {
                 std::cout << "[test] waiting for streamer connected" << std::endl;

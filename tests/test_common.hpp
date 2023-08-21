@@ -9,6 +9,12 @@
 #define GET_RANDOM_PORT getRandomPort( __FILE__ )
 
 static int getRandomPort( const char* filename ) {
+//#ifdef BUILD_SERVER
+//    return 4042;
+//#endif
+//#ifdef USE_MQTT
+//    return 1883;
+//#endif
     srand( (unsigned)time( NULL ) );
     constexpr int offset      = 6000;
     const unsigned int random = std::hash<std::string>()( filename ) + rand();

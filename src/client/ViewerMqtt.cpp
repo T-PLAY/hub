@@ -11,6 +11,8 @@
 #include <client/StreamViewer.hpp>
 #include <io/input/InputStream.hpp>
 
+#include <utils/Utils.hpp>
+
 
 namespace hub {
 namespace client {
@@ -23,17 +25,16 @@ namespace client {
 // const int N_RETRY_ATTEMPTS = 5;
 // const std::string CLIENT_ID( "viewer" );
 
-ViewerMqtt::ViewerMqtt(
-    const std::string& ipv4,
-    int port,
-    std::function<bool( const char*, const SensorSpec& )> onNewStreamer,
+ViewerMqtt::ViewerMqtt(std::function<bool( const char*, const SensorSpec& )> onNewStreamer,
     std::function<void( const char*, const SensorSpec& )> onDelStreamer,
     std::function<void( const char*, int )> onServerNotFound,
     std::function<void( const char*, int )> onServerConnected,
     std::function<void( const char*, int )> onServerDisconnected,
     std::function<void( const char*, const hub::Acquisition& )> onNewAcquisition,
     std::function<void( const char*, const char*, int, const Any& )> onSetProperty,
-    std::function<void( const char* )> onLogMessage ) :
+    std::function<void( const char* )> onLogMessage ,
+    const std::string& ipv4,
+    int port) :
     ViewerInterface( ipv4,
                      port,
                      onNewStreamer,
@@ -44,7 +45,7 @@ ViewerMqtt::ViewerMqtt(
                      onNewAcquisition,
                      onSetProperty,
                      onLogMessage ),
-    m_hostName( getHostname() ),
+    m_hostName( hub::utils::getHostname() ),
     m_client( new mqtt::client( ipv4 + ":" + std::to_string( port ),
                                 std::string( "viewer" ) + m_hostName,
                                 mqtt::create_options( MQTTVERSION_5 ) ) )

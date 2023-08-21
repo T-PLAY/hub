@@ -68,7 +68,8 @@ class Stream
 
             assert( m_outputSensor == nullptr );
 //            m_outputSensor = new OutputSensor( m_sensorSpec, m_streamName, std::move( sock ) );
-            m_outputSensor = new OutputSensor( m_sensorSpec, m_streamName, m_streamer.m_ipv4, m_streamer.m_port );
+//            m_outputSensor = new OutputSensor( m_sensorSpec, m_streamName, m_streamer.m_ipv4, m_streamer.m_port );
+            m_outputSensor = new OutputSensor( m_sensorSpec, OutputStream(m_streamName, m_streamer.m_ipv4, m_streamer.m_port) );
 
             for ( const auto& acq : m_initAcqs ) {
                 *m_outputSensor << acq;

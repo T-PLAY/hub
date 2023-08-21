@@ -10,8 +10,6 @@ class SRC_API ViewerMqtt : public ViewerInterface<input::InputStreamMqtt>
 {
   public:
     ViewerMqtt(
-        const std::string & ipv4,
-        int port,
         std::function<bool( const char* streamName, const SensorSpec& )> onNewStreamer = {},
         std::function<void( const char* streamName, const SensorSpec& )> onDelStreamer = {},
         std::function<void( const char* ipv4, int port )> onServerNotFound             = {},
@@ -23,7 +21,10 @@ class SRC_API ViewerMqtt : public ViewerInterface<input::InputStreamMqtt>
             void( const char* streamName, const char* id, int property, const Any& value )>
             onSetProperty                                          = {},
 //        bool autoSync                                              = true,
-        std::function<void( const char* logMessage )> onLogMessage = {} );
+        std::function<void( const char* logMessage )> onLogMessage = {},
+        const std::string & ipv4 = s_mqttDefaultIpv4,
+        int port = s_mqttDefaultPort
+        );
 
 
 

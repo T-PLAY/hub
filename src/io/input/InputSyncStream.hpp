@@ -43,8 +43,8 @@ class SRC_API InputSyncStream : public Input
     ///
     InputSyncStream( const std::string& streamName,
                      const std::string& syncStreamName,
-                     const std::string& ipv4 = net::s_defaultServiceIp,
-                     int port                = net::s_defaultServicePort );
+                     const std::string& ipv4,
+                     int port  );
 
   protected:
   public:

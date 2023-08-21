@@ -17,8 +17,12 @@
 
 #include "io/Memory.hpp"
 
+#include "net/ClientSocket.hpp"
+
+using namespace hub::output;
 
 namespace hub {
+
 
 ///
 /// \brief The OutputSensor class
@@ -46,7 +50,9 @@ class SRC_API OutputSensor : public Sensor
         class SensorSpec = hub::SensorSpec,
         class Output,
         typename = typename std::enable_if<std::is_base_of<io::Output, Output>::value &&
+#ifdef BUILD_SERVER
                                            !std::is_same<Output, output::OutputStreamServer>::value &&
+#endif
                                            !std::is_same<Output, net::ClientSocket>::value
                                            >::type>
     OutputSensor( SensorSpec&& sensorSpec, Output&& output ) :
@@ -55,11 +61,18 @@ class SRC_API OutputSensor : public Sensor
         m_output( new Output( std::move( output ) ) ) {
 
         static_assert( std::is_base_of<io::Output, Output>::value, "not a base class" );
+#ifdef BUILD_SERVER
         static_assert( !std::is_same<output::OutputStreamServer, Output>::value, "not outputStream class" );
+#endif
         static_assert( !std::is_same<net::ClientSocket, Output>::value, "not clientSocket class" );
 
         m_output->write( m_spec );
     }
+
+#ifdef BUILD_SERVER
+
+//#define hub::output::OutputStream(_streamName, _ipv4, _port) \
+//    _streamName, _ipv4, _port
 
     ///
     /// \brief OutputSensor
@@ -70,8 +83,8 @@ class SRC_API OutputSensor : public Sensor
     /// \param args
     ///
     template <class SensorSpec = hub::SensorSpec,
-              class Output     = output::OutputStreamServer,
               class... Args,
+              class Output     = output::OutputStreamServer,
               typename = typename std::enable_if<std::is_same<output::OutputStreamServer, Output>::value
 #if ( __cplusplus < 201703L )
                                                  && ( sizeof...( Args ) != 1 ||
@@ -89,6 +102,13 @@ class SRC_API OutputSensor : public Sensor
 
         m_output->write( m_spec );
     }
+
+#define OutputStream( sensorName, ipv4, port ) \
+    sensorName, ipv4, port
+//#define OutputStream( _params ) \
+//    _params
+#endif
+
 
     ////        io::Output(std::move(output)),
     ////        m_output( new Output( std::forward<Args>(args)... ) )

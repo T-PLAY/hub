@@ -23,12 +23,12 @@ using namespace server;
 class SRC_API Server
 {
   public:
-    Server();
+//    Server();
     ///
     /// \brief Server
     /// \param port
     ///
-    explicit Server( int port );
+    explicit Server( int port = s_serverDefaultPort  );
     ~Server();
 
     ///

@@ -124,8 +124,7 @@ namespace client {
 
 //} // end namespace viewer
 
-ViewerServer::ViewerServer(const std::string& ipv4,
-    int port,
+ViewerServer::ViewerServer(
     std::function<bool( const char* streamName, const SensorSpec& )> onNewStreamer,
     std::function<void( const char* streamName, const SensorSpec& )> onDelStreamer,
     std::function<void( const char* ipv4, int port )> onServerNotFound,
@@ -135,7 +134,10 @@ ViewerServer::ViewerServer(const std::string& ipv4,
     std::function<
         void( const char* streamName, const char* objectName, int property, const Any& value )>
         onSetProperty,
-    std::function<void( const char* logMessage )> onLogMessage ) :
+    std::function<void( const char* logMessage )> onLogMessage,
+    const std::string& ipv4,
+    int port
+    ) :
 
     ViewerInterface( ipv4,
                      port,

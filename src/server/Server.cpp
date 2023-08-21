@@ -22,9 +22,9 @@ namespace hub {
 
 using namespace server;
 
-Server::Server() {
-    assert( !m_thread.joinable() );
-}
+//Server::Server() {
+//    assert( !m_thread.joinable() );
+//}
 
 Server::Server( int port ) : m_serverSock( port ) {}
 

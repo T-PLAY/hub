@@ -12,6 +12,11 @@ const std::string s_topicStream = "streams/";
 const std::string s_topicViewer = "viewers/";
 const std::string s_topicEvents = "events";
 
+const std::string s_mqttDefaultIpv4 = "127.0.0.1";
+constexpr int s_mqttDefaultPort = 1883;
+
+const std::string s_serverDefaultIpv4 = "127.0.0.1";
+constexpr int s_serverDefaultPort = 4042;
 
 class Stream
 {

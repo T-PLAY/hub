@@ -202,7 +202,8 @@ TEST_CASE( "Native test" ) {
 
             hub::OutputSensor* outputSensor = new hub::OutputSensor(
 //                ref_sensorSpec, ref_streamName, hub::net::ClientSocket( ipv4, port ) );
-                ref_sensorSpec, ref_streamName, ipv4, port );
+//                ref_sensorSpec, ref_streamName, ipv4, port );
+                ref_sensorSpec, OutputStream(ref_streamName, ipv4, port) );
 
             std::this_thread::sleep_for( std::chrono::milliseconds( 2000 ) );
 

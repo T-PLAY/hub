@@ -142,6 +142,8 @@ if(HUB_ENABLE_EXAMPLES)
     add_subdirectory(examples)
 endif()
 
+add_subdirectory(bin)
+
 if(NOT WIN32)
     add_custom_target(
         cppCheck

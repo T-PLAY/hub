@@ -15,14 +15,15 @@
 
 // #include <Streamer.hpp>
 #include <OutputSensor.hpp>
-#include <client/Viewer.hpp>
+//#include <client/Viewer.hpp>
+#include <client/ViewerMqtt.hpp>
 
 //int main() {
 TEST_CASE( "MqttViewer" ) {
 
-    const std::string ipv4 = "127.0.0.1";
+//    const std::string ipv4 = "127.0.0.1";
     //    const int port         = GET_RANDOM_PORT;
-    const int port = 1883;
+//    const int port = 1883;
 
     // startConstruction
     auto onNewStreamer = [=]( const std::string& streamName, const hub::SensorSpec& sensorSpec ) {
@@ -58,8 +59,9 @@ TEST_CASE( "MqttViewer" ) {
 
     {
         std::cout << "\t[example-viewer] creating viewer" << std::endl;
-        hub::client::ViewerMqtt viewer( ipv4,
-                                        port,
+        hub::client::ViewerMqtt viewer(
+//            ipv4,
+//                                        port,
                                         onNewStreamer,
                                         onDelStreamer,
                                         onServerNotFound,
@@ -80,7 +82,7 @@ TEST_CASE( "MqttViewer" ) {
             hub::Resolution res { { 1 }, hub::Format::BGR8 };
             hub::SensorSpec sensorSpec( "sensorName", { res } );
             hub::OutputSensor outputSensor(
-                sensorSpec, hub::output::OutputStreamMqtt( "streamName", ipv4, port ) );
+                sensorSpec, hub::output::OutputStreamMqtt( "streamName" ) );
 
             //            std::this_thread::sleep_for( std::chrono::milliseconds( 3000 ) );
             std::cout << "\t----------------------------------------------------------------------"

@@ -37,7 +37,7 @@ class SRC_API OutputStreamServer : public OutputStreamInterface
 //    explicit OutputStreamServer( const std::string& streamName,
 //                           net::ClientSocket&& clientSocket = net::ClientSocket() );
     explicit OutputStreamServer( const std::string& streamName,
-                                 const std::string & ipv4, int port);
+                                 const std::string & ipv4 = s_serverDefaultIpv4, int port = s_serverDefaultPort);
     ///
     /// \brief OutputStreamServer
     /// \param outputStream

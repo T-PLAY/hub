@@ -36,7 +36,7 @@ class SRC_API InputStreamServer : public InputStreamInterface
     ///
 //    explicit InputStreamServer( const std::string& streamName,
 //                          net::ClientSocket&& clientSocket = net::ClientSocket() );
-    InputStreamServer( const std::string& streamName, const std::string & ipv4, int port);
+    InputStreamServer( const std::string& streamName, const std::string & ipv4 = s_serverDefaultIpv4, int port = s_serverDefaultPort);
 
     ///
     /// \brief InputStreamServer

@@ -164,6 +164,8 @@ TEST_CASE( "MqttCompareSpeed test" ) {
         std::cout << "[Mqtt] Mega byte wrote : " << bytes / 1000'000.0 << " Mo" << std::endl;
     }
 
+#ifdef BUILD_SERVER
+    // hub server
     {
         const int port2 = port + 1;
 
@@ -230,20 +232,21 @@ TEST_CASE( "MqttCompareSpeed test" ) {
                       << " Mo" << std::endl;
         }
     }
+#endif
 
     {
-        const std::string ipv4 = "127.0.0.1";
-        const int port         = 1883;
+//        const std::string ipv4 = "127.0.0.1";
+//        const int port         = 1883;
 
         std::cout << "[test][MqttStream] ############################### outputStream start"
                   << std::endl;
         hub::OutputSensor outputSensor(
             hub::SensorSpec( "sensorName", { { { width, height }, hub::Format::BGR8 } } ),
-            hub::output::OutputStreamMqtt( "streamName", "127.0.0.1", 1883 ) );
+            hub::output::OutputStreamMqtt( "streamName" ) );
 
         std::cout << "[test][MqttStream] ############################### inputStream start"
                   << std::endl;
-        hub::InputSensor inputSensor( hub::input::InputStreamMqtt( "streamName", ipv4, port ) );
+        hub::InputSensor inputSensor( hub::input::InputStreamMqtt( "streamName" ) );
 
         const auto& inputSensorSpec = inputSensor.getSpec();
         CHECK( inputSensorSpec.getAcquisitionSize() == dataSize );

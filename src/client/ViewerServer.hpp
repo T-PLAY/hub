@@ -18,8 +18,6 @@ class SRC_API ViewerServer : public ViewerInterface<input::InputStreamServer>
 {
   public:
     explicit ViewerServer(
-        const std::string& ipv4                                    = net::s_defaultServiceIp,
-        int port                                                   = net::s_defaultServicePort,
         std::function<bool( const char* streamName, const SensorSpec& )> onNewStreamer = {},
         std::function<void( const char* streamName, const SensorSpec& )> onDelStreamer = {},
         std::function<void( const char* ipv4, int port )> onServerNotFound             = {},
@@ -31,7 +29,10 @@ class SRC_API ViewerServer : public ViewerInterface<input::InputStreamServer>
             void( const char* streamName, const char* objectName, int property, const Any& value )>
             onSetProperty                                          = {},
 //        bool autoSync                                              = true,
-        std::function<void( const char* logMessage )> onLogMessage = {} );
+        std::function<void( const char* logMessage )> onLogMessage = {},
+        const std::string& ipv4                                    = s_serverDefaultIpv4,
+        int port                                                   = s_serverDefaultPort
+        );
 
     ~ViewerServer();
 
