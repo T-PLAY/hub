@@ -24,7 +24,8 @@
 TEST_CASE( "Viewer" ) {
 
     const std::string ipv4 = "127.0.0.1";
-    const int port         = GET_RANDOM_PORT;
+//    const int port         = GET_RANDOM_PORT;
+    const int port         = hub::io::s_serverDefaultPort;
 
     // startConstruction
     auto onNewStreamer = [=]( const std::string& streamName, const hub::SensorSpec& sensorSpec ) {

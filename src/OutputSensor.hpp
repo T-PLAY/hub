@@ -103,8 +103,14 @@ class SRC_API OutputSensor : public Sensor
         m_output->write( m_spec );
     }
 
-#define OutputStream( sensorName, ipv4, port ) \
-    sensorName, ipv4, port
+//#define OutputStream( ... ) \
+    __VA_ARGS__
+#define OutputStream( args... ) \
+    args
+//#define OutputStream( sensorName, ipv4, port ) \
+//    sensorName, ipv4, port
+#define OutputStreamServer( _params ) \
+    _params
 //#define OutputStream( _params ) \
 //    _params
 #endif

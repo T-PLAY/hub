@@ -13,7 +13,8 @@ TEST_CASE( "Asker test" ) {
     const hub::SensorSpec sensorSpec( "hello", { resolution } );
     const std::string streamName = "streamName";
     const std::string ipv4       = "127.0.0.1";
-    const int port               = GET_RANDOM_PORT;
+//    const int port               = GET_RANDOM_PORT;
+    const int port = hub::io::s_serverDefaultPort;
 
 //    hub::Server server( port );
 //    server.setMaxClients( 2 );
@@ -23,7 +24,7 @@ TEST_CASE( "Asker test" ) {
         hub::OutputSensor outputSensor(
 //            sensorSpec, streamName, hub::net::ClientSocket( ipv4, port ) );
 //            sensorSpec, streamName, ipv4, port );
-            sensorSpec, OutputStream(streamName, ipv4, port) );
+            sensorSpec, OutputStream(streamName) );
 
         unsigned char data[3] = { 0, 1, 2 };
         const hub::Acquisition acq =

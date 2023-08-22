@@ -36,8 +36,8 @@ TEST_CASE( "OutputStream test" ) {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const std::string ipv4 = "127.0.0.1";
-    const int port         = GET_RANDOM_PORT;
+//    const std::string ipv4 = "127.0.0.1";
+//    const int port         = GET_RANDOM_PORT;
 //    hub::Server server( port );
 //    server.setMaxClients( 2 );
 //    server.asyncRun();
@@ -46,7 +46,7 @@ TEST_CASE( "OutputStream test" ) {
 //        ref_sensorSpec, "streamName", hub::net::ClientSocket( ipv4, port ) );
 //        ref_sensorSpec, "streamName",ipv4, port );
 //        ref_sensorSpec, hub::output::OutputStream("streamName",ipv4, port) );
-        ref_sensorSpec, OutputStream("streamName",ipv4, port) );
+        ref_sensorSpec, OutputStream("streamName") );
     std::cout << "outputSensor created" << std::endl;
 
     {
@@ -58,7 +58,7 @@ TEST_CASE( "OutputStream test" ) {
             hub::OutputSensor outputSensor2(
 //                ref_sensorSpec, "streamName", hub::net::ClientSocket( ipv4, port ) );
 //                ref_sensorSpec, "streamName", ipv4, port );
-                ref_sensorSpec, OutputStream("streamName", ipv4, port) );
+                ref_sensorSpec, OutputStream("streamName") );
             CHECK( false );
             std::cout << "outputSensor2 created" << std::endl;
         }
