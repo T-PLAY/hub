@@ -7,7 +7,8 @@
 
 #include "Acquisition.hpp"
 #include "SensorSpec.hpp"
-#include "net/ClientSocket.hpp"
+//#include "net/ClientSocket.hpp"
+#include "io/output/OutputStream.hpp"
 
 namespace hub {
 namespace client {
@@ -38,8 +39,8 @@ class SRC_API Streamer
     /// \param port
     /// is the port of the server hub service.
     ///
-    explicit Streamer( const std::string& ipv4,
-                       int port );
+    explicit Streamer( const std::string& ipv4 = output::OutputStream::s_defaultIpv4,
+                       int port = output::OutputStream::s_defaultPort );
 
     ~Streamer();
 

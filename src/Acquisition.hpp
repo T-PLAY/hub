@@ -235,6 +235,8 @@ void Acquisition::emplaceMeasure( Args&&... args ) {
 }
 
 inline bool Acquisition::operator<( const Acquisition& right ) const {
+    if (m_start == right.m_start)
+        return m_end < right.m_end;
     return m_start < right.m_start;
 }
 

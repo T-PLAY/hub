@@ -4,18 +4,17 @@
 #include "io/Stream.hpp"
 
 namespace hub {
-using namespace io;
 namespace output {
 
-class OutputStreamInterface : public Output, public Stream {
-  public:
+//class OutputStreamInterface : public io::Output, public io::Stream {
+//  public:
 
-    OutputStreamInterface(const std::string & streamName, const std::string & ipv4, int port);
-    OutputStreamInterface(const char * streamName, const char * ipv4, int port);
-//    OutputStreamInterface() = default;
+//    OutputStreamInterface(const std::string & streamName, const std::string & ipv4, int port);
+//    OutputStreamInterface(const char * streamName, const char * ipv4, int port);
+////    OutputStreamInterface() = default;
 
-  private:
-};
+//  private:
+//};
 
 } // namespace output
 } // namespace hub

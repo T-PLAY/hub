@@ -3,7 +3,6 @@
 //#include <filesystem>
 
 namespace hub {
-using namespace io;
 namespace input {
 
 //InputFile::InputFile(std::ifstream && file)

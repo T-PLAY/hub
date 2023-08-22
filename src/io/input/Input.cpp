@@ -234,49 +234,60 @@ Acquisition Input::operator>>( Input& input ) {
     assert( input.isOpen() );
     assert( !input.isEnd() );
 
-    Acquisition t;
-    read( t );
+    Input & leftInput = *this;
+    Input & rightInput = input;
 
-    auto& lastAcqs = input.m_lastAcqs;
+    Acquisition rightAcq;
+    rightInput.read( rightAcq );
+//    assert(rightAcq.getMeasures().front().getResolution().second == hub::Format::DOF6);
 
-    assert( lastAcqs.size() < 20 );
+    auto& leftLastAcqs = leftInput.m_lastAcqs;
 
-    Acquisition t2;
+    assert( leftLastAcqs.size() < 20 );
 
-    if ( lastAcqs.empty() ) {
-        input.read( t2 );
-        lastAcqs.push_back( std::move( t2 ) );
+    Acquisition leftAcq;
+
+    if ( leftLastAcqs.empty() ) {
+        leftInput.read( leftAcq );
+        leftLastAcqs.push_back( std::move( leftAcq ) );
     }
 
-    while ( t.getStart() < lastAcqs.front().getStart() ) {
-        std::cout << "[InputSensor] operator>>(InputSensor&) shift t : " << t << std::endl;
+    while ( rightAcq.getStart() < leftLastAcqs.front().getStart() ) {
+        std::cout << "[InputSensor] operator>>(InputSensor&) shift t : " << rightAcq << std::endl;
         assert( !isEnd() );
-        read( t );
+        rightInput.read( rightAcq );
     }
 
-    while ( lastAcqs.back().getStart() < t.getStart() && !input.isEnd() ) {
-        assert( !input.isEnd() );
-        input.read( t2 );
-        lastAcqs.push_back( std::move( t2 ) );
+    while ( leftLastAcqs.back().getStart() < rightAcq.getStart() && !leftInput.isEnd() ) {
+        assert( !leftInput.isEnd() );
+        leftInput.read( leftAcq );
+        leftLastAcqs.push_back( std::move( leftAcq ) );
     }
 
-    while ( lastAcqs.size() > 2 ) {
-        lastAcqs.pop_front();
+    while ( leftLastAcqs.size() > 2 ) {
+        leftLastAcqs.pop_front();
     }
 
-    const auto& left  = lastAcqs.front();
-    const auto& right = lastAcqs.back();
+    const auto& leftBeforeRightAcq  = leftLastAcqs.front();
+    const auto& leftAfterRightAcq = leftLastAcqs.back();
 
-    assert( input.isEnd() || left.getStart() <= t.getStart() );
-    assert( input.isEnd() || t.getStart() <= right.getStart() );
+    assert( leftInput.isEnd() || leftBeforeRightAcq.getStart() <= rightAcq.getStart() );
+    assert( leftInput.isEnd() || rightAcq.getStart() <= leftAfterRightAcq.getStart() );
 
     const auto& closestAcq =
-        ( std::abs( left.getStart() - t.getStart() ) > std::abs( right.getStart() - t.getStart() ) )
-            ? ( right )
-            : ( left );
+        ( std::abs( leftBeforeRightAcq.getStart() - rightAcq.getStart() ) > std::abs( leftAfterRightAcq.getStart() - rightAcq.getStart() ) )
+            ? ( leftAfterRightAcq )
+            : ( leftBeforeRightAcq );
 
-    t << closestAcq.getMeasures();
-    return t;
+    const auto & rightMeasures = rightAcq.getMeasures();
+    const auto & closestMeasures = closestAcq.getMeasures();
+//    rightMeasures.insert(rightMeasures.begin(), closestMeasures.begin(), closestMeasures.end());
+//    rightAcq << closestAcq.getMeasures();
+    hub::Acquisition acq(rightAcq.m_start, rightAcq.m_end);
+    acq << closestMeasures;
+    acq << rightMeasures;
+    return acq;
+//    return rightAcq;
 }
 
 /////////////////////////////////////////////////////////////////////////////

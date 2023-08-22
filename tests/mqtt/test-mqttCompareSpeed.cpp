@@ -6,8 +6,8 @@
 #include <InputSensor.hpp>
 #include <OutputSensor.hpp>
 
-#include <server/Server.hpp>
-// #include <net/ServerSocket.hpp>
+//#include <server/Server.hpp>
+#include <net/ServerSocket.hpp>
 
 #include <filesystem>
 
@@ -56,7 +56,9 @@ TEST_CASE( "MqttCompareSpeed test" ) {
 
     double megaBytesPerSeconds;
     double megaBytesPerSeconds2;
+#ifdef BUILD_SERVER
     double megaBytesPerSeconds3;
+#endif
     double megaBytesPerSeconds4;
 
     {
@@ -301,8 +303,10 @@ TEST_CASE( "MqttCompareSpeed test" ) {
     std::cout << "[ClientSocket] Mega byte per second : " << megaBytesPerSeconds << " Mo/s"
               << std::endl;
 
+#ifdef BUILD_SERVER
     std::cout << "[Hub] Mega byte per second : " << megaBytesPerSeconds3
               << " Mo/s" << std::endl;
+#endif
 
     std::cout << "[Mqtt] Mega byte per second : " << megaBytesPerSeconds2 << " Mo/s" << std::endl;
 
@@ -324,9 +328,11 @@ TEST_CASE( "MqttCompareSpeed test" ) {
 //    checkRatio( ratio, 45 );
 //#endif
     double ratio;
+#ifdef BUILD_SERVER
     ratio = 100.0 * megaBytesPerSeconds3 / megaBytesPerSeconds;
     std::cout << "[Hub/ClientSocket] ratio : " << ratio << " %" << std::endl;
     checkRatio(ratio, 50, 15);
+#endif
 
     ratio = 100.0 * megaBytesPerSeconds2 / megaBytesPerSeconds;
     std::cout << "[Mqtt/ClientSocket] ratio : " << ratio << " %" << std::endl;
@@ -341,6 +347,7 @@ TEST_CASE( "MqttCompareSpeed test" ) {
     std::cout << "[MqttStream/Mqtt] ratio : " << ratio << " %" << std::endl;
 //    checkRatio(ratio, 50, 15);
 
+#ifdef BUILD_SERVER
     ratio = 100.0 * megaBytesPerSeconds2 / megaBytesPerSeconds3;
     std::cout << "[Mqtt/Hub] ratio : " << ratio << " %" << std::endl;
 //    checkRatio(ratio, 5, 5);
@@ -353,6 +360,7 @@ TEST_CASE( "MqttCompareSpeed test" ) {
 
     std::cout << "Hub server is " << megaBytesPerSeconds3 / megaBytesPerSeconds2 << " more efficient than raw mqtt stream (Qos = 0 -> can lost packet)" << std::endl;
     std::cout << "Hub server is " << megaBytesPerSeconds3 / megaBytesPerSeconds4 << " more efficient than mqtt implement (Qos = 2 -> no loss)" << std::endl;
+#endif
 
     delete[] datas;
     delete[] data2;

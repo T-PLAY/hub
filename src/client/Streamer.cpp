@@ -28,7 +28,8 @@ class Stream
                 init();
                 assert( m_outputSensor != nullptr );
             }
-            catch ( net::Socket::exception& e ) {
+//            catch ( net::Socket::exception& e ) {
+            catch ( std::exception& e ) {
 
                 std::cout << "[Streamer][Stream] loose connection from server : "
                           << m_streamer.m_ipv4 << " " << m_streamer.m_port << std::endl;

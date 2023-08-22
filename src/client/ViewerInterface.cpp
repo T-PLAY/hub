@@ -9,7 +9,6 @@
 namespace hub {
 namespace client {
 
-using namespace viewer;
 
 
 

@@ -8,8 +8,9 @@
 #include <string>
 
 // #include "InputSensor.hpp"
-#include <client/StreamViewer.hpp>
+//#include <client/StreamViewer.hpp>
 #include <io/input/InputStream.hpp>
+//#include <io/input/InputStreamMqtt.hpp>
 
 #include <utils/Utils.hpp>
 
@@ -35,8 +36,7 @@ ViewerMqtt::ViewerMqtt(std::function<bool( const char*, const SensorSpec& )> onN
     std::function<void( const char* )> onLogMessage ,
     const std::string& ipv4,
     int port) :
-    ViewerInterface( ipv4,
-                     port,
+    ViewerInterface(
                      onNewStreamer,
                      onDelStreamer,
                      onServerNotFound,
@@ -44,7 +44,10 @@ ViewerMqtt::ViewerMqtt(std::function<bool( const char*, const SensorSpec& )> onN
                      onServerDisconnected,
                      onNewAcquisition,
                      onSetProperty,
-                     onLogMessage ),
+                     onLogMessage,
+        ipv4,
+        port
+        ),
     m_hostName( hub::utils::getHostname() ),
     m_client( new mqtt::client( ipv4 + ":" + std::to_string( port ),
                                 std::string( "viewer" ) + m_hostName,
@@ -77,17 +80,18 @@ ViewerMqtt::ViewerMqtt(std::function<bool( const char*, const SensorSpec& )> onN
         //    assert(m_msgPtr == nullptr);
 
         m_onServerConnected( m_ipv4.c_str(), m_port );
+        m_serverConnected = true;
 
         DEBUG_MSG( "[ViewerMqtt] connected to server at ipv4 " << m_ipv4 << " and port "
                                                                        << m_port );
 
         //        const auto hostName = getHostname();
-        m_outputMsgPtr = mqtt::make_message( s_topicViewer + m_hostName, "active" );
+        m_outputMsgPtr = mqtt::make_message( input::InputStreamMqtt::s_topicViewer + m_hostName, "active" );
         //        m_outputMsgPtr->set_payload("active");
         //        m_client->subscribe( "viewer/" + hostName );
         m_client->publish( m_outputMsgPtr );
 
-        m_client->subscribe( s_topicEvents );
+        m_client->subscribe( input::InputStreamMqtt::s_topicEvents );
 
         m_client->start_consuming();
         while ( !m_stopThread ) {
@@ -102,10 +106,10 @@ ViewerMqtt::ViewerMqtt(std::function<bool( const char*, const SensorSpec& )> onN
                 //                DEBUG_MSG( "[ViewerMqtt] receive message : '" << payload << "'" );
                 //                m_inputMsgPtr.reset();
 
-                const Stream::Message message = Stream::Message( payload.at( 0 ) - '0' );
+                const io::StreamInterface::Message message = io::StreamInterface::Message( payload.at( 0 ) - '0' );
 
                 switch ( message ) {
-                case Stream::Message::NEW_STREAM: {
+                case io::StreamInterface::Message::NEW_STREAM: {
                     //                    m_client->subscribe( s_topicEvents + "/streamName" );
                     //                    m_inputMsgPtr = m_client->consume_message();
                     //                    assert( m_inputMsgPtr != nullptr );
@@ -120,7 +124,7 @@ ViewerMqtt::ViewerMqtt(std::function<bool( const char*, const SensorSpec& )> onN
                     try {
                         inputStream.read( sensorSpec );
                     }
-                    catch ( io::Stream::exception& ex ) {
+                    catch ( io::StreamInterface::exception& ex ) {
                         //                        DEBUG_MSG( "[ViewerMqtt] catch Stream exception '"
                         //                        << ex.what() << "'" );
                         DEBUG_MSG( "[ViewerMqtt] unable to connect with new stream '"
@@ -138,7 +142,7 @@ ViewerMqtt::ViewerMqtt(std::function<bool( const char*, const SensorSpec& )> onN
                         //                    assert(m_onDelStreamer);
 
                         m_streams[streamName] =
-                            std::make_unique<StreamViewer<input::InputStreamMqtt>>(
+                            std::make_unique<viewer::StreamViewer<input::InputStreamMqtt>>(
                                 m_ipv4,
                                 m_port,
                                 streamName,
@@ -156,7 +160,7 @@ ViewerMqtt::ViewerMqtt(std::function<bool( const char*, const SensorSpec& )> onN
                     //                std::this_thread::sleep_for( std::chrono::milliseconds( 100 )
                     //                );
                 } break;
-                case Stream::Message::DEL_STREAM: {
+                case io::StreamInterface::Message::DEL_STREAM: {
                     //                    std::string streamName;
                     const std::string streamName = payload.substr( 1, payload.size() - 1 );
                     //                    m_sock.read( streamName );
@@ -182,7 +186,7 @@ ViewerMqtt::ViewerMqtt(std::function<bool( const char*, const SensorSpec& )> onN
                     //                    std::this_thread::sleep_for( std::chrono::milliseconds(
                     //                    100 ) );
                 } break;
-                case Stream::Message::SET_PROPERTY: {
+                case io::StreamInterface::Message::SET_PROPERTY: {
                 } break;
                 default:
                     assert( false );
@@ -218,6 +222,7 @@ ViewerMqtt::~ViewerMqtt() {
     //    }
 
     m_onServerDisconnected( m_ipv4.c_str(), m_port );
+    m_serverConnected = false;
 
     assert( !m_stopThread );
     m_stopThread = true;

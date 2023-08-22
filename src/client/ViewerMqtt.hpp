@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ViewerInterface.hpp"
+#include "io/input/InputStreamMqtt.hpp"
 
 namespace hub {
 namespace client {
@@ -22,8 +23,8 @@ class SRC_API ViewerMqtt : public ViewerInterface<input::InputStreamMqtt>
             onSetProperty                                          = {},
 //        bool autoSync                                              = true,
         std::function<void( const char* logMessage )> onLogMessage = {},
-        const std::string & ipv4 = s_mqttDefaultIpv4,
-        int port = s_mqttDefaultPort
+        const std::string & ipv4 = input::InputStreamMqtt::s_defaultIpv4,
+        int port = input::InputStreamMqtt::s_defaultPort
         );
 
 

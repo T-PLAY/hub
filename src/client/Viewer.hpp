@@ -6,12 +6,12 @@
 #    include "ViewerServer.hpp"
 #endif
 
-#    ifdef USE_MQTT
-#        include "ViewerMqtt.hpp"
-#    endif
+#ifdef USE_MQTT
+#    include "ViewerMqtt.hpp"
+#endif
 
 // #include "io/input/InputStream.hpp"
-#include "SensorSpec.hpp"
+//#include "SensorSpec.hpp"
 
 namespace hub {
 namespace client {
@@ -24,8 +24,9 @@ using Viewer = ViewerMqtt;
 
 // using Viewer = ViewerInterface<InputStream>;
 
-// static_assert( std::is_base_of<ViewerInterface, Viewer>::value,
-//                "ViewerInterface is base class of Viewer" );
+//class SRC_API ViewerMqtt : public ViewerInterface<input::InputStreamMqtt>
+static_assert( std::is_base_of<client::ViewerInterface<>, Viewer>::value,
+                "ViewerInterface is base class of Viewer" );
 
 } // namespace client
 } // namespace hub

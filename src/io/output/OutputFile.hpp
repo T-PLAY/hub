@@ -6,10 +6,9 @@
 #include "io/File.hpp"
 
 namespace hub {
-using namespace io;
 namespace output {
 
-class OutputFile : public Output, public File
+class OutputFile : public io::Output, public io::File
 {
   public:
     explicit OutputFile(const std::string & filePath);

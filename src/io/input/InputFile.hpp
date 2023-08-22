@@ -6,10 +6,9 @@
 #include "io/File.hpp"
 
 namespace hub {
-using namespace io;
 namespace input {
 
-class InputFile : public Input, public File
+class InputFile : public io::Input, public io::File
 {
   public:
 //    InputFile(std::ifstream &&file);

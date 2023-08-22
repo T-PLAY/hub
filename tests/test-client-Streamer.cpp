@@ -9,12 +9,13 @@
 TEST_CASE( "Streamer" ) {
 //    const int port         = GET_RANDOM_PORT;
     const std::string ipv4 = "127.0.0.1";
-    const int port         = hub::io::s_serverDefaultPort;
+//    const int port         = hub::io::s_serverDefaultPort;
 
     constexpr int delay = 0;
 
     {
-        hub::client::Streamer streamer( ipv4, port );
+//        hub::client::Streamer streamer( ipv4, port );
+        hub::client::Streamer streamer;
         std::cout << "[Test] ############################### streamer start" << std::endl;
 
         const hub::Resolution resolution( { { 1 }, hub::Format::BGR8 } );

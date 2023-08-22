@@ -10,8 +10,6 @@
 #include "output/OutputMemory.hpp"
 
 namespace hub {
-// using namespace input;
-// using namespace output;
 namespace io {
 
 template <class Container>

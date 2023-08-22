@@ -12,9 +12,9 @@ TEST_CASE( "Asker test" ) {
     const hub::Resolution resolution( { 1 }, hub::Format::BGR8 );
     const hub::SensorSpec sensorSpec( "hello", { resolution } );
     const std::string streamName = "streamName";
-    const std::string ipv4       = "127.0.0.1";
+//    const std::string ipv4       = "127.0.0.1";
 //    const int port               = GET_RANDOM_PORT;
-    const int port = hub::io::s_serverDefaultPort;
+//    const int port = hub::io::s_serverDefaultPort;
 
 //    hub::Server server( port );
 //    server.setMaxClients( 2 );
@@ -34,7 +34,8 @@ TEST_CASE( "Asker test" ) {
         std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
 
         {
-            hub::client::Asker asker( ipv4, port );
+//            hub::client::Asker asker( ipv4, port );
+            hub::client::Asker asker;
             auto listStreams = asker.listStreams();
 
             std::cout << "nb stream : " << listStreams.size() << std::endl;

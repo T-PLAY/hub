@@ -162,8 +162,6 @@ extern "C"
     /// \return
     ///
     SRC_API client::Viewer* createViewer(
-                                          const char* ipv4,
-                                          int port,
         onNewStreamerFunc onNewStreamer,
                                           onDelStreamerFunc onDelStreamer,
                                           onServerNotFoundFunc onServerNotFound,
@@ -171,7 +169,10 @@ extern "C"
                                           onServerDisconnectedFunc onServerDisconnected,
                                           onNewAcquisitionFunc onNewAcquisition,
                                           onSetPropertyFunc onSetProperty,
-                                          onLogMessageFunc onLogMessage );
+                                          onLogMessageFunc onLogMessage,
+        const char* ipv4 = InputStream::s_defaultIpv4.c_str(),
+        int port = InputStream::s_defaultPort
+        );
 
     ///
     /// \brief freeViewer

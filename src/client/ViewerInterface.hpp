@@ -27,10 +27,9 @@
 namespace hub {
 namespace client {
 
-using namespace viewer;
 
 // namespace viewer {
-// class Stream;
+// class StreamViewer;
 // }
 
 ///
@@ -43,7 +42,7 @@ using namespace viewer;
 /// when new streamer is connected to server to have an interactive application.
 /// Close the input stream when server or streamer are disconnected.
 ///
-template <class InputStream>
+template <class InputStream = InputStream>
 class SRC_API ViewerInterface
 {
   public:
@@ -66,8 +65,6 @@ class SRC_API ViewerInterface
     /// server.
     ///
     explicit ViewerInterface(
-        const std::string& ipv4,
-        int port,
         std::function<bool( const char* streamName, const SensorSpec& )> onNewStreamer = {},
         std::function<void( const char* streamName, const SensorSpec& )> onDelStreamer = {},
         std::function<void( const char* ipv4, int port )> onServerNotFound             = {},
@@ -79,7 +76,10 @@ class SRC_API ViewerInterface
             void( const char* streamName, const char* id, int property, const Any& value )>
             onSetProperty = {},
         //        bool autoSync                                              = true,
-        std::function<void( const char* logMessage )> onLogMessage = {} );
+        std::function<void( const char* logMessage )> onLogMessage = {},
+        const std::string& ipv4 = InputStream::s_defaultIpv4,
+        int port = InputStream::s_defaultIpv4
+        );
 
     virtual ~ViewerInterface();
 
@@ -194,7 +194,7 @@ class SRC_API ViewerInterface
     std::function<void( const char* logMessage )> m_onLogMessage;
 
     //    std::map<std::string, std::unique_ptr<StreamViewer>> m_streams;
-    std::map<std::string, std::unique_ptr<StreamViewer<InputStream>>> m_streams;
+    std::map<std::string, std::unique_ptr<viewer::StreamViewer<InputStream>>> m_streams;
     //    std::map<std::string, StreamViewer> m_streams;
 
     //    friend class viewer::StreamViewer;
@@ -206,8 +206,6 @@ class SRC_API ViewerInterface
 
 template <class InputStream>
 ViewerInterface<InputStream>::ViewerInterface(
-    const std::string& ipv4,
-    int port,
     std::function<bool( const char*, const SensorSpec& )> onNewStreamer,
     std::function<void( const char*, const SensorSpec& )> onDelStreamer,
     std::function<void( const char*, int )> onServerNotFound,
@@ -215,7 +213,10 @@ ViewerInterface<InputStream>::ViewerInterface(
     std::function<void( const char*, int )> onServerDisconnected,
     std::function<void( const char*, const hub::Acquisition& )> onNewAcquisition,
     std::function<void( const char*, const char*, int, const Any& )> onSetProperty,
-    std::function<void( const char* )> onLogMessage ) :
+    std::function<void( const char* )> onLogMessage,
+    const std::string& ipv4,
+    int port
+        ) :
 
     m_ipv4( ipv4 ),
     m_port( port ),

@@ -3,20 +3,25 @@
 #include <mutex>
 #include <thread>
 
-#include "OutputStreamInterface.hpp"
+//#include "OutputStreamInterface.hpp"
+//#include "io/output/Output.hpp"
+//#include "io/StreamInterface.hpp"
+#include "Output.hpp"
+#include "io/StreamInterface.hpp"
+#include "io/StreamMqtt.hpp"
 
 #include <mqtt/client.h>
 
 namespace hub {
-using namespace io;
 namespace output {
 
 
-class SRC_API OutputStreamMqtt : public OutputStreamInterface
+//class SRC_API OutputStreamMqtt : public OutputStreamInterface
+class SRC_API OutputStreamMqtt : public io::Output, public io::StreamMqtt
 {
   public:
     explicit OutputStreamMqtt( const std::string& streamName,
-                                 const std::string & ipv4 = s_mqttDefaultIpv4, int port = s_mqttDefaultPort);
+                                 const std::string & ipv4 = s_defaultIpv4, int port = s_defaultPort);
 
 //    OutputStreamMqtt( OutputStreamMqtt&& outputStream );
 
@@ -35,7 +40,7 @@ class SRC_API OutputStreamMqtt : public OutputStreamInterface
   private:
     std::unique_ptr<mqtt::client> m_client;
     mqtt::message_ptr m_msgPtr;
-    std::string m_streamName;
+//    std::string m_streamName;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -49,7 +54,10 @@ inline void OutputStreamMqtt::write( const unsigned char* data, size_t len ) {
 #endif
     assert(m_client->is_connected());
     assert(m_msgPtr != nullptr);
+    assert(m_msgPtr->get_qos() == 2);
+    assert(m_msgPtr->is_retained());
     m_msgPtr->set_payload((char*)data, len);
+    m_msgPtr->set_qos( 2 );
 //    m_msgPtr->set_retained(true);
     m_client->publish(m_msgPtr);
     assert(m_client->is_connected());
@@ -91,7 +99,7 @@ inline void OutputStreamMqtt::close() {
     // prevent viewers there is streamer done
     m_msgPtr->set_retained(false);
     m_msgPtr->set_topic(s_topicEvents);
-    m_msgPtr->set_payload(Stream::to_string(Stream::Message::DEL_STREAM) + m_streamName);
+    m_msgPtr->set_payload(io::StreamMqtt::to_string(StreamMqtt::Message::DEL_STREAM) + m_name);
 //    m_msgPtr->set_payload("del sensor");
     m_client->publish(m_msgPtr);
 

@@ -4,24 +4,33 @@
 #include "io/Memory.hpp"
 
 namespace hub {
-using namespace io;
 namespace input {
 
 InputStreamMqtt::InputStreamMqtt( const std::string& streamName,
                                   const std::string& ipv4,
                                   int port ) :
-    InputStreamInterface( streamName, ipv4, port ),
+//    InputStreamInterface( streamName, ipv4, port ),
+    io::StreamMqtt(streamName, ipv4, port),
     m_client( new mqtt::client( ipv4 + ":" + std::to_string( port ),
                                 std::string( "InputStreamMqtt" ) + std::to_string( (long)this ),
                                 mqtt::create_options( MQTTVERSION_5 ) ) )
 //    , m_msgPtr(mqtt::make_message(streamName, ""))
 {
+//    mqtt::connect_options options;
+//    options.set_properties(properties);
     m_client->connect();
     assert( m_client->is_connected() );
     assert( m_msgPtr == nullptr );
     //    m_msgPtr.set_retained(true);
     //    m_msgPtr.set_qos(2);
 }
+
+//InputStreamMqtt::InputStreamMqtt(InputStreamMqtt &&inputStream)
+//    : io::StreamMqtt(inputStream.m_name, inputStream.m_ipv4, inputStream.m_port),
+//    m_client(std::move(inputStream.m_client))
+//{
+//    assert(m_client->is_connected());
+//}
 
 // InputStreamMqtt::InputStreamMqtt( InputStreamMqtt&& inputStream ) :
 //     InputStreamInterface(inputStream.m_name, inputStream.m_ipv4, inputStream.m_port)
@@ -65,6 +74,8 @@ void InputStreamMqtt::read( SensorSpec& sensorSpec ) {
     bool consumed =
         m_client->try_consume_message_for( &m_msgPtr, std::chrono::milliseconds( 100 ) );
     assert( consumed );
+//    m_msgPtr = m_client->consume_message();
+    assert(m_msgPtr != nullptr);
     const auto& payload = m_msgPtr->get_payload_str();
     assert( payload == "active" );
     m_client->stop_consuming();

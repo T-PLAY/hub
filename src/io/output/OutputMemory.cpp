@@ -1,7 +1,6 @@
 #include "OutputMemory.hpp"
 
 namespace hub {
-using namespace io;
 namespace output {
 
 //OutputMemory::OutputMemory(const std::string &filePath)

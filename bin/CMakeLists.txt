@@ -10,6 +10,10 @@ set(LINK_LIBRARIES hub)
 
 file(GLOB SOURCES *.cpp)
 
+if (NOT HUB_BUILD_SERVER)
+    list(FILTER SOURCES EXCLUDE REGEX ".*server\\.cpp$")
+endif()
+
 string(REPLACE ".cpp" "" SOURCES_BASENAME "${SOURCES}")
 set(SOURCES_BASENAME ${SOURCES_BASENAME})
 

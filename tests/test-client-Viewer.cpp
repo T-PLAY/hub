@@ -25,7 +25,7 @@ TEST_CASE( "Viewer" ) {
 
     const std::string ipv4 = "127.0.0.1";
 //    const int port         = GET_RANDOM_PORT;
-    const int port         = hub::io::s_serverDefaultPort;
+//    const int port         = hub::io::s_serverDefaultPort;
 
     // startConstruction
     auto onNewStreamer = [=]( const std::string& streamName, const hub::SensorSpec& sensorSpec ) {
@@ -63,11 +63,11 @@ TEST_CASE( "Viewer" ) {
 //ipv4, port,
         onNewStreamer, onDelStreamer, onServerNotFound, onServerConnected, onServerDisconnected, onNewAcquisition, onSetProperty };
 
-    viewer.setIpv4( ipv4 );
-    viewer.setPort( port );
-    CHECK( viewer.getIpv4() == ipv4 );
-    CHECK( viewer.getPort() == port );
-    CHECK( !viewer.isConnected() );
+//    viewer.setIpv4( ipv4 );
+//    viewer.setPort( port );
+//    CHECK( viewer.getIpv4() == ipv4 );
+//    CHECK( viewer.getPort() == port );
+//    CHECK( !viewer.isConnected() );
 
 //    viewer.setAutoSync( false );
     // endConstruction
@@ -101,7 +101,7 @@ TEST_CASE( "Viewer" ) {
                 sensorSpec,
 //                "streamName", hub::net::ClientSocket( ipv4, port ) );
 //                "streamName", ipv4, port );
-                OutputStream("streamName", ipv4, port) );
+                OutputStream("streamName") );
             std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
 
 

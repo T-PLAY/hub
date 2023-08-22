@@ -3,6 +3,6 @@
 #include "test_common.hpp"
 
 #include <server/Client.hpp>
-#include <server/Server.hpp>
+//#include <server/Server.hpp>
 
 TEST_CASE( "Client test" ) {}

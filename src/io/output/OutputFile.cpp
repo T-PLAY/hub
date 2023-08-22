@@ -1,7 +1,6 @@
 #include "OutputFile.hpp"
 
 namespace hub {
-using namespace io;
 namespace output {
 
 OutputFile::OutputFile(const std::string &filePath)

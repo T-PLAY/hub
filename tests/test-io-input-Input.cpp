@@ -9,6 +9,8 @@
 
 #include <io/Memory.hpp>
 
+//#include <memory>
+
 TEST_CASE( "Input test" ) {
 
     {
@@ -97,156 +99,6 @@ TEST_CASE( "Input test" ) {
     /////////////////////////////////////////////////////////////////////////////////////
 
     {
-        const int ref_offset    = 5;
-        constexpr int ref_nAcqs = 10;
-
-        const int ref2_offset    = 0;
-        constexpr int ref_nAcqs2 = 10;
-
-        std::cout << "ref_acqs" << std::endl;
-        const hub::Resolution ref_resolution( { { 1 }, hub::Format::Y8 } );
-//        const hub::SensorSpec ref_sensorSpec( "sensorName", { ref_resolution } );
-        std::vector<hub::Acquisition> ref_acqs;
-        const int ref_dataSize = hub::res::computeAcquisitionSize( ref_resolution );
-        unsigned char* data    = new unsigned char[ref_dataSize];
-        for ( int iAcq = 0; iAcq < ref_nAcqs; ++iAcq ) {
-            for ( int i = 0; i < ref_dataSize; ++i ) {
-                data[i] = ref_offset + iAcq + 1;
-            }
-            ref_acqs.emplace_back( ref_offset + iAcq + 1, ref_offset + iAcq + 1 );
-            ref_acqs.back() << hub::data::Measure(
-                reinterpret_cast<const unsigned char*>( data ), ref_dataSize, ref_resolution );
-            std::cout << ref_acqs.back() << std::endl;
-        }
-        delete[] data;
-
-        std::cout << std::endl;
-
-        //////////////////////
-
-        std::cout << "ref2_acqs" << std::endl;
-        const hub::Resolution ref_resolution2( { { 1 }, hub::Format::DOF6 } );
-//        const hub::SensorSpec ref_sensorSpec2( "sensorName2", { ref_resolution2 } );
-        std::vector<hub::Acquisition> ref_acqs2;
-        const int ref_dataSize2 = hub::res::computeAcquisitionSize( ref_resolution2 );
-        float data2[7];
-        for ( int iAcq = 0; iAcq < ref_nAcqs2; ++iAcq ) {
-            for ( int i = 0; i < 7; ++i ) {
-                data2[i] = ref2_offset + iAcq + 1;
-            }
-            ref_acqs2.emplace_back( ref2_offset + iAcq + 1, ref2_offset + iAcq + 1 );
-            ref_acqs2.back() << hub::data::Measure(
-                reinterpret_cast<const unsigned char*>( data2 ), ref_dataSize2, ref_resolution2 );
-
-            std::cout << ref_acqs2.back() << std::endl;
-        }
-        std::cout << std::endl;
-
-        //////////////////////
-
-        std::cout << "ref_sync_acqs" << std::endl;
-        std::vector<hub::Acquisition> ref_sync_acqs;
-        std::vector<int> min_dists( ref_acqs2.size(), 999999 );
-        std::vector<int> iMin_dists( ref_acqs2.size(), -1 );
-
-        int iAcq = 0;
-        for ( const auto& acq : ref_acqs ) {
-            int iMinDist = 0;
-            int minDist  = computeDist( acq, ref_acqs2.front() );
-            for ( int iAcq2 = 1; iAcq2 < ref_acqs2.size(); ++iAcq2 ) {
-                const auto& acq2 = ref_acqs2.at( iAcq2 );
-                const auto dist  = computeDist( acq, acq2 );
-                if ( dist <= minDist ) {
-                    minDist  = dist;
-                    iMinDist = iAcq2;
-                }
-            }
-
-            if ( minDist < min_dists.at( iMinDist ) ) {
-                min_dists[iMinDist]  = minDist;
-                iMin_dists[iMinDist] = iAcq;
-            }
-            ++iAcq;
-        }
-
-        for ( int i = 0; i < ref_acqs2.size(); ++i ) {
-            if ( iMin_dists[i] != -1 ) {
-                const auto& acq  = ref_acqs.at( iMin_dists.at( i ) );
-                const auto& acq2 = ref_acqs2.at( i );
-                ref_sync_acqs.push_back( acq.clone() );
-
-                auto& syncAcq = ref_sync_acqs.back();
-                syncAcq << acq2.getMeasures();
-
-                std::cout << ref_sync_acqs.back() << std::endl;
-
-                CHECK( syncAcq.getStart() == acq.getStart() );
-                CHECK( syncAcq.getEnd() == acq.getEnd() );
-                CHECK( syncAcq.getMeasures().size() == 2 );
-
-                CHECK( acq.getMeasures().size() == 1 );
-                const auto& measure = acq.getMeasures().front();
-                CHECK( syncAcq.getMeasures().at( 0 ) == measure );
-
-                CHECK( acq2.getMeasures().size() == 1 );
-                const auto& measure2 = acq2.getMeasures().front();
-                CHECK( syncAcq.getMeasures().at( 1 ) == measure2 );
-            }
-        }
-        std::cout << std::endl;
-
-        std::vector<char> buff;
-        hub::io::Memory<decltype( buff )> memory( buff );
-        hub::io::Output& output = memory;
-
-        std::vector<char> buff2;
-        hub::io::Memory<decltype( buff2 )> memory2( buff2 );
-        hub::io::Output& output2 = memory2;
-
-        hub::io::Input& input  = memory;
-        hub::io::Input& input2 = memory2;
-
-        for ( int i = 0; i < ref_acqs.size(); ++i ) {
-            const auto& acq = ref_acqs.at( i );
-            if ( i % 3 == 0 ) { output << acq; }
-            else if ( i % 3 == 1 ) {
-                output.write( acq );
-            }
-            else {
-                output.put( acq );
-            }
-        }
-
-        for ( const auto& acq2 : ref_acqs2 ) {
-            output2 << acq2;
-        }
-
-        std::cout << "sync acqs" << std::endl;
-        std::vector<hub::Acquisition> sync_acqs;
-        while ( !input.isEnd() && !input2.isEnd() ) {
-
-            hub::Acquisition acq;
-            input >> input2 >> acq;
-            std::cout << acq << std::endl;
-            sync_acqs.push_back( std::move( acq ) );
-        }
-
-        assert( input2.isEnd() );
-        assert( !input.isEnd() );
-
-        auto acq2 = input.get<hub::Acquisition>();
-        auto acqs = input.getAll<std::vector<hub::Acquisition>>();
-        CHECK( acqs.size() == ref_acqs.size() - ref_sync_acqs.size() - 1 );
-        assert( input.isEnd() );
-
-        assert( sync_acqs.size() == ref_sync_acqs.size() );
-        for ( int i = 0; i < ref_sync_acqs.size(); ++i ) {
-            const auto& sync_acq = sync_acqs.at( i );
-            CHECK( sync_acq == ref_sync_acqs.at( i ) );
-        }
-    }
-
-    {
         std::vector<char> buff;
         hub::io::Memory<decltype( buff )> memory( buff );
         hub::io::Output& output = memory;
@@ -270,6 +122,62 @@ TEST_CASE( "Input test" ) {
                  "-----------------------"
               << std::endl;
 
+    using Acqs = std::vector<hub::Acquisition>;
+    using Acqss = std::vector<Acqs>;
+    Acqss ref_acqss( 2 );
+    Acqss ref_acqss2( 2 );
+
+
+    using Acqsss = std::pair<const Acqss &, const Acqss &>;
+
+    const Acqsss ref_acqsss = {ref_acqss, ref_acqss2};
+    const Acqsss ref_reverse_acqsss = {ref_acqss2, ref_acqss};
+
+    const Acqsss ref_acqssss[2] = {ref_acqsss, ref_reverse_acqsss};
+
+
+//    const Acqss & ref_acqsss[2][2] = {{ref_acqsss, ref_acqss2}, {ref_acqss2, ref_acqsss}};
+
+//    const std:: & ref_acqsss = {ref_acqss, ref_acqss2};
+//    std::vector<const std::vector<std::vector<hub::Acquisition>>*> ref_acqsss = {&ref_acqss};
+//    const auto & refss = {{ref_acqss, ref_acqss2}, {ref_acqss2, ref_acqss}};
+
+
+    {
+        const int ref_offset    = 5;
+        constexpr int ref_nAcqs = 10;
+
+        const int ref2_offset    = 0;
+        constexpr int ref_nAcqs2 = 10;
+
+        const hub::Resolution ref_resolution( { { 1 }, hub::Format::Y8 } );
+        std::vector<hub::Acquisition>& ref_acqs = ref_acqss.at( 0 );
+        const int ref_dataSize = hub::res::computeAcquisitionSize( ref_resolution );
+        unsigned char* data    = new unsigned char[ref_dataSize];
+        for ( int iAcq = 0; iAcq < ref_nAcqs; ++iAcq ) {
+            for ( int i = 0; i < ref_dataSize; ++i ) {
+                data[i] = ref_offset + iAcq + 1;
+            }
+            ref_acqs.emplace_back( ref_offset + iAcq + 1, ref_offset + iAcq + 1 );
+            ref_acqs.back() << hub::data::Measure(
+                reinterpret_cast<const unsigned char*>( data ), ref_dataSize, ref_resolution );
+        }
+        delete[] data;
+
+        const hub::Resolution ref_resolution2( { { 1 }, hub::Format::DOF6 } );
+        std::vector<hub::Acquisition>& ref_acqs2 = ref_acqss2.at( 0 );
+        const int ref_dataSize2 = hub::res::computeAcquisitionSize( ref_resolution2 );
+        float data2[7];
+        for ( int iAcq = 0; iAcq < ref_nAcqs2; ++iAcq ) {
+            for ( int i = 0; i < 7; ++i ) {
+                data2[i] = ref2_offset + iAcq + 1;
+            }
+            ref_acqs2.emplace_back( ref2_offset + iAcq + 1, ref2_offset + iAcq + 1 );
+            ref_acqs2.back() << hub::data::Measure(
+                reinterpret_cast<const unsigned char*>( data2 ), ref_dataSize2, ref_resolution2 );
+        }
+    }
+
     {
         const int ref_offset    = 2;
         constexpr int ref_nAcqs = 10;
@@ -279,10 +187,8 @@ TEST_CASE( "Input test" ) {
         constexpr int ref_nAcqs2 = 10;
         constexpr int ref_step2  = 1;
 
-        std::cout << "ref_acqs" << std::endl;
         const hub::Resolution ref_resolution( { { 1 }, hub::Format::Y8 } );
-//        const hub::SensorSpec ref_sensorSpec( "sensorName", { ref_resolution } );
-        std::vector<hub::Acquisition> ref_acqs;
+        std::vector<hub::Acquisition>& ref_acqs = ref_acqss.at( 1 );
         const int ref_dataSize = hub::res::computeAcquisitionSize( ref_resolution );
         unsigned char* data    = new unsigned char[ref_dataSize];
         for ( int iAcq = 0; iAcq < ref_nAcqs; ++iAcq ) {
@@ -293,18 +199,11 @@ TEST_CASE( "Input test" ) {
                                    ref_offset + iAcq * ref_step + 1 );
             ref_acqs.back() << hub::data::Measure(
                 reinterpret_cast<const unsigned char*>( data ), ref_dataSize, ref_resolution );
-            std::cout << ref_acqs.back() << std::endl;
         }
         delete[] data;
 
-        std::cout << std::endl;
-
-        //////////////////////
-
-        std::cout << "ref2_acqs" << std::endl;
         const hub::Resolution ref_resolution2( { { 1 }, hub::Format::DOF6 } );
-//        const hub::SensorSpec ref_sensorSpec2( "sensorName2", { ref_resolution2 } );
-        std::vector<hub::Acquisition> ref_acqs2;
+        std::vector<hub::Acquisition>& ref_acqs2 = ref_acqss2.at( 1 );
         const int ref_dataSize2 = hub::res::computeAcquisitionSize( ref_resolution2 );
         float data2[7];
         for ( int iAcq = 0; iAcq < ref_nAcqs2; ++iAcq ) {
@@ -315,106 +214,128 @@ TEST_CASE( "Input test" ) {
                                     ref2_offset + iAcq * ref_step2 + 1 );
             ref_acqs2.back() << hub::data::Measure(
                 reinterpret_cast<const unsigned char*>( data2 ), ref_dataSize2, ref_resolution2 );
-
-            std::cout << ref_acqs2.back() << std::endl;
         }
-        std::cout << std::endl;
+    }
 
-        //////////////////////
+    for ( int j = 0; j < 2; ++j ) {
+        for ( int i = 0; i < ref_acqss.size(); ++i ) {
 
-        std::cout << "ref_sync_acqs" << std::endl;
-        std::vector<hub::Acquisition> ref_sync_acqs;
-        std::vector<int> min_dists( ref_acqs2.size(), 999999 );
-        std::vector<int> iMin_dists( ref_acqs2.size(), -1 );
+            const int idx = j * ref_acqss.size() + i;
 
-        int iAcq = 0;
-        for ( const auto& acq : ref_acqs ) {
-            int iMinDist = 0;
-            int minDist  = computeDist( acq, ref_acqs2.front() );
-            for ( int iAcq2 = 1; iAcq2 < ref_acqs2.size(); ++iAcq2 ) {
-                const auto& acq2 = ref_acqs2.at( iAcq2 );
-                const auto dist  = computeDist( acq, acq2 );
-                if ( dist <= minDist ) {
-                    minDist  = dist;
-                    iMinDist = iAcq2;
-                }
+//            const auto& ref_acqs = ref_acqss.at( i );
+            const auto& ref_acqs = ref_acqssss[j].first.at(i);
+
+            std::cout << "ref_acqs " << idx << std::endl;
+            for ( const auto& acq : ref_acqs ) {
+                std::cout << acq << std::endl;
+            }
+            std::cout << std::endl;
+
+//            const auto& ref_acqs2 = ref_acqss2.at( i );
+            const auto& ref_acqs2 = ref_acqssss[j].second.at(i);
+            std::cout << "ref_acqs2 " << idx << std::endl;
+            for ( const auto& acq : ref_acqs2 ) {
+                std::cout << acq << std::endl;
+            }
+            std::cout << std::endl;
+
+            std::cout << "ref_sync_acqs " << idx << std::endl;
+            auto ref_sync_acqs = computeSyncAcqs( ref_acqs, ref_acqs2 );
+
+            std::vector<char> buff;
+            hub::io::Memory<decltype( buff )> memory( buff );
+            hub::io::Output& output = memory;
+
+            std::vector<char> buff2;
+            hub::io::Memory<decltype( buff2 )> memory2( buff2 );
+            hub::io::Output& output2 = memory2;
+
+            hub::io::Input& input  = memory;
+            hub::io::Input& input2 = memory2;
+
+            for ( int i = 0; i < ref_acqs.size(); ++i ) {
+                const auto& acq = ref_acqs.at( i );
+                if ( i % 3 == 0 ) { output << acq; }
+                else if ( i % 3 == 1 ) { output.write( acq ); }
+                else { output.put( acq ); }
             }
 
-            if ( minDist < min_dists.at( iMinDist ) ) {
-                min_dists[iMinDist]  = minDist;
-                iMin_dists[iMinDist] = iAcq;
+            for ( const auto& acq2 : ref_acqs2 ) {
+                output2 << acq2;
             }
-            ++iAcq;
-        }
 
-        for ( int i = 0; i < ref_acqs2.size(); ++i ) {
-            if ( iMin_dists[i] != -1 ) {
-                const auto& acq  = ref_acqs.at( iMin_dists.at( i ) );
-                const auto& acq2 = ref_acqs2.at( i );
-                ref_sync_acqs.push_back( acq.clone() );
+            std::cout << "sync acqs " << idx << std::endl;
+            std::vector<hub::Acquisition> sync_acqs;
+            while ( !input.isEnd() && !input2.isEnd() ) {
 
-                auto& syncAcq = ref_sync_acqs.back();
-                syncAcq << acq2.getMeasures();
-
-                std::cout << ref_sync_acqs.back() << std::endl;
-
-                CHECK( syncAcq.getStart() == acq.getStart() );
-                CHECK( syncAcq.getEnd() == acq.getEnd() );
-                CHECK( syncAcq.getMeasures().size() == 2 );
-
-                CHECK( acq.getMeasures().size() == 1 );
-                const auto& measure = acq.getMeasures().front();
-                CHECK( syncAcq.getMeasures().at( 0 ) == measure );
-
-                CHECK( acq2.getMeasures().size() == 1 );
-                const auto& measure2 = acq2.getMeasures().front();
-                CHECK( syncAcq.getMeasures().at( 1 ) == measure2 );
+                hub::Acquisition acq;
+                input >> input2 >> acq;
+                std::cout << acq << std::endl;
+                sync_acqs.push_back( std::move( acq ) );
             }
-        }
-        std::cout << std::endl;
 
-        std::vector<char> buff;
-        hub::io::Memory<decltype( buff )> memory( buff );
-        hub::io::Output& output = memory;
-
-        std::vector<char> buff2;
-        hub::io::Memory<decltype( buff2 )> memory2( buff2 );
-        hub::io::Output& output2 = memory2;
-
-        hub::io::Input& input  = memory;
-        hub::io::Input& input2 = memory2;
-
-        for ( int i = 0; i < ref_acqs.size(); ++i ) {
-            const auto& acq = ref_acqs.at( i );
-            if ( i % 3 == 0 ) { output << acq; }
-            else if ( i % 3 == 1 ) {
-                output.write( acq );
+            assert( sync_acqs.size() == ref_sync_acqs.size() );
+            for ( int i = 0; i < ref_sync_acqs.size(); ++i ) {
+                const auto& sync_acq = sync_acqs.at( i );
+                CHECK( sync_acq == ref_sync_acqs.at( i ) );
             }
-            else {
-                output.put( acq );
-            }
-        }
-
-        for ( const auto& acq2 : ref_acqs2 ) {
-            output2 << acq2;
-        }
-
-        std::cout << "sync acqs" << std::endl;
-        std::vector<hub::Acquisition> sync_acqs;
-        while ( !input.isEnd() && !input2.isEnd() ) {
-
-            hub::Acquisition acq;
-            input >> input2 >> acq;
-            std::cout << acq << std::endl;
-            sync_acqs.push_back( std::move( acq ) );
-        }
-
-        assert( sync_acqs.size() == ref_sync_acqs.size() );
-        for ( int i = 0; i < ref_sync_acqs.size(); ++i ) {
-            const auto& sync_acq = sync_acqs.at( i );
-            CHECK( sync_acq == ref_sync_acqs.at( i ) );
+            std::cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
+                      << std::endl;
         }
     }
 
     std::cout << "end test" << std::endl;
 }
+
+////        std::vector<hub::Acquisition> ref_sync_acqs;
+//        auto ref_sync_acqs = computeSyncAcqs(ref_acqs, ref_acqs2);
+
+//        std::vector<char> buff;
+//        hub::io::Memory<decltype( buff )> memory( buff );
+//        hub::io::Output& output = memory;
+
+//        std::vector<char> buff2;
+//        hub::io::Memory<decltype( buff2 )> memory2( buff2 );
+//        hub::io::Output& output2 = memory2;
+
+//        hub::io::Input& input  = memory;
+//        hub::io::Input& input2 = memory2;
+
+//        for ( int i = 0; i < ref_acqs.size(); ++i ) {
+//            const auto& acq = ref_acqs.at( i );
+//            if ( i % 3 == 0 ) { output << acq; }
+//            else if ( i % 3 == 1 ) {
+//                output.write( acq );
+//            }
+//            else {
+//                output.put( acq );
+//            }
+//        }
+
+//        for ( const auto& acq2 : ref_acqs2 ) {
+//            output2 << acq2;
+//        }
+
+//        std::cout << "sync acqs" << std::endl;
+//        std::vector<hub::Acquisition> sync_acqs;
+//        while ( !input.isEnd() && !input2.isEnd() ) {
+
+//            hub::Acquisition acq;
+//            input >> input2 >> acq;
+//            std::cout << acq << std::endl;
+//            sync_acqs.push_back( std::move( acq ) );
+//        }
+
+//        assert( input2.isEnd() );
+//        assert( !input.isEnd() );
+
+//        auto acq2 = input.get<hub::Acquisition>();
+//        auto acqs = input.getAll<std::vector<hub::Acquisition>>();
+//        CHECK( acqs.size() == ref_acqs.size() - ref_sync_acqs.size() - 1 );
+//        assert( input.isEnd() );
+
+//        assert( sync_acqs.size() == ref_sync_acqs.size() );
+//        for ( int i = 0; i < ref_sync_acqs.size(); ++i ) {
+//            const auto& sync_acq = sync_acqs.at( i );
+//            CHECK( sync_acq == ref_sync_acqs.at( i ) );
+//        }

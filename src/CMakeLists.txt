@@ -73,6 +73,11 @@ source_group("Source Files\\" FILES ${sources})
 #set(REQUIRED_LIBS)
 
 add_library(${PROJECT_NAME} OBJECT ${sources} ${headers}
+    io/StreamMqtt.hpp io/StreamMqtt.cpp
+    io/StreamInterface.hpp io/StreamInterface.cpp
+    client/AskerInterface.hpp client/AskerInterface.cpp
+    client/AskerMqtt.hpp client/AskerMqtt.cpp
+    io/input/InputSyncStreamInterface.hpp io/input/InputSyncStreamInterface.cpp
 #    io/input/InputFile.hpp io/input/InputFile.cpp
 #    io/MemoryInterface.hpp
 #    io/Stream.hpp io/Stream.cpp

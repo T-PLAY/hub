@@ -5,14 +5,13 @@
 #include "io/MemoryInterface.hpp"
 
 namespace hub {
-using namespace io;
 namespace output {
 
 template <class Container>
-class OutputMemory : public Output, public MemoryInterface<Container>
+class OutputMemory : public io::Output, public io::MemoryInterface<Container>
 {
   public:
-    explicit OutputMemory( Container& buff ) : MemoryInterface<Container>(buff)  {}
+    explicit OutputMemory( Container& buff ) : io::MemoryInterface<Container>(buff)  {}
 
     ///
     /// \brief write
@@ -28,12 +27,12 @@ class OutputMemory : public Output, public MemoryInterface<Container>
     ///
     /// @copydoc InputOutput::close()
     ///
-    void close() override { MemoryInterface<Container>::m_closed = true; }
+    void close() override { io::MemoryInterface<Container>::m_closed = true; }
 
     ///
     /// @copydoc InputOutput::isOpen()
     ///
-    bool isOpen() const override { return !MemoryInterface<Container>::m_closed; }
+    bool isOpen() const override { return !io::MemoryInterface<Container>::m_closed; }
 
 //    ///
 //    /// @copydoc InputOutput::isEnd()
@@ -47,8 +46,8 @@ class OutputMemory : public Output, public MemoryInterface<Container>
     ///
     void write( const unsigned char* data, size_t len ) override {
         assert( data != nullptr );
-        MemoryInterface<Container>::m_container.insert(
-            MemoryInterface<Container>::m_container.end(), data, data + len );
+        io::MemoryInterface<Container>::m_container.insert(
+            io::MemoryInterface<Container>::m_container.end(), data, data + len );
     }
 
 

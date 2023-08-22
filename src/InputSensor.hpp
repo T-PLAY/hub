@@ -54,25 +54,25 @@ class SRC_API InputSensor : public Sensor
         m_input->read( m_spec );
     }
 
-//    template <class Input = input::InputStream,
-//              class... Args,
-//              typename = typename std::enable_if<std::is_same<input::InputStream, Input>::value
-//#if ( __cplusplus < 201703L )
-//                                                 && ( sizeof...( Args ) != 1 ||
-//                                                      !is_one_of<Input, Args...>::value )
-//#else
-//                                                 && ( sizeof...( Args ) != 1 ||
-//                                                      !( std::is_same<Input, Args> {} || ... ) )
-//#endif
-//                                                 >::type>
-//    InputSensor( Args&&... args ) :
-//        Sensor( hub::SensorSpec {}  ),
-//        m_input( new Input( std::forward<Args>( args )... ) ) {
-//        static_assert( std::is_base_of<io::Input, Input>::value, "not a base class" );
-//        static_assert( !std::is_same<net::ClientSocket, Input>::value, "not clientSocket class" );
+    template <class Input = input::InputStream,
+              class... Args,
+              typename = typename std::enable_if<std::is_same<input::InputStream, Input>::value
+#if ( __cplusplus < 201703L )
+                                                 && ( sizeof...( Args ) != 1 ||
+                                                      !is_one_of<Input, Args...>::value )
+#else
+                                                 && ( sizeof...( Args ) != 1 ||
+                                                      !( std::is_same<Input, Args> {} || ... ) )
+#endif
+                                                 >::type>
+    InputSensor( Args&&... args ) :
+        Sensor( hub::SensorSpec {}  ),
+        m_input( new Input( std::forward<Args>( args )... ) ) {
+        static_assert( std::is_base_of<io::Input, Input>::value, "not a base class" );
+        static_assert( !std::is_same<net::ClientSocket, Input>::value, "not clientSocket class" );
 
-//        m_input->read( m_spec );
-//    }
+        m_input->read( m_spec );
+    }
 
     template <class Input>
 //              ,

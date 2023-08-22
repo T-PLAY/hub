@@ -1,7 +1,6 @@
 #include "InputMemory.hpp"
 
 namespace hub {
-using namespace io;
 namespace input {
 
 

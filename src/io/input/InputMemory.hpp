@@ -7,16 +7,15 @@
 #include "io/MemoryInterface.hpp"
 
 namespace hub {
-using namespace io;
 namespace input {
 
 template <class Container>
-class InputMemory : public Input, public MemoryInterface<Container>
+class InputMemory : public io::Input, public io::MemoryInterface<Container>
 {
   public:
 
 //  protected:
-    explicit InputMemory( Container& buff ) : MemoryInterface<Container>(buff) {}
+    explicit InputMemory( Container& buff ) : io::MemoryInterface<Container>(buff) {}
 
 
     ///
@@ -34,17 +33,17 @@ class InputMemory : public Input, public MemoryInterface<Container>
     ///
     /// @copydoc InputOutput::close()
     ///
-    void close() override { MemoryInterface<Container>::m_closed = true; }
+    void close() override { io::MemoryInterface<Container>::m_closed = true; }
 
     ///
     /// @copydoc InputOutput::isOpen()
     ///
-    bool isOpen() const override { return !MemoryInterface<Container>::m_closed; }
+    bool isOpen() const override { return !io::MemoryInterface<Container>::m_closed; }
 
     ///
     /// @copydoc InputOutput::isEnd()
     ///
-    bool isEnd() const override { return MemoryInterface<Container>::m_container.empty(); }
+    bool isEnd() const override { return io::MemoryInterface<Container>::m_container.empty(); }
 
 
   public:
@@ -54,8 +53,8 @@ class InputMemory : public Input, public MemoryInterface<Container>
     ///
     void read( unsigned char* data, size_t len ) override {
         assert( data != nullptr );
-        memcpy( data, MemoryInterface<Container>::m_container.data(), len );
-        MemoryInterface<Container>::m_container.erase( MemoryInterface<Container>::m_container.begin(), MemoryInterface<Container>::m_container.begin() + len );
+        memcpy( data, io::MemoryInterface<Container>::m_container.data(), len );
+        io::MemoryInterface<Container>::m_container.erase( io::MemoryInterface<Container>::m_container.begin(), io::MemoryInterface<Container>::m_container.begin() + len );
     }
 
 

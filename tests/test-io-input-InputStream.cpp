@@ -4,9 +4,9 @@
 
 #include <io/input/InputStream.hpp>
 #include <io/output/OutputStream.hpp>
-//#include <server/Server.hpp>
-#include <OutputSensor.hpp>
+// #include <server/Server.hpp>
 #include <InputSensor.hpp>
+#include <OutputSensor.hpp>
 
 TEST_CASE( "InputStream test" ) {
 
@@ -34,53 +34,59 @@ TEST_CASE( "InputStream test" ) {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-//    const std::string ipv4 = "127.0.0.1";
-//    const int port         = GET_RANDOM_PORT;
-//    hub::Server server( port );
-//    server.setMaxClients( 2 );
-//    server.asyncRun();
+    //    const std::string ipv4 = "127.0.0.1";
+    //    const int port         = GET_RANDOM_PORT;
+    //    hub::Server server( port );
+    //    server.setMaxClients( 2 );
+    //    server.asyncRun();
 
     {
-//        hub::OutputSensor outputSensor(
-//            ref_sensorSpec, "streamName", hub::net::ClientSocket( ipv4, port ) );
-//            ref_sensorSpec, "streamName", ipv4, port );
+        //        hub::OutputSensor outputSensor(
+        //            ref_sensorSpec, "streamName", hub::net::ClientSocket( ipv4, port ) );
+        //            ref_sensorSpec, "streamName", ipv4, port );
         hub::OutputSensor outputSensor(
-//            ref_sensorSpec, "streamName", hub::net::ClientSocket( ipv4, port ) );
-            ref_sensorSpec, OutputStream("streamName") );
+            //            ref_sensorSpec, "streamName", hub::net::ClientSocket( ipv4, port ) );
+            ref_sensorSpec,
+            OutputStream( "streamName" ) );
         std::cout << "[test] outputSensor created" << std::endl;
 
         {
-//            hub::io::InputStream inputStream( "streamName", hub::net::ClientSocket( ipv4, port ) );
-//            hub::input::InputStreamServer inputStream( "streamName", ipv4, port );
+            //            hub::io::InputStream inputStream( "streamName", hub::net::ClientSocket(
+            //            ipv4, port ) ); hub::input::InputStreamServer inputStream( "streamName",
+            //            ipv4, port );
             hub::input::InputStream inputStream( "streamName" );
             hub::InputSensor inputSensor( std::move( inputStream ) );
             CHECK( inputSensor.getSpec() == ref_sensorSpec );
             std::cout << "[test] inputSensor created" << std::endl;
 
-            for ( const auto& acq : ref_acqs ) {
-                assert( !acq.isEmpty() );
-                outputSensor << acq;
-            }
-
-            hub::Acquisition acq;
             std::cout << "[test] acqs" << std::endl;
-            std::vector<hub::Acquisition> acqs;
+            hub::Acquisition inputAcq;
+//            std::vector<hub::Acquisition> acqs;
             for ( int i = 0; i < ref_acqs.size(); ++i ) {
+                //            for ( const auto& acq : ref_acqs ) {
+                const auto& outputAcq = ref_acqs.at( i );
+                assert( !outputAcq.isEmpty() );
+                outputSensor << outputAcq;
+                //            }
 
-                inputSensor >> acq;
-                assert( !acq.isEmpty() );
-                std::cout << acq << std::endl;
-                acqs.push_back( std::move( acq ) );
+                //            for ( int i = 0; i < ref_acqs.size(); ++i ) {
+
+                inputSensor >> inputAcq;
+                assert( !inputAcq.isEmpty() );
+                std::cout << inputAcq << std::endl;
+                CHECK(outputAcq == inputAcq);
+//                acqs.push_back( std::move( inputAcq ) );
+                //            }
             }
 
-            assert( acqs.size() == ref_acqs.size() );
-            for ( int i = 0; i < acqs.size(); ++i ) {
-                const auto& acq2 = acqs.at( i );
-                CHECK( acq2 == ref_acqs.at( i ) );
-            }
+//            assert( acqs.size() == ref_acqs.size() );
+//            for ( int i = 0; i < acqs.size(); ++i ) {
+//                const auto& acq2 = acqs.at( i );
+//                CHECK( acq2 == ref_acqs.at( i ) );
+//            }
+            std::cout << "[test] end inputStream" << std::endl;
         }
-        std::cout << "[test] end inputStream" << std::endl;
+        std::cout << "[test] end outputStream" << std::endl;
+//        std::cout << "[test] end server" << std::endl;
     }
-    std::cout << "[test] end outputStream" << std::endl;
-    std::cout << "[test] end server" << std::endl;
 }

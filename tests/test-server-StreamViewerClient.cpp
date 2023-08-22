@@ -2,7 +2,7 @@
 
 #include "test_common.hpp"
 
-#include <server/Server.hpp>
+//#include <server/Server.hpp>
 #include <server/StreamViewerClient.hpp>
 
 TEST_CASE( "StreamViewerClient test" ) {}

@@ -12,7 +12,7 @@
 // #include <iostream>
 
 #include <Native.hpp>
-#include <server/Server.hpp>
+//#include <server/Server.hpp>
 
 // needs server running
 
@@ -25,9 +25,9 @@
 TEST_CASE( "Native test" ) {
     constexpr int delay = 1000; // ms
 
-    const std::string ipv4 = "127.0.0.1";
+//    const std::string ipv4 = "127.0.0.1";
 //    const int port         = GET_RANDOM_PORT;
-    const int port         = 1883;
+//    const int port         = 1883;
 
     const hub::Resolution ref_resolution( { 1 }, hub::Format::BGR8 );
     const std::string ref_sensorName = "sensorName";
@@ -170,8 +170,6 @@ TEST_CASE( "Native test" ) {
     };
 
     auto* viewer = hub::native::createViewer(
-                                              ipv4.c_str(),
-                                              port,
         onNewStreamer,
                                               onDelStreamer,
                                               onServerNotFound,
@@ -179,85 +177,88 @@ TEST_CASE( "Native test" ) {
                                               onServerDisconnected,
                                               onNewAcquisition,
                                               onSetProperty,
-                                              onLogMessage );
-    hub::native::viewer_setIpv4( viewer, ipv4.c_str() );
-    hub::native::viewer_setPort( viewer, port );
+                                              onLogMessage
+//                                              ipv4.c_str(),
+//        port
+        );
+//    hub::native::viewer_setIpv4( viewer, ipv4.c_str() );
+//    hub::native::viewer_setPort( viewer, port );
     CHECK( !viewer->isConnected() );
     CHECK( !hub::native::viewer_isConnected( viewer ) );
 
     // todo test
-    if ( false ) {
-        std::cout << "[Test] ############################### server start" << std::endl;
-        hub::Server server( port );
-        server.setMaxClients( 2 );
-        server.asyncRun();
-        while ( !viewer->isConnected() ) {
-            std::cout << "[Test] wating for viewer connected" << std::endl;
-            std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
-        }
-        CHECK( viewer->isConnected() );
-        CHECK( hub::native::viewer_isConnected( viewer ) );
-        {
-            std::cout << "[Test] ############################### outputSensor start" << std::endl;
+//    if ( false ) {
+//        std::cout << "[Test] ############################### server start" << std::endl;
+//        hub::Server server( port );
+//        server.setMaxClients( 2 );
+//        server.asyncRun();
+//        while ( !viewer->isConnected() ) {
+//            std::cout << "[Test] wating for viewer connected" << std::endl;
+//            std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+//        }
+//        CHECK( viewer->isConnected() );
+//        CHECK( hub::native::viewer_isConnected( viewer ) );
+//        {
+//            std::cout << "[Test] ############################### outputSensor start" << std::endl;
 
-            hub::OutputSensor* outputSensor = new hub::OutputSensor(
-//                ref_sensorSpec, ref_streamName, hub::net::ClientSocket( ipv4, port ) );
-//                ref_sensorSpec, ref_streamName, ipv4, port );
-                ref_sensorSpec, OutputStream(ref_streamName, ipv4, port) );
+//            hub::OutputSensor* outputSensor = new hub::OutputSensor(
+////                ref_sensorSpec, ref_streamName, hub::net::ClientSocket( ipv4, port ) );
+////                ref_sensorSpec, ref_streamName, ipv4, port );
+//                ref_sensorSpec, OutputStream(ref_streamName, ipv4, port) );
 
-            std::this_thread::sleep_for( std::chrono::milliseconds( 2000 ) );
+//            std::this_thread::sleep_for( std::chrono::milliseconds( 2000 ) );
 
-            if ( false ) {
+//            if ( false ) {
 
-                std::cout << "[Test] ############################### inputSensor start"
-                          << std::endl;
+//                std::cout << "[Test] ############################### inputSensor start"
+//                          << std::endl;
 
-                auto* inputSensor =
-                    hub::native::createInputSensor( ref_streamName.c_str(), ipv4.c_str(), port );
+//                auto* inputSensor =
+//                    hub::native::createInputSensor( ref_streamName.c_str(), ipv4.c_str(), port );
 
-                auto acquisitionSize = hub::native::getAcquisitionSize( inputSensor );
-                CHECK( ref_acq.getSize() == acquisitionSize );
+//                auto acquisitionSize = hub::native::getAcquisitionSize( inputSensor );
+//                CHECK( ref_acq.getSize() == acquisitionSize );
 
-                *outputSensor << ref_acq;
+//                *outputSensor << ref_acq;
 
-                auto* acq = hub::native::getAcquisition( inputSensor );
-                CHECK( ref_acq == *acq );
+//                auto* acq = hub::native::getAcquisition( inputSensor );
+//                CHECK( ref_acq == *acq );
 
-                unsigned char data[256];
-                hub::native::acquisition_getMeasure( acq, data, 0 );
-                CHECK( !memcmp( ref_data, data, 3 ) );
+//                unsigned char data[256];
+//                hub::native::acquisition_getMeasure( acq, data, 0 );
+//                CHECK( !memcmp( ref_data, data, 3 ) );
 
-                auto start = hub::native::acquisition_getStart( acq );
-                CHECK( start == ref_acq.getStart() );
+//                auto start = hub::native::acquisition_getStart( acq );
+//                CHECK( start == ref_acq.getStart() );
 
-                hub::native::freeAcquisition( acq );
+//                hub::native::freeAcquisition( acq );
 
-                char buff[256];
-                int len;
-                hub::native::acquisition_to_string( acq, buff, &len );
+//                char buff[256];
+//                int len;
+//                hub::native::acquisition_to_string( acq, buff, &len );
 
-                hub::native::freeInputSensor( inputSensor );
+//                hub::native::freeInputSensor( inputSensor );
 
-                const auto* inputSensor2 =
-                    hub::native::createInputSensor( "nonConnected", ipv4.c_str(), port );
-                CHECK( inputSensor2 == nullptr );
+//                const auto* inputSensor2 =
+//                    hub::native::createInputSensor( "nonConnected", ipv4.c_str(), port );
+//                CHECK( inputSensor2 == nullptr );
 
-                auto& output = outputSensor->getOutput();
-                output.close();
-                delete outputSensor;
+//                auto& output = outputSensor->getOutput();
+//                output.close();
+//                delete outputSensor;
 
-                // todo native
+//                // todo native
 
-                std::cout << "[Test] ############################### inputSensor end" << std::endl;
-            }
+//                std::cout << "[Test] ############################### inputSensor end" << std::endl;
+//            }
 
-            delete outputSensor;
+//            delete outputSensor;
 
-            std::cout << "[Test] ############################### outputSensor end" << std::endl;
-        }
-        std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
-        std::cout << "[Test] ############################### server end" << std::endl;
-    }
+//            std::cout << "[Test] ############################### outputSensor end" << std::endl;
+//        }
+//        std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
+//        std::cout << "[Test] ############################### server end" << std::endl;
+//    }
 
     hub::native::freeViewer( viewer );
 }

@@ -134,8 +134,7 @@ void acquisition_to_string( const Acquisition* acquisition, char* str, int* strL
 //////////////////////////////////////////////////////////////////////////
 
 // template <class InputStream>
-client::Viewer* createViewer( const char* ipv4,
-                              int port,
+client::Viewer* createViewer(
                               onNewStreamerFunc onNewStreamer,
                               onDelStreamerFunc onDelStreamer,
                               onServerNotFoundFunc onServerNotFound,
@@ -143,7 +142,10 @@ client::Viewer* createViewer( const char* ipv4,
                               onServerDisconnectedFunc onServerDisconnected,
                               onNewAcquisitionFunc onNewAcquisition,
                               onSetPropertyFunc onSetProperty,
-                              onLogMessageFunc onLogMessage ) {
+                              onLogMessageFunc onLogMessage,
+    const char* ipv4,
+    int port
+    ) {
 
     auto onNewStreamerCpp = [=]( const std::string& streamName, const SensorSpec& sensorSpec ) {
         return onNewStreamer( streamName.c_str(), &sensorSpec );
@@ -183,7 +185,7 @@ client::Viewer* createViewer( const char* ipv4,
         onNewAcquisitionCpp,
         onSetPropertyCpp,
         //                                                 false,
-        onLogMessageCpp );
+        onLogMessageCpp, ipv4, port );
     return viewer;
 }
 
