@@ -11,6 +11,9 @@ namespace io {
 class StreamMqtt : public StreamInterface
 {
   public:
+    static const std::string s_defaultIpv4;
+    static const int s_defaultPort;
+
     static const std::string s_topicStream;
     static const std::string s_topicViewer;
     static const std::string s_topicEvents;

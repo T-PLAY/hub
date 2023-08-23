@@ -9,7 +9,7 @@
 
 // #include "InputSensor.hpp"
 //#include <client/StreamViewer.hpp>
-#include <io/input/InputStream.hpp>
+#include "io/input/InputStream.hpp"
 //#include <io/input/InputStreamMqtt.hpp>
 
 #include <utils/Utils.hpp>

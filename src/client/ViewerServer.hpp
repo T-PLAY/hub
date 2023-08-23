@@ -30,8 +30,8 @@ class SRC_API ViewerServer : public ViewerInterface<input::InputStreamServer>
             onSetProperty                                          = {},
 //        bool autoSync                                              = true,
         std::function<void( const char* logMessage )> onLogMessage = {},
-        const std::string& ipv4                                    = s_serverDefaultIpv4,
-        int port                                                   = s_serverDefaultPort
+        const std::string& ipv4                                    = input::InputStreamServer::s_defaultIpv4,
+        int port                                                   = input::InputStreamServer::s_defaultPort
         );
 
     ~ViewerServer();

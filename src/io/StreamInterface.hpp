@@ -12,8 +12,8 @@ namespace io {
 class StreamInterface
 {
   public:
-    static const std::string s_defaultIpv4;
-    static const int s_defaultPort;
+//    static const std::string s_defaultIpv4;
+//    static const int s_defaultPort;
 
     enum class Message {
         NONE = 0,
@@ -41,6 +41,9 @@ class StreamInterface
         ///
         const char* what() const throw() { return std::runtime_error::what(); }
     };
+
+//    virtual const std::string & getDefaultIpv4() = 0;
+//    virtual int getDefaultPort() = 0;
 
 
   protected:

@@ -2,16 +2,16 @@
 #include "InputStreamServer.hpp"
 
 namespace hub {
-using namespace io;
 namespace input {
 
 //InputStreamServer::InputStreamServer( const std::string& streamName, net::ClientSocket&& clientSocket ) :
 InputStreamServer::InputStreamServer(const std::string &streamName, const std::string &ipv4, int port) :
-    InputStreamInterface(streamName, ipv4, port),
+    io::StreamServer(streamName, ipv4, port),
 //    m_clientSocket( std::move( clientSocket ) ) {
     m_clientSocket(ipv4, port)
     {
 
+    assert(m_clientSocket.isConnected());
     m_clientSocket.write( net::ClientSocket::Type::STREAM_VIEWER );
 
     assert( streamName != "" );
@@ -32,7 +32,7 @@ InputStreamServer::InputStreamServer(const std::string &streamName, const std::s
 
 
 InputStreamServer::InputStreamServer( InputStreamServer&& inputStream ) :
-    InputStreamInterface(inputStream.m_name, inputStream.m_ipv4, inputStream.m_port),
+    io::StreamServer(inputStream.m_name, inputStream.m_ipv4, inputStream.m_port),
     m_clientSocket( std::move( inputStream.m_clientSocket ) ),
     m_streamViewerClientClosed( inputStream.m_streamViewerClientClosed ),
     m_streamerClosed( inputStream.m_streamerClosed ),
@@ -40,9 +40,11 @@ InputStreamServer::InputStreamServer( InputStreamServer&& inputStream ) :
     inputStream.m_moved = true;
 }
 
-InputStreamServer::~InputStreamServer() {
-    if ( !m_moved ) { assert( !InputStreamServer::isOpen() ); }
-}
+//InputStreamServer::~InputStreamServer() {
+//    if ( !m_moved ) {
+//        assert( !InputStreamServer::isOpen() );
+//    }
+//}
 
 void InputStreamServer::read( Acquisition& acq ) {
     assert( !m_readAcqWaiting );

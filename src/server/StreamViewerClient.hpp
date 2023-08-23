@@ -11,6 +11,7 @@ namespace server {
 
 class StreamerClient;
 
+
 ///
 /// \brief The StreamViewerClient class
 ///

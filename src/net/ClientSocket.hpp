@@ -12,13 +12,13 @@ namespace net {
 /// \brief s_defaultServicePort
 /// is the default opened for the hub service (server).
 ///
-static constexpr int s_defaultServicePort = 4042;
+//static constexpr int s_defaultServicePort = 4042;
 
 ///
 /// \brief s_defaultServiceIp
 /// by default hub service is running localy.
 ///
-static std::string s_defaultServiceIp = "127.0.0.1";
+//static std::string s_defaultServiceIp = "127.0.0.1";
 
 ///
 /// \brief The ClientSocket class
@@ -83,7 +83,7 @@ class SRC_API ClientSocket : public Socket, public io::InputOutput
     ///
     SRC_API friend std::ostream& operator<<( std::ostream& os, const Message& msg );
 
-    ClientSocket();
+//    ClientSocket();
 
     ///
     /// \brief ClientSocket

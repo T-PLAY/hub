@@ -132,7 +132,8 @@ void StreamViewerClient::update( const Acquisition& acq ) {
 void StreamViewerClient::end( net::ClientSocket::Message message ) {
 
     auto& output = m_outputSensor->getOutput();
-    assert( output.isOpen() );
+//    assert( output.isOpen() );
+    if (output.isOpen())
         output.write( message );
 }
 

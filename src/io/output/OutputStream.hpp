@@ -22,8 +22,8 @@ using OutputStream = OutputStreamMqtt;
 
 static_assert( std::is_base_of<io::Output, OutputStream>::value,
                "Output is base class of OutputStream" );
-static_assert( std::is_base_of<io::StreamMqtt, OutputStream>::value,
-               "StreamMqtt is base class of OutputStream" );
+static_assert( std::is_base_of<io::StreamInterface, OutputStream>::value,
+               "StreamInterface is base class of OutputStream" );
 
 } // namespace output
 } // namespace hub

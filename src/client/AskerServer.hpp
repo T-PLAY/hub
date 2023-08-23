@@ -3,17 +3,18 @@
 #include "AskerInterface.hpp"
 
 #include "net/ClientSocket.hpp"
+#include "io/StreamServer.hpp"
 
 namespace hub {
 namespace client {
 
-class AskerMqtt : public AskerInterface
+class AskerServer : public AskerInterface
 {
   public:
-    AskerMqtt(const std::string & ipv4, int port);
-    ~AskerMqtt();
+    AskerServer(const std::string & ipv4 = io::StreamServer::s_defaultIpv4 , int port = io::StreamServer::s_defaultPort);
+    ~AskerServer();
 
-  protected:
+//  protected:
     std::list<std::pair<std::string, hub::SensorSpec>> listStreams() override;
     hub::Acquisition getAcquisition(const std::string & streamName) override;
 

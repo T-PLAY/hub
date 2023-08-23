@@ -5,14 +5,14 @@
 #include <typeinfo>
 
 namespace hub {
-using namespace io;
 namespace output {
 
 OutputStreamServer::OutputStreamServer(const std::string &streamName, const std::string &ipv4, int port) :
 //OutputStreamServer::OutputStreamServer( const std::string& streamName, net::ClientSocket&& clientSocket ) :
-    OutputStreamInterface(streamName, ipv4, port),
+    io::StreamServer(streamName, ipv4, port),
 //    m_clientSocket( std::move( clientSocket ) ) {
-    m_clientSocket( ipv4, port ) {
+    m_clientSocket( ipv4, port )
+{
 
     Output::write( net::ClientSocket::Type::STREAMER );
 
@@ -52,7 +52,8 @@ OutputStreamServer::OutputStreamServer(const std::string &streamName, const std:
 
 
 OutputStreamServer::OutputStreamServer( OutputStreamServer&& outputStream ) :
-    OutputStreamInterface(outputStream.m_name, outputStream.m_ipv4, outputStream.m_port),
+//    OutputStreamInterface(outputStream.m_name, outputStream.m_ipv4, outputStream.m_port),
+    StreamServer(outputStream.m_name, outputStream.m_ipv4, outputStream.m_port),
     m_clientSocket( std::move( outputStream.m_clientSocket ) ),
     m_thread( std::move( outputStream.m_thread ) ),
     m_moved( outputStream.m_moved ) {

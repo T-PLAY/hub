@@ -17,7 +17,7 @@ class SRC_API ServerSocket : public Socket
     /// \brief ServerSocket
     /// create server socket with the default service port.
     ///
-    ServerSocket();
+//    ServerSocket();
 
     ///
     /// \brief ServerSocket

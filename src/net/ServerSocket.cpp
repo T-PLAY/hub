@@ -7,10 +7,10 @@
 namespace hub {
 namespace net {
 
-ServerSocket::ServerSocket() : mPort( s_defaultServicePort ) {
-    m_serverSide = true;
-    initServer();
-}
+//ServerSocket::ServerSocket() : mPort( s_defaultServicePort ) {
+//    m_serverSide = true;
+//    initServer();
+//}
 
 ServerSocket::ServerSocket( int port ) : mPort( port ) {
     m_serverSide = true;

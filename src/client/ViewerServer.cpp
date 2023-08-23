@@ -4,6 +4,7 @@
 #include <sstream>
 
 #include "InputSensor.hpp"
+#include "io/input/InputStreamServer.hpp"
 
 //#ifdef DEBUG_MSG
 //#    undef DEBUG_MSG
@@ -139,8 +140,7 @@ ViewerServer::ViewerServer(
     int port
     ) :
 
-    ViewerInterface( ipv4,
-                     port,
+    ViewerInterface(
                      onNewStreamer,
                      onDelStreamer,
                      onServerNotFound,
@@ -148,7 +148,9 @@ ViewerServer::ViewerServer(
                      onServerDisconnected,
                      onNewAcquisition,
                      onSetProperty,
-                     onLogMessage ),
+                     onLogMessage,
+        ipv4,
+        port),
 //    m_onNewStreamer( onNewStreamer ),
 //    m_onDelStreamer( onDelStreamer ),
 //    m_onServerNotFound( onServerNotFound ),
@@ -200,15 +202,16 @@ ViewerServer::ViewerServer(
 
                             m_streams[streamName] =
 //                                std::make_unique<StreamViewer<input::InputStreamServer>>( *this, streamName, sensorSpec );
-                            std::make_unique<StreamViewer<input::InputStreamServer>>(
+                                std::make_unique<viewer::StreamViewer<input::InputStreamServer>>(
                                 m_ipv4,
-                                m_port,
+                                    m_port,
                                 streamName,
                                 sensorSpec,
                                 m_onNewStreamer,
                                 m_onDelStreamer,
                                 m_onNewAcquisition,
-                                m_onLogMessage );
+                                m_onLogMessage
+                                    );
                         }
 
                         // prevent all son the father is comming

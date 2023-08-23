@@ -4,8 +4,9 @@
 #include <thread>
 
 //#include "Input.hpp"
-#include "InputStreamInterface.hpp"
 #include "net/ClientSocket.hpp"
+#include "Input.hpp"
+#include "io/StreamServer.hpp"
 
 namespace hub {
 namespace input {
@@ -17,7 +18,7 @@ namespace input {
 /// server. That implies an OutputStream communicating data through the hub.
 ///
 //class SRC_API InputStreamServer : public Input
-class SRC_API InputStreamServer : public InputStreamInterface
+class SRC_API InputStreamServer : public io::Input, public io::StreamServer
 {
   public:
     ///
@@ -36,7 +37,7 @@ class SRC_API InputStreamServer : public InputStreamInterface
     ///
 //    explicit InputStreamServer( const std::string& streamName,
 //                          net::ClientSocket&& clientSocket = net::ClientSocket() );
-    InputStreamServer( const std::string& streamName, const std::string & ipv4 = s_serverDefaultIpv4, int port = s_serverDefaultPort);
+    InputStreamServer( const std::string& streamName, const std::string & ipv4 = s_defaultIpv4, int port = s_defaultPort);
 
     ///
     /// \brief InputStreamServer
@@ -44,7 +45,7 @@ class SRC_API InputStreamServer : public InputStreamInterface
     ///
     InputStreamServer( InputStreamServer&& inputStream );
 
-    ~InputStreamServer();
+//    ~InputStreamServer();
 
   protected:
   public:

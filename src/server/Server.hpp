@@ -28,7 +28,7 @@ class SRC_API Server
     /// \brief Server
     /// \param port
     ///
-    explicit Server( int port = s_serverDefaultPort  );
+    explicit Server( int port = io::StreamServer::s_defaultPort);
     ~Server();
 
     ///

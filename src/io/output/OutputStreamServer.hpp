@@ -4,11 +4,12 @@
 #include <thread>
 
 //#include "Output.hpp"
-#include "OutputStreamInterface.hpp"
-#include "net/ClientSocket.hpp"
+//#include "OutputStreamInterface.hpp"
+//#include "net/ClientSocket.hpp"
+#include "Output.hpp"
+#include "io/StreamServer.hpp"
 
 namespace hub {
-using namespace io;
 namespace output {
 
 ///
@@ -16,7 +17,7 @@ namespace output {
 /// Describes an output communication to the server.
 ///
 //class SRC_API OutputStreamServer : public Output
-class SRC_API OutputStreamServer : public OutputStreamInterface
+class SRC_API OutputStreamServer : public io::Output, public io::StreamServer
 {
   public:
     ///
@@ -37,7 +38,7 @@ class SRC_API OutputStreamServer : public OutputStreamInterface
 //    explicit OutputStreamServer( const std::string& streamName,
 //                           net::ClientSocket&& clientSocket = net::ClientSocket() );
     explicit OutputStreamServer( const std::string& streamName,
-                                 const std::string & ipv4 = s_serverDefaultIpv4, int port = s_serverDefaultPort);
+                                 const std::string & ipv4 = s_defaultIpv4, int port = s_defaultPort);
     ///
     /// \brief OutputStreamServer
     /// \param outputStream

@@ -8,14 +8,14 @@
 namespace hub {
 namespace net {
 
-ClientSocket::ClientSocket() : m_ipv4( s_defaultServiceIp ), m_port( s_defaultServicePort ) {
-#ifdef DEBUG_SOCKET
-    DEBUG_MSG( getHeader( m_fdSock ) << "ClientSocket()" );
-#endif
+//ClientSocket::ClientSocket() : m_ipv4( s_defaultServiceIp ), m_port( s_defaultServicePort ) {
+//#ifdef DEBUG_SOCKET
+//    DEBUG_MSG( getHeader( m_fdSock ) << "ClientSocket()" );
+//#endif
 
-    initServerAddress();
-    connect();
-}
+//    initServerAddress();
+//    connect();
+//}
 
 ClientSocket::ClientSocket( const std::string& ipv4, int port, bool autoConnect ) :
     m_ipv4( ipv4 ), m_port( port ) {

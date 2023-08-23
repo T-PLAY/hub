@@ -3,8 +3,8 @@
 namespace hub {
 namespace io {
 
-const std::string StreamInterface::s_defaultIpv4 = "127.0.0.1";
-const int StreamInterface::s_defaultPort         = 1883;
+const std::string StreamMqtt::s_defaultIpv4 = "127.0.0.1";
+const int StreamMqtt::s_defaultPort         = 1883;
 
 const std::string StreamMqtt::s_topicStream = "streams/";
 const std::string StreamMqtt::s_topicViewer = "viewers/";
