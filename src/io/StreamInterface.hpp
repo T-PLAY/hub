@@ -6,6 +6,8 @@
 namespace hub {
 namespace io {
 
+//#define DEBUG_INPUT_STREAM ">> \033[" << std::to_string(31 + (long)this % 7) << "m[InputStream:" << this << "]\033[0m "
+//#define DEBUG_OUTPUT_STREAM "\t<< \033[" << std::to_string(31 + (long)this % 7) << "m[OutputStream:" << this << "]\033[0m "
 
 class StreamInterface
 {

@@ -41,6 +41,10 @@ class SRC_API OutputStreamMqtt : public io::Output, public io::StreamMqtt
     std::unique_ptr<mqtt::client> m_client;
     mqtt::message_ptr m_msgPtr;
 //    std::string m_streamName;
+
+    std::string m_currentTopic;
+
+    uint64_t m_acqSize = 0;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -55,16 +59,20 @@ inline void OutputStreamMqtt::write( const unsigned char* data, size_t len ) {
     assert(m_client->is_connected());
     assert(m_msgPtr != nullptr);
     assert(m_msgPtr->get_qos() == 2);
-    assert(m_msgPtr->is_retained());
+//    assert(m_msgPtr->is_retained());
+#ifdef DEBUG_OUTPUT_STREAM
+    std::cout << DEBUG_OUTPUT_STREAM + m_name + " write(const unsigned char*, size_t) len = " << len << ", current topic = " << m_currentTopic << std::endl;
+#endif
     m_msgPtr->set_payload((char*)data, len);
-    m_msgPtr->set_qos( 2 );
+//    m_msgPtr->set_qos( 2 );
 //    m_msgPtr->set_retained(true);
     m_client->publish(m_msgPtr);
-    assert(m_client->is_connected());
+//    assert(m_client->is_connected());
 }
 
 inline void OutputStreamMqtt::close() {
     assert(m_client->is_connected());
+
 
 //    m_msgPtr->set_retained(false);
 //    m_msgPtr->set_qos(2);

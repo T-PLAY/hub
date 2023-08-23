@@ -136,7 +136,7 @@ void Output::write( const char* str ) {
     std::cout << HEADER_OUTPUT_MSG "write(const char*)" << std::endl;
 #endif
 
-    int strLen = static_cast<int>( strlen( str ) );
+    uint32_t strLen = static_cast<int>( strlen( str ) );
     write( strLen );
 
     if ( strLen > 0 ) { write( reinterpret_cast<const unsigned char*>( str ), strLen ); }

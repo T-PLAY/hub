@@ -253,7 +253,7 @@ Acquisition Input::operator>>( Input& input ) {
     }
 
     while ( rightAcq.getStart() < leftLastAcqs.front().getStart() ) {
-        std::cout << "[InputSensor] operator>>(InputSensor&) shift t : " << rightAcq << std::endl;
+        std::cout << "[InputSensor] operator>>(InputSensor&) shift rightAcq : " << rightAcq << std::endl;
         assert( !isEnd() );
         rightInput.read( rightAcq );
     }

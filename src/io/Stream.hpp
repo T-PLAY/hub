@@ -10,6 +10,7 @@
 namespace hub {
 namespace io {
 
+
 using Stream = StreamMqtt;
 
 //const std::string s_serverDefaultIpv4 = "127.0.0.1";
