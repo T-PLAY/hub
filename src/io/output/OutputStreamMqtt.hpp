@@ -59,11 +59,13 @@ inline void OutputStreamMqtt::write( const unsigned char* data, size_t len ) {
     assert(m_client->is_connected());
     assert(m_msgPtr != nullptr);
     assert(m_msgPtr->get_qos() == 2);
-//    assert(m_msgPtr->is_retained());
+    assert(m_msgPtr->is_retained());
 #ifdef DEBUG_OUTPUT_STREAM
     std::cout << DEBUG_OUTPUT_STREAM + m_name + " write(const unsigned char*, size_t) len = " << len << ", current topic = " << m_currentTopic << std::endl;
 #endif
     m_msgPtr->set_payload((char*)data, len);
+    assert(m_msgPtr->get_qos() == 2);
+    assert(m_msgPtr->is_retained());
 //    m_msgPtr->set_qos( 2 );
 //    m_msgPtr->set_retained(true);
     m_client->publish(m_msgPtr);
@@ -110,6 +112,7 @@ inline void OutputStreamMqtt::close() {
     m_msgPtr->set_payload(io::StreamMqtt::to_string(StreamMqtt::Message::DEL_STREAM) + m_name);
 //    m_msgPtr->set_payload("del sensor");
     m_client->publish(m_msgPtr);
+    m_msgPtr->set_retained(true);
 
 //    m_msgPtr->set_topic(s_topicEvents + "/streamName");
 //    m_msgPtr->set_payload(m_streamName);

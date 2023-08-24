@@ -15,7 +15,8 @@ class InputFile : public io::Input, public io::File
     explicit InputFile(const std::string & filePath);
     explicit InputFile(const char * filePath);
 
-  protected:
+//  protected:
+  public:
     ///
     /// @copydoc InputOutput::isOpen()
     ///

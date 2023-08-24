@@ -5,6 +5,11 @@
 #include <random>
 
 #include <Acquisition.hpp>
+#include <InputSensor.hpp>
+#include <OutputSensor.hpp>
+#include <io/input/Input.hpp>
+#include <io/output/Output.hpp>
+#include <set>
 
 #define GET_RANDOM_PORT getRandomPort( __FILE__ )
 
@@ -68,7 +73,7 @@ computeSyncAcqs( const std::vector<hub::Acquisition>& leftAcqs,
 
     std::vector<hub::Acquisition> syncAcqs;
 
-//    std::cout << "ref_sync_acqs" << std::endl;
+    //    std::cout << "ref_sync_acqs" << std::endl;
 
     for ( int i = 0; i < rightAcqs.size(); ++i ) {
         if ( iMin_dists[i] != -1 ) {
@@ -100,6 +105,98 @@ computeSyncAcqs( const std::vector<hub::Acquisition>& leftAcqs,
 
     std::cout << std::endl;
     return syncAcqs;
+}
+
+template <class Output, class Input>
+static std::vector<hub::Acquisition> synchronize( Output&& output,
+                                                  const hub::SensorSpec& sensorSpec,
+                                                  const std::vector<hub::Acquisition>& ref_acqs,
+                                                  Output&& output2,
+                                                  const hub::SensorSpec& sensorSpec2,
+                                                  const std::vector<hub::Acquisition>& ref_acqs2,
+                                                  Input&& input,
+                                                  Input&& input2,
+                                                  bool delayed = false ) {
+
+    std::set<hub::Acquisition> sortedAcqs;
+    for ( int i = 1; i < ref_acqs.size(); ++i ) {
+        const auto& acq = ref_acqs.at( i );
+        sortedAcqs.insert( acq.clone() );
+    }
+    for ( int i = 1; i < ref_acqs2.size(); ++i ) {
+        const auto& acq = ref_acqs2.at( i );
+        sortedAcqs.insert( acq.clone() );
+    }
+    assert( sortedAcqs.size() == ref_acqs.size() + ref_acqs2.size() - 2 );
+
+    hub::OutputSensor outputSensor( sensorSpec, std::move( output ) );
+    std::cout << "outputSensor created" << std::endl;
+    hub::InputSensor inputSensor( std::move( input ) );
+    std::cout << "inputSensor created" << std::endl;
+
+    hub::OutputSensor outputSensor2( sensorSpec2, std::move( output2 ) );
+    std::cout << "outputSensor2 created" << std::endl;
+    hub::InputSensor inputSensor2( std::move( input2 ) );
+    std::cout << "inputSensor2 created" << std::endl;
+
+    std::cout << "synching acqs" << std::endl;
+    std::vector<hub::Acquisition> sync_acqs;
+    bool writeDone = false;
+    std::thread thread = std::thread( [&]() {
+        hub::Acquisition acq;
+
+        if (! delayed) {
+            while (! writeDone) {
+                std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            }
+        }
+        //	    for ( int i = 0; i < ref_sync_acqs.size(); ++i ) {
+        try {
+            while ( !inputSensor.getInput().isEnd() && !inputSensor2.getInput().isEnd() ) {
+
+                inputSensor >> inputSensor2 >> acq;
+                //            input >> input2 >> acq;
+                std::cout << "\tread synched acq: " << acq << std::endl;
+
+                sync_acqs.push_back( std::move( acq ) );
+            }
+        }
+        catch (hub::io::StreamInterface::exception & ex) {
+            std::cout << "[test_common] synchronize() catch exception : " << ex.what() << std::endl;
+        }
+//        catch ( std::exception& ex ) {
+//            throw ex;
+//        }
+        std::cout << "synching acqs done" << std::endl;
+    } );
+
+    const auto& acqFront2 = ref_acqs2.front();
+    std::cout << "write acq2: " << acqFront2 << std::endl;
+    outputSensor2 << acqFront2;
+
+    const auto& acqFront = ref_acqs.front();
+    std::cout << "write acq: " << acqFront << std::endl;
+    outputSensor << acqFront;
+
+    if ( delayed ) { std::this_thread::sleep_for( std::chrono::milliseconds( 500 ) ); }
+
+    for ( const auto& acq : sortedAcqs ) {
+        if ( acq.getMeasures().front().getResolution() == sensorSpec.getResolutions().front() ) {
+            std::cout << "write acq: " << acq << std::endl;
+            outputSensor << acq;
+        }
+        else {
+            std::cout << "write acq2: " << acq << std::endl;
+            outputSensor2 << acq;
+        }
+        if ( delayed ) { std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) ); }
+    }
+    writeDone = true;
+
+    assert( thread.joinable() );
+    thread.join();
+
+    return sync_acqs;
 }
 
 //        std::vector<int> min_dists( ref_acqs2.size(), 999999 );

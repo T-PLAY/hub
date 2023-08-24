@@ -16,11 +16,11 @@ InputSensor::~InputSensor() {
 
 Acquisition InputSensor::operator>>( InputSensor& inputSensor ) {
 
-    io::Input& masterInput = *m_input;
+    io::Input& lefInput = *m_input;
 //    /* cppcheck-suppress constVariableReference */ // 2.11
     /* cppcheck-suppress constVariable */ // 2.10
-    io::Input& input       = inputSensor.getInput();
-    return masterInput >> input;
+    io::Input& rightInput       = inputSensor.getInput();
+    return lefInput >> rightInput;
 }
 
 void InputSensor::operator>>( Acquisition& acq ) {

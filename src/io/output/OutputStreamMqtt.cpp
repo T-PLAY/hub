@@ -28,16 +28,15 @@ OutputStreamMqtt::OutputStreamMqtt( const std::string& streamName,
     m_msgPtr->set_retained( true );
     m_msgPtr->set_qos( 2 );
 
-    m_client->subscribe( s_topicStream + m_name );
-    mqtt::const_message_ptr inputMsgPtr;
+        m_client->subscribe( s_topicStream + m_name );
+        mqtt::const_message_ptr inputMsgPtr;
 
-    //    if (  m_client->try_consume_message_for( &inputMsgPtr, std::chrono::milliseconds( 100 ) ))
-    //    {
-    //        if (inputMsgPtr->get_payload_str() == "active") {
-    //            throw io::StreamMqtt::exception(("OutputStream '" + m_name + "' is already
-    //            connected to server").c_str());
-    //        }
-    //    }
+        if (  m_client->try_consume_message_for( &inputMsgPtr, std::chrono::milliseconds( 100 ) ))
+        {
+            if (inputMsgPtr->get_payload_str() == "active") {
+                throw io::StreamMqtt::exception(("OutputStream '" + m_name + "' is already connected to server").c_str());
+            }
+        }
 
     //    m_msgPtr->set_topic(s_topicStream + m_name);
     //    m_msgPtr->set_payload("active");
@@ -48,6 +47,10 @@ OutputStreamMqtt::OutputStreamMqtt( const std::string& streamName,
 }
 
 void OutputStreamMqtt::write( const Acquisition& acq ) {
+//    m_msgPtr->set_retained( true );
+//    m_msgPtr->set_qos( 2 );
+    assert(m_msgPtr->get_qos() == 2);
+
     std::vector<char> buff;
     constexpr int maxBuffLen = 512;
     buff.reserve( maxBuffLen );
@@ -67,24 +70,28 @@ void OutputStreamMqtt::write( const Acquisition& acq ) {
 
         //    assert(buff.size() == acqSize);
 
-//        m_msgPtr->set_retained( true );
+        //        m_msgPtr->set_retained( true );
         m_currentTopic = s_topicStream + m_name + "/acqs/size";
         m_msgPtr->set_topic( m_currentTopic );
         Output::write( m_acqSize );
-//        m_msgPtr->set_retained( false );
+        //        m_msgPtr->set_retained( false );
     }
 
-//    assert( !m_msgPtr->is_retained() );
+    //    assert( !m_msgPtr->is_retained() );
     //    Output::write((unsigned char*)buff.data(), acqSize);
     m_currentTopic = s_topicStream + m_name + "/acqs/data" + std::to_string( m_iAcq );
     m_msgPtr->set_topic( m_currentTopic );
-//        m_msgPtr->set_retained(true);
-    m_iAcq = ( m_iAcq + 1 ) % s_bufferAcqSize;
+    //        m_msgPtr->set_retained(true);
+    //    m_iAcq = ( m_iAcq + 1 ) % s_bufferAcqSize;
 
     write( (unsigned char*)buff.data(), m_acqSize );
 }
 
 void OutputStreamMqtt::write( const SensorSpec& sensorSpec ) {
+//    m_msgPtr->set_retained( true );
+//    m_msgPtr->set_qos( 2 );
+    assert(m_msgPtr->get_qos() == 2);
+
     assert( m_client->is_connected() );
     //    std::cout << "[OutputStreamMqtt] start write(SensorSpec)" << std::endl;
     //    Output::write(sensorSpec);
@@ -106,30 +113,31 @@ void OutputStreamMqtt::write( const SensorSpec& sensorSpec ) {
 
     assert( buff.size() == packetSize );
 
+    m_msgPtr->set_topic( s_topicStream + m_name );
+    m_msgPtr->set_payload( "active" );
+    m_client->publish( m_msgPtr );
+
     m_currentTopic = s_topicStream + m_name + "/header/size";
     m_msgPtr->set_topic( m_currentTopic );
+    assert(m_msgPtr->get_qos() == 2);
     Output::write( packetSize );
     //    Output::write((unsigned char*)buff.data(), packetSize);
     m_currentTopic = s_topicStream + m_name + "/header/data";
     m_msgPtr->set_topic( m_currentTopic );
     write( (unsigned char*)buff.data(), packetSize );
 
-    m_msgPtr->set_topic( s_topicStream + m_name );
-    m_msgPtr->set_payload( "active" );
-    m_client->publish( m_msgPtr );
-
     // prevent viewers there is new streamer
     m_msgPtr->set_retained( false );
     m_msgPtr->set_topic( s_topicEvents );
     m_msgPtr->set_payload( to_string( Message::NEW_STREAM ) + m_name );
     m_client->publish( m_msgPtr );
+    m_msgPtr->set_retained( true );
 
     //    m_msgPtr->set_topic(s_topicEvents + "/streamName");
     //    m_msgPtr->set_payload(m_streamName);
     //    m_client->publish(m_msgPtr);
 
-        m_msgPtr->set_retained( true );
-//    m_msgPtr->set_retained( false );
+    //    m_msgPtr->set_retained( false );
 
     //    m_msgPtr->set_qos(0);
     //    std::cout << "[OutputStreamMqtt] end write(SensorSpec)" << std::endl;

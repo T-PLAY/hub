@@ -14,7 +14,8 @@ class OutputFile : public io::Output, public io::File
     explicit OutputFile(const std::string & filePath);
     explicit OutputFile(const char * filePath);
 
-  protected:
+//  protected:
+  public:
     ///
     /// @copydoc InputOutput::isOpen()
     ///
