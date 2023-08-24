@@ -2,8 +2,11 @@
 
 #include "AskerInterface.hpp"
 
+#include <mqtt/client.h>
+
 //#include "net/ClientSocket.hpp"
 #include "io/StreamMqtt.hpp"
+
 
 namespace hub {
 namespace client {
@@ -19,7 +22,16 @@ class AskerMqtt : public AskerInterface
     hub::Acquisition getAcquisition(const std::string & streamName) override;
 
   private:
+    template <class T>
+    void read(T& t) {
+//    read( reinterpret_cast<unsigned char*>( &t ), sizeof( T ) );
+        memcpy(reinterpret_cast<unsigned char*>(&t), m_inputMsgPtr->get_payload().data(), sizeof(T));
+    }
+
+    std::string m_hostName;
 //    net::ClientSocket m_sock;
+    std::unique_ptr<mqtt::client> m_client;
+    mqtt::const_message_ptr m_inputMsgPtr;
 };
 
 

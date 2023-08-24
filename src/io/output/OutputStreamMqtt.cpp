@@ -28,15 +28,15 @@ OutputStreamMqtt::OutputStreamMqtt( const std::string& streamName,
     m_msgPtr->set_retained( true );
     m_msgPtr->set_qos( 2 );
 
-        m_client->subscribe( s_topicStream + m_name );
-        mqtt::const_message_ptr inputMsgPtr;
+//        m_client->subscribe( s_topicStream + m_name );
+//        mqtt::const_message_ptr inputMsgPtr;
 
-        if (  m_client->try_consume_message_for( &inputMsgPtr, std::chrono::milliseconds( 100 ) ))
-        {
-            if (inputMsgPtr->get_payload_str() == "active") {
-                throw io::StreamMqtt::exception(("OutputStream '" + m_name + "' is already connected to server").c_str());
-            }
-        }
+//        if (  m_client->try_consume_message_for( &inputMsgPtr, std::chrono::milliseconds( 100 ) ))
+//        {
+//            if (inputMsgPtr->get_payload_str() == "active") {
+//                throw io::StreamMqtt::exception(("OutputStream '" + m_name + "' is already connected to server").c_str());
+//            }
+//        }
 
     //    m_msgPtr->set_topic(s_topicStream + m_name);
     //    m_msgPtr->set_payload("active");
