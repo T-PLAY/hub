@@ -28,28 +28,26 @@ int main() {
                              const std::string& objectName,
                              int property,
                              const hub::Any& value ) {
-        std::cout << "\t[viewer] onSetProperty " << streamName << std::endl;
+        std::cout << "\t[viewer] onSetProperty " << streamName << " " << objectName << " "
+                  << property << " " << value << std::endl;
     };
     auto onLogMessage = []( const std::string& logMessage ) {
         std::cout << "\t[viewer] onLogMessage '" << logMessage << "'" << std::endl;
     };
 
-    hub::client::Viewer viewer(
-        __FILE_NAME__,
-        onNewStreamer,
+    hub::client::Viewer viewer( __FILE_NAME__,
+                                onNewStreamer,
                                 onDelStreamer,
                                 onServerNotFound,
                                 onServerConnected,
                                 onServerDisconnected,
                                 onNewAcquisition,
-                                onSetProperty
-//                                ,onLogMessage
-    );
+                                onSetProperty,
+                                onLogMessage );
 
     std::cout << "\t[viewer] Ctrl+C to exit" << std::endl;
 
-    while (true)
-    {
-        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    while ( true ) {
+        std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
     }
 }

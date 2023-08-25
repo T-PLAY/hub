@@ -100,7 +100,8 @@ TEST_CASE( "MqttCompareSpeed test" ) {
     }
 
     {
-        const std::string topicName = "streams/" __FILE_NAME__;
+//        const std::string topicName = "sensor";
+        const std::string topicName = __FILE_NAME__;
         std::cout << "[Mqtt] start streaming" << std::endl;
         const std::string ip = "localhost:1883";
         mqtt::client inputClient( ip, "consumer", mqtt::create_options( MQTTVERSION_5 ) );

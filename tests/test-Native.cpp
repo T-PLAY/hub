@@ -161,7 +161,7 @@ TEST_CASE( "Native test" ) {
     };
     auto onSetProperty =
         []( const char* streamName, const char* objectName, int property, const hub::Any* value ) {
-            std::cout << "[Example][Viewer] onSetProperty " << streamName << " " << value
+            std::cout << "[Example][Viewer] onSetProperty " << streamName << " " << objectName << " " << property << " " << value
                       << std::endl;
         };
     auto onLogMessage = []( const char* logMessage ) {
