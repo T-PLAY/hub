@@ -51,6 +51,18 @@ TEST_CASE( "InputStream test" ) {
         std::cout << "[test] outputSensor created" << std::endl;
 
         {
+            try {
+                hub::input::InputStream inputStream( "noStreamName" );
+                assert(false);
+            }
+            catch ( std::exception& ex ) {
+                std::cout << "[test] catch exception : '" << ex.what() << "'" << std::endl;
+
+                CHECK(true);
+            }
+        }
+
+        {
             //            hub::io::InputStream inputStream( "streamName", hub::net::ClientSocket(
             //            ipv4, port ) ); hub::input::InputStreamServer inputStream( "streamName",
             //            ipv4, port );
@@ -61,7 +73,7 @@ TEST_CASE( "InputStream test" ) {
 
             std::cout << "[test] acqs" << std::endl;
             hub::Acquisition inputAcq;
-//            std::vector<hub::Acquisition> acqs;
+            //            std::vector<hub::Acquisition> acqs;
             for ( int i = 0; i < ref_acqs.size(); ++i ) {
                 //            for ( const auto& acq : ref_acqs ) {
                 const auto& outputAcq = ref_acqs.at( i );
@@ -74,19 +86,19 @@ TEST_CASE( "InputStream test" ) {
                 inputSensor >> inputAcq;
                 assert( !inputAcq.isEmpty() );
                 std::cout << inputAcq << std::endl;
-                CHECK(outputAcq == inputAcq);
-//                acqs.push_back( std::move( inputAcq ) );
+                CHECK( outputAcq == inputAcq );
+                //                acqs.push_back( std::move( inputAcq ) );
                 //            }
             }
 
-//            assert( acqs.size() == ref_acqs.size() );
-//            for ( int i = 0; i < acqs.size(); ++i ) {
-//                const auto& acq2 = acqs.at( i );
-//                CHECK( acq2 == ref_acqs.at( i ) );
-//            }
+            //            assert( acqs.size() == ref_acqs.size() );
+            //            for ( int i = 0; i < acqs.size(); ++i ) {
+            //                const auto& acq2 = acqs.at( i );
+            //                CHECK( acq2 == ref_acqs.at( i ) );
+            //            }
             std::cout << "[test] end inputStream" << std::endl;
         }
         std::cout << "[test] end outputStream" << std::endl;
-//        std::cout << "[test] end server" << std::endl;
+        //        std::cout << "[test] end server" << std::endl;
     }
 }

@@ -252,6 +252,7 @@ TEST_CASE( "MqttCompareSpeed test" ) {
                   << std::endl;
         hub::InputSensor inputSensor( InputStreamMqtt( "streamName" ) );
 
+
         const auto& inputSensorSpec = inputSensor.getSpec();
         CHECK( inputSensorSpec.getAcquisitionSize() == dataSize );
         CHECK( inputSensorSpec.getSensorName() == "sensorName" );

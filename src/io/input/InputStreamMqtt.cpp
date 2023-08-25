@@ -38,6 +38,35 @@ InputStreamMqtt::InputStreamMqtt( const std::string& streamName,
 //    assert(rsp.get_properties().size() == 1);
     m_client->start_consuming();
 
+    subscribe(s_topicStream + m_name);
+//    m_client->start_consuming();
+    bool consumed =
+        m_client->try_consume_message_for( &m_msgPtr, std::chrono::milliseconds( 100 ) );
+    if (! consumed) {
+            throw io::StreamMqtt::exception(
+            ("[InputStreamMqtt] stream '" + m_name + "' is not connected to server").c_str());
+    }
+    assert( consumed );
+//    m_client->subscribe( m_currentTopic );
+//    m_msgPtr = m_client->consume_message();
+//    m_client->unsubscribe( m_currentTopic );
+//    if (m_msgPtr->get_topic() != m_currentTopic) {
+//            std::cout << "[InputStreamMqtt] msg topic : '" + m_msgPtr->get_topic() +
+//                         ", current topic : '" + m_currentTopic + "'" << std::endl;
+//    }
+    assert(m_msgPtr->get_topic() == m_currentTopic);
+    assert( m_msgPtr != nullptr );
+
+    const auto& payload = m_msgPtr->get_payload_str();
+    if (payload == "inactive") {
+            throw io::StreamMqtt::exception(
+            ("[InputStreamMqtt] stream '" + m_name + "' is inactive").c_str());
+    }
+    assert( payload == "active" );
+//    m_client->stop_consuming();
+    //    auto topic = m_client->get_topic(s_topicStream + m_name);
+    //    assert(topic.to_string() == "active");
+
 //    assert( m_msgPtr == nullptr );
     //    m_msgPtr.set_retained(true);
     //    m_msgPtr.set_qos(2);
@@ -121,26 +150,6 @@ void InputStreamMqtt::read( SensorSpec& sensorSpec ) {
     //    std::cout << "[InputStreamMqtt] start read(SensorSpec)" << std::endl;
     assert( m_client->is_connected() );
 
-    subscribe(s_topicStream + m_name);
-//    m_client->start_consuming();
-//    bool consumed =
-//        m_client->try_consume_message_for( &m_msgPtr, std::chrono::milliseconds( 100 ) );
-//    assert( consumed );
-//    m_client->subscribe( m_currentTopic );
-    m_msgPtr = m_client->consume_message();
-//    m_client->unsubscribe( m_currentTopic );
-    if (m_msgPtr->get_topic() != m_currentTopic) {
-            std::cout << "[InputStreamMqtt] msg topic : '" + m_msgPtr->get_topic() +
-                         ", current topic : '" + m_currentTopic + "'" << std::endl;
-    }
-    assert(m_msgPtr->get_topic() == m_currentTopic);
-    assert( m_msgPtr != nullptr );
-
-    const auto& payload = m_msgPtr->get_payload_str();
-    assert( payload == "active" );
-//    m_client->stop_consuming();
-    //    auto topic = m_client->get_topic(s_topicStream + m_name);
-    //    assert(topic.to_string() == "active");
 
     uint64_t packetSize;
     subscribe(s_topicStream + m_name + "/header/size");

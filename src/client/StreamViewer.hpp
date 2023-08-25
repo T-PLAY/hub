@@ -87,19 +87,19 @@ StreamViewer<InputStream>::StreamViewer(
 
 template <class InputStream>
 StreamViewer<InputStream>::~StreamViewer() {
-    DEBUG_MSG( "[Stream] ~Stream() streamer '" << m_streamName << "' started" );
+    DEBUG_MSG( "[StreamViewer] ~StreamViewer() streamer '" << m_streamName << "' started" );
     if ( m_onNewAcquisition && m_streaming ) {
         assert( m_thread != nullptr );
         if ( m_onDelStreamer ) { m_onDelStreamer( m_streamName.c_str(), m_sensorSpec ); }
         stopStream();
     }
 
-    DEBUG_MSG( "[Stream] ~Stream() streamer '" << m_streamName << "' ended" );
+    DEBUG_MSG( "[StreamViewer] ~StreamViewer() streamer '" << m_streamName << "' ended" );
 }
 
 template <class InputStream>
 void StreamViewer<InputStream>::startStream() {
-    DEBUG_MSG( "[ViewerInterface][Stream] startStream" );
+    DEBUG_MSG( "[StreamViewer] startStream" );
 
     assert( m_thread == nullptr );
 
@@ -132,6 +132,8 @@ void StreamViewer<InputStream>::startStream() {
             DEBUG_MSG( "[ViewerInterface] streamer '" << m_streamName << "' thread killed " );
         }
         DEBUG_MSG( "[ViewerInterface] thread end " );
+
+        m_streaming = false;
     } );
 
     m_streaming = true;
@@ -142,22 +144,22 @@ void StreamViewer<InputStream>::startStream() {
 
 template <class InputStream>
 void StreamViewer<InputStream>::stopStream() {
-    DEBUG_MSG( "[Stream] stopStream() streamer '" << m_streamName << "' started" );
+    DEBUG_MSG( "[StreamViewer] stopStream() streamer '" << m_streamName << "' started" );
 
     assert( m_thread != nullptr );
     assert( m_stopThread == false );
     m_stopThread = true;
 
-    m_inputSensor->getInput().close();
+//    m_inputSensor->getInput().close();
 
     assert( m_thread->joinable() );
     m_thread->join();
     delete m_thread;
     m_thread = nullptr;
 
-    m_streaming = false;
+//    m_streaming = false;
 
-    DEBUG_MSG( "[Stream] stopStream() streamer '" << m_streamName << "' ended" );
+    DEBUG_MSG( "[StreamViewer] stopStream() streamer '" << m_streamName << "' ended" );
 }
 
 } // end namespace viewer
