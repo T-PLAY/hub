@@ -92,12 +92,12 @@ inline void OutputStreamMqtt::close() {
 //    m_msgPtr->set_payload("none");
     m_client->publish(m_msgPtr);
 
-    m_msgPtr->set_topic(s_topicStream + m_name + "/acq/size");
+    m_msgPtr->set_topic(s_topicStream + m_name + "/acqs/size");
 //    m_msgPtr->clear_payload();
 //    m_msgPtr->set_payload("none");
     m_client->publish(m_msgPtr);
 
-    m_msgPtr->set_topic(s_topicStream + m_name + "/acq/data");
+    m_msgPtr->set_topic(s_topicStream + m_name + "/acqs/data0");
 //    m_msgPtr->clear_payload();
 //    m_msgPtr->set_payload("none");
     m_client->publish(m_msgPtr);

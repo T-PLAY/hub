@@ -135,6 +135,7 @@ void acquisition_to_string( const Acquisition* acquisition, char* str, int* strL
 
 // template <class InputStream>
 client::Viewer* createViewer(
+                        const char * name,
                               onNewStreamerFunc onNewStreamer,
                               onDelStreamerFunc onDelStreamer,
                               onServerNotFoundFunc onServerNotFound,
@@ -177,6 +178,7 @@ client::Viewer* createViewer(
     client::Viewer* viewer = new client::Viewer(
         //            ipv4,
         //                            port,
+        name,
         onNewStreamerCpp,
         onDelStreamerCpp,
         onServerNotFoundCpp,

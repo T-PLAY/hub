@@ -100,7 +100,7 @@ TEST_CASE( "MqttCompareSpeed test" ) {
     }
 
     {
-        const std::string topicName = "sensor3";
+        const std::string topicName = "streams/" __FILE_NAME__;
         std::cout << "[Mqtt] start streaming" << std::endl;
         const std::string ip = "localhost:1883";
         mqtt::client inputClient( ip, "consumer", mqtt::create_options( MQTTVERSION_5 ) );
@@ -186,9 +186,7 @@ TEST_CASE( "MqttCompareSpeed test" ) {
                 << std::endl;
             hub::OutputSensor outputSensor(
                 hub::SensorSpec( "sensorName", { { { width, height }, hub::Format::BGR8 } } ),
-                //                 hub::output::OutputStreamServer("streamName", ipv4, port2)
-                OutputStreamServer("streamName"));
-//                "streamName",
+                OutputStreamServer(__FILE_NAME__));
                 //                 hub::net::ClientSocket( ipv4, port2 ) );
 //                ipv4,
 //                port );
@@ -197,9 +195,8 @@ TEST_CASE( "MqttCompareSpeed test" ) {
                 << "[test][InputOutputSensor] ############################### inputStream start"
                 << std::endl;
             hub::InputSensor inputSensor(
-                //                 hub::io::InputStream( "streamName", hub::net::ClientSocket( ipv4,
                 //                 port2 ) ) );
-                InputStreamServer( "streamName" ) );
+                InputStreamServer( __FILE_NAME__ ) );
 
             const auto& inputSensorSpec = inputSensor.getSpec();
             CHECK( inputSensorSpec.getAcquisitionSize() == dataSize );
@@ -246,11 +243,11 @@ TEST_CASE( "MqttCompareSpeed test" ) {
                   << std::endl;
         hub::OutputSensor outputSensor(
             hub::SensorSpec( "sensorName", { { { width, height }, hub::Format::BGR8 } } ),
-            OutputStreamMqtt( "streamName" ) );
+            OutputStreamMqtt( __FILE_NAME__ ) );
 
         std::cout << "[test][MqttStream] ############################### inputStream start"
                   << std::endl;
-        hub::InputSensor inputSensor( InputStreamMqtt( "streamName" ) );
+        hub::InputSensor inputSensor( InputStreamMqtt( __FILE_NAME__ ) );
 
 
         const auto& inputSensorSpec = inputSensor.getSpec();

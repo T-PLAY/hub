@@ -46,8 +46,8 @@ std::list<std::pair<std::string, SensorSpec>> AskerMqtt::listStreams() {
         if ( m_inputMsgPtr == nullptr ) break;
         assert( m_inputMsgPtr != nullptr );
 
-        std::cout << "[AskerMqtt] input msg : " << m_inputMsgPtr->get_payload_str() << std::endl;
-        std::cout << "[AskerMqtt] input msg topic : " << m_inputMsgPtr->get_topic() << std::endl;
+//        std::cout << "[AskerMqtt] input msg : " << m_inputMsgPtr->get_payload_str() << std::endl;
+//        std::cout << "[AskerMqtt] input msg topic : " << m_inputMsgPtr->get_topic() << std::endl;
         if ( m_inputMsgPtr->get_payload_str() == "active" ) {
             activeStreamTopics.push_back( m_inputMsgPtr->get_topic() );
         }

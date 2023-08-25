@@ -61,6 +61,7 @@ TEST_CASE( "Viewer" ) {
 //    hub::client::ViewerServer viewer {
     hub::client::Viewer viewer {
 //ipv4, port,
+__FILE_NAME__,
         onNewStreamer, onDelStreamer, onServerNotFound, onServerConnected, onServerDisconnected, onNewAcquisition, onSetProperty };
 
 //    viewer.setIpv4( ipv4 );
@@ -95,13 +96,11 @@ TEST_CASE( "Viewer" ) {
 
             const auto resolution = hub::Resolution { { 1 }, hub::Format::BGR8 };
             hub::SensorSpec::MetaData metaData;
-            metaData["parent"] = "streamName2";
+            metaData["parent"] = "parentName";
             hub::SensorSpec sensorSpec( "sensorName", { resolution } );
             hub::OutputSensor outputSensor(
                 sensorSpec,
-//                "streamName", hub::net::ClientSocket( ipv4, port ) );
-//                "streamName", ipv4, port );
-                OutputStream("streamName") );
+                OutputStream(__FILE_NAME__) );
             std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
 
 

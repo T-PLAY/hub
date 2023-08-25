@@ -64,11 +64,11 @@ TEST_CASE( "InputSyncStream test" ) {
     std::vector<hub::Acquisition> ref_sync_acqs = computeSyncAcqs( ref_acqs, ref_acqs2 );
 
     {
-        hub::output::OutputStream outputStream( "streamName" );
-        InputStream inputStream( "streamName" );
+        hub::output::OutputStream outputStream( __FILE_NAME__ );
+        InputStream inputStream( __FILE_NAME__ );
 
-        hub::output::OutputStream outputStream2( "streamName2" );
-        InputStream inputStream2( "streamName2" );
+        hub::output::OutputStream outputStream2( __FILE_NAME__ "2" );
+        InputStream inputStream2( __FILE_NAME__ "2" );
 
         std::vector<hub::Acquisition> sync_acqs = synchronize( std::move(outputStream),
                                                                ref_sensorSpec,

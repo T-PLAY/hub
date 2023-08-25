@@ -8,116 +8,101 @@
 
 namespace hub {
 namespace client {
-namespace streamer {
 
-class Stream
-{
-  public:
-    Stream( Streamer& streamer,
-            const std::string& streamName,
-            const SensorSpec& sensorSpec,
-            std::vector<Acquisition>&& initAcqs ) :
-        m_streamer( streamer ),
-        m_streamName( streamName ),
-        m_sensorSpec( sensorSpec ),
-        m_initAcqs( std::move( initAcqs ) ) {
+//////////////////////////////////////// Stream ////////////////////////////////////////
 
-        if ( m_streamer.m_serverConnected ) {
-            try {
+Streamer::Stream::Stream(Streamer &streamer, const std::string &streamName, const SensorSpec &sensorSpec, std::vector<Acquisition> &&initAcqs) :
+    m_streamer( streamer ),
+    m_streamName( streamName ),
+    m_sensorSpec( sensorSpec ),
+    m_initAcqs( std::move( initAcqs ) ) {
 
-                init();
-                assert( m_outputSensor != nullptr );
-            }
-//            catch ( net::Socket::exception& e ) {
-            catch ( std::exception& e ) {
+    if ( m_streamer.m_serverConnected ) {
+        try {
 
-                std::cout << "[Streamer][Stream] loose connection from server : "
-                          << m_streamer.m_ipv4 << " " << m_streamer.m_port << std::endl;
-
-                delete m_outputSensor;
-                m_outputSensor = nullptr;
-
-                std::cout << "[Streamer][Stream] catch exception : " << e.what() << std::endl;
-
-                m_streamer.onServerDisconnected();
-            }
+            init();
+            assert( m_outputSensor != nullptr );
         }
-    }
+        //            catch ( net::Socket::exception& e ) {
+        catch ( std::exception& e ) {
 
-    Stream( Stream&& stream ) = delete;
+            std::cout << "[Streamer][Stream] loose connection from server : "
+                      << m_streamer.m_ipv4 << " " << m_streamer.m_port << std::endl;
 
-    ~Stream() {
-        std::cout << "[Stream] ~Stream()" << std::endl;
-
-        if ( m_outputSensor != nullptr ) {
             delete m_outputSensor;
             m_outputSensor = nullptr;
+
+            std::cout << "[Streamer][Stream] catch exception : " << e.what() << std::endl;
+
+            m_streamer.onServerDisconnected();
         }
     }
+}
 
-//    void onServerClosed() { std::cout << "[Stream] outputStream closed by server" << std::endl; }
+Streamer::Stream::~Stream() {
+    std::cout << "[Stream] ~Stream()" << std::endl;
 
-    void init() {
+    if ( m_outputSensor != nullptr ) {
+        delete m_outputSensor;
+        m_outputSensor = nullptr;
+    }
+}
+
+void Streamer::Stream::init() {
+
+    assert( m_outputSensor == nullptr );
+    m_mtxOutputSensor.lock();
+
+    try {
+        //            hub::net::ClientSocket sock( m_streamer.m_ipv4, m_streamer.m_port );
+        //            assert( sock.isConnected() );
+        //            assert( sock.isOpen() );
 
         assert( m_outputSensor == nullptr );
-        m_mtxOutputSensor.lock();
+        //            m_outputSensor = new OutputSensor( m_sensorSpec, m_streamName,
+        //            std::move( sock ) ); m_outputSensor = new OutputSensor( m_sensorSpec,
+        //            m_streamName, m_streamer.m_ipv4, m_streamer.m_port );
+        m_outputSensor = new OutputSensor(
+            m_sensorSpec,
+            OutputStream( m_streamName, m_streamer.m_ipv4, m_streamer.m_port ) );
 
+        for ( const auto& acq : m_initAcqs ) {
+            *m_outputSensor << acq;
+        }
+        m_mtxOutputSensor.unlock();
+    }
+    catch ( std::exception& ex ) {
+        m_mtxOutputSensor.unlock();
+        std::cout << "[Stream] init() catch exception : " << ex.what() << std::endl;
+
+        throw ex;
+    }
+
+    std::cout << "[Stream] " << m_streamName << " inited " << std::endl;
+}
+
+void Streamer::Stream::newAcquisition(const Acquisition &acquisition) {
+
+    assert( m_streamer.m_serverConnected );
+
+    if ( m_outputSensor != nullptr ) {
         try {
-//            hub::net::ClientSocket sock( m_streamer.m_ipv4, m_streamer.m_port );
-//            assert( sock.isConnected() );
-//            assert( sock.isOpen() );
-
-            assert( m_outputSensor == nullptr );
-//            m_outputSensor = new OutputSensor( m_sensorSpec, m_streamName, std::move( sock ) );
-//            m_outputSensor = new OutputSensor( m_sensorSpec, m_streamName, m_streamer.m_ipv4, m_streamer.m_port );
-            m_outputSensor = new OutputSensor( m_sensorSpec, OutputStream(m_streamName, m_streamer.m_ipv4, m_streamer.m_port) );
-
-            for ( const auto& acq : m_initAcqs ) {
-                *m_outputSensor << acq;
-            }
+            m_mtxOutputSensor.lock();
+            *m_outputSensor << acquisition;
             m_mtxOutputSensor.unlock();
         }
-        catch ( std::exception& ex ) {
+        catch ( std::exception& ) {
+            delete m_outputSensor;
+            m_outputSensor = nullptr;
             m_mtxOutputSensor.unlock();
-            std::cout << "[Stream] init() catch exception : " << ex.what() << std::endl;
-
-            throw ex;
-        }
-
-        std::cout << "[Stream] " << m_streamName << " inited " << std::endl;
-    }
-
-    void newAcquisition( const Acquisition& acquisition ) {
-
-        assert( m_streamer.m_serverConnected );
-
-        if ( m_outputSensor != nullptr ) {
-            try {
-                m_mtxOutputSensor.lock();
-                *m_outputSensor << acquisition;
-                m_mtxOutputSensor.unlock();
-            }
-            catch ( std::exception& ) {
-                delete m_outputSensor;
-                m_outputSensor = nullptr;
-                m_mtxOutputSensor.unlock();
-                throw;
-            }
+            throw;
         }
     }
+}
 
-  private:
-    Streamer& m_streamer;
-    const std::string m_streamName;
-    const hub::SensorSpec m_sensorSpec;
-    hub::OutputSensor* m_outputSensor = nullptr;
 
-    std::mutex m_mtxOutputSensor;
+//////////////////////////////////////// Streamer ////////////////////////////////////////
 
-    std::vector<hub::Acquisition> m_initAcqs;
-};
-
-} // end namespace streamer
 
 Streamer::Streamer( const std::string& ipv4, int port ) :
     m_ipv4( ipv4 ),
@@ -135,7 +120,7 @@ void Streamer::addStream( const std::string& streamName,
     assert( m_streams.find( streamName ) == m_streams.end() );
 
     m_streams[streamName] =
-        std::make_unique<streamer::Stream>( *this, streamName, sensorSpec, std::move( initAcqs ) );
+        std::make_unique<Stream>( *this, streamName, sensorSpec, std::move( initAcqs ) );
 
     if ( !m_serverConnected ) { waitingForServer(); }
 }

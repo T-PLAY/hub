@@ -141,10 +141,10 @@ TEST_CASE( "InputSensor test" ) {
               << std::endl;
 
     {
-        auto outputStream  = hub::output::OutputStream( "streamName" );
-        auto outputStream2 = hub::output::OutputStream( "streamName2" );
-        auto inputStream   = hub::input::InputStream( "streamName" );
-        auto inputStream2  = hub::input::InputStream( "streamName2" );
+        auto outputStream  = hub::output::OutputStream( __FILE_NAME__ );
+        auto outputStream2 = hub::output::OutputStream( __FILE_NAME__ "2" );
+        auto inputStream   = hub::input::InputStream( __FILE_NAME__ );
+        auto inputStream2  = hub::input::InputStream( __FILE_NAME__ "2" );
 
         std::vector<hub::Acquisition> sync_acqs = synchronize( std::move( outputStream ),
                                                                ref_sensorSpec,

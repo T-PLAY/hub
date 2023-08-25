@@ -27,7 +27,7 @@ TEST_CASE( "Streamer" ) {
         std::vector<hub::Acquisition> acqs;
         acqs.push_back( acq.clone() );
 
-        streamer.addStream( "streamName", sensorSpec, std::move( acqs ) );
+        streamer.addStream( __FILE_NAME__, sensorSpec, std::move( acqs ) );
         std::cout << "[Test] ############################### streamer add stream" << std::endl;
 
         assert( !streamer.isConnected() );
@@ -55,7 +55,7 @@ TEST_CASE( "Streamer" ) {
         std::cout << "[Test] ############################### server end" << std::endl;
         std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
 
-        streamer.newAcquisition( "streamName", acq );
+        streamer.newAcquisition( __FILE_NAME__, acq );
 
 //        while ( streamer.isConnected() ) {
 //            std::cout << "[test] waiting for streamer disconnected" << std::endl;

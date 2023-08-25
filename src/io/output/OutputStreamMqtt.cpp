@@ -28,15 +28,19 @@ OutputStreamMqtt::OutputStreamMqtt( const std::string& streamName,
     m_msgPtr->set_retained( true );
     m_msgPtr->set_qos( 2 );
 
-//        m_client->subscribe( s_topicStream + m_name );
-//        mqtt::const_message_ptr inputMsgPtr;
+    m_client->subscribe( s_topicStream + m_name );
+    mqtt::const_message_ptr inputMsgPtr;
 
-//        if (  m_client->try_consume_message_for( &inputMsgPtr, std::chrono::milliseconds( 100 ) ))
-//        {
-//            if (inputMsgPtr->get_payload_str() == "active") {
-//                throw io::StreamMqtt::exception(("OutputStream '" + m_name + "' is already connected to server").c_str());
-//            }
-//        }
+    if ( m_client->try_consume_message_for( &inputMsgPtr, std::chrono::milliseconds( 100 ) ) ) {
+        if ( inputMsgPtr->get_payload_str() == "active" ) {
+            throw io::StreamMqtt::exception(
+                ( "OutputStream '" + m_name + "' is already connected to server" ).c_str() );
+        }
+    }
+
+    m_msgPtr->set_topic( s_topicStream + m_name );
+    m_msgPtr->set_payload( "active" );
+    m_client->publish( m_msgPtr );
 
     //    m_msgPtr->set_topic(s_topicStream + m_name);
     //    m_msgPtr->set_payload("active");
@@ -47,9 +51,9 @@ OutputStreamMqtt::OutputStreamMqtt( const std::string& streamName,
 }
 
 void OutputStreamMqtt::write( const Acquisition& acq ) {
-//    m_msgPtr->set_retained( true );
-//    m_msgPtr->set_qos( 2 );
-    assert(m_msgPtr->get_qos() == 2);
+    //    m_msgPtr->set_retained( true );
+    //    m_msgPtr->set_qos( 2 );
+    assert( m_msgPtr->get_qos() == 2 );
 
     std::vector<char> buff;
     constexpr int maxBuffLen = 512;
@@ -88,9 +92,9 @@ void OutputStreamMqtt::write( const Acquisition& acq ) {
 }
 
 void OutputStreamMqtt::write( const SensorSpec& sensorSpec ) {
-//    m_msgPtr->set_retained( true );
-//    m_msgPtr->set_qos( 2 );
-    assert(m_msgPtr->get_qos() == 2);
+    //    m_msgPtr->set_retained( true );
+    //    m_msgPtr->set_qos( 2 );
+    assert( m_msgPtr->get_qos() == 2 );
 
     assert( m_client->is_connected() );
     //    std::cout << "[OutputStreamMqtt] start write(SensorSpec)" << std::endl;
@@ -113,13 +117,9 @@ void OutputStreamMqtt::write( const SensorSpec& sensorSpec ) {
 
     assert( buff.size() == packetSize );
 
-    m_msgPtr->set_topic( s_topicStream + m_name );
-    m_msgPtr->set_payload( "active" );
-    m_client->publish( m_msgPtr );
-
     m_currentTopic = s_topicStream + m_name + "/header/size";
     m_msgPtr->set_topic( m_currentTopic );
-    assert(m_msgPtr->get_qos() == 2);
+    assert( m_msgPtr->get_qos() == 2 );
     Output::write( packetSize );
     //    Output::write((unsigned char*)buff.data(), packetSize);
     m_currentTopic = s_topicStream + m_name + "/header/data";

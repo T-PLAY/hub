@@ -161,7 +161,7 @@ extern "C"
     /// \param onLogMessage
     /// \return
     ///
-    SRC_API client::Viewer* createViewer(
+    SRC_API client::Viewer* createViewer(const char *name,
         onNewStreamerFunc onNewStreamer,
                                           onDelStreamerFunc onDelStreamer,
                                           onServerNotFoundFunc onServerNotFound,

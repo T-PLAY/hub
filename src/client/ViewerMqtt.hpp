@@ -11,6 +11,7 @@ class SRC_API ViewerMqtt : public ViewerInterface<input::InputStreamMqtt>
 {
   public:
     ViewerMqtt(
+        const std::string & name,
         std::function<bool( const char* streamName, const SensorSpec& )> onNewStreamer = {},
         std::function<void( const char* streamName, const SensorSpec& )> onDelStreamer = {},
         std::function<void( const char* ipv4, int port )> onServerNotFound             = {},
@@ -36,7 +37,7 @@ class SRC_API ViewerMqtt : public ViewerInterface<input::InputStreamMqtt>
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
   private:
-    std::string m_hostName;
+//    std::string m_hostName;
 
 
     std::thread m_thread;

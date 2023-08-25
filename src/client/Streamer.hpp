@@ -7,15 +7,12 @@
 
 #include "Acquisition.hpp"
 #include "SensorSpec.hpp"
-//#include "net/ClientSocket.hpp"
+// #include "net/ClientSocket.hpp"
 #include "io/output/OutputStream.hpp"
+#include "OutputSensor.hpp"
 
 namespace hub {
 namespace client {
-
-namespace streamer {
-class Stream;
-}
 
 ///
 /// \brief The Streamer class
@@ -30,6 +27,31 @@ class Stream;
 ///
 class SRC_API Streamer
 {
+    class Stream
+    {
+      public:
+        Stream( Streamer& streamer,
+                const std::string& streamName,
+                const SensorSpec& sensorSpec,
+                std::vector<Acquisition>&& initAcqs );
+
+        Stream( Stream&& stream ) = delete;
+        ~Stream();
+
+        void init();
+        void newAcquisition( const Acquisition& acquisition );
+
+      private:
+        Streamer& m_streamer;
+        const std::string m_streamName;
+        const hub::SensorSpec m_sensorSpec;
+        hub::OutputSensor* m_outputSensor = nullptr;
+
+        std::mutex m_mtxOutputSensor;
+
+        std::vector<hub::Acquisition> m_initAcqs;
+    }; // end class Stream
+
   public:
     ///
     /// \brief Streamer
@@ -40,7 +62,7 @@ class SRC_API Streamer
     /// is the port of the server hub service.
     ///
     explicit Streamer( const std::string& ipv4 = output::OutputStream::s_defaultIpv4,
-                       int port = output::OutputStream::s_defaultPort );
+                       int port                = output::OutputStream::s_defaultPort );
 
     ~Streamer();
 
@@ -89,7 +111,7 @@ class SRC_API Streamer
 
     std::thread m_thread;
 
-    std::map<std::string, std::unique_ptr<streamer::Stream>> m_streams;
+    std::map<std::string, std::unique_ptr<Stream>> m_streams;
 
     const std::string m_ipv4;
     const int m_port;
@@ -99,7 +121,7 @@ class SRC_API Streamer
 
     bool m_exitThread = false;
 
-    friend class streamer::Stream;
+//    friend class streamer::Stream;
 };
 
 } // namespace client

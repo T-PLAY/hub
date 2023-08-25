@@ -60,6 +60,7 @@ TEST_CASE( "MqttViewer" ) {
     {
         std::cout << "\t[example-viewer] creating viewer" << std::endl;
         hub::client::ViewerMqtt viewer(
+            __FILE_NAME__,
 //            ipv4,
 //                                        port,
                                         onNewStreamer,
@@ -82,7 +83,7 @@ TEST_CASE( "MqttViewer" ) {
             hub::Resolution res { { 1 }, hub::Format::BGR8 };
             hub::SensorSpec sensorSpec( "sensorName", { res } );
             hub::OutputSensor outputSensor(
-                sensorSpec, hub::output::OutputStreamMqtt( "streamName" ) );
+                sensorSpec, hub::output::OutputStreamMqtt( __FILE_NAME__ ) );
 
             //            std::this_thread::sleep_for( std::chrono::milliseconds( 3000 ) );
             std::cout << "\t----------------------------------------------------------------------"
@@ -100,6 +101,7 @@ TEST_CASE( "MqttViewer" ) {
 
     //    std::cout << "[example-viewer] press key to quit" << std::endl;
     //    getchar();
+
 
     //    viewer.setIpv4( ipv4 );
     //    viewer.setPort( port );
@@ -133,12 +135,9 @@ TEST_CASE( "MqttViewer" ) {
 
     //            const auto resolution = hub::Resolution { { 1 }, hub::Format::BGR8 };
     //            hub::SensorSpec::MetaData metaData;
-    //            metaData["parent"] = "streamName2";
     //            hub::SensorSpec sensorSpec( "sensorName", { resolution } );
     //            hub::OutputSensor outputSensor(
     //                sensorSpec,
-    ////                "streamName", hub::net::ClientSocket( ipv4, port ) );
-    //                "streamName", ipv4, port );
     //            std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
 
     //            unsigned char data[3] { 1, 2, 3 };

@@ -73,9 +73,9 @@ void Input::read( SensorSpec& sensorSpec ) {
     assert( versionMajor <= hub::s_versionMajor );
     assert( versionMinor <= hub::s_versionMinor );
     assert( versionPatch <= hub::s_versionPatch );
-#ifdef DEBUG
-    std::cout <<  "[Input] read(magic number) : '" << magicNumber << "'" << std::endl;
-#endif
+//#ifdef DEBUG
+//    std::cout <<  "[Input] read(magic number) : '" << magicNumber << "'" << std::endl;
+//#endif
 
     std::string sensorName;
     Resolutions resolutions;

@@ -34,14 +34,16 @@ int main() {
         std::cout << "\t[viewer] onLogMessage '" << logMessage << "'" << std::endl;
     };
 
-    hub::client::Viewer viewer( onNewStreamer,
+    hub::client::Viewer viewer(
+        __FILE_NAME__,
+        onNewStreamer,
                                 onDelStreamer,
                                 onServerNotFound,
                                 onServerConnected,
                                 onServerDisconnected,
                                 onNewAcquisition,
-                                onSetProperty,
-                                onLogMessage
+                                onSetProperty
+//                                ,onLogMessage
     );
 
     std::cout << "\t[viewer] Ctrl+C to exit" << std::endl;

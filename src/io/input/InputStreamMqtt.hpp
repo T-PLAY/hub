@@ -74,7 +74,7 @@ inline void InputStreamMqtt::read( unsigned char* data, size_t len ) {
 //        bool consumed = m_msgPtr != nullptr;
         if ( !consumed ) {
             throw io::StreamMqtt::exception(
-                ("[InputStreamMqtt] current topic : '" + m_currentTopic + "' unable to receive data from stream").c_str() );
+                ("[InputStreamMqtt] read(unsigned char*, size_t) current topic : '" + m_currentTopic + "' unable to receive data from stream").c_str() );
         }
         assert( consumed );
 //        if ( m_msgPtr->get_topic() != m_currentTopic ) {
