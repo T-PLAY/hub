@@ -10,6 +10,7 @@ variables:
   CACHE_PATH: "cache10"
   GIT_STRATEGY: fetch
   LINUX_TAG: "linux"
+  WIN_TAG: "win11"
   # GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_CONCURRENT_ID/$CI_PROJECT_PATH
 
 #https://docs.gitlab.com/ee/ci/yaml/#extends
@@ -107,7 +108,7 @@ build-gcc-debug:
 build-cl-release:
   stage: build
   tags:
-    - win10
+    - $WIN_TAG
   script:
     - BUILD_TYPE=Release
     - CMAKE_C_COMPILER=cl
@@ -119,7 +120,7 @@ build-cl-release:
 build-cl-debug:
   stage: build
   tags:
-    - win10
+    - $WIN_TAG
   script:
     - BUILD_TYPE=Debug
     - CMAKE_C_COMPILER=cl
@@ -159,7 +160,7 @@ test-gcc-debug:
 test-cl-release:
   stage: test
   tags:
-    - win10
+    - $WIN_TAG
   script:
     - BUILD_TYPE=Release
     - CMAKE_C_COMPILER=cl
@@ -172,7 +173,7 @@ test-cl-release:
 test-cl-debug:
   stage: test
   tags:
-    - win10
+    - $WIN_TAG
   script:
     - BUILD_TYPE=Debug
     - CMAKE_C_COMPILER=cl
