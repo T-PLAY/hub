@@ -53,7 +53,7 @@ if (NOT PahoMqttCpp_FOUND)
     list(FILTER headers EXCLUDE REGEX ".*Mqtt\\.hpp$")
 endif()
 
-option(HUB_BUILD_SERVER "Build implement server" OFF)
+option(HUB_BUILD_SERVER "Build implement server" ON)
 if (NOT HUB_BUILD_SERVER)
     list(FILTER sources EXCLUDE REGEX ".*Server\\.cpp$")
     list(FILTER headers EXCLUDE REGEX ".*Server\\.hpp$")
@@ -73,15 +73,6 @@ source_group("Source Files\\" FILES ${sources})
 #set(REQUIRED_LIBS)
 
 add_library(${PROJECT_NAME} OBJECT ${sources} ${headers}
-    io/StreamMqtt.hpp io/StreamMqtt.cpp
-    io/StreamInterface.hpp io/StreamInterface.cpp
-    client/AskerInterface.hpp client/AskerInterface.cpp
-    client/AskerMqtt.hpp client/AskerMqtt.cpp
-    io/input/InputSyncStreamInterface.hpp io/input/InputSyncStreamInterface.cpp
-#    io/input/InputFile.hpp io/input/InputFile.cpp
-#    io/MemoryInterface.hpp
-#    io/Stream.hpp io/Stream.cpp
-#    io/InputStreamInterface.hpp
 )
 
 target_include_directories(${PROJECT_NAME}

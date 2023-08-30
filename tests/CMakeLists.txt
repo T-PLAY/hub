@@ -51,7 +51,7 @@ else()
 endif()
 #message(STATUS "#################### ${test_srcs}")
 
-if (NOT BUILD_SERVER)
+if (NOT HUB_BUILD_SERVER)
     list(FILTER test_srcs EXCLUDE REGEX ".*Server\\.cpp$")
     list(FILTER test_srcs EXCLUDE REGEX ".*server.*\\.cpp$")
 

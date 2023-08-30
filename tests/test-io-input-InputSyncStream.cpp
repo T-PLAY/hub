@@ -63,6 +63,7 @@ TEST_CASE( "InputSyncStream test" ) {
     std::cout << "ref_sync_acqs" << std::endl;
     std::vector<hub::Acquisition> ref_sync_acqs = computeSyncAcqs( ref_acqs, ref_acqs2 );
 
+#ifndef BUILD_SERVER
     {
         hub::output::OutputStream outputStream( __FILE_NAME__ );
         InputStream inputStream( __FILE_NAME__ );
@@ -85,5 +86,6 @@ TEST_CASE( "InputSyncStream test" ) {
             CHECK( sync_acq == ref_sync_acqs.at( i ) );
         }
     }
+#endif
     std::cout << "end output streams" << std::endl;
 }

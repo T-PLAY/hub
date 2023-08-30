@@ -161,8 +161,7 @@ TEST_CASE( "Server test : viewer" ) {
 
                 std::cout << "[Test] ############################### viewer start" << std::endl;
                 hub::client::ViewerServer viewer {
-                    ipv4,
-                    port2,
+                    __FILE_NAME__,
                     onNewStreamer,
                     onDelStreamer,
                     onServerNotFound,
@@ -170,6 +169,9 @@ TEST_CASE( "Server test : viewer" ) {
                     onServerDisconnected,
                     onNewAcquisition,
                     onSetProperty,
+                    onLogMessage,
+                    ipv4,
+                    port2,
                 };
 
                 while ( !serverConnected ) {

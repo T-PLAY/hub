@@ -126,6 +126,7 @@ namespace client {
 //} // end namespace viewer
 
 ViewerServer::ViewerServer(
+        const std::string & name,
     std::function<bool( const char* streamName, const SensorSpec& )> onNewStreamer,
     std::function<void( const char* streamName, const SensorSpec& )> onDelStreamer,
     std::function<void( const char* ipv4, int port )> onServerNotFound,
@@ -141,6 +142,7 @@ ViewerServer::ViewerServer(
     ) :
 
     ViewerInterface(
+        name,
                      onNewStreamer,
                      onDelStreamer,
                      onServerNotFound,
@@ -202,7 +204,9 @@ ViewerServer::ViewerServer(
 
                             m_streams[streamName] =
 //                                std::make_unique<StreamViewer<input::InputStreamServer>>( *this, streamName, sensorSpec );
-                                std::make_unique<viewer::StreamViewer<input::InputStreamServer>>(
+//                                std::make_unique<viewer::StreamViewer<input::InputStreamServer>>(
+                                std::make_unique<Stream>(
+                                    *this,
                                 m_ipv4,
                                     m_port,
                                 streamName,

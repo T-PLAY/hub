@@ -104,7 +104,7 @@ TEST_CASE( "Server test : sync" ) {
 
         std::cout << "[Test] ############################### inputStream3 start" << std::endl;
         hub::InputSensor inputSensor3(
-            hub::input::InputSyncStream<hub::input::InputStreamServer>( "stream", "stream2", ipv4, port ) );
+            hub::input::InputSyncStream( "stream", "stream2", ipv4, port ) );
 
         const auto& inputSensorSpec3 = inputSensor3.getSpec();
         std::cout << "[Test] inputStream2 end ---------------------------------" << std::endl;

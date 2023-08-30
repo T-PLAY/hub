@@ -18,6 +18,7 @@ class SRC_API ViewerServer : public ViewerInterface<input::InputStreamServer>
 {
   public:
     explicit ViewerServer(
+        const std::string & name,
         std::function<bool( const char* streamName, const SensorSpec& )> onNewStreamer = {},
         std::function<void( const char* streamName, const SensorSpec& )> onDelStreamer = {},
         std::function<void( const char* ipv4, int port )> onServerNotFound             = {},
