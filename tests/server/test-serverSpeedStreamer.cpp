@@ -11,7 +11,7 @@
 #include <filesystem>
 #include <utils/Utils.hpp>
 
-TEST_CASE( "Server test : viewer" ) {
+TEST_CASE( "Server speed test : streamer" ) {
     const auto hostname = hub::utils::getHostname();
 
     constexpr int nAcqs       = 200;
@@ -100,11 +100,14 @@ TEST_CASE( "Server test : viewer" ) {
 
             hub::client::Streamer streamer;
             streamer.addStream( __FILE_NAME__, sensorSpec );
-            while ( !streamer.isConnected() ) {
+            int iTryConnect = 0;
+            while ( !streamer.isConnected() && iTryConnect < 10 ) {
                 std::cout << "[test] waiting for streamer started" << std::endl;
                 std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+                ++iTryConnect;
             }
             CHECK( streamer.isConnected() );
+            assert(streamer.isConnected());
 
             hub::InputSensor inputSensor(
                 //                hub::io::InputStream( "streamName", hub::net::ClientSocket( ipv4,

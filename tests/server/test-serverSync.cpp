@@ -17,39 +17,42 @@ TEST_CASE( "Server test : sync" ) {
     constexpr int dataSize = 9;
 
     std::cout << "ref_acqs:" << std::endl;
-    std::vector<hub::Acquisition> acqs;
-    for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
-        unsigned char data[dataSize];
-        for ( int i = 0; i < dataSize; ++i ) {
-            data[i] = iAcq * 10;
-        }
-        acqs.emplace_back( iAcq * 10, iAcq * 10 );
-        acqs.back() << hub::data::Measure( reinterpret_cast<const unsigned char*>( data ),
-                                           dataSize,
-                                           { { 3 }, hub::Format::BGR8 } );
-        std::cout << acqs.back() << std::endl;
-    }
-
-    std::cout << "ref2_acqs:" << std::endl;
-    std::vector<hub::Acquisition> acqs2;
+    std::vector<hub::Acquisition> ref_acqs;
     for ( int iAcq = 0; iAcq < nAcqs * 5; ++iAcq ) {
         unsigned char data[dataSize];
         for ( int i = 0; i < dataSize; ++i ) {
             data[i] = iAcq * 2;
         }
-        acqs2.emplace_back( iAcq * 2, iAcq * 2 );
-        acqs2.back() << hub::data::Measure( reinterpret_cast<const unsigned char*>( data ),
+        ref_acqs.emplace_back( iAcq * 2, iAcq * 2 );
+        ref_acqs.back() << hub::data::Measure( reinterpret_cast<const unsigned char*>( data ),
+                                           dataSize,
+                                           { { 3 }, hub::Format::BGR8 } );
+        std::cout << ref_acqs.back() << std::endl;
+    }
+
+    std::cout << "ref2_acqs:" << std::endl;
+    std::vector<hub::Acquisition> ref_acqs2;
+    for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
+        unsigned char data[dataSize];
+        for ( int i = 0; i < dataSize; ++i ) {
+            data[i] = iAcq * 10;
+        }
+        ref_acqs2.emplace_back( iAcq * 10, iAcq * 10 );
+        ref_acqs2.back() << hub::data::Measure( reinterpret_cast<const unsigned char*>( data ),
                                             dataSize,
                                             { { 3 }, hub::Format::BGR8 } );
-        std::cout << acqs2.back() << std::endl;
+        std::cout << ref_acqs2.back() << std::endl;
     }
     std::cout << std::endl;
+
+    std::cout << "ref_sync_acqs" << std::endl;
+    std::vector<hub::Acquisition> ref_sync_acqs = computeSyncAcqs( ref_acqs, ref_acqs2 );
 
     std::cout << "[Test] ############################### server start" << std::endl;
 //    hub::Server server( port );
 //    server.setMaxClients( 6 );
 //    server.asyncRun();
-    std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
+//    std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
     std::cout << "[Test] server end ------------------------------" << std::endl;
 
     {
@@ -94,7 +97,7 @@ TEST_CASE( "Server test : sync" ) {
 //            hub::io::InputStream( "stream", hub::net::ClientSocket( ipv4, port ) ) );
             hub::input::InputStream( __FILE_NAME__));
 
-        const auto& inputSensorSpec = inputSensor.getSpec();
+//        const auto& inputSensorSpec = inputSensor.getSpec();
         std::cout << "[Test] inputStream end ---------------------------------" << std::endl;
 
         std::cout << "[Test] ############################### inputStream2 start" << std::endl;
@@ -103,50 +106,51 @@ TEST_CASE( "Server test : sync" ) {
             hub::input::InputStream( __FILE_NAME__ "2"));
 
 
-        const auto& inputSensorSpec2 = inputSensor2.getSpec();
+//        const auto& inputSensorSpec2 = inputSensor2.getSpec();
         std::cout << "[Test] inputStream2 end ---------------------------------" << std::endl;
 
         std::cout << "[Test] ############################### inputStream3 start" << std::endl;
         hub::InputSensor inputSensor3(
             hub::input::InputSyncStream( __FILE_NAME__, __FILE_NAME__ "2" ) );
 
-        const auto& inputSensorSpec3 = inputSensor3.getSpec();
+//        const auto& inputSensorSpec3 = inputSensor3.getSpec();
         std::cout << "[Test] inputStream2 end ---------------------------------" << std::endl;
 
         std::cout << "[Test] ############################### send acquisitions" << std::endl;
-        for ( const auto& acq : acqs ) {
+        for ( const auto& acq : ref_acqs ) {
             outputSensor << acq;
         }
-        std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+//        std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
         std::cout << "[Test] ############################### send acquisitions 2" << std::endl;
-        for ( const auto& acq2 : acqs2 ) {
+        for ( const auto& acq2 : ref_acqs2 ) {
             outputSensor2 << acq2;
         }
-        std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+//        std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
 
         std::cout << "[Test] ############################### compare " << std::endl;
-        for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
+        for ( int iAcq = 0; iAcq < ref_acqs.size(); ++iAcq ) {
             hub::Acquisition acq;
             inputSensor >> acq;
             std::cout << "[Test] acq = " << acq << std::endl;
-            CHECK( acq == acqs[iAcq] );
+            CHECK( acq == ref_acqs[iAcq] );
         }
         std::cout << "[Test] ############################### compare2 " << std::endl;
-        for ( int iAcq = 0; iAcq < nAcqs * 5; ++iAcq ) {
+        for ( int iAcq = 0; iAcq < ref_acqs2.size(); ++iAcq ) {
             hub::Acquisition acq;
             inputSensor2 >> acq;
             std::cout << "[Test] acq2 = " << acq << std::endl;
-            CHECK( acq == acqs2[iAcq] );
+            CHECK( acq == ref_acqs2[iAcq] );
         }
         std::cout << "[Test] ############################### compare3 " << std::endl;
-        for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
+//        for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
+        for ( int iAcq = 0; iAcq < ref_sync_acqs.size(); ++iAcq ) {
             hub::Acquisition acq;
             inputSensor3 >> acq;
             std::cout << "[Test] acq3 = " << acq << std::endl;
-            hub::Acquisition acqSync = acqs.at( iAcq ).clone();
-            acqSync << acqs2[iAcq * 5].getMeasures();
-            CHECK( acq == acqSync );
+//            hub::Acquisition acqSync = ref_acqs.at( iAcq ).clone();
+//            acqSync << ref_acqs2[iAcq * 5].getMeasures();
+            CHECK( acq == ref_sync_acqs.at(iAcq) );
         }
     }
-    std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+//    std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
 }

@@ -37,26 +37,26 @@ class SRC_API ViewerServer : public ViewerInterface<input::InputStreamServer>
 
     ~ViewerServer();
 
-    void setIpv4( const std::string& ipv4 );
+    void setIpv4( const std::string& ipv4 ) override;
 
-    void setPort( int port );
+    void setPort( int port ) override;
 
-    const std::string& getIpv4() const;
+//    const std::string& getIpv4() const;
 
-    const int& getPort() const;
+//    const int& getPort() const;
 
-    void setAutoSync( bool newAutoSync );
+//    void setAutoSync( bool newAutoSync );
 
-    bool isConnected() const;
+//    bool isConnected() const override;
 
-    void startStream( const std::string& streamName );
+//    void startStream( const std::string& streamName );
 
-    void stopStream( const std::string& streamName );
+//    void stopStream( const std::string& streamName );
 
     void setProperty( const std::string& streamName,
                       const std::string& objectName,
                       int property,
-                      const hub::Any& value );
+                      const hub::Any& value ) override;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
 

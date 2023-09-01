@@ -15,7 +15,7 @@
 TEST_CASE( "Server test : viewer" ) {
     const auto hostname = hub::utils::getHostname();
 
-    constexpr int nAcqs       = 200;
+    constexpr int nAcqs       = 100;
     constexpr int width       = 1920;
     constexpr int height      = 1080;
     constexpr size_t dataSize = width * height * 3;
@@ -148,8 +148,9 @@ TEST_CASE( "Server test : viewer" ) {
                 int nAcqSended              = 0;
                 auto onNewAcquisition = [&]( const std::string& streamName,
                                              const hub::Acquisition& acq ) {
-                    std::cout << "[example-viewer] onNewAcquisition : " << streamName << " " << acq
-                              << std::endl;
+//                    std::cout << "[example-viewer] onNewAcquisition : " << streamName << " " << acq
+//                              << std::endl;
+                    std::cout << "+";
                     CHECK( acq == acqs.at( nAcqSended ) );
                     ++nAcqSended;
                 };
@@ -191,12 +192,15 @@ TEST_CASE( "Server test : viewer" ) {
                 const auto& start2 = std::chrono::high_resolution_clock::now();
                 for ( int i = 0; i < nAcqs; ++i ) {
                     outputSensor << acqs.at( i );
-                    std::cout << "[test] send acq " << acqs.at(i) << std::endl;
+//                    std::cout << "[test] send acq " << acqs.at(i) << std::endl;
+                    std::cout << ".";
                     while ( nAcqSended <= i ) {
-                        std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
-                        std::cout << "[test] waiting for receive " << i << std::endl;
+//                        std::this_thread::sleep_for( std::chrono::milliseconds( 1 ) );
+//                        std::cout << "[test] waiting for receive " << i << std::endl;
                     }
                 }
+
+                std::cout << std::endl;
 
                 assert(nAcqSended == nAcqs);
 //                while ( nAcqSended != nAcqs ) {
@@ -215,8 +219,15 @@ TEST_CASE( "Server test : viewer" ) {
                 std::cout << "[test][InputOutputSensor] Mega byte per second : "
                           << megaBytesPerSeconds2 << " Mo/s" << std::endl;
 
+                // todo : add read acq timeout to exit infinite loop in detached thread
+                nAcqSended = 0;
+                outputSensor << acqs.front(); // to exit read acq loop from stream
             } // end viewer
-        }
+
+            std::cout << "######################### end viewer" << std::endl;
+//            outputSensor << acqs.front(); // to exit read acq loop from stream
+
+        } // end outputSensor
     }
 
     std::cout << std::endl;

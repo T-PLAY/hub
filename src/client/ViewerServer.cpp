@@ -198,31 +198,32 @@ ViewerServer::ViewerServer(
 
                         DEBUG_MSG( "[ViewerServer] new streamer '" << streamName << "'" );
 
-                        assert( m_streams.find( streamName ) == m_streams.end() );
+                        addStream(streamName, sensorSpec);
+//                        assert( m_streams.find( streamName ) == m_streams.end() );
 
-                        if ( m_onNewStreamer ) {
+//                        if ( m_onNewStreamer ) {
 
-                            m_streams[streamName] =
-//                                std::make_unique<StreamViewer<input::InputStreamServer>>( *this, streamName, sensorSpec );
-//                                std::make_unique<viewer::StreamViewer<input::InputStreamServer>>(
-                                std::make_unique<Stream>(
-                                    *this,
-                                m_ipv4,
-                                    m_port,
-                                streamName,
-                                sensorSpec,
-                                m_onNewStreamer,
-                                m_onDelStreamer,
-                                m_onNewAcquisition,
-                                m_onLogMessage
-                                    );
-                        }
+//                            m_streams[streamName] =
+////                                std::make_unique<StreamViewer<input::InputStreamServer>>( *this, streamName, sensorSpec );
+////                                std::make_unique<viewer::StreamViewer<input::InputStreamServer>>(
+//                                std::make_unique<Stream>(
+//                                    *this,
+//                                m_ipv4,
+//                                    m_port,
+//                                streamName,
+//                                sensorSpec,
+//                                m_onNewStreamer,
+//                                m_onDelStreamer,
+//                                m_onNewAcquisition,
+//                                m_onLogMessage
+//                                    );
+//                        }
 
                         // prevent all son the father is comming
 
                         // wait for client init sensorSpec with main thread context (async)
                         // for unity side (update context different of static event function)
-                        std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+//                        std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
 
                     } break;
 
@@ -233,17 +234,18 @@ ViewerServer::ViewerServer(
                         m_sock.read( sensorSpec );
                         DEBUG_MSG( "[ViewerServer] del streamer '" << streamName << "'" );
 
-                        if ( m_onNewStreamer ) {
-                            assert( m_onDelStreamer );
-                            assert( m_streams.find( streamName ) != m_streams.end() );
-                            m_streams.erase( streamName );
-                        }
+//                        if ( m_onNewStreamer ) {
+//                            assert( m_onDelStreamer );
+//                            assert( m_streams.find( streamName ) != m_streams.end() );
+//                            m_streams.erase( streamName );
+//                        }
+                        deleteStream(streamName);
 
                         // prevent all son the father is leaving
 
                         // wait for client init sensorSpec with main thread context (async)
                         // for unity side (update context different of static event function)
-                        std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+//                        std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
 
                     } break;
 
@@ -342,48 +344,52 @@ ViewerServer::~ViewerServer() {
 }
 
 void ViewerServer::setIpv4( const std::string& ipv4 ) {
+    ViewerInterface::setIpv4(ipv4);
+
     DEBUG_MSG( "[ViewerServer] setIpv4 " << ipv4 );
     assert( !m_serverConnected );
     m_sock.setIpv4( ipv4 );
 }
 
 void ViewerServer::setPort( int port ) {
+    ViewerInterface::setPort(port);
+
     DEBUG_MSG( "[ViewerServer] setPort " << port );
     assert( !m_serverConnected );
     m_sock.setPort( port );
 }
 
-const std::string& ViewerServer::getIpv4() const {
-    return m_sock.getIpv4();
-}
+//const std::string& ViewerServer::getIpv4() const {
+//    return m_sock.getIpv4();
+//}
 
-const int& ViewerServer::getPort() const {
-    return m_sock.getPort();
-}
+//const int& ViewerServer::getPort() const {
+//    return m_sock.getPort();
+//}
 
-void ViewerServer::setAutoSync( bool newAutoSync ) {
-    DEBUG_MSG( "[ViewerServer] setAutoSync " << newAutoSync );
-}
+//void ViewerServer::setAutoSync( bool newAutoSync ) {
+//    DEBUG_MSG( "[ViewerServer] setAutoSync " << newAutoSync );
+//}
 
-bool ViewerServer::isConnected() const {
-    return m_serverConnected;
-}
+//bool ViewerServer::isConnected() const {
+//    return m_serverConnected;
+//}
 
-void ViewerServer::startStream( const std::string& streamName ) {
-    assert( m_onNewStreamer );
-    assert( m_streams.find( streamName ) != m_streams.end() );
-    auto& stream = *m_streams.at( streamName );
-    stream.startStream();
-}
+//void ViewerServer::startStream( const std::string& streamName ) {
+//    assert( m_onNewStreamer );
+//    assert( m_streams.find( streamName ) != m_streams.end() );
+//    auto& stream = *m_streams.at( streamName );
+//    stream.startStream();
+//}
 
-void ViewerServer::stopStream( const std::string& streamName ) {
-    DEBUG_MSG( "[ViewerServer] stopStream by user " << streamName );
+//void ViewerServer::stopStream( const std::string& streamName ) {
+//    DEBUG_MSG( "[ViewerServer] stopStream by user " << streamName );
 
-    assert( m_onDelStreamer );
-    assert( m_streams.find( streamName ) != m_streams.end() );
-    auto& stream = *m_streams.at( streamName );
-    stream.stopStream();
-}
+//    assert( m_onDelStreamer );
+//    assert( m_streams.find( streamName ) != m_streams.end() );
+//    auto& stream = *m_streams.at( streamName );
+//    stream.stopStream();
+//}
 
 void ViewerServer::setProperty( const std::string& streamName,
                           const std::string& objectName,

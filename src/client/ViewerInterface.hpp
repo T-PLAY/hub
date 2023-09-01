@@ -142,7 +142,7 @@ class SRC_API ViewerInterface
     /// \warning
     /// You can't change current ip if server is connected.
     ///
-    void setIpv4( const std::string& ipv4 );
+    virtual void setIpv4( const std::string& ipv4 );
 
     ///
     /// \brief setPort
@@ -152,7 +152,7 @@ class SRC_API ViewerInterface
     /// \warning
     /// You can't change current port if server is connected.
     ///
-    void setPort( int port );
+    virtual void setPort( int port );
 
     ///
     /// \brief getIpv4
@@ -160,7 +160,7 @@ class SRC_API ViewerInterface
     /// \return
     /// the current ip of the server you want to connect.
     ///
-    const std::string& getIpv4() const;
+    virtual const std::string& getIpv4() const;
 
     ///
     /// \brief getPort
@@ -168,7 +168,7 @@ class SRC_API ViewerInterface
     /// \return
     /// the current service port you want to connect.
     ///
-    const int& getPort() const;
+    virtual const int& getPort() const;
 
     //    ///
     //    /// \brief setAutoSync
@@ -186,7 +186,7 @@ class SRC_API ViewerInterface
     /// true if the server is connected.\n
     /// false otherwise.
     ///
-    bool isConnected() const;
+    virtual bool isConnected() const;
 
     ///
     /// \brief startStream
@@ -209,7 +209,7 @@ class SRC_API ViewerInterface
     /// \param property
     /// \param value
     ///
-    void setProperty( const std::string& streamName,
+    virtual void setProperty( const std::string& streamName,
                       const std::string& objectName,
                       int property,
                       const hub::Any& value );

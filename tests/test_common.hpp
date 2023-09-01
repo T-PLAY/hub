@@ -46,59 +46,69 @@ static std::vector<hub::Acquisition>
 computeSyncAcqs( const std::vector<hub::Acquisition>& leftAcqs,
                  const std::vector<hub::Acquisition>& rightAcqs ) {
     std::vector<int> min_dists( rightAcqs.size(), 999999 );
-    std::vector<int> iMin_dists( rightAcqs.size(), -1 );
+    std::vector<int> iLeftMinDists( rightAcqs.size(), -1 );
 
-    int iAcq2 = 0;
-    for ( const auto& acq2 : rightAcqs ) {
-        int iMinDist = 0;
-        int minDist  = computeDist( acq2, leftAcqs.front() );
-        for ( int iAcq = 1; iAcq < leftAcqs.size(); ++iAcq ) {
-            const auto& acq = leftAcqs.at( iAcq );
-            const auto dist = computeDist( acq2, acq );
+    int iRightAcq = 0;
+    for ( const auto& rightAcq : rightAcqs ) {
+        int iLeftMinDist = 0;
+        int minDist  = computeDist( rightAcq, leftAcqs.front() );
+        for ( int iLeftAcq = 1; iLeftAcq < leftAcqs.size(); ++iLeftAcq ) {
+            const auto& leftAcq = leftAcqs.at( iLeftAcq );
+            const auto dist = computeDist( rightAcq, leftAcq );
             if ( dist <= minDist ) {
                 minDist  = dist;
-                iMinDist = iAcq;
+                iLeftMinDist = iLeftAcq;
             }
         }
 
-        if ( !( ( iMinDist == 0 || iMinDist == leftAcqs.size() - 1 ) && minDist != 0 ) ) {
+        int leftLeftMinDist;
+        int leftRightMinDist;
 
-            //            if ( minDist < min_dists.at( iMinDist ) ) {
-            min_dists[iAcq2]  = minDist;
-            iMin_dists[iAcq2] = iMinDist;
+        const auto & leftMinAcq = leftAcqs.at(iLeftMinDist);
+
+        if (! (leftMinAcq.getStart() < rightAcq.getStart() && iLeftMinDist == leftAcqs.size() - 1) && !(rightAcq.getStart() < leftMinAcq.getStart() && iLeftMinDist == 0)) {
+
+//        if ( !( ( iLeftMinDist == 0 || iLeftMinDist == leftAcqs.size() - 1 ) && minDist != 0 ) ) {
+//        if ( !(iLeftMinDist == 0 && minDist != 0))
+
+            //            if ( minDist < min_dists.at( iLeftMinDist ) ) {
+            min_dists[iRightAcq]  = minDist;
+            iLeftMinDists[iRightAcq] = iLeftMinDist;
         }
         //            }
-        ++iAcq2;
+        ++iRightAcq;
     }
 
     std::vector<hub::Acquisition> syncAcqs;
 
     //    std::cout << "ref_sync_acqs" << std::endl;
 
-    for ( int i = 0; i < rightAcqs.size(); ++i ) {
-        if ( iMin_dists[i] != -1 ) {
-            const auto& acq  = leftAcqs.at( iMin_dists.at( i ) );
-            const auto& acq2 = rightAcqs.at( i );
+    for ( int iRightAcq = 0; iRightAcq < rightAcqs.size(); ++iRightAcq ) {
 
-            hub::Acquisition sync_acq( acq2.getStart(), acq2.getEnd() );
-            sync_acq << acq.getMeasures() << acq2.getMeasures();
+        int iLeftMinDist = iLeftMinDists.at(iRightAcq);
+        if ( iLeftMinDist != -1 ) {
+            const auto& leftAcq  = leftAcqs.at( iLeftMinDist );
+            const auto& rightAcq = rightAcqs.at( iRightAcq );
+
+            hub::Acquisition sync_acq( rightAcq.getStart(), rightAcq.getEnd() );
+            sync_acq << leftAcq.getMeasures() << rightAcq.getMeasures();
             syncAcqs.push_back( std::move( sync_acq ) );
 
             auto& syncAcq = syncAcqs.back();
-            //                syncAcq << acq2.getMeasures();
+            //                syncAcq << rightAcq.getMeasures();
 
             std::cout << syncAcqs.back() << std::endl;
 
-            assert( syncAcq.getStart() == acq2.getStart() );
-            assert( syncAcq.getEnd() == acq2.getEnd() );
+            assert( syncAcq.getStart() == rightAcq.getStart() );
+            assert( syncAcq.getEnd() == rightAcq.getEnd() );
             assert( syncAcq.getMeasures().size() == 2 );
 
-            assert( acq.getMeasures().size() == 1 );
-            const auto& measure = acq.getMeasures().front();
+            assert( leftAcq.getMeasures().size() == 1 );
+            const auto& measure = leftAcq.getMeasures().front();
             assert( syncAcq.getMeasures().at( 0 ) == measure );
 
-            assert( acq2.getMeasures().size() == 1 );
-            const auto& measure2 = acq2.getMeasures().front();
+            assert( rightAcq.getMeasures().size() == 1 );
+            const auto& measure2 = rightAcq.getMeasures().front();
             assert( syncAcq.getMeasures().at( 1 ) == measure2 );
         }
     }

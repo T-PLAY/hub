@@ -11,12 +11,11 @@
 
 #include <OutputSensor.hpp>
 
-//#include <server/Server.hpp>
+// #include <server/Server.hpp>
 
 // #include <filesystem>
 // #include <iostream>
 
-// clang-format off
 
 // #include <Streamer.hpp>
 
@@ -84,12 +83,14 @@ __FILE_NAME__,
 //        server.asyncRun();
         std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
 
-        while ( !viewer.isConnected() ) {
+int iTryConnect = 0;
+        while ( !viewer.isConnected() && iTryConnect < 10 ) {
             std::cout << "[test] waiting for viewer connected" << std::endl;
-            std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
+            std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+++iTryConnect;
         }
-
         CHECK( viewer.isConnected() );
+assert(viewer.isConnected());
 
         {
             std::cout << "[Test] ############################### outputSensor start" << std::endl;
@@ -119,4 +120,3 @@ __FILE_NAME__,
 
     std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
 }
-// clang-format on

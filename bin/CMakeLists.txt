@@ -18,6 +18,7 @@ string(REPLACE ".cpp" "" SOURCES_BASENAME "${SOURCES}")
 set(SOURCES_BASENAME ${SOURCES_BASENAME})
 
 
+
 #find_package(PahoMqttCpp QUIET)
 ##find_package(PahoMqttCpp QUIET NO_DEFAULT_PATH)
 #if (PahoMqttCpp_FOUND)
@@ -79,6 +80,12 @@ foreach(name ${SOURCES_BASENAME})
 #    target_include_directories(
 #        ${TARGET_NAME}
 #        PRIVATE ${HUB_EXTERNAL_DIR})
+
+#    add_custom_target(
+#        run-${TARGET_NAME} # WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+#        COMMAND ${TARGET_NAME}
+#        COMMENT "Running executable")
+#    custom_target_added(run-${TARGET_NAME})
 
     if(WIN32)
         add_custom_command(

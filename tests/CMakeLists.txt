@@ -77,6 +77,7 @@ endif()
 include(CTest)
 enable_testing()
 foreach(testFile ${test_srcs})
+#    message(STATUS "${testFile}")
 
     get_filename_component(test ${testFile} NAME_WE)
 
@@ -87,10 +88,30 @@ foreach(testFile ${test_srcs})
 
     add_test(NAME ${test} COMMAND ${test})
 
+if (HUB_BUILD_SERVER)
+    add_custom_target(
+        run-${test}
+#        COMMAND "${CMAKE_BINARY_DIR}/bin/bin-server &"
+        COMMAND ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${CMAKE_BINARY_DIR}/bin/bin-server
+        COMMAND ctest -C ${CMAKE_BUILD_TYPE} -V -R ${test}
+        COMMAND pkill bin-server
+        COMMENT "Running single test")
+    custom_target_added(run-${test})
+endif()
+
 endforeach()
 
-add_custom_target(
-    tests # WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-    COMMAND ctest -C ${CMAKE_BUILD_TYPE} -V # COMMENT "Generating API documentation with Doxygen"
-    COMMENT "Running tests")
+if (HUB_BUILD_SERVER)
+    add_custom_target(
+        tests # WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+        COMMAND ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${CMAKE_BINARY_DIR}/bin/bin-server
+        COMMAND ctest -C ${CMAKE_BUILD_TYPE} -V
+        COMMAND pkill bin-server
+        COMMENT "Running tests")
+else()
+    add_custom_target(
+        tests # WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+        COMMAND ctest -C ${CMAKE_BUILD_TYPE} -V
+        COMMENT "Running tests")
+endif()
 custom_target_added(tests)
