@@ -4,14 +4,14 @@
 #include <InputSensor.hpp>
 #include <OutputSensor.hpp>
 
-#include <server/Server.hpp>
+//#include <server/Server.hpp>
 
 #include <filesystem>
 
 TEST_CASE( "Server test : sync" ) {
 
-    const std::string ipv4 = "127.0.0.1";
-    const int port         = GET_RANDOM_PORT;
+//    const std::string ipv4 = "127.0.0.1";
+//    const int port         = GET_RANDOM_PORT;
 
     constexpr int nAcqs    = 5;
     constexpr int dataSize = 9;
@@ -46,9 +46,9 @@ TEST_CASE( "Server test : sync" ) {
     std::cout << std::endl;
 
     std::cout << "[Test] ############################### server start" << std::endl;
-    hub::Server server( port );
-    server.setMaxClients( 6 );
-    server.asyncRun();
+//    hub::Server server( port );
+//    server.setMaxClients( 6 );
+//    server.asyncRun();
     std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
     std::cout << "[Test] server end ------------------------------" << std::endl;
 
@@ -56,9 +56,11 @@ TEST_CASE( "Server test : sync" ) {
         std::cout << "[Test] ############################### outputStream start" << std::endl;
         hub::OutputSensor outputSensor(
             hub::SensorSpec { "sensorName", { { { 3 }, hub::Format::BGR8 } } },
-            "stream",
+            OutputStream(__FILE_NAME__)
+//            "stream",
 //            hub::net::ClientSocket( ipv4, port ) );
-            ipv4, port );
+//            ipv4, port
+            );
 
         const auto& outputSensorSpec = outputSensor.getSpec();
         CHECK( outputSensorSpec.getAcquisitionSize() == dataSize );
@@ -72,9 +74,11 @@ TEST_CASE( "Server test : sync" ) {
         std::cout << "[Test] ############################### outputStream2 start" << std::endl;
         hub::OutputSensor outputSensor2(
             hub::SensorSpec { "sensorName2", { { { 3 }, hub::Format::BGR8 } } },
-            "stream2",
+            OutputStream(__FILE_NAME__ "2")
+//            "stream2",
 //            hub::net::ClientSocket( ipv4, port ) );
-            ipv4, port );
+//            ipv4, port
+            );
 
         const auto& outputSensorSpec2 = outputSensor2.getSpec();
         CHECK( outputSensorSpec2.getAcquisitionSize() == dataSize );
@@ -88,7 +92,7 @@ TEST_CASE( "Server test : sync" ) {
         std::cout << "[Test] ############################### inputStream start" << std::endl;
         hub::InputSensor inputSensor(
 //            hub::io::InputStream( "stream", hub::net::ClientSocket( ipv4, port ) ) );
-            hub::input::InputStreamServer( "stream", ipv4, port ) );
+            hub::input::InputStream( __FILE_NAME__));
 
         const auto& inputSensorSpec = inputSensor.getSpec();
         std::cout << "[Test] inputStream end ---------------------------------" << std::endl;
@@ -96,7 +100,7 @@ TEST_CASE( "Server test : sync" ) {
         std::cout << "[Test] ############################### inputStream2 start" << std::endl;
         hub::InputSensor inputSensor2(
 //            hub::io::InputStream( "stream2", hub::net::ClientSocket( ipv4, port ) ) );
-            hub::input::InputStreamServer( "stream2", ipv4, port ) );
+            hub::input::InputStream( __FILE_NAME__ "2"));
 
 
         const auto& inputSensorSpec2 = inputSensor2.getSpec();
@@ -104,7 +108,7 @@ TEST_CASE( "Server test : sync" ) {
 
         std::cout << "[Test] ############################### inputStream3 start" << std::endl;
         hub::InputSensor inputSensor3(
-            hub::input::InputSyncStream( "stream", "stream2", ipv4, port ) );
+            hub::input::InputSyncStream( __FILE_NAME__, __FILE_NAME__ "2" ) );
 
         const auto& inputSensorSpec3 = inputSensor3.getSpec();
         std::cout << "[Test] inputStream2 end ---------------------------------" << std::endl;

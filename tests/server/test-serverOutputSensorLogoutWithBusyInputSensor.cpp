@@ -2,17 +2,17 @@
 
 #include "test_common.hpp"
 
-#include <server/Server.hpp>
+//#include <server/Server.hpp>
 #include <server/StreamViewerClient.hpp>
 
 TEST_CASE( "Server test" ) {
 
-    const std::string ipv4 = "127.0.0.1";
-    const int port         = GET_RANDOM_PORT;
+//    const std::string ipv4 = "127.0.0.1";
+//    const int port         = GET_RANDOM_PORT;
 
-    hub::Server server( port );
-    server.setMaxClients( 2 );
-    server.asyncRun();
+//    hub::Server server( port );
+//    server.setMaxClients( 2 );
+//    server.asyncRun();
 
     {
         std::unique_ptr<hub::InputSensor> inputSensor;
@@ -22,14 +22,17 @@ TEST_CASE( "Server test" ) {
         {
             hub::OutputSensor outputSensor(
                 hub::SensorSpec( "sensorName", { { { 1 }, hub::Format::BGR8 } } ),
-                "streamName",
+                OutputStream(__FILE_NAME__)
+//                "streamName",
 //                hub::net::ClientSocket( ipv4, port ) );
-                ipv4, port );
+//                ipv4, port
+                );
             std::cout << "[test] outputSensor created" << std::endl;
 
             inputSensor = std::make_unique<hub::InputSensor>(
 //                hub::io::InputStream( "streamName", hub::net::ClientSocket( ipv4, port ) ) );
-                hub::input::InputStreamServer( "streamName", ipv4, port ) );
+//                hub::input::InputStreamServer( "streamName", ipv4, port ) );
+                hub::input::InputStream( __FILE_NAME__ ) );
             std::cout << "[test] inputSensor created" << std::endl;
 
             thread = std::thread( [&inputSensor]() {

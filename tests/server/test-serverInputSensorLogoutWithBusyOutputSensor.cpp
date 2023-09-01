@@ -2,26 +2,28 @@
 
 #include "test_common.hpp"
 
-#include <server/Server.hpp>
+//#include <server/Server.hpp>
 #include <server/StreamViewerClient.hpp>
 
 TEST_CASE( "Server test : inputSensorLogoutWithBusyOutputSensor" ) {
 
-    const std::string ipv4 = "127.0.0.1";
-    const int port         = GET_RANDOM_PORT;
+//    const std::string ipv4 = "127.0.0.1";
+//    const int port         = GET_RANDOM_PORT;
 
-    hub::Server server( port );
-    server.setMaxClients( 2 );
-    server.asyncRun();
+//    hub::Server server( port );
+//    server.setMaxClients( 2 );
+//    server.asyncRun();
 
     constexpr int delay = 0;
 
     {
         hub::OutputSensor outputSensor(
             hub::SensorSpec( "sensorName", { { { 1 }, hub::Format::BGR8 } } ),
-            "streamName",
+            OutputStream(__FILE_NAME__)
+//            "streamName",
 //            hub::net::ClientSocket( ipv4, port ) );
-            ipv4, port );
+//            ipv4, port
+            );
         std::cout << "[test] outputSensor created" << std::endl;
 
         std::thread thread;
@@ -44,7 +46,8 @@ TEST_CASE( "Server test : inputSensorLogoutWithBusyOutputSensor" ) {
         {
 
 //            hub::io::InputStream inputStream( "streamName", hub::net::ClientSocket( ipv4, port ) );
-            hub::input::InputStreamServer inputStream( "streamName", ipv4, port );
+//            hub::input::InputStreamServer inputStream( "streamName", ipv4, port );
+            hub::input::InputStream inputStream( __FILE_NAME__ );
             hub::InputSensor inputSensor( std::move( inputStream ) );
             assert( !inputSensor.getSpec().isEmpty() );
 

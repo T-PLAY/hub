@@ -3,7 +3,7 @@
 
 #include <OutputSensor.hpp>
 #include <SensorSpec.hpp>
-//#include <server/Server.hpp>
+// #include <server/Server.hpp>
 
 #include <client/Asker.hpp>
 
@@ -12,20 +12,21 @@ TEST_CASE( "Asker test" ) {
     const hub::Resolution resolution( { 1 }, hub::Format::BGR8 );
     const hub::SensorSpec sensorSpec( "hello", { resolution } );
     const std::string streamName = __FILE_NAME__;
-//    const std::string ipv4       = "127.0.0.1";
-//    const int port               = GET_RANDOM_PORT;
-//    const int port = hub::io::s_serverDefaultPort;
+    //    const std::string ipv4       = "127.0.0.1";
+    //    const int port               = GET_RANDOM_PORT;
+    //    const int port = hub::io::s_serverDefaultPort;
 
-//    hub::Server server( port );
-//    server.setMaxClients( 2 );
-//    server.asyncRun();
+    //    hub::Server server( port );
+    //    server.setMaxClients( 2 );
+    //    server.asyncRun();
 
     {
         hub::OutputSensor outputSensor(
-//            sensorSpec, streamName, hub::net::ClientSocket( ipv4, port ) );
-//            sensorSpec, streamName, ipv4, port );
-//            sensorSpec, OutputStream(__FILE_NAME__));
-            sensorSpec, OutputStream(streamName));
+            //            sensorSpec, streamName, hub::net::ClientSocket( ipv4, port ) );
+            //            sensorSpec, streamName, ipv4, port );
+            //            sensorSpec, OutputStream(__FILE_NAME__));
+            sensorSpec,
+            OutputStream( streamName ) );
 
         unsigned char data[3] = { 0, 1, 2 };
         const hub::Acquisition acq =
@@ -35,7 +36,7 @@ TEST_CASE( "Asker test" ) {
         std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
 
         {
-//            hub::client::Asker asker( ipv4, port );
+            //            hub::client::Asker asker( ipv4, port );
             hub::client::Asker asker;
             auto listStreams = asker.listStreams();
 
@@ -53,9 +54,11 @@ TEST_CASE( "Asker test" ) {
                 std::cout << sensorSpec2 << std::endl;
                 CHECK( sensorSpec == sensorSpec2 );
 
-                auto acq2 = asker.getAcquisition( streamName2 );
-                CHECK( acq == acq2 );
-                std::cout << acq2 << std::endl;
+                if ( streamName == streamName2 ) {
+                    auto acq2 = asker.getAcquisition( streamName2 );
+                    CHECK( acq == acq2 );
+                    std::cout << acq2 << std::endl;
+                }
 
                 std::cout << "--------------------------------" << std::endl;
             }

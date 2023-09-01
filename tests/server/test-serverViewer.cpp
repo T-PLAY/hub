@@ -6,15 +6,15 @@
 
 #include <client/Viewer.hpp>
 
-#include <server/Server.hpp>
+//#include <server/Server.hpp>
 
 #include <filesystem>
 
 TEST_CASE( "Server test : viewer" ) {
     // todo sometimes failed
 
-    const std::string ipv4 = "127.0.0.1";
-    const int port         = GET_RANDOM_PORT;
+//    const std::string ipv4 = "127.0.0.1";
+//    const int port         = GET_RANDOM_PORT;
 
     std::vector<hub::Acquisition> acqs;
     constexpr int sleepTime = 200;
@@ -35,9 +35,9 @@ TEST_CASE( "Server test : viewer" ) {
     delete[] data;
 
     std::cout << "[Test] ############################### server start" << std::endl;
-    hub::Server server( port );
-    server.setMaxClients( 4 );
-    server.asyncRun();
+//    hub::Server server( port );
+//    server.setMaxClients( 4 );
+//    server.asyncRun();
     std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
     std::cout << "[Test] server end ------------------------------" << std::endl;
 
@@ -49,7 +49,7 @@ TEST_CASE( "Server test : viewer" ) {
             {
                 hub::InputSensor inputSensor(
 //                    hub::io::InputStream( sensorName, hub::net::ClientSocket( ipv4, port ) ) );
-                    hub::input::InputStreamServer( sensorName, ipv4, port ) );
+                    hub::input::InputStream{ sensorName});
 
                 const auto& inputSensorSpec = inputSensor.getSpec();
                 CHECK( inputSensorSpec.getAcquisitionSize() == dataSize );
@@ -86,7 +86,7 @@ TEST_CASE( "Server test : viewer" ) {
                                  const hub::Any& value ) {
             std::cout << "[example-viewer] onSetProperty " << streamName << std::endl;
         };
-        hub::client::ViewerServer viewer (
+        hub::client::Viewer viewer (
                                      __FILE_NAME__,
                                            onNewStreamer,
                                      onDelStreamer,
@@ -95,9 +95,10 @@ TEST_CASE( "Server test : viewer" ) {
                                      onServerDisconnected,
                                      onNewAcquisition,
                                      onSetProperty,
-            {},
-                                     ipv4,
-                                     port
+            {}
+//            ,
+//                                     ipv4,
+//                                     port
         );
         std::cout << "[Test] ############################### viewer created" << std::endl;
         std::this_thread::sleep_for( std::chrono::milliseconds( sleepTime ) );
@@ -106,9 +107,11 @@ TEST_CASE( "Server test : viewer" ) {
             std::cout << "[Test] ############################### outputSensor start" << std::endl;
             hub::OutputSensor outputSensor(
                 hub::SensorSpec { "sensorName", { { { width, height }, hub::Format::BGR8 } } },
-                "stream",
+//                "stream",
+                OutputStream(__FILE_NAME__)
 //                hub::net::ClientSocket( ipv4, port ) );
-                ipv4, port );
+//                ipv4, port
+                );
             std::this_thread::sleep_for( std::chrono::milliseconds( 500 ) );
         }
         std::cout << "[Test] ############################### outputSensor end" << std::endl;

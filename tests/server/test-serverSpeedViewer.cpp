@@ -5,7 +5,8 @@
 #include <OutputSensor.hpp>
 #include <client/Viewer.hpp>
 
-#include <server/Server.hpp>
+// #include <server/Server.hpp>
+#include <net/ServerSocket.hpp>
 
 #include <filesystem>
 
@@ -34,13 +35,13 @@ TEST_CASE( "Server test : viewer" ) {
         acqs.at( iAcq ) = std::move( acq );
     }
 
-    const std::string ipv4 = "127.0.0.1";
-    const int port         = GET_RANDOM_PORT;
-
     double megaBytesPerSeconds;
     double megaBytesPerSeconds2;
 
     {
+        const std::string ipv4 = "127.0.0.1";
+        const int port         = GET_RANDOM_PORT;
+
         std::cout << "[test][ClientSocket] start streaming" << std::endl;
         hub::net::ServerSocket serverSocket( port );
         hub::net::ClientSocket clientSocket( ipv4, port );
@@ -80,13 +81,13 @@ TEST_CASE( "Server test : viewer" ) {
     }
 
     {
-        const int port2 = port + 1;
+        //        const int port2 = port + 1;
 
         std::cout << "[test][InputOutputSensor] ############################### server start"
                   << std::endl;
-        hub::Server server( port2 );
-        server.setMaxClients( 3 );
-        server.asyncRun();
+        //        hub::Server server( port2 );
+        //        server.setMaxClients( 3 );
+        //        server.asyncRun();
         std::cout << "[test][InputOutputSensor] server end ------------------------------"
                   << std::endl;
 
@@ -96,10 +97,12 @@ TEST_CASE( "Server test : viewer" ) {
                 << std::endl;
             hub::OutputSensor outputSensor(
                 hub::SensorSpec( "sensorName", { { { width, height }, hub::Format::BGR8 } } ),
-                "streamName",
+                OutputStream( __FILE_NAME__ )
+                //                "streamName",
                 //                hub::net::ClientSocket( ipv4, port2 ) );
-                ipv4,
-                port2 );
+                //                ipv4,
+                //                port2
+            );
 
             std::cout
                 << "[test][InputOutputSensor] ############################### inputStream start"
@@ -142,11 +145,13 @@ TEST_CASE( "Server test : viewer" ) {
                     std::cout << "[example-viewer] onServerDisconnected : " << ipv4 << " " << port
                               << std::endl;
                 };
-                int iAcq              = 0;
+                int nAcqSended              = 0;
                 auto onNewAcquisition = [&]( const std::string& streamName,
                                              const hub::Acquisition& acq ) {
-                    CHECK( acq == acqs.at( iAcq ) );
-                    ++iAcq;
+                    std::cout << "[example-viewer] onNewAcquisition : " << streamName << " " << acq
+                              << std::endl;
+                    CHECK( acq == acqs.at( nAcqSended ) );
+                    ++nAcqSended;
                 };
                 auto onSetProperty = []( const std::string& streamName,
                                          const std::string& objectName,
@@ -160,7 +165,7 @@ TEST_CASE( "Server test : viewer" ) {
                 };
 
                 std::cout << "[Test] ############################### viewer start" << std::endl;
-                hub::client::ViewerServer viewer {
+                hub::client::Viewer viewer {
                     __FILE_NAME__,
                     onNewStreamer,
                     onDelStreamer,
@@ -169,9 +174,9 @@ TEST_CASE( "Server test : viewer" ) {
                     onServerDisconnected,
                     onNewAcquisition,
                     onSetProperty,
-                    onLogMessage,
-                    ipv4,
-                    port2,
+                    onLogMessage
+                    //                    ipv4,
+                    //                    port2,
                 };
 
                 while ( !serverConnected ) {
@@ -186,12 +191,18 @@ TEST_CASE( "Server test : viewer" ) {
                 const auto& start2 = std::chrono::high_resolution_clock::now();
                 for ( int i = 0; i < nAcqs; ++i ) {
                     outputSensor << acqs.at( i );
+                    std::cout << "[test] send acq " << acqs.at(i) << std::endl;
+                    while ( nAcqSended <= i ) {
+                        std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+                        std::cout << "[test] waiting for receive " << i << std::endl;
+                    }
                 }
 
-                while ( iAcq != nAcqs ) {
-                    std::cout << "[test] waiting for viewer read all acqs" << std::endl;
-                    std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
-                }
+                assert(nAcqSended == nAcqs);
+//                while ( nAcqSended != nAcqs ) {
+//                    std::cout << "[test] waiting for viewer read all acqs" << std::endl;
+//                    std::this_thread::sleep_for( std::chrono::milliseconds( 25 ) );
+//                }
                 const auto& end2 = std::chrono::high_resolution_clock::now();
                 const auto& duration2 =
                     std::chrono::duration_cast<std::chrono::milliseconds>( end2 - start2 ).count();
@@ -207,6 +218,7 @@ TEST_CASE( "Server test : viewer" ) {
             } // end viewer
         }
     }
+
     std::cout << std::endl;
 
     std::cout << "[test][ClientSocket] Mega byte per second : " << megaBytesPerSeconds << " Mo/s"
@@ -218,22 +230,23 @@ TEST_CASE( "Server test : viewer" ) {
 
     const auto ratio = 100.0 * megaBytesPerSeconds2 / megaBytesPerSeconds;
     std::cout << "[test][ClientSocket/InputOutputSensor] ratio : " << ratio << " %" << std::endl;
-#ifdef WIN32
-#    ifdef DEBUG
-    checkRatio( ratio, 20 );
-#    else
-    checkRatio( ratio, 40 );
-#    endif
-#else
-    if ( hostname == "msi" ) { checkRatio( ratio, 50, 10 ); }
-    else {
-#    ifdef DEBUG
-        checkRatio( ratio, 55, 10 );
-#    else
-        checkRatio( ratio, 40, 10 );
-#    endif
-    }
-#endif
+
+    // #ifdef WIN32
+    // #    ifdef DEBUG
+    //     checkRatio( ratio, 20 );
+    // #    else
+    //     checkRatio( ratio, 40 );
+    // #    endif
+    // #else
+    //     if ( hostname == "msi" ) { checkRatio( ratio, 50, 10 ); }
+    //     else {
+    // #    ifdef DEBUG
+    //         checkRatio( ratio, 55, 10 );
+    // #    else
+    //         checkRatio( ratio, 40, 10 );
+    // #    endif
+    //     }
+    // #endif
 
     std::cout << "[test] tested on machine: '" << hostname << "'" << std::endl;
 

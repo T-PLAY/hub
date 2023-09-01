@@ -10,15 +10,15 @@
 #include <SensorSpec.hpp>
 #include <data/Dof6.hpp>
 #include <data/Measure.hpp>
-#include <server/Server.hpp>
+//#include <server/Server.hpp>
 
 TEST_CASE( "heavy data" ) {
-    const std::string ipv4 = "127.0.0.1";
-    const int port         = GET_RANDOM_PORT;
+//    const std::string ipv4 = "127.0.0.1";
+//    const int port         = GET_RANDOM_PORT;
     std::cout << "[Test] ############################### server start" << std::endl;
-    hub::Server server( port );
-    server.setMaxClients( 2 );
-    server.asyncRun();
+//    hub::Server server( port );
+//    server.setMaxClients( 2 );
+//    server.asyncRun();
 
     hub::Resolutions resolutions;
 
@@ -34,14 +34,17 @@ TEST_CASE( "heavy data" ) {
     metaData["model"]             = hub::data::Mesh( m_assetPath + "sensor" );
 
     hub::OutputSensor outputSensor( hub::SensorSpec { "Sensor", resolutions, metaData },
-                                    "Sensor",
+                                    OutputStream(__FILE_NAME__)
+                                    );
+//                                    "Sensor",
 //                                    hub::net::ClientSocket( ipv4, port ) );
-                                    ipv4, port );
+//                                    ipv4, port );
 
     std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
     hub::InputSensor inputSensor(
 //        hub::io::InputStream( "Sensor", hub::net::ClientSocket( ipv4, port ) ) );
-        hub::input::InputStreamServer( "Sensor", ipv4, port ) );
+//        hub::input::InputStreamServer( "Sensor", ipv4, port ) );
+        hub::input::InputStream( __FILE_NAME__ ) );
 
     std::vector<hub::Acquisition> acqs;
     constexpr size_t nAcq = 100;
