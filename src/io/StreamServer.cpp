@@ -4,7 +4,7 @@ namespace hub {
 namespace io {
 
 const std::string StreamServer::s_defaultIpv4 = "127.0.0.1";
-const int StreamServer::s_defaultPort         = 4042;
+const int StreamServer::s_defaultPort         = 4043;
 
 //const std::string StreamServer::s_topicStream = "streams/";
 //const std::string StreamServer::s_topicViewer = "viewers/";

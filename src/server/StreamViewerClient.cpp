@@ -74,11 +74,10 @@ StreamViewerClient::StreamViewerClient( Server* server,
     if ( streamers.find( m_streamName ) == streamers.end() ) {
         sock.write( hub::net::ClientSocket::Message::NOT_FOUND );
         std::cout << headerMsg() << "unknown stream name : '" << m_streamName << "'" << std::endl;
+        std::thread( [this]() { delete this; } ).detach();
         return;
     }
-    else {
-        sock.write( hub::net::ClientSocket::Message::OK );
-    }
+    else { sock.write( hub::net::ClientSocket::Message::OK ); }
     assert( streamers.find( m_streamName ) != streamers.end() );
 
     const auto& sensorSpec = m_server->getSensorSpec( m_streamName );
@@ -87,10 +86,11 @@ StreamViewerClient::StreamViewerClient( Server* server,
 
     m_server->addStreamViewer( this );
 
-    m_thread = std::thread( [this]() {
+    m_thread = new std::thread( [this]() {
         try {
 
-            OutputStreamClient& outputStream = dynamic_cast<OutputStreamClient&>( m_outputSensor->getOutput() );
+            OutputStreamClient& outputStream =
+                dynamic_cast<OutputStreamClient&>( m_outputSensor->getOutput() );
 
             hub::net::ClientSocket::Message message;
             // wait for client connection closed
@@ -114,10 +114,12 @@ StreamViewerClient::StreamViewerClient( Server* server,
 StreamViewerClient::~StreamViewerClient() {
     std::cout << headerMsg() << "delete start" << std::endl;
 
-    assert( m_thread.joinable() );
-    m_thread.join();
+    if ( m_thread != nullptr ) {
+        assert( m_thread->joinable() );
+        m_thread->join();
 
-    m_server->delStreamViewer( this );
+        m_server->delStreamViewer( this );
+    }
     std::cout << headerMsg() << "delete ended" << std::endl;
 }
 
@@ -131,10 +133,12 @@ void StreamViewerClient::update( const Acquisition& acq ) {
 
 void StreamViewerClient::end( net::ClientSocket::Message message ) {
 
+    //    if ( m_outputSensor != nullptr ) {
+    assert( m_outputSensor != nullptr );
     auto& output = m_outputSensor->getOutput();
-//    assert( output.isOpen() );
-    if (output.isOpen())
-        output.write( message );
+    //    assert( output.isOpen() );
+    if ( output.isOpen() ) output.write( message );
+    //    }
 }
 
 } // namespace server

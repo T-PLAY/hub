@@ -83,7 +83,7 @@ class SRC_API Server
                       const Any& value );
 
   private:
-    std::thread m_thread;
+    std::thread * m_thread = nullptr;
 
     std::map<std::string, StreamerClient*> m_streamName2streamer;
     mutable std::mutex m_mtxStreamName2streamer;
@@ -99,6 +99,7 @@ class SRC_API Server
     std::mutex m_mtxClients;
 
     int m_nClient    = 0;
+    int m_nActiveClient = 0;
     int m_maxClients = 1'000'000;
 
     std::mutex m_mtxPrint;

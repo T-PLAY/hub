@@ -154,11 +154,14 @@ StreamerClient::StreamerClient( Server* server,
 }
 
 StreamerClient::~StreamerClient() {
+    std::cout << headerMsg() << "delete start" << std::endl;
 
     assert( m_thread.joinable() );
     m_thread.join();
 
     if ( m_server != nullptr ) m_server->delStreamer( this );
+
+    std::cout << headerMsg() << "delete ended" << std::endl;
 }
 
 std::string StreamerClient::headerMsg() const {

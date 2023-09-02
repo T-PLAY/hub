@@ -32,7 +32,7 @@ class StreamViewerClient : public Client
 
     std::string m_streamName;
 
-    std::thread m_thread;
+    std::thread * m_thread = nullptr;
 
     bool m_ending = false;
 
