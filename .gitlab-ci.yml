@@ -58,7 +58,8 @@ cache:
 
 .test_any:
   script:
-    - cmake --build $CACHE_PATH/build-$CMAKE_C_COMPILER-$BUILD_TYPE --config $BUILD_TYPE --target tests
+    - buildDir=$CACHE_PATH/build-$CMAKE_C_COMPILER-$BUILD_TYPE
+    - cmake --build $buildDir --config $BUILD_TYPE --target tests
     # - cmake --build build-$CMAKE_C_COMPILER-$BUILD_TYPE --config $BUILD_TYPE --target tests
 
 #############################################
@@ -77,7 +78,7 @@ cache:
 #   script:
 #     - git fetch
 
-#############################################
+############################################# BUILDING
 
 build-clang-release:
   stage: build
@@ -85,11 +86,11 @@ build-clang-release:
     - $LINUX_TAG
   script:
     - BUILD_TYPE=Release
-    - CMAKE_C_COMPILER=clang
-    - CMAKE_CXX_COMPILER=clang++
+    - export CMAKE_C_COMPILER=clang
+    - export CMAKE_CXX_COMPILER=clang++
     # - CMAKE_CONFIGURE_ARGS="-DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON"
     # - CMAKE_CONFIGURE_ARGS="-DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON"
-    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON"
+    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -DHUB_DEFAULT_PORT=4042"
     - !reference [.build_any, script]
   # when: manual
 
@@ -101,7 +102,7 @@ build-gcc-debug:
     - BUILD_TYPE=Debug
     - CMAKE_C_COMPILER=gcc
     - CMAKE_CXX_COMPILER=g++
-    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON"
+    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -DHUB_DEFAULT_PORT=4043"
     - !reference [.build_any, script]
   # when: manual
   
@@ -113,7 +114,7 @@ build-cl-release:
     - BUILD_TYPE=Release
     - CMAKE_C_COMPILER=cl
     - CMAKE_CXX_COMPILER=cl
-    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON"
+    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -DHUB_DEFAULT_PORT=4042"
     - !reference [.build_any, script]
   # when: manual
 
@@ -125,11 +126,11 @@ build-cl-debug:
     - BUILD_TYPE=Debug
     - CMAKE_C_COMPILER=cl
     - CMAKE_CXX_COMPILER=cl
-    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON"
+    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -DHUB_DEFAULT_PORT=4043"
     - !reference [.build_any, script]
   # when: manual
 
-##########################################################
+########################################################## TESTING
 
 test-clang-release:
   stage: test
