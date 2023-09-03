@@ -105,6 +105,7 @@ if (HUB_BUILD_SERVER)
     add_custom_target(
         tests # WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
         COMMAND ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${CMAKE_BINARY_DIR}/bin/bin-server --maxClient 36
+        COMMAND ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${CMAKE_BINARY_DIR}/bin/bin-viewer
         COMMAND ctest -C ${CMAKE_BUILD_TYPE} -V
 #        COMMAND pkill bin-server
         COMMENT "Running tests")

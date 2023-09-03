@@ -353,7 +353,7 @@ TEST_CASE( "MqttCompareSpeed test" ) {
 
     ratio = 100.0 * megaBytesPerSeconds4 / megaBytesPerSeconds3;
     std::cout << "[MqttStream/Hub] ratio : " << ratio << " %" << std::endl;
-    checkRatio(ratio, 6, 6);
+    checkRatio(ratio, 10, 5);
 
     std::cout << std::endl;
 
