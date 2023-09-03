@@ -92,6 +92,10 @@ endif()
 
 if (HUB_BUILD_SERVER)
     target_compile_definitions(${PROJECT_NAME} PUBLIC -DBUILD_SERVER)
+#    option(HUB_SERVER_PORT "Server service port" "4042")
+    if (HUB_SERVER_PORT)
+        target_compile_definitions(${PROJECT_NAME} PUBLIC -DHUB_SERVER_PORT=${HUB_SERVER_PORT})
+    endif()
 endif()
 
 #set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "-fvisibility=hidden -fvisibility-inlines-hidden")
