@@ -3,9 +3,33 @@
 
 #include <Native.hpp>
 
-#define HEADER_MSG "\t[NativeViewer] "
+#define COLOR "\033[44m"
+#define HEADER_MSG "\t\t\t" COLOR "[NativeViewer]\033[0m "
 
-int main() {
+int main( int argc, char* argv[] ) {
+
+    static bool exitWhenServerLost = false;
+
+    std::vector<std::string> args( argv + 1, argv + argc );
+
+    auto it = args.begin();
+    while ( it != args.end() ) {
+        const auto& arg = *it;
+
+        if ( arg == "-h" || arg == "--help" ) {
+            std::cout << argv[0] << " usage: [--exitWhenServerLost]" << std::endl;
+            return 0;
+        }
+        else if ( arg == "--exitWhenServerLost" ) { exitWhenServerLost = true; }
+        else {
+            std::cout << "unrecognized argument: " << arg << std::endl;
+            std::cout << argv[0] << " usage: [--exitWhenServerLost]" << std::endl;
+            return 0;
+        }
+        ++it;
+    }
+
+    static bool exit = false;
 
     auto onNewStreamer = []( const char* streamName, const hub::SensorSpec* sensorSpec ) {
         std::cout << HEADER_MSG "onNewStreamer : " << streamName << std::endl;
@@ -22,9 +46,11 @@ int main() {
     };
     auto onServerDisconnected = []( const char* ipv4, int port ) {
         std::cout << HEADER_MSG "onServerDisconnected : " << ipv4 << " " << port << std::endl;
+        if ( exitWhenServerLost ) { exit = true; }
     };
     auto onNewAcquisition = []( const char* streamName, const hub::Acquisition* acq ) {
-        std::cout << HEADER_MSG "onNewAcquisition : " << acq << std::endl;
+//        std::cout << HEADER_MSG "onNewAcquisition : " << acq << std::endl;
+        std::cout << COLOR "+\033[0m";
     };
     auto onSetProperty =
         []( const char* streamName, const char* objectName, int property, const hub::Any* value ) {
@@ -47,7 +73,7 @@ int main() {
 
     std::cout << HEADER_MSG "Ctrl+C to exit" << std::endl;
 
-    while ( true ) {
+    while ( !exit ) {
         std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
     }
 }

@@ -105,6 +105,7 @@ class SRC_API Server
     std::mutex m_mtxPrint;
 
     bool m_detached = false;
+    bool m_killed = false;
 
     friend class server::Client;
     friend class server::StreamerClient;

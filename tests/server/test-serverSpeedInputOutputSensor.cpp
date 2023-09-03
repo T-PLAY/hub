@@ -82,7 +82,7 @@ TEST_CASE( "Server test : InputOutputSensor" ) {
     }
 
     {
-        const int port2 = port + 1;
+//        const int port2 = port + 1;
 
         std::cout << "[test][InputOutputSensor] ############################### server start"
                   << std::endl;

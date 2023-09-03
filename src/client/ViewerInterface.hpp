@@ -477,10 +477,10 @@ void ViewerInterface<InputStream>::printStatus() const {
     DEBUG_MSG( "\033[7m[Viewer] status : server connected:" << m_serverConnected
                                                             << ", nbStreamer:" << m_streams.size()
                                                             << " " << str << "\033[0m" );
-    //    for (int i = 0; i < 50; ++i) {
-    //        DEBUG_MSG( i << "\033[" << i << "m[Viewer] status : server connected:" <<
-    //        m_serverConnected << ", nbStreamer:" << m_streams.size() << " " << str << "\033[0m" );
-    //    }
+//        for (int i = 0; i < 50; ++i) {
+//            DEBUG_MSG( i << "\033[" << i << "m[Viewer] status : server connected:" <<
+//            m_serverConnected << ", nbStreamer:" << m_streams.size() << " " << str << "\033[0m" );
+//        }
 }
 
 template <class InputStream>

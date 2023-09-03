@@ -62,24 +62,12 @@ bool OutputStreamClient::isOpen() const {
 
 ///////////////////////////////////////////////// StreamViewerClient /////////////////////
 
-StreamViewerClient::StreamViewerClient( Server* server,
+StreamViewerClient::StreamViewerClient(Server* server,
                                         int iClient,
-                                        hub::net::ClientSocket&& sock ) :
-    Client( server, iClient ) {
-
-    assert( m_server != nullptr );
-    const auto& streamers = m_server->getStreamers();
-
-    sock.read( m_streamName );
-    if ( streamers.find( m_streamName ) == streamers.end() ) {
-        sock.write( hub::net::ClientSocket::Message::NOT_FOUND );
-        std::cout << headerMsg() << "unknown stream name : '" << m_streamName << "'" << std::endl;
-        std::thread( [this]() { delete this; } ).detach();
-        return;
-    }
-    else { sock.write( hub::net::ClientSocket::Message::OK ); }
-    assert( streamers.find( m_streamName ) != streamers.end() );
-
+                                        hub::net::ClientSocket&& sock , std::string streamName) :
+    Client( server, iClient ),
+    m_streamName(std::move(streamName))
+{
     const auto& sensorSpec = m_server->getSensorSpec( m_streamName );
     m_outputSensor =
         std::make_unique<hub::OutputSensor>( sensorSpec, OutputStreamClient( std::move( sock ) ) );

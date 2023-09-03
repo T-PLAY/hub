@@ -18,7 +18,7 @@ class StreamerClient;
 class StreamViewerClient : public Client
 {
   private:
-    StreamViewerClient( Server* server, int iClient, hub::net::ClientSocket&& sock );
+    StreamViewerClient( Server* server, int iClient, hub::net::ClientSocket&& sock, std::string  streamName );
     ~StreamViewerClient();
 
     std::string headerMsg() const override;

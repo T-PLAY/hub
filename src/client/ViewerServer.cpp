@@ -325,6 +325,10 @@ ViewerServer::ViewerServer(
                 // #endif
             }
 
+            if (m_sock.isOpen()) {
+                m_sock.close();
+            }
+
         } // while (! m_stopThread)
     } );  // thread
 }

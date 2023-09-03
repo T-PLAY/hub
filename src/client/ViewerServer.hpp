@@ -74,6 +74,7 @@ class SRC_API ViewerServer : public ViewerInterface<input::InputStreamServer>
 //        void( const char* streamName, const char* objectName, int property, const Any& value )>
 //        m_onSetProperty;
 
+
     net::ClientSocket m_sock;
 //    bool m_serverConnected = false;
 //    std::function<void( const char* logMessage )> m_onLogMessage;

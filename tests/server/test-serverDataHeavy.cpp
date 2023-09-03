@@ -75,12 +75,12 @@ TEST_CASE( "heavy data" ) {
     }
 
     for ( int i = 0; i < nAcq; ++i ) {
-        std::cout << "send acq " << i << std::endl;
+//        std::cout << "send acq " << i << std::endl;
         outputSensor << acqs[i];
 
         hub::Acquisition acq2;
         inputSensor >> acq2;
-        std::cout << "recv acq " << i << std::endl;
+//        std::cout << "recv acq " << i << std::endl;
         CHECK( acqs[i] == acq2 );
 
         const auto& measures = acq2.getMeasures();

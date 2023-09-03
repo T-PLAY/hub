@@ -25,6 +25,7 @@ static int getRandomPort( const char* filename ) {
     const unsigned int random = std::hash<std::string>()( filename ) + rand();
     const unsigned int ret    = offset + random % ( 65535 - offset );
     assert( offset <= ret && ret < 65536 );
+    assert(ret != hub::io::StreamServer::s_defaultPort);
     return ret;
 }
 

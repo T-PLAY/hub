@@ -31,7 +31,7 @@ Server::Server( int port ) : m_serverSock( port ) {}
 Server::~Server() {
     SERVER_MSG( "~Server() started" );
 
-    assert( m_nClient == 0 || m_nClient == m_maxClients );
+    //    assert( m_nClient == 0 || m_nClient == m_maxClients );
     if ( m_thread != nullptr ) {
         assert( m_thread->joinable() );
         m_thread->join();
@@ -43,7 +43,7 @@ Server::~Server() {
         client->end( net::ClientSocket::Message::SERVER_CLOSED );
     }
     m_mtxClients.unlock();
-    SERVER_MSG( "~Server() connected clients are ending" );
+    SERVER_MSG( "~Server() connected clients ended" );
 
     m_mtxClients.lock();
     while ( !m_clients.empty() ) {
@@ -69,9 +69,9 @@ Server::~Server() {
     // SERVER_MSG( "~Server() unlock mtxViewers" );
 
     SERVER_MSG( "~Server() ended" );
-    assert(m_nActiveClient == 0);
-    assert(m_clients.empty());
-    assert(m_nClient <= m_maxClients);
+    assert( m_nActiveClient == 0 );
+    assert( m_clients.empty() );
+    assert( m_nClient <= m_maxClients );
 }
 
 void Server::detach() {
@@ -94,7 +94,7 @@ std::string Server::headerMsg() const {
 void Server::run() {
     SERVER_MSG( "listening port " << m_serverSock.getPort() );
 
-    while ( m_nClient < m_maxClients ) {
+    while ( m_nClient < m_maxClients && !m_killed ) {
 
         hub::net::ClientSocket sock = m_serverSock.waitNewClient();
 
@@ -107,7 +107,7 @@ void Server::run() {
         else { m_clients.push_back( newClient ); }
         m_mtxClients.unlock();
     }
-    SERVER_MSG( "run() max clients attempt" );
+    if ( !m_killed ) { SERVER_MSG( "run() max clients attempt" ); }
     std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
 }
 
@@ -146,9 +146,39 @@ Client* Server::initClient( hub::net::ClientSocket&& sock, int iClient ) {
     case hub::net::ClientSocket::Type::VIEWER:
         return new ViewerClient( this, iClient, std::move( sock ) );
 
-    case hub::net::ClientSocket::Type::STREAM_VIEWER:
-        return new StreamViewerClient( this, iClient, std::move( sock ) );
+    case hub::net::ClientSocket::Type::STREAM_VIEWER: {
+        //        assert( m_server != nullptr );
+        m_mtxStreamName2streamer.lock();
+        const auto& streamers = m_streamName2streamer;
 
+        StreamViewerClient* ret = nullptr;
+
+        std::string streamName;
+        sock.read( streamName );
+        if ( streamName == "killServer" ) {
+            std::cout << headerMsg() << "killing server by peer" << std::endl;
+            sock.close();
+            m_killed = true;
+            //            return nullptr;
+        }
+        else if ( streamers.find( streamName ) == streamers.end() ) {
+            sock.write( hub::net::ClientSocket::Message::NOT_FOUND );
+            std::cout << headerMsg() << "unable to reach stream : '" << streamName << "'"
+                      << std::endl;
+            //            std::thread( [this]() { delete this; } ).detach();
+            sock.close();
+            //            return nullptr;
+        }
+        else {
+            sock.write( hub::net::ClientSocket::Message::OK );
+            assert( streamers.find( streamName ) != streamers.end() );
+            ret =
+                new StreamViewerClient( this, iClient, std::move( sock ), std::move( streamName ) );
+        }
+
+        m_mtxStreamName2streamer.unlock();
+        return ret;
+    }
     case hub::net::ClientSocket::Type::ASKER:
         return new AskerClient( this, iClient, std::move( sock ) );
 
