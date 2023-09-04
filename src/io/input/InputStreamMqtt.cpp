@@ -138,7 +138,7 @@ void InputStreamMqtt::read( Acquisition& acq ) {
     io::Memory<decltype( buff )> memory( buff );
     memory.read( acq );
 
-    std::cout << "\tread acq : " << acq << std::endl;
+//    std::cout << "\tread acq : " << acq << std::endl;
 //    std::cout << "\tread acq" << m_iAcq - 1 << " : " << acq << std::endl;
 
     assert( buff.empty() );

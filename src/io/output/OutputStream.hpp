@@ -3,18 +3,18 @@
 
 #include "Output.hpp"
 
-#ifdef BUILD_SERVER
+#ifdef HUB_BUILD_SERVER
 #    include "OutputStreamServer.hpp"
 #endif
 
-#ifdef USE_MQTT
+#ifdef HUB_BUILD_MQTT
 #    include "OutputStreamMqtt.hpp"
 #endif
 
 namespace hub {
 namespace output {
 
-#ifdef BUILD_SERVER
+#ifdef HUB_BUILD_SERVER
 using OutputStream = OutputStreamServer;
 #else
 using OutputStream = OutputStreamMqtt;

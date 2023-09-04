@@ -50,7 +50,7 @@ class SRC_API OutputSensor : public Sensor
         class SensorSpec = hub::SensorSpec,
         class Output,
         typename = typename std::enable_if<std::is_base_of<io::Output, Output>::value &&
-#ifdef BUILD_SERVER
+#ifdef HUB_BUILD_SERVER
                                            !std::is_same<Output, output::OutputStreamServer>::value &&
 #endif
                                            !std::is_same<Output, net::ClientSocket>::value
@@ -61,7 +61,7 @@ class SRC_API OutputSensor : public Sensor
         m_output( new Output( std::move( output ) ) ) {
 
         static_assert( std::is_base_of<io::Output, Output>::value, "not a base class" );
-#ifdef BUILD_SERVER
+#ifdef HUB_BUILD_SERVER
         static_assert( !std::is_same<output::OutputStreamServer, Output>::value, "not outputStream class" );
 #endif
         static_assert( !std::is_same<net::ClientSocket, Output>::value, "not clientSocket class" );
@@ -69,7 +69,7 @@ class SRC_API OutputSensor : public Sensor
         m_output->write( m_spec );
     }
 
-#ifdef BUILD_SERVER
+#ifdef HUB_BUILD_SERVER
 
 //#define hub::output::OutputStream(_streamName, _ipv4, _port) \
 //    _streamName, _ipv4, _port

@@ -140,7 +140,7 @@ TEST_CASE( "InputSensor test" ) {
                  "---------------------"
               << std::endl;
 
-#ifndef BUILD_SERVER
+#ifndef HUB_BUILD_SERVER
     {
         auto outputStream  = hub::output::OutputStream( __FILE_NAME__ );
         auto outputStream2 = hub::output::OutputStream( __FILE_NAME__ "2" );

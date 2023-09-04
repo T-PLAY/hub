@@ -3,11 +3,11 @@
 
 #include "Input.hpp"
 
-#ifdef BUILD_SERVER
+#ifdef HUB_BUILD_SERVER
 #    include "InputStreamServer.hpp"
 #endif
 
-#ifdef USE_MQTT
+#ifdef HUB_BUILD_MQTT
 #    include "InputStreamMqtt.hpp"
 #endif
 
@@ -15,7 +15,7 @@
 namespace hub {
 namespace input {
 
-#ifdef BUILD_SERVER
+#ifdef HUB_BUILD_SERVER
 using InputStream = InputStreamServer;
 #else
 using InputStream = InputStreamMqtt;

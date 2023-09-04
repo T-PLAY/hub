@@ -8,9 +8,12 @@ set(REQUIRED_LIBS "")
 
 message(STATUS "Hub version: ${${PROJECT_NAME}_VERSION}")
 
-find_package(PahoMqttCpp QUIET)
-if (PahoMqttCpp_FOUND)
-    set(REQUIRED_LIBS ${REQUIRED_LIBS} PahoMqttCpp::paho-mqttpp3)
+option(HUB_BUILD_MQTT "Build implement using mqtt" OFF)
+if (HUB_BUILD_MQTT)
+    find_package(PahoMqttCpp QUIET)
+    if (PahoMqttCpp_FOUND)
+        set(REQUIRED_LIBS ${REQUIRED_LIBS} PahoMqttCpp::paho-mqttpp3)
+    endif()
 endif()
 
 option(HUB_ENABLE_COVERAGE "Collect coverage from hub library (required tests enable)" OFF)
@@ -87,11 +90,12 @@ target_include_directories(${PROJECT_NAME}
 target_compile_definitions(${PROJECT_NAME} PUBLIC -DINTERNAL_BUILD)
 
 if (PahoMqttCpp_FOUND)
-    target_compile_definitions(${PROJECT_NAME} PUBLIC -DUSE_MQTT)
+#    target_compile_definitions(${PROJECT_NAME} PUBLIC -DUSE_MQTT)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC -DHUB_BUILD_MQTT)
 endif()
 
 if (HUB_BUILD_SERVER)
-    target_compile_definitions(${PROJECT_NAME} PUBLIC -DBUILD_SERVER)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC -DHUB_BUILD_SERVER)
 #    option(HUB_SERVER_PORT "Server service port" "4042")
     if (HUB_SERVER_PORT)
         target_compile_definitions(${PROJECT_NAME} PUBLIC -DHUB_SERVER_PORT=${HUB_SERVER_PORT})

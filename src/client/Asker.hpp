@@ -1,11 +1,11 @@
 #pragma once
 
 
-#ifdef BUILD_SERVER
+#ifdef HUB_BUILD_SERVER
 #    include "AskerServer.hpp"
 #endif
 
-#ifdef USE_MQTT
+#ifdef HUB_BUILD_MQTT
 #    include "AskerMqtt.hpp"
 #endif
 
@@ -13,7 +13,7 @@
 namespace hub {
 namespace client {
 
-#ifdef BUILD_SERVER
+#ifdef HUB_BUILD_SERVER
 using Asker = AskerServer;
 #else
 using Asker = AskerMqtt;

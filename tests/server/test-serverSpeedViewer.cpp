@@ -1,15 +1,14 @@
 #include "test_common.hpp"
 #include <catch2/catch_test_macros.hpp>
 
+#include <filesystem>
+#include <atomic>
+
 #include <InputSensor.hpp>
 #include <OutputSensor.hpp>
 #include <client/Viewer.hpp>
-
 // #include <server/Server.hpp>
 #include <net/ServerSocket.hpp>
-
-#include <filesystem>
-
 #include <utils/Utils.hpp>
 
 TEST_CASE( "Server test : viewer" ) {
@@ -23,11 +22,11 @@ TEST_CASE( "Server test : viewer" ) {
     unsigned char* data2      = new unsigned char[dataSize];
 
     std::vector<hub::Acquisition> acqs( nAcqs );
-    for ( int i = 0; i < dataSize; ++i ) {
-        data[i] = i % 256;
-    }
 
     for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
+        for ( int i = 0; i < dataSize; ++i ) {
+            data[i] = iAcq % 256;
+        }
         hub::Acquisition acq( iAcq, iAcq );
         acq << hub::data::Measure( reinterpret_cast<unsigned const char*>( data ),
                                    dataSize,
@@ -145,12 +144,15 @@ TEST_CASE( "Server test : viewer" ) {
                     std::cout << "[example-viewer] onServerDisconnected : " << ipv4 << " " << port
                               << std::endl;
                 };
-                int nAcqSended              = 0;
+//                int nAcqSended        = 0;
+                std::atomic_int nAcqSended;
+//                nAcqSended.store(0);
+                nAcqSended = 0;
                 auto onNewAcquisition = [&]( const std::string& streamName,
                                              const hub::Acquisition& acq ) {
 //                    std::cout << "[example-viewer] onNewAcquisition : " << streamName << " " << acq
 //                              << std::endl;
-                    std::cout << "+";
+                                        std::cout << "+";
                     CHECK( acq == acqs.at( nAcqSended ) );
                     ++nAcqSended;
                 };
@@ -191,22 +193,24 @@ TEST_CASE( "Server test : viewer" ) {
                     << std::endl;
                 const auto& start2 = std::chrono::high_resolution_clock::now();
                 for ( int i = 0; i < nAcqs; ++i ) {
+//                    std::cout << "[test] send acq " << acqs.at( i ) << std::endl;
+                                        std::cout << ".";
                     outputSensor << acqs.at( i );
-//                    std::cout << "[test] send acq " << acqs.at(i) << std::endl;
-                    std::cout << ".";
                     while ( nAcqSended <= i ) {
-//                        std::this_thread::sleep_for( std::chrono::milliseconds( 1 ) );
-//                        std::cout << "[test] waiting for receive " << i << std::endl;
+                        //                        std::this_thread::sleep_for(
+                        //                        std::chrono::milliseconds( 1 ) ); std::cout <<
+                        //                        "[test] waiting for receive " << i << std::endl;
                     }
                 }
 
                 std::cout << std::endl;
 
-                assert(nAcqSended == nAcqs);
-//                while ( nAcqSended != nAcqs ) {
-//                    std::cout << "[test] waiting for viewer read all acqs" << std::endl;
-//                    std::this_thread::sleep_for( std::chrono::milliseconds( 25 ) );
-//                }
+                assert( nAcqSended == nAcqs );
+                //                while ( nAcqSended != nAcqs ) {
+                //                    std::cout << "[test] waiting for viewer read all acqs" <<
+                //                    std::endl; std::this_thread::sleep_for(
+                //                    std::chrono::milliseconds( 25 ) );
+                //                }
                 const auto& end2 = std::chrono::high_resolution_clock::now();
                 const auto& duration2 =
                     std::chrono::duration_cast<std::chrono::milliseconds>( end2 - start2 ).count();
@@ -221,11 +225,13 @@ TEST_CASE( "Server test : viewer" ) {
 
                 // todo : add read acq timeout to exit infinite loop in detached thread
                 nAcqSended = 0;
+//                std::cout << "[test] send exit acq " << acqs.front() << std::endl;
+                                        std::cout << ".";
                 outputSensor << acqs.front(); // to exit read acq loop from stream
-            } // end viewer
+            }                                 // end viewer
 
             std::cout << "######################### end viewer" << std::endl;
-//            outputSensor << acqs.front(); // to exit read acq loop from stream
+            //            outputSensor << acqs.front(); // to exit read acq loop from stream
 
         } // end outputSensor
     }

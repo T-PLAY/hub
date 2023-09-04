@@ -6,18 +6,18 @@
 //#include <string>
 
 //#include "StreamMqtt.hpp"
-#ifdef BUILD_SERVER
+#ifdef HUB_BUILD_SERVER
 #    include "StreamServer.hpp"
 #endif
 
-#ifdef USE_MQTT
+#ifdef HUB_BUILD_MQTT
 #    include "StreamMqtt.hpp"
 #endif
 
 namespace hub {
 namespace io {
 
-#ifdef BUILD_SERVER
+#ifdef HUB_BUILD_SERVER
 using Stream = StreamServer;
 #else
 using Stream = StreamMqtt;

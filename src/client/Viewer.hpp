@@ -2,11 +2,11 @@
 
 // #include "ViewerInterface.hpp"
 
-#ifdef BUILD_SERVER
+#ifdef HUB_BUILD_SERVER
 #    include "ViewerServer.hpp"
 #endif
 
-#ifdef USE_MQTT
+#ifdef HUB_BUILD_MQTT
 #    include "ViewerMqtt.hpp"
 #endif
 
@@ -16,7 +16,7 @@
 namespace hub {
 namespace client {
 
-#ifdef BUILD_SERVER
+#ifdef HUB_BUILD_SERVER
 using Viewer = ViewerServer;
 #else
 using Viewer = ViewerMqtt;
