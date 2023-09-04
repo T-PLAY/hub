@@ -8,7 +8,7 @@ const std::string StreamServer::s_defaultIpv4 = "127.0.0.1";
 #ifdef HUB_SERVER_PORT
 const int StreamServer::s_defaultPort         = HUB_SERVER_PORT;
 #else
-const int StreamServer::s_defaultPort         = 4043;
+const int StreamServer::s_defaultPort         = 4042;
 #endif
 
 //const std::string StreamServer::s_topicStream = "streams/";

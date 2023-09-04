@@ -111,13 +111,13 @@ endforeach()
 if (HUB_BUILD_SERVER)
     add_custom_target(
         tests # WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-        COMMAND echo "starting tests"
 #        COMMAND ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${CMAKE_BINARY_DIR}/bin/bin-server --maxClient 36
         COMMAND ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${CMAKE_BINARY_DIR}/bin/bin-server
         COMMAND ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${CMAKE_BINARY_DIR}/bin/bin-viewer --exitWhenServerLost
         COMMAND ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${CMAKE_BINARY_DIR}/bin/bin-nativeViewer --exitWhenServerLost
+#        COMMAND echo "######################### starting tests #######################################"
         COMMAND ctest -C ${CMAKE_BUILD_TYPE} -V
-        COMMAND echo "ending tests"
+#        COMMAND echo "########################## ending tests ########################################"
 #        VERBATIM
         USES_TERMINAL
 #        COMMAND pkill bin-server
