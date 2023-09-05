@@ -251,7 +251,7 @@ install(
 
 ############################# STATIC LIBRARY ###############################
 
-option(HUB_BUILD_STATIC "Build static library" OFF)
+option(HUB_BUILD_STATIC "Build static library" ON)
 if (HUB_BUILD_STATIC)
     #if(HUB_BUILD_STATIC_LIBRARY)
     #    add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})
@@ -315,7 +315,7 @@ endif() # static library
 
 ############################# SHARED LIBRARY
 
-option(HUB_BUILD_SHARED "Build shared library" OFF)
+option(HUB_BUILD_SHARED "Build shared library" ON)
 if (HUB_BUILD_SHARED)
     add_library(${PROJECT_NAME}_shared SHARED $<TARGET_OBJECTS:${PROJECT_NAME}>)
     target_compile_definitions(${PROJECT_NAME}_shared PRIVATE -DSRC_EXPORTS)
