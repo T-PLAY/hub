@@ -66,7 +66,10 @@ OutputStreamServer::OutputStreamServer( OutputStreamServer&& outputStream ) :
     StreamServer(outputStream.m_name, outputStream.m_ipv4, outputStream.m_port),
     m_clientSocket( std::move( outputStream.m_clientSocket ) ),
     m_thread( std::move( outputStream.m_thread ) ),
-    m_moved( outputStream.m_moved ) {
+    m_moved( outputStream.m_moved ),
+    m_serverClosed(std::move(outputStream.m_serverClosed)),
+    m_streamerClosed(std::move(outputStream.m_streamerClosed))
+{
 
     std::cout << "[OutputStreamServer] OutputStreamServer(OutputStreamServer&&)" << std::endl;
     outputStream.m_moved = true;
