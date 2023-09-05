@@ -79,6 +79,12 @@ if(WIN32)
         COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:hub_shared> $<TARGET_FILE_DIR:test-all>)
 endif()
 
+if (WIN32)
+    set(BIN_DIR ${CMAKE_BINARY_DIR}/bin/${CMAKE_BUILD_TYPE})
+else()
+    set(BIN_DIR ${CMAKE_BINARY_DIR}/bin)
+endif()
+
 # foreach *.cpp tests
 include(CTest)
 enable_testing()
@@ -104,9 +110,9 @@ if (HUB_BUILD_SERVER)
 #        COMMAND ls ${CMAKE_SOURCE_DIR}/scripts/launcher.sh
 #        COMMAND ls ${CMAKE_BINARY_DIR}/bin/bin-server.exe
 #        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh
-        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${CMAKE_BINARY_DIR}/bin/bin-server
-        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${CMAKE_BINARY_DIR}/bin/bin-viewer --exitWhenServerLost
-        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${CMAKE_BINARY_DIR}/bin/bin-nativeViewer --exitWhenServerLost
+        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/bin-server
+        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/bin-viewer --exitWhenServerLost
+        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/bin-nativeViewer --exitWhenServerLost
         COMMAND ctest -C ${CMAKE_BUILD_TYPE} -V -R ${test}
         COMMAND ctest -C ${CMAKE_BUILD_TYPE} -V -R test-end
         VERBATIM
@@ -119,12 +125,13 @@ endif()
 endforeach()
 
 if (HUB_BUILD_SERVER)
+
     add_custom_target(
         tests # WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 #        COMMAND ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${CMAKE_BINARY_DIR}/bin/bin-server --maxClient 36
-        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${CMAKE_BINARY_DIR}/bin/bin-server
-        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${CMAKE_BINARY_DIR}/bin/bin-viewer --exitWhenServerLost
-        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${CMAKE_BINARY_DIR}/bin/bin-nativeViewer --exitWhenServerLost
+        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/bin-server
+        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/bin-viewer --exitWhenServerLost
+        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/bin-nativeViewer --exitWhenServerLost
 #        COMMAND echo "######################### starting tests #######################################"
         COMMAND ctest -C ${CMAKE_BUILD_TYPE} -V
 #        COMMAND echo "########################## ending tests ########################################"
