@@ -1,9 +1,13 @@
 #include "Native.hpp"
 
 #include <iostream>
-
 #include <cstring>
 #include <sstream>
+
+#include "io/input/InputStream.hpp"
+#include "io/output/OutputStream.hpp"
+
+#include "data/Mat4.hpp"
 
 namespace hub {
 namespace native {
@@ -68,7 +72,7 @@ OutputSensor* createMat4OutputSensor( const char* sensorName, const char* ipv4, 
             //            std::move( sensorSpec ), sensorName, net::ClientSocket( ipv4, port ) );
             std::move( sensorSpec ),
 //            hub::output::OutputStream( sensorName, ipv4, port ) );
-            OutputStream(sensorName, ipv4, port));
+            output::OutputStream(sensorName, ipv4, port));
     }
     catch ( std::exception& e ) {
         std::cout << "[Native] createOutputSensor : catch exception : " << e.what() << std::endl;
@@ -296,7 +300,6 @@ bool metaData_getString( const SensorSpec::MetaData* metaData,
                          int* strLen ) {
     if ( metaData->find( metaName ) == metaData->end() ) return false;
 
-    // todo any
     const char* meta = metaData->at( metaName ).getConstCharPtr();
     *strLen          = strlen( meta );
     memcpy( output, meta, *strLen + 1 );
@@ -306,7 +309,6 @@ bool metaData_getString( const SensorSpec::MetaData* metaData,
 
 bool metaData_getMat4( const SensorSpec::MetaData* metaData, const char* metaName, float* output ) {
     if ( metaData->find( metaName ) != metaData->end() ) {
-        // todo any
         const auto& mat4 = metaData->at( metaName ).getMat4();
         memcpy( output, mat4.getData(), 64 );
         return true;
@@ -320,23 +322,21 @@ bool metaData_exists( const SensorSpec::MetaData* metaData, const char* metaName
 
 int metaData_getInt( const SensorSpec::MetaData* metaData, const char* metaName ) {
     assert( metaData->find( metaName ) != metaData->end() );
-    // todo any
     return metaData->at( metaName ).getInt();
 }
 
 double metaData_getDouble( const SensorSpec::MetaData* metaData, const char* metaName ) {
     assert( metaData->find( metaName ) != metaData->end() );
-    // todo any
     return metaData->at( metaName ).getDouble();
 }
 
-// double any_getDouble( const Any* any ) {
-//     return any->getDouble();
-// }
+ double any_getDouble( const Any* any ) {
+     return any->getDouble();
+ }
 
-// int any_getInt( const Any* any ) {
-//     return any->getInt();
-// }
+ int any_getInt( const Any* any ) {
+     return any->getInt();
+ }
 
 } // namespace native
 } // namespace hub

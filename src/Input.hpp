@@ -2,10 +2,11 @@
 
 #include <cstdlib>
 
+#include "Macros.hpp"
 #include "Acquisition.hpp"
 #include "Any.hpp"
-#include "Macros.hpp"
 #include "SensorSpec.hpp"
+#include "Measure.hpp"
 
 #ifdef USE_BOOST
 #    include <boost/type_index.hpp>
@@ -16,7 +17,7 @@
 #endif
 
 namespace hub {
-namespace io {
+//namespace io {
 
 ///
 /// \brief The Input class
@@ -182,7 +183,7 @@ class SRC_API Input
     /// \brief read
     /// \param measure
     ///
-    void read( data::Measure& measure );
+    void read( Measure& measure );
 
 #ifdef ARCH_X86
     void read( size_t size ) = delete; // non compatible format 32/64 bit
@@ -343,5 +344,5 @@ inline void Input::read( std::pair<T, U>& pair ) {
     pair = std::make_pair( first, std::move( second ) );
 }
 
-} // namespace io
+//} // namespace io
 } // namespace hub

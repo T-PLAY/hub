@@ -17,16 +17,16 @@ int main() {
     const int port = 4042;
 
 
-//    const hub::io::Output & output = hub::Output(); // abstract class
-    const hub::io::Output & output2 = hub::output::OutputStream("streamName", ipv4, port);
-    const hub::io::Output & output3 = hub::output::OutputStreamServer("streamName", ipv4, port);
-//    const hub::io::Output & output4 = hub::output::OutputStreamInterface("streamName", ipv4, port); // abstract class
-    const hub::io::Output & output5 = hub::output::OutputFile("filePath");
+//    const hub::Output & output = hub::Output(); // abstract class
+    const hub::Output & output2 = hub::output::OutputStream("streamName", ipv4, port);
+    const hub::Output & output3 = hub::output::OutputStreamServer("streamName", ipv4, port);
+//    const hub::Output & output4 = hub::output::OutputStreamInterface("streamName", ipv4, port); // abstract class
+    const hub::Output & output5 = hub::output::OutputFile("filePath");
     std::vector<int> vs;
 #if CPLUSPLUS_VERSION < 17
-    const hub::io::Output & output6 = hub::output::OutputMemory<decltype(vs)>(vs);
+    const hub::Output & output6 = hub::output::OutputMemory<decltype(vs)>(vs);
 #else
-    const hub::io::Output & output6 = hub::output::OutputMemory(vs);
+    const hub::Output & output6 = hub::output::OutputMemory(vs);
 #endif
 
 

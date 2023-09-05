@@ -173,6 +173,7 @@
 #        define SRC_API __declspec( dllexport )
 
 #    else
+#    error "unable to import from build environment"
 #        define SRC_API __declspec( dllimport )
 #    endif
 
@@ -212,4 +213,11 @@
 #    ifdef OS_LINUX
 #        define USE_BOOST
 #    endif
+#endif
+
+
+#ifdef WIN32
+#define FILE_NAME __FILE__
+#else
+#define FILE_NAME __FILE_NAME__
 #endif

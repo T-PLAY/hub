@@ -8,7 +8,6 @@
 // #include <server/Server.hpp>
 #include <net/ServerSocket.hpp>
 
-#include <filesystem>
 #include <utils/Utils.hpp>
 
 TEST_CASE( "Server speed test : streamer" ) {
@@ -28,7 +27,7 @@ TEST_CASE( "Server speed test : streamer" ) {
 
     for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
         hub::Acquisition acq( iAcq, iAcq );
-        acq << hub::data::Measure( reinterpret_cast<unsigned const char*>( data ),
+        acq << hub::Measure( reinterpret_cast<unsigned const char*>( data ),
                                    dataSize,
                                    { { width, height }, hub::Format::BGR8 } );
         acqs.at( iAcq ) = std::move( acq );
@@ -99,7 +98,7 @@ TEST_CASE( "Server speed test : streamer" ) {
                                         { { { width, height }, hub::Format::BGR8 } } );
 
             hub::client::Streamer streamer;
-            streamer.addStream( __FILE_NAME__, sensorSpec );
+            streamer.addStream( FILE_NAME, sensorSpec );
             int iTryConnect = 0;
             while ( !streamer.isConnected() && iTryConnect < 10 ) {
                 std::cout << "[test] waiting for streamer started" << std::endl;
@@ -113,7 +112,7 @@ TEST_CASE( "Server speed test : streamer" ) {
                 //                hub::io::InputStream( "streamName", hub::net::ClientSocket( ipv4,
                 //                port2 ) ) );
                 //                hub::input::InputStreamServer( "streamName", ipv4, port2 ) );
-                hub::input::InputStream( __FILE_NAME__ ) );
+                hub::input::InputStream( FILE_NAME ) );
 
             const auto& sensorSpec2 = inputSensor.getSpec();
             CHECK( sensorSpec == sensorSpec2 );
@@ -124,7 +123,7 @@ TEST_CASE( "Server speed test : streamer" ) {
             const auto& start2 = std::chrono::high_resolution_clock::now();
             for ( int i = 0; i < nAcqs; ++i ) {
                 const auto& acq = acqs.at( i );
-                streamer.newAcquisition( __FILE_NAME__, acq );
+                streamer.newAcquisition( FILE_NAME, acq );
                 hub::Acquisition acq2;
                 inputSensor >> acq2;
                 CHECK( acq2 == acqs.at( i ) );

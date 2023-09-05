@@ -49,7 +49,7 @@ bool Acquisition::operator!=( const Acquisition& acq ) const {
     return !( *this == acq );
 }
 
-Acquisition& Acquisition::operator<<( data::Measure&& measure ) {
+Acquisition& Acquisition::operator<<( Measure&& measure ) {
     m_measures.push_back( std::move( measure ) );
     m_size += m_measures.back().getSize();
     return *this;
@@ -62,7 +62,7 @@ void Acquisition::operator>>( Acquisition& acq ) {
     assert( m_measures.empty() );
 }
 
-void Acquisition::pushBack( data::Measure&& measure ) {
+void Acquisition::pushBack( Measure&& measure ) {
     m_measures.push_back( std::move( measure ) );
     m_size += m_measures.back().getSize();
 }
@@ -71,7 +71,7 @@ bool Acquisition::isInterpolable() const {
     assert( !m_measures.empty() );
     return std::none_of( m_measures.crbegin(),
                          m_measures.crend(),
-                         []( const data::Measure& measure ) { return !measure.isInterpolable(); } );
+                         []( const Measure& measure ) { return !measure.isInterpolable(); } );
 }
 
 Acquisition Acquisition::slerp( const Acquisition& left, const Acquisition& right, double t ) {
@@ -88,12 +88,12 @@ Acquisition Acquisition::slerp( const Acquisition& left, const Acquisition& righ
         const auto& leftMeasure  = leftMeasures.at( iMeasure );
         const auto& rightMeasure = rightMeasures.at( iMeasure );
         assert( leftMeasure.getResolution() == rightMeasure.getResolution() );
-        ret << data::Measure::slerp( leftMeasure, rightMeasure, t );
+        ret << Measure::slerp( leftMeasure, rightMeasure, t );
     }
     return ret;
 }
 
-Acquisition& Acquisition::operator<<( const data::Measures& measures ) {
+Acquisition& Acquisition::operator<<( const Measures& measures ) {
     for ( const auto& measure : measures ) {
         emplaceMeasure( reinterpret_cast<const unsigned char*>( measure.getData() ),
                         measure.getSize(),
@@ -112,13 +112,13 @@ Acquisition Acquisition::clone() const {
     return acq;
 }
 
-const data::Measures& Acquisition::getMeasures() const {
+const Measures& Acquisition::getMeasures() const {
     assert( !m_measures.empty() );
     return m_measures;
 }
 
 bool Acquisition::hasFixedSize() const {
-    return std::all_of(m_measures.cbegin(), m_measures.cend(), [](const hub::data::Measure & measure) {
+    return std::all_of(m_measures.cbegin(), m_measures.cend(), [](const Measure & measure) {
         const auto& format = measure.getResolution().second;
         return res::format2hasFixedSize(format);
     });

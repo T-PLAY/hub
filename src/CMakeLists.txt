@@ -35,19 +35,82 @@ endif()
 
 ############################# COMPILING SOURCES
 
-file(GLOB_RECURSE sources ${HUB_SOURCE_DIR}/*.cpp ${HUB_EXTERNAL_DIR}/*.cpp ${HUB_EXTERNAL_DIR}/*.c)
+#set(FILES
+##    Any
+##    Input
+##    Measure
+#    Macros
+#    Info
+#    Version
+#    Contributors
+
+#    Map
+
+#    Resolution
+#    Measure
+##    data/Mesh
+
+##    io/MemoryInterface
+##    io/output/OutputMemory
+##    io/input/InputMemory
+##    io/Memory
+##    data/Mesh
+##    data/Mat4
+##    Any
+##    Resolution
+##    SensorSpec
+##    Sensor
+#)
+
+##set(sources)
+#file(GLOB_RECURSE sources ${HUB_EXTERNAL_DIR}/*.cpp ${HUB_EXTERNAL_DIR}/*.c)
+##set(headers)
+#file(
+##    GLOB_RECURSE
+#    GLOB
+#    headers
+#    ${HUB_EXTERNAL_DIR}/*.hpp
+#    ${HUB_EXTERNAL_DIR}/*.h
+#    ${HUB_EXTERNAL_DIR}/*.inl)
+
+#foreach(file ${FILES})
+#    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${file}.cpp")
+#        list(APPEND sources "${file}.cpp")
+#    endif()
+#    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${file}.c")
+#        list(APPEND sources "${file}.c")
+#    endif()
+#    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${file}.hpp")
+#        list(APPEND headers "${file}.hpp")
+#    endif()
+#    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${file}.h")
+#        list(APPEND headers "${file}.h")
+#    endif()
+#endforeach()
+
+#file(GLOB_RECURSE sources ${HUB_SOURCE_DIR}/*.cpp ${HUB_EXTERNAL_DIR}/*.cpp ${HUB_EXTERNAL_DIR}/*.c)
+file(
+#    GLOB
+    GLOB_RECURSE
+    sources
+    ${HUB_SOURCE_DIR}/*.cpp
+    ${HUB_EXTERNAL_DIR}/*.cpp
+    ${HUB_EXTERNAL_DIR}/*.c
+)
 
 #list(REMOVE_ITEM sources ${HUB_EXTERNAL_DIR}/mqtt/MQTTAsync.c)
 #list(REMOVE_ITEM sources ${HUB_EXTERNAL_DIR}/mqtt/MQTTAsyncUtils.c)
 file(
+#    GLOB
     GLOB_RECURSE
     headers
     ${HUB_INCLUDE_DIR}/*.hpp
     ${HUB_INCLUDE_DIR}/*.h
-    ${HUB_INCLUDE_DIR}/*.inl
+#    ${HUB_INCLUDE_DIR}/*.inl
     ${HUB_EXTERNAL_DIR}/*.hpp
     ${HUB_EXTERNAL_DIR}/*.h
-    ${HUB_EXTERNAL_DIR}/*.inl)
+#    ${HUB_EXTERNAL_DIR}/*.inl
+)
 #list(REMOVE_ITEM headers ${HUB_EXTERNAL_DIR}/mqtt/MQTTAsync.h)
 #list(REMOVE_ITEM headers ${HUB_EXTERNAL_DIR}/mqtt/MQTTAsyncUtils.h)
 
@@ -75,8 +138,7 @@ source_group("Source Files\\" FILES ${sources})
 
 #set(REQUIRED_LIBS)
 
-add_library(${PROJECT_NAME} OBJECT ${sources} ${headers}
-)
+add_library(${PROJECT_NAME} OBJECT ${sources} ${headers})
 
 target_include_directories(${PROJECT_NAME}
     PUBLIC
@@ -87,7 +149,8 @@ target_include_directories(${PROJECT_NAME}
         ${HUB_EXTERNAL_DIR}
 )
 
-target_compile_definitions(${PROJECT_NAME} PUBLIC -DINTERNAL_BUILD)
+#target_compile_definitions(${PROJECT_NAME} PUBLIC -DINTERNAL_BUILD)
+target_compile_definitions(${PROJECT_NAME} PUBLIC -DSRC_STATIC) # -> SRC_API = void
 
 if (PahoMqttCpp_FOUND)
 #    target_compile_definitions(${PROJECT_NAME} PUBLIC -DUSE_MQTT)
@@ -118,6 +181,7 @@ endif()
 if(HUB_ENABLE_COVERAGE)
     target_compile_definitions(${PROJECT_NAME} PUBLIC -DCOVERAGE)
 endif()
+
 
 if(MINGW)
     if(CLANG)
@@ -185,60 +249,10 @@ install(
     PATTERN "*.inl")
 
 
+############################# STATIC LIBRARY ###############################
 
-############################# SHARED LIBRARY
-
-#option(HUB_BUILD_SHARED "Build shared library" ON)
-#if (HUB_BUILD_SHARED)
-    add_library(${PROJECT_NAME}_shared SHARED $<TARGET_OBJECTS:${PROJECT_NAME}>)
-    target_compile_definitions(${PROJECT_NAME}_shared PRIVATE -DSRC_EXPORTS)
-#	target_compile_options(${PROJECT_NAME} PRIVATE "-fpic")
-#    target_link_libraries(${PROJECT_NAME} PRIVATE ${REQUIRED_LIBS})
-#    target_link_libraries(${PROJECT_NAME} PUBLIC Threads::Threads)
-#    set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE ON) # gltfpack
-#    target_include_directories(${PROJECT_NAME}
-#        PUBLIC
-#            $<BUILD_INTERFACE:${HUB_INCLUDE_DIR}>
-#            $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.h
-#            $<INSTALL_INTERFACE:include>
-#        PRIVATE
-#        ${HUB_EXTERNAL_DIR}
-#    )
-    set_target_properties(${PROJECT_NAME}_shared PROPERTIES
-        VERSION ${${PROJECT_NAME}_VERSION}
-        SOVERSION ${${PROJECT_NAME}_VERSION_MAJOR}
-    )
-
-    install(
-        TARGETS ${PROJECT_NAME}_shared
-        EXPORT ${PROJECT_NAME}_shared
-         DESTINATION ${ARCHITECTURE}/bin # Linux
-#        DESTINATION ${ARCHITECTURE}/lib)
-        RUNTIME DESTINATION ${ARCHITECTURE}/bin # Windows
-    )
-
-    if(MSVC)
-        if(NOT ${CMAKE_BUILD_TYPE} STREQUAL "Release")
-            install(FILES $<TARGET_PDB_FILE:${PROJECT_NAME}_shared> DESTINATION ${ARCHITECTURE}/bin)
-        endif()
-    endif()
-
-    install(
-        EXPORT ${PROJECT_NAME}_shared
-        FILE ${PROJECT_NAME}Targets.cmake
-        # DESTINATION lib/cmake/${PROJECT_NAME})
-        DESTINATION share/${PROJECT_NAME}/cmake)
-    export(EXPORT ${PROJECT_NAME}_shared FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake")
-
-    if (UNIX)
-        set_target_properties(${PROJECT_NAME}_shared PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
-    endif()
-#endif()
-
-############################# STATIC LIBRARY
-
-#option(HUB_BUILD_STATIC "Build static library" OFF)
-#if (HUB_BUILD_STATIC)
+option(HUB_BUILD_STATIC "Build static library" OFF)
+if (HUB_BUILD_STATIC)
     #if(HUB_BUILD_STATIC_LIBRARY)
     #    add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})
     add_library(${PROJECT_NAME}_static STATIC $<TARGET_OBJECTS:${PROJECT_NAME}>)
@@ -297,7 +311,58 @@ install(
         set_target_properties(${PROJECT_NAME}_static PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
     endif()
 
-#endif()
+endif() # static library
+
+############################# SHARED LIBRARY
+
+option(HUB_BUILD_SHARED "Build shared library" OFF)
+if (HUB_BUILD_SHARED)
+    add_library(${PROJECT_NAME}_shared SHARED $<TARGET_OBJECTS:${PROJECT_NAME}>)
+    target_compile_definitions(${PROJECT_NAME}_shared PRIVATE -DSRC_EXPORTS)
+#	target_compile_options(${PROJECT_NAME} PRIVATE "-fpic")
+#    target_link_libraries(${PROJECT_NAME} PRIVATE ${REQUIRED_LIBS})
+#    target_link_libraries(${PROJECT_NAME} PUBLIC Threads::Threads)
+#    set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE ON) # gltfpack
+#    target_include_directories(${PROJECT_NAME}
+#        PUBLIC
+#            $<BUILD_INTERFACE:${HUB_INCLUDE_DIR}>
+#            $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.h
+#            $<INSTALL_INTERFACE:include>
+#        PRIVATE
+#        ${HUB_EXTERNAL_DIR}
+#    )
+    set_target_properties(${PROJECT_NAME}_shared PROPERTIES
+        VERSION ${${PROJECT_NAME}_VERSION}
+        SOVERSION ${${PROJECT_NAME}_VERSION_MAJOR}
+    )
+
+    install(
+        TARGETS ${PROJECT_NAME}_shared
+        EXPORT ${PROJECT_NAME}_shared
+         DESTINATION ${ARCHITECTURE}/bin # Linux
+#        DESTINATION ${ARCHITECTURE}/lib)
+        RUNTIME DESTINATION ${ARCHITECTURE}/bin # Windows
+    )
+
+    if(MSVC)
+        if(NOT ${CMAKE_BUILD_TYPE} STREQUAL "Release")
+            install(FILES $<TARGET_PDB_FILE:${PROJECT_NAME}_shared> DESTINATION ${ARCHITECTURE}/bin)
+        endif()
+    endif()
+
+    install(
+        EXPORT ${PROJECT_NAME}_shared
+        FILE ${PROJECT_NAME}Targets.cmake
+        # DESTINATION lib/cmake/${PROJECT_NAME})
+        DESTINATION share/${PROJECT_NAME}/cmake)
+    export(EXPORT ${PROJECT_NAME}_shared FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake")
+
+#    if (UNIX)
+    set_target_properties(${PROJECT_NAME}_shared PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
+#    endif()
+
+endif() # shared library
+
 
 #else()
 #    add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})

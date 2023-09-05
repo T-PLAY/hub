@@ -11,7 +11,7 @@ TEST_CASE( "Asker test" ) {
 
     const hub::Resolution resolution( { 1 }, hub::Format::BGR8 );
     const hub::SensorSpec sensorSpec( "hello", { resolution } );
-    const std::string streamName = __FILE_NAME__;
+    const std::string streamName = FILE_NAME;
     //    const std::string ipv4       = "127.0.0.1";
     //    const int port               = GET_RANDOM_PORT;
     //    const int port = hub::io::s_serverDefaultPort;
@@ -24,13 +24,13 @@ TEST_CASE( "Asker test" ) {
         hub::OutputSensor outputSensor(
             //            sensorSpec, streamName, hub::net::ClientSocket( ipv4, port ) );
             //            sensorSpec, streamName, ipv4, port );
-            //            sensorSpec, OutputStream(__FILE_NAME__));
+            //            sensorSpec, OutputStream(FILE_NAME));
             sensorSpec,
             OutputStream( streamName ) );
 
         unsigned char data[3] = { 0, 1, 2 };
         const hub::Acquisition acq =
-            std::move( hub::Acquisition( 0, 1 ) << hub::data::Measure( data, 3, resolution ) );
+            std::move( hub::Acquisition( 0, 1 ) << hub::Measure( data, 3, resolution ) );
         outputSensor << acq;
 
         std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );

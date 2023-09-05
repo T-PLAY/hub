@@ -16,7 +16,7 @@ TEST_CASE( "OutputSensor test" ) {
     unsigned char data[3] { 1, 2, 3 };
     hub::OutputSensor outputSensor( sensorSpec, hub::io::Memory<decltype( buff )>( buff ) );
 
-    auto acq = std::move( hub::Acquisition { 0, 1 } << hub::data::Measure { data, 3, resolution } );
+    auto acq = std::move( hub::Acquisition { 0, 1 } << hub::Measure { data, 3, resolution } );
     outputSensor << acq;
     outputSensor << acq;
     outputSensor << acq;

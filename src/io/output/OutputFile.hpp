@@ -8,7 +8,7 @@
 namespace hub {
 namespace output {
 
-class OutputFile : public io::Output, public io::File
+class OutputFile : public Output, public io::File
 {
   public:
     explicit OutputFile(const std::string & filePath);

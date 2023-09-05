@@ -7,7 +7,6 @@
 
 // #include <server/Server.hpp>
 
-#include <filesystem>
 
 TEST_CASE( "Server test : direct stream" ) {
 
@@ -25,7 +24,7 @@ TEST_CASE( "Server test : direct stream" ) {
             data[i] = iAcq + i;
         }
         hub::Acquisition acq( iAcq + 1, iAcq + 2 );
-        acq << hub::data::Measure { reinterpret_cast<const unsigned char*>( data ),
+        acq << hub::Measure { reinterpret_cast<const unsigned char*>( data ),
                                     dataSize,
                                     { { 3 }, hub::Format::BGR8 } };
         acqs.push_back( std::move( acq ) );
@@ -41,7 +40,7 @@ TEST_CASE( "Server test : direct stream" ) {
 
             hub::OutputSensor outputSensor(
                 hub::SensorSpec { "sensorName", { { { 3 }, hub::Format::BGR8 } } },
-                OutputStream( __FILE_NAME__ )
+                OutputStream( FILE_NAME )
                 //                "stream",
                 //                hub::net::ClientSocket( ipv4, port ) );
                 //                ipv4, port
@@ -62,7 +61,7 @@ TEST_CASE( "Server test : direct stream" ) {
                         //                        hub::net::ClientSocket( ipv4, port ) ) );
                         //                        hub::input::InputStreamServer( "stream", ipv4,
                         //                        port ) );
-                        hub::input::InputStream( __FILE_NAME__ ) );
+                        hub::input::InputStream( FILE_NAME ) );
 
                     const auto& inputSensorSpec = inputSensor.getSpec();
                     CHECK( inputSensorSpec.getAcquisitionSize() == dataSize );

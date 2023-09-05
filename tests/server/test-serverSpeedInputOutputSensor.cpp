@@ -7,7 +7,6 @@
 // #include <server/Server.hpp>
 #include <net/ServerSocket.hpp>
 
-#include <filesystem>
 #include <utils/Utils.hpp>
 
 #ifdef HUB_TESTS_MQTT_FOUND
@@ -15,7 +14,6 @@
 #endif
 
 TEST_CASE( "Server test : InputOutputSensor" ) {
-    // todo sometimes failed
     const auto hostname = hub::utils::getHostname();
 
     constexpr int nAcqs       = 100;
@@ -46,7 +44,7 @@ TEST_CASE( "Server test : InputOutputSensor" ) {
     for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
         const unsigned char* data = &datas[iAcq * dataSize];
         hub::Acquisition acq( iAcq, iAcq );
-        acq << hub::data::Measure( reinterpret_cast<unsigned const char*>( data ),
+        acq << hub::Measure( reinterpret_cast<unsigned const char*>( data ),
                                    dataSize,
                                    { { width, height }, hub::Format::BGR8 } );
         acqs.at( iAcq ) = std::move( acq );
@@ -108,7 +106,7 @@ TEST_CASE( "Server test : InputOutputSensor" ) {
     double megaBytesPerSecondsMqtt;
     {
         //        const std::string topicName = "sensor";
-        const std::string topicName = __FILE_NAME__;
+        const std::string topicName = FILE_NAME;
         std::cout << "[test][Mqtt] start streaming" << std::endl;
         const std::string ip = "localhost:1883";
         mqtt::client inputClient( ip, "consumer", mqtt::create_options( MQTTVERSION_5 ) );
@@ -210,13 +208,13 @@ TEST_CASE( "Server test : InputOutputSensor" ) {
             case Implement::SERVER:
                 outputSensor = std::make_unique<hub::OutputSensor>(
                     hub::SensorSpec( "sensorName", { { { width, height }, hub::Format::BGR8 } } ),
-                    OutputStreamServer( __FILE_NAME__ ) );
+                    OutputStreamServer( FILE_NAME ) );
                 break;
 #ifdef HUB_BUILD_MQTT
             case Implement::MQTT:
                 outputSensor = std::make_unique<hub::OutputSensor>(
                     hub::SensorSpec( "sensorName", { { { width, height }, hub::Format::BGR8 } } ),
-                    OutputStreamMqtt( __FILE_NAME__ ) );
+                    OutputStreamMqtt( FILE_NAME ) );
                 break;
 #endif
             default:
@@ -226,7 +224,7 @@ TEST_CASE( "Server test : InputOutputSensor" ) {
 
             //            hub::OutputSensor outputSensor(
             //                hub::SensorSpec( "sensorName", { { { width, height },
-            //                hub::Format::BGR8 } } ), OutputStream( __FILE_NAME__ )
+            //                hub::Format::BGR8 } } ), OutputStream( FILE_NAME )
             //            );
 
             std::cout
@@ -237,12 +235,12 @@ TEST_CASE( "Server test : InputOutputSensor" ) {
             switch ( implement ) {
             case Implement::SERVER:
                 inputSensor =
-                    std::make_unique<hub::InputSensor>( hub::input::InputStreamServer( __FILE_NAME__ ) );
+                    std::make_unique<hub::InputSensor>( hub::input::InputStreamServer( FILE_NAME ) );
                 break;
 #ifdef HUB_BUILD_MQTT
             case Implement::MQTT:
                 inputSensor =
-                    std::make_unique<hub::InputSensor>( hub::input::InputStreamMqtt( __FILE_NAME__ ) );
+                    std::make_unique<hub::InputSensor>( hub::input::InputStreamMqtt( FILE_NAME ) );
                 break;
 #endif
             default:
@@ -251,7 +249,7 @@ TEST_CASE( "Server test : InputOutputSensor" ) {
             }
 
             //            hub::InputSensor inputSensor(
-            //                hub::input::InputStream( __FILE_NAME__ ) );
+            //                hub::input::InputStream( FILE_NAME ) );
 
             const auto& inputSensorSpec = inputSensor->getSpec();
             CHECK( inputSensorSpec.getAcquisitionSize() == dataSize );

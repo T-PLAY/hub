@@ -1,7 +1,7 @@
 #pragma once
 
-#include "input/Input.hpp"
-#include "output/Output.hpp"
+#include "Input.hpp"
+#include "Output.hpp"
 
 namespace hub {
 namespace io {

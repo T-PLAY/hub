@@ -5,7 +5,7 @@
 #include <iostream>
 #include <string>
 
-#include <io/input/Input.hpp>
+#include <Input.hpp>
 
 #include <io/Memory.hpp>
 
@@ -21,7 +21,7 @@ TEST_CASE( "Input test" ) {
         hub::SensorSpec ref_sensorSpec( "sensorName", { ref_resolution }, ref_metaData );
         unsigned char data[3] { 1, 2, 3 };
         hub::Acquisition ref_acq = std::move( hub::Acquisition { 0, 1 }
-                                              << hub::data::Measure { data, 3, ref_resolution } );
+                                              << hub::Measure { data, 3, ref_resolution } );
         const char ref_str[]     = "hello";
         hub::Any ref_any_int( 5 );
         hub::Any ref_any_double( 5.0 );
@@ -101,9 +101,9 @@ TEST_CASE( "Input test" ) {
     {
         std::vector<char> buff;
         hub::io::Memory<decltype( buff )> memory( buff );
-        hub::io::Output& output = memory;
+        hub::Output& output = memory;
 
-        hub::io::Input& input = memory;
+        hub::Input& input = memory;
 
         std::list<int> ints { 0, 1, 2 };
         output << ints;
@@ -159,7 +159,7 @@ TEST_CASE( "Input test" ) {
                 data[i] = ref_offset + iAcq + 1;
             }
             ref_acqs.emplace_back( ref_offset + iAcq + 1, ref_offset + iAcq + 1 );
-            ref_acqs.back() << hub::data::Measure(
+            ref_acqs.back() << hub::Measure(
                 reinterpret_cast<const unsigned char*>( data ), ref_dataSize, ref_resolution );
         }
         delete[] data;
@@ -173,7 +173,7 @@ TEST_CASE( "Input test" ) {
                 data2[i] = ref2_offset + iAcq + 1;
             }
             ref_acqs2.emplace_back( ref2_offset + iAcq + 1, ref2_offset + iAcq + 1 );
-            ref_acqs2.back() << hub::data::Measure(
+            ref_acqs2.back() << hub::Measure(
                 reinterpret_cast<const unsigned char*>( data2 ), ref_dataSize2, ref_resolution2 );
         }
     }
@@ -197,7 +197,7 @@ TEST_CASE( "Input test" ) {
             }
             ref_acqs.emplace_back( ref_offset + iAcq * ref_step + 1,
                                    ref_offset + iAcq * ref_step + 1 );
-            ref_acqs.back() << hub::data::Measure(
+            ref_acqs.back() << hub::Measure(
                 reinterpret_cast<const unsigned char*>( data ), ref_dataSize, ref_resolution );
         }
         delete[] data;
@@ -212,7 +212,7 @@ TEST_CASE( "Input test" ) {
             }
             ref_acqs2.emplace_back( ref2_offset + iAcq * ref_step2 + 1,
                                     ref2_offset + iAcq * ref_step2 + 1 );
-            ref_acqs2.back() << hub::data::Measure(
+            ref_acqs2.back() << hub::Measure(
                 reinterpret_cast<const unsigned char*>( data2 ), ref_dataSize2, ref_resolution2 );
         }
     }
@@ -244,14 +244,14 @@ TEST_CASE( "Input test" ) {
 
             std::vector<char> buff;
             hub::io::Memory<decltype( buff )> memory( buff );
-            hub::io::Output& output = memory;
+            hub::Output& output = memory;
 
             std::vector<char> buff2;
             hub::io::Memory<decltype( buff2 )> memory2( buff2 );
-            hub::io::Output& output2 = memory2;
+            hub::Output& output2 = memory2;
 
-            hub::io::Input& input  = memory;
-            hub::io::Input& input2 = memory2;
+            hub::Input& input  = memory;
+            hub::Input& input2 = memory2;
 
             for ( int i = 0; i < ref_acqs.size(); ++i ) {
                 const auto& acq = ref_acqs.at( i );
@@ -292,14 +292,14 @@ TEST_CASE( "Input test" ) {
 
 //        std::vector<char> buff;
 //        hub::io::Memory<decltype( buff )> memory( buff );
-//        hub::io::Output& output = memory;
+//        hub::Output& output = memory;
 
 //        std::vector<char> buff2;
 //        hub::io::Memory<decltype( buff2 )> memory2( buff2 );
-//        hub::io::Output& output2 = memory2;
+//        hub::Output& output2 = memory2;
 
-//        hub::io::Input& input  = memory;
-//        hub::io::Input& input2 = memory2;
+//        hub::Input& input  = memory;
+//        hub::Input& input2 = memory2;
 
 //        for ( int i = 0; i < ref_acqs.size(); ++i ) {
 //            const auto& acq = ref_acqs.at( i );

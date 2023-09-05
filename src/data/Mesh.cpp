@@ -40,7 +40,7 @@ class MeshImpl
     std::vector<Shape> m_shapes;
     std::vector<Material> m_materials;
 
-    void write( hub::io::Output& output ) {
+    void write( Output& output ) {
         output.write( m_nVertice );
         output.write( m_nTriangle );
         output.write( m_nDraw );

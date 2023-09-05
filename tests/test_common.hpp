@@ -7,8 +7,8 @@
 #include <Acquisition.hpp>
 #include <InputSensor.hpp>
 #include <OutputSensor.hpp>
-#include <io/input/Input.hpp>
-#include <io/output/Output.hpp>
+#include <Input.hpp>
+#include <Output.hpp>
 #include <set>
 
 #define GET_RANDOM_PORT getRandomPort( __FILE__ )
@@ -62,8 +62,8 @@ computeSyncAcqs( const std::vector<hub::Acquisition>& leftAcqs,
             }
         }
 
-        int leftLeftMinDist;
-        int leftRightMinDist;
+//        int leftLeftMinDist;
+//        int leftRightMinDist;
 
         const auto & leftMinAcq = leftAcqs.at(iLeftMinDist);
 

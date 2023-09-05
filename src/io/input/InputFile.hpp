@@ -8,7 +8,7 @@
 namespace hub {
 namespace input {
 
-class InputFile : public io::Input, public io::File
+class InputFile : public Input, public io::File
 {
   public:
 //    InputFile(std::ifstream &&file);

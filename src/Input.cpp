@@ -2,11 +2,11 @@
 
 #include "Any.hpp"
 #include "Info.hpp"
-#include "data/Measure.hpp"
-#include "InputMemory.hpp"
+//#include "Measure.hpp"
+//#include "InputMemory.hpp"
 
 namespace hub {
-namespace io {
+//namespace io {
 
 /////////////////////////////////////////////////////////////////////////////
 
@@ -35,16 +35,17 @@ void Input::read( SensorSpec& sensorSpec ) {
     assert( isOpen() );
     assert( !isEnd() );
 
-    uint64_t packetSize;
-    read(packetSize);
+//    uint64_t packetSize;
+//    read(packetSize);
 
-    std::vector<char> buff(packetSize);
-    read((unsigned char*)buff.data(), packetSize);
+//    std::vector<char> buff(packetSize);
+//    read((unsigned char*)buff.data(), packetSize);
 
-    input::InputMemory<decltype(buff)> memory(buff);
+//    input::InputMemory<decltype(buff)> memory(buff);
 
     char magicNumber[80] = { 0 };
-    memory.read( reinterpret_cast<unsigned char*>(magicNumber), 80 );
+//    memory.read( reinterpret_cast<unsigned char*>(magicNumber), 80 );
+    read( reinterpret_cast<unsigned char*>(magicNumber), 80 );
     int versionMajor;
     int versionMinor;
     int versionPatch;
@@ -80,11 +81,14 @@ void Input::read( SensorSpec& sensorSpec ) {
     std::string sensorName;
     Resolutions resolutions;
     hub::SensorSpec::MetaData metaData;
-    memory.read( sensorName );
-    memory.read( resolutions );
-    memory.read( metaData );
+//    memory.read( sensorName );
+    read( sensorName );
+//    memory.read( resolutions );
+    read( resolutions );
+//    memory.read( metaData );
+    read( metaData );
 
-    assert(memory.isEnd());
+//    assert(memory.isEnd());
 
     sensorSpec =
         SensorSpec( std::move( sensorName ), std::move( resolutions ), std::move( metaData ) );
@@ -92,7 +96,7 @@ void Input::read( SensorSpec& sensorSpec ) {
     assert( !sensorSpec.isEmpty() );
 }
 
-void Input::read( data::Measure& measure ) {
+void Input::read( Measure& measure ) {
     assert( isOpen() );
     assert( !isEnd() );
 
@@ -214,12 +218,13 @@ void Input::read( Any& any ) {
     } break;
 
     case Any::Type::MESH: {
-        data::Measure measure;
+        Measure measure;
         read( measure );
 
         any = Any( data::Mesh( measure ) );
 
     } break;
+
 #ifndef COVERAGE
     default:
         assert( false );
@@ -292,5 +297,5 @@ Acquisition Input::operator>>( Input& input ) {
 
 /////////////////////////////////////////////////////////////////////////////
 
-} // namespace io
+//} // namespace io
 } // namespace hub

@@ -1,6 +1,6 @@
 #pragma once
 
-// #include "ViewerInterface.hpp"
+//#include "ViewerInterface.hpp"
 
 #ifdef HUB_BUILD_SERVER
 #    include "ViewerServer.hpp"
@@ -10,7 +10,7 @@
 #    include "ViewerMqtt.hpp"
 #endif
 
-// #include "io/input/InputStream.hpp"
+#include "io/input/InputStream.hpp"
 //#include "SensorSpec.hpp"
 
 namespace hub {
@@ -25,7 +25,7 @@ using Viewer = ViewerMqtt;
 // using Viewer = ViewerInterface<InputStream>;
 
 //class SRC_API ViewerMqtt : public ViewerInterface<input::InputStreamMqtt>
-static_assert( std::is_base_of<client::ViewerInterface<>, Viewer>::value,
+static_assert( std::is_base_of<client::ViewerInterface<input::InputStream>, Viewer>::value,
                 "ViewerInterface is base class of Viewer" );
 
 } // namespace client

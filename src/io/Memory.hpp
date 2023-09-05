@@ -1,10 +1,10 @@
 #pragma once
 
 #include <stdexcept>
+#include <cassert>
 
 // #include "InputOutput.hpp"
 #include "Macros.hpp"
-#include <cassert>
 
 #include "input/InputMemory.hpp"
 #include "output/OutputMemory.hpp"

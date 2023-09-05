@@ -103,7 +103,7 @@ int main() {
     for (int i= 0; i <3; ++i) {
         data[i] = rand();
     }
-    hub::data::Measure measure(data, 3, res);
+    hub::Measure measure(data, 3, res);
     acq << std::move(measure);
 
     outputSensor << acq;

@@ -1,8 +1,11 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include <io/output/Output.hpp>
+#include <Output.hpp>
 
 #include <io/Memory.hpp>
+#include <Measure.hpp>
+#include <data/Mat4.hpp>
+#include <data/Mesh.hpp>
 
 TEST_CASE( "Output test" ) {
 
@@ -11,7 +14,7 @@ TEST_CASE( "Output test" ) {
     hub::SensorSpec ref_sensorSpec( "sensorName", { ref_resolution } );
     unsigned char data[3] { 1, 2, 3 };
     hub::Acquisition ref_acq =
-        std::move( hub::Acquisition { 0, 1 } << hub::data::Measure { data, 3, ref_resolution } );
+        std::move( hub::Acquisition { 0, 1 } << hub::Measure { data, 3, ref_resolution } );
     const char ref_str[] = "hello";
     hub::Any ref_any_int( 5 );
     hub::Any ref_any_double( 5.0 );

@@ -86,7 +86,7 @@ int main() {
             std::this_thread::sleep_for( std::chrono::milliseconds( 3000 ) );
 
             unsigned char data[3] {1, 2, 3};
-            hub::Acquisition acq = std::move(hub::Acquisition(1, 1) << hub::data::Measure(data, 3, res));
+            hub::Acquisition acq = std::move(hub::Acquisition(1, 1) << hub::Measure(data, 3, res));
             outputSensor << acq;
 
             std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
@@ -149,7 +149,7 @@ int main() {
 
     //            unsigned char data[3] { 1, 2, 3 };
     //            hub::Acquisition acq =
-    //                std::move( hub::Acquisition( 0, 1 ) << hub::data::Measure( data, 3, resolution
+    //                std::move( hub::Acquisition( 0, 1 ) << hub::Measure( data, 3, resolution
     //                ) );
     //            for ( int i = 0; i < 10; ++i ) {
     //                outputSensor << acq;

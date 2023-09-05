@@ -10,7 +10,7 @@ TEST_CASE( "Dof6 test" ) {
 
     unsigned char data[28] { 0 };
     const auto& resolution = hub::Resolution { { 1 }, hub::Format::DOF6 };
-    hub::data::Measure measure( data, 28, resolution );
+    hub::Measure measure( data, 28, resolution );
     const auto sqrt22 = sqrt( 2.0 ) / 2.0;
 
     hub::data::Dof6 dof6( measure );
@@ -44,10 +44,10 @@ TEST_CASE( "Dof6 test" ) {
     CHECK( hub::data::Dof6::slerp( dof62, dof64, 0.0 ) == dof62 );
     CHECK( hub::data::Dof6::slerp( dof62, dof64, 1.0 ) == dof64 );
 
-    const hub::data::Measure& measure2 = dof62;
-    const hub::data::Measure& measure3 = dof63;
+    const hub::Measure& measure2 = dof62;
+    const hub::Measure& measure3 = dof63;
     CHECK( measure2.isInterpolable() );
-    auto measure23 = hub::data::Measure::slerp( measure2, measure3, 0.5 );
+    auto measure23 = hub::Measure::slerp( measure2, measure3, 0.5 );
 
     std::cout << dof6 << std::endl;
     std::cout << measure23 << std::endl;

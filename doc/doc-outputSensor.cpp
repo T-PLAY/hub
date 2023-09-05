@@ -34,7 +34,7 @@ int main() {
     for ( int i = 0; i < dataSize; ++i ) {
         data[i] = 1.0;
     }
-    hub::data::Measure measure( (unsigned char*)data, dataSize * 4, resolution );
+    hub::Measure measure( (unsigned char*)data, dataSize * 4, resolution );
     delete[] data;
     acq << std::move( measure );
 
@@ -59,14 +59,14 @@ hub::OutputSensor outputSensor(
             unsigned char * data = nullptr;
             uint64_t size = 0;
             hub::Resolution resolution;
-            hub::data::Measure measure(data, size, resolution);
-            hub::data::Measure measure2(data, size, resolution);
-            hub::data::Measure measure3(data, size, resolution);
+            hub::Measure measure(data, size, resolution);
+            hub::Measure measure2(data, size, resolution);
+            hub::Measure measure3(data, size, resolution);
 
             // clang-format on
             // startFunctional
             outputSensor << ( hub::Acquisition { start, end }
-                              << hub::data::Measure { data, size, resolution } );
+                              << hub::Measure { data, size, resolution } );
             // endFunctional
             // assert( outputSensor.m_spec.getResolutions().at(0) == resolution );
             // clang-format off

@@ -24,7 +24,7 @@ int main() {
 
     for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
         hub::Acquisition acq( iAcq, iAcq );
-        acq << hub::data::Measure( reinterpret_cast<unsigned const char*>( data ),
+        acq << hub::Measure( reinterpret_cast<unsigned const char*>( data ),
                                    dataSize,
                                    { { width, height }, hub::Format::BGR8 } );
         acqs.at( iAcq ) = std::move( acq );

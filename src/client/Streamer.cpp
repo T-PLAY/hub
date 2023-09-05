@@ -5,6 +5,7 @@
 #include <regex>
 
 #include "OutputSensor.hpp"
+#include "io/output/OutputStream.hpp"
 
 namespace hub {
 namespace client {
@@ -64,7 +65,7 @@ void Streamer::Stream::init() {
         //            m_streamName, m_streamer.m_ipv4, m_streamer.m_port );
         m_outputSensor = new OutputSensor(
             m_sensorSpec,
-            OutputStream( m_streamName, m_streamer.m_ipv4, m_streamer.m_port ) );
+            output::OutputStream( m_streamName, m_streamer.m_ipv4, m_streamer.m_port ) );
 
         for ( const auto& acq : m_initAcqs ) {
             *m_outputSensor << acq;

@@ -11,7 +11,8 @@
 // #include "net/ClientSocket.hpp"
 // #include "StreamViewer.hpp"
 #include "InputSensor.hpp"
-#include <utils/Utils.hpp>
+#include "utils/Utils.hpp"
+#include <sstream>
 
 #ifdef DEBUG_MSG
 #    undef DEBUG_MSG
@@ -41,7 +42,7 @@ namespace client {
 /// when new streamer is connected to server to have an interactive application.
 /// Close the input stream when server or streamer are disconnected.
 ///
-template <class InputStream = InputStream>
+template <class InputStream>
 class SRC_API ViewerInterface
 {
   protected:

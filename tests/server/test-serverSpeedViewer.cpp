@@ -1,7 +1,6 @@
 #include "test_common.hpp"
 #include <catch2/catch_test_macros.hpp>
 
-#include <filesystem>
 #include <atomic>
 
 #include <InputSensor.hpp>
@@ -28,7 +27,7 @@ TEST_CASE( "Server test : viewer" ) {
             data[i] = iAcq % 256;
         }
         hub::Acquisition acq( iAcq, iAcq );
-        acq << hub::data::Measure( reinterpret_cast<unsigned const char*>( data ),
+        acq << hub::Measure( reinterpret_cast<unsigned const char*>( data ),
                                    dataSize,
                                    { { width, height }, hub::Format::BGR8 } );
         acqs.at( iAcq ) = std::move( acq );
@@ -96,7 +95,7 @@ TEST_CASE( "Server test : viewer" ) {
                 << std::endl;
             hub::OutputSensor outputSensor(
                 hub::SensorSpec( "sensorName", { { { width, height }, hub::Format::BGR8 } } ),
-                OutputStream( __FILE_NAME__ )
+                OutputStream( FILE_NAME )
                 //                "streamName",
                 //                hub::net::ClientSocket( ipv4, port2 ) );
                 //                ipv4,
@@ -169,7 +168,7 @@ TEST_CASE( "Server test : viewer" ) {
 
                 std::cout << "[Test] ############################### viewer start" << std::endl;
                 hub::client::Viewer viewer {
-                    __FILE_NAME__,
+                    FILE_NAME,
                     onNewStreamer,
                     onDelStreamer,
                     onServerNotFound,

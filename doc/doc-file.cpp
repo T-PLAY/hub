@@ -49,8 +49,8 @@ hub::io::File inputFile( std::fstream( "file.txt", std::ios::binary | std::ios::
             const unsigned char dof6Array[28] { 0 };
             hub::data::Dof6 dof6;
             outputSensor2 << ( hub::Acquisition { 0, 0 }
-                               << hub::data::Measure { bgrArray, 3, { { 1 }, hub::Format::BGR8 } }
-                               << hub::data::Measure { dof6Array, 28, { { 1 }, hub::Format::DOF6 } }
+                               << hub::Measure { bgrArray, 3, { { 1 }, hub::Format::BGR8 } }
+                               << hub::Measure { dof6Array, 28, { { 1 }, hub::Format::DOF6 } }
                                << std::move( hub::data::Dof6() ) << std::move( dof6 ) );
 
             std::fstream file( "file.txt", std::ios::in );
@@ -60,7 +60,7 @@ hub::io::File inputFile( std::fstream( "file.txt", std::ios::binary | std::ios::
             hub::Acquisition acq;
             inputSensor >> acq;
 
-            const hub::data::Measure& measure = acq.getMeasures().at( 0 );
+            const hub::Measure& measure = acq.getMeasures().at( 0 );
             const hub::data::Dof6 dof62( measure );
         }
 

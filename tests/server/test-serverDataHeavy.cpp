@@ -9,7 +9,7 @@
 #include <OutputSensor.hpp>
 #include <SensorSpec.hpp>
 #include <data/Dof6.hpp>
-#include <data/Measure.hpp>
+#include <Measure.hpp>
 //#include <server/Server.hpp>
 
 TEST_CASE( "heavy data" ) {
@@ -34,7 +34,7 @@ TEST_CASE( "heavy data" ) {
     metaData["model"]             = hub::data::Mesh( m_assetPath + "sensor" );
 
     hub::OutputSensor outputSensor( hub::SensorSpec { "Sensor", resolutions, metaData },
-                                    OutputStream(__FILE_NAME__)
+                                    OutputStream(FILE_NAME)
                                     );
 //                                    "Sensor",
 //                                    hub::net::ClientSocket( ipv4, port ) );
@@ -44,7 +44,7 @@ TEST_CASE( "heavy data" ) {
     hub::InputSensor inputSensor(
 //        hub::io::InputStream( "Sensor", hub::net::ClientSocket( ipv4, port ) ) );
 //        hub::input::InputStreamServer( "Sensor", ipv4, port ) );
-        hub::input::InputStream( __FILE_NAME__ ) );
+        hub::input::InputStream( FILE_NAME ) );
 
     std::vector<hub::Acquisition> acqs;
     constexpr size_t nAcq = 100;
@@ -57,7 +57,7 @@ TEST_CASE( "heavy data" ) {
         for ( int j = 0; j < colorSize; ++j ) {
             colors[j] = i + j;
         }
-        acq << hub::data::Measure {
+        acq << hub::Measure {
                                     reinterpret_cast<unsigned char*>(colors), colorSize, { { 640, 480 }, hub::Format::RGB8 } };
         delete[] colors;
 
@@ -67,7 +67,7 @@ TEST_CASE( "heavy data" ) {
             vertices[j] = i + j;
         }
 
-        acq << hub::data::Measure {
+        acq << hub::Measure {
                                     reinterpret_cast<unsigned char*>(vertices), verticesSize, { { 640, 480 }, hub::Format::XYZ32F } };
         delete[] vertices;
 

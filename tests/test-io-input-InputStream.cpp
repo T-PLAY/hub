@@ -24,7 +24,7 @@ TEST_CASE( "InputStream test" ) {
             data[i] = ref_offset + iAcq + 1;
         }
         ref_acqs.emplace_back( ref_offset + iAcq + 1, ref_offset + iAcq + 2 );
-        ref_acqs.back() << hub::data::Measure(
+        ref_acqs.back() << hub::Measure(
             reinterpret_cast<const unsigned char*>( data ), ref_dataSize, ref_resolution );
         std::cout << ref_acqs.back() << std::endl;
     }
@@ -44,7 +44,7 @@ TEST_CASE( "InputStream test" ) {
         //        hub::OutputSensor outputSensor(
         hub::OutputSensor outputSensor(
             ref_sensorSpec,
-            OutputStream( __FILE_NAME__ ) );
+            OutputStream( FILE_NAME ) );
         std::cout << "[test] outputSensor created" << std::endl;
 
         {
@@ -60,7 +60,7 @@ TEST_CASE( "InputStream test" ) {
         }
 
         {
-            hub::input::InputStream inputStream( __FILE_NAME__ );
+            hub::input::InputStream inputStream( FILE_NAME );
             hub::InputSensor inputSensor( std::move( inputStream ) );
             CHECK( inputSensor.getSpec() == ref_sensorSpec );
             std::cout << "[test] inputSensor created" << std::endl;

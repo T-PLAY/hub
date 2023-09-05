@@ -4,16 +4,17 @@
 #include <OutputSensor.hpp>
 #include <io/File.hpp>
 
+#if CPLUSPLUS_VERSION >= 17
 #include <filesystem>
+#endif
+
 #include <thread>
 
 TEST_CASE( "File test" ) {
 
     const std::string filename = "file.txt";
 
-#if CPLUSPLUS_VERSION <= 14
-    // todo cpp 17 -> 14
-#else
+#if CPLUSPLUS_VERSION >= 17
     std::filesystem::remove( filename );
 #endif
 
@@ -23,7 +24,7 @@ TEST_CASE( "File test" ) {
         const unsigned char data[3] = {
             (unsigned char)iAcq, (unsigned char)( iAcq + 1 ), (unsigned char)( iAcq + 2 ) };
         acqs.push_back( hub::Acquisition( iAcq, iAcq ) );
-        acqs.back() << hub::data::Measure( data, 3, { { 1 }, hub::Format::BGR8 } );
+        acqs.back() << hub::Measure( data, 3, { { 1 }, hub::Format::BGR8 } );
         CHECK( acqs.back().getSize() == 3 );
     }
     CHECK( acqs[0] != acqs[1] );

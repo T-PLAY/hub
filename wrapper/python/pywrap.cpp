@@ -104,7 +104,7 @@ PYBIND11_MODULE( Hub, m ) {
     py::class_<hub::Acquisition>( m, "Acquisition" )
         .def( py::init<long, long>() )
         .def( "addMeasure", []( hub::Acquisition& self, const CustomVector& customVector ) -> void {
-            hub::data::Measure measure(
+            hub::Measure measure(
                 customVector.getData(), customVector.getSize(), customVector.getResolution() );
             self.pushBack( std::move( measure ) );
         } );

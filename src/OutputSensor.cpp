@@ -8,7 +8,10 @@
 namespace hub {
 
 OutputSensor::OutputSensor( OutputSensor&& outputSensor ) :
-    Sensor( outputSensor.m_spec ), m_output( std::move( outputSensor.m_output ) ) {
+    Sensor( outputSensor.m_spec ),
+    m_output( std::move( outputSensor.m_output ) )
+//    m_output(outputSensor.m_output)
+{
     outputSensor.m_moved = true;
 }
 
@@ -41,7 +44,7 @@ void OutputSensor::operator<<( const Acquisition& acquisition ) const {
     m_output->write( acquisition );
 }
 
-io::Output& OutputSensor::getOutput() const {
+Output& OutputSensor::getOutput() const {
     return *m_output;
 }
 

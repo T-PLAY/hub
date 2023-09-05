@@ -16,18 +16,18 @@ int main() {
     const int port = 4042;
 
 
-//    const hub::io::Input & input = hub::Input(); // abstract class
-    const hub::io::Input & input2 = hub::input::InputStream("streamName", ipv4, port);
-    const hub::io::Input & input3 = hub::input::InputStreamServer("streamName", ipv4, port);
-//    const hub::io::Input & input4 = hub::input::InputStreamInterface("streamName", ipv4, port); // abstract class
-    const hub::io::Input & input5 = hub::input::InputSyncStream<>("streamName", "streamName2", ipv4, port);
-    const hub::io::Input & input6 = hub::input::InputSyncStream<hub::input::InputStreamServer>("streamName", "streamName2", ipv4, port);
-    const hub::io::Input & input7 = hub::input::InputSyncStream<hub::input::InputStreamMqtt>("streamName", "streamName2", ipv4, port);
-    const hub::io::Input & input8 = hub::input::InputFile("filePath");
+//    const hub::Input & input = hub::Input(); // abstract class
+    const hub::Input & input2 = hub::input::InputStream("streamName", ipv4, port);
+    const hub::Input & input3 = hub::input::InputStreamServer("streamName", ipv4, port);
+//    const hub::Input & input4 = hub::input::InputStreamInterface("streamName", ipv4, port); // abstract class
+    const hub::Input & input5 = hub::input::InputSyncStream<>("streamName", "streamName2", ipv4, port);
+    const hub::Input & input6 = hub::input::InputSyncStream<hub::input::InputStreamServer>("streamName", "streamName2", ipv4, port);
+    const hub::Input & input7 = hub::input::InputSyncStream<hub::input::InputStreamMqtt>("streamName", "streamName2", ipv4, port);
+    const hub::Input & input8 = hub::input::InputFile("filePath");
     std::vector<int> vs;
 #if CPLUSPLUS_VERSION < 17
-    const hub::io::Input & input9 = hub::input::InputMemory<decltype(vs)>(vs);
+    const hub::Input & input9 = hub::input::InputMemory<decltype(vs)>(vs);
 #else
-    const hub::io::Input & input9 = hub::input::InputMemory(vs);
+    const hub::Input & input9 = hub::input::InputMemory(vs);
 #endif
 }

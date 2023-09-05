@@ -13,7 +13,6 @@
 
 // #include <server/Server.hpp>
 
-// #include <filesystem>
 // #include <iostream>
 
 
@@ -60,7 +59,7 @@ TEST_CASE( "Viewer" ) {
 //    hub::client::ViewerServer viewer {
     hub::client::Viewer viewer {
 //ipv4, port,
-__FILE_NAME__,
+FILE_NAME,
         onNewStreamer, onDelStreamer, onServerNotFound, onServerConnected, onServerDisconnected, onNewAcquisition, onSetProperty };
 
 //    viewer.setIpv4( ipv4 );
@@ -101,13 +100,13 @@ assert(viewer.isConnected());
             hub::SensorSpec sensorSpec( "sensorName", { resolution } );
             hub::OutputSensor outputSensor(
                 sensorSpec,
-                OutputStream(__FILE_NAME__) );
+                OutputStream(FILE_NAME) );
             std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
 
 
             unsigned char data[3] { 1, 2, 3 };
             hub::Acquisition acq =
-                std::move( hub::Acquisition( 0, 1 ) << hub::data::Measure( data, 3, resolution ) );
+                std::move( hub::Acquisition( 0, 1 ) << hub::Measure( data, 3, resolution ) );
             for ( int i = 0; i < 10; ++i ) {
                 outputSensor << acq;
             }

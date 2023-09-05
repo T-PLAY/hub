@@ -7,7 +7,7 @@
 namespace hub {
 namespace server {
 
-class OutputStreamClient : public hub::io::Output
+class OutputStreamClient : public hub::Output
 {
   public:
     explicit OutputStreamClient( hub::net::ClientSocket&& clientSocket ) :
@@ -42,8 +42,8 @@ OutputStreamClient::~OutputStreamClient() {
 }
 
 void OutputStreamClient::write( const hub::Acquisition& acq ) {
-    hub::io::Output::write( hub::net::ClientSocket::Message::NEW_ACQ );
-    hub::io::Output::write( acq );
+    hub::Output::write( hub::net::ClientSocket::Message::NEW_ACQ );
+    hub::Output::write( acq );
 }
 
 void OutputStreamClient::write( const unsigned char* data, size_t len ) {

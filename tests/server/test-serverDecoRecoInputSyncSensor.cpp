@@ -1,7 +1,6 @@
 #include "test_common.hpp"
 #include <catch2/catch_test_macros.hpp>
 
-#include <filesystem>
 
 #include <InputSensor.hpp>
 #include <OutputSensor.hpp>
@@ -26,7 +25,7 @@ TEST_CASE( "Server test : close clients" ) {
             data[i] = iAcq2 * 10 + ref_offset;
         }
         ref_acqs.push_back( hub::Acquisition( iAcq2 * 10 + ref_offset, iAcq2 * 10 + ref_offset ) );
-        ref_acqs.back() << hub::data::Measure( reinterpret_cast<const unsigned char*>( data ),
+        ref_acqs.back() << hub::Measure( reinterpret_cast<const unsigned char*>( data ),
                                            dataSize,
                                            { { 3 }, hub::Format::BGR8 } );
         std::cout << ref_acqs.back() << std::endl;
@@ -40,7 +39,7 @@ TEST_CASE( "Server test : close clients" ) {
             data[i] = iAcq * 2;
         }
         ref_acqs2.emplace_back( iAcq * 2, iAcq * 2 );
-        ref_acqs2.back() << hub::data::Measure( reinterpret_cast<const unsigned char*>( data ),
+        ref_acqs2.back() << hub::Measure( reinterpret_cast<const unsigned char*>( data ),
                                             dataSize,
                                             { { 3 }, hub::Format::RGB8 } );
         std::cout << ref_acqs2.back() << std::endl;
@@ -62,7 +61,7 @@ TEST_CASE( "Server test : close clients" ) {
         std::cout << "[Test] ############################### outputStream start" << std::endl;
         hub::OutputSensor outputSensor(
             hub::SensorSpec { "sensorName", { { { 3 }, hub::Format::BGR8 } } },
-            OutputStream(__FILE_NAME__)
+            OutputStream(FILE_NAME)
 //            "stream",
 //            hub::net::ClientSocket( ipv4, port ) );
 //            ipv4, port
@@ -80,7 +79,7 @@ TEST_CASE( "Server test : close clients" ) {
         std::cout << "[Test] ############################### outputStream2 start" << std::endl;
         hub::OutputSensor outputSensor2(
             hub::SensorSpec { "sensorName2", { { { 3 }, hub::Format::RGB8 } } },
-            OutputStream(__FILE_NAME__ "2")
+            OutputStream(FILE_NAME "2")
 //            "stream2",
 //            hub::net::ClientSocket( ipv4, port ) );
 //            ipv4, port
@@ -101,7 +100,7 @@ TEST_CASE( "Server test : close clients" ) {
             {
                 hub::InputSensor inputSensor(
 //                    hub::input::InputSyncStream( "stream", "stream2", ipv4, port ) );
-                    hub::input::InputSyncStream( __FILE_NAME__, __FILE_NAME__ "2" ) );
+                    hub::input::InputSyncStream( FILE_NAME, FILE_NAME "2" ) );
 
                 const auto& inputSensorSpec = inputSensor.getSpec();
                 CHECK( inputSensorSpec.getAcquisitionSize() == dataSize * 2 );

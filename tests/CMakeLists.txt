@@ -32,6 +32,8 @@ endif()
 
 file(GLOB_RECURSE test_srcs *.cpp)
 #file(GLOB test_srcs *.cpp)
+list(REMOVE_ITEM test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/test-end.cpp)
+list(APPEND test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/test-end.cpp)
 
 find_package(PahoMqttCpp QUIET)
 #find_package(PahoMqttCpp QUIET NO_DEFAULT_PATH)
@@ -74,7 +76,7 @@ if(WIN32)
     add_custom_command(
         TARGET test-all
         POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:hub> $<TARGET_FILE_DIR:test-all>)
+        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:hub_shared> $<TARGET_FILE_DIR:test-all>)
 endif()
 
 # foreach *.cpp tests
@@ -95,16 +97,24 @@ foreach(testFile ${test_srcs})
 
     add_test(NAME ${test} COMMAND ${test})
 
-#if (HUB_BUILD_SERVER)
-#    add_custom_target(
-#        run-${test}
-##        COMMAND "${CMAKE_BINARY_DIR}/bin/bin-server &"
-#        COMMAND ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${CMAKE_BINARY_DIR}/bin/bin-server
-#        COMMAND ctest -C ${CMAKE_BUILD_TYPE} -V -R ${test}
-#        COMMAND pkill bin-server
-#        COMMENT "Running single test")
+if (HUB_BUILD_SERVER)
+    add_custom_target(
+        run-${test}
+#        COMMAND "${CMAKE_BINARY_DIR}/bin/bin-server &"
+#        COMMAND ls ${CMAKE_SOURCE_DIR}/scripts/launcher.sh
+#        COMMAND ls ${CMAKE_BINARY_DIR}/bin/bin-server.exe
+#        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh
+        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${CMAKE_BINARY_DIR}/bin/bin-server
+        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${CMAKE_BINARY_DIR}/bin/bin-viewer --exitWhenServerLost
+        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${CMAKE_BINARY_DIR}/bin/bin-nativeViewer --exitWhenServerLost
+        COMMAND ctest -C ${CMAKE_BUILD_TYPE} -V -R ${test}
+        COMMAND ctest -C ${CMAKE_BUILD_TYPE} -V -R test-end
+        VERBATIM
+        USES_TERMINAL
+        COMMENT "Running single test"
+    )
 #    custom_target_added(run-${test})
-#endif()
+endif()
 
 endforeach()
 
@@ -112,9 +122,9 @@ if (HUB_BUILD_SERVER)
     add_custom_target(
         tests # WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 #        COMMAND ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${CMAKE_BINARY_DIR}/bin/bin-server --maxClient 36
-        COMMAND ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${CMAKE_BINARY_DIR}/bin/bin-server
-        COMMAND ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${CMAKE_BINARY_DIR}/bin/bin-viewer --exitWhenServerLost
-        COMMAND ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${CMAKE_BINARY_DIR}/bin/bin-nativeViewer --exitWhenServerLost
+        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${CMAKE_BINARY_DIR}/bin/bin-server
+        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${CMAKE_BINARY_DIR}/bin/bin-viewer --exitWhenServerLost
+        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${CMAKE_BINARY_DIR}/bin/bin-nativeViewer --exitWhenServerLost
 #        COMMAND echo "######################### starting tests #######################################"
         COMMAND ctest -C ${CMAKE_BUILD_TYPE} -V
 #        COMMAND echo "########################## ending tests ########################################"

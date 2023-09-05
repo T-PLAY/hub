@@ -3,6 +3,7 @@
 //#include <iostream>
 //#include <memory>
 #include <string>
+#include <cassert>
 #ifndef WIN32
 #    include <unistd.h>
 #endif
@@ -17,11 +18,17 @@ static std::string getHostname() {
     std::string computerName;
 
 #if defined( WIN32 ) || defined( _WIN32 ) || defined( _WIN64 )
-    temp = getenv( "COMPUTERNAME" );
-    if ( temp != 0 ) {
-        computerName = temp;
-        temp         = 0;
-    }
+//    temp = getenv( "COMPUTERNAME" );
+    char buff[256];
+    size_t len;
+    int err = _dupenv_s((char**)&buff, &len, "COMPUTERNAME");
+    assert(len < 256);
+    assert(err == 0);
+    computerName = buff;
+//    if ( temp != 0 ) {
+//        computerName = temp;
+//        temp         = 0;
+//    }
 #else
     temp = getenv( "HOSTNAME" );
     if ( temp != 0 ) {

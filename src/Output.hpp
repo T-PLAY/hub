@@ -6,6 +6,7 @@
 #include "Any.hpp"
 #include "Macros.hpp"
 #include "SensorSpec.hpp"
+#include "Measure.hpp"
 
 #ifdef USE_BOOST
 #    include <boost/type_index.hpp>
@@ -16,7 +17,7 @@
 #endif
 
 namespace hub {
-namespace io {
+//namespace io {
 
 ///
 /// \brief The Output class
@@ -151,7 +152,7 @@ class SRC_API Output
     /// \brief write
     /// \param measure
     ///
-    void write( const data::Measure& measure );
+    void write( const Measure& measure );
 
     ///
     /// \brief write
@@ -260,5 +261,5 @@ inline void Output::write( const std::pair<T, U>& pair ) {
     write( second );
 }
 
-} // namespace io
+//} // namespace io
 } // namespace hub

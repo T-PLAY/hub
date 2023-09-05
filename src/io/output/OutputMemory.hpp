@@ -8,7 +8,7 @@ namespace hub {
 namespace output {
 
 template <class Container>
-class OutputMemory : public io::Output, public io::MemoryInterface<Container>
+class OutputMemory : public Output, public io::MemoryInterface<Container>
 {
   public:
     explicit OutputMemory( Container& buff ) : io::MemoryInterface<Container>(buff)  {}

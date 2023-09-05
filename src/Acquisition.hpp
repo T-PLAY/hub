@@ -5,8 +5,9 @@
 #include <list>
 
 #include "Macros.hpp"
-#include "data/Measure.hpp"
+//#include "data/Measure.hpp"
 
+#include "Measure.hpp"
 // user friendly useless includes
 #include "data/Dof6.hpp"
 #include "data/Mat4.hpp"
@@ -74,7 +75,7 @@ class SRC_API Acquisition
     /// \return
     /// modified acquisition with new measure.
     ///
-    Acquisition& operator<<( data::Measure&& measure );
+    Acquisition& operator<<( Measure&& measure );
 
     ///
     /// \brief operator <<
@@ -84,7 +85,7 @@ class SRC_API Acquisition
     /// \return
     /// modified acquisition with new measure.
     ///
-    Acquisition& operator<<( const data::Measures& measure );
+    Acquisition& operator<<( const Measures& measure );
 
     ///
     /// \brief operator >>
@@ -103,7 +104,7 @@ class SRC_API Acquisition
     /// \brief pushBack
     /// \param measure
     ///
-    void pushBack( data::Measure&& measure );
+    void pushBack( Measure&& measure );
 
     ///
     /// \brief isInterpolable
@@ -180,7 +181,7 @@ class SRC_API Acquisition
     /// \return
     /// all measures acquired during the acquisition.
     ///
-    const data::Measures& getMeasures() const;
+    const Measures& getMeasures() const;
 
     ///
     /// \brief getStart
@@ -203,11 +204,11 @@ class SRC_API Acquisition
   private:
     long long m_start = 0; // microseconds
     long long m_end   = 0; // microseconds
-    data::Measures m_measures;
+    Measures m_measures;
     uint64_t m_size = 0;
 
-    friend class io::Input;
-    friend class io::Output;
+    friend class Input;
+    friend class Output;
 };
 
 ///////////////////////////////////////////////// INLINE

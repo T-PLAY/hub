@@ -26,7 +26,7 @@ TEST_CASE( "OutputStream test" ) {
             data[i] = ref_offset + iAcq + 1;
         }
         ref_acqs.emplace_back( ref_offset + iAcq + 1, ref_offset + iAcq + 2 );
-        ref_acqs.back() << hub::data::Measure(
+        ref_acqs.back() << hub::Measure(
             reinterpret_cast<const unsigned char*>( data ), ref_dataSize, ref_resolution );
         std::cout << ref_acqs.back() << std::endl;
     }
@@ -43,7 +43,7 @@ TEST_CASE( "OutputStream test" ) {
 //    server.asyncRun();
 
     hub::OutputSensor outputSensor(
-        ref_sensorSpec, OutputStream(__FILE_NAME__) );
+        ref_sensorSpec, OutputStream(FILE_NAME) );
     std::cout << "outputSensor created" << std::endl;
 
     {
@@ -52,7 +52,7 @@ TEST_CASE( "OutputStream test" ) {
 //                                                 hub::net::ClientSocket( ipv4, port ) );
 //                                                 ipv4, port );
             hub::OutputSensor outputSensor2(
-                ref_sensorSpec, OutputStream(__FILE_NAME__) );
+                ref_sensorSpec, OutputStream(FILE_NAME) );
             CHECK( false );
             std::cout << "outputSensor2 created" << std::endl;
         }

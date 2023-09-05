@@ -21,7 +21,7 @@ using InputStream = InputStreamServer;
 using InputStream = InputStreamMqtt;
 #endif
 
-static_assert( std::is_base_of<io::Input, InputStream>::value,
+static_assert( std::is_base_of<Input, InputStream>::value,
                "Input is base class of InputStream" );
 static_assert( std::is_base_of<io::StreamInterface, InputStream>::value,
                "Stream is base class of InputStream" );

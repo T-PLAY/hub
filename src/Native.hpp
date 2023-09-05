@@ -3,7 +3,9 @@
 #include "InputSensor.hpp"
 #include "Macros.hpp"
 #include "OutputSensor.hpp"
+
 #include "client/Viewer.hpp"
+//#include "ViewerInterface.hpp"
 
 namespace hub {
 
@@ -170,8 +172,8 @@ extern "C"
                                           onNewAcquisitionFunc onNewAcquisition,
                                           onSetPropertyFunc onSetProperty,
                                           onLogMessageFunc onLogMessage,
-        const char* ipv4 = InputStream::s_defaultIpv4.c_str(),
-        int port = InputStream::s_defaultPort
+         const char* ipv4 = input::InputStream::s_defaultIpv4.c_str(),
+         int port = input::InputStream::s_defaultPort
         );
 
     ///
@@ -353,19 +355,19 @@ extern "C"
     ///
     SRC_API double metaData_getDouble( const SensorSpec::MetaData* metaData, const char* metaName );
 
-//    ///
-//    /// \brief any_getDouble
-//    /// \param any
-//    /// \return
-//    ///
-//    SRC_API double any_getDouble( const hub::Any* any );
+    ///
+    /// \brief any_getDouble
+    /// \param any
+    /// \return
+    ///
+    SRC_API double any_getDouble( const hub::Any* any );
 
-//    ///
-//    /// \brief any_getInt
-//    /// \param any
-//    /// \return
-//    ///
-//    SRC_API int any_getInt( const hub::Any* any );
+    ///
+    /// \brief any_getInt
+    /// \param any
+    /// \return
+    ///
+    SRC_API int any_getInt( const hub::Any* any );
 
 #ifdef __cplusplus
 } // end extern "C"

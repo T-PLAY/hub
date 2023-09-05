@@ -11,7 +11,8 @@ OutputStreamServer::OutputStreamServer(const std::string &streamName, const std:
 //OutputStreamServer::OutputStreamServer( const std::string& streamName, net::ClientSocket&& clientSocket ) :
     io::StreamServer(streamName, ipv4, port),
 //    m_clientSocket( std::move( clientSocket ) ) {
-    m_clientSocket( ipv4, port )
+//    m_clientSocket( ipv4, port )
+    m_clientSocket( std::make_unique<net::ClientSocket>(ipv4, port) )
 {
 
     Output::write( net::ClientSocket::Type::STREAMER );
@@ -19,35 +20,44 @@ OutputStreamServer::OutputStreamServer(const std::string &streamName, const std:
     Output::write( streamName );
 
     net::ClientSocket::Message mess;
-    m_clientSocket.read( mess );
+    m_clientSocket->read( mess );
     if ( mess == net::ClientSocket::Message::FOUND ) {
-        m_clientSocket.close();
+        m_clientSocket->close();
         throw net::Socket::exception(
             ( std::string( "stream '" ) + streamName + "' is already attached to server" )
                 .c_str() );
     }
     assert( mess == net::ClientSocket::Message::NOT_FOUND );
 
-    m_thread = std::make_unique<std::thread>( [&]() {
+
+    assert(m_clientSocket->isOpen());
+    auto * clientSocket = m_clientSocket.get();
+    auto * serverClosed = m_serverClosed.get();
+    auto * streamerClosed = m_streamerClosed.get();
+    m_thread = std::make_unique<std::thread>( [=]() {
+//        auto * clientSocket = m_clientSocket.get();
+        std::cout << "[OutputStreamServer] OutputStreamServer(string, string, int) thread started" << std::endl;
         hub::net::ClientSocket::Message message;
-        assert( m_clientSocket.isOpen() );
-        m_clientSocket.read( message );
+        assert( clientSocket->isOpen() );
+        clientSocket->read( message );
         if ( message == net::ClientSocket::Message::SERVER_CLOSED ) {
 
             std::cout << "[OutputStreamServer] server closed" << std::endl;
-            m_serverClosed = true;
+            *serverClosed = true;
         }
         else if ( message == net::ClientSocket::Message::STREAMER_CLOSED ) {
             std::cout << "[OutputStreamServer] streamer closed" << std::endl;
-            m_streamerClosed = true;
+            *streamerClosed = true;
         }
         else {
             assert( false );
         }
 
-        if ( m_clientSocket.isOpen() )
-            m_clientSocket.write( net::ClientSocket::Message::OUTPUT_STREAM_CLOSED );
+        if ( clientSocket->isOpen() )
+            clientSocket->write( net::ClientSocket::Message::OUTPUT_STREAM_CLOSED );
+        std::cout << "[OutputStreamServer] OutputStreamServer(string, string, int) thread ended" << std::endl;
     } );
+    std::cout << "[OutputStreamServer] OutputStreamServer(string, string, int) ended" << std::endl;
 }
 
 
@@ -57,6 +67,8 @@ OutputStreamServer::OutputStreamServer( OutputStreamServer&& outputStream ) :
     m_clientSocket( std::move( outputStream.m_clientSocket ) ),
     m_thread( std::move( outputStream.m_thread ) ),
     m_moved( outputStream.m_moved ) {
+
+    std::cout << "[OutputStreamServer] OutputStreamServer(OutputStreamServer&&)" << std::endl;
     outputStream.m_moved = true;
 }
 

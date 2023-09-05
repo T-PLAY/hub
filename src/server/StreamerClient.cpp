@@ -8,7 +8,7 @@
 namespace hub {
 namespace server {
 
-class InputStreamClient : public hub::io::Input
+class InputStreamClient : public hub::Input
 {
   public:
     explicit InputStreamClient( hub::net::ClientSocket&& clientSocket ) :

@@ -10,7 +10,7 @@ namespace hub {
 namespace input {
 
 template <class Container>
-class InputMemory : public io::Input, public io::MemoryInterface<Container>
+class InputMemory : public Input, public io::MemoryInterface<Container>
 {
   public:
 

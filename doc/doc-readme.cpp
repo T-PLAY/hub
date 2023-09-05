@@ -69,7 +69,7 @@ int main() {
 
             // send data
             outputSensor << ( hub::Acquisition { start, end }
-                              << hub::data::Measure { data, size, imageResolution } );
+                              << hub::Measure { data, size, imageResolution } );
         }
     }
 

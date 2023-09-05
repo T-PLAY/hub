@@ -29,7 +29,7 @@ SensorSpec SensorSpec::operator+( const SensorSpec& sensorSpec ) const {
     std::string sensorName;
     Resolutions resolutions;
     SensorSpec::MetaData metaData;
-    // todo
+
     sensorName  = m_sensorName + " + " + sensorSpec.m_sensorName;
     resolutions = m_resolutions;
     resolutions.insert(

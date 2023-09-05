@@ -9,13 +9,13 @@
 #include "Any.hpp"
 #include "Macros.hpp"
 #include "Resolution.hpp"
+//#include "Measure.hpp"
 
 // user friendly useless includes
-#include "data/Dof6.hpp"
-#include "data/Mat4.hpp"
-#include "data/Measure.hpp"
-#include "data/Mesh.hpp"
-#include "data/UserData.hpp"
+//#include "data/Dof6.hpp"
+//#include "data/Mat4.hpp"
+//#include "data/Mesh.hpp"
+//#include "data/UserData.hpp"
 
 #if CPLUSPLUS_VERSION == 20
 #    include "Map.hpp"

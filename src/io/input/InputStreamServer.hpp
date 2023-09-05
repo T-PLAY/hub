@@ -18,7 +18,7 @@ namespace input {
 /// server. That implies an OutputStream communicating data through the hub.
 ///
 //class SRC_API InputStreamServer : public Input
-class SRC_API InputStreamServer : public io::Input, public io::StreamServer
+class SRC_API InputStreamServer : public Input, public io::StreamServer
 {
   public:
     ///

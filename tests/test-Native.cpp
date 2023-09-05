@@ -8,7 +8,6 @@
 
 // #include <Server.hpp>
 
-// #include <filesystem>
 // #include <iostream>
 
 #include <Native.hpp>
@@ -39,10 +38,10 @@ TEST_CASE( "Native test" ) {
     std::cout << "ref_mat4: " << ref_mat4 << std::endl;
     ref_metaData["d"] = ref_mat4;
     const hub::SensorSpec ref_sensorSpec( ref_sensorName, { ref_resolution }, ref_metaData );
-    const std::string ref_streamName = __FILE_NAME__;
+    const std::string ref_streamName = FILE_NAME;
     unsigned char ref_data[3]        = { 0, 1, 2 };
     const hub::Acquisition ref_acq =
-        std::move( hub::Acquisition( 0, 1 ) << hub::data::Measure( ref_data, 3, ref_resolution ) );
+        std::move( hub::Acquisition( 0, 1 ) << hub::Measure( ref_data, 3, ref_resolution ) );
 
     auto onNewStreamer = []( const char* streamName, const hub::SensorSpec* sensorSpec ) {
 //        return false;
@@ -155,7 +154,7 @@ TEST_CASE( "Native test" ) {
         std::cout << "[Example][Viewer] onServerDisconnected " << ipv4 << " " << port << std::endl;
     };
     auto onNewAcquisition = []( const char* streamName, const hub::Acquisition* acq ) {
-        CHECK( !strcmp( streamName, __FILE_NAME__ ) );
+        CHECK( !strcmp( streamName, FILE_NAME ) );
         std::cout << "[Example][Viewer] onNewAcquisition " << streamName << " " << *acq
                   << std::endl;
     };
@@ -170,7 +169,7 @@ TEST_CASE( "Native test" ) {
     };
 
     auto* viewer = hub::native::createViewer(
-        __FILE_NAME__,
+        FILE_NAME,
         onNewStreamer,
                                               onDelStreamer,
                                               onServerNotFound,

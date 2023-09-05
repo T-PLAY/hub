@@ -10,6 +10,7 @@
 #include "SensorSpec.hpp"
 #include "net/ClientSocket.hpp"
 #include "ViewerInterface.hpp"
+#include "io/input/InputStreamServer.hpp"
 
 namespace hub {
 namespace client {

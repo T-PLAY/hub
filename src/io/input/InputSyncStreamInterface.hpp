@@ -17,7 +17,7 @@ namespace input {
 ///
 template <class InputStream = InputStream>
 //template <class InputStream>
-class SRC_API InputSyncStreamInterface : public io::Input
+class SRC_API InputSyncStreamInterface : public Input
 {
   public:
     ///
@@ -130,8 +130,8 @@ inline bool InputSyncStreamInterface<InputStream>::isEnd() const {
 template <class InputStream>
 inline void InputSyncStreamInterface<InputStream>::read( Acquisition& acq ) {
 
-    io::Input& input = m_inputStream;
-    io::Input& input2       = m_inputStream2;
+    Input& input = m_inputStream;
+    Input& input2       = m_inputStream2;
 
     input >> input2 >> acq;
 //    (void)(m_inputStream >> m_inputStream2 >> acq);

@@ -65,7 +65,8 @@ int main( int argc, char* argv[] ) {
         std::cout << HEADER_MSG "onLogMessage '" << logMessage << "'" << std::endl;
     };
 
-    hub::client::Viewer viewer( __FILE_NAME__,
+    hub::client::Viewer viewer(
+        FILE_NAME,
                                 onNewStreamer,
                                 onDelStreamer,
                                 onServerNotFound,

@@ -30,7 +30,7 @@ TEST_CASE( "InputSyncStream test" ) {
             data[i] = ref_offset + iAcq + 1;
         }
         ref_acqs.emplace_back( ref_offset + iAcq + 1, ref_offset + iAcq + 2 );
-        ref_acqs.back() << hub::data::Measure(
+        ref_acqs.back() << hub::Measure(
             reinterpret_cast<const unsigned char*>( data ), ref_dataSize, ref_resolution );
         std::cout << ref_acqs.back() << std::endl;
     }
@@ -51,7 +51,7 @@ TEST_CASE( "InputSyncStream test" ) {
             data2[i] = ref2_offset + iAcq + 1;
         }
         ref_acqs2.emplace_back( ref2_offset + iAcq + 1, ref2_offset + iAcq + 1 );
-        ref_acqs2.back() << hub::data::Measure(
+        ref_acqs2.back() << hub::Measure(
             reinterpret_cast<const unsigned char*>( data2 ), ref_dataSize2, ref_resolution2 );
 
         std::cout << ref_acqs2.back() << std::endl;
@@ -65,11 +65,11 @@ TEST_CASE( "InputSyncStream test" ) {
 
 #ifndef HUB_BUILD_SERVER
     {
-        hub::output::OutputStream outputStream( __FILE_NAME__ );
-        InputStream inputStream( __FILE_NAME__ );
+        hub::output::OutputStream outputStream( FILE_NAME );
+        InputStream inputStream( FILE_NAME );
 
-        hub::output::OutputStream outputStream2( __FILE_NAME__ "2" );
-        InputStream inputStream2( __FILE_NAME__ "2" );
+        hub::output::OutputStream outputStream2( FILE_NAME "2" );
+        InputStream inputStream2( FILE_NAME "2" );
 
         std::vector<hub::Acquisition> sync_acqs = synchronize( std::move(outputStream),
                                                                ref_sensorSpec,

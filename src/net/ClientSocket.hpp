@@ -216,13 +216,13 @@ void ClientSocket::write( const T& t ) {
     // server side
     // Assertion failed: isOpen()
     // D:\a\_work\1\s\src\vctools\crt\github\stl\src\mutex.cpp(64): mutex destroyed while busy
-    io::Output::write( t );
+    Output::write( t );
 }
 
 template <class T>
 void ClientSocket::read( T& t ) {
     assert( isOpen() );
-    io::Input::read( t );
+    Input::read( t );
 }
 
 } // namespace net

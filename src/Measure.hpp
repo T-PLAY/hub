@@ -6,15 +6,25 @@
 
 #include "Macros.hpp"
 #include "Resolution.hpp"
+//#include "Input.hpp"
+//#include "Output.hpp"
+
+// useless includes, user friendly
+//#include "data/UserData.hpp"
+//#include "data/Dof6.hpp"
+//#include "data/Mat4.hpp"
+//#include "data/Mesh.hpp"
+
 
 namespace hub {
 
-namespace io {
+//namespace io {
 class Input;
 class Output;
-} // namespace io
+//} // namespace io
 
-namespace data {
+
+//namespace data {
 
 ///
 /// \brief The Measure class
@@ -100,6 +110,9 @@ class SRC_API Measure
     ///
     static Measure slerp( const Measure& left, const Measure& right, double t );
 
+    virtual Measure slerp( const Measure& right, double t ) const;
+
+
     ///
     /// \brief operator ==
     /// \param measure
@@ -163,8 +176,8 @@ class SRC_API Measure
     Resolution m_resolution;
     bool m_isMoved = false;
 
-    friend class hub::io::Input;
-    friend class hub::io::Output;
+    friend class Input;
+    friend class Output;
 };
 
 using Measures = std::vector<Measure>;
@@ -218,5 +231,5 @@ const inline Resolution& Measure::getResolution() const {
     return m_resolution;
 }
 
-} // namespace data
+//} // namespace data
 } // namespace hub

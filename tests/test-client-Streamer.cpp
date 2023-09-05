@@ -23,11 +23,11 @@ TEST_CASE( "Streamer" ) {
 
         unsigned char data[3] { 1, 2, 3 };
         hub::Acquisition acq =
-            std::move( hub::Acquisition( 0, 1 ) << hub::data::Measure( data, 3, resolution ) );
+            std::move( hub::Acquisition( 0, 1 ) << hub::Measure( data, 3, resolution ) );
         std::vector<hub::Acquisition> acqs;
         acqs.push_back( acq.clone() );
 
-        streamer.addStream( __FILE_NAME__, sensorSpec, std::move( acqs ) );
+        streamer.addStream( FILE_NAME, sensorSpec, std::move( acqs ) );
         std::cout << "[Test] ############################### streamer add stream" << std::endl;
 
         assert( !streamer.isConnected() );
@@ -56,7 +56,7 @@ TEST_CASE( "Streamer" ) {
         std::cout << "[Test] ############################### server end" << std::endl;
         std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
 
-        streamer.newAcquisition( __FILE_NAME__, acq );
+        streamer.newAcquisition( FILE_NAME, acq );
 
         //        while ( streamer.isConnected() ) {
         //            std::cout << "[test] waiting for streamer disconnected" << std::endl;

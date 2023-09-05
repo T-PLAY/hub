@@ -11,6 +11,7 @@
 #include "StreamerClient.hpp"
 #include "ViewerClient.hpp"
 #include "net/ServerSocket.hpp"
+#include "io/StreamServer.hpp"
 
 namespace hub {
 //namespace server {

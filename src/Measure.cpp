@@ -8,7 +8,7 @@
 #include "data/UserData.hpp"
 
 namespace hub {
-namespace data {
+//namespace data {
 
 Measure::~Measure() {
 
@@ -43,19 +43,32 @@ Measure Measure::slerp( const Measure& left, const Measure& right, double t ) {
     assert( !right.m_resolution.first.empty() );
     assert( left.m_resolution == right.m_resolution );
 
-    if ( left.isInterpolable() ) {
+    return left.slerp(right, t);
+
+}
+
+Measure Measure::slerp(const Measure &right, double t) const
+{
+//    assert(! isInterpolable());
+//    return (t < 0.5) ?clone() :right.clone();
+
+    if ( isInterpolable() ) {
         assert( right.isInterpolable() );
 
-        switch ( left.m_resolution.second ) {
+//        return clone();
+
+        switch ( m_resolution.second ) {
         case Format::DOF6: {
-            return Dof6::slerp( Dof6( left ), Dof6( right ), t );
+            return data::Dof6::slerp( data::Dof6( *this ), data::Dof6( right ), t );
         }
         default:
             assert( false );
             // do nothing
         }
     }
-    return left.clone(); // avoid non return warning
+//    return left.clone(); // avoid non return warning
+    return (t < 0.5) ?clone() :right.clone();
+//    return clone();
 }
 
 bool Measure::operator==( const Measure& measure ) const {
@@ -114,5 +127,5 @@ std::ostream& operator<<( std::ostream& os, const Measure& measure ) {
     return os;
 }
 
-} // namespace data
+//} // namespace data
 } // namespace hub

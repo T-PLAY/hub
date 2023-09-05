@@ -2,22 +2,19 @@
 
 #include <type_traits>
 
-#include "Acquisition.hpp"
 #include "Sensor.hpp"
 #include "SensorSpec.hpp"
-#include "io/output/Output.hpp"
+#include "Acquisition.hpp"
 #include "Traits.hpp"
 
+#include "Output.hpp"
 // user friendly useless includes
-// #include "io/Output.hpp"
-//#include "io/File.hpp"
 #include "io/output/OutputFile.hpp"
 #include "io/output/OutputStream.hpp"
 #include "io/output/OutputMemory.hpp"
-
 #include "io/Memory.hpp"
 
-#include "net/ClientSocket.hpp"
+//#include "net/ClientSocket.hpp"
 
 using namespace hub::output;
 
@@ -48,81 +45,94 @@ class SRC_API OutputSensor : public Sensor
     ///
     template <
         class SensorSpec = hub::SensorSpec,
-        class Output,
-        typename = typename std::enable_if<std::is_base_of<io::Output, Output>::value &&
-#ifdef HUB_BUILD_SERVER
-                                           !std::is_same<Output, output::OutputStreamServer>::value &&
-#endif
-                                           !std::is_same<Output, net::ClientSocket>::value
-                                           >::type>
-    OutputSensor( SensorSpec&& sensorSpec, Output&& output ) :
+          class OutputT>
+//          ,
+//          typename = typename std::enable_if<std::is_base_of<Output, Output>::value &&
+//#ifdef HUB_BUILD_SERVER
+//                                           !std::is_same<OutputT, output::OutputStreamServer>::value
+//              &&
+//#endif
+//                                           !std::is_same<Output, net::ClientSocket>::value
+//                                           >::type>
+    OutputSensor( SensorSpec&& sensorSpec, OutputT&& output ) :
 
         Sensor( std::forward<SensorSpec>( sensorSpec ) ),
-        m_output( new Output( std::move( output ) ) ) {
+//          m_output(std::forward<OutputT>(output))
+        m_output( new OutputT( std::move( output ) ) )
+      {
 
-        static_assert( std::is_base_of<io::Output, Output>::value, "not a base class" );
-#ifdef HUB_BUILD_SERVER
-        static_assert( !std::is_same<output::OutputStreamServer, Output>::value, "not outputStream class" );
-#endif
-        static_assert( !std::is_same<net::ClientSocket, Output>::value, "not clientSocket class" );
+        static_assert( std::is_base_of<Output, OutputT>::value, "not a base class" );
+//#ifdef HUB_BUILD_SERVER
+//        static_assert( !std::is_same<output::OutputStreamServer, Output>::value, "not outputStream class" );
+//#endif
+//        static_assert( !std::is_same<net::ClientSocket, Output>::value, "not clientSocket class" );
 
         m_output->write( m_spec );
     }
 
-#ifdef HUB_BUILD_SERVER
 
-//#define hub::output::OutputStream(_streamName, _ipv4, _port) \
-//    _streamName, _ipv4, _port
+//#ifdef HUB_BUILD_SERVER
 
-    ///
-    /// \brief OutputSensor
-    /// OutputStream class init thread during its construction.
-    /// To prevent non movable pointers within the thread,
-    /// we construct OutputStream in OutputSensor place to instanciate correctly.
-    /// \param sensorSpec
-    /// \param args
-    ///
-    template <class SensorSpec = hub::SensorSpec,
-              class... Args,
-              class Output     = output::OutputStreamServer,
-              typename = typename std::enable_if<std::is_same<output::OutputStreamServer, Output>::value
-#if ( __cplusplus < 201703L )
-                                                 && ( sizeof...( Args ) != 1 ||
-                                                      !is_one_of<Output, Args...>::value )
-#else
-                                                 && ( sizeof...( Args ) != 1 ||
-                                                      !( std::is_same<Output, Args> {} || ... ) )
-#endif
-                                                 >::type>
-    OutputSensor( SensorSpec&& sensorSpec, Args&&... args ) :
-        Sensor( std::forward<SensorSpec>( sensorSpec ) ),
-        m_output( new Output( std::forward<Args>( args )... ) ) {
-        static_assert( std::is_base_of<io::Output, Output>::value, "not a base class" );
-        static_assert( !std::is_same<net::ClientSocket, Output>::value, "not clientSocket class" );
+////#define hub::output::OutputStream(_streamName, _ipv4, _port) \
+////    _streamName, _ipv4, _port
 
-        m_output->write( m_spec );
-    }
+//    ///
+//    /// \brief OutputSensor
+//    /// OutputStream class init thread during its construction.
+//    /// To prevent non movable pointers within the thread,
+//    /// we construct OutputStream in OutputSensor place to instanciate correctly.
+//    /// \param sensorSpec
+//    /// \param args
+//    ///
+//    template <class SensorSpec = hub::SensorSpec,
+//              class... Args,
+////             class Output,
+////             class OutputT = hub::Output,
+////             typename = typename std::enable_if<std::is_base_of<hub::Output, OutputT>::value
+//              class OutputT     = output::OutputStreamServer,
+//              typename = typename std::enable_if<std::is_same<output::OutputStreamServer, OutputT>::value
+//#if ( __cplusplus < 201703L )
+//                                                 && ( sizeof...( Args ) != 1 ||
+//                                                      !is_one_of<OutputT, Args...>::value )
+//#else
+//                                                 && ( sizeof...( Args ) != 1 ||
+//                                                      !( std::is_same<OutputT, Args> {} || ... ) )
+//#endif
+//                                                 >::type>
+//    OutputSensor( SensorSpec&& sensorSpec, Args&&... args ) :
+//        Sensor( std::forward<SensorSpec>( sensorSpec ) ),
+//        m_output( new OutputT( std::forward<Args>( args )... ) )
+////        m_output( std::make_unique<OutputT>( std::forward<Args>( args )... ) )
+////        m_output( std::forward<Args>( args )...  )
+//    {
+//        static_assert( std::is_base_of<Output, OutputT>::value, "not a base class" );
+////        static_assert( !std::is_same<net::ClientSocket, Output>::value, "not clientSocket class" );
+
+//        m_output->write( m_spec );
+//    }
 
 //#define OutputStream( ... ) \
-    __VA_ARGS__
-#define OutputStream( args... ) \
-    args
-//#define OutputStream( sensorName, ipv4, port ) \
-//    sensorName, ipv4, port
-#define OutputStreamServer( _params ) \
-    _params
-//#define OutputStream( _params ) \
-//    _params
-#endif
+//    __VA_ARGS__
+
+////#define OutputStream( args... ) \
+////    args
+////#define OutputStream( sensorName, ipv4, port ) \
+////    sensorName, ipv4, port
+////#define OutputStreamServer( _params ) \
+////    _params
+////#define OutputStream( _params ) \
+////    _params
+//#endif
 
 
-    ////        io::Output(std::move(output)),
+
+    ////        Output(std::move(output)),
     ////        m_output( new Output( std::forward<Args>(args)... ) )
 
     ////        Output::write(m_spec);
 
-    template <class Output>
-    OutputSensor( const SensorSpec&& sensorSpec, Output& output ) = delete;
+    template <class OutputT>
+    OutputSensor( const SensorSpec&& sensorSpec, OutputT& output ) = delete;
 
     OutputSensor( const OutputSensor& outputSensor ) = delete;
     OutputSensor operator=( const OutputSensor& outputSensor ) = delete;
@@ -153,10 +163,11 @@ class SRC_API OutputSensor : public Sensor
     /// \brief getOutput
     /// \return
     ///
-    io::Output& getOutput() const;
+    Output& getOutput() const;
 
   private:
-    std::unique_ptr<io::Output> m_output;
+    std::unique_ptr<Output> m_output;
+//    Output & m_output;
     bool m_moved = false;
 };
 

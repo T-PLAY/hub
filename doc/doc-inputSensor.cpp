@@ -33,7 +33,7 @@ int main() {
             data[i] = ref_offset + iAcq + 1;
         }
         ref_acqs.emplace_back( ref_offset + iAcq + 1, ref_offset + iAcq + 2 );
-        ref_acqs.back() << hub::data::Measure(
+        ref_acqs.back() << hub::Measure(
             reinterpret_cast<const unsigned char*>( data ), ref_dataSize, ref_resolution );
         std::cout << ref_acqs.back() << std::endl;
     }
@@ -54,7 +54,7 @@ int main() {
             data2[i] = ref2_offset + iAcq + 1;
         }
         ref_acqs2.emplace_back( ref2_offset + iAcq + 1, ref2_offset + iAcq + 2 );
-        ref_acqs2.back() << hub::data::Measure(
+        ref_acqs2.back() << hub::Measure(
             reinterpret_cast<const unsigned char*>( data2 ), ref_dataSize2, ref_resolution2 );
         std::cout << ref_acqs2.back() << std::endl;
     }

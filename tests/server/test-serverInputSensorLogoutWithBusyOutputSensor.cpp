@@ -19,7 +19,7 @@ TEST_CASE( "Server test : inputSensorLogoutWithBusyOutputSensor" ) {
     {
         hub::OutputSensor outputSensor(
             hub::SensorSpec( "sensorName", { { { 1 }, hub::Format::BGR8 } } ),
-            OutputStream(__FILE_NAME__)
+            OutputStream(FILE_NAME)
 //            "streamName",
 //            hub::net::ClientSocket( ipv4, port ) );
 //            ipv4, port
@@ -33,7 +33,7 @@ TEST_CASE( "Server test : inputSensorLogoutWithBusyOutputSensor" ) {
                 int iAcq = 0;
                 while ( !killThread ) {
                     unsigned char data[3] = { 0, 1, 2 };
-                    outputSensor << ( hub::Acquisition( iAcq, iAcq ) << hub::data::Measure(
+                    outputSensor << ( hub::Acquisition( iAcq, iAcq ) << hub::Measure(
                                           data, 3, { { 1 }, hub::Format::BGR8 } ) );
                     ++iAcq;
                 }
@@ -47,7 +47,7 @@ TEST_CASE( "Server test : inputSensorLogoutWithBusyOutputSensor" ) {
 
 //            hub::io::InputStream inputStream( "streamName", hub::net::ClientSocket( ipv4, port ) );
 //            hub::input::InputStreamServer inputStream( "streamName", ipv4, port );
-            hub::input::InputStream inputStream( __FILE_NAME__ );
+            hub::input::InputStream inputStream( FILE_NAME );
             hub::InputSensor inputSensor( std::move( inputStream ) );
             assert( !inputSensor.getSpec().isEmpty() );
 

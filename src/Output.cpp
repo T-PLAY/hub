@@ -3,10 +3,10 @@
 #include "Any.hpp"
 #include "Info.hpp"
 
-#include "OutputMemory.hpp"
+//#include "OutputMemory.hpp"
 
 namespace hub {
-namespace io {
+//namespace io {
 
 Output::~Output() {}
 
@@ -39,7 +39,7 @@ void Output::write( const SensorSpec& sensorSpec ) {
     std::vector<char> buff;
     constexpr int maxBuffLen = 512;
     buff.reserve(maxBuffLen);
-    output::OutputMemory<decltype(buff)> memory(buff);
+//    output::OutputMemory<decltype(buff)> memory(buff);
 
     char magicNumber[80] = { 0 };
     constexpr char joker = ' ';
@@ -65,20 +65,23 @@ void Output::write( const SensorSpec& sensorSpec ) {
 #endif
     assert( strlen( magicNumber ) < 79 );
     magicNumber[strlen( magicNumber )] = joker;
-    memory.write( reinterpret_cast<unsigned char*>(magicNumber), 80 );
+//    memory.write( reinterpret_cast<unsigned char*>(magicNumber), 80 );
+    write( reinterpret_cast<unsigned char*>(magicNumber), 80 );
 
-    memory.write( sensorSpec.getSensorName() );
-    memory.write( sensorSpec.getResolutions() );
-    memory.write( sensorSpec.getMetaData() );
+//    memory.write( sensorSpec.getSensorName() );
+    write( sensorSpec.getSensorName() );
+//    memory.write( sensorSpec.getResolutions() );
+    write( sensorSpec.getResolutions() );
+//    memory.write( sensorSpec.getMetaData() );
+    write( sensorSpec.getMetaData() );
 
-    uint64_t packetSize = buff.size();
-//    assert(packetSize < maxBuffLen);
-    write(packetSize);
-
-    write((unsigned char*)buff.data(), packetSize);
+//    uint64_t packetSize = buff.size();
+////    assert(packetSize < maxBuffLen);
+//    write(packetSize);
+//    write((unsigned char*)buff.data(), packetSize);
 }
 
-void Output::write( const data::Measure& measure ) {
+void Output::write( const Measure& measure ) {
     assert( isOpen() );
 
 #ifdef DEBUG_OUTPUT
@@ -189,7 +192,7 @@ void Output::write( const Any& any ) {
     }
 
     case Any::Type::MESH: {
-        const data::Measure& measure = any.getMesh();
+        const Measure& measure = any.getMesh();
         write( measure );
         break;
     }
@@ -202,5 +205,5 @@ void Output::write( const Any& any ) {
     }
 }
 
-} // namespace io
+//} // namespace io
 } // namespace hub

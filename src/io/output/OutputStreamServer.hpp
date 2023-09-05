@@ -17,7 +17,7 @@ namespace output {
 /// Describes an output communication to the server.
 ///
 //class SRC_API OutputStreamServer : public Output
-class SRC_API OutputStreamServer : public io::Output, public io::StreamServer
+class SRC_API OutputStreamServer : public Output, public io::StreamServer
 {
   public:
     ///
@@ -58,13 +58,13 @@ class SRC_API OutputStreamServer : public io::Output, public io::StreamServer
     // #endif
 
   private:
-    net::ClientSocket m_clientSocket;
+    std::unique_ptr<net::ClientSocket> m_clientSocket;
 
     std::unique_ptr<std::thread> m_thread;
     bool m_moved = false;
 
-    bool m_serverClosed   = false;
-    bool m_streamerClosed = false;
+    std::unique_ptr<bool> m_serverClosed   = std::make_unique<bool>(false);
+    std::unique_ptr<bool> m_streamerClosed = std::make_unique<bool>(false);
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -75,27 +75,27 @@ inline void OutputStreamServer::write( const Acquisition& acq ) {
 }
 
 inline void OutputStreamServer::write( const unsigned char* data, size_t len ) {
-    m_clientSocket.write( data, len );
+    m_clientSocket->write( data, len );
 }
 
 inline void OutputStreamServer::close() {
     std::cout << "[OutputStreamServer] close() started" << std::endl;
-    assert( m_clientSocket.isOpen() );
-    if ( !m_serverClosed && !m_streamerClosed ) {
-        m_clientSocket.write( net::ClientSocket::Message::OUTPUT_STREAM_CLOSED );
+    assert( m_clientSocket->isOpen() );
+    if ( ! *m_serverClosed && ! *m_streamerClosed ) {
+        m_clientSocket->write( net::ClientSocket::Message::OUTPUT_STREAM_CLOSED );
     }
     int iSleep = 0;
-    while ( !m_serverClosed && !m_streamerClosed && iSleep < 10 ) {
+    while ( ! *m_serverClosed && ! *m_streamerClosed && iSleep < 10 ) {
         std::cout << "[OutputStreamServer] close() waiting for server/streamer closing" << std::endl;
-        std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+        std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
         ++iSleep;
     }
-    m_clientSocket.close();
+    m_clientSocket->close();
     std::cout << "[OutputStreamServer] close() ended" << std::endl;
 }
 
 inline bool OutputStreamServer::isOpen() const {
-    return m_clientSocket.isOpen();
+    return m_clientSocket->isOpen();
 }
 
 } // namespace output
