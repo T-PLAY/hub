@@ -90,6 +90,11 @@ foreach(SUPPORTED_COMPILER ${SUPPORTED_COMPILERS})
     endif()
 endforeach()
 
+if (LLVM)
+    message(FATAL_ERROR "eee")
+endif()
+
+
 if(NOT COMPILER_FOUND)
     message(FATAL_ERROR "no supported compiler founded")
 endif()
