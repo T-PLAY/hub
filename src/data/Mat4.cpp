@@ -91,7 +91,11 @@ std::string Mat4::to_string() const {
 #ifdef WIN32
             sprintf_s( buff, "%.0f ", data[4 * i + j] );
 #else
+#ifdef OS_MACOS
+            snprintf( buff, 32, "%.0f", data[4 * i + j] );
+#else
             sprintf( buff, "%.0f", data[4 * i + j] );
+#endif
 #endif
             str += buff;
             if ( j != 3 ) str += " ";

@@ -79,13 +79,21 @@ void pretty_bytes( char* buf, uint64_t bytes ) {
 #ifdef WIN32
         sprintf_s( buf, 80, "%d %s", (int)count, suffixes[s] );
 #else
+#ifdef OS_MACOS
+        snprintf( buf, 80, "%d %s", (int)count, suffixes[s] );
+#else
         sprintf( buf, "%d %s", (int)count, suffixes[s] );
+#endif
 #endif
     else
 #ifdef WIN32
         sprintf_s( buf, 80, "%.1f %s", count, suffixes[s] );
 #else
+#ifdef OS_MACOS
+        snprintf( buf, 80, "%.1f %s", count, suffixes[s] );
+#else
         sprintf( buf, "%.1f %s", count, suffixes[s] );
+#endif
 #endif
 }
 

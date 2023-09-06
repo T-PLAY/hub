@@ -54,6 +54,16 @@ void Output::write( const SensorSpec& sensorSpec ) {
                hub::s_versionMinor,
                hub::s_versionPatch );
 #else
+#ifdef OS_MACOS
+    snprintf( magicNumber, 80,
+             "%c%c%c %d.%d.%d",
+             'H',
+             'U',
+             'B',
+             hub::s_versionMajor,
+             hub::s_versionMinor,
+             hub::s_versionPatch );
+#else
     sprintf( magicNumber,
              "%c%c%c %d.%d.%d",
              'H',
@@ -62,6 +72,7 @@ void Output::write( const SensorSpec& sensorSpec ) {
              hub::s_versionMajor,
              hub::s_versionMinor,
              hub::s_versionPatch );
+#endif
 #endif
     assert( strlen( magicNumber ) < 79 );
     magicNumber[strlen( magicNumber )] = joker;

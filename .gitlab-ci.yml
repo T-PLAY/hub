@@ -152,8 +152,10 @@ build-macOs-gcc-debug:
     - $MACOS_TAG
   script:
     - BUILD_TYPE=Debug
-    - CMAKE_C_COMPILER=gcc
-    - CMAKE_CXX_COMPILER=g++
+    #- CMAKE_C_COMPILER=gcc
+    - CMAKE_C_COMPILER=llvm-gcc
+    #- CMAKE_CXX_COMPILER=g++
+    - CMAKE_CXX_COMPILER=llvm-g++
     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -DHUB_SERVER_PORT=4043"
     - !reference [.build_any, script]
   # when: manual
