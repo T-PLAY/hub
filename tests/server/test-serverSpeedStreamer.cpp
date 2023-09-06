@@ -43,7 +43,8 @@ TEST_CASE( "Server speed test : streamer" ) {
         hub::net::ServerSocket serverSocket( port );
         hub::net::ClientSocket clientSocket( ipv4, port );
         auto clientServerSocket = serverSocket.waitNewClient();
-        const int packetSize    = 2'000'000; // 2Go network memory buffer
+        //const int packetSize    = 2'000'000; // 2Go network memory buffer
+        const int packetSize    = 500'000; // 500Mo network memory buffer MacOS
         const int nPart         = dataSize / packetSize;
 
         const auto& start = std::chrono::high_resolution_clock::now();

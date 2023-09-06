@@ -55,7 +55,7 @@ TEST_CASE( "heavy data" ) {
         constexpr size_t colorSize = 640 * 480 * 3;
         unsigned char* colors      = new unsigned char[colorSize];
         for ( int j = 0; j < colorSize; ++j ) {
-            colors[j] = i + j;
+            colors[j] = (65 + i) % 256;
         }
         acq << hub::Measure {
                                     reinterpret_cast<unsigned char*>(colors), colorSize, { { 640, 480 }, hub::Format::RGB8 } };
@@ -63,12 +63,14 @@ TEST_CASE( "heavy data" ) {
 
         constexpr size_t verticesSize = 640 * 480 * 3 * 4;
         unsigned char* vertices       = new unsigned char[verticesSize];
-        for ( int j = 0; j < colorSize; ++j ) {
-            vertices[j] = i + j;
+        for ( int j = 0; j < verticesSize; ++j ) {
+            vertices[j] = (65 + i) % 256;
         }
 
         acq << hub::Measure {
+                                    //reinterpret_cast<const unsigned char* const>(vertices), verticesSize, { { 640, 480 }, hub::Format::XYZ32F } };
                                     reinterpret_cast<unsigned char*>(vertices), verticesSize, { { 640, 480 }, hub::Format::XYZ32F } };
+        memset(vertices, 0, verticesSize);
         delete[] vertices;
 
         acqs.push_back( std::move( acq ) );
@@ -89,17 +91,20 @@ TEST_CASE( "heavy data" ) {
         constexpr size_t colorSize = 640 * 480 * 3;
         unsigned char* colors      = new unsigned char[colorSize];
         for ( int j = 0; j < colorSize; ++j ) {
-            colors[j] = i + j;
+            colors[j] = (65 + i) % 256;
         }
         CHECK( !memcmp( colors, measures.at( 0 ).getData(), colorSize ) );
         delete[] colors;
 
         constexpr size_t verticesSize = 640 * 480 * 3 * 4;
         unsigned char* vertices       = new unsigned char[verticesSize];
-        for ( int j = 0; j < colorSize; ++j ) {
-            vertices[j] = i + j;
+        for ( int j = 0; j < verticesSize; ++j ) {
+            vertices[j] = (65 + i) % 256;
         }
+        assert(measures.at(1).getSize() == verticesSize);
+        CHECK(vertices[0] == measures.at(1).getData()[0]);
         CHECK( !memcmp( vertices, measures.at( 1 ).getData(), verticesSize ) );
+        assert( !memcmp( vertices, measures.at( 1 ).getData(), verticesSize ) );
         delete[] vertices;
     }
 }

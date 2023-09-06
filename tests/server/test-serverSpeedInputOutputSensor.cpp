@@ -63,20 +63,28 @@ TEST_CASE( "Server test : InputOutputSensor" ) {
         hub::net::ServerSocket serverSocket( port );
         hub::net::ClientSocket clientSocket( ipv4, port );
         auto clientServerSocket = serverSocket.waitNewClient();
-        const int packetSize    = 2'000'000; // 2Go network memory buffer
+        //const int packetSize    = 2'000'000; // 2Go network memory buffer Linux, Win
+        const int packetSize    = 500'000; // 500Mo network memory buffer MacOS
         const int nPart         = dataSize / packetSize;
+	std::cout << "[test][ClientSocket] nPart: " << nPart << " of " << packetSize / 1000.0 << " Mo" << std::endl;
 
         unsigned char* dataIn = new unsigned char[dataSize];
 
         const auto& start = std::chrono::high_resolution_clock::now();
         {
             for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
+		//std::cout << "[test][ClientSocket] send acq " << iAcq << std::endl;
                 const unsigned char* data = &datas[iAcq * dataSize];
                 int uploadSize            = 0;
 
                 for ( int i = 0; i < nPart - 1; ++i ) {
+	 	//std::cout << "[test][ClientSocket] sending part " << i << std::endl;
                     clientSocket.write( data + uploadSize, packetSize );
+	 	//std::cout << "[test][ClientSocket] part sended " << i << std::endl;
+
+	 	//std::cout << "[test][ClientSocket] reading part " << i << std::endl;
                     clientServerSocket.read( dataIn + uploadSize, packetSize );
+	 	//std::cout << "[test][ClientSocket] part readed " << i << std::endl;
 
                     uploadSize += packetSize;
                 }

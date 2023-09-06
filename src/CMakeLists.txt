@@ -217,7 +217,8 @@ elseif(WIN32)
     endif()
 
 elseif(APPLE)
-    message(FATAL_ERROR "apple detected")
+    #message(FATAL_ERROR "eee")
+    target_compile_options(${PROJECT_NAME} PRIVATE "-g")
 
 elseif(UNIX)
     set (THREADS_PREFER_PTHREAD_FLAG ON)

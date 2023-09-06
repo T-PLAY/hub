@@ -473,7 +473,12 @@ void ViewerInterface<InputStream>::printStatus() const {
     for ( const auto& pair : m_streams ) {
         const auto& streamName = pair.first;
         const auto& stream     = pair.second;
+        if (stream == nullptr) {
+        str += "(" + streamName + ",null)";
+        }
+        else {
         str += "(" + streamName + "," + std::to_string( stream->m_streaming ) + ")";
+        }
     }
     DEBUG_MSG( "\033[7m[Viewer] status : server connected:" << m_serverConnected
                                                             << ", nbStreamer:" << m_streams.size()
