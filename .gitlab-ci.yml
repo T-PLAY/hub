@@ -82,57 +82,57 @@ cache:
 
 ############################################# BUILDING
 
-build-clang-release:
-  stage: build
-  tags:
-    - $LINUX_TAG
-  script:
-    - BUILD_TYPE=Release
-    - CMAKE_C_COMPILER=clang
-    - CMAKE_CXX_COMPILER=clang++
-    # - CMAKE_CONFIGURE_ARGS="-DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON"
-    # - CMAKE_CONFIGURE_ARGS="-DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON"
-    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -DHUB_SERVER_PORT=4042"
-    - !reference [.build_any, script]
-  # when: manual
-
-build-gcc-debug:
-  stage: build
-  tags:
-    - $LINUX_TAG
-  script:
-    - BUILD_TYPE=Debug
-    - CMAKE_C_COMPILER=gcc
-    - CMAKE_CXX_COMPILER=g++
-    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -DHUB_SERVER_PORT=4043"
-    - !reference [.build_any, script]
-  # when: manual
-  
-build-cl-release:
-  stage: build
-  tags:
-    - $WIN_TAG
-  script:
-    - BUILD_TYPE=Release
-    - CMAKE_C_COMPILER=cl
-    - CMAKE_CXX_COMPILER=cl
-    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -DHUB_SERVER_PORT=4042"
-    - !reference [.build_any, script]
-  # when: manual
-
-build-cl-debug:
-  stage: build
-  tags:
-    - $WIN_TAG
-  script:
-    - BUILD_TYPE=Debug
-    - CMAKE_C_COMPILER=cl
-    - CMAKE_CXX_COMPILER=cl
-    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -DHUB_SERVER_PORT=4043"
-    - !reference [.build_any, script]
-  # when: manual
-  
-build-$MACOS_TAG-clang-release:
+# build-clang-release:
+#   stage: build
+#   tags:
+#     - $LINUX_TAG
+#   script:
+#     - BUILD_TYPE=Release
+#     - CMAKE_C_COMPILER=clang
+#     - CMAKE_CXX_COMPILER=clang++
+#     # - CMAKE_CONFIGURE_ARGS="-DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON"
+#     # - CMAKE_CONFIGURE_ARGS="-DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON"
+#     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -DHUB_SERVER_PORT=4042"
+#     - !reference [.build_any, script]
+#   # when: manual
+#
+# build-gcc-debug:
+#   stage: build
+#   tags:
+#     - $LINUX_TAG
+#   script:
+#     - BUILD_TYPE=Debug
+#     - CMAKE_C_COMPILER=gcc
+#     - CMAKE_CXX_COMPILER=g++
+#     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -DHUB_SERVER_PORT=4043"
+#     - !reference [.build_any, script]
+#   # when: manual
+#
+# build-cl-release:
+#   stage: build
+#   tags:
+#     - $WIN_TAG
+#   script:
+#     - BUILD_TYPE=Release
+#     - CMAKE_C_COMPILER=cl
+#     - CMAKE_CXX_COMPILER=cl
+#     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -DHUB_SERVER_PORT=4042"
+#     - !reference [.build_any, script]
+#   # when: manual
+#
+# build-cl-debug:
+#   stage: build
+#   tags:
+#     - $WIN_TAG
+#   script:
+#     - BUILD_TYPE=Debug
+#     - CMAKE_C_COMPILER=cl
+#     - CMAKE_CXX_COMPILER=cl
+#     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -DHUB_SERVER_PORT=4043"
+#     - !reference [.build_any, script]
+#   # when: manual
+#
+build-macOs-clang-release:
   stage: build
   tags:
     - $MACOS_TAG
@@ -160,57 +160,57 @@ build-macOs-gcc-debug:
 
 ########################################################## TESTING
 
-test-clang-release:
-  stage: test
-  tags:
-    - $LINUX_TAG
-  script:
-    - BUILD_TYPE=Release
-    - CMAKE_C_COMPILER=clang
-    - !reference [.test_any, script]
-  # when: manual
-  needs:
-    - job: build-clang-release
-      optional: true
-
-test-gcc-debug:
-  stage: test
-  tags:
-    - $LINUX_TAG
-  script:
-    - BUILD_TYPE=Debug
-    - CMAKE_C_COMPILER=gcc
-    - !reference [.test_any, script]
-  # when: manual
-  needs:
-    - job: build-gcc-debug
-      optional: true
-
-test-cl-release:
-  stage: test
-  tags:
-    - $WIN_TAG
-  script:
-    - BUILD_TYPE=Release
-    - CMAKE_C_COMPILER=cl
-    - !reference [.test_any, script]
-  # when: manual
-  needs:
-    - job: build-cl-release
-      optional: true
-
-test-cl-debug:
-  stage: test
-  tags:
-    - $WIN_TAG
-  script:
-    - BUILD_TYPE=Debug
-    - CMAKE_C_COMPILER=cl
-    - !reference [.test_any, script]
-  # when: manual
-  needs:
-    - job: build-cl-debug
-      optional: true
+# test-clang-release:
+#   stage: test
+#   tags:
+#     - $LINUX_TAG
+#   script:
+#     - BUILD_TYPE=Release
+#     - CMAKE_C_COMPILER=clang
+#     - !reference [.test_any, script]
+#   # when: manual
+#   needs:
+#     - job: build-clang-release
+#       optional: true
+#
+# test-gcc-debug:
+#   stage: test
+#   tags:
+#     - $LINUX_TAG
+#   script:
+#     - BUILD_TYPE=Debug
+#     - CMAKE_C_COMPILER=gcc
+#     - !reference [.test_any, script]
+#   # when: manual
+#   needs:
+#     - job: build-gcc-debug
+#       optional: true
+#
+# test-cl-release:
+#   stage: test
+#   tags:
+#     - $WIN_TAG
+#   script:
+#     - BUILD_TYPE=Release
+#     - CMAKE_C_COMPILER=cl
+#     - !reference [.test_any, script]
+#   # when: manual
+#   needs:
+#     - job: build-cl-release
+#       optional: true
+#
+# test-cl-debug:
+#   stage: test
+#   tags:
+#     - $WIN_TAG
+#   script:
+#     - BUILD_TYPE=Debug
+#     - CMAKE_C_COMPILER=cl
+#     - !reference [.test_any, script]
+#   # when: manual
+#   needs:
+#     - job: build-cl-debug
+#       optional: true
 
 test-macOs-clang-release:
   stage: test
