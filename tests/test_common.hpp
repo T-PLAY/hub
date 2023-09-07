@@ -63,7 +63,7 @@ static void _checkRatio( double ratio, int compare, int gap, const std::string &
     std::ofstream logFile((filename + "_" + name2 + ".history").c_str(), std::ios::app);
     assert(logFile.is_open());
 
-    logFile << HUB_VERSION_GIT_HASH << " " << ratio << std::endl;
+    logFile << HUB_COMMIT_HASH << " " << ratio << std::endl;
 
     logFile.close();
 }

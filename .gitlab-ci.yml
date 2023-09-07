@@ -198,7 +198,7 @@ test-windows-cl-release:
     - !reference [.test_any, script]
   # when: manual
   needs:
-    - job: build-cl-release
+    - job: build-windows-cl-release
       optional: true
 
 test-windows-cl-debug:
@@ -211,7 +211,7 @@ test-windows-cl-debug:
     - !reference [.test_any, script]
   # when: manual
   needs:
-    - job: build-cl-debug
+    - job: build-windows-cl-debug
       optional: true
 
 test-macOs-clang-release:
