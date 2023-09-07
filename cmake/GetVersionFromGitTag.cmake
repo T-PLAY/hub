@@ -113,6 +113,18 @@ else()
         # Unset the list
         unset(${PROJECT_NAME}_PARTIAL_VERSION_LIST)
 
+        ###############################################  COMMIT GIT HASH
+        execute_process(
+    #        COMMAND ${GIT_EXECUTABLE} describe --tags --dirty --match "v*"
+            COMMAND ${GIT_EXECUTABLE} log -1 --format="%H"
+            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+            OUTPUT_VARIABLE ${PROJECT_NAME}_GIT_HASH
+            RESULT_VARIABLE GIT_DESCRIBE_ERROR_CODE
+            OUTPUT_STRIP_TRAILING_WHITESPACE
+        )
+
+#    message(STATUS "################### ${${PROJECT_NAME}_GIT_HASH}")
+
         # Set full project version string
 #        set(${PROJECT_NAME}_VERSION_STRING_FULL
 #                ${${PROJECT_NAME}_VERSION_STRING}+${${PROJECT_NAME}_VERSION_AHEAD}.${${PROJECT_NAME}_VERSION_GIT_SHA})

@@ -3,13 +3,17 @@
 
 #include <ctime>
 #include <random>
+#include <set>
+#include <fstream>
+#include <algorithm>
 
 #include <Acquisition.hpp>
 #include <InputSensor.hpp>
 #include <OutputSensor.hpp>
 #include <Input.hpp>
 #include <Output.hpp>
-#include <set>
+
+#include <Version.h>
 
 #define GET_RANDOM_PORT getRandomPort( __FILE__ )
 
@@ -33,7 +37,16 @@ static int computeDist( const hub::Acquisition& acq, const hub::Acquisition& acq
     return std::abs( acq.getStart() - acq2.getStart() );
 }
 
-static void checkRatio( double ratio, int compare, int gap ) {
+static std::string ReplaceAll(std::string str, const std::string& from, const std::string& to) {
+    size_t start_pos = 0;
+    while((start_pos = str.find(from, start_pos)) != std::string::npos) {
+        str.replace(start_pos, from.length(), to);
+        start_pos += to.length(); // Handles case where 'to' is a substring of 'from'
+    }
+    return str;
+}
+
+static void _checkRatio( double ratio, int compare, int gap, const std::string & name, const std::string & filename ) {
     //    const int gap = 10;
     CHECK( ( compare - gap <= ratio && ratio <= compare + gap ) );
     if ( !( compare - gap <= ratio && ratio <= compare + gap ) ) {
@@ -41,7 +54,21 @@ static void checkRatio( double ratio, int compare, int gap ) {
                      "---------------------------------------------------------------> checkRatio: "
                   << compare - gap << " <= " << ratio << " <= " << compare + gap << std::endl;
     }
+
+    auto name2 = name;
+//    name2.replace(name2.begin(), name2.end(), '/', '-');
+    name2 = ReplaceAll(name2, "/", "_vs_");
+
+    std::cout << "checkRatio " << filename << std::endl;
+    std::ofstream logFile((filename + "_" + name2 + ".history").c_str(), std::ios::app);
+    assert(logFile.is_open());
+
+    logFile << HUB_VERSION_GIT_HASH << " " << ratio << std::endl;
+
+    logFile.close();
 }
+
+#define checkRatio(...) _checkRatio(__VA_ARGS__, FILE_NAME)
 
 static std::vector<hub::Acquisition>
 computeSyncAcqs( const std::vector<hub::Acquisition>& leftAcqs,

@@ -28,7 +28,7 @@ TEST_CASE( "Input test" ) {
         hub::Any ref_any_string( std::string( "hello" ) );
         hub::Any ref_any_constCharPtr( "hello" );
         hub::Any ref_any_mat4( hub::data::Mat4( 0.0 ) );
-        const std::string meshPath = HUB_DIR "assets/";
+        const std::string meshPath = HUB_PROJECT_DIR "assets/";
         hub::data::Mesh ref_mesh( meshPath + "quad" );
         hub::Any ref_any_mesh( ref_mesh );
 

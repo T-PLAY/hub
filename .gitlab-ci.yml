@@ -82,7 +82,7 @@ cache:
 
 ############################################# BUILDING
 
-build-clang-release:
+build-linux-clang-release:
   stage: build
   tags:
     - $LINUX_TAG
@@ -96,7 +96,7 @@ build-clang-release:
     - !reference [.build_any, script]
   # when: manual
 
-build-gcc-debug:
+build-linux-gcc-debug:
   stage: build
   tags:
     - $LINUX_TAG
@@ -108,7 +108,7 @@ build-gcc-debug:
     - !reference [.build_any, script]
   # when: manual
 
-build-cl-release:
+build-windows-cl-release:
   stage: build
   tags:
     - $WIN_TAG
@@ -120,7 +120,7 @@ build-cl-release:
     - !reference [.build_any, script]
   # when: manual
 
-build-cl-debug:
+build-windows-cl-debug:
   stage: build
   tags:
     - $WIN_TAG
@@ -162,7 +162,7 @@ build-macOs-llvm-gcc-debug:
 
 ########################################################## TESTING
 
-test-clang-release:
+test-linux-clang-release:
   stage: test
   tags:
     - $LINUX_TAG
@@ -172,10 +172,10 @@ test-clang-release:
     - !reference [.test_any, script]
   # when: manual
   needs:
-    - job: build-clang-release
+    - job: build-linux-clang-release
       optional: true
 
-test-gcc-debug:
+test-linux-gcc-debug:
   stage: test
   tags:
     - $LINUX_TAG
@@ -185,10 +185,10 @@ test-gcc-debug:
     - !reference [.test_any, script]
   # when: manual
   needs:
-    - job: build-gcc-debug
+    - job: build-linux-gcc-debug
       optional: true
 
-test-cl-release:
+test-windows-cl-release:
   stage: test
   tags:
     - $WIN_TAG
@@ -201,7 +201,7 @@ test-cl-release:
     - job: build-cl-release
       optional: true
 
-test-cl-debug:
+test-windows-cl-debug:
   stage: test
   tags:
     - $WIN_TAG
@@ -238,7 +238,7 @@ test-macOs-llvm-gcc-debug:
     - !reference [.test_any, script]
   # when: manual
   needs:
-    - job: build-macOs-gcc-debug
+    - job: build-macOs-llvm-gcc-debug
       optional: true
 
 

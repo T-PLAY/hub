@@ -13,6 +13,8 @@
 #include <mqtt/client.h>
 #endif
 
+#include <Version.h>
+
 TEST_CASE( "Server test : InputOutputSensor" ) {
     const auto hostname = hub::utils::getHostname();
     //std::cout << "[test] tested on machine: '" << hostname << "'" << std::endl;
@@ -348,27 +350,26 @@ TEST_CASE( "Server test : InputOutputSensor" ) {
     // server performance with viewer and nativeViewer running
     ratio = 100.0 * megaBytesPerSecondsServerImpl / megaBytesPerSecondsClientSocket; 
     std::cout << "[Hub/ClientSocket] ratio : " << ratio << " %" << std::endl;
-//    checkRatio(ratio, 75, 10);
      if ( hostname == "asus-b450" ) // linux CI runner
     {
 #ifdef DEBUG
-        checkRatio( ratio, 35, 5 );
+        checkRatio( ratio, 35, 5, "Hub/ClientSocket" );
 #else
-        checkRatio( ratio, 25, 5 );
+        checkRatio( ratio, 25, 5 , "Hub/ClientSocket");
 #endif
      }
      else if (hostname == "gigabyte-Z370P") { // windows CI runner
 #ifdef DEBUG
-        checkRatio( ratio, 10, 5 );
+        checkRatio( ratio, 10, 5, "Hub/ClientSocket" );
 #else
-        checkRatio( ratio, 10, 5 );
+        checkRatio( ratio, 10, 5, "Hub/ClientSocket" );
 #endif
      }
      else if (hostname == "Mac-mini-de-gauthier") { // macOs CI runner
 #ifdef DEBUG
-        checkRatio( ratio, 40, 5 );
+        checkRatio( ratio, 40, 5, "Hub/ClientSocket" );
 #else
-        checkRatio( ratio, 80, 5 );
+        checkRatio( ratio, 80, 5, "Hub/ClientSocket" );
 #endif
      }
 

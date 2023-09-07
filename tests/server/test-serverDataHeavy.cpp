@@ -30,7 +30,7 @@ TEST_CASE( "heavy data" ) {
 
     hub::SensorSpec::MetaData metaData;
     metaData["parent"]            = "Polhemus Patriot (sensor 1)";
-    const std::string m_assetPath = HUB_DIR "/assets/";
+    const std::string m_assetPath = HUB_PROJECT_DIR "/assets/";
     metaData["model"]             = hub::data::Mesh( m_assetPath + "sensor" );
 
     hub::OutputSensor outputSensor( hub::SensorSpec { "Sensor", resolutions, metaData },

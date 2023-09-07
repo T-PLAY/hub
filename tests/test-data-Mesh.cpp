@@ -8,7 +8,7 @@
 
 TEST_CASE( "Mesh test" ) {
 
-    const std::string meshPath = HUB_DIR "assets/";
+    const std::string meshPath = HUB_PROJECT_DIR "assets/";
 
     hub::data::Mesh mesh( meshPath + "quad" );
 

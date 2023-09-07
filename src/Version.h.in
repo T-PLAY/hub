@@ -21,3 +21,5 @@
 
 #define HUB_VERSION "@hub_VERSION@"
 
+#define HUB_VERSION_GIT_HASH @hub_GIT_HASH@
+
