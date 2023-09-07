@@ -348,8 +348,9 @@ TEST_CASE( "Server test : InputOutputSensor" ) {
     double ratio;
 #ifdef HUB_BUILD_SERVER
     // server performance with viewer and nativeViewer running
-    ratio = 100.0 * megaBytesPerSecondsServerImpl / megaBytesPerSecondsClientSocket; 
-    std::cout << "[Hub/ClientSocket] ratio : " << ratio << " %" << std::endl;
+    ratio = 100.0 * megaBytesPerSecondsServerImpl / megaBytesPerSecondsClientSocket;
+//    std::cout << "[Hub/ClientSocket] ratio : " << ratio << " %" << std::endl;
+//    checkRatio( ratio, 50, 50, "Hub/ClientSocket" );
      if ( hostname == "asus-b450" ) // linux CI runner
     {
 #ifdef DEBUG

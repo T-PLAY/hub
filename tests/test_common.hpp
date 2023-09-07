@@ -1,17 +1,17 @@
 
 #include <catch2/catch_test_macros.hpp>
 
+#include <algorithm>
 #include <ctime>
+#include <fstream>
 #include <random>
 #include <set>
-#include <fstream>
-#include <algorithm>
 
 #include <Acquisition.hpp>
-#include <InputSensor.hpp>
-#include <OutputSensor.hpp>
 #include <Input.hpp>
+#include <InputSensor.hpp>
 #include <Output.hpp>
+#include <OutputSensor.hpp>
 
 #include <Version.h>
 
@@ -29,7 +29,7 @@ static int getRandomPort( const char* filename ) {
     const unsigned int random = std::hash<std::string>()( filename ) + rand();
     const unsigned int ret    = offset + random % ( 65535 - offset );
     assert( offset <= ret && ret < 65536 );
-    assert(ret != hub::io::StreamServer::s_defaultPort);
+    assert( ret != hub::io::StreamServer::s_defaultPort );
     return ret;
 }
 
@@ -37,16 +37,20 @@ static int computeDist( const hub::Acquisition& acq, const hub::Acquisition& acq
     return std::abs( acq.getStart() - acq2.getStart() );
 }
 
-static std::string ReplaceAll(std::string str, const std::string& from, const std::string& to) {
+static std::string ReplaceAll( std::string str, const std::string& from, const std::string& to ) {
     size_t start_pos = 0;
-    while((start_pos = str.find(from, start_pos)) != std::string::npos) {
-        str.replace(start_pos, from.length(), to);
+    while ( ( start_pos = str.find( from, start_pos ) ) != std::string::npos ) {
+        str.replace( start_pos, from.length(), to );
         start_pos += to.length(); // Handles case where 'to' is a substring of 'from'
     }
     return str;
 }
 
-static void _checkRatio( double ratio, int compare, int gap, const std::string & name, const std::string & filename ) {
+static void _checkRatio( double ratio,
+                         int compare,
+                         int gap,
+                         const std::string& name,
+                         const std::string& filename ) {
     //    const int gap = 10;
     CHECK( ( compare - gap <= ratio && ratio <= compare + gap ) );
     if ( !( compare - gap <= ratio && ratio <= compare + gap ) ) {
@@ -56,19 +60,62 @@ static void _checkRatio( double ratio, int compare, int gap, const std::string &
     }
 
     auto name2 = name;
-//    name2.replace(name2.begin(), name2.end(), '/', '-');
-    name2 = ReplaceAll(name2, "/", "_vs_");
+    //    name2.replace(name2.begin(), name2.end(), '/', '-');
+    name2 = ReplaceAll( name2, "/", "_vs_" );
 
-    std::cout << "checkRatio " << filename << std::endl;
-    std::ofstream logFile((filename + "_" + name2 + ".history").c_str(), std::ios::app);
-    assert(logFile.is_open());
+//    std::cout << "checkRatio " << filename << std::endl;
+    {
+        std::ofstream logFile( ( filename + "_" + name2 + ".history" ).c_str(), std::ios::app );
+        assert( logFile.is_open() );
 
-    logFile << HUB_COMMIT_HASH << " " << ratio << std::endl;
+        logFile << HUB_COMMIT_HASH << " " << ratio << std::endl;
 
-    logFile.close();
+        logFile.close();
+    }
+
+    {
+        std::ifstream inFile( ( filename + "_" + name2 + ".history" ).c_str() );
+        assert( inFile.is_open() );
+
+        double ratio2;
+        std::string hash;
+        int iRatio      = 0;
+        constexpr int nRatio = 10;
+        std::string hashes[nRatio];
+        double ratios[nRatio] = {0.0};
+        while ( !inFile.eof() ) {
+            ratio2 = -1;
+            hash   = "";
+            inFile >> hash >> ratio2;
+            if ( ratio2 != -1 ) {
+//                sumRatio += ratio2;
+                ratios[iRatio % nRatio] = ratio2;
+                hashes[iRatio % nRatio] = hash;
+                ++iRatio;
+            }
+        }
+        assert(iRatio > 0);
+        double sumRatio = 0.0;
+        double minRatio = ratios[0];
+        double maxRatio = ratios[0];
+        const int nEl = std::min(nRatio, iRatio);
+        for (int i = 0;i < nEl; ++i) {
+//            std::cout << hashes[i] << " " << ratios[i] << std::endl;
+            sumRatio += ratios[i];
+            minRatio = std::min(minRatio, ratios[i]);
+            maxRatio = std::max(maxRatio, ratios[i]);
+        }
+        const double meanRatio = sumRatio / nEl;
+        const double deviation = maxRatio - minRatio;
+
+//        std::cout << "average of ratio for the last " << std::min(nRatio, iRatio) << " builds is " << meanRatio << std::endl;
+        std::cout << "[" << name << "] ratio : " << ratio  << ", mean : " << meanRatio << " (" << nEl << "), deviation : +/- " << deviation / 2.0 << std::endl;
+
+        inFile.close();
+    }
 }
 
-#define checkRatio(...) _checkRatio(__VA_ARGS__, FILE_NAME)
+#define checkRatio( ... ) _checkRatio( __VA_ARGS__, FILE_NAME )
 
 static std::vector<hub::Acquisition>
 computeSyncAcqs( const std::vector<hub::Acquisition>& leftAcqs,
@@ -79,28 +126,30 @@ computeSyncAcqs( const std::vector<hub::Acquisition>& leftAcqs,
     int iRightAcq = 0;
     for ( const auto& rightAcq : rightAcqs ) {
         int iLeftMinDist = 0;
-        int minDist  = computeDist( rightAcq, leftAcqs.front() );
+        int minDist      = computeDist( rightAcq, leftAcqs.front() );
         for ( int iLeftAcq = 1; iLeftAcq < leftAcqs.size(); ++iLeftAcq ) {
             const auto& leftAcq = leftAcqs.at( iLeftAcq );
-            const auto dist = computeDist( rightAcq, leftAcq );
+            const auto dist     = computeDist( rightAcq, leftAcq );
             if ( dist <= minDist ) {
-                minDist  = dist;
+                minDist      = dist;
                 iLeftMinDist = iLeftAcq;
             }
         }
 
-//        int leftLeftMinDist;
-//        int leftRightMinDist;
+        //        int leftLeftMinDist;
+        //        int leftRightMinDist;
 
-        const auto & leftMinAcq = leftAcqs.at(iLeftMinDist);
+        const auto& leftMinAcq = leftAcqs.at( iLeftMinDist );
 
-        if (! (leftMinAcq.getStart() < rightAcq.getStart() && iLeftMinDist == leftAcqs.size() - 1) && !(rightAcq.getStart() < leftMinAcq.getStart() && iLeftMinDist == 0)) {
+        if ( !( leftMinAcq.getStart() < rightAcq.getStart() &&
+                iLeftMinDist == leftAcqs.size() - 1 ) &&
+             !( rightAcq.getStart() < leftMinAcq.getStart() && iLeftMinDist == 0 ) ) {
 
-//        if ( !( ( iLeftMinDist == 0 || iLeftMinDist == leftAcqs.size() - 1 ) && minDist != 0 ) ) {
-//        if ( !(iLeftMinDist == 0 && minDist != 0))
+            //        if ( !( ( iLeftMinDist == 0 || iLeftMinDist == leftAcqs.size() - 1 ) &&
+            //        minDist != 0 ) ) { if ( !(iLeftMinDist == 0 && minDist != 0))
 
             //            if ( minDist < min_dists.at( iLeftMinDist ) ) {
-            min_dists[iRightAcq]  = minDist;
+            min_dists[iRightAcq]     = minDist;
             iLeftMinDists[iRightAcq] = iLeftMinDist;
         }
         //            }
@@ -113,7 +162,7 @@ computeSyncAcqs( const std::vector<hub::Acquisition>& leftAcqs,
 
     for ( int iRightAcq = 0; iRightAcq < rightAcqs.size(); ++iRightAcq ) {
 
-        int iLeftMinDist = iLeftMinDists.at(iRightAcq);
+        int iLeftMinDist = iLeftMinDists.at( iRightAcq );
         if ( iLeftMinDist != -1 ) {
             const auto& leftAcq  = leftAcqs.at( iLeftMinDist );
             const auto& rightAcq = rightAcqs.at( iRightAcq );
@@ -179,13 +228,13 @@ static std::vector<hub::Acquisition> synchronize( Output&& output,
 
     std::cout << "synching acqs" << std::endl;
     std::vector<hub::Acquisition> sync_acqs;
-    bool writeDone = false;
+    bool writeDone     = false;
     std::thread thread = std::thread( [&]() {
         hub::Acquisition acq;
 
-        if (! delayed) {
-            while (! writeDone) {
-                std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        if ( !delayed ) {
+            while ( !writeDone ) {
+                std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
             }
         }
         //	    for ( int i = 0; i < ref_sync_acqs.size(); ++i ) {
@@ -199,12 +248,12 @@ static std::vector<hub::Acquisition> synchronize( Output&& output,
                 sync_acqs.push_back( std::move( acq ) );
             }
         }
-        catch (hub::io::StreamInterface::exception & ex) {
+        catch ( hub::io::StreamInterface::exception& ex ) {
             std::cout << "[test_common] synchronize() catch exception : " << ex.what() << std::endl;
         }
-//        catch ( std::exception& ex ) {
-//            throw ex;
-//        }
+        //        catch ( std::exception& ex ) {
+        //            throw ex;
+        //        }
         std::cout << "synching acqs done" << std::endl;
     } );
 
