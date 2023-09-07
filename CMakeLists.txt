@@ -59,7 +59,12 @@ foreach(
     cmake_host_system_information(RESULT tmp QUERY ${SYSTEM_INFO})
     set(${SYSTEM_INFO} ${tmp})
 endforeach()
-set(USERNAME $ENV{USERNAME})
+
+if (WIN32)
+        set(USERNAME $ENV{USERNAME})
+else()
+        set(USERNAME $ENV{USER})
+endif()
 
 # Looking for supported compiler
 set(SUPPORTED_COMPILERS "Clang" "GNU" "LLVM" "MSVC" "AppleClang")

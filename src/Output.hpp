@@ -205,7 +205,7 @@ inline void Output::write( const std::list<T>& list ) {
     std::cout << HEADER_OUTPUT_MSG "write(std::list)" << std::endl;
 #endif
 
-    int nbEl = list.size();
+    int nbEl = list.size(); // todo
     write( nbEl );
 
     for ( const T& el : list ) {

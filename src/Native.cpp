@@ -126,7 +126,7 @@ void acquisition_to_string( const Acquisition* acquisition, char* str, int* strL
     sstr << *acquisition;
     const std::string& stdString = sstr.str();
 
-    *strLen = stdString.size();
+    *strLen = stdString.size(); // todo
 #if CPLUSPLUS_VERSION == 20
     memcpy( sensorName, sensorSpec->getSensorName().data(), *strLen + 1 );
 #else
@@ -215,7 +215,7 @@ int viewer_getPort( const client::Viewer* viewer ) {
 
 void viewer_getIpv4( const client::Viewer* viewer, char* ipv4 ) {
     const auto& ipv4Str = viewer->getIpv4();
-    const int len       = ipv4Str.size();
+    const int len       = ipv4Str.size(); // todo
     memcpy( ipv4, ipv4Str.data(), len + 1 );
     ipv4[len] = 0;
 }
@@ -225,7 +225,7 @@ bool viewer_isConnected( const client::Viewer* viewer ) {
 }
 
 void sensorSpec_getSensorName( const SensorSpec* sensorSpec, char* sensorName, int* strLen ) {
-    *strLen = sensorSpec->getSensorName().size();
+    *strLen = sensorSpec->getSensorName().size(); // todo
 #if CPLUSPLUS_VERSION == 20
     memcpy( sensorName, sensorSpec->getSensorName().data(), *strLen + 1 );
 #else
@@ -235,15 +235,15 @@ void sensorSpec_getSensorName( const SensorSpec* sensorSpec, char* sensorName, i
 }
 
 int sensorSpec_getResolutionSize( const SensorSpec* sensorSpec, int iResolution ) {
-    return res::computeAcquisitionSize( sensorSpec->getResolutions().at( iResolution ) );
+    return res::computeAcquisitionSize( sensorSpec->getResolutions().at( iResolution ) ); // todo
 }
 
 int sensorSpec_getResolutionsSize( const SensorSpec* sensorSpec ) {
-    return sensorSpec->getResolutions().size();
+    return sensorSpec->getResolutions().size(); // todo
 }
 
 int sensorSpec_getAcquisitionSize( const SensorSpec* sensorSpec ) {
-    return sensorSpec->getAcquisitionSize();
+    return sensorSpec->getAcquisitionSize(); //todo
 }
 
 int sensorSpec_getFormat( const SensorSpec* sensorSpec, int iResolution ) {
@@ -253,7 +253,7 @@ int sensorSpec_getFormat( const SensorSpec* sensorSpec, int iResolution ) {
 
 int sensorSpec_getDimensionsSize( const SensorSpec* sensorSpec, int iResolution ) {
     assert( iResolution < sensorSpec->getResolutions().size() );
-    return sensorSpec->getResolutions().at( iResolution ).first.size();
+    return sensorSpec->getResolutions().at( iResolution ).first.size(); //todo
 }
 
 int sensorSpec_getDimension( const SensorSpec* sensorSpec, int iResolution, int iDimension ) {
@@ -267,14 +267,14 @@ void sensorSpec_getResolutionsStr( const SensorSpec* sensorSpec, char* resolutio
     std::stringstream ss;
     ss << resolutions;
     const auto& resolutionsString = ss.str();
-    const int len                 = resolutionsString.size();
+    const int len                 = resolutionsString.size(); // todo
     memcpy( resolutionsStr, resolutionsString.c_str(), len + 1 );
     resolutionsStr[len] = 0;
 }
 
 void sensorSpec_getMetaDataStr( const SensorSpec* sensorSpec, char* metaDataStr ) {
     const auto& metaDataString = SensorSpec::to_string( sensorSpec->getMetaData(), true );
-    const int len              = metaDataString.size();
+    const int len              = metaDataString.size();  // todo
     memcpy( metaDataStr, metaDataString.c_str(), len + 1 );
     metaDataStr[len] = 0;
 }
@@ -301,7 +301,7 @@ bool metaData_getString( const SensorSpec::MetaData* metaData,
     if ( metaData->find( metaName ) == metaData->end() ) return false;
 
     const char* meta = metaData->at( metaName ).getConstCharPtr();
-    *strLen          = strlen( meta );
+    *strLen          = strlen( meta ); // todo
     memcpy( output, meta, *strLen + 1 );
     output[*strLen] = 0;
     return true;

@@ -2,7 +2,11 @@ cmake_minimum_required(VERSION 3.5)
 
 project(tests LANGUAGES CXX)
 
-set(LINK_LIBRARIES Catch2::Catch2WithMain hub)
+if (XCODE)
+        set(LINK_LIBRARIES Catch2::Catch2WithMain hub_static)
+else()
+        set(LINK_LIBRARIES Catch2::Catch2WithMain hub)
+endif()
 #set(LINK_LIBRARIES Catch2::Catch2WithMain hub PahoMqttCpp::paho-mqttpp3)
 
 find_package(Catch2 QUIET)

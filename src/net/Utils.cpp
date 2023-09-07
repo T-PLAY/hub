@@ -82,7 +82,7 @@ void closeSocket( socket_fd& sock ) {
     }
     std::cout << std::endl;
 #endif
-    ::closesocket( sock );
+    ::closesocket( sock ); // todo
 
     sock = INVALID_SOCKET;
 }
@@ -102,7 +102,7 @@ bool isConnected( socket_fd sock ) {
     socklen_t optlen = sizeof( optval );
 
     int res;
-    res = getsockopt( sock, SOL_SOCKET, SO_ERROR, &optval, &optlen );
+    res = getsockopt( sock, SOL_SOCKET, SO_ERROR, &optval, &optlen ); // todo
 
     if ( optval == 0 && res == 0 ) return true;
 #endif
@@ -140,17 +140,17 @@ socket_fd serverSocket() {
 
 int bind( socket_fd sock, ServerAddr& addr ) {
     return ::bind(
-        sock, reinterpret_cast<struct sockaddr*>(&addr.m_pimpl->m_sockAddr), sizeof( struct sockaddr_in ) );
+        sock, reinterpret_cast<struct sockaddr*>(&addr.m_pimpl->m_sockAddr), sizeof( struct sockaddr_in ) ); // todo
 }
 
 int listen( socket_fd sock, int backlog ) {
-    return ::listen( sock, backlog );
+    return ::listen( sock, backlog ); // todo
 }
 
 socket_fd accept( socket_fd sock, ServerAddr& addr ) {
     auto& sockAddr       = addr.m_pimpl->m_sockAddr;
     socklen_t addrlen    = sizeof( sockAddr );
-    socket_fd new_socket = accept( sock, reinterpret_cast<struct sockaddr*>(&sockAddr), &addrlen );
+    socket_fd new_socket = accept( sock, reinterpret_cast<struct sockaddr*>(&sockAddr), &addrlen ); // todo
     return new_socket;
 }
 
@@ -205,15 +205,15 @@ socket_fd clientSocket() {
 
 int connect( socket_fd sock, ClientAddr& addr ) {
     return ::connect(
-        sock, reinterpret_cast<struct sockaddr*>(&addr.m_pimpl->m_sockAddr), sizeof( struct sockaddr_in ) );
+        sock, reinterpret_cast<struct sockaddr*>(&addr.m_pimpl->m_sockAddr), sizeof( struct sockaddr_in ) ); // todo
 }
 
 int send( socket_fd sock, const char* buf, int len, int flags ) {
-    return ::send( sock, buf, len, flags );
+    return ::send( sock, buf, len, flags ); // todo
 }
 
 int recv( socket_fd sock, char* buf, int len, int flags ) {
-    return ::recv( sock, buf, len, flags );
+    return ::recv( sock, buf, len, flags ); // todo
 }
 
 bool isValid( const std::string& ipv4 ) {

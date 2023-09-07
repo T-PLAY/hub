@@ -138,117 +138,118 @@ source_group("Source Files\\" FILES ${sources})
 
 #set(REQUIRED_LIBS)
 
-add_library(${PROJECT_NAME} OBJECT ${sources} ${headers})
+if (NOT XCODE) # unable to have object files as native build with Xcode
 
-target_include_directories(${PROJECT_NAME}
-    PUBLIC
-        $<BUILD_INTERFACE:${HUB_INCLUDE_DIR}>
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.h
-        $<INSTALL_INTERFACE:include>
-    PRIVATE
-        ${HUB_EXTERNAL_DIR}
-)
+        add_library(${PROJECT_NAME} OBJECT ${sources} ${headers})
 
-#target_compile_definitions(${PROJECT_NAME} PUBLIC -DINTERNAL_BUILD)
-target_compile_definitions(${PROJECT_NAME} PUBLIC -DSRC_STATIC) # -> SRC_API = void
+        target_include_directories(${PROJECT_NAME}
+            PUBLIC
+                $<BUILD_INTERFACE:${HUB_INCLUDE_DIR}>
+                $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.h
+                $<INSTALL_INTERFACE:include>
+            PRIVATE
+                ${HUB_EXTERNAL_DIR}
+        )
 
-if (PahoMqttCpp_FOUND)
-#    target_compile_definitions(${PROJECT_NAME} PUBLIC -DUSE_MQTT)
-    target_compile_definitions(${PROJECT_NAME} PUBLIC -DHUB_BUILD_MQTT)
-endif()
+        #target_compile_definitions(${PROJECT_NAME} PUBLIC -DINTERNAL_BUILD)
+        target_compile_definitions(${PROJECT_NAME} PUBLIC -DSRC_STATIC) # -> SRC_API = void, future shared
 
-if (HUB_BUILD_SERVER)
-    target_compile_definitions(${PROJECT_NAME} PUBLIC -DHUB_BUILD_SERVER)
-#    option(HUB_SERVER_PORT "Server service port" "4042")
-    if (HUB_SERVER_PORT)
-        target_compile_definitions(${PROJECT_NAME} PUBLIC -DHUB_SERVER_PORT=${HUB_SERVER_PORT})
-    endif()
-endif()
+        if (PahoMqttCpp_FOUND)
+            target_compile_definitions(${PROJECT_NAME} PUBLIC -DHUB_BUILD_MQTT)
+        endif()
 
-#set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "-fvisibility=hidden -fvisibility-inlines-hidden")
-#set_target_properties(${PROJECT_NAME} PROPERTIES SOVERSION ${${PROJECT_NAME}_VERSION_MAJOR} VERSION
-#                                                                                            ${${PROJECT_NAME}_VERSION})
+        if (HUB_BUILD_SERVER)
+            target_compile_definitions(${PROJECT_NAME} PUBLIC -DHUB_BUILD_SERVER)
+            if (HUB_SERVER_PORT)
+                target_compile_definitions(${PROJECT_NAME} PUBLIC -DHUB_SERVER_PORT=${HUB_SERVER_PORT})
+            endif()
+        endif()
 
-
-############################# COMPILER SPECIFICS
-
-if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
-    target_compile_definitions(${PROJECT_NAME} PUBLIC -DDEBUG)
-else()
-    target_compile_definitions(${PROJECT_NAME} PUBLIC -DNDEBUG)
-endif()
-
-if(HUB_ENABLE_COVERAGE)
-    target_compile_definitions(${PROJECT_NAME} PUBLIC -DCOVERAGE)
-endif()
+        #set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "-fvisibility=hidden -fvisibility-inlines-hidden")
+        #set_target_properties(${PROJECT_NAME} PROPERTIES SOVERSION ${${PROJECT_NAME}_VERSION_MAJOR} VERSION
+        #                                                                                            ${${PROJECT_NAME}_VERSION})
 
 
-if(MINGW)
-    if(CLANG)
-        set (THREADS_PREFER_PTHREAD_FLAG ON)
-        find_package(Threads REQUIRED)
-        set(REQUIRED_LIBS ${REQUIRED_LIBS} Threads::Threads)
+        ############################# COMPILER SPECIFICS
 
-    elseif(GNU)
-        message(FATAL_ERROR "eee")
+        if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+            target_compile_definitions(${PROJECT_NAME} PUBLIC -DDEBUG)
+        else()
+            target_compile_definitions(${PROJECT_NAME} PUBLIC -DNDEBUG)
+        endif()
 
-    elseif(GCC)
-        set(REQUIRED_LIBS ${REQUIRED_LIBS} ws2_32)
-        get_filename_component(Mingw_Path ${CMAKE_CXX_COMPILER} PATH)
-        message(STATUS "${Mingw_Path}")
-        set(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS ${Mingw_Path}/libgcc_s_seh-1.dll ${Mingw_Path}/libstdc++-6.dll
-                                              ${Mingw_Path}/libwinpthread-1.dll)
+        if(HUB_ENABLE_COVERAGE)
+            target_compile_definitions(${PROJECT_NAME} PUBLIC -DCOVERAGE)
+        endif()
+
+
+        if(MINGW)
+            if(CLANG)
+                set (THREADS_PREFER_PTHREAD_FLAG ON)
+                find_package(Threads REQUIRED)
+                set(REQUIRED_LIBS ${REQUIRED_LIBS} Threads::Threads)
+
+            elseif(GNU)
+                message(FATAL_ERROR "eee")
+
+            elseif(GCC)
+                set(REQUIRED_LIBS ${REQUIRED_LIBS} ws2_32)
+                get_filename_component(Mingw_Path ${CMAKE_CXX_COMPILER} PATH)
+                message(STATUS "${Mingw_Path}")
+                set(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS ${Mingw_Path}/libgcc_s_seh-1.dll ${Mingw_Path}/libstdc++-6.dll
+                                                      ${Mingw_Path}/libwinpthread-1.dll)
+
+                install(
+                    PROGRAMS ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS}
+                    DESTINATION ${CMAKE_INSTALL_BINDIR}/${ARCHITECTURE}
+                    COMPONENT System)
+            else()
+                message(FATAL_ERROR "unsupported compiler ${CMAKE_CXX_COMPILER_ID}")
+            endif()
+
+        elseif(WIN32)
+            if(MSVC)
+
+            elseif(Clang)
+
+            else()
+                message(FATAL_ERROR "unsupported compiler ${CMAKE_CXX_COMPILER_ID}")
+            endif()
+
+        elseif(APPLE)
+            #message(FATAL_ERROR "eee")
+            #target_compile_options(${PROJECT_NAME} PRIVATE "-g")
+
+        elseif(UNIX)
+            set (THREADS_PREFER_PTHREAD_FLAG ON)
+            find_package(Threads REQUIRED)
+            set(REQUIRED_LIBS ${REQUIRED_LIBS} Threads::Threads)
+            set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE ON) # gltfpack
+
+            if (Clang)
+            elseif (GCC)
+                message(FATAL_ERROR "eee")
+            elseif(GNU)
+            else()
+                message(FATAL_ERROR "unknown linux system")
+            endif()
+
+        else()
+            message(FATAL_ERROR "unknown system")
+        endif()
+
+        #target_link_libraries(${PROJECT_NAME} PUBLIC ${REQUIRED_LIBS})
+        target_link_libraries(${PROJECT_NAME} PRIVATE ${REQUIRED_LIBS})
 
         install(
-            PROGRAMS ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS}
-            DESTINATION ${CMAKE_INSTALL_BINDIR}/${ARCHITECTURE}
-            COMPONENT System)
-    else()
-        message(FATAL_ERROR "unsupported compiler ${CMAKE_CXX_COMPILER_ID}")
-    endif()
+            DIRECTORY ${HUB_INCLUDE_DIR}/
+            DESTINATION include
+            FILES_MATCHING
+            PATTERN "*.hpp"
+            PATTERN "*.h"
+            PATTERN "*.inl")
 
-elseif(WIN32)
-    if(MSVC)
-
-    elseif(Clang)
-
-    else()
-        message(FATAL_ERROR "unsupported compiler ${CMAKE_CXX_COMPILER_ID}")
-    endif()
-
-elseif(APPLE)
-    #message(FATAL_ERROR "eee")
-    target_compile_options(${PROJECT_NAME} PRIVATE "-g")
-
-elseif(UNIX)
-    set (THREADS_PREFER_PTHREAD_FLAG ON)
-    find_package(Threads REQUIRED)
-    set(REQUIRED_LIBS ${REQUIRED_LIBS} Threads::Threads)
-    set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE ON) # gltfpack
-
-    if (Clang)
-    elseif (GCC)
-        message(FATAL_ERROR "eee")
-    elseif(GNU)
-    else()
-        message(FATAL_ERROR "unknown linux system")
-    endif()
-
-else()
-    message(FATAL_ERROR "unknown system")
-endif()
-
-#target_link_libraries(${PROJECT_NAME} PUBLIC ${REQUIRED_LIBS})
-target_link_libraries(${PROJECT_NAME} PRIVATE ${REQUIRED_LIBS})
-
-install(
-    DIRECTORY ${HUB_INCLUDE_DIR}/
-    DESTINATION include
-    FILES_MATCHING
-    PATTERN "*.hpp"
-    PATTERN "*.h"
-    PATTERN "*.inl")
-
+endif()  # NOT XCODE
 
 ############################# STATIC LIBRARY ###############################
 
@@ -256,7 +257,31 @@ option(HUB_BUILD_STATIC "Build static library" ON)
 if (HUB_BUILD_STATIC)
     #if(HUB_BUILD_STATIC_LIBRARY)
     #    add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})
-    add_library(${PROJECT_NAME}_static STATIC $<TARGET_OBJECTS:${PROJECT_NAME}>)
+
+    if (XCODE)
+            add_library(${PROJECT_NAME}_static STATIC ${sources} ${headers})
+        target_include_directories(${PROJECT_NAME}_static
+            PUBLIC
+                $<BUILD_INTERFACE:${HUB_INCLUDE_DIR}>
+                $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.h
+                $<INSTALL_INTERFACE:include>
+            PRIVATE
+                ${HUB_EXTERNAL_DIR}
+        )
+        if (PahoMqttCpp_FOUND)
+            target_compile_definitions(${PROJECT_NAME}_static PUBLIC -DHUB_BUILD_MQTT)
+        endif()
+
+        if (HUB_BUILD_SERVER)
+            target_compile_definitions(${PROJECT_NAME}_static PUBLIC -DHUB_BUILD_SERVER)
+            if (HUB_SERVER_PORT)
+                target_compile_definitions(${PROJECT_NAME}_static PUBLIC -DHUB_SERVER_PORT=${HUB_SERVER_PORT})
+            endif()
+        endif()
+    else()
+            add_library(${PROJECT_NAME}_static STATIC $<TARGET_OBJECTS:${PROJECT_NAME}>)
+    endif()
+
     target_compile_definitions(${PROJECT_NAME}_static PUBLIC -DSRC_STATIC)
     #target_link_libraries(${PROJECT_NAME}_static PRIVATE ${REQUIRED_LIBS})
 #    target_include_directories(${PROJECT_NAME}_static
@@ -318,7 +343,30 @@ endif() # static library
 
 option(HUB_BUILD_SHARED "Build shared library" ON)
 if (HUB_BUILD_SHARED)
-    add_library(${PROJECT_NAME}_shared SHARED $<TARGET_OBJECTS:${PROJECT_NAME}>)
+
+    if (XCODE)
+            add_library(${PROJECT_NAME}_shared SHARED ${sources} ${headers})
+        target_include_directories(${PROJECT_NAME}_shared
+            PUBLIC
+                $<BUILD_INTERFACE:${HUB_INCLUDE_DIR}>
+                $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.h
+                $<INSTALL_INTERFACE:include>
+            PRIVATE
+                ${HUB_EXTERNAL_DIR}
+        )
+        if (PahoMqttCpp_FOUND)
+            target_compile_definitions(${PROJECT_NAME}_shared PUBLIC -DHUB_BUILD_MQTT)
+        endif()
+
+        if (HUB_BUILD_SERVER)
+            target_compile_definitions(${PROJECT_NAME}_shared PUBLIC -DHUB_BUILD_SERVER)
+            if (HUB_SERVER_PORT)
+                target_compile_definitions(${PROJECT_NAME}_shared PUBLIC -DHUB_SERVER_PORT=${HUB_SERVER_PORT})
+            endif()
+        endif()
+    else()
+            add_library(${PROJECT_NAME}_shared SHARED $<TARGET_OBJECTS:${PROJECT_NAME}>)
+    endif()
     target_compile_definitions(${PROJECT_NAME}_shared PRIVATE -DSRC_EXPORTS)
 #	target_compile_options(${PROJECT_NAME} PRIVATE "-fpic")
 #    target_link_libraries(${PROJECT_NAME} PRIVATE ${REQUIRED_LIBS})

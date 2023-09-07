@@ -3,7 +3,12 @@ cmake_minimum_required(VERSION 3.5)
 project(examples LANGUAGES CXX)
 
 #set(LINK_LIBRARIES hub PahoMqttCpp::paho-mqttpp3)
-set(LINK_LIBRARIES hub)
+if (XCODE)
+        set(LINK_LIBRARIES hub_static)
+        #set(LINK_LIBRARIES hub_shared)
+else()
+        set(LINK_LIBRARIES hub)
+endif()
 #set(LINK_LIBRARIES hub eclipse-paho-mqtt-c::paho-mqtt3c eclipse-paho-mqtt-c::paho-mqtt3a)
 
 #set(LINK_LIBRARIES hub PahoMqttCpp)
