@@ -15,6 +15,8 @@
 
 TEST_CASE( "Server test : InputOutputSensor" ) {
     const auto hostname = hub::utils::getHostname();
+    //std::cout << "[test] tested on machine: '" << hostname << "'" << std::endl;
+    //return;
 
     constexpr int nAcqs       = 100;
     constexpr int width       = 1920;
@@ -343,7 +345,8 @@ TEST_CASE( "Server test : InputOutputSensor" ) {
 
     double ratio;
 #ifdef HUB_BUILD_SERVER
-    ratio = 100.0 * megaBytesPerSecondsServerImpl / megaBytesPerSecondsClientSocket;
+    // server performance with viewer and nativeViewer running
+    ratio = 100.0 * megaBytesPerSecondsServerImpl / megaBytesPerSecondsClientSocket; 
     std::cout << "[Hub/ClientSocket] ratio : " << ratio << " %" << std::endl;
 //    checkRatio(ratio, 75, 10);
      if ( hostname == "asus-b450" ) // linux CI runner
@@ -352,6 +355,20 @@ TEST_CASE( "Server test : InputOutputSensor" ) {
         checkRatio( ratio, 35, 5 );
 #else
         checkRatio( ratio, 25, 5 );
+#endif
+     }
+     else if (hostname == "gigabyte-Z370P") { // windows CI runner
+#ifdef DEBUG
+        checkRatio( ratio, 10, 5 );
+#else
+        checkRatio( ratio, 10, 5 );
+#endif
+     }
+     else if (hostname == "Mac-mini-de-gauthier") { // macOs CI runner
+#ifdef DEBUG
+        checkRatio( ratio, 40, 5 );
+#else
+        checkRatio( ratio, 80, 5 );
 #endif
      }
 
