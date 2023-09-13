@@ -220,13 +220,13 @@ TEST_CASE( "Server test : InputOutputSensor" ) {
             case Implement::SERVER:
                 outputSensor = std::make_unique<hub::OutputSensor>(
                     hub::SensorSpec( "sensorName", { { { width, height }, hub::Format::BGR8 } } ),
-                    OutputStreamServer( FILE_NAME ) );
+                    hub::output::OutputStreamServer( FILE_NAME ) );
                 break;
 #ifdef HUB_BUILD_MQTT
             case Implement::MQTT:
                 outputSensor = std::make_unique<hub::OutputSensor>(
                     hub::SensorSpec( "sensorName", { { { width, height }, hub::Format::BGR8 } } ),
-                    OutputStreamMqtt( FILE_NAME ) );
+                    hub::output::OutputStreamMqtt( FILE_NAME ) );
                 break;
 #endif
             default:
@@ -366,7 +366,7 @@ TEST_CASE( "Server test : InputOutputSensor" ) {
         checkRatio( ratio, 10, 5, "Hub/ClientSocket" );
 #endif
      }
-     else if (hostname == "Mac-mini-de-gauthier") { // macOs CI runner
+     else if (hostname == "Mac-mini-de-gauthier.local") { // macOs CI runner
 #ifdef DEBUG
         checkRatio( ratio, 40, 5, "Hub/ClientSocket" );
 #else
@@ -379,17 +379,17 @@ TEST_CASE( "Server test : InputOutputSensor" ) {
 #ifdef HUB_TESTS_MQTT_FOUND
     ratio = 100.0 * megaBytesPerSecondsMqtt / megaBytesPerSecondsClientSocket;
     std::cout << "[Mqtt/ClientSocket] ratio : " << ratio << " %" << std::endl;
-    checkRatio(ratio, 12, 12);
+    checkRatio(ratio, 12, 12, "Mqtt/ClientSocket");
 #endif
 
 
 #ifdef HUB_BUILD_MQTT
     ratio = 100.0 * megaBytesPerSecondsMqttImpl / megaBytesPerSecondsClientSocket;
-    std::cout << "[MqttStream/ClientSocket] ratio : " << ratio << " %" << std::endl;
-    checkRatio(ratio, 4, 4);
+//    std::cout << "[MqttStream/ClientSocket] ratio : " << ratio << " %" << std::endl;
+    checkRatio(ratio, 4, 4, "MqttImpl/ClientSocket");
 
     ratio = 100.0 * megaBytesPerSecondsMqttImpl / megaBytesPerSecondsMqtt;
-    std::cout << "[MqttStream/Mqtt] ratio : " << ratio << " %" << std::endl;
+    std::cout << "[MqttImpl/Mqtt] ratio : " << ratio << " %" << std::endl;
 //    checkRatio(ratio, 50, 15);
 #endif
 
@@ -404,7 +404,7 @@ TEST_CASE( "Server test : InputOutputSensor" ) {
 
 #ifdef HUB_BUILD_MQTT
     ratio = 100.0 * megaBytesPerSecondsMqttImpl / megaBytesPerSecondsServerImpl;
-    std::cout << "[MqttStream/Hub] ratio : " << ratio << " %" << std::endl;
+    std::cout << "[MqttImpl/Hub] ratio : " << ratio << " %" << std::endl;
 //    checkRatio(ratio, 12, 5);
 #endif
 

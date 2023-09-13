@@ -11,18 +11,21 @@ AskerServer::AskerServer( const std::string& ipv4, int port ) :
 
     assert( m_sock.isOpen() );
 
-    m_sock.write( net::ClientSocket::Type::ASKER );
+//    m_sock.write( net::ClientSocket::Type::ASKER );
+    m_sock.write( io::StreamInterface::ClientType::ASKER );
 }
 
 AskerServer::~AskerServer() {
-    m_sock.write( net::ClientSocket::Message::CLOSE );
+//    m_sock.write( io::StreamInterface::ClientMessage::CLOSE );
+    m_sock.write( io::StreamInterface::ClientMessage::ASKER_CLIENT_CLOSED );
     assert( m_sock.isOpen() );
     m_sock.close();
     assert( !m_sock.isOpen() );
 }
 
 std::list<std::pair<std::string, SensorSpec>> AskerServer::listStreams() {
-    m_sock.write( net::ClientSocket::Message::LIST_STREAMS );
+//    m_sock.write( io::StreamInterface::ClientMessage::LIST_STREAMS );
+    m_sock.write( io::StreamInterface::ClientMessage::ASKER_CLIENT_GET_LIST_STREAMS );
 
 
     std::list<std::pair<std::string, hub::SensorSpec>> ret;
@@ -32,17 +35,17 @@ std::list<std::pair<std::string, SensorSpec>> AskerServer::listStreams() {
 }
 
 Acquisition AskerServer::getAcquisition( const std::string& streamName ) {
-    m_sock.write( net::ClientSocket::Message::GET_ACQUISITION );
+    m_sock.write( io::StreamInterface::ClientMessage::ASKER_CLIENT_GET_ACQ );
     m_sock.write( streamName );
 
-    net::ClientSocket::Message message;
-    m_sock.read( message );
+    io::StreamInterface::ServerMessage serverMsg;
+    m_sock.read( serverMsg );
 
-    if ( message == net::ClientSocket::Message::NOT_FOUND ) {
+    if ( serverMsg == io::StreamInterface::ServerMessage::NOT_FOUND ) {
         throw net::ClientSocket::exception(
             ( std::string( "stream '" ) + streamName + "' is not attached to server" ).c_str() );
     }
-    assert( message == net::ClientSocket::Message::FOUND );
+    assert( serverMsg == io::StreamInterface::ServerMessage::FOUND );
 
     hub::SensorSpec sensorSpec;
     m_sock.read( sensorSpec );

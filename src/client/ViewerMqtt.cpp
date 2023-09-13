@@ -110,10 +110,10 @@ ViewerMqtt::ViewerMqtt(const std::string &name, std::function<bool( const char*,
                 //                DEBUG_MSG( "[ViewerMqtt] receive message : '" << payload << "'" );
                 //                m_inputMsgPtr.reset();
 
-                const io::StreamInterface::Message message = io::StreamInterface::Message( payload.at( 0 ) - '0' );
+                const io::StreamInterface::ServerMessage message = io::StreamInterface::ServerMessage( payload.at( 0 ) - '0' );
 
                 switch ( message ) {
-                case io::StreamInterface::Message::NEW_STREAM: {
+                case io::StreamInterface::ServerMessage::VIEWER_NEW_STREAMER: {
                     std::cout << std::endl;
                     ++m_iStreamer;
                     //                    m_client->subscribe( s_topicEvents + "/streamName" );
@@ -152,7 +152,7 @@ ViewerMqtt::ViewerMqtt(const std::string &name, std::function<bool( const char*,
                     //                std::this_thread::sleep_for( std::chrono::milliseconds( 100 )
                     //                );
                 } break;
-                case io::StreamInterface::Message::DEL_STREAM: {
+                case io::StreamInterface::ServerMessage::VIEWER_DEL_STREAMER: {
                     //                    std::string streamName;
                     const std::string streamName = payload.substr( 1, payload.size() - 1 );
                     //                    m_sock.read( streamName );
@@ -172,7 +172,7 @@ ViewerMqtt::ViewerMqtt(const std::string &name, std::function<bool( const char*,
                     //                    std::this_thread::sleep_for( std::chrono::milliseconds(
                     //                    100 ) );
                 } break;
-                case io::StreamInterface::Message::SET_PROPERTY: {
+                case io::StreamInterface::ServerMessage::VIEWER_SET_PROPERTY: {
                 } break;
                 default:
                     assert( false );

@@ -48,7 +48,7 @@ class StreamerClient : public Client
     /// \brief getInputSensor
     /// \return
     ///
-    const hub::InputSensor& getInputSensor() const;
+    const hub::InputSensor *getInputSensor() const;
 
     ///
     /// \brief getLastAcq
@@ -60,7 +60,7 @@ class StreamerClient : public Client
     /// \brief end
     /// \param message
     ///
-    void end( net::ClientSocket::Message message ) override;
+    void end( io::StreamInterface::ServerMessage message ) override;
 
     ///
     /// \brief getStreamName

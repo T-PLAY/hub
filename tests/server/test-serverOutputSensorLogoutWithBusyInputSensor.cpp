@@ -22,7 +22,7 @@ TEST_CASE( "Server test" ) {
         {
             hub::OutputSensor outputSensor(
                 hub::SensorSpec( "sensorName", { { { 1 }, hub::Format::BGR8 } } ),
-                OutputStream(FILE_NAME)
+                hub::output::OutputStream(FILE_NAME)
 //                "streamName",
 //                hub::net::ClientSocket( ipv4, port ) );
 //                ipv4, port

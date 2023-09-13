@@ -1,12 +1,12 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include "test_common.hpp"
+//#include "test_common.hpp"
 
 #include <io/input/InputStream.hpp>
 #include <io/output/OutputStream.hpp>
 // #include <server/Server.hpp>
-#include <InputSensor.hpp>
-#include <OutputSensor.hpp>
+//#include <InputSensor.hpp>
+//#include <OutputSensor.hpp>
 
 TEST_CASE( "InputStream test" ) {
 
@@ -42,9 +42,10 @@ TEST_CASE( "InputStream test" ) {
 
     {
         //        hub::OutputSensor outputSensor(
-        hub::OutputSensor outputSensor(
-            ref_sensorSpec,
-            OutputStream( FILE_NAME ) );
+//        hub::OutputSensor outputSensor(
+//            ref_sensorSpec,
+//            hub::output::OutputStream( FILE_NAME ) );
+    hub::output::OutputStream outputStream( FILE_NAME );
         std::cout << "[test] outputSensor created" << std::endl;
 
         {
@@ -61,8 +62,8 @@ TEST_CASE( "InputStream test" ) {
 
         {
             hub::input::InputStream inputStream( FILE_NAME );
-            hub::InputSensor inputSensor( std::move( inputStream ) );
-            CHECK( inputSensor.getSpec() == ref_sensorSpec );
+//            hub::InputSensor inputSensor( std::move( inputStream ) );
+//            CHECK( inputSensor.getSpec() == ref_sensorSpec );
             std::cout << "[test] inputSensor created" << std::endl;
 
             std::cout << "[test] acqs" << std::endl;
@@ -72,12 +73,14 @@ TEST_CASE( "InputStream test" ) {
                 //            for ( const auto& acq : ref_acqs ) {
                 const auto& outputAcq = ref_acqs.at( i );
                 assert( !outputAcq.isEmpty() );
-                outputSensor << outputAcq;
+//                outputSensor << outputAcq;
+                outputStream.write(outputAcq);
                 //            }
 
                 //            for ( int i = 0; i < ref_acqs.size(); ++i ) {
 
-                inputSensor >> inputAcq;
+//                inputSensor >> inputAcq;
+                inputStream.read(inputAcq);
                 assert( !inputAcq.isEmpty() );
                 std::cout << inputAcq << std::endl;
                 CHECK( outputAcq == inputAcq );

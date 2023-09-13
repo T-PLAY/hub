@@ -26,14 +26,14 @@ TEST_CASE( "Asker test" ) {
             //            sensorSpec, streamName, ipv4, port );
             //            sensorSpec, OutputStream(FILE_NAME));
             sensorSpec,
-            OutputStream( streamName ) );
+            hub::output::OutputStream( streamName ) );
 
         unsigned char data[3] = { 0, 1, 2 };
         const hub::Acquisition acq =
             std::move( hub::Acquisition( 0, 1 ) << hub::Measure( data, 3, resolution ) );
         outputSensor << acq;
 
-        std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+//        std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
 
         {
             //            hub::client::Asker asker( ipv4, port );
@@ -74,11 +74,11 @@ TEST_CASE( "Asker test" ) {
 
         } // end asker
         std::cout << "[test] end asker " << std::endl;
-        std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+//        std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
 
     } // end outputSensor
     std::cout << "[test] end outputSensor " << std::endl;
-    std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+//    std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
 
     //////////////////////////////////////////////////////////////
     std::cout << "[test] end server " << std::endl;

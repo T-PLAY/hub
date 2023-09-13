@@ -17,9 +17,9 @@ ViewerClient::ViewerClient( Server* server, int iClient, hub::net::ClientSocket&
             // check client still alive
             // ping viewer client to know if the connection of this one still alive
 
-            net::ClientSocket::Message message;
+            io::StreamInterface::ClientMessage message;
             m_socket.read( message );
-            while ( message == net::ClientSocket::Message::SET_PROPERTY ) {
+            while ( message == io::StreamInterface::ClientMessage::VIEWER_CLIENT_SET_PROPERTY ) {
                 std::string streamName;
                 std::string objectName;
                 int property;
@@ -33,11 +33,11 @@ ViewerClient::ViewerClient( Server* server, int iClient, hub::net::ClientSocket&
 
                 m_socket.read( message );
             };
-            assert( message == net::ClientSocket::Message::VIEWER_CLOSED );
+            assert( message == io::StreamInterface::ClientMessage::VIEWER_CLIENT_CLOSED );
             m_viewerClosed = true;
 
             if ( m_socket.isOpen() )
-                m_socket.write( net::ClientSocket::Message::VIEWER_CLIENT_CLOSED );
+                m_socket.write( io::StreamInterface::ServerMessage::VIEWER_CLOSED );
         }
         catch ( std::exception& ex ) {
             std::cout << headerMsg() << "catch exception : " << ex.what() << std::endl;
@@ -58,7 +58,7 @@ ViewerClient::~ViewerClient() {
 
     if ( m_socket.isOpen() ) {
         if ( !m_viewerClosed ) {
-            m_socket.write( net::ClientSocket::Message::VIEWER_CLIENT_CLOSED );
+            m_socket.write( io::StreamInterface::ServerMessage::VIEWER_CLOSED );
         }
         while ( !m_viewerClosed ) {
             std::cout << "[ViewerClient] close() waiting for server/viewer closing" << std::endl;
@@ -76,7 +76,7 @@ std::string ViewerClient::headerMsg() const {
 void ViewerClient::notifyNewStreamer( const std::string& streamName,
                                       const SensorSpec& sensorSpec ) {
 
-    m_socket.write( hub::net::ClientSocket::Message::NEW_STREAMER );
+    m_socket.write( hub::io::StreamInterface::ServerMessage::VIEWER_NEW_STREAMER );
 
     m_socket.write( streamName );
     m_socket.write( sensorSpec );
@@ -88,7 +88,7 @@ void ViewerClient::notifyDelStreamer( const std::string& streamName,
     if ( m_viewerClosed ) return;
 
     try {
-        m_socket.write( hub::net::ClientSocket::Message::DEL_STREAMER );
+        m_socket.write( hub::io::StreamInterface::ServerMessage::VIEWER_DEL_STREAMER );
         m_socket.write( streamName );
         m_socket.write( sensorSpec );
     }
@@ -101,7 +101,7 @@ void ViewerClient::notifyDelStreamer( const std::string& streamName,
     }
 }
 
-void ViewerClient::end( net::ClientSocket::Message message ) {
+void ViewerClient::end(io::StreamInterface::ServerMessage message ) {
     std::cout << headerMsg() << "end(" << message << ")" << std::endl;
     if (m_socket.isOpen()) {
         try {
@@ -119,7 +119,7 @@ void ViewerClient::notifyProperty( const std::string& streamName,
                                    const Any& value ) {
 
     assert( m_socket.isOpen() );
-    m_socket.write( net::ClientSocket::Message::SET_PROPERTY );
+    m_socket.write( io::StreamInterface::ServerMessage::VIEWER_SET_PROPERTY );
     m_socket.write( streamName );
     m_socket.write( objectName );
     m_socket.write( property );

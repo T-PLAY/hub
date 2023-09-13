@@ -25,7 +25,7 @@ class StreamViewerClient : public Client
 
     void update( const hub::Acquisition& acq );
 
-    void end( net::ClientSocket::Message message ) override;
+    void end(io::StreamInterface::ServerMessage message ) override;
 
   private:
     std::unique_ptr<hub::OutputSensor> m_outputSensor;

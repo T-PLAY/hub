@@ -15,7 +15,6 @@
 
 //#include "net/ClientSocket.hpp"
 
-//using namespace hub::input;
 
 namespace hub {
 

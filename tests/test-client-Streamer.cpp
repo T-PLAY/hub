@@ -33,7 +33,7 @@ TEST_CASE( "Streamer" ) {
         assert( !streamer.isConnected() );
         CHECK( !streamer.isConnected() );
 
-        std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
+//        std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
         {
 
             //            hub::Server server( port );
@@ -42,6 +42,7 @@ TEST_CASE( "Streamer" ) {
 
             int iTryConnect = 0;
             while ( !streamer.isConnected() && iTryConnect < 10 ) {
+//        while (! streamer.isConnected()) {
                 std::cout << "[test] waiting for streamer connected" << std::endl;
                 std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
                 ++iTryConnect;
@@ -51,10 +52,10 @@ TEST_CASE( "Streamer" ) {
 //            std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
 
 
-            std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
+//            std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
         }
         std::cout << "[Test] ############################### server end" << std::endl;
-        std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
+//        std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
 
         streamer.newAcquisition( FILE_NAME, acq );
 
@@ -66,5 +67,5 @@ TEST_CASE( "Streamer" ) {
         //        CHECK( !streamer.isConnected() );
     }
     std::cout << "[Test] ############################### streamer end" << std::endl;
-    std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
+//    std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
 }

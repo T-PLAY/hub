@@ -11,7 +11,7 @@
 // #include <iostream>
 
 #include <Native.hpp>
-//#include <server/Server.hpp>
+// #include <server/Server.hpp>
 
 // needs server running
 
@@ -22,11 +22,11 @@
 /// \file
 
 TEST_CASE( "Native test" ) {
-    constexpr int delay = 1000; // ms
+    //    constexpr int delay = 1000; // ms
 
-//    const std::string ipv4 = "127.0.0.1";
-//    const int port         = GET_RANDOM_PORT;
-//    const int port         = 1883;
+    //    const std::string ipv4 = "127.0.0.1";
+    //    const int port         = GET_RANDOM_PORT;
+    //    const int port         = 1883;
 
     const hub::Resolution ref_resolution( { 1 }, hub::Format::BGR8 );
     const std::string ref_sensorName = "sensorName";
@@ -43,8 +43,9 @@ TEST_CASE( "Native test" ) {
     const hub::Acquisition ref_acq =
         std::move( hub::Acquisition( 0, 1 ) << hub::Measure( ref_data, 3, ref_resolution ) );
 
-    auto onNewStreamer = []( const char* streamName, const hub::SensorSpec* sensorSpec ) {
-//        return false;
+    static int nStreamerInited = 0;
+    auto onNewStreamer         = []( const char* streamName, const hub::SensorSpec* sensorSpec ) {
+        //        return false;
         const hub::Resolution ref_resolution( { 1 }, hub::Format::BGR8 );
         const std::string ref_sensorName = "sensorName";
         hub::SensorSpec::MetaData ref_metaData;
@@ -139,7 +140,8 @@ TEST_CASE( "Native test" ) {
         CHECK( len == strlen( ref_str ) );
         CHECK( !strcmp( ref_str, metaDataString ) );
 
-        return false;
+        ++nStreamerInited;
+        return true;
     };
     auto onDelStreamer = []( const char* streamName, const hub::SensorSpec* sensorSpec ) {
         std::cout << "[Example][Viewer] onDelStreamer " << streamName << std::endl;
@@ -153,112 +155,132 @@ TEST_CASE( "Native test" ) {
     auto onServerDisconnected = []( const char* ipv4, int port ) {
         std::cout << "[Example][Viewer] onServerDisconnected " << ipv4 << " " << port << std::endl;
     };
-    auto onNewAcquisition = []( const char* streamName, const hub::Acquisition* acq ) {
+    static int nReceiveAcq = 0;
+    auto onNewAcquisition  = []( const char* streamName, const hub::Acquisition* acq ) {
         CHECK( !strcmp( streamName, FILE_NAME ) );
         std::cout << "[Example][Viewer] onNewAcquisition " << streamName << " " << *acq
                   << std::endl;
+        ++nReceiveAcq;
     };
     auto onSetProperty =
         []( const char* streamName, const char* objectName, int property, const hub::Any* value ) {
-            std::cout << "[Example][Viewer] onSetProperty " << streamName << " " << objectName << " " << property << " " << value
-                      << std::endl;
+            std::cout << "[Example][Viewer] onSetProperty " << streamName << " " << objectName
+                      << " " << property << " " << value << std::endl;
         };
     auto onLogMessage = []( const char* logMessage ) {
         std::cout << "[Example][Viewer] onLogMessage " << logMessage << " " << *logMessage
                   << std::endl;
     };
 
-    auto* viewer = hub::native::createViewer(
-        FILE_NAME,
-        onNewStreamer,
-                                              onDelStreamer,
-                                              onServerNotFound,
-                                              onServerConnected,
-                                              onServerDisconnected,
-                                              onNewAcquisition,
-                                              onSetProperty,
-                                              onLogMessage
-//                                              ipv4.c_str(),
-//        port
+    auto* viewer =
+        hub::native::createViewer( FILE_NAME,
+                                   onNewStreamer,
+                                   onDelStreamer,
+                                   onServerNotFound,
+                                   onServerConnected,
+                                   onServerDisconnected,
+                                   onNewAcquisition,
+                                   onSetProperty,
+                                   onLogMessage
+                                   //                                              ipv4.c_str(),
+                                   //        port
         );
-//    hub::native::viewer_setIpv4( viewer, ipv4.c_str() );
-//    hub::native::viewer_setPort( viewer, port );
+    //    hub::native::viewer_setIpv4( viewer, ipv4.c_str() );
+    //    hub::native::viewer_setPort( viewer, port );
     CHECK( !viewer->isConnected() );
     CHECK( !hub::native::viewer_isConnected( viewer ) );
 
     // todo test
-//    if ( false ) {
-//        std::cout << "[Test] ############################### server start" << std::endl;
-//        hub::Server server( port );
-//        server.setMaxClients( 2 );
-//        server.asyncRun();
-//        while ( !viewer->isConnected() ) {
-//            std::cout << "[Test] wating for viewer connected" << std::endl;
-//            std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
-//        }
-//        CHECK( viewer->isConnected() );
-//        CHECK( hub::native::viewer_isConnected( viewer ) );
-//        {
-//            std::cout << "[Test] ############################### outputSensor start" << std::endl;
+    //    if ( false )
+    {
+        std::cout << "[Test] ############################### server start" << std::endl;
+        //        hub::Server server( port );
+        //        server.setMaxClients( 2 );
+        //        server.asyncRun();
+        int iTryConnect = 0;
+        while ( !viewer->isConnected() && iTryConnect < 10 ) {
+            std::cout << "[test] waiting for viewer connected" << std::endl;
+            std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+            ++iTryConnect;
+        }
+        CHECK( viewer->isConnected() );
+        assert(viewer->isConnected());
+        CHECK( hub::native::viewer_isConnected( viewer ) );
+        {
+            std::cout << "[Test] ############################### outputSensor start" << std::endl;
 
-//            hub::OutputSensor* outputSensor = new hub::OutputSensor(
-////                ref_sensorSpec, ref_streamName, hub::net::ClientSocket( ipv4, port ) );
-////                ref_sensorSpec, ref_streamName, ipv4, port );
-//                ref_sensorSpec, OutputStream(ref_streamName, ipv4, port) );
+            hub::OutputSensor* outputSensor = new hub::OutputSensor(
+                //                ref_sensorSpec, ref_streamName, hub::net::ClientSocket( ipv4, port
+                //                ) ); ref_sensorSpec, ref_streamName, ipv4, port );
+                ref_sensorSpec,
+                hub::output::OutputStream( ref_streamName ) );
 
-//            std::this_thread::sleep_for( std::chrono::milliseconds( 2000 ) );
+            while ( nStreamerInited == 0 ) {
+                std::cout << "[Test] wating for acq received" << std::endl;
+                std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+            }
 
-//            if ( false ) {
+            ////////////////////////////////////////////////////
 
-//                std::cout << "[Test] ############################### inputSensor start"
-//                          << std::endl;
+            *outputSensor << ref_acq;
 
-//                auto* inputSensor =
-//                    hub::native::createInputSensor( ref_streamName.c_str(), ipv4.c_str(), port );
+            while ( nReceiveAcq == 0 ) {
+                //                *outputSensor << ref_acq;
+                std::cout << "[Test] wating for acq received" << std::endl;
+                std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+            }
 
-//                auto acquisitionSize = hub::native::getAcquisitionSize( inputSensor );
-//                CHECK( ref_acq.getSize() == acquisitionSize );
+            //            std::this_thread::sleep_for( std::chrono::milliseconds( 2000 ) );
 
-//                *outputSensor << ref_acq;
+            //            if ( false )
+            //            {
 
-//                auto* acq = hub::native::getAcquisition( inputSensor );
-//                CHECK( ref_acq == *acq );
+            std::cout << "[Test] ############################### inputSensor start" << std::endl;
 
-//                unsigned char data[256];
-//                hub::native::acquisition_getMeasure( acq, data, 0 );
-//                CHECK( !memcmp( ref_data, data, 3 ) );
+            //                auto* inputSensor =
+            //                    hub::native::createInputSensor( ref_streamName.c_str());
 
-//                auto start = hub::native::acquisition_getStart( acq );
-//                CHECK( start == ref_acq.getStart() );
+            //                auto acquisitionSize = hub::native::getAcquisitionSize( inputSensor );
+            //                CHECK( ref_acq.getSize() == acquisitionSize );
 
-//                hub::native::freeAcquisition( acq );
+            //                auto* acq = hub::native::getAcquisition( inputSensor );
+            //                CHECK( ref_acq == *acq );
 
-//                char buff[256];
-//                int len;
-//                hub::native::acquisition_to_string( acq, buff, &len );
+            //                unsigned char data[256];
+            //                hub::native::acquisition_getMeasure( acq, data, 0 );
+            //                CHECK( !memcmp( ref_data, data, 3 ) );
 
-//                hub::native::freeInputSensor( inputSensor );
+            //                auto start = hub::native::acquisition_getStart( acq );
+            //                CHECK( start == ref_acq.getStart() );
 
-//                const auto* inputSensor2 =
-//                    hub::native::createInputSensor( "nonConnected", ipv4.c_str(), port );
-//                CHECK( inputSensor2 == nullptr );
+            //                hub::native::freeAcquisition( acq );
 
-//                auto& output = outputSensor->getOutput();
-//                output.close();
-//                delete outputSensor;
+            //                char buff[256];
+            //                int len;
+            //                hub::native::acquisition_to_string( acq, buff, &len );
 
-//                // todo native
+            //                hub::native::freeInputSensor( inputSensor );
 
-//                std::cout << "[Test] ############################### inputSensor end" << std::endl;
-//            }
+            //                const auto* inputSensor2 =
+            //                    hub::native::createInputSensor( "nonConnected" );
+            //                CHECK( inputSensor2 == nullptr );
 
-//            delete outputSensor;
+            //                auto& output = outputSensor->getOutput();
+            //                output.close();
+            //                delete outputSensor;
 
-//            std::cout << "[Test] ############################### outputSensor end" << std::endl;
-//        }
-//        std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
-//        std::cout << "[Test] ############################### server end" << std::endl;
-//    }
+            // todo native
+
+            std::cout << "[Test] ############################### inputSensor end" << std::endl;
+            //            }
+
+            delete outputSensor;
+
+            std::cout << "[Test] ############################### outputSensor end" << std::endl;
+        }
+        //        std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
+        std::cout << "[Test] ############################### server end" << std::endl;
+    }
 
     hub::native::freeViewer( viewer );
 }

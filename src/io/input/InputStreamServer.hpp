@@ -104,7 +104,7 @@ inline void InputStreamServer::close() {
 
     // inputSensor closing, prevent server this stream is done
     if ( !m_streamerClosed && !m_streamViewerClientClosed ) {
-        m_clientSocket.write( net::ClientSocket::Message::INPUT_STREAM_CLOSED );
+        m_clientSocket.write( io::StreamInterface::ClientMessage::STREAM_VIEWER_CLIENT_CLOSED );
     }
 
     if ( m_readAcqWaiting ) {
@@ -115,13 +115,13 @@ inline void InputStreamServer::close() {
     }
     else {
 
-        net::ClientSocket::Message message;
+        io::StreamInterface::ServerMessage message;
         m_clientSocket.read( message );
-        while ( message == net::ClientSocket::Message::NEW_ACQ ) {
+        while ( message == io::StreamInterface::ServerMessage::STREAM_VIEWER_NEW_ACQ ) {
             auto acq = m_clientSocket.get<Acquisition>();
             m_clientSocket.read( message );
         }
-        assert( message == net::ClientSocket::Message::STREAM_VIEWER_CLIENT_CLOSED );
+        assert( message == io::StreamInterface::ServerMessage::STREAM_VIEWER_CLOSED );
         std::cout << "[InputStreamServer] stream viewer client closed" << std::endl;
     }
 

@@ -1,27 +1,72 @@
 #pragma once
 
-#include <string>
 #include <iostream>
+#include <string>
+//#include <ostream>
+
+#include "Macros.hpp"
 
 namespace hub {
 namespace io {
 
-//#define DEBUG_INPUT_STREAM ">> \033[" << std::to_string(31 + (long)this % 7) << "m[InputStream:" << this << "]\033[0m "
-//#define DEBUG_OUTPUT_STREAM "\t<< \033[" << std::to_string(31 + (long)this % 7) << "m[OutputStream:" << this << "]\033[0m "
+// #define DEBUG_INPUT_STREAM ">> \033[" << std::to_string(31 + (long)this % 7) << "m[InputStream:"
+// << this << "]\033[0m " #define DEBUG_OUTPUT_STREAM "\t<< \033[" << std::to_string(31 + (long)this
+// % 7) << "m[OutputStream:" << this << "]\033[0m "
 
 class StreamInterface
 {
   public:
-//    static const std::string s_defaultIpv4;
-//    static const int s_defaultPort;
+    //    static const std::string s_defaultIpv4;
+    //    static const int s_defaultPort;
+    enum class ClientType { NONE = 0, STREAMER, STREAM_VIEWER, VIEWER, ASKER, COUNT };
+    SRC_API friend std::ostream& operator<<( std::ostream& os, const ClientType& clientType );
 
-    enum class Message {
+    enum class ClientMessage {
         NONE = 0,
-        NEW_STREAM,
-        DEL_STREAM,
-        SET_PROPERTY,
+
+        STREAMER_CLIENT_START,
+        STREAMER_CLIENT_CLOSED,
+        STREAMER_CLIENT_NEW_ACQ,
+
+        STREAM_VIEWER_CLIENT_CLOSED,
+
+        VIEWER_CLIENT_CLOSED,
+        VIEWER_CLIENT_SET_PROPERTY,
+
+        ASKER_CLIENT_CLOSED,
+        ASKER_CLIENT_GET_LIST_STREAMS,
+        ASKER_CLIENT_GET_ACQ,
+
         COUNT
     };
+    SRC_API friend std::ostream& operator<<( std::ostream& os, const ClientMessage& msg );
+
+    enum class ServerMessage {
+        NONE = 0,
+
+        FOUND,
+        NOT_FOUND,
+        OK,
+
+        SERVER_CLOSED,
+
+        STREAMER_CLOSED,
+
+        STREAM_VIEWER_CLOSED,
+        STREAM_VIEWER_NEW_ACQ,
+
+        VIEWER_CLOSED,
+        VIEWER_NEW_STREAMER,
+        VIEWER_DEL_STREAMER,
+        VIEWER_SET_PROPERTY,
+
+        ASKER_CLOSED,
+        ASKER_LIST_STREAMS,
+
+        COUNT
+    };
+    SRC_API friend std::ostream& operator<<( std::ostream& os, const ServerMessage& msg );
+
     class exception : public std::runtime_error
     {
       public:
@@ -42,26 +87,22 @@ class StreamInterface
         const char* what() const throw() { return std::runtime_error::what(); }
     };
 
-//    virtual const std::string & getDefaultIpv4() = 0;
-//    virtual int getDefaultPort() = 0;
-
+    //    virtual const std::string & getDefaultIpv4() = 0;
+    //    virtual int getDefaultPort() = 0;
 
   protected:
     StreamInterface( const std::string& name, const std::string& ipv4, int port );
-    StreamInterface( const char * name, const char * ipv4, int port );
+    StreamInterface( const char* name, const char* ipv4, int port );
 
-    static std::string to_string(const Message & message);
-//    static const std::string getDefaultIpv4();
-//    static constexpr int getDefaultPort();
-
-
+//    static std::string to_string( const ClientMessage& message );
+//    static std::string to_string( const ServerMessage& message );
+    //    static const std::string getDefaultIpv4();
+    //    static constexpr int getDefaultPort();
 
     const std::string m_name;
     const std::string m_ipv4;
     const int m_port;
 };
-
-
 
 } // namespace io
 } // namespace hub

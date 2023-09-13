@@ -26,7 +26,7 @@ class ViewerClient : public Client
     void notifyNewStreamer( const std::string& streamName, const SensorSpec& sensorSpec );
     void notifyDelStreamer( const std::string& streamName, const SensorSpec& sensorSpec );
 
-    void end( net::ClientSocket::Message message ) override;
+    void end( io::StreamInterface::ServerMessage message ) override;
     void notifyProperty( const std::string& streamName,
                          const std::string& objectName,
                          int property,

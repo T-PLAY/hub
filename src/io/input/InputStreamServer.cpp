@@ -12,14 +12,15 @@ InputStreamServer::InputStreamServer(const std::string &streamName, const std::s
     {
 
     assert(m_clientSocket.isConnected());
-    m_clientSocket.write( net::ClientSocket::Type::STREAM_VIEWER );
+//    m_clientSocket.write( net::ClientSocket::Type::STREAM_VIEWER );
+    m_clientSocket.write( ClientType::STREAM_VIEWER);
 
     assert( streamName != "" );
     m_clientSocket.write( streamName );
 
-    net::ClientSocket::Message mess;
-    Input::read( mess );
-    if ( mess == net::ClientSocket::Message::NOT_FOUND ) {
+    io::StreamInterface::ServerMessage serverMsg;
+    Input::read( serverMsg );
+    if ( serverMsg == io::StreamInterface::ServerMessage::NOT_FOUND ) {
 #ifdef DEBUG_SOCKET
         DEBUG_MSG( getHeader( m_fdSock ) << "[InputStreamServer] exception sensor '" << streamName
                                          << "' is not attached to server" );
@@ -27,7 +28,9 @@ InputStreamServer::InputStreamServer(const std::string &streamName, const std::s
         throw net::ClientSocket::exception(
             ( std::string( "stream '" ) + streamName + "' is not attached to server" ).c_str() );
     }
-    assert( mess == net::ClientSocket::Message::OK );
+    assert( serverMsg == io::StreamInterface::ServerMessage::OK );
+
+    std::cout << "[InputStreamServer:" << this << "] InputStreamServer() ended" << std::endl;
 }
 
 
@@ -38,6 +41,8 @@ InputStreamServer::InputStreamServer( InputStreamServer&& inputStream ) :
     m_streamerClosed( inputStream.m_streamerClosed ),
     m_readAcqWaiting( inputStream.m_readAcqWaiting ) {
     inputStream.m_moved = true;
+
+    std::cout << "[InputStreamServer:" << this << "] InputStreamServer(&&)" << std::endl;
 }
 
 //InputStreamServer::~InputStreamServer() {
@@ -53,9 +58,9 @@ void InputStreamServer::read( Acquisition& acq ) {
     assert( !m_streamerClosed );
 
     // Acquisition InputStreamServer::getAcq() {
-    net::ClientSocket::Message message;
+    io::StreamInterface::ServerMessage serverMsg;
     try {
-        m_clientSocket.read( message );
+        m_clientSocket.read( serverMsg );
     }
     catch ( const std::exception& ex ) {
         m_streamerClosed = true;
@@ -63,23 +68,23 @@ void InputStreamServer::read( Acquisition& acq ) {
         throw new std::exception( ex );
     }
 
-    if ( message == net::ClientSocket::Message::STREAMER_CLOSED ) {
+    if ( serverMsg == io::StreamInterface::ServerMessage::STREAMER_CLOSED ) {
         std::cout << "[InputStreamServer] streamer closed" << std::endl;
 
         m_streamerClosed = true;
-        m_clientSocket.write( net::ClientSocket::Message::INPUT_STREAM_CLOSED );
+        m_clientSocket.write( io::StreamInterface::ClientMessage::STREAM_VIEWER_CLIENT_CLOSED );
         m_readAcqWaiting = false;
         throw net::ClientSocket::exception( "sreamer closed from server" );
     }
-    else if ( message == net::ClientSocket::Message::STREAM_VIEWER_CLIENT_CLOSED ) {
+    else if ( serverMsg == io::StreamInterface::ServerMessage::STREAM_VIEWER_CLOSED ) {
         std::cout << "[InputStreamServer] stream viewer client closed" << std::endl;
 
         m_streamViewerClientClosed = true;
-        m_clientSocket.write( net::ClientSocket::Message::INPUT_STREAM_CLOSED );
+        m_clientSocket.write( io::StreamInterface::ClientMessage::STREAM_VIEWER_CLIENT_CLOSED );
         m_readAcqWaiting = false;
         throw net::ClientSocket::exception( "sream viewer client closed from server" );
     }
-    else if ( message == net::ClientSocket::Message::NEW_ACQ ) {
+    else if ( serverMsg == io::StreamInterface::ServerMessage::STREAM_VIEWER_NEW_ACQ ) {
         assert( m_clientSocket.isOpen() );
 
         m_clientSocket.read( acq );

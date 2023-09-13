@@ -72,7 +72,7 @@ FILE_NAME,
     // endConstruction
     // todo delay -> 0
 
-    constexpr int delay = 0;
+//    constexpr int delay = 0;
 
 
     {
@@ -80,7 +80,7 @@ FILE_NAME,
 //        hub::Server server( port );
 //        server.setMaxClients( 2 );
 //        server.asyncRun();
-        std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
+//        std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
 
 int iTryConnect = 0;
         while ( !viewer.isConnected() && iTryConnect < 10 ) {
@@ -100,8 +100,8 @@ assert(viewer.isConnected());
             hub::SensorSpec sensorSpec( "sensorName", { resolution } );
             hub::OutputSensor outputSensor(
                 sensorSpec,
-                OutputStream(FILE_NAME) );
-            std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
+                hub::output::OutputStream(FILE_NAME) );
+//            std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
 
 
             unsigned char data[3] { 1, 2, 3 };
@@ -112,10 +112,10 @@ assert(viewer.isConnected());
             }
             std::cout << "[Test] ############################### outputSensor end" << std::endl;
         }
-        std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
+//        std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
 
     }
     std::cout << "[Test] ############################### server end" << std::endl;
 
-    std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
+//    std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
 }

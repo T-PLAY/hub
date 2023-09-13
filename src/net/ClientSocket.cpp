@@ -240,38 +240,38 @@ bool ClientSocket::isEnd() const {
 using ConstString = const std::string;
 #endif
 
-static ConstString type2string[static_cast<int>( ClientSocket::Type::COUNT )] = {
-    "NONE",
-    "STREAMER",
-    "VIEWER",
-    "STREAM_VIEWER",
-    "ASKER",
-};
-std::ostream& operator<<( std::ostream& os, const ClientSocket::Type& type ) {
-    os << type2string[(int)type];
-    return os;
-}
+//static ConstString type2string[static_cast<int>( ClientSocket::Type::COUNT )] = {
+//    "NONE",
+//    "STREAMER",
+//    "VIEWER",
+//    "STREAM_VIEWER",
+//    "ASKER",
+//};
+//std::ostream& operator<<( std::ostream& os, const ClientSocket::Type& type ) {
+//    os << type2string[(int)type];
+//    return os;
+//}
 
-static ConstString message2string[static_cast<int>( ClientSocket::Message::COUNT )] = {
-    "NONE",
-    "PING",
-    "SYNC",
-    "DATA",
-    "OK",
-    "CLOSE",
-    "DEL_STREAMER",
-    "NEW_STREAMER",
-    "NOT_FOUND",
-    "FOUND",
-    "NEW_ACQ",
-    "LIST_STREAMS",
-    "GET_SENSOR_SPEC",
-    "GET_ACQUISITION",
-};
-std::ostream& operator<<( std::ostream& os, const ClientSocket::Message& msg ) {
-    os << message2string[(int)msg];
-    return os;
-}
+//static ConstString message2string[static_cast<int>( ClientSocket::Message::COUNT )] = {
+//    "NONE",
+//    "PING",
+//    "SYNC",
+//    "DATA",
+//    "OK",
+//    "CLOSE",
+//    "DEL_STREAMER",
+//    "NEW_STREAMER",
+//    "NOT_FOUND",
+//    "FOUND",
+//    "NEW_ACQ",
+//    "LIST_STREAMS",
+//    "GET_SENSOR_SPEC",
+//    "GET_ACQUISITION",
+//};
+//std::ostream& operator<<( std::ostream& os, const ClientSocket::Message& msg ) {
+//    os << message2string[(int)msg];
+//    return os;
+//}
 
 // void ClientSocket::clear() const {
 // #ifdef DEBUG_SOCKET

@@ -15,19 +15,21 @@ OutputStreamServer::OutputStreamServer(const std::string &streamName, const std:
     m_clientSocket( std::make_unique<net::ClientSocket>(ipv4, port) )
 {
 
-    Output::write( net::ClientSocket::Type::STREAMER );
+//    Output::write( net::ClientSocket::Type::STREAMER );
+    m_clientSocket->write(ClientType::STREAMER);
 
-    Output::write( streamName );
+//    Output::write( streamName );
+    m_clientSocket->write(streamName);
 
-    net::ClientSocket::Message mess;
+    io::StreamInterface::ServerMessage mess;
     m_clientSocket->read( mess );
-    if ( mess == net::ClientSocket::Message::FOUND ) {
+    if ( mess == io::StreamInterface::ServerMessage::FOUND ) {
         m_clientSocket->close();
         throw net::Socket::exception(
             ( std::string( "stream '" ) + streamName + "' is already attached to server" )
                 .c_str() );
     }
-    assert( mess == net::ClientSocket::Message::NOT_FOUND );
+    assert( mess == io::StreamInterface::ServerMessage::NOT_FOUND );
 
 
     assert(m_clientSocket->isOpen());
@@ -36,16 +38,16 @@ OutputStreamServer::OutputStreamServer(const std::string &streamName, const std:
     auto * streamerClosed = m_streamerClosed.get();
     m_thread = std::make_unique<std::thread>( [=]() {
 //        auto * clientSocket = m_clientSocket.get();
-        std::cout << "[OutputStreamServer] OutputStreamServer(string, string, int) thread started" << std::endl;
-        hub::net::ClientSocket::Message message;
+        std::cout << "[OutputStreamServer:" << this << "] OutputStreamServer(string, string, int) thread started" << std::endl;
+        hub::io::StreamInterface::ServerMessage serverMsg;
         assert( clientSocket->isOpen() );
-        clientSocket->read( message );
-        if ( message == net::ClientSocket::Message::SERVER_CLOSED ) {
+        clientSocket->read( serverMsg );
+        if ( serverMsg == io::StreamInterface::ServerMessage::SERVER_CLOSED ) {
 
             std::cout << "[OutputStreamServer] server closed" << std::endl;
             *serverClosed = true;
         }
-        else if ( message == net::ClientSocket::Message::STREAMER_CLOSED ) {
+        else if ( serverMsg == io::StreamInterface::ServerMessage::STREAMER_CLOSED ) {
             std::cout << "[OutputStreamServer] streamer closed" << std::endl;
             *streamerClosed = true;
         }
@@ -54,10 +56,12 @@ OutputStreamServer::OutputStreamServer(const std::string &streamName, const std:
         }
 
         if ( clientSocket->isOpen() )
-            clientSocket->write( net::ClientSocket::Message::OUTPUT_STREAM_CLOSED );
+            clientSocket->write( io::StreamInterface::ClientMessage::STREAMER_CLIENT_CLOSED );
         std::cout << "[OutputStreamServer] OutputStreamServer(string, string, int) thread ended" << std::endl;
     } );
-    std::cout << "[OutputStreamServer] OutputStreamServer(string, string, int) ended" << std::endl;
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    std::cout << "[OutputStreamServer:" << this << "] OutputStreamServer(string, string, int) ended" << std::endl;
 }
 
 
@@ -71,18 +75,32 @@ OutputStreamServer::OutputStreamServer( OutputStreamServer&& outputStream ) :
     m_streamerClosed(std::move(outputStream.m_streamerClosed))
 {
 
-    std::cout << "[OutputStreamServer] OutputStreamServer(OutputStreamServer&&)" << std::endl;
+    std::cout << "[OutputStreamServer:" << this << "] OutputStreamServer(OutputStreamServer&&)" << std::endl;
     outputStream.m_moved = true;
 }
 
 OutputStreamServer::~OutputStreamServer() {
+    std::cout << "[OutputStreamServer:" << this << "] ~OutputStreamServer()" << std::endl;
 
     if ( !m_moved ) {
+
+//        assert(m_clientSocket->isOpen());
+//        if (m_clientSocket->isOpen())
+//            m_clientSocket->close();
+//    assert( m_clientSocket->isOpen() );
+        if (OutputStreamServer::isOpen()) {
+    std::cout << "[OutputStreamServer:" << this << "] ~OutputStreamServer() closing connection" << std::endl;
+            OutputStreamServer::close();
+        }
         assert( !OutputStreamServer::isOpen() );
+
         assert( m_thread->joinable() );
+    std::cout << "[OutputStreamServer:" << this << "] ~OutputStreamServer() joining thread" << std::endl;
         m_thread->join();
     }
+    std::cout << "[OutputStreamServer:" << this << "] ~OutputStreamServer() ended" << std::endl;
 }
+
 
 } // namespace output
 } // namespace hub

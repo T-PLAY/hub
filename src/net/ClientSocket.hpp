@@ -33,7 +33,7 @@ class SRC_API ClientSocket : public Socket, public io::InputOutput
     /// corresponds of the type of connection uses by the server to process
     /// things corresponding of each type of new connected client.
     ///
-    enum class Type { NONE, STREAMER, VIEWER, STREAM_VIEWER, ASKER, COUNT };
+//    enum class Type { NONE, STREAMER, VIEWER, STREAM_VIEWER, ASKER, COUNT };
 
     ///
     /// \brief operator <<
@@ -41,39 +41,40 @@ class SRC_API ClientSocket : public Socket, public io::InputOutput
     /// \param type
     /// \return
     ///
-    SRC_API friend std::ostream& operator<<( std::ostream& os, const Type& type );
+//    SRC_API friend std::ostream& operator<<( std::ostream& os, const Type& type );
 
     ///
     /// \brief The Message enum
     /// define atomic message to communicate to the server.
     ///
-    enum class Message {
-        NONE,
-        PING,
-        SYNC,
-        DATA,
-        OK,
-        CLOSE, // connection
-        DEL_STREAMER,
-        NEW_STREAMER,
-        NOT_FOUND,
-        FOUND,
-        NEW_ACQ,
-        LIST_STREAMS,
-        GET_SENSOR_SPEC,
-        GET_ACQUISITION,
-        CLOSED,
-        STREAM_VIEWER_CLOSED,
-        STREAMER_CLOSED,
-        INPUT_STREAM_CLOSED,
-        OUTPUT_STREAM_CLOSED,
-        VIEWER_CLOSED,
-        VIEWER_CLIENT_CLOSED,
-        SERVER_CLOSED,
-        STREAM_VIEWER_CLIENT_CLOSED,
-        SET_PROPERTY,
-        COUNT
-    };
+//    enum class Message {
+//        NONE,
+//        PING,
+//        SYNC,
+//        DATA,
+//        OK,
+//        CLOSE, // connection
+//        DEL_STREAMER,
+//        NEW_STREAMER,
+//        NOT_FOUND,
+//        FOUND,
+//        NEW_ACQ,
+//        LIST_STREAMS,
+//        GET_SENSOR_SPEC,
+//        GET_ACQUISITION,
+//        CLOSED,
+//        STREAM_VIEWER_CLOSED,
+//        STREAMER_CLOSED,
+//        INPUT_STREAM_CLOSED,
+//        OUTPUT_STREAM_CLOSED,
+//        VIEWER_CLOSED,
+//        VIEWER_CLIENT_CLOSED,
+//        SERVER_CLOSED,
+//        STREAM_VIEWER_CLIENT_CLOSED,
+//        SET_PROPERTY,
+//        INIT_INPUT_SENSOR,
+//        COUNT
+//    };
 
     ///
     /// \brief operator <<
@@ -81,7 +82,7 @@ class SRC_API ClientSocket : public Socket, public io::InputOutput
     /// \param msg
     /// \return
     ///
-    SRC_API friend std::ostream& operator<<( std::ostream& os, const Message& msg );
+//    SRC_API friend std::ostream& operator<<( std::ostream& os, const Message& msg );
 
 //    ClientSocket();
 

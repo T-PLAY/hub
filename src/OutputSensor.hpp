@@ -16,7 +16,6 @@
 
 //#include "net/ClientSocket.hpp"
 
-using namespace hub::output;
 
 namespace hub {
 

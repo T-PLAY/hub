@@ -6,17 +6,18 @@
 #include <map>
 #include <memory>
 
+#include "Client.hpp"
 #include "AskerClient.hpp"
 #include "StreamViewerClient.hpp"
 #include "StreamerClient.hpp"
 #include "ViewerClient.hpp"
+
 #include "net/ServerSocket.hpp"
 #include "io/StreamServer.hpp"
 
 namespace hub {
 //namespace server {
 
-using namespace server;
 
 ///
 /// \brief The Server class
@@ -53,30 +54,33 @@ class SRC_API Server
     ///
     void setMaxClients( int maxClients );
 
+    void printStatus() const;
 
   private:
+    std::string getStatus() const;
     std::string headerMsg() const;
 
-    Client* initClient( hub::net::ClientSocket&& sock, int iClient );
-    std::string getStatus();
+    server::Client* initClient( hub::net::ClientSocket&& sock, int iClient );
 
-    void addStreamer( StreamerClient* streamer );
-    void addStreamViewer( StreamViewerClient* streamViewer );
-    void addViewer( ViewerClient* viewer );
+    void addStreamer( server::StreamerClient* streamer );
+    void newInputSensor(server::StreamerClient *streamer );
+    void addStreamViewer( server::StreamViewerClient* streamViewer );
+    void addViewer( server::ViewerClient* viewer );
 
-    void delStreamer( StreamerClient* streamer );
-    void delStreamViewer( StreamViewerClient* streamViewer );
-    void delViewer( ViewerClient* viewer );
+    void delStreamer( server::StreamerClient* streamer );
+    void delStreamViewer( server::StreamViewerClient* streamViewer );
+    void delViewer( server::ViewerClient* viewer );
 
-    void newAcquisition( const StreamerClient* streamer, const Acquisition& acq );
+    void newAcquisition( const server::StreamerClient* streamer, const Acquisition& acq );
 
     std::list<std::pair<std::string, hub::SensorSpec>> listStreams() const;
     hub::Acquisition getAcquisition( const std::string& streamName ) const;
 
-    void removeClient( Client* client );
-    const std::map<std::string, StreamerClient*>& getStreamers() const;
+    void removeClient( server::Client* client );
+    const std::map<std::string, server::StreamerClient*>& getStreamers() const;
 
-    const hub::SensorSpec& getSensorSpec( const std::string& streamName ) const;
+//    const hub::SensorSpec& getSensorSpec( const std::string& streamName ) const;
+    const hub::InputSensor * getInputSensor( const std::string & streamName) const;
 
     void setProperty( const std::string& streamName,
                       const std::string& objectName,
@@ -86,17 +90,17 @@ class SRC_API Server
   private:
     std::thread * m_thread = nullptr;
 
-    std::map<std::string, StreamerClient*> m_streamName2streamer;
+    std::map<std::string, server::StreamerClient*> m_streamName2streamer;
     mutable std::mutex m_mtxStreamName2streamer;
 
-    std::map<std::string, std::list<StreamViewerClient*>> m_streamName2streamViewers;
+    std::map<std::string, std::list<server::StreamViewerClient*>> m_streamName2streamViewers;
     std::mutex m_mtxSreamName2streamViewers;
 
-    std::list<ViewerClient*> m_viewers;
+    std::list<server::ViewerClient*> m_viewers;
     std::mutex m_mtxViewers;
 
     hub::net::ServerSocket m_serverSock;
-    std::list<Client*> m_clients;
+    std::list<server::Client*> m_clients;
     std::mutex m_mtxClients;
 
     int m_nClient    = 0;
@@ -107,6 +111,7 @@ class SRC_API Server
 
     bool m_detached = false;
     bool m_killed = false;
+    bool m_running = false;
 
     friend class server::Client;
     friend class server::StreamerClient;

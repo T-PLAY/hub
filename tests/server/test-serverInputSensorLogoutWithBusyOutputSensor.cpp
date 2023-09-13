@@ -19,7 +19,7 @@ TEST_CASE( "Server test : inputSensorLogoutWithBusyOutputSensor" ) {
     {
         hub::OutputSensor outputSensor(
             hub::SensorSpec( "sensorName", { { { 1 }, hub::Format::BGR8 } } ),
-            OutputStream(FILE_NAME)
+            hub::output::OutputStream(FILE_NAME)
 //            "streamName",
 //            hub::net::ClientSocket( ipv4, port ) );
 //            ipv4, port
@@ -56,18 +56,18 @@ TEST_CASE( "Server test : inputSensorLogoutWithBusyOutputSensor" ) {
                 inputSensor >> acq;
                 std::cout << "[test] receive acq: " << acq << std::endl;
             }
-            std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
+//            std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
         }
         std::cout << "[test] end inputSensor" << std::endl;
 
-        std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
+//        std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
 
         std::cout << "[test] kill thread" << std::endl;
         killThread = true;
         assert( thread.joinable() );
         thread.join();
-        std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
+//        std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
     }
     std::cout << "[test] end outputSensor" << std::endl;
-    std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
+//    std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
 }

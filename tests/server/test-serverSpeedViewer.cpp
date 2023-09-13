@@ -96,7 +96,7 @@ TEST_CASE( "Server test : viewer" ) {
                 << std::endl;
             hub::OutputSensor outputSensor(
                 hub::SensorSpec( "sensorName", { { { width, height }, hub::Format::BGR8 } } ),
-                OutputStream( FILE_NAME )
+                hub::output::OutputStream( FILE_NAME )
                 //                "streamName",
                 //                hub::net::ClientSocket( ipv4, port2 ) );
                 //                ipv4,

@@ -3,7 +3,8 @@
 #include <mutex>
 #include <string>
 
-#include <net/ClientSocket.hpp>
+#include "net/ClientSocket.hpp"
+#include "io/StreamInterface.hpp"
 
 namespace hub {
 
@@ -26,7 +27,7 @@ class Client
 
     void setServer( Server* newServer );
 
-    virtual void end( net::ClientSocket::Message message ) = 0;
+    virtual void end( io::StreamInterface::ServerMessage message ) = 0;
 
   private:
     Server* m_server = nullptr;

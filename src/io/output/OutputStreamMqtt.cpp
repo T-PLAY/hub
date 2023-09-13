@@ -129,7 +129,8 @@ void OutputStreamMqtt::write( const SensorSpec& sensorSpec ) {
     // prevent viewers there is new streamer
     m_msgPtr->set_retained( false );
     m_msgPtr->set_topic( s_topicEvents );
-    m_msgPtr->set_payload( to_string( Message::NEW_STREAM ) + m_name );
+//    m_msgPtr->set_payload( to_string( ClientMessage::NEW_STREAM ) + m_name );
+    m_msgPtr->set_payload( std::to_string( (int)ClientMessage::STREAMER_CLIENT_START ) + m_name );
     m_client->publish( m_msgPtr );
     m_msgPtr->set_retained( true );
 

@@ -176,19 +176,20 @@ ViewerServer::ViewerServer(
                 m_serverConnected = true;
                 assert( m_sock.isOpen() );
 
-                m_sock.write( net::ClientSocket::Type::VIEWER );
+//                m_sock.write( net::ClientSocket::Type::VIEWER );
+                m_sock.write( io::StreamInterface::ClientType::VIEWER );
 
                 if ( m_onServerConnected )
                     m_onServerConnected( m_sock.getIpv4().c_str(), m_sock.getPort() );
 
                 while ( !m_stopThread ) {
 
-                    net::ClientSocket::Message serverMessage;
+                    io::StreamInterface::ServerMessage serverMessage;
                     m_sock.read( serverMessage );
 
                     switch ( serverMessage ) {
 
-                    case net::ClientSocket::Message::NEW_STREAMER: {
+                    case io::StreamInterface::ServerMessage::VIEWER_NEW_STREAMER: {
 
                         std::string streamName;
                         m_sock.read( streamName );
@@ -227,7 +228,7 @@ ViewerServer::ViewerServer(
 
                     } break;
 
-                    case net::ClientSocket::Message::DEL_STREAMER: {
+                    case io::StreamInterface::ServerMessage::VIEWER_DEL_STREAMER: {
                         std::string streamName;
                         m_sock.read( streamName );
                         SensorSpec sensorSpec;
@@ -249,21 +250,21 @@ ViewerServer::ViewerServer(
 
                     } break;
 
-                    case net::ClientSocket::Message::SERVER_CLOSED: {
+                    case io::StreamInterface::ServerMessage::SERVER_CLOSED: {
                         DEBUG_MSG( "[ViewerServer] server closed" );
                         assert( m_sock.isOpen() );
-                        m_sock.write( net::ClientSocket::Message::VIEWER_CLOSED );
+                        m_sock.write( io::StreamInterface::ClientMessage::VIEWER_CLIENT_CLOSED );
                         throw net::ClientSocket::exception( "[viewer] server closed" );
                     }
 
-                    case net::ClientSocket::Message::VIEWER_CLIENT_CLOSED: {
+                    case io::StreamInterface::ServerMessage::VIEWER_CLOSED: {
                         DEBUG_MSG( "[ViewerServer] viewer client closed" );
                         assert( m_sock.isOpen() );
-                        m_sock.write( net::ClientSocket::Message::VIEWER_CLOSED );
+                        m_sock.write( io::StreamInterface::ClientMessage::VIEWER_CLIENT_CLOSED );
                         throw net::ClientSocket::exception( "[viewer] viewer client closed" );
                     }
 
-                    case net::ClientSocket::Message::SET_PROPERTY: {
+                    case io::StreamInterface::ServerMessage::VIEWER_SET_PROPERTY: {
                         DEBUG_MSG( "[ViewerServer] viewer client set property" );
                         assert( m_sock.isOpen() );
                         std::string streamName;
@@ -337,7 +338,7 @@ ViewerServer::~ViewerServer() {
     DEBUG_MSG( "[ViewerServer] ~ViewerServer()" );
     m_stopThread = true;
 
-    if ( m_sock.isOpen() ) { m_sock.write( net::ClientSocket::Message::VIEWER_CLOSED ); }
+    if ( m_sock.isOpen() ) { m_sock.write( io::StreamInterface::ClientMessage::VIEWER_CLIENT_CLOSED ); }
 
 
     assert( m_thread.joinable() );
@@ -400,7 +401,7 @@ void ViewerServer::setProperty( const std::string& streamName,
                           int property,
                           const Any& value ) {
     if ( m_sock.isOpen() ) {
-        m_sock.write( net::ClientSocket::Message::SET_PROPERTY );
+        m_sock.write( io::StreamInterface::ClientMessage::VIEWER_CLIENT_SET_PROPERTY );
         m_sock.write( streamName );
         m_sock.write( objectName );
         m_sock.write( property );

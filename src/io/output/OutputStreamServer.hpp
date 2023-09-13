@@ -48,6 +48,7 @@ class SRC_API OutputStreamServer : public Output, public io::StreamServer
     ~OutputStreamServer();
 
     void write( const Acquisition& acq ) override;
+    void write( const SensorSpec& sensorSpec ) override;
 
     // #ifdef WIN32 // msvc warning C4250
   protected:
@@ -70,8 +71,14 @@ class SRC_API OutputStreamServer : public Output, public io::StreamServer
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 inline void OutputStreamServer::write( const Acquisition& acq ) {
-    Output::write( net::ClientSocket::Message::NEW_ACQ );
+    Output::write( io::StreamInterface::ClientMessage::STREAMER_CLIENT_NEW_ACQ );
     Output::write( acq );
+}
+
+inline void OutputStreamServer::write(const SensorSpec &sensorSpec)
+{
+//    Output::write( io::StreamInterface::ClientMessage::INIT_INPUT_SENSOR );
+    Output::write( sensorSpec );
 }
 
 inline void OutputStreamServer::write( const unsigned char* data, size_t len ) {
@@ -82,7 +89,7 @@ inline void OutputStreamServer::close() {
     std::cout << "[OutputStreamServer] close() started" << std::endl;
     assert( m_clientSocket->isOpen() );
     if ( ! *m_serverClosed && ! *m_streamerClosed ) {
-        m_clientSocket->write( net::ClientSocket::Message::OUTPUT_STREAM_CLOSED );
+        m_clientSocket->write( io::StreamInterface::ClientMessage::STREAMER_CLIENT_CLOSED );
     }
     int iSleep = 0;
     while ( ! *m_serverClosed && ! *m_streamerClosed && iSleep < 10 ) {
@@ -90,6 +97,7 @@ inline void OutputStreamServer::close() {
         std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
         ++iSleep;
     }
+    std::cout << "[OutputStreamServer] closing connection ended" << std::endl;
     m_clientSocket->close();
     std::cout << "[OutputStreamServer] close() ended" << std::endl;
 }

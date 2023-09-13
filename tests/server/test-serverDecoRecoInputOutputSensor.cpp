@@ -40,7 +40,7 @@ TEST_CASE( "Server test : direct stream" ) {
 
             hub::OutputSensor outputSensor(
                 hub::SensorSpec { "sensorName", { { { 3 }, hub::Format::BGR8 } } },
-                OutputStream( FILE_NAME )
+                hub::output::OutputStream( FILE_NAME )
                 //                "stream",
                 //                hub::net::ClientSocket( ipv4, port ) );
                 //                ipv4, port

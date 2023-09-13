@@ -4,7 +4,7 @@
 #include <mutex>
 #include <thread>
 
-#include <net/ClientSocket.hpp>
+#include "net/ClientSocket.hpp"
 
 #include "Client.hpp"
 
@@ -22,7 +22,7 @@ class AskerClient : public Client
 
     std::string headerMsg() const override;
 
-    void end( net::ClientSocket::Message message ) override;
+    void end( io::StreamInterface::ServerMessage message ) override;
 
   private:
     std::thread m_thread;

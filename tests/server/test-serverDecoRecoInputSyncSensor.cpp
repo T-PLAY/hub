@@ -61,7 +61,7 @@ TEST_CASE( "Server test : close clients" ) {
         std::cout << "[Test] ############################### outputStream start" << std::endl;
         hub::OutputSensor outputSensor(
             hub::SensorSpec { "sensorName", { { { 3 }, hub::Format::BGR8 } } },
-            OutputStream(FILE_NAME)
+            hub::output::OutputStream(FILE_NAME)
 //            "stream",
 //            hub::net::ClientSocket( ipv4, port ) );
 //            ipv4, port
@@ -79,7 +79,7 @@ TEST_CASE( "Server test : close clients" ) {
         std::cout << "[Test] ############################### outputStream2 start" << std::endl;
         hub::OutputSensor outputSensor2(
             hub::SensorSpec { "sensorName2", { { { 3 }, hub::Format::RGB8 } } },
-            OutputStream(FILE_NAME "2")
+            hub::output::OutputStream(FILE_NAME "2")
 //            "stream2",
 //            hub::net::ClientSocket( ipv4, port ) );
 //            ipv4, port

@@ -13,7 +13,7 @@ namespace hub {
 namespace input {
 
 // class SRC_API InputStreamMqtt : public InputStreamInterface
-class SRC_API InputStreamMqtt : public io::Input, public io::StreamMqtt
+class SRC_API InputStreamMqtt : public Input, public io::StreamMqtt
 {
   public:
     explicit InputStreamMqtt( const std::string& streamName,

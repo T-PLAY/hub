@@ -422,7 +422,7 @@ ViewerInterface<InputStream>::~ViewerInterface() {
     //    assert(! m_stopThread);
     //    m_stopThread = true;
 
-    //    if ( m_sock.isOpen() ) { m_sock.write( net::ClientSocket::Message::VIEWER_CLOSED ); }
+    //    if ( m_sock.isOpen() ) { m_sock.write( io::StreamInterface::ClientMessage::VIEWER_CLOSED ); }
 
     //    assert( m_thread.joinable() );
     //    m_thread.join();
@@ -459,7 +459,7 @@ void ViewerInterface<InputStream>::setProperty( const std::string& streamName,
                                                 int property,
                                                 const Any& value ) {
     //    if ( m_sock.isOpen() ) {
-    //        m_sock.write( net::ClientSocket::Message::SET_PROPERTY );
+    //        m_sock.write( io::StreamInterface::ClientMessage::SET_PROPERTY );
     //        m_sock.write( streamName );
     //        m_sock.write( id );
     //        m_sock.write( property );

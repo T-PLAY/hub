@@ -27,7 +27,9 @@ extern "C"
     /// \param port
     /// \return
     ///
-    SRC_API InputSensor* createInputSensor( const char* streamName, const char* ipv4, int port );
+    SRC_API InputSensor* createInputSensor( const char* streamName,
+         const char* ipv4 = input::InputStream::s_defaultIpv4.c_str(),
+                                            int port = input::InputStream::s_defaultPort);
 
     ///
     /// \brief freeInputSensor

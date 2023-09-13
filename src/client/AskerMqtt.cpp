@@ -22,14 +22,14 @@ AskerMqtt::AskerMqtt( const std::string& ipv4, int port ) :
 }
 
 AskerMqtt::~AskerMqtt() {
-    //    m_sock.write( net::ClientSocket::Message::CLOSE );
+    //    m_sock.write( io::StreamInterface::ClientMessage::CLOSE );
     //    assert( m_sock.isOpen() );
     //    m_sock.close();
     //    assert( !m_sock.isOpen() );
 }
 
 std::list<std::pair<std::string, SensorSpec>> AskerMqtt::listStreams() {
-    //    m_sock.write( net::ClientSocket::Message::LIST_STREAMS );
+    //    m_sock.write( io::StreamInterface::ClientMessage::LIST_STREAMS );
 
     assert(m_client->is_connected());
     m_client->start_consuming();
@@ -104,7 +104,7 @@ std::list<std::pair<std::string, SensorSpec>> AskerMqtt::listStreams() {
 }
 
 Acquisition AskerMqtt::getAcquisition( const std::string& streamName ) {
-    //    m_sock.write( net::ClientSocket::Message::GET_ACQUISITION );
+    //    m_sock.write( io::StreamInterface::ClientMessage::GET_ACQUISITION );
     //    m_sock.write( streamName );
     assert(m_client->is_connected());
     m_client->start_consuming();
@@ -123,15 +123,15 @@ Acquisition AskerMqtt::getAcquisition( const std::string& streamName ) {
     assert(m_inputMsgPtr->get_payload_str() == "active");
 
 
-    //    net::ClientSocket::Message message;
+    //    io::StreamInterface::ClientMessage message;
     //    m_sock.read( message );
 
-    //    if ( message == net::ClientSocket::Message::NOT_FOUND ) {
+    //    if ( message == io::StreamInterface::ClientMessage::NOT_FOUND ) {
     //        throw net::ClientSocket::exception(
     //            ( std::string( "stream '" ) + streamName + "' is not attached to server" ).c_str()
     //            );
     //    }
-    //    assert( message == net::ClientSocket::Message::FOUND );
+    //    assert( message == io::StreamInterface::ClientMessage::FOUND );
 
     //    hub::SensorSpec sensorSpec;
     //    m_sock.read( sensorSpec );

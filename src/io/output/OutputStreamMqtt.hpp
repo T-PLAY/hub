@@ -17,7 +17,7 @@ namespace output {
 
 
 //class SRC_API OutputStreamMqtt : public OutputStreamInterface
-class SRC_API OutputStreamMqtt : public io::Output, public io::StreamMqtt
+class SRC_API OutputStreamMqtt : public Output, public io::StreamMqtt
 {
   public:
     explicit OutputStreamMqtt( const std::string& streamName,
@@ -109,7 +109,9 @@ inline void OutputStreamMqtt::close() {
     // prevent viewers there is streamer done
     m_msgPtr->set_retained(false);
     m_msgPtr->set_topic(s_topicEvents);
-    m_msgPtr->set_payload(io::StreamMqtt::to_string(StreamMqtt::Message::DEL_STREAM) + m_name);
+//    m_msgPtr->set_payload(io::StreamMqtt::to_string(ClientMessage::DEL_STREAM) + m_name);
+    m_msgPtr->set_payload(std::to_string((int)ClientMessage::STREAMER_CLIENT_CLOSED) + m_name);
+//    m_msgPtr->set_payload(ClientMessage::DEL_STREAM + m_name);
 //    m_msgPtr->set_payload("del sensor");
     m_client->publish(m_msgPtr);
     m_msgPtr->set_retained(true);
