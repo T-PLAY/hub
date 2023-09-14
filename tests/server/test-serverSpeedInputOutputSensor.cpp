@@ -373,12 +373,15 @@ TEST_CASE( "Server test : InputOutputSensor" ) {
         checkRatio( ratio, 80, 5, "Hub/ClientSocket" );
 #endif
      }
+     else {
+        checkRatio( ratio, 50, 50, "Hub/ClientSocket" );
+     }
 
 #endif
 
 #ifdef HUB_TESTS_MQTT_FOUND
     ratio = 100.0 * megaBytesPerSecondsMqtt / megaBytesPerSecondsClientSocket;
-    std::cout << "[Mqtt/ClientSocket] ratio : " << ratio << " %" << std::endl;
+//    std::cout << "[Mqtt/ClientSocket] ratio : " << ratio << " %" << std::endl;
     checkRatio(ratio, 12, 12, "Mqtt/ClientSocket");
 #endif
 

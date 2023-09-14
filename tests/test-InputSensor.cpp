@@ -62,7 +62,8 @@ TEST_CASE( "InputSensor test" ) {
 
     ///////////////////////////////// TESTING EACH INPUT IMPLEMENTS
 
-    std::cout << "----------------------------------------- Memory ----------------------------------------"
+    std::cout << "----------------------------------------- Memory "
+                 "----------------------------------------"
                  "---------------------"
               << std::endl;
 
@@ -74,26 +75,21 @@ TEST_CASE( "InputSensor test" ) {
         hub::output::OutputMemory<decltype( buff2 )> outputMemory2( buff2 );
         hub::input::InputMemory<decltype( buff2 )> inputMemory2( buff2 );
 
-        std::vector<hub::Acquisition> sync_acqs = synchronize( std::move( outputMemory ),
-                                                               ref_sensorSpec,
-                                                               ref_acqs,
-                                                               std::move( outputMemory2 ),
-                                                               ref_sensorSpec2,
-                                                               ref_acqs2,
-                                                               std::move( inputMemory ),
-                                                               std::move( inputMemory2 ) );
-
-        assert( sync_acqs.size() == ref_sync_acqs.size() );
-        for ( int i = 0; i < sync_acqs.size(); ++i ) {
-            const auto& acq2 = sync_acqs.at( i );
-
-            CHECK( acq2 == ref_sync_acqs.at( i ) );
-        }
+        checkSynchronize( std::move( outputMemory ),
+                          ref_sensorSpec,
+                          ref_acqs,
+                          std::move( outputMemory2 ),
+                          ref_sensorSpec2,
+                          ref_acqs2,
+                          std::move( inputMemory ),
+                          std::move( inputMemory2 ),
+                          ref_sync_acqs );
     }
 
-    std::cout << "----------------------------------------- File ----------------------------------------"
-                 "---------------------"
-              << std::endl;
+    std::cout
+        << "----------------------------------------- File ----------------------------------------"
+           "---------------------"
+        << std::endl;
 
     {
         {
@@ -136,34 +132,28 @@ TEST_CASE( "InputSensor test" ) {
         }
     }
 
-    std::cout << "----------------------------------------- Stream ----------------------------------------"
+    std::cout << "----------------------------------------- Stream "
+                 "----------------------------------------"
                  "---------------------"
               << std::endl;
 
-#ifndef HUB_BUILD_SERVER
     {
         auto outputStream  = hub::output::OutputStream( FILE_NAME );
         auto outputStream2 = hub::output::OutputStream( FILE_NAME "2" );
         auto inputStream   = hub::input::InputStream( FILE_NAME );
         auto inputStream2  = hub::input::InputStream( FILE_NAME "2" );
 
-        std::vector<hub::Acquisition> sync_acqs = synchronize( std::move( outputStream ),
-                                                               ref_sensorSpec,
-                                                               ref_acqs,
-                                                               std::move( outputStream2 ),
-                                                               ref_sensorSpec2,
-                                                               ref_acqs2,
-                                                               std::move( inputStream ),
-                                                               std::move( inputStream2 ), true );
-
-        assert( sync_acqs.size() == ref_sync_acqs.size() );
-        for ( int i = 0; i < sync_acqs.size(); ++i ) {
-            const auto& acq2 = sync_acqs.at( i );
-
-            CHECK( acq2 == ref_sync_acqs.at( i ) );
-        }
+        checkSynchronize( std::move( outputStream ),
+                          ref_sensorSpec,
+                          ref_acqs,
+                          std::move( outputStream2 ),
+                          ref_sensorSpec2,
+                          ref_acqs2,
+                          std::move( inputStream ),
+                          std::move( inputStream2 ),
+                          ref_sync_acqs,
+                          true );
     }
-#endif
 
     ///////////////////////////////////////////////////////////////////////////////////////////
 }

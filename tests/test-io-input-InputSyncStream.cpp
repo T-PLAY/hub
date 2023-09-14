@@ -60,44 +60,47 @@ TEST_CASE( "InputSyncStream test" ) {
 
     //////////////////////
 
-    std::cout << "ref_sync_acqs" << std::endl;
-    std::vector<hub::Acquisition> ref_sync_acqs = computeSyncAcqs( ref_acqs, ref_acqs2 );
+    //    std::cout << "ref_sync_acqs" << std::endl;
+    //    std::vector<hub::Acquisition> ref_sync_acqs = computeSyncAcqs( ref_acqs, ref_acqs2 );
 
-//#ifndef HUB_BUILD_SERVER
     {
         std::cout << "outputStream start" << std::endl;
         hub::output::OutputStream outputStream( FILE_NAME );
         std::cout << "outputStream end" << std::endl;
 
-        std::cout << "inputStream start" << std::endl;
-        hub::input::InputStream inputStream( FILE_NAME );
-        std::cout << "inputStream end" << std::endl;
+//        std::cout << "inputStream start" << std::endl;
+//        hub::input::InputStream inputStream( FILE_NAME );
+//        std::cout << "inputStream end" << std::endl;
 
+        //        std::cout << "outputStream2 start" << std::endl;
+        hub::output::OutputStream outputStream2( FILE_NAME "2" );
+        //        std::cout << "outputStream2 end" << std::endl;
 
-//        std::cout << "outputStream2 start" << std::endl;
-//        hub::output::OutputStream outputStream2( FILE_NAME "2" );
-//        std::cout << "outputStream2 end" << std::endl;
-
-//        std::cout << "inputStream2 start" << std::endl;
+//        //        std::cout << "inputStream2 start" << std::endl;
 //        hub::input::InputStream inputStream2( FILE_NAME "2" );
-//        std::cout << "inputStream2 end" << std::endl;
+//        //        std::cout << "inputStream2 end" << std::endl;
 
-//        std::vector<hub::Acquisition> sync_acqs = synchronize( std::move(outputStream),
-//                                                               ref_sensorSpec,
-//                                                               ref_acqs,
-//                                                               std::move(outputStream2),
-//                                                               ref_sensorSpec2,
-//                                                               ref_acqs2,
-//                                                               std::move(inputStream),
-//                                                               std::move(inputStream2), true );
+        hub::input::InputSyncStream inputSyncStream(FILE_NAME, FILE_NAME "2");
 
-//        assert( sync_acqs.size() == ref_sync_acqs.size() );
-//        for ( int i = 0; i < ref_sync_acqs.size(); ++i ) {
-//            const auto& sync_acq = sync_acqs.at( i );
-//            CHECK( sync_acq == ref_sync_acqs.at( i ) );
-//            std::cout << "receive sync acq : " << sync_acq << std::endl;
-//        }
+        checkSynchronize( std::move( outputStream ),
+                          ref_sensorSpec,
+                          ref_acqs,
+                          std::move( outputStream2 ),
+                          ref_sensorSpec2,
+                          ref_acqs2,
+//                          std::move( inputStream ),
+//                          std::move( inputStream2 ),
+                          std::move( inputSyncStream ),
+                          true );
+
+//        while ()
+
+        //        assert( sync_acqs.size() == ref_sync_acqs.size() );
+        //        for ( int i = 0; i < ref_sync_acqs.size(); ++i ) {
+        //            const auto& sync_acq = sync_acqs.at( i );
+        //            CHECK( sync_acq == ref_sync_acqs.at( i ) );
+        //            std::cout << "receive sync acq : " << sync_acq << std::endl;
+        //        }
     }
-//#endif
     std::cout << "end output streams" << std::endl;
 }

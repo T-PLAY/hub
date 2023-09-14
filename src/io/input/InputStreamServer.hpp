@@ -121,8 +121,10 @@ inline void InputStreamServer::close() {
             auto acq = m_clientSocket.get<Acquisition>();
             m_clientSocket.read( message );
         }
-        assert( message == io::StreamInterface::ServerMessage::STREAM_VIEWER_CLOSED );
-        std::cout << "[InputStreamServer] stream viewer client closed" << std::endl;
+//        assert( message == io::StreamInterface::ServerMessage::STREAM_VIEWER_CLOSED );
+        assert( message == io::StreamInterface::ServerMessage::STREAMER_CLOSED );
+        std::cout << "[InputStreamServer] streamer client closed" << std::endl;
+//        std::cout << "[InputStreamServer] stream viewer client closed" << std::endl;
     }
 
     if ( m_clientSocket.isOpen() ) m_clientSocket.close();

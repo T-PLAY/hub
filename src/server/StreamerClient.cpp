@@ -104,14 +104,17 @@ StreamerClient::StreamerClient( Server* server,
     m_thread = std::thread( [this, sock = std::move( sock )]() mutable {
         try {
             io::StreamInterface::ClientMessage mess;
-            sock.read( mess );
-            if ( mess == io::StreamInterface::ClientMessage::STREAMER_CLIENT_CLOSED ) {
-                sock.write( io::StreamInterface::ServerMessage::STREAMER_CLOSED );
-//                assert(sock.isOpen());
-                sock.close();
-                throw net::Socket::exception( "output stream closed" );
-            }
-//            assert( mess == io::StreamInterface::ClientMessage::INIT_INPUT_SENSOR );
+            do {
+                sock.read( mess );
+                if ( mess == io::StreamInterface::ClientMessage::STREAMER_CLIENT_CLOSED ) {
+                    sock.write( io::StreamInterface::ServerMessage::STREAMER_CLOSED );
+                    //                assert(sock.isOpen());
+                    sock.close();
+                    throw net::Socket::exception( "output stream closed" );
+                }
+            } while ( mess != io::StreamInterface::ClientMessage::STREAMER_CLIENT_INIT_SENSOR );
+            assert( mess == io::StreamInterface::ClientMessage::STREAMER_CLIENT_INIT_SENSOR );
+
             m_inputSensor =
                 std::make_unique<hub::InputSensor>( InputStreamClient( std::move( sock ) ) );
             //                std::make_unique<hub::InputSensor>( InputStreamClient( sock ) );
@@ -151,7 +154,7 @@ StreamerClient::StreamerClient( Server* server,
         //        assert( m_server != nullptr );
         //        m_server->addStreamer( this );
 
-        m_server->newInputSensor(this);
+        m_server->newInputSensor( this );
 
         try {
 
@@ -199,8 +202,8 @@ std::string StreamerClient::headerMsg() const {
     return Client::headerMsg() + "[Streamer] ";
 }
 
-const hub::InputSensor * StreamerClient::getInputSensor() const {
-//    assert(m_inputSensor != nullptr);
+const hub::InputSensor* StreamerClient::getInputSensor() const {
+    //    assert(m_inputSensor != nullptr);
     return m_inputSensor.get();
 }
 
@@ -216,7 +219,7 @@ Acquisition StreamerClient::getLastAcq() const {
     return acq;
 }
 
-void StreamerClient::end(io::StreamInterface::ServerMessage message ) {
+void StreamerClient::end( io::StreamInterface::ServerMessage message ) {
     InputStreamClient& input = dynamic_cast<InputStreamClient&>( m_inputSensor->getInput() );
     assert( input.m_clientSocket.isOpen() );
     input.m_clientSocket.write( message );

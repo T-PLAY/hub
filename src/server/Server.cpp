@@ -127,13 +127,13 @@ void Server::asyncRun() {
 
 server::Client* Server::initClient( hub::net::ClientSocket&& sock, int iClient ) {
 
-//    hub::net::ClientSocket::Type clientType;
+    //    hub::net::ClientSocket::Type clientType;
     io::StreamInterface::ClientType clientType;
     sock.read( clientType );
 
     switch ( clientType ) {
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//    case hub::net::ClientSocket::Type::STREAMER: {
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //    case hub::net::ClientSocket::Type::STREAMER: {
     case io::StreamInterface::ClientType::STREAMER: {
         std::string streamName;
         sock.read( streamName );
@@ -152,12 +152,12 @@ server::Client* Server::initClient( hub::net::ClientSocket&& sock, int iClient )
         return new server::StreamerClient(
             this, iClient, std::move( sock ), std::move( streamName ) );
     }
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//    case hub::net::ClientSocket::Type::VIEWER:
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //    case hub::net::ClientSocket::Type::VIEWER:
     case io::StreamInterface::ClientType::VIEWER:
         return new server::ViewerClient( this, iClient, std::move( sock ) );
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//    case hub::net::ClientSocket::Type::STREAM_VIEWER: {
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //    case hub::net::ClientSocket::Type::STREAM_VIEWER: {
     case io::StreamInterface::ClientType::STREAM_VIEWER: {
         //        assert( m_server != nullptr );
         m_mtxStreamName2streamer.lock();
@@ -191,8 +191,8 @@ server::Client* Server::initClient( hub::net::ClientSocket&& sock, int iClient )
         m_mtxStreamName2streamer.unlock();
         return ret;
     }
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//    case hub::net::ClientSocket::Type::ASKER:
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //    case hub::net::ClientSocket::Type::ASKER:
     case io::StreamInterface::ClientType::ASKER:
         return new server::AskerClient( this, iClient, std::move( sock ) );
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -306,9 +306,11 @@ void Server::addViewer( server::ViewerClient* viewer ) {
         const auto& streamer   = pair.second;
 #endif
 
-        assert( streamer->getInputSensor() != nullptr );
-        // notify orphans first
-        viewer->notifyNewStreamer( streamName, streamer->getInputSensor()->getSpec() );
+        const auto* inputSensor = streamer->getInputSensor();
+        if ( inputSensor != nullptr ) {
+            //            assert( streamer->getInputSensor() != nullptr );
+            viewer->notifyNewStreamer( streamName, inputSensor->getSpec() );
+        }
     }
 
     ////    for ( const auto& [streamName, streamer] : m_streamName2streamer ) {
@@ -439,9 +441,13 @@ std::list<std::pair<std::string, hub::SensorSpec>> Server::listStreams() const {
         const auto& streamer   = pair.second;
 #endif
 
-        assert( streamer->getInputSensor() != nullptr );
-        const auto& sensorSpec = streamer->getInputSensor()->getSpec();
-        ret.push_back( std::make_pair( streamName, sensorSpec ) );
+        const auto* inputSensor = streamer->getInputSensor();
+
+        if ( inputSensor != nullptr ) {
+//            assert( streamer->getInputSensor() != nullptr );
+            const auto& sensorSpec = inputSensor->getSpec();
+            ret.push_back( std::make_pair( streamName, sensorSpec ) );
+        }
     }
     m_mtxStreamName2streamer.unlock();
     return ret;

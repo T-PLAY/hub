@@ -132,7 +132,8 @@ std::string StreamViewerClient::headerMsg() const {
 }
 
 void StreamViewerClient::update( const Acquisition& acq ) {
-    *m_outputSensor << acq;
+    if (m_outputSensor != nullptr)
+        *m_outputSensor << acq;
 }
 
 void StreamViewerClient::end( io::StreamInterface::ServerMessage message ) {
