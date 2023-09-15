@@ -329,13 +329,14 @@ static void _checkSynchronize( Output&& output,
 
     hub::OutputSensor outputSensor( sensorSpec, std::move( output ) );
     std::cout << "outputSensor created" << std::endl;
-    hub::InputSensor inputSensor( std::move( input ) );
-    std::cout << "inputSensor created" << std::endl;
 
     hub::OutputSensor outputSensor2( sensorSpec2, std::move( output2 ) );
     std::cout << "outputSensor2 created" << std::endl;
 //    hub::InputSensor inputSensor2( std::move( input2 ) );
 //    std::cout << "inputSensor2 created" << std::endl;
+
+    hub::InputSensor inputSensor( std::move( input ) );
+    std::cout << "inputSensor created" << std::endl;
 
     std::cout << "synching acqs" << std::endl;
     std::vector<hub::Acquisition> sync_acqs;

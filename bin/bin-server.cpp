@@ -33,20 +33,18 @@ int main( int argc, char* argv[] ) {
 
     hub::Server server;
     if ( maxClient != -1 ) { server.setMaxClients( maxClient ); }
-//    server.run();
-    server.asyncRun();
 
+    server.run();
 
-    std::cout << "Ctrl+C to exit" << std::endl;
-
-//    char c;
-    while ( getchar() != 27 ) { // ESC to quit
-//        getchar();
-        server.printStatus();
-//        std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
-    }
-
-    std::cout << "exiting" << std::endl;
+//    server.asyncRun();
+//    std::cout << "Ctrl+C to exit" << std::endl;
+////    char c;
+//    while ( getchar() != 27 ) { // ESC to quit
+////        getchar();
+//        server.printStatus();
+////        std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
+//    }
+//    std::cout << "exiting" << std::endl;
 
     return 0;
 }
