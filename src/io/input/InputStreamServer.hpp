@@ -108,10 +108,13 @@ inline void InputStreamServer::close() {
     }
 
     if ( m_readAcqWaiting ) {
-        while ( !m_streamerClosed && !m_streamViewerClientClosed ) {
+        int iTry = 0;
+        while ( !m_streamerClosed && !m_streamViewerClientClosed && iTry < 10 ) {
             std::cout << "[InputStreamServer] close() waiting for server/streamer closing" << std::endl;
             std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+            ++iTry;
         }
+        assert(iTry < 10);
     }
     else {
 

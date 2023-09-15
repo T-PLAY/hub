@@ -25,7 +25,7 @@ static std::string getHostname() {
 
 #if defined( WIN32 ) || defined( _WIN32 ) || defined( _WIN64 )
 //    temp = getenv( "COMPUTERNAME" );
-    char buff[256];
+//    char buff[256];
     //LPDWORD len;
     //int err = _dupenv_s((char**)&buff, &len, "COMPUTERNAME");
     //int err = gethostname( buff, 256 );
@@ -36,7 +36,7 @@ static std::string getHostname() {
     char name[255];
     //CString ip;
     std::string ip;
-    PHOSTENT hostinfo;
+//    PHOSTENT hostinfo;
     wVersionRequested = MAKEWORD( 2, 0 );
 
     if ( WSAStartup( wVersionRequested, &wsaData ) == 0 ) {

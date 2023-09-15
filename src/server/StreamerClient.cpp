@@ -112,6 +112,12 @@ StreamerClient::StreamerClient( Server* server,
                     sock.close();
                     throw net::Socket::exception( "output stream closed" );
                 }
+                else if (mess == io::StreamInterface::ClientMessage::STREAMER_CLIENT_INIT_SENSOR) {
+                    // do nothing
+                }
+                else {
+                    assert(false);
+                }
             } while ( mess != io::StreamInterface::ClientMessage::STREAMER_CLIENT_INIT_SENSOR );
             assert( mess == io::StreamInterface::ClientMessage::STREAMER_CLIENT_INIT_SENSOR );
 
@@ -234,10 +240,13 @@ bool StreamerClient::isPackedStream() const {
 }
 
 const std::set<hub::Acquisition>& StreamerClient::getPackedAcqs() const {
-    while ( m_packedAcqs.size() != m_nAcq ) {
+    int iTry = 0;
+    while ( m_packedAcqs.size() != m_nAcq && iTry < 10 ) {
         std::cout << headerMsg() << "waiting for all packed acqs" << std::endl;
         std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+        ++iTry;
     }
+    assert(iTry < 10);
     assert( m_packedAcqs.size() == m_nAcq );
     return m_packedAcqs;
 }

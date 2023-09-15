@@ -60,10 +60,12 @@ ViewerClient::~ViewerClient() {
         if ( !m_viewerClosed ) {
             m_socket.write( io::StreamInterface::ServerMessage::VIEWER_CLOSED );
         }
-        while ( !m_viewerClosed ) {
+        int iTry = 0;
+        while ( !m_viewerClosed && iTry < 10) {
             std::cout << "[ViewerClient] close() waiting for server/viewer closing" << std::endl;
             std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
         }
+        assert(iTry < 10);
 
         m_socket.close();
     }

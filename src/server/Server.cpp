@@ -44,12 +44,15 @@ Server::~Server() {
     SERVER_MSG( "~Server() connected clients ended" );
 
     m_mtxClients.lock();
-    while ( !m_clients.empty() ) {
+    int iTry = 0;
+    while ( !m_clients.empty() && iTry < 10 ) {
         SERVER_MSG( "waiting for clients ended (" << m_clients.size() << ")" );
         m_mtxClients.unlock();
         std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
         m_mtxClients.lock();
+        ++iTry;
     }
+    assert(iTry < 10);
     m_mtxClients.unlock();
     SERVER_MSG( "~Server() clients disconnected" );
 
@@ -344,13 +347,16 @@ void Server::delStreamer( server::StreamerClient* streamer ) {
         m_mtxSreamName2streamViewers.unlock();
 
         m_mtxSreamName2streamViewers.lock();
-        while ( !streamViewers.empty() ) {
+        int iTry = 0;
+        while ( !streamViewers.empty() && iTry < 10 ) {
             SERVER_MSG( "waiting for streamViewers closing : " << streamViewers.size()
                                                                << " still alive" );
             m_mtxSreamName2streamViewers.unlock();
             std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
             m_mtxSreamName2streamViewers.lock();
+            ++iTry;
         }
+        assert(iTry < 10);
         SERVER_MSG( "streamViewers all closed" );
     }
     m_mtxSreamName2streamViewers.unlock();

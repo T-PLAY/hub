@@ -73,11 +73,15 @@ StreamViewerClient::StreamViewerClient( Server* server,
     m_thread = new std::thread( [this, sock = std::move( sock )]() mutable {
         try {
             const hub::InputSensor* inputSensor;
+            int iTry = 0;
             while ( !m_ending &&
-                    ( inputSensor = m_server->getInputSensor( m_streamName ) ) == nullptr ) {
+                    ( inputSensor = m_server->getInputSensor( m_streamName ) ) == nullptr && iTry < 10 ) {
                 std::cout << headerMsg() << "waiting for inited inputSensor" << std::endl;
-                std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
+                std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+                ++iTry;
             }
+            assert(iTry < 10);
+
             if ( m_ending ) {
                 sock.write( hub::io::StreamInterface::ServerMessage::STREAM_VIEWER_CLOSED );
                 sock.close();
