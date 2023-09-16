@@ -7,7 +7,12 @@
 
 #include <io/Memory.hpp>
 
+
+
 TEST_CASE( "InputSensor test" ) {
+
+
+
 
     const int ref_offset    = 5;
     constexpr int ref_nAcqs = 10;
@@ -137,6 +142,22 @@ TEST_CASE( "InputSensor test" ) {
                  "---------------------"
               << std::endl;
 
+#ifdef HUB_BUILD_SERVER
+    auto outputSensor  = hub::OutputSensor(ref_sensorSpec, hub::output::OutputStream( FILE_NAME ));
+    auto outputSensor2 = hub::OutputSensor(ref_sensorSpec2, hub::output::OutputStream( FILE_NAME "2" ));
+    auto inputSensor   = hub::InputSensor(hub::input::InputStream( FILE_NAME ));
+    auto inputSensor2  = hub::InputSensor(hub::input::InputStream( FILE_NAME "2" ));
+
+        checkSynchronize( outputSensor.getOutput() ,
+                          ref_acqs,
+                          outputSensor2.getOutput() ,
+                          ref_acqs2,
+                          ref_sync_acqs,
+                          false,
+                          inputSensor.getInput(),
+                          inputSensor2.getInput()
+                      );
+#else
     {
         auto outputStream  = hub::output::OutputStream( FILE_NAME );
         auto outputStream2 = hub::output::OutputStream( FILE_NAME "2" );
@@ -154,6 +175,7 @@ TEST_CASE( "InputSensor test" ) {
                           ref_sync_acqs,
                           true );
     }
+#endif
 
     ///////////////////////////////////////////////////////////////////////////////////////////
 }

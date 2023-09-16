@@ -73,6 +73,7 @@ bool isValid( socket_fd sock ) {
 
 void closeSocket( socket_fd& sock ) {
     assert( sock != INVALID_SOCKET );
+//    std::cout  << "[net] closing socket: " << sock  << std::endl;
 
 #ifdef DEBUG_NET
     std::cout << getHeader() << "closeSocket(" << sock << ") close socket" << std::endl;

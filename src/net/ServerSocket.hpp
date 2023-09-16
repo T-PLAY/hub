@@ -27,6 +27,8 @@ class SRC_API ServerSocket : public Socket
     ///
     explicit ServerSocket( int port );
 
+    ~ServerSocket();
+
     ///
     /// \brief waitNewClient
     /// wait client connection.
@@ -34,6 +36,7 @@ class SRC_API ServerSocket : public Socket
     /// return client socket to communication with.
     ///
     ClientSocket waitNewClient();
+
 
   private:
     void initServer();

@@ -17,33 +17,22 @@
 
 TEST_CASE( "Server test : InputOutputSensor" ) {
     const auto hostname = hub::utils::getHostname();
-    //std::cout << "[test] tested on machine: '" << hostname << "'" << std::endl;
-    //return;
 
+    // initing datum
     constexpr int nAcqs       = 100;
     constexpr int width       = 1920;
     constexpr int height      = 1080;
     constexpr size_t dataSize = width * height * 3;
-    //    unsigned char* data       = new unsigned char[dataSize];
-    //    unsigned char* data2      = new unsigned char[dataSize];
+
     unsigned char* datas = new unsigned char[nAcqs * dataSize];
-    //    unsigned char* data2 = new unsigned char[dataSize];
 
     srand( (unsigned)time( NULL ) );
-    //    int port = rand() % 60000;
     std::vector<hub::Acquisition> acqs( nAcqs );
     for ( int i = 0; i < nAcqs; ++i ) {
         for ( int j = 0; j < dataSize; ++j ) {
-            //         datas[i] = i % 256;
-            //            datas[i * dataSize + j] = rand() % 256;
-            datas[i * dataSize + j] = 65 + i % 256;
+            datas[i * dataSize + j] = rand() % 256;
         }
     }
-
-    //    std::vector<hub::Acquisition> acqs( nAcqs );
-    //    for ( int i = 0; i < dataSize; ++i ) {
-    //        data[i] = i % 256;
-    //    }
 
     for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
         const unsigned char* data = &datas[iAcq * dataSize];
@@ -53,9 +42,8 @@ TEST_CASE( "Server test : InputOutputSensor" ) {
                                    { { width, height }, hub::Format::BGR8 } );
         acqs.at( iAcq ) = std::move( acq );
     }
+    // datum inited
 
-
-//    double megaBytesPerSeconds2;
 
     // raw socket
     double megaBytesPerSecondsClientSocket;
@@ -68,15 +56,14 @@ TEST_CASE( "Server test : InputOutputSensor" ) {
         hub::net::ClientSocket clientSocket( ipv4, port );
         auto clientServerSocket = serverSocket.waitNewClient();
 #ifdef OS_MACOS
-        const int packetSize    = 2'000'000; // 2Go network memory buffer Linux, Win
+        const int packetSize    = 100'000; // 100Mo network memory buffer MacOS, Mac Mini M2
 #else
-        const int packetSize    = 400'000; // 400Mo network memory buffer MacOS, Mac Mini M2
+        const int packetSize    = 2'000'000; // 2Go network memory buffer Linux, Win
 #endif
         const int nPart         = dataSize / packetSize;
 	std::cout << "[test][ClientSocket] nPart: " << nPart << " of " << packetSize / 1000.0 << " Mo" << std::endl;
 
         unsigned char* dataIn = new unsigned char[dataSize];
-
         const auto& start = std::chrono::high_resolution_clock::now();
         {
             for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
@@ -105,10 +92,13 @@ TEST_CASE( "Server test : InputOutputSensor" ) {
                 clientSocket.write( data + uploadSize, dataSize - uploadSize );
                 clientServerSocket.read( dataIn + uploadSize, dataSize - uploadSize );
 
-                assert( !memcmp( data, dataIn, dataSize ) );
+//                assert( !memcmp( data, dataIn, dataSize ) );
+                CHECK( memcmp( data, dataIn, dataSize ) == 0 );
             }
         }
         const auto& end = std::chrono::high_resolution_clock::now();
+        delete [] dataIn;
+
         std::cout << "[test][ClientSocket] end streaming" << std::endl;
         const auto& duration =
             std::chrono::duration_cast<std::chrono::milliseconds>( end - start ).count();
@@ -326,28 +316,27 @@ TEST_CASE( "Server test : InputOutputSensor" ) {
     std::cout << std::endl;
 
     std::cout << "######################################## RESUME ########################################" << std::endl;
-    std::cout << std::endl;
 
-    std::cout << "[test][ClientSocket] Mega byte per second : " << megaBytesPerSecondsClientSocket
-              << " Mo/s" << std::endl;
+//    std::cout << std::endl;
+    REPORT( "[test][ClientSocket] Mega byte per second : " << megaBytesPerSecondsClientSocket
+                                                           << " Mo/s");
 #ifdef HUB_TESTS_MQTT_FOUND
-    std::cout << "[test][Mqtt] Mega byte per second : " << megaBytesPerSecondsMqtt << " Mo/s"
-              << std::endl;
+    REPORT("[test][Mqtt] Mega byte per second : " << megaBytesPerSecondsMqtt << " Mo/s");
 #endif
 
     for ( int i = 0; i < (int)Implement::COUNT; ++i ) {
         const auto implement     = Implement( i );
         const auto implementStr  = implements2string[(int)implement];
         const std::string header = "[test][" + implementStr + "Impl] ";
-        std::cout << header << "Mega byte per second : " << megaBytesPerSecondsImpls[(int)implement] << " Mo/s"
-              << std::endl;
+        REPORT( header << "Mega byte per second : " << megaBytesPerSecondsImpls[(int)implement] << " Mo/s");
     }
 
 
     //    std::cout << "[test][InputOutputSensor] Mega byte per second : " << megaBytesPerSeconds2
     //              << " Mo/s" << std::endl;
 
-    std::cout << std::endl;
+//    std::cout << std::endl;
+    REPORT_NEW_LINE;
 
     double megaBytesPerSecondsServerImpl = megaBytesPerSecondsImpls[(int)Implement::SERVER];
 #ifdef HUB_BUILD_MQTT
@@ -401,8 +390,8 @@ TEST_CASE( "Server test : InputOutputSensor" ) {
     checkRatio(ratio, 4, 4, "MqttImpl/ClientSocket");
 
     ratio = 100.0 * megaBytesPerSecondsMqttImpl / megaBytesPerSecondsMqtt;
-    std::cout << "[MqttImpl/Mqtt] ratio : " << ratio << " %" << std::endl;
-//    checkRatio(ratio, 50, 15);
+//    REPORT("[MqttImpl/Mqtt] ratio : " << ratio << " %");
+    checkRatio(ratio, 50, 50, "MqttImpl/Mqtt");
 #endif
 
     std::cout << std::endl;
@@ -410,23 +399,27 @@ TEST_CASE( "Server test : InputOutputSensor" ) {
 #ifdef HUB_BUILD_SERVER
 #ifdef HUB_TESTS_MQTT_FOUND
     ratio = 100.0 * megaBytesPerSecondsMqtt / megaBytesPerSecondsServerImpl;
-    std::cout << "[Mqtt/Hub] ratio : " << ratio << " %" << std::endl;
+//    REPORT("[Mqtt/Hub] ratio : " << ratio << " %");
+    checkRatio(ratio, 50, 50, "Mqtt/Hub");
+
 #endif
 //    checkRatio(ratio, 5, 5);
 
 #ifdef HUB_BUILD_MQTT
     ratio = 100.0 * megaBytesPerSecondsMqttImpl / megaBytesPerSecondsServerImpl;
-    std::cout << "[MqttImpl/Hub] ratio : " << ratio << " %" << std::endl;
+//    REPORT("[MqttImpl/Hub] ratio : " << ratio << " %");
 //    checkRatio(ratio, 12, 5);
+    checkRatio(ratio, 50, 50, "MqttImpl/Hub");
 #endif
 
-    std::cout << std::endl;
+//    std::cout << std::endl;
+    REPORT_NEW_LINE;
 
 #ifdef HUB_TESTS_MQTT_FOUND
-    std::cout << "Hub server is " << megaBytesPerSecondsImpls[(int)Implement::SERVER] / megaBytesPerSecondsMqtt << " more efficient than raw mqtt stream (Qos = 0 -> can lost packet)" << std::endl;
+    REPORT( "Hub server is " << megaBytesPerSecondsImpls[(int)Implement::SERVER] / megaBytesPerSecondsMqtt << " more efficient than raw mqtt stream (Qos = 0 -> can lost packet)");
 #endif
 #ifdef HUB_BUILD_MQTT
-    std::cout << "Hub server is " << megaBytesPerSecondsImpls[(int)Implement::SERVER] / megaBytesPerSecondsImpls[(int)Implement::MQTT] << " more efficient than mqtt implement (Qos = 2 -> no loss)" << std::endl;
+    REPORT("Hub server is " << megaBytesPerSecondsImpls[(int)Implement::SERVER] / megaBytesPerSecondsImpls[(int)Implement::MQTT] << " more efficient than mqtt implement (Qos = 2 -> no loss)");
 #endif
 #endif
 

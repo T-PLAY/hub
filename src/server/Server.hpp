@@ -63,7 +63,7 @@ class SRC_API Server
     server::Client* initClient( hub::net::ClientSocket&& sock, int iClient );
 
     void addStreamer( server::StreamerClient* streamer );
-    void newInputSensor(server::StreamerClient *streamer );
+//    void newInputSensor(server::StreamerClient *streamer );
     void addStreamViewer( server::StreamViewerClient* streamViewer );
     void addViewer( server::ViewerClient* viewer );
 

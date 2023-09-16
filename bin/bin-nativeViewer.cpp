@@ -40,6 +40,7 @@ int main( int argc, char* argv[] ) {
     };
     auto onServerNotFound = []( const char* ipv4, int port ) {
         std::cout << HEADER_MSG "onServerNotFound : " << ipv4 << " " << port << std::endl;
+        if ( exitWhenServerLost ) { exit = true; }
     };
     auto onServerConnected = []( const char* ipv4, int port ) {
         std::cout << HEADER_MSG "onServerConnected : " << ipv4 << " " << port << std::endl;

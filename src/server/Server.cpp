@@ -249,28 +249,28 @@ void Server::addStreamer( server::StreamerClient* streamer ) {
     assert( m_streamName2streamer.find( streamName ) == m_streamName2streamer.end() );
     m_streamName2streamer[streamName] = streamer;
 
-    //    SERVER_MSG( "prevent viewers there is a new streamer : '" << streamName << "'" );
-    //    m_mtxViewers.lock();
-    //    assert(streamer->getInputSensor() != nullptr);
-    //    for ( const auto& viewer : m_viewers ) {
-    //        viewer->notifyNewStreamer( streamName, streamer->getInputSensor()->getSpec() );
-    //    }
-    //    m_mtxViewers.unlock();
+        SERVER_MSG( "prevent viewers there is a new streamer : '" << streamName << "'" );
+        m_mtxViewers.lock();
+//        assert(streamer->getInputSensor() != nullptr);
+        for ( const auto& viewer : m_viewers ) {
+            viewer->notifyNewStreamer( streamName, streamer->getInputSensor()->getSpec() );
+        }
+        m_mtxViewers.unlock();
 
     streamer->printStatusMessage( "new streamer" );
 }
 
-void Server::newInputSensor( server::StreamerClient* streamer ) {
-    const auto& streamName = streamer->getStreamName();
+//void Server::newInputSensor( server::StreamerClient* streamer ) {
+//    const auto& streamName = streamer->getStreamName();
 
-    SERVER_MSG( "prevent viewers there is a new streamer : '" << streamName << "'" );
-    m_mtxViewers.lock();
-    //    assert(inputSensor);
-    for ( const auto& viewer : m_viewers ) {
-        viewer->notifyNewStreamer( streamName, streamer->getInputSensor()->getSpec() );
-    }
-    m_mtxViewers.unlock();
-}
+//    SERVER_MSG( "prevent viewers there is a new streamer : '" << streamName << "'" );
+//    m_mtxViewers.lock();
+//    //    assert(inputSensor);
+//    for ( const auto& viewer : m_viewers ) {
+//        viewer->notifyNewStreamer( streamName, streamer->getInputSensor()->getSpec() );
+//    }
+//    m_mtxViewers.unlock();
+//}
 
 void Server::addStreamViewer( server::StreamViewerClient* streamViewer ) {
     const auto& streamName = streamViewer->m_streamName;
@@ -310,10 +310,10 @@ void Server::addViewer( server::ViewerClient* viewer ) {
 #endif
 
         const auto* inputSensor = streamer->getInputSensor();
-        if ( inputSensor != nullptr ) {
+//        if ( inputSensor != nullptr ) {
             //            assert( streamer->getInputSensor() != nullptr );
             viewer->notifyNewStreamer( streamName, inputSensor->getSpec() );
-        }
+//        }
     }
 
     ////    for ( const auto& [streamName, streamer] : m_streamName2streamer ) {
@@ -362,12 +362,12 @@ void Server::delStreamer( server::StreamerClient* streamer ) {
     m_mtxSreamName2streamViewers.unlock();
 
     m_mtxViewers.lock();
-    if ( streamer->getInputSensor() != nullptr ) {
-        assert( streamer->getInputSensor() != nullptr );
+//    if ( streamer->getInputSensor() != nullptr ) {
+//        assert( streamer->getInputSensor() != nullptr );
         for ( auto* viewer : m_viewers ) {
             viewer->notifyDelStreamer( streamName, streamer->getInputSensor()->getSpec() );
         }
-    }
+//    }
     m_mtxViewers.unlock();
 
     m_mtxPrint.lock();
@@ -449,11 +449,11 @@ std::list<std::pair<std::string, hub::SensorSpec>> Server::listStreams() const {
 
         const auto* inputSensor = streamer->getInputSensor();
 
-        if ( inputSensor != nullptr ) {
+//        if ( inputSensor != nullptr ) {
 //            assert( streamer->getInputSensor() != nullptr );
             const auto& sensorSpec = inputSensor->getSpec();
             ret.push_back( std::make_pair( streamName, sensorSpec ) );
-        }
+//        }
     }
     m_mtxStreamName2streamer.unlock();
     return ret;

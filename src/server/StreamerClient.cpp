@@ -96,72 +96,66 @@ StreamerClient::StreamerClient( Server* server,
     std::cout << "[StreamerClient] StreamerClient() m_clientSocket : " << &sock << std::endl;
     std::cout << headerMsg() << "StreamerClient() start" << std::endl;
 
+//    try {
+//        io::StreamInterface::ClientMessage mess;
+//        do {
+//            sock.read( mess );
+//            if ( mess == io::StreamInterface::ClientMessage::STREAMER_CLIENT_CLOSED ) {
+//                sock.write( io::StreamInterface::ServerMessage::STREAMER_CLOSED );
+//                //                assert(sock.isOpen());
+//                sock.close();
+//                throw net::Socket::exception( "output stream closed" );
+//            }
+//            else if ( mess == io::StreamInterface::ClientMessage::STREAMER_CLIENT_INIT_SENSOR ) {
+//                // do nothing
+//            }
+//            else { assert( false ); }
+//        } while ( mess != io::StreamInterface::ClientMessage::STREAMER_CLIENT_INIT_SENSOR );
+//        assert( mess == io::StreamInterface::ClientMessage::STREAMER_CLIENT_INIT_SENSOR );
+
+        m_inputSensor =
+            std::make_unique<hub::InputSensor>( InputStreamClient( std::move( sock ) ) );
+        //                std::make_unique<hub::InputSensor>( InputStreamClient( sock ) );
+//    }
+//    catch ( hub::net::Socket::exception& e ) {
+//        std::cout << headerMsg() << "InputSensor() : catch exception : " << e.what() << std::endl;
+//        std::thread( [this]() { delete this; } ).detach();
+//        //            throw e;
+//        return;
+//    }
+
+    std::cout << headerMsg() << "stream name = '" << m_streamName << "'" << std::endl;
+
+    const auto& sensorSpec = m_inputSensor->getSpec();
+
+    const size_t acquisitionSize = sensorSpec.getAcquisitionSize();
+    std::cout << headerMsg() << "sensor name:'" << sensorSpec.getSensorName() << "'" << std::endl;
+    std::cout << headerMsg() << "acquisitionSize:" << acquisitionSize << std::endl;
+    std::cout << headerMsg() << "resolutions:" << sensorSpec.getResolutions() << std::endl;
+
+    const auto& metaData = sensorSpec.getMetaData();
+    for ( const auto& pair : metaData ) {
+        std::cout << headerMsg() << "metaData: " << hub::SensorSpec::to_string( pair ) << std::endl;
+        ////            mesh.printStats();
+    }
+    if ( metaData.find( "nAcq" ) != metaData.end() ) {
+        std::cout << headerMsg() << "type detected : packed stream" << std::endl;
+        m_nAcq           = metaData.at( "nAcq" ).getInt();
+        m_isPackedStream = true;
+    }
+
+    //        // get record acqs before prevent viewer
+    //        // std::this_thread::sleep_for( std::chrono::milliseconds( 200 ) );
+    //        assert( m_server != nullptr );
+    //        m_server->addStreamer( this );
+
     // get record acqs before prevent viewer
     // std::this_thread::sleep_for( std::chrono::milliseconds( 200 ) );
     assert( m_server != nullptr );
     m_server->addStreamer( this );
 
+    //        m_server->newInputSensor( this );
     m_thread = std::thread( [this, sock = std::move( sock )]() mutable {
-        try {
-            io::StreamInterface::ClientMessage mess;
-            do {
-                sock.read( mess );
-                if ( mess == io::StreamInterface::ClientMessage::STREAMER_CLIENT_CLOSED ) {
-                    sock.write( io::StreamInterface::ServerMessage::STREAMER_CLOSED );
-                    //                assert(sock.isOpen());
-                    sock.close();
-                    throw net::Socket::exception( "output stream closed" );
-                }
-                else if (mess == io::StreamInterface::ClientMessage::STREAMER_CLIENT_INIT_SENSOR) {
-                    // do nothing
-                }
-                else {
-                    assert(false);
-                }
-            } while ( mess != io::StreamInterface::ClientMessage::STREAMER_CLIENT_INIT_SENSOR );
-            assert( mess == io::StreamInterface::ClientMessage::STREAMER_CLIENT_INIT_SENSOR );
-
-            m_inputSensor =
-                std::make_unique<hub::InputSensor>( InputStreamClient( std::move( sock ) ) );
-            //                std::make_unique<hub::InputSensor>( InputStreamClient( sock ) );
-        }
-        catch ( hub::net::Socket::exception& e ) {
-            std::cout << headerMsg() << "InputSensor() : catch exception : " << e.what()
-                      << std::endl;
-            std::thread( [this]() { delete this; } ).detach();
-            //            throw e;
-            return;
-        }
-
-        std::cout << headerMsg() << "stream name = '" << m_streamName << "'" << std::endl;
-
-        const auto& sensorSpec = m_inputSensor->getSpec();
-
-        const size_t acquisitionSize = sensorSpec.getAcquisitionSize();
-        std::cout << headerMsg() << "sensor name:'" << sensorSpec.getSensorName() << "'"
-                  << std::endl;
-        std::cout << headerMsg() << "acquisitionSize:" << acquisitionSize << std::endl;
-        std::cout << headerMsg() << "resolutions:" << sensorSpec.getResolutions() << std::endl;
-
-        const auto& metaData = sensorSpec.getMetaData();
-        for ( const auto& pair : metaData ) {
-            std::cout << headerMsg() << "metaData: " << hub::SensorSpec::to_string( pair )
-                      << std::endl;
-            ////            mesh.printStats();
-        }
-        if ( metaData.find( "nAcq" ) != metaData.end() ) {
-            std::cout << headerMsg() << "type detected : packed stream" << std::endl;
-            m_nAcq           = metaData.at( "nAcq" ).getInt();
-            m_isPackedStream = true;
-        }
-
-        //        // get record acqs before prevent viewer
-        //        // std::this_thread::sleep_for( std::chrono::milliseconds( 200 ) );
-        //        assert( m_server != nullptr );
-        //        m_server->addStreamer( this );
-
-        m_server->newInputSensor( this );
-
         try {
 
             while ( m_inputSensor->getInput().isOpen() ) {
@@ -209,7 +203,7 @@ std::string StreamerClient::headerMsg() const {
 }
 
 const hub::InputSensor* StreamerClient::getInputSensor() const {
-    //    assert(m_inputSensor != nullptr);
+    assert( m_inputSensor != nullptr );
     return m_inputSensor.get();
 }
 
@@ -246,7 +240,7 @@ const std::set<hub::Acquisition>& StreamerClient::getPackedAcqs() const {
         std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
         ++iTry;
     }
-    assert(iTry < 10);
+    assert( iTry < 10 );
     assert( m_packedAcqs.size() == m_nAcq );
     return m_packedAcqs;
 }

@@ -39,8 +39,9 @@ int main( int argc, char* argv[] ) {
     auto onDelStreamer = []( const std::string& streamName, const hub::SensorSpec& sensorSpec ) {
         std::cout << HEADER_MSG "onDelStreamer : " << streamName << std::endl;
     };
-    auto onServerNotFound = []( const std::string& ipv4, int port ) {
+    auto onServerNotFound = [&]( const std::string& ipv4, int port ) {
         std::cout << HEADER_MSG "onServerNotFound : " << ipv4 << " " << port << std::endl;
+        if ( exitWhenServerLost ) { exit = true; }
     };
     auto onServerConnected = []( const std::string& ipv4, int port ) {
         std::cout << HEADER_MSG "onServerConnected : " << ipv4 << " " << port << std::endl;

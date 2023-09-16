@@ -39,6 +39,9 @@ file(GLOB_RECURSE test_srcs *.cpp)
 list(REMOVE_ITEM test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/test-end.cpp)
 list(APPEND test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/test-end.cpp)
 
+list(REMOVE_ITEM test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/test-start.cpp)
+list(PREPEND test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/test-start.cpp)
+
 find_package(PahoMqttCpp QUIET)
 #find_package(PahoMqttCpp QUIET NO_DEFAULT_PATH)
 if (PahoMqttCpp_FOUND)

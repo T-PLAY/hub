@@ -17,6 +17,12 @@ ServerSocket::ServerSocket( int port ) : mPort( port ) {
     initServer();
 }
 
+ServerSocket::~ServerSocket()
+{
+    assert(net::utils::isValid( m_fdSock ));
+    net::utils::closeSocket( m_fdSock );
+}
+
 ClientSocket ServerSocket::waitNewClient() {
 
 #ifdef DEBUG_SOCKET

@@ -13,29 +13,34 @@
 TEST_CASE( "Server test : viewer" ) {
     const auto hostname = hub::utils::getHostname();
 
+    // initing datum
     constexpr int nAcqs       = 100;
     constexpr int width       = 1920;
     constexpr int height      = 1080;
     constexpr size_t dataSize = width * height * 3;
-    unsigned char* data       = new unsigned char[dataSize];
-    unsigned char* data2      = new unsigned char[dataSize];
 
+    unsigned char* datas = new unsigned char[nAcqs * dataSize];
+
+    srand( (unsigned)time( NULL ) );
     std::vector<hub::Acquisition> acqs( nAcqs );
+    for ( int i = 0; i < nAcqs; ++i ) {
+        for ( int j = 0; j < dataSize; ++j ) {
+            datas[i * dataSize + j] = rand() % 256;
+        }
+    }
 
     for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
-        for ( int i = 0; i < dataSize; ++i ) {
-            data[i] = iAcq % 256;
-        }
+        const unsigned char* data = &datas[iAcq * dataSize];
         hub::Acquisition acq( iAcq, iAcq );
         acq << hub::Measure( reinterpret_cast<unsigned const char*>( data ),
                                    dataSize,
                                    { { width, height }, hub::Format::BGR8 } );
         acqs.at( iAcq ) = std::move( acq );
     }
+    // datum inited
 
-    double megaBytesPerSeconds;
-    double megaBytesPerSeconds2;
-
+    // raw socket
+    double megaBytesPerSecondClientSocket;
     {
         const std::string ipv4 = "127.0.0.1";
         const int port         = GET_RANDOM_PORT;
@@ -44,41 +49,51 @@ TEST_CASE( "Server test : viewer" ) {
         hub::net::ServerSocket serverSocket( port );
         hub::net::ClientSocket clientSocket( ipv4, port );
         auto clientServerSocket = serverSocket.waitNewClient();
-        //const int packetSize    = 2'000'000; // 2Go network memory buffer
-        const int packetSize    = 500'000; // 500Mo network memory buffer MacOS
+#ifdef OS_MACOS
+        const int packetSize    = 100'000; // 100Mo network memory buffer MacOS, Mac Mini M2
+#else
+        const int packetSize    = 2'000'000; // 2Go network memory buffer Linux, Win
+#endif
         const int nPart         = dataSize / packetSize;
+
+        unsigned char* dataIn = new unsigned char[dataSize];
         const auto& start       = std::chrono::high_resolution_clock::now();
         {
             for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
                 int uploadSize = 0;
+                const unsigned char* data = &datas[iAcq * dataSize];
 
                 for ( int i = 0; i < nPart - 1; ++i ) {
                     clientSocket.write( data + uploadSize, packetSize );
-                    clientServerSocket.read( data2 + uploadSize, packetSize );
+                    clientServerSocket.read( dataIn + uploadSize, packetSize );
 
                     uploadSize += packetSize;
                 }
 
                 clientSocket.write( data + uploadSize, dataSize - uploadSize );
-                clientServerSocket.read( data2 + uploadSize, dataSize - uploadSize );
+                clientServerSocket.read( dataIn + uploadSize, dataSize - uploadSize );
 
-                assert( !memcmp( data, data2, dataSize ) );
+//                assert( !memcmp( data, dataIn, dataSize ) );
+                CHECK( memcmp( data, dataIn, dataSize ) == 0 );
             }
         }
         const auto& end = std::chrono::high_resolution_clock::now();
+        delete [] dataIn;
+
         std::cout << "[test][ClientSocket] end streaming" << std::endl;
         const auto& duration =
             std::chrono::duration_cast<std::chrono::milliseconds>( end - start ).count();
         const auto& bytes           = dataSize * nAcqs;
         const auto& bytesPerSeconds = 1000.0 * bytes / duration;
-        megaBytesPerSeconds         = bytesPerSeconds / 1000'000.0;
+        megaBytesPerSecondClientSocket         = bytesPerSeconds / 1000'000.0;
 
         std::cout << "[test][ClientSocket] Mega byte wrote : " << bytes / 1000'000.0 << " Mo"
                   << std::endl;
-        std::cout << "[test][ClientSocket] Mega byte per second : " << megaBytesPerSeconds
+        std::cout << "[test][ClientSocket] Mega byte per second : " << megaBytesPerSecondClientSocket
                   << " Mo/s" << std::endl;
     }
 
+    double megaBytesPerSecondViewer;
     {
         //        const int port2 = port + 1;
 
@@ -216,12 +231,12 @@ TEST_CASE( "Server test : viewer" ) {
                     std::chrono::duration_cast<std::chrono::milliseconds>( end2 - start2 ).count();
                 const auto& bytes2           = dataSize * nAcqs;
                 const auto& bytesPerSeconds2 = 1000.0 * bytes2 / duration2;
-                megaBytesPerSeconds2         = bytesPerSeconds2 / 1000'000.0;
+                megaBytesPerSecondViewer         = bytesPerSeconds2 / 1000'000.0;
 
                 std::cout << "[test][InputOutputSensor] Mega byte wrote : " << bytes2 / 1000'000.0
                           << " Mo" << std::endl;
                 std::cout << "[test][InputOutputSensor] Mega byte per second : "
-                          << megaBytesPerSeconds2 << " Mo/s" << std::endl;
+                          << megaBytesPerSecondViewer << " Mo/s" << std::endl;
 
                 // todo : add read acq timeout to exit infinite loop in detached thread
                 nAcqSended = 0;
@@ -236,17 +251,22 @@ TEST_CASE( "Server test : viewer" ) {
         } // end outputSensor
     }
 
-    std::cout << std::endl;
+//    std::cout << std::endl;
+//    std::cout << "[test][ClientSocket] Mega byte per second : " << megaBytesPerSecondClientSocket << " Mo/s"
+//              << std::endl;
+    REPORT( "[test][ClientSocket] Mega bytes per second : " << megaBytesPerSecondClientSocket
+                                                           << " Mo/s");
+    REPORT( "[test][Viewer] Mega bytes per second : " << megaBytesPerSecondViewer
+                                                           << " Mo/s");
+//    std::cout << "[test][InputOutputSensor] Mega byte per second : " << megaBytesPerSecondViewer
+//              << " Mo/s" << std::endl;
 
-    std::cout << "[test][ClientSocket] Mega byte per second : " << megaBytesPerSeconds << " Mo/s"
-              << std::endl;
-    std::cout << "[test][InputOutputSensor] Mega byte per second : " << megaBytesPerSeconds2
-              << " Mo/s" << std::endl;
+//    std::cout << std::endl;
+    REPORT_NEW_LINE;
 
-    std::cout << std::endl;
-
-    const auto ratio = 100.0 * megaBytesPerSeconds2 / megaBytesPerSeconds;
-    std::cout << "[test][ClientSocket/InputOutputSensor] ratio : " << ratio << " %" << std::endl;
+    const auto ratio = 100.0 * megaBytesPerSecondViewer / megaBytesPerSecondClientSocket;
+//    std::cout << "[test][ClientSocket/InputOutputSensor] ratio : " << ratio << " %" << std::endl;
+    checkRatio(ratio, 50, 50, "Viewer/ClientSocket");
 
     // #ifdef WIN32
     // #    ifdef DEBUG
@@ -267,6 +287,6 @@ TEST_CASE( "Server test : viewer" ) {
 
     std::cout << "[test] tested on machine: '" << hostname << "'" << std::endl;
 
-    delete[] data;
-    delete[] data2;
+    delete[] datas;
+//    delete[] data2;
 }

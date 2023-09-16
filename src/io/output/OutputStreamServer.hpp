@@ -77,7 +77,7 @@ inline void OutputStreamServer::write( const Acquisition& acq ) {
 
 inline void OutputStreamServer::write(const SensorSpec &sensorSpec)
 {
-    Output::write( io::StreamInterface::ClientMessage::STREAMER_CLIENT_INIT_SENSOR );
+//    Output::write( io::StreamInterface::ClientMessage::STREAMER_CLIENT_INIT_SENSOR );
     Output::write( sensorSpec );
 }
 
