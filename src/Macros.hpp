@@ -131,9 +131,6 @@
 // Debug log message.
 // ----------------------------------------------------------------------------
 
-// if ( !s_logFile.is_open() ){ \
-// 			} \
-// 			assert( s_logFile.is_open() ); \
 
 // #if SRC_EXPORTS
 #define ENABLE_DEBUG_MSG

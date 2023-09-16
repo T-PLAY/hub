@@ -83,13 +83,15 @@ static std::string s_latestFilename = "";
             s_latestFilename = filename; \
             file << std::endl; \
             file << "----------------------------------" << testName << "----------------------------------------------" << std::endl; \
+            file << std::endl; \
+            file << std::endl; \
         } \
         file << _params << std::endl; \
         file.close(); \
     } while ( false );
 
-#define REPORT( _params )  _REPORT(_params, __FILE_NAME__, __LINE__)
-#define REPORT_NEW_LINE  _REPORT("", __FILE_NAME__, __LINE__)
+#define REPORT( _params )  _REPORT(_params, FILE_NAME, __LINE__)
+#define REPORT_NEW_LINE  _REPORT("", FILE_NAME, __LINE__)
 
 static void _checkRatio( double ratio,
                          int compare,

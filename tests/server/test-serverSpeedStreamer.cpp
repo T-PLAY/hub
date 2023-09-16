@@ -48,8 +48,11 @@ TEST_CASE( "Server speed test : streamer" ) {
         hub::net::ServerSocket serverSocket( port );
         hub::net::ClientSocket clientSocket( ipv4, port );
         auto clientServerSocket = serverSocket.waitNewClient();
-        //const int packetSize    = 2'000'000; // 2Go network memory buffer
-        const int packetSize    = 500'000; // 500Mo network memory buffer MacOS
+#ifdef OS_MACOS
+        const int packetSize    = 100'000; // 100Mo network memory buffer MacOS, Mac Mini M2
+#else
+        const int packetSize    = 2'000'000; // 2Go network memory buffer Linux, Win
+#endif
         const int nPart         = dataSize / packetSize;
 
         unsigned char* dataIn = new unsigned char[dataSize];

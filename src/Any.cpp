@@ -135,7 +135,7 @@ const std::string& Any::getStdString() const {
     assert( m_type == Type::STRING );
     return m_std_string;
 }
-const char* const Any::getConstCharPtr() const {
+const char* Any::getConstCharPtr() const {
     assert( m_type == Type::CONST_CHAR_PTR );
     return m_const_char_ptr;
 }

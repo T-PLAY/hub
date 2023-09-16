@@ -60,6 +60,9 @@ TEST_CASE( "Server test : viewer" ) {
         const auto& start       = std::chrono::high_resolution_clock::now();
         {
             for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
+#ifdef OS_MACOS
+        std::cout << "[test][ClientSocket] send acq " << iAcq << std::endl;
+#endif
                 int uploadSize = 0;
                 const unsigned char* data = &datas[iAcq * dataSize];
 

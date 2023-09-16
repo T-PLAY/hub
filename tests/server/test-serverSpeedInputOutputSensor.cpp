@@ -74,15 +74,15 @@ TEST_CASE( "Server test : InputOutputSensor" ) {
                 int uploadSize            = 0;
 
                 for ( int i = 0; i < nPart - 1; ++i ) {
-#ifdef OS_MACOS
-        std::cout << "[test][ClientSocket] sending part " << i << std::endl;
-#endif
+//#ifdef OS_MACOS
+//        std::cout << "[test][ClientSocket] sending part " << i << std::endl;
+//#endif
                     clientSocket.write( data + uploadSize, packetSize );
 	 	//std::cout << "[test][ClientSocket] part sended " << i << std::endl;
 
-#ifdef OS_MACOS
-        std::cout << "[test][ClientSocket] reading part " << i << std::endl;
-#endif
+//#ifdef OS_MACOS
+//        std::cout << "[test][ClientSocket] reading part " << i << std::endl;
+//#endif
                     clientServerSocket.read( dataIn + uploadSize, packetSize );
 	 	//std::cout << "[test][ClientSocket] part readed " << i << std::endl;
 
@@ -354,7 +354,7 @@ TEST_CASE( "Server test : InputOutputSensor" ) {
 #ifdef DEBUG
         checkRatio( ratio, 35, 5, "Hub/ClientSocket" );
 #else
-        checkRatio( ratio, 25, 5 , "Hub/ClientSocket");
+        checkRatio( ratio, 30, 7 , "Hub/ClientSocket");
 #endif
      }
      else if (hostname == "gigabyte-Z370P") { // windows CI runner

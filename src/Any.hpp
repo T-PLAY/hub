@@ -109,7 +109,7 @@ class SRC_API Any
     /// \brief getConstCharPtr
     /// \return
     ///
-    const char* const getConstCharPtr() const;
+    const char* getConstCharPtr() const;
 
     ///
     /// \brief getMat4

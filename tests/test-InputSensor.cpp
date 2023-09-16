@@ -79,6 +79,7 @@ TEST_CASE( "InputSensor test" ) {
         std::vector<char> buff2;
         hub::output::OutputMemory<decltype( buff2 )> outputMemory2( buff2 );
         hub::input::InputMemory<decltype( buff2 )> inputMemory2( buff2 );
+        int a;
 
         checkSynchronize( std::move( outputMemory ),
                           ref_sensorSpec,
