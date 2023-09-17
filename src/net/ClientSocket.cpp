@@ -222,7 +222,11 @@ void ClientSocket::read( unsigned char* data, const size_t len ) {
         assert( 0 <= len - downloadSize && len - downloadSize <= len );
         int64_t byteRead = net::utils::recv(
             m_fdSock, reinterpret_cast<char*>( data ) + downloadSize, len - downloadSize, 0 );
-        assert( -1 <= byteRead && byteRead <= len );
+        if ( !(-1 <= byteRead && byteRead <= len) ) {
+
+            std::cerr << "wring byteRead: " << byteRead << std::endl;
+//            assert( -1 <= byteRead && byteRead <= len );
+        }
 
         if ( byteRead == -1 ) {
 #ifdef DEBUG_SOCKET

@@ -216,7 +216,7 @@ TEST_CASE( "Native test" ) {
                 hub::output::OutputStream( ref_streamName ) );
 
             while ( nStreamerInited == 0 ) {
-                std::cout << "[Test] wating for acq received" << std::endl;
+                std::cout << "[Test] waiting for streamer inited" << std::endl;
                 std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
             }
 
@@ -226,7 +226,7 @@ TEST_CASE( "Native test" ) {
 
             while ( nReceiveAcq == 0 ) {
                 //                *outputSensor << ref_acq;
-                std::cout << "[Test] wating for acq received" << std::endl;
+                std::cout << "[Test] waiting for acq received" << std::endl;
                 std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
             }
 
