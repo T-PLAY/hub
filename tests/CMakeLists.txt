@@ -87,7 +87,7 @@ if(WIN32)
 endif()
 
 #if (WIN32)
-if(${CMAKE_GENERATOR_PLATFORM} MATCHES "Visual Studio.*")
+if(${CMAKE_GENERATOR} MATCHES "Visual Studio.*")
     set(BIN_DIR ${CMAKE_BINARY_DIR}/bin/${CMAKE_BUILD_TYPE})
 else()
     set(BIN_DIR ${CMAKE_BINARY_DIR}/bin)
