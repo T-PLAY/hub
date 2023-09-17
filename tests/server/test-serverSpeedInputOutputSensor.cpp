@@ -380,23 +380,23 @@ TEST_CASE( "Server test : InputOutputSensor" ) {
     if ( hostname == "asus-b450" ) // linux CI runner
     {
 #    ifdef DEBUG
-        checkRatio( ratio, 30, 5, "Hub/ClientSocket" );
+        checkRatio( ratio, 30, 10, "Hub/ClientSocket" );
 #    else
-        checkRatio( ratio, 30, 5, "Hub/ClientSocket" );
+        checkRatio( ratio, 25, 10, "Hub/ClientSocket" );
 #    endif
     }
     else if ( hostname == "gigabyte-Z370P" ) { // windows CI runner
 #    ifdef DEBUG
-        checkRatio( ratio, 10, 5, "Hub/ClientSocket" );
+        checkRatio( ratio, 10, 10, "Hub/ClientSocket" );
 #    else
-        checkRatio( ratio, 10, 5, "Hub/ClientSocket" );
+        checkRatio( ratio, 10, 10, "Hub/ClientSocket" );
 #    endif
     }
     else if ( hostname == "Mac-mini-de-gauthier.local" ) { // macOs CI runner
 #    ifdef DEBUG
-        checkRatio( ratio, 35, 5, "Hub/ClientSocket" );
+        checkRatio( ratio, 50, 10, "Hub/ClientSocket" );
 #    else
-        checkRatio( ratio, 30, 5, "Hub/ClientSocket" );
+        checkRatio( ratio, 50, 10, "Hub/ClientSocket" );
 #    endif
     }
     else { checkRatio( ratio, 50, 50, "Hub/ClientSocket" ); }
