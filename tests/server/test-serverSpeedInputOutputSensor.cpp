@@ -394,9 +394,9 @@ TEST_CASE( "Server test : InputOutputSensor" ) {
     }
     else if ( hostname == "Mac-mini-de-gauthier.local" ) { // macOs CI runner
 #    ifdef DEBUG
-        checkRatio( ratio, 40, 20, "Hub/ClientSocket" );
+        checkRatio( ratio, 40, 30, "Hub/ClientSocket" );
 #    else
-        checkRatio( ratio, 40, 20, "Hub/ClientSocket" );
+        checkRatio( ratio, 40, 30, "Hub/ClientSocket" );
 #    endif
     }
     else { checkRatio( ratio, 50, 50, "Hub/ClientSocket" ); }

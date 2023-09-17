@@ -10,7 +10,7 @@ variables:
   CACHE_PATH: "cache10"
   GIT_STRATEGY: fetch
   LINUX_TAG: "linux"
-  WIN_TAG: "win11"
+  WIN_TAG: "windows"
   MACOS_TAG: "macOs"
   # GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_CONCURRENT_ID/$CI_PROJECT_PATH
 
