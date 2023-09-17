@@ -172,7 +172,7 @@ void ClientSocket::write( const unsigned char* data, const size_t len ) {
 #ifdef DEBUG_SOCKET
             DEBUG_MSG( getHeader( m_fdSock ) << "sended bytes = " << byteSent );
 #endif
-            assert( 0 < byteSent && byteSent <= len );
+            assert( -1 <= byteSent && byteSent <= len );
         }
         catch ( std::exception& e ) {
             std::cout << "[ClientSocket] catch exception : " << e.what() << std::endl;
@@ -222,7 +222,7 @@ void ClientSocket::read( unsigned char* data, const size_t len ) {
         assert( 0 <= len - downloadSize && len - downloadSize <= len );
         int64_t byteRead = net::utils::recv(
             m_fdSock, reinterpret_cast<char*>( data ) + downloadSize, len - downloadSize, 0 );
-        assert( 0 <= byteRead && byteRead <= len );
+        assert( -1 <= byteRead && byteRead <= len );
 
         if ( byteRead == -1 ) {
 #ifdef DEBUG_SOCKET
