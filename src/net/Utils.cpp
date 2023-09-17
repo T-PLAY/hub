@@ -29,14 +29,14 @@ static const std::regex s_ipv4Regex { "^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$" };
 
 // #include <basetsd.h>
 
-#else
+#else // Linux or Apple
 #    define INVALID_SOCKET -1ul
 #    define closesocket close
 #    include <arpa/inet.h>
 #    include <csignal>
 #    include <sys/socket.h>
 #    include <unistd.h>
-#endif // #ifdef WIN32
+#endif // end WIN32
 
 namespace hub {
 namespace net {
@@ -209,12 +209,20 @@ int connect( socket_fd sock, ClientAddr& addr ) {
         sock, reinterpret_cast<struct sockaddr*>(&addr.m_pimpl->m_sockAddr), sizeof( struct sockaddr_in ) ); // todo
 }
 
-int send( socket_fd sock, const char* buf, int len, int flags ) {
+int64_t send( socket_fd sock, const char* buf, size_t len, int flags ) {
+//    std::cout << "send " << len << " bytes" << std::endl;
     return ::send( sock, buf, len, flags ); // todo
+//    auto ret = ::send( sock, buf, len, flags ); // todo
+//    std::cout << "sended " << ret << " bytes" << std::endl;
+//    return ret;
 }
 
-int recv( socket_fd sock, char* buf, int len, int flags ) {
+int64_t recv( socket_fd sock, char* buf, size_t len, int flags ) {
+//    std::cout << "receive " << len << " bytes" << std::endl;
     return ::recv( sock, buf, len, flags ); // todo
+//    auto ret = ::recv( sock, buf, len, flags ); // todo
+//    std::cout << "received " << ret << " bytes" << std::endl;
+//    return ret;
 }
 
 bool isValid( const std::string& ipv4 ) {
@@ -223,6 +231,18 @@ bool isValid( const std::string& ipv4 ) {
 
 bool isValid( int port ) {
     return ( 0 <= port && port <= 65535 );
+}
+
+size_t getMaxPacketSize(socket_fd sock ) {
+//{
+//    int optval;
+//    socklen_t optlen = sizeof( optval );
+
+//    int res;
+//    res = getsockopt( sock, SOL_SOCKET, SO_MAX_MSG_SIZE, &optval, &optlen ); // todo
+
+//    if ( optval == 0 && res == 0 ) return true;
+    return 0;
 }
 
 } // namespace utils

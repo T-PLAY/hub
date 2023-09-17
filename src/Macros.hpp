@@ -218,3 +218,11 @@
 #else
 #define FILE_NAME __FILE_NAME__
 #endif
+
+#if defined(OS_MACOS)
+    #define MAX_NET_BUFFER_SIZE 256'000
+#elif defined(OS_LINUX)
+    #define MAX_NET_BUFFER_SIZE 2'619'280 // 2.619280 Mo
+#elif defined(OS_WINDOWS)
+    #define MAX_NET_BUFFER_SIZE 2'000'000
+#endif

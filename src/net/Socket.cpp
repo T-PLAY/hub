@@ -8,7 +8,7 @@ namespace hub {
 namespace net {
 
 #ifdef DEBUG_SOCKET
-std::string Socket::getHeader( socket_fd iSock ) const {
+std::string Socket::getHeader(utils::socket_fd iSock ) const {
     std::string str;
     if ( m_serverSide ) { str += "\t\033[1m[Server]\033[0m"; }
     else {

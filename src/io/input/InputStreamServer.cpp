@@ -21,10 +21,6 @@ InputStreamServer::InputStreamServer(const std::string &streamName, const std::s
     io::StreamInterface::ServerMessage serverMsg;
     Input::read( serverMsg );
     if ( serverMsg == io::StreamInterface::ServerMessage::NOT_FOUND ) {
-#ifdef DEBUG_SOCKET
-        DEBUG_MSG( getHeader( m_fdSock ) << "[InputStreamServer] exception sensor '" << streamName
-                                         << "' is not attached to server" );
-#endif
         throw net::ClientSocket::exception(
             ( std::string( "stream '" ) + streamName + "' is not attached to server" ).c_str() );
     }

@@ -155,6 +155,7 @@ class SRC_API ClientSocket : public Socket, public io::InputOutput
     void setPort( int newPort );
 
   public:
+
     ///
     /// \brief isOpen
     /// \return

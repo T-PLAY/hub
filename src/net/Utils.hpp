@@ -17,6 +17,7 @@ void SRC_API closeSocket( socket_fd& sock );
 bool SRC_API isConnected( socket_fd sock );
 bool SRC_API isValid( const std::string& ipv4 );
 bool SRC_API isValid( int port );
+size_t getMaxPacketSize(socket_fd sock );
 
 ///////////////////////////////////// SERVER ADDRESS ///////////////////////////////////////
 
@@ -139,7 +140,7 @@ int SRC_API connect( socket_fd sock, ClientAddr& addr );
 /// \param flags
 /// \return
 ///
-int SRC_API send( socket_fd sock, const char* buf, int len, int flags );
+int64_t SRC_API send( socket_fd sock, const char* buf, size_t len, int flags );
 
 ///
 /// \brief recv
@@ -148,7 +149,7 @@ int SRC_API send( socket_fd sock, const char* buf, int len, int flags );
 /// \param flags
 /// \return
 ///
-int SRC_API recv( socket_fd, char* buf, int len, int flags );
+int64_t SRC_API recv(socket_fd, char* buf, size_t len, int flags );
 
 } // namespace utils
 } // namespace net

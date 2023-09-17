@@ -48,7 +48,7 @@ class SRC_API Socket
     };
 
 #ifdef DEBUG_SOCKET
-    std::string getHeader( socket_fd iSock ) const;
+    std::string getHeader( net::utils::socket_fd iSock ) const;
 #endif
 
     ///

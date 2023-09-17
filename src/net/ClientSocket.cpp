@@ -1,6 +1,7 @@
 #include "net/ClientSocket.hpp"
 
 #include <cassert>
+#include <cmath>
 #include <cstring>
 #include <regex>
 #include <thread>
@@ -8,10 +9,10 @@
 namespace hub {
 namespace net {
 
-//ClientSocket::ClientSocket() : m_ipv4( s_defaultServiceIp ), m_port( s_defaultServicePort ) {
-//#ifdef DEBUG_SOCKET
-//    DEBUG_MSG( getHeader( m_fdSock ) << "ClientSocket()" );
-//#endif
+// ClientSocket::ClientSocket() : m_ipv4( s_defaultServiceIp ), m_port( s_defaultServicePort ) {
+// #ifdef DEBUG_SOCKET
+//     DEBUG_MSG( getHeader( m_fdSock ) << "ClientSocket()" );
+// #endif
 
 //    initServerAddress();
 //    connect();
@@ -116,13 +117,34 @@ void ClientSocket::connect() {
 #endif
 }
 
-void ClientSocket::write( const unsigned char* data, size_t len ) {
+void ClientSocket::write( const unsigned char* data, const size_t len ) {
     assert( isOpen() );
+    //    assert( 0 < len && len <= MAX_NET_BUFFER_SIZE );
+    assert( 0 < len );
+
+    //    unsigned char * tmp = new unsigned char[len];
+    //    memcpy(tmp, data, len);
 
 #ifdef DEBUG_SOCKET
-    // DEBUG_MSG(getHeader(m_fdSock) << "write message ");
+    DEBUG_MSG( getHeader( m_fdSock ) << "write(unsigned char*, len = " << len << ") " );
 #endif
-    assert( len > 0 );
+
+    //    const int nPart = std::ceil( (float)len / MAX_NET_BUFFER_SIZE );
+
+    //    for ( int iPart = 0; iPart < nPart; ++iPart ) {
+
+    //        const size_t offsetPart = iPart * MAX_NET_BUFFER_SIZE;
+    //    const size_t offsetPart = 0;
+    //        const size_t sizePart = (iPart == nPart - 1) ?(len - offsetPart)
+    //        :(MAX_NET_BUFFER_SIZE);
+    //    const size_t sizePart = len;
+
+#ifdef DEBUG_SOCKET
+//            DEBUG_MSG( getHeader( m_fdSock )
+//                   << "iPart = " << iPart << "/" << nPart << ", offsetPart: " << offsetPart << ",
+//                   sizePart:" << sizePart );
+#endif
+
     size_t uploadSize = 0;
     do {
         if ( !isConnected() ) {
@@ -137,12 +159,20 @@ void ClientSocket::write( const unsigned char* data, size_t len ) {
         }
         // winsock const char * data
         // winsock int len
-        int byteSent;
+        int64_t byteSent;
         try {
-            byteSent = net::utils::send( m_fdSock,
-                                         reinterpret_cast<const char*>( data ) + uploadSize,
-                                         static_cast<int>( len - uploadSize ),
-                                         0 );
+#ifdef DEBUG_SOCKET
+            DEBUG_MSG( getHeader( m_fdSock ) << "sending bytes = " << len - uploadSize );
+#endif
+            //                assert(static_cast<size_t>(len - uploadSize) > 0);
+            //                assert(static_cast<size_t>(len - uploadSize) <= len);
+            assert( 0 < len - uploadSize && len - uploadSize <= len );
+            byteSent = net::utils::send(
+                m_fdSock, reinterpret_cast<const char*>( data + uploadSize ), len - uploadSize, 0 );
+#ifdef DEBUG_SOCKET
+            DEBUG_MSG( getHeader( m_fdSock ) << "sended bytes = " << byteSent );
+#endif
+            assert( 0 < byteSent && byteSent <= len );
         }
         catch ( std::exception& e ) {
             std::cout << "[ClientSocket] catch exception : " << e.what() << std::endl;
@@ -161,6 +191,10 @@ void ClientSocket::write( const unsigned char* data, size_t len ) {
         }
         else if ( byteSent == 0 ) {
             assert( false );
+            exit( 1 );
+//            close();
+//            throw Socket::exception(
+//                "[ClientSocket] write(data, len) Can't write packet, buffer overflow" );
 #ifdef DEBUG_SOCKET
             DEBUG_MSG( "byteSent == 0, sleep" );
 #endif
@@ -171,20 +205,25 @@ void ClientSocket::write( const unsigned char* data, size_t len ) {
                    << "byteSent = " << byteSent << " (" << uploadSize << "/" << len << ")" );
 #endif
     } while ( len != uploadSize );
+
+    //    } // end for ( int iPart = 0; iPart < nPart; ++iPart )
+
+    //        assert(memcmp(tmp, data, len) == 0);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void ClientSocket::read( unsigned char* data, size_t len ) {
+void ClientSocket::read( unsigned char* data, const size_t len ) {
     assert( isOpen() );
     assert( isConnected() );
 
     size_t downloadSize = 0;
     do {
-        int byteRead = net::utils::recv( m_fdSock,
-                                         reinterpret_cast<char*>( data ) + downloadSize,
-                                         static_cast<int>( len - downloadSize ),
-                                         0 );
+        assert( 0 <= len - downloadSize && len - downloadSize <= len );
+        int64_t byteRead = net::utils::recv(
+            m_fdSock, reinterpret_cast<char*>( data ) + downloadSize, len - downloadSize, 0 );
+        assert( 0 <= byteRead && byteRead <= len );
+
         if ( byteRead == -1 ) {
 #ifdef DEBUG_SOCKET
             DEBUG_MSG( "byte read == -1 error" );
@@ -197,6 +236,8 @@ void ClientSocket::read( unsigned char* data, size_t len ) {
                 "[ClientSocket] read(data, len) Can't read packet, peer connection lost" );
         }
         else if ( byteRead == 0 ) {
+            //            std::cout << "no bytes read, sleep" << std::endl;
+            //            std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
             close();
             throw Socket::exception(
                 "[ClientSocket] read(data, len) 0 byte received, peer connection lost" );
@@ -216,7 +257,7 @@ void ClientSocket::read( unsigned char* data, size_t len ) {
 
 void ClientSocket::close() {
     // assert( isOpen() ); // todo fix
-    if (isOpen()) {
+    if ( isOpen() ) {
         net::utils::closeSocket( m_fdSock );
         m_connected = false;
     }
@@ -240,38 +281,38 @@ bool ClientSocket::isEnd() const {
 using ConstString = const std::string;
 #endif
 
-//static ConstString type2string[static_cast<int>( ClientSocket::Type::COUNT )] = {
-//    "NONE",
-//    "STREAMER",
-//    "VIEWER",
-//    "STREAM_VIEWER",
-//    "ASKER",
-//};
-//std::ostream& operator<<( std::ostream& os, const ClientSocket::Type& type ) {
-//    os << type2string[(int)type];
-//    return os;
-//}
+// static ConstString type2string[static_cast<int>( ClientSocket::Type::COUNT )] = {
+//     "NONE",
+//     "STREAMER",
+//     "VIEWER",
+//     "STREAM_VIEWER",
+//     "ASKER",
+// };
+// std::ostream& operator<<( std::ostream& os, const ClientSocket::Type& type ) {
+//     os << type2string[(int)type];
+//     return os;
+// }
 
-//static ConstString message2string[static_cast<int>( ClientSocket::Message::COUNT )] = {
-//    "NONE",
-//    "PING",
-//    "SYNC",
-//    "DATA",
-//    "OK",
-//    "CLOSE",
-//    "DEL_STREAMER",
-//    "NEW_STREAMER",
-//    "NOT_FOUND",
-//    "FOUND",
-//    "NEW_ACQ",
-//    "LIST_STREAMS",
-//    "GET_SENSOR_SPEC",
-//    "GET_ACQUISITION",
-//};
-//std::ostream& operator<<( std::ostream& os, const ClientSocket::Message& msg ) {
-//    os << message2string[(int)msg];
-//    return os;
-//}
+// static ConstString message2string[static_cast<int>( ClientSocket::Message::COUNT )] = {
+//     "NONE",
+//     "PING",
+//     "SYNC",
+//     "DATA",
+//     "OK",
+//     "CLOSE",
+//     "DEL_STREAMER",
+//     "NEW_STREAMER",
+//     "NOT_FOUND",
+//     "FOUND",
+//     "NEW_ACQ",
+//     "LIST_STREAMS",
+//     "GET_SENSOR_SPEC",
+//     "GET_ACQUISITION",
+// };
+// std::ostream& operator<<( std::ostream& os, const ClientSocket::Message& msg ) {
+//     os << message2string[(int)msg];
+//     return os;
+// }
 
 // void ClientSocket::clear() const {
 // #ifdef DEBUG_SOCKET

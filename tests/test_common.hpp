@@ -14,8 +14,11 @@
 #include <OutputSensor.hpp>
 
 #include <Version.h>
+#include "Macros.hpp"
 
 #define GET_RANDOM_PORT getRandomPort( __FILE__ )
+
+
 
 static int getRandomPort( const char* filename ) {
     // #ifdef BUILD_SERVER
@@ -30,6 +33,7 @@ static int getRandomPort( const char* filename ) {
     const unsigned int ret    = offset + random % ( 65535 - offset );
     assert( offset <= ret && ret < 65536 );
     assert( ret != hub::io::StreamServer::s_defaultPort );
+    std::cout << "using random port: " << ret << std::endl;
     return ret;
 }
 
@@ -83,8 +87,6 @@ static std::string s_latestFilename = "";
             s_latestFilename = filename; \
             file << std::endl; \
             file << "----------------------------------" << testName << "----------------------------------------------" << std::endl; \
-            file << std::endl; \
-            file << std::endl; \
         } \
         file << _params << std::endl; \
         file.close(); \
