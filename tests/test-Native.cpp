@@ -111,7 +111,7 @@ TEST_CASE( "Native test" ) {
         hub::native::sensorSpec_getResolutionsStr( sensorSpec, resolutionsStr );
         std::cout << "[Example][Viewer] resolutionsStr : '" << resolutionsStr << "'" << std::endl;
 
-        char metaDataStr[80] = { 0 };
+        char metaDataStr[256] = { 0 };
         hub::native::sensorSpec_getMetaDataStr( sensorSpec, metaDataStr );
         std::cout << "[Example][Viewer] metaDataStr : '" << metaDataStr << "'" << std::endl;
 
