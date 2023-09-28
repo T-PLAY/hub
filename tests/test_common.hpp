@@ -13,12 +13,10 @@
 #include <Output.hpp>
 #include <OutputSensor.hpp>
 
-#include <Version.h>
 #include "Macros.hpp"
+#include <Version.h>
 
 #define GET_RANDOM_PORT getRandomPort( __FILE__ )
-
-
 
 static int getRandomPort( const char* filename ) {
     // #ifdef BUILD_SERVER
@@ -50,58 +48,61 @@ static std::string ReplaceAll( std::string str, const std::string& from, const s
     return str;
 }
 
-#define START_REPORT( )                                              \
-        std::ofstream file("report.txt"); \
-        assert(file.is_open()); \
-        file << std::endl; \
-        file << "#################################### START REPORT ####################################" << std::endl; \
-        file.close(); \
+#define START_REPORT()                                           \
+    std::ofstream file( "report.txt" );                          \
+    assert( file.is_open() );                                    \
+    file << std::endl;                                           \
+    file << "#################################### START REPORT " \
+            "####################################"               \
+         << std::endl;                                           \
+    file.close();
 
-#define END_REPORT( )                                              \
-        std::ofstream file("report.txt", std::ios::app); \
-        assert(file.is_open()); \
-        file << std::endl; \
-        file << "#################################### END REPORT ####################################" << std::endl; \
-        file.close(); \
+#define END_REPORT()                                                                               \
+    std::ofstream file( "report.txt", std::ios::app );                                             \
+    assert( file.is_open() );                                                                      \
+    file << std::endl;                                                                             \
+    file << "#################################### END REPORT ####################################" \
+         << std::endl;                                                                             \
+    file.close();
 
-#define PRINT_REPORT() \
-    do { \
-        std::ifstream file("report.txt"); \
-        assert(file.is_open()); \
-        std::cout << file.rdbuf(); \
-        file.close(); \
-    } while (false);
+#define PRINT_REPORT()                      \
+    do {                                    \
+        std::ifstream file( "report.txt" ); \
+        assert( file.is_open() );           \
+        std::cout << file.rdbuf();          \
+        file.close();                       \
+    } while ( false );
 
 static std::string s_latestFilename = "";
 
-#define _REPORT( _params, filename, line )                                              \
-    do {                                                                  \
-        std::string filenameStr = filename; \
-        const auto first = filenameStr.find("-") + 1; \
-        const auto last = filenameStr.find("."); \
-        const auto testName = filenameStr.substr(first, last - first); \
-        std::cout << _params << std::endl; \
-        std::ofstream file("report.txt", std::ios::app); \
-        assert(file.is_open()); \
-        if (filename != s_latestFilename) { \
-            s_latestFilename = filename; \
-            file << std::endl; \
-            file << "----------------------------------" << testName << "----------------------------------------------" << std::endl; \
-        } \
-        file << _params << std::endl; \
-        file.close(); \
+#define _REPORT( _params, filename, line )                                         \
+    do {                                                                           \
+        std::string filenameStr = filename;                                        \
+        const auto first        = filenameStr.find( "-" ) + 1;                     \
+        const auto last         = filenameStr.find( "." );                         \
+        const auto testName     = filenameStr.substr( first, last - first );       \
+        std::cout << _params << std::endl;                                         \
+        std::ofstream file( "report.txt", std::ios::app );                         \
+        assert( file.is_open() );                                                  \
+        if ( filename != s_latestFilename ) {                                      \
+            s_latestFilename = filename;                                           \
+            file << std::endl;                                                     \
+            file << "----------------------------------" << testName               \
+                 << "----------------------------------------------" << std::endl; \
+        }                                                                          \
+        file << _params << std::endl;                                              \
+        file.close();                                                              \
     } while ( false );
 
-#define REPORT( _params )  _REPORT(_params, FILE_NAME, __LINE__)
-#define REPORT_NEW_LINE  _REPORT("", FILE_NAME, __LINE__)
+#define REPORT( _params ) _REPORT( _params, FILE_NAME, __LINE__ )
+#define REPORT_NEW_LINE _REPORT( "", FILE_NAME, __LINE__ )
 
 static void _checkRatio( double ratio,
                          int compare,
                          int gap,
                          const std::string& name,
                          const std::string& filename,
-                         int line
-                         ) {
+                         int line ) {
     //    const int gap = 10;
     CHECK( ( compare - gap <= ratio && ratio <= compare + gap ) );
     if ( !( compare - gap <= ratio && ratio <= compare + gap ) ) {
@@ -110,8 +111,7 @@ static void _checkRatio( double ratio,
                   << compare - gap << " <= " << ratio << " <= " << compare + gap << std::endl;
     }
 
-
-//    std::ofstream file("ouou", std::ios::app);
+    //    std::ofstream file("ouou", std::ios::app);
     auto name2 = name;
     //    name2.replace(name2.begin(), name2.end(), '/', '-');
     name2 = ReplaceAll( name2, "/", "_vs_" );
@@ -132,10 +132,14 @@ static void _checkRatio( double ratio,
 
         double ratio2;
         std::string hash;
-        int iRatio           = 0;
-        constexpr int nRatio = 10;
+        int iRatio          = 0;
+        constexpr int nMaxMean = 4;
+        const int nRatio    = std::pow( 2, nMaxMean - 1 );
         std::string hashes[nRatio];
-        double ratios[nRatio] = { 0.0 };
+        double ratios[nRatio];
+        for ( int i = 0; i < nRatio; ++i ) {
+            ratios[i] = 0.0;
+        }
         while ( !inFile.eof() ) {
             ratio2 = -1;
             hash   = "";
@@ -148,31 +152,86 @@ static void _checkRatio( double ratio,
             }
         }
         assert( iRatio > 0 );
-        double sumRatio = 0.0;
-        double minRatio = ratios[0];
-        double maxRatio = ratios[0];
-        const int nEl   = std::min( nRatio, iRatio );
+        double sumRatios[nMaxMean];
+        double minRatios[nMaxMean];
+        double maxRatios[nMaxMean];
+        for ( int i = 0; i < nMaxMean; ++i ) {
+            sumRatios[i] = 0.0;
+            minRatios[i] = ratios[( iRatio - 1 ) % nRatio];
+            maxRatios[i] = ratios[( iRatio - 1 ) % nRatio];
+        }
+
+        const int nEl = std::min( nRatio, iRatio );
         for ( int i = 0; i < nEl; ++i ) {
             //            std::cout << hashes[i] << " " << ratios[i] << std::endl;
-            sumRatio += ratios[i];
-            minRatio = std::min( minRatio, ratios[i] );
-            maxRatio = std::max( maxRatio, ratios[i] );
+            const int idx       = ( iRatio - 1 - i ) % nRatio;
+            const auto curRatio = ratios[idx];
+
+            for ( int iMean = 0; iMean < nMaxMean; ++iMean ) {
+                if ( i < std::pow( 2.0, iMean ) ) {
+                    minRatios[iMean] = std::min( minRatios[iMean], curRatio );
+                    maxRatios[iMean] = std::max( maxRatios[iMean], curRatio );
+                    sumRatios[iMean] += curRatio;
+                }
+            }
         }
-        const double meanRatio = sumRatio / nEl;
-        const double deviation = maxRatio - minRatio;
-
-        //        std::cout << "average of ratio for the last " << std::min(nRatio, iRatio) << "
-        //        builds is " << meanRatio << std::endl;
+        //        double meanRatios[nMean];
+        //        double deviationRatios[nMean];
 
 
-        _REPORT( "[" << name << "] ratio: " << ratio << " % , mean: " << meanRatio << " % (" << nEl
-                    << "), deviation : +/- " << deviation / 2.0, filename, line);
+        std::string report;
+
+        const int nMean = std::log2(nEl) + 1;
+        const auto meanAll = sumRatios[nMean - 1] / std::pow( 2.0, nMean - 1 );
+
+        for ( int iMean = 0; iMean < nMean; ++iMean ) {
+            //            for ( int iMean = 0; iMean < nMean; ++iMean ) {
+            const auto meanRatio = sumRatios[iMean] / std::pow( 2.0, iMean );
+            const auto deviation = maxRatios[iMean] - minRatios[iMean];
+            //            }
+
+            //        std::cout << "average of ratio for the last " << std::min(nRatio, iRatio) << "
+            //        builds is " << meanRatio << std::endl;
+            //            for ( int iMean = 0; iMean < nMean; ++iMean ) {
+            std::string meanRatioStr = std::to_string(meanRatio);
+            meanRatioStr = meanRatioStr.substr(0, 5);
+            std::string deviationStr = std::to_string(deviation);
+            deviationStr = deviationStr.substr(0, 5);
+            std::string meanCompareStr = std::to_string(meanRatio - meanAll);
+            meanCompareStr = meanCompareStr.substr(0, 5);
+
+            report += "(" + std::to_string( (int)std::pow( 2, iMean ) ) +
+                      "): " + meanRatioStr + "% " +
+                      deviationStr + "+- " +
+                        meanCompareStr + "%";
+            if ( iMean != std::log2(nEl) ) { report += ",  "; }
+            //            }
+        }
+
+        report += "  (";
+        for ( int i = 0; i < nEl; ++i ) {
+            const int idx       = ( iRatio - 1 - i ) % nRatio;
+//            const auto curRatio = ratios[idx];
+            auto curRatioStr = std::to_string(ratios[idx]);
+            curRatioStr = curRatioStr.substr(0, 5);
+            report += curRatioStr;
+
+            if (i != nEl - 1) {
+                report += " ";
+            }
+        }
+        report += ")";
+
+        _REPORT( "[" << name << "] " << report, filename, line );
+        //        _REPORT( "[" << name << "] ratio: " << ratio << " % , mean: " << meanRatio << " %
+        //        (" << nEl
+        //                     << "), deviation : +/- " << deviation / 2.0,
+        //                 filename,
+        //                 line );
 
         inFile.close();
     }
 }
-
-
 
 #define checkRatio( ... ) _checkRatio( __VA_ARGS__, FILE_NAME, __LINE__ )
 
@@ -253,8 +312,9 @@ computeSyncAcqs( const std::vector<hub::Acquisition>& leftAcqs,
     return syncAcqs;
 }
 
-static std::set<hub::Acquisition> computeSortedAcqs( const std::vector<hub::Acquisition>& ref_acqs,
-                                              const std::vector<hub::Acquisition>& ref_acqs2 ) {
+static std::set<hub::Acquisition>
+computeSortedAcqs( const std::vector<hub::Acquisition>& ref_acqs,
+                   const std::vector<hub::Acquisition>& ref_acqs2 ) {
     std::set<hub::Acquisition> sortedAcqs;
     for ( int i = 1; i < ref_acqs.size(); ++i ) {
         const auto& acq = ref_acqs.at( i );
@@ -269,11 +329,11 @@ static std::set<hub::Acquisition> computeSortedAcqs( const std::vector<hub::Acqu
 }
 
 static void writingProcess( const std::vector<hub::Acquisition>& refAcqs,
-                     const std::vector<hub::Acquisition>& refAcqs2,
-                     hub::Output & output,
-                     hub::Output & output2,
-                     const std::set<hub::Acquisition>& sortedAcqs,
-                     bool delayed ) {
+                            const std::vector<hub::Acquisition>& refAcqs2,
+                            hub::Output& output,
+                            hub::Output& output2,
+                            const std::set<hub::Acquisition>& sortedAcqs,
+                            bool delayed ) {
 
     const auto& acqFront2 = refAcqs2.front();
     std::cout << "write acq2: " << acqFront2 << std::endl;
@@ -286,7 +346,8 @@ static void writingProcess( const std::vector<hub::Acquisition>& refAcqs,
     if ( delayed ) { std::this_thread::sleep_for( std::chrono::milliseconds( 500 ) ); }
 
     for ( const auto& acq : sortedAcqs ) {
-        if ( acq.getMeasures().front().getResolution() == acqFront.getMeasures().front().getResolution() ) {
+        if ( acq.getMeasures().front().getResolution() ==
+             acqFront.getMeasures().front().getResolution() ) {
             std::cout << "write acq: " << acq << std::endl;
             output << acq;
         }
@@ -300,60 +361,57 @@ static void writingProcess( const std::vector<hub::Acquisition>& refAcqs,
 }
 
 template <typename T>
-bool areEnd(T && t) {
+bool areEnd( T&& t ) {
     return t.isEnd();
 }
 
-template <typename T, typename ...Inputs>
-bool areEnd(T && t, Inputs && ... args) {
-    return t.isEnd() && areEnd(args...);
+template <typename T, typename... Inputs>
+bool areEnd( T&& t, Inputs&&... args ) {
+    return t.isEnd() && areEnd( args... );
 }
 
 template <typename Input>
-Input sync(Input && input) {
+Input sync( Input&& input ) {
     return input;
 }
 
 template <typename Input>
-hub::Acquisition sync(Input && input, Input && input2) {
+hub::Acquisition sync( Input&& input, Input&& input2 ) {
     return input >> input2;
 }
 
-//template <typename Input, typename ...Args>
-//hub::Acquisition sync(Input && input, Input && input2, Args && ... args) {
-//    return sync(input, input2) >> sync(args...);
-//}
+// template <typename Input, typename ...Args>
+// hub::Acquisition sync(Input && input, Input && input2, Args && ... args) {
+//     return sync(input, input2) >> sync(args...);
+// }
 
-//template <typename Input, typename ...Args>
-//hub::Acquisition sync(Input && t, T && t2, Args && ... args) {
-//    return t >> args...;
-//}
+// template <typename Input, typename ...Args>
+// hub::Acquisition sync(Input && t, T && t2, Args && ... args) {
+//     return t >> args...;
+// }
 
-//template <class Output, class Input>
+// template <class Output, class Input>
 template <class... Inputs>
 static void checkSynchronize( hub::Output& output,
-//                               const hub::SensorSpec& sensorSpec,
-                               const std::vector<hub::Acquisition>& ref_acqs,
-                               hub::Output& output2,
-//                               const hub::SensorSpec& sensorSpec2,
-                               const std::vector<hub::Acquisition>& ref_acqs2,
-//                               hub::Input& input,
-//                               hub::Input& input2,
-                               const std::vector<hub::Acquisition>& refSyncAcqs,
-                               bool delayed,
-//                               hub::Input & input,
-                               Inputs && ... inputs
-                               ) {
+                              //                               const hub::SensorSpec& sensorSpec,
+                              const std::vector<hub::Acquisition>& ref_acqs,
+                              hub::Output& output2,
+                              //                               const hub::SensorSpec& sensorSpec2,
+                              const std::vector<hub::Acquisition>& ref_acqs2,
+                              //                               hub::Input& input,
+                              //                               hub::Input& input2,
+                              const std::vector<hub::Acquisition>& refSyncAcqs,
+                              bool delayed,
+                              //                               hub::Input & input,
+                              Inputs&&... inputs ) {
 
     std::set<hub::Acquisition> sortedAcqs = computeSortedAcqs( ref_acqs, ref_acqs2 );
-
 
     std::cout << "synching acqs" << std::endl;
     std::vector<hub::Acquisition> sync_acqs;
     bool writeDone     = false;
     std::thread thread = std::thread( [&]() {
         hub::Acquisition acq;
-
 
         if ( !delayed ) {
             while ( !writeDone ) {
@@ -365,14 +423,14 @@ static void checkSynchronize( hub::Output& output,
 
             //            while ( !inputSensor.getInput().isEnd() &&
             //            !inputSensor2.getInput().isEnd() ) {
-//            while ( !inputSensor.getInput().isEnd() && !inputSensor2.getInput().isEnd() &&
-//            while ( !input.isEnd() && !input2.isEnd() &&
-            while (! areEnd(inputs...) &&
-                    sync_acqs.size() != refSyncAcqs.size() ) {
+            //            while ( !inputSensor.getInput().isEnd() &&
+            //            !inputSensor2.getInput().isEnd() && while ( !input.isEnd() &&
+            //            !input2.isEnd() &&
+            while ( !areEnd( inputs... ) && sync_acqs.size() != refSyncAcqs.size() ) {
 
-//                input >> input2 >> acq;
-//                input >> acq;
-                sync(inputs...) >> acq;
+                //                input >> input2 >> acq;
+                //                input >> acq;
+                sync( inputs... ) >> acq;
                 //            input >> input2 >> acq;
                 std::cout << "\tread synched acq: " << acq << std::endl;
 
@@ -402,16 +460,16 @@ static void checkSynchronize( hub::Output& output,
     }
 }
 
-//template <class Output, class Input>
-//static void _checkSynchronize( Output&& output,
-//                               const hub::SensorSpec& sensorSpec,
-//                               const std::vector<hub::Acquisition>& ref_acqs,
-//                               Output&& output2,
-//                               const hub::SensorSpec& sensorSpec2,
-//                               const std::vector<hub::Acquisition>& ref_acqs2,
-//                               Input&& input,
-//                               const std::vector<hub::Acquisition>& refSyncAcqs,
-//                               bool delayed = false ) {
+// template <class Output, class Input>
+// static void _checkSynchronize( Output&& output,
+//                                const hub::SensorSpec& sensorSpec,
+//                                const std::vector<hub::Acquisition>& ref_acqs,
+//                                Output&& output2,
+//                                const hub::SensorSpec& sensorSpec2,
+//                                const std::vector<hub::Acquisition>& ref_acqs2,
+//                                Input&& input,
+//                                const std::vector<hub::Acquisition>& refSyncAcqs,
+//                                bool delayed = false ) {
 
 //    std::set<hub::Acquisition> sortedAcqs = computeSortedAcqs( ref_acqs, ref_acqs2 );
 
@@ -452,7 +510,8 @@ static void checkSynchronize( hub::Output& output,
 //            }
 //        }
 //        catch ( hub::io::StreamInterface::exception& ex ) {
-//            std::cout << "[test_common] synchronize() catch exception : " << ex.what() << std::endl;
+//            std::cout << "[test_common] synchronize() catch exception : " << ex.what() <<
+//            std::endl;
 //        }
 //        //        catch ( std::exception& ex ) {
 //        //            throw ex;
@@ -475,7 +534,7 @@ static void checkSynchronize( hub::Output& output,
 //}
 
 ////template <class Output, class Input>
-//static void checkSynchronize( hub::OutputSensor&& outputSensor,
+// static void checkSynchronize( hub::OutputSensor&& outputSensor,
 ////                              const hub::SensorSpec& sensorSpec,
 //                              const std::vector<hub::Acquisition>& ref_acqs,
 //                              hub::OutputSensor&& outputSensor2,
@@ -522,28 +581,27 @@ static void checkSynchronize( Output&& output,
     std::cout << "inputSensor2 created" << std::endl;
 
     checkSynchronize( outputSensor.getOutput(),
-//                       sensorSpec,
-                       ref_acqs,
-                       outputSensor2.getOutput(),
-//                       sensorSpec2,
-                       ref_acqs2,
-                       refSyncAcqs,
-                       delayed,
-                       inputSensor.getInput(),
-                       inputSensor2.getInput()
-                       );
+                      //                       sensorSpec,
+                      ref_acqs,
+                      outputSensor2.getOutput(),
+                      //                       sensorSpec2,
+                      ref_acqs2,
+                      refSyncAcqs,
+                      delayed,
+                      inputSensor.getInput(),
+                      inputSensor2.getInput() );
 }
 
-//template <class Output, class Input>
-//static void checkSynchronize( Output&& output,
-//                              const hub::SensorSpec& sensorSpec,
-//                              const std::vector<hub::Acquisition>& ref_acqs,
-//                              Output&& output2,
-//                              const hub::SensorSpec& sensorSpec2,
-//                              const std::vector<hub::Acquisition>& ref_acqs2,
-//                              Input&& input,
-//                              Input&& input2,
-//                              bool delayed = false ) {
+// template <class Output, class Input>
+// static void checkSynchronize( Output&& output,
+//                               const hub::SensorSpec& sensorSpec,
+//                               const std::vector<hub::Acquisition>& ref_acqs,
+//                               Output&& output2,
+//                               const hub::SensorSpec& sensorSpec2,
+//                               const std::vector<hub::Acquisition>& ref_acqs2,
+//                               Input&& input,
+//                               Input&& input2,
+//                               bool delayed = false ) {
 
 //    std::cout << "ref_sync_acqs" << std::endl;
 //    std::vector<hub::Acquisition> ref_sync_acqs = computeSyncAcqs( ref_acqs, ref_acqs2 );
@@ -570,15 +628,15 @@ static void checkSynchronize( Output&& output,
 //                       delayed );
 //}
 
-//template <class Output, class Input>
-//static void checkSynchronize( Output&& output,
-//                              const hub::SensorSpec& sensorSpec,
-//                              const std::vector<hub::Acquisition>& ref_acqs,
-//                              Output&& output2,
-//                              const hub::SensorSpec& sensorSpec2,
-//                              const std::vector<hub::Acquisition>& ref_acqs2,
-//                              Input&& input,
-//                              bool delayed = false ) {
+// template <class Output, class Input>
+// static void checkSynchronize( Output&& output,
+//                               const hub::SensorSpec& sensorSpec,
+//                               const std::vector<hub::Acquisition>& ref_acqs,
+//                               Output&& output2,
+//                               const hub::SensorSpec& sensorSpec2,
+//                               const std::vector<hub::Acquisition>& ref_acqs2,
+//                               Input&& input,
+//                               bool delayed = false ) {
 
 //    std::cout << "ref_sync_acqs" << std::endl;
 //    std::vector<hub::Acquisition> ref_sync_acqs = computeSyncAcqs( ref_acqs, ref_acqs2 );
