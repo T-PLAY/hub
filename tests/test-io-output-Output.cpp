@@ -1,20 +1,20 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include <Output.hpp>
+#include <io/output/Output.hpp>
 
 #include <io/Memory.hpp>
-#include <Measure.hpp>
+#include <data/Measure.hpp>
 #include <data/Mat4.hpp>
 #include <data/Mesh.hpp>
 
 TEST_CASE( "Output test" ) {
 
     std::string ref_string    = "hello";
-    const auto ref_resolution = hub::Resolution { { 1 }, hub::Format::BGR8 };
-    hub::SensorSpec ref_sensorSpec( "sensorName", { ref_resolution } );
+    const auto ref_resolution = hub::sensor::Resolution { { 1 }, hub::sensor::Format::BGR8 };
+    hub::sensor::SensorSpec ref_sensorSpec( "sensorName", { ref_resolution } );
     unsigned char data[3] { 1, 2, 3 };
-    hub::Acquisition ref_acq =
-        std::move( hub::Acquisition { 0, 1 } << hub::Measure { data, 3, ref_resolution } );
+    hub::sensor::Acquisition ref_acq =
+        std::move( hub::sensor::Acquisition { 0, 1 } << hub::Measure { data, 3, ref_resolution } );
     const char ref_str[] = "hello";
     hub::Any ref_any_int( 5 );
     hub::Any ref_any_double( 5.0 );
@@ -45,11 +45,11 @@ TEST_CASE( "Output test" ) {
     memory.read( string );
     CHECK( ref_string == string );
 
-    hub::SensorSpec sensorSpec;
+    hub::sensor::SensorSpec sensorSpec;
     memory.read( sensorSpec );
     CHECK( ref_sensorSpec == sensorSpec );
 
-    hub::Acquisition acq;
+    hub::sensor::Acquisition acq;
     memory.read( acq );
     CHECK( ref_acq == acq );
 

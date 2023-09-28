@@ -31,7 +31,7 @@ void Input::read( std::string& str ) {
 #endif
 }
 
-void Input::read( SensorSpec& sensorSpec ) {
+void Input::read( sensor::SensorSpec& sensorSpec ) {
     assert( isOpen() );
     assert( !isEnd() );
 
@@ -71,16 +71,16 @@ void Input::read( SensorSpec& sensorSpec ) {
     assert( h == 'H' );
     assert( u == 'U' );
     assert( b == 'B' );
-    assert( versionMajor <= hub::s_versionMajor );
-    assert( versionMinor <= hub::s_versionMinor );
-    assert( versionPatch <= hub::s_versionPatch );
+    assert( versionMajor <= s_versionMajor );
+    assert( versionMinor <= s_versionMinor );
+    assert( versionPatch <= s_versionPatch );
 //#ifdef DEBUG
 //    std::cout <<  "[Input] read(magic number) : '" << magicNumber << "'" << std::endl;
 //#endif
 
     std::string sensorName;
-    Resolutions resolutions;
-    hub::SensorSpec::MetaData metaData;
+    sensor::Resolutions resolutions;
+    sensor::SensorSpec::MetaData metaData;
 //    memory.read( sensorName );
     read( sensorName );
 //    memory.read( resolutions );
@@ -91,7 +91,7 @@ void Input::read( SensorSpec& sensorSpec ) {
 //    assert(memory.isEnd());
 
     sensorSpec =
-        SensorSpec( std::move( sensorName ), std::move( resolutions ), std::move( metaData ) );
+        sensor::SensorSpec( std::move( sensorName ), std::move( resolutions ), std::move( metaData ) );
 
     assert( !sensorSpec.isEmpty() );
 }
@@ -110,10 +110,10 @@ void Input::read( Measure& measure ) {
     assert( measure.m_size > 0 );
     assert( measure.m_data != nullptr );
     assert( !measure.m_resolution.first.empty() );
-    assert( measure.m_resolution.second != Format::NONE );
+    assert( measure.m_resolution.second != sensor::Format::NONE );
 }
 
-void Input::read( Acquisition& acq ) {
+void Input::read( sensor::Acquisition& acq ) {
     assert( isOpen() );
     assert( !isEnd() );
 
@@ -233,7 +233,7 @@ void Input::read( Any& any ) {
     assert( any.has_value() );
 }
 
-Acquisition Input::operator>>( Input& input ) {
+sensor::Acquisition Input::operator>>( Input& input ) {
     assert( isOpen() );
     assert( !isEnd() );
     assert( input.isOpen() );
@@ -242,15 +242,15 @@ Acquisition Input::operator>>( Input& input ) {
     Input & leftInput = *this;
     Input & rightInput = input;
 
-    Acquisition rightAcq;
+    sensor::Acquisition rightAcq;
     rightInput.read( rightAcq );
-//    assert(rightAcq.getMeasures().front().getResolution().second == hub::Format::DOF6);
+//    assert(rightAcq.getMeasures().front().getResolution().second == Format::DOF6);
 
     auto& leftLastAcqs = leftInput.m_lastAcqs;
 
     assert( leftLastAcqs.size() < 20 );
 
-    Acquisition leftAcq;
+    sensor::Acquisition leftAcq;
 
     if ( leftLastAcqs.empty() ) {
         leftInput.read( leftAcq );
@@ -288,7 +288,7 @@ Acquisition Input::operator>>( Input& input ) {
     const auto & closestMeasures = closestAcq.getMeasures();
 //    rightMeasures.insert(rightMeasures.begin(), closestMeasures.begin(), closestMeasures.end());
 //    rightAcq << closestAcq.getMeasures();
-    hub::Acquisition acq(rightAcq.m_start, rightAcq.m_end);
+    sensor::Acquisition acq(rightAcq.m_start, rightAcq.m_end);
     acq << closestMeasures;
     acq << rightMeasures;
     return acq;

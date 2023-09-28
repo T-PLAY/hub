@@ -10,6 +10,7 @@
 #include <iomanip>
 
 namespace hub {
+namespace sensor {
 
 Acquisition::Acquisition( long long start, long long end ) : m_start( start ), m_end( end ) {
     assert( m_start <= m_end );
@@ -120,7 +121,7 @@ const Measures& Acquisition::getMeasures() const {
 bool Acquisition::hasFixedSize() const {
     return std::all_of(m_measures.cbegin(), m_measures.cend(), [](const Measure & measure) {
         const auto& format = measure.getResolution().second;
-        return res::format2hasFixedSize(format);
+        return resolution::format2hasFixedSize(format);
     });
 //    for ( const auto& measure : m_measures ) {
 //        const auto& format = measure.getResolution().second;
@@ -149,4 +150,5 @@ std::ostream& operator<<( std::ostream& os, const Acquisition& acq ) {
     return os;
 }
 
+} // namespace sensor
 } // namespace hub

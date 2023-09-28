@@ -6,7 +6,7 @@ namespace hub {
 namespace data {
 
 Mat4::Mat4( const Measure& measure ) :
-    Measure( measure.getData(), measure.getSize(), Resolution { { 1 }, Format::MAT4 } ) {
+    Measure( measure.getData(), measure.getSize(), sensor::Resolution { { 1 }, sensor::Format::MAT4 } ) {
     assert( measure.getSize() == 64 );
     assert( m_data != nullptr );
 }
@@ -14,7 +14,7 @@ Mat4::Mat4( const Measure& measure ) :
 Mat4::Mat4( const Mat4& mat4 ) :
     Measure( reinterpret_cast<unsigned char*>( new float[16] ),
              64,
-             Resolution { { 1 }, Format::MAT4 },
+             sensor::Resolution { { 1 }, sensor::Format::MAT4 },
              true ) {
     memcpy( m_data, mat4.m_data, 64 );
 }
@@ -22,7 +22,7 @@ Mat4::Mat4( const Mat4& mat4 ) :
 Mat4::Mat4( float* array ) :
     Measure( reinterpret_cast<unsigned char*>( new float[16] ),
              64,
-             Resolution { { 1 }, Format::MAT4 },
+             sensor::Resolution { { 1 }, sensor::Format::MAT4 },
              true ) {
     memcpy( m_data, array, 64 );
     assert( m_size == 64 );
@@ -31,7 +31,7 @@ Mat4::Mat4( float* array ) :
 Mat4::Mat4( const float* array ) :
     Measure( reinterpret_cast<unsigned char*>( new float[16] ),
              64,
-             Resolution { { 1 }, Format::MAT4 },
+             sensor::Resolution { { 1 }, sensor::Format::MAT4 },
              true ) {
     memcpy( m_data, array, 64 );
     assert( m_size == 64 );
@@ -55,7 +55,7 @@ Mat4::Mat4( float r0c0,
             float r3c3 ) :
     Measure( reinterpret_cast<unsigned char*>( new float[16] ),
              64,
-             Resolution { { 1 }, Format::MAT4 },
+             sensor::Resolution { { 1 }, sensor::Format::MAT4 },
              true ) {
 
     float params[16] { r0c0,

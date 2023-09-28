@@ -2,8 +2,8 @@
 #include <catch2/catch_test_macros.hpp>
 
 
-#include <InputSensor.hpp>
-#include <OutputSensor.hpp>
+#include <sensor/InputSensor.hpp>
+#include <sensor/OutputSensor.hpp>
 
 //#include <server/Server.hpp>
 
@@ -17,21 +17,21 @@ TEST_CASE( "Server test : close clients" ) {
     constexpr int dataSize = 9;
 
     std::cout << "ref acqs : " << std::endl;
-    std::vector<hub::Acquisition> ref_acqs;
+    std::vector<hub::sensor::Acquisition> ref_acqs;
     int ref_offset = 4;
     for ( int iAcq2 = 0; iAcq2 < nAcqs; ++iAcq2 ) {
         unsigned char data[dataSize];
         for ( int i = 0; i < dataSize; ++i ) {
             data[i] = iAcq2 * 10 + ref_offset;
         }
-        ref_acqs.push_back( hub::Acquisition( iAcq2 * 10 + ref_offset, iAcq2 * 10 + ref_offset ) );
+        ref_acqs.push_back( hub::sensor::Acquisition( iAcq2 * 10 + ref_offset, iAcq2 * 10 + ref_offset ) );
         ref_acqs.back() << hub::Measure( reinterpret_cast<const unsigned char*>( data ),
                                            dataSize,
-                                           { { 3 }, hub::Format::BGR8 } );
+                                           { { 3 }, hub::sensor::Format::BGR8 } );
         std::cout << ref_acqs.back() << std::endl;
     }
 
-    std::vector<hub::Acquisition> ref_acqs2;
+    std::vector<hub::sensor::Acquisition> ref_acqs2;
     std::cout << "ref acqs2 : " << std::endl;
     for ( int iAcq = 0; iAcq < nAcqs * 5; ++iAcq ) {
         unsigned char data[dataSize];
@@ -41,13 +41,13 @@ TEST_CASE( "Server test : close clients" ) {
         ref_acqs2.emplace_back( iAcq * 2, iAcq * 2 );
         ref_acqs2.back() << hub::Measure( reinterpret_cast<const unsigned char*>( data ),
                                             dataSize,
-                                            { { 3 }, hub::Format::RGB8 } );
+                                            { { 3 }, hub::sensor::Format::RGB8 } );
         std::cout << ref_acqs2.back() << std::endl;
     }
 
 
     std::cout << "ref_sync_acqs" << std::endl;
-    std::vector<hub::Acquisition> ref_sync_acqs = computeSyncAcqs( ref_acqs, ref_acqs2 );
+    std::vector<hub::sensor::Acquisition> ref_sync_acqs = computeSyncAcqs( ref_acqs, ref_acqs2 );
 
 //    return;
 
@@ -59,8 +59,8 @@ TEST_CASE( "Server test : close clients" ) {
 
     {
         std::cout << "[Test] ############################### outputStream start" << std::endl;
-        hub::OutputSensor outputSensor(
-            hub::SensorSpec { "sensorName", { { { 3 }, hub::Format::BGR8 } } },
+        hub::sensor::OutputSensor outputSensor(
+            hub::sensor::SensorSpec { "sensorName", { { { 3 }, hub::sensor::Format::BGR8 } } },
             hub::output::OutputStream(FILE_NAME)
 //            "stream",
 //            hub::net::ClientSocket( ipv4, port ) );
@@ -73,12 +73,12 @@ TEST_CASE( "Server test : close clients" ) {
         CHECK( outputSensorSpec.getResolutions().size() == 1 );
         CHECK( outputSensorSpec.getResolutions()[0].first.size() == 1 );
         CHECK( outputSensorSpec.getResolutions()[0].first.at( 0 ) == 3 );
-        CHECK( outputSensorSpec.getResolutions()[0].second == hub::Format::BGR8 );
+        CHECK( outputSensorSpec.getResolutions()[0].second == hub::sensor::Format::BGR8 );
         std::cout << "[Test] outputStream end ---------------------------------" << std::endl;
 
         std::cout << "[Test] ############################### outputStream2 start" << std::endl;
-        hub::OutputSensor outputSensor2(
-            hub::SensorSpec { "sensorName2", { { { 3 }, hub::Format::RGB8 } } },
+        hub::sensor::OutputSensor outputSensor2(
+            hub::sensor::SensorSpec { "sensorName2", { { { 3 }, hub::sensor::Format::RGB8 } } },
             hub::output::OutputStream(FILE_NAME "2")
 //            "stream2",
 //            hub::net::ClientSocket( ipv4, port ) );
@@ -91,14 +91,14 @@ TEST_CASE( "Server test : close clients" ) {
         CHECK( outputSensorSpec2.getResolutions().size() == 1 );
         CHECK( outputSensorSpec2.getResolutions()[0].first.size() == 1 );
         CHECK( outputSensorSpec2.getResolutions()[0].first.at( 0 ) == 3 );
-        CHECK( outputSensorSpec2.getResolutions()[0].second == hub::Format::RGB8 );
+        CHECK( outputSensorSpec2.getResolutions()[0].second == hub::sensor::Format::RGB8 );
         std::cout << "[Test] outputStream2 end ---------------------------------" << std::endl;
 
         for ( int i = 0; i < nInput; ++i ) {
             std::cout << "[Test] ############################### inputSensor(stream, stream2)"
                       << std::endl;
             {
-                hub::InputSensor inputSensor(
+                hub::sensor::InputSensor inputSensor(
 //                    hub::input::InputSyncStream( "stream", "stream2", ipv4, port ) );
                     hub::input::InputSyncStream( FILE_NAME, FILE_NAME "2" ) );
 
@@ -108,10 +108,10 @@ TEST_CASE( "Server test : close clients" ) {
                 CHECK( inputSensorSpec.getResolutions().size() == 2 );
                 CHECK( inputSensorSpec.getResolutions()[0].first.size() == 1 );
                 CHECK( inputSensorSpec.getResolutions()[0].first.at( 0 ) == 3 );
-                CHECK( inputSensorSpec.getResolutions()[0].second == hub::Format::BGR8 );
+                CHECK( inputSensorSpec.getResolutions()[0].second == hub::sensor::Format::BGR8 );
                 CHECK( inputSensorSpec.getResolutions()[1].first.size() == 1 );
                 CHECK( inputSensorSpec.getResolutions()[1].first.at( 0 ) == 3 );
-                CHECK( inputSensorSpec.getResolutions()[1].second == hub::Format::RGB8 );
+                CHECK( inputSensorSpec.getResolutions()[1].second == hub::sensor::Format::RGB8 );
                 std::cout << "[Test] inputStream end ---------------------------------"
                           << std::endl;
 
@@ -131,7 +131,7 @@ TEST_CASE( "Server test : close clients" ) {
                 std::cout << "[Test] ############################### compare " << std::endl;
 //                for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
                 for ( int iAcq = 0; iAcq < ref_sync_acqs.size(); ++iAcq ) {
-                    hub::Acquisition acq;
+                    hub::sensor::Acquisition acq;
                     inputSensor >> acq;
 //                    std::cout << "synchronized acq = " << acq << std::endl;
 //                    std::cout << "ref synched acq = " << ref_sync_acqs.at(iAcq) << std::endl;

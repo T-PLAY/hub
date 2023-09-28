@@ -3,7 +3,7 @@
 #include <regex>
 #include <sstream>
 
-#include "InputSensor.hpp"
+#include "sensor/InputSensor.hpp"
 #include "io/input/InputStreamServer.hpp"
 
 //#ifdef DEBUG_MSG
@@ -69,7 +69,7 @@ namespace client {
 //                    m_viewer.m_sock.getIpv4(), m_viewer.m_sock.getPort() ) );
 
 //                while ( !m_stopThread ) {
-//                    hub::Acquisition acq;
+//                    Acquisition acq;
 //                    *m_inputSensor >> acq;
 //                    m_viewer.m_onNewAcquisition( m_streamName.c_str(), acq );
 //                }
@@ -127,12 +127,12 @@ namespace client {
 
 ViewerServer::ViewerServer(
         const std::string & name,
-    std::function<bool( const char* streamName, const SensorSpec& )> onNewStreamer,
-    std::function<void( const char* streamName, const SensorSpec& )> onDelStreamer,
+    std::function<bool( const char* streamName, const sensor::SensorSpec& )> onNewStreamer,
+    std::function<void( const char* streamName, const sensor::SensorSpec& )> onDelStreamer,
     std::function<void( const char* ipv4, int port )> onServerNotFound,
     std::function<void( const char* ipv4, int port )> onServerConnected,
     std::function<void( const char* ipv4, int port )> onServerDisconnected,
-    std::function<void( const char* streamName, const hub::Acquisition& )> onNewAcquisition,
+    std::function<void( const char* streamName, const sensor::Acquisition& )> onNewAcquisition,
     std::function<
         void( const char* streamName, const char* objectName, int property, const Any& value )>
         onSetProperty,
@@ -193,7 +193,7 @@ ViewerServer::ViewerServer(
 
                         std::string streamName;
                         m_sock.read( streamName );
-                        SensorSpec sensorSpec;
+                        sensor::SensorSpec sensorSpec;
                         m_sock.read( sensorSpec );
                         std::cout << "[ViewerServer] new streamer '" << streamName << "'" << std::endl;
 
@@ -231,7 +231,7 @@ ViewerServer::ViewerServer(
                     case io::StreamInterface::ServerMessage::VIEWER_DEL_STREAMER: {
                         std::string streamName;
                         m_sock.read( streamName );
-                        SensorSpec sensorSpec;
+                        sensor::SensorSpec sensorSpec;
                         m_sock.read( sensorSpec );
                         DEBUG_MSG( "[ViewerServer] del streamer '" << streamName << "'" );
 

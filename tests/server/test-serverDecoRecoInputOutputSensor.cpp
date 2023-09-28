@@ -2,8 +2,8 @@
 
 #include "test_common.hpp"
 
-#include <InputSensor.hpp>
-#include <OutputSensor.hpp>
+#include <sensor/InputSensor.hpp>
+#include <sensor/OutputSensor.hpp>
 
 // #include <server/Server.hpp>
 
@@ -15,7 +15,7 @@ TEST_CASE( "Server test : direct stream" ) {
     constexpr int nOutput = 2;
     constexpr int nInput  = 2;
 
-    std::vector<hub::Acquisition> acqs;
+    std::vector<hub::sensor::Acquisition> acqs;
     constexpr int nAcqs    = 20;
     constexpr int dataSize = 9;
     for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
@@ -23,10 +23,10 @@ TEST_CASE( "Server test : direct stream" ) {
         for ( int i = 0; i < dataSize; ++i ) {
             data[i] = iAcq + i;
         }
-        hub::Acquisition acq( iAcq + 1, iAcq + 2 );
+        hub::sensor::Acquisition acq( iAcq + 1, iAcq + 2 );
         acq << hub::Measure { reinterpret_cast<const unsigned char*>( data ),
                                     dataSize,
-                                    { { 3 }, hub::Format::BGR8 } };
+                                    { { 3 }, hub::sensor::Format::BGR8 } };
         acqs.push_back( std::move( acq ) );
     }
 
@@ -38,8 +38,8 @@ TEST_CASE( "Server test : direct stream" ) {
     for ( int iOutput = 0; iOutput < nOutput; ++iOutput ) {
         { // outputSensor
 
-            hub::OutputSensor outputSensor(
-                hub::SensorSpec { "sensorName", { { { 3 }, hub::Format::BGR8 } } },
+            hub::sensor::OutputSensor outputSensor(
+                hub::sensor::SensorSpec { "sensorName", { { { 3 }, hub::sensor::Format::BGR8 } } },
                 hub::output::OutputStream( FILE_NAME )
                 //                "stream",
                 //                hub::net::ClientSocket( ipv4, port ) );
@@ -52,11 +52,11 @@ TEST_CASE( "Server test : direct stream" ) {
             CHECK( outputSensorSpec.getResolutions().size() == 1 );
             CHECK( outputSensorSpec.getResolutions()[0].first.size() == 1 );
             CHECK( outputSensorSpec.getResolutions()[0].first.at( 0 ) == 3 );
-            CHECK( outputSensorSpec.getResolutions()[0].second == hub::Format::BGR8 );
+            CHECK( outputSensorSpec.getResolutions()[0].second == hub::sensor::Format::BGR8 );
 
             for ( int iInput = 0; iInput < nInput; ++iInput ) {
                 {
-                    hub::InputSensor inputSensor(
+                    hub::sensor::InputSensor inputSensor(
                         //                        hub::io::InputStream( "stream",
                         //                        hub::net::ClientSocket( ipv4, port ) ) );
                         //                        hub::input::InputStreamServer( "stream", ipv4,
@@ -69,11 +69,11 @@ TEST_CASE( "Server test : direct stream" ) {
                     CHECK( inputSensorSpec.getResolutions().size() == 1 );
                     CHECK( inputSensorSpec.getResolutions()[0].first.size() == 1 );
                     CHECK( inputSensorSpec.getResolutions()[0].first.at( 0 ) == 3 );
-                    CHECK( inputSensorSpec.getResolutions()[0].second == hub::Format::BGR8 );
+                    CHECK( inputSensorSpec.getResolutions()[0].second == hub::sensor::Format::BGR8 );
 
                     for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
                         outputSensor << acqs[iAcq];
-                        hub::Acquisition acq;
+                        hub::sensor::Acquisition acq;
                         inputSensor >> acq;
                         CHECK( acq == acqs[iAcq] );
                     }

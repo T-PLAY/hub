@@ -14,16 +14,16 @@ int main() {
 
 
 //    const hub::Output & output = hub::Output(); // abstract class
-//    const auto & outputSensor2 = hub::OutputSensor(sensorSpec, hub::output::OutputStream("streamName", ipv4, port));
-    hub::OutputSensor outputSensor2(sensorSpec, "streamName", ipv4, port);
-    hub::OutputSensor outputSensor3(sensorSpec, "streamName", ipv4, port);
+//    const auto & outputSensor2 = hub::sensor::OutputSensor(sensorSpec, hub::output::OutputStream("streamName", ipv4, port));
+    hub::sensor::OutputSensor outputSensor2(sensorSpec, "streamName", ipv4, port);
+    hub::sensor::OutputSensor outputSensor3(sensorSpec, "streamName", ipv4, port);
 //    const hub::Output & output4 = hub::output::OutputStreamInterface("streamName", ipv4, port); // abstract class
-    hub::OutputSensor outputSensor5(sensorSpec, hub::output::OutputFile("filePath"));
+    hub::sensor::OutputSensor outputSensor5(sensorSpec, hub::output::OutputFile("filePath"));
     std::vector<int> vs;
 #if CPLUSPLUS_VERSION < 17
-    hub::OutputSensor outputSensor6(sensorSpec, hub::output::OutputMemory<decltype(vs)>(vs));
+    hub::sensor::OutputSensor outputSensor6(sensorSpec, hub::output::OutputMemory<decltype(vs)>(vs));
 #else
-    hub::OutputSensor outputSensor6(sensorSpec, hub::output::OutputMemory(vs));
+    hub::sensor::OutputSensor outputSensor6(sensorSpec, hub::output::OutputMemory(vs));
 #endif
 
 

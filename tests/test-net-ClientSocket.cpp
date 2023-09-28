@@ -3,8 +3,8 @@
 
 #include <algorithm>
 
-#include <InputSensor.hpp>
-#include <OutputSensor.hpp>
+#include <sensor/InputSensor.hpp>
+#include <sensor/OutputSensor.hpp>
 
 // #include <server/Server.hpp>
 #include <net/ServerSocket.hpp>

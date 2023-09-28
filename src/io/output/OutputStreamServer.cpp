@@ -41,7 +41,7 @@ OutputStreamServer::OutputStreamServer( const std::string& streamName,
         //        auto * clientSocket = m_clientSocket.get();
         std::cout << "[OutputStreamServer:" << this
                   << "] OutputStreamServer(string, string, int) thread started" << std::endl;
-        hub::io::StreamInterface::ServerMessage serverMsg;
+        io::StreamInterface::ServerMessage serverMsg;
         assert( clientSocket->isOpen() );
         clientSocket->read( serverMsg );
         if ( serverMsg == io::StreamInterface::ServerMessage::SERVER_CLOSED ) {

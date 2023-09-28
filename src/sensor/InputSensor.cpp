@@ -1,6 +1,7 @@
 #include "InputSensor.hpp"
 
 namespace hub {
+namespace sensor {
 
 InputSensor::InputSensor( InputSensor&& inputSensor ) :
     Sensor( std::move( inputSensor.m_spec ) ), m_input( std::move( inputSensor.m_input ) ) {
@@ -42,8 +43,8 @@ void InputSensor::operator>>( Acquisition& acq ) {
         const auto& acqMeasure    = acqMeasures.at( i );
         const auto& acqResolution = acqMeasure.getResolution();
 
-        assert( !res::format2hasFixedSize( resolution.second ) ||
-                res::computeAcquisitionSize( resolution ) == acqMeasure.getSize() );
+        assert( !resolution::format2hasFixedSize( resolution.second ) ||
+                resolution::computeAcquisitionSize( resolution ) == acqMeasure.getSize() );
         assert( !acqResolution.first.empty() );
         assert( acqResolution.second != Format::NONE );
         assert( acqResolution == resolution );
@@ -65,4 +66,5 @@ void InputSensor::close() {
     if ( m_input->isOpen() ) m_input->close();
 }
 
+} // namespace sensor
 } // namespace hub

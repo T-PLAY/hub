@@ -70,40 +70,40 @@ int main() {
     hub::SensorSpec sensorSpec("sensorName", {res});
 //    hub::SensorSpec sensorSpec("sensorName", {{{1}, hub::Format::BGR8}});
 //    hub::net::ClientSocket clientSocket;
-//    hub::OutputSensor outputSensor(sensorSpec, std::move(clientSocket));
-//    hub::OutputSensor outputSensor(sensorSpec, "streamName", hub::net::ClientSocket("127.0.0.1", port));
+//    hub::sensor::OutputSensor outputSensor(sensorSpec, std::move(clientSocket));
+//    hub::sensor::OutputSensor outputSensor(sensorSpec, "streamName", hub::net::ClientSocket("127.0.0.1", port));
 //    hub::io::OutputStream outputStream("streamName", "127.0.0.1", port);
-//    hub::OutputSensor outputSensor(sensorSpec, std::move(outputStream));
-//    hub::OutputSensor outputSensor(sensorSpec, hub::io::OutputStream("streamName", "127.0.0.1", port));
-//    hub::OutputSensor outputSensor(sensorSpec, "streamName", "127.0.0.1", port);
-//    hub::OutputSensor outputSensor(sensorSpec, "streamName", "127.0.0.1", port);
-//    hub::OutputSensor outputSensor({"sensorName", {res}}, "streamName", "127.0.0.1", port);
-//    hub::OutputSensor outputSensor(sensorSpec, "streamName", "127.0.0.1", port);
-//    hub::OutputSensor outputSensor({"sensorName", {{{1}, hub::Format::BGR8}}}, "streamName", "127.0.0.1", port);
+//    hub::sensor::OutputSensor outputSensor(sensorSpec, std::move(outputStream));
+//    hub::sensor::OutputSensor outputSensor(sensorSpec, hub::io::OutputStream("streamName", "127.0.0.1", port));
+//    hub::sensor::OutputSensor outputSensor(sensorSpec, "streamName", "127.0.0.1", port);
+//    hub::sensor::OutputSensor outputSensor(sensorSpec, "streamName", "127.0.0.1", port);
+//    hub::sensor::OutputSensor outputSensor({"sensorName", {res}}, "streamName", "127.0.0.1", port);
+//    hub::sensor::OutputSensor outputSensor(sensorSpec, "streamName", "127.0.0.1", port);
+//    hub::sensor::OutputSensor outputSensor({"sensorName", {{{1}, hub::Format::BGR8}}}, "streamName", "127.0.0.1", port);
 
-    hub::OutputSensor outputSensor(sensorSpec, hub::output::OutputStreamMqtt("streamName", "127.0.0.1", port));
+    hub::sensor::OutputSensor outputSensor(sensorSpec, hub::output::OutputStreamMqtt("streamName", "127.0.0.1", port));
 
-    hub::InputSensor inputSensor(hub::input::InputStreamMqtt("streamName", "127.0.0.1", port));
+    hub::sensor::InputSensor inputSensor(hub::input::InputStreamMqtt("streamName", "127.0.0.1", port));
 
 //    assert(outputSensor.getSpec() == inputSensor.getSpec());
 
 //    hub::io::InputStream inputStream("streamName", "127.0.0.1", port);
-//    hub::InputSensor inputSensor(std::move(inputStream));
-//    hub::InputSensor inputSensor(hub::input::InputStream("streamName", "127.0.0.1", port));
-//    hub::InputSensor inputSensor("streamName", "127.0.0.1", port);
-//    hub::InputSensor inputSensor(std::move(clientSocket));
+//    hub::sensor::InputSensor inputSensor(std::move(inputStream));
+//    hub::sensor::InputSensor inputSensor(hub::input::InputStream("streamName", "127.0.0.1", port));
+//    hub::sensor::InputSensor inputSensor("streamName", "127.0.0.1", port);
+//    hub::sensor::InputSensor inputSensor(std::move(clientSocket));
 
-//    hub::InputSensor inputSensor("streamName", "127.0.0.1", port);
+//    hub::sensor::InputSensor inputSensor("streamName", "127.0.0.1", port);
     auto & input = inputSensor.getInput();
 //    assert(input.isEnd());
 
 
-    hub::Acquisition acq(1, 1);
+    hub::sensor::Acquisition acq(1, 1);
     unsigned char data[3];
     for (int i= 0; i <3; ++i) {
         data[i] = rand();
     }
-    hub::Measure measure(data, 3, res);
+    hub::Measure measure(data, 3, resolution);
     acq << std::move(measure);
 
     outputSensor << acq;
@@ -111,7 +111,7 @@ int main() {
 
 
     assert(! input.isEnd());
-    hub::Acquisition acq2;
+    hub::sensor::Acquisition acq2;
     inputSensor >> acq2;
 
     std::cout << acq2 << std::endl;

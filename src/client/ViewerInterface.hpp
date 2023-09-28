@@ -6,11 +6,11 @@
 #include <string>
 #include <thread>
 
-#include "Acquisition.hpp"
-#include "SensorSpec.hpp"
+#include "sensor/Acquisition.hpp"
+#include "sensor/SensorSpec.hpp"
 // #include "net/ClientSocket.hpp"
 // #include "StreamViewer.hpp"
-#include "InputSensor.hpp"
+#include "sensor/InputSensor.hpp"
 #include "utils/Utils.hpp"
 #include <sstream>
 
@@ -55,10 +55,10 @@ class SRC_API ViewerInterface
             const std::string& ipv4,
             int port,
             const std::string& streamName,
-            const SensorSpec& sensorSpec,
-            std::function<bool( const char* streamName, const SensorSpec& )> onNewStreamer,
-            std::function<void( const char* streamName, const SensorSpec& )> onDelStreamer,
-            std::function<void( const char* streamName, const hub::Acquisition& )> onNewAcquisition,
+            const sensor::SensorSpec& sensorSpec,
+            std::function<bool( const char* streamName, const sensor::SensorSpec& )> onNewStreamer,
+            std::function<void( const char* streamName, const sensor::SensorSpec& )> onDelStreamer,
+            std::function<void( const char* streamName, const sensor::Acquisition& )> onNewAcquisition,
             std::function<void( const char* logMessage )> onLogMessage );
 
         ~Stream();
@@ -76,18 +76,18 @@ class SRC_API ViewerInterface
 
         //    ViewerInterface& m_viewer;
         const std::string m_streamName;
-        const SensorSpec m_sensorSpec;
+        const sensor::SensorSpec m_sensorSpec;
 
         //    std::thread* m_thread = nullptr;
         //    std::unique_ptr<std::thread> m_thread;
         bool m_streaming = false;
 
-        std::function<bool( const char* streamName, const SensorSpec& )> m_onNewStreamer;
-        std::function<void( const char* streamName, const SensorSpec& )> m_onDelStreamer;
-        std::function<void( const char* streamName, const hub::Acquisition& )> m_onNewAcquisition;
+        std::function<bool( const char* streamName, const sensor::SensorSpec& )> m_onNewStreamer;
+        std::function<void( const char* streamName, const sensor::SensorSpec& )> m_onDelStreamer;
+        std::function<void( const char* streamName, const sensor::Acquisition& )> m_onNewAcquisition;
         std::function<void( const char* logMessage )> m_onLogMessage;
 
-        std::unique_ptr<InputSensor> m_inputSensor;
+        std::unique_ptr<sensor::InputSensor> m_inputSensor;
         friend class ViewerInterface<InputStream>;
         friend class ViewerInterface;
 
@@ -113,12 +113,12 @@ class SRC_API ViewerInterface
     ///
     explicit ViewerInterface(
         const std::string & name,
-        std::function<bool( const char* streamName, const SensorSpec& )> onNewStreamer = {},
-        std::function<void( const char* streamName, const SensorSpec& )> onDelStreamer = {},
+        std::function<bool( const char* streamName, const sensor::SensorSpec& )> onNewStreamer = {},
+        std::function<void( const char* streamName, const sensor::SensorSpec& )> onDelStreamer = {},
         std::function<void( const char* ipv4, int port )> onServerNotFound             = {},
         std::function<void( const char* ipv4, int port )> onServerConnected            = {},
         std::function<void( const char* ipv4, int port )> onServerDisconnected         = {},
-        std::function<void( const char* streamName, const hub::Acquisition& )> onNewAcquisition =
+        std::function<void( const char* streamName, const sensor::Acquisition& )> onNewAcquisition =
             {},
         std::function<
             void( const char* streamName, const char* id, int property, const Any& value )>
@@ -213,7 +213,7 @@ class SRC_API ViewerInterface
     virtual void setProperty( const std::string& streamName,
                       const std::string& objectName,
                       int property,
-                      const hub::Any& value );
+                      const Any& value );
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -221,7 +221,7 @@ class SRC_API ViewerInterface
   protected:
     void printStatus() const;
 
-    void addStream( const std::string& streamName, const hub::SensorSpec& sensorSpec );
+    void addStream( const std::string& streamName, const sensor::SensorSpec& sensorSpec );
     void deleteStream( const std::string& streamName );
     //    std::thread m_thread;
     //    bool m_stopThread = false;
@@ -230,18 +230,18 @@ class SRC_API ViewerInterface
     std::string m_ipv4;
     int m_port;
 
-    std::function<bool( const char* streamName, const SensorSpec& )> m_onNewStreamer;
-    std::function<void( const char* streamName, const SensorSpec& )> m_onDelStreamer;
+    std::function<bool( const char* streamName, const sensor::SensorSpec& )> m_onNewStreamer;
+    std::function<void( const char* streamName, const sensor::SensorSpec& )> m_onDelStreamer;
     std::function<void( const char* ipv4, int port )> m_onServerNotFound;
     std::function<void( const char* ipv4, int port )> m_onServerConnected;
     std::function<void( const char* ipv4, int port )> m_onServerDisconnected;
-    std::function<void( const char* streamName, const hub::Acquisition& )> m_onNewAcquisition;
+    std::function<void( const char* streamName, const sensor::Acquisition& )> m_onNewAcquisition;
     std::function<
         void( const char* streamName, const char* objectName, int property, const Any& value )>
         m_onSetProperty;
 
     //    net::ClientSocket m_sock;
-    //    hub::Input& m_input;
+    //    Input& m_input;
     bool m_serverConnected = false;
     std::function<void( const char* logMessage )> m_onLogMessage;
 
@@ -269,10 +269,10 @@ ViewerInterface<InputStream>::Stream::Stream(
     const std::string& ipv4,
     int port,
     const std::string& streamName,
-    const SensorSpec& sensorSpec,
-    std::function<bool( const char*, const SensorSpec& )> onNewStreamer,
-    std::function<void( const char*, const SensorSpec& )> onDelStreamer,
-    std::function<void( const char*, const hub::Acquisition& )> onNewAcquisition,
+    const sensor::SensorSpec& sensorSpec,
+    std::function<bool( const char*, const sensor::SensorSpec& )> onNewStreamer,
+    std::function<void( const char*, const sensor::SensorSpec& )> onDelStreamer,
+    std::function<void( const char*, const sensor::Acquisition& )> onNewAcquisition,
     std::function<void( const char* logMessage )> onLogMessage ) :
     //    m_viewer( viewer ),
     m_viewer( viewer ),
@@ -320,7 +320,7 @@ void ViewerInterface<InputStream>::Stream::startStream() {
         try {
 
             //            m_inputSensor = std::make_unique<InputSensor>( input::InputStreamServer(
-            m_inputSensor = std::make_unique<InputSensor>(
+            m_inputSensor = std::make_unique<sensor::InputSensor>(
                 InputStream( m_streamName,
                              //                    net::ClientSocket( m_viewer.m_sock.getIpv4(),
                              //                    m_viewer.m_sock.getPort() ) ) );
@@ -329,7 +329,7 @@ void ViewerInterface<InputStream>::Stream::startStream() {
 
             assert( m_onNewAcquisition );
             while ( !m_stopThread ) {
-                hub::Acquisition acq;
+                sensor::Acquisition acq;
                 *m_inputSensor >> acq;
                 m_onNewAcquisition( m_streamName.c_str(), acq );
             }
@@ -385,12 +385,12 @@ void ViewerInterface<InputStream>::Stream::stopStream() {
 template <class InputStream>
 ViewerInterface<InputStream>::ViewerInterface(
     const std::string & name,
-    std::function<bool( const char*, const SensorSpec& )> onNewStreamer,
-    std::function<void( const char*, const SensorSpec& )> onDelStreamer,
+    std::function<bool( const char*, const sensor::SensorSpec& )> onNewStreamer,
+    std::function<void( const char*, const sensor::SensorSpec& )> onDelStreamer,
     std::function<void( const char*, int )> onServerNotFound,
     std::function<void( const char*, int )> onServerConnected,
     std::function<void( const char*, int )> onServerDisconnected,
-    std::function<void( const char*, const hub::Acquisition& )> onNewAcquisition,
+    std::function<void( const char*, const sensor::Acquisition& )> onNewAcquisition,
     std::function<void( const char*, const char*, int, const Any& )> onSetProperty,
     std::function<void( const char* )> onLogMessage,
     const std::string& ipv4,
@@ -491,7 +491,7 @@ void ViewerInterface<InputStream>::printStatus() const {
 
 template <class InputStream>
 void ViewerInterface<InputStream>::addStream( const std::string& streamName,
-                                              const SensorSpec& sensorSpec ) {
+                                              const sensor::SensorSpec& sensorSpec ) {
     assert( m_streams.find( streamName ) == m_streams.end() );
 
     if ( m_onNewStreamer ) {

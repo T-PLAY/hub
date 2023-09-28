@@ -8,6 +8,7 @@
 #include "Any.hpp"
 
 namespace hub {
+namespace sensor {
 
 #if CPLUSPLUS_VERSION != 20
 SensorSpec::SensorSpec( const SensorNameType& sensorName,
@@ -16,14 +17,14 @@ SensorSpec::SensorSpec( const SensorNameType& sensorName,
     m_sensorName( sensorName ),
     m_resolutions( resolutions ),
     m_metaData( metaData ),
-    m_acquisitionSize( res::computeAcquisitionSize( resolutions ) ) {}
+    m_acquisitionSize( resolution::computeAcquisitionSize( resolutions ) ) {}
 #endif
 
 SensorSpec::SensorSpec(const char *sensorName, const Resolutions &resolutions, const MetaData &metaData) :
     m_sensorName( sensorName ),
     m_resolutions( resolutions ),
     m_metaData( metaData ),
-    m_acquisitionSize( res::computeAcquisitionSize( resolutions ) ) {}
+    m_acquisitionSize( resolution::computeAcquisitionSize( resolutions ) ) {}
 
 SensorSpec SensorSpec::operator+( const SensorSpec& sensorSpec ) const {
     std::string sensorName;
@@ -100,13 +101,8 @@ void pretty_bytes( char* buf, uint64_t bytes ) {
 std::string SensorSpec::to_string() const {
     char acqSizeStr[80];
     pretty_bytes( acqSizeStr, m_acquisitionSize );
-    ////        acqSizeStr += std::to_string((int)(m_acquisitionSize / std::pow(10, 3 * i)) %
-    /// 1'000); /        acqSizeStr += std::to_string(hundred); /        else if (i == 0) { /
-    /// std::stringstream ss; /            ss << std::fixed << std::setprecision(1) << hundred /
-    /// 1000.0; /            acqSizeStr += ss.str(); /            acqSizeStr +=
-    /// std::to_string(hundred); /        }
 
-    return "'" + m_sensorName + "', " + hub::res::to_string( m_resolutions ) + ", " +
+    return "'" + m_sensorName + "', " + sensor::resolution::to_string( m_resolutions ) + ", " +
            SensorSpec::to_string( m_metaData ) + ", " + acqSizeStr;
 }
 
@@ -148,5 +144,6 @@ std::ostream& operator<<( std::ostream& os, const SensorSpec& sensorSpec ) {
     return os;
 }
 
+} // namespace sensor
 } // namespace hub
 

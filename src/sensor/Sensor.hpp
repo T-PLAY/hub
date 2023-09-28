@@ -3,6 +3,7 @@
 #include "SensorSpec.hpp"
 
 namespace hub {
+namespace sensor {
 
 ///
 /// \brief The Sensor class
@@ -46,4 +47,5 @@ inline const SensorSpec& Sensor::getSpec() const {
     return m_spec;
 }
 
+} // namespace sensor
 } // namespace hub

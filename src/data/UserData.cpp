@@ -15,7 +15,7 @@ const Any& UserData::getValue() const {
 }
 
 UserData::UserData( const Measure& measure ) :
-    Measure( measure.getData(), measure.getSize(), Resolution { { 1 }, Format::USER_DATA } ) {
+    Measure( measure.getData(), measure.getSize(), sensor::Resolution { { 1 }, sensor::Format::USER_DATA } ) {
     assert( m_data != nullptr );
     assert( m_size > 0 );
 
@@ -30,7 +30,7 @@ UserData::UserData( const Measure& measure ) :
 }
 
 UserData::UserData( const std::string& name, const Any& value ) :
-    Measure( (unsigned char*)nullptr, 0, Resolution { { 1 }, Format::USER_DATA } ),
+    Measure( (unsigned char*)nullptr, 0, sensor::Resolution { { 1 }, sensor::Format::USER_DATA } ),
     m_name( name ),
     m_value( value ) {
 

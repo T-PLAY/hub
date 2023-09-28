@@ -18,13 +18,13 @@ TEST_CASE( "Streamer" ) {
         hub::client::Streamer streamer;
         std::cout << "[Test] ############################### streamer start" << std::endl;
 
-        const hub::Resolution resolution( { { 1 }, hub::Format::BGR8 } );
-        const hub::SensorSpec sensorSpec( "sensorName", { resolution } );
+        const hub::sensor::Resolution resolution( { { 1 }, hub::sensor::Format::BGR8 } );
+        const hub::sensor::SensorSpec sensorSpec( "sensorName", { resolution } );
 
         unsigned char data[3] { 1, 2, 3 };
-        hub::Acquisition acq =
-            std::move( hub::Acquisition( 0, 1 ) << hub::Measure( data, 3, resolution ) );
-        std::vector<hub::Acquisition> acqs;
+        hub::sensor::Acquisition acq =
+            std::move( hub::sensor::Acquisition( 0, 1 ) << hub::Measure( data, 3, resolution ) );
+        std::vector<hub::sensor::Acquisition> acqs;
         acqs.push_back( acq.clone() );
 
         streamer.addStream( FILE_NAME, sensorSpec, std::move( acqs ) );

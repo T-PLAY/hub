@@ -15,13 +15,13 @@ TEST_CASE( "Server test" ) {
 //    server.asyncRun();
 
     {
-        std::unique_ptr<hub::InputSensor> inputSensor;
+        std::unique_ptr<hub::sensor::InputSensor> inputSensor;
 
         std::thread thread;
 
         {
-            hub::OutputSensor outputSensor(
-                hub::SensorSpec( "sensorName", { { { 1 }, hub::Format::BGR8 } } ),
+            hub::sensor::OutputSensor outputSensor(
+                hub::sensor::SensorSpec( "sensorName", { { { 1 }, hub::sensor::Format::BGR8 } } ),
                 hub::output::OutputStream(FILE_NAME)
 //                "streamName",
 //                hub::net::ClientSocket( ipv4, port ) );
@@ -29,7 +29,7 @@ TEST_CASE( "Server test" ) {
                 );
             std::cout << "[test] outputSensor created" << std::endl;
 
-            inputSensor = std::make_unique<hub::InputSensor>(
+            inputSensor = std::make_unique<hub::sensor::InputSensor>(
 //                hub::io::InputStream( "streamName", hub::net::ClientSocket( ipv4, port ) ) );
 //                hub::input::InputStreamServer( "streamName", ipv4, port ) );
                 hub::input::InputStream( FILE_NAME ) );
@@ -38,7 +38,7 @@ TEST_CASE( "Server test" ) {
             thread = std::thread( [&inputSensor]() {
                 try {
                     while ( true ) {
-                        hub::Acquisition acq;
+                        hub::sensor::Acquisition acq;
                         *inputSensor >> acq;
                         std::cout << "[test] receive acq: " << acq << std::endl;
                     }

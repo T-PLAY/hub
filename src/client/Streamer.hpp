@@ -5,11 +5,11 @@
 #include <string>
 #include <thread>
 
-#include "Acquisition.hpp"
-#include "SensorSpec.hpp"
+#include "sensor/Acquisition.hpp"
+#include "sensor/SensorSpec.hpp"
 // #include "net/ClientSocket.hpp"
 #include "io/output/OutputStream.hpp"
-#include "OutputSensor.hpp"
+#include "sensor/OutputSensor.hpp"
 
 namespace hub {
 namespace client {
@@ -32,24 +32,24 @@ class SRC_API Streamer
       public:
         Stream( Streamer& streamer,
                 const std::string& streamName,
-                const SensorSpec& sensorSpec,
-                std::vector<Acquisition>&& initAcqs );
+                const sensor::SensorSpec& sensorSpec,
+                std::vector<sensor::Acquisition>&& initAcqs );
 
         Stream( Stream&& stream ) = delete;
         ~Stream();
 
         void init();
-        void newAcquisition( const Acquisition& acquisition );
+        void newAcquisition( const sensor::Acquisition& acquisition );
 
       private:
         Streamer& m_streamer;
         const std::string m_streamName;
-        const hub::SensorSpec m_sensorSpec;
-        hub::OutputSensor* m_outputSensor = nullptr;
+        const sensor::SensorSpec m_sensorSpec;
+        sensor::OutputSensor* m_outputSensor = nullptr;
 
         std::mutex m_mtxOutputSensor;
 
-        std::vector<hub::Acquisition> m_initAcqs;
+        std::vector<sensor::Acquisition> m_initAcqs;
     }; // end class Stream
 
   public:
@@ -78,8 +78,8 @@ class SRC_API Streamer
     /// for recorded stream (fixed size).
     ///
     void addStream( const std::string& streamName,
-                    const SensorSpec& sensorSpec,
-                    std::vector<Acquisition>&& initAcqs = {} );
+                    const sensor::SensorSpec& sensorSpec,
+                    std::vector<sensor::Acquisition>&& initAcqs = {} );
 
     ///
     /// \brief newAcquisition
@@ -93,7 +93,7 @@ class SRC_API Streamer
     /// The parameter stream with the param name 'streamName' has to be added before share
     /// acquisition.
     ///
-    void newAcquisition( const std::string& streamName, const Acquisition& acquisition );
+    void newAcquisition( const std::string& streamName, const sensor::Acquisition& acquisition );
 
     ///
     /// \brief isConnected

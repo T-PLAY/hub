@@ -17,13 +17,13 @@ int main() {
     unsigned char* data       = new unsigned char[dataSize];
     unsigned char* data2      = new unsigned char[dataSize];
 
-    std::vector<hub::Acquisition> acqs( nAcqs );
+    std::vector<hub::sensor::Acquisition> acqs( nAcqs );
     for ( int i = 0; i < dataSize; ++i ) {
         data[i] = i % 256;
     }
 
     for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
-        hub::Acquisition acq( iAcq, iAcq );
+        hub::sensor::Acquisition acq( iAcq, iAcq );
         acq << hub::Measure( reinterpret_cast<unsigned const char*>( data ),
                                    dataSize,
                                    { { width, height }, hub::Format::BGR8 } );
@@ -159,7 +159,7 @@ int main() {
             std::cout
                 << "[test][InputOutputSensor] ############################### outputStream start"
                 << std::endl;
-            hub::OutputSensor outputSensor(
+            hub::sensor::OutputSensor outputSensor(
                 hub::SensorSpec( "sensorName", { { { width, height }, hub::Format::BGR8 } } ),
                 "streamName",
 //                hub::net::ClientSocket( ipv4, port2 ) );
@@ -168,7 +168,7 @@ int main() {
             std::cout
                 << "[test][InputOutputSensor] ############################### inputStream start"
                 << std::endl;
-            hub::InputSensor inputSensor(
+            hub::sensor::InputSensor inputSensor(
 //                hub::io::InputStream( "streamName", hub::net::ClientSocket( ipv4, port2 ) ) );
                 hub::input::InputStream( "streamName", ipv4, port2 ) );
 
@@ -192,7 +192,7 @@ int main() {
             const auto& start3 = std::chrono::high_resolution_clock::now();
             for ( int i = 0; i < nAcqs; ++i ) {
                 outputSensor << acqs.at( i );
-                hub::Acquisition acq;
+                hub::sensor::Acquisition acq;
                 inputSensor >> acq;
                 assert( acq == acqs.at( i ) );
             }

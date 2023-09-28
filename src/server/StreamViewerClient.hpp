@@ -3,7 +3,7 @@
 #include <thread>
 
 #include "Client.hpp"
-#include "OutputSensor.hpp"
+#include "sensor/OutputSensor.hpp"
 #include "net/ClientSocket.hpp"
 
 namespace hub {
@@ -18,17 +18,17 @@ class StreamerClient;
 class StreamViewerClient : public Client
 {
   private:
-    StreamViewerClient( Server* server, int iClient, hub::net::ClientSocket&& sock, std::string  streamName );
+    StreamViewerClient( Server* server, int iClient, net::ClientSocket&& sock, std::string  streamName );
     ~StreamViewerClient();
 
     std::string headerMsg() const override;
 
-    void update( const hub::Acquisition& acq );
+    void update( const sensor::Acquisition& acq );
 
     void end(io::StreamInterface::ServerMessage message ) override;
 
   private:
-    std::unique_ptr<hub::OutputSensor> m_outputSensor;
+    std::unique_ptr<sensor::OutputSensor> m_outputSensor;
 
     std::string m_streamName;
 

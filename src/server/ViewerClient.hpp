@@ -18,13 +18,13 @@ class StreamerClient;
 class ViewerClient : public Client
 {
   private:
-    ViewerClient( Server* server, int iClient, hub::net::ClientSocket&& sock );
+    ViewerClient( Server* server, int iClient, net::ClientSocket&& sock );
     ~ViewerClient();
 
     std::string headerMsg() const override;
 
-    void notifyNewStreamer( const std::string& streamName, const SensorSpec& sensorSpec );
-    void notifyDelStreamer( const std::string& streamName, const SensorSpec& sensorSpec );
+    void notifyNewStreamer( const std::string& streamName, const sensor::SensorSpec& sensorSpec );
+    void notifyDelStreamer( const std::string& streamName, const sensor::SensorSpec& sensorSpec );
 
     void end( io::StreamInterface::ServerMessage message ) override;
     void notifyProperty( const std::string& streamName,
@@ -35,7 +35,7 @@ class ViewerClient : public Client
   private:
     std::thread m_thread;
 
-    hub::net::ClientSocket m_socket;
+    net::ClientSocket m_socket;
 
     bool m_viewerClosed = false;
 

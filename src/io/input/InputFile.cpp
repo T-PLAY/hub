@@ -20,7 +20,7 @@ InputFile::InputFile(const std::string &filePath)
 InputFile::InputFile(const char *filePath)
     : File(filePath)
     , m_file(filePath, std::ios::in | std::ios::binary)
-//            hub::io::File( std::fstream( filename, std::ios::in | std::ios::binary ) ) );
+//            io::File( std::fstream( filename, std::ios::in | std::ios::binary ) ) );
 {
     assert(m_file.is_open());
 

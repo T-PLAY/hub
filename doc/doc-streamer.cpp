@@ -49,7 +49,7 @@ while ( receivingDataFromSensor ) {
     auto size = sensorAPI::getData().size;
 #endif
 
-    auto&& acq {hub::Acquisition { start, end } << hub::Measure { data, size, resolution }};
+    auto&& acq {hub::sensor::Acquisition { start, end } << hub::Measure { data, size, resolution }};
     // share new sensor data (only if connected to the server)
     streamer.newAcquisition( "myStream", std::move( acq ) );
 }

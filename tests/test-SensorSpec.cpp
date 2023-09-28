@@ -1,41 +1,41 @@
 
 #include <catch2/catch_test_macros.hpp>
 
-#include <InputSensor.hpp>
-#include <OutputSensor.hpp>
+#include <sensor/InputSensor.hpp>
+#include <sensor/OutputSensor.hpp>
 #include <io/File.hpp>
 
 TEST_CASE( "SensorSpec test" ) {
 
-    hub::SensorSpec::MetaData metaData;
+    hub::sensor::SensorSpec::MetaData metaData;
     metaData["hello"] = 5;
     metaData["name"]  = "gauthier";
-    hub::Dims dims    = { 1 };
-    hub::SensorSpec sensorSpec { "sensorName", { { dims, hub::Format::BGR8 } }, metaData };
+    hub::sensor::Dims dims    = { 1 };
+    hub::sensor::SensorSpec sensorSpec { "sensorName", { { dims, hub::sensor::Format::BGR8 } }, metaData };
 
     CHECK( sensorSpec.getSensorName() == "sensorName" );
     CHECK( sensorSpec.getAcquisitionSize() == 3 );
 
-    hub::SensorSpec sensorSpec2 { "sensorName2", { { { 2 }, hub::Format::RGB8 } } };
+    hub::sensor::SensorSpec sensorSpec2 { "sensorName2", { { { 2 }, hub::sensor::Format::RGB8 } } };
 
     auto sensorSpecSum = sensorSpec + sensorSpec2;
     CHECK( sensorSpecSum.getSensorName() == "sensorName + sensorName2" );
     CHECK( sensorSpecSum.getAcquisitionSize() == 9 );
 
-    hub::SensorSpec sensorSpec3;
+    hub::sensor::SensorSpec sensorSpec3;
     sensorSpec3 += sensorSpec;
 
-    hub::SensorSpec sensorSpec4;
+    hub::sensor::SensorSpec sensorSpec4;
     sensorSpec4 += sensorSpec;
     CHECK( sensorSpec3 == sensorSpec4 );
 
     std::cout << sensorSpec.to_string() << std::endl;
-    std::cout << hub::SensorSpec::to_string( metaData ) << std::endl;
-    std::cout << hub::SensorSpec::to_string( metaData, true ) << std::endl;
+    std::cout << hub::sensor::SensorSpec::to_string( metaData ) << std::endl;
+    std::cout << hub::sensor::SensorSpec::to_string( metaData, true ) << std::endl;
     std::cout << sensorSpec << std::endl;
 
-    hub::SensorSpec sensorSpec5( "sensorName" );
-    sensorSpec5 += hub::SensorSpec();
+    hub::sensor::SensorSpec sensorSpec5( "sensorName" );
+    sensorSpec5 += hub::sensor::SensorSpec();
 
     std::cout << sensorSpec5 << std::endl;
 }

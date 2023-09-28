@@ -5,7 +5,7 @@
 #include <cstring>
 
 #include "Macros.hpp"
-#include "Resolution.hpp"
+#include "sensor/Resolution.hpp"
 //#include "Input.hpp"
 //#include "Output.hpp"
 
@@ -45,7 +45,8 @@ class SRC_API Measure
     /// needs to be compatible with the sensorSpec when you send this measure through the
     /// OutputSensor.
     ///
-    template <class Resolution = Resolution>
+    // todo refactor
+    template <class Resolution = sensor::Resolution>
     Measure( const unsigned char* const data, uint64_t size, Resolution&& resolution );
 
     ///
@@ -142,7 +143,7 @@ class SRC_API Measure
     /// \return
     /// internal resolution.
     ///
-    const inline Resolution& getResolution() const;
+    const inline sensor::Resolution& getResolution() const;
 
     ///
     /// \brief getData
@@ -173,7 +174,7 @@ class SRC_API Measure
     bool m_ownData = false;
 
   private:
-    Resolution m_resolution;
+    sensor::Resolution m_resolution;
     bool m_isMoved = false;
 
     friend class Input;
@@ -199,14 +200,14 @@ Measure::Measure( const unsigned char* const data, uint64_t size, Resolution&& r
     m_resolution( std::forward<Resolution>( resolution ) ),
     m_ownData( true ) {
 
-    static_assert( std::is_same<std::decay_t<Resolution>, std::decay_t<hub::Resolution>>::value,
+    static_assert( std::is_same<std::decay_t<Resolution>, std::decay_t<sensor::Resolution>>::value,
                    "must be the same as Resolution" );
 
     assert( data != nullptr );
     memcpy( const_cast<unsigned char*>( m_data ), data, m_size );
     assert( m_size > 0 );
     assert( m_data != nullptr );
-    assert( size == res::computeAcquisitionSize( m_resolution ) );
+    assert( size == sensor::resolution::computeAcquisitionSize( m_resolution ) );
 }
 
 template <class Resolution>
@@ -216,18 +217,18 @@ Measure::Measure( unsigned char* data, uint64_t size, Resolution&& resolution, b
     m_resolution( std::forward<Resolution>( resolution ) ),
     m_ownData( stealData ) {
 
-    static_assert( std::is_same<std::decay_t<Resolution>, std::decay_t<hub::Resolution>>::value,
+    static_assert( std::is_same<std::decay_t<Resolution>, std::decay_t<sensor::Resolution>>::value,
                    "must be the same as Resolution" );
 
-    if ( !res::format2hasFixedSize( m_resolution.second ) ) return;
+    if ( !sensor::resolution::format2hasFixedSize( m_resolution.second ) ) return;
     assert( data != nullptr );
     assert( m_size > 0 );
     assert( m_data != nullptr );
-    assert( !res::format2hasFixedSize( m_resolution.second ) ||
-            size == res::computeAcquisitionSize( m_resolution ) );
+    assert( !sensor::resolution::format2hasFixedSize( m_resolution.second ) ||
+            size == sensor::resolution::computeAcquisitionSize( m_resolution ) );
 }
 
-const inline Resolution& Measure::getResolution() const {
+const inline sensor::Resolution& Measure::getResolution() const {
     return m_resolution;
 }
 

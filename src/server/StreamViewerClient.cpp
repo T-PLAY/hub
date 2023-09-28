@@ -7,24 +7,24 @@
 namespace hub {
 namespace server {
 
-class OutputStreamClient : public hub::Output
+class OutputStreamClient : public Output
 {
   public:
-    explicit OutputStreamClient( hub::net::ClientSocket&& clientSocket ) :
+    explicit OutputStreamClient( net::ClientSocket&& clientSocket ) :
         m_clientSocket( std::move( clientSocket ) ) {}
 
     OutputStreamClient( OutputStreamClient&& outputStream );
     ~OutputStreamClient();
 
   protected:
-    void write( const hub::Acquisition& acq ) override;
+    void write( const sensor::Acquisition& acq ) override;
 
     void write( const unsigned char* data, size_t len ) override;
     void close() override;
     bool isOpen() const override;
 
   private:
-    hub::net::ClientSocket m_clientSocket;
+    net::ClientSocket m_clientSocket;
     bool m_moved = false;
 
     friend class StreamViewerClient;
@@ -41,9 +41,9 @@ OutputStreamClient::~OutputStreamClient() {
 #endif
 }
 
-void OutputStreamClient::write( const hub::Acquisition& acq ) {
-    hub::Output::write( hub::io::StreamInterface::ServerMessage::STREAM_VIEWER_NEW_ACQ );
-    hub::Output::write( acq );
+void OutputStreamClient::write( const sensor::Acquisition& acq ) {
+    Output::write( io::StreamInterface::ServerMessage::STREAM_VIEWER_NEW_ACQ );
+    Output::write( acq );
 }
 
 void OutputStreamClient::write( const unsigned char* data, size_t len ) {
@@ -52,7 +52,7 @@ void OutputStreamClient::write( const unsigned char* data, size_t len ) {
 
 void OutputStreamClient::close() {
     assert( isOpen() );
-    m_clientSocket.write( hub::io::StreamInterface::ClientMessage::STREAM_VIEWER_CLIENT_CLOSED );
+    m_clientSocket.write( io::StreamInterface::ClientMessage::STREAM_VIEWER_CLIENT_CLOSED );
     m_clientSocket.close();
 }
 
@@ -64,12 +64,12 @@ bool OutputStreamClient::isOpen() const {
 
 StreamViewerClient::StreamViewerClient( Server* server,
                                         int iClient,
-                                        hub::net::ClientSocket&& sock,
+                                        net::ClientSocket&& sock,
                                         std::string streamName ) :
     Client( server, iClient ), m_streamName( std::move( streamName ) ) {
 
     //        try {
-    //            const hub::InputSensor* inputSensor;
+    //            const InputSensor* inputSensor;
     //            int iTry = 0;
     //            while ( !m_ending &&
     //                    ( inputSensor = m_server->getInputSensor( m_streamName ) ) == nullptr &&
@@ -81,7 +81,7 @@ StreamViewerClient::StreamViewerClient( Server* server,
     //            assert(iTry < 10);
 
     //            if ( m_ending ) {
-    //                sock.write( hub::io::StreamInterface::ServerMessage::STREAM_VIEWER_CLOSED );
+    //                sock.write( io::StreamInterface::ServerMessage::STREAM_VIEWER_CLOSED );
     //                sock.close();
     //                throw net::Socket::exception( "input stream closed" );
     //                //                std::thread( [this]() { delete this; } ).detach();
@@ -92,7 +92,7 @@ StreamViewerClient::StreamViewerClient( Server* server,
     //            const auto& sensorSpec = m_server->getSensorSpec( m_streamName );
     const auto& sensorSpec = inputSensor->getSpec();
     m_outputSensor =
-        std::make_unique<hub::OutputSensor>( sensorSpec, OutputStreamClient( std::move( sock ) ) );
+        std::make_unique<sensor::OutputSensor>( sensorSpec, OutputStreamClient( std::move( sock ) ) );
 
     m_server->addStreamViewer( this );
 
@@ -101,14 +101,14 @@ StreamViewerClient::StreamViewerClient( Server* server,
             OutputStreamClient& outputStream =
                 dynamic_cast<OutputStreamClient&>( m_outputSensor->getOutput() );
 
-            hub::io::StreamInterface::ClientMessage message;
+            io::StreamInterface::ClientMessage message;
             // wait for client connection closed
             outputStream.m_clientSocket.read( message );
             assert( message == io::StreamInterface::ClientMessage::STREAM_VIEWER_CLIENT_CLOSED );
 
             std::cout << headerMsg() << "input stream closed by client " << std::endl;
         }
-        catch ( hub::net::Socket::exception& ex ) {
+        catch ( net::Socket::exception& ex ) {
 
             std::cout << headerMsg() << "catch exception : " << ex.what() << std::endl;
         }
@@ -137,7 +137,7 @@ std::string StreamViewerClient::headerMsg() const {
     return Client::headerMsg() + "[StreamViewer] ";
 }
 
-void StreamViewerClient::update( const Acquisition& acq ) {
+void StreamViewerClient::update( const sensor::Acquisition& acq ) {
     assert(m_outputSensor != nullptr);
 //    if ( m_outputSensor != nullptr )
     *m_outputSensor << acq;

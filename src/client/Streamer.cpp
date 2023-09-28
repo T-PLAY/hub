@@ -4,7 +4,7 @@
 #include <chrono>
 #include <regex>
 
-#include "OutputSensor.hpp"
+#include "sensor/OutputSensor.hpp"
 #include "io/output/OutputStream.hpp"
 
 namespace hub {
@@ -12,7 +12,7 @@ namespace client {
 
 //////////////////////////////////////// Stream ////////////////////////////////////////
 
-Streamer::Stream::Stream(Streamer &streamer, const std::string &streamName, const SensorSpec &sensorSpec, std::vector<Acquisition> &&initAcqs) :
+Streamer::Stream::Stream(Streamer &streamer, const std::string &streamName, const sensor::SensorSpec &sensorSpec, std::vector<sensor::Acquisition> &&initAcqs) :
     m_streamer( streamer ),
     m_streamName( streamName ),
     m_sensorSpec( sensorSpec ),
@@ -55,7 +55,7 @@ void Streamer::Stream::init() {
     m_mtxOutputSensor.lock();
 
     try {
-        //            hub::net::ClientSocket sock( m_streamer.m_ipv4, m_streamer.m_port );
+        //            net::ClientSocket sock( m_streamer.m_ipv4, m_streamer.m_port );
         //            assert( sock.isConnected() );
         //            assert( sock.isOpen() );
 
@@ -63,7 +63,7 @@ void Streamer::Stream::init() {
         //            m_outputSensor = new OutputSensor( m_sensorSpec, m_streamName,
         //            std::move( sock ) ); m_outputSensor = new OutputSensor( m_sensorSpec,
         //            m_streamName, m_streamer.m_ipv4, m_streamer.m_port );
-        m_outputSensor = new OutputSensor(
+        m_outputSensor = new sensor::OutputSensor(
             m_sensorSpec,
             output::OutputStream( m_streamName, m_streamer.m_ipv4, m_streamer.m_port ) );
 
@@ -82,7 +82,7 @@ void Streamer::Stream::init() {
     std::cout << "[Stream] " << m_streamName << " inited " << std::endl;
 }
 
-void Streamer::Stream::newAcquisition(const Acquisition &acquisition) {
+void Streamer::Stream::newAcquisition(const sensor::Acquisition &acquisition) {
 
     assert( m_streamer.m_serverConnected );
 
@@ -115,8 +115,8 @@ Streamer::Streamer( const std::string& ipv4, int port ) :
 }
 
 void Streamer::addStream( const std::string& streamName,
-                          const SensorSpec& sensorSpec,
-                          std::vector<Acquisition>&& initAcqs ) {
+                          const sensor::SensorSpec& sensorSpec,
+                          std::vector<sensor::Acquisition>&& initAcqs ) {
     std::cout << "[Streamer] addStream '" << streamName << "'" << std::endl;
     assert( m_streams.find( streamName ) == m_streams.end() );
 
@@ -126,7 +126,7 @@ void Streamer::addStream( const std::string& streamName,
     if ( !m_serverConnected ) { waitingForServer(); }
 }
 
-void Streamer::newAcquisition( const std::string& streamName, const Acquisition& acquisition ) {
+void Streamer::newAcquisition( const std::string& streamName, const sensor::Acquisition& acquisition ) {
 
     if ( m_serverConnected ) {
 

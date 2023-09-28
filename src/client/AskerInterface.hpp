@@ -3,9 +3,9 @@
 
 #include <string>
 
-#include "Acquisition.hpp"
+#include "sensor/Acquisition.hpp"
 #include "Macros.hpp"
-#include "SensorSpec.hpp"
+#include "sensor/SensorSpec.hpp"
 //#include "net/ClientSocket.hpp"
 
 namespace hub {
@@ -34,7 +34,7 @@ class SRC_API AskerInterface
     /// \return
     /// list of connected sensors to the server
     ///
-    virtual std::list<std::pair<std::string, hub::SensorSpec>> listStreams() = 0;
+    virtual std::list<std::pair<std::string, sensor::SensorSpec>> listStreams() = 0;
 
     ///
     /// \brief getAcquisition
@@ -42,7 +42,7 @@ class SRC_API AskerInterface
     /// \param streamName
     /// \return
     ///
-    virtual hub::Acquisition getAcquisition( const std::string& streamName ) = 0;
+    virtual sensor::Acquisition getAcquisition( const std::string& streamName ) = 0;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
 

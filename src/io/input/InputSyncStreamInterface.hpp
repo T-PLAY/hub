@@ -32,7 +32,7 @@ class SRC_API InputSyncStreamInterface : public Input
     /// \warning The hub service must be accessible, that means the
     /// server hub is running on a machine you know the ip and the oppened port of the service.
     /// \warning Stream you want to link (by their names) needs to be active in the server hub.
-    /// \exception hub::net::Socket::exception
+    /// \exception net::Socket::exception
     /// when the server is not found or by loosing connection to the server.
     /// Also occur when stream you want to link is not connected to the server.
     ///
@@ -75,20 +75,20 @@ class SRC_API InputSyncStreamInterface : public Input
     /// \brief getAcq
     /// \param acq
     ///
-    void read( Acquisition& acq ) override;
+    void read( sensor::Acquisition& acq ) override;
 
     ///
     /// \brief read
     /// \param sensorSpec
     ///
-    void read( SensorSpec& sensorSpec ) override;
+    void read( sensor::SensorSpec& sensorSpec ) override;
 
 
 
   private:
     InputStream m_inputStream;
     InputStream m_inputStream2;
-    std::list<Acquisition> m_lastAcqs;
+    std::list<sensor::Acquisition> m_lastAcqs;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -128,7 +128,7 @@ inline bool InputSyncStreamInterface<InputStream>::isEnd() const {
 
 
 template <class InputStream>
-inline void InputSyncStreamInterface<InputStream>::read( Acquisition& acq ) {
+inline void InputSyncStreamInterface<InputStream>::read( sensor::Acquisition& acq ) {
 
     Input& input = m_inputStream;
     Input& input2       = m_inputStream2;
@@ -138,9 +138,9 @@ inline void InputSyncStreamInterface<InputStream>::read( Acquisition& acq ) {
 }
 
 template <class InputStream>
-inline void InputSyncStreamInterface<InputStream>::read( SensorSpec& sensorSpec ) {
+inline void InputSyncStreamInterface<InputStream>::read( sensor::SensorSpec& sensorSpec ) {
     m_inputStream.read( sensorSpec );
-    SensorSpec sensorSpec2;
+    sensor::SensorSpec sensorSpec2;
     m_inputStream2.read( sensorSpec2 );
 
     sensorSpec = sensorSpec + sensorSpec2;

@@ -8,7 +8,7 @@
 TEST_CASE( "UserData test" ) {
 
     unsigned char data[28] { 0 };
-    const auto& resolution = hub::Resolution { { 1 }, hub::Format::DOF6 };
+    const auto& resolution = hub::sensor::Resolution { { 1 }, hub::sensor::Format::DOF6 };
     hub::Measure measure( data, 28, resolution );
 
     hub::data::UserData userData( "userData", 0 );

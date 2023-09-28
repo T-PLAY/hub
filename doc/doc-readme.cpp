@@ -53,7 +53,7 @@ int main() {
         metaData["date"] = "now";
         const hub::SensorSpec sensorSpec( "sensorName", { imageResolution }, metaData );
 
-        hub::OutputSensor outputSensor {
+        hub::sensor::OutputSensor outputSensor {
             sensorSpec, "streamName", hub::net::ClientSocket { "serverIp", serverPort } };
 
         while ( 1 ) {
@@ -68,14 +68,14 @@ int main() {
 #endif
 
             // send data
-            outputSensor << ( hub::Acquisition { start, end }
+            outputSensor << ( hub::sensor::Acquisition { start, end }
                               << hub::Measure { data, size, imageResolution } );
         }
     }
 
     {
         // init input sensor
-        hub::InputSensor inputSensor { hub::io::InputStream {
+        hub::sensor::InputSensor inputSensor { hub::io::InputStream {
             "streamName", hub::net::ClientSocket { "serverIp", serverPort } } };
 
         const auto& resolutions = inputSensor.getSpec().getResolutions();
@@ -94,7 +94,7 @@ int main() {
 
                 while ( 1 ) {
                     // receive data
-                    hub::Acquisition acq;
+                    hub::sensor::Acquisition acq;
                     inputSensor >> acq;
                     const auto& measure = acq.getMeasures().at( 0 );
 

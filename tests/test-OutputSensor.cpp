@@ -2,8 +2,8 @@
 #include "test_common.hpp"
 #include <catch2/catch_test_macros.hpp>
 
-#include <InputSensor.hpp>
-#include <OutputSensor.hpp>
+#include <sensor/InputSensor.hpp>
+#include <sensor/OutputSensor.hpp>
 
 // #include <io/Interface.hpp>
 
@@ -11,19 +11,19 @@ TEST_CASE( "OutputSensor test" ) {
 
     std::vector<char> buff;
 
-    const auto resolution = hub::Resolution { { 1 }, hub::Format::BGR8 };
-    const hub::SensorSpec sensorSpec( "sensorName", { resolution } );
+    const auto resolution = hub::sensor::Resolution { { 1 }, hub::sensor::Format::BGR8 };
+    const hub::sensor::SensorSpec sensorSpec( "sensorName", { resolution } );
     unsigned char data[3] { 1, 2, 3 };
-    hub::OutputSensor outputSensor( sensorSpec, hub::io::Memory<decltype( buff )>( buff ) );
+    hub::sensor::OutputSensor outputSensor( sensorSpec, hub::io::Memory<decltype( buff )>( buff ) );
 
-    auto acq = std::move( hub::Acquisition { 0, 1 } << hub::Measure { data, 3, resolution } );
+    auto acq = std::move( hub::sensor::Acquisition { 0, 1 } << hub::Measure { data, 3, resolution } );
     outputSensor << acq;
     outputSensor << acq;
     outputSensor << acq;
 
-    hub::InputSensor inputSensor { hub::io::Memory<decltype( buff )>( buff ) };
+    hub::sensor::InputSensor inputSensor { hub::io::Memory<decltype( buff )>( buff ) };
 
-    hub::Acquisition acq2;
+    hub::sensor::Acquisition acq2;
     inputSensor >> acq2;
     CHECK( acq == acq2 );
 

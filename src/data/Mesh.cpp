@@ -84,7 +84,7 @@ class MeshImpl
 MeshImpl::~MeshImpl() {}
 
 Mesh::Mesh( const Measure& measure ) :
-    Measure( measure.getData(), measure.getSize(), Resolution { { 1 }, Format::MESH } ),
+    Measure( measure.getData(), measure.getSize(), sensor::Resolution { { 1 }, sensor::Format::MESH } ),
     m_pimpl( new MeshImpl ) {
     assert( m_data != nullptr );
 }
@@ -92,7 +92,7 @@ Mesh::Mesh( const Measure& measure ) :
 Mesh::Mesh( const Mesh& mesh ) :
     Measure( new unsigned char[mesh.m_size],
              mesh.m_size,
-             Resolution { { 1 }, Format::MESH },
+             sensor::Resolution { { 1 }, sensor::Format::MESH },
              true ),
     m_pimpl( mesh.m_pimpl )
 
@@ -108,7 +108,7 @@ Mesh::~Mesh() = default;
 
 // Mesh::Mesh( const std::string& name, const std::vector<std::string>& filePaths ) :
 Mesh::Mesh( std::initializer_list<std::string> filePaths ) :
-    Measure( (unsigned char*)nullptr, 0, Resolution { { 1 }, Format::MESH } ),
+    Measure( (unsigned char*)nullptr, 0, sensor::Resolution { { 1 }, sensor::Format::MESH } ),
     m_pimpl( new MeshImpl ) {
 
     std::vector<std::string> filenames;

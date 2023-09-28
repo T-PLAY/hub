@@ -69,7 +69,7 @@ hub::Resolution CustomVector::getResolution() const {
 
 CustomVector::CustomVector( const Matrix8u& data, const hub::Resolution& resolution ) :
     m_data( data ), m_resolution( resolution ) {
-    assert( m_data.size() == hub::res::computeAcquisitionSize( resolution ) );
+    assert( m_data.size() == hub::sensor::resolution::computeAcquisitionSize( resolution ) );
 }
 
 unsigned char* CustomVector::getData() const {
@@ -101,9 +101,9 @@ PYBIND11_MODULE( Hub, m ) {
             return py::bytes( self.m_sensorSpec.to_string() );
         } );
 
-    py::class_<hub::Acquisition>( m, "Acquisition" )
+    py::class_<hub::sensor::Acquisition>( m, "Acquisition" )
         .def( py::init<long, long>() )
-        .def( "addMeasure", []( hub::Acquisition& self, const CustomVector& customVector ) -> void {
+        .def( "addMeasure", []( hub::sensor::Acquisition& self, const CustomVector& customVector ) -> void {
             hub::Measure measure(
                 customVector.getData(), customVector.getSize(), customVector.getResolution() );
             self.pushBack( std::move( measure ) );
@@ -123,7 +123,7 @@ PYBIND11_MODULE( Hub, m ) {
             "newAcq",
             []( hub::client::Streamer& self,
                 const std::string& streamName,
-                const hub::Acquisition& acq ) -> void { self.newAcquisition( streamName, acq ); } )
+                const hub::sensor::Acquisition& acq ) -> void { self.newAcquisition( streamName, acq ); } )
         .def( "isConnected", &hub::client::Streamer::isConnected );
 
     py::enum_<hub::Format>( m, "Format" )

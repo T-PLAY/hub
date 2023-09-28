@@ -17,7 +17,7 @@ namespace server {
 class AskerClient : public Client
 {
   private:
-    AskerClient( Server* server, int iClient, hub::net::ClientSocket&& sock );
+    AskerClient( Server* server, int iClient, net::ClientSocket&& sock );
     ~AskerClient();
 
     std::string headerMsg() const override;
@@ -26,7 +26,7 @@ class AskerClient : public Client
 
   private:
     std::thread m_thread;
-    hub::net::ClientSocket m_sock;
+    net::ClientSocket m_sock;
 
     friend class hub::Server;
 };

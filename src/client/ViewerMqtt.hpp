@@ -17,7 +17,7 @@ class SRC_API ViewerMqtt : public ViewerInterface<input::InputStreamMqtt>
         std::function<void( const char* ipv4, int port )> onServerNotFound             = {},
         std::function<void( const char* ipv4, int port )> onServerConnected            = {},
         std::function<void( const char* ipv4, int port )> onServerDisconnected         = {},
-        std::function<void( const char* streamName, const hub::Acquisition& )> onNewAcquisition =
+        std::function<void( const char* streamName, const hub::sensor::Acquisition& )> onNewAcquisition =
             {},
         std::function<
             void( const char* streamName, const char* id, int property, const Any& value )>

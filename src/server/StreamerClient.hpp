@@ -7,7 +7,7 @@
 #include <thread>
 
 #include "Client.hpp"
-#include "InputSensor.hpp"
+#include "sensor/InputSensor.hpp"
 #include "net/ClientSocket.hpp"
 
 namespace hub {
@@ -33,7 +33,7 @@ class StreamerClient : public Client
     ///
     StreamerClient( Server* server,
                     int iClient,
-                    hub::net::ClientSocket&& sock,
+                    net::ClientSocket&& sock,
                     std::string streamName );
 
     ~StreamerClient();
@@ -48,13 +48,13 @@ class StreamerClient : public Client
     /// \brief getInputSensor
     /// \return
     ///
-    const hub::InputSensor *getInputSensor() const;
+    const sensor::InputSensor *getInputSensor() const;
 
     ///
     /// \brief getLastAcq
     /// \return
     ///
-    hub::Acquisition getLastAcq() const;
+    sensor::Acquisition getLastAcq() const;
 
     ///
     /// \brief end
@@ -78,19 +78,19 @@ class StreamerClient : public Client
     /// \brief getPackedAcqs
     /// \return
     ///
-    const std::set<hub::Acquisition>& getPackedAcqs() const;
+    const std::set<sensor::Acquisition>& getPackedAcqs() const;
 
   private:
     std::thread m_thread;
 
-    std::unique_ptr<hub::InputSensor> m_inputSensor;
+    std::unique_ptr<sensor::InputSensor> m_inputSensor;
     std::string m_streamName;
 
-    hub::Acquisition m_lastAcq;
+    sensor::Acquisition m_lastAcq;
 
     int m_nAcq            = 0;
     bool m_isPackedStream = false;
-    std::set<hub::Acquisition> m_packedAcqs;
+    std::set<sensor::Acquisition> m_packedAcqs;
 };
 
 } // namespace server

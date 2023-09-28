@@ -6,7 +6,7 @@
 namespace hub {
 namespace server {
 
-ViewerClient::ViewerClient( Server* server, int iClient, hub::net::ClientSocket&& sock ) :
+ViewerClient::ViewerClient( Server* server, int iClient, net::ClientSocket&& sock ) :
     Client( server, iClient ), m_socket( std::move( sock ) ) {
 
     assert( m_server != nullptr );
@@ -76,21 +76,21 @@ std::string ViewerClient::headerMsg() const {
 }
 
 void ViewerClient::notifyNewStreamer( const std::string& streamName,
-                                      const SensorSpec& sensorSpec ) {
+                                      const sensor::SensorSpec& sensorSpec ) {
 
-    m_socket.write( hub::io::StreamInterface::ServerMessage::VIEWER_NEW_STREAMER );
+    m_socket.write( io::StreamInterface::ServerMessage::VIEWER_NEW_STREAMER );
 
     m_socket.write( streamName );
     m_socket.write( sensorSpec );
 }
 
 void ViewerClient::notifyDelStreamer( const std::string& streamName,
-                                      const SensorSpec& sensorSpec ) {
+                                      const sensor::SensorSpec& sensorSpec ) {
     // void ViewerClient::notifyDelStreamer( const StreamerClient& streamer ) {
     if ( m_viewerClosed ) return;
 
     try {
-        m_socket.write( hub::io::StreamInterface::ServerMessage::VIEWER_DEL_STREAMER );
+        m_socket.write( io::StreamInterface::ServerMessage::VIEWER_DEL_STREAMER );
         m_socket.write( streamName );
         m_socket.write( sensorSpec );
     }

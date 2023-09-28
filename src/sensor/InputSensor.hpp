@@ -4,7 +4,7 @@
 #include "Acquisition.hpp"
 #include "Traits.hpp"
 
-#include "Input.hpp"
+#include "io/input/Input.hpp"
 // user friendly useless includes
 //#include "io/File.hpp"
 #include "io/input/InputFile.hpp"
@@ -17,6 +17,7 @@
 
 
 namespace hub {
+namespace sensor {
 
 ///
 /// \brief The InputSensor class
@@ -45,7 +46,7 @@ class SRC_API InputSensor : public Sensor
                                                  >::type>
     explicit InputSensor( Input&& input ) :
 
-        Sensor( hub::SensorSpec {} ), m_input( new Input( std::move( input ) ) ) {
+        Sensor( sensor::SensorSpec {} ), m_input( new Input( std::move( input ) ) ) {
         static_assert( std::is_base_of<Input, Input>::value, "not a base class" );
 //        static_assert( !std::is_same<net::ClientSocket, Input>::value, "not clientSocket class" );
 
@@ -66,7 +67,7 @@ class SRC_API InputSensor : public Sensor
 #endif
                                                  >::type>
     InputSensor( Args&&... args ) :
-        Sensor( hub::SensorSpec {}  ),
+        Sensor( sensor::SensorSpec {}  ),
         m_input( new Input( std::forward<Args>( args )... ) ) {
         static_assert( std::is_base_of<Input, Input>::value, "not a base class" );
 //        static_assert( !std::is_same<net::ClientSocket, Input>::value, "not clientSocket class" );
@@ -130,4 +131,5 @@ class SRC_API InputSensor : public Sensor
     bool m_moved = false;
 };
 
+} // namespace sensor
 } // namespace hub

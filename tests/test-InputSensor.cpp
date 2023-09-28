@@ -2,8 +2,8 @@
 
 #include "test_common.hpp"
 
-#include <InputSensor.hpp>
-#include <OutputSensor.hpp>
+#include <sensor/InputSensor.hpp>
+#include <sensor/OutputSensor.hpp>
 
 #include <io/Memory.hpp>
 
@@ -21,10 +21,10 @@ TEST_CASE( "InputSensor test" ) {
     constexpr int ref_nAcqs2 = 10;
 
     std::cout << "ref_acqs" << std::endl;
-    const hub::Resolution ref_resolution( { { 1 }, hub::Format::Y8 } );
-    const hub::SensorSpec ref_sensorSpec( "sensorName", { ref_resolution } );
-    std::vector<hub::Acquisition> ref_acqs;
-    const int ref_dataSize = hub::res::computeAcquisitionSize( ref_resolution );
+    const hub::sensor::Resolution ref_resolution( { { 1 }, hub::sensor::Format::Y8 } );
+    const hub::sensor::SensorSpec ref_sensorSpec( "sensorName", { ref_resolution } );
+    std::vector<hub::sensor::Acquisition> ref_acqs;
+    const int ref_dataSize = hub::sensor::resolution::computeAcquisitionSize( ref_resolution );
     unsigned char* data    = new unsigned char[ref_dataSize];
     for ( int iAcq = 0; iAcq < ref_nAcqs; ++iAcq ) {
         for ( int i = 0; i < ref_dataSize; ++i ) {
@@ -42,10 +42,10 @@ TEST_CASE( "InputSensor test" ) {
     //////////////////////
 
     std::cout << "ref2_acqs" << std::endl;
-    const hub::Resolution ref_resolution2( { { 1 }, hub::Format::DOF6 } );
-    const hub::SensorSpec ref_sensorSpec2( "sensorName2", { ref_resolution2 } );
-    std::vector<hub::Acquisition> ref_acqs2;
-    const int ref_dataSize2 = hub::res::computeAcquisitionSize( ref_resolution2 );
+    const hub::sensor::Resolution ref_resolution2( { { 1 }, hub::sensor::Format::DOF6 } );
+    const hub::sensor::SensorSpec ref_sensorSpec2( "sensorName2", { ref_resolution2 } );
+    std::vector<hub::sensor::Acquisition> ref_acqs2;
+    const int ref_dataSize2 = hub::sensor::resolution::computeAcquisitionSize( ref_resolution2 );
     unsigned char* data2    = new unsigned char[ref_dataSize2];
     float* data2Float       = (float*)data2;
     for ( int iAcq = 0; iAcq < ref_nAcqs2; ++iAcq ) {
@@ -63,7 +63,7 @@ TEST_CASE( "InputSensor test" ) {
     std::cout << std::endl;
 
     std::cout << "ref_sync_acqs" << std::endl;
-    std::vector<hub::Acquisition> ref_sync_acqs = computeSyncAcqs( ref_acqs, ref_acqs2 );
+    std::vector<hub::sensor::Acquisition> ref_sync_acqs = computeSyncAcqs( ref_acqs, ref_acqs2 );
 
     ///////////////////////////////// TESTING EACH INPUT IMPLEMENTS
 
@@ -101,8 +101,8 @@ TEST_CASE( "InputSensor test" ) {
             auto outputFile  = hub::output::OutputFile( "filepath.txt" );
             auto outputFile2 = hub::output::OutputFile( "filepath2.txt" );
 
-            hub::OutputSensor outputSensor( ref_sensorSpec, std::move( outputFile ) );
-            hub::OutputSensor outputSensor2( ref_sensorSpec2, std::move( outputFile2 ) );
+            hub::sensor::OutputSensor outputSensor( ref_sensorSpec, std::move( outputFile ) );
+            hub::sensor::OutputSensor outputSensor2( ref_sensorSpec2, std::move( outputFile2 ) );
 
             for ( const auto& acq : ref_acqs ) {
                 outputSensor << acq;
@@ -114,12 +114,12 @@ TEST_CASE( "InputSensor test" ) {
 
         auto inputFile  = hub::input::InputFile( "filepath.txt" );
         auto inputFile2 = hub::input::InputFile( "filepath2.txt" );
-        hub::InputSensor inputSensor( std::move( inputFile ) );
-        hub::InputSensor inputSensor2( std::move( inputFile2 ) );
+        hub::sensor::InputSensor inputSensor( std::move( inputFile ) );
+        hub::sensor::InputSensor inputSensor2( std::move( inputFile2 ) );
 
-        hub::Acquisition acq;
+        hub::sensor::Acquisition acq;
         std::cout << "sync acqs" << std::endl;
-        std::vector<hub::Acquisition> sync_acqs;
+        std::vector<hub::sensor::Acquisition> sync_acqs;
         while ( !inputSensor.getInput().isEnd() && !inputSensor2.getInput().isEnd() ) {
 
             inputSensor >> inputSensor2 >> acq;
@@ -143,10 +143,10 @@ TEST_CASE( "InputSensor test" ) {
               << std::endl;
 
 #ifdef HUB_BUILD_SERVER
-    auto outputSensor  = hub::OutputSensor(ref_sensorSpec, hub::output::OutputStream( FILE_NAME ));
-    auto outputSensor2 = hub::OutputSensor(ref_sensorSpec2, hub::output::OutputStream( FILE_NAME "2" ));
-    auto inputSensor   = hub::InputSensor(hub::input::InputStream( FILE_NAME ));
-    auto inputSensor2  = hub::InputSensor(hub::input::InputStream( FILE_NAME "2" ));
+    auto outputSensor  = hub::sensor::OutputSensor(ref_sensorSpec, hub::output::OutputStream( FILE_NAME ));
+    auto outputSensor2 = hub::sensor::OutputSensor(ref_sensorSpec2, hub::output::OutputStream( FILE_NAME "2" ));
+    auto inputSensor   = hub::sensor::InputSensor(hub::input::InputStream( FILE_NAME ));
+    auto inputSensor2  = hub::sensor::InputSensor(hub::input::InputStream( FILE_NAME "2" ));
 
         checkSynchronize( outputSensor.getOutput() ,
                           ref_acqs,

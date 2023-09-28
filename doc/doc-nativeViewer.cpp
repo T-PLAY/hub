@@ -68,7 +68,7 @@ int main() {
     auto onServerDisconnected = []( const char* ipv4, int port ) {
         std::cout << "[Example][Viewer] onServerDisconnected " << ipv4 << " " << port << std::endl;
     };
-    auto onNewAcquisition = []( const char* streamName, const hub::Acquisition* acq ) {
+    auto onNewAcquisition = []( const char* streamName, const hub::sensor::Acquisition* acq ) {
         std::cout << "[Example][Viewer] onNewAcquisition " << streamName << " " << *acq
                   << std::endl;
     };

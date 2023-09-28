@@ -5,11 +5,11 @@
 #include <cmath>
 #include <iostream>
 
-#include <InputSensor.hpp>
-#include <OutputSensor.hpp>
-#include <SensorSpec.hpp>
+#include <sensor/InputSensor.hpp>
+#include <sensor/OutputSensor.hpp>
+#include <sensor/SensorSpec.hpp>
 #include <data/Dof6.hpp>
-#include <Measure.hpp>
+#include <data/Measure.hpp>
 //#include <server/Server.hpp>
 
 TEST_CASE( "heavy data" ) {
@@ -20,20 +20,20 @@ TEST_CASE( "heavy data" ) {
 //    server.setMaxClients( 2 );
 //    server.asyncRun();
 
-    hub::Resolutions resolutions;
+    hub::sensor::Resolutions resolutions;
 
-    hub::Resolution rgbResolution = { { 640, 480 }, hub::Format::RGB8 };
+    hub::sensor::Resolution rgbResolution = { { 640, 480 }, hub::sensor::Format::RGB8 };
     resolutions.push_back( rgbResolution );
 
-    hub::Resolution pointsResolution = { { 640, 480 }, hub::Format::XYZ32F };
+    hub::sensor::Resolution pointsResolution = { { 640, 480 }, hub::sensor::Format::XYZ32F };
     resolutions.push_back( pointsResolution );
 
-    hub::SensorSpec::MetaData metaData;
+    hub::sensor::SensorSpec::MetaData metaData;
     metaData["parent"]            = "Polhemus Patriot (sensor 1)";
     const std::string m_assetPath = HUB_PROJECT_DIR "/assets/";
     metaData["model"]             = hub::data::Mesh( m_assetPath + "sensor" );
 
-    hub::OutputSensor outputSensor( hub::SensorSpec { "Sensor", resolutions, metaData },
+    hub::sensor::OutputSensor outputSensor( hub::sensor::SensorSpec { "Sensor", resolutions, metaData },
                                     hub::output::OutputStream(FILE_NAME)
                                     );
 //                                    "Sensor",
@@ -41,16 +41,16 @@ TEST_CASE( "heavy data" ) {
 //                                    ipv4, port );
 
 //    std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
-    hub::InputSensor inputSensor(
+    hub::sensor::InputSensor inputSensor(
 //        hub::io::InputStream( "Sensor", hub::net::ClientSocket( ipv4, port ) ) );
 //        hub::input::InputStreamServer( "Sensor", ipv4, port ) );
         hub::input::InputStream( FILE_NAME ) );
 
-    std::vector<hub::Acquisition> acqs;
+    std::vector<hub::sensor::Acquisition> acqs;
     constexpr size_t nAcq = 100;
 
     for ( int i = 0; i < nAcq; ++i ) {
-        hub::Acquisition acq { i, i };
+        hub::sensor::Acquisition acq { i, i };
 
         constexpr size_t colorSize = 640 * 480 * 3;
         unsigned char* colors      = new unsigned char[colorSize];
@@ -58,7 +58,7 @@ TEST_CASE( "heavy data" ) {
             colors[j] = (65 + i) % 256;
         }
         acq << hub::Measure {
-                                    reinterpret_cast<unsigned char*>(colors), colorSize, { { 640, 480 }, hub::Format::RGB8 } };
+                                    reinterpret_cast<unsigned char*>(colors), colorSize, { { 640, 480 }, hub::sensor::Format::RGB8 } };
         delete[] colors;
 
         constexpr size_t verticesSize = 640 * 480 * 3 * 4;
@@ -68,8 +68,8 @@ TEST_CASE( "heavy data" ) {
         }
 
         acq << hub::Measure {
-                                    //reinterpret_cast<const unsigned char* const>(vertices), verticesSize, { { 640, 480 }, hub::Format::XYZ32F } };
-                                    reinterpret_cast<unsigned char*>(vertices), verticesSize, { { 640, 480 }, hub::Format::XYZ32F } };
+                                    //reinterpret_cast<const unsigned char* const>(vertices), verticesSize, { { 640, 480 }, hub::sensor::Format::XYZ32F } };
+                                    reinterpret_cast<unsigned char*>(vertices), verticesSize, { { 640, 480 }, hub::sensor::Format::XYZ32F } };
         memset(vertices, 0, verticesSize);
         delete[] vertices;
 
@@ -80,7 +80,7 @@ TEST_CASE( "heavy data" ) {
 //        std::cout << "send acq " << i << std::endl;
         outputSensor << acqs[i];
 
-        hub::Acquisition acq2;
+        hub::sensor::Acquisition acq2;
         inputSensor >> acq2;
 //        std::cout << "recv acq " << i << std::endl;
         CHECK( acqs[i] == acq2 );

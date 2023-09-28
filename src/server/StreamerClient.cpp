@@ -8,12 +8,12 @@
 namespace hub {
 namespace server {
 
-class InputStreamClient : public hub::Input
+class InputStreamClient : public Input
 {
   public:
-    explicit InputStreamClient( hub::net::ClientSocket&& clientSocket );
+    explicit InputStreamClient( net::ClientSocket&& clientSocket );
 
-    void read( Acquisition& acq ) override;
+    void read( sensor::Acquisition& acq ) override;
 
     InputStreamClient( InputStreamClient&& inputStream );
     ~InputStreamClient();
@@ -25,7 +25,7 @@ class InputStreamClient : public hub::Input
     bool isEnd() const override;
 
   private:
-    hub::net::ClientSocket m_clientSocket;
+    net::ClientSocket m_clientSocket;
     bool m_outputStreamClosed = false;
 
     bool m_moved = false;
@@ -53,7 +53,7 @@ InputStreamClient::~InputStreamClient() {
 #endif
 }
 
-void InputStreamClient::read( Acquisition& acq )
+void InputStreamClient::read( sensor::Acquisition& acq )
 // Acquisition InputStreamClient::getAcq()
 {
     io::StreamInterface::ClientMessage mess;
@@ -87,7 +87,7 @@ bool InputStreamClient::isEnd() const {
 
 StreamerClient::StreamerClient( Server* server,
                                 int iClient,
-                                hub::net::ClientSocket&& sock,
+                                net::ClientSocket&& sock,
                                 std::string streamName ) :
     Client( server, iClient ),
     m_streamName( std::move( streamName ) )
@@ -114,10 +114,10 @@ StreamerClient::StreamerClient( Server* server,
 //        assert( mess == io::StreamInterface::ClientMessage::STREAMER_CLIENT_INIT_SENSOR );
 
         m_inputSensor =
-            std::make_unique<hub::InputSensor>( InputStreamClient( std::move( sock ) ) );
-        //                std::make_unique<hub::InputSensor>( InputStreamClient( sock ) );
+            std::make_unique<sensor::InputSensor>( InputStreamClient( std::move( sock ) ) );
+        //                std::make_unique<InputSensor>( InputStreamClient( sock ) );
 //    }
-//    catch ( hub::net::Socket::exception& e ) {
+//    catch ( net::Socket::exception& e ) {
 //        std::cout << headerMsg() << "InputSensor() : catch exception : " << e.what() << std::endl;
 //        std::thread( [this]() { delete this; } ).detach();
 //        //            throw e;
@@ -135,7 +135,7 @@ StreamerClient::StreamerClient( Server* server,
 
     const auto& metaData = sensorSpec.getMetaData();
     for ( const auto& pair : metaData ) {
-        std::cout << headerMsg() << "metaData: " << hub::SensorSpec::to_string( pair ) << std::endl;
+        std::cout << headerMsg() << "metaData: " << sensor::SensorSpec::to_string( pair ) << std::endl;
         ////            mesh.printStats();
     }
     if ( metaData.find( "nAcq" ) != metaData.end() ) {
@@ -179,7 +179,7 @@ StreamerClient::StreamerClient( Server* server,
             } // while (true)
             assert( false );
         }
-        catch ( hub::net::Socket::exception& ex ) {
+        catch ( net::Socket::exception& ex ) {
             std::cout << headerMsg() << "catch exception : " << ex.what() << std::endl;
         }
 
@@ -202,12 +202,12 @@ std::string StreamerClient::headerMsg() const {
     return Client::headerMsg() + "[Streamer] ";
 }
 
-const hub::InputSensor* StreamerClient::getInputSensor() const {
+const sensor::InputSensor* StreamerClient::getInputSensor() const {
     assert( m_inputSensor != nullptr );
     return m_inputSensor.get();
 }
 
-Acquisition StreamerClient::getLastAcq() const {
+sensor::Acquisition StreamerClient::getLastAcq() const {
 
     while ( m_lastAcq.isEmpty() ) {
         std::cout << "last acq empty" << std::endl;
@@ -233,7 +233,7 @@ bool StreamerClient::isPackedStream() const {
     return m_isPackedStream;
 }
 
-const std::set<hub::Acquisition>& StreamerClient::getPackedAcqs() const {
+const std::set<sensor::Acquisition>& StreamerClient::getPackedAcqs() const {
     int iTry = 0;
     while ( m_packedAcqs.size() != m_nAcq && iTry < 10 ) {
         std::cout << headerMsg() << "waiting for all packed acqs" << std::endl;
@@ -260,15 +260,15 @@ const std::set<hub::Acquisition>& StreamerClient::getPackedAcqs() const {
 // StreamerClient::getSyncViewers() const {
 // }
 
-// const std::shared_ptr<hub::Acquisition>
+// const std::shared_ptr<Acquisition>
 // StreamerClient::getLastAcq( const std::string& streamName ) const {
 // }
 
-// const std::map<long long, std::shared_ptr<hub::Acquisition>>&
+// const std::map<long long, std::shared_ptr<Acquisition>>&
 // StreamerClient::getSaveAcqs( const std::string& streamName ) const {
 // }
 
-// void StreamerClient::saveNewAcq( const std::string& streamName, hub::Acquisition&& newAcq ) {
+// void StreamerClient::saveNewAcq( const std::string& streamName, Acquisition&& newAcq ) {
 
 // #if ( __cplusplus >= 201703L )
 // #else

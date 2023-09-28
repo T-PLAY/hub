@@ -2,11 +2,11 @@
 
 #include <exception>
 
-#include "Acquisition.hpp"
+#include "sensor/Acquisition.hpp"
 #include "Any.hpp"
 #include "Macros.hpp"
-#include "SensorSpec.hpp"
-#include "Measure.hpp"
+#include "sensor/SensorSpec.hpp"
+#include "data/Measure.hpp"
 
 #ifdef USE_BOOST
 #    include <boost/type_index.hpp>
@@ -146,7 +146,7 @@ class SRC_API Output
     /// \brief write
     /// \param sensorSpec
     ///
-    virtual void write( const SensorSpec& sensorSpec );
+    virtual void write( const sensor::SensorSpec& sensorSpec );
 
     ///
     /// \brief write
@@ -158,7 +158,7 @@ class SRC_API Output
     /// \brief write
     /// \param acq
     ///
-    virtual void write( const Acquisition& acq );
+    virtual void write( const sensor::Acquisition& acq );
 
 //    virtual void write(uint64_t size);
 

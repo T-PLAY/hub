@@ -25,8 +25,8 @@ int main() {
     std::cout << "ref_acqs" << std::endl;
     const hub::Resolution ref_resolution( { { 1 }, hub::Format::Y8 } );
     const hub::SensorSpec ref_sensorSpec( "sensorName", { ref_resolution } );
-    std::vector<hub::Acquisition> ref_acqs;
-    const int ref_dataSize = hub::res::computeAcquisitionSize( ref_resolution );
+    std::vector<hub::sensor::Acquisition> ref_acqs;
+    const int ref_dataSize = hub::sensor::resolution::computeAcquisitionSize( ref_resolution );
     unsigned char* data    = new unsigned char[ref_dataSize];
     for ( int iAcq = 0; iAcq < ref_nAcqs; ++iAcq ) {
         for ( int i = 0; i < ref_dataSize; ++i ) {
@@ -46,8 +46,8 @@ int main() {
     std::cout << "ref2_acqs" << std::endl;
     const hub::Resolution ref_resolution2( { { 1 }, hub::Format::DOF6 } );
     const hub::SensorSpec ref_sensorSpec2( "sensorName2", { ref_resolution2 } );
-    std::vector<hub::Acquisition> ref_acqs2;
-    const int ref_dataSize2 = hub::res::computeAcquisitionSize( ref_resolution2 );
+    std::vector<hub::sensor::Acquisition> ref_acqs2;
+    const int ref_dataSize2 = hub::sensor::resolution::computeAcquisitionSize( ref_resolution2 );
     unsigned char* data2    = new unsigned char[ref_dataSize2];
     for ( int iAcq = 0; iAcq < ref_nAcqs2; ++iAcq ) {
         for ( int i = 0; i < ref_dataSize2; ++i ) {
@@ -64,7 +64,7 @@ int main() {
     //////////////////////
 
     std::cout << "ref_sync_acqs" << std::endl;
-    std::vector<hub::Acquisition> ref_sync_acqs;
+    std::vector<hub::sensor::Acquisition> ref_sync_acqs;
     std::vector<int> min_dists( ref_acqs2.size(), 999999 );
     std::vector<int> iMin_dists( ref_acqs2.size(), -1 );
 
@@ -123,22 +123,22 @@ int main() {
     server.setMaxClients( 2 );
     server.asyncRun();
 
-    hub::OutputSensor outputSensor(
+    hub::sensor::OutputSensor outputSensor(
         ref_sensorSpec, "streamName", hub::net::ClientSocket( ipv4, port ) );
     std::cout << "outputSensor created" << std::endl;
 
     std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
 
     hub::io::InputStream inputStream( "streamName", hub::net::ClientSocket( ipv4, port ) );
-    hub::InputSensor inputSensor( std::move( inputStream ) );
+    hub::sensor::InputSensor inputSensor( std::move( inputStream ) );
     std::cout << "inputSensor created" << std::endl;
 
     for ( const auto& acq : ref_acqs ) {
         outputSensor << acq;
     }
 
-    hub::Acquisition acq;
-    std::vector<hub::Acquisition> acqs;
+    hub::sensor::Acquisition acq;
+    std::vector<hub::sensor::Acquisition> acqs;
     for ( int i = 0; i < ref_acqs.size(); ++i ) {
 
         inputSensor >> acq;
@@ -155,17 +155,17 @@ int main() {
 
     //// bin/server is running locally on port 4042
     //// the stream id name 'myStream' is streaming to the server
-    // hub::InputSensor inputSensor(
+    // hub::sensor::InputSensor inputSensor(
 
     // auto acq = inputSensor.getAcquisition();
     // auto acqs = inputSensor.getAllAcquisitions();
 
     //// read saved acquisitions from file
-    // hub::InputSensor inputSensor(
+    // hub::sensor::InputSensor inputSensor(
 
     //// get acqusitions from different threads
     // hub::io::CyclicBuff buff;
-    // hub::InputSensor inputSensor{ hub::io::Ram( buff ) };
+    // hub::sensor::InputSensor inputSensor{ hub::io::Ram( buff ) };
 
     return 0;
 }

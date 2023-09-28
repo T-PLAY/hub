@@ -1,8 +1,8 @@
 #pragma once
 
-#include "InputSensor.hpp"
+#include "sensor/InputSensor.hpp"
 #include "Macros.hpp"
-#include "OutputSensor.hpp"
+#include "sensor/OutputSensor.hpp"
 
 #include "client/Viewer.hpp"
 //#include "ViewerInterface.hpp"
@@ -27,7 +27,7 @@ extern "C"
     /// \param port
     /// \return
     ///
-    SRC_API InputSensor* createInputSensor( const char* streamName,
+    SRC_API sensor::InputSensor* createInputSensor( const char* streamName,
          const char* ipv4 = input::InputStream::s_defaultIpv4.c_str(),
                                             int port = input::InputStream::s_defaultPort);
 
@@ -35,21 +35,21 @@ extern "C"
     /// \brief freeInputSensor
     /// \param inputSensor
     ///
-    SRC_API void freeInputSensor( InputSensor* inputSensor );
+    SRC_API void freeInputSensor( sensor::InputSensor* inputSensor );
 
     ///
     /// \brief getAcquisitionSize
     /// \param inputSensor
     /// \return
     ///
-    SRC_API int getAcquisitionSize( const InputSensor* inputSensor );
+    SRC_API int getAcquisitionSize( const sensor::InputSensor* inputSensor );
 
     ///
     /// \brief getAcquisition
     /// \param inputSensor
     /// \return
     ///
-    SRC_API Acquisition* getAcquisition( InputSensor* inputSensor );
+    SRC_API sensor::Acquisition* getAcquisition( sensor::InputSensor* inputSensor );
 
     /////////////////////////////////////////////////
 
@@ -60,7 +60,7 @@ extern "C"
     /// \param port
     /// \return
     ///
-    SRC_API OutputSensor*
+    SRC_API sensor::OutputSensor*
     createMat4OutputSensor( const char* sensorName, const char* ipv4, int port );
 
     ///
@@ -69,19 +69,19 @@ extern "C"
     /// \param input
     /// \return
     ///
-    SRC_API bool mat4OutputSensorSendAcq( OutputSensor* outputSensor, const float* input );
+    SRC_API bool mat4OutputSensorSendAcq( sensor::OutputSensor* outputSensor, const float* input );
 
     ///
     /// \brief freeOutputSensor
     /// \param outputSensor
     ///
-    SRC_API void freeOutputSensor( OutputSensor* outputSensor );
+    SRC_API void freeOutputSensor( sensor::OutputSensor* outputSensor );
 
     ///
     /// \brief freeAcquisition
     /// \param acquisition
     ///
-    SRC_API void freeAcquisition( Acquisition* acquisition );
+    SRC_API void freeAcquisition( sensor::Acquisition* acquisition );
 
     ///
     /// \brief acquisition_getMeasure
@@ -90,14 +90,14 @@ extern "C"
     /// \param iMeasure
     ///
     SRC_API void
-    acquisition_getMeasure( const Acquisition* acquisition, unsigned char* data, int iMeasure = 0 );
+    acquisition_getMeasure( const sensor::Acquisition* acquisition, unsigned char* data, int iMeasure = 0 );
 
     ///
     /// \brief acquisition_getStart
     /// \param acquisition
     /// \return
     ///
-    SRC_API long long acquisition_getStart( const Acquisition* acquisition );
+    SRC_API long long acquisition_getStart( const sensor::Acquisition* acquisition );
 
     ///
     /// \brief acquisition_to_string
@@ -105,17 +105,17 @@ extern "C"
     /// \param str
     /// \param strLen
     ///
-    SRC_API void acquisition_to_string( const Acquisition* acquisition, char* str, int* strLen );
+    SRC_API void acquisition_to_string( const sensor::Acquisition* acquisition, char* str, int* strLen );
 
     /// \brief onNewStreamerFunc
     /// \param streamName
     /// \param sensorSpec
-    typedef bool ( *onNewStreamerFunc )( const char* streamName, const SensorSpec* sensorSpec );
+    typedef bool ( *onNewStreamerFunc )( const char* streamName, const sensor::SensorSpec* sensorSpec );
 
     /// \brief onDelStreamerFunc
     /// \param streamName
     /// \param sensorSpec
-    typedef void ( *onDelStreamerFunc )( const char* streamName, const SensorSpec* sensorSpec );
+    typedef void ( *onDelStreamerFunc )( const char* streamName, const sensor::SensorSpec* sensorSpec );
 
     /// \brief onServerConnectedFunc
     /// \param ipv4
@@ -135,7 +135,7 @@ extern "C"
     /// \brief onNewAcquisitionFunc
     /// \param streamName
     /// \param acq
-    typedef void ( *onNewAcquisitionFunc )( const char* streamName, const Acquisition* acq );
+    typedef void ( *onNewAcquisitionFunc )( const char* streamName, const sensor::Acquisition* acq );
 
     /// \brief onSetPropertyFunc
     /// \param streamName
@@ -223,7 +223,7 @@ extern "C"
     /// \brief freeSensorSpec
     /// \param sensorSpec
     ///
-    SRC_API void freeSensorSpec( SensorSpec* sensorSpec );
+    SRC_API void freeSensorSpec( sensor::SensorSpec* sensorSpec );
 
     ///
     /// \brief sensorSpec_getSensorName
@@ -232,14 +232,14 @@ extern "C"
     /// \param strLen
     ///
     SRC_API void
-    sensorSpec_getSensorName( const SensorSpec* sensorSpec, char* sensorName, int* strLen );
+    sensorSpec_getSensorName( const sensor::SensorSpec* sensorSpec, char* sensorName, int* strLen );
 
     ///
     /// \brief sensorSpec_getResolutionsSize
     /// \param sensorSpec
     /// \return
     ///
-    SRC_API int sensorSpec_getResolutionsSize( const SensorSpec* sensorSpec );
+    SRC_API int sensorSpec_getResolutionsSize( const sensor::SensorSpec* sensorSpec );
 
     ///
     /// \brief sensorSpec_getResolutionSize
@@ -247,14 +247,14 @@ extern "C"
     /// \param iResolution
     /// \return
     ///
-    SRC_API int sensorSpec_getResolutionSize( const SensorSpec* sensorSpec, int iResolution = 0 );
+    SRC_API int sensorSpec_getResolutionSize( const sensor::SensorSpec* sensorSpec, int iResolution = 0 );
 
     ///
     /// \brief sensorSpec_getResolutionsStr
     /// \param sensorSpec
     /// \param resolutionsStr
     ///
-    SRC_API void sensorSpec_getResolutionsStr( const SensorSpec* sensorSpec, char* resolutionsStr );
+    SRC_API void sensorSpec_getResolutionsStr( const sensor::SensorSpec* sensorSpec, char* resolutionsStr );
 
     ///
     /// \brief sensorSpec_getFormat
@@ -262,7 +262,7 @@ extern "C"
     /// \param iResolution
     /// \return
     ///
-    SRC_API int sensorSpec_getFormat( const SensorSpec* sensorSpec, int iResolution );
+    SRC_API int sensorSpec_getFormat( const sensor::SensorSpec* sensorSpec, int iResolution );
 
     ///
     /// \brief sensorSpec_getDimensionsSize
@@ -270,7 +270,7 @@ extern "C"
     /// \param iResolution
     /// \return
     ///
-    SRC_API int sensorSpec_getDimensionsSize( const SensorSpec* sensorSpec, int iResolution );
+    SRC_API int sensorSpec_getDimensionsSize( const sensor::SensorSpec* sensorSpec, int iResolution );
 
     ///
     /// \brief sensorSpec_getDimension
@@ -280,35 +280,35 @@ extern "C"
     /// \return
     ///
     SRC_API int
-    sensorSpec_getDimension( const SensorSpec* sensorSpec, int iResolution, int iDimension );
+    sensorSpec_getDimension( const sensor::SensorSpec* sensorSpec, int iResolution, int iDimension );
 
     ///
     /// \brief sensorSpec_getAcquisitionSize
     /// \param sensorSpec
     /// \return
     ///
-    SRC_API int sensorSpec_getAcquisitionSize( const SensorSpec* sensorSpec );
+    SRC_API int sensorSpec_getAcquisitionSize( const sensor::SensorSpec* sensorSpec );
 
     ///
     /// \brief sensorSpec_getMetaDataStr
     /// \param sensorSpec
     /// \param metaDataStr
     ///
-    SRC_API void sensorSpec_getMetaDataStr( const SensorSpec* sensorSpec, char* metaDataStr );
+    SRC_API void sensorSpec_getMetaDataStr( const sensor::SensorSpec* sensorSpec, char* metaDataStr );
 
     ///
     /// \brief sensorSpec_copy
     /// \param source
     /// \return
     ///
-    SRC_API SensorSpec* sensorSpec_copy( const SensorSpec* source );
+    SRC_API sensor::SensorSpec* sensorSpec_copy( const sensor::SensorSpec* source );
 
     ///
     /// \brief sensorSpec_getMetaData
     /// \param sensorSpec
     /// \return
     ///
-    SRC_API const SensorSpec::MetaData* sensorSpec_getMetaData( const SensorSpec* sensorSpec );
+    SRC_API const sensor::SensorSpec::MetaData* sensorSpec_getMetaData( const sensor::SensorSpec* sensorSpec );
 
     ///
     /// \brief metaData_exists
@@ -316,7 +316,7 @@ extern "C"
     /// \param metaName
     /// \return
     ///
-    SRC_API bool metaData_exists( const SensorSpec::MetaData* metaData, const char* metaName );
+    SRC_API bool metaData_exists( const sensor::SensorSpec::MetaData* metaData, const char* metaName );
 
     ///
     /// \brief metaData_getString
@@ -326,7 +326,7 @@ extern "C"
     /// \param strLen
     /// \return
     ///
-    SRC_API bool metaData_getString( const SensorSpec::MetaData* metaData,
+    SRC_API bool metaData_getString( const sensor::SensorSpec::MetaData* metaData,
                                      const char* metaName,
                                      char* output,
                                      int* strLen );
@@ -339,7 +339,7 @@ extern "C"
     /// \return
     ///
     SRC_API bool
-    metaData_getMat4( const SensorSpec::MetaData* metaData, const char* metaName, float* output );
+    metaData_getMat4( const sensor::SensorSpec::MetaData* metaData, const char* metaName, float* output );
 
     ///
     /// \brief metaData_getInt
@@ -347,7 +347,7 @@ extern "C"
     /// \param metaName
     /// \return
     ///
-    SRC_API int metaData_getInt( const SensorSpec::MetaData* metaData, const char* metaName );
+    SRC_API int metaData_getInt( const sensor::SensorSpec::MetaData* metaData, const char* metaName );
 
     ///
     /// \brief metaData_getUInt
@@ -355,21 +355,21 @@ extern "C"
     /// \param metaName
     /// \return
     ///
-    SRC_API double metaData_getDouble( const SensorSpec::MetaData* metaData, const char* metaName );
+    SRC_API double metaData_getDouble( const sensor::SensorSpec::MetaData* metaData, const char* metaName );
 
     ///
     /// \brief any_getDouble
     /// \param any
     /// \return
     ///
-    SRC_API double any_getDouble( const hub::Any* any );
+    SRC_API double any_getDouble( const Any* any );
 
     ///
     /// \brief any_getInt
     /// \param any
     /// \return
     ///
-    SRC_API int any_getInt( const hub::Any* any );
+    SRC_API int any_getInt( const Any* any );
 
 #ifdef __cplusplus
 } // end extern "C"

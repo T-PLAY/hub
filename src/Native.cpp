@@ -12,14 +12,14 @@
 namespace hub {
 namespace native {
 
-InputSensor* createInputSensor( const char* streamName, const char* ipv4, int port ) {
+sensor::InputSensor* createInputSensor( const char* streamName, const char* ipv4, int port ) {
     std::cout << "[Native] createInputSensor( " << streamName << ")" << std::endl;
-    InputSensor* inputSensor = nullptr;
+    sensor::InputSensor* inputSensor = nullptr;
     try {
         inputSensor =
             //            new InputSensor( io::InputStream( streamName, net::ClientSocket( ipv4,
             //            port ) ) );
-            new InputSensor( input::InputStream( streamName, ipv4, port ) );
+            new sensor::InputSensor( input::InputStream( streamName, ipv4, port ) );
     }
     catch ( std::exception& e ) {
         std::cout << "[Native] createInputSensor : catch exception : " << e.what() << std::endl;
@@ -28,28 +28,28 @@ InputSensor* createInputSensor( const char* streamName, const char* ipv4, int po
     return inputSensor;
 }
 
-void freeInputSensor( InputSensor* inputSensor ) {
+void freeInputSensor( sensor::InputSensor* inputSensor ) {
     assert( inputSensor != nullptr );
     std::cout << "[Native] freeinputSensor( " << inputSensor << ")" << std::endl;
     delete inputSensor;
 }
 
-int getAcquisitionSize( const InputSensor* inputSensor ) {
+int getAcquisitionSize( const sensor::InputSensor* inputSensor ) {
     assert( inputSensor != nullptr );
     return static_cast<int>( inputSensor->getSpec().getAcquisitionSize() );
 }
 
-Acquisition* getAcquisition( InputSensor* inputSensor ) {
+sensor::Acquisition* getAcquisition( sensor::InputSensor* inputSensor ) {
     assert( inputSensor != nullptr );
 
     std::cout << "[Native] getAcquisition( " << inputSensor << ")" << std::endl;
-    Acquisition* ret = nullptr;
+    sensor::Acquisition* ret = nullptr;
 
     try {
-        hub::Acquisition acq;
+        sensor::Acquisition acq;
         *inputSensor >> acq;
         std::cout << "[Native] get acq : " << acq << std::endl;
-        ret = new Acquisition( std::move( acq ) );
+        ret = new sensor::Acquisition( std::move( acq ) );
     }
     catch ( std::exception& e ) {
         std::cout << "[Native] getAcquisition : catch exception : " << e.what() << std::endl;
@@ -60,18 +60,18 @@ Acquisition* getAcquisition( InputSensor* inputSensor ) {
 
 ///////////////////////////////////////////////////////////////////////
 
-OutputSensor* createMat4OutputSensor( const char* sensorName, const char* ipv4, int port ) {
+sensor::OutputSensor* createMat4OutputSensor( const char* sensorName, const char* ipv4, int port ) {
     std::cout << "[Native] createOutputSensor( " << sensorName << ")" << std::endl;
-    OutputSensor* outputSensor = nullptr;
+    sensor::OutputSensor* outputSensor = nullptr;
     try {
-        SensorSpec sensorSpec( sensorName, { { { 1 }, hub::Format::MAT4 } } );
+        sensor::SensorSpec sensorSpec( sensorName, { { { 1 }, sensor::Format::MAT4 } } );
         //        outputSensor = new OutputSensor(
         //            //            std::move( sensorSpec ), sensorName, net::ClientSocket( ipv4,
         //            port ) ); std::move( sensorSpec ), sensorName, ipv4, port );
-        outputSensor = new OutputSensor(
+        outputSensor = new sensor::OutputSensor(
             //            std::move( sensorSpec ), sensorName, net::ClientSocket( ipv4, port ) );
             std::move( sensorSpec ),
-//            hub::output::OutputStream( sensorName, ipv4, port ) );
+//            output::OutputStream( sensorName, ipv4, port ) );
             output::OutputStream(sensorName, ipv4, port));
     }
     catch ( std::exception& e ) {
@@ -81,11 +81,11 @@ OutputSensor* createMat4OutputSensor( const char* sensorName, const char* ipv4, 
     return outputSensor;
 }
 
-bool mat4OutputSensorSendAcq( OutputSensor* outputSensor, const float* input ) {
+bool mat4OutputSensorSendAcq( sensor::OutputSensor* outputSensor, const float* input ) {
     assert( input != nullptr );
     try {
-        hub::Acquisition acq( 1, 1 );
-        hub::data::Mat4 mat4( input );
+        sensor::Acquisition acq( 1, 1 );
+        data::Mat4 mat4( input );
         acq << std::move( mat4 );
         *outputSensor << acq;
         std::cout << "[Native] send acq : " << acq << std::endl;
@@ -97,7 +97,7 @@ bool mat4OutputSensorSendAcq( OutputSensor* outputSensor, const float* input ) {
     return true;
 }
 
-void freeOutputSensor( OutputSensor* outputSensor ) {
+void freeOutputSensor( sensor::OutputSensor* outputSensor ) {
     assert( outputSensor != nullptr );
     std::cout << "[Native] freeOutputSensor( " << outputSensor << ")" << std::endl;
     delete outputSensor;
@@ -105,11 +105,11 @@ void freeOutputSensor( OutputSensor* outputSensor ) {
 
 ///////////////////////////////////////////////////////////////////////
 
-void freeAcquisition( Acquisition* acquisition ) {
+void freeAcquisition( sensor::Acquisition* acquisition ) {
     delete acquisition;
 }
 
-void acquisition_getMeasure( const Acquisition* acquisition, unsigned char* data, int iMeasure ) {
+void acquisition_getMeasure( const sensor::Acquisition* acquisition, unsigned char* data, int iMeasure ) {
     assert( acquisition != nullptr );
 
     assert( iMeasure < acquisition->getMeasures().size() );
@@ -117,11 +117,11 @@ void acquisition_getMeasure( const Acquisition* acquisition, unsigned char* data
     memcpy( data, measure.getData(), measure.getSize() );
 }
 
-long long acquisition_getStart( const Acquisition* acquisition ) {
+long long acquisition_getStart( const sensor::Acquisition* acquisition ) {
     return acquisition->getStart();
 }
 
-void acquisition_to_string( const Acquisition* acquisition, char* str, int* strLen ) {
+void acquisition_to_string( const sensor::Acquisition* acquisition, char* str, int* strLen ) {
     std::stringstream sstr;
     sstr << *acquisition;
     const std::string& stdString = sstr.str();
@@ -152,10 +152,10 @@ client::Viewer* createViewer(
     int port
     ) {
 
-    auto onNewStreamerCpp = [=]( const std::string& streamName, const SensorSpec& sensorSpec ) {
+    auto onNewStreamerCpp = [=]( const std::string& streamName, const sensor::SensorSpec& sensorSpec ) {
         return onNewStreamer( streamName.c_str(), &sensorSpec );
     };
-    auto onDelStreamerCpp = [=]( const std::string& streamName, const SensorSpec& sensorSpec ) {
+    auto onDelStreamerCpp = [=]( const std::string& streamName, const sensor::SensorSpec& sensorSpec ) {
         onDelStreamer( streamName.c_str(), &sensorSpec );
     };
     auto onServerNotFoundCpp = [=]( const std::string& ipv4, int port ) {
@@ -167,7 +167,7 @@ client::Viewer* createViewer(
     auto onServerDisconnectedCpp = [=]( const std::string& ipv4, int port ) {
         onServerDisconnected( ipv4.c_str(), port );
     };
-    auto onNewAcquisitionCpp = [=]( const std::string& streamName, const Acquisition& acq ) {
+    auto onNewAcquisitionCpp = [=]( const std::string& streamName, const sensor::Acquisition& acq ) {
         onNewAcquisition( streamName.c_str(), &acq );
     };
     auto onSetPropertyCpp = [=]( const std::string& streamName,
@@ -224,7 +224,7 @@ bool viewer_isConnected( const client::Viewer* viewer ) {
     return viewer->isConnected();
 }
 
-void sensorSpec_getSensorName( const SensorSpec* sensorSpec, char* sensorName, int* strLen ) {
+void sensorSpec_getSensorName( const sensor::SensorSpec* sensorSpec, char* sensorName, int* strLen ) {
     *strLen = sensorSpec->getSensorName().size(); // todo
 #if CPLUSPLUS_VERSION == 20
     memcpy( sensorName, sensorSpec->getSensorName().data(), *strLen + 1 );
@@ -234,35 +234,35 @@ void sensorSpec_getSensorName( const SensorSpec* sensorSpec, char* sensorName, i
     sensorName[*strLen] = 0;
 }
 
-int sensorSpec_getResolutionSize( const SensorSpec* sensorSpec, int iResolution ) {
-    return res::computeAcquisitionSize( sensorSpec->getResolutions().at( iResolution ) ); // todo
+int sensorSpec_getResolutionSize( const sensor::SensorSpec* sensorSpec, int iResolution ) {
+    return sensor::resolution::computeAcquisitionSize( sensorSpec->getResolutions().at( iResolution ) ); // todo
 }
 
-int sensorSpec_getResolutionsSize( const SensorSpec* sensorSpec ) {
+int sensorSpec_getResolutionsSize( const sensor::SensorSpec* sensorSpec ) {
     return sensorSpec->getResolutions().size(); // todo
 }
 
-int sensorSpec_getAcquisitionSize( const SensorSpec* sensorSpec ) {
+int sensorSpec_getAcquisitionSize( const sensor::SensorSpec* sensorSpec ) {
     return sensorSpec->getAcquisitionSize(); //todo
 }
 
-int sensorSpec_getFormat( const SensorSpec* sensorSpec, int iResolution ) {
+int sensorSpec_getFormat( const sensor::SensorSpec* sensorSpec, int iResolution ) {
     assert( iResolution < sensorSpec->getResolutions().size() );
     return static_cast<int>( sensorSpec->getResolutions().at( iResolution ).second );
 }
 
-int sensorSpec_getDimensionsSize( const SensorSpec* sensorSpec, int iResolution ) {
+int sensorSpec_getDimensionsSize( const sensor::SensorSpec* sensorSpec, int iResolution ) {
     assert( iResolution < sensorSpec->getResolutions().size() );
     return sensorSpec->getResolutions().at( iResolution ).first.size(); //todo
 }
 
-int sensorSpec_getDimension( const SensorSpec* sensorSpec, int iResolution, int iDimension ) {
+int sensorSpec_getDimension( const sensor::SensorSpec* sensorSpec, int iResolution, int iDimension ) {
     assert( iResolution < sensorSpec->getResolutions().size() );
     assert( iDimension < sensorSpec->getResolutions().at( iResolution ).first.size() );
     return sensorSpec->getResolutions().at( iResolution ).first.at( iDimension );
 }
 
-void sensorSpec_getResolutionsStr( const SensorSpec* sensorSpec, char* resolutionsStr ) {
+void sensorSpec_getResolutionsStr( const sensor::SensorSpec* sensorSpec, char* resolutionsStr ) {
     const auto& resolutions = sensorSpec->getResolutions();
     std::stringstream ss;
     ss << resolutions;
@@ -272,29 +272,29 @@ void sensorSpec_getResolutionsStr( const SensorSpec* sensorSpec, char* resolutio
     resolutionsStr[len] = 0;
 }
 
-void sensorSpec_getMetaDataStr( const SensorSpec* sensorSpec, char* metaDataStr ) {
-    const auto& metaDataString = SensorSpec::to_string( sensorSpec->getMetaData(), true );
+void sensorSpec_getMetaDataStr( const sensor::SensorSpec* sensorSpec, char* metaDataStr ) {
+    const auto& metaDataString = sensor::SensorSpec::to_string( sensorSpec->getMetaData(), true );
     const int len              = metaDataString.size();  // todo
     memcpy( metaDataStr, metaDataString.c_str(), len + 1 );
     metaDataStr[len] = 0;
 }
 
-SensorSpec* sensorSpec_copy( const SensorSpec* source ) {
-    return new SensorSpec(
+sensor::SensorSpec* sensorSpec_copy( const sensor::SensorSpec* source ) {
+    return new sensor::SensorSpec(
         source->getSensorName(), source->getResolutions(), source->getMetaData() );
 }
 
-void freeSensorSpec( SensorSpec* sensorSpec ) {
+void freeSensorSpec( sensor::SensorSpec* sensorSpec ) {
     assert( sensorSpec != nullptr );
     std::cout << "[Native] freeSensorSpec( " << sensorSpec << ")" << std::endl;
     delete sensorSpec;
 }
 
-const SensorSpec::MetaData* sensorSpec_getMetaData( const SensorSpec* sensorSpec ) {
+const sensor::SensorSpec::MetaData* sensorSpec_getMetaData( const sensor::SensorSpec* sensorSpec ) {
     return &sensorSpec->getMetaData();
 }
 
-bool metaData_getString( const SensorSpec::MetaData* metaData,
+bool metaData_getString( const sensor::SensorSpec::MetaData* metaData,
                          const char* metaName,
                          char* output,
                          int* strLen ) {
@@ -307,7 +307,7 @@ bool metaData_getString( const SensorSpec::MetaData* metaData,
     return true;
 }
 
-bool metaData_getMat4( const SensorSpec::MetaData* metaData, const char* metaName, float* output ) {
+bool metaData_getMat4( const sensor::SensorSpec::MetaData* metaData, const char* metaName, float* output ) {
     if ( metaData->find( metaName ) != metaData->end() ) {
         const auto& mat4 = metaData->at( metaName ).getMat4();
         memcpy( output, mat4.getData(), 64 );
@@ -316,16 +316,16 @@ bool metaData_getMat4( const SensorSpec::MetaData* metaData, const char* metaNam
     return false;
 }
 
-bool metaData_exists( const SensorSpec::MetaData* metaData, const char* metaName ) {
+bool metaData_exists( const sensor::SensorSpec::MetaData* metaData, const char* metaName ) {
     return metaData->find( metaName ) != metaData->end();
 }
 
-int metaData_getInt( const SensorSpec::MetaData* metaData, const char* metaName ) {
+int metaData_getInt( const sensor::SensorSpec::MetaData* metaData, const char* metaName ) {
     assert( metaData->find( metaName ) != metaData->end() );
     return metaData->at( metaName ).getInt();
 }
 
-double metaData_getDouble( const SensorSpec::MetaData* metaData, const char* metaName ) {
+double metaData_getDouble( const sensor::SensorSpec::MetaData* metaData, const char* metaName ) {
     assert( metaData->find( metaName ) != metaData->end() );
     return metaData->at( metaName ).getDouble();
 }

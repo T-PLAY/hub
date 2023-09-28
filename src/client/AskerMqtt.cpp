@@ -175,7 +175,7 @@ Acquisition AskerMqtt::getAcquisition( const std::string& streamName ) {
 //        m_client->unsubscribe( m_currentTopic );
 
     io::Memory<decltype( buff )> memory( buff );
-    hub::Acquisition acq;
+    hub::sensor::Acquisition acq;
     memory.read( acq );
 
     std::cout << "read acq : " << acq << std::endl;

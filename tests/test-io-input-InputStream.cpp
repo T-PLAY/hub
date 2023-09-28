@@ -14,10 +14,10 @@ TEST_CASE( "InputStream test" ) {
     constexpr int ref_nAcqs = 10;
 
     std::cout << "[test] ref_acqs" << std::endl;
-    const hub::Resolution ref_resolution( { { 1 }, hub::Format::Y8 } );
-    const hub::SensorSpec ref_sensorSpec( "sensorName", { ref_resolution } );
-    std::vector<hub::Acquisition> ref_acqs;
-    const int ref_dataSize = hub::res::computeAcquisitionSize( ref_resolution );
+    const hub::sensor::Resolution ref_resolution( { { 1 }, hub::sensor::Format::Y8 } );
+    const hub::sensor::SensorSpec ref_sensorSpec( "sensorName", { ref_resolution } );
+    std::vector<hub::sensor::Acquisition> ref_acqs;
+    const int ref_dataSize = hub::sensor::resolution::computeAcquisitionSize( ref_resolution );
     unsigned char* data    = new unsigned char[ref_dataSize];
     for ( int iAcq = 0; iAcq < ref_nAcqs; ++iAcq ) {
         for ( int i = 0; i < ref_dataSize; ++i ) {
@@ -42,8 +42,8 @@ TEST_CASE( "InputStream test" ) {
 
 #ifndef HUB_BUILD_SERVER // not work because server is not allow to use stream without sensor
     {
-        //        hub::OutputSensor outputSensor(
-        //        hub::OutputSensor outputSensor(
+        //        hub::sensor::OutputSensor outputSensor(
+        //        hub::sensor::OutputSensor outputSensor(
         //            ref_sensorSpec,
         //            hub::output::OutputStream( FILE_NAME ) );
         hub::output::OutputStream outputStream( FILE_NAME );
@@ -63,13 +63,13 @@ TEST_CASE( "InputStream test" ) {
 
         {
             hub::input::InputStream inputStream( FILE_NAME );
-            //            hub::InputSensor inputSensor( std::move( inputStream ) );
+            //            hub::sensor::InputSensor inputSensor( std::move( inputStream ) );
             //            CHECK( inputSensor.getSpec() == ref_sensorSpec );
             std::cout << "[test] inputSensor created" << std::endl;
 
             std::cout << "[test] acqs" << std::endl;
-            hub::Acquisition inputAcq;
-            //            std::vector<hub::Acquisition> acqs;
+            hub::sensor::Acquisition inputAcq;
+            //            std::vector<hub::sensor::Acquisition> acqs;
             for ( int i = 0; i < ref_acqs.size(); ++i ) {
                 //            for ( const auto& acq : ref_acqs ) {
                 const auto& outputAcq = ref_acqs.at( i );

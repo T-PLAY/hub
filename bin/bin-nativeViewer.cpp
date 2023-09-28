@@ -31,11 +31,11 @@ int main( int argc, char* argv[] ) {
 
     static bool exit = false;
 
-    auto onNewStreamer = []( const char* streamName, const hub::SensorSpec* sensorSpec ) {
+    auto onNewStreamer = []( const char* streamName, const hub::sensor::SensorSpec* sensorSpec ) {
         std::cout << HEADER_MSG "onNewStreamer : " << streamName << std::endl;
         return true;
     };
-    auto onDelStreamer = []( const char* streamName, const hub::SensorSpec* sensorSpec ) {
+    auto onDelStreamer = []( const char* streamName, const hub::sensor::SensorSpec* sensorSpec ) {
         std::cout << HEADER_MSG "onDelStreamer : " << streamName << std::endl;
     };
     auto onServerNotFound = []( const char* ipv4, int port ) {
@@ -49,7 +49,7 @@ int main( int argc, char* argv[] ) {
         std::cout << HEADER_MSG "onServerDisconnected : " << ipv4 << " " << port << std::endl;
         if ( exitWhenServerLost ) { exit = true; }
     };
-    auto onNewAcquisition = []( const char* streamName, const hub::Acquisition* acq ) {
+    auto onNewAcquisition = []( const char* streamName, const hub::sensor::Acquisition* acq ) {
 //        std::cout << HEADER_MSG "onNewAcquisition : " << acq << std::endl;
         std::cout << COLOR "+\033[0m";
     };

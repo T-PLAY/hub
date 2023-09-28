@@ -6,8 +6,8 @@
 #include <string>
 #include <thread>
 
-#include "Acquisition.hpp"
-#include "SensorSpec.hpp"
+#include "sensor/Acquisition.hpp"
+#include "sensor/SensorSpec.hpp"
 #include "net/ClientSocket.hpp"
 #include "ViewerInterface.hpp"
 #include "io/input/InputStreamServer.hpp"
@@ -20,12 +20,12 @@ class SRC_API ViewerServer : public ViewerInterface<input::InputStreamServer>
   public:
     explicit ViewerServer(
         const std::string & name,
-        std::function<bool( const char* streamName, const SensorSpec& )> onNewStreamer = {},
-        std::function<void( const char* streamName, const SensorSpec& )> onDelStreamer = {},
+        std::function<bool( const char* streamName, const sensor::SensorSpec& )> onNewStreamer = {},
+        std::function<void( const char* streamName, const sensor::SensorSpec& )> onDelStreamer = {},
         std::function<void( const char* ipv4, int port )> onServerNotFound             = {},
         std::function<void( const char* ipv4, int port )> onServerConnected            = {},
         std::function<void( const char* ipv4, int port )> onServerDisconnected         = {},
-        std::function<void( const char* streamName, const hub::Acquisition& )> onNewAcquisition =
+        std::function<void( const char* streamName, const sensor::Acquisition& )> onNewAcquisition =
             {},
         std::function<
             void( const char* streamName, const char* objectName, int property, const Any& value )>
@@ -57,7 +57,7 @@ class SRC_API ViewerServer : public ViewerInterface<input::InputStreamServer>
     void setProperty( const std::string& streamName,
                       const std::string& objectName,
                       int property,
-                      const hub::Any& value ) override;
+                      const Any& value ) override;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -70,7 +70,7 @@ class SRC_API ViewerServer : public ViewerInterface<input::InputStreamServer>
 //    std::function<void( const char* ipv4, int port )> m_onServerNotFound;
 //    std::function<void( const char* ipv4, int port )> m_onServerConnected;
 //    std::function<void( const char* ipv4, int port )> m_onServerDisconnected;
-//    std::function<void( const char* streamName, const hub::Acquisition& )> m_onNewAcquisition;
+//    std::function<void( const char* streamName, const Acquisition& )> m_onNewAcquisition;
 //    std::function<
 //        void( const char* streamName, const char* objectName, int property, const Any& value )>
 //        m_onSetProperty;

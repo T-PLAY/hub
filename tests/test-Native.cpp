@@ -15,9 +15,9 @@
 
 // needs server running
 
-// void onNewStreamer( const char* sensorName, const hub::SensorSpec* sensorSpec ) {
+// void onNewStreamer( const char* sensorName, const hub::sensor::SensorSpec* sensorSpec ) {
 
-// void onDelStreamer( const char* sensorName, const hub::SensorSpec* sensorSpec ) {
+// void onDelStreamer( const char* sensorName, const hub::sensor::SensorSpec* sensorSpec ) {
 
 /// \file
 
@@ -28,27 +28,27 @@ TEST_CASE( "Native test" ) {
     //    const int port         = GET_RANDOM_PORT;
     //    const int port         = 1883;
 
-    const hub::Resolution ref_resolution( { 1 }, hub::Format::BGR8 );
+    const hub::sensor::Resolution ref_resolution( { 1 }, hub::sensor::Format::BGR8 );
     const std::string ref_sensorName = "sensorName";
-    hub::SensorSpec::MetaData ref_metaData;
+    hub::sensor::SensorSpec::MetaData ref_metaData;
     ref_metaData["a"] = 0;
     ref_metaData["b"] = "string";
     ref_metaData["c"] = 2.0;
     const hub::data::Mat4 ref_mat4( 0.0 );
     std::cout << "ref_mat4: " << ref_mat4 << std::endl;
     ref_metaData["d"] = ref_mat4;
-    const hub::SensorSpec ref_sensorSpec( ref_sensorName, { ref_resolution }, ref_metaData );
+    const hub::sensor::SensorSpec ref_sensorSpec( ref_sensorName, { ref_resolution }, ref_metaData );
     const std::string ref_streamName = FILE_NAME;
     unsigned char ref_data[3]        = { 0, 1, 2 };
-    const hub::Acquisition ref_acq =
-        std::move( hub::Acquisition( 0, 1 ) << hub::Measure( ref_data, 3, ref_resolution ) );
+    const hub::sensor::Acquisition ref_acq =
+        std::move( hub::sensor::Acquisition( 0, 1 ) << hub::Measure( ref_data, 3, ref_resolution ) );
 
     static int nStreamerInited = 0;
-    auto onNewStreamer         = []( const char* streamName, const hub::SensorSpec* sensorSpec ) {
+    auto onNewStreamer         = []( const char* streamName, const hub::sensor::SensorSpec* sensorSpec ) {
         //        return false;
-        const hub::Resolution ref_resolution( { 1 }, hub::Format::BGR8 );
+        const hub::sensor::Resolution ref_resolution( { 1 }, hub::sensor::Format::BGR8 );
         const std::string ref_sensorName = "sensorName";
-        hub::SensorSpec::MetaData ref_metaData;
+        hub::sensor::SensorSpec::MetaData ref_metaData;
         ref_metaData["a"] = 0;
         ref_metaData["b"] = "string";
         ref_metaData["c"] = 2.0;
@@ -81,14 +81,14 @@ TEST_CASE( "Native test" ) {
 
             const int resolutionSize =
                 hub::native::sensorSpec_getResolutionSize( sensorSpec, iResolution );
-            CHECK( resolutionSize == hub::res::computeAcquisitionSize( ref_resolution ) );
+            CHECK( resolutionSize == hub::sensor::resolution::computeAcquisitionSize( ref_resolution ) );
 
             const int dimensionsSize =
                 hub::native::sensorSpec_getDimensionsSize( sensorSpec, iResolution );
             std::cout << "[Example][Viewer] resolutions[" << iResolution
                       << "] dimensions size : " << dimensionsSize << std::endl;
-            CHECK( hub::res::computeAcquisitionSize( ref_resolution ) ==
-                   hub::res::computeAcquisitionSize( ref_format, ref_dims ) );
+            CHECK( hub::sensor::resolution::computeAcquisitionSize( ref_resolution ) ==
+                   hub::sensor::resolution::computeAcquisitionSize( ref_format, ref_dims ) );
             CHECK( dimensionsSize == ref_dims.size() );
 
             for ( int iDimension = 0; iDimension < dimensionsSize; ++iDimension ) {
@@ -115,10 +115,10 @@ TEST_CASE( "Native test" ) {
         hub::native::sensorSpec_getMetaDataStr( sensorSpec, metaDataStr );
         std::cout << "[Example][Viewer] metaDataStr : '" << metaDataStr << "'" << std::endl;
 
-        const hub::SensorSpec* sensorSpecCopy = hub::native::sensorSpec_copy( sensorSpec );
+        const hub::sensor::SensorSpec* sensorSpecCopy = hub::native::sensorSpec_copy( sensorSpec );
         CHECK( *sensorSpecCopy == *sensorSpec );
 
-        const hub::SensorSpec::MetaData* metaData =
+        const hub::sensor::SensorSpec::MetaData* metaData =
             hub::native::sensorSpec_getMetaData( sensorSpec );
         CHECK( hub::native::metaData_exists( metaData, "a" ) );
         CHECK( hub::native::metaData_getInt( metaData, "a" ) == ref_metaData.at( "a" ).getInt() );
@@ -143,7 +143,7 @@ TEST_CASE( "Native test" ) {
         ++nStreamerInited;
         return true;
     };
-    auto onDelStreamer = []( const char* streamName, const hub::SensorSpec* sensorSpec ) {
+    auto onDelStreamer = []( const char* streamName, const hub::sensor::SensorSpec* sensorSpec ) {
         std::cout << "[Example][Viewer] onDelStreamer " << streamName << std::endl;
     };
     auto onServerNotFound = []( const char* ipv4, int port ) {
@@ -156,7 +156,7 @@ TEST_CASE( "Native test" ) {
         std::cout << "[Example][Viewer] onServerDisconnected " << ipv4 << " " << port << std::endl;
     };
     static int nReceiveAcq = 0;
-    auto onNewAcquisition  = []( const char* streamName, const hub::Acquisition* acq ) {
+    auto onNewAcquisition  = []( const char* streamName, const hub::sensor::Acquisition* acq ) {
         CHECK( !strcmp( streamName, FILE_NAME ) );
         std::cout << "[Example][Viewer] onNewAcquisition " << streamName << " " << *acq
                   << std::endl;
@@ -209,7 +209,7 @@ TEST_CASE( "Native test" ) {
         {
             std::cout << "[Test] ############################### outputSensor start" << std::endl;
 
-            hub::OutputSensor* outputSensor = new hub::OutputSensor(
+            hub::sensor::OutputSensor* outputSensor = new hub::sensor::OutputSensor(
                 //                ref_sensorSpec, ref_streamName, hub::net::ClientSocket( ipv4, port
                 //                ) ); ref_sensorSpec, ref_streamName, ipv4, port );
                 ref_sensorSpec,

@@ -1,8 +1,8 @@
 #include "test_common.hpp"
 #include <catch2/catch_test_macros.hpp>
 
-#include <InputSensor.hpp>
-#include <OutputSensor.hpp>
+#include <sensor/InputSensor.hpp>
+#include <sensor/OutputSensor.hpp>
 #include <client/Streamer.hpp>
 
 // #include <server/Server.hpp>
@@ -22,7 +22,7 @@ TEST_CASE( "Server speed test : streamer" ) {
     unsigned char* datas = new unsigned char[nAcqs * dataSize];
 
     srand( (unsigned)time( NULL ) );
-    std::vector<hub::Acquisition> acqs( nAcqs );
+    std::vector<hub::sensor::Acquisition> acqs( nAcqs );
     for ( int i = 0; i < nAcqs; ++i ) {
         for ( int j = 0; j < dataSize; ++j ) {
             datas[i * dataSize + j] = rand() % 256;
@@ -31,10 +31,10 @@ TEST_CASE( "Server speed test : streamer" ) {
 
     for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
         const unsigned char* data = &datas[iAcq * dataSize];
-        hub::Acquisition acq( iAcq, iAcq );
+        hub::sensor::Acquisition acq( iAcq, iAcq );
         acq << hub::Measure( reinterpret_cast<unsigned const char*>( data ),
                              dataSize,
-                             { { width, height }, hub::Format::BGR8 } );
+                             { { width, height }, hub::sensor::Format::BGR8 } );
         acqs.at( iAcq ) = std::move( acq );
     }
     // datum inited
@@ -113,8 +113,8 @@ TEST_CASE( "Server speed test : streamer" ) {
                 << "[test][InputOutputSensor] ############################### outputStream start"
                 << std::endl;
 
-            hub::SensorSpec sensorSpec( "sensorName",
-                                        { { { width, height }, hub::Format::BGR8 } } );
+            hub::sensor::SensorSpec sensorSpec( "sensorName",
+                                        { { { width, height }, hub::sensor::Format::BGR8 } } );
 
             hub::client::Streamer streamer;
             streamer.addStream( FILE_NAME, sensorSpec );
@@ -127,7 +127,7 @@ TEST_CASE( "Server speed test : streamer" ) {
             CHECK( streamer.isConnected() );
             assert( streamer.isConnected() );
 
-            hub::InputSensor inputSensor(
+            hub::sensor::InputSensor inputSensor(
                 //                hub::io::InputStream( "streamName", hub::net::ClientSocket( ipv4,
                 //                port2 ) ) );
                 //                hub::input::InputStreamServer( "streamName", ipv4, port2 ) );
@@ -148,7 +148,7 @@ TEST_CASE( "Server speed test : streamer" ) {
             }});
 
             for ( int i = 0; i < nAcqs; ++i ) {
-                hub::Acquisition acq2;
+                hub::sensor::Acquisition acq2;
                 inputSensor >> acq2;
 #ifdef DEBUG
                 assert( acq2 == acqs.at( i ) );

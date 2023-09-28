@@ -15,8 +15,8 @@ class AskerServer : public AskerInterface
     ~AskerServer();
 
 //  protected:
-    std::list<std::pair<std::string, hub::SensorSpec>> listStreams() override;
-    hub::Acquisition getAcquisition(const std::string & streamName) override;
+    std::list<std::pair<std::string, sensor::SensorSpec>> listStreams() override;
+    sensor::Acquisition getAcquisition(const std::string & streamName) override;
 
   private:
     net::ClientSocket m_sock;

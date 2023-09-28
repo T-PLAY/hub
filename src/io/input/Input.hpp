@@ -3,10 +3,10 @@
 #include <cstdlib>
 
 #include "Macros.hpp"
-#include "Acquisition.hpp"
+#include "sensor/Acquisition.hpp"
 #include "Any.hpp"
-#include "SensorSpec.hpp"
-#include "Measure.hpp"
+#include "sensor/SensorSpec.hpp"
+#include "data/Measure.hpp"
 
 #ifdef USE_BOOST
 #    include <boost/type_index.hpp>
@@ -171,13 +171,13 @@ class SRC_API Input
     /// \brief read
     /// \param sensorSpec
     ///
-    virtual void read( SensorSpec& sensorSpec );
+    virtual void read( sensor::SensorSpec& sensorSpec );
 
     ///
     /// \brief read
     /// \param acq
     ///
-    virtual void read( Acquisition& acq );
+    virtual void read( sensor::Acquisition& acq );
 
     ///
     /// \brief read
@@ -195,10 +195,10 @@ class SRC_API Input
     /// \param input
     /// \return
     ///
-    Acquisition operator>>( Input& input );
+    sensor::Acquisition operator>>( Input& input );
 
   private:
-    std::list<Acquisition> m_lastAcqs;
+    std::list<sensor::Acquisition> m_lastAcqs;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

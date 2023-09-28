@@ -8,6 +8,7 @@
 #include "Macros.hpp"
 
 namespace hub {
+namespace sensor {
 
 ///
 /// \brief The Format enum
@@ -110,7 +111,7 @@ SRC_API std::ostream& operator<<( std::ostream& os, const Resolution& resolution
 ///
 SRC_API std::ostream& operator<<( std::ostream& os, const Resolutions& resolutions );
 
-namespace res {
+namespace resolution {
 
 #define HUB_TO_STRING to_string
 
@@ -178,8 +179,8 @@ inline CONSTEXPR20 size_t computeAcquisitionSize( Format format, const Dims& dim
 
 inline size_t CONSTEXPR20 computeAcquisitionSize( const Resolutions& resolutions ) noexcept {
     return std::accumulate(
-        resolutions.cbegin(), resolutions.cend(), 0, []( size_t size, const Resolution& res ) {
-            return size + computeAcquisitionSize( res );
+        resolutions.cbegin(), resolutions.cend(), 0, []( size_t size, const Resolution& resolution ) {
+            return size + computeAcquisitionSize( resolution );
         } );
 }
 
@@ -320,5 +321,7 @@ inline constexpr bool format2hasFixedSize( const Format& format ) noexcept {
     return s_format2hasFixedSize[(int)format];
 }
 
-} // namespace res
+} // namespace resolution
+
+} // namespace sensor
 } // namespace hub

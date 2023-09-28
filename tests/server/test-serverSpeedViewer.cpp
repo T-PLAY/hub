@@ -3,8 +3,8 @@
 
 #include <atomic>
 
-#include <InputSensor.hpp>
-#include <OutputSensor.hpp>
+#include <sensor/InputSensor.hpp>
+#include <sensor/OutputSensor.hpp>
 #include <client/Viewer.hpp>
 // #include <server/Server.hpp>
 #include <net/ServerSocket.hpp>
@@ -22,7 +22,7 @@ TEST_CASE( "Server test : viewer" ) {
     unsigned char* datas = new unsigned char[nAcqs * dataSize];
 
     srand( (unsigned)time( NULL ) );
-    std::vector<hub::Acquisition> acqs( nAcqs );
+    std::vector<hub::sensor::Acquisition> acqs( nAcqs );
     for ( int i = 0; i < nAcqs; ++i ) {
         for ( int j = 0; j < dataSize; ++j ) {
             datas[i * dataSize + j] = rand() % 256;
@@ -31,10 +31,10 @@ TEST_CASE( "Server test : viewer" ) {
 
     for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
         const unsigned char* data = &datas[iAcq * dataSize];
-        hub::Acquisition acq( iAcq, iAcq );
+        hub::sensor::Acquisition acq( iAcq, iAcq );
         acq << hub::Measure( reinterpret_cast<unsigned const char*>( data ),
                              dataSize,
-                             { { width, height }, hub::Format::BGR8 } );
+                             { { width, height }, hub::sensor::Format::BGR8 } );
         acqs.at( iAcq ) = std::move( acq );
     }
     // datum inited
@@ -113,8 +113,8 @@ TEST_CASE( "Server test : viewer" ) {
             std::cout
                 << "[test][InputOutputSensor] ############################### outputStream start"
                 << std::endl;
-            hub::OutputSensor outputSensor(
-                hub::SensorSpec( "sensorName", { { { width, height }, hub::Format::BGR8 } } ),
+            hub::sensor::OutputSensor outputSensor(
+                hub::sensor::SensorSpec( "sensorName", { { { width, height }, hub::sensor::Format::BGR8 } } ),
                 hub::output::OutputStream( FILE_NAME )
                 //                "streamName",
                 //                hub::net::ClientSocket( ipv4, port2 ) );
@@ -130,7 +130,7 @@ TEST_CASE( "Server test : viewer" ) {
                 // startConstruction
                 bool newStreamerAdded = false;
                 auto onNewStreamer    = [&]( const std::string& streamName,
-                                          const hub::SensorSpec& sensorSpec ) {
+                                          const hub::sensor::SensorSpec& sensorSpec ) {
                     std::cout << "[example-viewer] onNewStreamer : " << streamName << std::endl;
 
                     CHECK( sensorSpec.getAcquisitionSize() == dataSize );
@@ -141,12 +141,12 @@ TEST_CASE( "Server test : viewer" ) {
                     CHECK( resolutions[0].first.size() == 2 );
                     CHECK( resolutions[0].first.at( 0 ) == width );
                     CHECK( resolutions[0].first.at( 1 ) == height );
-                    CHECK( resolutions[0].second == hub::Format::BGR8 );
+                    CHECK( resolutions[0].second == hub::sensor::Format::BGR8 );
                     newStreamerAdded = true;
                     return true;
                 };
                 auto onDelStreamer = []( const std::string& streamName,
-                                         const hub::SensorSpec& sensorSpec ) {
+                                         const hub::sensor::SensorSpec& sensorSpec ) {
                     std::cout << "[example-viewer] onDelStreamer : " << streamName << std::endl;
                 };
                 auto onServerNotFound = []( const std::string& ipv4, int port ) {
@@ -168,7 +168,7 @@ TEST_CASE( "Server test : viewer" ) {
                 //                nAcqReceived.store(0);
                 nAcqReceived            = 0;
                 auto onNewAcquisition = [&]( const std::string& streamName,
-                                             const hub::Acquisition& acq ) {
+                                             const hub::sensor::Acquisition& acq ) {
                     //                    std::cout << "[example-viewer] onNewAcquisition : " <<
                     //                    streamName << " " << acq
                     //                              << std::endl;

@@ -8,8 +8,8 @@
 #include <io/output/OutputStream.hpp>
 // #include <server/Server.hpp>
 
-#include <InputSensor.hpp>
-#include <OutputSensor.hpp>
+#include <sensor/InputSensor.hpp>
+#include <sensor/OutputSensor.hpp>
 
 TEST_CASE( "InputSyncStream test" ) {
 
@@ -20,10 +20,10 @@ TEST_CASE( "InputSyncStream test" ) {
     constexpr int ref_nAcqs2 = 10;
 
     std::cout << "ref_acqs" << std::endl;
-    const hub::Resolution ref_resolution( { { 1 }, hub::Format::Y8 } );
-    const hub::SensorSpec ref_sensorSpec( "sensorName", { ref_resolution } );
-    std::vector<hub::Acquisition> ref_acqs;
-    const int ref_dataSize = hub::res::computeAcquisitionSize( ref_resolution );
+    const hub::sensor::Resolution ref_resolution( { { 1 }, hub::sensor::Format::Y8 } );
+    const hub::sensor::SensorSpec ref_sensorSpec( "sensorName", { ref_resolution } );
+    std::vector<hub::sensor::Acquisition> ref_acqs;
+    const int ref_dataSize = hub::sensor::resolution::computeAcquisitionSize( ref_resolution );
     unsigned char* data    = new unsigned char[ref_dataSize];
     for ( int iAcq = 0; iAcq < ref_nAcqs; ++iAcq ) {
         for ( int i = 0; i < ref_dataSize; ++i ) {
@@ -41,10 +41,10 @@ TEST_CASE( "InputSyncStream test" ) {
     //////////////////////
 
     std::cout << "ref2_acqs" << std::endl;
-    const hub::Resolution ref_resolution2( { { 1 }, hub::Format::DOF6 } );
-    const hub::SensorSpec ref_sensorSpec2( "sensorName2", { ref_resolution2 } );
-    std::vector<hub::Acquisition> ref_acqs2;
-    const int ref_dataSize2 = hub::res::computeAcquisitionSize( ref_resolution2 );
+    const hub::sensor::Resolution ref_resolution2( { { 1 }, hub::sensor::Format::DOF6 } );
+    const hub::sensor::SensorSpec ref_sensorSpec2( "sensorName2", { ref_resolution2 } );
+    std::vector<hub::sensor::Acquisition> ref_acqs2;
+    const int ref_dataSize2 = hub::sensor::resolution::computeAcquisitionSize( ref_resolution2 );
     float data2[7];
     for ( int iAcq = 0; iAcq < ref_nAcqs2; ++iAcq ) {
         for ( int i = 0; i < 7; ++i ) {
@@ -61,14 +61,14 @@ TEST_CASE( "InputSyncStream test" ) {
     //////////////////////
 
         std::cout << "ref_sync_acqs" << std::endl;
-        std::vector<hub::Acquisition> ref_sync_acqs = computeSyncAcqs( ref_acqs, ref_acqs2 );
+        std::vector<hub::sensor::Acquisition> ref_sync_acqs = computeSyncAcqs( ref_acqs, ref_acqs2 );
 
 #ifdef HUB_BUILD_SERVER
     {
-        hub::OutputSensor outputSensor(ref_sensorSpec, hub::output::OutputStream( FILE_NAME ));
-        hub::OutputSensor outputSensor2(ref_sensorSpec2, hub::output::OutputStream( FILE_NAME "2" ));
+        hub::sensor::OutputSensor outputSensor(ref_sensorSpec, hub::output::OutputStream( FILE_NAME ));
+        hub::sensor::OutputSensor outputSensor2(ref_sensorSpec2, hub::output::OutputStream( FILE_NAME "2" ));
 
-        hub::InputSensor inputSyncSensor(hub::input::InputSyncStream(FILE_NAME, FILE_NAME "2"));
+        hub::sensor::InputSensor inputSyncSensor(hub::input::InputSyncStream(FILE_NAME, FILE_NAME "2"));
 
         checkSynchronize( outputSensor.getOutput(),
                           ref_acqs,

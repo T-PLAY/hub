@@ -31,7 +31,7 @@ class SRC_API OutputStreamServer : public Output, public io::StreamServer
     /// server hub is running on a machine you know the ip and the oppened port of the service.
     /// \warning Stream you want to start linking (by it name) needs to not exist in the server hub.
     /// Streaming with most of one sender is not allowed.
-    /// \exception hub::net::Socket::exception
+    /// \exception net::Socket::exception
     /// when the server is not found or by loosing connection to the server.
     /// Also occur when stream you want to link is already started in the server.
     ///
@@ -47,8 +47,8 @@ class SRC_API OutputStreamServer : public Output, public io::StreamServer
 
     ~OutputStreamServer();
 
-    void write( const Acquisition& acq ) override;
-    void write( const SensorSpec& sensorSpec ) override;
+    void write( const sensor::Acquisition& acq ) override;
+    void write( const sensor::SensorSpec& sensorSpec ) override;
 
     // #ifdef WIN32 // msvc warning C4250
   protected:
@@ -70,12 +70,12 @@ class SRC_API OutputStreamServer : public Output, public io::StreamServer
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-inline void OutputStreamServer::write( const Acquisition& acq ) {
+inline void OutputStreamServer::write( const sensor::Acquisition& acq ) {
     Output::write( io::StreamInterface::ClientMessage::STREAMER_CLIENT_NEW_ACQ );
     Output::write( acq );
 }
 
-inline void OutputStreamServer::write(const SensorSpec &sensorSpec)
+inline void OutputStreamServer::write(const sensor::SensorSpec &sensorSpec)
 {
 //    Output::write( io::StreamInterface::ClientMessage::STREAMER_CLIENT_INIT_SENSOR );
     Output::write( sensorSpec );

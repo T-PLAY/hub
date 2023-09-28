@@ -6,6 +6,7 @@
 #include <numeric>
 
 namespace hub {
+namespace sensor {
 
 OutputSensor::OutputSensor( OutputSensor&& outputSensor ) :
     Sensor( outputSensor.m_spec ),
@@ -36,8 +37,8 @@ void OutputSensor::operator<<( const Acquisition& acquisition ) const {
     for ( size_t i = 0; i < resolutions.size(); ++i ) {
         const auto& resolution = resolutions.at( i );
         const auto& format     = resolution.second;
-        assert( !res::format2hasFixedSize( format ) ||
-                res::computeAcquisitionSize( resolutions.at( i ) ) == measures.at( i ).getSize() );
+        assert( !resolution::format2hasFixedSize( format ) ||
+                resolution::computeAcquisitionSize( resolutions.at( i ) ) == measures.at( i ).getSize() );
     }
 #endif
 
@@ -48,4 +49,5 @@ Output& OutputSensor::getOutput() const {
     return *m_output;
 }
 
+} // namespace sensor
 } // namespace hub

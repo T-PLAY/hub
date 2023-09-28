@@ -7,7 +7,7 @@
 #include "Acquisition.hpp"
 #include "Traits.hpp"
 
-#include "Output.hpp"
+#include "io/output/Output.hpp"
 // user friendly useless includes
 #include "io/output/OutputFile.hpp"
 #include "io/output/OutputStream.hpp"
@@ -18,6 +18,7 @@
 
 
 namespace hub {
+namespace sensor {
 
 
 ///
@@ -43,7 +44,7 @@ class SRC_API OutputSensor : public Sensor
     /// is the communication bus you want to use
     ///
     template <
-        class SensorSpec = hub::SensorSpec,
+        class SensorSpec = sensor::SensorSpec,
           class OutputT>
 //          ,
 //          typename = typename std::enable_if<std::is_base_of<Output, Output>::value &&
@@ -72,7 +73,7 @@ class SRC_API OutputSensor : public Sensor
 
 //#ifdef HUB_BUILD_SERVER
 
-////#define hub::output::OutputStream(_streamName, _ipv4, _port) \
+////#define output::OutputStream(_streamName, _ipv4, _port) \
 ////    _streamName, _ipv4, _port
 
 //    ///
@@ -83,11 +84,11 @@ class SRC_API OutputSensor : public Sensor
 //    /// \param sensorSpec
 //    /// \param args
 //    ///
-//    template <class SensorSpec = hub::SensorSpec,
+//    template <class SensorSpec = SensorSpec,
 //              class... Args,
 ////             class Output,
-////             class OutputT = hub::Output,
-////             typename = typename std::enable_if<std::is_base_of<hub::Output, OutputT>::value
+////             class OutputT = Output,
+////             typename = typename std::enable_if<std::is_base_of<Output, OutputT>::value
 //              class OutputT     = output::OutputStreamServer,
 //              typename = typename std::enable_if<std::is_same<output::OutputStreamServer, OutputT>::value
 //#if ( __cplusplus < 201703L )
@@ -170,4 +171,5 @@ class SRC_API OutputSensor : public Sensor
     bool m_moved = false;
 };
 
+} // namespace sensor
 } // namespace hub

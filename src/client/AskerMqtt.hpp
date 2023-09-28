@@ -19,7 +19,7 @@ class AskerMqtt : public AskerInterface
 
 //  protected:
     std::list<std::pair<std::string, hub::SensorSpec>> listStreams() override;
-    hub::Acquisition getAcquisition(const std::string & streamName) override;
+    hub::sensor::Acquisition getAcquisition(const std::string & streamName) override;
 
   private:
     template <class T>

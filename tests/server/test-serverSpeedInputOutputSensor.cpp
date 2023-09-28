@@ -1,8 +1,8 @@
 #include "test_common.hpp"
 #include <catch2/catch_test_macros.hpp>
 
-#include <InputSensor.hpp>
-#include <OutputSensor.hpp>
+#include <sensor/InputSensor.hpp>
+#include <sensor/OutputSensor.hpp>
 
 // #include <server/Server.hpp>
 #include <net/ServerSocket.hpp>
@@ -27,7 +27,7 @@ TEST_CASE( "Server test : InputOutputSensor" ) {
     unsigned char* datas = new unsigned char[nAcqs * dataSize];
 
     srand( (unsigned)time( NULL ) );
-    std::vector<hub::Acquisition> acqs( nAcqs );
+    std::vector<hub::sensor::Acquisition> acqs( nAcqs );
     for ( int i = 0; i < nAcqs; ++i ) {
         for ( int j = 0; j < dataSize; ++j ) {
             datas[i * dataSize + j] = rand() % 256;
@@ -37,10 +37,10 @@ TEST_CASE( "Server test : InputOutputSensor" ) {
 
     for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
         const unsigned char* data = &datas[iAcq * dataSize];
-        hub::Acquisition acq( iAcq, iAcq );
+        hub::sensor::Acquisition acq( iAcq, iAcq );
         acq << hub::Measure( reinterpret_cast<unsigned const char*>( data ),
                              dataSize,
-                             { { width, height }, hub::Format::BGR8 } );
+                             { { width, height }, hub::sensor::Format::BGR8 } );
         acqs.at( iAcq ) = std::move( acq );
     }
     // datum inited
@@ -229,18 +229,18 @@ TEST_CASE( "Server test : InputOutputSensor" ) {
             std::cout << header << "############################### outputStream start"
                       << std::endl;
 
-            std::unique_ptr<hub::OutputSensor> outputSensor;
+            std::unique_ptr<hub::sensor::OutputSensor> outputSensor;
 
             switch ( implement ) {
             case Implement::SERVER:
-                outputSensor = std::make_unique<hub::OutputSensor>(
-                    hub::SensorSpec( "sensorName", { { { width, height }, hub::Format::BGR8 } } ),
+                outputSensor = std::make_unique<hub::sensor::OutputSensor>(
+                    hub::sensor::SensorSpec( "sensorName", { { { width, height }, hub::sensor::Format::BGR8 } } ),
                     hub::output::OutputStreamServer( FILE_NAME ) );
                 break;
 #ifdef HUB_BUILD_MQTT
             case Implement::MQTT:
-                outputSensor = std::make_unique<hub::OutputSensor>(
-                    hub::SensorSpec( "sensorName", { { { width, height }, hub::Format::BGR8 } } ),
+                outputSensor = std::make_unique<hub::sensor::OutputSensor>(
+                    hub::sensor::SensorSpec( "sensorName", { { { width, height }, hub::sensor::Format::BGR8 } } ),
                     hub::output::OutputStreamMqtt( FILE_NAME ) );
                 break;
 #endif
@@ -249,25 +249,25 @@ TEST_CASE( "Server test : InputOutputSensor" ) {
                 break;
             }
 
-            //            hub::OutputSensor outputSensor(
-            //                hub::SensorSpec( "sensorName", { { { width, height },
-            //                hub::Format::BGR8 } } ), OutputStream( FILE_NAME )
+            //            hub::sensor::OutputSensor outputSensor(
+            //                hub::sensor::SensorSpec( "sensorName", { { { width, height },
+            //                hub::sensor::Format::BGR8 } } ), OutputStream( FILE_NAME )
             //            );
 
             std::cout
                 << "[test][InputOutputSensor] ############################### inputStream start"
                 << std::endl;
-            std::unique_ptr<hub::InputSensor> inputSensor;
+            std::unique_ptr<hub::sensor::InputSensor> inputSensor;
 
             switch ( implement ) {
             case Implement::SERVER:
-                inputSensor = std::make_unique<hub::InputSensor>(
+                inputSensor = std::make_unique<hub::sensor::InputSensor>(
                     hub::input::InputStreamServer( FILE_NAME ) );
                 break;
 #ifdef HUB_BUILD_MQTT
             case Implement::MQTT:
                 inputSensor =
-                    std::make_unique<hub::InputSensor>( hub::input::InputStreamMqtt( FILE_NAME ) );
+                    std::make_unique<hub::sensor::InputSensor>( hub::input::InputStreamMqtt( FILE_NAME ) );
                 break;
 #endif
             default:
@@ -275,7 +275,7 @@ TEST_CASE( "Server test : InputOutputSensor" ) {
                 break;
             }
 
-            //            hub::InputSensor inputSensor(
+            //            hub::sensor::InputSensor inputSensor(
             //                hub::input::InputStream( FILE_NAME ) );
 
             const auto& inputSensorSpec = inputSensor->getSpec();
@@ -287,7 +287,7 @@ TEST_CASE( "Server test : InputOutputSensor" ) {
             CHECK( resolutions[0].first.size() == 2 );
             CHECK( resolutions[0].first.at( 0 ) == width );
             CHECK( resolutions[0].first.at( 1 ) == height );
-            CHECK( resolutions[0].second == hub::Format::BGR8 );
+            CHECK( resolutions[0].second == hub::sensor::Format::BGR8 );
             std::cout << header << "inputStream end ---------------------------------" << std::endl;
 
             std::cout << header << "############################### send acquisitions" << std::endl;
@@ -299,7 +299,7 @@ TEST_CASE( "Server test : InputOutputSensor" ) {
             } );
 
             for ( int i = 0; i < nAcqs; ++i ) {
-                hub::Acquisition acq;
+                hub::sensor::Acquisition acq;
                 *inputSensor >> acq;
 #ifdef DEBUG
                 //                CHECK( acq == acqs.at( i ) );

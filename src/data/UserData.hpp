@@ -23,7 +23,7 @@ class SRC_API UserData : public Measure
     /// \param name
     /// \param any
     ///
-    UserData( const std::string& name, const hub::Any& any );
+    UserData( const std::string& name, const Any& any );
 
     ///
     /// \brief getName
@@ -34,7 +34,7 @@ class SRC_API UserData : public Measure
     /// \brief getValue
     /// \return
     ///
-    const hub::Any& getValue() const;
+    const Any& getValue() const;
 
     ///
     /// \brief operator <<

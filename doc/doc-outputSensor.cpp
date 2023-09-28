@@ -28,7 +28,7 @@ int main() {
     hub::client::Streamer streamer( "127.0.0.1", 4042 );
     streamer.addStream( "streamName", sensorSpec2 );
 
-    hub::Acquisition acq( 1, 1 );
+    hub::sensor::Acquisition acq( 1, 1 );
     const int dataSize = width * depth * height;
     float* data        = new float[dataSize];
     for ( int i = 0; i < dataSize; ++i ) {
@@ -50,7 +50,7 @@ int main() {
             // startConstruction
 // bin/server is running locally on port 4042
 // the stream id name 'myStream' is not used within the server
-hub::OutputSensor outputSensor(
+hub::sensor::OutputSensor outputSensor(
     sensorSpec,
     "myStream", hub::net::ClientSocket( "127.0.0.1", 4042 ) );
             // endConstruction
@@ -65,7 +65,7 @@ hub::OutputSensor outputSensor(
 
             // clang-format on
             // startFunctional
-            outputSensor << ( hub::Acquisition { start, end }
+            outputSensor << ( hub::sensor::Acquisition { start, end }
                               << hub::Measure { data, size, resolution } );
             // endFunctional
             // assert( outputSensor.m_spec.getResolutions().at(0) == resolution );
@@ -75,7 +75,7 @@ hub::OutputSensor outputSensor(
         {
             // startConstruction2
 // save acquisitions to file
-hub::OutputSensor outputSensor(
+hub::sensor::OutputSensor outputSensor(
     sensorSpec,
     hub::io::File( std::fstream(
         "file.txt", std::ios::binary | std::ios::out | std::ios::trunc ) ) );

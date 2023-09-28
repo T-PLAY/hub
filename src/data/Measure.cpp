@@ -32,9 +32,9 @@ Measure Measure::clone() const {
 }
 
 bool Measure::isInterpolable() const {
-    assert( m_resolution.second != Format::NONE );
+    assert( m_resolution.second != sensor::Format::NONE );
     assert( !m_resolution.first.empty() );
-    return res::format2isInterpolable( m_resolution.second );
+    return sensor::resolution::format2isInterpolable( m_resolution.second );
 }
 
 Measure Measure::slerp( const Measure& left, const Measure& right, double t ) {
@@ -58,7 +58,7 @@ Measure Measure::slerp(const Measure &right, double t) const
 //        return clone();
 
         switch ( m_resolution.second ) {
-        case Format::DOF6: {
+        case sensor::Format::DOF6: {
             return data::Dof6::slerp( data::Dof6( *this ), data::Dof6( right ), t );
         }
         default:
@@ -93,23 +93,23 @@ std::ostream& operator<<( std::ostream& os, const Measure& measure ) {
 
     const auto& format = measure.getResolution().second;
     switch ( format ) {
-    case Format::DOF6: {
+    case sensor::Format::DOF6: {
         const data::Dof6 dof6( measure );
         os << dof6;
         break;
     }
-    case Format::MAT4: {
+    case sensor::Format::MAT4: {
         const data::Mat4 mat4( measure );
         os << mat4;
         break;
     }
-    case Format::USER_DATA: {
+    case sensor::Format::USER_DATA: {
         const data::UserData userData( measure );
         os << userData;
         break;
     }
 
-    case Format::MESH: {
+    case sensor::Format::MESH: {
         const data::Mesh mesh( measure );
         os << mesh;
         break;

@@ -47,7 +47,7 @@ InputStreamServer::InputStreamServer( InputStreamServer&& inputStream ) :
 //    }
 //}
 
-void InputStreamServer::read( Acquisition& acq ) {
+void InputStreamServer::read( sensor::Acquisition& acq ) {
     assert( !m_readAcqWaiting );
     m_readAcqWaiting = true;
 
@@ -92,7 +92,7 @@ void InputStreamServer::read( Acquisition& acq ) {
     m_readAcqWaiting = false;
 }
 
-void InputStreamServer::read( SensorSpec& sensorSpec ) {
+void InputStreamServer::read( sensor::SensorSpec& sensorSpec ) {
     m_clientSocket.read( sensorSpec );
 }
 

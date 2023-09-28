@@ -31,7 +31,7 @@ class SRC_API InputStreamServer : public Input, public io::StreamServer
     /// \warning The hub service must be accessible, that means the
     /// server hub is running on a machine you know the ip and the oppened port of the service.
     /// \warning Stream you want to link (by their names) needs to be active in the server hub.
-    /// \exception hub::net::Socket::exception
+    /// \exception net::Socket::exception
     /// when the server is not found or by loosing connection to the server.
     /// Also occur when stream you want to link is not connected to the server.
     ///
@@ -73,8 +73,8 @@ class SRC_API InputStreamServer : public Input, public io::StreamServer
     ///
     bool isEnd() const override;
 
-    void read( Acquisition& acq ) override;
-    void read( SensorSpec& sensorSpec ) override;
+    void read( sensor::Acquisition& acq ) override;
+    void read( sensor::SensorSpec& sensorSpec ) override;
 
   private:
     net::ClientSocket m_clientSocket;
@@ -121,7 +121,7 @@ inline void InputStreamServer::close() {
         io::StreamInterface::ServerMessage message;
         m_clientSocket.read( message );
         while ( message == io::StreamInterface::ServerMessage::STREAM_VIEWER_NEW_ACQ ) {
-            auto acq = m_clientSocket.get<Acquisition>();
+            auto acq = m_clientSocket.get<sensor::Acquisition>();
             m_clientSocket.read( message );
         }
 //        assert( message == io::StreamInterface::ServerMessage::STREAM_VIEWER_CLOSED );

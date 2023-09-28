@@ -28,7 +28,7 @@ void Output::write( const std::string& str ) {
 }
 
 
-void Output::write( const SensorSpec& sensorSpec ) {
+void Output::write( const sensor::SensorSpec& sensorSpec ) {
     assert( isOpen() );
 
 #ifdef DEBUG_OUTPUT
@@ -50,9 +50,9 @@ void Output::write( const SensorSpec& sensorSpec ) {
                'H',
                'U',
                'B',
-               hub::s_versionMajor,
-               hub::s_versionMinor,
-               hub::s_versionPatch );
+               s_versionMajor,
+               s_versionMinor,
+               s_versionPatch );
 #else
 #ifdef OS_MACOS
     snprintf( magicNumber, 80,
@@ -60,18 +60,18 @@ void Output::write( const SensorSpec& sensorSpec ) {
              'H',
              'U',
              'B',
-             hub::s_versionMajor,
-             hub::s_versionMinor,
-             hub::s_versionPatch );
+             s_versionMajor,
+             s_versionMinor,
+             s_versionPatch );
 #else
     sprintf( magicNumber,
              "%c%c%c %d.%d.%d",
              'H',
              'U',
              'B',
-             hub::s_versionMajor,
-             hub::s_versionMinor,
-             hub::s_versionPatch );
+             s_versionMajor,
+             s_versionMinor,
+             s_versionPatch );
 #endif
 #endif
     assert( strlen( magicNumber ) < 79 );
@@ -107,7 +107,7 @@ void Output::write( const Measure& measure ) {
     write( measure.m_resolution );
 }
 
-void Output::write( const Acquisition& acq ) {
+void Output::write( const sensor::Acquisition& acq ) {
     assert( isOpen() );
 
 #ifdef DEBUG_OUTPUT

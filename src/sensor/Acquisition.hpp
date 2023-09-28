@@ -7,7 +7,7 @@
 #include "Macros.hpp"
 //#include "data/Measure.hpp"
 
-#include "Measure.hpp"
+#include "data/Measure.hpp"
 // user friendly useless includes
 #include "data/Dof6.hpp"
 #include "data/Mat4.hpp"
@@ -15,6 +15,7 @@
 #include "data/UserData.hpp"
 
 namespace hub {
+namespace sensor {
 
 ///
 /// \brief The Acquisition class
@@ -207,8 +208,8 @@ class SRC_API Acquisition
     Measures m_measures;
     uint64_t m_size = 0;
 
-    friend class Input;
-    friend class Output;
+    friend class hub::Input;
+    friend class hub::Output;
 };
 
 ///////////////////////////////////////////////// INLINE
@@ -241,4 +242,5 @@ inline bool Acquisition::operator<( const Acquisition& right ) const {
     return m_start < right.m_start;
 }
 
+} // namespace sensor
 } // namespace hub

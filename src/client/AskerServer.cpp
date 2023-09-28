@@ -23,18 +23,18 @@ AskerServer::~AskerServer() {
     assert( !m_sock.isOpen() );
 }
 
-std::list<std::pair<std::string, SensorSpec>> AskerServer::listStreams() {
+std::list<std::pair<std::string, sensor::SensorSpec>> AskerServer::listStreams() {
 //    m_sock.write( io::StreamInterface::ClientMessage::LIST_STREAMS );
     m_sock.write( io::StreamInterface::ClientMessage::ASKER_CLIENT_GET_LIST_STREAMS );
 
 
-    std::list<std::pair<std::string, hub::SensorSpec>> ret;
+    std::list<std::pair<std::string, sensor::SensorSpec>> ret;
     m_sock.read( ret );
 
     return ret;
 }
 
-Acquisition AskerServer::getAcquisition( const std::string& streamName ) {
+sensor::Acquisition AskerServer::getAcquisition( const std::string& streamName ) {
     m_sock.write( io::StreamInterface::ClientMessage::ASKER_CLIENT_GET_ACQ );
     m_sock.write( streamName );
 
@@ -47,10 +47,10 @@ Acquisition AskerServer::getAcquisition( const std::string& streamName ) {
     }
     assert( serverMsg == io::StreamInterface::ServerMessage::FOUND );
 
-    hub::SensorSpec sensorSpec;
+    sensor::SensorSpec sensorSpec;
     m_sock.read( sensorSpec );
 
-    hub::Acquisition acq;
+    sensor::Acquisition acq;
     m_sock.read( acq );
     return acq;
 }

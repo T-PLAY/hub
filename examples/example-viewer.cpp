@@ -44,7 +44,7 @@ int main() {
         std::cout << "\t[example-viewer] onServerDisconnected : " << ipv4 << " " << port
                   << std::endl;
     };
-    auto onNewAcquisition = []( const std::string& streamName, const hub::Acquisition& acq ) {
+    auto onNewAcquisition = []( const std::string& streamName, const hub::sensor::Acquisition& acq ) {
         std::cout << "\t[example-viewer] onNewAcquisition : " << acq << std::endl;
     };
     auto onSetProperty = []( const std::string& streamName,
@@ -79,14 +79,14 @@ int main() {
         {
             std::cout << "\t[example-viewer] creating outputSensor" << std::endl;
             hub::Resolution res { { 1 }, hub::Format::BGR8 };
-            hub::SensorSpec sensorSpec( "sensorName", { res } );
-            hub::OutputSensor outputSensor(
+            hub::SensorSpec sensorSpec( "sensorName", { resolution } );
+            hub::sensor::OutputSensor outputSensor(
                 sensorSpec, hub::output::OutputStreamMqtt( "streamName", ipv4, port ) );
 
             std::this_thread::sleep_for( std::chrono::milliseconds( 3000 ) );
 
             unsigned char data[3] {1, 2, 3};
-            hub::Acquisition acq = std::move(hub::Acquisition(1, 1) << hub::Measure(data, 3, res));
+            hub::sensor::Acquisition acq = std::move(hub::sensor::Acquisition(1, 1) << hub::Measure(data, 3, resolution));
             outputSensor << acq;
 
             std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
@@ -141,15 +141,15 @@ int main() {
     //            hub::SensorSpec::MetaData metaData;
     //            metaData["parent"] = "streamName2";
     //            hub::SensorSpec sensorSpec( "sensorName", { resolution } );
-    //            hub::OutputSensor outputSensor(
+    //            hub::sensor::OutputSensor outputSensor(
     //                sensorSpec,
     ////                "streamName", hub::net::ClientSocket( ipv4, port ) );
     //                "streamName", ipv4, port );
     //            std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
 
     //            unsigned char data[3] { 1, 2, 3 };
-    //            hub::Acquisition acq =
-    //                std::move( hub::Acquisition( 0, 1 ) << hub::Measure( data, 3, resolution
+    //            hub::sensor::Acquisition acq =
+    //                std::move( hub::sensor::Acquisition( 0, 1 ) << hub::Measure( data, 3, resolution
     //                ) );
     //            for ( int i = 0; i < 10; ++i ) {
     //                outputSensor << acq;

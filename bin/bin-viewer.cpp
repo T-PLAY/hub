@@ -32,11 +32,11 @@ int main( int argc, char* argv[] ) {
 
     bool exit = false;
 
-    auto onNewStreamer = [=]( const std::string& streamName, const hub::SensorSpec& sensorSpec ) {
+    auto onNewStreamer = [=]( const std::string& streamName, const hub::sensor::SensorSpec& sensorSpec ) {
         std::cout << HEADER_MSG "onNewStreamer : " << streamName << std::endl;
         return true;
     };
-    auto onDelStreamer = []( const std::string& streamName, const hub::SensorSpec& sensorSpec ) {
+    auto onDelStreamer = []( const std::string& streamName, const hub::sensor::SensorSpec& sensorSpec ) {
         std::cout << HEADER_MSG "onDelStreamer : " << streamName << std::endl;
     };
     auto onServerNotFound = [&]( const std::string& ipv4, int port ) {
@@ -50,7 +50,7 @@ int main( int argc, char* argv[] ) {
         std::cout << HEADER_MSG "onServerDisconnected : " << ipv4 << " " << port << std::endl;
         if ( exitWhenServerLost ) { exit = true; }
     };
-    auto onNewAcquisition = []( const std::string& streamName, const hub::Acquisition& acq ) {
+    auto onNewAcquisition = []( const std::string& streamName, const hub::sensor::Acquisition& acq ) {
 //        std::cout << HEADER_MSG "onNewAcquisition : " << acq << std::endl;
 //        std::cout << "+";
         std::cout << COLOR "+\033[0m";

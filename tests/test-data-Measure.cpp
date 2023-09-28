@@ -5,12 +5,12 @@
 #include <iostream>
 
 #include <data/Dof6.hpp>
-#include <Measure.hpp>
+#include <data/Measure.hpp>
 
 TEST_CASE( "Measure test" ) {
 
     unsigned char data[28] { 0 };
-    const auto& resolution = hub::Resolution { { 1 }, hub::Format::RGB8 };
+    const auto& resolution = hub::sensor::Resolution { { 1 }, hub::sensor::Format::RGB8 };
     hub::Measure measure( data, 3, resolution );
 
     hub::Measure measure2( reinterpret_cast<const unsigned char*>( data ), 3, resolution );
@@ -25,7 +25,7 @@ TEST_CASE( "Measure test" ) {
     CHECK( measure == measure4 );
 
     unsigned char data2[56] { 1 };
-    const auto& resolution2 = hub::Resolution { { 2 }, hub::Format::DOF6 };
+    const auto& resolution2 = hub::sensor::Resolution { { 2 }, hub::sensor::Format::DOF6 };
     hub::Measure measure5( data2, 56, resolution2 );
     CHECK( measure != measure5 );
 

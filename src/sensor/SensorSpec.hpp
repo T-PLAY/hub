@@ -23,6 +23,7 @@
 #endif
 
 namespace hub {
+namespace sensor {
 
 ///
 /// \brief The SensorSpec class
@@ -50,7 +51,7 @@ class SRC_API SensorSpec
     /// \brief
     /// Definition of metadata
     ///
-    using MetaData = std::map<std::string, hub::Any>;
+    using MetaData = std::map<std::string, Any>;
 #endif
 
     ///
@@ -205,4 +206,5 @@ inline CONSTEXPR size_t SensorSpec::getAcquisitionSize() const noexcept {
     return m_acquisitionSize;
 }
 
+} // namespace sensor
 } // namespace hub

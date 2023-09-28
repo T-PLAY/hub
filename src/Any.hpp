@@ -185,8 +185,8 @@ class SRC_API Any
     double m_double              = 0.0;
     std::string m_std_string     = "";
     const char* m_const_char_ptr = nullptr;
-    hub::data::Mat4* m_mat4      = nullptr;
-    hub::data::Mesh* m_mesh      = nullptr;
+    data::Mat4* m_mat4      = nullptr;
+    data::Mesh* m_mesh      = nullptr;
     bool m_bool                  = false;
 };
 
