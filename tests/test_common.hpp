@@ -134,7 +134,8 @@ static void _checkRatio( double ratio,
         std::string hash;
         int iRatio          = 0;
         constexpr int nMaxMean = 4;
-        const int nRatio    = std::pow( 2, nMaxMean - 1 );
+        constexpr int nRatio   = 8;
+		assert(nRatio == std::pow( 2, nMaxMean - 1 ));
         std::string hashes[nRatio];
         double ratios[nRatio];
         for ( int i = 0; i < nRatio; ++i ) {
