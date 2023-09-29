@@ -50,7 +50,8 @@ UserData::UserData( const std::string& name, const Any& value ) :
 }
 
 std::ostream& operator<<( std::ostream& os, const UserData& userData ) {
-    os << "[\"" << userData.getName() << "\", '" << userData.getValue() << "']";
+    // todo any
+//    os << "[\"" << userData.getName() << "\", '" << userData.getValue() << "']";
     return os;
 }
 

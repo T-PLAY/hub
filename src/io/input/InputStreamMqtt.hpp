@@ -34,8 +34,8 @@ class SRC_API InputStreamMqtt : public Input, public io::StreamMqtt
 
     bool isEnd() const override;
 
-    void read( Acquisition& acq ) override;
-    void read( SensorSpec& sensorSpec ) override;
+    void read( sensor::Acquisition& acq ) override;
+    void read( sensor::SensorSpec& sensorSpec ) override;
 
   private:
     void subscribe(const std::string & topic);

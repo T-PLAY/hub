@@ -167,53 +167,55 @@ void Output::write( const Any& any ) {
 #    endif
 #endif
 
-    assert( any.has_value() );
-    const auto& anyType = any.type();
-    write( anyType );
-    switch ( anyType ) {
+    // todo any
 
-    case Any::Type::INT: {
-        const auto& val = any.getInt();
-        write( val );
-        break;
-    }
+//    assert( any.has_value() );
+//    const auto& anyType = any.type();
+//    write( anyType );
+//    switch ( anyType ) {
 
-    case Any::Type::DOUBLE: {
-        const auto& val = any.getDouble();
-        write( val );
-        break;
-    }
+//    case Any::Type::INT: {
+//        const auto& val = any.get<int>();
+//        write( val );
+//        break;
+//    }
 
-    case Any::Type::STRING: {
-        const auto& val = any.getStdString();
-        write( val );
-        break;
-    }
+//    case Any::Type::DOUBLE: {
+//        const auto& val = any.get<double>();
+//        write( val );
+//        break;
+//    }
 
-    case Any::Type::CONST_CHAR_PTR: {
-        const auto& val = any.getConstCharPtr();
-        write( val );
-        break;
-    }
+//    case Any::Type::STRING: {
+//        const auto& val = any.getStdString();
+//        write( val );
+//        break;
+//    }
 
-    case Any::Type::MAT4: {
-        const auto& val = any.getMat4();
-        write( reinterpret_cast<const unsigned char*>( val.getData() ), 64 );
-        break;
-    }
+//    case Any::Type::CONST_CHAR_PTR: {
+//        const auto& val = any.getConstCharPtr();
+//        write( val );
+//        break;
+//    }
 
-    case Any::Type::MESH: {
-        const Measure& measure = any.getMesh();
-        write( measure );
-        break;
-    }
+//    case Any::Type::MAT4: {
+//        const auto& val = any.getMat4();
+//        write( reinterpret_cast<const unsigned char*>( val.getData() ), 64 );
+//        break;
+//    }
 
-#ifndef COVERAGE
-    default:
-        std::cerr << "non supported type : '" << any.type() << "'" << std::endl;
-        assert( false );
-#endif
-    }
+//    case Any::Type::MESH: {
+//        const Measure& measure = any.getMesh();
+//        write( measure );
+//        break;
+//    }
+
+//#ifndef COVERAGE
+//    default:
+//        std::cerr << "non supported type : '" << any.type() << "'" << std::endl;
+//        assert( false );
+//#endif
+//    }
 }
 
 //} // namespace io

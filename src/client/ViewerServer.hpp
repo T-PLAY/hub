@@ -6,11 +6,11 @@
 #include <string>
 #include <thread>
 
-#include "sensor/Acquisition.hpp"
-#include "sensor/SensorSpec.hpp"
+//#include "sensor/Acquisition.hpp"
+//#include "sensor/SensorSpec.hpp"
 #include "net/ClientSocket.hpp"
 #include "ViewerInterface.hpp"
-#include "io/input/InputStreamServer.hpp"
+//#include "io/input/InputStreamServer.hpp"
 
 namespace hub {
 namespace client {

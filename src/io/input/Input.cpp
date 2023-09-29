@@ -167,70 +167,72 @@ void Input::read( Any& any ) {
     std::cout << HEADER_INPUT_MSG "read(std::any)" << std::endl;
 #endif
 
-    assert( !any.has_value() );
+    assert( !any.isEmpty() );
 
-    Any::Type anyType;
-    read( anyType );
-    switch ( anyType ) {
+    // todo any
 
-    case Any::Type::INT: {
-        int val;
-        read( val );
-        any = Any( val );
-    } break;
+//    Any::Type anyType;
+//    read( anyType );
+//    switch ( anyType ) {
 
-    case Any::Type::DOUBLE: {
-        double val;
-        read( val );
-        any = Any( val );
-    } break;
+//    case Any::Type::INT: {
+//        int val;
+//        read( val );
+//        any = Any( val );
+//    } break;
 
-    case Any::Type::STRING: {
-        std::string val;
-        read( val );
-        any = Any( val );
-    } break;
+//    case Any::Type::DOUBLE: {
+//        double val;
+//        read( val );
+//        any = Any( val );
+//    } break;
 
-    case Any::Type::CONST_CHAR_PTR: {
-        assert( sizeof( char ) == 1 );
-        char* buff = new char[256];
-        memset( buff, 0, 256 );
-        read( buff );
-        int len = static_cast<int>( strlen( buff ) );
+//    case Any::Type::STRING: {
+//        std::string val;
+//        read( val );
+//        any = Any( val );
+//    } break;
 
-        const int buffSize = len + 1;
-        char* str          = new char[buffSize];
-        memcpy( str, buff, len );
-        str[len] = 0;
-        delete[] buff;
+//    case Any::Type::CONST_CHAR_PTR: {
+//        assert( sizeof( char ) == 1 );
+//        char* buff = new char[256];
+//        memset( buff, 0, 256 );
+//        read( buff );
+//        int len = static_cast<int>( strlen( buff ) );
 
-        any = Any( str );
+//        const int buffSize = len + 1;
+//        char* str          = new char[buffSize];
+//        memcpy( str, buff, len );
+//        str[len] = 0;
+//        delete[] buff;
 
-    } break;
+//        any = Any( str );
 
-    case Any::Type::MAT4: {
-        float buff[16];
-        read( reinterpret_cast<unsigned char*>( buff ), 64 );
+//    } break;
 
-        data::Mat4 mat4( buff );
-        any = Any( mat4 );
+//    case Any::Type::MAT4: {
+//        float buff[16];
+//        read( reinterpret_cast<unsigned char*>( buff ), 64 );
 
-    } break;
+//        data::Mat4 mat4( buff );
+//        any = Any( mat4 );
 
-    case Any::Type::MESH: {
-        Measure measure;
-        read( measure );
+//    } break;
 
-        any = Any( data::Mesh( measure ) );
+//    case Any::Type::MESH: {
+//        Measure measure;
+//        read( measure );
 
-    } break;
+//        any = Any( data::Mesh( measure ) );
 
-#ifndef COVERAGE
-    default:
-        assert( false );
-#endif
-    }
-    assert( any.has_value() );
+//    } break;
+
+//#ifndef COVERAGE
+//    default:
+//        assert( false );
+//#endif
+//    }
+//    assert( ! any.isEmpty() );
 }
 
 sensor::Acquisition Input::operator>>( Input& input ) {

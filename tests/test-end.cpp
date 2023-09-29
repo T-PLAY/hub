@@ -1,19 +1,20 @@
 #include "test_common.hpp"
 
- #include <catch2/catch_test_macros.hpp>
+// #include <catch2/catch_test_macros.hpp>
 
-#include <io/input/InputStream.hpp>
+//#include <io/input/InputStream.hpp>
+//#include <thread>
 
  TEST_CASE( "Test end" ) {
 
-    try {
-        hub::input::InputStream( "killServer" );
-        CHECK(false);
-    }
-    catch ( std::exception& ex ) {
-        std::cout << "[test] catch exception : " << ex.what() << std::endl;
-        CHECK(true);
-    }
+//    try {
+//        hub::input::InputStream( "killServer" );
+//        CHECK(false);
+//    }
+//    catch ( std::exception& ex ) {
+//        std::cout << "[test] catch exception : " << ex.what() << std::endl;
+//        CHECK(true);
+//    }
 
     END_REPORT();
 

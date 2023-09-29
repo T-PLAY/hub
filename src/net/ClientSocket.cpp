@@ -117,7 +117,7 @@ void ClientSocket::connect() {
 #endif
 }
 
-void ClientSocket::write( const unsigned char* data, const size_t len ) {
+void ClientSocket::write( const unsigned char* const data, const size_t len ) {
     assert( isOpen() );
     //    assert( 0 < len && len <= MAX_NET_BUFFER_SIZE );
     assert( 0 < len );
@@ -270,11 +270,16 @@ bool ClientSocket::isOpen() const {
     return m_connected;
 }
 
-bool ClientSocket::isEnd() const {
-    assert( isOpen() );
-    assert( isConnected() );
-    return false;
-}
+//bool ClientSocket::isConnected() const
+//{
+//    return m_connected;
+//}
+
+//bool ClientSocket::isEnd() const {
+//    assert( isOpen() );
+//    assert( isConnected() );
+//    return false;
+//}
 
 #if ( __cplusplus >= 201703L )
 #    define ConstString constexpr std::string_view
@@ -335,6 +340,7 @@ void ClientSocket::setPort( int newPort ) {
     m_port = newPort;
     m_addr.setPort( m_port );
 }
+
 
 void ClientSocket::setIpv4( const std::string& newIpv4 ) {
     assert( !isOpen() );

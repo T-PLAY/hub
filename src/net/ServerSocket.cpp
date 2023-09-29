@@ -1,6 +1,7 @@
 #include "net/ServerSocket.hpp"
 
 #include <cstring>
+#include <cassert>
 
 #include <net/Utils.hpp>
 

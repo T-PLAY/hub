@@ -3,7 +3,7 @@
 #include <string>
 
 /* cppcheck-suppress missingInclude */
-#include "Version.h"
+#include "Version.hpp"
 
 ///
 /// @author Gauthier Bouyjou

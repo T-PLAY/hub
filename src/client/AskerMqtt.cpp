@@ -8,7 +8,7 @@ namespace hub {
 namespace client {
 
 AskerMqtt::AskerMqtt( const std::string& ipv4, int port ) :
-    m_hostName( hub::utils::getHostname() ),
+    m_hostName( utils::getHostname() ),
     m_client( new mqtt::client( ipv4 + ":" + std::to_string( port ),
                                 std::string( "asker" ) + m_hostName,
                                 mqtt::create_options( MQTTVERSION_5 ) ) ) {
@@ -28,7 +28,7 @@ AskerMqtt::~AskerMqtt() {
     //    assert( !m_sock.isOpen() );
 }
 
-std::list<std::pair<std::string, SensorSpec>> AskerMqtt::listStreams() {
+std::list<std::pair<std::string, sensor::SensorSpec>> AskerMqtt::listStreams() {
     //    m_sock.write( io::StreamInterface::ClientMessage::LIST_STREAMS );
 
     assert(m_client->is_connected());
@@ -53,7 +53,7 @@ std::list<std::pair<std::string, SensorSpec>> AskerMqtt::listStreams() {
         }
     }
 
-    std::list<std::pair<std::string, SensorSpec>> ret;
+    std::list<std::pair<std::string, sensor::SensorSpec>> ret;
 
     for ( const auto& activeStreamTopic : activeStreamTopics ) {
 
@@ -86,7 +86,7 @@ std::list<std::pair<std::string, SensorSpec>> AskerMqtt::listStreams() {
         memcpy(&data[sizeof(uint64_t)], m_inputMsgPtr->get_payload().data(), packetSize);
 
         io::Memory<decltype( buff )> memory( buff );
-        hub::SensorSpec sensorSpec;
+        sensor::SensorSpec sensorSpec;
         memory.read( sensorSpec );
         assert( buff.empty() );
         assert( memory.isEnd() );
@@ -97,13 +97,13 @@ std::list<std::pair<std::string, SensorSpec>> AskerMqtt::listStreams() {
     }
 
     m_client->stop_consuming();
-//    std::list<std::pair<std::string, hub::SensorSpec>> ret;
+//    std::list<std::pair<std::string, SensorSpec>> ret;
     //    m_sock.read( ret );
 
     return ret;
 }
 
-Acquisition AskerMqtt::getAcquisition( const std::string& streamName ) {
+sensor::Acquisition AskerMqtt::getAcquisition( const std::string& streamName ) {
     //    m_sock.write( io::StreamInterface::ClientMessage::GET_ACQUISITION );
     //    m_sock.write( streamName );
     assert(m_client->is_connected());
@@ -133,7 +133,7 @@ Acquisition AskerMqtt::getAcquisition( const std::string& streamName ) {
     //    }
     //    assert( message == io::StreamInterface::ClientMessage::FOUND );
 
-    //    hub::SensorSpec sensorSpec;
+    //    SensorSpec sensorSpec;
     //    m_sock.read( sensorSpec );
     uint64_t acqSize;
 
@@ -175,7 +175,7 @@ Acquisition AskerMqtt::getAcquisition( const std::string& streamName ) {
 //        m_client->unsubscribe( m_currentTopic );
 
     io::Memory<decltype( buff )> memory( buff );
-    hub::sensor::Acquisition acq;
+    sensor::Acquisition acq;
     memory.read( acq );
 
     std::cout << "read acq : " << acq << std::endl;

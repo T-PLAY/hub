@@ -8,6 +8,8 @@ set(REQUIRED_LIBS "")
 
 message(STATUS "Hub version: ${${PROJECT_NAME}_VERSION}")
 
+option(HUB_BUILD_SERVER "Build implement server" ON)
+
 option(HUB_BUILD_MQTT "Build implement using mqtt" OFF)
 if (HUB_BUILD_MQTT)
     find_package(PahoMqttCpp QUIET)
@@ -36,67 +38,36 @@ endif()
 #endif()
 
 
-############################# COMPILING SOURCES
+#set(SOURCES_DIR ${HUB_SOURCE_DIR})
+#set(HEADERS_DIR ${HUB_INCLUDE_DIR})
 
-#set(FILES
-##    Any
-##    Input
-##    Measure
-#    Macros
-#    Info
-#    Version
-#    Contributors
+#list(REMOVE_ITEM headers ${HUB_EXTERNAL_DIR}/mqtt/MQTTAsync.h)
+#list(REMOVE_ITEM headers ${HUB_EXTERNAL_DIR}/mqtt/MQTTAsyncUtils.h)
 
-#    Map
+#if (NOT PahoMqttCpp_FOUND)
+#    list(FILTER sources EXCLUDE REGEX ".*Mqtt\\.cpp$")
+#    list(FILTER headers EXCLUDE REGEX ".*Mqtt\\.hpp$")
+#endif()
 
-#    Resolution
-#    Measure
-##    data/Mesh
 
-##    io/MemoryInterface
-##    io/output/OutputMemory
-##    io/input/InputMemory
-##    io/Memory
-##    data/Mesh
-##    data/Mat4
-##    Any
-##    Resolution
-##    SensorSpec
-##    Sensor
-#)
+#if (NOT HUB_BUILD_SERVER)
+#    list(FILTER sources EXCLUDE REGEX ".*Server\\.cpp$")
+#    list(FILTER headers EXCLUDE REGEX ".*Server\\.hpp$")
 
-##set(sources)
-#file(GLOB_RECURSE sources ${HUB_EXTERNAL_DIR}/*.cpp ${HUB_EXTERNAL_DIR}/*.c)
-##set(headers)
-#file(
-##    GLOB_RECURSE
-#    GLOB
-#    headers
-#    ${HUB_EXTERNAL_DIR}/*.hpp
-#    ${HUB_EXTERNAL_DIR}/*.h
-#    ${HUB_EXTERNAL_DIR}/*.inl)
+#    file(GLOB server_srcs server/*.cpp)
+#    list(REMOVE_ITEM sources ${server_srcs})
 
-#foreach(file ${FILES})
-#    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${file}.cpp")
-#        list(APPEND sources "${file}.cpp")
-#    endif()
-#    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${file}.c")
-#        list(APPEND sources "${file}.c")
-#    endif()
-#    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${file}.hpp")
-#        list(APPEND headers "${file}.hpp")
-#    endif()
-#    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${file}.h")
-#        list(APPEND headers "${file}.h")
-#    endif()
-#endforeach()
+#    file(GLOB server_headers server/*.hpp)
+#    list(REMOVE_ITEM headers ${server_headers})
+#endif()
 
 #file(GLOB_RECURSE sources ${HUB_SOURCE_DIR}/*.cpp ${HUB_EXTERNAL_DIR}/*.cpp ${HUB_EXTERNAL_DIR}/*.c)
 file(
-#    GLOB
-    GLOB_RECURSE
+    GLOB
+#    GLOB_RECURSE
     sources
-    ${HUB_SOURCE_DIR}/*.cpp
+#    ${HUB_SOURCE_DIR}/*.cpp
+    ${HUB_SOURCE_DIR}/net/*.cpp
     ${HUB_EXTERNAL_DIR}/*.cpp
     ${HUB_EXTERNAL_DIR}/*.c
 )
@@ -104,35 +75,17 @@ file(
 #list(REMOVE_ITEM sources ${HUB_EXTERNAL_DIR}/mqtt/MQTTAsync.c)
 #list(REMOVE_ITEM sources ${HUB_EXTERNAL_DIR}/mqtt/MQTTAsyncUtils.c)
 file(
-#    GLOB
-    GLOB_RECURSE
+    GLOB
+#    GLOB_RECURSE
     headers
-    ${HUB_INCLUDE_DIR}/*.hpp
-    ${HUB_INCLUDE_DIR}/*.h
+#    ${HUB_INCLUDE_DIR}/*.hpp
+    ${HUB_INCLUDE_DIR}/net/*.hpp
+#    ${HUB_INCLUDE_DIR}/*.h
 #    ${HUB_INCLUDE_DIR}/*.inl
     ${HUB_EXTERNAL_DIR}/*.hpp
     ${HUB_EXTERNAL_DIR}/*.h
 #    ${HUB_EXTERNAL_DIR}/*.inl
 )
-#list(REMOVE_ITEM headers ${HUB_EXTERNAL_DIR}/mqtt/MQTTAsync.h)
-#list(REMOVE_ITEM headers ${HUB_EXTERNAL_DIR}/mqtt/MQTTAsyncUtils.h)
-
-if (NOT PahoMqttCpp_FOUND)
-    list(FILTER sources EXCLUDE REGEX ".*Mqtt\\.cpp$")
-    list(FILTER headers EXCLUDE REGEX ".*Mqtt\\.hpp$")
-endif()
-
-option(HUB_BUILD_SERVER "Build implement server" ON)
-if (NOT HUB_BUILD_SERVER)
-    list(FILTER sources EXCLUDE REGEX ".*Server\\.cpp$")
-    list(FILTER headers EXCLUDE REGEX ".*Server\\.hpp$")
-
-    file(GLOB server_srcs server/*.cpp)
-    list(REMOVE_ITEM sources ${server_srcs})
-
-    file(GLOB server_headers server/*.hpp)
-    list(REMOVE_ITEM headers ${server_headers})
-endif()
 
 list(APPEND SOURCE_FILES ${sources} ${headers})
 
@@ -143,7 +96,7 @@ source_group("Source Files\\" FILES ${sources})
 
 if (NOT XCODE) # unable to have object files as native build with Xcode
 
-        add_library(${PROJECT_NAME} OBJECT ${sources} ${headers})
+    add_library(${PROJECT_NAME} OBJECT ${sources} ${headers})
 
         target_include_directories(${PROJECT_NAME}
             PUBLIC
@@ -193,7 +146,7 @@ if (NOT XCODE) # unable to have object files as native build with Xcode
                 set(REQUIRED_LIBS ${REQUIRED_LIBS} Threads::Threads)
 
             elseif(GNU)
-                message(FATAL_ERROR "eee")
+                message(FATAL_ERROR "GNU not supported")
 
             elseif(GCC)
                 set(REQUIRED_LIBS ${REQUIRED_LIBS} ws2_32)
@@ -286,6 +239,7 @@ if (HUB_BUILD_STATIC)
     endif()
 
     target_compile_definitions(${PROJECT_NAME}_static PUBLIC -DSRC_STATIC)
+
     #target_link_libraries(${PROJECT_NAME}_static PRIVATE ${REQUIRED_LIBS})
 #    target_include_directories(${PROJECT_NAME}_static
 #        PUBLIC
@@ -370,6 +324,7 @@ if (HUB_BUILD_SHARED)
     else()
             add_library(${PROJECT_NAME}_shared SHARED $<TARGET_OBJECTS:${PROJECT_NAME}>)
     endif()
+
     target_compile_definitions(${PROJECT_NAME}_shared PRIVATE -DSRC_EXPORTS)
 #	target_compile_options(${PROJECT_NAME} PRIVATE "-fpic")
 #    target_link_libraries(${PROJECT_NAME} PRIVATE ${REQUIRED_LIBS})
@@ -460,8 +415,8 @@ endif() # shared library
 
 string(TIMESTAMP DATE "%Y/%m/%d %H:%M UTC+0" UTC)
 
-configure_file("${CMAKE_CURRENT_SOURCE_DIR}/Version.h.in" "${CMAKE_CURRENT_BINARY_DIR}/Version.h" @ONLY)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Version.h DESTINATION include)
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/Version.hpp.in" "${CMAKE_CURRENT_BINARY_DIR}/Version.hpp" @ONLY)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Version.hpp DESTINATION include)
 
 include(CMakePackageConfigHelpers)
 

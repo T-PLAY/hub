@@ -27,8 +27,8 @@ class SRC_API OutputStreamMqtt : public Output, public io::StreamMqtt
 
 //    ~OutputStreamMqtt();
 
-    void write( const Acquisition& acq ) override;
-    void write( const SensorSpec& sensorSpec ) override;
+    void write( const sensor::Acquisition& acq ) override;
+    void write( const sensor::SensorSpec& sensorSpec ) override;
 //    void write(uint64_t packetSize);
 
   protected:

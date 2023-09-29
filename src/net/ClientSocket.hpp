@@ -2,7 +2,7 @@
 
 #include <mutex>
 
-#include "io/InputOutput.hpp"
+//#include "io/InputOutput.hpp"
 #include "net/Socket.hpp"
 
 namespace hub {
@@ -25,7 +25,8 @@ namespace net {
 /// allows connection to remote server hubs.
 /// This class describes the functionality needed to open a remote communication.
 ///
-class SRC_API ClientSocket : public Socket, public io::InputOutput
+//class SRC_API ClientSocket : public Socket, public io::InputOutput
+class SRC_API ClientSocket : public Socket
 {
   public:
     ///
@@ -160,33 +161,38 @@ class SRC_API ClientSocket : public Socket, public io::InputOutput
     /// \brief isOpen
     /// \return
     ///
-    bool isOpen() const override;
+//    bool isOpen() const override;
+    bool isOpen() const;
+//    bool isConnected() const;
 
     ///
     /// \brief write
     /// \param data
     /// \param len
     ///
-    void write( const unsigned char* data, size_t len ) override;
+//    void write( const unsigned char* data, size_t len ) override;
+    void write(const unsigned char * const data, size_t len );
 
     ///
     /// \brief read
     /// \param data
     /// \param len
     ///
-    void read( unsigned char* data, size_t len ) override;
+//    void read( unsigned char* data, size_t len ) override;
+    void read( unsigned char* data, size_t len );
 
   public:
     ///
     /// \brief close
     ///
-    void close() override;
+//    void close() override;
+    void close();
 
     ///
     /// \brief isEnd
     /// \return
     ///
-    bool isEnd() const override;
+//    bool isEnd() const override;
 
   public:
     ///
@@ -211,21 +217,21 @@ class SRC_API ClientSocket : public Socket, public io::InputOutput
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-template <class T>
-void ClientSocket::write( const T& t ) {
-    assert( m_connected );
-    // todo fix
-    // server side
-    // Assertion failed: isOpen()
-    // D:\a\_work\1\s\src\vctools\crt\github\stl\src\mutex.cpp(64): mutex destroyed while busy
-    Output::write( t );
-}
+//template <class T>
+//void ClientSocket::write( const T& t ) {
+//    assert( m_connected );
+//    // todo fix
+//    // server side
+//    // Assertion failed: isOpen()
+//    // D:\a\_work\1\s\src\vctools\crt\github\stl\src\mutex.cpp(64): mutex destroyed while busy
+//    Output::write( t );
+//}
 
-template <class T>
-void ClientSocket::read( T& t ) {
-    assert( isOpen() );
-    Input::read( t );
-}
+//template <class T>
+//void ClientSocket::read( T& t ) {
+//    assert( isOpen() );
+//    Input::read( t );
+//}
 
 } // namespace net
 } // namespace hub

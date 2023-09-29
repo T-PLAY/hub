@@ -1,9 +1,9 @@
 #pragma once
 
-#include "sensor/InputSensor.hpp"
 #include "Macros.hpp"
-#include "sensor/OutputSensor.hpp"
 
+#include "sensor/InputSensor.hpp"
+#include "sensor/OutputSensor.hpp"
 #include "client/Viewer.hpp"
 //#include "ViewerInterface.hpp"
 

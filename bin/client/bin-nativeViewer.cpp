@@ -1,7 +1,7 @@
 
 #include <iostream>
 
-#include <Native.hpp>
+#include <native/Native.hpp>
 
 #define COLOR "\033[44m"
 #define HEADER_MSG "\t\t\t" COLOR "[NativeViewer]\033[0m "

@@ -135,8 +135,10 @@ std::string SensorSpec::to_string( const SensorSpec::MetaData& metaData, bool ex
 std::string SensorSpec::to_string( const std::pair<std::string, Any>& metaData ) {
     const auto& name = metaData.first;
     const auto& val  = metaData.second;
-    std::string str  = name + " : " + val.to_string();
-    return str;
+    // todo any
+//    std::string str  = name + " : " + val.to_string();
+//    return str;
+    return "";
 }
 
 std::ostream& operator<<( std::ostream& os, const SensorSpec& sensorSpec ) {

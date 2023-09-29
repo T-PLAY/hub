@@ -25,12 +25,12 @@ namespace client {
 // const int N_RETRY_ATTEMPTS = 5;
 // const std::string CLIENT_ID( "viewer" );
 
-ViewerMqtt::ViewerMqtt(const std::string &name, std::function<bool( const char*, const SensorSpec& )> onNewStreamer,
-    std::function<void( const char*, const SensorSpec& )> onDelStreamer,
+ViewerMqtt::ViewerMqtt(const std::string &name, std::function<bool( const char*, const sensor::SensorSpec& )> onNewStreamer,
+    std::function<void( const char*, const sensor::SensorSpec& )> onDelStreamer,
     std::function<void( const char*, int )> onServerNotFound,
     std::function<void( const char*, int )> onServerConnected,
     std::function<void( const char*, int )> onServerDisconnected,
-    std::function<void( const char*, const hub::sensor::Acquisition& )> onNewAcquisition,
+    std::function<void( const char*, const sensor::Acquisition& )> onNewAcquisition,
     std::function<void( const char*, const char*, int, const Any& )> onSetProperty,
     std::function<void( const char* )> onLogMessage ,
     const std::string& ipv4,
@@ -48,7 +48,7 @@ ViewerMqtt::ViewerMqtt(const std::string &name, std::function<bool( const char*,
         ipv4,
         port
         ),
-//    m_hostName( hub::utils::getHostname() + std::to_string(std::hash<std::thread::id>{}(std::this_thread::get_id())) ),
+//    m_hostName( utils::getHostname() + std::to_string(std::hash<std::thread::id>{}(std::this_thread::get_id())) ),
     m_client( new mqtt::client( ipv4 + ":" + std::to_string( port ),
                                 std::string( "viewer:" ) + m_name,
                                 mqtt::create_options( MQTTVERSION_5 ) ) )
@@ -125,7 +125,7 @@ ViewerMqtt::ViewerMqtt(const std::string &name, std::function<bool( const char*,
                     DEBUG_MSG( "[ViewerMqtt] new streamer '" << streamName << "'" );
 
                     //                std::string streamName;
-                    SensorSpec sensorSpec;
+                    sensor::SensorSpec sensorSpec;
                     try {
                         input::InputStreamMqtt inputStream( streamName, m_ipv4, m_port );
                         inputStream.read( sensorSpec );

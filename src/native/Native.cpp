@@ -300,7 +300,7 @@ bool metaData_getString( const sensor::SensorSpec::MetaData* metaData,
                          int* strLen ) {
     if ( metaData->find( metaName ) == metaData->end() ) return false;
 
-    const char* meta = metaData->at( metaName ).getConstCharPtr();
+    const char* meta = metaData->at( metaName ).get<const char *>();
     *strLen          = strlen( meta ); // todo
     memcpy( output, meta, *strLen + 1 );
     output[*strLen] = 0;
@@ -309,7 +309,7 @@ bool metaData_getString( const sensor::SensorSpec::MetaData* metaData,
 
 bool metaData_getMat4( const sensor::SensorSpec::MetaData* metaData, const char* metaName, float* output ) {
     if ( metaData->find( metaName ) != metaData->end() ) {
-        const auto& mat4 = metaData->at( metaName ).getMat4();
+        const auto& mat4 = metaData->at( metaName ).get<data::Mat4>();
         memcpy( output, mat4.getData(), 64 );
         return true;
     }
@@ -322,20 +322,20 @@ bool metaData_exists( const sensor::SensorSpec::MetaData* metaData, const char* 
 
 int metaData_getInt( const sensor::SensorSpec::MetaData* metaData, const char* metaName ) {
     assert( metaData->find( metaName ) != metaData->end() );
-    return metaData->at( metaName ).getInt();
+    return metaData->at( metaName ).get<int>();
 }
 
 double metaData_getDouble( const sensor::SensorSpec::MetaData* metaData, const char* metaName ) {
     assert( metaData->find( metaName ) != metaData->end() );
-    return metaData->at( metaName ).getDouble();
+    return metaData->at( metaName ).get<double>();
 }
 
  double any_getDouble( const Any* any ) {
-     return any->getDouble();
+     return any->get<double>();
  }
 
  int any_getInt( const Any* any ) {
-     return any->getInt();
+     return any->get<int>();
  }
 
 } // namespace native

@@ -90,7 +90,7 @@ InputStreamMqtt::InputStreamMqtt( const std::string& streamName,
 // InputStreamMqtt::~InputStreamMqtt() {
 // }
 
-void InputStreamMqtt::read( Acquisition& acq ) {
+void InputStreamMqtt::read( sensor::Acquisition& acq ) {
     assert( m_client->is_connected() );
 
 #ifdef DEBUG_INPUT_STREAM
@@ -145,7 +145,7 @@ void InputStreamMqtt::read( Acquisition& acq ) {
     assert( memory.isEnd() );
 }
 
-void InputStreamMqtt::read( SensorSpec& sensorSpec ) {
+void InputStreamMqtt::read( sensor::SensorSpec& sensorSpec ) {
 
     //    std::cout << "[InputStreamMqtt] start read(SensorSpec)" << std::endl;
     assert( m_client->is_connected() );

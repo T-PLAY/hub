@@ -50,7 +50,7 @@ OutputStreamMqtt::OutputStreamMqtt( const std::string& streamName,
 #endif
 }
 
-void OutputStreamMqtt::write( const Acquisition& acq ) {
+void OutputStreamMqtt::write( const sensor::Acquisition& acq ) {
     //    m_msgPtr->set_retained( true );
     //    m_msgPtr->set_qos( 2 );
     assert( m_msgPtr->get_qos() == 2 );
@@ -91,7 +91,7 @@ void OutputStreamMqtt::write( const Acquisition& acq ) {
     write( (unsigned char*)buff.data(), m_acqSize );
 }
 
-void OutputStreamMqtt::write( const SensorSpec& sensorSpec ) {
+void OutputStreamMqtt::write( const sensor::SensorSpec& sensorSpec ) {
     //    m_msgPtr->set_retained( true );
     //    m_msgPtr->set_qos( 2 );
     assert( m_msgPtr->get_qos() == 2 );

@@ -140,7 +140,7 @@ StreamerClient::StreamerClient( Server* server,
     }
     if ( metaData.find( "nAcq" ) != metaData.end() ) {
         std::cout << headerMsg() << "type detected : packed stream" << std::endl;
-        m_nAcq           = metaData.at( "nAcq" ).getInt();
+        m_nAcq           = metaData.at( "nAcq" ).get<int>();
         m_isPackedStream = true;
     }
 

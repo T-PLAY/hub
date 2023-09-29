@@ -10,7 +10,7 @@
 
 // #include <iostream>
 
-#include <Native.hpp>
+#include <native/Native.hpp>
 // #include <server/Server.hpp>
 
 // needs server running
@@ -121,9 +121,9 @@ TEST_CASE( "Native test" ) {
         const hub::sensor::SensorSpec::MetaData* metaData =
             hub::native::sensorSpec_getMetaData( sensorSpec );
         CHECK( hub::native::metaData_exists( metaData, "a" ) );
-        CHECK( hub::native::metaData_getInt( metaData, "a" ) == ref_metaData.at( "a" ).getInt() );
+        CHECK( hub::native::metaData_getInt( metaData, "a" ) == ref_metaData.at( "a" ).get<int>() );
         CHECK( hub::native::metaData_getDouble( metaData, "c" ) ==
-               ref_metaData.at( "c" ).getDouble() );
+               ref_metaData.at( "c" ).get<double>() );
         CHECK( !hub::native::metaData_exists( metaData, "z" ) );
         float* data_mat4 = new float[16];
         hub::native::metaData_getMat4( metaData, "d", data_mat4 );
