@@ -384,8 +384,8 @@ if (HUB_BUILD_SHARED)
                 $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/>
                 $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.hpp
                 $<INSTALL_INTERFACE:include>
-#            PRIVATE
-#                ${HUB_EXTERNAL_DIR}
+            PRIVATE
+                ${HUB_EXTERNAL_DIR}
         )
         if (PahoMqttCpp_FOUND)
             target_compile_definitions(${PROJECT_NAME}_shared PUBLIC -DHUB_BUILD_MQTT)
@@ -399,7 +399,16 @@ if (HUB_BUILD_SHARED)
         endif()
     else()
 #            add_library(${PROJECT_NAME}_shared SHARED $<TARGET_OBJECTS:${PROJECT_NAME}>)
-            add_library(${PROJECT_NAME}_shared SHARED ${SRC_TARGETS})
+#        add_library(${PROJECT_NAME}_shared SHARED ${SRC_TARGETS})
+        add_library(${PROJECT_NAME}_shared SHARED ${SRC_TARGETS} ${external_sources} ${external_headers})
+        target_include_directories(${PROJECT_NAME}_shared
+            PUBLIC
+                $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/>
+                $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.hpp
+                $<INSTALL_INTERFACE:include>
+            PRIVATE
+                ${HUB_EXTERNAL_DIR}
+        )
     endif()
 
     target_compile_definitions(${PROJECT_NAME}_shared PRIVATE -DSRC_EXPORTS)
