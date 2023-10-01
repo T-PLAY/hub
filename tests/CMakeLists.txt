@@ -123,7 +123,7 @@ endif()
 include(CTest)
 enable_testing()
 foreach(testFile ${test_srcs})
-    message(STATUS "test src: ${testFile}")
+#    message(STATUS "test src: ${testFile}")
 #endforeach()
 
     get_filename_component(test ${testFile} NAME_WE)
