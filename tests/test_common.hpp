@@ -16,8 +16,28 @@
 //#include <sensor/InputSensor.hpp>
 //#include <sensor/OutputSensor.hpp>
 
-#include "Macros.hpp"
+//#include "Macros.hpp"
 #include <Version.hpp>
+
+#define GET_RANDOM_PORT getRandomPort( __FILE__ )
+
+static int getRandomPort( const char* filename ) {
+    // #ifdef BUILD_SERVER
+    //     return 4042;
+    // #endif
+    // #ifdef USE_MQTT
+    //     return 1883;
+    // #endif
+    srand( (unsigned)time( NULL ) );
+    constexpr int offset      = 6000;
+    const unsigned int random = std::hash<std::string>()( filename ) + rand();
+    const unsigned int ret    = offset + random % ( 65535 - offset );
+    assert( offset <= ret && ret < 65536 );
+//    assert( ret != hub::io::StreamServer::s_defaultPort );
+    std::cout << "using random port: " << ret << std::endl;
+    return ret;
+}
+
 
 static std::string ReplaceAll( std::string str, const std::string& from, const std::string& to ) {
     size_t start_pos = 0;
@@ -37,8 +57,7 @@ static std::string ReplaceAll( std::string str, const std::string& from, const s
          << "#################################### START REPORT "                                   \
             "####################################\n"                                               \
          << "####################################################################################" \
-            "##\n"                                                                                 \
-         << std::endl;                                                                             \
+        "##\n";                                                                                 \
     file.close();
 
 #define END_REPORT()                                                                               \

@@ -15,8 +15,8 @@
         CHECK(true);
     }
 
-    END_REPORT();
+//    END_REPORT();
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(200));
-    PRINT_REPORT();
+//    std::this_thread::sleep_for(std::chrono::milliseconds(200));
+//    PRINT_REPORT();
 }

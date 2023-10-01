@@ -1,4 +1,4 @@
-#include "net/ClientSocket.hpp"
+#include "ClientSocket.hpp"
 
 #include <cassert>
 #include <cmath>
@@ -275,11 +275,11 @@ bool ClientSocket::isOpen() const {
 //    return m_connected;
 //}
 
-//bool ClientSocket::isEnd() const {
-//    assert( isOpen() );
-//    assert( isConnected() );
-//    return false;
-//}
+bool ClientSocket::isEnd() const {
+    assert( isOpen() );
+    assert( isConnected() );
+    return false;
+}
 
 #if ( __cplusplus >= 201703L )
 #    define ConstString constexpr std::string_view

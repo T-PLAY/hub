@@ -135,7 +135,7 @@ TEST_CASE( "Native test" ) {
         char metaDataString[80] = { 0 };
         int len;
         hub::native::metaData_getString( metaData, "b", metaDataString, &len );
-        const char* ref_str = ref_metaData.at( "b" ).getConstCharPtr();
+        const char* ref_str = ref_metaData.at( "b" ).get<const char *>();
         std::cout << "ref_str = " << ref_str << std::endl;
         CHECK( len == strlen( ref_str ) );
         CHECK( !strcmp( ref_str, metaDataString ) );

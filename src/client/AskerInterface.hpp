@@ -4,7 +4,7 @@
 #include <string>
 
 #include "sensor/Acquisition.hpp"
-#include "Macros.hpp"
+#include "core/Macros.hpp"
 #include "sensor/SensorSpec.hpp"
 //#include "net/ClientSocket.hpp"
 

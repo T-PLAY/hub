@@ -7,19 +7,30 @@ if (XCODE)
         set(LINK_LIBRARIES hub_static)
         #set(LINK_LIBRARIES hub_shared)
 else()
-        set(LINK_LIBRARIES hub)
+#        set(LINK_LIBRARIES hub)
+        set(LINK_LIBRARIES hub_static)
 endif()
 #set(LINK_LIBRARIES hub eclipse-paho-mqtt-c::paho-mqtt3c eclipse-paho-mqtt-c::paho-mqtt3a)
 
 #set(LINK_LIBRARIES hub PahoMqttCpp)
 
-file(GLOB SOURCES *.cpp)
+#file(GLOB_RECURSE SOURCES *.cpp)
+set(bin_srcs)
+foreach(HUB_SOURCE_DIR ${HUB_SOURCE_DIRS})
+    file(
+        GLOB
+    #    GLOB_RECURSE
+        test_src
+        ${CMAKE_CURRENT_SOURCE_DIR}/${HUB_SOURCE_DIR}/*.cpp
+    )
+    list(APPEND bin_srcs ${test_src})
+endforeach()
 
 if (NOT HUB_BUILD_SERVER)
-    list(FILTER SOURCES EXCLUDE REGEX ".*server\\.cpp$")
+    list(FILTER bin_srcs EXCLUDE REGEX ".*server\\.cpp$")
 endif()
 
-string(REPLACE ".cpp" "" SOURCES_BASENAME "${SOURCES}")
+string(REPLACE ".cpp" "" SOURCES_BASENAME "${bin_srcs}")
 set(SOURCES_BASENAME ${SOURCES_BASENAME})
 
 
@@ -27,8 +38,8 @@ set(SOURCES_BASENAME ${SOURCES_BASENAME})
 #find_package(PahoMqttCpp QUIET)
 ##find_package(PahoMqttCpp QUIET NO_DEFAULT_PATH)
 #if (PahoMqttCpp_FOUND)
-#    file(GLOB SOURCES mqtt/*.cpp)
-#    string(REPLACE ".cpp" "" EXAMPLE_SRC_BASENAME2 "${SOURCES}")
+#    file(GLOB bin_srcs mqtt/*.cpp)
+#    string(REPLACE ".cpp" "" EXAMPLE_SRC_BASENAME2 "${bin_srcs}")
 #    set(SOURCES_BASENAME ${SOURCES_BASENAME} ${EXAMPLE_SRC_BASENAME2})
 ##    set(LINK_LIBRARIES "${LINK_LIBRARIES} PahoMqttCpp::paho-mqttpp3")
 #    set(LINK_LIBRARIES ${LINK_LIBRARIES} PahoMqttCpp::paho-mqttpp3)

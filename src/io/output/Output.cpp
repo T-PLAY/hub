@@ -1,7 +1,7 @@
 #include "Output.hpp"
 
-#include "Any.hpp"
-#include "Info.hpp"
+#include "core/Any.hpp"
+#include "core/Info.hpp"
 
 //#include "OutputMemory.hpp"
 
@@ -167,55 +167,56 @@ void Output::write( const Any& any ) {
 #    endif
 #endif
 
-    // todo any
 
-//    assert( any.has_value() );
-//    const auto& anyType = any.type();
-//    write( anyType );
-//    switch ( anyType ) {
+    assert( any.hasValue() );
 
-//    case Any::Type::INT: {
-//        const auto& val = any.get<int>();
-//        write( val );
-//        break;
-//    }
+    const auto& anyType = any.type();
+    write( anyType );
 
-//    case Any::Type::DOUBLE: {
-//        const auto& val = any.get<double>();
-//        write( val );
-//        break;
-//    }
+    switch ( anyType ) {
 
-//    case Any::Type::STRING: {
-//        const auto& val = any.getStdString();
-//        write( val );
-//        break;
-//    }
+    case Any::Type::INT: {
+        const auto& val = any.get<int>();
+        write( val );
+        break;
+    }
 
-//    case Any::Type::CONST_CHAR_PTR: {
-//        const auto& val = any.getConstCharPtr();
-//        write( val );
-//        break;
-//    }
+    case Any::Type::DOUBLE: {
+        const auto& val = any.get<double>();
+        write( val );
+        break;
+    }
 
-//    case Any::Type::MAT4: {
-//        const auto& val = any.getMat4();
-//        write( reinterpret_cast<const unsigned char*>( val.getData() ), 64 );
-//        break;
-//    }
+    case Any::Type::STRING: {
+        const auto& val = any.get<std::string>();
+        write( val );
+        break;
+    }
 
-//    case Any::Type::MESH: {
-//        const Measure& measure = any.getMesh();
-//        write( measure );
-//        break;
-//    }
+    case Any::Type::CONST_CHAR_PTR: {
+        const auto& val = any.get<const char*>();
+        write( val );
+        break;
+    }
 
-//#ifndef COVERAGE
-//    default:
-//        std::cerr << "non supported type : '" << any.type() << "'" << std::endl;
-//        assert( false );
-//#endif
-//    }
+    case Any::Type::MAT4: {
+        const auto& val = any.get<data::Mat4>();
+        write( reinterpret_cast<const unsigned char*>( val.getData() ), 64 );
+        break;
+    }
+
+    case Any::Type::MESH: {
+        const Measure& measure = any.get<data::Mesh>();
+        write( measure );
+        break;
+    }
+
+#ifndef COVERAGE
+    default:
+        std::cerr << "non supported type : '" << any.type() << "'" << std::endl;
+        assert( false );
+#endif
+    }
 }
 
 //} // namespace io

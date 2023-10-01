@@ -5,7 +5,7 @@
 // #include <numeric>
 #include <cmath>
 
-#include "Any.hpp"
+#include "core/Any.hpp"
 
 namespace hub {
 namespace sensor {
@@ -135,10 +135,8 @@ std::string SensorSpec::to_string( const SensorSpec::MetaData& metaData, bool ex
 std::string SensorSpec::to_string( const std::pair<std::string, Any>& metaData ) {
     const auto& name = metaData.first;
     const auto& val  = metaData.second;
-    // todo any
-//    std::string str  = name + " : " + val.to_string();
-//    return str;
-    return "";
+    std::string str  = name + " : " + val.to_string();
+    return str;
 }
 
 std::ostream& operator<<( std::ostream& os, const SensorSpec& sensorSpec ) {

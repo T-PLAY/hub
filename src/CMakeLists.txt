@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.8)
 
+#project(core LANGUAGES CXX)
+
 find_package(Git)
 #set(VERSION_UPDATE_FROM_GIT 1)
 include(GetVersionFromGitTag)
@@ -61,81 +63,133 @@ endif()
 #    list(REMOVE_ITEM headers ${server_headers})
 #endif()
 
-#file(GLOB_RECURSE sources ${HUB_SOURCE_DIR}/*.cpp ${HUB_EXTERNAL_DIR}/*.cpp ${HUB_EXTERNAL_DIR}/*.c)
-file(
-    GLOB
-#    GLOB_RECURSE
-    sources
-#    ${HUB_SOURCE_DIR}/*.cpp
-    ${HUB_SOURCE_DIR}/net/*.cpp
-    ${HUB_EXTERNAL_DIR}/*.cpp
-    ${HUB_EXTERNAL_DIR}/*.c
-)
+#list(REMOVE_ITEM sources ${HUB_EXTERNAL_DIR}/mqtt/MQTTAsync.c)
+#list(REMOVE_ITEM sources ${HUB_EXTERNAL_DIR}/mqtt/MQTTAsyncUtils.c)
+#file(
+#    GLOB
+##    GLOB_RECURSE
+#    core_headers
+#    ${CMAKE_CURRENT_SOURCE_DIR}/*.hpp
+##            ${HUB_EXTERNAL_DIR}/*.hpp
+##            ${HUB_EXTERNAL_DIR}/*.h
+##    ${HUB_EXTERNAL_DIR}/*.inl
+#)
+#add_library(core INTERFACE ${core_headers})
 
+file(
+#            GLOB
+    GLOB_RECURSE
+    external_sources
+#    ${CMAKE_CURRENT_SOURCE_DIR}/${HUB_SOURCE_DIR}/*.cpp
+            ${HUB_EXTERNAL_DIR}/*.cpp
+            ${HUB_EXTERNAL_DIR}/*.c
+)
 #list(REMOVE_ITEM sources ${HUB_EXTERNAL_DIR}/mqtt/MQTTAsync.c)
 #list(REMOVE_ITEM sources ${HUB_EXTERNAL_DIR}/mqtt/MQTTAsyncUtils.c)
 file(
-    GLOB
-#    GLOB_RECURSE
-    headers
-#    ${HUB_INCLUDE_DIR}/*.hpp
-    ${HUB_INCLUDE_DIR}/net/*.hpp
-#    ${HUB_INCLUDE_DIR}/*.h
-#    ${HUB_INCLUDE_DIR}/*.inl
-    ${HUB_EXTERNAL_DIR}/*.hpp
-    ${HUB_EXTERNAL_DIR}/*.h
+#            GLOB
+    GLOB_RECURSE
+    external_headers
+#    ${CMAKE_CURRENT_SOURCE_DIR}/${HUB_SOURCE_DIR}/*.hpp
+            ${HUB_EXTERNAL_DIR}/*.hpp
+            ${HUB_EXTERNAL_DIR}/*.h
 #    ${HUB_EXTERNAL_DIR}/*.inl
 )
+add_library(external OBJECT ${external_headers} ${external_sources})
+#add_library(external SHARED ${external_headers} ${external_sources})
+target_include_directories(external
+#    PUBLIC
+#	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+#	$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.hpp
+#	$<INSTALL_INTERFACE:include>
+    PRIVATE
+        ${HUB_EXTERNAL_DIR}
+)
 
-list(APPEND SOURCE_FILES ${sources} ${headers})
 
-source_group("Header Files\\" FILES ${headers})
-source_group("Source Files\\" FILES ${sources})
+#list(APPEND SOURCE_FILES ${sources} ${headers})
+
+#source_group("Header Files\\" FILES ${headers})
+#source_group("Source Files\\" FILES ${sources})
 
 #set(REQUIRED_LIBS)
 
+set (SRC_TARGETS)
+
 if (NOT XCODE) # unable to have object files as native build with Xcode
 
-    add_library(${PROJECT_NAME} OBJECT ${sources} ${headers})
+    foreach(HUB_SOURCE_DIR ${HUB_SOURCE_DIRS})
 
-        target_include_directories(${PROJECT_NAME}
+        set(TARGET_NAME ${HUB_SOURCE_DIR})
+#        set(TARGET_NAME ${PROJECT_NAME})
+
+#        message(STATUS "HUB_SOURCE_DIR: ${HUB_SOURCE_DIR}")
+
+        file(
+#            GLOB
+            GLOB_RECURSE
+            sources
+            ${CMAKE_CURRENT_SOURCE_DIR}/${HUB_SOURCE_DIR}/*.cpp
+#            ${HUB_EXTERNAL_DIR}/*.cpp
+#            ${HUB_EXTERNAL_DIR}/*.c
+        )
+        #list(REMOVE_ITEM sources ${HUB_EXTERNAL_DIR}/mqtt/MQTTAsync.c)
+        #list(REMOVE_ITEM sources ${HUB_EXTERNAL_DIR}/mqtt/MQTTAsyncUtils.c)
+        file(
+#            GLOB
+            GLOB_RECURSE
+            headers
+            ${CMAKE_CURRENT_SOURCE_DIR}/${HUB_SOURCE_DIR}/*.hpp
+#            ${HUB_EXTERNAL_DIR}/*.hpp
+#            ${HUB_EXTERNAL_DIR}/*.h
+        #    ${HUB_EXTERNAL_DIR}/*.inl
+        )
+#        add_library(${PROJECT_NAME} OBJECT ${sources} ${headers})
+#        add_library(${TARGET_NAME} INTERFACE ${sources} ${headers})
+#        add_library(${TARGET_NAME} INTERFACE ${headers})
+        add_library(${TARGET_NAME} OBJECT ${sources} ${headers})
+#        add_library(${TARGET_NAME} SHARED ${sources} ${headers})
+
+        list(APPEND SRC_TARGETS "$<TARGET_OBJECTS:${TARGET_NAME}>")
+
+        target_include_directories(${TARGET_NAME}
             PUBLIC
-                $<BUILD_INTERFACE:${HUB_INCLUDE_DIR}>
-                $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.h
+                $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+                $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.hpp
                 $<INSTALL_INTERFACE:include>
             PRIVATE
                 ${HUB_EXTERNAL_DIR}
         )
 
-        #target_compile_definitions(${PROJECT_NAME} PUBLIC -DINTERNAL_BUILD)
-        target_compile_definitions(${PROJECT_NAME} PUBLIC -DSRC_STATIC) # -> SRC_API = void, future shared
+        #target_compile_definitions(${TARGET_NAME} PUBLIC -DINTERNAL_BUILD)
+        target_compile_definitions(${TARGET_NAME} PUBLIC -DSRC_STATIC) # -> SRC_API = void, future shared
 
         if (PahoMqttCpp_FOUND)
-            target_compile_definitions(${PROJECT_NAME} PUBLIC -DHUB_BUILD_MQTT)
+            target_compile_definitions(${TARGET_NAME} PUBLIC -DHUB_BUILD_MQTT)
         endif()
 
         if (HUB_BUILD_SERVER)
-            target_compile_definitions(${PROJECT_NAME} PUBLIC -DHUB_BUILD_SERVER)
+            target_compile_definitions(${TARGET_NAME} PUBLIC -DHUB_BUILD_SERVER)
             if (HUB_SERVER_PORT)
-                target_compile_definitions(${PROJECT_NAME} PUBLIC -DHUB_SERVER_PORT=${HUB_SERVER_PORT})
+                target_compile_definitions(${TARGET_NAME} PUBLIC -DHUB_SERVER_PORT=${HUB_SERVER_PORT})
             endif()
         endif()
 
-        #set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "-fvisibility=hidden -fvisibility-inlines-hidden")
-        #set_target_properties(${PROJECT_NAME} PROPERTIES SOVERSION ${${PROJECT_NAME}_VERSION_MAJOR} VERSION
-        #                                                                                            ${${PROJECT_NAME}_VERSION})
+        #set_target_properties(${TARGET_NAME} PROPERTIES LINK_FLAGS "-fvisibility=hidden -fvisibility-inlines-hidden")
+        #set_target_properties(${TARGET_NAME} PROPERTIES SOVERSION ${${TARGET_NAME}_VERSION_MAJOR} VERSION
+        #                                                                                            ${${TARGET_NAME}_VERSION})
 
 
         ############################# COMPILER SPECIFICS
 
         if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
-            target_compile_definitions(${PROJECT_NAME} PUBLIC -DDEBUG)
+            target_compile_definitions(${TARGET_NAME} PUBLIC -DDEBUG)
         else()
-            target_compile_definitions(${PROJECT_NAME} PUBLIC -DNDEBUG)
+            target_compile_definitions(${TARGET_NAME} PUBLIC -DNDEBUG)
         endif()
 
         if(HUB_ENABLE_COVERAGE)
-            target_compile_definitions(${PROJECT_NAME} PUBLIC -DCOVERAGE)
+            target_compile_definitions(${TARGET_NAME} PUBLIC -DCOVERAGE)
         endif()
 
 
@@ -174,13 +228,13 @@ if (NOT XCODE) # unable to have object files as native build with Xcode
 
         elseif(APPLE)
             #message(FATAL_ERROR "eee")
-            #target_compile_options(${PROJECT_NAME} PRIVATE "-g")
+            #target_compile_options(${TARGET_NAME} PRIVATE "-g")
 
         elseif(UNIX)
             set (THREADS_PREFER_PTHREAD_FLAG ON)
             find_package(Threads REQUIRED)
             set(REQUIRED_LIBS ${REQUIRED_LIBS} Threads::Threads)
-            set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE ON) # gltfpack
+            set_property(TARGET ${TARGET_NAME} PROPERTY POSITION_INDEPENDENT_CODE ON) # gltfpack
 
             if (Clang)
             elseif (GCC)
@@ -194,16 +248,20 @@ if (NOT XCODE) # unable to have object files as native build with Xcode
             message(FATAL_ERROR "unknown system")
         endif()
 
-        #target_link_libraries(${PROJECT_NAME} PUBLIC ${REQUIRED_LIBS})
-        target_link_libraries(${PROJECT_NAME} PRIVATE ${REQUIRED_LIBS})
+#        set(REQUIRED_LIBS ${REQUIRED_LIBS} external)
+
+        #target_link_libraries(${TARGET_NAME} PUBLIC ${REQUIRED_LIBS})
+        target_link_libraries(${TARGET_NAME} PRIVATE ${REQUIRED_LIBS})
 
         install(
-            DIRECTORY ${HUB_INCLUDE_DIR}/
+            DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/
             DESTINATION include
             FILES_MATCHING
             PATTERN "*.hpp"
             PATTERN "*.h"
             PATTERN "*.inl")
+
+    endforeach() # (HUB_SOURCE_DIR ${HUB_SOURCE_DIRS})
 
 endif()  # NOT XCODE
 
@@ -218,11 +276,11 @@ if (HUB_BUILD_STATIC)
             add_library(${PROJECT_NAME}_static STATIC ${sources} ${headers})
         target_include_directories(${PROJECT_NAME}_static
             PUBLIC
-                $<BUILD_INTERFACE:${HUB_INCLUDE_DIR}>
-                $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.h
+                $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/>
+                $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.hpp
                 $<INSTALL_INTERFACE:include>
-            PRIVATE
-                ${HUB_EXTERNAL_DIR}
+#            PRIVATE
+#                ${HUB_EXTERNAL_DIR}
         )
         if (PahoMqttCpp_FOUND)
             target_compile_definitions(${PROJECT_NAME}_static PUBLIC -DHUB_BUILD_MQTT)
@@ -235,16 +293,32 @@ if (HUB_BUILD_STATIC)
             endif()
         endif()
     else()
-            add_library(${PROJECT_NAME}_static STATIC $<TARGET_OBJECTS:${PROJECT_NAME}>)
+#            add_library(${PROJECT_NAME}_static STATIC $<TARGET_OBJECTS:${PROJECT_NAME}>)
+        add_library(${PROJECT_NAME}_static STATIC ${SRC_TARGETS})
+        target_include_directories(${PROJECT_NAME}_static
+            PUBLIC
+                $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/>
+                $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.hpp
+                $<INSTALL_INTERFACE:include>
+#            PRIVATE
+#                ${HUB_EXTERNAL_DIR}
+        )
+        if (HUB_BUILD_SERVER)
+            target_compile_definitions(${PROJECT_NAME}_static PUBLIC -DHUB_BUILD_SERVER)
+            if (HUB_SERVER_PORT)
+                target_compile_definitions(${PROJECT_NAME}_static PUBLIC -DHUB_SERVER_PORT=${HUB_SERVER_PORT})
+            endif()
+        endif()
     endif()
 
     target_compile_definitions(${PROJECT_NAME}_static PUBLIC -DSRC_STATIC)
+    target_link_libraries(${PROJECT_NAME}_static PUBLIC external)
 
     #target_link_libraries(${PROJECT_NAME}_static PRIVATE ${REQUIRED_LIBS})
 #    target_include_directories(${PROJECT_NAME}_static
 #        PUBLIC
 #            $<BUILD_INTERFACE:${HUB_INCLUDE_DIR}>
-#            $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.h
+#            $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.hpp
 #            $<INSTALL_INTERFACE:include>
 #        PRIVATE
 #        ${HUB_EXTERNAL_DIR}
@@ -305,11 +379,11 @@ if (HUB_BUILD_SHARED)
             add_library(${PROJECT_NAME}_shared SHARED ${sources} ${headers})
         target_include_directories(${PROJECT_NAME}_shared
             PUBLIC
-                $<BUILD_INTERFACE:${HUB_INCLUDE_DIR}>
-                $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.h
+                $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/>
+                $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.hpp
                 $<INSTALL_INTERFACE:include>
-            PRIVATE
-                ${HUB_EXTERNAL_DIR}
+#            PRIVATE
+#                ${HUB_EXTERNAL_DIR}
         )
         if (PahoMqttCpp_FOUND)
             target_compile_definitions(${PROJECT_NAME}_shared PUBLIC -DHUB_BUILD_MQTT)
@@ -322,10 +396,13 @@ if (HUB_BUILD_SHARED)
             endif()
         endif()
     else()
-            add_library(${PROJECT_NAME}_shared SHARED $<TARGET_OBJECTS:${PROJECT_NAME}>)
+#            add_library(${PROJECT_NAME}_shared SHARED $<TARGET_OBJECTS:${PROJECT_NAME}>)
+            add_library(${PROJECT_NAME}_shared SHARED ${SRC_TARGETS})
     endif()
 
     target_compile_definitions(${PROJECT_NAME}_shared PRIVATE -DSRC_EXPORTS)
+#    target_link_libraries(${PROJECT_NAME}_shared PUBLIC external)
+
 #	target_compile_options(${PROJECT_NAME} PRIVATE "-fpic")
 #    target_link_libraries(${PROJECT_NAME} PRIVATE ${REQUIRED_LIBS})
 #    target_link_libraries(${PROJECT_NAME} PUBLIC Threads::Threads)
@@ -333,7 +410,7 @@ if (HUB_BUILD_SHARED)
 #    target_include_directories(${PROJECT_NAME}
 #        PUBLIC
 #            $<BUILD_INTERFACE:${HUB_INCLUDE_DIR}>
-#            $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.h
+#            $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.hpp
 #            $<INSTALL_INTERFACE:include>
 #        PRIVATE
 #        ${HUB_EXTERNAL_DIR}
@@ -388,7 +465,7 @@ endif() # shared library
 #    target_link_libraries(${PROJECT_NAME}_static PUBLIC ${REQUIRED_LIBS})
 #    target_include_directories(
 #        ${PROJECT_NAME}_static
-#        PUBLIC $<BUILD_INTERFACE:${HUB_INCLUDE_DIR}> $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.h
+#        PUBLIC $<BUILD_INTERFACE:${HUB_INCLUDE_DIR}> $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.hpp
 #               $<INSTALL_INTERFACE:include>
 #        PRIVATE ${HUB_EXTERNAL_DIR})
 #endif()
@@ -485,7 +562,7 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
     file(
         GLOB_RECURSE
         src_headers
-        ${HUB_INCLUDE_DIR}/*.cpp)
+        ${CMAKE_CURRENT_SOURCE_DIR}/${HUB_INCLUDE_DIR}/*.cpp)
 
     foreach(file ${src_headers})
         get_filename_component(basename ${file} NAME)

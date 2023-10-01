@@ -5,7 +5,7 @@
 #include "Sensor.hpp"
 #include "SensorSpec.hpp"
 #include "Acquisition.hpp"
-#include "Traits.hpp"
+#include "core/Traits.hpp"
 
 #include "io/output/Output.hpp"
 // user friendly useless includes

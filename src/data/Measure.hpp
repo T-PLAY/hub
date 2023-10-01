@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <cstring>
 
-#include "Macros.hpp"
+#include "core/Macros.hpp"
 #include "sensor/Resolution.hpp"
 //#include "Input.hpp"
 //#include "Output.hpp"

@@ -5,14 +5,14 @@
 #include <regex>
 #include <string>
 #include <thread>
+#include <sstream>
 
 #include "sensor/Acquisition.hpp"
 #include "sensor/SensorSpec.hpp"
 // #include "net/ClientSocket.hpp"
 // #include "StreamViewer.hpp"
 #include "sensor/InputSensor.hpp"
-#include "utils/Utils.hpp"
-#include <sstream>
+#include "core/Utils.hpp"
 
 #ifdef DEBUG_MSG
 #    undef DEBUG_MSG

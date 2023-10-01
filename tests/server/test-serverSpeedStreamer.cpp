@@ -8,7 +8,7 @@
 // #include <server/Server.hpp>
 #include <net/ServerSocket.hpp>
 
-#include <utils/Utils.hpp>
+#include <core/Utils.hpp>
 
 TEST_CASE( "Server speed test : streamer" ) {
     const auto hostname = hub::utils::getHostname();

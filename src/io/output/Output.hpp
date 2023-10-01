@@ -3,8 +3,8 @@
 #include <exception>
 
 #include "sensor/Acquisition.hpp"
-#include "Any.hpp"
-#include "Macros.hpp"
+#include "core/Any.hpp"
+#include "core/Macros.hpp"
 #include "sensor/SensorSpec.hpp"
 #include "data/Measure.hpp"
 

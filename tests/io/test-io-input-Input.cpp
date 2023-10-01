@@ -1,5 +1,5 @@
 #include "test_common.hpp"
-#include <catch2/catch_test_macros.hpp>
+#include "sensor/test_sensor_utils.hpp"
 
 #include <cstring>
 #include <iostream>
@@ -55,6 +55,7 @@ TEST_CASE( "Input test" ) {
         hub::sensor::SensorSpec sensorSpec;
         memory.read( sensorSpec );
         CHECK( ref_sensorSpec == sensorSpec );
+
         CHECK( ref_metaData == sensorSpec.getMetaData() );
 
         hub::sensor::Acquisition acq;

@@ -9,8 +9,8 @@ set_property(GLOBAL PROPERTY CUSTOM_TARGETS_FOUNDED "")
 
 
 #set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD 14)
-#set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 14) # std::decay
+#set(CMAKE_CXX_STANDARD 17) # std::any
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_FIND_PACKAGE_NO_SYSTEM_PACKAGE_REGISTRY False)
 #if(WIN32)
@@ -137,8 +137,24 @@ add_definitions(-DHUB_PROJECT_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/\")
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
 
-set(HUB_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
-set(HUB_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
+
+#set(HUB_SOURCE_DIRS "core")
+#set(HUB_SOURCE_DIRS "io" "data" "net" "sensor")
+#set(HUB_SOURCE_DIRS "data")
+set(HUB_SOURCE_DIRS "core" "net" "data" "io" "sensor" "server" "client" "native")
+#set(HUB_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
+#set(HUB_SOURCE_DIR ".")
+#set(HUB_SOURCE_DIRS "client") # io sensor
+#set(HUB_SOURCE_DIRS "data") # sensor
+#set(HUB_SOURCE_DIRS "io") # core
+#set(HUB_SOURCE_DIRS "native")
+#set(HUB_SOURCE_DIRS "sensor")
+#set(HUB_SOURCE_DIRS "server")
+#set(HUB_SOURCE_DIRS "utils") # core
+#set(HUB_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
+#set(HUB_INCLUDE_DIR "net")
+#set(HUB_INCLUDE_DIR ".")
+#set(HUB_INCLUDE_DIR ${HUB_SOURCE_DIR})
 set(HUB_EXTERNAL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/external")
 
 add_subdirectory(src)

@@ -1,5 +1,5 @@
 #include "test_common.hpp"
-#include <catch2/catch_test_macros.hpp>
+#include "sensor/test_sensor_utils.hpp"
 
 
 #include <sensor/InputSensor.hpp>

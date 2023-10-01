@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 
-#include "Macros.hpp"
+#include "core/Macros.hpp"
 
 namespace hub {
 namespace sensor {

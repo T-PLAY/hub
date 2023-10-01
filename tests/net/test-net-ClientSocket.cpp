@@ -3,19 +3,20 @@
 
 #include <algorithm>
 
-#include <sensor/InputSensor.hpp>
-#include <sensor/OutputSensor.hpp>
+//#include <sensor/InputSensor.hpp>
+//#include <sensor/OutputSensor.hpp>
 
 // #include <server/Server.hpp>
 #include <net/ServerSocket.hpp>
+//#include <ServerSocket.hpp>
 
-#include <utils/Utils.hpp>
+#include <core/Utils.hpp>
 
 #ifdef HUB_TESTS_MQTT_FOUND
 #    include <mqtt/client.h>
 #endif
 
-#include <Version.h>
+//#include <Version.h>
 
 void dataIsOk( const unsigned char* const data, size_t len ) {
     for ( int i = 0; i < std::min( (size_t)1'000'000, len ); ++i ) {

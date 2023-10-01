@@ -2,7 +2,7 @@
 
 #include "Sensor.hpp"
 #include "Acquisition.hpp"
-#include "Traits.hpp"
+#include "core/Traits.hpp"
 
 #include "io/input/Input.hpp"
 // user friendly useless includes

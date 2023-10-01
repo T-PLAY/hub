@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Macros.hpp"
+#include "core/Macros.hpp"
 
 #include "sensor/InputSensor.hpp"
 #include "sensor/OutputSensor.hpp"

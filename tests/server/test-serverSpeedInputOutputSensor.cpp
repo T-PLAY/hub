@@ -7,13 +7,13 @@
 // #include <server/Server.hpp>
 #include <net/ServerSocket.hpp>
 
-#include <utils/Utils.hpp>
+#include <core/Utils.hpp>
 
 #ifdef HUB_TESTS_MQTT_FOUND
 #    include <mqtt/client.h>
 #endif
 
-#include <Version.h>
+//#include <Version.h>
 
 TEST_CASE( "Server test : InputOutputSensor" ) {
     const auto hostname = hub::utils::getHostname();

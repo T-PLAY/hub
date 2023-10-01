@@ -5,7 +5,8 @@ project(tests LANGUAGES CXX)
 if (XCODE)
         set(LINK_LIBRARIES Catch2::Catch2WithMain hub_static)
 else()
-        set(LINK_LIBRARIES Catch2::Catch2WithMain hub)
+#        set(LINK_LIBRARIES Catch2::Catch2WithMain hub)
+        set(LINK_LIBRARIES Catch2::Catch2WithMain hub_static)
 endif()
 #set(LINK_LIBRARIES Catch2::Catch2WithMain hub PahoMqttCpp::paho-mqttpp3)
 
@@ -34,13 +35,37 @@ endif()
 #endif()
 #find_package(PahoMqttCpp REQUIRED)
 
-file(GLOB test_srcs *.cpp)
+#file(GLOB test_srcs *.cpp)
+set(test_srcs)
+foreach(HUB_SOURCE_DIR ${HUB_SOURCE_DIRS})
+    file(
+        GLOB
+    #    GLOB_RECURSE
+        test_src
+        ${CMAKE_CURRENT_SOURCE_DIR}/${HUB_SOURCE_DIR}/*.cpp
+    )
+    list(APPEND test_srcs ${test_src})
+endforeach()
+#list(APPEND test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/test_common.hpp)
+
+#file(GLOB
+#    test_common
+#    ${CMAKE_CURRENT_SOURCE_DIR}/test_common.hpp
+#)
+
+list(REMOVE_ITEM test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/server/test-server-end.cpp)
+# list(REMOVE_ITEM test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/./test-end.cpp)
+list(APPEND test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/server/test-server-end.cpp)
+
 #file(GLOB test_srcs *.cpp)
 list(REMOVE_ITEM test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/test-end.cpp)
+# list(REMOVE_ITEM test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/./test-end.cpp)
 list(APPEND test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/test-end.cpp)
 
 list(REMOVE_ITEM test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/test-start.cpp)
+# list(REMOVE_ITEM test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/./test-start.cpp)
 list(PREPEND test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/test-start.cpp)
+
 
 find_package(PahoMqttCpp QUIET)
 #find_package(PahoMqttCpp QUIET NO_DEFAULT_PATH)
@@ -68,23 +93,24 @@ if (NOT HUB_BUILD_SERVER)
 #    list(REMOVE_ITEM test_srcs ${server_srcs})
 endif()
 
-# gathering tests
-add_executable(test-all ${test_srcs})
-# target_link_libraries(test-all Catch2::Catch2WithMain hub PahoMqttCpp::paho-mqttpp3)
-target_link_libraries(test-all ${LINK_LIBRARIES})
-target_include_directories(test-all PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
-set_property(TARGET test-all PROPERTY CXX_STANDARD ${CMAKE_CXX_STANDARD})
-set_property(TARGET test-all PROPERTY CXX_EXTENSIONS OFF)
-if (PahoMqttCpp_FOUND)
-    target_compile_definitions(test-all PUBLIC -DHUB_TESTS_MQTT_FOUND)
-endif()
+## gathering tests
+##add_executable(test-all ${test_srcs} ${test_common})
+#add_executable(test-all ${test_srcs})
+## target_link_libraries(test-all Catch2::Catch2WithMain hub PahoMqttCpp::paho-mqttpp3)
+#target_link_libraries(test-all ${LINK_LIBRARIES})
+#target_include_directories(test-all PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+#set_property(TARGET test-all PROPERTY CXX_STANDARD ${CMAKE_CXX_STANDARD})
+#set_property(TARGET test-all PROPERTY CXX_EXTENSIONS OFF)
+#if (PahoMqttCpp_FOUND)
+#    target_compile_definitions(test-all PUBLIC -DHUB_TESTS_MQTT_FOUND)
+#endif()
 
-if(WIN32)
-    add_custom_command(
-        TARGET test-all
-        POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:hub_shared> $<TARGET_FILE_DIR:test-all>)
-endif()
+#if(WIN32)
+#    add_custom_command(
+#        TARGET test-all
+#        POST_BUILD
+#        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:hub_shared> $<TARGET_FILE_DIR:test-all>)
+#endif()
 
 #if (WIN32)
 if(${CMAKE_GENERATOR} MATCHES "Visual Studio.*")
@@ -97,14 +123,18 @@ endif()
 include(CTest)
 enable_testing()
 foreach(testFile ${test_srcs})
-#    message(STATUS "${testFile}")
+#    message(STATUS "test src: ${testFile}")
 
     get_filename_component(test ${testFile} NAME_WE)
 
+#    add_executable(${test} ${testFile} ${test_common})
     add_executable(${test} ${testFile})
     # target_link_libraries(${test} PRIVATE Catch2::Catch2WithMain hub PahoMqttCpp::paho-mqttpp3)
 	target_link_libraries(${test} PRIVATE ${LINK_LIBRARIES})
-    target_include_directories(${test} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+    target_include_directories(${test}
+            PUBLIC
+                ${CMAKE_CURRENT_SOURCE_DIR}>
+        PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
     if (PahoMqttCpp_FOUND)
         target_compile_definitions(${test} PUBLIC -DHUB_TESTS_MQTT_FOUND)
     endif()
@@ -137,9 +167,9 @@ if (HUB_BUILD_SERVER)
     add_custom_target(
         tests # WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 #        COMMAND ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${CMAKE_BINARY_DIR}/bin/bin-server --maxClient 36
-        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/server/bin-server
-        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/client/bin-viewer --exitWhenServerLost
-        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/client/bin-nativeViewer --exitWhenServerLost
+        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/bin-server
+        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/bin-viewer --exitWhenServerLost
+        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/bin-nativeViewer --exitWhenServerLost
 #        COMMAND echo "######################### starting tests #######################################"
         COMMAND ctest -C ${CMAKE_BUILD_TYPE} -V
 #        COMMAND echo "########################## ending tests ########################################"

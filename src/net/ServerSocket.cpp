@@ -1,9 +1,9 @@
-#include "net/ServerSocket.hpp"
+#include "ServerSocket.hpp"
 
 #include <cstring>
 #include <cassert>
 
-#include <net/Utils.hpp>
+#include "NetUtils.hpp"
 
 namespace hub {
 namespace net {

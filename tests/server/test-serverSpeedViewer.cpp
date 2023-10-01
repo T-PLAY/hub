@@ -8,7 +8,7 @@
 #include <client/Viewer.hpp>
 // #include <server/Server.hpp>
 #include <net/ServerSocket.hpp>
-#include <utils/Utils.hpp>
+#include <core/Utils.hpp>
 
 TEST_CASE( "Server test : viewer" ) {
     const auto hostname = hub::utils::getHostname();

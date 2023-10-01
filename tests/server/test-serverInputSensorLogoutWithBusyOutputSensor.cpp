@@ -3,7 +3,10 @@
 #include "test_common.hpp"
 
 //#include <server/Server.hpp>
-#include <server/StreamViewerClient.hpp>
+//#include <server/StreamViewerClient.hpp>
+//#include <io/input/InputStream.hpp>
+#include <sensor/InputSensor.hpp>
+#include <sensor/OutputSensor.hpp>
 
 TEST_CASE( "Server test : inputSensorLogoutWithBusyOutputSensor" ) {
 

@@ -6,8 +6,8 @@
 #include <list>
 #include <string>
 
-#include "Macros.hpp"
-#include "net/Utils.hpp"
+#include "core/Macros.hpp"
+#include "NetUtils.hpp"
 
 // #define DEBUG_SOCKET
 

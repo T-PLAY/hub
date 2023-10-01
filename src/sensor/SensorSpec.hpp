@@ -6,8 +6,8 @@
 #include <string>
 #include <vector>
 
-#include "Any.hpp"
-#include "Macros.hpp"
+#include "core/Any.hpp"
+#include "core/Macros.hpp"
 #include "Resolution.hpp"
 //#include "Measure.hpp"
 

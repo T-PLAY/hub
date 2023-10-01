@@ -4,6 +4,7 @@
 
 //#include <server/Server.hpp>
 #include <server/StreamViewerClient.hpp>
+#include <sensor/InputSensor.hpp>
 
 TEST_CASE( "Server test" ) {
 
