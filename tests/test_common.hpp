@@ -30,7 +30,7 @@ static int getRandomPort( const char* filename ) {
     // #endif
     srand( (unsigned)time( NULL ) );
     constexpr int offset      = 6000;
-    const unsigned int random = std::hash<std::string>()( filename ) + rand();
+    const unsigned int random = static_cast<int>(std::hash<std::string>()( filename )) + rand();
     const unsigned int ret    = offset + random % ( 65535 - offset );
     assert( offset <= ret && ret < 65536 );
 //    assert( ret != hub::io::StreamServer::s_defaultPort );
@@ -189,7 +189,7 @@ static void _checkRatio( double ratio,
 
         std::string report;
 
-        const int nMean    = std::log2( nEl ) + 1;
+        const int nMean    = static_cast<int>(std::log2( nEl )) + 1;
         const auto meanAll = sumRatios[nMean - 1] / std::pow( 2.0, nMean - 1 );
 
         for ( int iMean = 0; iMean < nMean; ++iMean ) {

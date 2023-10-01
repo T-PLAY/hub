@@ -91,16 +91,17 @@ file(
             ${HUB_EXTERNAL_DIR}/*.h
 #    ${HUB_EXTERNAL_DIR}/*.inl
 )
-add_library(external OBJECT ${external_headers} ${external_sources})
-#add_library(external SHARED ${external_headers} ${external_sources})
-target_include_directories(external
-#    PUBLIC
-#	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-#	$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.hpp
-#	$<INSTALL_INTERFACE:include>
-    PRIVATE
-        ${HUB_EXTERNAL_DIR}
-)
+#add_library(external OBJECT ${external_headers} ${external_sources})
+add_library(external INTERFACE ${external_headers} ${external_sources})
+##add_library(external SHARED ${external_headers} ${external_sources})
+#target_include_directories(external
+##    PUBLIC
+##	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+##	$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.hpp
+##	$<INSTALL_INTERFACE:include>
+#    PRIVATE
+#        ${HUB_EXTERNAL_DIR}
+#)
 
 
 #list(APPEND SOURCE_FILES ${sources} ${headers})
@@ -281,8 +282,8 @@ if (HUB_BUILD_STATIC)
                 $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/>
                 $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.hpp
                 $<INSTALL_INTERFACE:include>
-#            PRIVATE
-#                ${HUB_EXTERNAL_DIR}
+            PRIVATE
+                ${HUB_EXTERNAL_DIR}
         )
         if (PahoMqttCpp_FOUND)
             target_compile_definitions(${PROJECT_NAME}_static PUBLIC -DHUB_BUILD_MQTT)
@@ -297,13 +298,14 @@ if (HUB_BUILD_STATIC)
     else()
 #            add_library(${PROJECT_NAME}_static STATIC $<TARGET_OBJECTS:${PROJECT_NAME}>)
         add_library(${PROJECT_NAME}_static STATIC ${SRC_TARGETS})
+        #add_library(${PROJECT_NAME}_static STATIC ${SRC_TARGETS} ${external_sources} ${external_headers})
         target_include_directories(${PROJECT_NAME}_static
             PUBLIC
                 $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/>
                 $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.hpp
                 $<INSTALL_INTERFACE:include>
-#            PRIVATE
-#                ${HUB_EXTERNAL_DIR}
+        #    PRIVATE
+        #        ${HUB_EXTERNAL_DIR}
         )
         if (HUB_BUILD_SERVER)
             target_compile_definitions(${PROJECT_NAME}_static PUBLIC -DHUB_BUILD_SERVER)
@@ -314,7 +316,7 @@ if (HUB_BUILD_STATIC)
     endif()
 
     target_compile_definitions(${PROJECT_NAME}_static PUBLIC -DSRC_STATIC)
-    target_link_libraries(${PROJECT_NAME}_static PUBLIC external)
+    target_link_libraries(${PROJECT_NAME}_static PRIVATE external)
 
     #target_link_libraries(${PROJECT_NAME}_static PRIVATE ${REQUIRED_LIBS})
 #    target_include_directories(${PROJECT_NAME}_static
@@ -399,20 +401,20 @@ if (HUB_BUILD_SHARED)
         endif()
     else()
 #            add_library(${PROJECT_NAME}_shared SHARED $<TARGET_OBJECTS:${PROJECT_NAME}>)
-#        add_library(${PROJECT_NAME}_shared SHARED ${SRC_TARGETS})
-        add_library(${PROJECT_NAME}_shared SHARED ${SRC_TARGETS} ${external_sources} ${external_headers})
+        add_library(${PROJECT_NAME}_shared SHARED ${SRC_TARGETS})
+#        add_library(${PROJECT_NAME}_shared SHARED ${SRC_TARGETS} ${external_sources} ${external_headers})
         target_include_directories(${PROJECT_NAME}_shared
             PUBLIC
                 $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/>
                 $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.hpp
                 $<INSTALL_INTERFACE:include>
-            PRIVATE
-                ${HUB_EXTERNAL_DIR}
+#            PRIVATE
+#                ${HUB_EXTERNAL_DIR}
         )
     endif()
 
-    target_compile_definitions(${PROJECT_NAME}_shared PRIVATE -DSRC_EXPORTS)
-#    target_link_libraries(${PROJECT_NAME}_shared PUBLIC external)
+    target_compile_definitions(${PROJECT_NAME}_shared PUBLIC -DSRC_EXPORTS)
+    target_link_libraries(${PROJECT_NAME}_shared PRIVATE external)
 
 #	target_compile_options(${PROJECT_NAME} PRIVATE "-fpic")
 #    target_link_libraries(${PROJECT_NAME} PRIVATE ${REQUIRED_LIBS})

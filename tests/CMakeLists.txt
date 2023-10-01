@@ -123,7 +123,8 @@ endif()
 include(CTest)
 enable_testing()
 foreach(testFile ${test_srcs})
-#    message(STATUS "test src: ${testFile}")
+    message(STATUS "test src: ${testFile}")
+#endforeach()
 
     get_filename_component(test ${testFile} NAME_WE)
 
@@ -132,8 +133,8 @@ foreach(testFile ${test_srcs})
     # target_link_libraries(${test} PRIVATE Catch2::Catch2WithMain hub PahoMqttCpp::paho-mqttpp3)
 	target_link_libraries(${test} PRIVATE ${LINK_LIBRARIES})
     target_include_directories(${test}
-            PUBLIC
-                ${CMAKE_CURRENT_SOURCE_DIR}>
+#            PUBLIC
+#                ${CMAKE_CURRENT_SOURCE_DIR}
         PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
     if (PahoMqttCpp_FOUND)
         target_compile_definitions(${test} PUBLIC -DHUB_TESTS_MQTT_FOUND)
@@ -141,7 +142,7 @@ foreach(testFile ${test_srcs})
 
     add_test(NAME ${test} COMMAND ${test})
 
-if (HUB_BUILD_SERVER)
+#if (HUB_BUILD_SERVER)
 #    add_custom_target(
 #        run-${test}
 ##        COMMAND "${CMAKE_BINARY_DIR}/bin/bin-server &"
@@ -158,7 +159,7 @@ if (HUB_BUILD_SERVER)
 #        COMMENT "Running single test"
 #    )
 #    custom_target_added(run-${test})
-endif()
+#endif()
 
 endforeach()
 

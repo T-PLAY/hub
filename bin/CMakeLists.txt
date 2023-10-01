@@ -104,10 +104,12 @@ foreach(name ${SOURCES_BASENAME})
 #    custom_target_added(run-${TARGET_NAME})
 
     if(WIN32)
+    if (HUB_BUILD_SHARED)
         add_custom_command(
             # TARGET ${PROJECT_NAME}
             TARGET ${TARGET_NAME}
             POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:hub_shared> $<TARGET_FILE_DIR:${TARGET_NAME}>)
+	endif()
     endif()
 endforeach()
