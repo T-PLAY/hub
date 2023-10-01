@@ -52,6 +52,7 @@ static std::string ReplaceAll( std::string str, const std::string& from, const s
     std::ofstream file( "report.txt" );                                                            \
     assert( file.is_open() );                                                                      \
     file << std::endl;                                                                             \
+    file << std::endl;                                                                             \
     file << "####################################################################################" \
             "##\n"                                                                                 \
          << "#################################### START REPORT "                                   \
@@ -126,7 +127,7 @@ static void _checkRatio( double ratio,
 
     //    std::cout << "checkRatio " << filename << std::endl;
     {
-        std::ofstream logFile( ( filename + "_" + name2 + ".history" ).c_str(), std::ios::app );
+        std::ofstream logFile( ( filename + "_" + name2 + ".history" ).c_str(), std::ios::out | std::ios::app );
         assert( logFile.is_open() );
 
         logFile << HUB_COMMIT_HASH << " " << ratio << std::endl;

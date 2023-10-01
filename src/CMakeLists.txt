@@ -91,17 +91,19 @@ file(
             ${HUB_EXTERNAL_DIR}/*.h
 #    ${HUB_EXTERNAL_DIR}/*.inl
 )
+#add_library(external INTERFACE ${external_headers} ${external_sources})
+add_library(external OBJECT ${external_headers} ${external_sources})
 #add_library(external OBJECT ${external_headers} ${external_sources})
-add_library(external INTERFACE ${external_headers} ${external_sources})
 ##add_library(external SHARED ${external_headers} ${external_sources})
-#target_include_directories(external
-##    PUBLIC
-##	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-##	$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.hpp
-##	$<INSTALL_INTERFACE:include>
-#    PRIVATE
-#        ${HUB_EXTERNAL_DIR}
-#)
+target_include_directories(external
+#    PUBLIC
+#	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+#	$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.hpp
+#	$<INSTALL_INTERFACE:include>
+    PRIVATE
+        ${HUB_EXTERNAL_DIR}
+)
+target_compile_options(external PRIVATE -fPIC)
 
 
 #list(APPEND SOURCE_FILES ${sources} ${headers})
@@ -165,7 +167,9 @@ if (NOT XCODE) # unable to have object files as native build with Xcode
         )
 
         #target_compile_definitions(${TARGET_NAME} PUBLIC -DINTERNAL_BUILD)
-        target_compile_definitions(${TARGET_NAME} PUBLIC -DSRC_STATIC) # -> SRC_API = void, future shared
+#        target_compile_definitions(${TARGET_NAME} PUBLIC -DSRC_STATIC) # -> SRC_API = void, future shared
+        target_compile_definitions(${TARGET_NAME} PUBLIC -DSRC_EXPORTS) # -> SRC_API = void, future shared
+#        target_compile_options(${TARGET_NAME} PRIVATE -fPIC)
 
         if (PahoMqttCpp_FOUND)
             target_compile_definitions(${TARGET_NAME} PUBLIC -DHUB_BUILD_MQTT)
@@ -268,12 +272,16 @@ if (NOT XCODE) # unable to have object files as native build with Xcode
 
 endif()  # NOT XCODE
 
+#target_compile_definitions(${PROJECT_NAME} PUBLIC -DSRC_STATIC)
+#target_link_libraries(${PROJECT_NAME} PRIVATE external)
+
 ############################# STATIC LIBRARY ###############################
 
 option(HUB_BUILD_STATIC "Build static library" ON)
 if (HUB_BUILD_STATIC)
-    #if(HUB_BUILD_STATIC_LIBRARY)
-    #    add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})
+
+#    if(HUB_BUILD_STATIC_LIBRARY)
+#        add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})
 
     if (XCODE)
             add_library(${PROJECT_NAME}_static STATIC ${sources} ${headers})
@@ -298,14 +306,14 @@ if (HUB_BUILD_STATIC)
     else()
 #            add_library(${PROJECT_NAME}_static STATIC $<TARGET_OBJECTS:${PROJECT_NAME}>)
         add_library(${PROJECT_NAME}_static STATIC ${SRC_TARGETS})
-        #add_library(${PROJECT_NAME}_static STATIC ${SRC_TARGETS} ${external_sources} ${external_headers})
+#        add_library(${PROJECT_NAME}_static STATIC ${SRC_TARGETS} ${external_sources} ${external_headers})
         target_include_directories(${PROJECT_NAME}_static
             PUBLIC
                 $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/>
                 $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.hpp
                 $<INSTALL_INTERFACE:include>
-        #    PRIVATE
-        #        ${HUB_EXTERNAL_DIR}
+#            PRIVATE
+#                ${HUB_EXTERNAL_DIR}
         )
         if (HUB_BUILD_SERVER)
             target_compile_definitions(${PROJECT_NAME}_static PUBLIC -DHUB_BUILD_SERVER)
@@ -402,6 +410,7 @@ if (HUB_BUILD_SHARED)
     else()
 #            add_library(${PROJECT_NAME}_shared SHARED $<TARGET_OBJECTS:${PROJECT_NAME}>)
         add_library(${PROJECT_NAME}_shared SHARED ${SRC_TARGETS})
+#        target_compile_options(${PROJECT_NAME}_shared PRIVATE -fPIC)
 #        add_library(${PROJECT_NAME}_shared SHARED ${SRC_TARGETS} ${external_sources} ${external_headers})
         target_include_directories(${PROJECT_NAME}_shared
             PUBLIC
@@ -411,6 +420,12 @@ if (HUB_BUILD_SHARED)
 #            PRIVATE
 #                ${HUB_EXTERNAL_DIR}
         )
+        if (HUB_BUILD_SERVER)
+            target_compile_definitions(${PROJECT_NAME}_shared PUBLIC -DHUB_BUILD_SERVER)
+            if (HUB_SERVER_PORT)
+                target_compile_definitions(${PROJECT_NAME}_shared PUBLIC -DHUB_SERVER_PORT=${HUB_SERVER_PORT})
+            endif()
+        endif()
     endif()
 
     target_compile_definitions(${PROJECT_NAME}_shared PUBLIC -DSRC_EXPORTS)
