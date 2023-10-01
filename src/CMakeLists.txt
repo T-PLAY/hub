@@ -46,10 +46,6 @@ endif()
 #list(REMOVE_ITEM headers ${HUB_EXTERNAL_DIR}/mqtt/MQTTAsync.h)
 #list(REMOVE_ITEM headers ${HUB_EXTERNAL_DIR}/mqtt/MQTTAsyncUtils.h)
 
-#if (NOT PahoMqttCpp_FOUND)
-#    list(FILTER sources EXCLUDE REGEX ".*Mqtt\\.cpp$")
-#    list(FILTER headers EXCLUDE REGEX ".*Mqtt\\.hpp$")
-#endif()
 
 
 #if (NOT HUB_BUILD_SERVER)
@@ -144,6 +140,12 @@ if (NOT XCODE) # unable to have object files as native build with Xcode
 #            ${HUB_EXTERNAL_DIR}/*.h
         #    ${HUB_EXTERNAL_DIR}/*.inl
         )
+
+        if (NOT PahoMqttCpp_FOUND)
+            list(FILTER sources EXCLUDE REGEX ".*Mqtt\\.cpp$")
+            list(FILTER headers EXCLUDE REGEX ".*Mqtt\\.hpp$")
+        endif()
+
 #        add_library(${PROJECT_NAME} OBJECT ${sources} ${headers})
 #        add_library(${TARGET_NAME} INTERFACE ${sources} ${headers})
 #        add_library(${TARGET_NAME} INTERFACE ${headers})
