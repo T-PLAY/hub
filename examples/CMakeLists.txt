@@ -2,8 +2,12 @@ cmake_minimum_required(VERSION 3.5)
 
 project(examples LANGUAGES CXX)
 
+if (TARGET hub_static OR TARGET hub_shared AND TARGET hub_static)
 #set(LINK_LIBRARIES hub PahoMqttCpp::paho-mqttpp3)
-set(LINK_LIBRARIES hub)
+if (TARGET hub_static)
+    set(LINK_LIBRARIES hub_static)
+endif()
+#set(LINK_LIBRARIES hub)
 #set(LINK_LIBRARIES hub eclipse-paho-mqtt-c::paho-mqtt3c eclipse-paho-mqtt-c::paho-mqtt3a)
 
 #set(LINK_LIBRARIES hub PahoMqttCpp)
@@ -84,3 +88,5 @@ foreach(name ${EXAMPLE_SRC_BASENAME})
             COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:hub_shared> $<TARGET_FILE_DIR:${TARGET_NAME}>)
     endif()
 endforeach()
+
+endif()

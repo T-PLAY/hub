@@ -5,7 +5,7 @@
 #include <io/output/OutputFile.hpp>
 #include <io/output/OutputMemory.hpp>
 #include <io/output/OutputStream.hpp>
-#include <io/output/OutputStreamInterface.hpp>
+//#include <io/output/OutputStreamInterface.hpp>
 #include <io/output/OutputStreamServer.hpp>
 
 

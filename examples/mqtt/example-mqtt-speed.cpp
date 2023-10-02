@@ -1,6 +1,6 @@
 
-#include <InputSensor.hpp>
-#include <OutputSensor.hpp>
+#include <sensor/InputSensor.hpp>
+#include <sensor/OutputSensor.hpp>
 
 #include <server/Server.hpp>
 // #include <net/ServerSocket.hpp>
@@ -26,7 +26,7 @@ int main() {
         hub::sensor::Acquisition acq( iAcq, iAcq );
         acq << hub::Measure( reinterpret_cast<unsigned const char*>( data ),
                                    dataSize,
-                                   { { width, height }, hub::Format::BGR8 } );
+                             { { width, height }, hub::sensor::Format::BGR8 } );
         acqs.at( iAcq ) = std::move( acq );
     }
 
@@ -160,10 +160,11 @@ int main() {
                 << "[test][InputOutputSensor] ############################### outputStream start"
                 << std::endl;
             hub::sensor::OutputSensor outputSensor(
-                hub::SensorSpec( "sensorName", { { { width, height }, hub::Format::BGR8 } } ),
+                hub::sensor::SensorSpec( "sensorName", { { { width, height }, hub::sensor::Format::BGR8 } } ),
+                hub::output::OutputStream(
                 "streamName",
 //                hub::net::ClientSocket( ipv4, port2 ) );
-                ipv4, port2 );
+                    ipv4, port2) );
 
             std::cout
                 << "[test][InputOutputSensor] ############################### inputStream start"
@@ -181,7 +182,7 @@ int main() {
             assert( resolutions[0].first.size() == 2 );
             assert( resolutions[0].first.at( 0 ) == width );
             assert( resolutions[0].first.at( 1 ) == height );
-            assert( resolutions[0].second == hub::Format::BGR8 );
+            assert( resolutions[0].second == hub::sensor::Format::BGR8 );
             std::cout
                 << "[test][InputOutputSensor] inputStream end ---------------------------------"
                 << std::endl;

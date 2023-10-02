@@ -2,7 +2,7 @@
 
 
 
-#include <OutputSensor.hpp>
+#include <sensor/OutputSensor.hpp>
 
 int main() {
     return 0;
@@ -10,13 +10,13 @@ int main() {
     const std::string ipv4 = "127.0.0.1";
     const int port = 4042;
 
-    hub::SensorSpec sensorSpec;
+    hub::sensor::SensorSpec sensorSpec;
 
 
 //    const hub::Output & output = hub::Output(); // abstract class
 //    const auto & outputSensor2 = hub::sensor::OutputSensor(sensorSpec, hub::output::OutputStream("streamName", ipv4, port));
-    hub::sensor::OutputSensor outputSensor2(sensorSpec, "streamName", ipv4, port);
-    hub::sensor::OutputSensor outputSensor3(sensorSpec, "streamName", ipv4, port);
+    hub::sensor::OutputSensor outputSensor2(sensorSpec, hub::output::OutputStream("streamName", ipv4, port));
+    hub::sensor::OutputSensor outputSensor3(sensorSpec, hub::output::OutputStream("streamName", ipv4, port));
 //    const hub::Output & output4 = hub::output::OutputStreamInterface("streamName", ipv4, port); // abstract class
     hub::sensor::OutputSensor outputSensor5(sensorSpec, hub::output::OutputFile("filePath"));
     std::vector<int> vs;

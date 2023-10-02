@@ -138,10 +138,12 @@ add_definitions(-DHUB_PROJECT_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/\")
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
 
 
-#set(HUB_SOURCE_DIRS "core")
+#set(HUB_SOURCE_DIRS "sensor" "net")
+#set(HUB_SOURCE_DIRS "net" "io" "sensor" "data" "core")
 #set(HUB_SOURCE_DIRS "io" "data" "net" "sensor")
 #set(HUB_SOURCE_DIRS "data")
 set(HUB_SOURCE_DIRS "core" "net" "data" "io" "sensor" "server" "client" "native")
+
 #set(HUB_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
 #set(HUB_SOURCE_DIR ".")
 #set(HUB_SOURCE_DIRS "client") # io sensor

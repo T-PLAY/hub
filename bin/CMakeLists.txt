@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.5)
 
 project(bin LANGUAGES CXX)
 
-if (true)
+#if (true)
 
 if (TARGET hub_static OR TARGET hub_shared AND TARGET hub_static)
 
@@ -74,4 +74,4 @@ if (TARGET hub_static OR TARGET hub_shared AND TARGET hub_static)
 
 endif()
 
-endif()
+#endif()

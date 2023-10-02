@@ -14,7 +14,7 @@
 // #include <iostream>
 
 // #include <Streamer.hpp>
-#include <OutputSensor.hpp>
+#include <sensor/OutputSensor.hpp>
 #include <client/Viewer.hpp>
 
 int main() {
@@ -25,13 +25,13 @@ int main() {
     const int port = 1883;
 
     // startConstruction
-    auto onNewStreamer = [=]( const std::string& streamName, const hub::SensorSpec& sensorSpec ) {
+    auto onNewStreamer = [=]( const std::string& streamName, const hub::sensor::SensorSpec& sensorSpec ) {
         std::cout << "\t[example-viewer] onNewStreamer : " << streamName << std::endl;
         // accept all stream to run
         return true;
 //        return false;
     };
-    auto onDelStreamer = []( const std::string& streamName, const hub::SensorSpec& sensorSpec ) {
+    auto onDelStreamer = []( const std::string& streamName, const hub::sensor::SensorSpec& sensorSpec ) {
         std::cout << "\t[example-viewer] onDelStreamer : " << streamName << std::endl;
     };
     auto onServerNotFound = []( const std::string& ipv4, int port ) {
@@ -53,21 +53,23 @@ int main() {
                              const hub::Any& value ) {
         std::cout << "\t[example-viewer] onSetProperty " << streamName << std::endl;
     };
-    //    auto onLogMessage = []( const std::string& logMessage ) {
-    //        std::cout << "[example-viewer] onLogMessage '" << logMessage << "'" << std::endl;
-    //    };
+        auto onLogMessage = []( const std::string& logMessage ) {
+            std::cout << "[example-viewer] onLogMessage '" << logMessage << "'" << std::endl;
+        };
 
     {
         std::cout << "\t[example-viewer] creating viewer" << std::endl;
-        hub::client::ViewerMqtt viewer( ipv4,
-                                        port,
+        hub::client::Viewer viewer( FILE_NAME,
                                         onNewStreamer,
                                         onDelStreamer,
                                         onServerNotFound,
                                         onServerConnected,
                                         onServerDisconnected,
                                         onNewAcquisition,
-                                        onSetProperty
+                                        onSetProperty,
+                                    onLogMessage,
+            ipv4,
+                                        port
                                         //                                        ,onLogMessage
         );
         //    hub::client::Viewer viewer {
@@ -78,15 +80,15 @@ int main() {
 
         {
             std::cout << "\t[example-viewer] creating outputSensor" << std::endl;
-            hub::Resolution res { { 1 }, hub::Format::BGR8 };
-            hub::SensorSpec sensorSpec( "sensorName", { resolution } );
+            hub::sensor::Resolution res { { 1 }, hub::sensor::Format::BGR8 };
+            hub::sensor::SensorSpec sensorSpec( "sensorName", { res } );
             hub::sensor::OutputSensor outputSensor(
-                sensorSpec, hub::output::OutputStreamMqtt( "streamName", ipv4, port ) );
+                sensorSpec, hub::output::OutputStream( "streamName", ipv4, port ) );
 
             std::this_thread::sleep_for( std::chrono::milliseconds( 3000 ) );
 
             unsigned char data[3] {1, 2, 3};
-            hub::sensor::Acquisition acq = std::move(hub::sensor::Acquisition(1, 1) << hub::Measure(data, 3, resolution));
+            hub::sensor::Acquisition acq = std::move(hub::sensor::Acquisition(1, 1) << hub::Measure(data, 3, res));
             outputSensor << acq;
 
             std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
