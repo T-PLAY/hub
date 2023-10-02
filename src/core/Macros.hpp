@@ -227,7 +227,7 @@
 
 
 #else
-#define FILE_NAME __FILE_NAME__
+#define FILE_NAME std::string(__FILE_NAME__)
 #endif
 
 //#if defined(OS_MACOS)
