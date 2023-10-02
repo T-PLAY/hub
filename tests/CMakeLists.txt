@@ -112,6 +112,8 @@ endif()
 #        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:hub_shared> $<TARGET_FILE_DIR:test-all>)
 #endif()
 
+#add_definitions(-DHUB_TESTS_BIN_DIR=\"${CMAKE_CURRENT_BINARY_DIR}/\")
+
 #if (WIN32)
 if(${CMAKE_GENERATOR} MATCHES "Visual Studio.*")
     set(BIN_DIR ${CMAKE_BINARY_DIR}/bin/${CMAKE_BUILD_TYPE})
@@ -139,6 +141,7 @@ foreach(testFile ${test_srcs})
     if (PahoMqttCpp_FOUND)
         target_compile_definitions(${test} PUBLIC -DHUB_TESTS_MQTT_FOUND)
     endif()
+	#target_compile_definitions(${test} PUBLIC -DHUB_TESTS_BIN_DIR=\"${CMAKE_CURRENT_BINARY_DIR}/\")
 
     add_test(NAME ${test} COMMAND ${test})
 

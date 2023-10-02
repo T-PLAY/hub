@@ -27,6 +27,7 @@ class Lambda {
 
 TEST_CASE( "Any test" ) {
 
+
     std::cout << "typeinfo(int) : " << typeid(int).name() << " : " << typeid(int).hash_code() << std::endl;
     std::cout << "typeinfo(double) : " << typeid(double).name() << " : " << typeid(int).hash_code() << std::endl;
     std::cout << "typeinfo(std::string) : " << typeid(std::string).name() << " : " << typeid(std::string).hash_code() << std::endl;

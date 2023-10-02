@@ -125,6 +125,8 @@ static void _checkRatio( double ratio,
     //    name2.replace(name2.begin(), name2.end(), '/', '-');
     name2 = ReplaceAll( name2, "/", "_vs_" );
 
+    //std::string rootPath = HUB_TESTS_BIN_DIR;
+
     //    std::cout << "checkRatio " << filename << std::endl;
     {
         std::ofstream logFile( ( filename + "_" + name2 + ".history" ).c_str(), std::ios::out | std::ios::app );

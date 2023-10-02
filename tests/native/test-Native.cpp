@@ -157,7 +157,7 @@ TEST_CASE( "Native test" ) {
     };
     static int nReceiveAcq = 0;
     auto onNewAcquisition  = []( const char* streamName, const hub::sensor::Acquisition* acq ) {
-        CHECK( !strcmp( streamName, FILE_NAME ) );
+        CHECK( !strcmp( streamName, FILE_NAME.c_str() ) );
         std::cout << "[Example][Viewer] onNewAcquisition " << streamName << " " << *acq
                   << std::endl;
         ++nReceiveAcq;
@@ -173,7 +173,7 @@ TEST_CASE( "Native test" ) {
     };
 
     auto* viewer =
-        hub::native::createViewer( FILE_NAME,
+        hub::native::createViewer( FILE_NAME.c_str(),
                                    onNewStreamer,
                                    onDelStreamer,
                                    onServerNotFound,

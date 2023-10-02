@@ -79,7 +79,7 @@ TEST_CASE( "Server test : close clients" ) {
         std::cout << "[Test] ############################### outputStream2 start" << std::endl;
         hub::sensor::OutputSensor outputSensor2(
             hub::sensor::SensorSpec { "sensorName2", { { { 3 }, hub::sensor::Format::RGB8 } } },
-            hub::output::OutputStream(FILE_NAME "2")
+            hub::output::OutputStream(FILE_NAME + "2")
 //            "stream2",
 //            hub::net::ClientSocket( ipv4, port ) );
 //            ipv4, port
@@ -100,7 +100,7 @@ TEST_CASE( "Server test : close clients" ) {
             {
                 hub::sensor::InputSensor inputSensor(
 //                    hub::input::InputSyncStream( "stream", "stream2", ipv4, port ) );
-                    hub::input::InputSyncStream( FILE_NAME, FILE_NAME "2" ) );
+                    hub::input::InputSyncStream( FILE_NAME, FILE_NAME +  "2" ) );
 
                 const auto& inputSensorSpec = inputSensor.getSpec();
                 CHECK( inputSensorSpec.getAcquisitionSize() == dataSize * 2 );

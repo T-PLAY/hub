@@ -213,8 +213,19 @@
 #endif
 
 
+//filename = filename.substr( filename.find_last_of( '\\' ) + 1 );
+
+//#include <string.h>
+
 #ifdef WIN32
-#define FILE_NAME __FILE__
+//#define FILE_NAME __FILE__
+//#    define FILE_NAME std::string( __FILE__ ).substr( std::string(__FILE__).find_last_of( '\\' ) + 1 )
+
+//#define FILE_NAME strrchr( __FILE__, '\\' ) ? strrchr( __FILE__, '\\' ) + 1 : __FILE__
+
+#define FILE_NAME std::string( strrchr( __FILE__, '\\' ) ? strrchr( __FILE__, '\\' ) + 1 : __FILE__ )
+
+
 #else
 #define FILE_NAME __FILE_NAME__
 #endif

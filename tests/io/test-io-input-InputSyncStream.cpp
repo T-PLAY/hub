@@ -65,9 +65,9 @@ TEST_CASE( "InputSyncStream test" ) {
 #ifdef HUB_BUILD_SERVER
     {
         hub::sensor::OutputSensor outputSensor(ref_sensorSpec, hub::output::OutputStream( FILE_NAME ));
-        hub::sensor::OutputSensor outputSensor2(ref_sensorSpec2, hub::output::OutputStream( FILE_NAME "2" ));
+        hub::sensor::OutputSensor outputSensor2(ref_sensorSpec2, hub::output::OutputStream( FILE_NAME + "2" ));
 
-        hub::sensor::InputSensor inputSyncSensor(hub::input::InputSyncStream(FILE_NAME, FILE_NAME "2"));
+        hub::sensor::InputSensor inputSyncSensor(hub::input::InputSyncStream(FILE_NAME, FILE_NAME + "2"));
 
         checkSynchronize( outputSensor.getOutput(),
                           ref_acqs,

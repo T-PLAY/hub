@@ -143,9 +143,9 @@ TEST_CASE( "InputSensor test" ) {
 
 #ifdef HUB_BUILD_SERVER
     auto outputSensor  = hub::sensor::OutputSensor(ref_sensorSpec, hub::output::OutputStream( FILE_NAME ));
-    auto outputSensor2 = hub::sensor::OutputSensor(ref_sensorSpec2, hub::output::OutputStream( FILE_NAME "2" ));
+    auto outputSensor2 = hub::sensor::OutputSensor(ref_sensorSpec2, hub::output::OutputStream( FILE_NAME + "2" ));
     auto inputSensor   = hub::sensor::InputSensor(hub::input::InputStream( FILE_NAME ));
-    auto inputSensor2  = hub::sensor::InputSensor(hub::input::InputStream( FILE_NAME "2" ));
+    auto inputSensor2  = hub::sensor::InputSensor(hub::input::InputStream( FILE_NAME + "2" ));
 
         checkSynchronize( outputSensor.getOutput() ,
                           ref_acqs,

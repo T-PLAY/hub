@@ -62,9 +62,8 @@ int main( int argc, char* argv[] ) {
         std::cout << HEADER_MSG "onLogMessage '" << logMessage << "'" << std::endl;
     };
 
-    auto* viewer = hub::native::createViewer(
-        FILE_NAME,
-//        FILE_NAME,
+    auto* viewer = hub::native::createViewer( FILE_NAME.c_str(),
+                                              //        FILE_NAME,
                                               onNewStreamer,
                                               onDelStreamer,
                                               onServerNotFound,
