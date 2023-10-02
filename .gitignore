@@ -11,3 +11,4 @@ src/latex/
 out/
 install/
 *.glb
+*.history

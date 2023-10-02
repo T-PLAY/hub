@@ -1,8 +1,10 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(examples LANGUAGES CXX)
+project(bin LANGUAGES CXX)
 
-if (TARGET hub_static OR TARGET hub_shared)
+if (true)
+
+if (TARGET hub_static OR TARGET hub_shared AND TARGET hub_static)
 
     #set(LINK_LIBRARIES hub PahoMqttCpp::paho-mqttpp3)
     if (XCODE)
@@ -56,6 +58,8 @@ if (TARGET hub_static OR TARGET hub_shared)
     #        COMMAND ${TARGET_NAME}
     #        COMMENT "Running executable")
     #    custom_target_added(run-${TARGET_NAME})
+    #target_compile_definitions(${TARGET_NAME} PUBLIC -DSRC_EXPORTS)
+	#target_compile_definitions(${TARGET_NAME} PUBLIC -DSRC_STATIC) # -> SRC_API = void, future shared
 
         if(WIN32)
         if (HUB_BUILD_SHARED)
@@ -67,5 +71,7 @@ if (TARGET hub_static OR TARGET hub_shared)
             endif()
         endif()
     endforeach()
+
+endif()
 
 endif()

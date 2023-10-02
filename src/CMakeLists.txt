@@ -103,7 +103,10 @@ target_include_directories(external
     PRIVATE
         ${HUB_EXTERNAL_DIR}
 )
-target_compile_options(external PRIVATE -fPIC)
+#target_compile_options(external PRIVATE -fPIC)
+if (UNIX)
+	set_property(TARGET external PROPERTY POSITION_INDEPENDENT_CODE ON) # gltfpack
+endif()
 
 
 #list(APPEND SOURCE_FILES ${sources} ${headers})
@@ -167,8 +170,8 @@ if (NOT XCODE) # unable to have object files as native build with Xcode
         )
 
         #target_compile_definitions(${TARGET_NAME} PUBLIC -DINTERNAL_BUILD)
-#        target_compile_definitions(${TARGET_NAME} PUBLIC -DSRC_STATIC) # -> SRC_API = void, future shared
-        target_compile_definitions(${TARGET_NAME} PUBLIC -DSRC_EXPORTS) # -> SRC_API = void, future shared
+       target_compile_definitions(${TARGET_NAME} PUBLIC -DSRC_STATIC) # -> SRC_API = void, future shared
+#        target_compile_definitions(${TARGET_NAME} PUBLIC -DSRC_EXPORTS) # -> SRC_API = void, future shared
 #        target_compile_options(${TARGET_NAME} PRIVATE -fPIC)
 
         if (PahoMqttCpp_FOUND)
