@@ -18,7 +18,7 @@
 //#include "data/UserData.hpp"
 
 #if CPLUSPLUS_VERSION == 20
-#    include "Map.hpp"
+//#    include "Map.hpp"
 #    include <ranges>
 #endif
 
@@ -38,8 +38,10 @@ class SRC_API SensorSpec
 {
   public:
 #if CPLUSPLUS_VERSION == 20
-    using SensorNameType = std::string_view;
-    using MetaData       = Map<std::string, std::any>; // any -> C++17
+//    using SensorNameType = std::string_view;
+    using SensorNameType = std::string;
+//    using MetaData       = Map<std::string, std::any>; // any -> C++17
+    using MetaData       = std::map<std::string, Any>; // any -> C++17
 #else
     ///
     /// \brief
@@ -63,11 +65,11 @@ class SRC_API SensorSpec
     /// \param metaData
     /// [in] Additional informations of the sensor and acquisition.
     ///
-    CONSTEXPR20 SensorSpec( const SensorNameType& sensorName = "",
+    SensorSpec( const SensorNameType& sensorName = "",
                                      const Resolutions& resolutions   = {},
                                      const MetaData& metaData         = {} );
 
-    CONSTEXPR20 SensorSpec( const char * sensorName,
+    SensorSpec( const char * sensorName,
                                      const Resolutions& resolutions   = {},
                                      const MetaData& metaData         = {} );
 
@@ -176,15 +178,15 @@ class SRC_API SensorSpec
 ///////////////////////////////////////////////// INLINE
 /////////////////////////////////////////////////////////////////////////
 
-#if CPLUSPLUS_VERSION == 20
-CONSTEXPR20 SensorSpec::SensorSpec( const SensorNameType& sensorName,
-                                    const Resolutions& resolutions,
-                                    const MetaData& metaData ) :
-    m_sensorName( sensorName ),
-    m_resolutions( resolutions ),
-    m_metaData( metaData ),
-    m_acquisitionSize( computeAcquisitionSize( resolutions ) ) {}
-#endif
+//#if CPLUSPLUS_VERSION == 20
+//SensorSpec::SensorSpec( const SensorNameType& sensorName,
+//                                    const Resolutions& resolutions,
+//                                    const MetaData& metaData ) :
+//    m_sensorName( sensorName ),
+//    m_resolutions( resolutions ),
+//    m_metaData( metaData ),
+//    m_acquisitionSize( resolution::computeAcquisitionSize( resolutions ) ) {}
+//#endif
 
 inline CONSTEXPR20 const SensorSpec::SensorNameType& SensorSpec::getSensorName() const noexcept {
     return m_sensorName;

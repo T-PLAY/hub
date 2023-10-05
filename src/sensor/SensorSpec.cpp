@@ -10,7 +10,7 @@
 namespace hub {
 namespace sensor {
 
-#if CPLUSPLUS_VERSION != 20
+//#if CPLUSPLUS_VERSION != 20
 SensorSpec::SensorSpec( const SensorNameType& sensorName,
                         const Resolutions& resolutions,
                         const MetaData& metaData ) :
@@ -18,13 +18,13 @@ SensorSpec::SensorSpec( const SensorNameType& sensorName,
     m_resolutions( resolutions ),
     m_metaData( metaData ),
     m_acquisitionSize( resolution::computeAcquisitionSize( resolutions ) ) {}
-#endif
 
 SensorSpec::SensorSpec(const char *sensorName, const Resolutions &resolutions, const MetaData &metaData) :
     m_sensorName( sensorName ),
     m_resolutions( resolutions ),
     m_metaData( metaData ),
     m_acquisitionSize( resolution::computeAcquisitionSize( resolutions ) ) {}
+//#endif
 
 SensorSpec SensorSpec::operator+( const SensorSpec& sensorSpec ) const {
     std::string sensorName;

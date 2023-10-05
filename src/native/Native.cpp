@@ -128,7 +128,8 @@ void acquisition_to_string( const sensor::Acquisition* acquisition, char* str, i
 
     *strLen = stdString.size(); // todo
 #if CPLUSPLUS_VERSION == 20
-    memcpy( sensorName, sensorSpec->getSensorName().data(), *strLen + 1 );
+//    memcpy( sensorName, sensorSpec->getSensorName().data(), *strLen + 1 );
+    memcpy( str, stdString.c_str(), *strLen + 1 );
 #else
     memcpy( str, stdString.c_str(), *strLen + 1 );
 #endif
