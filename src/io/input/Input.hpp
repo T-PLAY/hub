@@ -1,12 +1,15 @@
 #pragma once
 
 #include <cstdlib>
+#include <list>
+#include <map>
+#include <iostream>
 
 #include "core/Macros.hpp"
-#include "sensor/Acquisition.hpp"
+//#include "sensor/Acquisition.hpp"
 #include "core/Any.hpp"
-#include "sensor/SensorSpec.hpp"
-#include "data/Measure.hpp"
+//#include "sensor/SensorSpec.hpp"
+//#include "data/Measure.hpp"
 
 #ifdef USE_BOOST
 #    include <boost/type_index.hpp>
@@ -167,38 +170,40 @@ class SRC_API Input
     ///
     void read( std::string& str );
 
-    ///
-    /// \brief read
-    /// \param sensorSpec
-    ///
-    virtual void read( sensor::SensorSpec& sensorSpec );
+//    ///
+//    /// \brief read
+//    /// \param sensorSpec
+//    ///
+//    virtual void read( sensor::SensorSpec& sensorSpec );
 
-    ///
-    /// \brief read
-    /// \param acq
-    ///
-    virtual void read( sensor::Acquisition& acq );
+    // todo acq
+//    ///
+//    /// \brief read
+//    /// \param acq
+//    ///
+//    virtual void read( sensor::Acquisition& acq );
 
-    ///
-    /// \brief read
-    /// \param measure
-    ///
-    void read( Measure& measure );
+//    ///
+//    /// \brief read
+//    /// \param measure
+//    ///
+//    void read( Measure& measure );
 
 #ifdef ARCH_X86
     void read( size_t size ) = delete; // non compatible format 32/64 bit
 #endif
 
   public:
-    ///
-    /// \brief operator >>
-    /// \param input
-    /// \return
-    ///
-    sensor::Acquisition operator>>( Input& input );
+    // todo acq
+//    ///
+//    /// \brief operator >>
+//    /// \param input
+//    /// \return
+//    ///
+//    sensor::Acquisition operator>>( Input& input );
 
   private:
-    std::list<sensor::Acquisition> m_lastAcqs;
+//    std::list<sensor::Acquisition> m_lastAcqs;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

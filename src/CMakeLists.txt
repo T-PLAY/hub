@@ -155,7 +155,9 @@ if (NOT XCODE) # unable to have object files as native build with Xcode
 #        add_library(${PROJECT_NAME} OBJECT ${sources} ${headers})
 #        add_library(${TARGET_NAME} INTERFACE ${sources} ${headers})
 #        add_library(${TARGET_NAME} INTERFACE ${headers})
-        add_library(${TARGET_NAME} OBJECT ${sources} ${headers})
+        add_library(${TARGET_NAME} OBJECT ${sources} ${headers}
+            core/Vector.hpp
+        )
 #        add_library(${TARGET_NAME} SHARED ${sources} ${headers})
 
         list(APPEND SRC_TARGETS "$<TARGET_OBJECTS:${TARGET_NAME}>")

@@ -8,7 +8,7 @@
 
 #include "core/Any.hpp"
 #include "core/Macros.hpp"
-#include "Resolution.hpp"
+//#include "Resolution.hpp"
 //#include "Measure.hpp"
 
 // user friendly useless includes
@@ -66,14 +66,24 @@ class SRC_API SensorSpec
     /// [in] Additional informations of the sensor and acquisition.
     ///
     SensorSpec( const SensorNameType& sensorName = "",
-                                     const Resolutions& resolutions   = {},
+//                                     const Resolutions& resolutions   = {},
                                      const MetaData& metaData         = {} );
 
     SensorSpec( const char * sensorName,
-                                     const Resolutions& resolutions   = {},
+//                                     const Resolutions& resolutions   = {},
                                      const MetaData& metaData         = {} );
 
   public:
+    const unsigned char * getData() const {
+        return nullptr;
+    }
+    constexpr std::string typeName() const {
+        return "SensorSpec";
+    }
+    size_t getSize() const {
+        return 0;
+    }
+
     ///
     /// \brief operator +
     /// \param sensorSpec
@@ -145,7 +155,8 @@ class SRC_API SensorSpec
     /// \brief getResolutions
     /// \return
     ///
-    inline CONSTEXPR Resolutions& getResolutions() const noexcept;
+//    inline CONSTEXPR Resolutions& getResolutions() const noexcept;
+
     ///
     /// \brief getMetaData
     /// \return
@@ -169,7 +180,7 @@ class SRC_API SensorSpec
 
   private:
     SensorNameType m_sensorName;
-    Resolutions m_resolutions;
+//    Resolutions m_resolutions;
     MetaData m_metaData;
 
     size_t m_acquisitionSize;
@@ -192,9 +203,9 @@ inline CONSTEXPR20 const SensorSpec::SensorNameType& SensorSpec::getSensorName()
     return m_sensorName;
 }
 
-inline CONSTEXPR Resolutions& SensorSpec::getResolutions() const noexcept {
-    return const_cast<Resolutions&>( m_resolutions );
-}
+//inline CONSTEXPR Resolutions& SensorSpec::getResolutions() const noexcept {
+//    return const_cast<Resolutions&>( m_resolutions );
+//}
 
 inline CONSTEXPR SensorSpec::MetaData& SensorSpec::getMetaData() const noexcept {
     return const_cast<SensorSpec::MetaData&>( m_metaData );

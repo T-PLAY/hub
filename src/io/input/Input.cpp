@@ -1,5 +1,7 @@
 #include "Input.hpp"
 
+#include <cstring>
+
 #include "core/Any.hpp"
 #include "core/Info.hpp"
 //#include "Measure.hpp"
@@ -31,112 +33,113 @@ void Input::read( std::string& str ) {
 #endif
 }
 
-void Input::read( sensor::SensorSpec& sensorSpec ) {
-    assert( isOpen() );
-    assert( !isEnd() );
+// todo acq
+//void Input::read( sensor::SensorSpec& sensorSpec ) {
+//    assert( isOpen() );
+//    assert( !isEnd() );
 
-//    uint64_t packetSize;
-//    read(packetSize);
+////    uint64_t packetSize;
+////    read(packetSize);
 
-//    std::vector<char> buff(packetSize);
-//    read((unsigned char*)buff.data(), packetSize);
+////    std::vector<char> buff(packetSize);
+////    read((unsigned char*)buff.data(), packetSize);
 
-//    input::InputMemory<decltype(buff)> memory(buff);
+////    input::InputMemory<decltype(buff)> memory(buff);
 
-    char magicNumber[80] = { 0 };
-//    memory.read( reinterpret_cast<unsigned char*>(magicNumber), 80 );
-    read( reinterpret_cast<unsigned char*>(magicNumber), 80 );
-    int versionMajor;
-    int versionMinor;
-    int versionPatch;
-    char h;
-    char u;
-    char b;
-#ifdef WIN32
-    sscanf_s( magicNumber,
-              "%c%c%c %d.%d.%d",
-              &h,
-              1,
-              &u,
-              1,
-              &b,
-              1,
-              &versionMajor,
-              &versionMinor,
-              &versionPatch );
-#else
-    sscanf(
-        magicNumber, "%c%c%c %d.%d.%d", &h, &u, &b, &versionMajor, &versionMinor, &versionPatch );
-#endif
-    assert( h == 'H' );
-    assert( u == 'U' );
-    assert( b == 'B' );
-    assert( versionMajor <= s_versionMajor );
-    assert( versionMinor <= s_versionMinor );
-    assert( versionPatch <= s_versionPatch );
-//#ifdef DEBUG
-//    std::cout <<  "[Input] read(magic number) : '" << magicNumber << "'" << std::endl;
+//    char magicNumber[80] = { 0 };
+////    memory.read( reinterpret_cast<unsigned char*>(magicNumber), 80 );
+//    read( reinterpret_cast<unsigned char*>(magicNumber), 80 );
+//    int versionMajor;
+//    int versionMinor;
+//    int versionPatch;
+//    char h;
+//    char u;
+//    char b;
+//#ifdef WIN32
+//    sscanf_s( magicNumber,
+//              "%c%c%c %d.%d.%d",
+//              &h,
+//              1,
+//              &u,
+//              1,
+//              &b,
+//              1,
+//              &versionMajor,
+//              &versionMinor,
+//              &versionPatch );
+//#else
+//    sscanf(
+//        magicNumber, "%c%c%c %d.%d.%d", &h, &u, &b, &versionMajor, &versionMinor, &versionPatch );
 //#endif
+//    assert( h == 'H' );
+//    assert( u == 'U' );
+//    assert( b == 'B' );
+//    assert( versionMajor <= s_versionMajor );
+//    assert( versionMinor <= s_versionMinor );
+//    assert( versionPatch <= s_versionPatch );
+////#ifdef DEBUG
+////    std::cout <<  "[Input] read(magic number) : '" << magicNumber << "'" << std::endl;
+////#endif
 
-    std::string sensorName;
-    sensor::Resolutions resolutions;
-    sensor::SensorSpec::MetaData metaData;
-//    memory.read( sensorName );
-    read( sensorName );
-//    memory.read( resolutions );
-    read( resolutions );
-//    memory.read( metaData );
-    read( metaData );
+//    std::string sensorName;
+//    sensor::Resolutions resolutions;
+//    sensor::SensorSpec::MetaData metaData;
+////    memory.read( sensorName );
+//    read( sensorName );
+////    memory.read( resolutions );
+//    read( resolutions );
+////    memory.read( metaData );
+//    read( metaData );
 
-//    assert(memory.isEnd());
+////    assert(memory.isEnd());
 
-    sensorSpec =
-        sensor::SensorSpec( std::move( sensorName ), std::move( resolutions ), std::move( metaData ) );
+//    sensorSpec =
+//        sensor::SensorSpec( std::move( sensorName ), std::move( resolutions ), std::move( metaData ) );
 
-    assert( !sensorSpec.isEmpty() );
-}
+//    assert( !sensorSpec.isEmpty() );
+//}
 
-void Input::read( Measure& measure ) {
-    assert( isOpen() );
-    assert( !isEnd() );
+//void Input::read( Measure& measure ) {
+//    assert( isOpen() );
+//    assert( !isEnd() );
 
-    assert( measure.m_data == nullptr );
-    read( measure.m_size );
-    measure.m_data = new unsigned char[measure.m_size];
-    read( measure.m_data, measure.m_size );
-    read( measure.m_resolution );
-    measure.m_ownData = true;
+//    assert( measure.m_data == nullptr );
+//    read( measure.m_size );
+//    measure.m_data = new unsigned char[measure.m_size];
+//    read( measure.m_data, measure.m_size );
+//    read( measure.m_resolution );
+//    measure.m_ownData = true;
 
-    assert( measure.m_size > 0 );
-    assert( measure.m_data != nullptr );
-    assert( !measure.m_resolution.first.empty() );
-    assert( measure.m_resolution.second != sensor::Format::NONE );
-}
+//    assert( measure.m_size > 0 );
+//    assert( measure.m_data != nullptr );
+//    assert( !measure.m_resolution.first.empty() );
+//    assert( measure.m_resolution.second != sensor::Format::NONE );
+//}
 
-void Input::read( sensor::Acquisition& acq ) {
-    assert( isOpen() );
-    assert( !isEnd() );
+//void Input::read( sensor::Acquisition& acq ) {
+//    assert( isOpen() );
+//    assert( !isEnd() );
 
 
-//    uint64_t packetSize;
-//    read(packetSize);
+////    uint64_t packetSize;
+////    read(packetSize);
 
-//    std::vector<char> buff(packetSize);
-//    read((unsigned char*)buff.data(), packetSize);
+////    std::vector<char> buff(packetSize);
+////    read((unsigned char*)buff.data(), packetSize);
 
-//    input::InputMemory<decltype(buff)> memory(buff);
+////    input::InputMemory<decltype(buff)> memory(buff);
 
-    read( acq.m_start );
-    read( acq.m_end );
-    read( acq.m_measures );
-    read( acq.m_size );
+//    read( acq.m_start );
+//    read( acq.m_end );
+//    read( acq.m_measures );
+//    read( acq.m_size );
 
-//    assert(memory.isEnd());
+////    assert(memory.isEnd());
 
-    assert( acq.m_start <= acq.m_end );
-    assert( !acq.m_measures.empty() );
-    assert( acq.m_size > 0 );
-}
+//    assert( acq.m_start <= acq.m_end );
+//    assert( !acq.m_measures.empty() );
+//    assert( acq.m_size > 0 );
+//}
 
 void Input::read( char* str ) {
     assert( str != nullptr );
@@ -215,24 +218,25 @@ void Input::read( Any& any ) {
 
     } break;
 
-    case Any::Type::MAT4: {
-        float buff[16];
-        read( reinterpret_cast<unsigned char*>( buff ), 64 );
+    // todo any
+//    case Any::Type::MAT4: {
+//        float buff[16];
+//        read( reinterpret_cast<unsigned char*>( buff ), 64 );
 
-        data::Mat4 mat4( buff );
-//        any = Any( mat4 );
-        any = mat4;
+//        data::Mat4 mat4( buff );
+////        any = Any( mat4 );
+//        any = mat4;
 
-    } break;
+//    } break;
 
-    case Any::Type::MESH: {
-        Measure measure;
-        read( measure );
+//    case Any::Type::MESH: {
+//        Measure measure;
+//        read( measure );
 
-//        any = Any( data::Mesh( measure ) );
-        any = data::Mesh(measure);
+////        any = Any( data::Mesh( measure ) );
+//        any = data::Mesh(measure);
 
-    } break;
+//    } break;
 
 #ifndef COVERAGE
     default:
@@ -242,67 +246,68 @@ void Input::read( Any& any ) {
     assert( any.hasValue() );
 }
 
-sensor::Acquisition Input::operator>>( Input& input ) {
-    assert( isOpen() );
-    assert( !isEnd() );
-    assert( input.isOpen() );
-    assert( !input.isEnd() );
+// todo acq
+//sensor::Acquisition Input::operator>>( Input& input ) {
+//    assert( isOpen() );
+//    assert( !isEnd() );
+//    assert( input.isOpen() );
+//    assert( !input.isEnd() );
 
-    Input & leftInput = *this;
-    Input & rightInput = input;
+//    Input & leftInput = *this;
+//    Input & rightInput = input;
 
-    sensor::Acquisition rightAcq;
-    rightInput.read( rightAcq );
-//    assert(rightAcq.getMeasures().front().getResolution().second == Format::DOF6);
+//    sensor::Acquisition rightAcq;
+//    rightInput.read( rightAcq );
+////    assert(rightAcq.getMeasures().front().getResolution().second == Format::DOF6);
 
-    auto& leftLastAcqs = leftInput.m_lastAcqs;
+//    auto& leftLastAcqs = leftInput.m_lastAcqs;
 
-    assert( leftLastAcqs.size() < 20 );
+//    assert( leftLastAcqs.size() < 20 );
 
-    sensor::Acquisition leftAcq;
+//    sensor::Acquisition leftAcq;
 
-    if ( leftLastAcqs.empty() ) {
-        leftInput.read( leftAcq );
-        leftLastAcqs.push_back( std::move( leftAcq ) );
-    }
+//    if ( leftLastAcqs.empty() ) {
+//        leftInput.read( leftAcq );
+//        leftLastAcqs.push_back( std::move( leftAcq ) );
+//    }
 
-    while ( rightAcq.getStart() < leftLastAcqs.front().getStart() ) {
-        std::cout << "[InputSensor] operator>>(InputSensor&) shift rightAcq : " << rightAcq << std::endl;
-        assert( !rightInput.isEnd() );
-        rightInput.read( rightAcq );
-    }
+//    while ( rightAcq.getStart() < leftLastAcqs.front().getStart() ) {
+//        std::cout << "[InputSensor] operator>>(InputSensor&) shift rightAcq : " << rightAcq << std::endl;
+//        assert( !rightInput.isEnd() );
+//        rightInput.read( rightAcq );
+//    }
 
-    while ( leftLastAcqs.back().getStart() < rightAcq.getStart() && !leftInput.isEnd() ) {
-        assert( !leftInput.isEnd() );
-        leftInput.read( leftAcq );
-        leftLastAcqs.push_back( std::move( leftAcq ) );
-    }
+//    while ( leftLastAcqs.back().getStart() < rightAcq.getStart() && !leftInput.isEnd() ) {
+//        assert( !leftInput.isEnd() );
+//        leftInput.read( leftAcq );
+//        leftLastAcqs.push_back( std::move( leftAcq ) );
+//    }
 
-    while ( leftLastAcqs.size() > 2 ) {
-        leftLastAcqs.pop_front();
-    }
+//    while ( leftLastAcqs.size() > 2 ) {
+//        leftLastAcqs.pop_front();
+//    }
 
-    const auto& leftBeforeRightAcq  = leftLastAcqs.front();
-    const auto& leftAfterRightAcq = leftLastAcqs.back();
+//    const auto& leftBeforeRightAcq  = leftLastAcqs.front();
+//    const auto& leftAfterRightAcq = leftLastAcqs.back();
 
-    assert( leftInput.isEnd() || leftBeforeRightAcq.getStart() <= rightAcq.getStart() );
-    assert( leftInput.isEnd() || rightAcq.getStart() <= leftAfterRightAcq.getStart() );
+//    assert( leftInput.isEnd() || leftBeforeRightAcq.getStart() <= rightAcq.getStart() );
+//    assert( leftInput.isEnd() || rightAcq.getStart() <= leftAfterRightAcq.getStart() );
 
-    const auto& closestAcq =
-        ( std::abs( leftBeforeRightAcq.getStart() - rightAcq.getStart() ) > std::abs( leftAfterRightAcq.getStart() - rightAcq.getStart() ) )
-            ? ( leftAfterRightAcq )
-            : ( leftBeforeRightAcq );
+//    const auto& closestAcq =
+//        ( std::abs( leftBeforeRightAcq.getStart() - rightAcq.getStart() ) > std::abs( leftAfterRightAcq.getStart() - rightAcq.getStart() ) )
+//            ? ( leftAfterRightAcq )
+//            : ( leftBeforeRightAcq );
 
-    const auto & rightMeasures = rightAcq.getMeasures();
-    const auto & closestMeasures = closestAcq.getMeasures();
-//    rightMeasures.insert(rightMeasures.begin(), closestMeasures.begin(), closestMeasures.end());
-//    rightAcq << closestAcq.getMeasures();
-    sensor::Acquisition acq(rightAcq.m_start, rightAcq.m_end);
-    acq << closestMeasures;
-    acq << rightMeasures;
-    return acq;
-//    return rightAcq;
-}
+//    const auto & rightMeasures = rightAcq.getMeasures();
+//    const auto & closestMeasures = closestAcq.getMeasures();
+////    rightMeasures.insert(rightMeasures.begin(), closestMeasures.begin(), closestMeasures.end());
+////    rightAcq << closestAcq.getMeasures();
+//    sensor::Acquisition acq(rightAcq.m_start, rightAcq.m_end);
+//    acq << closestMeasures;
+//    acq << rightMeasures;
+//    return acq;
+////    return rightAcq;
+//}
 
 /////////////////////////////////////////////////////////////////////////////
 

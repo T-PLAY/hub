@@ -20,7 +20,9 @@ namespace io {
 #ifdef HUB_BUILD_SERVER
 using Stream = StreamServer;
 #else
+#ifdef HUB_BUILD_MQTT
 using Stream = StreamMqtt;
+#endif
 #endif
 
 

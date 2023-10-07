@@ -11,8 +11,8 @@
 
 #include "Macros.hpp"
 
-#include "data/Mat4.hpp"
-#include "data/Mesh.hpp"
+//#include "data/Mat4.hpp"
+//#include "data/Mesh.hpp"
 
 //#define USE_BOOST
 #ifdef USE_BOOST
@@ -154,12 +154,13 @@ Any::Any(T &&t)
     else if (anyType == typeid(const char *)) {
         m_type = Type::CONST_CHAR_PTR;
     }
-    else if (anyType == typeid(data::Mat4)) {
-        m_type = Type::MAT4;
-    }
-    else if (anyType == typeid(data::Mesh)) {
-        m_type = Type::MESH;
-    }
+    // todo any
+//    else if (anyType == typeid(data::Mat4)) {
+//        m_type = Type::MAT4;
+//    }
+//    else if (anyType == typeid(data::Mesh)) {
+//        m_type = Type::MESH;
+//    }
     else {
         assert(false);
     }

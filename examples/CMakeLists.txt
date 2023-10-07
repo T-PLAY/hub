@@ -12,17 +12,29 @@ endif()
 
 #set(LINK_LIBRARIES hub PahoMqttCpp)
 
-file(GLOB EXAMPLE_SRC *.cpp)
+#file(GLOB EXAMPLE_SRC *.cpp)
+set(example_srcs)
+foreach(HUB_SOURCE_DIR ${HUB_SOURCE_DIRS})
+    file(
+        GLOB
+    #    GLOB_RECURSE
+        example_src
+        ${CMAKE_CURRENT_SOURCE_DIR}/${HUB_SOURCE_DIR}/*.cpp
+    )
+    list(APPEND example_srcs ${example_src})
+endforeach()
 
-string(REPLACE ".cpp" "" EXAMPLE_SRC_BASENAME "${EXAMPLE_SRC}")
+list(APPEND example_srcs ${CMAKE_CURRENT_SOURCE_DIR}/example-wip.cpp)
+
+string(REPLACE ".cpp" "" EXAMPLE_SRC_BASENAME "${example_srcs}")
 set(EXAMPLE_SRC_BASENAME ${EXAMPLE_SRC_BASENAME})
 
 
 find_package(PahoMqttCpp QUIET)
 #find_package(PahoMqttCpp QUIET NO_DEFAULT_PATH)
-if (PahoMqttCpp_FOUND)
-    file(GLOB EXAMPLE_SRC mqtt/*.cpp)
-    string(REPLACE ".cpp" "" EXAMPLE_SRC_BASENAME2 "${EXAMPLE_SRC}")
+if (HUB_BUILD_MQTT AND PahoMqttCpp_FOUND)
+    file(GLOB example_srcs mqtt/*.cpp)
+    string(REPLACE ".cpp" "" EXAMPLE_SRC_BASENAME2 "${example_srcs}")
     set(EXAMPLE_SRC_BASENAME ${EXAMPLE_SRC_BASENAME} ${EXAMPLE_SRC_BASENAME2})
 #    set(LINK_LIBRARIES "${LINK_LIBRARIES} PahoMqttCpp::paho-mqttpp3")
     set(LINK_LIBRARIES ${LINK_LIBRARIES} PahoMqttCpp::paho-mqttpp3)

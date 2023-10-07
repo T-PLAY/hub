@@ -73,8 +73,9 @@ class SRC_API InputStreamServer : public Input, public io::StreamServer
     ///
     bool isEnd() const override;
 
-    void read( sensor::Acquisition& acq ) override;
-    void read( sensor::SensorSpec& sensorSpec ) override;
+    // todo acq
+//    void read( sensor::Acquisition& acq ) override;
+//    void read( sensor::SensorSpec& sensorSpec ) override;
 
   private:
     net::ClientSocket m_clientSocket;

@@ -1,25 +1,26 @@
 #pragma once
 
-#include <type_traits>
+// #include <type_traits>
 
+// #include "io/output/Output.hpp"
 #include "Sensor.hpp"
 #include "SensorSpec.hpp"
-#include "Acquisition.hpp"
-#include "core/Traits.hpp"
+// #include "Acquisition.hpp"
+// #include "core/Traits.hpp"
 
-#include "io/output/Output.hpp"
 // user friendly useless includes
-#include "io/output/OutputFile.hpp"
-#include "io/output/OutputStream.hpp"
-#include "io/output/OutputMemory.hpp"
-#include "io/Memory.hpp"
+// #include "io/output/OutputFile.hpp"
+// #include "io/output/OutputStream.hpp"
+// #include "io/output/OutputMemory.hpp"
+// #include "io/Memory.hpp"
 
-//#include "net/ClientSocket.hpp"
-
+// #include "net/ClientSocket.hpp"
+#include "Format.hpp"
+#include "Measure.hpp"
+#include "Acquisition.hpp"
 
 namespace hub {
 namespace sensor {
-
 
 ///
 /// \brief The OutputSensor class
@@ -32,6 +33,9 @@ namespace sensor {
 /// so that it can be used in real time on various network machines.
 ///
 /// todo: template class
+//template <typename Output, typename Measures, typename Acquisition = Acquisition<Measures>>
+template <typename Output, typename Measures>
+// template <typename Measures>
 class SRC_API OutputSensor : public Sensor
 {
   public:
@@ -43,35 +47,111 @@ class SRC_API OutputSensor : public Sensor
     /// \param output
     /// is the communication bus you want to use
     ///
-    template <
-        class SensorSpec = sensor::SensorSpec,
-          class OutputT>
-//          ,
-//          typename = typename std::enable_if<std::is_base_of<Output, Output>::value &&
-//#ifdef HUB_BUILD_SERVER
-//                                           !std::is_same<OutputT, output::OutputStreamServer>::value
-//              &&
-//#endif
-//                                           !std::is_same<Output, net::ClientSocket>::value
-//                                           >::type>
-    OutputSensor( SensorSpec&& sensorSpec, OutputT&& output ) :
+    template <typename OutputT, typename SensorSpec = sensor::SensorSpec>
+    //          class OutputT>
+    //          ,
+    //          typename = typename std::enable_if<std::is_base_of<Output, Output>::value &&
+    // #ifdef HUB_BUILD_SERVER
+    //                                           !std::is_same<OutputT,
+    //                                           output::OutputStreamServer>::value
+    //              &&
+    // #endif
+    //                                           !std::is_same<Output, net::ClientSocket>::value
+    //                                           >::type>
+    OutputSensor( OutputT&& output, SensorSpec&& sensorSpec ) :
+        m_output( std::forward<OutputT>( output ) ),
+        Sensor( std::forward<SensorSpec>( sensorSpec ) )
+    //          m_output(std::forward<OutputT>(output))
+    //        m_output( new OutputT( std::move( output ) ) )
+    {
+        //        static_assert( std::is_base_of<Output, OutputT>::value, "not a base class" );
+        // #ifdef HUB_BUILD_SERVER
+        //        static_assert( !std::is_same<output::OutputStreamServer, Output>::value, "not
+        //        outputStream class" );
+        // #endif
+        //        static_assert( !std::is_same<net::ClientSocket, Output>::value, "not clientSocket
+        //        class" );
 
-        Sensor( std::forward<SensorSpec>( sensorSpec ) ),
-//          m_output(std::forward<OutputT>(output))
-        m_output( new OutputT( std::move( output ) ) )
-      {
-
-        static_assert( std::is_base_of<Output, OutputT>::value, "not a base class" );
-//#ifdef HUB_BUILD_SERVER
-//        static_assert( !std::is_same<output::OutputStreamServer, Output>::value, "not outputStream class" );
-//#endif
-//        static_assert( !std::is_same<net::ClientSocket, Output>::value, "not clientSocket class" );
-
-        m_output->write( m_spec );
+//        m_output.write( m_spec );
     }
 
+    ////        m_output( new Output( std::forward<Args>(args)... ) )
+    ////        Output::write(m_spec);
 
-//#ifdef HUB_BUILD_SERVER
+    template <class OutputT>
+    OutputSensor( OutputT& output, const SensorSpec&& sensorSpec ) = delete;
+
+    OutputSensor( const OutputSensor& outputSensor )           = delete;
+    OutputSensor operator=( const OutputSensor& outputSensor ) = delete;
+
+    ///
+    /// \brief OutputSensor
+    /// \param outputSensor
+    ///
+    OutputSensor( OutputSensor&& outputSensor )           = delete;
+    OutputSensor operator=( OutputSensor&& outputSensor ) = delete;
+
+//    ~OutputSensor();
+
+    ///
+    /// \brief operator <<
+    /// is used when you want to share sensor data.
+    /// \param acquisition
+    /// to send through the communication bus.
+    /// \warning The acquisition needs to be compatible with
+    /// the internal sensor specification resolution and format.\n
+    /// sensorSpec.resolutions == { acq.measures[0].resolution, acq.measures[1].resolution, ... }
+    /// \exception "used interface exception"
+    /// when communication is broken.
+    ///
+
+    // todo acq
+//    template <typename Acquisition>
+    void operator<<( const Acquisition<Measures>& acquisition ) {
+        m_output.write(acquisition);
+    }
+
+//    ///
+//    /// \brief getOutput
+//    /// \return
+//    ///
+//    Output& getOutput() const;
+
+  private:
+    //    std::unique_ptr<Output> m_output;
+    Output & m_output;
+    //    Output & m_output;
+//    bool m_moved = false;
+};
+
+// template <typename ...T>
+// inline auto make_outputSensor(T&&... t) {
+//     return OutputSensor<T...>(std::forward<OutputSensor<T...>>(t...));
+// }
+
+//template <typename OutputT, typename SensorSpec = sensor::SensorSpec>
+//inline constexpr auto make_outputSensor( OutputT&& output, SensorSpec&& sensorSpec ) {
+//    using Measure1 = Measure<Format::RGB8, 640, 480>;
+//    return OutputSensor<OutputT, Measure1>( std::forward<OutputT>( output ),
+//                                            std::forward<SensorSpec>( sensorSpec ) );
+//    //          class OutputT>
+//    //          ,
+//    //          typename = typename std::enable_if<std::is_base_of<Output, Output>::value &&
+//    // #ifdef HUB_BUILD_SERVER
+//    //                                           !std::is_same<OutputT,
+//    //                                           output::OutputStreamServer>::value
+//    //              &&
+//    // #endif
+//    //                                           !std::is_same<Output, net::ClientSocket>::value
+//    //                                           >::type>
+//    //    OutputSensor( OutputT&& output, SensorSpec&& sensorSpec ) :
+//    //    return std::forward<T>(t);
+//}
+
+} // namespace sensor
+} // namespace hub
+
+// #ifdef HUB_BUILD_SERVER
 
 ////#define output::OutputStream(_streamName, _ipv4, _port) \
 ////    _streamName, _ipv4, _port
@@ -90,14 +170,15 @@ class SRC_API OutputSensor : public Sensor
 ////             class OutputT = Output,
 ////             typename = typename std::enable_if<std::is_base_of<Output, OutputT>::value
 //              class OutputT     = output::OutputStreamServer,
-//              typename = typename std::enable_if<std::is_same<output::OutputStreamServer, OutputT>::value
-//#if ( __cplusplus < 201703L )
+//              typename = typename std::enable_if<std::is_same<output::OutputStreamServer,
+//              OutputT>::value
+// #if ( __cplusplus < 201703L )
 //                                                 && ( sizeof...( Args ) != 1 ||
 //                                                      !is_one_of<OutputT, Args...>::value )
-//#else
+// #else
 //                                                 && ( sizeof...( Args ) != 1 ||
 //                                                      !( std::is_same<OutputT, Args> {} || ... ) )
-//#endif
+// #endif
 //                                                 >::type>
 //    OutputSensor( SensorSpec&& sensorSpec, Args&&... args ) :
 //        Sensor( std::forward<SensorSpec>( sensorSpec ) ),
@@ -106,7 +187,8 @@ class SRC_API OutputSensor : public Sensor
 ////        m_output( std::forward<Args>( args )...  )
 //    {
 //        static_assert( std::is_base_of<Output, OutputT>::value, "not a base class" );
-////        static_assert( !std::is_same<net::ClientSocket, Output>::value, "not clientSocket class" );
+////        static_assert( !std::is_same<net::ClientSocket, Output>::value, "not clientSocket class"
+///);
 
 //        m_output->write( m_spec );
 //    }
@@ -122,54 +204,5 @@ class SRC_API OutputSensor : public Sensor
 ////    _params
 ////#define OutputStream( _params ) \
 ////    _params
-//#endif
-
-
-
-    ////        Output(std::move(output)),
-    ////        m_output( new Output( std::forward<Args>(args)... ) )
-
-    ////        Output::write(m_spec);
-
-    template <class OutputT>
-    OutputSensor( const SensorSpec&& sensorSpec, OutputT& output ) = delete;
-
-    OutputSensor( const OutputSensor& outputSensor ) = delete;
-    OutputSensor operator=( const OutputSensor& outputSensor ) = delete;
-
-    ///
-    /// \brief OutputSensor
-    /// \param outputSensor
-    ///
-    OutputSensor( OutputSensor&& outputSensor );
-
-    ~OutputSensor();
-
-    ///
-    /// \brief operator <<
-    /// is used when you want to share sensor data.
-    /// \param acquisition
-    /// to send through the communication bus.
-    /// \warning The acquisition needs to be compatible with
-    /// the internal sensor specification resolution and format.\n
-    /// sensorSpec.resolutions == { acq.measures[0].resolution, acq.measures[1].resolution, ... }
-    /// \exception "used interface exception"
-    /// when communication is broken.
-    ///
-
-    void operator<<( const Acquisition& acquisition ) const;
-
-    ///
-    /// \brief getOutput
-    /// \return
-    ///
-    Output& getOutput() const;
-
-  private:
-    std::unique_ptr<Output> m_output;
-//    Output & m_output;
-    bool m_moved = false;
-};
-
-} // namespace sensor
-} // namespace hub
+// #endif
+////        Output(std::move(output)),

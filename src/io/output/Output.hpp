@@ -1,12 +1,15 @@
 #pragma once
 
 #include <exception>
+#include <list>
+#include <map>
 
-#include "sensor/Acquisition.hpp"
+//#include "sensor/Acquisition.hpp"
 #include "core/Any.hpp"
 #include "core/Macros.hpp"
-#include "sensor/SensorSpec.hpp"
-#include "data/Measure.hpp"
+//#include "sensor/SensorSpec.hpp"
+//#include "data/Measure.hpp"
+
 
 #ifdef USE_BOOST
 #    include <boost/type_index.hpp>
@@ -142,23 +145,25 @@ class SRC_API Output
     ///
     void write( const std::string& str );
 
-    ///
-    /// \brief write
-    /// \param sensorSpec
-    ///
-    virtual void write( const sensor::SensorSpec& sensorSpec );
+    // todo acq
+//    ///
+//    /// \brief write
+//    /// \param sensorSpec
+//    ///
+//    virtual void write( const sensor::SensorSpec& sensorSpec );
 
-    ///
-    /// \brief write
-    /// \param measure
-    ///
-    void write( const Measure& measure );
+//    ///
+//    /// \brief write
+//    /// \param measure
+//    ///
+//    void write( const Measure& measure );
 
-    ///
-    /// \brief write
-    /// \param acq
-    ///
-    virtual void write( const sensor::Acquisition& acq );
+    // todo acq
+//    ///
+//    /// \brief write
+//    /// \param acq
+//    ///
+//    virtual void write( const sensor::Acquisition& acq );
 
 //    virtual void write(uint64_t size);
 

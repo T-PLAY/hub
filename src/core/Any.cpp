@@ -5,9 +5,10 @@
 #include <map>
 #include <typeinfo>
 #include <vector>
+#include <cstring>
 
-#include "data/Mat4.hpp"
-#include "data/Mesh.hpp"
+//#include "data/Mat4.hpp"
+//#include "data/Mesh.hpp"
 
 namespace hub {
 
@@ -176,15 +177,16 @@ std::string anyValue2string( const Any& any ) {
             return "'" + std::string( val ) + "'";
         } break;
 
-        case Any::Type::MAT4: {
-            const auto& val = any.get<data::Mat4>();
-            return val.to_string();
-        } break;
+            // todo any
+//        case Any::Type::MAT4: {
+//            const auto& val = any.get<data::Mat4>();
+//            return val.to_string();
+//        } break;
 
-        case Any::Type::MESH: {
-            const auto& val = any.get<data::Mesh>();
-            return val.to_string();
-        } break;
+//        case Any::Type::MESH: {
+//            const auto& val = any.get<data::Mesh>();
+//            return val.to_string();
+//        } break;
 
         default:
             assert( false );
@@ -262,15 +264,16 @@ bool Any::operator==( const Any& any ) const {
 //            return !strcmp( m_const_char_ptr, any.m_const_char_ptr );
         } break;
 
-        case Any::Type::MAT4: {
-            return get<data::Mat4>() == any.get<data::Mat4>();
-//            return *m_mat4 == *any.m_mat4;
-        } break;
+            // todo any
+//        case Any::Type::MAT4: {
+//            return get<data::Mat4>() == any.get<data::Mat4>();
+////            return *m_mat4 == *any.m_mat4;
+//        } break;
 
-        case Any::Type::MESH: {
-            return get<data::Mesh>() == any.get<data::Mesh>();
-//            return *m_mesh == *any.m_mesh;
-        } break;
+//        case Any::Type::MESH: {
+//            return get<data::Mesh>() == any.get<data::Mesh>();
+////            return *m_mesh == *any.m_mesh;
+//        } break;
 
         default:
             assert( false );

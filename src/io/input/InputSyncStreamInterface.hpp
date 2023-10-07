@@ -15,7 +15,8 @@ namespace input {
 /// The communication is only possible if the stream (with the same name) is active within the
 /// server. That implies an OutputStream communicating data through the hub.
 ///
-template <class InputStream = InputStream>
+//template <class InputStream = InputStream>
+template <class InputStream>
 //template <class InputStream>
 class SRC_API InputSyncStreamInterface : public Input
 {
@@ -71,24 +72,26 @@ class SRC_API InputSyncStreamInterface : public Input
     ///
     bool isEnd() const override;
 
-    ///
-    /// \brief getAcq
-    /// \param acq
-    ///
-    void read( sensor::Acquisition& acq ) override;
+    // todo acq
+//    ///
+//    /// \brief getAcq
+//    /// \param acq
+//    ///
+//    void read( sensor::Acquisition& acq ) override;
 
-    ///
-    /// \brief read
-    /// \param sensorSpec
-    ///
-    void read( sensor::SensorSpec& sensorSpec ) override;
+//    ///
+//    /// \brief read
+//    /// \param sensorSpec
+//    ///
+//    void read( sensor::SensorSpec& sensorSpec ) override;
 
 
 
   private:
     InputStream m_inputStream;
     InputStream m_inputStream2;
-    std::list<sensor::Acquisition> m_lastAcqs;
+    // todo acq
+//    std::list<sensor::Acquisition> m_lastAcqs;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -127,24 +130,25 @@ inline bool InputSyncStreamInterface<InputStream>::isEnd() const {
 }
 
 
-template <class InputStream>
-inline void InputSyncStreamInterface<InputStream>::read( sensor::Acquisition& acq ) {
+// todo acq
+//template <class InputStream>
+//inline void InputSyncStreamInterface<InputStream>::read( sensor::Acquisition& acq ) {
 
-    Input& input = m_inputStream;
-    Input& input2       = m_inputStream2;
+//    Input& input = m_inputStream;
+//    Input& input2       = m_inputStream2;
 
-    input >> input2 >> acq;
-//    (void)(m_inputStream >> m_inputStream2 >> acq);
-}
+//    input >> input2 >> acq;
+////    (void)(m_inputStream >> m_inputStream2 >> acq);
+//}
 
-template <class InputStream>
-inline void InputSyncStreamInterface<InputStream>::read( sensor::SensorSpec& sensorSpec ) {
-    m_inputStream.read( sensorSpec );
-    sensor::SensorSpec sensorSpec2;
-    m_inputStream2.read( sensorSpec2 );
+//template <class InputStream>
+//inline void InputSyncStreamInterface<InputStream>::read( sensor::SensorSpec& sensorSpec ) {
+//    m_inputStream.read( sensorSpec );
+//    sensor::SensorSpec sensorSpec2;
+//    m_inputStream2.read( sensorSpec2 );
 
-    sensorSpec = sensorSpec + sensorSpec2;
-}
+//    sensorSpec = sensorSpec + sensorSpec2;
+//}
 
 } // namespace input
 } // namespace hub
