@@ -44,8 +44,8 @@ bool InputFile::isEnd() const {
 //    return m_file.peek() == EOF;
 }
 
-void InputFile::read( unsigned char* data, size_t len ) {
-    size_t downloadSize = 0;
+void InputFile::read( Data_t* data, Size_t len ) {
+    Size_t downloadSize = 0;
     do {
 
         auto before = m_file.tellg();
@@ -55,7 +55,7 @@ void InputFile::read( unsigned char* data, size_t len ) {
         // std::cout << "[File] byteRead = " << byteRead << std::endl;
         if ( byteRead <= 0 ) { throw File::exception( "End of file" ); }
 
-        downloadSize += (size_t)byteRead;
+        downloadSize += (Size_t)byteRead;
     } while ( len != downloadSize );
 }
 

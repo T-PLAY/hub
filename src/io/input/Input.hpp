@@ -1,26 +1,33 @@
 #pragma once
 
 #include <cstdlib>
+#include <iostream>
 #include <list>
 #include <map>
-#include <iostream>
 
 #include "core/Macros.hpp"
-//#include "sensor/Acquisition.hpp"
+// #include "sensor/Acquisition.hpp"
 #include "core/Any.hpp"
-//#include "sensor/SensorSpec.hpp"
-//#include "data/Measure.hpp"
+// #include "sensor/SensorSpec.hpp"
+// #include "data/Measure.hpp"
+
+#define DEBUG_INPUT
+#define USE_BOOST
 
 #ifdef USE_BOOST
 #    include <boost/type_index.hpp>
 #endif
 
 #ifdef DEBUG_INPUT
-#define HEADER_INPUT_MSG "\t\033[" << std::to_string(31 + (long)this % 7) << "m[Input:" << this << "]\033[0m "
+#    define HEADER_INPUT_MSG \
+        "\t\033[" << std::to_string( 31 + (long)this % 7 ) << "m[Input:" << this << "]\033[0m "
 #endif
 
+
 namespace hub {
-//namespace io {
+// namespace io {
+
+// class Input;
 
 ///
 /// \brief The Input class
@@ -35,19 +42,33 @@ namespace hub {
 class SRC_API Input
 {
   public:
+    template <typename T>
+    //     using readable_t = decltype( std::declval<T>().isReadable() );
+    using readable_t = decltype( std::declval<T>().read( std::declval<Input&>() ) );
+
+    template <typename T, typename = std::void_t<>>
+    struct readable : std::false_type {};
+
+    template <typename T>
+    struct readable<T, std::void_t<readable_t<T>>> : std::true_type {};
+
+    template <typename T>
+    static constexpr bool readable_v = readable<T>::value;
+
     Input() = default;
+
 
     ///
     /// \param input
     ///
-    Input( Input&& input )      = default;
-    Input( const Input& input ) = delete;
+    Input( const Input& input )            = delete;
+    Input( Input&& input )                 = delete;
     Input& operator=( const Input& input ) = delete;
-    Input&& operator=( Input&& input ) = delete;
+    Input&& operator=( Input&& input )     = delete;
 
     virtual ~Input() = default;
 
-  protected:
+    //  protected:
     ///
     /// \brief read
     /// function describes how to read data through from the communication bus.
@@ -56,7 +77,7 @@ class SRC_API Input
     /// \param len
     /// [in] size of the data array to read
     ///
-    virtual void read( unsigned char* data, size_t len ) = 0;
+    virtual void read( Data_t* data, Size_t len ) = 0;
 
   public:
     ///
@@ -87,41 +108,93 @@ class SRC_API Input
     ////////////////////////////////////////////////////////////////////////////
 
   public:
-    ///
-    /// \brief operator >>
-    /// \param t
-    ///
-    template <class T>
-    void operator>>( T& t );
+    //    ///
+    //    /// \brief operator >>
+    //    /// \param t
+    //    ///
+    //    template <class T>
+    //    void operator>>( T& t );
+
+    //    ///
+    //    /// \brief get
+    //    /// \return
+    //    ///
+    //    template <class T>
+    //    T get();
+
+    //    ///
+    //    /// \brief readAll
+    //    /// \param ts
+    //    ///
+    //    template <typename Container,
+    //              typename T = std::decay_t<decltype( *begin( std::declval<Container>() ) )>>
+    //    void readAll( Container& ts );
+
+    //    ///
+    //    /// \brief getAll
+    //    /// \return
+    //    ///
+    //    template <typename Container>
+    //    Container getAll();
 
     ///
     /// \brief read
     /// \param t
     ///
     template <class T>
-    void read( T& t );
+    // typename = typename std::enable_if<readable_v<T> >::type>
+    //     void read( T& t );
+//    std::enable_if<readable<T>::value>::type read( T& t ) {
+    std::enable_if<readable_v<T>>::type read( T& t ) {
+//        std::cout << HEADER_INPUT_MSG "read(T) : " << typeid( T ).name()
+//                  << std::endl;
+        t.read(*this);
+//	    debugInput(t);
+//        DEBUG_INPUT(t);
+//        hub::debugPrintTypeAndValue(t);
+#ifdef DEBUG_INPUT
+        std::cout << HEADER_INPUT_MSG << "read(" << TYPE_NAME(t) << ") = " << t << std::endl;
+#endif
 
-    ///
-    /// \brief get
-    /// \return
-    ///
+//#ifdef DEBUG_INPUT
+//#    ifdef USE_BOOST
+//        std::cout << HEADER_INPUT_MSG "read(T) : <"
+////                  << typeid( T ).name() << " ("
+//                  << boost::typeindex::type_id<T>().pretty_name() << "> " << t  << std::endl;
+//#    else
+//        std::cout << HEADER_INPUT_MSG "read(T) : <" << typeid( T ).name() << "> = " << t
+//                  << std::endl;
+//#    endif
+//#endif
+    }
+
     template <class T>
-    T get();
+    //    void read( T& t );
+    std::enable_if<!readable_v<T>>::type read( T& t ) {
+//        std::cout << HEADER_INPUT_MSG "read(T) : " << typeid( T ).name()
+//                  << std::endl;
 
-    ///
-    /// \brief readAll
-    /// \param ts
-    ///
-    template <typename Container,
-              typename T = std::decay_t<decltype( *begin( std::declval<Container>() ) )>>
-    void readAll( Container& ts );
+        assert( isOpen() );
+        assert( !isEnd() );
 
-    ///
-    /// \brief getAll
-    /// \return
-    ///
-    template <typename Container>
-    Container getAll();
+        read( reinterpret_cast<Data_t*>( &t ), sizeof( T ) );
+
+#ifdef DEBUG_INPUT
+        std::cout << HEADER_INPUT_MSG << "read(" << TYPE_NAME(t) << ") = " << t << std::endl;
+#endif
+//        debugPrintTypeAndValue(t);
+
+//#ifdef DEBUG_INPUT
+//#    ifdef USE_BOOST
+//        std::cout << HEADER_INPUT_MSG "read(T) : <"
+////                  << typeid( T ).name() << " ("
+//                  << boost::typeindex::type_id<T>().pretty_name() << "> " << t  << std::endl;
+//#    else
+//        std::cout << HEADER_INPUT_MSG "read(T) : <" << typeid( T ).name() << "> = " << t
+//                  << std::endl;
+//#    endif
+//#endif
+    }
 
     ///
     /// \brief read
@@ -170,24 +243,24 @@ class SRC_API Input
     ///
     void read( std::string& str );
 
-//    ///
-//    /// \brief read
-//    /// \param sensorSpec
-//    ///
-//    virtual void read( sensor::SensorSpec& sensorSpec );
+    //    ///
+    //    /// \brief read
+    //    /// \param sensorSpec
+    //    ///
+    //    virtual void read( sensor::SensorSpec& sensorSpec );
 
     // todo acq
-//    ///
-//    /// \brief read
-//    /// \param acq
-//    ///
-//    virtual void read( sensor::Acquisition& acq );
+    //    ///
+    //    /// \brief read
+    //    /// \param acq
+    //    ///
+    //    virtual void read( sensor::Acquisition& acq );
 
-//    ///
-//    /// \brief read
-//    /// \param measure
-//    ///
-//    void read( Measure& measure );
+    //    ///
+    //    /// \brief read
+    //    /// \param measure
+    //    ///
+    //    void read( Measure& measure );
 
 #ifdef ARCH_X86
     void read( size_t size ) = delete; // non compatible format 32/64 bit
@@ -195,79 +268,109 @@ class SRC_API Input
 
   public:
     // todo acq
-//    ///
-//    /// \brief operator >>
-//    /// \param input
-//    /// \return
-//    ///
-//    sensor::Acquisition operator>>( Input& input );
+    //    ///
+    //    /// \brief operator >>
+    //    /// \param input
+    //    /// \return
+    //    ///
+    //    sensor::Acquisition operator>>( Input& input );
 
   private:
-//    std::list<sensor::Acquisition> m_lastAcqs;
+    //    std::list<sensor::Acquisition> m_lastAcqs;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-template <class T>
-inline void Input::operator>>( T& t ) {
-    assert( isOpen() );
-    assert( !isEnd() );
+// template<class T,
+// typename = typename std::enable_if<readable_v<T> >::type>
+// void Input::read(T &t) {
+//     std::cout << HEADER_INPUT_MSG "read(T) : " << typeid( T ).name() << " (readable)" <<
+//     std::endl;
 
-    read( t );
-}
+//}
 
-template <class T>
-inline T Input::get() {
-    assert( isOpen() );
-    assert( !isEnd() );
+// template<class T>
+// std::enable_if<! readable_v<T>>::type Input::read(T &t) {
+//     std::cout << HEADER_INPUT_MSG "read(T) : " << typeid( T ).name() << " (not readable)" <<
+//     std::endl;
 
-    T t;
-    read( t );
-    return t;
-}
+//    assert( isOpen() );
+//    assert( !isEnd() );
 
-template <typename Container>
-Container Input::getAll() {
-    assert( isOpen() );
-    assert( !isEnd() );
+//    read( reinterpret_cast<Data_t*>( &t ), sizeof( T ) );
 
-    Container ts;
-    readAll( ts );
-    return ts;
-}
+// #ifdef DEBUG_INPUT
+// #    ifdef USE_BOOST
+//     std::cout << HEADER_INPUT_MSG "read(T) : " << typeid( T ).name() << " ("
+//               << boost::typeindex::type_id<T>().pretty_name() << ") '" << t << "'" << std::endl;
+// #    else
+//     std::cout << HEADER_INPUT_MSG "read(T) : " << typeid( T ).name() << " '" << t << "'"
+//               << std::endl;
+// #    endif
+// #endif
+// }
 
-template <typename Container, typename T>
-void Input::readAll( Container& ts ) {
-    assert( isOpen() );
-    assert( !isEnd() );
+// template <class T>
+// inline void Input::operator>>( T& t ) {
+//     assert( isOpen() );
+//     assert( !isEnd() );
 
-    try {
-        while ( !isEnd() ) {
-            ts.emplace_back( get<T>() );
-        }
-    }
-    catch ( std::exception& e ) {
-        std::cout <<  "[Input] catch exception : " << e.what() << std::endl;
-        throw;
-    }
-}
+//    read( t );
+//}
 
-template <class T>
-inline void Input::read( T& t ) {
-    assert( isOpen() );
-    assert( !isEnd() );
+// template <class T>
+// inline T Input::get() {
+//     assert( isOpen() );
+//     assert( !isEnd() );
 
-    read( reinterpret_cast<unsigned char*>( &t ), sizeof( T ) );
+//    T t;
+//    read( t );
+//    return t;
+//}
 
-#ifdef DEBUG_INPUT
-#    ifdef USE_BOOST
-    std::cout << HEADER_INPUT_MSG "read(T) : " << typeid( T ).name() << " ("
-              << boost::typeindex::type_id<T>().pretty_name() << ") '" << t << "'" << std::endl;
-#    else
-    std::cout << HEADER_INPUT_MSG "read(T) : " << typeid( T ).name() << " '" << t << "'" << std::endl;
-#    endif
-#endif
-}
+// template <typename Container>
+// Container Input::getAll() {
+//     assert( isOpen() );
+//     assert( !isEnd() );
+
+//    Container ts;
+//    readAll( ts );
+//    return ts;
+//}
+
+// template <typename Container, typename T>
+// void Input::readAll( Container& ts ) {
+//     assert( isOpen() );
+//     assert( !isEnd() );
+
+//    try {
+//        while ( !isEnd() ) {
+//            ts.emplace_back( get<T>() );
+//        }
+//    }
+//    catch ( std::exception& e ) {
+//        std::cout <<  "[Input] catch exception : " << e.what() << std::endl;
+//        throw;
+//    }
+//}
+
+// template <class T>
+// inline void Input::read( T& t ) {
+//     assert( isOpen() );
+//     assert( !isEnd() );
+
+//    read( reinterpret_cast<Data_t*>( &t ), sizeof( T ) );
+
+// #ifdef DEBUG_INPUT
+// #    ifdef USE_BOOST
+//     std::cout << HEADER_INPUT_MSG "read(T) : " << typeid( T ).name() << " ("
+//               << boost::typeindex::type_id<T>().pretty_name() << ") '" << t << "'" << std::endl;
+// #    else
+//     std::cout << HEADER_INPUT_MSG "read(T) : " << typeid( T ).name() << " '" << t << "'" <<
+//     std::endl;
+// #    endif
+// #endif
+// }
 
 template <class T>
 inline void Input::read( std::list<T>& list ) {
@@ -275,7 +378,7 @@ inline void Input::read( std::list<T>& list ) {
     assert( !isEnd() );
 
 #ifdef DEBUG_INPUT
-    std::cout << "[InpuInput] read(std::list)" << std::endl;
+    std::cout << "[InpuInput] read(" << TYPE_NAME(list) << ")" << std::endl;
 #endif
 
     int nbEl;
@@ -294,7 +397,7 @@ inline void Input::read( std::vector<T>& vector ) {
     assert( !isEnd() );
 
 #ifdef DEBUG_INPUT
-    std::cout << HEADER_INPUT_MSG "read(std::vector)" << std::endl;
+    std::cout << HEADER_INPUT_MSG "read(" << TYPE_NAME(vector) << ")" << std::endl;
 #endif
 
     uint64_t nbEl;
@@ -316,14 +419,15 @@ inline void Input::read( std::map<T, U>& map ) {
     assert( !isEnd() );
 
 #ifdef DEBUG_INPUT
-    std::cout << HEADER_INPUT_MSG "read(std::map)" << std::endl;
+//    std::cout << HEADER_INPUT_MSG "read(std::map)" << std::endl;
+    std::cout << HEADER_INPUT_MSG "read(" << TYPE_NAME(map)  << ")" << std::endl;
 #endif
 
     int nbEl;
     read( nbEl );
-#ifdef DEBUG_INPUT
-    std::cout << HEADER_INPUT_MSG "map : nbEl = " << nbEl << std::endl;
-#endif
+//#ifdef DEBUG_INPUT
+//    std::cout << HEADER_INPUT_MSG "map : nbEl = " << nbEl << std::endl;
+//#endif
     map.clear();
 
     for ( int i = 0; i < nbEl; ++i ) {
@@ -340,7 +444,8 @@ inline void Input::read( std::pair<T, U>& pair ) {
     assert( !isEnd() );
 
 #ifdef DEBUG_INPUT
-    std::cout << HEADER_INPUT_MSG "read(std::pair)" << std::endl;
+//    std::cout << HEADER_INPUT_MSG "read(std::pair)" << std::endl;
+    std::cout << HEADER_INPUT_MSG "read(" << TYPE_NAME(pair) << ")" << std::endl;
 #endif
     T first;
     read( first );

@@ -6,19 +6,21 @@
 #include <string>
 #include <vector>
 
+// #include "io/output/Output.hpp"
+// #include "io/input/Input.hpp"
+#include "Resolution.hpp"
 #include "core/Any.hpp"
 #include "core/Macros.hpp"
-//#include "Resolution.hpp"
-//#include "Measure.hpp"
+// #include "Measure.hpp"
 
 // user friendly useless includes
-//#include "data/Dof6.hpp"
-//#include "data/Mat4.hpp"
-//#include "data/Mesh.hpp"
-//#include "data/UserData.hpp"
+// #include "data/Dof6.hpp"
+// #include "data/Mat4.hpp"
+// #include "data/Mesh.hpp"
+// #include "data/UserData.hpp"
 
 #if CPLUSPLUS_VERSION == 20
-//#    include "Map.hpp"
+// #    include "Map.hpp"
 #    include <ranges>
 #endif
 
@@ -38,10 +40,10 @@ class SRC_API SensorSpec
 {
   public:
 #if CPLUSPLUS_VERSION == 20
-//    using SensorNameType = std::string_view;
-    using SensorNameType = std::string;
-//    using MetaData       = Map<std::string, std::any>; // any -> C++17
-    using MetaData       = std::map<std::string, Any>; // any -> C++17
+    //    using SensorNameType = std::string_view;
+    //    using SensorNameType = std::string;
+    //    using MetaData       = Map<std::string, std::any>; // any -> C++17
+    using MetaData = std::map<std::string, Any>; // any -> C++17
 #else
     ///
     /// \brief
@@ -65,24 +67,20 @@ class SRC_API SensorSpec
     /// \param metaData
     /// [in] Additional informations of the sensor and acquisition.
     ///
-    SensorSpec( const SensorNameType& sensorName = "",
-//                                     const Resolutions& resolutions   = {},
-                                     const MetaData& metaData         = {} );
+    explicit SensorSpec( const std::string& sensorName,
+                         const Resolutions& resolutions = {},
+                         const MetaData& metaData       = {} );
 
-    SensorSpec( const char * sensorName,
-//                                     const Resolutions& resolutions   = {},
-                                     const MetaData& metaData         = {} );
+    explicit SensorSpec( const char* sensorName,
+                         const Resolutions& resolutions = {},
+                         const MetaData& metaData       = {} );
+
+    SensorSpec() = default;
 
   public:
-    const unsigned char * getData() const {
-        return nullptr;
-    }
-    constexpr std::string typeName() const {
-        return "SensorSpec";
-    }
-    size_t getSize() const {
-        return 0;
-    }
+    const unsigned char* getData() const { return nullptr; }
+    constexpr std::string typeName() const { return "SensorSpec"; }
+    size_t getSize() const { return 0; }
 
     ///
     /// \brief operator +
@@ -125,6 +123,22 @@ class SRC_API SensorSpec
     ///
     bool isEmpty() const;
 
+    template <typename Input>
+    void read( Input& input ) {
+        //        input.read( m_format );
+        input.read( m_sensorName );
+        input.read( m_resolutions );
+        input.read( m_metaData );
+    }
+
+    template <typename Output>
+    void write( Output& output ) const {
+        //        output.write( m_format );
+        output.write( m_sensorName );
+        output.write( m_resolutions );
+        output.write( m_metaData );
+    }
+
   public:
     ///
     /// \brief to_string
@@ -143,7 +157,7 @@ class SRC_API SensorSpec
 
   public:
 #if CPLUSPLUS_VERSION == 20
-    inline CONSTEXPR const SensorNameType& getSensorName() const noexcept;
+    inline CONSTEXPR const std::string& getSensorName() const noexcept;
 #else
     ///
     /// \brief getSensorName
@@ -155,7 +169,7 @@ class SRC_API SensorSpec
     /// \brief getResolutions
     /// \return
     ///
-//    inline CONSTEXPR Resolutions& getResolutions() const noexcept;
+    //    inline CONSTEXPR Resolutions& getResolutions() const noexcept;
 
     ///
     /// \brief getMetaData
@@ -178,34 +192,40 @@ class SRC_API SensorSpec
     /// \param metaData
     ///
 
+    //    template <typename Output>
+    //    friend Output& operator<<( Output& output, const SensorSpec& sensorSpec );
+
+    //    template <typename Input>
+    //    friend Input& operator>>( Input& input, SensorSpec& sensorSpec );
+
   private:
-    SensorNameType m_sensorName;
-//    Resolutions m_resolutions;
+    std::string m_sensorName;
+    Resolutions m_resolutions;
     MetaData m_metaData;
 
-    size_t m_acquisitionSize;
+    //    size_t m_acquisitionSize;
 };
 
 ///////////////////////////////////////////////// INLINE
 /////////////////////////////////////////////////////////////////////////
 
-//#if CPLUSPLUS_VERSION == 20
-//SensorSpec::SensorSpec( const SensorNameType& sensorName,
-//                                    const Resolutions& resolutions,
-//                                    const MetaData& metaData ) :
-//    m_sensorName( sensorName ),
-//    m_resolutions( resolutions ),
-//    m_metaData( metaData ),
-//    m_acquisitionSize( resolution::computeAcquisitionSize( resolutions ) ) {}
-//#endif
+// #if CPLUSPLUS_VERSION == 20
+// SensorSpec::SensorSpec( const SensorNameType& sensorName,
+//                                     const Resolutions& resolutions,
+//                                     const MetaData& metaData ) :
+//     m_sensorName( sensorName ),
+//     m_resolutions( resolutions ),
+//     m_metaData( metaData ),
+//     m_acquisitionSize( resolution::computeAcquisitionSize( resolutions ) ) {}
+// #endif
 
-inline CONSTEXPR20 const SensorSpec::SensorNameType& SensorSpec::getSensorName() const noexcept {
+inline CONSTEXPR20 const std::string& SensorSpec::getSensorName() const noexcept {
     return m_sensorName;
 }
 
-//inline CONSTEXPR Resolutions& SensorSpec::getResolutions() const noexcept {
-//    return const_cast<Resolutions&>( m_resolutions );
-//}
+// inline CONSTEXPR Resolutions& SensorSpec::getResolutions() const noexcept {
+//     return const_cast<Resolutions&>( m_resolutions );
+// }
 
 inline CONSTEXPR SensorSpec::MetaData& SensorSpec::getMetaData() const noexcept {
     return const_cast<SensorSpec::MetaData&>( m_metaData );
@@ -215,9 +235,9 @@ inline SensorSpec::MetaData& SensorSpec::getMetaData() noexcept {
     return m_metaData;
 }
 
-inline CONSTEXPR size_t SensorSpec::getAcquisitionSize() const noexcept {
-    return m_acquisitionSize;
-}
+// inline CONSTEXPR size_t SensorSpec::getAcquisitionSize() const noexcept {
+//     return m_acquisitionSize;
+// }
 
 } // namespace sensor
 } // namespace hub

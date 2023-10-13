@@ -30,7 +30,8 @@ void OutputFile::close() {
 }
 
 
-void OutputFile::write( const unsigned char* data, size_t len ) {
+//void OutputFile::write( const Data_t* data, Size_t len ) {
+void OutputFile::write( const Data_t* data, Size_t len ) {
     m_file.write( reinterpret_cast<const char*>( data ), len );
 }
 

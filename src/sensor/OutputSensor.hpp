@@ -13,11 +13,13 @@
 // #include "io/output/OutputStream.hpp"
 // #include "io/output/OutputMemory.hpp"
 // #include "io/Memory.hpp"
+#include "io/output/Output.hpp"
 
 // #include "net/ClientSocket.hpp"
+#include "Acquisition.hpp"
 #include "Format.hpp"
 #include "Measure.hpp"
-#include "Acquisition.hpp"
+#include "Resolution.hpp"
 
 namespace hub {
 namespace sensor {
@@ -33,14 +35,42 @@ namespace sensor {
 /// so that it can be used in real time on various network machines.
 ///
 /// todo: template class
-//template <typename Output, typename Measures, typename Acquisition = Acquisition<Measures>>
+// template <typename Output, typename Measures, typename Acquisition = Acquisition<Measures>>
+
+
+//template <typename Output>
+class OutputSensor : public Sensor
+{
+  public:
+    template <typename OutputT, typename SensorSpec = sensor::SensorSpec>
+    OutputSensor( OutputT&& output, SensorSpec&& sensorSpec ) :
+//        m_output(output),
+        m_output( std::forward<Output&>( output ) ),
+//        m_measures(std::forward<Measures>(measures)),
+        Sensor( std::forward<SensorSpec>( sensorSpec ) )
+    {
+//        m_output.write(m_spec);
+        m_output.write(m_spec);
+//        m_output << m_spec;
+    }
+
+//    void operator<<( const Acquisition& acquisition ) {
+//        m_output.write( acquisition );
+//    }
+
+    Output& m_output;
+//    Measures m_measures;
+};
+
+///////////////////////////////////////////// TEMPLATE ////////////////////////////////////////////////////
+
 template <typename Output, typename Measures>
 // template <typename Measures>
-class SRC_API OutputSensor : public Sensor
+class SRC_API OutputSensorT : public Sensor
 {
   public:
     ///
-    /// \brief OutputSensor
+    /// \brief OutputSensorT
     /// is called when you want to share data sensor
     /// \param sensorSpec
     /// able client application to understand the data
@@ -58,7 +88,7 @@ class SRC_API OutputSensor : public Sensor
     // #endif
     //                                           !std::is_same<Output, net::ClientSocket>::value
     //                                           >::type>
-    OutputSensor( OutputT&& output, SensorSpec&& sensorSpec ) :
+    OutputSensorT( OutputT&& output, SensorSpec&& sensorSpec ) :
         m_output( std::forward<OutputT>( output ) ),
         Sensor( std::forward<SensorSpec>( sensorSpec ) )
     //          m_output(std::forward<OutputT>(output))
@@ -72,26 +102,35 @@ class SRC_API OutputSensor : public Sensor
         //        static_assert( !std::is_same<net::ClientSocket, Output>::value, "not clientSocket
         //        class" );
 
-//        m_output.write( m_spec );
+//        const auto nMeasure = Measures::nMeasure();
+//        for (int iMeasure = 0; iMeasure < nMeasure; ++iMeasure) {
+//            const auto nDim
+
+//        }
+
+//        Measures measures;
+//        m_output.write(Measures);
+
+        //        m_output.write( m_spec );
     }
 
     ////        m_output( new Output( std::forward<Args>(args)... ) )
     ////        Output::write(m_spec);
 
     template <class OutputT>
-    OutputSensor( OutputT& output, const SensorSpec&& sensorSpec ) = delete;
+    OutputSensorT( OutputT& output, const SensorSpec&& sensorSpec ) = delete;
 
-    OutputSensor( const OutputSensor& outputSensor )           = delete;
-    OutputSensor operator=( const OutputSensor& outputSensor ) = delete;
+    OutputSensorT( const OutputSensorT& outputSensor )           = delete;
+    OutputSensorT operator=( const OutputSensorT& outputSensor ) = delete;
 
     ///
-    /// \brief OutputSensor
+    /// \brief OutputSensorT
     /// \param outputSensor
     ///
-    OutputSensor( OutputSensor&& outputSensor )           = delete;
-    OutputSensor operator=( OutputSensor&& outputSensor ) = delete;
+    OutputSensorT( OutputSensorT&& outputSensor )           = delete;
+    OutputSensorT operator=( OutputSensorT&& outputSensor ) = delete;
 
-//    ~OutputSensor();
+    //    ~OutputSensorT();
 
     ///
     /// \brief operator <<
@@ -106,22 +145,20 @@ class SRC_API OutputSensor : public Sensor
     ///
 
     // todo acq
-//    template <typename Acquisition>
-    void operator<<( const Acquisition<Measures>& acquisition ) {
-        m_output.write(acquisition);
-    }
+    //    template <typename Acquisition>
+//    void operator<<( const AcquisitionT<Measures>& acquisition ) { m_output.write( acquisition ); }
 
-//    ///
-//    /// \brief getOutput
-//    /// \return
-//    ///
-//    Output& getOutput() const;
+    //    ///
+    //    /// \brief getOutput
+    //    /// \return
+    //    ///
+    Output& getOutput() const { return m_output; }
 
   private:
     //    std::unique_ptr<Output> m_output;
-    Output & m_output;
+    Output& m_output;
     //    Output & m_output;
-//    bool m_moved = false;
+    //    bool m_moved = false;
 };
 
 // template <typename ...T>
@@ -129,24 +166,24 @@ class SRC_API OutputSensor : public Sensor
 //     return OutputSensor<T...>(std::forward<OutputSensor<T...>>(t...));
 // }
 
-//template <typename OutputT, typename SensorSpec = sensor::SensorSpec>
-//inline constexpr auto make_outputSensor( OutputT&& output, SensorSpec&& sensorSpec ) {
-//    using Measure1 = Measure<Format::RGB8, 640, 480>;
-//    return OutputSensor<OutputT, Measure1>( std::forward<OutputT>( output ),
-//                                            std::forward<SensorSpec>( sensorSpec ) );
-//    //          class OutputT>
-//    //          ,
-//    //          typename = typename std::enable_if<std::is_base_of<Output, Output>::value &&
-//    // #ifdef HUB_BUILD_SERVER
-//    //                                           !std::is_same<OutputT,
-//    //                                           output::OutputStreamServer>::value
-//    //              &&
-//    // #endif
-//    //                                           !std::is_same<Output, net::ClientSocket>::value
-//    //                                           >::type>
-//    //    OutputSensor( OutputT&& output, SensorSpec&& sensorSpec ) :
-//    //    return std::forward<T>(t);
-//}
+// template <typename OutputT, typename SensorSpec = sensor::SensorSpec>
+// inline constexpr auto make_outputSensor( OutputT&& output, SensorSpec&& sensorSpec ) {
+//     using Measure1 = Measure<Format::RGB8, 640, 480>;
+//     return OutputSensor<OutputT, Measure1>( std::forward<OutputT>( output ),
+//                                             std::forward<SensorSpec>( sensorSpec ) );
+//     //          class OutputT>
+//     //          ,
+//     //          typename = typename std::enable_if<std::is_base_of<Output, Output>::value &&
+//     // #ifdef HUB_BUILD_SERVER
+//     //                                           !std::is_same<OutputT,
+//     //                                           output::OutputStreamServer>::value
+//     //              &&
+//     // #endif
+//     //                                           !std::is_same<Output, net::ClientSocket>::value
+//     //                                           >::type>
+//     //    OutputSensor( OutputT&& output, SensorSpec&& sensorSpec ) :
+//     //    return std::forward<T>(t);
+// }
 
 } // namespace sensor
 } // namespace hub

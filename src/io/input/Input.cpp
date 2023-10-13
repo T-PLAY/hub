@@ -29,7 +29,7 @@ void Input::read( std::string& str ) {
         delete[] tmp;
     }
 #ifdef DEBUG_INPUT
-    std::cout << HEADER_INPUT_MSG "read(std::string) : '" << str << "'" << std::endl;
+    std::cout << HEADER_INPUT_MSG "read(" << TYPE_NAME(str) << ") : '" << str << "'" << std::endl;
 #endif
 }
 
@@ -147,7 +147,7 @@ void Input::read( char* str ) {
     assert( !isEnd() );
 
 #ifdef DEBUG_INPUT
-    std::cout << HEADER_INPUT_MSG "read(char*)" << std::endl;
+    std::cout << HEADER_INPUT_MSG "read(" << TYPE_NAME(str) << ")" << std::endl;
 #endif
 
     int strLen = 0;
@@ -167,7 +167,7 @@ void Input::read( Any& any ) {
     assert( !isEnd() );
 
 #ifdef DEBUG_INPUT
-    std::cout << HEADER_INPUT_MSG "read(std::any)" << std::endl;
+    std::cout << HEADER_INPUT_MSG "read(" << TYPE_NAME(any) << ")" << std::endl;
 #endif
 
 //    assert( !any.isEmpty() );

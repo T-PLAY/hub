@@ -4,23 +4,26 @@
 #include <list>
 #include <map>
 
-//#include "sensor/Acquisition.hpp"
+// #include "sensor/Acquisition.hpp"
 #include "core/Any.hpp"
 #include "core/Macros.hpp"
-//#include "sensor/SensorSpec.hpp"
-//#include "data/Measure.hpp"
+// #include "sensor/SensorSpec.hpp"
+// #include "data/Measure.hpp"
 
+#define DEBUG_OUTPUT
+#define USE_BOOST
 
 #ifdef USE_BOOST
 #    include <boost/type_index.hpp>
 #endif
 
 #ifdef DEBUG_OUTPUT
-#define HEADER_OUTPUT_MSG "\033[" << std::to_string(31 + (long)this % 7) << "m[Output:" << this << "]\033[0m "
+#    define HEADER_OUTPUT_MSG \
+        "\033[" << std::to_string( 31 + (long)this % 7 ) << "m[Output:" << this << "]\033[0m "
 #endif
 
 namespace hub {
-//namespace io {
+// namespace io {
 
 ///
 /// \brief The Output class
@@ -35,15 +38,27 @@ namespace hub {
 class SRC_API Output
 {
   public:
+    template <typename T>
+    using writable_t = decltype( std::declval<T>().write( std::declval<Output&>() ) );
+
+    template <typename T, typename = std::void_t<>>
+    struct writable : std::false_type {};
+
+    template <typename T>
+    struct writable<T, std::void_t<writable_t<T>>> : std::true_type {};
+
+    template <typename T>
+    static constexpr bool writable_v = writable<T>::value;
+
     Output() = default;
 
     ///
     /// \param output
     ///
-    Output( Output&& output )      = default;
-    Output( const Output& output ) = delete;
+    Output( const Output& output )            = delete;
+    Output( Output&& output )                 = delete;
     Output& operator=( const Output& output ) = delete;
-    Output&& operator=( Output&& output ) = delete;
+    Output&& operator=( Output&& output )     = delete;
 
     virtual ~Output();
 
@@ -56,7 +71,7 @@ class SRC_API Output
     /// \param len
     /// [in] size of the data array to write
     ///
-    virtual void write( const unsigned char* data, size_t len ) = 0;
+    virtual void write( const Data_t* data, Size_t len ) = 0;
 
   public:
     ///
@@ -75,26 +90,77 @@ class SRC_API Output
     virtual bool isOpen() const = 0;
 
   public:
-    ///
-    /// \brief operator <<
-    /// \param t
-    ///
-    template <class T>
-    void operator<<( T& t );
+    //    ///
+    //    /// \brief operator <<
+    //    /// \param t
+    //    ///
+    //    template <class T>
+    //    void operator<<( T& t );
 
-    ///
-    /// \brief put
-    /// \param t
-    ///
-    template <class T>
-    void put( const T& t );
+    //    ///
+    //    /// \brief put
+    //    /// \param t
+    //    ///
+    //    template <class T>
+    //    void put( const T& t );
 
     ///
     /// \brief write
     /// \param t
     ///
     template <class T>
-    void write( const T& t );
+    //    void write( const T& t );
+//    std::enable_if<writable<T>::value>::type write( const T& t ) {
+    std::enable_if<writable_v<T>>::type write( const T& t ) {
+//#ifdef DEBUG_OUTPUT
+//#    ifdef USE_BOOST
+//        std::cout << HEADER_OUTPUT_MSG "write(T) : <"
+////                  << typeid( T ).name() << " ("
+//                  << boost::typeindex::type_id<T>().pretty_name() << " = " << t << std::endl;
+//#    else
+//        std::cout << HEADER_OUTPUT_MSG "write(T) : <" << typeid( T ).name() << "> = " << t
+//                  << std::endl;
+//#    endif
+//#endif
+#ifdef DEBUG_OUTPUT
+        std::cout << HEADER_OUTPUT_MSG "write(" << TYPE_NAME(t) << ") = " << t << std::endl;
+#endif
+//        std::cout << HEADER_OUTPUT_MSG "write(T) : " << typeid( T ).name()
+//                  << std::endl;
+        t.write(*this);
+    }
+    //    write( const T& t );
+
+    template <class T>
+    //    void write( const T& t );
+//    std::enable_if<!writable<T>::value>::type write( const T& t ) {
+    std::enable_if<!writable_v<T>>::type write( const T& t ) {
+
+//        std::cout << HEADER_OUTPUT_MSG "write(T) : " << typeid( T ).name()
+//                  << std::endl;
+
+        assert( isOpen() );
+
+#ifdef DEBUG_OUTPUT
+        std::cout << HEADER_OUTPUT_MSG "write(" << TYPE_NAME(t) << ") = " << t << std::endl;
+#endif
+
+//#ifdef DEBUG_OUTPUT
+//#    ifdef USE_BOOST
+//        std::cout << HEADER_OUTPUT_MSG "write(T) : <"
+////                  << typeid( T ).name() << " ("
+//                  << boost::typeindex::type_id<T>().pretty_name() << " = " << t << std::endl;
+//#    else
+//        std::cout << HEADER_OUTPUT_MSG "write(T) : <" << typeid( T ).name() << "> = " << t
+//                  << std::endl;
+//#    endif
+//#endif
+        //    std::cout << HEADER_OUTPUT_MSG "write(T) : '" << t.ioTypeName() << "' = " << t <<
+        //    std::endl;
+
+        write( reinterpret_cast<const Data_t*>( &t ), sizeof( T ) );
+        //    write( t.ioGetData(), t.ioGetSize() );
+    }
 
     ///
     /// \brief write
@@ -146,26 +212,26 @@ class SRC_API Output
     void write( const std::string& str );
 
     // todo acq
-//    ///
-//    /// \brief write
-//    /// \param sensorSpec
-//    ///
-//    virtual void write( const sensor::SensorSpec& sensorSpec );
+    //    ///
+    //    /// \brief write
+    //    /// \param sensorSpec
+    //    ///
+    //    virtual void write( const sensor::SensorSpec& sensorSpec );
 
-//    ///
-//    /// \brief write
-//    /// \param measure
-//    ///
-//    void write( const Measure& measure );
+    //    ///
+    //    /// \brief write
+    //    /// \param measure
+    //    ///
+    //    void write( const Measure& measure );
 
     // todo acq
-//    ///
-//    /// \brief write
-//    /// \param acq
-//    ///
-//    virtual void write( const sensor::Acquisition& acq );
+    //    ///
+    //    /// \brief write
+    //    /// \param acq
+    //    ///
+    //    virtual void write( const sensor::Acquisition& acq );
 
-//    virtual void write(uint64_t size);
+    //    virtual void write(uint64_t size);
 
 #ifdef ARCH_X86
     void write( size_t size ) = delete; // non compatible format 32/64 bit
@@ -174,40 +240,44 @@ class SRC_API Output
     ////////////////////////////////////////////////////////////////////////////
 };
 
-template <class T>
-inline void Output::put( const T& t ) {
-    assert( isOpen() );
-    write( t );
-}
+// template <class T>
+// inline void Output::put( const T& t ) {
+//     assert( isOpen() );
+//     write( t );
+// }
 
-template <class T>
-inline void Output::operator<<( T& t ) {
-    assert( isOpen() );
-    write( t );
-}
+// template <class T>
+// inline void Output::operator<<( T& t ) {
+//     assert( isOpen() );
+//     write( t );
+// }
 
-template <class T>
-inline void Output::write( const T& t ) {
-    assert( isOpen() );
+// template <class T
+//           >
+// inline void Output::write( const T& t ) {
+//     assert( isOpen() );
 
-    write( reinterpret_cast<const unsigned char*>( &t ), sizeof( T ) );
+// #ifdef DEBUG_OUTPUT
+// #    ifdef USE_BOOST
+//     std::cout << HEADER_OUTPUT_MSG "write(T) : " << typeid( T ).name() << " ("
+//               << boost::typeindex::type_id<T>().pretty_name() << ") '" << t << "'" << std::endl;
+// #    else
+//     std::cout << HEADER_OUTPUT_MSG "write(T) : " << typeid( T ).name() << " '" << t << "'"
+//               << std::endl;
+// #    endif
+// #endif
+////    std::cout << HEADER_OUTPUT_MSG "write(T) : '" << t.ioTypeName() << "' = " << t << std::endl;
 
-#ifdef DEBUG_OUTPUT
-#    ifdef USE_BOOST
-    std::cout << HEADER_OUTPUT_MSG "write(T) : " << typeid( T ).name() << " ("
-              << boost::typeindex::type_id<T>().pretty_name() << ") '" << t << "'" << std::endl;
-#    else
-    std::cout << HEADER_OUTPUT_MSG "write(T) : " << typeid( T ).name() << " '" << t << "'" << std::endl;
-#    endif
-#endif
-}
+//    write( reinterpret_cast<const Data_t*>( &t ), sizeof( T ) );
+////    write( t.ioGetData(), t.ioGetSize() );
+//}
 
 template <class T>
 inline void Output::write( const std::list<T>& list ) {
     assert( isOpen() );
 
 #ifdef DEBUG_OUTPUT
-    std::cout << HEADER_OUTPUT_MSG "write(std::list)" << std::endl;
+    std::cout << HEADER_OUTPUT_MSG "write(" << TYPE_NAME(list) << ")" << std::endl;
 #endif
 
     int nbEl = list.size(); // todo
@@ -223,7 +293,7 @@ inline void Output::write( const std::vector<T>& vector ) {
     assert( isOpen() );
 
 #ifdef DEBUG_OUTPUT
-    std::cout << HEADER_OUTPUT_MSG "write(std::vector)" << std::endl;
+    std::cout << HEADER_OUTPUT_MSG "write(" << TYPE_NAME(vector) <<  ")" << std::endl;
 #endif
 
     uint64_t nbEl = static_cast<uint64_t>( vector.size() );
@@ -239,14 +309,14 @@ inline void Output::write( const std::map<T, U>& map ) {
     assert( isOpen() );
 
 #ifdef DEBUG_OUTPUT
-    std::cout << HEADER_OUTPUT_MSG "write(std::map)" << std::endl;
+    std::cout << HEADER_OUTPUT_MSG "write(" << TYPE_NAME(map) <<  ")" << std::endl;
 #endif
 
     int nbKey = static_cast<int>( map.size() );
     write( nbKey );
-#ifdef DEBUG_OUTPUT
-    std::cout << HEADER_OUTPUT_MSG "map : nbEl = " << nbKey << std::endl;
-#endif
+//#ifdef DEBUG_OUTPUT
+//    std::cout << HEADER_OUTPUT_MSG "map : nbEl = " << nbKey << std::endl;
+//#endif
 
     for ( const std::pair<T, U>& pair : map ) {
         write( pair );
@@ -258,7 +328,7 @@ inline void Output::write( const std::pair<T, U>& pair ) {
     assert( isOpen() );
 
 #ifdef DEBUG_OUTPUT
-    std::cout << HEADER_OUTPUT_MSG "write(std::pair)" << std::endl;
+    std::cout << HEADER_OUTPUT_MSG "write(" << TYPE_NAME(pair)  << ")" << std::endl;
 #endif
     const T& first  = pair.first;
     const U& second = pair.second;

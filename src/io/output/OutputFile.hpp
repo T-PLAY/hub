@@ -28,7 +28,7 @@ class OutputFile : public Output, public io::File
     ///
     /// @copydoc InputOutput::write()
     ///
-    void write( const unsigned char* data, size_t len ) override;
+    void write( const Data_t* data, Size_t len ) override;
 
   private:
     std::ofstream m_file;

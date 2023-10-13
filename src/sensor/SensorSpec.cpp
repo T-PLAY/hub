@@ -11,20 +11,20 @@ namespace hub {
 namespace sensor {
 
 //#if CPLUSPLUS_VERSION != 20
-SensorSpec::SensorSpec( const SensorNameType& sensorName,
-//                        const Resolutions& resolutions,
+SensorSpec::SensorSpec( const std::string& sensorName,
+                        const Resolutions& resolutions,
                         const MetaData& metaData ) :
     m_sensorName( sensorName ),
-//    m_resolutions( resolutions ),
+    m_resolutions( resolutions ),
     m_metaData( metaData )
 //    m_acquisitionSize( resolution::computeAcquisitionSize( resolutions ) )
 {}
 
 SensorSpec::SensorSpec(const char *sensorName,
-//                        const Resolutions &resolutions,
+                        const Resolutions &resolutions,
                         const MetaData &metaData) :
     m_sensorName( sensorName ),
-//    m_resolutions( resolutions ),
+    m_resolutions( resolutions ),
     m_metaData( metaData )
 //    m_acquisitionSize( resolution::computeAcquisitionSize( resolutions ) )
 {}
@@ -32,20 +32,20 @@ SensorSpec::SensorSpec(const char *sensorName,
 
 SensorSpec SensorSpec::operator+( const SensorSpec& sensorSpec ) const {
     std::string sensorName;
-//    Resolutions resolutions;
+    Resolutions resolutions;
     SensorSpec::MetaData metaData;
 
     sensorName  = m_sensorName + " + " + sensorSpec.m_sensorName;
-//    resolutions = m_resolutions;
-//    resolutions.insert(
-//        resolutions.end(), sensorSpec.m_resolutions.begin(), sensorSpec.m_resolutions.end() );
+    resolutions = m_resolutions;
+    resolutions.insert(
+        resolutions.end(), sensorSpec.m_resolutions.begin(), sensorSpec.m_resolutions.end() );
     metaData = m_metaData;
 
     metaData.insert( sensorSpec.m_metaData.begin(), sensorSpec.m_metaData.end() );
     metaData.erase( "parent" );
 
     return SensorSpec( std::move( sensorName ),
-//                       std::move( resolutions ),
+                       std::move( resolutions ),
                        std::move( metaData ) );
 }
 
@@ -60,8 +60,8 @@ SensorSpec& SensorSpec::operator+=( const SensorSpec& sensorSpec ) {
 bool SensorSpec::operator==( const SensorSpec& sensorSpec ) const {
 
     return m_sensorName == sensorSpec.m_sensorName &&
-//           m_resolutions == sensorSpec.m_resolutions &&
-           m_acquisitionSize == sensorSpec.m_acquisitionSize &&
+           m_resolutions == sensorSpec.m_resolutions &&
+//           m_acquisitionSize == sensorSpec.m_acquisitionSize &&
            m_metaData.size() == sensorSpec.m_metaData.size();
     // todo any compare
 }
@@ -107,18 +107,21 @@ void pretty_bytes( char* buf, uint64_t bytes ) {
 
 std::string SensorSpec::to_string() const {
     char acqSizeStr[80];
-    pretty_bytes( acqSizeStr, m_acquisitionSize );
+//    pretty_bytes( acqSizeStr, m_acquisitionSize );
+    pretty_bytes( acqSizeStr, sensor::nByte(m_resolutions) );
 
     return "'" + m_sensorName + "', "
 //           + "', " +
-//           sensor::resolution::to_string( m_resolutions ) +
-//           ", " +
-           + SensorSpec::to_string( m_metaData ) + ", " + acqSizeStr;
+           + sensor::toString( m_resolutions ) +
+//           + m_resolutions.toString() +
+//           + m_resolutions +
+           ", " +
+           SensorSpec::to_string( m_metaData ) + ", " + acqSizeStr;
 }
 
 bool SensorSpec::isEmpty() const {
-    return m_sensorName == "";
-//           && m_resolutions.empty();
+    return m_sensorName == ""
+           && m_resolutions.empty();
 }
 
 std::string SensorSpec::to_string( const SensorSpec::MetaData& metaData, bool expand ) {
@@ -154,6 +157,28 @@ std::ostream& operator<<( std::ostream& os, const SensorSpec& sensorSpec ) {
     os << sensorSpec.to_string();
     return os;
 }
+
+////template <typename Output>
+//Output& operator<<( Output& output, const SensorSpec& sensorSpec ) {
+////    output.write(sensorSpec.m_sensorName);
+////    output.isOutput();
+////    output << sensorSpec.m_sensorName;
+//    output.write(sensorSpec.m_sensorName);
+////    output << sensorSpec.m_resolutions;
+
+//    return output;
+//}
+
+////template <typename Input>
+//Input& operator>>( Input& input, SensorSpec& sensorSpec ) {
+////    output.write(sensorSpec.m_sensorName);
+////    input.isInput();
+////    output << sensorSpec.m_sensorName;
+//    input.read(sensorSpec.m_sensorName);
+////    input >> sensorSpec.m_sensorName;
+
+//    return input;
+//}
 
 } // namespace sensor
 } // namespace hub

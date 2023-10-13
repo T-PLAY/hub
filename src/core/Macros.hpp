@@ -237,3 +237,50 @@
 //#elif defined(OS_WINDOWS)
 //    #define MAX_NET_BUFFER_SIZE 2'000'000
 //#endif
+
+#include <iostream>
+//#include <stdlib.h>
+//#include <stdint.h>
+#include <cstdint>
+
+#ifdef USE_BOOST
+    #define TYPE_NAME(t) \
+        typeid(t).name()
+#else
+    #define TYPE_NAME(t) \
+        boost::typeindex::type_id<typeof(t)>().pretty_name()
+#endif
+//#    ifdef USE_BOOST
+//        std::cout << HEADER_INPUT_MSG "read(T) : <"
+////                  << typeid( T ).name() << " ("
+//                  << boost::typeindex::type_id<T>().pretty_name() << "> " << t  << std::endl;
+//#    else
+//        std::cout << typeid( T ).name() << "> = " << t
+//                  << std::endl;
+//#    endif
+
+namespace hub {
+    using Data_t = unsigned char;
+//    using Size_t = uint64_t;
+    using Size_t = uint32_t;
+//    using Size_t = uint16_t;
+//    using Size_t = size_t;
+//    using Size_t = int;
+//    using Size_t = unsigned int;
+
+//#ifdef DEBUG_INPUT
+//    template <typename T>
+//    void printTypeAndValue(const T & t) {
+//    }
+
+//#    ifdef USE_BOOST
+//        std::cout << HEADER_INPUT_MSG "read(T) : <"
+////                  << typeid( T ).name() << " ("
+//                  << boost::typeindex::type_id<T>().pretty_name() << "> " << t  << std::endl;
+//#    else
+//        std::cout << typeid( T ).name() << "> = " << t
+//                  << std::endl;
+//#    endif
+//    }
+//#endif
+}

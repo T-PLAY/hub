@@ -35,7 +35,7 @@ class InputFile : public Input, public io::File
     ///
     /// @copydoc InputOutput::read()
     ///
-    void read( unsigned char* data, size_t len ) override;
+    void read( Data_t* data, Size_t len ) override;
 
   private:
     std::ifstream m_file;

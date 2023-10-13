@@ -14,6 +14,25 @@ namespace sensor {
 
 //namespace format {
 
+std::ostream& operator<<( std::ostream& os, const Format& format ) {
+    os << "{" << format.m_name << ", " << format.m_nByte << ", " << format.m_isInterpolable << "}";
+    return os;
+}
+
+//Output &operator<<(Output &output, const Format &format) {
+//    //    output.isOutput();
+////    std::cout << "write format" << std::endl;
+//    output.write((const Data_t*)&format.m_nByte, format.ioGetSize());
+//    //    output.write( reinterpret_cast<const unsigned char*>( &format.m_nByte ), format.ioGetSize() );
+//    return output;
+//}
+
+//Input &operator>>(Input &input, Format &format) {
+//    //    input.read(format.ioGetData(), format.ioGetSize());
+//    input.read((Data_t*)&format.m_nByte, format.ioGetSize());
+//    //    const Data_t* ioGetData() const { return (Data_t*)this; }
+//    return input;
+//}
 
 //static constexpr int s_format2nByte[static_cast<int>( Format::COUNT )] = {
 //    0,       // NONE

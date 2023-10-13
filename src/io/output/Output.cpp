@@ -17,7 +17,7 @@ void Output::write( const std::string& str ) {
     assert( isOpen() );
 
 #ifdef DEBUG_OUTPUT
-    std::cout << HEADER_OUTPUT_MSG "write(std::string) : '" << str << "'" << std::endl;
+    std::cout << HEADER_OUTPUT_MSG "write(" << TYPE_NAME(str) << ") : '" << str << "'" << std::endl;
 #endif
 
     int strLen = static_cast<int>( str.size() );
@@ -151,7 +151,7 @@ void Output::write( const char* str ) {
     assert( isOpen() );
 
 #ifdef DEBUG_OUTPUT
-    std::cout << HEADER_OUTPUT_MSG "write(const char*)" << std::endl;
+    std::cout << HEADER_OUTPUT_MSG "write(" << TYPE_NAME(str) << ")" << std::endl;
 #endif
 
     uint32_t strLen = static_cast<int>( strlen( str ) );
@@ -164,11 +164,11 @@ void Output::write( const Any& any ) {
     assert( isOpen() );
 
 #ifdef DEBUG_OUTPUT
-#    ifdef WIN32
-    std::cout << HEADER_OUTPUT_MSG "write(std::any) : '" << any << "'" << std::endl;
-#    else
-    std::cout << HEADER_OUTPUT_MSG "write(std::any) : '" << any << "'" << std::endl;
-#    endif
+//#    ifdef WIN32
+//    std::cout << HEADER_OUTPUT_MSG "write(std::any) : '" << any << "'" << std::endl;
+//#    else
+    std::cout << HEADER_OUTPUT_MSG "write(" << TYPE_NAME(any) << ") : '" << any << "'" << std::endl;
+//#    endif
 #endif
 
 
