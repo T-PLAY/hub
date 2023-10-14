@@ -204,8 +204,8 @@
 //#define DEBUG_INPUT_OUTPUT
 
 #ifdef DEBUG_INPUT_OUTPUT
-#    define DEBUG_INPUT
-#    define DEBUG_OUTPUT
+#    define HUB_DEBUG_INPUT
+#    define HUB_DEBUG_OUTPUT
 
 #    ifdef OS_LINUX
 #        define USE_BOOST
@@ -245,10 +245,10 @@
 
 #ifdef USE_BOOST
     #define TYPE_NAME(t) \
-        typeid(t).name()
+        boost::typeindex::type_id<typeof(t)>().pretty_name()
 #else
     #define TYPE_NAME(t) \
-        boost::typeindex::type_id<typeof(t)>().pretty_name()
+        typeid(t).name()
 #endif
 //#    ifdef USE_BOOST
 //        std::cout << HEADER_INPUT_MSG "read(T) : <"
@@ -268,7 +268,7 @@ namespace hub {
 //    using Size_t = int;
 //    using Size_t = unsigned int;
 
-//#ifdef DEBUG_INPUT
+//#ifdef HUB_DEBUG_INPUT
 //    template <typename T>
 //    void printTypeAndValue(const T & t) {
 //    }

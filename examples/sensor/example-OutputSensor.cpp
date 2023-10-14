@@ -668,7 +668,7 @@ int main() {
 //        //    assert( isOpen() );
 //        assert(false);
 
-//        // #ifdef DEBUG_OUTPUT
+//        // #ifdef HUB_DEBUG_OUTPUT
 //        std::cout << HEADER_OUTPUT_MSG "write(std::vector)" << std::endl;
 //        // #endif
 
@@ -692,7 +692,7 @@ int main() {
 //    auto& operator<<( const std::string& str ) {
 //        //        assert( isOpen() );
 
-//        // #ifdef DEBUG_OUTPUT
+//        // #ifdef HUB_DEBUG_OUTPUT
 //        std::cout << HEADER_OUTPUT_MSG "write(std::string) : '" << str << "'" << std::endl;
 //        // #endif
 //        //         std::cout << HEADER_OUTPUT_MSG "write(T) : '" << t.ioTypeName() << "' = " << t
@@ -758,7 +758,7 @@ int main() {
 //            str         = std::string( reinterpret_cast<char*>( tmp ) );
 //            delete[] tmp;
 //        }
-//        // #ifdef DEBUG_INPUT
+//        // #ifdef HUB_DEBUG_INPUT
 //        std::cout << HEADER_INPUT_MSG "read(std::string) : '" << str << "'" << std::endl;
 //        // #endif
 //        return *this;

@@ -16,7 +16,7 @@ namespace hub {
 void Output::write( const std::string& str ) {
     assert( isOpen() );
 
-#ifdef DEBUG_OUTPUT
+#ifdef HUB_DEBUG_OUTPUT
     std::cout << HEADER_OUTPUT_MSG "write(" << TYPE_NAME(str) << ") : '" << str << "'" << std::endl;
 #endif
 
@@ -35,7 +35,7 @@ void Output::write( const std::string& str ) {
 //void Output::write( const sensor::SensorSpec& sensorSpec ) {
 //    assert( isOpen() );
 
-//#ifdef DEBUG_OUTPUT
+//#ifdef HUB_DEBUG_OUTPUT
 ////    std::cout << "[Output:" << this << "] write(SensorSpec)" << std::endl;
 //    std::cout << HEADER_OUTPUT_MSG "write(SensorSpec)" << std::endl;
 //#endif
@@ -99,7 +99,7 @@ void Output::write( const std::string& str ) {
 //void Output::write( const Measure& measure ) {
 //    assert( isOpen() );
 
-//#ifdef DEBUG_OUTPUT
+//#ifdef HUB_DEBUG_OUTPUT
 //    std::cout << HEADER_OUTPUT_MSG "write(Measure)" << std::endl;
 //#endif
 
@@ -114,7 +114,7 @@ void Output::write( const std::string& str ) {
 //void Output::write( const sensor::Acquisition& acq ) {
 //    assert( isOpen() );
 
-//#ifdef DEBUG_OUTPUT
+//#ifdef HUB_DEBUG_OUTPUT
 //    std::cout << HEADER_OUTPUT_MSG "write(Acquisition)" << std::endl;
 //#endif
 
@@ -140,7 +140,7 @@ void Output::write( const std::string& str ) {
 
 //void Output::write(uint64_t size)
 //{
-//#ifdef DEBUG_OUTPUT
+//#ifdef HUB_DEBUG_OUTPUT
 //    std::cout << HEADER_OUTPUT_MSG "write(uint64_t)" << std::endl;
 //#endif
 //    write((unsigned char*)&size, sizeof(uint64_t));
@@ -150,7 +150,7 @@ void Output::write( const char* str ) {
     assert( str != nullptr );
     assert( isOpen() );
 
-#ifdef DEBUG_OUTPUT
+#ifdef HUB_DEBUG_OUTPUT
     std::cout << HEADER_OUTPUT_MSG "write(" << TYPE_NAME(str) << ")" << std::endl;
 #endif
 
@@ -163,7 +163,7 @@ void Output::write( const char* str ) {
 //void Output::write( const Any& any ) {
 //    assert( isOpen() );
 
-//#ifdef DEBUG_OUTPUT
+//#ifdef HUB_DEBUG_OUTPUT
 ////#    ifdef WIN32
 ////    std::cout << HEADER_OUTPUT_MSG "write(std::any) : '" << any << "'" << std::endl;
 ////#    else

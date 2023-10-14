@@ -28,7 +28,7 @@ void Input::read( std::string& str ) {
         str         = std::string( reinterpret_cast<char*>( tmp ) );
         delete[] tmp;
     }
-#ifdef DEBUG_INPUT
+#ifdef HUB_DEBUG_INPUT
     std::cout << HEADER_INPUT_MSG "read(" << TYPE_NAME(str) << ") : '" << str << "'" << std::endl;
 #endif
 }
@@ -146,7 +146,7 @@ void Input::read( char* str ) {
     assert( isOpen() );
     assert( !isEnd() );
 
-#ifdef DEBUG_INPUT
+#ifdef HUB_DEBUG_INPUT
     std::cout << HEADER_INPUT_MSG "read(" << TYPE_NAME(str) << ")" << std::endl;
 #endif
 
@@ -166,7 +166,7 @@ void Input::read( char* str ) {
 //    assert( isOpen() );
 //    assert( !isEnd() );
 
-//#ifdef DEBUG_INPUT
+//#ifdef HUB_DEBUG_INPUT
 //    std::cout << HEADER_INPUT_MSG "read(" << TYPE_NAME(any) << ")" << std::endl;
 //#endif
 

@@ -11,14 +11,14 @@
 // #include "sensor/SensorSpec.hpp"
 // #include "data/Measure.hpp"
 
-#define DEBUG_INPUT
-#define USE_BOOST
+//#define HUB_DEBUG_INPUT
+//#define USE_BOOST
 
 #ifdef USE_BOOST
 #    include <boost/type_index.hpp>
 #endif
 
-#ifdef DEBUG_INPUT
+#ifdef HUB_DEBUG_INPUT
 #    define HEADER_INPUT_MSG \
         "\t\033[" << std::to_string( 31 + (long)this % 7 ) << "m[Input:" << this << "]\033[0m "
 #endif
@@ -150,13 +150,13 @@ class SRC_API Input
 //                  << std::endl;
         t.read(*this);
 //	    debugInput(t);
-//        DEBUG_INPUT(t);
+//        HUB_DEBUG_INPUT(t);
 //        hub::debugPrintTypeAndValue(t);
-#ifdef DEBUG_INPUT
+#ifdef HUB_DEBUG_INPUT
         std::cout << HEADER_INPUT_MSG << "read(" << TYPE_NAME(t) << ") = " << t << std::endl;
 #endif
 
-//#ifdef DEBUG_INPUT
+//#ifdef HUB_DEBUG_INPUT
 //#    ifdef USE_BOOST
 //        std::cout << HEADER_INPUT_MSG "read(T) : <"
 ////                  << typeid( T ).name() << " ("
@@ -179,12 +179,12 @@ class SRC_API Input
 
         read( reinterpret_cast<Data_t*>( &t ), sizeof( T ) );
 
-#ifdef DEBUG_INPUT
+#ifdef HUB_DEBUG_INPUT
         std::cout << HEADER_INPUT_MSG << "read(" << TYPE_NAME(t) << ") = " << t << std::endl;
 #endif
 //        debugPrintTypeAndValue(t);
 
-//#ifdef DEBUG_INPUT
+//#ifdef HUB_DEBUG_INPUT
 //#    ifdef USE_BOOST
 //        std::cout << HEADER_INPUT_MSG "read(T) : <"
 ////                  << typeid( T ).name() << " ("
@@ -299,7 +299,7 @@ class SRC_API Input
 
 //    read( reinterpret_cast<Data_t*>( &t ), sizeof( T ) );
 
-// #ifdef DEBUG_INPUT
+// #ifdef HUB_DEBUG_INPUT
 // #    ifdef USE_BOOST
 //     std::cout << HEADER_INPUT_MSG "read(T) : " << typeid( T ).name() << " ("
 //               << boost::typeindex::type_id<T>().pretty_name() << ") '" << t << "'" << std::endl;
@@ -361,7 +361,7 @@ class SRC_API Input
 
 //    read( reinterpret_cast<Data_t*>( &t ), sizeof( T ) );
 
-// #ifdef DEBUG_INPUT
+// #ifdef HUB_DEBUG_INPUT
 // #    ifdef USE_BOOST
 //     std::cout << HEADER_INPUT_MSG "read(T) : " << typeid( T ).name() << " ("
 //               << boost::typeindex::type_id<T>().pretty_name() << ") '" << t << "'" << std::endl;
@@ -377,7 +377,7 @@ inline void Input::read( std::list<T>& list ) {
     assert( isOpen() );
     assert( !isEnd() );
 
-#ifdef DEBUG_INPUT
+#ifdef HUB_DEBUG_INPUT
     std::cout << "[InpuInput] read(" << TYPE_NAME(list) << ")" << std::endl;
 #endif
 
@@ -396,7 +396,7 @@ inline void Input::read( std::vector<T>& vector ) {
     assert( isOpen() );
     assert( !isEnd() );
 
-#ifdef DEBUG_INPUT
+#ifdef HUB_DEBUG_INPUT
     std::cout << HEADER_INPUT_MSG "read(" << TYPE_NAME(vector) << ")" << std::endl;
 #endif
 
@@ -418,14 +418,14 @@ inline void Input::read( std::map<T, U>& map ) {
     assert( isOpen() );
     assert( !isEnd() );
 
-#ifdef DEBUG_INPUT
+#ifdef HUB_DEBUG_INPUT
 //    std::cout << HEADER_INPUT_MSG "read(std::map)" << std::endl;
     std::cout << HEADER_INPUT_MSG "read(" << TYPE_NAME(map)  << ")" << std::endl;
 #endif
 
     int nbEl;
     read( nbEl );
-//#ifdef DEBUG_INPUT
+//#ifdef HUB_DEBUG_INPUT
 //    std::cout << HEADER_INPUT_MSG "map : nbEl = " << nbEl << std::endl;
 //#endif
     map.clear();
@@ -443,7 +443,7 @@ inline void Input::read( std::pair<T, U>& pair ) {
     assert( isOpen() );
     assert( !isEnd() );
 
-#ifdef DEBUG_INPUT
+#ifdef HUB_DEBUG_INPUT
 //    std::cout << HEADER_INPUT_MSG "read(std::pair)" << std::endl;
     std::cout << HEADER_INPUT_MSG "read(" << TYPE_NAME(pair) << ")" << std::endl;
 #endif

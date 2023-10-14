@@ -10,14 +10,14 @@
 // #include "sensor/SensorSpec.hpp"
 // #include "data/Measure.hpp"
 
-#define DEBUG_OUTPUT
-#define USE_BOOST
+//#define HUB_DEBUG_OUTPUT
+//#define USE_BOOST
 
 #ifdef USE_BOOST
 #    include <boost/type_index.hpp>
 #endif
 
-#ifdef DEBUG_OUTPUT
+#ifdef HUB_DEBUG_OUTPUT
 #    define HEADER_OUTPUT_MSG \
         "\033[" << std::to_string( 31 + (long)this % 7 ) << "m[Output:" << this << "]\033[0m "
 #endif
@@ -112,7 +112,7 @@ class SRC_API Output
     //    void write( const T& t );
 //    std::enable_if<writable<T>::value>::type write( const T& t ) {
     std::enable_if<writable_v<T>>::type write( const T& t ) {
-//#ifdef DEBUG_OUTPUT
+//#ifdef HUB_DEBUG_OUTPUT
 //#    ifdef USE_BOOST
 //        std::cout << HEADER_OUTPUT_MSG "write(T) : <"
 ////                  << typeid( T ).name() << " ("
@@ -122,7 +122,7 @@ class SRC_API Output
 //                  << std::endl;
 //#    endif
 //#endif
-#ifdef DEBUG_OUTPUT
+#ifdef HUB_DEBUG_OUTPUT
         std::cout << HEADER_OUTPUT_MSG "write(" << TYPE_NAME(t) << ") = " << t << std::endl;
 #endif
 //        std::cout << HEADER_OUTPUT_MSG "write(T) : " << typeid( T ).name()
@@ -141,11 +141,11 @@ class SRC_API Output
 
         assert( isOpen() );
 
-#ifdef DEBUG_OUTPUT
+#ifdef HUB_DEBUG_OUTPUT
         std::cout << HEADER_OUTPUT_MSG "write(" << TYPE_NAME(t) << ") = " << t << std::endl;
 #endif
 
-//#ifdef DEBUG_OUTPUT
+//#ifdef HUB_DEBUG_OUTPUT
 //#    ifdef USE_BOOST
 //        std::cout << HEADER_OUTPUT_MSG "write(T) : <"
 ////                  << typeid( T ).name() << " ("
@@ -257,7 +257,7 @@ class SRC_API Output
 // inline void Output::write( const T& t ) {
 //     assert( isOpen() );
 
-// #ifdef DEBUG_OUTPUT
+// #ifdef HUB_DEBUG_OUTPUT
 // #    ifdef USE_BOOST
 //     std::cout << HEADER_OUTPUT_MSG "write(T) : " << typeid( T ).name() << " ("
 //               << boost::typeindex::type_id<T>().pretty_name() << ") '" << t << "'" << std::endl;
@@ -276,7 +276,7 @@ template <class T>
 inline void Output::write( const std::list<T>& list ) {
     assert( isOpen() );
 
-#ifdef DEBUG_OUTPUT
+#ifdef HUB_DEBUG_OUTPUT
     std::cout << HEADER_OUTPUT_MSG "write(" << TYPE_NAME(list) << ")" << std::endl;
 #endif
 
@@ -292,7 +292,7 @@ template <class T>
 inline void Output::write( const std::vector<T>& vector ) {
     assert( isOpen() );
 
-#ifdef DEBUG_OUTPUT
+#ifdef HUB_DEBUG_OUTPUT
     std::cout << HEADER_OUTPUT_MSG "write(" << TYPE_NAME(vector) <<  ")" << std::endl;
 #endif
 
@@ -308,13 +308,13 @@ template <class T, class U>
 inline void Output::write( const std::map<T, U>& map ) {
     assert( isOpen() );
 
-#ifdef DEBUG_OUTPUT
+#ifdef HUB_DEBUG_OUTPUT
     std::cout << HEADER_OUTPUT_MSG "write(" << TYPE_NAME(map) <<  ")" << std::endl;
 #endif
 
     int nbKey = static_cast<int>( map.size() );
     write( nbKey );
-//#ifdef DEBUG_OUTPUT
+//#ifdef HUB_DEBUG_OUTPUT
 //    std::cout << HEADER_OUTPUT_MSG "map : nbEl = " << nbKey << std::endl;
 //#endif
 
@@ -327,7 +327,7 @@ template <class T, class U>
 inline void Output::write( const std::pair<T, U>& pair ) {
     assert( isOpen() );
 
-#ifdef DEBUG_OUTPUT
+#ifdef HUB_DEBUG_OUTPUT
     std::cout << HEADER_OUTPUT_MSG "write(" << TYPE_NAME(pair)  << ")" << std::endl;
 #endif
     const T& first  = pair.first;

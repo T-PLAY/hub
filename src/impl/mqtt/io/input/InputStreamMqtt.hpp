@@ -57,7 +57,7 @@ inline bool InputStreamMqtt::isOpen() const {
 }
 
 inline void InputStreamMqtt::read( unsigned char* data, size_t len ) {
-#ifdef DEBUG_INPUT
+#ifdef HUB_DEBUG_INPUT
     std::cout << HEADER_INPUT_MSG "read(data, len = " << len << ")" << std::endl;
 #endif
 #ifdef DEBUG_INPUT_STREAM

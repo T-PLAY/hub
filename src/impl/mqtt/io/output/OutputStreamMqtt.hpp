@@ -53,7 +53,7 @@ class SRC_API OutputStreamMqtt : public Output, public io::StreamMqtt
 //}
 
 inline void OutputStreamMqtt::write( const unsigned char* data, size_t len ) {
-#ifdef DEBUG_OUTPUT
+#ifdef HUB_DEBUG_OUTPUT
     std::cout << HEADER_OUTPUT_MSG "write(data, len = " << len << ")" << std::endl;
 #endif
     assert(m_client->is_connected());
