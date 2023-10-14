@@ -13,7 +13,7 @@
 // #include "io/output/OutputStream.hpp"
 // #include "io/output/OutputMemory.hpp"
 // #include "io/Memory.hpp"
-#include "io/output/Output.hpp"
+#include "core/Output.hpp"
 
 // #include "net/ClientSocket.hpp"
 #include "Acquisition.hpp"
@@ -42,6 +42,8 @@ namespace sensor {
 class OutputSensor : public Sensor
 {
   public:
+    using Sensor::acq;
+
     template <typename OutputT, typename SensorSpec = sensor::SensorSpec>
     OutputSensor( OutputT&& output, SensorSpec&& sensorSpec ) :
 //        m_output(output),
@@ -54,8 +56,12 @@ class OutputSensor : public Sensor
 //        m_output << m_spec;
     }
 
-//    void operator<<( const Acquisition& acquisition ) {
-//        m_output.write( acquisition );
+    void operator<<( const Acquisition& acquisition ) {
+        m_output.write( acquisition );
+    }
+
+//    Acquisition acq() const {
+//        return Acquisition{m_spec.getResolutions()};
 //    }
 
     Output& m_output;

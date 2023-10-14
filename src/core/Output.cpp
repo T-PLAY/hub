@@ -11,7 +11,7 @@
 namespace hub {
 //namespace io {
 
-Output::~Output() {}
+//Output::~Output() {}
 
 void Output::write( const std::string& str ) {
     assert( isOpen() );
@@ -160,69 +160,69 @@ void Output::write( const char* str ) {
     if ( strLen > 0 ) { write( reinterpret_cast<const unsigned char*>( str ), strLen ); }
 }
 
-void Output::write( const Any& any ) {
-    assert( isOpen() );
+//void Output::write( const Any& any ) {
+//    assert( isOpen() );
 
-#ifdef DEBUG_OUTPUT
-//#    ifdef WIN32
-//    std::cout << HEADER_OUTPUT_MSG "write(std::any) : '" << any << "'" << std::endl;
-//#    else
-    std::cout << HEADER_OUTPUT_MSG "write(" << TYPE_NAME(any) << ") : '" << any << "'" << std::endl;
-//#    endif
-#endif
+//#ifdef DEBUG_OUTPUT
+////#    ifdef WIN32
+////    std::cout << HEADER_OUTPUT_MSG "write(std::any) : '" << any << "'" << std::endl;
+////#    else
+//    std::cout << HEADER_OUTPUT_MSG "write(" << TYPE_NAME(any) << ") : '" << any << "'" << std::endl;
+////#    endif
+//#endif
 
 
-    assert( any.hasValue() );
+//    assert( any.hasValue() );
 
-    const auto& anyType = any.type();
-    write( anyType );
+//    const auto& anyType = any.type();
+//    write( anyType );
 
-    switch ( anyType ) {
+//    switch ( anyType ) {
 
-    case Any::Type::INT: {
-        const auto& val = any.get<int>();
-        write( val );
-        break;
-    }
-
-    case Any::Type::DOUBLE: {
-        const auto& val = any.get<double>();
-        write( val );
-        break;
-    }
-
-    case Any::Type::STRING: {
-        const auto& val = any.get<std::string>();
-        write( val );
-        break;
-    }
-
-    case Any::Type::CONST_CHAR_PTR: {
-        const auto& val = any.get<const char*>();
-        write( val );
-        break;
-    }
-
-    // todo any
-//    case Any::Type::MAT4: {
-//        const auto& val = any.get<data::Mat4>();
-//        write( reinterpret_cast<const unsigned char*>( val.getData() ), 64 );
+//    case Any::Type::INT: {
+//        const auto& val = any.get<int>();
+//        write( val );
 //        break;
 //    }
 
-//    case Any::Type::MESH: {
-//        const Measure& measure = any.get<data::Mesh>();
-//        write( measure );
+//    case Any::Type::DOUBLE: {
+//        const auto& val = any.get<double>();
+//        write( val );
 //        break;
 //    }
 
-#ifndef COVERAGE
-    default:
-        std::cerr << "non supported type : '" << any.type() << "'" << std::endl;
-        assert( false );
-#endif
-    }
-}
+//    case Any::Type::STRING: {
+//        const auto& val = any.get<std::string>();
+//        write( val );
+//        break;
+//    }
+
+//    case Any::Type::CONST_CHAR_PTR: {
+//        const auto& val = any.get<const char*>();
+//        write( val );
+//        break;
+//    }
+
+//    // todo any
+////    case Any::Type::MAT4: {
+////        const auto& val = any.get<data::Mat4>();
+////        write( reinterpret_cast<const unsigned char*>( val.getData() ), 64 );
+////        break;
+////    }
+
+////    case Any::Type::MESH: {
+////        const Measure& measure = any.get<data::Mesh>();
+////        write( measure );
+////        break;
+////    }
+
+//#ifndef COVERAGE
+//    default:
+//        std::cerr << "non supported type : '" << any.type() << "'" << std::endl;
+//        assert( false );
+//#endif
+//    }
+//}
 
 //} // namespace io
 } // namespace hub

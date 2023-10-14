@@ -9,35 +9,40 @@
 #include <iomanip>
 #include <numeric>
 
+//#include "core/Vector.hpp"
+
 namespace hub {
 namespace sensor {
 
-//std::ostream& operator<<( std::ostream& os, const Acquisition& acq ) {
-//    os << "(start:" << ( acq.getStart() / 1'000'000 ) % 1'000 << " "
-//       << ( acq.getStart() / 1'000 ) % 1'000 << " " << acq.getStart() % 1'000
-//       << ", end:" << ( acq.getEnd() / 1'000'000 ) % 1'000 << " "
-//       << ( acq.getEnd() / 1'000 ) % 1'000 << " " << acq.getEnd() % 1'000;
-//    os << ", measures:";
-//    const auto& measures = acq.m_measures;
-//    os << measures;
-////    os << ", data = ";
-////    os << "[";
+std::ostream& operator<<( std::ostream& os, const Acquisition& acq ) {
+    os << "(start:" << ( acq.getStart() / 1'000'000 ) % 1'000 << " "
+       << ( acq.getStart() / 1'000 ) % 1'000 << " " << acq.getStart() % 1'000
+       << ", end:" << ( acq.getEnd() / 1'000'000 ) % 1'000 << " "
+       << ( acq.getEnd() / 1'000 ) % 1'000 << " " << acq.getEnd() % 1'000;
+    os << ", measures: ";
+    const auto& measures = acq.m_measures;
+    os << measures;
+//    for (const auto & measure : acq.m_measures) {
+//        os << measure;
+//    }
+//    os << ", data = ";
+//    os << "[";
 
-////    constexpr Size_t nMaxDataToShow = 30;
-////    const auto iMax                   = std::min( acq.getSize(), nMaxDataToShow );
-////    for ( auto i = 0; i < iMax; ++i ) {
-////        //        os << std::setw( 3 ) << (int)array[i] << " ";
-////        os << std::to_string( acq.m_dataContainer.at(i) );
-////        if ( i != iMax - 1 ) os << " ";
-////    }
-////    if ( acq.getSize() > nMaxDataToShow ) {
-////        os << " ... " << std::to_string( acq.m_dataContainer.at(iMax - 1) );
-////    }
-////    os << "](" << acq.getSize() << "))";
-//    os << ")";
+//    constexpr Size_t nMaxDataToShow = 30;
+//    const auto iMax                   = std::min( acq.getSize(), nMaxDataToShow );
+//    for ( auto i = 0; i < iMax; ++i ) {
+//        //        os << std::setw( 3 ) << (int)array[i] << " ";
+//        os << std::to_string( acq.m_dataContainer.at(i) );
+//        if ( i != iMax - 1 ) os << " ";
+//    }
+//    if ( acq.getSize() > nMaxDataToShow ) {
+//        os << " ... " << std::to_string( acq.m_dataContainer.at(iMax - 1) );
+//    }
+//    os << "](" << acq.getSize() << "))";
+    os << ")";
 
-//    return os;
-//}
+    return os;
+}
 
 // Acquisition::Acquisition( long long start, long long end ) : m_start( start ), m_end( end ) {
 //     assert( m_start <= m_end );

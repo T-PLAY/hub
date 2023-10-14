@@ -6,7 +6,7 @@
 #include <core/Any.hpp>
 #include <map>
 
-#include <data/Mat4.hpp>
+//#include <data/Mat4.hpp>
 
 class Lambda {
   public:
@@ -22,27 +22,34 @@ class Lambda {
         }
         return os;
     }
+    bool operator==(const Lambda & lambda) const {
+        return a == lambda.a && b == lambda.b && c == lambda.c && ds == lambda.ds;
+    }
 };
 
 
 TEST_CASE( "Any test" ) {
 
 
-    std::cout << "typeinfo(int) : " << typeid(int).name() << " : " << typeid(int).hash_code() << std::endl;
-    std::cout << "typeinfo(double) : " << typeid(double).name() << " : " << typeid(int).hash_code() << std::endl;
-    std::cout << "typeinfo(std::string) : " << typeid(std::string).name() << " : " << typeid(std::string).hash_code() << std::endl;
-    std::cout  << std::endl;
-
     hub::Any any;
+    hub::Any any2;
     assert(! any.hasValue());
-//    std::cout << any << std::endl;
+    assert(any.type() == typeid(void));
+//    std::cout << any.type().name() << std::endl;
+    std::cout << any << std::endl;
 
     any = 1;
+    any2 = 1;
+    CHECK(any == any2);
+    any2 = 2;
+    CHECK(any != any2);
+    std::cout << any << std::endl;
+    std::cout << any.type().name() << std::endl;
+    std::cout << any.getValueStr() << std::endl;
     assert(any.hasValue());
 //    std::cout << any.to_string<int>() << std::endl;
-    std::cout << any << std::endl;
     CHECK( any.is<int>());
-    CHECK( any.typeId() == typeid(int));
+//    CHECK( any.typeId() == typeid(int));
     CHECK( ! any.is<bool>());
     CHECK( ! any.is<double>());
     CHECK( ! any.is<const char *>());
@@ -52,40 +59,60 @@ TEST_CASE( "Any test" ) {
 //    int a2 = any.get();
     CHECK( a == 1 );
 
-    any = 1.0;
+    any = 1.4;
+    any2 = 1.4;
+    CHECK(any == any2);
+    any2 = 2.1;
+    CHECK(any != any2);
     std::cout << any << std::endl;
     CHECK (any.is<double>());
     CHECK (! any.is<int>());
     double b = any.get<double>();
 //    auto b2 = any.get<int>();
-    CHECK( b == 1.0 );
+    CHECK( b == 1.4 );
 
     any = std::string( "hello" );
+    any2 = std::string("hello");
+    CHECK(any == any2);
+    any2 = std::string("bye");
+    CHECK(any != any2);
     std::cout << any << std::endl;
     CHECK (any.is<std::string>());
     std::string c = any.get<std::string>();
     CHECK( c == "hello" );
 
-    any = "hello";
+    const char * str = "hello";
+    any = str;
+    any2 = str;
+    CHECK(any == any2);
+    any2 = "bye";
+    CHECK(any != any2);
     std::cout << any << std::endl;
     CHECK (any.is<const char *>());
     const char* d = any.get<const char*>();
     CHECK( !strcmp( d, "hello" ) );
 
 
-    any = hub::data::Mat4();
-    std::cout << any << std::endl;
-    const auto& i = any.get<hub::data::Mat4>();
-    CHECK( i == hub::data::Mat4() );
 
-
-//    any = Lambda{5, 0.0, 1.0f, {0, 1, 2}};
-//    CHECK (any.is<Lambda>());
+//    any = hub::data::Mat4();
 //    std::cout << any << std::endl;
+//    const auto& i = any.get<hub::data::Mat4>();
+//    CHECK( i == hub::data::Mat4() );
 
-    std::cout << "any type: " << any.type() << std::endl;
-    std::cout << "any value: " << any.getValueAsString() << std::endl;
-    std::cout << "any typeid: " << any.typeId().name() << std::endl;
+
+    const Lambda lambda{5, 0.0, 1.0f, {0, 1, 2}};
+    any = lambda;
+    any2 = lambda;
+    CHECK(any == any2);
+    any2 = Lambda{2, 0.0, 1.0f, {0}};
+    CHECK(any != any2);
+    std::cout << any << std::endl;
+    CHECK (any.is<Lambda>());
+    CHECK(any.get<Lambda>() == lambda);
+
+//    std::cout << "any type: " << any.type() << std::endl;
+//    std::cout << "any value: " << any.getValueAsString() << std::endl;
+//    std::cout << "any typeid: " << any.typeId().name() << std::endl;
 //    std::cout << any << std::endl;
 
 }

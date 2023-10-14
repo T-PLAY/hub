@@ -5,7 +5,7 @@
 #include "core/Traits.hpp"
 // #include "core/Tuple.hpp"
 
-#include "io/input/Input.hpp"
+#include "core/Input.hpp"
 //  user friendly useless includes
 // #include "io/File.hpp"
 // #include "io/input/InputFile.hpp"
@@ -37,6 +37,8 @@ namespace sensor {
 //template <typename Input>
 class InputSensor : public Sensor {
   public:
+    using Sensor::acq;
+
     template <class InputT>
     explicit InputSensor( InputT&& input ) :
 
@@ -55,6 +57,15 @@ class InputSensor : public Sensor {
         m_input.read(m_spec);
 //        m_input.read(m_measures);
     }
+
+    void operator>>( Acquisition& acquisition ) {
+        m_input.read( acquisition );
+    }
+
+
+    const Input& getInput() const { return m_input; }
+
+  private:
 
     Input& m_input;
 //    Measures m_measures;

@@ -21,19 +21,21 @@
 
 // #include "core/Macros.hpp"
 #include "Format.hpp"
+#include "Resolution.hpp"
 
 namespace hub {
 namespace sensor {
 
-//class Measure
-//{
-//  public:
-//    // io
+class Measure
+{
+  public:
+
+    // io
 //    static constexpr Size_t ioGetSize() { return sizeof( Measure ) - sizeof( Data_t* ); }
 //    const Data_t* ioGetData() const { return (Data_t*)&m_format; }
 //    void ioSetData( const Data_t* data, Size_t size ) { memcpy( &m_format, data, size ); }
 //    constexpr std::string ioTypeName() const { return "Measure"; }
-//    // end io
+    // end io
 
 //    constexpr auto nDim() const { return m_nDim; }
 
@@ -50,13 +52,14 @@ namespace sensor {
 //        return str;
 //    }
 
-//    constexpr auto nByte() const {
+    constexpr auto nByte() const {
+        return m_resolution.nByte();
 //        auto size = m_format.nByte();
 //        for ( Size_t i = 0; i < m_nDim; ++i ) {
 //            size *= m_dims[i];
 //        }
 //        return size;
-//    }
+    }
 
 //    Measure( Format format, std::initializer_list<Size_t> dims ) : m_format( format ) {
 //        assert( dims.size() <= s_maxDim );
@@ -67,33 +70,51 @@ namespace sensor {
 //        m_nDim = dimsVector.size();
 //    }
 
+    template <typename ResolutionT>
+    Measure( ResolutionT resolution, Data_t * const data )
+        : m_resolution( std::forward<Resolution>(resolution) )
+        , m_data(data)
+    {
+    }
+
 //    Measure() = default;
 
-//    constexpr bool operator==( const Measure& measure ) const {
+    constexpr bool operator==( const Measure& measure ) const {
+        return m_resolution == measure.m_resolution && std::memcmp(m_data, measure.m_data, nByte());
 //        return nByte() == measure.nByte() && nDim() == measure.nDim();
-//    }
+    }
 
 //    void setData( Data_t* const data ) {
 //        assert( data != nullptr );
 //        m_data = data;
 //    }
-//    void setData( const Data_t* const data, Size_t len ) {
-//        assert( m_data != nullptr );
-//        assert( nByte() == len );
-//        assert( data != nullptr );
-//        std::memcpy( m_data, data, len );
-//    }
+    void setData( const Data_t* const data, Size_t size ) {
+        assert( m_data != nullptr );
+        assert( nByte() == size );
+        assert( data != nullptr );
+        std::memcpy( m_data, data, size );
+    }
 
-//    SRC_API friend std::ostream& operator<<( std::ostream& os, const Measure& measure );
-//    //  private:
+    SRC_API friend std::ostream& operator<<( std::ostream& os, const Measure& measure );
+    //  private:
+    const Resolution & getResolution() const;
 
+  private:
 //    static constexpr auto s_maxDim = 3;
-//    Data_t* m_data               = nullptr;
+    const Resolution m_resolution;
+    Data_t* const m_data               = nullptr;
+
+//    using nByte = Resolution::nByte;
 
 //    Format m_format;
 //    Size_t m_nDim = 0;
-//    Size_t m_dims[s_maxDim];
-//};
+    //    Size_t m_dims[s_maxDim];
+};
+
+using Measures = std::vector<Measure>;
+
+//SRC_API friend std::ostream& operator<<( std::ostream& os, const Measures& measures );
+std::ostream& operator<<( std::ostream& os, const Measures& measures );
 
 ///**************************************************************************************
 
@@ -237,25 +258,25 @@ class MeasureT
         //        return m_array.data();
     }
 
-    void setData( const Data_t* const data, Size_t len ) {
+    void setData( const Data_t* const data, Size_t size ) {
         assert( m_data != nullptr );
-        assert( nByte() == len );
+        assert( nByte() == size );
 
         assert( data != nullptr );
         //        data[0] = 0;
         //        m_data = nullptr;
         //        m_data[0] = 0;
-        std::memcpy( m_data, data, len );
+        std::memcpy( m_data, data, size );
     }
 
     void setData( Data_t* const data ) {
-        //        assert( getSize() == len );
+        //        assert( getSize() == size );
         assert( data != nullptr );
         m_data = data;
         //        data[0] = 0;
         //        m_data = nullptr;
         //        m_data[0] = 0;
-        //        std::memcpy( m_data, data, len );
+        //        std::memcpy( m_data, data, size );
     }
 
     template <Format formatT, Size_t... DimsT>

@@ -169,7 +169,7 @@ class SRC_API SensorSpec
     /// \brief getResolutions
     /// \return
     ///
-    //    inline CONSTEXPR Resolutions& getResolutions() const noexcept;
+        inline CONSTEXPR Resolutions& getResolutions() const noexcept;
 
     ///
     /// \brief getMetaData
@@ -223,9 +223,9 @@ inline CONSTEXPR20 const std::string& SensorSpec::getSensorName() const noexcept
     return m_sensorName;
 }
 
-// inline CONSTEXPR Resolutions& SensorSpec::getResolutions() const noexcept {
-//     return const_cast<Resolutions&>( m_resolutions );
-// }
+ inline CONSTEXPR Resolutions& SensorSpec::getResolutions() const noexcept {
+     return const_cast<Resolutions&>( m_resolutions );
+ }
 
 inline CONSTEXPR SensorSpec::MetaData& SensorSpec::getMetaData() const noexcept {
     return const_cast<SensorSpec::MetaData&>( m_metaData );

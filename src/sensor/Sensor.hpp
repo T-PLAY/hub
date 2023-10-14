@@ -1,6 +1,7 @@
 #pragma once
 
 #include "SensorSpec.hpp"
+#include "Acquisition.hpp"
 
 namespace hub {
 namespace sensor {
@@ -25,6 +26,10 @@ class SRC_API Sensor
     Sensor& operator=( const Sensor& sensor ) = delete;
 
     ~Sensor();
+
+    Acquisition acq() const {
+        return Acquisition{m_spec.getResolutions()};
+    }
 
   public:
     ///

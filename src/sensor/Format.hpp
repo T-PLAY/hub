@@ -22,10 +22,10 @@ class Format
 {
   public:
     // io
-    static constexpr Size_t ioGetSize() { return sizeof( Format ); }
-    const Data_t* ioGetData() const { return (Data_t*)this; }
-    void ioSetData( const Data_t* data, Size_t size ) { memcpy( this, data, size ); }
-    static constexpr std::string ioTypeName() { return "Format"; }
+//    static constexpr Size_t ioGetSize() { return sizeof( Format ); }
+//    const Data_t* ioGetData() const { return (Data_t*)this; }
+//    void ioSetData( const Data_t* data, Size_t size ) { memcpy( this, data, size ); }
+//    static constexpr std::string ioTypeName() { return "Format"; }
     // end io
 
 

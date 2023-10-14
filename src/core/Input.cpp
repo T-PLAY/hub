@@ -162,89 +162,89 @@ void Input::read( char* str ) {
     }
 }
 
-void Input::read( Any& any ) {
-    assert( isOpen() );
-    assert( !isEnd() );
+//void Input::read( Any& any ) {
+//    assert( isOpen() );
+//    assert( !isEnd() );
 
-#ifdef DEBUG_INPUT
-    std::cout << HEADER_INPUT_MSG "read(" << TYPE_NAME(any) << ")" << std::endl;
-#endif
+//#ifdef DEBUG_INPUT
+//    std::cout << HEADER_INPUT_MSG "read(" << TYPE_NAME(any) << ")" << std::endl;
+//#endif
 
-//    assert( !any.isEmpty() );
-    assert( ! any.hasValue() );
+////    assert( !any.isEmpty() );
+//    assert( ! any.hasValue() );
 
-    Any::Type anyType;
-    read( anyType );
+//    Any::Type anyType;
+//    read( anyType );
 
-    switch ( anyType ) {
+//    switch ( anyType ) {
 
-    case Any::Type::INT: {
-        int val;
-        read( val );
-//        any = Any( val );
-        any = val;
-    } break;
+//    case Any::Type::INT: {
+//        int val;
+//        read( val );
+////        any = Any( val );
+//        any = val;
+//    } break;
 
-    case Any::Type::DOUBLE: {
-        double val;
-        read( val );
-//        any = Any( val );
-        any = val;
-    } break;
+//    case Any::Type::DOUBLE: {
+//        double val;
+//        read( val );
+////        any = Any( val );
+//        any = val;
+//    } break;
 
-    case Any::Type::STRING: {
-        std::string val;
-        read( val );
-//        any = Any( val );
-        any = val;
-    } break;
+//    case Any::Type::STRING: {
+//        std::string val;
+//        read( val );
+////        any = Any( val );
+//        any = val;
+//    } break;
 
-    case Any::Type::CONST_CHAR_PTR: {
-        assert( sizeof( char ) == 1 );
-        char* buff = new char[256];
-        memset( buff, 0, 256 );
-        read( buff );
-        int len = static_cast<int>( strlen( buff ) );
+//    case Any::Type::CONST_CHAR_PTR: {
+//        assert( sizeof( char ) == 1 );
+//        char* buff = new char[256];
+//        memset( buff, 0, 256 );
+//        read( buff );
+//        int len = static_cast<int>( strlen( buff ) );
 
-        const int buffSize = len + 1;
-        char* str          = new char[buffSize];
-        memcpy( str, buff, len );
-        str[len] = 0;
-        delete[] buff;
+//        const int buffSize = len + 1;
+//        char* str          = new char[buffSize];
+//        memcpy( str, buff, len );
+//        str[len] = 0;
+//        delete[] buff;
 
-//        any = Any( str );
-//        any = str;
-        any = (const char*)str;
-
-    } break;
-
-    // todo any
-//    case Any::Type::MAT4: {
-//        float buff[16];
-//        read( reinterpret_cast<unsigned char*>( buff ), 64 );
-
-//        data::Mat4 mat4( buff );
-////        any = Any( mat4 );
-//        any = mat4;
+////        any = Any( str );
+////        any = str;
+//        any = (const char*)str;
 
 //    } break;
 
-//    case Any::Type::MESH: {
-//        Measure measure;
-//        read( measure );
+//    // todo any
+////    case Any::Type::MAT4: {
+////        float buff[16];
+////        read( reinterpret_cast<unsigned char*>( buff ), 64 );
 
-////        any = Any( data::Mesh( measure ) );
-//        any = data::Mesh(measure);
+////        data::Mat4 mat4( buff );
+//////        any = Any( mat4 );
+////        any = mat4;
 
-//    } break;
+////    } break;
 
-#ifndef COVERAGE
-    default:
-        assert( false );
-#endif
-    }
-    assert( any.hasValue() );
-}
+////    case Any::Type::MESH: {
+////        Measure measure;
+////        read( measure );
+
+//////        any = Any( data::Mesh( measure ) );
+////        any = data::Mesh(measure);
+
+////    } break;
+
+//#ifndef COVERAGE
+//    default:
+//        assert( false );
+//#endif
+//    }
+//    assert( any.hasValue() );
+//}
 
 // todo acq
 //sensor::Acquisition Input::operator>>( Input& input ) {

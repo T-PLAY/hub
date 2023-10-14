@@ -60,7 +60,7 @@ class SRC_API Output
     Output& operator=( const Output& output ) = delete;
     Output&& operator=( Output&& output )     = delete;
 
-    virtual ~Output();
+//    virtual ~Output();
 
   public:
     ///
