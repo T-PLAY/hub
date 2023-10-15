@@ -111,7 +111,7 @@ class SRC_API Output
     template <class T>
     //    void write( const T& t );
 //    std::enable_if<writable<T>::value>::type write( const T& t ) {
-    std::enable_if<writable_v<T>>::type write( const T& t ) {
+    typename std::enable_if<writable_v<T>>::type write( const T& t ) {
 //#ifdef HUB_DEBUG_OUTPUT
 //#    ifdef USE_BOOST
 //        std::cout << HEADER_OUTPUT_MSG "write(T) : <"
@@ -134,7 +134,7 @@ class SRC_API Output
     template <class T>
     //    void write( const T& t );
 //    std::enable_if<!writable<T>::value>::type write( const T& t ) {
-    std::enable_if<!writable_v<T>>::type write( const T& t ) {
+    typename std::enable_if<!writable_v<T>>::type write( const T& t ) {
 
 //        std::cout << HEADER_OUTPUT_MSG "write(T) : " << typeid( T ).name()
 //                  << std::endl;

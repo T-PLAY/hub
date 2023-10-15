@@ -145,7 +145,7 @@ class SRC_API Input
     // typename = typename std::enable_if<readable_v<T> >::type>
     //     void read( T& t );
 //    std::enable_if<readable<T>::value>::type read( T& t ) {
-    std::enable_if<readable_v<T>>::type read( T& t ) {
+    typename std::enable_if<readable_v<T>>::type read( T& t ) {
 //        std::cout << HEADER_INPUT_MSG "read(T) : " << typeid( T ).name()
 //                  << std::endl;
         t.read(*this);
@@ -170,7 +170,7 @@ class SRC_API Input
 
     template <class T>
     //    void read( T& t );
-    std::enable_if<!readable_v<T>>::type read( T& t ) {
+    typename std::enable_if<!readable_v<T>>::type read( T& t ) {
 //        std::cout << HEADER_INPUT_MSG "read(T) : " << typeid( T ).name()
 //                  << std::endl;
 
