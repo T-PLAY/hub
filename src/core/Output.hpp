@@ -19,7 +19,7 @@
 
 #ifdef HUB_DEBUG_OUTPUT
 #    define HEADER_OUTPUT_MSG \
-        "\033[" << std::to_string( 31 + (long)this % 7 ) << "m[Output:" << this << "]\033[0m "
+"\033[" << std::to_string( 31 + reinterpret_cast<std::uintptr_t>(this) % 7 ) << "m[Output:" << this << "]\033[0m "
 #endif
 
 namespace hub {
@@ -142,7 +142,9 @@ class SRC_API Output
         assert( isOpen() );
 
 #ifdef HUB_DEBUG_OUTPUT
-        std::cout << HEADER_OUTPUT_MSG "write(" << TYPE_NAME(t) << ") = " << t << std::endl;
+//        std::cout << HEADER_OUTPUT_MSG "write(" << TYPE_NAME(t) << ") = " << t << std::endl;
+        std::cout << HEADER_OUTPUT_MSG "write(";
+        std::cout << TYPE_NAME(t) << ") = " << t << std::endl;
 #endif
 
 //#ifdef HUB_DEBUG_OUTPUT

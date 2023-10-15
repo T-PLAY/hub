@@ -53,9 +53,9 @@ endforeach()
 #    ${CMAKE_CURRENT_SOURCE_DIR}/test_common.hpp
 #)
 
-list(REMOVE_ITEM test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/server/test-server-end.cpp)
+#list(REMOVE_ITEM test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/server/test-server-end.cpp)
 # list(REMOVE_ITEM test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/./test-end.cpp)
-list(APPEND test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/server/test-server-end.cpp)
+#list(APPEND test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/server/test-server-end.cpp)
 
 #file(GLOB test_srcs *.cpp)
 list(REMOVE_ITEM test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/test-end.cpp)
@@ -166,7 +166,15 @@ foreach(testFile ${test_srcs})
 
 endforeach()
 
-if (HUB_BUILD_SERVER)
+#if ("cor" IN_LIST HUB_SOURCE_DIRS)
+#    message(FATAL_ERROR "ouou")
+#endif()
+
+
+if (HUB_BUILD_SERVER AND "impl/server" IN_LIST HUB_SOURCE_DIRS)
+
+#set(HUB_SOURCE_DIRS "core")
+    message(FATAL_ERROR "ouou")
 
     add_custom_target(
         tests # WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}

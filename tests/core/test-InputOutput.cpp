@@ -2,6 +2,7 @@
 
 #include <queue>
 #include <string>
+#include <array>
 
 #define HUB_DEBUG_INPUT
 #define HUB_DEBUG_OUTPUT
@@ -48,7 +49,7 @@ class InputOutput : public hub::Input, public hub::Output
 int main() {
 
     constexpr std::array<unsigned char, 6> data1 { 1, 2, 3, 4, 5, 6 };
-    constexpr std::array<unsigned char, 3> data2 { 1, 2, 3 };
+    constexpr std::array<unsigned char, 3> data2 {1, 2, 3};
 
     InputOutput inputOutput;
 

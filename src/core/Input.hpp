@@ -20,7 +20,7 @@
 
 #ifdef HUB_DEBUG_INPUT
 #    define HEADER_INPUT_MSG \
-        "\t\033[" << std::to_string( 31 + (long)this % 7 ) << "m[Input:" << this << "]\033[0m "
+"\t\033[" << std::to_string( 31 + reinterpret_cast<std::uintptr_t>(this) % 7 ) << "m[Input:" << this << "]\033[0m "
 #endif
 
 
