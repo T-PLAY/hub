@@ -13,9 +13,9 @@
 //#define HUB_DEBUG_OUTPUT
 //#define USE_BOOST
 
-#ifdef USE_BOOST
-#    include <boost/type_index.hpp>
-#endif
+//#ifdef USE_BOOST
+//#    include <boost/type_index.hpp>
+//#endif
 
 #ifdef HUB_DEBUG_OUTPUT
 #    define HEADER_OUTPUT_MSG \

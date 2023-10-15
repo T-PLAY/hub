@@ -244,6 +244,11 @@
 #include <cstdint>
 
 #ifdef USE_BOOST
+#    include <boost/type_index.hpp>
+#endif
+
+
+#ifdef USE_BOOST
     #define TYPE_NAME(t) \
         boost::typeindex::type_id<typeof(t)>().pretty_name()
 #else
