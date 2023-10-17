@@ -118,10 +118,10 @@ class SRC_API Input
 #endif
         assert( isOpen() );
 //        while (isOpen() && isEmpty()) {
-        while (isEmpty()) {
-            std::cout << "[Input] waiting for data" << std::endl;
-            std::this_thread::sleep_for(std::chrono::milliseconds(10));
-        }
+//        while (isEmpty()) {
+//            std::cout << "[Input" << std::this_thread::get_id() << "]  waiting for data" << std::endl;
+//            std::this_thread::sleep_for(std::chrono::milliseconds(10));
+//        }
         assert( !isEmpty() );
 
         t.read( *this );
@@ -140,10 +140,15 @@ class SRC_API Input
 #endif
         assert( isOpen() );
 //        while (isOpen() && isEmpty()) {
-        while (isEmpty()) {
-            std::cout << "[Input] waiting for data" << std::endl;
-            std::this_thread::sleep_for(std::chrono::milliseconds(10));
-        }
+//        while (isEmpty()) {
+//            std::cout << "[Input" << std::this_thread::get_id() << "]  waiting for data" << std::endl;
+//            std::this_thread::sleep_for(std::chrono::milliseconds(10));
+//        }
+//        if ( !isOpen() ) {
+//            std::cout << "[Input" << std::this_thread::get_id() << "]  is closed, unable to read data"
+//                      << std::endl;
+//            return;
+//        }
         assert( !isEmpty() );
 
         read( reinterpret_cast<Data_t*>( &t ), sizeof( T ) );

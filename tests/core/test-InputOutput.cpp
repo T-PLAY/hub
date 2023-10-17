@@ -49,8 +49,12 @@ class InputOutput : public hub::Input, public hub::Output
     }
 
     void close() override {};
+//    void close() override { assert( isOpen() );
+//        m_isOpen = false;
+//    };
 
-    bool isOpen() const override { return true; };
+    bool isOpen() const override { return true; }
+//    bool isOpen() const override { return m_isOpen; };
 
     bool isEmpty() const override { return m_datas.empty(); }
 
@@ -61,6 +65,7 @@ class InputOutput : public hub::Input, public hub::Output
 
     std::mutex m_mtxDatas;
     std::queue<std::vector<hub::Data_t>> m_datas;
+//    bool m_isOpen = true;
 };
 
 //int main() {
@@ -111,8 +116,35 @@ TEST_CASE( "Any test" ) {
 
     const int data = 5;
 
+    auto waitingOutput = []() {
+        std::this_thread::sleep_for(std::chrono::microseconds(1));
+    };
 
-//    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    size_t nWrite = 0;
+    std::thread threadOutput( [&]() {
+//        while (! start) {
+//            waitingStart();
+//        }
+        while ( !exit ) {
+            output << data;
+            ++nWrite;
+            waitingOutput();
+        }
+    } );
+
+    size_t nWrite2 = 0;
+    std::thread threadOutput2( [&]() {
+//        while (! start) {
+//            waitingStart();
+//        }
+        while ( !exit ) {
+            output << data;
+            ++nWrite2;
+            waitingOutput();
+        }
+    } );
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(200));
 
     auto waitingStart = []() {
         std::this_thread::sleep_for(std::chrono::microseconds(1));
@@ -157,33 +189,6 @@ TEST_CASE( "Any test" ) {
         }
     } );
 
-    auto waitingOutput = []() {
-        std::this_thread::sleep_for(std::chrono::microseconds(1));
-    };
-
-    size_t nWrite = 0;
-    std::thread threadOutput( [&]() {
-        while (! start) {
-            waitingStart();
-        }
-        while ( !exit ) {
-            output << data;
-            ++nWrite;
-            waitingOutput();
-        }
-    } );
-
-    size_t nWrite2 = 0;
-    std::thread threadOutput2( [&]() {
-        while (! start) {
-            waitingStart();
-        }
-        while ( !exit ) {
-            output << data;
-            ++nWrite2;
-            waitingOutput();
-        }
-    } );
 
     const auto startClock = std::chrono::high_resolution_clock::now();
     start = true;
@@ -214,4 +219,5 @@ TEST_CASE( "Any test" ) {
     std::cout << std::to_string((int)writePerSecond) << " write/s" << std::endl;
     std::cout  << std::to_string((int)readPerSecond) << " read/s" << std::endl;
 
+    std::cout << "----------------------------------------" << std::endl;
 }
