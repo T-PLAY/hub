@@ -65,7 +65,7 @@ class SRC_API Any
     Any( const T* t ) : m_any( t ) {
         m_typeName = [](  ) {
 //            return std::string("const ") + TYPE_NAME(T) + " *";
-            return TYPE_NAME(T) + "*";
+            return std::string(TYPE_NAME(T)) + "*";
         };
 
         m_any2valueStr = []( const std::any& any ) {
