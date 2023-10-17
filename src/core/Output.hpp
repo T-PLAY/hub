@@ -11,6 +11,9 @@
 
 #include "core/Any.hpp"
 #include "core/Macros.hpp"
+#if defined(OS_MACOS) && CPLUSPLUS_VERSION <= 14
+#include "core/Traits.hpp"
+#endif
 
 #ifdef HUB_DEBUG_OUTPUT
 #    define HEADER_OUTPUT_MSG                                                          \

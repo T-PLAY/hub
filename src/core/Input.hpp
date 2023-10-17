@@ -14,6 +14,10 @@
 #include "core/Any.hpp"
 #include "core/Macros.hpp"
 
+#if defined(OS_MACOS) && CPLUSPLUS_VERSION <= 14
+#include "core/Traits.hpp"
+#endif
+
 #ifdef HUB_DEBUG_INPUT
 #    define HEADER_INPUT_MSG                                                             \
         "\t\033[" << std::to_string( 31 + reinterpret_cast<std::uintptr_t>( this ) % 7 ) \
@@ -37,6 +41,7 @@ class SRC_API Input
   public:
     template <typename T>
     using readable_t = decltype( std::declval<T>().read( std::declval<Input&>() ) );
+
 
     template <typename T, typename = std::void_t<>>
     struct readable : std::false_type {};

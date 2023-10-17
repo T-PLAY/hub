@@ -10,7 +10,7 @@ set_property(GLOBAL PROPERTY CUSTOM_TARGETS_FOUNDED "")
 
 #set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD 14) # std::decay
-#set(CMAKE_CXX_STANDARD 17) # std::any
+#set(CMAKE_CXX_STANDARD 17) # std::any, AppleClang std::void_t<>
 #set(CMAKE_CXX_STANDARD 20) # std::any
 #set(CMAKE_CXX_STANDARD 23) # std::any
 set(CMAKE_CXX_STANDARD_REQUIRED ON)

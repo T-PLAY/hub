@@ -17,3 +17,15 @@ constexpr bool is_one_of() noexcept {
     return ( std::is_same<T1, Ts> {} || ... );
 }
 #endif
+
+#if defined(OS_MACOS) && CPLUSPLUS_VERSION <= 14
+namespace std {
+
+template<typename... Ts>
+struct make_void { typedef void type; };
+
+template <typename ... Ts>
+using void_t = typename make_void<Ts...>::type;
+
+}
+#endif
