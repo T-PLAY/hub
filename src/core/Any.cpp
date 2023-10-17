@@ -264,11 +264,14 @@ std::string Any::to_string() const {
 
     if ( hasValue() ) {
         //    return m_any2valueStr(m_any);
-        return "*'" + std::string( m_any.type().name() ) + "' : " + m_any2valueStr( m_any ) + "*";
+//        return "*'" + std::string( m_any.type().name() ) + "' : " + m_any2valueStr( m_any ) + "*";
+        assert(m_typeName);
+        return "*'" + m_typeName() + "' : " + m_any2valueStr( m_any ) + "*";
         //    return ret;
     }
     else {
-        return "*'" + std::string( m_any.type().name() ) + "' : none*";
+//        return "*'" + std::string( m_any.type().name() ) + "' : none*";
+        return "*'void' : none*";
     }
 }
 

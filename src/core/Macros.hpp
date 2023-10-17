@@ -208,7 +208,7 @@
 #    define HUB_DEBUG_OUTPUT
 
 #    ifdef OS_LINUX
-#        define USE_BOOST
+#        define HUB_USE_BOOST
 #    endif
 #endif
 
@@ -243,21 +243,21 @@
 //#include <stdint.h>
 #include <cstdint>
 
-#define USE_BOOST
+//#define HUB_USE_BOOST
 
-#ifdef USE_BOOST
+#ifdef HUB_USE_BOOST
 #    include <boost/type_index.hpp>
 #endif
 
 
-#ifdef USE_BOOST
+#ifdef HUB_USE_BOOST
     #define TYPE_NAME(t) \
         boost::typeindex::type_id<typeof(t)>().pretty_name()
 #else
     #define TYPE_NAME(t) \
         typeid(t).name()
 #endif
-//#    ifdef USE_BOOST
+//#    ifdef HUB_USE_BOOST
 //        std::cout << HEADER_INPUT_MSG "read(T) : <"
 ////                  << typeid( T ).name() << " ("
 //                  << boost::typeindex::type_id<T>().pretty_name() << "> " << t  << std::endl;
@@ -280,7 +280,7 @@ namespace hub {
 //    void printTypeAndValue(const T & t) {
 //    }
 
-//#    ifdef USE_BOOST
+//#    ifdef HUB_USE_BOOST
 //        std::cout << HEADER_INPUT_MSG "read(T) : <"
 ////                  << typeid( T ).name() << " ("
 //                  << boost::typeindex::type_id<T>().pretty_name() << "> " << t  << std::endl;

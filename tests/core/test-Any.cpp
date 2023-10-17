@@ -29,7 +29,7 @@ class Lambda {
 
 
 TEST_CASE( "Any test" ) {
-
+//int main() {
 
     hub::Any any;
     hub::Any any2;

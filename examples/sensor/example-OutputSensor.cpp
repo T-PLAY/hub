@@ -10,7 +10,7 @@
 #include <sensor/OutputSensor.hpp>
 // #include <core/Tuple.hpp>
 
-//#define USE_BOOST
+//#define HUB_USE_BOOST
 //#include <boost/type_index.hpp>
 //#define HEADER_OUTPUT_MSG \
 //    "\033[" << std::to_string( 31 + (long)this % 7 ) << "m<< [Output:" << this << "]\033[0m "
@@ -18,7 +18,7 @@
 //    "\033[" << std::to_string( 31 + (long)this % 7 ) << "m>> [ Input:" << this << "]\033[0m "
 
 //        std::cout << "[InputOutput] write " << std::endl;
-// #    ifdef USE_BOOST
+// #    ifdef HUB_USE_BOOST
 //    std::cout << HEADER_OUTPUT_MSG "write(T) : " << typeid( T ).name() << " ("
 //              << boost::typeindex::type_id<T>().pretty_name() << ") '" << t << "'" <<
 //              std::endl;

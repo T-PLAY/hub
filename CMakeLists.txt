@@ -137,6 +137,12 @@ endif()
 
 add_definitions(-DHUB_PROJECT_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/\")
 
+find_package(Boost QUIET)
+if (Boost_FOUND)
+    add_definitions(-DHUB_USE_BOOST)
+#    target_compile_definitions(${TARGET_NAME} PUBLIC -DHUB_USE_BOOST)
+endif()
+
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
 
 

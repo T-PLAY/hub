@@ -23,10 +23,10 @@
 // #include "data/Mat4.hpp"
 // #include "data/Mesh.hpp"
 
-// #define USE_BOOST
-#ifdef USE_BOOST
-#    include <boost/type_index.hpp>
-#endif
+//#define HUB_USE_BOOST
+//#ifdef HUB_USE_BOOST
+//#    include <boost/type_index.hpp>
+//#endif
 
 namespace hub {
 
@@ -63,6 +63,10 @@ class SRC_API Any
 
     template <typename T>
     Any( const T* t ) : m_any( t ) {
+        m_typeName = [](  ) {
+//            return std::string("const ") + TYPE_NAME(T) + " *";
+            return TYPE_NAME(T) + "*";
+        };
 
         m_any2valueStr = []( const std::any& any ) {
             assert( typeid( const T* ) == any.type() );
@@ -78,6 +82,9 @@ class SRC_API Any
 
     template <typename T>
     Any( T&& t ) : m_any( std::forward<T>( t ) ) {
+        m_typeName = [](  ) {
+            return TYPE_NAME(T);
+        };
 
         m_any2valueStr = []( const std::any& any ) {
             assert( typeid( T ) == any.type() );
@@ -201,6 +208,7 @@ class SRC_API Any
 //    std::string anyValue2string() const;
 
   private:
+    std::function<std::string( )> m_typeName;
     std::function<std::string( const std::any& )> m_any2valueStr;
     std::function<bool( const std::any&, const std::any& )> m_anyCompare;
 //    std::function<auto( const std::any& )> m_getValue;
@@ -322,7 +330,7 @@ inline const std::type_info& Any::type() const {
 ////     }
 ////     else {
 ////        sstream << "'" << typeName() << "' = " << get<T>();
-// #    ifdef USE_BOOST
+// #    ifdef HUB_USE_BOOST
 //     sstream  << "'" << typeid( T ).name() << " ("
 //             << boost::typeindex::type_id<T>().pretty_name() << ")' = " << get<T>();
 ////        sstream << "'" << typeid(T).name() << "' = " << get<T>();
