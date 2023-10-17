@@ -2,19 +2,22 @@
 
 #include <cstring>
 
-#include "core/Any.hpp"
-#include "core/Info.hpp"
-//#include "Measure.hpp"
-//#include "InputMemory.hpp"
+// #include "core/Any.hpp"
+// #include "core/Info.hpp"
+
+// #include "Measure.hpp"
+// #include "InputMemory.hpp"
 
 namespace hub {
-//namespace io {
+// namespace io {
 
 /////////////////////////////////////////////////////////////////////////////
 
+//size_t Input::s_nInput = 0;
+
 void Input::read( std::string& str ) {
     assert( isOpen() );
-    assert( !isEnd() );
+    assert( !isEmpty() );
 
     int strLen = 0;
     read( strLen );
@@ -29,14 +32,43 @@ void Input::read( std::string& str ) {
         delete[] tmp;
     }
 #ifdef HUB_DEBUG_INPUT
-    std::cout << HEADER_INPUT_MSG "read(" << TYPE_NAME(str) << ") : '" << str << "'" << std::endl;
+    std::cout << HEADER_INPUT_MSG "read(" << TYPE_NAME( str ) << ") : '" << str << "'" << std::endl;
 #endif
 }
 
+
+void Input::read( char* str ) {
+    assert( str != nullptr );
+    assert( isOpen() );
+    assert( !isEmpty() );
+
+#ifdef HUB_DEBUG_INPUT
+    std::cout << HEADER_INPUT_MSG "read(" << TYPE_NAME( str ) << ")" << std::endl;
+#endif
+
+    int strLen = 0;
+    assert( sizeof( int ) == 4 );
+    read( strLen );
+
+    if ( strLen == 0 ) { str[0] = 0; }
+    else {
+        read( reinterpret_cast<unsigned char*>( str ), strLen );
+
+        str[strLen] = 0;
+    }
+}
+
+//void Input::clear()
+//{
+//    while ( !isEmpty() ) {
+////	ts.emplace_back( get<T>() );
+//    }
+//}
+
 // todo acq
-//void Input::read( sensor::SensorSpec& sensorSpec ) {
+// void Input::read( sensor::SensorSpec& sensorSpec ) {
 //    assert( isOpen() );
-//    assert( !isEnd() );
+//    assert( !isEmpty() );
 
 ////    uint64_t packetSize;
 ////    read(packetSize);
@@ -55,7 +87,7 @@ void Input::read( std::string& str ) {
 //    char h;
 //    char u;
 //    char b;
-//#ifdef WIN32
+// #ifdef WIN32
 //    sscanf_s( magicNumber,
 //              "%c%c%c %d.%d.%d",
 //              &h,
@@ -67,10 +99,10 @@ void Input::read( std::string& str ) {
 //              &versionMajor,
 //              &versionMinor,
 //              &versionPatch );
-//#else
+// #else
 //    sscanf(
 //        magicNumber, "%c%c%c %d.%d.%d", &h, &u, &b, &versionMajor, &versionMinor, &versionPatch );
-//#endif
+// #endif
 //    assert( h == 'H' );
 //    assert( u == 'U' );
 //    assert( b == 'B' );
@@ -91,17 +123,18 @@ void Input::read( std::string& str ) {
 ////    memory.read( metaData );
 //    read( metaData );
 
-////    assert(memory.isEnd());
+////    assert(memory.isEmpty());
 
 //    sensorSpec =
-//        sensor::SensorSpec( std::move( sensorName ), std::move( resolutions ), std::move( metaData ) );
+//        sensor::SensorSpec( std::move( sensorName ), std::move( resolutions ), std::move( metaData
+//        ) );
 
 //    assert( !sensorSpec.isEmpty() );
 //}
 
-//void Input::read( Measure& measure ) {
-//    assert( isOpen() );
-//    assert( !isEnd() );
+// void Input::read( Measure& measure ) {
+//     assert( isOpen() );
+//     assert( !isEmpty() );
 
 //    assert( measure.m_data == nullptr );
 //    read( measure.m_size );
@@ -116,10 +149,9 @@ void Input::read( std::string& str ) {
 //    assert( measure.m_resolution.second != sensor::Format::NONE );
 //}
 
-//void Input::read( sensor::Acquisition& acq ) {
-//    assert( isOpen() );
-//    assert( !isEnd() );
-
+// void Input::read( sensor::Acquisition& acq ) {
+//     assert( isOpen() );
+//     assert( !isEmpty() );
 
 ////    uint64_t packetSize;
 ////    read(packetSize);
@@ -134,41 +166,20 @@ void Input::read( std::string& str ) {
 //    read( acq.m_measures );
 //    read( acq.m_size );
 
-////    assert(memory.isEnd());
+////    assert(memory.isEmpty());
 
 //    assert( acq.m_start <= acq.m_end );
 //    assert( !acq.m_measures.empty() );
 //    assert( acq.m_size > 0 );
 //}
 
-void Input::read( char* str ) {
-    assert( str != nullptr );
-    assert( isOpen() );
-    assert( !isEnd() );
+// void Input::read( Any& any ) {
+//     assert( isOpen() );
+//     assert( !isEmpty() );
 
-#ifdef HUB_DEBUG_INPUT
-    std::cout << HEADER_INPUT_MSG "read(" << TYPE_NAME(str) << ")" << std::endl;
-#endif
-
-    int strLen = 0;
-    assert( sizeof( int ) == 4 );
-    read( strLen );
-
-    if ( strLen == 0 ) { str[0] = 0; }
-    else {
-        read( reinterpret_cast<unsigned char*>( str ), strLen );
-
-        str[strLen] = 0;
-    }
-}
-
-//void Input::read( Any& any ) {
-//    assert( isOpen() );
-//    assert( !isEnd() );
-
-//#ifdef HUB_DEBUG_INPUT
-//    std::cout << HEADER_INPUT_MSG "read(" << TYPE_NAME(any) << ")" << std::endl;
-//#endif
+// #ifdef HUB_DEBUG_INPUT
+//     std::cout << HEADER_INPUT_MSG "read(" << TYPE_NAME(any) << ")" << std::endl;
+// #endif
 
 ////    assert( !any.isEmpty() );
 //    assert( ! any.hasValue() );
@@ -238,76 +249,13 @@ void Input::read( char* str ) {
 
 ////    } break;
 
-//#ifndef COVERAGE
-//    default:
-//        assert( false );
-//#endif
-//    }
-//    assert( any.hasValue() );
-//}
-
-// todo acq
-//sensor::Acquisition Input::operator>>( Input& input ) {
-//    assert( isOpen() );
-//    assert( !isEnd() );
-//    assert( input.isOpen() );
-//    assert( !input.isEnd() );
-
-//    Input & leftInput = *this;
-//    Input & rightInput = input;
-
-//    sensor::Acquisition rightAcq;
-//    rightInput.read( rightAcq );
-////    assert(rightAcq.getMeasures().front().getResolution().second == Format::DOF6);
-
-//    auto& leftLastAcqs = leftInput.m_lastAcqs;
-
-//    assert( leftLastAcqs.size() < 20 );
-
-//    sensor::Acquisition leftAcq;
-
-//    if ( leftLastAcqs.empty() ) {
-//        leftInput.read( leftAcq );
-//        leftLastAcqs.push_back( std::move( leftAcq ) );
-//    }
-
-//    while ( rightAcq.getStart() < leftLastAcqs.front().getStart() ) {
-//        std::cout << "[InputSensor] operator>>(InputSensor&) shift rightAcq : " << rightAcq << std::endl;
-//        assert( !rightInput.isEnd() );
-//        rightInput.read( rightAcq );
-//    }
-
-//    while ( leftLastAcqs.back().getStart() < rightAcq.getStart() && !leftInput.isEnd() ) {
-//        assert( !leftInput.isEnd() );
-//        leftInput.read( leftAcq );
-//        leftLastAcqs.push_back( std::move( leftAcq ) );
-//    }
-
-//    while ( leftLastAcqs.size() > 2 ) {
-//        leftLastAcqs.pop_front();
-//    }
-
-//    const auto& leftBeforeRightAcq  = leftLastAcqs.front();
-//    const auto& leftAfterRightAcq = leftLastAcqs.back();
-
-//    assert( leftInput.isEnd() || leftBeforeRightAcq.getStart() <= rightAcq.getStart() );
-//    assert( leftInput.isEnd() || rightAcq.getStart() <= leftAfterRightAcq.getStart() );
-
-//    const auto& closestAcq =
-//        ( std::abs( leftBeforeRightAcq.getStart() - rightAcq.getStart() ) > std::abs( leftAfterRightAcq.getStart() - rightAcq.getStart() ) )
-//            ? ( leftAfterRightAcq )
-//            : ( leftBeforeRightAcq );
-
-//    const auto & rightMeasures = rightAcq.getMeasures();
-//    const auto & closestMeasures = closestAcq.getMeasures();
-////    rightMeasures.insert(rightMeasures.begin(), closestMeasures.begin(), closestMeasures.end());
-////    rightAcq << closestAcq.getMeasures();
-//    sensor::Acquisition acq(rightAcq.m_start, rightAcq.m_end);
-//    acq << closestMeasures;
-//    acq << rightMeasures;
-//    return acq;
-////    return rightAcq;
-//}
+// #ifndef COVERAGE
+//     default:
+//         assert( false );
+// #endif
+//     }
+//     assert( any.hasValue() );
+// }
 
 /////////////////////////////////////////////////////////////////////////////
 

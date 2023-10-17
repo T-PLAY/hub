@@ -3,21 +3,16 @@
 #include <cstring>
 #include <iostream>
 
-#include "core/Any.hpp"
-#include "core/Info.hpp"
-
-//#include "OutputMemory.hpp"
-
 namespace hub {
-//namespace io {
 
-//Output::~Output() {}
+// Output::~Output() {}
 
 void Output::write( const std::string& str ) {
     assert( isOpen() );
 
 #ifdef HUB_DEBUG_OUTPUT
-    std::cout << HEADER_OUTPUT_MSG "write(" << TYPE_NAME(str) << ") : '" << str << "'" << std::endl;
+    std::cout << HEADER_OUTPUT_MSG "write(" << TYPE_NAME( str ) << ") : '" << str << "'"
+              << std::endl;
 #endif
 
     int strLen = static_cast<int>( str.size() );
@@ -30,15 +25,28 @@ void Output::write( const std::string& str ) {
     }
 }
 
+void Output::write( const char* str ) {
+    assert( str != nullptr );
+    assert( isOpen() );
+
+#ifdef HUB_DEBUG_OUTPUT
+    std::cout << HEADER_OUTPUT_MSG "write(" << TYPE_NAME( str ) << ")" << std::endl;
+#endif
+
+    uint32_t strLen = static_cast<int>( strlen( str ) );
+    write( strLen );
+
+    if ( strLen > 0 ) { write( reinterpret_cast<const unsigned char*>( str ), strLen ); }
+}
 
 // todo acq
-//void Output::write( const sensor::SensorSpec& sensorSpec ) {
+// void Output::write( const sensor::SensorSpec& sensorSpec ) {
 //    assert( isOpen() );
 
-//#ifdef HUB_DEBUG_OUTPUT
+// #ifdef HUB_DEBUG_OUTPUT
 ////    std::cout << "[Output:" << this << "] write(SensorSpec)" << std::endl;
 //    std::cout << HEADER_OUTPUT_MSG "write(SensorSpec)" << std::endl;
-//#endif
+// #endif
 
 //    std::vector<char> buff;
 //    constexpr int maxBuffLen = 512;
@@ -48,7 +56,7 @@ void Output::write( const std::string& str ) {
 //    char magicNumber[80] = { 0 };
 //    constexpr char joker = ' ';
 //    memset( magicNumber, joker, 79 );
-//#ifdef WIN32
+// #ifdef WIN32
 //    sprintf_s( magicNumber,
 //               "%c%c%c %d.%d.%d",
 //               'H',
@@ -57,8 +65,8 @@ void Output::write( const std::string& str ) {
 //               s_versionMajor,
 //               s_versionMinor,
 //               s_versionPatch );
-//#else
-//#ifdef OS_MACOS
+// #else
+// #ifdef OS_MACOS
 //    snprintf( magicNumber, 80,
 //             "%c%c%c %d.%d.%d",
 //             'H',
@@ -67,7 +75,7 @@ void Output::write( const std::string& str ) {
 //             s_versionMajor,
 //             s_versionMinor,
 //             s_versionPatch );
-//#else
+// #else
 //    sprintf( magicNumber,
 //             "%c%c%c %d.%d.%d",
 //             'H',
@@ -76,8 +84,8 @@ void Output::write( const std::string& str ) {
 //             s_versionMajor,
 //             s_versionMinor,
 //             s_versionPatch );
-//#endif
-//#endif
+// #endif
+// #endif
 //    assert( strlen( magicNumber ) < 79 );
 //    magicNumber[strlen( magicNumber )] = joker;
 ////    memory.write( reinterpret_cast<unsigned char*>(magicNumber), 80 );
@@ -96,12 +104,12 @@ void Output::write( const std::string& str ) {
 ////    write((unsigned char*)buff.data(), packetSize);
 //}
 
-//void Output::write( const Measure& measure ) {
-//    assert( isOpen() );
+// void Output::write( const Measure& measure ) {
+//     assert( isOpen() );
 
-//#ifdef HUB_DEBUG_OUTPUT
-//    std::cout << HEADER_OUTPUT_MSG "write(Measure)" << std::endl;
-//#endif
+// #ifdef HUB_DEBUG_OUTPUT
+//     std::cout << HEADER_OUTPUT_MSG "write(Measure)" << std::endl;
+// #endif
 
 //    assert( measure.m_size != 0 );
 //    assert( measure.m_data != nullptr );
@@ -111,12 +119,12 @@ void Output::write( const std::string& str ) {
 //    write( measure.m_resolution );
 //}
 
-//void Output::write( const sensor::Acquisition& acq ) {
-//    assert( isOpen() );
+// void Output::write( const sensor::Acquisition& acq ) {
+//     assert( isOpen() );
 
-//#ifdef HUB_DEBUG_OUTPUT
-//    std::cout << HEADER_OUTPUT_MSG "write(Acquisition)" << std::endl;
-//#endif
+// #ifdef HUB_DEBUG_OUTPUT
+//     std::cout << HEADER_OUTPUT_MSG "write(Acquisition)" << std::endl;
+// #endif
 
 //    assert( acq.m_start <= acq.m_end );
 //    assert( !acq.m_measures.empty() );
@@ -138,39 +146,25 @@ void Output::write( const std::string& str ) {
 ////    write((unsigned char*)buff.data(), packetSize);
 //}
 
-//void Output::write(uint64_t size)
+// void Output::write(uint64_t size)
 //{
-//#ifdef HUB_DEBUG_OUTPUT
-//    std::cout << HEADER_OUTPUT_MSG "write(uint64_t)" << std::endl;
-//#endif
-//    write((unsigned char*)&size, sizeof(uint64_t));
-//}
+// #ifdef HUB_DEBUG_OUTPUT
+//     std::cout << HEADER_OUTPUT_MSG "write(uint64_t)" << std::endl;
+// #endif
+//     write((unsigned char*)&size, sizeof(uint64_t));
+// }
 
-void Output::write( const char* str ) {
-    assert( str != nullptr );
-    assert( isOpen() );
+// void Output::write( const Any& any ) {
+//     assert( isOpen() );
 
-#ifdef HUB_DEBUG_OUTPUT
-    std::cout << HEADER_OUTPUT_MSG "write(" << TYPE_NAME(str) << ")" << std::endl;
-#endif
-
-    uint32_t strLen = static_cast<int>( strlen( str ) );
-    write( strLen );
-
-    if ( strLen > 0 ) { write( reinterpret_cast<const unsigned char*>( str ), strLen ); }
-}
-
-//void Output::write( const Any& any ) {
-//    assert( isOpen() );
-
-//#ifdef HUB_DEBUG_OUTPUT
+// #ifdef HUB_DEBUG_OUTPUT
 ////#    ifdef WIN32
 ////    std::cout << HEADER_OUTPUT_MSG "write(std::any) : '" << any << "'" << std::endl;
 ////#    else
-//    std::cout << HEADER_OUTPUT_MSG "write(" << TYPE_NAME(any) << ") : '" << any << "'" << std::endl;
+//    std::cout << HEADER_OUTPUT_MSG "write(" << TYPE_NAME(any) << ") : '" << any << "'" <<
+//    std::endl;
 ////#    endif
-//#endif
-
+// #endif
 
 //    assert( any.hasValue() );
 
@@ -216,13 +210,12 @@ void Output::write( const char* str ) {
 ////        break;
 ////    }
 
-//#ifndef COVERAGE
-//    default:
-//        std::cerr << "non supported type : '" << any.type() << "'" << std::endl;
-//        assert( false );
-//#endif
-//    }
-//}
+// #ifndef COVERAGE
+//     default:
+//         std::cerr << "non supported type : '" << any.type() << "'" << std::endl;
+//         assert( false );
+// #endif
+//     }
+// }
 
-//} // namespace io
 } // namespace hub

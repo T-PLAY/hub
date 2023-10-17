@@ -343,6 +343,13 @@ bool Any::operator==( const Any& any ) const {
     return false;
 }
 
+#if CPLUSPLUS_VERSION <= 17
+bool Any::operator!=(const Any &any) const
+{
+    return ! (*this == any);
+}
+#endif
+
 std::ostream& operator<<( std::ostream& os, const Any& any ) {
     os << any.to_string();
     return os;

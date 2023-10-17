@@ -243,6 +243,8 @@
 //#include <stdint.h>
 #include <cstdint>
 
+#define USE_BOOST
+
 #ifdef USE_BOOST
 #    include <boost/type_index.hpp>
 #endif

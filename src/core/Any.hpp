@@ -10,8 +10,13 @@
 #include <string>
 #include <vector>
 
-// #include <any>
-#include "std_any.hpp"
+#if CPLUSPLUS_VERSION <= 14
+    #include "std_any.hpp"
+#else
+    #include <any>
+#endif
+
+//#include "std_any.hpp"
 
 #include "Macros.hpp"
 
@@ -155,6 +160,10 @@ class SRC_API Any
     ///
     bool operator==( const Any& any ) const;
 
+#if CPLUSPLUS_VERSION <= 17
+    bool operator!=(const Any& any) const;
+#endif
+
     ///
     /// \brief operator <<
     /// \param os
@@ -288,8 +297,12 @@ const T& Any::get() const {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 inline bool Any::hasValue() const {
-    return !m_any.empty();
-    //    return m_hasValue;
+
+#if CPLUSPLUS_VERSION <= 17
+    return ! m_any.empty();
+#else
+    return m_any.has_value();
+#endif
 }
 
 inline const std::type_info& Any::type() const {
