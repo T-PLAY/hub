@@ -1,19 +1,17 @@
 #include "test_common.hpp"
 
-
 #include <array>
 #include <queue>
 #include <string>
 #include <thread>
-//#include <mutex>
+// #include <mutex>
 
-//#define HUB_DEBUG_INPUT
-//#define HUB_DEBUG_OUTPUT
+// #define HUB_DEBUG_INPUT
+// #define HUB_DEBUG_OUTPUT
 
 #include <core/Input.hpp>
 #include <core/Output.hpp>
 #include <core/Vector.hpp>
-
 
 class InputOutput : public hub::Input, public hub::Output
 {
@@ -44,17 +42,17 @@ class InputOutput : public hub::Input, public hub::Output
         //        std::cout << HEADER_OUTPUT_MSG "write(Data_t*, Size_t) : data = " << vector <<
         //        std::endl;
         m_datas.push( vector );
-//        std::cout << "write datas size = " << m_datas.size() << std::endl;
+        //        std::cout << "write datas size = " << m_datas.size() << std::endl;
         m_mtxDatas.unlock();
     }
 
     void close() override {};
-//    void close() override { assert( isOpen() );
-//        m_isOpen = false;
-//    };
+    //    void close() override { assert( isOpen() );
+    //        m_isOpen = false;
+    //    };
 
     bool isOpen() const override { return true; }
-//    bool isOpen() const override { return m_isOpen; };
+    //    bool isOpen() const override { return m_isOpen; };
 
     bool isEmpty() const override { return m_datas.empty(); }
 
@@ -65,10 +63,10 @@ class InputOutput : public hub::Input, public hub::Output
 
     std::mutex m_mtxDatas;
     std::queue<std::vector<hub::Data_t>> m_datas;
-//    bool m_isOpen = true;
+    //    bool m_isOpen = true;
 };
 
-//int main() {
+// int main() {
 TEST_CASE( "Any test" ) {
 
     constexpr std::array<unsigned char, 6> data1 { 1, 2, 3, 4, 5, 6 };
@@ -110,21 +108,87 @@ TEST_CASE( "Any test" ) {
 
     std::cout << "----------------------------------------" << std::endl;
 
-    bool exit = false;
+    bool exit  = false;
     bool start = false;
-
 
     const int data = 5;
 
-    auto waitingOutput = []() {
-        std::this_thread::sleep_for(std::chrono::microseconds(1));
-    };
+    std::mutex mtxInput;
+
+    //    std::this_thread::sleep_for(std::chrono::milliseconds(200));
+
+//    auto waitingStart = []() { std::this_thread::sleep_for( std::chrono::microseconds( 1 ) ); };
+    auto waitingStart = []() { };
+//    auto waitingRead  = []() { std::this_thread::sleep_for( std::chrono::microseconds( 1 ) ); };
+
+    size_t nRead = 0;
+    std::thread threadInput( [&]() {
+        while ( !start ) {
+            waitingStart();
+        }
+        while ( !exit ) {
+            int data_read;
+            //            while ( input.isEmpty() ) {
+            //                waitingRead();
+            //            }
+            mtxInput.lock();
+            if ( !input.isEmpty() ) {
+                input >> data_read;
+                CHECK( data_read == data );
+                ++nRead;
+            }
+            mtxInput.unlock();
+        }
+    } );
+
+    size_t nRead2 = 0;
+    std::thread threadInput2( [&]() {
+        while ( !start ) {
+            waitingStart();
+        }
+        while ( !exit ) {
+            int data_read2;
+            //            while ( input.isEmpty() ) {
+            //                waitingRead();
+            //            }
+            mtxInput.lock();
+            if ( !input.isEmpty() ) {
+                input >> data_read2;
+                CHECK( data_read2 == data );
+                ++nRead2;
+            }
+            mtxInput.unlock();
+        }
+    } );
+
+    size_t nRead3 = 0;
+    std::thread threadInput3( [&]() {
+        while ( !start ) {
+            waitingStart();
+        }
+        while ( !exit ) {
+            int data_read3;
+            //            while ( input.isEmpty() ) {
+            //                waitingRead();
+            //            }
+            mtxInput.lock();
+            if ( !input.isEmpty() ) {
+                input >> data_read3;
+                CHECK( data_read3 == data );
+                ++nRead3;
+            }
+            mtxInput.unlock();
+        }
+    } );
+
+//    auto waitingOutput = []() { std::this_thread::sleep_for( std::chrono::nanoseconds( 1 ) ); };
+    auto waitingOutput = []() { };
 
     size_t nWrite = 0;
     std::thread threadOutput( [&]() {
-//        while (! start) {
-//            waitingStart();
-//        }
+        while ( !start ) {
+            waitingStart();
+        }
         while ( !exit ) {
             output << data;
             ++nWrite;
@@ -134,9 +198,9 @@ TEST_CASE( "Any test" ) {
 
     size_t nWrite2 = 0;
     std::thread threadOutput2( [&]() {
-//        while (! start) {
-//            waitingStart();
-//        }
+        while ( !start ) {
+            waitingStart();
+        }
         while ( !exit ) {
             output << data;
             ++nWrite2;
@@ -144,57 +208,11 @@ TEST_CASE( "Any test" ) {
         }
     } );
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(200));
-
-    auto waitingStart = []() {
-        std::this_thread::sleep_for(std::chrono::microseconds(1));
-    };
-
-    size_t nRead = 0;
-    std::thread threadInput( [&]() {
-        while (! start) {
-            waitingStart();
-        }
-        while ( !exit ) {
-            int data_read;
-            input >> data_read;
-            CHECK( data_read == data );
-            ++nRead;
-        }
-    } );
-
-    size_t nRead2 = 0;
-    std::thread threadInput2( [&]() {
-        while (! start) {
-            waitingStart();
-        }
-        while ( !exit ) {
-            int data_read2;
-            input >> data_read2;
-            CHECK( data_read2 == data );
-            ++nRead2;
-        }
-    } );
-
-    size_t nRead3 = 0;
-    std::thread threadInput3( [&]() {
-        while (! start) {
-            waitingStart();
-        }
-        while ( !exit ) {
-            int data_read3;
-            input >> data_read3;
-            CHECK( data_read3 == data );
-            ++nRead3;
-        }
-    } );
-
-
     const auto startClock = std::chrono::high_resolution_clock::now();
-    start = true;
-    std::this_thread::sleep_for(std::chrono::milliseconds(20));
-//    std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    exit = true;
+    start                 = true;
+    //    std::this_thread::sleep_for( std::chrono::milliseconds( 20 ) );
+    std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+    exit                = true;
     const auto endClock = std::chrono::high_resolution_clock::now();
     const auto& duration =
         std::chrono::duration_cast<std::chrono::milliseconds>( endClock - startClock ).count();
@@ -205,19 +223,20 @@ TEST_CASE( "Any test" ) {
     threadInput2.join();
     threadInput3.join();
 
-    const auto writePerSecond = 1000.0 * (nWrite + nWrite2) / duration;
-    const auto readPerSecond = 1000.0 * (nRead + nRead2 + nRead3) / duration;
+    const auto writePerSecond = 1000.0 * ( nWrite + nWrite2 ) / duration;
+    const auto readPerSecond  = 1000.0 * ( nRead + nRead2 + nRead3 ) / duration;
+    //    const auto readPerSecond  = 1000.0 * ( nRead ) / duration;
 
-//    const auto nTotalWrite = nWrite;
-//    const auto nTotalRead = nRead + nRead2;
+    //    const auto nTotalWrite = nWrite;
+    //    const auto nTotalRead = nRead + nRead2;
 
-    std::cout << "nb write: " << std::to_string(nWrite) << std::endl;
-    std::cout << "nb write2: " << std::to_string(nWrite2) << std::endl;
-    std::cout << "nb read: " << std::to_string(nRead) << std::endl;
-    std::cout << "nb read2: " << std::to_string(nRead2) << std::endl;
-    std::cout << "nb read3: " << std::to_string(nRead3) << std::endl;
-    std::cout << std::to_string((int)writePerSecond) << " write/s" << std::endl;
-    std::cout  << std::to_string((int)readPerSecond) << " read/s" << std::endl;
+    std::cout << "nb write: " << std::to_string( nWrite ) << std::endl;
+    std::cout << "nb write2: " << std::to_string( nWrite2 ) << std::endl;
+    std::cout << "nb read: " << std::to_string( nRead ) << std::endl;
+    std::cout << "nb read2: " << std::to_string( nRead2 ) << std::endl;
+    std::cout << "nb read3: " << std::to_string( nRead3 ) << std::endl;
+    std::cout << std::to_string( (int)writePerSecond ) << " write/s" << std::endl;
+    std::cout << std::to_string( (int)readPerSecond ) << " read/s" << std::endl;
 
     std::cout << "----------------------------------------" << std::endl;
 }
