@@ -6,7 +6,7 @@
 #include <map>
 #include <thread>
 
-#define HUB_THREAD_SAFE
+//#define HUB_THREAD_SAFE
 #ifdef HUB_THREAD_SAFE
 #include <mutex>
 #endif

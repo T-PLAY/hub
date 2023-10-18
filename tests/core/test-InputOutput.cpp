@@ -134,15 +134,16 @@ TEST_CASE( "Any test" ) {
             //                waitingRead();
             //            }
             //            mtxInput.lock();
-            //            if ( !input.isEmpty() ) {
-            input >> data_read;
-            CHECK( data_read == data );
-            ++nRead;
-            //            }
+            if ( !input.isEmpty() ) {
+                input >> data_read;
+                CHECK( data_read == data );
+                ++nRead;
+            }
             //            mtxInput.unlock();
         }
     } );
 
+#ifdef MULTITHREAD
     size_t nRead2 = 0;
     std::thread threadInput2( [&]() {
         while ( !start ) {
@@ -182,6 +183,7 @@ TEST_CASE( "Any test" ) {
             //            mtxInput.unlock();
         }
     } );
+#endif
 
     //    auto waitingOutput = []() { std::this_thread::sleep_for( std::chrono::nanoseconds( 1 ) );
     //    };
@@ -199,6 +201,7 @@ TEST_CASE( "Any test" ) {
         }
     } );
 
+#ifdef MULTITHREAD
     size_t nWrite2 = 0;
     std::thread threadOutput2( [&]() {
         while ( !start ) {
@@ -210,6 +213,7 @@ TEST_CASE( "Any test" ) {
             waitingOutput();
         }
     } );
+#endif
 
     const auto startClock = std::chrono::high_resolution_clock::now();
     start                 = true;
@@ -221,23 +225,32 @@ TEST_CASE( "Any test" ) {
         std::chrono::duration_cast<std::chrono::milliseconds>( endClock - startClock ).count();
 
     threadOutput.join();
-    threadOutput2.join();
     threadInput.join();
+#ifdef MULTITHREAD
+    threadOutput2.join();
     threadInput2.join();
     threadInput3.join();
+#endif
 
+#ifdef MULTITHREAD
     const auto writePerSecond = 1000.0 * ( nWrite + nWrite2 ) / duration;
     const auto readPerSecond  = 1000.0 * ( nRead + nRead2 + nRead3 ) / duration;
+#else
+    const auto writePerSecond = 1000.0 * nWrite / duration;
+    const auto readPerSecond  = 1000.0 * nRead / duration;
+#endif
     //    const auto readPerSecond  = 1000.0 * ( nRead ) / duration;
 
     //    const auto nTotalWrite = nWrite;
     //    const auto nTotalRead = nRead + nRead2;
 
     std::cout << "nb write: " << std::to_string( nWrite ) << std::endl;
-    std::cout << "nb write2: " << std::to_string( nWrite2 ) << std::endl;
     std::cout << "nb read: " << std::to_string( nRead ) << std::endl;
+#ifdef MULTITHREAD
+    std::cout << "nb write2: " << std::to_string( nWrite2 ) << std::endl;
     std::cout << "nb read2: " << std::to_string( nRead2 ) << std::endl;
     std::cout << "nb read3: " << std::to_string( nRead3 ) << std::endl;
+#endif
     std::cout << std::to_string( (int)writePerSecond ) << " write/s" << std::endl;
     std::cout << std::to_string( (int)readPerSecond ) << " read/s" << std::endl;
 
