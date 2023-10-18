@@ -286,10 +286,12 @@ TEST_CASE( "Any test" ) {
 #endif
     std::cout << "writing rate: " << std::to_string( megaWritePerSecond ) << " MegaWrite/s" << std::endl;
     std::cout << "reading rate: " << std::to_string( megaReadPerSecond ) << " MegaRead/s" << std::endl;
-    std::cout << "latency: " << (durationInput - durationOutput) / 1000.0 << " ms" << std::endl;
+    const auto latency = (durationInput - durationOutput) / 1000.0;
+    std::cout << "latency: " << latency << " ms" << std::endl;
 
     std::cout << "----------------------------------------" << std::endl;
 
-    checkValue( megaWritePerSecond, 5, 5, "Output: MegaWrite/s" );
-    checkValue( megaReadPerSecond, 5, 5, "Input: MegaRead/s" );
+    checkValue( megaWritePerSecond, 5, 5, "Output: MegaWritePerSecond" );
+    checkValue( megaReadPerSecond, 5, 5, "Input: MegaReadPerSecond" );
+    checkValue( latency, 10, 10, "Latency: MilliSeconds" );
 }

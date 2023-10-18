@@ -123,6 +123,7 @@ static void _checkValue( double value,
     //    std::ofstream file("ouou", std::ios::app);
     auto name2 = name;
     //    name2.replace(name2.begin(), name2.end(), '/', '-');
+//    if ()
     name2 = ReplaceAll( name2, "/", "_vs_" );
 
     //std::string rootPath = HUB_TESTS_BIN_DIR;
