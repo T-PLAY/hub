@@ -7,19 +7,20 @@
 #include <string>
 
 #include "core/Macros.hpp"
-#include "NetUtils.hpp"
+#include "NetUtilsSystem.hpp"
 
 // #define DEBUG_SOCKET
 
 namespace hub {
 namespace net {
+namespace system {
 
 ///
-/// \brief The Socket class
+/// \brief The SocketSystem class
 /// is an abstraction of different (Windows, Unix) network sockets
 /// allows the TCP communication.
 ///
-class SRC_API Socket
+class SRC_API SocketSystem
 {
   public:
     ///
@@ -61,24 +62,24 @@ class SRC_API Socket
     bool isConnected() const;
 
   protected:
-    Socket();
-    ~Socket();
+    SocketSystem();
+    ~SocketSystem();
 
-    Socket( const Socket& socket ) = delete;
+    SocketSystem( const SocketSystem& socket ) = delete;
     ///
-    /// \brief Socket
+    /// \brief SocketSystem
     /// \param socket
     ///
-    Socket( Socket&& socket );
+    SocketSystem( SocketSystem&& socket );
 
-    Socket& operator=( const Socket& socket ) = delete;
-    Socket&& operator=( Socket&& socket ) = delete;
+    SocketSystem& operator=( const SocketSystem& socket ) = delete;
+    SocketSystem&& operator=( SocketSystem&& socket ) = delete;
 
   protected:
     ///
     /// \brief m_fdSock
     ///
-    net::utils::socket_fd m_fdSock = net::utils::invalidSocket();
+    utils::socket_fd m_fdSock = utils::invalidSocket();
 
     ///
     /// \brief m_serverSide
@@ -86,5 +87,6 @@ class SRC_API Socket
     bool m_serverSide = false;
 };
 
+} // namespace system
 } // namespace net
 } // namespace hub

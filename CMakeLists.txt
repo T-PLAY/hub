@@ -146,7 +146,15 @@ endif()
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
 
 
-set(HUB_SOURCE_DIRS "core")
+#set(HUB_SOURCE_DIRS "client")
+#set(HUB_SOURCE_DIRS "core")
+#set(HUB_SOURCE_DIRS "data") # sensor
+#set(HUB_SOURCE_DIRS "impl")
+#set(HUB_SOURCE_DIRS "io") # impl
+#set(HUB_SOURCE_DIRS "native")
+set(HUB_SOURCE_DIRS "net")
+#set(HUB_SOURCE_DIRS "sensor")
+
 #set(HUB_SOURCE_DIRS "io")
 #set(HUB_SOURCE_DIRS "core" "io")
 #set(HUB_SOURCE_DIRS "core" "io" "sensor")

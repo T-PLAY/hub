@@ -1,52 +1,56 @@
-#include "ServerSocket.hpp"
+#include "ServerSocketSystem.hpp"
 
 #include <cstring>
 #include <cassert>
 
-#include "NetUtils.hpp"
+#include "NetUtilsSystem.hpp"
 
 namespace hub {
 namespace net {
+namespace system {
 
-//ServerSocket::ServerSocket() : mPort( s_defaultServicePort ) {
+//ServerSocketSystem::ServerSocketSystem() : mPort( s_defaultServicePort ) {
 //    m_serverSide = true;
 //    initServer();
 //}
 
-ServerSocket::ServerSocket( int port ) : mPort( port ) {
+ServerSocketSystem::ServerSocketSystem( int port )
+//    : ServerSocketInterface(port),
+    : mPort( port )
+{
     m_serverSide = true;
     initServer();
 }
 
-ServerSocket::~ServerSocket()
+ServerSocketSystem::~ServerSocketSystem()
 {
-    assert(net::utils::isValid( m_fdSock ));
-    net::utils::closeSocket( m_fdSock );
+    assert(utils::isValid( m_fdSock ));
+    utils::closeSocket( m_fdSock );
 }
 
-ClientSocket ServerSocket::waitNewClient() {
+ClientSocketSystem ServerSocketSystem::waitNewClient() {
 
 #ifdef DEBUG_SOCKET
     DEBUG_MSG( getHeader( m_fdSock ) << "wait client on port " << mPort );
 #endif
-    net::utils::socket_fd new_socket = net::utils::accept( m_fdSock, m_addr );
-    if ( !net::utils::isValid( new_socket ) ) {
+    utils::socket_fd new_socket = utils::accept( m_fdSock, m_addr );
+    if ( !utils::isValid( new_socket ) ) {
         perror( "not accept new socket" );
-        net::utils::closeSocket( new_socket );
+        utils::closeSocket( new_socket );
         exit( 1 );
     }
 #ifdef DEBUG_SOCKET
     DEBUG_MSG( getHeader( m_fdSock ) << "new client on socket " << new_socket );
 #endif
 
-    return ClientSocket( new_socket );
+    return ClientSocketSystem( new_socket );
 }
 
-void ServerSocket::initServer() {
+void ServerSocketSystem::initServer() {
 
     // Socket creation
-    m_fdSock = net::utils::serverSocket();
-    if ( !net::utils::isValid( m_fdSock ) ) {
+    m_fdSock = utils::serverSocket();
+    if ( !utils::isValid( m_fdSock ) ) {
         perror( "socket creation failed.\n" );
         exit( 1 );
     }
@@ -57,13 +61,13 @@ void ServerSocket::initServer() {
     m_addr.init( mPort );
 
     // Create server
-    if ( net::utils::bind( m_fdSock, m_addr ) < 0 ) {
-        throw Socket::exception( ( std::string( "Failed to bind because port " ) +
+    if ( utils::bind( m_fdSock, m_addr ) < 0 ) {
+        throw SocketSystem::exception( ( std::string( "Failed to bind because port " ) +
                                    std::to_string( mPort ) + " already in use" )
                                      .c_str() );
     }
 
-    if ( net::utils::listen( m_fdSock, 3 ) < 0 ) {
+    if ( utils::listen( m_fdSock, 3 ) < 0 ) {
         perror( "listen" );
         exit( 1 );
     }
@@ -73,9 +77,10 @@ void ServerSocket::initServer() {
 #endif
 }
 
-int ServerSocket::getPort() const {
+int ServerSocketSystem::getPort() const {
     return mPort;
 }
 
+} // namespace system
 } // namespace net
 } // namespace hub

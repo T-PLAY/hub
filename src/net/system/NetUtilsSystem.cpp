@@ -1,5 +1,5 @@
 
-#include "NetUtils.hpp"
+#include "NetUtilsSystem.hpp"
 
 #include <cassert>
 #include <cstring>
@@ -40,6 +40,7 @@ static const std::regex s_ipv4Regex { "^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$" };
 
 namespace hub {
 namespace net {
+namespace system {
 namespace utils {
 
 static bool s_inited = false;
@@ -90,7 +91,7 @@ void closeSocket( socket_fd& sock ) {
 
 bool isConnected( socket_fd sock ) {
 
-    if ( !net::utils::isValid( sock ) ) return false;
+    if ( !utils::isValid( sock ) ) return false;
 
 #ifdef WIN32
     // not sure how to check this in windows
@@ -233,18 +234,19 @@ bool isValid( int port ) {
     return ( 0 <= port && port <= 65535 );
 }
 
-size_t getMaxPacketSize(socket_fd sock ) {
-//{
-//    int optval;
-//    socklen_t optlen = sizeof( optval );
+//size_t getMaxPacketSize(socket_fd sock ) {
+////{
+////    int optval;
+////    socklen_t optlen = sizeof( optval );
 
-//    int res;
-//    res = getsockopt( sock, SOL_SOCKET, SO_MAX_MSG_SIZE, &optval, &optlen ); // todo
+////    int res;
+////    res = getsockopt( sock, SOL_SOCKET, SO_MAX_MSG_SIZE, &optval, &optlen ); // todo
 
-//    if ( optval == 0 && res == 0 ) return true;
-    return 0;
-}
+////    if ( optval == 0 && res == 0 ) return true;
+//    return 0;
+//}
 
 } // namespace utils
+} // namespace system
 } // namespace net
 } // namespace hub
