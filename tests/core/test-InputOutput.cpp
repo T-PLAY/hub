@@ -113,13 +113,15 @@ TEST_CASE( "Any test" ) {
 
     const int data = 5;
 
-    std::mutex mtxInput;
+    //    std::mutex mtxInput;
 
     //    std::this_thread::sleep_for(std::chrono::milliseconds(200));
 
-//    auto waitingStart = []() { std::this_thread::sleep_for( std::chrono::microseconds( 1 ) ); };
-    auto waitingStart = []() { };
-//    auto waitingRead  = []() { std::this_thread::sleep_for( std::chrono::microseconds( 1 ) ); };
+    //    auto waitingStart = []() { std::this_thread::sleep_for( std::chrono::microseconds( 1 ) );
+    //    };
+    auto waitingStart = []() {};
+    //    auto waitingRead  = []() { std::this_thread::sleep_for( std::chrono::microseconds( 1 ) );
+    //    };
 
     size_t nRead = 0;
     std::thread threadInput( [&]() {
@@ -131,13 +133,13 @@ TEST_CASE( "Any test" ) {
             //            while ( input.isEmpty() ) {
             //                waitingRead();
             //            }
-            mtxInput.lock();
-            if ( !input.isEmpty() ) {
-                input >> data_read;
-                CHECK( data_read == data );
-                ++nRead;
-            }
-            mtxInput.unlock();
+            //            mtxInput.lock();
+            //            if ( !input.isEmpty() ) {
+            input >> data_read;
+            CHECK( data_read == data );
+            ++nRead;
+            //            }
+            //            mtxInput.unlock();
         }
     } );
 
@@ -151,13 +153,13 @@ TEST_CASE( "Any test" ) {
             //            while ( input.isEmpty() ) {
             //                waitingRead();
             //            }
-            mtxInput.lock();
-            if ( !input.isEmpty() ) {
-                input >> data_read2;
-                CHECK( data_read2 == data );
-                ++nRead2;
-            }
-            mtxInput.unlock();
+            //            mtxInput.lock();
+            //            if ( !input.isEmpty() ) {
+            input >> data_read2;
+            CHECK( data_read2 == data );
+            ++nRead2;
+            //            }
+            //            mtxInput.unlock();
         }
     } );
 
@@ -171,18 +173,19 @@ TEST_CASE( "Any test" ) {
             //            while ( input.isEmpty() ) {
             //                waitingRead();
             //            }
-            mtxInput.lock();
-            if ( !input.isEmpty() ) {
-                input >> data_read3;
-                CHECK( data_read3 == data );
-                ++nRead3;
-            }
-            mtxInput.unlock();
+            //            mtxInput.lock();
+            //            if ( !input.isEmpty() ) {
+            input >> data_read3;
+            CHECK( data_read3 == data );
+            ++nRead3;
+            //            }
+            //            mtxInput.unlock();
         }
     } );
 
-//    auto waitingOutput = []() { std::this_thread::sleep_for( std::chrono::nanoseconds( 1 ) ); };
-    auto waitingOutput = []() { };
+    //    auto waitingOutput = []() { std::this_thread::sleep_for( std::chrono::nanoseconds( 1 ) );
+    //    };
+    auto waitingOutput = []() {};
 
     size_t nWrite = 0;
     std::thread threadOutput( [&]() {

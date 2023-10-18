@@ -14,7 +14,7 @@
 #include "core/Any.hpp"
 #include "core/Macros.hpp"
 
-#if defined(OS_MACOS) && CPLUSPLUS_VERSION <= 14
+#if defined(OS_MACOS) && CPLUSPLUS_VERSION <= 14 // std::void_t not supported by AppleClang (c++14)
 #include "core/Traits.hpp"
 #endif
 
@@ -118,10 +118,12 @@ class SRC_API Input
 #endif
         assert( isOpen() );
 //        while (isOpen() && isEmpty()) {
-//        while (isEmpty()) {
-//            std::cout << "[Input" << std::this_thread::get_id() << "]  waiting for data" << std::endl;
-//            std::this_thread::sleep_for(std::chrono::milliseconds(10));
-//        }
+#ifdef HUB_THREAD_SAFE
+        while (isEmpty()) {
+            std::cout << "[Input:" << std::this_thread::get_id() << "]  waiting for data" << std::endl;
+            std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        }
+#endif
         assert( !isEmpty() );
 
         t.read( *this );
@@ -140,10 +142,12 @@ class SRC_API Input
 #endif
         assert( isOpen() );
 //        while (isOpen() && isEmpty()) {
-//        while (isEmpty()) {
-//            std::cout << "[Input" << std::this_thread::get_id() << "]  waiting for data" << std::endl;
-//            std::this_thread::sleep_for(std::chrono::milliseconds(10));
-//        }
+#ifdef HUB_THREAD_SAFE
+        while (isEmpty()) {
+            std::cout << "[Input:" << std::this_thread::get_id() << "]  waiting for data" << std::endl;
+            std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        }
+#endif
 //        if ( !isOpen() ) {
 //            std::cout << "[Input" << std::this_thread::get_id() << "]  is closed, unable to read data"
 //                      << std::endl;
