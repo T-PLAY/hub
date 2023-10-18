@@ -18,7 +18,7 @@ constexpr bool is_one_of() noexcept {
 }
 #endif
 
-#if defined(OS_MACOS) && CPLUSPLUS_VERSION <= 14
+#if defined(OS_MACOS) && CPLUSPLUS_VERSION <= 14 // std::void_t not supported by AppleClang (c++14)
 namespace std {
 
 template<typename... Ts>

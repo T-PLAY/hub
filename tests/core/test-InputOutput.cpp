@@ -5,6 +5,7 @@
 #include <string>
 #include <thread>
 // #include <mutex>
+#include <atomic>
 
 // #define HUB_DEBUG_INPUT
 // #define HUB_DEBUG_OUTPUT
@@ -54,14 +55,20 @@ class InputOutput : public hub::Input, public hub::Output
     bool isOpen() const override { return true; }
     //    bool isOpen() const override { return m_isOpen; };
 
-    bool isEmpty() const override { return m_datas.empty(); }
+    bool isEmpty() const override {
+        //        m_mtxDatas.lock();
+        //        auto ret = m_datas.empty();
+        //        m_mtxDatas.unlock();
+        //        return ret;
+        return m_datas.empty();
+    }
 
     void clear() override {
         while ( !m_datas.empty() )
             m_datas.pop();
     }
 
-    std::mutex m_mtxDatas;
+    mutable std::mutex m_mtxDatas;
     std::queue<std::vector<hub::Data_t>> m_datas;
     //    bool m_isOpen = true;
 };
@@ -109,9 +116,13 @@ TEST_CASE( "Any test" ) {
     std::cout << "----------------------------------------" << std::endl;
 
     bool exit  = false;
-    bool start = false;
+    std::atomic<bool> start;
+//    bool start;
+    start = false;
 
     const int data = 5;
+
+    constexpr auto nData = 100'000;
 
     //    std::mutex mtxInput;
 
@@ -127,20 +138,29 @@ TEST_CASE( "Any test" ) {
     std::thread threadInput( [&]() {
         while ( !start ) {
             waitingStart();
+//            std::cout << "\t>> waiting to start read" << std::endl;
         }
-        while ( !exit ) {
-            int data_read;
-            //            while ( input.isEmpty() ) {
-            //                waitingRead();
-            //            }
-            //            mtxInput.lock();
-            if ( !input.isEmpty() ) {
-                input >> data_read;
-                CHECK( data_read == data );
-                ++nRead;
-            }
-            //            mtxInput.unlock();
+        std::cout << "\t>> start reading" << std::endl;
+
+        //        while ( !exit ) {
+        int data_read;
+        //            while ( input.isEmpty() ) {
+        //                waitingRead();
+        //            }
+        //            mtxInput.lock();
+        for ( int i = 0; i < nData; ++i ) {
+            while ( input.isEmpty() ) {
+                std::cout << "\t>> waiting for data " << std::endl;
+                std::this_thread::sleep_for( std::chrono::microseconds( 1 ) );
+            };
+//            std::cout << "\t>> reading data " << nRead << std::endl;
+            input >> data_read;
+            CHECK( data_read == data );
+            ++nRead;
         }
+        std::cout << "\t>> end reading" << std::endl;
+        //            mtxInput.unlock();
+        //        }
     } );
 
 #ifdef MULTITHREAD
@@ -185,20 +205,25 @@ TEST_CASE( "Any test" ) {
     } );
 #endif
 
-    //    auto waitingOutput = []() { std::this_thread::sleep_for( std::chrono::nanoseconds( 1 ) );
-    //    };
+    //    auto waitingOutput = []() { std::this_thread::sleep_for( std::chrono::microseconds( 100000
+    //    ) ); };
     auto waitingOutput = []() {};
 
     size_t nWrite = 0;
     std::thread threadOutput( [&]() {
         while ( !start ) {
             waitingStart();
+//            std::cout << "<< waiting to start write" << std::endl;
         }
-        while ( !exit ) {
+        std::cout << "<< start writing" << std::endl;
+
+        for ( int i = 0; i < nData; ++i ) {
+//            std::cout << "<< writing data " << nWrite << std::endl;
             output << data;
             ++nWrite;
             waitingOutput();
         }
+        std::cout << "<< end writing" << std::endl;
     } );
 
 #ifdef MULTITHREAD
@@ -216,16 +241,24 @@ TEST_CASE( "Any test" ) {
 #endif
 
     const auto startClock = std::chrono::high_resolution_clock::now();
-    start                 = true;
+    std::cout << "----------------- start -----------------------" << std::endl;
+    start = true;
     //    std::this_thread::sleep_for( std::chrono::milliseconds( 20 ) );
-    std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
-    exit                = true;
-    const auto endClock = std::chrono::high_resolution_clock::now();
-    const auto& duration =
-        std::chrono::duration_cast<std::chrono::milliseconds>( endClock - startClock ).count();
+    //    std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+    //    exit                = true;
 
     threadOutput.join();
+    const auto endOutputClock = std::chrono::high_resolution_clock::now();
     threadInput.join();
+    const auto endInputClock = std::chrono::high_resolution_clock::now();
+
+    std::cout << "---------------------- end ----------------------------" << std::endl;
+//    const auto endClock = std::chrono::high_resolution_clock::now();
+    const auto& durationOutput =
+        std::chrono::duration_cast<std::chrono::microseconds>( endOutputClock - startClock ).count();
+    const auto& durationInput =
+        std::chrono::duration_cast<std::chrono::microseconds>( endInputClock - startClock ).count();
+
 #ifdef MULTITHREAD
     threadOutput2.join();
     threadInput2.join();
@@ -236,8 +269,8 @@ TEST_CASE( "Any test" ) {
     const auto writePerSecond = 1000.0 * ( nWrite + nWrite2 ) / duration;
     const auto readPerSecond  = 1000.0 * ( nRead + nRead2 + nRead3 ) / duration;
 #else
-    const auto writePerSecond = 1000.0 * nWrite / duration;
-    const auto readPerSecond  = 1000.0 * nRead / duration;
+    const auto writePerSecond = (double)nWrite / durationOutput;
+    const auto readPerSecond  = (double)nRead / durationInput;
 #endif
     //    const auto readPerSecond  = 1000.0 * ( nRead ) / duration;
 
@@ -251,8 +284,9 @@ TEST_CASE( "Any test" ) {
     std::cout << "nb read2: " << std::to_string( nRead2 ) << std::endl;
     std::cout << "nb read3: " << std::to_string( nRead3 ) << std::endl;
 #endif
-    std::cout << std::to_string( (int)writePerSecond ) << " write/s" << std::endl;
-    std::cout << std::to_string( (int)readPerSecond ) << " read/s" << std::endl;
+    std::cout << "writing rate: " << std::to_string( writePerSecond ) << " MegaWrite/s" << std::endl;
+    std::cout << "reading rate: " << std::to_string( readPerSecond ) << " MegaRead/s" << std::endl;
+    std::cout << "latency: " << (durationInput - durationOutput) / 1000.0 << " ms" << std::endl;
 
     std::cout << "----------------------------------------" << std::endl;
 }
