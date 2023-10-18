@@ -293,5 +293,5 @@ TEST_CASE( "Any test" ) {
 
     checkValue( megaWritePerSecond, 5, 5, "Output: MegaWritePerSecond" );
     checkValue( megaReadPerSecond, 5, 5, "Input: MegaReadPerSecond" );
-    checkValue( latency, 10, 10, "Latency: MilliSeconds" );
+    checkValue( latency, 100, 100, "Latency: MilliSeconds" );
 }
