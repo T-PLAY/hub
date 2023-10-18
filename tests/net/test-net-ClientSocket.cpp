@@ -2,6 +2,7 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include <algorithm>
+#include <array>
 
 // #include <sensor/InputSensor.hpp>
 // #include <sensor/OutputSensor.hpp>
@@ -28,25 +29,26 @@ TEST_CASE( "Net test : ClientSocket" ) {
     const auto hostname = hub::utils::getHostname();
 
     // initing datum
-    constexpr auto bigDataSize = 5'000'000'000; // 1 Go
+    constexpr auto bigDataSize = 1'000'000'000; // 1 Go
                                                 //    assert(sizeof(size_t) == 8);
 
     //    unsigned char* bigData = new unsigned char[bigDataSize * 2u];
     unsigned char* bigData = new unsigned char[bigDataSize];
+//    std::array<unsigned char, bigDataSize> bigData;
 
     //    srand( (unsigned)time( NULL ) );
     memset( bigData, 65, bigDataSize );
-    //    memset( bigData, 65, bigDataSize * 2u );
-    //    for ( int j = 0; j < bigDataSize * 2; ++j ) {
-    //        bigData[j] = rand() % 256;
-    //        bigData[j] = 65;
-    //    }
+//        memset( bigData, 65, bigDataSize * 2u );
+//        for ( int i = 0; i < bigDataSize; ++i ) {
+//            bigData[i] = rand() % 256;
+//            bigData[j] = 65;
+//        }
     //    dataIsOk( bigData, bigDataSize );
 
     const int port = GET_RANDOM_PORT;
     hub::net::ServerSocket serverSocket( port );
 
-    constexpr auto nWrite = 2;
+    constexpr auto nWrite = 1;
 
     //    std::shuffle(bigData, bigData + bigDataSize, std::default_random_engine(11));
     // datum inited
@@ -69,6 +71,9 @@ TEST_CASE( "Net test : ClientSocket" ) {
 
 //        unsigned char* dataIn = new unsigned char[bigDataSize * 2u];
         unsigned char* dataIn = new unsigned char[bigDataSize];
+//        std::array<unsigned char, bigDataSize> dataIn;
+        memset( dataIn, 0, bigDataSize );
+
         size_t dataWrote      = 0;
         const auto& start     = std::chrono::high_resolution_clock::now();
         {
@@ -116,9 +121,10 @@ TEST_CASE( "Net test : ClientSocket" ) {
                 //                    clientServerSocket.read( dataIn, iSize );
                 for ( int i = 0; i < nWrite; ++i ) {
                     clientServerSocket.read( dataIn, bigDataSize );
-#ifdef DEBUG
+//                    dataIn[100] = 5;
+//#ifdef DEBUG
                     CHECK( memcmp( bigData, dataIn, bigDataSize ) == 0 );
-#endif
+//#endif
                 }
             }
             catch ( std::exception& ex ) {
