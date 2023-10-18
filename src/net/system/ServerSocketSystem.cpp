@@ -28,6 +28,8 @@ ServerSocketSystem::~ServerSocketSystem()
     utils::closeSocket( m_fdSock );
 }
 
+//#define DEBUG_SOCKET
+
 ClientSocketSystem ServerSocketSystem::waitNewClient() {
 
 #ifdef DEBUG_SOCKET
