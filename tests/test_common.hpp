@@ -106,18 +106,18 @@ static std::string s_latestFilename = "";
 #define REPORT( _params ) _REPORT( _params, FILE_NAME, __LINE__ )
 #define REPORT_NEW_LINE _REPORT( "", FILE_NAME, __LINE__ )
 
-static void _checkRatio( double ratio,
+static void _checkValue( double value,
                          int compare,
                          int gap,
                          const std::string& name,
                          const std::string& filename,
                          int line ) {
     //    const int gap = 10;
-    CHECK( ( compare - gap <= ratio && ratio <= compare + gap ) );
-    if ( !( compare - gap <= ratio && ratio <= compare + gap ) ) {
+    CHECK( ( compare - gap <= value && value <= compare + gap ) );
+    if ( !( compare - gap <= value && value <= compare + gap ) ) {
         std::cout << "-----------------------------------------------------------------------------"
                      "---------------------------------------------------------------> checkRatio: "
-                  << compare - gap << " <= " << ratio << " <= " << compare + gap << std::endl;
+                  << compare - gap << " <= " << value << " <= " << compare + gap << std::endl;
     }
 
     //    std::ofstream file("ouou", std::ios::app);
@@ -132,7 +132,7 @@ static void _checkRatio( double ratio,
         std::ofstream logFile( ( filename + "_" + name2 + ".history" ).c_str(), std::ios::out | std::ios::app );
         assert( logFile.is_open() );
 
-        logFile << HUB_COMMIT_HASH << " " << ratio << std::endl;
+        logFile << HUB_COMMIT_HASH << " " << value << std::endl;
 
         logFile.close();
     }
@@ -141,24 +141,24 @@ static void _checkRatio( double ratio,
         std::ifstream inFile( ( filename + "_" + name2 + ".history" ).c_str() );
         assert( inFile.is_open() );
 
-        double ratio2;
+        double value2;
         std::string hash;
         int iRatio             = 0;
         constexpr int nMaxMean = 4;
         constexpr int nRatio   = 8;
         assert( nRatio == std::pow( 2, nMaxMean - 1 ) );
         std::string hashes[nRatio];
-        double ratios[nRatio];
+        double values[nRatio];
         for ( int i = 0; i < nRatio; ++i ) {
-            ratios[i] = 0.0;
+            values[i] = 0.0;
         }
         while ( !inFile.eof() ) {
-            ratio2 = -1;
+            value2 = -1;
             hash   = "";
-            inFile >> hash >> ratio2;
-            if ( ratio2 != -1 ) {
-                //                sumRatio += ratio2;
-                ratios[iRatio % nRatio] = ratio2;
+            inFile >> hash >> value2;
+            if ( value2 != -1 ) {
+                //                sumRatio += value2;
+                values[iRatio % nRatio] = value2;
                 hashes[iRatio % nRatio] = hash;
                 ++iRatio;
             }
@@ -169,15 +169,15 @@ static void _checkRatio( double ratio,
         double maxRatios[nMaxMean];
         for ( int i = 0; i < nMaxMean; ++i ) {
             sumRatios[i] = 0.0;
-            minRatios[i] = ratios[( iRatio - 1 ) % nRatio];
-            maxRatios[i] = ratios[( iRatio - 1 ) % nRatio];
+            minRatios[i] = values[( iRatio - 1 ) % nRatio];
+            maxRatios[i] = values[( iRatio - 1 ) % nRatio];
         }
 
         const int nEl = std::min( nRatio, iRatio );
         for ( int i = 0; i < nEl; ++i ) {
-            //            std::cout << hashes[i] << " " << ratios[i] << std::endl;
+            //            std::cout << hashes[i] << " " << values[i] << std::endl;
             const int idx       = ( iRatio - 1 - i ) % nRatio;
-            const auto curRatio = ratios[idx];
+            const auto curRatio = values[idx];
 
             for ( int iMean = 0; iMean < nMaxMean; ++iMean ) {
                 if ( i < std::pow( 2.0, iMean ) ) {
@@ -212,16 +212,16 @@ static void _checkRatio( double ratio,
             meanCompareStr             = meanCompareStr.substr( 0, 5 );
 
             report += "(" + std::to_string( (int)std::pow( 2, iMean ) ) + "): " + meanRatioStr +
-                      "% " + deviationStr + "+- " + meanCompareStr + "%";
-            if ( iMean != std::log2( nEl ) ) { report += ",  "; }
+                      " " + deviationStr + "+- " + meanCompareStr;
+            if ( iMean != std::log2( nEl ) ) { report += ", "; }
             //            }
         }
 
         report += "  (";
         for ( int i = 0; i < nEl; ++i ) {
             const int idx = ( iRatio - 1 - i ) % nRatio;
-            //            const auto curRatio = ratios[idx];
-            auto curRatioStr = std::to_string( ratios[idx] );
+            //            const auto curRatio = values[idx];
+            auto curRatioStr = std::to_string( values[idx] );
             curRatioStr      = curRatioStr.substr( 0, 5 );
             report += curRatioStr;
 
@@ -240,7 +240,7 @@ static void _checkRatio( double ratio,
     }
 }
 
-#define checkRatio( ... ) _checkRatio( __VA_ARGS__, FILE_NAME, __LINE__ )
+#define checkValue( ... ) _checkValue( __VA_ARGS__, FILE_NAME, __LINE__ )
 
 
 //template <typename T>

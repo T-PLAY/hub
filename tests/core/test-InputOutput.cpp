@@ -269,8 +269,8 @@ TEST_CASE( "Any test" ) {
     const auto writePerSecond = 1000.0 * ( nWrite + nWrite2 ) / duration;
     const auto readPerSecond  = 1000.0 * ( nRead + nRead2 + nRead3 ) / duration;
 #else
-    const auto writePerSecond = (double)nWrite / durationOutput;
-    const auto readPerSecond  = (double)nRead / durationInput;
+    const auto megaWritePerSecond = (double)nWrite / durationOutput;
+    const auto megaReadPerSecond  = (double)nRead / durationInput;
 #endif
     //    const auto readPerSecond  = 1000.0 * ( nRead ) / duration;
 
@@ -284,9 +284,12 @@ TEST_CASE( "Any test" ) {
     std::cout << "nb read2: " << std::to_string( nRead2 ) << std::endl;
     std::cout << "nb read3: " << std::to_string( nRead3 ) << std::endl;
 #endif
-    std::cout << "writing rate: " << std::to_string( writePerSecond ) << " MegaWrite/s" << std::endl;
-    std::cout << "reading rate: " << std::to_string( readPerSecond ) << " MegaRead/s" << std::endl;
+    std::cout << "writing rate: " << std::to_string( megaWritePerSecond ) << " MegaWrite/s" << std::endl;
+    std::cout << "reading rate: " << std::to_string( megaReadPerSecond ) << " MegaRead/s" << std::endl;
     std::cout << "latency: " << (durationInput - durationOutput) / 1000.0 << " ms" << std::endl;
 
     std::cout << "----------------------------------------" << std::endl;
+
+    checkValue( megaWritePerSecond, 5, 5, "Output: MegaWrite/s" );
+    checkValue( megaReadPerSecond, 5, 5, "Input: MegaRead/s" );
 }
