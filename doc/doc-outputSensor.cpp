@@ -5,7 +5,6 @@
 
 #include <filesystem>
 #include <thread>
-// #include <cassert>
 
 /// \file
 /// \brief  Main function

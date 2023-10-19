@@ -3,7 +3,6 @@
 #include <array>
 #include <iostream>
 
-#include <cassert>
 // #include <stdlib.h>
 #include <cstdint>
 #include <memory>
@@ -515,7 +514,6 @@ class InputData : public Input
 // template < resolution>
 // template <Format format, int... Dims>
 
-#include <cassert>
 
 int main() {
 

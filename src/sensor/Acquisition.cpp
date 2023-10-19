@@ -3,7 +3,6 @@
 #include <algorithm>
 // #include <functional>
 // #include <iterator>
-#include <cassert>
 #include <cmath>
 #include <cstring>
 #include <iomanip>

@@ -1,6 +1,5 @@
 #include "ClientSocketSystem.hpp"
 
-#include <cassert>
 #include <cmath>
 #include <cstring>
 #include <regex>

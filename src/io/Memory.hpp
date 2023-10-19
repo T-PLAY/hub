@@ -1,7 +1,6 @@
 #pragma once
 
 #include <stdexcept>
-#include <cassert>
 
 // #include "InputOutput.hpp"
 #include "core/Macros.hpp"

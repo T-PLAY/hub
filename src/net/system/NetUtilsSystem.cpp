@@ -1,7 +1,6 @@
 
 #include "NetUtilsSystem.hpp"
 
-#include <cassert>
 #include <cstring>
 #include <regex>
 #include <stdio.h>

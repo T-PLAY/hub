@@ -1,6 +1,5 @@
 #include "ServerSocketBoost.hpp"
 
-#include <cassert>
 #include <cstring>
 
 // #include "NetUtilsSystem.hpp"

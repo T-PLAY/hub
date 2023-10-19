@@ -1,7 +1,6 @@
 #include "OutputSensor.hpp"
 
 #include <algorithm>
-#include <cassert>
 #include <iomanip>
 #include <numeric>
 

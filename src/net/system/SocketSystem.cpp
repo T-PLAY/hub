@@ -1,7 +1,6 @@
 #include "SocketSystem.hpp"
 
 #include <algorithm>
-#include <cassert>
 #include <exception>
 
 namespace hub {

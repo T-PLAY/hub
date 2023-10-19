@@ -266,9 +266,11 @@
 //                  << std::endl;
 //#    endif
 
-#ifdef DEBUG
+//#ifdef DEBUG
 #include <cassert>
-#endif
+//#else
+////#undef assert
+//#endif
 
 namespace hub {
     using Data_t = unsigned char;

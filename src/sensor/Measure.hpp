@@ -17,7 +17,6 @@
 // #include "core/Tuple.hpp"
 
 // #include <bits/stdc++.h>
-#include <cassert>
 
 // #include "core/Macros.hpp"
 #include "Format.hpp"

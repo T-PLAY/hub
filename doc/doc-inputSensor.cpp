@@ -3,7 +3,6 @@
 
 #include <filesystem>
 #include <thread>
-// #include <cassert>
 
 #include "../tests/test-common.hpp"
 #include <InputSensor.hpp>

@@ -4,7 +4,6 @@
 
 //#include "InputOutput.hpp"
 #include "core/Macros.hpp"
-#include <cassert>
 
 
 namespace hub {

@@ -3,7 +3,6 @@
 //#include <iostream>
 //#include <memory>
 #include <string>
-#include <cassert>
 #ifndef WIN32
 #    include <unistd.h>
 #else

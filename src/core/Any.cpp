@@ -1,6 +1,5 @@
 #include "Any.hpp"
 
-#include <cassert>
 #include <cstring>
 #include <iostream>
 #include <map>

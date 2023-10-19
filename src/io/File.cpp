@@ -1,6 +1,5 @@
 #include "io/File.hpp"
 
-#include <cassert>
 #include <iostream>
 #include <memory>
 

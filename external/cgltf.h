@@ -1496,7 +1496,7 @@ cgltf_result cgltf_load_buffers(const cgltf_options* options, cgltf_data* data, 
 		else
 		{
 			return cgltf_result_unknown_format;
-		}
+        }
         assert(data->buffers[i].data != nullptr);
     }
 
