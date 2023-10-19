@@ -17,7 +17,7 @@ TEST_CASE( "Resolution test" ) {
 //    static_assert(hub::sensor::format::RGB8. == "RGB8");
 
     static_assert(hub::sensor::format::RGB8.nByte == 3);
-    static_assert(hub::sensor::format::RGB8.name == std::string("RGB8"));
+    static_assert(std::string(hub::sensor::format::RGB8.name) == "RGB8");
     static_assert(! hub::sensor::format::RGB8.interpolable);
 
     auto & format = hub::sensor::format::RGB8;
