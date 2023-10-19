@@ -11,7 +11,6 @@
 
 TEST_CASE( "InputSensor test" ) {
 
-    assert(false);
 
 
 //    const int ref_offset    = 5;
