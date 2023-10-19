@@ -206,7 +206,7 @@ class MeasureT
   public:
     static constexpr auto getFormat() { return format; }
     static constexpr auto nByte() {
-        auto size = format.nByte();
+        auto size = format.nByte;
         //        size = std::accumulate()
         for ( auto dim : { Dims... } )
             size *= dim;
@@ -229,7 +229,7 @@ class MeasureT
     }
     static constexpr std::string typeName() {
         std::string str = "<";
-        str += format.name();
+        str += format.name;
         str += ":";
         Size_t i = 0;
         for ( auto dim : { Dims... } ) {
