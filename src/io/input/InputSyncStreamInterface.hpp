@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Input.hpp"
+#include "core/Input.hpp"
 #include "InputStream.hpp"
 
 

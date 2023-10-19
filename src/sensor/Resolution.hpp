@@ -68,7 +68,7 @@ class Resolution
     constexpr auto getFormat() const { return m_format; }
 
     constexpr auto nByte() const {
-        auto size = m_format.nByte();
+        auto size = m_format.nByte;
         for ( int i = 0; i < nDim(); ++i ) {
             size *= m_dims.at( i );
         }
@@ -101,6 +101,7 @@ class Resolution
     //    template <typename Input>
     //    friend Input& operator>>( Input& input, Resolution& resolution );
 
+//  private:
     template <typename Input>
     void read( Input& input ) {
         input.read( m_format );
@@ -135,7 +136,15 @@ class Resolution
 using Resolutions = std::vector<Resolution>;
 std::ostream& operator<<( std::ostream& os, const Resolutions& resolutions );
 std::string toString( const Resolutions& resolutions );
-Size_t nByte( const Resolutions& resolutions );
+constexpr Size_t nByte( const Resolutions& resolutions );
+
+constexpr Size_t nByte(const Resolutions &resolutions) {
+    Size_t size = 0;
+    for (const auto & resolution : resolutions) {
+        size += resolution.nByte();
+    }
+    return size;
+}
 
 // class Resolutions {
 //   public:

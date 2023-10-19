@@ -2,7 +2,7 @@
 
 #include <fstream>
 
-#include "Input.hpp"
+#include "core/Input.hpp"
 #include "io/File.hpp"
 
 namespace hub {
@@ -30,7 +30,8 @@ class InputFile : public Input, public io::File
     ///
     /// @copydoc InputOutput::isEnd()
     ///
-    bool isEnd() const override;
+//    bool isEnd() const override;
+    bool isEmpty() const override;
 
     ///
     /// @copydoc InputOutput::read()

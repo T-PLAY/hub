@@ -29,12 +29,12 @@ class Format
     // end io
 
 
-    constexpr auto nByte() const { return m_nByte; }
-    constexpr std::string name() const { return m_name; }
+//    constexpr auto nByte() const { return m_nByte; }
+//    constexpr std::string name() const { return m_name; }
 
     constexpr bool operator==( const Format& format ) const {
-        return m_nByte == format.m_nByte && !std::memcmp( m_name, format.m_name, s_maxNameLen ) &&
-               m_isInterpolable == format.m_isInterpolable;
+        return nByte == format.nByte && !std::memcmp( name, format.name, s_maxNameLen ) &&
+               interpolable == format.interpolable;
     }
 
     SRC_API friend std::ostream& operator<<( std::ostream& os, const Format& format );
@@ -44,13 +44,14 @@ class Format
 
 //    template <typename Input>
 //    friend Input& operator>>( Input& input, Format& format );
-
-    //  private:
+  private:
     static constexpr auto s_maxNameLen = 32;
-    Size_t m_nByte                   = 0;
-    char m_name[s_maxNameLen]          = { 0 };
+
+  public:
+    Size_t nByte                   = 0;
+    char name[s_maxNameLen]          = { 0 };
 //    std::array<char, s_maxNameLen> m_name;
-    bool m_isInterpolable;
+    bool interpolable;
 };
 
 //template <typename Output>
@@ -99,11 +100,11 @@ static constexpr Format GPIO_RAW		{ 0, 				"GPIO_RAW", 		false };	// Raw data fr
 static constexpr Format DISPARITY32		{ 4, 				"DISPARITY32", 		false };	// 32-bit float-point disparity values. Depth->Disparity conversion : Disparity = Baseline*FocalLength/Depth.
 static constexpr Format DOF6			{ 3 * 4 + 4 * 4,	"DOF6", 			false };	// Pose data packed as floats array, containing translation vector (x, y, z), rotation quaternion (w0, w1, w2, w3 || w, x, y, z).
 static constexpr Format INZI			{ 0, 				"INZI", 			false };	// multi-planar Depth 16bit + IR 10bit.
+static constexpr Format MESH			{ 0, 				"MESH", 			false };	// Mesh consist of shapes of vertices with indexes.
+static constexpr Format POINT			{ 0, 				"POINT",		 	false };	// Point consist of x, y and z position, rgb color and depth .
 
 // custom
 static constexpr Format USER_DATA		{ 0, 				"USER_DATA", 		false };	// User data with name and any value.
-static constexpr Format MESH			{ 0, 				"MESH", 			false };	// Mesh consist of shapes of vertices with indexes.
-static constexpr Format POINT			{ 0, 				"POINT",		 	false };	// Point consist of x, y and z position, rgb color and depth .
 
 // clang-format on
 } // namespace format

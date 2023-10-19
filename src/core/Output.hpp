@@ -3,13 +3,14 @@
 #include <exception>
 #include <list>
 #include <map>
+#include <vector>
 
 #define HUB_THREAD_SAFE
 #ifdef HUB_THREAD_SAFE
 #include <mutex>
 #endif
 
-#include "core/Any.hpp"
+//#include "core/Any.hpp"
 #include "core/Macros.hpp"
 #if defined(OS_MACOS) && CPLUSPLUS_VERSION <= 14
 #include "core/Traits.hpp"
@@ -156,7 +157,7 @@ class SRC_API Output
     /// \brief write
     /// \param any
     ///
-    void write( const Any& any );
+//    void write( const Any& any );
 
     ///
     /// \brief write

@@ -1,6 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include <io/output/Output.hpp>
+#include <core/Output.hpp>
 
 #include <io/Memory.hpp>
 #include <data/Measure.hpp>

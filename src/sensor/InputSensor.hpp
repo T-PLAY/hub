@@ -38,6 +38,7 @@ namespace sensor {
 class InputSensor : public Sensor {
   public:
     using Sensor::acq;
+//    using Input::read;
 
     template <class InputT>
     explicit InputSensor( InputT&& input ) :

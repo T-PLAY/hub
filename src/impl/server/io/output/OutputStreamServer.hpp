@@ -6,7 +6,7 @@
 //#include "Output.hpp"
 //#include "OutputStreamInterface.hpp"
 //#include "net/ClientSocket.hpp"
-#include "Output.hpp"
+#include "core/Output.hpp"
 #include "io/StreamServer.hpp"
 
 namespace hub {

@@ -2,7 +2,7 @@
 
 #include <fstream>
 
-#include "Input.hpp"
+#include "core/Input.hpp"
 //#include "io/Memory.hpp"
 #include "io/MemoryInterface.hpp"
 

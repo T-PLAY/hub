@@ -266,6 +266,10 @@
 //                  << std::endl;
 //#    endif
 
+#ifdef DEBUG
+#include <cassert>
+#endif
+
 namespace hub {
     using Data_t = unsigned char;
 //    using Size_t = uint64_t;

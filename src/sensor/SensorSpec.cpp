@@ -36,12 +36,14 @@ SensorSpec SensorSpec::operator+( const SensorSpec& sensorSpec ) const {
     SensorSpec::MetaData metaData;
 
     sensorName  = m_sensorName + " + " + sensorSpec.m_sensorName;
+
     resolutions = m_resolutions;
     resolutions.insert(
         resolutions.end(), sensorSpec.m_resolutions.begin(), sensorSpec.m_resolutions.end() );
-    metaData = m_metaData;
 
+    metaData = m_metaData;
     metaData.insert( sensorSpec.m_metaData.begin(), sensorSpec.m_metaData.end() );
+
     metaData.erase( "parent" );
 
     return SensorSpec( std::move( sensorName ),
@@ -138,8 +140,14 @@ std::string SensorSpec::to_string( const SensorSpec::MetaData& metaData, bool ex
     }
     else {
         str += "[";
+        int i = 0;
         for ( const auto& pair : metaData ) {
-            str += to_string( pair ) + ", ";
+//            for (int i = 0; i < metaData.size(); ++i) {
+//            const auto & pair = metaData.a;
+            str += to_string( pair );
+            if (i != metaData.size() - 1)
+                str += ", ";
+            ++i;
         }
         str += "]";
     }

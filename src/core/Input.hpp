@@ -4,14 +4,15 @@
 #include <iostream>
 #include <list>
 #include <map>
-#include <thread>
+//#include <thread>
+#include <vector>
 
 //#define HUB_THREAD_SAFE
 #ifdef HUB_THREAD_SAFE
 #include <mutex>
 #endif
 
-#include "core/Any.hpp"
+//#include "core/Any.hpp"
 #include "core/Macros.hpp"
 
 #if defined(OS_MACOS) && CPLUSPLUS_VERSION <= 14 // std::void_t not supported by AppleClang (c++14)
@@ -65,7 +66,7 @@ class SRC_API Input
 
     virtual ~Input() = default;
 
-  protected:
+//  protected:
     ///
     /// \brief read
     /// function describes how to read data through from the communication bus.

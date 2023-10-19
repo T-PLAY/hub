@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Output.hpp"
+#include "core/Output.hpp"
 //#include "io/Memory.hpp"
 #include "io/MemoryInterface.hpp"
 

@@ -93,17 +93,17 @@ if (NOT HUB_BUILD_SERVER)
 #    list(REMOVE_ITEM test_srcs ${server_srcs})
 endif()
 
-## gathering tests
-##add_executable(test-all ${test_srcs} ${test_common})
-#add_executable(test-all ${test_srcs})
-## target_link_libraries(test-all Catch2::Catch2WithMain hub PahoMqttCpp::paho-mqttpp3)
-#target_link_libraries(test-all ${LINK_LIBRARIES})
-#target_include_directories(test-all PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+# gathering tests
+#add_executable(test-all ${test_srcs} ${test_common})
+add_executable(test-all ${test_srcs})
+# target_link_libraries(test-all Catch2::Catch2WithMain hub PahoMqttCpp::paho-mqttpp3)
+target_link_libraries(test-all ${LINK_LIBRARIES})
+target_include_directories(test-all PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 #set_property(TARGET test-all PROPERTY CXX_STANDARD ${CMAKE_CXX_STANDARD})
 #set_property(TARGET test-all PROPERTY CXX_EXTENSIONS OFF)
-#if (PahoMqttCpp_FOUND)
-#    target_compile_definitions(test-all PUBLIC -DHUB_TESTS_MQTT_FOUND)
-#endif()
+if (PahoMqttCpp_FOUND)
+    target_compile_definitions(test-all PUBLIC -DHUB_TESTS_MQTT_FOUND)
+endif()
 
 #if(WIN32)
 #    add_custom_command(

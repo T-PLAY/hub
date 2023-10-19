@@ -3,24 +3,26 @@
 
 #include <sensor/InputSensor.hpp>
 #include <sensor/OutputSensor.hpp>
-#include <io/File.hpp>
+// #include <io/File.hpp>
 
 TEST_CASE( "SensorSpec test" ) {
 
     hub::sensor::SensorSpec::MetaData metaData;
     metaData["hello"] = 5;
     metaData["name"]  = "gauthier";
-    hub::sensor::Dims dims    = { 1 };
-    hub::sensor::SensorSpec sensorSpec { "sensorName", { { dims, hub::sensor::Format::BGR8 } }, metaData };
+    //    hub::sensor::Resolution::Dims dims = { 1 };
+    hub::sensor::Resolution resolution { hub::sensor::format::BGR8, 1 };
+    hub::sensor::Resolutions resolutions { resolution };
+    hub::sensor::SensorSpec sensorSpec { "sensorName", resolutions, metaData };
 
     CHECK( sensorSpec.getSensorName() == "sensorName" );
     CHECK( sensorSpec.getAcquisitionSize() == 3 );
 
-    hub::sensor::SensorSpec sensorSpec2 { "sensorName2", { { { 2 }, hub::sensor::Format::RGB8 } } };
+    hub::sensor::SensorSpec sensorSpec2 { "sensorName2", { { hub::sensor::format::RGB8, 1 } } };
 
     auto sensorSpecSum = sensorSpec + sensorSpec2;
     CHECK( sensorSpecSum.getSensorName() == "sensorName + sensorName2" );
-    CHECK( sensorSpecSum.getAcquisitionSize() == 9 );
+    CHECK( sensorSpecSum.getAcquisitionSize() == 6 );
 
     hub::sensor::SensorSpec sensorSpec3;
     sensorSpec3 += sensorSpec;

@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "Output.hpp"
+#include "core/Output.hpp"
 
 #ifdef HUB_BUILD_SERVER
 #    include "OutputStreamServer.hpp"

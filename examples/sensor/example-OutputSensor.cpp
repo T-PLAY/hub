@@ -45,14 +45,14 @@ class InputOutput : public hub::Input, public hub::Output
         auto vector = m_datas.front();
         m_datas.pop();
         assert( vector.size() == size );
-        std::cout << HEADER_INPUT_MSG "read(Data_t*, Size_t) : data = " << vector << std::endl;
+//        std::cout << HEADER_INPUT_MSG "read(Data_t*, Size_t) : data = " << vector << std::endl;
 
         memcpy( data, vector.data(), size );
     }
 
     void write( const hub::Data_t* data, hub::Size_t size ) override {
         std::vector<hub::Data_t> vector( data, data + size );
-        std::cout << HEADER_OUTPUT_MSG "write(T) : data = " << vector << std::endl;
+//        std::cout << HEADER_OUTPUT_MSG "write(T) : data = " << vector << std::endl;
         m_datas.push( vector );
     }
 
@@ -63,7 +63,14 @@ class InputOutput : public hub::Input, public hub::Output
         return true;
     };
 
-    bool isEnd() const override {
+    void clear() override {
+        while (! m_datas.empty())
+            m_datas.pop();
+        assert(m_datas.empty());
+    }
+
+//    bool isEnd() const override {
+    bool isEmpty() const override {
         return m_datas.empty();
     }
 
@@ -112,8 +119,8 @@ int main() {
     //    assert(value == 5);
     //    return 0;
 
-    const std::string ipv4 = "127.0.0.1";
-    const int port         = 4042;
+//    const std::string ipv4 = "127.0.0.1";
+//    const int port         = 4042;
 
     //    class UserFormat {
     //      public:
@@ -284,7 +291,7 @@ int main() {
     //    //    std::cout << "acqread: " << acq12_read << std::endl;
 
     //    int iAcq = 0;
-    //    while ( !inputSensorT12.getInput().isEnd() ) {
+    //    while ( !inputSensorT12.getInput().isEmpty() ) {
     //        inputSensorT12 >> acq12_read;
 
     //        assert( acq12_read.getStart() == iAcq );
@@ -317,7 +324,7 @@ int main() {
     ///////////////
 
     //    InputOutput inputOutput;
-    //    assert( inputOutput.isEnd() );
+    //    assert( inputOutput.isEmpty() );
     std::cout << "--------------------------- no template part" << std::endl;
 
     //    constexpr std::vector<int> vec = {1, 2, 3};
@@ -362,7 +369,7 @@ int main() {
 
     InputOutput inputOutput;
 
-    assert(inputOutput.isEnd());
+    assert(inputOutput.isEmpty());
 
     static_assert(! hub::Input::readable<hub::sensor::Format>());
     static_assert(! hub::Output::writable<hub::sensor::Format>());
@@ -374,7 +381,7 @@ int main() {
     inputOutput.read(format_read);
     assert(format == format_read);
 
-    assert(inputOutput.isEnd());
+    assert(inputOutput.isEmpty());
 
 
 //    inputOutput << dims;
@@ -384,7 +391,7 @@ int main() {
     inputOutput.read(dims_read);
     assert(dims == dims_read);
 
-    assert(inputOutput.isEnd());
+    assert(inputOutput.isEmpty());
 
 //    inputOutput << resolution1;
     inputOutput.write(resolution1);
@@ -393,22 +400,22 @@ int main() {
     inputOutput.read(resolution1_read);
     assert(resolution1 == resolution1_read);
 
-//    assert(inputOutput.isEnd());
+//    assert(inputOutput.isEmpty());
     static_assert(hub::Input::readable<hub::sensor::Resolution>());
     static_assert(hub::Output::writable<hub::sensor::Resolution>());
 
-    assert(inputOutput.isEnd());
+    assert(inputOutput.isEmpty());
 
     inputOutput.write(sensorSpec);
     hub::sensor::SensorSpec sensorSpec_read;
     inputOutput.read(sensorSpec_read);
     assert(sensorSpec == sensorSpec_read);
 
-    assert(inputOutput.isEnd());
+    assert(inputOutput.isEmpty());
 
     hub::sensor::OutputSensor outputSensor{ inputOutput, sensorSpec };
 
-    assert(! inputOutput.isEnd());
+    assert(! inputOutput.isEmpty());
 
     auto acq12 = outputSensor.acq();
 
@@ -461,7 +468,8 @@ int main() {
 //            auto& measure2_read = acq12_read.getMeasures().at(1);
 
         int iAcq = 0;
-        while ( !inputSensor.getInput().isEnd() ) {
+//        while ( !inputSensor.getInput().isEmpty() ) {
+        while ( !inputSensor.getInput().isEmpty() ) {
             inputSensor >> acq12_read;
 
             assert( acq12_read.getStart() == iAcq );
@@ -524,7 +532,7 @@ int main() {
     //    /////////////////////////////////////////////////////////////////////
 
     //    hub::sensor::Format format_write = hub::sensor::format::Y8;
-    //    assert( inputOutput.isEnd() );
+    //    assert( inputOutput.isEmpty() );
 
     //    inputOutput.write( format_write );
 
@@ -743,7 +751,7 @@ int main() {
 //    auto& operator>>( std::string& str ) {
 
 //        //        assert( isOpen() );
-//        //        assert( !isEnd() );
+//        //        assert( !isEmpty() );
 
 //        int strLen = 0;
 //        //        read( strLen );
@@ -805,7 +813,7 @@ int main() {
 //    //        std::endl;
 //    //    }
 
-//    bool isEnd() const { return m_datas.empty(); }
+//    bool isEmpty() const { return m_datas.empty(); }
 
 //    //    void read( hub::Data_t* data, hub::Size_t size ) {
 //    //        assert( !m_datas.empty() );

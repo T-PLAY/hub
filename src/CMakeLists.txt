@@ -134,6 +134,7 @@ if (NOT XCODE) # unable to have object files as native build with Xcode
             GLOB_RECURSE
             sources
             ${CMAKE_CURRENT_SOURCE_DIR}/${HUB_SOURCE_DIR}/*.cpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/impl/server/${HUB_SOURCE_DIR}/*.cpp
 #            ${HUB_EXTERNAL_DIR}/*.cpp
 #            ${HUB_EXTERNAL_DIR}/*.c
         )
@@ -144,6 +145,7 @@ if (NOT XCODE) # unable to have object files as native build with Xcode
             GLOB_RECURSE
             headers
             ${CMAKE_CURRENT_SOURCE_DIR}/${HUB_SOURCE_DIR}/*.hpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/impl/server/${HUB_SOURCE_DIR}/*.hpp
 #            ${HUB_EXTERNAL_DIR}/*.hpp
 #            ${HUB_EXTERNAL_DIR}/*.h
         #    ${HUB_EXTERNAL_DIR}/*.inl
@@ -176,6 +178,7 @@ if (NOT XCODE) # unable to have object files as native build with Xcode
                 $<INSTALL_INTERFACE:include>
             PRIVATE
                 ${HUB_EXTERNAL_DIR}
+                ${CMAKE_CURRENT_SOURCE_DIR}/impl/server
         )
 
         #target_compile_definitions(${TARGET_NAME} PUBLIC -DINTERNAL_BUILD)
@@ -308,6 +311,7 @@ if (HUB_BUILD_STATIC)
                 $<INSTALL_INTERFACE:include>
             PRIVATE
                 ${HUB_EXTERNAL_DIR}
+                ${CMAKE_CURRENT_SOURCE_DIR}/impl/server
         )
         if (PahoMqttCpp_FOUND)
             target_compile_definitions(${PROJECT_NAME}_static PUBLIC -DHUB_BUILD_MQTT)
@@ -415,6 +419,7 @@ if (HUB_BUILD_SHARED)
                 $<INSTALL_INTERFACE:include>
             PRIVATE
                 ${HUB_EXTERNAL_DIR}
+                ${CMAKE_CURRENT_SOURCE_DIR}/impl/server
         )
         if (PahoMqttCpp_FOUND)
             target_compile_definitions(${PROJECT_NAME}_shared PUBLIC -DHUB_BUILD_MQTT)

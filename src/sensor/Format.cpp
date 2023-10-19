@@ -15,7 +15,7 @@ namespace sensor {
 //namespace format {
 
 std::ostream& operator<<( std::ostream& os, const Format& format ) {
-    os << "{" << format.m_name << ", " << format.m_nByte << ", " << format.m_isInterpolable << "}";
+    os << "{" << format.name << ", " << format.nByte << ", " << format.interpolable << "}";
     return os;
 }
 

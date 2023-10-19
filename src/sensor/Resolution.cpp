@@ -30,7 +30,7 @@ std::ostream& operator<<( std::ostream& os, const Resolution& resolution ) {
     //    constexpr std::string name() const {
     //        std::string str = "<";
 //    os << "<" << resolution.m_format.name() << ":" << resolution.m_dims << ">";
-    os << resolution.m_format.name() << ":" << resolution.m_dims;
+    os << resolution.m_format.name << ":" << resolution.m_dims;
     //        str += m_format.name();
     //        str += ":";
     //        for ( Size_t i = 0; i < m_nDim; ++i ) {
@@ -69,13 +69,14 @@ std::string toString(const Resolutions &resolutions) {
     return ss.str();
 }
 
-Size_t nByte(const Resolutions &resolutions) {
-    Size_t size = 0;
-    for (const auto & resolution : resolutions) {
-        size += resolution.nByte();
-    }
-    return size;
-}
+//Size_t nByte(const Resolutions &resolutions) {
+//    Size_t size = 0;
+//    for (const auto & resolution : resolutions) {
+//        size += resolution.nByte();
+//    }
+//    return size;
+//}
+
 
 //Output &operator<<(Output &output, const Resolution &resolution) {
 //    output << resolution.m_format;

@@ -1,11 +1,11 @@
 
 #pragma once
 
-#include "Input.hpp"
+#include "core/Input.hpp"
 //#include "InputStream.hpp"
 
 #ifdef HUB_BUILD_SERVER
-#    include "InputStreamServer.hpp"
+#    include "io/input/InputStreamServer.hpp"
 #endif
 
 #ifdef HUB_BUILD_MQTT

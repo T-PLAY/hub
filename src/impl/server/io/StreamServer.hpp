@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include "StreamInterface.hpp"
+#include "io/StreamInterface.hpp"
 #include "net/ClientSocket.hpp"
 
 namespace hub {
