@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.8)
 
 project(hub)
 
-#set(CMAKE_FIND_PACKAGE_NO_SYSTEM_PACKAGE_REGISTRY False)
 
 include(cmake/Functions.cmake)
 set_property(GLOBAL PROPERTY CUSTOM_TARGETS_FOUNDED "")

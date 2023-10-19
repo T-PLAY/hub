@@ -154,11 +154,16 @@ if (NOT XCODE) # unable to have object files as native build with Xcode
             list(FILTER headers EXCLUDE REGEX ".*Mqtt\\.hpp$")
         endif()
 
+        if (NOT Boost_FOUND)
+#            message(FATAL_ERROR "ouou")
+            list(FILTER sources EXCLUDE REGEX ".*boost/.*\\.cpp$")
+            list(FILTER headers EXCLUDE REGEX ".*boost/.*\\.hpp$")
+        endif()
+
 #        add_library(${PROJECT_NAME} OBJECT ${sources} ${headers})
 #        add_library(${TARGET_NAME} INTERFACE ${sources} ${headers})
 #        add_library(${TARGET_NAME} INTERFACE ${headers})
         add_library(${TARGET_NAME} OBJECT ${sources} ${headers}
-            core/Vector.hpp
         )
 #        add_library(${TARGET_NAME} SHARED ${sources} ${headers})
 

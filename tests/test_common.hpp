@@ -241,7 +241,7 @@ static void _checkValue( double value,
     }
 }
 
-#define checkValue( ... ) _checkValue( __VA_ARGS__, FILE_NAME, __LINE__ )
+#define CHECK_VALUE( ... ) _checkValue( __VA_ARGS__, FILE_NAME, __LINE__ )
 
 
 //template <typename T>

@@ -136,7 +136,7 @@ void ClientSocketSystem::connect() {
     }
 
     m_connected = true;
-    std::cout << "[ClientSocketSystem] connect() " << std::endl;
+//    std::cout << "[ClientSocketSystem] connect() " << std::endl;
 //    assert( isOpen() );
     assert( isConnected() );
     assert( SocketSystem::isConnected() );

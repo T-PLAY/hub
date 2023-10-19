@@ -6,7 +6,7 @@
 #include <regex>
 #include <thread>
 
-#define DEBUG_SOCKET
+//#define DEBUG_SOCKET
 
 namespace hub {
 namespace net {
