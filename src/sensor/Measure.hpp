@@ -79,7 +79,7 @@ class Measure
 //    Measure() = default;
 
     constexpr bool operator==( const Measure& measure ) const {
-        return m_resolution == measure.m_resolution && std::memcmp(m_data, measure.m_data, nByte());
+        return m_resolution == measure.m_resolution && ! std::memcmp(m_data, measure.m_data, nByte());
 //        return nByte() == measure.nByte() && nDim() == measure.nDim();
     }
 
@@ -98,6 +98,8 @@ class Measure
     //  private:
     const Resolution & getResolution() const;
 
+    Data_t *getData() const;
+
   private:
 //    static constexpr auto s_maxDim = 3;
     const Resolution m_resolution;
@@ -109,6 +111,11 @@ class Measure
 //    Size_t m_nDim = 0;
     //    Size_t m_dims[s_maxDim];
 };
+
+inline Data_t *Measure::getData() const
+{
+    return m_data;
+}
 
 using Measures = std::vector<Measure>;
 
@@ -199,213 +206,213 @@ std::ostream& operator<<( std::ostream& os, const Measures& measures );
 ////////////////////////////////////////////// TEMPLATES
 ////////////////////////////////////////////////////////////////////////////
 
-template <Format format, Size_t... Dims>
-class MeasureT
-{
-  public:
-    static constexpr auto getFormat() { return format; }
-    static constexpr auto nByte() {
-        auto size = format.nByte;
-        //        size = std::accumulate()
-        for ( auto dim : { Dims... } )
-            size *= dim;
-        return size;
-    }
-    static constexpr auto nDim() {
-        auto nDim = 0;
-        for ( auto n : { Dims... } ) {
-            ++nDim;
-        }
-        return nDim;
-    }
-    static constexpr auto getDim( int iDim ) {
-        auto i = 0;
-        for ( auto dim : { Dims... } ) {
-            if ( i == iDim ) return dim;
-            ++i;
-        }
-        return (Size_t)0;
-    }
-    static constexpr std::string typeName() {
-        std::string str = "<";
-        str += format.name;
-        str += ":";
-        Size_t i = 0;
-        for ( auto dim : { Dims... } ) {
-            str += std::to_string( dim );
-            if ( i != nDim() - 1 ) str += "x";
-            ++i;
-        }
-        //            int _[]  = { ( str += std::to_string(Dims) + ", " )... };
-        str += ">";
-        return str;
-    }
-    static constexpr Size_t nMeasure() { return 1; }
+//template <Format format, Size_t... Dims>
+//class MeasureT
+//{
+//  public:
+//    static constexpr auto getFormat() { return format; }
+//    static constexpr auto nByte() {
+//        auto size = format.nByte;
+//        //        size = std::accumulate()
+//        for ( auto dim : { Dims... } )
+//            size *= dim;
+//        return size;
+//    }
+//    static constexpr auto nDim() {
+//        auto nDim = 0;
+//        for ( auto n : { Dims... } ) {
+//            ++nDim;
+//        }
+//        return nDim;
+//    }
+//    static constexpr auto getDim( int iDim ) {
+//        auto i = 0;
+//        for ( auto dim : { Dims... } ) {
+//            if ( i == iDim ) return dim;
+//            ++i;
+//        }
+//        return (Size_t)0;
+//    }
+//    static constexpr std::string typeName() {
+//        std::string str = "<";
+//        str += format.name;
+//        str += ":";
+//        Size_t i = 0;
+//        for ( auto dim : { Dims... } ) {
+//            str += std::to_string( dim );
+//            if ( i != nDim() - 1 ) str += "x";
+//            ++i;
+//        }
+//        //            int _[]  = { ( str += std::to_string(Dims) + ", " )... };
+//        str += ">";
+//        return str;
+//    }
+//    static constexpr Size_t nMeasure() { return 1; }
 
-    constexpr bool operator==( const MeasureT& measure ) const {
-        assert( m_data != nullptr );
-        assert( measure.m_data != nullptr );
-        static_assert( nByte() == measure.nByte() );
-        static_assert( nDim() == measure.nDim() );
-        return !std::memcmp( m_data, measure.m_data, nByte() );
-        //        return m_array == measure.m_array;
-    }
+//    constexpr bool operator==( const MeasureT& measure ) const {
+//        assert( m_data != nullptr );
+//        assert( measure.m_data != nullptr );
+//        static_assert( nByte() == measure.nByte() );
+//        static_assert( nDim() == measure.nDim() );
+//        return !std::memcmp( m_data, measure.m_data, nByte() );
+//        //        return m_array == measure.m_array;
+//    }
 
-    Data_t* getData() {
-        assert( m_data != nullptr );
-        return m_data;
-        //        return m_array.data();
-    }
+//    const Data_t* getData() const {
+//        assert( m_data != nullptr );
+//        return m_data;
+//        //        return m_array.data();
+//    }
 
-    void setData( const Data_t* const data, Size_t size ) {
-        assert( m_data != nullptr );
-        assert( nByte() == size );
+//    void setData( const Data_t* const data, Size_t size ) {
+//        assert( m_data != nullptr );
+//        assert( nByte() == size );
 
-        assert( data != nullptr );
-        //        data[0] = 0;
-        //        m_data = nullptr;
-        //        m_data[0] = 0;
-        std::memcpy( m_data, data, size );
-    }
+//        assert( data != nullptr );
+//        //        data[0] = 0;
+//        //        m_data = nullptr;
+//        //        m_data[0] = 0;
+//        std::memcpy( m_data, data, size );
+//    }
 
-    void setData( Data_t* const data ) {
-        //        assert( getSize() == size );
-        assert( data != nullptr );
-        m_data = data;
-        //        data[0] = 0;
-        //        m_data = nullptr;
-        //        m_data[0] = 0;
-        //        std::memcpy( m_data, data, size );
-    }
+//    void setData( Data_t* const data ) {
+//        //        assert( getSize() == size );
+//        assert( data != nullptr );
+//        m_data = data;
+//        //        data[0] = 0;
+//        //        m_data = nullptr;
+//        //        m_data[0] = 0;
+//        //        std::memcpy( m_data, data, size );
+//    }
 
-    template <Format formatT, Size_t... DimsT>
-    SRC_API friend std::ostream& operator<<( std::ostream& os,
-                                             const MeasureT<formatT, DimsT...>& measure );
+//    template <Format formatT, Size_t... DimsT>
+//    SRC_API friend std::ostream& operator<<( std::ostream& os,
+//                                             const MeasureT<formatT, DimsT...>& measure );
 
-  private:
-    unsigned char* m_data = nullptr;
-};
+//  private:
+//    unsigned char* m_data = nullptr;
+//};
 
-template <Format format, Size_t... Dims>
-std::ostream& operator<<( std::ostream& os, const MeasureT<format, Dims...>& measure ) {
+//template <Format format, Size_t... Dims>
+//std::ostream& operator<<( std::ostream& os, const MeasureT<format, Dims...>& measure ) {
 
-    os << measure.typeName();
-    os << " = ";
+//    os << measure.typeName();
+//    os << " = ";
 
-    const auto* data = measure.m_data;
-    if ( data == nullptr ) { os << "nil"; }
-    else {
-        os << "[";
-        assert( data != nullptr );
+//    const auto* data = measure.m_data;
+//    if ( data == nullptr ) { os << "nil"; }
+//    else {
+//        os << "[";
+//        assert( data != nullptr );
 
-        constexpr Size_t nMaxDataToShow = 10;
-        const auto iMax                   = std::min( measure.nByte(), nMaxDataToShow );
-        for ( auto i = 0; i < iMax; ++i ) {
-            //        os << std::setw( 3 ) << (int)array[i] << " ";
-            os << std::to_string( data[i] );
-            if ( i != iMax - 1 ) os << " ";
-        }
-        if ( measure.nByte() > nMaxDataToShow ) {
-            os << " ... " << std::to_string( data[iMax - 1] );
-        }
-        os << "]";
-    }
+//        constexpr Size_t nMaxDataToShow = 10;
+//        const auto iMax                   = std::min( measure.nByte(), nMaxDataToShow );
+//        for ( auto i = 0; i < iMax; ++i ) {
+//            //        os << std::setw( 3 ) << (int)array[i] << " ";
+//            os << std::to_string( data[i] );
+//            if ( i != iMax - 1 ) os << " ";
+//        }
+//        if ( measure.nByte() > nMaxDataToShow ) {
+//            os << " ... " << std::to_string( data[iMax - 1] );
+//        }
+//        os << "]";
+//    }
 
-    return os;
-}
+//    return os;
+//}
 
-////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////
 
-template <typename... MeasureT>
-// template <Format, Measure<Format format, int... Dims>... Measure>
-class MeasuresT
-{
-  public:
-    static constexpr auto nByte() {
-        auto size = 0;
-        int _[]   = { ( size = size + MeasureT::nByte() )... };
-        return size;
-    }
-    static constexpr auto nMeasure() {
-        auto size = 0;
-        int _[]   = { ( size = size + MeasureT::nMeasure() )... };
-        return size;
-    }
+//template <typename... MeasureT>
+//// template <Format, Measure<Format format, int... Dims>... Measure>
+//class MeasuresT
+//{
+//  public:
+//    static constexpr auto nByte() {
+//        auto size = 0;
+//        int _[]   = { ( size = size + MeasureT::nByte() )... };
+//        return size;
+//    }
+//    static constexpr auto nMeasure() {
+//        auto size = 0;
+//        int _[]   = { ( size = size + MeasureT::nMeasure() )... };
+//        return size;
+//    }
 
-    template <typename T>
-    auto& get() {
-        return std::get<T>( m_tuple );
-        //        T t;
-        //        m_measures::get<T>();
-        //        return m_measures.get<T>();
-        //        return m_measures.get<T>();
-        //        return std::get<T>( m_measures );
-    }
+//    template <typename T>
+//    auto& get() {
+//        return std::get<T>( m_tuple );
+//        //        T t;
+//        //        m_measures::get<T>();
+//        //        return m_measures.get<T>();
+//        //        return m_measures.get<T>();
+//        //        return std::get<T>( m_measures );
+//    }
 
-    template <int id>
-    auto& get() {
-        //        return std::get<id>( m_tuple );
-        //        return std::get<id>( m_measures );
-        return std::get<id>( m_tuple );
-        //        return MeasuresT::get<id>();
-    }
+//    template <int id>
+//    auto& get() {
+//        //        return std::get<id>( m_tuple );
+//        //        return std::get<id>( m_measures );
+//        return std::get<id>( m_tuple );
+//        //        return MeasuresT::get<id>();
+//    }
 
-    template <size_t Index = 0, // start iteration at 0 index
-                                //          typename TTuple,  // the tuple type
-              //          size_t Size = std::tuple_size_v<std::remove_reference_t<TTuple>>, // tuple
-              //          size
-              typename TCallable, // the callable to be invoked for each tuple item
-              typename... TArgs   // other arguments to be passed to the callable
-              >
-    void for_each( TCallable&& callable, TArgs&&... args ) {
-        if constexpr ( Index < nMeasure() ) {
-            std::invoke( callable, args..., std::get<Index>( m_tuple ) );
+//    template <size_t Index = 0, // start iteration at 0 index
+//                                //          typename TTuple,  // the tuple type
+//              //          size_t Size = std::tuple_size_v<std::remove_reference_t<TTuple>>, // tuple
+//              //          size
+//              typename TCallable, // the callable to be invoked for each tuple item
+//              typename... TArgs   // other arguments to be passed to the callable
+//              >
+//    void for_each( TCallable&& callable, TArgs&&... args ) {
+//        if constexpr ( Index < nMeasure() ) {
+//            std::invoke( callable, args..., std::get<Index>( m_tuple ) );
 
-            if constexpr ( Index + 1 < nMeasure() )
-                for_each<Index + 1>( std::forward<TCallable>( callable ),
-                                     std::forward<TArgs>( args )... );
-        }
-    }
+//            if constexpr ( Index + 1 < nMeasure() )
+//                for_each<Index + 1>( std::forward<TCallable>( callable ),
+//                                     std::forward<TArgs>( args )... );
+//        }
+//    }
 
-    //    auto& at( int i ) {
-    //        return true;
-    ////        return std::get<i>( m_tuple );
-    //    }
+//    //    auto& at( int i ) {
+//    //        return true;
+//    ////        return std::get<i>( m_tuple );
+//    //    }
 
-    constexpr auto& getTuple() { return m_tuple; }
+//    constexpr auto& getTuple() { return m_tuple; }
 
-    template <typename... MeasureT_>
-    SRC_API friend std::ostream& operator<<( std::ostream& os,
-                                             const MeasuresT<MeasureT_...>& measures );
+//    template <typename... MeasureT_>
+//    SRC_API friend std::ostream& operator<<( std::ostream& os,
+//                                             const MeasuresT<MeasureT_...>& measures );
 
-  private:
-    std::tuple<MeasureT...> m_tuple;
-};
+//  private:
+//    std::tuple<MeasureT...> m_tuple;
+//};
 
-template <typename TupleT, std::size_t... Is>
-std::ostream& printTupleImp( std::ostream& os, const TupleT& tp, std::index_sequence<Is...> ) {
-    size_t index   = 0;
-    auto printElem = [&index, &os]( const auto& x ) {
-        if ( index++ > 0 ) os << ", ";
-        os << x;
-    };
+//template <typename TupleT, std::size_t... Is>
+//std::ostream& printTupleImp( std::ostream& os, const TupleT& tp, std::index_sequence<Is...> ) {
+//    size_t index   = 0;
+//    auto printElem = [&index, &os]( const auto& x ) {
+//        if ( index++ > 0 ) os << ", ";
+//        os << x;
+//    };
 
-    os << "(";
-    ( printElem( std::get<Is>( tp ) ), ... );
-    os << ")";
-    return os;
-}
+//    os << "(";
+//    ( printElem( std::get<Is>( tp ) ), ... );
+//    os << ")";
+//    return os;
+//}
 
-template <typename TupleT, std::size_t TupSize = std::tuple_size<TupleT>::value>
-std::ostream& operator<<( std::ostream& os, const TupleT& tp ) {
-    return printTupleImp( os, tp, std::make_index_sequence<TupSize> {} );
-}
+//template <typename TupleT, std::size_t TupSize = std::tuple_size<TupleT>::value>
+//std::ostream& operator<<( std::ostream& os, const TupleT& tp ) {
+//    return printTupleImp( os, tp, std::make_index_sequence<TupSize> {} );
+//}
 
-template <typename... MeasureT>
-std::ostream& operator<<( std::ostream& os, const MeasuresT<MeasureT...>& measures ) {
-    os << measures.m_tuple;
-    return os;
-}
+//template <typename... MeasureT>
+//std::ostream& operator<<( std::ostream& os, const MeasuresT<MeasureT...>& measures ) {
+//    os << measures.m_tuple;
+//    return os;
+//}
 
 } // namespace sensor
 } // namespace hub

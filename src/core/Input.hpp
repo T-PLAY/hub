@@ -379,6 +379,7 @@ inline T Input::get() {
     assert( isOpen() );
     assert( !isEmpty() );
 
+//    return T::create(*this);
     T t;
     read( t );
     return t;

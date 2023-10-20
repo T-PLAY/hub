@@ -15,6 +15,11 @@ const Resolution & Measure::getResolution() const
     return m_resolution;
 }
 
+//const Data_t *Measure::getData() const
+//{
+//    return m_data;
+//}
+
 //template <Format format, Size_t... Dims>
 std::ostream& operator<<( std::ostream& os, const Measure& measure ) {
 

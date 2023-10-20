@@ -48,10 +48,12 @@ foreach(HUB_SOURCE_DIR ${HUB_SOURCE_DIRS})
 endforeach()
 #list(APPEND test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/test_common.hpp)
 
-#file(GLOB
-#    test_common
-#    ${CMAKE_CURRENT_SOURCE_DIR}/test_common.hpp
-#)
+file(
+#    GLOB
+    GLOB_RECURSE
+    test_common
+    ${CMAKE_CURRENT_SOURCE_DIR}/*.hpp
+)
 
 #list(REMOVE_ITEM test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/server/test-server-end.cpp)
 # list(REMOVE_ITEM test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/./test-end.cpp)
@@ -94,8 +96,8 @@ if (NOT HUB_BUILD_SERVER)
 endif()
 
 # gathering tests
-#add_executable(test-all ${test_srcs} ${test_common})
-add_executable(test-all ${test_srcs})
+add_executable(test-all ${test_srcs} ${test_common})
+#add_executable(test-all ${test_srcs})
 # target_link_libraries(test-all Catch2::Catch2WithMain hub PahoMqttCpp::paho-mqttpp3)
 target_link_libraries(test-all ${LINK_LIBRARIES})
 target_include_directories(test-all PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})

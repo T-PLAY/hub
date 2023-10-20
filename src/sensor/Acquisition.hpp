@@ -28,9 +28,6 @@ namespace sensor {
 class Acquisition
 {
   public:
-    // io
-    //    constexpr Size_t ioGetSize() const { return 2 * sizeof( long long ) + m_measures.nByte();
-    //    }
     constexpr Size_t nByte() const {
         Size_t dataSize = 0;
         for ( const auto& resolution : m_resolutions ) {
@@ -38,54 +35,49 @@ class Acquisition
         }
         return 2 * sizeof( long long ) + dataSize;
     }
-    //    const Data_t* ioGetData() const {
-    //        assert( m_data != nullptr );
-    //        return m_data;
-    //    }
-    //    void ioSetData( const Data_t* data, Size_t size ) {
-    //        memcpy( (Data_t*)m_data, data, size );
-    //    }
-    //    static constexpr std::string ioTypeName() { return "Acquisition"; }
-    // end io
 
-    template <class ResolutionsT>
-    Acquisition( ResolutionsT&& resolutions ) :
-        m_resolutions( std::forward<ResolutionsT>( resolutions ) ),
-        //        m_measures(m_resolutions.size()),
-        m_dataContainer( nByte() ),
+//    template <class ResolutionsT>
+    Acquisition( const Resolutions& resolutions ) :
+//        m_resolutions( std::forward<ResolutionsT>( resolutions ) ),
+        m_resolutions( resolutions),
+        m_size { nByte() },
+        m_dataContainer( m_size ),
         m_data { m_dataContainer.data() },
-        m_size { (Size_t)m_dataContainer.size() },
         m_start( &( (long long*)m_data )[0] ),
         m_end( &( (long long*)m_data )[1] ) {
-
-        //        std::cout << "[AcquisitionT] AcquisitionT()" << std::endl;
-
+//        std::cout << "[Acquisition] Acquisition(ResolutionT&&)" << std::endl;
         m_measures.reserve( m_resolutions.size() );
 
-        //        m_measures.reserve(m_resolutions.size());
-        //        m_measures.resize(m_resolutions.size());
-
-        Size_t iData = 0;
-        //        for ( auto& measure : m_measures ) {
+        Size_t iData = 2 * sizeof( long long );
         for ( auto i = 0; i < m_resolutions.size(); ++i ) {
-            //        for (const auto & resolution : m_resolutions) {
             const auto& resolution = m_resolutions.at( i );
 
-            //            auto & measure = m_measures.at(i);
-            //            measure.setData( &m_data[2 * sizeof( long long ) + iData] );
-            m_measures.emplace_back( resolution, &m_data[2 * sizeof( long long ) + iData] );
+            m_measures.emplace_back( resolution, &m_data[iData] );
 
             iData += resolution.nByte();
         }
-
-#ifdef DEBUG
-//        for (int i = 0; i <getSize(); ++i) {
-//            assert(m_data[i] == 0);
-//        }
-#endif
+        assert( iData == m_size );
     };
 
-//    Acquisition() = default;
+    //    Acquisition( const Acquisition & acq )
+    //        : m_resolutions{acq.m_resolutions}
+    //        , m_size(acq.m_size)
+    //    {
+    //        std::cout << "[Acquisition] Acquisition(const Acquisition&)" << std::endl;
+    //    }
+
+    Acquisition( const Acquisition& acq ) = delete;
+    Acquisition( Acquisition && acq ) = default;
+    Acquisition& operator=( const Acquisition& acq ) = delete;
+    Acquisition& operator=( Acquisition&& acq )      = delete;
+
+    Acquisition clone() const {
+        Acquisition acq { m_resolutions };
+        std::memcpy(acq.m_data, m_data, m_size);
+        return acq;
+    }
+
+    //    };
 
     constexpr long long getStart() const {
         assert( m_start != nullptr );
@@ -105,145 +97,170 @@ class Acquisition
     }
 
     constexpr Measures& getMeasures() { return m_measures; }
+    constexpr const Measures& getMeasures() const { return m_measures; }
 
     SRC_API friend std::ostream& operator<<( std::ostream& os, const Acquisition& acq );
 
     constexpr bool operator==( const Acquisition& acq ) const {
-//        static_assert( ioGetSize() == acq.ioGetSize() );
         return m_resolutions == acq.m_resolutions && !std::memcmp( m_data, acq.m_data, m_size );
     }
 
+    const Resolutions& getResolutions() const;
 
+    bool operator<( const Acquisition& right ) const;
+
+  private:
     template <typename Input>
     void read( Input& input ) {
         input.read( m_data, m_size );
     }
+
+//    template <typename Input>
+//    static Acquisition create(Input & input) {
+//        Resolutions resolutions;
+//        input.read(resolutions);
+////        return Acquisition{m_resolutions};
+//    }
 
     template <typename Output>
     void write( Output& output ) const {
         output.write( m_data, m_size );
     }
 
+
+  private:
     const Resolutions m_resolutions;
-    Measures m_measures;
-    std::vector<Data_t> m_dataContainer;
-    Data_t* const m_data = nullptr;
     const Size_t m_size;
+    std::vector<Data_t> m_dataContainer;
+    Data_t* const m_data     = nullptr;
     long long* const m_start = nullptr;
     long long* const m_end   = nullptr;
+
+    Measures m_measures;
 };
+
+inline const Resolutions& Acquisition::getResolutions() const {
+    return m_resolutions;
+}
+
+ inline bool Acquisition::operator<( const Acquisition& right ) const {
+     if (m_start == right.m_start)
+         return m_end < right.m_end;
+     return m_start < right.m_start;
+ }
 
 ///////////////////////////////// TEMPLATE ///////////////////////////////////////////////////
 
-template <typename Measures>
-class AcquisitionT
-{
-  public:
-    // io
-    static constexpr Size_t ioGetSize() { return 2 * sizeof( long long ) + Measures::nByte(); }
-    const Data_t* ioGetData() const {
-        assert( m_data != nullptr );
-        return m_data;
-    }
-    void ioSetData( const Data_t* data, Size_t size ) { memcpy( (Data_t*)m_data, data, size ); }
-    static constexpr std::string ioTypeName() { return "AcquisitionT"; }
-    // end io
+// template <typename Measures>
+// class AcquisitionT
+//{
+//   public:
+//     // io
+//     static constexpr Size_t ioGetSize() { return 2 * sizeof( long long ) + Measures::nByte(); }
+//     const Data_t* ioGetData() const {
+//         assert( m_data != nullptr );
+//         return m_data;
+//     }
+//     void ioSetData( const Data_t* data, Size_t size ) { memcpy( (Data_t*)m_data, data, size ); }
+//     static constexpr std::string ioTypeName() { return "AcquisitionT"; }
+//     // end io
 
-    using Array = std::array<Data_t, ioGetSize()>;
+//    using Array = std::array<Data_t, ioGetSize()>;
 
-    AcquisitionT() :
-        m_dataContainer { 0 },
-        m_data { m_dataContainer.data() },
-        m_start( &( (long long*)m_data )[0] ),
-        m_end( &( (long long*)m_data )[1] ) {
+//    AcquisitionT() :
+//        m_dataContainer { 0 },
+//        m_data { m_dataContainer.data() },
+//        m_start( &( (long long*)m_data )[0] ),
+//        m_end( &( (long long*)m_data )[1] ) {
 
-        std::cout << "[AcquisitionT] AcquisitionT()" << std::endl;
+//        std::cout << "[AcquisitionT] AcquisitionT()" << std::endl;
 
-        int iData = 0;
-        m_measures.for_each( [&]( auto& measure ) {
-            measure.setData( &m_data[2 * sizeof( long long ) + iData] );
-            iData += measure.nByte();
-        } );
+//        int iData = 0;
+//        m_measures.for_each( [&]( auto& measure ) {
+//            measure.setData( &m_data[2 * sizeof( long long ) + iData] );
+//            iData += measure.nByte();
+//        } );
 
-#ifdef DEBUG
-        for ( int i = 0; i < ioGetSize(); ++i ) {
-            //            m_array.at(i) == 0;
-            assert( m_data[i] == 0 );
-        }
-#endif
-    };
+// #ifdef DEBUG
+//         for ( int i = 0; i < ioGetSize(); ++i ) {
+//             //            m_array.at(i) == 0;
+//             assert( m_data[i] == 0 );
+//         }
+// #endif
+//     };
 
-    constexpr bool operator==( const AcquisitionT& acq ) const {
-        static_assert( ioGetSize() == acq.ioGetSize() );
-        return !std::memcmp( ioGetData(), acq.ioGetData(), ioGetSize() );
-    }
+//    constexpr bool operator==( const AcquisitionT& acq ) const {
+//        static_assert( ioGetSize() == acq.ioGetSize() );
+//        return !std::memcmp( ioGetData(), acq.ioGetData(), ioGetSize() );
+//    }
 
-    constexpr Measures& getMeasures() { return m_measures; }
+//    constexpr Measures& getMeasures() { return m_measures; }
 
-    constexpr long long getStart() const {
-        assert( m_start != nullptr );
-        return *m_start;
-    }
-    void setStart( long long start ) {
-        assert( m_start != nullptr );
-        *m_start = start;
-    }
-    constexpr long long getEnd() const {
-        assert( m_end != nullptr );
-        return *m_end;
-    }
-    void setEnd( long long end ) {
-        assert( m_end != nullptr );
-        *m_end = end;
-    }
+//    constexpr long long getStart() const {
+//        assert( m_start != nullptr );
+//        return *m_start;
+//    }
+//    void setStart( long long start ) {
+//        assert( m_start != nullptr );
+//        *m_start = start;
+//    }
+//    constexpr long long getEnd() const {
+//        assert( m_end != nullptr );
+//        return *m_end;
+//    }
+//    void setEnd( long long end ) {
+//        assert( m_end != nullptr );
+//        *m_end = end;
+//    }
 
-    template <typename MeasuresT>
-    SRC_API friend std::ostream& operator<<( std::ostream& os, const AcquisitionT<MeasuresT>& acq );
+//    template <typename MeasuresT>
+//    SRC_API friend std::ostream& operator<<( std::ostream& os, const AcquisitionT<MeasuresT>& acq
+//    );
 
-    //  private:
-    Measures m_measures;
-    Array m_dataContainer;
-    Data_t* m_data     = nullptr;
-    long long* m_start = nullptr;
-    long long* m_end   = nullptr;
-    //    Data_t * m_data;
-    //    std::array<Data_t, getSize()> m_array;
-};
+//    //  private:
+//    Measures m_measures;
+//    Array m_dataContainer;
+//    Data_t* m_data     = nullptr;
+//    long long* m_start = nullptr;
+//    long long* m_end   = nullptr;
+//    //    Data_t * m_data;
+//    //    std::array<Data_t, getSize()> m_array;
+//};
 
-// #include "core/Array.hpp"
+//// #include "core/Array.hpp"
 
-// template <typename T, size_t N, typename Array = std::array<T, N>>
-// std::ostream& operator<<( std::ostream& os, const Array& tp ) {
-//     return os;
-////    return printTupleImp( os, tp, std::make_index_sequence<TupSize> {} );
+//// template <typename T, size_t N, typename Array = std::array<T, N>>
+//// std::ostream& operator<<( std::ostream& os, const Array& tp ) {
+////     return os;
+//////    return printTupleImp( os, tp, std::make_index_sequence<TupSize> {} );
+////}
+
+// template <typename MeasuresT>
+// std::ostream& operator<<( std::ostream& os, const AcquisitionT<MeasuresT>& acq ) {
+//     os << "(start:" << ( acq.getStart() / 1'000'000 ) % 1'000 << " "
+//        << ( acq.getStart() / 1'000 ) % 1'000 << " " << acq.getStart() % 1'000
+//        << ", end:" << ( acq.getEnd() / 1'000'000 ) % 1'000 << " "
+//        << ( acq.getEnd() / 1'000 ) % 1'000 << " " << acq.getEnd() % 1'000;
+//     os << ", measures:";
+//     const auto& measures = acq.m_measures;
+//     os << measures;
+//     os << ", data = ";
+//     os << "[";
+
+//    constexpr Size_t nMaxDataToShow = 30;
+//    const auto iMax                 = std::min( acq.ioGetSize(), nMaxDataToShow );
+//    for ( auto i = 0; i < iMax; ++i ) {
+//        //        os << std::setw( 3 ) << (int)array[i] << " ";
+//        os << std::to_string( acq.m_dataContainer.at( i ) );
+//        if ( i != iMax - 1 ) os << " ";
+//    }
+//    if ( acq.ioGetSize() > nMaxDataToShow ) {
+//        os << " ... " << std::to_string( acq.m_dataContainer.at( iMax - 1 ) );
+//    }
+//    os << "](" << acq.ioGetSize() << "))";
+
+//    return os;
 //}
-
-template <typename MeasuresT>
-std::ostream& operator<<( std::ostream& os, const AcquisitionT<MeasuresT>& acq ) {
-    os << "(start:" << ( acq.getStart() / 1'000'000 ) % 1'000 << " "
-       << ( acq.getStart() / 1'000 ) % 1'000 << " " << acq.getStart() % 1'000
-       << ", end:" << ( acq.getEnd() / 1'000'000 ) % 1'000 << " "
-       << ( acq.getEnd() / 1'000 ) % 1'000 << " " << acq.getEnd() % 1'000;
-    os << ", measures:";
-    const auto& measures = acq.m_measures;
-    os << measures;
-    os << ", data = ";
-    os << "[";
-
-    constexpr Size_t nMaxDataToShow = 30;
-    const auto iMax                 = std::min( acq.ioGetSize(), nMaxDataToShow );
-    for ( auto i = 0; i < iMax; ++i ) {
-        //        os << std::setw( 3 ) << (int)array[i] << " ";
-        os << std::to_string( acq.m_dataContainer.at( i ) );
-        if ( i != iMax - 1 ) os << " ";
-    }
-    if ( acq.ioGetSize() > nMaxDataToShow ) {
-        os << " ... " << std::to_string( acq.m_dataContainer.at( iMax - 1 ) );
-    }
-    os << "](" << acq.ioGetSize() << "))";
-
-    return os;
-}
 
 // template <typename MeasuresT>
 // std::ostream& operator<<( std::ostream& os, const AcquisitionT<MeasuresT>& acq ) {

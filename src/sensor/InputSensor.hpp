@@ -60,6 +60,7 @@ class InputSensor : public Sensor {
     }
 
     void operator>>( Acquisition& acquisition ) {
+        assert(m_spec.getResolutions() == acquisition.getResolutions());
         m_input.read( acquisition );
     }
 
@@ -76,105 +77,105 @@ class InputSensor : public Sensor {
 
 /////////////////////////////////// TEMPLATE ////////////////////////////////////
 
-template <typename Input, typename Measures>
-class SRC_API InputSensorT : public Sensor
-{
-  public:
-    //    using Acquisition = Acquisition<Measures>;
+//template <typename Input, typename Measures>
+//class SRC_API InputSensorT : public Sensor
+//{
+//  public:
+//    //    using Acquisition = Acquisition<Measures>;
 
-    ///
-    /// \brief InputSensorT
-    /// is called when you want to get data sensor
-    /// \param input
-    /// is the communication bus you want to use
-    ///
-    template <class InputT>
-    //              typename = typename std::enable_if<std::is_base_of<Input, Input>::value
-    //                                                 && !std::is_same<Input,
-    //                                                 net::ClientSocket>::value
-    //                                                 >::type>
-    explicit InputSensorT( InputT&& input ) :
+//    ///
+//    /// \brief InputSensorT
+//    /// is called when you want to get data sensor
+//    /// \param input
+//    /// is the communication bus you want to use
+//    ///
+//    template <class InputT>
+//    //              typename = typename std::enable_if<std::is_base_of<Input, Input>::value
+//    //                                                 && !std::is_same<Input,
+//    //                                                 net::ClientSocket>::value
+//    //                                                 >::type>
+//    explicit InputSensorT( InputT&& input ) :
 
-        m_input( std::forward<InputT>( input ) ),
-        Sensor( sensor::SensorSpec {} )
-    //        m_input( new Input( std::move( input ) ) )
-    {
-        //        static_assert( std::is_base_of<Input, Input>::value, "not a base class" );
-        //        static_assert( !std::is_same<net::ClientSocket, Input>::value, "not clientSocket
-        //        class" );
+//        m_input( std::forward<InputT>( input ) ),
+//        Sensor( sensor::SensorSpec {} )
+//    //        m_input( new Input( std::move( input ) ) )
+//    {
+//        //        static_assert( std::is_base_of<Input, Input>::value, "not a base class" );
+//        //        static_assert( !std::is_same<net::ClientSocket, Input>::value, "not clientSocket
+//        //        class" );
 
-        //        m_input.read( m_spec );
-    }
+//        //        m_input.read( m_spec );
+//    }
 
-    template <class InputT>
-    //              ,
-    //              typename = typename std::enable_if<std::is_base_of<Input, Input>::value>::type>
-    explicit InputSensorT( const InputT& input ) = delete;
+//    template <class InputT>
+//    //              ,
+//    //              typename = typename std::enable_if<std::is_base_of<Input, Input>::value>::type>
+//    explicit InputSensorT( const InputT& input ) = delete;
 
-    InputSensorT( const InputSensorT& inputSensor )           = delete;
-    InputSensorT operator=( const InputSensorT& inputSensor ) = delete;
+//    InputSensorT( const InputSensorT& inputSensor )           = delete;
+//    InputSensorT operator=( const InputSensorT& inputSensor ) = delete;
 
-    InputSensorT( InputSensorT&& inputSensor )           = delete;
-    InputSensorT operator=( InputSensorT&& inputSensor ) = delete;
+//    InputSensorT( InputSensorT&& inputSensor )           = delete;
+//    InputSensorT operator=( InputSensorT&& inputSensor ) = delete;
 
-    ///
-    /// \brief InputSensorT
-    /// \param inputSensor
-    ///
-    //    InputSensorT( InputSensorT&& inputSensor );
+//    ///
+//    /// \brief InputSensorT
+//    /// \param inputSensor
+//    ///
+//    //    InputSensorT( InputSensorT&& inputSensor );
 
-    //    ~InputSensorT();
+//    //    ~InputSensorT();
 
-    template <typename T>
-    void operator>>( T& t ) {
-        m_input.read( t );
-    }
+//    template <typename T>
+//    void operator>>( T& t ) {
+//        m_input.read( t );
+//    }
 
-  public:
-    //    Acquisition<Measures> getAcq() {
-    //        Acquisition<Measures> acq;
-    //        m_input.read(acq);
-    //        return acq;
-    //    }
+//  public:
+//    //    Acquisition<Measures> getAcq() {
+//    //        Acquisition<Measures> acq;
+//    //        m_input.read(acq);
+//    //        return acq;
+//    //    }
 
-    // todo acq
-    //    ///
-    //    /// \brief operator >>
-    //    /// \param acquisition
-    //    ///
-    //    void operator>>( Acquisition& acquisition );
+//    // todo acq
+//    //    ///
+//    //    /// \brief operator >>
+//    //    /// \param acquisition
+//    //    ///
+//    //    void operator>>( Acquisition& acquisition );
 
-    //    ///
-    //    /// \brief operator >>
-    //    /// \param inputSensor
-    //    /// \return
-    //    ///
-    //    Acquisition operator>>( InputSensorT& inputSensor );
+//    //    ///
+//    //    /// \brief operator >>
+//    //    /// \param inputSensor
+//    //    /// \return
+//    //    ///
+//    //    Acquisition operator>>( InputSensorT& inputSensor );
 
-    //    ///
-    //    /// \brief getAllAcquisitions
-    //    /// can be an asynchronous function depending of the used interface.
-    //    /// \return
-    //    /// all acquisitions coming from the interface.
-    //    ///
-    //    std::vector<Acquisition> getAllAcquisitions();
+//    //    ///
+//    //    /// \brief getAllAcquisitions
+//    //    /// can be an asynchronous function depending of the used interface.
+//    //    /// \return
+//    //    /// all acquisitions coming from the interface.
+//    //    ///
+//    //    std::vector<Acquisition> getAllAcquisitions();
 
-    //    ///
-    //    /// \brief close
-    //    ///
-    //    void close();
+//    //    ///
+//    //    /// \brief close
+//    //    ///
+//    //    void close();
 
-    ///
-    /// \brief getInput
-    /// \return
-    ///
-    const Input& getInput() const { return m_input; }
+//    ///
+//    /// \brief getInput
+//    /// \return
+//    ///
+//    const Input& getInput() const { return m_input; }
 
-  private:
-    //    std::unique_ptr<Input> m_input;
-    Input& m_input;
-    //    bool m_moved = false;
-};
+//  private:
+//    //    std::unique_ptr<Input> m_input;
+//    Input& m_input;
+//    //    bool m_moved = false;
+//};
 
 } // namespace sensor
 } // namespace hub

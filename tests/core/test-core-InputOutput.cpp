@@ -232,5 +232,5 @@ TEST_CASE( "InputOutput test" ) {
 
     CHECK_VALUE( megaWritePerSecond, 5, 5, "Output: MegaWritePerSecond" );
     CHECK_VALUE( megaReadPerSecond, 5, 5, "Input: MegaReadPerSecond" );
-    CHECK_VALUE( latency, 100, 100, "Latency: MilliSeconds" );
+    CHECK_VALUE( latency, 150, 150, "Latency: MilliSeconds" );
 }

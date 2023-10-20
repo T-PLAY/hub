@@ -227,6 +227,7 @@ inline CONSTEXPR20 const std::string& SensorSpec::getSensorName() const noexcept
 }
 
 inline CONSTEXPR Resolutions& SensorSpec::getResolutions() const noexcept {
+//    return m_resolutions;
     return const_cast<Resolutions&>( m_resolutions );
 }
 

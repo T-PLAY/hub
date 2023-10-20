@@ -6,11 +6,23 @@
 TEST_CASE( "Acquisition test" ) {
 
     const hub::sensor::Resolutions resolutions { { hub::sensor::format::BGR8, 1 } };
+    auto resolutions_copy = resolutions;
+    auto & resolutions_ref = resolutions;
+    auto && resolutions_rvalue = hub::sensor::Resolutions(resolutions);
+
+//    hub::sensor::Acquisition acq_ {resolutions};
+//    hub::sensor::Acquisition acq_copy {resolutions_copy};
+//    hub::sensor::Acquisition acq_ref {resolutions_ref};
+//    hub::sensor::Acquisition acq_rvalue {std::move(resolutions_rvalue)};
+
 
     // getSize
     {
         //        hub::sensor::Acquisition acq { 0, 0 };
         hub::sensor::Acquisition acq { resolutions };
+//        hub::sensor::Acquisition acq { std::move(resolutions) };
+        acq.setStart(2);
+        acq.setEnd(3);
         //        hub::sensor::Acquisition acq();
         CHECK( acq.nByte() == 2 * sizeof(long long) + 3 );
         unsigned char data[3] { 1, 2, 3 };
@@ -18,7 +30,27 @@ TEST_CASE( "Acquisition test" ) {
         //        hub::sensor::Format::BGR8 } };
         auto& measure = acq.getMeasures().at( 0 );
         measure.setData( data, 3 );
+
         CHECK( measure.nByte() == 3 );
+        CHECK(acq.getStart() == 2);
+        CHECK(acq.getEnd() == 3);
+//        CHECK(std::memcmp(acq.ge))
+
+
+        hub::sensor::Acquisition acq2 = acq.clone();
+        assert(acq == acq2);
+        acq2.setStart(5);
+        assert(acq != acq2);
+
+
+        hub::sensor::Acquisition acq3 = acq.clone();
+        auto acq4 = std::move(acq3);;
+        assert(acq == acq4);
+
+//        CHECK(acq2.getStart() == 2);
+//        CHECK(acq2.getEnd() == 3);
+
+//        assert(acq == acq2);
 
         //        acq.emplaceMeasure( data, 3, hub::sensor::Resolution { { 1 },
         //        hub::sensor::Format::BGR8 } ); CHECK( acq.getSize() == 6 );
@@ -34,22 +66,24 @@ TEST_CASE( "Acquisition test" ) {
     acq.setStart( 0 );
     acq.setEnd( 1 );
 
-    hub::sensor::Acquisition acq2( std::move( acq ) );
+//    hub::sensor::Acquisition acq2( std::move( acq ) );
 
-    CHECK( acq2.getStart() == 0 );
-    CHECK( acq2.getEnd() == 1 );
+//    CHECK( acq2.getStart() == 0 );
+//    CHECK( acq2.getEnd() == 1 );
 
-    hub::sensor::Resolution resolution { hub::sensor::format::RGB8, 1 };
-    unsigned char data[3] { 0, 1, 2 };
+//    hub::sensor::Resolution resolution { hub::sensor::format::RGB8, 1 };
+//    unsigned char data[3] { 0, 1, 2 };
 
-//    hub::sensor::Measure measure( data, 3, resolution );
-//    hub::sensor::Measure measure{resolution, data};
-    auto& measure = acq2.getMeasures().at( 0 );
-    measure.setData(data, 3);
-//    acq2.emplaceMeasure( data, 3, resolution );
+////    hub::sensor::Measure measure( data, 3, resolution );
+////    hub::sensor::Measure measure{resolution, data};
+//    auto& measure = acq2.getMeasures().at( 0 );
+//    measure.setData(data, 3);
+////    acq2.emplaceMeasure( data, 3, resolution );
 
-    const auto& measures = acq2.getMeasures();
-    CHECK( measures.size() == 1 );
+//    const auto& measures = acq2.getMeasures();
+//    CHECK( measures.size() == 1 );
+
+
 
 //    hub::sensor::Acquisition acq3( 0, 1 );
 //    acq3 << std::move( measure );

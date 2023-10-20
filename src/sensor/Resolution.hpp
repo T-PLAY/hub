@@ -47,6 +47,8 @@ class Resolution
         //        Resolution(format, dims...);
     }
 
+//    Resolution(Resolution &&) = default;
+
     //    Resolution() = default;
 
   public:

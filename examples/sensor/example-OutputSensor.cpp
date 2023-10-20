@@ -10,11 +10,11 @@
 #include <sensor/OutputSensor.hpp>
 // #include <core/Tuple.hpp>
 
-//#define HUB_USE_BOOST
-//#include <boost/type_index.hpp>
-//#define HEADER_OUTPUT_MSG \
+// #define HUB_USE_BOOST
+// #include <boost/type_index.hpp>
+// #def ine HEADER_OUTPUT_MSG \
 //    "\033[" << std::to_string( 31 + (long)this % 7 ) << "m<< [Output:" << this << "]\033[0m "
-//#define HEADER_INPUT_MSG \
+// #def ine HEADER_INPUT_MSG \
 //    "\033[" << std::to_string( 31 + (long)this % 7 ) << "m>> [ Input:" << this << "]\033[0m "
 
 //        std::cout << "[InputOutput] write " << std::endl;
@@ -45,45 +45,47 @@ class InputOutput : public hub::Input, public hub::Output
         auto vector = m_datas.front();
         m_datas.pop();
         assert( vector.size() == size );
-//        std::cout << HEADER_INPUT_MSG "read(Data_t*, Size_t) : data = " << vector << std::endl;
+        //        std::cout << HEADER_INPUT_MSG "read(Data_t*, Size_t) : data = " << vector <<
+        //        std::endl;
 
         memcpy( data, vector.data(), size );
     }
 
     void write( const hub::Data_t* data, hub::Size_t size ) override {
         std::vector<hub::Data_t> vector( data, data + size );
-//        std::cout << HEADER_OUTPUT_MSG "write(T) : data = " << vector << std::endl;
+        //        std::cout << HEADER_OUTPUT_MSG "write(T) : data = " << vector << std::endl;
         m_datas.push( vector );
     }
 
-    void close() override {
-    };
+    void close() override {};
 
-    bool isOpen() const override {
-        return true;
-    };
+    bool isOpen() const override { return true; };
 
     void clear() override {
-        while (! m_datas.empty())
+        while ( !m_datas.empty() )
             m_datas.pop();
-        assert(m_datas.empty());
+        assert( m_datas.empty() );
     }
 
-//    bool isEnd() const override {
-    bool isEmpty() const override {
-        return m_datas.empty();
-    }
+    //    bool isEnd() const override {
+    bool isEmpty() const override { return m_datas.empty(); }
 
     std::queue<std::vector<hub::Data_t>> m_datas;
 };
 
 #include <core/Tuple.hpp>
 
-
 int main() {
 
+    const hub::sensor::Resolutions resolutions3 { { hub::sensor::format::RGB8, 1 } };
+    hub::sensor::Acquisition acq { resolutions3 };
+    std::cout << acq << std::endl;
 
-//    return 0;
+    hub::sensor::Acquisition acq2 { hub::sensor::Resolutions { { hub::sensor::format::RGB8, 1 } } };
+//    hub::sensor::Acquisition acq3 { { hub::sensor::Resolution{ hub::sensor::format::RGB8, 1 } } };
+//    hub::sensor::Acquisition acq3 { { { hub::sensor::format::RGB8, 1 } } };
+
+    return 0;
 
     //    std::tuple t{42, 'a', 4.2}; // Another C++17 feature: class template argument deduction
     //    std::apply([](auto&&... args) {((std::cout << args << '\n'), ...);}, t);
@@ -119,8 +121,8 @@ int main() {
     //    assert(value == 5);
     //    return 0;
 
-//    const std::string ipv4 = "127.0.0.1";
-//    const int port         = 4042;
+    //    const std::string ipv4 = "127.0.0.1";
+    //    const int port         = 4042;
 
     //    class UserFormat {
     //      public:
@@ -142,7 +144,7 @@ int main() {
     //    //    static_assert(MeasureT1::nDim() == 3);
     //    //    using Output = int;
     //    //    MeasureT1 measure1{0, }
-        constexpr std::array<unsigned char, 6> data1 { 1, 2, 3, 4, 5, 6 };
+    constexpr std::array<unsigned char, 6> data1 { 1, 2, 3, 4, 5, 6 };
     //    //        constexpr MeasureT1 measure1 { data1 };
 
     //    constexpr MeasureT1 measureT1;
@@ -186,7 +188,7 @@ int main() {
     //    using MeasureT2 = hub::sensor::MeasureT<hub::sensor::format::RGB8, 1>;
     //    //    using Output = int;
     //    //    MeasureT1 measureT1{0, }
-        constexpr std::array<unsigned char, 3> data2 { 1, 2, 3 };
+    constexpr std::array<unsigned char, 3> data2 { 1, 2, 3 };
     //    //    constexpr MeasureT2 measure2 { data2 };
     //    //    MeasureT2 measure2_noConst { data2 };
 
@@ -361,7 +363,7 @@ int main() {
 
     const auto format = hub::sensor::format::RGB8;
 
-    std::vector<int> dims {640, 480, 3};
+    std::vector<int> dims { 640, 480, 3 };
 
     //        hub::sensor::OutputSensorT outputSensor12{inputOutput, measures12, sensorSpec};
     const auto sensorSpec = hub::sensor::SensorSpec { "sensorName", resolutions };
@@ -369,138 +371,135 @@ int main() {
 
     InputOutput inputOutput;
 
-    assert(inputOutput.isEmpty());
+    assert( inputOutput.isEmpty() );
 
-    static_assert(! hub::Input::readable<hub::sensor::Format>());
-    static_assert(! hub::Output::writable<hub::sensor::Format>());
+    static_assert( !hub::Input::readable<hub::sensor::Format>() );
+    static_assert( !hub::Output::writable<hub::sensor::Format>() );
 
-//    inputOutput << format;
-    inputOutput.write(format);
+    //    inputOutput << format;
+    inputOutput.write( format );
     hub::sensor::Format format_read;
-//    inputOutput >> format_read;
-    inputOutput.read(format_read);
-    assert(format == format_read);
+    //    inputOutput >> format_read;
+    inputOutput.read( format_read );
+    assert( format == format_read );
 
-    assert(inputOutput.isEmpty());
+    assert( inputOutput.isEmpty() );
 
-
-//    inputOutput << dims;
-    inputOutput.write(dims);
+    //    inputOutput << dims;
+    inputOutput.write( dims );
     std::vector<int> dims_read;
-//    inputOutput >> dims_read;
-    inputOutput.read(dims_read);
-    assert(dims == dims_read);
+    //    inputOutput >> dims_read;
+    inputOutput.read( dims_read );
+    assert( dims == dims_read );
 
-    assert(inputOutput.isEmpty());
+    assert( inputOutput.isEmpty() );
 
-//    inputOutput << resolution1;
-    inputOutput.write(resolution1);
+    //    inputOutput << resolution1;
+    inputOutput.write( resolution1 );
     hub::sensor::Resolution resolution1_read;
-//    inputOutput >> resolution1_read;
-    inputOutput.read(resolution1_read);
-    assert(resolution1 == resolution1_read);
+        inputOutput >> resolution1_read;
+//    inputOutput.read( resolution1_read );
+//    auto resolution1_read = inputOutput.get<hub::sensor::Resolution>();
+//    assert( resolution1 == resolution1_read );
 
-//    assert(inputOutput.isEmpty());
-    static_assert(hub::Input::readable<hub::sensor::Resolution>());
-    static_assert(hub::Output::writable<hub::sensor::Resolution>());
+    //    assert(inputOutput.isEmpty());
+    static_assert( hub::Input::readable<hub::sensor::Resolution>() );
+    static_assert( hub::Output::writable<hub::sensor::Resolution>() );
 
-    assert(inputOutput.isEmpty());
+    assert( inputOutput.isEmpty() );
 
-    inputOutput.write(sensorSpec);
+    inputOutput.write( sensorSpec );
     hub::sensor::SensorSpec sensorSpec_read;
-    inputOutput.read(sensorSpec_read);
-    assert(sensorSpec == sensorSpec_read);
+    inputOutput.read( sensorSpec_read );
+    assert( sensorSpec == sensorSpec_read );
 
-    assert(inputOutput.isEmpty());
+    assert( inputOutput.isEmpty() );
 
-    hub::sensor::OutputSensor outputSensor{ inputOutput, sensorSpec };
+    hub::sensor::OutputSensor outputSensor { inputOutput, sensorSpec };
 
-    assert(! inputOutput.isEmpty());
+    assert( !inputOutput.isEmpty() );
 
     auto acq12 = outputSensor.acq();
 
-//    std::vector<hub::sensor::Acquisition> acqs;
-//    acqs.reserve(10);
-//    for (int i = 0; i < 10; ++i) {
-//        hub::sensor::Acquisition acq{resolutions};
-//        acq.setStart(i);
-//        acq.setEnd(i);
-//        auto & measures = acq.getMeasures();
-//        measures.at(0).setData(data1.data(), data1.size());
-//        measures.at(1).setData(data2.data(), data2.size());
-////        acqs.push_back(std::move(acq));
-//        acqs.push_back(acq);
-//    }
+    //    std::vector<hub::sensor::Acquisition> acqs;
+    //    acqs.reserve(10);
+    //    for (int i = 0; i < 10; ++i) {
+    //        hub::sensor::Acquisition acq{resolutions};
+    //        acq.setStart(i);
+    //        acq.setEnd(i);
+    //        auto & measures = acq.getMeasures();
+    //        measures.at(0).setData(data1.data(), data1.size());
+    //        measures.at(1).setData(data2.data(), data2.size());
+    ////        acqs.push_back(std::move(acq));
+    //        acqs.push_back(acq);
+    //    }
 
-//    hub::sensor::Acquisition acq12{resolutions};
-//    std::cout << "acq12: " << acq12 << std::endl;
-//    std::cout << acq12.nByte() << std::endl;
-//    std::cout << sizeof(long long) << std::endl;
+    //    hub::sensor::Acquisition acq12{resolutions};
+    //    std::cout << "acq12: " << acq12 << std::endl;
+    //    std::cout << acq12.nByte() << std::endl;
+    //    std::cout << sizeof(long long) << std::endl;
 
-    assert(acq12.getMeasures().size() == 2);
-    auto & measure1 = acq12.getMeasures().at(0);
-    auto & measure2 = acq12.getMeasures().at(1);
+    assert( acq12.getMeasures().size() == 2 );
+    auto& measure1 = acq12.getMeasures().at( 0 );
+    auto& measure2 = acq12.getMeasures().at( 1 );
 
-//    hub::sensor::Resolutions resolutions{resolution1, resolution2};
+    //    hub::sensor::Resolutions resolutions{resolution1, resolution2};
 
-//    auto& measure1_acq = acq12.getMeasures().at( 0 );
+    //    auto& measure1_acq = acq12.getMeasures().at( 0 );
 
-        for ( int iAcq = 0; iAcq < 2; ++iAcq ) {
-            acq12.setStart( iAcq );
-            acq12.setEnd( iAcq + 1 );
-            measure1.setData( data1.data(), data1.size() );
-            measure2.setData( data2.data(), data2.size() );
-            outputSensor << acq12;
-        }
+    for ( int iAcq = 0; iAcq < 2; ++iAcq ) {
+        acq12.setStart( iAcq );
+        acq12.setEnd( iAcq + 1 );
+        measure1.setData( data1.data(), data1.size() );
+        measure2.setData( data2.data(), data2.size() );
+        outputSensor << acq12;
+    }
 
     //    ///////////////////////////////////////////////////////
     //    //    ///
 
     //    //    auto outputSensor = make_outputSensor(output, sensorSpec);
-    hub::sensor::InputSensor inputSensor{ inputOutput };
+    hub::sensor::InputSensor inputSensor { inputOutput };
 
-    assert(outputSensor.getSpec() == inputSensor.getSpec());
+    assert( outputSensor.getSpec() == inputSensor.getSpec() );
 
     auto acq12_read = inputSensor.acq();
-//    auto& measures = acq12_read.getMeasures();
+    //    auto& measures = acq12_read.getMeasures();
 
-//            auto& measure1_read = acq12_read.getMeasures().at(0);
-//            auto& measure2_read = acq12_read.getMeasures().at(1);
+    //            auto& measure1_read = acq12_read.getMeasures().at(0);
+    //            auto& measure2_read = acq12_read.getMeasures().at(1);
 
-        int iAcq = 0;
-//        while ( !inputSensor.getInput().isEmpty() ) {
-        while ( !inputSensor.getInput().isEmpty() ) {
-            inputSensor >> acq12_read;
+    int iAcq = 0;
+    //        while ( !inputSensor.getInput().isEmpty() ) {
+    while ( !inputSensor.getInput().isEmpty() ) {
+        inputSensor >> acq12_read;
 
-            assert( acq12_read.getStart() == iAcq );
-            assert( acq12_read.getEnd() == iAcq + 1 );
+        assert( acq12_read.getStart() == iAcq );
+        assert( acq12_read.getEnd() == iAcq + 1 );
 
-            int iMeasure   = 0;
-            for (const auto & measure : acq12_read.getMeasures()) {
-                std::cout << "measure " << iMeasure << ": " << measure << std::endl;
-                ++iMeasure;
-            }
-
-            ++iAcq;
+        int iMeasure = 0;
+        for ( const auto& measure : acq12_read.getMeasures() ) {
+            std::cout << "measure " << iMeasure << ": " << measure << std::endl;
+            ++iMeasure;
         }
 
+        ++iAcq;
+    }
 
+    //    acq12.setStart(1);
+    //    acq12.setEnd(2);
+    //    measure1.setData(data1.data(), data1.size());
+    //    measure2.setData(data2.data(), data2.size());
 
-//    acq12.setStart(1);
-//    acq12.setEnd(2);
-//    measure1.setData(data1.data(), data1.size());
-//    measure2.setData(data2.data(), data2.size());
+    //    inputOutput.write(acq12);
 
+    //    hub::sensor::Acquisition acq12_read{resolutions};
+    //    inputOutput.read(acq12_read);
 
-//    inputOutput.write(acq12);
+    //    assert(acq12 == acq12_read);
 
-//    hub::sensor::Acquisition acq12_read{resolutions};
-//    inputOutput.read(acq12_read);
-
-//    assert(acq12 == acq12_read);
-
-//    hub::sensor::Acquisition acq12_read = inputOutput.get<hub::sensor::Acquisition>();
-//    hub::sensor::Acquisition acq12_read = inputOutput.get<hub::sensor::Acquisition>();
+    //    hub::sensor::Acquisition acq12_read = inputOutput.get<hub::sensor::Acquisition>();
+    //    hub::sensor::Acquisition acq12_read = inputOutput.get<hub::sensor::Acquisition>();
 
     //    std::cout << "measures12: " << measures12 << std::endl;
 

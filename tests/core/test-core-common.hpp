@@ -59,6 +59,7 @@ class InputOutput : public hub::Input, public hub::Output
             m_datas.pop();
     }
 
+  private:
     mutable std::mutex m_mtxDatas;
     std::queue<std::vector<hub::Data_t>> m_datas;
     //    bool m_isOpen = true;
