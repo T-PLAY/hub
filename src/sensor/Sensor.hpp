@@ -3,6 +3,8 @@
 #include "SensorSpec.hpp"
 #include "Acquisition.hpp"
 
+#include "core/Input.hpp"
+
 namespace hub {
 namespace sensor {
 
@@ -24,6 +26,8 @@ class SRC_API Sensor
     Sensor( const Sensor& sensor ) = delete;
 
     Sensor& operator=( const Sensor& sensor ) = delete;
+
+//    Sensor(Input & input) :
 
     ~Sensor();
 

@@ -68,15 +68,25 @@ class SRC_API SensorSpec
     /// \param metaData
     /// [in] Additional informations of the sensor and acquisition.
     ///
-    explicit SensorSpec( const std::string& sensorName,
-                         const Resolutions& resolutions = {},
+    SensorSpec( const std::string& sensorName,
+                         const Resolutions& resolutions,
                          const MetaData& metaData       = {} );
 
-    explicit SensorSpec( const char* sensorName,
-                         const Resolutions& resolutions = {},
+    SensorSpec( const char* sensorName,
+                         const Resolutions& resolutions,
                          const MetaData& metaData       = {} );
 
-    SensorSpec() = default;
+    SensorSpec(Input & input)
+        : m_sensorName(input.get<decltype(m_sensorName)>())
+//        , m_resolutions(input.get<decltype(m_resolutions)>())
+        , m_metaData(input.get<decltype(m_metaData)>())
+    {
+//        input.read( m_sensorName );
+//        input.read( m_resolutions );
+//        input.read( m_metaData );
+    }
+
+    SensorSpec() = delete;
 
   public:
     //    const unsigned char* getData() const { return nullptr; }
@@ -184,7 +194,7 @@ class SRC_API SensorSpec
     //    template <typename Input>
     //    friend Input& operator>>( Input& input, SensorSpec& sensorSpec );
 
-  private:
+//  private:
     template <typename Input>
     void read( Input& input ) {
         //        input.read( m_format );

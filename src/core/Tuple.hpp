@@ -2,6 +2,7 @@
 
 #include <tuple>
 #include <iostream>
+#include "Vector.hpp"
 
 template <typename TupleT, std::size_t... Is>
 std::ostream& printTupleImp( std::ostream& os, const TupleT& tp, std::index_sequence<Is...> ) {

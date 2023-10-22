@@ -3,23 +3,151 @@
 
 // #include <numeric>
 // #include <string>
-#include "core/Vector.hpp"
 #include <sstream>
 #include <vector>
-
 #include <algorithm>
 
-#include "Format.hpp"
+#include "core/Vector.hpp"
 #include "core/Macros.hpp"
+#include "core/Traits.hpp"
+#include "core/Serial.hpp"
+
+#include "Format.hpp"
 
 //#include "io/input/Input.hpp"
 //#include "io/output/Output.hpp"
+
+//#include "core/Input.hpp"
 
 namespace hub {
 namespace sensor {
 
 // using Resolution = std::pair<Dims, Format>;
 
+//class Dims {
+//  public:
+
+//};
+
+template <Format format, Size_t... Dims>
+//template <Size_t... Dims>
+class ResolutionT
+{
+  public:
+//    template <typename Input>
+//    static auto get( Input& input ) {
+////        Format format;
+////        Dims dims;
+//        return ResolutionT<format, Dims>();
+////        input.read( m_format );
+////        input.read( m_dims );
+//    }
+
+//    Format format;
+    ResolutionT() = default;
+
+    template <typename Output>
+    void write( Output& output ) const {
+        output.write( format );
+//        output.write( Dims );
+//        std::vector<Size_t> dims{Dims};
+//        Size_t size = sizeof...(Dims);
+        output.write(nDim());
+        for ( auto dim : { Dims... } ) {
+            output.write(dim);
+        }
+    }
+
+//    template <typename Input>
+//    void read( Input& input ) {
+//        input.read( format );
+////        input.read( m_dims );
+//    }
+
+
+    static constexpr auto getFormat() { return format; }
+    static constexpr auto nByte() {
+        auto size = format.nByte;
+        //        size = std::accumulate()
+        for ( auto dim : { Dims... } )
+            size *= dim;
+        return size;
+    }
+    static constexpr auto nDim() {
+        return sizeof...(Dims);
+//        auto nDim = 0;
+//        for ( auto n : { Dims... } ) {
+//            ++nDim;
+//        }
+//        return nDim;
+    }
+    static constexpr auto getDim( int iDim ) {
+        auto i = 0;
+        for ( auto dim : { Dims... } ) {
+            if ( i == iDim ) return dim;
+            ++i;
+        }
+        return (Size_t)0;
+    }
+    static constexpr std::string typeName() {
+        std::string str = "<";
+        str += format.name;
+        str += ":";
+        Size_t i = 0;
+        for ( auto dim : { Dims... } ) {
+            str += std::to_string( dim );
+            if ( i != nDim() - 1 ) str += "x";
+            ++i;
+        }
+        //            int _[]  = { ( str += std::to_string(Dims) + ", " )... };
+        str += ">";
+        return str;
+    }
+
+//    constexpr bool operator==( const ResolutionT& resolution ) const {
+////        return m_format == resolution.m_format && m_dims == resolution.m_dims;
+//        return getFormat() == resolution.getFormat() && getDims() == resolution.getDims();
+//    }
+    constexpr bool operator==( const ResolutionT& resolution ) const {
+        return true;
+        if ( nDim() == resolution.nDim() ) {
+            for ( int i = 0; i < nDim(); ++i ) {
+                if ( getDim( i ) != resolution.getDim( i ) ) return false;
+            }
+            return true;
+        }
+        return false;
+    }
+
+
+
+
+    template <Format formatT, Size_t... DimsT>
+    SRC_API friend std::ostream& operator<<( std::ostream& os,
+                                             const ResolutionT<formatT, DimsT...>& resolution );
+
+};
+
+//template <class Format, class... Ts>
+//template <class FormatT, class... Dims>
+//constexpr auto make_resolution( FormatT format, Dims&&... dims ) {
+////    return ResolutionT<format, dims...>();
+////    return ResolutionT<hub::sensor::format::RGB8, 1, 2, 3>();
+//    return ResolutionT<format, 1, 2, 3>();
+////    return ResolutionT<Format, Ts&&...>( format, dims... );
+//}
+
+//auto make_resolution()
+
+template <Format format, Size_t... Dims>
+std::ostream& operator<<( std::ostream& os, const ResolutionT<format, Dims...>& resolution ) {
+    os << resolution.typeName();
+    return os;
+}
+
+
+//template <Format format, Size_t... Dims>
+//template <Size_t... Dims>
 class Resolution
 {
   public:
@@ -32,27 +160,43 @@ class Resolution
     //    constexpr std::string ioTypeName() const { return "Measure"; }
     // end io
 
+//    Resolution() = delete;
     Resolution() = default;
+//    Resolution(Resolution &&) = delete;
 
     template <typename Dim>
-    Resolution( Format format, Dim&& dim ) : m_format( format ) {
-        m_dims.emplace_back( std::forward<Dim>( dim ) );
+    Resolution( Format format, Dim&& dim )
+//        : m_format( format )
+//        : std:m_serial{format}
+    {
+//        getFormat() = format;
+//        m_dims.emplace_back( std::forward<Dim>( dim ) );
         //        std::reverse(m_dims.begin(), m_dims.end());
     }
 
     template <typename Dim, typename... Dims>
     Resolution( Format format, Dim&& dim, Dims&&... dims ) : Resolution( format, dims... ) {
         //        m_dims.emplace_back(std::forward<Dim>(dim));
-        m_dims.insert( m_dims.begin(), dim );
+//        m_dims.insert( m_dims.begin(), dim );
         //        Resolution(format, dims...);
     }
 
-//    Resolution(Resolution &&) = default;
+//    template <typename Input>
+//              typename std::enable_if_t<isInput_v<Input>>>
+//    constexpr Resolution ( Input& input )
+//        : m_format(input.get<Format>())
+//        , m_dims(input.get<Dims>())
+//    {
+////        Format format;
+////        input.read(m_format);
+////        input.read( m_format );
+////        input.read( m_dims );
+//    }
+
 
     //    Resolution() = default;
 
   public:
-    constexpr auto nDim() const { return m_dims.size(); }
     //    constexpr std::string name() const {
     //        std::string str = "<";
     //        str += m_format.name();
@@ -66,21 +210,27 @@ class Resolution
     //        return str;
     //    }
 
-    constexpr auto getDim( int iDim ) const { return m_dims.at( iDim ); }
-    constexpr auto getFormat() const { return m_format; }
+    constexpr auto & getFormat() const { return m_format; }
+//    constexpr auto & getFormat() const { return std::get<Format>(m_serial); };
+//    auto & getFormat() { return std::get<Format>(m_serial); };
+    constexpr auto & getDims() const { return m_dims; };
+//    constexpr auto & getDims() const { return std::get<Dims>(m_serial); }
+    constexpr auto getDim( int iDim ) const { return getDims().at( iDim ); }
+    constexpr auto nDim() const { return getDims().size(); }
 
     constexpr auto nByte() const {
-        auto size = m_format.nByte;
+//        auto size = m_format.nByte;
+        auto size = getFormat().nByte;
         for ( int i = 0; i < nDim(); ++i ) {
-            size *= m_dims.at( i );
+            size *= getDims().at( i );
         }
         return size;
     }
 
     constexpr bool operator==( const Resolution& resolution ) const {
         return m_format == resolution.m_format && m_dims == resolution.m_dims;
+//        return getFormat() == resolution.getFormat() && getDims() == resolution.getDims();
     }
-
     //    void setData( Data_t* const data ) {
     //        assert( data != nullptr );
     //        m_data = data;
@@ -104,24 +254,46 @@ class Resolution
     //    friend Input& operator>>( Input& input, Resolution& resolution );
 
 //  private:
-    template <typename Input>
-    void read( Input& input ) {
-        input.read( m_format );
-        input.read( m_dims );
-    }
+//    template <typename Input>
+//    void read( Input& input ) {
+//        input.read( m_format );
+//        input.read( m_dims );
+//    }
 
-    template <typename Output>
-    void write( Output& output ) const {
-        output.write( m_format );
-        output.write( m_dims );
-    }
+//    template <typename Input>
+//    static Resolution get( Input& input ) {
+//        Format format;
+//        Dims dims;
+//        return Resolution {format, dims};
+////        input.read( m_format );
+////        input.read( m_dims );
+//    }
+
+
+//    template <typename Output>
+//    void write( Output& output ) const {
+//        output.write( m_format );
+//        output.write( m_dims );
+//    }
 
     //    void isReadable();
+
+//    const auto & serialize() const {
+//        return m_serial;
+//    }
+
+    auto & serialize() {
+//        return std::make_tuple(m_format, m_dims);
+        return m_serial;
+    }
 
   private:
     Format m_format;
     //    std::vector<Size_t> m_dims;
     Dims m_dims;
+//  public:
+    std::tuple<Format&, Dims&> m_serial { m_format, m_dims };
+//    std::tuple<Format, Dims> m_serial;
 
     //    Size_t m_nDim = 0;
     //    Size_t m_dims[s_maxDim];

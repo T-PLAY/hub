@@ -36,6 +36,7 @@ class Acquisition
         return 2 * sizeof( long long ) + dataSize;
     }
 
+
 //    template <class ResolutionsT>
     Acquisition( const Resolutions& resolutions ) :
 //        m_resolutions( std::forward<ResolutionsT>( resolutions ) ),
@@ -109,11 +110,15 @@ class Acquisition
 
     bool operator<( const Acquisition& right ) const;
 
-  private:
-    template <typename Input>
-    void read( Input& input ) {
-        input.read( m_data, m_size );
-    }
+//  private:
+//    template <typename Input>
+//    void read( Input& input ) {
+//        input.read( m_data, m_size );
+//    }
+
+//    void serialize() {
+
+//    }
 
 //    template <typename Input>
 //    static Acquisition create(Input & input) {
@@ -122,10 +127,10 @@ class Acquisition
 ////        return Acquisition{m_resolutions};
 //    }
 
-    template <typename Output>
-    void write( Output& output ) const {
-        output.write( m_data, m_size );
-    }
+//    template <typename Output>
+//    void write( Output& output ) const {
+//        output.write( m_data, m_size );
+//    }
 
 
   private:

@@ -4,16 +4,21 @@
 #include <list>
 #include <map>
 #include <vector>
+#include <tuple>
+// #include <semaphore>
 
-#define HUB_THREAD_SAFE
-#ifdef HUB_THREAD_SAFE
-#include <mutex>
-#endif
+// #define HUB_THREAD_SAFE
+// #ifdef HUB_THREAD_SAFE
+// #include <mutex>
+// #endif
 
-//#include "core/Any.hpp"
+// #include "core/Any.hpp"
 #include "core/Macros.hpp"
-#if defined(OS_MACOS) && CPLUSPLUS_VERSION <= 14
-#include "core/Traits.hpp"
+#include "core/Serial.hpp"
+#include "core/Tuple.hpp"
+
+#if defined( OS_MACOS ) && CPLUSPLUS_VERSION <= 14
+#    include "core/Traits.hpp"
 #endif
 
 #ifdef HUB_DEBUG_OUTPUT
@@ -23,6 +28,7 @@
 #endif
 
 namespace hub {
+
 
 ///
 /// \brief The Output class
@@ -89,39 +95,75 @@ class SRC_API Output
     virtual bool isOpen() const = 0;
 
   public:
+    //    template <class... Ts>
+    //    void write(const std::tuple<Ts...> & serial) {
+
+    //    }
+
     ///
     /// \brief write
     /// \param t
     ///
     template <class T>
-    typename std::enable_if<writable_v<T>>::type write( const T& t ) {
-#ifdef HUB_THREAD_SAFE
-        m_mtx.lock();
-#endif
+    //    typename std::enable_if<writable_v<T>>::type write( const T& t ) {
+    typename std::enable_if<serializable_v<T>>::type write( const T& t ) {
+        static_assert(! writable_v<T>);
+
+        // #ifdef HUB_THREAD_SAFE
+        //         m_mtx.lock();
+        // #endif
         assert( isOpen() );
 #ifdef HUB_DEBUG_OUTPUT
-        std::cout << HEADER_OUTPUT_MSG "write(" << TYPE_NAME( t ) << ") = " << t << std::endl;
+        std::cout << HEADER_OUTPUT_MSG "\033[1mwrite\033[0m(" << TYPE_NAME( t ) << ") = " << t
+                  << std::endl;
 #endif
-        t.write( *this );
-#ifdef HUB_THREAD_SAFE
-        m_mtx.unlock();
-#endif
+        //        t.write( *this );
+        write( const_cast<T&>(t).serialize() );
+//        write( reinterpret_cast<T&>(t).serialize() );
+
+        // #ifdef HUB_THREAD_SAFE
+        //         m_mtx.unlock();
+        // #endif
     }
 
     template <class T>
-    typename std::enable_if<!writable_v<T>>::type write( const T& t ) {
-#ifdef HUB_THREAD_SAFE
-        m_mtx.lock();
+    //    typename std::enable_if<writable_v<T>>::type write( const T& t ) {
+    typename std::enable_if<writable_v<T>>::type write( const T& t ) {
+        static_assert(! serializable_v<T>);
+
+        // #ifdef HUB_THREAD_SAFE
+        //         m_mtx.lock();
+        // #endif
+        assert( isOpen() );
+#ifdef HUB_DEBUG_OUTPUT
+        std::cout << HEADER_OUTPUT_MSG "\033[1mwrite\033[0m(" << TYPE_NAME( t ) << ") = " << t
+                  << std::endl;
 #endif
+        t.write( *this );
+
+//        write( const_cast<T&>(t).serialize() );
+//        write( reinterpret_cast<T&>(t).serialize() );
+
+        // #ifdef HUB_THREAD_SAFE
+        //         m_mtx.unlock();
+        // #endif
+    }
+
+    template <class T>
+    //    typename std::enable_if<!writable_v<T>>::type write( const T& t ) {
+    typename std::enable_if<!serializable_v<T> && !writable_v<T>>::type write( const T& t ) {
+        // #ifdef HUB_THREAD_SAFE
+        //         m_mtx.lock();
+        // #endif
         assert( isOpen() );
 
 #ifdef HUB_DEBUG_OUTPUT
         std::cout << HEADER_OUTPUT_MSG "write(" << TYPE_NAME( t ) << ") = " << t << std::endl;
 #endif
         write( reinterpret_cast<const Data_t*>( &t ), sizeof( T ) );
-#ifdef HUB_THREAD_SAFE
-        m_mtx.unlock();
-#endif
+        // #ifdef HUB_THREAD_SAFE
+        //         m_mtx.unlock();
+        // #endif
     }
 
     ///
@@ -157,7 +199,7 @@ class SRC_API Output
     /// \brief write
     /// \param any
     ///
-//    void write( const Any& any );
+    //    void write( const Any& any );
 
     ///
     /// \brief write
@@ -179,9 +221,17 @@ class SRC_API Output
     void write( size_t size ) = delete; // non compatible format 32/64 bit
 #endif
 
+    template <std::size_t I = 0, typename... Tp>
+    inline typename std::enable_if<I == sizeof...( Tp ), void>::type
+    write( const std::tuple<Tp...>& t );
+
+    template <std::size_t I = 0, typename... Tp>
+        typename std::enable_if <
+        I<sizeof...( Tp ), void>::type write( const std::tuple<Tp...>& t );
+
     // void writeAll
     template <typename Container>
-//              typename T = std::decay_t<decltype( *begin( std::declval<Container>() ) )>>
+    //              typename T = std::decay_t<decltype( *begin( std::declval<Container>() ) )>>
     void writeAll( Container& c );
 
     ///
@@ -193,7 +243,7 @@ class SRC_API Output
 
     //    void putAll( const T& t );
     template <typename Container>
-    void putAll(Container & c);
+    void putAll( Container& c );
 
     ///
     /// \brief operator <<
@@ -202,14 +252,12 @@ class SRC_API Output
     template <class T>
     void operator<<( const T& t );
 
-           ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
   private:
 #ifdef HUB_THREAD_SAFE
     std::mutex m_mtx;
 #endif
 };
-
-
 
 template <class T>
 inline void Output::write( const std::list<T>& list ) {
@@ -275,15 +323,33 @@ inline void Output::write( const std::pair<T, U>& pair ) {
     write( second );
 }
 
-template<typename Container>
-void Output::writeAll(Container &ts) {
+template <std::size_t I, typename... Tp>
+inline typename std::enable_if<I == sizeof...( Tp ), void>::type
+Output::write( const std::tuple<Tp...>& t ) {}
+
+template <std::size_t I, typename... Tp>
+    typename std::enable_if < I<sizeof...( Tp ), void>::type Output::write( const std::tuple<Tp...>& t ) {
+
+    if constexpr ( static_cast<int>( I ) == 0 ) {
+#ifdef HUB_DEBUG_OUTPUT
+        std::cout << HEADER_OUTPUT_MSG "write(" << TYPE_NAME( t ) << ") : '" << t << "'"
+                  << std::endl;
+#endif
+    }
+    //        std::cout << std::get<I>( t ) << std::endl;
+    write( std::get<I>( t ) );
+
+    write<I + 1, Tp...>( t );
+}
+
+template <typename Container>
+void Output::writeAll( Container& ts ) {
     assert( isOpen() );
 
     for ( const auto& t : ts ) {
         write( t );
     }
 }
-
 
 template <class T>
 inline void Output::put( const T& t ) {
@@ -297,9 +363,8 @@ inline void Output::operator<<( const T& t ) {
     write( t );
 }
 
-template<typename Container>
-void Output::putAll(Container & ts)
-{
+template <typename Container>
+void Output::putAll( Container& ts ) {
     assert( isOpen() );
 
     writeAll( ts );

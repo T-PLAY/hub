@@ -15,14 +15,15 @@ class InputOutput : public hub::Input, public hub::Output
 
     InputOutput() = default;
 
+    ~InputOutput() { std::cout << "[InputOutput] ~InputOutput()" << std::endl; }
+
     void read( hub::Data_t* data, hub::Size_t size ) override {
         m_mtxDatas.lock();
         assert( !m_datas.empty() );
         auto vector = m_datas.front();
         m_datas.pop();
+        std::cout << HEADER_INPUT_MSG "read(Data_t*, Size_t) : data = " << vector << std::endl;
         assert( vector.size() == size );
-        //        std::cout << HEADER_INPUT_MSG "read(Data_t*, Size_t) : data = " << vector <<
-        //        std::endl;
 
         memcpy( data, vector.data(), size );
         m_mtxDatas.unlock();
@@ -31,10 +32,8 @@ class InputOutput : public hub::Input, public hub::Output
     void write( const hub::Data_t* data, hub::Size_t size ) override {
         m_mtxDatas.lock();
         std::vector<hub::Data_t> vector( data, data + size );
-        //        std::cout << HEADER_OUTPUT_MSG "write(Data_t*, Size_t) : data = " << vector <<
-        //        std::endl;
+        std::cout << HEADER_OUTPUT_MSG "write(Data_t*, Size_t) : data = " << vector << std::endl;
         m_datas.push( vector );
-        //        std::cout << "write datas size = " << m_datas.size() << std::endl;
         m_mtxDatas.unlock();
     }
 

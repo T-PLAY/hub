@@ -1,5 +1,8 @@
 #include "test_common.hpp"
 // #include "sensor/test_sensor_utils.hpp"
+
+#include <vector>
+
 #include "core/test-core-common.hpp"
 #include "sensor/test-sensor-common.hpp"
 
@@ -78,55 +81,191 @@ TEST_CASE( "InputSensor test" ) {
 
     std::vector<hub::sensor::Acquisition> ref_sync_acqs = computeSyncAcqs( ref_acqs, ref_acqs2 );
 
+
+    static_assert( !hub::Input::readable_v<hub::sensor::Acquisition> );
+    static_assert( !hub::Input::readable_v<hub::sensor::Format> );
+    static_assert( !hub::Input::readable_v<hub::sensor::Measure> );
+    static_assert( !hub::Input::readable_v<hub::sensor::Measures> );
+    static_assert( !hub::Input::readable_v<hub::sensor::Resolution> );
+    static_assert( !hub::Input::readable_v<hub::sensor::Resolutions> );
+    static_assert( hub::Input::readable_v<hub::sensor::SensorSpec> );
+
+    static_assert( !hub::Input::getable_v<hub::sensor::Acquisition> );
+    static_assert( !hub::Input::getable_v<hub::sensor::Format> );
+    static_assert( !hub::Input::getable_v<hub::sensor::Measure> );
+    static_assert( !hub::Input::getable_v<hub::sensor::Measures> );
+    static_assert( !hub::Input::getable_v<hub::sensor::Resolution> );
+    static_assert( !hub::Input::getable_v<hub::sensor::Resolutions> );
+    static_assert( hub::Input::getable_v<hub::sensor::SensorSpec> );
+
+    static_assert( !hub::serializable_v<hub::sensor::Acquisition> );
+    static_assert( !hub::serializable_v<hub::sensor::Format> );
+    static_assert( !hub::serializable_v<hub::sensor::Measure> );
+    static_assert( !hub::serializable_v<hub::sensor::Measures> );
+    static_assert( hub::serializable_v<hub::sensor::Resolution> );
+    static_assert( !hub::serializable_v<hub::sensor::Resolutions> );
+    static_assert( !hub::serializable_v<hub::sensor::SensorSpec> );
+
+    //    static_assert(hub::Input::getable_v<hub::sensor::Resolution>);
+    //    static_assert(! isInput_v<hub::sensor::Resolution>);
+    //    static_assert(isInput_v<hub::Input>);
+    //    static_assert(isInput_v<InputOutput>);
+
     {
         InputOutput inputOutput;
-        //        InputOutput inputOutput2;
 
-        {
-            //            auto outputFile  = hub::output::OutputFile( "filepath.txt" );
-            //            auto outputFile2 = hub::output::OutputFile( "filepath2.txt" );
+        int ref_int = 5;
+        inputOutput.write( ref_int );
+        inputOutput.write( ref_int );
+        int read_int;
+        inputOutput.read( read_int );
+        assert( read_int == ref_int );
+        const auto read_int2 = inputOutput.get<int>();
+        assert( read_int2 == ref_int );
 
-            assert( inputOutput.isEmpty() );
-            hub::sensor::OutputSensor outputSensor( inputOutput, ref_sensorSpec );
-            assert( !inputOutput.isEmpty() );
-            assert( outputSensor.getSpec() == ref_sensorSpec );
-            //            hub::sensor::OutputSensor outputSensor2( inputOutput2, ref_sensorSpec2 );
-            //            assert(outputSensor2.getSpec() == ref_sensorSpec2);
+        inputOutput.write( 4.0 );
+        auto d = inputOutput.get<double>();
+        assert( d == 4.0 );
 
-            //            for ( const auto& acq : ref_acqs ) {
-            //                outputSensor << acq;
-            //                std::cout << "write acq : " << acq << std::endl;
-            //            }
+        constexpr hub::sensor::Format format = hub::sensor::format::RGB8;
+        assert( format == hub::sensor::format::RGB8 );
+        inputOutput.write( format );
+        std::cout << "start reading" << std::endl;
+        hub::sensor::Format format_read;
+        inputOutput.read( format_read );
+        assert( format == format_read );
 
-            //            for ( const auto& acq2 : ref_acqs2 ) {
-            //                outputSensor2 << acq2;
-            //                std::cout << "write acq2 : " << acq2 << std::endl;
-            //            }
-        }
+        inputOutput.write( format );
+        auto format_read2 = inputOutput.get<hub::sensor::Format>();
+        assert( format == format_read2 );
 
-        //        auto inputFile  = hub::input::InputFile( "filepath.txt" );
-        //        auto inputFile2 = hub::input::InputFile( "filepath2.txt" );
 
-        assert( !inputOutput.isEmpty() );
-        hub::sensor::InputSensor inputSensor( inputOutput );
-        std::cout << "ref_sensorSpec: " << ref_sensorSpec << std::endl;
-        std::cout << "fuck" << std::endl;
-        std::cout << "inputSensor.getSpec(): " << inputSensor.getSpec() << std::endl;
-        assert( inputOutput.isEmpty() );
-        assert( inputSensor.getSpec() == ref_sensorSpec );
 
-        std::cout << "#############################" << std::endl;
+//        constexpr auto dims2 = std::vector<int>{1, 2, 3};
+//        const hub::sensor::Resolution::Dims& dims = { 1, 2, 3 };
+//        inputOutput.write( dims );
+//        std::cout << "start reading" << std::endl;
+//        hub::sensor::Resolution::Dims dims_read;
+//        inputOutput.read( dims_read );
+//        assert( dims == dims_read );
 
-        //        hub::sensor::InputSensor inputSensor2( inputOutput2 );
-        //            assert(inputSensor2.getSpec() == ref_sensorSpec);
+//        inputOutput.write( dims );
+//        auto dims_read2 = inputOutput.get<hub::sensor::Resolution::Dims>();
+//        assert( dims == dims_read2 );
 
-        //        auto acq = inputOutput.get<hub::sensor::Acquisition>();
+//        static_assert(hub::Input::serializable_v<hub::sensor::Resolution>);
+        static_assert(hub::serializable_v<hub::sensor::Resolution>);
+        static_assert(! hub::Output::writable_v<hub::sensor::Resolution>);
+        static_assert(! hub::Input::readable_v<hub::sensor::Resolution>);
+        constexpr hub::sensor::ResolutionT<format, 1, 2, 3> resolution;
+        static_assert(resolution.nDim() == 3);
+//        hub::sensor::Resolution resolution { format, 1, 2, 3 };
+        inputOutput.write( resolution );
+//        std::cout << "start reading" << std::endl;
+//        hub::sensor::Resolution resolution_read;
+        hub::sensor::ResolutionT<format, 1, 2, 3> resolution_read;
+//        inputOutput.read( resolution_read );
+
+//        constexpr auto resolution_maked = hub::sensor::make_resolution(format, 1, 2);
+//        static_assert(resolution_maked == resolution);
+
+//        inputOutput.write( resolution );
+//        auto resolution_read2 = inputOutput.get<hub::sensor::Resolution>();
+//        assert( resolution == resolution_read2 );
+
+        return;
+
+        std::tuple<int, bool> tuple{2, true};
+        inputOutput.write(tuple);
+        std::tuple<int, bool> tuple2;
+        inputOutput.read(tuple2);
+        assert(tuple == tuple2);
+
+
+
+        //        return;
+
+        const std::string sensorName = "sensorName";
+        inputOutput.write( sensorName );
+        inputOutput.write( sensorName );
+        std::cout << "start reading" << std::endl;
+        std::string sensorName_read;
+        inputOutput.read( sensorName_read );
+        assert( sensorName == sensorName_read );
+        auto sensorName_read2 = inputOutput.get<std::string>();
+        assert( sensorName == sensorName_read2 );
+
+//        inputOutput.write( ref_resolutions );
+//        std::cout << "start reading" << std::endl;
+//        hub::sensor::Resolutions resolutions_read;
+//        inputOutput.read( resolutions_read );
+//        assert( ref_resolutions == resolutions_read );
+
+//        inputOutput.write( ref_resolutions );
+//        auto resolutions_read2 = inputOutput.get<hub::sensor::Resolutions>();
+//        assert( ref_resolutions == resolutions_read2 );
+
+        hub::sensor::SensorSpec::MetaData metaData;
+        metaData["a"] = 5;
+        inputOutput.write( metaData );
+        std::cout << "start reading" << std::endl;
+        hub::sensor::SensorSpec::MetaData metaData_read;
+        inputOutput.read( metaData_read );
+        assert( metaData == metaData_read );
+
+        inputOutput.write( metaData );
+        auto metaData_read2 = inputOutput.get<hub::sensor::SensorSpec::MetaData>();
+        assert( metaData == metaData_read2 );
+
+        inputOutput.write( ref_sensorSpec );
+        hub::sensor::SensorSpec ref_sensorSpec_read = inputOutput.get<hub::sensor::SensorSpec>();
+        //                inputOutput.read( ref_sensorSpec_read );
+        assert( ref_sensorSpec == ref_sensorSpec_read );
+
+        //        //        InputOutput inputOutput2;
+
+        //        //            auto outputFile  = hub::output::OutputFile( "filepath.txt" );
+        //        //            auto outputFile2 = hub::output::OutputFile( "filepath2.txt" );
+
+        //        assert( inputOutput.isEmpty() );
+        //        hub::sensor::OutputSensor outputSensor( inputOutput, ref_sensorSpec );
+        //        assert( !inputOutput.isEmpty() );
+        //        assert( outputSensor.getSpec() == ref_sensorSpec );
+        //        //            hub::sensor::OutputSensor outputSensor2( inputOutput2,
+        //        ref_sensorSpec2 );
+        //        //            assert(outputSensor2.getSpec() == ref_sensorSpec2);
+
+        //        assert( !inputOutput.isEmpty() );
+        //        hub::sensor::InputSensor inputSensor( inputOutput );
+        //        //        std::cout << "ref_sensorSpec: " << ref_sensorSpec << std::endl;
+        //        assert( inputSensor.getSpec() == ref_sensorSpec );
+        //        //        std::cout << "inputSensor.getSpec(): " << inputSensor.getSpec() <<
+        //        std::endl; assert( inputOutput.isEmpty() );
+        //        //        assert( inputSensor.getSpec() == ref_sensorSpec );
+
+        //        for ( const auto& acq : ref_acqs ) {
+        //            outputSensor << acq;
+        //            std::cout << "write acq : " << acq << std::endl;
+        //        }
 
         //        auto acq_read = inputSensor.acq();
         //        while ( !inputOutput.isEmpty() ) {
         //            inputSensor >> acq_read;
         //            std::cout << "read acq : " << acq_read << std::endl;
         //        }
+
+        //            for ( const auto& acq2 : ref_acqs2 ) {
+        //                outputSensor2 << acq2;
+        //                std::cout << "write acq2 : " << acq2 << std::endl;
+        //            }
+
+        //        auto inputFile  = hub::input::InputFile( "filepath.txt" );
+        //        auto inputFile2 = hub::input::InputFile( "filepath2.txt" );
+
+        //        hub::sensor::InputSensor inputSensor2( inputOutput2 );
+        //            assert(inputSensor2.getSpec() == ref_sensorSpec);
+
+        //        auto acq = inputOutput.get<hub::sensor::Acquisition>();
 
         //        auto acq2_read = inputSensor2.acq();
         //        while ( !inputOutput2.isEmpty() ) {
@@ -144,7 +283,7 @@ TEST_CASE( "InputSensor test" ) {
         //            sync_acqs.push_back( std::move( acq ) );
         //        }
 
-        std::cout << std::endl;
+        //        std::cout << std::endl;
 
         //        assert( sync_acqs.size() == ref_sync_acqs.size() );
         //        for ( int i = 0; i < sync_acqs.size(); ++i ) {

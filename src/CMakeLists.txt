@@ -166,6 +166,7 @@ if (NOT XCODE) # unable to have object files as native build with Xcode
 #        add_library(${TARGET_NAME} INTERFACE ${sources} ${headers})
 #        add_library(${TARGET_NAME} INTERFACE ${headers})
         add_library(${TARGET_NAME} OBJECT ${sources} ${headers}
+            core/Serial.hpp
         )
 #        add_library(${TARGET_NAME} SHARED ${sources} ${headers})
 

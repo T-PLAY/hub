@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Macros.hpp"
+
 #include <type_traits>
 
 #if ( __cplusplus < 201703L )
@@ -29,3 +31,25 @@ using void_t = typename make_void<Ts...>::type;
 
 }
 #endif
+
+
+//template <typename T>
+//using isInput_t = decltype( T::isInput );
+//using isInput_t = decltype( std::declval<T>().read( std::declval<hub::Data_t*>(), std::declval<hub::Size_t>() ) );
+//using isInput_t = decltype( std::declval<T>().read( std::declval<hub::Data_t*>(), std::declval<hub::Size_t>() ) );
+
+//template <typename T, typename = std::void_t<>>
+//struct isInput : std::false_type {};
+
+//template <typename T>
+//struct isInput<T, std::void_t<isInput<T>>> : std::true_type {};
+
+//#include "core/Input.hpp"
+//template <typename T>
+////static constexpr bool isInput_v = isInput<T>::value;
+//static constexpr bool isInput_v = std::is_base_of_v<hub::Input, T>;
+
+//#include "core/Output.hpp"
+//template <typename T>
+////static constexpr bool isInput_v = isInput<T>::value;
+//static constexpr bool isOutput_v = std::is_base_of_v<hub::Output, T>;

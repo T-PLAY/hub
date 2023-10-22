@@ -4,19 +4,19 @@
 #include <iostream>
 #include <list>
 #include <map>
-//#include <thread>
+// #include <thread>
 #include <vector>
 
-//#define HUB_THREAD_SAFE
-#ifdef HUB_THREAD_SAFE
-#include <mutex>
-#endif
+// #define HUB_THREAD_SAFE
 
-//#include "core/Any.hpp"
+// #include "core/Any.hpp"
 #include "core/Macros.hpp"
+#include "core/Serial.hpp"
+#include "core/Tuple.hpp"
 
-#if defined(OS_MACOS) && CPLUSPLUS_VERSION <= 14 // std::void_t not supported by AppleClang (c++14)
-#include "core/Traits.hpp"
+#if defined( OS_MACOS ) && \
+    CPLUSPLUS_VERSION <= 14 // std::void_t not supported by AppleClang (c++14)
+#    include "core/Traits.hpp"
 #endif
 
 #ifdef HUB_DEBUG_INPUT
@@ -26,6 +26,7 @@
 #endif
 
 namespace hub {
+
 
 ///
 /// \brief The Input class
@@ -43,7 +44,6 @@ class SRC_API Input
     template <typename T>
     using readable_t = decltype( std::declval<T>().read( std::declval<Input&>() ) );
 
-
     template <typename T, typename = std::void_t<>>
     struct readable : std::false_type {};
 
@@ -52,6 +52,22 @@ class SRC_API Input
 
     template <typename T>
     static constexpr bool readable_v = readable<T>::value;
+
+    //////////////////////////////////
+
+    template <typename T>
+    using getable_t = decltype( T( std::declval<Input&>() ) );
+
+    template <typename T, typename = std::void_t<>>
+    struct getable : std::false_type {};
+
+    template <typename T>
+    struct getable<T, std::void_t<getable_t<T>>> : std::true_type {};
+
+    template <typename T>
+    static constexpr bool getable_v = getable<T>::value;
+
+    //////////////////////////
 
   public:
     Input() = default;
@@ -66,7 +82,7 @@ class SRC_API Input
 
     virtual ~Input() = default;
 
-//  protected:
+    //  protected:
     ///
     /// \brief read
     /// function describes how to read data through from the communication bus.
@@ -113,59 +129,119 @@ class SRC_API Input
     /// \param t
     ///
     template <class T>
-    typename std::enable_if<readable_v<T>>::type read( T& t ) {
-#ifdef HUB_THREAD_SAFE
-        m_mtx.lock();
+    typename std::enable_if<serializable_v<T>>::type read( T& t ) {
+        static_assert(! readable_v<T>);
+
+#ifdef HUB_DEBUG_INPUT
+        std::cout << HEADER_INPUT_MSG << "read\033[0m(" << TYPE_NAME( t ) << ")" << std::endl;
 #endif
         assert( isOpen() );
-//        while (isOpen() && isEmpty()) {
-#ifdef HUB_THREAD_SAFE
-        while (isEmpty()) {
-            std::cout << "[Input:" << std::this_thread::get_id() << "]  waiting for data" << std::endl;
-            std::this_thread::sleep_for(std::chrono::milliseconds(10));
-        }
-#endif
         assert( !isEmpty() );
 
-        t.read( *this );
+        read(t.serialize());
+
 #ifdef HUB_DEBUG_INPUT
-        std::cout << HEADER_INPUT_MSG << "read(" << TYPE_NAME( t ) << ") = " << t << std::endl;
-#endif
-#ifdef HUB_THREAD_SAFE
-        m_mtx.unlock();
+        std::cout << HEADER_INPUT_MSG << "\033[1mread\033[0m(" << TYPE_NAME( t ) << ") = " << t
+                  << std::endl;
 #endif
     }
 
     template <class T>
-    typename std::enable_if<!readable_v<T>>::type read( T& t ) {
-#ifdef HUB_THREAD_SAFE
-        m_mtx.lock();
+    typename std::enable_if<readable_v<T>>::type read( T& t ) {
+        static_assert(! serializable_v<T>);
+
+#ifdef HUB_DEBUG_INPUT
+        std::cout << HEADER_INPUT_MSG << "read\033[0m(" << TYPE_NAME( t ) << ")" << std::endl;
 #endif
         assert( isOpen() );
-//        while (isOpen() && isEmpty()) {
-#ifdef HUB_THREAD_SAFE
-        while (isEmpty()) {
-            std::cout << "[Input:" << std::this_thread::get_id() << "]  waiting for data" << std::endl;
-            std::this_thread::sleep_for(std::chrono::milliseconds(10));
-        }
+        assert( !isEmpty() );
+
+//        t.read( *this );
+
+#ifdef HUB_DEBUG_INPUT
+        std::cout << HEADER_INPUT_MSG << "\033[1mread\033[0m(" << TYPE_NAME( t ) << ") = " << t
+                  << std::endl;
 #endif
-//        if ( !isOpen() ) {
-//            std::cout << "[Input" << std::this_thread::get_id() << "]  is closed, unable to read data"
-//                      << std::endl;
-//            return;
-//        }
+    }
+
+    template <class T>
+    //    typename std::enable_if<!readable_v<T>>::type read( T& t ) {
+    typename std::enable_if<!serializable_v<T> && ! readable_v<T>>::type read( T& t ) {
+#ifdef HUB_DEBUG_INPUT
+        std::cout << HEADER_INPUT_MSG << "read(" << TYPE_NAME( t ) << std::endl;
+#endif
+        assert( isOpen() );
+        //        while (isOpen() && isEmpty()) {
+        //        if ( !isOpen() ) {
+        //            std::cout << "[Input" << std::this_thread::get_id() << "]  is closed, unable
+        //            to read data"
+        //                      << std::endl;
+        //            return;
+        //        }
         assert( !isEmpty() );
 
         read( reinterpret_cast<Data_t*>( &t ), sizeof( T ) );
 #ifdef HUB_DEBUG_INPUT
         std::cout << HEADER_INPUT_MSG << "read(" << TYPE_NAME( t ) << ") = " << t << std::endl;
 #endif
-#ifdef HUB_THREAD_SAFE
-        m_mtx.unlock();
-#endif
     }
 
-//  private:
+    template <class T>
+    //              typename = typename std::enable_if<readable_v<T>>::type>
+    //              typename = typename std::enable_if<true>::type>
+    T get() {
+        //    template <class T>
+        //    inline T Input::get() {
+        assert( isOpen() );
+        assert( !isEmpty() );
+
+        //    return T::create(*this);
+        //        return T::get( *this );
+        //        if constexpr (readable_v<T>) {
+        if constexpr ( getable_v<T> ) {
+#ifdef HUB_DEBUG_INPUT
+            std::cout << HEADER_INPUT_MSG << "\033[33mget<" << TYPE_NAME( T ) << ">\033[0m()"
+                      << std::endl;
+#endif
+            T t( *this );
+//            T t = T::get(*this);
+#ifdef HUB_DEBUG_INPUT
+            std::cout << HEADER_INPUT_MSG << "\033[1;33mget<" << TYPE_NAME( t )
+                      << ">\033[0m() = " << t << std::endl;
+#endif
+            return t;
+            //            return T(*this);
+            //        if (readable_v<T>) {
+        }
+        else {
+            //            static_assert( !serializable_v<T> );
+            T t;
+            read( t );
+            // #ifdef HUB_DEBUG_INPUT
+            //         std::cout << HEADER_INPUT_MSG << "get<" << TYPE_NAME( t ) << ">() = " << t <<
+            //         std::endl;
+            // #endif
+            return t;
+        }
+    }
+
+    //    template <class T,
+    //              typename = typename std::enable_if<!readable_v<T>>::type>
+    ////              typename = typename std::enable_if<std::false_type>::type>
+    //    T get() {
+    //        //    template <class T>
+    //        //    inline T Input::get() {
+    //        assert( isOpen() );
+    //        assert( !isEmpty() );
+
+    //        //    return T::create(*this);
+    ////        return T::get( *this );
+    //            T t;
+    //        //    read( t );
+    //        //    return t;
+    //    }
+
+    //  private:
     ///
     /// \brief read
     /// \param list
@@ -210,8 +286,13 @@ class SRC_API Input
     void read( size_t size ) = delete; // non compatible format 32/64 bit
 #endif
 
-  public:
+    template <std::size_t I = 0, typename... Tp>
+    inline typename std::enable_if<I == sizeof...( Tp ), void>::type read( std::tuple<Tp...>& t );
 
+    template <std::size_t I = 0, typename... Tp>
+        typename std::enable_if < I<sizeof...( Tp ), void>::type read( std::tuple<Tp...>& t );
+
+  public:
     ///
     /// \brief readAll
     /// \param ts
@@ -220,12 +301,12 @@ class SRC_API Input
               typename T = std::decay_t<decltype( *begin( std::declval<Container>() ) )>>
     void readAll( Container& ts );
 
-    ///
-    /// \brief get
-    /// \return
-    ///
-    template <class T>
-    T get();
+    //    ///
+    //    /// \brief get
+    //    /// \return
+    //    ///
+    //    template <class T>
+    //    T get();
 
     ///
     /// \brief getAll
@@ -250,21 +331,16 @@ class SRC_API Input
 
     //    template <typename Acquisition>
     //    Acquisition operator>>( Input& input );
-//    Input& operator>>( Input& input );
+    //    Input& operator>>( Input& input );
 
     // sensor::Acquisition Input::operator>>( Input& input ) {
 
   private:
-#ifdef HUB_THREAD_SAFE
-    std::mutex m_mtx;
-#endif
-
     //    std::list<sensor::Acquisition> m_lastAcqs;
-//    size_t m_id;
-//    std::list<std::any> m_lastTs;
-//    std::list<hub::Input*> m_leftInputs;
+    //    size_t m_id;
+    //    std::list<std::any> m_lastTs;
+    //    std::list<hub::Input*> m_leftInputs;
 };
-
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -303,9 +379,12 @@ inline void Input::read( std::vector<T>& vector ) {
     vector.reserve( nbEl );
 
     for ( int i = 0; i < nbEl; ++i ) {
-        T el;
-        read( el );
-        vector.push_back( std::move( el ) );
+        if constexpr ( getable_v<T> ) { vector.push_back( get<T>() ); }
+        else {
+            T el;
+            read( el );
+            vector.push_back( std::move( el ) );
+        }
     }
 }
 
@@ -347,6 +426,28 @@ inline void Input::read( std::pair<T, U>& pair ) {
     pair = std::make_pair( first, std::move( second ) );
 }
 
+template <std::size_t I, typename... Tp>
+inline typename std::enable_if<I == sizeof...( Tp ), void>::type
+Input::read( std::tuple<Tp...>& t ) {
+#ifdef HUB_DEBUG_INPUT
+    std::cout << HEADER_INPUT_MSG "\033[1mread\033[0m(" << TYPE_NAME( t ) << ") : '" << t << "'"
+              << std::endl;
+#endif
+}
+
+template <std::size_t I, typename... Tp>
+    typename std::enable_if < I<sizeof...( Tp ), void>::type Input::read( std::tuple<Tp...>& t ) {
+
+    if constexpr ( static_cast<int>( I ) == 0 ) {
+#ifdef HUB_DEBUG_INPUT
+        std::cout << HEADER_INPUT_MSG "read(" << TYPE_NAME( t ) << ")" << std::endl;
+#endif
+    }
+    read( std::get<I>( t ) );
+
+    read<I + 1, Tp...>( t );
+}
+
 // template <class T>
 // template <class T,
 //           typename>
@@ -362,7 +463,7 @@ void Input::readAll( Container& ts ) {
     assert( isOpen() );
     assert( !isEmpty() );
 
-           //    ts.reserve( ts.size() );
+    //    ts.reserve( ts.size() );
     try {
         while ( !isEmpty() ) {
             ts.emplace_back( get<T>() );
@@ -372,17 +473,6 @@ void Input::readAll( Container& ts ) {
         std::cout << "[Input] catch exception : " << e.what() << std::endl;
         throw;
     }
-}
-
-template <class T>
-inline T Input::get() {
-    assert( isOpen() );
-    assert( !isEmpty() );
-
-//    return T::create(*this);
-    T t;
-    read( t );
-    return t;
 }
 
 template <typename Container>
@@ -395,109 +485,110 @@ Container Input::getAll() {
     return ts;
 }
 
-template<class T>
-void Input::operator>>(T &t) {
+template <class T>
+void Input::operator>>( T& t ) {
     assert( isOpen() );
-//    assert( !isEmpty() );
+    //    assert( !isEmpty() );
 
-    read(t);
+    read( t );
 }
 
-    //        std::cout << "[Input] operator>> ";
-    //        //        for (int i = 0; i < m_leftInputs.size(); ++i) {
-    //        for ( auto* leftInput : m_leftInputs ) {
-    //            std::cout << leftInput << " ";
-    //        }
-    //        std::cout << std::endl;
+//        std::cout << "[Input] operator>> ";
+//        //        for (int i = 0; i < m_leftInputs.size(); ++i) {
+//        for ( auto* leftInput : m_leftInputs ) {
+//            std::cout << leftInput << " ";
+//        }
+//        std::cout << std::endl;
 
-    ////        tOut = 1;
+////        tOut = 1;
 
-    //        auto& rightInput = *this;
-    //        T rightT;
-    //        rightInput.read( rightT );
+//        auto& rightInput = *this;
+//        T rightT;
+//        rightInput.read( rightT );
 
-    //        //        read( t );
-    ////        T ret;
+//        //        read( t );
+////        T ret;
 
-    //        for ( auto* leftInputPtr : m_leftInputs ) {
-    //            auto& leftInput  = *leftInputPtr;
-    //            auto& leftLastTs = leftInput.m_lastTs;
-    //            assert( leftLastTs.size() < 20 );
+//        for ( auto* leftInputPtr : m_leftInputs ) {
+//            auto& leftInput  = *leftInputPtr;
+//            auto& leftLastTs = leftInput.m_lastTs;
+//            assert( leftLastTs.size() < 20 );
 
-    //            if ( leftLastTs.empty() ) {
-    //                T leftT;
-    //                leftInput.read( leftT );
-    //                leftLastTs.push_back( std::move( leftT ) );
-    //            }
+//            if ( leftLastTs.empty() ) {
+//                T leftT;
+//                leftInput.read( leftT );
+//                leftLastTs.push_back( std::move( leftT ) );
+//            }
 
-    //            //                while ( rightT.getStart() < leftLastTs.front().getStart() ) {
-    //            while ( rightT < std::any_cast<const T&>(leftLastTs.front()) ) {
-    //                std::cout << "[Input] operator>>(Input&) shift rightT : " << rightT
-    //                          << std::endl;
-    //                assert( !rightInput.isEmpty() );
-    //                rightInput.read( rightT );
-    //            }
+//            //                while ( rightT.getStart() < leftLastTs.front().getStart() ) {
+//            while ( rightT < std::any_cast<const T&>(leftLastTs.front()) ) {
+//                std::cout << "[Input] operator>>(Input&) shift rightT : " << rightT
+//                          << std::endl;
+//                assert( !rightInput.isEmpty() );
+//                rightInput.read( rightT );
+//            }
 
-    //            //                while ( leftLastTs.back().getStart() < rightT.getStart() &&
-    //            //                !leftInput.isEmpty()
-    //            while ( std::any_cast<const T&>(leftLastTs.back()) < rightT && !leftInput.isEmpty() ) {
-    //                T leftT;
-    //                assert( !leftInput.isEmpty() );
-    //                leftInput.read( leftT );
-    //                leftLastTs.push_back( std::move( leftT ) );
-    //            }
+//            //                while ( leftLastTs.back().getStart() < rightT.getStart() &&
+//            //                !leftInput.isEmpty()
+//            while ( std::any_cast<const T&>(leftLastTs.back()) < rightT && !leftInput.isEmpty() )
+//            {
+//                T leftT;
+//                assert( !leftInput.isEmpty() );
+//                leftInput.read( leftT );
+//                leftLastTs.push_back( std::move( leftT ) );
+//            }
 
-    //            while ( leftLastTs.size() > 2 ) {
-    //                leftLastTs.pop_front();
-    //            }
+//            while ( leftLastTs.size() > 2 ) {
+//                leftLastTs.pop_front();
+//            }
 
-    //            const auto& leftTBeforeRightT = std::any_cast<const T&>(leftLastTs.front());
-    //            const auto& leftTAfterRightT  = std::any_cast<const T&>(leftLastTs.back());
+//            const auto& leftTBeforeRightT = std::any_cast<const T&>(leftLastTs.front());
+//            const auto& leftTAfterRightT  = std::any_cast<const T&>(leftLastTs.back());
 
-    //            //                assert( leftInput.isEmpty() || leftTBeforeRightT.getStart() <=
-    //            //                rightT.getStart());
-    //            assert( leftInput.isEmpty() || leftTBeforeRightT <= rightT );
-    //            //                assert( leftInput.isEmpty() || rightT.getStart() <= leftTAfterRightT );
-    //            assert( leftInput.isEmpty() || rightT <= leftTAfterRightT );
+//            //                assert( leftInput.isEmpty() || leftTBeforeRightT.getStart() <=
+//            //                rightT.getStart());
+//            assert( leftInput.isEmpty() || leftTBeforeRightT <= rightT );
+//            //                assert( leftInput.isEmpty() || rightT.getStart() <= leftTAfterRightT
+//            ); assert( leftInput.isEmpty() || rightT <= leftTAfterRightT );
 
-    //            const auto& closestLeftT =
-    //                ( std::abs( leftTBeforeRightT - rightT ) > std::abs( leftTAfterRightT - rightT ) )
-    //                    ? ( leftTAfterRightT )
-    //                    : ( leftTBeforeRightT );
+//            const auto& closestLeftT =
+//                ( std::abs( leftTBeforeRightT - rightT ) > std::abs( leftTAfterRightT - rightT ) )
+//                    ? ( leftTAfterRightT )
+//                    : ( leftTBeforeRightT );
 
-    //            //    const auto & rightMeasures = rightT.getMeasures();
-    //            //    const auto & closestMeasures = closestLeftT.getMeasures();
-    //            ////    rightMeasures.insert(rightMeasures.begin(), closestMeasures.begin(),
-    //            // closestMeasures.end());
-    //            ////    rightT << closestLeftT.getMeasures();
-    //            //    Acquisition acq(rightT.m_start, rightT.m_end);
+//            //    const auto & rightMeasures = rightT.getMeasures();
+//            //    const auto & closestMeasures = closestLeftT.getMeasures();
+//            ////    rightMeasures.insert(rightMeasures.begin(), closestMeasures.begin(),
+//            // closestMeasures.end());
+//            ////    rightT << closestLeftT.getMeasures();
+//            //    Acquisition acq(rightT.m_start, rightT.m_end);
 
-    ////            (void)(tOut << closestLeftT);
-    ////            tOut = tOut << closestLeftT;
-    ////            tOut |= closestLeftT;
-    //            tOut <<= closestLeftT;
-    ////            (void)(tOut << closestLeftT);
-    ////            tOut += closestLeftT;
+////            (void)(tOut << closestLeftT);
+////            tOut = tOut << closestLeftT;
+////            tOut |= closestLeftT;
+//            tOut <<= closestLeftT;
+////            (void)(tOut << closestLeftT);
+////            tOut += closestLeftT;
 
-    //            //    acq << closestMeasures;
-    //            //    acq << rightMeasures;
-    //            //    return acq;
-    //            //    return rightT;
-    //        }
+//            //    acq << closestMeasures;
+//            //    acq << rightMeasures;
+//            //    return acq;
+//            //    return rightT;
+//        }
 
-    ////        (void)(tOut << rightT);
-    ////        tOut = rightT;
-    ////        tOut |= rightT;
-    //        tOut <<= rightT;
-    ////        tOut << rightT;
-    ////        tOut += rightT;
+////        (void)(tOut << rightT);
+////        tOut = rightT;
+////        tOut |= rightT;
+//        tOut <<= rightT;
+////        tOut << rightT;
+////        tOut += rightT;
 
-    //        m_leftInputs.clear();
-    //        return ret;
+//        m_leftInputs.clear();
+//        return ret;
 //}
 
 // template <typename Acquisition>
-//Input& Input::operator>>( Input& input ) {
+// Input& Input::operator>>( Input& input ) {
 //    assert( isOpen() );
 //    assert( !isEmpty() );
 //    assert( input.isOpen() );
@@ -536,8 +627,10 @@ void Input::operator>>(T &t) {
 //    //    }
 
 //    //    while ( rightAcq.getStart() < leftLastAcqs.front().getStart() ) {
-//    //        std::cout << "[InputSensor] operator>>(InputSensor&) shift rightAcq : " << rightAcq <<
-//    // std::endl; /        assert( !rightInput.isEmpty() ); /        rightInput.read( rightAcq ); / }
+//    //        std::cout << "[InputSensor] operator>>(InputSensor&) shift rightAcq : " << rightAcq
+//    <<
+//    // std::endl; /        assert( !rightInput.isEmpty() ); /        rightInput.read( rightAcq );
+//    / }
 
 //    //    while ( leftLastAcqs.back().getStart() < rightAcq.getStart() && !leftInput.isEmpty() ) {
 //    //        assert( !leftInput.isEmpty() );
@@ -557,7 +650,8 @@ void Input::operator>>(T &t) {
 
 //    //    const auto& closestAcq =
 //    //        ( std::abs( leftBeforeRightAcq.getStart() - rightAcq.getStart() ) > std::abs(
-//    // leftAfterRightAcq.getStart() - rightAcq.getStart() ) ) /            ? ( leftAfterRightAcq ) /
+//    // leftAfterRightAcq.getStart() - rightAcq.getStart() ) ) /            ? ( leftAfterRightAcq )
+//    /
 //    // : ( leftBeforeRightAcq );
 
 //    //    const auto & rightMeasures = rightAcq.getMeasures();

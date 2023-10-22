@@ -201,15 +201,15 @@
 #define CONSTEXPR const
 #endif
 
-//#define DEBUG_INPUT_OUTPUT
+#define DEBUG_INPUT_OUTPUT
 
 #ifdef DEBUG_INPUT_OUTPUT
 #    define HUB_DEBUG_INPUT
 #    define HUB_DEBUG_OUTPUT
 
-#    ifdef OS_LINUX
-#        define HUB_USE_BOOST
-#    endif
+//#    ifdef OS_LINUX
+//#        define HUB_USE_BOOST
+//#    endif
 #endif
 
 

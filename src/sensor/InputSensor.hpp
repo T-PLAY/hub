@@ -44,8 +44,10 @@ class InputSensor : public Sensor {
     explicit InputSensor( InputT&& input ) :
 
         m_input( std::forward<Input&>( input ) ),
+        Sensor(m_input.get<SensorSpec>())
 //        m_measures(m_input),
-        Sensor( SensorSpec {} )
+//        Sensor( SensorSpec {} )
+
     //        m_input( new Input( std::move( input ) ) )
     {
         //        static_assert( std::is_base_of<Input, Input>::value, "not a base class" );
@@ -55,7 +57,7 @@ class InputSensor : public Sensor {
         //        m_input.read( m_spec );
 
 //        m_input >> m_spec;
-        m_input.read(m_spec);
+//        m_input.read(m_spec);
 //        m_input.read(m_measures);
     }
 
