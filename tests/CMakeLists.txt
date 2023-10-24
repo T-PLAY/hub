@@ -39,8 +39,8 @@ endif()
 set(test_srcs)
 foreach(HUB_SOURCE_DIR ${HUB_SOURCE_DIRS})
     file(
-        GLOB
-    #    GLOB_RECURSE
+#        GLOB
+        GLOB_RECURSE
         test_src
         ${CMAKE_CURRENT_SOURCE_DIR}/${HUB_SOURCE_DIR}/*.cpp
     )

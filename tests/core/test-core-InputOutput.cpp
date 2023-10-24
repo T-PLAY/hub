@@ -23,14 +23,14 @@ TEST_CASE( "InputOutput test" ) {
     hub::Output& output = inputOutput;
 
     inputOutput.write( 5 );
-    inputOutput.put( 5 );
+//    inputOutput.put( 5 );
     inputOutput << 5;
 
     int v;
     inputOutput.read( v );
     assert( v == 5 );
-    v = inputOutput.get<int>();
-    assert( v == 5 );
+//    v = inputOutput.get<int>();
+//    assert( v == 5 );
     v = 0;
     inputOutput >> v;
 

@@ -42,6 +42,21 @@ class SRC_API Input
 {
   public:
     template <typename T>
+    using notReadable_t = decltype( T::notReadable );
+
+    template <typename T, typename = std::void_t<>>
+    struct notReadable : std::false_type {};
+
+    template <typename T>
+    struct notReadable<T, std::void_t<notReadable_t<T>>> : std::true_type {};
+
+    template <typename T>
+    static constexpr bool notReadable_v = notReadable<T>::value;
+//    static constexpr bool packable_v = ! std::is_constructible_v<T> ;
+
+    //////////////////////////////////
+
+    template <typename T>
     using readable_t = decltype( std::declval<T>().read( std::declval<Input&>() ) );
 
     template <typename T, typename = std::void_t<>>
@@ -56,7 +71,7 @@ class SRC_API Input
     //////////////////////////////////
 
     template <typename T>
-    using getable_t = decltype( T( std::declval<Input&>() ) );
+    using getable_t = decltype( T::get( std::declval<Input&>() ) );
 
     template <typename T, typename = std::void_t<>>
     struct getable : std::false_type {};
@@ -92,6 +107,14 @@ class SRC_API Input
     /// [in] size of the data array to read
     ///
     virtual void read( Data_t* data, Size_t len ) = 0;
+
+
+//        return get<T>();
+//        return T::get(*this);
+//            T t = T::get(*this);
+//        T t;
+//        return t;
+
 
   public:
     ///
@@ -156,7 +179,7 @@ class SRC_API Input
         assert( isOpen() );
         assert( !isEmpty() );
 
-//        t.read( *this );
+        t.read( *this );
 
 #ifdef HUB_DEBUG_INPUT
         std::cout << HEADER_INPUT_MSG << "\033[1mread\033[0m(" << TYPE_NAME( t ) << ") = " << t
@@ -166,9 +189,9 @@ class SRC_API Input
 
     template <class T>
     //    typename std::enable_if<!readable_v<T>>::type read( T& t ) {
-    typename std::enable_if<!serializable_v<T> && ! readable_v<T>>::type read( T& t ) {
+    typename std::enable_if<!serializable_v<T> && ! readable_v<T> && ! notReadable_v<T>>::type read( T& t ) {
 #ifdef HUB_DEBUG_INPUT
-        std::cout << HEADER_INPUT_MSG << "read(" << TYPE_NAME( t ) << std::endl;
+        std::cout << HEADER_INPUT_MSG << "read(" << TYPE_NAME( t ) << ")" << std::endl;
 #endif
         assert( isOpen() );
         //        while (isOpen() && isEmpty()) {
@@ -186,14 +209,31 @@ class SRC_API Input
 #endif
     }
 
+//    template <class T>
+//    constexpr typename std::enable_if<getable_v<T>, T>::type get()
+////    constexpr T get()
+//    {
+
+////        return get<T>();
+////        return T::get(*this);
+////            T t = T::get(*this);
+////        T t;
+////        return t;
+//    }
+
     template <class T>
+    typename std::enable_if<! getable_v<T>, T>::type get() {
+//    typename std::enable_if<getable_v<T>, T>::type get() {
     //              typename = typename std::enable_if<readable_v<T>>::type>
     //              typename = typename std::enable_if<true>::type>
-    T get() {
+//    T get() {
+
         //    template <class T>
         //    inline T Input::get() {
         assert( isOpen() );
         assert( !isEmpty() );
+
+        static_assert(! readable_v<T> && ! serializable_v<T>);
 
         //    return T::create(*this);
         //        return T::get( *this );
@@ -203,7 +243,8 @@ class SRC_API Input
             std::cout << HEADER_INPUT_MSG << "\033[33mget<" << TYPE_NAME( T ) << ">\033[0m()"
                       << std::endl;
 #endif
-            T t( *this );
+//            T t( *this );
+            T t = T::get(*this);
 //            T t = T::get(*this);
 #ifdef HUB_DEBUG_INPUT
             std::cout << HEADER_INPUT_MSG << "\033[1;33mget<" << TYPE_NAME( t )
@@ -379,12 +420,12 @@ inline void Input::read( std::vector<T>& vector ) {
     vector.reserve( nbEl );
 
     for ( int i = 0; i < nbEl; ++i ) {
-        if constexpr ( getable_v<T> ) { vector.push_back( get<T>() ); }
-        else {
+//        if constexpr ( getable_v<T> ) { vector.push_back( get<T>() ); }
+//        else {
             T el;
             read( el );
             vector.push_back( std::move( el ) );
-        }
+//        }
     }
 }
 
@@ -466,7 +507,10 @@ void Input::readAll( Container& ts ) {
     //    ts.reserve( ts.size() );
     try {
         while ( !isEmpty() ) {
-            ts.emplace_back( get<T>() );
+            T t;
+            read(t);
+            ts.push_back(std::move(t));
+//            ts.emplace_back( get<T>() );
         }
     }
     catch ( std::exception& e ) {

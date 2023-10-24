@@ -19,7 +19,7 @@
 // #include <bits/stdc++.h>
 
 // #include "core/Macros.hpp"
-#include "Format.hpp"
+//#include "Format.hpp"
 #include "Resolution.hpp"
 
 namespace hub {

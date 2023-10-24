@@ -44,7 +44,22 @@ class SRC_API Output
 {
   public:
     template <typename T>
+    using notWritable_t = decltype( T::notWritable );
+
+    template <typename T, typename = std::void_t<>>
+    struct notWritable : std::false_type {};
+
+    template <typename T>
+    struct notWritable<T, std::void_t<notWritable_t<T>>> : std::true_type {};
+
+    template <typename T>
+    static constexpr bool notWritable_v = notWritable<T>::value;
+
+    //////////////////////////////////////
+
+    template <typename T>
     using writable_t = decltype( std::declval<T>().write( std::declval<Output&>() ) );
+//    using writable_t = decltype( write( std::declval<T>(), std::declval<Output&>() ) );
 
     template <typename T, typename = std::void_t<>>
     struct writable : std::false_type {};
@@ -140,6 +155,7 @@ class SRC_API Output
                   << std::endl;
 #endif
         t.write( *this );
+//        write(t, *this);
 
 //        write( const_cast<T&>(t).serialize() );
 //        write( reinterpret_cast<T&>(t).serialize() );
@@ -151,7 +167,7 @@ class SRC_API Output
 
     template <class T>
     //    typename std::enable_if<!writable_v<T>>::type write( const T& t ) {
-    typename std::enable_if<!serializable_v<T> && !writable_v<T>>::type write( const T& t ) {
+    typename std::enable_if<!serializable_v<T> && !writable_v<T> && ! notWritable_v<T>>::type write( const T& t ) {
         // #ifdef HUB_THREAD_SAFE
         //         m_mtx.lock();
         // #endif

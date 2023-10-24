@@ -76,15 +76,15 @@ class SRC_API SensorSpec
                          const Resolutions& resolutions,
                          const MetaData& metaData       = {} );
 
-    SensorSpec(Input & input)
-        : m_sensorName(input.get<decltype(m_sensorName)>())
-//        , m_resolutions(input.get<decltype(m_resolutions)>())
-        , m_metaData(input.get<decltype(m_metaData)>())
-    {
-//        input.read( m_sensorName );
-//        input.read( m_resolutions );
-//        input.read( m_metaData );
-    }
+//    SensorSpec(Input & input)
+//        : m_sensorName(input.get<decltype(m_sensorName)>())
+////        , m_resolutions(input.get<decltype(m_resolutions)>())
+//        , m_metaData(input.get<decltype(m_metaData)>())
+//    {
+////        input.read( m_sensorName );
+////        input.read( m_resolutions );
+////        input.read( m_metaData );
+//    }
 
     SensorSpec() = delete;
 
@@ -195,21 +195,21 @@ class SRC_API SensorSpec
     //    friend Input& operator>>( Input& input, SensorSpec& sensorSpec );
 
 //  private:
-    template <typename Input>
-    void read( Input& input ) {
-        //        input.read( m_format );
-        input.read( m_sensorName );
-        input.read( m_resolutions );
-        input.read( m_metaData );
-    }
+//    template <typename Input>
+//    void read( Input& input ) {
+//        //        input.read( m_format );
+//        input.read( m_sensorName );
+//        input.read( m_resolutions );
+//        input.read( m_metaData );
+//    }
 
-    template <typename Output>
-    void write( Output& output ) const {
-        //        output.write( m_format );
-        output.write( m_sensorName );
-        output.write( m_resolutions );
-        output.write( m_metaData );
-    }
+//    template <typename Output>
+//    void write( Output& output ) const {
+//        //        output.write( m_format );
+//        output.write( m_sensorName );
+//        output.write( m_resolutions );
+//        output.write( m_metaData );
+//    }
 
   private:
     std::string m_sensorName;

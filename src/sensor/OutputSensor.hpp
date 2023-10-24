@@ -17,7 +17,7 @@
 
 // #include "net/ClientSocket.hpp"
 #include "Acquisition.hpp"
-#include "Format.hpp"
+//#include "Format.hpp"
 #include "Measure.hpp"
 #include "Resolution.hpp"
 

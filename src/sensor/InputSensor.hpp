@@ -43,8 +43,8 @@ class InputSensor : public Sensor {
     template <class InputT>
     explicit InputSensor( InputT&& input ) :
 
-        m_input( std::forward<Input&>( input ) ),
-        Sensor(m_input.get<SensorSpec>())
+        m_input( std::forward<Input&>( input ) )
+//        Sensor(m_input.get<SensorSpec>())
 //        m_measures(m_input),
 //        Sensor( SensorSpec {} )
 
@@ -57,7 +57,7 @@ class InputSensor : public Sensor {
         //        m_input.read( m_spec );
 
 //        m_input >> m_spec;
-//        m_input.read(m_spec);
+        m_input.read(m_spec);
 //        m_input.read(m_measures);
     }
 
