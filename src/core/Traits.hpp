@@ -4,6 +4,8 @@
 
 #include <type_traits>
 
+namespace hub {
+
 #if ( __cplusplus < 201703L )
 template <class...>
 struct is_one_of : std::false_type {};
@@ -32,6 +34,24 @@ using void_t = typename make_void<Ts...>::type;
 }
 #endif
 
+template <typename T>
+using isPackable_t = decltype( T::packable );
+
+template <typename T, typename = std::void_t<>>
+struct isPackable : std::false_type {};
+
+template <typename T>
+struct isPackable<T, std::void_t<isPackable_t<T>>> : std::true_type {};
+
+template <typename T>
+static constexpr bool isPackable_v = isPackable<T>::value;
+
+template <typename T>
+static constexpr bool isSimpleType_v = std::is_same<T, int>::value;
+//template <class T>
+//constexpr bool isSimpleType() noexcept {
+//    return std::is_same<int, T> {};
+//}
 
 //template <typename T>
 //using isInput_t = decltype( T::isInput );
@@ -53,3 +73,5 @@ using void_t = typename make_void<Ts...>::type;
 //template <typename T>
 ////static constexpr bool isInput_v = isInput<T>::value;
 //static constexpr bool isOutput_v = std::is_base_of_v<hub::Output, T>;
+
+} // namespace hub

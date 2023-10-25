@@ -1,4 +1,4 @@
-#include "Input.hpp"
+#include "InputImpl.hpp"
 
 #include <cstring>
 
@@ -9,13 +9,14 @@
 // #include "InputMemory.hpp"
 
 namespace hub {
-// namespace io {
+namespace io {
+namespace input {
 
 /////////////////////////////////////////////////////////////////////////////
 
-//size_t Input::s_nInput = 0;
+// size_t InputImpl::s_nInput = 0;
 
-void Input::read( std::string& str ) {
+void InputImpl::read( std::string& str ) {
     assert( isOpen() );
     assert( !isEmpty() );
 
@@ -32,18 +33,17 @@ void Input::read( std::string& str ) {
         delete[] tmp;
     }
 #ifdef HUB_DEBUG_INPUT
-    std::cout << HEADER_INPUT_MSG "read(" << TYPE_NAME( str ) << ") : '" << str << "'" << std::endl;
+    std::cout << HEADER <<  "read(" << TYPE_NAME( str ) << ") : '" << str << "'" << std::endl;
 #endif
 }
 
-
-void Input::read( char* str ) {
+void InputImpl::read( char* str ) {
     assert( str != nullptr );
     assert( isOpen() );
     assert( !isEmpty() );
 
 #ifdef HUB_DEBUG_INPUT
-    std::cout << HEADER_INPUT_MSG "read(" << TYPE_NAME( str ) << ")" << std::endl;
+    std::cout << HEADER << "read(" << TYPE_NAME( str ) << ")" << std::endl;
 #endif
 
     int strLen = 0;
@@ -58,15 +58,15 @@ void Input::read( char* str ) {
     }
 }
 
-//void Input::clear()
+// void InputImpl::clear()
 //{
-//    while ( !isEmpty() ) {
+//     while ( !isEmpty() ) {
 ////	ts.emplace_back( get<T>() );
 //    }
 //}
 
 // todo acq
-// void Input::read( sensor::SensorSpec& sensorSpec ) {
+// void InputImpl::read( sensor::SensorSpec& sensorSpec ) {
 //    assert( isOpen() );
 //    assert( !isEmpty() );
 
@@ -110,7 +110,7 @@ void Input::read( char* str ) {
 //    assert( versionMinor <= s_versionMinor );
 //    assert( versionPatch <= s_versionPatch );
 ////#ifdef DEBUG
-////    std::cout <<  "[Input] read(magic number) : '" << magicNumber << "'" << std::endl;
+////    std::cout <<  "[InputImpl] read(magic number) : '" << magicNumber << "'" << std::endl;
 ////#endif
 
 //    std::string sensorName;
@@ -132,7 +132,7 @@ void Input::read( char* str ) {
 //    assert( !sensorSpec.isEmpty() );
 //}
 
-// void Input::read( Measure& measure ) {
+// void InputImpl::read( Measure& measure ) {
 //     assert( isOpen() );
 //     assert( !isEmpty() );
 
@@ -149,7 +149,7 @@ void Input::read( char* str ) {
 //    assert( measure.m_resolution.second != sensor::Format::NONE );
 //}
 
-// void Input::read( sensor::Acquisition& acq ) {
+// void InputImpl::read( sensor::Acquisition& acq ) {
 //     assert( isOpen() );
 //     assert( !isEmpty() );
 
@@ -173,7 +173,7 @@ void Input::read( char* str ) {
 //    assert( acq.m_size > 0 );
 //}
 
-// void Input::read( Any& any ) {
+// void InputImpl::read( Any& any ) {
 //     assert( isOpen() );
 //     assert( !isEmpty() );
 
@@ -259,5 +259,6 @@ void Input::read( char* str ) {
 
 /////////////////////////////////////////////////////////////////////////////
 
-//} // namespace io
+} // namespace input
+} // namespace io
 } // namespace hub

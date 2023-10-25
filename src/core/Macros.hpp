@@ -230,6 +230,8 @@
 #define FILE_NAME std::string(__FILE_NAME__)
 #endif
 
+#define FILE_NAME_WITHOUT_EXTENSION FILE_NAME.substr(0, FILE_NAME.find_first_of('.'))
+
 //#if defined(OS_MACOS)
 //    #define MAX_NET_BUFFER_SIZE 256'000
 //#elif defined(OS_LINUX)
@@ -257,6 +259,11 @@
     #define TYPE_NAME(t) \
         typeid(t).name()
 #endif
+
+#define HEADER \
+        "\033[" << std::to_string( 31 + reinterpret_cast<std::uintptr_t>( this ) % 7 ) \
+<< "m[" << FILE_NAME_WITHOUT_EXTENSION << ":" << this << "]\033[0m "
+
 //#    ifdef HUB_USE_BOOST
 //        std::cout << HEADER_INPUT_MSG "read(T) : <"
 ////                  << typeid( T ).name() << " ("
@@ -274,6 +281,7 @@
 
 namespace hub {
     using Data_t = unsigned char;
+//    using Data_t =  std::byte;
 //    using Size_t = uint64_t;
     using Size_t = uint32_t;
 //    using Size_t = uint16_t;

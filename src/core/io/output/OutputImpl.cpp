@@ -1,17 +1,19 @@
-#include "Output.hpp"
+#include "OutputImpl.hpp"
 
 #include <cstring>
 #include <iostream>
 
 namespace hub {
+namespace io {
+namespace output {
 
-// Output::~Output() {}
+// OutputImpl::~OutputImpl() {}
 
-void Output::write( const std::string& str ) {
+void OutputImpl::write( const std::string& str ) {
     assert( isOpen() );
 
 #ifdef HUB_DEBUG_OUTPUT
-    std::cout << HEADER_OUTPUT_MSG "write(" << TYPE_NAME( str ) << ") : '" << str << "'"
+    std::cout << HEADER << "write(" << TYPE_NAME( str ) << ") : '" << str << "'"
               << std::endl;
 #endif
 
@@ -25,12 +27,12 @@ void Output::write( const std::string& str ) {
     }
 }
 
-void Output::write( const char* str ) {
+void OutputImpl::write( const char* str ) {
     assert( str != nullptr );
     assert( isOpen() );
 
 #ifdef HUB_DEBUG_OUTPUT
-    std::cout << HEADER_OUTPUT_MSG "write(" << TYPE_NAME( str ) << ")" << std::endl;
+    std::cout << HEADER << "write(" << TYPE_NAME( str ) << ")" << std::endl;
 #endif
 
     uint32_t strLen = static_cast<int>( strlen( str ) );
@@ -40,11 +42,11 @@ void Output::write( const char* str ) {
 }
 
 // todo acq
-// void Output::write( const sensor::SensorSpec& sensorSpec ) {
+// void OutputImpl::write( const sensor::SensorSpec& sensorSpec ) {
 //    assert( isOpen() );
 
 // #ifdef HUB_DEBUG_OUTPUT
-////    std::cout << "[Output:" << this << "] write(SensorSpec)" << std::endl;
+////    std::cout << "[OutputImpl:" << this << "] write(SensorSpec)" << std::endl;
 //    std::cout << HEADER_OUTPUT_MSG "write(SensorSpec)" << std::endl;
 // #endif
 
@@ -104,7 +106,7 @@ void Output::write( const char* str ) {
 ////    write((unsigned char*)buff.data(), packetSize);
 //}
 
-// void Output::write( const Measure& measure ) {
+// void OutputImpl::write( const Measure& measure ) {
 //     assert( isOpen() );
 
 // #ifdef HUB_DEBUG_OUTPUT
@@ -119,7 +121,7 @@ void Output::write( const char* str ) {
 //    write( measure.m_resolution );
 //}
 
-// void Output::write( const sensor::Acquisition& acq ) {
+// void OutputImpl::write( const sensor::Acquisition& acq ) {
 //     assert( isOpen() );
 
 // #ifdef HUB_DEBUG_OUTPUT
@@ -146,7 +148,7 @@ void Output::write( const char* str ) {
 ////    write((unsigned char*)buff.data(), packetSize);
 //}
 
-// void Output::write(uint64_t size)
+// void OutputImpl::write(uint64_t size)
 //{
 // #ifdef HUB_DEBUG_OUTPUT
 //     std::cout << HEADER_OUTPUT_MSG "write(uint64_t)" << std::endl;
@@ -154,7 +156,7 @@ void Output::write( const char* str ) {
 //     write((unsigned char*)&size, sizeof(uint64_t));
 // }
 
-// void Output::write( const Any& any ) {
+// void OutputImpl::write( const Any& any ) {
 //     assert( isOpen() );
 
 // #ifdef HUB_DEBUG_OUTPUT
@@ -218,4 +220,6 @@ void Output::write( const char* str ) {
 //     }
 // }
 
+} // namespace output
+} // namespace io
 } // namespace hub

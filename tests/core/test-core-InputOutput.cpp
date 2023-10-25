@@ -1,236 +1,223 @@
-#include "test_common.hpp"
+
+#define HUB_DEBUG_INPUT
+#define HUB_DEBUG_OUTPUT
+
 #include "test-core-common.hpp"
+#include "test_common.hpp"
 
-#include <array>
-#include <string>
-#include <thread>
-// #include <mutex>
-#include <atomic>
+// #include <core/InputOutput.hpp>
+// #include <core/io/InputOutputZppBits.hpp>
+// #include <core/io/
 
-// #define HUB_DEBUG_INPUT
-// #define HUB_DEBUG_OUTPUT
+#include <core/io/Archive.hpp>
+#include <core/io/InputOutputI.hpp>
+#include <core/io/InputOutputImpl.hpp>
+#include <core/io/InputOutputZppBits.hpp>
 
+namespace testCoreInputOutput {
 
+struct Data {
+    //    std::string_view name;
+    //    std::string name;
+    int age;
+    double size;
 
-// int main() {
+    //    static struct {} notReadable;
+    static struct {
+    } packable;
+
+    //    bool operator==( const Data& data ) const { return name == data.name && age == data.age; }
+    bool operator==( const Data& data ) const { return age == data.age; }
+    friend std::ostream& operator<<( std::ostream& os, const Data& data );
+};
+static_assert( sizeof( int ) == 4 );
+static_assert( sizeof( double ) == 8 );
+// static_assert( sizeof( Data ) == 16 );
+
+std::ostream& operator<<( std::ostream& os, const Data& data ) {
+    os << data.age;
+    return os;
+}
+
+} // namespace testCoreInputOutput
+
 TEST_CASE( "InputOutput test" ) {
+    using namespace testCoreInputOutput;
+    //            InputOutputImpl<datasSize> inputOutput;
+    //    std::vector<unsigned char> dataV;
 
-    constexpr std::array<unsigned char, 6> data1 { 1, 2, 3, 4, 5, 6 };
-    constexpr std::array<unsigned char, 3> data2 { 1, 2, 3 };
+    hub::io::Archive archive;
+    //    hub::io::InputOutputI & inputOutput = archive;
+    hub::io::input::InputI& input    = archive;
+    hub::io::output::OutputI& output = archive;
+    output.write( 5 );
+    int a;
+    input.read( a );
+    assert( a == 5 );
 
-    InputOutput inputOutput;
-    hub::Input& input   = inputOutput;
-    hub::Output& output = inputOutput;
+    Data a2 { 29, 1.0 };
+    output.write( a2 );
+    Data a2_read;
+    input.read( a2_read );
+    assert( a2 == a2_read );
 
+    ////////////////////////////////////
+
+    hub::io::Archive<hub::io::InputOutputImpl> archive2;
+    hub::io::InputOutputI& inputOutput = archive;
     inputOutput.write( 5 );
-//    inputOutput.put( 5 );
-    inputOutput << 5;
+    //    output.write(5);
+    int b;
+    inputOutput.read( b );
+    assert( b == 5 );
 
-    int v;
-    inputOutput.read( v );
-    assert( v == 5 );
-//    v = inputOutput.get<int>();
-//    assert( v == 5 );
-    v = 0;
-    inputOutput >> v;
+    /////////////////////////////////////////////
 
-    const std::vector<int> vints { 1, 2, 3, 4, 5, 6 };
-    inputOutput.writeAll( vints );
+    hub::io::Archive<hub::io::InputOutputZppBits> archive3;
+    archive3.write( 5 );
+    //    output.write(5);
+    int c;
+    archive3.read( c );
+    assert( c == 5 );
 
-    std::vector<int> vints_read;
-    inputOutput.readAll( vints_read );
-    assert( vints == vints_read );
+    //    auto inputOutput = hub::InputOutput(dataV);
+    //    hub::InputOutput inputOutput;
+    //    auto & input = inputOutput;
+    //    auto & output = inputOutput;
 
-    assert( inputOutput.isEmpty() );
+    std::vector<hub::io::InputOutputI*> inputOutputs;
+    inputOutputs.push_back( (hub::io::InputOutputI*)&archive2 );
+    inputOutputs.push_back( (hub::io::InputOutputI*)&archive3 );
 
-    inputOutput.writeAll( vints );
+    return;
+    std::cout << "#################################################################################"
+                 "###############"
+              << std::endl;
 
-    int a = 0;
-    input >> a;
-    std::cout << "a = " << a << std::endl;
+    //    constexpr size_t nReadWrite = 100;
+    constexpr size_t nReadWrite = 100'000;
+    const auto data             = Data { 30, 2.0 };
+    //    const int data             = 5;
+    constexpr size_t datasSize = nReadWrite * sizeof( data );
+    constexpr int nIteration   = 10;
+    //    constexpr int nIteration = 1;
+    std::cout << "nb read/write: " << std::to_string( nReadWrite * nIteration / 1'000'000.0 )
+              << " M" << std::endl;
+    std::cout << "read/write size: " << std::to_string( datasSize * nIteration / 1'000'000.0 )
+              << " Mo" << std::endl;
+    std::cout << std::endl;
 
-    input.clear();
-    assert( input.isEmpty() );
+    //    enum class InputOutputImplName { Impl = 0, ZppBits, COUNT };
+    enum class InputOutputImplName { Impl = 0, ZppBits, COUNT };
+    //    static_assert( static_cast<int>( InputOutputImplName::COUNT ) == 2 );
+    constexpr auto nImpl = static_cast<int>( InputOutputImplName::COUNT );
+    static constexpr std::string_view implNames[nImpl] { "Impl", "ZppBits" };
+    static_assert( InputOutputImplName( 0 ) == InputOutputImplName::Impl );
+    //    static_assert(InputOutputImplName(1) == InputOutputImplName::ZppBits);
 
-    std::cout << "----------------------------------------" << std::endl;
+    double megaWritePerSecond[nImpl];
+    double megaWriteGigabytePerSecond[nImpl];
+    double megaReadPerSecond[nImpl];
+    double megaReadGigabytePerSecond[nImpl];
 
-    bool exit  = false;
-    std::atomic<bool> start;
-//    bool start;
-    start = false;
+    long long durationOutput[nImpl] { 0 };
+    long long durationInput[nImpl] { 0 };
+    long long duration[nImpl] { 0 };
 
-    const int data = 5;
+    //    for ( int iImpl = 0; iImpl < nImpl; ++iImpl ) {
+    //        InputOutputImplName impl = InputOutputImplName( iImpl );
+    //        const auto& implName     = implNames[iImpl];
 
-    constexpr auto nData = 100'000;
+    //        auto& inputOutput                = *inputOutputs[iImpl];
+    //        hub::io::input::InputI& input    = inputOutput;
+    //        hub::io::output::OutputI& output = inputOutput;
 
-    //    std::mutex mtxInput;
+    //        for ( int iIter = 0; iIter < nIteration; ++iIter ) {
 
-    //    std::this_thread::sleep_for(std::chrono::milliseconds(200));
+    //            //            InputOutputImpl<datasSize> inputOutput;
 
-    //    auto waitingStart = []() { std::this_thread::sleep_for( std::chrono::microseconds( 1 ) );
-    //    };
-    auto waitingStart = []() {};
-    //    auto waitingRead  = []() { std::this_thread::sleep_for( std::chrono::microseconds( 1 ) );
-    //    };
+    //            auto startClock = std::chrono::high_resolution_clock::now();
 
-    size_t nRead = 0;
-    std::thread threadInput( [&]() {
-        while ( !start ) {
-            waitingStart();
-//            std::cout << "\t>> waiting to start read" << std::endl;
-        }
-        std::cout << "\t>> start reading" << std::endl;
+    //            size_t nWrite         = 0;
+    //            auto startOutputClock = std::chrono::high_resolution_clock::now();
+    //            while ( nWrite < nReadWrite ) {
+    //                output.write( data );
+    //                ++nWrite;
+    //            }
+    //            auto endOutputClock = std::chrono::high_resolution_clock::now();
 
-        //        while ( !exit ) {
-        int data_read;
-        //            while ( input.isEmpty() ) {
-        //                waitingRead();
-        //            }
-        //            mtxInput.lock();
-        for ( int i = 0; i < nData; ++i ) {
-            while ( input.isEmpty() ) {
-                std::cout << "\t>> waiting for data " << std::endl;
-                std::this_thread::sleep_for( std::chrono::microseconds( 1 ) );
-            };
-//            std::cout << "\t>> reading data " << nRead << std::endl;
-            input >> data_read;
-            CHECK( data_read == data );
-            ++nRead;
-        }
-        std::cout << "\t>> end reading" << std::endl;
-        //            mtxInput.unlock();
-        //        }
-    } );
+    //            size_t nRead = 0;
+    //            Data data_read;
+    ////            int data_read;
+    //            auto startInputClock = std::chrono::high_resolution_clock::now();
+    //            while ( nRead < nReadWrite ) {
+    //                input.read( data_read );
+    //                assert( data_read == data );
+    //                //                if ( data_read != data ) {
+    //                //                    assert(false);
+    //                //                    std::cerr << data_read << " != " << data << std::endl;
+    //                //                    continue;
+    //                //                }
+    //                ++nRead;
+    //            }
+    //            auto endInputClock = std::chrono::high_resolution_clock::now();
+    //            auto endClock      = std::chrono::high_resolution_clock::now();
 
-#ifdef MULTITHREAD
-    size_t nRead2 = 0;
-    std::thread threadInput2( [&]() {
-        while ( !start ) {
-            waitingStart();
-        }
-        while ( !exit ) {
-            int data_read2;
-            //            while ( input.isEmpty() ) {
-            //                waitingRead();
-            //            }
-            //            mtxInput.lock();
-            //            if ( !input.isEmpty() ) {
-            input >> data_read2;
-            CHECK( data_read2 == data );
-            ++nRead2;
-            //            }
-            //            mtxInput.unlock();
-        }
-    } );
+    //            assert( nWrite == nReadWrite );
+    //            assert( nRead == nReadWrite );
 
-    size_t nRead3 = 0;
-    std::thread threadInput3( [&]() {
-        while ( !start ) {
-            waitingStart();
-        }
-        while ( !exit ) {
-            int data_read3;
-            //            while ( input.isEmpty() ) {
-            //                waitingRead();
-            //            }
-            //            mtxInput.lock();
-            //            if ( !input.isEmpty() ) {
-            input >> data_read3;
-            CHECK( data_read3 == data );
-            ++nRead3;
-            //            }
-            //            mtxInput.unlock();
-        }
-    } );
-#endif
+    //            durationOutput[iImpl] += std::chrono::duration_cast<std::chrono::microseconds>(
+    //                                         endOutputClock - startOutputClock )
+    //                                         .count();
+    //            durationInput[iImpl] += std::chrono::duration_cast<std::chrono::microseconds>(
+    //                                        endInputClock - startInputClock )
+    //                                        .count();
+    //            duration[iImpl] +=
+    //                std::chrono::duration_cast<std::chrono::microseconds>( endClock - startClock )
+    //                    .count();
+    //        }
 
-    //    auto waitingOutput = []() { std::this_thread::sleep_for( std::chrono::microseconds( 100000
-    //    ) ); };
-    auto waitingOutput = []() {};
+    //        megaWritePerSecond[iImpl]         = (double)nReadWrite * nIteration /
+    //        durationOutput[iImpl]; megaWriteGigabytePerSecond[iImpl] = megaWritePerSecond[iImpl] *
+    //        sizeof( Data ) / 1000.0;
 
-    size_t nWrite = 0;
-    std::thread threadOutput( [&]() {
-        while ( !start ) {
-            waitingStart();
-//            std::cout << "<< waiting to start write" << std::endl;
-        }
-        std::cout << "<< start writing" << std::endl;
+    //        megaReadPerSecond[iImpl]         = (double)nReadWrite * nIteration /
+    //        durationInput[iImpl]; megaReadGigabytePerSecond[iImpl] = megaReadPerSecond[iImpl] *
+    //        sizeof( Data ) / 1000.0;
 
-        for ( int i = 0; i < nData; ++i ) {
-//            std::cout << "<< writing data " << nWrite << std::endl;
-            output << data;
-            ++nWrite;
-            waitingOutput();
-        }
-        std::cout << "<< end writing" << std::endl;
-    } );
+    //    }
 
-#ifdef MULTITHREAD
-    size_t nWrite2 = 0;
-    std::thread threadOutput2( [&]() {
-        while ( !start ) {
-            waitingStart();
-        }
-        while ( !exit ) {
-            output << data;
-            ++nWrite2;
-            waitingOutput();
-        }
-    } );
-#endif
-
-    const auto startClock = std::chrono::high_resolution_clock::now();
-    std::cout << "----------------- start -----------------------" << std::endl;
-    start = true;
-    //    std::this_thread::sleep_for( std::chrono::milliseconds( 20 ) );
-    //    std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
-    //    exit                = true;
-
-    threadOutput.join();
-    const auto endOutputClock = std::chrono::high_resolution_clock::now();
-    threadInput.join();
-    const auto endInputClock = std::chrono::high_resolution_clock::now();
-
-    std::cout << "---------------------- end ----------------------------" << std::endl;
-//    const auto endClock = std::chrono::high_resolution_clock::now();
-    const auto& durationOutput =
-        std::chrono::duration_cast<std::chrono::microseconds>( endOutputClock - startClock ).count();
-    const auto& durationInput =
-        std::chrono::duration_cast<std::chrono::microseconds>( endInputClock - startClock ).count();
-
-#ifdef MULTITHREAD
-    threadOutput2.join();
-    threadInput2.join();
-    threadInput3.join();
-#endif
-
-#ifdef MULTITHREAD
-    const auto writePerSecond = 1000.0 * ( nWrite + nWrite2 ) / duration;
-    const auto readPerSecond  = 1000.0 * ( nRead + nRead2 + nRead3 ) / duration;
-#else
-    const auto megaWritePerSecond = (double)nWrite / durationOutput;
-    const auto megaReadPerSecond  = (double)nRead / durationInput;
-#endif
-    //    const auto readPerSecond  = 1000.0 * ( nRead ) / duration;
-
-    //    const auto nTotalWrite = nWrite;
-    //    const auto nTotalRead = nRead + nRead2;
-
-    std::cout << "nb write: " << std::to_string( nWrite ) << std::endl;
-    std::cout << "nb read: " << std::to_string( nRead ) << std::endl;
-#ifdef MULTITHREAD
-    std::cout << "nb write2: " << std::to_string( nWrite2 ) << std::endl;
-    std::cout << "nb read2: " << std::to_string( nRead2 ) << std::endl;
-    std::cout << "nb read3: " << std::to_string( nRead3 ) << std::endl;
-#endif
-    std::cout << "writing rate: " << std::to_string( megaWritePerSecond ) << " MegaWrite/s" << std::endl;
-    std::cout << "reading rate: " << std::to_string( megaReadPerSecond ) << " MegaRead/s" << std::endl;
-    const auto latency = (durationInput - durationOutput) / 1000.0;
-    std::cout << "latency: " << latency << " ms" << std::endl;
-
-    std::cout << "----------------------------------------" << std::endl;
-
-    CHECK_VALUE( megaWritePerSecond, 5, 5, "Output: MegaWritePerSecond" );
-    CHECK_VALUE( megaReadPerSecond, 5, 5, "Input: MegaReadPerSecond" );
-    CHECK_VALUE( latency, 150, 150, "Latency: MilliSeconds" );
+    //    for ( int iImpl = 0; iImpl < nImpl; ++iImpl ) {
+    //        const auto& implName = implNames[iImpl];
+    //        std::cout << "------------------------------------" << std::endl;
+    //        std::cout << "[" << implName
+    //                  << "] writing rate: " << std::to_string( megaWritePerSecond[iImpl] )
+    //                  << " MegaWrite/s, " << std::to_string( megaWriteGigabytePerSecond[iImpl] )
+    //                  << " Go/s";
+    //        if ( iImpl == nImpl - 1 ) {
+    //            std::cout << " (" << 100 * megaWritePerSecond[1] / megaWritePerSecond[0] << " %)";
+    //        }
+    //        std::cout << std::endl;
+    //        std::cout << "[" << implName
+    //                  << "] reading rate: " << std::to_string( megaReadPerSecond[iImpl] )
+    //                  << " MegaRead/s, " << std::to_string( megaReadGigabytePerSecond[iImpl] )
+    //                  << " Go/s";
+    //        if ( iImpl == nImpl - 1 ) {
+    //            std::cout << " (" << 100 * megaReadPerSecond[1] / megaReadPerSecond[0] << " %)";
+    //        }
+    //        std::cout << std::endl;
+    //        std::cout << "[" << implName << "] write time: " << durationOutput[iImpl] / 1000.0 <<
+    //        " ms"; if ( iImpl == nImpl - 1 ) {
+    //            std::cout << " (" << 100 * durationOutput[0] / durationOutput[1] << " %)";
+    //        }
+    //        std::cout << std::endl;
+    //        std::cout << "[" << implName << "] read time: " << durationInput[iImpl] / 1000.0 << "
+    //        ms"; if ( iImpl == nImpl - 1 ) {
+    //            std::cout << " (" << 100 * durationInput[0] / durationInput[1] << " %)";
+    //        }
+    //        std::cout << std::endl;
+    //        std::cout << "[" << implName << "] total time: " << duration[iImpl] / 1000.0 << " ms";
+    //        if ( iImpl == nImpl - 1 ) { std::cout << " (" << 100 * duration[0] / duration[1] << "
+    //        %)"; } std::cout << std::endl;
+    //    }
 }

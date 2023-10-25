@@ -1,17 +1,19 @@
 
 #include <queue>
+#include <mutex>
 
 #include <core/Input.hpp>
 #include <core/Output.hpp>
 #include <core/Vector.hpp>
 
+
 class InputOutput : public hub::Input, public hub::Output
 {
   public:
     using hub::Input::read;
-    using hub::Input::operator>>;
+//    using hub::Input::operator>>;
     using hub::Output::write;
-    using hub::Output::operator<<;
+//    using hub::Output::operator<<;
 
     InputOutput() = default;
 
@@ -22,7 +24,7 @@ class InputOutput : public hub::Input, public hub::Output
         assert( !m_datas.empty() );
         const auto& vector = m_datas.front();
 #ifdef HUB_DEBUG_INPUT
-        std::cout << HEADER_INPUT_MSG "read(Data_t*, Size_t) : data = " << vector << ", read size = " << size << std::endl;
+        std::cout << HEADER << "read(Data_t*, Size_t) : data = " << vector << ", read size = " << size << std::endl;
 #endif
         assert( vector.size() == size );
 
@@ -35,7 +37,7 @@ class InputOutput : public hub::Input, public hub::Output
         m_mtxDatas.lock();
         std::vector<hub::Data_t> vector( data, data + size );
 #ifdef HUB_DEBUG_OUTPUT
-        std::cout << HEADER_OUTPUT_MSG "write(Data_t*, Size_t) : data = " << vector << std::endl;
+        std::cout << HEADER << "write(Data_t*, Size_t) : data = " << vector << std::endl;
 #endif
         m_datas.push( std::move( vector ) );
         m_mtxDatas.unlock();

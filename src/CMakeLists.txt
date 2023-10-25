@@ -103,6 +103,7 @@ target_include_directories(external
 #	$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.hpp
 #	$<INSTALL_INTERFACE:include>
     PRIVATE
+#    PUBLIC
         ${HUB_EXTERNAL_DIR}
 )
 #target_compile_options(external PRIVATE -fPIC)
@@ -166,7 +167,6 @@ if (NOT XCODE) # unable to have object files as native build with Xcode
 #        add_library(${TARGET_NAME} INTERFACE ${sources} ${headers})
 #        add_library(${TARGET_NAME} INTERFACE ${headers})
         add_library(${TARGET_NAME} OBJECT ${sources} ${headers}
-            core/Serial.hpp
         )
 #        add_library(${TARGET_NAME} SHARED ${sources} ${headers})
 
@@ -175,11 +175,11 @@ if (NOT XCODE) # unable to have object files as native build with Xcode
         target_include_directories(${TARGET_NAME}
             PUBLIC
                 $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-                $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.hpp
-                $<INSTALL_INTERFACE:include>
-            PRIVATE
+#                $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.hpp
+#                $<INSTALL_INTERFACE:include>
+#            PRIVATE
                 ${HUB_EXTERNAL_DIR}
-                ${CMAKE_CURRENT_SOURCE_DIR}/impl/server
+#                ${CMAKE_CURRENT_SOURCE_DIR}/impl/server
         )
 
         #target_compile_definitions(${TARGET_NAME} PUBLIC -DINTERNAL_BUILD)
@@ -337,7 +337,7 @@ if (HUB_BUILD_STATIC)
                 $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.hpp
                 $<INSTALL_INTERFACE:include>
 #            PRIVATE
-#                ${HUB_EXTERNAL_DIR}
+                ${HUB_EXTERNAL_DIR}
         )
         if (HUB_BUILD_SERVER)
             target_compile_definitions(${PROJECT_NAME}_static PUBLIC -DHUB_BUILD_SERVER)
@@ -349,6 +349,7 @@ if (HUB_BUILD_STATIC)
 
     target_compile_definitions(${PROJECT_NAME}_static PUBLIC -DSRC_STATIC)
     target_link_libraries(${PROJECT_NAME}_static PRIVATE external)
+#    target_link_libraries(${PROJECT_NAME}_static PUBLIC external)
 
     #target_link_libraries(${PROJECT_NAME}_static PRIVATE ${REQUIRED_LIBS})
 #    target_include_directories(${PROJECT_NAME}_static
