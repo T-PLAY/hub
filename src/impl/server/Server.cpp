@@ -282,7 +282,7 @@ void Server::addStreamViewer( server::StreamViewerClient* streamViewer ) {
     }
     else {
         //        const auto& lastAcq = streamer->getLastAcq();
-        //        assert( !lastAcq.isEmpty() );
+        //        assert( !lastAcq.isEnd() );
         //        streamViewer->update( lastAcq );
     }
 
@@ -408,7 +408,7 @@ void Server::delViewer( server::ViewerClient* viewer ) {
 }
 
 void Server::newAcquisition( const server::StreamerClient* streamer, const sensor::Acquisition& acq ) {
-    assert( !acq.isEmpty() );
+    assert( !acq.isEnd() );
 
     const auto& streamName = streamer->getStreamName();
 
@@ -432,7 +432,7 @@ void Server::newAcquisition( const server::StreamerClient* streamer, const senso
         }
     }
     m_mtxSreamName2streamViewers.unlock();
-    assert( !acq.isEmpty() );
+    assert( !acq.isEnd() );
 }
 
 std::list<std::pair<std::string, sensor::SensorSpec>> Server::listStreams() const {

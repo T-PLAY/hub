@@ -51,7 +51,7 @@ class InputOutput : public hub::Input, public hub::Output
     bool isOpen() const override { return true; }
     //    bool isOpen() const override { return m_isOpen; };
 
-    bool isEmpty() const override {
+    bool isEnd() const override {
         //        m_mtxDatas.lock();
         //        auto ret = m_datas.empty();
         //        m_mtxDatas.unlock();
@@ -124,7 +124,7 @@ class InputOutput : public hub::Input, public hub::Output
 
 //    bool isOpen() const override { return true; }
 
-//    bool isEmpty() const override {
+//    bool isEnd() const override {
 //        return false;
 //    }
 

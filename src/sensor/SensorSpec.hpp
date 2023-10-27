@@ -132,7 +132,7 @@ class SRC_API SensorSpec
     /// \brief isEmpty
     /// \return
     ///
-    bool isEmpty() const;
+    bool isEnd() const;
 
 
   public:

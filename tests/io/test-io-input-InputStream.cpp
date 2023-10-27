@@ -73,7 +73,7 @@ TEST_CASE( "InputStream test" ) {
             for ( int i = 0; i < ref_acqs.size(); ++i ) {
                 //            for ( const auto& acq : ref_acqs ) {
                 const auto& outputAcq = ref_acqs.at( i );
-                assert( !outputAcq.isEmpty() );
+                assert( !outputAcq.isEnd() );
                 //                outputSensor << outputAcq;
                 outputStream.write( outputAcq );
                 //            }
@@ -82,7 +82,7 @@ TEST_CASE( "InputStream test" ) {
 
                 //                inputSensor >> inputAcq;
                 inputStream.read( inputAcq );
-                assert( !inputAcq.isEmpty() );
+                assert( !inputAcq.isEnd() );
                 std::cout << inputAcq << std::endl;
                 CHECK( outputAcq == inputAcq );
                 //                acqs.push_back( std::move( inputAcq ) );

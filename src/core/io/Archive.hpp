@@ -15,6 +15,8 @@
 //#include "input/InputI.hpp"
 //#include "output/OutputI.hpp"
 #include "InputOutputI.hpp"
+#include "InputOutputImpl.hpp"
+#include "InputOutputZppBits.hpp"
 
 //#ifdef HUB_DEBUG_INPUT
 //#    define HEADER_INPUT_MSG                                                             \
@@ -33,7 +35,10 @@ namespace io {
 
 //template <class Input = input::InputI, class Output = output::OutputI>
 //class Archive : public input::InputI, public output::OutputI
-template <class InputOutput = InputOutputI>
+//template <class InputOutput = InputOutputI>
+template <class InputOutput = InputOutputImpl>
+//template <class InputOutput = InputOutputZppBits>
+//template <class InputOutput = BasicInputOutputI>
 //class Archive : public Input, public Output
 //class Archive : public Input, public Output
 class Archive : public InputOutput
@@ -74,7 +79,7 @@ class Archive : public InputOutput
     bool isOpen() const override { return true; }
     //    bool isOpen() const override { return m_isOpen; };
 
-    bool isEmpty() const override {
+    bool isEnd() const override {
         //        auto ret = m_datas.empty();
         //        return ret;
         return m_datas.empty();

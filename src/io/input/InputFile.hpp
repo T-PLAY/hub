@@ -31,7 +31,7 @@ class InputFile : public Input, public io::File
     /// @copydoc InputOutput::isEnd()
     ///
 //    bool isEnd() const override;
-    bool isEmpty() const override;
+    bool isEnd() const override;
 
     ///
     /// @copydoc InputOutput::read()

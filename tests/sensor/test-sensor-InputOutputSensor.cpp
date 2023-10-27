@@ -414,20 +414,20 @@ TEST_CASE( "InputSensor test" ) {
 //        //        //            auto outputFile  = hub::output::OutputFile( "filepath.txt" );
 //        //        //            auto outputFile2 = hub::output::OutputFile( "filepath2.txt" );
 
-//        //        assert( inputOutput.isEmpty() );
+//        //        assert( inputOutput.isEnd() );
 //        //        hub::sensor::OutputSensor outputSensor( inputOutput, ref_sensorSpec );
-//        //        assert( !inputOutput.isEmpty() );
+//        //        assert( !inputOutput.isEnd() );
 //        //        assert( outputSensor.getSpec() == ref_sensorSpec );
 //        //        //            hub::sensor::OutputSensor outputSensor2( inputOutput2,
 //        //        ref_sensorSpec2 );
 //        //        //            assert(outputSensor2.getSpec() == ref_sensorSpec2);
 
-//        //        assert( !inputOutput.isEmpty() );
+//        //        assert( !inputOutput.isEnd() );
 //        //        hub::sensor::InputSensor inputSensor( inputOutput );
 //        //        //        std::cout << "ref_sensorSpec: " << ref_sensorSpec << std::endl;
 //        //        assert( inputSensor.getSpec() == ref_sensorSpec );
 //        //        //        std::cout << "inputSensor.getSpec(): " << inputSensor.getSpec() <<
-//        //        std::endl; assert( inputOutput.isEmpty() );
+//        //        std::endl; assert( inputOutput.isEnd() );
 //        //        //        assert( inputSensor.getSpec() == ref_sensorSpec );
 
 //        //        for ( const auto& acq : ref_acqs ) {
@@ -436,7 +436,7 @@ TEST_CASE( "InputSensor test" ) {
 //        //        }
 
 //        //        auto acq_read = inputSensor.acq();
-//        //        while ( !inputOutput.isEmpty() ) {
+//        //        while ( !inputOutput.isEnd() ) {
 //        //            inputSensor >> acq_read;
 //        //            std::cout << "read acq : " << acq_read << std::endl;
 //        //        }
@@ -455,7 +455,7 @@ TEST_CASE( "InputSensor test" ) {
 //        //        auto acq = inputOutput.get<hub::sensor::Acquisition>();
 
 //        //        auto acq2_read = inputSensor2.acq();
-//        //        while ( !inputOutput2.isEmpty() ) {
+//        //        while ( !inputOutput2.isEnd() ) {
 //        //            inputSensor2 >> acq2_read;
 //        //            std::cout << "read acq2 : " << acq2_read << std::endl;
 //        //        }

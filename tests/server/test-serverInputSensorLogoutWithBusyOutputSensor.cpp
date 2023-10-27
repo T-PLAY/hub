@@ -52,7 +52,7 @@ TEST_CASE( "Server test : inputSensorLogoutWithBusyOutputSensor" ) {
 //            hub::input::InputStreamServer inputStream( "streamName", ipv4, port );
             hub::input::InputStream inputStream( FILE_NAME );
             hub::sensor::InputSensor inputSensor( std::move( inputStream ) );
-            assert( !inputSensor.getSpec().isEmpty() );
+            assert( !inputSensor.getSpec().isEnd() );
 
             for ( int i = 0; i < 10; ++i ) {
                 hub::sensor::Acquisition acq;

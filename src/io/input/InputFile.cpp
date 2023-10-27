@@ -37,7 +37,7 @@ void InputFile::close()
 }
 
 //bool InputFile::isEnd() const {
-bool InputFile::isEmpty() const {
+bool InputFile::isEnd() const {
     assert( isOpen() );
     return const_cast<std::ifstream*>(&m_file)->peek() == EOF;
 //    return m_file.t

@@ -18,7 +18,7 @@ namespace input {
 
 void InputImpl::read( std::string& str ) {
     assert( isOpen() );
-    assert( !isEmpty() );
+    assert( !isEnd() );
 
     int strLen = 0;
     read( strLen );
@@ -33,17 +33,17 @@ void InputImpl::read( std::string& str ) {
         delete[] tmp;
     }
 #ifdef HUB_DEBUG_INPUT
-    std::cout << HEADER <<  "read(" << TYPE_NAME( str ) << ") : '" << str << "'" << std::endl;
+    std::cout << "\t" << HEADER <<  "read(" << TYPE_NAME( str ) << ") : '" << str << "'" << std::endl;
 #endif
 }
 
 void InputImpl::read( char* str ) {
     assert( str != nullptr );
     assert( isOpen() );
-    assert( !isEmpty() );
+    assert( !isEnd() );
 
 #ifdef HUB_DEBUG_INPUT
-    std::cout << HEADER << "read(" << TYPE_NAME( str ) << ")" << std::endl;
+    std::cout << "\t" << HEADER << "read(" << TYPE_NAME( str ) << ")" << std::endl;
 #endif
 
     int strLen = 0;
@@ -60,7 +60,7 @@ void InputImpl::read( char* str ) {
 
 // void InputImpl::clear()
 //{
-//     while ( !isEmpty() ) {
+//     while ( !isEnd() ) {
 ////	ts.emplace_back( get<T>() );
 //    }
 //}
@@ -68,7 +68,7 @@ void InputImpl::read( char* str ) {
 // todo acq
 // void InputImpl::read( sensor::SensorSpec& sensorSpec ) {
 //    assert( isOpen() );
-//    assert( !isEmpty() );
+//    assert( !isEnd() );
 
 ////    uint64_t packetSize;
 ////    read(packetSize);
@@ -123,18 +123,18 @@ void InputImpl::read( char* str ) {
 ////    memory.read( metaData );
 //    read( metaData );
 
-////    assert(memory.isEmpty());
+////    assert(memory.isEnd());
 
 //    sensorSpec =
 //        sensor::SensorSpec( std::move( sensorName ), std::move( resolutions ), std::move( metaData
 //        ) );
 
-//    assert( !sensorSpec.isEmpty() );
+//    assert( !sensorSpec.isEnd() );
 //}
 
 // void InputImpl::read( Measure& measure ) {
 //     assert( isOpen() );
-//     assert( !isEmpty() );
+//     assert( !isEnd() );
 
 //    assert( measure.m_data == nullptr );
 //    read( measure.m_size );
@@ -151,7 +151,7 @@ void InputImpl::read( char* str ) {
 
 // void InputImpl::read( sensor::Acquisition& acq ) {
 //     assert( isOpen() );
-//     assert( !isEmpty() );
+//     assert( !isEnd() );
 
 ////    uint64_t packetSize;
 ////    read(packetSize);
@@ -166,7 +166,7 @@ void InputImpl::read( char* str ) {
 //    read( acq.m_measures );
 //    read( acq.m_size );
 
-////    assert(memory.isEmpty());
+////    assert(memory.isEnd());
 
 //    assert( acq.m_start <= acq.m_end );
 //    assert( !acq.m_measures.empty() );
@@ -175,13 +175,13 @@ void InputImpl::read( char* str ) {
 
 // void InputImpl::read( Any& any ) {
 //     assert( isOpen() );
-//     assert( !isEmpty() );
+//     assert( !isEnd() );
 
 // #ifdef HUB_DEBUG_INPUT
 //     std::cout << HEADER_INPUT_MSG "read(" << TYPE_NAME(any) << ")" << std::endl;
 // #endif
 
-////    assert( !any.isEmpty() );
+////    assert( !any.isEnd() );
 //    assert( ! any.hasValue() );
 
 //    Any::Type anyType;

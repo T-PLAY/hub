@@ -12,7 +12,9 @@
 // #include "core/Any.hpp"
 // #include "core/InputI.hpp"
 #include "core/Macros.hpp"
-#include "core/Serial.hpp"
+#include "core/Traits.hpp"
+
+//#include "core/Serial.hpp"
 #include "core/Tuple.hpp"
 
 #include "InputI.hpp"
@@ -129,7 +131,7 @@ class SRC_API InputImpl : public InputI
     //    /// true if the bus is inactive.\n
     //    /// false otherwise.
     //    ///
-    //    virtual bool isEmpty() const = 0;
+    //    virtual bool isEnd() const = 0;
 
     //    ///
     //    /// \brief close
@@ -158,20 +160,20 @@ class SRC_API InputImpl : public InputI
     template <class T>
     typename std::enable_if<serializable_v<T>>::type read( T& t ) {
         static_assert( !readable_v<T> );
-        assert(false);
+//        assert(false);
 
 #ifdef HUB_DEBUG_INPUT
 //        std::cout << HEADER_INPUT_MSG << "read\033[0m(" << TYPE_NAME( t ) << ")" << std::endl;
-        std::cout << HEADER << "read\033[0m(" << TYPE_NAME( t ) << ")" << std::endl;
+        std::cout << "\t" << HEADER << "read\033[0m(" << TYPE_NAME( t ) << ") ..." << std::endl;
 #endif
         assert( isOpen() );
-        assert( !isEmpty() );
+        assert( !isEnd() );
 
         read( t.serialize() );
 
 #ifdef HUB_DEBUG_INPUT
 //        std::cout << HEADER_INPUT_MSG << "\033[1mread\033[0m(" << TYPE_NAME( t ) << ") = " << t
-        std::cout << HEADER << "\033[1mread\033[0m(" << TYPE_NAME( t ) << ") = " << t
+        std::cout << "\t" << HEADER << "\033[1mread\033[0m(" << TYPE_NAME( t ) << ") = " << t
                   << std::endl;
 #endif
     }
@@ -183,16 +185,16 @@ class SRC_API InputImpl : public InputI
 
 #ifdef HUB_DEBUG_INPUT
 //        std::cout << HEADER_INPUT_MSG << "read\033[0m(" << TYPE_NAME( t ) << ")" << std::endl;
-        std::cout << HEADER << "read\033[0m(" << TYPE_NAME( t ) << ")" << std::endl;
+        std::cout << "\t" << HEADER << "read\033[0m(" << TYPE_NAME( t ) << ")" << std::endl;
 #endif
         assert( isOpen() );
-        assert( !isEmpty() );
+        assert( !isEnd() );
 
         t.read( *this );
 
 #ifdef HUB_DEBUG_INPUT
 //        std::cout << HEADER_INPUT_MSG << "\033[1mread\033[0m(" << TYPE_NAME( t ) << ") = " << t
-        std::cout << HEADER << "\033[1mread\033[0m(" << TYPE_NAME( t ) << ") = " << t
+        std::cout << "\t" << HEADER << "\033[1mread\033[0m(" << TYPE_NAME( t ) << ") = " << t
                   << std::endl;
 #endif
     }
@@ -201,25 +203,25 @@ class SRC_API InputImpl : public InputI
     //    typename std::enable_if<!readable_v<T>>::type read( T& t ) {
     typename std::enable_if<!serializable_v<T> && !readable_v<T> && !notReadable_v<T>>::type
     read( T& t ) {
-        assert(false);
-#ifdef HUB_DEBUG_INPUT
-//        std::cout << HEADER_INPUT_MSG << "read(" << TYPE_NAME( t ) << ")" << std::endl;
-        std::cout << HEADER << "read(" << TYPE_NAME( t ) << ")" << std::endl;
-#endif
+//        assert(false);
+//#ifdef HUB_DEBUG_INPUT
+////        std::cout << HEADER_INPUT_MSG << "read(" << TYPE_NAME( t ) << ")" << std::endl;
+//        std::cout << HEADER << "read(" << TYPE_NAME( t ) << ")" << std::endl;
+//#endif
         assert( isOpen() );
-        //        while (isOpen() && isEmpty()) {
+        //        while (isOpen() && isEnd()) {
         //        if ( !isOpen() ) {
         //            std::cout << "[InputImpl" << std::this_thread::get_id() << "]  is closed,
         //            unable to read data"
         //                      << std::endl;
         //            return;
         //        }
-        assert( !isEmpty() );
+        assert( !isEnd() );
 
         read( reinterpret_cast<Data_t*>( &t ), sizeof( T ) );
 #ifdef HUB_DEBUG_INPUT
 //        std::cout << HEADER_INPUT_MSG << "read(" << TYPE_NAME( t ) << ") = " << t << std::endl;
-        std::cout << HEADER << "read(" << TYPE_NAME( t ) << ") = " << t << std::endl;
+        std::cout << "\t" << HEADER << "read(" << TYPE_NAME( t ) << ") = " << t << std::endl;
 #endif
     }
 
@@ -245,7 +247,7 @@ class SRC_API InputImpl : public InputI
         //    template <class T>
         //    inline T InputImpl::get() {
         assert( isOpen() );
-        assert( !isEmpty() );
+        assert( !isEnd() );
 
         static_assert( !readable_v<T> && !serializable_v<T> );
 
@@ -255,7 +257,7 @@ class SRC_API InputImpl : public InputI
         if constexpr ( getable_v<T> ) {
 #ifdef HUB_DEBUG_INPUT
 //            std::cout << HEADER_INPUT_MSG << "\033[33mget<" << TYPE_NAME( T ) << ">\033[0m()"
-            std::cout << HEADER << "\033[33mget<" << TYPE_NAME( T ) << ">\033[0m()"
+            std::cout << "\t" << HEADER << "\033[33mget<" << TYPE_NAME( T ) << ">\033[0m()"
                       << std::endl;
 #endif
             //            T t( *this );
@@ -263,7 +265,7 @@ class SRC_API InputImpl : public InputI
 //            T t = T::get(*this);
 #ifdef HUB_DEBUG_INPUT
 //            std::cout << HEADER_INPUT_MSG << "\033[1;33mget<" << TYPE_NAME( t )
-            std::cout << HEADER << "\033[1;33mget<" << TYPE_NAME( t )
+            std::cout << "\t" << HEADER << "\033[1;33mget<" << TYPE_NAME( t )
                       << ">\033[0m() = " << t << std::endl;
 #endif
             return t;
@@ -289,7 +291,7 @@ class SRC_API InputImpl : public InputI
     //        //    template <class T>
     //        //    inline T InputImpl::get() {
     //        assert( isOpen() );
-    //        assert( !isEmpty() );
+    //        assert( !isEnd() );
 
     //        //    return T::create(*this);
     ////        return T::get( *this );
@@ -349,6 +351,12 @@ class SRC_API InputImpl : public InputI
     template <std::size_t I = 0, typename... Tp>
         typename std::enable_if < I<sizeof...( Tp ), void>::type read( std::tuple<Tp...>& t );
 
+    template <std::size_t I = 0, typename... Tp>
+    inline typename std::enable_if<I == sizeof...( Tp ), void>::type read( std::tuple<Tp...> && t );
+
+    template <std::size_t I = 0, typename... Tp>
+        typename std::enable_if < I<sizeof...( Tp ), void>::type read( std::tuple<Tp...> && t );
+
   public:
     ///
     /// \brief readAll
@@ -404,10 +412,10 @@ class SRC_API InputImpl : public InputI
 template <class T>
 inline void InputImpl::read( std::list<T>& list ) {
     assert( isOpen() );
-    assert( !isEmpty() );
+    assert( !isEnd() );
 
 #ifdef HUB_DEBUG_INPUT
-    std::cout << HEADER << "read(" << TYPE_NAME( list ) << ")" << std::endl;
+    std::cout << "\t" << HEADER << "read(" << TYPE_NAME( list ) << ")" << std::endl;
 #endif
 
     int nbEl;
@@ -423,11 +431,11 @@ inline void InputImpl::read( std::list<T>& list ) {
 template <class T>
 inline void InputImpl::read( std::vector<T>& vector ) {
     assert( isOpen() );
-    assert( !isEmpty() );
+    assert( !isEnd() );
 
 #ifdef HUB_DEBUG_INPUT
 //    std::cout << HEADER_INPUT_MSG "read(" << TYPE_NAME( vector ) << ")" << std::endl;
-    std::cout << HEADER << "read(" << TYPE_NAME( vector ) << ")" << std::endl;
+    std::cout <<  "\t" <<HEADER << "read(" << TYPE_NAME( vector ) << ")" << std::endl;
 #endif
 
     uint64_t nbEl;
@@ -449,11 +457,11 @@ inline void InputImpl::read( std::vector<T>& vector ) {
 template <class T, class U>
 inline void InputImpl::read( std::map<T, U>& map ) {
     assert( isOpen() );
-    assert( !isEmpty() );
+    assert( !isEnd() );
 
 #ifdef HUB_DEBUG_INPUT
     //    std::cout << HEADER_INPUT_MSG "read(std::map)" << std::endl;
-    std::cout << HEADER << "read(" << TYPE_NAME( map ) << ")" << std::endl;
+    std::cout << "\t" << HEADER << "read(" << TYPE_NAME( map ) << ")" << std::endl;
 #endif
 
     int nbEl;
@@ -471,11 +479,11 @@ inline void InputImpl::read( std::map<T, U>& map ) {
 template <class T, class U>
 inline void InputImpl::read( std::pair<T, U>& pair ) {
     assert( isOpen() );
-    assert( !isEmpty() );
+    assert( !isEnd() );
 
 #ifdef HUB_DEBUG_INPUT
     //    std::cout << HEADER_INPUT_MSG "read(std::pair)" << std::endl;
-    std::cout << HEADER << "read(" << TYPE_NAME( pair ) << ")" << std::endl;
+    std::cout << "\t" << HEADER << "read(" << TYPE_NAME( pair ) << ")" << std::endl;
 #endif
     T first;
     read( first );
@@ -488,7 +496,7 @@ template <std::size_t I, typename... Tp>
 inline typename std::enable_if<I == sizeof...( Tp ), void>::type
 InputImpl::read( std::tuple<Tp...>& t ) {
 #ifdef HUB_DEBUG_INPUT
-    std::cout << HEADER << "\033[1mread\033[0m(" << TYPE_NAME( t ) << ") : '" << t << "'"
+    std::cout << "\t" << HEADER << "\033[1mread\033[0m(" << TYPE_NAME( t ) << ") : '" << t << "'"
               << std::endl;
 #endif
 }
@@ -499,7 +507,30 @@ template <std::size_t I, typename... Tp>
 
     if constexpr ( static_cast<int>( I ) == 0 ) {
 #ifdef HUB_DEBUG_INPUT
-        std::cout << HEADER << "read(" << TYPE_NAME( t ) << ")" << std::endl;
+        std::cout << "\t" << HEADER << "read(" << TYPE_NAME( t ) << ")" << std::endl;
+#endif
+    }
+    read( std::get<I>( t ) );
+
+    read<I + 1, Tp...>( t );
+}
+
+template <std::size_t I, typename... Tp>
+inline typename std::enable_if<I == sizeof...( Tp ), void>::type
+InputImpl::read( std::tuple<Tp...>&& t ) {
+#ifdef HUB_DEBUG_INPUT
+    std::cout << "\t" << HEADER << "\033[1mread\033[0m(" << TYPE_NAME( t ) << ") : '" << t << "'"
+              << std::endl;
+#endif
+}
+
+template <std::size_t I, typename... Tp>
+    typename std::enable_if <
+    I<sizeof...( Tp ), void>::type InputImpl::read( std::tuple<Tp...>&& t ) {
+
+    if constexpr ( static_cast<int>( I ) == 0 ) {
+#ifdef HUB_DEBUG_INPUT
+        std::cout << "\t" << HEADER << "read(" << TYPE_NAME( t ) << ")" << std::endl;
 #endif
     }
     read( std::get<I>( t ) );
@@ -512,7 +543,7 @@ template <std::size_t I, typename... Tp>
 //           typename>
 // inline void InputImpl::operator>>( T& t ) {
 //     assert( isOpen() );
-//     assert( !isEmpty() );
+//     assert( !isEnd() );
 
 //    read( t );
 //}
@@ -520,11 +551,11 @@ template <std::size_t I, typename... Tp>
 template <typename Container, typename T>
 void InputImpl::readAll( Container& ts ) {
     assert( isOpen() );
-    assert( !isEmpty() );
+    assert( !isEnd() );
 
     //    ts.reserve( ts.size() );
     try {
-        while ( !isEmpty() ) {
+        while ( !isEnd() ) {
             T t;
             read( t );
             ts.push_back( std::move( t ) );
@@ -540,7 +571,7 @@ void InputImpl::readAll( Container& ts ) {
 template <typename Container>
 Container InputImpl::getAll() {
     assert( isOpen() );
-    assert( !isEmpty() );
+    assert( !isEnd() );
 
     Container ts;
     readAll( ts );
@@ -550,7 +581,7 @@ Container InputImpl::getAll() {
 template <class T>
 void InputImpl::operator>>( T& t ) {
     assert( isOpen() );
-    //    assert( !isEmpty() );
+    //    assert( !isEnd() );
 
     read( t );
 }
@@ -586,16 +617,16 @@ void InputImpl::operator>>( T& t ) {
 //            while ( rightT < std::any_cast<const T&>(leftLastTs.front()) ) {
 //                std::cout << "[InputImpl] operator>>(InputImpl&) shift rightT : " << rightT
 //                          << std::endl;
-//                assert( !rightInput.isEmpty() );
+//                assert( !rightInput.isEnd() );
 //                rightInput.read( rightT );
 //            }
 
 //            //                while ( leftLastTs.back().getStart() < rightT.getStart() &&
-//            //                !leftInput.isEmpty()
-//            while ( std::any_cast<const T&>(leftLastTs.back()) < rightT && !leftInput.isEmpty() )
+//            //                !leftInput.isEnd()
+//            while ( std::any_cast<const T&>(leftLastTs.back()) < rightT && !leftInput.isEnd() )
 //            {
 //                T leftT;
-//                assert( !leftInput.isEmpty() );
+//                assert( !leftInput.isEnd() );
 //                leftInput.read( leftT );
 //                leftLastTs.push_back( std::move( leftT ) );
 //            }
@@ -607,11 +638,11 @@ void InputImpl::operator>>( T& t ) {
 //            const auto& leftTBeforeRightT = std::any_cast<const T&>(leftLastTs.front());
 //            const auto& leftTAfterRightT  = std::any_cast<const T&>(leftLastTs.back());
 
-//            //                assert( leftInput.isEmpty() || leftTBeforeRightT.getStart() <=
+//            //                assert( leftInput.isEnd() || leftTBeforeRightT.getStart() <=
 //            //                rightT.getStart());
-//            assert( leftInput.isEmpty() || leftTBeforeRightT <= rightT );
-//            //                assert( leftInput.isEmpty() || rightT.getStart() <= leftTAfterRightT
-//            ); assert( leftInput.isEmpty() || rightT <= leftTAfterRightT );
+//            assert( leftInput.isEnd() || leftTBeforeRightT <= rightT );
+//            //                assert( leftInput.isEnd() || rightT.getStart() <= leftTAfterRightT
+//            ); assert( leftInput.isEnd() || rightT <= leftTAfterRightT );
 
 //            const auto& closestLeftT =
 //                ( std::abs( leftTBeforeRightT - rightT ) > std::abs( leftTAfterRightT - rightT ) )
@@ -652,9 +683,9 @@ void InputImpl::operator>>( T& t ) {
 // template <typename Acquisition>
 // InputImpl& InputImpl::operator>>( InputImpl& input ) {
 //    assert( isOpen() );
-//    assert( !isEmpty() );
+//    assert( !isEnd() );
 //    assert( input.isOpen() );
-//    assert( !input.isEmpty() );
+//    assert( !input.isEnd() );
 
 //    assert( input.m_leftInputs.empty() );
 //    input.m_leftInputs.swap( m_leftInputs );
@@ -691,11 +722,11 @@ void InputImpl::operator>>( T& t ) {
 //    //    while ( rightAcq.getStart() < leftLastAcqs.front().getStart() ) {
 //    //        std::cout << "[InputSensor] operator>>(InputSensor&) shift rightAcq : " << rightAcq
 //    <<
-//    // std::endl; /        assert( !rightInput.isEmpty() ); /        rightInput.read( rightAcq );
+//    // std::endl; /        assert( !rightInput.isEnd() ); /        rightInput.read( rightAcq );
 //    / }
 
-//    //    while ( leftLastAcqs.back().getStart() < rightAcq.getStart() && !leftInput.isEmpty() ) {
-//    //        assert( !leftInput.isEmpty() );
+//    //    while ( leftLastAcqs.back().getStart() < rightAcq.getStart() && !leftInput.isEnd() ) {
+//    //        assert( !leftInput.isEnd() );
 //    //        leftInput.read( leftAcq );
 //    //        leftLastAcqs.push_back( std::move( leftAcq ) );
 //    //    }
@@ -707,8 +738,8 @@ void InputImpl::operator>>( T& t ) {
 //    //    const auto& leftBeforeRightAcq  = leftLastAcqs.front();
 //    //    const auto& leftAfterRightAcq = leftLastAcqs.back();
 
-//    //    assert( leftInput.isEmpty() || leftBeforeRightAcq.getStart() <= rightAcq.getStart() );
-//    //    assert( leftInput.isEmpty() || rightAcq.getStart() <= leftAfterRightAcq.getStart() );
+//    //    assert( leftInput.isEnd() || leftBeforeRightAcq.getStart() <= rightAcq.getStart() );
+//    //    assert( leftInput.isEnd() || rightAcq.getStart() <= leftAfterRightAcq.getStart() );
 
 //    //    const auto& closestAcq =
 //    //        ( std::abs( leftBeforeRightAcq.getStart() - rightAcq.getStart() ) > std::abs(

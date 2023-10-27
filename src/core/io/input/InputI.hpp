@@ -1,5 +1,6 @@
 #pragma once
 
+#include "BasicInputI.hpp"
 #include "core/Macros.hpp"
 #include "core/Traits.hpp"
 
@@ -7,14 +8,10 @@ namespace hub {
 namespace io {
 namespace input {
 
-class InputI
+class InputI : public BasicInputI
 {
   public:
     virtual void read( Data_t* data, Size_t len ) = 0;
-    virtual bool isEmpty() const                  = 0;
-    virtual void clear()                          = 0;
-    virtual void close()                          = 0;
-    virtual bool isOpen() const                   = 0;
 
     template <class T>
     //    typename std::enable_if<!readable_v<T>>::type read( T& t ) {
@@ -27,11 +24,10 @@ class InputI
 //        std::cout << "\t" << HEADER << "read(" << TYPE_NAME( t ) << ") ..." << std::endl;
 //#endif
         assert( isOpen() );
-        assert( !isEmpty() );
+        assert( !isEnd() );
 
         read( reinterpret_cast<Data_t*>( &t ), sizeof( T ) );
 #ifdef HUB_DEBUG_INPUT
-//        std::cout << HEADER_INPUT_MSG << "read(" << TYPE_NAME( t ) << ") = " << t << std::endl;
         std::cout << "\t" << HEADER << "read(" << TYPE_NAME( t ) << ") = " << t << std::endl;
 #endif
     }

@@ -53,6 +53,19 @@ static constexpr bool isSimpleType_v = std::is_same<T, int>::value;
 //    return std::is_same<int, T> {};
 //}
 
+template <typename T>
+//    using readable_t = decltype( std::declval<T>().read( std::declval<Input&>() ) );
+using serializable_t = decltype( std::declval<T&>().serialize() );
+
+template <typename T, typename = std::void_t<>>
+struct serializable : std::false_type {};
+
+template <typename T>
+struct serializable<T, std::void_t<serializable_t<T>>> : std::true_type {};
+
+template <typename T>
+static constexpr bool serializable_v = serializable<T>::value;
+
 //template <typename T>
 //using isInput_t = decltype( T::isInput );
 //using isInput_t = decltype( std::declval<T>().read( std::declval<hub::Data_t*>(), std::declval<hub::Size_t>() ) );

@@ -120,7 +120,7 @@ std::string SensorSpec::to_string() const {
            SensorSpec::to_string( m_metaData ) + ", " + acqSizeStr;
 }
 
-bool SensorSpec::isEmpty() const {
+bool SensorSpec::isEnd() const {
     return m_sensorName == ""
            && m_resolutions.empty();
 }

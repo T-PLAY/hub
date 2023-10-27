@@ -15,7 +15,8 @@
 // #include "core/Any.hpp"
 // #include "core/OutputI.hpp"
 #include "core/Macros.hpp"
-#include "core/Serial.hpp"
+#include "core/Traits.hpp"
+
 #include "core/Tuple.hpp"
 
 #include "OutputI.hpp"
@@ -129,7 +130,7 @@ class SRC_API OutputImpl : public OutputI
     //    typename std::enable_if<writable_v<T>>::type write( const T& t ) {
     typename std::enable_if<serializable_v<T>>::type write( const T& t ) {
         static_assert( !writable_v<T> );
-        assert(false);
+//        assert(false);
 
         // #ifdef HUB_THREAD_SAFE
         //         m_mtx.lock();
@@ -177,7 +178,9 @@ class SRC_API OutputImpl : public OutputI
     //    typename std::enable_if<!writable_v<T>>::type write( const T& t ) {
     typename std::enable_if<!serializable_v<T> && !writable_v<T> && !notWritable_v<T>>::type
     write( const T& t ) {
-        assert(false);
+//        OutputI::write(t);
+//        return;
+//        assert(false);
 
         // #ifdef HUB_THREAD_SAFE
         //         m_mtx.lock();
@@ -255,6 +258,14 @@ class SRC_API OutputImpl : public OutputI
     template <std::size_t I = 0, typename... Tp>
         typename std::enable_if <
         I<sizeof...( Tp ), void>::type write( const std::tuple<Tp...>& t );
+
+    template <std::size_t I = 0, typename... Tp>
+    inline typename std::enable_if<I == sizeof...( Tp ), void>::type
+    write( std::tuple<Tp...>&& t );
+
+    template <std::size_t I = 0, typename... Tp>
+        typename std::enable_if <
+        I<sizeof...( Tp ), void>::type write( std::tuple<Tp...>&& t );
 
     // void writeAll
     template <typename Container>
@@ -357,6 +368,26 @@ OutputImpl::write( const std::tuple<Tp...>& t ) {}
 template <std::size_t I, typename... Tp>
     typename std::enable_if <
     I<sizeof...( Tp ), void>::type OutputImpl::write( const std::tuple<Tp...>& t ) {
+
+    if constexpr ( static_cast<int>( I ) == 0 ) {
+#ifdef HUB_DEBUG_OUTPUT
+        std::cout << HEADER << "write(" << TYPE_NAME( t ) << ") : '" << t << "'"
+                  << std::endl;
+#endif
+    }
+    //        std::cout << std::get<I>( t ) << std::endl;
+    write( std::get<I>( t ) );
+
+    write<I + 1, Tp...>( t );
+}
+
+template <std::size_t I, typename... Tp>
+inline typename std::enable_if<I == sizeof...( Tp ), void>::type
+OutputImpl::write( std::tuple<Tp...>&& t ) {}
+
+template <std::size_t I, typename... Tp>
+    typename std::enable_if <
+    I<sizeof...( Tp ), void>::type OutputImpl::write( std::tuple<Tp...>&& t ) {
 
     if constexpr ( static_cast<int>( I ) == 0 ) {
 #ifdef HUB_DEBUG_OUTPUT

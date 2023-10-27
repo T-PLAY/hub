@@ -262,7 +262,7 @@
 
 #define HEADER \
         "\033[" << std::to_string( 31 + reinterpret_cast<std::uintptr_t>( this ) % 7 ) \
-<< "m[" << FILE_NAME_WITHOUT_EXTENSION << ":" << this << "]\033[0m "
+<< "m[" << FILE_NAME_WITHOUT_EXTENSION << ":" << (uintptr_t)this % 100 << "]\033[0m "
 
 //#    ifdef HUB_USE_BOOST
 //        std::cout << HEADER_INPUT_MSG "read(T) : <"

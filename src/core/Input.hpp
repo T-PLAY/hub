@@ -11,7 +11,7 @@ namespace hub {
 //using Input = io::input::InputImpl;
 using Input = io::input::InputZppBits;
 
-static_assert(std::is_base_of<io::input::InputI, Input>::value, "Input is not base class of IntputI");
+//static_assert(std::is_base_of<io::input::InputI, Input>::value, "Input is not base class of IntputI");
 
 
 } // namespace hub

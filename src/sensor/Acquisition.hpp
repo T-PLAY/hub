@@ -522,7 +522,7 @@ inline const Resolutions& Acquisition::getResolutions() const {
 //    /// \brief isEmpty
 //    /// \return
 //    ///
-//    bool isEmpty() const;
+//    bool isEnd() const;
 
 //  private:
 //    long long m_start = 0; // microseconds
@@ -545,7 +545,7 @@ inline const Resolutions& Acquisition::getResolutions() const {
 //     return m_end;
 // }
 
-// inline bool Acquisition::isEmpty() const {
+// inline bool Acquisition::isEnd() const {
 //     return m_measures.empty();
 // }
 
