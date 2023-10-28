@@ -14,39 +14,13 @@ namespace book {
 // template <Size_t NumberOfCharacter = 1'000'000> // max size on stack 1Mo
 //           class Characters         = std::array<unsigned char, NumberOfCharacter>>
 // template <zpp::bits::concepts::byte_view ByteView>
-template <Size_t Size = 1'000'000, class Characters = std::array<unsigned char, Size>>
+template <Size_t NumberOfCharacter = 1'000'000, class Characters = std::array<unsigned char, NumberOfCharacter>>
 class BookZppBits : public BasicInputOutputI
 {
-    //    using ByteView = std::span<unsigned char, NumberOfCharacter>;
-    //    using ByteView = std::span<unsigned char, NumberOfCharacter>;
-    //    std::span<unsigned char, NumberOfCharacter> m_datas;
-    Characters& m_characters;
-//    std::unique_ptr<Characters&> m_characters;
-    //    zpp::bits::in<ByteView> m_in;
-    //    zpp::bits::out<ByteView> m_out;
-
-    //    using view_type =
-    //        std::conditional_t<resizable,
-    //                           ByteView &,
-    //                           std::remove_cvref_t<decltype(
-    //                               std::span{std::declval<ByteView &>()})>>;
   public:
     //    template <class Characters>
     BookZppBits( Characters& characters ) : m_characters( characters ) {}
-    BookZppBits() : m_characters { * new Characters } {}
-    //    BookZppBits(TypeSize size)
-    //        :
-    //    {
-    //    }
-
-    //        m_datas {std::forward<Characters>(characters)},
-    //        m_datas{},
-    //        m_in( m_datas ),
-    //        m_out( m_datas )
-    //        m_in( characters ),
-    //        m_out( characters )
-    //        {};
-    //    BookZppBits() : m_in( m_datas ), m_out( m_datas ) {};
+    BookZppBits() : m_characters { *new Characters } {}
 
     void write( const Data_t* data, Size_t len ) {
         zpp::bits::out out( m_characters );
@@ -106,6 +80,7 @@ class BookZppBits : public BasicInputOutputI
     }
 
   private:
+    Characters& m_characters;
     //    std::array<unsigned char, NumberOfCharacter> m_characters;
 };
 

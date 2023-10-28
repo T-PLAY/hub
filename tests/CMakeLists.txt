@@ -57,6 +57,9 @@ endforeach()
 
 list(APPEND test_headers ${CMAKE_CURRENT_SOURCE_DIR}/test_common.hpp)
 
+set(test_headers_src)
+list(APPEND test_headers_src ${CMAKE_CURRENT_SOURCE_DIR}/core/io/test-core-io-common.cpp)
+
 
 #list(REMOVE_ITEM test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/server/test-server-end.cpp)
 # list(REMOVE_ITEM test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/./test-end.cpp)
@@ -99,7 +102,7 @@ if (NOT HUB_BUILD_SERVER)
 endif()
 
 # gathering tests
-add_executable(test-all ${test_srcs} ${test_headers})
+add_executable(test-all ${test_srcs} ${test_headers} ${test_headers_src})
 #add_executable(test-all ${test_srcs})
 # target_link_libraries(test-all Catch2::Catch2WithMain hub PahoMqttCpp::paho-mqttpp3)
 target_link_libraries(test-all ${LINK_LIBRARIES})
@@ -128,6 +131,12 @@ endif()
 
 # foreach *.cpp tests
 include(CTest)
+
+#target_sources(Continuous
+#  PRIVATE
+#    core/io/test-core-io-common.hpp
+#    core/io/test-core-common.cpp
+#)
 enable_testing()
 foreach(testFile ${test_srcs})
 #    message(STATUS "test src: ${testFile}")
@@ -136,7 +145,7 @@ foreach(testFile ${test_srcs})
     get_filename_component(test ${testFile} NAME_WE)
 
 #    add_executable(${test} ${testFile} ${test_common})
-    add_executable(${test} ${testFile})
+    add_executable(${test} ${testFile} ${test_headers_src})
     # target_link_libraries(${test} PRIVATE Catch2::Catch2WithMain hub PahoMqttCpp::paho-mqttpp3)
 	target_link_libraries(${test} PRIVATE ${LINK_LIBRARIES})
     target_include_directories(${test}

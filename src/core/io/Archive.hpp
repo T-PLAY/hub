@@ -1,61 +1,34 @@
 #pragma once
 
-//#include <vector>
+// #include <vector>
 
 #include <queue>
 
-#include "core/Vector.hpp"
-//#include "core/Macros.hpp"
 //#include "core/Vector.hpp"
+//#include "input/InputZppBits.hpp"
+//#include "output/OutputZppBits.hpp"
+
 //#include "InputOutputI.hpp"
-#include "input/InputZppBits.hpp"
-#include "output/OutputZppBits.hpp"
-//#include "core/Vector.hpp"
-
-//#include "input/InputI.hpp"
-//#include "output/OutputI.hpp"
-#include "InputOutputI.hpp"
-#include "InputOutputImpl.hpp"
-#include "InputOutputZppBits.hpp"
-
-//#ifdef HUB_DEBUG_INPUT
-//#    define HEADER_INPUT_MSG                                                             \
-//        "\t\033[" << std::to_string( 31 + reinterpret_cast<std::uintptr_t>( this ) % 7 ) \
-//                  << "m[Archive:" << this << "]\033[0m "
-//#endif
-//#ifdef HUB_DEBUG_OUTPUT
-//#    define HEADER_OUTPUT_MSG                                                          \
-//        "\033[" << std::to_string( 31 + reinterpret_cast<std::uintptr_t>( this ) % 7 ) \
-//                << "m[Archive:" << this << "]\033[0m "
-//#endif
+//#include "InputOutputImpl.hpp"
+//#include "InputOutputZppBits.hpp"
+#include "InputOutput.hpp"
 
 namespace hub {
 namespace io {
 
-
-//template <class Input = input::InputI, class Output = output::OutputI>
-//class Archive : public input::InputI, public output::OutputI
-//template <class InputOutput = InputOutputI>
-template <class InputOutput = InputOutputImpl>
-//template <class InputOutput = InputOutputZppBits>
-//template <class InputOutput = BasicInputOutputI>
-//class Archive : public Input, public Output
-//class Archive : public Input, public Output
+template <class InputOutput = InputOutput>
 class Archive : public InputOutput
 {
   public:
     using InputOutput::read;
     using InputOutput::write;
 
-//    Archive() = default;
-
-//    ~Archive() { std::cout << "[Archive] ~Archive()" << std::endl; }
-
     void read( hub::Data_t* data, hub::Size_t size ) override {
         assert( !m_datas.empty() );
         const auto& vector = m_datas.front();
 #ifdef HUB_DEBUG_INPUT
-        std::cout << "\t" << HEADER << "read(Data_t*, Size_t) : data = " << vector << ", read size = " << size << std::endl;
+        std::cout << "\t" << HEADER << "read(Data_t*, Size_t) : data = " << vector
+                  << ", read size = " << size << std::endl;
 #endif
         assert( vector.size() == size );
 
@@ -72,32 +45,19 @@ class Archive : public InputOutput
     }
 
     void close() override {};
-    //    void close() override { assert( isOpen() );
-    //        m_isOpen = false;
-    //    };
 
     bool isOpen() const override { return true; }
-    //    bool isOpen() const override { return m_isOpen; };
 
-    bool isEnd() const override {
-        //        auto ret = m_datas.empty();
-        //        return ret;
-        return m_datas.empty();
-    }
+    bool isEnd() const override { return m_datas.empty(); }
 
     void clear() override {
         while ( !m_datas.empty() )
             m_datas.pop();
     }
 
-
   private:
     std::queue<std::vector<hub::Data_t>> m_datas;
-//    InputT & m_input;
-//    OutputT & m_output;
-    //    bool m_isOpen = true;
 };
-
 
 } // namespace io
 } // namespace hub

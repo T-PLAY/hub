@@ -10,16 +10,19 @@ namespace hub {
 namespace io {
 namespace book {
 
-template <Size_t NumberOfCharacter = 1'000'000>
+//template <Size_t NumberOfCharacter = 1'000'000>
 //          class Characters         = std::array<unsigned char, NumberOfCharacter>>
 //class BookImpl : public InputOutputI
+template <Size_t NumberOfCharacter = 1'000'000, class Characters = std::array<unsigned char, NumberOfCharacter>>
 class BookImpl : public InputOutputImpl
 {
   public:
     using InputOutputImpl::read;
     using InputOutputImpl::write;
 
-    BookImpl() : m_characters { 0 }, m_datas( m_characters.data() ) {}
+    BookImpl( Characters& characters ) : m_characters( characters ), m_datas{m_characters.data()} {}
+    BookImpl() : m_characters { *new Characters }, m_datas{m_characters.data()} {}
+//    BookImpl() : m_characters { 0 }, m_datas( m_characters.data() ) {}
 
     void read( hub::Data_t* data, hub::Size_t size ) override {
         memcpy( data, m_datas + m_iRead, size );
@@ -47,7 +50,8 @@ class BookImpl : public InputOutputImpl
 
   private:
 //    size_t m_size;
-    std::array<unsigned char, NumberOfCharacter> m_characters;
+    Characters& m_characters;
+//    std::array<unsigned char, NumberOfCharacter> m_characters;
     unsigned char* m_datas = nullptr;
     size_t m_iRead         = 0;
     size_t m_iWrite        = 0;
