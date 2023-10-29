@@ -7,30 +7,33 @@
 
 // #include <core/Macros.hpp>
 #include <core/Traits.hpp>
+#include <core/io/iosBase.hpp>
 
 namespace testCoreIoCommon {
 
-struct Character {
+struct Data {
     double a;
     int b;
     std::string name;
     std::vector<int> vints;
 
-    constexpr auto serialize() {
-        return std::tuple<double&, int&, std::string&, std::vector<int>&> { a, b, name, vints };
-    }
+//    constexpr auto serialize() {
+//        return std::tuple<double&, int&, std::string&, std::vector<int>&> { a, b, name, vints };
+//    }
 
-    bool operator==( const Character& character ) const {
+    bool operator==( const Data& character ) const {
         return a == character.a && b == character.b && name == character.name &&
                vints == character.vints;
     }
-    friend std::ostream& operator<<( std::ostream& os, const Character& character );
+    friend std::ostream& operator<<( std::ostream& os, const Data& character );
 };
-static_assert( hub::serializable_v<Character> );
+//static_assert( hub::io::serializable_v<Data> );
 static_assert( sizeof( int ) == 4 );
 static_assert( sizeof( double ) == 8 );
 
-//std::ostream& operator<<( std::ostream& os, const Character& character ) {
+    static constexpr size_t s_dataSize = sizeof( Data );
+
+//std::ostream& operator<<( std::ostream& os, const Data& character ) {
 //    os << character.a << " " << character.b << " " << character.name;
 //    return os;
 //}
@@ -102,10 +105,10 @@ ReadWriteStat readWriteData( ReadInputFunc& readInputFunc,
                              size_t nReadWrite,
                              const Data& data ) {
 
-#ifdef HUB_DEBUG_INPUT
-    std::cout << "------------------------------ " << implName
-              << " --------------------------------" << std::endl;
-#endif
+//#ifdef HUB_DEBUG_INPUT
+//    std::cout << "------------------------------ " << implName
+//              << " --------------------------------" << std::endl;
+//#endif
 
     const auto startClock = std::chrono::high_resolution_clock::now();
 

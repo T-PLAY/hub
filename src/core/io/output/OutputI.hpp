@@ -18,7 +18,7 @@ class OutputI : public BasicOutputI
     //    typename std::enable_if<!serializable_v<T> && !writable_v<T> && ! notWritable_v<T>>::type
     //    write( const T& t ) {
 //        typename std::enable_if_t<std::isww
-    typename std::enable_if_t<isPackable_v<T> || isSimpleType_v<T>, void>
+    typename std::enable_if_t<packable_v<T>, void>
     write( const T& t ) {
 #ifdef HUB_DEBUG_OUTPUT
         std::cout << HEADER << "write(" << TYPE_NAME( t ) << ") = " << t << std::endl;

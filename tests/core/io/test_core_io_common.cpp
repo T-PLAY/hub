@@ -1,4 +1,4 @@
-#include "test-core-io-common.hpp"
+#include "test_core_io_common.hpp"
 
 //#include <chrono>
 //#include <string>
@@ -11,8 +11,8 @@
 namespace testCoreIoCommon {
 
 
-std::ostream& operator<<( std::ostream& os, const Character& character ) {
-    os << character.a << " " << character.b << " " << character.name;
+std::ostream& operator<<( std::ostream& os, const Data& data ) {
+    os << data.a << " " << data.b << " " << data.name;
     return os;
 }
 

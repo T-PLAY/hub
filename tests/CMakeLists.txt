@@ -58,7 +58,8 @@ endforeach()
 list(APPEND test_headers ${CMAKE_CURRENT_SOURCE_DIR}/test_common.hpp)
 
 set(test_headers_src)
-list(APPEND test_headers_src ${CMAKE_CURRENT_SOURCE_DIR}/core/io/test-core-io-common.cpp)
+list(REMOVE_ITEM test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/core/io/test_core_io_common.cpp)
+list(APPEND test_headers_src ${CMAKE_CURRENT_SOURCE_DIR}/core/io/test_core_io_common.cpp)
 
 
 #list(REMOVE_ITEM test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/server/test-server-end.cpp)

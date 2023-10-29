@@ -64,17 +64,17 @@ class SRC_API InputImpl : public InputI
 
     //////////////////////////////////
 
-    template <typename T>
-    using readable_t = decltype( std::declval<T>().read( std::declval<InputImpl&>() ) );
+//    template <typename T>
+//    using readable_t = decltype( std::declval<T>().read( std::declval<InputImpl&>() ) );
 
-    template <typename T, typename = std::void_t<>>
-    struct readable : std::false_type {};
+//    template <typename T, typename = std::void_t<>>
+//    struct readable : std::false_type {};
 
-    template <typename T>
-    struct readable<T, std::void_t<readable_t<T>>> : std::true_type {};
+//    template <typename T>
+//    struct readable<T, std::void_t<readable_t<T>>> : std::true_type {};
 
-    template <typename T>
-    static constexpr bool readable_v = readable<T>::value;
+//    template <typename T>
+//    static constexpr bool readable_v = readable<T>::value;
 
     //////////////////////////////////
 

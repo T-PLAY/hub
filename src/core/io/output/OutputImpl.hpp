@@ -64,18 +64,18 @@ class SRC_API OutputImpl : public OutputI
 
     //////////////////////////////////////
 
-    template <typename T>
-    using writable_t = decltype( std::declval<T>().write( std::declval<OutputImpl&>() ) );
-    //    using writable_t = decltype( write( std::declval<T>(), std::declval<OutputImpl&>() ) );
+//    template <typename T>
+//    using writable_t = decltype( std::declval<T>().write( std::declval<OutputImpl&>() ) );
+//    //    using writable_t = decltype( write( std::declval<T>(), std::declval<OutputImpl&>() ) );
 
-    template <typename T, typename = std::void_t<>>
-    struct writable : std::false_type {};
+//    template <typename T, typename = std::void_t<>>
+//    struct writable : std::false_type {};
 
-    template <typename T>
-    struct writable<T, std::void_t<writable_t<T>>> : std::true_type {};
+//    template <typename T>
+//    struct writable<T, std::void_t<writable_t<T>>> : std::true_type {};
 
-    template <typename T>
-    static constexpr bool writable_v = writable<T>::value;
+//    template <typename T>
+//    static constexpr bool writable_v = writable<T>::value;
 
   public:
     OutputImpl() = default;

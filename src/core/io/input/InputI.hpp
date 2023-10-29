@@ -17,7 +17,7 @@ class InputI : public BasicInputI
     //    typename std::enable_if<!readable_v<T>>::type read( T& t ) {
     //    typename std::enable_if<!serializable_v<T> && ! readable_v<T> && ! notReadable_v<T>>::type
     //    read( T& t ) {
-    typename std::enable_if_t<isPackable_v<T> || isSimpleType_v<T>, void>
+    typename std::enable_if_t<packable_v<T>, void>
     read( T& t ) {
 //#ifdef HUB_DEBUG_INPUT
 //        std::cout << HEADER_INPUT_MSG << "read(" << TYPE_NAME( t ) << ")" << std::endl;

@@ -1,8 +1,8 @@
 // #define HUB_DEBUG_INPUT
 // #define HUB_DEBUG_OUTPUT
 
-#include "core/io/test-core-io-common.hpp"
-#include "core/test-core-common.hpp"
+#include "core/io/test_core_io_common.hpp"
+#include "core/test_core_common.hpp"
 #include "test_common.hpp"
 
 // #include <iostream>
@@ -37,21 +37,20 @@ TEST_CASE( "Book test" ) {
     //    std::string_view ioImplNames[s_nIOImpl] {
     //        "ZppBits", "BookImpl", "BookZppBits", "ArchiveImpl", "ArchiveZppBits" };
 
-    static constexpr size_t s_characterSize = sizeof( Character );
     static constexpr size_t s_maxDataSize   = 1'000'000;
 #ifdef HUB_DEBUG_INPUT
     static constexpr size_t s_nReadWrite = 1;
 #else
-    static constexpr size_t s_nReadWrite = s_maxDataSize / s_characterSize;
+    static constexpr size_t s_nReadWrite = s_maxDataSize / s_dataSize;
 #endif
-    static constexpr size_t s_bookSize = s_nReadWrite * s_characterSize;
+    static constexpr size_t s_bookSize = s_nReadWrite * s_dataSize;
 
     static constexpr size_t s_nReadWriteDataPtr = 1;
     static constexpr size_t s_DataSizePtr       = 1'00'000'000;
 
     std::cout << "nb read/write: " << s_nReadWrite / 1000000.0 << " M" << std::endl;
     std::cout << "read/write size: "
-              << std::to_string( s_characterSize * s_nReadWrite / 1'000'000.0 ) << " Mo"
+              << std::to_string( s_dataSize * s_nReadWrite / 1'000'000.0 ) << " Mo"
               << std::endl;
     std::cout << "nb read/write ptr: " << s_nReadWriteDataPtr << std::endl;
     std::cout << "read/write ptr size: "
@@ -59,7 +58,7 @@ TEST_CASE( "Book test" ) {
               << std::endl;
     std::cout << std::endl;
 
-    Character character( 'a', 5, "gauthier", { 0, 1, 2, 3, 4 } );
+    Data data( 'a', 5, "gauthier", { 0, 1, 2, 3, 4 } );
 
     unsigned char* data_write = new unsigned char[s_DataSizePtr];
     memset( data_write, 'a', s_DataSizePtr );
@@ -72,13 +71,13 @@ TEST_CASE( "Book test" ) {
         {
             std::array<unsigned char, s_bookSize> characters;
 
-            auto read = [&]( Character& character ) {
-                zpp::bits::in(characters)( character ).or_throw();
+            auto read = [&]( Data& data ) {
+                zpp::bits::in(characters)( data ).or_throw();
             };
-            auto write = [&]( const Character& character ) {
-                zpp::bits::out( characters )( character ).or_throw();
+            auto write = [&]( const Data& data ) {
+                zpp::bits::out( characters )( data ).or_throw();
             };
-            benchStat.readWriteDataStat = readWriteData( read, write, s_nReadWrite, character );
+            benchStat.readWriteDataStat = readWriteData( read, write, s_nReadWrite, data );
         }
         {
             static std::array<unsigned char, s_DataSizePtr + 100> characters;
@@ -104,7 +103,7 @@ TEST_CASE( "Book test" ) {
         {
             hub::io::book::BookImpl<s_bookSize> bookImpl;
             benchStatBookImpl.readWriteDataStat =
-                readWriteData( bookImpl, s_nReadWrite, character );
+                readWriteData( bookImpl, s_nReadWrite, data );
             assert( bookImpl.isEnd() );
         }
         {
@@ -123,7 +122,7 @@ TEST_CASE( "Book test" ) {
     {
         {
             hub::io::book::BookZppBits<s_bookSize> book;
-            benchStatBookZppBits.readWriteDataStat = readWriteData( book, s_nReadWrite, character );
+            benchStatBookZppBits.readWriteDataStat = readWriteData( book, s_nReadWrite, data );
             assert( book.isEnd() );
         }
         {
@@ -151,7 +150,7 @@ TEST_CASE( "Book test" ) {
         BenchStat benchStat { "ArchiveImpl" };
         hub::io::Archive<hub::io::InputOutputImpl> archive;
 
-        benchStat.readWriteDataStat = readWriteData( archive, s_nReadWrite, character );
+        benchStat.readWriteDataStat = readWriteData( archive, s_nReadWrite, data );
         assert( archive.isEnd() );
 
         benchStat.readWriteDataPtrStat =
@@ -164,7 +163,7 @@ TEST_CASE( "Book test" ) {
         BenchStat benchStat { "ArchiveZppBits" };
         hub::io::Archive<hub::io::InputOutputZppBits> archive;
 
-        benchStat.readWriteDataStat = readWriteData( archive, s_nReadWrite, character );
+        benchStat.readWriteDataStat = readWriteData( archive, s_nReadWrite, data );
         assert( archive.isEnd() );
 
         benchStat.readWriteDataPtrStat =

@@ -10,9 +10,9 @@
 
 class Lambda {
   public:
-    int a;
-    float b;
-    double c;
+    int a = 0;
+    float b = 0.0f;
+    double c = 0.0;
     std::vector<int> ds;
 
     friend std::ostream& operator<<( std::ostream& os, const Lambda& lambda ) {
@@ -25,11 +25,16 @@ class Lambda {
     bool operator==(const Lambda & lambda) const {
         return a == lambda.a && b == lambda.b && c == lambda.c && ds == lambda.ds;
     }
+//    Lambda() = default;
 };
 
 
 TEST_CASE( "Any test" ) {
 //int main() {
+//    hub::Any::printTable();
+    std::cout << "any supported types : " << hub::Anyable::supportedTypes() << std::endl;
+//    hub::Anyable::registerTypes<Lambda>();
+//    std::cout << "any supported types : " << hub::Anyable::supportedTypes() << std::endl;
 
     hub::Any any;
     hub::Any any2;
@@ -38,12 +43,14 @@ TEST_CASE( "Any test" ) {
 //    std::cout << any.type().name() << std::endl;
     std::cout << any << std::endl;
 
+
     any = 1;
     any2 = 1;
     CHECK(any == any2);
     any2 = 2;
     CHECK(any != any2);
     std::cout << any << std::endl;
+//    return;
     std::cout << any.type().name() << std::endl;
     std::cout << any.getValueStr() << std::endl;
     assert(any.hasValue());
@@ -58,6 +65,8 @@ TEST_CASE( "Any test" ) {
     int a = any.get<int>();
 //    int a2 = any.get();
     CHECK( a == 1 );
+
+//    return;
 
     any = 1.4;
     any2 = 1.4;
@@ -101,6 +110,7 @@ TEST_CASE( "Any test" ) {
 
 
     const Lambda lambda{5, 0.0, 1.0f, {0, 1, 2}};
+//    Lambda lambda{5, 0.0, 1.0f, {0, 1, 2}};
     any = lambda;
     any2 = lambda;
     CHECK(any == any2);
@@ -114,5 +124,7 @@ TEST_CASE( "Any test" ) {
 //    std::cout << "any value: " << any.getValueAsString() << std::endl;
 //    std::cout << "any typeid: " << any.typeId().name() << std::endl;
 //    std::cout << any << std::endl;
+
+    std::cout << "any supported types : " << hub::Anyable::supportedTypes() << std::endl;
 
 }

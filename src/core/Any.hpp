@@ -4,36 +4,39 @@
 #include <cstring>
 #include <functional>
 #include <iostream>
+#include <map>
 #include <memory>
 #include <sstream>
 #include <string>
 #include <vector>
 
-
-//#include "std_any.hpp"
+#include "Anyable.hpp"
+#include "core/Vector.hpp"
+// #include "std_any.hpp"
 
 #include "Macros.hpp"
 
 #if CPLUSPLUS_VERSION <= 14
-    #include "std_any.hpp"
+#    include "std_any.hpp"
 #else
-    #include <any>
+#    include <any>
 #endif
 
 // #include "data/Mat4.hpp"
 // #include "data/Mesh.hpp"
 
-//#define HUB_USE_BOOST
-//#ifdef HUB_USE_BOOST
-//#    include <boost/type_index.hpp>
-//#endif
+// #define HUB_USE_BOOST
+// #ifdef HUB_USE_BOOST
+// #    include <boost/type_index.hpp>
+// #endif
 
 namespace hub {
 
-// namespace data {
-// class Mat4;
-// class Mesh;
-// } // namespace data
+// class AnyHelper;
+//  template <class T>
+//  std::map<size_t, AnyHelper> makeMap() {
+//      return std::map<size_t, AnyHelper> { makeAnyHelperRow<T>() };
+//  }
 
 ///
 /// \brief The Any class
@@ -42,101 +45,83 @@ namespace hub {
 class SRC_API Any
 {
   public:
-    //    template <typename T>
-    //    //     using readable_t = decltype( std::declval<T>().isReadable() );
-    //    using anyable_t = decltype( std::declval<T>().anyable() );
-
-    //    template <typename T, typename = std::void_t<>>
-    //    struct anyable : std::false_type {};
-
-    //    template <typename T>
-    //    struct anyable<T, std::void_t<anyable_t<T>>> : std::true_type {};
-
-    //    template <typename T>
-    //    static constexpr bool anyable_v = anyable<T>::value;
-
     ///
     /// \brief The AnyType enum
     /// allows to unify the data according to the different architecture (32, 64 bits).
     ///
     //    enum class Type { NONE = 0, INT, DOUBLE, STRING, CONST_CHAR_PTR, MAT4, MESH, COUNT };
 
+    Any() {
+        assert( Anyable::s_anyables.find( typeid( void ).hash_code() ) != Anyable::s_anyables.end() );
+        m_anyHelper = std::make_unique<Anyable::AnyHelper>(Anyable::s_anyables.at( typeid( void ).hash_code() ));
+    }
+
+    template <class T>
+    Any( T&& t ) : m_any( std::forward<T>( t ) ) {
+        if ( Anyable::s_anyables.find( typeid( T ).hash_code() ) == Anyable::s_anyables.end() ) {
+            Anyable::registerTypes<std::remove_cvref_t<T>>();
+//            std::cerr << HEADER << "'" << TYPE_NAME(T) << "' is not supported by hub::Any class, please do hub::Anyable::registerType<" << TYPE_NAME(T) << ">() before using it." << std::endl;
+//            exit(1);
+        }
+        assert( Anyable::s_anyables.find( typeid( T ).hash_code() ) != Anyable::s_anyables.end() );
+        m_anyHelper = std::make_unique<Anyable::AnyHelper>(Anyable::s_anyables.at( typeid( T ).hash_code() ));
+
+        //        const auto hashCode = m_any.type().hash_code();
+        //        const auto hashCode = typeid(T).hash_code();
+        //        std::cout << "hashCode of " << TYPE_NAME(T) << " = " << hashCode << std::endl;
+        //        for (const auto & pair : s_anyHelpers) {
+        //            std::cout << pair.first << " -> " << pair.second.getTypeName() << std::endl;
+        //        }
+        //        assert( s_anyHelpers.find( hashCode ) != s_anyHelpers.end() );
+    }
+
     template <typename T>
     Any( const T* t ) : m_any( t ) {
-        m_typeName = [](  ) {
-//            return std::string("const ") + TYPE_NAME(T) + " *";
-            return std::string(TYPE_NAME(T)) + "*";
-        };
+        if ( Anyable::s_anyables.find( typeid( const T* ).hash_code() ) == Anyable::s_anyables.end() ) {
+            Anyable::registerTypes<const T*>();
+//            std::cerr << HEADER << "'" << TYPE_NAME(const T*) << "' is not supported by hub::Any class, please do hub::Anyable::registerType<" << TYPE_NAME(T) << ">() before using it." << std::endl;
+//            exit(1);
+        }
+        assert( Anyable::s_anyables.find( typeid( const T* ).hash_code() ) !=
+                Anyable::s_anyables.end() );
+//        m_anyHelper = &Anyable::s_anyables.at( typeid( const T* ).hash_code() );
+        m_anyHelper = std::make_unique<Anyable::AnyHelper>(Anyable::s_anyables.at( typeid( const T * ).hash_code() ));
+        //        assert( s_anyHelpers.find( typeid( const T* ).hash_code() ) != s_anyHelpers.end()
+        //        ); m_typeName = [](  ) {
+        ////            return std::string("const ") + TYPE_NAME(T) + " *";
+        //            return std::string(TYPE_NAME(T)) + "*";
+    };
 
-        m_any2valueStr = []( const std::any& any ) {
-            assert( typeid( const T* ) == any.type() );
-            const T* val = std::any_cast<const T*>( any );
-            std::stringstream sstream;
-            sstream << val;
-            return sstream.str();
-        };
-        m_anyCompare = []( const std::any& any, const std::any& any2 ) {
-            return !strcmp( std::any_cast<const T*>( any ), std::any_cast<const T*>( any2 ) );
-        };
-    }
+    //        m_any2valueStr = []( const std::any& any ) {
+    //            assert( typeid( const T* ) == any.type() );
+    //            const T* val = std::any_cast<const T*>( any );
+    //            std::stringstream sstream;
+    //            sstream << val;
+    //            return sstream.str();
+    //        };
+    //        m_anyCompare = []( const std::any& any, const std::any& any2 ) {
+    //            return !strcmp( std::any_cast<const T*>( any ), std::any_cast<const T*>( any2 ) );
+    //        };
+    //    }
 
-    template <typename T>
-    Any( T&& t ) : m_any( std::forward<T>( t ) ) {
-        m_typeName = [](  ) {
-            return TYPE_NAME(T);
-        };
-
-        m_any2valueStr = []( const std::any& any ) {
-            assert( typeid( T ) == any.type() );
-            const T& val = std::any_cast<const T&>( any );
-            std::stringstream sstream;
-            sstream << val;
-            return sstream.str();
-        };
-        m_anyCompare = []( const std::any& any, const std::any& any2 ) {
-            return std::any_cast<const T&>( any ) == std::any_cast<const T&>( any2 );
-        };
-    }
-
-    //    template <class T,
-    //              typename =
-    //              std::enable_if<anyable_v<T>>::type>
-    //    Any( T&& t )
-    //    : m_any( std::forward<T>( t ) )
-    //    {
+    //    template <typename T>
+    //    Any( T&& t ) : m_any( std::forward<T>( t ) ) {
+    //        m_typeName = [](  ) {
+    //            return TYPE_NAME(T);
     //        };
 
+    //        m_any2valueStr = []( const std::any& any ) {
+    //            assert( typeid( T ) == any.type() );
+    //            const T& val = std::any_cast<const T&>( any );
+    //            std::stringstream sstream;
+    //            sstream << val;
+    //            return sstream.str();
+    //        };
+    //        m_anyCompare = []( const std::any& any, const std::any& any2 ) {
+    //            return std::any_cast<const T&>( any ) == std::any_cast<const T&>( any2 );
+    //        };
     //    }
 
-    //    template <class T,
-    //              typename =
-    //              std::enable_if<! anyable_v<T>>::type>
-    //    Any( T&& t )
-    //    : m_any( std::forward<T>( t ) )
-    //    {
-
-    //    }
-
-    //    template <class T>
-    //    std::enable_if<! anyable_v<T>>::type
-    //    read( T&& t ) {
-
-    //    }
-
-    ///
-    /// \brief Any
-    /// \param any
-    ///
-    //    Any( const Any& any );
-
-    ///
-    /// \brief operator =
-    /// \param any
-    /// \return
-    ///
-    //    Any& operator=( const Any& any );
-
-    Any() = default;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -146,13 +131,7 @@ class SRC_API Any
     ///
     bool hasValue() const;
 
-    //    ///
-    //    /// \brief type
-    //    /// \return
-    //    ///
     const std::type_info& type() const;
-
-    //    const std::type_info & typeId() const;
 
     ///
     /// \brief getValueAsString
@@ -168,7 +147,7 @@ class SRC_API Any
     bool operator==( const Any& any ) const;
 
 #if CPLUSPLUS_VERSION <= 17
-    bool operator!=(const Any& any) const;
+    bool operator!=( const Any& any ) const;
 #endif
 
     ///
@@ -197,7 +176,39 @@ class SRC_API Any
     /// \brief to_string
     /// \return
     ///
-    std::string to_string() const;
+    //    std::string to_string() const;
+
+
+    template <class Output>
+    void write(Output & output) const {
+        const auto & hashCode = m_any.type().hash_code();
+        output.write(hashCode);
+//        serial(hashCode);
+        m_anyHelper->write(output, m_any);
+//        serial(m_any.type().hash_code());
+    }
+
+    template <class Input>
+    void read(Input & input) {
+//        const auto & hashCode = m_any.type().hash_code();
+        decltype(m_any.type().hash_code()) hashCode;
+        input.read(hashCode);
+
+        assert( Anyable::s_anyables.find( hashCode ) != Anyable::s_anyables.end() );
+        m_anyHelper = std::make_unique<Anyable::AnyHelper>(Anyable::s_anyables.at( hashCode ));
+
+        m_anyHelper->read(input, m_any);
+
+//        serial(hashCode);
+//        serial(m_any.type().hash_code());
+    }
+
+//    template <class Serial>
+//    void serialize(Serial & serial) {
+//        const auto & hashCode = m_any.type().hash_code();
+////        serial(hashCode);
+//        serial(m_any.type().hash_code());
+//    }
 
   private:
     ///
@@ -205,18 +216,16 @@ class SRC_API Any
     /// \return
     ///
     //    const std::string& typeName() const;
-//    std::string anyValue2string() const;
+    //    std::string anyValue2string() const;
 
   private:
-    std::function<std::string( )> m_typeName;
-    std::function<std::string( const std::any& )> m_any2valueStr;
-    std::function<bool( const std::any&, const std::any& )> m_anyCompare;
-//    std::function<auto( const std::any& )> m_getValue;
-    //    Type m_type     = Type::NONE;
-    //    std::unique_ptr<std::type_info&> m_type;
-    //    siz_t m_type;
-    //    bool m_hasValue = false;
+    //    std::function<std::string( )> m_typeName;
+    //    std::function<std::string( const std::any& )> m_any2valueStr;
+    //    std::function<bool( const std::any&, const std::any& )> m_anyCompare;
+
     std::any m_any;
+//    const Anyable::AnyHelper* m_anyHelper = nullptr;
+    std::unique_ptr<Anyable::AnyHelper> m_anyHelper;
 };
 
 template <class T>
@@ -261,7 +270,6 @@ bool Any::is() const {
 
 //            std::any_cast<T>( any );
 //            //        const T & val = std::any_cast<const T&>(any);
-//            return std::string( "fuck" );
 //            //        std::stringstream sstream;
 //            //        sstream << val;
 //            //        return sstream.str();
@@ -307,7 +315,7 @@ const T& Any::get() const {
 inline bool Any::hasValue() const {
 
 #if CPLUSPLUS_VERSION <= 17
-    return ! m_any.empty();
+    return !m_any.empty();
 #else
     return m_any.has_value();
 #endif
