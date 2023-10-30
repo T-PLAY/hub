@@ -37,6 +37,10 @@ class InputZppBits : public BasicInputI
         //         std::cout << HEADER_INPUT_MSG << "read(" << TYPE_NAME( t ) << ")" << std::endl;
         //         std::cout << "\t" << HEADER << "read(" << TYPE_NAME( t ) << ") ..." << std::endl;
         // #endif
+#ifdef HUB_DEBUG_INPUT
+        std::cout << "\t" << HEADER << "\033[1mread\033[0m(readable: " << TYPE_NAME( t ) << ") ..."
+                  << std::endl;
+#endif
         assert( isOpen() );
         assert( !isEnd() );
 
@@ -44,7 +48,7 @@ class InputZppBits : public BasicInputI
         t.read( *this );
 
 #ifdef HUB_DEBUG_INPUT
-        std::cout << "\t" << HEADER << "read(readable: " << TYPE_NAME( t ) << ") = " << t
+        std::cout << "\t" << HEADER << "\033[1mread\033[0m(readable: " << TYPE_NAME( t ) << ") = " << t
                   << std::endl;
 #endif
     }
@@ -53,10 +57,14 @@ class InputZppBits : public BasicInputI
     typename std::enable_if<serializable_v<T>>::type read( T& t ) {
         assert( isOpen() );
         assert( !isEnd() );
+#ifdef HUB_DEBUG_INPUT
+        std::cout << "\t" << HEADER << "\033[1mread\033[0m(serial: " << TYPE_NAME( t ) << ") ..."
+                  << std::endl;
+#endif
 
         t.serialize( *this );
 #ifdef HUB_DEBUG_INPUT
-        std::cout << "\t" << HEADER << "read(serial: " << TYPE_NAME( t ) << ") = " << t
+        std::cout << "\t" << HEADER << "\033[1mread\033[0m(serial: " << TYPE_NAME( t ) << ") = " << t
                   << std::endl;
 #endif
     }
@@ -69,12 +77,12 @@ class InputZppBits : public BasicInputI
         //        Size_t size;
         //        read( reinterpret_cast<Data_t*>( &size ), sizeof( Size_t ) );
         //        assert(size < BuffSize);
-        read( m_serialBuff.data(), sizeof( T ) );
+//        read( m_serialBuff.data(), sizeof( T ) );
         //        read( m_serialBuff.data(), size );
 
-        zpp::bits::in input( m_serialBuff );
-        input( t ).or_throw();
-        //        read( reinterpret_cast<Data_t*>( &t ), sizeof( T ) );
+//        zpp::bits::in input( m_serialBuff );
+//        input( t ).or_throw();
+        read( reinterpret_cast<Data_t*>( &t ), sizeof( T ) );
 
 #ifdef HUB_DEBUG_INPUT
         std::cout << "\t" << HEADER << "read(packable: " << TYPE_NAME( t ) << ") = " << t << std::endl;
@@ -83,6 +91,7 @@ class InputZppBits : public BasicInputI
 
     template <class T>
     typename std::enable_if<!readable_v<T> && !serializable_v<T> && !packable_v<T>>::type
+//    typename std::enable_if<!readable_v<T> && !serializable_v<T>>::type
     read( T& t ) {
         // #ifdef HUB_DEBUG_INPUT
         //         std::cout << HEADER_INPUT_MSG << "read(" << TYPE_NAME( t ) << ")" << std::endl;
@@ -98,6 +107,7 @@ class InputZppBits : public BasicInputI
 
         Size_t size;
         read( reinterpret_cast<Data_t*>( &size ), sizeof( Size_t ) );
+//        read(size);
         assert( size < BuffSize );
         //        read( m_serialBuff.data(), sizeof(T) );
         read( m_serialBuff.data(), size );
@@ -111,24 +121,31 @@ class InputZppBits : public BasicInputI
 #endif
     }
 
-    template <class T>
-    void operator()( T& t ) {
-        read( t );
-    }
+//    template <class T>
+//    void operator()( T& t ) {
+//        read( t );
+//    }
 
     template <class... Ts>
     void operator()( Ts&... ts ) {
-        readAll( ts... );
+        readAll_( ts... );
     }
 
   private:
     template <class... Ts>
-    void readAll( Ts&... ts ) {
+    void readAll_( Ts&... ts ) {
         assert( isOpen() );
         assert( !isEnd() );
         //        auto allSize = sizeofAll(ts...);
         //        read( m_serialBuff.data(), sizeofAll(ts...) );
-        read( m_serialBuff.data(), ( sizeof( Ts ) + ... ) );
+//        Size_t size;
+//        read(size);
+        Size_t size;
+        read( reinterpret_cast<Data_t*>( &size ), sizeof( Size_t ) );
+        assert(size < BuffSize);
+
+//        read( m_serialBuff.data(), ( sizeof( Ts ) + ... ) );
+        read( m_serialBuff.data(), size);
         zpp::bits::in input( m_serialBuff );
         //        input( ts... ).or_throw();
         input( ts... ).or_throw();

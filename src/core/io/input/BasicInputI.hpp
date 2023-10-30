@@ -4,7 +4,7 @@
 
 #include "core/Macros.hpp"
 // #include "core/Traits.hpp"
-#include "core/io/iosBase.hpp"
+#include "core/ioBase.hpp"
 
 namespace hub {
 namespace io {
@@ -19,7 +19,7 @@ namespace input {
 // };
 
 // template <class ReaderT>
-class BasicInputI : public iosBase
+class BasicInputI : public ioBase
 {
   public:
     //    virtual void read( Data_t* data, Size_t len ) = 0;

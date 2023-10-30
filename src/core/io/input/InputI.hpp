@@ -17,19 +17,20 @@ class InputI : public BasicInputI
     //    typename std::enable_if<!readable_v<T>>::type read( T& t ) {
     //    typename std::enable_if<!serializable_v<T> && ! readable_v<T> && ! notReadable_v<T>>::type
     //    read( T& t ) {
-    typename std::enable_if_t<packable_v<T>, void>
-    read( T& t ) {
-//#ifdef HUB_DEBUG_INPUT
-//        std::cout << HEADER_INPUT_MSG << "read(" << TYPE_NAME( t ) << ")" << std::endl;
-//        std::cout << "\t" << HEADER << "read(" << TYPE_NAME( t ) << ") ..." << std::endl;
-//#endif
-        assert( isOpen() );
-        assert( !isEnd() );
+//    typename std::enable_if_t<packable_v<T>, void>
+    void read( T& ) {
+        assert(false);
+////#ifdef HUB_DEBUG_INPUT
+////        std::cout << HEADER_INPUT_MSG << "read(" << TYPE_NAME( t ) << ")" << std::endl;
+////        std::cout << "\t" << HEADER << "read(" << TYPE_NAME( t ) << ") ..." << std::endl;
+////#endif
+//        assert( isOpen() );
+//        assert( !isEnd() );
 
-        read( reinterpret_cast<Data_t*>( &t ), sizeof( T ) );
-#ifdef HUB_DEBUG_INPUT
-        std::cout << "\t" << HEADER << "read(" << TYPE_NAME( t ) << ") = " << t << std::endl;
-#endif
+//        read( reinterpret_cast<Data_t*>( &t ), sizeof( T ) );
+//#ifdef HUB_DEBUG_INPUT
+//        std::cout << "\t" << HEADER << "read(" << TYPE_NAME( t ) << ") = " << t << std::endl;
+//#endif
     }
 
 };

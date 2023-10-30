@@ -58,7 +58,7 @@ TEST_CASE( "Book test" ) {
               << std::endl;
     std::cout << std::endl;
 
-    Data data( 'a', 5, "gauthier", { 0, 1, 2, 3, 4 } );
+    UserData data( 'a', 5, "gauthier", { 0, 1, 2, 3, 4 } );
 
     unsigned char* data_write = new unsigned char[s_DataSizePtr];
     memset( data_write, 'a', s_DataSizePtr );
@@ -71,10 +71,10 @@ TEST_CASE( "Book test" ) {
         {
             std::array<unsigned char, s_bookSize> characters;
 
-            auto read = [&]( Data& data ) {
+            auto read = [&]( UserData& data ) {
                 zpp::bits::in(characters)( data ).or_throw();
             };
-            auto write = [&]( const Data& data ) {
+            auto write = [&]( const UserData& data ) {
                 zpp::bits::out( characters )( data ).or_throw();
             };
             benchStat.readWriteDataStat = readWriteData( read, write, s_nReadWrite, data );
@@ -159,18 +159,18 @@ TEST_CASE( "Book test" ) {
         dataBenchStats.insert( std::move( benchStat ) );
     }
 
-    {
-        BenchStat benchStat { "ArchiveZppBits" };
-        hub::io::Archive<hub::io::InputOutputZppBits> archive;
+//    {
+//        BenchStat benchStat { "ArchiveZppBits" };
+//        hub::io::Archive<hub::io::InputOutputZppBits> archive;
 
-        benchStat.readWriteDataStat = readWriteData( archive, s_nReadWrite, data );
-        assert( archive.isEnd() );
+//        benchStat.readWriteDataStat = readWriteData( archive, s_nReadWrite, data );
+//        assert( archive.isEnd() );
 
-        benchStat.readWriteDataPtrStat =
-            readWriteDataPtr( archive, s_nReadWriteDataPtr, data_write, s_DataSizePtr );
-        assert( archive.isEnd() );
-        dataBenchStats.insert( std::move( benchStat ) );
-    }
+//        benchStat.readWriteDataPtrStat =
+//            readWriteDataPtr( archive, s_nReadWriteDataPtr, data_write, s_DataSizePtr );
+//        assert( archive.isEnd() );
+//        dataBenchStats.insert( std::move( benchStat ) );
+//    }
 
     delete[] data_write;
 

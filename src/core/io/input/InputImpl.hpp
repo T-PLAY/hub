@@ -11,6 +11,7 @@
 
 // #include "core/Any.hpp"
 // #include "core/InputI.hpp"
+//#include "BasicInputI.hpp"
 #include "core/Macros.hpp"
 #include "core/Traits.hpp"
 
@@ -159,33 +160,31 @@ class SRC_API InputImpl : public InputI
     ///
     template <class T>
     typename std::enable_if<serializable_v<T>>::type read( T& t ) {
-        static_assert( !readable_v<T> );
+//        static_assert( !readable_v<T> );
 //        assert(false);
 
 #ifdef HUB_DEBUG_INPUT
-//        std::cout << HEADER_INPUT_MSG << "read\033[0m(" << TYPE_NAME( t ) << ")" << std::endl;
-        std::cout << "\t" << HEADER << "read\033[0m(" << TYPE_NAME( t ) << ") ..." << std::endl;
+        std::cout << "\t" << HEADER << "\033[1mread\033[0m(serial: " << TYPE_NAME( t ) << ") ..." << std::endl;
 #endif
         assert( isOpen() );
         assert( !isEnd() );
 
-        read( t.serialize() );
+//        read( t.serialize() );
+        t.serialize(*this);
 
 #ifdef HUB_DEBUG_INPUT
-//        std::cout << HEADER_INPUT_MSG << "\033[1mread\033[0m(" << TYPE_NAME( t ) << ") = " << t
-        std::cout << "\t" << HEADER << "\033[1mread\033[0m(" << TYPE_NAME( t ) << ") = " << t
+        std::cout << "\t" << HEADER << "\033[1mread\033[0m(serial: " << TYPE_NAME( t ) << ") = " << t
                   << std::endl;
 #endif
     }
 
     template <class T>
     typename std::enable_if<readable_v<T>>::type read( T& t ) {
-        static_assert( !serializable_v<T> );
-        assert(false);
+//        static_assert( !serializable_v<T> );
+//        assert(false);
 
 #ifdef HUB_DEBUG_INPUT
-//        std::cout << HEADER_INPUT_MSG << "read\033[0m(" << TYPE_NAME( t ) << ")" << std::endl;
-        std::cout << "\t" << HEADER << "read\033[0m(" << TYPE_NAME( t ) << ")" << std::endl;
+        std::cout << "\t" << HEADER << "\033[1mread\033[0m(readable: " << TYPE_NAME( t ) << ")" << std::endl;
 #endif
         assert( isOpen() );
         assert( !isEnd() );
@@ -193,15 +192,15 @@ class SRC_API InputImpl : public InputI
         t.read( *this );
 
 #ifdef HUB_DEBUG_INPUT
-//        std::cout << HEADER_INPUT_MSG << "\033[1mread\033[0m(" << TYPE_NAME( t ) << ") = " << t
-        std::cout << "\t" << HEADER << "\033[1mread\033[0m(" << TYPE_NAME( t ) << ") = " << t
+        std::cout << "\t" << HEADER << "\033[1mread\033[0m(readable: " << TYPE_NAME( t ) << ") = " << t
                   << std::endl;
 #endif
     }
 
     template <class T>
     //    typename std::enable_if<!readable_v<T>>::type read( T& t ) {
-    typename std::enable_if<!serializable_v<T> && !readable_v<T> && !notReadable_v<T>>::type
+//    typename std::enable_if<!serializable_v<T> && !readable_v<T> && !notReadable_v<T>>::type
+    typename std::enable_if<!serializable_v<T> && !readable_v<T>>::type
     read( T& t ) {
 //        assert(false);
 //#ifdef HUB_DEBUG_INPUT
@@ -220,10 +219,34 @@ class SRC_API InputImpl : public InputI
 
         read( reinterpret_cast<Data_t*>( &t ), sizeof( T ) );
 #ifdef HUB_DEBUG_INPUT
-//        std::cout << HEADER_INPUT_MSG << "read(" << TYPE_NAME( t ) << ") = " << t << std::endl;
-        std::cout << "\t" << HEADER << "read(" << TYPE_NAME( t ) << ") = " << t << std::endl;
+        std::cout << "\t" << HEADER << "read(raw: " << TYPE_NAME( t ) << ") = " << t << std::endl;
 #endif
     }
+
+//    template <class T>
+//    void operator()( T& t ) {
+//        read( t );
+//    }
+
+    template <class... Ts>
+    void operator()(Ts&... ts ) {
+//        readAll_(ts...);
+    }
+
+  private:
+    template <class T>
+    void readAll_( T& t ) {
+        read(t);
+//        if constexpr ( sizeof...( Ts ) > 0 ) { readAll_( ts... ); }
+    }
+    template <class T, class... Ts>
+    void readAll_( T& t, Ts&... ts ) {
+        read(t);
+        readAll_(ts...);
+//        if constexpr ( sizeof...( Ts ) > 0 ) { readAll_( ts... ); }
+    }
+
+  public:
 
     //    template <class T>
     //    constexpr typename std::enable_if<getable_v<T>, T>::type get()
@@ -439,6 +462,7 @@ inline void InputImpl::read( std::vector<T>& vector ) {
 #endif
 
     uint64_t nbEl;
+    static_assert(sizeof(uint64_t) == 8);
     read( nbEl );
 
     vector.clear();

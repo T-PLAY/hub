@@ -1,8 +1,7 @@
 
 #pragma once
 
-#include "core/Input.hpp"
-#include "core/Output.hpp"
+
 #include <cassert>
 #include <functional>
 #include <map>
@@ -10,6 +9,10 @@
 
 #include "core/Macros.hpp"
 // #include "core/std_any.hpp"
+//#include "core/Input.hpp"
+//#include "core/Output.hpp"
+#include "core/io/input/InputI.hpp"
+#include "core/io/output/OutputI.hpp"
 
 #if CPLUSPLUS_VERSION <= 14
 #    include "std_any.hpp"
@@ -66,8 +69,8 @@ class Anyable
                     //                                        ==
                     //                    std::any_cast<const T&>( any2 );
                 };
-                write = []( Output& output, const std::any& ) {};
-                read  = []( Input& input, std::any& ) {};
+                write = []( io::output::OutputI& output, const std::any& ) {};
+                read  = []( io::input::InputI& input, std::any& ) {};
             }
             else {
                 getValueStr = []( const std::any& any ) {
@@ -85,11 +88,11 @@ class Anyable
                 };
                 if constexpr ( std::is_same_v<T, const char*> ) {}
                 else {
-                    write = []( Output& output, const std::any& any ) {
+                    write = []( io::output::OutputI& output, const std::any& any ) {
                         const T& val = std::any_cast<const T&>( any );
                         output.write( val );
                     };
-                    read = []( Input& input, std::any& any ) {
+                    read = []( io::input::InputI& input, std::any& any ) {
                         T t;
 //                        int a;
                         input.read( t );
@@ -102,8 +105,8 @@ class Anyable
         std::function<std::string()> getTypeName;
         std::function<std::string( const std::any& )> getValueStr;
         std::function<bool( const std::any&, const std::any& )> compare;
-        std::function<void( Output& output, const std::any& )> write;
-        std::function<void( Input& input, std::any& )> read;
+        std::function<void( io::output::OutputI& output, const std::any& )> write;
+        std::function<void( io::input::InputI& input, std::any& )> read;
     };
 
     template <class T>

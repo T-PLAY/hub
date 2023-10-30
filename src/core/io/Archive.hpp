@@ -4,7 +4,7 @@
 
 #include <queue>
 
-//#include "core/Vector.hpp"
+#include "core/Vector.hpp"
 //#include "input/InputZppBits.hpp"
 //#include "output/OutputZppBits.hpp"
 
@@ -34,6 +34,10 @@ class Archive : public InputOutput
 
         memcpy( data, vector.data(), size );
         m_datas.pop();
+
+#ifdef DEBUG
+        ++m_nCall;
+#endif
     }
 
     void write( const hub::Data_t* data, hub::Size_t size ) override {
@@ -42,6 +46,10 @@ class Archive : public InputOutput
         std::cout << HEADER << "write(Data_t*, Size_t) : data = " << vector << std::endl;
 #endif
         m_datas.push( std::move( vector ) );
+
+#ifdef DEBUG
+        ++m_nCall;
+#endif
     }
 
     void close() override {};
@@ -55,8 +63,15 @@ class Archive : public InputOutput
             m_datas.pop();
     }
 
+#ifdef DEBUG
+    size_t getNCall() const {
+        return m_nCall;
+    }
+#endif
+
   private:
     std::queue<std::vector<hub::Data_t>> m_datas;
+    size_t m_nCall = 0;
 };
 
 } // namespace io

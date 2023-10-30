@@ -92,6 +92,24 @@ class SRC_API Any
         //            return std::string(TYPE_NAME(T)) + "*";
     };
 
+    template <class Output>
+    void write(Output & output) const {
+        const auto & hashCode = m_any.type().hash_code();
+        output.write(hashCode);
+        m_anyHelper->write(output, m_any);
+//        auto & [data, size] = m_anyHelper->serialize(m_any);
+//        output.write(data, size);
+    }
+
+    template <class Input>
+    void read(Input & input) {
+        decltype(m_any.type().hash_code()) hashCode;
+        input.read(hashCode);
+        assert( Anyable::s_anyables.find( hashCode ) != Anyable::s_anyables.end() );
+        m_anyHelper = std::make_unique<Anyable::AnyHelper>(Anyable::s_anyables.at( hashCode ));
+        m_anyHelper->read(input, m_any);
+    }
+
     //        m_any2valueStr = []( const std::any& any ) {
     //            assert( typeid( const T* ) == any.type() );
     //            const T* val = std::any_cast<const T*>( any );
@@ -179,29 +197,6 @@ class SRC_API Any
     //    std::string to_string() const;
 
 
-    template <class Output>
-    void write(Output & output) const {
-        const auto & hashCode = m_any.type().hash_code();
-        output.write(hashCode);
-//        serial(hashCode);
-        m_anyHelper->write(output, m_any);
-//        serial(m_any.type().hash_code());
-    }
-
-    template <class Input>
-    void read(Input & input) {
-//        const auto & hashCode = m_any.type().hash_code();
-        decltype(m_any.type().hash_code()) hashCode;
-        input.read(hashCode);
-
-        assert( Anyable::s_anyables.find( hashCode ) != Anyable::s_anyables.end() );
-        m_anyHelper = std::make_unique<Anyable::AnyHelper>(Anyable::s_anyables.at( hashCode ));
-
-        m_anyHelper->read(input, m_any);
-
-//        serial(hashCode);
-//        serial(m_any.type().hash_code());
-    }
 
 //    template <class Serial>
 //    void serialize(Serial & serial) {

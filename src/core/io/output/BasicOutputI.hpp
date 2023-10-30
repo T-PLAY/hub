@@ -4,14 +4,14 @@
 
 #include "core/Macros.hpp"
 // #include "core/Traits.hpp"
-#include "core/io/iosBase.hpp"
+#include "core/ioBase.hpp"
 
 namespace hub {
 namespace io {
 namespace output {
 
 
-class BasicOutputI : public iosBase
+class BasicOutputI : public ioBase
 {
   public:
     //    virtual void write( const Data_t* data, Size_t len ) = 0;

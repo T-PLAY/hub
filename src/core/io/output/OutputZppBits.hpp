@@ -35,21 +35,27 @@ class OutputZppBits : public BasicOutputI
     typename std::enable_if<writable_v<T>>::type write( const T& t ) {
 //        static_assert()
 #ifdef HUB_DEBUG_OUTPUT
-        std::cout << HEADER << "write(writable: " << TYPE_NAME( t ) << ") = " << t << std::endl;
+        std::cout << HEADER << "\033[1mwrite\033[0m(writable: " << TYPE_NAME( t ) << ") ..." << std::endl;
 #endif
         assert( isOpen() );
         //        t.serialize(*this);
         t.write( *this );
+#ifdef HUB_DEBUG_OUTPUT
+        std::cout << HEADER << "\033[1mwrite\033[0m(writable: " << TYPE_NAME( t ) << ") = " << t << std::endl;
+#endif
     }
 
     template <class T>
     typename std::enable_if<serializable_v<T>>::type write( const T& t ) {
 #ifdef HUB_DEBUG_OUTPUT
-        std::cout << HEADER << "write(serial: " << TYPE_NAME( t ) << ") = " << t << std::endl;
+        std::cout << HEADER << "\033[1mwrite\033[0m(serial: " << TYPE_NAME( t ) << ") ..." << std::endl;
 #endif
         assert( isOpen() );
         const_cast<T&>(t).serialize( *this );
         //        t.write(*this);
+#ifdef HUB_DEBUG_OUTPUT
+        std::cout << HEADER << "\033[1mwrite\033[0m(serial: " << TYPE_NAME( t ) << ") = " << t << std::endl;
+#endif
     }
 
     template <class T>
@@ -60,21 +66,22 @@ class OutputZppBits : public BasicOutputI
 #endif
         assert( isOpen() );
 
-        zpp::bits::out output( m_serialBuff );
-        output( t ).or_throw();
-        Size_t size = output.position();
-        assert( size < BuffSize );
-        assert(size == sizeof(T));
-//        write( reinterpret_cast<const Data_t*>( &size ), sizeof( Size_t ) );
-        write( m_serialBuff.data(), output.position() );
+//        zpp::bits::out output( m_serialBuff );
+//        output( t ).or_throw();
+//        Size_t size = output.position();
+//        assert( size < BuffSize );
+//        assert(size == sizeof(T));
+////        write( reinterpret_cast<const Data_t*>( &size ), sizeof( Size_t ) );
+//        write( m_serialBuff.data(), output.position() );
 
-        //        write( reinterpret_cast<const Data_t*>( &t ), sizeof( T ) );
+        write( reinterpret_cast<const Data_t*>( &t ), sizeof( T ) );
     }
 
 
     template <class T>
     //    typename std::enable_if_t<isPackable_v<T> || isSimpleType_v<T>, void>
     typename std::enable_if<!writable_v<T> && !serializable_v<T> && !packable_v<T>>::type write( const T& t ) {
+//    typename std::enable_if<!writable_v<T> && !serializable_v<T>>::type write( const T& t ) {
 #ifdef HUB_DEBUG_OUTPUT
         std::cout << HEADER << "write(raw: " << TYPE_NAME( t ) << ") = " << t << std::endl;
 #endif
@@ -84,6 +91,7 @@ class OutputZppBits : public BasicOutputI
         output( t ).or_throw();
         Size_t size = output.position();
         assert( size < BuffSize );
+//        write(size);
         write( reinterpret_cast<const Data_t*>( &size ), sizeof( Size_t ) );
         write( m_serialBuff.data(), output.position() );
 
@@ -93,20 +101,20 @@ class OutputZppBits : public BasicOutputI
     //    template <class... Ts>
     //    void
 
-    template <class T>
-    void operator()( const T& t ) {
-        write( t );
-    }
+//    template <class T>
+//    void operator()( const T& t ) {
+//        write( t );
+//    }
 
     template <class... Ts>
     void operator()( const Ts&... ts ) {
-        writeAll( ts... );
+        writeAll_( ts... );
         //        write(t);
     }
 
   private:
     template <class... Ts>
-    void writeAll( const Ts&... ts ) {
+    void writeAll_( const Ts&... ts ) {
 #ifdef HUB_DEBUG_OUTPUT
 //        std::cout << HEADER << "write(raw: " << TYPE_NAME( ts ) << ") = " << t << std::endl;
 #endif
@@ -115,11 +123,13 @@ class OutputZppBits : public BasicOutputI
         zpp::bits::out output( m_serialBuff );
         output( ts... ).or_throw();
 
-        assert( ( sizeof( Ts ) + ... ) == output.position() );
+//        assert( ( sizeof( Ts ) + ... ) == output.position() );
 
-        //        Size_t size = output.position();
-        //        assert(size < BuffSize);
-        //        write( reinterpret_cast<const Data_t*>( &size ), sizeof( Size_t ) );
+                Size_t size = output.position();
+                assert(size < BuffSize);
+//                write(size);
+                write( reinterpret_cast<const Data_t*>( &size ), sizeof( Size_t ) );
+
         write( m_serialBuff.data(), output.position() );
         //        write( reinterpret_cast<const Data_t*>( &t ), sizeof( T ) );
     }

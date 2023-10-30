@@ -7,41 +7,50 @@
 
 // #include <core/Macros.hpp>
 #include <core/Traits.hpp>
-#include <core/io/iosBase.hpp>
+#include <core/ioBase.hpp>
+// #include <core/Vector.hpp>
 
 namespace testCoreIoCommon {
 
-struct Data {
+struct UserData {
     double a;
     int b;
     std::string name;
     std::vector<int> vints;
 
-//    constexpr auto serialize() {
-//        return std::tuple<double&, int&, std::string&, std::vector<int>&> { a, b, name, vints };
-//    }
+    //    constexpr auto serialize() {
+    //        return std::tuple<double&, int&, std::string&, std::vector<int>&> { a, b, name, vints
+    //        };
+    //    }
 
-    bool operator==( const Data& character ) const {
+    template <class Serial>
+    void serialize( Serial& serial ) {
+        serial( a, b, name, vints );
+    }
+
+    bool operator==( const UserData& character ) const {
         return a == character.a && b == character.b && name == character.name &&
                vints == character.vints;
     }
-    friend std::ostream& operator<<( std::ostream& os, const Data& character );
+    friend std::ostream& operator<<( std::ostream& os, const UserData& character );
 };
-//static_assert( hub::io::serializable_v<Data> );
+// static_assert( hub::io::serializable_v<UserData> );
 static_assert( sizeof( int ) == 4 );
 static_assert( sizeof( double ) == 8 );
 
-    static constexpr size_t s_dataSize = sizeof( Data );
+static constexpr size_t s_dataSize = sizeof( UserData );
 
-//std::ostream& operator<<( std::ostream& os, const Data& character ) {
-//    os << character.a << " " << character.b << " " << character.name;
-//    return os;
-//}
+// std::ostream& operator<<( std::ostream& os, const UserData& character ) {
+//     os << character.a << " " << character.b << " " << character.name;
+//     return os;
+// }
 
 struct ReadWriteStat {
     long long durationInNanoSecond = 0;
-    double megaReadWritePerSecond = 0;
-    double gigaBytePerSecond = 0;
+    double megaReadWritePerSecond  = 0;
+    double gigaBytePerSecond       = 0;
+
+    long long nInputOutputCall = 0;
 
     bool operator<( const ReadWriteStat& benchStat ) const {
         return durationInNanoSecond < benchStat.durationInNanoSecond;
@@ -59,13 +68,13 @@ struct BenchStat {
                benchStat.readWriteDataStat.durationInNanoSecond +
                    benchStat.readWriteDataPtrStat.durationInNanoSecond;
     }
-    bool operator==(const BenchStat & benchStat) const {
-        return name == benchStat.name;
-    }
+    bool operator==( const BenchStat& benchStat ) const { return name == benchStat.name; }
 };
 
 template <class BenchStats>
-void printStats(const BenchStats & benchStats) {
+void printStats( const BenchStats& benchStats ) {
+
+    std::cout << std::endl;
 
     //    for ( int iImpl = 0; iImpl < dataBenchStats.size(); ++iImpl ) {
     for ( const auto& dataBenchStat : benchStats ) {
@@ -83,6 +92,9 @@ void printStats(const BenchStats & benchStats) {
             std::cout << "[" << implName
                       << "] total time: " << readWriteDataStat.durationInNanoSecond / 1000'000.0
                       << " ms" << std::endl;
+            if (readWriteDataStat.nInputOutputCall != 0) {
+                std::cout << "[" << implName << "] total io call: " << readWriteDataStat.nInputOutputCall << std::endl;
+            }
         }
 
         {
@@ -99,20 +111,20 @@ void printStats(const BenchStats & benchStats) {
     }
 }
 
-template <class ReadInputFunc, class WriteOutputFunc, class Data>
+template <class ReadInputFunc, class WriteOutputFunc, class UserData>
 ReadWriteStat readWriteData( ReadInputFunc& readInputFunc,
                              WriteOutputFunc& writeOutputFunc,
                              size_t nReadWrite,
-                             const Data& data ) {
+                             const UserData& data ) {
 
-//#ifdef HUB_DEBUG_INPUT
-//    std::cout << "------------------------------ " << implName
-//              << " --------------------------------" << std::endl;
-//#endif
+    // #ifdef HUB_DEBUG_INPUT
+    //     std::cout << "------------------------------ " << implName
+    //               << " --------------------------------" << std::endl;
+    // #endif
 
     const auto startClock = std::chrono::high_resolution_clock::now();
 
-    Data data_write = data;
+    UserData data_write = data;
 
     size_t iReadWrite = 0;
     while ( iReadWrite < nReadWrite ) {
@@ -120,7 +132,7 @@ ReadWriteStat readWriteData( ReadInputFunc& readInputFunc,
         data_write.b = iReadWrite;
 
         writeOutputFunc( data_write );
-        Data data_read;
+        UserData data_read;
         readInputFunc( data_read );
 
         if ( data_read != data_write ) {
@@ -138,15 +150,34 @@ ReadWriteStat readWriteData( ReadInputFunc& readInputFunc,
         std::chrono::duration_cast<std::chrono::nanoseconds>( endClock - startClock ).count();
 
     stats.megaReadWritePerSecond = 1000.0 * nReadWrite / stats.durationInNanoSecond;
-    stats.gigaBytePerSecond      = stats.megaReadWritePerSecond * sizeof( Data ) / 1000.0;
+    stats.gigaBytePerSecond      = stats.megaReadWritePerSecond * sizeof( UserData ) / 1000.0;
     return stats;
 };
 
-template <class InputOutput, class Data>
-ReadWriteStat readWriteData( InputOutput& inputOutput, size_t nReadWrite, const Data& data ) {
-    auto read  = [&]( Data& data ) { inputOutput.read( data ); };
-    auto write = [&]( const Data& data ) { inputOutput.write( data ); };
-    return readWriteData( read, write, nReadWrite, data );
+template <class T>
+concept GetableNCall = requires( const T a ) { a.getNCall(); };
+
+template <class InputOutput, class UserData>
+//    requires GetableNCall<InputOutput>
+ReadWriteStat readWriteData( InputOutput& inputOutput, size_t nReadWrite, const UserData& data ) {
+    constexpr bool getableNCall = GetableNCall<InputOutput>;
+    if constexpr ( getableNCall ) {
+#ifdef DEBUG
+        size_t nCallFirst = inputOutput.getNCall();
+#endif
+        auto read  = [&]( UserData& data ) { inputOutput.read( data ); };
+        auto write = [&]( const UserData& data ) { inputOutput.write( data ); };
+        auto ret   = readWriteData( read, write, nReadWrite, data );
+#ifdef DEBUG
+        ret.nInputOutputCall = inputOutput.getNCall() - nCallFirst;
+#endif
+        return ret;
+    }
+    else {
+        auto read  = [&]( UserData& data ) { inputOutput.read( data ); };
+        auto write = [&]( const UserData& data ) { inputOutput.write( data ); };
+        return readWriteData( read, write, nReadWrite, data );
+    }
 }
 
 template <class ReadInputFunc, class WriteOutputFunc>

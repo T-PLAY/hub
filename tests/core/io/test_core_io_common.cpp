@@ -7,12 +7,18 @@
 
 //// #include <core/Macros.hpp>
 //#include <core/Traits.hpp>
+#include <core/Vector.hpp>
 
 namespace testCoreIoCommon {
 
+//using namespace hub;
 
-std::ostream& operator<<( std::ostream& os, const Data& data ) {
-    os << data.a << " " << data.b << " " << data.name;
+
+std::ostream& operator<<( std::ostream& os, const UserData& data ) {
+    os << data.a << " " << data.b << " " << data.name << " ";
+    ::operator<<(os, data.vints);
+//    os << data.a << " " << data.b << " " << data.name << " " << data.vints;
+
     return os;
 }
 

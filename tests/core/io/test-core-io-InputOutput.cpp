@@ -1,227 +1,220 @@
 
- #define HUB_DEBUG_INPUT
- #define HUB_DEBUG_OUTPUT
+#define HUB_DEBUG_INPUT
+#define HUB_DEBUG_OUTPUT
 
+#include <cstring>
 #include <set>
+#include <any>
 
-#include "core/io/test_core_io_common.hpp"
-#include "core/test_core_common.hpp"
 #include "test_common.hpp"
+// #include "core/test_core_common.hpp"
+// #include "core/io/test_core_io_common.hpp"
 
 #include <core/io/Archive.hpp>
-
 #include <core/io/InputOutput.hpp>
-#include <core/io/InputOutputImpl.hpp>
-#include <core/io/InputOutputZppBits.hpp>
-//#include <core/InputOutput.hpp>
-#include <core/Input.hpp>
-#include <core/Output.hpp>
-#include <core/Any.hpp>
-#include <core/io/Book.hpp>
 
-class Random {
-  public:
-    int a;
-    bool b;
-    std::vector<int> c;
+struct TestNonPackable {
+    double a;
+    int b;
+    std::string name;
+    std::vector<int> vints;
 
-    unsigned char d[6]; // zppBits unable to visit
-
-//    std::any any;
-    bool operator==(const Random & random) const {
-        return a == random.a && b == random.b && c == random.c
-               && std::memcmp(d, random.d, 5) == 0;
+    bool operator==( const TestNonPackable& test ) const {
+        return a == test.a && b == test.b && name == test.name &&
+               vints == test.vints;
     }
-
-//    template <class Input>
-//    void read(Input & input) {
-////        input.readAll(a, b);
-////        input.read(c);
-//        input(a, b, d);
-//        input(c);
-//    }
-
-//    template <class Output>
-//    void write(Output & output) const {
-//        output(a, b, d);
-//        output(c);
-////        output.writeAll(a, b);
-////        output.write(c);
-//    }
-
-    template <class Serial>
-    void serialize(Serial & serial) {
-        serial(a, b, d);
-        serial(c);
-    }
-
-//    template <class Serial>
-//    void serialize(Serial & serial) const {
-//        serial(a, b, c);
-//    }
-
-    friend std::ostream & operator<<(std::ostream & os, const Random & random) {
-        os << random.a << " " << random.b << " " << random.c
-           << " " << random.d;
+    friend std::ostream& operator<<( std::ostream& os, const TestNonPackable& test ) {
+        os << test.a << " " << test.b << " " << test.name << " ";
+        ::operator<<( os, test.vints );
         return os;
     }
 };
 
-//auto serialize(const Random &) -> zpp::bits::pb_protocol;
+struct TestPackable {
+    double a;
+    int b;
+    bool c;
+
+    static struct {} packable;
+
+    bool operator==( const TestPackable& test ) const {
+        return a == test.a && b == test.b && c == test.c;
+    }
+    friend std::ostream& operator<<( std::ostream& os, const TestPackable& test ) {
+        os << test.a << " " << test.b << " " << test.c;
+        return os;
+    }
+};
+
+struct TestForceSerializable {
+    double a;
+    int b;
+    bool c;
+    std::any any;
+
+    template <class Serial>
+    void serialize( Serial& serial ) {
+        serial( a, b, c);
+        any = 1;
+    }
+//    static struct {} packable;
+
+    bool operator==( const TestForceSerializable& test ) const {
+        return a == test.a && b == test.b && c == test.c && std::any_cast<int>(any) == std::any_cast<int>(test.any);
+    }
+    friend std::ostream& operator<<( std::ostream& os, const TestForceSerializable& test ) {
+        os << test.a << " " << test.b << " " << test.c << " " << std::any_cast<int>(test.any);
+        return os;
+    }
+};
 
 TEST_CASE( "InputOutput test" ) {
 
-//    static_assert(hub::io::serializable_v<Random>);
-//    static_assert(hub::io::serializable_v<const Random>);
-//    static_assert(hub::io::serializable_v<const Random &>);
-//    static_assert(hub::io::serializable_v<Random &&>);
+    hub::io::Archive<hub::io::InputOutput> archive;
+    assert( archive.isEnd() );
 
-//    static_assert(hub::io::input::readable_v<Random>);
-//    static_assert(hub::io::input::readable_v<const Random>);
-//    static_assert(hub::io::input::readable_v<const Random &>);
-//    static_assert(hub::io::input::readable_v<Random &&>);
+    {
+        const int toWrite = 5.0;
+        using toWriteType = std::remove_cvref_t<decltype( toWrite )>;
+        static_assert( hub::packable_v<toWriteType> );
+        std::cout << std::endl << "------------------ " << TYPE_NAME( toWrite ) << " ---------------------"
+                  << std::endl;
+        archive.write( toWrite );
+        assert( !archive.isEnd() );
+        toWriteType toRead;
+        archive.read( toRead );
+        assert( toWrite == toRead );
+        assert( archive.isEnd() );
+    }
 
-//    static_assert(hub::io::output::writable_v<Random >);
-//    static_assert(hub::io::output::writable_v<const Random>);
-//    static_assert(hub::io::output::writable_v<const Random &>);
-//    static_assert(hub::io::output::writable_v<Random &&>);
+    {
+        const double& toWrite = 5.0;
+        using toWriteType     = std::remove_cvref_t<decltype( toWrite )>;
+        static_assert( hub::packable_v<toWriteType> );
+        std::cout << std::endl << "------------------ " << TYPE_NAME( toWrite ) << " ---------------------"
+                  << std::endl;
+        archive.write( toWrite );
+        assert( !archive.isEnd() );
+        toWriteType toRead;
+        archive.read( toRead );
+        assert( toWrite == toRead );
+        assert( archive.isEnd() );
+    }
 
-//    static_assert(hub::io::input::InputZppBits::serializable_v<Random>);
-//    static_assert(hub::io::output::OutputZppBits::serializable_v<Random>);
-//    static_assert(hub::io::input::readable_v<Random>);
-//    static_assert(hub::io::output::writable_v<Random>);
+    {
+        const uint32_t&& toWrite = 2;
+        using toWriteType        = std::remove_cvref_t<decltype( toWrite )>;
+        static_assert( hub::packable_v<toWriteType> );
+        std::cout << std::endl << "------------------ " << TYPE_NAME( toWrite ) << " ---------------------"
+                  << std::endl;
+        archive.write( toWrite );
+        assert( !archive.isEnd() );
+        toWriteType toRead;
+        archive.read( toRead );
+        assert( toWrite == toRead );
+        assert( archive.isEnd() );
+    }
 
-//    hub::Any any;
-    Random random{5, true, {1, 2, 3}
-                    , "abcde"};
+    {
+        const unsigned char toWrite[9] = "gauthier";
+        using toWriteType              = std::remove_cvref_t<decltype( toWrite )>;
+        static_assert( hub::packable_v<toWriteType> );
+        std::cout << std::endl << "------------------ " << TYPE_NAME( toWrite ) << " ---------------------"
+                  << std::endl;
+        archive.write( toWrite );
+        assert( !archive.isEnd() );
+        toWriteType toRead;
+        archive.read( toRead );
+        assert( memcmp( toWrite, toRead, strlen( (const char*)toWrite ) ) == 0 );
+        assert( archive.isEnd() );
+    }
 
-//    hub::io::Book book;
-    hub::io::Archive archive;
-    archive.write(random);
+    {
+        const unsigned char buff[9]  = "gauthier";
+        const unsigned char* toWrite = buff;
+        using toWriteType            = std::remove_cvref_t<decltype( toWrite )>;
+        static_assert( !hub::packable_v<toWriteType> );
+        std::cout << std::endl << "------------------ " << TYPE_NAME( toWrite ) << " ---------------------"
+                  << std::endl;
+        archive.write( toWrite, strlen( (const char*)buff ) );
+        assert( !archive.isEnd() );
+        unsigned char toRead[9];
+        archive.read( toRead, strlen( (const char*)buff ) );
+        assert( memcmp( toWrite, toRead, strlen( (const char*)toWrite ) ) == 0 );
+        assert( archive.isEnd() );
+    }
 
-//    hub::Any any_read;
-    Random random_read;
-    archive.read(random_read);
-    assert(random == random_read);
-    assert(archive.isEnd());
-    std::cout << std::endl;
+    {
+        const std::string toWrite = "gauthier";
+        using toWriteType        = std::remove_cvref_t<decltype( toWrite )>;
+        static_assert(! hub::packable_v<toWriteType> );
+        std::cout << std::endl << "------------------ " << TYPE_NAME( toWrite ) << " ---------------------"
+                  << std::endl;
+        archive.write( toWrite );
+        assert( !archive.isEnd() );
+        toWriteType toRead;
+        archive.read( toRead );
+        assert( toWrite == toRead );
+        assert( archive.isEnd() );
+    }
 
-    //////////////////////////////////
+    {
+        const TestPackable toWrite{1.0, 5, true};
+        using toWriteType        = std::remove_cvref_t<decltype( toWrite )>;
+        static_assert(hub::packable_v<toWriteType> );
+        std::cout << std::endl << "------------------ " << TYPE_NAME( toWrite ) << " ---------------------"
+                  << std::endl;
+        archive.write( toWrite );
+        assert( !archive.isEnd() );
+        toWriteType toRead;
+        archive.read( toRead );
+        assert( toWrite == toRead );
+        assert( archive.isEnd() );
+    }
 
-    hub::Any any;
-    archive.write(any);
-    hub::Any any_read;
-    archive.read(any_read);
-    assert(any == any_read);
-    assert(archive.isEnd());
-    std::cout << std::endl;
+    {
+        const TestNonPackable toWrite{1.0, 5, "hello", {1, 2, 3}};
+        using toWriteType        = std::remove_cvref_t<decltype( toWrite )>;
+        static_assert(! hub::packable_v<toWriteType> );
+        std::cout << std::endl << "------------------ " << TYPE_NAME( toWrite ) << " ---------------------"
+                  << std::endl;
+        archive.write( toWrite );
+        assert( !archive.isEnd() );
+        toWriteType toRead;
+        archive.read( toRead );
+        assert( toWrite == toRead );
+        assert( archive.isEnd() );
+    }
 
-    any = 1;
-    archive.write(any);
-    archive.read(any_read);
-    assert(any == any_read);
-    assert(archive.isEnd());
-    std::cout << std::endl;
+    {
+        const TestForceSerializable toWrite{1.0, 5, true, 2};
+        using toWriteType        = std::remove_cvref_t<decltype( toWrite )>;
+//        static_assert(! hub::packable_v<toWriteType> );
+        std::cout << std::endl << "------------------ " << TYPE_NAME( toWrite ) << " ---------------------"
+                  << std::endl;
+        archive.write( toWrite );
+        assert( !archive.isEnd() );
+        toWriteType toRead;
+        archive.read( toRead );
+        assert( toWrite == toRead );
+        assert( archive.isEnd() );
+    }
 
-    any = random;
-    archive.write(any);
-    archive.read(any_read);
-    assert(any == any_read);
-    assert(archive.isEnd());
-    std::cout << std::endl;
+    {
+        const std::vector<double> toWrite(1'000, 5);
+        using toWriteType        = std::remove_cvref_t<decltype( toWrite )>;
+//        static_assert(! hub::packable_v<toWriteType> );
+        std::cout << std::endl << "------------------ " << TYPE_NAME( toWrite ) << " ---------------------"
+                  << std::endl;
+        archive.write( toWrite );
+        assert( !archive.isEnd() );
+        toWriteType toRead;
+        archive.read( toRead );
+        assert( toWrite == toRead );
+        assert( archive.isEnd() );
+    }
+
 
 
     return;
-
-    /////////////////////////////////////////////////////////////
-
-
-    using namespace testCoreIoCommon;
-
-#ifdef DEBUG
-    static constexpr size_t s_nReadWrite = 10'000;
-#else
-    static constexpr size_t s_nReadWrite = 1'000'000;
-#endif
-
-#ifdef DEBUG
-    static constexpr size_t s_nReadWriteDataPtr = 5;
-    static constexpr size_t s_DataSizePtr       = 10'000'000;
-#else
-    static constexpr size_t s_nReadWriteDataPtr = 1;
-    static constexpr size_t s_DataSizePtr       = 1'000'000'000;
-#endif
-
-    std::cout << "nb read/write: " << s_nReadWrite / 1000000.0 << " M" << std::endl;
-    std::cout << "read/write size: "
-              << s_dataSize * s_nReadWrite / 1'000'000.0 << " Mo"
-              << std::endl;
-    std::cout << "nb read/write ptr: " << s_nReadWriteDataPtr  << std::endl;
-    std::cout << "read/write ptr size: "
-              << s_nReadWriteDataPtr * s_DataSizePtr / 1'000'000.0 << " Mo"
-              << std::endl;
-    std::cout << std::endl;
-
-    Data data( 'a', 5, "gauthier", { 0, 1, 2, 3, 4 } );
-
-    unsigned char* data_write = new unsigned char[s_DataSizePtr];
-    memset( data_write, 'a', s_DataSizePtr );
-
-    std::set<BenchStat> dataBenchStats;
-
-//    BenchStat benchStatInputOutput { "InputOutput" };
-//    {
-//        hub::io::Archive archive;
-
-//        benchStatInputOutput.readWriteDataStat =
-//            readWriteData( archive, s_nReadWrite, data );
-//        assert( archive.isEnd() );
-
-//        benchStatInputOutput.readWriteDataPtrStat =
-//            readWriteDataPtr( archive, s_nReadWriteDataPtr, data_write, s_DataSizePtr );
-//        assert( archive.isEnd() );
-//        dataBenchStats.insert( benchStatInputOutput );
-//    }
-
-    BenchStat benchStatInputOutputImpl { "InputOutputImpl" };
-    {
-        hub::io::Archive<hub::io::InputOutputImpl> archive;
-
-        benchStatInputOutputImpl.readWriteDataStat =
-            readWriteData( archive, s_nReadWrite, data );
-        assert( archive.isEnd() );
-
-        benchStatInputOutputImpl.readWriteDataPtrStat =
-            readWriteDataPtr( archive, s_nReadWriteDataPtr, data_write, s_DataSizePtr );
-        assert( archive.isEnd() );
-        dataBenchStats.insert( benchStatInputOutputImpl );
-    }
-
-    BenchStat benchStatInputOutputZppBits { "InputOutputZppBits" };
-    {
-        hub::io::Archive<hub::io::InputOutputZppBits> archive;
-
-        benchStatInputOutputZppBits.readWriteDataStat =
-            readWriteData( archive, s_nReadWrite, data );
-        assert( archive.isEnd() );
-
-        benchStatInputOutputZppBits.readWriteDataPtrStat =
-            readWriteDataPtr( archive, s_nReadWriteDataPtr, data_write, s_DataSizePtr );
-        assert( archive.isEnd() );
-        dataBenchStats.insert( benchStatInputOutputZppBits );
-    }
-
-    delete[] data_write;
-
-    CHECK( benchStatInputOutputZppBits < benchStatInputOutputImpl );
-    static_assert(std::is_same_v<hub::io::Archive<>, hub::io::Archive<hub::io::InputOutput>> );
-    static_assert(std::is_same_v<hub::io::InputOutput, hub::io::InputOutputZppBits> );
-    static_assert(std::is_same_v<hub::Input, hub::io::input::InputZppBits> );
-    static_assert(std::is_same_v<hub::Output, hub::io::output::OutputZppBits> );
-
-//    auto inputOutputRank = std::distance(dataBenchStats.begin(), std::find(dataBenchStats.begin(), dataBenchStats.end(), benchStatInputOutput));
-//    const auto inputOutputRank = std::distance(dataBenchStats.begin(), dataBenchStats.find(benchStatInputOutput));
-//    CHECK(inputOutputRank < 2);
-
-    printStats( dataBenchStats );
 }
