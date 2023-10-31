@@ -12,11 +12,11 @@ namespace hub {
 class SerializerI {
   public:
 
-  protected:
-    struct Result {
-        const Data_t* data;
-        Size_t size;
-    };
+//  protected:
+//    struct Result {
+//        const Data_t* data;
+//        Size_t size;
+//    };
 //    Result m_result;
 
 //    auto serialize()

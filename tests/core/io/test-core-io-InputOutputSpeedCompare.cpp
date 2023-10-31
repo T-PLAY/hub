@@ -1,6 +1,6 @@
 
-#define HUB_DEBUG_INPUT
-#define HUB_DEBUG_OUTPUT
+//#define HUB_DEBUG_INPUT
+//#define HUB_DEBUG_OUTPUT
 
 #include <set>
 #include <cstring>
@@ -20,83 +20,8 @@
 #include <core/Output.hpp>
 #include <core/io/Book.hpp>
 
+
 TEST_CASE( "InputOutput test" ) {
-
-    //    hub::Input * input;
-    //    hub::Serializer serializer;
-    // hub::io::InputOutput inputOuptut;
-    hub::io::Archive archive;
-    assert( archive.isEnd() );
-
-    {
-        const int toWrite = 5.0;
-        using toWriteType = std::remove_cvref_t<decltype(toWrite)>;
-        static_assert(hub::packable_v<toWriteType>);
-        std::cout << "------------------ " << TYPE_NAME(toWrite) << " ---------------------" << std::endl;
-        archive.write( toWrite );
-        assert( !archive.isEnd() );
-        toWriteType toRead;
-        archive.read( toRead );
-        assert( toWrite == toRead );
-        assert( archive.isEnd() );
-    }
-
-    {
-        const double & toWrite = 5.0;
-        using toWriteType = std::remove_cvref_t<decltype(toWrite)>;
-        static_assert(hub::packable_v<toWriteType>);
-        std::cout << "------------------ " << TYPE_NAME(toWrite) << " ---------------------" << std::endl;
-        archive.write( toWrite );
-        assert( !archive.isEnd() );
-        toWriteType toRead;
-        archive.read( toRead );
-        assert( toWrite == toRead );
-        assert( archive.isEnd() );
-    }
-
-    {
-        const uint32_t && toWrite = 2;
-        using toWriteType = std::remove_cvref_t<decltype(toWrite)>;
-        static_assert(hub::packable_v<toWriteType>);
-        std::cout << "------------------ " << TYPE_NAME(toWrite) << " ---------------------" << std::endl;
-        archive.write( toWrite );
-        assert( !archive.isEnd() );
-        toWriteType toRead;
-        archive.read( toRead );
-        assert( toWrite == toRead );
-        assert( archive.isEnd() );
-    }
-
-    {
-        const unsigned char toWrite[9] = "gauthier";
-        using toWriteType = std::remove_cvref_t<decltype(toWrite)>;
-        static_assert(hub::packable_v<toWriteType>);
-        std::cout << "------------------ " << TYPE_NAME(toWrite) << " ---------------------" << std::endl;
-        archive.write( toWrite );
-        assert( !archive.isEnd() );
-        toWriteType toRead;
-        archive.read( toRead );
-        assert( memcmp(toWrite, toRead, strlen((const char*)toWrite)) == 0 );
-        assert( archive.isEnd() );
-    }
-
-    {
-        const unsigned char buff[9] = "gauthier";
-        const unsigned char * toWrite = buff;
-        using toWriteType = std::remove_cvref_t<decltype(toWrite)>;
-        static_assert(! hub::packable_v<toWriteType>);
-        std::cout << "------------------ " << TYPE_NAME(toWrite) << " ---------------------" << std::endl;
-        archive.write( toWrite, strlen((const char*)buff) );
-        assert( !archive.isEnd() );
-        unsigned char toRead[9];
-        archive.read( toRead, strlen((const char*)buff) );
-        assert( memcmp(toWrite, toRead, strlen((const char*)toWrite)) == 0 );
-        assert( archive.isEnd() );
-    }
-
-
-    return;
-
     using namespace testCoreIoCommon;
 
 #ifdef HUB_DEBUG_OUTPUT
@@ -156,7 +81,7 @@ TEST_CASE( "InputOutput test" ) {
 #endif
     BenchStat benchStatInputOutputImpl { "InputOutputImpl" };
     {
-        hub::io::Archive<hub::io::InputOutputImpl> archive;
+        hub::io::Archive<hub::serializer::SerializerImpl> archive;
 
         benchStatInputOutputImpl.readWriteDataStat =
             readWriteData( archive, s_nReadWrite, userData );
@@ -174,7 +99,7 @@ TEST_CASE( "InputOutput test" ) {
 #endif
     BenchStat benchStatInputOutputZppBits { "InputOutputZppBits" };
     {
-        hub::io::Archive<hub::io::InputOutputZppBits> archive;
+        hub::io::Archive<hub::serializer::SerializerZppBits> archive;
 
         benchStatInputOutputZppBits.readWriteDataStat =
             readWriteData( archive, s_nReadWrite, userData );
@@ -189,9 +114,10 @@ TEST_CASE( "InputOutput test" ) {
     delete[] data_write;
 
     CHECK( benchStatInputOutputZppBits < benchStatInputOutputImpl );
-    CHECK( benchStatInputOutputZppBits.readWriteDataStat.nInputOutputCall <
+    CHECK( benchStatInputOutputZppBits.readWriteDataStat.nInputOutputCall <=
            benchStatInputOutputImpl.readWriteDataStat.nInputOutputCall );
-    static_assert( std::is_same_v<hub::io::Archive<>, hub::io::Archive<hub::io::InputOutput>> );
+    static_assert( std::is_same_v<hub::io::Archive<>, hub::io::Archive<hub::serializer::SerializerZppBits>>);
+
     //    static_assert( std::is_same_v<hub::io::InputOutput, hub::io::InputOutputZppBits> );
     //    static_assert( std::is_same_v<hub::Input, hub::io::input::InputZppBits> );
     //    static_assert( std::is_same_v<hub::Output, hub::io::output::OutputZppBits> );

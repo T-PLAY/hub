@@ -16,12 +16,13 @@
 namespace hub {
 namespace io {
 
-template <class InputOutput = InputOutput>
-class Archive : public InputOutput
+//template <class InputOutputT = InputOutput<>>
+template <class SerializerT = Serializer, class InputOutputT = InputOutput<SerializerT>>
+class Archive : public InputOutputT
 {
   public:
-    using InputOutput::read;
-    using InputOutput::write;
+    using InputOutputT::read;
+    using InputOutputT::write;
 
     void read( hub::Data_t* data, hub::Size_t size ) override {
         assert( !m_datas.empty() );

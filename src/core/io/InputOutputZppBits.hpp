@@ -18,12 +18,12 @@
 namespace hub {
 namespace io {
 
-class InputOutputZppBits : public input::InputZppBits, public output::OutputZppBits
-{
-  public:
-    using input::InputZppBits::read;
-    using output::OutputZppBits::write;
-};
+//class InputOutputZppBits : public input::InputZppBits, public output::OutputZppBits
+//{
+//  public:
+//    using input::InputZppBits::read;
+//    using output::OutputZppBits::write;
+//};
 
 } // namespace io
 } // namespace hub

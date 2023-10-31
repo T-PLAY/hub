@@ -46,14 +46,14 @@ std::ostream& operator<<( std::ostream& os, const Random& data ) {
 
 
 TEST_CASE( "InputOutput test" ) {
-    using namespace testCoreIoCommon;
+//    using namespace testCoreIoCommon;
 
 //    hub::Any any;
 
 //    hub::io::Book book;
-//    hub::io::Archive archive;
-//    hub::io::Archive<hub::io::InputOutputZppBits> archive;
-    hub::io::Archive<hub::io::InputOutputImpl> archive;
+    hub::io::Archive archive;
+//    hub::io::Archive<hub::serializer::SerializerZppBits> archive;
+//    hub::io::Archive<hub::serializer::SerializerImpl> archive;
 
     //////////////////////////////////
 

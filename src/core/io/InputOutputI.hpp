@@ -20,13 +20,13 @@ namespace io {
 //    using output::OutputI::write;
 //};
 
-template <class SerializerT, class InputT = Input<SerializerT>, class OutputT = Output<SerializerT>>
-class InputOutputI : public InputT, public OutputT
-{
-  public:
-    using InputT::read;
-    using OutputT::write;
-};
+//template <class SerializerT = Serializer, class InputT = Input<SerializerT>, class OutputT = Output<SerializerT>>
+//class InputOutputI : public InputT, public OutputT
+//{
+//  public:
+//    using InputT::read;
+//    using OutputT::write;
+//};
 
 } // namespace io
 } // namespace hub

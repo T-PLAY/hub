@@ -4,7 +4,8 @@
 
 #include "core/Macros.hpp"
 //#include "core/io/InputOutputI.hpp"
-#include "core/io/InputOutputImpl.hpp"
+//#include "core/io/InputOutputImpl.hpp"
+#include "core/io/InputOutput.hpp"
 
 namespace hub {
 namespace io {
@@ -13,12 +14,13 @@ namespace book {
 //template <Size_t NumberOfCharacter = 1'000'000>
 //          class Characters         = std::array<unsigned char, NumberOfCharacter>>
 //class BookImpl : public InputOutputI
-template <Size_t NumberOfCharacter = 1'000'000, class Characters = std::array<unsigned char, NumberOfCharacter>>
-class BookImpl : public InputOutputImpl
+template <Size_t NumberOfCharacter = 1'000'000, class Characters = std::array<unsigned char, NumberOfCharacter>, class InputOutputT = InputOutput<serializer::SerializerImpl>>
+//class BookImpl : public InputOutputImpl
+class BookImpl : public InputOutputT
 {
   public:
-    using InputOutputImpl::read;
-    using InputOutputImpl::write;
+    using InputOutputT::read;
+    using InputOutputT::write;
 
     BookImpl( Characters& characters ) : m_characters( characters ), m_datas{m_characters.data()} {}
     BookImpl() : m_characters { *new Characters }, m_datas{m_characters.data()} {}

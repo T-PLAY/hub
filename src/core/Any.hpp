@@ -66,6 +66,7 @@ class SRC_API Any
         assert( Anyable::s_anyables.find( typeid( T ).hash_code() ) != Anyable::s_anyables.end() );
         m_anyHelper = std::make_unique<Anyable::AnyHelper>(Anyable::s_anyables.at( typeid( T ).hash_code() ));
 
+
         //        const auto hashCode = m_any.type().hash_code();
         //        const auto hashCode = typeid(T).hash_code();
         //        std::cout << "hashCode of " << TYPE_NAME(T) << " = " << hashCode << std::endl;

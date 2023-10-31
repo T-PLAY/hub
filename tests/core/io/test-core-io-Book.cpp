@@ -148,7 +148,7 @@ TEST_CASE( "Book test" ) {
 
     {
         BenchStat benchStat { "ArchiveImpl" };
-        hub::io::Archive<hub::io::InputOutputImpl> archive;
+        hub::io::Archive<hub::serializer::SerializerImpl> archive;
 
         benchStat.readWriteDataStat = readWriteData( archive, s_nReadWrite, data );
         assert( archive.isEnd() );
