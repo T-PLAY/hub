@@ -75,10 +75,12 @@ TEST_CASE( "Book test" ) {
             std::array<unsigned char, s_bookSize> characters;
 
             auto read = [&]( UserData& data ) {
-                zpp::bits::in(characters)( data ).or_throw();
+                zpp::bits::in in(characters);
+                in( data ).or_throw();
             };
             auto write = [&]( const UserData& data ) {
-                zpp::bits::out( characters )( data ).or_throw();
+                zpp::bits::out out( characters );
+                out( data ).or_throw();
             };
             benchStat.readWriteDataStat = readWriteData( read, write, s_nReadWrite, data );
         }
@@ -86,11 +88,13 @@ TEST_CASE( "Book test" ) {
             static std::array<unsigned char, s_DataSizePtr + 100> characters;
             auto read = [&]( hub::Data_t* data, hub::Size_t size ) {
                 std::span span( data, size );
-                zpp::bits::in(characters)( span ).or_throw();
+                zpp::bits::in in(characters);
+                in( span ).or_throw();
             };
             auto write = [&]( const hub::Data_t* data, hub::Size_t size ) {
                 std::span span( data, size );
-                zpp::bits::out( characters )( span ).or_throw();
+                zpp::bits::out out( characters );
+                out( span ).or_throw();
             };
             benchStat.readWriteDataPtrStat =
                 readWriteDataPtr( read, write, s_nReadWriteDataPtr, data_write, s_DataSizePtr );
