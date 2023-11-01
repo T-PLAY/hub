@@ -5,6 +5,7 @@
 #include <tuple>
 #include <type_traits>
 #include <vector>
+#include <cstring>
 
 // #include <core/Macros.hpp>
 #include <core/Traits.hpp>
