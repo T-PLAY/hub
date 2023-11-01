@@ -8,9 +8,9 @@ set_property(GLOBAL PROPERTY CUSTOM_TARGETS_FOUNDED "")
 
 
 #set(CMAKE_CXX_STANDARD 11)
-#set(CMAKE_CXX_STANDARD 14) # std::decay
+set(CMAKE_CXX_STANDARD 14) # std::decay
 #set(CMAKE_CXX_STANDARD 17) # std::any, AppleClang std::void_t<>
-set(CMAKE_CXX_STANDARD 20) # std::any, zpp_bits.h
+#set(CMAKE_CXX_STANDARD 20) # std::any, zpp_bits.h
 #set(CMAKE_CXX_STANDARD 23) # std::any
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_FIND_PACKAGE_NO_SYSTEM_PACKAGE_REGISTRY False)
@@ -20,6 +20,7 @@ set(CMAKE_FIND_PACKAGE_NO_SYSTEM_PACKAGE_REGISTRY False)
 #    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -Wall -Wextra")
 #endif()
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++2a")
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
 
 message(STATUS "CXX compiler: ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}")
 message(STATUS "Processor: ${CMAKE_SYSTEM_PROCESSOR}")
@@ -142,6 +143,13 @@ find_package(Boost QUIET)
 if (Boost_FOUND)
     add_definitions(-DHUB_USE_BOOST)
 #    target_compile_definitions(${TARGET_NAME} PUBLIC -DHUB_USE_BOOST)
+endif()
+
+set(HUB_USE_ZPP_BITS 0)
+if (CMAKE_CXX_STANDARD GREATER_EQUAL 20)
+#    option(HUB_USE_ZPP_BITS "Use zpp_bits.h for input/output serialization" ON)
+    set(HUB_USE_ZPP_BITS 1)
+    add_definitions(-DHUB_USE_ZPP_BITS)
 endif()
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")

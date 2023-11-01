@@ -1,6 +1,10 @@
+
 #pragma once
 
+#ifdef HUB_USE_ZPP_BITS
+
 #include <array>
+
 
 #include "zpp_bits.h"
 
@@ -67,3 +71,5 @@ class SerializerZppBits : public SerializerI
 
 } // namespace serializer
 } // namespace hub
+
+#endif

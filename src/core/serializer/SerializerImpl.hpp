@@ -12,6 +12,7 @@
 // #include "io/input/InputImpl.hpp"
 // #include "io/input/InputZppBits.hpp"
 #include "core/Macros.hpp"
+#include "core/Vector.hpp"
 #include "core/ioBase.hpp"
 
 #include "SerializerI.hpp"
@@ -57,6 +58,11 @@ class SerializerImpl : public SerializerI
 
   private:
     virtual void write( const Data_t* data, Size_t size ) {
+#ifdef HUB_DEBUG_OUTPUT
+        std::vector<Data_t> vector(data, data + size);
+        std::cout << "<---" << HEADER << "write(Data_t*, Size_t) : data = " << vector << std::endl;
+#endif
+
         memcpy( &m_serialBuff[m_position], data, size );
         m_position += size;
     }
@@ -92,6 +98,12 @@ class SerializerImpl : public SerializerI
     virtual void read( Data_t* data, Size_t size ) {
         memcpy( data, &m_serialBuff[m_position], size );
         m_position += size;
+
+#ifdef HUB_DEBUG_INPUT
+        std::vector<Data_t> vector(data, data + size);
+        std::cout << "\t --->" << HEADER << "read(Data_t*, Size_t) : data = " << vector
+                  << ", read size = " << size << std::endl;
+#endif
     }
 
     template <class T>
@@ -170,7 +182,7 @@ class SerializerImpl : public SerializerI
     /// \brief write
     /// \param str
     ///
-    void write( const char* str );
+//    void write( const char* str );
 
     void write( char* str ) = delete; // non compatible format 32/64 bit
 
@@ -242,7 +254,7 @@ class SerializerImpl : public SerializerI
     /// \brief read
     /// \param str
     ///
-    void read( char* str );
+//    void read( char* str );
 
     ///
     /// \brief read

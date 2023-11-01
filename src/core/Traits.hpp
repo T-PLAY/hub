@@ -4,9 +4,34 @@
 
 #include <type_traits>
 
+namespace std {
+
+#if CPLUSPLUS_VERSION < 20
+template <typename T>
+struct remove_cvref :std::remove_cv<std::remove_reference_t<T>> {};
+
+template <typename T>
+using remove_cvref_t = typename remove_cvref<T>::type;
+#endif
+
+#if CPLUSPLUS_VERSION < 17
+template <class T, class U>
+static constexpr auto is_same_v = is_same<T, U>::value;
+
+template< class T >
+static constexpr bool is_arithmetic_v = is_arithmetic<T>::value;
+
+template< class T >
+static constexpr bool is_array_v = is_array<T>::value;
+#endif
+
+}
+
+
 namespace hub {
 
-#if ( __cplusplus < 201703L )
+//#if ( __cplusplus < 201703L )
+#if CPLUSPLUS_VERSION < 17
 template <class...>
 struct is_one_of : std::false_type {};
 template <class T1, class T2>
@@ -55,10 +80,10 @@ using void_t = typename make_void<Ts...>::type;
 // template <typename T>
 // static constexpr bool serializable_v = serializable<T>::value;
 
-template <typename T>
-concept printable = requires( T t ) {
-    { std::cout << t } -> std::same_as<std::ostream&>;
-};
+//template <typename T>
+//concept printable = requires( T t ) {
+//    { std::cout << t } -> std::same_as<std::ostream&>;
+//};
 
 // template <typename T>
 // using isInput_t = decltype( T::isInput );

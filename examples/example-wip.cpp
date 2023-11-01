@@ -1,6 +1,8 @@
 
 #include <iostream>
 
+#include <tuple>
+
 template <class... Ts>
 class Serial
 {

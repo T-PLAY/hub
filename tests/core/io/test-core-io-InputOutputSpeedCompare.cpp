@@ -14,8 +14,6 @@
 #include <core/io/Archive.hpp>
 
 #include <core/io/InputOutput.hpp>
-#include <core/io/InputOutputImpl.hpp>
-#include <core/io/InputOutputZppBits.hpp>
 // #include <core/InputOutput.hpp>
 #include <core/Any.hpp>
 #include <core/Input.hpp>
@@ -56,7 +54,7 @@ TEST_CASE( "InputOutput test" ) {
               << " Mo" << std::endl;
     std::cout << std::endl;
 
-    UserData userData( 'a', 5, "gauthier", { 0, 1, 2, 3, 4 } );
+    UserData userData{ 'a', 5, "gauthier", { 0, 1, 2, 3, 4 } };
     static_assert( !hub::packable_v<UserData> );
     static_assert( hub::serializable_v<UserData> );
     static_assert( !hub::writable_v<UserData> );
@@ -124,7 +122,7 @@ TEST_CASE( "InputOutput test" ) {
 #endif
     BenchStat benchStatInputOutputImpl { "InputOutputImpl" };
     {
-        hub::io::Archive<hub::serializer::SerializerImpl> archive;
+        hub::io::ArchiveT<hub::serializer::SerializerImpl> archive;
 
         benchStatInputOutputImpl.readWriteDataStat =
             readWriteData( archive, s_nReadWrite, userData );
@@ -136,13 +134,14 @@ TEST_CASE( "InputOutput test" ) {
         dataBenchStats.insert( benchStatInputOutputImpl );
     }
 
+#ifdef HUB_USE_ZPP_BITS
 #ifdef HUB_DEBUG_OUTPUT
     std::cout << std::endl;
     std::cout << "-------------------- InputOutputZppBits ----------------------" << std::endl;
 #endif
     BenchStat benchStatInputOutputZppBits { "InputOutputZppBits" };
     {
-        hub::io::Archive<hub::serializer::SerializerZppBits> archive;
+        hub::io::ArchiveT<hub::serializer::SerializerZppBits> archive;
 
         benchStatInputOutputZppBits.readWriteDataStat =
             readWriteData( archive, s_nReadWrite, userData );
@@ -153,16 +152,20 @@ TEST_CASE( "InputOutput test" ) {
         assert( archive.isEnd() );
         dataBenchStats.insert( benchStatInputOutputZppBits );
     }
+#endif
 
     delete[] data_write;
 
-#ifndef DEBUG
+//#ifndef DEBUG
+#if ! defined(DEBUG) && defined(HUB_USE_ZPP_BITS)
     CHECK( benchStatInputOutputZppBits < benchStatInputOutputImpl );
     CHECK( benchStatInputOutputZppBits.readWriteDataStat.nInputOutputCall <=
            benchStatInputOutputImpl.readWriteDataStat.nInputOutputCall );
 #endif
+#ifdef HUB_USE_ZPP_BITS
     static_assert(
-        std::is_same_v<hub::io::Archive<>, hub::io::Archive<hub::serializer::SerializerZppBits>> );
+        std::is_same_v<hub::io::Archive, hub::io::ArchiveT<hub::serializer::SerializerZppBits>> );
+#endif
 
     //    static_assert( std::is_same_v<hub::io::InputOutput, hub::io::InputOutputZppBits> );
     //    static_assert( std::is_same_v<hub::Input, hub::io::input::InputZppBits> );

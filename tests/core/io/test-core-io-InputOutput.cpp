@@ -2,11 +2,18 @@
 // #define HUB_DEBUG_INPUT
 // #define HUB_DEBUG_OUTPUT
 
-#include <any>
+#if CPLUSPLUS_VERSION <= 14
+#    include "core/std_any.hpp"
+#else
+#    include <any>
+#endif
+
+//#include <any>
 #include <cstring>
 #include <set>
 
 #include "test_common.hpp"
+#include "core/Traits.hpp"
 // #include "core/test_core_common.hpp"
 // #include "core/io/test_core_io_common.hpp"
 
@@ -266,9 +273,10 @@ TEST_CASE( "InputOutput test" ) {
 
     //    hub::io::Archive<hub::io::InputOutput> archive;
 //    hub::io::Archive archive;
+#ifdef HUB_USE_ZPP_BITS
     {
         std::cout << "-------------------- ArchiveZppBits --------" << std::endl;
-        hub::io::Archive<hub::serializer::SerializerZppBits> archiveZppBits;
+        hub::io::ArchiveT<hub::serializer::SerializerZppBits> archiveZppBits;
         const auto startClock = std::chrono::high_resolution_clock::now();
         process( archiveZppBits );
         const auto endClock = std::chrono::high_resolution_clock::now();
@@ -276,10 +284,11 @@ TEST_CASE( "InputOutput test" ) {
             std::chrono::duration_cast<std::chrono::nanoseconds>( endClock - startClock ).count();
         std::cout << "duration: " << durationArchiveZppBits / 1'000'000.0 << " ms" << std::endl;
     }
+#endif
 
     {
         std::cout << "-------------------- ArchiveImpl --------" << std::endl;
-        hub::io::Archive<hub::serializer::SerializerImpl> archiveImpl;
+        hub::io::ArchiveT<hub::serializer::SerializerImpl> archiveImpl;
         const auto startClock = std::chrono::high_resolution_clock::now();
         process( archiveImpl );
         const auto endClock = std::chrono::high_resolution_clock::now();
@@ -291,7 +300,9 @@ TEST_CASE( "InputOutput test" ) {
 #ifndef DEBUG
     CHECK( durationArchiveZppBits < durationArchiveImpl );
 #endif
-    static_assert(std::is_same_v<hub::io::Archive<>, hub::io::Archive<hub::serializer::SerializerZppBits>>);
+#ifdef HUB_USE_ZPP_BITS
+    static_assert(std::is_same_v<hub::io::Archive, hub::io::ArchiveT<hub::serializer::SerializerZppBits>>);
+#endif
 
     return;
 }

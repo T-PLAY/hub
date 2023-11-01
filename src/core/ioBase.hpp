@@ -3,6 +3,8 @@
 //#include "core/Macros.hpp"
 //#include "core/Traits.hpp"
 #include <type_traits>
+
+#include "core/Traits.hpp"
 //#include <vector>
 
 namespace hub {

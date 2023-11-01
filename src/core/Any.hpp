@@ -10,11 +10,13 @@
 #include <string>
 #include <vector>
 
+#include "Macros.hpp"
+#include "Traits.hpp"
+
 #include "Anyable.hpp"
 #include "core/Vector.hpp"
 // #include "std_any.hpp"
 
-#include "Macros.hpp"
 
 #if CPLUSPLUS_VERSION <= 14
 #    include "std_any.hpp"
@@ -79,6 +81,7 @@ class SRC_API Any
     template <typename T>
     Any( const T* t ) : m_any( t ) {
         if ( Anyable::s_anyables.find( typeid( const T* ).hash_code() ) == Anyable::s_anyables.end() ) {
+//            Anyable::registerTypes<const T*>();
             Anyable::registerTypes<const T*>();
 //            std::cerr << HEADER << "'" << TYPE_NAME(const T*) << "' is not supported by hub::Any class, please do hub::Anyable::registerType<" << TYPE_NAME(T) << ">() before using it." << std::endl;
 //            exit(1);
@@ -310,7 +313,7 @@ const T& Any::get() const {
 
 inline bool Any::hasValue() const {
 
-#if CPLUSPLUS_VERSION <= 17
+#if CPLUSPLUS_VERSION < 17
     return !m_any.empty();
 #else
     return m_any.has_value();

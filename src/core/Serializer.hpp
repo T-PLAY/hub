@@ -11,7 +11,11 @@
 
 namespace hub {
 
+
+#ifdef HUB_USE_ZPP_BITS
 using Serializer = serializer::SerializerZppBits;
-//using Serializer = serializer::SerializerImpl;
+#else
+using Serializer = serializer::SerializerImpl;
+#endif
 
 } // namespace hub

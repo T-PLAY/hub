@@ -1,6 +1,6 @@
 
- #define HUB_DEBUG_INPUT
- #define HUB_DEBUG_OUTPUT
+// #define HUB_DEBUG_INPUT
+// #define HUB_DEBUG_OUTPUT
 
 #include <set>
 
@@ -11,8 +11,8 @@
 #include <core/io/Archive.hpp>
 
 #include <core/io/InputOutput.hpp>
-#include <core/io/InputOutputImpl.hpp>
-#include <core/io/InputOutputZppBits.hpp>
+//#include <core/io/InputOutputImpl.hpp>
+//#include <core/io/InputOutputZppBits.hpp>
 //#include <core/InputOutput.hpp>
 #include <core/Input.hpp>
 #include <core/Output.hpp>
@@ -57,7 +57,9 @@ TEST_CASE( "InputOutput test" ) {
 
     //////////////////////////////////
 
+#ifdef HUB_DEBUG_OUTPUT
     std::cout << "------------------ void ---------------------" << std::endl;
+#endif
     hub::Any any;
     archive.write(any);
     hub::Any any_read;
@@ -66,7 +68,9 @@ TEST_CASE( "InputOutput test" ) {
     assert(archive.isEnd());
     std::cout << std::endl;
 
+#ifdef HUB_DEBUG_OUTPUT
     std::cout << "------------------ int ---------------------" << std::endl;
+#endif
     any = 1;
     archive.write(any);
     archive.read(any_read);
@@ -74,7 +78,9 @@ TEST_CASE( "InputOutput test" ) {
     assert(archive.isEnd());
     std::cout << std::endl;
 
+#ifdef HUB_DEBUG_OUTPUT
     std::cout << "------------------ Random ---------------------" << std::endl;
+#endif
     any = Random{5, true, "hello", {1, 2, 3}};
     archive.write(any);
     archive.read(any_read);

@@ -16,9 +16,10 @@
 namespace hub {
 namespace io {
 
+
 //template <class InputOutputT = InputOutput<>>
 template <class SerializerT = Serializer, class InputOutputT = InputOutput<SerializerT>>
-class Archive : public InputOutputT
+class ArchiveT : public InputOutputT
 {
   public:
     using InputOutputT::read;
@@ -81,6 +82,8 @@ class Archive : public InputOutputT
     size_t m_nCall = 0;
     size_t m_lastCallSize = 0;
 };
+
+using Archive = ArchiveT<>;
 
 } // namespace io
 } // namespace hub

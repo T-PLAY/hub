@@ -19,14 +19,16 @@
 #include <set>
 // #include <core/Vector.hpp>
 
+#ifdef HUB_USE_ZPP_BITS
 #include "zpp_bits.h"
+using namespace zpp::bits::literals;
+#endif
 
 #include <core/Any.hpp>
 #include <core/Traits.hpp>
 #include <core/io/Archive.hpp>
 #include <core/io/Book.hpp>
 
-using namespace zpp::bits::literals;
 
 TEST_CASE( "Book test" ) {
     // int main() {
@@ -58,7 +60,7 @@ TEST_CASE( "Book test" ) {
               << std::endl;
     std::cout << std::endl;
 
-    UserData data( 'a', 5, "gauthier", { 0, 1, 2, 3, 4 } );
+    UserData data{ 'a', 5, "gauthier", { 0, 1, 2, 3, 4 } };
 
     unsigned char* data_write = new unsigned char[s_DataSizePtr];
     memset( data_write, 'a', s_DataSizePtr );
@@ -66,6 +68,7 @@ TEST_CASE( "Book test" ) {
     //    std::vector<BenchStat> dataBenchStats;
     std::set<BenchStat> dataBenchStats;
     //    std::vector<ReadWriteStat> dataPtrBenchStats;
+#ifdef HUB_USE_ZPP_BITS
     {
         BenchStat benchStat { "ZppBits" };
         {
@@ -95,6 +98,7 @@ TEST_CASE( "Book test" ) {
         //        dataBenchStats.push_back( std::move( benchStat ) );
         dataBenchStats.insert( std::move( benchStat ) );
     }
+#endif
 
     ///////////////////////////////////////////////////
 
@@ -118,6 +122,7 @@ TEST_CASE( "Book test" ) {
 
     ///////////////////////////////////////////////////
 
+#ifdef HUB_USE_ZPP_BITS
     BenchStat benchStatBookZppBits { "BookZppBits" };
     {
         {
@@ -143,12 +148,13 @@ TEST_CASE( "Book test" ) {
         //        dataBenchStats.push_back( std::move( benchStat ) );
         dataBenchStats.insert( benchStatBookZppBits );
     }
+#endif
 
     ///////////////////////////////////////////////////
 
     {
         BenchStat benchStat { "ArchiveImpl" };
-        hub::io::Archive<hub::serializer::SerializerImpl> archive;
+        hub::io::ArchiveT<hub::serializer::SerializerImpl> archive;
 
         benchStat.readWriteDataStat = readWriteData( archive, s_nReadWrite, data );
         assert( archive.isEnd() );
@@ -159,9 +165,10 @@ TEST_CASE( "Book test" ) {
         dataBenchStats.insert( std::move( benchStat ) );
     }
 
+#ifdef HUB_USE_ZPP_BITS
     {
         BenchStat benchStat { "ArchiveZppBits" };
-        hub::io::Archive<hub::serializer::SerializerZppBits> archive;
+        hub::io::ArchiveT<hub::serializer::SerializerZppBits> archive;
 
         benchStat.readWriteDataStat = readWriteData( archive, s_nReadWrite, data );
         assert( archive.isEnd() );
@@ -171,13 +178,16 @@ TEST_CASE( "Book test" ) {
         assert( archive.isEnd() );
         dataBenchStats.insert( std::move( benchStat ) );
     }
+#endif
 
     delete[] data_write;
 
-#ifndef DEBUG
+#if ! defined(DEBUG) && defined(HUB_USE_ZPP_BITS)
     CHECK( benchStatBookZppBits < benchStatBookImpl );
 #endif
+#ifdef HUB_USE_ZPP_BITS
     static_assert(std::is_same_v<hub::io::Book, hub::io::book::BookZppBits<>> );
+#endif
 
     printStats( dataBenchStats );
 

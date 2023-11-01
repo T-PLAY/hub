@@ -3,15 +3,22 @@
 #include <iostream>
 #include <vector>
 
-//namespace hub {
+#include "Macros.hpp"
+#include "Traits.hpp"
 
+// namespace hub {
+
+#if CPLUSPLUS_VERSION >= 20 // concept
 template <class T>
-concept Printable = requires(T a) { std::cout << a; };
-
+concept Printable = requires( T a ) { std::cout << a; };
+#else
+template <class T>
+static constexpr auto Printable = true;
+#endif
 
 template <typename T>
-//requires (! Printable<T>)
-typename std::enable_if_t<! Printable<T> || std::is_same_v<T, unsigned char>, std::ostream&>
+// requires (! Printable<T>)
+typename std::enable_if_t<!Printable<T> || std::is_same_v<T, unsigned char>, std::ostream&>
 operator<<( std::ostream& os, const std::vector<T>& vector ) {
     os << "[";
     //    auto nMax
@@ -28,11 +35,11 @@ operator<<( std::ostream& os, const std::vector<T>& vector ) {
     return os;
 }
 
-//template <typename T = std::string>
+// template <typename T = std::string>
 template <typename T>
-//typename std::enable_if_t<std::is_same_v<T, std::string>, std::ostream&>
-//requires (Printable<T>)
-typename std::enable_if_t<Printable<T> && ! std::is_same_v<T, unsigned char>, std::ostream&>
+// typename std::enable_if_t<std::is_same_v<T, std::string>, std::ostream&>
+// requires (Printable<T>)
+typename std::enable_if_t<Printable<T> && !std::is_same_v<T, unsigned char>, std::ostream&>
 operator<<( std::ostream& os, const std::vector<T>& vector ) {
     os << "[";
     //    auto nMax

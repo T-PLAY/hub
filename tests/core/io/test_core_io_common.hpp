@@ -3,6 +3,7 @@
 #include <chrono>
 #include <string>
 #include <tuple>
+#include <type_traits>
 #include <vector>
 
 // #include <core/Macros.hpp>
@@ -50,7 +51,7 @@ struct ReadWriteStat {
     double megaReadWritePerSecond  = 0;
     double gigaBytePerSecond       = 0;
 
-    long long nInputOutputCall = 0;
+    long long nInputOutputCall    = 0;
     long long inputOutputCallSize = 0;
 
     bool operator<( const ReadWriteStat& benchStat ) const {
@@ -93,8 +94,10 @@ void printStats( const BenchStats& benchStats ) {
             std::cout << "[" << implName
                       << "] total time: " << readWriteDataStat.durationInNanoSecond / 1000'000.0
                       << " ms" << std::endl;
-            if (readWriteDataStat.nInputOutputCall != 0) {
-                std::cout << "[" << implName << "] io call per read/write iteration: " << readWriteDataStat.nInputOutputCall << ", size: " << readWriteDataStat.inputOutputCallSize << std::endl;
+            if ( readWriteDataStat.nInputOutputCall != 0 ) {
+                std::cout << "[" << implName << "] io call per read/write iteration: "
+                          << readWriteDataStat.nInputOutputCall
+                          << ", size: " << readWriteDataStat.inputOutputCallSize << std::endl;
             }
         }
 
@@ -136,13 +139,14 @@ ReadWriteStat readWriteData( ReadInputFunc& readInputFunc,
         writeOutputFunc( data_write );
         readInputFunc( data_read );
 
-        assert ( data_read == data_write );
-//        if ( data_read != data_write ) {
-//            //            std::cerr << "writeRead data_write != data_read for impl : " << implName
-//            //            << std::endl;
-//            std::cerr << data_read << " != " << data_write << std::endl;
-//            exit( 1 );
-//        }
+        assert( data_read == data_write );
+        //        if ( data_read != data_write ) {
+        //            //            std::cerr << "writeRead data_write != data_read for impl : " <<
+        //            implName
+        //            //            << std::endl;
+        //            std::cerr << data_read << " != " << data_write << std::endl;
+        //            exit( 1 );
+        //        }
 
         ++iReadWrite;
     }
@@ -156,14 +160,33 @@ ReadWriteStat readWriteData( ReadInputFunc& readInputFunc,
     return stats;
 };
 
+#if CPLUSPLUS_VERSION >= 20 // concept
 template <class T>
-concept GetableNCall = requires( const T a ) { a.getNCall(); };
+concept getableNCall_v = requires( const T a ) { a.getNCall(); };
+
+#else
+template <typename T>
+using getableNCall_t = decltype( std::declval<T>().read( std::declval<T&>().getNCall() ) );
+
+template <typename T, typename = std::void_t<>>
+struct getableNCall : std::false_type {};
+
+template <typename T>
+struct getableNCall<T, std::void_t<getableNCall_t<T>>> : std::true_type {};
+
+template <typename T>
+static constexpr bool getableNCall_v = getableNCall<T>::value;
+#endif
 
 template <class InputOutput, class UserData>
 //    requires GetableNCall<InputOutput>
 ReadWriteStat readWriteData( InputOutput& inputOutput, size_t nReadWrite, const UserData& data ) {
-    constexpr bool getableNCall = GetableNCall<InputOutput>;
-    if constexpr ( getableNCall ) {
+    //    constexpr bool getableNCall = GetableNCall<InputOutput>;
+    //    constexpr bool getableNCall = requires(const InputOutput & inputOutput) {
+    //        inputOutput.getNCall();
+    //    };
+    if constexpr ( getableNCall_v<InputOutput> ) {
+//    if constexpr ( getableNCall ) {
 #ifdef DEBUG
         size_t nCallFirst = inputOutput.getNCall();
 #endif
@@ -171,7 +194,7 @@ ReadWriteStat readWriteData( InputOutput& inputOutput, size_t nReadWrite, const 
         auto write = [&]( const UserData& data ) { inputOutput.write( data ); };
         auto ret   = readWriteData( read, write, nReadWrite, data );
 #ifdef DEBUG
-        ret.nInputOutputCall = (inputOutput.getNCall() - nCallFirst) / nReadWrite;
+        ret.nInputOutputCall    = ( inputOutput.getNCall() - nCallFirst ) / nReadWrite;
         ret.inputOutputCallSize = inputOutput.getLastCallSize();
 #endif
         return ret;

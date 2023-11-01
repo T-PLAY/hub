@@ -1,7 +1,6 @@
 
 #pragma once
 
-
 #include <cassert>
 #include <functional>
 #include <map>
@@ -9,12 +8,12 @@
 
 #include "core/Macros.hpp"
 // #include "core/std_any.hpp"
-//#include "core/Input.hpp"
-//#include "core/Output.hpp"
-//#include "core/io/input/InputI.hpp"
-//#include "core/io/output/OutputI.hpp"
-#include "core/Output.hpp"
+// #include "core/Input.hpp"
+// #include "core/Output.hpp"
+// #include "core/io/input/InputI.hpp"
+// #include "core/io/output/OutputI.hpp"
 #include "core/Input.hpp"
+#include "core/Output.hpp"
 
 #if CPLUSPLUS_VERSION <= 14
 #    include "std_any.hpp"
@@ -55,24 +54,21 @@ class Anyable
 
         template <class T>
         void setup() {
-//            std::cout << "[Anyable] setup type : " << TYPE_NAME(T) << std::endl;
+            //            std::cout << "[Anyable] setup type : " << TYPE_NAME(T) << std::endl;
 
             getTypeName = []() { return TYPE_NAME( T ); };
 
+            // void
             if constexpr ( std::is_same_v<T, void> ) {
                 getValueStr = []( const std::any& any ) { return "nil"; };
+                write = []( Output<>& output, const std::any& ) {};
+                read  = []( Input<>& input, std::any& ) {};
                 compare     = []( const std::any& any, const std::any& any2 ) {
-                    //                    return false;
                     if ( any.type() == typeid( void ) || any2.type() == typeid( void ) ) {
                         return any.type() == any2.type();
                     }
                     return false;
-                    //                                        return std::any_cast<const T&>( any )
-                    //                                        ==
-                    //                    std::any_cast<const T&>( any2 );
                 };
-                write = []( Output<>& output, const std::any& ) {};
-                read  = []( Input<>& input, std::any& ) {};
             }
             else {
                 getValueStr = []( const std::any& any ) {
@@ -82,13 +78,22 @@ class Anyable
                     sstream << val;
                     return sstream.str();
                 };
-                compare = []( const std::any& any, const std::any& any2 ) {
-                    if ( any.type() == typeid( void ) || any2.type() == typeid( void ) ) {
-                        return any.type() == any2.type();
-                    }
-                    return std::any_cast<const T&>( any ) == std::any_cast<const T&>( any2 );
-                };
-                if constexpr ( std::is_same_v<T, const char*> ) {}
+                // const char *
+                if constexpr ( std::is_same_v<T, const char*> ) {
+                    write = []( Output<>& output, const std::any& any ) {
+                        const char* val = std::any_cast<const char*>( any );
+                        output.write( val );
+                    };
+                    read = []( Input<>& input, std::any& any ) {
+                        char* val = new char[80]; // leak, please do not use char *, use std::string instead
+                        input.read( val );
+                        any = (const char*)val;
+                    };
+                    compare = []( const std::any& any, const std::any& any2 ) {
+                        return strcmp(std::any_cast<const char *>( any ), std::any_cast<const char *>( any2 )) == 0;
+                    };
+                }
+                // others
                 else {
                     write = []( Output<>& output, const std::any& any ) {
                         const T& val = std::any_cast<const T&>( any );
@@ -96,9 +101,14 @@ class Anyable
                     };
                     read = []( Input<>& input, std::any& any ) {
                         T t;
-//                        int a;
                         input.read( t );
                         any = t;
+                    };
+                    compare = []( const std::any& any, const std::any& any2 ) {
+                        if ( any.type() == typeid( void ) || any2.type() == typeid( void ) ) {
+                            return any.type() == any2.type();
+                        }
+                        return std::any_cast<const T&>( any ) == std::any_cast<const T&>( any2 );
                     };
                 }
             }
@@ -107,7 +117,7 @@ class Anyable
         std::function<std::string()> getTypeName;
         std::function<std::string( const std::any& )> getValueStr;
         std::function<bool( const std::any&, const std::any& )> compare;
-//        std::function<void( io::output::OutputI& output, const std::any& )> write;
+        //        std::function<void( io::output::OutputI& output, const std::any& )> write;
         std::function<void( Output<>& output, const std::any& )> write;
         std::function<void( Input<>& input, std::any& )> read;
     };
