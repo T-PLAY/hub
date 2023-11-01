@@ -86,7 +86,7 @@ void process( Archive& archive ) {
     assert( archive.isEnd() );
 
 #ifndef HUB_DEBUG_OUTPUT
-    for ( int i = 0; i < 10000; ++i ) {
+    for ( int i = 0; i < 100000; ++i ) {
 #endif
         {
             const int toWrite = 5.0;
@@ -268,8 +268,8 @@ void process( Archive& archive ) {
 
 TEST_CASE( "InputOutput test" ) {
 
-    long long durationArchiveZppBits;
-    long long durationArchiveImpl;
+    long long durationArchiveZppBits = 0;
+    long long durationArchiveImpl = 0;
 
     //    hub::io::Archive<hub::io::InputOutput> archive;
 //    hub::io::Archive archive;
