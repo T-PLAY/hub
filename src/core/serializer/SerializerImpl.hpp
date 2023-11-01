@@ -63,7 +63,7 @@ class SerializerImpl : public SerializerI
         std::cout << "<---" << HEADER << "write(Data_t*, Size_t) : data = " << vector << std::endl;
 #endif
 
-        memcpy( &m_serialBuff[m_position], data, size );
+        std::memcpy( &m_serialBuff[m_position], data, size );
         m_position += size;
     }
 
@@ -96,7 +96,7 @@ class SerializerImpl : public SerializerI
     //////////////////////////////////////////////////////////////////////////////
 
     virtual void read( Data_t* data, Size_t size ) {
-        memcpy( data, &m_serialBuff[m_position], size );
+        std::memcpy( data, &m_serialBuff[m_position], size );
         m_position += size;
 
 #ifdef HUB_DEBUG_INPUT

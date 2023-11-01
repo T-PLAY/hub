@@ -100,7 +100,7 @@ class Output : public BasicOutput
         std::cout << HEADER << "write(" << TYPE_NAME( str ) << ")" << std::endl;
 #endif
 
-        uint32_t strLen = static_cast<int>( strlen( str ) );
+        uint32_t strLen = static_cast<int>( std::strlen( str ) );
         write( strLen );
 
         if ( strLen > 0 ) { write( reinterpret_cast<const unsigned char*>( str ), strLen ); }
