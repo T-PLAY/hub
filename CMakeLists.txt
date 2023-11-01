@@ -9,8 +9,8 @@ set_property(GLOBAL PROPERTY CUSTOM_TARGETS_FOUNDED "")
 
 #set(CMAKE_CXX_STANDARD 11)
 #set(CMAKE_CXX_STANDARD 14) # std::decay
-#set(CMAKE_CXX_STANDARD 17) # std::any, AppleClang std::void_t<>
-set(CMAKE_CXX_STANDARD 20) # std::any, zpp_bits.h
+set(CMAKE_CXX_STANDARD 17) # std::any, AppleClang std::void_t<>
+#set(CMAKE_CXX_STANDARD 20) # std::any, zpp_bits.h
 #set(CMAKE_CXX_STANDARD 23) # std::any
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_FIND_PACKAGE_NO_SYSTEM_PACKAGE_REGISTRY False)
@@ -21,6 +21,9 @@ set(CMAKE_FIND_PACKAGE_NO_SYSTEM_PACKAGE_REGISTRY False)
 #endif()
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++2a")
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
+if(WIN32)
+    add_definitions(-DCPLUSPLUS_VERSION=${CMAKE_CXX_STANDARD})
+endif()
 
 message(STATUS "CXX compiler: ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}")
 message(STATUS "Processor: ${CMAKE_SYSTEM_PROCESSOR}")

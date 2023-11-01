@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <vector>
+#include <string>
 
 #include "Macros.hpp"
 #include "Traits.hpp"

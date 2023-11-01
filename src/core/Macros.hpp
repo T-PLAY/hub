@@ -178,6 +178,8 @@
 #    define SRC_API
 #endif
 
+#ifndef OS_WINDOWS
+
 #if ( __cplusplus >= 202001L )
 #    define CPLUSPLUS_VERSION 20
 #    define CONSTEXPR17 constexpr
@@ -199,6 +201,8 @@
 #    define CONSTEXPR20
 // #    error "C++ version " __cplusplus " not supported"
 #define CONSTEXPR const
+#endif
+
 #endif
 
 //#define DEBUG_INPUT_OUTPUT

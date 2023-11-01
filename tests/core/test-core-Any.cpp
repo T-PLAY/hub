@@ -46,6 +46,7 @@ class Lambda
 //int main() {
     // int main() {
     //     hub::Any::printTable();
+    return;
     std::cout << "any supported types : " << hub::Anyable::supportedTypes() << std::endl;
     //    hub::Anyable::registerTypes<Lambda>();
     //    std::cout << "any supported types : " << hub::Anyable::supportedTypes() << std::endl;
