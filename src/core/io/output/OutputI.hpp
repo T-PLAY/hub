@@ -1,12 +1,12 @@
 #pragma once
 
-#include "BasicOutputI.hpp"
-#include "core/Macros.hpp"
-#include "core/Traits.hpp"
+//#include "BasicOutputI.hpp"
+//#include "core/Macros.hpp"
+//#include "core/Traits.hpp"
 
-namespace hub {
-namespace io {
-namespace output {
+//namespace hub {
+//namespace io {
+//namespace output {
 
 //class OutputI : public BasicOutputI
 //{
@@ -29,6 +29,6 @@ namespace output {
 //    }
 //};
 
-} // namespace output
-} // namespace io
-} // namespace hub
+//} // namespace output
+//} // namespace io
+//} // namespace hub

@@ -1,12 +1,12 @@
 #pragma once
 
-#include "BasicInputI.hpp"
-#include "core/Macros.hpp"
-#include "core/Traits.hpp"
+//#include "BasicInputI.hpp"
+//#include "core/Macros.hpp"
+//#include "core/Traits.hpp"
 
-namespace hub {
-namespace io {
-namespace input {
+//namespace hub {
+//namespace io {
+//namespace input {
 
 //class InputI : public BasicInputI
 //{
@@ -35,6 +35,6 @@ namespace input {
 
 //};
 
-} // namespace input
-} // namespace io
-} // namespace hub
+//} // namespace input
+//} // namespace io
+//} // namespace hub

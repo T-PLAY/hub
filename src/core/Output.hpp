@@ -6,7 +6,8 @@
 //#include "io/output/OutputZppBits.hpp"
 
 #include "core/Macros.hpp"
-#include "ioBase.hpp"
+//#include "ioBase.hpp"
+#include "BasicOutput.hpp"
 #include "Serializer.hpp"
 
 namespace hub {
@@ -17,20 +18,23 @@ namespace hub {
 //static_assert(std::is_base_of<io::output::OutputI, Output>::value, "Output is not base class of OutputI");
 
 template <class SerializerT = Serializer>
-class Output : public ioBase
+//class Output : public ioBase
+class Output : public BasicOutput
 {
   public:
-    template <typename T>
-    using writable_t = decltype( std::declval<T>().write( std::declval<Output&>() ) );
-    template <typename T, typename = std::void_t<>>
-    struct writable : std::false_type {};
-    template <typename T>
-    struct writable<T, std::void_t<writable_t<T>>> : std::true_type {};
-    template <typename T>
-    static constexpr bool writable_v = writable<T>::value;
+    using BasicOutput::write;
 
-  public:
-    virtual void write( const Data_t* data, Size_t len ) = 0;
+//    template <typename T>
+//    using writable_t = decltype( std::declval<T>().write( std::declval<Output&>() ) );
+//    template <typename T, typename = std::void_t<>>
+//    struct writable : std::false_type {};
+//    template <typename T>
+//    struct writable<T, std::void_t<writable_t<T>>> : std::true_type {};
+//    template <typename T>
+//    static constexpr bool writable_v = writable<T>::value;
+
+//  public:
+//    virtual void write( const Data_t* data, Size_t len ) = 0;
 
   public:
     template <class T>

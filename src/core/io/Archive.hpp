@@ -38,6 +38,7 @@ class Archive : public InputOutputT
 
 #ifdef DEBUG
         ++m_nCall;
+        m_lastCallSize = size;
 #endif
     }
 
@@ -50,6 +51,7 @@ class Archive : public InputOutputT
 
 #ifdef DEBUG
         ++m_nCall;
+        m_lastCallSize = size;
 #endif
     }
 
@@ -70,9 +72,14 @@ class Archive : public InputOutputT
     }
 #endif
 
+    size_t getLastCallSize() const {
+        return m_lastCallSize;
+    }
+
   private:
     std::queue<std::vector<hub::Data_t>> m_datas;
     size_t m_nCall = 0;
+    size_t m_lastCallSize = 0;
 };
 
 } // namespace io

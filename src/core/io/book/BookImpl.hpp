@@ -6,6 +6,8 @@
 //#include "core/io/InputOutputI.hpp"
 //#include "core/io/InputOutputImpl.hpp"
 #include "core/io/InputOutput.hpp"
+//#include "core/io/BasicInputOutputI.hpp"
+
 
 namespace hub {
 namespace io {
@@ -15,8 +17,10 @@ namespace book {
 //          class Characters         = std::array<unsigned char, NumberOfCharacter>>
 //class BookImpl : public InputOutputI
 template <Size_t NumberOfCharacter = 1'000'000, class Characters = std::array<unsigned char, NumberOfCharacter>, class InputOutputT = InputOutput<serializer::SerializerImpl>>
+//template <Size_t NumberOfCharacter = 1'000'000, class Characters = std::array<unsigned char, NumberOfCharacter>, class InputOutputT = InputOutput<serializer::SerializerZppBits>>
 //class BookImpl : public InputOutputImpl
 class BookImpl : public InputOutputT
+//class BookImpl : public BasicInputOutputI
 {
   public:
     using InputOutputT::read;

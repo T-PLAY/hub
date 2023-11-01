@@ -1,12 +1,12 @@
 #pragma once
 
-#include "BasicInputI.hpp"
+//#include "BasicInputI.hpp"
 
-#include "zpp_bits.h"
+//#include "zpp_bits.h"
 
-namespace hub {
-namespace io {
-namespace input {
+//namespace hub {
+//namespace io {
+//namespace input {
 
 // template <Size_t BuffSize = 1'000'000>
 //class InputZppBits : public BasicInputI
@@ -155,6 +155,6 @@ namespace input {
 //    std::array<unsigned char, BuffSize> m_serialBuff;
 //};
 
-} // namespace input
-} // namespace io
-} // namespace hub
+//} // namespace input
+//} // namespace io
+//} // namespace hub

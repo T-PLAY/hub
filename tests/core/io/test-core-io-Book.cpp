@@ -46,7 +46,7 @@ TEST_CASE( "Book test" ) {
     static constexpr size_t s_bookSize = s_nReadWrite * s_dataSize;
 
     static constexpr size_t s_nReadWriteDataPtr = 1;
-    static constexpr size_t s_DataSizePtr       = 1'00'000'000;
+    static constexpr size_t s_DataSizePtr       = 500'000'000;
 
     std::cout << "nb read/write: " << s_nReadWrite / 1000000.0 << " M" << std::endl;
     std::cout << "read/write size: "
@@ -159,18 +159,18 @@ TEST_CASE( "Book test" ) {
         dataBenchStats.insert( std::move( benchStat ) );
     }
 
-//    {
-//        BenchStat benchStat { "ArchiveZppBits" };
-//        hub::io::Archive<hub::io::InputOutputZppBits> archive;
+    {
+        BenchStat benchStat { "ArchiveZppBits" };
+        hub::io::Archive<hub::serializer::SerializerZppBits> archive;
 
-//        benchStat.readWriteDataStat = readWriteData( archive, s_nReadWrite, data );
-//        assert( archive.isEnd() );
+        benchStat.readWriteDataStat = readWriteData( archive, s_nReadWrite, data );
+        assert( archive.isEnd() );
 
-//        benchStat.readWriteDataPtrStat =
-//            readWriteDataPtr( archive, s_nReadWriteDataPtr, data_write, s_DataSizePtr );
-//        assert( archive.isEnd() );
-//        dataBenchStats.insert( std::move( benchStat ) );
-//    }
+        benchStat.readWriteDataPtrStat =
+            readWriteDataPtr( archive, s_nReadWriteDataPtr, data_write, s_DataSizePtr );
+        assert( archive.isEnd() );
+        dataBenchStats.insert( std::move( benchStat ) );
+    }
 
     delete[] data_write;
 

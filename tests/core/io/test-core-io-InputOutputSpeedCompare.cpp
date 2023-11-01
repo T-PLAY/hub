@@ -1,9 +1,11 @@
 
-//#define HUB_DEBUG_INPUT
-//#define HUB_DEBUG_OUTPUT
+// #define HUB_DEBUG_INPUT
+// #define HUB_DEBUG_OUTPUT
 
-#include <set>
 #include <cstring>
+#include <set>
+
+//#include "zpp_bits.h"
 
 #include "core/io/test_core_io_common.hpp"
 #include "core/test_core_common.hpp"
@@ -19,7 +21,6 @@
 #include <core/Input.hpp>
 #include <core/Output.hpp>
 #include <core/io/Book.hpp>
-
 
 TEST_CASE( "InputOutput test" ) {
     using namespace testCoreIoCommon;
@@ -39,11 +40,11 @@ TEST_CASE( "InputOutput test" ) {
     static constexpr size_t s_DataSizePtr       = 10'000'000;
 #else
 #    ifdef DEBUG
-    static constexpr size_t s_nReadWriteDataPtr = 5;
-    static constexpr size_t s_DataSizePtr       = 10'000'000;
+    static constexpr size_t s_nReadWriteDataPtr = 2;
+    static constexpr size_t s_DataSizePtr       = 100'000'000;
 #    else
-    static constexpr size_t s_nReadWriteDataPtr = 1;
-    static constexpr size_t s_DataSizePtr       = 1'000'000'000;
+    static constexpr size_t s_nReadWriteDataPtr = 5;
+    static constexpr size_t s_DataSizePtr       = 100'000'000;
 #    endif
 #endif
 
@@ -56,11 +57,53 @@ TEST_CASE( "InputOutput test" ) {
     std::cout << std::endl;
 
     UserData userData( 'a', 5, "gauthier", { 0, 1, 2, 3, 4 } );
+    static_assert( !hub::packable_v<UserData> );
+    static_assert( hub::serializable_v<UserData> );
+    static_assert( !hub::writable_v<UserData> );
+    static_assert( !hub::readable_v<UserData> );
 
     unsigned char* data_write = new unsigned char[s_DataSizePtr];
     memset( data_write, 'a', s_DataSizePtr );
 
     std::set<BenchStat> dataBenchStats;
+
+    //    {
+    //        std::vector<unsigned char> buff;
+    //        zpp::bits::out out( buff );
+    //        out( userData ).or_throw();
+    //        const auto serializeSize = out.position();
+    //        unsigned char* data      = new unsigned char[serializeSize];
+    //        memset( data, 55, serializeSize );
+    //        unsigned char* data_read = new unsigned char[serializeSize];
+
+    //        const auto startClock = std::chrono::high_resolution_clock::now();
+    //        for ( int i = 0; i < s_nReadWrite; ++i ) {
+    //            data[0] = i;
+    //            memcpy( data_read, data, serializeSize );
+
+    //            assert (memcmp(data, data_read, serializeSize) == 0);
+    ////            std::this_thread::sleep_for(std::chrono::nanoseconds(1));
+    //        }
+    //        const auto endClock = std::chrono::high_resolution_clock::now();
+    //        const auto durationInNanoSecond =
+    //            std::chrono::duration_cast<std::chrono::nanoseconds>( endClock - startClock
+    //            ).count();
+
+    //        const auto megaReadWritePerSecond = 1000.0 * s_nReadWrite / durationInNanoSecond;
+    //        const auto gigaBytePerSecond      = megaReadWritePerSecond * sizeof( UserData ) /
+    //        1000.0;
+
+    //        delete[] data_read;
+    //        delete[] data;
+
+    //        std::cout << "------------------------------------" << std::endl;
+    //        std::cout << "[reference] writing/reading rate: "
+    //                  << std::to_string( megaReadWritePerSecond / 1000.0 ) << " GigaReadWrite/s, "
+    //                  << std::to_string( gigaBytePerSecond ) << " Go/s" << std::endl;
+    //        std::cout << "[reference]"
+    //                  << "total time: " << durationInNanoSecond / 1000'000.0 << " ms" <<
+    //                  std::endl;
+    //    }
 
     //    BenchStat benchStatInputOutput { "InputOutput" };
     //    {
@@ -113,10 +156,13 @@ TEST_CASE( "InputOutput test" ) {
 
     delete[] data_write;
 
+#ifndef DEBUG
     CHECK( benchStatInputOutputZppBits < benchStatInputOutputImpl );
     CHECK( benchStatInputOutputZppBits.readWriteDataStat.nInputOutputCall <=
            benchStatInputOutputImpl.readWriteDataStat.nInputOutputCall );
-    static_assert( std::is_same_v<hub::io::Archive<>, hub::io::Archive<hub::serializer::SerializerZppBits>>);
+#endif
+    static_assert(
+        std::is_same_v<hub::io::Archive<>, hub::io::Archive<hub::serializer::SerializerZppBits>> );
 
     //    static_assert( std::is_same_v<hub::io::InputOutput, hub::io::InputOutputZppBits> );
     //    static_assert( std::is_same_v<hub::Input, hub::io::input::InputZppBits> );

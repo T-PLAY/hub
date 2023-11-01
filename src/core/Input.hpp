@@ -6,7 +6,8 @@
 // #include "io/input/InputZppBits.hpp"
 
 #include "core/Macros.hpp"
-#include "ioBase.hpp"
+//#include "ioBase.hpp"
+#include "BasicInput.hpp"
 // #include "serializer/SerializerI.hpp"
 #include "Serializer.hpp"
 
@@ -19,22 +20,25 @@ namespace hub {
 // IntputI");
 
 template <class SerializerT = Serializer>
-class Input : public ioBase
+//class Input : public ioBase
+class Input : public BasicInput
 {
   public:
-    template <typename T>
-    using readable_t = decltype( std::declval<T>().read( std::declval<Input&>() ) );
-    template <typename T, typename = std::void_t<>>
-    struct readable : std::false_type {};
-    template <typename T>
-    struct readable<T, std::void_t<readable_t<T>>> : std::true_type {};
-    template <typename T>
-    static constexpr bool readable_v = readable<T>::value;
+    using BasicInput::read;
 
-  public:
-    virtual bool isEnd() const                    = 0;
-    virtual void clear()                          = 0;
-    virtual void read( Data_t* data, Size_t len ) = 0;
+//    template <typename T>
+//    using readable_t = decltype( std::declval<T>().read( std::declval<Input&>() ) );
+//    template <typename T, typename = std::void_t<>>
+//    struct readable : std::false_type {};
+//    template <typename T>
+//    struct readable<T, std::void_t<readable_t<T>>> : std::true_type {};
+//    template <typename T>
+//    static constexpr bool readable_v = readable<T>::value;
+
+//  public:
+//    virtual bool isEnd() const                    = 0;
+//    virtual void clear()                          = 0;
+//    virtual void read( Data_t* data, Size_t len ) = 0;
 
 //  public:
 //    Input( SerializerT serializer = SerializerT() ) : m_serializer( std::move( serializer ) ) {}

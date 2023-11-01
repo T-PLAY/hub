@@ -1,13 +1,13 @@
 #pragma once
 
-#include "BasicOutputI.hpp"
+//#include "BasicOutputI.hpp"
 
-#include "zpp_bits.h"
-#include <iostream>
+//#include "zpp_bits.h"
+//#include <iostream>
 
-namespace hub {
-namespace io {
-namespace output {
+//namespace hub {
+//namespace io {
+//namespace output {
 
 // template <Size_t BuffSize = 1'000'000>
 //class OutputZppBits : public BasicOutputI
@@ -138,6 +138,6 @@ namespace output {
 //    std::array<unsigned char, BuffSize> m_serialBuff;
 //};
 
-} // namespace output
-} // namespace io
-} // namespace hub
+//} // namespace output
+//} // namespace io
+//} // namespace hub

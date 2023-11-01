@@ -51,6 +51,7 @@ struct ReadWriteStat {
     double gigaBytePerSecond       = 0;
 
     long long nInputOutputCall = 0;
+    long long inputOutputCallSize = 0;
 
     bool operator<( const ReadWriteStat& benchStat ) const {
         return durationInNanoSecond < benchStat.durationInNanoSecond;
@@ -93,7 +94,7 @@ void printStats( const BenchStats& benchStats ) {
                       << "] total time: " << readWriteDataStat.durationInNanoSecond / 1000'000.0
                       << " ms" << std::endl;
             if (readWriteDataStat.nInputOutputCall != 0) {
-                std::cout << "[" << implName << "] total io call: " << readWriteDataStat.nInputOutputCall << std::endl;
+                std::cout << "[" << implName << "] io call per read/write iteration: " << readWriteDataStat.nInputOutputCall << ", size: " << readWriteDataStat.inputOutputCallSize << std::endl;
             }
         }
 
@@ -125,6 +126,7 @@ ReadWriteStat readWriteData( ReadInputFunc& readInputFunc,
     const auto startClock = std::chrono::high_resolution_clock::now();
 
     UserData data_write = data;
+    UserData data_read;
 
     size_t iReadWrite = 0;
     while ( iReadWrite < nReadWrite ) {
@@ -132,15 +134,15 @@ ReadWriteStat readWriteData( ReadInputFunc& readInputFunc,
         data_write.b = iReadWrite;
 
         writeOutputFunc( data_write );
-        UserData data_read;
         readInputFunc( data_read );
 
-        if ( data_read != data_write ) {
-            //            std::cerr << "writeRead data_write != data_read for impl : " << implName
-            //            << std::endl;
-            std::cerr << data_read << " != " << data_write << std::endl;
-            exit( 1 );
-        }
+        assert ( data_read == data_write );
+//        if ( data_read != data_write ) {
+//            //            std::cerr << "writeRead data_write != data_read for impl : " << implName
+//            //            << std::endl;
+//            std::cerr << data_read << " != " << data_write << std::endl;
+//            exit( 1 );
+//        }
 
         ++iReadWrite;
     }
@@ -169,7 +171,8 @@ ReadWriteStat readWriteData( InputOutput& inputOutput, size_t nReadWrite, const 
         auto write = [&]( const UserData& data ) { inputOutput.write( data ); };
         auto ret   = readWriteData( read, write, nReadWrite, data );
 #ifdef DEBUG
-        ret.nInputOutputCall = inputOutput.getNCall() - nCallFirst;
+        ret.nInputOutputCall = (inputOutput.getNCall() - nCallFirst) / nReadWrite;
+        ret.inputOutputCallSize = inputOutput.getLastCallSize();
 #endif
         return ret;
     }

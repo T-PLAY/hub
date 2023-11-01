@@ -3,7 +3,8 @@
 #include <thread>
 #include <vector>
 
-#include "core/io/BasicInputOutputI.hpp"
+#include "core/io/BasicInputOutput.hpp"
+
 
 #include "zpp_bits.h"
 
@@ -15,14 +16,14 @@ namespace book {
 //           class Characters         = std::array<unsigned char, NumberOfCharacter>>
 // template <zpp::bits::concepts::byte_view ByteView>
 template <Size_t NumberOfCharacter = 1'000'000, class Characters = std::array<unsigned char, NumberOfCharacter>>
-class BookZppBits : public BasicInputOutputI
+class BookZppBits : public BasicInputOutput
 {
   public:
     //    template <class Characters>
     BookZppBits( Characters& characters ) : m_characters( characters ) {}
     BookZppBits() : m_characters { *new Characters } {}
 
-    void write( const Data_t* data, Size_t len ) {
+    void write( const Data_t* data, Size_t len ) override {
         zpp::bits::out out( m_characters );
         std::span span( data, len );
         //        zpp::bits::out(m_characters)( std::span(data, len) ).or_throw();
@@ -31,7 +32,7 @@ class BookZppBits : public BasicInputOutputI
         //        memcpy(m_characters.data(), data, len);
     }
 
-    constexpr void read( Data_t* data, Size_t len ) {
+    constexpr void read( Data_t* data, Size_t len ) override {
         zpp::bits::in in( m_characters );
         std::span span( data, len );
         in( span ).or_throw();
