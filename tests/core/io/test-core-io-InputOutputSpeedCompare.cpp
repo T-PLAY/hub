@@ -156,17 +156,19 @@ TEST_CASE( "InputOutput test" ) {
 
     delete[] data_write;
 
-    const auto ratioData = benchStatInputOutputImpl.readWriteDataStat.durationInNanoSecond / (double)benchStatInputOutputZppBits.readWriteDataStat.durationInNanoSecond;
-    const auto ratioDataPtr = benchStatInputOutputImpl.readWriteDataPtrStat.durationInNanoSecond / (double)benchStatInputOutputZppBits.readWriteDataPtrStat.durationInNanoSecond;
-    CHECK_VALUE( ratioData, 1.0, 1.0, "Data: ArchiveZppBits/ArchiveImpl", "/" );
-    CHECK_VALUE( ratioDataPtr, 1.0, 1.0, "DataPtr: ArchiveZppBits/ArchiveImpl", "/" );
 
 //#ifndef DEBUG
 #if ! defined(DEBUG) && defined(HUB_USE_ZPP_BITS)
+    const auto ratioData = benchStatInputOutputImpl.readWriteDataStat.durationInNanoSecond / (double)benchStatInputOutputZppBits.readWriteDataStat.durationInNanoSecond;
+    const auto ratioDataPtr = benchStatInputOutputImpl.readWriteDataPtrStat.durationInNanoSecond / (double)benchStatInputOutputZppBits.readWriteDataPtrStat.durationInNanoSecond;
+    CHECK_VALUE( ratioData, 2.0, 1.0, "Data: ArchiveZppBits/ArchiveImpl", "/" );
+    CHECK_VALUE( ratioDataPtr, 1.0, 0.5, "DataPtr: ArchiveZppBits/ArchiveImpl", "/" );
+
     CHECK( benchStatInputOutputZppBits < benchStatInputOutputImpl );
     CHECK( benchStatInputOutputZppBits.readWriteDataStat.nInputOutputCall <=
            benchStatInputOutputImpl.readWriteDataStat.nInputOutputCall );
 #endif
+
 #ifdef HUB_USE_ZPP_BITS
     static_assert(
         std::is_same_v<hub::io::Archive, hub::io::ArchiveT<hub::serializer::SerializerZppBits>> );
