@@ -134,14 +134,15 @@ static void _checkValue( double value,
 //    std::remove( name2.begin(), name2.end(), ' ' );
 //    name2.erase( std::remove_if( name2.begin(), name2.end(), std::isspace ), name2.end() );
 
+    constexpr auto extension = ".log";
 
-    std::cout << "[checkValue] name2: '" << name2 << "'" << std::endl;
+    //std::cout << "[checkValue] name2: '" << name2 << "'" << std::endl;
 
     //std::string rootPath = HUB_TESTS_BIN_DIR;
 
     //    std::cout << "checkRatio " << filename << std::endl;
     {
-        std::ofstream logFile( ( filename + "_" + name2 + ".history" ).c_str(), std::ios::out | std::ios::app );
+        std::ofstream logFile( ( filename + "_" + name2 + extension ).c_str(), std::ios::out | std::ios::app );
         assert( logFile.is_open() );
 
         logFile << HUB_COMMIT_HASH << " " << value << " " << unit << std::endl;
@@ -150,7 +151,7 @@ static void _checkValue( double value,
     }
 
     {
-        std::ifstream inFile( ( filename + "_" + name2 + ".history" ).c_str() );
+        std::ifstream inFile( ( filename + "_" + name2 + extension ).c_str() );
         assert( inFile.is_open() );
 
         double value2;
