@@ -110,6 +110,7 @@ static void _checkValue( double value,
                          double compare,
                          double gap,
                          const std::string& name,
+                         const std::string& unit,
                          const std::string& filename,
                          int line ) {
     //    const int gap = 10;
@@ -120,11 +121,21 @@ static void _checkValue( double value,
                   << compare - gap << " <= " << value << " <= " << compare + gap << std::endl;
     }
 
+    //std::cout << "[checkValue] name: '" << name << "'" << std::endl;
+    //std::cout << "[checkValue] filename: '" << filename << "'" << std::endl;
+
     //    std::ofstream file("ouou", std::ios::app);
-    auto name2 = name;
+    std::string name2 = name;
     //    name2.replace(name2.begin(), name2.end(), '/', '-');
 //    if ()
     name2 = ReplaceAll( name2, "/", "_vs_" );
+    name2 = ReplaceAll( name2, ":", "_" );
+    name2 = ReplaceAll( name2, " ", "" );
+//    std::remove( name2.begin(), name2.end(), ' ' );
+//    name2.erase( std::remove_if( name2.begin(), name2.end(), std::isspace ), name2.end() );
+
+
+    std::cout << "[checkValue] name2: '" << name2 << "'" << std::endl;
 
     //std::string rootPath = HUB_TESTS_BIN_DIR;
 
@@ -133,7 +144,7 @@ static void _checkValue( double value,
         std::ofstream logFile( ( filename + "_" + name2 + ".history" ).c_str(), std::ios::out | std::ios::app );
         assert( logFile.is_open() );
 
-        logFile << HUB_COMMIT_HASH << " " << value << std::endl;
+        logFile << HUB_COMMIT_HASH << " " << value << " " << unit << std::endl;
 
         logFile.close();
     }
@@ -144,6 +155,7 @@ static void _checkValue( double value,
 
         double value2;
         std::string hash;
+        std::string unit;
         int iRatio             = 0;
         constexpr int nMaxMean = 4;
         constexpr int nRatio   = 8;
@@ -156,7 +168,7 @@ static void _checkValue( double value,
         while ( !inFile.eof() ) {
             value2 = -1;
             hash   = "";
-            inFile >> hash >> value2;
+            inFile >> hash >> value2 >> unit;
             if ( value2 != -1 ) {
                 //                sumRatio += value2;
                 values[iRatio % nRatio] = value2;

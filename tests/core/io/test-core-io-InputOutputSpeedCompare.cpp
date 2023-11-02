@@ -120,7 +120,7 @@ TEST_CASE( "InputOutput test" ) {
 #ifdef HUB_DEBUG_OUTPUT
     std::cout << "-------------------- InputOutputImpl ----------------------" << std::endl;
 #endif
-    BenchStat benchStatInputOutputImpl { "InputOutputImpl" };
+    BenchStat benchStatInputOutputImpl { "ArchiveImpl" };
     {
         hub::io::ArchiveT<hub::serializer::SerializerImpl> archive;
 
@@ -139,7 +139,7 @@ TEST_CASE( "InputOutput test" ) {
     std::cout << std::endl;
     std::cout << "-------------------- InputOutputZppBits ----------------------" << std::endl;
 #endif
-    BenchStat benchStatInputOutputZppBits { "InputOutputZppBits" };
+    BenchStat benchStatInputOutputZppBits { "ArchiveZppBits" };
     {
         hub::io::ArchiveT<hub::serializer::SerializerZppBits> archive;
 
@@ -155,6 +155,11 @@ TEST_CASE( "InputOutput test" ) {
 #endif
 
     delete[] data_write;
+
+    const auto ratioData = benchStatInputOutputImpl.readWriteDataStat.durationInNanoSecond / (double)benchStatInputOutputZppBits.readWriteDataStat.durationInNanoSecond;
+    const auto ratioDataPtr = benchStatInputOutputImpl.readWriteDataPtrStat.durationInNanoSecond / (double)benchStatInputOutputZppBits.readWriteDataPtrStat.durationInNanoSecond;
+    CHECK_VALUE( ratioData, 1.0, 1.0, "Data: ArchiveZppBits/ArchiveImpl", "/" );
+    CHECK_VALUE( ratioDataPtr, 1.0, 1.0, "DataPtr: ArchiveZppBits/ArchiveImpl", "/" );
 
 //#ifndef DEBUG
 #if ! defined(DEBUG) && defined(HUB_USE_ZPP_BITS)

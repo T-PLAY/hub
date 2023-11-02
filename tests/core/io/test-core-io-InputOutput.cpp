@@ -298,7 +298,7 @@ TEST_CASE( "InputOutput test" ) {
     }
 
     const auto ratio = durationArchiveImpl / (double)durationArchiveZppBits;
-    CHECK_VALUE( ratio, 1.0, 1.0, "ArchiveZppBits/ArchiveImpl" );
+    CHECK_VALUE( ratio, 1.0, 1.0, "ArchiveZppBits/ArchiveImpl", "/" );
 //#ifndef DEBUG
 //    CHECK( durationArchiveZppBits < durationArchiveImpl );
 //#endif
