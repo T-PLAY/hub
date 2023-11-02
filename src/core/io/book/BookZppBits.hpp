@@ -17,7 +17,7 @@ namespace book {
 // template <Size_t NumberOfCharacter = 1'000'000> // max size on stack 1Mo
 //           class Characters         = std::array<unsigned char, NumberOfCharacter>>
 // template <zpp::bits::concepts::byte_view ByteView>
-template <Size_t NumberOfCharacter = 1'000'000, class Characters = std::array<unsigned char, NumberOfCharacter>>
+template <Size_t NumberOfCharacter = MAX_STACK_SIZE, class Characters = std::array<unsigned char, NumberOfCharacter>>
 class BookZppBits : public BasicInputOutput
 {
   public:
@@ -28,10 +28,10 @@ class BookZppBits : public BasicInputOutput
     void write( const Data_t* data, Size_t len ) override {
         zpp::bits::out out( m_characters );
         std::span span( data, len );
-        //        zpp::bits::out(m_characters)( std::span(data, len) ).or_throw();
         out( span ).or_throw();
+
         //        assert( len < m_characters.size());
-        //        memcpy(m_characters.data(), data, len);
+         //       memcpy(m_characters.data(), data, len);
     }
 
     constexpr void read( Data_t* data, Size_t len ) override {

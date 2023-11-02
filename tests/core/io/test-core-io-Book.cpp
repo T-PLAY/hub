@@ -39,7 +39,11 @@ TEST_CASE( "Book test" ) {
     //    std::string_view ioImplNames[s_nIOImpl] {
     //        "ZppBits", "BookImpl", "BookZppBits", "ArchiveImpl", "ArchiveZppBits" };
 
-    static constexpr size_t s_maxDataSize   = 1'000'000;
+#ifdef WIN32
+static constexpr size_t s_maxDataSize   = 100'000;
+#else
+static constexpr size_t s_maxDataSize   = 1'000'000;
+#endif
 #ifdef HUB_DEBUG_INPUT
     static constexpr size_t s_nReadWrite = 1;
 #else

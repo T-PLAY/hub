@@ -42,14 +42,16 @@ class Lambda
 
 //#define CHECK assert
 
+#include <core/Serializer.hpp>
+
  TEST_CASE( "Any test" ) {
 //int main() {
     // int main() {
     //     hub::Any::printTable();
-    return;
     std::cout << "any supported types : " << hub::Anyable::supportedTypes() << std::endl;
     //    hub::Anyable::registerTypes<Lambda>();
     //    std::cout << "any supported types : " << hub::Anyable::supportedTypes() << std::endl;
+
 
     //    hub::io::InputOutput inputOutput;
     hub::io::Archive archive;

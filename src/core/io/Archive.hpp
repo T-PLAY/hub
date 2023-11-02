@@ -4,6 +4,7 @@
 
 #include <queue>
 
+#include "core/Macros.hpp"
 #include "core/Vector.hpp"
 //#include "input/InputZppBits.hpp"
 //#include "output/OutputZppBits.hpp"
@@ -56,7 +57,8 @@ class ArchiveT : public InputOutputT
 #endif
     }
 
-    void close() override {};
+    void close() override {
+    };
 
     bool isOpen() const override { return true; }
 
@@ -71,16 +73,18 @@ class ArchiveT : public InputOutputT
     size_t getNCall() const {
         return m_nCall;
     }
-#endif
 
     size_t getLastCallSize() const {
         return m_lastCallSize;
     }
+#endif
 
   private:
     std::queue<std::vector<hub::Data_t>> m_datas;
+#ifdef DEBUG
     size_t m_nCall = 0;
     size_t m_lastCallSize = 0;
+#endif
 };
 
 using Archive = ArchiveT<>;

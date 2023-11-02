@@ -23,7 +23,8 @@ namespace serializer {
 
 class SerializerImpl : public SerializerI
 {
-    static constexpr Size_t BuffSize = 1'000'000;
+    //static constexpr Size_t BuffSize = 1'000'000;
+    static constexpr Size_t BuffSize = MAX_STACK_SIZE;
 
   public:
     template <class Output, class... Ts>

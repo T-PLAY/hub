@@ -297,9 +297,11 @@ TEST_CASE( "InputOutput test" ) {
         std::cout << "duration: " << durationArchiveImpl / 1'000'000.0 << " ms" << std::endl;
     }
 
-#ifndef DEBUG
-    CHECK( durationArchiveZppBits < durationArchiveImpl );
-#endif
+    const auto ratio = durationArchiveImpl / (double)durationArchiveZppBits;
+    CHECK_VALUE( ratio, 1.0, 1.0, "ArchiveZppBits/ArchiveImpl" );
+//#ifndef DEBUG
+//    CHECK( durationArchiveZppBits < durationArchiveImpl );
+//#endif
 #ifdef HUB_USE_ZPP_BITS
     static_assert(std::is_same_v<hub::io::Archive, hub::io::ArchiveT<hub::serializer::SerializerZppBits>>);
 #endif

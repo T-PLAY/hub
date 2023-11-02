@@ -1,6 +1,6 @@
 
-// #define HUB_DEBUG_INPUT
-// #define HUB_DEBUG_OUTPUT
+//#define HUB_DEBUG_INPUT
+//#define HUB_DEBUG_OUTPUT
 
 #include <set>
 
@@ -48,11 +48,14 @@ std::ostream& operator<<( std::ostream& os, const Random& data ) {
 TEST_CASE( "InputOutput test" ) {
 //    using namespace testCoreIoCommon;
 
-//    hub::Any any;
+    std::cout << FILE_NAME << std::endl;
+    std::cout << FILE_NAME_WITHOUT_EXTENSION << std::endl;
+
+    //    hub::Any any;
 
 //    hub::io::Book book;
     hub::io::Archive archive;
-//    hub::io::Archive<hub::serializer::SerializerZppBits> archive;
+    //    hub::io::Archive<hub::serializer::SerializerZppBits> archive;
 //    hub::io::Archive<hub::serializer::SerializerImpl> archive;
 
     //////////////////////////////////

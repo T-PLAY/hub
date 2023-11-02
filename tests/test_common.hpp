@@ -107,8 +107,8 @@ static std::string s_latestFilename = "";
 #define REPORT_NEW_LINE _REPORT( "", FILE_NAME, __LINE__ )
 
 static void _checkValue( double value,
-                         int compare,
-                         int gap,
+                         double compare,
+                         double gap,
                          const std::string& name,
                          const std::string& filename,
                          int line ) {

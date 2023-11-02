@@ -66,10 +66,13 @@ struct BenchStat {
     ReadWriteStat readWriteDataPtrStat {};
 
     bool operator<( const BenchStat& benchStat ) const {
+        const auto fatorDataDataPtr = (double)readWriteDataStat.durationInNanoSecond / readWriteDataPtrStat.durationInNanoSecond;
+        const auto fatorDataDataPtr2 = (double)benchStat.readWriteDataStat.durationInNanoSecond / benchStat.readWriteDataPtrStat.durationInNanoSecond;
+        const auto fatorDataDataPtrMean = ( fatorDataDataPtr + fatorDataDataPtr2 ) / 2.0;
 
-        return readWriteDataStat.durationInNanoSecond + readWriteDataPtrStat.durationInNanoSecond <
+        return readWriteDataStat.durationInNanoSecond + readWriteDataPtrStat.durationInNanoSecond * fatorDataDataPtrMean <
                benchStat.readWriteDataStat.durationInNanoSecond +
-                   benchStat.readWriteDataPtrStat.durationInNanoSecond;
+                   benchStat.readWriteDataPtrStat.durationInNanoSecond * fatorDataDataPtrMean;
     }
     bool operator==( const BenchStat& benchStat ) const { return name == benchStat.name; }
 };

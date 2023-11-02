@@ -16,7 +16,7 @@ namespace book {
 //template <Size_t NumberOfCharacter = 1'000'000>
 //          class Characters         = std::array<unsigned char, NumberOfCharacter>>
 //class BookImpl : public InputOutputI
-template <Size_t NumberOfCharacter = 1'000'000, class Characters = std::array<unsigned char, NumberOfCharacter>, class InputOutputT = InputOutput<serializer::SerializerImpl>>
+template <Size_t NumberOfCharacter = MAX_STACK_SIZE, class Characters = std::array<unsigned char, NumberOfCharacter>, class InputOutputT = InputOutput<serializer::SerializerImpl>>
 //template <Size_t NumberOfCharacter = 1'000'000, class Characters = std::array<unsigned char, NumberOfCharacter>, class InputOutputT = InputOutput<serializer::SerializerZppBits>>
 //class BookImpl : public InputOutputImpl
 class BookImpl : public InputOutputT

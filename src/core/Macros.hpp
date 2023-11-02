@@ -223,11 +223,11 @@
 
 #ifdef WIN32
 //#define FILE_NAME __FILE__
-//#    define FILE_NAME std::string( __FILE__ ).substr( std::string(__FILE__).find_last_of( '\\' ) + 1 )
+#define FILE_NAME std::string( __FILE__ ).substr( std::string(__FILE__).find_last_of( '/' ) + 1 )
 
 //#define FILE_NAME strrchr( __FILE__, '\\' ) ? strrchr( __FILE__, '\\' ) + 1 : __FILE__
 
-#define FILE_NAME std::string( strrchr( __FILE__, '\\' ) ? strrchr( __FILE__, '\\' ) + 1 : __FILE__ )
+//#define FILE_NAME std::string( strrchr( __FILE__, '\\' ) ? strrchr( __FILE__, '\\' ) + 1 : __FILE__ )
 
 
 #else
@@ -236,6 +236,10 @@
 
 #define FILE_NAME_WITHOUT_EXTENSION FILE_NAME.substr(0, FILE_NAME.find_first_of('.'))
 
+#define HEADER \
+        "\033[" << std::to_string( 31 + reinterpret_cast<std::uintptr_t>( this ) % 7 ) \
+<< "m[" << FILE_NAME_WITHOUT_EXTENSION << ":" << (uintptr_t)this % 100 << "]\033[0m "
+
 //#if defined(OS_MACOS)
 //    #define MAX_NET_BUFFER_SIZE 256'000
 //#elif defined(OS_LINUX)
@@ -243,6 +247,12 @@
 //#elif defined(OS_WINDOWS)
 //    #define MAX_NET_BUFFER_SIZE 2'000'000
 //#endif
+
+#ifdef WIN32
+#define MAX_STACK_SIZE  100'000
+#else
+#define MAX_STACK_SIZE  1'000'000
+#endif
 
 #include <iostream>
 //#include <stdlib.h>
@@ -264,9 +274,6 @@
         typeid(t).name()
 #endif
 
-#define HEADER \
-        "\033[" << std::to_string( 31 + reinterpret_cast<std::uintptr_t>( this ) % 7 ) \
-<< "m[" << FILE_NAME_WITHOUT_EXTENSION << ":" << (uintptr_t)this % 100 << "]\033[0m "
 
 //#    ifdef HUB_USE_BOOST
 //        std::cout << HEADER_INPUT_MSG "read(T) : <"

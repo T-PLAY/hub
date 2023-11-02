@@ -21,7 +21,7 @@ namespace serializer {
 class SerializerZppBits : public SerializerI
 {
   public:
-    static constexpr Size_t BuffSize = 1'000'000;
+    static constexpr Size_t BuffSize = MAX_STACK_SIZE;
 
     template <class Output, class... Ts>
     void pack( Output& output, const Ts&... ts ) {
