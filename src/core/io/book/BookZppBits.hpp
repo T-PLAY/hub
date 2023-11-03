@@ -5,7 +5,7 @@
 #include <thread>
 #include <vector>
 
-#include "core/io/BasicInputOutput.hpp"
+#include "core/io/InputOutputI.hpp"
 
 
 #include "zpp_bits.h"
@@ -18,7 +18,7 @@ namespace book {
 //           class Characters         = std::array<unsigned char, NumberOfCharacter>>
 // template <zpp::bits::concepts::byte_view ByteView>
 template <Size_t NumberOfCharacter = MAX_STACK_SIZE, class Characters = std::array<unsigned char, NumberOfCharacter>>
-class BookZppBits : public BasicInputOutput
+class BookZppBits : public InputOutputI
 {
   public:
     //    template <class Characters>

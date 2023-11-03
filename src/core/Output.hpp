@@ -7,7 +7,7 @@
 
 #include "core/Macros.hpp"
 // #include "ioBase.hpp"
-#include "BasicOutput.hpp"
+#include "OutputI.hpp"
 #include "Serializer.hpp"
 
 namespace hub {
@@ -20,10 +20,11 @@ namespace hub {
 
 template <class SerializerT = Serializer>
 // class Output : public ioBase
-class Output : public BasicOutput
+class OutputT : public OutputI
 {
   public:
-    using BasicOutput::write;
+    using OutputI::write;
+
 
     //    template <typename T>
     //    using writable_t = decltype( std::declval<T>().write( std::declval<Output&>() ) );
@@ -39,7 +40,7 @@ class Output : public BasicOutput
 
   public:
     template <class T>
-    typename std::enable_if<writable_v<T>>::type write( const T& t ) {
+    typename std::enable_if<! notWritable_v<T> && writable_v<T>>::type write( const T& t ) {
 #ifdef HUB_DEBUG_OUTPUT
         std::cout << HEADER << "\033[1mwrite\033[0m(writable: " << TYPE_NAME( t ) << ") ..."
                   << std::endl;
@@ -53,7 +54,7 @@ class Output : public BasicOutput
     }
 
     template <class T>
-    typename std::enable_if<packable_v<T>>::type write( const T& t ) {
+    typename std::enable_if<! notWritable_v<T> && packable_v<T>>::type write( const T& t ) {
 #ifdef HUB_DEBUG_OUTPUT
         std::cout << HEADER << "write(packable: " << TYPE_NAME( t ) << ") = " << t << std::endl;
 #endif
@@ -62,7 +63,7 @@ class Output : public BasicOutput
     }
 
     template <class T>
-    typename std::enable_if<serializable_v<T>>::type write( const T& t ) {
+    typename std::enable_if<! notWritable_v<T> && serializable_v<T>>::type write( const T& t ) {
 #ifdef HUB_DEBUG_OUTPUT
         std::cout << HEADER << "\033[1mwrite\033[0m(serializable: " << TYPE_NAME( t ) << ") ..."
                   << std::endl;
@@ -76,7 +77,7 @@ class Output : public BasicOutput
     }
 
     template <class T>
-    typename std::enable_if<!writable_v<T> && !serializable_v<T> && !packable_v<T>>::type
+    typename std::enable_if<! notWritable_v<T> && !writable_v<T> && !serializable_v<T> && !packable_v<T>>::type
     write( const T& t ) {
 #ifdef HUB_DEBUG_OUTPUT
         std::cout << HEADER << "write(raw: " << TYPE_NAME( t ) << ") = " << t << std::endl;
@@ -131,5 +132,7 @@ class Output : public BasicOutput
   private:
     SerializerT m_serializer;
 };
+
+using Output = OutputT<>;
 
 } // namespace hub

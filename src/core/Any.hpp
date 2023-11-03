@@ -96,6 +96,23 @@ class SRC_API Any
         //            return std::string(TYPE_NAME(T)) + "*";
     };
 
+    Any(const Any & any)
+        : m_any(any.m_any)
+//        m_anyHelper{std::make_unique<Anyable::AnyHelper>(any.m_anyHelper)}
+    {
+//        m_anyHelper = std::make_unique<Anyable::AnyHelper>(any.m_anyHelper.get());
+        m_anyHelper = std::make_unique<Anyable::AnyHelper>(Anyable::s_anyables.at( any.type().hash_code() ));
+
+    }
+
+    Any & operator=(const Any & any)
+    {
+        m_any = any.m_any;
+        m_anyHelper = std::make_unique<Anyable::AnyHelper>(Anyable::s_anyables.at( any.type().hash_code() ));
+        return *this;
+    }
+
+
     template <class Output>
     void write(Output & output) const {
         const auto & hashCode = m_any.type().hash_code();
@@ -198,7 +215,7 @@ class SRC_API Any
     /// \brief to_string
     /// \return
     ///
-    //    std::string to_string() const;
+        std::string to_string() const;
 
 
 

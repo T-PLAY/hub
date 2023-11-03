@@ -363,7 +363,7 @@ int main() {
 
 //    const auto format = hub::sensor::resolution::format::RGB8;
 
-//    std::vector<int> dims { 640, 480, 3 };
+//    std::vector<int> nDim { 640, 480, 3 };
 
 //    //        hub::sensor::OutputSensorT outputSensor12{inputOutput, measures12, sensorSpec};
 //    const auto sensorSpec = hub::sensor::SensorSpec { "sensorName", resolutions };
@@ -385,12 +385,12 @@ int main() {
 
 //    assert( inputOutput.isEnd() );
 
-//    //    inputOutput << dims;
-//    inputOutput.write( dims );
+//    //    inputOutput << nDim;
+//    inputOutput.write( nDim );
 //    std::vector<int> dims_read;
 //    //    inputOutput >> dims_read;
 //    inputOutput.read( dims_read );
-//    assert( dims == dims_read );
+//    assert( nDim == dims_read );
 
 //    assert( inputOutput.isEnd() );
 

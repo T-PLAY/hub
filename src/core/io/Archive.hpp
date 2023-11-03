@@ -27,6 +27,7 @@ class ArchiveT : public InputOutputT
     using InputOutputT::write;
 
     void read( hub::Data_t* data, hub::Size_t size ) override {
+        assert(size > 0);
         assert( !m_datas.empty() );
         const auto& vector = m_datas.front();
 #ifdef HUB_DEBUG_INPUT
@@ -45,6 +46,7 @@ class ArchiveT : public InputOutputT
     }
 
     void write( const hub::Data_t* data, hub::Size_t size ) override {
+        assert(size > 0);
         std::vector<hub::Data_t> vector( data, data + size );
 #ifdef HUB_DEBUG_OUTPUT
         std::cout << HEADER << "write(Data_t*, Size_t) : data = " << vector << std::endl;

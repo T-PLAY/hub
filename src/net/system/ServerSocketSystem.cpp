@@ -14,7 +14,7 @@ namespace system {
 //}
 
 ServerSocketSystem::ServerSocketSystem( int port )
-//    : ServerSocketInterface(port),
+//    : ServerSocketI(port),
     : mPort( port )
 {
     m_serverSide = true;

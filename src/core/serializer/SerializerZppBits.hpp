@@ -30,6 +30,7 @@ class SerializerZppBits : public SerializerI
         out( ts... ).or_throw();
 
         const Size_t size = out.position();
+        assert(size > 0);
         assert( size < BuffSize );
         output.write( reinterpret_cast<const Data_t*>( &size ), sizeof( Size_t ) );
         output.write( m_serialBuff.data(), size );
@@ -39,6 +40,7 @@ class SerializerZppBits : public SerializerI
     void unpack( Input& input, Ts&... ts ) {
         Size_t size;
         input.read( reinterpret_cast<Data_t*>( &size ), sizeof( Size_t ) );
+        assert(size > 0);
         assert( size < BuffSize );
         input.read( m_serialBuff.data(), size );
 

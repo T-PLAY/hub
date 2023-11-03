@@ -7,10 +7,11 @@
 
 TEST_CASE( "SensorSpec test" ) {
 
-    hub::sensor::SensorSpec::MetaData metaData;
-    metaData["hello"] = 5;
-    metaData["name"]  = "gauthier";
-    //    hub::sensor::Resolution::Dims dims = { 1 };
+//    hub::sensor::SensorSpec::MetaData metaData;
+//    metaData["hello"] = 5;
+//    metaData["name"]  = "gauthier";
+
+    //    hub::sensor::Resolution::NDim nDim = { 1 };
 //    hub::sensor::Resolution resolution { hub::sensor::resolution::format::BGR8, 1 };
 //    hub::sensor::Resolutions resolutions { resolution };
 //    hub::sensor::SensorSpec sensorSpec { "sensorName", resolutions, metaData };

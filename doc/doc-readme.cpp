@@ -81,16 +81,16 @@ int main() {
         const auto& resolutions = inputSensor.getSpec().getResolutions();
         if ( resolutions.size() == 1 ) {
 #if ( __cplusplus >= 201703L )
-            const auto& [dims, format] = resolutions.at( 0 );
+            const auto& [nDim, format] = resolutions.at( 0 );
 #else
-            const auto& dims   = resolutions.at( 0 ).first;
+            const auto& nDim   = resolutions.at( 0 ).first;
             const auto& format = resolutions.at( 0 ).second;
 #endif
 
             // if compatible resolution for the client application
-            if ( dims.size() == 2 && format == hub::Format::BGR8 ) {
-                const auto& imageWidth  = dims.at( 0 );
-                const auto& imageHeight = dims.at( 1 );
+            if ( nDim.size() == 2 && format == hub::Format::BGR8 ) {
+                const auto& imageWidth  = nDim.at( 0 );
+                const auto& imageHeight = nDim.at( 1 );
 
                 while ( 1 ) {
                     // receive data

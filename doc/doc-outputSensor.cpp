@@ -18,8 +18,8 @@ int main() {
     constexpr int height = 100;
 
     hub::Format format = hub::Format::DENSITY;
-    hub::Dims dims     = { width, depth, height };
-    hub::Resolution resolution( { dims, format } );
+    hub::NDim nDim     = { width, depth, height };
+    hub::Resolution resolution( { nDim, format } );
     hub::Resolutions resolutions( { resolution } );
     hub::SensorSpec sensorSpec2( "sensorName", resolutions );
     std::cout << sensorSpec2.to_string() << std::endl;

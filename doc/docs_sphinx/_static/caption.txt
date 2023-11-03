@@ -375,7 +375,7 @@
 1661777892|2022-08-29 commit before change plain material to more complex (transparency)
 1661721762|2022-08-28 able to visualize dicom volume using transparency of slices
 1661692715|2022-08-28 cleanup Measure and Acquisition
-1661637628|2022-08-28 added measure class to split acquisition format and dims
+1661637628|2022-08-28 added measure class to split acquisition format and nDim
 1661610249|2022-08-27 auto start stream + clean exit
 1661602061|2022-08-27 commit before break stream viewer
 1661534478|2022-08-26 save last acquisition for pinging pending stream viewers

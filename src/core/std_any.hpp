@@ -1,4 +1,7 @@
 
+#include "Macros.hpp"
+#if CPLUSPLUS_VERSION <= 14
+
 //
 // Implementation of N4562 std::experimental::any (merged into C++17) for C++11 compilers.
 //
@@ -503,5 +506,7 @@ namespace std
         lhs.swap(rhs);
     }
 }
+
+#endif
 
 #endif

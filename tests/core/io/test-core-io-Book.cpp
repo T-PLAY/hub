@@ -62,7 +62,6 @@ static constexpr size_t s_maxDataSize   = 1'000'000;
     std::cout << "read/write ptr size: "
               << std::to_string( s_nReadWriteDataPtr * s_DataSizePtr / 1'000'000.0 ) << " Mo"
               << std::endl;
-    std::cout << std::endl;
 
     UserData data{ 'a', 5, "gauthier", { 0, 1, 2, 3, 4 } };
 

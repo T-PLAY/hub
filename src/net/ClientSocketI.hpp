@@ -5,7 +5,7 @@
 namespace hub {
 namespace net {
 
-class SRC_API ClientSocketInterface
+class SRC_API ClientSocketI
 {
   public:
     virtual void setIpv4( const std::string& newIpv4 ) = 0;

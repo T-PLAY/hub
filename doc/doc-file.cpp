@@ -27,9 +27,9 @@ hub::io::File inputFile( std::fstream( "file.txt", std::ios::binary | std::ios::
 
         hub::SensorSpec::MetaData metaData;
         hub::Format format = hub::Format::BGR8;
-        hub::Dims dims     = { 1 };
-        hub::Resolutions resolutions { { dims, format } };
-        hub::SensorSpec sensorSpec { "sensorName", { { dims, hub::Format::BGR8 } }, metaData };
+        hub::NDim nDim     = { 1 };
+        hub::Resolutions resolutions { { nDim, format } };
+        hub::SensorSpec sensorSpec { "sensorName", { { nDim, hub::Format::BGR8 } }, metaData };
         hub::SensorSpec sensorSpec2 {
             "sensorName", { { { 1 }, hub::Format::BGR8 }, { { 1, 2, 3 }, format } }, metaData };
         hub::SensorSpec sensorSpec3 { "sensorName", {}, metaData };

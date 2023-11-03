@@ -2,6 +2,8 @@
 // #define HUB_DEBUG_INPUT
 // #define HUB_DEBUG_OUTPUT
 
+#include <core/Macros.hpp>
+
 #if CPLUSPLUS_VERSION <= 14
 #    include "core/std_any.hpp"
 #else

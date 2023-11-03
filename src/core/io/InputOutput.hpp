@@ -21,7 +21,7 @@ namespace io {
 //using InputOutput = io::InputOutputI<SerializerT>;
 
 //template <class SerializerT = Serializer>
-template <class SerializerT = Serializer, class InputT = Input<SerializerT>, class OutputT = Output<SerializerT>>
+template <class SerializerT = Serializer, class InputT = InputT<SerializerT>, class OutputT = OutputT<SerializerT>>
 class InputOutput : public InputT, public OutputT {
   public:
     using InputT::read;

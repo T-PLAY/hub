@@ -20,7 +20,7 @@
 #include <core/Output.hpp>
 #include <core/io/Book.hpp>
 
-TEST_CASE( "InputOutput test" ) {
+TEST_CASE( "InputOutput speed compare test" ) {
     using namespace testCoreIoCommon;
 
 #ifdef HUB_DEBUG_OUTPUT
@@ -52,7 +52,7 @@ TEST_CASE( "InputOutput test" ) {
     std::cout << "nb read/write ptr: " << s_nReadWriteDataPtr << std::endl;
     std::cout << "read/write ptr size: " << s_nReadWriteDataPtr * s_DataSizePtr / 1'000'000.0
               << " Mo" << std::endl;
-    std::cout << std::endl;
+//    std::cout << std::endl;
 
     UserData userData{ 'a', 5, "gauthier", { 0, 1, 2, 3, 4 } };
     static_assert( !hub::packable_v<UserData> );

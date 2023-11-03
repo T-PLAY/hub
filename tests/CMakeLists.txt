@@ -8,6 +8,7 @@ else()
 #        set(LINK_LIBRARIES Catch2::Catch2WithMain hub)
         set(LINK_LIBRARIES Catch2::Catch2WithMain hub_static)
 endif()
+#set(LINK_LIBRARIES ${LINK_LIBRARIES} Threads::Threads)
 #set(LINK_LIBRARIES Catch2::Catch2WithMain hub PahoMqttCpp::paho-mqttpp3)
 
 find_package(Catch2 QUIET)
@@ -58,8 +59,10 @@ endforeach()
 list(APPEND test_headers ${CMAKE_CURRENT_SOURCE_DIR}/test_common.hpp)
 
 set(test_headers_src)
-list(REMOVE_ITEM test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/core/io/test_core_io_common.cpp)
-list(APPEND test_headers_src ${CMAKE_CURRENT_SOURCE_DIR}/core/io/test_core_io_common.cpp)
+if (BUILD_CORE)
+    list(REMOVE_ITEM test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/core/io/test_core_io_common.cpp)
+    list(APPEND test_headers_src ${CMAKE_CURRENT_SOURCE_DIR}/core/io/test_core_io_common.cpp)
+endif()
 
 
 #list(REMOVE_ITEM test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/server/test-server-end.cpp)
@@ -136,7 +139,7 @@ include(CTest)
 #target_sources(Continuous
 #  PRIVATE
 #    core/io/test-core-io-common.hpp
-#    core/io/test-core-common.cpp
+#    core/io/test_core_common.cpp
 #)
 enable_testing()
 foreach(testFile ${test_srcs})

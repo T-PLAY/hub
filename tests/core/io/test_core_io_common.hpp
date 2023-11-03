@@ -80,7 +80,7 @@ struct BenchStat {
 template <class BenchStats>
 void printStats( const BenchStats& benchStats ) {
 
-    std::cout << std::endl;
+//    std::cout << std::endl;
 
     //    for ( int iImpl = 0; iImpl < dataBenchStats.size(); ++iImpl ) {
     for ( const auto& dataBenchStat : benchStats ) {

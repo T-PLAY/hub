@@ -1,18 +1,18 @@
 #pragma once
 
 #include "core/Macros.hpp"
-#include "ClientSocketInterface.hpp"
+#include "ClientSocketI.hpp"
 
 namespace hub {
 namespace net {
 
-class SRC_API ServerSocketInterface
+class SRC_API ServerSocketI
 {
 //  public:
-//    explicit ServerSocketInterface(int port);
+//    explicit ServerSocketI(int port);
   public:
     virtual int getPort() const = 0;
-    ClientSocketInterface waitNewClient();
+    ClientSocketI waitNewClient();
 };
 
 } // namespace net

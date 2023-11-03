@@ -14,7 +14,7 @@ namespace boost {
 // }
 
 ServerSocketBoost::ServerSocketBoost( int port )
-    //    : ServerSocketInterface(port),
+    //    : ServerSocketI(port),
     :
     m_port( port ),
     m_acceptor( m_ioService,

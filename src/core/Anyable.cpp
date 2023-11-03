@@ -13,7 +13,7 @@ namespace hub {
 //namespace anyable {
 
 //std::map<size_t, Anyable::AnyHelper> Anyable::s_anyables = makeAnyHelperMap<void, int, double, std::string, const char*>();
-std::map<size_t, Anyable::AnyHelper> Anyable::s_anyables = makeAnyHelperMap<void>();
+std::map<decltype(typeid(void).hash_code()), Anyable::AnyHelper> Anyable::s_anyables = makeAnyHelperMap<void>();
 
 //} // namespace Anyable
 } // namespace hub

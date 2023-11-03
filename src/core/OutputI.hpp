@@ -7,14 +7,13 @@
 #include "core/ioBase.hpp"
 
 namespace hub {
-//namespace io {
-//namespace output {
+// namespace io {
+// namespace output {
 
-
-class BasicOutput : public ioBase
+class OutputI : public ioBase
 {
   public:
-        virtual void write( const Data_t* data, Size_t len ) = 0;
+    virtual void write( const Data_t* data, Size_t len ) = 0;
 
     //    void write() {};
 
@@ -28,7 +27,7 @@ class BasicOutput : public ioBase
 };
 
 template <typename T>
-using writable_t = decltype( std::declval<T>().write( std::declval<BasicOutput&>() ) );
+using writable_t = decltype( std::declval<T>().write( std::declval<OutputI&>() ) );
 //    using writable_t = decltype( write( std::declval<T>(), std::declval<OutputImpl&>() ) );
 
 template <typename T, typename = std::void_t<>>
@@ -39,6 +38,20 @@ struct writable<T, std::void_t<writable_t<T>>> : std::true_type {};
 
 template <typename T>
 static constexpr bool writable_v = writable<T>::value;
+
+////////////////////
+
+template <typename T>
+using notWritable_t = decltype( T::notWritable );
+
+template <typename T, typename = std::void_t<>>
+struct notWritable : std::false_type {};
+
+template <typename T>
+struct notWritable<T, std::void_t<notWritable_t<T>>> : std::true_type {};
+
+template <typename T>
+static constexpr bool notWritable_v = notWritable<T>::value;
 
 //} // namespace output
 //} // namespace io

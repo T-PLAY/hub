@@ -20,14 +20,15 @@ class Lambda
     float b  = 0.0f;
     double c = 0.0;
     std::vector<int> ds;
+    std::string e;
 
     template <class Serial>
     void serialize( Serial& serial ) {
-        serial( a, b, c, ds );
+        serial( a, b, c, ds, e );
     }
 
     friend std::ostream& operator<<( std::ostream& os, const Lambda& lambda ) {
-        os << lambda.a << " " << lambda.b << " " << lambda.c << " " << lambda.ds;
+        os << lambda.a << " " << lambda.b << " " << lambda.c << " " << lambda.ds << " " << lambda.e;
 //        for ( const auto& d : lambda.ds ) {
 //            os << d << " ";
 //        }
@@ -35,7 +36,7 @@ class Lambda
         return os;
     }
     bool operator==( const Lambda& lambda ) const {
-        return a == lambda.a && b == lambda.b && c == lambda.c && ds == lambda.ds;
+        return a == lambda.a && b == lambda.b && c == lambda.c && ds == lambda.ds && e == lambda.e;
     }
     //    Lambda() = default;
 };
@@ -55,10 +56,14 @@ class Lambda
 
     //    hub::io::InputOutput inputOutput;
     hub::io::Archive archive;
+    std::any std_any;
+    assert(! std_any.has_value());
 
     hub::Any any;
+    assert(any.type() == typeid(void));
     hub::Any any_read;
     assert( !any.hasValue() );
+    assert( !any_read.hasValue() );
     assert( any.type() == typeid( void ) );
     //    std::cout << any.type().name() << std::endl;
     std::cout << any << std::endl;
@@ -70,6 +75,7 @@ class Lambda
 #endif
         archive.write( any );
         archive.read( any_read );
+        assert(! any_read.hasValue());
         CHECK( any == any_read );
     }
 
@@ -174,7 +180,7 @@ class Lambda
     //    CHECK( i == hub::data::Mat4() );
 
     {
-        const Lambda lambda { 5, 0.0, 1.0f, { 0, 1, 2 } };
+        const Lambda lambda { 5, 0.0, 1.0f, { 0, 1, 2 }, "gauthier" };
 #ifdef HUB_DEBUG_OUTPUT
         std::cout << "\n------------------ " << TYPE_NAME( Lambda ) << " ---------------------\n";
 #endif
@@ -183,7 +189,7 @@ class Lambda
         any      = lambda;
         any_read = lambda;
         CHECK( any == any_read );
-        any_read = Lambda { 2, 0.0, 1.0f, { 0 } };
+        any_read = Lambda { 2, 0.0, 1.0f, { 0 }, "bouyjou" };
         CHECK( any != any_read );
         std::cout << any << std::endl;
         CHECK( any.is<Lambda>() );
@@ -199,6 +205,5 @@ class Lambda
     //    std::cout << "any typeid: " << any.typeId().name() << std::endl;
     //    std::cout << any << std::endl;
 
-    std::cout << std::endl;
     std::cout << "any supported types : " << hub::Anyable::supportedTypes() << std::endl;
 }

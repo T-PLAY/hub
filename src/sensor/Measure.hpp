@@ -25,102 +25,102 @@
 namespace hub {
 namespace sensor {
 
-class Measure
-{
-  public:
+//class Measure
+//{
+//  public:
 
-    // io
-//    static constexpr Size_t ioGetSize() { return sizeof( Measure ) - sizeof( Data_t* ); }
-//    const Data_t* ioGetData() const { return (Data_t*)&m_format; }
-//    void ioSetData( const Data_t* data, Size_t size ) { memcpy( &m_format, data, size ); }
-//    constexpr std::string ioTypeName() const { return "Measure"; }
-    // end io
+//    // io
+////    static constexpr Size_t ioGetSize() { return sizeof( Measure ) - sizeof( Data_t* ); }
+////    const Data_t* ioGetData() const { return (Data_t*)&m_format; }
+////    void ioSetData( const Data_t* data, Size_t size ) { memcpy( &m_format, data, size ); }
+////    constexpr std::string ioTypeName() const { return "Measure"; }
+//    // end io
 
-//    constexpr auto nDim() const { return m_nDim; }
+////    constexpr auto nDim() const { return m_nDim; }
 
-//    constexpr std::string name() const {
-//        std::string str = "<";
-//        str += m_format.name();
-//        str += ":";
-//        for ( Size_t i = 0; i < m_nDim; ++i ) {
-//            str += std::to_string( m_dims[i] );
-//            if ( i != nDim() - 1 ) str += "x";
-//            //            ++i;
-//        }
-//        str += ">";
-//        return str;
+////    constexpr std::string name() const {
+////        std::string str = "<";
+////        str += m_format.name();
+////        str += ":";
+////        for ( Size_t i = 0; i < m_nDim; ++i ) {
+////            str += std::to_string( m_dims[i] );
+////            if ( i != nDim() - 1 ) str += "x";
+////            //            ++i;
+////        }
+////        str += ">";
+////        return str;
+////    }
+
+//    constexpr auto nByte() const {
+//        return m_resolution.nByte();
+////        auto size = m_format.nByte();
+////        for ( Size_t i = 0; i < m_nDim; ++i ) {
+////            size *= m_dims[i];
+////        }
+////        return size;
 //    }
 
-    constexpr auto nByte() const {
-        return m_resolution.nByte();
-//        auto size = m_format.nByte();
-//        for ( Size_t i = 0; i < m_nDim; ++i ) {
-//            size *= m_dims[i];
-//        }
-//        return size;
-    }
+////    Measure( Format format, std::initializer_list<Size_t> nDim ) : m_format( format ) {
+////        assert( nDim.size() <= s_maxDim );
+////        std::vector<Size_t> dimsVector = nDim;
+////        for ( int i = 0; i < dimsVector.size(); ++i ) {
+////            m_dims[i] = dimsVector.at( i );
+////        }
+////        m_nDim = dimsVector.size();
+////    }
 
-//    Measure( Format format, std::initializer_list<Size_t> dims ) : m_format( format ) {
-//        assert( dims.size() <= s_maxDim );
-//        std::vector<Size_t> dimsVector = dims;
-//        for ( int i = 0; i < dimsVector.size(); ++i ) {
-//            m_dims[i] = dimsVector.at( i );
-//        }
-//        m_nDim = dimsVector.size();
+//    template <typename ResolutionT>
+//    Measure( ResolutionT resolution, Data_t * const data )
+//        : m_resolution( std::forward<Resolution>(resolution) )
+//        , m_data(data)
+//    {
 //    }
 
-    template <typename ResolutionT>
-    Measure( ResolutionT resolution, Data_t * const data )
-        : m_resolution( std::forward<Resolution>(resolution) )
-        , m_data(data)
-    {
-    }
+////    Measure() = default;
 
-//    Measure() = default;
+//    constexpr bool operator==( const Measure& measure ) const {
+//        return m_resolution == measure.m_resolution && ! std::memcmp(m_data, measure.m_data, nByte());
+////        return nByte() == measure.nByte() && nDim() == measure.nDim();
+//    }
 
-    constexpr bool operator==( const Measure& measure ) const {
-        return m_resolution == measure.m_resolution && ! std::memcmp(m_data, measure.m_data, nByte());
-//        return nByte() == measure.nByte() && nDim() == measure.nDim();
-    }
-
-//    void setData( Data_t* const data ) {
+////    void setData( Data_t* const data ) {
+////        assert( data != nullptr );
+////        m_data = data;
+////    }
+//    void setData( const Data_t* const data, Size_t size ) {
+//        assert( m_data != nullptr );
+//        assert( nByte() == size );
 //        assert( data != nullptr );
-//        m_data = data;
+//        std::memcpy( m_data, data, size );
 //    }
-    void setData( const Data_t* const data, Size_t size ) {
-        assert( m_data != nullptr );
-        assert( nByte() == size );
-        assert( data != nullptr );
-        std::memcpy( m_data, data, size );
-    }
 
-    SRC_API friend std::ostream& operator<<( std::ostream& os, const Measure& measure );
-    //  private:
-    const Resolution & getResolution() const;
+//    SRC_API friend std::ostream& operator<<( std::ostream& os, const Measure& measure );
+//    //  private:
+//    const Resolution & getResolution() const;
 
-    Data_t *getData() const;
+//    Data_t *getData() const;
 
-  private:
-//    static constexpr auto s_maxDim = 3;
-    const Resolution m_resolution;
-    Data_t* const m_data               = nullptr;
+//  private:
+////    static constexpr auto s_maxDim = 3;
+//    const Resolution m_resolution;
+//    Data_t* const m_data               = nullptr;
 
-//    using nByte = Resolution::nByte;
+////    using nByte = Resolution::nByte;
 
-//    Format m_format;
-//    Size_t m_nDim = 0;
-    //    Size_t m_dims[s_maxDim];
-};
+////    Format m_format;
+////    Size_t m_nDim = 0;
+//    //    Size_t m_dims[s_maxDim];
+//};
 
-inline Data_t *Measure::getData() const
-{
-    return m_data;
-}
+//inline Data_t *Measure::getData() const
+//{
+//    return m_data;
+//}
 
-using Measures = std::vector<Measure>;
+//using Measures = std::vector<Measure>;
 
-//SRC_API friend std::ostream& operator<<( std::ostream& os, const Measures& measures );
-std::ostream& operator<<( std::ostream& os, const Measures& measures );
+////SRC_API friend std::ostream& operator<<( std::ostream& os, const Measures& measures );
+//std::ostream& operator<<( std::ostream& os, const Measures& measures );
 
 ///**************************************************************************************
 
@@ -206,7 +206,7 @@ std::ostream& operator<<( std::ostream& os, const Measures& measures );
 ////////////////////////////////////////////// TEMPLATES
 ////////////////////////////////////////////////////////////////////////////
 
-//template <Format format, Size_t... Dims>
+//template <Format format, Size_t... NDim>
 //class MeasureT
 //{
 //  public:
@@ -214,20 +214,20 @@ std::ostream& operator<<( std::ostream& os, const Measures& measures );
 //    static constexpr auto nByte() {
 //        auto size = format.nByte;
 //        //        size = std::accumulate()
-//        for ( auto dim : { Dims... } )
+//        for ( auto dim : { NDim... } )
 //            size *= dim;
 //        return size;
 //    }
 //    static constexpr auto nDim() {
 //        auto nDim = 0;
-//        for ( auto n : { Dims... } ) {
+//        for ( auto n : { NDim... } ) {
 //            ++nDim;
 //        }
 //        return nDim;
 //    }
 //    static constexpr auto getDim( int iDim ) {
 //        auto i = 0;
-//        for ( auto dim : { Dims... } ) {
+//        for ( auto dim : { NDim... } ) {
 //            if ( i == iDim ) return dim;
 //            ++i;
 //        }
@@ -238,12 +238,12 @@ std::ostream& operator<<( std::ostream& os, const Measures& measures );
 //        str += format.name;
 //        str += ":";
 //        Size_t i = 0;
-//        for ( auto dim : { Dims... } ) {
+//        for ( auto dim : { NDim... } ) {
 //            str += std::to_string( dim );
 //            if ( i != nDim() - 1 ) str += "x";
 //            ++i;
 //        }
-//        //            int _[]  = { ( str += std::to_string(Dims) + ", " )... };
+//        //            int _[]  = { ( str += std::to_string(NDim) + ", " )... };
 //        str += ">";
 //        return str;
 //    }
@@ -293,8 +293,8 @@ std::ostream& operator<<( std::ostream& os, const Measures& measures );
 //    unsigned char* m_data = nullptr;
 //};
 
-//template <Format format, Size_t... Dims>
-//std::ostream& operator<<( std::ostream& os, const MeasureT<format, Dims...>& measure ) {
+//template <Format format, Size_t... NDim>
+//std::ostream& operator<<( std::ostream& os, const MeasureT<format, NDim...>& measure ) {
 
 //    os << measure.typeName();
 //    os << " = ";
@@ -324,7 +324,7 @@ std::ostream& operator<<( std::ostream& os, const Measures& measures );
 //////////////////////////////////////////////////////////////////////////////////
 
 //template <typename... MeasureT>
-//// template <Format, Measure<Format format, int... Dims>... Measure>
+//// template <Format, Measure<Format format, int... NDim>... Measure>
 //class MeasuresT
 //{
 //  public:

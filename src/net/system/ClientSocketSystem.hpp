@@ -2,7 +2,7 @@
 
 #include <mutex>
 
-#include "net/ClientSocketInterface.hpp"
+#include "net/ClientSocketI.hpp"
 
 //#include "io/InputOutput.hpp"
 #include "SocketSystem.hpp"
@@ -18,7 +18,7 @@ namespace system {
 /// This class describes the functionality needed to open a remote communication.
 ///
 //class SRC_API ClientSocketSystem : public Socket, public io::InputOutput
-class SRC_API ClientSocketSystem : public ClientSocketInterface, public SocketSystem
+class SRC_API ClientSocketSystem : public ClientSocketI, public SocketSystem
 {
   public:
 //    ClientSocketSystem();

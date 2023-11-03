@@ -69,6 +69,13 @@ std::ostream& operator<<( std::ostream& os, const Any& any ) {
     return os;
 }
 
+ std::string Any::to_string() const {
+    std::stringstream sstream;
+    sstream << *this;
+    return sstream.str();
+//         std::string ret = "'" + Any::typeName() + "' = " + anyValue2string( *this );
+ }
+
 
 bool Any::operator==( const Any& any ) const {
 //    assert( hasValue() );
@@ -404,8 +411,6 @@ bool Any::operator==( const Any& any ) const {
 //     return os;
 // }
 
-// std::string Any::to_string() const {
-//     //    std::string ret = "'" + Any::typeName() + "' = " + anyValue2string( *this );
 
 //    //    const auto& any = *this;
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "net/ServerSocketInterface.hpp"
+#include "net/ServerSocketI.hpp"
 
 #include "ClientSocketSystem.hpp"
 #include "SocketSystem.hpp"
@@ -13,7 +13,7 @@ namespace system {
 /// \brief The ServerSocketSystem class
 /// enable the server application to listen client sockets (streamer, viewer).
 ///
-class SRC_API ServerSocketSystem : public ServerSocketInterface, public SocketSystem
+class SRC_API ServerSocketSystem : public ServerSocketI, public SocketSystem
 {
   public:
     ///

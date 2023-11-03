@@ -42,14 +42,14 @@ static constexpr int s_format2nByte[static_cast<int>( Format::COUNT )] = {
     1,
 };
 
-template <Format format, int... Dims>
+template <Format format, int... NDim>
 class Measure
 {
   public:
     static constexpr int size() {
         //        return m_size;
         int p = s_format2nByte[static_cast<int>( format )];
-        for ( auto n : { Dims... } )
+        for ( auto n : { NDim... } )
             p *= n;
         return p;
     }
@@ -137,7 +137,7 @@ class Measures
 //}
 
 // template <typename Measure>
-////template <typename T, Format format, int... Dims>
+////template <typename T, Format format, int... NDim>
 // class Measure {
 //   public:
 
@@ -512,7 +512,7 @@ class InputData : public Input
 // using Resolutions = <Resolution...>;
 
 // template < resolution>
-// template <Format format, int... Dims>
+// template <Format format, int... NDim>
 
 
 int main() {

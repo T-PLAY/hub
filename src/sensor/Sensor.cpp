@@ -1,13 +1,13 @@
 #include "Sensor.hpp"
 
-#include <iostream>
+//#include <iostream>
 
-namespace hub {
-namespace sensor {
+//namespace hub {
+//namespace sensor {
 
-Sensor::Sensor( const SensorSpec& sensorSpec ) : m_spec( std::move( sensorSpec ) ) {}
+//Sensor::Sensor( const SensorSpec& sensorSpec ) : m_spec( std::move( sensorSpec ) ) {}
 
-Sensor::~Sensor() {}
+//Sensor::~Sensor() {}
 
-} // namespace sensor
-} // namespace hub
+//} // namespace sensor
+//} // namespace hub

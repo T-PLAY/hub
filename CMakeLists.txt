@@ -21,6 +21,7 @@ set(CMAKE_FIND_PACKAGE_NO_SYSTEM_PACKAGE_REGISTRY False)
 #endif()
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++2a")
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 if(WIN32)
     add_definitions(-DCPLUSPLUS_VERSION=${CMAKE_CXX_STANDARD})
 endif()
@@ -142,13 +143,42 @@ endif()
 
 add_definitions(-DHUB_PROJECT_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/\")
 
-find_package(Boost QUIET)
+find_package(Boost QUIET) # tcp socket communication
 if (Boost_FOUND)
     add_definitions(-DHUB_USE_BOOST)
 #    target_compile_definitions(${TARGET_NAME} PUBLIC -DHUB_USE_BOOST)
 endif()
 
-set(HUB_USE_ZPP_BITS 0)
+find_package(OpenCV QUIET) # tcp socket communication
+if (OpenCV_FOUND)
+    add_definitions(-DHUB_USE_OPENCV)
+    link_libraries(${OpenCV_LIBS})
+endif()
+
+find_package(Eigen3 QUIET) # tcp socket communication
+if (Eigen3_FOUND)
+    add_definitions(-DHUB_USE_EIGEN3)
+endif()
+
+#find_package(OpenEXR QUIET) # tcp socket communication
+#if (OpenEXR_FOUND)
+##    message(FATAL_ERROR "error")
+##    add_definitions(-DHUB_USE_OIMAGEIO)
+#    link_libraries(OpenEXR)
+##    link_libraries(${OpenImageIO_LIBRARIES})
+#endif()
+
+#find_package(OpenImageIO QUIET) # tcp socket communication
+#if (OpenImageIO_FOUND)
+###    message(FATAL_ERROR "error")
+##    add_definitions(-DHUB_USE_OIMAGEIO)
+#    link_libraries(OpenImageIO)
+#    link_libraries(${OpenImageIO_LIBRARIES})
+#    include_directories(${OpenImageIO_INCLUDE_DIRS})
+##    link_libraries(Threads::Threads)
+#endif()
+
+set(HUB_USE_ZPP_BITS 0) # serializer
 if (CMAKE_CXX_STANDARD GREATER_EQUAL 20)
 #    option(HUB_USE_ZPP_BITS "Use zpp_bits.h for input/output serialization" ON)
     set(HUB_USE_ZPP_BITS 1)
@@ -157,13 +187,11 @@ endif()
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
 
-
-set(HUB_SOURCE_DIRS "core") # allowed
+#set(HUB_SOURCE_DIRS "core") # allowed
 #set(HUB_SOURCE_DIRS "net") # allowed
+set(HUB_SOURCE_DIRS "core" "sensor")
 #set(HUB_SOURCE_DIRS "sensor")
-#set(HUB_SOURCE_DIRS "core" "sensor")
 #set(HUB_SOURCE_DIRS "io")
-#set(HUB_SOURCE_DIRS "core" "io")
 #set(HUB_SOURCE_DIRS "data")
 #set(HUB_SOURCE_DIRS "impl")
 #set(HUB_SOURCE_DIRS "client")
@@ -190,6 +218,11 @@ set(HUB_SOURCE_DIRS "core") # allowed
 #set(HUB_INCLUDE_DIR "net")
 #set(HUB_INCLUDE_DIR ".")
 #set(HUB_INCLUDE_DIR ${HUB_SOURCE_DIR})
+foreach(HUB_SOURCE_DIR ${HUB_SOURCE_DIRS})
+    string(TOUPPER ${HUB_SOURCE_DIR} UPPER_SOURCE_DIR)
+    set(BUILD_${UPPER_SOURCE_DIR} 1)
+endforeach()
+
 set(HUB_EXTERNAL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/external")
 
 add_subdirectory(src)

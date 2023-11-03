@@ -1,6 +1,6 @@
 #pragma once
 
-#include "net/ServerSocketInterface.hpp"
+#include "net/ServerSocketI.hpp"
 
 #include "ClientSocketBoost.hpp"
 //#include "SocketSystem.hpp"
@@ -32,8 +32,8 @@ namespace boost {
 /// \brief The ServerSocketBoost class
 /// enable the server application to listen client sockets (streamer, viewer).
 ///
-//class SRC_API ServerSocketBoost : public ServerSocketInterface, public SocketSystem
-class SRC_API ServerSocketBoost : public ServerSocketInterface
+//class SRC_API ServerSocketBoost : public ServerSocketI, public SocketSystem
+class SRC_API ServerSocketBoost : public ServerSocketI
 {
   public:
     ///

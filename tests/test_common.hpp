@@ -1,22 +1,22 @@
 
 #include <catch2/catch_test_macros.hpp>
 
-//#include <algorithm>
+// #include <algorithm>
 #include <cmath>
-//#include <ctime>
+// #include <ctime>
 #include <fstream>
-//#include <random>
-//#include <set>
+// #include <random>
+// #include <set>
 #include <iostream>
 #include <thread>
 
-//#include <io/input/Input.hpp>
-//#include <io/output/Output.hpp>
-//#include <sensor/Acquisition.hpp>
-//#include <sensor/InputSensor.hpp>
-//#include <sensor/OutputSensor.hpp>
+// #include <io/input/Input.hpp>
+// #include <io/output/Output.hpp>
+// #include <sensor/Acquisition.hpp>
+// #include <sensor/InputSensor.hpp>
+// #include <sensor/OutputSensor.hpp>
 
-//#include "Macros.hpp"
+// #include "Macros.hpp"
 #include <Version.hpp>
 
 #define GET_RANDOM_PORT getRandomPort( __FILE__ )
@@ -30,14 +30,13 @@ static int getRandomPort( const char* filename ) {
     // #endif
     srand( (unsigned)time( NULL ) );
     constexpr int offset      = 6000;
-    const unsigned int random = static_cast<int>(std::hash<std::string>()( filename )) + rand();
+    const unsigned int random = static_cast<int>( std::hash<std::string>()( filename ) ) + rand();
     const unsigned int ret    = offset + random % ( 65535 - offset );
     assert( offset <= ret && ret < 65536 );
-//    assert( ret != hub::io::StreamServer::s_defaultPort );
+    //    assert( ret != hub::io::StreamServer::s_defaultPort );
     std::cout << "using random port: " << ret << std::endl;
     return ret;
 }
-
 
 static std::string ReplaceAll( std::string str, const std::string& from, const std::string& to ) {
     size_t start_pos = 0;
@@ -48,39 +47,68 @@ static std::string ReplaceAll( std::string str, const std::string& from, const s
     return str;
 }
 
-#define START_REPORT()                                                                             \
-    std::ofstream file( "report.txt" );                                                            \
-    assert( file.is_open() );                                                                      \
-    file << std::endl;                                                                             \
-    file << std::endl;                                                                             \
-    file << "####################################################################################" \
-            "##\n"                                                                                 \
-         << "#################################### START REPORT "                                   \
-            "####################################\n"                                               \
-         << "####################################################################################" \
-        "##\n";                                                                                 \
-    file.close();
+#define START_REPORT()                  \
+    std::ofstream file( "report.txt" ); \
+    assert( file.is_open() );
+//    file << std::endl;                                                                             \
+//    file << std::endl;                                                                             \
+//    file << "####################################################################################" \
+//            "##\n"                                                                                 \
+//         << "#################################### START REPORT "                                   \
+//            "####################################\n"                                               \
+//         << "####################################################################################" \
+//            "##";                                                                                  \
+//    file.close();
 
-#define END_REPORT()                                                                               \
-    std::ofstream file( "report.txt", std::ios::app );                                             \
-    assert( file.is_open() );                                                                      \
-    file << std::endl;                                                                             \
-    file << "####################################################################################" \
-            "##\n"                                                                                 \
-         << "#################################### END REPORT "                                     \
-            "######################################\n"                                               \
-         << "####################################################################################" \
-            "##\n"                                                                                 \
-         << std::endl                                                                              \
-         << std::endl;                                                                             \
-    file.close();
+#define END_REPORT() (void)0
 
-#define PRINT_REPORT()                      \
-    do {                                    \
-        std::ifstream file( "report.txt" ); \
-        assert( file.is_open() );           \
-        std::cout << file.rdbuf();          \
-        file.close();                       \
+//    std::ofstream file( "report.txt", std::ios::app );                                             \
+//    assert( file.is_open() );                                                                      \
+//    file << std::endl;                                                                             \
+//    file << "####################################################################################" \
+//            "##\n"                                                                                 \
+//         << "##################################### END REPORT "                                    \
+//            "#####################################\n"                                              \
+//         << "####################################################################################" \
+//            "##\n"                                                                                 \
+//         << std::endl                                                                              \
+//         << std::endl;                                                                             \
+//    file.close();
+
+#define PRINT_REPORT()                                                                           \
+    do {                                                                                         \
+        std::ifstream file( "report.txt" );                                                      \
+        file.seekg( 0, std::ios::end );                                                          \
+        auto len = file.tellg();                                                                 \
+        if ( file.is_open() && len != 0 ) {                                                      \
+            std::cout                                                                            \
+                << std::endl                                                                     \
+                << std::endl                                                                     \
+                << "###########################################################################" \
+                   "#########"                                                                   \
+                   "##\n"                                                                        \
+                << "#################################### START REPORT "                          \
+                   "####################################\n"                                      \
+                << "###########################################################################" \
+                   "#########"                                                                   \
+                   "##"                                                                          \
+                << std::endl;                                                                    \
+            file.seekg( 0, std::ios::beg );                                                      \
+            std::cout << file.rdbuf();                                                           \
+            std::cout                                                                            \
+                << std::endl                                                                     \
+                << "###########################################################################" \
+                   "#########"                                                                   \
+                   "##\n"                                                                        \
+                << "##################################### END REPORT "                           \
+                   "#####################################\n"                                     \
+                << "###########################################################################" \
+                   "#########"                                                                   \
+                   "##\n"                                                                        \
+                << std::endl                                                                     \
+                << std::endl;                                                                    \
+        }                                                                                        \
+        file.close();                                                                            \
     } while ( false );
 
 static std::string s_latestFilename = "";
@@ -106,6 +134,8 @@ static std::string s_latestFilename = "";
 #define REPORT( _params ) _REPORT( _params, FILE_NAME, __LINE__ )
 #define REPORT_NEW_LINE _REPORT( "", FILE_NAME, __LINE__ )
 
+/////////////////////////////////////////////////////////////////////////////////
+
 static void _checkValue( double value,
                          double compare,
                          double gap,
@@ -121,28 +151,29 @@ static void _checkValue( double value,
                   << compare - gap << " <= " << value << " <= " << compare + gap << std::endl;
     }
 
-    //std::cout << "[checkValue] name: '" << name << "'" << std::endl;
-    //std::cout << "[checkValue] filename: '" << filename << "'" << std::endl;
+    // std::cout << "[checkValue] name: '" << name << "'" << std::endl;
+    // std::cout << "[checkValue] filename: '" << filename << "'" << std::endl;
 
     //    std::ofstream file("ouou", std::ios::app);
     std::string name2 = name;
     //    name2.replace(name2.begin(), name2.end(), '/', '-');
-//    if ()
+    //    if ()
     name2 = ReplaceAll( name2, "/", "_vs_" );
     name2 = ReplaceAll( name2, ":", "_" );
     name2 = ReplaceAll( name2, " ", "" );
-//    std::remove( name2.begin(), name2.end(), ' ' );
-//    name2.erase( std::remove_if( name2.begin(), name2.end(), std::isspace ), name2.end() );
+    //    std::remove( name2.begin(), name2.end(), ' ' );
+    //    name2.erase( std::remove_if( name2.begin(), name2.end(), std::isspace ), name2.end() );
 
     constexpr auto extension = ".log";
 
-    //std::cout << "[checkValue] name2: '" << name2 << "'" << std::endl;
+    // std::cout << "[checkValue] name2: '" << name2 << "'" << std::endl;
 
-    //std::string rootPath = HUB_TESTS_BIN_DIR;
+    // std::string rootPath = HUB_TESTS_BIN_DIR;
 
     //    std::cout << "checkRatio " << filename << std::endl;
     {
-        std::ofstream logFile( ( filename + "_" + name2 + extension ).c_str(), std::ios::out | std::ios::app );
+        std::ofstream logFile( ( filename + "_" + name2 + extension ).c_str(),
+                               std::ios::out | std::ios::app );
         assert( logFile.is_open() );
 
         logFile << HUB_COMMIT_HASH << " " << value << " " << unit << std::endl;
@@ -206,7 +237,7 @@ static void _checkValue( double value,
 
         std::string report;
 
-        const int nMean    = static_cast<int>(std::log2( nEl )) + 1;
+        const int nMean    = static_cast<int>( std::log2( nEl ) ) + 1;
         const auto meanAll = sumRatios[nMean - 1] / std::pow( 2.0, nMean - 1 );
 
         for ( int iMean = 0; iMean < nMean; ++iMean ) {
@@ -256,18 +287,17 @@ static void _checkValue( double value,
 
 #define CHECK_VALUE( ... ) _checkValue( __VA_ARGS__, FILE_NAME, __LINE__ )
 
+// template <typename T>
+// bool areEnd( T&& t ) {
+//     return t.isEnd();
+// }
 
-//template <typename T>
-//bool areEnd( T&& t ) {
-//    return t.isEnd();
-//}
+// template <typename T, typename... Inputs>
+// bool areEnd( T&& t, Inputs&&... args ) {
+//     return t.isEnd() && areEnd( args... );
+// }
 
-//template <typename T, typename... Inputs>
-//bool areEnd( T&& t, Inputs&&... args ) {
-//    return t.isEnd() && areEnd( args... );
-//}
-
-//template <typename Input>
-//Input sync( Input&& input ) {
-//    return input;
-//}
+// template <typename Input>
+// Input sync( Input&& input ) {
+//     return input;
+// }

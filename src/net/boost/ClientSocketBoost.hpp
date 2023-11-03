@@ -3,7 +3,7 @@
 #include <boost/asio.hpp>
 #include <boost/asio/ip/tcp.hpp>
 
-#include "net/ClientSocketInterface.hpp"
+#include "net/ClientSocketI.hpp"
 
 
 namespace hub {
@@ -16,8 +16,8 @@ namespace boost {
 /// This class describes the functionality needed to open a remote communication.
 ///
 //class SRC_API ClientSocketBoost : public Socket, public io::InputOutput
-//class SRC_API ClientSocketBoost : public ClientSocketInterface, public SocketSystem
-class SRC_API ClientSocketBoost : public ClientSocketInterface
+//class SRC_API ClientSocketBoost : public ClientSocketI, public SocketSystem
+class SRC_API ClientSocketBoost : public ClientSocketI
 {
   public:
 //    ClientSocketBoost();

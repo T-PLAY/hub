@@ -23,7 +23,6 @@ if (HUB_BUILD_MQTT)
     endif()
 endif()
 
-#find_package(Boost QUIET)
 
 option(HUB_ENABLE_COVERAGE "Collect coverage from hub library (required tests enable)" OFF)
 if(HUB_ENABLE_COVERAGE)

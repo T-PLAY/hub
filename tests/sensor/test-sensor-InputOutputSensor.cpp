@@ -3,8 +3,8 @@
 
 #include <vector>
 
-#include "core/test-core-common.hpp"
-#include "sensor/test-sensor-common.hpp"
+#include "core/test_core_common.hpp"
+#include "sensor/test_sensor_common.hpp"
 
 #include <sensor/InputSensor.hpp>
 #include <sensor/OutputSensor.hpp>
@@ -144,28 +144,28 @@ TEST_CASE( "InputSensor test" ) {
 
 
 ////        constexpr auto dims2 = std::vector<int>{1, 2, 3};
-////        const hub::sensor::Resolution::Dims& dims = { 1, 2, 3 };
-////        inputOutput.write( dims );
+////        const hub::sensor::Resolution::NDim& nDim = { 1, 2, 3 };
+////        inputOutput.write( nDim );
 ////        std::cout << "start reading" << std::endl;
-////        hub::sensor::Resolution::Dims dims_read;
+////        hub::sensor::Resolution::NDim dims_read;
 ////        inputOutput.read( dims_read );
-////        assert( dims == dims_read );
+////        assert( nDim == dims_read );
 
-////        inputOutput.write( dims );
-////        auto dims_read2 = inputOutput.get<hub::sensor::Resolution::Dims>();
-////        assert( dims == dims_read2 );
+////        inputOutput.write( nDim );
+////        auto dims_read2 = inputOutput.get<hub::sensor::Resolution::NDim>();
+////        assert( nDim == dims_read2 );
 
 ////        static_assert(hub::Input::serializable_v<hub::sensor::Resolution>);
 //        static_assert(! hub::serializable_v<hub::sensor::Resolution>);
 //        static_assert(! hub::Output::writable_v<hub::sensor::Resolution>);
 //        static_assert(! hub::Input::readable_v<hub::sensor::Resolution>);
 
-//        constexpr auto dims0D = hub::sensor::resolution::Dims{};
+//        constexpr auto dims0D = hub::sensor::resolution::NDim{};
 //        static_assert(dims0D.n() == 0);
 //        static_assert(dims0D.capacity() == 1);
 //        static_assert(dims0D.ns[0] == 0);
 
-//        constexpr auto dims1D = hub::sensor::resolution::Dims{640};
+//        constexpr auto dims1D = hub::sensor::resolution::NDim{640};
 ////        static_assert(dims1D.n() == 640);
 ////        dims1D.width();
 ////        dims1D.height();
@@ -178,7 +178,7 @@ TEST_CASE( "InputSensor test" ) {
 //        static_assert(dims1D.capacity() == 640);
 ////        dims1D.width();
 
-//        constexpr auto dims2D = hub::sensor::resolution::Dims{640, 480};
+//        constexpr auto dims2D = hub::sensor::resolution::NDim{640, 480};
 ////        static_assert(dims2D.width() == 640);
 ////        static_assert(dims2D.height() == 480);
 //        static_assert(dims2D.n() == 2);
@@ -195,7 +195,7 @@ TEST_CASE( "InputSensor test" ) {
 //        static_assert((hub::Size_t)4294967295 == 0xffffffff);
 //        static_assert((hub::Size_t)4294967296 == 0);
 //        static_assert((hub::Size_t)4294967297 == 1);
-//        constexpr auto dims3D = hub::sensor::resolution::Dims{640, 480, 1};
+//        constexpr auto dims3D = hub::sensor::resolution::NDim{640, 480, 1};
 ////        static_assert(dims2D.width() == 640);
 ////        static_assert(dims2D.height() == 480);
 ////        static_assert(dims3D.size() == 3);
@@ -214,12 +214,12 @@ TEST_CASE( "InputSensor test" ) {
 
 
 
-//        std::cout << "dims:" << std::endl;
+//        std::cout << "nDim:" << std::endl;
 
 //        inputOutput.write(dims3D);
-////        hub::sensor::resolution::Dims dims_read;
+////        hub::sensor::resolution::NDim dims_read;
 ////        inputOutput.read(dims_read);
-//        const auto dims_read = inputOutput.get<hub::sensor::resolution::Dims>();
+//        const auto dims_read = inputOutput.get<hub::sensor::resolution::NDim>();
 //        assert(dims3D == dims_read);
 ////        static_assert(dims_read == dims3D);
 
@@ -235,12 +235,12 @@ TEST_CASE( "InputSensor test" ) {
 
 ////        DimsT dimsT;
 ////        inputOutput.read(dimsT);
-//        const auto dimsT_read = inputOutput.get<hub::sensor::resolution::Dims>();
+//        const auto dimsT_read = inputOutput.get<hub::sensor::resolution::NDim>();
 //        assert(dimsT == dimsT_read);
 
 //        return;
 
-//        hub::sensor::resolution::Dims dims_read2;
+//        hub::sensor::resolution::NDim dims_read2;
 //        inputOutput.read(dims_read2);
 
 //        using DimsT1 = hub::sensor::DimsT<5>;
@@ -272,7 +272,7 @@ TEST_CASE( "InputSensor test" ) {
 
 //        return;
 
-//        constexpr hub::sensor::Resolution2 resolution2{hub::sensor::resolution::format::RGB8, hub::sensor::dims::Full_HD};
+//        constexpr hub::sensor::Resolution2 resolution2{hub::sensor::resolution::format::RGB8, hub::sensor::nDim::Full_HD};
 //        std::cout << resolution2 << std::endl;
 
 ////        constexpr hub::sensor::Resolution2 resolution3{{3, "RGB", true}, {640, 480}};
@@ -305,16 +305,16 @@ TEST_CASE( "InputSensor test" ) {
 
 ////        InputOutputConstExpr<
 ////        constexpr InputExpr inputExpr{0, 1, 2, 3, 4, true, dims1D, dims2D, dims3D, 5};
-////        static_assert(inputOutput.get<0, hub::sensor::resolution::Dims>() == dims3D);
+////        static_assert(inputOutput.get<0, hub::sensor::resolution::NDim>() == dims3D);
 ////        static_assert(inputExpr.get<int>() == 0);
 ////        static_assert(inputExpr.get<bool>() == true);
 ////        static_assert(inputExpr.get<1>() == dims1D);
 ////        static_assert(inputExpr.get<2>() == dims2D);
 ////        static_assert(inputExpr.get<3>() == dims3D);
 
-////        static_assert(inputExpr.get<0, hub::sensor::resolution::Dims>() == dims1D);
-////        static_assert(inputExpr.get<1, hub::sensor::resolution::Dims>() == dims2D);
-////        static_assert(inputExpr.get<2, hub::sensor::resolution::Dims>() == dims3D);
+////        static_assert(inputExpr.get<0, hub::sensor::resolution::NDim>() == dims1D);
+////        static_assert(inputExpr.get<1, hub::sensor::resolution::NDim>() == dims2D);
+////        static_assert(inputExpr.get<2, hub::sensor::resolution::NDim>() == dims3D);
 
 ////        constexpr int i = 0;
 ////        for (constexpr i = 0; i < 5; ++i) {
@@ -329,22 +329,22 @@ TEST_CASE( "InputSensor test" ) {
 
 //        return;
 
-////        constexpr auto dims = hub::sensor::resolution::Dims{640};
-////        static_assert(dims.size() == 1);
-////        static_assert(dims.get(1) == 480);
-////        dims.n();
-////        dims.width();
-////        dims.nx();
+////        constexpr auto nDim = hub::sensor::resolution::NDim{640};
+////        static_assert(nDim.size() == 1);
+////        static_assert(nDim.get(1) == 480);
+////        nDim.n();
+////        nDim.width();
+////        nDim.nx();
 
 ////        constexpr hub::sensor::ResolutionT res {format, 640, 480};
 ////        constexpr hub::sensor::ResolutionT<format, 1, 2, 3> resolution;
 
 ////        constexpr hub::sensor::ResolutionT resolution {format, 1, 2, 3};
-////        static_assert(resolution.dims.n() == 3);
+////        static_assert(resolution.nDim.n() == 3);
 ////        static_assert(resolution.format == format);
 ////        std::cout << resolution.nByte() << std::endl;
 
-////        static_assert(resolution.dims. == 3);
+////        static_assert(resolution.nDim. == 3);
 ////        hub::sensor::Resolution resolution { format, 1, 2, 3 };
 ////        inputOutput.write( resolution );
 ////        std::cout << "start reading" << std::endl;

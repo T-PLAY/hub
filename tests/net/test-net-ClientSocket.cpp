@@ -172,11 +172,11 @@ TEST_CASE( "Net test : ClientSocket" ) {
         boostBytesPerSecond     = 1000.0 * dataWrote / duration;
         boostGigaBytesPerSecond = boostBytesPerSecond / 1'000'000'000.0;
 
-        REPORT( "[test][Boost::asio::ip::tcp] Giga byte wrote : " << dataWrote / 1'000'000'000.0
-                                                                  << "Go" );
+        std::cout << "[test][Boost::asio::ip::tcp] Giga byte wrote : " << dataWrote / 1'000'000'000.0
+                  << "Go" << std::endl;
         //                  << std::endl;
-        REPORT( "[test][Boost::asio::ip::tcp] Giga byte per second : " << boostGigaBytesPerSecond
-                                                                       << " Go/s" );
+        std::cout << "[test][Boost::asio::ip::tcp] Giga byte per second : " << boostGigaBytesPerSecond
+                  << " Go/s" << std::endl;
     }
 #endif
 
@@ -244,18 +244,18 @@ TEST_CASE( "Net test : ClientSocket" ) {
         sysBytesPerSecond     = 1000.0 * dataWrote / duration;
         sysGigaBytesPerSecond = sysBytesPerSecond / 1'000'000'000.0;
 
-        REPORT( "[test][ClientSocket] Giga byte wrote : " << dataWrote / 1'000'000'000.0 << "Go" );
+        std::cout << "[test][ClientSocket] Giga byte wrote : " << dataWrote / 1'000'000'000.0 << "Go" << std::endl;
         //                  << std::endl;
-        REPORT( "[test][ClientSocket] Giga byte per second : " << sysGigaBytesPerSecond
-                                                               << " Go/s" );
+        std::cout << "[test][ClientSocket] Giga byte per second : " << sysGigaBytesPerSecond
+                  << " Go/s" << std::endl;
     }
 
 #ifdef HUB_USE_BOOST
     const double ratioSysBoost = sysBytesPerSecond / boostBytesPerSecond;
-    REPORT( "[test] sys socket impl is " << ratioSysBoost
-                                         << " more efficient than boost::asio::ip::tcp" );
+    std::cout <<  "[test] sys socket impl is " << ratioSysBoost
+              << " more efficient than boost::asio::ip::tcp" << std::endl;
 
-    CHECK_VALUE(ratioSysBoost, 2, 1, "SysSocketImpl/BoostAsioIpTcp");
+    CHECK_VALUE(ratioSysBoost, 2, 1, "SysSocketImpl/BoostAsioIpTcp", "/");
 #endif
 
     std::cout << "[test] tested on machine: '" << hostname << "'" << std::endl;

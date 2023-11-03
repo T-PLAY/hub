@@ -7,7 +7,7 @@
 
 #include "core/Macros.hpp"
 // #include "ioBase.hpp"
-#include "BasicInput.hpp"
+#include "InputI.hpp"
 // #include "serializer/SerializerI.hpp"
 #include "Serializer.hpp"
 
@@ -21,10 +21,10 @@ namespace hub {
 
 template <class SerializerT = Serializer>
 // class Input : public ioBase
-class Input : public BasicInput
+class InputT : public InputI
 {
   public:
-    using BasicInput::read;
+    using InputI::read;
 
     //    template <typename T>
     //    using readable_t = decltype( std::declval<T>().read( std::declval<Input&>() ) );
@@ -52,7 +52,7 @@ class Input : public BasicInput
 
   public:
     template <class T>
-    typename std::enable_if<readable_v<T>>::type read( T& t ) {
+    typename std::enable_if<! notReadable_v<T> && readable_v<T>>::type read( T& t ) {
 #ifdef HUB_DEBUG_INPUT
         std::cout << "\t" << HEADER << "\033[1mread\033[0m(readable: " << TYPE_NAME( t ) << ") ..."
                   << std::endl;
@@ -67,7 +67,7 @@ class Input : public BasicInput
     }
 
     template <class T>
-    typename std::enable_if<packable_v<T>>::type read( T& t ) {
+    typename std::enable_if<! notReadable_v<T> && packable_v<T>>::type read( T& t ) {
         assert( isOpen() );
         assert( !isEnd() );
         read( reinterpret_cast<Data_t*>( &t ), sizeof( T ) );
@@ -78,7 +78,7 @@ class Input : public BasicInput
     }
 
     template <class T>
-    typename std::enable_if<serializable_v<T>>::type read( T& t ) {
+    typename std::enable_if<! notReadable_v<T> && serializable_v<T>>::type read( T& t ) {
         assert( isOpen() );
         assert( !isEnd() );
 #ifdef HUB_DEBUG_INPUT
@@ -93,7 +93,7 @@ class Input : public BasicInput
     }
 
     template <class T>
-    typename std::enable_if<!readable_v<T> && !serializable_v<T> && !packable_v<T>>::type
+    typename std::enable_if<! notReadable_v<T> && !readable_v<T> && !serializable_v<T> && !packable_v<T>>::type
     read( T& t ) {
         assert( isOpen() );
         assert( !isEnd() );
@@ -169,5 +169,7 @@ class Input : public BasicInput
   private:
     SerializerT m_serializer;
 };
+
+using Input = InputT<>;
 
 } // namespace hub
