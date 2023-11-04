@@ -1,9 +1,10 @@
 
 #include <catch2/catch_test_macros.hpp>
 
-#include <sensor/InputSensor.hpp>
-#include <sensor/OutputSensor.hpp>
+//#include <sensor/InputSensor.hpp>
+//#include <sensor/OutputSensor.hpp>
 // #include <io/File.hpp>
+#include <sensor/SensorSpec.hpp>
 
 TEST_CASE( "SensorSpec test" ) {
 
@@ -12,14 +13,14 @@ TEST_CASE( "SensorSpec test" ) {
 //    metaData["name"]  = "gauthier";
 
     //    hub::sensor::Resolution::NDim nDim = { 1 };
-//    hub::sensor::Resolution resolution { hub::sensor::resolution::format::BGR8, 1 };
+//    hub::sensor::Resolution resolution { hub::sensor::format::BGR8, 1 };
 //    hub::sensor::Resolutions resolutions { resolution };
 //    hub::sensor::SensorSpec sensorSpec { "sensorName", resolutions, metaData };
 
 //    CHECK( sensorSpec.getSensorName() == "sensorName" );
 //    CHECK( sensorSpec.getAcquisitionSize() == 3 );
 
-//    hub::sensor::SensorSpec sensorSpec2 { "sensorName2", { { hub::sensor::resolution::format::RGB8, 1 } } };
+//    hub::sensor::SensorSpec sensorSpec2 { "sensorName2", { { hub::sensor::format::RGB8, 1 } } };
 
 //    auto sensorSpecSum = sensorSpec + sensorSpec2;
 //    CHECK( sensorSpecSum.getSensorName() == "sensorName + sensorName2" );

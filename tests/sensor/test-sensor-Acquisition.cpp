@@ -5,7 +5,7 @@
 
 TEST_CASE( "Acquisition test" ) {
 
-//    const hub::sensor::Resolutions resolutions { { hub::sensor::resolution::format::BGR8, 1 } };
+//    const hub::sensor::Resolutions resolutions { { hub::sensor::format::BGR8, 1 } };
 //    auto resolutions_copy = resolutions;
 //    auto & resolutions_ref = resolutions;
 //    auto && resolutions_rvalue = hub::sensor::Resolutions(resolutions);
@@ -71,7 +71,7 @@ TEST_CASE( "Acquisition test" ) {
 ////    CHECK( acq2.getStart() == 0 );
 ////    CHECK( acq2.getEnd() == 1 );
 
-////    hub::sensor::Resolution resolution { hub::sensor::resolution::format::RGB8, 1 };
+////    hub::sensor::Resolution resolution { hub::sensor::format::RGB8, 1 };
 ////    unsigned char data[3] { 0, 1, 2 };
 
 //////    hub::sensor::Measure measure( data, 3, resolution );

@@ -12,55 +12,55 @@ TEST_CASE( "sensor/NDim test" ) {
     hub::io::Archive archive;
 //    InputOutput inputOutput;
 
-    static_assert( !hub::serializable_v<hub::sensor::resolution::NDim> );
-    static_assert( !hub::writable_v<hub::sensor::resolution::NDim> );
-    static_assert( !hub::readable_v<hub::sensor::resolution::NDim> );
+//    static_assert( hub::serializable_v<hub::sensor::resolution::NDim> );
+//    static_assert( !hub::writable_v<hub::sensor::resolution::NDim> );
+//    static_assert( !hub::readable_v<hub::sensor::resolution::NDim> );
 
     //////////////////////////// Static NDim
 
-    static_assert( (hub::Size_t)4294967295 == 0xffffffff );
-    static_assert( (hub::Size_t)4294967296 == 0 );
-    static_assert( (hub::Size_t)4294967297 == 1 );
+//    static_assert( (hub::Size_t)4294967295 == 0xffffffff );
+//    static_assert( (hub::Size_t)4294967296 == 0 );
+//    static_assert( (hub::Size_t)4294967297 == 1 );
 
-    constexpr auto dims0D = hub::sensor::resolution::NDim {};
-    static_assert( dims0D.size() == 1 );
-//    static_assert( dims0D.ns[-1] == 0 ); // out of bound
-    static_assert( dims0D.ns[0] == 1 );
-    static_assert( dims0D.ns[1] == 0 );
-    static_assert( dims0D.ns[2] == 0 );
-    static_assert( dims0D.ns[3] == 0 );
-    static_assert( dims0D.ns[4] == 0 );
-//    static_assert( dims0D.ns[5] == 0 ); // out of bound
-    static_assert( dims0D.capacity() == 1 ); // weird
+//    constexpr auto dims0D = hub::sensor::resolution::NDim {};
+//    static_assert( dims0D.size() == 1 );
+////    static_assert( dims0D.ns[-1] == 0 ); // out of bound
+//    static_assert( dims0D.ns[0] == 1 );
+//    static_assert( dims0D.ns[1] == 0 );
+//    static_assert( dims0D.ns[2] == 0 );
+//    static_assert( dims0D.ns[3] == 0 );
+//    static_assert( dims0D.ns[4] == 0 );
+////    static_assert( dims0D.ns[5] == 0 ); // out of bound
+//    static_assert( dims0D.capacity() == 1 ); // weird
 
-    constexpr auto dims1D = hub::sensor::resolution::NDim { 640 };
-    static_assert( dims1D.size() == 1 );
-    static_assert( dims1D.ns[0] == 640 );
-    static_assert( dims1D.ns[1] == 0 );
-    static_assert( dims1D.ns[2] == 0 );
-    static_assert( dims1D.ns[3] == 0 );
-    static_assert( dims1D.ns[4] == 0 );
-    static_assert( dims1D.capacity() == 640 );
+//    constexpr auto dims1D = hub::sensor::resolution::NDim { 640 };
+//    static_assert( dims1D.size() == 1 );
+//    static_assert( dims1D.ns[0] == 640 );
+//    static_assert( dims1D.ns[1] == 0 );
+//    static_assert( dims1D.ns[2] == 0 );
+//    static_assert( dims1D.ns[3] == 0 );
+//    static_assert( dims1D.ns[4] == 0 );
+//    static_assert( dims1D.capacity() == 640 );
 
-//    hub::sensor::resolution::Dims1D dims1D2{dims1D};
+////    hub::sensor::resolution::Dims1D dims1D2{dims1D};
 
-    constexpr auto dims2D = hub::sensor::resolution::NDim { 640, 480 };
-    static_assert( dims2D.size() == 2 );
-    static_assert( dims2D.ns[0] == 640 );
-    static_assert( dims2D.ns[1] == 480 );
-    static_assert( dims2D.ns[2] == 0 );
-    static_assert( dims2D.ns[3] == 0 );
-    static_assert( dims2D.ns[4] == 0 );
-    static_assert( dims2D.capacity() == 640 * 480 );
+//    constexpr auto dims2D = hub::sensor::resolution::NDim { 640, 480 };
+//    static_assert( dims2D.size() == 2 );
+//    static_assert( dims2D.ns[0] == 640 );
+//    static_assert( dims2D.ns[1] == 480 );
+//    static_assert( dims2D.ns[2] == 0 );
+//    static_assert( dims2D.ns[3] == 0 );
+//    static_assert( dims2D.ns[4] == 0 );
+//    static_assert( dims2D.capacity() == 640 * 480 );
 
-    constexpr auto dims3D = hub::sensor::resolution::NDim { 640, 480, 2 };
-    static_assert( dims3D.size() == 3 );
-    static_assert( dims3D.ns[0] == 640 );
-    static_assert( dims3D.ns[1] == 480 );
-    static_assert( dims3D.ns[2] == 2 );
-    static_assert( dims3D.ns[3] == 0 );
-    static_assert( dims3D.ns[4] == 0 );
-    static_assert( dims3D.capacity() == 640 * 480 * 2 );
+//    constexpr auto dims3D = hub::sensor::resolution::NDim { 640, 480, 2 };
+//    static_assert( dims3D.size() == 3 );
+//    static_assert( dims3D.ns[0] == 640 );
+//    static_assert( dims3D.ns[1] == 480 );
+//    static_assert( dims3D.ns[2] == 2 );
+//    static_assert( dims3D.ns[3] == 0 );
+//    static_assert( dims3D.ns[4] == 0 );
+//    static_assert( dims3D.capacity() == 640 * 480 * 2 );
 
 //    archive.write( dims1D );
 //    hub::sensor::resolution::NDim dims1D_read;

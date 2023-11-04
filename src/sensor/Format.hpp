@@ -16,107 +16,51 @@
 
 namespace hub {
 namespace sensor {
-namespace resolution {
+//namespace resolution {
 
 class Format
 {
-//  private:
-//    static constexpr auto s_maxNameLen = 32;
   public:
-//    using Name = char[s_maxNameLen];
-    // io
-    //    static constexpr Size_t ioGetSize() { return sizeof( Format ); }
-    //    const Data_t* ioGetData() const { return (Data_t*)this; }
-    //    void ioSetData( const Data_t* data, Size_t size ) { memcpy( this, data, size ); }
-    //    static constexpr std::string ioTypeName() { return "Format"; }
-    // end io
-
-//    constexpr Format(Size_t nByte_, Name && name_, bool interpolable_)
-//        : nByte(nByte_)
-//        , name(std::forward<Name>(name_))
-//        , interpolable(interpolable_)
-//    {
-//    }
-
-//    template <class Serial>
-//    void serialize( Serial& serial ) {
-//        serial(nByte, interpolable);
-////        serial( a, b, name, vints );
-//    }
-    template <class Output>
-    void write(Output & output) const {
-        output.write(nByte);
-//        output.write(name);
-        output.write(interpolable);
-    }
-
-    template <class Input>
-    void read(Input & input) {
-        input.read(nByte);
-//        input.read(name);
-        input.read(interpolable);
-    }
-
-
     constexpr bool operator==( const Format& format ) const {
-        // memcmp is a non constexpr function
-        //        return nByte == format.nByte && name == format.name &&
-        //               interpolable == format.interpolable;
-        //         return true;
-        if ( nByte == format.nByte && interpolable == format.interpolable ) {
-            return name == format.name;
-//            for ( int i = 0; i < s_maxNameLen; ++i ) {
-//                if ( name[i] != format.name[i] ) return false;
-//            }
-//            return true;
-        }
-        return false;
-        //        return nByte == format.nByte && !std::memcmp( name, format.name, s_maxNameLen ) &&
-        //               interpolable == format.interpolable;
+        return nByte == format.nByte && interpolable == format.interpolable && name == format.name;
     }
 
     SRC_API friend std::ostream& operator<<( std::ostream& os, const Format& format );
 
   public:
-    Size_t nByte            = 0;
-//    char name[s_maxNameLen] = { 0 };
-    std::string_view name = "";
-//    Name name = { 0 };
-    //    std::string_view name;
-    //    std::array<char, s_maxNameLen> m_name;
-    bool interpolable = false;
+    Size_t nByte;
+    std::string name ;
+    bool interpolable;
 };
-//static_assert( sizeof( Format ) == 40 );
 
-
-//struct RGB8 {
-//    unsigned char r;
-//    unsigned char g;
-//    unsigned char b;
-//    static constexpr auto name() { return "RGB8"; };
-//    static constexpr auto interpolable() { return true; };
-//};
-//static_assert(sizeof(RGB8) == 3);
-
-//template <int, bool, char... name>
-////template <class... Ts>
-//class FormatT {
-//  public:
-//    const char * name() const {
-//        char str[32] {0};
-//        return str;
-////        return str...;
-//    }
-////    FormatT()
-////    int nByte;
-////    char name[10];
-////    bool interpolable;
-//};
-
-//using OUOU = FormatT<3, true, 'r', 'g', 'b', '8'>;
 
 namespace format {
 
+/////////////////////////////////////// 1D ////////////////////////////////////////
+
+// Transform matrix 4x4 of float.
+struct Mat4 {
+    float data[16];
+};
+static_assert( sizeof( Mat4 ) == 64 );
+
+// 32-bit density values. For MRI, CT scan and US representations.
+struct Density {
+    uint32_t value;
+};
+static_assert( sizeof( Density ) == 4 );
+
+// 32-bit float-point depth distance value.
+struct Distance {
+    float value;
+};
+static_assert( sizeof( Distance ) == 4 );
+
+
+
+/////////////////////////////////////// 2D ////////////////////////////////////////
+
+// 8-bit red, green and blue channels.
 struct RGB8 {
     unsigned char r;
     unsigned char g;
@@ -126,6 +70,47 @@ struct RGB8 {
     static constexpr auto interpolable() { return false; };
 };
 static_assert( sizeof( RGB8 ) == 3 );
+
+// 16-bit linear depth values. The depth is meters is equal to depth scale pixel value.
+struct Z16 {
+    uint16_t depth; // meters
+};
+static_assert( sizeof( Z16 ) == 2);
+
+/////////////////////////////////////// 3D ////////////////////////////////////////
+
+// Pose data packed as floats array, containing translation vector (x, y, z), rotation quaternion (w0, w1, w2, w3 || w, x, y, z).
+struct DOF6 {
+    // translation
+    float x;
+    float y;
+    float z;
+    // quaternion
+    float w0; // w
+    float w1; // x
+    float w2; // y
+    float w3; // z
+};
+static_assert( sizeof( DOF6 ) == 28 );
+
+// Point consist of x, y and z position, rgb color and depth .
+//struct Point {
+//    float x;
+//    float y;
+//    float z;
+
+//    unsigned char r;
+//    unsigned char g;
+//    unsigned char b;
+//};
+
+// 32-bit floating point 3D coordinates.
+struct XYZ32F {
+    float x;
+    float y;
+    float z;
+};
+static_assert(sizeof(XYZ32F) == 12);
 
 }
 
@@ -184,6 +169,6 @@ static_assert( sizeof( RGB8 ) == 3 );
 //// clang-format on
 //} // namespace format
 
-} // namespace resolution
+//} // namespace resolution
 } // namespace sensor
 } // namespace hub

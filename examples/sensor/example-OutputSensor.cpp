@@ -77,13 +77,13 @@ class InputOutput : public hub::Input, public hub::Output
 
 int main() {
 
-//    const hub::sensor::Resolutions resolutions3 { { hub::sensor::resolution::format::RGB8, 1 } };
+//    const hub::sensor::Resolutions resolutions3 { { hub::sensor::format::RGB8, 1 } };
 //    hub::sensor::Acquisition acq { resolutions3 };
 //    std::cout << acq << std::endl;
 
-//    hub::sensor::Acquisition acq2 { hub::sensor::Resolutions { { hub::sensor::resolution::format::RGB8, 1 } } };
-////    hub::sensor::Acquisition acq3 { { hub::sensor::Resolution{ hub::sensor::resolution::format::RGB8, 1 } } };
-////    hub::sensor::Acquisition acq3 { { { hub::sensor::resolution::format::RGB8, 1 } } };
+//    hub::sensor::Acquisition acq2 { hub::sensor::Resolutions { { hub::sensor::format::RGB8, 1 } } };
+////    hub::sensor::Acquisition acq3 { { hub::sensor::Resolution{ hub::sensor::format::RGB8, 1 } } };
+////    hub::sensor::Acquisition acq3 { { { hub::sensor::format::RGB8, 1 } } };
 
 //    return 0;
 
@@ -137,9 +137,9 @@ int main() {
 //    /////////////////////////////////////////////////////////////////////////////////////////////////
 //    //    //    using MeasureT1 = hub::sensor::MeasureT<UserFormat, 3, 2, 1>;
 
-//    //    //    hub::sensor::resolution::format::Z
+//    //    //    hub::sensor::format::Z
 //    //    //    hub::sensor::SensorSpec sensorSpec;
-//    //    using MeasureT1 = hub::sensor::MeasureT<hub::sensor::resolution::format::Y8, 3, 2, 1>;
+//    //    using MeasureT1 = hub::sensor::MeasureT<hub::sensor::format::Y8, 3, 2, 1>;
 //    //    //    static_assert(MeasureT1::getSize() == 6);
 //    //    //    static_assert(MeasureT1::nDim() == 3);
 //    //    //    using Output = int;
@@ -148,8 +148,8 @@ int main() {
 //    //    //        constexpr MeasureT1 measure1 { data1 };
 
 //    //    constexpr MeasureT1 measureT1;
-//    //    static_assert( MeasureT1::getFormat() == hub::sensor::resolution::format::Y8 );
-//    //    //    static_assert(MeasureT1::getFormat() == hub::sensor::resolution::format::Z16);
+//    //    static_assert( MeasureT1::getFormat() == hub::sensor::format::Y8 );
+//    //    //    static_assert(MeasureT1::getFormat() == hub::sensor::format::Z16);
 //    //    static_assert( MeasureT1::nDim() == 3 );
 //    //    static_assert( MeasureT1::getDim( 0 ) == 3 );
 //    //    static_assert( MeasureT1::getDim( 1 ) == 2 );
@@ -159,7 +159,7 @@ int main() {
 //    //    //    static_assert( MeasureT1::getSize() == 6 );
 //    //    //    assert(MeasureT1::typeName() == "Y8");
 
-//    //    static_assert( hub::sensor::resolution::format::Y8.name() == "Y8" );
+//    //    static_assert( hub::sensor::format::Y8.name() == "Y8" );
 
 //    //    std::cout << "typename: '" << MeasureT1::typeName() << "'" << std::endl;
 //    //    std::cout << "measureT1: " << measureT1 << std::endl;
@@ -185,7 +185,7 @@ int main() {
 
 //    //    //    std::cout << "measure1_noConst: '" << measure1_noConst << "'" << std::endl;
 
-//    //    using MeasureT2 = hub::sensor::MeasureT<hub::sensor::resolution::format::RGB8, 1>;
+//    //    using MeasureT2 = hub::sensor::MeasureT<hub::sensor::format::RGB8, 1>;
 //    //    //    using Output = int;
 //    //    //    MeasureT1 measureT1{0, }
 //    constexpr std::array<unsigned char, 3> data2 { 1, 2, 3 };
@@ -331,9 +331,9 @@ int main() {
 
 //    //    constexpr std::vector<int> vec = {1, 2, 3};
 
-//    //    using MeasureT1 = hub::sensor::MeasureT<hub::sensor::resolution::format::Y8, 3, 2, 1>;
-//    //    hub::sensor::Measure measure = hub::sensor::Measure(hub::sensor::resolution::format::Y8, 3, 2, 1);
-//    const auto resolution1 = hub::sensor::Resolution { hub::sensor::resolution::format::Y8, 3, 2, 1 };
+//    //    using MeasureT1 = hub::sensor::MeasureT<hub::sensor::format::Y8, 3, 2, 1>;
+//    //    hub::sensor::Measure measure = hub::sensor::Measure(hub::sensor::format::Y8, 3, 2, 1);
+//    const auto resolution1 = hub::sensor::Resolution { hub::sensor::format::Y8, 3, 2, 1 };
 //    //    assert(measure == measure1);
 //    std::cout << "resolution1: " << resolution1 << std::endl;
 //    assert( resolution1.nByte() == 6 );
@@ -341,19 +341,19 @@ int main() {
 //    assert( resolution1.getDim( 0 ) == 3 );
 //    assert( resolution1.getDim( 1 ) == 2 );
 //    assert( resolution1.getDim( 2 ) == 1 );
-//    assert( resolution1.getFormat() == hub::sensor::resolution::format::Y8 );
+//    assert( resolution1.getFormat() == hub::sensor::format::Y8 );
 //    //    assert(resolution1.getDim(3) == 1);
 
-//    //    //    using MeasureT2 = hub::sensor::MeasureT<hub::sensor::resolution::format::RGB8, 1>;
-//    const auto resolution2 = hub::sensor::Resolution { hub::sensor::resolution::format::RGB8, 1 };
+//    //    //    using MeasureT2 = hub::sensor::MeasureT<hub::sensor::format::RGB8, 1>;
+//    const auto resolution2 = hub::sensor::Resolution { hub::sensor::format::RGB8, 1 };
 //    std::cout << "resolution2: " << resolution2 << std::endl;
 
 //    //    //    using Measures12 = hub::sensor::Measures<MeasureT1, MeasureT2>;
 //    hub::sensor::Resolutions resolutions { resolution1, resolution2 };
 //    std::cout << "resolutions: " << resolutions << std::endl;
 
-//    const auto resolutions2 = hub::sensor::Resolutions { { hub::sensor::resolution::format::RGB8, 640, 480 },
-//                                                         { hub::sensor::resolution::format::Y8, 640, 480 } };
+//    const auto resolutions2 = hub::sensor::Resolutions { { hub::sensor::format::RGB8, 640, 480 },
+//                                                         { hub::sensor::format::Y8, 640, 480 } };
 //    std::cout << "resolutions2: " << resolutions2 << std::endl;
 
 //    //    hub::sensor::SensorSpec sensorSpec;
@@ -361,7 +361,7 @@ int main() {
 //    //    using OutputSensorT12 = hub::sensor::OutputSensorT<InputOutput, MeasuresT12>;
 //    //    OutputSensorT12 outputSensorT12 { inputOutput, sensorSpec };
 
-//    const auto format = hub::sensor::resolution::format::RGB8;
+//    const auto format = hub::sensor::format::RGB8;
 
 //    std::vector<int> nDim { 640, 480, 3 };
 
@@ -530,7 +530,7 @@ int main() {
 
 //    //    /////////////////////////////////////////////////////////////////////
 
-//    //    hub::sensor::Format format_write = hub::sensor::resolution::format::Y8;
+//    //    hub::sensor::Format format_write = hub::sensor::format::Y8;
 //    //    assert( inputOutput.isEnd() );
 
 //    //    inputOutput.write( format_write );
@@ -557,7 +557,7 @@ int main() {
 
 //    //    ///////////
 
-//    //    hub::sensor::Measure measure2_write { hub::sensor::resolution::format::RGB8, {1, 1,
+//    //    hub::sensor::Measure measure2_write { hub::sensor::format::RGB8, {1, 1,
 //    //    0xffffffffffffffff} }; std::cout << "measure2_write: " << measure2_write << std::endl;
 //    //    inputOutput.write(measure2_write);
 
@@ -610,8 +610,8 @@ int main() {
 
 //    //    auto inputSensor12 = hub::sensor::InputSensor<InputOutput>(inputOutput);
 
-//    //    if (format == hub::sensor::resolution::format::DISPARITY32) {
-//    //        using Measure1_read = hub::sensor::MeasureT<hub::sensor::resolution::format::DISPARITY32, 3, 2,
+//    //    if (format == hub::sensor::format::DISPARITY32) {
+//    //        using Measure1_read = hub::sensor::MeasureT<hub::sensor::format::DISPARITY32, 3, 2,
 //    //        1>;
 //    //    }
 

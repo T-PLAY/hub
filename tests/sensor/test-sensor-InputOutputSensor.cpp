@@ -7,12 +7,99 @@
 #include "sensor/test_sensor_common.hpp"
 
 #include <sensor/InputSensor.hpp>
+#include <sensor/Measure.hpp>
 #include <sensor/OutputSensor.hpp>
+#include <sensor/Resolution.hpp>
 
 // #include <io/Memory.hpp>
 
 TEST_CASE( "InputSensor test" ) {
 
+    ////////////////////////// ResolutionT //////////////////////////////
+
+    using Resolution = hub::sensor::ResolutionT<hub::sensor::format::RGB8, 640, 480>;
+    static_assert( Resolution::nResolution() == 1 );
+    //    auto get = Resolution::get<0>();
+    //    static_assert(Resolution::get<0>() == Resolution());
+    //    static_assert(Resolution::getResolutionT<0>() == Resolution());
+
+    std::cout << "Resolution: " << Resolution() << std::endl;
+
+    ////////////////////////// MeasureT //////////////////////////////
+
+    constexpr auto dataSize = 640 * 480 * 3;
+
+//    constexpr auto dataSize = 640 * 480 * 3 * 2;
+    unsigned char datas[640 * 480 * 3 * 2] {0};
+//    std::span<hub::Data_t> datasSpan(datas, datas + dataSize);
+
+//    hub::sensor::MeasureT<Resolution> measureT(datas);
+//    auto measureT = hub::sensor::MeasureT<Resolution>(datas);
+//    auto buffer = hub::Buffer(datas);
+//    auto buffer = hub::Buffer<dataSize>(datas);
+//    static_assert(buffer.size == dataSize);
+    auto datasBuff = hub::Buffer(datas, dataSize);
+    auto datasBuff2 = hub::Buffer((const hub::Data_t*)datas, dataSize);
+    assert(datasBuff == datasBuff2);
+
+//    return;
+//    datasBuff.data = nullptr;
+//    datasBuff.data[0] = 2;
+    assert(datasBuff == datasBuff2);
+
+    std::cout << "datasBuff: " << datasBuff << std::endl;
+    hub::sensor::MeasureT<Resolution> measureT(datasBuff);
+//    hub::sensor::MeasureT<Resolution> measureT{datas, dataSize};
+//    static_assert( measureT.getResolution() == Resolution() );
+
+    unsigned char data[dataSize] {0};
+    unsigned char * data2 = new unsigned char[dataSize];
+    auto buffer = hub::Buffer(data, dataSize);
+    auto buffer2 = hub::Buffer(data2, dataSize);
+    assert(buffer == buffer2);
+//    assert(buffer == datasBuff);
+
+//    std::array<unsigned char, dataSize> array;
+//    decltype(array)::value_type;
+//    auto type = typeid(std::span<int>::value_type()).hash_code();
+//    measureT.setData(array);
+
+    std::memset(data2, 55, dataSize);
+//    measureT.setData(5, nullptr);
+//    measureT.setData<data, dataSize>();
+//    hub::Buffer buffer2(data2, dataSize);
+    measureT.setData(buffer2);
+//    measureT.setData(data, dataSize);
+    assert(std::memcmp(datas, data2, dataSize) == 0);
+    assert(datasBuff == buffer2);
+
+//    std::span span(data);
+//    measureT.setData(span);
+
+    std::memset(data, 55, dataSize);
+//    std::span span(data);
+//    std::span<hub::Data_t> span2(data2, dataSize);
+//    decltype(span)::value_type;
+
+//    measureT.setData(span);
+//    assert(std::memcmp(datas, data, dataSize) == 0);
+
+//    measureT.setData(span2);
+//    std::span<unsigned char> span2(data2, data2 + dataSize);
+
+
+    ////////////////////////// OutputSensorT //////////////////////////////
+
+    using OutputSensor = hub::sensor::OutputSensorT<Resolution>;
+    //    using Acquisition = OutputSensor::Acquisition;
+    OutputSensor outputSensor;
+    OutputSensor::Acquisition acq;
+
+    auto& measure = acq.getMeasure<0>();
+    measure.setData( nullptr, 10 );
+    //    auto & measure2 = acq.getMeasure<1>();
+
+    //    hub::sensor::
 }
 
 //    const int ref_offset    = 5;
@@ -22,7 +109,7 @@ TEST_CASE( "InputSensor test" ) {
 //    constexpr int ref_nAcqs2 = 10;
 
 //    std::cout << "ref_acqs" << std::endl;
-//    const hub::sensor::Resolution ref_resolution { hub::sensor::resolution::format::Y8, 1 };
+//    const hub::sensor::Resolution ref_resolution { hub::sensor::format::Y8, 1 };
 //    const hub::sensor::Resolutions ref_resolutions { ref_resolution };
 //    const hub::sensor::SensorSpec ref_sensorSpec( "sensorName", ref_resolutions );
 //    std::vector<hub::sensor::Acquisition> ref_acqs;
@@ -52,11 +139,12 @@ TEST_CASE( "InputSensor test" ) {
 //    //////////////////////
 
 //    std::cout << "ref2_acqs" << std::endl;
-//    const hub::sensor::Resolution ref_resolution2 { hub::sensor::resolution::format::DOF6, 1 };
+//    const hub::sensor::Resolution ref_resolution2 { hub::sensor::format::DOF6, 1 };
 //    const hub::sensor::Resolutions ref_resolutions2 { ref_resolution2 };
 //    const hub::sensor::SensorSpec ref_sensorSpec2 { "sensorName2", ref_resolutions2 };
 //    std::vector<hub::sensor::Acquisition> ref_acqs2;
-//    //    const int ref_dataSize2 = hub::sensor::resolution::computeAcquisitionSize( ref_resolution2
+//    //    const int ref_dataSize2 = hub::sensor::resolution::computeAcquisitionSize(
+//    ref_resolution2
 //    //    );
 //    const int ref_dataSize2 = ref_resolution2.nByte();
 //    unsigned char* data2    = new unsigned char[ref_dataSize2];
@@ -82,7 +170,6 @@ TEST_CASE( "InputSensor test" ) {
 //    std::cout << std::endl;
 
 //    std::vector<hub::sensor::Acquisition> ref_sync_acqs = computeSyncAcqs( ref_acqs, ref_acqs2 );
-
 
 //    static_assert( !hub::Input::readable_v<hub::sensor::Acquisition> );
 //    static_assert( !hub::Input::readable_v<hub::sensor::Format> );
@@ -129,8 +216,8 @@ TEST_CASE( "InputSensor test" ) {
 ////        auto d = inputOutput.get<double>();
 ////        assert( d == 4.0 );
 
-//        constexpr hub::sensor::Format format = hub::sensor::resolution::format::RGB8;
-//        assert( format == hub::sensor::resolution::format::RGB8 );
+//        constexpr hub::sensor::Format format = hub::sensor::format::RGB8;
+//        assert( format == hub::sensor::format::RGB8 );
 //        inputOutput.write( format );
 //        std::cout << "start reading" << std::endl;
 //        hub::sensor::Format format_read;
@@ -140,8 +227,6 @@ TEST_CASE( "InputSensor test" ) {
 ////        inputOutput.write( format );
 ////        auto format_read2 = inputOutput.get<hub::sensor::Format>();
 ////        assert( format == format_read2 );
-
-
 
 ////        constexpr auto dims2 = std::vector<int>{1, 2, 3};
 ////        const hub::sensor::Resolution::NDim& nDim = { 1, 2, 3 };
@@ -212,8 +297,6 @@ TEST_CASE( "InputSensor test" ) {
 ////        static_assert(dims3D.capacity() == 640 * 480);
 ////        dims3D.width();
 
-
-
 //        std::cout << "nDim:" << std::endl;
 
 //        inputOutput.write(dims3D);
@@ -248,12 +331,10 @@ TEST_CASE( "InputSensor test" ) {
 
 //        inputOutput.write(DimsT1());
 
-
 //        using DimsT2 = hub::sensor::DimsT<640, 480>;
 //        static_assert(DimsT2::width() == 640);
 
 //        inputOutput.write(DimsT2());
-
 
 //        using DimsT3 = hub::sensor::DimsT<640, 480, 1>;
 //        static_assert(DimsT3::nx() == 640);
@@ -268,17 +349,14 @@ TEST_CASE( "InputSensor test" ) {
 
 ////        const auto dims_read2 = inputOutput.g
 
-
-
 //        return;
 
-//        constexpr hub::sensor::Resolution2 resolution2{hub::sensor::resolution::format::RGB8, hub::sensor::nDim::Full_HD};
-//        std::cout << resolution2 << std::endl;
+//        constexpr hub::sensor::Resolution2 resolution2{hub::sensor::format::RGB8,
+//        hub::sensor::nDim::Full_HD}; std::cout << resolution2 << std::endl;
 
 ////        constexpr hub::sensor::Resolution2 resolution3{{3, "RGB", true}, {640, 480}};
 //        constexpr hub::sensor::Resolution2 resolution3 = hub::sensor::resolution::RGB8_Full_HD;
 //        std::cout << resolution3 << std::endl;
-
 
 ////        dims_read.
 
@@ -292,7 +370,8 @@ TEST_CASE( "InputSensor test" ) {
 ////        constexpr auto dimsT2D = (dims1D.size() == 1) ?(1) :(2);
 ////        hub::sensor::DimsT<1>();
 ////        hub::sensor::DimsT<1, 2>();
-////        constexpr auto dimsT3D = (dims1D.size() == 1) ?(hub::sensor::DimsT<1>()) :(hub::sensor::DimsT<1, 2>());
+////        constexpr auto dimsT3D = (dims1D.size() == 1) ?(hub::sensor::DimsT<1>())
+///:(hub::sensor::DimsT<1, 2>());
 
 ////        } else if (dims1D.size() == 2) {
 ////        }
@@ -326,7 +405,6 @@ TEST_CASE( "InputSensor test" ) {
 ////        constexpr auto get0 = inputExpr.get<0>();
 ////        constexpr auto get1 = inputExpr.get<
 
-
 //        return;
 
 ////        constexpr auto nDim = hub::sensor::resolution::NDim{640};
@@ -352,7 +430,6 @@ TEST_CASE( "InputSensor test" ) {
 ////        hub::sensor::ResolutionT<format, 1, 2, 3> resolution_read;
 ////        inputOutput.read( resolution_read );
 
-
 ////        constexpr auto resolution_maked = hub::sensor::make_resolution(format, 1, 2);
 ////        static_assert(resolution_maked == resolution);
 
@@ -367,8 +444,6 @@ TEST_CASE( "InputSensor test" ) {
 //        std::tuple<int, bool> tuple2;
 //        inputOutput.read(tuple2);
 //        assert(tuple == tuple2);
-
-
 
 //        //        return;
 
@@ -405,9 +480,9 @@ TEST_CASE( "InputSensor test" ) {
 ////        assert( metaData == metaData_read2 );
 
 ////        inputOutput.write( ref_sensorSpec );
-////        hub::sensor::SensorSpec ref_sensorSpec_read = inputOutput.get<hub::sensor::SensorSpec>();
-////        //                inputOutput.read( ref_sensorSpec_read );
-////        assert( ref_sensorSpec == ref_sensorSpec_read );
+////        hub::sensor::SensorSpec ref_sensorSpec_read =
+///inputOutput.get<hub::sensor::SensorSpec>(); /        //                inputOutput.read(
+///ref_sensorSpec_read ); /        assert( ref_sensorSpec == ref_sensorSpec_read );
 
 //        //        //        InputOutput inputOutput2;
 
@@ -517,8 +592,10 @@ TEST_CASE( "InputSensor test" ) {
 //    //            auto outputFile  = hub::output::OutputFile( "filepath.txt" );
 //    //            auto outputFile2 = hub::output::OutputFile( "filepath2.txt" );
 
-//    //            hub::sensor::OutputSensor outputSensor( ref_sensorSpec, std::move( outputFile ) );
-//    //            hub::sensor::OutputSensor outputSensor2( ref_sensorSpec2, std::move( outputFile2 )
+//    //            hub::sensor::OutputSensor outputSensor( ref_sensorSpec, std::move( outputFile )
+//    );
+//    //            hub::sensor::OutputSensor outputSensor2( ref_sensorSpec2, std::move( outputFile2
+//    )
 //    //            );
 
 //    //            for ( const auto& acq : ref_acqs ) {
@@ -560,7 +637,8 @@ TEST_CASE( "InputSensor test" ) {
 //    //              << std::endl;
 
 //    // #ifdef HUB_BUILD_SERVER
-//    //     auto outputSensor  = hub::sensor::OutputSensor(ref_sensorSpec, hub::output::OutputStream(
+//    //     auto outputSensor  = hub::sensor::OutputSensor(ref_sensorSpec,
+//    hub::output::OutputStream(
 //    //     FILE_NAME )); auto outputSensor2 = hub::sensor::OutputSensor(ref_sensorSpec2,
 //    //     hub::output::OutputStream( FILE_NAME + "2" )); auto inputSensor   =
 //    //     hub::sensor::InputSensor(hub::input::InputStream( FILE_NAME )); auto inputSensor2  =
@@ -600,14 +678,14 @@ TEST_CASE( "InputSensor test" ) {
 
 ////    std::vector<char> buff;
 
-////    const auto resolution = hub::sensor::Resolution { hub::sensor::resolution::format::BGR8, 1 };
+////    const auto resolution = hub::sensor::Resolution { hub::sensor::format::BGR8, 1 };
 ////    const hub::sensor::SensorSpec sensorSpec( "sensorName", { resolution } );
 ////    unsigned char data[3] { 1, 2, 3 };
-////    hub::sensor::OutputSensor outputSensor( sensorSpec, hub::io::Memory<decltype( buff )>( buff )
-////    );
+////    hub::sensor::OutputSensor outputSensor( sensorSpec, hub::io::Memory<decltype( buff )>( buff
+///) /    );
 
-////    auto acq = std::move( hub::sensor::Acquisition { 0, 1 } << hub::Measure { data, 3, resolution
-////    } ); outputSensor << acq; outputSensor << acq; outputSensor << acq;
+////    auto acq = std::move( hub::sensor::Acquisition { 0, 1 } << hub::Measure { data, 3,
+///resolution /    } ); outputSensor << acq; outputSensor << acq; outputSensor << acq;
 
 ////    hub::sensor::InputSensor inputSensor { hub::io::Memory<decltype( buff )>( buff ) };
 

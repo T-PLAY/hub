@@ -6,8 +6,8 @@
 // #include <algorithm>
 // #include <any>
 // #include <sstream>
-// #include <vector>
-#include <type_traits>
+ #include <vector>
+//#include <type_traits>
 
 #include "core/Macros.hpp"
 // #include "core/Serial.hpp"
@@ -25,80 +25,92 @@ namespace hub {
 namespace sensor {
 namespace resolution {
 
-class NDim
-{
+//class NDim
+//{
 
-  public:
-    //    template <class... Ns>
-    //    constexpr NDim( Ns&&... ns ) : ns { std::forward<Size_t>( ns )... } {}
+//  public:
+//    //    template <class... Ns>
+//    //    constexpr NDim( Ns&&... ns ) : ns { std::forward<Size_t>( ns )... } {}
 
-    //    NDim(NDim && nDim) = default;
+//    //    NDim(NDim && nDim) = default;
+//    template <class Serial>
+//    void serialize( Serial& serial ) {
+//        serial( ns );
+//    }
 
-    constexpr NDim() {
-        ns[0] = 1;
-    }
 
-    template <class... Ns>
-    //    requires( ( Ns > 0 ) && ... )
-    constexpr NDim( Ns&&... ns_ )
-        : ns { std::forward<Size_t>( ns_ )... }
-    {
-//        for (int i = 0; i < )
-        //        static_assert(((ns_ > 0) && ...));
-        for ( int i = 0; i < sizeof...( ns_ ); ++i ) {
-            assert(i != 0 || ns[i] > 0);
-            assert(i == 0 || ns[i] > 1);
-//            for (const auto n_ : {ns_...}) {
-//            static_assert((Size_t)n_ > 0);
+//    constexpr NDim() {
+////        ns[0] = 1;
+//        ns.push_back(1);
+//    }
 
-//            }
-        }
-    }
+//    template <class... Ns>
+//    //    requires( ( Ns > 0 ) && ... )
+//    constexpr NDim( Ns&&... ns_ )
+//        : ns { std::forward<Size_t>( ns_ )... }
+//    {
+////        for (int i = 0; i < )
+//        //        static_assert(((ns_ > 0) && ...));
+//#ifdef DEBUG
+//        for ( int i = 0; i < sizeof...( ns_ ); ++i ) {
+//            assert(i != 0 || ns[i] > 0);
+//            assert(i == 0 || ns[i] > 1);
+////            for (const auto n_ : {ns_...}) {
+////            static_assert((Size_t)n_ > 0);
 
-    constexpr auto size() const {
-        auto ret = 0;
-        while ( ret < s_nMax && ns[ret] != 0 ) {
-            ++ret;
-        }
-        assert(ret > 0);
-        return ret;
-    }
+////            }
+//        }
+//#endif
+//    }
 
-    //    NDim() = delete;
-    //    NDim() = default;
-    //    NDim(const NDim & nDim) = default;
+//    constexpr auto size() const {
+//        return ns.size();
+////        auto ret = 0;
+////        while ( ret < s_nMax && ns[ret] != 0 ) {
+////            ++ret;
+////        }
+////        assert(ret > 0);
+////        return ret;
+//    }
 
-    constexpr auto capacity() const {
+//    //    NDim() = delete;
+//    //    NDim() = default;
+//    //    NDim(const NDim & nDim) = default;
 
-        Size_t ret = 1;
-        for ( int i = 0; i < size(); ++i ) {
-            const auto& n = ns[i];
-            ret *= n;
-        }
-        assert(ret > 0);
-        return ret;
-    }
+//    constexpr auto capacity() const {
 
-    constexpr bool operator==( const NDim& nDim ) const {
-        bool ret = true;
-        for ( int i = 0; i < s_nMax; ++i ) {
-            if ( ns[i] != nDim.ns[i] ) return false;
-        }
-        return ret;
-        //        return ns == nDim.ns;
-    }
+//        Size_t ret = 1;
+//        for (const auto & n : ns) {
+////        for ( int i = 0; i < size(); ++i ) {
+////            const auto& n = ns[i];
+//            ret *= n;
+//        }
+//        assert(ret > 0);
+//        return ret;
+//    }
 
-    SRC_API friend std::ostream& operator<<( std::ostream& os, const NDim& nDim );
+//    constexpr bool operator==( const NDim& nDim ) const {
+//        return ns == nDim.ns;
+////        bool ret = true;
+////        for ( int i = 0; i < s_nMax; ++i ) {
+////            if ( ns[i] != nDim.ns[i] ) return false;
+////        }
+////        return ret;
+//        //        return ns == nDim.ns;
+//    }
 
-  private:
-    static constexpr auto s_nMax = 5;
+//    SRC_API friend std::ostream& operator<<( std::ostream& os, const NDim& nDim );
 
-  public:
-    //    const std::array<Size_t, s_nMax> ns;
-//    int size = 0;
-    Size_t ns[s_nMax] = { 0 };
-};
-static_assert( sizeof( NDim ) == 20 );
+////  private:
+////    static constexpr auto s_nMax = 5;
+
+//  public:
+//    //    const std::array<Size_t, s_nMax> ns;
+//    std::vector<Size_t> ns;
+////    int size = 0;
+////    Size_t ns[s_nMax] = { 0 };
+//};
+//static_assert( sizeof( NDim ) == 20 );
 
 // template <Size_t N>
 // class Dims1D : public NDim

@@ -9,6 +9,7 @@
 //// #include "io/output/Output.hpp"
 //// #include "io/input/Input.hpp"
 //#include "Resolution.hpp"
+//#include "Resolutions.hpp"
 //#include "core/Any.hpp"
 //#include "core/Macros.hpp"
 //// #include "Measure.hpp"

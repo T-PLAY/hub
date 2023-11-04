@@ -3,8 +3,8 @@
 //// #include <type_traits>
 
 //// #include "io/output/Output.hpp"
-//#include "Sensor.hpp"
-//#include "SensorSpec.hpp"
+// #include "Sensor.hpp"
+// #include "SensorSpec.hpp"
 //// #include "Acquisition.hpp"
 //// #include "core/Traits.hpp"
 
@@ -13,16 +13,96 @@
 //// #include "io/output/OutputStream.hpp"
 //// #include "io/output/OutputMemory.hpp"
 //// #include "io/Memory.hpp"
-//#include "core/Output.hpp"
+// #include "core/Output.hpp"
 
+#include <span>
+
+#include "core/Macros.hpp"
 //// #include "net/ClientSocket.hpp"
-//#include "Acquisition.hpp"
+// #include "Acquisition.hpp"
 ////#include "Format.hpp"
-//#include "Measure.hpp"
-//#include "Resolution.hpp"
+// #include "Measure.hpp"
+#include "Resolution.hpp"
 
-//namespace hub {
-//namespace sensor {
+namespace hub {
+namespace sensor {
+
+template <class ResolutionsT>
+// template <class... ResolutionTs>
+class OutputSensorT
+{
+  public:
+    class Acquisition
+    {
+      public:
+        using Array = std::array<Data_t, ResolutionsT::nByte()>;
+        static constexpr auto nResolution() { return ResolutionsT::nResolution(); }
+
+//        template <class ResolutionT>
+        class Measure
+        {
+          public:
+            int iMeasure;
+            void setData( const Data_t* const data, Size_t size ) {
+//                static_assert()
+//                ResolutionsT::get<0>();
+
+//                ResolutionsT::get<0>().nByte();
+//                static_assert(size == ResolutionsT::get<0>()::nByte());
+            }
+//            void setData()
+//            void setData( std::span<Data_t> span ) {
+//                static_assert(s)
+//            }
+
+//            Reso
+        };
+
+        Acquisition() :
+            m_dataContainer { 0 },
+            m_data { m_dataContainer.data() },
+            m_start( &( (long long*)m_data )[0] ),
+            m_end( &( (long long*)m_data )[1] ) {
+
+            std::cout << "[AcquisitionT] AcquisitionT()" << std::endl;
+            //            int iData = 0;
+            int iMeasure = 0;
+            for (auto & measure : m_measures) {
+                measure.iMeasure = iMeasure;
+                ++iMeasure;
+            }
+            //            m_measures.for_each( [&]( auto& measure ) {
+            //                measure.setData( &m_data[2 * sizeof( long long ) + iData] );
+            //                iData += measure.nByte();
+            //            } );
+
+            // #ifdef DEBUG
+            //             for ( int i = 0; i < ioGetSize(); ++i ) {
+            //                 //            m_array.at(i) == 0;
+            //                 assert( m_data[i] == 0 );
+            //             }
+            // #endif
+        };
+
+        template <int id>
+        auto& getMeasure() {
+            static_assert( 0 <= id && id < nResolution() );
+            return m_measures.at( id );
+        }
+
+      private:
+        std::array<Measure, nResolution()> m_measures;
+//        std::array<Measure, nResolution()> m_measures;
+        //    Measures m_measures;
+        Array m_dataContainer;
+        Data_t* m_data     = nullptr;
+        long long* m_start = nullptr;
+        long long* m_end   = nullptr;
+        //    Data_t * m_data;
+        //    std::array<Data_t, getSize()> m_array;
+    }; // end Acquisition
+
+}; // end OutputSensorT
 
 /////
 ///// \brief The OutputSensor class
@@ -37,12 +117,11 @@
 ///// todo: template class
 //// template <typename Output, typename Measures, typename Acquisition = Acquisition<Measures>>
 
-
 ////template <typename Output>
-//class OutputSensor : public Sensor
+// class OutputSensor : public Sensor
 //{
-//  public:
-//    using Sensor::acq;
+//   public:
+//     using Sensor::acq;
 
 //    template <typename OutputT, typename SensorSpec = sensor::SensorSpec>
 //    OutputSensor( OutputT&& output, SensorSpec&& sensorSpec ) :
@@ -69,7 +148,8 @@
 ////    Measures m_measures;
 //};
 
-/////////////////////////////////////////////// TEMPLATE ////////////////////////////////////////////////////
+/////////////////////////////////////////////// TEMPLATE
+///////////////////////////////////////////////////////
 
 ////template <typename Output, typename Measures>
 ////// template <typename Measures>
@@ -106,8 +186,8 @@
 ////        //        static_assert( !std::is_same<output::OutputStreamServer, Output>::value, "not
 ////        //        outputStream class" );
 ////        // #endif
-////        //        static_assert( !std::is_same<net::ClientSocket, Output>::value, "not clientSocket
-////        //        class" );
+////        //        static_assert( !std::is_same<net::ClientSocket, Output>::value, "not
+/// clientSocket /        //        class" );
 
 //////        const auto nMeasure = Measures::nMeasure();
 //////        for (int iMeasure = 0; iMeasure < nMeasure; ++iMeasure) {
@@ -146,14 +226,13 @@
 ////    /// to send through the communication bus.
 ////    /// \warning The acquisition needs to be compatible with
 ////    /// the internal sensor specification resolution and format.\n
-////    /// sensorSpec.resolutions == { acq.measures[0].resolution, acq.measures[1].resolution, ... }
-////    /// \exception "used interface exception"
-////    /// when communication is broken.
-////    ///
+////    /// sensorSpec.resolutions == { acq.measures[0].resolution, acq.measures[1].resolution, ...
+///} /    /// \exception "used interface exception" /    /// when communication is broken. /    ///
 
 ////    // todo acq
 ////    //    template <typename Acquisition>
-//////    void operator<<( const AcquisitionT<Measures>& acquisition ) { m_output.write( acquisition ); }
+//////    void operator<<( const AcquisitionT<Measures>& acquisition ) { m_output.write( acquisition
+///); }
 
 ////    //    ///
 ////    //    /// \brief getOutput
@@ -186,14 +265,13 @@
 ////     //                                           output::OutputStreamServer>::value
 ////     //              &&
 ////     // #endif
-////     //                                           !std::is_same<Output, net::ClientSocket>::value
-////     //                                           >::type>
-////     //    OutputSensor( OutputT&& output, SensorSpec&& sensorSpec ) :
-////     //    return std::forward<T>(t);
-//// }
+////     //                                           !std::is_same<Output,
+/// net::ClientSocket>::value /     //                                           >::type> /     //
+/// OutputSensor( OutputT&& output, SensorSpec&& sensorSpec ) : /     //    return
+/// std::forward<T>(t); / }
 
-//} // namespace sensor
-//} // namespace hub
+} // namespace sensor
+} // namespace hub
 
 //// #ifdef HUB_BUILD_SERVER
 
@@ -221,17 +299,16 @@
 ////                                                      !is_one_of<OutputT, Args...>::value )
 //// #else
 ////                                                 && ( sizeof...( Args ) != 1 ||
-////                                                      !( std::is_same<OutputT, Args> {} || ... ) )
-//// #endif
-////                                                 >::type>
-////    OutputSensor( SensorSpec&& sensorSpec, Args&&... args ) :
-////        Sensor( std::forward<SensorSpec>( sensorSpec ) ),
-////        m_output( new OutputT( std::forward<Args>( args )... ) )
+////                                                      !( std::is_same<OutputT, Args> {} || ... )
+///) / #endif /                                                 >::type> /    OutputSensor(
+/// SensorSpec&& sensorSpec, Args&&... args ) : /        Sensor( std::forward<SensorSpec>(
+/// sensorSpec ) ), /        m_output( new OutputT( std::forward<Args>( args )... ) )
 //////        m_output( std::make_unique<OutputT>( std::forward<Args>( args )... ) )
 //////        m_output( std::forward<Args>( args )...  )
 ////    {
 ////        static_assert( std::is_base_of<Output, OutputT>::value, "not a base class" );
-//////        static_assert( !std::is_same<net::ClientSocket, Output>::value, "not clientSocket class"
+//////        static_assert( !std::is_same<net::ClientSocket, Output>::value, "not clientSocket
+/// class"
 /////);
 
 ////        m_output->write( m_spec );

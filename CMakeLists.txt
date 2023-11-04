@@ -189,7 +189,8 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
 
 #set(HUB_SOURCE_DIRS "core") # allowed
 #set(HUB_SOURCE_DIRS "net") # allowed
-set(HUB_SOURCE_DIRS "core" "sensor")
+#set(HUB_SOURCE_DIRS "core" "sensor")
+set(HUB_SOURCE_DIRS "core" "net" "sensor")
 #set(HUB_SOURCE_DIRS "sensor")
 #set(HUB_SOURCE_DIRS "io")
 #set(HUB_SOURCE_DIRS "data")
@@ -221,6 +222,7 @@ set(HUB_SOURCE_DIRS "core" "sensor")
 foreach(HUB_SOURCE_DIR ${HUB_SOURCE_DIRS})
     string(TOUPPER ${HUB_SOURCE_DIR} UPPER_SOURCE_DIR)
     set(BUILD_${UPPER_SOURCE_DIR} 1)
+    add_definitions(-DBUILD_${UPPER_SOURCE_DIR})
 endforeach()
 
 set(HUB_EXTERNAL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/external")
