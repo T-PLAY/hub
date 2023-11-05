@@ -69,6 +69,9 @@ template <typename T>
 static constexpr bool notReadable_v = notReadable<T>::value;
 //    static constexpr bool packable_v = ! std::is_constructible_v<T> ;
 
+//static_assert(notReadable_v<T>);
+
+
 //} // namespace input
 //} // namespace io
 } // namespace hub

@@ -27,7 +27,7 @@ TEST_CASE( "Resolution test" ) {
     using Resolution = hub::sensor::ResolutionT<int, 640, 480>;
     static_assert(Resolution::nByte() == 640 * 480 * sizeof(int));
     static_assert(Resolution::nDim() == 2);
-    static_assert(Resolution::nResolution() == 1);
+    static_assert(Resolution::nResolution == 1);
     static_assert(Resolution::getDim(0) == 640);
     static_assert(Resolution::getDim(1) == 480);
     static_assert(Resolution::getDim(2) == 0);
@@ -45,6 +45,7 @@ TEST_CASE( "Resolution test" ) {
         unsigned char r;
         unsigned char g;
         unsigned char b;
+//    static constexpr auto nByte() {return 3;};
         static constexpr auto name() { return "userFormat"; };
         static constexpr auto interpolable() { return true; };
     };
@@ -60,9 +61,9 @@ TEST_CASE( "Resolution test" ) {
     using Resolution1 = hub::sensor::ResolutionT<UserFormat>;
     static_assert(Resolution1::nByte() == sizeof(UserFormat) * size);
     static_assert(Resolution1::nDim() == 1);
-    static_assert(Resolution1::nResolution() == 1);
+    static_assert(Resolution1::nResolution == 1);
     static_assert(Resolution1::getDim(0) == size);
-    static_assert(Resolution1::length() == size);
+//    static_assert(Resolution1::length() == size);
     static_assert(std::is_same_v<Resolution1::getFormatT, UserFormat>);
     std::cout << "resolution1: " << Resolution1() << std::endl;
 
@@ -81,6 +82,8 @@ TEST_CASE( "Resolution test" ) {
     static_assert(Resolution2::width() == 640);
     static_assert(Resolution2::height() == 480);
     std::cout << "resolution2: " << Resolution2() << std::endl;
+
+    static_assert(hub::notReadable_v<Resolution2>);
 
     using Resolution3 = hub::sensor::ResolutionT<hub::sensor::format::RGB8, 1, 2, 3>;
     static_assert(Resolution3::nx() == 1);

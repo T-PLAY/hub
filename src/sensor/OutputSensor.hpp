@@ -36,7 +36,7 @@ class OutputSensorT
     {
       public:
         using Array = std::array<Data_t, ResolutionsT::nByte()>;
-        static constexpr auto nResolution() { return ResolutionsT::nResolution(); }
+        static constexpr auto nResolution() { return ResolutionsT::nResolution; }
 
 //        template <class ResolutionT>
         class Measure

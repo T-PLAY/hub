@@ -12,12 +12,12 @@
 #include <functional>
 #include <iomanip>
 #include <memory>
+#include <tuple>
 
 #include "core/Buffer.hpp"
 
 // #include <span>
 
-// #include <tuple>
 // #include "core/Tuple.hpp"
 
 // #include <bits/stdc++.h>
@@ -39,16 +39,66 @@ class MeasureT : public ResolutionT
     using ResolutionT::nByte;
     using Buffer_t = MutableBuffer<nByte()>;
 
-    static constexpr auto getResolution() { return ResolutionT(); }
+    static constexpr auto getResolutionT() { return ResolutionT(); }
+
+    constexpr MeasureT() = default;
 
     template <class BufferT>
     MeasureT( BufferT&& buffer_ ) : buffer( std::forward<BufferT>( buffer_ ) ) {}
 
     void setData( const Buffer_t& buffer_ ) { buffer = buffer_; }
 
+    static struct {
+    } notReadable, notWritable;
+
   private:
     Buffer_t buffer;
 };
+
+///////////////////////////////////////////////////////
+
+template <class ResolutionsT>
+//template <class... ResolutionTs>
+class MeasuresT : public ResolutionsT
+{
+  public:
+    using ResolutionsT::nByte;
+    using Buffer_t = MutableBuffer<nByte()>;
+//    static constexpr auto nByte() {
+//        return ResolutionsT::nByte();
+//        return (ResolutionTs::nByte() + ...);
+//    }
+
+//    template <class... Args>
+//    MeasuresT(Args&&... args)
+//    template <class BufferT>
+    MeasuresT( const Buffer_t& buffer_ )
+        : buffer{buffer_}
+//        : buffer( std::forward<BufferT>( buffer_ ) )
+    {}
+
+//    MeasuresT(const Buffer_t & buffer)
+//        : m_tuple{std::forward<MeasureT<ResolutionTs>>(buffer)...}
+//        : m_tuple{std::forward<ResolutionTs...>(args)...}
+//        : m_tuple{args...}
+//        : m_tuple{std::forward<Args...>(args...)}
+//    {
+//    }
+
+//    template <int id>
+//    auto& get() {
+//        //        return std::get<id>( m_tuple );
+//        //        return std::get<id>( m_measures );
+//        return std::get<id>( m_tuple );
+//        //        return MeasuresT::get<id>();
+//    }
+
+  private:
+//    std::tuple<MeasureT<ResolutionTs>...> m_tuple;
+//    std::tuple<ResolutionTs...> m_tuple;
+    Buffer_t buffer;
+};
+
 
 // class Measure
 //{

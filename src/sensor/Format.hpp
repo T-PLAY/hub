@@ -41,6 +41,7 @@ namespace format {
 // Transform matrix 4x4 of float.
 struct Mat4 {
     float data[16];
+//    static constexpr auto nByte() {return  16;};
 };
 static_assert( sizeof( Mat4 ) == 64 );
 
@@ -66,6 +67,7 @@ struct RGB8 {
     unsigned char g;
     unsigned char b;
 //    static constexpr std::string_view name() { return "RGB8"; };
+//    static constexpr auto nByte() {return 3;};
     static constexpr auto name() { return "RGB8"; };
     static constexpr auto interpolable() { return false; };
 };

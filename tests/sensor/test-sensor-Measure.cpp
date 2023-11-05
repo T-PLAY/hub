@@ -1,6 +1,7 @@
 #include "test_common.hpp"
 // #include "sensor/test_sensor_utils.hpp"
 
+#include <type_traits>
 #include <vector>
 
 #include "core/test_core_common.hpp"
@@ -8,95 +9,410 @@
 
 #include <sensor/InputSensor.hpp>
 #include <sensor/Measure.hpp>
+#include <sensor/Measures.hpp>
 #include <sensor/OutputSensor.hpp>
 #include <sensor/Resolution.hpp>
+#include <sensor/Resolutions.hpp>
+
+template <int... Ns>
+class Dim
+{
+  public:
+    static struct {
+    } isDim;
+    static constexpr auto Size     = sizeof...( Ns );
+    static constexpr auto Capacity = ( Ns * ... );
+    //    typedef int value_type;
+    //    static constexpr size_t size() noexcept { return sizeof...( Ns ); }
+};
+
+template <class... Ts>
+class Types {
+  public:
+};
+
+
+//template <int... Ns>
+////using Dim = return template <class... Ts>;
+//constexpr auto Fuck() {
+//    return Types;
+//}
+
+
+//#define Teste\< args... \> void
+
+template <class Dim, class... Types>
+class MatPrivate
+{
+  public:
+//    using type = MatXD<Dim, El...>;
+//    typedef MatXD<Dim, El...> type;
+};
+
+// template <int N, class... Types>
+// class Mat1D : public Mat<Dim<N>, Types...>
+//{
+//   public:
+// };
+
+// template <class... El>
+//class Mat
+
+
+//template <int N, class... El>
+//class MatXD<Dim<N>, El...> {
+//         public:
+//};
+
+template <class... Types>
+using Merge = MatPrivate<Dim<1>, Types...>;
+
+template <int N, class... Types>
+using Mat1D = MatPrivate<Dim<N>, Types...>;
+
+template <int N, int N2, class... Types>
+using Mat2D = MatPrivate<Dim<N, N2>, Types...>;
+
+template <int N, int N2, int N3, class... Types>
+using Mat3D = MatPrivate<Dim<N, N2, N3>, Types...>;
+
+template <int N, int N2, int N3, int N4, class... Types>
+using Mat4D = MatPrivate<Dim<N, N2, N3, N4>, Types...>;
+
+
+
+//template <class Type, int... Ns>
+//using Mat = MatXD<Dim<Ns...>, Type>;
+//using Mat = MatXD<Dim<Ns...>, Type>;
+
+template <class Type, int... Ns>
+class Mat : public MatPrivate<Dim<Ns...>, Type> {
+  public:
+};
+
+template <class Type>
+class Mat<Type, 1> : public MatPrivate<Dim<1>, Type> {
+  public:
+//    static struct {} is1D;
+    void length();
+//    void length();
+};
+
+
+template <class Type, int N>
+class Mat<Type, N> : public MatPrivate<Dim<N>, Type> {
+  public:
+//    static struct {} is1D;
+    void length();
+//    void length();
+};
+
+template <class Type, int N, int N2>
+class Mat<Type, N, N2> : public MatPrivate<Dim<N, N2>, Type> {
+  public:
+    void width();
+//    static struct {} is2D;
+//    void length();
+};
+
+template <class Type, int N, int N2, int N3>
+class Mat<Type, N, N2, N3> : public MatPrivate<Dim<N, N2, N3>, Type> {
+  public:
+    void depth();
+//    static struct {} is3D;
+//    void length();
+};
+
+
+//template <class Type, int N, int N2>
+//class Mat<Type, N, N2> {
+//  public:
+//};
+
+//template <int N, class... El>
+//constexpr auto Mat() {
+//    return MatXD<Dim<N>, El...>();
+//}
+
+//template <int N, int N2, class... El>
+//constexpr auto Mat() {
+//    return MatXD<Dim<N, N2>, El...>();
+//}
+
+//template <int N, int N2, int N3, class... El>
+//constexpr auto Mat() {
+//    return MatXD<Dim<N, N2, N3>, El...>();
+//}
+
+//template <int N, int N2, int N3, int N4, class... El>
+//constexpr auto Mat() {
+//    return MatXD<Dim<N, N2, N3, N4>, El...>();
+//}
+
+// class Mat2D
+//{
+//   public:
+// };
+
+// template <int N, int N2, class... Ts>
+// class Matrix2D
+//{
+//   public:
+//     //    using type = Matrix1;
+// };
+
+// template <int N, int N2, int N3, class... Ts>
+// class Matrix3D
+//{
+//   public:
+//     //    using type = Matrix1;
+// };
+
+// template <class T, class T2, class T3, hub::Size_t... Dims>
+// class Matrix3 {
+//   public:
+// };
+
+// template <int N, class... Ts>
+// using Matrix = Matrix1D<N, Ts...>;
+
+// template <int N, int N2, class... Ts>
+// using Matrix = Matrix2D<N, N2, Ts...>;
+
+// template <class T, hub::Size_t... Dims>
+// using Matrix = Matrix1<T, Dims...>;
+
+// template <class T, class T2, hub::Size_t... Dims>
+// using Matrix = Matrix2<T, T2>;
+
+// template <class... Args>
+// using Matrix = Matrix1<Args...>;
+
+// template <class T, hub::Size_t... Dims>
+// constexpr auto Matrix() { return typename Matrix1<T, Dims...>::type(); };
+// using Matrix = typename Matrix1<T, Dims...>::type;
+
+// template <class T, class T2, hub::Size_t... Dims>
+// using Matrix = typename Matrix2<T, T2, Dims...>::type;
+
+// template <class... Args>
+// constexpr auto makeMatrix(Args...) {
+//     return Matrix<int, 4, 4>();
+// }
 
 // #include <io/Memory.hpp>
 
+#include <tuple>
+
+//class Integer {
+//  public:
+//    Integer(int value) {
+
+//    }
+//};
+
 TEST_CASE( "InputSensor test" ) {
+    //    Dim<1> dim;
+
+//    using trash = Trash<int, typeof(5)>;
+//    Test<int, bool>;
+//    Test<int, 5>;
+//    Test<640, 480>;
+
+//    using MyTypes = Types<int, int>;
+
+//    using test = Teste<640, 480, int>;
+
+//    Types<Dim<1, 2>>;
+
+//    constexpr auto myMat = Mat<640, 480, int>();
+//    using MyMat = Mat<640, 480, int>()::type;
+//    std::make_tuple(5, 4, int);
+//    using MyMat = Mat2D<640, 480, int>;
+
+    using R = unsigned char;
+    using G = unsigned char;
+    using B = unsigned char;
+
+
+    using MyMat2 = Mat<int, 640, 480, 3>;
+    using MyMat3 = Mat<int, 640>;
+    using MyMat4 = Mat2D<640, 480, R, G, B>;
+//    using MyMat5 = MatXMatXD<MyMat4, 5>;
+//    using MyMat6 = Mat<Mat<int, double>, 5>;
+//    using MyMat7 = Mat1D<5, int, double>;
+    using MyMat8 = Mat1D<5, Mat<int, 640, 480>, Mat<double, 10>>;
+    using MyMat9 = Merge<Mat1D<5, Mat<int, 640, 480>, Mat<double, 10>>>;
+//    using MyMat9 = Mat<Merge<Mat<int, 640, 480>, Mat<double, 10>>, 10>;
+
+//       MatXD<5, int>;
+//    constexpr auto myMat = Mat<640, 480, int>;
+//    using MyMat = Mat<640, 480, int>;
+//    myMat::type;
+//    using MatType = myMat::
+
+
+    //    MatrixXD<std::integer_sequence<int, 1>, int>;
+    //    using MyMatrix = Matrix<1, int>;
+    //    MatrixXD<1, int>;
+    //    using sequence = std::integer_sequence<int, 640, 480>;
+    //    using MyMatrix = Matrix<double, Dim<640, 480>>;
+    //      using MyMatrix = Matrix<double, 640, 480>;
+    //    using MyMatrix2 = Matrix<int, double>;
+    //    using MyMatrix = Matrix<int, 640, 480>;
+    //    using MyMatrix2 = Matrix<double, 10>;
+    //    using MyMatrix3 = Matrix<MyMatrix, MyMatrix2>;
+
+        using namespace hub::sensor;
+        using Resolution1 = ResolutionT<int, 640, 480>;
+    //    using R = unsigned char;
+    //    using G = unsigned char;
+    //    using B = unsigned char;
+
+//        using Resolution5 = ResolutionT<FormatT<R, G, B>, 640, 480>;
+//        static_assert(Resolution5::nByte() == 640 * 480 * 3);
+    //    using MyMatrix = Matrix<int, 640, 480>;
+    //    using MyMatrix2 = Matrix<double, 10>;
+
+    //    using MyMatrixRGB = Matrix<R, G, B, 640, 480>;
+
+    ////    using MyMatrix12 = Matrix<
+
+    ////    using MyMatrix2 = makeMatrix
+
+//    return;
 
     ////////////////////////// ResolutionT //////////////////////////////
 
     using Resolution = hub::sensor::ResolutionT<hub::sensor::format::RGB8, 640, 480>;
     static_assert( Resolution::nResolution == 1 );
+    static_assert( Resolution::nByte() == 640 * 480 * 3 );
+    using Resolution2 = hub::sensor::ResolutionT<hub::sensor::format::Mat4>;
+    static_assert( Resolution2::nResolution == 1 );
+    std::cout << "Resolution: " << Resolution() << std::endl;
+    std::cout << "Resolution2: " << Resolution2() << std::endl;
+
+    using Resolutions = hub::sensor::ResolutionsT<Resolution, Resolution2>;
+    std::cout << "Resolutions: " << Resolutions() << std::endl;
+    static_assert( Resolutions::nResolution == 2 );
+    static_assert( std::is_same_v<Resolutions::IResolution<0>, Resolution> );
+    static_assert( std::is_same_v<Resolutions::IResolution<1>, Resolution2> );
+    //    Resolutions::
+
+    //    using ResolutionsPack = hub::sensor::ResolutionsPackT<Resolutions, 2>;
+    //    std::cout << "ResolutionsPack: " << ResolutionsPack() << std::endl;
+    //    static_assert(Resolutions::nByte() == 640 * 480 * 3 + 64);
+    //    static_assert(ResolutionsPack::nByte() == (640 * 480 * 3 + 64) * 2);
+
+    using ResolutionPack = hub::sensor::ResolutionT<Resolutions, 2>;
+    std::cout << "ResolutionPack: " << ResolutionPack() << std::endl;
+    static_assert( ResolutionPack::nByte() == ( 640 * 480 * 3 + 64 ) * 2 );
+
+//    using ResolutionPack2 = ResolutionT<FormatT<ResolutionT<double, 640, 480>, ResolutionT<float, 5>>, 100>;
+//    using ResolutionPack3 = Resolution1DT<100, ResolutionT<double, 640, 480>, ResolutionT<float, 5>>;
+//    using ResolutionPack3 = Resolution1DT<ResolutionPack>;
+
+
+    return;
+//    using ResolutionPack3 = Res1DT<100, ResT<double, 640, 480>, ResT<float, 5>>;
+//    using ResolutionPack4 = nd<100, nd<double, 640, 480>, nd<float, 5>>;
+
+//    ResolutionTI<Dims<5>, int> fuck;
+
+    //    auto resolution = Resolutions::get<0>();
+
+    //    static_assert( Resolution::nResolution() == 1 );
     //    auto get = Resolution::get<0>();
     //    static_assert(Resolution::get<0>() == Resolution());
     //    static_assert(Resolution::getResolutionT<0>() == Resolution());
-
-    std::cout << "Resolution: " << Resolution() << std::endl;
 
     ////////////////////////// MeasureT //////////////////////////////
 
     constexpr auto dataSize = 640 * 480 * 3;
 
-//    constexpr auto dataSize = 640 * 480 * 3 * 2;
-    unsigned char datas[640 * 480 * 3 * 2] {0};
-//    std::span<hub::Data_t> datasSpan(datas, datas + dataSize);
+    //    constexpr auto dataSize = 640 * 480 * 3 * 2;
+    unsigned char datas[640 * 480 * 3 * 2] { 0 };
+    //    std::span<hub::Data_t> datasSpan(datas, datas + dataSize);
 
-//    hub::sensor::MeasureT<Resolution> measureT(datas);
-//    auto measureT = hub::sensor::MeasureT<Resolution>(datas);
-//    auto buffer = hub::Buffer(datas);
-//    auto buffer = hub::Buffer<dataSize>(datas);
-//    static_assert(buffer.size == dataSize);
-    auto datasBuff = hub::Buffer(datas, dataSize);
-    auto datasBuff2 = hub::Buffer((const hub::Data_t*)datas, dataSize);
-    assert(datasBuff == datasBuff2);
+    //    hub::sensor::MeasureT<Resolution> measureT(datas);
+    //    auto measureT = hub::sensor::MeasureT<Resolution>(datas);
+    //    auto buffer = hub::Buffer(datas);
+    //    auto buffer = hub::Buffer<dataSize>(datas);
+    //    static_assert(buffer.size == dataSize);
+    auto datasBuff  = hub::Buffer( datas, dataSize );
+    auto datasBuff2 = hub::Buffer( (const hub::Data_t*)datas, dataSize );
+    assert( datasBuff == datasBuff2 );
 
-//    return;
-//    datasBuff.data = nullptr;
-//    datasBuff.data[0] = 2;
-    assert(datasBuff == datasBuff2);
+    //    return;
+    //    datasBuff.data = nullptr;
+    //    datasBuff.data[0] = 2;
+    assert( datasBuff == datasBuff2 );
 
     std::cout << "datasBuff: " << datasBuff << std::endl;
-    hub::sensor::MeasureT<Resolution> measureT(datasBuff);
-//    hub::sensor::MeasureT<Resolution> measureT{datas, dataSize};
-//    static_assert( measureT.getResolution() == Resolution() );
+    hub::sensor::MeasureT<Resolution> measureT( datasBuff );
+    //    hub::sensor::MeasureT<Resolution> measureT{datas, dataSize};
+    //    static_assert( measureT.getResolution() == Resolution() );
 
-    unsigned char data[dataSize] {0};
-    unsigned char * data2 = new unsigned char[dataSize];
-    auto buffer = hub::Buffer(data, dataSize);
-    auto buffer2 = hub::Buffer(data2, dataSize);
-    assert(buffer == buffer2);
-//    assert(buffer == datasBuff);
+    unsigned char data[dataSize] { 0 };
+    unsigned char* data2 = new unsigned char[dataSize];
+    auto buffer          = hub::Buffer( data, dataSize );
+    auto buffer2         = hub::Buffer( data2, dataSize );
+    assert( buffer == buffer2 );
+    //    assert(buffer == datasBuff);
 
-//    std::array<unsigned char, dataSize> array;
-//    decltype(array)::value_type;
-//    auto type = typeid(std::span<int>::value_type()).hash_code();
-//    measureT.setData(array);
+    //    std::array<unsigned char, dataSize> array;
+    //    decltype(array)::value_type;
+    //    auto type = typeid(std::span<int>::value_type()).hash_code();
+    //    measureT.setData(array);
 
-    std::memset(data2, 55, dataSize);
-//    measureT.setData(5, nullptr);
-//    measureT.setData<data, dataSize>();
-//    hub::Buffer buffer2(data2, dataSize);
-    measureT.setData(buffer2);
-//    measureT.setData(data, dataSize);
-    assert(std::memcmp(datas, data2, dataSize) == 0);
-    assert(datasBuff == buffer2);
+    std::memset( data2, 55, dataSize );
+    //    measureT.setData(5, nullptr);
+    //    measureT.setData<data, dataSize>();
+    //    hub::Buffer buffer2(data2, dataSize);
+    measureT.setData( buffer2 );
+    //    measureT.setData(data, dataSize);
+    assert( std::memcmp( datas, data2, dataSize ) == 0 );
+    assert( datasBuff == buffer2 );
 
-//    std::span span(data);
-//    measureT.setData(span);
+    //    std::span span(data);
+    //    measureT.setData(span);
 
-    std::memset(data, 55, dataSize);
-//    std::span span(data);
-//    std::span<hub::Data_t> span2(data2, dataSize);
-//    decltype(span)::value_type;
+    std::memset( data, 55, dataSize );
+    //    std::span span(data);
+    //    std::span<hub::Data_t> span2(data2, dataSize);
+    //    decltype(span)::value_type;
 
-//    measureT.setData(span);
-//    assert(std::memcmp(datas, data, dataSize) == 0);
+    //    hub::sensor::MeasuresT<Resolution, Resolution> measuresT(buffer);
+    hub::sensor::MeasureT<Resolution> measure( buffer );
 
-//    measureT.setData(span2);
-//    std::span<unsigned char> span2(data2, data2 + dataSize);
+    hub::sensor::MeasuresT<Resolution> measuresT( buffer );
+    static_assert( measuresT.nResolution == 1 );
 
+    //    hub::sensor::MeasureT<Resolution>(buffer, buffer);
+
+    //    auto & measure1 = measuresT.get<0>();
+    //    auto & measure2 = measuresT.get<1>();
+    //    auto & measure2 = measuresT.get<1>();
+
+    //    measureT.setData(span);
+    //    assert(std::memcmp(datas, data, dataSize) == 0);
+
+    //    measureT.setData(span2);
+    //    std::span<unsigned char> span2(data2, data2 + dataSize);
+
+    //    hub::sensor::MeasuresT<Resolution> measureT(datasBuff);
 
     ////////////////////////// OutputSensorT //////////////////////////////
+
+    return;
 
     using OutputSensor = hub::sensor::OutputSensorT<Resolution>;
     //    using Acquisition = OutputSensor::Acquisition;
     OutputSensor outputSensor;
     OutputSensor::Acquisition acq;
 
-    auto& measure = acq.getMeasure<0>();
-    measure.setData( nullptr, 10 );
+    //    auto& measure = acq.getMeasure<0>();
+    //    measure.setData( nullptr, 10 );
     //    auto & measure2 = acq.getMeasure<1>();
 
     //    hub::sensor::
@@ -481,8 +797,8 @@ TEST_CASE( "InputSensor test" ) {
 
 ////        inputOutput.write( ref_sensorSpec );
 ////        hub::sensor::SensorSpec ref_sensorSpec_read =
-///inputOutput.get<hub::sensor::SensorSpec>(); /        //                inputOutput.read(
-///ref_sensorSpec_read ); /        assert( ref_sensorSpec == ref_sensorSpec_read );
+/// inputOutput.get<hub::sensor::SensorSpec>(); /        //                inputOutput.read(
+/// ref_sensorSpec_read ); /        assert( ref_sensorSpec == ref_sensorSpec_read );
 
 //        //        //        InputOutput inputOutput2;
 
@@ -685,7 +1001,7 @@ TEST_CASE( "InputSensor test" ) {
 ///) /    );
 
 ////    auto acq = std::move( hub::sensor::Acquisition { 0, 1 } << hub::Measure { data, 3,
-///resolution /    } ); outputSensor << acq; outputSensor << acq; outputSensor << acq;
+/// resolution /    } ); outputSensor << acq; outputSensor << acq; outputSensor << acq;
 
 ////    hub::sensor::InputSensor inputSensor { hub::io::Memory<decltype( buff )>( buff ) };
 
