@@ -114,18 +114,18 @@ SRC_API std::ostream& operator<<( std::ostream& os, const MutableBuffer<size>& b
 }
 
 template <Size_t size>
-static constexpr inline auto make_buffer( Data_t* data ) {
+static constexpr inline auto Buffer( Data_t* data ) {
     return MutableBuffer<size> { data };
 }
 
 template <Size_t size>
-static constexpr inline auto make_buffer( const Data_t* data ) {
+static constexpr inline auto Buffer( const Data_t* data ) {
     return ConstantBuffer<size> { data };
 }
 
 // namespace hub {
 
-#define Buffer( _data_, _size_ ) make_buffer<_size_>( _data_ )
+//#define Buffer( _data_, _size_ ) make_buffer<_size_>( _data_ )
 
 //}
 

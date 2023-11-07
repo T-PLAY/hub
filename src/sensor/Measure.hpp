@@ -29,76 +29,136 @@
 namespace hub {
 namespace sensor {
 
+//    class Measure
+//    {
+//      public:
+//        int iMeasure;
+//        void setData( const Data_t* const data, Size_t size ) {
+//            //                static_assert()
+//            //                Resolution::get<0>();
+
+//            //                Resolution::get<0>().nByte();
+//            //                static_assert(size == Resolution::get<0>()::nByte());
+//        }
+//        //            void setData()
+//        //            void setData( std::span<Data_t> span ) {
+//        //                static_assert(s)
+//        //            }
+
+//        //            Reso
+//    };
+
 ////////////////////////////////////////////// TEMPLATES
 ////////////////////////////////////////////////////////////////////////////
 
-template <class ResolutionT>
-class MeasureT : public ResolutionT
+template <class Resolution>
+class MeasureT
 {
   public:
-    using ResolutionT::nByte;
-    using Buffer_t = MutableBuffer<nByte()>;
+    //    template <class Type>
+    //    constexpr MeasureT(std::span<Type> span) {
 
-    static constexpr auto getResolutionT() { return ResolutionT(); }
+    //    }
+//    constexpr MeasureT( Data_t* data, Size_t size ) : m_data( data ), m_size( size ) {}
+    template <class Buffer>
+    constexpr MeasureT(Buffer && buffer)
+        : m_buffer(std::forward<Buffer>(buffer))
+    {
+    }
 
-    constexpr MeasureT() = default;
+    template <class Buffer>
+    constexpr void setData( Buffer buffer ) {
+        m_buffer = buffer;
+//        static_assert( Resolution::nByte() == buffer.size );
+        //        static_assert(m_size == buffer.size);
+    }
 
-    template <class BufferT>
-    MeasureT( BufferT&& buffer_ ) : buffer( std::forward<BufferT>( buffer_ ) ) {}
+    template <class Resolution_>
+    SRC_API friend std::ostream& operator<<( std::ostream& os,
+                                             const MeasureT<Resolution_>& measure );
 
-    void setData( const Buffer_t& buffer_ ) { buffer = buffer_; }
-
-    static struct {
-    } notReadable, notWritable;
+    //    constexpr void setData(Data_t * data, Size_t size)
+    //    {
+    //        static_assert(m_size == size);
+    //    }
 
   private:
-    Buffer_t buffer;
+    MutableBuffer<Resolution::nByte()> m_buffer;
+//    Data_t* m_data;
+//    Size_t m_size;
 };
 
-///////////////////////////////////////////////////////
+template <class Resolution_>
+SRC_API std::ostream& operator<<( std::ostream& os, const MeasureT<Resolution_>& measure ) {
+    os << Resolution() << " " << measure.m_buffer;
+    return os;
+}
+// template <class ResolutionT>
+// class MeasureT : public ResolutionT
+//{
+//   public:
+//     using ResolutionT::nByte;
+//     using Buffer_t = MutableBuffer<nByte()>;
 
-template <class ResolutionsT>
-//template <class... ResolutionTs>
-class MeasuresT : public ResolutionsT
-{
-  public:
-    using ResolutionsT::nByte;
-    using Buffer_t = MutableBuffer<nByte()>;
-//    static constexpr auto nByte() {
-//        return ResolutionsT::nByte();
-//        return (ResolutionTs::nByte() + ...);
-//    }
+//    static constexpr auto getResolutionT() { return ResolutionT(); }
 
-//    template <class... Args>
-//    MeasuresT(Args&&... args)
+//    constexpr MeasureT() = default;
+
 //    template <class BufferT>
-    MeasuresT( const Buffer_t& buffer_ )
-        : buffer{buffer_}
-//        : buffer( std::forward<BufferT>( buffer_ ) )
-    {}
+//    MeasureT( BufferT&& buffer_ ) : buffer( std::forward<BufferT>( buffer_ ) ) {}
 
-//    MeasuresT(const Buffer_t & buffer)
-//        : m_tuple{std::forward<MeasureT<ResolutionTs>>(buffer)...}
-//        : m_tuple{std::forward<ResolutionTs...>(args)...}
-//        : m_tuple{args...}
-//        : m_tuple{std::forward<Args...>(args...)}
-//    {
-//    }
+//    void setData( const Buffer_t& buffer_ ) { buffer = buffer_; }
 
-//    template <int id>
-//    auto& get() {
-//        //        return std::get<id>( m_tuple );
-//        //        return std::get<id>( m_measures );
-//        return std::get<id>( m_tuple );
-//        //        return MeasuresT::get<id>();
-//    }
+//    static struct {
+//    } notReadable, notWritable;
 
-  private:
-//    std::tuple<MeasureT<ResolutionTs>...> m_tuple;
-//    std::tuple<ResolutionTs...> m_tuple;
-    Buffer_t buffer;
-};
+//  private:
+//    Buffer_t buffer;
+//};
 
+/////////////////////////////////////////////////////////
+
+// template <class ResolutionsT>
+////template <class... ResolutionTs>
+// class MeasuresT : public ResolutionsT
+//{
+//   public:
+//     using ResolutionsT::nByte;
+//     using Buffer_t = MutableBuffer<nByte()>;
+////    static constexpr auto nByte() {
+////        return ResolutionsT::nByte();
+////        return (ResolutionTs::nByte() + ...);
+////    }
+
+////    template <class... Args>
+////    MeasuresT(Args&&... args)
+////    template <class BufferT>
+//    MeasuresT( const Buffer_t& buffer_ )
+//        : buffer{buffer_}
+////        : buffer( std::forward<BufferT>( buffer_ ) )
+//    {}
+
+////    MeasuresT(const Buffer_t & buffer)
+////        : m_tuple{std::forward<MeasureT<ResolutionTs>>(buffer)...}
+////        : m_tuple{std::forward<ResolutionTs...>(args)...}
+////        : m_tuple{args...}
+////        : m_tuple{std::forward<Args...>(args...)}
+////    {
+////    }
+
+////    template <int id>
+////    auto& get() {
+////        //        return std::get<id>( m_tuple );
+////        //        return std::get<id>( m_measures );
+////        return std::get<id>( m_tuple );
+////        //        return MeasuresT::get<id>();
+////    }
+
+//  private:
+////    std::tuple<MeasureT<ResolutionTs>...> m_tuple;
+////    std::tuple<ResolutionTs...> m_tuple;
+//    Buffer_t buffer;
+//};
 
 // class Measure
 //{

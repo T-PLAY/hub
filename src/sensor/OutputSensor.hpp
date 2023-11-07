@@ -27,80 +27,11 @@
 namespace hub {
 namespace sensor {
 
-template <class ResolutionsT>
+template <class Resolution>
 // template <class... ResolutionTs>
 class OutputSensorT
 {
   public:
-    class Acquisition
-    {
-      public:
-        using Array = std::array<Data_t, ResolutionsT::nByte()>;
-        static constexpr auto nResolution() { return ResolutionsT::nResolution; }
-
-//        template <class ResolutionT>
-        class Measure
-        {
-          public:
-            int iMeasure;
-            void setData( const Data_t* const data, Size_t size ) {
-//                static_assert()
-//                ResolutionsT::get<0>();
-
-//                ResolutionsT::get<0>().nByte();
-//                static_assert(size == ResolutionsT::get<0>()::nByte());
-            }
-//            void setData()
-//            void setData( std::span<Data_t> span ) {
-//                static_assert(s)
-//            }
-
-//            Reso
-        };
-
-        Acquisition() :
-            m_dataContainer { 0 },
-            m_data { m_dataContainer.data() },
-            m_start( &( (long long*)m_data )[0] ),
-            m_end( &( (long long*)m_data )[1] ) {
-
-            std::cout << "[AcquisitionT] AcquisitionT()" << std::endl;
-            //            int iData = 0;
-            int iMeasure = 0;
-            for (auto & measure : m_measures) {
-                measure.iMeasure = iMeasure;
-                ++iMeasure;
-            }
-            //            m_measures.for_each( [&]( auto& measure ) {
-            //                measure.setData( &m_data[2 * sizeof( long long ) + iData] );
-            //                iData += measure.nByte();
-            //            } );
-
-            // #ifdef DEBUG
-            //             for ( int i = 0; i < ioGetSize(); ++i ) {
-            //                 //            m_array.at(i) == 0;
-            //                 assert( m_data[i] == 0 );
-            //             }
-            // #endif
-        };
-
-        template <int id>
-        auto& getMeasure() {
-            static_assert( 0 <= id && id < nResolution() );
-            return m_measures.at( id );
-        }
-
-      private:
-        std::array<Measure, nResolution()> m_measures;
-//        std::array<Measure, nResolution()> m_measures;
-        //    Measures m_measures;
-        Array m_dataContainer;
-        Data_t* m_data     = nullptr;
-        long long* m_start = nullptr;
-        long long* m_end   = nullptr;
-        //    Data_t * m_data;
-        //    std::array<Data_t, getSize()> m_array;
-    }; // end Acquisition
 
 }; // end OutputSensorT
 

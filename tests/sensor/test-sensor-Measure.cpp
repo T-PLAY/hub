@@ -292,11 +292,11 @@ TEST_CASE( "InputSensor test" ) {
     std::cout << "Resolution: " << Resolution() << std::endl;
     std::cout << "Resolution2: " << Resolution2() << std::endl;
 
-    using Resolutions = hub::sensor::ResolutionsT<Resolution, Resolution2>;
-    std::cout << "Resolutions: " << Resolutions() << std::endl;
-    static_assert( Resolutions::nResolution == 2 );
-    static_assert( std::is_same_v<Resolutions::IResolution<0>, Resolution> );
-    static_assert( std::is_same_v<Resolutions::IResolution<1>, Resolution2> );
+//    using Resolutions = hub::sensor::Resolution1DT<20, Resolution, Resolution2>;
+//    std::cout << "Resolutions: " << Resolutions() << std::endl;
+//    static_assert( Resolutions::nResolution == 1 );
+//    static_assert( std::is_same_v<Resolutions::IResolution<0>, Resolution> );
+//    static_assert( std::is_same_v<Resolutions::IResolution<1>, Resolution2> );
     //    Resolutions::
 
     //    using ResolutionsPack = hub::sensor::ResolutionsPackT<Resolutions, 2>;
@@ -304,9 +304,9 @@ TEST_CASE( "InputSensor test" ) {
     //    static_assert(Resolutions::nByte() == 640 * 480 * 3 + 64);
     //    static_assert(ResolutionsPack::nByte() == (640 * 480 * 3 + 64) * 2);
 
-    using ResolutionPack = hub::sensor::ResolutionT<Resolutions, 2>;
-    std::cout << "ResolutionPack: " << ResolutionPack() << std::endl;
-    static_assert( ResolutionPack::nByte() == ( 640 * 480 * 3 + 64 ) * 2 );
+//    using ResolutionPack = hub::sensor::ResolutionT<Resolutions, 2>;
+//    std::cout << "ResolutionPack: " << ResolutionPack() << std::endl;
+//    static_assert( ResolutionPack::nByte() == ( 640 * 480 * 3 + 64 ) * 2 );
 
 //    using ResolutionPack2 = ResolutionT<FormatT<ResolutionT<double, 640, 480>, ResolutionT<float, 5>>, 100>;
 //    using ResolutionPack3 = Resolution1DT<100, ResolutionT<double, 640, 480>, ResolutionT<float, 5>>;
@@ -339,54 +339,54 @@ TEST_CASE( "InputSensor test" ) {
     //    auto buffer = hub::Buffer(datas);
     //    auto buffer = hub::Buffer<dataSize>(datas);
     //    static_assert(buffer.size == dataSize);
-    auto datasBuff  = hub::Buffer( datas, dataSize );
-    auto datasBuff2 = hub::Buffer( (const hub::Data_t*)datas, dataSize );
-    assert( datasBuff == datasBuff2 );
+//    auto datasBuff  = hub::Buffer( datas, dataSize );
+//    auto datasBuff2 = hub::Buffer( (const hub::Data_t*)datas, dataSize );
+//    assert( datasBuff == datasBuff2 );
 
     //    return;
     //    datasBuff.data = nullptr;
     //    datasBuff.data[0] = 2;
-    assert( datasBuff == datasBuff2 );
+//    assert( datasBuff == datasBuff2 );
 
-    std::cout << "datasBuff: " << datasBuff << std::endl;
-    hub::sensor::MeasureT<Resolution> measureT( datasBuff );
+//    std::cout << "datasBuff: " << datasBuff << std::endl;
+//    hub::sensor::MeasureT<Resolution> measureT( datasBuff );
     //    hub::sensor::MeasureT<Resolution> measureT{datas, dataSize};
     //    static_assert( measureT.getResolution() == Resolution() );
 
-    unsigned char data[dataSize] { 0 };
-    unsigned char* data2 = new unsigned char[dataSize];
-    auto buffer          = hub::Buffer( data, dataSize );
-    auto buffer2         = hub::Buffer( data2, dataSize );
-    assert( buffer == buffer2 );
-    //    assert(buffer == datasBuff);
+//    unsigned char data[dataSize] { 0 };
+//    unsigned char* data2 = new unsigned char[dataSize];
+//    auto buffer          = hub::Buffer( data, dataSize );
+//    auto buffer2         = hub::Buffer( data2, dataSize );
+//    assert( buffer == buffer2 );
+//    //    assert(buffer == datasBuff);
 
-    //    std::array<unsigned char, dataSize> array;
-    //    decltype(array)::value_type;
-    //    auto type = typeid(std::span<int>::value_type()).hash_code();
-    //    measureT.setData(array);
+//    //    std::array<unsigned char, dataSize> array;
+//    //    decltype(array)::value_type;
+//    //    auto type = typeid(std::span<int>::value_type()).hash_code();
+//    //    measureT.setData(array);
 
-    std::memset( data2, 55, dataSize );
-    //    measureT.setData(5, nullptr);
-    //    measureT.setData<data, dataSize>();
-    //    hub::Buffer buffer2(data2, dataSize);
-    measureT.setData( buffer2 );
-    //    measureT.setData(data, dataSize);
-    assert( std::memcmp( datas, data2, dataSize ) == 0 );
-    assert( datasBuff == buffer2 );
+//    std::memset( data2, 55, dataSize );
+//    //    measureT.setData(5, nullptr);
+//    //    measureT.setData<data, dataSize>();
+//    //    hub::Buffer buffer2(data2, dataSize);
+//    measureT.setData( buffer2 );
+//    //    measureT.setData(data, dataSize);
+//    assert( std::memcmp( datas, data2, dataSize ) == 0 );
+//    assert( datasBuff == buffer2 );
 
     //    std::span span(data);
     //    measureT.setData(span);
 
-    std::memset( data, 55, dataSize );
+//    std::memset( data, 55, dataSize );
     //    std::span span(data);
     //    std::span<hub::Data_t> span2(data2, dataSize);
     //    decltype(span)::value_type;
 
     //    hub::sensor::MeasuresT<Resolution, Resolution> measuresT(buffer);
-    hub::sensor::MeasureT<Resolution> measure( buffer );
+//    hub::sensor::MeasureT<Resolution> measure( buffer );
 
-    hub::sensor::MeasuresT<Resolution> measuresT( buffer );
-    static_assert( measuresT.nResolution == 1 );
+//    hub::sensor::MeasuresT<Resolution> measuresT( buffer );
+//    static_assert( measuresT.nResolution == 1 );
 
     //    hub::sensor::MeasureT<Resolution>(buffer, buffer);
 
@@ -406,10 +406,10 @@ TEST_CASE( "InputSensor test" ) {
 
     return;
 
-    using OutputSensor = hub::sensor::OutputSensorT<Resolution>;
+//    using OutputSensor = hub::sensor::OutputSensorT<Resolution>;
     //    using Acquisition = OutputSensor::Acquisition;
-    OutputSensor outputSensor;
-    OutputSensor::Acquisition acq;
+//    OutputSensor outputSensor;
+//    OutputSensor::Acquisition acq;
 
     //    auto& measure = acq.getMeasure<0>();
     //    measure.setData( nullptr, 10 );

@@ -1,17 +1,18 @@
 #pragma once
 
-//#include <iostream>
-//#include <list>
+// #include <iostream>
+// #include <list>
 //// #include <cstdlib>
 //// #include <string>
-//#include <cstring>
-//#include <memory>
-//#include <vector>
+// #include <cstring>
+// #include <memory>
+// #include <vector>
+#include <array>
 
-//#include "core/Macros.hpp"
+ #include "core/Macros.hpp"
 //// #include "data/Measure.hpp"
 
-//#include "data/Measure.hpp"
+// #include "data/Measure.hpp"
 //// #include "data/Measure.hpp"
 ////  user friendly useless includes
 //// #include "data/Dof6.hpp"
@@ -19,28 +20,113 @@
 //// #include "data/Mesh.hpp"
 //// #include "data/UserData.hpp"
 
-//#include "Measure.hpp"
+#include "Measure.hpp"
 //// #include "core/Tuple.hpp"
 
-//namespace hub {
-//namespace sensor {
+//#include "Resolution.hpp"
 
-//class Acquisition
+ namespace hub {
+ namespace sensor {
+
+// class Acquisition
 //{
-//  public:
-//    constexpr Size_t nByte() const {
-//        Size_t dataSize = 0;
-//        for ( const auto& resolution : m_resolutions ) {
-//            dataSize += resolution.nByte();
-//        }
-//        return 2 * sizeof( long long ) + dataSize;
-//    }
+//   public:
+//     constexpr Size_t nByte() const {
+//         Size_t dataSize = 0;
+//         for ( const auto& resolution : m_resolutions ) {
+//             dataSize += resolution.nByte();
+//         }
+//         return 2 * sizeof( long long ) + dataSize;
+//     }
 
 //    template <class Serial>
 //    void serialize( Serial& serial ) {
 ////        serial( a, b, name, vints );
 //    }
 
+template <class Resolution>
+class AcquisitionT
+{
+  public:
+    using Array = std::array<Data_t, Resolution::nByte() + 2 * sizeof(long long)>;
+//    using resolution = Resolution;
+    static constexpr auto resolution = Resolution();
+//    template <class Type>
+//    using has<Type> = Resolution::has<Type>;
+//    using Resolution::nResolution;
+//    static constexpr auto nResolution() { return Resolution::nResolution; }
+
+    //        template <class ResolutionT>
+
+    AcquisitionT() :
+        m_dataContainer { 0 },
+        m_data { m_dataContainer.data() + 2 * sizeof(long long) },
+        m_start( &( (long long*)m_data )[0] ),
+        m_end( &( (long long*)m_data )[1] ) {
+
+        std::cout << "[AcquisitionT] AcquisitionT()" << std::endl;
+        //            int iData = 0;
+//        int iMeasure = 0;
+//        for ( auto& measure : m_measures ) {
+//            measure.iMeasure = iMeasure;
+//            ++iMeasure;
+//        }
+        //            m_measures.for_each( [&]( auto& measure ) {
+        //                measure.setData( &m_data[2 * sizeof( long long ) + iData] );
+        //                iData += measure.nByte();
+        //            } );
+
+        // #ifdef DEBUG
+        //             for ( int i = 0; i < ioGetSize(); ++i ) {
+        //                 //            m_array.at(i) == 0;
+        //                 assert( m_data[i] == 0 );
+        //             }
+        // #endif
+    };
+
+//    using has = Resolution::has<Type>;
+
+//    template <class Type>
+//    constexpr bool has() const {
+//        return Resolution::has<Type>();
+//    }
+//    using has = Resolution::has;
+
+    template <class Type>
+    constexpr auto has() const {
+        return Resolution::template has<Type>();
+    }
+
+    template <class Type>
+    constexpr auto get() const {
+        static_assert(Resolution::template has<Type>());
+        using Res = Resolution::template get<Type>;
+        auto buffer = Buffer<Res::nByte()>(m_data);
+        return MeasureT<Res>(buffer);
+//        return MeasureT<Res>(m_data, Res::nByte());
+//        using res = Resolution::get<Type>();
+//        Measure measure(m_data, 10);
+//        return measure;
+//        return Resolution::has<Type>();
+    }
+
+//    template <int id>
+//    auto& getMeasure() {
+//        static_assert( 0 <= id && id < Resolution::nResolution );
+////        return m_measures.at( id );
+//    }
+
+  private:
+//    std::array<Measure, nResolution()> m_measures;
+    //        std::array<Measure, nResolution()> m_measures;
+    //    Measures m_measures;
+    Array m_dataContainer;
+    Data_t* m_data     = nullptr;
+    long long* m_start = nullptr;
+    long long* m_end   = nullptr;
+    //    Data_t * m_data;
+    //    std::array<Data_t, getSize()> m_array;
+}; // end Acquisition
 
 ////    template <class ResolutionsT>
 //    Acquisition( const Resolutions& resolutions ) :
@@ -137,7 +223,6 @@
 ////        output.write( m_data, m_size );
 ////    }
 
-
 //  private:
 //    const Resolutions m_resolutions;
 //    const Size_t m_size;
@@ -149,9 +234,9 @@
 //    Measures m_measures;
 //};
 
-//inline const Resolutions& Acquisition::getResolutions() const {
-//    return m_resolutions;
-//}
+// inline const Resolutions& Acquisition::getResolutions() const {
+//     return m_resolutions;
+// }
 
 // inline bool Acquisition::operator<( const Acquisition& right ) const {
 //     if (m_start == right.m_start)
@@ -171,9 +256,8 @@
 ////         assert( m_data != nullptr );
 ////         return m_data;
 ////     }
-////     void ioSetData( const Data_t* data, Size_t size ) { memcpy( (Data_t*)m_data, data, size ); }
-////     static constexpr std::string ioTypeName() { return "AcquisitionT"; }
-////     // end io
+////     void ioSetData( const Data_t* data, Size_t size ) { memcpy( (Data_t*)m_data, data, size );
+///} /     static constexpr std::string ioTypeName() { return "AcquisitionT"; } /     // end io
 
 ////    using Array = std::array<Data_t, ioGetSize()>;
 
@@ -224,8 +308,8 @@
 ////    }
 
 ////    template <typename MeasuresT>
-////    SRC_API friend std::ostream& operator<<( std::ostream& os, const AcquisitionT<MeasuresT>& acq
-////    );
+////    SRC_API friend std::ostream& operator<<( std::ostream& os, const AcquisitionT<MeasuresT>&
+///acq /    );
 
 ////    //  private:
 ////    Measures m_measures;
@@ -569,5 +653,5 @@
 ////     return m_start < right.m_start;
 //// }
 
-//} // namespace sensor
-//} // namespace hub
+} // namespace sensor
+} // namespace hub
