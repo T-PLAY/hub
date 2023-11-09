@@ -24,9 +24,29 @@ std::ostream & operator<<( std::ostream& os, const std::span<T, N>& span ) {
         //        if ( i != span.size() - 1 ) os << " ";
         if ( i != iMax - 1 ) os << " ";
     }
-    if ( span.size() > nMaxDataToShow ) { os << " ... " << std::to_string( span[iMax - 1] ); }
+    if ( span.size() > nMaxDataToShow ) { os << " ... " << std::to_string( span[span.size() - 1] ); }
     os << "](" << PRETTY_BYTES(span.size()) << ")";
     return os;
+}
+
+namespace std {
+
+template <typename T, size_t Extent, typename R>
+bool operator==(span<T, Extent> lhs,
+                 R const& rhs) {
+    // we don't have to bring in namespace std here since
+    // we're already in namespace std. But qualified call
+    // to std::equal to avoid ADL shenanigans
+    return std::equal(begin(lhs), end(lhs),
+                       begin(rhs), end(rhs));
+}
+
+//template <typename T, size_t Extent, typename R>
+//bool operator==(R const& lhs,
+//                 span<T, Extent> rhs) {
+//    return rhs == lhs;
+//}
+
 }
 
 //// template <typename T = std::string>

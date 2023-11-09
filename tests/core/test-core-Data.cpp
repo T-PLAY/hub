@@ -1,12 +1,11 @@
 
-//#define HUB_DEBUG_INPUT
-//#define HUB_DEBUG_OUTPUT
+// #define HUB_DEBUG_INPUT
+// #define HUB_DEBUG_OUTPUT
 
 #include "test_common.hpp"
 
 #include <core/Data.hpp>
 #include <core/Vector.hpp>
-
 
 class Lambda
 {
@@ -31,35 +30,63 @@ class Lambda
     }
 };
 
-
-
- TEST_CASE( "Data test" ) {
+TEST_CASE( "Data test" ) {
     using namespace hub;
 
-//    constexpr auto dataSize = 10'000'000'000; // 1Go
-//    constexpr auto dataSize = MAX_STACK_SIZE + 1; // 1Go
-    constexpr auto dataSize = MAX_STACK_SIZE; // 1Go
+    //        constexpr auto dataSize = 10'000'000'000; // 1Go
+            constexpr auto dataSize = 1'000'000'000; // 1Go
+//    constexpr auto dataSize = MAX_STACK_SIZE; // 1Go
+                                              //    constexpr auto dataSize = MAX_STACK_SIZE; // 1Go
+    constexpr auto nIteration = 1;
 
-//    using MyData = Data<dataSize, data::Option::Dynamic>;
-    using MyData = Data<dataSize>;
+    Data_t* rawData = new unsigned char[dataSize];
+    for ( int i = 0; i < 256; ++i ) {
+        rawData[i] = i;
+    }
+    rawData[dataSize - 1] = 93;
 
-//    std::cout << "MyData(): " << MyData() << std::endl;
-    MyData myData;
-    std::cout << "myData: " << myData << std::endl;
+    std::span<Data_t, dataSize> rawSpan { rawData, rawData + dataSize };
+    std::cout << "rawSpan: " << rawSpan << std::endl;
 
-//    for (auto & v : myData.getSpan()) {
-//        v = 5;
-//    }
-    auto span = myData.getSpan();
-    auto start = std::chrono::high_resolution_clock::now();
-    std::fill(span.begin(), span.end(), 5);
-    auto end = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
-    std::cout << "myData: " << myData << std::endl;
-    std::cout << "fill duration: " << duration << " us" << std::endl;
-    std::cout << "output speed: " << dataSize / duration << " MB/s" << std::endl;
+    //    {
+    static Data<dataSize, data::Option::Static> myStaticData;
+    std::cout << "[static] myStaticData: " << myStaticData << std::endl;
+    auto staticStart = std::chrono::high_resolution_clock::now();
+    for ( int i = 0; i < nIteration; ++i ) {
+        myStaticData.setData( rawSpan );
+    }
+    auto staticEnd = std::chrono::high_resolution_clock::now();
+    auto staticDuration =
+        std::chrono::duration_cast<std::chrono::microseconds>( staticEnd - staticStart ).count();
+    CHECK( myStaticData.getSpan() == rawSpan );
+    std::cout << "[static] myStaticData: " << myStaticData << std::endl;
+    std::cout << "[static] static copy duration: " << staticDuration << " us" << std::endl;
+    std::cout << "[static] static copy speed: "
+              << nIteration * dataSize / ( staticDuration * 1000.0 ) << " GB/s" << std::endl;
+    //    }
 
-//    std::this_thread::sleep_for(std::chrono::seconds(5));
+    std::cout << "--------------------------------------------" << std::endl;
 
+    //    {
+    Data<dataSize, data::Option::Dynamic> myDynamicData;
+    std::cout << "[dynamic] myDynamicData: " << myDynamicData << std::endl;
+    auto dynamicStart = std::chrono::high_resolution_clock::now();
+    for ( int i = 0; i < nIteration; ++i ) {
+        myDynamicData.setData( rawSpan );
+    }
+    auto dynamicEnd = std::chrono::high_resolution_clock::now();
+    auto dynamicDuration =
+        std::chrono::duration_cast<std::chrono::microseconds>( dynamicEnd - dynamicStart ).count();
+    CHECK( myDynamicData.getSpan() == rawSpan );
+    std::cout << "[dynamic] myDynamicData: " << myDynamicData << std::endl;
+    std::cout << "[dynamic] static copy duration: " << dynamicDuration << " us" << std::endl;
+    std::cout << "[dynamic] static copy speed: "
+              << nIteration * dataSize / ( dynamicDuration * 1000.0 ) << " GB/s" << std::endl;
+    //    }
 
+    const auto ratio = staticDuration / (double)dynamicDuration;
+    CHECK_VALUE( ratio, 3.0, 2.0, "DynamicData/StaticData", "/" );
+    //    std::this_thread::sleep_for(std::chrono::seconds(5));
+
+    delete[] rawData;
 }

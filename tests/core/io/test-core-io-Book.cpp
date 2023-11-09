@@ -49,7 +49,7 @@ static constexpr size_t s_maxDataSize   = 1'000'000;
 #else
     static constexpr size_t s_nReadWrite = s_maxDataSize / s_dataSize;
 #endif
-    static constexpr size_t s_bookSize = s_nReadWrite * s_dataSize;
+    static constexpr size_t s_bookSize = s_maxDataSize;
 
     static constexpr size_t s_nReadWriteDataPtr = 1;
     static constexpr size_t s_DataSizePtr       = 500'000'000;
