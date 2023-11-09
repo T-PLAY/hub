@@ -7,6 +7,7 @@
 // #include <any>
 // #include <sstream>
 // #include <vector>
+#include <functional>
 #include <type_traits>
 #include <cmath>
 // #include <strstream>
@@ -34,6 +35,189 @@ namespace sensor {
 
 //////////////////////////////////////////// TEMPLATES /////////////////////////////////////////
 
+// template <typename... ResolutionT>
+ template <class... Resolutions>
+//template <ResolutionT... Resolutions>
+ class ResolutionsT
+{
+  public:
+//    static constexpr Resolutions getResolutions() { return { Ts::getResolution()... }; }
+//    static constexpr Size_t depth = 1 + std::max( 0u, Ts::depth... );
+//    struct internal {
+//        decltype...(Ts);
+//    };
+
+//    static constexpr Size_t depth() {
+//        return std::max(Ts::depth()...);
+//    }
+
+    template <class Output>
+    static void write( Output& output ) {
+//        output.write( getResolutions() );
+    }
+
+    static struct {
+    } notReadable;
+
+    static constexpr auto nByte() {
+        auto size = 0;
+        int _[]   = { ( size = size + Resolutions::nByte() )... };
+        return size;
+    }
+    using Tuple = std::tuple<Resolutions...>;
+    //    static constexpr auto Size = sizeof...(Resolutions);
+    static constexpr auto nResolution = sizeof...( Resolutions );
+    //    using Nth = typename std::tuple_element<N, Tuple>::type;
+//    template <Size_t ith>
+//    using get = typename std::tuple_element<ith, Tuple>::type;
+    //    using First = Nth<0>;
+    //    using Last = Nth<Size - 1>;
+
+    template <Size_t i>
+    using getResolution = typename std::tuple_element<i, Tuple>::type;
+
+    template <class Type>
+//    using has = (Resolutions::template has<Type>() || ...);
+    static constexpr auto hasType() {
+//        (Resolutions::nByte() + ...);
+        return (std::is_same<Type, decltype(Resolutions::type())>() || ...);
+    }
+
+    template <class... Types>
+    requires(sizeof...(Types) > 1)
+    static constexpr auto hasType() {
+        return (hasType<Types>() && ...);
+    }
+
+//    template <class Type>
+//        requires(has<Type>())
+//    static constexpr auto get() {
+//        for (auto res : {Resolutions()...}) {
+//            if (std::is_same<decltype(res.type()), Type>()) {
+//                return res;
+//            }
+//        }
+//    }
+
+
+    //    static constexpr auto nResolution = Size;
+
+    //    static constexpr auto nResolution() {
+    //        auto size = 0;
+    //        int _[]   = { ( size = size + Resolutions::nResolution() )... };
+    //        return size;
+    //    }
+    //    static auto name() {
+    //        std::string str;
+    ////    ( os << ... << Resolutions() );
+    //        std::strstream sstream;
+    //        ( sstream << ... << Resolutions() );
+    //        return sstream.str();
+    //    }
+    static constexpr std::string name() {
+//        std::string str = "<";
+        std::string str;
+        int i = 0;
+        for (auto n : {Resolutions::name()...}) {
+            str += n;
+            if (i != sizeof...(Resolutions) - 1)
+                str += "_";
+            ++i;
+        }
+//        str += ( Resolutions::name() + ... );
+        //        if constexpr ( requires { FormatT::name(); } ) { str += FormatT::name(); }
+        //        else { str += TYPE_NAME( FormatT ); }
+
+        //        if ( !( nDim() == 1 && getDim( 0 ) == 1 ) ) { str += ":" + DimsT::to_string(); }
+//        str += ">";
+        return str;
+    }
+
+    template <class... Ts_>
+    SRC_API friend std::ostream& operator<<( std::ostream& os,
+                                             const ResolutionsT<Ts_...>& resolutions );
+
+    //        template <class T>
+    //        auto& get() const {
+    //		    for (auto res : Resolutions...) {
+
+    //		    }
+    //    //            return std::get<T>( m_tuple );
+    //        }
+
+    //    template <int id, int i, class ResolutionT_, class... ResolutionTs_>
+    //    static constexpr auto get_internal(ResolutionT_ resolutionT, ResolutionTs_...
+    //    resolutionTs) {
+    ////        return ResolutionT2();
+    //        if (id == i) return ResolutionT_();
+    //        else return get_internal<id, i + 1>(resolutionTs...);
+    ////        if constexpr (id == i) return ResolutionT();
+    ////        else return ResolutionT2();
+
+    ////        return get_internal<id, i + 1, ResolutionTs_...>();
+    //    }
+
+    //    template <int id>
+    //    static constexpr auto get() {
+    //        return get_internal<id, 0, Resolutions...>();
+    //    }
+
+//            template <int id>
+//            constexpr auto& get() {
+//                return std::get<id>( m_tuple );
+//                return std::get<id>( m_tuple );
+//            }
+
+//        template <size_t Index = 0, // start iteration at 0 index
+//                                    //          typename TTuple,  // the tuple type
+//                  //          size_t Size = std::tuple_size_v<std::remove_reference_t<TTuple>>,
+
+////                  Tuple,
+//                  //          size
+//                  typename TCallable, // the callable to be invoked for each tuple item
+//                  typename... TArgs   // other arguments to be passed to the callable
+//                  >
+//        void for_each( TCallable&& callable, TArgs&&... args ) {
+//            if constexpr ( Index < nResolution ) {
+//            std::invoke( callable, args..., std::get<Index>( Tuple() ) );
+
+//                if constexpr ( Index + 1 < nResolution )
+//                    for_each<Index + 1>( std::forward<TCallable>( callable ),
+//                                         std::forward<TArgs>( args )... );
+//            }
+//        }
+
+    //    auto& at( int i ) {
+    //        return true;
+    ////        return std::get<i>( m_tuple );
+    //    }
+
+    //    constexpr auto& getTuple() { return m_tuple; }
+
+    //    template <class ResolutionT_>
+    //    friend std::ostream& operator<<( std::ostream& os, const ResolutionT_& resolution );
+
+    //    template <class Resolution_, class... Resolutions_>
+    //    std::ostream& operator<<( std::ostream& os, const Resolution_ & resolution, const
+    //    Resolutions_&... resolutions );
+
+    //  private:
+    //    int a;
+    //    std::tuple<Resolutions...> m_tuple;
+};
+
+ template <class... Resolutions>
+ std::ostream& operator<<( std::ostream& os, const ResolutionsT<Resolutions...>& resolution) {
+     //    (os << resolutions) ...;
+     //    (os << ... << resolutions);
+     //    if constexpr (sizeof...(Resolutions) > 0)
+     //        os << "-";
+     os << resolution.name();
+//    ( os << ... << Resolutions() );
+    //    for (const auto & res : {ResolutionT_ ...}) {
+    //    }
+    return os;
+}
 
 // template <class... FormatT>
 // constexpr auto make_Resolution() {

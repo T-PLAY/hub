@@ -10,7 +10,7 @@ set_property(GLOBAL PROPERTY CUSTOM_TARGETS_FOUNDED "")
 #set(CMAKE_CXX_STANDARD 11)
 #set(CMAKE_CXX_STANDARD 14) # std::decay
 #set(CMAKE_CXX_STANDARD 17) # std::any, AppleClang std::void_t<>
-set(CMAKE_CXX_STANDARD 20) # std::any, zpp_bits.h
+set(CMAKE_CXX_STANDARD 20) # std::any, zpp_bits
 #set(CMAKE_CXX_STANDARD 23) # std::any
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_FIND_PACKAGE_NO_SYSTEM_PACKAGE_REGISTRY False)
@@ -187,10 +187,10 @@ endif()
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
 
-#set(HUB_SOURCE_DIRS "core") # allowed
+set(HUB_SOURCE_DIRS "core") # allowed
 #set(HUB_SOURCE_DIRS "net") # allowed
 #set(HUB_SOURCE_DIRS "core" "sensor")
-set(HUB_SOURCE_DIRS "core" "net" "sensor")
+#set(HUB_SOURCE_DIRS "core" "net" "sensor")
 #set(HUB_SOURCE_DIRS "sensor")
 #set(HUB_SOURCE_DIRS "io")
 #set(HUB_SOURCE_DIRS "data")

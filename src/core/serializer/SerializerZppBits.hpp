@@ -67,7 +67,7 @@ class SerializerZppBits : public SerializerI
     //    }
 
   private:
-    std::array<unsigned char, BuffSize> m_serialBuff;
+    std::array<Data_t, BuffSize> m_serialBuff;
 //    Result m_result { m_serialBuff.data(), 0 };
 };
 

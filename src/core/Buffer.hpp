@@ -4,16 +4,72 @@
 #include <vector>
 
 #include "Macros.hpp"
+#include "Tuple.hpp"
 #include "Vector.hpp"
 
 namespace hub {
 
-//template <Size_t size_>
-//class BufferI {
-//  public:
+// template <Size_t size_>
+// class BufferI {
+//   public:
 
 //    SRC_API friend std::ostream& operator<<( std::ostream& os, const Resolution& resolution );
 //};
+
+//template <Size_t Size, class Type>
+template <class... Types>
+class ArrayBuffer
+{
+  public:
+//    static constexpr auto size = sizeof( Data );
+    static constexpr auto Size() { return  (sizeof(Types) + ...); };
+//    static constexpr auto size() { return Size * sizeof(Type); };
+
+//    template <class... Args>
+    constexpr ArrayBuffer( Types... types )
+        : m_tuple{types...}
+//        : m_data{datas...}
+    {
+    }
+
+    template <Size_t i>
+    constexpr auto get() const {
+        return std::get<i>(m_tuple);
+    }
+
+    template <class Type>
+    constexpr auto get() const {
+        return std::get<Type>(m_tuple);
+    }
+
+//    template <class ArrayBuffer
+//    constexpr bool operator==(const ArrayBuffer & other) const {
+//        return data == other.data;
+//    }
+    template <class... Types_>
+    SRC_API friend std::ostream& operator<<( std::ostream& os, const ArrayBuffer<Types_...>& buffer );
+
+//    Data data;
+    std::tuple<Types...> m_tuple;
+//    std::array<Type, Size> m_data;
+};
+
+template <class... Types>
+SRC_API std::ostream& operator<<( std::ostream& os, const ArrayBuffer<Types...>& buffer ) {
+//    std::vector<Data_t> vector { buffer.data, buffer.data + buffer.size };
+    os << "(constexpr)";
+    ::operator<<( os, buffer.m_tuple );
+    os << ", size: " << buffer.size();
+    return os;
+}
+
+template <class Data>
+static constexpr inline auto Buffer( Data data ) {
+    return ArrayBuffer{ data };
+}
+
+/////////////////////////////////////////////////////////////////////////
+
 
 template <Size_t size_>
 class ConstantBuffer
@@ -24,37 +80,31 @@ class ConstantBuffer
     //        return size;
     //    }
 
+    ConstantBuffer( const Data_t* data_ ) : data { data_ } {}
+    ConstantBuffer( const ConstantBuffer& ) = default;
+
     template <class BufferT>
     void operator=( const BufferT& other ) = delete;
 
     template <class BufferT>
-//    constexpr bool operator==( const ConstantBuffer<size_>& other ) {
+    //    constexpr bool operator==( const ConstantBuffer<size_>& other ) {
     constexpr bool operator==( const BufferT& other ) {
-        static_assert(size == BufferT::size);
-        return std::memcmp(data, other.data, size) == 0;
-//        static_assert(size == other.size);
-//        if ( size != other.size ) return false;
-//        for ( int i = 0; i < size; ++i ) {
-//            if ( data[i] != other.data[i] ) return false;
-//        }
-//        return true;
+        static_assert( size == BufferT::size );
+        return std::memcmp( data, other.data, size ) == 0;
     }
 
     template <Size_t size__>
     SRC_API friend std::ostream& operator<<( std::ostream& os, const ConstantBuffer& buffer );
 
-//  private:
     const Data_t* const data;
-    //    constexpr auto size() const { return size; };
-    //    const Size_t size;
 };
 
 template <Size_t size>
 SRC_API std::ostream& operator<<( std::ostream& os, const ConstantBuffer<size>& buffer ) {
-    std::vector<Data_t> vector{buffer.data, buffer.data + buffer.size};
-//    os << vector;
+    std::vector<Data_t> vector { buffer.data, buffer.data + buffer.size };
+    //    os << vector;
     os << "(const)";
-    ::operator<<(os, vector);
+    ::operator<<( os, vector );
     return os;
 }
 
@@ -65,51 +115,33 @@ class MutableBuffer
 {
   public:
     static constexpr auto size = size_;
-    //    static constexpr auto getSize = size;
-//    template <class BufferT>
     void operator=( const MutableBuffer<size_>& other ) const {
-//        assert( size == other.size );
         std::memcpy( data, other.data, size );
-//        return *this;
+    }
+    void operator=( const ConstantBuffer<size_>& other ) const {
+        std::memcpy( data, other.data, size );
     }
 
-//    template <class BufferT>
-//    constexpr bool operator==( const MutableBuffer<size_>& other ) const {
-//        return std::memcmp(data, other.data, size) == 0;
-////        static_assert(size == other.size);
-////        if ( size != other.size ) return false;
-////        for ( int i = 0; i < size; ++i ) {
-////            if ( data[i] != other.data[i] ) return false;
-////        }
-////        return true;
-//    }
+    MutableBuffer( Data_t* data_ ) : data { data_ } {}
+    MutableBuffer( const MutableBuffer& ) = default;
 
     template <class BufferT>
     constexpr bool operator==( const BufferT& other ) const {
-        static_assert(size == BufferT::size);
-        return std::memcmp(data, other.data, size) == 0;
-//        if ( size != other.size ) return false;
-//        for ( int i = 0; i < size; ++i ) {
-//            if ( data[i] != other.data[i] ) return false;
-//        }
-//        return true;
+        static_assert( size == BufferT::size );
+        return std::memcmp( data, other.data, size ) == 0;
     }
-
 
     template <Size_t size__>
     SRC_API friend std::ostream& operator<<( std::ostream& os, const MutableBuffer& buffer );
 
-//  private:
     Data_t* const data;
-    //    const Size_t size;
 };
 
 template <Size_t size>
 SRC_API std::ostream& operator<<( std::ostream& os, const MutableBuffer<size>& buffer ) {
-    std::vector<Data_t> vector{buffer.data, buffer.data + buffer.size};
-//    os << vector;
+    std::vector<Data_t> vector { buffer.data, buffer.data + buffer.size };
     os << "(mutable)";
-    ::operator<<(os, vector);
+    ::operator<<( os, vector );
     return os;
 }
 
@@ -123,9 +155,22 @@ static constexpr inline auto Buffer( const Data_t* data ) {
     return ConstantBuffer<size> { data };
 }
 
+
+//template <class Type>
+//static constexpr inline auto Buffer( const Type& type ) {
+//    //    return MutableBuffer<sizeof(Type)> { reinterpret_cast<Data_t*>(&type) };
+//    return ConstantBuffer<sizeof( Type )> { (const Data_t*)( &type ) };
+//}
+
+//template <class Type>
+//static constexpr inline auto Buffer( Type& type ) {
+//    return MutableBuffer<sizeof( Type )> { (Data_t*)( &type ) };
+//    //    return ConstantBuffer<sizeof(Type)> { (const Data_t*)(&type) };
+//}
+
 // namespace hub {
 
-//#define Buffer( _data_, _size_ ) make_buffer<_size_>( _data_ )
+// #define Buffer( _data_, _size_ ) make_buffer<_size_>( _data_ )
 
 //}
 
@@ -145,7 +190,6 @@ static constexpr inline auto Buffer( const Data_t* data ) {
 // constexpr auto Buffer(Data_t * data, Size_t size ) {
 //     return MutableBuffer<size>{data};
 // }
-
 
 // constexpr auto Buffer(const Data_t * data, Size_t size ) {
 //     return ConstantBuffer{data, size};

@@ -9,7 +9,7 @@ std::ostream& printTupleImp( std::ostream& os, const TupleT& tp, std::index_sequ
     size_t index   = 0;
     auto printElem = [&index, &os]( const auto& x ) {
         if ( index++ > 0 ) os << ", ";
-        os << x;
+        os << TYPE_NAME(x) << ":" << x;
     };
 
     os << "(";
@@ -20,6 +20,7 @@ std::ostream& printTupleImp( std::ostream& os, const TupleT& tp, std::index_sequ
 
 template <typename TupleT, std::size_t TupSize = std::tuple_size<TupleT>::value>
 std::ostream& operator<<( std::ostream& os, const TupleT& tp ) {
+//    return os;
     return printTupleImp( os, tp, std::make_index_sequence<TupSize> {} );
 }
 

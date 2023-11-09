@@ -28,6 +28,7 @@ namespace sensor {
 
 std::ostream& operator<<( std::ostream& os, const Resolution& resolution ) {
 //    os << "<" << resolution.format << ":" << resolution.nDim << ">";
+//    os << "[Resolution] ";
     os << "<" << resolution.format << ":";
 //    ::operator<<(os, resolution.nDim);
     const auto & nDim = resolution.nDim;

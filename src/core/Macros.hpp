@@ -131,7 +131,6 @@
 // Debug log message.
 // ----------------------------------------------------------------------------
 
-
 // #if SRC_EXPORTS
 #define ENABLE_DEBUG_MSG
 // #endif
@@ -170,7 +169,7 @@
 #        define SRC_API __declspec( dllexport )
 
 #    else
-#    error "unable to import from build environment"
+#        error "unable to import from build environment"
 #        define SRC_API __declspec( dllimport )
 #    endif
 
@@ -180,142 +179,204 @@
 
 #ifndef OS_WINDOWS
 
-#if ( __cplusplus >= 202001L )
-#    define CPLUSPLUS_VERSION 20
-#    define CONSTEXPR17 constexpr
-#    define CONSTEXPR20 constexpr
-#    define CONSTEXPR constexpr
-#elif ( __cplusplus >= 201703L )
-#    define CPLUSPLUS_VERSION 17
-#    define CONSTEXPR17 constexpr
-#    define CONSTEXPR20
-#    define CONSTEXPR constexpr
-#elif ( __cplusplus >= 201402L ) || ( defined( _MSC_VER ) && _MSC_VER >= 1914 )
-#    define CPLUSPLUS_VERSION 14
-#    define CONSTEXPR17
-#    define CONSTEXPR20
-#    define CONSTEXPR constexpr
-#else
-#    define CPLUSPLUS_VERSION 14
-#    define CONSTEXPR17
-#    define CONSTEXPR20
+#    if ( __cplusplus >= 202001L )
+#        define CPLUSPLUS_VERSION 20
+#        define CONSTEXPR17 constexpr
+#        define CONSTEXPR20 constexpr
+#        define CONSTEXPR constexpr
+#    elif ( __cplusplus >= 201703L )
+#        define CPLUSPLUS_VERSION 17
+#        define CONSTEXPR17 constexpr
+#        define CONSTEXPR20
+#        define CONSTEXPR constexpr
+#    elif ( __cplusplus >= 201402L ) || ( defined( _MSC_VER ) && _MSC_VER >= 1914 )
+#        define CPLUSPLUS_VERSION 14
+#        define CONSTEXPR17
+#        define CONSTEXPR20
+#        define CONSTEXPR constexpr
+#    else
+#        define CPLUSPLUS_VERSION 14
+#        define CONSTEXPR17
+#        define CONSTEXPR20
 // #    error "C++ version " __cplusplus " not supported"
-#define CONSTEXPR const
-#endif
+#        define CONSTEXPR const
+#    endif
 
 #endif
 
-//#define DEBUG_INPUT_OUTPUT
+// #define DEBUG_INPUT_OUTPUT
 
 #ifdef DEBUG_INPUT_OUTPUT
 #    define HUB_DEBUG_INPUT
 #    define HUB_DEBUG_OUTPUT
 
-//#    ifdef OS_LINUX
-//#        define HUB_USE_BOOST
-//#    endif
+// #    ifdef OS_LINUX
+// #        define HUB_USE_BOOST
+// #    endif
 #endif
 
+// filename = filename.substr( filename.find_last_of( '\\' ) + 1 );
 
-//filename = filename.substr( filename.find_last_of( '\\' ) + 1 );
-
-//#include <string.h>
+// #include <string.h>
 
 #ifdef WIN32
-//#define FILE_NAME __FILE__
+// #define FILE_NAME __FILE__
 #    define FILE_NAME                                                   \
-        std::string( __FILE__ )                                     \
+        std::string( __FILE__ )                                         \
             .substr( std::string( __FILE__ ).find_last_of( '\\' ) + 1 ) \
-            .substr( std::string( __FILE__ ).find_last_of('/') + 1 )
+            .substr( std::string( __FILE__ ).find_last_of( '/' ) + 1 )
 
-//#define FILE_NAME strrchr( __FILE__, '\\' ) ? strrchr( __FILE__, '\\' ) + 1 : __FILE__
+// #define FILE_NAME strrchr( __FILE__, '\\' ) ? strrchr( __FILE__, '\\' ) + 1 : __FILE__
 
-//#define FILE_NAME std::string( strrchr( __FILE__, '\\' ) ? strrchr( __FILE__, '\\' ) + 1 : __FILE__ )
-
+// #define FILE_NAME std::string( strrchr( __FILE__, '\\' ) ? strrchr( __FILE__, '\\' ) + 1 :
+// __FILE__ )
 
 #else
-#define FILE_NAME std::string(__FILE_NAME__)
+#    define FILE_NAME std::string( __FILE_NAME__ )
 #endif
 
-#define FILE_NAME_WITHOUT_EXTENSION FILE_NAME.substr(0, FILE_NAME.find_first_of('.'))
+#define FILE_NAME_WITHOUT_EXTENSION FILE_NAME.substr( 0, FILE_NAME.find_first_of( '.' ) )
 
-#define HEADER \
-        "\033[" << std::to_string( 31 + reinterpret_cast<std::uintptr_t>( this ) % 7 ) \
-<< "m[" << FILE_NAME_WITHOUT_EXTENSION << ":" << (uintptr_t)this % 100 << "]\033[0m "
+#define HEADER                                                                             \
+    "\033[" << std::to_string( 31 + reinterpret_cast<std::uintptr_t>( this ) % 7 ) << "m[" \
+            << FILE_NAME_WITHOUT_EXTENSION << ":" << (uintptr_t)this % 100 << "]\033[0m "
 
-//#if defined(OS_MACOS)
-//    #define MAX_NET_BUFFER_SIZE 256'000
-//#elif defined(OS_LINUX)
-//    #define MAX_NET_BUFFER_SIZE 2'619'280 // 2.619280 Mo
-//#elif defined(OS_WINDOWS)
-//    #define MAX_NET_BUFFER_SIZE 2'000'000
-//#endif
+// #if defined(OS_MACOS)
+//     #define MAX_NET_BUFFER_SIZE 256'000
+// #elif defined(OS_LINUX)
+//     #define MAX_NET_BUFFER_SIZE 2'619'280 // 2.619280 Mo
+// #elif defined(OS_WINDOWS)
+//     #define MAX_NET_BUFFER_SIZE 2'000'000
+// #endif
 
 #ifdef WIN32
-#define MAX_STACK_SIZE  100'000
+#    define MAX_STACK_SIZE 100'000
 #else
-#define MAX_STACK_SIZE  1'000'000
+#    define MAX_STACK_SIZE 8'000'000 // 5Mo
+//#    define MAX_STACK_SIZE 4'000'000'000 // 5Mo
 #endif
 
 #include <iostream>
-//#include <stdlib.h>
-//#include <stdint.h>
+// #include <stdlib.h>
+// #include <stdint.h>
 #include <cstdint>
 
-//#define HUB_USE_BOOST
+// #define HUB_USE_BOOST
 
 #ifdef HUB_USE_BOOST
 #    include <boost/type_index.hpp>
 #endif
 
-
 #ifdef HUB_USE_BOOST
-    #define TYPE_NAME(t) \
-        boost::typeindex::type_id<typeof(t)>().pretty_name()
+#    define TYPE_NAME( t ) boost::typeindex::type_id<typeof( t )>().pretty_name()
 #else
-    #define TYPE_NAME(t) \
-        typeid(t).name()
+#    define TYPE_NAME( t ) typeid( t ).name()
 #endif
 
-
-//#    ifdef HUB_USE_BOOST
-//        std::cout << HEADER_INPUT_MSG "read(T) : <"
+// #    ifdef HUB_USE_BOOST
+//         std::cout << HEADER_INPUT_MSG "read(T) : <"
 ////                  << typeid( T ).name() << " ("
 //                  << boost::typeindex::type_id<T>().pretty_name() << "> " << t  << std::endl;
-//#    else
+// #    else
 //        std::cout << typeid( T ).name() << "> = " << t
 //                  << std::endl;
-//#    endif
+// #    endif
 
-//#ifdef DEBUG
+// #ifdef DEBUG
 #include <cassert>
-//#else
+// #else
 ////#undef assert
-//#endif
+// #endif
 
 namespace hub {
-    using Data_t = unsigned char;
+using Data_t = unsigned char;
 //    using Data_t =  std::byte;
-//    using Size_t = uint64_t;
-    using Size_t = uint32_t;
-//    using Size_t = uint16_t;
-//    using Size_t = size_t;
-//    using Size_t = int;
-//    using Size_t = unsigned int;
+using Size_t = uint64_t; // max = 18'446'744'073'709'551'616 ~= 18 exa
+                         //    using Size_t = uint32_t;  // max = 4'294'967'296 ~= 4 giga
+                         //    using Size_t = uint16_t; // max = 65'536 ~= 65 kilo
+                         //    using Size_t = size_t;
+                         //    using Size_t = int;
+                         //    using Size_t = unsigned int;
 
-//#ifdef HUB_DEBUG_INPUT
-//    template <typename T>
-//    void printTypeAndValue(const T & t) {
-//    }
+template <class T>
+constexpr auto sizeof_() {
+    if constexpr ( requires { T::Size; } ) { return T::Size; }
+    else { return sizeof( T ); }
+}
 
-//#    ifdef HUB_USE_BOOST
-//        std::cout << HEADER_INPUT_MSG "read(T) : <"
+template <class... Ts>
+    requires( sizeof...( Ts ) > 1 )
+constexpr auto sizeof_() {
+    return ( sizeof_<Ts>() + ... );
+}
+
+
+// #ifdef HUB_DEBUG_INPUT
+//     template <typename T>
+//     void printTypeAndValue(const T & t) {
+//     }
+
+// #    ifdef HUB_USE_BOOST
+//         std::cout << HEADER_INPUT_MSG "read(T) : <"
 ////                  << typeid( T ).name() << " ("
 //                  << boost::typeindex::type_id<T>().pretty_name() << "> " << t  << std::endl;
-//#    else
+// #    else
 //        std::cout << typeid( T ).name() << "> = " << t
 //                  << std::endl;
-//#    endif
+// #    endif
 //    }
-//#endif
+// #endif
+} // namespace hub
+
+//// source : https://www.mbeckler.org/blog/?p=114
+//// Prints to the provided buffer a nice number of bytes (KB, MB, GB, etc)
+static constexpr std::string pretty_bytes( hub::Size_t bytes ) {
+    std::string str;
+    char buff[32] { 0 };
+    const char* suffixes[7];
+//    suffixes[0]         = "Bytes";
+//    suffixes[1]         = "KiloBytes";
+//    suffixes[2]         = "MegaBytes";
+//    suffixes[3]         = "GigaBytes";
+//    suffixes[4]         = "TeraBytes";
+//    suffixes[5]         = "PetaBytes";
+//    suffixes[6]         = "ExaBytes";
+    suffixes[0]         = "Bytes";
+    suffixes[1]         = "Ko";
+    suffixes[2]         = "Mo";
+    suffixes[3]         = "Go";
+    suffixes[4]         = "To";
+    suffixes[5]         = "Po";
+    suffixes[6]         = "Eo";
+    uint64_t s          = 0; // which suffix to use
+    double count        = bytes;
+    constexpr auto kilo = 1000;
+    //    constexpr auto kilo = 1024;
+    while ( count >= kilo && s < 7 ) {
+        s++;
+        count /= kilo;
+    }
+    if ( count - floor( count ) == 0.0 )
+#ifdef WIN32
+        sprintf_s( buff, 80, "%d %s", (int)count, suffixes[s] );
+#else
+#    ifdef OS_MACOS
+        snprintf( buff, 80, "%d %s", (int)count, suffixes[s] );
+#    else
+        sprintf( buff, "%d %s", (int)count, suffixes[s] );
+#    endif
+#endif
+    else
+#ifdef WIN32
+        sprintf_s( buff, 80, "%.1f %s", count, suffixes[s] );
+#else
+#    ifdef OS_MACOS
+        snprintf( buff, 80, "%.1f %s", count, suffixes[s] );
+#    else
+        sprintf( buff, "%.1f %s", count, suffixes[s] );
+#    endif
+#endif
+
+    return std::string( buff );
 }
+#define PRETTY_BYTES( t ) pretty_bytes( t )

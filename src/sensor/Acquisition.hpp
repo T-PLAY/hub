@@ -9,7 +9,8 @@
 // #include <vector>
 #include <array>
 
- #include "core/Macros.hpp"
+#include "core/Array.hpp"
+#include "core/Macros.hpp"
 //// #include "data/Measure.hpp"
 
 // #include "data/Measure.hpp"
@@ -22,11 +23,21 @@
 
 #include "Measure.hpp"
 //// #include "core/Tuple.hpp"
+///
+/**
+ *        +---------------+
+ *        |  Acquisition  |
+ *        |---------------|
+ *        | Clock : start |  ->  Fixed size packet
+ *        | Clock : end   |
+ *        | Data  : data  |
+ *        +---------------+
+ */
 
-//#include "Resolution.hpp"
+// #include "Resolution.hpp"
 
- namespace hub {
- namespace sensor {
+namespace hub {
+namespace sensor {
 
 // class Acquisition
 //{
@@ -48,29 +59,46 @@ template <class Resolution>
 class AcquisitionT
 {
   public:
-    using Array = std::array<Data_t, Resolution::nByte() + 2 * sizeof(long long)>;
-//    using resolution = Resolution;
-    static constexpr auto resolution = Resolution();
-//    template <class Type>
-//    using has<Type> = Resolution::has<Type>;
-//    using Resolution::nResolution;
-//    static constexpr auto nResolution() { return Resolution::nResolution; }
+    using Clock = long long;
+    static constexpr auto nByte() { return 2 * sizeof( Clock ) + Resolution::nByte(); }
+    using Array = std::array<Data_t, nByte()>;
+    //    using resolution = Resolution;
+    static constexpr auto resolutions = Resolution();
+    //    template <class Type>
+    //    using has<Type> = Resolution::has<Type>;
+    //    using Resolution::nResolution;
+    //    static constexpr auto nResolution() { return Resolution::nResolution; }
 
     //        template <class ResolutionT>
+//    Array m_dataContainer;
+//    ArrayBuffer<Clock, Clock, Resolution> m_data;
+    ArrayBuffer<Clock, Clock> m_data;
+//    Data_t* m_data = nullptr;
+//    Clock* m_start = nullptr;
+//    Clock* m_end   = nullptr;
 
-    AcquisitionT() :
-        m_dataContainer { 0 },
-        m_data { m_dataContainer.data() + 2 * sizeof(long long) },
-        m_start( &( (long long*)m_data )[0] ),
-        m_end( &( (long long*)m_data )[1] ) {
+//    template <class... Arg>
+//    template <class Start, class End>
+    constexpr AcquisitionT(Clock start, Clock end) : m_data{start, end}
+    {
+//        m_dataContainer{std::forward<Array>(array)} {
+    }
+
+    AcquisitionT()
+//        :
+//        m_dataContainer { 0 },
+//        m_data { m_dataContainer.data() + 2 * sizeof( long long ) },
+//        m_start( &( (long long*)m_data )[0] ),
+//        m_end( &( (long long*)m_data )[1] )
+    {
 
         std::cout << "[AcquisitionT] AcquisitionT()" << std::endl;
         //            int iData = 0;
-//        int iMeasure = 0;
-//        for ( auto& measure : m_measures ) {
-//            measure.iMeasure = iMeasure;
-//            ++iMeasure;
-//        }
+        //        int iMeasure = 0;
+        //        for ( auto& measure : m_measures ) {
+        //            measure.iMeasure = iMeasure;
+        //            ++iMeasure;
+        //        }
         //            m_measures.for_each( [&]( auto& measure ) {
         //                measure.setData( &m_data[2 * sizeof( long long ) + iData] );
         //                iData += measure.nByte();
@@ -84,49 +112,80 @@ class AcquisitionT
         // #endif
     };
 
-//    using has = Resolution::has<Type>;
+    //    using has = Resolution::has<Type>;
 
-//    template <class Type>
-//    constexpr bool has() const {
-//        return Resolution::has<Type>();
+    //    template <class Type>
+    //    constexpr bool has() const {
+    //        return Resolution::has<Type>();
+    //    }
+    //    using has = Resolution::has;
+
+    template <class... Type>
+    constexpr auto hasType() const {
+        return Resolution::template hasType<Type...>();
+    }
+
+    //    template <class Type>
+    template <Size_t i>
+    constexpr auto getMeasure() const {
+        //        static_assert(Resolution::template has<Type>());
+        //        using Res = Resolution::template get<Type>;
+        return true;
+//        using Res     = Resolution::template getResolution<i>;
+//        return Res();
+//        auto&& buffer = Buffer<Res::nByte()>( m_data );
+//        return MeasureT<Res>( std::move( buffer ) );
+
+        //        return MeasureT<Res>(m_data, Res::nByte());
+        //        using res = Resolution::get<Type>();
+        //        Measure measure(m_data, 10);
+        //        return measure;
+        //        return Resolution::has<Type>();
+    }
+
+    //    template <int id>
+    //    auto& getMeasure() {
+    //        static_assert( 0 <= id && id < Resolution::nResolution );
+    ////        return m_measures.at( id );
+    //    }
+    template <class Resolution_>
+    SRC_API friend std::ostream& operator<<( std::ostream& os,
+                                             const AcquisitionT<Resolution_>& acq );
+
+    constexpr Clock getStart() const {
+        return m_data.get<0>();
+        //        return *(long long*)m_dataContainer.data();
+        //        assert( m_start != nullptr );
+        //        return *m_start;
+    }
+//    void setStart( long long start ) {
+//        assert( m_start != nullptr );
+//        *m_start = start;
 //    }
-//    using has = Resolution::has;
-
-    template <class Type>
-    constexpr auto has() const {
-        return Resolution::template has<Type>();
+    constexpr long long getEnd() const {
+        return m_data.get<1>();
+//        assert( m_end != nullptr );
+//        return *m_end;
     }
-
-    template <class Type>
-    constexpr auto get() const {
-        static_assert(Resolution::template has<Type>());
-        using Res = Resolution::template get<Type>;
-        auto buffer = Buffer<Res::nByte()>(m_data);
-        return MeasureT<Res>(buffer);
-//        return MeasureT<Res>(m_data, Res::nByte());
-//        using res = Resolution::get<Type>();
-//        Measure measure(m_data, 10);
-//        return measure;
-//        return Resolution::has<Type>();
-    }
-
-//    template <int id>
-//    auto& getMeasure() {
-//        static_assert( 0 <= id && id < Resolution::nResolution );
-////        return m_measures.at( id );
+//    void setEnd( long long end ) {
+//        assert( m_end != nullptr );
+//        *m_end = end;
 //    }
 
   private:
-//    std::array<Measure, nResolution()> m_measures;
+    //    std::array<Measure, nResolution()> m_measures;
     //        std::array<Measure, nResolution()> m_measures;
     //    Measures m_measures;
-    Array m_dataContainer;
-    Data_t* m_data     = nullptr;
-    long long* m_start = nullptr;
-    long long* m_end   = nullptr;
     //    Data_t * m_data;
     //    std::array<Data_t, getSize()> m_array;
 }; // end Acquisition
+
+template <class Resolution>
+SRC_API std::ostream& operator<<( std::ostream& os, const AcquisitionT<Resolution>& acq ) {
+    os << Resolution() << " ";
+//    ::operator<<( os, acq.m_dataContainer );
+    return os;
+}
 
 ////    template <class ResolutionsT>
 //    Acquisition( const Resolutions& resolutions ) :
@@ -190,8 +249,6 @@ class AcquisitionT
 
 //    constexpr Measures& getMeasures() { return m_measures; }
 //    constexpr const Measures& getMeasures() const { return m_measures; }
-
-//    SRC_API friend std::ostream& operator<<( std::ostream& os, const Acquisition& acq );
 
 //    constexpr bool operator==( const Acquisition& acq ) const {
 //        return m_resolutions == acq.m_resolutions && !std::memcmp( m_data, acq.m_data, m_size );
@@ -309,7 +366,7 @@ class AcquisitionT
 
 ////    template <typename MeasuresT>
 ////    SRC_API friend std::ostream& operator<<( std::ostream& os, const AcquisitionT<MeasuresT>&
-///acq /    );
+/// acq /    );
 
 ////    //  private:
 ////    Measures m_measures;

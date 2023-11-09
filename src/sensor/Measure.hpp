@@ -51,27 +51,55 @@ namespace sensor {
 ////////////////////////////////////////////// TEMPLATES
 ////////////////////////////////////////////////////////////////////////////
 
+//template <class... Types>
 template <class Resolution>
-class MeasureT
+//    requires(std::is_same<Buffer().get<0>())
+class MeasureT : public Resolution
+//class MeasureT
 {
   public:
+//    using resolution = Resolution;
+//    static constexpr auto resolution = Resolution();
+//    using Type = Resolution::Type;
     //    template <class Type>
     //    constexpr MeasureT(std::span<Type> span) {
 
     //    }
 //    constexpr MeasureT( Data_t* data, Size_t size ) : m_data( data ), m_size( size ) {}
-    template <class Buffer>
-    constexpr MeasureT(Buffer && buffer)
-        : m_buffer(std::forward<Buffer>(buffer))
+//    template <class Buffer>
+//    template <class Buffer_>
+//    constexpr MeasureT(Buffer buffer)
+//    constexpr MeasureT(Types... types)
+//    constexpr MeasureT(Resolution::Type type)
+    constexpr MeasureT(Resolution::Type type)
+//        : m_buffer{buffer}
+//        : m_buffer{types...}
+        : m_buffer{type}
+//        : m_buffer(std::forward<Buffer>(buffer))
     {
     }
 
-    template <class Buffer>
-    constexpr void setData( Buffer buffer ) {
-        m_buffer = buffer;
+//    template <class Buffer>
+//    constexpr void setData( Buffer buffer ) {
+//        m_buffer = buffer;
 //        static_assert( Resolution::nByte() == buffer.size );
         //        static_assert(m_size == buffer.size);
+//    }
+
+//    constexpr void setType( const Type & type) {
+//        m_buffer = Buffer(type);
+//    }
+
+    constexpr auto getData() const {
+        return m_buffer;
+//        return ConstantBuffer<Resolution::nByte()>(m_buffer.data);
     }
+
+//    template <class Type>
+//    constexpr Type getData() const {
+//        return Type();
+//    }
+
 
     template <class Resolution_>
     SRC_API friend std::ostream& operator<<( std::ostream& os,
@@ -83,16 +111,21 @@ class MeasureT
     //    }
 
   private:
-    MutableBuffer<Resolution::nByte()> m_buffer;
+    ArrayBuffer<Resolution> m_buffer;
+//    ArrayBuffer<Resolution::capacity(), typename Resolution::Type> m_buffer;
+//    ArrayBuffer<Types...> m_buffer;
+//    Buffer m_buffer;
+//    MutableBuffer<Resolution::nByte()> m_buffer;
 //    Data_t* m_data;
 //    Size_t m_size;
 };
 
 template <class Resolution_>
 SRC_API std::ostream& operator<<( std::ostream& os, const MeasureT<Resolution_>& measure ) {
-    os << Resolution() << " " << measure.m_buffer;
+    os << Resolution_() << " " << measure.m_buffer;
     return os;
 }
+
 // template <class ResolutionT>
 // class MeasureT : public ResolutionT
 //{
