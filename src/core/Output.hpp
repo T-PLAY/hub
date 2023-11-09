@@ -1,13 +1,13 @@
 #pragma once
 
-// #include "io/output/OutputI.hpp"
+// #include "io/output/OutputBase.hpp"
 
 // #include "io/output/OutputImpl.hpp"
 // #include "io/output/OutputZppBits.hpp"
 
 #include "core/Macros.hpp"
-// #include "ioBase.hpp"
-#include "OutputI.hpp"
+// #include "ios.hpp"
+#include "OutputBase.hpp"
 #include "Serializer.hpp"
 
 namespace hub {
@@ -15,15 +15,15 @@ namespace hub {
 //    using Output = output::OutputImpl;
 // using Output = io::output::OutputZppBits;
 
-// static_assert(std::is_base_of<io::output::OutputI, Output>::value, "Output is not base class of
-// OutputI");
+// static_assert(std::is_base_of<io::output::OutputBase, Output>::value, "Output is not base class of
+// OutputBase");
 
 template <class SerializerT = Serializer>
-// class Output : public ioBase
-class OutputT : public OutputI
+// class Output : public ios
+class OutputT : public OutputBase
 {
   public:
-    using OutputI::write;
+    using OutputBase::write;
 
 
     //    template <typename T>

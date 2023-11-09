@@ -4,6 +4,7 @@
 
 #include "test_common.hpp"
 
+#include <core/Traits.hpp>
 #include <core/Any.hpp>
 #include <core/io/Archive.hpp>
 #include <core/Matrix.hpp>
@@ -24,7 +25,7 @@ class Lambda
     }
 
     friend std::ostream& operator<<( std::ostream& os, const Lambda& lambda ) {
-        os << lambda.a << " " << lambda.b << " " << lambda.c << " " << lambda.ds << " " << lambda.e;
+//        os << lambda.a << " " << lambda.b << " " << lambda.c << " " << lambda.ds << " " << lambda.e;
 //        for ( const auto& d : lambda.ds ) {
 //            os << d << " ";
 //        }
@@ -93,7 +94,7 @@ class Lambda
     constexpr auto matrix3 = Matrix<640, 480, R, G, B>();
     static_assert(matrix3.width() == 640);
     static_assert(matrix3.size() == 640 * 480 * 3);
-    static constexpr auto matrix4 = Matrix<2, MAX_STACK_SIZE, unsigned char>();
+    auto matrix4 = Matrix<2, MAX_STACK_SIZE, unsigned char>();
     auto matrix5 = Matrix<MatrixXD<int, 2>, double, float>();
     static_assert(matrix5.size() == sizeof(int) * 2 + sizeof(double) + sizeof(float));
 //    using MyMatrix5 = MatrixXD<unsigned char, 2, MAX_STACK_SIZE>;
@@ -106,6 +107,11 @@ class Lambda
 //    constexpr auto matrix6 = Matrix<640, 480, 3, 2, 2, int, bool>();
 //    static_assert(matrix6.n<4>() == 2);
 
+    std::vector<int> vints { 1, 2, 3};
+    std::vector<char> vchar { 'a', 'b', 'c'};
+    std::array<int, 5> array { 1, 2, 3, 4, 5};
+    std::span span {array};
+    std::string string = "gauthier";
 
 
 //    std::cout << "any supported types : " << hub::Anyable::supportedTypes() << std::endl;

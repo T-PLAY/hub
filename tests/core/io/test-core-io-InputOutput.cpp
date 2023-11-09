@@ -38,7 +38,7 @@ struct TestNonPackable {
     }
     friend std::ostream& operator<<( std::ostream& os, const TestNonPackable& test ) {
         os << test.a << " " << test.b << " " << test.name << " ";
-        ::operator<<( os, test.vints );
+//        ::operator<<( os, test.vints );
         return os;
     }
 };

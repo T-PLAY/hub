@@ -10,15 +10,15 @@
 // #define HUB_THREAD_SAFE
 
 // #include "core/Any.hpp"
-// #include "core/InputI.hpp"
+// #include "core/InputBase.hpp"
 //#include "BasicInputI.hpp"
 #include "core/Macros.hpp"
 #include "core/Traits.hpp"
 
 //#include "core/Serial.hpp"
-#include "core/Tuple.hpp"
+//#include "core/Tuple.hpp"
 
-//#include "InputI.hpp"
+//#include "InputBase.hpp"
 
 #if defined( OS_MACOS ) && \
     CPLUSPLUS_VERSION <= 14 // std::void_t not supported by AppleClang (c++14)
@@ -45,10 +45,10 @@ namespace input {
 /// \warning Unable to perform write/read operations if communication is ended or closed.
 /// TODO: split InputImpl -> InputImpl and Output classes
 ///
-//class SRC_API InputImpl : public InputI
+//class SRC_API InputImpl : public InputBase
 //{
 //  public:
-//    using InputI::read;
+//    using InputBase::read;
 
 //    template <typename T>
 //    using notReadable_t = decltype( T::notReadable );

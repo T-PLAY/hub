@@ -4,7 +4,7 @@
 
 #include "core/Macros.hpp"
 // #include "core/Traits.hpp"
-#include "core/ioBase.hpp"
+#include "core/ios.hpp"
 
 namespace hub {
 // namespace io {
@@ -19,7 +19,7 @@ namespace hub {
 // };
 
 // template <class ReaderT>
-class InputI : public ioBase
+class InputBase : public ios
 {
   public:
     virtual void read( Data_t* data, Size_t len ) = 0;
@@ -43,7 +43,7 @@ class InputI : public ioBase
 };
 
 template <typename T>
-using readable_t = decltype( std::declval<T>().read( std::declval<InputI&>() ) );
+using readable_t = decltype( std::declval<T>().read( std::declval<InputBase&>() ) );
 
 template <typename T, typename = std::void_t<>>
 struct readable : std::false_type {};

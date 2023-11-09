@@ -3,31 +3,32 @@
 //#include <array>
 #include <iostream>
 
-#include "Macros.hpp"
-//#include "Traits.hpp"
+//#include "core/Macros.hpp"
+//#include "core/Traits.hpp"
 //#include "Vector.hpp"
 //#include <vector>
 #include <span>
 
 
-template <class T, std::size_t N>
-// requires (! Printable<T>)
-//typename std::enable_if_t<!Printable<T> || std::is_same_v<T, unsigned char>, std::ostream&>
-std::ostream & operator<<( std::ostream& os, const std::span<T, N>& span ) {
-    os << "[";
-    //    auto nMax
-    constexpr auto nMaxDataToShow = 40;
-    const auto iMax               = std::min( (int)span.size(), nMaxDataToShow );
-    for ( auto i = 0; i < iMax; ++i ) {
-        //    for ( int i = 0; i < span.size(); ++i ) {
-        os << std::to_string( span[ i ] );
-        //        if ( i != span.size() - 1 ) os << " ";
-        if ( i != iMax - 1 ) os << " ";
-    }
-    if ( span.size() > nMaxDataToShow ) { os << " ... " << std::to_string( span[span.size() - 1] ); }
-    os << "](" << PRETTY_BYTES(span.size()) << ")";
-    return os;
-}
+//template <class T, std::size_t N>
+//// requires (! Printable<T>)
+////typename std::enable_if_t<!Printable<T> || std::is_same_v<T, unsigned char>, std::ostream&>
+//std::ostream & operator<<( std::ostream& os, const std::span<T, N>& span ) {
+//    os << hub::to_string(span);
+////    os << "[";
+////    //    auto nMax
+////    constexpr auto nMaxDataToShow = 40;
+////    const auto iMax               = std::min( (int)span.size(), nMaxDataToShow );
+////    for ( auto i = 0; i < iMax; ++i ) {
+////        //    for ( int i = 0; i < span.size(); ++i ) {
+////        os << std::to_string( span[ i ] );
+////        //        if ( i != span.size() - 1 ) os << " ";
+////        if ( i != iMax - 1 ) os << " ";
+////    }
+////    if ( span.size() > nMaxDataToShow ) { os << " ... " << std::to_string( span[span.size() - 1] ); }
+////    os << "](" << PRETTY_BYTES(span.size()) << ")";
+//    return os;
+//}
 
 namespace std {
 

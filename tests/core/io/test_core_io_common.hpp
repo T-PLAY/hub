@@ -9,7 +9,7 @@
 
 // #include <core/Macros.hpp>
 #include <core/Traits.hpp>
-#include <core/ioBase.hpp>
+#include <core/ios.hpp>
 // #include <core/Vector.hpp>
 
 namespace testCoreIoCommon {

@@ -13,13 +13,13 @@
 // #endif
 
 // #include "core/Any.hpp"
-// #include "core/OutputI.hpp"
+// #include "core/OutputBase.hpp"
 #include "core/Macros.hpp"
 #include "core/Traits.hpp"
 
-#include "core/Tuple.hpp"
+//#include "core/Tuple.hpp"
 
-//#include "OutputI.hpp"
+//#include "OutputBase.hpp"
 
 #if defined( OS_MACOS ) && CPLUSPLUS_VERSION <= 14
 #    include "core/Traits.hpp"
@@ -45,10 +45,10 @@ namespace output {
 /// \warning Unable to perform write/read operations if communication is ended or closed.
 /// TODO: split OutputImpl -> Input and OutputImpl classes
 ///
-//class SRC_API OutputImpl : public OutputI
+//class SRC_API OutputImpl : public OutputBase
 //{
 //  public:
-//    using OutputI::write;
+//    using OutputBase::write;
 
 //    template <typename T>
 //    using notWritable_t = decltype( T::notWritable );
@@ -186,7 +186,7 @@ namespace output {
 ////    typename std::enable_if<!serializable_v<T> && !writable_v<T> && !notWritable_v<T>>::type
 //    typename std::enable_if<!serializable_v<T> && !writable_v<T>>::type
 //    write( const T& t ) {
-//        //        OutputI::write(t);
+//        //        OutputBase::write(t);
 //        //        return;
 //        //        assert(false);
 

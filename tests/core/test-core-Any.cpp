@@ -6,6 +6,7 @@
 // #include <catch2/catch_test_macros.hpp>
 // #include <iostream>
 
+#include <core/Traits.hpp>
 #include <core/Any.hpp>
 // #include <core/io/InputOutput.hpp>
 #include <core/io/Archive.hpp>
@@ -28,7 +29,8 @@ class Lambda
     }
 
     friend std::ostream& operator<<( std::ostream& os, const Lambda& lambda ) {
-        os << lambda.a << " " << lambda.b << " " << lambda.c << " " << lambda.ds << " " << lambda.e;
+//        os << lambda.a << " " << lambda.b << " " << lambda.c << " " << lambda.ds << " " << lambda.e;
+
 //        for ( const auto& d : lambda.ds ) {
 //            os << d << " ";
 //        }
@@ -49,7 +51,9 @@ class Lambda
 //int main() {
     // int main() {
     //     hub::Any::printTable();
-    std::cout << "any supported types : " << hub::Anyable::supportedTypes() << std::endl;
+
+//    std::cout << "any supported types : " << hub::Anyable::supportedTypes() << std::endl;
+
     //    hub::Anyable::registerTypes<Lambda>();
     //    std::cout << "any supported types : " << hub::Anyable::supportedTypes() << std::endl;
 
@@ -205,5 +209,5 @@ class Lambda
     //    std::cout << "any typeid: " << any.typeId().name() << std::endl;
     //    std::cout << any << std::endl;
 
-    std::cout << "any supported types : " << hub::Anyable::supportedTypes() << std::endl;
+//    std::cout << "any supported types : " << hub::Anyable::supportedTypes() << std::endl;
 }

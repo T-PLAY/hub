@@ -1,13 +1,13 @@
 #pragma once
 
-// #include "io/input/InputI.hpp"
+// #include "io/input/InputBase.hpp"
 
 // #include "io/input/InputImpl.hpp"
 // #include "io/input/InputZppBits.hpp"
 
 #include "core/Macros.hpp"
-// #include "ioBase.hpp"
-#include "InputI.hpp"
+// #include "ios.hpp"
+#include "InputBase.hpp"
 // #include "serializer/SerializerI.hpp"
 #include "Serializer.hpp"
 
@@ -16,15 +16,15 @@ namespace hub {
 // using Input = io::input::InputImpl;
 // using Input = io::input::InputZppBits;
 
-// static_assert(std::is_base_of<io::input::InputI, Input>::value, "Input is not base class of
+// static_assert(std::is_base_of<io::input::InputBase, Input>::value, "Input is not base class of
 // IntputI");
 
 template <class SerializerT = Serializer>
-// class Input : public ioBase
-class InputT : public InputI
+// class Input : public ios
+class InputT : public InputBase
 {
   public:
-    using InputI::read;
+    using InputBase::read;
 
     //    template <typename T>
     //    using readable_t = decltype( std::declval<T>().read( std::declval<Input&>() ) );

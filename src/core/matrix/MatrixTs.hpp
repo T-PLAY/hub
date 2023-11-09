@@ -45,7 +45,7 @@ class MatrixTs
     using getType = typename std::tuple_element<ith, std::tuple<Types...>>::type;
 
   public:
-    using Data = std::array<Data_t, size()>;
+//    using Data = std::array<Data_t, size()>;
 
 //    constexpr MatrixTs() : m_data { 0 } {}
 
@@ -79,8 +79,13 @@ class MatrixTs
 
     static constexpr std::string name() { return printName<Types...>(); }
 
-    template <class... Types_>
-    SRC_API friend std::ostream& operator<<( std::ostream& os, const MatrixTs<Types_...>& matrix );
+//    static constexpr auto toString() { return name() + " = " + ::toString(m_data); };
+    constexpr auto toString() const {
+        return name() + " = " + m_data.toString();
+    }
+
+//    template <class... Types_>
+//    SRC_API friend std::ostream& operator<<( std::ostream& os, const MatrixTs<Types_...>& matrix );
 
   private:
     template <const Size_t ith, Size_t i = 0, class Type_, class... Types_>
@@ -98,8 +103,9 @@ class MatrixTs
     static constexpr auto printName() {
         std::string str;
         //        using type = Type_();
-        if constexpr ( requires { Type_::name(); } ) { str += Type_::name(); }
-        else { str += TYPE_NAME( Type_ ); }
+//        if constexpr ( requires { Type_::name(); } ) { str += Type_::name(); }
+//        else { str += TYPE_NAME( Type_ ); }
+        str += TYPE_NAME(Type_);
 
         //        std::replace(str.begin(), str.end(), ' ', '_');
         str.erase( std::remove( str.begin(), str.end(), ' ' ), str.end() );
@@ -109,20 +115,20 @@ class MatrixTs
     }
 
   private:
-//    Data m_data;
+    Data<Size> m_data;
 };
-static_assert(sizeof(MatrixTs<int, double, float>) == 1);
+static_assert(sizeof(MatrixTs<int, double, float>) == sizeof(int) + sizeof(double) + sizeof(float) + 8);
 
-template <class... Types>
-SRC_API std::ostream& operator<<( std::ostream& os, const MatrixTs<Types...>& matrix ) {
-    //    os << "(constexpr)";
-    os << matrix.name() << " = ";
-//    ::operator<<( os, matrix.m_data );
-    //    ::operator<<( os, matrix.Tuple() );
-    //    ::operator<<( os, typename MatrixTs<Types...>::Tuple() );
-    //    os << ", size: " << buffer.size();
-    return os;
-}
+//template <class... Types>
+//SRC_API std::ostream& operator<<( std::ostream& os, const MatrixTs<Types...>& matrix ) {
+//    //    os << "(constexpr)";
+//    os << matrix.toString();
+////    ::operator<<( os, matrix.m_data );
+//    //    ::operator<<( os, matrix.Tuple() );
+//    //    ::operator<<( os, typename MatrixTs<Types...>::Tuple() );
+//    //    os << ", size: " << buffer.size();
+//    return os;
+//}
 
 
 } // namespace hub

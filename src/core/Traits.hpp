@@ -2,7 +2,46 @@
 
 #include "Macros.hpp"
 
+//#include <iostream>
 #include <type_traits>
+//#include <vector>
+
+template <class Container, class T = std::decay_t<decltype( *std::declval<Container>().begin() )>>
+auto toString( const Container& container ) {
+    std::string str;
+    str += "<" + TYPE_NAME( T ) + ">";
+    str += "[";
+    constexpr auto nMaxDataToShow = 40;
+    const auto iMax               = std::min( (int)container.size(), nMaxDataToShow );
+    for ( auto i = 0; i < iMax; ++i ) {
+        if constexpr ( std::is_same_v<T, char> ) { str += container[i]; }
+        else { str += std::to_string( container[i] ); }
+        if ( i != iMax - 1 ) str += " ";
+    }
+    if ( container.size() > nMaxDataToShow ) {
+        str += " ... " + std::to_string( container[container.size() - 1] );
+    }
+    str += "](" + PRETTY_BYTES(container.size() * sizeof(T)) + ")";
+//    str += "](" + std::to_string( container.size() ) + ")";
+    return str;
+}
+
+template <class Container, class T = std::decay_t<decltype( *std::declval<Container>().begin() )>>
+    requires( !std::is_same_v<Container, std::string> )
+std::ostream& operator<<( std::ostream& os, const Container& container ) {
+    os << toString( container );
+    return os;
+}
+
+template <class T>
+concept Stringable = requires(std::ostream & os, const T & t) { os << t.toString(); };
+
+template <class T>
+    requires Stringable<T>
+std::ostream& operator<<( std::ostream& os, const T& t ) {
+    os << t.toString();
+    return os;
+}
 
 namespace std {
 
@@ -33,7 +72,7 @@ static constexpr bool is_array_v = is_array<T>::value;
 
 } // namespace std
 
-namespace hub {
+// namespace hub {
 
 // #if ( __cplusplus < 201703L )
 #if CPLUSPLUS_VERSION < 17
@@ -112,22 +151,30 @@ using void_t = typename make_void<Ts...>::type;
 ////static constexpr bool isInput_v = isInput<T>::value;
 // static constexpr bool isOutput_v = std::is_base_of_v<hub::Output, T>;
 
-template <class T>
-Size_t sizeofAll( T& ts ) {
-    //        zpp::bits::in input( m_serialBuff );
-    //        input( ts... ).or_throw();
-    return sizeof( T );
-}
+// template <class T>
+// std::size_t sizeofAll( T& ts ) {
+//     //        zpp::bits::in input( m_serialBuff );
+//     //        input( ts... ).or_throw();
+//     return sizeof( T );
+// }
 
-template <class T, class... Ts>
-Size_t sizeofAll( T& t, Ts&... ts ) {
-    //        assert( isOpen() );
-    //        assert( !isEnd() );
-    //        read( m_serialBuff.data(), sizeof(Ts)... );
-    //        zpp::bits::in input( m_serialBuff );
-    //        input( ts... ).or_throw();
-    //        input( ts... ).or_throw();
-    return sizeof( T ) + sizeofAll( ts... );
-}
+// template <class T, class... Ts>
+// std::size_t sizeofAll( T& t, Ts&... ts ) {
+//     //        assert( isOpen() );
+//     //        assert( !isEnd() );
+//     //        read( m_serialBuff.data(), sizeof(Ts)... );
+//     //        zpp::bits::in input( m_serialBuff );
+//     //        input( ts... ).or_throw();
+//     //        input( ts... ).or_throw();
+//     return sizeof( T ) + sizeofAll( ts... );
+// }
 
-} // namespace hub
+// #if CPLUSPLUS_VERSION >= 20 // concept
+// template <class T>
+// concept Printable = requires( T a ) { std::cout << a; };
+// #else
+// template <class T>
+// static constexpr auto Printable = true;
+// #endif
+
+//} // namespace hub

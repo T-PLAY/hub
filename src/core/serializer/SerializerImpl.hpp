@@ -9,12 +9,12 @@
 #include <vector>
 #include <cstring>
 
-// #include "io/input/InputI.hpp"
+// #include "io/input/InputBase.hpp"
 // #include "io/input/InputImpl.hpp"
 // #include "io/input/InputZppBits.hpp"
 #include "core/Macros.hpp"
-#include "core/Vector.hpp"
-#include "core/ioBase.hpp"
+//#include "core/Vector.hpp"
+#include "core/ios.hpp"
 
 #include "SerializerI.hpp"
 

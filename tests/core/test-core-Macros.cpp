@@ -5,7 +5,8 @@
 #include "test_common.hpp"
 
 #include <core/Macros.hpp>
-#include <core/Vector.hpp>
+//#include <core/Vector.hpp>
+#include <core/Traits.hpp>
 
 
 class Lambda
@@ -23,7 +24,8 @@ class Lambda
     }
 
     friend std::ostream& operator<<( std::ostream& os, const Lambda& lambda ) {
-        os << lambda.a << " " << lambda.b << " " << lambda.c << " " << lambda.ds << " " << lambda.e;
+//        os << lambda.a << " " << lambda.b << " " << lambda.c << " " << lambda.ds << " " << lambda.e;
+
 //        for ( const auto& d : lambda.ds ) {
 //            os << d << " ";
 //        }

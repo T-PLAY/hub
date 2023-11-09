@@ -10,8 +10,8 @@
 // #include "core/std_any.hpp"
 // #include "core/Input.hpp"
 // #include "core/Output.hpp"
-// #include "core/io/input/InputI.hpp"
-// #include "core/io/output/OutputI.hpp"
+// #include "core/io/input/InputBase.hpp"
+// #include "core/io/output/OutputBase.hpp"
 #include "core/Input.hpp"
 #include "core/Output.hpp"
 
@@ -22,7 +22,7 @@
 #endif
 
 namespace hub {
-// namespace anyable {
+
 class Anyable
 {
 
@@ -119,7 +119,7 @@ class Anyable
         std::function<std::string()> getTypeName;
         std::function<std::string( const std::any& )> getValueStr;
         std::function<bool( const std::any&, const std::any& )> compare;
-        //        std::function<void( io::output::OutputI& output, const std::any& )> write;
+        //        std::function<void( io::output::OutputBase& output, const std::any& )> write;
         std::function<void( Output&, const std::any& )> write;
         std::function<void( Input&, std::any& )> read;
     };
@@ -189,5 +189,4 @@ class Anyable
 
 }; // class Anyable
 
-//} // namespace Anyable
 } // namespace hub

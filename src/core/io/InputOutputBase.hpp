@@ -3,13 +3,13 @@
 //#include "core/Macros.hpp"
 //#include "input/BasicInputI.hpp"
 //#include "output/BasicOutputI.hpp"
-#include "core/InputI.hpp"
-#include "core/OutputI.hpp"
+#include "core/InputBase.hpp"
+#include "core/OutputBase.hpp"
 
 namespace hub {
 namespace io {
 
-class InputOutputI : public InputI, public OutputI
+class InputOutputBase : public InputBase, public OutputBase
 {
   public:
 };

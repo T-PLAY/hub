@@ -4,13 +4,13 @@
 
 #include "core/Macros.hpp"
 // #include "core/Traits.hpp"
-#include "core/ioBase.hpp"
+#include "core/ios.hpp"
 
 namespace hub {
 // namespace io {
 // namespace output {
 
-class OutputI : public ioBase
+class OutputBase : public ios
 {
   public:
     virtual void write( const Data_t* data, Size_t len ) = 0;
@@ -27,7 +27,7 @@ class OutputI : public ioBase
 };
 
 template <typename T>
-using writable_t = decltype( std::declval<T>().write( std::declval<OutputI&>() ) );
+using writable_t = decltype( std::declval<T>().write( std::declval<OutputBase&>() ) );
 //    using writable_t = decltype( write( std::declval<T>(), std::declval<OutputImpl&>() ) );
 
 template <typename T, typename = std::void_t<>>

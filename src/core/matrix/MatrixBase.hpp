@@ -4,9 +4,11 @@
 #include <algorithm>
 #include <type_traits>
 
-#include "core/Array.hpp"
 #include "core/Macros.hpp"
-#include "core/Span.hpp"
+#include "core/Traits.hpp"
+#include "core/Data.hpp"
+//#include "core/Array.hpp"
+//#include "core/Span.hpp"
 
 //namespace hub {
 

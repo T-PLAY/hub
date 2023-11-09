@@ -6,8 +6,8 @@
 //#include <vector>
 
 //// #include <core/Macros.hpp>
-//#include <core/Traits.hpp>
-#include <core/Vector.hpp>
+#include <core/Traits.hpp>
+//#include <core/Vector.hpp>
 
 namespace testCoreIoCommon {
 
@@ -16,7 +16,7 @@ namespace testCoreIoCommon {
 
 std::ostream& operator<<( std::ostream& os, const UserData& data ) {
     os << data.a << " " << data.b << " " << data.name << " ";
-    ::operator<<(os, data.vints);
+//    ::operator<<(os, data.vints);
 //    os << data.a << " " << data.b << " " << data.name << " " << data.vints;
 
     return os;

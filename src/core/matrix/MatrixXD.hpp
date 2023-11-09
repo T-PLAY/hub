@@ -48,7 +48,7 @@ class MatrixXDBase
     using getType = Type;
 
   public:
-    using Data = std::array<Data_t, Size>;
+//    using Data = std::array<Data_t, Size>;
 
 //    constexpr MatrixXDBase() : m_data { 0 } {}
 
@@ -71,8 +71,9 @@ class MatrixXDBase
 
     static constexpr std::string name() {
         std::string str;
-        if constexpr ( requires { Type::name(); } ) { str += Type::name(); }
-        else { str += TYPE_NAME( Type ); }
+//        if constexpr ( requires { Type::name(); } ) { str += Type::name(); }
+//        else { str += TYPE_NAME( Type ); }
+        str += TYPE_NAME(Type);
 
         if ( !( nDim() == 1 && getDim<0>() == 1 ) ) {
             str += ":";
@@ -86,26 +87,35 @@ class MatrixXDBase
         return str;
     }
 
-    template <class Type_, Size_t... Ns_>
-    SRC_API friend std::ostream& operator<<( std::ostream& os,
-                                             const MatrixXDBase<Type, Ns...>& matrix );
+    constexpr auto toString() const {
+        return name() + " = " + m_data.toString();
+    }
+
+//    template <class Type_, Size_t... Ns_>
+//    SRC_API friend std::ostream& operator<<( std::ostream& os,
+//                                             const MatrixXDBase<Type, Ns...>& matrix );
 
 //    constexpr bool operator==( const MatrixXDBase& matrix ) const { return m_data == matrix.m_data; }
 
   private:
+//    Data<Size, DataOption::StaticMemory> m_data;
+    Data<Size> m_data;
+//    Data<
 //    Data m_data;
 };
-static_assert(sizeof(MatrixXDBase<int, 2, 3, 4, 5, 6>) == 1);
+//static_assert(sizeof(MatrixXDBase<int, 2, 3, 4, 5, 6>) == 1);
+static_assert(sizeof(MatrixXDBase<int, 2, 3, 4, 5, 6>) == sizeof(int) * 2 * 3 * 4 * 5 * 6 + 8);
 
-template <class Type, Size_t... Ns>
-SRC_API std::ostream& operator<<( std::ostream& os, const MatrixXDBase<Type, Ns...>& matrix ) {
-    //    os << matrix.m_data;
-    os << matrix.name() << " = ";
-//    matrix.getData();
-//    ::operator<<( os, matrix.m_data );
-//    ::operator<<( os, matrix.getData() );
-    return os;
-}
+//template <class Type, Size_t... Ns>
+//SRC_API std::ostream& operator<<( std::ostream& os, const MatrixXDBase<Type, Ns...>& matrix ) {
+//    //    os << matrix.m_data;
+////    os << matrix.name();
+//    os << matrix.toString();
+////    matrix.getData();
+////    ::operator<<( os, matrix.m_data );
+////    ::operator<<( os, matrix.getData() );
+//    return os;
+//}
 
 } // namespace _
 
@@ -125,7 +135,7 @@ class MatrixXD : public _::MatrixXDBase<Type, Ns...>
         return 0;
     }
 };
-static_assert(sizeof(MatrixXD<int, 2, 3, 4, 5, 6>) == 1);
+//static_assert(sizeof(MatrixXD<int, 2, 3, 4, 5, 6>) == 1);
 
 //template <class Type>
 //class MatrixXD<Type> : public _::MatrixXDBase<Type>

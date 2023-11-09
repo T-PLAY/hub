@@ -266,11 +266,29 @@
 #    include <boost/type_index.hpp>
 #endif
 
+// template <class T>
+// concept TypeNameable = requires( const T& t ) { t.name(); };
+
+template <class T>
+auto type_name( ) {
+//    constexpr bool nameable = requires(  ) { T::name(); };
+    if constexpr ( requires { T::name(); } ) { return T::name(); }
+    else {
 #ifdef HUB_USE_BOOST
-#    define TYPE_NAME( t ) boost::typeindex::type_id<typeof( t )>().pretty_name()
+        return boost::typeindex::type_id<typeof( T )>().pretty_name();
 #else
-#    define TYPE_NAME( t ) typeid( t ).name()
+        return typeid( T ).name();
 #endif
+    }
+}
+
+#define TYPE_NAME(Type) type_name<Type>()
+
+//#ifdef HUB_USE_BOOST
+//#    define TYPE_NAME( t ) boost::typeindex::type_id<typeof( t )>().pretty_name()
+//#else
+//#    define TYPE_NAME( t ) typeid( t ).name()
+//#endif
 
 // #    ifdef HUB_USE_BOOST
 //         std::cout << HEADER_INPUT_MSG "read(T) : <"
@@ -309,7 +327,6 @@ constexpr auto sizeof_() {
     return ( sizeof_<Ts>() + ... );
 }
 
-
 // #ifdef HUB_DEBUG_INPUT
 //     template <typename T>
 //     void printTypeAndValue(const T & t) {
@@ -327,7 +344,8 @@ constexpr auto sizeof_() {
 // #endif
 } // namespace hub
 
-/////////////////////////////////////////////// PRETTY BYTES //////////////////////////////////////////////
+/////////////////////////////////////////////// PRETTY BYTES
+/////////////////////////////////////////////////
 
 //// source : https://www.mbeckler.org/blog/?p=114
 //// Prints to the provided buffer a nice number of bytes (KB, MB, GB, etc)
@@ -335,23 +353,24 @@ static constexpr std::string pretty_bytes( hub::Size_t bytes ) {
     std::string str;
     char buff[32] { 0 };
     const char* suffixes[7];
-//    suffixes[0]         = "Bytes";
-//    suffixes[1]         = "KiloBytes";
-//    suffixes[2]         = "MegaBytes";
-//    suffixes[3]         = "GigaBytes";
-//    suffixes[4]         = "TeraBytes";
-//    suffixes[5]         = "PetaBytes";
-//    suffixes[6]         = "ExaBytes";
-    suffixes[0]         = "Bytes";
-    suffixes[1]         = "Ko";
-    suffixes[2]         = "Mo";
-    suffixes[3]         = "Go";
-    suffixes[4]         = "To";
-    suffixes[5]         = "Po";
-    suffixes[6]         = "Eo";
+    //    suffixes[0]         = "Bytes";
+    //    suffixes[1]         = "KiloBytes";
+    //    suffixes[2]         = "MegaBytes";
+    //    suffixes[3]         = "GigaBytes";
+    //    suffixes[4]         = "TeraBytes";
+    //    suffixes[5]         = "PetaBytes";
+    //    suffixes[6]         = "ExaBytes";
+    //    suffixes[0]         = "";
+    suffixes[0]         = " Bytes";
+    suffixes[1]         = " Ko";
+    suffixes[2]         = " Mo";
+    suffixes[3]         = " Go";
+    suffixes[4]         = " To";
+    suffixes[5]         = " Po";
+    suffixes[6]         = " Eo";
     uint64_t s          = 0; // which suffix to use
     double count        = bytes;
-    constexpr auto kilo = 1000;
+    constexpr auto kilo = 1'000;
     //    constexpr auto kilo = 1024;
     while ( count >= kilo && s < 7 ) {
         s++;
@@ -359,22 +378,22 @@ static constexpr std::string pretty_bytes( hub::Size_t bytes ) {
     }
     if ( count - floor( count ) == 0.0 )
 #ifdef WIN32
-        sprintf_s( buff, 80, "%d %s", (int)count, suffixes[s] );
+        sprintf_s( buff, 80, "%d%s", (int)count, suffixes[s] );
 #else
 #    ifdef OS_MACOS
-        snprintf( buff, 80, "%d %s", (int)count, suffixes[s] );
+        snprintf( buff, 80, "%d%s", (int)count, suffixes[s] );
 #    else
-        sprintf( buff, "%d %s", (int)count, suffixes[s] );
+        sprintf( buff, "%d%s", (int)count, suffixes[s] );
 #    endif
 #endif
     else
 #ifdef WIN32
-        sprintf_s( buff, 80, "%.1f %s", count, suffixes[s] );
+        sprintf_s( buff, 80, "%.1f%s", count, suffixes[s] );
 #else
 #    ifdef OS_MACOS
-        snprintf( buff, 80, "%.1f %s", count, suffixes[s] );
+        snprintf( buff, 80, "%.1f%s", count, suffixes[s] );
 #    else
-        sprintf( buff, "%.1f %s", count, suffixes[s] );
+        sprintf( buff, "%.1f%s", count, suffixes[s] );
 #    endif
 #endif
 
@@ -382,39 +401,39 @@ static constexpr std::string pretty_bytes( hub::Size_t bytes ) {
 }
 #define PRETTY_BYTES( t ) pretty_bytes( t )
 
-/////////////////////////////////////////////// STATIC WARNING //////////////////////////////////////////////
+/////////////////////////////////////////////// STATIC WARNING
+/////////////////////////////////////////////////
 
+// #if defined(__GNUC__)
+// #define DEPRECATE(foo, msg) foo __attribute__((deprecated(msg)))
+// #elif defined(_MSC_VER)
+// #define DEPRECATE(foo, msg) __declspec(deprecated(msg)) foo
+// #else
+// #error This compiler is not supported
+// #endif
 
-#if defined(__GNUC__)
-#define DEPRECATE(foo, msg) foo __attribute__((deprecated(msg)))
-#elif defined(_MSC_VER)
-#define DEPRECATE(foo, msg) __declspec(deprecated(msg)) foo
-#else
-#error This compiler is not supported
-#endif
+// #define PP_CAT(x,y) PP_CAT1(x,y)
+// #define PP_CAT1(x,y) x##y
 
-#define PP_CAT(x,y) PP_CAT1(x,y)
-#define PP_CAT1(x,y) x##y
+// namespace detail
+//{
+// struct true_type {};
+// struct false_type {};
+// template <int test> struct converter : public true_type {};
+// template <> struct converter<0> : public false_type {};
+// }
 
-namespace detail
-{
-struct true_type {};
-struct false_type {};
-template <int test> struct converter : public true_type {};
-template <> struct converter<0> : public false_type {};
-}
+//#define STATIC_WARNING(cond, msg) \
+//struct PP_CAT(static_warning,__LINE__) { \
+//        DEPRECATE(void _(::detail::false_type const& ),msg) {}; \
+//        void _(::detail::true_type const& ) {}; \
+//        PP_CAT(static_warning,__LINE__)() {_(::detail::converter<(cond)>());} \
+//}
 
-#define STATIC_WARNING(cond, msg) \
-struct PP_CAT(static_warning,__LINE__) { \
-        DEPRECATE(void _(::detail::false_type const& ),msg) {}; \
-        void _(::detail::true_type const& ) {}; \
-        PP_CAT(static_warning,__LINE__)() {_(::detail::converter<(cond)>());} \
-}
-
-// Note: using STATIC_WARNING_TEMPLATE changes the meaning of a program in a small way.
-// It introduces a member/variable declaration.  This means at least one byte of space
-// in each structure/class instantiation.  STATIC_WARNING should be preferred in any
-// non-template situation.
-//  'token' must be a program-wide unique identifier.
-#define STATIC_WARNING_TEMPLATE(token, cond, msg) \
-STATIC_WARNING(cond, msg) PP_CAT(PP_CAT(_localvar_, token),__LINE__)
+//// Note: using STATIC_WARNING_TEMPLATE changes the meaning of a program in a small way.
+//// It introduces a member/variable declaration.  This means at least one byte of space
+//// in each structure/class instantiation.  STATIC_WARNING should be preferred in any
+//// non-template situation.
+////  'token' must be a program-wide unique identifier.
+//   #define STATIC_WARNING_TEMPLATE(token, cond, msg) \
+//STATIC_WARNING(cond, msg) PP_CAT(PP_CAT(_localvar_, token),__LINE__)
