@@ -269,10 +269,17 @@
 // template <class T>
 // concept TypeNameable = requires( const T& t ) { t.name(); };
 
+template <typename T>
+concept isContainer = !std::is_same<T, std::string>() && requires( T t ) {
+    std::begin( t );
+    std::end( t );
+};
+
 template <class T>
-auto type_name( ) {
-//    constexpr bool nameable = requires(  ) { T::name(); };
+    requires( !isContainer<T> )
+std::string type_name() {
     if constexpr ( requires { T::name(); } ) { return T::name(); }
+    else if ( std::is_same_v<T, std::string> ) { return "string"; }
     else {
 #ifdef HUB_USE_BOOST
         return boost::typeindex::type_id<typeof( T )>().pretty_name();
@@ -282,13 +289,24 @@ auto type_name( ) {
     }
 }
 
-#define TYPE_NAME(Type) type_name<Type>()
+#include <vector>
 
-//#ifdef HUB_USE_BOOST
-//#    define TYPE_NAME( t ) boost::typeindex::type_id<typeof( t )>().pretty_name()
-//#else
-//#    define TYPE_NAME( t ) typeid( t ).name()
-//#endif
+template <class Container, class T = std::decay_t<decltype( *std::declval<Container>().begin() )>>
+    requires( isContainer<Container> )
+std::string type_name() {
+    if constexpr ( std::is_same_v<Container, std::vector<T>> ) {
+        return "vector<" + type_name<T>() + ">";
+    }
+    else { return "container<" + type_name<T>() + ">"; }
+}
+
+#define TYPE_NAME( Type ) type_name<Type>()
+
+// #ifdef HUB_USE_BOOST
+// #    define TYPE_NAME( t ) boost::typeindex::type_id<typeof( t )>().pretty_name()
+// #else
+// #    define TYPE_NAME( t ) typeid( t ).name()
+// #endif
 
 // #    ifdef HUB_USE_BOOST
 //         std::cout << HEADER_INPUT_MSG "read(T) : <"
@@ -435,5 +453,5 @@ static constexpr std::string pretty_bytes( hub::Size_t bytes ) {
 //// in each structure/class instantiation.  STATIC_WARNING should be preferred in any
 //// non-template situation.
 ////  'token' must be a program-wide unique identifier.
-//   #define STATIC_WARNING_TEMPLATE(token, cond, msg) \
+//     #define STATIC_WARNING_TEMPLATE(token, cond, msg) \
 //STATIC_WARNING(cond, msg) PP_CAT(PP_CAT(_localvar_, token),__LINE__)

@@ -2,27 +2,38 @@
 
 #include "Macros.hpp"
 
-//#include <iostream>
+// #include <iostream>
 #include <type_traits>
-//#include <vector>
+// #include <vector>
 
 template <class Container, class T = std::decay_t<decltype( *std::declval<Container>().begin() )>>
 auto toString( const Container& container ) {
     std::string str;
     str += "<" + TYPE_NAME( T ) + ">";
     str += "[";
+    constexpr bool stringable     = requires( T t ) { str += t; } && ! std::is_arithmetic_v<T>;
+    constexpr bool toStringable     = requires( T t ) { t.toString(); };
+
     constexpr auto nMaxDataToShow = 40;
     const auto iMax               = std::min( (int)container.size(), nMaxDataToShow );
     for ( auto i = 0; i < iMax; ++i ) {
-        if constexpr ( std::is_same_v<T, char> ) { str += container[i]; }
-        else { str += std::to_string( container[i] ); }
+        const auto& el = container[i];
+        if constexpr ( stringable ) { str += el; }
+        else if constexpr (toStringable) { str += el.toString(); }
+        else { str += std::to_string( el ); }
+        //        if constexpr ( std::is_same_v<T, char> ) { str += container[i]; }
+        //        else { str += std::to_string( container[i] ); }
         if ( i != iMax - 1 ) str += " ";
     }
     if ( container.size() > nMaxDataToShow ) {
-        str += " ... " + std::to_string( container[container.size() - 1] );
+        const auto& lastEl = container.back();
+        str += " ... ";
+        if constexpr ( stringable ) { str += lastEl; }
+        else if constexpr (toStringable) { str += lastEl.toString(); }
+        else { str += std::to_string( lastEl ); }
     }
-    str += "](" + PRETTY_BYTES(container.size() * sizeof(T)) + ")";
-//    str += "](" + std::to_string( container.size() ) + ")";
+    str += "](" + PRETTY_BYTES( container.size() * sizeof( T ) ) + ")";
+    //    str += "](" + std::to_string( container.size() ) + ")";
     return str;
 }
 
@@ -34,7 +45,7 @@ std::ostream& operator<<( std::ostream& os, const Container& container ) {
 }
 
 template <class T>
-concept Stringable = requires(std::ostream & os, const T & t) { os << t.toString(); };
+concept Stringable = requires( std::ostream& os, const T& t ) { os << t.toString(); };
 
 template <class T>
     requires Stringable<T>

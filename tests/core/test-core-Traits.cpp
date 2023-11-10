@@ -54,4 +54,9 @@ TEST_CASE( "Matrix test" ) {
     //    std::cout << "lambda: " << toString(lambda) << std::endl;
     std::cout << "lambda: " << lambda << std::endl;
     std::cout << std::endl;
+
+    std::vector<std::string> strings{"gauthier", "bouyjou"};
+    std::cout << "strings: " << toString( strings ) << std::endl;
+    std::cout << "strings: " << strings << std::endl;
+    std::cout << std::endl;
 }

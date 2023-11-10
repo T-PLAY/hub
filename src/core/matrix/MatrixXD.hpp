@@ -12,6 +12,7 @@ template <class Type, Size_t... Ns>
 class MatrixXDBase
 {
   public:
+//    using Types = Type;
     static constexpr auto Capacity = ( Ns * ... );
 //    static constexpr auto Size     = sizeof( Type ) * Capacity;
     static constexpr auto Size     = sizeof_<Type>() * Capacity;
@@ -43,6 +44,33 @@ class MatrixXDBase
         return ( hasType<Types>() && ... );
     }
 
+    template <class Type_>
+    static constexpr int nType() {
+        return std::is_same_v<Type, Type_>;
+    }
+
+//    template <int ith, int i, class Type_, class... Types_>
+////        requires( hasType<Type_>() )
+//    static constexpr Size_t getOffset() {
+//        static_assert(hasType<Type_>());
+////        static_assert(ith == 0 && i == 0);
+//        if constexpr (ith == i) {
+//            return 0;
+//        }
+//        else {
+//            return Size;
+//        }
+//        return 0;
+//    }
+
+//    template <class Type_, int ith = 0>
+////        requires( hasType<Type_>() )
+//    static constexpr Size_t getOffset() {
+//        static_assert(hasType<Type_>());
+//        static_assert(ith == 0);
+//        return 0;
+//    }
+
     template <Size_t ith>
         requires( ith == 0 )
     using getType = Type;
@@ -50,7 +78,9 @@ class MatrixXDBase
   public:
 //    using Data = std::array<Data_t, Size>;
 
-//    constexpr MatrixXDBase() : m_data { 0 } {}
+//    template <class... Args>
+//    constexpr MatrixXDBase() = default;
+//    MatrixXDBase(std::initializer_list<Type> && list) : m_data { std::span<Data_t, list.size() * sizeof(Type)>(list.begin()) } {}
 
 //    template <class Type_, std::size_t Size_>
 //        requires( Size == Size_ )
@@ -98,13 +128,15 @@ class MatrixXDBase
 //    constexpr bool operator==( const MatrixXDBase& matrix ) const { return m_data == matrix.m_data; }
 
   private:
-//    Data<Size, DataOption::StaticMemory> m_data;
-    Data<Size> m_data;
+//    Data<Size, BufferOption::StaticMemory> m_data;
+//    Buffer<Type, Capacity> m_data;
+    Buffer<Data_t, Size> m_data;
 //    Data<
 //    Data m_data;
 };
 //static_assert(sizeof(MatrixXDBase<int, 2, 3, 4, 5, 6>) == 1);
 static_assert(sizeof(MatrixXDBase<int, 2, 3, 4, 5, 6>) == sizeof(int) * 2 * 3 * 4 * 5 * 6 + 8);
+static_assert(isMatrix<MatrixXDBase<int, 2>>);
 
 //template <class Type, Size_t... Ns>
 //SRC_API std::ostream& operator<<( std::ostream& os, const MatrixXDBase<Type, Ns...>& matrix ) {

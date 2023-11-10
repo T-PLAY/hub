@@ -18,26 +18,9 @@ class Lambda
     std::vector<int> ds;
     std::string e;
 
-    template <class Serial>
-    void serialize( Serial& serial ) {
-        serial( a, b, c, ds, e );
-    }
+    static constexpr auto Size = 5;
 
-    friend std::ostream& operator<<( std::ostream& os, const Lambda& lambda ) {
-//        os << lambda.a << " " << lambda.b << " " << lambda.c << " " << lambda.ds << " " << lambda.e;
-
-//        for ( const auto& d : lambda.ds ) {
-//            os << d << " ";
-//        }
-//        os << "]";
-        return os;
-    }
-    bool operator==( const Lambda& lambda ) const {
-        return a == lambda.a && b == lambda.b && c == lambda.c && ds == lambda.ds && e == lambda.e;
-    }
-    //    Lambda() = default;
 };
-
 
 
 TEST_CASE( "Macros test" ) {
@@ -45,5 +28,15 @@ TEST_CASE( "Macros test" ) {
     static_assert(hub::sizeof_<int>() == 4);
     static_assert(hub::sizeof_<double>() == 8);
     static_assert(hub::sizeof_<int, int>() == 8);
+    static_assert(hub::sizeof_<Lambda>() == 5);
+
+    std::cout << "int: " << TYPE_NAME(int) << std::endl;
+    std::cout << "vints: " << TYPE_NAME(std::vector<int>) << std::endl;
+
+    std::cout << "string: " << TYPE_NAME(std::string) << std::endl;
+    std::cout << "strings: " << TYPE_NAME(std::vector<std::string>) << std::endl;
+
+    std::cout << "lambda: " << TYPE_NAME(Lambda) << std::endl;
+    std::cout << "lambdas: " << TYPE_NAME(std::vector<Lambda>) << std::endl;
 
 }

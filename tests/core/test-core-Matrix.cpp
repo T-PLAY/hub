@@ -4,6 +4,8 @@
 
 #include "test_common.hpp"
 
+#include <tuple>
+
 #include <core/Traits.hpp>
 #include <core/Any.hpp>
 #include <core/io/Archive.hpp>
@@ -85,13 +87,13 @@ class Lambda
 //    MatrixTs<int>;
     static_assert(MatrixTs<int, double>::nType() == 2);
 
-    constexpr auto matrix = Matrix<10, int>();
+    const auto matrix = Matrix<10, int>();
     static_assert(matrix.size() == 10 * sizeof(int));
-    constexpr auto matrix2 = Matrix<int, double>();
+    const auto matrix2 = Matrix<int, double>();
     using R = unsigned char;
     using G = unsigned char;
     using B = unsigned char;
-    constexpr auto matrix3 = Matrix<640, 480, R, G, B>();
+    const auto matrix3 = Matrix<640, 480, R, G, B>();
     static_assert(matrix3.width() == 640);
     static_assert(matrix3.size() == 640 * 480 * 3);
     auto matrix4 = Matrix<2, MAX_STACK_SIZE, unsigned char>();
@@ -106,17 +108,69 @@ class Lambda
 //    static_assert(matrix5.nt() == 2);
 //    constexpr auto matrix6 = Matrix<640, 480, 3, 2, 2, int, bool>();
 //    static_assert(matrix6.n<4>() == 2);
+//    using MyMatrixResolution = MatrixTs<
 
-    std::vector<int> vints { 1, 2, 3};
-    std::vector<char> vchar { 'a', 'b', 'c'};
-    std::array<int, 5> array { 1, 2, 3, 4, 5};
-    std::span span {array};
-    std::string string = "gauthier";
+    using MatrixInt = MatrixXD<int, 2>;
+    static_assert(MatrixInt::Size == 8);
+//    std::array<int, 2> matrixIntRawData{1, 2};
+//    auto matrixInt_ref = MatrixInt{1, 2};
+    using MatrixFloat = MatrixXD<float, 2>;
+    static_assert(MatrixFloat::Size == 8);
+    using MatrixDouble = MatrixXD<double, 2>;
+    static_assert(MatrixDouble::Size == 16);
+    using Matrices = MatrixTs<double, bool, float, double, double, MatrixInt, MatrixFloat, MatrixDouble, double>;
+    static_assert(Matrices::Size == 69);
+    static_assert(Matrices::nType<double>() == 5);
+    static_assert(Matrices::nType<bool>() == 1);
+    static_assert(Matrices::nType<float>() == 2);
 
 
-//    std::cout << "any supported types : " << hub::Anyable::supportedTypes() << std::endl;
-//    hub::io::Archive archive;
-//    std::any std_any;
-//    assert(! std_any.has_value());
-//    std::cout << "any supported types : " << hub::Anyable::supportedTypes() << std::endl;
+//    std::tuple<MatrixInt, MatrixFloat, MatrixDouble, double, bool> tuple;
+
+    Matrices matrices;
+    std::cout << "Matrices: " << matrices << std::endl;
+    static_assert(! matrices.hasType<MatrixInt, double, bool>());
+    static_assert(matrices.hasType<int, double, bool>());
+    static_assert(matrices.hasType<int>());
+    static_assert(matrices.getOffset<double>() == 0);
+//    matrices.getOffset<char>();
+    static_assert(matrices.getOffset<bool>() == 8);
+    static_assert(matrices.getOffset<float>() == 9);
+    static_assert(matrices.getOffset<double, 1>() == 13);
+    static_assert(matrices.getOffset<double, 2>() == 21);
+    static_assert(matrices.getOffset<int>() == 29);
+    static_assert(matrices.getOffset<float, 1>() == 37);
+    static_assert(matrices.getOffset<double, 3>() == 45);
+    static_assert(matrices.getOffset<double, 4>() == 61);
+//    static_assert(matrices.getOffset<double, 5>() == 69);
+//    static_assert(matrices.getOffset<double, 6>() == 69);
+//    static_assert(matrices.getOffset<double, 5>() == 69);
+//    static_assert(matrices.has<int>());
+
+//    double doubleValue_get = matrices.get<double>();
+//    doubleValue_get = 2.0;
+//    std::cout << "Matrices: " << matrices << std::endl;
+
+    double & doubleRef_get = matrices.get<double&, 0>();
+    doubleRef_get = 1.0;
+    std::cout << "Matrices: " << matrices << std::endl;
+
+    bool * doublePtr_get = matrices.get<bool*>();
+    *doublePtr_get = true;
+
+    matrices.get<float&>() = 2.0f;
+    matrices.get<double&, 1>() = 3.0f;
+    matrices.get<double&, 2>() = 4.0f;
+    matrices.get<int&>() = 5;
+    matrices.get<float&, 1>() = 6.0f;
+    matrices.get<double&, 3>() = 7.0f;
+    matrices.get<double&, 4>() = 8.0f;
+
+    std::cout << "Matrices: " << matrices << std::endl;
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    using Matrices2 = MatrixTs<char, char, char, char, char, char, char, char>;
+//    Matrices2 matrices2{'g', 'a', 'u', 't', 'h', 'i', 'e', 'r'};
+
 }
