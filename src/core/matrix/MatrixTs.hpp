@@ -2,6 +2,7 @@
 #pragma once
 
 #include "MatrixBase.hpp"
+#include "MatrixSerial.hpp"
 
 namespace hub {
 
@@ -12,7 +13,6 @@ template <class... Types>
 class MatrixTs
 {
   public:
-    //    using getTypes = Types;
     static constexpr auto Capacity = 1;
     //    static constexpr auto Size     = ( sizeof( Types ) + ... );
     static constexpr auto Size = sizeof_<Types...>();
@@ -24,13 +24,19 @@ class MatrixTs
 
     static constexpr auto nType() { return sizeof...( Types ); };
     static constexpr auto nDim() { return 1; };
-    template <Size_t ith>
-        requires( ith == 0 )
+    template <Size_t i>
+        requires( i == 0 )
     static constexpr auto getDim() {
         return 1;
     }
-    //    using Tuple = std::tuple<Types...>;
-    //    using getType = typename std::tuple_element<ith, Tuple>::type;
+
+    const Data_t * data() const {
+        return m_buffer.data();
+    }
+//    Size_t size() const {
+//        return m_buffer.size();
+//    }
+
     template <class Type>
     static constexpr auto hasType() {
         return ( isSame<Type, Types>() || ... );
@@ -42,45 +48,21 @@ class MatrixTs
         return ( hasType<Types_>() && ... );
     }
 
-
     template <class Type>
     static constexpr int nType() {
+        static_assert(hasType<Type>());
         return ( nType<Type, Types>() + ... );
     }
 
-    template <Size_t ith>
-    using getType = typename std::tuple_element<ith, std::tuple<Types...>>::type;
+    template <Size_t i>
+    using getType = typename std::tuple_element<i, std::tuple<Types...>>::type;
 
   public:
-    //    using Data = std::array<Data_t, size()>;
-
     //    constexpr MatrixTs() : m_data { 0 } {}
-
-    //    constexpr MatrixTs( Types... types ) {
-    //        Size_t offset = 0;
-    //        for ( auto type : { types... } ) {
-    //            //            auto * data = (Data_t*)&type;
-    //            //            std::copy(data, data + sizeof(type), m_data.data() + offset);
-    //            //		    std::copy( span.begin(), span.end(), m_data.begin() );
-    //            //            offset += sizeof(type);
-    //        }
-    //    }
+    template <class... Args>
+    constexpr MatrixTs( Args&&... args ) : m_buffer { std::forward<Data_t&&>( args )... } {}
 
   public:
-    //    template <Size_t i, class Type_, std::size_t Size_>
-    //        requires( size() == Size_ )
-    //    void setData( const std::span<Type_, Size_>& span ) {
-    //        std::copy( span.begin(), span.end(), m_data.begin() );
-    //    }
-
-    //    template <Size_t ith>
-    //    constexpr auto& getData() {
-    //        const auto offset = getOffset<ith, 0, Types...>();
-    //        static_assert( 0 <= offset && offset < size() );
-    //        using Type = getType<ith>;
-
-    //        return reinterpret_cast<Type&>( *( m_data.begin() + offset ) );
-    //    }
     template <class Type, class Matrix, class... Types_>
         requires( isMatrix<Matrix> )
     static constexpr int nType() {
@@ -98,45 +80,106 @@ class MatrixTs
         else { return std::is_same_v<Type, Type2>; }
     }
 
-    //    template <class Type>
-    template <class Type, int ith = 0, class RawType = std::remove_pointer_t<Type>>
-        requires( std::is_pointer_v<Type> && hasType<RawType>() && ith < nType<RawType>() )
+    template <class Type, int i = 0, class RawType = std::remove_pointer_t<Type>>
+        requires( std::is_pointer_v<Type> && hasType<RawType>() && i < nType<RawType>() )
     Type get() {
-        const auto offset = getOffset<ith, 0, RawType, Types...>();
-        //        const auto offset = 0;
-        // todo
+        const auto offset = getOffset<i, 0, RawType, Types...>();
         static_assert( 0 <= offset && offset < Size );
-        //        return reinterpret_cast<Type>( m_data.ptr() + offset );
-        return reinterpret_cast<Type>( m_buffer.data() + offset );
+//        return reinterpret_cast<Type>( m_buffer.data() + offset );
+        return (Type)( m_buffer.data() + offset );
     }
-    //    template <class Type>
-    template <class Type, int ith = 0, class RawType = std::remove_cvref_t<Type>>
-        requires( !std::is_pointer_v<Type> && hasType<RawType>() && ith < nType<RawType>() )
-    Type get() {
-        const auto offset = getOffset<ith, 0, RawType, Types...>();
-        //        const auto offset = 0;
-        // todo
+    template <class Type, int i = 0, class RawType = std::remove_pointer_t<Type>>
+        requires( std::is_pointer_v<Type> && hasType<RawType>() && i < nType<RawType>() )
+    Type get() const {
+        const auto offset = getOffset<i, 0, RawType, Types...>();
         static_assert( 0 <= offset && offset < Size );
-        //        return reinterpret_cast<Type>( m_data.ptr() + offset );
+//        return reinterpret_cast<Type>( m_buffer.data() + offset );
+        return (Type)( m_buffer.data() + offset );
+    }
+
+//    template <class Type, int i = 0, class RawType = std::remove_pointer_t<Type>>
+//        requires( std::is_pointer_v<Type> && hasType<RawType>() && i < nType<RawType>() )
+//    const Type get() const {
+//        const auto offset = getOffset<i, 0, RawType, Types...>();
+//        static_assert( 0 <= offset && offset < Size );
+//        return reinterpret_cast<Type>( m_buffer.data() + offset );
+//    }
+
+    template <class Type, int i = 0, class RawType = std::remove_cvref_t<Type>>
+        requires( !std::is_pointer_v<Type> && hasType<RawType>() && i < nType<RawType>() )
+    Type get() {
+        const auto offset = getOffset<i, 0, RawType, Types...>();
+        static_assert( 0 <= offset && offset < Size );
         return reinterpret_cast<Type>( *( m_buffer.data() + offset ) );
     }
+
+    template <class Type, int i = 0, class RawType = std::remove_cvref_t<Type>>
+        requires( !std::is_pointer_v<Type> && hasType<RawType>() && i < nType<RawType>() )
+    Type get() const {
+        const auto offset = getOffset<i, 0, RawType, Types...>();
+        static_assert( 0 <= offset && offset < Size );
+        return reinterpret_cast<Type>( *( m_buffer.data() + offset ) );
+//        return (Type)( *( m_buffer.data() + offset ) );
+    }
+
 
     //    constexpr bool operator==( const MatrixTs& matrix ) const { return m_data ==
     //    matrix.m_data; }
 
     static constexpr std::string name() { return printName<Types...>(); }
 
-    //    static constexpr auto toString() { return name() + " = " + ::toString(m_data); };
     constexpr auto toString() const { return name() + " = " + m_buffer.toString(); }
 
-    //    template <class... Types_>
-    //    SRC_API friend std::ostream& operator<<( std::ostream& os, const MatrixTs<Types_...>&
-    //    matrix );
-
-    template <class Type, int ith = 0>
-        requires( hasType<Type>() && ith < nType<Type>() )
+    template <class Type, int i = 0>
+        requires( hasType<Type>() && i < nType<Type>() )
     static constexpr Size_t getOffset() {
-        return getOffset<ith, 0, Type, Types...>();
+        return getOffset<i, 0, Type, Types...>();
+    }
+
+    //    MatrixSerial::Node getNode() const {
+    //                MatrixSerial::Node node;
+    //                node.m_hashCode = typeid(Type).hash_code();
+    //                node.m_dims = std::vector<int>{Ns...};
+    //                node.m_name = TYPE_NAME(Type);
+    //                node.m_size = Size;
+    //                serial.m_nodes.push_back(std::move(node));
+    //                serial.m_size = Size;
+    //    }
+
+    template <class Type_, class... Types_>
+        requires( !isMatrix<Type_> )
+    void serialize( MatrixSerial& serial ) const {
+        //        MatrixSerial::Node node;
+        //        node.m_hashCode = typeid(Type_).hash_code();
+        //        node.m_dims = std::vector<int>{1};
+        //        node.m_name = TYPE_NAME(Type_);
+        //        node.m_size = sizeof(Type_);
+        //        auto node = MatrixSerial::Node({1});
+        auto node = make_node<Type_>( Dims { 1 } );
+        serial.push_back( std::move( node ) );
+
+        if constexpr ( sizeof...( Types_ ) > 0 ) { serialize<Types_...>( serial ); }
+    }
+
+    template <class Matrix, class... Types_>
+        requires( isMatrix<Matrix> )
+    void serialize( MatrixSerial& serial ) const {
+        Matrix::serialize( serial );
+
+        if constexpr ( sizeof...( Types_ ) > 0 ) { serialize<Types_...>( serial ); }
+    }
+
+        void serialize( MatrixSerial& serial ) const {
+//            Matrix::serialize( serial );
+//            if ( sizeof...( Types_ ) > 0 )
+            serialize<Types...>( serial );
+        }
+
+    MatrixSerial getSerial() const {
+        MatrixSerial serial;
+            serialize(serial);
+//        serialize<Types...>( serial );
+        return serial;
     }
 
   private:
@@ -150,6 +193,7 @@ class MatrixTs
         }
         else { return Matrix::template hasType<Type>(); }
     }
+
     template <class Type, class Type_, class... Types_>
         requires( !isMatrix<Type_> )
     static constexpr auto isSame() {
@@ -180,6 +224,7 @@ class MatrixTs
             else { return Matrix::Size; }
         }
     }
+
     template <int ith, int i, class targetType, class Type_, class... Types_>
         requires( !isMatrix<Type_> )
     static constexpr Size_t getOffset() {
@@ -203,26 +248,10 @@ class MatrixTs
         }
     }
 
-    //    template <const Size_t ith, Size_t i = 0, class Type_, class... Types_>
-    //    static constexpr auto getOffset() {
-    //        if constexpr ( ith == i ) { return 0; }
-    //        else {
-    //            if constexpr ( sizeof...( Types_ ) > 0 ) {
-    //                return sizeof( Type_ ) + getOffset<ith, i + 1, Types_...>();
-    //            }
-    //            else { return sizeof( Type_ ); }
-    //        }
-    //    }
-
     template <class Type_, class... Types_>
     static constexpr auto printName() {
         std::string str;
-        //        using type = Type_();
-        //        if constexpr ( requires { Type_::name(); } ) { str += Type_::name(); }
-        //        else { str += TYPE_NAME( Type_ ); }
         str += TYPE_NAME( Type_ );
-
-        //        std::replace(str.begin(), str.end(), ' ', '_');
         str.erase( std::remove( str.begin(), str.end(), ' ' ), str.end() );
 
         if constexpr ( sizeof...( Types_ ) > 0 ) { return str + "_" + printName<Types_...>(); }

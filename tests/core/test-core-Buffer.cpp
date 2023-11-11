@@ -85,9 +85,17 @@ TEST_CASE( "Buffer test" ) {
     };
 
     constexpr Buffer<int, 2> buffer{1, 2};
+    static_assert(buffer.get<0>() == 1);
+    static_assert(buffer.get<1>() == 2);
+    const Buffer<int, 2, BufferOption::DynamicMemory> buffer3{1, 2};
+//    static_assert(buffer3.get<0>() == 1);
+//    static_assert(buffer3.get<1>() == 2);
     constexpr Buffer<char, 2> buffer2{'a', 'b'};
 //    constexpr Buffer<Random, 2> buffer3{{5, true}, {2, false}};
     constexpr Buffer<Random, 2, BufferOption::StaticMemory> buffer4{Random{5, true}, Random{2, false}};
+    constexpr std::array<Random, 2> array{Random{5, true}, Random{2, false}};
+
+//    constexpr std::array<Random, 2> array2{5, true, 2, false};
     std::cout << "buffer4: " << buffer4 << std::endl;
 //    Buffer<Random, 2, BufferOption::DynamicMemory> buffer5;
     const Buffer<Random, 2, BufferOption::DynamicMemory> buffer5{Random{5, true}, Random{2, false}};

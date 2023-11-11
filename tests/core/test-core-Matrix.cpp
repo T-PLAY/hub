@@ -170,7 +170,121 @@ class Lambda
 
     ///////////////////////////////////////////////////////////////////////////
 
-    using Matrices2 = MatrixTs<char, char, char, char, char, char, char, char>;
-//    Matrices2 matrices2{'g', 'a', 'u', 't', 'h', 'i', 'e', 'r'};
+    using MatricesChar = MatrixTs<char, char, char, char, char, char, char, char, char, int>;
+    constexpr MatricesChar matricesChar{'g', 'a', 'u', 't', 'h', 'i', 'e', 'r', '\0', 5, 0, 0, 0};
+    std::cout << "matricesChar: " << matricesChar << std::endl;
+    static_assert(matricesChar.nDim() == 1);
+    static_assert(matricesChar.getDim<0>() == 1);
+    static_assert(matricesChar.nType() == 10);
+    static_assert(matricesChar.hasType<char, int>());
+    static_assert(matricesChar.nType<char>() == 9);
+    static_assert(matricesChar.nType<int>() == 1);
+    assert(matricesChar.get<const char&>() == 'g');
+    assert((matricesChar.get<const char&, 0>() == 'g'));
+    assert((matricesChar.get<const char&, 1>() == 'a'));
+    assert((matricesChar.get<const char&, 2>() == 'u'));
+    char * myName = matricesChar.get<char*>();
+    assert(std::memcmp(myName, "gauthier", strlen(myName)) == 0);
+    assert(strlen(myName) == 8);
+    std::cout << "myName: " << myName << std::endl;
+    assert(matricesChar.get<const int&>() == 5);
 
+    auto serialChar = matricesChar.getSerial();
+    serialChar.setData(matricesChar.data(), matricesChar.size());
+    std::cout << "serialChar: " << serialChar << std::endl;
+    assert(serialChar.nType() == 10);
+    assert((serialChar.hasType<char, int>()));
+    assert(serialChar.nType<char>() == 9);
+    assert(serialChar.nType<int>() == 1);
+    assert(serialChar.getDims<char>() == Dims{1});
+    assert((serialChar.getDims<char, 1>() == Dims{1}));
+    assert((serialChar.getDims<char, 2>() == Dims{1}));
+    assert((serialChar.getDims<char, 8>() == Dims{1}));
+//    std::cout << "const char&: " << std::to_string(serialChar.get<char&>()) << std::endl;
+    assert(serialChar.get<const char&>() == 'g');
+    assert((serialChar.get<const char&, 0>() == 'g'));
+    assert((serialChar.get<const char&, 1>() == 'a'));
+    assert((serialChar.get<const char&, 2>() == 'u'));
+    char * myName2 = serialChar.get<char*>();
+    assert(std::memcmp(myName2, "gauthier", strlen(myName2)) == 0);
+    assert(serialChar.get<const int&>() == 5);
+
+    for (int iType = 0; iType < serialChar.nType(); ++iType) {
+        const auto & dims = serialChar.getDims(iType);
+//        const auto & size = serialChar.getSize(iType);
+//        const auto * data = serialChar.getData(iType);
+    }
+
+    return;
+
+    constexpr Buffer<Data_t, 2> buffer{1, 2};
+    std::cout << "buffer: " << buffer << std::endl;
+
+    constexpr Buffer<int, 2> buffer2{1, 2};
+    std::cout << "buffer2: " << buffer2 << std::endl;
+
+    constexpr MatrixXD<char, 2> matrice4{{1, 2}};
+    std::cout << "matrice4: " << matrice4 << std::endl;
+
+    constexpr MatrixXD<int, 2> matrice5{{1, 2}};
+    std::cout << "matrice5: " << matrice5 << std::endl;
+
+    char str[] {'B', 'o', 'u', 'y', 'j', 'o', 'u'};
+    std::cout << "str: " << std::to_string(str[0]) << std::endl;
+    std::string string;
+    string += str;
+    static_assert(std::is_arithmetic<char>());
+
+
+
+    ///////////////////////////////////////////////////////////////////////////////
+
+    using VectorChar = Vector<char, 10>;
+    VectorChar vectorChar{{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}};
+    std::cout << "vectorChar: " << vectorChar << std::endl;
+    assert(vectorChar.get<0>() == 1);
+    assert(vectorChar.get<1>() == 2);
+
+    auto serial = vectorChar.getSerial();
+    std::cout << "serial: " << serial << std::endl;
+
+    assert(serial.hasType<char>());
+    assert(serial.getDims<char>() == std::vector<int>{10});
+
+    struct UserClass {
+        bool a;
+        bool b;
+        auto toString() const {
+            return std::to_string(a) + " " + std::to_string(b);
+        }
+        static constexpr auto name() {
+            return "UserClass";
+        }
+    };
+
+    ////////////////////////////////
+
+    using UserMatrix = MatrixXD<UserClass, 2, 3>;
+//    UserMatrix matrixUser;
+
+//    MatrixTs<int, UserMatrix> matrixUser;
+    MatrixTs<int, double> matrixUser;
+    std::cout << "matrixUser: " << matrixUser << std::endl;
+
+    auto serial2 = matrixUser.getSerial();
+    std::cout << "matrixUser: " << serial2 << std::endl;
+    serial2.hasType<int, double>();
+    auto hasIntDouble = serial2.hasType<int, double>();
+    assert(hasIntDouble);
+
+    assert(serial2.getDims<int>() == Dims{1});
+    assert(serial2.getDims<double>() == Dims{1});
+
+//    serial2.get<int&>() = 5;
+//    std::cout << "matrixUser: " << matrixUser << std::endl;
+
+    ////////////////////////////////
+
+//    hub::io::Archive archive;
+//    archive.write(matrices3);
 }

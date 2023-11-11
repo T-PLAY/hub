@@ -1,9 +1,14 @@
 
 #pragma once
 
+#include <type_traits>
+
 #include "MatrixBase.hpp"
+#include "MatrixSerial.hpp"
 
 namespace hub {
+
+/////////////////////////////////////////// TEMPLATES //////////////////////////////////////////////////
 
 namespace _ {
 
@@ -23,15 +28,19 @@ class MatrixXDBase
 
     static constexpr auto nType() { return 1; };
     static constexpr auto nDim() { return sizeof...( Ns ); };
-    template <Size_t ith>
-        requires( 0 <= ith && ith < nDim() )
+    template <Size_t i>
+        requires( 0 <= i && i < nDim() )
     static constexpr auto getDim() {
-        auto i = 0;
+        auto j = 0;
         for ( auto dim : { Ns... } ) {
-            if ( i == ith ) return dim;
-            ++i;
+            if ( j == i ) return dim;
+            ++j;
         }
         return (Size_t)0;
+    }
+    const Data_t * data() const {
+//        return m_buffer.getSpan();
+        return m_buffer.data();
     }
     template <class Type_>
     static constexpr auto hasType() {
@@ -48,6 +57,8 @@ class MatrixXDBase
     static constexpr int nType() {
         return std::is_same_v<Type, Type_>;
     }
+
+
 
 //    template <int ith, int i, class Type_, class... Types_>
 ////        requires( hasType<Type_>() )
@@ -77,6 +88,19 @@ class MatrixXDBase
 
   public:
 //    using Data = std::array<Data_t, Size>;
+
+//    constexpr MatrixXDBase(Args&&... args) : m_data{std::forward<Type&&>(args)...} {}
+//    constexpr MatrixXDBase(Args&&... args) : m_data{std::forward<Type&&>(args)...} {}
+//    constexpr MatrixXDBase(Args... args) : m_data{std::forward<Size>(args)...} {}
+//    constexpr MatrixXDBase(Args... args) : m_data(std::forward<Args&&>(args)...) {}
+//    template <class... Args>
+//    constexpr MatrixXDBase(Args... args) : m_data{args...} {};
+
+    template <class... Args>
+    constexpr MatrixXDBase(Args&&... args) : m_buffer{std::forward<Type&&>(args)...} {}
+
+//    template <class T>
+//    constexpr MatrixXDBase(T t) : m_data{t} {};
 
 //    template <class... Args>
 //    constexpr MatrixXDBase() = default;
@@ -118,8 +142,29 @@ class MatrixXDBase
     }
 
     constexpr auto toString() const {
-        return name() + " = " + m_data.toString();
+        return name() + " = " + m_buffer.toString();
     }
+
+    template <int i = 0>
+    const Type & get() {
+        //        const auto offset = 0;
+        // todo
+        static_assert( 0 <= i && i < Capacity );
+        //        return reinterpret_cast<Type>( m_data.ptr() + offset );
+        return reinterpret_cast<const Type&>( *(m_buffer.data() + i) );
+    }
+//    template <Size_t i>
+////        requires (Buffer<Type, Capacity>::_Option == BufferOption::StaticMemory)
+////        requires (std::is_same_v<Buffer<Type, Capacity>, Buffer<Type, Capacity, BufferOption::StaticMemory>>)
+//    constexpr Type & get() const {
+//        static_assert( 0 <= i && i < Capacity );
+////        return m_buffer.get<
+////        if constexpr (requires { m_buffer.get<i>(); }; ) {
+////        return dynamic_cast<const Buffer<Type, Capacity, BufferOption::StaticMemory> &>(m_buffer).get<i>();
+////        return m_buffer.get<i>();
+
+//        return reinterpret_cast<Type&>( *(m_buffer.data() + i) );
+//    }
 
 //    template <class Type_, Size_t... Ns_>
 //    SRC_API friend std::ostream& operator<<( std::ostream& os,
@@ -127,10 +172,26 @@ class MatrixXDBase
 
 //    constexpr bool operator==( const MatrixXDBase& matrix ) const { return m_data == matrix.m_data; }
 
+    void serialize(MatrixSerial & serial) const {
+//        MatrixSerial::Node node;
+//        node.m_hashCode = typeid(Type).hash_code();
+//        node.m_dims = std::vector<int>{Ns...};
+//        node.m_name = TYPE_NAME(Type);
+//        node.m_size = Size;
+        auto node = make_node<Type>(Dims{Ns...});
+        serial.push_back(std::move(node));
+    }
+
+    MatrixSerial getSerial() const {
+        MatrixSerial serial;
+        serialize(serial);
+        return serial;
+    }
+
   private:
 //    Data<Size, BufferOption::StaticMemory> m_data;
-//    Buffer<Type, Capacity> m_data;
-    Buffer<Data_t, Size> m_data;
+    Buffer<Type, Capacity> m_buffer;
+//    Buffer<Data_t, Size> m_data;
 //    Data<
 //    Data m_data;
 };

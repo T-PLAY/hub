@@ -11,7 +11,7 @@ auto toString( const Container& container ) {
     std::string str;
     str += "<" + TYPE_NAME( T ) + ">";
     str += "[";
-    constexpr bool stringable     = requires( T t ) { str += t; } && ! std::is_arithmetic_v<T>;
+    constexpr bool stringable     = requires( T t ) { str += t; } &&  ! std::is_arithmetic_v<T>;
     constexpr bool toStringable     = requires( T t ) { t.toString(); };
 
     constexpr auto nMaxDataToShow = 40;

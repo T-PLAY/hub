@@ -44,6 +44,8 @@ class BufferBase
     }
 
     virtual Data_t * data() = 0;
+    virtual const Data_t * data() const = 0;
+    virtual Size_t size() const = 0;
 
     virtual constexpr std::string toString() const = 0;
 
@@ -75,6 +77,7 @@ template <class Type, Size_t Size,
 class Buffer : public BufferBase<Type, Size, Option>
 {
   public:
+    BufferOption _Option = Option;
     //    constexpr std::span<Data_t, Size> getSpan() const override { return std::span<Data_t,
     //    Size> { m_data }; } std::array<Data_t, Size> m_data;
 };
@@ -100,13 +103,15 @@ class Buffer<Type, Size, StaticMemory> : public BufferBase<Type, Size, StaticMem
     //        , m_span{m_data.begin(), m_data.end()}
     //    {
     //    }
-    constexpr Buffer() : m_array{0} {}
+//    constexpr Buffer() : m_array{0} {}
 //    constexpr StaticBuffer() = default;
 //    template <Type... types>
     template <class... Args>
-//    constexpr Buffer(Args&&... args) : m_array{std::forward<Type&&>(args)...} {}
-//    constexpr Buffer(Args&&... args) : m_array{std::forward<Args&&>(args) {}
     constexpr Buffer(Args&&... args) : m_array{std::forward<Type&&>(args)...} {}
+//    constexpr Buffer(Args&&... args) : m_array{std::forward<Args&&>(args)...} {}
+//    constexpr Buffer(Args... args) : m_array{std::forward<Type>(args)...} {}
+//    constexpr Buffer(Args&&... args) : m_array{std::forward<Type&&>(args)...} {}
+//    constexpr Buffer(Args... args) : m_array{args...} {}
 //        , m_span{m_array} {}
 //        , m_span{m_array} {}
 
@@ -126,6 +131,11 @@ class Buffer<Type, Size, StaticMemory> : public BufferBase<Type, Size, StaticMem
 //        return Span();
     }
 
+    template <Size_t i>
+    constexpr Type get() const {
+        return m_array.at(i);
+    }
+
     constexpr std::string toString() const override {
         std::string str;
         str += "(static)";
@@ -140,6 +150,14 @@ class Buffer<Type, Size, StaticMemory> : public BufferBase<Type, Size, StaticMem
     Data_t * data() override {
         return (Data_t*)m_array.data();
     }
+
+    const Data_t * data() const override {
+        return (const Data_t*)m_array.data();
+    }
+    Size_t size() const override {
+        return m_array.size();
+    }
+
 
   private:
     std::array<Type, Size> m_array;
@@ -168,6 +186,11 @@ class Buffer<Type, Size, DynamicMemory> : public BufferBase<Type, Size, DynamicM
     Span getSpan() override { return std::span<Type, Size> { m_vector.begin(), m_vector.end() }; }
 //    Span getSpan() const { return m_span; };
 
+//    template <Size_t i>
+//    constexpr Type get() const {
+//        return m_vector.at(i);
+//    }
+
     constexpr std::string toString() const override {
         std::string str;
         str += "(dynamic)";
@@ -181,6 +204,12 @@ class Buffer<Type, Size, DynamicMemory> : public BufferBase<Type, Size, DynamicM
 //    }
     Data_t * data() override {
         return (Data_t*)m_vector.data();
+    }
+    const Data_t * data() const override {
+        return (const Data_t*)m_vector.data();
+    }
+    Size_t size() const override {
+        return m_vector.size();
     }
 
   private:
