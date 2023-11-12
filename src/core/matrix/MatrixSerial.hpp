@@ -18,6 +18,7 @@ class MatrixSerial
       public:
         using HashType = decltype( typeid( void ).hash_code() );
         //        template <class Type>
+        Node() = default;
         Node( HashType hash, Dims&& dims, std::string name, Size_t size ) :
             m_hashCode { hash }, m_dims { std::move( dims ) }, m_name { name }, m_size { size } {
 
@@ -49,6 +50,10 @@ class MatrixSerial
         const auto size() const { return m_size; }
 
         friend class MatrixSerial;
+
+//        template <class Serial>
+//        void serialize( Serial& serial ) {}
+            static constexpr auto serialize( auto& archive, auto& self ) { return archive( self.m_hashCode, self.m_dims, self.m_name, self.m_size ); }
 
       private:
         HashType m_hashCode;
@@ -101,9 +106,7 @@ class MatrixSerial
         return ret;
     }
 
-    Dims getDims(int i) const {
-        return m_nodes.at(i).m_dims;
-    }
+    Dims getDims( int i ) const { return m_nodes.at( i ).m_dims; }
 
     template <class Type, int i = 0>
     Dims getDims() const {
@@ -186,6 +189,13 @@ class MatrixSerial
     }
 
     auto nType() const { return m_nodes.size(); }
+
+    //    template <class Serial>
+    //    void serialize( Serial& serial ) {
+    //        //        serial(m_nodes);
+    //        serial( m_size );
+    //    }
+    static constexpr auto serialize( auto& archive, auto& self ) { return archive( self.m_nodes, self.m_size ); }
 
   private:
     std::vector<Node> m_nodes;

@@ -42,6 +42,7 @@ static constexpr bool packable_v =
 
 template <typename T>
 using serializable_t = decltype( std::declval<T>().serialize( std::declval<ios&>() ) );
+//using serializable_t = decltype( T::serialize );
 // using serializable_t = decltype( std::declval<T&>().serialize() );
 
 template <typename T, typename = std::void_t<>>

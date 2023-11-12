@@ -10,37 +10,91 @@
 #    include <any>
 #endif
 
-//#include <any>
+// #include <any>
 #include <cstring>
+#include <iostream>
 #include <set>
 
-#include "test_common.hpp"
 #include "core/Traits.hpp"
+#include "test_common.hpp"
 // #include "core/test_core_common.hpp"
 // #include "core/io/test_core_io_common.hpp"
 
 #include <core/io/Archive.hpp>
 #include <core/io/InputOutput.hpp>
 
-struct TestNonPackable {
-    double a;
-    int b;
-    std::string name;
-    std::vector<int> vints;
+// auto serialize(const Node &) -> zpp::bits::pb_protocol;
+
+class TestNonPackable
+{
+  public:
+    class Node
+    {
+      public:
+        using HashType = decltype( typeid( void ).hash_code() );
+        using Dims     = std::vector<int>;
+
+        bool operator==( const Node& other ) const { return m_a == other.m_a; }
+
+        auto toString() const { return std::to_string( m_a ); }
+
+        Node() = default;
+        Node( int a ) : m_a { a } {};
+
+        template <class Serial>
+        void serialize( Serial& serial ) {
+            serial( m_a );
+        }
+        static constexpr auto serialize( auto& archive, auto& self ) { return archive( self.m_a ); }
+
+      private:
+        int m_a;
+    };
+    static_assert( !hub::notWritable_v<Node> );
+    static_assert( !hub::writable_v<Node> );
+    static_assert( !hub::packable_v<Node> );
+    static_assert( hub::serializable_v<Node> );
+
+    TestNonPackable() = default;
+    TestNonPackable( double a,
+                     int b,
+                     std::string name,
+                     std::vector<int> vints,
+                     std::vector<Node> nodes ) :
+        m_a { a }, m_b { b }, m_name { name }, m_vints { vints }, m_nodes { nodes } {}
+
+    bool operator==( const TestNonPackable& test ) const {
+        return m_a == test.m_a && m_b == test.m_b && m_name == test.m_name &&
+               m_vints == test.m_vints && m_nodes == test.m_nodes;
+    }
+    auto toString() const {
+        std::string str;
+        str += "{" + std::to_string( m_a ) + " " + std::to_string( m_b ) + " " + m_name + " " +
+               ::toString( m_vints ) + "}";
+        return str;
+    }
+    //    friend std::ostream& operator<<( std::ostream& os, const TestNonPackable& test ) {
+    //        os << test.a << " " << test.b << " " << test.name << " ";
+    ////        ::operator<<( os, test.vints );
+    //        return os;
+    //    }
 
     template <class Serial>
     void serialize( Serial& serial ) {
-        serial( a, b, name, vints );
+        //            serial( m_a, m_b, m_name);
+        //        serial( m_nodes );
+        serial( m_a, m_b, m_name, m_vints, m_nodes );
+    }
+    static constexpr auto serialize( auto& archive, auto& self ) {
+        return archive( self.m_a, self.m_b, self.m_name, self.m_vints, self.m_nodes );
     }
 
-    bool operator==( const TestNonPackable& test ) const {
-        return a == test.a && b == test.b && name == test.name && vints == test.vints;
-    }
-    friend std::ostream& operator<<( std::ostream& os, const TestNonPackable& test ) {
-        os << test.a << " " << test.b << " " << test.name << " ";
-//        ::operator<<( os, test.vints );
-        return os;
-    }
+  private:
+    double m_a;
+    int m_b;
+    std::string m_name;
+    std::vector<int> m_vints;
+    std::vector<Node> m_nodes;
 };
 
 struct TestPackable {
@@ -87,17 +141,76 @@ template <class Archive>
 void process( Archive& archive ) {
     assert( archive.isEnd() );
 
+    using NodeType = TestNonPackable::Node;
+    NodeType node { 1 };
+    std::vector<NodeType> nodes { node };
+
 #ifndef HUB_DEBUG_OUTPUT
     for ( int i = 0; i < 100000; ++i ) {
 #endif
+
+        {
+            //            const TestNonPackable toWrite { 1.0, 5, "hello", { 1, 2, 3 }, nodes };
+            //            NodeType toWrite;
+            std::vector<NodeType> toWrite = nodes;
+            using toWriteType             = std::remove_cvref_t<decltype( toWrite )>;
+            static_assert( !hub::packable_v<toWriteType> );
+#ifdef HUB_DEBUG_OUTPUT
+            std::cout << std::endl
+                      << "------------------ " << TYPE_NAME( toWriteType )
+                      << " ---------------------" << std::endl;
+#endif
+            archive.write( toWrite );
+            assert( !archive.isEnd() );
+            toWriteType toRead;
+            archive.read( toRead );
+            assert( toWrite == toRead );
+            assert( archive.isEnd() );
+        }
+
+        {
+            const TestNonPackable toWrite { 1.0, 5, "hello", { 1, 2, 3 }, nodes };
+            using toWriteType = std::remove_cvref_t<decltype( toWrite )>;
+            static_assert( !hub::packable_v<toWriteType> );
+#ifdef HUB_DEBUG_OUTPUT
+            std::cout << std::endl
+                      << "------------------ " << TYPE_NAME( toWriteType )
+                      << " ---------------------" << std::endl;
+#endif
+            archive.write( toWrite );
+            assert( !archive.isEnd() );
+            toWriteType toRead;
+            archive.read( toRead );
+            assert( toWrite == toRead );
+            assert( archive.isEnd() );
+        }
+
+        {
+            std::vector<TestNonPackable> toWrite { { 1.0, 5, "hello", { 1, 2, 3 }, nodes },
+                                                   { 2.0, 2, "gauthier", { 0, 0, 0 }, nodes } };
+            using toWriteType = std::remove_cvref_t<decltype( toWrite )>;
+            static_assert( !hub::packable_v<toWriteType> );
+#ifdef HUB_DEBUG_OUTPUT
+            std::cout << std::endl
+                      << "------------------ " << TYPE_NAME( toWriteType )
+                      << " ---------------------" << std::endl;
+#endif
+            archive.write( toWrite );
+            assert( !archive.isEnd() );
+            toWriteType toRead;
+            archive.read( toRead );
+            assert( toWrite == toRead );
+            assert( archive.isEnd() );
+        }
+        //                return;
         {
             const int toWrite = 5.0;
             using toWriteType = std::remove_cvref_t<decltype( toWrite )>;
             static_assert( hub::packable_v<toWriteType> );
 #ifdef HUB_DEBUG_OUTPUT
             std::cout << std::endl
-                      << "------------------ " << TYPE_NAME( toWrite ) << " ---------------------"
-                      << std::endl;
+                      << "------------------ " << TYPE_NAME( toWriteType )
+                      << " ---------------------" << std::endl;
 #endif
             archive.write( toWrite );
             assert( !archive.isEnd() );
@@ -113,8 +226,8 @@ void process( Archive& archive ) {
             static_assert( hub::packable_v<toWriteType> );
 #ifdef HUB_DEBUG_OUTPUT
             std::cout << std::endl
-                      << "------------------ " << TYPE_NAME( toWrite ) << " ---------------------"
-                      << std::endl;
+                      << "------------------ " << TYPE_NAME( toWriteType )
+                      << " ---------------------" << std::endl;
 #endif
             archive.write( toWrite );
             assert( !archive.isEnd() );
@@ -130,8 +243,8 @@ void process( Archive& archive ) {
             static_assert( hub::packable_v<toWriteType> );
 #ifdef HUB_DEBUG_OUTPUT
             std::cout << std::endl
-                      << "------------------ " << TYPE_NAME( toWrite ) << " ---------------------"
-                      << std::endl;
+                      << "------------------ " << TYPE_NAME( toWriteType )
+                      << " ---------------------" << std::endl;
 #endif
             archive.write( toWrite );
             assert( !archive.isEnd() );
@@ -147,8 +260,8 @@ void process( Archive& archive ) {
             static_assert( hub::packable_v<toWriteType> );
 #ifdef HUB_DEBUG_OUTPUT
             std::cout << std::endl
-                      << "------------------ " << TYPE_NAME( toWrite ) << " ---------------------"
-                      << std::endl;
+                      << "------------------ " << TYPE_NAME( toWriteType )
+                      << " ---------------------" << std::endl;
 #endif
             archive.write( toWrite );
             assert( !archive.isEnd() );
@@ -165,8 +278,8 @@ void process( Archive& archive ) {
             static_assert( !hub::packable_v<toWriteType> );
 #ifdef HUB_DEBUG_OUTPUT
             std::cout << std::endl
-                      << "------------------ " << TYPE_NAME( toWrite ) << " ---------------------"
-                      << std::endl;
+                      << "------------------ " << TYPE_NAME( toWriteType )
+                      << " ---------------------" << std::endl;
 #endif
             archive.write( toWrite, strlen( (const char*)buff ) );
             assert( !archive.isEnd() );
@@ -182,8 +295,8 @@ void process( Archive& archive ) {
             static_assert( !hub::packable_v<toWriteType> );
 #ifdef HUB_DEBUG_OUTPUT
             std::cout << std::endl
-                      << "------------------ " << TYPE_NAME( toWrite ) << " ---------------------"
-                      << std::endl;
+                      << "------------------ " << TYPE_NAME( toWriteType )
+                      << " ---------------------" << std::endl;
 #endif
             archive.write( toWrite );
             assert( !archive.isEnd() );
@@ -199,8 +312,8 @@ void process( Archive& archive ) {
             static_assert( hub::packable_v<toWriteType> );
 #ifdef HUB_DEBUG_OUTPUT
             std::cout << std::endl
-                      << "------------------ " << TYPE_NAME( toWrite ) << " ---------------------"
-                      << std::endl;
+                      << "------------------ " << TYPE_NAME( toWriteType )
+                      << " ---------------------" << std::endl;
 #endif
             archive.write( toWrite );
             assert( !archive.isEnd() );
@@ -210,22 +323,7 @@ void process( Archive& archive ) {
             assert( archive.isEnd() );
         }
 
-        {
-            const TestNonPackable toWrite { 1.0, 5, "hello", { 1, 2, 3 } };
-            using toWriteType = std::remove_cvref_t<decltype( toWrite )>;
-            static_assert( !hub::packable_v<toWriteType> );
-#ifdef HUB_DEBUG_OUTPUT
-            std::cout << std::endl
-                      << "------------------ " << TYPE_NAME( toWrite ) << " ---------------------"
-                      << std::endl;
-#endif
-            archive.write( toWrite );
-            assert( !archive.isEnd() );
-            toWriteType toRead;
-            archive.read( toRead );
-            assert( toWrite == toRead );
-            assert( archive.isEnd() );
-        }
+        /////////////
 
         {
             const TestForceSerializable toWrite { 1.0, 5, true, 2 };
@@ -233,8 +331,8 @@ void process( Archive& archive ) {
             static_assert( hub::serializable_v<toWriteType> );
 #ifdef HUB_DEBUG_OUTPUT
             std::cout << std::endl
-                      << "------------------ " << TYPE_NAME( toWrite ) << " ---------------------"
-                      << std::endl;
+                      << "------------------ " << TYPE_NAME( toWriteType )
+                      << " ---------------------" << std::endl;
 #endif
             archive.write( toWrite );
             assert( !archive.isEnd() );
@@ -250,8 +348,8 @@ void process( Archive& archive ) {
             //        static_assert(! hub::packable_v<toWriteType> );
 #ifdef HUB_DEBUG_OUTPUT
             std::cout << std::endl
-                      << "------------------ " << TYPE_NAME( toWrite ) << " ---------------------"
-                      << std::endl;
+                      << "------------------ " << TYPE_NAME( toWriteType )
+                      << " ---------------------" << std::endl;
 #endif
             archive.write( toWrite );
             assert( !archive.isEnd() );
@@ -264,14 +362,13 @@ void process( Archive& archive ) {
     }
 #endif
 #ifdef DEBUG
-        std::cout << "nCall : " << archive.getNCall() << std::endl;
+    std::cout << "nCall : " << archive.getNCall() << std::endl;
 #endif
 }
 
 TEST_CASE( "InputOutput test" ) {
-
     long long durationArchiveZppBits = 0;
-    long long durationArchiveImpl = 0;
+    long long durationArchiveImpl    = 0;
 
     //    hub::io::Archive<hub::io::InputOutput> archive;
 //    hub::io::Archive archive;
@@ -299,15 +396,16 @@ TEST_CASE( "InputOutput test" ) {
         std::cout << "duration: " << durationArchiveImpl / 1'000'000.0 << " ms" << std::endl;
     }
 
-//#ifndef DEBUG
-//    CHECK( durationArchiveZppBits < durationArchiveImpl );
-//#endif
-//#ifdef HUB_USE_ZPP_BITS
-#if ! defined(DEBUG) && defined(HUB_USE_ZPP_BITS)
+// #ifndef DEBUG
+//     CHECK( durationArchiveZppBits < durationArchiveImpl );
+// #endif
+// #ifdef HUB_USE_ZPP_BITS
+#if !defined( DEBUG ) && defined( HUB_USE_ZPP_BITS )
     const auto ratio = durationArchiveImpl / (double)durationArchiveZppBits;
     CHECK_VALUE( ratio, 1.0, 0.5, "ArchiveZppBits/ArchiveImpl", "/" );
 
-    static_assert(std::is_same_v<hub::io::Archive, hub::io::ArchiveT<hub::serializer::SerializerZppBits>>);
+    static_assert(
+        std::is_same_v<hub::io::Archive, hub::io::ArchiveT<hub::serializer::SerializerZppBits>> );
 #endif
 
     return;

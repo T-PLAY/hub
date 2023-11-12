@@ -1,6 +1,6 @@
 
-//#define HUB_DEBUG_INPUT
-//#define HUB_DEBUG_OUTPUT
+#define HUB_DEBUG_INPUT
+#define HUB_DEBUG_OUTPUT
 
 #include "test_common.hpp"
 
@@ -43,6 +43,8 @@ class Lambda
 
 
  TEST_CASE( "Matrix test" ) {
+
+    hub::io::Archive archive;
 
     using namespace hub;
 
@@ -214,6 +216,13 @@ class Lambda
 //        const auto & size = serialChar.getSize(iType);
 //        const auto * data = serialChar.getData(iType);
     }
+
+    archive.write(serialChar);
+    MatrixSerial serialChar_read;
+    archive.read(serialChar_read);
+
+    //////////////////////////////////////////////////////////////////////
+
 
     return;
 
