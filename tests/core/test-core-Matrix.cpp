@@ -195,7 +195,7 @@ class Lambda
     serialChar.setData(matricesChar.data(), matricesChar.size());
     std::cout << "serialChar: " << serialChar << std::endl;
     assert(serialChar.nType() == 10);
-    assert((serialChar.hasType<char, int>()));
+    assert((serialChar.hasAnyType<char, int>()));
     assert(serialChar.nType<char>() == 9);
     assert(serialChar.nType<int>() == 1);
     assert(serialChar.getDims<char>() == Dims{1});
@@ -220,11 +220,16 @@ class Lambda
     archive.write(serialChar);
     MatrixSerial serialChar_read;
     archive.read(serialChar_read);
+    assert(serialChar == serialChar_read);
+
+    archive.write(serialChar.data(), serialChar.size());
+    archive.read(serialChar_read.data(), serialChar.size());
+    assert(memcmp(serialChar.data(), serialChar_read.data(), serialChar.size()) == 0);
 
     //////////////////////////////////////////////////////////////////////
 
 
-    return;
+//    return;
 
     constexpr Buffer<Data_t, 2> buffer{1, 2};
     std::cout << "buffer: " << buffer << std::endl;
@@ -282,9 +287,11 @@ class Lambda
 
     auto serial2 = matrixUser.getSerial();
     std::cout << "matrixUser: " << serial2 << std::endl;
-    serial2.hasType<int, double>();
-    auto hasIntDouble = serial2.hasType<int, double>();
+    serial2.hasAnyType<int, double>();
+    auto hasIntDouble = serial2.hasAnyType<int, double>();
     assert(hasIntDouble);
+
+    assert((serial2.hasSomeType<bool, int>()));
 
     assert(serial2.getDims<int>() == Dims{1});
     assert(serial2.getDims<double>() == Dims{1});

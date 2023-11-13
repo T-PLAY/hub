@@ -49,6 +49,11 @@ class MatrixSerial
 
         const auto size() const { return m_size; }
 
+        bool operator==(const Node & other) const {
+            return m_hashCode == other.m_hashCode && m_dims == other.m_dims && m_name == other.m_name && m_size == other.m_size;
+        }
+
+
         friend class MatrixSerial;
 
 //        template <class Serial>
@@ -64,7 +69,7 @@ class MatrixSerial
 
     void push_back( Node&& node ) {
         m_size += node.size();
-        //        m_vector.resize(m_size);
+                m_vector.resize(m_size);
         m_nodes.push_back( std::move( node ) );
     }
 
@@ -91,8 +96,14 @@ class MatrixSerial
 
     template <class... Types>
         requires( sizeof...( Types ) > 1 )
-    bool hasType() const {
+    bool hasAnyType() const {
         return ( hasType<Types>() && ... );
+    }
+
+    template <class... Types>
+        requires( sizeof...( Types ) > 1 )
+    bool hasSomeType() const {
+        return ( hasType<Types>() || ... );
     }
 
     template <class Type>
@@ -169,14 +180,6 @@ class MatrixSerial
         return reinterpret_cast<Type>( *( m_vector.data() + offset ) );
     }
 
-    void setData( const Data_t* data, Size_t size ) {
-        assert( size == m_size );
-        assert( m_vector.empty() );
-        m_vector.resize( size );
-        //        assert(m_vector.size() == size);
-        std::copy( data, data + size, m_vector.data() );
-    }
-
     template <class Type, int i = 0, class RawType = std::remove_cvref_t<Type>>
     //        requires( !std::is_pointer_v<Type> && hasType<RawType>() && i < nType<RawType>() )
         requires( !std::is_pointer_v<Type> )
@@ -195,7 +198,38 @@ class MatrixSerial
     //        //        serial(m_nodes);
     //        serial( m_size );
     //    }
-    static constexpr auto serialize( auto& archive, auto& self ) { return archive( self.m_nodes, self.m_size ); }
+    static constexpr auto serialize( auto& archive, auto& self ) {
+        return archive( self.m_nodes, self.m_size );
+    }
+
+    void setData( const Data_t* data, Size_t size ) {
+        assert( size == m_size );
+        assert( m_vector.size() == m_size );
+//        assert( m_vector.empty() );
+//        m_vector.resize( size );
+        //        assert(m_vector.size() == size);
+        std::copy( data, data + size, m_vector.data() );
+    }
+
+    const Data_t * data() const {
+//        if (m_vector.empty())
+//            m_vector.resize(m_size);
+        assert(! m_vector.empty());
+        return m_vector.data();
+    }
+    Data_t * data() {
+        if (m_vector.empty())
+            m_vector.resize(m_size);
+        assert(! m_vector.empty());
+        return m_vector.data();
+    }
+    Size_t size() const {
+        return m_size;
+    }
+
+    bool operator==(const MatrixSerial & other) const {
+        return m_nodes == other.m_nodes && m_size == other.m_size;
+    }
 
   private:
     std::vector<Node> m_nodes;
