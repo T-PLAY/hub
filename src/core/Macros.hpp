@@ -365,6 +365,9 @@ constexpr auto sizeof_() {
 /////////////////////////////////////////////// PRETTY BYTES
 /////////////////////////////////////////////////
 
+//#include <iostream>
+#include <cmath>
+
 //// source : https://www.mbeckler.org/blog/?p=114
 //// Prints to the provided buffer a nice number of bytes (KB, MB, GB, etc)
 static constexpr std::string pretty_bytes( hub::Size_t bytes ) {

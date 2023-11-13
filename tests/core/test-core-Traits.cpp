@@ -5,6 +5,8 @@
 #include "test_common.hpp"
 
 #include <core/Traits.hpp>
+#include <array>
+#include <span>
 
 class Lambda
 {
