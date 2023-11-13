@@ -9,6 +9,9 @@
 #include <core/traits/Span.hpp>
 
 TEST_CASE( "Buffer test" ) {
+
+//    std::cout << "FILE_NAME: " << FILE_NAME << std::endl;
+
     using namespace hub;
 
     //    constexpr auto dataSize = 10'000'000'000; // 10Go

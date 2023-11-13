@@ -223,8 +223,9 @@
 // #define FILE_NAME __FILE__
 #    define FILE_NAME                                                   \
         std::string( __FILE__ )                                         \
-            .substr( std::string( __FILE__ ).find_last_of( '\\' ) + 1 ) \
-            .substr( std::string( __FILE__ ).find_last_of( '/' ) + 1 )
+            .substr( std::min( std::string( __FILE__ ).find_last_of( '\\' ), std::string(__FILE__).find_last_of( '/' )) + 1 )
+            //.substr( std::string( __FILE__ ).find_last_of( '\\' ) + 1 ) \
+            //.substr( std::string( __FILE__ ).find_last_of( '/' ) + 1 )
 
 // #define FILE_NAME strrchr( __FILE__, '\\' ) ? strrchr( __FILE__, '\\' ) + 1 : __FILE__
 
@@ -236,6 +237,7 @@
 #endif
 
 #define FILE_NAME_WITHOUT_EXTENSION FILE_NAME.substr( 0, FILE_NAME.find_first_of( '.' ) )
+//#define FILE_NAME_WITHOUT_EXTENSION FILE_NAME
 
 #define HEADER                                                                             \
     "\033[" << std::to_string( 31 + reinterpret_cast<std::uintptr_t>( this ) % 7 ) << "m[" \
@@ -370,10 +372,13 @@ constexpr auto sizeof_() {
 
 //// source : https://www.mbeckler.org/blog/?p=114
 //// Prints to the provided buffer a nice number of bytes (KB, MB, GB, etc)
-static constexpr std::string pretty_bytes( hub::Size_t bytes ) {
+static std::string pretty_bytes( hub::Size_t bytes ) {
     std::string str;
+
     char buff[32] { 0 };
-    const char* suffixes[7];
+    //static const char* suffixes[7];
+    static constexpr std::string_view suffixes[] {
+        "Bytes", "KiloBytes", "MegaBytes", "GigaBytes", "TeraBytes", "PetaBytes", "ExaBytes" };
     //    suffixes[0]         = "Bytes";
     //    suffixes[1]         = "KiloBytes";
     //    suffixes[2]         = "MegaBytes";
@@ -382,13 +387,13 @@ static constexpr std::string pretty_bytes( hub::Size_t bytes ) {
     //    suffixes[5]         = "PetaBytes";
     //    suffixes[6]         = "ExaBytes";
     //    suffixes[0]         = "";
-    suffixes[0]         = " Bytes";
-    suffixes[1]         = " Ko";
-    suffixes[2]         = " Mo";
-    suffixes[3]         = " Go";
-    suffixes[4]         = " To";
-    suffixes[5]         = " Po";
-    suffixes[6]         = " Eo";
+    //suffixes[0]         = " Bytes";
+    //suffixes[1]         = " Ko";
+    //suffixes[2]         = " Mo";
+    //suffixes[3]         = " Go";
+    //suffixes[4]         = " To";
+    //suffixes[5]         = " Po";
+    //suffixes[6]         = " Eo";
     uint64_t s          = 0; // which suffix to use
     double count        = bytes;
     constexpr auto kilo = 1'000;
@@ -397,9 +402,13 @@ static constexpr std::string pretty_bytes( hub::Size_t bytes ) {
         s++;
         count /= kilo;
     }
+    //sprintf_s( buff, 80, "%d%s", (int)count, suffixes[s].data() );
+    //return std::string( buff );
+
     if ( count - floor( count ) == 0.0 )
 #ifdef WIN32
-        sprintf_s( buff, 80, "%d%s", (int)count, suffixes[s] );
+        //sprintf_s( buff, 80, "%d%s", (int)count, suffixes[s].data() );
+        snprintf( buff, 80, "%d%s", (int)count, suffixes[s].data() );
 #else
 #    ifdef OS_MACOS
         snprintf( buff, 80, "%d%s", (int)count, suffixes[s] );
@@ -409,7 +418,8 @@ static constexpr std::string pretty_bytes( hub::Size_t bytes ) {
 #endif
     else
 #ifdef WIN32
-        sprintf_s( buff, 80, "%.1f%s", count, suffixes[s] );
+        //sprintf_s( buff, 80, "%.1f%s", count, suffixes[s].data() );
+        snprintf( buff, 80, "%.1f%s", count, suffixes[s].data() );
 #else
 #    ifdef OS_MACOS
         snprintf( buff, 80, "%.1f%s", count, suffixes[s] );
@@ -417,7 +427,6 @@ static constexpr std::string pretty_bytes( hub::Size_t bytes ) {
         sprintf( buff, "%.1f%s", count, suffixes[s] );
 #    endif
 #endif
-
     return std::string( buff );
 }
 #define PRETTY_BYTES( t ) pretty_bytes( t )

@@ -4,6 +4,7 @@
 #include <span>
 #include <type_traits>
 #include <vector>
+#include <array>
 
 #include "Macros.hpp"
 #include "Traits.hpp"
@@ -216,6 +217,7 @@ class Buffer<Type, Size, DynamicMemory> : public BufferBase<Type, Size, DynamicM
     std::vector<Type> m_vector;
 //    Span m_span;
 };
-static_assert( sizeof( Buffer<unsigned char, 1'000, DynamicMemory> ) == 32  );
+//static_assert( sizeof( Buffer<unsigned char, 1'000, DynamicMemory> ) == 32 ); // unix
+//static_assert( sizeof( Buffer<unsigned char, 1'000, DynamicMemory> ) == 40  ); // win
 
 } // namespace hub

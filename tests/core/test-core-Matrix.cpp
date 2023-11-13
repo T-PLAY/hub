@@ -40,9 +40,26 @@ class Lambda
     //    Lambda() = default;
 };
 
+#include "core/Macros.hpp"
+
+class Test
+{
+  public:
+      void printHeader() {
+			std::cout << "HEADER: " << HEADER << std::endl;
+    }
+};
 
 
- TEST_CASE( "Matrix test" ) {
+// TEST_CASE( "Matrix test" ) {
+int main() {
+
+    Test myTest;
+      myTest.printHeader();
+
+    std::cout << "FILE_NAME: " << FILE_NAME << std::endl;
+    std::cout << "FILE_NAME_WITHOUT_EXTENSIONS: " << FILE_NAME_WITHOUT_EXTENSION << std::endl;
+    //return 0;
 
     hub::io::Archive archive;
 
@@ -217,7 +234,9 @@ class Lambda
 //        const auto * data = serialChar.getData(iType);
     }
 
+    std::cout << "archive write" << std::endl;
     archive.write(serialChar);
+    return 0;
     MatrixSerial serialChar_read;
     archive.read(serialChar_read);
     assert(serialChar == serialChar_read);

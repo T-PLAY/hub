@@ -4,6 +4,7 @@
 
 // #include <iostream>
 #include <type_traits>
+#include <string>
 // #include <vector>
 
 template <class Container, class T = std::decay_t<decltype( *std::declval<Container>().begin() )>>
