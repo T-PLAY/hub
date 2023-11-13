@@ -91,7 +91,7 @@ class Buffer<Type, Size, StaticMemory> : public BufferBase<Type, Size, StaticMem
 //class StaticBuffer : public BufferBase<Size, StaticMemory>
 {
   public:
-    using Span = BufferBase<Type, Size, StaticMemory>::Span;
+    using Span = typename BufferBase<Type, Size, StaticMemory>::Span;
 
     //    static_assert(Size <= MAX_STACK_SIZE, "Stack size reached, please use static memory.");
     //    STATIC_WARNING(Size <= MAX_STACK_SIZE, "Stack size reached, please use static memory.");
@@ -173,7 +173,7 @@ class Buffer<Type, Size, DynamicMemory> : public BufferBase<Type, Size, DynamicM
 {
   public:
 //    using Span = std::span<Data_t, Size>;
-    using Span = BufferBase<Type, Size, DynamicMemory>::Span;
+    using Span = typename BufferBase<Type, Size, DynamicMemory>::Span;
 
 //    template <class... Args>
 //    constexpr Data(Args... args) : m_data{args...} {}
