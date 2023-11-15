@@ -4,7 +4,7 @@
 #include <type_traits>
 
 #include "MatrixBase.hpp"
-#include "MatrixSerial.hpp"
+#include "core/Matrix.hpp"
 
 namespace hub {
 
@@ -172,20 +172,22 @@ class MatrixXDBase
 
 //    constexpr bool operator==( const MatrixXDBase& matrix ) const { return m_data == matrix.m_data; }
 
-    void serialize(MatrixSerial & serial) const {
-//        MatrixSerial::Node node;
+    void serialize(Matrix & matrix) const {
+//        Matrix::Node node;
 //        node.m_hashCode = typeid(Type).hash_code();
 //        node.m_dims = std::vector<int>{Ns...};
 //        node.m_name = TYPE_NAME(Type);
 //        node.m_size = Size;
-        auto node = make_node<Type>(Dims{Ns...});
-        serial.push_back(std::move(node));
+//        auto node = Matrix::make_node<Type, Ns...>();
+        auto matrix2 = make_matrix<Type, Ns...>();
+        matrix << matrix2;
+//        matrix.push_back(std::move(node));
     }
 
-    MatrixSerial getSerial() const {
-        MatrixSerial serial;
-        serialize(serial);
-        return serial;
+    Matrix getMatrix() const {
+        Matrix matrix;
+        serialize(matrix);
+        return matrix;
     }
 
   private:

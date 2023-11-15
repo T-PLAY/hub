@@ -5,8 +5,8 @@
 #include <queue>
 #include <string>
 
-#include <core/Vector.hpp>
-#include <sensor/InputSensor.hpp>
+//#include <core/Vector.hpp>
+//#include <sensor/InputSensor.hpp>
 #include <sensor/OutputSensor.hpp>
 // #include <core/Tuple.hpp>
 
@@ -29,51 +29,7 @@
 
 // using namespace hub::sensor;
 
-#include <core/Input.hpp>
-#include <core/Output.hpp>
 
-class InputOutput : public hub::Input, public hub::Output
-{
-  public:
-    using hub::Input::read;
-    using hub::Output::write;
-
-    InputOutput() = default;
-
-    void read( hub::Data_t* data, hub::Size_t size ) override {
-        assert( !m_datas.empty() );
-        auto vector = m_datas.front();
-        m_datas.pop();
-        assert( vector.size() == size );
-        //        std::cout << HEADER_INPUT_MSG "read(Data_t*, Size_t) : data = " << vector <<
-        //        std::endl;
-
-        memcpy( data, vector.data(), size );
-    }
-
-    void write( const hub::Data_t* data, hub::Size_t size ) override {
-        std::vector<hub::Data_t> vector( data, data + size );
-        //        std::cout << HEADER_OUTPUT_MSG "write(T) : data = " << vector << std::endl;
-        m_datas.push( vector );
-    }
-
-    void close() override {};
-
-    bool isOpen() const override { return true; };
-
-    void clear() override {
-        while ( !m_datas.empty() )
-            m_datas.pop();
-        assert( m_datas.empty() );
-    }
-
-    //    bool isEnd() const override {
-    bool isEnd() const override { return m_datas.empty(); }
-
-    std::queue<std::vector<hub::Data_t>> m_datas;
-};
-
-#include <core/Tuple.hpp>
 
 int main() {
 

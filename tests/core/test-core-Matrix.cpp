@@ -10,6 +10,7 @@
 #include <core/Any.hpp>
 #include <core/io/Archive.hpp>
 #include <core/Matrix.hpp>
+#include <core/MatrixT.hpp>
 
 
 class Lambda
@@ -106,26 +107,26 @@ int main() {
 //    MatrixTs<int>;
     static_assert(MatrixTs<int, double>::nType() == 2);
 
-    const auto matrix = Matrix<10, int>();
+    const auto matrix = MatrixT<10, int>();
     static_assert(matrix.size() == 10 * sizeof(int));
-    const auto matrix2 = Matrix<int, double>();
+    const auto matrix2 = MatrixT<int, double>();
     using R = unsigned char;
     using G = unsigned char;
     using B = unsigned char;
-    const auto matrix3 = Matrix<640, 480, R, G, B>();
+    const auto matrix3 = MatrixT<640, 480, R, G, B>();
     static_assert(matrix3.width() == 640);
     static_assert(matrix3.size() == 640 * 480 * 3);
-    auto matrix4 = Matrix<2, MAX_STACK_SIZE, unsigned char>();
-    auto matrix5 = Matrix<MatrixXD<int, 2>, double, float>();
+    auto matrix4 = MatrixT<2, MAX_STACK_SIZE, unsigned char>();
+    auto matrix5 = MatrixT<MatrixXD<int, 2>, double, float>();
     static_assert(matrix5.size() == sizeof(int) * 2 + sizeof(double) + sizeof(float));
 //    using MyMatrix5 = MatrixXD<unsigned char, 2, MAX_STACK_SIZE>;
 //    static constexpr auto matrix5 = MyMatrix5();
 //    constexpr auto matrix5 = MyMatrix5();
 //    std::cout << "matrix5: " << matrix5 << std::endl;
 //    static_assert(matrix4.nx() == 640);
-//    constexpr auto matrix5 = Matrix<640, 480, 3, 2, int, bool>();
+//    constexpr auto matrix5 = MatrixT<640, 480, 3, 2, int, bool>();
 //    static_assert(matrix5.nt() == 2);
-//    constexpr auto matrix6 = Matrix<640, 480, 3, 2, 2, int, bool>();
+//    constexpr auto matrix6 = MatrixT<640, 480, 3, 2, 2, int, bool>();
 //    static_assert(matrix6.n<4>() == 2);
 //    using MyMatrixResolution = MatrixTs<
 
@@ -208,7 +209,7 @@ int main() {
     std::cout << "myName: " << myName << std::endl;
     assert(matricesChar.get<const int&>() == 5);
 
-    auto serialChar = matricesChar.getSerial();
+    auto serialChar = matricesChar.getMatrix();
     serialChar.setData(matricesChar.data(), matricesChar.size());
     std::cout << "serialChar: " << serialChar << std::endl;
     assert(serialChar.nType() == 10);
@@ -237,7 +238,7 @@ int main() {
     std::cout << "archive write" << std::endl;
     archive.write(serialChar);
     return 0;
-    MatrixSerial serialChar_read;
+    Matrix serialChar_read;
     archive.read(serialChar_read);
     assert(serialChar == serialChar_read);
 
@@ -278,7 +279,7 @@ int main() {
     assert(vectorChar.get<0>() == 1);
     assert(vectorChar.get<1>() == 2);
 
-    auto serial = vectorChar.getSerial();
+    auto serial = vectorChar.getMatrix();
     std::cout << "serial: " << serial << std::endl;
 
     assert(serial.hasType<char>());
@@ -304,7 +305,7 @@ int main() {
     MatrixTs<int, double> matrixUser;
     std::cout << "matrixUser: " << matrixUser << std::endl;
 
-    auto serial2 = matrixUser.getSerial();
+    auto serial2 = matrixUser.getMatrix();
     std::cout << "matrixUser: " << serial2 << std::endl;
     serial2.hasAnyType<int, double>();
     auto hasIntDouble = serial2.hasAnyType<int, double>();

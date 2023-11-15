@@ -1,19 +1,23 @@
+#define HUB_DEBUG_INPUT
+#define HUB_DEBUG_OUTPUT
+
 #include "test_common.hpp"
 // #include "sensor/test_sensor_utils.hpp"
 
+#include <initializer_list>
 #include <span>
 #include <vector>
-#include <initializer_list>
 
 #include "core/test_core_common.hpp"
 #include "sensor/test_sensor_common.hpp"
 
-#include <core/Buffer.hpp>
+#include <core/io/Archive.hpp>
+// #include <core/Buffer.hpp>
 #include <sensor/InputSensor.hpp>
-#include <sensor/Measure.hpp>
+// #include <sensor/Measure.hpp>
 #include <sensor/OutputSensor.hpp>
-#include <sensor/Resolution.hpp>
-#include <sensor/Resolutions.hpp>
+// #include <sensor/Resolution.hpp>
+// #include <sensor/Resolutions.hpp>
 
 // #include <io/Memory.hpp>
 
@@ -23,68 +27,70 @@ TEST_CASE( "InputSensor test" ) {
     using namespace hub;
 
     {
+        hub::io::Archive archive;
+
         struct UserType {
             int a;
             bool b;
+            auto toString() const { return std::to_string( a ) + " " + std::to_string( b ); }
             static constexpr auto name() { return "UserType"; };
         };
         static_assert( sizeof( UserType ) == 8 );
 
-        UserType data[640 * 480];
-        for ( int i = 0; i < 640 * 480; ++i ) {
-            data[i].a = i;
-            data[i].b = true;
-        }
-        constexpr auto dataSize = 640 * 480 * sizeof( UserType );
-        static_assert( sizeof( data ) == dataSize );
+        using UserResolution = UserType;
+        //        using UserResolution = MatrixXD<UserType, 640, 480>;
+        //        using UserResolution = MatrixXD<UserType>;
 
-        class UserType2
-        {
-          public:
-            int a;
-            static constexpr auto name() { return "UserType2"; };
-            //    template <class Other>
-            //    constexpr bool operator==( Other other ) const {
-            //        return a == other.a;
-            //    }
-        };
-        static_assert( sizeof( UserType2 ) == 4 );
+        hub::sensor::SensorSpec sensorSpec( "sensorName" );
+        OutputSensorT<UserResolution> outputSensor( sensorSpec, archive );
+        OutputSensorT<UserResolution>::Acquisition acq;
+//        AcquisitionT<UserResolution> acq;
+//        AcquisitionT<int> acq;
 
-        //    constexpr auto dataArray = std::array<hub::Data_t, dataSize>{0};
-        //    std::array<hub::Data_t, dataSize> dataArray;
+        auto& start    = acq.getStart();
+        auto& end      = acq.getEnd();
+        auto& userType = acq.get<UserType&>();
 
-        //    ResolutionT<
-        using UserResolution = ResolutionT<UserType, 640, 480>;
-        static_assert( UserResolution::nByte() == 640 * 480 * sizeof( UserType ) );
-        //    using UserResolution2 = ResolutionT<UserType2, 100>;
-        static_assert( UserResolution::hasType<UserType>() );
-        static_assert( !UserResolution::hasType<int>() );
-        std::cout << "resolution: " << UserResolution() << std::endl;
+        start      = 4;
+        end        = 3;
+        userType.a = 2;
+        userType.b = true;
 
-        using UserResolution2 = ResolutionT<UserType2>;
-        static_assert( UserResolution2::nDim() == 1 );
-        static_assert( UserResolution2::n() == 1 );
-        std::cout << "resolution2: " << UserResolution2() << std::endl;
+        outputSensor << acq;
 
-        using UserResolution3 = ResolutionT<int>;
-        static_assert( UserResolution3::n() == 1 );
-        //    static_assert(UserResolution3::isScalar;
+        InputSensor inputSensor(archive);
+//        assert(UserResolution() == inputSensor.getSpec().resolution);
 
-        using UserResolutions = ResolutionsT<UserResolution, UserResolution2, UserResolution3>;
-        static_assert( UserResolutions::nResolution == 3 );
-        //    static_assert(UserResolutions::has<UserType>());
+        //        static_assert( UserResolution::nByte() == 640 * 480 * sizeof( UserType ) );
+        //        //    using UserResolution2 = ResolutionT<UserType2, 100>;
+        //        static_assert( UserResolution::hasType<UserType>() );
+        //        static_assert( !UserResolution::hasType<int>() );
+        //        std::cout << "resolution: " << UserResolution() << std::endl;
 
-        std::cout << "resolutions: " << UserResolutions() << std::endl;
-        static_assert( UserResolutions::hasType<UserType>() );
-        static_assert( UserResolutions::hasType<UserType2>() );
-        static_assert( UserResolutions::hasType<int>() );
-        static_assert( !UserResolutions::hasType<void>() );
-        static_assert( UserResolutions::hasType<UserType, UserType2>() );
-        static_assert( UserResolutions::hasType<UserType, UserType2, int>() );
-        static_assert( !UserResolutions::hasType<UserType, UserType2, int, double>() );
+        //        using UserResolution2 = ResolutionT<UserType2>;
+        //        static_assert( UserResolution2::nDim() == 1 );
+        //        static_assert( UserResolution2::n() == 1 );
+        //        std::cout << "resolution2: " << UserResolution2() << std::endl;
 
-        //    constexpr auto res = UserResolutions::get<UserType>();
-        static_assert( UserResolutions::nResolution == 3 );
+        //        using UserResolution3 = ResolutionT<int>;
+        //        static_assert( UserResolution3::n() == 1 );
+        //        //    static_assert(UserResolution3::isScalar;
+
+        //        using UserResolutions = ResolutionsT<UserResolution, UserResolution2,
+        //        UserResolution3>; static_assert( UserResolutions::nResolution == 3 );
+        //        //    static_assert(UserResolutions::has<UserType>());
+
+        //        std::cout << "resolutions: " << UserResolutions() << std::endl;
+        //        static_assert( UserResolutions::hasType<UserType>() );
+        //        static_assert( UserResolutions::hasType<UserType2>() );
+        //        static_assert( UserResolutions::hasType<int>() );
+        //        static_assert( !UserResolutions::hasType<void>() );
+        //        static_assert( UserResolutions::hasType<UserType, UserType2>() );
+        //        static_assert( UserResolutions::hasType<UserType, UserType2, int>() );
+        //        static_assert( !UserResolutions::hasType<UserType, UserType2, int, double>() );
+
+        //        //    constexpr auto res = UserResolutions::get<UserType>();
+        //        static_assert( UserResolutions::nResolution == 3 );
         //    constexpr int nResolution = 2;
         //    for (constexpr int i = 0; i < nResolution; ++i) {
         //        UserResolutions::get<i>();
@@ -102,260 +108,256 @@ TEST_CASE( "InputSensor test" ) {
         //    using UserResolution2 = ResolutionT<
 
         //    OutputSensorT<UserResolution> outputSensor;
-//        AcquisitionT<UserResolutions> acq;
-//        //    static_assert( !acq.resolutions.hasType<int>() );
-//        //    static_assert( acq.resolutions.hasType<UserType>() );
-//        //    static_assert(acq.resolution.h)
-//        //    static_assert(acq.n)
-//        //    static_assert(Acquisition::has<UserType>());
-//        //    static_assert(Acquisition::has<double>());
-//        //    using Resolution_get = acq.resolution.get<UserType>();
+        //        AcquisitionT<UserResolutions> acq;
+        //        //    static_assert( !acq.resolutions.hasType<int>() );
+        //        //    static_assert( acq.resolutions.hasType<UserType>() );
+        //        //    static_assert(acq.resolution.h)
+        //        //    static_assert(acq.n)
+        //        //    static_assert(Acquisition::has<UserType>());
+        //        //    static_assert(Acquisition::has<double>());
+        //        //    using Resolution_get = acq.resolution.get<UserType>();
 
-//        //    auto measure = acq.getMeasure<UserType>();
-//        static_assert( acq.hasType<UserType>() );
-//        static_assert( acq.hasType<UserType, int>() );
-//        //    static_assert(acq.)
-//        static_assert( acq.resolutions.nResolution == 3 );
-//        //    auto measure = acq.get<UserType>();
-//        auto measure = acq.getMeasure<0>();
-//        static_assert( std::is_same<decltype( measure.type() ), UserType>() );
-//        //    static_assert(measure.R)
-//        auto measure2 = acq.getMeasure<1>();
-//        //    measure.resolution.
+        //        //    auto measure = acq.getMeasure<UserType>();
+        //        static_assert( acq.hasType<UserType>() );
+        //        static_assert( acq.hasType<UserType, int>() );
+        //        //    static_assert(acq.)
+        //        static_assert( acq.resolutions.nResolution == 3 );
+        //        //    auto measure = acq.get<UserType>();
+        //        auto measure = acq.getMeasure<0>();
+        //        static_assert( std::is_same<decltype( measure.type() ), UserType>() );
+        //        //    static_assert(measure.R)
+        //        auto measure2 = acq.getMeasure<1>();
+        //        //    measure.resolution.
 
-//        //    constexpr MeasureT<UserResolution> measure((hub::Data_t*)data, dataSize);
-//        //    constexpr auto span = std::span(data, data + dataSize);
-//        //    constexpr auto span = std::span(dataArray);
-//        //    constexpr MeasureT<UserResolution> measure((hub::Data_t*)data, dataSize);
+        //        //    constexpr MeasureT<UserResolution> measure((hub::Data_t*)data, dataSize);
+        //        //    constexpr auto span = std::span(data, data + dataSize);
+        //        //    constexpr auto span = std::span(dataArray);
+        //        //    constexpr MeasureT<UserResolution> measure((hub::Data_t*)data, dataSize);
 
-//        auto buffer = hub::Buffer<dataSize>( (const hub::Data_t*)data );
-//        //    auto buffer = hub::Buffer<dataSize>((hub::Data_t*)data);
-//        //    buffer.data[0] = 1;
-//        //    buffer.data = nullptr;
-//        //    buffer.size = 5;
-//        std::cout << "buffer: " << buffer << std::endl;
+        //        auto buffer = hub::Buffer<dataSize>( (const hub::Data_t*)data );
+        //        //    auto buffer = hub::Buffer<dataSize>((hub::Data_t*)data);
+        //        //    buffer.data[0] = 1;
+        //        //    buffer.data = nullptr;
+        //        //    buffer.size = 5;
+        //        std::cout << "buffer: " << buffer << std::endl;
 
-//        std::cout << "measure: " << measure << std::endl;
-//        measure.setData( buffer );
-//        std::cout << "measure: " << measure << std::endl;
+        //        std::cout << "measure: " << measure << std::endl;
+        //        measure.setData( buffer );
+        //        std::cout << "measure: " << measure << std::endl;
 
-//        const UserType2 userType2 { 5 };
-//        //    userType2.a = 5;
-//        //    measure2.setData(buffer);
-//        //    std::cout << hub::Buffer(userType2) << std::endl;
-//        //    auto buffer2 = hub::Buffer(userType2);
+        //        const UserType2 userType2 { 5 };
+        //        //    userType2.a = 5;
+        //        //    measure2.setData(buffer);
+        //        //    std::cout << hub::Buffer(userType2) << std::endl;
+        //        //    auto buffer2 = hub::Buffer(userType2);
 
-//        //    std::cout << "buffer2: " << buffer2 << std::endl;
+        //        //    std::cout << "buffer2: " << buffer2 << std::endl;
 
-//        std::cout << "measure2: " << measure2 << std::endl;
-//        //    measure2.setData(buffer2);
-//        //    measure2.setType( userType2 );
+        //        std::cout << "measure2: " << measure2 << std::endl;
+        //        //    measure2.setData(buffer2);
+        //        //    measure2.setType( userType2 );
 
-//        std::cout << "measure2: " << measure2 << std::endl;
+        //        std::cout << "measure2: " << measure2 << std::endl;
 
-//        //    auto buffer_get = measure.getData();
-//        //    std::cout << "buffer_get: " << buffer_get << std::endl;
-//        //    buffer_get.data[0] = 1;
-//        //    buffer_get.data = nullptr;
-//        //    buffer_get.size = 5;
+        //        //    auto buffer_get = measure.getData();
+        //        //    std::cout << "buffer_get: " << buffer_get << std::endl;
+        //        //    buffer_get.data[0] = 1;
+        //        //    buffer_get.data = nullptr;
+        //        //    buffer_get.size = 5;
 
-//        //    constexpr auto data2_get = measure2.getData<UserType2>();
-//        //    constexpr auto userType2_get = measure2.getData();
-//        //    static_assert( userType2 == userType2_get );
+        //        //    constexpr auto data2_get = measure2.getData<UserType2>();
+        //        //    constexpr auto userType2_get = measure2.getData();
+        //        //    static_assert( userType2 == userType2_get );
 
-//        constexpr int a         = 5;
-//        constexpr auto buffer_a = hub::Buffer( a );
-//        static_assert( buffer_a.data == a );
+        //        constexpr int a         = 5;
+        //        constexpr auto buffer_a = hub::Buffer( a );
+        //        static_assert( buffer_a.data == a );
 
-//        constexpr int b         = 5;
-//        constexpr auto buffer_b = hub::Buffer( b );
-//        static_assert( buffer_a == buffer_b );
+        //        constexpr int b         = 5;
+        //        constexpr auto buffer_b = hub::Buffer( b );
+        //        static_assert( buffer_a == buffer_b );
     }
 
-    {
-        constexpr double double_ref = 5.0;
-        constexpr float float_ref = 2.0f;
-        using MatrixInt2 = MatrixXD<int, 2>;
-//        static_assert(sizeof(MatrixInt2) == sizeof(int) * 2);
-        MatrixInt2 matrix_ref {2, 1};
-        std::cout << "matrix_ref: " << matrix_ref << std::endl;
+    //    {
+    //        constexpr double double_ref = 5.0;
+    //        constexpr float float_ref = 2.0f;
+    //        using MatrixInt2 = MatrixXD<int, 2>;
+    ////        static_assert(sizeof(MatrixInt2) == sizeof(int) * 2);
+    //        MatrixInt2 matrix_ref {2, 1};
+    //        std::cout << "matrix_ref: " << matrix_ref << std::endl;
 
+    //        constexpr int dataSize = sizeof(int) * 2;
+    //        Data_t * data_ptr = new Data_t[dataSize];
+    //        memset(data_ptr, 55, dataSize);
+    ////        std::array<int, 2> array {1, 2};
+    ////        std::span<int, 2> span(array);
+    ////        std::span<int, 2> span(data);
+    //        std::span<Data_t, dataSize> span(data_ptr, data_ptr + dataSize);
 
-        constexpr int dataSize = sizeof(int) * 2;
-        Data_t * data_ptr = new Data_t[dataSize];
-        memset(data_ptr, 55, dataSize);
-//        std::array<int, 2> array {1, 2};
-//        std::span<int, 2> span(array);
-//        std::span<int, 2> span(data);
-        std::span<Data_t, dataSize> span(data_ptr, data_ptr + dataSize);
+    //        matrix_ref.setData(span);
+    //        std::cout << "matrix_ref: " << matrix_ref << std::endl;
 
-        matrix_ref.setData(span);
-        std::cout << "matrix_ref: " << matrix_ref << std::endl;
+    //        int data_read[2] {0};
+    //        std::span<Data_t, dataSize> span_read((unsigned char*)data_read, (unsigned
+    //        char*)data_read + dataSize);
 
-        int data_read[2] {0};
-        std::span<Data_t, dataSize> span_read((unsigned char*)data_read, (unsigned char*)data_read + dataSize);
+    //        matrix_ref.getData(span_read);
+    ////        matrix_ref.data.at(100);
+    //        std::cout << "span_read: " << span_read << std::endl;
 
-        matrix_ref.getData(span_read);
-//        matrix_ref.data.at(100);
-        std::cout << "span_read: " << span_read << std::endl;
+    ////        int data2[4] { 1, 2, 3, 4};
+    ////        std::span<int, 4> span2(data2);
 
-//        int data2[4] { 1, 2, 3, 4};
-//        std::span<int, 4> span2(data2);
+    ////        return;
+    ////        span = span2;
 
-//        return;
-//        span = span2;
+    ////        constexpr ArrayBuffer<MatrixInt2, double, float> buffer {matrix_ref, double_ref,
+    ///float_ref};
 
-//        constexpr ArrayBuffer<MatrixInt2, double, float> buffer {matrix_ref, double_ref, float_ref};
+    ////        static_assert(buffer.Size() == sizeof(MatrixInt2) + sizeof(double) + sizeof(float));
+    ////        static_assert(buffer.get<MatrixInt2>() == matrix_ref);
+    ////        static_assert(buffer.get<MatrixInt2>() != MatrixInt2{2, 2});
+    //        struct Mat4 {
+    //            float m44[16];
+    //            static constexpr auto name() { return "Mat4"; };
+    //        };
 
-//        static_assert(buffer.Size() == sizeof(MatrixInt2) + sizeof(double) + sizeof(float));
-//        static_assert(buffer.get<MatrixInt2>() == matrix_ref);
-//        static_assert(buffer.get<MatrixInt2>() != MatrixInt2{2, 2});
-        struct Mat4 {
-            float m44[16];
-            static constexpr auto name() { return "Mat4"; };
-        };
+    //        struct RGB8 {
+    //            unsigned char r;
+    //            unsigned char g;
+    //            unsigned char b;
+    //            static constexpr auto name() { return "RGB8"; };
+    //        };
 
-        struct RGB8 {
-            unsigned char r;
-            unsigned char g;
-            unsigned char b;
-            static constexpr auto name() { return "RGB8"; };
-        };
+    //        using Resolution1 = Matrix<Mat4>;
+    //        static_assert(Resolution1::size() == 16 * 4);
+    ////        using Resolution1 = Mat4;
+    //        std::cout << "resolution1: " << Resolution1() << std::endl;
+    //        using Resolution2 = MatrixXD<RGB8, 2>;
+    //        static_assert(Resolution2::size() == 6);
+    //        std::cout << "resolution2: " << Resolution2() << std::endl;
+    ////        using ResolutionAcq = Matrix<Mat4, MatrixXD<RGB8, 2>>;
+    //        using ResolutionAcq = Matrix<Resolution1, Resolution2>;
+    //        static_assert(ResolutionAcq::size() == 16 * 4 + 3  * 2);
+    //        std::cout << "resolutionAcq: " << ResolutionAcq() << std::endl;
 
-        using Resolution1 = Matrix<Mat4>;
-        static_assert(Resolution1::size() == 16 * 4);
-//        using Resolution1 = Mat4;
-        std::cout << "resolution1: " << Resolution1() << std::endl;
-        using Resolution2 = MatrixXD<RGB8, 2>;
-        static_assert(Resolution2::size() == 6);
-        std::cout << "resolution2: " << Resolution2() << std::endl;
-//        using ResolutionAcq = Matrix<Mat4, MatrixXD<RGB8, 2>>;
-        using ResolutionAcq = Matrix<Resolution1, Resolution2>;
-        static_assert(ResolutionAcq::size() == 16 * 4 + 3  * 2);
-        std::cout << "resolutionAcq: " << ResolutionAcq() << std::endl;
+    //        using Clock = long long;
+    //        using MyMatrixAcq = Matrix<Clock, Clock, ResolutionAcq>;
+    ////        using MyMatrixAcq = Matrix<Clock, Clock>;
+    //        static_assert(MyMatrixAcq::size() == sizeof(Clock) * 2 + sizeof(ResolutionAcq));
+    //        constexpr Clock clock_start = 5;
+    //        constexpr Clock clock_end = 6;
+    //        constexpr RGB8 rgb8{1, 2, 3};
+    //        constexpr RGB8 rgb8s[2] {{1, 2, 3}, {4, 5, 6}};
+    //        constexpr Mat4 mat4 { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
 
-        using Clock = long long;
-        using MyMatrixAcq = Matrix<Clock, Clock, ResolutionAcq>;
-//        using MyMatrixAcq = Matrix<Clock, Clock>;
-        static_assert(MyMatrixAcq::size() == sizeof(Clock) * 2 + sizeof(ResolutionAcq));
-        constexpr Clock clock_start = 5;
-        constexpr Clock clock_end = 6;
-        constexpr RGB8 rgb8{1, 2, 3};
-        constexpr RGB8 rgb8s[2] {{1, 2, 3}, {4, 5, 6}};
-        constexpr Mat4 mat4 { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
+    //        constexpr Resolution1 resolution1 {mat4};
+    ////        constexpr ResolutionAcq resolution{mat4, rgb8s};
 
-        constexpr Resolution1 resolution1 {mat4};
-//        constexpr ResolutionAcq resolution{mat4, rgb8s};
+    //        MyMatrixAcq acq;
+    //        static_assert(acq.size() == MyMatrixAcq::size());
 
+    //        static_assert(acq.hasType<Clock>());
+    //        static_assert(acq.hasType<Clock, ResolutionAcq>());
+    //        static_assert(! acq.hasType<Clock, ResolutionAcq, int>());
 
-        MyMatrixAcq acq;
-        static_assert(acq.size() == MyMatrixAcq::size());
+    //        std::cout << "acq: " << acq << std::endl;
 
-        static_assert(acq.hasType<Clock>());
-        static_assert(acq.hasType<Clock, ResolutionAcq>());
-        static_assert(! acq.hasType<Clock, ResolutionAcq, int>());
+    //        auto & clockStartRead = acq.getData<0>();
+    //        clockStartRead = 5;
+    //        auto & clockEndRead = acq.getData<1>();
+    //        clockEndRead = 6;
+    //        auto & measure = acq.getData<2>();
+    ////        measure.
 
-        std::cout << "acq: " << acq << std::endl;
+    //        std::cout << "acq: " << acq << std::endl;
 
-        auto & clockStartRead = acq.getData<0>();
-        clockStartRead = 5;
-        auto & clockEndRead = acq.getData<1>();
-        clockEndRead = 6;
-        auto & measure = acq.getData<2>();
-//        measure.
+    ////        constexpr
+    ////        constexpr MatrixInt2 matrixInt2 {5, 3};
 
-        std::cout << "acq: " << acq << std::endl;
+    ////        constexpr MyMatrixAcq matrix_acq {clock_start, clock_end, matrixInt2};
+    ////        static_assert(sizeof(matrix_acq) == sizeof(long long) * 2 + sizeof(MatrixInt2));
+    ////        std::cout << "matrix_acq: " << matrix_acq << std::endl;
 
-//        constexpr
-//        constexpr MatrixInt2 matrixInt2 {5, 3};
+    ////        static_assert(matrix_acq.get<0>() == clock_start);
+    ////        static_assert(matrix_acq.get<1>() == clock_end);
+    ////        static_assert(matrix_acq.get<2>() == matrixInt2);
 
-//        constexpr MyMatrixAcq matrix_acq {clock_start, clock_end, matrixInt2};
-//        static_assert(sizeof(matrix_acq) == sizeof(long long) * 2 + sizeof(MatrixInt2));
-//        std::cout << "matrix_acq: " << matrix_acq << std::endl;
+    ////        static_assert(matrix_acq.get<MatrixInt2>() == matrixInt2);
+    ////        static_assert(matrix_acq.get<0, Clock>() == matrixInt2);
 
-//        static_assert(matrix_acq.get<0>() == clock_start);
-//        static_assert(matrix_acq.get<1>() == clock_end);
-//        static_assert(matrix_acq.get<2>() == matrixInt2);
+    //        return;
+    ////        std::array<int, 10> array {1};
+    ////        std::span<int> span{array};
+    ////        std::cout << "span: " << span << std::endl;
 
-//        static_assert(matrix_acq.get<MatrixInt2>() == matrixInt2);
-//        static_assert(matrix_acq.get<0, Clock>() == matrixInt2);
+    ////        std::array<int, 10> array2 {2};
+    ////        std::span<int> span2{array2};
+    ////        std::cout << "span2: " << span2 << std::endl;
+    ////        span2 = span;
+    ////        std::cout << "span2: " << span2 << std::endl;
 
+    ////        static_assert(buffer.get<int>() == 5);
+    ////        static_assert(buffer.get<0>() == 5);
 
-        return;
-//        std::array<int, 10> array {1};
-//        std::span<int> span{array};
-//        std::cout << "span: " << span << std::endl;
+    ////        std::cout << "arrayBuffer: " << buffer << std::endl;
 
-//        std::array<int, 10> array2 {2};
-//        std::span<int> span2{array2};
-//        std::cout << "span2: " << span2 << std::endl;
-//        span2 = span;
-//        std::cout << "span2: " << span2 << std::endl;
+    ////        using Resolution = ResolutionT<int, 2>;
+    ////        static_assert(Resolution::nByte() == 8);
+    ////        static_assert(std::is_same<Resolution::Type, int>());
 
-//        static_assert(buffer.get<int>() == 5);
-//        static_assert(buffer.get<0>() == 5);
+    ////        constexpr auto measure = MeasureT<int>(5);
+    ////        std::cout << "measure: " << measure << std::endl;
 
-//        std::cout << "arrayBuffer: " << buffer << std::endl;
+    //        return;
+    ////        using Resolution2 = ResolutionT<double>;
+    ////        using Resolutions = ResolutionsT<Resolution, Resolution2>;
+    ////        static_assert(std::is_same<Resolutions::Types, double>());
 
-//        using Resolution = ResolutionT<int, 2>;
-//        static_assert(Resolution::nByte() == 8);
-//        static_assert(std::is_same<Resolution::Type, int>());
+    ////        constexpr ArrayBuffer<int> buffer_int{5};
+    ////        constexpr ArrayBuffer<int> buffer_int{5};
 
-//        constexpr auto measure = MeasureT<int>(5);
-//        std::cout << "measure: " << measure << std::endl;
+    ////        using Measure = MeasureT<Resolution>;
+    ////        constexpr auto measure = MeasureT<Resolution, ArrayBuffer<int>>(buffer_int);
+    ////        constexpr auto measure2 = MeasureT<Resolution2>(true);
+    ////        constexpr auto measure2 = MeasureT<Resolution>(buffer_int);
 
+    ////        constexpr ArrayBuffer<Resolution> buffer2;
 
-        return;
-//        using Resolution2 = ResolutionT<double>;
-//        using Resolutions = ResolutionsT<Resolution, Resolution2>;
-//        static_assert(std::is_same<Resolutions::Types, double>());
+    //        constexpr auto start = 1;
+    //        constexpr auto end = 2;
+    //        constexpr auto value_int = 5;
+    ////        constexpr AcquisitionT<Resolution> acq{start, end};
 
-//        constexpr ArrayBuffer<int> buffer_int{5};
-//        constexpr ArrayBuffer<int> buffer_int{5};
+    ////        static_assert(acq.getStart() == start);
+    ////        static_assert(acq.getEnd() == end);
 
-//        using Measure = MeasureT<Resolution>;
-//        constexpr auto measure = MeasureT<Resolution, ArrayBuffer<int>>(buffer_int);
-//        constexpr auto measure2 = MeasureT<Resolution2>(true);
-//        constexpr auto measure2 = MeasureT<Resolution>(buffer_int);
+    ////        using Resolutions = ResolutionsT<ResolutionT<int>, ResolutionT<double>>;
+    ////        static_assert(Resolutions::nByte() == 12);
+    ////        const long long start = 5;
+    ////        static constexpr auto start_list = {1, 2};
+    ////        static constexpr auto start_list = std::initializer_list<hub::Data_t>{0, 1, 0, 0};
+    ////        constexpr int value = reinterpret_cast<const int&>(&*start_list.begin());
+    ////        const int * value = (const int*)start_list.begin();
+    ////        constexpr int value = *(const int*)start_list.begin();
 
+    ////        std::cout << "int: " << *value << std::endl;
 
-//        constexpr ArrayBuffer<Resolution> buffer2;
+    ////        static_assert(start_list.size() == 1);
+    ////        constexpr std::array<hub::Data_t, 8> start{5};
+    ////        constexpr std::array<hub::Data_t, 8> end{6};
+    ////        constexpr auto array_acq = join(start, end);
+    ////        const long long end = 6;
+    ////        std::array<hub::Data_t, 8> array{start};
+    ////        std::cout << "array: " << array << std::endl;
 
-        constexpr auto start = 1;
-        constexpr auto end = 2;
-        constexpr auto value_int = 5;
-//        constexpr AcquisitionT<Resolution> acq{start, end};
+    ////        constexpr AcquisitionT<Resolutions> acq{array_acq};
+    ////        static_assert(acq.nByte() == 28);
+    ////        std::cout << "acq: " << acq << std::endl;
 
-//        static_assert(acq.getStart() == start);
-//        static_assert(acq.getEnd() == end);
-
-//        using Resolutions = ResolutionsT<ResolutionT<int>, ResolutionT<double>>;
-//        static_assert(Resolutions::nByte() == 12);
-//        const long long start = 5;
-//        static constexpr auto start_list = {1, 2};
-//        static constexpr auto start_list = std::initializer_list<hub::Data_t>{0, 1, 0, 0};
-//        constexpr int value = reinterpret_cast<const int&>(&*start_list.begin());
-//        const int * value = (const int*)start_list.begin();
-//        constexpr int value = *(const int*)start_list.begin();
-
-//        std::cout << "int: " << *value << std::endl;
-
-//        static_assert(start_list.size() == 1);
-//        constexpr std::array<hub::Data_t, 8> start{5};
-//        constexpr std::array<hub::Data_t, 8> end{6};
-//        constexpr auto array_acq = join(start, end);
-//        const long long end = 6;
-//        std::array<hub::Data_t, 8> array{start};
-//        std::cout << "array: " << array << std::endl;
-
-//        constexpr AcquisitionT<Resolutions> acq{array_acq};
-//        static_assert(acq.nByte() == 28);
-//        std::cout << "acq: " << acq << std::endl;
-
-//        static_assert(acq.getStart() == 0);
-    }
-
-    return;
+    ////        static_assert(acq.getStart() == 0);
+    //    }
+    //    return;
 }
 
 //    ////////////////////////// ResolutionT //////////////////////////////

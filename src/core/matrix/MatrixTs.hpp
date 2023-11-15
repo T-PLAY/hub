@@ -2,7 +2,7 @@
 #pragma once
 
 #include "MatrixBase.hpp"
-#include "MatrixSerial.hpp"
+#include "core/Matrix.hpp"
 
 namespace hub {
 
@@ -20,7 +20,8 @@ class MatrixTs
     static constexpr auto size() { return Size; };
     //    static constexpr auto types() { return {Types...}; };
     //    static_assert(size() < MAX_STACK_SIZE);
-    static_assert( size() <= MAX_STACK_SIZE, "Stack size reached, please use static memory." );
+    //    static_assert( size() <= MAX_STACK_SIZE, "Stack size reached, please use static memory."
+    //    );
 
     static constexpr auto nType() { return sizeof...( Types ); };
     static constexpr auto nDim() { return 1; };
@@ -30,12 +31,10 @@ class MatrixTs
         return 1;
     }
 
-    const Data_t * data() const {
-        return m_buffer.data();
-    }
-//    Size_t size() const {
-//        return m_buffer.size();
-//    }
+    const Data_t* data() const { return m_buffer.data(); }
+    //    Size_t size() const {
+    //        return m_buffer.size();
+    //    }
 
     template <class Type>
     static constexpr auto hasType() {
@@ -50,7 +49,7 @@ class MatrixTs
 
     template <class Type>
     static constexpr int nType() {
-        static_assert(hasType<Type>());
+        static_assert( hasType<Type>() );
         return ( nType<Type, Types>() + ... );
     }
 
@@ -85,7 +84,7 @@ class MatrixTs
     Type get() {
         const auto offset = getOffset<i, 0, RawType, Types...>();
         static_assert( 0 <= offset && offset < Size );
-//        return reinterpret_cast<Type>( m_buffer.data() + offset );
+        //        return reinterpret_cast<Type>( m_buffer.data() + offset );
         return (Type)( m_buffer.data() + offset );
     }
     template <class Type, int i = 0, class RawType = std::remove_pointer_t<Type>>
@@ -93,17 +92,17 @@ class MatrixTs
     Type get() const {
         const auto offset = getOffset<i, 0, RawType, Types...>();
         static_assert( 0 <= offset && offset < Size );
-//        return reinterpret_cast<Type>( m_buffer.data() + offset );
+        //        return reinterpret_cast<Type>( m_buffer.data() + offset );
         return (Type)( m_buffer.data() + offset );
     }
 
-//    template <class Type, int i = 0, class RawType = std::remove_pointer_t<Type>>
-//        requires( std::is_pointer_v<Type> && hasType<RawType>() && i < nType<RawType>() )
-//    const Type get() const {
-//        const auto offset = getOffset<i, 0, RawType, Types...>();
-//        static_assert( 0 <= offset && offset < Size );
-//        return reinterpret_cast<Type>( m_buffer.data() + offset );
-//    }
+    //    template <class Type, int i = 0, class RawType = std::remove_pointer_t<Type>>
+    //        requires( std::is_pointer_v<Type> && hasType<RawType>() && i < nType<RawType>() )
+    //    const Type get() const {
+    //        const auto offset = getOffset<i, 0, RawType, Types...>();
+    //        static_assert( 0 <= offset && offset < Size );
+    //        return reinterpret_cast<Type>( m_buffer.data() + offset );
+    //    }
 
     template <class Type, int i = 0, class RawType = std::remove_cvref_t<Type>>
         requires( !std::is_pointer_v<Type> && hasType<RawType>() && i < nType<RawType>() )
@@ -119,9 +118,8 @@ class MatrixTs
         const auto offset = getOffset<i, 0, RawType, Types...>();
         static_assert( 0 <= offset && offset < Size );
         return reinterpret_cast<Type>( *( m_buffer.data() + offset ) );
-//        return (Type)( *( m_buffer.data() + offset ) );
+        //        return (Type)( *( m_buffer.data() + offset ) );
     }
-
 
     //    constexpr bool operator==( const MatrixTs& matrix ) const { return m_data ==
     //    matrix.m_data; }
@@ -136,51 +134,55 @@ class MatrixTs
         return getOffset<i, 0, Type, Types...>();
     }
 
-    //    MatrixSerial::Node getNode() const {
-    //                MatrixSerial::Node node;
+    //    Matrix::Node getNode() const {
+    //                Matrix::Node node;
     //                node.m_hashCode = typeid(Type).hash_code();
     //                node.m_dims = std::vector<int>{Ns...};
     //                node.m_name = TYPE_NAME(Type);
     //                node.m_size = Size;
-    //                serial.m_nodes.push_back(std::move(node));
-    //                serial.m_size = Size;
+    //                matrix.m_nodes.push_back(std::move(node));
+    //                matrix.m_size = Size;
     //    }
 
     template <class Type_, class... Types_>
         requires( !isMatrix<Type_> )
-    void serialize( MatrixSerial& serial ) const {
-        //        MatrixSerial::Node node;
+    void serialize( Matrix& matrix ) const {
+        //        Matrix::Node node;
         //        node.m_hashCode = typeid(Type_).hash_code();
         //        node.m_dims = std::vector<int>{1};
         //        node.m_name = TYPE_NAME(Type_);
         //        node.m_size = sizeof(Type_);
-        //        auto node = MatrixSerial::Node({1});
-        auto node = make_node<Type_>( Dims { 1 } );
-        serial.push_back( std::move( node ) );
+        //        auto node = Matrix::Node({1});
+        auto matrix2 = make_matrix<Type_>();
+        //        matrix.push_back( std::move( matrix2 ) );
+        matrix << matrix2;
 
-        if constexpr ( sizeof...( Types_ ) > 0 ) { serialize<Types_...>( serial ); }
+        if constexpr ( sizeof...( Types_ ) > 0 ) { serialize<Types_...>( matrix ); }
     }
 
     template <class Matrix, class... Types_>
         requires( isMatrix<Matrix> )
-    void serialize( MatrixSerial& serial ) const {
-        Matrix::serialize( serial );
+    void serialize( Matrix& matrix ) const {
+        Matrix::serialize( matrix );
 
-        if constexpr ( sizeof...( Types_ ) > 0 ) { serialize<Types_...>( serial ); }
+        if constexpr ( sizeof...( Types_ ) > 0 ) { serialize<Types_...>( matrix ); }
     }
 
-        void serialize( MatrixSerial& serial ) const {
-//            Matrix::serialize( serial );
-//            if ( sizeof...( Types_ ) > 0 )
-            serialize<Types...>( serial );
-        }
-
-    MatrixSerial getSerial() const {
-        MatrixSerial serial;
-            serialize(serial);
-//        serialize<Types...>( serial );
-        return serial;
+    void serialize( Matrix& matrix ) const {
+        //            Matrix::serialize( matrix );
+        //            if ( sizeof...( Types_ ) > 0 )
+        serialize<Types...>( matrix );
     }
+
+    Matrix getMatrix() const {
+        Matrix matrix;
+        serialize( matrix );
+        //        serialize<Types...>( matrix );
+        return matrix;
+    }
+
+    //    bool operator==(const Matrix & matrix) {
+    //    }
 
   private:
     template <class Type, class Matrix, class... Types_>

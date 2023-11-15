@@ -1,11 +1,12 @@
 #pragma once
 
-//#include "Acquisition.hpp"
-//#include "Sensor.hpp"
-//#include "core/Traits.hpp"
+#include "core/Input.hpp"
+
+#include "Acquisition.hpp"
+#include "Sensor.hpp"
+// #include "core/Traits.hpp"
 //// #include "core/Tuple.hpp"
 
-//#include "core/Input.hpp"
 ////  user friendly useless includes
 //// #include "io/File.hpp"
 //// #include "io/input/InputFile.hpp"
@@ -16,66 +17,63 @@
 
 //// #include "net/ClientSocket.hpp"
 
-//namespace hub {
-//namespace sensor {
+namespace hub {
+namespace sensor {
 
-/////
-///// \brief The InputSensorT class
-///// represents the remote sensor.
-///// From any communication bus (file, RAM, socket) you have access to all the information specific
-///// to the sensors as well as the acquisition flow coming from the physical sensor.
-///// This class allows client applications to completely abstract from the notion
-///// of sensor and to be interested only in the carried data.
-///// This enables several applications to work simultaneously on the same data in real time.
-///// This also avoids the need to manage the drivers of each of the manufacturers of the sensors you
-///// wish to use.
-/////
-///// todo: template class
-/////
+///
+/// \brief The InputSensorT class
+/// represents the remote sensor.
+/// From any communication bus (file, RAM, socket) you have access to all the information specific
+/// to the sensors as well as the acquisition flow coming from the physical sensor.
+/// This class allows client applications to completely abstract from the notion
+/// of sensor and to be interested only in the carried data.
+/// This enables several applications to work simultaneously on the same data in real time.
+/// This also avoids the need to manage the drivers of each of the manufacturers of the sensors you
+/// wish to use.
+///
+/// todo: template class
+///
 
+// template <typename Input>
+class InputSensor : public Sensor
+{
+  public:
+    //    using Sensor::acq;
+    //    using Input::read;
 
-////template <typename Input>
-//class InputSensor : public Sensor {
-//  public:
-//    using Sensor::acq;
-////    using Input::read;
+    //    template <class InputT>
+    explicit InputSensor( Input& input ) :
 
-//    template <class InputT>
-//    explicit InputSensor( InputT&& input ) :
+        //        m_input( std::forward<Input&>( input ) )
+        Sensor( SensorSpec {} ),
+        m_input( input )
+        //        Sensor(m_input.get<SensorSpec>())
+        //        m_measures(m_input),
 
-//        m_input( std::forward<Input&>( input ) )
-////        Sensor(m_input.get<SensorSpec>())
-////        m_measures(m_input),
-////        Sensor( SensorSpec {} )
+    //        m_input( new Input( std::move( input ) ) )
+    {
+        //        static_assert( std::is_base_of<Input, Input>::value, "not a base class" );
+        //        static_assert( !std::is_same<net::ClientSocket, Input>::value, "not clientSocket
+        //        class" );
 
-//    //        m_input( new Input( std::move( input ) ) )
-//    {
-//        //        static_assert( std::is_base_of<Input, Input>::value, "not a base class" );
-//        //        static_assert( !std::is_same<net::ClientSocket, Input>::value, "not clientSocket
-//        //        class" );
+        m_input.read( m_spec );
 
-//        //        m_input.read( m_spec );
+        //        m_input >> m_spec;
+        //        m_input.read(m_spec);
+        //        m_input.read(m_measures);
+    }
 
-////        m_input >> m_spec;
-//        m_input.read(m_spec);
-////        m_input.read(m_measures);
-//    }
+    void operator>>( Acquisition& acquisition ) {
+        //        assert(m_spec.getResolutions() == acquisition.getResolutions());
+        m_input.read( acquisition );
+    }
 
-//    void operator>>( Acquisition& acquisition ) {
-//        assert(m_spec.getResolutions() == acquisition.getResolutions());
-//        m_input.read( acquisition );
-//    }
+    //    const Input& getInput() const { return m_input; }
 
-
-//    const Input& getInput() const { return m_input; }
-
-//  private:
-
-//    Input& m_input;
-////    Measures m_measures;
-//};
-
-
+  private:
+    Input& m_input;
+    //    Measures m_measures;
+};
 
 ///////////////////////////////////// TEMPLATE ////////////////////////////////////
 
@@ -103,16 +101,16 @@
 ////    //        m_input( new Input( std::move( input ) ) )
 ////    {
 ////        //        static_assert( std::is_base_of<Input, Input>::value, "not a base class" );
-////        //        static_assert( !std::is_same<net::ClientSocket, Input>::value, "not clientSocket
-////        //        class" );
+////        //        static_assert( !std::is_same<net::ClientSocket, Input>::value, "not
+///clientSocket /        //        class" );
 
 ////        //        m_input.read( m_spec );
 ////    }
 
 ////    template <class InputT>
 ////    //              ,
-////    //              typename = typename std::enable_if<std::is_base_of<Input, Input>::value>::type>
-////    explicit InputSensorT( const InputT& input ) = delete;
+////    //              typename = typename std::enable_if<std::is_base_of<Input,
+///Input>::value>::type> /    explicit InputSensorT( const InputT& input ) = delete;
 
 ////    InputSensorT( const InputSensorT& inputSensor )           = delete;
 ////    InputSensorT operator=( const InputSensorT& inputSensor ) = delete;
@@ -179,27 +177,23 @@
 ////    //    bool m_moved = false;
 ////};
 
-//} // namespace sensor
-//} // namespace hub
+} // namespace sensor
+} // namespace hub
 
 ////    template <class Input = input::InputStream,
 ////    template <class Input,
 ////              class... Args,
 ////              typename = typename std::enable_if<std::is_base_of<Input, Input>::value
-//////              typename = typename std::enable_if<std::is_same<input::InputStream, Input>::value
-//// #if ( __cplusplus < 201703L )
-////                                                  && ( sizeof...( Args ) != 1 ||
-////                                                       !is_one_of<Input, Args...>::value )
-//// #else
-////                                                  && ( sizeof...( Args ) != 1 ||
-////                                                       !( std::is_same<Input, Args> {} || ... ) )
-//// #endif
-////                                                  >::type>
-////     InputSensorT( Args&&... args ) :
-////         Sensor( sensor::SensorSpec {}  ),
-////         m_input( new Input( std::forward<Args>( args )... ) ) {
-////         static_assert( std::is_base_of<Input, Input>::value, "not a base class" );
-//////        static_assert( !std::is_same<net::ClientSocket, Input>::value, "not clientSocket class"
+//////              typename = typename std::enable_if<std::is_same<input::InputStream,
+///Input>::value / #if ( __cplusplus < 201703L ) / && ( sizeof...( Args ) != 1 || /
+///!is_one_of<Input, Args...>::value ) / #else /                                                  &&
+///( sizeof...( Args ) != 1 || /                                                       !(
+///std::is_same<Input, Args> {} || ... ) ) / #endif / >::type> /     InputSensorT( Args&&... args )
+///: /         Sensor( sensor::SensorSpec {}  ), /         m_input( new Input( std::forward<Args>(
+///args )... ) ) { /         static_assert( std::is_base_of<Input, Input>::value, "not a base class"
+///);
+//////        static_assert( !std::is_same<net::ClientSocket, Input>::value, "not clientSocket
+///class"
 /////);
 
 ////        m_input->read( m_spec );

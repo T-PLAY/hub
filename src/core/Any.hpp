@@ -60,6 +60,8 @@ class SRC_API Any
             Anyable::s_anyables.at( typeid( void ).hash_code() ) );
     }
 
+    Any(Any && any) = default;
+
     template <class T>
     Any( T&& t ) : m_any( std::forward<T>( t ) ) {
         if ( Anyable::s_anyables.find( typeid( T ).hash_code() ) == Anyable::s_anyables.end() ) {
@@ -110,23 +112,48 @@ class SRC_API Any
         return *this;
     }
 
-    template <class Output>
-    void write( Output& output ) const {
+//    template <class Output>
+    void write( Serializer& serializer ) const {
         const auto& hashCode = m_any.type().hash_code();
-        output.write( hashCode );
-        m_anyHelper->write( output, m_any );
-        //        auto & [data, size] = m_anyHelper->serialize(m_any);
-        //        output.write(data, size);
+        serializer.write( hashCode );
+
+        m_anyHelper->write( serializer, m_any );
     }
 
-    template <class Input>
-    void read( Input& input ) {
+//    template <class Input>
+    void read( Serializer& serializer ) {
         decltype( m_any.type().hash_code() ) hashCode;
-        input.read( hashCode );
+        serializer.read( hashCode );
         assert( Anyable::s_anyables.find( hashCode ) != Anyable::s_anyables.end() );
         m_anyHelper = std::make_unique<Anyable::AnyHelper>( Anyable::s_anyables.at( hashCode ) );
-        m_anyHelper->read( input, m_any );
+
+        m_anyHelper->read( serializer, m_any );
     }
+
+//    static constexpr auto serialize( auto& archive, auto& self ) {
+//        return archive(5);
+//    }
+
+//    static constexpr auto serialize( auto& archive, auto& self ) {
+//        //        return archive( self.m_anyHelper);
+//        using archive_type = std::remove_cvref_t<decltype( archive )>;
+
+//        if constexpr ( archive_type::kind() == zpp::bits::kind::in ) {
+//            // Input archive
+//            const auto& hashCode = self.m_any.type().hash_code();
+//            //			output.write( hashCode );
+//            archive( hashCode );
+//            return archive;
+//        }
+//        else if constexpr ( archive_type::kind() == zpp::bits::kind::out ) {
+//            // Output archive
+//            const auto& hashCode = self.m_any.type().hash_code();
+//            //			output.write( hashCode );
+//            archive( hashCode );
+//            return archive;
+//        }
+////        return archive;
+//    }
 
     //        m_any2valueStr = []( const std::any& any ) {
     //            assert( typeid( const T* ) == any.type() );
@@ -223,6 +250,7 @@ class SRC_API Any
 
   private:
     std::any m_any;
+//    decltype( m_any.type().hash_code() ) m_hashCode;
     std::unique_ptr<Anyable::AnyHelper> m_anyHelper;
 };
 

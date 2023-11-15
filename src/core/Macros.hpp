@@ -277,6 +277,12 @@ concept isContainer = !std::is_same<T, std::string>() && requires( T t ) {
     std::end( t );
 };
 
+//template <typename T>
+//concept isPair = requires( T t ) {
+//    t.first();
+//    t.second();
+//};
+
 template <class T>
     requires( !isContainer<T> )
 std::string type_name() {
@@ -407,24 +413,24 @@ static std::string pretty_bytes( hub::Size_t bytes ) {
 
     if ( count - floor( count ) == 0.0 )
 #ifdef WIN32
-        //sprintf_s( buff, 80, "%d%s", (int)count, suffixes[s].data() );
-        snprintf( buff, 80, "%d%s", (int)count, suffixes[s].data() );
+        //sprintf_s( buff, 80, "%d %s", (int)count, suffixes[s].data() );
+        snprintf( buff, 80, "%d %s", (int)count, suffixes[s].data() );
 #else
 #    ifdef OS_MACOS
-        snprintf( buff, 80, "%d%s", (int)count, suffixes[s].data() );
+        snprintf( buff, 80, "%d %s", (int)count, suffixes[s].data() );
 #    else
-        sprintf( buff, "%d%s", (int)count, suffixes[s].data() );
+        sprintf( buff, "%d %s", (int)count, suffixes[s].data() );
 #    endif
 #endif
     else
 #ifdef WIN32
-        //sprintf_s( buff, 80, "%.1f%s", count, suffixes[s].data() );
-        snprintf( buff, 80, "%.1f%s", count, suffixes[s].data() );
+        //sprintf_s( buff, 80, "%.1f %s", count, suffixes[s].data() );
+        snprintf( buff, 80, "%.1f %s", count, suffixes[s].data() );
 #else
 #    ifdef OS_MACOS
-        snprintf( buff, 80, "%.1f%s", count, suffixes[s].data() );
+        snprintf( buff, 80, "%.1f %s", count, suffixes[s].data() );
 #    else
-        sprintf( buff, "%.1f%s", count, suffixes[s].data() );
+        sprintf( buff, "%.1f %s", count, suffixes[s].data() );
 #    endif
 #endif
     return std::string( buff );

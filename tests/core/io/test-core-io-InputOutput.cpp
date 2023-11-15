@@ -22,6 +22,7 @@
 
 #include <core/io/Archive.hpp>
 #include <core/io/InputOutput.hpp>
+//#include <core/Serializer.hpp>
 
 // auto serialize(const Node &) -> zpp::bits::pb_protocol;
 
@@ -41,10 +42,10 @@ class TestNonPackable
         Node() = default;
         Node( int a ) : m_a { a } {};
 
-        template <class Serial>
-        void serialize( Serial& serial ) {
-            serial( m_a );
-        }
+//        template <class Serial>
+//        void serialize( Serial& serial ) {
+//            serial( m_a );
+//        }
         static constexpr auto serialize( auto& archive, auto& self ) { return archive( self.m_a ); }
 
       private:
@@ -53,7 +54,7 @@ class TestNonPackable
     static_assert( !hub::notWritable_v<Node> );
     static_assert( !hub::writable_v<Node> );
     static_assert( !hub::packable_v<Node> );
-    static_assert( hub::serializable_v<Node> );
+//    static_assert( hub::serializable_v<Node> );
 
     TestNonPackable() = default;
     TestNonPackable( double a,
@@ -79,12 +80,12 @@ class TestNonPackable
     //        return os;
     //    }
 
-    template <class Serial>
-    void serialize( Serial& serial ) {
-        //            serial( m_a, m_b, m_name);
-        //        serial( m_nodes );
-        serial( m_a, m_b, m_name, m_vints, m_nodes );
-    }
+//    template <class Serial>
+//    void serialize( Serial& serial ) {
+//        //            serial( m_a, m_b, m_name);
+//        //        serial( m_nodes );
+//        serial( m_a, m_b, m_name, m_vints, m_nodes );
+//    }
     static constexpr auto serialize( auto& archive, auto& self ) {
         return archive( self.m_a, self.m_b, self.m_name, self.m_vints, self.m_nodes );
     }
@@ -120,11 +121,27 @@ struct TestForceSerializable {
     bool c;
     std::any any;
 
-    template <class Serial>
-    void serialize( Serial& serial ) {
-        serial( a, b, c );
-        any = 1;
+//    template <class Serial>
+//    void serialize( Serial& serial ) {
+//        serial( a, b, c );
+//        any = 1;
+//    }
+
+//    void write(hub::Serializer & serializer) const {
+    void write(auto & serializer) const {
+        serializer.writeAll(a, b, c);
+        serializer.write(std::any_cast<int>(any));
     }
+//    void read(hub::Serializer & serializer) {
+    void read(auto & serializer) {
+        serializer.readAll(a, b, c);
+        int v;
+        serializer.read(v);
+        any = v;
+    }
+//    static constexpr auto serialize( auto& archive, auto& self ) {
+//        return archive( self.a, self.b, self.c);
+//    }
     //    static struct {} packable;
 
     bool operator==( const TestForceSerializable& test ) const {
@@ -323,12 +340,12 @@ void process( Archive& archive ) {
             assert( archive.isEnd() );
         }
 
-        /////////////
+        ///////////
 
         {
             const TestForceSerializable toWrite { 1.0, 5, true, 2 };
             using toWriteType = std::remove_cvref_t<decltype( toWrite )>;
-            static_assert( hub::serializable_v<toWriteType> );
+            static_assert( !hub::Serializer::Serializable<toWriteType>() );
 #ifdef HUB_DEBUG_OUTPUT
             std::cout << std::endl
                       << "------------------ " << TYPE_NAME( toWriteType )
@@ -358,6 +375,7 @@ void process( Archive& archive ) {
             assert( toWrite == toRead );
             assert( archive.isEnd() );
         }
+
 #ifndef HUB_DEBUG_OUTPUT
     }
 #endif
@@ -385,16 +403,16 @@ TEST_CASE( "InputOutput test" ) {
     }
 #endif
 
-    {
-        std::cout << "-------------------- ArchiveImpl --------" << std::endl;
-        hub::io::ArchiveT<hub::serializer::SerializerImpl> archiveImpl;
-        const auto startClock = std::chrono::high_resolution_clock::now();
-        process( archiveImpl );
-        const auto endClock = std::chrono::high_resolution_clock::now();
-        durationArchiveImpl =
-            std::chrono::duration_cast<std::chrono::nanoseconds>( endClock - startClock ).count();
-        std::cout << "duration: " << durationArchiveImpl / 1'000'000.0 << " ms" << std::endl;
-    }
+//    {
+//        std::cout << "-------------------- ArchiveImpl --------" << std::endl;
+//        hub::io::ArchiveT<hub::serializer::SerializerImpl> archiveImpl;
+//        const auto startClock = std::chrono::high_resolution_clock::now();
+//        process( archiveImpl );
+//        const auto endClock = std::chrono::high_resolution_clock::now();
+//        durationArchiveImpl =
+//            std::chrono::duration_cast<std::chrono::nanoseconds>( endClock - startClock ).count();
+//        std::cout << "duration: " << durationArchiveImpl / 1'000'000.0 << " ms" << std::endl;
+//    }
 
 // #ifndef DEBUG
 //     CHECK( durationArchiveZppBits < durationArchiveImpl );

@@ -31,8 +31,8 @@ class ArchiveT : public InputOutputT
         assert( !m_datas.empty() );
         const auto& vector = m_datas.front();
 #ifdef HUB_DEBUG_INPUT
-        std::cout << "\t" << HEADER << "read(Data_t*, Size_t) : data = " << vector
-                  << ", read size = " << size << std::endl;
+        std::cout << "\t" << HEADER << "read(Data_t*, Size_t) : data = " << vector << std::endl;
+//                  << ", read size = " << size << std::endl;
 #endif
         assert( vector.size() == size );
 

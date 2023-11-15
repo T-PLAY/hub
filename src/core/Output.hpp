@@ -25,6 +25,18 @@ class OutputT : public OutputBase
   public:
     using OutputBase::write;
 
+//    template <class T>
+//    typename std::enable_if<!notWritable_v<T> && !writable_v<T> && !serializable_v<T> &&
+//                            !packable_v<T>>::type
+//    void write( const T& t ) {
+//#ifdef HUB_DEBUG_OUTPUT
+//        std::cout << HEADER << "write(" << TYPE_NAME( T ) << ") = " << t << std::endl;
+//#endif
+//        assert( isOpen() );
+//        m_serializer.pack( *this, t );
+//    }
+
+
     //    template <typename T>
     //    using writable_t = decltype( std::declval<T>().write( std::declval<Output&>() ) );
     //    template <typename T, typename = std::void_t<>>
@@ -38,22 +50,23 @@ class OutputT : public OutputBase
     //    virtual void write( const Data_t* data, Size_t len ) = 0;
 
   public:
-    template <class T>
-    typename std::enable_if<!notWritable_v<T> && writable_v<T>>::type write( const T& t ) {
-#ifdef HUB_DEBUG_OUTPUT
-        std::cout << HEADER << "\033[1mwrite\033[0m(writable: " << TYPE_NAME( T ) << ") ..."
-                  << std::endl;
-#endif
-        assert( isOpen() );
-        t.write( *this );
-#ifdef HUB_DEBUG_OUTPUT
-        std::cout << HEADER << "\033[1mwrite\033[0m(writable: " << TYPE_NAME( T ) << ") = " << t
-                  << std::endl;
-#endif
-    }
+//    template <class T>
+//    typename std::enable_if<!notWritable_v<T> && writable_v<T>>::type write( const T& t ) {
+//#ifdef HUB_DEBUG_OUTPUT
+//        std::cout << HEADER << "\033[1mwrite\033[0m(writable: " << TYPE_NAME( T ) << ") ..."
+//                  << std::endl;
+//#endif
+//        assert( isOpen() );
+//        t.write( *this );
+//#ifdef HUB_DEBUG_OUTPUT
+//        std::cout << HEADER << "\033[1mwrite\033[0m(writable: " << TYPE_NAME( T ) << ") = " << t
+//                  << std::endl;
+//#endif
+//    }
 
     template <class T>
-    typename std::enable_if<!notWritable_v<T> && packable_v<T>>::type write( const T& t ) {
+//    typename std::enable_if<!notWritable_v<T> && packable_v<T>>::type write( const T& t ) {
+    typename std::enable_if<packable_v<T>>::type write( const T& t ) {
 #ifdef HUB_DEBUG_OUTPUT
         std::cout << HEADER << "write(packable: " << TYPE_NAME( T ) << ") = " << t << std::endl;
 #endif
@@ -61,24 +74,25 @@ class OutputT : public OutputBase
         write( reinterpret_cast<const Data_t*>( &t ), sizeof( T ) );
     }
 
-    template <class T>
-    typename std::enable_if<!notWritable_v<T> && serializable_v<T>>::type write( const T& t ) {
-#ifdef HUB_DEBUG_OUTPUT
-        std::cout << HEADER << "\033[1mwrite\033[0m(serializable: " << TYPE_NAME( T ) << ") ..."
-                  << std::endl;
-#endif
-        assert( isOpen() );
-        const_cast<T&>( t ).serialize( *this );
-#ifdef HUB_DEBUG_OUTPUT
-        std::cout << HEADER << "\033[1mwrite\033[0m(serializable: " << TYPE_NAME( T ) << ") = " << t
-                  << std::endl;
-#endif
-    }
+//    template <class T>
+//    typename std::enable_if<!notWritable_v<T> && serializable_v<T>>::type write( const T& t ) {
+//#ifdef HUB_DEBUG_OUTPUT
+//        std::cout << HEADER << "\033[1mwrite\033[0m(serializable: " << TYPE_NAME( T ) << ") ..."
+//                  << std::endl;
+//#endif
+//        assert( isOpen() );
+//        const_cast<T&>( t ).serialize( *this );
+//#ifdef HUB_DEBUG_OUTPUT
+//        std::cout << HEADER << "\033[1mwrite\033[0m(serializable: " << TYPE_NAME( T ) << ") = " << t
+//                  << std::endl;
+//#endif
+//    }
 
     template <class T>
-    typename std::enable_if<!notWritable_v<T> && !writable_v<T> && !serializable_v<T> &&
-                            !packable_v<T>>::type
-    write( const T& t ) {
+//    typename std::enable_if<!notWritable_v<T> && !writable_v<T> && !serializable_v<T> &&
+//                            !packable_v<T>>::type
+//    write( const T& t ) {
+    typename std::enable_if<! packable_v<T>>::type write( const T& t ) {
 #ifdef HUB_DEBUG_OUTPUT
         std::cout << HEADER << "write(raw: " << TYPE_NAME( T ) << ") = " << t << std::endl;
 #endif
@@ -86,6 +100,10 @@ class OutputT : public OutputBase
         //        m_serializer.write(*this, t);
         m_serializer.pack( *this, t );
     }
+
+    ///////////////////////////////////////////////////////////////
+
+
 
 
 //    template <class T>
@@ -112,21 +130,21 @@ class OutputT : public OutputBase
 //        }
 //    }
 
-    void write( char* str ) = delete; // non compatible format 32/64 bit
+//    void write( char* str ) = delete; // non compatible format 32/64 bit
 
-    void write( const char* str ) {
-        assert( str != nullptr );
-        assert( isOpen() );
+//    void write( const char* str ) {
+//        assert( str != nullptr );
+//        assert( isOpen() );
 
-#ifdef HUB_DEBUG_OUTPUT
-        std::cout << HEADER << "write(const char*)" << std::endl;
-#endif
+//#ifdef HUB_DEBUG_OUTPUT
+//        std::cout << HEADER << "write(const char*)" << std::endl;
+//#endif
 
-        uint32_t strLen = static_cast<int>( std::strlen( str ) );
-        write( strLen );
+//        uint32_t strLen = static_cast<int>( std::strlen( str ) );
+//        write( strLen );
 
-        if ( strLen > 0 ) { write( reinterpret_cast<const unsigned char*>( str ), strLen ); }
-    }
+//        if ( strLen > 0 ) { write( reinterpret_cast<const unsigned char*>( str ), strLen ); }
+//    }
 
     //  private:
     //    template <class... Ts>
@@ -150,11 +168,11 @@ class OutputT : public OutputBase
     ////        //        write( reinterpret_cast<const Data_t*>( &t ), sizeof( T ) );
     //    }
 
-    template <class... Ts>
-    void operator()( const Ts&... ts ) {
-        assert( isOpen() );
-        m_serializer.pack( *this, ts... );
-    }
+//    template <class... Ts>
+//    void operator()( const Ts&... ts ) {
+//        assert( isOpen() );
+//        m_serializer.pack( *this, ts... );
+//    }
 
   private:
     SerializerT m_serializer;

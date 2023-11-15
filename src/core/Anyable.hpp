@@ -12,8 +12,10 @@
 // #include "core/Output.hpp"
 // #include "core/io/input/InputBase.hpp"
 // #include "core/io/output/OutputBase.hpp"
-#include "core/Input.hpp"
-#include "core/Output.hpp"
+//#include "core/Input.hpp"
+//#include "core/Output.hpp"
+#include "core/Serializer.hpp"
+//#include "core/serializer/SerializerI.hpp"
 
 #if CPLUSPLUS_VERSION <= 14
 #    include "std_any.hpp"
@@ -31,6 +33,10 @@ class Anyable
     {
         //  private:
       public:
+//        AnyHelper() = delete;
+//        AnyHelper(AnyHelper &&) = delete;
+//        AnyHelper(const AnyHelper &) = delete;
+
         //    template <typename T>
         //    Anyable( const T* t )
         //    {
@@ -60,9 +66,9 @@ class Anyable
 
             // void
             if constexpr ( std::is_same_v<T, void> ) {
-                getValueStr = []( const std::any& any ) { return "nil"; };
-                write       = []( Output& output, const std::any& ) {};
-                read        = []( Input& input, std::any& ) {};
+                getValueStr = []( const std::any& ) { return "nil"; };
+                write       = []( Serializer&, const std::any& ) {};
+                read        = []( Serializer&, std::any& ) {};
                 compare     = []( const std::any& any, const std::any& any2 ) {
                     if ( any.type() == typeid( void ) || any2.type() == typeid( void ) ) {
                         return any.type() == any2.type();
@@ -80,11 +86,11 @@ class Anyable
                 };
                 // const char *
                 if constexpr ( std::is_same_v<T, const char*> ) {
-                    write = []( Output& output, const std::any& any ) {
+                    write = []( Serializer& output, const std::any& any ) {
                         const char* val = std::any_cast<const char*>( any );
                         output.write( val );
                     };
-                    read = []( Input& input, std::any& any ) {
+                    read = []( Serializer& input, std::any& any ) {
                         char* val =
                             new char[80]; // leak, please do not use char *, use std::string instead
                         input.read( val );
@@ -97,11 +103,11 @@ class Anyable
                 }
                 // others
                 else {
-                    write = []( Output& output, const std::any& any ) {
+                    write = []( Serializer& output, const std::any& any ) {
                         const T& val = std::any_cast<const T&>( any );
                         output.write( val );
                     };
-                    read = []( Input& input, std::any& any ) {
+                    read = []( Serializer& input, std::any& any ) {
                         T t;
                         input.read( t );
                         any = t;
@@ -116,12 +122,17 @@ class Anyable
             }
         }
 
+        friend class Anyable;
+        friend class Any;
+      private:
         std::function<std::string()> getTypeName;
         std::function<std::string( const std::any& )> getValueStr;
         std::function<bool( const std::any&, const std::any& )> compare;
         //        std::function<void( io::output::OutputBase& output, const std::any& )> write;
-        std::function<void( Output&, const std::any& )> write;
-        std::function<void( Input&, std::any& )> read;
+//        std::function<void( Output&, const std::any& )> write;
+        std::function<void( Serializer&, const std::any& )> write;
+        std::function<void( Serializer&, std::any& )> read;
+//        std::function<void( Input&, std::any& )> read;
     };
 
     template <class T>

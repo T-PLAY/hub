@@ -2,7 +2,7 @@
 
 // #include <iostream>
 //#include "core/Traits.hpp"
-#include "core/Vector.hpp"
+//#include "core/Vector.hpp"
 
 namespace hub {
 namespace sensor {
@@ -26,23 +26,23 @@ namespace sensor {
 //    return os;
 //}
 
-std::ostream& operator<<( std::ostream& os, const Resolution& resolution ) {
-//    os << "<" << resolution.format << ":" << resolution.nDim << ">";
-//    os << "[Resolution] ";
-    os << "<" << resolution.format << ":";
-//    ::operator<<(os, resolution.nDim);
-    const auto & nDim = resolution.nDim;
-    for ( int i = 0; i < nDim.size(); ++i ) {
-        const auto& n = nDim.at( i );
-        os << n;
-        if (i != nDim.size() - 1)
-            os << "x";
-    }
-//    os << resolution.nDim << ">";
-//    hub::operator<<(os, resolution.nDim);
-    os << ">";
-    return os;
-}
+//std::ostream& operator<<( std::ostream& os, const Resolution& resolution ) {
+////    os << "<" << resolution.format << ":" << resolution.nDim << ">";
+////    os << "[Resolution] ";
+//    os << "<" << resolution.format << ":";
+////    ::operator<<(os, resolution.nDim);
+//    const auto & nDim = resolution.nDim;
+//    for ( int i = 0; i < nDim.size(); ++i ) {
+//        const auto& n = nDim.at( i );
+//        os << n;
+//        if (i != nDim.size() - 1)
+//            os << "x";
+//    }
+////    os << resolution.nDim << ">";
+////    hub::operator<<(os, resolution.nDim);
+//    os << ">";
+//    return os;
+//}
 
 ///////////////////////////////////////////////////////////////////////
 

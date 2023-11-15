@@ -15,23 +15,51 @@
 //// #include "io/Memory.hpp"
 // #include "core/Output.hpp"
 
-#include <span>
+// #include <span>
 
 #include "core/Macros.hpp"
+// #include "core/Matrix.hpp"
+#include "core/Output.hpp"
+
+#include "Acquisition.hpp"
+#include "Sensor.hpp"
+#include "SensorSpec.hpp"
+
 //// #include "net/ClientSocket.hpp"
 // #include "Acquisition.hpp"
 ////#include "Format.hpp"
 // #include "Measure.hpp"
-#include "Resolution.hpp"
+// #include "Resolution.hpp"
 
 namespace hub {
 namespace sensor {
 
 template <class Resolution>
 // template <class... ResolutionTs>
-class OutputSensorT
+class OutputSensorT : public Sensor
 {
   public:
+    using Acquisition = AcquisitionT<Resolution>;
+
+    OutputSensorT( const SensorSpec& sensorSpec, Output& output ) :
+        Sensor( sensorSpec ), m_output( output ) {
+        //        m_spec.m_resolution = Resolution();
+        if constexpr ( isMatrix<Resolution> ) { m_spec.resolution = Resolution().getSerial(); }
+        else { m_spec.resolution = make_matrix<Resolution>(); }
+        m_output.write( m_spec );
+    }
+
+    void operator<<( const Acquisition& acquisition ) {
+//        m_output.write( acquisition );
+#ifdef HUB_DEBUG_OUTPUT
+        std::cout << HEADER << "write(const Acquisition&) = " << acquisition << std::endl;
+#endif
+        m_output.write( acquisition.Matrix::data(), acquisition.Matrix::size() );
+    }
+
+  private:
+    Output& m_output;
+    //    SensorSpec m_sensorSpec;
 
 }; // end OutputSensorT
 
