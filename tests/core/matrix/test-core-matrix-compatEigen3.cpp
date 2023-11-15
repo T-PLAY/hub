@@ -5,8 +5,9 @@
 
 #include <sensor/Resolution.hpp>
 
+#ifdef HUB_USE_EIGEN3
 #include <eigen3/Eigen/Eigen>
-#include <opencv2/opencv.hpp>
+#endif
 
 //#include <OpenImageIO/image_view.h>
 //#include <OpenImageIO/imagebuf.h>
@@ -39,6 +40,7 @@ TEST_CASE( "Resolution test" ) {
     //    using EigenMat = Eigen::Matrix<unsigned char, Eigen::Dynamic>;
     //    Eigen::Matrix<unsigned char, Eigen::Dynamic, Eigen::Dynamic> eigenMat(data, height,
     //    width);
+#ifdef HUB_USE_EIGEN3
     Eigen::Matrix<unsigned char, height, width, Eigen::RowMajor> eigenMat( data );
     for ( int j = 0; j < height; ++j ) {
         for ( int i = 0; i < width; ++i ) {
@@ -48,18 +50,10 @@ TEST_CASE( "Resolution test" ) {
         std::cout << std::endl;
     }
     std::cout << std::endl;
+#endif
 
     ////////////////////////////////////
 
-    cv::Mat cvMat( height, width, CV_8UC3, data ); // row major
-
-    for ( int j = 0; j < height; ++j ) {
-        for ( int i = 0; i < width; ++i ) {
-            std::cout << cvMat.data[i + j * width] << " ";
-//            assert( eigenMat.coeff( i, j ) == cvMat.data[i * height + j] );
-        }
-        std::cout << std::endl;
-    }
 
     //    hub::sensor::Resolutions resolutions;
     //    resolutions.push_back( hub::sensor::Resolution {

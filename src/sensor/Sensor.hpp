@@ -1,7 +1,7 @@
 #pragma once
 
 #include "SensorSpec.hpp"
-//#include "Acquisition.hpp"
+#include "Acquisition.hpp"
 
 //#include "core/Input.hpp"
 
@@ -30,9 +30,10 @@ class SRC_API Sensor
 //    Sensor(Input & input) :
 //    ~Sensor();
 
-//    Acquisition acq() const {
-//        return Acquisition{m_spec.getResolutions()};
-//    }
+    const Acquisition & acq() const {
+        return Acquisition{m_spec.getResolution()};
+//        return dynamic_cast<const Acquisition&>(m_spec.getResolution());
+    }
 
   public:
     ///

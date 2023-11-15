@@ -191,3 +191,11 @@
 //} // namespace hub
 
 
+
+
+namespace hub {
+namespace sensor {
+
+
+}
+}

@@ -30,7 +30,7 @@
 namespace hub {
 namespace sensor {
 
-using Resolution = Matrix;
+// using Resolution = Matrix;
 
 ///
 /// \brief The SensorSpec class
@@ -75,18 +75,22 @@ class SRC_API SensorSpec
     ///
 
     SensorSpec( const std::string& _sensorName,
-                const Resolution& _resolution = {},
-                const MetaData& _metaData     = {} ) :
-        sensorName { _sensorName },
-        resolution {_resolution},
-        metaData{_metaData}
-        {}
+                //                const Resolution& _resolution = {},
+                const MetaData& _metaData = {} ) :
+        m_sensorName { _sensorName },
+        //        resolution {_resolution},
+        m_metaData { _metaData } {}
 
     auto toString() const {
-        return "'" + sensorName + "' " + resolution.toString() + " " + ::toString(metaData);
-//        return sensorName + " " + resolution.toString();
+        return "'" + m_sensorName + "' " + m_resolution.toString() + " " + ::toString( m_metaData );
+        //        return sensorName + " " + resolution.toString();
     }
-    //    SensorSpec( const char* sensorName,
+
+    bool operator==( const SensorSpec& other ) const {
+        return m_sensorName == other.m_sensorName && m_resolution == other.m_resolution &&
+               m_metaData == other.m_metaData;
+    }
+    //    SensorSpec( const char* m_sensorName,
     //                const Resolution& resolution = {},
     //                const MetaData& metaData = {} );
 
@@ -101,157 +105,164 @@ class SRC_API SensorSpec
     //    }
 
     SensorSpec() = default;
-//    SensorSpec() = delete;
 
-  public:
+    SensorSpec( const SensorSpec& sensorSpec ) :
+        m_sensorName { sensorSpec.m_sensorName }, m_metaData { sensorSpec.m_metaData } {};
 
+    //    SensorSpec() = delete;
+
+    //  public:
 
     void write( Serializer& serializer ) const {
-        serializer.writeAll(sensorName, resolution, metaData);
+        serializer.writeAll( m_sensorName, m_resolution, m_metaData );
     }
     void read( Serializer& serializer ) {
-        serializer.readAll(sensorName, resolution, metaData);
+        serializer.readAll( m_sensorName, m_resolution, m_metaData );
     }
 
-//    void serialize(Serializer & serializer) {
-//        serializer(sensorName, resolution, metaData);
-//    }
+    //    void serialize(Serializer & serializer) {
+    //        serializer(m_sensorName, resolution, metaData);
+    //    }
 
+    //    static constexpr auto serialize( auto& archive, auto& self ) {
+    ////                return archive( self.m_sensorName, self.m_resolution, self.m_metaData );
+    //        return archive( self.m_sensorName, self.resolution );
+    //    }
 
-//    static constexpr auto serialize( auto& archive, auto& self ) {
-////                return archive( self.m_sensorName, self.m_resolution, self.m_metaData );
-//        return archive( self.sensorName, self.resolution );
-//    }
+    std::string getSensorName() const { return m_sensorName; }
+    const Matrix& getResolution() const { return m_resolution; }
+    MetaData getMetaData() const { return m_metaData; }
+    void setResolution( Matrix&& newResolution ) { m_resolution = std::move( newResolution ); }
 
-//  private:
-    std::string sensorName;
-    Resolution resolution;
+  private:
+    std::string m_sensorName;
+    Matrix m_resolution;
     //    Matrix m_resolutions;
 
-    MetaData metaData;
+    MetaData m_metaData;
 
     //    size_t m_acquisitionSize;
 };
-    //    const unsigned char* getData() const { return nullptr; }
-    //    constexpr std::string typeName() const { return "SensorSpec"; }
-    //    size_t getSize() const { return 0; }
+//    const unsigned char* getData() const { return nullptr; }
+//    constexpr std::string typeName() const { return "SensorSpec"; }
+//    size_t getSize() const { return 0; }
 
-    //    ///
-    //    /// \brief operator +
-    //    /// \param sensorSpec
-    //    /// \return
-    //    ///
-    //    SensorSpec operator+( const SensorSpec& sensorSpec ) const;
+//    ///
+//    /// \brief operator +
+//    /// \param sensorSpec
+//    /// \return
+//    ///
+//    SensorSpec operator+( const SensorSpec& sensorSpec ) const;
 
-    //    ///
-    //    /// \brief operator +=
-    //    /// \param sensorSpec
-    //    /// \return
-    //    ///
-    //    SensorSpec& operator+=( const SensorSpec& sensorSpec );
+//    ///
+//    /// \brief operator +=
+//    /// \param sensorSpec
+//    /// \return
+//    ///
+//    SensorSpec& operator+=( const SensorSpec& sensorSpec );
 
-    //    ///
-    //    /// \brief operator ==
-    //    /// \param sensorSpec
-    //    /// \return
-    //    ///
-    //    bool operator==( const SensorSpec& sensorSpec ) const;
+//    ///
+//    /// \brief operator ==
+//    /// \param sensorSpec
+//    /// \return
+//    ///
+//    bool operator==( const SensorSpec& sensorSpec ) const;
 
-    //    ///
-    //    /// \brief operator <<
-    //    /// \param os
-    //    /// \param sensorSpec
-    //    /// \return
-    //    ///
-    //    SRC_API friend std::ostream& operator<<( std::ostream& os, const SensorSpec& sensorSpec );
+//    ///
+//    /// \brief operator <<
+//    /// \param os
+//    /// \param sensorSpec
+//    /// \return
+//    ///
+//    SRC_API friend std::ostream& operator<<( std::ostream& os, const SensorSpec& sensorSpec );
 
-    //    ///
-    //    /// \brief to_string
-    //    /// \return
-    //    ///
-    //    std::string to_string() const;
+//    ///
+//    /// \brief to_string
+//    /// \return
+//    ///
+//    std::string to_string() const;
 
-    //    ///
-    //    /// \brief isEmpty
-    //    /// \return
-    //    ///
-    //    bool isEnd() const;
+//    ///
+//    /// \brief isEmpty
+//    /// \return
+//    ///
+//    bool isEnd() const;
 
-    //  public:
-    //    ///
-    //    /// \brief to_string
-    //    /// \param metaData
-    //    /// \param expand
-    //    /// \return
-    //    ///
-    //    static std::string to_string( const MetaData& metaData, bool expand = false );
+//  public:
+//    ///
+//    /// \brief to_string
+//    /// \param metaData
+//    /// \param expand
+//    /// \return
+//    ///
+//    static std::string to_string( const MetaData& metaData, bool expand = false );
 
-    //    ///
-    //    /// \brief to_string
-    //    /// \param metaData
-    //    /// \return
-    //    ///
-    //    static std::string to_string( const std::pair<std::string, Any>& metaData );
+//    ///
+//    /// \brief to_string
+//    /// \param metaData
+//    /// \return
+//    ///
+//    static std::string to_string( const std::pair<std::string, Any>& metaData );
 
-    //  public:
-    // #if CPLUSPLUS_VERSION == 20
-    //    inline CONSTEXPR const std::string& getSensorName() const noexcept;
-    // #else
-    //    ///
-    //    /// \brief getSensorName
-    //    /// \return
-    //    ///
-    //    inline const std::string& getSensorName() const noexcept;
-    // #endif
-    //    ///
-    //    /// \brief getResolutions
-    //    /// \return
-    //    ///
-    //    inline CONSTEXPR Resolutions& getResolutions() const noexcept;
+//  public:
+// #if CPLUSPLUS_VERSION == 20
+//    inline CONSTEXPR const std::string& getSensorName() const noexcept;
+// #else
+//    ///
+//    /// \brief getSensorName
+//    /// \return
+//    ///
+//    inline const std::string& getSensorName() const noexcept;
+// #endif
+//    ///
+//    /// \brief getResolutions
+//    /// \return
+//    ///
+//    inline CONSTEXPR Resolutions& getResolutions() const noexcept;
 
-    //    ///
-    //    /// \brief getMetaDatas
-    //    /// \return
-    //    ///
-    //    inline CONSTEXPR MetaData& getMetaDatas() const noexcept;
-    //    ///
-    //    /// \brief getMetaDatas
-    //    /// \return
-    //    ///
-    //    inline MetaData& getMetaDatas() noexcept;
-    //    ///
-    //    /// \brief getAcquisitionSize
-    //    /// \return
-    //    ///
-    //    inline CONSTEXPR Size_t getAcquisitionSize() const noexcept;
+//    ///
+//    /// \brief getMetaDatas
+//    /// \return
+//    ///
+//    inline CONSTEXPR MetaData& getMetaDatas() const noexcept;
+//    ///
+//    /// \brief getMetaDatas
+//    /// \return
+//    ///
+//    inline MetaData& getMetaDatas() noexcept;
+//    ///
+//    /// \brief getAcquisitionSize
+//    /// \return
+//    ///
+//    inline CONSTEXPR Size_t getAcquisitionSize() const noexcept;
 
-    //    ///
-    //    /// \brief setMetaData
-    //    /// \param metaData
-    //    ///
+//    ///
+//    /// \brief setMetaData
+//    /// \param metaData
+//    ///
 
-    //    template <typename Output>
-    //    friend Output& operator<<( Output& output, const SensorSpec& sensorSpec );
+//    template <typename Output>
+//    friend Output& operator<<( Output& output, const SensorSpec& sensorSpec );
 
-    //    template <typename Input>
-    //    friend Input& operator>>( Input& input, SensorSpec& sensorSpec );
+//    template <typename Input>
+//    friend Input& operator>>( Input& input, SensorSpec& sensorSpec );
 
-    //  private:
-    //    template <typename Input>
-    //    void read( Input& input ) {
-    //        //        input.read( m_format );
-    //        input.read( m_sensorName );
-    //        input.read( m_resolutions );
-    //        input.read( m_metaData );
-    //    }
+//  private:
+//    template <typename Input>
+//    void read( Input& input ) {
+//        //        input.read( m_format );
+//        input.read( m_sensorName );
+//        input.read( m_resolutions );
+//        input.read( m_metaData );
+//    }
 
-    //    template <typename Output>
-    //    void write( Output& output ) const {
-    //        //        output.write( m_format );
-    //        output.write( m_sensorName );
-    //        output.write( m_resolutions );
-    //        output.write( m_metaData );
-    //    }
+//    template <typename Output>
+//    void write( Output& output ) const {
+//        //        output.write( m_format );
+//        output.write( m_sensorName );
+//        output.write( m_resolutions );
+//        output.write( m_metaData );
+//    }
 
 /////////////////////////////////////////////////// INLINE
 ///////////////////////////////////////////////////////////////////////////

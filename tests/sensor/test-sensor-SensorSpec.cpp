@@ -64,8 +64,8 @@ TEST_CASE( "SensorSpec test" ) {
     hub::sensor::SensorSpec::MetaData metaData;
     metaData["hello"] = 5;
     metaData["name"]  = "gauthier";
-    auto resolution = hub::make_matrix(hub::make_matrix<double>(), hub::make_matrix<int, 640, 480>());
-    hub::sensor::SensorSpec sensorSpec{"sensorName", resolution, metaData};
+    hub::sensor::SensorSpec sensorSpec{"sensorName", metaData};
+//    sensorSpec.resolution = hub::make_matrix(hub::make_matrix<double>(), hub::make_matrix<int, 640, 480>());
 //    sensorSpec.sensorName = "sensorName";
 //    auto & resolution = sensorSpec.resolution;
 //    resolution.push_back(make_re)
@@ -73,7 +73,7 @@ TEST_CASE( "SensorSpec test" ) {
     archive.write(sensorSpec);
     hub::sensor::SensorSpec sensorSpec_read;
     archive.read(sensorSpec_read);
-//    assert(sensorSpec == sensorSpec_read);
+    assert(sensorSpec == sensorSpec_read);
 //    static_assert(! hub::Serializer::Writable_v<hub::sensor::SensorSpec>);
 //    static_assert(hub::serializer::Readable_v<hub::Any>);
 //    static_assert(hub::serializer::Readable_v<hub::sensor::SensorSpec::MetaData>);

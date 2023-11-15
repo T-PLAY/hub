@@ -44,8 +44,8 @@ class OutputSensorT : public Sensor
     OutputSensorT( const SensorSpec& sensorSpec, Output& output ) :
         Sensor( sensorSpec ), m_output( output ) {
         //        m_spec.m_resolution = Resolution();
-        if constexpr ( isMatrix<Resolution> ) { m_spec.resolution = Resolution().getSerial(); }
-        else { m_spec.resolution = make_matrix<Resolution>(); }
+        if constexpr ( isMatrix<Resolution> ) { m_spec.setResolution(Resolution().getSerial()); }
+        else { m_spec.setResolution(make_matrix<Resolution>()); }
         m_output.write( m_spec );
     }
 

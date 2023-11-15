@@ -61,6 +61,9 @@ class MatrixTs
     template <class... Args>
     constexpr MatrixTs( Args&&... args ) : m_buffer { std::forward<Data_t&&>( args )... } {}
 
+//    MatrixTs(MatrixTs &&) = default;
+//    MatrixTs(const MatrixTs &) = delete;
+
   public:
     template <class Type, class Matrix, class... Types_>
         requires( isMatrix<Matrix> )

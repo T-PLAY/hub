@@ -38,7 +38,7 @@ namespace sensor {
 class InputSensor : public Sensor
 {
   public:
-    //    using Sensor::acq;
+        using Sensor::acq;
     //    using Input::read;
 
     //    template <class InputT>
@@ -63,9 +63,9 @@ class InputSensor : public Sensor
         //        m_input.read(m_measures);
     }
 
-    void operator>>( Acquisition& acquisition ) {
-        //        assert(m_spec.getResolutions() == acquisition.getResolutions());
-        m_input.read( acquisition );
+    void operator>>( Acquisition& acq ) {
+        assert(m_spec.getResolution() == acq.getResolution());
+        m_input.read( acq );
     }
 
     //    const Input& getInput() const { return m_input; }

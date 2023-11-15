@@ -90,11 +90,17 @@ class Matrix
     //        m_nodes.push_back( Matrix::make_node<Type, N, Ns...>() );
     //    }
 
-    template <class MatrixT>
-    Matrix& operator=( const MatrixT& matrix ) {
+    Matrix(Matrix && matrix) = default;
+    Matrix(const Matrix & matrix) = delete;
 
-        return *this;
-    }
+    Matrix & operator=(Matrix && matrix) = default;
+    Matrix & operator=(const Matrix & matrix) = delete;
+
+//    template <class MatrixT>
+//    Matrix& operator=( const MatrixT& matrix ) {
+
+//        return *this;
+//    }
 
     //    void push_back( Node&& node ) {
     //        m_size += node.size();
@@ -295,7 +301,7 @@ class Matrix
 //}
 
 template <class Type, Size_t N = 1, Size_t... Ns>
-    requires( N > 0 && ( ( Ns > 1 ) && ... ) )
+    requires( ! std::is_same_v<Type, Matrix> && N > 0 && ( ( Ns > 1 ) && ... ) )
 Matrix make_matrix() {
     //     Matrix matrix;
     return Matrix( Matrix::make_node<Type, N, Ns...>() );
@@ -303,8 +309,12 @@ Matrix make_matrix() {
 }
 
 template <class... Matrices>
-Matrix make_matrix(Matrices&&... matrices) {
-    return (matrices << ...);
+    requires (sizeof...(Matrices) > 1)
+Matrix make_matrix(const Matrices&... matrices) {
+    Matrix matrix;
+    ((matrix << matrices) << ...);
+    return matrix;
+//    return Matrix();
 }
 
 //    static_assert(decltype(m_hashCode) == 8);

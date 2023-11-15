@@ -53,7 +53,7 @@ auto toString( const std::map<T, U>& container ) {
     //    constexpr auto nMaxDataToShow = 40;
     //    const auto iMax               = std::mincontainer.size(), nMaxDataToShow );
     //    for ( auto i = 0; i < iMax; ++i ) {
-    int i = 0;
+    size_t i = 0;
     for ( const auto& [key, value] : container ) {
         //        const auto& [key, value] = pair;
 

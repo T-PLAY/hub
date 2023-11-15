@@ -41,11 +41,13 @@ TEST_CASE( "InputSensor test" ) {
         //        using UserResolution = MatrixXD<UserType, 640, 480>;
         //        using UserResolution = MatrixXD<UserType>;
 
-        hub::sensor::SensorSpec sensorSpec( "sensorName" );
+        hub::sensor::SensorSpec::MetaData metaData;
+        metaData["name"]  = "gauthier";
+        hub::sensor::SensorSpec sensorSpec( "sensorName", metaData );
         OutputSensorT<UserResolution> outputSensor( sensorSpec, archive );
         OutputSensorT<UserResolution>::Acquisition acq;
-//        AcquisitionT<UserResolution> acq;
-//        AcquisitionT<int> acq;
+        //        AcquisitionT<UserResolution> acq;
+        //        AcquisitionT<int> acq;
 
         auto& start    = acq.getStart();
         auto& end      = acq.getEnd();
@@ -56,10 +58,20 @@ TEST_CASE( "InputSensor test" ) {
         userType.a = 2;
         userType.b = true;
 
-        outputSensor << acq;
 
-        InputSensor inputSensor(archive);
-//        assert(UserResolution() == inputSensor.getSpec().resolution);
+
+        InputSensor inputSensor( archive );
+        auto acq_read = inputSensor.acq();
+        std::cout << "acq : " << acq << std::endl;
+
+        std::cout << "sending acq" << std::endl;
+        outputSensor << acq;
+        inputSensor >> acq_read;
+
+
+
+
+        //        assert(UserResolution() == inputSensor.getSpec().resolution);
 
         //        static_assert( UserResolution::nByte() == 640 * 480 * sizeof( UserType ) );
         //        //    using UserResolution2 = ResolutionT<UserType2, 100>;
@@ -212,7 +224,7 @@ TEST_CASE( "InputSensor test" ) {
     ////        span = span2;
 
     ////        constexpr ArrayBuffer<MatrixInt2, double, float> buffer {matrix_ref, double_ref,
-    ///float_ref};
+    /// float_ref};
 
     ////        static_assert(buffer.Size() == sizeof(MatrixInt2) + sizeof(double) + sizeof(float));
     ////        static_assert(buffer.get<MatrixInt2>() == matrix_ref);
