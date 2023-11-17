@@ -61,8 +61,8 @@ class MatrixTs
     template <class... Args>
     constexpr MatrixTs( Args&&... args ) : m_buffer { std::forward<Data_t&&>( args )... } {}
 
-//    MatrixTs(MatrixTs &&) = default;
-//    MatrixTs(const MatrixTs &) = delete;
+    //    MatrixTs(MatrixTs &&) = default;
+    //    MatrixTs(const MatrixTs &) = delete;
 
   public:
     template <class Type, class Matrix, class... Types_>
@@ -184,8 +184,18 @@ class MatrixTs
         return matrix;
     }
 
-    //    bool operator==(const Matrix & matrix) {
-    //    }
+    bool operator==( const Matrix& matrix ) {
+        if (Size == matrix.size() && nType() == matrix.nType()) {
+            const Matrix & me = getMatrix();
+            if (me == matrix) {
+                return memcmp(data(), matrix.data(), Size) == 0;
+            }
+            else {
+                return false;
+            }
+        }
+            return false;
+    }
 
   private:
     template <class Type, class Matrix, class... Types_>
@@ -260,7 +270,7 @@ class MatrixTs
         str.erase( std::remove( str.begin(), str.end(), ' ' ), str.end() );
 
         if constexpr ( sizeof...( Types_ ) > 0 ) { return str + "_" + printName<Types_...>(); }
-        else { return str; }
+        else { return str + "(" + std::to_string( Size ) + ")"; }
     }
 
   private:

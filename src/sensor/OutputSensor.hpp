@@ -49,12 +49,13 @@ class OutputSensorT : public Sensor
         m_output.write( m_spec );
     }
 
-    void operator<<( const Acquisition& acquisition ) {
-//        m_output.write( acquisition );
+    void operator<<( const Acquisition& aqc ) {
+//        m_output.write( aqc );
 #ifdef HUB_DEBUG_OUTPUT
-        std::cout << HEADER << "write(const Acquisition&) = " << acquisition << std::endl;
+        std::cout << HEADER << "write(const Acquisition&) = " << aqc << std::endl;
 #endif
-        m_output.write( acquisition.Matrix::data(), acquisition.Matrix::size() );
+//        m_output.write( aqc.Matrix::data(), aqc.Matrix::size() );
+        m_output.write( aqc.data(), aqc.size() );
     }
 
   private:

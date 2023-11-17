@@ -12,11 +12,23 @@ using Clock = long long;
 class Acquisition : public Matrix
 {
   public:
-    Acquisition( Matrix&& resolution ) :
-        Matrix ( make_matrix( make_matrix<Clock>(), make_matrix<Clock>(), resolution ) ) {}
-//        Matrix(  resolution ) {}
+    Acquisition( const Matrix& resolution ) :
+        Matrix( make_matrix( make_matrix<Clock>(), make_matrix<Clock>(), resolution ) ),
+//        Matrix( make_matrix(resolution, make_matrix<int>()) ),
+//        Matrix( resolution.clone() ),
+        m_resolution { resolution } {}
+    //        Matrix(  resolution ) {}
 
-//    const Matrix & getResolution() const { return *this; }
+    Acquisition(Acquisition &&) = default;
+    Acquisition(const Acquisition &) = delete;
+
+    Acquisition & operator=(Acquisition &&) = default;
+    Acquisition & operator=(const Acquisition &) = delete;
+
+    //    const Matrix & getResolution() const { return *this; }
+    const Matrix & getResolution() const {
+        return m_resolution;
+    }
     Clock& getStart() { return get<Clock&>(); }
     Clock& getEnd() { return get<Clock&, 1>(); }
     //    template <class Type>
@@ -25,7 +37,8 @@ class Acquisition : public Matrix
     //    }
 
   private:
-//    Matrix m_matrix;
+    const Matrix& m_resolution;
+    //    Matrix m_matrix;
 };
 
 /////////////////////////////////////////////////////////////////////

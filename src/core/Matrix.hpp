@@ -43,6 +43,7 @@ class Matrix
             //            );
             std::string str;
             str += m_name;
+            str.erase( std::remove( str.begin(), str.end(), ' ' ), str.end() );
             if ( !( m_dims.size() == 1 && m_dims.at( 0 ) == 1 ) ) {
                 str += ":";
                 Size_t i = 0;
@@ -52,6 +53,7 @@ class Matrix
                     ++i;
                 }
             }
+//            str += "(" + std::to_string(m_size) + ")";
             return str;
         }
 
@@ -96,6 +98,12 @@ class Matrix
     Matrix & operator=(Matrix && matrix) = default;
     Matrix & operator=(const Matrix & matrix) = delete;
 
+    Matrix clone() const {
+        Matrix matrix;
+        matrix << *this;
+        return matrix;
+    }
+
 //    template <class MatrixT>
 //    Matrix& operator=( const MatrixT& matrix ) {
 
@@ -111,6 +119,7 @@ class Matrix
     Matrix & operator<<( const Matrix& other ) {
         for ( const auto& node : other.m_nodes ) {
             m_nodes.push_back( node );
+            m_size += node.m_size;
         }
         return *this;
         //        return m_nodes;
@@ -124,6 +133,8 @@ class Matrix
             str += node.toString();
             if ( i != m_nodes.size() - 1 ) str += "_";
         }
+        str += "(" + std::to_string(m_size) + ")";
+
         if ( !m_vector.empty() ) {
             str += " = ";
             str += ::toString( m_vector );
@@ -312,7 +323,8 @@ template <class... Matrices>
     requires (sizeof...(Matrices) > 1)
 Matrix make_matrix(const Matrices&... matrices) {
     Matrix matrix;
-    ((matrix << matrices) << ...);
+//    ((matrix << matrices) << ...);
+    (matrix << ... << matrices);
     return matrix;
 //    return Matrix();
 }

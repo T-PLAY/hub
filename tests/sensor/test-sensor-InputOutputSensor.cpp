@@ -33,6 +33,9 @@ TEST_CASE( "InputSensor test" ) {
             int a;
             bool b;
             auto toString() const { return std::to_string( a ) + " " + std::to_string( b ); }
+            bool operator==(const UserType & other) const {
+                return a == other.a && b == other.b;
+            }
             static constexpr auto name() { return "UserType"; };
         };
         static_assert( sizeof( UserType ) == 8 );
@@ -58,15 +61,35 @@ TEST_CASE( "InputSensor test" ) {
         userType.a = 2;
         userType.b = true;
 
+        std::cout << "acq : " << acq << std::endl;
+        std::cout << "acq : " << acq.getMatrix() << std::endl;
+//        assert(acq == acq.getMatrix());
 
 
         InputSensor inputSensor( archive );
-        auto acq_read = inputSensor.acq();
-        std::cout << "acq : " << acq << std::endl;
+        assert(archive.isEnd());
+//        std::cout << "outputSensor spec: " << outputSensor.getSpec() << std::endl;
+//        std::cout << "outputSensor resolution: " << outputSensor.getSpec().getResolution() << std::endl;
+//        std::cout << "inputSensor spec: " << inputSensor.getSpec() << std::endl;
+        assert(outputSensor.getSpec() == inputSensor.getSpec());
+//        std::cout << "inputSensor size: " << inputSensor.getSpec().getResolution().size() << std::endl;
+//        std::cout << "inputSensor resolution: " << inputSensor.getSpec().getResolution() << std::endl;
+//        return;
+//        Acquisition acq2{outputSensor.getSpec().getResolution()};
+//        std::cout << "acq2: " << acq2 << std::endl;
+
+        auto  acq_read = inputSensor.acq();
+//        std::cout << "acq_read : " << acq_read << std::endl;
+//        std::cout << "acq_read : " << acq_read.size() << std::endl;
 
         std::cout << "sending acq" << std::endl;
         outputSensor << acq;
         inputSensor >> acq_read;
+        assert(acq == acq_read);
+        assert(acq_read.getStart() == 4);
+        assert(acq_read.getEnd() == 3);
+        const auto & userType_read = acq_read.get<const UserType&>();
+        assert(userType == userType_read);
 
 
 

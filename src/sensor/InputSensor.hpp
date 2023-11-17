@@ -65,7 +65,8 @@ class InputSensor : public Sensor
 
     void operator>>( Acquisition& acq ) {
         assert(m_spec.getResolution() == acq.getResolution());
-        m_input.read( acq );
+//        m_input.read( acq );
+        m_input.read( acq.data(), acq.size() );
     }
 
     //    const Input& getInput() const { return m_input; }
