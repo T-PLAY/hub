@@ -74,12 +74,12 @@ class SRC_API SensorSpec
     /// [in] Additional informations of the sensor and acquisition.
     ///
 
-    SensorSpec( const std::string& _sensorName,
+    SensorSpec( const std::string& sensorName,
                 //                const Resolution& _resolution = {},
-                const MetaData& _metaData = {} ) :
-        m_sensorName { _sensorName },
+                const MetaData& metaData = {} ) :
+        m_sensorName { sensorName },
         //        resolution {_resolution},
-        m_metaData { _metaData } {}
+        m_metaData { metaData } {}
 
     auto toString() const {
         return "'" + m_sensorName + "' " + m_resolution.toString() + " " + ::toString( m_metaData );

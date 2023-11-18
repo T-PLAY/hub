@@ -12,34 +12,104 @@ using Clock = long long;
 class Acquisition : public Matrix
 {
   public:
-    Acquisition( const Matrix& resolution ) :
-        Matrix( make_matrix( make_matrix<Clock>(), make_matrix<Clock>(), resolution ) ),
-//        Matrix( make_matrix(resolution, make_matrix<int>()) ),
-//        Matrix( resolution.clone() ),
-        m_resolution { resolution } {}
-    //        Matrix(  resolution ) {}
+    //    Acquisition( const Matrix& resolution ) :
+    ////        Matrix( make_matrix( make_matrix<Clock>(), make_matrix<Clock>(), resolution ) )
+    //        Matrix( resolution )
+    ////        Matrix( make_matrix(resolution, make_matrix<int>()) ),
+    ////        Matrix( resolution.clone() ),
+    ////        m_resolution { resolution.clone() } {}
+    //    //        Matrix(  resolution ) {}
+    //    {
+    //          std::cout << "[Acquisition] Acquisition(const Matrix&)" << std::endl;
+    //    }
 
-    Acquisition(Acquisition &&) = default;
-    Acquisition(const Acquisition &) = delete;
+    Acquisition() = default;
 
-    Acquisition & operator=(Acquisition &&) = default;
-    Acquisition & operator=(const Acquisition &) = delete;
+    Acquisition( Acquisition&& )      = default;
+    Acquisition( const Acquisition& ) = delete;
+
+    Acquisition& operator=( Acquisition&& )      = default;
+    Acquisition& operator=( const Acquisition& ) = delete;
+
+    Acquisition clone() const {
+        Acquisition acq;
+        acq.push_back(*this);
+        return acq;
+    }
 
     //    const Matrix & getResolution() const { return *this; }
-    const Matrix & getResolution() const {
+    const Matrix& getResolution() const {
+        //    Matrix getResolution() const {
+        if ( m_resolution.size() == 0 ) {
+            //        Matrix resolution;
+            for ( int i = 2; i < nType(); ++i ) {
+                m_resolution.push_back_node( m_nodes.at( i ) );
+            }
+        }
         return m_resolution;
+        //        return *this;
+        //        return m_resolution;
     }
-    Clock& getStart() { return get<Clock&>(); }
-    Clock& getEnd() { return get<Clock&, 1>(); }
+    Clock& start() {
+//        if (m_start == nullptr) {
+//            m_start = get<Clock*>();
+//        }
+//        return *m_start;
+        return get<Clock&>();
+    }
+    Clock getStart() const {
+//        if (m_start == nullptr) {
+//            m_start = get<Clock*>();
+//        }
+//        return *m_start;
+//        return 5;
+        return *get<const Clock*>();
+    }
+
+    Clock& end() { return get<Clock&, 1>(); }
+    Clock getEnd() const {
+        return *get<const Clock*, 1>();
+//        return get<Clock, 1>();
+    }
     //    template <class Type>
     //    Type get() {
     //        return Matrix::template get<Type>();
     //    }
 
+//    using Matrix::operator<<;
+
+    Acquisition& operator<<( const Acquisition& other ) {
+        size_t sizeBeforeAdd = m_size;
+        for ( int i = 2; i < other.nType(); ++i ) {
+            push_back_node( other.m_nodes.at( i ) );
+        }
+//        for ( const auto& node : other.m_nodes ) {
+//            m_nodes.push_back( node );
+//            m_size += node.m_size;
+//        }
+        if ( ! other.m_vector.empty() ) {
+            m_vector.resize(sizeBeforeAdd + other.m_vector.size() - 2 * sizeof(Clock));
+            std::copy(other.m_vector.begin() + 2 * sizeof(Clock), other.m_vector.end(), m_vector.begin() + sizeBeforeAdd);
+        }
+        return *this;
+    }
+
+    Acquisition operator<<( const Acquisition& other ) const {
+        Acquisition matrix = this->clone();
+        matrix << other;
+        return matrix;
+    }
+
+
   private:
-    const Matrix& m_resolution;
+    mutable Matrix m_resolution;
+//    mutable Clock * m_start = nullptr;
+//    mutable Clock * m_end = nullptr;
+    //    const Matrix & m_resolution;
     //    Matrix m_matrix;
 };
+
+Acquisition make_acquisition( const Matrix& resolution );
 
 /////////////////////////////////////////////////////////////////////
 
@@ -50,11 +120,19 @@ class AcquisitionT : public MatrixTs<Clock, Clock, Resolution>
     //    using Legacy = MatrixTs<Clock, Clock, Resolution>;
     using Matrix = MatrixTs<Clock, Clock, Resolution>;
 
-    Clock& getStart() {
+    Clock& start() {
         return Matrix::template get<Clock&>();
         //        return get<Clock&>();
     }
-    Clock& getEnd() { return Matrix::template get<Clock&, 1>(); }
+    Clock getStart() const {
+        return Matrix::template get<Clock>();
+    }
+
+    Clock& end() { return Matrix::template get<Clock&, 1>(); }
+    Clock getEnd() const {
+        return Matrix::template get<Clock, 1>();
+    }
+
     template <class Type>
     Type get() {
         return Matrix::template get<Type>();
@@ -223,7 +301,7 @@ class AcquisitionT : public MatrixTs<Clock, Clock, Resolution>
 ////        assert( m_start != nullptr );
 ////        *m_start = start;
 ////    }
-//    constexpr long long getEnd() const {
+//    constexpr long long end() const {
 //        return m_data.get<1>();
 ////        assert( m_end != nullptr );
 ////        return *m_end;

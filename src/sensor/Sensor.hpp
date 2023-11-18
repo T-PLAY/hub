@@ -3,6 +3,8 @@
 #include "SensorSpec.hpp"
 #include "Acquisition.hpp"
 
+#include "Resolution.hpp"
+#include "Format.hpp"
 //#include "core/Input.hpp"
 
 namespace hub {
@@ -31,7 +33,8 @@ class SRC_API Sensor
 //    ~Sensor();
 
     Acquisition acq() const {
-        return Acquisition{m_spec.getResolution()};
+//        return Acquisition{m_spec.getResolution()};
+        return make_acquisition(m_spec.getResolution());
 //        return dynamic_cast<const Acquisition&>(m_spec.getResolution());
     }
 

@@ -17,72 +17,79 @@
 //#include "Macros.hpp"
 //#include "Version.hpp"
 
-//static int computeDist( const hub::sensor::Acquisition& acq, const hub::sensor::Acquisition& acq2 ) {
-//    return std::abs( acq.getStart() - acq2.getStart() );
-//}
+static int computeDist( const hub::sensor::Acquisition& acq, const hub::sensor::Acquisition& acq2 ) {
+    return std::abs( acq.getStart() - acq2.getStart() );
+}
 
-//static std::vector<hub::sensor::Acquisition>
-//computeSyncAcqs( const std::vector<hub::sensor::Acquisition>& leftAcqs,
-//                 const std::vector<hub::sensor::Acquisition>& rightAcqs ) {
-//    std::vector<int> min_dists( rightAcqs.size(), 999999 );
-//    std::vector<int> iLeftMinDists( rightAcqs.size(), -1 );
+static std::vector<hub::sensor::Acquisition>
+computeSyncAcqs( const std::vector<hub::sensor::Acquisition>& leftAcqs,
+                 const std::vector<hub::sensor::Acquisition>& rightAcqs ) {
+    std::vector<int> min_dists( rightAcqs.size(), 999999 );
+    std::vector<int> iLeftMinDists( rightAcqs.size(), -1 );
 
-//    int iRightAcq = 0;
-//    for ( const auto& rightAcq : rightAcqs ) {
-//        int iLeftMinDist = 0;
-//        int minDist      = computeDist( rightAcq, leftAcqs.front() );
-//        for ( int iLeftAcq = 1; iLeftAcq < leftAcqs.size(); ++iLeftAcq ) {
-//            const auto& leftAcq = leftAcqs.at( iLeftAcq );
-//            const auto dist     = computeDist( rightAcq, leftAcq );
-//            if ( dist <= minDist ) {
-//                minDist      = dist;
-//                iLeftMinDist = iLeftAcq;
-//            }
-//        }
+    int iRightAcq = 0;
+    for ( const auto& rightAcq : rightAcqs ) {
+        int iLeftMinDist = 0;
+        int minDist      = computeDist( rightAcq, leftAcqs.front() );
+        for ( int iLeftAcq = 1; iLeftAcq < leftAcqs.size(); ++iLeftAcq ) {
+            const auto& leftAcq = leftAcqs.at( iLeftAcq );
+            const auto dist     = computeDist( rightAcq, leftAcq );
+            if ( dist <= minDist ) {
+                minDist      = dist;
+                iLeftMinDist = iLeftAcq;
+            }
+        }
 
-//        //        int leftLeftMinDist;
-//        //        int leftRightMinDist;
+        //        int leftLeftMinDist;
+        //        int leftRightMinDist;
 
-//        const auto& leftMinAcq = leftAcqs.at( iLeftMinDist );
+        const auto& leftMinAcq = leftAcqs.at( iLeftMinDist );
 
-//        if ( !( leftMinAcq.getStart() < rightAcq.getStart() &&
-//                iLeftMinDist == leftAcqs.size() - 1 ) &&
-//             !( rightAcq.getStart() < leftMinAcq.getStart() && iLeftMinDist == 0 ) ) {
+        if ( !( leftMinAcq.getStart() < rightAcq.getStart() &&
+                iLeftMinDist == leftAcqs.size() - 1 ) &&
+             !( rightAcq.getStart() < leftMinAcq.getStart() && iLeftMinDist == 0 ) ) {
 
-//            //        if ( !( ( iLeftMinDist == 0 || iLeftMinDist == leftAcqs.size() - 1 ) &&
-//            //        minDist != 0 ) ) { if ( !(iLeftMinDist == 0 && minDist != 0))
+            //        if ( !( ( iLeftMinDist == 0 || iLeftMinDist == leftAcqs.size() - 1 ) &&
+            //        minDist != 0 ) ) { if ( !(iLeftMinDist == 0 && minDist != 0))
 
-//            //            if ( minDist < min_dists.at( iLeftMinDist ) ) {
-//            min_dists[iRightAcq]     = minDist;
-//            iLeftMinDists[iRightAcq] = iLeftMinDist;
-//        }
-//        //            }
-//        ++iRightAcq;
-//    }
+            //            if ( minDist < min_dists.at( iLeftMinDist ) ) {
+            min_dists[iRightAcq]     = minDist;
+            iLeftMinDists[iRightAcq] = iLeftMinDist;
+        }
+        //            }
+        ++iRightAcq;
+    }
 
-//    std::vector<hub::sensor::Acquisition> syncAcqs;
+    std::vector<hub::sensor::Acquisition> syncAcqs;
 
-//    const auto & resolutionsLeft = leftAcqs.at(0).getResolutions();
-//    const auto & resolutionsRight = rightAcqs.at(0).getResolutions();
+    const auto & resolutionsLeft = leftAcqs.at(0).getResolution();
+    const auto & resolutionsRight = rightAcqs.at(0).getResolution();
+//    auto & resolutionLeftRight = leftAcqs << resolutionsRight;
 //    hub::sensor::Resolutions resolutionsLeftRight { resolutionsLeft };
 //    resolutionsLeftRight.insert(resolutionsLeftRight.end(), resolutionsRight.begin(), resolutionsRight.end());
+//    auto sync_acq_resolution = leftAcqs.at(0) << resolutionsRight;
+//    auto sync_acq = hub::sensor::make_acquisition(sync_acq_resolution);
+//    auto sync_acq = leftAcqs.at(0) << rightAcqs.at(0);
+//    auto & sync_acq = hub::sensor::make_acquisition(resolutionsLeft << resolutionsRight);
 
-////    std::cout << resolutionsLeftRight << std::endl;
+//    std::cout << resolutionsLeftRight << std::endl;
 
-//    std::cout << "ref_sync_acqs" << std::endl;
+    std::cout << "ref_sync_acqs" << std::endl;
 
-//    for ( int iRightAcq = 0; iRightAcq < rightAcqs.size(); ++iRightAcq ) {
+    for ( int iRightAcq = 0; iRightAcq < rightAcqs.size(); ++iRightAcq ) {
 
-//        int iLeftMinDist = iLeftMinDists.at( iRightAcq );
-//        if ( iLeftMinDist != -1 ) {
-//            const auto& leftAcq  = leftAcqs.at( iLeftMinDist );
-//            const auto& rightAcq = rightAcqs.at( iRightAcq );
+        int iLeftMinDist = iLeftMinDists.at( iRightAcq );
+        if ( iLeftMinDist != -1 ) {
+            const auto& leftAcq  = leftAcqs.at( iLeftMinDist );
+            const auto& rightAcq = rightAcqs.at( iRightAcq );
 
-////            hub::sensor::Acquisition sync_acq( rightAcq.getStart(), rightAcq.getEnd() );
+//            hub::sensor::Acquisition sync_acq( rightAcq.getStart(), rightAcq.getEnd() );
 //            hub::sensor::Acquisition sync_acq{ resolutionsLeftRight };
-//            sync_acq.setStart(rightAcq.getStart());
-//            sync_acq.setEnd(rightAcq.getEnd());
-////            sync_acq << leftAcq.getMeasures() << rightAcq.getMeasures();
+//            auto sync_acq = leftAcq << rightAcq;
+            auto sync_acq = leftAcq << rightAcq;
+            sync_acq.start() = rightAcq.getStart();
+            sync_acq.end() = rightAcq.getEnd();
+//            sync_acq << leftAcq.getMeasures() << rightAcq.getMeasures();
 //            auto & measures = sync_acq.getMeasures();
 //            const auto & leftMeasures = leftAcq.getMeasures();
 //            for (int i = 0; i < leftMeasures.size(); ++i) {
@@ -94,34 +101,35 @@
 //                const auto & rightMeasure = rightMeasures.at(i);
 //                measures.at(leftMeasures.size() + i).setData(rightMeasure.getData(), rightMeasure.nByte());
 //            }
-//            syncAcqs.push_back( std::move( sync_acq ) );
+            syncAcqs.push_back( std::move( sync_acq ) );
 
-//            auto& syncAcq = syncAcqs.back();
-//            //                syncAcq << rightAcq.getMeasures();
-////            std::cout << "left acq: " << leftAcq << std::endl;
-////            std::cout << "right acq: " << rightAcq << std::endl;
+            auto& syncAcq = syncAcqs.back();
+            //                syncAcq << rightAcq.getMeasures();
+//            std::cout << "left acq: " << leftAcq << std::endl;
+//            std::cout << "right acq: " << rightAcq << std::endl;
 
-//            std::cout << syncAcqs.back() << std::endl;
+            std::cout << syncAcqs.back() << std::endl;
 
-//            assert( syncAcq.getStart() == rightAcq.getStart() );
-//            assert( syncAcq.getEnd() == rightAcq.getEnd() );
-//            assert( syncAcq.getMeasures().size() == 2 );
+            assert( syncAcq.getStart() == rightAcq.getStart() );
+            assert( syncAcq.getEnd() == rightAcq.getEnd() );
+//            assert( syncAcq.nType() == 4 );
+//            assert( leftAcq.nType() == 2 );
+//            assert( rightAcq.nType() == 2 );
 
-//            assert( leftAcq.getMeasures().size() == 1 );
 //            const auto& measure = leftAcq.getMeasures().front();
-////            std::cout << syncAcq.getMeasures().at(0) << std::endl;
-////            std::cout << measure << std::endl;
+//            std::cout << syncAcq.getMeasures().at(0) << std::endl;
+//            std::cout << measure << std::endl;
 //            assert( syncAcq.getMeasures().at( 0 ) == measure );
 
 //            assert( rightAcq.getMeasures().size() == 1 );
 //            const auto& measure2 = rightAcq.getMeasures().front();
 //            assert( syncAcq.getMeasures().at( 1 ) == measure2 );
-//        }
-//    }
+        }
+    }
 
-//    std::cout << std::endl;
-//    return syncAcqs;
-//}
+    std::cout << std::endl;
+    return syncAcqs;
+}
 
 //static std::set<hub::sensor::Acquisition>
 //computeSortedAcqs( const std::vector<hub::sensor::Acquisition>& ref_acqs,

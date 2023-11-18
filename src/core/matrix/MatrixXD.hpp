@@ -180,7 +180,7 @@ class MatrixXDBase
 //        node.m_size = Size;
 //        auto node = Matrix::make_node<Type, Ns...>();
         auto matrix2 = make_matrix<Type, Ns...>();
-        matrix << matrix2;
+        matrix.push_back(matrix2);
 //        matrix.push_back(std::move(node));
     }
 

@@ -38,8 +38,10 @@ template <class Resolution>
 // template <class... ResolutionTs>
 class OutputSensorT : public Sensor
 {
-  public:
     using Acquisition = AcquisitionT<Resolution>;
+  public:
+    using Acq = Acquisition;
+//    using Acq = Acquisition;
 
     OutputSensorT( const SensorSpec& sensorSpec, Output& output ) :
         Sensor( sensorSpec ), m_output( output ) {
@@ -49,13 +51,13 @@ class OutputSensorT : public Sensor
         m_output.write( m_spec );
     }
 
-    void operator<<( const Acquisition& aqc ) {
+    void operator<<( const Acquisition& acq ) {
 //        m_output.write( aqc );
 #ifdef HUB_DEBUG_OUTPUT
-        std::cout << HEADER << "write(const Acquisition&) = " << aqc << std::endl;
+        std::cout << HEADER << "write(const Acquisition&) : " << acq << std::endl;
 #endif
-//        m_output.write( aqc.Matrix::data(), aqc.Matrix::size() );
-        m_output.write( aqc.data(), aqc.size() );
+//        m_output.write( acq.Matrix::data(), acq.Matrix::size() );
+        m_output.write( acq.data(), acq.size() );
     }
 
   private:

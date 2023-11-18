@@ -7,11 +7,11 @@
 
 namespace hub {
 
-enum class MatrixOptions {
-    RowMajor = 0,
-    ColumnMajor = 0x1,
-    Dynamic = 0x2,
-};
+//enum class MatrixOptions {
+//    RowMajor = 0,
+//    ColumnMajor = 0x1,
+//    Dynamic = 0x2,
+//};
 
 template <class... Types>
     requires( sizeof...( Types ) > 1 )

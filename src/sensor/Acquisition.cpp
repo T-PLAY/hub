@@ -10,8 +10,20 @@
 
 ////#include "core/Vector.hpp"
 
-//namespace hub {
-//namespace sensor {
+namespace hub {
+namespace sensor {
+
+Acquisition make_acquisition(const Matrix &resolution) {
+    //    return Acquisition( make_matrix( make_matrix<Clock>(), make_matrix<Clock>(), resolution ) );
+    Acquisition acq;
+    acq.push_back(make_matrix<Clock>());
+    acq.push_back(make_matrix<Clock>());
+    acq.push_back(resolution);
+    return acq;
+}
+
+} // namespace sensor
+} // namespace hub
 
 //std::ostream& operator<<( std::ostream& os, const Acquisition& acq ) {
 //    os << "(start:" << ( acq.getStart() / 1'000'000 ) % 1'000 << " "
@@ -183,6 +195,5 @@
 ////     return os;
 //// }
 
-//} // namespace sensor
-//} // namespace hub
+
 

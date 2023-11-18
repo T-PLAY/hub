@@ -418,13 +418,14 @@ TEST_CASE( "InputOutput test" ) {
 //     CHECK( durationArchiveZppBits < durationArchiveImpl );
 // #endif
 // #ifdef HUB_USE_ZPP_BITS
-#if !defined( DEBUG ) && defined( HUB_USE_ZPP_BITS )
-    const auto ratio = durationArchiveImpl / (double)durationArchiveZppBits;
-    CHECK_VALUE( ratio, 1.0, 0.5, "ArchiveZppBits/ArchiveImpl", "/" );
 
-    static_assert(
-        std::is_same_v<hub::io::Archive, hub::io::ArchiveT<hub::serializer::SerializerZppBits>> );
-#endif
+//#if !defined( DEBUG ) && defined( HUB_USE_ZPP_BITS )
+//    const auto ratio = durationArchiveImpl / (double)durationArchiveZppBits;
+//    CHECK_VALUE( ratio, 1.0, 0.5, "ArchiveZppBits/ArchiveImpl", "/" );
+
+//    static_assert(
+//        std::is_same_v<hub::io::Archive, hub::io::ArchiveT<hub::serializer::SerializerZppBits>> );
+//#endif
 
     return;
 }

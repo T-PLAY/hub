@@ -53,7 +53,7 @@ class Matrix
                     ++i;
                 }
             }
-//            str += "(" + std::to_string(m_size) + ")";
+            //            str += "(" + std::to_string(m_size) + ")";
             return str;
         }
 
@@ -81,10 +81,11 @@ class Matrix
 
     Matrix() = default;
 
-    Matrix( Node&& node ) {
-        m_nodes.push_back( node );
-        m_size += node.size();
-    };
+//    Matrix( Node&& node ) {
+////        std::cout << "[Matrix] Matrix(Node&&)" << std::endl;
+//        m_nodes.push_back( node );
+//        m_size += node.size();
+//    };
 
     //    template <class Type, Size_t N = 1, Size_t... Ns>
     //        requires( N > 0 && ( ( Ns > 1 ) && ... ) )
@@ -92,23 +93,24 @@ class Matrix
     //        m_nodes.push_back( Matrix::make_node<Type, N, Ns...>() );
     //    }
 
-    Matrix(Matrix && matrix) = default;
-    Matrix(const Matrix & matrix) = delete;
+    Matrix( Matrix&& matrix )      = default;
+    Matrix( const Matrix& matrix ) = delete;
 
-    Matrix & operator=(Matrix && matrix) = default;
-    Matrix & operator=(const Matrix & matrix) = delete;
+    Matrix& operator=( Matrix&& matrix )      = default;
+    Matrix& operator=( const Matrix& matrix ) = delete;
 
     Matrix clone() const {
         Matrix matrix;
-        matrix << *this;
+//        matrix << *this;
+        matrix.push_back(*this);
         return matrix;
     }
 
-//    template <class MatrixT>
-//    Matrix& operator=( const MatrixT& matrix ) {
+    //    template <class MatrixT>
+    //    Matrix& operator=( const MatrixT& matrix ) {
 
-//        return *this;
-//    }
+    //        return *this;
+    //    }
 
     //    void push_back( Node&& node ) {
     //        m_size += node.size();
@@ -116,14 +118,39 @@ class Matrix
     //        m_nodes.push_back( std::move( node ) );
     //    }
 
-    Matrix & operator<<( const Matrix& other ) {
+//    Matrix& operator<<( const Matrix& other ) {
+    Matrix& push_back( const Matrix& other ) {
+        size_t sizeBeforeAdd = m_size;
         for ( const auto& node : other.m_nodes ) {
             m_nodes.push_back( node );
             m_size += node.m_size;
         }
+        if ( ! other.m_vector.empty() ) {
+            m_vector.resize(sizeBeforeAdd + other.m_vector.size());
+            std::copy(other.m_vector.begin(), other.m_vector.end(), m_vector.begin() + sizeBeforeAdd);
+        }
         return *this;
-        //        return m_nodes;
     }
+
+//    Matrix operator<<( const Matrix& other ) const {
+    Matrix push_back( const Matrix& other ) const {
+        Matrix matrix = this->clone();
+//        matrix << other;
+        matrix.push_back(other);
+
+//        for ( const auto& node : other.m_nodes ) {
+//            matrix.insert(node);
+////            m_nodes.push_back( node );
+////            m_size += node.m_size;
+//        }
+//        if ( ! other.m_vector.empty() ) {
+//            m_vector.resize(other.m_vector.size());
+//            std::copy(other.m_vector.begin(), other.m_vector.end(), m_vector.begin());
+//        }
+//        return *this;
+        return matrix;
+    }
+
 
     std::string toString() const {
         std::string str;
@@ -133,9 +160,10 @@ class Matrix
             str += node.toString();
             if ( i != m_nodes.size() - 1 ) str += "_";
         }
-        str += "(" + std::to_string(m_size) + ")";
 
-        if ( !m_vector.empty() ) {
+        if ( m_vector.empty() ) { str += "(" + std::to_string( m_size ) + ")"; }
+        //        if ( !m_vector.empty() ) {
+        else {
             str += " = ";
             str += ::toString( m_vector );
         }
@@ -285,7 +313,7 @@ class Matrix
         return m_nodes == other.m_nodes && m_size == other.m_size;
     }
 
-//  private:
+    //  private:
     template <class Type, Size_t N = 1, Size_t... Ns>
         requires( N > 0 && ( ( Ns > 1 ) && ... ) )
     static Matrix::Node make_node() {
@@ -299,7 +327,15 @@ class Matrix
         //    m_name     = TYPE_NAME( Type );
     }
 
-  private:
+    void push_back_node( const Node& node ) {
+        //        m_vector.resize( m_size );
+        m_nodes.push_back( node );
+        m_size += node.size();
+    }
+
+  protected:
+    //  private:
+  protected:
     std::vector<Node> m_nodes;
     Size_t m_size = 0;
     std::vector<Data_t> m_vector;
@@ -312,21 +348,30 @@ class Matrix
 //}
 
 template <class Type, Size_t N = 1, Size_t... Ns>
-    requires( ! std::is_same_v<Type, Matrix> && N > 0 && ( ( Ns > 1 ) && ... ) )
+    requires( !std::is_same_v<Type, Matrix> && N > 0 && ( ( Ns > 1 ) && ... ) )
 Matrix make_matrix() {
+//    std::cout << "[Matrix] make_matrix<Type, Ns...>()" << std::endl;
     //     Matrix matrix;
-    return Matrix( Matrix::make_node<Type, N, Ns...>() );
+        Matrix matrix;
+        matrix.push_back_node(Matrix::make_node<Type, N, Ns...>());
+        return matrix;
+//    if ( sizeof...( Ns ) == 0 ) {
+//        return Matrix( Matrix::make_node<Type, N>() );
+//    }
+//    else { return Matrix( Matrix::make_node<Type, N, Ns...>() ); }
     //     return matrix;
 }
 
 template <class... Matrices>
-    requires (sizeof...(Matrices) > 1)
-Matrix make_matrix(const Matrices&... matrices) {
+    requires( sizeof...( Matrices ) > 1 )
+Matrix make_matrix( const Matrices&... matrices ) {
+//    std::cout << "[Matrix] make_matrix(Matrices...)" << std::endl;
     Matrix matrix;
-//    ((matrix << matrices) << ...);
-    (matrix << ... << matrices);
+    //    ((matrix << matrices) << ...);
+//    ( matrix << ... << matrices );
+//    matrix.push_back(matrices...);
     return matrix;
-//    return Matrix();
+    //    return Matrix();
 }
 
 //    static_assert(decltype(m_hashCode) == 8);

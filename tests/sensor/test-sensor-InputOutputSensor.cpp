@@ -2,216 +2,175 @@
 #define HUB_DEBUG_OUTPUT
 
 #include "test_common.hpp"
-// #include "sensor/test_sensor_utils.hpp"
 
-#include <initializer_list>
-#include <span>
-#include <vector>
+// #include <initializer_list>
+// #include <span>
+// #include <vector>
 
 #include "core/test_core_common.hpp"
 #include "sensor/test_sensor_common.hpp"
 
 #include <core/io/Archive.hpp>
-// #include <core/Buffer.hpp>
 #include <sensor/InputSensor.hpp>
-// #include <sensor/Measure.hpp>
 #include <sensor/OutputSensor.hpp>
-// #include <sensor/Resolution.hpp>
-// #include <sensor/Resolutions.hpp>
 
-// #include <io/Memory.hpp>
+TEST_CASE( "InputOutputSensor test" ) {
 
-TEST_CASE( "InputSensor test" ) {
+    hub::io::Archive archive;
 
-    using namespace hub::sensor;
-    using namespace hub;
+    struct UserType {
+        int a;
+        bool b;
+        static constexpr auto name() { return "UserType"; };
+    };
+    static_assert( sizeof( UserType ) == 8 );
 
-    {
-        hub::io::Archive archive;
+    // init outputSensor
+    hub::sensor::SensorSpec::MetaData metaData;
+    metaData["name"] = "gauthier";
+    hub::sensor::SensorSpec sensorSpec( "sensorName", metaData );
+    using UserResolution = UserType;
+    hub::sensor::OutputSensorT<UserResolution> outputSensor( sensorSpec, archive );
 
-        struct UserType {
-            int a;
-            bool b;
-            auto toString() const { return std::to_string( a ) + " " + std::to_string( b ); }
-            bool operator==(const UserType & other) const {
-                return a == other.a && b == other.b;
-            }
-            static constexpr auto name() { return "UserType"; };
-        };
-        static_assert( sizeof( UserType ) == 8 );
+    // init output acq
+    hub::sensor::OutputSensorT<UserResolution>::Acq acq;
+//    hub::sensor::AcquisitionT<UserResolution> acq; // same as above
+    acq.start() = 4;
+    acq.end() = 3;
+    auto& userType = acq.get<UserType&>();
+    userType.a     = 2;
+    userType.b     = true;
 
-        using UserResolution = UserType;
-        //        using UserResolution = MatrixXD<UserType, 640, 480>;
-        //        using UserResolution = MatrixXD<UserType>;
+    // init inputSensor
+    hub::sensor::InputSensor inputSensor( archive );
+    CHECK( archive.isEnd() );
+    CHECK( outputSensor.getSpec() == inputSensor.getSpec() );
 
-        hub::sensor::SensorSpec::MetaData metaData;
-        metaData["name"]  = "gauthier";
-        hub::sensor::SensorSpec sensorSpec( "sensorName", metaData );
-        OutputSensorT<UserResolution> outputSensor( sensorSpec, archive );
-        OutputSensorT<UserResolution>::Acquisition acq;
-        //        AcquisitionT<UserResolution> acq;
-        //        AcquisitionT<int> acq;
+    // write output acq
+    outputSensor << acq;
 
-        auto& start    = acq.getStart();
-        auto& end      = acq.getEnd();
-        auto& userType = acq.get<UserType&>();
+    // read input acq
+    auto acq_read = inputSensor.acq();
+    inputSensor >> acq_read;
+    CHECK( acq == acq_read );
 
-        start      = 4;
-        end        = 3;
-        userType.a = 2;
-        userType.b = true;
+    //        assert(UserResolution() == inputSensor.getSpec().resolution);
 
-        std::cout << "acq : " << acq << std::endl;
-        std::cout << "acq : " << acq.getMatrix() << std::endl;
-//        assert(acq == acq.getMatrix());
+    //        static_assert( UserResolution::nByte() == 640 * 480 * sizeof( UserType ) );
+    //        //    using UserResolution2 = ResolutionT<UserType2, 100>;
+    //        static_assert( UserResolution::hasType<UserType>() );
+    //        static_assert( !UserResolution::hasType<int>() );
+    //        std::cout << "resolution: " << UserResolution() << std::endl;
 
+    //        using UserResolution2 = ResolutionT<UserType2>;
+    //        static_assert( UserResolution2::nDim() == 1 );
+    //        static_assert( UserResolution2::n() == 1 );
+    //        std::cout << "resolution2: " << UserResolution2() << std::endl;
 
-        InputSensor inputSensor( archive );
-        assert(archive.isEnd());
-//        std::cout << "outputSensor spec: " << outputSensor.getSpec() << std::endl;
-//        std::cout << "outputSensor resolution: " << outputSensor.getSpec().getResolution() << std::endl;
-//        std::cout << "inputSensor spec: " << inputSensor.getSpec() << std::endl;
-        assert(outputSensor.getSpec() == inputSensor.getSpec());
-//        std::cout << "inputSensor size: " << inputSensor.getSpec().getResolution().size() << std::endl;
-//        std::cout << "inputSensor resolution: " << inputSensor.getSpec().getResolution() << std::endl;
-//        return;
-//        Acquisition acq2{outputSensor.getSpec().getResolution()};
-//        std::cout << "acq2: " << acq2 << std::endl;
+    //        using UserResolution3 = ResolutionT<int>;
+    //        static_assert( UserResolution3::n() == 1 );
+    //        //    static_assert(UserResolution3::isScalar;
 
-        auto  acq_read = inputSensor.acq();
-//        std::cout << "acq_read : " << acq_read << std::endl;
-//        std::cout << "acq_read : " << acq_read.size() << std::endl;
+    //        using UserResolutions = ResolutionsT<UserResolution, UserResolution2,
+    //        UserResolution3>; static_assert( UserResolutions::nResolution == 3 );
+    //        //    static_assert(UserResolutions::has<UserType>());
 
-        std::cout << "sending acq" << std::endl;
-        outputSensor << acq;
-        inputSensor >> acq_read;
-        assert(acq == acq_read);
-        assert(acq_read.getStart() == 4);
-        assert(acq_read.getEnd() == 3);
-        const auto & userType_read = acq_read.get<const UserType&>();
-        assert(userType == userType_read);
+    //        std::cout << "resolutions: " << UserResolutions() << std::endl;
+    //        static_assert( UserResolutions::hasType<UserType>() );
+    //        static_assert( UserResolutions::hasType<UserType2>() );
+    //        static_assert( UserResolutions::hasType<int>() );
+    //        static_assert( !UserResolutions::hasType<void>() );
+    //        static_assert( UserResolutions::hasType<UserType, UserType2>() );
+    //        static_assert( UserResolutions::hasType<UserType, UserType2, int>() );
+    //        static_assert( !UserResolutions::hasType<UserType, UserType2, int, double>() );
 
+    //        //    constexpr auto res = UserResolutions::get<UserType>();
+    //        static_assert( UserResolutions::nResolution == 3 );
+    //    constexpr int nResolution = 2;
+    //    for (constexpr int i = 0; i < nResolution; ++i) {
+    //        UserResolutions::get<i>();
+    //    }
+    //    UserResolutions::for_each([](auto & measure) {
+    //    });
 
+    //    static_assert(std::is_same<UserResolutions::get<0>, UserResolution>());
+    //    static_assert(std::is_same<UserResolutions::get<1>, UserResolution2>());
 
+    //    constexpr std::tuple<int, int, int, char> tuple {1, 3, 2, 'a'};
+    //    static_assert(std::get<1, int>(tuple) == 3);
+    //    std::has
 
-        //        assert(UserResolution() == inputSensor.getSpec().resolution);
+    //    using UserResolution2 = ResolutionT<
 
-        //        static_assert( UserResolution::nByte() == 640 * 480 * sizeof( UserType ) );
-        //        //    using UserResolution2 = ResolutionT<UserType2, 100>;
-        //        static_assert( UserResolution::hasType<UserType>() );
-        //        static_assert( !UserResolution::hasType<int>() );
-        //        std::cout << "resolution: " << UserResolution() << std::endl;
+    //    OutputSensorT<UserResolution> outputSensor;
+    //        AcquisitionT<UserResolutions> acq;
+    //        //    static_assert( !acq.resolutions.hasType<int>() );
+    //        //    static_assert( acq.resolutions.hasType<UserType>() );
+    //        //    static_assert(acq.resolution.h)
+    //        //    static_assert(acq.n)
+    //        //    static_assert(Acquisition::has<UserType>());
+    //        //    static_assert(Acquisition::has<double>());
+    //        //    using Resolution_get = acq.resolution.get<UserType>();
 
-        //        using UserResolution2 = ResolutionT<UserType2>;
-        //        static_assert( UserResolution2::nDim() == 1 );
-        //        static_assert( UserResolution2::n() == 1 );
-        //        std::cout << "resolution2: " << UserResolution2() << std::endl;
+    //        //    auto measure = acq.getMeasure<UserType>();
+    //        static_assert( acq.hasType<UserType>() );
+    //        static_assert( acq.hasType<UserType, int>() );
+    //        //    static_assert(acq.)
+    //        static_assert( acq.resolutions.nResolution == 3 );
+    //        //    auto measure = acq.get<UserType>();
+    //        auto measure = acq.getMeasure<0>();
+    //        static_assert( std::is_same<decltype( measure.type() ), UserType>() );
+    //        //    static_assert(measure.R)
+    //        auto measure2 = acq.getMeasure<1>();
+    //        //    measure.resolution.
 
-        //        using UserResolution3 = ResolutionT<int>;
-        //        static_assert( UserResolution3::n() == 1 );
-        //        //    static_assert(UserResolution3::isScalar;
+    //        //    constexpr MeasureT<UserResolution> measure((hub::Data_t*)data, dataSize);
+    //        //    constexpr auto span = std::span(data, data + dataSize);
+    //        //    constexpr auto span = std::span(dataArray);
+    //        //    constexpr MeasureT<UserResolution> measure((hub::Data_t*)data, dataSize);
 
-        //        using UserResolutions = ResolutionsT<UserResolution, UserResolution2,
-        //        UserResolution3>; static_assert( UserResolutions::nResolution == 3 );
-        //        //    static_assert(UserResolutions::has<UserType>());
+    //        auto buffer = hub::Buffer<dataSize>( (const hub::Data_t*)data );
+    //        //    auto buffer = hub::Buffer<dataSize>((hub::Data_t*)data);
+    //        //    buffer.data[0] = 1;
+    //        //    buffer.data = nullptr;
+    //        //    buffer.size = 5;
+    //        std::cout << "buffer: " << buffer << std::endl;
 
-        //        std::cout << "resolutions: " << UserResolutions() << std::endl;
-        //        static_assert( UserResolutions::hasType<UserType>() );
-        //        static_assert( UserResolutions::hasType<UserType2>() );
-        //        static_assert( UserResolutions::hasType<int>() );
-        //        static_assert( !UserResolutions::hasType<void>() );
-        //        static_assert( UserResolutions::hasType<UserType, UserType2>() );
-        //        static_assert( UserResolutions::hasType<UserType, UserType2, int>() );
-        //        static_assert( !UserResolutions::hasType<UserType, UserType2, int, double>() );
+    //        std::cout << "measure: " << measure << std::endl;
+    //        measure.setData( buffer );
+    //        std::cout << "measure: " << measure << std::endl;
 
-        //        //    constexpr auto res = UserResolutions::get<UserType>();
-        //        static_assert( UserResolutions::nResolution == 3 );
-        //    constexpr int nResolution = 2;
-        //    for (constexpr int i = 0; i < nResolution; ++i) {
-        //        UserResolutions::get<i>();
-        //    }
-        //    UserResolutions::for_each([](auto & measure) {
-        //    });
+    //        const UserType2 userType2 { 5 };
+    //        //    userType2.a = 5;
+    //        //    measure2.setData(buffer);
+    //        //    std::cout << hub::Buffer(userType2) << std::endl;
+    //        //    auto buffer2 = hub::Buffer(userType2);
 
-        //    static_assert(std::is_same<UserResolutions::get<0>, UserResolution>());
-        //    static_assert(std::is_same<UserResolutions::get<1>, UserResolution2>());
+    //        //    std::cout << "buffer2: " << buffer2 << std::endl;
 
-        //    constexpr std::tuple<int, int, int, char> tuple {1, 3, 2, 'a'};
-        //    static_assert(std::get<1, int>(tuple) == 3);
-        //    std::has
+    //        std::cout << "measure2: " << measure2 << std::endl;
+    //        //    measure2.setData(buffer2);
+    //        //    measure2.setType( userType2 );
 
-        //    using UserResolution2 = ResolutionT<
+    //        std::cout << "measure2: " << measure2 << std::endl;
 
-        //    OutputSensorT<UserResolution> outputSensor;
-        //        AcquisitionT<UserResolutions> acq;
-        //        //    static_assert( !acq.resolutions.hasType<int>() );
-        //        //    static_assert( acq.resolutions.hasType<UserType>() );
-        //        //    static_assert(acq.resolution.h)
-        //        //    static_assert(acq.n)
-        //        //    static_assert(Acquisition::has<UserType>());
-        //        //    static_assert(Acquisition::has<double>());
-        //        //    using Resolution_get = acq.resolution.get<UserType>();
+    //        //    auto buffer_get = measure.getData();
+    //        //    std::cout << "buffer_get: " << buffer_get << std::endl;
+    //        //    buffer_get.data[0] = 1;
+    //        //    buffer_get.data = nullptr;
+    //        //    buffer_get.size = 5;
 
-        //        //    auto measure = acq.getMeasure<UserType>();
-        //        static_assert( acq.hasType<UserType>() );
-        //        static_assert( acq.hasType<UserType, int>() );
-        //        //    static_assert(acq.)
-        //        static_assert( acq.resolutions.nResolution == 3 );
-        //        //    auto measure = acq.get<UserType>();
-        //        auto measure = acq.getMeasure<0>();
-        //        static_assert( std::is_same<decltype( measure.type() ), UserType>() );
-        //        //    static_assert(measure.R)
-        //        auto measure2 = acq.getMeasure<1>();
-        //        //    measure.resolution.
+    //        //    constexpr auto data2_get = measure2.getData<UserType2>();
+    //        //    constexpr auto userType2_get = measure2.getData();
+    //        //    static_assert( userType2 == userType2_get );
 
-        //        //    constexpr MeasureT<UserResolution> measure((hub::Data_t*)data, dataSize);
-        //        //    constexpr auto span = std::span(data, data + dataSize);
-        //        //    constexpr auto span = std::span(dataArray);
-        //        //    constexpr MeasureT<UserResolution> measure((hub::Data_t*)data, dataSize);
+    //        constexpr int a         = 5;
+    //        constexpr auto buffer_a = hub::Buffer( a );
+    //        static_assert( buffer_a.data == a );
 
-        //        auto buffer = hub::Buffer<dataSize>( (const hub::Data_t*)data );
-        //        //    auto buffer = hub::Buffer<dataSize>((hub::Data_t*)data);
-        //        //    buffer.data[0] = 1;
-        //        //    buffer.data = nullptr;
-        //        //    buffer.size = 5;
-        //        std::cout << "buffer: " << buffer << std::endl;
-
-        //        std::cout << "measure: " << measure << std::endl;
-        //        measure.setData( buffer );
-        //        std::cout << "measure: " << measure << std::endl;
-
-        //        const UserType2 userType2 { 5 };
-        //        //    userType2.a = 5;
-        //        //    measure2.setData(buffer);
-        //        //    std::cout << hub::Buffer(userType2) << std::endl;
-        //        //    auto buffer2 = hub::Buffer(userType2);
-
-        //        //    std::cout << "buffer2: " << buffer2 << std::endl;
-
-        //        std::cout << "measure2: " << measure2 << std::endl;
-        //        //    measure2.setData(buffer2);
-        //        //    measure2.setType( userType2 );
-
-        //        std::cout << "measure2: " << measure2 << std::endl;
-
-        //        //    auto buffer_get = measure.getData();
-        //        //    std::cout << "buffer_get: " << buffer_get << std::endl;
-        //        //    buffer_get.data[0] = 1;
-        //        //    buffer_get.data = nullptr;
-        //        //    buffer_get.size = 5;
-
-        //        //    constexpr auto data2_get = measure2.getData<UserType2>();
-        //        //    constexpr auto userType2_get = measure2.getData();
-        //        //    static_assert( userType2 == userType2_get );
-
-        //        constexpr int a         = 5;
-        //        constexpr auto buffer_a = hub::Buffer( a );
-        //        static_assert( buffer_a.data == a );
-
-        //        constexpr int b         = 5;
-        //        constexpr auto buffer_b = hub::Buffer( b );
-        //        static_assert( buffer_a == buffer_b );
-    }
+    //        constexpr int b         = 5;
+    //        constexpr auto buffer_b = hub::Buffer( b );
+    //        static_assert( buffer_a == buffer_b );
 
     //    {
     //        constexpr double double_ref = 5.0;

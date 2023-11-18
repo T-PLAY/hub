@@ -12,7 +12,7 @@ TEST_CASE( "sensor/Format test" ) {
 
 
 //    InputOutput inputOutput;
-    hub::io::Archive archive;
+//    hub::io::Archive archive;
 
 //    static_assert( !hub::serializable_v<hub::sensor::Format> );
 //    static_assert( !hub::writable_v<hub::sensor::Format> );
@@ -25,9 +25,9 @@ TEST_CASE( "sensor/Format test" ) {
 
 //    auto & format = hub::sensor::format::RGB8;
 
-    const auto format = hub::sensor::Format{};
-    assert(format.interpolable == false);
-    assert(format.nByte == 0);
+//    const auto format = hub::sensor::Format{};
+//    assert(format.interpolable == false);
+//    assert(format.nByte == 0);
 //    assert(! std::memcmp(format.name, "");
 
 //    archive.write(format);

@@ -67,6 +67,9 @@ class InputSensor : public Sensor
         assert(m_spec.getResolution() == acq.getResolution());
 //        m_input.read( acq );
         m_input.read( acq.data(), acq.size() );
+#ifdef HUB_DEBUG_OUTPUT
+        std::cout << HEADER << "read(Acquisition&) : " << acq << std::endl;
+#endif
     }
 
     //    const Input& getInput() const { return m_input; }

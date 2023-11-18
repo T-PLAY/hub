@@ -158,7 +158,8 @@ class MatrixTs
         //        auto node = Matrix::Node({1});
         auto matrix2 = make_matrix<Type_>();
         //        matrix.push_back( std::move( matrix2 ) );
-        matrix << matrix2;
+//        matrix << matrix2;
+        matrix.push_back(matrix2);
 
         if constexpr ( sizeof...( Types_ ) > 0 ) { serialize<Types_...>( matrix ); }
     }
@@ -270,7 +271,8 @@ class MatrixTs
         str.erase( std::remove( str.begin(), str.end(), ' ' ), str.end() );
 
         if constexpr ( sizeof...( Types_ ) > 0 ) { return str + "_" + printName<Types_...>(); }
-        else { return str + "(" + std::to_string( Size ) + ")"; }
+//        else { return str + "(" + std::to_string( Size ) + ")"; }
+        else { return str; }
     }
 
   private:

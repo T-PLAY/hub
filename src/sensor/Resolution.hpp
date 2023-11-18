@@ -8,15 +8,17 @@
 //#include "core/Macros.hpp"
 //#include "core/Span.hpp"
 //#include "core/Tuple.hpp"
+#include "core/matrix/MatrixXD.hpp"
+#include "Format.hpp"
 
 namespace hub {
 namespace sensor {
 
 //namespace resolution {
 
-//using Full_HD      = ResolutionT<format::RGB8, 1920, 1080>;
-//using Full_HD_Plus = ResolutionT<format::RGB8, 2160, 1080>;
-//using UltraWide    = ResolutionT<format::RGB8, 2560, 1080>;
+using Full_HD      = MatrixXD<format::RGB8, 1920, 1080>;
+using Full_HD_Plus = MatrixXD<format::RGB8, 2160, 1080>;
+using UltraWide    = MatrixXD<format::RGB8, 2560, 1080>;
 
 //} // namespace resolution
 
