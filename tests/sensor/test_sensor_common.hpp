@@ -7,17 +7,20 @@
 #include <random>
 #include <set>
 #include <thread>
+#include <tuple>
 
 #include <core/Input.hpp>
 #include <core/Output.hpp>
+#include <core/io/InputOutput.hpp>
 #include <sensor/Acquisition.hpp>
 #include <sensor/InputSensor.hpp>
 #include <sensor/OutputSensor.hpp>
 
-//#include "Macros.hpp"
-//#include "Version.hpp"
+// #include "Macros.hpp"
+// #include "Version.hpp"
 
-static int computeDist( const hub::sensor::Acquisition& acq, const hub::sensor::Acquisition& acq2 ) {
+static int computeDist( const hub::sensor::Acquisition& acq,
+                        const hub::sensor::Acquisition& acq2 ) {
     return std::abs( acq.getStart() - acq2.getStart() );
 }
 
@@ -62,19 +65,19 @@ computeSyncAcqs( const std::vector<hub::sensor::Acquisition>& leftAcqs,
 
     std::vector<hub::sensor::Acquisition> syncAcqs;
 
-    const auto & resolutionsLeft = leftAcqs.at(0).getResolution();
-    const auto & resolutionsRight = rightAcqs.at(0).getResolution();
-//    auto & resolutionLeftRight = leftAcqs << resolutionsRight;
-//    hub::sensor::Resolutions resolutionsLeftRight { resolutionsLeft };
-//    resolutionsLeftRight.insert(resolutionsLeftRight.end(), resolutionsRight.begin(), resolutionsRight.end());
-//    auto sync_acq_resolution = leftAcqs.at(0) << resolutionsRight;
-//    auto sync_acq = hub::sensor::make_acquisition(sync_acq_resolution);
-//    auto sync_acq = leftAcqs.at(0) << rightAcqs.at(0);
-//    auto & sync_acq = hub::sensor::make_acquisition(resolutionsLeft << resolutionsRight);
+    //    const auto & resolutionsLeft = leftAcqs.at(0).getResolution();
+    //    const auto & resolutionsRight = rightAcqs.at(0).getResolution();
+    //    auto & resolutionLeftRight = leftAcqs << resolutionsRight;
+    //    hub::sensor::Resolutions resolutionsLeftRight { resolutionsLeft };
+    //    resolutionsLeftRight.insert(resolutionsLeftRight.end(), resolutionsRight.begin(),
+    //    resolutionsRight.end()); auto sync_acq_resolution = leftAcqs.at(0) << resolutionsRight;
+    //    auto sync_acq = hub::sensor::make_acquisition(sync_acq_resolution);
+    //    auto sync_acq = leftAcqs.at(0) << rightAcqs.at(0);
+    //    auto & sync_acq = hub::sensor::make_acquisition(resolutionsLeft << resolutionsRight);
 
-//    std::cout << resolutionsLeftRight << std::endl;
+    //    std::cout << resolutionsLeftRight << std::endl;
 
-    std::cout << "ref_sync_acqs" << std::endl;
+    //    std::cout << "ref_sync_acqs" << std::endl;
 
     for ( int iRightAcq = 0; iRightAcq < rightAcqs.size(); ++iRightAcq ) {
 
@@ -83,76 +86,77 @@ computeSyncAcqs( const std::vector<hub::sensor::Acquisition>& leftAcqs,
             const auto& leftAcq  = leftAcqs.at( iLeftMinDist );
             const auto& rightAcq = rightAcqs.at( iRightAcq );
 
-//            hub::sensor::Acquisition sync_acq( rightAcq.getStart(), rightAcq.getEnd() );
-//            hub::sensor::Acquisition sync_acq{ resolutionsLeftRight };
-//            auto sync_acq = leftAcq << rightAcq;
-            auto sync_acq = leftAcq << rightAcq;
+            //            hub::sensor::Acquisition sync_acq( rightAcq.getStart(), rightAcq.getEnd()
+            //            ); hub::sensor::Acquisition sync_acq{ resolutionsLeftRight }; auto
+            //            sync_acq = leftAcq << rightAcq;
+            auto sync_acq    = leftAcq << rightAcq;
             sync_acq.start() = rightAcq.getStart();
-            sync_acq.end() = rightAcq.getEnd();
-//            sync_acq << leftAcq.getMeasures() << rightAcq.getMeasures();
-//            auto & measures = sync_acq.getMeasures();
-//            const auto & leftMeasures = leftAcq.getMeasures();
-//            for (int i = 0; i < leftMeasures.size(); ++i) {
-//                const auto & leftMeasure = leftMeasures.at(i);
-//                measures.at(i).setData(leftMeasure.getData(), leftMeasure.nByte());
-//            }
-//            const auto & rightMeasures = rightAcq.getMeasures();
-//            for (int i = 0; i < rightMeasures.size(); ++i) {
-//                const auto & rightMeasure = rightMeasures.at(i);
-//                measures.at(leftMeasures.size() + i).setData(rightMeasure.getData(), rightMeasure.nByte());
-//            }
+            sync_acq.end()   = rightAcq.getEnd();
+            //            sync_acq << leftAcq.getMeasures() << rightAcq.getMeasures();
+            //            auto & measures = sync_acq.getMeasures();
+            //            const auto & leftMeasures = leftAcq.getMeasures();
+            //            for (int i = 0; i < leftMeasures.size(); ++i) {
+            //                const auto & leftMeasure = leftMeasures.at(i);
+            //                measures.at(i).setData(leftMeasure.getData(), leftMeasure.nByte());
+            //            }
+            //            const auto & rightMeasures = rightAcq.getMeasures();
+            //            for (int i = 0; i < rightMeasures.size(); ++i) {
+            //                const auto & rightMeasure = rightMeasures.at(i);
+            //                measures.at(leftMeasures.size() + i).setData(rightMeasure.getData(),
+            //                rightMeasure.nByte());
+            //            }
             syncAcqs.push_back( std::move( sync_acq ) );
 
             auto& syncAcq = syncAcqs.back();
             //                syncAcq << rightAcq.getMeasures();
-//            std::cout << "left acq: " << leftAcq << std::endl;
-//            std::cout << "right acq: " << rightAcq << std::endl;
+            //            std::cout << "left acq: " << leftAcq << std::endl;
+            //            std::cout << "right acq: " << rightAcq << std::endl;
 
-            std::cout << syncAcqs.back() << std::endl;
+            //            std::cout << syncAcqs.back() << std::endl;
 
             assert( syncAcq.getStart() == rightAcq.getStart() );
             assert( syncAcq.getEnd() == rightAcq.getEnd() );
-//            assert( syncAcq.nType() == 4 );
-//            assert( leftAcq.nType() == 2 );
-//            assert( rightAcq.nType() == 2 );
+            //            assert( syncAcq.nType() == 4 );
+            //            assert( leftAcq.nType() == 2 );
+            //            assert( rightAcq.nType() == 2 );
 
-//            const auto& measure = leftAcq.getMeasures().front();
-//            std::cout << syncAcq.getMeasures().at(0) << std::endl;
-//            std::cout << measure << std::endl;
-//            assert( syncAcq.getMeasures().at( 0 ) == measure );
+            //            const auto& measure = leftAcq.getMeasures().front();
+            //            std::cout << syncAcq.getMeasures().at(0) << std::endl;
+            //            std::cout << measure << std::endl;
+            //            assert( syncAcq.getMeasures().at( 0 ) == measure );
 
-//            assert( rightAcq.getMeasures().size() == 1 );
-//            const auto& measure2 = rightAcq.getMeasures().front();
-//            assert( syncAcq.getMeasures().at( 1 ) == measure2 );
+            //            assert( rightAcq.getMeasures().size() == 1 );
+            //            const auto& measure2 = rightAcq.getMeasures().front();
+            //            assert( syncAcq.getMeasures().at( 1 ) == measure2 );
         }
     }
 
-    std::cout << std::endl;
+    //    std::cout << std::endl;
     return syncAcqs;
 }
 
-//static std::set<hub::sensor::Acquisition>
-//computeSortedAcqs( const std::vector<hub::sensor::Acquisition>& ref_acqs,
-//                   const std::vector<hub::sensor::Acquisition>& ref_acqs2 ) {
-//    std::set<hub::sensor::Acquisition> sortedAcqs;
-//    for ( int i = 1; i < ref_acqs.size(); ++i ) {
-//        const auto& acq = ref_acqs.at( i );
-//        sortedAcqs.insert( acq.clone() );
-//    }
-//    for ( int i = 1; i < ref_acqs2.size(); ++i ) {
-//        const auto& acq = ref_acqs2.at( i );
-//        sortedAcqs.insert( acq.clone() );
-//    }
-//    assert( sortedAcqs.size() == ref_acqs.size() + ref_acqs2.size() - 2 );
-//    return sortedAcqs;
-//}
+// static std::set<hub::sensor::Acquisition>
+// computeSortedAcqs( const std::vector<hub::sensor::Acquisition>& ref_acqs,
+//                    const std::vector<hub::sensor::Acquisition>& ref_acqs2 ) {
+//     std::set<hub::sensor::Acquisition> sortedAcqs;
+//     for ( int i = 1; i < ref_acqs.size(); ++i ) {
+//         const auto& acq = ref_acqs.at( i );
+//         sortedAcqs.insert( acq.clone() );
+//     }
+//     for ( int i = 1; i < ref_acqs2.size(); ++i ) {
+//         const auto& acq = ref_acqs2.at( i );
+//         sortedAcqs.insert( acq.clone() );
+//     }
+//     assert( sortedAcqs.size() == ref_acqs.size() + ref_acqs2.size() - 2 );
+//     return sortedAcqs;
+// }
 
-//static void writingProcess( const std::vector<hub::sensor::Acquisition>& refAcqs,
-//                            const std::vector<hub::sensor::Acquisition>& refAcqs2,
-//                            hub::Output& output,
-//                            hub::Output& output2,
-//                            const std::set<hub::sensor::Acquisition>& sortedAcqs,
-//                            bool delayed ) {
+// static void writingProcess( const std::vector<hub::sensor::Acquisition>& refAcqs,
+//                             const std::vector<hub::sensor::Acquisition>& refAcqs2,
+//                             hub::Output& output,
+//                             hub::Output& output2,
+//                             const std::set<hub::sensor::Acquisition>& sortedAcqs,
+//                             bool delayed ) {
 
 //    const auto& acqFront2 = refAcqs2.front();
 //    std::cout << "write acq2: " << acqFront2 << std::endl;
@@ -180,24 +184,46 @@ computeSyncAcqs( const std::vector<hub::sensor::Acquisition>& leftAcqs,
 //}
 
 template <typename T>
-bool areEnd( T&& t ) {
+bool someEnd( const T& t ) {
     return t.isEnd();
 }
 
 template <typename T, typename... Inputs>
-bool areEnd( T&& t, Inputs&&... args ) {
-    return t.isEnd() && areEnd( args... );
+bool someEnd( const T& t, const Inputs&... args ) {
+    //    return t.isEnd() && areEnd( args... );
+    return t.isEnd() || someEnd( args... );
 }
 
-template <typename Input>
-Input sync( Input&& input ) {
-    return input;
+template <typename T>
+bool anyEnd( const T& t ) {
+    return t.isEnd();
 }
 
-//template <typename Input>
-//hub::sensor::Acquisition sync( Input&& input, Input&& input2 ) {
-//    return input >> input2;
-//}
+template <typename T, typename... Inputs>
+bool anyEnd( const T& t, const Inputs&... args ) {
+    //    return t.isEnd() && areEnd( args... );
+    return t.isEnd() && anyEnd( args... );
+}
+
+template <class Input>
+void clearAll( Input& input) {
+    input.clear();
+}
+template <class Input, class... Inputs>
+void clearAll( Input& input, Inputs&... inputs ) {
+    input.clear();
+    if ( sizeof...( Inputs ) > 0 ) { clearAll( inputs... ); }
+}
+
+// template <typename Input>
+// Input sync( Input&& input ) {
+//     return input;
+// }
+
+// template <typename Input>
+// hub::sensor::Acquisition sync( Input&& input, Input&& input2 ) {
+//     return input >> input2;
+// }
 
 // template <typename Input, typename ...Args>
 // hub::sensor::Acquisition sync(Input && input, Input && input2, Args && ... args) {
@@ -209,88 +235,148 @@ Input sync( Input&& input ) {
 //     return t >> args...;
 // }
 
-//// template <class Output, class Input>
-//template <class... Inputs>
-//static void checkSynchronize( hub::Output& output,
-//                              //                               const hub::SensorSpec& sensorSpec,
-//                              const std::vector<hub::sensor::Acquisition>& ref_acqs,
-//                              hub::Output& output2,
-//                              //                               const hub::SensorSpec& sensorSpec2,
-//                              const std::vector<hub::sensor::Acquisition>& ref_acqs2,
-//                              //                               hub::Input& input,
-//                              //                               hub::Input& input2,
-//                              const std::vector<hub::sensor::Acquisition>& refSyncAcqs,
-//                              bool delayed,
-//                              //                               hub::Input & input,
-//                              Inputs&&... inputs ) {
+// template <class Output, class Input>
+template <class... Inputs>
+static void
+checkSynchronize( hub::Output& output,
+                  const hub::sensor::SensorSpec& ref_sensorSpec,
+                  const std::vector<hub::sensor::Acquisition>& ref_acqs,
+                  hub::Output& output2,
+                  const hub::sensor::SensorSpec& ref_sensorSpec2,
+                  const std::vector<hub::sensor::Acquisition>& ref_acqs2,
+                  //                               hub::Input& input,
+                  //                               hub::Input& input2,
+                  //                              const std::vector<hub::sensor::Acquisition>&
+                  //                              refSyncAcqs, bool delayed,
+                  //                               hub::Input & input,
+                  Inputs&... inputs ) {
 
-//    std::set<hub::sensor::Acquisition> sortedAcqs = computeSortedAcqs( ref_acqs, ref_acqs2 );
+    //    std::set<hub::sensor::Acquisition> sortedAcqs = computeSortedAcqs( ref_acqs, ref_acqs2 );
 
-//    std::cout << "synching acqs" << std::endl;
-//    std::vector<hub::sensor::Acquisition> sync_acqs;
-//    bool writeDone     = false;
-//    std::thread thread = std::thread( [&]() {
-//        hub::sensor::Acquisition acq;
+    assert( anyEnd( inputs... ) );
 
-//        if ( !delayed ) {
-//            while ( !writeDone ) {
-//                std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
-//            }
-//        }
-//        //	    for ( int i = 0; i < ref_sync_acqs.size(); ++i ) {
-//        try {
+    std::cout << "--------------------------------------------------" << std::endl;
+    std::cout << "ref_sync_acqs: " << std::endl;
+    for ( const auto& ref_acq : ref_acqs ) {
+        std::cout << ref_acq << std::endl;
+    }
+    std::cout << "ref_sync_acqs2: " << std::endl;
+    for ( const auto& ref_acq2 : ref_acqs2 ) {
+        std::cout << ref_acq2 << std::endl;
+    }
 
-//            //            while ( !inputSensor.getInput().isEnd() &&
-//            //            !inputSensor2.getInput().isEnd() ) {
-//            //            while ( !inputSensor.getInput().isEnd() &&
-//            //            !inputSensor2.getInput().isEnd() && while ( !input.isEnd() &&
-//            //            !input2.isEnd() &&
-//            while ( !areEnd( inputs... ) && sync_acqs.size() != refSyncAcqs.size() ) {
+    std::vector<hub::sensor::Acquisition> ref_sync_acqs = computeSyncAcqs( ref_acqs, ref_acqs2 );
+    std::cout << "ref_sync_acqs:" << std::endl;
+    for ( const auto& sync_acq : ref_sync_acqs ) {
+        std::cout << sync_acq << std::endl;
+    }
 
-//                //                input >> input2 >> acq;
-//                //                input >> acq;
-//                sync( inputs... ) >> acq;
-//                //            input >> input2 >> acq;
-//                std::cout << "\tread synched acq: " << acq << std::endl;
+    hub::sensor::OutputSensor outputSensor( ref_sensorSpec, output );
+    hub::sensor::OutputSensor outputSensor2( ref_sensorSpec2, output2 );
 
-//                sync_acqs.push_back( std::move( acq ) );
-//            }
-//        }
-////        catch ( hub::io::StreamInterface::exception& ex ) {
-//        catch ( std::exception& ex ) {
-//            std::cout << "[test_common] synchronize() catch exception : " << ex.what() << std::endl;
-//        }
-//        //        catch ( std::exception& ex ) {
-//        //            throw ex;
-//        //        }
-//        std::cout << "synching acqs done" << std::endl;
-//    } );
+    for ( const auto& acq : ref_acqs ) {
+        outputSensor << acq;
+    }
+    for ( const auto& acq2 : ref_acqs2 ) {
+        outputSensor2 << acq2;
+    }
 
-//    writingProcess( ref_acqs, ref_acqs2, output, output2, sortedAcqs, delayed );
-//    writeDone = true;
+    std::vector<hub::sensor::Acquisition> sync_acqs;
+    hub::sensor::InputSensor inputSensorSync( inputs... );
+    auto read_acq = inputSensorSync.acq();
 
-//    assert( thread.joinable() );
-//    thread.join();
+    //    while (! archive.isEnd() && !archive2.isEnd()) {
+    //	while ( !areEnd( inputs... ) && sync_acqs.size() != refSyncAcqs.size() ) {
+    std::cout << "sync_acqs:" << std::endl;
+    while ( !someEnd( inputs... ) ) {
+        inputSensorSync >> read_acq;
+        sync_acqs.push_back( read_acq.clone() );
+        std::cout << read_acq << std::endl;
+    }
 
-//    assert( sync_acqs.size() == refSyncAcqs.size() );
-//    for ( int i = 0; i < sync_acqs.size(); ++i ) {
-//        const auto& acq2 = sync_acqs.at( i );
+    clearAll( inputs... );
 
-//        CHECK( acq2 == refSyncAcqs.at( i ) );
-//    }
-//}
+    CHECK( ref_sync_acqs == sync_acqs );
+    assert( anyEnd( inputs... ) );
+}
 
-//template <class Output, class Input>
-//static void checkSynchronize( Output&& output,
-//                              const hub::sensor::SensorSpec& sensorSpec,
-//                              const std::vector<hub::sensor::Acquisition>& ref_acqs,
-//                              Output&& output2,
-//                              const hub::sensor::SensorSpec& sensorSpec2,
-//                              const std::vector<hub::sensor::Acquisition>& ref_acqs2,
-//                              Input&& input,
-//                              Input&& input2,
-//                              const std::vector<hub::sensor::Acquisition>& refSyncAcqs,
-//                              bool delayed = false ) {
+template <class Type>
+static auto generateRefAcqs(int offset, int nAcq, std::string sensorName) {
+
+    //    std::cout << "ref_acqs" << std::endl;
+    const auto ref_resolution = hub::make_matrix<Type>();
+    const hub::sensor::SensorSpec ref_sensorSpec( sensorName, ref_resolution );
+    hub::sensor::Acquisition acq = hub::sensor::make_acquisition( ref_resolution );
+
+    std::vector<hub::sensor::Acquisition> ref_acqs;
+    auto ref_dataSize = acq.size() - 2 * sizeof( hub::sensor::Clock );
+    auto* data        = acq.data() + 2 * sizeof( hub::sensor::Clock );
+    for ( int iAcq = 0; iAcq < nAcq; ++iAcq ) {
+        for ( int i = 0; i < ref_dataSize; ++i ) {
+            data[i] = offset + iAcq + 1;
+        }
+        acq.start() = offset + iAcq + 1;
+        acq.end()   = offset + iAcq + 2;
+        ref_acqs.push_back( acq.clone() );
+        //        std::cout << ref_acqs.back() << std::endl;
+    }
+    //    std::cout << std::endl;
+
+    return std::tuple<hub::sensor::SensorSpec, std::vector<hub::sensor::Acquisition>>(std::move(ref_sensorSpec), std::move(ref_acqs));
+}
+
+template <class InputOutput>
+//static void inputOutputBench( hub::io::InputOutput<>& inputOutput,
+//                              hub::io::InputOutput<>& inputOutput2 ) {
+static void inputOutputBench( ) {
+    InputOutput inputOutput;
+    InputOutput inputOutput2;
+//    const int ref_offset    = 5;
+//    constexpr int ref_nAcqs = 10;
+    const auto & [ref_sensorSpec, ref_acqs] = generateRefAcqs<hub::sensor::format::Y8>(0, 10, "sensorName");
+    const auto & [ref_sensorSpec2, ref_acqs2] = generateRefAcqs<hub::sensor::format::Z16>(5, 10, "sensorName2");
+    const auto & [ref_sensorSpec3, ref_acqs3] = generateRefAcqs<hub::sensor::format::Y8>(10, 10, "sensorName3");
+
+    checkSynchronize( inputOutput,
+                      ref_sensorSpec,
+                      ref_acqs,
+                      inputOutput2,
+                      ref_sensorSpec2,
+                      ref_acqs2,
+                      inputOutput,
+                      inputOutput2 );
+
+    checkSynchronize( inputOutput,
+                      ref_sensorSpec2,
+                      ref_acqs2,
+                      inputOutput2,
+                      ref_sensorSpec3,
+                      ref_acqs3,
+                      inputOutput,
+                      inputOutput2 );
+
+
+//    checkSynchronize( inputOutput2,
+//                      ref_sensorSpec2,
+//                      ref_acqs2,
+//                      inputOutput,
+//                      ref_sensorSpec,
+//                      ref_acqs,
+//                      inputOutput2,
+//                      inputOutput );
+}
+
+// template <class Output, class Input>
+// static void checkSynchronize( Output&& output,
+//                               const hub::sensor::SensorSpec& sensorSpec,
+//                               const std::vector<hub::sensor::Acquisition>& ref_acqs,
+//                               Output&& output2,
+//                               const hub::sensor::SensorSpec& sensorSpec2,
+//                               const std::vector<hub::sensor::Acquisition>& ref_acqs2,
+//                               Input&& input,
+//                               Input&& input2,
+//                               const std::vector<hub::sensor::Acquisition>& refSyncAcqs,
+//                               bool delayed = false ) {
 
 //    hub::sensor::OutputSensor outputSensor( sensorSpec, std::move( output ) );
 //    std::cout << "outputSensor created" << std::endl;
@@ -426,15 +512,15 @@ Input sync( Input&& input ) {
 //        }
 //        std::cout << std::endl;
 
-
-//static std::string ReplaceAll( std::string str, const std::string& from, const std::string& to ) {
-//    size_t start_pos = 0;
-//    while ( ( start_pos = str.find( from, start_pos ) ) != std::string::npos ) {
-//        str.replace( start_pos, from.length(), to );
-//        start_pos += to.length(); // Handles case where 'to' is a substring of 'from'
-//    }
-//    return str;
-//}
+// static std::string ReplaceAll( std::string str, const std::string& from, const std::string& to )
+// {
+//     size_t start_pos = 0;
+//     while ( ( start_pos = str.find( from, start_pos ) ) != std::string::npos ) {
+//         str.replace( start_pos, from.length(), to );
+//         start_pos += to.length(); // Handles case where 'to' is a substring of 'from'
+//     }
+//     return str;
+// }
 
 //#define START_REPORT()                                                                             \
 //    std::ofstream file( "report.txt" );                                                            \
@@ -471,7 +557,7 @@ Input sync( Input&& input ) {
 //        file.close();                       \
 //    } while ( false );
 
-//static std::string s_latestFilename = "";
+// static std::string s_latestFilename = "";
 
 //#define _REPORT( _params, filename, line )                                         \
 //    do {                                                                           \
@@ -491,22 +577,24 @@ Input sync( Input&& input ) {
 //        file.close();                                                              \
 //    } while ( false );
 
-//#define REPORT( _params ) _REPORT( _params, FILE_NAME, __LINE__ )
-//#define REPORT_NEW_LINE _REPORT( "", FILE_NAME, __LINE__ )
+// #define REPORT( _params ) _REPORT( _params, FILE_NAME, __LINE__ )
+// #define REPORT_NEW_LINE _REPORT( "", FILE_NAME, __LINE__ )
 
-//static void _checkRatio( double ratio,
-//                         int compare,
-//                         int gap,
-//                         const std::string& name,
-//                         const std::string& filename,
-//                         int line ) {
-//    //    const int gap = 10;
-//    CHECK( ( compare - gap <= ratio && ratio <= compare + gap ) );
-//    if ( !( compare - gap <= ratio && ratio <= compare + gap ) ) {
-//        std::cout << "-----------------------------------------------------------------------------"
-//                     "---------------------------------------------------------------> checkRatio: "
-//                  << compare - gap << " <= " << ratio << " <= " << compare + gap << std::endl;
-//    }
+// static void _checkRatio( double ratio,
+//                          int compare,
+//                          int gap,
+//                          const std::string& name,
+//                          const std::string& filename,
+//                          int line ) {
+//     //    const int gap = 10;
+//     CHECK( ( compare - gap <= ratio && ratio <= compare + gap ) );
+//     if ( !( compare - gap <= ratio && ratio <= compare + gap ) ) {
+//         std::cout <<
+//         "-----------------------------------------------------------------------------"
+//                      "--------------------------------------------------------------->
+//                      checkRatio: "
+//                   << compare - gap << " <= " << ratio << " <= " << compare + gap << std::endl;
+//     }
 
 //    //    std::ofstream file("ouou", std::ios::app);
 //    auto name2 = name;
@@ -587,7 +675,8 @@ Input sync( Input&& input ) {
 //            const auto deviation = maxRatios[iMean] - minRatios[iMean];
 //            //            }
 
-//            //        std::cout << "average of ratio for the last " << std::min(nRatio, iRatio) << "
+//            //        std::cout << "average of ratio for the last " << std::min(nRatio, iRatio) <<
+//            "
 //            //        builds is " << meanRatio << std::endl;
 //            //            for ( int iMean = 0; iMean < nMean; ++iMean ) {
 //            std::string meanRatioStr   = std::to_string( meanRatio );
@@ -616,7 +705,8 @@ Input sync( Input&& input ) {
 //        report += ")";
 
 //        _REPORT( "[" << name << "] " << report, filename, line );
-//        //        _REPORT( "[" << name << "] ratio: " << ratio << " % , mean: " << meanRatio << " %
+//        //        _REPORT( "[" << name << "] ratio: " << ratio << " % , mean: " << meanRatio << "
+//        %
 //        //        (" << nEl
 //        //                     << "), deviation : +/- " << deviation / 2.0,
 //        //                 filename,
@@ -626,7 +716,7 @@ Input sync( Input&& input ) {
 //    }
 //}
 
-//#define checkRatio( ... ) _checkRatio( __VA_ARGS__, FILE_NAME, __LINE__ )
+// #define checkRatio( ... ) _checkRatio( __VA_ARGS__, FILE_NAME, __LINE__ )
 
 // template <class Output, class Input>
 // static void _checkSynchronize( Output&& output,

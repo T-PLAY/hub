@@ -38,17 +38,18 @@ namespace sensor {
 class InputSensor : public Sensor
 {
   public:
-        using Sensor::acq;
+    using Sensor::acq;
     //    using Input::read;
 
-    //    template <class InputT>
-    explicit InputSensor( Input& input ) :
+    template <class... Inputs>
+    explicit InputSensor( Inputs&... inputs ) :
 
         //        m_input( std::forward<Input&>( input ) )
         Sensor( SensorSpec {} ),
-        m_input( input )
-        //        Sensor(m_input.get<SensorSpec>())
-        //        m_measures(m_input),
+        m_inputs( { &inputs... } )
+    //            m_inputs( {std::make_unique<Input>(&inputs)...} )
+    //        Sensor(m_input.get<SensorSpec>())
+    //        m_measures(m_input),
 
     //        m_input( new Input( std::move( input ) ) )
     {
@@ -56,7 +57,16 @@ class InputSensor : public Sensor
         //        static_assert( !std::is_same<net::ClientSocket, Input>::value, "not clientSocket
         //        class" );
 
-        m_input.read( m_spec );
+        //        SensorSpec tmp;
+        m_specs.resize( m_inputs.size() );
+        //        for ( auto* input : m_inputs ) {
+        for ( int i = 0; i < m_inputs.size(); ++i ) {
+            auto* input = m_inputs.at( i );
+            input->read( m_specs.at( i ) );
+            m_spec += m_specs.at( i );
+        }
+        m_lastAcqs.resize( m_inputs.size() );
+        //        m_input.read( m_spec );
 
         //        m_input >> m_spec;
         //        m_input.read(m_spec);
@@ -64,10 +74,75 @@ class InputSensor : public Sensor
     }
 
     void operator>>( Acquisition& acq ) {
-        assert(m_spec.getResolution() == acq.getResolution());
+        //        std::cout << "[InputSensor] m_spec.getResolution() = " << m_spec.getResolution()
+        //                  << std::endl;
+        //        std::cout << "[InputSensor] acq.getResolution() = " << acq.getResolution() <<
+        //        std::endl;
+        assert( m_spec.getResolution() == acq.getResolution() );
+
+        if ( m_inputs.size() == 1 ) {
+            Input& input = *m_inputs.at( 0 );
+            input.read( acq.data(), acq.size() );
+        }
+        else {
+            Input& leftInput  = *m_inputs.at( 0 );
+            Input& rightInput = *m_inputs.at( 1 );
+
+            Acquisition rightAcq = make_acquisition( m_specs.at( 1 ).getResolution() );
+//            std::cout << "rightAcq: " << rightAcq << std::endl;
+            rightInput.read( rightAcq );
+
+            auto& leftLastAcqs = m_lastAcqs.at( 0 );
+            assert( leftLastAcqs.size() < 20 );
+            Acquisition leftAcq = make_acquisition( m_specs.at( 0 ).getResolution() );
+
+            if ( leftLastAcqs.empty() ) {
+                leftInput.read( leftAcq );
+                leftLastAcqs.push_back( leftAcq.clone() );
+            }
+
+            while ( rightAcq.getStart() < leftLastAcqs.front().getStart() ) {
+#ifdef HUB_DEBUG_INPUT
+                std::cout << "[InputSensor] operator>>(InputSensor&) shift rightAcq : " << rightAcq
+                          << std::endl;
+#endif
+                assert( !rightInput.isEnd() );
+                rightInput.read( rightAcq );
+            }
+
+            while ( leftLastAcqs.back().getStart() < rightAcq.getStart() && !leftInput.isEnd() ) {
+                assert( !leftInput.isEnd() );
+                leftInput.read( leftAcq );
+                leftLastAcqs.push_back( leftAcq.clone() );
+            }
+
+            while ( leftLastAcqs.size() > 2 ) {
+                leftLastAcqs.pop_front();
+            }
+
+            const auto& leftBeforeRightAcq = leftLastAcqs.front();
+            const auto& leftAfterRightAcq  = leftLastAcqs.back();
+
+            assert( leftInput.isEnd() || leftBeforeRightAcq.getStart() <= rightAcq.getStart() );
+            assert( leftInput.isEnd() || rightAcq.getStart() <= leftAfterRightAcq.getStart() );
+
+            const auto& closestAcq =
+                ( std::abs( leftBeforeRightAcq.getStart() - rightAcq.getStart() ) >
+                  std::abs( leftAfterRightAcq.getStart() - rightAcq.getStart() ) )
+                    ? ( leftAfterRightAcq )
+                    : ( leftBeforeRightAcq );
+
+            auto sync_acq = closestAcq << rightAcq;
+            sync_acq.start() = rightAcq.getStart();
+            sync_acq.end() = rightAcq.getEnd();
+            assert( sync_acq.getResolution() == acq.getResolution() );
+
+            acq = std::move(sync_acq);
+        }
+
 //        m_input.read( acq );
-        m_input.read( acq.data(), acq.size() );
-#ifdef HUB_DEBUG_OUTPUT
+//        m_input.read( acq.data(), acq.size() );
+#ifdef HUB_DEBUG_INPUT
         std::cout << HEADER << "read(Acquisition&) : " << acq << std::endl;
 #endif
     }
@@ -75,7 +150,11 @@ class InputSensor : public Sensor
     //    const Input& getInput() const { return m_input; }
 
   private:
-    Input& m_input;
+    //    Input& m_input;
+    std::vector<Input*> m_inputs;
+    std::vector<std::list<sensor::Acquisition>> m_lastAcqs;
+    std::vector<hub::sensor::SensorSpec> m_specs;
+    //    std::vector<std::unique_ptr<Input>> m_inputs;
     //    Measures m_measures;
 };
 
@@ -106,7 +185,7 @@ class InputSensor : public Sensor
 ////    {
 ////        //        static_assert( std::is_base_of<Input, Input>::value, "not a base class" );
 ////        //        static_assert( !std::is_same<net::ClientSocket, Input>::value, "not
-///clientSocket /        //        class" );
+/// clientSocket /        //        class" );
 
 ////        //        m_input.read( m_spec );
 ////    }
@@ -114,7 +193,7 @@ class InputSensor : public Sensor
 ////    template <class InputT>
 ////    //              ,
 ////    //              typename = typename std::enable_if<std::is_base_of<Input,
-///Input>::value>::type> /    explicit InputSensorT( const InputT& input ) = delete;
+/// Input>::value>::type> /    explicit InputSensorT( const InputT& input ) = delete;
 
 ////    InputSensorT( const InputSensorT& inputSensor )           = delete;
 ////    InputSensorT operator=( const InputSensorT& inputSensor ) = delete;
@@ -189,15 +268,16 @@ class InputSensor : public Sensor
 ////              class... Args,
 ////              typename = typename std::enable_if<std::is_base_of<Input, Input>::value
 //////              typename = typename std::enable_if<std::is_same<input::InputStream,
-///Input>::value / #if ( __cplusplus < 201703L ) / && ( sizeof...( Args ) != 1 || /
+/// Input>::value / #if ( __cplusplus < 201703L ) / && ( sizeof...( Args ) != 1 || /
 ///!is_one_of<Input, Args...>::value ) / #else /                                                  &&
 ///( sizeof...( Args ) != 1 || /                                                       !(
-///std::is_same<Input, Args> {} || ... ) ) / #endif / >::type> /     InputSensorT( Args&&... args )
+/// std::is_same<Input, Args> {} || ... ) ) / #endif / >::type> /     InputSensorT( Args&&... args )
 ///: /         Sensor( sensor::SensorSpec {}  ), /         m_input( new Input( std::forward<Args>(
-///args )... ) ) { /         static_assert( std::is_base_of<Input, Input>::value, "not a base class"
+/// args )... ) ) { /         static_assert( std::is_base_of<Input, Input>::value, "not a base
+/// class"
 ///);
 //////        static_assert( !std::is_same<net::ClientSocket, Input>::value, "not clientSocket
-///class"
+/// class"
 /////);
 
 ////        m_input->read( m_spec );

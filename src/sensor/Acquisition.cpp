@@ -16,9 +16,10 @@ namespace sensor {
 Acquisition make_acquisition(const Matrix &resolution) {
     //    return Acquisition( make_matrix( make_matrix<Clock>(), make_matrix<Clock>(), resolution ) );
     Acquisition acq;
-    acq.push_back(make_matrix<Clock>());
-    acq.push_back(make_matrix<Clock>());
-    acq.push_back(resolution);
+//    acq.push_back(make_matrix<Clock>());
+//    acq.push_back(make_matrix<Clock>());
+//    acq.push_back(resolution);
+    acq |= make_matrix<Clock>() | make_matrix<Clock>() | resolution;
     return acq;
 }
 

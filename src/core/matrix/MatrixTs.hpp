@@ -159,7 +159,8 @@ class MatrixTs
         auto matrix2 = make_matrix<Type_>();
         //        matrix.push_back( std::move( matrix2 ) );
 //        matrix << matrix2;
-        matrix.push_back(matrix2);
+//        matrix.push_back(matrix2);
+        matrix |= matrix2;
 
         if constexpr ( sizeof...( Types_ ) > 0 ) { serialize<Types_...>( matrix ); }
     }

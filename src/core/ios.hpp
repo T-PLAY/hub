@@ -22,6 +22,9 @@ class ios
 // template<typename T, typename A>
 // struct is_std_vector<std::vector<T,A>> : std::true_type {};
 
+template <class T>
+concept isPacket = requires (T t) { t.data(); t.size(); };
+
 template <typename T>
 using packable_t = decltype( T::packable );
 template <typename T, typename = std::void_t<>>

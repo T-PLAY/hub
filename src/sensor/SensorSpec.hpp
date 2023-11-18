@@ -75,11 +75,11 @@ class SRC_API SensorSpec
     ///
 
     SensorSpec( const std::string& sensorName,
-                //                const Resolution& _resolution = {},
+                const Matrix& resolution = {},
                 const MetaData& metaData = {} ) :
-        m_sensorName { sensorName },
-        //        resolution {_resolution},
-        m_metaData { metaData } {}
+        m_sensorName { sensorName }, m_resolution { resolution.clone() }, m_metaData { metaData } {}
+
+    //    SensorSpec(const SensorSpec & sensorSpec) = default;
 
     auto toString() const {
         return "'" + m_sensorName + "' " + m_resolution.toString() + " " + ::toString( m_metaData );
@@ -105,9 +105,19 @@ class SRC_API SensorSpec
     //    }
 
     SensorSpec() = default;
+    //    SensorSpec(const SensorSpec & sensorSpec) = default;
 
     SensorSpec( const SensorSpec& sensorSpec ) :
-        m_sensorName { sensorSpec.m_sensorName }, m_metaData { sensorSpec.m_metaData } {};
+        m_sensorName { sensorSpec.m_sensorName },
+        m_resolution { sensorSpec.m_resolution.clone() },
+        m_metaData { sensorSpec.m_metaData } {};
+
+    SensorSpec& operator=( const SensorSpec& sensorSpec ) {
+        m_sensorName = sensorSpec.m_sensorName;
+        m_resolution = sensorSpec.m_resolution.clone();
+        m_metaData   = sensorSpec.m_metaData;
+        return *this;
+    }
 
     //    SensorSpec() = delete;
 
@@ -118,6 +128,35 @@ class SRC_API SensorSpec
     }
     void read( Serializer& serializer ) {
         serializer.readAll( m_sensorName, m_resolution, m_metaData );
+    }
+
+    SensorSpec operator+( const SensorSpec& sensorSpec ) const {
+
+        std::string sensorName;
+        Matrix resolution;
+        SensorSpec::MetaData metaData;
+
+        sensorName = m_sensorName + " + " + sensorSpec.m_sensorName;
+
+        resolution = make_matrix(m_resolution, sensorSpec.m_resolution);
+//        resolution = m_resolution.clone();
+//        resolution.insert(
+//            resolution.end(), sensorSpec.m_resolutions.begin(), sensorSpec.m_resolutions.end() );
+//        resolution.push_back(sensorSpec.m_resolution);
+
+        metaData = m_metaData;
+        metaData.insert( sensorSpec.m_metaData.begin(), sensorSpec.m_metaData.end() );
+
+        metaData.erase( "parent" );
+
+        return SensorSpec(
+            std::move( sensorName ), std::move( resolution ), std::move( metaData ) );
+    }
+
+    SensorSpec& operator+=( const SensorSpec& sensorSpec ) {
+        if ( m_sensorName == "" ) { *this = sensorSpec; }
+        else { *this = *this + sensorSpec; }
+        return *this;
     }
 
     //    void serialize(Serializer & serializer) {
@@ -133,12 +172,11 @@ class SRC_API SensorSpec
     const Matrix& getResolution() const { return m_resolution; }
     MetaData getMetaData() const { return m_metaData; }
     void setResolution( Matrix&& newResolution ) { m_resolution = std::move( newResolution ); }
+    void setResolution( const Matrix& newResolution ) { m_resolution = newResolution.clone(); }
 
   private:
     std::string m_sensorName;
     Matrix m_resolution;
-    //    Matrix m_resolutions;
-
     MetaData m_metaData;
 
     //    size_t m_acquisitionSize;
@@ -269,7 +307,7 @@ class SRC_API SensorSpec
 
 //// #if CPLUSPLUS_VERSION == 20
 //// SensorSpec::SensorSpec( const SensorNameType& sensorName,
-////                                     const Resolutions& resolutions,
+////                                     const Resolutions& resolution,
 ////                                     const MetaData& metaData ) :
 ////     m_sensorName( sensorName ),
 ////     m_resolutions( resolutions ),

@@ -3,6 +3,7 @@
 // #include "core/Matrix.hpp"
 #include "core/Matrix.hpp"
 #include "core/MatrixT.hpp"
+#include "core/Serializer.hpp"
 
 namespace hub {
 namespace sensor {
@@ -22,6 +23,7 @@ class Acquisition : public Matrix
     //    {
     //          std::cout << "[Acquisition] Acquisition(const Matrix&)" << std::endl;
     //    }
+    static struct  {} packable;
 
     Acquisition() = default;
 
@@ -33,17 +35,19 @@ class Acquisition : public Matrix
 
     Acquisition clone() const {
         Acquisition acq;
-        acq.push_back(*this);
+//        acq.push_back(*this);
+        acq |= *this;
         return acq;
     }
 
     //    const Matrix & getResolution() const { return *this; }
     const Matrix& getResolution() const {
+//        std::cout << "[Acquisition] getResolution() size = " << m_resolution.size() << std::endl;
         //    Matrix getResolution() const {
         if ( m_resolution.size() == 0 ) {
             //        Matrix resolution;
             for ( int i = 2; i < nType(); ++i ) {
-                m_resolution.push_back_node( m_nodes.at( i ) );
+                m_resolution.push_back( m_nodes.at( i ) );
             }
         }
         return m_resolution;
@@ -77,11 +81,19 @@ class Acquisition : public Matrix
     //    }
 
 //    using Matrix::operator<<;
+//    void write( Serializer& serializer ) const {
+//        serializer.write( data(), size() );
+//    }
+
+//    template <class Input>
+//    void read( Serializer& serializer ) {
+//        serializer.read( data(), size() );
+//    }
 
     Acquisition& operator<<( const Acquisition& other ) {
         size_t sizeBeforeAdd = m_size;
         for ( int i = 2; i < other.nType(); ++i ) {
-            push_back_node( other.m_nodes.at( i ) );
+            push_back( other.m_nodes.at( i ) );
         }
 //        for ( const auto& node : other.m_nodes ) {
 //            m_nodes.push_back( node );

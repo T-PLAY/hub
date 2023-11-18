@@ -25,6 +25,7 @@ class InputT : public InputBase
 {
   public:
     using InputBase::read;
+//    using InputBase::clear;
 
     //    template <typename T>
     //    using readable_t = decltype( std::declval<T>().read( std::declval<Input&>() ) );
@@ -45,53 +46,56 @@ class InputT : public InputBase
     //    {}
 
   public:
-//    template <class T>
-//    typename std::enable_if<!notReadable_v<T> && readable_v<T>>::type read( T& t ) {
-//#ifdef HUB_DEBUG_INPUT
-//        std::cout << "\t" << HEADER << "\033[1mread\033[0m(readable: " << TYPE_NAME( T ) << ") ..."
-//                  << std::endl;
-//#endif
-//        assert( isOpen() );
-//        assert( !isEnd() );
-//        t.read( *this );
-//#ifdef HUB_DEBUG_INPUT
-//        std::cout << "\t" << HEADER << "\033[1mread\033[0m(readable: " << TYPE_NAME( T )
-//                  << ") = " << t << std::endl;
-//#endif
-//    }
+    //    template <class T>
+    //    typename std::enable_if<!notReadable_v<T> && readable_v<T>>::type read( T& t ) {
+    // #ifdef HUB_DEBUG_INPUT
+    //        std::cout << "\t" << HEADER << "\033[1mread\033[0m(readable: " << TYPE_NAME( T ) << ")
+    //        ..."
+    //                  << std::endl;
+    // #endif
+    //        assert( isOpen() );
+    //        assert( !isEnd() );
+    //        t.read( *this );
+    // #ifdef HUB_DEBUG_INPUT
+    //        std::cout << "\t" << HEADER << "\033[1mread\033[0m(readable: " << TYPE_NAME( T )
+    //                  << ") = " << t << std::endl;
+    // #endif
+    //    }
 
     template <class T>
-//    typename std::enable_if<!notReadable_v<T> && packable_v<T>>::type read( T& t ) {
+    //    typename std::enable_if<!notReadable_v<T> && packable_v<T>>::type read( T& t ) {
     typename std::enable_if<packable_v<T>>::type read( T& t ) {
         assert( isOpen() );
         assert( !isEnd() );
-        read( reinterpret_cast<Data_t*>( &t ), sizeof( T ) );
+        if constexpr ( isPacket<T> ) { read( t.data(), t.size() ); }
+        else { read( reinterpret_cast<Data_t*>( &t ), sizeof( T ) ); }
 #ifdef HUB_DEBUG_INPUT
         std::cout << "\t" << HEADER << "read(packable: " << TYPE_NAME( T ) << ") = " << t
                   << std::endl;
 #endif
     }
 
-//    template <class T>
-//    typename std::enable_if<!notReadable_v<T> && serializable_v<T>>::type read( T& t ) {
-//        assert( isOpen() );
-//        assert( !isEnd() );
-//#ifdef HUB_DEBUG_INPUT
-//        std::cout << "\t" << HEADER << "\033[1mread\033[0m(serial: " << TYPE_NAME( T ) << ") ..."
-//                  << std::endl;
-//#endif
-//        t.serialize( *this );
-//#ifdef HUB_DEBUG_INPUT
-//        std::cout << "\t" << HEADER << "\033[1mread\033[0m(serial: " << TYPE_NAME( T )
-//                  << ") = " << t << std::endl;
-//#endif
-//    }
+    //    template <class T>
+    //    typename std::enable_if<!notReadable_v<T> && serializable_v<T>>::type read( T& t ) {
+    //        assert( isOpen() );
+    //        assert( !isEnd() );
+    // #ifdef HUB_DEBUG_INPUT
+    //        std::cout << "\t" << HEADER << "\033[1mread\033[0m(serial: " << TYPE_NAME( T ) << ")
+    //        ..."
+    //                  << std::endl;
+    // #endif
+    //        t.serialize( *this );
+    // #ifdef HUB_DEBUG_INPUT
+    //        std::cout << "\t" << HEADER << "\033[1mread\033[0m(serial: " << TYPE_NAME( T )
+    //                  << ") = " << t << std::endl;
+    // #endif
+    //    }
 
     template <class T>
-//    typename std::enable_if<!notReadable_v<T> && !readable_v<T> && !serializable_v<T> &&
-//                            !packable_v<T>>::type
-//    read( T& t ) {
-    typename std::enable_if<! packable_v<T>>::type read( T& t ) {
+    //    typename std::enable_if<!notReadable_v<T> && !readable_v<T> && !serializable_v<T> &&
+    //                            !packable_v<T>>::type
+    //    read( T& t ) {
+    typename std::enable_if<!packable_v<T>>::type read( T& t ) {
         assert( isOpen() );
         assert( !isEnd() );
         //        m_serializer.read(*this, t);
@@ -149,30 +153,30 @@ class InputT : public InputBase
     //         #endif
     //    }
 
-//#ifdef ARCH_X86
-//    void read( size_t size ) = delete; // non compatible format 32/64 bit
-//#endif
+    // #ifdef ARCH_X86
+    //     void read( size_t size ) = delete; // non compatible format 32/64 bit
+    // #endif
 
-//    void read( char* str ) {
-//        assert( str != nullptr );
-//        assert( isOpen() );
-//        assert( !isEnd() );
+    //    void read( char* str ) {
+    //        assert( str != nullptr );
+    //        assert( isOpen() );
+    //        assert( !isEnd() );
 
-//#ifdef HUB_DEBUG_INPUT
-//        std::cout << "\t" << HEADER << "read(char *)" << std::endl;
-//#endif
+    // #ifdef HUB_DEBUG_INPUT
+    //         std::cout << "\t" << HEADER << "read(char *)" << std::endl;
+    // #endif
 
-//        int strLen = 0;
-//        assert( sizeof( int ) == 4 );
-//        read( strLen );
+    //        int strLen = 0;
+    //        assert( sizeof( int ) == 4 );
+    //        read( strLen );
 
-//        if ( strLen == 0 ) { str[0] = 0; }
-//        else {
-//            read( reinterpret_cast<unsigned char*>( str ), strLen );
+    //        if ( strLen == 0 ) { str[0] = 0; }
+    //        else {
+    //            read( reinterpret_cast<unsigned char*>( str ), strLen );
 
-//            str[strLen] = 0;
-//        }
-//    }
+    //            str[strLen] = 0;
+    //        }
+    //    }
 
     //  private:
     //    template <class... Ts>
@@ -194,18 +198,18 @@ class InputT : public InputBase
     ////        input( ts... ).or_throw();
     //    }
 
-//    template <class... Ts>
-//    void operator()( Ts&... ts ) {
-//        assert( isOpen() );
-//        assert( !isEnd() );
-//        //        readAll_( ts... );
-//        m_serializer.unpack( *this, ts... );
-//    }
+    //    template <class... Ts>
+    //    void operator()( Ts&... ts ) {
+    //        assert( isOpen() );
+    //        assert( !isEnd() );
+    //        //        readAll_( ts... );
+    //        m_serializer.unpack( *this, ts... );
+    //    }
 
   private:
     SerializerT m_serializer;
 };
 
-using Input = InputT<>;
+using Input = InputT<Serializer>;
 
 } // namespace hub

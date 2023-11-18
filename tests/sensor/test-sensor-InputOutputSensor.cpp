@@ -28,7 +28,7 @@ TEST_CASE( "InputOutputSensor test" ) {
     // init outputSensor
     hub::sensor::SensorSpec::MetaData metaData;
     metaData["name"] = "gauthier";
-    hub::sensor::SensorSpec sensorSpec( "sensorName", metaData );
+    hub::sensor::SensorSpec sensorSpec( "sensorName", {}, metaData );
     using UserResolution = UserType;
     hub::sensor::OutputSensorT<UserResolution> outputSensor( sensorSpec, archive );
 

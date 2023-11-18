@@ -64,7 +64,7 @@ TEST_CASE( "SensorSpec test" ) {
     hub::sensor::SensorSpec::MetaData metaData;
     metaData["hello"] = 5;
     metaData["name"]  = "gauthier";
-    hub::sensor::SensorSpec sensorSpec{"sensorName", metaData};
+    hub::sensor::SensorSpec sensorSpec{"sensorName", {}, metaData};
 //    sensorSpec.resolution = hub::make_matrix(hub::make_matrix<double>(), hub::make_matrix<int, 640, 480>());
 //    sensorSpec.sensorName = "sensorName";
 //    auto & resolution = sensorSpec.resolution;

@@ -34,6 +34,53 @@
 namespace hub {
 namespace sensor {
 
+/////
+///// \brief The OutputSensor class
+///// describes what a sensor physically is.
+///// A sensor measures physical information from the environment around us.
+///// We declare a sensor with its intrinsic data and the transportable
+///// data format that the sensor driver proposes to export.
+///// The sensor transmits volatile and potentially unrecordable data.
+///// This class allows the data to be transmitted without being recorded
+///// so that it can be used in real time on various network machines.
+/////
+///// todo: template class
+//// template <typename Output, typename Measures, typename Acquisition = Acquisition<Measures>>
+
+//template <typename Output>
+ class OutputSensor : public Sensor
+{
+   public:
+     using Sensor::acq;
+
+//    template <typename OutputT, typename SensorSpec = sensor::SensorSpec>
+//    OutputSensor( SensorSpec&& sensorSpec,  ) :
+    OutputSensor( const SensorSpec& sensorSpec, Output& output ) :
+//        m_output(output),
+//        m_measures(std::forward<Measures>(measures)),
+        Sensor( sensorSpec ), m_output( output )
+//        Sensor( std::forward<SensorSpec>( sensorSpec ) ),
+//        m_output( std::forward<Output&>( output ) )
+    {
+//         m_spec.setResolution(resolution);
+//        m_output.write(m_spec);
+        m_output.write(m_spec);
+//        m_output << m_spec;
+    }
+
+    void operator<<( const Acquisition& acq ) {
+        assert(m_spec.getResolution() == acq.getResolution());
+        m_output.write( acq.data(), acq.size() );
+    }
+
+//    Acquisition acq() const {
+//        return Acquisition{m_spec.getResolutions()};
+//    }
+
+    Output& m_output;
+//    Measures m_measures;
+};
+
 template <class Resolution>
 // template <class... ResolutionTs>
 class OutputSensorT : public Sensor
@@ -66,49 +113,6 @@ class OutputSensorT : public Sensor
 
 }; // end OutputSensorT
 
-/////
-///// \brief The OutputSensor class
-///// describes what a sensor physically is.
-///// A sensor measures physical information from the environment around us.
-///// We declare a sensor with its intrinsic data and the transportable
-///// data format that the sensor driver proposes to export.
-///// The sensor transmits volatile and potentially unrecordable data.
-///// This class allows the data to be transmitted without being recorded
-///// so that it can be used in real time on various network machines.
-/////
-///// todo: template class
-//// template <typename Output, typename Measures, typename Acquisition = Acquisition<Measures>>
-
-////template <typename Output>
-// class OutputSensor : public Sensor
-//{
-//   public:
-//     using Sensor::acq;
-
-//    template <typename OutputT, typename SensorSpec = sensor::SensorSpec>
-//    OutputSensor( OutputT&& output, SensorSpec&& sensorSpec ) :
-////        m_output(output),
-////        m_measures(std::forward<Measures>(measures)),
-//        Sensor( std::forward<SensorSpec>( sensorSpec ) ),
-//        m_output( std::forward<Output&>( output ) )
-//    {
-////        m_output.write(m_spec);
-//        m_output.write(m_spec);
-////        m_output << m_spec;
-//    }
-
-//    void operator<<( const Acquisition& acquisition ) {
-//        assert(m_spec.getResolutions() == acquisition.getResolutions());
-//        m_output.write( acquisition );
-//    }
-
-////    Acquisition acq() const {
-////        return Acquisition{m_spec.getResolutions()};
-////    }
-
-//    Output& m_output;
-////    Measures m_measures;
-//};
 
 /////////////////////////////////////////////// TEMPLATE
 ///////////////////////////////////////////////////////

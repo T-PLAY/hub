@@ -1,5 +1,5 @@
-#define HUB_DEBUG_INPUT
-#define HUB_DEBUG_OUTPUT
+//#define HUB_DEBUG_INPUT
+//#define HUB_DEBUG_OUTPUT
 
 #include "test_common.hpp"
 
@@ -16,62 +16,55 @@
 
 TEST_CASE( "InputOutputSensorSync test" ) {
 
-    const int ref_offset    = 5;
-    constexpr int ref_nAcqs = 10;
-
-    std::cout << "ref_acqs" << std::endl;
-    const auto ref_resolution = hub::make_matrix<hub::sensor::format::Y8>();
-    const hub::sensor::SensorSpec ref_sensorSpec( "sensorName" );
-    hub::sensor::Acquisition acq = hub::sensor::make_acquisition( ref_resolution );
-
-    std::vector<hub::sensor::Acquisition> ref_acqs;
-    auto ref_dataSize = acq.size() - 2 * sizeof( hub::sensor::Clock );
-    auto* data        = acq.data() + 2 * sizeof( hub::sensor::Clock );
-    for ( int iAcq = 0; iAcq < ref_nAcqs; ++iAcq ) {
-        for ( int i = 0; i < ref_dataSize; ++i ) {
-            data[i] = ref_offset + iAcq + 1;
-        }
-        acq.start() = ref_offset + iAcq + 1;
-        acq.end()   = ref_offset + iAcq + 2;
-        ref_acqs.push_back( acq.clone() );
-        std::cout << ref_acqs.back() << std::endl;
-    }
-    std::cout << std::endl;
-
-    //////////////////////
-
-    const int ref_offset2    = 0;
-    constexpr int ref_nAcqs2 = 10;
-
-    std::cout << "ref2_acqs" << std::endl;
-    const auto ref_resolution2 = hub::make_matrix<hub::sensor::format::Z16>();
-    const hub::sensor::SensorSpec ref_sensorSpec2( "sensorName" );
-    hub::sensor::Acquisition acq2 = hub::sensor::make_acquisition( ref_resolution2 );
-
-    std::vector<hub::sensor::Acquisition> ref_acqs2;
-    auto ref_dataSize2 = acq2.size() - 2 * sizeof( hub::sensor::Clock );
-    auto* data2        = acq2.data() + 2 * sizeof( hub::sensor::Clock );
-    for ( int iAcq = 0; iAcq < ref_nAcqs2; ++iAcq ) {
-        for ( int i = 0; i < ref_dataSize2; ++i ) {
-            data2[i] = ref_offset2 + iAcq + 1;
-        }
-        acq2.start() = ref_offset2 + iAcq + 1;
-        acq2.end()   = ref_offset2 + iAcq + 1;
-        ref_acqs2.push_back( acq2.clone() );
-        std::cout << ref_acqs2.back() << std::endl;
-    }
-    std::cout << std::endl;
-
-
     //    //////////////////////
 
-//        std::cout << "ref_sync_acqs" << std::endl;
-        std::vector<hub::sensor::Acquisition> ref_sync_acqs = computeSyncAcqs( ref_acqs, ref_acqs2
-        );
+//    hub::io::Archive archive;
+//    hub::io::Archive archive2;
+//    inputOutputBench(archive, archive2);
+    inputOutputBench<hub::io::Archive>();
+    return;
 
-    //    {
-    //        hub::sensor::OutputSensor outputSensor( ref_sensorSpec,
-    //                                                hub::output::OutputStream( FILE_NAME ) );
+//    //        std::cout << "ref_sync_acqs" << std::endl;
+//    std::vector<hub::sensor::Acquisition> ref_sync_acqs = computeSyncAcqs( ref_acqs, ref_acqs2 );
+
+//    //    {
+////    hub::sensor::OutputSensorT<UserResolution> outputSensor( sensorSpec, archive );
+//    hub::sensor::OutputSensor outputSensor( ref_sensorSpec, archive);
+//    hub::sensor::OutputSensor outputSensor2( ref_sensorSpec2, archive2);
+
+//    hub::sensor::InputSensor inputSensorSync(archive, archive2);
+////    std::cout << "ref_sensorSpec: " << ref_sensorSpec << std::endl;
+//    std::cout << "outputSensor spec: " << outputSensor.getSpec() << std::endl;
+//    std::cout << "outputSensor2 spec: " << outputSensor2.getSpec() << std::endl;
+//    std::cout << "inputSensor spec: " << inputSensorSync.getSpec() << std::endl;
+
+//    for (const auto & acq : ref_acqs) {
+//        outputSensor << acq;
+//    }
+//    for (const auto & acq2 : ref_acqs2) {
+//        outputSensor2 << acq2;
+//    }
+
+//    std::vector<hub::sensor::Acquisition> acqs_read;
+//    auto read_acq = inputSensorSync.acq();
+//    std::cout << "read_acq: " << read_acq << std::endl;
+//    std::cout << "read_acq_res: " << read_acq.getResolution() << std::endl;
+
+//    while (! archive.isEnd() && !archive2.isEnd()) {
+//        inputSensorSync >> read_acq;
+////        std::cout << "read sync acq: " << read_acq << std::endl;
+////        acqs_read.push_back(std::move(read_acq));
+//        acqs_read.push_back(read_acq.clone());
+//    }
+
+//    for (const auto & syncAcq: acqs_read) {
+//        std::cout << syncAcq << std::endl;
+//    }
+
+//    assert(ref_sync_acqs == acqs_read);
+
+
+//                                                    hub::output::OutputStream( FILE_NAME ) );
     //        hub::sensor::OutputSensor outputSensor2( ref_sensorSpec2,
     //                                                 hub::output::OutputStream( FILE_NAME + "2" )
     //                                                 );
