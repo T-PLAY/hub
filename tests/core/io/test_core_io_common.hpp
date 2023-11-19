@@ -30,11 +30,15 @@ struct UserData {
         serial( a, b, name, vints );
     }
 
+    auto toString() const {
+        return std::to_string(a) + " " + std::to_string(b) + " " + name + " " + ::toString(vints);
+    }
+
     bool operator==( const UserData& character ) const {
         return a == character.a && b == character.b && name == character.name &&
                vints == character.vints;
     }
-    friend std::ostream& operator<<( std::ostream& os, const UserData& character );
+//    friend std::ostream& operator<<( std::ostream& os, const UserData& character );
 };
 // static_assert( hub::io::serializable_v<UserData> );
 static_assert( sizeof( int ) == 4 );

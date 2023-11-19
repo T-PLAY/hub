@@ -182,19 +182,23 @@ class MatrixTs
     Matrix getMatrix() const {
         Matrix matrix;
         serialize( matrix );
+//        std::copy(m_buffer.data(), m_buffer.data() + m_buffer.size(), matrix.)
+        matrix.setData(m_buffer.data(), m_buffer.size());
         //        serialize<Types...>( matrix );
         return matrix;
     }
 
     bool operator==( const Matrix& matrix ) {
+
         if (Size == matrix.size() && nType() == matrix.nType()) {
-            const Matrix & me = getMatrix();
-            if (me == matrix) {
-                return memcmp(data(), matrix.data(), Size) == 0;
-            }
-            else {
-                return false;
-            }
+            const Matrix & myselfAsMatrix = getMatrix();
+            return myselfAsMatrix == matrix;
+//            if (me == matrix) {
+//                return memcmp(data(), matrix.data(), Size) == 0;
+//            }
+//            else {
+//                return false;
+//            }
         }
             return false;
     }

@@ -188,6 +188,7 @@ class MatrixXDBase
     Matrix getMatrix() const {
         Matrix matrix;
         serialize(matrix);
+        matrix.setData(m_buffer.data(), m_buffer.size());
         return matrix;
     }
 

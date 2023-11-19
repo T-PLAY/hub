@@ -7,7 +7,7 @@
 // #include <span>
 // #include <vector>
 
-#include "core/test_core_common.hpp"
+//#include "core/test_core_common.hpp"
 #include "sensor/test_sensor_common.hpp"
 
 #include <core/io/Archive.hpp>
@@ -52,6 +52,8 @@ TEST_CASE( "InputOutputSensor test" ) {
     // read input acq
     auto acq_read = inputSensor.acq();
     inputSensor >> acq_read;
+    std::cout << "acq: " << acq << std::endl;
+    std::cout << "acq_read: " << acq_read << std::endl;
     CHECK( acq == acq_read );
 
     //        assert(UserResolution() == inputSensor.getSpec().resolution);

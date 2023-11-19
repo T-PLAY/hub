@@ -129,6 +129,11 @@ class SRC_API SensorSpec
     void read( Serializer& serializer ) {
         serializer.readAll( m_sensorName, m_resolution, m_metaData );
     }
+//        static constexpr auto serialize( auto& archive, auto& self ) {
+//            assert(false);
+//            return archive( self.m_sensorName, self.m_resolution, self.m_metaData );
+//            return archive( self.m_sensorName, self.resolution );
+//        }
 
     SensorSpec operator+( const SensorSpec& sensorSpec ) const {
 
@@ -163,10 +168,6 @@ class SRC_API SensorSpec
     //        serializer(m_sensorName, resolution, metaData);
     //    }
 
-    //    static constexpr auto serialize( auto& archive, auto& self ) {
-    ////                return archive( self.m_sensorName, self.m_resolution, self.m_metaData );
-    //        return archive( self.m_sensorName, self.resolution );
-    //    }
 
     std::string getSensorName() const { return m_sensorName; }
     const Matrix& getResolution() const { return m_resolution; }
