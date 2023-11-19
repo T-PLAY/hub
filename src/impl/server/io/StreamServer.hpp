@@ -3,7 +3,8 @@
 #include <string>
 
 #include "io/StreamInterface.hpp"
-#include "net/ClientSocket.hpp"
+//#include "net/ClientSocket.hpp"
+#include "io/InputOutputSocket.hpp"
 
 namespace hub {
 namespace io {

@@ -5,7 +5,9 @@
 #include <thread>
 
 #include "Client.hpp"
-#include "net/ClientSocket.hpp"
+//#include "net/ClientSocket.hpp"
+#include "io/InputOutputSocket.hpp"
+#include "sensor/SensorSpec.hpp"
 
 namespace hub {
 namespace server {
@@ -35,7 +37,8 @@ class ViewerClient : public Client
   private:
     std::thread m_thread;
 
-    net::ClientSocket m_socket;
+//    net::ClientSocket m_socket;
+    io::InputOutputSocket m_socket;
 
     bool m_viewerClosed = false;
 

@@ -127,7 +127,8 @@ void Server::asyncRun() {
 
 // void Server::stop() {}
 
-server::Client* Server::initClient( net::ClientSocket&& sock, int iClient ) {
+//server::Client* Server::initClient( net::ClientSocket&& sock, int iClient ) {
+server::Client* Server::initClient( io::InputOutputSocket&& sock, int iClient ) {
 
     //    net::ClientSocket::Type clientType;
     io::StreamInterface::ClientType clientType;
@@ -408,7 +409,7 @@ void Server::delViewer( server::ViewerClient* viewer ) {
 }
 
 void Server::newAcquisition( const server::StreamerClient* streamer, const sensor::Acquisition& acq ) {
-    assert( !acq.isEnd() );
+//    assert( !acq.isEnd() );
 
     const auto& streamName = streamer->getStreamName();
 
@@ -432,7 +433,7 @@ void Server::newAcquisition( const server::StreamerClient* streamer, const senso
         }
     }
     m_mtxSreamName2streamViewers.unlock();
-    assert( !acq.isEnd() );
+//    assert( !acq.isEnd() );
 }
 
 std::list<std::pair<std::string, sensor::SensorSpec>> Server::listStreams() const {

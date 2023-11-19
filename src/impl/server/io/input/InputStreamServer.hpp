@@ -4,9 +4,14 @@
 #include <thread>
 
 //#include "Input.hpp"
-#include "net/ClientSocket.hpp"
-#include "Input.hpp"
-#include "io/StreamServer.hpp"
+//#include "net/ClientSocket.hpp"
+#include "core/Input.hpp"
+#include "io/InputOutputSocket.hpp"
+#include "sensor/Acquisition.hpp"
+#include "sensor/SensorSpec.hpp"
+
+//#include "../StreamServer.hpp"
+#include "impl/server/io/StreamServer.hpp"
 
 namespace hub {
 namespace input {
@@ -45,10 +50,14 @@ class SRC_API InputStreamServer : public Input, public io::StreamServer
     ///
     InputStreamServer( InputStreamServer&& inputStream );
 
+
 //    ~InputStreamServer();
 
   protected:
   public:
+    void read( sensor::Acquisition& acq );
+    void read( sensor::SensorSpec& sensorSpec );
+
     ///
     /// \brief isOpen
     /// \return
@@ -73,12 +82,15 @@ class SRC_API InputStreamServer : public Input, public io::StreamServer
     ///
     bool isEnd() const override;
 
+    void clear() override;
+
     // todo acq
 //    void read( sensor::Acquisition& acq ) override;
 //    void read( sensor::SensorSpec& sensorSpec ) override;
 
   private:
-    net::ClientSocket m_clientSocket;
+//    net::ClientSocket m_clientSocket;
+    io::InputOutputSocket m_clientSocket;
     bool m_streamViewerClientClosed = false;
     bool m_streamerClosed           = false;
 
@@ -122,7 +134,8 @@ inline void InputStreamServer::close() {
         io::StreamInterface::ServerMessage message;
         m_clientSocket.read( message );
         while ( message == io::StreamInterface::ServerMessage::STREAM_VIEWER_NEW_ACQ ) {
-            auto acq = m_clientSocket.get<sensor::Acquisition>();
+            // todo server
+//            auto acq = m_clientSocket.get<sensor::Acquisition>();
             m_clientSocket.read( message );
         }
 //        assert( message == io::StreamInterface::ServerMessage::STREAM_VIEWER_CLOSED );

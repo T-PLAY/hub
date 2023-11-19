@@ -37,41 +37,92 @@ namespace sensor {
 // template <typename Input>
 class InputSensor : public Sensor
 {
-  public:
-    using Sensor::acq;
-    //    using Input::read;
-
-    template <class... Inputs>
-    explicit InputSensor( Inputs&... inputs ) :
-
-        //        m_input( std::forward<Input&>( input ) )
-        Sensor( SensorSpec {} ),
-        m_inputs( { &inputs... } )
-    //            m_inputs( {std::make_unique<Input>(&inputs)...} )
-    //        Sensor(m_input.get<SensorSpec>())
-    //        m_measures(m_input),
-
-    //        m_input( new Input( std::move( input ) ) )
-    {
-        //        static_assert( std::is_base_of<Input, Input>::value, "not a base class" );
-        //        static_assert( !std::is_same<net::ClientSocket, Input>::value, "not clientSocket
-        //        class" );
-
-        //        SensorSpec tmp;
+    void initSensorSpecFromInputs() {
         m_specs.resize( m_inputs.size() );
-        //        for ( auto* input : m_inputs ) {
         for ( int i = 0; i < m_inputs.size(); ++i ) {
             auto* input = m_inputs.at( i );
             input->read( m_specs.at( i ) );
             m_spec += m_specs.at( i );
         }
         m_lastAcqs.resize( m_inputs.size() );
-        //        m_input.read( m_spec );
-
-        //        m_input >> m_spec;
-        //        m_input.read(m_spec);
-        //        m_input.read(m_measures);
     }
+
+  public:
+    using Sensor::acq;
+    //    using Input::read;
+
+//    template <class... Inputs>
+////    template <Input
+//    explicit InputSensor( Inputs&... inputs ) :
+//        Sensor( SensorSpec {} ),
+//        m_inputs( { &inputs... } )
+//    {
+//        m_specs.resize( m_inputs.size() );
+//        for ( int i = 0; i < m_inputs.size(); ++i ) {
+//            auto* input = m_inputs.at( i );
+//            input->read( m_specs.at( i ) );
+//            m_spec += m_specs.at( i );
+//        }
+//        m_lastAcqs.resize( m_inputs.size() );
+//    }
+//    template <class... Inputs>
+//    template <Input
+    InputSensor( Input& input ) :
+        Sensor( SensorSpec {} ),
+        m_inputs( { &input } )
+    {
+        initSensorSpecFromInputs();
+    }
+
+    InputSensor( Input& input, Input& input2 ) :
+        Sensor( SensorSpec {} ),
+        m_inputs( { &input, &input2 } )
+    {
+        initSensorSpecFromInputs();
+    }
+
+
+    template <class InputT>
+//        requires std::is_rvalue_reference_v<InputT>
+        requires std::is_base_of_v<Input, InputT>
+    InputSensor( InputT&& input ) :
+        Sensor( SensorSpec {} )
+//        m_inputs( { &inputs... } )
+//        m_inputs(new InputT(std::move(input)))
+    {
+        m_inputs.push_back(new InputT(std::move(input)));
+        initSensorSpecFromInputs();
+    }
+
+    template <class InputT>
+        requires std::is_base_of_v<Input, InputT>
+//        requires std::is_rvalue_reference_v<InputT>
+    InputSensor( InputT&& input, InputT&& input2 ) :
+        Sensor( SensorSpec {} )
+//        m_inputs( { &inputs... } )
+//        m_inputs(new InputT(std::move(input)))
+    {
+        m_inputs.push_back(new InputT(std::move(input)));
+        m_inputs.push_back(new InputT(std::move(input2)));
+        initSensorSpecFromInputs();
+    }
+
+//    template <class... Inputs>
+//    explicit InputSensor( Inputs&&... inputs ) :
+//        Sensor( SensorSpec {} ),
+////        m_inputs( { &inputs... } )
+//        m_inputs({*(new Inputs(std::move(inputs)))...})
+//    {
+////        for (auto && input : {inputs...}) {
+////        }
+//        m_specs.resize( m_inputs.size() );
+//        for ( int i = 0; i < m_inputs.size(); ++i ) {
+//            auto* input = m_inputs.at( i );
+//            input->read( m_specs.at( i ) );
+//            m_spec += m_specs.at( i );
+//        }
+//        m_lastAcqs.resize( m_inputs.size() );
+//    }
 
     void operator>>( Acquisition& acq ) {
         //        std::cout << "[InputSensor] m_spec.getResolution() = " << m_spec.getResolution()
@@ -147,7 +198,8 @@ class InputSensor : public Sensor
 #endif
     }
 
-    //    const Input& getInput() const { return m_input; }
+    const Input& getInput() const { return *m_inputs.at(0); }
+    Input& getInput() { return *m_inputs.at(0); }
 
   private:
     //    Input& m_input;

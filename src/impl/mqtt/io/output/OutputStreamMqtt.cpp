@@ -4,7 +4,7 @@
 #include <iostream>
 #include <typeinfo>
 
-#include "io/Memory.hpp"
+//#include "io/Memory.hpp"
 
 namespace hub {
 namespace output {
@@ -58,9 +58,10 @@ void OutputStreamMqtt::write( const sensor::Acquisition& acq ) {
     std::vector<char> buff;
     constexpr int maxBuffLen = 512;
     buff.reserve( maxBuffLen );
-    io::Memory<decltype( buff )> memory( buff );
+    // todo mqtt
+//    io::Memory<decltype( buff )> memory( buff );
 
-    memory.write( acq );
+//    memory.write( acq );
 
     ///////////////////////////////////////
 
@@ -106,25 +107,26 @@ void OutputStreamMqtt::write( const sensor::SensorSpec& sensorSpec ) {
     std::vector<char> buff;
     constexpr int maxBuffLen = 512;
     buff.reserve( maxBuffLen );
-    io::Memory<decltype( buff )> memory( buff );
+//    io::Memory<decltype( buff )> memory( buff );
 
-    memory.write( sensorSpec );
+//    memory.write( sensorSpec );
 
     ///////////////////////////////////////
 
-    uint64_t packetSize;
-    memory.read( packetSize );
+    // todo mqtt
+//    uint64_t packetSize;
+//    memory.read( packetSize );
 
-    assert( buff.size() == packetSize );
+//    assert( buff.size() == packetSize );
 
-    m_currentTopic = s_topicStream + m_name + "/header/size";
-    m_msgPtr->set_topic( m_currentTopic );
-    assert( m_msgPtr->get_qos() == 2 );
-    Output::write( packetSize );
-    //    Output::write((unsigned char*)buff.data(), packetSize);
-    m_currentTopic = s_topicStream + m_name + "/header/data";
-    m_msgPtr->set_topic( m_currentTopic );
-    write( (unsigned char*)buff.data(), packetSize );
+//    m_currentTopic = s_topicStream + m_name + "/header/size";
+//    m_msgPtr->set_topic( m_currentTopic );
+//    assert( m_msgPtr->get_qos() == 2 );
+//    Output::write( packetSize );
+//    //    Output::write((unsigned char*)buff.data(), packetSize);
+//    m_currentTopic = s_topicStream + m_name + "/header/data";
+//    m_msgPtr->set_topic( m_currentTopic );
+//    write( (unsigned char*)buff.data(), packetSize );
 
     // prevent viewers there is new streamer
     m_msgPtr->set_retained( false );

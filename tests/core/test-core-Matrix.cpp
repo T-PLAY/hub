@@ -41,25 +41,25 @@ class Lambda
     //    Lambda() = default;
 };
 
-#include "core/Macros.hpp"
+//#include "core/Macros.hpp"
 
-class Test
-{
-  public:
-      void printHeader() {
-			std::cout << "HEADER: " << HEADER << std::endl;
-    }
-};
+//class Test
+//{
+//  public:
+//      void printHeader() {
+//			std::cout << "HEADER: " << HEADER << std::endl;
+//    }
+//};
 
 
 // TEST_CASE( "Matrix test" ) {
 int main() {
 
-    Test myTest;
-      myTest.printHeader();
+//    Test myTest;
+//      myTest.printHeader();
 
-    std::cout << "FILE_NAME: " << FILE_NAME << std::endl;
-    std::cout << "FILE_NAME_WITHOUT_EXTENSIONS: " << FILE_NAME_WITHOUT_EXTENSION << std::endl;
+//    std::cout << "FILE_NAME: " << FILE_NAME << std::endl;
+//    std::cout << "FILE_NAME_WITHOUT_EXTENSIONS: " << FILE_NAME_WITHOUT_EXTENSION << std::endl;
     //return 0;
 
     hub::io::Archive archive;
@@ -237,10 +237,12 @@ int main() {
 
     std::cout << "archive write" << std::endl;
     archive.write(serialChar);
-    return 0;
+//    return 0;
     Matrix serialChar_read;
     archive.read(serialChar_read);
     assert(serialChar == serialChar_read);
+
+//    return 0;
 
     archive.write(serialChar.data(), serialChar.size());
     archive.read(serialChar_read.data(), serialChar.size());

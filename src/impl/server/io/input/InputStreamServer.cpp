@@ -1,5 +1,7 @@
 
 #include "InputStreamServer.hpp"
+#include "sensor/Acquisition.hpp"
+#include "sensor/SensorSpec.hpp"
 
 namespace hub {
 namespace input {
@@ -8,7 +10,8 @@ namespace input {
 InputStreamServer::InputStreamServer(const std::string &streamName, const std::string &ipv4, int port) :
     io::StreamServer(streamName, ipv4, port),
 //    m_clientSocket( std::move( clientSocket ) ) {
-    m_clientSocket(ipv4, port)
+//    m_clientSocket(ipv4, port)
+    m_clientSocket(net::ClientSocket(ipv4, port))
     {
 
     assert(m_clientSocket.isConnected());
@@ -94,6 +97,10 @@ void InputStreamServer::read( sensor::Acquisition& acq ) {
 
 void InputStreamServer::read( sensor::SensorSpec& sensorSpec ) {
     m_clientSocket.read( sensorSpec );
+}
+
+void InputStreamServer::clear()
+{
 }
 
 } // namespace input

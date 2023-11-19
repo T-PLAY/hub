@@ -15,7 +15,9 @@ OutputStreamServer::OutputStreamServer( const std::string& streamName,
     io::StreamServer( streamName, ipv4, port ),
     //    m_clientSocket( std::move( clientSocket ) ) {
     //    m_clientSocket( ipv4, port )
-    m_clientSocket( std::make_unique<net::ClientSocket>( ipv4, port ) ) {
+//    m_clientSocket( std::make_unique<net::ClientSocket>( ipv4, port ) )
+    m_clientSocket( std::make_unique<io::InputOutputSocket>( net::ClientSocket(ipv4, port) ) )
+{
 
     //    Output::write( net::ClientSocket::Type::STREAMER );
     m_clientSocket->write( ClientType::STREAMER );
@@ -27,7 +29,8 @@ OutputStreamServer::OutputStreamServer( const std::string& streamName,
     m_clientSocket->read( mess );
     if ( mess == io::StreamInterface::ServerMessage::FOUND ) {
         m_clientSocket->close();
-        throw net::Socket::exception(
+//        throw net::Socket::exception(
+        throw net::system::SocketSystem::exception(
             ( std::string( "stream '" ) + streamName + "' is already attached to server" )
                 .c_str() );
     }
@@ -37,7 +40,7 @@ OutputStreamServer::OutputStreamServer( const std::string& streamName,
     auto* clientSocket   = m_clientSocket.get();
     auto* serverClosed   = m_serverClosed.get();
     auto* streamerClosed = m_streamerClosed.get();
-    m_thread             = std::make_unique<std::thread>( [=]() {
+    m_thread             = std::make_unique<std::thread>( [=, this]() {
         //        auto * clientSocket = m_clientSocket.get();
         std::cout << "[OutputStreamServer:" << this
                   << "] OutputStreamServer(string, string, int) thread started" << std::endl;

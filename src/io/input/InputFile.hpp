@@ -38,6 +38,8 @@ class InputFile : public Input, public io::File
     ///
     void read( Data_t* data, Size_t len ) override;
 
+    void clear() override;
+
   private:
     std::ifstream m_file;
 };

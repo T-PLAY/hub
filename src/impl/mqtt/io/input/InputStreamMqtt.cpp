@@ -1,7 +1,7 @@
 
 #include "InputStreamMqtt.hpp"
 
-#include "io/Memory.hpp"
+//#include "io/Memory.hpp"
 
 namespace hub {
 namespace input {
@@ -135,14 +135,15 @@ void InputStreamMqtt::read( sensor::Acquisition& acq ) {
     read( (unsigned char*)buff.data(), m_acqSize );
 //        m_client->unsubscribe( m_currentTopic );
 
-    io::Memory<decltype( buff )> memory( buff );
-    memory.read( acq );
+    // todo mqtt
+//    io::Memory<decltype( buff )> memory( buff );
+//    memory.read( acq );
 
 //    std::cout << "\tread acq : " << acq << std::endl;
 //    std::cout << "\tread acq" << m_iAcq - 1 << " : " << acq << std::endl;
 
     assert( buff.empty() );
-    assert( memory.isEnd() );
+//    assert( memory.isEnd() );
 }
 
 void InputStreamMqtt::read( sensor::SensorSpec& sensorSpec ) {
@@ -166,10 +167,11 @@ void InputStreamMqtt::read( sensor::SensorSpec& sensorSpec ) {
     read( (unsigned char*)&data[sizeof( uint64_t )], packetSize );
 //    m_client->unsubscribe( m_currentTopic );
 
-    io::Memory<decltype( buff )> memory( buff );
-    memory.read( sensorSpec );
-    assert( buff.empty() );
-    assert( memory.isEnd() );
+    // todo mqtt
+//    io::Memory<decltype( buff )> memory( buff );
+//    memory.read( sensorSpec );
+//    assert( buff.empty() );
+//    assert( memory.isEnd() );
 }
 
 void InputStreamMqtt::subscribe(const std::string &topic)

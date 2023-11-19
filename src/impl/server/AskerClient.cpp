@@ -26,9 +26,10 @@ AskerClient::AskerClient( Server* server, int iClient, net::ClientSocket&& sock 
                 case io::StreamInterface::ClientMessage::ASKER_CLIENT_GET_LIST_STREAMS: {
                     std::cout << headerMsg() << "listing sensors" << std::endl;
 
-                    assert( m_server != nullptr );
-                    const auto& listStreams = m_server->listStreams();
-                    m_sock.write( listStreams );
+                    // todo server
+//                    assert( m_server != nullptr );
+//                    const auto& listStreams = m_server->listStreams();
+//                    m_sock.write( listStreams );
 
                 } break;
 

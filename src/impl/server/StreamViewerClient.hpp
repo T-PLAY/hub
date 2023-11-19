@@ -4,7 +4,8 @@
 
 #include "Client.hpp"
 #include "sensor/OutputSensor.hpp"
-#include "net/ClientSocket.hpp"
+//#include "net/ClientSocket.hpp"
+#include "io/InputOutputSocket.hpp"
 
 namespace hub {
 namespace server {
@@ -18,7 +19,8 @@ class StreamerClient;
 class StreamViewerClient : public Client
 {
   private:
-    StreamViewerClient( Server* server, int iClient, net::ClientSocket&& sock, std::string  streamName );
+//    StreamViewerClient( Server* server, int iClient, net::ClientSocket&& sock, std::string  streamName );
+    StreamViewerClient( Server* server, int iClient, io::InputOutputSocket&& sock, std::string  streamName );
     ~StreamViewerClient();
 
     std::string headerMsg() const override;

@@ -10,21 +10,23 @@ namespace server {
 class OutputStreamClient : public Output
 {
   public:
-    explicit OutputStreamClient( net::ClientSocket&& clientSocket ) :
+//    explicit OutputStreamClient( net::ClientSocket&& clientSocket ) :
+    explicit OutputStreamClient( io::InputOutputSocket&& clientSocket ) :
         m_clientSocket( std::move( clientSocket ) ) {}
 
     OutputStreamClient( OutputStreamClient&& outputStream );
     ~OutputStreamClient();
 
   protected:
-    void write( const sensor::Acquisition& acq ) override;
+    void write( const sensor::Acquisition& acq );
 
     void write( const unsigned char* data, size_t len ) override;
     void close() override;
     bool isOpen() const override;
 
   private:
-    net::ClientSocket m_clientSocket;
+//    net::ClientSocket m_clientSocket;
+    io::InputOutputSocket m_clientSocket;
     bool m_moved = false;
 
     friend class StreamViewerClient;
@@ -64,7 +66,8 @@ bool OutputStreamClient::isOpen() const {
 
 StreamViewerClient::StreamViewerClient( Server* server,
                                         int iClient,
-                                        net::ClientSocket&& sock,
+//                                        net::ClientSocket&& sock,
+                                        io::InputOutputSocket&& sock,
                                         std::string streamName ) :
     Client( server, iClient ), m_streamName( std::move( streamName ) ) {
 
@@ -96,7 +99,8 @@ StreamViewerClient::StreamViewerClient( Server* server,
 
     m_server->addStreamViewer( this );
 
-    m_thread = new std::thread( [this, sock = std::move( sock )]() mutable {
+//    m_thread = new std::thread( [this, sock = std::move( sock )]() mutable {
+    m_thread = new std::thread( [this]() {
         try {
             OutputStreamClient& outputStream =
                 dynamic_cast<OutputStreamClient&>( m_outputSensor->getOutput() );
@@ -108,7 +112,8 @@ StreamViewerClient::StreamViewerClient( Server* server,
 
             std::cout << headerMsg() << "input stream closed by client " << std::endl;
         }
-        catch ( net::Socket::exception& ex ) {
+//        catch ( net::Socket::exception& ex ) {
+        catch ( net::system::SocketSystem::exception& ex ) {
 
             std::cout << headerMsg() << "catch exception : " << ex.what() << std::endl;
         }

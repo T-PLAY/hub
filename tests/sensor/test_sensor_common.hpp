@@ -325,10 +325,67 @@ static auto generateRefAcqs(int offset, int nAcq, std::string sensorName) {
     return std::tuple<hub::sensor::SensorSpec, std::vector<hub::sensor::Acquisition>>(std::move(ref_sensorSpec), std::move(ref_acqs));
 }
 
+template <class Output>
+static void outputSensorBench(Output & output) {
+    const auto & [ref_sensorSpec, ref_acqs] = generateRefAcqs<hub::sensor::format::Y8>(0, 10, "sensorName");
+//    assert( anyEnd( output... ) );
+
+    hub::sensor::OutputSensor outputSensor( ref_sensorSpec, output );
+
+    for ( const auto& acq : ref_acqs ) {
+        outputSensor << acq;
+    }
+
+}
+
+template <class Input>
+static void inputSensorBench(Input & input) {
+    assert(! input.isEnd());
+
+    const auto & [ref_sensorSpec, ref_acqs] = generateRefAcqs<hub::sensor::format::Y8>(0, 10, "sensorName");
+
+    hub::sensor::InputSensor inputSensor( input );
+    assert(ref_sensorSpec == inputSensor.getSpec());
+    auto acq_read = inputSensor.acq();
+
+    for ( const auto& acq : ref_acqs ) {
+        inputSensor >> acq_read;
+        CHECK(acq == acq_read);
+    }
+
+//    assert(input.isEnd());
+}
+
 template <class InputOutput>
-//static void inputOutputBench( hub::io::InputOutput<>& inputOutput,
+static void inputOutputSensorBench(InputOutput & inputOutput, InputOutput & inputOutput2 ) {
+//    InputOutput inputOutput;
+//    InputOutput inputOutput2;
+//    const int ref_offset    = 5;
+//    constexpr int ref_nAcqs = 10;
+//    const auto & [ref_sensorSpec, ref_acqs] = generateRefAcqs<hub::sensor::format::Y8>(0, 10, "sensorName");
+//    const auto & [ref_sensorSpec2, ref_acqs2] = generateRefAcqs<hub::sensor::format::Z16>(5, 10, "sensorName2");
+//    const auto & [ref_sensorSpec3, ref_acqs3] = generateRefAcqs<hub::sensor::format::Y8>(10, 10, "sensorName3");
+
+//    assert(inputOutput.isEnd());
+//    assert(inputOutput2.isEnd());
+
+    outputSensorBench(inputOutput);
+    inputSensorBench(inputOutput2);
+
+//    assert(inputOutput.isEnd());
+//    assert(inputOutput2.isEnd());
+
+    outputSensorBench(inputOutput2);
+    inputSensorBench(inputOutput);
+
+//    assert(inputOutput.isEnd());
+//    assert(inputOutput2.isEnd());
+}
+
+template <class InputOutput>
+//static void inputOutputSensorBench( hub::io::InputOutput<>& inputOutput,
 //                              hub::io::InputOutput<>& inputOutput2 ) {
-static void inputOutputBench( ) {
+static void inputOutputSensorBench( ) {
     InputOutput inputOutput;
     InputOutput inputOutput2;
 //    const int ref_offset    = 5;

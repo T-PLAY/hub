@@ -60,7 +60,8 @@ class SRC_API Server
     std::string getStatus() const;
     std::string headerMsg() const;
 
-    server::Client* initClient( net::ClientSocket&& sock, int iClient );
+//    server::Client* initClient( net::ClientSocket&& sock, int iClient );
+    server::Client* initClient( io::InputOutputSocket&& sock, int iClient );
 
     void addStreamer( server::StreamerClient* streamer );
 //    void newInputSensor(server::StreamerClient *streamer );

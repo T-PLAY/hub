@@ -287,9 +287,6 @@ class Matrix
     //        //        serial(m_nodes);
     //        serial( m_size );
     //    }
-    static constexpr auto serialize( auto& archive, auto& self ) {
-        return archive( self.m_nodes, self.m_size );
-    }
 
     void setData( const Data_t* data, Size_t size ) {
         assert( size == m_size );
@@ -336,6 +333,14 @@ class Matrix
         //        m_vector.resize( m_size );
         m_nodes.push_back( node );
         m_size += node.size();
+    }
+
+    static constexpr auto serialize( auto& archive, auto& self ) {
+        return archive( self.m_nodes, self.m_size, self.m_vector );
+    }
+
+    bool hasValue() const {
+        return ! m_vector.empty();
     }
 
   protected:

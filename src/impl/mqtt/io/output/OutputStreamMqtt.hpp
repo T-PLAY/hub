@@ -3,14 +3,17 @@
 #include <mutex>
 #include <thread>
 
+#include <mqtt/client.h>
+
 //#include "OutputStreamInterface.hpp"
 //#include "io/output/Output.hpp"
 //#include "io/StreamInterface.hpp"
-#include "Output.hpp"
+#include "core/Output.hpp"
 #include "io/StreamInterface.hpp"
-#include "io/StreamMqtt.hpp"
+#include "impl/mqtt/io/StreamMqtt.hpp"
+#include "sensor/Acquisition.hpp"
+#include "sensor/SensorSpec.hpp"
 
-#include <mqtt/client.h>
 
 namespace hub {
 namespace output {
@@ -27,8 +30,8 @@ class SRC_API OutputStreamMqtt : public Output, public io::StreamMqtt
 
 //    ~OutputStreamMqtt();
 
-    void write( const sensor::Acquisition& acq ) override;
-    void write( const sensor::SensorSpec& sensorSpec ) override;
+    void write( const sensor::Acquisition& acq );
+    void write( const sensor::SensorSpec& sensorSpec );
 //    void write(uint64_t packetSize);
 
   protected:

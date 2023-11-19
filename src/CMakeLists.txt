@@ -15,7 +15,7 @@ option(HUB_BUILD_SERVER "Build implement server" ON)
 option(HUB_BUILD_MQTT "Build implement using mqtt" OFF)
 if (HUB_BUILD_MQTT)
     find_package(PahoMqttCpp QUIET)
-#    find_package(PahoMqttCpp REQUIRED)
+    #    find_package(PahoMqttCpp REQUIRED)
     if (PahoMqttCpp_FOUND)
         set(REQUIRED_LIBS ${REQUIRED_LIBS} PahoMqttCpp::paho-mqttpp3)
     else()
@@ -74,23 +74,23 @@ endif()
 #add_library(core INTERFACE ${core_headers})
 
 file(
-#            GLOB
+    #            GLOB
     GLOB_RECURSE
     external_sources
-#    ${CMAKE_CURRENT_SOURCE_DIR}/${HUB_SOURCE_DIR}/*.cpp
-            ${HUB_EXTERNAL_DIR}/*.cpp
-            ${HUB_EXTERNAL_DIR}/*.c
+    #    ${CMAKE_CURRENT_SOURCE_DIR}/${HUB_SOURCE_DIR}/*.cpp
+    ${HUB_EXTERNAL_DIR}/*.cpp
+    ${HUB_EXTERNAL_DIR}/*.c
 )
 #list(REMOVE_ITEM sources ${HUB_EXTERNAL_DIR}/mqtt/MQTTAsync.c)
 #list(REMOVE_ITEM sources ${HUB_EXTERNAL_DIR}/mqtt/MQTTAsyncUtils.c)
 file(
-#            GLOB
+    #            GLOB
     GLOB_RECURSE
     external_headers
-#    ${CMAKE_CURRENT_SOURCE_DIR}/${HUB_SOURCE_DIR}/*.hpp
-            ${HUB_EXTERNAL_DIR}/*.hpp
-            ${HUB_EXTERNAL_DIR}/*.h
-#    ${HUB_EXTERNAL_DIR}/*.inl
+    #    ${CMAKE_CURRENT_SOURCE_DIR}/${HUB_SOURCE_DIR}/*.hpp
+    ${HUB_EXTERNAL_DIR}/*.hpp
+    ${HUB_EXTERNAL_DIR}/*.h
+    #    ${HUB_EXTERNAL_DIR}/*.inl
 )
 if (NOT HUB_USE_ZPP_BITS)
     list(REMOVE_ITEM external_headers ${HUB_EXTERNAL_DIR}/zpp_bits.h)
@@ -100,17 +100,17 @@ add_library(external OBJECT ${external_headers} ${external_sources})
 #add_library(external OBJECT ${external_headers} ${external_sources})
 ##add_library(external SHARED ${external_headers} ${external_sources})
 target_include_directories(external
-#    PUBLIC
-#	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-#	$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.hpp
-#	$<INSTALL_INTERFACE:include>
+    #    PUBLIC
+    #	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+    #	$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.hpp
+    #	$<INSTALL_INTERFACE:include>
     PRIVATE
-#    PUBLIC
-        ${HUB_EXTERNAL_DIR}
+    #    PUBLIC
+    ${HUB_EXTERNAL_DIR}
 )
 #target_compile_options(external PRIVATE -fPIC)
 if (UNIX)
-	set_property(TARGET external PROPERTY POSITION_INDEPENDENT_CODE ON) # gltfpack
+    set_property(TARGET external PROPERTY POSITION_INDEPENDENT_CODE ON) # gltfpack
 endif()
 
 
@@ -128,74 +128,98 @@ if (NOT XCODE) # unable to have object files as native build with Xcode
     foreach(HUB_SOURCE_DIR ${HUB_SOURCE_DIRS})
 
         set(TARGET_NAME ${HUB_SOURCE_DIR})
-#        set(TARGET_NAME ${PROJECT_NAME})
+        #        set(TARGET_NAME ${PROJECT_NAME})
 
-#        message(STATUS "HUB_SOURCE_DIR: ${HUB_SOURCE_DIR}")
+        #        message(STATUS "HUB_SOURCE_DIR: ${HUB_SOURCE_DIR}")
 
+        set (object_sources)
         file(
-#            GLOB
+            #            GLOB
             GLOB_RECURSE
-            sources
+            object_sources
             ${CMAKE_CURRENT_SOURCE_DIR}/${HUB_SOURCE_DIR}/*.cpp
-            ${CMAKE_CURRENT_SOURCE_DIR}/impl/server/${HUB_SOURCE_DIR}/*.cpp
-#            ${HUB_EXTERNAL_DIR}/*.cpp
-#            ${HUB_EXTERNAL_DIR}/*.c
+            #            ${CMAKE_CURRENT_SOURCE_DIR}/impl/server/${HUB_SOURCE_DIR}/*.cpp
+            #            ${HUB_EXTERNAL_DIR}/*.cpp
+            #            ${HUB_EXTERNAL_DIR}/*.c
         )
-        #list(REMOVE_ITEM sources ${HUB_EXTERNAL_DIR}/mqtt/MQTTAsync.c)
-        #list(REMOVE_ITEM sources ${HUB_EXTERNAL_DIR}/mqtt/MQTTAsyncUtils.c)
+        #list(REMOVE_ITEM object_sources ${HUB_EXTERNAL_DIR}/mqtt/MQTTAsync.c)
+        #list(REMOVE_ITEM object_sources ${HUB_EXTERNAL_DIR}/mqtt/MQTTAsyncUtils.c)
+        set (object_headers)
         file(
-#            GLOB
+            #            GLOB
             GLOB_RECURSE
-            headers
+            object_headers
             ${CMAKE_CURRENT_SOURCE_DIR}/${HUB_SOURCE_DIR}/*.hpp
-            ${CMAKE_CURRENT_SOURCE_DIR}/impl/server/${HUB_SOURCE_DIR}/*.hpp
-#            ${HUB_EXTERNAL_DIR}/*.hpp
-#            ${HUB_EXTERNAL_DIR}/*.h
-        #    ${HUB_EXTERNAL_DIR}/*.inl
+            #            ${CMAKE_CURRENT_SOURCE_DIR}/impl/server/${HUB_SOURCE_DIR}/*.hpp
+            #            ${HUB_EXTERNAL_DIR}/*.hpp
+            #            ${HUB_EXTERNAL_DIR}/*.h
+            #    ${HUB_EXTERNAL_DIR}/*.inl
         )
+
+#        set (impl_sources)
+#        set (impl_headers)
+#        set (IMPL_DIR)
+#        if (${TARGET_NAME} STREQUAL "io")
+#        if (BUILD_IMPL)
+##	if(HUB_BUILD_SERVER)
+##	    set(IMPL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/impl)
+##	    set(IMPL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/impl/server)
+#            file(
+#                GLOB_RECURSE
+#                impl_sources
+#                ${CMAKE_CURRENT_SOURCE_DIR}/impl/*/${HUB_SOURCE_DIR}/*.cpp
+#            )
+#            file(
+#                GLOB_RECURSE
+#                impl_headers
+#                ${CMAKE_CURRENT_SOURCE_DIR}/impl/*/${HUB_SOURCE_DIR}/*.hpp
+#            )
+#        endif()
+#        endif()
 
         if (NOT PahoMqttCpp_FOUND)
-            list(FILTER sources EXCLUDE REGEX ".*Mqtt\\.cpp$")
-            list(FILTER headers EXCLUDE REGEX ".*Mqtt\\.hpp$")
+            list(FILTER object_sources EXCLUDE REGEX ".*Mqtt\\.cpp$")
+            list(FILTER object_headers EXCLUDE REGEX ".*Mqtt\\.hpp$")
         endif()
 
         if (NOT Boost_FOUND)
-#            message(FATAL_ERROR "ouou")
-            list(FILTER sources EXCLUDE REGEX ".*boost/.*\\.cpp$")
-            list(FILTER headers EXCLUDE REGEX ".*boost/.*\\.hpp$")
+            #            message(FATAL_ERROR "ouou")
+            list(FILTER object_sources EXCLUDE REGEX ".*boost/.*\\.cpp$")
+            list(FILTER object_headers EXCLUDE REGEX ".*boost/.*\\.hpp$")
         endif()
 
-#        add_library(${PROJECT_NAME} OBJECT ${sources} ${headers})
-#        add_library(${TARGET_NAME} INTERFACE ${sources} ${headers})
-#        add_library(${TARGET_NAME} INTERFACE ${headers})
-        add_library(${TARGET_NAME} OBJECT ${sources} ${headers}
-        )
-#        add_library(${TARGET_NAME} SHARED ${sources} ${headers})
+        #        add_library(${PROJECT_NAME} OBJECT ${object_sources} ${object_headers})
+        #        add_library(${TARGET_NAME} INTERFACE ${object_sources} ${object_headers})
+        #        add_library(${TARGET_NAME} INTERFACE ${object_headers})
+#        add_library(${TARGET_NAME} OBJECT ${object_sources} ${object_headers} ${impl_sources} ${impl_headers})
+        add_library(${TARGET_NAME} OBJECT ${object_sources} ${object_headers})
+        #        add_library(${TARGET_NAME} SHARED ${object_sources} ${object_headers})
 
         list(APPEND SRC_TARGETS "$<TARGET_OBJECTS:${TARGET_NAME}>")
 
         target_include_directories(${TARGET_NAME}
             PUBLIC
-                $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-#                $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.hpp
-#                $<INSTALL_INTERFACE:include>
-#            PRIVATE
-                ${HUB_EXTERNAL_DIR}
-#                ${CMAKE_CURRENT_SOURCE_DIR}/impl/server
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+            #                $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.hpp
+            #                $<INSTALL_INTERFACE:include>
+            #            PRIVATE
+            ${HUB_EXTERNAL_DIR}
+#            ${IMPL_DIR}
+            #                ${CMAKE_CURRENT_SOURCE_DIR}/impl/server
         )
 
         #target_compile_definitions(${TARGET_NAME} PUBLIC -DINTERNAL_BUILD)
-       target_compile_definitions(${TARGET_NAME} PUBLIC -DSRC_STATIC) # -> SRC_API = void, future shared
-#        target_compile_definitions(${TARGET_NAME} PUBLIC -DSRC_EXPORTS) # -> SRC_API = void, future shared
-#        target_compile_options(${TARGET_NAME} PRIVATE -fPIC)
+        target_compile_definitions(${TARGET_NAME} PUBLIC -DSRC_STATIC) # -> SRC_API = void, future shared
+        #        target_compile_definitions(${TARGET_NAME} PUBLIC -DSRC_EXPORTS) # -> SRC_API = void, future shared
+        #        target_compile_options(${TARGET_NAME} PRIVATE -fPIC)
 
         if (PahoMqttCpp_FOUND)
             target_compile_definitions(${TARGET_NAME} PUBLIC -DHUB_BUILD_MQTT)
         endif()
 
-#        if (Boost_FOUND)
-#            target_compile_definitions(${TARGET_NAME} PUBLIC -DHUB_USE_BOOST)
-#        endif()
+        #        if (Boost_FOUND)
+        #            target_compile_definitions(${TARGET_NAME} PUBLIC -DHUB_USE_BOOST)
+        #        endif()
 
         if (HUB_BUILD_SERVER)
             target_compile_definitions(${TARGET_NAME} PUBLIC -DHUB_BUILD_SERVER)
@@ -236,7 +260,7 @@ if (NOT XCODE) # unable to have object files as native build with Xcode
                 get_filename_component(Mingw_Path ${CMAKE_CXX_COMPILER} PATH)
                 message(STATUS "${Mingw_Path}")
                 set(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS ${Mingw_Path}/libgcc_s_seh-1.dll ${Mingw_Path}/libstdc++-6.dll
-                                                      ${Mingw_Path}/libwinpthread-1.dll)
+                    ${Mingw_Path}/libwinpthread-1.dll)
 
                 install(
                     PROGRAMS ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS}
@@ -277,7 +301,7 @@ if (NOT XCODE) # unable to have object files as native build with Xcode
             message(FATAL_ERROR "unknown system")
         endif()
 
-#        set(REQUIRED_LIBS ${REQUIRED_LIBS} external)
+        #        set(REQUIRED_LIBS ${REQUIRED_LIBS} external)
 
         #target_link_libraries(${TARGET_NAME} PUBLIC ${REQUIRED_LIBS})
         target_link_libraries(${TARGET_NAME} PRIVATE ${REQUIRED_LIBS})
@@ -302,26 +326,26 @@ endif()  # NOT XCODE
 option(HUB_BUILD_STATIC "Build static library" ON)
 if (HUB_BUILD_STATIC)
 
-#    if(HUB_BUILD_STATIC_LIBRARY)
-#        add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})
+    #    if(HUB_BUILD_STATIC_LIBRARY)
+    #        add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})
 
     if (XCODE)
-            add_library(${PROJECT_NAME}_static STATIC ${sources} ${headers})
+        add_library(${PROJECT_NAME}_static STATIC ${sources} ${headers})
         target_include_directories(${PROJECT_NAME}_static
             PUBLIC
-                $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/>
-                $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.hpp
-                $<INSTALL_INTERFACE:include>
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/>
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.hpp
+            $<INSTALL_INTERFACE:include>
             PRIVATE
-                ${HUB_EXTERNAL_DIR}
-                ${CMAKE_CURRENT_SOURCE_DIR}/impl/server
+            ${HUB_EXTERNAL_DIR}
+            #                ${CMAKE_CURRENT_SOURCE_DIR}/impl/server
         )
         if (PahoMqttCpp_FOUND)
             target_compile_definitions(${PROJECT_NAME}_static PUBLIC -DHUB_BUILD_MQTT)
         endif()
-#        if (Boost_FOUND)
-#            target_compile_definitions(${TARGET_NAME} PUBLIC -DHUB_USE_BOOST)
-#        endif()
+        #        if (Boost_FOUND)
+        #            target_compile_definitions(${TARGET_NAME} PUBLIC -DHUB_USE_BOOST)
+        #        endif()
 
         if (HUB_BUILD_SERVER)
             target_compile_definitions(${PROJECT_NAME}_static PUBLIC -DHUB_BUILD_SERVER)
@@ -330,16 +354,16 @@ if (HUB_BUILD_STATIC)
             endif()
         endif()
     else()
-#            add_library(${PROJECT_NAME}_static STATIC $<TARGET_OBJECTS:${PROJECT_NAME}>)
+        #            add_library(${PROJECT_NAME}_static STATIC $<TARGET_OBJECTS:${PROJECT_NAME}>)
         add_library(${PROJECT_NAME}_static STATIC ${SRC_TARGETS})
-#        add_library(${PROJECT_NAME}_static STATIC ${SRC_TARGETS} ${external_sources} ${external_headers})
+        #        add_library(${PROJECT_NAME}_static STATIC ${SRC_TARGETS} ${external_sources} ${external_headers})
         target_include_directories(${PROJECT_NAME}_static
             PUBLIC
-                $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/>
-                $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.hpp
-                $<INSTALL_INTERFACE:include>
-#            PRIVATE
-                ${HUB_EXTERNAL_DIR}
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/>
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.hpp
+            $<INSTALL_INTERFACE:include>
+#                        PRIVATE
+            ${HUB_EXTERNAL_DIR}
         )
         if (HUB_BUILD_SERVER)
             target_compile_definitions(${PROJECT_NAME}_static PUBLIC -DHUB_BUILD_SERVER)
@@ -347,22 +371,22 @@ if (HUB_BUILD_STATIC)
                 target_compile_definitions(${PROJECT_NAME}_static PUBLIC -DHUB_SERVER_PORT=${HUB_SERVER_PORT})
             endif()
         endif()
-    endif()
+    endif() # (XCODE)
 
     target_compile_definitions(${PROJECT_NAME}_static PUBLIC -DSRC_STATIC)
     target_link_libraries(${PROJECT_NAME}_static PRIVATE external)
-#    target_link_libraries(${PROJECT_NAME}_static PUBLIC external)
+    #    target_link_libraries(${PROJECT_NAME}_static PUBLIC external)
 
     #target_link_libraries(${PROJECT_NAME}_static PRIVATE ${REQUIRED_LIBS})
-#    target_include_directories(${PROJECT_NAME}_static
-#        PUBLIC
-#            $<BUILD_INTERFACE:${HUB_INCLUDE_DIR}>
-#            $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.hpp
-#            $<INSTALL_INTERFACE:include>
-#        PRIVATE
-#        ${HUB_EXTERNAL_DIR}
-#    )
-#    set_property(TARGET ${PROJECT_NAME}_static PROPERTY POSITION_INDEPENDENT_CODE ON) # octave, python
+    #    target_include_directories(${PROJECT_NAME}_static
+    #        PUBLIC
+    #            $<BUILD_INTERFACE:${HUB_INCLUDE_DIR}>
+    #            $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.hpp
+    #            $<INSTALL_INTERFACE:include>
+    #        PRIVATE
+    #        ${HUB_EXTERNAL_DIR}
+    #    )
+    #    set_property(TARGET ${PROJECT_NAME}_static PROPERTY POSITION_INDEPENDENT_CODE ON) # octave, python
 
     #install(
     #    TARGETS ${PROJECT_NAME}_static
@@ -386,26 +410,26 @@ if (HUB_BUILD_STATIC)
             set_target_properties(
                 ${PROJECT_NAME}_static
                 PROPERTIES # COMPILE_PDB_NAME ${PROJECT_NAME}${CMAKE_POSTFIX}
-                           COMPILE_PDB_NAME ${PROJECT_NAME} COMPILE_PDB_OUTPUT_DIR ${CMAKE_BINARY_DIR}
-                           # DEBUG_POSTFIX "${CMAKE_DEBUG_POSTFIX}"
+                COMPILE_PDB_NAME ${PROJECT_NAME} COMPILE_PDB_OUTPUT_DIR ${CMAKE_BINARY_DIR}
+                # DEBUG_POSTFIX "${CMAKE_DEBUG_POSTFIX}"
             )
-        endif()
-
-        if(NOT ${CMAKE_BUILD_TYPE} STREQUAL "Release")
-            install(
-                FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}${CMAKE_POSTFIX}.pdb
-                DESTINATION ${ARCHITECTURE}/lib
-                OPTIONAL)
-            install(
-                FILES ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${PROJECT_NAME}${CMAKE_POSTFIX}.pdb
-                DESTINATION ${ARCHITECTURE}/lib
-                OPTIONAL)
-        endif()
     endif()
 
-    if (UNIX)
-        set_target_properties(${PROJECT_NAME}_static PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
+    if(NOT ${CMAKE_BUILD_TYPE} STREQUAL "Release")
+        install(
+            FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}${CMAKE_POSTFIX}.pdb
+            DESTINATION ${ARCHITECTURE}/lib
+            OPTIONAL)
+        install(
+            FILES ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${PROJECT_NAME}${CMAKE_POSTFIX}.pdb
+            DESTINATION ${ARCHITECTURE}/lib
+            OPTIONAL)
     endif()
+endif() # (HUB_BUILD_STATIC)
+
+if (UNIX)
+    set_target_properties(${PROJECT_NAME}_static PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
+endif()
 
 endif() # static library
 
@@ -415,22 +439,22 @@ option(HUB_BUILD_SHARED "Build shared library" ON)
 if (HUB_BUILD_SHARED)
 
     if (XCODE)
-            add_library(${PROJECT_NAME}_shared SHARED ${sources} ${headers})
+        add_library(${PROJECT_NAME}_shared SHARED ${sources} ${headers})
         target_include_directories(${PROJECT_NAME}_shared
             PUBLIC
-                $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/>
-                $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.hpp
-                $<INSTALL_INTERFACE:include>
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/>
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.hpp
+            $<INSTALL_INTERFACE:include>
             PRIVATE
-                ${HUB_EXTERNAL_DIR}
-                ${CMAKE_CURRENT_SOURCE_DIR}/impl/server
+            ${HUB_EXTERNAL_DIR}
+            #                ${CMAKE_CURRENT_SOURCE_DIR}/impl/server
         )
         if (PahoMqttCpp_FOUND)
             target_compile_definitions(${PROJECT_NAME}_shared PUBLIC -DHUB_BUILD_MQTT)
         endif()
-#        if (Boost_FOUND)
-#            target_compile_definitions(${TARGET_NAME} PUBLIC -DHUB_USE_BOOST)
-#        endif()
+        #        if (Boost_FOUND)
+        #            target_compile_definitions(${TARGET_NAME} PUBLIC -DHUB_USE_BOOST)
+        #        endif()
 
         if (HUB_BUILD_SERVER)
             target_compile_definitions(${PROJECT_NAME}_shared PUBLIC -DHUB_BUILD_SERVER)
@@ -439,17 +463,17 @@ if (HUB_BUILD_SHARED)
             endif()
         endif()
     else()
-#            add_library(${PROJECT_NAME}_shared SHARED $<TARGET_OBJECTS:${PROJECT_NAME}>)
+        #            add_library(${PROJECT_NAME}_shared SHARED $<TARGET_OBJECTS:${PROJECT_NAME}>)
         add_library(${PROJECT_NAME}_shared SHARED ${SRC_TARGETS})
-#        target_compile_options(${PROJECT_NAME}_shared PRIVATE -fPIC)
-#        add_library(${PROJECT_NAME}_shared SHARED ${SRC_TARGETS} ${external_sources} ${external_headers})
+        #        target_compile_options(${PROJECT_NAME}_shared PRIVATE -fPIC)
+        #        add_library(${PROJECT_NAME}_shared SHARED ${SRC_TARGETS} ${external_sources} ${external_headers})
         target_include_directories(${PROJECT_NAME}_shared
             PUBLIC
-                $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/>
-                $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.hpp
-                $<INSTALL_INTERFACE:include>
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/>
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.hpp
+            $<INSTALL_INTERFACE:include>
 #            PRIVATE
-#                ${HUB_EXTERNAL_DIR}
+#            ${HUB_EXTERNAL_DIR}
         )
         if (HUB_BUILD_SERVER)
             target_compile_definitions(${PROJECT_NAME}_shared PUBLIC -DHUB_BUILD_SERVER)
@@ -457,23 +481,23 @@ if (HUB_BUILD_SHARED)
                 target_compile_definitions(${PROJECT_NAME}_shared PUBLIC -DHUB_SERVER_PORT=${HUB_SERVER_PORT})
             endif()
         endif()
-    endif()
+    endif() # (XCODE)
 
     target_compile_definitions(${PROJECT_NAME}_shared PUBLIC -DSRC_EXPORTS)
     target_link_libraries(${PROJECT_NAME}_shared PRIVATE external)
 
-#	target_compile_options(${PROJECT_NAME} PRIVATE "-fpic")
-#    target_link_libraries(${PROJECT_NAME} PRIVATE ${REQUIRED_LIBS})
-#    target_link_libraries(${PROJECT_NAME} PUBLIC Threads::Threads)
-#    set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE ON) # gltfpack
-#    target_include_directories(${PROJECT_NAME}
-#        PUBLIC
-#            $<BUILD_INTERFACE:${HUB_INCLUDE_DIR}>
-#            $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.hpp
-#            $<INSTALL_INTERFACE:include>
-#        PRIVATE
-#        ${HUB_EXTERNAL_DIR}
-#    )
+    #	target_compile_options(${PROJECT_NAME} PRIVATE "-fpic")
+    #    target_link_libraries(${PROJECT_NAME} PRIVATE ${REQUIRED_LIBS})
+    #    target_link_libraries(${PROJECT_NAME} PUBLIC Threads::Threads)
+    #    set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE ON) # gltfpack
+    #    target_include_directories(${PROJECT_NAME}
+    #        PUBLIC
+    #            $<BUILD_INTERFACE:${HUB_INCLUDE_DIR}>
+    #            $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.hpp
+    #            $<INSTALL_INTERFACE:include>
+    #        PRIVATE
+    #        ${HUB_EXTERNAL_DIR}
+    #    )
     set_target_properties(${PROJECT_NAME}_shared PROPERTIES
         VERSION ${${PROJECT_NAME}_VERSION}
         SOVERSION ${${PROJECT_NAME}_VERSION_MAJOR}
@@ -482,8 +506,8 @@ if (HUB_BUILD_SHARED)
     install(
         TARGETS ${PROJECT_NAME}_shared
         EXPORT ${PROJECT_NAME}_shared
-         DESTINATION ${ARCHITECTURE}/bin # Linux
-#        DESTINATION ${ARCHITECTURE}/lib)
+        DESTINATION ${ARCHITECTURE}/bin # Linux
+        #        DESTINATION ${ARCHITECTURE}/lib)
         RUNTIME DESTINATION ${ARCHITECTURE}/bin # Windows
     )
 
@@ -500,11 +524,11 @@ if (HUB_BUILD_SHARED)
         DESTINATION share/${PROJECT_NAME}/cmake)
     export(EXPORT ${PROJECT_NAME}_shared FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake")
 
-#    if (UNIX)
+    #    if (UNIX)
     set_target_properties(${PROJECT_NAME}_shared PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
-#    endif()
+    #    endif()
 
-endif() # shared library
+endif() # (HUB_BUILD_SHARED)
 
 
 #else()
@@ -569,7 +593,7 @@ write_basic_package_version_file(
     COMPATIBILITY AnyNewerVersion)
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
-              ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake DESTINATION share/${PROJECT_NAME}/cmake)
+    ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake DESTINATION share/${PROJECT_NAME}/cmake)
 
 
 # ########################### COVERAGE ################################
@@ -599,77 +623,77 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
         "external/*.cpp"
         "/usr/*"
     )
-    custom_target_added(coverage-lcov)
+custom_target_added(coverage-lcov)
 #        "*tiny_obj_loader.h"
 
-    if(${CMAKE_VERSION} VERSION_LESS "3.20") # ctest --test-dir option
-        add_custom_command(
-            TARGET ${PROJECT_NAME}
-            POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_BINARY_DIR}/tests/DartConfiguration.tcl
-                    ${CMAKE_CURRENT_BINARY_DIR}/
-                )
+if(${CMAKE_VERSION} VERSION_LESS "3.20") # ctest --test-dir option
+    add_custom_command(
+        TARGET ${PROJECT_NAME}
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_BINARY_DIR}/tests/DartConfiguration.tcl
+        ${CMAKE_CURRENT_BINARY_DIR}/
+    )
+endif()
+
+add_custom_target(coverage COMMAND ${HUB_BROWSER} ${CMAKE_CURRENT_BINARY_DIR}/../coverage-lcov/index.html)
+custom_target_added(coverage)
+add_dependencies(coverage coverage-lcov)
+
+add_custom_target(coverage-all)
+custom_target_added(coverage-all)
+
+file(
+    GLOB_RECURSE
+    src_headers
+    ${CMAKE_CURRENT_SOURCE_DIR}/${HUB_INCLUDE_DIR}/*.cpp)
+
+foreach(file ${src_headers})
+    get_filename_component(basename ${file} NAME)
+    get_filename_component(parentDir ${file} DIRECTORY)
+    get_filename_component(parentName ${parentDir} NAME)
+    get_filename_component(name ${basename} NAME_WE)
+    set(parentMacro "")
+    if(parentName STREQUAL src)
+        set(parentMacro "")
+    else()
+        set(parentMacro "${parentName}-")
+    endif()
+    if(NOT EXISTS "${PROJECT_SOURCE_DIR}/tests/test-${parentMacro}${name}.cpp")
+        message("parentMacro :${parentMacro}")
+        message("name :${name}")
+        message(FATAL_ERROR "test-${parentMacro}${name}.cpp not found in tests directory")
     endif()
 
-    add_custom_target(coverage COMMAND ${HUB_BROWSER} ${CMAKE_CURRENT_BINARY_DIR}/../coverage-lcov/index.html)
-    custom_target_added(coverage)
-    add_dependencies(coverage coverage-lcov)
+    set(sourcesTmp ${SOURCE_FILES})
+    list(FILTER sourcesTmp EXCLUDE REGEX ".*/${name}\\.cpp$")
 
-    add_custom_target(coverage-all)
-    custom_target_added(coverage-all)
+    setup_target_for_coverage_lcov(
+        NAME
+        coverage-lcov-${name}
+        # BASE_DIRECTORY "src/"                        # Base directory for report
+        EXECUTABLE
+        tests/test-${parentMacro}${name}
+        DEPENDENCIES
+        hub
+        test-${parentMacro}${name}
+        EXCLUDE
+        "external/*.h"
+        "external/*.cpp"
+        "/usr/*"
+        ${sourcesTmp})
+    #            "*tiny_obj_loader.h"
 
-    file(
-        GLOB_RECURSE
-        src_headers
-        ${CMAKE_CURRENT_SOURCE_DIR}/${HUB_INCLUDE_DIR}/*.cpp)
+    add_custom_target(
+        coverage-${name}
+        COMMAND
+        ls ${CMAKE_CURRENT_BINARY_DIR}/../coverage-lcov-${name}/index.html && head -n 40
+        ${CMAKE_CURRENT_BINARY_DIR}/../coverage-lcov-${name}/index.html | grep '100.0 %' || ${HUB_BROWSER}
+        ${CMAKE_CURRENT_BINARY_DIR}/../coverage-lcov-${name}/index.html)
+    #        custom_target_added(coverage-${name})
 
-    foreach(file ${src_headers})
-        get_filename_component(basename ${file} NAME)
-        get_filename_component(parentDir ${file} DIRECTORY)
-        get_filename_component(parentName ${parentDir} NAME)
-        get_filename_component(name ${basename} NAME_WE)
-        set(parentMacro "")
-        if(parentName STREQUAL src)
-            set(parentMacro "")
-        else()
-            set(parentMacro "${parentName}-")
-        endif()
-        if(NOT EXISTS "${PROJECT_SOURCE_DIR}/tests/test-${parentMacro}${name}.cpp")
-            message("parentMacro :${parentMacro}")
-            message("name :${name}")
-            message(FATAL_ERROR "test-${parentMacro}${name}.cpp not found in tests directory")
-        endif()
+    add_dependencies(coverage-${name} coverage-lcov-${name})
+    add_dependencies(coverage-all coverage-${name})
 
-        set(sourcesTmp ${SOURCE_FILES})
-        list(FILTER sourcesTmp EXCLUDE REGEX ".*/${name}\\.cpp$")
-
-        setup_target_for_coverage_lcov(
-            NAME
-            coverage-lcov-${name}
-            # BASE_DIRECTORY "src/"                        # Base directory for report
-            EXECUTABLE
-            tests/test-${parentMacro}${name}
-            DEPENDENCIES
-            hub
-            test-${parentMacro}${name}
-            EXCLUDE
-            "external/*.h"
-            "external/*.cpp"
-            "/usr/*"
-            ${sourcesTmp})
-#            "*tiny_obj_loader.h"
-
-        add_custom_target(
-            coverage-${name}
-            COMMAND
-                ls ${CMAKE_CURRENT_BINARY_DIR}/../coverage-lcov-${name}/index.html && head -n 40
-                ${CMAKE_CURRENT_BINARY_DIR}/../coverage-lcov-${name}/index.html | grep '100.0 %' || ${HUB_BROWSER}
-                ${CMAKE_CURRENT_BINARY_DIR}/../coverage-lcov-${name}/index.html)
-#        custom_target_added(coverage-${name})
-
-        add_dependencies(coverage-${name} coverage-lcov-${name})
-        add_dependencies(coverage-all coverage-${name})
-
-    endforeach()
+endforeach()
 
 endif()

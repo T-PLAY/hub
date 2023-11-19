@@ -7,7 +7,10 @@
 //#include "OutputStreamInterface.hpp"
 //#include "net/ClientSocket.hpp"
 #include "core/Output.hpp"
-#include "io/StreamServer.hpp"
+//#include "../StreamServer.hpp"
+#include "impl/server/io/StreamServer.hpp"
+#include "sensor/Acquisition.hpp"
+#include "sensor/SensorSpec.hpp"
 
 namespace hub {
 namespace output {
@@ -47,8 +50,8 @@ class SRC_API OutputStreamServer : public Output, public io::StreamServer
 
     ~OutputStreamServer();
 
-    void write( const sensor::Acquisition& acq ) override;
-    void write( const sensor::SensorSpec& sensorSpec ) override;
+    void write( const sensor::Acquisition& acq );
+    void write( const sensor::SensorSpec& sensorSpec );
 
     // #ifdef WIN32 // msvc warning C4250
   protected:
@@ -59,7 +62,8 @@ class SRC_API OutputStreamServer : public Output, public io::StreamServer
     // #endif
 
   private:
-    std::unique_ptr<net::ClientSocket> m_clientSocket;
+//    std::unique_ptr<net::ClientSocket> m_clientSocket;
+    std::unique_ptr<io::InputOutputSocket> m_clientSocket;
 
     std::unique_ptr<std::thread> m_thread;
     bool m_moved = false;

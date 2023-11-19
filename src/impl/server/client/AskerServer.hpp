@@ -1,9 +1,10 @@
 #pragma once
 
-#include "AskerInterface.hpp"
+#include "client/AskerInterface.hpp"
 
-#include "net/ClientSocket.hpp"
-#include "io/StreamServer.hpp"
+//#include "net/ClientSocket.hpp"
+#include "io/InputOutputSocket.hpp"
+#include "impl/server/io/StreamServer.hpp"
 
 namespace hub {
 namespace client {
@@ -19,7 +20,8 @@ class AskerServer : public AskerInterface
     sensor::Acquisition getAcquisition(const std::string & streamName) override;
 
   private:
-    net::ClientSocket m_sock;
+//    net::ClientSocket m_sock;
+    io::InputOutputSocket m_sock;
 };
 
 

@@ -8,9 +8,9 @@
 
 //#include "sensor/Acquisition.hpp"
 //#include "sensor/SensorSpec.hpp"
-#include "net/ClientSocket.hpp"
-#include "ViewerInterface.hpp"
-//#include "io/input/InputStreamServer.hpp"
+//#include "net/ClientSocket.hpp"
+#include "client/ViewerInterface.hpp"
+#include "impl/server/io/input/InputStreamServer.hpp"
 
 namespace hub {
 namespace client {
@@ -75,8 +75,9 @@ class SRC_API ViewerServer : public ViewerInterface<input::InputStreamServer>
 //        void( const char* streamName, const char* objectName, int property, const Any& value )>
 //        m_onSetProperty;
 
+//    net::ClientSocket m_sock;
+    io::InputOutputSocket m_sock;
 
-    net::ClientSocket m_sock;
 //    bool m_serverConnected = false;
 //    std::function<void( const char* logMessage )> m_onLogMessage;
 

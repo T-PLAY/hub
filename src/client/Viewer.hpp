@@ -3,7 +3,7 @@
 //#include "ViewerInterface.hpp"
 
 #ifdef HUB_BUILD_SERVER
-#    include "ViewerServer.hpp"
+#    include "impl/server/client/ViewerServer.hpp"
 #endif
 
 #ifdef HUB_BUILD_MQTT

@@ -16,23 +16,28 @@ auto toString( const Container& container ) {
     constexpr bool stringable   = requires( T t ) { str += t; } && !std::is_arithmetic_v<T>;
     constexpr bool toStringable = requires( T t ) { t.toString(); };
 
-    constexpr auto nMaxDataToShow = 40;
-    const auto iMax               = std::min( (int)container.size(), nMaxDataToShow );
-    for ( auto i = 0; i < iMax; ++i ) {
+    constexpr auto nFirstData = 30;
+    constexpr auto nLastData  = 8;
+//    const auto iMax           = std::min( (int)container.size(), nFirstData );
+    for ( auto i = 0; i < container.size(); ++i ) {
+        if ( nFirstData < i && i < container.size() - nLastData ) {
+            if ( i == container.size() - nLastData - 1 ) { str += "... "; }
+            continue;
+        }
         const auto& el = container[i];
         if constexpr ( stringable ) { str += el; }
         else if constexpr ( toStringable ) { str += el.toString(); }
         else { str += std::to_string( el ); }
         //        if constexpr ( std::is_same_v<T, char> ) { str += container[i]; }
         //        else { str += std::to_string( container[i] ); }
-        if ( i != iMax - 1 ) str += " ";
-    }
-    if ( container.size() > nMaxDataToShow ) {
-        const auto& lastEl = container.back();
-        str += " ... ";
-        if constexpr ( stringable ) { str += lastEl; }
-        else if constexpr ( toStringable ) { str += lastEl.toString(); }
-        else { str += std::to_string( lastEl ); }
+        if ( i != container.size() - 1 ) str += " ";
+        //    }
+        //    if ( container.size() > nFirstData ) {
+        //        const auto& lastEl = container.back();
+        //        str += " ... ";
+        //        if constexpr ( stringable ) { str += lastEl; }
+        //        else if constexpr ( toStringable ) { str += lastEl.toString(); }
+        //        else { str += std::to_string( lastEl ); }
     }
     str += "](" + PRETTY_BYTES( container.size() * sizeof( T ) ) + ")";
     //    str += "](" + std::to_string( container.size() ) + ")";
@@ -43,7 +48,7 @@ template <class T, class U>
 auto toString( const std::map<T, U>& container ) {
     std::string str;
     //    str += "<" + TYPE_NAME( T ) + ">";
-//    str += "std::map<" + TYPE_NAME( T ) + ", " + TYPE_NAME( U ) + ">";
+    //    str += "std::map<" + TYPE_NAME( T ) + ", " + TYPE_NAME( U ) + ">";
     str += "[";
     constexpr bool stringableT   = requires( T t ) { str += t; } && !std::is_arithmetic_v<T>;
     constexpr bool toStringableT = requires( T t ) { t.toString(); };
@@ -81,39 +86,38 @@ auto toString( const std::map<T, U>& container ) {
 template <class T, class U>
 auto toString( const std::pair<T, U>& pair ) {
     std::string str;
-//    str += "std::pair<" + TYPE_NAME( T ) + ", " + TYPE_NAME( U ) + ">";
-//    str += "[";
+    //    str += "std::pair<" + TYPE_NAME( T ) + ", " + TYPE_NAME( U ) + ">";
+    //    str += "[";
     constexpr bool stringableT   = requires( T t ) { str += t; } && !std::is_arithmetic_v<T>;
     constexpr bool toStringableT = requires( T t ) { t.toString(); };
     constexpr bool stringableU   = requires( U u ) { str += u; } && !std::is_arithmetic_v<U>;
     constexpr bool toStringableU = requires( U u ) { u.toString(); };
 
-    const auto &[key, value] = pair;
+    const auto& [key, value] = pair;
 
-        str += "{";
+    str += "{";
 
-        if constexpr ( stringableT ) { str += key; }
-        else if constexpr ( toStringableT ) { str += key.toString(); }
-        else { str += std::to_string( key ); }
+    if constexpr ( stringableT ) { str += key; }
+    else if constexpr ( toStringableT ) { str += key.toString(); }
+    else { str += std::to_string( key ); }
 
-        str += ": ";
+    str += ": ";
 
-        if constexpr ( stringableU ) { str += value; }
-        else if constexpr ( toStringableU ) { str += value.toString(); }
-        else { str += std::to_string( value ); }
+    if constexpr ( stringableU ) { str += value; }
+    else if constexpr ( toStringableU ) { str += value.toString(); }
+    else { str += std::to_string( value ); }
 
-        str += "}";
+    str += "}";
 
-//    str += "]";
+    //    str += "]";
     return str;
 }
 
 template <class T, class U>
-std::ostream& operator<<( std::ostream& os, const std::pair<T, U> & pair ) {
+std::ostream& operator<<( std::ostream& os, const std::pair<T, U>& pair ) {
     os << toString( pair );
     return os;
 }
-
 
 template <class Container, class T = std::decay_t<decltype( *std::declval<Container>().begin() )>>
     requires( !std::is_same_v<Container, std::string> )

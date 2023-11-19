@@ -4,7 +4,8 @@
 #include <mutex>
 #include <thread>
 
-#include "net/ClientSocket.hpp"
+//#include "net/ClientSocket.hpp"
+#include "io/InputOutputSocket.hpp"
 
 #include "Client.hpp"
 
@@ -26,7 +27,8 @@ class AskerClient : public Client
 
   private:
     std::thread m_thread;
-    net::ClientSocket m_sock;
+//    net::ClientSocket m_sock;
+    io::InputOutputSocket m_sock;
 
     friend class hub::Server;
 };

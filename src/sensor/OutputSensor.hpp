@@ -67,11 +67,32 @@ namespace sensor {
         m_output.write(m_spec);
 //        m_output << m_spec;
     }
+//    template <class OutputT>
+//    OutputSensor( const SensorSpec& sensorSpec, OutputT&& output ) :
+//        Sensor( sensorSpec ),
+//        m_output( new OutputT(std::move(output)) )
+//    {
+//        m_output.write(m_spec);
+//    }
+
+    template <class OutputT>
+        requires std::is_base_of_v<Output, OutputT>
+    OutputSensor( const SensorSpec& sensorSpec, OutputT&& output ) :
+        Sensor( sensorSpec ),
+        m_output( *(new OutputT(std::move(output))) )
+    {
+        m_output.write(m_spec);
+    }
 
     void operator<<( const Acquisition& acq ) {
+#ifdef HUB_DEBUG_OUTPUT
+        std::cout << HEADER << "write(const Acquisition&) : " << acq << std::endl;
+#endif
         assert(m_spec.getResolution() == acq.getResolution());
         m_output.write( acq.data(), acq.size() );
     }
+
+    Output& getOutput() const { return m_output; }
 
 //    Acquisition acq() const {
 //        return Acquisition{m_spec.getResolutions()};

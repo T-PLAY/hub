@@ -160,7 +160,8 @@ ViewerServer::ViewerServer(
 //    m_onServerDisconnected( onServerDisconnected ),
 //    m_onNewAcquisition( onNewAcquisition ),
 //    m_onSetProperty( onSetProperty ),
-    m_sock( ipv4, port, false )
+//    m_sock( ipv4, port, false )
+    m_sock( net::ClientSocket(ipv4, port, false) )
 //    m_onLogMessage( onLogMessage )
 {
 

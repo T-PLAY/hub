@@ -60,5 +60,10 @@ void InputFile::read( Data_t* data, Size_t len ) {
     } while ( len != downloadSize );
 }
 
+void InputFile::clear()
+{
+
+}
+
 } // namespace input
 } // namespace hub

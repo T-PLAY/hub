@@ -6,8 +6,11 @@
 #include <mqtt/client.h>
 
 // #include "InputStreamInterface.hpp"
-#include "Input.hpp"
-#include "io/StreamMqtt.hpp"
+#include "core/Input.hpp"
+//#include "io/input/"
+#include "impl/mqtt/io/StreamMqtt.hpp"
+#include "sensor/Acquisition.hpp"
+#include "sensor/SensorSpec.hpp"
 
 namespace hub {
 namespace input {
@@ -34,8 +37,8 @@ class SRC_API InputStreamMqtt : public Input, public io::StreamMqtt
 
     bool isEnd() const override;
 
-    void read( sensor::Acquisition& acq ) override;
-    void read( sensor::SensorSpec& sensorSpec ) override;
+    void read( sensor::Acquisition& acq );
+    void read( sensor::SensorSpec& sensorSpec );
 
   private:
     void subscribe(const std::string & topic);
@@ -63,6 +66,7 @@ inline void InputStreamMqtt::read( unsigned char* data, size_t len ) {
 #ifdef DEBUG_INPUT_STREAM
     std::cout << DEBUG_INPUT_STREAM "read(data, len = " << len << ")" << std::endl;
 #endif
+
     assert( m_client->is_connected() );
     //    m_client->start_consuming();
 //    do {

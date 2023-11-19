@@ -8,7 +8,8 @@
 
 #include "Client.hpp"
 #include "sensor/InputSensor.hpp"
-#include "net/ClientSocket.hpp"
+//#include "net/ClientSocket.hpp"
+#include "io/InputOutputSocket.hpp"
 
 namespace hub {
 
@@ -33,7 +34,8 @@ class StreamerClient : public Client
     ///
     StreamerClient( Server* server,
                     int iClient,
-                    net::ClientSocket&& sock,
+//                    net::ClientSocket&& sock,
+                    io::InputOutputSocket&& sock,
                     std::string streamName );
 
     ~StreamerClient();

@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include "StreamInterface.hpp"
+#include "io/StreamInterface.hpp"
 
 namespace hub {
 namespace io {
