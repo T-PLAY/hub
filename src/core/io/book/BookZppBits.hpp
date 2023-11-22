@@ -82,6 +82,10 @@ class BookZppBits : public InputOutputBase
         //        m_out.reset( 0 );
     }
 
+    void setRetain(bool rentained) override {
+
+    }
+
   private:
     Characters& m_characters;
     //    std::array<unsigned char, NumberOfCharacter> m_characters;

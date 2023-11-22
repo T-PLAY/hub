@@ -254,7 +254,7 @@
 #ifdef WIN32
 #    define MAX_STACK_SIZE 100'000
 #else
-#    define MAX_STACK_SIZE 1'000'000 // 1Mo
+#    define MAX_STACK_SIZE 100'000 // 100Ko
 #endif
 
 #include <iostream>

@@ -27,24 +27,27 @@ ServerSocketSystem::~ServerSocketSystem()
     utils::closeSocket( m_fdSock );
 }
 
-//#define DEBUG_SOCKET
+//#define HUB_DEBUG_SOCKET
 
 ClientSocketSystem ServerSocketSystem::waitNewClient() {
 
-#ifdef DEBUG_SOCKET
+#ifdef HUB_DEBUG_SOCKET
     DEBUG_MSG( getHeader( m_fdSock ) << "wait client on port " << mPort );
 #endif
-    utils::socket_fd new_socket = utils::accept( m_fdSock, m_addr );
+
+
+    utils::ClientAddr clientAddr;
+    utils::socket_fd new_socket = utils::accept( m_fdSock, clientAddr );
     if ( !utils::isValid( new_socket ) ) {
         perror( "not accept new socket" );
         utils::closeSocket( new_socket );
         exit( 1 );
     }
-#ifdef DEBUG_SOCKET
+#ifdef HUB_DEBUG_SOCKET
     DEBUG_MSG( getHeader( m_fdSock ) << "new client on socket " << new_socket );
 #endif
 
-    return ClientSocketSystem( new_socket );
+    return ClientSocketSystem( new_socket, std::move(clientAddr) );
 }
 
 void ServerSocketSystem::initServer() {
@@ -55,7 +58,7 @@ void ServerSocketSystem::initServer() {
         perror( "socket creation failed.\n" );
         exit( 1 );
     }
-#ifdef DEBUG_SOCKET
+#ifdef HUB_DEBUG_SOCKET
     DEBUG_MSG( getHeader( m_fdSock ) << "server started " );
 #endif
 
@@ -73,9 +76,12 @@ void ServerSocketSystem::initServer() {
         exit( 1 );
     }
 
-#ifdef DEBUG_SOCKET
+#ifdef HUB_DEBUG_SOCKET
     DEBUG_MSG( getHeader( m_fdSock ) << "server inited " );
 #endif
+
+//    DEBUG_MSG( "starting server at port " << mPort );
+//    DEBUG_MSG( "[OutputStream] listening port " << mPort );
 }
 
 int ServerSocketSystem::getPort() const {

@@ -14,6 +14,7 @@ class OutputBase : public ios
 {
   public:
     virtual void write( const Data_t* data, Size_t len ) = 0;
+    virtual void setRetain(bool retain) = 0;
 
     //    void write() {};
 

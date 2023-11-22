@@ -67,13 +67,6 @@ int SRC_API bind( socket_fd sock, ServerAddr& addr );
 ///
 int SRC_API listen( socket_fd sock, int backlog );
 
-///
-/// \brief accept
-/// \param sock
-/// \param addr
-/// \return
-///
-socket_fd SRC_API accept( socket_fd sock, ServerAddr& addr );
 
 /////////////////////////////////////// CLIENT ADDRESS /////////////////////////////////////
 
@@ -113,11 +106,24 @@ class SRC_API ClientAddr
     ///
     void setIpv4( const std::string& ipv4 );
 
+    std::string getIpv4() const;
+
+    int getPort() const;
+
     ///
     /// \brief m_pimpl
     ///
     std::unique_ptr<ClientAddrImpl> m_pimpl;
 };
+
+///
+/// \brief accept
+/// \param sock
+/// \param addr
+/// \return
+///
+//socket_fd SRC_API accept( socket_fd sock, ServerAddr& addr );
+socket_fd SRC_API accept( socket_fd sock, ClientAddr& addr );
 
 ///
 /// \brief clientSocket

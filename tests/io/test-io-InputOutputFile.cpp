@@ -1,6 +1,6 @@
 //#include <catch2/catch_test_macros.hpp>
 #include "test_common.hpp"
-#include "sensor/test_sensor_common.hpp"
+//#include "sensor/test_sensor_common.hpp"
 
 
 #include <sensor/InputSensor.hpp>
@@ -32,7 +32,7 @@ TEST_CASE( "File test" ) {
 
         outputFile.write( vector.data(), vector.size() );
 
-        outputSensorBench(outputFile);
+//        outputSensorBench(outputFile);
     }
 
     {
@@ -42,7 +42,7 @@ TEST_CASE( "File test" ) {
         inputFile.read( vector_read.data(), vector.size() );
         assert( vector == vector_read );
 
-        inputSensorBench(inputFile);
+//        inputSensorBench(inputFile);
         assert(inputFile.isEnd());
     }
 

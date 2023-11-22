@@ -30,7 +30,7 @@ ServerSocketBoost::~ServerSocketBoost() {
 
 ClientSocketBoost ServerSocketBoost::waitNewClient() {
 
-    // #ifdef DEBUG_SOCKET
+    // #ifdef HUB_DEBUG_SOCKET
     //     DEBUG_MSG( getHeader( m_fdSock ) << "wait client on port " << mPort );
     // #endif
     //     utils::socket_fd new_socket = utils::accept( m_fdSock, m_addr );
@@ -39,7 +39,7 @@ ClientSocketBoost ServerSocketBoost::waitNewClient() {
     //         utils::closeSocket( new_socket );
     //         exit( 1 );
     //     }
-    // #ifdef DEBUG_SOCKET
+    // #ifdef HUB_DEBUG_SOCKET
     //     DEBUG_MSG( getHeader( m_fdSock ) << "new client on socket " << new_socket );
     // #endif
 
@@ -63,7 +63,7 @@ void ServerSocketBoost::initServer() {
     //        perror( "socket creation failed.\n" );
     //        exit( 1 );
     //    }
-    // #ifdef DEBUG_SOCKET
+    // #ifdef HUB_DEBUG_SOCKET
     //    DEBUG_MSG( getHeader( m_fdSock ) << "server started " );
     // #endif
 
@@ -81,7 +81,7 @@ void ServerSocketBoost::initServer() {
     //        exit( 1 );
     //    }
 
-    // #ifdef DEBUG_SOCKET
+    // #ifdef HUB_DEBUG_SOCKET
     //     DEBUG_MSG( getHeader( m_fdSock ) << "server inited " );
     // #endif
 }

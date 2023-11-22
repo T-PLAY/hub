@@ -8,13 +8,13 @@
 #include <boost/asio.hpp>
 #include <boost/asio/ip/tcp.hpp>
 
-//#define DEBUG_SOCKET
+//#define HUB_DEBUG_SOCKET
 
 namespace hub {
 namespace net {
 namespace boost {
 
-//#ifdef DEBUG_SOCKET
+//#ifdef HUB_DEBUG_SOCKET
 //std::string SocketSystem::getHeader(utils::socket_fd iSock ) const {
 //    std::string str;
 //    if ( m_serverSide ) { str += "\t\033[1m[Server]\033[0m"; }

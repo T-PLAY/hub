@@ -5,13 +5,13 @@
 #include <regex>
 #include <thread>
 
-//#define DEBUG_SOCKET
+//#define HUB_DEBUG_SOCKET
 
 namespace hub {
 namespace net {
 namespace boost {
 
-#ifdef DEBUG_SOCKET
+#ifdef HUB_DEBUG_SOCKET
 std::string getHeader( ::boost::asio::ip::tcp::socket& iSock ) {
     std::string str;
     //    if ( m_serverSide ) { str += "\t\033[1m[Server]\033[0m"; }
@@ -25,7 +25,7 @@ std::string getHeader( ::boost::asio::ip::tcp::socket& iSock ) {
 #endif
 
 // ClientSocketBoost::ClientSocketBoost() : m_ipv4( s_defaultServiceIp ), m_port(
-// s_defaultServicePort ) { #ifdef DEBUG_SOCKET
+// s_defaultServicePort ) { #ifdef HUB_DEBUG_SOCKET
 //     DEBUG_MSG( getHeader( m_sock ) << "ClientSocketBoost()" );
 // #endif
 
@@ -35,7 +35,7 @@ std::string getHeader( ::boost::asio::ip::tcp::socket& iSock ) {
 
 ClientSocketBoost::ClientSocketBoost( const std::string& ipv4, int port, bool autoConnect ) :
     m_ipv4( ipv4 ), m_port( port ), m_ioService(), m_sock( m_ioService ) {
-#ifdef DEBUG_SOCKET
+#ifdef HUB_DEBUG_SOCKET
     DEBUG_MSG( getHeader( m_sock ) << "ClientSocketBoost(std::string ipv4, int port)" );
 #endif
     //    initServerAddress();
@@ -48,7 +48,7 @@ ClientSocketBoost::ClientSocketBoost( ::boost::asio::ip::tcp::socket&& fdSock ) 
 //    m_sock     = fdSock;
 //    m_serverSide = true;
 //    m_connected  = true;
-#ifdef DEBUG_SOCKET
+#ifdef HUB_DEBUG_SOCKET
     DEBUG_MSG( getHeader( m_sock ) << "ClientSocketBoost(socket_fd fdSock)" );
 #endif
 }
@@ -58,7 +58,7 @@ ClientSocketBoost::ClientSocketBoost( ::boost::asio::ip::tcp::socket&& fdSock ) 
 //     m_sock     = fdSock;
 //     m_serverSide = true;
 //     m_connected  = true;
-// #ifdef DEBUG_SOCKET
+// #ifdef HUB_DEBUG_SOCKET
 //     DEBUG_MSG( getHeader( m_sock ) << "ClientSocketBoost(socket_fd fdSock)" );
 // #endif
 // }
@@ -81,7 +81,7 @@ ClientSocketBoost::ClientSocketBoost( ClientSocketBoost&& sock ) :
 // ClientSocketSysteClientSocketSystem::ClientSocketBoost(ClientSocketBoost &&sock) :
 
 ClientSocketBoost::~ClientSocketBoost() {
-#ifdef DEBUG_SOCKET
+#ifdef HUB_DEBUG_SOCKET
     DEBUG_MSG( getHeader( m_sock ) << "~ClientSocketBoost()" );
 #endif
     if ( !m_moved ) {
@@ -105,7 +105,7 @@ void ClientSocketBoost::setIpv4( const std::string& newIpv4 ) {
     //    m_addr.setIpv4( m_ipv4 );
 }
 
-const std::string& ClientSocketBoost::getIpv4() const {
+const std::string & ClientSocketBoost::getIpv4() const {
     return m_ipv4;
 }
 
@@ -126,7 +126,7 @@ void ClientSocketBoost::connect() {
     ////    assert( !isOpen() );
     //    assert( !isConnected() );
 
-    // #ifdef DEBUG_SOCKET
+    // #ifdef HUB_DEBUG_SOCKET
     //     DEBUG_MSG( "[ClientSocketBoost] connectToServer" );
     //     DEBUG_MSG( getHeader( m_sock )
     //                << "[ClientSocketBoost] ClientSocketBoost('" << m_ipv4 << ", " << m_port <<
@@ -153,7 +153,7 @@ void ClientSocketBoost::connect() {
 
     //    // Connect to server
     //    if ( utils::connect( m_sock, m_addr ) < 0 ) {
-    // #ifdef DEBUG_SOCKET
+    // #ifdef HUB_DEBUG_SOCKET
     //        DEBUG_MSG( "[ClienSocket] failed to connect to server ########################" );
     // #endif
     //        utils::closeSocket( m_sock );
@@ -170,7 +170,7 @@ void ClientSocketBoost::connect() {
     //    assert( isConnected() );
     //    assert( SocketSystem::isConnected() );
 
-#ifdef DEBUG_SOCKET
+#ifdef HUB_DEBUG_SOCKET
     DEBUG_MSG( getHeader( m_sock ) << "[ClientSocketSysteClientSocketSystem] connected to the "
                                       "server, starting communication" );
     DEBUG_MSG( getHeader( m_sock ) << "new client on socket " << m_sock.native_handle() );
@@ -228,7 +228,7 @@ void ClientSocketBoost::write( const unsigned char* data, const size_t size ) {
     //    //    unsigned char * tmp = new unsigned char[len];
     //    //    memcpy(tmp, data, len);
 
-    // #ifdef DEBUG_SOCKET
+    // #ifdef HUB_DEBUG_SOCKET
     //     DEBUG_MSG( getHeader( m_sock ) << "write(unsigned char*, len = " << len << ") " );
     // #endif
 
@@ -242,7 +242,7 @@ void ClientSocketBoost::write( const unsigned char* data, const size_t size ) {
     //    //        :(MAX_NET_BUFFER_SIZE);
     //    //    const size_t sizePart = len;
 
-    // #ifdef DEBUG_SOCKET
+    // #ifdef HUB_DEBUG_SOCKET
     ////            DEBUG_MSG( getHeader( m_sock )
     ////                   << "iPart = " << iPart << "/" << nPart << ", offsetPart: " << offsetPart
     ///<< ", /                   sizePart:" << sizePart );
@@ -251,7 +251,7 @@ void ClientSocketBoost::write( const unsigned char* data, const size_t size ) {
     //    size_t uploadSize = 0;
     //    do {
     //        if ( !isConnected() ) {
-    // #ifdef DEBUG_SOCKET
+    // #ifdef HUB_DEBUG_SOCKET
     //            DEBUG_MSG(
     //                getHeader( m_sock )
     //                << "write(const unsigned char* data, size_t len) : isConnected() client lost"
@@ -266,7 +266,7 @@ void ClientSocketBoost::write( const unsigned char* data, const size_t size ) {
     //        // winsock int len
     //        int64_t byteSent;
     //        try {
-    // #ifdef DEBUG_SOCKET
+    // #ifdef HUB_DEBUG_SOCKET
     //            DEBUG_MSG( getHeader( m_sock ) << "sending bytes = " << len - uploadSize );
     // #endif
     //            //                assert(static_cast<size_t>(len - uploadSize) > 0);
@@ -275,7 +275,7 @@ void ClientSocketBoost::write( const unsigned char* data, const size_t size ) {
     //            byteSent = utils::send(
     //                m_sock, reinterpret_cast<const char*>( data + uploadSize ), len - uploadSize,
     //                0 );
-    // #ifdef DEBUG_SOCKET
+    // #ifdef HUB_DEBUG_SOCKET
     //            DEBUG_MSG( getHeader( m_sock ) << "sended bytes = " << byteSent );
     // #endif
     //            assert( -1 <= byteSent && byteSent <= len );
@@ -287,7 +287,7 @@ void ClientSocketBoost::write( const unsigned char* data, const size_t size ) {
     //        }
 
     //        if ( byteSent == -1 ) {
-    // #ifdef DEBUG_SOCKET
+    // #ifdef HUB_DEBUG_SOCKET
     //            DEBUG_MSG( getHeader( m_sock ) << "can't send packet " << byteSent << "/" << len
     //            ); perror( "[socket] send failed.\n" );
     // #endif
@@ -304,12 +304,12 @@ void ClientSocketBoost::write( const unsigned char* data, const size_t size ) {
     ////            throw SocketSystem::exception(
     ////                "[ClientSocketBoost] write(data, len) Can't write packet, buffer overflow"
     ///);
-    // #ifdef DEBUG_SOCKET
+    // #ifdef HUB_DEBUG_SOCKET
     //             DEBUG_MSG( "byteSent == 0, sleep" );
     // #endif
     //         }
     //         uploadSize += byteSent;
-    // #ifdef DEBUG_SOCKET
+    // #ifdef HUB_DEBUG_SOCKET
     //         DEBUG_MSG( getHeader( m_sock )
     //                    << "byteSent = " << byteSent << " (" << uploadSize << "/" << len << ")" );
     // #endif
@@ -354,7 +354,7 @@ void ClientSocketBoost::read( unsigned char* data, const size_t size ) {
     //        assert( -1 <= byteRead && byteRead <= (int64_t)len );
 
     //        if ( byteRead == -1 ) {
-    // #ifdef DEBUG_SOCKET
+    // #ifdef HUB_DEBUG_SOCKET
     //            DEBUG_MSG( "byte read == -1 error" );
     //            perror( "[socket] receive failed.\n" );
     // #endif
@@ -376,14 +376,14 @@ void ClientSocketBoost::read( unsigned char* data, const size_t size ) {
     //        }
 
     //        downloadSize += byteRead;
-    // #ifdef DEBUG_SOCKET
+    // #ifdef HUB_DEBUG_SOCKET
     //        DEBUG_MSG( getHeader( m_sock )
     //                   << "byteRead = " << byteRead << " (" << downloadSize << "/" << len << ")"
     //                   );
     // #endif
     //    } while ( len != downloadSize );
 
-    // #ifdef DEBUG_SOCKET
+    // #ifdef HUB_DEBUG_SOCKET
     ////
     // #endif
 }

@@ -23,6 +23,9 @@ if(NOT ${Catch2_FOUND})
     FetchContent_MakeAvailable(Catch2)
 endif()
 
+#find_package(TBB REQUIRED)
+#set(LINK_LIBRARIES ${LINK_LIBRARIES} tbb)
+
 #find_package(PahoMqttCpp QUIET)
 #if (NOT ${PahoMqttCpp_FOUND})
 #    include(FetchContent)
@@ -56,7 +59,7 @@ foreach(HUB_SOURCE_DIR ${HUB_SOURCE_DIRS})
     list(APPEND test_headers ${test_header})
 endforeach()
 
-#list(APPEND test_headers ${CMAKE_CURRENT_SOURCE_DIR}/test_common.hpp)
+list(APPEND test_headers ${CMAKE_CURRENT_SOURCE_DIR}/test_common.hpp)
 
 #set(test_headers_src)
 if (BUILD_CORE)

@@ -65,7 +65,7 @@ class SRC_API ClientSocketBoost : public ClientSocketI
     /// \brief getIpv4
     /// \return
     ///
-    const std::string& getIpv4() const override;
+    const std::string & getIpv4() const override;
 
     ///
     /// \brief setPort

@@ -45,6 +45,8 @@ class InputT : public InputBase
     //    Input( SerializerT serializer = SerializerT() ) : m_serializer( std::move( serializer ) )
     //    {}
 
+    virtual ~InputT() = default;
+
   public:
     //    template <class T>
     //    typename std::enable_if<!notReadable_v<T> && readable_v<T>>::type read( T& t ) {

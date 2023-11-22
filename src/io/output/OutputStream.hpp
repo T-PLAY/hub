@@ -11,23 +11,29 @@
 #    include "OutputStreamMqtt.hpp"
 #endif
 
+#ifdef HUB_BUILD_IMPL_SERVER2
+#include "impl/server2/io/output/OutputStreamServer.hpp"
+#endif
+
 namespace hub {
 namespace output {
 
-#ifdef HUB_BUILD_SERVER
+#if defined(HUB_BUILD_SERVER)
 using OutputStream = OutputStreamServer;
-#else
-#ifdef HUB_BUILD_MQTT
+
+#elif defined(HUB_BUILD_MQTT)
 using OutputStream = OutputStreamMqtt;
-#endif
+
+#elif defined(HUB_BUILD_IMPL_SERVER2)
+using OutputStream = OutputStreamServer;
 #endif
 
-#if defined(HUB_BUILD_SERVER) || defined(HUB_BUILD_MQTT)
+//#if defined(HUB_BUILD_SERVER) || defined(HUB_BUILD_MQTT)
 static_assert( std::is_base_of<Output, OutputStream>::value,
                "Output is base class of OutputStream" );
 static_assert( std::is_base_of<io::StreamInterface, OutputStream>::value,
                "StreamInterface is base class of OutputStream" );
-#endif
+//#endif
 
 } // namespace output
 } // namespace hub

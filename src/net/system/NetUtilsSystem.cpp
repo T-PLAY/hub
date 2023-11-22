@@ -73,7 +73,7 @@ bool isValid( socket_fd sock ) {
 
 void closeSocket( socket_fd& sock ) {
     assert( sock != INVALID_SOCKET );
-//    std::cout  << "[net] closing socket: " << sock  << std::endl;
+    //    std::cout  << "[net] closing socket: " << sock  << std::endl;
 
 #ifdef DEBUG_NET
     std::cout << getHeader() << "closeSocket(" << sock << ") close socket" << std::endl;
@@ -140,19 +140,13 @@ socket_fd serverSocket() {
 }
 
 int bind( socket_fd sock, ServerAddr& addr ) {
-    return ::bind(
-        sock, reinterpret_cast<struct sockaddr*>(&addr.m_pimpl->m_sockAddr), sizeof( struct sockaddr_in ) ); // todo
+    return ::bind( sock,
+                   reinterpret_cast<struct sockaddr*>( &addr.m_pimpl->m_sockAddr ),
+                   sizeof( struct sockaddr_in ) ); // todo
 }
 
 int listen( socket_fd sock, int backlog ) {
     return ::listen( sock, backlog ); // todo
-}
-
-socket_fd accept( socket_fd sock, ServerAddr& addr ) {
-    auto& sockAddr       = addr.m_pimpl->m_sockAddr;
-    socklen_t addrlen    = sizeof( sockAddr );
-    socket_fd new_socket = accept( sock, reinterpret_cast<struct sockaddr*>(&sockAddr), &addrlen ); // todo
-    return new_socket;
 }
 
 // socket_fd socket()
@@ -199,30 +193,53 @@ void ClientAddr::setIpv4( const std::string& ipv4 ) {
     m_pimpl->setIpv4( ipv4 );
 }
 
+std::string ClientAddr::getIpv4() const {
+    char buff[INET_ADDRSTRLEN] { 0 };
+    inet_ntop( AF_INET, &m_pimpl->m_sockAddr.sin_addr.s_addr, buff, INET_ADDRSTRLEN );
+    return std::string( buff );
+}
+
+int ClientAddr::getPort() const {
+    return m_pimpl->m_sockAddr.sin_port;
+}
+
+// socket_fd accept( socket_fd sock, ServerAddr& addr ) {
+socket_fd accept( socket_fd sock, ClientAddr& addr ) {
+    auto& sockAddr    = addr.m_pimpl->m_sockAddr;
+    socklen_t addrlen = sizeof( sockAddr );
+    socket_fd new_socket =
+        accept( sock, reinterpret_cast<struct sockaddr*>( &sockAddr ), &addrlen );
+    //    char buff[INET_ADDRSTRLEN] { 0 };
+    //    inet_ntop( AF_INET, &sockAddr.sin_addr.s_addr, buff, INET_ADDRSTRLEN );
+    //    std::cout << "accept new socket at ip: " << buff << std::endl;
+    return new_socket;
+}
+
 socket_fd clientSocket() {
     if ( !s_inited ) init();
     return ::socket( PF_INET, SOCK_STREAM, 0 );
 }
 
 int connect( socket_fd sock, ClientAddr& addr ) {
-    return ::connect(
-        sock, reinterpret_cast<struct sockaddr*>(&addr.m_pimpl->m_sockAddr), sizeof( struct sockaddr_in ) ); // todo
+    return ::connect( sock,
+                      reinterpret_cast<struct sockaddr*>( &addr.m_pimpl->m_sockAddr ),
+                      sizeof( struct sockaddr_in ) ); // todo
 }
 
 int64_t send( socket_fd sock, const char* buf, size_t len, int flags ) {
-//    std::cout << "send " << len << " bytes" << std::endl;
+    //    std::cout << "send " << len << " bytes" << std::endl;
     return ::send( sock, buf, len, flags ); // todo
-//    auto ret = ::send( sock, buf, len, flags ); // todo
-//    std::cout << "sended " << ret << " bytes" << std::endl;
-//    return ret;
+    //    auto ret = ::send( sock, buf, len, flags ); // todo
+    //    std::cout << "sended " << ret << " bytes" << std::endl;
+    //    return ret;
 }
 
 int64_t recv( socket_fd sock, char* buf, size_t len, int flags ) {
-//    std::cout << "receive " << len << " bytes" << std::endl;
+    //    std::cout << "receive " << len << " bytes" << std::endl;
     return ::recv( sock, buf, len, flags ); // todo
-//    auto ret = ::recv( sock, buf, len, flags ); // todo
-//    std::cout << "received " << ret << " bytes" << std::endl;
-//    return ret;
+    //    auto ret = ::recv( sock, buf, len, flags ); // todo
+    //    std::cout << "received " << ret << " bytes" << std::endl;
+    //    return ret;
 }
 
 bool isValid( const std::string& ipv4 ) {
@@ -233,7 +250,7 @@ bool isValid( int port ) {
     return ( 0 <= port && port <= 65535 );
 }
 
-//size_t getMaxPacketSize(socket_fd sock ) {
+// size_t getMaxPacketSize(socket_fd sock ) {
 ////{
 ////    int optval;
 ////    socklen_t optlen = sizeof( optval );

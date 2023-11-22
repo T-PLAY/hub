@@ -4,7 +4,11 @@ project(bin LANGUAGES CXX)
 
 #if (true)
 
-if (TARGET hub_static OR TARGET hub_shared AND TARGET hub_static)
+#if (TARGET hub_static OR TARGET hub_shared AND TARGET hub_static)
+#if (TARGET ${PROJECT_NAME}_static)
+#if (TARGET hub_static)
+if (BUILD_IMPL AND BUILD_SENSOR)
+#    message(FATAL_ERROR "ouou")
 
     #set(LINK_LIBRARIES hub PahoMqttCpp::paho-mqttpp3)
     if (XCODE)
@@ -24,20 +28,22 @@ if (TARGET hub_static OR TARGET hub_shared AND TARGET hub_static)
     set(bin_srcs)
     foreach(HUB_SOURCE_DIR ${HUB_SOURCE_DIRS})
         file(
-            GLOB
-        #    GLOB_RECURSE
-            test_src
+#            GLOB
+            GLOB_RECURSE
+            bin_src
             ${CMAKE_CURRENT_SOURCE_DIR}/${HUB_SOURCE_DIR}/*.cpp
         )
-        list(APPEND bin_srcs ${test_src})
+        list(APPEND bin_srcs ${bin_src})
     endforeach()
 
     if (NOT HUB_BUILD_SERVER)
         list(FILTER bin_srcs EXCLUDE REGEX ".*server\\.cpp$")
     endif()
+#    message(STATUS "bin_srcs: ${bin_srcs}")
 
     string(REPLACE ".cpp" "" SOURCES_BASENAME "${bin_srcs}")
     set(SOURCES_BASENAME ${SOURCES_BASENAME})
+#    message(STATUS "${SOURCES_BASENAME}")
 
 
     foreach(name ${SOURCES_BASENAME})

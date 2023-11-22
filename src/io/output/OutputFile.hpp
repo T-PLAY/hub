@@ -30,6 +30,8 @@ class OutputFile : public Output, public io::File
     ///
     void write( const Data_t* data, Size_t len ) override;
 
+    void setRetain(bool retained) override;
+
   private:
     std::ofstream m_file;
 

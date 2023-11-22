@@ -95,6 +95,7 @@ class SerializerZppBits : public SerializerI
 
   private:
     using ByteView = std::array<Data_t, BuffSize>;
+//    using ByteView = std::vector<Data_t>;
     ByteView m_serialBuff;
     zpp::bits::out<ByteView> m_out { m_serialBuff };
     zpp::bits::in<ByteView> m_in { m_serialBuff };
@@ -102,6 +103,7 @@ class SerializerZppBits : public SerializerI
   public:
     template <class Output, class... Ts>
     void pack( Output& output, const Ts&... ts ) {
+//        m_serialBuff.resize(BuffSize);
         //        zpp::bits::out out( m_serialBuff );
         //        m_out = zpp::bits::out(m_serialBuff);
         m_out.reset( 0 );
@@ -118,6 +120,7 @@ class SerializerZppBits : public SerializerI
 
     template <class Input, class... Ts>
     void unpack( Input& input, Ts&... ts ) {
+//        m_serialBuff.resize(BuffSize);
         Size_t size;
         input.read( reinterpret_cast<Data_t*>( &size ), sizeof( Size_t ) );
         assert( 0 < size && size < BuffSize );

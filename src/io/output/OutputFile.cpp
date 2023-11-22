@@ -35,6 +35,11 @@ void OutputFile::write( const Data_t* data, Size_t len ) {
     m_file.write( reinterpret_cast<const char*>( data ), len );
 }
 
+void OutputFile::setRetain(bool retained)
+{
+
+}
+
 
 } // namespace output
 } // namespace hub

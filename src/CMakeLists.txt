@@ -10,7 +10,7 @@ set(REQUIRED_LIBS "")
 
 message(STATUS "Hub version: ${${PROJECT_NAME}_VERSION}")
 
-option(HUB_BUILD_SERVER "Build implement server" ON)
+option(HUB_BUILD_SERVER "Build implement server" OFF)
 
 option(HUB_BUILD_MQTT "Build implement using mqtt" OFF)
 if (HUB_BUILD_MQTT)
@@ -128,6 +128,7 @@ if (NOT XCODE) # unable to have object files as native build with Xcode
     foreach(HUB_SOURCE_DIR ${HUB_SOURCE_DIRS})
 
         set(TARGET_NAME ${HUB_SOURCE_DIR})
+        string(REPLACE "/" "-" TARGET_NAME "${TARGET_NAME}")
         #        set(TARGET_NAME ${PROJECT_NAME})
 
         #        message(STATUS "HUB_SOURCE_DIR: ${HUB_SOURCE_DIR}")

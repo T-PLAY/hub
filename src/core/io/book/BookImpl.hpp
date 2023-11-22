@@ -54,6 +54,8 @@ class BookImpl : public InputOutputT
 
     void clear() override {}
 
+    void setRetain(bool retained) override {}
+
   private:
 //    size_t m_size;
     Characters& m_characters;

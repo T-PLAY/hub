@@ -71,6 +71,9 @@ class ArchiveT : public InputOutputT
             m_datas.pop();
     }
 
+    void setRetain(bool retained) override {
+    }
+
 #ifdef DEBUG
     size_t getNCall() const {
         return m_nCall;

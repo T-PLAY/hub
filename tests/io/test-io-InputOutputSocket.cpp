@@ -1,8 +1,9 @@
 // #define HUB_DEBUG_INPUT
 // #define HUB_DEBUG_OUTPUT
 
-#include "sensor/test_sensor_common.hpp"
+//#include "sensor/test_sensor_common.hpp"
 #include "test_common.hpp"
+#include "test_io_common.hpp"
 
 #include <core/Utils.hpp>
 #include <io/InputOutputSocket.hpp>
@@ -20,13 +21,18 @@ TEST_CASE( "InputOutputSocket test" ) {
     hub::net::ServerSocket serverSocket( port );
     hub::net::ClientSocket clientSocket( ipv4, port );
     assert( clientSocket.isConnected() );
+    std::cout << "clientSocket: " << clientSocket << std::endl;
     auto clientServerSocket = serverSocket.waitNewClient();
     assert( clientServerSocket.isConnected() );
+    std::cout << "clientServerSocket: " << clientServerSocket << std::endl;
 
     hub::io::InputOutputSocket inputOutputSocket(std::move(clientSocket));
     hub::io::InputOutputSocket inputOutputSocket2(std::move(clientServerSocket));
 
-    inputOutputSensorBench(inputOutputSocket, inputOutputSocket2);
+    inputOutputBench(inputOutputSocket, inputOutputSocket2);
+    inputOutputBench(inputOutputSocket2, inputOutputSocket);
+
+//    inputOutputSensorBench(inputOutputSocket, inputOutputSocket2);
 
 //    inputOutputSensorBench<hub::io::InputOutputSocket>();
 

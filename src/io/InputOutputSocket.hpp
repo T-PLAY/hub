@@ -41,6 +41,9 @@ class InputOutputSocket : public InputOutput<>, public net::ClientSocket
     void clear() override {
     }
 
+    void setRetain(bool retain) override {
+    }
+
 };
 
 } // namespace io

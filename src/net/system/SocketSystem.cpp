@@ -7,7 +7,7 @@ namespace hub {
 namespace net {
 namespace system {
 
-#ifdef DEBUG_SOCKET
+#ifdef HUB_DEBUG_SOCKET
 std::string SocketSystem::getHeader(utils::socket_fd iSock ) const {
     std::string str;
     if ( m_serverSide ) { str += "\t\033[1m[Server]\033[0m"; }
@@ -21,7 +21,7 @@ std::string SocketSystem::getHeader(utils::socket_fd iSock ) const {
 #endif
 
 SocketSystem::SocketSystem() {
-#ifdef DEBUG_SOCKET
+#ifdef HUB_DEBUG_SOCKET
     DEBUG_MSG( getHeader( m_fdSock ) << "SocketSystem()" );
 #endif
 }
@@ -33,12 +33,12 @@ SocketSystem::SocketSystem( SocketSystem&& socket ) {
 }
 
 SocketSystem::~SocketSystem() {
-#ifdef DEBUG_SOCKET
+#ifdef HUB_DEBUG_SOCKET
     DEBUG_MSG( getHeader( m_fdSock ) << "~SocketSystem()" );
 #endif
 
     if ( utils::isValid( m_fdSock ) ) {
-#ifdef DEBUG_SOCKET
+#ifdef HUB_DEBUG_SOCKET
         DEBUG_MSG( getHeader( m_fdSock ) << "close socket" );
 #endif
         utils::closeSocket( m_fdSock );

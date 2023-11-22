@@ -18,7 +18,7 @@ class StreamInterface
   public:
     //    static const std::string s_defaultIpv4;
     //    static const int s_defaultPort;
-    enum class ClientType { NONE = 0, STREAMER, STREAM_VIEWER, VIEWER, ASKER, COUNT };
+    enum class ClientType { NONE = 0, STREAMER, STREAM_VIEWER, VIEWER, ASKER, KILLER, COUNT };
     SRC_API friend std::ostream& operator<<( std::ostream& os, const ClientType& clientType );
 
     enum class ClientMessage {
@@ -30,6 +30,7 @@ class StreamInterface
         STREAMER_CLIENT_INIT_SENSOR,
 
         STREAM_VIEWER_CLIENT_CLOSED,
+        STREAM_VIEWER_CLIENT,
 
         VIEWER_CLIENT_CLOSED,
         VIEWER_CLIENT_SET_PROPERTY,
@@ -37,6 +38,8 @@ class StreamInterface
         ASKER_CLIENT_CLOSED,
         ASKER_CLIENT_GET_LIST_STREAMS,
         ASKER_CLIENT_GET_ACQ,
+
+//        KILL,
 
         COUNT
     };

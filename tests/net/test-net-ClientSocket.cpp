@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <array>
 
-// #define DEBUG_SOCKET
+// #define HUB_DEBUG_SOCKET
 
 #include <core/Utils.hpp>
 #include <net/ServerSocket.hpp>

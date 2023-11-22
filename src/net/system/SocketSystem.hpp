@@ -9,7 +9,7 @@
 #include "core/Macros.hpp"
 #include "NetUtilsSystem.hpp"
 
-// #define DEBUG_SOCKET
+// #define HUB_DEBUG_SOCKET
 
 namespace hub {
 namespace net {
@@ -48,7 +48,7 @@ class SRC_API SocketSystem
         const char* what() const throw() { return std::runtime_error::what(); }
     };
 
-#ifdef DEBUG_SOCKET
+#ifdef HUB_DEBUG_SOCKET
     std::string getHeader( utils::socket_fd iSock ) const;
 #endif
 

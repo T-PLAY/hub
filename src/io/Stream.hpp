@@ -1,34 +1,39 @@
 #pragma once
 
-//#include <exception>
-//#include <functional>
-//#include <iostream>
-//#include <string>
+// #include <exception>
+// #include <functional>
+// #include <iostream>
+// #include <string>
 
-//#include "StreamMqtt.hpp"
+// #include "StreamMqtt.hpp"
 #ifdef HUB_BUILD_SERVER
-//#    include "io/StreamServer.hpp"
-#include "impl/server/io/StreamServer.hpp"
+// #    include "io/StreamServer.hpp"
+#    include "impl/server/io/StreamServer.hpp"
 #endif
 
 #ifdef HUB_BUILD_MQTT
 #    include "StreamMqtt.hpp"
 #endif
 
+#ifdef HUB_BUILD_IMPL_SERVER2
+#    include "impl/server2/io/StreamServer.hpp"
+#endif
+
 namespace hub {
 namespace io {
 
-#ifdef HUB_BUILD_SERVER
+#if defined( HUB_BUILD_SERVER )
 using Stream = StreamServer;
-#else
-#ifdef HUB_BUILD_MQTT
+
+#elif defined( HUB_BUILD_MQTT )
 using Stream = StreamMqtt;
-#endif
+
+#elif defined( HUB_BUILD_IMPL_SERVER2 )
+using Stream = StreamServer;
 #endif
 
-
-//const std::string s_serverDefaultIpv4 = "127.0.0.1";
-//constexpr int s_serverDefaultPort = 4042;
+// const std::string s_serverDefaultIpv4 = "127.0.0.1";
+// constexpr int s_serverDefaultPort = 4042;
 
 } // namespace io
 } // namespace hub

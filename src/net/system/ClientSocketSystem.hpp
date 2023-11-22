@@ -39,7 +39,7 @@ class SRC_API ClientSocketSystem : public ClientSocketI, public SocketSystem
     /// \brief ClientSocketSystem
     /// \param fdSock
     ///
-    explicit ClientSocketSystem( utils::socket_fd fdSock ); // server side client (bind and listen)
+    explicit ClientSocketSystem( utils::socket_fd fdSock, utils::ClientAddr clientAddr ); // server side client (bind and listen)
 
     ClientSocketSystem( const ClientSocketSystem& sock ) = delete;
 
@@ -65,7 +65,7 @@ class SRC_API ClientSocketSystem : public ClientSocketI, public SocketSystem
     /// \brief getIpv4
     /// \return
     ///
-    const std::string& getIpv4() const override;
+    const std::string & getIpv4() const override;
 
     ///
     /// \brief setPort
@@ -103,18 +103,24 @@ class SRC_API ClientSocketSystem : public ClientSocketI, public SocketSystem
     ///
     /// \brief write
     /// \param data
-    /// \param len
+    /// \param size
     ///
-//    void write( const unsigned char* data, size_t len ) override;
-    void write(const unsigned char * data, size_t len ) override;
+//    void write( const unsigned char* data, size_t size ) override;
+    void write(const Data_t * data, size_t size ) override;
 
     ///
     /// \brief read
     /// \param data
-    /// \param len
+    /// \param size
     ///
-//    void read( unsigned char* data, size_t len ) override;
-    void read( unsigned char* data, size_t len ) override;
+//    void read( unsigned char* data, size_t size ) override;
+    void read( Data_t* data, size_t size ) override;
+
+//    std::string getIpv4() const {
+//    }
+    std::string toString() const {
+        return m_ipv4 + ":" + std::to_string(m_port);
+    }
 
   public:
 
