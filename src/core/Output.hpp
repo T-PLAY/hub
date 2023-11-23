@@ -10,6 +10,8 @@
 #include "OutputBase.hpp"
 #include "Serializer.hpp"
 
+// #define HUB_DEBUG_OUTPUT
+
 namespace hub {
 
 //    using Output = output::OutputImpl;
@@ -24,6 +26,8 @@ class OutputT : public OutputBase
 {
   public:
     using OutputBase::write;
+
+    virtual ~OutputT() = default;
 
     //    template <class T>
     //    typename std::enable_if<!notWritable_v<T> && !writable_v<T> && !serializable_v<T> &&

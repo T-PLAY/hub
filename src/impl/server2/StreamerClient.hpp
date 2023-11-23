@@ -67,6 +67,9 @@ class StreamerClient : public Client
     ///
     void end( io::StreamInterface::ServerMessage message ) override;
 
+    StreamerClient(const StreamerClient &) = delete;
+    StreamerClient(StreamerClient &&) = delete;
+
     ///
     /// \brief getStreamName
     /// \return
@@ -89,8 +92,16 @@ class StreamerClient : public Client
     const std::string ipv4;
     const int port;
 
+    int getNStreamViewer() const;
+
   private:
     std::thread m_thread;
+
+    std::unique_ptr<io::InputOutputSocket> m_sock;
+
+    bool m_serverDown = false;
+
+//    int m_nStreamViewer = 0;
 
 //    std::unique_ptr<sensor::InputSensor> m_inputSensor;
 

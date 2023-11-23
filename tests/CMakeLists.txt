@@ -109,13 +109,13 @@ else()
 endif()
 #message(STATUS "#################### ${test_srcs}")
 
-if (NOT HUB_BUILD_SERVER)
-    list(FILTER test_srcs EXCLUDE REGEX ".*Server\\.cpp$")
-    list(FILTER test_srcs EXCLUDE REGEX ".*-server-.*\\.cpp$")
+#if (NOT HUB_BUILD_SERVER)
+#    list(FILTER test_srcs EXCLUDE REGEX ".*Server\\.cpp$")
+#    list(FILTER test_srcs EXCLUDE REGEX ".*-server-.*\\.cpp$")
 
 #    file(GLOB server_srcs server/*.cpp)
 #    list(REMOVE_ITEM test_srcs ${server_srcs})
-endif()
+#endif()
 
 # gathering tests
 #add_executable(test-all ${test_srcs} ${test_headers} ${test_headers_src})

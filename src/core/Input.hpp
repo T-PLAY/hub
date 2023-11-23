@@ -11,6 +11,8 @@
 // #include "serializer/SerializerI.hpp"
 #include "Serializer.hpp"
 
+// #define HUB_DEBUG_INPUT
+
 namespace hub {
 
 // using Input = io::input::InputImpl;

@@ -42,17 +42,22 @@ class SRC_API OutputStreamServer : public Output, public io::StreamServer
     ///
     //    explicit OutputStreamServer( const std::string& streamName,
     //                           net::ClientSocket&& clientSocket = net::ClientSocket() );
+    OutputStreamServer( int streamPort);
+
     explicit OutputStreamServer( const std::string& streamName,
-                                 const std::string& ipv4 = s_defaultIpv4,
-                                 int port                = s_defaultPort );
+                                 int port                = s_defaultPort,
+                                 const std::string& ipv4 = s_defaultIpv4);
     ///
     /// \brief OutputStreamServer
     /// \param outputStream
     ///
-    //    OutputStreamServer( OutputStreamServer&& outputStream );
+    OutputStreamServer( OutputStreamServer&& outputStream );
 
-        ~OutputStreamServer();
+    ~OutputStreamServer();
 
+    void serverProcess();
+    void startServer();
+    void streamConnect();
     //    void write( const sensor::Acquisition& acq );
     //    void write( const sensor::SensorSpec& sensorSpec );
 
@@ -61,25 +66,37 @@ class SRC_API OutputStreamServer : public Output, public io::StreamServer
     void write( const unsigned char* data, size_t len ) override;
     void close() override;
     bool isOpen() const override;
-    void setRetain(bool retain) override;
+    void setRetain( bool retain ) override;
 
     // #endif
 
   private:
     void stop();
     //    std::unique_ptr<net::ClientSocket> m_serverSocket;
-    //    std::unique_ptr<io::InputOutputSocket> m_serverSocket;
-    io::InputOutputSocket m_serverSocket;
-    int m_port;
-    std::vector<io::InputOutputSocket> m_clientSockets;
-//    hub::Buffer<> m_buffer;
-    std::vector<hub::Data_t> m_retainedData;
-    std::function<void(const Data_t *, Size_t)> m_writingFun;
-    bool m_killed = false;
+    std::unique_ptr<io::InputOutputSocket> m_clientSocket;
+//    io::InputOutputSocket m_serverSocket;
+    struct ServerDataThread {
+        int m_streamPort = 0;
+        std::vector<io::InputOutputSocket> m_clientSockets;
+        std::mutex m_mtxClientSockets;
+        std::vector<hub::Data_t> m_retainedData;
+        //        std::atomic<bool> m_killed = false;
+        bool m_killed = false;
+        std::atomic<bool> m_serverStarted = false;
+    };
+    std::unique_ptr<ServerDataThread> m_serverDataThread;
+    std::atomic<bool> m_streamConnected = false;
 
-    std::unique_ptr<std::thread> m_thread;
-    std::unique_ptr<std::thread> m_threadWriting;
-    //    bool m_moved = false;
+    //    std::unique_ptr<std::vector<io::InputOutputSocket>> m_clientSockets;
+    //    hub::Buffer<> m_buffer;
+    std::function<void( const Data_t*, Size_t )> m_writingFun;
+
+    std::unique_ptr<std::thread> m_serverThread;
+    std::unique_ptr<std::thread> m_clientThread;
+    bool m_shutdown = false;
+//    std::unique_ptr<std::thread> m_serverThread;
+    //    std::unique_ptr<std::thread> m_threadWriting;
+    bool m_moved = false;
 
     //    std::unique_ptr<bool> m_serverClosed   = std::make_unique<bool>(false);
     //    std::unique_ptr<bool> m_streamerClosed = std::make_unique<bool>(false);
@@ -98,13 +115,13 @@ class SRC_API OutputStreamServer : public Output, public io::StreamServer
 //    Output::write( sensorSpec );
 //}
 
-//void OutputStreamServer::write( const unsigned char* data, size_t len );
+// void OutputStreamServer::write( const unsigned char* data, size_t len );
 
 inline void OutputStreamServer::close() {
     std::cout << "[OutputStreamServer] close() started" << std::endl;
-    //    assert( m_serverSocket->isOpen() );
+    //    assert( m_clientSocket->isOpen() );
     //    if ( ! *m_serverClosed && ! *m_streamerClosed ) {
-    //        m_serverSocket->write( io::StreamInterface::ClientMessage::STREAMER_CLIENT_CLOSED );
+    //        m_clientSocket->write( io::StreamInterface::ClientMessage::STREAMER_CLIENT_CLOSED );
     //    }
     //    int iTry = 0;
     //    while ( ! *m_serverClosed && ! *m_streamerClosed && iTry < 10 ) {
@@ -115,12 +132,12 @@ inline void OutputStreamServer::close() {
     //    assert(iTry < 10);
 
     std::cout << "[OutputStreamServer] closing connection ended" << std::endl;
-    m_serverSocket.close();
+    m_clientSocket->close();
     std::cout << "[OutputStreamServer] close() ended" << std::endl;
 }
 
 inline bool OutputStreamServer::isOpen() const {
-    return m_serverSocket.isOpen();
+    return m_clientSocket->isOpen();
 }
 
 } // namespace output

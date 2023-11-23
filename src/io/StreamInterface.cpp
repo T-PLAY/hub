@@ -14,6 +14,7 @@ static const std::string type2string[static_cast<int>( StreamInterface::ClientTy
     "STREAM_VIEWER",
     "VIEWER",
     "ASKER",
+    "KILLER",
 };
 std::ostream& operator<<( std::ostream& os, const StreamInterface::ClientType& clientType ) {
     os << type2string[(int)clientType];
@@ -37,6 +38,8 @@ static const std::string
         "ASKER_CLIENT_CLOSED",
         "ASKER_CLIENT_GET_LIST_STREAMS",
         "ASKER_CLIENT_GET_ACQ",
+
+        "SERVER_DOWN",
 };
 std::ostream& operator<<( std::ostream& os, const StreamInterface::ClientMessage& msg ) {
     os << clientMessage2string[(int)msg];

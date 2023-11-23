@@ -38,7 +38,7 @@ template <typename T>
 // packable<T>::value || std::is_arithmetic_v<T> || std::is_array_v<T> || is_std_vector<T>::value;
 // // double free corruption
 static constexpr bool packable_v =
-    packable<T>::value || std::is_arithmetic_v<T> || std::is_array_v<T>;
+    packable<T>::value || std::is_arithmetic_v<T> || std::is_array_v<T> || std::is_enum_v<T>;
 
 // template <typename T>
 // static constexpr bool isSimpleType_v = std::is_same<T, int>::value;

@@ -324,8 +324,9 @@ void ViewerInterface<InputStream>::Stream::startStream() {
                 InputStream( m_streamName,
                              //                    net::ClientSocket( m_viewer.m_sock.getIpv4(),
                              //                    m_viewer.m_sock.getPort() ) ) );
-                             m_ipv4,
-                             m_port ) );
+                             m_port,
+                             m_ipv4
+                             ) );
 
             assert( m_onNewAcquisition );
             while ( !m_stopThread ) {

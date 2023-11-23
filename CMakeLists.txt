@@ -162,6 +162,12 @@ if (Eigen3_FOUND)
     add_definitions(-DHUB_USE_EIGEN3)
 endif()
 
+find_package(TBB QUIET)
+if (TBB_FOUND)
+    add_definitions(-DHUB_USE_TBB)
+    link_libraries(tbb)
+endif()
+
 #find_package(OpenEXR QUIET) # tcp socket communication
 #if (OpenEXR_FOUND)
 ##    message(FATAL_ERROR "error")

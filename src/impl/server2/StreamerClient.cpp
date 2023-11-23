@@ -96,7 +96,6 @@ namespace server {
 
 StreamerClient::StreamerClient( Server* server,
                                 int iClient,
-                                //                                net::ClientSocket&& sock,
                                 io::InputOutputSocket&& sock,
                                 std::string streamName_,
                                 std::string ipv4_,
@@ -104,131 +103,60 @@ StreamerClient::StreamerClient( Server* server,
     Client( server, iClient ),
     streamName( std::move( streamName_ ) ),
     ipv4( std::move( ipv4_ ) ),
-    port( port_ ) {
+    port( port_ ),
+    m_sock( std::make_unique<io::InputOutputSocket>( std::move( sock ) ) ) {
 
-    //    std::cout << "[StreamerClient] StreamerClient() m_clientSocket : " << &sock << std::endl;
     std::cout << headerMsg() << "StreamerClient() start" << std::endl;
 
-    //    try {
-    //        io::StreamInterface::ClientMessage mess;
-    //        do {
-    //            sock.read( mess );
-    //            if ( mess == io::StreamInterface::ClientMessage::STREAMER_CLIENT_CLOSED ) {
-    //                sock.write( io::StreamInterface::ServerMessage::STREAMER_CLOSED );
-    //                //                assert(sock.isOpen());
-    //                sock.close();
-    //                throw net::Socket::exception( "output stream closed" );
-    //            }
-    //            else if ( mess == io::StreamInterface::ClientMessage::STREAMER_CLIENT_INIT_SENSOR
-    //            ) {
-    //                // do nothing
-    //            }
-    //            else { assert( false ); }
-    //        } while ( mess != io::StreamInterface::ClientMessage::STREAMER_CLIENT_INIT_SENSOR );
-    //        assert( mess == io::StreamInterface::ClientMessage::STREAMER_CLIENT_INIT_SENSOR );
-
-    //        m_inputSensor =
-    //            std::make_unique<sensor::InputSensor>( InputStreamClient( std::move( sock ) ) );
-    //                std::make_unique<InputSensor>( InputStreamClient( sock ) );
-    //    }
-    //    catch ( net::Socket::exception& e ) {
-    //        std::cout << headerMsg() << "InputSensor() : catch exception : " << e.what() <<
-    //        std::endl; std::thread( [this]() { delete this; } ).detach();
-    //        //            throw e;
-    //        return;
-    //    }
-
     std::cout << headerMsg() << "stream name = '" << streamName << "'" << std::endl;
-//    std::cout << headerMsg() << "ipv4 = '" << ipv4 << "'" << std::endl;
-//    std::cout << headerMsg() << "port = '" << port << "'" << std::endl;
-
-    sock.write(port);
-
-    //    const auto& sensorSpec = m_inputSensor->getSpec();
-
-    //    const size_t acquisitionSize = sensorSpec.getAcquisitionSize();
-    //    const size_t acquisitionSize = sensorSpec.getResolution().size();
-    //    std::cout << headerMsg() << "sensor name:'" << sensorSpec.getSensorName() << "'" <<
-    //    std::endl; std::cout << headerMsg() << "acquisitionSize:" << acquisitionSize << std::endl;
-    //    std::cout << headerMsg() << "resolution:" << sensorSpec.getResolution() << std::endl;
-
-    //    const auto& metaData = sensorSpec.getMetaData();
-    //    for ( const auto& pair : metaData ) {
-    ////        std::cout << headerMsg() << "metaData: " << sensor::SensorSpec::to_string( pair ) <<
-    /// std::endl;
-    //        std::cout << headerMsg() << "metaData: " << pair << std::endl;
-    //        ////            mesh.printStats();
-    //    }
-    //    if ( metaData.find( "nAcq" ) != metaData.end() ) {
-    //        std::cout << headerMsg() << "type detected : packed stream" << std::endl;
-    //        m_nAcq           = metaData.at( "nAcq" ).get<int>();
-    //        m_isPackedStream = true;
-    //    }
-
-    //        // get record acqs before prevent viewer
-    //        // std::this_thread::sleep_for( std::chrono::milliseconds( 200 ) );
-    //        assert( m_server != nullptr );
-    //        m_server->addStreamer( this );
-
-    // get record acqs before prevent viewer
-    // std::this_thread::sleep_for( std::chrono::milliseconds( 200 ) );
     assert( m_server != nullptr );
     m_server->addStreamer( this );
 
-    //        m_server->newInputSensor( this );
-    m_thread = std::thread( [this, sock = std::move( sock )]() mutable {
+    auto* sockPtr = m_sock.get();
+    m_thread      = std::thread( [sockPtr, this]() mutable {
         try {
 
             io::StreamInterface::ClientMessage mess;
-            sock.read( mess );
-            assert( mess == io::StreamInterface::ClientMessage::STREAMER_CLIENT_CLOSED );
-            //            if ( mess == io::StreamInterface::ClientMessage::STREAMER_CLIENT_CLOSED )
-            //            {
-            //                throw net::system::SocketSystem::exception( "streamer closed" );
-            //        std::cout << headerMsg() << "streamer closed" << std::endl;
-            //            }
-
-            //            while ( m_inputSensor->getInput().isOpen() ) {
-
-            //                *m_inputSensor >> m_lastAcq;
-            //                //                std::cout << "get acq " << m_lastAcq << std::endl;
-            ////                assert( !m_lastAcq.isEnd() );
-
-            //                m_server->newAcquisition( this, m_lastAcq );
-
-            //                if ( m_isPackedStream ) {
-            //                    auto it = m_packedAcqs.insert( m_lastAcq.clone() );
-            //                    assert( m_packedAcqs.size() <= m_nAcq );
-            //                    if ( m_packedAcqs.size() == m_nAcq ) {
-            //                        std::cout << headerMsg() << "updating saved acq "
-            //                                  << std::distance( m_packedAcqs.begin(), it.first )
-            //                                  <<
-            //                                  "/"
-            //                                  << m_nAcq << std::endl;
-            //                    }
-            //                }
-
-            //            } // while (true)
-            //            assert( false );
+            sockPtr->read( mess );
+            if ( mess == io::StreamInterface::ClientMessage::SERVER_DOWN ) { m_serverDown = true; }
+            else if ( mess == io::StreamInterface::ClientMessage::STREAMER_CLIENT_CLOSED ) {}
+            else if ( mess == io::StreamInterface::ClientMessage::STREAMER_CLIENT_START ) {
+                std::cout << "[StreamerClient] STREAMER_CLIENT_START" << std::endl;
+            }
+            else { assert( false ); }
         }
-        //        catch ( net::Socket::exception& ex ) {
         catch ( net::system::SocketSystem::exception& ex ) {
+            m_server->m_mtxPrint.lock();
             std::cout << headerMsg() << "catch exception : " << ex.what() << std::endl;
         }
 
         std::thread( [this]() { delete this; } ).detach();
     } );
+
+    m_sock->write( io::StreamInterface::ServerMessage::STREAMER_INITED );
+}
+
+int StreamerClient::getNStreamViewer() const {
+    return 0;
 }
 
 StreamerClient::~StreamerClient() {
+    //    m_server->m_mtxPrint.lock();
     std::cout << headerMsg() << "delete start" << std::endl;
+    //    m_server->m_mtxPrint.unlock();
 
     assert( m_thread.joinable() );
     m_thread.join();
 
     if ( m_server != nullptr ) m_server->delStreamer( this );
 
-    std::cout << headerMsg() << "delete ended" << std::endl;
+    //    m_server->m_mtxPrint.lock();
+    //    std::cout << headerMsg() << "delete ended" << std::endl;
+    m_server->m_mtxPrint.unlock();
+    if ( !m_serverDown ) {
+        assert( m_sock->isOpen() );
+        m_sock->write( io::StreamInterface::ServerMessage::STREAMER_CLOSED );
+    }
 }
 
 std::string StreamerClient::headerMsg() const {
@@ -257,7 +185,8 @@ std::string StreamerClient::headerMsg() const {
 void StreamerClient::end( io::StreamInterface::ServerMessage message ) {
     //    InputStreamClient& input = dynamic_cast<InputStreamClient&>( m_inputSensor->getInput() );
     //    assert( input.m_clientSocket.isOpen() );
-    //    input.m_clientSocket.write( message );
+    assert( m_sock->isOpen() );
+    m_sock->write( message );
 }
 
 // const std::string& StreamerClient::getStreamName() const {

@@ -19,6 +19,18 @@
 
 // #include "Macros.hpp"
 // #include "Version.hpp"
+#include <impl/server2/Server.hpp>
+// #include <impl/server2/io/input/InputStreamServer.hpp>
+
+#ifdef HUB_SERVER_PORT
+#    define INIT_SERVER const auto SERVER_PORT = HUB_SERVER_PORT;
+
+#else
+#    define INIT_SERVER                           \
+        const auto SERVER_PORT = GET_RANDOM_PORT; \
+        hub::Server server( SERVER_PORT );        \
+        server.asyncRun();
+#endif
 
 template <typename T>
 bool someEnd( const T& t ) {
@@ -70,25 +82,16 @@ static auto generateTestData() {
     return std::tuple<const hub::Data_t*, hub::Size_t>( s_testData.data(), s_testData.size() );
 }
 
-template <class Output, class Input>
-static auto inputOutputBench( Output& output, Input& input ) {
-    //    std::array<hub::Data_t, dataSize> array;
-    //    std::vector<hub::Data_t> vector( s_dataSize );
-    //    std::fill( vector.begin(), vector.end(), rand() );
-
-    //    hub::Data_t* data = s_testData.data();
-    //    hub::Size_t size  = s_testData.size();
+template <class Input, class Output>
+static auto inputOutputBench( Input& input, Output& output, std::string verbose = "") {
 
     const auto& [data, size] = generateTestData();
 
-    //    std::data<hub::Data_t, dataSize> array_read;
-    //    std::vector<hub::Data_t> s_testData_read( s_dataSize );
     static std::atomic<bool> startSignal = false;
 
     std::thread thread( [&]() {
         while ( !startSignal ) {};
         for ( int i = 0; i < s_nIteration; ++i ) {
-            //            memset(data, i, size);
             output.write( data, size );
         }
     } );
@@ -96,11 +99,9 @@ static auto inputOutputBench( Output& output, Input& input ) {
     std::thread thread2( [&]() {
         while ( !startSignal ) {};
         for ( int i = 0; i < s_nIteration; ++i ) {
-            //            output.write( data, size );
             input.read( s_testData_read.data(), size );
 #ifdef DEBUG
             assert( s_testData == s_testData_read );
-//            assert(mem(s_testData_read.data(), ))
 #endif
         }
     } );
@@ -119,76 +120,90 @@ static auto inputOutputBench( Output& output, Input& input ) {
     const auto durationInNanoSecond =
         std::chrono::duration_cast<std::chrono::nanoseconds>( endClock - startClock ).count();
     const auto gigaBytePerSecond = ( 2 * s_nIteration * s_dataSize ) / (double)durationInNanoSecond;
-    //    struct Report {
-    //        duration
-    //    };
 
-    //    std::cout << "------------------------------------" << std::endl;
-    //    std::cout << "[inputOutputBench] writing/reading rate: " << std::to_string(
-    //    gigaBytePerSecond )
-    //              << " Go/s" << std::endl;
-    //    std::cout << "[inputOutputBench] total time: " << durationInNanoSecond / 1000'000.0 << "
-    //    ms"
-    //              << std::endl;
-    //    return std::make_tuple<>(durationInMicroSecond, gigaBytePerSecond);
+    if ( ! verbose.empty() ) {
+//        std::cout << "---------------- inputOutputBench --------------------" << std::endl;
+        std::cout << "[InputOutput:" << verbose << "] writing/reading rate: " << std::to_string( gigaBytePerSecond )
+                  << " Go/s" << std::endl;
+        std::cout << "[InputOutput:" << verbose << "] total time: " << durationInNanoSecond / 1'000'000.0 << " ms"
+                  << std::endl;
+    }
+
     return std::tuple<double, double>( durationInNanoSecond / 1'000'000.0, gigaBytePerSecond );
 }
 
-template <class Output, class Input>
-static auto inputOutputBench( Output& output, std::vector<Input>& inputs ) {
-    //    std::array<hub::Data_t, dataSize> array;
-    //    std::vector<hub::Data_t> vector( s_dataSize );
-    //    std::fill( vector.begin(), vector.end(), rand() );
+// template <class Output, class Input>
+// static auto inputOutputBench( Output& output, std::vector<Input>& inputs ) {
+//     const auto& [data, size] = generateTestData();
 
-    //    hub::Data_t* data = vector.data();
-    //    hub::Size_t size  = vector.size();
+//    static std::atomic<bool> startSignal = false;
 
+//    std::thread thread( [&]() {
+//        while ( !startSignal ) {};
+
+//        for ( int i = 0; i < s_nIteration; ++i ) {
+//            output.write( data, size );
+//        }
+//    } );
+
+//    std::thread thread2( [&]() {
+//        while ( !startSignal ) {};
+//        for ( int i = 0; i < s_nIteration; ++i ) {
+//            for ( auto& input : inputs ) {
+//                input.read( s_testData_read.data(), s_dataSize );
+// #ifdef DEBUG
+//                assert( s_testData == s_testData_read );
+// #endif
+//            }
+//        }
+//    } );
+
+//    const auto startClock = std::chrono::high_resolution_clock::now();
+
+//    startSignal = true;
+
+//    thread.join();
+//    thread2.join();
+
+//    const auto endClock = std::chrono::high_resolution_clock::now();
+
+//    CHECK( s_testData == s_testData_read );
+
+//    const auto durationInNanoSecond =
+//        std::chrono::duration_cast<std::chrono::nanoseconds>( endClock - startClock ).count();
+//    const auto gigaBytePerSecond =
+//        ( ( 1 + inputs.size() ) * s_nIteration * s_dataSize ) / (double)durationInNanoSecond;
+
+//    return std::tuple<double, double>( durationInNanoSecond / 1'000'000.0, gigaBytePerSecond );
+//}
+
+template <class Input, class Output>
+static auto inputOutputBench( std::vector<Input>& inputs, std::vector<Output>& outputs, std::string verbose = "" ) {
     const auto& [data, size] = generateTestData();
 
-    //    std::data<hub::Data_t, dataSize> array_read;
-    //    std::vector<hub::Data_t> vector_read( s_dataSize );
     static std::atomic<bool> startSignal = false;
 
     std::thread thread( [&]() {
         while ( !startSignal ) {};
 
         for ( int i = 0; i < s_nIteration; ++i ) {
-            output.write( data, size );
+            for ( auto& output : outputs ) {
+                output.write( data, size );
+            }
         }
     } );
 
-//        std::thread thread2( [&]() {
-////                    std::for_each( std::execution::seq, inputs.begin(), inputs.end(), []( auto&
-////    /input /                ) {
-//            std::for_each( std::execution::par, inputs.begin(), inputs.end(), []( auto& input ) {
-//                while ( !startSignal ) {};
-
-//                for ( int i = 0; i < s_nIteration; ++i ) {
-//                    //        output.write( data, size );
-//                    input.read( s_testData_read.data(), s_dataSize );
-//     #ifdef DEBUG
-//                    assert( s_testData == s_testData_read );
-//     #endif
-//                }
-//            } );
-//        } );
-
     std::thread thread2( [&]() {
-        //                std::for_each( std::execution::seq, inputs.begin(), inputs.end(), [](
-        //                auto& input ) {
         while ( !startSignal ) {};
-        //        std::for_each( std::execution::par, inputs.begin(), inputs.end(), []( auto& input
-        //        ) {
+
         for ( int i = 0; i < s_nIteration; ++i ) {
             for ( auto& input : inputs ) {
-                //        output.write( data, size );
                 input.read( s_testData_read.data(), s_dataSize );
 #ifdef DEBUG
                 assert( s_testData == s_testData_read );
 #endif
             }
         }
-        // );
     } );
 
     const auto startClock = std::chrono::high_resolution_clock::now();
@@ -207,18 +222,16 @@ static auto inputOutputBench( Output& output, std::vector<Input>& inputs ) {
     const auto gigaBytePerSecond =
         //        ( ( 1 + inputs.size() ) * s_nIteration * s_dataSize ) /
         //        (double)durationInNanoSecond;
-        (( 1 + inputs.size()) * s_nIteration * s_dataSize ) / (double)durationInNanoSecond;
-    //    struct Report {
-    //        duration
-    //    };
+        ( ( outputs.size() + inputs.size() ) * s_nIteration * s_dataSize ) /
+        (double)durationInNanoSecond;
 
-    //    std::cout << "------------------------------------" << std::endl;
-    //    std::cout << "[inputOutputBench] writing/reading rate: " << std::to_string(
-    //    gigaBytePerSecond )
-    //              << " Go/s" << std::endl;
-    //    std::cout << "[inputOutputBench] total time: " << durationInNanoSecond / 1000'000.0 << "
-    //    ms"
-    //              << std::endl;
-    //    return std::make_tuple<>(durationInMicroSecond, gigaBytePerSecond);
+    if ( ! verbose.empty() ) {
+        std::cout << "[InputOutput:" << verbose << "] writing/reading rate: " << std::to_string( gigaBytePerSecond )
+                  << " Go/s" << std::endl;
+        std::cout << "[InputOutput:" << verbose << "] total time: " << durationInNanoSecond / 1'000'000.0 << " ms"
+                  << std::endl;
+    }
+
+
     return std::tuple<double, double>( durationInNanoSecond / 1'000'000.0, gigaBytePerSecond );
 }

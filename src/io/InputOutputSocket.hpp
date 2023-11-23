@@ -18,6 +18,8 @@ class InputOutputSocket : public InputOutput<>, public net::ClientSocket
     using InputOutput<>::write;
 
     InputOutputSocket(net::ClientSocket && clientSocket) : net::ClientSocket(std::move(clientSocket)) {}
+    InputOutputSocket(InputOutputSocket &&) = default;
+    InputOutputSocket(const InputOutputSocket &) = delete;
 
     void read( hub::Data_t* data, hub::Size_t size ) override {
         net::ClientSocket::read(data, size);

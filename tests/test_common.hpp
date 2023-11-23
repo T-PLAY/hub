@@ -18,6 +18,7 @@
 
 // #include "Macros.hpp"
 #include <Version.hpp>
+#include <core/Utils.hpp>
 
 #define GET_RANDOM_PORT getRandomPort( __FILE__ )
 

@@ -1,204 +1,196 @@
 
 #include "OutputStreamServer.hpp"
 
+#include <execution>
 #include <iostream>
 #include <typeinfo>
 
-// #include "impl/server2/io/input/InputStreamServer.hpp"
 #include "net/ServerSocket.hpp"
 
 namespace hub {
 namespace output {
 
-OutputStreamServer::OutputStreamServer( const std::string& streamName,
-                                        const std::string& ipv4,
-                                        int port ) :
-    // OutputStreamServer::OutputStreamServer( const std::string& streamName, net::ClientSocket&&
-    // clientSocket ) :
-    io::StreamServer( streamName, ipv4, port ),
-    //    m_serverSocket( std::move( clientSocket ) ) {
-    //    m_serverSocket( ipv4, port )
-    //    m_serverSocket( std::make_unique<net::ClientSocket>( ipv4, port ) )
-    //    m_serverSocket( std::make_unique<io::InputOutputSocket>( net::ClientSocket(ipv4, port) ) )
-    m_serverSocket( net::ClientSocket( ipv4, port ) )
-//    m_writingFun(write)
+OutputStreamServer::OutputStreamServer( int streamPort ) :
+    io::StreamServer( "", "", 0 ), m_serverDataThread( std::make_unique<ServerDataThread>() ) {
+    m_serverDataThread->m_streamPort = streamPort;
+    startServer();
+}
 
-{
-    setRetain( false );
+void OutputStreamServer::streamConnect() {
+    m_clientSocket->write( ClientType::STREAMER );
 
-    //    m_writingFun = [this](const Data_t *data, Size_t size) {
-    //        write(data, size);
-    //    };
+    m_clientSocket->write( m_name );
 
-    //    Output::write( net::ClientSocket::Type::STREAMER );
-    m_serverSocket.write( ClientType::STREAMER );
-
-    //    Output::write( streamName );
-    m_serverSocket.write( streamName );
-
-    io::StreamInterface::ServerMessage mess;
-    m_serverSocket.read( mess );
+        io::StreamInterface::ServerMessage mess;
+    m_clientSocket->read( mess );
     if ( mess == io::StreamInterface::ServerMessage::FOUND ) {
-        m_serverSocket.close();
-        //        throw net::Socket::exception(
+        m_clientSocket->close();
         throw net::system::SocketSystem::exception(
-            ( std::string( "stream '" ) + streamName + "' is already attached to server" )
+            ( std::string( "stream '" ) + m_name + "' is already attached to server" )
                 .c_str() );
     }
     assert( mess == io::StreamInterface::ServerMessage::NOT_FOUND );
 
-    m_serverSocket.read( m_port );
+    m_clientSocket->write( m_serverDataThread->m_streamPort );
+    m_clientSocket->read( m_serverDataThread->m_streamPort );
+    //                    serverConnected = true;
+}
 
-    assert( m_serverSocket.isOpen() );
-    //    auto* clientSocket   = m_serverSocket.get();
-    //    auto* serverClosed   = m_serverClosed.get();
-    //    auto* streamerClosed = m_streamerClosed.get();
-    m_thread = std::make_unique<std::thread>( [this]() {
-        DEBUG_MSG( "[OutputStream] listening port " << m_port );
-        net::ServerSocket serverSocket( m_port );
-        assert( serverSocket.isConnected() );
-        while ( !m_killed ) {
-            auto clientSock = io::InputOutputSocket( serverSocket.waitNewClient() );
-            std::cout << "[OutputStream] new client: " << clientSock << std::endl;
-            io::StreamInterface::ClientType clientType;
-            clientSock.read( clientType );
+OutputStreamServer::OutputStreamServer( const std::string& streamName,
+                                        int port,
+                                        const std::string& ipv4 ) :
+    io::StreamServer( streamName, ipv4, port ),
+    m_clientSocket( std::make_unique<io::InputOutputSocket>( net::ClientSocket( ipv4, port ) ) ),
+    m_serverDataThread( std::make_unique<ServerDataThread>() ) {
 
-            if ( clientType == io::StreamInterface::ClientType::STREAM_VIEWER ) {
-                DEBUG_MSG( "[OutputStream] accepting new stream viewer at " << clientSock );
-                if ( !m_retainedData.empty() ) {
-                    clientSock.write( m_retainedData.data(), m_retainedData.size() );
+    //    std::atomic<bool> serverConnected = false;
+    //    std::atomic<bool> streamNameAlreadyExist = false;
+    //    std::atomic<bool> streamConnected = false;
+
+    streamConnect();
+
+    //    auto * streamConnected = m_st
+    m_clientThread = std::make_unique<std::thread>( [this, streamName]() {
+        io::StreamInterface::ServerMessage mess;
+        while ( !m_shutdown ) {
+            try {
+                if ( !m_clientSocket->isConnected() ) { m_clientSocket->connect(); }
+                if ( !m_streamConnected ) {
+                    streamConnect();
                 }
-                m_clientSockets.push_back( std::move( clientSock ) );
-            }
-            else if ( clientType == io::StreamInterface::ClientType::KILLER ) {
-                if ( m_killed ) { std::cout << "[OutputStream] harakiri" << std::endl; }
-                else {
-                    std::cout << "[OutputStream] killing by peer" << std::endl;
-                    m_killed = true;
+                m_clientSocket->read( mess );
+
+                if ( mess == io::StreamInterface::ServerMessage::SERVER_CLOSED ) {
+                    m_clientSocket->write( io::StreamInterface::ClientMessage::SERVER_DOWN );
+                    //                    serverConnected = false;
+                    std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
+                    continue;
                 }
+                else if ( mess == io::StreamInterface::ServerMessage::STREAMER_CLOSED ) { break; }
+                else if ( mess == io::StreamInterface::ServerMessage::STREAMER_INITED ) {
+                    m_streamConnected = true;
+                    continue;
+                }
+                else { assert( false ); }
             }
-            else { assert( false ); }
+            catch ( net::system::SocketSystem::exception& ex ) {
+                //                if ( !serverConnected ) throw ex;
+                //                if (streamNameAlreadyExist) throw ex;
+                //                if (! streamConnected) throw;
+                std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
+            }
         }
     } );
 
-    //    m_threadWriting = std::make_unique<std::thread>( [this]() {
-    //        auto * clientSocket = m_serverSocket.get();
-    //            std::cout << "[OutputStreamServer:" << this
-    //                      << "] OutputStreamServer(string, string, int) thread started" <<
-    //                      std::endl;
-    //            io::StreamInterface::ServerMessage serverMsg;
-    //            assert( clientSocket->isOpen() );
-    //            clientSocket->read( serverMsg );
-    //            if ( serverMsg == io::StreamInterface::ServerMessage::SERVER_CLOSED ) {
+    //    while ( !serverConnected ) {
+    while ( !m_streamConnected ) {
+        std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
+    };
 
-    //                std::cout << "[OutputStreamServer] server closed" << std::endl;
-    //                *serverClosed = true;
-    //            }
-    //            else if ( serverMsg == io::StreamInterface::ServerMessage::STREAMER_CLOSED ) {
-    //                std::cout << "[OutputStreamServer] streamer closed" << std::endl;
-    //                *streamerClosed = true;
-    //            }
-    //            else { assert( false ); }
+    startServer();
+}
 
-    //            if ( clientSocket->isOpen() )
-    //                clientSocket->write(
-    //                io::StreamInterface::ClientMessage::STREAMER_CLIENT_CLOSED );
-
-    //            std::cout << "[OutputStreamServer] OutputStreamServer(string, string, int)
-    //            thread ended"
-    //                      << std::endl;
-    //    } );
-
-    //    std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
-    //    std::cout << "[OutputStreamServer:" << this << "] OutputStreamServer(string, string, int)
-    //    ended"
-    //              << std::endl;
+OutputStreamServer::OutputStreamServer( OutputStreamServer&& outputStream ) :
+    StreamServer( outputStream.m_name, outputStream.m_ipv4, outputStream.m_port ),
+    m_clientSocket( std::move( outputStream.m_clientSocket ) ),
+    m_serverDataThread( std::move( outputStream.m_serverDataThread ) ),
+    m_writingFun( std::move( outputStream.m_writingFun ) ),
+    m_serverThread( std::move( outputStream.m_serverThread ) ),
+    m_moved( outputStream.m_moved ) {
+    outputStream.m_moved = true;
 }
 
 OutputStreamServer::~OutputStreamServer() {
-    //    std::cout << "[OutputStreamServer:" << this << "] ~OutputStreamServer()" << std::endl;
 
-    if ( m_thread != nullptr ) {
-        //        SERVER_MSG( "~Server() joining main thread" );
-        assert( m_thread->joinable() );
-        //        if ( m_running ) { stop(); }
-        stop();
-        m_thread->join();
+    if ( !m_moved ) {
+        if ( m_clientThread != nullptr ) {
+            assert( m_clientThread->joinable() );
+            if ( m_clientSocket != nullptr && m_clientSocket->isConnected() )
+                m_clientSocket->write( io::StreamInterface::ClientMessage::STREAMER_CLIENT_CLOSED );
+
+            m_shutdown = true;
+            m_clientThread->join();
+        }
+
+        if ( m_serverThread != nullptr ) {
+            assert( m_serverThread->joinable() );
+            stop();
+            m_serverThread->join();
+        }
     }
-    //    assert( !m_running );
+}
 
-    //    if ( !m_moved ) {
+//////////////////////////////////////////////////////////////////////
 
-    //        //        assert(m_serverSocket->isOpen());
-    //        //        if (m_serverSocket->isOpen())
-    //        //            m_serverSocket->close();
-    //        //    assert( m_serverSocket->isOpen() );
-    //        if ( OutputStreamServer::isOpen() ) {
-    //            std::cout << "[OutputStreamServer:" << this
-    //                      << "] ~OutputStreamServer() closing connection" << std::endl;
-    //            OutputStreamServer::close();
-    //        }
-    //        assert( !OutputStreamServer::isOpen() );
+void OutputStreamServer::serverProcess() {
+    net::ServerSocket serverSocket( m_serverDataThread->m_streamPort );
+    assert( serverSocket.isConnected() );
+    m_serverDataThread->m_serverStarted = true;
 
-    //        assert( m_thread->joinable() );
-    //        std::cout << "[OutputStreamServer:" << this << "] ~OutputStreamServer() joining
-    //        thread"
-    //                  << std::endl;
-    //        m_thread->join();
-    //    }
-    //    std::cout << "[OutputStreamServer:" << this << "] ~OutputStreamServer() ended" <<
-    //    std::endl;
+    while ( !m_serverDataThread->m_killed ) {
+        auto streamViewerSock = io::InputOutputSocket( serverSocket.waitNewClient() );
+        io::StreamInterface::ClientType clientType;
+        streamViewerSock.read( clientType );
+
+        if ( clientType == io::StreamInterface::ClientType::STREAM_VIEWER ) {
+            if ( !m_serverDataThread->m_retainedData.empty() ) {
+                streamViewerSock.write( m_serverDataThread->m_retainedData.data(),
+                                        m_serverDataThread->m_retainedData.size() );
+            }
+            streamViewerSock.write(
+                io::StreamInterface::ClientMessage::STREAMER_CLIENT_INIT_SENSOR );
+            m_serverDataThread->m_mtxClientSockets.lock();
+            m_serverDataThread->m_clientSockets.push_back( std::move( streamViewerSock ) );
+            m_serverDataThread->m_mtxClientSockets.unlock();
+        }
+        else if ( clientType == io::StreamInterface::ClientType::KILLER ) {
+            if ( m_serverDataThread->m_killed ) {}
+            else { m_serverDataThread->m_killed = true; }
+        }
+        else { assert( false ); }
+    }
+}
+
+void OutputStreamServer::startServer() {
+    assert( m_serverThread == nullptr );
+    assert( !m_serverDataThread->m_serverStarted );
+    assert( m_serverDataThread->m_streamPort != 0 );
+    m_serverThread = std::make_unique<std::thread>( [this]() { serverProcess(); } );
+
+    while ( !m_serverDataThread->m_serverStarted ) {};
 }
 
 void hub::output::OutputStreamServer::write( const Data_t* data, size_t size ) {
-    //    assert(m_writingFun);
-    m_writingFun( data, size );
-    for ( auto& clientSocket : m_clientSockets ) {
-        clientSocket.write( data, size );
-    }
-    //    m_serverSocket.write( data, len );
+    if ( m_writingFun != nullptr ) m_writingFun( data, size );
+    m_serverDataThread->m_mtxClientSockets.lock();
+    auto& clientSockets = m_serverDataThread->m_clientSockets;
+#ifdef HUB_USE_TBB
+    std::for_each( std::execution::par,
+#else
+    std::for_each( std::execution::seq,
+#endif
+                   clientSockets.begin(),
+                   clientSockets.end(),
+                   [=]( auto& clientSocket ) { clientSocket.write( data, size ); } );
+    m_serverDataThread->m_mtxClientSockets.unlock();
 }
 
 void OutputStreamServer::setRetain( bool retain ) {
     if ( retain ) {
         m_writingFun = [this]( const Data_t* data, Size_t size ) {
-            m_retainedData.insert( m_retainedData.end(), data, data + size );
-            //            for ( auto& clientSocket : m_clientSockets ) {
-            //                clientSocket.write( data, size );
-            //            }
+            m_serverDataThread->m_retainedData.insert(
+                m_serverDataThread->m_retainedData.end(), data, data + size );
         };
     }
-    else {
-//        m_writingFun = nullptr;
-        m_writingFun = []( const Data_t*, Size_t) {
-//            for ( auto& clientSocket : m_clientSockets ) {
-//                clientSocket.write( data, size );
-//            }
-        };
-    }
+    else { m_writingFun = nullptr; }
 }
 
 void OutputStreamServer::stop() {
-    m_killed        = true;
-    auto clientSock = io::InputOutputSocket( hub::net::ClientSocket( "127.0.0.1", m_port ) );
+    m_serverDataThread->m_killed = true;
+    auto clientSock              = io::InputOutputSocket(
+        hub::net::ClientSocket( "127.0.0.1", m_serverDataThread->m_streamPort ) );
     clientSock.write( io::StreamInterface::ClientType::KILLER );
-    //    hub::input::InputStreamServer inputStream(
-    //        io::StreamServer::s_exitSignal, "127.0.0.1", m_port );
 }
-
-// OutputStreamServer::OutputStreamServer( OutputStreamServer&& outputStream ) :
-//     //    OutputStreamInterface(outputStream.m_name, outputStream.m_ipv4, outputStream.m_port),
-//     StreamServer( outputStream.m_name, outputStream.m_ipv4, outputStream.m_port ),
-//     m_serverSocket( std::move( outputStream.m_serverSocket ) ),
-//     m_thread( std::move( outputStream.m_thread ) ),
-//     m_moved( outputStream.m_moved ),
-//     m_serverClosed( std::move( outputStream.m_serverClosed ) ),
-//     m_streamerClosed( std::move( outputStream.m_streamerClosed ) ) {
-
-//    std::cout << "[OutputStreamServer:" << this << "] OutputStreamServer(OutputStreamServer&&)"
-//              << std::endl;
-//    outputStream.m_moved = true;
-//}
 
 } // namespace output
 } // namespace hub

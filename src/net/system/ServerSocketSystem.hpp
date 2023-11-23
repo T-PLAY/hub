@@ -40,6 +40,8 @@ class SRC_API ServerSocketSystem : public ServerSocketI, public SocketSystem
     ///
     ClientSocketSystem waitNewClient();
 
+//    void disconnect();
+
 
   private:
     void initServer();

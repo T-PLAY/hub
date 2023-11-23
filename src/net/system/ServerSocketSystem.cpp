@@ -50,6 +50,14 @@ ClientSocketSystem ServerSocketSystem::waitNewClient() {
     return ClientSocketSystem( new_socket, std::move(clientAddr) );
 }
 
+//void ServerSocketSystem::disconnect()
+//{
+//    if ( isConnected() ) {
+//        utils::closeSocket( m_fdSock );
+//    }
+//    assert( !isConnected() );
+//}
+
 void ServerSocketSystem::initServer() {
 
     // Socket creation

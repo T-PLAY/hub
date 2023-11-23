@@ -53,14 +53,14 @@ class BookZppBits : public InputOutputBase
 //        std::this_thread::sleep_for(std::chrono::nanoseconds(1));
 //        m_in( t ).or_throw();
 #ifdef HUB_DEBUG_INPUT
-        std::cout << "\t" << HEADER << "read(" << TYPE_NAME( t ) << ") = " << t << std::endl;
+        std::cout << "\t" << HEADER << "read(" << TYPE_NAME( T ) << ") = " << t << std::endl;
 #endif
     }
 
     template <class T>
     void write( const T& t ) {
 #ifdef HUB_DEBUG_OUTPUT
-        std::cout << HEADER << "write(" << TYPE_NAME( t ) << ") = " << t << std::endl;
+        std::cout << HEADER << "write(" << TYPE_NAME( T ) << ") = " << t << std::endl;
 #endif
         zpp::bits::out out( m_characters );
         out( t ).or_throw();

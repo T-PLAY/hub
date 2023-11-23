@@ -19,70 +19,62 @@
 TEST_CASE( "InputOutputStream test" ) {
     const auto hostname = hub::utils::getHostname();
     const auto port     = GET_RANDOM_PORT;
-    const auto port2    = port + 1;
 
-    const auto delay = 100;
-
-    double durationInMillisecondSinglePair;
-    double gigaBytePerSecondSinglePair;
+    double durationInMillisecondSerial;
+    double gigaBytePerSecondSerial;
 
     double durationInMillisecondBroadcast;
     double gigaBytePerSecondBroadcast;
 
-    constexpr auto nInputStream = 5;
+    constexpr auto nOutputStream = 1;
+    constexpr auto nInputStream  = 5;
 
     {
         hub::Server server( port );
         server.asyncRun();
 
         {
-            hub::output::OutputStream outputStream( "streamName", "127.0.0.1", port );
-            std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
+            std::vector<hub::output::OutputStream> outputStreams;
+            outputStreams.emplace_back( "streamName",  port );
 
             {
-                //                hub::input::InputStream inputStream( "streamName", "127.0.0.1",
-                //                port ); std::this_thread::sleep_for( std::chrono::milliseconds(
-                //                delay ) );
                 std::vector<hub::input::InputStream> inputStreams;
-                //                for ( int i = 0; i < nInputStream; ++i ) {
-                inputStreams.emplace_back( "streamName", "127.0.0.1", port );
+                inputStreams.emplace_back( "streamName", port );
 
                 {
                     const auto& [durationInMillisecond, gigaBytePerSecond] =
-                        inputOutputBench( outputStream, inputStreams );
-                    durationInMillisecondSinglePair = durationInMillisecond;
-                    gigaBytePerSecondSinglePair     = gigaBytePerSecond;
+                        inputOutputBench( inputStreams, outputStreams );
+                    durationInMillisecondSerial = durationInMillisecond;
+                    gigaBytePerSecondSerial     = gigaBytePerSecond;
+                }
+
+                for ( int i = 1; i < nOutputStream; ++i ) {
+                    outputStreams.emplace_back(
+                        "streamName" + std::to_string( i ), port );
                 }
 
                 for ( int i = 1; i < nInputStream; ++i ) {
-                    inputStreams.emplace_back( "streamName", "127.0.0.1", port );
-                    std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
+                    inputStreams.emplace_back( "streamName", port );
                 }
 
                 {
                     const auto& [durationInMillisecond, gigaBytePerSecond] =
-                        inputOutputBench( outputStream, inputStreams );
+                        inputOutputBench( inputStreams , outputStreams);
                     durationInMillisecondBroadcast = durationInMillisecond;
                     gigaBytePerSecondBroadcast     = gigaBytePerSecond;
                 }
-
-                std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
             }
             std::cout << "[test] inputStreams ended" << std::endl;
-
-            std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
         }
         std::cout << "[test] outputStream ended" << std::endl;
-
-        std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
     }
     std::cout << "[test] server ended" << std::endl;
 
     std::cout << "------------------------------------" << std::endl;
     std::cout << "[InputOutputStreamSerial] writing/reading rate: "
-              << std::to_string( gigaBytePerSecondSinglePair ) << " Go/s" << std::endl;
-    std::cout << "[InputOutputStreamSerial] total time: " << durationInMillisecondSinglePair
-              << " ms" << std::endl;
+              << std::to_string( gigaBytePerSecondSerial ) << " Go/s" << std::endl;
+    std::cout << "[InputOutputStreamSerial] total time: " << durationInMillisecondSerial << " ms"
+              << std::endl;
 
     std::cout << "------------------------------------" << std::endl;
     std::cout << "[InputOutputStreamBroadcast] writing/reading rate: "
@@ -91,7 +83,7 @@ TEST_CASE( "InputOutputStream test" ) {
               << " ms" << std::endl;
     std::cout << std::endl;
 
-    const auto ratio = 100.0 * gigaBytePerSecondBroadcast / gigaBytePerSecondSinglePair;
+    const auto ratio = 100.0 * gigaBytePerSecondBroadcast / gigaBytePerSecondSerial;
     CHECK_VALUE( ratio, 60, 30, "InputOutputStreamBroadcast/InputOutputStreamSerial", "%" );
 
     std::cout << "[test] tested on machine: '" << hostname << "'" << std::endl;

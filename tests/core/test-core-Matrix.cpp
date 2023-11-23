@@ -52,8 +52,8 @@ class Lambda
 //};
 
 
-// TEST_CASE( "Matrix test" ) {
-int main() {
+TEST_CASE( "Matrix test" ) {
+//int main() {
 
 //    Test myTest;
 //      myTest.printHeader();
