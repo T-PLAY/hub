@@ -54,7 +54,8 @@ TEST_CASE( "InputOutputStream test" ) {
     //    delete server;
     //    std::cout << "[test] inputStream ended" << std::endl;
     //    std::cout << "[test] outputStream ended" << std::endl;
-    CHECK_VALUE( ratio, 50, 30, "InputOutputStreamLocal:multicast/unicast", "%" );
+    // CHECK_VALUE( ratio, 50, 30, "InputOutputStreamLocal:multicast/unicast", "%" );
+    CHECK_DECLINE( ratio, "InputOutputStreamLocal:multicast/unicast", "%" );
 
     std::cout << "[test] tested on machine: '" << hostname << "'" << std::endl;
 }

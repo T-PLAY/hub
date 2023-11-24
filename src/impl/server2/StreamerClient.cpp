@@ -109,6 +109,9 @@ StreamerClient::StreamerClient( Server* server,
     std::cout << headerMsg() << "StreamerClient() start" << std::endl;
 
     std::cout << headerMsg() << "stream name = '" << streamName << "'" << std::endl;
+
+    m_sock->read(m_nStreamViewer);
+
     assert( m_server != nullptr );
     m_server->addStreamer( this );
 
@@ -116,14 +119,29 @@ StreamerClient::StreamerClient( Server* server,
     m_thread      = std::thread( [sockPtr, this]() mutable {
         try {
 
-            io::StreamInterface::ClientMessage mess;
-            sockPtr->read( mess );
-            if ( mess == io::StreamInterface::ClientMessage::SERVER_DOWN ) { m_serverDown = true; }
-            else if ( mess == io::StreamInterface::ClientMessage::STREAMER_CLIENT_CLOSED ) {}
-            else if ( mess == io::StreamInterface::ClientMessage::STREAMER_CLIENT_START ) {
-                std::cout << "[StreamerClient] STREAMER_CLIENT_START" << std::endl;
+            while ( true ) {
+                io::StreamInterface::ClientMessage mess = io::StreamInterface::ClientMessage::NONE;
+                sockPtr->read( mess );
+                if ( mess == io::StreamInterface::ClientMessage::CLIENT_SERVER_DOWN ) {
+                    m_serverDown = true;
+                    break;
+                }
+                else if ( mess == io::StreamInterface::ClientMessage::STREAMER_CLIENT_CLOSED ) {
+                    break;
+                }
+                else if ( mess ==
+                          io::StreamInterface::ClientMessage::STREAMER_CLIENT_NEW_STREAM_VIEWER ) {
+                    sockPtr->read( m_nStreamViewer );
+                    m_server->newStreamViewer( this );
+                    sockPtr->write( io::StreamInterface::ServerMessage::STREAM_VIEWER_INITED );
+                    // std::cout << headerMsg() << "new stream viewer" << std::endl;
+                    // m_server->printStatus();
+                }
+                // else if ( mess == io::StreamInterface::ClientMessage::STREAMER_CLIENT_START ) {
+                // std::cout << "[StreamerClient] STREAMER_CLIENT_START" << std::endl;
+                // }
+                else { assert( false ); }
             }
-            else { assert( false ); }
         }
         catch ( net::system::SocketSystem::exception& ex ) {
             m_server->m_mtxPrint.lock();
@@ -137,7 +155,7 @@ StreamerClient::StreamerClient( Server* server,
 }
 
 int StreamerClient::getNStreamViewer() const {
-    return 0;
+    return m_nStreamViewer;
 }
 
 StreamerClient::~StreamerClient() {

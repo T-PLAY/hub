@@ -36,6 +36,8 @@ ClientSocketSystem ServerSocketSystem::waitNewClient() {
 #endif
 
 
+    assert(utils::isValid(m_fdSock));
+
     utils::ClientAddr clientAddr;
     utils::socket_fd new_socket = utils::accept( m_fdSock, clientAddr );
     if ( !utils::isValid( new_socket ) ) {
@@ -79,7 +81,7 @@ void ServerSocketSystem::initServer() {
                                      .c_str() );
     }
 
-    if ( utils::listen( m_fdSock, 3 ) < 0 ) {
+    if ( utils::listen( m_fdSock, 5 ) < 0 ) {
         perror( "listen" );
         exit( 1 );
     }

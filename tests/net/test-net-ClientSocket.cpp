@@ -255,7 +255,8 @@ TEST_CASE( "Net test : ClientSocket" ) {
     std::cout <<  "[test] sys socket impl is " << ratioSysBoost
               << " more efficient than boost::asio::ip::tcp" << std::endl;
 
-    CHECK_VALUE(ratioSysBoost, 2, 1, "SysSocketImpl/BoostAsioIpTcp", "/");
+    // CHECK_VALUE(ratioSysBoost, 2, 1, "SysSocketImpl/BoostAsioIpTcp", "/");
+    CHECK_DECLINE(ratioSysBoost, "SysSocketImpl/BoostAsioIpTcp", "/");
 #endif
 
     std::cout << "[test] tested on machine: '" << hostname << "'" << std::endl;

@@ -8,8 +8,7 @@
 #include <io/output/OutputStream.hpp>
 
 TEST_CASE( "InputOutputStream test" ) {
-    const auto hostname = hub::utils::getHostname();
-    const auto port     = GET_RANDOM_PORT;
+    const auto port = GET_RANDOM_PORT;
 
     {
         try {
@@ -22,6 +21,4 @@ TEST_CASE( "InputOutputStream test" ) {
         }
     }
     std::cout << "[test] outputStream ended" << std::endl;
-
-    std::cout << "[test] tested on machine: '" << hostname << "'" << std::endl;
 }

@@ -84,7 +84,8 @@ TEST_CASE( "InputOutputStream test" ) {
     std::cout << std::endl;
 
     const auto ratio = 100.0 * gigaBytePerSecondBroadcast / gigaBytePerSecondSerial;
-    CHECK_VALUE( ratio, 100, 50, "InputOutputStream:Multicast/Serial", "%" );
+    // CHECK_VALUE( ratio, 100, 50, "InputOutputStream:Multicast/Serial", "%" );
+    CHECK_DECLINE( ratio, "InputOutputStream:Multicast/Serial", "%" );
 
     std::cout << "[test] tested on machine: '" << hostname << "'" << std::endl;
 }

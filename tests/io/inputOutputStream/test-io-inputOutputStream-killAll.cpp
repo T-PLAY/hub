@@ -20,20 +20,14 @@ TEST_CASE( "InputOutputStream test" ) {
     //        hub::Server server( port );
     //        server.asyncRun();
 
-    {
-        hub::output::OutputStream outputStream( FILE_NAME, SERVER_PORT );
+    hub::output::OutputStream outputStream( FILE_NAME, SERVER_PORT );
 
-        {
-            hub::input::InputStream inputStream( FILE_NAME, SERVER_PORT );
-            //                std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
-        }
-        std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
-    }
+    hub::input::InputStream inputStream( FILE_NAME, SERVER_PORT );
 
     //        server->exit();
     //        delete server;
     //        std::cout << "[test] server ended" << std::endl;
     //        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
-    std::cout << "[test] tested on machine: '" << hostname << "'" << std::endl;
+    // std::cout << "[test] tested on machine: '" << hostname << "'" << std::endl;
 }

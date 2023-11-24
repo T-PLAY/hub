@@ -60,7 +60,7 @@ void InputStreamServer::startStream()
 
     io::StreamInterface::ClientMessage clientMessage;
     m_streamSocket->read( clientMessage );
-    assert( clientMessage == io::StreamInterface::ClientMessage::STREAMER_CLIENT_INIT_SENSOR );
+    assert( clientMessage == io::StreamInterface::ClientMessage::STREAMER_CLIENT_STREAM_VIEWER_INITED );
 
 
 }

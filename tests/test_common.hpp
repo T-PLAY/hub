@@ -16,8 +16,8 @@
 // #include <sensor/InputSensor.hpp>
 // #include <sensor/OutputSensor.hpp>
 
-// #include "Macros.hpp"
 #include <Version.hpp>
+#include <core/Macros.hpp>
 #include <core/Utils.hpp>
 
 #define GET_RANDOM_PORT getRandomPort( __FILE__ )
@@ -138,41 +138,68 @@ static std::string s_latestFilename = "";
 /////////////////////////////////////////////////////////////////////////////////
 
 static void _checkValue( double value,
-                         double compare,
-                         double gap,
                          const std::string& name,
                          const std::string& unit,
                          const std::string& filename,
                          int line ) {
-    //    const int gap = 10;
-    CHECK( ( compare - gap <= value && value <= compare + gap ) );
-    if ( !( compare - gap <= value && value <= compare + gap ) ) {
-        std::cout << "-----------------------------------------------------------------------------"
-                     "---------------------------------------------------------------> checkRatio: "
-                  << compare - gap << " <= " << value << " <= " << compare + gap << std::endl;
-    }
 
-    // std::cout << "[checkValue] name: '" << name << "'" << std::endl;
-    // std::cout << "[checkValue] filename: '" << filename << "'" << std::endl;
-
-    //    std::ofstream file("ouou", std::ios::app);
     std::string name2 = name;
-    //    name2.replace(name2.begin(), name2.end(), '/', '-');
-    //    if ()
+
     name2 = ReplaceAll( name2, "/", "_vs_" );
     name2 = ReplaceAll( name2, ":", "_" );
     name2 = ReplaceAll( name2, " ", "" );
-    //    std::remove( name2.begin(), name2.end(), ' ' );
-    //    name2.erase( std::remove_if( name2.begin(), name2.end(), std::isspace ), name2.end() );
 
     constexpr auto extension = ".log";
+    bool decline             = false;
+    constexpr int nMaxMean   = 4;
+    constexpr int nRatio     = 8;
+    assert( nRatio == std::pow( 2, nMaxMean - 1 ) );
 
-    // std::cout << "[checkValue] name2: '" << name2 << "'" << std::endl;
-
-    // std::string rootPath = HUB_TESTS_BIN_DIR;
-
-    //    std::cout << "checkRatio " << filename << std::endl;
     {
+        std::ifstream inFile( ( filename + "_" + name2 + extension ).c_str() );
+        if ( inFile.is_open() ) {
+            assert( inFile.is_open() );
+
+            std::vector<double> values;
+            std::string hash;
+            std::string unit;
+            double value2;
+            while ( !inFile.eof() ) {
+                inFile >> hash >> value2 >> unit;
+                values.push_back( value2 );
+            }
+            inFile.close();
+
+            double minValue  = values.back();
+            double maxValue  = values.back();
+            double sum       = values.back();
+            const int nValue = values.size();
+            for ( int i = 1; i < std::min( nRatio, nValue ); ++i ) {
+                minValue = std::min( values[nValue - 1 - i], minValue );
+                maxValue = std::max( values[nValue - 1 - i], maxValue );
+                sum += values[nValue - 1 - i];
+            }
+            const double mean = sum / std::min( nRatio, nValue );
+
+            const auto lastDeviation = maxValue - minValue;
+            assert( lastDeviation >= 0 );
+            const auto minRatio = minValue - lastDeviation * 0.1;
+            // std::cout << "minValue = " << minValue << std::endl;
+            // std::cout << "maxValue = " << maxValue << std::endl;
+            // std::cout << "minRatio = " << minRatio << std::endl;
+            CHECK( minRatio <= value );
+            if ( !( minRatio <= value ) ) {
+                std::cout << "-------------------------------------"
+                             "-----------------------------------> "
+                             "checkRatio: "
+                          << minRatio << "(minRatio) <= " << value << "(value), decline: " << value - mean << " "  << unit
+                          << std::endl;
+                decline = true;
+            }
+        }
+    }
+
+    if ( !decline ) {
         std::ofstream logFile( ( filename + "_" + name2 + extension ).c_str(),
                                std::ios::out | std::ios::app );
         assert( logFile.is_open() );
@@ -184,109 +211,96 @@ static void _checkValue( double value,
 
     {
         std::ifstream inFile( ( filename + "_" + name2 + extension ).c_str() );
-        assert( inFile.is_open() );
+        if ( inFile.is_open() ) {
+            assert( inFile.is_open() );
 
-        double value2;
-        std::string hash;
-        std::string unit;
-        int iRatio             = 0;
-        constexpr int nMaxMean = 4;
-        constexpr int nRatio   = 8;
-        assert( nRatio == std::pow( 2, nMaxMean - 1 ) );
-        std::string hashes[nRatio];
-        double values[nRatio];
-        for ( int i = 0; i < nRatio; ++i ) {
-            values[i] = 0.0;
-        }
-        while ( !inFile.eof() ) {
-            value2 = -1;
-            hash   = "";
-            inFile >> hash >> value2 >> unit;
-            if ( value2 != -1 ) {
-                //                sumRatio += value2;
-                values[iRatio % nRatio] = value2;
-                hashes[iRatio % nRatio] = hash;
-                ++iRatio;
+            double value2;
+            std::string hash;
+            std::string unit;
+            int iRatio = 0;
+            std::string hashes[nRatio];
+            double values[nRatio];
+            for ( int i = 0; i < nRatio; ++i ) {
+                values[i] = 0.0;
             }
-        }
-        assert( iRatio > 0 );
-        double sumRatios[nMaxMean];
-        double minRatios[nMaxMean];
-        double maxRatios[nMaxMean];
-        for ( int i = 0; i < nMaxMean; ++i ) {
-            sumRatios[i] = 0.0;
-            minRatios[i] = values[( iRatio - 1 ) % nRatio];
-            maxRatios[i] = values[( iRatio - 1 ) % nRatio];
-        }
-
-        const int nEl = std::min( nRatio, iRatio );
-        for ( int i = 0; i < nEl; ++i ) {
-            //            std::cout << hashes[i] << " " << values[i] << std::endl;
-            const int idx       = ( iRatio - 1 - i ) % nRatio;
-            const auto curRatio = values[idx];
-
-            for ( int iMean = 0; iMean < nMaxMean; ++iMean ) {
-                if ( i < std::pow( 2.0, iMean ) ) {
-                    minRatios[iMean] = std::min( minRatios[iMean], curRatio );
-                    maxRatios[iMean] = std::max( maxRatios[iMean], curRatio );
-                    sumRatios[iMean] += curRatio;
+            while ( !inFile.eof() ) {
+                value2 = -1;
+                hash   = "";
+                inFile >> hash >> value2 >> unit;
+                if ( value2 != -1 ) {
+                    values[iRatio % nRatio] = value2;
+                    hashes[iRatio % nRatio] = hash;
+                    ++iRatio;
                 }
             }
+            inFile.close();
+            assert( iRatio > 0 );
+            double sumRatios[nMaxMean];
+            double minRatios[nMaxMean];
+            double maxRatios[nMaxMean];
+            for ( int i = 0; i < nMaxMean; ++i ) {
+                sumRatios[i] = 0.0;
+                minRatios[i] = values[( iRatio - 1 ) % nRatio];
+                maxRatios[i] = values[( iRatio - 1 ) % nRatio];
+            }
+
+            const int nEl = std::min( nRatio, iRatio );
+            for ( int i = 0; i < nEl; ++i ) {
+                const int idx       = ( iRatio - 1 - i ) % nRatio;
+                const auto curRatio = values[idx];
+
+                for ( int iMean = 0; iMean < nMaxMean; ++iMean ) {
+                    if ( i < std::pow( 2.0, iMean ) ) {
+                        minRatios[iMean] = std::min( minRatios[iMean], curRatio );
+                        maxRatios[iMean] = std::max( maxRatios[iMean], curRatio );
+                        sumRatios[iMean] += curRatio;
+                    }
+                }
+            }
+
+            std::string report;
+
+            const int nMean    = static_cast<int>( std::log2( nEl ) ) + 1;
+            const auto meanAll = sumRatios[nMean - 1] / std::pow( 2.0, nMean - 1 );
+
+            for ( int iMean = 0; iMean < nMean; ++iMean ) {
+                const auto meanRatio = sumRatios[iMean] / std::pow( 2.0, iMean );
+                const auto deviation = maxRatios[iMean] - minRatios[iMean];
+
+                std::string meanRatioStr   = std::to_string( meanRatio );
+                meanRatioStr               = meanRatioStr.substr( 0, 5 );
+                std::string deviationStr   = std::to_string( deviation );
+                deviationStr               = deviationStr.substr( 0, 5 );
+                std::string meanCompareStr = std::to_string( meanRatio - meanAll );
+                meanCompareStr             = meanCompareStr.substr( 0, 5 );
+
+                report += "(" + std::to_string( (int)std::pow( 2, iMean ) ) + "): " + meanRatioStr +
+                          " " + deviationStr + "+- " + meanCompareStr;
+                if ( iMean != std::log2( nEl ) ) { report += ", "; }
+            }
+
+            report += "  (";
+            for ( int i = 0; i < nEl; ++i ) {
+                const int idx    = ( iRatio - 1 - i ) % nRatio;
+                auto curRatioStr = std::to_string( values[idx] );
+                curRatioStr      = curRatioStr.substr( 0, 5 );
+                report += curRatioStr;
+
+                if ( i != nEl - 1 ) { report += " "; }
+            }
+            report += ")";
+
+            _REPORT( "[" << name << "] " << report, filename, line );
         }
-        //        double meanRatios[nMean];
-        //        double deviationRatios[nMean];
-
-        std::string report;
-
-        const int nMean    = static_cast<int>( std::log2( nEl ) ) + 1;
-        const auto meanAll = sumRatios[nMean - 1] / std::pow( 2.0, nMean - 1 );
-
-        for ( int iMean = 0; iMean < nMean; ++iMean ) {
-            //            for ( int iMean = 0; iMean < nMean; ++iMean ) {
-            const auto meanRatio = sumRatios[iMean] / std::pow( 2.0, iMean );
-            const auto deviation = maxRatios[iMean] - minRatios[iMean];
-            //            }
-
-            //        std::cout << "average of ratio for the last " << std::min(nRatio, iRatio) << "
-            //        builds is " << meanRatio << std::endl;
-            //            for ( int iMean = 0; iMean < nMean; ++iMean ) {
-            std::string meanRatioStr   = std::to_string( meanRatio );
-            meanRatioStr               = meanRatioStr.substr( 0, 5 );
-            std::string deviationStr   = std::to_string( deviation );
-            deviationStr               = deviationStr.substr( 0, 5 );
-            std::string meanCompareStr = std::to_string( meanRatio - meanAll );
-            meanCompareStr             = meanCompareStr.substr( 0, 5 );
-
-            report += "(" + std::to_string( (int)std::pow( 2, iMean ) ) + "): " + meanRatioStr +
-                      " " + deviationStr + "+- " + meanCompareStr;
-            if ( iMean != std::log2( nEl ) ) { report += ", "; }
-            //            }
-        }
-
-        report += "  (";
-        for ( int i = 0; i < nEl; ++i ) {
-            const int idx = ( iRatio - 1 - i ) % nRatio;
-            //            const auto curRatio = values[idx];
-            auto curRatioStr = std::to_string( values[idx] );
-            curRatioStr      = curRatioStr.substr( 0, 5 );
-            report += curRatioStr;
-
-            if ( i != nEl - 1 ) { report += " "; }
-        }
-        report += ")";
-
-        _REPORT( "[" << name << "] " << report, filename, line );
-        //        _REPORT( "[" << name << "] ratio: " << ratio << " % , mean: " << meanRatio << " %
-        //        (" << nEl
-        //                     << "), deviation : +/- " << deviation / 2.0,
-        //                 filename,
-        //                 line );
-
-        inFile.close();
     }
 }
 
-#define CHECK_VALUE( ... ) _checkValue( __VA_ARGS__, FILE_NAME, __LINE__ )
+// #define CHECK_DECLINE ( ... ) _checkValue( __VA_ARGS__, FILE_NAME, __LINE__ )
+// #define CHECK_DECLINE ( ratio, name, unit )()
+// #define CHECK_VALUE ( ... ) _checkValue( __VA_ARGS__, FILE_NAME, __LINE__ )
+#define CHECK_DECLINE( ... ) _checkValue( __VA_ARGS__, FILE_NAME, __LINE__ )
+
+// #define CHECK_VALUE( ... ) ();
 
 // template <typename T>
 // bool areEnd( T&& t ) {

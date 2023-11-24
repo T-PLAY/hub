@@ -39,7 +39,10 @@ class StreamInterface
         ASKER_CLIENT_GET_LIST_STREAMS,
         ASKER_CLIENT_GET_ACQ,
 
-        SERVER_DOWN,
+        CLIENT_SERVER_DOWN,
+        STREAMER_CLIENT_NEW_STREAM_VIEWER,
+        STREAMER_CLIENT_INITED,
+        STREAMER_CLIENT_STREAM_VIEWER_INITED,
 
 //        KILL,
 
@@ -69,6 +72,8 @@ class StreamInterface
 
         ASKER_CLOSED,
         ASKER_LIST_STREAMS,
+
+        STREAM_VIEWER_INITED,
 
         COUNT
     };

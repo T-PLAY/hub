@@ -64,7 +64,7 @@ void Server::run() {
     while ( !m_killed ) {
 
         assert( m_serverSock.isConnected() );
-        SERVER_MSG( "waiting new client" );
+        // SERVER_MSG( "waiting new client" );
         net::ClientSocket sock = m_serverSock.waitNewClient();
 
         ++m_nActiveClient;
@@ -329,7 +329,9 @@ std::string Server::getStatus() const {
         //        assert( m_streamName2streamer.find( streamerName ) != m_streamName2streamer.end()
         //        ); const auto & streamer = m_streamName2streamer.at(streamerName);
 
-        str += "'" + streamerName + "'" + streamer->ipv4 + ":" + std::to_string( streamer->port );
+        str += "'" + streamerName.substr( streamerName.size() - 12, 12 ) + "'";
+        if ( streamer->ipv4 != "127.0.0.1" ) { str += streamer->ipv4 + ":"; }
+        str += std::to_string( streamer->port );
         //        if ( !streamViewers.empty() ) {
 
         //        if ( m_streamName2streamViewers.find( streamerName ) !=
@@ -356,17 +358,30 @@ void Server::addStreamer( server::StreamerClient* streamer ) {
     assert( m_streamName2streamer.find( streamName ) == m_streamName2streamer.end() );
     m_streamName2streamer[streamName] = streamer;
 
-    SERVER_MSG( "prevent viewers there is a new streamer : '" << streamName << "'" );
-    m_mtxViewers.lock();
-    //        assert(streamer->getInputSensor() != nullptr);
-    for ( const auto& viewer : m_viewers ) {
-        //            viewer->notifyNewStreamer( streamName, streamer->getInputSensor()->getSpec()
-        //            );
-        viewer->notifyNewStreamer( streamName );
+    if ( !m_viewers.empty() ) {
+        SERVER_MSG( "prevent viewers there is a new streamer : '" << streamName << "'" );
+        m_mtxViewers.lock();
+        //        assert(streamer->getInputSensor() != nullptr);
+        for ( const auto& viewer : m_viewers ) {
+            //            viewer->notifyNewStreamer( streamName,
+            //            streamer->getInputSensor()->getSpec()
+            //            );
+            viewer->notifyNewStreamer( streamName );
+        }
+        m_mtxViewers.unlock();
     }
-    m_mtxViewers.unlock();
 
     streamer->printStatusMessage( "new streamer" );
+}
+
+void Server::newStreamViewer( server::StreamerClient* streamer ) {
+    const auto& streamName = streamer->streamName;
+
+   m_mtxPrint.lock();
+   std::cout << streamer->headerMsg() << "new stream viewer watching '" << streamName << "'"
+             << std::endl;
+   streamer->printStatusMessage( "new streamViewer" );
+   m_mtxPrint.unlock();
 }
 
 // void Server::newInputSensor( server::StreamerClient* streamer ) {
@@ -406,6 +421,7 @@ void Server::addStreamer( server::StreamerClient* streamer ) {
 //    streamViewer->printStatusMessage( "new streamViewer" );
 //    m_mtxPrint.unlock();
 //}
+
 
 void Server::addViewer( server::ViewerClient* viewer ) {
 

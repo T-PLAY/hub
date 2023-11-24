@@ -66,6 +66,7 @@ class SRC_API Server
     server::Client* initClient( io::InputOutputSocket&& sock, int iClient );
 
     void addStreamer( server::StreamerClient* streamer );
+    void newStreamViewer( server::StreamerClient* streamer );
     //    void newInputSensor(server::StreamerClient *streamer );
     //    void addStreamViewer( server::StreamViewerClient* streamViewer );
     void addViewer( server::ViewerClient* viewer );

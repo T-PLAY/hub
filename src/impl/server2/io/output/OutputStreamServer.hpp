@@ -42,11 +42,11 @@ class SRC_API OutputStreamServer : public Output, public io::StreamServer
     ///
     //    explicit OutputStreamServer( const std::string& streamName,
     //                           net::ClientSocket&& clientSocket = net::ClientSocket() );
-    OutputStreamServer( int streamPort);
+    OutputStreamServer( int streamPort );
 
     explicit OutputStreamServer( const std::string& streamName,
                                  int port                = s_defaultPort,
-                                 const std::string& ipv4 = s_defaultIpv4);
+                                 const std::string& ipv4 = s_defaultIpv4 );
     ///
     /// \brief OutputStreamServer
     /// \param outputStream
@@ -74,18 +74,19 @@ class SRC_API OutputStreamServer : public Output, public io::StreamServer
     void stop();
     //    std::unique_ptr<net::ClientSocket> m_serverSocket;
     std::unique_ptr<io::InputOutputSocket> m_clientSocket;
-//    io::InputOutputSocket m_serverSocket;
+    //    io::InputOutputSocket m_serverSocket;
     struct ServerDataThread {
         int m_streamPort = 0;
         std::vector<io::InputOutputSocket> m_clientSockets;
         std::mutex m_mtxClientSockets;
         std::vector<hub::Data_t> m_retainedData;
         //        std::atomic<bool> m_killed = false;
-        bool m_killed = false;
+        bool m_killed                     = false;
         std::atomic<bool> m_serverStarted = false;
     };
     std::unique_ptr<ServerDataThread> m_serverDataThread;
-    std::atomic<bool> m_streamConnected = false;
+    std::atomic<bool> m_streamConnected    = false;
+    std::atomic<bool> m_streamViewerInited = false;
 
     //    std::unique_ptr<std::vector<io::InputOutputSocket>> m_clientSockets;
     //    hub::Buffer<> m_buffer;
@@ -94,7 +95,7 @@ class SRC_API OutputStreamServer : public Output, public io::StreamServer
     std::unique_ptr<std::thread> m_serverThread;
     std::unique_ptr<std::thread> m_clientThread;
     bool m_shutdown = false;
-//    std::unique_ptr<std::thread> m_serverThread;
+    //    std::unique_ptr<std::thread> m_serverThread;
     //    std::unique_ptr<std::thread> m_threadWriting;
     bool m_moved = false;
 
@@ -118,7 +119,8 @@ class SRC_API OutputStreamServer : public Output, public io::StreamServer
 // void OutputStreamServer::write( const unsigned char* data, size_t len );
 
 inline void OutputStreamServer::close() {
-    std::cout << "[OutputStreamServer] close() started" << std::endl;
+    m_clientSocket->close();
+    // std::cout << "[OutputStreamServer] close() started" << std::endl;
     //    assert( m_clientSocket->isOpen() );
     //    if ( ! *m_serverClosed && ! *m_streamerClosed ) {
     //        m_clientSocket->write( io::StreamInterface::ClientMessage::STREAMER_CLIENT_CLOSED );
@@ -131,13 +133,14 @@ inline void OutputStreamServer::close() {
     //    }
     //    assert(iTry < 10);
 
-    std::cout << "[OutputStreamServer] closing connection ended" << std::endl;
-    m_clientSocket->close();
-    std::cout << "[OutputStreamServer] close() ended" << std::endl;
+    // std::cout << "[OutputStreamServer] closing connection ended" << std::endl;
+    // m_clientSocket->close();
+    // std::cout << "[OutputStreamServer] close() ended" << std::endl;
 }
 
 inline bool OutputStreamServer::isOpen() const {
-    return m_clientSocket->isOpen();
+    return true;
+    // return m_clientSocket->isOpen();
 }
 
 } // namespace output

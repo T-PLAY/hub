@@ -101,7 +101,7 @@ class StreamerClient : public Client
 
     bool m_serverDown = false;
 
-//    int m_nStreamViewer = 0;
+   int m_nStreamViewer = 0;
 
 //    std::unique_ptr<sensor::InputSensor> m_inputSensor;
 

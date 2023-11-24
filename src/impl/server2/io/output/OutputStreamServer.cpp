@@ -7,6 +7,8 @@
 
 #include "net/ServerSocket.hpp"
 
+// #define DEBUG_OUTPUT_STREAM
+
 namespace hub {
 namespace output {
 
@@ -17,23 +19,34 @@ OutputStreamServer::OutputStreamServer( int streamPort ) :
 }
 
 void OutputStreamServer::streamConnect() {
+#ifdef DEBUG_OUTPUT_STREAM
+    std::cout << "[OutputStream] stream connecting" << std::endl;
+#endif
+    assert( !m_streamConnected );
     m_clientSocket->write( ClientType::STREAMER );
 
     m_clientSocket->write( m_name );
 
-        io::StreamInterface::ServerMessage mess;
+    io::StreamInterface::ServerMessage mess;
     m_clientSocket->read( mess );
     if ( mess == io::StreamInterface::ServerMessage::FOUND ) {
         m_clientSocket->close();
         throw net::system::SocketSystem::exception(
-            ( std::string( "stream '" ) + m_name + "' is already attached to server" )
-                .c_str() );
+            ( std::string( "stream '" ) + m_name + "' is already attached to server" ).c_str() );
     }
     assert( mess == io::StreamInterface::ServerMessage::NOT_FOUND );
 
     m_clientSocket->write( m_serverDataThread->m_streamPort );
     m_clientSocket->read( m_serverDataThread->m_streamPort );
-    //                    serverConnected = true;
+
+    m_clientSocket->write( (int)m_serverDataThread->m_clientSockets.size() );
+
+    m_clientSocket->read( mess );
+    assert( mess == io::StreamInterface::ServerMessage::STREAMER_INITED );
+    m_streamConnected = true;
+#ifdef DEBUG_OUTPUT_STREAM
+    std::cout << "[OutputStream] stream connected" << std::endl;
+#endif
 }
 
 OutputStreamServer::OutputStreamServer( const std::string& streamName,
@@ -43,40 +56,57 @@ OutputStreamServer::OutputStreamServer( const std::string& streamName,
     m_clientSocket( std::make_unique<io::InputOutputSocket>( net::ClientSocket( ipv4, port ) ) ),
     m_serverDataThread( std::make_unique<ServerDataThread>() ) {
 
-    //    std::atomic<bool> serverConnected = false;
-    //    std::atomic<bool> streamNameAlreadyExist = false;
-    //    std::atomic<bool> streamConnected = false;
-
     streamConnect();
+    assert( m_streamConnected );
 
-    //    auto * streamConnected = m_st
     m_clientThread = std::make_unique<std::thread>( [this, streamName]() {
         io::StreamInterface::ServerMessage mess;
         while ( !m_shutdown ) {
             try {
-                if ( !m_clientSocket->isConnected() ) { m_clientSocket->connect(); }
+                if ( !m_clientSocket->isConnected() ) {
+#ifdef DEBUG_OUTPUT_STREAM
+                    std::cout << "[OutputStream] try connect to server " << *m_clientSocket
+                              << std::endl;
+#endif
+                    m_clientSocket->connect();
+                }
                 if ( !m_streamConnected ) {
+                    // std::cout << "[OutputStream] stream connect" << std::endl;
                     streamConnect();
                 }
                 m_clientSocket->read( mess );
 
                 if ( mess == io::StreamInterface::ServerMessage::SERVER_CLOSED ) {
-                    m_clientSocket->write( io::StreamInterface::ClientMessage::SERVER_DOWN );
-                    //                    serverConnected = false;
+#ifdef DEBUG_OUTPUT_STREAM
+                    std::cout << "[OutputStream] server closed" << std::endl;
+#endif
+                    m_clientSocket->write( io::StreamInterface::ClientMessage::CLIENT_SERVER_DOWN );
+                    m_clientSocket->close();
+                    m_streamConnected = false;
                     std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
                     continue;
                 }
-                else if ( mess == io::StreamInterface::ServerMessage::STREAMER_CLOSED ) { break; }
-                else if ( mess == io::StreamInterface::ServerMessage::STREAMER_INITED ) {
-                    m_streamConnected = true;
+                else if ( mess == io::StreamInterface::ServerMessage::STREAMER_CLOSED ) {
+#ifdef DEBUG_OUTPUT_STREAM
+                    std::cout << "[OutputStream] streamer closed" << std::endl;
+#endif
+                    m_streamConnected = false;
+                    break;
+                }
+                else if ( mess == io::StreamInterface::ServerMessage::STREAM_VIEWER_INITED ) {
+#ifdef DEBUG_OUTPUT_STREAM
+                    std::cout << "[OutputStream] stream viewer inited" << std::endl;
+#endif
+                    assert( !m_streamViewerInited );
+                    m_streamViewerInited = true;
                     continue;
                 }
                 else { assert( false ); }
             }
             catch ( net::system::SocketSystem::exception& ex ) {
-                //                if ( !serverConnected ) throw ex;
-                //                if (streamNameAlreadyExist) throw ex;
-                //                if (! streamConnected) throw;
+#ifdef DEBUG_OUTPUT_STREAM
+                std::cout << "[OutputStream] catch exception : " << ex.what() << std::endl;
+#endif
                 std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
             }
         }
@@ -137,8 +167,21 @@ void OutputStreamServer::serverProcess() {
                 streamViewerSock.write( m_serverDataThread->m_retainedData.data(),
                                         m_serverDataThread->m_retainedData.size() );
             }
+
+            if ( m_clientSocket->isConnected() ) {
+                m_clientSocket->write(
+                    io::StreamInterface::ClientMessage::STREAMER_CLIENT_NEW_STREAM_VIEWER );
+                m_clientSocket->write( (int)m_serverDataThread->m_clientSockets.size() + 1 );
+
+                m_streamViewerInited = false;
+                while ( !m_streamViewerInited ) {
+                    std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
+                };
+            }
+
             streamViewerSock.write(
-                io::StreamInterface::ClientMessage::STREAMER_CLIENT_INIT_SENSOR );
+                io::StreamInterface::ClientMessage::STREAMER_CLIENT_STREAM_VIEWER_INITED );
+
             m_serverDataThread->m_mtxClientSockets.lock();
             m_serverDataThread->m_clientSockets.push_back( std::move( streamViewerSock ) );
             m_serverDataThread->m_mtxClientSockets.unlock();
@@ -149,6 +192,10 @@ void OutputStreamServer::serverProcess() {
         }
         else { assert( false ); }
     }
+
+#ifdef DEBUG_OUTPUT_STREAM
+    std::cout << "[OutputStream] server down" << std::endl;
+#endif
 }
 
 void OutputStreamServer::startServer() {
