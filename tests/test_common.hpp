@@ -165,8 +165,11 @@ static void _checkValue( double value,
             std::string unit;
             double value2;
             while ( !inFile.eof() ) {
+                value2 = -1;
                 inFile >> hash >> value2 >> unit;
-                values.push_back( value2 );
+                if ( value2 != -1 ) {
+                    values.push_back( value2 );
+                }
             }
             inFile.close();
 
@@ -181,10 +184,10 @@ static void _checkValue( double value,
             }
             const double mean = sum / std::min( nRatio, nValue );
 
-            if ( nValue > 1 ) {
+            if ( nValue >= 4 ) {
                 const auto lastDeviation = maxValue - minValue;
                 assert( lastDeviation >= 0 );
-                const auto minRatio = minValue - lastDeviation * 0.1;
+                const auto minRatio = minValue - lastDeviation * 1.0;
                 // std::cout << "minValue = " << minValue << std::endl;
                 // std::cout << "maxValue = " << maxValue << std::endl;
                 // std::cout << "minRatio = " << minRatio << std::endl;
