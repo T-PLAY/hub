@@ -23,13 +23,17 @@ class Lambda
     std::vector<int> ds;
     std::string e;
 
-    template <class Serial>
-    void serialize( Serial& serial ) {
-        serial( a, b, c, ds, e );
-    }
+    // static constexpr auto serialize( auto& archive, auto& self ) {
+    //     return archive( self.a, self.b, self.c, self.ds, self.e );
+    // }
+
+    // template <class Serial>
+    // void serialize( Serial& serial ) {
+    //     serial( a, b, c, ds, e );
+    // }
 
     friend std::ostream& operator<<( std::ostream& os, const Lambda& lambda ) {
-//        os << lambda.a << " " << lambda.b << " " << lambda.c << " " << lambda.ds << " " << lambda.e;
+       os << lambda.a << " " << lambda.b << " " << lambda.c << " " << lambda.ds << " " << lambda.e;
 
 //        for ( const auto& d : lambda.ds ) {
 //            os << d << " ";

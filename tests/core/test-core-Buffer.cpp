@@ -38,7 +38,7 @@ TEST_CASE( "Buffer test" ) {
     for ( int i = 0; i < nIteration; ++i ) {
         myDynamicData.setData( rawSpan );
     }
-    std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    // std::this_thread::sleep_for(std::chrono::milliseconds(1));
     auto dynamicEnd = std::chrono::high_resolution_clock::now();
     auto dynamicDuration =
         std::chrono::duration_cast<std::chrono::microseconds>( dynamicEnd - dynamicStart ).count();

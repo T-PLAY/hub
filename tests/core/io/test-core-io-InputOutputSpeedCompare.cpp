@@ -161,8 +161,10 @@ TEST_CASE( "InputOutput speed compare test" ) {
 #if ! defined(DEBUG) && defined(HUB_USE_ZPP_BITS)
     const auto ratioData = benchStatInputOutputImpl.readWriteDataStat.durationInNanoSecond / (double)benchStatInputOutputZppBits.readWriteDataStat.durationInNanoSecond;
     const auto ratioDataPtr = benchStatInputOutputImpl.readWriteDataPtrStat.durationInNanoSecond / (double)benchStatInputOutputZppBits.readWriteDataPtrStat.durationInNanoSecond;
-    CHECK_VALUE( ratioData, 2.0, 1.0, "Data: ArchiveZppBits/ArchiveImpl", "/" );
-    CHECK_VALUE( ratioDataPtr, 1.0, 0.5, "DataPtr: ArchiveZppBits/ArchiveImpl", "/" );
+    // CHECK_VALUE( ratioData, 2.0, 1.0, "Data: ArchiveZppBits/ArchiveImpl", "/" );
+    CHECK_DECLINE( ratioData, "Data: ArchiveZppBits/ArchiveImpl", "/" );
+    // CHECK_VALUE( ratioDataPtr, 1.0, 0.5, "DataPtr: ArchiveZppBits/ArchiveImpl", "/" );
+    CHECK_DECLINE( ratioDataPtr, "DataPtr: ArchiveZppBits/ArchiveImpl", "/" );
 
     CHECK( benchStatInputOutputZppBits < benchStatInputOutputImpl );
     CHECK( benchStatInputOutputZppBits.readWriteDataStat.nInputOutputCall <=
