@@ -14,7 +14,7 @@
 //#include <OpenImageIO/imagebuf.h>
 //#include <OpenImageIO/imageio.h>
 
-TEST_CASE( "Resolution test" ) {
+TEST_CASE( "Matrix compat OpenCV test" ) {
 
     constexpr auto width  = 20;
     constexpr auto height = 10;

@@ -76,6 +76,9 @@ class Lambda
     //    std::cout << any.type().name() << std::endl;
     std::cout << any << std::endl;
 
+    static_assert(hub::Serializer::Readable_v<hub::Any>);
+    static_assert(hub::Serializer::Writable_v<hub::Any>);
+    static_assert(! hub::Serializer::Serializable<hub::Any>());
     // void
     {
 #ifdef HUB_DEBUG_OUTPUT

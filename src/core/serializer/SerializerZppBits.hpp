@@ -52,7 +52,7 @@ class SerializerZppBits : public SerializerI
 {
   public:
     template <typename T>
-    using Readable_t = decltype( std::declval<T>().read( std::declval<SerializerZppBits&>() ) );
+    using Readable_t = decltype( std::declval<T&>().read( std::declval<SerializerZppBits&>() ) );
     template <typename T, typename = std::void_t<>>
     struct Readable : std::false_type {};
     template <typename T>
@@ -63,7 +63,7 @@ class SerializerZppBits : public SerializerI
     //////////////////////////
 
     template <typename T>
-    using Writable_t = decltype( std::declval<T>().write( std::declval<SerializerZppBits&>() ) );
+    using Writable_t = decltype( std::declval<T&>().write( std::declval<SerializerZppBits&>() ) );
     template <typename T, typename = std::void_t<>>
     struct Writable : std::false_type {};
     template <typename T>
@@ -109,7 +109,7 @@ class SerializerZppBits : public SerializerI
         m_out.reset( 0 );
         //        m_in.reset(0);
         assert( m_out.position() == 0 );
-        //        m_out( ts... ).or_throw();
+//                m_out( ts... ).or_throw();
         writeAll( ts... );
 
         const Size_t size = m_out.position();

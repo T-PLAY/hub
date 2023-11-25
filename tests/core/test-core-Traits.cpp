@@ -23,7 +23,7 @@ class Lambda
     }
 };
 
-TEST_CASE( "Matrix test" ) {
+TEST_CASE( "Traits test" ) {
 
     //    using namespace hub;
 
