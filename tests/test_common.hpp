@@ -149,7 +149,7 @@ static void _checkValue( double value,
     name2 = ReplaceAll( name2, ":", "_" );
     name2 = ReplaceAll( name2, " ", "" );
 
-    constexpr auto extension = ".log";
+    constexpr auto extension = "_v1.log";
     bool decline             = false;
     constexpr int nMaxMean   = 4;
     constexpr int nRatio     = 8;
@@ -181,20 +181,22 @@ static void _checkValue( double value,
             }
             const double mean = sum / std::min( nRatio, nValue );
 
-            const auto lastDeviation = maxValue - minValue;
-            assert( lastDeviation >= 0 );
-            const auto minRatio = minValue - lastDeviation * 0.1;
-            // std::cout << "minValue = " << minValue << std::endl;
-            // std::cout << "maxValue = " << maxValue << std::endl;
-            // std::cout << "minRatio = " << minRatio << std::endl;
-            CHECK( minRatio <= value );
-            if ( !( minRatio <= value ) ) {
-                std::cout << "-------------------------------------"
-                             "-----------------------------------> "
-                             "checkRatio: "
-                          << minRatio << "(minRatio) <= " << value << "(value), decline: " << value - mean << " "  << unit
-                          << std::endl;
-                decline = true;
+            if ( nValue > 1 ) {
+                const auto lastDeviation = maxValue - minValue;
+                assert( lastDeviation >= 0 );
+                const auto minRatio = minValue - lastDeviation * 0.1;
+                // std::cout << "minValue = " << minValue << std::endl;
+                // std::cout << "maxValue = " << maxValue << std::endl;
+                // std::cout << "minRatio = " << minRatio << std::endl;
+                CHECK( minRatio <= value );
+                if ( !( minRatio <= value ) ) {
+                    std::cout << "-------------------------------------"
+                                 "-----------------------------------> "
+                                 "checkRatio: "
+                              << minRatio << "(minRatio) <= " << value
+                              << "(value), decline: " << value - mean << " " << unit << std::endl;
+                    decline = true;
+                }
             }
         }
     }

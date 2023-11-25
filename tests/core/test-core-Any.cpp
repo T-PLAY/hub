@@ -23,9 +23,9 @@ class Lambda
     std::vector<int> ds;
     std::string e;
 
-    // static constexpr auto serialize( auto& archive, auto& self ) {
-    //     return archive( self.a, self.b, self.c, self.ds, self.e );
-    // }
+    static constexpr auto serialize( auto& archive, auto& self ) {
+        return archive( self.a, self.b, self.c, self.ds, self.e );
+    }
 
     // template <class Serial>
     // void serialize( Serial& serial ) {
