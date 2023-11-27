@@ -31,10 +31,14 @@ using InputStream = impl2::input::InputStreamServer;
 #endif
 
 //#if defined(HUB_BUILD_SERVER) || defined(HUB_BUILD_MQTT)
+
+#ifdef HUB_BUILD_SERVER
 static_assert( std::is_base_of<Input, InputStream>::value,
                "Input is base class of InputStream" );
 static_assert( std::is_base_of<io::StreamInterface, InputStream>::value,
                "Stream is base class of InputStream" );
+#endif
+
 //#endif
 
 } // namespace input
