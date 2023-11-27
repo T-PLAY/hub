@@ -8,14 +8,14 @@
 
 #include "Client.hpp"
 #include "sensor/InputSensor.hpp"
-//#include "net/ClientSocket.hpp"
+// #include "net/ClientSocket.hpp"
 #include "io/InputOutputSocket.hpp"
 
 namespace hub {
 
-class Server;
-
 namespace server {
+namespace impl {
+class ServerImpl;
 
 class StreamViewerClient;
 
@@ -32,9 +32,9 @@ class StreamerClient : public Client
     /// \param sock
     /// \param streamName
     ///
-    StreamerClient( Server* server,
+    StreamerClient( ServerImpl* server,
                     int iClient,
-//                    net::ClientSocket&& sock,
+                    //                    net::ClientSocket&& sock,
                     io::InputOutputSocket&& sock,
                     std::string streamName );
 
@@ -50,7 +50,7 @@ class StreamerClient : public Client
     /// \brief getInputSensor
     /// \return
     ///
-    const sensor::InputSensor *getInputSensor() const;
+    const sensor::InputSensor* getInputSensor() const;
 
     ///
     /// \brief getLastAcq
@@ -62,7 +62,7 @@ class StreamerClient : public Client
     /// \brief end
     /// \param message
     ///
-    void end( io::StreamInterface::ServerMessage message ) override;
+    void end( io::StreamBase::ServerMessage message ) override;
 
     ///
     /// \brief getStreamName
@@ -95,5 +95,6 @@ class StreamerClient : public Client
     std::set<sensor::Acquisition> m_packedAcqs;
 };
 
+} // namespace impl
 } // namespace server
 } // namespace hub

@@ -201,11 +201,14 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
 
 # set(HUB_SOURCE_DIRS "core") # allowed
 #set(HUB_SOURCE_DIRS "net") # allowed
+# set(HUB_SOURCE_DIRS "core" "net" "io")
+set(HUB_SOURCE_DIRS "core" "net" "io" "server")
 #set(HUB_SOURCE_DIRS "core" "sensor")
 #set(HUB_SOURCE_DIRS "core" "net" "sensor")
 # set(HUB_SOURCE_DIRS "core" "net" "sensor" "io" "impl")
 # set(HUB_SOURCE_DIRS "core" "net" "io" "impl/server2")
-set(HUB_SOURCE_DIRS "core" "net" "io")
+# set(HUB_SOURCE_DIRS "core" "net" "io")
+# set(HUB_SOURCE_DIRS "core" "io" "server")
 # set(HUB_SOURCE_DIRS "core" "net" "io" "server")
 #set(HUB_SOURCE_DIRS "sensor")
 #set(HUB_SOURCE_DIRS "io")

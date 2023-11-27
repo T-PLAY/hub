@@ -8,7 +8,7 @@ project(bin LANGUAGES CXX)
 #if (TARGET ${PROJECT_NAME}_static)
 #if (TARGET hub_static)
 # if (BUILD_IMPL AND BUILD_SENSOR)
-if (HUB_BUILD_IMPL_SERVER2)
+if (HUB_BUILD_SERVER)
    # message(FATAL_ERROR "ouou")
 
     #set(LINK_LIBRARIES hub PahoMqttCpp::paho-mqttpp3)

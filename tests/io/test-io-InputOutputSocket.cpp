@@ -6,8 +6,8 @@
 #include "test_io_common.hpp"
 
 // #include <core/Utils.hpp>
-// #include <io/InputOutputSocket.hpp>
-// #include <net/ServerSocket.hpp>
+#include <io/InputOutputSocket.hpp>
+#include <net/ServerSocket.hpp>
 
 TEST_CASE( "InputOutputSocket test" ) {
     const auto hostname = hub::utils::getHostname();

@@ -5,12 +5,13 @@
 #include <thread>
 
 #include "Client.hpp"
-//#include "net/ClientSocket.hpp"
+// #include "net/ClientSocket.hpp"
 #include "io/InputOutputSocket.hpp"
 #include "sensor/SensorSpec.hpp"
 
 namespace hub {
 namespace server {
+namespace impl {
 
 class StreamerClient;
 
@@ -20,7 +21,7 @@ class StreamerClient;
 class ViewerClient : public Client
 {
   private:
-    ViewerClient( Server* server, int iClient, net::ClientSocket&& sock );
+    ViewerClient( ServerImpl* server, int iClient, net::ClientSocket&& sock );
     ~ViewerClient();
 
     std::string headerMsg() const override;
@@ -28,7 +29,7 @@ class ViewerClient : public Client
     void notifyNewStreamer( const std::string& streamName, const sensor::SensorSpec& sensorSpec );
     void notifyDelStreamer( const std::string& streamName, const sensor::SensorSpec& sensorSpec );
 
-    void end( io::StreamInterface::ServerMessage message ) override;
+    void end( io::StreamBase::ServerMessage message ) override;
     void notifyProperty( const std::string& streamName,
                          const std::string& objectName,
                          int property,
@@ -37,13 +38,14 @@ class ViewerClient : public Client
   private:
     std::thread m_thread;
 
-//    net::ClientSocket m_socket;
+    //    net::ClientSocket m_socket;
     io::InputOutputSocket m_socket;
 
     bool m_viewerClosed = false;
 
-    friend class hub::Server;
+    friend class ServerImpl;
 };
 
+} // namespace impl
 } // namespace server
 } // namespace hub

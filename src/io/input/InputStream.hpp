@@ -5,37 +5,39 @@
 //#include "InputStream.hpp"
 
 #ifdef HUB_BUILD_SERVER
-#    include "impl/server/io/input/InputStreamServer.hpp"
-#endif
+// #    include "impl/server/io/input/InputStreamServer.hpp"
+#include "io/input/InputStreamServer.hpp"
+#include "io/input/InputStreamServer2.hpp"
+// #endif
 
-#ifdef HUB_BUILD_MQTT
-#    include "InputStreamMqtt.hpp"
-#endif
+// #ifdef HUB_BUILD_MQTT
+// #    include "InputStreamMqtt.hpp"
+// #endif
 
-#ifdef HUB_BUILD_IMPL_SERVER2
-#include "impl/server2/io/input/InputStreamServer.hpp"
+// #ifdef HUB_BUILD_IMPL_SERVER2
+// #include "impl/server2/io/input/InputStreamServer.hpp"
 #endif
 
 
 namespace hub {
 namespace input {
 
-#if defined(HUB_BUILD_SERVER)
-using InputStream = InputStreamServer;
+#ifdef HUB_BUILD_SERVER
 
-#elif defined(HUB_BUILD_MQTT)
-using InputStream = InputStreamMqtt;
+// using InputStream = InputStreamServer;
+using InputStream = InputStreamServer2;
 
-#elif defined(HUB_BUILD_IMPL_SERVER2)
-using InputStream = impl2::input::InputStreamServer;
-#endif
+// #elif defined(HUB_BUILD_MQTT)
+// using InputStream = InputStreamMqtt;
+
+// #elif defined(HUB_BUILD_IMPL_SERVER2)
+// using InputStream = impl2::input::InputStreamServer;
 
 //#if defined(HUB_BUILD_SERVER) || defined(HUB_BUILD_MQTT)
 
-#ifdef HUB_BUILD_SERVER
 static_assert( std::is_base_of<Input, InputStream>::value,
                "Input is base class of InputStream" );
-static_assert( std::is_base_of<io::StreamInterface, InputStream>::value,
+static_assert( std::is_base_of<io::StreamBase, InputStream>::value,
                "Stream is base class of InputStream" );
 #endif
 

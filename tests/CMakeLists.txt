@@ -109,6 +109,15 @@ else()
 endif()
 #message(STATUS "#################### ${test_srcs}")
 
+if (NOT HUB_BUILD_SERVER)
+   list(FILTER test_srcs EXCLUDE REGEX "test-io-inputOutputStream.*\\.cpp$")
+   list(FILTER test_srcs EXCLUDE REGEX "test-io-InputOutputStream.cpp$")
+#    list(FILTER test_srcs EXCLUDE REGEX ".*-server-.*\\.cpp$")
+
+#    file(GLOB server_srcs server/*.cpp)
+#    list(REMOVE_ITEM test_srcs ${server_srcs})
+endif()
+
 #if (NOT HUB_BUILD_SERVER)
 #    list(FILTER test_srcs EXCLUDE REGEX ".*Server\\.cpp$")
 #    list(FILTER test_srcs EXCLUDE REGEX ".*-server-.*\\.cpp$")
@@ -211,7 +220,7 @@ endforeach()
 # if (HUB_BUILD_SERVER AND "impl/server2" IN_LIST HUB_SOURCE_DIRS)
 # if (HUB_BUILD_SERVER AND "impl/server2" IN_LIST HUB_SOURCE_DIRS)
 # if (HUB_BUILD_IMPL_SERVER2)
-if (HUB_SERVER_PORT)
+if (HUB_BUILD_SERVER AND HUB_SERVER_PORT)
 
     #set(HUB_SOURCE_DIRS "core")
     # message(FATAL_ERROR "ouou")
@@ -236,6 +245,7 @@ else()
     add_custom_target(
         tests # WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
         COMMAND ctest -C ${CMAKE_BUILD_TYPE} -V
+        USES_TERMINAL
         COMMENT "Running tests")
 endif()
 custom_target_added(tests)

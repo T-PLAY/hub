@@ -8,7 +8,7 @@
 
 #include <io/input/InputStream.hpp>
 #include <io/output/OutputStream.hpp>
-#include <io/Server.hpp>
+#include <server/Server.hpp>
 
 TEST_CASE( "InputStream server deco reco test" ) {
     // const auto hostname = hub::utils::getHostname();

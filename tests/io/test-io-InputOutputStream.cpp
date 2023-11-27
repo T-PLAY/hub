@@ -15,6 +15,8 @@
 // #include <InputSensor.hpp>
 // #include <OutputSensor.hpp>
 // #include <thread>
+#include <net/ClientSocket.hpp>
+#include <net/ServerSocket.hpp>
 
 TEST_CASE( "InputOutputStream test" ) {
     // const auto hostname = hub::utils::getHostname();

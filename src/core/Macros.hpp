@@ -440,6 +440,10 @@ static std::string pretty_bytes( hub::Size_t bytes ) {
 /////////////////////////////////////////////// STATIC WARNING
 /////////////////////////////////////////////////
 
+// #ifndef HUB_SERVICE_PORT
+// #define HUB_SERVICE_PORT 4042
+// #endif
+
 // #if defined(__GNUC__)
 // #define DEPRECATE(foo, msg) foo __attribute__((deprecated(msg)))
 // #elif defined(_MSC_VER)

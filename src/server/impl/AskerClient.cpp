@@ -1,11 +1,12 @@
 #include "AskerClient.hpp"
 
-#include "Server.hpp"
+#include "ServerImpl.hpp"
 
 namespace hub {
 namespace server {
+namespace impl {
 
-AskerClient::AskerClient( Server* server, int iClient, net::ClientSocket&& sock ) :
+AskerClient::AskerClient( ServerImpl* server, int iClient, net::ClientSocket&& sock ) :
     Client( server, iClient ), m_sock( std::move( sock ) ) {
 
     m_thread = std::thread( [this]() {
@@ -14,26 +15,26 @@ AskerClient::AskerClient( Server* server, int iClient, net::ClientSocket&& sock 
             bool closeConnection = false;
             while ( !closeConnection ) {
 
-                io::StreamInterface::ClientMessage message;
+                io::StreamBase::ClientMessage message;
                 m_sock.read( message );
 
                 switch ( message ) {
-                case io::StreamInterface::ClientMessage::ASKER_CLIENT_CLOSED:
+                case io::StreamBase::ClientMessage::ASKER_CLIENT_CLOSED:
                     std::cout << headerMsg() << "closing connection" << std::endl;
                     closeConnection = true;
                     break;
 
-                case io::StreamInterface::ClientMessage::ASKER_CLIENT_GET_LIST_STREAMS: {
+                case io::StreamBase::ClientMessage::ASKER_CLIENT_GET_LIST_STREAMS: {
                     std::cout << headerMsg() << "listing sensors" << std::endl;
 
                     // todo server
-//                    assert( m_server != nullptr );
-//                    const auto& listStreams = m_server->listStreams();
-//                    m_sock.write( listStreams );
+                    //                    assert( m_server != nullptr );
+                    //                    const auto& listStreams = m_server->listStreams();
+                    //                    m_sock.write( listStreams );
 
                 } break;
 
-                case io::StreamInterface::ClientMessage::ASKER_CLIENT_GET_ACQ: {
+                case io::StreamBase::ClientMessage::ASKER_CLIENT_GET_ACQ: {
                     std::cout << headerMsg() << "get sensor acquisition" << std::endl;
                     std::string streamName;
                     m_sock.read( streamName );
@@ -41,21 +42,20 @@ AskerClient::AskerClient( Server* server, int iClient, net::ClientSocket&& sock 
                     assert( m_server != nullptr );
                     const auto& streamers = m_server->getStreamers();
                     if ( streamers.find( streamName ) != streamers.end() ) {
-                        m_sock.write( io::StreamInterface::ServerMessage::FOUND );
+                        m_sock.write( io::StreamBase::ServerMessage::FOUND );
 
-                        const auto * inputSensor = m_server->getInputSensor(streamName);
-                        assert(inputSensor != nullptr);
+                        const auto* inputSensor = m_server->getInputSensor( streamName );
+                        assert( inputSensor != nullptr );
                         const auto& sensorSpec = inputSensor->getSpec();
-//                        const auto& sensorSpec = m_server->getSensorSpec( streamName );
+                        //                        const auto& sensorSpec = m_server->getSensorSpec(
+                        //                        streamName );
                         m_sock.write( sensorSpec );
 
                         assert( m_server != nullptr );
                         const sensor::Acquisition& acq = m_server->getAcquisition( streamName );
                         m_sock.write( acq );
                     }
-                    else {
-                        m_sock.write( io::StreamInterface::ServerMessage::NOT_FOUND );
-                    }
+                    else { m_sock.write( io::StreamBase::ServerMessage::NOT_FOUND ); }
 
                 } break;
 
@@ -93,9 +93,10 @@ std::string AskerClient::headerMsg() const {
     return Client::headerMsg() + "[Asker] ";
 }
 
-void AskerClient::end( io::StreamInterface::ServerMessage message ) {
+void AskerClient::end( io::StreamBase::ServerMessage message ) {
     m_sock.close();
 }
 
+} // namespace impl
 } // namespace server
 } // namespace hub

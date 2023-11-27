@@ -1,16 +1,17 @@
 
 #include <iomanip>
 
-#include "Server.hpp"
+#include "ServerImpl.hpp"
 #include "StreamViewerClient.hpp"
 
 namespace hub {
 namespace server {
+namespace impl {
 
 class OutputStreamClient : public Output
 {
   public:
-//    explicit OutputStreamClient( net::ClientSocket&& clientSocket ) :
+    //    explicit OutputStreamClient( net::ClientSocket&& clientSocket ) :
     explicit OutputStreamClient( io::InputOutputSocket&& clientSocket ) :
         m_clientSocket( std::move( clientSocket ) ) {}
 
@@ -23,9 +24,10 @@ class OutputStreamClient : public Output
     void write( const unsigned char* data, size_t len ) override;
     void close() override;
     bool isOpen() const override;
+    void setRetain( bool retained ) override;
 
   private:
-//    net::ClientSocket m_clientSocket;
+    //    net::ClientSocket m_clientSocket;
     io::InputOutputSocket m_clientSocket;
     bool m_moved = false;
 
@@ -44,7 +46,7 @@ OutputStreamClient::~OutputStreamClient() {
 }
 
 void OutputStreamClient::write( const sensor::Acquisition& acq ) {
-    Output::write( io::StreamInterface::ServerMessage::STREAM_VIEWER_NEW_ACQ );
+    Output::write( io::StreamBase::ServerMessage::STREAM_VIEWER_NEW_ACQ );
     Output::write( acq );
 }
 
@@ -54,7 +56,7 @@ void OutputStreamClient::write( const unsigned char* data, size_t len ) {
 
 void OutputStreamClient::close() {
     assert( isOpen() );
-    m_clientSocket.write( io::StreamInterface::ClientMessage::STREAM_VIEWER_CLIENT_CLOSED );
+    m_clientSocket.write( io::StreamBase::ClientMessage::STREAM_VIEWER_CLIENT_CLOSED );
     m_clientSocket.close();
 }
 
@@ -62,13 +64,16 @@ bool OutputStreamClient::isOpen() const {
     return m_clientSocket.isOpen();
 }
 
+void OutputStreamClient::setRetain( bool retained ) {}
+
 ///////////////////////////////////////////////// StreamViewerClient /////////////////////
 
-StreamViewerClient::StreamViewerClient( Server* server,
-                                        int iClient,
-//                                        net::ClientSocket&& sock,
-                                        io::InputOutputSocket&& sock,
-                                        std::string streamName ) :
+StreamViewerClient::StreamViewerClient(
+    ServerImpl* server,
+    int iClient,
+    //                                        net::ClientSocket&& sock,
+    io::InputOutputSocket&& sock,
+    std::string streamName ) :
     Client( server, iClient ), m_streamName( std::move( streamName ) ) {
 
     //        try {
@@ -84,7 +89,7 @@ StreamViewerClient::StreamViewerClient( Server* server,
     //            assert(iTry < 10);
 
     //            if ( m_ending ) {
-    //                sock.write( io::StreamInterface::ServerMessage::STREAM_VIEWER_CLOSED );
+    //                sock.write( io::StreamBase::ServerMessage::STREAM_VIEWER_CLOSED );
     //                sock.close();
     //                throw net::Socket::exception( "input stream closed" );
     //                //                std::thread( [this]() { delete this; } ).detach();
@@ -94,25 +99,25 @@ StreamViewerClient::StreamViewerClient( Server* server,
     const auto& inputSensor = m_server->getInputSensor( m_streamName );
     //            const auto& sensorSpec = m_server->getSensorSpec( m_streamName );
     const auto& sensorSpec = inputSensor->getSpec();
-    m_outputSensor =
-        std::make_unique<sensor::OutputSensor>( sensorSpec, OutputStreamClient( std::move( sock ) ) );
+    m_outputSensor         = std::make_unique<sensor::OutputSensor>(
+        sensorSpec, OutputStreamClient( std::move( sock ) ) );
 
     m_server->addStreamViewer( this );
 
-//    m_thread = new std::thread( [this, sock = std::move( sock )]() mutable {
+    //    m_thread = new std::thread( [this, sock = std::move( sock )]() mutable {
     m_thread = new std::thread( [this]() {
         try {
             OutputStreamClient& outputStream =
                 dynamic_cast<OutputStreamClient&>( m_outputSensor->getOutput() );
 
-            io::StreamInterface::ClientMessage message;
+            io::StreamBase::ClientMessage message;
             // wait for client connection closed
             outputStream.m_clientSocket.read( message );
-            assert( message == io::StreamInterface::ClientMessage::STREAM_VIEWER_CLIENT_CLOSED );
+            assert( message == io::StreamBase::ClientMessage::STREAM_VIEWER_CLIENT_CLOSED );
 
             std::cout << headerMsg() << "input stream closed by client " << std::endl;
         }
-//        catch ( net::Socket::exception& ex ) {
+        //        catch ( net::Socket::exception& ex ) {
         catch ( net::system::SocketSystem::exception& ex ) {
 
             std::cout << headerMsg() << "catch exception : " << ex.what() << std::endl;
@@ -143,24 +148,25 @@ std::string StreamViewerClient::headerMsg() const {
 }
 
 void StreamViewerClient::update( const sensor::Acquisition& acq ) {
-    assert(m_outputSensor != nullptr);
-//    if ( m_outputSensor != nullptr )
+    assert( m_outputSensor != nullptr );
+    //    if ( m_outputSensor != nullptr )
     *m_outputSensor << acq;
 }
 
-void StreamViewerClient::end( io::StreamInterface::ServerMessage message ) {
+void StreamViewerClient::end( io::StreamBase::ServerMessage message ) {
 
     m_ending = true;
 
     //    if ( m_outputSensor != nullptr ) {
-//    if ( m_outputSensor != nullptr ) {
-        assert( m_outputSensor != nullptr );
-        auto& output = m_outputSensor->getOutput();
-        //    assert( output.isOpen() );
-        if ( output.isOpen() ) output.write( message );
-//    }
+    //    if ( m_outputSensor != nullptr ) {
+    assert( m_outputSensor != nullptr );
+    auto& output = m_outputSensor->getOutput();
+    //    assert( output.isOpen() );
+    if ( output.isOpen() ) output.write( message );
+    //    }
     //    }
 }
 
+} // namespace impl
 } // namespace server
 } // namespace hub
