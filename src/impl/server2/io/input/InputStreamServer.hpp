@@ -98,7 +98,7 @@ class SRC_API InputStreamServer : public Input, public io::StreamServer
 
   private:
     //    net::ClientSocket m_serverSocket;
-    std::unique_ptr<io::InputOutputSocket> m_clientSocket;
+    std::unique_ptr<io::InputOutputSocket> m_serverSocket;
     //    bool m_streamViewerClientClosed = false;
     //    bool m_streamerClosed           = false;
     std::unique_ptr<io::InputOutputSocket> m_streamSocket;
@@ -119,11 +119,11 @@ class SRC_API InputStreamServer : public Input, public io::StreamServer
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 inline bool InputStreamServer::isOpen() const {
-    return m_clientSocket->isOpen();
+    return m_serverSocket->isOpen();
 }
 
 inline void InputStreamServer::read( unsigned char* data, size_t len ) {
-    //    m_clientSocket.read( data, len );
+    //    m_serverSocket.read( data, len );
     assert( m_streamSocket != nullptr );
     m_streamSocket->read( data, len );
 }
@@ -133,7 +133,7 @@ inline void InputStreamServer::close() {
 
     // inputSensor closing, prevent server this stream is done
     //    if ( !m_streamerClosed && !m_streamViewerClientClosed ) {
-    //        m_clientSocket.write( io::StreamInterface::ClientMessage::STREAM_VIEWER_CLIENT_CLOSED
+    //        m_serverSocket.write( io::StreamInterface::ClientMessage::STREAM_VIEWER_CLIENT_CLOSED
     //        );
     //    }
 
@@ -149,10 +149,10 @@ inline void InputStreamServer::close() {
     //    else {
 
     //        io::StreamInterface::ServerMessage message;
-    //        m_clientSocket.read( message );
+    //        m_serverSocket.read( message );
     //        while ( message == io::StreamInterface::ServerMessage::STREAM_VIEWER_NEW_ACQ ) {
     //            // todo server
-    ////            auto acq = m_clientSocket.get<sensor::Acquisition>();
+    ////            auto acq = m_serverSocket.get<sensor::Acquisition>();
     //            m_clientSocket.read( message );
     //        }
     ////        assert( message == io::StreamInterface::ServerMessage::STREAM_VIEWER_CLOSED );
@@ -161,13 +161,13 @@ inline void InputStreamServer::close() {
     ////        std::cout << "[InputStreamServer] stream viewer client closed" << std::endl;
     //    }
 
-    if ( m_clientSocket->isOpen() ) m_clientSocket->close();
+    if ( m_serverSocket->isOpen() ) m_serverSocket->close();
 
     std::cout << "[InputStreamServer] close() ended" << std::endl;
 }
 
 inline bool InputStreamServer::isEnd() const {
-    return m_clientSocket->isEnd();
+    return m_serverSocket->isEnd();
 }
 
 } // namespace input

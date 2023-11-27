@@ -20,11 +20,12 @@
 // #include "Macros.hpp"
 // #include "Version.hpp"
 #include <impl/server2/Server.hpp>
-// #include <impl/server2/io/input/InputStreamServer.hpp>
+#include <impl/server2/io/StreamServer.hpp>
 
 #ifdef HUB_SERVER_PORT
+// #ifdef HUB_TEST_ALL
 #    define INIT_SERVER const auto SERVER_PORT = HUB_SERVER_PORT;
-
+// #    define INIT_SERVER const auto SERVER_PORT = hub::io::StreamServer::s_defaultPort;
 #else
 #    define INIT_SERVER                           \
         const auto SERVER_PORT = GET_RANDOM_PORT; \

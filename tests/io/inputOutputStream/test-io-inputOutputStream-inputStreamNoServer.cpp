@@ -7,7 +7,7 @@
 
 #include <io/input/InputStream.hpp>
 
-TEST_CASE( "InputOutputStream test" ) {
+TEST_CASE( "InputStream no server test" ) {
     const auto port = GET_RANDOM_PORT;
 
     {

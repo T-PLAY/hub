@@ -6,32 +6,69 @@
 #include "test_common.hpp"
 #include "test_io_common.hpp"
 
-#include <core/Utils.hpp>
+// #include <core/Utils.hpp>
 #include <io/input/InputStream.hpp>
 #include <io/output/OutputStream.hpp>
 // #include <server/Server.hpp>
-#include <impl/server2/Server.hpp>
-#include <impl/server2/io/input/InputStreamServer.hpp>
+// #include <impl/server2/Server.hpp>
+// #include <impl/server2/io/input/InputStreamServer.hpp>
 // #include <InputSensor.hpp>
 // #include <OutputSensor.hpp>
-#include <thread>
+// #include <thread>
 
 TEST_CASE( "InputOutputStream test" ) {
-    const auto hostname = hub::utils::getHostname();
-    const auto port     = GET_RANDOM_PORT;
+    // const auto hostname = hub::utils::getHostname();
+    // const auto port     = GET_RANDOM_PORT;
 
+    // double durationInMillisecondSocket;
+    double gigaBytePerSecondSocket;
+
+    // raw socket speed reference
     {
-        hub::Server server( port );
-        server.asyncRun();
+        const auto port = GET_RANDOM_PORT;
 
-        hub::output::OutputStream outputStream( "streamName",  port );
+        const std::string ipv4 = "127.0.0.1";
 
-        hub::input::InputStream inputStream( "streamName", port );
+        hub::net::ServerSocket serverSocket( port );
+        hub::net::ClientSocket clientSocket( ipv4, port );
+        assert( clientSocket.isConnected() );
+        std::cout << "clientSocket: " << clientSocket << std::endl;
+        auto clientServerSocket = serverSocket.waitNewClient();
+        assert( clientServerSocket.isConnected() );
+        std::cout << "clientServerSocket: " << clientServerSocket << std::endl;
 
-        std::cout << "inputOutputBench start" << std::endl;
-        inputOutputBench(inputStream, outputStream);
-        std::cout << "inputOutputBench done" << std::endl;
+        hub::io::InputOutputSocket inputOutputSocket( std::move( clientSocket ) );
+        hub::io::InputOutputSocket inputOutputSocket2( std::move( clientServerSocket ) );
+
+        const auto& [durationInMillisecond, gigaBytePerSecond] =
+            inputOutputBench( inputOutputSocket, inputOutputSocket2, "InputOutputSocket" );
+        // durationInMillisecondSocket = durationInMillisecond;
+        gigaBytePerSecondSocket     = gigaBytePerSecond;
     }
 
-    std::cout << "[test] tested on machine: '" << hostname << "'" << std::endl;
+    // double durationInMillisecondInputOutputStream;
+    double gigaBytePerSecondInputOutputStream;
+
+    {
+        INIT_SERVER
+
+        {
+            // hub::Server server( port );
+            // server.asyncRun();
+
+            hub::output::OutputStream outputStream( FILE_NAME, SERVER_PORT );
+
+            hub::input::InputStream inputStream( FILE_NAME, SERVER_PORT );
+
+            const auto& [durationInMillisecond, gigaBytePerSecond] =
+                inputOutputBench( inputStream, outputStream, "InputOutputStrem" );
+            // durationInMillisecondInputOutputStream = durationInMillisecond;
+            gigaBytePerSecondInputOutputStream     = gigaBytePerSecond;
+        }
+    }
+
+    const auto ratio = gigaBytePerSecondInputOutputStream / gigaBytePerSecondSocket;
+    CHECK_DECLINE( ratio, "InputOutput:Stream/Socket", "/" );
+
+    // std::cout << "[test] tested on machine: '" << hostname << "'" << std::endl;
 }

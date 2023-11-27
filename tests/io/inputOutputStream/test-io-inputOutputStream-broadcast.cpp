@@ -9,7 +9,7 @@
 #include <io/input/InputStream.hpp>
 #include <io/output/OutputStream.hpp>
 
-TEST_CASE( "InputOutputStream test" ) {
+TEST_CASE( "InputOutputStream broadcast test" ) {
     const auto hostname = hub::utils::getHostname();
 
     double durationInMillisecondSerial;
@@ -73,9 +73,9 @@ TEST_CASE( "InputOutputStream test" ) {
               << " ms" << std::endl;
     std::cout << std::endl;
 
-    const auto ratio = 100.0 * gigaBytePerSecondBroadcast / gigaBytePerSecondSerial;
+    const auto ratio = gigaBytePerSecondBroadcast / gigaBytePerSecondSerial;
     // CHECK_VALUE( ratio, 60, 30, "InputOutputStream:Broadcast/Serial", "%" );
-    CHECK_DECLINE( ratio, "InputOutputStream:Broadcast/Serial", "%" );
+    CHECK_DECLINE( ratio, "InputOutputStream:Broadcast(1->5)/Serial(1->1)", "/" );
 
-    std::cout << "[test] tested on machine: '" << hostname << "'" << std::endl;
+    // std::cout << "[test] tested on machine: '" << hostname << "'" << std::endl;
 }

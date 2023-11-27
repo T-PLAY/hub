@@ -14,6 +14,8 @@ TEST_CASE( "InputStream test" ) {
         hub::output::OutputStream outputStream( FILE_NAME, SERVER_PORT );
 
         hub::input::InputStream inputStream( FILE_NAME, SERVER_PORT );
+
+        inputOutputBench( inputStream, outputStream, "inputStream/outputStream" );
     }
 
     // std::cout << "[test] tested on machine: '" << hostname << "'" << std::endl;

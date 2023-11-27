@@ -55,9 +55,9 @@ class SRC_API OutputStreamServer : public Output, public io::StreamServer
 
     ~OutputStreamServer();
 
-    void serverProcess();
-    void startServer();
-    void streamConnect();
+    // void streamProcess();
+    void startStreaming();
+    void initStream();
     //    void write( const sensor::Acquisition& acq );
     //    void write( const sensor::SensorSpec& sensorSpec );
 
@@ -72,32 +72,27 @@ class SRC_API OutputStreamServer : public Output, public io::StreamServer
 
   private:
     void stop();
-    //    std::unique_ptr<net::ClientSocket> m_serverSocket;
-    std::unique_ptr<io::InputOutputSocket> m_clientSocket;
-    //    io::InputOutputSocket m_serverSocket;
-    struct ServerDataThread {
+
+    struct SharedData {
+        std::unique_ptr<io::InputOutputSocket> m_serverSocket;
         int m_streamPort = 0;
-        std::vector<io::InputOutputSocket> m_clientSockets;
+        std::vector<io::InputOutputSocket> m_streamSockets;
         std::mutex m_mtxClientSockets;
         std::vector<hub::Data_t> m_retainedData;
-        //        std::atomic<bool> m_killed = false;
-        bool m_killed                     = false;
-        std::atomic<bool> m_serverStarted = false;
+        bool m_killed                          = false;
+        std::atomic<bool> m_serverStarted      = false;
+        std::atomic<bool> m_streamConnected    = false;
+        std::atomic<bool> m_streamViewerInited = false;
+        std::function<void( const Data_t*, Size_t )> m_writingFun;
+        std::unique_ptr<std::thread> m_streamThread;
+        std::unique_ptr<std::thread> m_serverThread;
+        bool m_shutdown = false;
     };
-    std::unique_ptr<ServerDataThread> m_serverDataThread;
-    std::atomic<bool> m_streamConnected    = false;
-    std::atomic<bool> m_streamViewerInited = false;
+    std::unique_ptr<SharedData> m_data;
+    bool m_moved = false;
 
     //    std::unique_ptr<std::vector<io::InputOutputSocket>> m_clientSockets;
     //    hub::Buffer<> m_buffer;
-    std::function<void( const Data_t*, Size_t )> m_writingFun;
-
-    std::unique_ptr<std::thread> m_serverThread;
-    std::unique_ptr<std::thread> m_clientThread;
-    bool m_shutdown = false;
-    //    std::unique_ptr<std::thread> m_serverThread;
-    //    std::unique_ptr<std::thread> m_threadWriting;
-    bool m_moved = false;
 
     //    std::unique_ptr<bool> m_serverClosed   = std::make_unique<bool>(false);
     //    std::unique_ptr<bool> m_streamerClosed = std::make_unique<bool>(false);
@@ -119,11 +114,11 @@ class SRC_API OutputStreamServer : public Output, public io::StreamServer
 // void OutputStreamServer::write( const unsigned char* data, size_t len );
 
 inline void OutputStreamServer::close() {
-    m_clientSocket->close();
+    m_data->m_serverSocket->close();
     // std::cout << "[OutputStreamServer] close() started" << std::endl;
-    //    assert( m_clientSocket->isOpen() );
+    //    assert( m_serverSocket->isOpen() );
     //    if ( ! *m_serverClosed && ! *m_streamerClosed ) {
-    //        m_clientSocket->write( io::StreamInterface::ClientMessage::STREAMER_CLIENT_CLOSED );
+    //        m_serverSocket->write( io::StreamInterface::ClientMessage::STREAMER_CLIENT_CLOSED );
     //    }
     //    int iTry = 0;
     //    while ( ! *m_serverClosed && ! *m_streamerClosed && iTry < 10 ) {
@@ -134,13 +129,13 @@ inline void OutputStreamServer::close() {
     //    assert(iTry < 10);
 
     // std::cout << "[OutputStreamServer] closing connection ended" << std::endl;
-    // m_clientSocket->close();
+    // m_serverSocket->close();
     // std::cout << "[OutputStreamServer] close() ended" << std::endl;
 }
 
 inline bool OutputStreamServer::isOpen() const {
     return true;
-    // return m_clientSocket->isOpen();
+    // return m_serverSocket->isOpen();
 }
 
 } // namespace output

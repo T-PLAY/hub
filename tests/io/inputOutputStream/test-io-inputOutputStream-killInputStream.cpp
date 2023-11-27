@@ -9,24 +9,30 @@
 #include <io/input/InputStream.hpp>
 #include <io/output/OutputStream.hpp>
 
-TEST_CASE( "InputOutputStream test" ) {
+TEST_CASE( "InputOutputStream kill input stream test" ) {
+// int main() {
     const auto hostname = hub::utils::getHostname();
-    // const auto port     = GET_RANDOM_PORT;
 
     INIT_SERVER
 
-    // not allowed
     {
-        // hub::Server server( port );
-        // server.asyncRun();
 
         {
             hub::output::OutputStream outputStream( FILE_NAME, SERVER_PORT );
+            int a = 5;
             {
                 hub::input::InputStream inputStream( FILE_NAME, SERVER_PORT );
-                // shutdown inputStream first
+                outputStream.write( a );
+                std::cout << "[test] writing done" << std::endl;
+                int a_read;
+                inputStream.read( a_read );
+                std::cout << "[test] read done" << std::endl;
+                assert( a == a_read );
             }
             std::cout << "[test] inputStream ended" << std::endl;
+
+            a = 6;
+            outputStream.write( a );
         }
         std::cout << "[test] outputStream ended" << std::endl;
     }

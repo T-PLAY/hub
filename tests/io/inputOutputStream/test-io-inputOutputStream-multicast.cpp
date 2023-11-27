@@ -6,39 +6,34 @@
 #include "io/test_io_common.hpp"
 #include "test_common.hpp"
 
-#include <core/Utils.hpp>
 #include <io/input/InputStream.hpp>
 #include <io/output/OutputStream.hpp>
-// #include <server/Server.hpp>
-#include <impl/server2/Server.hpp>
-#include <impl/server2/io/input/InputStreamServer.hpp>
-// #include <InputSensor.hpp>
-// #include <OutputSensor.hpp>
-#include <thread>
 
-TEST_CASE( "InputOutputStream test" ) {
+TEST_CASE( "InputOutputStream multicast test" ) {
     const auto hostname = hub::utils::getHostname();
-    const auto port     = GET_RANDOM_PORT;
+    // const auto port     = GET_RANDOM_PORT;
+
+    INIT_SERVER
 
     double durationInMillisecondSerial;
     double gigaBytePerSecondSerial;
 
-    double durationInMillisecondBroadcast;
-    double gigaBytePerSecondBroadcast;
+    double durationInMillisecondMulticast;
+    double gigaBytePerSecondMulticast;
 
     constexpr auto nStream = 5;
 
     {
-        hub::Server server( port );
-        server.asyncRun();
+        // hub::Server server( );
+        // server.asyncRun();
 
         {
             std::vector<hub::output::OutputStream> outputStreams;
-            outputStreams.emplace_back( "streamName", port );
+            outputStreams.emplace_back( FILE_NAME, SERVER_PORT );
 
             {
                 std::vector<hub::input::InputStream> inputStreams;
-                inputStreams.emplace_back( "streamName", port );
+                inputStreams.emplace_back( FILE_NAME, SERVER_PORT );
 
                 {
                     const auto& [durationInMillisecond, gigaBytePerSecond] =
@@ -49,19 +44,19 @@ TEST_CASE( "InputOutputStream test" ) {
 
                 for ( int i = 1; i < nStream; ++i ) {
                     outputStreams.emplace_back(
-                        "streamName" + std::to_string( i ), port );
+                        FILE_NAME + std::to_string( i ), SERVER_PORT );
                 }
 
                 for ( int i = 1; i < nStream; ++i ) {
                     inputStreams.emplace_back(
-                        "streamName" + std::to_string( i ), port );
+                        FILE_NAME + std::to_string( i ), SERVER_PORT );
                 }
 
                 {
                     const auto& [durationInMillisecond, gigaBytePerSecond] =
                         inputOutputBench( inputStreams, outputStreams );
-                    durationInMillisecondBroadcast = durationInMillisecond;
-                    gigaBytePerSecondBroadcast     = gigaBytePerSecond;
+                    durationInMillisecondMulticast = durationInMillisecond;
+                    gigaBytePerSecondMulticast     = gigaBytePerSecond;
                 }
             }
             std::cout << "[test] inputStreams ended" << std::endl;
@@ -78,14 +73,14 @@ TEST_CASE( "InputOutputStream test" ) {
 
     std::cout << "------------------------------------" << std::endl;
     std::cout << "[InputOutputStream:Multicast] writing/reading rate: "
-              << std::to_string( gigaBytePerSecondBroadcast ) << " Go/s" << std::endl;
-    std::cout << "[InputOutputStream:Multicast] total time: " << durationInMillisecondBroadcast
+              << std::to_string( gigaBytePerSecondMulticast ) << " Go/s" << std::endl;
+    std::cout << "[InputOutputStream:Multicast] total time: " << durationInMillisecondMulticast
               << " ms" << std::endl;
     std::cout << std::endl;
 
-    const auto ratio = 100.0 * gigaBytePerSecondBroadcast / gigaBytePerSecondSerial;
+    const auto ratio = gigaBytePerSecondMulticast / gigaBytePerSecondSerial;
     // CHECK_VALUE( ratio, 100, 50, "InputOutputStream:Multicast/Serial", "%" );
-    CHECK_DECLINE( ratio, "InputOutputStream:Multicast/Serial", "%" );
+    CHECK_DECLINE( ratio, "InputOutputStream:Multicast(5->5)/Serial(1->1)", "/" );
 
-    std::cout << "[test] tested on machine: '" << hostname << "'" << std::endl;
+    // std::cout << "[test] tested on machine: '" << hostname << "'" << std::endl;
 }

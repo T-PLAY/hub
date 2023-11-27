@@ -3,10 +3,10 @@ cmake_minimum_required(VERSION 3.5)
 project(tests LANGUAGES CXX)
 
 if (XCODE)
-        set(LINK_LIBRARIES Catch2::Catch2WithMain hub_static)
+    set(LINK_LIBRARIES Catch2::Catch2WithMain hub_static)
 else()
-#        set(LINK_LIBRARIES Catch2::Catch2WithMain hub)
-        set(LINK_LIBRARIES Catch2::Catch2WithMain hub_static)
+    #        set(LINK_LIBRARIES Catch2::Catch2WithMain hub)
+    set(LINK_LIBRARIES Catch2::Catch2WithMain hub_static)
 endif()
 #set(LINK_LIBRARIES ${LINK_LIBRARIES} Threads::Threads)
 #set(LINK_LIBRARIES Catch2::Catch2WithMain hub PahoMqttCpp::paho-mqttpp3)
@@ -44,27 +44,27 @@ set(test_srcs)
 set(test_headers)
 foreach(HUB_SOURCE_DIR ${HUB_SOURCE_DIRS})
     file(
-#        GLOB
+        #        GLOB
         GLOB_RECURSE
         test_src
         ${CMAKE_CURRENT_SOURCE_DIR}/${HUB_SOURCE_DIR}/*.cpp
     )
-    list(APPEND test_srcs ${test_src})
-    file(
+list(APPEND test_srcs ${test_src})
+file(
     #    GLOB
-        GLOB_RECURSE
-        test_header
-        ${CMAKE_CURRENT_SOURCE_DIR}/${HUB_SOURCE_DIR}/*.hpp
-    )
-    list(APPEND test_headers ${test_header})
+    GLOB_RECURSE
+    test_header
+    ${CMAKE_CURRENT_SOURCE_DIR}/${HUB_SOURCE_DIR}/*.hpp
+)
+list(APPEND test_headers ${test_header})
 endforeach()
 
 list(APPEND test_headers ${CMAKE_CURRENT_SOURCE_DIR}/test_common.hpp)
 
 #set(test_headers_src)
 if (BUILD_CORE)
-#    list(REMOVE_ITEM test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/core/io/test_core_io_common.cpp)
-#    list(APPEND test_headers_src ${CMAKE_CURRENT_SOURCE_DIR}/core/io/test_core_io_common.cpp)
+    #    list(REMOVE_ITEM test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/core/io/test_core_io_common.cpp)
+    #    list(APPEND test_headers_src ${CMAKE_CURRENT_SOURCE_DIR}/core/io/test_core_io_common.cpp)
     if (NOT Eigen3_FOUND)
         list(REMOVE_ITEM test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/core/matrix/test-core-matrix-compatEigen3.cpp)
     endif()
@@ -95,17 +95,17 @@ find_package(PahoMqttCpp QUIET)
 #find_package(PahoMqttCpp QUIET NO_DEFAULT_PATH)
 if (PahoMqttCpp_FOUND)
 
-#    file(GLOB EXAMPLE_SRC mqtt/*.cpp)
-#    string(REPLACE ".cpp" "" EXAMPLE_SRC_BASENAME2 "${EXAMPLE_SRC}")
-#    set(EXAMPLE_SRC_BASENAME ${EXAMPLE_SRC_BASENAME} ${EXAMPLE_SRC_BASENAME2})
-#    set(LINK_LIBRARIES "${LINK_LIBRARIES} PahoMqttCpp::paho-mqttpp3")
+    #    file(GLOB EXAMPLE_SRC mqtt/*.cpp)
+    #    string(REPLACE ".cpp" "" EXAMPLE_SRC_BASENAME2 "${EXAMPLE_SRC}")
+    #    set(EXAMPLE_SRC_BASENAME ${EXAMPLE_SRC_BASENAME} ${EXAMPLE_SRC_BASENAME2})
+    #    set(LINK_LIBRARIES "${LINK_LIBRARIES} PahoMqttCpp::paho-mqttpp3")
     set(LINK_LIBRARIES ${LINK_LIBRARIES} PahoMqttCpp::paho-mqttpp3)
 else()
     list(FILTER test_srcs EXCLUDE REGEX ".*Mqtt\\.cpp$")
 
     file(GLOB mqtt_srcs mqtt/*.cpp)
     list(REMOVE_ITEM test_srcs ${mqtt_srcs})
-#    message(STATUS "#################### ${mqtt_srcs}")
+    #    message(STATUS "#################### ${mqtt_srcs}")
 endif()
 #message(STATUS "#################### ${test_srcs}")
 
@@ -129,6 +129,7 @@ target_include_directories(test-all PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 if (PahoMqttCpp_FOUND)
     target_compile_definitions(test-all PUBLIC -DHUB_TESTS_MQTT_FOUND)
 endif()
+# target_compile_definitions(test-all PUBLIC -DHUB_TEST_ALL)
 
 #if(WIN32)
 #    add_custom_command(
@@ -156,45 +157,49 @@ include(CTest)
 #)
 enable_testing()
 foreach(testFile ${test_srcs})
-#    message(STATUS "test src: ${testFile}")
-#endforeach()
+    #    message(STATUS "test src: ${testFile}")
+    #endforeach()
 
     get_filename_component(test ${testFile} NAME_WE)
 
-#    add_executable(${test} ${testFile} ${test_common})
-#    add_executable(${test} ${testFile} ${test_headers_src})
+    #    add_executable(${test} ${testFile} ${test_common})
+    #    add_executable(${test} ${testFile} ${test_headers_src})
     add_executable(${test} ${testFile})
     # target_link_libraries(${test} PRIVATE Catch2::Catch2WithMain hub PahoMqttCpp::paho-mqttpp3)
-	target_link_libraries(${test} PRIVATE ${LINK_LIBRARIES})
+    target_link_libraries(${test} PRIVATE ${LINK_LIBRARIES})
     target_include_directories(${test}
-#            PUBLIC
-#                ${CMAKE_CURRENT_SOURCE_DIR}
+        #            PUBLIC
+        #                ${CMAKE_CURRENT_SOURCE_DIR}
         PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
     if (PahoMqttCpp_FOUND)
         target_compile_definitions(${test} PUBLIC -DHUB_TESTS_MQTT_FOUND)
     endif()
-	#target_compile_definitions(${test} PUBLIC -DHUB_TESTS_BIN_DIR=\"${CMAKE_CURRENT_BINARY_DIR}/\")
+    #target_compile_definitions(${test} PUBLIC -DHUB_TESTS_BIN_DIR=\"${CMAKE_CURRENT_BINARY_DIR}/\")
 
     add_test(NAME ${test} COMMAND ${test})
 
-#if (HUB_BUILD_SERVER)
-#    add_custom_target(
-#        run-${test}
-##        COMMAND "${CMAKE_BINARY_DIR}/bin/bin-server &"
-##        COMMAND ls ${CMAKE_SOURCE_DIR}/scripts/launcher.sh
-##        COMMAND ls ${CMAKE_BINARY_DIR}/bin/bin-server.exe
-##        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh
-#        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/server/bin-server
-#        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/client/bin-viewer --exitWhenServerLost
-#        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/client/bin-nativeViewer --exitWhenServerLost
-#        COMMAND ctest -C ${CMAKE_BUILD_TYPE} -V -R ${test}
-#        COMMAND ctest -C ${CMAKE_BUILD_TYPE} -V -R test-end
-#        VERBATIM
-#        USES_TERMINAL
-#        COMMENT "Running single test"
-#    )
-#    custom_target_added(run-${test})
-#endif()
+    # if (HUB_BUILD_IMPL_SERVER2)
+    #     target_compile_definitions(${test} PUBLIC -DHUB_SERVER_PORT=5000)
+    # endif()
+
+    #if (HUB_BUILD_SERVER)
+    #    add_custom_target(
+    #        run-${test}
+    ##        COMMAND "${CMAKE_BINARY_DIR}/bin/bin-server &"
+    ##        COMMAND ls ${CMAKE_SOURCE_DIR}/scripts/launcher.sh
+    ##        COMMAND ls ${CMAKE_BINARY_DIR}/bin/bin-server.exe
+    ##        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh
+    #        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/server/bin-server
+    #        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/client/bin-viewer --exitWhenServerLost
+    #        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/client/bin-nativeViewer --exitWhenServerLost
+    #        COMMAND ctest -C ${CMAKE_BUILD_TYPE} -V -R ${test}
+    #        COMMAND ctest -C ${CMAKE_BUILD_TYPE} -V -R test-end
+    #        VERBATIM
+    #        USES_TERMINAL
+    #        COMMENT "Running single test"
+    #    )
+    #    custom_target_added(run-${test})
+    #endif()
 
 endforeach()
 
@@ -203,25 +208,29 @@ endforeach()
 #endif()
 
 
-if (HUB_BUILD_SERVER AND "impl/server" IN_LIST HUB_SOURCE_DIRS)
+# if (HUB_BUILD_SERVER AND "impl/server2" IN_LIST HUB_SOURCE_DIRS)
+# if (HUB_BUILD_SERVER AND "impl/server2" IN_LIST HUB_SOURCE_DIRS)
+# if (HUB_BUILD_IMPL_SERVER2)
+if (HUB_SERVER_PORT)
 
-#set(HUB_SOURCE_DIRS "core")
-    message(FATAL_ERROR "ouou")
+    #set(HUB_SOURCE_DIRS "core")
+    # message(FATAL_ERROR "ouou")
 
     add_custom_target(
         tests # WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-#        COMMAND ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${CMAKE_BINARY_DIR}/bin/bin-server --maxClient 36
-        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/bin-server
-        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/bin-viewer --exitWhenServerLost
-        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/bin-nativeViewer --exitWhenServerLost
-#        COMMAND echo "######################### starting tests #######################################"
+        #        COMMAND ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${CMAKE_BINARY_DIR}/bin/bin-server --maxClient 36
+        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/bin-server --port ${HUB_SERVER_PORT}
+        # COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/bin-viewer --exitWhenServerLost
+        # COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/bin-nativeViewer --exitWhenServerLost
+        #        COMMAND echo "######################### starting tests #######################################"
         COMMAND ctest -C ${CMAKE_BUILD_TYPE} -V
-#        COMMAND echo "########################## ending tests ########################################"
-#        VERBATIM
+        # COMMAND ./test-all
+        #        COMMAND echo "########################## ending tests ########################################"
+        # VERBATIM
         USES_TERMINAL
-#        COMMAND pkill bin-server
+        #        COMMAND pkill bin-server
         COMMENT "Running tests"
-#        OUTPUT tests.log
+        #        OUTPUT tests.log
     )
 else()
     add_custom_target(

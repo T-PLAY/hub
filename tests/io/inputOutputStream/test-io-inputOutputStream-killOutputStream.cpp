@@ -9,7 +9,7 @@
 #include <io/input/InputStream.hpp>
 #include <io/output/OutputStream.hpp>
 
-TEST_CASE( "InputOutputStream test" ) {
+TEST_CASE( "InputOutputStream kill output stream test" ) {
     const auto hostname = hub::utils::getHostname();
 
     INIT_SERVER

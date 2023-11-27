@@ -18,6 +18,8 @@
 namespace hub {
 // namespace server {
 
+// static void stopServer( std::string ipv4, int port );
+
 ///
 /// \brief The Server class
 ///
@@ -55,10 +57,12 @@ class SRC_API Server
 
     void stop();
     void printStatus() const;
-    void exitMainThread();
+    bool running() const;
     //    void exit();
 
   private:
+    void exitMainThread();
+
     std::string getStatus() const;
     std::string headerMsg() const;
 

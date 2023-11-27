@@ -8,7 +8,7 @@
 
 #include <io/output/OutputStream.hpp>
 
-TEST_CASE( "InputOutputStream test" ) {
+TEST_CASE( "OutputStream server deco reco test" ) {
     // const auto hostname = hub::utils::getHostname();
     const auto port = GET_RANDOM_PORT;
 
@@ -18,11 +18,9 @@ TEST_CASE( "InputOutputStream test" ) {
 
     {
         hub::output::OutputStream outputStream( FILE_NAME, port );
-        // std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
 
         std::cout << "[test] server ending" << std::endl;
         server.stop();
-        // std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
         std::cout << "[test] server ended" << std::endl;
 
 

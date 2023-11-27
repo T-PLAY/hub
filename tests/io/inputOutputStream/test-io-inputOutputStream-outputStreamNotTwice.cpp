@@ -8,7 +8,7 @@
 
 #include <io/output/OutputStream.hpp>
 
-TEST_CASE( "InputOutputStream test" ) {
+TEST_CASE( "InputOutputStream no stream twice test" ) {
 
     INIT_SERVER
 

@@ -9,11 +9,10 @@
 namespace hub {
 namespace io {
 
-
 class StreamServer : public StreamInterface
 {
   public:
-//    static const std::string s_exitSignal;
+    //    static const std::string s_exitSignal;
     static const std::string s_defaultIpv4;
     static const int s_defaultPort;
     //    static const std::string s_topicStream;
@@ -24,6 +23,10 @@ class StreamServer : public StreamInterface
 
     //        static const std::string s_defaultIpv4;
     //        static constexpr int s_defaultPort     = 4042;
+    static void stopServer( std::string ipv4 = s_defaultIpv4, int port = s_defaultPort ) {
+        auto clientSock = io::InputOutputSocket( hub::net::ClientSocket( ipv4, port ) );
+        clientSock.write( io::StreamInterface::ClientType::KILLER );
+    }
 
   protected:
     StreamServer( const std::string& name, const std::string& ipv4, int port );

@@ -20,6 +20,7 @@
 namespace hub {
 // namespace server {
 
+
 // Server::Server() {
 //     assert( !m_thread.joinable() );
 // }
@@ -53,10 +54,8 @@ std::string Server::headerMsg() const {
 
 void Server::run() {
     SERVER_MSG( "starting server" );
-    assert( !m_running );
     m_killed = false;
     assert( !m_killed );
-    m_running = true;
     SERVER_MSG( "listening port " << m_serverSock.getPort() );
 
     //    while ( m_nClient < m_maxClients && !m_killed ) {
@@ -87,6 +86,7 @@ void Server::run() {
 void Server::asyncRun() {
     assert( !m_running );
     assert( m_thread == nullptr );
+    m_running = true;
     //    SERVER_MSG( "asyncRun()" );
     m_thread = new std::thread( [this]() { run(); } );
 }
@@ -153,14 +153,12 @@ void Server::stop() {
     //    } // ( !m_exiting ) {
 }
 
+
 void Server::exitMainThread() {
     //    SERVER_MSG( "ending main loop" );
     m_killed = true;
-    auto clientSock =
-        io::InputOutputSocket( hub::net::ClientSocket( "127.0.0.1", m_serverSock.getPort() ) );
-    clientSock.write( io::StreamInterface::ClientType::KILLER );
     //    SERVER_MSG( "killing main loop" );
-
+    io::StreamServer::stopServer("127.0.0.1", m_serverSock.getPort());
     //    hub::input::InputStreamServer inputStream(
     //        io::StreamServer::s_exitSignal, "127.0.0.1", m_serverSock.getPort() );
     //        "exitServer", "127.0.0.1", m_serverSock.getPort() );
@@ -291,7 +289,14 @@ server::Client* Server::initClient( io::InputOutputSocket&& sock, int iClient ) 
 
 void Server::printStatus() const {
     std::cout << headerMsg() << getStatus() << std::endl;
+    // std::cout << headerMsg() << getStatus();
 }
+
+bool Server::running() const
+{
+    return m_running;
+}
+
 
 std::string Server::getStatus() const {
     //    std::string streamViewersStr = "[";
@@ -329,7 +334,7 @@ std::string Server::getStatus() const {
         //        assert( m_streamName2streamer.find( streamerName ) != m_streamName2streamer.end()
         //        ); const auto & streamer = m_streamName2streamer.at(streamerName);
 
-        str += "'" + streamerName.substr( streamerName.size() - 12, 12 ) + "'";
+        str += "'" + streamerName.substr( std::max(0, (int)streamerName.size() - 12), 12 ) + "'";
         if ( streamer->ipv4 != "127.0.0.1" ) { str += streamer->ipv4 + ":"; }
         str += std::to_string( streamer->port );
         //        if ( !streamViewers.empty() ) {
