@@ -1,12 +1,14 @@
 
 
 #include <impl/server2/Server.hpp>
-#include <impl/server2/io/StreamServer.hpp>
+// #include <impl/server2/io/StreamServer.hpp>
+#include <io/Stream.hpp>
+#include <io/Server.hpp>
 
 int main( int argc, char* argv[] ) {
 
     // int maxClient = -1;
-    int port = hub::io::StreamServer::s_defaultPort;
+    int port = hub::io::Stream::s_defaultPort;
 
     std::vector<std::string> args( argv + 1, argv + argc );
 

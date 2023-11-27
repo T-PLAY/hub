@@ -19,8 +19,10 @@
 
 // #include "Macros.hpp"
 // #include "Version.hpp"
-#include <impl/server2/Server.hpp>
-#include <impl/server2/io/StreamServer.hpp>
+// #include <impl/server2/Server.hpp>
+// #include <impl/server2/io/StreamServer.hpp>
+#include <io/Stream.hpp>
+// #include <io/Server.hpp>
 
 #ifdef HUB_SERVER_PORT
 // #ifdef HUB_TEST_ALL

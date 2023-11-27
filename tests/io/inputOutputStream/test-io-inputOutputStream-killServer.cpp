@@ -8,7 +8,7 @@
 
 #include <io/input/InputStream.hpp>
 #include <io/output/OutputStream.hpp>
-#include <thread>
+#include <io/Server.hpp>
 
 TEST_CASE( "InputOutputStream kill server test" ) {
     const auto hostname = hub::utils::getHostname();

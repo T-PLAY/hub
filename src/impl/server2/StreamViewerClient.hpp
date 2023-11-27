@@ -3,25 +3,26 @@
 #include <thread>
 
 #include "Client.hpp"
-//#include "sensor/OutputSensor.hpp"
-//#include "net/ClientSocket.hpp"
+// #include "sensor/OutputSensor.hpp"
+// #include "net/ClientSocket.hpp"
 #include "io/InputOutputSocket.hpp"
 
 namespace hub {
+namespace impl2 {
 namespace server {
 
-//class StreamerClient;
-
+// class StreamerClient;
 
 /////
 ///// \brief The StreamViewerClient class
 /////
-//class StreamViewerClient : public Client
+// class StreamViewerClient : public Client
 //{
-//  private:
-////    StreamViewerClient( Server* server, int iClient, net::ClientSocket&& sock, std::string  streamName );
-//    StreamViewerClient( Server* server, int iClient, io::InputOutputSocket&& sock, std::string  streamName );
-//    ~StreamViewerClient();
+//   private:
+////    StreamViewerClient( Server* server, int iClient, net::ClientSocket&& sock, std::string
+///streamName );
+//    StreamViewerClient( Server* server, int iClient, io::InputOutputSocket&& sock, std::string
+//    streamName ); ~StreamViewerClient();
 
 //    std::string headerMsg() const override;
 
@@ -43,4 +44,5 @@ namespace server {
 //};
 
 } // namespace server
+} // namespace impl2
 } // namespace hub

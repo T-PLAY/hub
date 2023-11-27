@@ -7,9 +7,10 @@
 #include "io/InputOutputSocket.hpp"
 
 namespace hub {
+namespace impl2 {
 namespace io {
 
-class StreamServer : public StreamInterface
+class StreamServer : public hub::io::StreamInterface
 {
   public:
     //    static const std::string s_exitSignal;
@@ -24,8 +25,8 @@ class StreamServer : public StreamInterface
     //        static const std::string s_defaultIpv4;
     //        static constexpr int s_defaultPort     = 4042;
     static void stopServer( std::string ipv4 = s_defaultIpv4, int port = s_defaultPort ) {
-        auto clientSock = io::InputOutputSocket( hub::net::ClientSocket( ipv4, port ) );
-        clientSock.write( io::StreamInterface::ClientType::KILLER );
+        auto clientSock = hub::io::InputOutputSocket( hub::net::ClientSocket( ipv4, port ) );
+        clientSock.write( hub::io::StreamInterface::ClientType::KILLER );
     }
 
   protected:
@@ -37,4 +38,5 @@ class StreamServer : public StreamInterface
 };
 
 } // namespace io
+} // namespace impl2
 } // namespace hub

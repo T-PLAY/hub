@@ -9,7 +9,7 @@
 TEST_CASE( "Test end" ) {
 
 #ifdef HUB_SERVER_PORT
-    hub::io::StreamServer::stopServer();
+    hub::impl2::io::StreamServer::stopServer();
 #endif
 
     END_REPORT();

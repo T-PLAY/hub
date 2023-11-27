@@ -4,6 +4,7 @@
 // #include "sensor/SensorSpec.hpp"
 
 namespace hub {
+namespace impl2 {
 namespace input {
 
 // InputStreamServer::InputStreamServer( const std::string& streamName, net::ClientSocket&&
@@ -23,7 +24,7 @@ InputStreamServer::InputStreamServer( const std::string& streamName,
     io::StreamServer( streamName, ipv4, port ),
     //    m_serverSocket( std::move( clientSocket ) ) {
     //    m_serverSocket(ipv4, port)
-    m_serverSocket( std::make_unique<io::InputOutputSocket>( net::ClientSocket( ipv4, port ) ) ) {
+    m_serverSocket( std::make_unique<hub::io::InputOutputSocket>( net::ClientSocket( ipv4, port ) ) ) {
 
     assert( m_serverSocket->isConnected() );
     //    m_serverSocket.write( net::ClientSocket::Type::STREAM_VIEWER );
@@ -34,14 +35,14 @@ InputStreamServer::InputStreamServer( const std::string& streamName,
 
     //    if ( streamName != io::StreamServer::s_exitSignal ) {
 
-    io::StreamInterface::ServerMessage serverMsg;
+    hub::io::StreamInterface::ServerMessage serverMsg;
     //        Input::read( serverMsg );
     m_serverSocket->read( serverMsg );
-    if ( serverMsg == io::StreamInterface::ServerMessage::NOT_FOUND ) {
+    if ( serverMsg == hub::io::StreamInterface::ServerMessage::NOT_FOUND ) {
         throw net::ClientSocket::exception(
             ( std::string( "stream '" ) + streamName + "' is not attached to server" ).c_str() );
     }
-    assert( serverMsg == io::StreamInterface::ServerMessage::OK );
+    assert( serverMsg == hub::io::StreamInterface::ServerMessage::OK );
 
     m_serverSocket->read( m_streamIpv4 );
     m_serverSocket->read( m_streamPort );
@@ -53,16 +54,15 @@ InputStreamServer::InputStreamServer( const std::string& streamName,
     startStream();
 }
 
-void InputStreamServer::startStream()
-{
-    m_streamSocket = std::make_unique<io::InputOutputSocket>( net::ClientSocket( m_streamIpv4, m_streamPort ) );
+void InputStreamServer::startStream() {
+    m_streamSocket =
+        std::make_unique<hub::io::InputOutputSocket>( net::ClientSocket( m_streamIpv4, m_streamPort ) );
     m_streamSocket->write( ClientType::STREAM_VIEWER );
 
-    io::StreamInterface::ClientMessage clientMessage;
+    hub::io::StreamInterface::ClientMessage clientMessage;
     m_streamSocket->read( clientMessage );
-    assert( clientMessage == io::StreamInterface::ClientMessage::STREAMER_CLIENT_STREAM_VIEWER_INITED );
-
-
+    assert( clientMessage ==
+            hub::io::StreamInterface::ClientMessage::STREAMER_CLIENT_STREAM_VIEWER_INITED );
 }
 
 // InputStreamServer::InputStreamServer( InputStreamServer&& inputStream ) :
@@ -134,4 +134,5 @@ void InputStreamServer::startStream()
 void InputStreamServer::clear() {}
 
 } // namespace input
+} // namespace impl2
 } // namespace hub

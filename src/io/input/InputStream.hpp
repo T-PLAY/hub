@@ -27,7 +27,7 @@ using InputStream = InputStreamServer;
 using InputStream = InputStreamMqtt;
 
 #elif defined(HUB_BUILD_IMPL_SERVER2)
-using InputStream = InputStreamServer;
+using InputStream = impl2::input::InputStreamServer;
 #endif
 
 //#if defined(HUB_BUILD_SERVER) || defined(HUB_BUILD_MQTT)

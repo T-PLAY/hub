@@ -13,6 +13,7 @@
 #include "sensor/SensorSpec.hpp"
 
 namespace hub {
+namespace impl2 {
 namespace output {
 
 ///
@@ -74,9 +75,9 @@ class SRC_API OutputStreamServer : public Output, public io::StreamServer
     void stop();
 
     struct SharedData {
-        std::unique_ptr<io::InputOutputSocket> m_serverSocket;
+        std::unique_ptr<hub::io::InputOutputSocket> m_serverSocket;
         int m_streamPort = 0;
-        std::vector<io::InputOutputSocket> m_streamSockets;
+        std::vector<hub::io::InputOutputSocket> m_streamSockets;
         std::mutex m_mtxClientSockets;
         std::vector<hub::Data_t> m_retainedData;
         bool m_killed                          = false;
@@ -139,4 +140,5 @@ inline bool OutputStreamServer::isOpen() const {
 }
 
 } // namespace output
+} // namespace impl2
 } // namespace hub

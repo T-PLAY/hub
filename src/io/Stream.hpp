@@ -17,6 +17,7 @@
 
 #ifdef HUB_BUILD_IMPL_SERVER2
 #    include "impl/server2/io/StreamServer.hpp"
+#include "impl/server2/Server.hpp"
 #endif
 
 namespace hub {
@@ -29,7 +30,7 @@ using Stream = StreamServer;
 using Stream = StreamMqtt;
 
 #elif defined( HUB_BUILD_IMPL_SERVER2 )
-using Stream = StreamServer;
+using Stream = impl2::io::StreamServer;
 #endif
 
 // const std::string s_serverDefaultIpv4 = "127.0.0.1";

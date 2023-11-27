@@ -3,15 +3,14 @@
 #include <mutex>
 #include <string>
 
-//#include "net/ClientSocket.hpp"
+// #include "net/ClientSocket.hpp"
 #include "io/StreamInterface.hpp"
 
 namespace hub {
-
+namespace impl2 {
 class Server;
 
 namespace server {
-
 
 ///
 /// \brief The Client class
@@ -27,13 +26,13 @@ class Client
 
     void setServer( Server* newServer );
 
-    virtual void end( io::StreamInterface::ServerMessage message ) = 0;
+    virtual void end( hub::io::StreamInterface::ServerMessage message ) = 0;
 
   private:
     Server* m_server = nullptr;
     int m_iClient;
 
-    friend class hub::Server;
+    friend class hub::impl2::Server;
     friend class StreamerClient;
     friend class StreamViewerClient;
     friend class ViewerClient;
@@ -41,4 +40,5 @@ class Client
 };
 
 } // namespace server
+} // namespace impl2
 } // namespace hub

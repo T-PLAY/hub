@@ -6,6 +6,7 @@
 #include "StreamerClient.hpp"
 
 namespace hub {
+namespace impl2 {
 namespace server {
 
 // class InputStreamClient : public Input
@@ -96,7 +97,7 @@ namespace server {
 
 StreamerClient::StreamerClient( Server* server,
                                 int iClient,
-                                io::InputOutputSocket&& sock,
+                                hub::io::InputOutputSocket&& sock,
                                 std::string streamName_,
                                 std::string ipv4_,
                                 int port_ ) :
@@ -104,13 +105,13 @@ StreamerClient::StreamerClient( Server* server,
     streamName( std::move( streamName_ ) ),
     ipv4( std::move( ipv4_ ) ),
     port( port_ ),
-    m_sock( std::make_unique<io::InputOutputSocket>( std::move( sock ) ) ) {
+    m_sock( std::make_unique<hub::io::InputOutputSocket>( std::move( sock ) ) ) {
 
     std::cout << headerMsg() << "StreamerClient() start" << std::endl;
 
     std::cout << headerMsg() << "stream name = '" << streamName << "'" << std::endl;
 
-    m_sock->read(m_nStreamViewer);
+    m_sock->read( m_nStreamViewer );
 
     assert( m_server != nullptr );
     m_server->addStreamer( this );
@@ -120,20 +121,20 @@ StreamerClient::StreamerClient( Server* server,
         try {
 
             while ( true ) {
-                io::StreamInterface::ClientMessage mess = io::StreamInterface::ClientMessage::NONE;
+                hub::io::StreamInterface::ClientMessage mess = hub::io::StreamInterface::ClientMessage::NONE;
                 sockPtr->read( mess );
-                if ( mess == io::StreamInterface::ClientMessage::CLIENT_SERVER_DOWN ) {
+                if ( mess == hub::io::StreamInterface::ClientMessage::CLIENT_SERVER_DOWN ) {
                     m_serverDown = true;
                     break;
                 }
-                else if ( mess == io::StreamInterface::ClientMessage::STREAMER_CLIENT_CLOSED ) {
+                else if ( mess == hub::io::StreamInterface::ClientMessage::STREAMER_CLIENT_CLOSED ) {
                     break;
                 }
                 else if ( mess ==
-                          io::StreamInterface::ClientMessage::STREAMER_CLIENT_NEW_STREAM_VIEWER ) {
+                          hub::io::StreamInterface::ClientMessage::STREAMER_CLIENT_NEW_STREAM_VIEWER ) {
                     sockPtr->read( m_nStreamViewer );
                     m_server->newStreamViewer( this );
-                    sockPtr->write( io::StreamInterface::ServerMessage::STREAM_VIEWER_INITED );
+                    sockPtr->write( hub::io::StreamInterface::ServerMessage::STREAM_VIEWER_INITED );
                     // std::cout << headerMsg() << "new stream viewer" << std::endl;
                     // m_server->printStatus();
                 }
@@ -151,7 +152,7 @@ StreamerClient::StreamerClient( Server* server,
         std::thread( [this]() { delete this; } ).detach();
     } );
 
-    m_sock->write( io::StreamInterface::ServerMessage::STREAMER_INITED );
+    m_sock->write( hub::io::StreamInterface::ServerMessage::STREAMER_INITED );
 }
 
 int StreamerClient::getNStreamViewer() const {
@@ -173,7 +174,7 @@ StreamerClient::~StreamerClient() {
     m_server->m_mtxPrint.unlock();
     if ( !m_serverDown ) {
         assert( m_sock->isOpen() );
-        m_sock->write( io::StreamInterface::ServerMessage::STREAMER_CLOSED );
+        m_sock->write( hub::io::StreamInterface::ServerMessage::STREAMER_CLOSED );
     }
 }
 
@@ -200,7 +201,7 @@ std::string StreamerClient::headerMsg() const {
 //    return acq;
 //}
 
-void StreamerClient::end( io::StreamInterface::ServerMessage message ) {
+void StreamerClient::end( hub::io::StreamInterface::ServerMessage message ) {
     //    InputStreamClient& input = dynamic_cast<InputStreamClient&>( m_inputSensor->getInput() );
     //    assert( input.m_clientSocket.isOpen() );
     assert( m_sock->isOpen() );
@@ -270,6 +271,7 @@ void StreamerClient::end( io::StreamInterface::ServerMessage message ) {
 // }
 
 } // namespace server
+} // namespace impl2
 } // namespace hub
 
 // #if ( __cplusplus >= 201703L )

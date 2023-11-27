@@ -5,6 +5,7 @@
 #include "StreamViewerClient.hpp"
 
 namespace hub {
+namespace impl2 {
 namespace server {
 
 // class OutputStreamClient : public Output
@@ -64,14 +65,14 @@ namespace server {
 
 ///////////////////////////////////////////////// StreamViewerClient /////////////////////
 
-//StreamViewerClient::StreamViewerClient(
-//    Server* server,
-//    int iClient,
-//    //                                        net::ClientSocket&& sock,
-//    io::InputOutputSocket&& sock,
-//    std::string streamName ) :
-//    Client( server, iClient ), m_streamName( std::move( streamName ) ),
-//    m_sock(std::make_unique<io::InputOutputSocket>(std::move(sock)))
+// StreamViewerClient::StreamViewerClient(
+//     Server* server,
+//     int iClient,
+//     //                                        net::ClientSocket&& sock,
+//     io::InputOutputSocket&& sock,
+//     std::string streamName ) :
+//     Client( server, iClient ), m_streamName( std::move( streamName ) ),
+//     m_sock(std::make_unique<io::InputOutputSocket>(std::move(sock)))
 //{
 
 //    //        try {
@@ -119,7 +120,8 @@ namespace server {
 //            //            assert( message ==
 //            //            io::StreamInterface::ClientMessage::STREAM_VIEWER_CLIENT_CLOSED );
 
-//            //            std::cout << headerMsg() << "input stream closed by client " << std::endl;
+//            //            std::cout << headerMsg() << "input stream closed by client " <<
+//            std::endl;
 //        }
 //        //        catch ( net::Socket::exception& ex ) {
 //        catch ( net::system::SocketSystem::exception& ex ) {
@@ -136,7 +138,7 @@ namespace server {
 //    } );
 //}
 
-//StreamViewerClient::~StreamViewerClient() {
+// StreamViewerClient::~StreamViewerClient() {
 ////    m_server->m_mtxPrint.lock();
 //    std::cout << headerMsg() << "delete start" << std::endl;
 ////    m_server->m_mtxPrint.unlock();
@@ -153,9 +155,9 @@ namespace server {
 //    m_server->m_mtxPrint.unlock();
 //}
 
-//std::string StreamViewerClient::headerMsg() const {
-//    return Client::headerMsg() + "[StreamViewer] ";
-//}
+// std::string StreamViewerClient::headerMsg() const {
+//     return Client::headerMsg() + "[StreamViewer] ";
+// }
 
 //// void StreamViewerClient::update( const sensor::Acquisition& acq ) {
 ////     assert(m_outputSensor != nullptr);
@@ -163,7 +165,7 @@ namespace server {
 ////    *m_outputSensor << acq;
 ////}
 
-//void StreamViewerClient::end( io::StreamInterface::ServerMessage message ) {
+// void StreamViewerClient::end( io::StreamInterface::ServerMessage message ) {
 
 //    m_sock->write(message);
 
@@ -180,4 +182,5 @@ namespace server {
 //}
 
 } // namespace server
+} // namespace impl2
 } // namespace hub

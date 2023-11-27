@@ -14,6 +14,7 @@
 #include "impl/server2/io/StreamServer.hpp"
 
 namespace hub {
+namespace impl2 {
 namespace input {
 
 ///
@@ -44,12 +45,10 @@ class SRC_API InputStreamServer : public Input, public io::StreamServer
     ///
     //    explicit InputStreamServer( const std::string& streamName,
     //                          net::ClientSocket&& clientSocket = net::ClientSocket() );
-    InputStreamServer(
-                       int streamPort,
-                       const std::string& ipv4 = "127.0.0.1");
+    InputStreamServer( int streamPort, const std::string& ipv4 = "127.0.0.1" );
     InputStreamServer( const std::string& streamName,
                        int port                = s_defaultPort,
-                       const std::string& ipv4 = s_defaultIpv4);
+                       const std::string& ipv4 = s_defaultIpv4 );
 
     ///
     /// \brief InputStreamServer
@@ -98,15 +97,15 @@ class SRC_API InputStreamServer : public Input, public io::StreamServer
 
   private:
     //    net::ClientSocket m_serverSocket;
-    std::unique_ptr<io::InputOutputSocket> m_serverSocket;
+    std::unique_ptr<hub::io::InputOutputSocket> m_serverSocket;
     //    bool m_streamViewerClientClosed = false;
     //    bool m_streamerClosed           = false;
-    std::unique_ptr<io::InputOutputSocket> m_streamSocket;
+    std::unique_ptr<hub::io::InputOutputSocket> m_streamSocket;
 
     std::string m_streamIpv4;
     int m_streamPort;
-//    std::string m_ipv4;
-//    int m_port;
+    //    std::string m_ipv4;
+    //    int m_port;
 
     //    bool m_moved = false;
 
@@ -171,4 +170,5 @@ inline bool InputStreamServer::isEnd() const {
 }
 
 } // namespace input
+} // namespace impl2
 } // namespace hub

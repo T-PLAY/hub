@@ -25,7 +25,7 @@ using OutputStream = OutputStreamServer;
 using OutputStream = OutputStreamMqtt;
 
 #elif defined(HUB_BUILD_IMPL_SERVER2)
-using OutputStream = OutputStreamServer;
+using OutputStream = impl2::output::OutputStreamServer;
 #endif
 
 //#if defined(HUB_BUILD_SERVER) || defined(HUB_BUILD_MQTT)

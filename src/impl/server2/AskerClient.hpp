@@ -4,22 +4,23 @@
 #include <mutex>
 #include <thread>
 
-//#include "net/ClientSocket.hpp"
+// #include "net/ClientSocket.hpp"
 #include "io/InputOutputSocket.hpp"
 
 #include "Client.hpp"
 
 namespace hub {
+namespace impl2 {
 namespace server {
 
 /////
 ///// \brief The AskerClient class
 /////
-//class AskerClient : public Client
+// class AskerClient : public Client
 //{
-//  private:
-//    AskerClient( Server* server, int iClient, net::ClientSocket&& sock );
-//    ~AskerClient();
+//   private:
+//     AskerClient( Server* server, int iClient, net::ClientSocket&& sock );
+//     ~AskerClient();
 
 //    std::string headerMsg() const override;
 
@@ -34,4 +35,5 @@ namespace server {
 //};
 
 } // namespace server
+} // namespace impl2
 } // namespace hub

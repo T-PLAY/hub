@@ -3,10 +3,11 @@
 #include "Server.hpp"
 
 namespace hub {
+namespace impl2 {
 namespace server {
 
-//AskerClient::AskerClient( Server* server, int iClient, net::ClientSocket&& sock ) :
-//    Client( server, iClient ), m_sock( std::move( sock ) ) {
+// AskerClient::AskerClient( Server* server, int iClient, net::ClientSocket&& sock ) :
+//     Client( server, iClient ), m_sock( std::move( sock ) ) {
 
 //    m_thread = std::thread( [this]() {
 //        try {
@@ -77,7 +78,7 @@ namespace server {
 //    printStatusMessage( "new asker" );
 //}
 
-//AskerClient::~AskerClient() {
+// AskerClient::~AskerClient() {
 
 //    assert( m_thread.joinable() );
 //    m_thread.join();
@@ -89,13 +90,14 @@ namespace server {
 //    printStatusMessage( "del asker" );
 //}
 
-//std::string AskerClient::headerMsg() const {
-//    return Client::headerMsg() + "[Asker] ";
-//}
+// std::string AskerClient::headerMsg() const {
+//     return Client::headerMsg() + "[Asker] ";
+// }
 
-//void AskerClient::end( io::StreamInterface::ServerMessage message ) {
-//    m_sock.close();
-//}
+// void AskerClient::end( io::StreamInterface::ServerMessage message ) {
+//     m_sock.close();
+// }
 
 } // namespace server
+} // namespace impl2
 } // namespace hub
