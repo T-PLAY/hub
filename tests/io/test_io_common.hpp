@@ -89,7 +89,9 @@ static auto generateTestData() {
 template <class Input, class Output>
 static auto inputOutputBench( Input& input, Output& output, std::string verbose = "") {
 
-    const auto& [data, size] = generateTestData();
+    const auto& [dataGen, sizeGen] = generateTestData();
+    const hub::Data_t * data = dataGen;
+    const hub::Size_t size = sizeGen;
 
     static std::atomic<bool> startSignal = false;
 
@@ -183,7 +185,10 @@ static auto inputOutputBench( Input& input, Output& output, std::string verbose 
 
 template <class Input, class Output>
 static auto inputOutputBench( std::vector<Input>& inputs, std::vector<Output>& outputs, std::string verbose = "" ) {
-    const auto& [data, size] = generateTestData();
+
+    const auto& [dataGen, sizeGen] = generateTestData();
+    const hub::Data_t * data = dataGen;
+    const hub::Size_t size = sizeGen;
 
     static std::atomic<bool> startSignal = false;
 

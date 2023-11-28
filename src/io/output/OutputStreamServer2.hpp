@@ -88,6 +88,8 @@ class SRC_API OutputStreamServer2 : public Output, public io::StreamServer2
         std::unique_ptr<std::thread> m_streamThread;
         std::unique_ptr<std::thread> m_serverThread;
         bool m_shutdown = false;
+        SharedData(std::unique_ptr<hub::io::InputOutputSocket> && ioSocket) : m_serverSocket{std::move(ioSocket)} {};
+        SharedData() = default;
     };
     std::unique_ptr<SharedData> m_data;
     bool m_moved = false;
