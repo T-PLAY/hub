@@ -75,7 +75,7 @@ class SRC_API InputStreamServer2 : public Input, public io::StreamServer2
     /// \param data
     /// \param len
     ///
-    void read( unsigned char* data, size_t len ) override;
+    void read( Data_t* data, Size_t len ) override;
 
     ///
     /// \brief close
@@ -120,7 +120,7 @@ inline bool InputStreamServer2::isOpen() const {
     return m_serverSocket->isOpen();
 }
 
-inline void InputStreamServer2::read( unsigned char* data, size_t len ) {
+inline void InputStreamServer2::read( Data_t* data, Size_t len ) {
     //    m_serverSocket.read( data, len );
     assert( m_streamSocket != nullptr );
     m_streamSocket->read( data, len );

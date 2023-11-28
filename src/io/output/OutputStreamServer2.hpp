@@ -10,8 +10,8 @@
 // #include "../StreamServer.hpp"
 // #include "impl/server2/io/StreamServer.hpp"
 #include "io/StreamServer2.hpp"
-#include "sensor/Acquisition.hpp"
-#include "sensor/SensorSpec.hpp"
+// #include "sensor/Acquisition.hpp"
+// #include "sensor/SensorSpec.hpp"
 
 namespace hub {
 namespace output {
@@ -64,7 +64,7 @@ class SRC_API OutputStreamServer2 : public Output, public io::StreamServer2
 
     // #ifdef WIN32 // msvc warning C4250
     //  protected:
-    void write( const unsigned char* data, size_t len ) override;
+    void write( const Data_t* data, Size_t len ) override;
     void close() override;
     bool isOpen() const override;
     void setRetain( bool retain ) override;

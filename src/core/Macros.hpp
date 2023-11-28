@@ -417,7 +417,7 @@ static std::string pretty_bytes( hub::Size_t bytes ) {
         snprintf( buff, 80, "%d %s", (int)count, suffixes[s].data() );
 #else
 #    ifdef OS_MACOS
-        snprintf( buff, 80, "%d %s", (int)count, suffixes[s].data() );
+        snprintf( buff, 32, "%d %s", (int)count, suffixes[s].data() );
 #    else
         sprintf( buff, "%d %s", (int)count, suffixes[s].data() );
 #    endif
@@ -428,7 +428,7 @@ static std::string pretty_bytes( hub::Size_t bytes ) {
         snprintf( buff, 80, "%.1f %s", count, suffixes[s].data() );
 #else
 #    ifdef OS_MACOS
-        snprintf( buff, 80, "%.1f %s", count, suffixes[s].data() );
+        snprintf( buff, 32, "%.1f %s", count, suffixes[s].data() );
 #    else
         sprintf( buff, "%.1f %s", count, suffixes[s].data() );
 #    endif
