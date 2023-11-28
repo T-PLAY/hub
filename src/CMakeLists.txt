@@ -188,6 +188,12 @@ if (NOT XCODE) # unable to have object files as native build with Xcode
             list(FILTER object_headers EXCLUDE REGEX ".*boost/.*\\.hpp$")
         endif()
 
+        if (HUB_BUILD_SERVER)
+            list(FILTER object_sources EXCLUDE REGEX ".*server/impl/.*\\.cpp$")
+            list(FILTER object_headers EXCLUDE REGEX ".*server/impl/.*\\.hpp$")
+        endif()
+
+
         #        add_library(${PROJECT_NAME} OBJECT ${object_sources} ${object_headers})
         #        add_library(${TARGET_NAME} INTERFACE ${object_sources} ${object_headers})
         #        add_library(${TARGET_NAME} INTERFACE ${object_headers})

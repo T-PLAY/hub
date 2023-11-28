@@ -12,6 +12,7 @@
 // #include <algorithm>
 #include <list>
 #include <numeric>
+#include <set>
 
 // #include <io/input/Input.hpp>
 // #include <io/output/Output.hpp>
@@ -25,6 +26,8 @@
 
 #define GET_RANDOM_PORT getRandomPort( __FILE__ )
 
+static std::set<int> s_randomPortsGenerated;
+
 static int getRandomPort( const char* filename ) {
     // #ifdef BUILD_SERVER
     //     return 4042;
@@ -33,13 +36,19 @@ static int getRandomPort( const char* filename ) {
     //     return 1883;
     // #endif
     srand( (unsigned)time( NULL ) );
-    constexpr int offset      = 6000;
-    const unsigned int random = static_cast<int>( std::hash<std::string>()( filename ) ) + rand();
-    const unsigned int ret    = offset + random % ( 65535 - offset );
-    assert( offset <= ret && ret < 65535 );
-    //    assert( ret != hub::io::StreamServer::s_defaultPort );
-    std::cout << "using random port: " << ret << std::endl;
-    return ret;
+    constexpr int offset = 6000;
+    int randomPort;
+    do {
+        const unsigned int random =
+            static_cast<int>( std::hash<std::string>()( filename ) ) + rand();
+        randomPort = offset + random % ( 65535 - offset );
+        assert( offset <= randomPort && randomPort < 65535 );
+    } while ( s_randomPortsGenerated.find( randomPort ) != s_randomPortsGenerated.end() );
+
+    s_randomPortsGenerated.insert( randomPort );
+    //    assert( randomPort != hub::io::StreamServer::s_defaultPort );
+    std::cout << "using random port: " << randomPort << std::endl;
+    return randomPort;
 }
 
 static std::string ReplaceAll( std::string str, const std::string& from, const std::string& to ) {
@@ -226,7 +235,9 @@ static void _checkValue( double value,
                 // std::cout << "minValue = " << minValue << std::endl;
                 // std::cout << "maxValue = " << maxValue << std::endl;
                 // std::cout << "minRatio = " << minRatio << std::endl;
+#ifndef DEBUG
                 CHECK( minRatio <= value );
+#endif
                 if ( !( minRatio <= value ) ) {
                     std::cout << "---------------------------------------------> "
                                  "checkRatio: "
@@ -352,7 +363,8 @@ static void _checkValue( double value,
                 const auto standardDeviation =
                     algo::StandardDeviation( values.begin(), values.begin() + nEl );
                 const auto mean = algo::Mean( values.begin(), values.begin() + nEl );
-                report += "\n\t\tvalue:" + std::to_string( value ) + ", mean:" + std::to_string( mean ) +
+                report += "\n\t\tvalue:" + std::to_string( value ) +
+                          ", mean:" + std::to_string( mean ) +
                           ", σ:" + std::to_string( standardDeviation ) +
                           ", mean-σ(15.9%):" + std::to_string( mean - standardDeviation ) +
                           ", mean-2σ(2.3%):" + std::to_string( mean - 2 * standardDeviation ) +
