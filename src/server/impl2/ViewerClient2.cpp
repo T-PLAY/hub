@@ -2,6 +2,7 @@
 
 #include "ServerImpl2.hpp"
 #include "StreamerClient2.hpp"
+#include "core/Any.hpp"
 
 namespace hub {
 namespace server {

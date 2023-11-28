@@ -197,6 +197,10 @@ if (NOT XCODE) # unable to have object files as native build with Xcode
             list(FILTER object_headers EXCLUDE REGEX ".*Server\\.hpp$")
         endif()
 
+#        foreach (object_src ${object_headers})
+#            message(STATUS "src: ${object_src}")
+#        endforeach()
+
 
         #        add_library(${PROJECT_NAME} OBJECT ${object_sources} ${object_headers})
         #        add_library(${TARGET_NAME} INTERFACE ${object_sources} ${object_headers})

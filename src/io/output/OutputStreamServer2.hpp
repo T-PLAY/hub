@@ -52,7 +52,7 @@ class SRC_API OutputStreamServer2 : public Output, public io::StreamServer2
     /// \brief OutputStreamServer2
     /// \param outputStream
     ///
-    OutputStreamServer2( OutputStreamServer2&& outputStream );
+    OutputStreamServer2( OutputStreamServer2&& outputStream ) noexcept;
 
     ~OutputStreamServer2();
 

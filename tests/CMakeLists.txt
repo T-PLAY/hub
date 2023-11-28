@@ -43,6 +43,8 @@ endif()
 set(test_srcs)
 set(test_headers)
 foreach(HUB_SOURCE_DIR ${HUB_SOURCE_DIRS})
+#set(DIRS "core" "net" "io")
+#foreach(HUB_SOURCE_DIR ${DIRS})
     file(
         #        GLOB
         GLOB_RECURSE
@@ -118,6 +120,7 @@ if (NOT HUB_BUILD_SERVER)
 #    list(REMOVE_ITEM test_srcs ${server_srcs})
 endif()
 
+
 #if (NOT HUB_BUILD_SERVER)
 #    list(FILTER test_srcs EXCLUDE REGEX ".*Server\\.cpp$")
 #    list(FILTER test_srcs EXCLUDE REGEX ".*-server-.*\\.cpp$")
@@ -166,7 +169,7 @@ include(CTest)
 #)
 enable_testing()
 foreach(testFile ${test_srcs})
-    #    message(STATUS "test src: ${testFile}")
+    #  message(STATUS "test src: ${testFile}")
     #endforeach()
 
     get_filename_component(test ${testFile} NAME_WE)

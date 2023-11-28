@@ -381,7 +381,8 @@ constexpr auto sizeof_() {
 static std::string pretty_bytes( hub::Size_t bytes ) {
     std::string str;
 
-    char buff[32] { 0 };
+    constexpr auto buffSize = 32;
+    char buff[buffSize] { 0 };
     //static const char* suffixes[7];
     static constexpr std::string_view suffixes[] {
         "Bytes", "KiloBytes", "MegaBytes", "GigaBytes", "TeraBytes", "PetaBytes", "ExaBytes" };
@@ -408,16 +409,16 @@ static std::string pretty_bytes( hub::Size_t bytes ) {
         s++;
         count /= kilo;
     }
-    //sprintf_s( buff, 80, "%d%s", (int)count, suffixes[s].data() );
+    //sprintf_s( buff, buffSize, "%d%s", (int)count, suffixes[s].data() );
     //return std::string( buff );
 
     if ( count - floor( count ) == 0.0 )
 #ifdef WIN32
         //sprintf_s( buff, 80, "%d %s", (int)count, suffixes[s].data() );
-        snprintf( buff, 80, "%d %s", (int)count, suffixes[s].data() );
+        snprintf( buff, buffSize, "%d %s", (int)count, suffixes[s].data() );
 #else
 #    ifdef OS_MACOS
-        snprintf( buff, 32, "%d %s", (int)count, suffixes[s].data() );
+        snprintf( buff, buffSize, "%d %s", (int)count, suffixes[s].data() );
 #    else
         sprintf( buff, "%d %s", (int)count, suffixes[s].data() );
 #    endif
@@ -425,10 +426,10 @@ static std::string pretty_bytes( hub::Size_t bytes ) {
     else
 #ifdef WIN32
         //sprintf_s( buff, 80, "%.1f %s", count, suffixes[s].data() );
-        snprintf( buff, 80, "%.1f %s", count, suffixes[s].data() );
+        snprintf( buff, buffSize, "%.1f %s", count, suffixes[s].data() );
 #else
 #    ifdef OS_MACOS
-        snprintf( buff, 32, "%.1f %s", count, suffixes[s].data() );
+        snprintf( buff, buffSize, "%.1f %s", count, suffixes[s].data() );
 #    else
         sprintf( buff, "%.1f %s", count, suffixes[s].data() );
 #    endif

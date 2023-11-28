@@ -7,7 +7,7 @@
 #include <thread>
 
 #include "Client2.hpp"
-#include "sensor/InputSensor.hpp"
+//#include "sensor/InputSensor.hpp"
 // #include "net/ClientSocket.hpp"
 #include "io/InputOutputSocket.hpp"
 

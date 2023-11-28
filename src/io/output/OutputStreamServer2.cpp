@@ -108,9 +108,9 @@ OutputStreamServer2::OutputStreamServer2( const std::string& streamName,
                 else { assert( false ); }
             }
             catch ( net::system::SocketSystem::exception& ex ) {
-#ifdef DEBUG_OUTPUT_STREAM
+//#ifdef DEBUG_OUTPUT_STREAM
                 std::cout << "[OutputStream] catch exception : " << ex.what() << std::endl;
-#endif
+//#endif
                 std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
             }
         }
@@ -124,7 +124,7 @@ OutputStreamServer2::OutputStreamServer2( const std::string& streamName,
     startStreaming();
 }
 
-OutputStreamServer2::OutputStreamServer2( OutputStreamServer2&& outputStream ) :
+OutputStreamServer2::OutputStreamServer2( OutputStreamServer2&& outputStream ) noexcept :
     StreamServer2( outputStream.m_name, outputStream.m_ipv4, outputStream.m_port ),
     // m_serverSocket( std::move( outputStream.m_serverSocket ) ),
     m_data( std::move( outputStream.m_data ) )

@@ -215,9 +215,9 @@ endif()
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
 
-# set(HUB_SOURCE_DIRS "core")
-#set(HUB_SOURCE_DIRS "net")
-# set(HUB_SOURCE_DIRS "core" "net" "io")
+#set(HUB_SOURCE_DIRS "core")
+#set(HUB_SOURCE_DIRS "core" "net")
+#set(HUB_SOURCE_DIRS "core" "net" "io")
 set(HUB_SOURCE_DIRS "core" "net" "io" "server")
 #set(HUB_SOURCE_DIRS "core" "sensor")
 #set(HUB_SOURCE_DIRS "core" "net" "sensor")

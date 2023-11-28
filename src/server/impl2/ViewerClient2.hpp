@@ -7,7 +7,7 @@
 #include "Client2.hpp"
 // #include "net/ClientSocket.hpp"
 #include "io/InputOutputSocket.hpp"
-#include "sensor/SensorSpec.hpp"
+//#include "sensor/SensorSpec.hpp"
 
 namespace hub {
 namespace server {
