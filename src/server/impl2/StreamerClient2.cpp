@@ -121,19 +121,17 @@ StreamerClient2::StreamerClient2( ServerImpl2* server,
         try {
 
             while ( true ) {
-                hub::io::StreamBase::ClientMessage mess =
-                    hub::io::StreamBase::ClientMessage::NONE;
+                hub::io::StreamBase::ClientMessage mess = hub::io::StreamBase::ClientMessage::NONE;
                 sockPtr->read( mess );
                 if ( mess == hub::io::StreamBase::ClientMessage::CLIENT_SERVER_DOWN ) {
                     m_serverDown = true;
                     break;
                 }
-                else if ( mess ==
-                          hub::io::StreamBase::ClientMessage::STREAMER_CLIENT_CLOSED ) {
+                else if ( mess == hub::io::StreamBase::ClientMessage::STREAMER_CLIENT_CLOSED ) {
                     break;
                 }
-                else if ( mess == hub::io::StreamBase::ClientMessage::
-                                      STREAMER_CLIENT_NEW_STREAM_VIEWER ) {
+                else if ( mess ==
+                          hub::io::StreamBase::ClientMessage::STREAMER_CLIENT_NEW_STREAM_VIEWER ) {
                     sockPtr->read( m_nStreamViewer );
                     m_server->newStreamViewer( this );
                     sockPtr->write( hub::io::StreamBase::ServerMessage::STREAM_VIEWER_INITED );
@@ -175,8 +173,11 @@ StreamerClient2::~StreamerClient2() {
     //    std::cout << headerMsg() << "delete ended" << std::endl;
     m_server->m_mtxPrint.unlock();
     if ( !m_serverDown ) {
-        assert( m_sock->isOpen() );
-        m_sock->write( hub::io::StreamBase::ServerMessage::STREAMER_CLOSED );
+        // todo check fix
+        if ( m_sock->isOpen() ) {
+            assert( m_sock->isOpen() );
+            m_sock->write( hub::io::StreamBase::ServerMessage::STREAMER_CLOSED );
+        }
     }
 }
 

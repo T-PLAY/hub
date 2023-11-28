@@ -19,6 +19,7 @@ TEST_CASE( "InputOutputStream retain test" ) {
 
         {
             hub::input::InputStream inputStream( FILE_NAME, SERVER_PORT );
+            assert(inputStream.isOpen());
 
             int a = 5;
             outputStream.write( a );
@@ -29,6 +30,7 @@ TEST_CASE( "InputOutputStream retain test" ) {
             assert( a == a_read );
 
             hub::input::InputStream inputStream2( FILE_NAME, SERVER_PORT );
+            assert(inputStream2.isOpen());
 
             a = 6;
             outputStream.write( a );
@@ -42,6 +44,7 @@ TEST_CASE( "InputOutputStream retain test" ) {
             outputStream.write( a );
 
             hub::input::InputStream inputStream3( FILE_NAME, SERVER_PORT );
+            assert(inputStream3.isOpen());
             inputStream.read( a_read );
             assert( a == a_read );
             inputStream2.read( a_read );

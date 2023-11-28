@@ -75,7 +75,7 @@ TEST_CASE( "Buffer test" ) {
 
     const auto ratio = staticDuration / (double)dynamicDuration;
     // CHECK_VALUE( ratio, 3.0, 2.0, "DynamicData/StaticData", "/" );
-    CHECK_DECLINE( ratio, "DynamicData/StaticData", "/" );
+    CHECK_DECLINE( ratio, "Buffer:DynamicData/StaticData", "/" );
     //    std::this_thread::sleep_for(std::chrono::seconds(5));
 
     delete[] rawData;

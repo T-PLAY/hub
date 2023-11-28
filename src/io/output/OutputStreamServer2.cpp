@@ -217,7 +217,7 @@ void OutputStreamServer2::startStreaming() {
     while ( !m_data->m_serverStarted ) {};
 }
 
-void output::OutputStreamServer2::write( const Data_t* data, size_t size ) {
+void output::OutputStreamServer2::write( const Data_t* data, Size_t size ) {
     if ( m_data->m_writingFun != nullptr ) m_data->m_writingFun( data, size );
     m_data->m_mtxClientSockets.lock();
     auto& clientSockets = m_data->m_streamSockets;
