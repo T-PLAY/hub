@@ -52,8 +52,8 @@ void OutputStreamServer2::initStream() {
 }
 
 OutputStreamServer2::OutputStreamServer2( const std::string& streamName,
-                                        int port,
-                                        const std::string& ipv4 ) :
+                                          int port,
+                                          const std::string& ipv4 ) :
     io::StreamServer2( streamName, ipv4, port ),
     m_data( std::make_unique<SharedData>(
         std::make_unique<hub::io::InputOutputSocket>( net::ClientSocket( ipv4, port ) ) ) ) {
@@ -221,14 +221,20 @@ void output::OutputStreamServer2::write( const Data_t* data, size_t size ) {
     if ( m_data->m_writingFun != nullptr ) m_data->m_writingFun( data, size );
     m_data->m_mtxClientSockets.lock();
     auto& clientSockets = m_data->m_streamSockets;
-#ifdef HUB_USE_TBB
-    std::for_each( std::execution::par,
+#ifdef OS_MACOS
+    for ( auto& clientSocket : clientSockets ) {
+        clientSocket.write( data, size );
+    }
 #else
+#    ifdef HUB_USE_TBB
+    std::for_each( std::execution::par,
+#    else
     std::for_each( std::execution::seq,
-#endif
+#    endif
                    clientSockets.begin(),
                    clientSockets.end(),
                    [=]( auto& clientSocket ) { clientSocket.write( data, size ); } );
+#endif
     m_data->m_mtxClientSockets.unlock();
 }
 
