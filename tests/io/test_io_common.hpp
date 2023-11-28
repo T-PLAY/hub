@@ -23,6 +23,7 @@
 // #include <impl/server2/io/StreamServer.hpp>
 #include <io/Stream.hpp>
 // #include <io/Server.hpp>
+#include <server/Server.hpp>
 
 #ifdef HUB_SERVER_PORT
 // #ifdef HUB_TEST_ALL

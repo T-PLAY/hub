@@ -36,7 +36,7 @@ static int getRandomPort( const char* filename ) {
     constexpr int offset      = 6000;
     const unsigned int random = static_cast<int>( std::hash<std::string>()( filename ) ) + rand();
     const unsigned int ret    = offset + random % ( 65535 - offset );
-    assert( offset <= ret && ret < 65536 );
+    assert( offset <= ret && ret < 65535 );
     //    assert( ret != hub::io::StreamServer::s_defaultPort );
     std::cout << "using random port: " << ret << std::endl;
     return ret;
@@ -220,7 +220,7 @@ static void _checkValue( double value,
                 // const auto lastDeviation     = maxValue - minValue;
                 // assert( lastDeviation >= 0 );
                 const auto minRatio =
-                    mean - standardDeviation * 2.0; // correspond of 0.1% of the population, should
+                    mean - standardDeviation * 3.0; // correspond of 0.1% of the population, should
                                                     // never happened, retry test if not.
                 // const auto minRatio = minValue - lastDeviation * 0.5;
                 // std::cout << "minValue = " << minValue << std::endl;

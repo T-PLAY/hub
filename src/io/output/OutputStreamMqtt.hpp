@@ -9,8 +9,8 @@
 //#include "io/output/Output.hpp"
 //#include "io/StreamInterface.hpp"
 #include "core/Output.hpp"
-#include "io/StreamInterface.hpp"
-#include "impl/mqtt/io/StreamMqtt.hpp"
+// #include "io/StreamBase.hpp"
+#include "io/StreamMqtt.hpp"
 #include "sensor/Acquisition.hpp"
 #include "sensor/SensorSpec.hpp"
 

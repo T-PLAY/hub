@@ -2,13 +2,14 @@
 
 #include <string>
 
-#include "io/StreamInterface.hpp"
+// #include "io/StreamInterface.hpp"
+#include "StreamBase.hpp"
 
 namespace hub {
 namespace io {
 
 
-class StreamMqtt : public StreamInterface
+class StreamMqtt : public StreamBase
 {
   public:
     static const std::string s_defaultIpv4;

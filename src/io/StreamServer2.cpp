@@ -9,7 +9,7 @@ const std::string StreamServer2::s_defaultIpv4 = "127.0.0.1";
 #ifdef HUB_SERVER_PORT
 const int StreamServer2::s_defaultPort = HUB_SERVER_PORT;
 #else
-const int StreamServer2::s_defaultPort = 5043;
+const int StreamServer2::s_defaultPort = 1993; // author's birthday, not snmp-tcp port
 #endif
 // const int StreamServer2::s_defaultPort = HUB_SERVICE_PORT;
 

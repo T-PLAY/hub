@@ -9,10 +9,8 @@
 
 TEST_CASE( "Test end" ) {
 
-#if defined(HUB_BUILD_IO) && defined(HUB_BUILD_SERVER) && defined(HUB_SERVER_PORT)
-    // hub::impl2::io::StreamServer::stopServer();
+#if defined(HUB_BUILD_SERVER) && defined(HUB_SERVER_PORT)
     hub::io::Stream::stopServer();
-    // hub::io::Stream
 #endif
 
     END_REPORT();

@@ -8,7 +8,8 @@
 // #include "InputStreamInterface.hpp"
 #include "core/Input.hpp"
 //#include "io/input/"
-#include "impl/mqtt/io/StreamMqtt.hpp"
+// #include "impl/mqtt/io/StreamMqtt.hpp"
+#include "io/StreamMqtt.hpp"
 #include "sensor/Acquisition.hpp"
 #include "sensor/SensorSpec.hpp"
 

@@ -111,7 +111,7 @@ foreach(SUPPORTED_COMPILER ${SUPPORTED_COMPILERS})
 endforeach()
 
 if (LLVM)
-    message(FATAL_ERROR "eee")
+    message(FATAL_ERROR "not supported")
 endif()
 
 
@@ -151,13 +151,13 @@ if (Boost_FOUND)
 #    target_compile_definitions(${TARGET_NAME} PUBLIC -DHUB_USE_BOOST)
 endif()
 
-find_package(OpenCV QUIET) # tcp socket communication
+find_package(OpenCV QUIET)
 if (OpenCV_FOUND)
     add_definitions(-DHUB_USE_OPENCV)
     link_libraries(${OpenCV_LIBS})
 endif()
 
-find_package(Eigen3 QUIET) # tcp socket communication
+find_package(Eigen3 QUIET)
 if (Eigen3_FOUND)
     add_definitions(-DHUB_USE_EIGEN3)
 endif()
@@ -168,9 +168,25 @@ if (TBB_FOUND)
     link_libraries(tbb)
 endif()
 
+find_package(PahoMqttCpp QUIET)
+if (PahoMqttCpp_FOUND)
+    add_definitions(-DHUB_USE_MQTT)
+    link_libraries(PahoMqttCpp::paho-mqttpp3)
+endif()
+
 if (HUB_SERVER_PORT)
     add_definitions(-DHUB_SERVER_PORT=${HUB_SERVER_PORT})
 endif()
+
+# option(HUB_BUILD_SERVER "Build implement server" OFF)
+# if (HUB_BUILD_SERVER)
+#     add_definitions(-DHUB_BUILD_SERVER)
+#     # target_compile_definitions(${TARGET_NAME} PUBLIC -DHUB_BUILD_SERVER)
+#     # if (HUB_SERVER_PORT)
+#         # target_compile_definitions(${TARGET_NAME} PUBLIC -DHUB_SERVER_PORT=${HUB_SERVER_PORT})
+#     # endif()
+# endif()
+
 
 #find_package(OpenEXR QUIET) # tcp socket communication
 #if (OpenEXR_FOUND)
@@ -199,8 +215,8 @@ endif()
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
 
-# set(HUB_SOURCE_DIRS "core") # allowed
-#set(HUB_SOURCE_DIRS "net") # allowed
+# set(HUB_SOURCE_DIRS "core")
+#set(HUB_SOURCE_DIRS "net")
 # set(HUB_SOURCE_DIRS "core" "net" "io")
 set(HUB_SOURCE_DIRS "core" "net" "io" "server")
 #set(HUB_SOURCE_DIRS "core" "sensor")
