@@ -27,6 +27,7 @@ class Client2
     void setServer( ServerImpl2* newServer );
 
     virtual void end( hub::io::StreamBase::ServerMessage message ) = 0;
+    virtual void notifyInited() = 0;
 
   private:
     ServerImpl2* m_server = nullptr;

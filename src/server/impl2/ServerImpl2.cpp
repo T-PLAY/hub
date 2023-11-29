@@ -54,7 +54,7 @@ ServerImpl2::~ServerImpl2() {
 
 std::string ServerImpl2::headerMsg() const {
     const std::string str =
-        "\t\033[1m[ServerImpl2:0/" + std::to_string( m_nActiveClient ) + "]\033[0m ";
+        "\t\033[1m[Server:0/" + std::to_string( m_nActiveClient ) + "]\033[0m ";
     return str;
 }
 
@@ -81,6 +81,7 @@ void ServerImpl2::run() {
         else {
             m_clients.push_back( newClient );
             SERVER_MSG( "new client inited" );
+            newClient->notifyInited();
         }
         m_mtxClients.unlock();
     }
@@ -301,6 +302,16 @@ void ServerImpl2::printStatus() const {
 
 bool ServerImpl2::running() const {
     return m_running;
+}
+
+int ServerImpl2::nStreamer() const
+{
+    return m_streamName2streamer.size();
+}
+
+int ServerImpl2::nClient() const
+{
+    return m_clients.size();
 }
 
 std::string ServerImpl2::getStatus() const {

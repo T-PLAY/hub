@@ -33,6 +33,7 @@ class ViewerClient2 : public Client2
     void notifyDelStreamer( const std::string& streamName );
 
     void end( io::StreamBase::ServerMessage message ) override;
+    void notifyInited() override;
     //    void notifyProperty( const std::string& streamName,
     //                         const std::string& objectName,
     //                         int property,

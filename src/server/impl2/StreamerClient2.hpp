@@ -65,6 +65,7 @@ class StreamerClient2 : public Client2
     /// \param message
     ///
     void end( io::StreamBase::ServerMessage message ) override;
+    void notifyInited() override;
 
     StreamerClient2( const StreamerClient2& ) = delete;
     StreamerClient2( StreamerClient2&& )      = delete;

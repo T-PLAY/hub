@@ -72,6 +72,7 @@ class SRC_API OutputStreamServer2 : public Output, public io::StreamServer2
     void setRetain( bool retain ) override;
 
     // #endif
+    // int getNStreamViewer() const;
 
   private:
     void stop();
@@ -83,8 +84,8 @@ class SRC_API OutputStreamServer2 : public Output, public io::StreamServer2
         std::mutex m_mtxClientSockets;
         std::vector<hub::Data_t> m_retainedData;
         bool m_killed                          = false;
-        std::atomic<bool> m_serverStarted      = false;
-        std::atomic<bool> m_streamConnected    = false;
+        std::atomic<bool> m_isStreaming      = false;
+        std::atomic<bool> m_serverConnected    = false;
         std::atomic<bool> m_streamViewerInited = false;
         std::function<void( const Data_t*, Size_t )> m_writingFun;
         std::unique_ptr<std::thread> m_streamThread;

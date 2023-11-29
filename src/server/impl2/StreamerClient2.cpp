@@ -116,8 +116,10 @@ StreamerClient2::StreamerClient2( ServerImpl2* server,
     assert( m_server != nullptr );
     m_server->addStreamer( this );
 
+    std::atomic<bool> streamerClientInited = false;
+
     auto* sockPtr = m_sock.get();
-    m_thread      = std::thread( [sockPtr, this]() mutable {
+    m_thread      = std::thread( [this, sockPtr, &streamerClientInited]() mutable {
         try {
 
             while ( true ) {
@@ -138,8 +140,9 @@ StreamerClient2::StreamerClient2( ServerImpl2* server,
                     // std::cout << headerMsg() << "new stream viewer" << std::endl;
                     // m_server->printStatus();
                 }
-                // else if ( mess == io::StreamBase::ClientMessage::STREAMER_CLIENT_START ) {
-                // std::cout << "[StreamerClient2] STREAMER_CLIENT_START" << std::endl;
+                // else if ( mess == io::StreamBase::ClientMessage::STREAMER_CLIENT_INITED ) {
+                // // std::cout << "[StreamerClient2] STREAMER_CLIENT_START" << std::endl;
+                //     streamerClientInited = true;
                 // }
                 else { assert( false ); }
             }
@@ -154,7 +157,14 @@ StreamerClient2::StreamerClient2( ServerImpl2* server,
         std::thread( [this]() { delete this; } ).detach();
     } );
 
-    m_sock->write( hub::io::StreamBase::ServerMessage::STREAMER_INITED );
+    // m_sock->write( hub::io::StreamBase::ServerMessage::STREAMER_INITED );
+    // hub::io::StreamBase::ClientMessage clientMess;
+    // while ( !streamerClientInited ) {
+    //     std::cout << "[StreamerClient2] waiting for streamer client inited ..." << std::endl;
+    //     std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
+    // };
+    // m_sock->read(clientMess);
+    // assert(clientMess == io::StreamBase::ClientMessage::STREAMER_CLIENT_INITED);
 }
 
 int StreamerClient2::getNStreamViewer() const {
@@ -213,6 +223,13 @@ void StreamerClient2::end( hub::io::StreamBase::ServerMessage message ) {
     //    assert( input.m_clientSocket.isOpen() );
     assert( m_sock->isOpen() );
     m_sock->write( message );
+}
+
+void StreamerClient2::notifyInited()
+{
+    assert( m_sock->isOpen() );
+    // m_sock->write( message );
+    m_sock->write( hub::io::StreamBase::ServerMessage::STREAMER_INITED );
 }
 
 // const std::string& StreamerClient2::getStreamName() const {

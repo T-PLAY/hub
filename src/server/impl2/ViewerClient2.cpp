@@ -121,6 +121,12 @@ void ViewerClient2::end( hub::io::StreamBase::ServerMessage message ) {
     }
 }
 
+void ViewerClient2::notifyInited()
+{
+    assert( m_socket.isOpen() );
+    // m_socket.write( message );
+}
+
 // void ViewerClient2::notifyProperty( const std::string& streamName,
 //                                    const std::string& objectName,
 //                                    int property,

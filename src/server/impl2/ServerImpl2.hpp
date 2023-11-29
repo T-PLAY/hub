@@ -67,6 +67,9 @@ class SRC_API ServerImpl2
     bool running() const;
     //    void exit();
 
+    int nStreamer() const;
+    int nClient() const;
+
   private:
     void exitMainThread();
 
