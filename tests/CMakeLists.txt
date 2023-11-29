@@ -112,8 +112,8 @@ endif()
 #message(STATUS "#################### ${test_srcs}")
 
 if (NOT HUB_BUILD_SERVER)
-   list(FILTER test_srcs EXCLUDE REGEX "test-io-inputOutputStream.*\\.cpp$")
-   list(FILTER test_srcs EXCLUDE REGEX "test-io-InputOutputStream.cpp$")
+   list(FILTER test_srcs EXCLUDE REGEX ".*inputOutputStream/.*\\.cpp$")
+   list(FILTER test_srcs EXCLUDE REGEX ".*test-io-InputOutputStream.cpp$")
 #    list(FILTER test_srcs EXCLUDE REGEX ".*-server-.*\\.cpp$")
 
 #    file(GLOB server_srcs server/*.cpp)

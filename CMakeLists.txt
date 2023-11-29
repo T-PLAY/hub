@@ -245,6 +245,11 @@ set(HUB_SOURCE_DIRS "core" "net" "io" "sensor")
 #set(HUB_SOURCE_DIRS "core" "io" "sensor")
 #set(HUB_SOURCE_DIRS "core" "net" "data" "io" "sensor" "server" "client" "native")
 
+foreach(MODULE "core" "net" "data" "io" "sensor" "server" "client" "native")
+    string(TOUPPER ${MODULE} UPPER_MODULE)
+    set(HUB_BUILD_${UPPER_MODULE} 0)
+endforeach()
+
 #set(HUB_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
 #set(HUB_SOURCE_DIR ".")
 #set(HUB_SOURCE_DIRS "client") # io sensor
