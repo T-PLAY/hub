@@ -159,7 +159,10 @@ endif()
 
 find_package(Eigen3 QUIET)
 if (Eigen3_FOUND)
+#    message(FATAL_ERROR "ouou")
     add_definitions(-DHUB_USE_EIGEN3)
+    link_libraries(Eigen3::Eigen)
+    include_directories(${EIGEN3_INCLUDE_DIR})
 endif()
 
 find_package(TBB QUIET)
@@ -313,6 +316,8 @@ option(HUB_ENABLE_WRAPPER "Enable wrapper" OFF)
 if(HUB_ENABLE_WRAPPER)
     add_subdirectory(wrapper)
 endif()
+
+message(STATUS "Modules: ${HUB_SOURCE_DIRS}")
 
 get_property(TMP GLOBAL PROPERTY CUSTOM_TARGETS_FOUNDED)
 #message(STATUS "Custom targets: cppCheck format doc-doxygen doc-sphinx coverage coverage-lcov coverage-all tests")

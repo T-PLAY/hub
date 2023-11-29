@@ -183,11 +183,18 @@ static void _checkValue( double value,
                          const std::string& filename,
                          int line ) {
 
-    std::string name2 = name;
+    std::string filename2 = filename;
+    filename2 = ReplaceAll( filename, ".", "_" );
 
+    std::string name2 = name;
     name2 = ReplaceAll( name2, "/", "_vs_" );
     name2 = ReplaceAll( name2, ":", "_" );
     name2 = ReplaceAll( name2, " ", "" );
+//    name2 = ReplaceAll( name2, ".", "_" );
+    name2 = ReplaceAll( name2, "(", "_" );
+    name2 = ReplaceAll( name2, ")", "_" );
+    name2 = ReplaceAll( name2, ">", "_" );
+//    name2 = ReplaceAll( name2, "-", "_" );
 
     constexpr auto extension = "_v1_0_4.log";
     bool decline             = false;
@@ -195,8 +202,10 @@ static void _checkValue( double value,
     constexpr int nRatio     = 8;
     assert( nRatio == std::pow( 2, nMaxMean - 1 ) );
 
+    const std::string logFilename = filename2 + "_" + name2 + extension;
+
     {
-        std::ifstream inFile( ( filename + "_" + name2 + extension ).c_str() );
+        std::ifstream inFile( logFilename.c_str() );
         if ( inFile.is_open() ) {
             assert( inFile.is_open() );
 
@@ -250,7 +259,8 @@ static void _checkValue( double value,
     }
 
     if ( !decline ) {
-        std::ofstream logFile( ( filename + "_" + name2 + extension ).c_str(),
+//        std::cout << "filename: " <<  filename + "_" + name2 + extension << std::endl;
+        std::ofstream logFile(  logFilename.c_str(),
                                std::ios::out | std::ios::app );
         assert( logFile.is_open() );
 
@@ -260,7 +270,8 @@ static void _checkValue( double value,
     }
 
     {
-        std::ifstream inFile( ( filename + "_" + name2 + extension ).c_str() );
+//        std::ifstream inFile( ( filename + "_" + name2 + extension ).c_str() );
+        std::ifstream inFile( logFilename.c_str() );
         if ( inFile.is_open() ) {
             assert( inFile.is_open() );
 

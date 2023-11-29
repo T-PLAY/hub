@@ -145,8 +145,10 @@ StreamerClient2::StreamerClient2( ServerImpl2* server,
             }
         }
         catch ( net::system::SocketSystem::exception& ex ) {
-            m_server->m_mtxPrint.lock();
+//            m_server->m_mtxPrint.lock();
+            m_mtxPrint.lock();
             std::cout << headerMsg() << "catch exception : " << ex.what() << std::endl;
+            m_mtxPrint.unlock();
         }
 
         std::thread( [this]() { delete this; } ).detach();
@@ -161,6 +163,7 @@ int StreamerClient2::getNStreamViewer() const {
 
 StreamerClient2::~StreamerClient2() {
     //    m_server->m_mtxPrint.lock();
+    m_mtxPrint.lock();
     std::cout << headerMsg() << "delete start" << std::endl;
     //    m_server->m_mtxPrint.unlock();
 
@@ -171,7 +174,8 @@ StreamerClient2::~StreamerClient2() {
 
     //    m_server->m_mtxPrint.lock();
     //    std::cout << headerMsg() << "delete ended" << std::endl;
-    m_server->m_mtxPrint.unlock();
+//    m_server->m_mtxPrint.unlock();
+    m_mtxPrint.unlock();
     if ( !m_serverDown ) {
         // todo check fix
         if ( m_sock->isOpen() ) {

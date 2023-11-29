@@ -23,6 +23,8 @@ namespace server {
 // static void stopServer( std::string ipv4, int port );
 namespace impl2 {
 
+static std::mutex m_mtxPrint;
+
 ///
 /// \brief The ServerImpl2 class
 ///
@@ -121,7 +123,7 @@ class SRC_API ServerImpl2
     int m_nActiveClient = 0;
     //    int m_maxClients = 1'000'000;
 
-    std::mutex m_mtxPrint;
+//    std::mutex m_mtxPrint;
 
     //    bool m_detached = false;
     bool m_killed  = false;

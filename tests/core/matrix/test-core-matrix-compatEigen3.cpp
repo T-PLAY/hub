@@ -6,7 +6,9 @@
 #include <sensor/Resolution.hpp>
 
 #ifdef HUB_USE_EIGEN3
-#include <eigen3/Eigen/Eigen>
+//#include <eigen3/Eigen/Eigen>
+#include <Eigen/Core>
+//#include <Eigen/src/Core/Matrix.h>
 #endif
 
 //#include <OpenImageIO/image_view.h>

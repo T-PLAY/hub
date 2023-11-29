@@ -32,6 +32,7 @@ TEST_CASE( "OutputStream server deco reco test" ) {
 
         std::cout << "[test] outputStream ending" << std::endl;
     }
+    // todo infinite loop
     std::cout << "[test] outputStream ended" << std::endl;
 
     // std::cout << "[test] tested on machine: '" << hostname << "'" << std::endl;
