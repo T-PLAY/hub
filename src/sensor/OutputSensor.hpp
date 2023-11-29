@@ -102,6 +102,9 @@ namespace sensor {
 //    Measures m_measures;
 };
 
+/////////////////////////////////////////////// TEMPLATE
+///////////////////////////////////////////////////////
+
 template <class Resolution>
 // template <class... ResolutionTs>
 class OutputSensorT : public Sensor
@@ -135,8 +138,6 @@ class OutputSensorT : public Sensor
 }; // end OutputSensorT
 
 
-/////////////////////////////////////////////// TEMPLATE
-///////////////////////////////////////////////////////
 
 ////template <typename Output, typename Measures>
 ////// template <typename Measures>

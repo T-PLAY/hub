@@ -33,7 +33,8 @@ TEST_CASE( "InputOutputSensor test" ) {
     hub::sensor::OutputSensorT<UserResolution> outputSensor( sensorSpec, archive );
 
     // init output acq
-    hub::sensor::OutputSensorT<UserResolution>::Acq acq;
+    decltype(outputSensor)::Acq acq;
+    // hub::sensor::OutputSensorT<UserResolution>::Acq acq;
 //    hub::sensor::AcquisitionT<UserResolution> acq; // same as above
     acq.start() = 4;
     acq.end() = 3;

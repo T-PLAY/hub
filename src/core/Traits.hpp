@@ -19,7 +19,7 @@ auto toString( const Container& container ) {
     constexpr auto nFirstData = 30;
     constexpr auto nLastData  = 8;
 //    const auto iMax           = std::min( (int)container.size(), nFirstData );
-    for ( auto i = 0; i < container.size(); ++i ) {
+    for ( size_t i = 0; i < container.size(); ++i ) {
         if ( nFirstData < i && i < container.size() - nLastData ) {
             if ( i == container.size() - nLastData - 1 ) { str += "... "; }
             continue;

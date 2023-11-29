@@ -22,7 +22,7 @@ constexpr int g_margin2 = 20;
 
 std::string Client2::headerMsg() const {
     const std::string str = "\t\033[" + std::to_string( 31 + m_iClient % 7 ) + "m" +
-                            "[Client2:" + std::to_string( m_iClient ) + "/" +
+                            "[Client:" + std::to_string( m_iClient ) + "/" +
                             std::to_string( m_server->m_nActiveClient ) + "]\033[0m";
     return str;
 }

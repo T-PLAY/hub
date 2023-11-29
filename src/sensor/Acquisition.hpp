@@ -3,7 +3,7 @@
 // #include "core/Matrix.hpp"
 #include "core/Matrix.hpp"
 #include "core/MatrixT.hpp"
-#include "core/Serializer.hpp"
+// #include "core/Serializer.hpp"
 
 namespace hub {
 namespace sensor {
@@ -48,7 +48,7 @@ class Acquisition : public Matrix
         //    Matrix getResolution() const {
         if ( m_resolution.size() == 0 ) {
             //        Matrix resolution;
-            for ( int i = 2; i < nType(); ++i ) {
+            for ( size_t i = 2; i < nType(); ++i ) {
                 m_resolution.push_back( m_nodes.at( i ) );
             }
         }
@@ -94,7 +94,7 @@ class Acquisition : public Matrix
 
     Acquisition& operator<<( const Acquisition& other ) {
         size_t sizeBeforeAdd = m_size;
-        for ( int i = 2; i < other.nType(); ++i ) {
+        for ( size_t i = 2; i < other.nType(); ++i ) {
             push_back( other.m_nodes.at( i ) );
         }
         //        for ( const auto& node : other.m_nodes ) {
@@ -131,7 +131,7 @@ class Acquisition : public Matrix
 
 Acquisition make_acquisition( const Matrix& resolution );
 
-/////////////////////////////////////////////////////////////////////
+///////////////////////////////////// TEMPLATE ////////////////////////////////
 
 template <class Resolution>
 class AcquisitionT : public MatrixTs<Clock, Clock, Resolution>
