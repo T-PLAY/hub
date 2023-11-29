@@ -27,9 +27,10 @@ TEST_CASE( "OutputStream server deco reco test" ) {
 
         std::cout << "[test] server starting" << std::endl;
         server.asyncRun();
-        std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
         std::cout << "[test] server started" << std::endl;
+        std::this_thread::sleep_for( std::chrono::milliseconds( 2000 ) );
 
+        std::cout << "[test] outputStream ending" << std::endl;
     }
     std::cout << "[test] outputStream ended" << std::endl;
 
