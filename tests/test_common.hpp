@@ -12,7 +12,8 @@
 // #include <algorithm>
 #include <list>
 #include <numeric>
-#include <set>
+// #include <set>
+#include <map>
 
 // #include <io/input/Input.hpp>
 // #include <io/output/Output.hpp>
@@ -26,9 +27,28 @@
 
 #define GET_RANDOM_PORT getRandomPort( __FILE__ )
 
-static std::set<int> s_randomPortsGenerated;
+// static std::set<int> s_randomPortsGenerated;
 
 static int getRandomPort( const char* filename ) {
+
+    const std::string randomUsedPortsFilename = "randomUsedPorts.txt";
+    std::map<int, std::string> usedPorts;
+    // std::set<int> usedPorts;
+
+    std::ifstream inFile( randomUsedPortsFilename.c_str() );
+    if ( inFile.is_open() ) {
+
+        std::string testName;
+        int port;
+        while ( !inFile.eof() ) {
+            testName = "";
+            port     = 0;
+            inFile >> port >> testName;
+            if ( port != 0 ) { usedPorts.insert( std::make_pair(port, testName) ); }
+        }
+        inFile.close();
+    }
+
     // #ifdef BUILD_SERVER
     //     return 4042;
     // #endif
@@ -36,16 +56,24 @@ static int getRandomPort( const char* filename ) {
     //     return 1883;
     // #endif
     srand( (unsigned)time( NULL ) );
-    constexpr int offset = 6000;
+    // constexpr int offset = 1'000;
     int randomPort;
     do {
         const unsigned int random =
             static_cast<int>( std::hash<std::string>()( filename ) ) + rand();
-        randomPort = offset + random % ( 65535 - offset );
-        assert( offset <= randomPort && randomPort < 65535 );
-    } while ( s_randomPortsGenerated.find( randomPort ) != s_randomPortsGenerated.end() );
+        // randomPort = offset + random % ( 65535 - offset );
+        randomPort = 10'000 + (random % 1'000) * 10;
+        // assert( offset <= randomPort && randomPort < 1000 );
+        // assert( offset <= randomPort && randomPort < 65535 );
+    } while ( usedPorts.find( randomPort ) != usedPorts.end() );
 
-    s_randomPortsGenerated.insert( randomPort );
+    // usedPorts.insert( std::make_pair(randomPort, filename) );
+    std::ofstream outFile(  randomUsedPortsFilename.c_str(),
+                           std::ios::out | std::ios::app );
+    assert( outFile.is_open() );
+    outFile << randomPort << " " << filename << std::endl;
+    outFile.close();
+
     //    assert( randomPort != hub::io::StreamServer::s_defaultPort );
     std::cout << "using random port: " << randomPort << std::endl;
     return randomPort;
@@ -184,19 +212,19 @@ static void _checkValue( double value,
                          int line ) {
 
     std::string filename2 = filename;
-    filename2 = ReplaceAll( filename, ".", "_" );
+    filename2             = ReplaceAll( filename, ".", "_" );
 
     std::string name2 = name;
-    name2 = ReplaceAll( name2, "/", "_vs_" );
-    name2 = ReplaceAll( name2, ":", "_" );
-    name2 = ReplaceAll( name2, " ", "" );
-//    name2 = ReplaceAll( name2, ".", "_" );
+    name2             = ReplaceAll( name2, "/", "_vs_" );
+    name2             = ReplaceAll( name2, ":", "_" );
+    name2             = ReplaceAll( name2, " ", "" );
+    //    name2 = ReplaceAll( name2, ".", "_" );
     name2 = ReplaceAll( name2, "(", "_" );
     name2 = ReplaceAll( name2, ")", "_" );
     name2 = ReplaceAll( name2, ">", "_" );
-//    name2 = ReplaceAll( name2, "-", "_" );
+    //    name2 = ReplaceAll( name2, "-", "_" );
 
-    constexpr auto extension = "_v1_0_4.log";
+    constexpr auto extension = "_v1_0_5.log";
     bool decline             = false;
     constexpr int nMaxMean   = 4;
     constexpr int nRatio     = 8;
@@ -259,9 +287,8 @@ static void _checkValue( double value,
     }
 
     if ( !decline ) {
-//        std::cout << "filename: " <<  filename + "_" + name2 + extension << std::endl;
-        std::ofstream logFile(  logFilename.c_str(),
-                               std::ios::out | std::ios::app );
+        //        std::cout << "filename: " <<  filename + "_" + name2 + extension << std::endl;
+        std::ofstream logFile( logFilename.c_str(), std::ios::out | std::ios::app );
         assert( logFile.is_open() );
 
         logFile << HUB_COMMIT_HASH << " " << value << " " << unit << std::endl;
@@ -270,7 +297,7 @@ static void _checkValue( double value,
     }
 
     {
-//        std::ifstream inFile( ( filename + "_" + name2 + extension ).c_str() );
+        //        std::ifstream inFile( ( filename + "_" + name2 + extension ).c_str() );
         std::ifstream inFile( logFilename.c_str() );
         if ( inFile.is_open() ) {
             assert( inFile.is_open() );
@@ -379,7 +406,8 @@ static void _checkValue( double value,
                           ", σ:" + std::to_string( standardDeviation ) +
                           ", mean-σ(15.9%):" + std::to_string( mean - standardDeviation ) +
                           ", mean-2σ(2.3%):" + std::to_string( mean - 2 * standardDeviation ) +
-                          ", mean-3σ(0.1%):" + std::to_string( mean - 3 * standardDeviation ) + "\033[0m";
+                          ", mean-3σ(0.1%):" + std::to_string( mean - 3 * standardDeviation ) +
+                          "\033[0m";
             }
 
             _REPORT( "[" << name << "] " << report, filename, line );
