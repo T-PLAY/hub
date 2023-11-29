@@ -7,7 +7,6 @@
 
 #include "net/ServerSocket.hpp"
 
-// #define DEBUG_OUTPUT_STREAM
 
 namespace hub {
 namespace output {

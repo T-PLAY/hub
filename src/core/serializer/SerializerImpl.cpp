@@ -7,7 +7,7 @@ void SerializerImpl::write( const std::string& str ) {
     //    assert( isOpen() );
 
 #ifdef HUB_DEBUG_OUTPUT
-    std::cout << HEADER << "write(" << TYPE_NAME( str ) << ") : '" << str << "'" << std::endl;
+    std::cout << HEADER << "write(const std::string&) : '" << str << "'" << std::endl;
 #endif
 
     int strLen = static_cast<int>( str.size() );
@@ -53,7 +53,7 @@ void SerializerImpl::read( std::string& str ) {
         delete[] tmp;
     }
 #ifdef HUB_DEBUG_INPUT
-    std::cout << "\t" << HEADER << "read(" << TYPE_NAME( str ) << ") : '" << str << "'"
+    std::cout << "\t" << HEADER << "read(std::string&) : '" << str << "'"
               << std::endl;
 #endif
 }

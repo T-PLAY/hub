@@ -13,6 +13,8 @@
 // #include "sensor/Acquisition.hpp"
 // #include "sensor/SensorSpec.hpp"
 
+#define DEBUG_OUTPUT_STREAM
+
 namespace hub {
 namespace output {
 

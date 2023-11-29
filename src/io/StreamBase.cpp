@@ -31,6 +31,7 @@ static const std::string
         "STREAMER_CLIENT_INIT_SENSOR",
 
         "STREAM_VIEWER_CLIENT_CLOSED",
+        "STREAM_VIEWER_CLIENT",
 
         "VIEWER_CLIENT_CLOSED",
         "VIEWER_CLIENT_SET_PROPERTY",
@@ -60,6 +61,7 @@ static const std::string
         "SERVER_CLOSED",
 
         "STREAMER_CLOSED",
+        "STREAMER_INITED",
 
         "STREAM_VIEWER_CLOSED",
         "STREAM_VIEWER_NEW_ACQ",
