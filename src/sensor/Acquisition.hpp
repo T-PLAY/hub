@@ -28,11 +28,17 @@ class Acquisition : public Matrix
 
     Acquisition() = default;
 
-    Acquisition( Acquisition&& )      = default;
+    Acquisition( Acquisition&& )    = default;
     Acquisition( const Acquisition& ) = delete;
+//    Acquisition( const Acquisition& acq ) {
+//    }
 
     Acquisition& operator=( Acquisition&& )      = default;
     Acquisition& operator=( const Acquisition& ) = delete;
+//    Acquisition& operator=( const Acquisition& acq ) {
+//        *this = acq.clone();
+//        return *this;
+//    }
 
     Acquisition clone() const {
         Acquisition acq;

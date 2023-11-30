@@ -44,27 +44,13 @@ class InputSensor : public Sensor
             input->read( m_specs.at( i ) );
             m_spec += m_specs.at( i );
         }
-        m_lastAcqs.resize( m_inputs.size() );
+//        m_lastAcqs.resize( m_inputs.size() );
     }
 
   public:
     using Sensor::acq;
     //    using Input::read;
 
-//    template <class... Inputs>
-////    template <Input
-//    explicit InputSensor( Inputs&... inputs ) :
-//        Sensor( SensorSpec {} ),
-//        m_inputs( { &inputs... } )
-//    {
-//        m_specs.resize( m_inputs.size() );
-//        for ( int i = 0; i < m_inputs.size(); ++i ) {
-//            auto* input = m_inputs.at( i );
-//            input->read( m_specs.at( i ) );
-//            m_spec += m_specs.at( i );
-//        }
-//        m_lastAcqs.resize( m_inputs.size() );
-//    }
 //    template <class... Inputs>
 //    template <Input
     InputSensor( Input& input ) :
@@ -107,22 +93,6 @@ class InputSensor : public Sensor
         initSensorSpecFromInputs();
     }
 
-//    template <class... Inputs>
-//    explicit InputSensor( Inputs&&... inputs ) :
-//        Sensor( SensorSpec {} ),
-////        m_inputs( { &inputs... } )
-//        m_inputs({*(new Inputs(std::move(inputs)))...})
-//    {
-////        for (auto && input : {inputs...}) {
-////        }
-//        m_specs.resize( m_inputs.size() );
-//        for ( int i = 0; i < m_inputs.size(); ++i ) {
-//            auto* input = m_inputs.at( i );
-//            input->read( m_specs.at( i ) );
-//            m_spec += m_specs.at( i );
-//        }
-//        m_lastAcqs.resize( m_inputs.size() );
-//    }
 
     void operator>>( Acquisition& acq ) {
         //        std::cout << "[InputSensor] m_spec.getResolution() = " << m_spec.getResolution()
@@ -143,7 +113,8 @@ class InputSensor : public Sensor
 //            std::cout << "rightAcq: " << rightAcq << std::endl;
             rightInput.read( rightAcq );
 
-            auto& leftLastAcqs = m_lastAcqs.at( 0 );
+//            auto& leftLastAcqs = m_lastAcqs.at( 0 );
+            auto& leftLastAcqs = m_lastAcqs;
             assert( leftLastAcqs.size() < 20 );
             Acquisition leftAcq = make_acquisition( m_specs.at( 0 ).getResolution() );
 
@@ -204,7 +175,8 @@ class InputSensor : public Sensor
   private:
     //    Input& m_input;
     std::vector<Input*> m_inputs;
-    std::vector<std::list<sensor::Acquisition>> m_lastAcqs;
+//    std::vector<std::list<sensor::Acquisition>> m_lastAcqs;
+    std::list<sensor::Acquisition> m_lastAcqs;
     std::vector<hub::sensor::SensorSpec> m_specs;
     //    std::vector<std::unique_ptr<Input>> m_inputs;
     //    Measures m_measures;

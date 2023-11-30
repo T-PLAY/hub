@@ -319,9 +319,11 @@ class Matrix
     template <class Type, Size_t N = 1, Size_t... Ns>
         requires( N > 0 && ( ( Ns > 1 ) && ... ) )
     static Matrix::Node make_node() {
-        auto size = sizeof( Type );
-        for ( auto dim : { N, Ns... } ) {
-            size *= dim;
+        auto size = sizeof( Type ) * N;
+        if constexpr (sizeof...(Ns) > 0) {
+            for ( auto dim :  {Ns...} ) {
+                size *= dim;
+            }
         }
         return Matrix::Node(
             typeid( Type ).hash_code(), std::move( Dims { N, Ns... } ), TYPE_NAME( Type ), size );
