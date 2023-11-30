@@ -26,6 +26,7 @@ namespace input {
 class SRC_API InputStreamServer2 : public Input, public io::StreamServer2
 {
   public:
+    static struct {} not_endable;
     using Input::read;
 
     ///

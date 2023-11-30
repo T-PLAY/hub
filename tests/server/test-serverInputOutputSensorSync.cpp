@@ -1,113 +1,230 @@
 
-#include "test_common.hpp"
 #include "io/test_io_common.hpp"
+#include "sensor/test_sensor_common.hpp"
+#include "test_common.hpp"
+// #include <catch2/catch_test_macros.hpp>
+
+#include <sensor/InputSensor.hpp>
+#include <sensor/OutputSensor.hpp>
 
 // #include <server/Server.hpp>
-#include <net/ServerSocket.hpp>
+// #include <net/ServerSocket.hpp>
 
+// #include <core/Utils.hpp>
+
+// #ifdef HUB_TESTS_MQTT_FOUND
+// #    include <mqtt/client.h>
+// #endif
 #include <io/input/InputStream.hpp>
 #include <io/output/OutputStream.hpp>
 
-#ifdef HUB_USE_MQTT
-#    include <mqtt/client.h>
-#endif
+// #include <Version.h>
 
-TEST_CASE( "Server test : InputOutputStream_vs_Mqtt" ) {
+TEST_CASE( "Server test : InputOutputSensor" ) {
     //    const auto hostname = hub::utils::getHostname();
 
-    // raw socket
-    // double gigaBytePerSecondSocket;
-    // {
-    //     const std::string ipv4 = "127.0.0.1";
-    //     const int port         = GET_RANDOM_PORT;
-    //     // std::cout << "[test][ClientSocket] start streaming" << std::endl;
-    //     hub::net::ServerSocket serverSocket( port );
-    //     hub::net::ClientSocket clientSocket( ipv4, port );
-    //     auto clientServerSocket = serverSocket.waitNewClient();
+    static_assert(! hub::Endable<hub::io::InputOutputSocket>);
+    static_assert(! hub::Endable<hub::input::InputStream>);
 
-    //     const auto& [durationInMillisecond, gigaBytePerSecond] =
-    //         inputOutputBench( clientSocket, clientServerSocket, "Socket" );
-    //     gigaBytePerSecondSocket = gigaBytePerSecond;
-    // }
+    INIT_SERVER
 
-    double gigaBytePerSecondInputOutputStream;
-    {
-        INIT_SERVER
+    hub::output::OutputStream outputStream( FILE_NAME, SERVER_PORT );
+    hub::output::OutputStream outputStream2( FILE_NAME + "2", SERVER_PORT );
 
-        {
+    hub::input::InputStream inputStream( FILE_NAME, SERVER_PORT );
+    hub::input::InputStream inputStream2( FILE_NAME + "2", SERVER_PORT );
 
-            hub::output::OutputStream outputStream( FILE_NAME, SERVER_PORT );
+    test::sensor::inputOutputSensorBench( inputStream, inputStream2, outputStream, outputStream2 );
+    return;
 
-            hub::input::InputStream inputStream( FILE_NAME, SERVER_PORT );
+    //    // initing datum
+    //    constexpr int nAcqs       = 100;
+    //    constexpr int width       = 1920;
+    //    constexpr int height      = 1080;
+    //    constexpr size_t dataSize = width * height * 3;
 
-            const auto& [durationInMillisecond, gigaBytePerSecond] =
-                inputOutputBench( inputStream, outputStream, "InputOutputStrem" );
-            gigaBytePerSecondInputOutputStream = gigaBytePerSecond;
-        }
-    }
+    //    unsigned char* datas = new unsigned char[nAcqs * dataSize];
 
-#ifdef HUB_TESTS_MQTT_FOUND
-    // raw mqtt
-    double gigaBytesPerSecondMqtt;
-    {
-        const auto& [data, size] = generateTestData();
-        std::cout << "[test][Mqtt] data ready" << std::endl;
+    //    srand( (unsigned)time( NULL ) );
+    //    std::vector<hub::sensor::Acquisition> acqs( nAcqs );
+    //    for ( int i = 0; i < nAcqs; ++i ) {
+    //        for ( int j = 0; j < dataSize; ++j ) {
+    //            datas[i * dataSize + j] = rand() % 256;
+    //        }
+    //    }
+    ////    memset(datas, 65, nAcqs * dataSize);
 
-        const std::string topicName = FILE_NAME;
-        const std::string ip        = "localhost:1883";
-        mqtt::client inputClient( ip, "consumer", mqtt::create_options( MQTTVERSION_5 ) );
-        inputClient.connect();
-        inputClient.subscribe( topicName );
-        inputClient.start_consuming();
-        std::cout << "[test][Mqtt] input client connected" << std::endl;
+    //    for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
+    //        const unsigned char* data = &datas[iAcq * dataSize];
+    //        hub::sensor::Acquisition acq( iAcq, iAcq );
+    //        acq << hub::Measure( reinterpret_cast<unsigned const char*>( data ),
+    //                             dataSize,
+    //                             { { width, height }, hub::sensor::Format::BGR8 } );
+    //        acqs.at( iAcq ) = std::move( acq );
+    //    }
+    //    // datum inited
 
-        mqtt::client outputClient( ip, "producer", mqtt::create_options( MQTTVERSION_5 ) );
-        outputClient.connect();
-        std::cout << "[test][Mqtt] output client connected" << std::endl;
-        const mqtt::message_ptr outputMsgPtr = mqtt::make_message( topicName, "" );
-        //        outputMsgPtr->set_retained(true);
-        outputMsgPtr->set_qos( 2 ); // no packet lost
-        // outputMsgPtr->set_qos( 0 );
+    //    // raw socket
+    //    double megaBytesPerSecondsClientSocket;
+    //    {
+    //        const std::string ipv4 = "127.0.0.1";
+    //        const int port         = GET_RANDOM_PORT;
+    //        // measure direct tcp stream duration
+    //        std::cout << "[test][ClientSocket] start streaming" << std::endl;
+    //        hub::net::ServerSocket serverSocket( port );
+    //        hub::net::ClientSocket clientSocket( ipv4, port );
+    //        auto clientServerSocket = serverSocket.waitNewClient();
+    //        //        constexpr int packetSize = MAX_NET_BUFFER_SIZE;
+    //        //        constexpr int nPart      = dataSize / packetSize;
+    //        //        std::cout << "[test][ClientSocket] nPart: " << nPart << " of " << packetSize
+    //        /
+    //        //        1000'000.0
+    //        //                  << " Mo" << std::endl;
 
-        mqtt::const_message_ptr inputMsgPtr;
-        std::cout << "[test][Mqtt] start streaming" << std::endl;
-        const auto& start2 = std::chrono::high_resolution_clock::now();
+    //        unsigned char* dataIn = new unsigned char[dataSize];
+    //        const auto& start     = std::chrono::high_resolution_clock::now();
+    //        {
+    //            auto thread = std::thread( [&]() {
+    //                for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
+    //                    const unsigned char* data = &datas[iAcq * dataSize];
+    //                    //                int uploadSize            = 0;
 
-        auto thread = std::thread( [&]() {
-            for ( int i = 0; i < s_nIteration; ++i ) {
-                outputMsgPtr->set_payload( data, size );
-                outputClient.publish( outputMsgPtr );
-            }
-        } );
-        //        }
+    //                    //                for ( int i = 0; i < nPart - 1; ++i ) {
+    //                    // #ifdef OS_MACOS
+    //                    //         std::cout << "[test][ClientSocket] sending part " << i <<
+    //                    std::endl;
+    //                    // #endif
+    //                    //                auto thread = std::thread([&]() {
+    //                    clientSocket.write( data, dataSize );
+    //                }
+    //                //                });
+    //            } );
+    //            // std::cout << "[test][ClientSocket] part sended " << i << std::endl;
 
-        for ( int i = 0; i < s_nIteration; ++i ) {
-            inputMsgPtr = inputClient.consume_message();
+    //            // #ifdef OS_MACOS
+    //            //         std::cout << "[test][ClientSocket] reading part " << i << std::endl;
+    //            // #endif
+    //            for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
+    //                const unsigned char* data = &datas[iAcq * dataSize];
+    //                clientServerSocket.read( dataIn, dataSize );
+    //                // std::cout << "[test][ClientSocket] part readed " << i << std::endl;
+    //                //                    thread.join();
 
-            const auto& payload   = inputMsgPtr->get_payload();
-            const auto* inputData = payload.data();
+    //                //                    uploadSize += packetSize;
+    //                //                }
 
-#    ifdef DEBUG
-            assert( memcmp( data, inputData, size ) == 0 );
-#    endif
-        }
-        thread.join();
-        inputClient.stop_consuming();
+    //                //                clientSocket.write( data + uploadSize, dataSize - uploadSize
+    //                );
+    //                //                clientServerSocket.read( dataIn + uploadSize, dataSize -
+    //                //                uploadSize );
 
-        const auto& end2 = std::chrono::high_resolution_clock::now();
-        std::cout << "[test][Mqtt] end streaming" << std::endl;
-        const auto& duration2 =
-            std::chrono::duration_cast<std::chrono::nanoseconds>( end2 - start2 ).count();
-        gigaBytesPerSecondMqtt = ( 2 * size * s_nIteration ) / (double)duration2;
+    // #ifdef DEBUG
+    //                 assert( memcmp( data, dataIn, dataSize ) == 0 );
+    // #endif
+    //                 //                CHECK( memcmp( data, dataIn, dataSize ) == 0 );
+    //             }
 
-        std::cout << "[test][Mqtt] writing/reading rate: " << gigaBytesPerSecondMqtt << " Go/s"
-                  << std::endl;
-        std::cout << "[test][Mqtt] total time: " << duration2 / 1'000'000.0 << " ms" << std::endl;
-    }
-#endif
+    //            thread.join();
+    //        }
+    //        const auto& end = std::chrono::high_resolution_clock::now();
+    //        delete[] dataIn;
 
-    const auto ratio = gigaBytePerSecondInputOutputStream / gigaBytesPerSecondMqtt;
-    CHECK_DECLINE( ratio, "InputOutput:Stream/Mqtt", "/" );
+    //        std::cout << "[test][ClientSocket] end streaming" << std::endl;
+    //        const auto& duration =
+    //            std::chrono::duration_cast<std::chrono::milliseconds>( end - start ).count();
+    //        const auto& bytes               = dataSize * nAcqs;
+    //        const auto& bytesPerSeconds     = 1000.0 * bytes / duration;
+    //        megaBytesPerSecondsClientSocket = bytesPerSeconds / 1000'000.0;
+
+    //        std::cout << "[test][ClientSocket] Mega byte wrote : " << bytes / 1000'000.0 << " Mo"
+    //                  << std::endl;
+    //        std::cout << "[test][ClientSocket] Mega byte per second : "
+    //                  << megaBytesPerSecondsClientSocket << " Mo/s" << std::endl;
+    //    }
+
+    // #ifdef HUB_TESTS_MQTT_FOUND
+    //     // raw mqtt
+    //     double megaBytesPerSecondsMqtt;
+    //     {
+    //         //        const std::string topicName = "sensor";
+    //         const std::string topicName = FILE_NAME;
+    //         std::cout << "[test][Mqtt] start streaming" << std::endl;
+    //         const std::string ip = "localhost:1883";
+    //         mqtt::client inputClient( ip, "consumer", mqtt::create_options( MQTTVERSION_5 ) );
+    //         inputClient.connect();
+    //         inputClient.subscribe( topicName );
+    //         inputClient.start_consuming();
+
+    //        //            hub::net::ClientSocket clientSocket( ipv4, port );
+    //        //            auto clientServerSocket = serverSocket.waitNewClient();
+    //        mqtt::client outputClient( ip, "producer", mqtt::create_options( MQTTVERSION_5 ) );
+    //        outputClient.connect();
+    //        const mqtt::message_ptr outputMsgPtr = mqtt::make_message( topicName, "" );
+    //        //        outputMsgPtr->set_retained(true);
+    //        //                outputMsgPtr->set_qos(2);
+    //        outputMsgPtr->set_qos( 0 );
+
+    //        mqtt::const_message_ptr inputMsgPtr;
+    //        const auto& start2 = std::chrono::high_resolution_clock::now();
+    //        //            hub::net::ServerSocket serverSocket( port );
+
+    //        //            const int packetSize    = 2'000'000; // 2Go network memory buffer
+    //        //            const int nPart         = dataSize / packetSize;
+    //        auto thread = std::thread( [&]() {
+    //            for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
+    //                //                            int uploadSize = 0;
+
+    //                outputMsgPtr->set_payload( &datas[iAcq * dataSize], dataSize );
+    //                //            outputMsgPtr->set_payload( datas, dataSize );
+    //                outputClient.publish( outputMsgPtr );
+    //            }
+    //        } );
+    //        //        }
+
+    //        for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
+    //            inputMsgPtr = inputClient.consume_message();
+    //            //            assert( inputMsgPtr != nullptr );
+
+    //            //            const auto& payload  = inputMsgPtr->get_payload_ref();
+    //            const auto& payload = inputMsgPtr->get_payload();
+    //            const auto* data3   = payload.data();
+    //            //            const auto data3Size = payload.size();
+
+    //            //                for ( int i = 0; i < nPart - 1; ++i ) {
+    //            //                    clientSocket.write( data + uploadSize, packetSize );
+    //            //                    clientServerSocket.read( data2 + uploadSize, packetSize );
+
+    //            //                    uploadSize += packetSize;
+    //            //                }
+
+    //            //                clientSocket.write( data + uploadSize, dataSize - uploadSize );
+    //            //                clientServerSocket.read( data2 + uploadSize, dataSize -
+    //            uploadSize
+    //            //                );
+
+    //            //                assert( !memcmp( data, data2, dataSize ) );
+    //            //            CHECK( dataSize == data3Size );
+    // #    ifdef DEBUG
+    //            assert( memcmp( &datas[iAcq * dataSize], data3, dataSize ) == 0 );
+    // #    endif
+    //            //            assert( !memcmp( &datas[iAcq * dataSize], data3, dataSize ) );
+    //        }
+    //        thread.join();
+    //        inputClient.stop_consuming();
+    //        const auto& end2 = std::chrono::high_resolution_clock::now();
+    //        std::cout << "[test][Mqtt] end streaming" << std::endl;
+    //        const auto& duration2 =
+    //            std::chrono::duration_cast<std::chrono::milliseconds>( end2 - start2 ).count();
+    //        const auto& bytes            = dataSize * nAcqs;
+    //        const auto& bytesPerSeconds2 = 1000.0 * bytes / duration2;
+    //        megaBytesPerSecondsMqtt      = bytesPerSeconds2 / 1000'000.0;
+
+    //        std::cout << "[test][Mqtt] Mega byte wrote : " << bytes / 1000'000.0 << " Mo" <<
+    //        std::endl; std::cout << "[test][Mqtt] Mega byte per second : " <<
+    //        megaBytesPerSecondsMqtt << " Mo/s"
+    //                  << std::endl;
+    //    }
+    // #endif
 
     //    enum class Implement {
     //        SERVER = 0,

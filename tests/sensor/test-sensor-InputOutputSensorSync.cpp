@@ -18,9 +18,6 @@ TEST_CASE( "InputOutputSensorSync test" ) {
 
     //    //////////////////////
 
-//    hub::io::Archive archive;
-//    hub::io::Archive archive2;
-//    inputOutputSensorBench(archive, archive2);
     test::sensor::inputOutputSensorBench<hub::io::Archive>();
     return;
 

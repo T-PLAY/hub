@@ -118,7 +118,9 @@ OutputStreamServer2::OutputStreamServer2( const std::string& streamName,
 
     //    while ( !serverConnected ) {
     while ( !m_data->m_serverConnected ) {
+#ifdef DEBUG_OUTPUT_STREAM
         std::cout << "[OutputStreamServer2] waiting for stream connected ..." << std::endl;
+#endif
         std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
     };
 
@@ -188,8 +190,10 @@ void OutputStreamServer2::startStreaming() {
 
                     data->m_streamViewerInited = false;
                     while ( !data->m_streamViewerInited ) {
+#ifdef DEBUG_OUTPUT_STREAM
                         std::cout << "[OutputStreamServer2] waiting for stream viewer inited ..."
                                   << std::endl;
+#endif
                         std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
                     };
                 }

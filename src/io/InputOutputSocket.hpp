@@ -14,6 +14,7 @@ namespace io {
 class InputOutputSocket : public InputOutput<>, public net::ClientSocket
 {
   public:
+    static struct {} not_endable;
     using InputOutput<>::read;
     using InputOutput<>::write;
 

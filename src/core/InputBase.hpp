@@ -43,6 +43,27 @@ class InputBase : public ios
 };
 
 template <typename T>
+using not_endable_t = decltype( T::not_endable );
+
+template <typename T, typename = std::void_t<>>
+struct not_endable : std::false_type {};
+
+template <typename T>
+struct not_endable<T, std::void_t<not_endable_t<T>>> : std::true_type {};
+
+template <typename T>
+static constexpr bool not_endable_v = not_endable<T>::value;
+
+// template <class T>
+// concept NotEndable = T::not_endable;
+
+template <class T>
+concept Endable = ! not_endable_v<T>;
+
+
+///////////////////////////////////////
+
+template <typename T>
 using readable_t = decltype( std::declval<T>().read( std::declval<InputBase&>() ) );
 
 template <typename T, typename = std::void_t<>>
