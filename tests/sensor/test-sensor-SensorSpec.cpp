@@ -17,6 +17,29 @@ TEST_CASE( "SensorSpec test" ) {
 
     hub::io::Archive archive;
 
+    hub::sensor::SensorSpec::MetaData metaData;
+    metaData["hello"] = 5;
+    metaData["name"]  = "gauthier";
+    hub::sensor::SensorSpec sensorSpec{"sensorName", {}, metaData};
+//    sensorSpec.resolution = hub::make_matrix(hub::make_matrix<double>(), hub::make_matrix<int, 640, 480>());
+//    sensorSpec.sensorName = "sensorName";
+//    auto & resolution = sensorSpec.resolution;
+//    resolution.push_back(make_re)
+//    auto & metaData = sensorSpec.metaData;
+    archive.write(sensorSpec);
+    hub::sensor::SensorSpec sensorSpec_read;
+    archive.read(sensorSpec_read);
+    assert(sensorSpec == sensorSpec_read);
+//    static_assert(! hub::Serializer::Writable_v<hub::sensor::SensorSpec>);
+//    static_assert(hub::serializer::Readable_v<hub::Any>);
+//    static_assert(hub::serializer::Readable_v<hub::sensor::SensorSpec::MetaData>);
+    static_assert(! hub::Serializer::Serializable<hub::sensor::SensorSpec>());
+    static_assert(! hub::Serializer::Serializable<hub::Any>());
+    static_assert(! hub::Serializer::Serializable<hub::sensor::SensorSpec::MetaData>());
+    return;
+
+
+
 //    hub::Any any = 5;
 //    hub::Any any2 = std::move(any);
 //    archive.write(any2);
@@ -60,28 +83,6 @@ TEST_CASE( "SensorSpec test" ) {
 //    static_assert(! hub::Serializer::Serializable<hub::Any>());
 //    static_assert(! hub::Serializer::Serializable<hub::sensor::SensorSpec::MetaData>());
 //    return;
-
-    hub::sensor::SensorSpec::MetaData metaData;
-    metaData["hello"] = 5;
-    metaData["name"]  = "gauthier";
-    hub::sensor::SensorSpec sensorSpec{"sensorName", {}, metaData};
-//    sensorSpec.resolution = hub::make_matrix(hub::make_matrix<double>(), hub::make_matrix<int, 640, 480>());
-//    sensorSpec.sensorName = "sensorName";
-//    auto & resolution = sensorSpec.resolution;
-//    resolution.push_back(make_re)
-//    auto & metaData = sensorSpec.metaData;
-    archive.write(sensorSpec);
-    hub::sensor::SensorSpec sensorSpec_read;
-    archive.read(sensorSpec_read);
-    assert(sensorSpec == sensorSpec_read);
-//    static_assert(! hub::Serializer::Writable_v<hub::sensor::SensorSpec>);
-//    static_assert(hub::serializer::Readable_v<hub::Any>);
-//    static_assert(hub::serializer::Readable_v<hub::sensor::SensorSpec::MetaData>);
-    static_assert(! hub::Serializer::Serializable<hub::sensor::SensorSpec>());
-    static_assert(! hub::Serializer::Serializable<hub::Any>());
-    static_assert(! hub::Serializer::Serializable<hub::sensor::SensorSpec::MetaData>());
-    return;
-
 
     //    hub::sensor::Resolution::NDim nDim = { 1 };
 //    hub::sensor::Resolution resolution { hub::sensor::format::BGR8, 1 };

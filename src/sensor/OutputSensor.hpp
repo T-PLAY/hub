@@ -131,6 +131,10 @@ class OutputSensorT : public Sensor
         m_output.write( acq.data(), acq.size() );
     }
 
+    Acquisition acq() const {
+        return Acq();
+    }
+
   private:
     Output& m_output;
     //    SensorSpec m_sensorSpec;

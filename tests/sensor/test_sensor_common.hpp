@@ -19,6 +19,9 @@
 // #include "Macros.hpp"
 // #include "Version.hpp"
 
+namespace test {
+namespace sensor {
+
 static int computeDist( const hub::sensor::Acquisition& acq,
                         const hub::sensor::Acquisition& acq2 ) {
     return std::abs( acq.getStart() - acq2.getStart() );
@@ -206,7 +209,7 @@ bool anyEnd( const T& t, const Inputs&... args ) {
 }
 
 template <class Input>
-void clearAll( Input& input) {
+void clearAll( Input& input ) {
     input.clear();
 }
 template <class Input, class... Inputs>
@@ -301,7 +304,7 @@ checkSynchronize( hub::Output& output,
 }
 
 template <class Type>
-static auto generateRefAcqs(int offset, int nAcq, std::string sensorName) {
+static auto generateRefAcqs( int offset, int nAcq, std::string sensorName ) {
 
     //    std::cout << "ref_acqs" << std::endl;
     const auto ref_resolution = hub::make_matrix<Type>();
@@ -322,77 +325,84 @@ static auto generateRefAcqs(int offset, int nAcq, std::string sensorName) {
     }
     //    std::cout << std::endl;
 
-    return std::tuple<hub::sensor::SensorSpec, std::vector<hub::sensor::Acquisition>>(std::move(ref_sensorSpec), std::move(ref_acqs));
+    return std::tuple<hub::sensor::SensorSpec, std::vector<hub::sensor::Acquisition>>(
+        std::move( ref_sensorSpec ), std::move( ref_acqs ) );
 }
 
 template <class Output>
-static void outputSensorBench(Output & output) {
-    const auto & [ref_sensorSpec, ref_acqs] = generateRefAcqs<hub::sensor::format::Y8>(0, 10, "sensorName");
-//    assert( anyEnd( output... ) );
+static void outputSensorBench( Output& output ) {
+    const auto& [ref_sensorSpec, ref_acqs] =
+        generateRefAcqs<hub::sensor::format::Y8>( 0, 10, "sensorName" );
+    //    assert( anyEnd( output... ) );
 
     hub::sensor::OutputSensor outputSensor( ref_sensorSpec, output );
 
     for ( const auto& acq : ref_acqs ) {
         outputSensor << acq;
     }
-
 }
 
 template <class Input>
-static void inputSensorBench(Input & input) {
-    assert(! input.isEnd());
+static void inputSensorBench( Input& input ) {
+    assert( !input.isEnd() );
 
-    const auto & [ref_sensorSpec, ref_acqs] = generateRefAcqs<hub::sensor::format::Y8>(0, 10, "sensorName");
+    const auto& [ref_sensorSpec, ref_acqs] =
+        generateRefAcqs<hub::sensor::format::Y8>( 0, 10, "sensorName" );
 
     hub::sensor::InputSensor inputSensor( input );
-    assert(ref_sensorSpec == inputSensor.getSpec());
+    assert( ref_sensorSpec == inputSensor.getSpec() );
     auto acq_read = inputSensor.acq();
 
     for ( const auto& acq : ref_acqs ) {
         inputSensor >> acq_read;
-        CHECK(acq == acq_read);
+        CHECK( acq == acq_read );
     }
 
-//    assert(input.isEnd());
+    //    assert(input.isEnd());
 }
 
 template <class InputOutput>
-static void inputOutputSensorBench(InputOutput & inputOutput, InputOutput & inputOutput2 ) {
-//    InputOutput inputOutput;
-//    InputOutput inputOutput2;
-//    const int ref_offset    = 5;
-//    constexpr int ref_nAcqs = 10;
-//    const auto & [ref_sensorSpec, ref_acqs] = generateRefAcqs<hub::sensor::format::Y8>(0, 10, "sensorName");
-//    const auto & [ref_sensorSpec2, ref_acqs2] = generateRefAcqs<hub::sensor::format::Z16>(5, 10, "sensorName2");
-//    const auto & [ref_sensorSpec3, ref_acqs3] = generateRefAcqs<hub::sensor::format::Y8>(10, 10, "sensorName3");
+static void inputOutputSensorBench( InputOutput& inputOutput, InputOutput& inputOutput2 ) {
+    //    InputOutput inputOutput;
+    //    InputOutput inputOutput2;
+    //    const int ref_offset    = 5;
+    //    constexpr int ref_nAcqs = 10;
+    //    const auto & [ref_sensorSpec, ref_acqs] = generateRefAcqs<hub::sensor::format::Y8>(0, 10,
+    //    "sensorName"); const auto & [ref_sensorSpec2, ref_acqs2] =
+    //    generateRefAcqs<hub::sensor::format::Z16>(5, 10, "sensorName2"); const auto &
+    //    [ref_sensorSpec3, ref_acqs3] = generateRefAcqs<hub::sensor::format::Y8>(10, 10,
+    //    "sensorName3");
 
-//    assert(inputOutput.isEnd());
-//    assert(inputOutput2.isEnd());
+    //    assert(inputOutput.isEnd());
+    //    assert(inputOutput2.isEnd());
 
-    outputSensorBench(inputOutput);
-    inputSensorBench(inputOutput2);
+    outputSensorBench( inputOutput );
+    inputSensorBench( inputOutput2 );
 
-//    assert(inputOutput.isEnd());
-//    assert(inputOutput2.isEnd());
+    //    assert(inputOutput.isEnd());
+    //    assert(inputOutput2.isEnd());
 
-    outputSensorBench(inputOutput2);
-    inputSensorBench(inputOutput);
+    outputSensorBench( inputOutput2 );
+    inputSensorBench( inputOutput );
 
-//    assert(inputOutput.isEnd());
-//    assert(inputOutput2.isEnd());
+    //    assert(inputOutput.isEnd());
+    //    assert(inputOutput2.isEnd());
 }
 
 template <class InputOutput>
-//static void inputOutputSensorBench( hub::io::InputOutput<>& inputOutput,
-//                              hub::io::InputOutput<>& inputOutput2 ) {
-static void inputOutputSensorBench( ) {
+// static void inputOutputSensorBench( hub::io::InputOutput<>& inputOutput,
+//                               hub::io::InputOutput<>& inputOutput2 ) {
+static void inputOutputSensorBench() {
     InputOutput inputOutput;
     InputOutput inputOutput2;
-//    const int ref_offset    = 5;
-//    constexpr int ref_nAcqs = 10;
-    const auto & [ref_sensorSpec, ref_acqs] = generateRefAcqs<hub::sensor::format::Y8>(0, 10, "sensorName");
-    const auto & [ref_sensorSpec2, ref_acqs2] = generateRefAcqs<hub::sensor::format::Z16>(5, 10, "sensorName2");
-    const auto & [ref_sensorSpec3, ref_acqs3] = generateRefAcqs<hub::sensor::format::Y8>(10, 10, "sensorName3");
+    //    const int ref_offset    = 5;
+    //    constexpr int ref_nAcqs = 10;
+    const auto& [ref_sensorSpec, ref_acqs] =
+        generateRefAcqs<hub::sensor::format::Y8>( 0, 10, "sensorName" );
+    const auto& [ref_sensorSpec2, ref_acqs2] =
+        generateRefAcqs<hub::sensor::format::Z16>( 5, 10, "sensorName2" );
+    const auto& [ref_sensorSpec3, ref_acqs3] =
+        generateRefAcqs<hub::sensor::format::Y8>( 10, 10, "sensorName3" );
 
     checkSynchronize( inputOutput,
                       ref_sensorSpec,
@@ -412,15 +422,14 @@ static void inputOutputSensorBench( ) {
                       inputOutput,
                       inputOutput2 );
 
-
-//    checkSynchronize( inputOutput2,
-//                      ref_sensorSpec2,
-//                      ref_acqs2,
-//                      inputOutput,
-//                      ref_sensorSpec,
-//                      ref_acqs,
-//                      inputOutput2,
-//                      inputOutput );
+    //    checkSynchronize( inputOutput2,
+    //                      ref_sensorSpec2,
+    //                      ref_acqs2,
+    //                      inputOutput,
+    //                      ref_sensorSpec,
+    //                      ref_acqs,
+    //                      inputOutput2,
+    //                      inputOutput );
 }
 
 // template <class Output, class Input>
@@ -891,3 +900,6 @@ static void inputOutputSensorBench( ) {
 //     std::cout << "using random port: " << ret << std::endl;
 //     return ret;
 // }
+
+} // namespace sensor
+} // namespace test

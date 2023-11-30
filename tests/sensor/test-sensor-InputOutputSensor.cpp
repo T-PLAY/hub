@@ -28,14 +28,15 @@ TEST_CASE( "InputOutputSensor test" ) {
     // init outputSensor
     hub::sensor::SensorSpec::MetaData metaData;
     metaData["name"] = "gauthier";
-    hub::sensor::SensorSpec sensorSpec( "sensorName", {}, metaData );
+    const hub::sensor::SensorSpec sensorSpec( "sensorName", metaData );
     using UserResolution = UserType;
     hub::sensor::OutputSensorT<UserResolution> outputSensor( sensorSpec, archive );
 
     // init output acq
-    decltype(outputSensor)::Acq acq;
+    // decltype(outputSensor)::Acq acq;
     // hub::sensor::OutputSensorT<UserResolution>::Acq acq;
 //    hub::sensor::AcquisitionT<UserResolution> acq; // same as above
+    auto acq = outputSensor.acq();
     acq.start() = 4;
     acq.end() = 3;
     auto& userType = acq.get<UserType&>();
@@ -56,6 +57,9 @@ TEST_CASE( "InputOutputSensor test" ) {
     std::cout << "acq: " << acq << std::endl;
     std::cout << "acq_read: " << acq_read << std::endl;
     CHECK( acq == acq_read );
+
+    assert(inputSensor.getInput().isEnd());
+
 
     //        assert(UserResolution() == inputSensor.getSpec().resolution);
 

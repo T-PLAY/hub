@@ -79,6 +79,10 @@ class SRC_API SensorSpec
                 const MetaData& metaData = {} ) :
         m_sensorName { sensorName }, m_resolution { resolution.clone() }, m_metaData { metaData } {}
 
+    SensorSpec( const std::string& sensorName,
+                const MetaData& metaData = {} ) :
+        m_sensorName { sensorName }, m_metaData { metaData } {}
+
     //    SensorSpec(const SensorSpec & sensorSpec) = default;
 
     auto toString() const {

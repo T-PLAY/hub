@@ -21,7 +21,7 @@ TEST_CASE( "InputOutputSensorSync test" ) {
 //    hub::io::Archive archive;
 //    hub::io::Archive archive2;
 //    inputOutputSensorBench(archive, archive2);
-    inputOutputSensorBench<hub::io::Archive>();
+    test::sensor::inputOutputSensorBench<hub::io::Archive>();
     return;
 
 //    //        std::cout << "ref_sync_acqs" << std::endl;
