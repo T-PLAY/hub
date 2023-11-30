@@ -127,30 +127,32 @@ namespace client {
 
 ViewerServer::ViewerServer(
         const std::string & name,
-    std::function<bool( const char* streamName, const sensor::SensorSpec& )> onNewStreamer,
-    std::function<void( const char* streamName, const sensor::SensorSpec& )> onDelStreamer,
-    std::function<void( const char* ipv4, int port )> onServerNotFound,
-    std::function<void( const char* ipv4, int port )> onServerConnected,
-    std::function<void( const char* ipv4, int port )> onServerDisconnected,
-    std::function<void( const char* streamName, const sensor::Acquisition& )> onNewAcquisition,
-    std::function<
-        void( const char* streamName, const char* objectName, int property, const Any& value )>
-        onSetProperty,
-    std::function<void( const char* logMessage )> onLogMessage,
+    ViewerHandler && viewerHandler,
+    // std::function<bool( const char* streamName, const sensor::SensorSpec& )> onNewStreamer,
+    // std::function<void( const char* streamName, const sensor::SensorSpec& )> onDelStreamer,
+    // std::function<void( const char* ipv4, int port )> onServerNotFound,
+    // std::function<void( const char* ipv4, int port )> onServerConnected,
+    // std::function<void( const char* ipv4, int port )> onServerDisconnected,
+    // std::function<void( const char* streamName, const sensor::Acquisition& )> onNewAcquisition,
+    // std::function<
+    //     void( const char* streamName, const char* objectName, int property, const Any& value )>
+    //     onSetProperty,
+    // std::function<void( const char* logMessage )> onLogMessage,
     const std::string& ipv4,
     int port
     ) :
 
     ViewerInterface(
         name,
-                     onNewStreamer,
-                     onDelStreamer,
-                     onServerNotFound,
-                     onServerConnected,
-                     onServerDisconnected,
-                     onNewAcquisition,
-                     onSetProperty,
-                     onLogMessage,
+        std::move(viewerHandler),
+                     // onNewStreamer,
+                     // onDelStreamer,
+                     // onServerNotFound,
+                     // onServerConnected,
+                     // onServerDisconnected,
+                     // onNewAcquisition,
+                     // onSetProperty,
+                     // onLogMessage,
         ipv4,
         port),
 //    m_onNewStreamer( onNewStreamer ),
@@ -178,19 +180,19 @@ ViewerServer::ViewerServer(
                 assert( m_sock.isOpen() );
 
 //                m_sock.write( net::ClientSocket::Type::VIEWER );
-                m_sock.write( io::StreamInterface::ClientType::VIEWER );
+                m_sock.write( io::StreamBase::ClientType::VIEWER );
 
-                if ( m_onServerConnected )
-                    m_onServerConnected( m_sock.getIpv4().c_str(), m_sock.getPort() );
+                if ( m_viewerHandler.onServerConnected )
+                    m_viewerHandler.onServerConnected( m_sock.getIpv4().c_str(), m_sock.getPort() );
 
                 while ( !m_stopThread ) {
 
-                    io::StreamInterface::ServerMessage serverMessage;
+                    io::StreamBase::ServerMessage serverMessage;
                     m_sock.read( serverMessage );
 
                     switch ( serverMessage ) {
 
-                    case io::StreamInterface::ServerMessage::VIEWER_NEW_STREAMER: {
+                    case io::StreamBase::ServerMessage::VIEWER_NEW_STREAMER: {
 
                         std::string streamName;
                         m_sock.read( streamName );
@@ -229,7 +231,7 @@ ViewerServer::ViewerServer(
 
                     } break;
 
-                    case io::StreamInterface::ServerMessage::VIEWER_DEL_STREAMER: {
+                    case io::StreamBase::ServerMessage::VIEWER_DEL_STREAMER: {
                         std::string streamName;
                         m_sock.read( streamName );
                         sensor::SensorSpec sensorSpec;
@@ -251,21 +253,21 @@ ViewerServer::ViewerServer(
 
                     } break;
 
-                    case io::StreamInterface::ServerMessage::SERVER_CLOSED: {
+                    case io::StreamBase::ServerMessage::SERVER_CLOSED: {
                         DEBUG_MSG( "[ViewerServer] server closed" );
                         assert( m_sock.isOpen() );
-                        m_sock.write( io::StreamInterface::ClientMessage::VIEWER_CLIENT_CLOSED );
+                        m_sock.write( io::StreamBase::ClientMessage::VIEWER_CLIENT_CLOSED );
                         throw net::ClientSocket::exception( "[viewer] server closed" );
                     }
 
-                    case io::StreamInterface::ServerMessage::VIEWER_CLOSED: {
+                    case io::StreamBase::ServerMessage::VIEWER_CLOSED: {
                         DEBUG_MSG( "[ViewerServer] viewer client closed" );
                         assert( m_sock.isOpen() );
-                        m_sock.write( io::StreamInterface::ClientMessage::VIEWER_CLIENT_CLOSED );
+                        m_sock.write( io::StreamBase::ClientMessage::VIEWER_CLIENT_CLOSED );
                         throw net::ClientSocket::exception( "[viewer] viewer client closed" );
                     }
 
-                    case io::StreamInterface::ServerMessage::VIEWER_SET_PROPERTY: {
+                    case io::StreamBase::ServerMessage::VIEWER_SET_PROPERTY: {
                         DEBUG_MSG( "[ViewerServer] viewer client set property" );
                         assert( m_sock.isOpen() );
                         std::string streamName;
@@ -277,8 +279,8 @@ ViewerServer::ViewerServer(
                         m_sock.read( property );
                         m_sock.read( value );
 
-                        if ( m_onSetProperty )
-                            m_onSetProperty(
+                        if ( m_viewerHandler.onSetProperty )
+                            m_viewerHandler.onSetProperty(
                                 streamName.c_str(), objectName.c_str(), property, value );
 
                     } break;
@@ -300,8 +302,8 @@ ViewerServer::ViewerServer(
                 else {
                     DEBUG_MSG( "[ViewerServer] server not found at ipv4 "
                                << m_sock.getIpv4() << " and port " << m_sock.getPort() );
-                    if ( m_onServerNotFound )
-                        m_onServerNotFound( m_sock.getIpv4().c_str(), m_sock.getPort() );
+                    if ( m_viewerHandler.onServerNotFound )
+                        m_viewerHandler.onServerNotFound( m_sock.getIpv4().c_str(), m_sock.getPort() );
                 }
                 // ping the server when this one is not started or visible in the network
                 // able the viewer clients to be aware of the starting of server less than 100
@@ -317,8 +319,8 @@ ViewerServer::ViewerServer(
                 m_serverConnected = false;
                 DEBUG_MSG( "[ViewerServer] server disconnected, close all client connections" );
 
-                if ( m_onServerDisconnected )
-                    m_onServerDisconnected( m_sock.getIpv4().c_str(), m_sock.getPort() );
+                if ( m_viewerHandler.onServerDisconnected )
+                    m_viewerHandler.onServerDisconnected( m_sock.getIpv4().c_str(), m_sock.getPort() );
 
                 m_streams.clear();
                 assert( m_streams.empty() );
@@ -339,7 +341,7 @@ ViewerServer::~ViewerServer() {
     DEBUG_MSG( "[ViewerServer] ~ViewerServer()" );
     m_stopThread = true;
 
-    if ( m_sock.isOpen() ) { m_sock.write( io::StreamInterface::ClientMessage::VIEWER_CLIENT_CLOSED ); }
+    if ( m_sock.isOpen() ) { m_sock.write( io::StreamBase::ClientMessage::VIEWER_CLIENT_CLOSED ); }
 
 
     assert( m_thread.joinable() );
@@ -402,7 +404,7 @@ void ViewerServer::setProperty( const std::string& streamName,
                           int property,
                           const Any& value ) {
     if ( m_sock.isOpen() ) {
-        m_sock.write( io::StreamInterface::ClientMessage::VIEWER_CLIENT_SET_PROPERTY );
+        m_sock.write( io::StreamBase::ClientMessage::VIEWER_CLIENT_SET_PROPERTY );
         m_sock.write( streamName );
         m_sock.write( objectName );
         m_sock.write( property );

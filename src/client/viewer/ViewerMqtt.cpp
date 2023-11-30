@@ -25,26 +25,29 @@ namespace client {
 // const int N_RETRY_ATTEMPTS = 5;
 // const std::string CLIENT_ID( "viewer" );
 
-ViewerMqtt::ViewerMqtt(const std::string &name, std::function<bool( const char*, const sensor::SensorSpec& )> onNewStreamer,
-    std::function<void( const char*, const sensor::SensorSpec& )> onDelStreamer,
-    std::function<void( const char*, int )> onServerNotFound,
-    std::function<void( const char*, int )> onServerConnected,
-    std::function<void( const char*, int )> onServerDisconnected,
-    std::function<void( const char*, const sensor::Acquisition& )> onNewAcquisition,
-    std::function<void( const char*, const char*, int, const Any& )> onSetProperty,
-    std::function<void( const char* )> onLogMessage ,
+ViewerMqtt::ViewerMqtt(const std::string &name,
+                        ViewerHandler && viewerHandler,
+    //                     std::function<bool( const char*, const sensor::SensorSpec& )> onNewStreamer,
+    // std::function<void( const char*, const sensor::SensorSpec& )> onDelStreamer,
+    // std::function<void( const char*, int )> onServerNotFound,
+    // std::function<void( const char*, int )> onServerConnected,
+    // std::function<void( const char*, int )> onServerDisconnected,
+    // std::function<void( const char*, const sensor::Acquisition& )> onNewAcquisition,
+    // std::function<void( const char*, const char*, int, const Any& )> onSetProperty,
+    // std::function<void( const char* )> onLogMessage ,
     const std::string& ipv4,
     int port) :
     ViewerInterface(
         name,
-                     onNewStreamer,
-                     onDelStreamer,
-                     onServerNotFound,
-                     onServerConnected,
-                     onServerDisconnected,
-                     onNewAcquisition,
-                     onSetProperty,
-                     onLogMessage,
+        std::move(viewerHandler),
+                     // onNewStreamer,
+                     // onDelStreamer,
+                     // onServerNotFound,
+                     // onServerConnected,
+                     // onServerDisconnected,
+                     // onNewAcquisition,
+                     // onSetProperty,
+                     // onLogMessage,
         ipv4,
         port
         ),
@@ -79,7 +82,7 @@ ViewerMqtt::ViewerMqtt(const std::string &name, std::function<bool( const char*,
         //    assert(m_client->is_connected());
         //    assert(m_msgPtr == nullptr);
 
-        m_onServerConnected( m_ipv4.c_str(), m_port );
+        m_viewerHandler.onServerConnected( m_ipv4.c_str(), m_port );
         m_serverConnected = true;
         printStatus();
 
@@ -110,10 +113,10 @@ ViewerMqtt::ViewerMqtt(const std::string &name, std::function<bool( const char*,
                 //                DEBUG_MSG( "[ViewerMqtt] receive message : '" << payload << "'" );
                 //                m_inputMsgPtr.reset();
 
-                const io::StreamInterface::ServerMessage message = io::StreamInterface::ServerMessage( payload.at( 0 ) - '0' );
+                const io::StreamBase::ServerMessage message = io::StreamBase::ServerMessage( payload.at( 0 ) - '0' );
 
                 switch ( message ) {
-                case io::StreamInterface::ServerMessage::VIEWER_NEW_STREAMER: {
+                case io::StreamBase::ServerMessage::VIEWER_NEW_STREAMER: {
                     std::cout << std::endl;
                     ++m_iStreamer;
                     //                    m_client->subscribe( s_topicEvents + "/streamName" );
@@ -127,10 +130,10 @@ ViewerMqtt::ViewerMqtt(const std::string &name, std::function<bool( const char*,
                     //                std::string streamName;
                     sensor::SensorSpec sensorSpec;
                     try {
-                        input::InputStreamMqtt inputStream( streamName, m_ipv4, m_port );
+                        input::InputStreamMqtt inputStream( streamName, m_port, m_ipv4 );
                         inputStream.read( sensorSpec );
                     }
-                    catch ( io::StreamInterface::exception& ex ) {
+                    catch ( io::StreamBase::exception& ex ) {
                         //                        DEBUG_MSG( "[ViewerMqtt] catch Stream exception '"
                         //                        << ex.what() << "'" );
                         DEBUG_MSG( "[ViewerMqtt] unable to connect with new stream '"
@@ -152,7 +155,7 @@ ViewerMqtt::ViewerMqtt(const std::string &name, std::function<bool( const char*,
                     //                std::this_thread::sleep_for( std::chrono::milliseconds( 100 )
                     //                );
                 } break;
-                case io::StreamInterface::ServerMessage::VIEWER_DEL_STREAMER: {
+                case io::StreamBase::ServerMessage::VIEWER_DEL_STREAMER: {
                     //                    std::string streamName;
                     const std::string streamName = payload.substr( 1, payload.size() - 1 );
                     //                    m_sock.read( streamName );
@@ -172,7 +175,7 @@ ViewerMqtt::ViewerMqtt(const std::string &name, std::function<bool( const char*,
                     //                    std::this_thread::sleep_for( std::chrono::milliseconds(
                     //                    100 ) );
                 } break;
-                case io::StreamInterface::ServerMessage::VIEWER_SET_PROPERTY: {
+                case io::StreamBase::ServerMessage::VIEWER_SET_PROPERTY: {
                 } break;
                 default:
                     assert( false );
@@ -207,7 +210,7 @@ ViewerMqtt::~ViewerMqtt() {
     //        return;
     //    }
 
-    m_onServerDisconnected( m_ipv4.c_str(), m_port );
+    m_viewerHandler.onServerDisconnected( m_ipv4.c_str(), m_port );
     m_serverConnected = false;
     printStatus();
 

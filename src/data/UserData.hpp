@@ -10,14 +10,15 @@ namespace data {
 /// \brief The UserData class
 /// is a custom data, using for event sensor.
 ///
-class SRC_API UserData : public Measure
+// class SRC_API UserData : public Measure
+class SRC_API UserData
 {
   public:
     ///
     /// \brief UserData
     /// \param measure
     ///
-    explicit UserData( const Measure& measure );
+    // explicit UserData( const Measure& measure );
     ///
     /// \brief UserData
     /// \param name

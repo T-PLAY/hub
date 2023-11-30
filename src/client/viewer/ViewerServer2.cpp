@@ -1,4 +1,4 @@
-#include "ViewerServer.hpp"
+#include "ViewerServer2.hpp"
 
 #include <regex>
 #include <sstream>
@@ -22,7 +22,7 @@
 //    } while ( false );
 
 namespace hub {
-namespace impl2 {
+// namespace impl2 {
 namespace client {
 
 // namespace viewer {
@@ -30,7 +30,7 @@ namespace client {
 // class Stream
 //{
 //   public:
-//     explicit Stream( ViewerServer& viewer, const std::string& streamName, const SensorSpec&
+//     explicit Stream( ViewerServer2& viewer, const std::string& streamName, const SensorSpec&
 //     sensorSpec ) :
 //         m_viewer( viewer ),
 //         m_streamName( streamName ),
@@ -56,7 +56,7 @@ namespace client {
 //    }
 
 //    void startStream() {
-//        DEBUG_MSG( "[ViewerServer][Stream] startStream" );
+//        DEBUG_MSG( "[ViewerServer2][Stream] startStream" );
 
 //        assert( m_thread == nullptr );
 
@@ -78,20 +78,20 @@ namespace client {
 //                }
 //            }
 //            catch ( net::Socket::exception& e ) {
-//                DEBUG_MSG( "[ViewerServer] startStream() streamer '"
+//                DEBUG_MSG( "[ViewerServer2] startStream() streamer '"
 //                           << "'" << m_streamName << "' disconnected, catch exception "
 //                           << e.what() );
 //            }
 
 //            if ( m_stopThread ) {
-//                DEBUG_MSG( "[ViewerServer] streamer '" << m_streamName << "' thread killed " );
+//                DEBUG_MSG( "[ViewerServer2] streamer '" << m_streamName << "' thread killed " );
 //            }
-//            DEBUG_MSG( "[ViewerServer] thread end " );
+//            DEBUG_MSG( "[ViewerServer2] thread end " );
 //        } );
 
 //        m_streaming = true;
 
-//        DEBUG_MSG( "[ViewerServer] startStream() streamer '" << m_streamName << "' inited " );
+//        DEBUG_MSG( "[ViewerServer2] startStream() streamer '" << m_streamName << "' inited " );
 //    }
 
 //    void stopStream() {
@@ -113,7 +113,7 @@ namespace client {
 //        DEBUG_MSG( "[Stream] stopStream() streamer '" << m_streamName << "' ended" );
 //    }
 
-//    ViewerServer& m_viewer;
+//    ViewerServer2& m_viewer;
 //    std::string m_streamName;
 //    SensorSpec m_sensorSpec;
 
@@ -128,30 +128,32 @@ namespace client {
 
 //} // end namespace viewer
 
-ViewerServer::ViewerServer(
+ViewerServer2::ViewerServer2(
     const std::string& name,
-    std::function<bool( const char* streamName, const sensor::SensorSpec& )> onNewStreamer,
-    std::function<void( const char* streamName, const sensor::SensorSpec& )> onDelStreamer,
-    std::function<void( const char* ipv4, int port )> onServerNotFound,
-    std::function<void( const char* ipv4, int port )> onServerConnected,
-    std::function<void( const char* ipv4, int port )> onServerDisconnected,
-    std::function<void( const char* streamName, const sensor::Acquisition& )> onNewAcquisition,
-    std::function<
-        void( const char* streamName, const char* objectName, int property, const Any& value )>
-        onSetProperty,
-    std::function<void( const char* logMessage )> onLogMessage,
+    ViewerHandler && viewerHandler,
+    // std::function<bool( const char* streamName, const sensor::SensorSpec& )> onNewStreamer,
+    // std::function<void( const char* streamName, const sensor::SensorSpec& )> onDelStreamer,
+    // std::function<void( const char* ipv4, int port )> onServerNotFound,
+    // std::function<void( const char* ipv4, int port )> onServerConnected,
+    // std::function<void( const char* ipv4, int port )> onServerDisconnected,
+    // std::function<void( const char* streamName, const sensor::Acquisition& )> onNewAcquisition,
+    // std::function<
+    //     void( const char* streamName, const char* objectName, int property, const Any& value )>
+    //     onSetProperty,
+    // std::function<void( const char* logMessage )> onLogMessage,
     const std::string& ipv4,
     int port ) :
 
     ViewerInterface( name,
-                     onNewStreamer,
-                     onDelStreamer,
-                     onServerNotFound,
-                     onServerConnected,
-                     onServerDisconnected,
-                     onNewAcquisition,
-                     onSetProperty,
-                     onLogMessage,
+                     std::move(viewerHandler),
+                     // onNewStreamer,
+                     // onDelStreamer,
+                     // onServerNotFound,
+                     // onServerConnected,
+                     // onServerDisconnected,
+                     // onNewAcquisition,
+                     // onSetProperty,
+                     // onLogMessage,
                      ipv4,
                      port ),
     //    m_onNewStreamer( onNewStreamer ),
@@ -170,7 +172,7 @@ ViewerServer::ViewerServer(
         while ( !m_stopThread ) {
             try {
 
-                DEBUG_MSG( "[ViewerServer] trying to connect to server at ipv4 "
+                DEBUG_MSG( "[ViewerServer2] trying to connect to server at ipv4 "
                            << m_sock.getIpv4() << " and port " << m_sock.getPort() );
 
                 assert( !m_sock.isOpen() );
@@ -179,28 +181,28 @@ ViewerServer::ViewerServer(
                 assert( m_sock.isOpen() );
 
                 //                m_sock.write( net::ClientSocket::Type::VIEWER );
-                m_sock.write( hub::io::StreamInterface::ClientType::VIEWER );
+                m_sock.write( hub::io::StreamBase::ClientType::VIEWER );
 
-                if ( m_onServerConnected )
-                    m_onServerConnected( m_sock.getIpv4().c_str(), m_sock.getPort() );
+                if ( m_viewerHandler.onServerConnected )
+                    m_viewerHandler.onServerConnected( m_sock.getIpv4().c_str(), m_sock.getPort() );
 
                 while ( !m_stopThread ) {
 
-                    hub::io::StreamInterface::ServerMessage serverMessage;
+                    hub::io::StreamBase::ServerMessage serverMessage;
                     m_sock.read( serverMessage );
 
                     switch ( serverMessage ) {
 
-                    case hub::io::StreamInterface::ServerMessage::VIEWER_NEW_STREAMER: {
+                    case hub::io::StreamBase::ServerMessage::VIEWER_NEW_STREAMER: {
 
                         std::string streamName;
                         m_sock.read( streamName );
                         sensor::SensorSpec sensorSpec;
                         m_sock.read( sensorSpec );
-                        std::cout << "[ViewerServer] new streamer '" << streamName << "'"
+                        std::cout << "[ViewerServer2] new streamer '" << streamName << "'"
                                   << std::endl;
 
-                        DEBUG_MSG( "[ViewerServer] new streamer '" << streamName << "'" );
+                        DEBUG_MSG( "[ViewerServer2] new streamer '" << streamName << "'" );
 
                         addStream( streamName, sensorSpec );
                         //                        assert( m_streams.find( streamName ) ==
@@ -234,12 +236,12 @@ ViewerServer::ViewerServer(
 
                     } break;
 
-                    case hub::io::StreamInterface::ServerMessage::VIEWER_DEL_STREAMER: {
+                    case hub::io::StreamBase::ServerMessage::VIEWER_DEL_STREAMER: {
                         std::string streamName;
                         m_sock.read( streamName );
                         sensor::SensorSpec sensorSpec;
                         m_sock.read( sensorSpec );
-                        DEBUG_MSG( "[ViewerServer] del streamer '" << streamName << "'" );
+                        DEBUG_MSG( "[ViewerServer2] del streamer '" << streamName << "'" );
 
                         //                        if ( m_onNewStreamer ) {
                         //                            assert( m_onDelStreamer );
@@ -258,22 +260,22 @@ ViewerServer::ViewerServer(
 
                     } break;
 
-                    case hub::io::StreamInterface::ServerMessage::SERVER_CLOSED: {
-                        DEBUG_MSG( "[ViewerServer] server closed" );
+                    case hub::io::StreamBase::ServerMessage::SERVER_CLOSED: {
+                        DEBUG_MSG( "[ViewerServer2] server closed" );
                         assert( m_sock.isOpen() );
-                        m_sock.write( hub::io::StreamInterface::ClientMessage::VIEWER_CLIENT_CLOSED );
+                        m_sock.write( hub::io::StreamBase::ClientMessage::VIEWER_CLIENT_CLOSED );
                         throw net::ClientSocket::exception( "[viewer] server closed" );
                     }
 
-                    case hub::io::StreamInterface::ServerMessage::VIEWER_CLOSED: {
-                        DEBUG_MSG( "[ViewerServer] viewer client closed" );
+                    case hub::io::StreamBase::ServerMessage::VIEWER_CLOSED: {
+                        DEBUG_MSG( "[ViewerServer2] viewer client closed" );
                         assert( m_sock.isOpen() );
-                        m_sock.write( hub::io::StreamInterface::ClientMessage::VIEWER_CLIENT_CLOSED );
+                        m_sock.write( hub::io::StreamBase::ClientMessage::VIEWER_CLIENT_CLOSED );
                         throw net::ClientSocket::exception( "[viewer] viewer client closed" );
                     }
 
-                    case hub::io::StreamInterface::ServerMessage::VIEWER_SET_PROPERTY: {
-                        DEBUG_MSG( "[ViewerServer] viewer client set property" );
+                    case hub::io::StreamBase::ServerMessage::VIEWER_SET_PROPERTY: {
+                        DEBUG_MSG( "[ViewerServer2] viewer client set property" );
                         assert( m_sock.isOpen() );
                         std::string streamName;
                         std::string objectName;
@@ -284,15 +286,15 @@ ViewerServer::ViewerServer(
                         m_sock.read( property );
                         m_sock.read( value );
 
-                        if ( m_onSetProperty )
-                            m_onSetProperty(
+                        if ( m_viewerHandler.onSetProperty )
+                            m_viewerHandler.onSetProperty(
                                 streamName.c_str(), objectName.c_str(), property, value );
 
                     } break;
 
                     default: {
                         assert( false );
-                        DEBUG_MSG( "[ViewerServer] unknown message from server" );
+                        DEBUG_MSG( "[ViewerServer2] unknown message from server" );
                         throw net::ClientSocket::exception(
                             "[viewer] unknown message from server " );
                     }
@@ -302,13 +304,13 @@ ViewerServer::ViewerServer(
             }
             catch ( net::ClientSocket::exception& e ) {
                 if ( m_serverConnected ) {
-                    DEBUG_MSG( "[ViewerServer] server disconnected, catch exception " << e.what() );
+                    DEBUG_MSG( "[ViewerServer2] server disconnected, catch exception " << e.what() );
                 }
                 else {
-                    DEBUG_MSG( "[ViewerServer] server not found at ipv4 "
+                    DEBUG_MSG( "[ViewerServer2] server not found at ipv4 "
                                << m_sock.getIpv4() << " and port " << m_sock.getPort() );
-                    if ( m_onServerNotFound )
-                        m_onServerNotFound( m_sock.getIpv4().c_str(), m_sock.getPort() );
+                    if ( m_viewerHandler.onServerNotFound )
+                        m_viewerHandler.onServerNotFound( m_sock.getIpv4().c_str(), m_sock.getPort() );
                 }
                 // ping the server when this one is not started or visible in the network
                 // able the viewer clients to be aware of the starting of server less than 100
@@ -322,10 +324,10 @@ ViewerServer::ViewerServer(
 
             if ( m_serverConnected ) {
                 m_serverConnected = false;
-                DEBUG_MSG( "[ViewerServer] server disconnected, close all client connections" );
+                DEBUG_MSG( "[ViewerServer2] server disconnected, close all client connections" );
 
-                if ( m_onServerDisconnected )
-                    m_onServerDisconnected( m_sock.getIpv4().c_str(), m_sock.getPort() );
+                if ( m_viewerHandler.onServerDisconnected )
+                    m_viewerHandler.onServerDisconnected( m_sock.getIpv4().c_str(), m_sock.getPort() );
 
                 m_streams.clear();
                 assert( m_streams.empty() );
@@ -340,62 +342,62 @@ ViewerServer::ViewerServer(
     } );  // thread
 }
 
-ViewerServer::~ViewerServer() {
-    DEBUG_MSG( "[ViewerServer] ~ViewerServer()" );
+ViewerServer2::~ViewerServer2() {
+    DEBUG_MSG( "[ViewerServer2] ~ViewerServer2()" );
     m_stopThread = true;
 
     if ( m_sock.isOpen() ) {
-        m_sock.write( hub::io::StreamInterface::ClientMessage::VIEWER_CLIENT_CLOSED );
+        m_sock.write( hub::io::StreamBase::ClientMessage::VIEWER_CLIENT_CLOSED );
     }
 
     assert( m_thread.joinable() );
     m_thread.join();
 
     m_streams.clear();
-    DEBUG_MSG( "[ViewerServer] ~ViewerServer() done" );
+    DEBUG_MSG( "[ViewerServer2] ~ViewerServer2() done" );
 }
 
-void ViewerServer::setIpv4( const std::string& ipv4 ) {
+void ViewerServer2::setIpv4( const std::string& ipv4 ) {
     ViewerInterface::setIpv4( ipv4 );
 
-    DEBUG_MSG( "[ViewerServer] setIpv4 " << ipv4 );
+    DEBUG_MSG( "[ViewerServer2] setIpv4 " << ipv4 );
     assert( !m_serverConnected );
     m_sock.setIpv4( ipv4 );
 }
 
-void ViewerServer::setPort( int port ) {
+void ViewerServer2::setPort( int port ) {
     ViewerInterface::setPort( port );
 
-    DEBUG_MSG( "[ViewerServer] setPort " << port );
+    DEBUG_MSG( "[ViewerServer2] setPort " << port );
     assert( !m_serverConnected );
     m_sock.setPort( port );
 }
 
-// const std::string& ViewerServer::getIpv4() const {
+// const std::string& ViewerServer2::getIpv4() const {
 //     return m_sock.getIpv4();
 // }
 
-// const int& ViewerServer::getPort() const {
+// const int& ViewerServer2::getPort() const {
 //     return m_sock.getPort();
 // }
 
-// void ViewerServer::setAutoSync( bool newAutoSync ) {
-//     DEBUG_MSG( "[ViewerServer] setAutoSync " << newAutoSync );
+// void ViewerServer2::setAutoSync( bool newAutoSync ) {
+//     DEBUG_MSG( "[ViewerServer2] setAutoSync " << newAutoSync );
 // }
 
-// bool ViewerServer::isConnected() const {
+// bool ViewerServer2::isConnected() const {
 //     return m_serverConnected;
 // }
 
-// void ViewerServer::startStream( const std::string& streamName ) {
+// void ViewerServer2::startStream( const std::string& streamName ) {
 //     assert( m_onNewStreamer );
 //     assert( m_streams.find( streamName ) != m_streams.end() );
 //     auto& stream = *m_streams.at( streamName );
 //     stream.startStream();
 // }
 
-// void ViewerServer::stopStream( const std::string& streamName ) {
-//     DEBUG_MSG( "[ViewerServer] stopStream by user " << streamName );
+// void ViewerServer2::stopStream( const std::string& streamName ) {
+//     DEBUG_MSG( "[ViewerServer2] stopStream by user " << streamName );
 
 //    assert( m_onDelStreamer );
 //    assert( m_streams.find( streamName ) != m_streams.end() );
@@ -403,12 +405,12 @@ void ViewerServer::setPort( int port ) {
 //    stream.stopStream();
 //}
 
-void ViewerServer::setProperty( const std::string& streamName,
+void ViewerServer2::setProperty( const std::string& streamName,
                                 const std::string& objectName,
                                 int property,
                                 const Any& value ) {
     if ( m_sock.isOpen() ) {
-        m_sock.write( hub::io::StreamInterface::ClientMessage::VIEWER_CLIENT_SET_PROPERTY );
+        m_sock.write( hub::io::StreamBase::ClientMessage::VIEWER_CLIENT_SET_PROPERTY );
         m_sock.write( streamName );
         m_sock.write( objectName );
         m_sock.write( property );
@@ -417,5 +419,5 @@ void ViewerServer::setProperty( const std::string& streamName,
 }
 
 } // namespace client
-} // namespace impl2
+// } // namespace impl2
 } // namespace hub

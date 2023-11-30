@@ -8,8 +8,9 @@ namespace input {
 
 
 InputStreamMqtt::InputStreamMqtt( const std::string& streamName,
-                                  const std::string& ipv4,
-                                  int port ) :
+                                  int port,
+                                  const std::string& ipv4
+                                  ) :
     //    InputStreamInterface( streamName, ipv4, port ),
     io::StreamMqtt( streamName, ipv4, port ),
     m_client( new mqtt::client( ipv4 + ":" + std::to_string( port ),
@@ -73,6 +74,11 @@ InputStreamMqtt::InputStreamMqtt( const std::string& streamName,
 #ifdef DEBUG_INPUT_STREAM
     std::cout << DEBUG_INPUT_STREAM + m_name + " InputStreamMqtt()" << std::endl;
 #endif
+}
+
+void InputStreamMqtt::clear()
+{
+
 }
 
 // InputStreamMqtt::InputStreamMqtt(InputStreamMqtt &&inputStream)

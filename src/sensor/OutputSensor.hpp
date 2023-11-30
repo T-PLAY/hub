@@ -8,7 +8,10 @@
 //// #include "Acquisition.hpp"
 //// #include "core/Traits.hpp"
 
-//// user friendly useless includes
+// user friendly useless includes
+#include "io/output/OutputFile.hpp"
+#include "io/output/OutputStream.hpp"
+
 //// #include "io/output/OutputFile.hpp"
 //// #include "io/output/OutputStream.hpp"
 //// #include "io/output/OutputMemory.hpp"
@@ -24,6 +27,7 @@
 #include "Acquisition.hpp"
 #include "Sensor.hpp"
 #include "SensorSpec.hpp"
+
 
 //// #include "net/ClientSocket.hpp"
 // #include "Acquisition.hpp"
@@ -114,8 +118,10 @@ class OutputSensorT : public Sensor
     using Acq = Acquisition;
 //    using Acq = Acquisition;
 
-    OutputSensorT( const SensorSpec& sensorSpec, Output& output ) :
-        Sensor( sensorSpec ), m_output( output ) {
+    // template <class Output>
+    // OutputSensorT( const SensorSpec& sensorSpec, Output&& output ) :
+    OutputSensorT( const SensorSpec& sensorSpec, auto && output ) :
+        Sensor( sensorSpec ), m_output( std::forward<Output&>(output) ) {
         //        m_spec.m_resolution = Resolution();
         if constexpr ( isMatrix<Resolution> ) { m_spec.setResolution(Resolution().getSerial()); }
         else { m_spec.setResolution(make_matrix<Resolution>()); }

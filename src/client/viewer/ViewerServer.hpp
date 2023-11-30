@@ -9,8 +9,9 @@
 //#include "sensor/Acquisition.hpp"
 //#include "sensor/SensorSpec.hpp"
 //#include "net/ClientSocket.hpp"
-#include "client/ViewerInterface.hpp"
-#include "impl/server/io/input/InputStreamServer.hpp"
+#include "ViewerInterface.hpp"
+// #include "impl/server/io/input/InputStreamServer.hpp"
+#include "io/input/InputStreamServer.hpp"
 
 namespace hub {
 namespace client {
@@ -20,18 +21,19 @@ class SRC_API ViewerServer : public ViewerInterface<input::InputStreamServer>
   public:
     explicit ViewerServer(
         const std::string & name,
-        std::function<bool( const char* streamName, const sensor::SensorSpec& )> onNewStreamer = {},
-        std::function<void( const char* streamName, const sensor::SensorSpec& )> onDelStreamer = {},
-        std::function<void( const char* ipv4, int port )> onServerNotFound             = {},
-        std::function<void( const char* ipv4, int port )> onServerConnected            = {},
-        std::function<void( const char* ipv4, int port )> onServerDisconnected         = {},
-        std::function<void( const char* streamName, const sensor::Acquisition& )> onNewAcquisition =
-            {},
-        std::function<
-            void( const char* streamName, const char* objectName, int property, const Any& value )>
-            onSetProperty                                          = {},
+        ViewerHandler && viewerHandler,
+        // std::function<bool( const char* streamName, const sensor::SensorSpec& )> onNewStreamer = {},
+        // std::function<void( const char* streamName, const sensor::SensorSpec& )> onDelStreamer = {},
+        // std::function<void( const char* ipv4, int port )> onServerNotFound             = {},
+        // std::function<void( const char* ipv4, int port )> onServerConnected            = {},
+        // std::function<void( const char* ipv4, int port )> onServerDisconnected         = {},
+        // std::function<void( const char* streamName, const sensor::Acquisition& )> onNewAcquisition =
+        //     {},
+        // std::function<
+        //     void( const char* streamName, const char* objectName, int property, const Any& value )>
+        //     onSetProperty                                          = {},
 //        bool autoSync                                              = true,
-        std::function<void( const char* logMessage )> onLogMessage = {},
+        // std::function<void( const char* logMessage )> onLogMessage = {},
         const std::string& ipv4                                    = input::InputStreamServer::s_defaultIpv4,
         int port                                                   = input::InputStreamServer::s_defaultPort
         );

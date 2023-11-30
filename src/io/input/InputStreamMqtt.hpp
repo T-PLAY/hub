@@ -21,8 +21,9 @@ class SRC_API InputStreamMqtt : public Input, public io::StreamMqtt
 {
   public:
     explicit InputStreamMqtt( const std::string& streamName,
-                              const std::string& ipv4 = s_defaultIpv4,
-                              int port                = s_defaultPort );
+                              int port                = s_defaultPort,
+                              const std::string& ipv4 = s_defaultIpv4
+                              );
 
     //        InputStreamMqtt( InputStreamMqtt&& inputStream );
 
@@ -37,6 +38,7 @@ class SRC_API InputStreamMqtt : public Input, public io::StreamMqtt
     void close() override;
 
     bool isEnd() const override;
+    void clear() override;
 
     void read( sensor::Acquisition& acq );
     void read( sensor::SensorSpec& sensorSpec );

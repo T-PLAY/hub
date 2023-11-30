@@ -11,7 +11,7 @@
 #include <gltf/gltfpack.h>
 #include <meshoptimizer/meshoptimizer.h>
 
-#include "io/Memory.hpp"
+// #include "io/Memory.hpp"
 
 constexpr int s_materialSize = 4 * 3 * 6 + 4 * 3 + 4;
 
@@ -40,64 +40,64 @@ class MeshImpl
     std::vector<Shape> m_shapes;
     std::vector<Material> m_materials;
 
-    void write( Output& output ) {
-        output.write( m_nVertice );
-        output.write( m_nTriangle );
-        output.write( m_nDraw );
+    // void write( Output& output ) {
+    //     output.write( m_nVertice );
+    //     output.write( m_nTriangle );
+    //     output.write( m_nDraw );
 
-        output.write( m_nMesh );
-        output.write( m_mesh_triangles );
-        output.write( m_mesh_vertices );
-        output.write( m_total_triangles );
-        output.write( m_total_instances );
-        output.write( m_total_draws );
+    //     output.write( m_nMesh );
+    //     output.write( m_mesh_triangles );
+    //     output.write( m_mesh_vertices );
+    //     output.write( m_total_triangles );
+    //     output.write( m_total_instances );
+    //     output.write( m_total_draws );
 
-        output.write( m_name );
-        output.write( (uint64_t)m_shapes.size() );
-        for ( const auto& shape : m_shapes ) {
-            uint64_t size = shape.vertices.size();
-            output.write( size );
-            output.write( reinterpret_cast<const unsigned char*>(shape.vertices.data()),
-                          shape.vertices.size() * sizeof( Vertex ) );
+    //     output.write( m_name );
+    //     output.write( (uint64_t)m_shapes.size() );
+    //     for ( const auto& shape : m_shapes ) {
+    //         uint64_t size = shape.vertices.size();
+    //         output.write( size );
+    //         output.write( reinterpret_cast<const unsigned char*>(shape.vertices.data()),
+    //                       shape.vertices.size() * sizeof( Vertex ) );
 
-            output.write( shape.hasNormal );
-            size = shape.indices.size();
-            output.write( size );
-            output.write( reinterpret_cast<const unsigned char*>(shape.indices.data()),
-                          shape.indices.size() * sizeof( unsigned int ) );
+    //         output.write( shape.hasNormal );
+    //         size = shape.indices.size();
+    //         output.write( size );
+    //         output.write( reinterpret_cast<const unsigned char*>(shape.indices.data()),
+    //                       shape.indices.size() * sizeof( unsigned int ) );
 
-            output.write( shape.name );
-            output.write( shape.material );
-        }
-        output.write( (uint64_t)m_materials.size() );
-        for ( const auto& material : m_materials ) {
-            output.write( material.name );
-            assert( sizeof( float ) == 4 );
-            assert( sizeof( int ) == 4 );
-            output.write( reinterpret_cast<const unsigned char*>(&material.Ka), s_materialSize );
-        }
-    }
+    //         output.write( shape.name );
+    //         output.write( shape.material );
+    //     }
+    //     output.write( (uint64_t)m_materials.size() );
+    //     for ( const auto& material : m_materials ) {
+    //         output.write( material.name );
+    //         assert( sizeof( float ) == 4 );
+    //         assert( sizeof( int ) == 4 );
+    //         output.write( reinterpret_cast<const unsigned char*>(&material.Ka), s_materialSize );
+    //     }
+    // }
 
     friend class Mesh;
 };
 
 MeshImpl::~MeshImpl() {}
 
-Mesh::Mesh( const Measure& measure ) :
-    Measure( measure.getData(), measure.getSize(), sensor::Resolution { { 1 }, sensor::Format::MESH } ),
-    m_pimpl( new MeshImpl ) {
-    assert( m_data != nullptr );
-}
+// Mesh::Mesh( const Measure& measure ) :
+//     Measure( measure.getData(), measure.getSize(), sensor::Resolution { { 1 }, sensor::Format::MESH } ),
+//     m_pimpl( new MeshImpl ) {
+//     assert( m_data != nullptr );
+// }
 
 Mesh::Mesh( const Mesh& mesh ) :
-    Measure( new unsigned char[mesh.m_size],
-             mesh.m_size,
-             sensor::Resolution { { 1 }, sensor::Format::MESH },
-             true ),
+    // Measure( new unsigned char[mesh.m_size],
+    //          mesh.m_size,
+    //          sensor::Resolution { { 1 }, sensor::Format::MESH },
+    //          true ),
     m_pimpl( mesh.m_pimpl )
 
 {
-    memcpy( m_data, mesh.m_data, m_size );
+    // memcpy( m_data, mesh.m_data, m_size );
 }
 
 Mesh::Mesh( const std::string& filePath ) : Mesh( { filePath } ) {}
@@ -108,7 +108,7 @@ Mesh::~Mesh() = default;
 
 // Mesh::Mesh( const std::string& name, const std::vector<std::string>& filePaths ) :
 Mesh::Mesh( std::initializer_list<std::string> filePaths ) :
-    Measure( (unsigned char*)nullptr, 0, sensor::Resolution { { 1 }, sensor::Format::MESH } ),
+    // Measure( (unsigned char*)nullptr, 0, sensor::Resolution { { 1 }, sensor::Format::MESH } ),
     m_pimpl( new MeshImpl ) {
 
     std::vector<std::string> filenames;
@@ -343,14 +343,13 @@ Mesh::Mesh( std::initializer_list<std::string> filePaths ) :
 
     std::vector<unsigned char> buff;
 
-//    io::Memory<decltype( buff )> memory( buff );
-    output::OutputMemory<decltype( buff )> memory( buff );
-    m_pimpl->write( memory );
+    // output::OutputMemory<decltype( buff )> memory( buff );
+    // m_pimpl->write( memory );
 
-    m_data    = new unsigned char[buff.size()];
-    m_ownData = true;
-    m_size    = buff.size();
-    memcpy( m_data, buff.data(), m_size );
+    // m_data    = new unsigned char[buff.size()];
+    // m_ownData = true;
+    // m_size    = buff.size();
+    // memcpy( m_data, buff.data(), m_size );
 
     m_pimpl->m_shapes.clear();
     m_pimpl->m_materials.clear();
@@ -361,68 +360,67 @@ void Mesh::unpack( bool headerOnly ) const {
     const auto start = std::chrono::high_resolution_clock::now();
 
     std::vector<unsigned char> buff;
-    buff.insert( buff.begin(), m_data, m_data + m_size );
-//    io::Memory<decltype( buff )> memory( buff );
-    input::InputMemory<decltype( buff )> memory( buff );
+    // buff.insert( buff.begin(), m_data, m_data + m_size );
+    // input::InputMemory<decltype( buff )> memory( buff );
 
-    memory.read( m_pimpl->m_nVertice );
-    memory.read( m_pimpl->m_nTriangle );
-    memory.read( m_pimpl->m_nDraw );
+    // memory.read( m_pimpl->m_nVertice );
+    // memory.read( m_pimpl->m_nTriangle );
+    // memory.read( m_pimpl->m_nDraw );
 
-    memory.read( m_pimpl->m_nMesh );
-    memory.read( m_pimpl->m_mesh_triangles );
-    memory.read( m_pimpl->m_mesh_vertices );
-    memory.read( m_pimpl->m_total_triangles );
-    memory.read( m_pimpl->m_total_instances );
-    memory.read( m_pimpl->m_total_draws );
+    // memory.read( m_pimpl->m_nMesh );
+    // memory.read( m_pimpl->m_mesh_triangles );
+    // memory.read( m_pimpl->m_mesh_vertices );
+    // memory.read( m_pimpl->m_total_triangles );
+    // memory.read( m_pimpl->m_total_instances );
+    // memory.read( m_pimpl->m_total_draws );
 
-    memory.read( m_pimpl->m_name );
+    // memory.read( m_pimpl->m_name );
 
-    if ( !headerOnly ) {
-        m_pimpl->m_shapes.clear();
-        uint64_t nShape;
-        memory.read( nShape );
-        for ( int iShape = 0; iShape < nShape; ++iShape ) {
-            m_pimpl->m_shapes.push_back( Shape() );
-            auto& shape = m_pimpl->m_shapes.back();
+    // if ( !headerOnly ) {
+    //     m_pimpl->m_shapes.clear();
+    //     uint64_t nShape;
+    //     memory.read( nShape );
+    //     for ( int iShape = 0; iShape < nShape; ++iShape ) {
+    //         m_pimpl->m_shapes.push_back( Shape() );
+    //         auto& shape = m_pimpl->m_shapes.back();
 
-            uint64_t size;
-            memory.read( size );
-            shape.vertices.resize( size );
-            memory.read( reinterpret_cast<unsigned char*>(shape.vertices.data()),
-                         shape.vertices.size() * sizeof( Vertex ) );
+    //         uint64_t size;
+    //         memory.read( size );
+    //         shape.vertices.resize( size );
+    //         memory.read( reinterpret_cast<unsigned char*>(shape.vertices.data()),
+    //                      shape.vertices.size() * sizeof( Vertex ) );
 
-            memory.read( shape.hasNormal );
+    //         memory.read( shape.hasNormal );
 
-            memory.read( size );
-            shape.indices.resize( size );
-            memory.read( reinterpret_cast<unsigned char*>(shape.indices.data()),
-                         shape.indices.size() * sizeof( unsigned int ) );
+    //         memory.read( size );
+    //         shape.indices.resize( size );
+    //         memory.read( reinterpret_cast<unsigned char*>(shape.indices.data()),
+    //                      shape.indices.size() * sizeof( unsigned int ) );
 
-            memory.read( shape.name );
-            memory.read( shape.material );
-        }
+    //         memory.read( shape.name );
+    //         memory.read( shape.material );
+    //     }
 
-        std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+    //     std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
 
-        m_pimpl->m_materials.clear();
-        uint64_t nMaterial;
-        memory.read( nMaterial );
-        for ( int iMaterial = 0; iMaterial < nMaterial; ++iMaterial ) {
-            m_pimpl->m_materials.push_back( Material() );
-            auto& material = m_pimpl->m_materials.back();
-            memory.read( material.name );
-            std::cout << "[Mesh] read material name: " << material.name << std::endl;
-            memory.read( reinterpret_cast<unsigned char*>(&material.Ka), s_materialSize );
-        }
-        const auto end = std::chrono::high_resolution_clock::now();
-        const auto duration =
-            std::chrono::duration_cast<std::chrono::microseconds>( end - start ).count();
-        const double speed = (double)m_size / duration;
-        std::cout << "[Mesh] unpack scene " << int( m_size / 1'000.0 ) << " Ko in "
-                  << duration / 1000.0 << " ms (" << speed << " Mo/s)" << std::endl;
-        assert( memory.isEnd() );
-    }
+    //     m_pimpl->m_materials.clear();
+    //     uint64_t nMaterial;
+    //     memory.read( nMaterial );
+    //     for ( int iMaterial = 0; iMaterial < nMaterial; ++iMaterial ) {
+    //         m_pimpl->m_materials.push_back( Material() );
+    //         auto& material = m_pimpl->m_materials.back();
+    //         memory.read( material.name );
+    //         std::cout << "[Mesh] read material name: " << material.name << std::endl;
+    //         memory.read( reinterpret_cast<unsigned char*>(&material.Ka), s_materialSize );
+    //     }
+    //     const auto end = std::chrono::high_resolution_clock::now();
+    //     const auto duration =
+    //         std::chrono::duration_cast<std::chrono::microseconds>( end - start ).count();
+    //     const double speed = (double)m_size / duration;
+    //     std::cout << "[Mesh] unpack scene " << int( m_size / 1'000.0 ) << " Ko in "
+    //               << duration / 1000.0 << " ms (" << speed << " Mo/s)" << std::endl;
+    //     assert( memory.isEnd() );
+    // }
 }
 
 std::string Mesh::to_string() const {

@@ -9,34 +9,36 @@
 // #include "sensor/Acquisition.hpp"
 // #include "sensor/SensorSpec.hpp"
 // #include "net/ClientSocket.hpp"
-#include "client/ViewerInterface.hpp"
-#include "impl/server2/io/input/InputStreamServer.hpp"
+#include "ViewerInterface.hpp"
+// #include "impl/server2/io/input/InputStreamServer.hpp"
+#include "io/input/InputStreamServer2.hpp"
 
 namespace hub {
-namespace impl2 {
+// namespace impl2 {
 namespace client {
 
-class SRC_API ViewerServer : public hub::client::ViewerInterface<input::InputStreamServer>
+class SRC_API ViewerServer2 : public hub::client::ViewerInterface<input::InputStreamServer2>
 {
   public:
-    explicit ViewerServer(
+    explicit ViewerServer2(
         const std::string& name,
-        std::function<bool( const char* streamName, const sensor::SensorSpec& )> onNewStreamer = {},
-        std::function<void( const char* streamName, const sensor::SensorSpec& )> onDelStreamer = {},
-        std::function<void( const char* ipv4, int port )> onServerNotFound                     = {},
-        std::function<void( const char* ipv4, int port )> onServerConnected                    = {},
-        std::function<void( const char* ipv4, int port )> onServerDisconnected                 = {},
-        std::function<void( const char* streamName, const sensor::Acquisition& )> onNewAcquisition =
-            {},
-        std::function<
-            void( const char* streamName, const char* objectName, int property, const Any& value )>
-            onSetProperty = {},
+        ViewerHandler && viewerHandler,
+        // std::function<bool( const char* streamName, const sensor::SensorSpec& )> onNewStreamer = {},
+        // std::function<void( const char* streamName, const sensor::SensorSpec& )> onDelStreamer = {},
+        // std::function<void( const char* ipv4, int port )> onServerNotFound                     = {},
+        // std::function<void( const char* ipv4, int port )> onServerConnected                    = {},
+        // std::function<void( const char* ipv4, int port )> onServerDisconnected                 = {},
+        // std::function<void( const char* streamName, const sensor::Acquisition& )> onNewAcquisition =
+        //     {},
+        // std::function<
+        //     void( const char* streamName, const char* objectName, int property, const Any& value )>
+        //     onSetProperty = {},
         //        bool autoSync                                              = true,
-        std::function<void( const char* logMessage )> onLogMessage = {},
-        const std::string& ipv4 = input::InputStreamServer::s_defaultIpv4,
-        int port                = input::InputStreamServer::s_defaultPort );
+        // std::function<void( const char* logMessage )> onLogMessage = {},
+        const std::string& ipv4 = input::InputStreamServer2::s_defaultIpv4,
+        int port                = input::InputStreamServer2::s_defaultPort );
 
-    ~ViewerServer();
+    ~ViewerServer2();
 
     void setIpv4( const std::string& ipv4 ) override;
 
@@ -89,5 +91,5 @@ class SRC_API ViewerServer : public hub::client::ViewerInterface<input::InputStr
 };
 
 } // namespace client
-} // namespace impl2
+// } // namespace impl2
 } // namespace hub

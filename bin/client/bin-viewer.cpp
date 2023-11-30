@@ -32,50 +32,56 @@ int main( int argc, char* argv[] ) {
 
     bool exit = false;
 
-    auto onNewStreamer = [=]( const std::string& streamName, const hub::sensor::SensorSpec& sensorSpec ) {
+    hub::client::ViewerHandler viewerHandler;
+    // auto onNewStreamer = [=]( const std::string& streamName, const hub::sensor::SensorSpec&
+    // sensorSpec ) {
+    viewerHandler.onNewStreamer = [=]( const std::string& streamName,
+                                       const hub::sensor::SensorSpec& sensorSpec ) {
         std::cout << HEADER_MSG "onNewStreamer : " << streamName << std::endl;
         return true;
     };
-    auto onDelStreamer = []( const std::string& streamName, const hub::sensor::SensorSpec& sensorSpec ) {
+    viewerHandler.onDelStreamer = []( const std::string& streamName,
+                                      const hub::sensor::SensorSpec& sensorSpec ) {
         std::cout << HEADER_MSG "onDelStreamer : " << streamName << std::endl;
     };
-    auto onServerNotFound = [&]( const std::string& ipv4, int port ) {
+    viewerHandler.onServerNotFound = [&]( const std::string& ipv4, int port ) {
         std::cout << HEADER_MSG "onServerNotFound : " << ipv4 << " " << port << std::endl;
         if ( exitWhenServerLost ) { exit = true; }
     };
-    auto onServerConnected = []( const std::string& ipv4, int port ) {
+    viewerHandler.onServerConnected = []( const std::string& ipv4, int port ) {
         std::cout << HEADER_MSG "onServerConnected : " << ipv4 << " " << port << std::endl;
     };
-    auto onServerDisconnected = [&]( const std::string& ipv4, int port ) {
+    viewerHandler.onServerDisconnected = [&]( const std::string& ipv4, int port ) {
         std::cout << HEADER_MSG "onServerDisconnected : " << ipv4 << " " << port << std::endl;
         if ( exitWhenServerLost ) { exit = true; }
     };
-    auto onNewAcquisition = []( const std::string& streamName, const hub::sensor::Acquisition& acq ) {
-//        std::cout << HEADER_MSG "onNewAcquisition : " << acq << std::endl;
-//        std::cout << "+";
+    viewerHandler.onNewAcquisition = []( const std::string& streamName,
+                                         const hub::sensor::Acquisition& acq ) {
+        //        std::cout << HEADER_MSG "onNewAcquisition : " << acq << std::endl;
+        //        std::cout << "+";
         std::cout << COLOR "+\033[0m";
     };
-    auto onSetProperty = []( const std::string& streamName,
-                             const std::string& objectName,
-                             int property,
-                             const hub::Any& value ) {
+    viewerHandler.onSetProperty = []( const std::string& streamName,
+                                      const std::string& objectName,
+                                      int property,
+                                      const hub::Any& value ) {
         std::cout << HEADER_MSG "onSetProperty " << streamName << " " << objectName << " "
                   << property << " " << value << std::endl;
     };
-    auto onLogMessage = []( const std::string& logMessage ) {
+    viewerHandler.onLogMessage = []( const std::string& logMessage ) {
         std::cout << HEADER_MSG "onLogMessage '" << logMessage << "'" << std::endl;
     };
 
-    hub::client::Viewer viewer(
-        FILE_NAME,
-                                onNewStreamer,
-                                onDelStreamer,
-                                onServerNotFound,
-                                onServerConnected,
-                                onServerDisconnected,
-                                onNewAcquisition,
-                                onSetProperty,
-                                onLogMessage );
+    hub::client::Viewer viewer( FILE_NAME, std::move( viewerHandler ));
+                                // onNewStreamer,
+                                // onDelStreamer,
+                                // onServerNotFound,
+                                // onServerConnected,
+                                // onServerDisconnected,
+                                // onNewAcquisition,
+                                // onSetProperty,
+                                // onLogMessage
+    // );
 
     std::cout << "\t[viewer] Ctrl+C to exit" << std::endl;
 

@@ -1,10 +1,11 @@
 #pragma once
 
-#include "client/AskerInterface.hpp"
+#include "AskerInterface.hpp"
 
 //#include "net/ClientSocket.hpp"
 #include "io/InputOutputSocket.hpp"
-#include "impl/server/io/StreamServer.hpp"
+// #include "impl/server/io/StreamServer.hpp"
+#include "io/StreamServer.hpp"
 
 namespace hub {
 namespace client {

@@ -1,21 +1,22 @@
 #pragma once
 
-#include "client/AskerInterface.hpp"
+#include "AskerInterface.hpp"
 
 // #include "net/ClientSocket.hpp"
-#include "impl/server2/io/StreamServer.hpp"
+// #include "impl/server2/io/StreamServer.hpp"
+#include "io/StreamServer2.hpp"
 #include "io/InputOutputSocket.hpp"
 
 namespace hub {
-namespace impl2 {
+// namespace impl2 {
 namespace client {
 
-class AskerServer : public hub::client::AskerInterface
+class AskerServer2 : public hub::client::AskerInterface
 {
   public:
-    AskerServer( const std::string& ipv4 = io::StreamServer::s_defaultIpv4,
-                 int port                = io::StreamServer::s_defaultPort );
-    ~AskerServer();
+    AskerServer2( const std::string& ipv4 = io::StreamServer2::s_defaultIpv4,
+                 int port                = io::StreamServer2::s_defaultPort );
+    ~AskerServer2();
 
     //  protected:
     std::list<std::pair<std::string, sensor::SensorSpec>> listStreams() override;
@@ -27,5 +28,5 @@ class AskerServer : public hub::client::AskerInterface
 };
 
 } // namespace client
-} // namespace impl2
+// } // namespace impl2
 } // namespace hub

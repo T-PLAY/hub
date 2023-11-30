@@ -7,7 +7,10 @@ namespace hub {
 namespace input {
 
 //InputStreamServer::InputStreamServer( const std::string& streamName, net::ClientSocket&& clientSocket ) :
-InputStreamServer::InputStreamServer(const std::string &streamName, const std::string &ipv4, int port) :
+InputStreamServer::InputStreamServer(const std::string &streamName,
+                                      int port,
+                                      const std::string &ipv4
+                                      ) :
     io::StreamServer(streamName, ipv4, port),
 //    m_clientSocket( std::move( clientSocket ) ) {
 //    m_clientSocket(ipv4, port)

@@ -2,7 +2,7 @@
 
 #include "core/Utils.hpp"
 
-#include "io/Memory.hpp"
+// #include "io/Memory.hpp"
 
 namespace hub {
 namespace client {
@@ -85,15 +85,16 @@ std::list<std::pair<std::string, sensor::SensorSpec>> AskerMqtt::listStreams() {
         assert(m_inputMsgPtr->get_topic() == activeStreamTopic + "/header/data");
         memcpy(&data[sizeof(uint64_t)], m_inputMsgPtr->get_payload().data(), packetSize);
 
-        io::Memory<decltype( buff )> memory( buff );
-        sensor::SensorSpec sensorSpec;
-        memory.read( sensorSpec );
-        assert( buff.empty() );
-        assert( memory.isEnd() );
+        // todo fix
+        // io::Memory<decltype( buff )> memory( buff );
+        // sensor::SensorSpec sensorSpec;
+        // memory.read( sensorSpec );
+        // assert( buff.empty() );
+        // assert( memory.isEnd() );
 
-        std::cout << "[AskerMqtt] sensorSpec : " << sensorSpec << std::endl;
-        auto streamName = activeStreamTopic.substr(activeStreamTopic.find('/') + 1);
-        ret.push_back(std::make_pair(streamName, sensorSpec));
+        // std::cout << "[AskerMqtt] sensorSpec : " << sensorSpec << std::endl;
+        // auto streamName = activeStreamTopic.substr(activeStreamTopic.find('/') + 1);
+        // ret.push_back(std::make_pair(streamName, sensorSpec));
     }
 
     m_client->stop_consuming();
@@ -174,20 +175,22 @@ sensor::Acquisition AskerMqtt::getAcquisition( const std::string& streamName ) {
         memcpy(buff.data(), m_inputMsgPtr->get_payload().data(), acqSize);
 //        m_client->unsubscribe( m_currentTopic );
 
-    io::Memory<decltype( buff )> memory( buff );
-    sensor::Acquisition acq;
-    memory.read( acq );
+        // todo fix
+//     io::Memory<decltype( buff )> memory( buff );
+//     sensor::Acquisition acq;
+//     memory.read( acq );
 
-    std::cout << "read acq : " << acq << std::endl;
-//    std::cout << "\tread acq" << m_iAcq - 1 << " : " << acq << std::endl;
+//     std::cout << "read acq : " << acq << std::endl;
+// //    std::cout << "\tread acq" << m_iAcq - 1 << " : " << acq << std::endl;
 
-    assert( buff.empty() );
-    assert( memory.isEnd() );
+//     assert( buff.empty() );
+//     assert( memory.isEnd() );
 
     m_client->stop_consuming();
 
     //    m_sock.read( acq );
-    return acq;
+    // return acq;
+    return hub::sensor::Acquisition();
 }
 
 } // namespace client

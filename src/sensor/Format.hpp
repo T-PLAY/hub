@@ -76,6 +76,16 @@ struct RGB8 {
 };
 static_assert( sizeof( RGB8 ) == 3 );
 
+// 8-bit blue, green and red channels.
+struct BGR8 {
+    unsigned char b;
+    unsigned char g;
+    unsigned char r;
+    static constexpr auto name() { return "BGR8"; };
+    //    static constexpr auto interpolable() { return false; };
+};
+static_assert( sizeof( RGB8 ) == 3 );
+
  // 8-bit per-pixel
 struct Y8				{
     unsigned char y;

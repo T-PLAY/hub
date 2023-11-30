@@ -7,7 +7,10 @@
 // #include "core/Traits.hpp"
 //// #include "core/Tuple.hpp"
 
-////  user friendly useless includes
+//  user friendly useless includes
+#include "io/input/InputFile.hpp"
+#include "io/input/InputStream.hpp"
+
 //// #include "io/File.hpp"
 //// #include "io/input/InputFile.hpp"
 //// #include "io/input/InputStream.hpp"
@@ -16,6 +19,8 @@
 //// #include "io/Memory.hpp"
 
 //// #include "net/ClientSocket.hpp"
+///
+
 
 namespace hub {
 namespace sensor {

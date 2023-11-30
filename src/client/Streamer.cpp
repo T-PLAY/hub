@@ -65,7 +65,8 @@ void Streamer::Stream::init() {
         //            m_streamName, m_streamer.m_ipv4, m_streamer.m_port );
         m_outputSensor = new sensor::OutputSensor(
             m_sensorSpec,
-            output::OutputStream( m_streamName, m_streamer.m_ipv4, m_streamer.m_port ) );
+            // output::OutputStream( m_streamName, m_streamer.m_ipv4, m_streamer.m_port ) );
+            output::OutputStream( m_streamName, m_streamer.m_port, m_streamer.m_ipv4 ) );
 
         for ( const auto& acq : m_initAcqs ) {
             *m_outputSensor << acq;

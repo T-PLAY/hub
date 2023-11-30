@@ -32,6 +32,8 @@ class MatrixTs
     }
 
     const Data_t* data() const { return m_buffer.data(); }
+    Data_t* data() { return m_buffer.data(); };
+
     //    Size_t size() const {
     //        return m_buffer.size();
     //    }
