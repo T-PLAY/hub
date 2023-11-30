@@ -21,7 +21,7 @@ class InputStreamClient : public Input
     ~InputStreamClient();
 
   protected:
-    void read( unsigned char* data, size_t len ) override;
+    void read( Data_t* data, Size_t len ) override;
     void close() override;
     bool isOpen() const override;
     bool isEnd() const override;
@@ -71,7 +71,7 @@ void InputStreamClient::read( sensor::Acquisition& acq )
     Input::read( acq );
 }
 
-void InputStreamClient::read( unsigned char* data, size_t len ) {
+void InputStreamClient::read( Data_t* data, Size_t len ) {
     m_clientSocket.read( data, len );
 }
 

@@ -56,7 +56,7 @@ class SRC_API OutputStreamServer : public Output, public io::StreamServer
 
     // #ifdef WIN32 // msvc warning C4250
   protected:
-    void write( const unsigned char* data, size_t len ) override;
+    void write( const Data_t* data, Size_t len ) override;
     void close() override;
     bool isOpen() const override;
 
@@ -86,7 +86,7 @@ inline void OutputStreamServer::write(const sensor::SensorSpec &sensorSpec)
     Output::write( sensorSpec );
 }
 
-inline void OutputStreamServer::write( const unsigned char* data, size_t len ) {
+inline void OutputStreamServer::write( const Data_t* data, Size_t len ) {
     m_clientSocket->write( data, len );
 }
 

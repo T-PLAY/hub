@@ -21,7 +21,7 @@ class OutputStreamClient : public Output
   protected:
     void write( const sensor::Acquisition& acq );
 
-    void write( const unsigned char* data, size_t len ) override;
+    void write( const Data_t* data, Size_t len ) override;
     void close() override;
     bool isOpen() const override;
     void setRetain( bool retained ) override;
@@ -50,7 +50,7 @@ void OutputStreamClient::write( const sensor::Acquisition& acq ) {
     Output::write( acq );
 }
 
-void OutputStreamClient::write( const unsigned char* data, size_t len ) {
+void OutputStreamClient::write( const Data_t* data, Size_t len ) {
     m_clientSocket.write( data, len );
 }
 

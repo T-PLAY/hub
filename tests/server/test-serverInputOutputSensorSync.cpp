@@ -20,7 +20,7 @@
 
 // #include <Version.h>
 
-TEST_CASE( "Server test : InputOutputSensor" ) {
+TEST_CASE( "Server test : InputOutputSensorSync" ) {
     //    const auto hostname = hub::utils::getHostname();
 
     static_assert(! hub::Endable<hub::io::InputOutputSocket>);
