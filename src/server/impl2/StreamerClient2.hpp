@@ -13,7 +13,6 @@
 
 namespace hub {
 namespace server {
-namespace impl2 {
 
 class ServerImpl2;
 
@@ -112,6 +111,5 @@ class StreamerClient2 : public Client2
     //    std::set<sensor::Acquisition> m_packedAcqs;
 };
 
-} // namespace impl2
 } // namespace server
 } // namespace hub

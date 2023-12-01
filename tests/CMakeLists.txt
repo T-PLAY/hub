@@ -129,6 +129,13 @@ endif()
 #    list(REMOVE_ITEM test_srcs ${server_srcs})
 #endif()
 
+set(test_srcs
+    ${CMAKE_CURRENT_SOURCE_DIR}/core/io/test-core-io-Serializer.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/sensor/test-sensor-InputSensor.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/sensor/test-sensor-OutputSensor.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/sensor/test-sensor-OutputSensorT.cpp
+)
+
 # gathering tests
 #add_executable(test-all ${test_srcs} ${test_headers} ${test_headers_src})
 add_executable(test-all ${test_srcs} ${test_headers})

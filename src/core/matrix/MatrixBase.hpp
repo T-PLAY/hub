@@ -4,21 +4,18 @@
 #include <algorithm>
 #include <type_traits>
 
+#include "core/Buffer.hpp"
 #include "core/Macros.hpp"
 #include "core/Traits.hpp"
-#include "core/Buffer.hpp"
-//#include "core/Array.hpp"
-//#include "core/Span.hpp"
-
-
-
+// #include "core/Array.hpp"
+// #include "core/Span.hpp"
 
 namespace hub {
 
 template <class T>
-concept isMatrix = requires {T::Capacity; };
+concept isMatrix = requires { T::Capacity; };
 
-static_assert(! isMatrix<int>);
+static_assert( !isMatrix<int> );
 
 // class MatrixBase {
 //   public:

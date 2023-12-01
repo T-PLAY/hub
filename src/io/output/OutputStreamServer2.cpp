@@ -203,6 +203,9 @@ void OutputStreamServer2::startStreaming() {
                     hub::io::StreamBase::ClientMessage::STREAMER_CLIENT_STREAM_VIEWER_INITED );
 
                 if ( !data->m_retainedData.empty() ) {
+                    // std::cout << "[OutputStream] write retain data (" << data->m_retainedData.size()
+                              // << " bytes)" << std::endl;
+                    std::cout << "[OutputStream] load retain data " << data->m_retainedData << std::endl;
                     streamSock.write( data->m_retainedData.data(), data->m_retainedData.size() );
                 }
 
@@ -249,13 +252,16 @@ void OutputStreamServer2::setRetain( bool retain ) {
     if ( retain ) {
         m_data->m_writingFun = [this]( const Data_t* data, Size_t size ) {
             m_data->m_retainedData.insert( m_data->m_retainedData.end(), data, data + size );
+            // std::cout << "[OutputStream] save retained data (" << size << " bytes)" << std::endl;
+            // std::vector<Data_t> vector(data, data + size);
+            std::cout << "[OutputStream] save retained data : " << m_data->m_retainedData << std::endl;
         };
     }
     else { m_data->m_writingFun = nullptr; }
 }
 
 // int OutputStreamServer2::getNStreamViewer() const {
-    // return m_data->m_streamSockets.size();
+// return m_data->m_streamSockets.size();
 // }
 
 void OutputStreamServer2::stop() {

@@ -7,13 +7,10 @@
 #include <string>
 #include <thread>
 
-#include "sensor/Acquisition.hpp"
-#include "sensor/SensorSpec.hpp"
-// #include "net/ClientSocket.hpp"
-// #include "StreamViewer.hpp"
-// #include "ViewerInterface.hpp"
 #include "core/Utils.hpp"
+#include "sensor/Acquisition.hpp"
 #include "sensor/InputSensor.hpp"
+#include "sensor/SensorSpec.hpp"
 
 #ifdef DEBUG_MSG
 #    undef DEBUG_MSG
@@ -32,14 +29,10 @@ namespace hub {
 namespace client {
 
 template <class InputStream>
-// class ViewerInterface<InputStream>::Stream
 class ViewerStream
 {
   public:
-    // using Viewer = ViewerInterface<InputStream>;
-    //    template <class InputStream>
     ViewerStream(
-        // ViewerInterface<InputStream>& viewer,
         const std::string& ipv4,
         int port,
         const std::string& streamName,
@@ -56,19 +49,15 @@ class ViewerStream
     bool isStreaming() const;
 
   private:
-    // ViewerInterface<InputStream>& m_viewer;
     std::thread* m_thread = nullptr;
     bool m_stopThread     = false;
 
     std::string m_ipv4;
     int m_port;
 
-    //    ViewerInterface& m_viewer;
     const std::string m_streamName;
     const sensor::SensorSpec m_sensorSpec;
 
-    //    std::thread* m_thread = nullptr;
-    //    std::unique_ptr<std::thread> m_thread;
     bool m_streaming = false;
 
     std::function<bool( const char* streamName, const sensor::SensorSpec& )> m_onNewStreamer;
@@ -77,24 +66,17 @@ class ViewerStream
     std::function<void( const char* logMessage )> m_onLogMessage;
 
     std::unique_ptr<sensor::InputSensor> m_inputSensor;
-    // friend class ViewerInterface<InputStream>;
-    // friend class ViewerInterface;
     static int m_iStreamer;
 
-}; // end class Stream
+}; // end class ViewerStream
+
+/////////////////////////////////////// INLINE ////////////////////////////////////////////////////
 
 template <class InputStream>
 int ViewerStream<InputStream>::m_iStreamer = 0;
 
-
-//////////////////////////////////////// Stream ////////////////////////////////////////
-
 template <class InputStream>
-// ViewerInterface<InputStream>::Stream::Stream(
 ViewerStream<InputStream>::ViewerStream(
-    // Stream::Stream(
-    // ViewerInterface::Stream::Stream(
-    // ViewerInterface<InputStream>& viewer,
     const std::string& ipv4,
     int port,
     const std::string& streamName,
@@ -103,8 +85,7 @@ ViewerStream<InputStream>::ViewerStream(
     std::function<void( const char*, const sensor::SensorSpec& )> onDelStreamer,
     std::function<void( const char*, const sensor::Acquisition& )> onNewAcquisition,
     std::function<void( const char* logMessage )> onLogMessage ) :
-    //    m_viewer( viewer ),
-    // m_viewer( viewer ),
+
     m_ipv4( ipv4 ),
     m_port( port ),
     m_streamName( streamName ),
@@ -119,12 +100,8 @@ ViewerStream<InputStream>::ViewerStream(
     if ( m_onNewAcquisition && m_streaming ) { startStream(); }
 }
 
-// template <class InputStream>
-// Stream<InputStream>::~Stream() {
 template <class InputStream>
-// ViewerInterface<InputStream>::Stream::~Stream() {
 ViewerStream<InputStream>::~ViewerStream() {
-    // Stream::~Stream() {
     DEBUG_MSG( "[Viewer][Stream] ~Stream() streamer '" << m_streamName << "' started" );
     if ( m_onNewAcquisition && m_streaming ) {
         assert( m_thread != nullptr );
@@ -135,12 +112,8 @@ ViewerStream<InputStream>::~ViewerStream() {
     DEBUG_MSG( "[Viewer][Stream] ~Stream() streamer '" << m_streamName << "' ended" );
 }
 
-// template <class InputStream>
-// void Stream<InputStream>::startStream() {
 template <class InputStream>
-// void ViewerInterface<InputStream>::Stream::startStream() {
 void ViewerStream<InputStream>::startStream() {
-    // void Stream::startStream() {
     DEBUG_MSG( "[Viewer][Stream] startStream" );
 
     assert( m_thread == nullptr );
@@ -150,13 +123,8 @@ void ViewerStream<InputStream>::startStream() {
     m_thread = new std::thread( [this]() {
         try {
 
-            //            m_inputSensor = std::make_unique<InputSensor>( input::InputStreamServer(
             m_inputSensor = std::make_unique<sensor::InputSensor>(
-                InputStream( m_streamName,
-                             //                    net::ClientSocket( m_viewer.m_sock.getIpv4(),
-                             //                    m_viewer.m_sock.getPort() ) ) );
-                             m_port,
-                             m_ipv4 ) );
+                InputStream( m_streamName, m_port, m_ipv4 ) );
 
             assert( m_onNewAcquisition );
             while ( !m_stopThread ) {
@@ -168,8 +136,6 @@ void ViewerStream<InputStream>::startStream() {
         catch ( std::exception& e ) {
             DEBUG_MSG( "[Viewer][Stream] startStream() streamer '"
                        << "'" << m_streamName << "' disconnected, catch exception " << e.what() );
-            //            m_streaming = false;
-            //            m_viewer.deleteStream(m_streamName);
         }
 
         if ( m_stopThread ) {
@@ -178,7 +144,6 @@ void ViewerStream<InputStream>::startStream() {
         DEBUG_MSG( "[Viewer][Stream] thread end " );
 
         m_streaming = false;
-        //        m_viewer.printStatus();
     } );
 
     m_streaming = true;
@@ -186,34 +151,24 @@ void ViewerStream<InputStream>::startStream() {
     DEBUG_MSG( "[Viewer][Stream] startStream() streamer '" << m_streamName << "' inited " );
 }
 
-// template <class InputStream>
-// void Stream<InputStream>::stopStream() {
 template <class InputStream>
-// void ViewerInterface<InputStream>::Stream::stopStream() {
 void ViewerStream<InputStream>::stopStream() {
-    // void Stream::stopStream() {
     DEBUG_MSG( "[Viewer][Stream] stopStream() streamer '" << m_streamName << "' started" );
 
     assert( m_thread != nullptr );
     assert( m_stopThread == false );
     m_stopThread = true;
 
-    //    m_inputSensor->getInput().close();
-
     assert( m_thread->joinable() );
     m_thread->join();
     delete m_thread;
     m_thread = nullptr;
 
-    //    m_streaming = false;
-
     DEBUG_MSG( "[Viewer][Stream] stopStream() streamer '" << m_streamName << "' ended" );
-    // m_viewer.printStatus();
 }
 
-template<class InputStream>
-bool ViewerStream<InputStream>::isStreaming() const
-{
+template <class InputStream>
+bool ViewerStream<InputStream>::isStreaming() const {
     return m_streaming;
 }
 

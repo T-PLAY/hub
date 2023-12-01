@@ -10,7 +10,7 @@ namespace hub {
 
 #ifdef HUB_BUILD_SERVER
 // using Server = server::impl::ServerImpl;
-using Server = server::impl2::ServerImpl2;
+using Server = server::ServerImpl2;
 #endif
 
 

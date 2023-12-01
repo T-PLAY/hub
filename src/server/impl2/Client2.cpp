@@ -7,7 +7,6 @@
 
 namespace hub {
 namespace server {
-namespace impl2 {
 
 Client2::Client2( ServerImpl2* server, int iClient ) : m_server( server ), m_iClient( iClient ) {
     assert( m_server != nullptr );
@@ -50,5 +49,4 @@ void Client2::setServer( ServerImpl2* newServer ) {
 }
 
 } // namespace server
-} // namespace impl2
 } // namespace hub

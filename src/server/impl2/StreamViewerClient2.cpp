@@ -6,7 +6,6 @@
 
 namespace hub {
 namespace server {
-namespace impl2 {
 
 // class OutputStreamClient : public Output
 //{
@@ -182,5 +181,4 @@ namespace impl2 {
 //}
 
 } // namespace server
-} // namespace impl2
 } // namespace hub

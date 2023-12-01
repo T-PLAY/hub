@@ -11,7 +11,6 @@
 
 namespace hub {
 namespace server {
-namespace impl2 {
 
 /////
 ///// \brief The AskerClient class
@@ -34,6 +33,5 @@ namespace impl2 {
 //    friend class hub::Server;
 //};
 
-} // namespace impl2
 } // namespace server
 } // namespace hub

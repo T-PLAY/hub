@@ -28,7 +28,6 @@
 #include "Sensor.hpp"
 #include "SensorSpec.hpp"
 
-
 //// #include "net/ClientSocket.hpp"
 // #include "Acquisition.hpp"
 ////#include "Format.hpp"
@@ -51,103 +50,104 @@ namespace sensor {
 ///// todo: template class
 //// template <typename Output, typename Measures, typename Acquisition = Acquisition<Measures>>
 
-//template <typename Output>
- class OutputSensor : public Sensor
+// template <typename Output>
+class OutputSensor : public Sensor
 {
-   public:
-     using Sensor::acq;
+  public:
+    using Sensor::acq;
 
-//    template <typename OutputT, typename SensorSpec = sensor::SensorSpec>
-//    OutputSensor( SensorSpec&& sensorSpec,  ) :
     OutputSensor( const SensorSpec& sensorSpec, Output& output ) :
-//        m_output(output),
-//        m_measures(std::forward<Measures>(measures)),
-        Sensor( sensorSpec ), m_output( output )
-//        Sensor( std::forward<SensorSpec>( sensorSpec ) ),
-//        m_output( std::forward<Output&>( output ) )
-    {
-//         m_spec.setResolution(resolution);
-//        m_output.write(m_spec);
-        m_output.write(m_spec);
-//        m_output << m_spec;
-    }
-//    template <class OutputT>
-//    OutputSensor( const SensorSpec& sensorSpec, OutputT&& output ) :
-//        Sensor( sensorSpec ),
-//        m_output( new OutputT(std::move(output)) )
-//    {
-//        m_output.write(m_spec);
-//    }
+        Sensor( sensorSpec ), m_output( output ) {
 
-    template <class OutputT>
-        requires std::is_base_of_v<Output, OutputT>
-    OutputSensor( const SensorSpec& sensorSpec, OutputT&& output ) :
-        Sensor( sensorSpec ),
-        m_output( *(new OutputT(std::move(output))) )
-    {
-        m_output.write(m_spec);
+        assert( m_spec.getResolution().nType() > 0 );
+        m_output.setRetain( true );
+        m_output.write( m_spec );
+        m_output.setRetain( false );
+        //        m_output << m_spec;
+    }
+
+    template <class Output>
+        requires std::is_base_of_v<hub::Output, Output>
+    OutputSensor( const SensorSpec& sensorSpec, Output&& output ) :
+        Sensor( sensorSpec ), m_output( *( new Output( std::move( output ) ) ) ) {
+
+        assert( m_spec.getResolution().nType() > 0 );
+        m_output.setRetain( true );
+        m_output.write( m_spec );
+        m_output.setRetain( false );
     }
 
     void operator<<( const Acquisition& acq ) {
 #ifdef HUB_DEBUG_OUTPUT
         std::cout << HEADER << "write(const Acquisition&) : " << acq << std::endl;
 #endif
-        assert(m_spec.getResolution() == acq.getResolution());
+        assert( m_spec.getResolution() == acq.getResolution() );
         m_output.write( acq.data(), acq.size() );
     }
 
     Output& getOutput() const { return m_output; }
 
-//    Acquisition acq() const {
-//        return Acquisition{m_spec.getResolutions()};
-//    }
+    //    Acquisition acq() const {
+    //        return Acquisition{m_spec.getResolutions()};
+    //    }
 
     Output& m_output;
-//    Measures m_measures;
+    //    Measures m_measures;
 };
 
-/////////////////////////////////////////////// TEMPLATE
-///////////////////////////////////////////////////////
+/////////////////////////////////////// TEMPLATE //////////////////////////////////////////////////
 
 template <class Resolution>
 // template <class... ResolutionTs>
 class OutputSensorT : public Sensor
 {
     using Acquisition = AcquisitionT<Resolution>;
+
   public:
     using Acq = Acquisition;
-//    using Acq = Acquisition;
 
-    // template <class Output>
-    // OutputSensorT( const SensorSpec& sensorSpec, Output&& output ) :
-    OutputSensorT( const SensorSpec& sensorSpec, auto && output ) :
-        Sensor( sensorSpec ), m_output( std::forward<Output&>(output) ) {
-        //        m_spec.m_resolution = Resolution();
-        if constexpr ( isMatrix<Resolution> ) { m_spec.setResolution(Resolution().getSerial()); }
-        else { m_spec.setResolution(make_matrix<Resolution>()); }
+    OutputSensorT( const SensorSpec& sensorSpec, Output& output ) :
+        Sensor( sensorSpec ), m_output( output ) {
+
+        if constexpr ( isMatrix<Resolution> ) { m_spec.setResolution( Resolution().getSerial() ); }
+        else { m_spec.setResolution( make_matrix<Resolution>() ); }
+
+        m_output.setRetain( true );
         m_output.write( m_spec );
+        m_output.setRetain( false );
+    }
+
+    template <class Output>
+        requires std::is_base_of_v<hub::Output, Output>
+    OutputSensorT( const SensorSpec& sensorSpec, Output&& output ) :
+        Sensor( sensorSpec ), m_output( *( new Output( std::move( output ) ) ) ) {
+
+        if constexpr ( isMatrix<Resolution> ) { m_spec.setResolution( Resolution().getSerial() ); }
+        else { m_spec.setResolution( make_matrix<Resolution>() ); }
+
+        m_output.setRetain( true );
+        m_output.write( m_spec );
+        m_output.setRetain( false );
     }
 
     void operator<<( const Acquisition& acq ) {
-//        m_output.write( aqc );
 #ifdef HUB_DEBUG_OUTPUT
         std::cout << HEADER << "write(const Acquisition&) : " << acq << std::endl;
 #endif
-//        m_output.write( acq.Matrix::data(), acq.Matrix::size() );
+        //        m_output.write( aqc );
+        //        m_output.write( acq.Matrix::data(), acq.Matrix::size() );
         m_output.write( acq.data(), acq.size() );
     }
 
-    Acquisition acq() const {
-        return Acq();
-    }
+    Acquisition acq() const { return Acq(); }
+
+    Output& getOutput() const { return m_output; }
 
   private:
     Output& m_output;
     //    SensorSpec m_sensorSpec;
 
 }; // end OutputSensorT
-
-
 
 ////template <typename Output, typename Measures>
 ////// template <typename Measures>

@@ -7,93 +7,6 @@
 
 namespace hub {
 namespace server {
-namespace impl2 {
-
-// class InputStreamClient : public Input
-//{
-//   public:
-////    explicit InputStreamClient( net::ClientSocket&& clientSocket );
-//    explicit InputStreamClient( io::InputOutputSocket&& clientSocket );
-
-//    void read( sensor::Acquisition& acq );
-
-//    InputStreamClient( InputStreamClient&& inputStream );
-//    ~InputStreamClient();
-
-//  protected:
-//    void read( unsigned char* data, size_t len ) override;
-//    void close() override;
-//    bool isOpen() const override;
-//    bool isEnd() const override;
-//    void clear() override;
-
-//  private:
-////    net::ClientSocket m_clientSocket;
-//    io::InputOutputSocket m_clientSocket;
-//    bool m_outputStreamClosed = false;
-
-//    bool m_moved = false;
-
-//    friend class StreamerClient2;
-//};
-
-////InputStreamClient::InputStreamClient( net::ClientSocket&& clientSocket ) :
-// InputStreamClient::InputStreamClient( io::InputOutputSocket&& clientSocket ) :
-//     m_clientSocket( std::move( clientSocket ) ) {
-
-//    std::cout << "[InputStreamClient] InputStreamClient()" << std::endl;
-//}
-
-// InputStreamClient::InputStreamClient( InputStreamClient&& inputStream ) :
-//     m_clientSocket( std::move( inputStream.m_clientSocket ) ),
-//     m_outputStreamClosed( inputStream.m_outputStreamClosed ) {
-//     inputStream.m_moved = true;
-//     std::cout << "[InputStreamClient] InputStreamClient(&&)" << std::endl;
-// }
-
-// InputStreamClient::~InputStreamClient() {
-//     std::cout << "[InputStreamClient] ~InputStreamClient()" << std::endl;
-// #ifdef DEBUG
-//     if ( !m_moved ) { assert( !isOpen() ); }
-// #endif
-// }
-
-// void InputStreamClient::read( sensor::Acquisition& acq )
-//// Acquisition InputStreamClient::getAcq()
-//{
-//    io::StreamBase::ClientMessage mess;
-//    m_clientSocket.read( mess );
-//    if ( mess == io::StreamBase::ClientMessage::STREAMER_CLIENT_CLOSED ) {
-////        throw net::Socket::exception( "streamer closed" );
-//        throw net::system::SocketSystem::exception( "streamer closed" );
-//    }
-//    assert( mess == io::StreamBase::ClientMessage::STREAMER_CLIENT_NEW_ACQ );
-//    Input::read( acq );
-//}
-
-// void InputStreamClient::read( unsigned char* data, size_t len ) {
-//     m_clientSocket.read( data, len );
-// }
-
-// void InputStreamClient::close() {
-//     std::cout << "[InputStreamClient] close()" << std::endl;
-//     m_clientSocket.write( io::StreamBase::ServerMessage::STREAMER_CLOSED );
-//     m_clientSocket.close();
-// }
-
-// bool InputStreamClient::isOpen() const {
-//     return m_clientSocket.isOpen();
-// }
-
-// bool InputStreamClient::isEnd() const {
-//     return m_clientSocket.isEnd();
-// }
-
-// void InputStreamClient::clear() {
-//     // todo server
-// }
-
-//////////////////////////////////////////////////////////////////////////////
 
 StreamerClient2::StreamerClient2( ServerImpl2* server,
                                   int iClient,
@@ -148,7 +61,7 @@ StreamerClient2::StreamerClient2( ServerImpl2* server,
             }
         }
         catch ( net::system::SocketSystem::exception& ex ) {
-//            m_server->m_mtxPrint.lock();
+            //            m_server->m_mtxPrint.lock();
             m_mtxPrint.lock();
             std::cout << headerMsg() << "catch exception : " << ex.what() << std::endl;
             m_mtxPrint.unlock();
@@ -184,7 +97,7 @@ StreamerClient2::~StreamerClient2() {
 
     //    m_server->m_mtxPrint.lock();
     //    std::cout << headerMsg() << "delete ended" << std::endl;
-//    m_server->m_mtxPrint.unlock();
+    //    m_server->m_mtxPrint.unlock();
     m_mtxPrint.unlock();
     if ( !m_serverDown ) {
         // todo check fix
@@ -199,25 +112,6 @@ std::string StreamerClient2::headerMsg() const {
     return Client2::headerMsg() + "[Streamer] ";
 }
 
-// const sensor::InputSensor* StreamerClient2::getInputSensor() const {
-//     assert( m_inputSensor != nullptr );
-//     return m_inputSensor.get();
-// }
-
-// sensor::Acquisition StreamerClient2::getLastAcq() const {
-
-////    while ( m_lastAcq.isEnd() ) {
-//    while ( ! m_lastAcq.hasValue() ) {
-//        std::cout << "last acq empty" << std::endl;
-//        std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
-//    }
-////    assert( !m_lastAcq.isEnd() );
-//    assert( m_lastAcq.hasValue() );
-//    auto acq = m_lastAcq.clone();
-
-//    return acq;
-//}
-
 void StreamerClient2::end( hub::io::StreamBase::ServerMessage message ) {
     //    InputStreamClient& input = dynamic_cast<InputStreamClient&>( m_inputSensor->getInput() );
     //    assert( input.m_clientSocket.isOpen() );
@@ -225,8 +119,7 @@ void StreamerClient2::end( hub::io::StreamBase::ServerMessage message ) {
     m_sock->write( message );
 }
 
-void StreamerClient2::notifyInited()
-{
+void StreamerClient2::notifyInited() {
     assert( m_sock->isOpen() );
     // m_sock->write( message );
     m_sock->write( hub::io::StreamBase::ServerMessage::STREAMER_INITED );
@@ -294,7 +187,6 @@ void StreamerClient2::notifyInited()
 // StreamerClient2::getLastUpdateAcqDate( const std::string& streamName ) const {
 // }
 
-} // namespace impl2
 } // namespace server
 } // namespace hub
 

@@ -6,55 +6,25 @@
 #include <string>
 #include <thread>
 
-// #include "sensor/Acquisition.hpp"
-// #include "sensor/SensorSpec.hpp"
-// #include "net/ClientSocket.hpp"
 #include "ViewerInterface.hpp"
-// #include "impl/server2/io/input/InputStreamServer.hpp"
 #include "io/input/InputStreamServer2.hpp"
 
 namespace hub {
-// namespace impl2 {
 namespace client {
 
 class SRC_API ViewerServer2 : public hub::client::ViewerInterface<input::InputStreamServer2>
 {
   public:
-    explicit ViewerServer2(
-        const std::string& name,
-        ViewerHandler && viewerHandler,
-        // std::function<bool( const char* streamName, const sensor::SensorSpec& )> onNewStreamer = {},
-        // std::function<void( const char* streamName, const sensor::SensorSpec& )> onDelStreamer = {},
-        // std::function<void( const char* ipv4, int port )> onServerNotFound                     = {},
-        // std::function<void( const char* ipv4, int port )> onServerConnected                    = {},
-        // std::function<void( const char* ipv4, int port )> onServerDisconnected                 = {},
-        // std::function<void( const char* streamName, const sensor::Acquisition& )> onNewAcquisition =
-        //     {},
-        // std::function<
-        //     void( const char* streamName, const char* objectName, int property, const Any& value )>
-        //     onSetProperty = {},
-        //        bool autoSync                                              = true,
-        // std::function<void( const char* logMessage )> onLogMessage = {},
-        const std::string& ipv4 = input::InputStreamServer2::s_defaultIpv4,
-        int port                = input::InputStreamServer2::s_defaultPort );
+    explicit ViewerServer2( const std::string& name,
+                            ViewerHandler&& viewerHandler,
+                            const std::string& ipv4 = input::InputStreamServer2::s_defaultIpv4,
+                            int port                = input::InputStreamServer2::s_defaultPort );
 
     ~ViewerServer2();
 
     void setIpv4( const std::string& ipv4 ) override;
 
     void setPort( int port ) override;
-
-    //    const std::string& getIpv4() const;
-
-    //    const int& getPort() const;
-
-    //    void setAutoSync( bool newAutoSync );
-
-    //    bool isConnected() const override;
-
-    //    void startStream( const std::string& streamName );
-
-    //    void stopStream( const std::string& streamName );
 
     void setProperty( const std::string& streamName,
                       const std::string& objectName,
@@ -67,29 +37,12 @@ class SRC_API ViewerServer2 : public hub::client::ViewerInterface<input::InputSt
     std::thread m_thread;
     bool m_stopThread = false;
 
-    //    std::function<bool( const char* streamName, const SensorSpec& )> m_onNewStreamer;
-    //    std::function<void( const char* streamName, const SensorSpec& )> m_onDelStreamer;
-    //    std::function<void( const char* ipv4, int port )> m_onServerNotFound;
-    //    std::function<void( const char* ipv4, int port )> m_onServerConnected;
-    //    std::function<void( const char* ipv4, int port )> m_onServerDisconnected;
-    //    std::function<void( const char* streamName, const Acquisition& )> m_onNewAcquisition;
-    //    std::function<
-    //        void( const char* streamName, const char* objectName, int property, const Any& value
-    //        )> m_onSetProperty;
-
-    //    net::ClientSocket m_sock;
     hub::io::InputOutputSocket m_sock;
-
-    //    bool m_serverConnected = false;
-    //    std::function<void( const char* logMessage )> m_onLogMessage;
-
     //    std::map<std::string, std::shared_ptr<viewer::Stream>> m_streams;
-
     //    friend class viewer::Stream;
 
   private:
 };
 
 } // namespace client
-// } // namespace impl2
 } // namespace hub

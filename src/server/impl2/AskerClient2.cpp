@@ -4,7 +4,6 @@
 
 namespace hub {
 namespace server {
-namespace impl2 {
 
 // AskerClient::AskerClient( Server* server, int iClient, net::ClientSocket&& sock ) :
 //     Client( server, iClient ), m_sock( std::move( sock ) ) {
@@ -99,5 +98,4 @@ namespace impl2 {
 // }
 
 } // namespace server
-} // namespace impl2
 } // namespace hub

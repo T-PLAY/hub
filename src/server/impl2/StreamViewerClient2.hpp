@@ -9,7 +9,6 @@
 
 namespace hub {
 namespace server {
-namespace impl2 {
 
 // class StreamerClient;
 
@@ -43,6 +42,5 @@ namespace impl2 {
 //    friend class hub::Server;
 //};
 
-} // namespace impl2
 } // namespace server
 } // namespace hub

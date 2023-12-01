@@ -6,7 +6,6 @@
 
 namespace hub {
 namespace server {
-namespace impl2 {
 
 ViewerClient2::ViewerClient2( ServerImpl2* server, int iClient, net::ClientSocket&& sock ) :
     Client2( server, iClient ), m_socket( std::move( sock ) ) {
@@ -78,26 +77,19 @@ std::string ViewerClient2::headerMsg() const {
     return Client2::headerMsg() + "[Viewer] ";
 }
 
-// void ViewerClient2::notifyNewStreamer( const std::string& streamName,
-//                                       const sensor::SensorSpec& sensorSpec ) {
 void ViewerClient2::notifyNewStreamer( const std::string& streamName ) {
 
     m_socket.write( hub::io::StreamBase::ServerMessage::VIEWER_NEW_STREAMER );
 
     m_socket.write( streamName );
-    //    m_socket.write( sensorSpec );
 }
 
-// void ViewerClient2::notifyDelStreamer( const std::string& streamName,
-//                                       const sensor::SensorSpec& sensorSpec ) {
 void ViewerClient2::notifyDelStreamer( const std::string& streamName ) {
-    // void ViewerClient2::notifyDelStreamer( const StreamerClient& streamer ) {
     if ( m_viewerClosed ) return;
 
     try {
         m_socket.write( hub::io::StreamBase::ServerMessage::VIEWER_DEL_STREAMER );
         m_socket.write( streamName );
-        //        m_socket.write( sensorSpec );
     }
     catch ( std::exception& e ) {
         std::cout << headerMsg()
@@ -124,22 +116,8 @@ void ViewerClient2::end( hub::io::StreamBase::ServerMessage message ) {
 void ViewerClient2::notifyInited()
 {
     assert( m_socket.isOpen() );
-    // m_socket.write( message );
 }
 
-// void ViewerClient2::notifyProperty( const std::string& streamName,
-//                                    const std::string& objectName,
-//                                    int property,
-//                                    const Any& value ) {
 
-//    assert( m_socket.isOpen() );
-//    m_socket.write( io::StreamBase::ServerMessage::VIEWER_SET_PROPERTY );
-//    m_socket.write( streamName );
-//    m_socket.write( objectName );
-//    m_socket.write( property );
-//    m_socket.write( value );
-//}
-
-} // namespace impl2
 } // namespace server
 } // namespace hub

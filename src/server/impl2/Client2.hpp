@@ -8,7 +8,6 @@
 
 namespace hub {
 namespace server {
-namespace impl2 {
 
 class ServerImpl2;
 
@@ -40,6 +39,5 @@ class Client2
     friend class AskerClient2;
 };
 
-} // namespace impl2
 } // namespace server
 } // namespace hub

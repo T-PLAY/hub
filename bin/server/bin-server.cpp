@@ -8,6 +8,11 @@
 
 int main( int argc, char* argv[] ) {
 
+    // for (int i = 0; i < 50; ++i) {
+    //     std::cout << std::to_string(i) << ": " << "\033[" << i << "mhello\033[0m" << std::endl;
+    // }
+    // return 0;
+
     // int maxClient = -1;
     // int port = HUB_SERVICE_PORT;
     int port = hub::io::Stream::s_defaultPort;

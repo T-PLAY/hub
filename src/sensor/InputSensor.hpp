@@ -21,7 +21,6 @@
 //// #include "net/ClientSocket.hpp"
 ///
 
-
 namespace hub {
 namespace sensor {
 
@@ -43,67 +42,46 @@ namespace sensor {
 class InputSensor : public Sensor
 {
     void initSensorSpecFromInputs() {
+        std::cout << "[InputSensor] reading specs ..." << std::endl;
         m_specs.resize( m_inputs.size() );
         for ( int i = 0; i < m_inputs.size(); ++i ) {
+            std::cout << "[InputSensor] reading spec " << i << " : " << m_specs.at(i) << std::endl;
             auto* input = m_inputs.at( i );
             input->read( m_specs.at( i ) );
             m_spec += m_specs.at( i );
         }
-//        m_lastAcqs.resize( m_inputs.size() );
+        std::cout << "[InputSensor] specs readed" << std::endl;
+        std::cout << "[InputSenosr] spec: " << m_spec << std::endl;
     }
 
   public:
     using Sensor::acq;
-    //    using Input::read;
 
-//    template <class... Inputs>
-//    template <Input
-    InputSensor( Input& input ) :
-        Sensor( SensorSpec {} ),
-        m_inputs( { &input } )
-    {
+    InputSensor( Input& input ) : Sensor( SensorSpec {} ), m_inputs( { &input } ) {
         initSensorSpecFromInputs();
     }
 
     InputSensor( Input& input, Input& input2 ) :
-        Sensor( SensorSpec {} ),
-        m_inputs( { &input, &input2 } )
-    {
-        initSensorSpecFromInputs();
-    }
-
-
-    template <class InputT>
-//        requires std::is_rvalue_reference_v<InputT>
-        requires std::is_base_of_v<Input, InputT>
-    InputSensor( InputT&& input ) :
-        Sensor( SensorSpec {} )
-//        m_inputs( { &inputs... } )
-//        m_inputs(new InputT(std::move(input)))
-    {
-        m_inputs.push_back(new InputT(std::move(input)));
+        Sensor( SensorSpec {} ), m_inputs( { &input, &input2 } ) {
         initSensorSpecFromInputs();
     }
 
     template <class InputT>
         requires std::is_base_of_v<Input, InputT>
-//        requires std::is_rvalue_reference_v<InputT>
-    InputSensor( InputT&& input, InputT&& input2 ) :
-        Sensor( SensorSpec {} )
-//        m_inputs( { &inputs... } )
-//        m_inputs(new InputT(std::move(input)))
-    {
-        m_inputs.push_back(new InputT(std::move(input)));
-        m_inputs.push_back(new InputT(std::move(input2)));
+    InputSensor( InputT&& input ) : Sensor( SensorSpec {} ) {
+        m_inputs.push_back( new InputT( std::move( input ) ) );
         initSensorSpecFromInputs();
     }
 
+    template <class InputT>
+        requires std::is_base_of_v<Input, InputT>
+    InputSensor( InputT&& input, InputT&& input2 ) : Sensor( SensorSpec {} ) {
+        m_inputs.push_back( new InputT( std::move( input ) ) );
+        m_inputs.push_back( new InputT( std::move( input2 ) ) );
+        initSensorSpecFromInputs();
+    }
 
     void operator>>( Acquisition& acq ) {
-        //        std::cout << "[InputSensor] m_spec.getResolution() = " << m_spec.getResolution()
-        //                  << std::endl;
-        //        std::cout << "[InputSensor] acq.getResolution() = " << acq.getResolution() <<
-        //        std::endl;
         assert( m_spec.getResolution() == acq.getResolution() );
 
         if ( m_inputs.size() == 1 ) {
@@ -115,10 +93,8 @@ class InputSensor : public Sensor
             Input& rightInput = *m_inputs.at( 1 );
 
             Acquisition rightAcq = make_acquisition( m_specs.at( 1 ).getResolution() );
-//            std::cout << "rightAcq: " << rightAcq << std::endl;
             rightInput.read( rightAcq );
 
-//            auto& leftLastAcqs = m_lastAcqs.at( 0 );
             auto& leftLastAcqs = m_lastAcqs;
             assert( leftLastAcqs.size() < 20 );
             Acquisition leftAcq = make_acquisition( m_specs.at( 0 ).getResolution() );
@@ -159,32 +135,26 @@ class InputSensor : public Sensor
                     ? ( leftAfterRightAcq )
                     : ( leftBeforeRightAcq );
 
-            auto sync_acq = closestAcq << rightAcq;
+            auto sync_acq    = closestAcq << rightAcq;
             sync_acq.start() = rightAcq.getStart();
-            sync_acq.end() = rightAcq.getEnd();
+            sync_acq.end()   = rightAcq.getEnd();
             assert( sync_acq.getResolution() == acq.getResolution() );
 
-            acq = std::move(sync_acq);
+            acq = std::move( sync_acq );
         }
 
-//        m_input.read( acq );
-//        m_input.read( acq.data(), acq.size() );
 #ifdef HUB_DEBUG_INPUT
         std::cout << HEADER << "read(Acquisition&) : " << acq << std::endl;
 #endif
     }
 
-    const Input& getInput() const { return *m_inputs.at(0); }
-    Input& getInput() { return *m_inputs.at(0); }
+    const Input& getInput() const { return *m_inputs.at( 0 ); }
+    Input& getInput() { return *m_inputs.at( 0 ); }
 
   private:
-    //    Input& m_input;
     std::vector<Input*> m_inputs;
-//    std::vector<std::list<sensor::Acquisition>> m_lastAcqs;
     std::list<sensor::Acquisition> m_lastAcqs;
     std::vector<hub::sensor::SensorSpec> m_specs;
-    //    std::vector<std::unique_ptr<Input>> m_inputs;
-    //    Measures m_measures;
 };
 
 ///////////////////////////////////// TEMPLATE ////////////////////////////////////

@@ -16,7 +16,7 @@ auto toString( const Container& container ) {
     constexpr bool stringable   = requires( T t ) { str += t; } && !std::is_arithmetic_v<T>;
     constexpr bool toStringable = requires( T t ) { t.toString(); };
 
-    constexpr auto nFirstData = 30;
+    constexpr auto nFirstData = 20;
     constexpr auto nLastData  = 8;
 //    const auto iMax           = std::min( (int)container.size(), nFirstData );
     for ( size_t i = 0; i < container.size(); ++i ) {
