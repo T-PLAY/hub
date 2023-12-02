@@ -83,14 +83,6 @@ endif()
 # list(REMOVE_ITEM test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/./test-end.cpp)
 #list(APPEND test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/server/test-server-end.cpp)
 
-#file(GLOB test_srcs *.cpp)
-list(REMOVE_ITEM test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/test-end.cpp)
-# list(REMOVE_ITEM test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/./test-end.cpp)
-list(APPEND test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/test-end.cpp)
-
-list(REMOVE_ITEM test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/test-start.cpp)
-# list(REMOVE_ITEM test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/./test-start.cpp)
-list(PREPEND test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/test-start.cpp)
 
 
 find_package(PahoMqttCpp QUIET)
@@ -135,6 +127,16 @@ set(test_srcs
     ${CMAKE_CURRENT_SOURCE_DIR}/sensor/test-sensor-OutputSensor.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/sensor/test-sensor-OutputSensorT.cpp
 )
+
+#file(GLOB test_srcs *.cpp)
+list(REMOVE_ITEM test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/test-end.cpp)
+# list(REMOVE_ITEM test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/./test-end.cpp)
+list(APPEND test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/test-end.cpp)
+
+list(REMOVE_ITEM test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/test-start.cpp)
+# list(REMOVE_ITEM test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/./test-start.cpp)
+list(PREPEND test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/test-start.cpp)
+
 
 # gathering tests
 #add_executable(test-all ${test_srcs} ${test_headers} ${test_headers_src})
