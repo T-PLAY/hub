@@ -13,8 +13,6 @@
 
 namespace hub {
 
-// using Dims = std::vector<int>;
-
 class Matrix
 {
   public:
@@ -89,13 +87,14 @@ class Matrix
 
     bool hasValue() const;
 
+    void clear();
+
   protected:
   protected:
     std::vector<Node> m_nodes;
     Size_t m_size = 0;
     std::vector<Data_t> m_vector;
 };
-// static_assert( sizeof( Matrix ) == 56 );
 
 /////////////////////////////////////// MAKER /////////////////////////////////////////////////////
 
@@ -200,6 +199,7 @@ inline bool Matrix::hasValue() const {
     return !m_vector.empty();
 }
 
+
 template <class Type>
 bool Matrix::hasType() const {
     for ( const auto& node : m_nodes ) {
@@ -301,6 +301,11 @@ Type Matrix::get() const {
     const auto offset = 0;
     assert( 0 <= offset && offset < m_size );
     return reinterpret_cast<Type>( *( m_vector.data() + offset ) );
+}
+
+inline void Matrix::clear()
+{
+    m_vector.clear();
 }
 
 } // namespace hub

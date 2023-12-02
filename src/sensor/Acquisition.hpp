@@ -1,9 +1,7 @@
 #pragma once
 
-// #include "core/Matrix.hpp"
 #include "core/Matrix.hpp"
-#include "core/MatrixT.hpp"
-// #include "core/Serializer.hpp"
+#include "core/matrix/MatrixTs.hpp"
 
 namespace hub {
 namespace sensor {
@@ -13,100 +11,48 @@ using Clock = long long;
 class Acquisition : public Matrix
 {
   public:
-    //    Acquisition( const Matrix& resolution ) :
-    ////        Matrix( make_matrix( make_matrix<Clock>(), make_matrix<Clock>(), resolution ) )
-    //        Matrix( resolution )
-    ////        Matrix( make_matrix(resolution, make_matrix<int>()) ),
-    ////        Matrix( resolution.clone() ),
-    ////        m_resolution { resolution.clone() } {}
-    //    //        Matrix(  resolution ) {}
-    //    {
-    //          std::cout << "[Acquisition] Acquisition(const Matrix&)" << std::endl;
-    //    }
     static struct {
     } packable;
 
     Acquisition() = default;
 
-    Acquisition( Acquisition&& )    = default;
+    Acquisition( Acquisition&& )      = default;
     Acquisition( const Acquisition& ) = delete;
-//    Acquisition( const Acquisition& acq ) {
-//    }
 
     Acquisition& operator=( Acquisition&& )      = default;
     Acquisition& operator=( const Acquisition& ) = delete;
-//    Acquisition& operator=( const Acquisition& acq ) {
-//        *this = acq.clone();
-//        return *this;
-//    }
 
     Acquisition clone() const {
         Acquisition acq;
-        //        acq.push_back(*this);
         acq |= *this;
         return acq;
     }
 
-    //    const Matrix & getResolution() const { return *this; }
     const Matrix& getResolution() const {
-        //        std::cout << "[Acquisition] getResolution() size = " << m_resolution.size() <<
-        //        std::endl;
-        //    Matrix getResolution() const {
         if ( m_resolution.size() == 0 ) {
-            //        Matrix resolution;
             for ( size_t i = 2; i < nType(); ++i ) {
                 m_resolution.push_back( m_nodes.at( i ) );
             }
         }
         return m_resolution;
-        //        return *this;
-        //        return m_resolution;
     }
     Clock& start() {
-        //        if (m_start == nullptr) {
-        //            m_start = get<Clock*>();
-        //        }
-        //        return *m_start;
         return get<Clock&>();
     }
     Clock getStart() const {
-        //        if (m_start == nullptr) {
-        //            m_start = get<Clock*>();
-        //        }
-        //        return *m_start;
-        //        return 5;
         return *get<const Clock*>();
     }
 
     Clock& end() { return get<Clock&, 1>(); }
     Clock getEnd() const {
         return *get<const Clock*, 1>();
-        //        return get<Clock, 1>();
     }
-    //    template <class Type>
-    //    Type get() {
-    //        return Matrix::template get<Type>();
-    //    }
-
-    //    using Matrix::operator<<;
-    //    void write( Serializer& serializer ) const {
-    //        serializer.write( data(), size() );
-    //    }
-
-    //    template <class Input>
-    //    void read( Serializer& serializer ) {
-    //        serializer.read( data(), size() );
-    //    }
 
     Acquisition& operator<<( const Acquisition& other ) {
         size_t sizeBeforeAdd = m_size;
         for ( size_t i = 2; i < other.nType(); ++i ) {
             push_back( other.m_nodes.at( i ) );
         }
-        //        for ( const auto& node : other.m_nodes ) {
-        //            m_nodes.push_back( node );
-        //            m_size += node.m_size;
-        //        }
         if ( !other.m_vector.empty() ) {
             m_vector.resize( sizeBeforeAdd + other.m_vector.size() - 2 * sizeof( Clock ) );
             std::copy( other.m_vector.begin() + 2 * sizeof( Clock ),
@@ -129,41 +75,33 @@ class Acquisition : public Matrix
 
   private:
     mutable Matrix m_resolution;
-    //    mutable Clock * m_start = nullptr;
-    //    mutable Clock * m_end = nullptr;
-    //    const Matrix & m_resolution;
-    //    Matrix m_matrix;
 };
 
 Acquisition make_acquisition( const Matrix& resolution );
 
 ///////////////////////////////////// TEMPLATE ////////////////////////////////
 
+
 template <class Resolution>
 class AcquisitionT : public MatrixTs<Clock, Clock, Resolution>
 {
   public:
-    //    using Legacy = MatrixTs<Clock, Clock, Resolution>;
     using Matrix = MatrixTs<Clock, Clock, Resolution>;
+    using Matrix::get;
 
     Clock& start() {
         return Matrix::template get<Clock&>();
-        //        return get<Clock&>();
     }
     Clock getStart() const { return Matrix::template get<Clock>(); }
 
     Clock& end() { return Matrix::template get<Clock&, 1>(); }
     Clock getEnd() const { return Matrix::template get<Clock, 1>(); }
 
-    template <class Type>
-    Type get() {
-        return Matrix::template get<Type>();
-    }
+    // template <class Type>
+    // Type get() {
+    //     return Matrix::template get<Type>();
+    // }
 
-    //    template <class Serial>
-    //    void serialize(Serial & serial) {
-    //        serial()
-    //    }
 };
 
 //// #include <iostream>

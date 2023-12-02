@@ -1,12 +1,11 @@
-#define HUB_DEBUG_INPUT
-#define HUB_DEBUG_OUTPUT
+// #define HUB_DEBUG_INPUT
+// #define HUB_DEBUG_OUTPUT
 
 #include "io/test_io_common.hpp"
 #include "sensor/test_sensor_common.hpp"
 #include "test_common.hpp"
 
 #include <core/io/Archive.hpp>
-#include <sensor/InputSensor.hpp>
 #include <sensor/OutputSensor.hpp>
 
 TEST_CASE( "InputOutputSensor test" ) {
@@ -20,10 +19,10 @@ TEST_CASE( "InputOutputSensor test" ) {
     hub::sensor::SensorSpec::MetaData metaData;
     metaData["parent"] = "parentName";
 
-    auto resolution = hub::make_matrix<hub::sensor::format::BGR8>();
     // using Resolution = hub::sensor::format::BGR8;
+    auto resolution = hub::make_matrix<hub::sensor::format::BGR8>();
     assert( resolution.size() != 0 );
-    assert(resolution.nType() > 0);
+    assert( resolution.nType() > 0 );
 
     const hub::sensor::SensorSpec sensorSpec( "sensorName", resolution, metaData );
     assert( sensorSpec.getResolution().size() != 0 );
@@ -36,36 +35,20 @@ TEST_CASE( "InputOutputSensor test" ) {
     hub::sensor::OutputSensorT<Resolution> outputSensor( sensorSpec, archive );
 #endif
 
-    // hub::sensor::AcquisitionT<Resolution> acq;
-    // hub::sensor::Acquisition acq;
-        auto acq = outputSensor.acq();
+    auto acq = outputSensor.acq();
 
-        auto& start = acq.start();
-        auto& end   = acq.end();
-        auto& bgr8  = acq.get<hub::sensor::format::BGR8&>();
-        // hub::Data_t * data = acq.data();
-        // hub::Size_t size = acq.size();
-        for ( int i = 0; i < 10; ++i ) {
-            start  = i;
-            end    = i;
-            bgr8.b = i;
-            bgr8.g = i;
-            bgr8.r = i;
-    // #ifdef HUB_BUILD_SENSOR
-            // outputSensor.
-            outputSensor << acq;
-            // auto & output = outputSensor.getOutput();
-            // dynamic_cast<hub::output::OutputStream&>(output).write(data, size);
+    auto& start = acq.start();
+    auto& end   = acq.end();
+    auto& bgr8  = acq.get<hub::sensor::format::BGR8&>();
+    for ( int i = 0; i < 10; ++i ) {
+        start  = i;
+        end    = i;
+        bgr8.b = i;
+        bgr8.g = i;
+        bgr8.r = i;
+        outputSensor << acq;
+    }
 
-    // #else
-            // outputStream.write(data, size);
-    // #endif
-        }
-
-    // std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-
-    // hub::io::Archive archive;
-    // test::sensor::inputOutputSensorBench(archive, archive);
     return;
 
     //        assert(UserResolution() == inputSensor.getSpec().resolution);

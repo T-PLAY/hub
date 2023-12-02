@@ -205,7 +205,9 @@ void OutputStreamServer2::startStreaming() {
                 if ( !data->m_retainedData.empty() ) {
                     // std::cout << "[OutputStream] write retain data (" << data->m_retainedData.size()
                               // << " bytes)" << std::endl;
+#ifdef DEBUG_OUTPUT_STREAM
                     std::cout << "[OutputStream] load retain data " << data->m_retainedData << std::endl;
+#endif
                     streamSock.write( data->m_retainedData.data(), data->m_retainedData.size() );
                 }
 
@@ -254,7 +256,9 @@ void OutputStreamServer2::setRetain( bool retain ) {
             m_data->m_retainedData.insert( m_data->m_retainedData.end(), data, data + size );
             // std::cout << "[OutputStream] save retained data (" << size << " bytes)" << std::endl;
             // std::vector<Data_t> vector(data, data + size);
+#ifdef DEBUG_OUTPUT_STREAM
             std::cout << "[OutputStream] save retained data : " << m_data->m_retainedData << std::endl;
+#endif
         };
     }
     else { m_data->m_writingFun = nullptr; }

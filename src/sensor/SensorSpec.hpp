@@ -128,14 +128,14 @@ class SRC_API SensorSpec
     //  public:
 
     void write( Serializer& serializer ) const {
-        std::cout << "[SensorSpec] write(Serializer&) : " << *this << std::endl;
-        // serializer.writeAll( m_sensorName, m_resolution, m_metaData );
-        serializer.write(m_sensorName);
+        // std::cout << "[SensorSpec] write(Serializer&) : " << *this << std::endl;
+        serializer.writeAll( m_sensorName, m_resolution, m_metaData );
+        // serializer.write(m_sensorName);
     }
     void read( Serializer& serializer ) {
-        std::cout << "[SensorSpec] read(Serializer&) : " << *this << std::endl;
-        // serializer.readAll( m_sensorName, m_resolution, m_metaData );
-        serializer.read(m_sensorName);
+        // std::cout << "[SensorSpec] read(Serializer&) : " << *this << std::endl;
+        serializer.readAll( m_sensorName, m_resolution, m_metaData );
+        // serializer.read(m_sensorName);
     }
 //        static constexpr auto serialize( auto& archive, auto& self ) {
 //            assert(false);
