@@ -121,11 +121,22 @@ endif()
 #    list(REMOVE_ITEM test_srcs ${server_srcs})
 #endif()
 
-set(test_srcs
-    ${CMAKE_CURRENT_SOURCE_DIR}/core/io/test-core-io-Serializer.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/sensor/test-sensor-InputSensor.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/sensor/test-sensor-OutputSensor.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/sensor/test-sensor-OutputSensorT.cpp
+# set(test_srcs
+#     ${CMAKE_CURRENT_SOURCE_DIR}/client/test-client-Viewer.cpp
+#     ${CMAKE_CURRENT_SOURCE_DIR}/sensor/test-sensor-InputOutputSensor.cpp
+#     ${CMAKE_CURRENT_SOURCE_DIR}/sensor/test-sensor-InputSensor.cpp
+# #     ${CMAKE_CURRENT_SOURCE_DIR}/core/io/test-core-io-Serializer.cpp
+# #     ${CMAKE_CURRENT_SOURCE_DIR}/sensor/test-sensor-InputSensor.cpp
+# #     ${CMAKE_CURRENT_SOURCE_DIR}/sensor/test-sensor-OutputSensor.cpp
+# #     ${CMAKE_CURRENT_SOURCE_DIR}/sensor/test-sensor-OutputSensorT.cpp
+# )
+
+set(test_srcs)
+file(
+    #        GLOB
+    GLOB_RECURSE
+    test_srcs
+    ${CMAKE_CURRENT_SOURCE_DIR}/sensor/*.cpp
 )
 
 #file(GLOB test_srcs *.cpp)

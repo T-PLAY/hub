@@ -9,8 +9,8 @@ namespace hub {
 namespace net {
 namespace system {
 
-// ClientSocketSystem::ClientSocketSystem() : m_ipv4( s_defaultServiceIp ), m_port( s_defaultServicePort ) {
-// #ifdef HUB_DEBUG_SOCKET
+// ClientSocketSystem::ClientSocketSystem() : m_ipv4( s_defaultServiceIp ), m_port(
+// s_defaultServicePort ) { #ifdef HUB_DEBUG_SOCKET
 //     DEBUG_MSG( getHeader( m_fdSock ) << "ClientSocketSystem()" );
 // #endif
 
@@ -20,9 +20,9 @@ namespace system {
 
 ClientSocketSystem::ClientSocketSystem( const std::string& ipv4, int port, bool autoConnect ) :
     m_ipv4( ipv4 ), m_port( port ) {
-#ifdef HUB_DEBUG_SOCKET
-    DEBUG_MSG( getHeader( m_fdSock ) << "ClientSocketSystem(std::string ipv4, int port)" );
-#endif
+    // #ifdef HUB_DEBUG_SOCKET
+    //     DEBUG_MSG( getHeader(  ) << "ClientSocket(std::string ipv4, int port)" );
+    // #endif
 
     initServerAddress();
 
@@ -34,71 +34,72 @@ ClientSocketSystem::ClientSocketSystem( const std::string& ipv4, int port, bool 
 //    utils::ClientAddr m_addr;
 //    bool m_connected = false;
 //    bool m_moved     = false;
-ClientSocketSystem::ClientSocketSystem( utils::socket_fd fdSock, utils::ClientAddr clientAddr )
-    : m_ipv4(clientAddr.getIpv4()),
-    m_port(clientAddr.getPort()),
-    m_addr(std::move(clientAddr)),
-    m_connected(true)
-{
-//    m_port       = -1;
-    m_fdSock     = fdSock;
-//    m_ipv4 = m_addr.getIpv4();
-//    m_addr(std::move(clientAddr)),
+ClientSocketSystem::ClientSocketSystem( utils::socket_fd fdSock, utils::ClientAddr clientAddr ) :
+    m_ipv4( clientAddr.getIpv4() ),
+    m_port( clientAddr.getPort() ),
+    m_addr( std::move( clientAddr ) ),
+    m_connected( true ) {
+    //    m_port       = -1;
+    m_fdSock = fdSock;
+    //    m_ipv4 = m_addr.getIpv4();
+    //    m_addr(std::move(clientAddr)),
     m_serverSide = true;
 //    m_connected  = true;
 #ifdef HUB_DEBUG_SOCKET
-//    DEBUG_MSG( getHeader( m_fdSock ) << "ClientSocketSystem(socket_fd fdSock)" );
-    DEBUG_MSG( getHeader( m_fdSock ) << "accepting new socket:" << toString() );
+    //    DEBUG_MSG( getHeader( m_fdSock ) << "ClientSocketSystem(socket_fd fdSock)" );
+    DEBUG_MSG( getHeader() << "accepting new socket:" << toString() );
 #endif
-//    DEBUG_MSG( "socket " << m_fdSock << ": accepting new socket:" << toString() );
+    //    DEBUG_MSG( "socket " << m_fdSock << ": accepting new socket:" << toString() );
 }
 
-ClientSocketSystem::ClientSocketSystem( ClientSocketSystem&& sock ) :
-    m_ipv4( sock.m_ipv4 ),
-    m_port( sock.m_port ),
-    m_addr( std::move( sock.m_addr ) ),
-    m_connected( sock.m_connected ) {
+// ClientSocketSystem::ClientSocketSystem( ClientSocketSystem&& sock ) :
+//     m_ipv4( sock.m_ipv4 ),
+//     m_port( sock.m_port ),
+//     m_addr( std::move( sock.m_addr ) ),
+//     m_connected( sock.m_connected ) {
 
-    m_fdSock         = sock.m_fdSock;
-    m_serverSide     = sock.m_serverSide;
-    sock.m_fdSock    = utils::invalidSocket();
-    sock.m_moved     = true;
-    sock.m_connected = false;
-}
+//     m_fdSock         = sock.m_fdSock;
+//     m_serverSide     = sock.m_serverSide;
+//     sock.m_fdSock    = utils::invalidSocket();
+//     sock.m_moved     = true;
+//     sock.m_connected = false;
+// }
 
 // ClientSocketSysteClientSocketSystem::ClientSocketSystem(ClientSocketSystem &&sock) :
 
-ClientSocketSystem::~ClientSocketSystem() {
-#ifdef HUB_DEBUG_SOCKET
-    DEBUG_MSG( getHeader( m_fdSock ) << "~ClientSocketSystem()" );
-#endif
-    if ( !m_moved ) {
-//        if ( ClientSocketSystem::isOpen() ) {
-        if ( ClientSocketSystem::isConnected() ) {
-//            ClientSocketSystem::close();
-            disconnect();
-        }
-//        assert( !ClientSocketSystem::isOpen() );
-        assert( !ClientSocketSystem::isConnected() );
-    }
-}
+// ClientSocketSystem::~ClientSocketSystem() {
+// #ifdef HUB_DEBUG_SOCKET
+//     DEBUG_MSG( getHeader(  ) << "~ClientSocket()" );
+// #endif
+//     if ( !m_moved ) {
+//         assert( !ClientSocketSystem::isConnected() );
+
+// // //        if ( ClientSocketSystem::isOpen() ) {
+// //         if ( ClientSocketSystem::isConnected() ) {
+// // //            ClientSocketSystem::close();
+// //             disconnect();
+// //         }
+// // //        assert( !ClientSocketSystem::isOpen() );
+// //         assert( !ClientSocketSystem::isConnected() );
+//     }
+// }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
 void ClientSocketSystem::setIpv4( const std::string& newIpv4 ) {
-//    assert( !isOpen() );
+    //    assert( !isOpen() );
     assert( !isConnected() );
     assert( utils::isValid( newIpv4 ) );
     m_ipv4 = newIpv4;
     m_addr.setIpv4( m_ipv4 );
 }
 
-const std::string & ClientSocketSystem::getIpv4() const {
+const std::string& ClientSocketSystem::getIpv4() const {
     return m_ipv4;
 }
 
 void ClientSocketSystem::setPort( int newPort ) {
-//    assert( !isOpen() );
+    //    assert( !isOpen() );
     assert( !isConnected() );
     assert( 0 <= newPort && newPort <= 65535 );
     m_port = newPort;
@@ -109,18 +110,14 @@ int ClientSocketSystem::getPort() const {
     return m_port;
 }
 
-
-
-
 void ClientSocketSystem::connect() {
     assert( !m_connected );
-//    assert( !isOpen() );
+    //    assert( !isOpen() );
     assert( !isConnected() );
 
 #ifdef HUB_DEBUG_SOCKET
-    DEBUG_MSG( "[ClientSocketSystem] connectToServer" );
-    DEBUG_MSG( getHeader( m_fdSock )
-               << "[ClientSocketSystem] ClientSocketSystem('" << m_ipv4 << ", " << m_port << ")" );
+    // DEBUG_MSG( "[ClientSocket] connectToServer" );
+    DEBUG_MSG( getHeader() << "[ClientSocket] ClientSocket('" << m_ipv4 << ", " << m_port << ")" );
 #endif
 
     assert( !utils::isValid( m_fdSock ) );
@@ -131,10 +128,15 @@ void ClientSocketSystem::connect() {
         perror( "[socket] socket creation failed.\n" );
         return;
     }
+#ifdef HUB_DEBUG_SOCKET
+    DEBUG_MSG( getHeader() << "[ClientSocket] client socket inited" );
+    // std::cout << "fdSock = " << m_fdSock << std::endl;
+#endif
 
-//    assert( !isOpen() );
-    assert( !isConnected() );
-    assert( SocketSystem::isConnected() );
+    //    assert( !isOpen() );
+    // assert( !isConnected() );
+    assert( isConnected() );
+    // assert( SocketSystem::isConnected() );
 
     // Connect to server
     if ( utils::connect( m_fdSock, m_addr ) < 0 ) {
@@ -143,54 +145,57 @@ void ClientSocketSystem::connect() {
 #endif
         utils::closeSocket( m_fdSock );
         throw SocketSystem::exception(
-            ( ( std::string( "[ClientSocketSystem] connect() Failed to connect to server at address " ) +
+            ( ( std::string( "[ClientSocket] connect() Failed to connect to server at address " ) +
                 m_ipv4 + " and port " + std::to_string( m_port ) ) )
                 .c_str() );
     }
 
     m_connected = true;
-//    std::cout << "[ClientSocketSystem] connect() " << std::endl;
-//    assert( isOpen() );
+    //    std::cout << "[ClientSocket] connect() " << std::endl;
+    //    assert( isOpen() );
     assert( isConnected() );
-    assert( SocketSystem::isConnected() );
+    // assert( SocketSystem::isConnected() );
 
 #ifdef HUB_DEBUG_SOCKET
-    DEBUG_MSG( getHeader( m_fdSock )
-               << "[ClientSocketSysteClientSocketSystem] connected to the server, starting communication" );
-    DEBUG_MSG( getHeader( m_fdSock ) << "new client on socket " << m_fdSock );
+    DEBUG_MSG( getHeader() << "[ClientSocket] connected to the server, starting communication" );
+    DEBUG_MSG( getHeader() << "new client on socket " << m_fdSock );
 #endif
 }
 
-bool ClientSocketSystem::isConnected() const
-{
-    return m_connected;
+bool ClientSocketSystem::isConnected() const {
+    return SocketSystem::isConnected();
+    // return m_connected;
 }
 
-
-void ClientSocketSystem::disconnect()
-{
+void ClientSocketSystem::disconnect() {
     // assert( isOpen() ); // todo fix
-//    if ( isOpen() ) {
+    //    if ( isOpen() ) {
     if ( isConnected() ) {
+#ifdef HUB_DEBUG_SOCKET
+        DEBUG_MSG( getHeader() << "disconnecting socket ..." );
+#endif
         utils::closeSocket( m_fdSock );
+#ifdef HUB_DEBUG_SOCKET
+        DEBUG_MSG( getHeader() << "socket disconnected" );
+#endif
         m_connected = false;
     }
     assert( !isConnected() );
-//    assert( !isOpen() );
-//    close();
+    //    assert( !isOpen() );
+    //    close();
 }
 
 void ClientSocketSystem::write( const unsigned char* data, const size_t size ) {
-    assert( isConnected() );
-//    assert( isOpen() );
+    // assert( isConnected() );
+    //    assert( isOpen() );
     //    assert( 0 < size && size <= MAX_NET_BUFFER_SIZE );
     assert( 0 < size );
 
     //    unsigned char * tmp = new unsigned char[size];
     //    memcpy(tmp, data, size);
 
-#ifdef HUB_DEBUG_SOCKET
-    DEBUG_MSG( getHeader( m_fdSock ) << "write(unsigned char*, size = " << size << ") " );
+#ifdef HUB_DEBUG_SOCKET_OUTPUT
+    DEBUG_MSG( getHeader() << "write(unsigned char*, size = " << size << ") " );
 #endif
 
     //    const int nPart = std::ceil( (float)size / MAX_NET_BUFFER_SIZE );
@@ -203,72 +208,74 @@ void ClientSocketSystem::write( const unsigned char* data, const size_t size ) {
     //        :(MAX_NET_BUFFER_SIZE);
     //    const size_t sizePart = size;
 
-#ifdef HUB_DEBUG_SOCKET
-//            DEBUG_MSG( getHeader( m_fdSock )
-//                   << "iPart = " << iPart << "/" << nPart << ", offsetPart: " << offsetPart << ",
-//                   sizePart:" << sizePart );
-#endif
+    // #ifdef HUB_DEBUG_SOCKET
+    //            DEBUG_MSG( getHeader( m_fdSock )
+    //                   << "iPart = " << iPart << "/" << nPart << ", offsetPart: " << offsetPart <<
+    //                   ", sizePart:" << sizePart );
+    // #endif
 
     size_t uploadSize = 0;
     do {
         if ( !isConnected() ) {
-#ifdef HUB_DEBUG_SOCKET
+#ifdef HUB_DEBUG_SOCKET_OUTPUT
             DEBUG_MSG(
-                getHeader( m_fdSock )
+                getHeader()
                 << "write(const unsigned char* data, size_t size) : isConnected() client lost" );
 #endif
-//            close();
-            disconnect();
+            //            close();
+            // disconnect();
             throw SocketSystem::exception(
-                "[ClientSocketSystem] write(data, size) Can't write packet, not connected" );
+                "[ClientSocket] write(data, size) Can't write packet, peer not connected" );
         }
         // winsock const char * data
         // winsock int size
         int64_t byteSent;
         try {
-#ifdef HUB_DEBUG_SOCKET
-            DEBUG_MSG( getHeader( m_fdSock ) << "sending bytes = " << size - uploadSize );
+#ifdef HUB_DEBUG_SOCKET_OUTPUT
+            DEBUG_MSG( getHeader() << "sending bytes = " << size - uploadSize );
 #endif
             //                assert(static_cast<size_t>(size - uploadSize) > 0);
             //                assert(static_cast<size_t>(size - uploadSize) <= size);
             assert( 0 < size - uploadSize && size - uploadSize <= size );
-            byteSent = utils::send(
-                m_fdSock, reinterpret_cast<const char*>( data + uploadSize ), size - uploadSize, 0 );
-#ifdef HUB_DEBUG_SOCKET
-            DEBUG_MSG( getHeader( m_fdSock ) << "sended bytes = " << byteSent );
+            byteSent = utils::send( m_fdSock,
+                                    reinterpret_cast<const char*>( data + uploadSize ),
+                                    size - uploadSize,
+                                    0 );
+#ifdef HUB_DEBUG_SOCKET_OUTPUT
+            DEBUG_MSG( getHeader() << "sended bytes = " << byteSent );
 #endif
             assert( -1 <= byteSent && byteSent <= size );
         }
         catch ( std::exception& e ) {
-            std::cout << "[ClientSocketSystem] catch exception : " << e.what() << std::endl;
+            std::cout << "[ClientSocket] catch exception : " << e.what() << std::endl;
             assert( false );
             throw e;
         }
 
         if ( byteSent == -1 ) {
 #ifdef HUB_DEBUG_SOCKET
-            DEBUG_MSG( getHeader( m_fdSock ) << "can't send packet " << byteSent << "/" << size );
+            DEBUG_MSG( getHeader() << "can't send packet " << byteSent << "/" << size );
             perror( "[socket] send failed.\n" );
 #endif
-//            close();
+            //            close();
             disconnect();
             throw SocketSystem::exception(
-                "[ClientSocketSystem] write(data, size) Can't write packet, peer connection lost" );
+                "[ClientSocket] write(data, size) Can't write packet, peer connection lost" );
         }
         else if ( byteSent == 0 ) {
             assert( false );
             exit( 1 );
 //            close();
 //            throw SocketSystem::exception(
-//                "[ClientSocketSystem] write(data, size) Can't write packet, buffer overflow" );
+//                "[ClientSocket] write(data, size) Can't write packet, buffer overflow" );
 #ifdef HUB_DEBUG_SOCKET
             DEBUG_MSG( "byteSent == 0, sleep" );
 #endif
         }
         uploadSize += byteSent;
-#ifdef HUB_DEBUG_SOCKET
-        DEBUG_MSG( getHeader( m_fdSock )
-                   << "byteSent = " << byteSent << " (" << uploadSize << "/" << size << ")" );
+#ifdef HUB_DEBUG_SOCKET_OUTPUT
+        DEBUG_MSG( getHeader() << "byteSent = " << byteSent << " (" << uploadSize << "/" << size
+                               << ")" );
 #endif
     } while ( size != uploadSize );
 
@@ -280,16 +287,16 @@ void ClientSocketSystem::write( const unsigned char* data, const size_t size ) {
 ///////////////////////////////////////////////////////////////////////////////
 
 void ClientSocketSystem::read( unsigned char* data, const size_t size ) {
-//    assert( isOpen() );
+    //    assert( isOpen() );
     assert( isConnected() );
-    assert( SocketSystem::isConnected() );
+    // assert( SocketSystem::isConnected() );
 
     size_t downloadSize = 0;
     do {
         assert( 0 <= size - downloadSize && size - downloadSize <= size );
         int64_t byteRead = utils::recv(
             m_fdSock, reinterpret_cast<char*>( data ) + downloadSize, size - downloadSize, 0 );
-        //assert( -1 <= byteRead && byteRead <= (int64_t)size );
+        // assert( -1 <= byteRead && byteRead <= (int64_t)size );
         assert( (int64_t)size > 0 );
         assert( -1 <= byteRead && byteRead <= (int64_t)size );
 
@@ -300,32 +307,31 @@ void ClientSocketSystem::read( unsigned char* data, const size_t size ) {
 #endif
 #ifndef WIN32
 #endif
-//            close();
+            //            close();
             disconnect();
-            throw SocketSystem::exception(
-                "[ClientSocketSysteClientSocketSystem] read(data, size) Can't read packet, peer connection lost" );
+            throw SocketSystem::exception( "[ClientSocketSysteClientSocketSystem] read(data, size) "
+                                           "Can't read packet, peer connection lost" );
         }
         else if ( byteRead == 0 ) {
             //            std::cout << "no bytes read, sleep" << std::endl;
             //            std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
-//            close();
+            //            close();
             disconnect();
             throw SocketSystem::exception(
-                "[ClientSocketSystem] read(data, size) 0 byte received, peer connection lost" );
+                "[ClientSocket] read(data, size) 0 byte received, peer connection lost" );
         }
 
         downloadSize += byteRead;
-#ifdef HUB_DEBUG_SOCKET
-        DEBUG_MSG( getHeader( m_fdSock )
-                   << "byteRead = " << byteRead << " (" << downloadSize << "/" << size << ")" );
+#ifdef HUB_DEBUG_SOCKET_INPUT
+        DEBUG_MSG( getHeader() << "byteRead = " << byteRead << " (" << downloadSize << "/" << size
+                               << ")" );
 #endif
     } while ( size != downloadSize );
 
-#ifdef HUB_DEBUG_SOCKET
-//
-#endif
+    // #ifdef HUB_DEBUG_SOCKET
+    //
+    // #endif
 }
-
 
 ////////////////////////////////////////////////////////////////
 
@@ -336,34 +342,32 @@ void ClientSocketSystem::initServerAddress() {
     m_addr.init( m_ipv4, m_port );
 }
 
-//bool ClientSocketSystem::isOpen() const {
-//bool ClientSocketSystem::isOpen() const {
-//    return m_connected;
-//}
+// bool ClientSocketSystem::isOpen() const {
+// bool ClientSocketSystem::isOpen() const {
+//     return m_connected;
+// }
 
-//void ClientSocketSystem::close() {
-//    // assert( isOpen() ); // todo fix
-//    if ( isOpen() ) {
-//        utils::closeSocket( m_fdSock );
-//        m_connected = false;
-//    }
-//    assert( !isOpen() );
-//}
+// void ClientSocketSystem::close() {
+//     // assert( isOpen() ); // todo fix
+//     if ( isOpen() ) {
+//         utils::closeSocket( m_fdSock );
+//         m_connected = false;
+//     }
+//     assert( !isOpen() );
+// }
 
+// bool ClientSocketSystem::isEnd() const {
+//     assert( isOpen() );
+//     assert( isConnected() );
+//     return false;
+// }
 
-
-//bool ClientSocketSystem::isEnd() const {
-//    assert( isOpen() );
-//    assert( isConnected() );
-//    return false;
-//}
-
-//#if ( __cplusplus >= 201703L )
-//#    define ConstString constexpr std::string_view
+// #if ( __cplusplus >= 201703L )
+// #    define ConstString constexpr std::string_view
 //// using ConstString = constexpr std::string_view;
-//#else
-//using ConstString = const std::string;
-//#endif
+// #else
+// using ConstString = const std::string;
+// #endif
 
 // static ConstString type2string[static_cast<int>( ClientSocketSystem::Type::COUNT )] = {
 //     "NONE",
@@ -377,7 +381,8 @@ void ClientSocketSystem::initServerAddress() {
 //     return os;
 // }
 
-// static ConstString message2string[static_cast<int>( ClientSocketSysteClientSocketSystem::Message::COUNT )] = {
+// static ConstString message2string[static_cast<int>(
+// ClientSocketSysteClientSocketSystem::Message::COUNT )] = {
 //     "NONE",
 //     "PING",
 //     "SYNC",
@@ -402,7 +407,6 @@ void ClientSocketSystem::initServerAddress() {
 // #ifdef HUB_DEBUG_SOCKET
 // #endif
 // }
-
 
 } // namespace system
 } // namespace net

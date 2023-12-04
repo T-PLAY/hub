@@ -47,6 +47,10 @@ class InputOutputSocket : public InputOutput<>, public net::ClientSocket
     void setRetain(bool retain) override {
     }
 
+    bool operator==(const InputOutputSocket & inputOutputSocket) const {
+        return m_fdSock == inputOutputSocket.m_fdSock;
+    }
+
 };
 
 } // namespace io

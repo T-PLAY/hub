@@ -44,6 +44,10 @@ static const std::string
         "STREAMER_CLIENT_NEW_STREAM_VIEWER",
         "STREAMER_CLIENT_INITED",
         "STREAMER_CLIENT_STREAM_VIEWER_INITED",
+
+        "NEW_RETAIN_DATA",
+        "FULLY_RETAINED_DATA",
+        "STREAMER_CLIENT_DEL_STREAM_VIEWER",
 };
 std::ostream& operator<<( std::ostream& os, const StreamBase::ClientMessage& msg ) {
     os << clientMessage2string[(int)msg];
@@ -75,6 +79,8 @@ static const std::string
         "ASKER_LIST_STREAMS",
 
         "STREAM_VIEWER_INITED",
+
+        // "RETAINED_DATA",
 };
 std::ostream& operator<<( std::ostream& os, const StreamBase::ServerMessage& msg ) {
     os << serverMessage2string[(int)msg];

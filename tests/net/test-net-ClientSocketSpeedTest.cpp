@@ -24,7 +24,7 @@
 //     boost::asio::write( socket, boost::asio::buffer( message ) );
 // }
 
-TEST_CASE( "Net test : ClientSocket" ) {
+TEST_CASE( "Net test : ClientSocket speed test" ) {
     const auto hostname = hub::utils::getHostname();
     const auto port     = GET_RANDOM_PORT;
     const auto port2    = port + 1;

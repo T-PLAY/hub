@@ -42,17 +42,11 @@ class SRC_API ClientSocketSystem : public ClientSocketI, public SocketSystem
     explicit ClientSocketSystem( utils::socket_fd fdSock, utils::ClientAddr clientAddr ); // server side client (bind and listen)
 
     ClientSocketSystem( const ClientSocketSystem& sock ) = delete;
-
-    ///
-    /// \brief ClientSocketSystem
-    /// \param sock
-    ///
-    ClientSocketSystem( ClientSocketSystem&& sock );
-
+    ClientSocketSystem( ClientSocketSystem&& sock ) = default;
     ClientSocketSystem& operator=( const ClientSocketSystem& sock ) = delete;
     ClientSocketSystem&& operator=( ClientSocketSystem&& sock ) = delete;
 
-    ~ClientSocketSystem();
+    // ~ClientSocketSystem();
 
   public:
     ///
@@ -119,7 +113,7 @@ class SRC_API ClientSocketSystem : public ClientSocketI, public SocketSystem
 //    std::string getIpv4() const {
 //    }
     std::string toString() const {
-        return m_ipv4 + ":" + std::to_string(m_port);
+        return m_ipv4 + "-" + std::to_string(m_port);
     }
 
   public:

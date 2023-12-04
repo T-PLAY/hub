@@ -53,6 +53,26 @@ StreamerClient2::StreamerClient2( ServerImpl2* server,
                     // std::cout << headerMsg() << "new stream viewer" << std::endl;
                     // m_server->printStatus();
                 }
+                else if ( mess ==
+                          hub::io::StreamBase::ClientMessage::STREAMER_CLIENT_DEL_STREAM_VIEWER ) {
+                    sockPtr->read( m_nStreamViewer );
+                    m_server->delStreamViewer( this );
+                    // sockPtr->write( hub::io::StreamBase::ServerMessage::STREAM_VIEWER_INITED );
+                    // std::cout << headerMsg() << "new stream viewer" << std::endl;
+                    // m_server->printStatus();
+                }
+                else if ( mess == io::StreamBase::ClientMessage::NEW_RETAIN_DATA ) {
+                    Size_t size;
+                    sockPtr->read( size );
+                    const auto previousSize = m_retainedData.size();
+                    m_retainedData.resize(m_retainedData.size() + size);
+                    sockPtr->read(m_retainedData.data() + previousSize, size);
+                    // std::cout << "[StreamerClient] new retain data : " << m_retainedData << std::endl;
+                }
+                else if ( mess == io::StreamBase::ClientMessage::FULLY_RETAINED_DATA) {
+                    m_fullyRetained = true;
+                    // std::cout << "[StreamerClient] new retain data : " << m_retainedData << std::endl;
+                }
                 // else if ( mess == io::StreamBase::ClientMessage::STREAMER_CLIENT_INITED ) {
                 // // std::cout << "[StreamerClient2] STREAMER_CLIENT_START" << std::endl;
                 //     streamerClientInited = true;

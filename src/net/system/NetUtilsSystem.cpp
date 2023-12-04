@@ -5,6 +5,9 @@
 #include <regex>
 #include <stdio.h>
 #include <stdlib.h>
+// #include <list>
+#include <set>
+#include <thread>
 
 static const std::regex s_ipv4Regex { "^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$" };
 
@@ -42,6 +45,81 @@ namespace net {
 namespace system {
 namespace utils {
 
+class NetManager
+{
+  public:
+    ~NetManager() {
+#ifdef HUB_DEBUG_NET
+        std::cout << "[net] all socket closed" << std::endl;
+#endif
+        assert( m_sockets.empty() );
+        // for ( auto& socket : sockets ) {
+        // closesocket( socket );
+        // }
+    }
+#ifdef HUB_DEBUG_NET
+    void printStatus() const {
+        std::cout << "[NetManager:" << std::this_thread::get_id() << "] sockets : ";
+        for ( const auto& sock : m_sockets ) {
+            std::cout << sock << " ";
+        }
+        std::cout << std::endl;
+    }
+#endif
+    void registerSocket( const socket_fd& sock ) {
+        int iTry = 0;
+        m_mtxSockets.lock();
+        while ( m_sockets.find( sock ) != m_sockets.end() && iTry < 10 ) {
+            m_mtxSockets.unlock();
+            std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+#ifdef HUB_DEBUG_NET
+            std::cout << "[NetManager] waiting for unregistered socket ..." << std::endl;
+#endif
+            ++iTry;
+            m_mtxSockets.lock();
+        }
+        m_mtxSockets.unlock();
+
+        m_mtxSockets.lock();
+        if ( m_sockets.find( sock ) != m_sockets.end() ) {
+#ifdef HUB_DEBUG_NET
+            std::cout << "[NetManager] unable to register sock : " << sock
+                      << ", because already presents" << std::endl;
+            printStatus();
+#endif
+        }
+        assert( m_sockets.find( sock ) == m_sockets.end() );
+        m_sockets.insert( sock );
+#ifdef HUB_DEBUG_NET
+        std::cout << "[NetManager:" << std::this_thread::get_id() << "] registerSocket(" << sock
+                  << ")" << std::endl;
+        printStatus();
+#endif
+        m_mtxSockets.unlock();
+    }
+    void unregisterSocket( const socket_fd& sock ) {
+
+        m_mtxSockets.lock();
+        assert( m_sockets.find( sock ) != m_sockets.end() );
+        m_sockets.erase( sock );
+#ifdef HUB_DEBUG_NET
+        std::cout << "[NetManager:" << std::this_thread::get_id() << "] unregisterSocket(" << sock
+                  << ")" << std::endl;
+        printStatus();
+#endif
+        m_mtxSockets.unlock();
+    }
+
+  private:
+    // static std::set<socket_fd> m_sockets;
+    // static std::mutex m_mtxSockets;
+    std::set<socket_fd> m_sockets;
+    std::mutex m_mtxSockets;
+};
+// std::set<socket_fd> NetManager::m_sockets;
+// std::mutex NetManager::m_mtxSockets;
+static NetManager s_netManager;
+
 static bool s_inited = false;
 
 socket_fd invalidSocket() {
@@ -49,7 +127,7 @@ socket_fd invalidSocket() {
 }
 
 static inline void init() {
-#ifdef DEBUG_NET
+#ifdef HUB_DEBUG_NET
     std::cout << getHeader() << "init()" << std::endl;
 #endif
 #if defined WIN32
@@ -72,10 +150,11 @@ bool isValid( socket_fd sock ) {
 }
 
 void closeSocket( socket_fd& sock ) {
-    assert( sock != INVALID_SOCKET );
-    //    std::cout  << "[net] closing socket: " << sock  << std::endl;
+    // assert( sock != INVALID_SOCKET );
+    assert( isValid( sock ) );
+    assert( isConnected( sock ) );
 
-#ifdef DEBUG_NET
+#ifdef HUB_DEBUG_NET
     std::cout << getHeader() << "closeSocket(" << sock << ") close socket" << std::endl;
     std::cout << getHeader() << "s_sockets = ";
     for ( const auto& socket : s_sockets ) {
@@ -83,7 +162,27 @@ void closeSocket( socket_fd& sock ) {
     }
     std::cout << std::endl;
 #endif
-    ::closesocket( sock ); // todo
+
+    if ( ::closesocket( sock ) != 0 ) { perror( "closesocket" ); }
+
+    s_netManager.unregisterSocket( sock );
+
+    // if (shutdown(sock, SHUT_WR) == -1)
+    // {
+    //     printf("close client\n");
+    //     exit(1);
+    // }
+
+    // char buf[8];
+    // if (recv(sock, buf, 8, 0) != 8)
+    // {
+    //     printf("not received\n");
+    //     exit(2);
+    // }
+
+#ifdef HUB_DEBUG_NET
+    std::cout << "[net] closing socket: " << sock << std::endl;
+#endif
 
     sock = INVALID_SOCKET;
 }
@@ -136,7 +235,15 @@ void ServerAddr::init( int port ) {
 
 socket_fd serverSocket() {
     if ( !s_inited ) init();
-    return ::socket( PF_INET, SOCK_STREAM, IPPROTO_TCP );
+    int sock;
+    sock = ::socket( PF_INET, SOCK_STREAM, IPPROTO_TCP );
+    s_netManager.registerSocket( sock );
+    int option = 1;
+    setsockopt( sock, SOL_SOCKET, SO_REUSEADDR, &option, sizeof( option ) );
+#ifdef HUB_DEBUG_NET
+    std::cout << "[net] init socket: " << sock << std::endl;
+#endif
+    return sock;
 }
 
 int bind( socket_fd sock, ServerAddr& addr ) {
@@ -203,6 +310,8 @@ int ClientAddr::getPort() const {
     return m_pimpl->m_sockAddr.sin_port;
 }
 
+///////////////////////////////////////////////////////////////////////////
+
 // socket_fd accept( socket_fd sock, ServerAddr& addr ) {
 socket_fd accept( socket_fd sock, ClientAddr& addr ) {
     auto& sockAddr    = addr.m_pimpl->m_sockAddr;
@@ -211,13 +320,24 @@ socket_fd accept( socket_fd sock, ClientAddr& addr ) {
         accept( sock, reinterpret_cast<struct sockaddr*>( &sockAddr ), &addrlen );
     //    char buff[INET_ADDRSTRLEN] { 0 };
     //    inet_ntop( AF_INET, &sockAddr.sin_addr.s_addr, buff, INET_ADDRSTRLEN );
+#ifdef HUB_DEBUG_NET
+    std::cout << "[net] init socket: " << new_socket << std::endl;
+#endif
+    s_netManager.registerSocket( new_socket );
     //    std::cout << "accept new socket at ip: " << buff << std::endl;
     return new_socket;
 }
 
 socket_fd clientSocket() {
     if ( !s_inited ) init();
-    return ::socket( PF_INET, SOCK_STREAM, 0 );
+    int sock = ::socket( PF_INET, SOCK_STREAM, 0 );
+    s_netManager.registerSocket( sock );
+    // std::cout << "\033[1m[Socket] new socket at : " << sock << "\033[0m" << std::endl;
+#ifdef HUB_DEBUG_NET
+    std::cout << "[net] init socket: " << sock << std::endl;
+#endif
+    return sock;
+    // return ::socket( PF_INET, SOCK_STREAM, 0 );
 }
 
 int connect( socket_fd sock, ClientAddr& addr ) {
@@ -228,6 +348,7 @@ int connect( socket_fd sock, ClientAddr& addr ) {
 
 int64_t send( socket_fd sock, const char* buf, size_t len, int flags ) {
     //    std::cout << "send " << len << " bytes" << std::endl;
+    assert( isConnected( sock ) );
     return ::send( sock, buf, len, flags ); // todo
     //    auto ret = ::send( sock, buf, len, flags ); // todo
     //    std::cout << "sended " << ret << " bytes" << std::endl;
@@ -235,6 +356,7 @@ int64_t send( socket_fd sock, const char* buf, size_t len, int flags ) {
 }
 
 int64_t recv( socket_fd sock, char* buf, size_t len, int flags ) {
+    assert( isConnected( sock ) );
     //    std::cout << "receive " << len << " bytes" << std::endl;
     return ::recv( sock, buf, len, flags ); // todo
     //    auto ret = ::recv( sock, buf, len, flags ); // todo

@@ -43,14 +43,16 @@ ViewerServer2::ViewerServer2( const std::string& name,
 
                     case hub::io::StreamBase::ServerMessage::VIEWER_NEW_STREAMER: {
 
+                        // std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
                         std::string streamName;
                         m_sock.read( streamName );
-                        std::cout << "[Viewer] read stream name: " << streamName << std::endl;
+                        // std::cout << "[Viewer] read stream name: " << streamName << std::endl;
 
                         sensor::SensorSpec sensorSpec;
                         m_sock.read( sensorSpec );
-                        std::cout << "[Viewer] read sensor spec: " << sensorSpec << std::endl;
-                        std::cout << "[Viewer] new streamer '" << streamName << "'" << std::endl;
+                        // std::cout << "[Viewer] read sensor spec: " << sensorSpec << std::endl;
+                        // std::cout << "[Viewer] new streamer '" << streamName << "'" << std::endl;
 
                         DEBUG_MSG( "[Viewer] new streamer '" << streamName << "'" );
 

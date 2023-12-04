@@ -13,7 +13,7 @@
 // #include "sensor/Acquisition.hpp"
 // #include "sensor/SensorSpec.hpp"
 
-// #define DEBUG_OUTPUT_STREAM
+#define DEBUG_OUTPUT_STREAM
 
 namespace hub {
 namespace output {
@@ -80,9 +80,10 @@ class SRC_API OutputStreamServer2 : public Output, public io::StreamServer2
     struct SharedData {
         std::unique_ptr<hub::io::InputOutputSocket> m_serverSocket;
         int m_streamPort = 0;
-        std::vector<hub::io::InputOutputSocket> m_streamSockets;
+        std::list<hub::io::InputOutputSocket> m_streamSockets;
         std::mutex m_mtxClientSockets;
         std::vector<hub::Data_t> m_retainedData;
+        // std::atomic<bool> m_fullyRetained = false;
         bool m_killed                          = false;
         std::atomic<bool> m_isStreaming      = false;
         std::atomic<bool> m_serverConnected    = false;

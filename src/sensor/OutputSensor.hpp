@@ -69,12 +69,20 @@ class OutputSensor : public Sensor
     template <class Output>
         requires std::is_base_of_v<hub::Output, Output>
     OutputSensor( const SensorSpec& sensorSpec, Output&& output ) :
-        Sensor( sensorSpec ), m_output( *( new Output( std::move( output ) ) ) ) {
+        Sensor( sensorSpec ),
+        m_output( *( new Output( std::move( output ) ) ) ),
+        m_outputOwner( true ) {
 
         assert( m_spec.getResolution().nType() > 0 );
         m_output.setRetain( true );
         m_output.write( m_spec );
         m_output.setRetain( false );
+    }
+
+    ~OutputSensor() {
+        if (m_outputOwner) {
+            delete &m_output;
+        }
     }
 
     void operator<<( const Acquisition& acq ) {
@@ -91,7 +99,9 @@ class OutputSensor : public Sensor
     //        return Acquisition{m_spec.getResolutions()};
     //    }
 
+  private:
     Output& m_output;
+    bool m_outputOwner = false;
     //    Measures m_measures;
 };
 
@@ -120,7 +130,9 @@ class OutputSensorT : public Sensor
     template <class Output>
         requires std::is_base_of_v<hub::Output, Output>
     OutputSensorT( const SensorSpec& sensorSpec, Output&& output ) :
-        Sensor( sensorSpec ), m_output( *( new Output( std::move( output ) ) ) ) {
+        Sensor( sensorSpec ),
+        m_output( *( new Output( std::move( output ) ) ) ),
+        m_outputOwner( true ) {
 
         if constexpr ( isMatrix<Resolution> ) { m_spec.setResolution( Resolution().getSerial() ); }
         else { m_spec.setResolution( make_matrix<Resolution>() ); }
@@ -128,6 +140,12 @@ class OutputSensorT : public Sensor
         m_output.setRetain( true );
         m_output.write( m_spec );
         m_output.setRetain( false );
+    }
+
+    ~OutputSensorT() {
+        if (m_outputOwner) {
+            delete &m_output;
+        }
     }
 
     void operator<<( const Acquisition& acq ) {
@@ -145,6 +163,7 @@ class OutputSensorT : public Sensor
 
   private:
     Output& m_output;
+    bool m_outputOwner = false;
     //    SensorSpec m_sensorSpec;
 
 }; // end OutputSensorT

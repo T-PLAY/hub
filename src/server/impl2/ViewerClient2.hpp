@@ -25,7 +25,7 @@ class ViewerClient2 : public Client2
 
     std::string headerMsg() const override;
 
-    void notifyNewStreamer( const std::string& streamName );
+    void notifyNewStreamer( const std::string& streamName, const std::vector<Data_t> & retainedData );
     void notifyDelStreamer( const std::string& streamName );
 
     void end( io::StreamBase::ServerMessage message ) override;

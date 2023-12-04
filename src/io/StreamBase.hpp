@@ -44,6 +44,10 @@ class StreamBase
         STREAMER_CLIENT_INITED,
         STREAMER_CLIENT_STREAM_VIEWER_INITED,
 
+        NEW_RETAIN_DATA,
+        FULLY_RETAINED_DATA,
+        STREAMER_CLIENT_DEL_STREAM_VIEWER,
+
 //        KILL,
 
         COUNT
@@ -74,6 +78,9 @@ class StreamBase
         ASKER_LIST_STREAMS,
 
         STREAM_VIEWER_INITED,
+
+        // RETAINED_DATA,
+
 
         COUNT
     };

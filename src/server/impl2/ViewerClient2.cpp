@@ -20,8 +20,7 @@ ViewerClient2::ViewerClient2( ServerImpl2* server, int iClient, net::ClientSocke
 
             hub::io::StreamBase::ClientMessage message;
             m_socket.read( message );
-            while ( message ==
-                    hub::io::StreamBase::ClientMessage::VIEWER_CLIENT_SET_PROPERTY ) {
+            while ( message == hub::io::StreamBase::ClientMessage::VIEWER_CLIENT_SET_PROPERTY ) {
                 std::string streamName;
                 std::string objectName;
                 int property;
@@ -77,11 +76,22 @@ std::string ViewerClient2::headerMsg() const {
     return Client2::headerMsg() + "[Viewer] ";
 }
 
-void ViewerClient2::notifyNewStreamer( const std::string& streamName ) {
+void ViewerClient2::notifyNewStreamer( const std::string& streamName,
+                                       const std::vector<Data_t>& retainedData ) {
 
     m_socket.write( hub::io::StreamBase::ServerMessage::VIEWER_NEW_STREAMER );
-
+    // std::cout << "[Viewer] write streamName : " << streamName << std::endl;
     m_socket.write( streamName );
+
+    // if ( !retainedData.empty() ) {
+    // m_socket.write( hub::io::StreamBase::ServerMessage::RETAINED_DATA );
+    // std::cout << "[Viewer] write retainedData : " << retainedData << std::endl;
+    assert(! retainedData.empty());
+    // if ( retainedData.size() > 0 ) {
+    m_socket.write( retainedData.data(), retainedData.size() );
+    // }
+
+    // }
 }
 
 void ViewerClient2::notifyDelStreamer( const std::string& streamName ) {
@@ -113,11 +123,9 @@ void ViewerClient2::end( hub::io::StreamBase::ServerMessage message ) {
     }
 }
 
-void ViewerClient2::notifyInited()
-{
+void ViewerClient2::notifyInited() {
     assert( m_socket.isOpen() );
 }
-
 
 } // namespace server
 } // namespace hub

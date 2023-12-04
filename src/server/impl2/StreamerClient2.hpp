@@ -7,8 +7,8 @@
 #include <thread>
 
 #include "Client2.hpp"
-//#include "sensor/InputSensor.hpp"
-// #include "net/ClientSocket.hpp"
+// #include "sensor/InputSensor.hpp"
+//  #include "net/ClientSocket.hpp"
 #include "io/InputOutputSocket.hpp"
 
 namespace hub {
@@ -88,6 +88,8 @@ class StreamerClient2 : public Client2
     //    const std::set<sensor::Acquisition>& getPackedAcqs() const;
 
     const std::string streamName;
+    std::vector<hub::Data_t> m_retainedData;
+    std::atomic<bool> m_fullyRetained = false;
     const std::string ipv4;
     const int port;
 

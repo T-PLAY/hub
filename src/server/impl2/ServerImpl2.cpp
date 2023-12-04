@@ -294,13 +294,26 @@ void ServerImpl2::addStreamer( StreamerClient2* streamer ) {
     m_streamName2streamer[streamName] = streamer;
 
     if ( !m_viewers.empty() ) {
-        SERVER_MSG( "prevent viewers there is a new streamer : '" << streamName << "'" );
-        m_mtxViewers.lock();
-        //        assert(streamer->getInputSensor() != nullptr);
-        for ( const auto& viewer : m_viewers ) {
-            viewer->notifyNewStreamer( streamName );
-        }
-        m_mtxViewers.unlock();
+        auto preventThread = std::thread( [this, streamName, streamer]() {
+            // std::this_thread::sleep_for( std::chrono::milliseconds( 500 ) );
+            while ( ! streamer->m_fullyRetained ) {
+#ifdef DEBUG_OUTPUT_STREAM
+                std::cout << "[OutputStreamServer2] waiting for fully retained data ..." << std::endl;
+#endif
+                std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
+            };
+
+            SERVER_MSG( "prevent viewers there is a new streamer : '" << streamName << "'" );
+            m_mtxViewers.lock();
+            //        assert(streamer->getInputSensor() != nullptr);
+            for ( const auto& viewer : m_viewers ) {
+                viewer->notifyNewStreamer( streamName, streamer->m_retainedData );
+            }
+            m_mtxViewers.unlock();
+            // SERVER_MSG( "prevent viewers there is a new streamer : '" << streamName << "' done" );
+            // SERVER_MSG( "--------------------------------------------------" );
+        } );
+        preventThread.detach();
     }
 
     streamer->printStatusMessage( "new streamer" );
@@ -316,6 +329,16 @@ void ServerImpl2::newStreamViewer( StreamerClient2* streamer ) {
     m_mtxPrint.unlock();
 }
 
+void ServerImpl2::delStreamViewer( StreamerClient2* streamer ) {
+    const auto& streamName = streamer->streamName;
+
+    m_mtxPrint.lock();
+    std::cout << streamer->headerMsg() << "del stream viewer watching '" << streamName << "'"
+              << std::endl;
+    streamer->printStatusMessage( "del streamViewer" );
+    m_mtxPrint.unlock();
+}
+
 void ServerImpl2::addViewer( ViewerClient2* viewer ) {
 
     // each already connected streamers prevent existence for this new viewer
@@ -327,7 +350,7 @@ void ServerImpl2::addViewer( ViewerClient2* viewer ) {
         const auto& streamer   = pair.second;
 #endif
 
-        viewer->notifyNewStreamer( streamName );
+        viewer->notifyNewStreamer( streamName, streamer->m_retainedData );
     }
 
     m_mtxViewers.lock();

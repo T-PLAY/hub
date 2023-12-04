@@ -6,8 +6,8 @@
 #include <list>
 #include <string>
 
-#include "core/Macros.hpp"
 #include "NetUtilsSystem.hpp"
+#include "core/Macros.hpp"
 
 // #define HUB_DEBUG_SOCKET
 
@@ -48,10 +48,6 @@ class SRC_API SocketSystem
         const char* what() const throw() { return std::runtime_error::what(); }
     };
 
-#ifdef HUB_DEBUG_SOCKET
-    std::string getHeader( utils::socket_fd iSock ) const;
-#endif
-
     ///
     /// \brief isConnected
     /// is used to test if peer connection is valid.
@@ -62,29 +58,26 @@ class SRC_API SocketSystem
     bool isConnected() const;
 
   protected:
+#ifdef HUB_DEBUG_SOCKET
+    std::string getHeader() const;
+#endif
     SocketSystem();
     ~SocketSystem();
 
     SocketSystem( const SocketSystem& socket ) = delete;
-    ///
-    /// \brief SocketSystem
-    /// \param socket
-    ///
     SocketSystem( SocketSystem&& socket );
-
     SocketSystem& operator=( const SocketSystem& socket ) = delete;
-    SocketSystem&& operator=( SocketSystem&& socket ) = delete;
+    SocketSystem&& operator=( SocketSystem&& socket )     = delete;
 
   protected:
     ///
     /// \brief m_fdSock
     ///
     utils::socket_fd m_fdSock = utils::invalidSocket();
+    // utils::socket_fd m_fdSockInited = utils::invalidSocket();
 
-    ///
-    /// \brief m_serverSide
-    ///
     bool m_serverSide = false;
+    bool m_moved = false;
 };
 
 } // namespace system

@@ -127,8 +127,10 @@ void ViewerStream<InputStream>::startStream() {
                 InputStream( m_streamName, m_port, m_ipv4 ) );
 
             assert( m_onNewAcquisition );
+
+            auto acq = m_inputSensor->acq();
             while ( !m_stopThread ) {
-                sensor::Acquisition acq;
+                // sensor::Acquisition acq;
                 *m_inputSensor >> acq;
                 m_onNewAcquisition( m_streamName.c_str(), acq );
             }

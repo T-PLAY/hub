@@ -45,7 +45,8 @@ class InputSensor : public Sensor
         // std::cout << "[InputSensor] reading specs ..." << std::endl;
         m_specs.resize( m_inputs.size() );
         for ( int i = 0; i < m_inputs.size(); ++i ) {
-            // std::cout << "[InputSensor] reading spec " << i << " : " << m_specs.at(i) << std::endl;
+            // std::cout << "[InputSensor] reading spec " << i << " : " << m_specs.at(i) <<
+            // std::endl;
             auto* input = m_inputs.at( i );
             input->read( m_specs.at( i ) );
             m_spec += m_specs.at( i );
@@ -70,6 +71,7 @@ class InputSensor : public Sensor
         requires std::is_base_of_v<Input, InputT>
     InputSensor( InputT&& input ) : Sensor( SensorSpec {} ) {
         m_inputs.push_back( new InputT( std::move( input ) ) );
+        m_inputOwner = true;
         initSensorSpecFromInputs();
     }
 
@@ -78,7 +80,20 @@ class InputSensor : public Sensor
     InputSensor( InputT&& input, InputT&& input2 ) : Sensor( SensorSpec {} ) {
         m_inputs.push_back( new InputT( std::move( input ) ) );
         m_inputs.push_back( new InputT( std::move( input2 ) ) );
+        m_inputOwner = true;
         initSensorSpecFromInputs();
+    }
+
+    ~InputSensor() {
+        if ( m_inputOwner ) {
+            // std::cout << "[InputSensor] ~InputSensor()" << std::endl;
+            auto it = m_inputs.begin();
+            while ( it != m_inputs.end() ) {
+                auto cur = it;
+                it++;
+                delete ( *cur );
+            }
+        }
     }
 
     void operator>>( Acquisition& acq ) {
@@ -153,6 +168,8 @@ class InputSensor : public Sensor
 
   private:
     std::vector<Input*> m_inputs;
+    // std::vector<bool> m_inputOwners;
+    bool m_inputOwner = false;
     std::list<sensor::Acquisition> m_lastAcqs;
     std::vector<hub::sensor::SensorSpec> m_specs;
 };

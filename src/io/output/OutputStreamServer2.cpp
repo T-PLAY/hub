@@ -18,39 +18,6 @@ OutputStreamServer2::OutputStreamServer2( int streamPort ) :
     startStreaming();
 }
 
-void OutputStreamServer2::initStream() {
-#ifdef DEBUG_OUTPUT_STREAM
-    std::cout << "[OutputStream] stream connecting" << std::endl;
-#endif
-    assert( !m_data->m_serverConnected );
-    m_data->m_serverSocket->write( ClientType::STREAMER );
-
-    m_data->m_serverSocket->write( m_name );
-
-    hub::io::StreamBase::ServerMessage mess;
-    m_data->m_serverSocket->read( mess );
-    if ( mess == hub::io::StreamBase::ServerMessage::FOUND ) {
-        m_data->m_serverSocket->close();
-        throw net::system::SocketSystem::exception(
-            ( std::string( "stream '" ) + m_name + "' is already attached to server" ).c_str() );
-    }
-    assert( mess == hub::io::StreamBase::ServerMessage::NOT_FOUND );
-
-    m_data->m_serverSocket->write( m_data->m_streamPort );
-    m_data->m_serverSocket->read( m_data->m_streamPort );
-
-    m_data->m_serverSocket->write( (int)m_data->m_streamSockets.size() );
-
-    m_data->m_serverSocket->read( mess );
-    assert( mess == hub::io::StreamBase::ServerMessage::STREAMER_INITED );
-    // m_data->m_serverSocket->write( hub::io::StreamBase::ClientMessage::STREAMER_CLIENT_INITED );
-
-    m_data->m_serverConnected = true;
-#ifdef DEBUG_OUTPUT_STREAM
-    std::cout << "[OutputStream] stream connected" << std::endl;
-#endif
-}
-
 OutputStreamServer2::OutputStreamServer2( const std::string& streamName,
                                           int port,
                                           const std::string& ipv4 ) :
@@ -142,6 +109,9 @@ OutputStreamServer2::OutputStreamServer2( OutputStreamServer2&& outputStream ) n
 OutputStreamServer2::~OutputStreamServer2() {
 
     if ( !m_moved ) {
+#ifdef DEBUG_OUTPUT_STREAM
+        std::cout << "~[OutputStream] starting ..." << std::endl;
+#endif
         if ( m_data->m_serverThread != nullptr ) {
             assert( m_data->m_serverThread->joinable() );
             if ( m_data->m_serverSocket != nullptr && m_data->m_serverSocket->isConnected() )
@@ -157,6 +127,9 @@ OutputStreamServer2::~OutputStreamServer2() {
             stop();
             m_data->m_streamThread->join();
         }
+#ifdef DEBUG_OUTPUT_STREAM
+        std::cout << "~[OutputStream] ended" << std::endl;
+#endif
     }
 }
 
@@ -164,6 +137,39 @@ OutputStreamServer2::~OutputStreamServer2() {
 
 // void OutputStreamServer2::streamProcess() {
 // }
+
+void OutputStreamServer2::initStream() {
+#ifdef DEBUG_OUTPUT_STREAM
+    std::cout << "[OutputStream] stream connecting" << std::endl;
+#endif
+    assert( !m_data->m_serverConnected );
+    m_data->m_serverSocket->write( ClientType::STREAMER );
+
+    m_data->m_serverSocket->write( m_name );
+
+    hub::io::StreamBase::ServerMessage mess;
+    m_data->m_serverSocket->read( mess );
+    if ( mess == hub::io::StreamBase::ServerMessage::FOUND ) {
+        m_data->m_serverSocket->close();
+        throw net::system::SocketSystem::exception(
+            ( std::string( "stream '" ) + m_name + "' is already attached to server" ).c_str() );
+    }
+    assert( mess == hub::io::StreamBase::ServerMessage::NOT_FOUND );
+
+    m_data->m_serverSocket->write( m_data->m_streamPort );
+    m_data->m_serverSocket->read( m_data->m_streamPort );
+
+    m_data->m_serverSocket->write( (int)m_data->m_streamSockets.size() );
+
+    m_data->m_serverSocket->read( mess );
+    assert( mess == hub::io::StreamBase::ServerMessage::STREAMER_INITED );
+    // m_data->m_serverSocket->write( hub::io::StreamBase::ClientMessage::STREAMER_CLIENT_INITED );
+
+    m_data->m_serverConnected = true;
+#ifdef DEBUG_OUTPUT_STREAM
+    std::cout << "[OutputStream] stream connected" << std::endl;
+#endif
+}
 
 void OutputStreamServer2::startStreaming() {
     assert( m_data->m_streamThread == nullptr );
@@ -203,10 +209,12 @@ void OutputStreamServer2::startStreaming() {
                     hub::io::StreamBase::ClientMessage::STREAMER_CLIENT_STREAM_VIEWER_INITED );
 
                 if ( !data->m_retainedData.empty() ) {
-                    // std::cout << "[OutputStream] write retain data (" << data->m_retainedData.size()
-                              // << " bytes)" << std::endl;
+                    // std::cout << "[OutputStream] write retain data (" <<
+                    // data->m_retainedData.size()
+                    // << " bytes)" << std::endl;
 #ifdef DEBUG_OUTPUT_STREAM
-                    std::cout << "[OutputStream] load retain data " << data->m_retainedData << std::endl;
+                    std::cout << "[OutputStream] load retain data " << data->m_retainedData
+                              << std::endl;
 #endif
                     streamSock.write( data->m_retainedData.data(), data->m_retainedData.size() );
                 }
@@ -233,20 +241,62 @@ void output::OutputStreamServer2::write( const Data_t* data, Size_t size ) {
     if ( m_data->m_writingFun != nullptr ) m_data->m_writingFun( data, size );
     m_data->m_mtxClientSockets.lock();
     auto& clientSockets = m_data->m_streamSockets;
+
+    std::list<io::InputOutputSocket*> socketToRemoves;
+
 #ifdef OS_MACOS
     for ( auto& clientSocket : clientSockets ) {
-        clientSocket.write( data, size );
-    }
 #else
 #    ifdef HUB_USE_TBB
-    std::for_each( std::execution::par,
+    std::for_each(
+        std::execution::par,
 #    else
-    std::for_each( std::execution::seq,
+    std::for_each(
+        std::execution::seq,
 #    endif
-                   clientSockets.begin(),
-                   clientSockets.end(),
-                   [=]( auto& clientSocket ) { clientSocket.write( data, size ); } );
+        clientSockets.begin(),
+        clientSockets.end(),
+        [&]( auto& clientSocket ) {
 #endif
+
+        try {
+            clientSocket.write( data, size );
+        }
+        catch ( std::exception& ex ) {
+            clientSocket.close();
+            std::cout << "[OutputStream] catch exception : " << ex.what() << std::endl;
+            socketToRemoves.push_back( &clientSocket );
+            // clientSockets.remove()
+        }
+
+#ifdef OS_MACOS
+    }
+#else
+        } );
+#endif
+
+    for ( auto* socketToRemove : socketToRemoves ) {
+        clientSockets.remove( *socketToRemove );
+        m_data->m_serverSocket->write(
+            hub::io::StreamBase::ClientMessage::STREAMER_CLIENT_DEL_STREAM_VIEWER );
+        m_data->m_serverSocket->write( (int)m_data->m_streamSockets.size() );
+    }
+
+    // auto it = clientSockets.begin();
+    // while ( it != clientSockets.end() ) {
+    //     auto& clientSocket = *it;
+    //     try {
+    //         clientSocket.write( data, size );
+    //     }
+    //     catch ( std::exception& ex ) {
+    //         clientSocket.close();
+    //         std::cout << "[OutputStream] catch exception : " << ex.what() << std::endl;
+    //         it = clientSockets.erase( it );
+    //         continue;
+    //     }
+    //     ++it;
+    // }
+
     m_data->m_mtxClientSockets.unlock();
 }
 
@@ -254,14 +304,23 @@ void OutputStreamServer2::setRetain( bool retain ) {
     if ( retain ) {
         m_data->m_writingFun = [this]( const Data_t* data, Size_t size ) {
             m_data->m_retainedData.insert( m_data->m_retainedData.end(), data, data + size );
+            // m_data->m_serverSocket->write(size);
+            m_data->m_serverSocket->write( io::StreamBase::ClientMessage::NEW_RETAIN_DATA );
+            m_data->m_serverSocket->write( size );
+            m_data->m_serverSocket->write( data, size );
             // std::cout << "[OutputStream] save retained data (" << size << " bytes)" << std::endl;
             // std::vector<Data_t> vector(data, data + size);
 #ifdef DEBUG_OUTPUT_STREAM
-            std::cout << "[OutputStream] save retained data : " << m_data->m_retainedData << std::endl;
+            std::cout << "[OutputStream] save retained data : " << m_data->m_retainedData
+                      << std::endl;
 #endif
         };
     }
-    else { m_data->m_writingFun = nullptr; }
+    else {
+        m_data->m_serverSocket->write( io::StreamBase::ClientMessage::FULLY_RETAINED_DATA );
+        // m_data->m_fullyRetained = true;
+        m_data->m_writingFun = nullptr;
+    }
 }
 
 // int OutputStreamServer2::getNStreamViewer() const {
