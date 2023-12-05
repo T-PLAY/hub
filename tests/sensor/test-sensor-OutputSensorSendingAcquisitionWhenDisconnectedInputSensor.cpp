@@ -9,7 +9,7 @@
 #include <sensor/InputSensor.hpp>
 #include <sensor/OutputSensor.hpp>
 
-TEST_CASE( "InputOutputSensor test" ) {
+TEST_CASE( "OutputSensor sending acq with disconnect test" ) {
 
 #ifdef HUB_BUILD_SERVER
     INIT_SERVER
@@ -104,7 +104,7 @@ TEST_CASE( "InputOutputSensor test" ) {
 
         std::cout << "[test] end outputSensor ------------------------------" << std::endl;
     } // end outputSensor
-    std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
+    std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
 
     // hub::io::Archive archive;
     // test::sensor::inputOutputSensorBench( archive, archive );

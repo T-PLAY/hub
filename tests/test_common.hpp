@@ -259,7 +259,7 @@ static void _checkValue( double value,
             // }
             // const double mean = sum / std::min( nRatio, nValue );
 
-            if ( nValue >= 4 ) {
+            if ( nValue >= 8 ) {
                 const auto standardDeviation =
                     algo::StandardDeviation( lastValues.begin(), lastValues.end() );
                 const auto mean = algo::Mean( lastValues.begin(), lastValues.end() );

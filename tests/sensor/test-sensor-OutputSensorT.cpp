@@ -8,7 +8,7 @@
 #include <core/io/Archive.hpp>
 #include <sensor/OutputSensor.hpp>
 
-TEST_CASE( "InputOutputSensor test" ) {
+TEST_CASE( "OutputSensorT test" ) {
 
 #ifdef HUB_BUILD_SERVER
     INIT_SERVER

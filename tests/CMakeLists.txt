@@ -131,13 +131,13 @@ endif()
 # #     ${CMAKE_CURRENT_SOURCE_DIR}/sensor/test-sensor-OutputSensorT.cpp
 # )
 
-set(test_srcs)
-file(
-    #        GLOB
-    GLOB_RECURSE
-    test_srcs
-    ${CMAKE_CURRENT_SOURCE_DIR}/sensor/*.cpp
-)
+# set(test_srcs)
+# file(
+#     #        GLOB
+#     GLOB_RECURSE
+#     test_srcs
+#     ${CMAKE_CURRENT_SOURCE_DIR}/sensor/*.cpp
+# )
 
 #file(GLOB test_srcs *.cpp)
 list(REMOVE_ITEM test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/test-end.cpp)

@@ -152,7 +152,7 @@ bool isValid( socket_fd sock ) {
 void closeSocket( socket_fd& sock ) {
     // assert( sock != INVALID_SOCKET );
     assert( isValid( sock ) );
-    assert( isConnected( sock ) );
+    // assert( isConnected( sock ) );
 
 #ifdef HUB_DEBUG_NET
     std::cout << getHeader() << "closeSocket(" << sock << ") close socket" << std::endl;

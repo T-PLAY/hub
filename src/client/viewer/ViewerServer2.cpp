@@ -20,8 +20,9 @@ ViewerServer2::ViewerServer2( const std::string& name,
         while ( !m_stopThread ) {
             try {
 
-                DEBUG_MSG( "[Viewer] trying to connect to server at ipv4 "
-                           << m_sock.getIpv4() << " and port " << m_sock.getPort() );
+                DEBUG_MSG( "[Viewer] trying to connect to server : " << m_sock);
+                // DEBUG_MSG( "[Viewer] trying to connect to server at ipv4 "
+                           // << m_sock.getIpv4() << " and port " << m_sock.getPort() );
 
                 assert( !m_sock.isOpen() );
                 m_sock.connect();
@@ -37,7 +38,9 @@ ViewerServer2::ViewerServer2( const std::string& name,
                 while ( !m_stopThread ) {
 
                     hub::io::StreamBase::ServerMessage serverMessage;
+                    DEBUG_MSG( "[Viewer] waiting for new server message ...")
                     m_sock.read( serverMessage );
+                    DEBUG_MSG( "[Viewer] new server message : " << serverMessage)
 
                     switch ( serverMessage ) {
 
@@ -70,8 +73,8 @@ ViewerServer2::ViewerServer2( const std::string& name,
                     case hub::io::StreamBase::ServerMessage::VIEWER_DEL_STREAMER: {
                         std::string streamName;
                         m_sock.read( streamName );
-                        sensor::SensorSpec sensorSpec;
-                        m_sock.read( sensorSpec );
+                        // sensor::SensorSpec sensorSpec;
+                        // m_sock.read( sensorSpec );
                         DEBUG_MSG( "[Viewer] del streamer '" << streamName << "'" );
 
                         //                        if ( m_onNewStreamer ) {
@@ -138,8 +141,9 @@ ViewerServer2::ViewerServer2( const std::string& name,
                     DEBUG_MSG( "[Viewer] server disconnected, catch exception " << e.what() );
                 }
                 else {
-                    DEBUG_MSG( "[Viewer] server not found at ipv4 "
-                               << m_sock.getIpv4() << " and port " << m_sock.getPort() );
+                    DEBUG_MSG( "[Viewer] server not found : " << m_sock);
+                    // DEBUG_MSG( "[Viewer] server not found at ipv4 "
+                               // << m_sock.getIpv4() << " and port " << m_sock.getPort() );
                     if ( m_viewerHandler.onServerNotFound )
                         m_viewerHandler.onServerNotFound( m_sock.getIpv4().c_str(),
                                                           m_sock.getPort() );

@@ -47,6 +47,7 @@ SocketSystem::~SocketSystem() {
 #ifdef HUB_DEBUG_SOCKET
             DEBUG_MSG( getHeader() << "closing socket ..." );
 #endif
+            // assert(utils::isConnected(m_fdSock));
             utils::closeSocket( m_fdSock );
 #ifdef HUB_DEBUG_SOCKET
             DEBUG_MSG( getHeader() << "socket closed" );

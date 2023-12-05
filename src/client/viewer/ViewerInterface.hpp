@@ -158,6 +158,7 @@ class SRC_API ViewerInterface
 
 
     int nStream() const;
+    int nStreaming() const;
 
   private:
   protected:
@@ -253,6 +254,21 @@ template<class InputStream>
 int ViewerInterface<InputStream>::nStream() const
 {
     return m_streams.size();
+}
+
+template<class InputStream>
+int ViewerInterface<InputStream>::nStreaming() const
+{
+    int ret = 0;
+    for (const auto & pair : m_streams) {
+        const auto & stream = pair.second;
+
+        if (stream->isStreaming()) {
+            ++ret;
+        }
+    }
+    return ret;
+    // return m_streams.size();
 }
 
 template <class InputStream>

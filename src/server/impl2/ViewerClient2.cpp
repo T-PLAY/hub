@@ -86,7 +86,7 @@ void ViewerClient2::notifyNewStreamer( const std::string& streamName,
     // if ( !retainedData.empty() ) {
     // m_socket.write( hub::io::StreamBase::ServerMessage::RETAINED_DATA );
     // std::cout << "[Viewer] write retainedData : " << retainedData << std::endl;
-    assert(! retainedData.empty());
+    assert( !retainedData.empty() );
     // if ( retainedData.size() > 0 ) {
     m_socket.write( retainedData.data(), retainedData.size() );
     // }
@@ -111,11 +111,11 @@ void ViewerClient2::notifyDelStreamer( const std::string& streamName ) {
 }
 
 void ViewerClient2::end( hub::io::StreamBase::ServerMessage message ) {
-    std::cout << headerMsg() << "end(" << message << ")" << std::endl;
     if ( m_socket.isOpen() ) {
         try {
             assert( m_socket.isOpen() );
             m_socket.write( message );
+            std::cout << headerMsg() << "end(" << message << ")" << std::endl;
         }
         catch ( std::exception& ex ) {
             std::cout << headerMsg() << "catch exception " << ex.what() << std::endl;

@@ -12,7 +12,7 @@
 
 // #undef HUB_BUILD_SERVER
 
-TEST_CASE( "InputOutputSensor test" ) {
+TEST_CASE( "InputSensor test" ) {
 
 #ifdef HUB_BUILD_SERVER
     INIT_SERVER
