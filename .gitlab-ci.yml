@@ -61,7 +61,7 @@ cache:
 .test_any:
   script:
     - buildDir=$CACHE_PATH/build-$CMAKE_C_COMPILER-$BUILD_TYPE
-    - cmake --build $buildDir --config $BUILD_TYPE --target tests
+    - cmake --build $buildDir --config $BUILD_TYPE --target test-bins
     # - cmake --build build-$CMAKE_C_COMPILER-$BUILD_TYPE --config $BUILD_TYPE --target tests
 
 #############################################

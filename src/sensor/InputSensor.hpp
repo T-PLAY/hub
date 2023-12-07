@@ -62,7 +62,7 @@ class InputSensor : public Sensor
     }
 
   public:
-    using Sensor::acq;
+    using Sensor::acqMsg;
 
     InputSensor( Input& input ) : Sensor( SensorSpec {} ), m_inputs( { &input } ) {
         initSensorSpecFromInputs();

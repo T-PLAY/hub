@@ -23,10 +23,10 @@
     do {                                                                  \
         if ( m_viewerHandler.onLogMessage ) {                             \
             std::stringstream _sstr;                                      \
-            _sstr << m_iStreamer << ":" << _params;                       \
+_sstr << m_nStreamer << "/" << m_streams.size() << ":" << _params;                       \
             m_viewerHandler.onLogMessage( _sstr.str().c_str() );          \
         }                                                                 \
-        else { std::cout << m_iStreamer << ":" << _params << std::endl; } \
+        else { std::cout << m_nStreamer << ":" << _params << std::endl; } \
     } while ( false );
 
 namespace hub {
@@ -175,13 +175,14 @@ class SRC_API ViewerInterface
 
     std::map<std::string, std::unique_ptr<ViewerStream<InputStream>>> m_streams;
 
-    static int m_iStreamer;
+    // static int m_iStreamer;
+    int m_nStreamer = 0;
 
   private:
 };
 
-template <class InputStream>
-int ViewerInterface<InputStream>::m_iStreamer = 0;
+// template <class InputStream>
+// int ViewerInterface<InputStream>::m_iStreamer = 0;
 
 //////////////////////////////////////// Viewer ////////////////////////////////////////
 
@@ -287,7 +288,8 @@ void ViewerInterface<InputStream>::addStream( const std::string& streamName,
     if ( m_viewerHandler.onNewStreamer ) {
 
         m_streams[streamName] =
-            std::make_unique<ViewerStream<InputStream>>( m_ipv4,
+            std::make_unique<ViewerStream<InputStream>>(
+                m_nStreamer, m_ipv4,
                                                          m_port,
                                                          streamName,
                                                          sensorSpec,

@@ -118,7 +118,7 @@ ViewerMqtt::ViewerMqtt(const std::string &name,
                 switch ( message ) {
                 case io::StreamBase::ServerMessage::VIEWER_NEW_STREAMER: {
                     std::cout << std::endl;
-                    ++m_iStreamer;
+                    ++m_nStreamer;
                     //                    m_client->subscribe( s_topicEvents + "/streamName" );
                     //                    m_inputMsgPtr = m_client->consume_message();
                     //                    assert( m_inputMsgPtr != nullptr );

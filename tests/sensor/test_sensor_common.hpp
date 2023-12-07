@@ -290,7 +290,7 @@ checkSynchronize( hub::Output& output,
 
     std::vector<hub::sensor::Acquisition> sync_acqs;
     hub::sensor::InputSensor inputSensorSync( inputs... );
-    auto read_acq = inputSensorSync.acq();
+    auto read_acq = inputSensorSync.acqMsg();
 
     //    while (! archive.isEnd() && !archive2.isEnd()) {
     //	while ( !areEnd( inputs... ) && sync_acqs.size() != refSyncAcqs.size() ) {
@@ -356,7 +356,7 @@ static void inputSensorBench( Input& input ) {
 
     hub::sensor::InputSensor inputSensor( input );
     assert( ref_sensorSpec == inputSensor.getSpec() );
-    auto acq_read = inputSensor.acq();
+    auto acq_read = inputSensor.acqMsg();
 
     for ( const auto& acq : ref_acqs ) {
         inputSensor >> acq_read;
@@ -387,7 +387,7 @@ static void inputOutputSensorBench( Input& input, Output& output ) {
     // decltype(outputSensor)::Acq acq;
     // hub::sensor::OutputSensorT<UserResolution>::Acq acq;
     //    hub::sensor::AcquisitionT<UserResolution> acq; // same as above
-    auto acq       = outputSensor.acq();
+    auto acq       = outputSensor.acqMsg();
     acq.start()    = 4;
     acq.end()      = 3;
     auto& userType = acq.get<UserType&>();
@@ -403,7 +403,7 @@ static void inputOutputSensorBench( Input& input, Output& output ) {
     outputSensor << acq;
 
     // read input acq
-    auto acq_read = inputSensor.acq();
+    auto acq_read = inputSensor.acqMsg();
     inputSensor >> acq_read;
     std::cout << "acq: " << acq << std::endl;
     std::cout << "acq_read: " << acq_read << std::endl;

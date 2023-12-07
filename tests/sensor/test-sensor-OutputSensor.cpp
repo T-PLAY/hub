@@ -35,7 +35,7 @@ TEST_CASE( "OutputSensor test" ) {
     hub::sensor::OutputSensorT<Resolution> outputSensor( sensorSpec, archive );
 #endif
 
-    auto acq = outputSensor.acq();
+    auto acq = outputSensor.acqMsg();
 
     auto& start = acq.start();
     auto& end   = acq.end();

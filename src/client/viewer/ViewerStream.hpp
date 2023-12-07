@@ -33,6 +33,7 @@ class ViewerStream
 {
   public:
     ViewerStream(
+        int iStreamer,
         const std::string& ipv4,
         int port,
         const std::string& streamName,
@@ -66,17 +67,19 @@ class ViewerStream
     std::function<void( const char* logMessage )> m_onLogMessage;
 
     std::unique_ptr<sensor::InputSensor> m_inputSensor;
-    static int m_iStreamer;
+    // static int m_iStreamer;
+    const int m_iStreamer;
 
 }; // end class ViewerStream
 
 /////////////////////////////////////// INLINE ////////////////////////////////////////////////////
 
-template <class InputStream>
-int ViewerStream<InputStream>::m_iStreamer = 0;
+// template <class InputStream>
+// int ViewerStream<InputStream>::m_iStreamer = 0;
 
 template <class InputStream>
 ViewerStream<InputStream>::ViewerStream(
+    int iStreamer,
     const std::string& ipv4,
     int port,
     const std::string& streamName,
@@ -86,6 +89,7 @@ ViewerStream<InputStream>::ViewerStream(
     std::function<void( const char*, const sensor::Acquisition& )> onNewAcquisition,
     std::function<void( const char* logMessage )> onLogMessage ) :
 
+    m_iStreamer(iStreamer),
     m_ipv4( ipv4 ),
     m_port( port ),
     m_streamName( streamName ),
@@ -131,7 +135,7 @@ void ViewerStream<InputStream>::startStream() {
 
             assert(! m_streaming);
             m_streaming = true;
-            auto acq = m_inputSensor->acq();
+            auto acq = m_inputSensor->acqMsg();
             while ( !m_stopThread ) {
                 // sensor::Acquisition acq;
                 *m_inputSensor >> acq;

@@ -54,7 +54,7 @@ namespace sensor {
 class OutputSensor : public Sensor
 {
   public:
-    using Sensor::acq;
+    using Sensor::acqMsg;
 
     OutputSensor( const SensorSpec& sensorSpec, Output& output ) :
         Sensor( sensorSpec ), m_output( output ) {
@@ -114,7 +114,7 @@ class OutputSensorT : public Sensor
     using Acquisition = AcquisitionT<Resolution>;
 
   public:
-    using Acq = Acquisition;
+    // using Acq = Acquisition;
 
     OutputSensorT( const SensorSpec& sensorSpec, Output& output ) :
         Sensor( sensorSpec ), m_output( output ) {
@@ -157,7 +157,7 @@ class OutputSensorT : public Sensor
         m_output.write( acq.data(), acq.size() );
     }
 
-    Acquisition acq() const { return Acq(); }
+    Acquisition acqMsg() const { return Acquisition(); }
 
     Output& getOutput() const { return m_output; }
 

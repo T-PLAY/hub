@@ -38,7 +38,7 @@ sensor::Acquisition* getAcquisition( sensor::InputSensor* inputSensor ) {
     std::cout << "[Native] getAcquisition( " << inputSensor << ")" << std::endl;
     sensor::Acquisition* ret = nullptr;
 
-    auto acq = inputSensor->acq();
+    auto acq = inputSensor->acqMsg();
     try {
         // sensor::Acquisition acq;
         *inputSensor >> acq;

@@ -32,7 +32,7 @@ class SRC_API Sensor
 //    Sensor(Input & input) :
 //    ~Sensor();
 
-    Acquisition acq() const {
+    Acquisition acqMsg() const {
 //        return Acquisition{m_spec.getResolution()};
         return make_acquisition(m_spec.getResolution());
 //        return dynamic_cast<const Acquisition&>(m_spec.getResolution());

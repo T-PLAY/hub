@@ -76,6 +76,8 @@ class OutputT : public OutputBase
 #endif
         // todo fix killOutputStream
         // todo fix test-sensor-OutputSensor
+        // todo fix test-sensor-OutputSensor
+        // todo fix test-sensor-OutputSensorT
         assert( isOpen() );
         if constexpr ( isPacket<T> ) {
             write( t.data(), t.size() );

@@ -35,6 +35,17 @@ int main( int argc, char* argv[] ) {
     hub::client::ViewerHandler viewerHandler;
     // auto onNewStreamer = [=]( const std::string& streamName, const hub::sensor::SensorSpec&
     // sensorSpec ) {
+    viewerHandler.onServerNotFound = [&]( const std::string& ipv4, int port ) {
+        std::cout << HEADER_MSG "onServerNotFound : " << ipv4 << " " << port << std::endl;
+        // if ( exitWhenServerLost ) { exit = true; }
+    };
+    viewerHandler.onServerConnected = []( const std::string& ipv4, int port ) {
+        std::cout << HEADER_MSG "onServerConnected : " << ipv4 << " " << port << std::endl;
+    };
+    viewerHandler.onServerDisconnected = [&]( const std::string& ipv4, int port ) {
+        std::cout << HEADER_MSG "onServerDisconnected : " << ipv4 << " " << port << std::endl;
+        if ( exitWhenServerLost ) { exit = true; }
+    };
     viewerHandler.onNewStreamer = [=]( const std::string& streamName,
                                        const hub::sensor::SensorSpec& sensorSpec ) {
         std::cout << HEADER_MSG "onNewStreamer : " << streamName << ", " << sensorSpec << std::endl;
@@ -43,17 +54,6 @@ int main( int argc, char* argv[] ) {
     viewerHandler.onDelStreamer = []( const std::string& streamName,
                                       const hub::sensor::SensorSpec& sensorSpec ) {
         std::cout << HEADER_MSG "onDelStreamer : " << streamName << ", " << sensorSpec << std::endl;
-    };
-    viewerHandler.onServerNotFound = [&]( const std::string& ipv4, int port ) {
-        std::cout << HEADER_MSG "onServerNotFound : " << ipv4 << " " << port << std::endl;
-        if ( exitWhenServerLost ) { exit = true; }
-    };
-    viewerHandler.onServerConnected = []( const std::string& ipv4, int port ) {
-        std::cout << HEADER_MSG "onServerConnected : " << ipv4 << " " << port << std::endl;
-    };
-    viewerHandler.onServerDisconnected = [&]( const std::string& ipv4, int port ) {
-        std::cout << HEADER_MSG "onServerDisconnected : " << ipv4 << " " << port << std::endl;
-        if ( exitWhenServerLost ) { exit = true; }
     };
     viewerHandler.onNewAcquisition = []( const std::string& streamName,
                                          const hub::sensor::Acquisition& acq ) {

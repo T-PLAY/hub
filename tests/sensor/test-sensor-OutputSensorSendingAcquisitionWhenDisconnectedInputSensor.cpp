@@ -38,7 +38,7 @@ TEST_CASE( "OutputSensor sending acq with disconnect test" ) {
 #endif
         std::cout << "[test] outputSensor inited" << std::endl;
 
-        auto acq = outputSensor.acq();
+        auto acq = outputSensor.acqMsg();
         // outputSensor.getOutput().setRetain( true );
 
         // auto& start = acq.start();
@@ -80,7 +80,7 @@ TEST_CASE( "OutputSensor sending acq with disconnect test" ) {
             assert( outputSensor.getSpec() == inputSensor.getSpec() );
             assert( inputSensor.getSpec().getResolution().hasType<hub::sensor::format::BGR8>() );
 
-            auto acq_read = inputSensor.acq();
+            auto acq_read = inputSensor.acqMsg();
             // acq.clear();
             // assert( acq == acq_read );
             auto& start_read = acq_read.start();

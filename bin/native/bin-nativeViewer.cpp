@@ -31,13 +31,6 @@ int main( int argc, char* argv[] ) {
 
     static bool exit = false;
 
-    auto onNewStreamer = []( const char* streamName, const hub::sensor::SensorSpec* sensorSpec ) {
-        std::cout << HEADER_MSG "onNewStreamer : " << streamName << std::endl;
-        return true;
-    };
-    auto onDelStreamer = []( const char* streamName, const hub::sensor::SensorSpec* sensorSpec ) {
-        std::cout << HEADER_MSG "onDelStreamer : " << streamName << std::endl;
-    };
     auto onServerNotFound = []( const char* ipv4, int port ) {
         std::cout << HEADER_MSG "onServerNotFound : " << ipv4 << " " << port << std::endl;
         // if ( exitWhenServerLost ) { exit = true; }
@@ -48,6 +41,13 @@ int main( int argc, char* argv[] ) {
     auto onServerDisconnected = []( const char* ipv4, int port ) {
         std::cout << HEADER_MSG "onServerDisconnected : " << ipv4 << " " << port << std::endl;
         if ( exitWhenServerLost ) { exit = true; }
+    };
+    auto onNewStreamer = []( const char* streamName, const hub::sensor::SensorSpec* sensorSpec ) {
+        std::cout << HEADER_MSG "onNewStreamer : " << streamName << std::endl;
+        return true;
+    };
+    auto onDelStreamer = []( const char* streamName, const hub::sensor::SensorSpec* sensorSpec ) {
+        std::cout << HEADER_MSG "onDelStreamer : " << streamName << std::endl;
     };
     auto onNewAcquisition = []( const char* streamName, const hub::sensor::Acquisition* acq ) {
         //        std::cout << HEADER_MSG "onNewAcquisition : " << acq << std::endl;

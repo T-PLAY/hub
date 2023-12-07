@@ -138,7 +138,7 @@ TEST_CASE( "Viewer" ) {
                 std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
 
                 // hub::sensor::AcquisitionT<Resolution> acq;
-                auto acq    = outputSensor.acq();
+                auto acq    = outputSensor.acqMsg();
                 auto& start = acq.start();
                 auto& end   = acq.end();
                 // auto * data = acq.data();
@@ -194,4 +194,6 @@ TEST_CASE( "Viewer" ) {
     } // end viewer
     std::cout << "[test] ############################### viewer end" << std::endl;
     // std::this_thread::sleep_for( std::chrono::milliseconds( 500 ) );
+
+    // todo fix : SIGPIPE Exception
 }

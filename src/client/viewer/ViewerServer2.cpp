@@ -50,10 +50,11 @@ ViewerServer2::ViewerServer2( const std::string& name,
                     switch ( serverMessage ) {
 
                     case hub::io::StreamBase::ServerMessage::VIEWER_NEW_STREAMER: {
+                        ++m_nStreamer;
 
 #ifdef DEBUG
                         std::this_thread::sleep_for(
-                            std::chrono::milliseconds( 100 ) ); // log messages
+                            std::chrono::milliseconds( 100 ) ); // log messages concurrency
 #endif
 
                         std::string streamName;
