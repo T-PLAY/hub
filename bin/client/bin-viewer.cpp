@@ -1,6 +1,7 @@
 
 #include <iostream>
 
+#include <io/Stream.hpp>
 #include <client/Viewer.hpp>
 
 #define COLOR "\033[41m"
@@ -13,15 +14,23 @@ int main( int argc, char* argv[] ) {
 
     std::vector<std::string> args( argv + 1, argv + argc );
 
+    int port = hub::io::Stream::s_defaultPort;
+
     auto it = args.begin();
     while ( it != args.end() ) {
         const auto& arg = *it;
 
         if ( arg == "-h" || arg == "--help" ) {
-            std::cout << argv[0] << " usage: [--exitWhenServerLost]" << std::endl;
+            std::cout << argv[0] << " usage: [--port <int>] [--exitWhenServerLost]" << std::endl;
             return 0;
         }
         else if ( arg == "--exitWhenServerLost" ) { exitWhenServerLost = true; }
+        else if ( arg == "--port" ) {
+            assert( it + 1 != args.end() );
+            const auto& nextArg = *( it + 1 );
+            port                = std::atoi( nextArg.c_str() );
+            ++it;
+        }
         else {
             std::cout << "unrecognized argument: " << arg << std::endl;
             std::cout << argv[0] << " usage: [--exitWhenServerLost]" << std::endl;
@@ -72,7 +81,7 @@ int main( int argc, char* argv[] ) {
         std::cout << HEADER_MSG "onLogMessage '" << logMessage << "'" << std::endl;
     };
 
-    hub::client::Viewer viewer( FILE_NAME, std::move( viewerHandler ));
+    hub::client::Viewer viewer( FILE_NAME, std::move( viewerHandler ), "127.0.0.1", port);
                                 // onNewStreamer,
                                 // onDelStreamer,
                                 // onServerNotFound,

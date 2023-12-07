@@ -4,7 +4,7 @@
 
 // #include <InputSensor.hpp>
 // #include <OutputSensor.hpp>
-// #include <Viewer.hpp>
+// #include <NativeViewer.hpp>
 
 // #include <Server.hpp>
 
@@ -57,13 +57,13 @@ TEST_CASE( "Native test" ) {
     bgr8.r          = 2;
 
     auto onServerNotFound = []( const char* ipv4, int port ) {
-        std::cout << "[Example][Viewer] onServerNotFound " << ipv4 << " " << port << std::endl;
+        std::cout << "[test][NativeViewer] onServerNotFound " << ipv4 << " " << port << std::endl;
     };
     auto onServerConnected = []( const char* ipv4, int port ) {
-        std::cout << "[Example][Viewer] onServerConnected " << ipv4 << " " << port << std::endl;
+        std::cout << "[test][NativeViewer] onServerConnected " << ipv4 << " " << port << std::endl;
     };
     auto onServerDisconnected = []( const char* ipv4, int port ) {
-        std::cout << "[Example][Viewer] onServerDisconnected " << ipv4 << " " << port << std::endl;
+        std::cout << "[test][NativeViewer] onServerDisconnected " << ipv4 << " " << port << std::endl;
     };
     static int nStreamerInited = 0;
     auto onNewStreamer = []( const char* streamName, const hub::sensor::SensorSpec* sensorSpec ) {
@@ -79,16 +79,16 @@ TEST_CASE( "Native test" ) {
         const hub::sensor::format::MAT4 ref_mat4( 0.0 );
         ref_metaData["d"] = ref_mat4;
 
-        std::cout << "[Example][Viewer] onNewStreamer : " << streamName << std::endl;
+        std::cout << "[test][NativeViewer] onNewStreamer : " << streamName << std::endl;
         char sensorName[80] = { 0 };
         int strLen          = 0;
         hub::native::sensorSpec_getSensorName( sensorSpec, sensorName, &strLen );
         CHECK( ref_sensorName == sensorName );
 
-        // std::cout << "[Example][Viewer] sensorName : '" << sensorName << "' size = " << strLen
+        // std::cout << "[test][NativeViewer] sensorName : '" << sensorName << "' size = " << strLen
         //           << std::endl;
         // const int resolutionsSize = hub::native::sensorSpec_getResolutionsSize( sensorSpec );
-        // std::cout << "[Example][Viewer] resolutions size : " << resolutionsSize << std::endl;
+        // std::cout << "[test][NativeViewer] resolutions size : " << resolutionsSize << std::endl;
 
         // const auto& resolutions = sensorSpec->getResolutions();
         // CHECK( resolutions.size() == resolutionsSize );
@@ -99,7 +99,7 @@ TEST_CASE( "Native test" ) {
         //     const auto& ref_dims        = ref_resolution2.first;
 
         //     const auto& format = hub::native::sensorSpec_getFormat( sensorSpec, iResolution );
-        //     std::cout << "[Example][Viewer] resolutions[" << iResolution << "] format : " <<
+        //     std::cout << "[test][NativeViewer] resolutions[" << iResolution << "] format : " <<
         //     format
         //               << std::endl;
         //     CHECK( format == static_cast<int>( ref_format ) );
@@ -111,7 +111,7 @@ TEST_CASE( "Native test" ) {
 
         //     const int dimensionsSize =
         //         hub::native::sensorSpec_getDimensionsSize( sensorSpec, iResolution );
-        //     std::cout << "[Example][Viewer] resolutions[" << iResolution
+        //     std::cout << "[test][NativeViewer] resolutions[" << iResolution
         //               << "] dimensions size : " << dimensionsSize << std::endl;
         //     CHECK( hub::sensor::resolution::computeAcquisitionSize( ref_resolution ) ==
         //            hub::sensor::resolution::computeAcquisitionSize( ref_format, ref_dims ) );
@@ -121,7 +121,7 @@ TEST_CASE( "Native test" ) {
         //         const auto dim =
         //             hub::native::sensorSpec_getDimension( sensorSpec, iResolution, iDimension );
 
-        //         std::cout << "[Example][Viewer] resolutions[" << iResolution << "] dimensions["
+        //         std::cout << "[test][NativeViewer] resolutions[" << iResolution << "] dimensions["
         //                   << iDimension << "] size : "
         //                   << hub::native::sensorSpec_getDimension(
         //                          sensorSpec, iResolution, iDimension )
@@ -130,17 +130,17 @@ TEST_CASE( "Native test" ) {
         //         CHECK( dim == ref_dims.at( iDimension ) );
         //     }
         // }
-        // std::cout << "[Example][Viewer] acquisitionsSize : "
+        // std::cout << "[test][NativeViewer] acquisitionsSize : "
         //           << hub::native::sensorSpec_getAcquisitionSize( sensorSpec ) << std::endl;
 
         // char resolutionsStr[80] = { 0 };
         // hub::native::sensorSpec_getResolutionsStr( sensorSpec, resolutionsStr );
-        // std::cout << "[Example][Viewer] resolutionsStr : '" << resolutionsStr << "'" <<
+        // std::cout << "[test][NativeViewer] resolutionsStr : '" << resolutionsStr << "'" <<
         // std::endl;
 
         char metaDataStr[256] = { 0 };
         hub::native::sensorSpec_getMetaDataStr( sensorSpec, metaDataStr );
-        std::cout << "[Example][Viewer] metaDataStr : '" << metaDataStr << "'" << std::endl;
+        std::cout << "[test][NativeViewer] metaDataStr : '" << metaDataStr << "'" << std::endl;
 
         const hub::sensor::SensorSpec* sensorSpecCopy = hub::native::sensorSpec_copy( sensorSpec );
         CHECK( *sensorSpecCopy == *sensorSpec );
@@ -172,22 +172,22 @@ TEST_CASE( "Native test" ) {
         return true;
     };
     auto onDelStreamer = []( const char* streamName, const hub::sensor::SensorSpec* sensorSpec ) {
-        std::cout << "[Example][Viewer] onDelStreamer " << streamName << std::endl;
+        std::cout << "[test][NativeViewer] onDelStreamer " << streamName << std::endl;
     };
     static int nReceiveAcq = 0;
     auto onNewAcquisition  = []( const char* streamName, const hub::sensor::Acquisition* acq ) {
         CHECK( !strcmp( streamName, FILE_NAME.c_str() ) );
-        std::cout << "[Example][Viewer] onNewAcquisition " << streamName << " " << *acq
+        std::cout << "[test][NativeViewer] onNewAcquisition " << streamName << " " << *acq
                   << std::endl;
         ++nReceiveAcq;
     };
     auto onSetProperty =
         []( const char* streamName, const char* objectName, int property, const hub::Any* value ) {
-            std::cout << "[Example][Viewer] onSetProperty " << streamName << " " << objectName
+            std::cout << "[test][NativeViewer] onSetProperty " << streamName << " " << objectName
                       << " " << property << " " << value << std::endl;
         };
     auto onLogMessage = []( const char* logMessage ) {
-        std::cout << "[Example][Viewer] onLogMessage " << logMessage << " " << *logMessage
+        std::cout << "[test][NativeViewer] onLogMessage " << logMessage << " " << *logMessage
                   << std::endl;
     };
 

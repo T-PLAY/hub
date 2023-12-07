@@ -181,6 +181,16 @@ endif()
 # foreach *.cpp tests
 include(CTest)
 
+if (HUB_SERVER_PORT)
+    set(HUB_SERVER_TEST_BIN_PORT ${HUB_SERVER_PORT})
+else()
+    if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+        set(HUB_SERVER_TEST_BIN_PORT 6000)
+    else()
+        set(HUB_SERVER_TEST_BIN_PORT 7000)
+    endif()
+endif()
+
 #target_sources(Continuous
 #  PRIVATE
 #    core/io/test-core-io-common.hpp
@@ -231,6 +241,21 @@ foreach(testFile ${test_srcs})
     #    )
     #    custom_target_added(run-${test})
     #endif()
+    add_custom_target(
+        test-bin-${test}
+        # COMMAND bash echo "${HUB_SERVER_TEST_BIN_PORT}" > hubServerPort.txt
+        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/generateServerPort.sh ${HUB_SERVER_TEST_BIN_PORT}
+        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/bin-server --port ${HUB_SERVER_TEST_BIN_PORT}
+        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/bin-viewer --port ${HUB_SERVER_TEST_BIN_PORT} --exitWhenServerLost
+        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/bin-nativeViewer --port ${HUB_SERVER_TEST_BIN_PORT} --exitWhenServerLost
+        # COMMAND ctest -C ${CMAKE_BUILD_TYPE} -V
+        COMMAND ctest -C ${CMAKE_BUILD_TYPE} -V -R ${test}
+        COMMAND ctest -C ${CMAKE_BUILD_TYPE} -V -R test-end
+        # COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/deleteServerPort.sh
+        # COMMAND bash rm hubServerBinPort.txt
+        USES_TERMINAL
+        COMMENT "Running server"
+    )
 
 endforeach()
 
@@ -240,46 +265,53 @@ endforeach()
 
 
 
-if (HUB_SERVER_PORT)
 
-    if (HUB_BUILD_NATIVE)
-        add_custom_target(
-            test-bins
-            COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/bin-server --port ${HUB_SERVER_PORT}
-            COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/bin-viewer --exitWhenServerLost
-            COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/bin-nativeViewer --exitWhenServerLost
-            COMMAND ctest -C ${CMAKE_BUILD_TYPE} -V
-            USES_TERMINAL
-            COMMENT "Running server"
-        )
+if (HUB_BUILD_NATIVE)
+    add_custom_target(
+        test-bins
+        # COMMAND bash echo "${HUB_SERVER_TEST_BIN_PORT}" > hubServerPort.txt
+        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/generateServerPort.sh ${HUB_SERVER_TEST_BIN_PORT}
+        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/bin-server --port ${HUB_SERVER_TEST_BIN_PORT}
+        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/bin-viewer --port ${HUB_SERVER_TEST_BIN_PORT} --exitWhenServerLost
+        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/bin-nativeViewer --port ${HUB_SERVER_TEST_BIN_PORT} --exitWhenServerLost
+        COMMAND ctest -C ${CMAKE_BUILD_TYPE} -V
+        # COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/deleteServerPort.sh
+        # COMMAND bash rm hubServerBinPort.txt
+        USES_TERMINAL
+        COMMENT "Running server"
+    )
 
-    elseif (HUB_BUILD_CLIENT)
-        add_custom_target(
-            test-bins
-            COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/bin-server --port ${HUB_SERVER_PORT}
-            COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/bin-viewer --exitWhenServerLost
-            # COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/bin-nativeViewer --exitWhenServerLost
-            COMMAND ctest -C ${CMAKE_BUILD_TYPE} -V
-            # VERBATIM
-            USES_TERMINAL
-            COMMENT "Running server"
-            #        OUTPUT tests.log
-        )
+elseif (HUB_BUILD_CLIENT)
+    add_custom_target(
+        test-bins
+        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/generateServerPort.sh ${HUB_SERVER_TEST_BIN_PORT}
+        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/bin-server --port ${HUB_SERVER_TEST_BIN_PORT}
+        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/bin-viewer --port ${HUB_SERVER_TEST_BIN_PORT} --exitWhenServerLost
+        # COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/bin-nativeViewer --exitWhenServerLost
+        COMMAND ctest -C ${CMAKE_BUILD_TYPE} -V
+        # COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/deleteServerPort.sh
+        # VERBATIM
+        USES_TERMINAL
+        COMMENT "Running server"
+        #        OUTPUT tests.log
+    )
 
-    elseif (HUB_BUILD_SERVER)
-        add_custom_target(
-            test-bins
-            COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/bin-server --port ${HUB_SERVER_PORT}
-            COMMAND ctest -C ${CMAKE_BUILD_TYPE} -V
-            USES_TERMINAL
-            COMMENT "Running server"
-        )
-    endif()
-
-    if (TARGET test-bins)
-        custom_target_added(test-bins)
-    endif()
+elseif (HUB_BUILD_SERVER)
+    add_custom_target(
+        test-bins
+        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/generateServerPort.sh ${HUB_SERVER_TEST_BIN_PORT}
+        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/bin-server --port ${HUB_SERVER_TEST_BIN_PORT}
+        COMMAND ctest -C ${CMAKE_BUILD_TYPE} -V
+        # COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/deleteServerPort.sh
+        USES_TERMINAL
+        COMMENT "Running server"
+    )
 endif()
+
+if (TARGET test-bins)
+    custom_target_added(test-bins)
+endif()
+# endif()
 
 add_custom_target(
     tests

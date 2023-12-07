@@ -47,7 +47,7 @@ TEST_CASE( "OutputSensorT test" ) {
     }
 
     // todo fix
-    // std::this_thread::sleep_for(std::chrono::milliseconds(100)); // need by viewer to catch retained data before the deletion of streamer client
+    std::this_thread::sleep_for(std::chrono::milliseconds(100)); // need by viewer to catch retained data before the deletion of streamer client
 
     return;
 

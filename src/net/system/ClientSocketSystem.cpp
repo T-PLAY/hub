@@ -40,7 +40,9 @@ ClientSocketSystem::ClientSocketSystem( utils::socket_fd fdSock, utils::ClientAd
     m_addr( std::move( clientAddr ) ),
     m_connected( true ) {
     //    m_port       = -1;
+    assert( utils::isConnected( fdSock ) );
     m_fdSock = fdSock;
+    // assert(isConnected());
     //    m_ipv4 = m_addr.getIpv4();
     //    m_addr(std::move(clientAddr)),
     m_serverSide = true;
@@ -136,9 +138,9 @@ void ClientSocketSystem::connect() {
     //    assert( !isOpen() );
     // assert( !isConnected() );
     // assert( isConnected() );
-    assert(utils::isValid(m_fdSock));
+    assert( utils::isValid( m_fdSock ) );
     // assert( SocketSystem::isConnected() );
-    assert( ! isConnected() );
+    assert( !isConnected() );
 
     // Connect to server
     if ( utils::connect( m_fdSock, m_addr ) < 0 ) {
@@ -152,7 +154,7 @@ void ClientSocketSystem::connect() {
                 .c_str() );
     }
 
-    assert( ! isConnected() );
+    assert( !isConnected() );
 
     m_connected = true;
     //    std::cout << "[ClientSocket] connect() " << std::endl;
@@ -173,9 +175,10 @@ bool ClientSocketSystem::isConnected() const {
 }
 
 void ClientSocketSystem::disconnect() {
+    // assert(m_connected);
     // assert( isOpen() ); // todo fix
     //    if ( isOpen() ) {
-    assert(utils::isValid(m_fdSock));
+    assert( utils::isValid( m_fdSock ) );
     if ( isConnected() ) {
 #ifdef HUB_DEBUG_SOCKET
         DEBUG_MSG( getHeader() << "disconnecting socket ..." );
@@ -184,6 +187,7 @@ void ClientSocketSystem::disconnect() {
 #ifdef HUB_DEBUG_SOCKET
         DEBUG_MSG( getHeader() << "socket disconnected" );
 #endif
+        assert( m_connected );
         m_connected = false;
     }
     assert( !isConnected() );
@@ -192,7 +196,8 @@ void ClientSocketSystem::disconnect() {
 }
 
 void ClientSocketSystem::write( const unsigned char* data, const size_t size ) {
-    assert( isConnected() );
+    assert( m_connected );
+    // assert( isConnected() );
     //    assert( isOpen() );
     //    assert( 0 < size && size <= MAX_NET_BUFFER_SIZE );
     assert( 0 < size );
@@ -229,6 +234,8 @@ void ClientSocketSystem::write( const unsigned char* data, const size_t size ) {
                 << "write(const unsigned char* data, size_t size) : isConnected() client lost" );
 #endif
             //            close();
+            assert( m_connected );
+            m_connected = false;
             // disconnect();
             throw SocketSystem::exception(
                 "[ClientSocket] write(data, size) Can't write packet, peer not connected" );

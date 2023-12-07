@@ -9,6 +9,7 @@
 #include <set>
 #include <thread>
 #include <tuple>
+#include <filesystem>
 
 #include <core/Input.hpp>
 #include <core/Output.hpp>
@@ -31,9 +32,19 @@
 // #    define INIT_SERVER const auto SERVER_PORT = hub::io::StreamServer::s_defaultPort;
 #else
 #    define INIT_SERVER                           \
-        const auto SERVER_PORT = GET_RANDOM_PORT; \
-        hub::Server server( SERVER_PORT );        \
-        server.asyncRun();
+        const auto fileName = "hubServerPort.txt"; \
+        int SERVER_PORT; \
+        std::unique_ptr<hub::Server> server; \
+        if ( std::filesystem::exists( fileName ) ) { \
+            std::ifstream file( fileName ); \
+            file >> SERVER_PORT; \
+            file.close(); \
+        } \
+        else { \
+            SERVER_PORT = GET_RANDOM_PORT; \
+            server = std::make_unique<hub::Server>(SERVER_PORT); \
+            server->asyncRun(); \
+        }
 #endif
 
 template <typename T>
