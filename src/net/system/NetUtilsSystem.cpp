@@ -190,7 +190,8 @@ void closeSocket( socket_fd& sock ) {
 
 bool isConnected( socket_fd sock ) {
 
-    if ( !utils::isValid( sock ) ) return false;
+    assert(utils::isValid(sock));
+    // if ( !utils::isValid( sock ) ) return false;
 
 #ifdef WIN32
     // not sure how to check this in windows

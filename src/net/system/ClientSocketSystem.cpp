@@ -113,7 +113,7 @@ int ClientSocketSystem::getPort() const {
 void ClientSocketSystem::connect() {
     assert( !m_connected );
     //    assert( !isOpen() );
-    assert( !isConnected() );
+    // assert( !isConnected() );
 
 #ifdef HUB_DEBUG_SOCKET
     // DEBUG_MSG( "[ClientSocket] connectToServer" );
@@ -135,8 +135,10 @@ void ClientSocketSystem::connect() {
 
     //    assert( !isOpen() );
     // assert( !isConnected() );
-    assert( isConnected() );
+    // assert( isConnected() );
+    assert(utils::isValid(m_fdSock));
     // assert( SocketSystem::isConnected() );
+    assert( ! isConnected() );
 
     // Connect to server
     if ( utils::connect( m_fdSock, m_addr ) < 0 ) {
@@ -149,6 +151,8 @@ void ClientSocketSystem::connect() {
                 m_ipv4 + " and port " + std::to_string( m_port ) ) )
                 .c_str() );
     }
+
+    assert( ! isConnected() );
 
     m_connected = true;
     //    std::cout << "[ClientSocket] connect() " << std::endl;
@@ -163,13 +167,15 @@ void ClientSocketSystem::connect() {
 }
 
 bool ClientSocketSystem::isConnected() const {
-    return SocketSystem::isConnected();
+    // return SocketSystem::isConnected();
+    return m_connected && SocketSystem::isConnected();
     // return m_connected;
 }
 
 void ClientSocketSystem::disconnect() {
     // assert( isOpen() ); // todo fix
     //    if ( isOpen() ) {
+    assert(utils::isValid(m_fdSock));
     if ( isConnected() ) {
 #ifdef HUB_DEBUG_SOCKET
         DEBUG_MSG( getHeader() << "disconnecting socket ..." );
@@ -186,7 +192,7 @@ void ClientSocketSystem::disconnect() {
 }
 
 void ClientSocketSystem::write( const unsigned char* data, const size_t size ) {
-    // assert( isConnected() );
+    assert( isConnected() );
     //    assert( isOpen() );
     //    assert( 0 < size && size <= MAX_NET_BUFFER_SIZE );
     assert( 0 < size );

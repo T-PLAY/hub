@@ -137,7 +137,7 @@ class SRC_API ClientSocketSystem : public ClientSocketI, public SocketSystem
     int m_port;
     utils::ClientAddr m_addr;
     bool m_connected = false;
-    bool m_moved     = false;
+    // bool m_moved     = false;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
