@@ -8,6 +8,7 @@
 // #include <list>
 #include <set>
 #include <thread>
+#include <mutex>
 
 static const std::regex s_ipv4Regex { "^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$" };
 
@@ -239,7 +240,9 @@ socket_fd serverSocket() {
     sock = ::socket( PF_INET, SOCK_STREAM, IPPROTO_TCP );
     s_netManager.registerSocket( sock );
     int option = 1;
+#ifndef WIN32
     setsockopt( sock, SOL_SOCKET, SO_REUSEADDR, &option, sizeof( option ) );
+#endif
 #ifdef HUB_DEBUG_NET
     std::cout << "[net] init socket: " << sock << std::endl;
 #endif
