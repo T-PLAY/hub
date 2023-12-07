@@ -11,7 +11,7 @@
 // #include <iostream>
 
 #include <native/Native.hpp>
-// #include <server/Server.hpp>
+#include <server/Server.hpp>
 
 // needs server running
 
@@ -25,8 +25,10 @@ TEST_CASE( "Native test" ) {
     //    constexpr int delay = 1000; // ms
 
     //    const std::string ipv4 = "127.0.0.1";
-    //    const int port         = GET_RANDOM_PORT;
+    const int port = GET_RANDOM_PORT;
     //    const int port         = 1883;
+    hub::Server server( port );
+    server.asyncRun();
 
     // const hub::sensor::Resolution ref_resolution( { 1 }, hub::sensor::Format::BGR8 );
     const auto ref_resolution        = hub::make_matrix<hub::sensor::format::BGR8>();
@@ -39,10 +41,10 @@ TEST_CASE( "Native test" ) {
     const hub::sensor::format::MAT4 ref_mat4( 0.0 );
 
     std::cout << "ref_mat4: " << ref_mat4 << std::endl;
-    // ref_metaData["d"] = ref_mat4;
+    ref_metaData["d"] = ref_mat4;
     const hub::sensor::SensorSpec ref_sensorSpec(
         ref_sensorName, { ref_resolution }, ref_metaData );
-    const std::string ref_streamName = FILE_NAME;
+    // const std::string ref_streamName = FILE_NAME;
     // unsigned char ref_data[3]        = { 0, 1, 2 };
     // const hub::sensor::Acquisition ref_acq =
     // std::move( hub::sensor::Acquisition( 0, 1 ) << hub::Measure( ref_data, 3, ref_resolution ) );
@@ -202,10 +204,10 @@ TEST_CASE( "Native test" ) {
     //    hub::native::viewer_setPort( viewer, port );
 
     auto* viewer =
-        hub::native::createViewer( FILE_NAME.c_str(), viewerHandler
+        hub::native::createViewer( FILE_NAME.c_str(), viewerHandler, "127.0.0.1", port);
                                    //                                              ipv4.c_str(),
                                    //        port
-        );
+        // );
 
     // todo test
     //    if ( false )
@@ -230,7 +232,7 @@ TEST_CASE( "Native test" ) {
                 //                ref_sensorSpec, ref_streamName, hub::net::ClientSocket( ipv4, port
                 //                ) ); ref_sensorSpec, ref_streamName, ipv4, port );
                 ref_sensorSpec,
-                hub::output::OutputStream( ref_streamName ) );
+                hub::output::OutputStream( FILE_NAME, port ) );
 
             while ( nStreamerInited == 0 ) {
                 std::cout << "[Test] waiting for streamer inited" << std::endl;
