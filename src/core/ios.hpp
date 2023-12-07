@@ -23,7 +23,7 @@ class ios
 // struct is_std_vector<std::vector<T,A>> : std::true_type {};
 
 template <class T>
-concept isPacket = requires (T t) { t.data(); t.size(); };
+concept isPacket = requires (T t) { t.data(); t.size(); }; // uses by acquisition
 
 template <typename T>
 using packable_t = decltype( T::packable );
@@ -43,20 +43,20 @@ static constexpr bool packable_v =
 // template <typename T>
 // static constexpr bool isSimpleType_v = std::is_same<T, int>::value;
 
-template <typename T>
-using serializable_t = decltype( std::declval<T>().serialize( std::declval<ios&>() ) );
-//using serializable_t = decltype( T::serialize );
-// using serializable_t = decltype( std::declval<T&>().serialize() );
+// template <typename T>
+// using serializable_t = decltype( std::declval<T>().serialize( std::declval<ios&>() ) );
+// //using serializable_t = decltype( T::serialize );
+// // using serializable_t = decltype( std::declval<T&>().serialize() );
 
-template <typename T, typename = std::void_t<>>
-struct serializable : std::false_type {};
+// template <typename T, typename = std::void_t<>>
+// struct serializable : std::false_type {};
 
-template <typename T>
-struct serializable<T, std::void_t<serializable_t<T>>> : std::true_type {};
+// template <typename T>
+// struct serializable<T, std::void_t<serializable_t<T>>> : std::true_type {};
 
-template <typename T>
-// static constexpr bool serializable_v = serializable<std::remove_cvref_t<T>>::value;
-static constexpr bool serializable_v = serializable<T>::value;
+// template <typename T>
+// // static constexpr bool serializable_v = serializable<std::remove_cvref_t<T>>::value;
+// static constexpr bool serializable_v = serializable<T>::value;
 
 //} // namespace io
 } // namespace hub

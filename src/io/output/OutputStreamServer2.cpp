@@ -20,10 +20,12 @@ OutputStreamServer2::OutputStreamServer2( int streamPort ) :
 
 OutputStreamServer2::OutputStreamServer2( const std::string& streamName,
                                           int port,
-                                          const std::string& ipv4 ) :
+                                          const std::string& ipv4,
+                                          bool retained ) :
     io::StreamServer2( streamName, ipv4, port ),
     m_data( std::make_unique<SharedData>(
-        std::make_unique<hub::io::InputOutputSocket>( net::ClientSocket( ipv4, port ) ) ) ) {
+        std::make_unique<hub::io::InputOutputSocket>( net::ClientSocket( ipv4, port ) ),
+        retained ) ) {
 
     initStream();
     assert( m_data->m_serverConnected );
@@ -70,6 +72,10 @@ OutputStreamServer2::OutputStreamServer2( const std::string& streamName,
 #endif
                     assert( !data->m_streamViewerInited );
                     data->m_streamViewerInited = true;
+                    continue;
+                }
+                else if ( mess == hub::io::StreamBase::ServerMessage::RETAINED_SHARED_TO_VIEWER ) {
+                    data->m_retainedSharedToViewer = true;
                     continue;
                 }
                 else { assert( false ); }
@@ -160,6 +166,7 @@ void OutputStreamServer2::initStream() {
     m_data->m_serverSocket->read( m_data->m_streamPort );
 
     m_data->m_serverSocket->write( (int)m_data->m_streamSockets.size() );
+    m_data->m_serverSocket->write( m_data->m_retained );
 
     m_data->m_serverSocket->read( mess );
     assert( mess == hub::io::StreamBase::ServerMessage::STREAMER_INITED );
@@ -303,6 +310,7 @@ void output::OutputStreamServer2::write( const Data_t* data, Size_t size ) {
 void OutputStreamServer2::setRetain( bool retain ) {
     if ( retain ) {
         m_data->m_writingFun = [this]( const Data_t* data, Size_t size ) {
+            assert( size > 0 );
             m_data->m_retainedData.insert( m_data->m_retainedData.end(), data, data + size );
             // m_data->m_serverSocket->write(size);
             m_data->m_serverSocket->write( io::StreamBase::ClientMessage::NEW_RETAIN_DATA );
@@ -317,9 +325,18 @@ void OutputStreamServer2::setRetain( bool retain ) {
         };
     }
     else {
-        m_data->m_serverSocket->write( io::StreamBase::ClientMessage::FULLY_RETAINED_DATA );
-        // m_data->m_fullyRetained = true;
-        m_data->m_writingFun = nullptr;
+        // assert( !m_data->m_retainedSharedToViewer );
+        if ( m_data->m_retained ) {
+            m_data->m_retainedSharedToViewer = false;
+            m_data->m_serverSocket->write( io::StreamBase::ClientMessage::FULLY_RETAINED_DATA );
+            // m_data->m_fullyRetained = true;
+            m_data->m_writingFun = nullptr;
+            while ( !m_data->m_retainedSharedToViewer ) {
+                std::cout << "[OutputStream] waiting for shared retained data to viewer ..."
+                          << std::endl;
+                std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+            }
+        }
     }
 }
 

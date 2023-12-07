@@ -29,7 +29,7 @@ TEST_CASE( "InputOutputStream multicast test" ) {
 
         {
             std::vector<hub::output::OutputStream> outputStreams;
-            outputStreams.emplace_back( FILE_NAME, SERVER_PORT );
+            outputStreams.emplace_back( FILE_NAME, SERVER_PORT, "127.0.0.1", false );
 
             {
                 std::vector<hub::input::InputStream> inputStreams;
@@ -44,7 +44,7 @@ TEST_CASE( "InputOutputStream multicast test" ) {
 
                 for ( int i = 1; i < nStream; ++i ) {
                     outputStreams.emplace_back(
-                        FILE_NAME + std::to_string( i ), SERVER_PORT );
+                        FILE_NAME + std::to_string( i ), SERVER_PORT, "127.0.0.1", false );
                 }
 
                 for ( int i = 1; i < nStream; ++i ) {

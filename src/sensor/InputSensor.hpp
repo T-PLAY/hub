@@ -42,17 +42,23 @@ namespace sensor {
 class InputSensor : public Sensor
 {
     void initSensorSpecFromInputs() {
-        // std::cout << "[InputSensor] reading specs ..." << std::endl;
+#ifdef HUB_DEBUG_INPUT
+        std::cout << "[InputSensor] reading " << m_inputs.size() << " specs ..." << std::endl;
+#endif
         m_specs.resize( m_inputs.size() );
         for ( int i = 0; i < m_inputs.size(); ++i ) {
-            // std::cout << "[InputSensor] reading spec " << i << " : " << m_specs.at(i) <<
-            // std::endl;
+#ifdef HUB_DEBUG_INPUT
+            std::cout << "[InputSensor] reading spec " << i << " : " << m_specs.at( i )
+                      << std::endl;
+#endif
             auto* input = m_inputs.at( i );
             input->read( m_specs.at( i ) );
             m_spec += m_specs.at( i );
         }
         // std::cout << "[InputSensor] specs readed" << std::endl;
-        // std::cout << "[InputSensor] spec: " << m_spec << std::endl;
+#ifdef HUB_DEBUG_INPUT
+        std::cout << "[InputSensor] spec: " << m_spec << std::endl;
+#endif
     }
 
   public:
@@ -101,7 +107,8 @@ class InputSensor : public Sensor
 
         if ( m_inputs.size() == 1 ) {
             Input& input = *m_inputs.at( 0 );
-            input.read( acq.data(), acq.size() );
+            // input.read( acq.data(), acq.size() );
+            input.read(acq);
         }
         else {
             Input& leftInput  = *m_inputs.at( 0 );

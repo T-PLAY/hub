@@ -79,8 +79,9 @@ class StreamBase
 
         STREAM_VIEWER_INITED,
 
-        // RETAINED_DATA,
-
+        RETAINED_DATA_START,
+        RETAINED_DATA_END,
+        RETAINED_SHARED_TO_VIEWER,
 
         COUNT
     };

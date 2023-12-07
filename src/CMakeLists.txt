@@ -190,12 +190,12 @@ if (NOT XCODE) # unable to have object files as native build with Xcode
             list(FILTER object_headers EXCLUDE REGEX ".*boost/.*\\.hpp$")
         endif()
 
-        if (NOT HUB_BUILD_SERVER OR NOT HUB_BUILD_SENSOR)
+        # if (NOT HUB_BUILD_SERVER OR NOT HUB_BUILD_SENSOR)
             list(FILTER object_sources EXCLUDE REGEX ".*server/impl/.*\\.cpp$")
             list(FILTER object_headers EXCLUDE REGEX ".*server/impl/.*\\.hpp$")
             list(FILTER object_sources EXCLUDE REGEX ".*Server\\.cpp$")
             list(FILTER object_headers EXCLUDE REGEX ".*Server\\.hpp$")
-        endif()
+        # endif()
 
 #        foreach (object_src ${object_headers})
 #            message(STATUS "src: ${object_src}")

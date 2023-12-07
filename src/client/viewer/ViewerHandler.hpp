@@ -40,10 +40,10 @@ class ViewerHandler
     std::function<void( const char* ipv4, int port )> onServerConnected;
     std::function<void( const char* ipv4, int port )> onServerDisconnected;
 
-    std::function<bool( const char* streamName, const sensor::SensorSpec& )> onNewStreamer;
-    std::function<void( const char* streamName, const sensor::SensorSpec& )> onDelStreamer;
+    std::function<bool( const char* streamName, const sensor::SensorSpec& sensorSpec )> onNewStreamer;
+    std::function<void( const char* streamName, const sensor::SensorSpec& sensorSpec )> onDelStreamer;
 
-    std::function<void( const char* streamName, const sensor::Acquisition& )> onNewAcquisition;
+    std::function<void( const char* streamName, const sensor::Acquisition& acq )> onNewAcquisition;
     std::function<
         void( const char* streamName, const char* objectName, int property, const Any& value )>
         onSetProperty;

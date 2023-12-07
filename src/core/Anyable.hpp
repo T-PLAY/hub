@@ -86,14 +86,14 @@ class Anyable
                 };
                 // const char *
                 if constexpr ( std::is_same_v<T, const char*> ) {
-                    write = []( Serializer& output, const std::any& any ) {
+                    write = []( Serializer& serializer, const std::any& any ) {
                         const char* val = std::any_cast<const char*>( any );
-                        output.write( val );
+                        serializer.write( val );
                     };
-                    read = []( Serializer& input, std::any& any ) {
+                    read = []( Serializer& serializer, std::any& any ) {
                         char* val =
                             new char[80]; // leak, please do not use char *, use std::string instead
-                        input.read( val );
+                        serializer.read( val );
                         any = (const char*)val;
                     };
                     compare = []( const std::any& any, const std::any& any2 ) {
@@ -103,13 +103,13 @@ class Anyable
                 }
                 // others
                 else {
-                    write = []( Serializer& output, const std::any& any ) {
+                    write = []( Serializer& serializer, const std::any& any ) {
                         const T& val = std::any_cast<const T&>( any );
-                        output.write( val );
+                        serializer.write( val );
                     };
-                    read = []( Serializer& input, std::any& any ) {
+                    read = []( Serializer& serializer, std::any& any ) {
                         T t;
-                        input.read( t );
+                        serializer.read( t );
                         any = t;
                     };
                     compare = []( const std::any& any, const std::any& any2 ) {
@@ -165,6 +165,7 @@ class Anyable
         assert( s_anyables.find( typeid( T ).hash_code() ) == s_anyables.end() );
         s_anyables.insert( makeAnyHelperRow<T>() );
         assert( s_anyables.find( typeid( T ).hash_code() ) != s_anyables.end() );
+        std::cout << "[Anyable] added new supported type : " << TYPE_NAME(T) << std::endl;
     }
     template <class T, class... Ts>
     static void insertSupportedTypes() {

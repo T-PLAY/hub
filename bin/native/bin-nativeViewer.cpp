@@ -40,7 +40,7 @@ int main( int argc, char* argv[] ) {
     };
     auto onServerNotFound = []( const char* ipv4, int port ) {
         std::cout << HEADER_MSG "onServerNotFound : " << ipv4 << " " << port << std::endl;
-        if ( exitWhenServerLost ) { exit = true; }
+        // if ( exitWhenServerLost ) { exit = true; }
     };
     auto onServerConnected = []( const char* ipv4, int port ) {
         std::cout << HEADER_MSG "onServerConnected : " << ipv4 << " " << port << std::endl;
@@ -50,7 +50,7 @@ int main( int argc, char* argv[] ) {
         if ( exitWhenServerLost ) { exit = true; }
     };
     auto onNewAcquisition = []( const char* streamName, const hub::sensor::Acquisition* acq ) {
-//        std::cout << HEADER_MSG "onNewAcquisition : " << acq << std::endl;
+        //        std::cout << HEADER_MSG "onNewAcquisition : " << acq << std::endl;
         std::cout << COLOR "+\033[0m";
     };
     auto onSetProperty =
@@ -62,20 +62,22 @@ int main( int argc, char* argv[] ) {
         std::cout << HEADER_MSG "onLogMessage '" << logMessage << "'" << std::endl;
     };
 
-    auto* viewer = hub::native::createViewer( FILE_NAME.c_str(),
-                                              //        FILE_NAME,
-                                              onNewStreamer,
-                                              onDelStreamer,
-                                              onServerNotFound,
-                                              onServerConnected,
-                                              onServerDisconnected,
-                                              onNewAcquisition,
-                                              onSetProperty,
-                                              onLogMessage );
+    auto* viewerHandler = hub::native::createViewerHandler( onServerNotFound,
+                                                            onServerConnected,
+                                                            onServerDisconnected,
+                                                            onNewStreamer,
+                                                            onDelStreamer,
+                                                            onNewAcquisition,
+                                                            onSetProperty,
+                                                            onLogMessage );
+
+    auto* viewer = hub::native::createViewer( FILE_NAME.c_str(), viewerHandler );
 
     std::cout << HEADER_MSG "Ctrl+C to exit" << std::endl;
 
     while ( !exit ) {
         std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
     }
+
+    hub::native::freeViewer( viewer );
 }

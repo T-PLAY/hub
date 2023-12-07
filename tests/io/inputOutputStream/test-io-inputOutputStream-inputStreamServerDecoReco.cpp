@@ -18,7 +18,7 @@ TEST_CASE( "InputStream server deco reco test" ) {
     server.asyncRun();
 
     {
-        hub::output::OutputStream outputStream( FILE_NAME, port );
+        hub::output::OutputStream outputStream( FILE_NAME, port, "127.0.0.1", false );
 
         hub::input::InputStream inputStream( FILE_NAME, port );
 

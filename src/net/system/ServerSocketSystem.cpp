@@ -8,14 +8,14 @@ namespace hub {
 namespace net {
 namespace system {
 
-//ServerSocketSystem::ServerSocketSystem() : mPort( s_defaultServicePort ) {
+//ServerSocketSystem::ServerSocketSystem() : m_port( s_defaultServicePort ) {
 //    m_serverSide = true;
 //    initServer();
 //}
 
 ServerSocketSystem::ServerSocketSystem( int port )
 //    : ServerSocketI(port),
-    : mPort( port )
+    : m_port( port )
 {
     m_serverSide = true;
     initServer();
@@ -32,7 +32,7 @@ ServerSocketSystem::ServerSocketSystem( int port )
 ClientSocketSystem ServerSocketSystem::waitNewClient() {
 
 #ifdef HUB_DEBUG_SOCKET
-    DEBUG_MSG( getHeader(  ) << "wait client on port " << mPort );
+    DEBUG_MSG( getHeader(  ) << "wait client on port " << m_port );
 #endif
 
 
@@ -72,12 +72,12 @@ void ServerSocketSystem::initServer() {
     DEBUG_MSG( getHeader(  ) << "server started " );
 #endif
 
-    m_addr.init( mPort );
+    m_addr.init( m_port );
 
     // Create server
     if ( utils::bind( m_fdSock, m_addr ) < 0 ) {
         throw SocketSystem::exception( ( std::string( "Failed to bind because port " ) +
-                                   std::to_string( mPort ) + " already in use" )
+                                   std::to_string( m_port ) + " already in use" )
                                      .c_str() );
     }
 
@@ -90,12 +90,12 @@ void ServerSocketSystem::initServer() {
     DEBUG_MSG( getHeader(  ) << "server inited " );
 #endif
 
-//    DEBUG_MSG( "starting server at port " << mPort );
-//    DEBUG_MSG( "[OutputStream] listening port " << mPort );
+//    DEBUG_MSG( "starting server at port " << m_port );
+//    DEBUG_MSG( "[OutputStream] listening port " << m_port );
 }
 
 int ServerSocketSystem::getPort() const {
-    return mPort;
+    return m_port;
 }
 
 } // namespace system

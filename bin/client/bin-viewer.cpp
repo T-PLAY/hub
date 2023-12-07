@@ -37,12 +37,12 @@ int main( int argc, char* argv[] ) {
     // sensorSpec ) {
     viewerHandler.onNewStreamer = [=]( const std::string& streamName,
                                        const hub::sensor::SensorSpec& sensorSpec ) {
-        std::cout << HEADER_MSG "onNewStreamer : " << streamName << std::endl;
+        std::cout << HEADER_MSG "onNewStreamer : " << streamName << ", " << sensorSpec << std::endl;
         return true;
     };
     viewerHandler.onDelStreamer = []( const std::string& streamName,
                                       const hub::sensor::SensorSpec& sensorSpec ) {
-        std::cout << HEADER_MSG "onDelStreamer : " << streamName << std::endl;
+        std::cout << HEADER_MSG "onDelStreamer : " << streamName << ", " << sensorSpec << std::endl;
     };
     viewerHandler.onServerNotFound = [&]( const std::string& ipv4, int port ) {
         std::cout << HEADER_MSG "onServerNotFound : " << ipv4 << " " << port << std::endl;

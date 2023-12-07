@@ -45,7 +45,7 @@ TEST_CASE( "Viewer" ) {
         int nDelStreamer        = 0;
         int nServerNotFound     = 0;
         int nServerConnected    = 0;
-        int nServerDisconnected = 0;
+        std::atomic<int> nServerDisconnected = 0;
         int nNewAcquisition     = 0;
 
         // startConstruction
@@ -102,8 +102,8 @@ TEST_CASE( "Viewer" ) {
         std::cout << "[test] ############################### server start" << std::endl;
         assert( nServerDisconnected == 0 );
         assert( !viewer.isConnected() );
-        while ( nServerNotFound < 2 ) {
-            std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
+        while ( nServerNotFound == 0 ) {
+            std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
             std::cout << "[test] waiting for server not found" << std::endl;
         }
         int iTry = 0;
@@ -181,12 +181,14 @@ TEST_CASE( "Viewer" ) {
         std::cout << "[test] ############################### server end" << std::endl;
 
         iTry = 0;
-        while ( viewer.isConnected() && iTry < 20 ) {
+        // while ( viewer.isConnected() && iTry < 20 ) {
+        while ( nServerDisconnected == 0 && iTry < 20 ) {
             std::cout << "[test] waiting for viewer disconnected" << std::endl;
             std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
             ++iTry;
         }
         assert( !viewer.isConnected() );
+        std::cout << "[test] nServerDisconnected : " << nServerDisconnected << std::endl;
         assert( nServerDisconnected == 1 );
 
     } // end viewer

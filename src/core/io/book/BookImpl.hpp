@@ -26,12 +26,12 @@ class BookImpl : public InputOutputT
     using InputOutputT::read;
     using InputOutputT::write;
 
-    BookImpl( Characters& characters ) : m_characters( characters ), m_datas{m_characters.data()} {}
-    BookImpl() : m_characters { *new Characters }, m_datas{m_characters.data()} {}
-//    BookImpl() : m_characters { 0 }, m_datas( m_characters.data() ) {}
+    BookImpl( Characters& characters ) : m_characters( characters ), m_data{m_characters.data()} {}
+    BookImpl() : m_characters { *new Characters }, m_data{m_characters.data()} {}
+//    BookImpl() : m_characters { 0 }, m_data( m_characters.data() ) {}
 
     void read( hub::Data_t* data, hub::Size_t size ) override {
-        memcpy( data, m_datas + m_iRead, size );
+        memcpy( data, m_data + m_iRead, size );
         m_iRead += size;
 //#ifdef HUB_DEBUG_INPUT
 //        std::cout << "\t" << HEADER << "read(Data_t*, Size_t = " << size << ")"  << std::endl;
@@ -42,7 +42,7 @@ class BookImpl : public InputOutputT
 //#ifdef HUB_DEBUG_INPUT
 //        std::cout << "\t" << HEADER << "write(Data_t*, Size_t = " << size << ")"  << std::endl;
 //#endif
-        memcpy( m_datas + m_iWrite, data, size );
+        memcpy( m_data + m_iWrite, data, size );
         m_iWrite += size;
     }
 
@@ -60,7 +60,7 @@ class BookImpl : public InputOutputT
 //    size_t m_size;
     Characters& m_characters;
 //    std::array<unsigned char, NumberOfCharacter> m_characters;
-    unsigned char* m_datas = nullptr;
+    unsigned char* m_data = nullptr;
     size_t m_iRead         = 0;
     size_t m_iWrite        = 0;
 };

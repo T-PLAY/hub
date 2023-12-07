@@ -89,7 +89,9 @@ class StreamerClient2 : public Client2
 
     const std::string streamName;
     std::vector<hub::Data_t> m_retainedData;
+    bool m_retained;
     std::atomic<bool> m_fullyRetained = false;
+    std::atomic<bool> m_retainedSharedToViewer = false;
     const std::string ipv4;
     const int port;
 

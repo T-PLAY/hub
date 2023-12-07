@@ -13,7 +13,7 @@
 // #include "sensor/Acquisition.hpp"
 // #include "sensor/SensorSpec.hpp"
 
-#define DEBUG_OUTPUT_STREAM
+// #define DEBUG_OUTPUT_STREAM
 
 namespace hub {
 namespace output {
@@ -48,8 +48,9 @@ class SRC_API OutputStreamServer2 : public Output, public io::StreamServer2
     OutputStreamServer2( int streamPort );
 
     explicit OutputStreamServer2( const std::string& streamName,
-                                 int port                = s_defaultPort,
-                                 const std::string& ipv4 = s_defaultIpv4 );
+                                  int port                = s_defaultPort,
+                                  const std::string& ipv4 = s_defaultIpv4,
+                                  bool retained           = true );
     ///
     /// \brief OutputStreamServer2
     /// \param outputStream
@@ -79,20 +80,23 @@ class SRC_API OutputStreamServer2 : public Output, public io::StreamServer2
 
     struct SharedData {
         std::unique_ptr<hub::io::InputOutputSocket> m_serverSocket;
+        bool m_retained;
         int m_streamPort = 0;
         std::list<hub::io::InputOutputSocket> m_streamSockets;
         std::mutex m_mtxClientSockets;
         std::vector<hub::Data_t> m_retainedData;
+        std::atomic<bool> m_retainedSharedToViewer = false;
         // std::atomic<bool> m_fullyRetained = false;
         bool m_killed                          = false;
-        std::atomic<bool> m_isStreaming      = false;
+        std::atomic<bool> m_isStreaming        = false;
         std::atomic<bool> m_serverConnected    = false;
         std::atomic<bool> m_streamViewerInited = false;
         std::function<void( const Data_t*, Size_t )> m_writingFun;
         std::unique_ptr<std::thread> m_streamThread;
         std::unique_ptr<std::thread> m_serverThread;
         bool m_shutdown = false;
-        SharedData(std::unique_ptr<hub::io::InputOutputSocket> && ioSocket) : m_serverSocket{std::move(ioSocket)} {};
+        SharedData( std::unique_ptr<hub::io::InputOutputSocket>&& ioSocket, bool retained ) :
+            m_serverSocket { std::move( ioSocket ) }, m_retained { retained } {};
         SharedData() = default;
     };
     std::unique_ptr<SharedData> m_data;

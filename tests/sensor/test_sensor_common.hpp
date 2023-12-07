@@ -262,21 +262,21 @@ checkSynchronize( hub::Output& output,
 
     assert( anyEnd( inputs... ) );
 
-    std::cout << "--------------------------------------------------" << std::endl;
-    std::cout << "ref_sync_acqs: " << std::endl;
-    for ( const auto& ref_acq : ref_acqs ) {
-        std::cout << ref_acq << std::endl;
-    }
-    std::cout << "ref_sync_acqs2: " << std::endl;
-    for ( const auto& ref_acq2 : ref_acqs2 ) {
-        std::cout << ref_acq2 << std::endl;
-    }
+    // std::cout << "--------------------------------------------------" << std::endl;
+    // std::cout << "ref_sync_acqs: " << std::endl;
+    // for ( const auto& ref_acq : ref_acqs ) {
+    //     std::cout << ref_acq << std::endl;
+    // }
+    // std::cout << "ref_sync_acqs2: " << std::endl;
+    // for ( const auto& ref_acq2 : ref_acqs2 ) {
+    //     std::cout << ref_acq2 << std::endl;
+    // }
 
     std::vector<hub::sensor::Acquisition> ref_sync_acqs = computeSyncAcqs( ref_acqs, ref_acqs2 );
-    std::cout << "ref_sync_acqs:" << std::endl;
-    for ( const auto& sync_acq : ref_sync_acqs ) {
-        std::cout << sync_acq << std::endl;
-    }
+    // std::cout << "ref_sync_acqs:" << std::endl;
+    // for ( const auto& sync_acq : ref_sync_acqs ) {
+    //     std::cout << sync_acq << std::endl;
+    // }
 
     hub::sensor::OutputSensor outputSensor( ref_sensorSpec, output );
     hub::sensor::OutputSensor outputSensor2( ref_sensorSpec2, output2 );
@@ -294,6 +294,7 @@ checkSynchronize( hub::Output& output,
 
     //    while (! archive.isEnd() && !archive2.isEnd()) {
     //	while ( !areEnd( inputs... ) && sync_acqs.size() != refSyncAcqs.size() ) {
+
     std::cout << "sync_acqs:" << std::endl;
     while ( !someEnd( inputs... ) && sync_acqs.size() != ref_sync_acqs.size() ) {
         inputSensorSync >> read_acq;

@@ -25,6 +25,7 @@ StreamerClient2::StreamerClient2( ServerImpl2* server,
     std::cout << headerMsg() << "stream name = '" << streamName << "'" << std::endl;
 
     m_sock->read( m_nStreamViewer );
+    m_sock->read( m_retained );
 
     assert( m_server != nullptr );
     m_server->addStreamer( this );
@@ -62,16 +63,29 @@ StreamerClient2::StreamerClient2( ServerImpl2* server,
                     // m_server->printStatus();
                 }
                 else if ( mess == io::StreamBase::ClientMessage::NEW_RETAIN_DATA ) {
+                    // assert( m_retained );
                     Size_t size;
                     sockPtr->read( size );
+                    assert( size > 0 );
                     const auto previousSize = m_retainedData.size();
-                    m_retainedData.resize(m_retainedData.size() + size);
-                    sockPtr->read(m_retainedData.data() + previousSize, size);
-                    // std::cout << "[StreamerClient] new retain data : " << m_retainedData << std::endl;
+                    m_retainedData.resize( m_retainedData.size() + size );
+                    sockPtr->read( m_retainedData.data() + previousSize, size );
+                    // std::cout << "[StreamerClient] new retain data : " << m_retainedData <<
+                    // std::endl;
                 }
-                else if ( mess == io::StreamBase::ClientMessage::FULLY_RETAINED_DATA) {
+                else if ( mess == io::StreamBase::ClientMessage::FULLY_RETAINED_DATA ) {
+                    assert( m_retained );
                     m_fullyRetained = true;
-                    // std::cout << "[StreamerClient] new retain data : " << m_retainedData << std::endl;
+
+                    while ( !m_retainedSharedToViewer ) {
+                        std::cout
+                            << "[StreamerClient] waiting for shared retained data to viewer ..."
+                            << std::endl;
+                        std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+                    }
+                    sockPtr->write( hub::io::StreamBase::ServerMessage::RETAINED_SHARED_TO_VIEWER );
+                    // std::cout << "[StreamerClient] new retain data : " << m_retainedData <<
+                    // std::endl;
                 }
                 // else if ( mess == io::StreamBase::ClientMessage::STREAMER_CLIENT_INITED ) {
                 // // std::cout << "[StreamerClient2] STREAMER_CLIENT_START" << std::endl;

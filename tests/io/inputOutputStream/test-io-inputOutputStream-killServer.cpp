@@ -20,7 +20,7 @@ TEST_CASE( "InputOutputStream kill server test" ) {
     // not allowed
     {
 
-        hub::output::OutputStream outputStream( FILE_NAME, port );
+        hub::output::OutputStream outputStream( FILE_NAME, port, "127.0.0.1", false );
 
         hub::input::InputStream inputStream( FILE_NAME, port );
 

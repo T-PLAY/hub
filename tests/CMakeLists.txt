@@ -5,11 +5,11 @@ project(tests LANGUAGES CXX)
 if (XCODE)
     set(LINK_LIBRARIES Catch2::Catch2WithMain hub_static)
 else()
-    #        set(LINK_LIBRARIES Catch2::Catch2WithMain hub)
+#set( LINK_LIBRARIES Catch2::Catch2WithMain hub )
     set(LINK_LIBRARIES Catch2::Catch2WithMain hub_static)
 endif()
-#set(LINK_LIBRARIES ${LINK_LIBRARIES} Threads::Threads)
-#set(LINK_LIBRARIES Catch2::Catch2WithMain hub PahoMqttCpp::paho-mqttpp3)
+#set( LINK_LIBRARIES ${ LINK_LIBRARIES } Threads::Threads )
+#set( LINK_LIBRARIES Catch2::Catch2WithMain hub PahoMqttCpp::paho - mqttpp3 )
 
 find_package(Catch2 QUIET)
 if(NOT ${Catch2_FOUND})
@@ -17,36 +17,35 @@ if(NOT ${Catch2_FOUND})
     FetchContent_Declare(
         Catch2
         GIT_REPOSITORY https://github.com/catchorg/Catch2.git
-        # GIT_TAG v3.0.1 # or a later release
+#GIT_TAG v3 .0.1 # or a later release
         GIT_TAG v3.3.2 # or a later release
         GIT_PROGRESS TRUE)
     FetchContent_MakeAvailable(Catch2)
 endif()
 
-#find_package(TBB REQUIRED)
-#set(LINK_LIBRARIES ${LINK_LIBRARIES} tbb)
+#find_package( TBB REQUIRED )
+#set( LINK_LIBRARIES ${ LINK_LIBRARIES } tbb )
 
-#find_package(PahoMqttCpp QUIET)
-#if (NOT ${PahoMqttCpp_FOUND})
-#    include(FetchContent)
+#find_package( PahoMqttCpp QUIET )
+#if ( NOT ${ PahoMqttCpp_FOUND } )
+#    include( FetchContent )
 #    FetchContent_Declare(
-#        PahoMqttCpp
-#        GIT_REPOSITORY https://github.com/eclipse/paho.mqtt.cpp.git
-#        GIT_TAG v1.2.0 # or a later release
-#        GIT_PROGRESS TRUE)
-#    FetchContent_MakeAvailable(PahoMqttCpp)
-#    set(LINK_LIBRARIES "${LINK_LIBRARIES} PahoMqttCpp::paho-mqttpp3")
+#    PahoMqttCpp
+#    GIT_REPOSITORY https: // github.com/eclipse/paho.mqtt.cpp.git
+#    GIT_TAG v1 .2.0 # or a later release
+#    GIT_PROGRESS TRUE )
+#    FetchContent_MakeAvailable( PahoMqttCpp )
+#    set( LINK_LIBRARIES "${LINK_LIBRARIES} PahoMqttCpp::paho-mqttpp3" )
 #endif()
-#find_package(PahoMqttCpp REQUIRED)
+#find_package( PahoMqttCpp REQUIRED )
 
-#file(GLOB test_srcs *.cpp)
+#file( GLOB test_srcs*.cpp )
 set(test_srcs)
 set(test_headers)
 foreach(HUB_SOURCE_DIR ${HUB_SOURCE_DIRS})
-#set(DIRS "core" "net" "io")
-#foreach(HUB_SOURCE_DIR ${DIRS})
+#set( DIRS "core" #"net" #"io" )
+#foreach ( HUB_SOURCE_DIR ${ DIRS } )
     file(
-        #        GLOB
         GLOB_RECURSE
         test_src
         ${CMAKE_CURRENT_SOURCE_DIR}/${HUB_SOURCE_DIR}/*.cpp
@@ -104,12 +103,12 @@ endif()
 #message(STATUS "#################### ${test_srcs}")
 
 if (NOT HUB_BUILD_SERVER)
-   list(FILTER test_srcs EXCLUDE REGEX ".*inputOutputStream/.*\\.cpp$")
-   list(FILTER test_srcs EXCLUDE REGEX ".*test-io-InputOutputStream.cpp$")
-#    list(FILTER test_srcs EXCLUDE REGEX ".*-server-.*\\.cpp$")
+    list(FILTER test_srcs EXCLUDE REGEX ".*inputOutputStream/.*\\.cpp$")
+    list(FILTER test_srcs EXCLUDE REGEX ".*test-io-InputOutputStream.cpp$")
+    #    list(FILTER test_srcs EXCLUDE REGEX ".*-server-.*\\.cpp$")
 
-#    file(GLOB server_srcs server/*.cpp)
-#    list(REMOVE_ITEM test_srcs ${server_srcs})
+    #    file(GLOB server_srcs server/*.cpp)
+    #    list(REMOVE_ITEM test_srcs ${server_srcs})
 endif()
 
 
@@ -133,10 +132,10 @@ endif()
 
 # set(test_srcs)
 # file(
-#     #        GLOB
 #     GLOB_RECURSE
 #     test_srcs
-#     ${CMAKE_CURRENT_SOURCE_DIR}/sensor/*.cpp
+#     # ${CMAKE_CURRENT_SOURCE_DIR}/sensor/*.cpp
+#     ${CMAKE_CURRENT_SOURCE_DIR}/core/*.cpp
 # )
 
 #file(GLOB test_srcs *.cpp)
@@ -240,35 +239,51 @@ endforeach()
 #endif()
 
 
-# if (HUB_BUILD_SERVER AND "impl/server2" IN_LIST HUB_SOURCE_DIRS)
-# if (HUB_BUILD_SERVER AND "impl/server2" IN_LIST HUB_SOURCE_DIRS)
-# if (HUB_BUILD_IMPL_SERVER2)
-if (HUB_BUILD_SERVER AND HUB_SERVER_PORT)
 
-    #set(HUB_SOURCE_DIRS "core")
-    # message(FATAL_ERROR "ouou")
+if (HUB_SERVER_PORT)
 
-    add_custom_target(
-        tests # WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-        #        COMMAND ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${CMAKE_BINARY_DIR}/bin/bin-server --maxClient 36
-        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/bin-server --port ${HUB_SERVER_PORT}
-        # COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/bin-viewer --exitWhenServerLost
-        # COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/bin-nativeViewer --exitWhenServerLost
-        #        COMMAND echo "######################### starting tests #######################################"
-        COMMAND ctest -C ${CMAKE_BUILD_TYPE} -V
-        # COMMAND ./test-all
-        #        COMMAND echo "########################## ending tests ########################################"
-        # VERBATIM
-        USES_TERMINAL
-        #        COMMAND pkill bin-server
-        COMMENT "Running tests"
-        #        OUTPUT tests.log
-    )
-else()
-    add_custom_target(
-        tests # WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-        COMMAND ctest -C ${CMAKE_BUILD_TYPE} -V
-        USES_TERMINAL
-        COMMENT "Running tests")
+    if (HUB_BUILD_NATIVE)
+        add_custom_target(
+            test-bins
+            COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/bin-server --port ${HUB_SERVER_PORT}
+            COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/bin-viewer --exitWhenServerLost
+            COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/bin-nativeViewer --exitWhenServerLost
+            COMMAND ctest -C ${CMAKE_BUILD_TYPE} -V
+            USES_TERMINAL
+            COMMENT "Running server"
+        )
+
+    elseif (HUB_BUILD_CLIENT)
+        add_custom_target(
+            test-bins
+            COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/bin-server --port ${HUB_SERVER_PORT}
+            COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/bin-viewer --exitWhenServerLost
+            # COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/bin-nativeViewer --exitWhenServerLost
+            COMMAND ctest -C ${CMAKE_BUILD_TYPE} -V
+            # VERBATIM
+            USES_TERMINAL
+            COMMENT "Running server"
+            #        OUTPUT tests.log
+        )
+
+    elseif (HUB_BUILD_SERVER)
+        add_custom_target(
+            test-bins
+            COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/bin-server --port ${HUB_SERVER_PORT}
+            COMMAND ctest -C ${CMAKE_BUILD_TYPE} -V
+            USES_TERMINAL
+            COMMENT "Running server"
+        )
+    endif()
+
+    if (TARGET test-bins)
+        custom_target_added(test-bins)
+    endif()
 endif()
+
+add_custom_target(
+    tests
+    COMMAND ctest -C ${CMAKE_BUILD_TYPE} -V
+    USES_TERMINAL
+    COMMENT "Running tests")
 custom_target_added(tests)

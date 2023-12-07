@@ -45,13 +45,17 @@ class SRC_API ServerSocketSystem : public ServerSocketI, public SocketSystem
     ClientSocketSystem waitNewClient();
 
 //    void disconnect();
+    std::string toString() const {
+        return std::to_string(m_port);
+    }
+
 
 
   private:
     void initServer();
 
   private:
-    int mPort;
+    int m_port;
     utils::ServerAddr m_addr;
 
   public:

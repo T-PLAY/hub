@@ -35,6 +35,8 @@ TEST_CASE( "Server test : InputOutputSensorSync" ) {
     hub::input::InputStream inputStream2( FILE_NAME + "2", SERVER_PORT );
 
     test::sensor::inputOutputSensorBench( inputStream, inputStream2, outputStream, outputStream2 );
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
     return;
 
     //    // initing datum

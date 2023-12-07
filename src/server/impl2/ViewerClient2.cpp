@@ -88,7 +88,10 @@ void ViewerClient2::notifyNewStreamer( const std::string& streamName,
     // std::cout << "[Viewer] write retainedData : " << retainedData << std::endl;
     assert( !retainedData.empty() );
     // if ( retainedData.size() > 0 ) {
-    m_socket.write( retainedData.data(), retainedData.size() );
+    // m_socket.write( retainedData.data(), retainedData.size() );
+    m_socket.write(hub::io::StreamBase::ServerMessage::RETAINED_DATA_START);
+    m_socket.write(retainedData);
+    m_socket.write(hub::io::StreamBase::ServerMessage::RETAINED_DATA_END);
     // }
 
     // }

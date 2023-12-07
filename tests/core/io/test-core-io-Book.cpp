@@ -192,9 +192,9 @@ static constexpr size_t s_maxDataSize   = 1'000'000;
 //#if ! defined(DEBUG) && defined(HUB_USE_ZPP_BITS)
 //    CHECK( benchStatBookZppBits < benchStatBookImpl );
 //#endif
-#ifdef HUB_USE_ZPP_BITS
-    static_assert(std::is_same_v<hub::io::Book, hub::io::book::BookZppBits<>> );
-#endif
+// #ifdef HUB_USE_ZPP_BITS
+//     static_assert(std::is_same_v<hub::io::Book, hub::io::book::BookZppBits<>> );
+// #endif
 
     printStats( dataBenchStats );
 

@@ -51,6 +51,8 @@ class SRC_API SensorSpec
     //    using MetaData = std::pair<std::string, Any>;
     using MetaData = std::map<std::string, Any>; // any -> C++17
                                                  // #else
+   static std::string to_string( const MetaData& metaData, bool expand = false );
+   static std::string to_string( const std::pair<std::string, Any>& metaData );
     //     ///
     //     /// \brief
     //     /// Type of sensor name
@@ -179,7 +181,7 @@ class SRC_API SensorSpec
 
     std::string getSensorName() const { return m_sensorName; }
     const Matrix& getResolution() const { return m_resolution; }
-    MetaData getMetaData() const { return m_metaData; }
+    const MetaData & getMetaData() const { return m_metaData; }
     void setResolution( Matrix&& newResolution ) { m_resolution = std::move( newResolution ); }
     void setResolution( const Matrix& newResolution ) { m_resolution = newResolution.clone(); }
 
@@ -242,14 +244,12 @@ class SRC_API SensorSpec
 //    /// \param expand
 //    /// \return
 //    ///
-//    static std::string to_string( const MetaData& metaData, bool expand = false );
 
 //    ///
 //    /// \brief to_string
 //    /// \param metaData
 //    /// \return
 //    ///
-//    static std::string to_string( const std::pair<std::string, Any>& metaData );
 
 //  public:
 // #if CPLUSPLUS_VERSION == 20

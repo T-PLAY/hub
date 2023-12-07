@@ -60,7 +60,7 @@ class SerializerZppBits : public SerializerI
     template <class T>
         requires( !isMap<T> )
     static constexpr auto Serializable() {
-        return !Readable_v<T> && !Writable_v<T>;
+        return !Readable_v<T> && !Writable_v<T> && !packable_v<T>;
     };
 
     template <class Map,
@@ -82,17 +82,24 @@ class SerializerZppBits : public SerializerI
     using ByteView        = std::vector<Data_t>;
     ByteView m_serialBuff = std::vector<Data_t>( BuffSize );
 
-    Size_t m_packSize;
+    Size_t m_packSize        = 0;
     Data_t* const m_packData = m_serialBuff.data();
 
     zpp::bits::out<ByteView> m_out { m_serialBuff };
-    Size_t m_dataWrote;
-    Size_t m_dataReaded;
+    Size_t m_dataWrote  = 0;
+    Size_t m_dataReaded = 0;
     zpp::bits::in<ByteView> m_in { m_serialBuff };
     // zpp::bits::out<ByteView> m_out;
     // zpp::bits::in<ByteView> m_in;
 
   public:
+    // SerializerZppBits() = default;
+
+    // template <class Container>
+    // SerializerZppBits(Container & container) {
+    //     std::copy(container.begin(), container.end(), m_serialBuff.begin());
+    // }
+
     template <class Output, class... Ts>
     void pack( Output& output, const Ts&... ts ) {
         // m_serialBuff.reserve( BuffSize );
@@ -123,6 +130,7 @@ class SerializerZppBits : public SerializerI
         // m_serialBuff.reserve( BuffSize );
         // m_serialBuff.resize( BuffSize );
         // Size_t size;
+        assert( !input.isEnd() );
         input.read( reinterpret_cast<Data_t*>( &m_packSize ), sizeof( Size_t ) );
         assert( 0 < m_packSize && m_packSize < BuffSize );
         input.read( m_packData, m_packSize );
@@ -146,7 +154,7 @@ class SerializerZppBits : public SerializerI
         assert( m_packSize == m_in.position() );
     }
 
-    ////////////////////////////
+    /////////////////////////////////// WRITE ALL ////////////////////////////
 
     template <class... Ts>
         requires( Serializables<Ts...> )
@@ -170,7 +178,7 @@ class SerializerZppBits : public SerializerI
         if constexpr ( sizeof...( Ts ) > 0 ) { writeAll( ts... ); }
     }
 
-    /////////////////////
+    /////////////////////////////////// READ ALL ////////////////////////////////
 
     template <class... Ts>
         requires( Serializables<Ts...> )
@@ -194,12 +202,14 @@ class SerializerZppBits : public SerializerI
         if constexpr ( sizeof...( Ts ) > 0 ) { readAll( ts... ); }
     }
 
-    //////////////////////////////////////////////////////////
+    //////////////////////////////////////// WRITE T //////////////////
 
     template <class T>
         requires( Serializable<T>() )
     void write( const T& t ) {
+
         const auto lastPosition = m_out.position();
+
         try {
             m_out( t ).or_throw();
         }
@@ -207,6 +217,7 @@ class SerializerZppBits : public SerializerI
             std::cout << "[Serializer] catch exception : " << ex.what() << std::endl;
             assert( false );
         }
+
         const auto newPosition = m_out.position();
         m_dataWrote += newPosition - lastPosition;
 
@@ -216,27 +227,51 @@ class SerializerZppBits : public SerializerI
         const std::vector<Data_t> data( m_serialBuff.data() + lastPosition,
                                         m_serialBuff.data() + newPosition );
         std::cout << "<---" << HEADER << "\033[1;36mwrite\033[0m(const " << TYPE_NAME( T )
-                  << "&) = " << t << " (" << lastPosition << "->" << newPosition
-                  << ")" << data << std::endl;
+                  << "&) = " << t << " (" << lastPosition << "->" << newPosition << ")" << data
+                  << std::endl;
 #    endif
     }
 
     template <class T>
-        requires( !Serializable<T>() )
+        requires( !Serializable<T>() && packable_v<T> )
     void write( const T& t ) {
-        static_assert( Writable_v<T> );
 #    ifdef HUB_DEBUG_OUTPUT
         std::cout << "<---" << HEADER << "\033[1mwrite\033[0m(writable: " << TYPE_NAME( T )
                   << ") ..." << std::endl;
 #    endif
-        t.write( *this );
+
+        const auto lastPosition = m_out.position();
+
+        memcpy( m_packData + lastPosition, reinterpret_cast<const Data_t*>( &t ), sizeof( T ) );
+        m_out.position() = lastPosition + sizeof( T );
+
+        const auto newPosition = m_out.position();
+        m_dataWrote += newPosition - lastPosition;
+
 #    ifdef HUB_DEBUG_OUTPUT
         std::cout << "<---" << HEADER << "\033[1mwrite\033[0m(writable: " << TYPE_NAME( T )
                   << ") = " << t << std::endl;
 #    endif
     }
 
-    //////////////////////////////
+    template <class T>
+        requires( !Serializable<T>() && !packable_v<T> )
+    void write( const T& t ) {
+        static_assert( Writable_v<T> );
+#    ifdef HUB_DEBUG_OUTPUT
+        std::cout << "<---" << HEADER << "\033[1mwrite\033[0m(writable: " << TYPE_NAME( T )
+                  << ") ..." << std::endl;
+#    endif
+
+        t.write( *this );
+
+#    ifdef HUB_DEBUG_OUTPUT
+        std::cout << "<---" << HEADER << "\033[1mwrite\033[0m(writable: " << TYPE_NAME( T )
+                  << ") = " << t << std::endl;
+#    endif
+    }
+
+    /////////////////////////////////// READ T ////////////////////////////////////
 
     template <class T>
         requires( Serializable<T>() )
@@ -245,7 +280,9 @@ class SerializerZppBits : public SerializerI
         std::cout << "\t--->" << HEADER << "\033[1;36mread\033[0m(" << TYPE_NAME( T ) << "&) ..."
                   << std::endl;
 #    endif
+
         const auto lastPosition = m_in.position();
+
         try {
             m_in( t ).or_throw();
         }
@@ -261,15 +298,36 @@ class SerializerZppBits : public SerializerI
         // const auto span = m_in.processed_data();
         const std::vector<Data_t> data( m_packData + lastPosition, m_packData + newPosition );
         std::cout << "\t--->" << HEADER << "\033[1;36mread\033[0m(" << TYPE_NAME( T )
-                  << "&) = " << t << " (" << lastPosition << "->" << newPosition
-                  << ")" << data << std::endl;
+                  << "&) = " << t << " (" << lastPosition << "->" << newPosition << ")" << data
+                  << std::endl;
 #    endif
     }
 
     template <class T>
-        requires( !Serializable<T>() )
+        requires( !Serializable<T>() && packable_v<T> )
     void read( T& t ) {
-        //        m_in( t ).or_throw();
+#    ifdef HUB_DEBUG_INPUT
+        std::cout << "\t--->" << HEADER << "\033[1mread\033[0m(readable: " << TYPE_NAME( T )
+                  << ") ..." << std::endl;
+#    endif
+
+        const auto lastPosition = m_in.position();
+
+        memcpy( reinterpret_cast<Data_t*>( &t ), m_packData + lastPosition, sizeof( T ) );
+        m_in.position() = lastPosition + sizeof( T );
+
+        const auto newPosition = m_in.position();
+        m_dataReaded += newPosition - lastPosition;
+
+#    ifdef HUB_DEBUG_INPUT
+        std::cout << "\t--->" << HEADER << "\033[1mread\033[0m(readable: " << TYPE_NAME( T )
+                  << ") = " << t << std::endl;
+#    endif
+    }
+
+    template <class T>
+        requires( !Serializable<T>() && !packable_v<T> )
+    void read( T& t ) {
         static_assert( Readable_v<T> );
 #    ifdef HUB_DEBUG_INPUT
         std::cout << "\t--->" << HEADER << "\033[1mread\033[0m(readable: " << TYPE_NAME( T )
@@ -277,13 +335,14 @@ class SerializerZppBits : public SerializerI
 #    endif
 
         t.read( *this );
+
 #    ifdef HUB_DEBUG_INPUT
         std::cout << "\t--->" << HEADER << "\033[1mread\033[0m(readable: " << TYPE_NAME( T )
                   << ") = " << t << std::endl;
 #    endif
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////// CHAR PTR //////////////////////////////////////////////////
 
     void write( char* str ) = delete; // non compatible format 32/64 bit
 
@@ -295,6 +354,25 @@ class SerializerZppBits : public SerializerI
 #    endif
         write( std::string( str ) );
     }
+
+#    ifdef ARCH_X86
+    void read( size_t size ) = delete; // non compatible format 32/64 bit
+#    endif
+
+    void read( char* str ) {
+        assert( str != nullptr );
+
+#    ifdef HUB_DEBUG_INPUT
+        std::cout << "\t--->" << HEADER << "read(char *)" << std::endl;
+#    endif
+
+        std::string string;
+        read( string );
+        memcpy( str, string.data(), string.size() );
+        str[string.size()] = 0;
+    }
+
+    /////////////////////////////////// PAIR ///////////////////////
 
     template <class T, class U>
     //            requires (writable_v<T> || writable_v<U>)
@@ -312,6 +390,24 @@ class SerializerZppBits : public SerializerI
     }
 
     template <class T, class U>
+        requires( !Serializables<T, U> )
+    void read( std::pair<T, U>& pair ) {
+
+        T first;
+        read( first );
+        U second;
+        read( second );
+        pair = std::make_pair( std::move( first ), std::move( second ) );
+        //        pair = std::make_pair( first, second );
+#    ifdef HUB_DEBUG_INPUT
+        std::cout << "\t--->" << HEADER << "read(std::pair<" << TYPE_NAME( T ) << ", "
+                  << TYPE_NAME( U ) << ">) = " << pair << std::endl;
+#    endif
+    }
+
+    /////////////////////////////////// MAP /////////////////////////////
+
+    template <class T, class U>
     //            requires (writable_v<T> || writable_v<U>)
         requires( !Serializables<T, U> )
     void write( const std::map<T, U>& map ) {
@@ -327,25 +423,6 @@ class SerializerZppBits : public SerializerI
         for ( const std::pair<T, U>& pair : map ) {
             write( pair );
         }
-    }
-
-    //    //////////////////////////////////////////////////////////////////////////////
-
-#    ifdef ARCH_X86
-    void read( size_t size ) = delete; // non compatible format 32/64 bit
-#    endif
-
-    void read( char* str ) {
-        assert( str != nullptr );
-
-#    ifdef HUB_DEBUG_INPUT
-        std::cout << "\t--->" << HEADER << "read(char *)" << std::endl;
-#    endif
-
-        std::string string;
-        read( string );
-        memcpy( str, string.data(), string.size() );
-        str[string.size()] = 0;
     }
 
     template <class T, class U>
@@ -367,24 +444,6 @@ class SerializerZppBits : public SerializerI
                   << TYPE_NAME( U ) << ") = " << map << std::endl;
 #    endif
     }
-
-    template <class T, class U>
-        requires( !Serializables<T, U> )
-    void read( std::pair<T, U>& pair ) {
-
-        T first;
-        read( first );
-        U second;
-        read( second );
-        pair = std::make_pair( std::move( first ), std::move( second ) );
-        //        pair = std::make_pair( first, second );
-#    ifdef HUB_DEBUG_INPUT
-        std::cout << "\t--->" << HEADER << "read(std::pair<" << TYPE_NAME( T ) << ", "
-                  << TYPE_NAME( U ) << ">) = " << pair << std::endl;
-#    endif
-    }
-
-    //    Result m_result { m_serialBuff.data(), 0 };
 };
 
 } // namespace serializer

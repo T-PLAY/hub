@@ -1,5 +1,5 @@
-#define HUB_DEBUG_INPUT
-#define HUB_DEBUG_OUTPUT
+// #define HUB_DEBUG_INPUT
+// #define HUB_DEBUG_OUTPUT
 
 #include <catch2/catch_test_macros.hpp>
 

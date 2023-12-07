@@ -56,6 +56,7 @@ TEST_CASE( "InputSensor test" ) {
         bgr8.r = i;
         outputSensor << acq;
     }
+    std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
 
     //////////////////////////////////////////////////////////////////////////////////
 
@@ -85,15 +86,7 @@ TEST_CASE( "InputSensor test" ) {
         CHECK( bgr8_read.r == i );
     }
 
-    // std::thread inputThread([&]() {
-    //     std::cout << "[test][InputThread] reading acq" << std::endl;
-    //     inputSensor >> acq_read;
-    //     std::cout << "read acq " << acq_read << std::endl;
-    // });
 
-    // inputThread.join();
-
-    // std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
 
     return;
 }

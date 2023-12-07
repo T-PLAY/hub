@@ -58,7 +58,7 @@ TEST_CASE( "InputOutputStream test" ) {
             // hub::Server server( port );
             // server.asyncRun();
 
-            hub::output::OutputStream outputStream( FILE_NAME, SERVER_PORT );
+            hub::output::OutputStream outputStream( FILE_NAME, SERVER_PORT, "127.0.0.1", false );
 
             hub::input::InputStream inputStream( FILE_NAME, SERVER_PORT );
 

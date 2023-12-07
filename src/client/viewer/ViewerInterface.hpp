@@ -154,8 +154,7 @@ class SRC_API ViewerInterface
                               int property,
                               const Any& value );
 
-           ///////////////////////////////////////////////////////////////////////////////////////////////
-
+    ///////////////////////////////////////////////////////////////////////////////////////////////
 
     int nStream() const;
     int nStreaming() const;
@@ -196,7 +195,6 @@ ViewerInterface<InputStream>::ViewerInterface( const std::string& name,
     m_viewerHandler( std::move( viewerHandler ) ),
     m_ipv4( ipv4 ),
     m_port( port ) {}
-
 
 template <class InputStream>
 ViewerInterface<InputStream>::~ViewerInterface() {
@@ -250,22 +248,18 @@ void ViewerInterface<InputStream>::setProperty( const std::string& streamName,
     //    }
 }
 
-template<class InputStream>
-int ViewerInterface<InputStream>::nStream() const
-{
+template <class InputStream>
+int ViewerInterface<InputStream>::nStream() const {
     return m_streams.size();
 }
 
-template<class InputStream>
-int ViewerInterface<InputStream>::nStreaming() const
-{
+template <class InputStream>
+int ViewerInterface<InputStream>::nStreaming() const {
     int ret = 0;
-    for (const auto & pair : m_streams) {
-        const auto & stream = pair.second;
+    for ( const auto& pair : m_streams ) {
+        const auto& stream = pair.second;
 
-        if (stream->isStreaming()) {
-            ++ret;
-        }
+        if ( stream->isStreaming() ) { ++ret; }
     }
     return ret;
     // return m_streams.size();
@@ -293,15 +287,14 @@ void ViewerInterface<InputStream>::addStream( const std::string& streamName,
     if ( m_viewerHandler.onNewStreamer ) {
 
         m_streams[streamName] =
-            std::make_unique<ViewerStream<InputStream>>(
-                m_ipv4,
-                m_port,
-                streamName,
-                sensorSpec,
-                m_viewerHandler.onNewStreamer,
-                m_viewerHandler.onDelStreamer,
-                m_viewerHandler.onNewAcquisition,
-                m_viewerHandler.onLogMessage );
+            std::make_unique<ViewerStream<InputStream>>( m_ipv4,
+                                                         m_port,
+                                                         streamName,
+                                                         sensorSpec,
+                                                         m_viewerHandler.onNewStreamer,
+                                                         m_viewerHandler.onDelStreamer,
+                                                         m_viewerHandler.onNewAcquisition,
+                                                         m_viewerHandler.onLogMessage );
         printStatus();
     }
 }
@@ -311,9 +304,9 @@ void ViewerInterface<InputStream>::deleteStream( const std::string& streamName )
 
     if ( m_viewerHandler.onNewStreamer ) {
         assert( m_viewerHandler.onDelStreamer );
-        //                        assert( m_streams.find( streamName ) !=
-        //                        m_streams.end() );
-        if ( m_streams.find( streamName ) != m_streams.end() ) { m_streams.erase( streamName ); }
+        assert( m_streams.find( streamName ) != m_streams.end() );
+        // if ( m_streams.find( streamName ) != m_streams.end() ) { m_streams.erase( streamName ); }
+        m_streams.erase(streamName);
         printStatus();
     }
 }

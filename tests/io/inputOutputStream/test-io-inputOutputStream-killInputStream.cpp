@@ -18,7 +18,7 @@ TEST_CASE( "InputOutputStream kill input stream test" ) {
     {
 
         {
-            hub::output::OutputStream outputStream( FILE_NAME, SERVER_PORT );
+            hub::output::OutputStream outputStream( FILE_NAME, SERVER_PORT, "127.0.0.1", false );
             int a = 5;
             {
                 hub::input::InputStream inputStream( FILE_NAME, SERVER_PORT );

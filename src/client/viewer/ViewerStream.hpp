@@ -96,8 +96,9 @@ ViewerStream<InputStream>::ViewerStream(
     m_onLogMessage( onLogMessage ) {
 
     assert( m_onNewStreamer );
-    m_streaming = m_onNewStreamer( streamName.c_str(), sensorSpec );
-    if ( m_onNewAcquisition && m_streaming ) { startStream(); }
+    // m_streaming = m_onNewStreamer( streamName.c_str(), sensorSpec );
+    const bool acceptStreamer = m_onNewStreamer( streamName.c_str(), sensorSpec );
+    if ( m_onNewAcquisition && acceptStreamer ) { startStream(); }
 }
 
 template <class InputStream>
@@ -128,6 +129,8 @@ void ViewerStream<InputStream>::startStream() {
 
             assert( m_onNewAcquisition );
 
+            assert(! m_streaming);
+            m_streaming = true;
             auto acq = m_inputSensor->acq();
             while ( !m_stopThread ) {
                 // sensor::Acquisition acq;
@@ -148,7 +151,11 @@ void ViewerStream<InputStream>::startStream() {
         m_streaming = false;
     } );
 
-    m_streaming = true;
+    // m_streaming = true;
+    // while (! m_streaming) {
+    //     std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    // }
+    // std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
     DEBUG_MSG( "[Viewer][Stream] startStream() streamer '" << m_streamName << "' inited " );
 }

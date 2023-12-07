@@ -309,7 +309,7 @@ void ClientSocketSystem::read( unsigned char* data, const size_t size ) {
 #endif
             //            close();
             disconnect();
-            throw SocketSystem::exception( "[ClientSocketSysteClientSocketSystem] read(data, size) "
+            throw SocketSystem::exception( "[ClientSocketSystem] read(data, size) "
                                            "Can't read packet, peer connection lost" );
         }
         else if ( byteRead == 0 ) {

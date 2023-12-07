@@ -74,9 +74,15 @@ class OutputT : public OutputBase
 #ifdef HUB_DEBUG_OUTPUT
         std::cout << HEADER << "write(packable: " << TYPE_NAME( T ) << ") = " << t << std::endl;
 #endif
+        // todo fix killOutputStream
+        // todo fix test-sensor-OutputSensor
         assert( isOpen() );
-        if constexpr ( isPacket<T> ) { write( t.data(), t.size() ); }
-        else { write( reinterpret_cast<const Data_t*>( &t ), sizeof( T ) ); }
+        if constexpr ( isPacket<T> ) {
+            write( t.data(), t.size() );
+        }
+        else {
+            write( reinterpret_cast<const Data_t*>( &t ), sizeof( T ) );
+        }
     }
 
     //    template <class T>

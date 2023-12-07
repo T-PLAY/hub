@@ -72,7 +72,9 @@ class InputT : public InputBase
         assert( isOpen() );
         assert( !isEnd() );
         if constexpr ( isPacket<T> ) { read( t.data(), t.size() ); }
-        else { read( reinterpret_cast<Data_t*>( &t ), sizeof( T ) ); }
+        else {
+            read( reinterpret_cast<Data_t*>( &t ), sizeof( T ) );
+        }
 #ifdef HUB_DEBUG_INPUT
         std::cout << "\t" << HEADER << "read(packable: " << TYPE_NAME( T ) << ") = " << t
                   << std::endl;

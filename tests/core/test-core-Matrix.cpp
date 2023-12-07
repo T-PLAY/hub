@@ -1,6 +1,6 @@
 
-#define HUB_DEBUG_INPUT
-#define HUB_DEBUG_OUTPUT
+// #define HUB_DEBUG_INPUT
+// #define HUB_DEBUG_OUTPUT
 
 #include "test_common.hpp"
 

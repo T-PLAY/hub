@@ -6,6 +6,6 @@ namespace hub {
 // std::string, const char*>();
 
 std::map<decltype( typeid( void ).hash_code() ), Anyable::AnyHelper> Anyable::s_anyables =
-    makeAnyHelperMap<void>();
+    makeAnyHelperMap<void, int, double, std::string, const char*>();
 
 } // namespace hub

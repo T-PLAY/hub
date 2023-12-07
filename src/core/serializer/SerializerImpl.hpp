@@ -25,6 +25,22 @@
 namespace hub {
 namespace serializer {
 
+template <typename T>
+using serializable_t = decltype( std::declval<T>().serialize( std::declval<ios&>() ) );
+//using serializable_t = decltype( T::serialize );
+// using serializable_t = decltype( std::declval<T&>().serialize() );
+
+template <typename T, typename = std::void_t<>>
+struct serializable : std::false_type {};
+
+template <typename T>
+struct serializable<T, std::void_t<serializable_t<T>>> : std::true_type {};
+
+template <typename T>
+// static constexpr bool serializable_v = serializable<std::remove_cvref_t<T>>::value;
+static constexpr bool serializable_v = serializable<T>::value;
+
+
 class SerializerImpl : public SerializerI
 {
     // static constexpr Size_t BuffSize = 1'000'000;

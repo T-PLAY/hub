@@ -31,14 +31,17 @@ namespace server {
 ServerImpl2::ServerImpl2( int port ) : m_serverSock( port ), m_givingPort( port + 1 ) {}
 
 ServerImpl2::~ServerImpl2() {
-    SERVER_MSG( "~ServerImpl2() started" );
+    // SERVER_MSG( "~ServerImpl2() started" );
 
     stop();
-    SERVER_MSG( "~ServerImpl2() ended" );
+    SERVER_MSG( "closing port " << m_serverSock );
+    SERVER_MSG( "stoping server" );
+    // SERVER_MSG( "~ServerImpl2() ended" );
 }
 
 std::string ServerImpl2::headerMsg() const {
-    const std::string str = "\t\033[1m[Server:0/" + std::to_string( m_nActiveClient ) + "]\033[0m ";
+    const std::string str = "\t\033[1m[Server:" + std::to_string( m_iClient ) + "/" +
+                            std::to_string( m_nActiveClient ) + "]\033[0m ";
     return str;
 }
 
@@ -49,7 +52,7 @@ void ServerImpl2::run() {
     SERVER_MSG( "listening port " << m_serverSock.getPort() );
 
     //    while ( m_nClient < m_maxClients && !m_killed ) {
-    int iClient = 0;
+    // int iClient = 0;
     while ( !m_killed ) {
 
         assert( m_serverSock.isConnected() );
@@ -60,7 +63,7 @@ void ServerImpl2::run() {
         SERVER_MSG( "new client" );
 
         m_mtxClients.lock();
-        Client2* newClient = initClient( std::move( sock ), ++iClient );
+        Client2* newClient = initClient( std::move( sock ), ++m_iClient );
         if ( newClient == nullptr ) { --m_nActiveClient; }
         else {
             m_clients.push_back( newClient );
@@ -293,27 +296,41 @@ void ServerImpl2::addStreamer( StreamerClient2* streamer ) {
     assert( m_streamName2streamer.find( streamName ) == m_streamName2streamer.end() );
     m_streamName2streamer[streamName] = streamer;
 
-    if ( !m_viewers.empty() ) {
-        auto preventThread = std::thread( [this, streamName, streamer]() {
-            // std::this_thread::sleep_for( std::chrono::milliseconds( 500 ) );
-            while ( ! streamer->m_fullyRetained ) {
-#ifdef DEBUG_OUTPUT_STREAM
-                std::cout << "[OutputStreamServer2] waiting for fully retained data ..." << std::endl;
-#endif
-                std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
-            };
+    if ( streamer->m_retained ) { // viewer need retained data due of sensor spec
+        if ( !m_viewers.empty() ) {
+            auto preventThread = std::thread( [this, streamName, streamer]() {
+                // std::this_thread::sleep_for( std::chrono::milliseconds( 500 ) );
+                while ( !streamer->m_fullyRetained ) {
+                    // #ifdef DEBUG_OUTPUT_STREAM
+                    std::cout << "[Server] waiting for fully retained data ..." << std::endl;
+                    // #endif
+                    std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+                };
 
-            SERVER_MSG( "prevent viewers there is a new streamer : '" << streamName << "'" );
-            m_mtxViewers.lock();
-            //        assert(streamer->getInputSensor() != nullptr);
-            for ( const auto& viewer : m_viewers ) {
-                viewer->notifyNewStreamer( streamName, streamer->m_retainedData );
-            }
-            m_mtxViewers.unlock();
-            // SERVER_MSG( "prevent viewers there is a new streamer : '" << streamName << "' done" );
-            // SERVER_MSG( "--------------------------------------------------" );
-        } );
-        preventThread.detach();
+                // assert( m_streamName2streamer.find( streamName ) == m_streamName2streamer.end()
+                // ); std::vector<Data_t> retainedData = streamer->m_retainedData;
+
+                SERVER_MSG( "prevent viewers there is a new streamer : '" << streamName << "'" );
+                m_mtxViewers.lock();
+                //        assert(streamer->getInputSensor() != nullptr);
+                for ( const auto& viewer : m_viewers ) {
+                    viewer->notifyNewStreamer( streamName, streamer->m_retainedData );
+                    // viewer->notifyNewStreamer( streamName, retainedData );
+                }
+                m_mtxViewers.unlock();
+
+                assert( !streamer->m_retainedSharedToViewer );
+                streamer->m_retainedSharedToViewer = true;
+                // SERVER_MSG( "prevent viewers there is a new streamer : '" << streamName << "'
+                // done"
+                // ); SERVER_MSG( "--------------------------------------------------" );
+            } );
+            preventThread.detach();
+        }
+        else {
+            assert( !streamer->m_retainedSharedToViewer );
+            streamer->m_retainedSharedToViewer = true;
+        }
     }
 
     streamer->printStatusMessage( "new streamer" );
@@ -367,11 +384,13 @@ void ServerImpl2::delStreamer( StreamerClient2* streamer ) {
     m_streamName2streamer.erase( streamName );
     m_mtxStreamName2streamer.unlock();
 
-    m_mtxViewers.lock();
-    for ( auto* viewer : m_viewers ) {
-        viewer->notifyDelStreamer( streamName );
+    if ( streamer->m_retained ) { // viewer need retained data due of sensor spec
+        m_mtxViewers.lock();
+        for ( auto* viewer : m_viewers ) {
+            viewer->notifyDelStreamer( streamName );
+        }
+        m_mtxViewers.unlock();
     }
-    m_mtxViewers.unlock();
 
     //    m_mtxPrint.lock();
     std::cout << streamer->headerMsg() << "end streamer : '" << streamName << "'" << std::endl;

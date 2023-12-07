@@ -18,7 +18,7 @@ TEST_CASE( "InputOutputStream broadcast test" ) {
     double durationInMillisecondBroadcast;
     double gigaBytePerSecondBroadcast;
 
-    constexpr auto nOutputStream = 1;
+    // constexpr auto nOutputStream = 1;
     constexpr auto nInputStream  = 5;
 
     {
@@ -26,7 +26,7 @@ TEST_CASE( "InputOutputStream broadcast test" ) {
 
         {
             std::vector<hub::output::OutputStream> outputStreams;
-            outputStreams.emplace_back( FILE_NAME, SERVER_PORT );
+            outputStreams.emplace_back( FILE_NAME, SERVER_PORT, "127.0.0.1", false );
 
             {
                 std::vector<hub::input::InputStream> inputStreams;
@@ -39,9 +39,9 @@ TEST_CASE( "InputOutputStream broadcast test" ) {
                     gigaBytePerSecondSerial     = gigaBytePerSecond;
                 }
 
-                for ( int i = 1; i < nOutputStream; ++i ) {
-                    outputStreams.emplace_back( FILE_NAME + std::to_string( i ), SERVER_PORT );
-                }
+                // for ( int i = 1; i < nOutputStream; ++i ) {
+                //     outputStreams.emplace_back( FILE_NAME + std::to_string( i ), SERVER_PORT );
+                // }
 
                 for ( int i = 1; i < nInputStream; ++i ) {
                     inputStreams.emplace_back( FILE_NAME, SERVER_PORT );

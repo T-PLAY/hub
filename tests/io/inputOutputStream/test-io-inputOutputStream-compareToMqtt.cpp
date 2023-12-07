@@ -36,7 +36,7 @@ TEST_CASE( "Server test : InputOutputStream_vs_Mqtt" ) {
 
         {
 
-            hub::output::OutputStream outputStream( FILE_NAME, SERVER_PORT );
+            hub::output::OutputStream outputStream( FILE_NAME, SERVER_PORT, "127.0.0.1", false );
 
             hub::input::InputStream inputStream( FILE_NAME, SERVER_PORT );
 

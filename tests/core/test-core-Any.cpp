@@ -12,6 +12,10 @@
 #include <core/io/Archive.hpp>
 #include <map>
 
+#ifdef HUB_BUILD_SENSOR
+#include <sensor/Format.hpp>
+#endif
+
 // #include <data/Mat4.hpp>
 
 class Lambda
@@ -210,6 +214,57 @@ class Lambda
         archive.read( any_read );
         CHECK( any == any_read );
     }
+
+#ifdef HUB_BUILD_SENSOR
+//     {
+//         using Format = hub::sensor::format::BGR8;
+//         const Format bgr8(0.0f);
+// #ifdef HUB_DEBUG_OUTPUT
+//         std::cout << "\n------------------ " << TYPE_NAME( Lambda ) << " ---------------------\n";
+// #endif
+//         //    archive.write(lambda);
+//         //    Lambda lambda{5, 0.0, 1.0f, {0, 1, 2}};
+//         any      = bgr8;
+//         any_read = bgr8;
+//         CHECK( any == any_read );
+//         any_read = Format(0.0f);
+//         CHECK( any != any_read );
+//         std::cout << any << std::endl;
+//         CHECK( any.is<Format>() );
+//         // CHECK( any.get<Format>() == bgr8 );
+
+//         archive.write( any );
+//         archive.read( any_read );
+//         CHECK( any == any_read );
+//     }
+
+    {
+        using Format = hub::sensor::format::MAT4;
+        static_assert(hub::packable_v<Format>);
+        // static_assert(! hub::isPacket<Format>);
+        // static_assert(! hub::serializable_v<Format>);
+        static_assert(! hub::serializer::SerializerZppBits::Serializable<Format>());
+        const Format mat4(1.0f);
+#ifdef HUB_DEBUG_OUTPUT
+        std::cout << "\n------------------ " << TYPE_NAME( Lambda ) << " ---------------------\n";
+#endif
+        //    archive.write(lambda);
+        //    Lambda lambda{5, 0.0, 1.0f, {0, 1, 2}};
+        any      = mat4;
+        any_read = mat4;
+        CHECK( any == any_read );
+        any_read = Format(2.0f);
+        CHECK( any != any_read );
+        std::cout << any << std::endl;
+        CHECK( any.is<Format>() );
+        CHECK( any.get<Format>() == mat4 );
+
+        archive.write( any );
+        archive.read( any_read );
+        CHECK( any == any_read );
+    }
+#endif
+
 
     //    std::cout << "any type: " << any.type() << std::endl;
     //    std::cout << "any value: " << any.getValueAsString() << std::endl;

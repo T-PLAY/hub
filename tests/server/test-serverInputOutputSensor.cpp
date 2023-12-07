@@ -29,6 +29,9 @@ TEST_CASE( "Server test : InputOutputSensor" ) {
     hub::input::InputStream inputStream( FILE_NAME, SERVER_PORT );
 
     test::sensor::inputOutputSensorBench( inputStream, outputStream );
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(100)); // need by viewer to catch retained data before the deletion of streamer client
+
     return;
 
     //    // initing datum

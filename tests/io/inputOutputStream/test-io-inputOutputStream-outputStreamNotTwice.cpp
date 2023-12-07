@@ -13,7 +13,7 @@ TEST_CASE( "InputOutputStream no stream twice test" ) {
     INIT_SERVER
 
     {
-        hub::output::OutputStream outputStream( FILE_NAME, SERVER_PORT );
+        hub::output::OutputStream outputStream( FILE_NAME, SERVER_PORT, "127.0.0.1", false );
 
         try {
             hub::output::OutputStream outputStream2( FILE_NAME, SERVER_PORT );

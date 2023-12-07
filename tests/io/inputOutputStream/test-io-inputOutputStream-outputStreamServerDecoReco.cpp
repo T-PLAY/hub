@@ -19,7 +19,7 @@ TEST_CASE( "OutputStream server deco reco test" ) {
     assert( server.nStreamer() == 0 );
 
     {
-        hub::output::OutputStream outputStream( FILE_NAME, port );
+        hub::output::OutputStream outputStream( FILE_NAME, port, "127.0.0.1", false );
         assert(server.nClient() == 1);
         assert( server.nStreamer() == 1 );
 

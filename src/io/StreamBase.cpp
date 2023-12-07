@@ -80,7 +80,10 @@ static const std::string
 
         "STREAM_VIEWER_INITED",
 
-        // "RETAINED_DATA",
+        "RETAINED_DATA_START",
+        "RETAINED_DATA_END",
+
+        "RETAINED_SHARED_TO_VIEWER",
 };
 std::ostream& operator<<( std::ostream& os, const StreamBase::ServerMessage& msg ) {
     os << serverMessage2string[(int)msg];

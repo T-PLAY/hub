@@ -96,7 +96,7 @@ class SRC_API ServerImpl2
     std::list<Client2*> m_clients;
     std::mutex m_mtxClients;
 
-    //    int m_iClient    = 0;
+    int m_iClient       = 0;
     int m_nActiveClient = 0;
     //    int m_maxClients = 1'000'000;
 

@@ -3,6 +3,9 @@
 #include <regex>
 #include <sstream>
 
+// #include <core/io/Book.hpp>
+#include <core/Serializer.hpp>
+#include <core/io/Memory.hpp>
 
 namespace hub {
 // namespace impl2 {
@@ -20,9 +23,9 @@ ViewerServer2::ViewerServer2( const std::string& name,
         while ( !m_stopThread ) {
             try {
 
-                DEBUG_MSG( "[Viewer] trying to connect to server : " << m_sock);
+                DEBUG_MSG( "[Viewer] trying to connect to server : " << m_sock );
                 // DEBUG_MSG( "[Viewer] trying to connect to server at ipv4 "
-                           // << m_sock.getIpv4() << " and port " << m_sock.getPort() );
+                // << m_sock.getIpv4() << " and port " << m_sock.getPort() );
 
                 assert( !m_sock.isOpen() );
                 m_sock.connect();
@@ -35,25 +38,46 @@ ViewerServer2::ViewerServer2( const std::string& name,
                 if ( m_viewerHandler.onServerConnected )
                     m_viewerHandler.onServerConnected( m_sock.getIpv4().c_str(), m_sock.getPort() );
 
+                printStatus();
+
                 while ( !m_stopThread ) {
 
                     hub::io::StreamBase::ServerMessage serverMessage;
-                    DEBUG_MSG( "[Viewer] waiting for new server message ...")
+                    DEBUG_MSG( "[Viewer] waiting for new server message ..." )
                     m_sock.read( serverMessage );
-                    DEBUG_MSG( "[Viewer] new server message : " << serverMessage)
+                    DEBUG_MSG( "[Viewer] new server message : " << serverMessage )
 
                     switch ( serverMessage ) {
 
                     case hub::io::StreamBase::ServerMessage::VIEWER_NEW_STREAMER: {
 
-                        // std::this_thread::sleep_for(std::chrono::milliseconds(100));
+#ifdef DEBUG
+                        std::this_thread::sleep_for(
+                            std::chrono::milliseconds( 100 ) ); // log messages
+#endif
 
                         std::string streamName;
                         m_sock.read( streamName );
                         // std::cout << "[Viewer] read stream name: " << streamName << std::endl;
 
+                        hub::io::StreamBase::ServerMessage servMess;
+                        m_sock.read( servMess );
+                        assert( servMess ==
+                                hub::io::StreamBase::ServerMessage::RETAINED_DATA_START );
+                        std::vector<Data_t> retainedData;
+                        m_sock.read( retainedData );
+                        m_sock.read( servMess );
+                        assert( servMess == hub::io::StreamBase::ServerMessage::RETAINED_DATA_END );
+
+                        // hub::io::Book book(retainedData);
+
+                        hub::io::Memory memory( retainedData );
+
+                        // hub::Serializer serializer;
                         sensor::SensorSpec sensorSpec;
-                        m_sock.read( sensorSpec );
+                        // serializer.read(sensorSpec);
+                        memory.read( sensorSpec );
+                        // m_sock.read( sensorSpec );
                         // std::cout << "[Viewer] read sensor spec: " << sensorSpec << std::endl;
                         // std::cout << "[Viewer] new streamer '" << streamName << "'" << std::endl;
 
@@ -127,8 +151,8 @@ ViewerServer2::ViewerServer2( const std::string& name,
                     } break;
 
                     default: {
-                        assert( false );
                         DEBUG_MSG( "[Viewer] unknown message from server" );
+                        assert( false );
                         throw net::ClientSocket::exception(
                             "[viewer] unknown message from server " );
                     }
@@ -141,9 +165,9 @@ ViewerServer2::ViewerServer2( const std::string& name,
                     DEBUG_MSG( "[Viewer] server disconnected, catch exception " << e.what() );
                 }
                 else {
-                    DEBUG_MSG( "[Viewer] server not found : " << m_sock);
+                    DEBUG_MSG( "[Viewer] server not found : " << m_sock );
                     // DEBUG_MSG( "[Viewer] server not found at ipv4 "
-                               // << m_sock.getIpv4() << " and port " << m_sock.getPort() );
+                    // << m_sock.getIpv4() << " and port " << m_sock.getPort() );
                     if ( m_viewerHandler.onServerNotFound )
                         m_viewerHandler.onServerNotFound( m_sock.getIpv4().c_str(),
                                                           m_sock.getPort() );
@@ -161,6 +185,7 @@ ViewerServer2::ViewerServer2( const std::string& name,
             if ( m_serverConnected ) {
                 m_serverConnected = false;
                 DEBUG_MSG( "[Viewer] server disconnected, close all client connections" );
+                printStatus();
 
                 if ( m_viewerHandler.onServerDisconnected )
                     m_viewerHandler.onServerDisconnected( m_sock.getIpv4().c_str(),
