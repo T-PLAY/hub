@@ -270,7 +270,8 @@ void output::OutputStreamServer2::write( const Data_t* data, Size_t size ) {
             clientSocket.write( data, size );
         }
         catch ( std::exception& ex ) {
-            clientSocket.close();
+            // todo check
+//            clientSocket.close();
             std::cout << "[OutputStream] catch exception : " << ex.what() << std::endl;
             socketToRemoves.push_back( &clientSocket );
             // clientSockets.remove()

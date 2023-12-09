@@ -257,7 +257,7 @@ void ClientSocketSystem::write( const unsigned char* data, const size_t size ) {
 #ifdef HUB_DEBUG_SOCKET_OUTPUT
             DEBUG_MSG( getHeader() << "sended bytes = " << byteSent );
 #endif
-            assert( -1 <= byteSent && byteSent <= size );
+            assert( -1 <= byteSent && byteSent <= (int64_t)size );
         }
         catch ( std::exception& e ) {
             std::cout << "[ClientSocket] catch exception : " << e.what() << std::endl;
