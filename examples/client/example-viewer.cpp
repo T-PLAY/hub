@@ -14,8 +14,8 @@
 // #include <iostream>
 
 // #include <Streamer.hpp>
-#include <sensor/OutputSensor.hpp>
 #include <client/Viewer.hpp>
+#include <sensor/OutputSensor.hpp>
 
 int main() {
     // TEST_CASE( "Viewer" ) {
@@ -24,53 +24,50 @@ int main() {
     //    const int port         = GET_RANDOM_PORT;
     const int port = 1883;
 
+    hub::client::ViewerHandler viewerHandler;
     // startConstruction
-    auto onNewStreamer = [=]( const std::string& streamName, const hub::sensor::SensorSpec& sensorSpec ) {
+    viewerHandler.onNewStreamer = [=]( const std::string& streamName,
+                              const hub::sensor::SensorSpec& sensorSpec ) {
         std::cout << "\t[example-viewer] onNewStreamer : " << streamName << std::endl;
         // accept all stream to run
         return true;
-//        return false;
+        //        return false;
     };
-    auto onDelStreamer = []( const std::string& streamName, const hub::sensor::SensorSpec& sensorSpec ) {
+    viewerHandler.onDelStreamer = []( const std::string& streamName,
+                             const hub::sensor::SensorSpec& sensorSpec ) {
         std::cout << "\t[example-viewer] onDelStreamer : " << streamName << std::endl;
     };
-    auto onServerNotFound = []( const std::string& ipv4, int port ) {
+    viewerHandler.onServerNotFound = []( const std::string& ipv4, int port ) {
         std::cout << "\t[example-viewer] onServerNotFound : " << ipv4 << " " << port << std::endl;
     };
-    auto onServerConnected = []( const std::string& ipv4, int port ) {
+    viewerHandler.onServerConnected = []( const std::string& ipv4, int port ) {
         std::cout << "\t[example-viewer] onServerConnected : " << ipv4 << " " << port << std::endl;
     };
-    auto onServerDisconnected = []( const std::string& ipv4, int port ) {
+    viewerHandler.onServerDisconnected = []( const std::string& ipv4, int port ) {
         std::cout << "\t[example-viewer] onServerDisconnected : " << ipv4 << " " << port
                   << std::endl;
     };
-    auto onNewAcquisition = []( const std::string& streamName, const hub::sensor::Acquisition& acq ) {
+    viewerHandler.onNewAcquisition = []( const std::string& streamName,
+                                const hub::sensor::Acquisition& acq ) {
         std::cout << "\t[example-viewer] onNewAcquisition : " << acq << std::endl;
     };
-    auto onSetProperty = []( const std::string& streamName,
+    viewerHandler.onSetProperty = []( const std::string& streamName,
                              const std::string& objectName,
                              int property,
                              const hub::Any& value ) {
         std::cout << "\t[example-viewer] onSetProperty " << streamName << std::endl;
     };
-        auto onLogMessage = []( const std::string& logMessage ) {
-            std::cout << "[example-viewer] onLogMessage '" << logMessage << "'" << std::endl;
-        };
+    viewerHandler.onLogMessage = []( const std::string& logMessage ) {
+        std::cout << "[example-viewer] onLogMessage '" << logMessage << "'" << std::endl;
+    };
 
     {
         std::cout << "\t[example-viewer] creating viewer" << std::endl;
         hub::client::Viewer viewer( FILE_NAME,
-                                        onNewStreamer,
-                                        onDelStreamer,
-                                        onServerNotFound,
-                                        onServerConnected,
-                                        onServerDisconnected,
-                                        onNewAcquisition,
-                                        onSetProperty,
-                                    onLogMessage,
-            ipv4,
-                                        port
-                                        //                                        ,onLogMessage
+                                    std::move(viewerHandler),
+                                    ipv4,
+                                    port
+                                    //                                        ,onLogMessage
         );
         //    hub::client::Viewer viewer {
         //        onNewStreamer, onDelStreamer, onServerNotFound, onServerConnected,
@@ -80,15 +77,25 @@ int main() {
 
         {
             std::cout << "\t[example-viewer] creating outputSensor" << std::endl;
-            hub::sensor::Resolution res { { 1 }, hub::sensor::Format::BGR8 };
-            hub::sensor::SensorSpec sensorSpec( "sensorName", { res } );
+            // hub::sensor::Resolution res { { 1 }, hub::sensor::Format::BGR8 };
+            using res = hub::sensor::format::BGR8;
+            // hub::sensor::SensorSpec sensorSpec( "sensorName", { res } );
+            hub::sensor::SensorSpec sensorSpec( "sensorName" );
             hub::sensor::OutputSensor outputSensor(
-                sensorSpec, hub::output::OutputStream( "streamName", ipv4, port ) );
+                sensorSpec, hub::output::OutputStream( "streamName", port, ipv4 ) );
 
             std::this_thread::sleep_for( std::chrono::milliseconds( 3000 ) );
 
-            unsigned char data[3] {1, 2, 3};
-            hub::sensor::Acquisition acq = std::move(hub::sensor::Acquisition(1, 1) << hub::Measure(data, 3, res));
+            // unsigned char data[3] { 1, 2, 3 };
+            // hub::sensor::Acquisition acq =
+                // std::move( hub::sensor::Acquisition( 1, 1 ) << hub::Measure( data, 3, res ) );
+            auto acq = outputSensor.acqMsg();
+            acq.start() = 1;
+            acq.end() = 1;
+            auto & bgr8 = acq.get<hub::sensor::format::BGR8&>();
+            bgr8.b = 1;
+            bgr8.g = 2;
+            bgr8.r = 3;
             outputSensor << acq;
 
             std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
@@ -151,8 +158,8 @@ int main() {
 
     //            unsigned char data[3] { 1, 2, 3 };
     //            hub::sensor::Acquisition acq =
-    //                std::move( hub::sensor::Acquisition( 0, 1 ) << hub::Measure( data, 3, resolution
-    //                ) );
+    //                std::move( hub::sensor::Acquisition( 0, 1 ) << hub::Measure( data, 3,
+    //                resolution ) );
     //            for ( int i = 0; i < 10; ++i ) {
     //                outputSensor << acq;
     //            }

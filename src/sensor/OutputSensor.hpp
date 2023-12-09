@@ -9,6 +9,7 @@
 //// #include "core/Traits.hpp"
 
 // user friendly useless includes
+// #include "core/Utils.hpp"
 #include "io/output/OutputFile.hpp"
 #include "io/output/OutputStream.hpp"
 
@@ -36,6 +37,7 @@
 
 namespace hub {
 namespace sensor {
+
 
 /////
 ///// \brief The OutputSensor class
@@ -119,7 +121,7 @@ class OutputSensorT : public Sensor
     OutputSensorT( const SensorSpec& sensorSpec, Output& output ) :
         Sensor( sensorSpec ), m_output( output ) {
 
-        if constexpr ( isMatrix<Resolution> ) { m_spec.setResolution( Resolution().getSerial() ); }
+        if constexpr ( isMatrix<Resolution> ) { m_spec.setResolution( Resolution().getMatrix() ); }
         else { m_spec.setResolution( make_matrix<Resolution>() ); }
 
         m_output.setRetain( true );
@@ -134,7 +136,7 @@ class OutputSensorT : public Sensor
         m_output( *( new Output( std::move( output ) ) ) ),
         m_outputOwner( true ) {
 
-        if constexpr ( isMatrix<Resolution> ) { m_spec.setResolution( Resolution().getSerial() ); }
+        if constexpr ( isMatrix<Resolution> ) { m_spec.setResolution( Resolution().getMatrix() ); }
         else { m_spec.setResolution( make_matrix<Resolution>() ); }
 
         m_output.setRetain( true );

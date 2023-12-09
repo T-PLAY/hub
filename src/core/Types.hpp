@@ -3,6 +3,7 @@
 
 namespace hub {
 
+
 // namespace types {
 
 // using Full_HD      = ResolutionT<format::RGB8, 1920, 1080>;

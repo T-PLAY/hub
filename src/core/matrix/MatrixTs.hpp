@@ -42,7 +42,7 @@ class MatrixTs
 
     template <class Type>
     static constexpr int nType() {
-        static_assert( hasType<Type>() );
+        // static_assert( hasType<Type>() );
         return ( nType<Type, Types>() + ... );
     }
 
@@ -55,7 +55,7 @@ class MatrixTs
     template <class Type, class Matrix, class... Types_>
         requires( isMatrix<Matrix> )
     static constexpr int nType() {
-        if constexpr ( sizeof...( Types_ ) ) {
+        if constexpr ( sizeof...( Types_ ) > 0 ) {
             return Matrix::template nType<Type>() + ( nType<Type, Types_>() + ... );
         }
         else { return Matrix::template nType<Type>(); }

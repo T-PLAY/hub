@@ -77,7 +77,7 @@ class SRC_API SensorSpec
     ///
 
     SensorSpec( const std::string& sensorName,
-                const Matrix& resolution = {},
+                const Matrix& resolution,
                 const MetaData& metaData = {} ) :
         m_sensorName { sensorName }, m_resolution { resolution.clone() }, m_metaData { metaData } {}
 

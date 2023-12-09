@@ -1,5 +1,8 @@
 #pragma once
 
+#include <chrono>
+
+#include "core/Types.hpp"
 #include "core/Matrix.hpp"
 #include "core/matrix/MatrixTs.hpp"
 
@@ -7,6 +10,11 @@ namespace hub {
 namespace sensor {
 
 using Clock = long long;
+
+static Clock getClock() {
+    return std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count();
+}
+
 
 class Acquisition : public Matrix
 {
