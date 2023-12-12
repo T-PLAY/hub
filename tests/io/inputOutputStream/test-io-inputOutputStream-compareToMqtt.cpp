@@ -41,7 +41,7 @@ TEST_CASE( "Server test : InputOutputStream_vs_Mqtt" ) {
         INIT_SERVER
 
         {
-            hub::output::OutputStream outputStream( FILE_NAME, SERVER_PORT );
+            hub::output::OutputStream outputStream( FILE_NAME, SERVER_PORT, SERVER_IP, TEST_IO_HEADER );
             hub::input::InputStream inputStream( FILE_NAME, SERVER_PORT );
 
             const auto& start2 = std::chrono::high_resolution_clock::now();

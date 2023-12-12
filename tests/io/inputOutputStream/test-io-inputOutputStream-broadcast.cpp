@@ -23,12 +23,15 @@ TEST_CASE( "InputOutputStream broadcast test" ) {
     // constexpr auto nOutputStream = 1;
     constexpr auto nInputStream  = 5;
 
+    // const auto& [dataGen, sizeGen] = generateTestData();
+    // std::cout << s_testData << std::endl;
+
     {
         INIT_SERVER
 
         {
             std::vector<hub::output::OutputStream> outputStreams;
-            outputStreams.emplace_back( FILE_NAME, SERVER_PORT );
+            outputStreams.emplace_back( FILE_NAME, SERVER_PORT, SERVER_IP, TEST_IO_HEADER );
 
             {
                 std::vector<hub::input::InputStream> inputStreams;

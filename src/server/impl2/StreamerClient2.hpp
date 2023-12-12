@@ -92,7 +92,7 @@ class StreamerClient2 : public Client2
     // bool m_retained;
     const std::string m_streamIpv4;
     const int m_streamPort;
-    Datas_t m_header;
+    io::Header m_header;
     // std::atomic<bool> m_fullyRetained = false;
     // std::atomic<bool> m_retainedSharedToViewer = false;
 

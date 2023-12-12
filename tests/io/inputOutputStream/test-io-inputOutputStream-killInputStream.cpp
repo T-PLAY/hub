@@ -12,7 +12,7 @@
 TEST_CASE( "InputOutputStream kill input stream test" ) {
     TEST_BEGIN()
 
-// int main() {
+    // int main() {
     const auto hostname = hub::utils::getHostname();
 
     INIT_SERVER
@@ -20,7 +20,10 @@ TEST_CASE( "InputOutputStream kill input stream test" ) {
     {
 
         {
-            hub::output::OutputStream outputStream( FILE_NAME, SERVER_PORT );
+            // hub::output::OutputStream outputStream( FILE_NAME, SERVER_PORT );
+            const hub::io::Header header{sizeof(int)};
+            hub::output::OutputStream outputStream(
+                FILE_NAME, SERVER_PORT, SERVER_IP, header );
             int a = 5;
             {
                 hub::input::InputStream inputStream( FILE_NAME, SERVER_PORT );

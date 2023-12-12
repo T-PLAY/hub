@@ -26,7 +26,8 @@ namespace input {
 class SRC_API InputStreamServer2 : public Input, public io::StreamServer2
 {
   public:
-    static struct {} not_endable;
+    static struct {
+    } not_endable;
     using Input::read;
     using io::StreamServer2::getHeader;
 
@@ -48,8 +49,8 @@ class SRC_API InputStreamServer2 : public Input, public io::StreamServer2
     //                          net::ClientSocket&& clientSocket = net::ClientSocket() );
     InputStreamServer2( int streamPort, const std::string& ipv4 = "127.0.0.1" );
     InputStreamServer2( const std::string& streamName,
-                       int serverPort                = s_defaultPort,
-                       const std::string& serverIpv4 = s_defaultIpv4 );
+                        int serverPort                = s_defaultPort,
+                        const std::string& serverIpv4 = s_defaultIpv4 );
 
     ///
     /// \brief InputStreamServer2
@@ -120,7 +121,7 @@ class SRC_API InputStreamServer2 : public Input, public io::StreamServer2
 
 inline bool InputStreamServer2::isOpen() const {
     // return ! m_serverSocket || m_serverSocket->isOpen();
-    assert(m_streamSocket != nullptr);
+    assert( m_streamSocket != nullptr );
     return m_streamSocket->isOpen();
 }
 
@@ -131,7 +132,10 @@ inline void InputStreamServer2::read( Data_t* data, Size_t len ) {
 }
 
 inline void InputStreamServer2::close() {
+    assert( false );
+#ifdef HUB_DEBUG_INPUT_STREAM
     std::cout << "[InputStreamServer2] close() started" << std::endl;
+#endif
 
     // inputSensor closing, prevent server this stream is done
     //    if ( !m_streamerClosed && !m_streamViewerClientClosed ) {
@@ -165,11 +169,13 @@ inline void InputStreamServer2::close() {
 
     if ( m_serverSocket->isOpen() ) m_serverSocket->close();
 
+#ifdef HUB_DEBUG_INPUT_STREAM
     std::cout << "[InputStreamServer2] close() ended" << std::endl;
+#endif
 }
 
 inline bool InputStreamServer2::isEnd() const {
-    assert(m_streamSocket != nullptr);
+    assert( m_streamSocket != nullptr );
     return m_streamSocket->isEnd();
     // return m_serverSocket->isEnd();
 }

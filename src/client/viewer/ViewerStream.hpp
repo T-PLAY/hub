@@ -14,18 +14,20 @@
 // #include "sensor/InputSensor.hpp"
 // #include "sensor/SensorSpec.hpp"
 
-#ifdef DEBUG_MSG
-#    undef DEBUG_MSG
+#ifdef HUB_DEBUG_VIEWER_STREAM
+#    ifdef DEBUG_MSG
+#        undef DEBUG_MSG
+#    endif
+#    define DEBUG_MSG( _params )                                              \
+        do {                                                                  \
+            if ( m_viewerHandler.onLogMessage ) {                             \
+                std::stringstream _sstr;                                      \
+                _sstr << m_iStreamer << ":" << _params;                       \
+                m_viewerHandler.onLogMessage( _sstr.str().c_str() );          \
+            }                                                                 \
+            else { std::cout << m_iStreamer << ":" << _params << std::endl; } \
+        } while ( false );
 #endif
-#define DEBUG_MSG( _params )                                              \
-    do {                                                                  \
-        if ( m_viewerHandler.onLogMessage ) {                             \
-            std::stringstream _sstr;                                      \
-            _sstr << m_iStreamer << ":" << _params;                       \
-            m_viewerHandler.onLogMessage( _sstr.str().c_str() );          \
-        }                                                                 \
-        else { std::cout << m_iStreamer << ":" << _params << std::endl; } \
-    } while ( false );
 
 namespace hub {
 namespace client {
@@ -39,7 +41,7 @@ class ViewerStream
         const std::string& streamIpv4,
         int streamPort,
         const std::string& streamName,
-        Datas_t&& header,
+        io::Header&& header,
         ViewerHandler& viewerHandler
         // const sensor::SensorSpec& sensorSpec,
         // std::function<bool( const char* streamName, const sensor::SensorSpec& )> onNewStream,
@@ -68,7 +70,7 @@ class ViewerStream
     int m_streamPort;
 
     const std::string m_streamName;
-    const Datas_t m_header;
+    const io::Header m_header;
     // const sensor::SensorSpec m_sensorSpec;
 
     std::atomic<bool> m_streaming = false;
@@ -97,7 +99,7 @@ ViewerStream<InputStream>::ViewerStream(
     const std::string& streamIpv4,
     int streamPort,
     const std::string& streamName,
-    Datas_t&& header,
+    io::Header&& header,
     ViewerHandler& viewerHandler
     // const sensor::SensorSpec& sensorSpec,
     // std::function<bool( const char*, const sensor::SensorSpec& )> onNewStream,
@@ -130,22 +132,30 @@ ViewerStream<InputStream>::ViewerStream(
 
 template <class InputStream>
 ViewerStream<InputStream>::~ViewerStream() {
+#ifdef HUB_DEBUG_VIEWER_STREAM
     DEBUG_MSG( "[Viewer][Stream] ~Stream() streamer '" << m_streamName << "' started" );
+#endif
     // if ( m_viewerHandler.onNewAcquisition && m_streaming ) {
-    if ( m_viewerHandler.onNewData && m_streaming ) {
-        assert( m_thread != nullptr );
-        // if ( m_viewerHandler.onDelStream ) { m_viewerHandler.onDelStream( m_streamName.c_str(),
-        // m_header ); }
+    if ( m_viewerHandler.onNewData ) {
+        if ( m_streaming ) {
+            assert( m_thread != nullptr );
+            // if ( m_viewerHandler.onDelStream ) { m_viewerHandler.onDelStream(
+            // m_streamName.c_str(), m_header ); }
+            stopStream();
+        }
         if ( m_viewerHandler.onDelStream ) { m_viewerHandler.onDelStream( m_streamName.c_str() ); }
-        stopStream();
     }
 
+#ifdef HUB_DEBUG_VIEWER_STREAM
     DEBUG_MSG( "[Viewer][Stream] ~Stream() streamer '" << m_streamName << "' ended" );
+#endif
 }
 
 template <class InputStream>
 void ViewerStream<InputStream>::startStream() {
-    DEBUG_MSG( "[Viewer][Stream] startStream" );
+#ifdef HUB_DEBUG_VIEWER_STREAM
+    // DEBUG_MSG( "[Viewer][Stream] startStream" );
+#endif
 
     assert( m_thread == nullptr );
     assert( !m_streaming );
@@ -155,7 +165,9 @@ void ViewerStream<InputStream>::startStream() {
     m_thread = new std::thread( [this]() {
         try {
 
-            DEBUG_MSG( "[Viewer][Stream] starting streaming thread" );
+#ifdef HUB_DEBUG_VIEWER_STREAM
+            // DEBUG_MSG( "[Viewer][Stream] starting streaming thread" );
+#endif
             // m_inputSensor = std::make_unique<sensor::InputSensor>(
             // InputStream( m_streamName, m_streamPort, m_streamIpv4 ) );
             // m_inputStream = std::make_unique<InputStream>( m_streamName, m_streamPort,
@@ -164,19 +176,24 @@ void ViewerStream<InputStream>::startStream() {
             assert( m_inputStream->isOpen() );
             // InputStream inputStream(m_streamName, m_streamPort, m_streamIpv4);
 
-            DEBUG_MSG( "[Viewer][Stream] inputStream inited" );
+#ifdef HUB_DEBUG_VIEWER_STREAM
+            // DEBUG_MSG( "[Viewer][Stream] inputStream inited" );
+#endif
 
             // assert( m_viewerHandler.onInitStream );
             // m_viewerHandler.onInitStream(m_streamName.c_str(), *m_inputStream);
 
-            // hub::Datas_t retainedData;
+            // hub::io::Header retainedData;
             // m_inputStream->read(retainedData);
-            // hub::Datas_t retainedData(m_header.size());
+            // hub::io::Header retainedData(m_header.size());
             // m_inputStream->read(retainedData.data(), retainedData.size());
             assert( m_inputStream->getHeader() == m_header );
 
             // assert( m_viewerHandler.onNewAcquisition );
             assert( m_viewerHandler.onNewData );
+            assert( m_header.getDataSize() > 0 );
+
+            Datas_t datas( m_header.getDataSize() );
 
             assert( !m_streaming );
             m_streaming = true;
@@ -186,36 +203,48 @@ void ViewerStream<InputStream>::startStream() {
                 assert( m_inputStream->isOpen() );
                 // sensor::Acquisition acq;
                 // *m_inputSensor >> acq;
+                m_inputStream->read( datas.data(), datas.size() );
                 // m_viewerHandler.onNewAcquisition( m_streamName.c_str(), acq );
-                m_viewerHandler.onNewData( m_streamName.c_str(), *m_inputStream );
+                // m_viewerHandler.onNewData( m_streamName.c_str(), *m_inputStream );
+                m_viewerHandler.onNewData( m_streamName.c_str(), datas );
             }
         }
         catch ( std::exception& e ) {
+#ifdef HUB_DEBUG_VIEWER_STREAM
             DEBUG_MSG( "[Viewer][Stream] startStream() streamer '"
                        << "'" << m_streamName << "' disconnected, catch exception " << e.what() );
+#endif
         }
 
+#ifdef HUB_DEBUG_VIEWER_STREAM
         if ( m_stopThread ) {
             DEBUG_MSG( "[Viewer][Stream] streamer '" << m_streamName << "' thread killed" );
         }
         DEBUG_MSG( "[Viewer][Stream] thread end" );
+#endif
 
         m_streaming = false;
     } );
 
     // m_streaming = true;
     while ( !m_streaming ) {
-        DEBUG_MSG( "[Viewer][Stream] waiting for start streaming ..." );
-        std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+#ifdef HUB_DEBUG_VIEWER_STREAM
+        // DEBUG_MSG( "[Viewer][Stream] waiting for start streaming ..." );
+#endif
+        std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
     }
     // std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
-    DEBUG_MSG( "[Viewer][Stream] startStream() streamer '" << m_streamName << "' inited" );
+#ifdef HUB_DEBUG_VIEWER_STREAM
+    DEBUG_MSG( "[Viewer][Stream] streaming '" << m_streamName << "'" );
+#endif
 }
 
 template <class InputStream>
 void ViewerStream<InputStream>::stopStream() {
-    DEBUG_MSG( "[Viewer][Stream] stopStream() streamer '" << m_streamName << "' started" );
+#ifdef HUB_DEBUG_VIEWER_STREAM
+    DEBUG_MSG( "[Viewer][Stream] stop stream '" << m_streamName << "' started" );
+#endif
 
     assert( m_thread != nullptr );
     assert( m_stopThread == false );
@@ -226,7 +255,9 @@ void ViewerStream<InputStream>::stopStream() {
     delete m_thread;
     m_thread = nullptr;
 
-    DEBUG_MSG( "[Viewer][Stream] stopStream() streamer '" << m_streamName << "' ended" );
+#ifdef HUB_DEBUG_VIEWER_STREAM
+    DEBUG_MSG( "[Viewer][Stream] stop stream '" << m_streamName << "' ended" );
+#endif
 }
 
 template <class InputStream>

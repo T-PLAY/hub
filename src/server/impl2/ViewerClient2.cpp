@@ -22,7 +22,7 @@ ViewerClient2::ViewerClient2( ServerImpl2* server, int iClient, net::ClientSocke
             while ( ! m_viewerClosed ) {
                 hub::io::StreamBase::ClientMessage message;
                 m_socket.read( message );
-                std::cout << "[ViewerClient] read message : " << message << std::endl;
+                // std::cout << "[ViewerClient] read message : " << message << std::endl;
                 if ( message == hub::io::StreamBase::ClientMessage::VIEWER_CLIENT_SET_PROPERTY ) {
                     std::string streamName;
                     std::string objectName;
@@ -145,7 +145,7 @@ void ViewerClient2::end( hub::io::StreamBase::ServerMessage message ) {
         try {
             assert( m_socket.isOpen() );
             m_socket.write( message );
-            std::cout << headerMsg() << "end(" << message << ")" << std::endl;
+            // std::cout << headerMsg() << "end(" << message << ")" << std::endl;
         }
         catch ( std::exception& ex ) {
             std::cout << headerMsg() << "catch exception " << ex.what() << std::endl;

@@ -22,6 +22,7 @@ TEST_CASE( "InputOutputStream kill server test" ) {
     // not allowed
     {
 
+        // const hub::io::Header header{sizeof(int)};
         hub::output::OutputStream outputStream( FILE_NAME, port );
 
         hub::input::InputStream inputStream( FILE_NAME, port );

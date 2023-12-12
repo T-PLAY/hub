@@ -43,19 +43,19 @@ ViewerServer2::ViewerServer2( const std::string& name,
                 while ( !m_stopThread ) {
 
                     hub::io::StreamBase::ServerMessage serverMessage;
-                    DEBUG_MSG( "[Viewer] waiting for new server message ..." )
+                    // DEBUG_MSG( "[Viewer] waiting for new server message ..." )
                     m_sock.read( serverMessage );
-                    DEBUG_MSG( "[Viewer] new server message : " << serverMessage )
+                    // DEBUG_MSG( "[Viewer] new server message : " << serverMessage )
 
                     switch ( serverMessage ) {
 
                     case hub::io::StreamBase::ServerMessage::VIEWER_NEW_STREAMER: {
                         // ++m_nStreamer;
 
-#ifdef DEBUG
-                        std::this_thread::sleep_for(
-                            std::chrono::milliseconds( 100 ) ); // log messages concurrency
-#endif
+// #ifdef DEBUG
+//                         std::this_thread::sleep_for(
+//                             std::chrono::milliseconds( 100 ) ); // log messages concurrency
+// #endif
 
                         std::string streamName;
                         m_sock.read( streamName );
@@ -71,7 +71,7 @@ ViewerServer2::ViewerServer2( const std::string& name,
                         // m_sock.read( servMess );
                         // assert( servMess ==
                         //         hub::io::StreamBase::ServerMessage::RETAINED_DATA_START );
-                        Datas_t header;
+                        io::Header header;
                         m_sock.read( header );
                         // m_sock.read( servMess );
                         // assert( servMess == hub::io::StreamBase::ServerMessage::RETAINED_DATA_END );
@@ -185,7 +185,7 @@ ViewerServer2::ViewerServer2( const std::string& name,
                 // able the viewer clients to be aware of the starting of server less than 100
                 // milliseconds.
                 int i = 0;
-                while ( !m_stopThread && i < 10 ) {
+                while ( !m_stopThread && i < 5 ) {
                     std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
                     ++i;
                 }

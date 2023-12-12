@@ -159,7 +159,7 @@ class SRC_API ViewerInterface
     void printStatus() const;
 
     // void addStream( const std::string& streamName, const sensor::SensorSpec& sensorSpec );
-    void addStream(const std::string& streamName , const std::string & streamIpv4, int streamPort, Datas_t &&header);
+    void addStream(const std::string& streamName , const std::string & streamIpv4, int streamPort, io::Header &&header);
     void delStream( const std::string& streamName );
 
     std::string m_name;
@@ -214,7 +214,7 @@ ViewerInterface<InputStream>::~ViewerInterface() {
 /////////////////////////////////////////////////////
 
 template <class InputStream>
-void ViewerInterface<InputStream>::addStream(const std::string& streamName, const std::string &streamIpv4, int streamPort, Datas_t && header )
+void ViewerInterface<InputStream>::addStream(const std::string& streamName, const std::string &streamIpv4, int streamPort, io::Header && header )
 // const sensor::SensorSpec& sensorSpec ) {
 {
     assert( m_streams.find( streamName ) == m_streams.end() );
@@ -305,14 +305,16 @@ template <class InputStream>
 void ViewerInterface<InputStream>::printStatus() const {
     std::string str;
     for ( const auto& pair : m_streams ) {
-        const auto& streamName = pair.first;
+        auto streamName = pair.first;
+        streamName = streamName.substr( std::max( 0, (int)streamName.size() - 12 ), 12 );
+
         const auto& stream     = pair.second;
-        if ( stream == nullptr ) { str += "(" + streamName + ",null)"; }
-        else { str += "(" + streamName + "," + std::to_string( stream->isStreaming() ) + ")"; }
+        if ( stream == nullptr ) { str += " (" + streamName + ",null)"; }
+        else { str += " (" + streamName + "," + std::to_string( stream->isStreaming() ) + ")"; }
     }
     DEBUG_MSG( "\033[7m[Viewer] status : server connected:" << m_serverConnected
-                                                            << ", nbStreamer:" << m_streams.size()
-                                                            << " " << str << "\033[0m" );
+                                                            << ", nStreamer:" << m_streams.size()
+                                                             << str << "\033[0m" );
 }
 
 

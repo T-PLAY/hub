@@ -14,10 +14,10 @@ TEST_CASE( "InputOutputStream no stream twice test" ) {
     INIT_SERVER
 
     {
-        hub::output::OutputStream outputStream( FILE_NAME, SERVER_PORT);
+        hub::output::OutputStream outputStream( FILE_NAME, SERVER_PORT, SERVER_IP, TEST_IO_HEADER);
 
         try {
-            hub::output::OutputStream outputStream2( FILE_NAME, SERVER_PORT );
+            hub::output::OutputStream outputStream2( FILE_NAME, SERVER_PORT, SERVER_IP, TEST_IO_HEADER );
             assert( false );
         }
         catch ( hub::net::system::SocketSystem::exception& ex ) {

@@ -1,13 +1,12 @@
 
 #include <iostream>
 
-#include <io/Stream.hpp>
 #include <client/Viewer.hpp>
+#include <io/Stream.hpp>
 
 #define COLOR "\033[41m"
 #define HEADER_MSG "\t\t" COLOR "[Viewer]\033[0m "
 
-// int main() {
 int main( int argc, char* argv[] ) {
 
     bool exitWhenServerLost = false;
@@ -42,8 +41,6 @@ int main( int argc, char* argv[] ) {
     bool exit = false;
 
     hub::client::ViewerHandler viewerHandler;
-    // auto onNewStream = [=]( const std::string& streamName, const hub::sensor::SensorSpec&
-    // sensorSpec ) {
     viewerHandler.onServerNotFound = [&]( const std::string& ipv4, int port ) {
         std::cout << HEADER_MSG "onServerNotFound : " << ipv4 << " " << port << std::endl;
         // if ( exitWhenServerLost ) { exit = true; }
@@ -55,20 +52,20 @@ int main( int argc, char* argv[] ) {
         std::cout << HEADER_MSG "onServerDisconnected : " << ipv4 << " " << port << std::endl;
         if ( exitWhenServerLost ) { exit = true; }
     };
-    // viewerHandler.onNewStream = [=]( const std::string& streamName,
-    //                                    const hub::sensor::SensorSpec& sensorSpec ) {
-    //     std::cout << HEADER_MSG "onNewStream : " << streamName << ", " << sensorSpec << std::endl;
-    //     return true;
-    // };
-    viewerHandler.onNewStream = [=]( const std::string& streamName,
-                                       const hub::Datas_t& header ) {
+    // auto onNewStream = [=]( const std::string& streamName, const hub::sensor::SensorSpec&
+    // sensorSpec ) {
+    viewerHandler.onNewStream = [=]( const std::string& streamName, const hub::io::Header& header ) {
         std::cout << HEADER_MSG "onNewStream : " << streamName << ", " << header << std::endl;
         return true;
+        // return header.getDataSize() > 0;
     };
-    viewerHandler.onDelStream = []( const std::string& streamName) {
-                                      // const hub::Datas_t & header ) {
-        // std::cout << HEADER_MSG "onDelStream : " << streamName << ", " << header << std::endl;
-        std::cout << HEADER_MSG "onDelStream : " << streamName << std::endl;
+    viewerHandler.onNewData = []( const std::string& streamName,
+                                  const hub::Datas_t& datas ) {
+                                  // hub::input::InputStream& inputStream ) {
+        // std::cout << COLOR "+\033[0m";
+        // int a;
+        // inputStream.read( a );
+        std::cout << "[test-client-Viewer] '" << streamName << "', onNewData : " << datas << std::endl;
     };
     // viewerHandler.onNewAcquisition = []( const std::string& streamName,
     //                                      const hub::sensor::Acquisition& acq ) {
@@ -76,10 +73,11 @@ int main( int argc, char* argv[] ) {
     //     //        std::cout << "+";
     //     std::cout << COLOR "+\033[0m";
     // };
-    // viewerHandler.onNewData = []( const std::string& streamName,
-    //                                      hub::input::InputStream& inputStream ) {
-    //     // std::cout << COLOR "+\033[0m";
-    // };
+    viewerHandler.onDelStream = []( const std::string& streamName ) {
+        // const hub::io::Header & header ) {
+        // std::cout << HEADER_MSG "onDelStream : " << streamName << ", " << header << std::endl;
+        std::cout << HEADER_MSG "onDelStream : " << streamName << std::endl;
+    };
     viewerHandler.onSetProperty = []( const std::string& streamName,
                                       const std::string& objectName,
                                       int property,
@@ -91,16 +89,7 @@ int main( int argc, char* argv[] ) {
         std::cout << HEADER_MSG "onLogMessage '" << logMessage << "'" << std::endl;
     };
 
-    hub::client::Viewer viewer( FILE_NAME, std::move( viewerHandler ), "127.0.0.1", port);
-                                // onNewStream,
-                                // onDelStream,
-                                // onServerNotFound,
-                                // onServerConnected,
-                                // onServerDisconnected,
-                                // onNewAcquisition,
-                                // onSetProperty,
-                                // onLogMessage
-    // );
+    hub::client::Viewer viewer( FILE_NAME, std::move( viewerHandler ), "127.0.0.1", port );
 
     std::cout << "\t[viewer] Ctrl+C to exit" << std::endl;
 

@@ -13,7 +13,7 @@
 // #include "sensor/Acquisition.hpp"
 // #include "sensor/SensorSpec.hpp"
 
-#define DEBUG_OUTPUT_STREAM
+// #define DEBUG_OUTPUT_STREAM
 
 namespace hub {
 namespace output {
@@ -50,7 +50,7 @@ class SRC_API OutputStreamServer2 : public Output, public io::StreamServer2
     explicit OutputStreamServer2( const std::string& streamName,
                                   int port                = s_defaultPort,
                                   const std::string& ipv4 = s_defaultIpv4,
-                                  const hub::Datas_t & header = {}
+                                  const hub::io::Header & header = {}
                                   );
                                   // bool retained           = true );
     ///
@@ -62,8 +62,6 @@ class SRC_API OutputStreamServer2 : public Output, public io::StreamServer2
     ~OutputStreamServer2();
 
     // void streamProcess();
-    void startStreaming();
-    void tryConnectToServer();
     //    void write( const sensor::Acquisition& acq );
     //    void write( const sensor::SensorSpec& sensorSpec );
 
@@ -76,18 +74,21 @@ class SRC_API OutputStreamServer2 : public Output, public io::StreamServer2
 
     // #endif
     // int getNStreamViewer() const;
+    int getNStreamViewer() const;
 
   private:
+    void startStreaming();
+    void tryConnectToServer();
     void killServer();
 
     struct SharedData {
         std::unique_ptr<hub::io::InputOutputSocket> m_serverSocket;
         // bool m_retained;
-        // Datas_t m_header;
+        // io::Header m_header;
         int m_streamPort = 0;
         std::list<hub::io::InputOutputSocket> m_streamViewerSocks;
         std::mutex m_mtxClientSockets;
-        // std::vector<hub::Data_t> m_retainedData;
+        std::vector<hub::Data_t> m_retainedData;
         // std::atomic<bool> m_retainedSharedToViewer = false;
         // std::atomic<bool> m_fullyRetained = false;
         bool m_killed                          = false;
@@ -132,6 +133,7 @@ class SRC_API OutputStreamServer2 : public Output, public io::StreamServer2
 // void OutputStreamServer2::write( const unsigned char* data, size_t len );
 
 inline void OutputStreamServer2::close() {
+    assert(false);
     m_data->m_serverSocket->close();
     // std::cout << "[OutputStreamServer2] close() started" << std::endl;
     //    assert( m_serverSocket->isOpen() );

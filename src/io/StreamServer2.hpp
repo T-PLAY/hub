@@ -31,8 +31,8 @@ class StreamServer2 : public hub::io::StreamBase
     }
 
   protected:
-    StreamServer2( const std::string& name, const std::string& ipv4, int port, const Datas_t & header );
-    StreamServer2( const char* name, const char* ipv4, int port, const Datas_t & header );
+    StreamServer2( const std::string& name, const std::string& ipv4, int port, const io::Header & header );
+    StreamServer2( const char* name, const char* ipv4, int port, const io::Header & header );
 
     //    int m_iAcq = 0;
     //    net::ClientSocket m_clientSocket;

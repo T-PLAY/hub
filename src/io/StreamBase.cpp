@@ -105,16 +105,17 @@ std::ostream& operator<<( std::ostream& os, const StreamBase::ServerMessage& msg
 StreamBase::StreamBase( const std::string& name,
                         const std::string& ipv4,
                         int port,
-                        const Datas_t& header ) :
+                        const Header& header ) :
+    m_name( name ), m_ipv4( ipv4 ), m_port( port ), m_header( header ) {
+}
+
+StreamBase::StreamBase( const char* name, const char* ipv4, int port, const Header& header ) :
     m_name( name ), m_ipv4( ipv4 ), m_port( port ), m_header( header ) {}
 
-StreamBase::StreamBase( const char* name, const char* ipv4, int port, const Datas_t& header ) :
-    m_name( name ), m_ipv4( ipv4 ), m_port( port ), m_header( header ) {}
-
-const Datas_t & StreamBase::getHeader() const
-{
+const Header& StreamBase::getHeader() const {
     return m_header;
 }
+
 
 } // namespace io
 } // namespace hub

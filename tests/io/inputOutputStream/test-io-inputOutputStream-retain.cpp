@@ -17,7 +17,8 @@ TEST_CASE( "InputOutputStream retain test" ) {
     INIT_SERVER
 
     {
-        hub::output::OutputStream outputStream( FILE_NAME, SERVER_PORT );
+        const hub::io::Header header{sizeof(int)};
+        hub::output::OutputStream outputStream( FILE_NAME, SERVER_PORT, SERVER_IP, header );
 
         {
             hub::input::InputStream inputStream( FILE_NAME, SERVER_PORT );
@@ -41,9 +42,10 @@ TEST_CASE( "InputOutputStream retain test" ) {
             inputStream2.read( a_read );
             assert( a == a_read );
 
-            outputStream.setRetain( true );
             a = 7;
+            outputStream.setRetain( true );
             outputStream.write( a );
+            outputStream.setRetain( false );
 
             hub::input::InputStream inputStream3( FILE_NAME, SERVER_PORT );
             assert(inputStream3.isOpen());

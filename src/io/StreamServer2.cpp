@@ -20,12 +20,12 @@ const int StreamServer2::s_defaultPort = 1993; // author's birthday, not snmp-tc
 StreamServer2::StreamServer2( const std::string& name,
                               const std::string& ipv4,
                               int port,
-                              const Datas_t& header ) :
-    StreamBase( name, ipv4, port,header  )
+                              const io::Header& header ) :
+    StreamBase( name, ipv4, port, header )
 //    m_clientSocket(ipv4, port) {}
 {}
 
-StreamServer2::StreamServer2( const char* name, const char* ipv4, int port, const Datas_t& header ) :
+StreamServer2::StreamServer2( const char* name, const char* ipv4, int port, const io::Header& header ) :
     StreamBase( name, ipv4, port, header )
 //    m_clientSocket(ipv4, port)
 {}

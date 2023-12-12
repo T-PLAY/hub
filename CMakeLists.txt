@@ -239,6 +239,10 @@ foreach(MODULE "core" "net" "data" "io" "sensor" "server" "client" "native")
     set(HUB_BUILD_${UPPER_MODULE} 0)
 endforeach()
 
+if (HUB_BUILD_NATIVE)
+    message(FATAL_ERROR "ou")
+endif()
+
 #set(HUB_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
 #set(HUB_SOURCE_DIR ".")
 #set(HUB_SOURCE_DIRS "client") # io sensor

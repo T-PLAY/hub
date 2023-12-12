@@ -26,6 +26,8 @@
 // #include <io/Server.hpp>
 #include <server/Server.hpp>
 
+#define SERVER_IP "127.0.0.1"
+
 #ifdef HUB_SERVER_PORT
 // #ifdef HUB_TEST_ALL
 #    define INIT_SERVER const auto SERVER_PORT = HUB_SERVER_PORT;
@@ -91,11 +93,16 @@ static auto generateTestData() {
     if ( s_testData.empty() ) {
         s_testData.resize( s_dataSize );
         s_testData_read.resize( s_dataSize );
-        std::fill( s_testData.begin(), s_testData.end(), rand() );
+        // std::fill( s_testData.begin(), s_testData.end(), rand() );
+        std::generate(s_testData.begin(), s_testData.end(), rand);
         //        memset(s_testData.data(), 55, s_dataSize);
     }
     return std::tuple<const hub::Data_t*, hub::Size_t>( s_testData.data(), s_testData.size() );
 }
+
+static const hub::io::Header s_header_ref { s_dataSize };
+
+#define TEST_IO_HEADER s_header_ref
 
 template <class Input, class Output>
 static auto inputOutputBench( Input& input, Output& output, std::string verbose = "") {

@@ -47,7 +47,7 @@ TEST_CASE( "InputOutputStream test" ) {
         const auto& [durationInMillisecond, gigaBytePerSecond] =
             inputOutputBench( inputOutputSocket, inputOutputSocket2, "InputOutputSocket" );
         // durationInMillisecondSocket = durationInMillisecond;
-        gigaBytePerSecondSocket     = gigaBytePerSecond;
+        gigaBytePerSecondSocket = gigaBytePerSecond;
     }
 
     // double durationInMillisecondInputOutputStream;
@@ -60,14 +60,15 @@ TEST_CASE( "InputOutputStream test" ) {
             // hub::Server server( port );
             // server.asyncRun();
 
-            hub::output::OutputStream outputStream( FILE_NAME, SERVER_PORT );
+            hub::output::OutputStream outputStream(
+                FILE_NAME, SERVER_PORT, SERVER_IP, TEST_IO_HEADER );
 
             hub::input::InputStream inputStream( FILE_NAME, SERVER_PORT );
 
             const auto& [durationInMillisecond, gigaBytePerSecond] =
                 inputOutputBench( inputStream, outputStream, "InputOutputStrem" );
             // durationInMillisecondInputOutputStream = durationInMillisecond;
-            gigaBytePerSecondInputOutputStream     = gigaBytePerSecond;
+            gigaBytePerSecondInputOutputStream = gigaBytePerSecond;
         }
     }
 

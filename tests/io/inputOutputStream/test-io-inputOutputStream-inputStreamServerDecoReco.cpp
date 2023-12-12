@@ -20,9 +20,16 @@ TEST_CASE( "InputStream server deco reco test" ) {
     server.asyncRun();
 
     {
-        hub::output::OutputStream outputStream( FILE_NAME, port );
+        // hub::output::OutputStream outputStream( FILE_NAME, port );
+        // const hub::io::Header header{sizeof(int)};
+        hub::output::OutputStream outputStream( FILE_NAME, port);
+        assert(server.nClient() == 1);
+        assert( server.nStreamer() == 1 );
+        assert(outputStream.getNStreamViewer() == 0);
+
 
         hub::input::InputStream inputStream( FILE_NAME, port );
+        assert(outputStream.getNStreamViewer() == 1);
 
         int a = 5;
         outputStream.write( a );
@@ -31,6 +38,9 @@ TEST_CASE( "InputStream server deco reco test" ) {
         assert( a == a_read );
 
         server.stop();
+        assert(server.nClient() == 0);
+        assert( server.nStreamer() == 0 );
+        assert(outputStream.getNStreamViewer() == 1);
 
         a = 6;
         outputStream.write( a );
@@ -38,7 +48,13 @@ TEST_CASE( "InputStream server deco reco test" ) {
         assert( a == a_read );
 
         server.asyncRun();
-        std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
+        // std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
+        while ( server.nStreamer() != 1 ) {
+            std::cout << "[test] waiting for sreamer recon ..." << std::endl;
+            std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+        }
+        assert( server.nStreamer() == 1 );
+        assert(outputStream.getNStreamViewer() == 1);
 
         a = 7;
         outputStream.write( a );

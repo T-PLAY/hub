@@ -24,11 +24,12 @@ class ViewerHandler
     std::function<void( const char* ipv4, int port )> onServerConnected;
     std::function<void( const char* ipv4, int port )> onServerDisconnected;
 
-    std::function<bool( const char* streamName, const Datas_t & header )>
+    std::function<bool( const char* streamName, const io::Header & header )>
         onNewStream;
     // std::function<void( const char* streamName, input::InputStream & inputStream )>
         // onInitStream;
-    std::function<void( const char* streamName, input::InputStream & inputStream )> onNewData;
+    // std::function<void( const char* streamName, input::InputStream & inputStream )> onNewData;
+    std::function<void( const char* streamName, const Datas_t & datas )> onNewData;
     // std::function<bool( const char* streamName, const sensor::SensorSpec& sensorSpec )>
         // onNewStream;
     std::function<void( const char* streamName )>

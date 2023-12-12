@@ -10,6 +10,8 @@
 namespace hub {
 namespace output {
 
+static constexpr int s_pingToServerDelay = 500; // ms
+
 OutputStreamServer2::OutputStreamServer2( int streamPort ) :
     io::StreamServer2( "", "", 0, {} ), m_data( std::make_unique<SharedData>() ) {
 
@@ -21,7 +23,7 @@ OutputStreamServer2::OutputStreamServer2( int streamPort ) :
 OutputStreamServer2::OutputStreamServer2( const std::string& streamName,
                                           int port,
                                           const std::string& ipv4,
-                                          const Datas_t& header
+                                          const io::Header& header
                                           // bool retained ) :
                                           ) :
     io::StreamServer2( streamName, ipv4, port, header ),
@@ -39,14 +41,14 @@ OutputStreamServer2::OutputStreamServer2( const std::string& streamName,
             try {
                 if ( !data->m_serverSocket->isConnected() ) {
 #ifdef DEBUG_OUTPUT_STREAM
-                    std::cout << "[OutputStream][Server] try connect to server " << *data->m_serverSocket
-                              << std::endl;
+                    std::cout << "[OutputStream][Server] try connect to server "
+                              << *data->m_serverSocket << std::endl;
 #endif
                     data->m_serverSocket->connect();
                 }
                 if ( !data->m_serverConnected ) { tryConnectToServer(); }
 #ifdef DEBUG_OUTPUT_STREAM
-                    std::cout << "[OutputStream][Server] waiting for server message ..." << std::endl;
+                std::cout << "[OutputStream][Server] waiting for server message ..." << std::endl;
 #endif
                 data->m_serverSocket->read( mess );
 
@@ -58,7 +60,8 @@ OutputStreamServer2::OutputStreamServer2( const std::string& streamName,
                         hub::io::StreamBase::ClientMessage::CLIENT_SERVER_DOWN );
                     data->m_serverSocket->close();
                     data->m_serverConnected = false;
-                    std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
+                    std::this_thread::sleep_for( std::chrono::milliseconds( s_pingToServerDelay ) );
+                    // std::this_thread::sleep_for( std::chrono::milliseconds( 500 ) );
                     // continue;
                 }
                 else if ( mess == hub::io::StreamBase::ServerMessage::STREAMER_CLOSED ) {
@@ -80,7 +83,7 @@ OutputStreamServer2::OutputStreamServer2( const std::string& streamName,
 #ifdef DEBUG_OUTPUT_STREAM
                     std::cout << "[OutputStream][Server] streamer inited" << std::endl;
 #endif
-                    assert( !data->m_streamerInited );
+                    // assert( !data->m_streamerInited );
                     data->m_streamerInited = true;
                     // continue;
                 }
@@ -95,7 +98,8 @@ OutputStreamServer2::OutputStreamServer2( const std::string& streamName,
                 // #ifdef DEBUG_OUTPUT_STREAM
                 std::cout << "[OutputStream][Server] catch exception : " << ex.what() << std::endl;
                 // #endif
-                std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
+                std::this_thread::sleep_for( std::chrono::milliseconds( s_pingToServerDelay ) );
+                // std::this_thread::sleep_for( std::chrono::milliseconds( 500 ) );
             }
         } // while (! data->m_shutdown)
     } );
@@ -105,7 +109,7 @@ OutputStreamServer2::OutputStreamServer2( const std::string& streamName,
 #ifdef DEBUG_OUTPUT_STREAM
         std::cout << "[OutputStream] waiting for server connected ..." << std::endl;
 #endif
-        std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+        std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
     };
 
     startStreaming();
@@ -114,7 +118,7 @@ OutputStreamServer2::OutputStreamServer2( const std::string& streamName,
 #ifdef DEBUG_OUTPUT_STREAM
         std::cout << "[OutputStream] waiting for streamer initing ..." << std::endl;
 #endif
-        std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+        std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
     };
 }
 
@@ -219,7 +223,7 @@ void OutputStreamServer2::startStreaming() {
 
             if ( clientType == hub::io::StreamBase::ClientType::STREAM_VIEWER ) {
 #ifdef DEBUG_OUTPUT_STREAM
-            std::cout << "[OutputStream][Stream] new stream viewer" << std::endl;
+                std::cout << "[OutputStream][Stream] new stream viewer" << std::endl;
 #endif
 
                 if ( data->m_serverSocket != nullptr && data->m_serverSocket->isConnected() ) {
@@ -243,20 +247,19 @@ void OutputStreamServer2::startStreaming() {
                 streamViewerSock.write(
                     hub::io::StreamBase::ClientMessage::STREAMER_CLIENT_STREAM_VIEWER_INITED );
 
-                // if ( !data->m_retainedData.empty() ) {
-                //                 if ( !m_header.empty() ) {
-                //                     // std::cout << "[OutputStream] write retain data (" <<
-                //                     // data->m_retainedData.size()
-                //                     // << " bytes)" << std::endl;
-                // #ifdef DEBUG_OUTPUT_STREAM
-                //                     std::cout << "[OutputStream] load retain data " <<
-                //                     data->m_retainedData
-                //                               << std::endl;
-                // #endif
-                //                     // streamViewerSock.write( data->m_retainedData.data(),
-                //                     // data->m_retainedData.size() );
-                //                     streamViewerSock.write( m_header.data(), m_header.size() );
-                //                 }
+                if ( !data->m_retainedData.empty() ) {
+                    // if ( !m_header.empty() ) {
+                    // std::cout << "[OutputStream] write retain data (" <<
+                    // data->m_retainedData.size()
+                    // << " bytes)" << std::endl;
+#ifdef DEBUG_OUTPUT_STREAM
+                    std::cout << "[OutputStream] load retain data " << data->m_retainedData
+                              << std::endl;
+#endif
+                    streamViewerSock.write( data->m_retainedData.data(),
+                                            data->m_retainedData.size() );
+                    // streamViewerSock.write( m_header.data(), m_header.size() );
+                }
 
                 data->m_streamViewerSocks.push_back( std::move( streamViewerSock ) );
                 data->m_mtxClientSockets.unlock();
@@ -273,7 +276,9 @@ void OutputStreamServer2::startStreaming() {
 #endif
     } );
 
-    while ( !m_data->m_isStreaming ) {};
+    while ( !m_data->m_isStreaming ) {
+        std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
+    };
 }
 
 void output::OutputStreamServer2::write( const Data_t* data, Size_t size ) {
@@ -341,38 +346,48 @@ void output::OutputStreamServer2::write( const Data_t* data, Size_t size ) {
 }
 
 void OutputStreamServer2::setRetain( bool retain ) {
-    //     if ( retain ) {
-    //         m_data->m_writingFun = [this]( const Data_t* data, Size_t size ) {
-    //             assert( size > 0 );
-    //             m_data->m_retainedData.insert( m_data->m_retainedData.end(), data, data + size );
-    //             // m_data->m_serverSocket->write(size);
-    //             m_data->m_serverSocket->write( io::StreamBase::ClientMessage::NEW_RETAIN_DATA );
-    //             m_data->m_serverSocket->write( size );
-    //             m_data->m_serverSocket->write( data, size );
-    //             // std::cout << "[OutputStream] save retained data (" << size << " bytes)" <<
-    //             std::endl;
-    //             // std::vector<Data_t> vector(data, data + size);
-    // #ifdef DEBUG_OUTPUT_STREAM
-    //             std::cout << "[OutputStream] save retained data : " << m_data->m_retainedData
-    //                       << std::endl;
-    // #endif
-    //         };
-    //     }
-    //     else {
-    //         // assert( !m_data->m_retainedSharedToViewer );
-    //         if ( m_data->m_retained ) {
-    //             m_data->m_retainedSharedToViewer = false;
-    //             m_data->m_serverSocket->write( io::StreamBase::ClientMessage::FULLY_RETAINED_DATA
-    //             );
-    //             // m_data->m_fullyRetained = true;
-    //             m_data->m_writingFun = nullptr;
-    //             while ( !m_data->m_retainedSharedToViewer ) {
-    //                 std::cout << "[OutputStream] waiting for shared retained data to viewer ..."
-    //                           << std::endl;
-    //                 std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
-    //             }
-    //         }
-    //     }
+    if ( retain ) {
+        m_data->m_writingFun = [this]( const Data_t* data, Size_t size ) {
+            assert( size > 0 );
+            m_data->m_retainedData.insert( m_data->m_retainedData.end(), data, data + size );
+            // m_header.insert(m_header.end(), data, data + size);
+            // m_data->m_serverSocket->write(size);
+            // m_data->m_serverSocket->write( io::StreamBase::ClientMessage::NEW_RETAIN_DATA );
+            // m_data->m_serverSocket->write( size );
+            // m_data->m_serverSocket->write( data, size );
+            // std::cout << "[OutputStream] save retained data (" << size << " bytes)" <<
+            // std::endl;
+            // std::vector<Data_t> vector(data, data + size);
+#ifdef DEBUG_OUTPUT_STREAM
+            std::cout << "[OutputStream] save retained data : " << m_data->m_retainedData
+                      << std::endl;
+#endif
+        };
+    }
+    else {
+        // assert( !m_data->m_retainedSharedToViewer );
+        // if ( m_data->m_retained ) {
+        // m_data->m_retainedSharedToViewer = false;
+        // m_data->m_serverSocket->write( io::StreamBase::ClientMessage::FULLY_RETAINED_DATA
+        // );
+        // m_data->m_fullyRetained = true;
+        m_data->m_writingFun = nullptr;
+        // while ( !m_data->m_retainedSharedToViewer ) {
+        // std::cout << "[OutputStream] waiting for shared retained data to viewer ..."
+        // << std::endl;
+        // std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+        // }
+        // }
+    }
+}
+
+int OutputStreamServer2::getNStreamViewer() const {
+
+    m_data->m_mtxClientSockets.lock();
+    const auto nStreamViewer = m_data->m_streamViewerSocks.size();
+    m_data->m_mtxClientSockets.unlock();
+
+    return nStreamViewer;
 }
 
 // int OutputStreamServer2::getNStreamViewer() const {

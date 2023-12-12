@@ -20,9 +20,9 @@ StreamerClient2::StreamerClient2( ServerImpl2* server,
     m_streamPort( streamPort ),
     m_sock( std::make_unique<hub::io::InputOutputSocket>( std::move( sock ) ) ) {
 
-    std::cout << headerMsg() << "StreamerClient2() start" << std::endl;
+    // std::cout << headerMsg() << "StreamerClient2() start" << std::endl;
 
-    std::cout << headerMsg() << "stream name = '" << m_streamName << "'" << std::endl;
+    std::cout << headerMsg() << "new streamer '" << m_streamName << "'" << std::endl;
 
     m_sock->read( m_nStreamViewer );
 
@@ -66,9 +66,12 @@ StreamerClient2::StreamerClient2( ServerImpl2* server,
                 //     Size_t size;
                 //     sockPtr->read( size );
                 //     assert( size > 0 );
-                //     const auto previousSize = m_retainedData.size();
-                //     m_retainedData.resize( m_retainedData.size() + size );
-                //     sockPtr->read( m_retainedData.data() + previousSize, size );
+                //     // const auto previousSize = m_retainedData.size();
+                //     const auto previousSize = m_header.size();
+                //     // m_retainedData.resize( m_retainedData.size() + size );
+                //     m_header.resize( m_header.size() + size );
+                //     // sockPtr->read( m_retainedData.data() + previousSize, size );
+                //     sockPtr->read( m_header.data() + previousSize, size );
                 //     // std::cout << "[StreamerClient] new retain data : " << m_retainedData <<
                 //     // std::endl;
                 // }
