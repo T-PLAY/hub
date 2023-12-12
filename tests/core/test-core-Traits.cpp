@@ -24,6 +24,7 @@ class Lambda
 };
 
 TEST_CASE( "Traits test" ) {
+    TEST_BEGIN()
 
     //    using namespace hub;
 
@@ -61,4 +62,6 @@ TEST_CASE( "Traits test" ) {
     std::cout << "strings: " << toString( strings ) << std::endl;
     std::cout << "strings: " << strings << std::endl;
     std::cout << std::endl;
+
+    TEST_END()
 }

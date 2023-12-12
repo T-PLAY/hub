@@ -10,6 +10,8 @@
 #include <io/output/OutputStream.hpp>
 
 TEST_CASE( "InputOutputStream kill output stream test" ) {
+    TEST_BEGIN()
+
     const auto hostname = hub::utils::getHostname();
 
     INIT_SERVER
@@ -17,7 +19,7 @@ TEST_CASE( "InputOutputStream kill output stream test" ) {
 
     {
         auto* outputStream =
-            new hub::output::OutputStream( FILE_NAME, SERVER_PORT, "127.0.0.1", false );
+            new hub::output::OutputStream( FILE_NAME, SERVER_PORT );
         hub::input::InputStream inputStream( FILE_NAME, SERVER_PORT );
 
         int a = 5;
@@ -39,4 +41,5 @@ TEST_CASE( "InputOutputStream kill output stream test" ) {
         }
     }
     std::cout << "[test] inputStream ended" << std::endl;
+    TEST_END()
 }

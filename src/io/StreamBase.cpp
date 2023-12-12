@@ -48,6 +48,8 @@ static const std::string
         "NEW_RETAIN_DATA",
         "FULLY_RETAINED_DATA",
         "STREAMER_CLIENT_DEL_STREAM_VIEWER",
+
+        "VIEWER_CLIENT_STREAM_ADDED",
 };
 std::ostream& operator<<( std::ostream& os, const StreamBase::ClientMessage& msg ) {
     os << clientMessage2string[(int)msg];
@@ -100,11 +102,19 @@ std::ostream& operator<<( std::ostream& os, const StreamBase::ServerMessage& msg
 //     return std::to_string((int)message);
 //}
 
-StreamBase::StreamBase( const std::string& name, const std::string& ipv4, int port ) :
-    m_name( name ), m_ipv4( ipv4 ), m_port( port ) {}
+StreamBase::StreamBase( const std::string& name,
+                        const std::string& ipv4,
+                        int port,
+                        const Datas_t& header ) :
+    m_name( name ), m_ipv4( ipv4 ), m_port( port ), m_header( header ) {}
 
-StreamBase::StreamBase( const char* name, const char* ipv4, int port ) :
-    m_name( name ), m_ipv4( ipv4 ), m_port( port ) {}
+StreamBase::StreamBase( const char* name, const char* ipv4, int port, const Datas_t& header ) :
+    m_name( name ), m_ipv4( ipv4 ), m_port( port ), m_header( header ) {}
+
+const Datas_t & StreamBase::getHeader() const
+{
+    return m_header;
+}
 
 } // namespace io
 } // namespace hub

@@ -333,6 +333,7 @@ std::string type_name() {
 
 namespace hub {
 using Data_t = unsigned char;
+using Datas_t = std::vector<Data_t>;
 //    using Data_t =  std::byte;
 using Size_t = uint64_t; // max = 18'446'744'073'709'551'616 ~= 18 exa
                          //    using Size_t = uint32_t;  // max = 4'294'967'296 ~= 4 giga

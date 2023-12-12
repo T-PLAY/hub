@@ -1,6 +1,6 @@
 
-#include "test_common.hpp"
 #include "io/test_io_common.hpp"
+#include "test_common.hpp"
 
 // #include <server/Server.hpp>
 #include <net/ServerSocket.hpp>
@@ -13,6 +13,8 @@
 #endif
 
 TEST_CASE( "Server test : InputOutputStream_vs_Mqtt" ) {
+    TEST_BEGIN()
+
     //    const auto hostname = hub::utils::getHostname();
 
     // raw socket
@@ -30,19 +32,44 @@ TEST_CASE( "Server test : InputOutputStream_vs_Mqtt" ) {
     //     gigaBytePerSecondSocket = gigaBytePerSecond;
     // }
 
+    const auto& [data, size] = generateTestData();
+    unsigned char* data_read = new unsigned char[size];
+    const auto nIteration = 100;
+
     double gigaBytePerSecondInputOutputStream;
     {
         INIT_SERVER
 
         {
-
-            hub::output::OutputStream outputStream( FILE_NAME, SERVER_PORT, "127.0.0.1", false );
-
+            hub::output::OutputStream outputStream( FILE_NAME, SERVER_PORT );
             hub::input::InputStream inputStream( FILE_NAME, SERVER_PORT );
 
-            const auto& [durationInMillisecond, gigaBytePerSecond] =
-                inputOutputBench( inputStream, outputStream, "InputOutputStrem" );
-            gigaBytePerSecondInputOutputStream = gigaBytePerSecond;
+            const auto& start2 = std::chrono::high_resolution_clock::now();
+
+            auto thread = std::thread( [&]() {
+                for ( int i = 0; i < nIteration; ++i ) {
+                    outputStream.write( data, size );
+                }
+            } );
+
+            for ( int i = 0; i < nIteration; ++i ) {
+                inputStream.read( data_read, size );
+#ifdef DEBUG
+                assert( memcmp( data, data_read, size ) == 0 );
+#endif
+            }
+            thread.join();
+
+            const auto& end2 = std::chrono::high_resolution_clock::now();
+            std::cout << "[test][InputOutputStream] end streaming" << std::endl;
+            const auto& duration2 =
+                std::chrono::duration_cast<std::chrono::nanoseconds>( end2 - start2 ).count();
+            gigaBytePerSecondInputOutputStream = ( 2 * size * nIteration ) / (double)duration2;
+
+            std::cout << "[test][InputOutputStream] writing/reading rate: " << gigaBytePerSecondInputOutputStream
+                      << " Go/s" << std::endl;
+            std::cout << "[test][InputOutputStream] total time: " << duration2 / 1'000'000.0 << " ms"
+                      << std::endl;
         }
     }
 
@@ -50,7 +77,6 @@ TEST_CASE( "Server test : InputOutputStream_vs_Mqtt" ) {
     // raw mqtt
     double gigaBytesPerSecondMqtt;
     {
-        const auto& [data, size] = generateTestData();
         std::cout << "[test][Mqtt] data ready" << std::endl;
 
         const std::string topicName = FILE_NAME;
@@ -74,14 +100,13 @@ TEST_CASE( "Server test : InputOutputStream_vs_Mqtt" ) {
         const auto& start2 = std::chrono::high_resolution_clock::now();
 
         auto thread = std::thread( [&]() {
-            for ( int i = 0; i < s_nIteration; ++i ) {
+            for ( int i = 0; i < nIteration; ++i ) {
                 outputMsgPtr->set_payload( data, size );
                 outputClient.publish( outputMsgPtr );
             }
         } );
-        //        }
 
-        for ( int i = 0; i < s_nIteration; ++i ) {
+        for ( int i = 0; i < nIteration; ++i ) {
             inputMsgPtr = inputClient.consume_message();
 
             const auto& payload   = inputMsgPtr->get_payload();
@@ -98,13 +123,15 @@ TEST_CASE( "Server test : InputOutputStream_vs_Mqtt" ) {
         std::cout << "[test][Mqtt] end streaming" << std::endl;
         const auto& duration2 =
             std::chrono::duration_cast<std::chrono::nanoseconds>( end2 - start2 ).count();
-        gigaBytesPerSecondMqtt = ( 2 * size * s_nIteration ) / (double)duration2;
+        gigaBytesPerSecondMqtt = ( 2 * size * nIteration ) / (double)duration2;
 
         std::cout << "[test][Mqtt] writing/reading rate: " << gigaBytesPerSecondMqtt << " Go/s"
                   << std::endl;
         std::cout << "[test][Mqtt] total time: " << duration2 / 1'000'000.0 << " ms" << std::endl;
     }
 #endif
+
+    delete[] data_read;
 
     const auto ratio = gigaBytePerSecondInputOutputStream / gigaBytesPerSecondMqtt;
     CHECK_DECLINE( ratio, "InputOutput:Stream/Mqtt", "/" );
@@ -379,4 +406,5 @@ TEST_CASE( "Server test : InputOutputStream_vs_Mqtt" ) {
 
     //    delete[] datas;
     //    //    delete[] data2;
+    TEST_END()
 }

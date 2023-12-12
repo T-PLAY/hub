@@ -16,6 +16,7 @@
 #include <thread>
 
 TEST_CASE( "File test" ) {
+    TEST_BEGIN()
 
     const std::string filename = "file.txt";
 
@@ -113,4 +114,5 @@ TEST_CASE( "File test" ) {
     //        CHECK( input.isEnd() );
     //    }
     //    std::cout << "inputStream end #################################" << std::endl;
+    TEST_END()
 }

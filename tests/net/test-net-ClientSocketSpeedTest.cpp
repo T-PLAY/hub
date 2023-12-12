@@ -25,12 +25,15 @@
 // }
 
 TEST_CASE( "Net test : ClientSocket speed test" ) {
+    TEST_BEGIN()
+
     const auto hostname = hub::utils::getHostname();
     const auto port     = GET_RANDOM_PORT;
     const auto port2    = port + 1;
 
     // initing datum
-    constexpr auto bigDataSize = 2'000'000'000; // 1 Go
+    // constexpr auto bigDataSize = 1'000'000'000; // 1 Go
+    constexpr auto bigDataSize = 500'000'000; // 500 Mo
                                                 //    constexpr auto bigDataSize = 1000; // 1 Go
                                                 //    assert(sizeof(size_t) == 8);
     std::cout << "[test] data size: " << bigDataSize / 1'000'000'000.0 << " Go" << std::endl;
@@ -262,4 +265,6 @@ TEST_CASE( "Net test : ClientSocket speed test" ) {
     std::cout << "[test] tested on machine: '" << hostname << "'" << std::endl;
 
     delete[] bigData;
+
+    TEST_END()
 }

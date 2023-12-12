@@ -27,8 +27,8 @@ namespace client {
 
 ViewerMqtt::ViewerMqtt(const std::string &name,
                         ViewerHandler && viewerHandler,
-    //                     std::function<bool( const char*, const sensor::SensorSpec& )> onNewStreamer,
-    // std::function<void( const char*, const sensor::SensorSpec& )> onDelStreamer,
+    //                     std::function<bool( const char*, const sensor::SensorSpec& )> onNewStream,
+    // std::function<void( const char*, const sensor::SensorSpec& )> onDelStream,
     // std::function<void( const char*, int )> onServerNotFound,
     // std::function<void( const char*, int )> onServerConnected,
     // std::function<void( const char*, int )> onServerDisconnected,
@@ -40,8 +40,8 @@ ViewerMqtt::ViewerMqtt(const std::string &name,
     ViewerInterface(
         name,
         std::move(viewerHandler),
-                     // onNewStreamer,
-                     // onDelStreamer,
+                     // onNewStream,
+                     // onDelStream,
                      // onServerNotFound,
                      // onServerConnected,
                      // onServerDisconnected,
@@ -63,8 +63,8 @@ ViewerMqtt::ViewerMqtt(const std::string &name,
 
     m_thread = std::thread( [this]() {
         //            try {
-        DEBUG_MSG( "[ViewerMqtt] trying to connect to server at ipv4 " << m_ipv4 << " and port "
-                                                                       << m_port );
+        DEBUG_MSG( "[ViewerMqtt] trying to connect to server at ipv4 " << m_serverIpv4 << " and port "
+                                                                       << m_serverPort );
 
         m_client->connect();
         assert( m_client->is_connected() );
@@ -82,12 +82,12 @@ ViewerMqtt::ViewerMqtt(const std::string &name,
         //    assert(m_client->is_connected());
         //    assert(m_msgPtr == nullptr);
 
-        m_viewerHandler.onServerConnected( m_ipv4.c_str(), m_port );
+        m_viewerHandler.onServerConnected( m_serverIpv4.c_str(), m_serverPort );
         m_serverConnected = true;
         printStatus();
 
-        DEBUG_MSG( "[ViewerMqtt] connected to server at ipv4 " << m_ipv4 << " and port "
-                                                                       << m_port );
+        DEBUG_MSG( "[ViewerMqtt] connected to server at ipv4 " << m_serverIpv4 << " and port "
+                                                                       << m_serverPort );
 
         //        const auto hostName = getHostname();
         m_outputMsgPtr = mqtt::make_message( input::InputStreamMqtt::s_topicViewer + m_name, "active" );
@@ -130,7 +130,7 @@ ViewerMqtt::ViewerMqtt(const std::string &name,
                     //                std::string streamName;
                     sensor::SensorSpec sensorSpec;
                     try {
-                        input::InputStreamMqtt inputStream( streamName, m_port, m_ipv4 );
+                        input::InputStreamMqtt inputStream( streamName, m_serverPort, m_serverIpv4 );
                         inputStream.read( sensorSpec );
                     }
                     catch ( io::StreamBase::exception& ex ) {
@@ -145,7 +145,8 @@ ViewerMqtt::ViewerMqtt(const std::string &name,
                     //                    "'"  << std::endl;
                     DEBUG_MSG( "[ViewerMqtt] sensorSpec '" << sensorSpec << "'" );
 
-                    addStream(streamName, sensorSpec);
+                    // todo fix
+                    // addStream(streamName, sensorSpec);
 
 
                     // prevent all son the father is comming
@@ -165,7 +166,7 @@ ViewerMqtt::ViewerMqtt(const std::string &name,
                     //                    sensorSpec );
                     DEBUG_MSG( "[ViewerMqtt] del streamer '" << streamName << "'" );
 
-                    deleteStream(streamName);
+                    delStream(streamName);
 
 
                     // prevent all son the father is leaving
@@ -210,7 +211,7 @@ ViewerMqtt::~ViewerMqtt() {
     //        return;
     //    }
 
-    m_viewerHandler.onServerDisconnected( m_ipv4.c_str(), m_port );
+    m_viewerHandler.onServerDisconnected( m_serverIpv4.c_str(), m_serverPort );
     m_serverConnected = false;
     printStatus();
 

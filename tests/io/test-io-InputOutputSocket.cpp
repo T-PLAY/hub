@@ -10,6 +10,8 @@
 #include <net/ServerSocket.hpp>
 
 TEST_CASE( "InputOutputSocket test" ) {
+    TEST_BEGIN()
+
     const auto hostname = hub::utils::getHostname();
     const auto port     = GET_RANDOM_PORT;
 //    const auto port2    = port + 1;
@@ -37,5 +39,6 @@ TEST_CASE( "InputOutputSocket test" ) {
 //    inputOutputSensorBench<hub::io::InputOutputSocket>();
 
     std::cout << "[test] tested on machine: '" << hostname << "'" << std::endl;
-    return;
+
+    TEST_END()
 }

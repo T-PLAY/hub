@@ -28,6 +28,7 @@ class SRC_API InputStreamServer2 : public Input, public io::StreamServer2
   public:
     static struct {} not_endable;
     using Input::read;
+    using io::StreamServer2::getHeader;
 
     ///
     /// \brief InputStreamServer2
@@ -47,8 +48,8 @@ class SRC_API InputStreamServer2 : public Input, public io::StreamServer2
     //                          net::ClientSocket&& clientSocket = net::ClientSocket() );
     InputStreamServer2( int streamPort, const std::string& ipv4 = "127.0.0.1" );
     InputStreamServer2( const std::string& streamName,
-                       int port                = s_defaultPort,
-                       const std::string& ipv4 = s_defaultIpv4 );
+                       int serverPort                = s_defaultPort,
+                       const std::string& serverIpv4 = s_defaultIpv4 );
 
     ///
     /// \brief InputStreamServer2
@@ -118,7 +119,9 @@ class SRC_API InputStreamServer2 : public Input, public io::StreamServer2
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 inline bool InputStreamServer2::isOpen() const {
-    return m_serverSocket->isOpen();
+    // return ! m_serverSocket || m_serverSocket->isOpen();
+    assert(m_streamSocket != nullptr);
+    return m_streamSocket->isOpen();
 }
 
 inline void InputStreamServer2::read( Data_t* data, Size_t len ) {
@@ -166,7 +169,9 @@ inline void InputStreamServer2::close() {
 }
 
 inline bool InputStreamServer2::isEnd() const {
-    return m_serverSocket->isEnd();
+    assert(m_streamSocket != nullptr);
+    return m_streamSocket->isEnd();
+    // return m_serverSocket->isEnd();
 }
 
 } // namespace input

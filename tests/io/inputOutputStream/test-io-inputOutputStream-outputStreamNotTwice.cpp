@@ -9,11 +9,12 @@
 #include <io/output/OutputStream.hpp>
 
 TEST_CASE( "InputOutputStream no stream twice test" ) {
+    TEST_BEGIN()
 
     INIT_SERVER
 
     {
-        hub::output::OutputStream outputStream( FILE_NAME, SERVER_PORT, "127.0.0.1", false );
+        hub::output::OutputStream outputStream( FILE_NAME, SERVER_PORT);
 
         try {
             hub::output::OutputStream outputStream2( FILE_NAME, SERVER_PORT );
@@ -26,4 +27,5 @@ TEST_CASE( "InputOutputStream no stream twice test" ) {
         std::cout << "[test] outputStream ending" << std::endl;
     }
     std::cout << "[test] outputStream ended" << std::endl;
+    TEST_END()
 }

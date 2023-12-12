@@ -8,6 +8,8 @@
 #include <io/input/InputStream.hpp>
 
 TEST_CASE( "InputStream no server test" ) {
+    TEST_BEGIN()
+
     const auto port = GET_RANDOM_PORT;
 
     {
@@ -21,4 +23,5 @@ TEST_CASE( "InputStream no server test" ) {
         }
     }
     std::cout << "[test] inputStream ended" << std::endl;
+    TEST_END()
 }

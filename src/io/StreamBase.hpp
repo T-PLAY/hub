@@ -48,6 +48,8 @@ class StreamBase
         FULLY_RETAINED_DATA,
         STREAMER_CLIENT_DEL_STREAM_VIEWER,
 
+        VIEWER_CLIENT_STREAM_ADDED,
+
 //        KILL,
 
         COUNT
@@ -110,9 +112,11 @@ class StreamBase
     //    virtual const std::string & getDefaultIpv4() = 0;
     //    virtual int getDefaultPort() = 0;
 
+    const Datas_t & getHeader() const;
+
   protected:
-    StreamBase( const std::string& name, const std::string& ipv4, int port );
-    StreamBase( const char* name, const char* ipv4, int port );
+    StreamBase( const std::string& name, const std::string& ipv4, int port, const Datas_t & header );
+    StreamBase( const char* name, const char* ipv4, int port, const Datas_t & header );
 
 //    static std::string to_string( const ClientMessage& message );
 //    static std::string to_string( const ServerMessage& message );
@@ -122,6 +126,7 @@ class StreamBase
     const std::string m_name;
     const std::string m_ipv4;
     const int m_port;
+    Datas_t m_header;
 };
 
 } // namespace io

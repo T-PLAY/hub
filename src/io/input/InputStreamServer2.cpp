@@ -9,7 +9,7 @@ namespace input {
 // InputStreamServer2::InputStreamServer2( const std::string& streamName, net::ClientSocket&&
 // clientSocket ) :
 InputStreamServer2::InputStreamServer2( int streamPort, const std::string& ipv4 ) :
-    io::StreamServer2( "", "", 0 ) {
+    io::StreamServer2( "", "", 0, {} ) {
 
     m_streamPort = streamPort;
     m_streamIpv4 = ipv4;
@@ -17,13 +17,13 @@ InputStreamServer2::InputStreamServer2( int streamPort, const std::string& ipv4 
     startStream();
 }
 
-InputStreamServer2::InputStreamServer2( const std::string& streamName,
-                                      int port,
-                                      const std::string& ipv4 ) :
-    io::StreamServer2( streamName, ipv4, port ),
+InputStreamServer2::InputStreamServer2(const std::string& streamName,
+                                      int serverPort,
+                                      const std::string& serverIpv4 ) :
+    io::StreamServer2( streamName, serverIpv4, serverPort, {} ),
     //    m_serverSocket( std::move( clientSocket ) ) {
-    //    m_serverSocket(ipv4, port)
-    m_serverSocket( std::make_unique<hub::io::InputOutputSocket>( net::ClientSocket( ipv4, port ) ) ) {
+    //    m_serverSocket(ipv4, serverPort)
+    m_serverSocket( std::make_unique<hub::io::InputOutputSocket>( net::ClientSocket( serverIpv4, serverPort ) ) ) {
 
     assert( m_serverSocket->isConnected() );
     //    m_serverSocket.write( net::ClientSocket::Type::STREAM_VIEWER );
@@ -54,14 +54,24 @@ InputStreamServer2::InputStreamServer2( const std::string& streamName,
 }
 
 void InputStreamServer2::startStream() {
+    std::cout << "[InputStream] startStream()" << std::endl;
+    std::cout << "[InputStream] stream socket initing ..." << std::endl;
     m_streamSocket =
         std::make_unique<hub::io::InputOutputSocket>( net::ClientSocket( m_streamIpv4, m_streamPort ) );
+    std::cout << "[InputStream] stream socket inited : " << *m_streamSocket << std::endl;
     m_streamSocket->write( ClientType::STREAM_VIEWER );
+
+    std::cout << "[InputStream] reading header ..." << std::endl;
+    assert(m_header.empty());
+    m_streamSocket->read(m_header);
+    std::cout << "[InputStream] read header" << std::endl;
 
     hub::io::StreamBase::ClientMessage clientMessage;
     m_streamSocket->read( clientMessage );
     assert( clientMessage ==
             hub::io::StreamBase::ClientMessage::STREAMER_CLIENT_STREAM_VIEWER_INITED );
+
+    std::cout << "[InputStream] startStream() done" << std::endl;
 }
 
 // InputStreamServer2::InputStreamServer2( InputStreamServer2&& inputStream ) :

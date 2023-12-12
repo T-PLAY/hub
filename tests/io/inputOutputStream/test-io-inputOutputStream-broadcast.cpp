@@ -10,6 +10,8 @@
 #include <io/output/OutputStream.hpp>
 
 TEST_CASE( "InputOutputStream broadcast test" ) {
+    TEST_BEGIN()
+
     const auto hostname = hub::utils::getHostname();
 
     double durationInMillisecondSerial;
@@ -26,7 +28,7 @@ TEST_CASE( "InputOutputStream broadcast test" ) {
 
         {
             std::vector<hub::output::OutputStream> outputStreams;
-            outputStreams.emplace_back( FILE_NAME, SERVER_PORT, "127.0.0.1", false );
+            outputStreams.emplace_back( FILE_NAME, SERVER_PORT );
 
             {
                 std::vector<hub::input::InputStream> inputStreams;
@@ -78,4 +80,5 @@ TEST_CASE( "InputOutputStream broadcast test" ) {
     CHECK_DECLINE( ratio, "InputOutputStream:Broadcast(1->5)/Serial(1->1)", "/" );
 
     // std::cout << "[test] tested on machine: '" << hostname << "'" << std::endl;
+    TEST_END()
 }

@@ -8,11 +8,13 @@
 #include <io/output/OutputStream.hpp>
 
 TEST_CASE( "OutputStream no server test" ) {
+    TEST_BEGIN()
+
     const auto port = GET_RANDOM_PORT;
 
     {
         try {
-            hub::output::OutputStream outputStream( FILE_NAME, port, "127.0.0.1", false );
+            hub::output::OutputStream outputStream( FILE_NAME, port );
             assert( false );
         }
         catch ( hub::net::system::SocketSystem::exception& ex ) {
@@ -21,4 +23,5 @@ TEST_CASE( "OutputStream no server test" ) {
         }
     }
     std::cout << "[test] outputStream ended" << std::endl;
+    TEST_END()
 }

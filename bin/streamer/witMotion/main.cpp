@@ -32,11 +32,11 @@ int main( int argc, char* argv[] ) {
     // }
 
     if ( ( fd = serial_open( (unsigned char*)deviceName.c_str(), 9600 ) < 0 ) ) {
-        std::cout << "open %s fail\n" << deviceName << std::endl;
+        std::cout << "open failed : '" << deviceName << "' not found" << std::endl;
         return 0;
     }
     else
-        std::cout << "open %s success\n" <<  deviceName << std::endl;
+        std::cout << "open " <<  deviceName << " successed" << std::endl;
 
     float fAcc[3], fGyro[3], fAngle[3];
     int i, ret;

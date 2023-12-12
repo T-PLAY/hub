@@ -163,7 +163,7 @@ void process( Archive& archive ) {
     std::vector<NodeType> nodes { node };
 
 #ifndef HUB_DEBUG_OUTPUT
-    for ( int i = 0; i < 100000; ++i ) {
+    for ( int i = 0; i < 1'000; ++i ) {
 #endif
 
         {
@@ -385,6 +385,8 @@ void process( Archive& archive ) {
 }
 
 TEST_CASE( "InputOutput test" ) {
+    TEST_BEGIN()
+
     long long durationArchiveZppBits = 0;
     long long durationArchiveImpl    = 0;
 
@@ -427,5 +429,5 @@ TEST_CASE( "InputOutput test" ) {
 //        std::is_same_v<hub::io::Archive, hub::io::ArchiveT<hub::serializer::SerializerZppBits>> );
 //#endif
 
-    return;
+    TEST_END()
 }

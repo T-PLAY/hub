@@ -30,6 +30,8 @@ class MemoryT : public InputOutputT
         m_data.insert(m_data.end(), container.begin(), container.end());
     }
 
+    MemoryT() = default;
+
     void read( hub::Data_t* data, hub::Size_t size ) override {
         assert(size > 0);
         assert( !m_data.empty() );

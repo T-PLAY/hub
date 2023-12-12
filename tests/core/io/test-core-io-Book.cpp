@@ -31,6 +31,8 @@ using namespace zpp::bits::literals;
 
 
 TEST_CASE( "Book test" ) {
+    TEST_BEGIN()
+
     // int main() {
     using namespace testCoreIoCommon;
 
@@ -199,4 +201,5 @@ static constexpr size_t s_maxDataSize   = 1'000'000;
     printStats( dataBenchStats );
 
     //    return 0;
+    TEST_END()
 }

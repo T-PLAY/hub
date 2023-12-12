@@ -13,6 +13,11 @@ TEST_CASE( "Test start" ) {
         std::filesystem::remove( randomUsedPortsFilename );
     }
 
+    const std::string durationTestsFilename = "duration_tests.txt";
+    if ( std::filesystem::exists( durationTestsFilename ) ) {
+        std::filesystem::remove( durationTestsFilename );
+    }
+
     // #ifdef HUB_TEST_ALL
     // hub::Server server;
     // server.asyncRun();

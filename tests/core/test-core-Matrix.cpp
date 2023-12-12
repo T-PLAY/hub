@@ -53,6 +53,7 @@ class Lambda
 
 
 TEST_CASE( "Matrix test" ) {
+    TEST_BEGIN()
 //int main() {
 
 //    Test myTest;
@@ -325,4 +326,5 @@ TEST_CASE( "Matrix test" ) {
 
 //    hub::io::Archive archive;
 //    archive.write(matrices3);
+    TEST_END()
 }

@@ -11,6 +11,8 @@
 #include <server/Server.hpp>
 
 TEST_CASE( "InputStream server deco reco test" ) {
+    TEST_BEGIN()
+
     // const auto hostname = hub::utils::getHostname();
     const auto port = GET_RANDOM_PORT;
 
@@ -18,7 +20,7 @@ TEST_CASE( "InputStream server deco reco test" ) {
     server.asyncRun();
 
     {
-        hub::output::OutputStream outputStream( FILE_NAME, port, "127.0.0.1", false );
+        hub::output::OutputStream outputStream( FILE_NAME, port );
 
         hub::input::InputStream inputStream( FILE_NAME, port );
 
@@ -45,4 +47,5 @@ TEST_CASE( "InputStream server deco reco test" ) {
     }
 
     // std::cout << "[test] tested on machine: '" << hostname << "'" << std::endl;
+    TEST_END()
 }

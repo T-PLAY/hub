@@ -56,6 +56,8 @@ class Lambda
 #include <core/Serializer.hpp>
 
  TEST_CASE( "Any test" ) {
+    TEST_BEGIN()
+
 //int main() {
     // int main() {
     //     hub::Any::printTable();
@@ -272,4 +274,5 @@ class Lambda
     //    std::cout << any << std::endl;
 
     std::cout << "any supported types : " << hub::Anyable::supportedTypes() << std::endl;
+    TEST_END()
 }

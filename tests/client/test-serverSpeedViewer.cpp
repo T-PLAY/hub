@@ -129,9 +129,9 @@ TEST_CASE( "Server test : viewer" ) {
 //            {
 //                // startConstruction
 //                bool newStreamerAdded = false;
-//                auto onNewStreamer    = [&]( const std::string& streamName,
+//                auto onNewStream    = [&]( const std::string& streamName,
 //                                          const hub::sensor::SensorSpec& sensorSpec ) {
-//                    std::cout << "[example-viewer] onNewStreamer : " << streamName << std::endl;
+//                    std::cout << "[example-viewer] onNewStream : " << streamName << std::endl;
 
 //                    CHECK( sensorSpec.getAcquisitionSize() == dataSize );
 //                    CHECK( sensorSpec.getSensorName() == "sensorName" );
@@ -145,9 +145,9 @@ TEST_CASE( "Server test : viewer" ) {
 //                    newStreamerAdded = true;
 //                    return true;
 //                };
-//                auto onDelStreamer = []( const std::string& streamName,
+//                auto onDelStream = []( const std::string& streamName,
 //                                         const hub::sensor::SensorSpec& sensorSpec ) {
-//                    std::cout << "[example-viewer] onDelStreamer : " << streamName << std::endl;
+//                    std::cout << "[example-viewer] onDelStream : " << streamName << std::endl;
 //                };
 //                auto onServerNotFound = []( const std::string& ipv4, int port ) {
 //                    std::cout << "[example-viewer] onServerNotFound : " << ipv4 << " " << port
@@ -192,8 +192,8 @@ TEST_CASE( "Server test : viewer" ) {
 //                std::cout << "[Test] ############################### viewer start" << std::endl;
 //                hub::client::Viewer viewer {
 //                    FILE_NAME,
-//                    onNewStreamer,
-//                    onDelStreamer,
+//                    onNewStream,
+//                    onDelStream,
 //                    onServerNotFound,
 //                    onServerConnected,
 //                    onServerDisconnected,

@@ -11,6 +11,8 @@
 #include <server/Server.hpp>
 
 TEST_CASE( "InputOutputStream kill server test" ) {
+    TEST_BEGIN()
+
     const auto hostname = hub::utils::getHostname();
     const auto port     = GET_RANDOM_PORT;
 
@@ -20,7 +22,7 @@ TEST_CASE( "InputOutputStream kill server test" ) {
     // not allowed
     {
 
-        hub::output::OutputStream outputStream( FILE_NAME, port, "127.0.0.1", false );
+        hub::output::OutputStream outputStream( FILE_NAME, port );
 
         hub::input::InputStream inputStream( FILE_NAME, port );
 
@@ -43,4 +45,5 @@ TEST_CASE( "InputOutputStream kill server test" ) {
     std::cout << "[test] outputStream ended" << std::endl;
 
     std::cout << "[test] tested on machine: '" << hostname << "'" << std::endl;
+    TEST_END()
 }

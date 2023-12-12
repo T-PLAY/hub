@@ -21,6 +21,8 @@
 #include <core/io/Book.hpp>
 
 TEST_CASE( "InputOutput speed compare test" ) {
+    TEST_BEGIN()
+
     using namespace testCoreIoCommon;
 
 #ifdef HUB_DEBUG_OUTPUT
@@ -186,4 +188,5 @@ TEST_CASE( "InputOutput speed compare test" ) {
     //    dataBenchStats.find(benchStatInputOutput)); CHECK(inputOutputRank < 2);
 
     printStats( dataBenchStats );
+    TEST_END()
 }

@@ -19,6 +19,8 @@
 #include <net/ServerSocket.hpp>
 
 TEST_CASE( "InputOutputStream test" ) {
+    TEST_BEGIN()
+
     // const auto hostname = hub::utils::getHostname();
     // const auto port     = GET_RANDOM_PORT;
 
@@ -58,7 +60,7 @@ TEST_CASE( "InputOutputStream test" ) {
             // hub::Server server( port );
             // server.asyncRun();
 
-            hub::output::OutputStream outputStream( FILE_NAME, SERVER_PORT, "127.0.0.1", false );
+            hub::output::OutputStream outputStream( FILE_NAME, SERVER_PORT );
 
             hub::input::InputStream inputStream( FILE_NAME, SERVER_PORT );
 
@@ -73,4 +75,5 @@ TEST_CASE( "InputOutputStream test" ) {
     CHECK_DECLINE( ratio, "InputOutput:Stream/Socket", "/" );
 
     // std::cout << "[test] tested on machine: '" << hostname << "'" << std::endl;
+    TEST_END()
 }

@@ -9,6 +9,7 @@
 #include <core/traits/Span.hpp>
 
 TEST_CASE( "Buffer test" ) {
+    TEST_BEGIN()
 
 //    std::cout << "FILE_NAME: " << FILE_NAME << std::endl;
 
@@ -108,4 +109,5 @@ TEST_CASE( "Buffer test" ) {
 
 //    constexpr auto dataStaticConstexpr = Buffer<2, BufferOption::StaticMemory>{"ab"};
     //    constexpr auto dataDynamicContexpr =  Buffer<1000, BufferOption::DynamicMemory>();
+    TEST_END()
 }

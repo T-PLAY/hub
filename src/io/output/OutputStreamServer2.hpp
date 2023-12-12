@@ -13,7 +13,7 @@
 // #include "sensor/Acquisition.hpp"
 // #include "sensor/SensorSpec.hpp"
 
-// #define DEBUG_OUTPUT_STREAM
+#define DEBUG_OUTPUT_STREAM
 
 namespace hub {
 namespace output {
@@ -50,7 +50,9 @@ class SRC_API OutputStreamServer2 : public Output, public io::StreamServer2
     explicit OutputStreamServer2( const std::string& streamName,
                                   int port                = s_defaultPort,
                                   const std::string& ipv4 = s_defaultIpv4,
-                                  bool retained           = true );
+                                  const hub::Datas_t & header = {}
+                                  );
+                                  // bool retained           = true );
     ///
     /// \brief OutputStreamServer2
     /// \param outputStream
@@ -61,7 +63,7 @@ class SRC_API OutputStreamServer2 : public Output, public io::StreamServer2
 
     // void streamProcess();
     void startStreaming();
-    void initStream();
+    void tryConnectToServer();
     //    void write( const sensor::Acquisition& acq );
     //    void write( const sensor::SensorSpec& sensorSpec );
 
@@ -76,27 +78,32 @@ class SRC_API OutputStreamServer2 : public Output, public io::StreamServer2
     // int getNStreamViewer() const;
 
   private:
-    void stop();
+    void killServer();
 
     struct SharedData {
         std::unique_ptr<hub::io::InputOutputSocket> m_serverSocket;
-        bool m_retained;
+        // bool m_retained;
+        // Datas_t m_header;
         int m_streamPort = 0;
-        std::list<hub::io::InputOutputSocket> m_streamSockets;
+        std::list<hub::io::InputOutputSocket> m_streamViewerSocks;
         std::mutex m_mtxClientSockets;
-        std::vector<hub::Data_t> m_retainedData;
-        std::atomic<bool> m_retainedSharedToViewer = false;
+        // std::vector<hub::Data_t> m_retainedData;
+        // std::atomic<bool> m_retainedSharedToViewer = false;
         // std::atomic<bool> m_fullyRetained = false;
         bool m_killed                          = false;
         std::atomic<bool> m_isStreaming        = false;
         std::atomic<bool> m_serverConnected    = false;
         std::atomic<bool> m_streamViewerInited = false;
+        std::atomic<bool> m_streamerInited = false;
         std::function<void( const Data_t*, Size_t )> m_writingFun;
         std::unique_ptr<std::thread> m_streamThread;
         std::unique_ptr<std::thread> m_serverThread;
         bool m_shutdown = false;
-        SharedData( std::unique_ptr<hub::io::InputOutputSocket>&& ioSocket, bool retained ) :
-            m_serverSocket { std::move( ioSocket ) }, m_retained { retained } {};
+        SharedData( std::unique_ptr<hub::io::InputOutputSocket>&& ioSocket ) :
+            m_serverSocket { std::move( ioSocket ) }
+            // m_header{std::move(header)}
+            // m_retained { retained }
+            {};
         SharedData() = default;
     };
     std::unique_ptr<SharedData> m_data;

@@ -1,4 +1,5 @@
 
+
 #include <catch2/catch_test_macros.hpp>
 
 // #include <algorithm>
@@ -25,6 +26,37 @@
 #include <core/Macros.hpp>
 #include <core/Utils.hpp>
 
+#define CONSTRUCT_BEGIN( name )                                                           \
+    std::cout << "\033[1;32m[test] -------------------------------------------------> " name \
+              << "() ..."                                                                 \
+              << "\033[0m" << std::endl;
+
+#define CONSTRUCT_END( name )                                                                \
+    std::cout << "\033[1;32m[test] -------------------------------------------------> " << name \
+              << "() done"                                                                   \
+              << "\033[0m" << std::endl;
+
+#define DESTRUCT_BEGIN( name )                                                          \
+    std::cout << "\033[1;31m[test] =================================================> " \
+              << "~" << name << "() ..."                                                \
+              << "\033[0m" << std::endl;
+
+#define DESTRUCT_END( name )                                                  \
+    std::cout << "\033[1;31m[test] =================================================> " \
+              << "~" << name << "() done"                                     \
+              << "\033[0m" << std::endl;
+
+#define TEST_BEGIN() auto start_test = std::chrono::high_resolution_clock::now();
+
+#define TEST_END()                                                                              \
+    const auto end_test = std::chrono::high_resolution_clock::now();                            \
+    const auto duration =                                                                       \
+        std::chrono::duration_cast<std::chrono::milliseconds>( end_test - start_test ).count(); \
+    std::cout << "[" << FILE_NAME << "] duration : " << duration << " ms" << std::endl;         \
+    std::ofstream file( "duration_tests.txt", std::ios::app );                                  \
+    file << duration << " " << FILE_NAME << std::endl;                                          \
+    file.close();
+
 #define GET_RANDOM_PORT getRandomPort( __FILE__ )
 
 // static std::set<int> s_randomPortsGenerated;
@@ -44,7 +76,7 @@ static int getRandomPort( const char* filename ) {
             testName = "";
             port     = 0;
             inFile >> port >> testName;
-            if ( port != 0 ) { usedPorts.insert( std::make_pair(port, testName) ); }
+            if ( port != 0 ) { usedPorts.insert( std::make_pair( port, testName ) ); }
         }
         inFile.close();
     }
@@ -62,14 +94,13 @@ static int getRandomPort( const char* filename ) {
         const unsigned int random =
             static_cast<int>( std::hash<std::string>()( filename ) ) + rand();
         // randomPort = offset + random % ( 65535 - offset );
-        randomPort = 10'000 + (random % 1'000) * 10;
+        randomPort = 10'000 + ( random % 1'000 ) * 10;
         // assert( offset <= randomPort && randomPort < 1000 );
         // assert( offset <= randomPort && randomPort < 65535 );
     } while ( usedPorts.find( randomPort ) != usedPorts.end() );
 
     // usedPorts.insert( std::make_pair(randomPort, filename) );
-    std::ofstream outFile(  randomUsedPortsFilename.c_str(),
-                           std::ios::out | std::ios::app );
+    std::ofstream outFile( randomUsedPortsFilename.c_str(), std::ios::out | std::ios::app );
     assert( outFile.is_open() );
     outFile << randomPort << " " << filename << std::endl;
     outFile.close();

@@ -10,12 +10,14 @@
 #include <io/output/OutputStream.hpp>
 
 TEST_CASE( "InputOutputStream retain test" ) {
+    TEST_BEGIN()
+
     const auto hostname = hub::utils::getHostname();
 
     INIT_SERVER
 
     {
-        hub::output::OutputStream outputStream( FILE_NAME, SERVER_PORT, "127.0.0.1", false );
+        hub::output::OutputStream outputStream( FILE_NAME, SERVER_PORT );
 
         {
             hub::input::InputStream inputStream( FILE_NAME, SERVER_PORT );
@@ -57,4 +59,5 @@ TEST_CASE( "InputOutputStream retain test" ) {
     std::cout << "[test] outputStream ended" << std::endl;
 
     std::cout << "[test] tested on machine: '" << hostname << "'" << std::endl;
+    TEST_END()
 }

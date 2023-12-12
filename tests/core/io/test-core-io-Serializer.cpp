@@ -74,6 +74,8 @@ class InputOutputStream : public hub::Output, public hub::Input
 };
 
 TEST_CASE( "Serializer test" ) {
+    TEST_BEGIN()
+
     hub::io::Archive archive;
 
     SensorSpec sensorSpec;
@@ -96,5 +98,5 @@ TEST_CASE( "Serializer test" ) {
     // hub::Serializer serializer;
     // serializer.pack( archive, myName );
 
-    return;
+    TEST_END()
 }

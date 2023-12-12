@@ -13,8 +13,8 @@ class SRC_API ViewerMqtt : public ViewerInterface<input::InputStreamMqtt>
     ViewerMqtt(
         const std::string & name,
         ViewerHandler && viewerHandler,
-//         std::function<bool( const char* streamName, const sensor::SensorSpec& )> onNewStreamer = {},
-//         std::function<void( const char* streamName, const sensor::SensorSpec& )> onDelStreamer = {},
+//         std::function<bool( const char* streamName, const sensor::SensorSpec& )> onNewStream = {},
+//         std::function<void( const char* streamName, const sensor::SensorSpec& )> onDelStream = {},
 //         std::function<void( const char* ipv4, int port )> onServerNotFound             = {},
 //         std::function<void( const char* ipv4, int port )> onServerConnected            = {},
 //         std::function<void( const char* ipv4, int port )> onServerDisconnected         = {},

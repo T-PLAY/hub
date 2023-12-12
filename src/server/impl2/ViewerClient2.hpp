@@ -25,7 +25,7 @@ class ViewerClient2 : public Client2
 
     std::string headerMsg() const override;
 
-    void notifyNewStreamer( const std::string& streamName, const std::vector<Data_t> & retainedData );
+    void notifyNewStreamer( const StreamerClient2 * streamer );
     void notifyDelStreamer( const std::string& streamName );
 
     void end( io::StreamBase::ServerMessage message ) override;
@@ -37,6 +37,7 @@ class ViewerClient2 : public Client2
     hub::io::InputOutputSocket m_socket;
 
     bool m_viewerClosed = false;
+    std::atomic<bool> m_clientStreamAdded = false;
 
     friend class ServerImpl2;
 };

@@ -10,6 +10,8 @@
 #include <io/output/OutputStream.hpp>
 
 TEST_CASE( "InputOutputStream local test" ) {
+    TEST_BEGIN()
+
     const auto hostname = hub::utils::getHostname();
     const auto port     = GET_RANDOM_PORT;
 
@@ -39,4 +41,5 @@ TEST_CASE( "InputOutputStream local test" ) {
     CHECK_DECLINE( ratio, "InputOutputStreamLocal:broadcast(1->10)/unicast(1->1)", "/" );
 
     // std::cout << "[test] tested on machine: '" << hostname << "'" << std::endl;
+    TEST_END()
 }

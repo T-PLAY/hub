@@ -1,5 +1,5 @@
 
-#include <catch2/catch_test_macros.hpp>
+#include <test_common.hpp>
 
 #include <iostream>
 
@@ -16,6 +16,7 @@
 //#include <OpenImageIO/imageio.h>
 
 TEST_CASE( "Matrix compat Eigen test" ) {
+    TEST_BEGIN()
 
     constexpr auto width  = 20;
     constexpr auto height = 10;
@@ -111,4 +112,5 @@ TEST_CASE( "Matrix compat Eigen test" ) {
 
     ////    hub::sensor::Resolution resolution { { 1 }, format };
     //    std::cout << resolution << std::endl;
+    TEST_END()
 }

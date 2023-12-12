@@ -7,11 +7,6 @@
 #include <string>
 #include <thread>
 
-// #include "sensor/Acquisition.hpp"
-// #include "sensor/SensorSpec.hpp"
-// #include "net/ClientSocket.hpp"
-// #include "StreamViewer.hpp"
-// #include "sensor/InputSensor.hpp"
 #include "ViewerHandler.hpp"
 #include "ViewerStream.hpp"
 #include "core/Utils.hpp"
@@ -19,14 +14,14 @@
 #ifdef DEBUG_MSG
 #    undef DEBUG_MSG
 #endif
-#define DEBUG_MSG( _params )                                              \
-    do {                                                                  \
-        if ( m_viewerHandler.onLogMessage ) {                             \
-            std::stringstream _sstr;                                      \
-_sstr << m_nStreamer << "/" << m_streams.size() << ":" << _params;                       \
-            m_viewerHandler.onLogMessage( _sstr.str().c_str() );          \
-        }                                                                 \
-        else { std::cout << m_nStreamer << ":" << _params << std::endl; } \
+#define DEBUG_MSG( _params )                                                   \
+    do {                                                                       \
+        if ( m_viewerHandler.onLogMessage ) {                                  \
+            std::stringstream _sstr;                                           \
+            _sstr << m_nStreamer << "/" << m_streams.size() << ":" << _params; \
+            m_viewerHandler.onLogMessage( _sstr.str().c_str() );               \
+        }                                                                      \
+        else { std::cout << m_nStreamer << ":" << _params << std::endl; }      \
     } while ( false );
 
 namespace hub {
@@ -51,10 +46,10 @@ class SRC_API ViewerInterface
   public:
     ///
     /// \brief
-    /// \param onNewStreamer
+    /// \param onNewStream
     /// is an event handler called when new streamer (OutputStream) is recently connected to the
     /// server.
-    /// \param onDelStreamer is an event handler called when connected streamer
+    /// \param onDelStream is an event handler called when connected streamer
     /// (OutputStream) is recently disconnected from the server.
     /// \param onServerNotFound
     /// \param onServerConnected is an event handler called when viewer is recently connected to the
@@ -163,13 +158,14 @@ class SRC_API ViewerInterface
   protected:
     void printStatus() const;
 
-    void addStream( const std::string& streamName, const sensor::SensorSpec& sensorSpec );
-    void deleteStream( const std::string& streamName );
+    // void addStream( const std::string& streamName, const sensor::SensorSpec& sensorSpec );
+    void addStream(const std::string& streamName , const std::string & streamIpv4, int streamPort, Datas_t &&header);
+    void delStream( const std::string& streamName );
 
     std::string m_name;
     ViewerHandler m_viewerHandler;
-    std::string m_ipv4;
-    int m_port;
+    std::string m_serverIpv4;
+    int m_serverPort;
 
     bool m_serverConnected = false;
 
@@ -194,8 +190,8 @@ ViewerInterface<InputStream>::ViewerInterface( const std::string& name,
 
     m_name( utils::getHostname() + ":" + name ),
     m_viewerHandler( std::move( viewerHandler ) ),
-    m_ipv4( ipv4 ),
-    m_port( port ) {}
+    m_serverIpv4( ipv4 ),
+    m_serverPort( port ) {}
 
 template <class InputStream>
 ViewerInterface<InputStream>::~ViewerInterface() {
@@ -215,9 +211,48 @@ ViewerInterface<InputStream>::~ViewerInterface() {
     //    printStatus();
 }
 
+/////////////////////////////////////////////////////
+
+template <class InputStream>
+void ViewerInterface<InputStream>::addStream(const std::string& streamName, const std::string &streamIpv4, int streamPort, Datas_t && header )
+// const sensor::SensorSpec& sensorSpec ) {
+{
+    assert( m_streams.find( streamName ) == m_streams.end() );
+
+    if ( m_viewerHandler.onNewStream ) {
+
+        m_streams[streamName] =
+            std::make_unique<ViewerStream<InputStream>>( m_nStreamer++,
+                                                         streamIpv4,
+                                                         streamPort,
+                                                         streamName,
+                                                         std::move(header),
+                                                         // sensorSpec,
+                                                         m_viewerHandler
+                                                         // m_viewerHandler.onNewStream,
+                                                         // m_viewerHandler.onDelStream,
+                                                         // m_viewerHandler.onNewAcquisition,
+                                                         // m_viewerHandler.onLogMessage
+            );
+        printStatus();
+    }
+}
+
+template <class InputStream>
+void ViewerInterface<InputStream>::delStream( const std::string& streamName ) {
+
+    if ( m_viewerHandler.onNewStream ) {
+        assert( m_viewerHandler.onDelStream );
+        assert( m_streams.find( streamName ) != m_streams.end() );
+        // if ( m_streams.find( streamName ) != m_streams.end() ) { m_streams.erase( streamName ); }
+        m_streams.erase( streamName );
+        printStatus();
+    }
+}
+
 template <class InputStream>
 void ViewerInterface<InputStream>::startStream( const std::string& streamName ) {
-    assert( m_viewerHandler.onNewStreamer );
+    assert( m_viewerHandler.onNewStream );
     assert( m_streams.find( streamName ) != m_streams.end() );
     auto& stream = *m_streams.at( streamName );
     stream.startStream();
@@ -228,7 +263,7 @@ template <class InputStream>
 void ViewerInterface<InputStream>::stopStream( const std::string& streamName ) {
     DEBUG_MSG( "[Viewer] stopStream by user " << streamName );
 
-    assert( m_viewerHandler.onDelStreamer );
+    assert( m_viewerHandler.onDelStream );
     assert( m_streams.find( streamName ) != m_streams.end() );
     auto& stream = *m_streams.at( streamName );
     stream.stopStream();
@@ -280,44 +315,12 @@ void ViewerInterface<InputStream>::printStatus() const {
                                                             << " " << str << "\033[0m" );
 }
 
-template <class InputStream>
-void ViewerInterface<InputStream>::addStream( const std::string& streamName,
-                                              const sensor::SensorSpec& sensorSpec ) {
-    assert( m_streams.find( streamName ) == m_streams.end() );
-
-    if ( m_viewerHandler.onNewStreamer ) {
-
-        m_streams[streamName] =
-            std::make_unique<ViewerStream<InputStream>>(
-                m_nStreamer, m_ipv4,
-                                                         m_port,
-                                                         streamName,
-                                                         sensorSpec,
-                                                         m_viewerHandler.onNewStreamer,
-                                                         m_viewerHandler.onDelStreamer,
-                                                         m_viewerHandler.onNewAcquisition,
-                                                         m_viewerHandler.onLogMessage );
-        printStatus();
-    }
-}
-
-template <class InputStream>
-void ViewerInterface<InputStream>::deleteStream( const std::string& streamName ) {
-
-    if ( m_viewerHandler.onNewStreamer ) {
-        assert( m_viewerHandler.onDelStreamer );
-        assert( m_streams.find( streamName ) != m_streams.end() );
-        // if ( m_streams.find( streamName ) != m_streams.end() ) { m_streams.erase( streamName ); }
-        m_streams.erase(streamName);
-        printStatus();
-    }
-}
 
 template <class InputStream>
 void ViewerInterface<InputStream>::setIpv4( const std::string& ipv4 ) {
     DEBUG_MSG( "[Viewer] setIpv4 " << ipv4 );
     assert( !m_serverConnected );
-    m_ipv4 = ipv4;
+    m_serverIpv4 = ipv4;
     //    m_sock.setIpv4( ipv4 );
 }
 
@@ -325,19 +328,19 @@ template <class InputStream>
 void ViewerInterface<InputStream>::setPort( int port ) {
     DEBUG_MSG( "[Viewer] setPort " << port );
     assert( !m_serverConnected );
-    m_port = port;
+    m_serverPort = port;
     //    m_sock.setPort( port );
 }
 
 template <class InputStream>
 const std::string& ViewerInterface<InputStream>::getIpv4() const {
-    return m_ipv4;
+    return m_serverIpv4;
     //    return m_sock.getIpv4();
 }
 
 template <class InputStream>
 const int& ViewerInterface<InputStream>::getPort() const {
-    return m_port;
+    return m_serverPort;
     //    return m_sock.getPort();
 }
 

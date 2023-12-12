@@ -42,7 +42,7 @@ int main( int argc, char* argv[] ) {
     bool exit = false;
 
     hub::client::ViewerHandler viewerHandler;
-    // auto onNewStreamer = [=]( const std::string& streamName, const hub::sensor::SensorSpec&
+    // auto onNewStream = [=]( const std::string& streamName, const hub::sensor::SensorSpec&
     // sensorSpec ) {
     viewerHandler.onServerNotFound = [&]( const std::string& ipv4, int port ) {
         std::cout << HEADER_MSG "onServerNotFound : " << ipv4 << " " << port << std::endl;
@@ -55,21 +55,31 @@ int main( int argc, char* argv[] ) {
         std::cout << HEADER_MSG "onServerDisconnected : " << ipv4 << " " << port << std::endl;
         if ( exitWhenServerLost ) { exit = true; }
     };
-    viewerHandler.onNewStreamer = [=]( const std::string& streamName,
-                                       const hub::sensor::SensorSpec& sensorSpec ) {
-        std::cout << HEADER_MSG "onNewStreamer : " << streamName << ", " << sensorSpec << std::endl;
+    // viewerHandler.onNewStream = [=]( const std::string& streamName,
+    //                                    const hub::sensor::SensorSpec& sensorSpec ) {
+    //     std::cout << HEADER_MSG "onNewStream : " << streamName << ", " << sensorSpec << std::endl;
+    //     return true;
+    // };
+    viewerHandler.onNewStream = [=]( const std::string& streamName,
+                                       const hub::Datas_t& header ) {
+        std::cout << HEADER_MSG "onNewStream : " << streamName << ", " << header << std::endl;
         return true;
     };
-    viewerHandler.onDelStreamer = []( const std::string& streamName,
-                                      const hub::sensor::SensorSpec& sensorSpec ) {
-        std::cout << HEADER_MSG "onDelStreamer : " << streamName << ", " << sensorSpec << std::endl;
+    viewerHandler.onDelStream = []( const std::string& streamName) {
+                                      // const hub::Datas_t & header ) {
+        // std::cout << HEADER_MSG "onDelStream : " << streamName << ", " << header << std::endl;
+        std::cout << HEADER_MSG "onDelStream : " << streamName << std::endl;
     };
-    viewerHandler.onNewAcquisition = []( const std::string& streamName,
-                                         const hub::sensor::Acquisition& acq ) {
-        //        std::cout << HEADER_MSG "onNewAcquisition : " << acq << std::endl;
-        //        std::cout << "+";
-        std::cout << COLOR "+\033[0m";
-    };
+    // viewerHandler.onNewAcquisition = []( const std::string& streamName,
+    //                                      const hub::sensor::Acquisition& acq ) {
+    //     //        std::cout << HEADER_MSG "onNewAcquisition : " << acq << std::endl;
+    //     //        std::cout << "+";
+    //     std::cout << COLOR "+\033[0m";
+    // };
+    // viewerHandler.onNewData = []( const std::string& streamName,
+    //                                      hub::input::InputStream& inputStream ) {
+    //     // std::cout << COLOR "+\033[0m";
+    // };
     viewerHandler.onSetProperty = []( const std::string& streamName,
                                       const std::string& objectName,
                                       int property,
@@ -82,8 +92,8 @@ int main( int argc, char* argv[] ) {
     };
 
     hub::client::Viewer viewer( FILE_NAME, std::move( viewerHandler ), "127.0.0.1", port);
-                                // onNewStreamer,
-                                // onDelStreamer,
+                                // onNewStream,
+                                // onDelStream,
                                 // onServerNotFound,
                                 // onServerConnected,
                                 // onServerDisconnected,

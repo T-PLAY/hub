@@ -10,6 +10,8 @@
 #include <net/ServerSocket.hpp>
 
 TEST_CASE( "Net test : ClientSocket" ) {
+    TEST_BEGIN()
+
     // const auto hostname = hub::utils::getHostname();
 
     const std::string ipv4 = "127.0.0.1";
@@ -114,4 +116,6 @@ TEST_CASE( "Net test : ClientSocket" ) {
     std::cout << "[test] end serverSocket -----------------------" << std::endl;
     std::cout << std::endl;
 #endif
+
+    TEST_END()
 }

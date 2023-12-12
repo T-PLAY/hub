@@ -50,7 +50,7 @@ ViewerServer2::ViewerServer2( const std::string& name,
                     switch ( serverMessage ) {
 
                     case hub::io::StreamBase::ServerMessage::VIEWER_NEW_STREAMER: {
-                        ++m_nStreamer;
+                        // ++m_nStreamer;
 
 #ifdef DEBUG
                         std::this_thread::sleep_for(
@@ -61,30 +61,38 @@ ViewerServer2::ViewerServer2( const std::string& name,
                         m_sock.read( streamName );
                         // std::cout << "[Viewer] read stream name: " << streamName << std::endl;
 
-                        hub::io::StreamBase::ServerMessage servMess;
-                        m_sock.read( servMess );
-                        assert( servMess ==
-                                hub::io::StreamBase::ServerMessage::RETAINED_DATA_START );
-                        std::vector<Data_t> retainedData;
-                        m_sock.read( retainedData );
-                        m_sock.read( servMess );
-                        assert( servMess == hub::io::StreamBase::ServerMessage::RETAINED_DATA_END );
+                        std::string streamIpv4;
+                        m_sock.read(streamIpv4);
 
-                        // hub::io::Book book(retainedData);
+                        int streamPort;
+                        m_sock.read(streamPort);
 
-                        hub::io::Memory memory( retainedData );
+                        // hub::io::StreamBase::ServerMessage servMess;
+                        // m_sock.read( servMess );
+                        // assert( servMess ==
+                        //         hub::io::StreamBase::ServerMessage::RETAINED_DATA_START );
+                        Datas_t header;
+                        m_sock.read( header );
+                        // m_sock.read( servMess );
+                        // assert( servMess == hub::io::StreamBase::ServerMessage::RETAINED_DATA_END );
+
+                        // hub::io::Book book(header);
+
+                        // hub::io::Memory memory( header );
+                        // sensor::SensorSpec sensorSpec;
+                        // memory.read( sensorSpec );
 
                         // hub::Serializer serializer;
-                        sensor::SensorSpec sensorSpec;
                         // serializer.read(sensorSpec);
-                        memory.read( sensorSpec );
                         // m_sock.read( sensorSpec );
                         // std::cout << "[Viewer] read sensor spec: " << sensorSpec << std::endl;
                         // std::cout << "[Viewer] new streamer '" << streamName << "'" << std::endl;
 
                         DEBUG_MSG( "[Viewer] new streamer '" << streamName << "'" );
 
-                        addStream( streamName, sensorSpec );
+                        addStream( streamName, streamIpv4, streamPort, std::move(header) );
+
+                        m_sock.write(io::StreamBase::ClientMessage::VIEWER_CLIENT_STREAM_ADDED);
 
                         // prevent all son the father is comming
 
@@ -108,7 +116,7 @@ ViewerServer2::ViewerServer2( const std::string& name,
                         //                            m_streams.end() ); m_streams.erase( streamName
                         //                            );
                         //                        }
-                        deleteStream( streamName );
+                        delStream( streamName );
 
                         // prevent all son the father is leaving
 

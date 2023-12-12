@@ -2,17 +2,18 @@
 #ifndef SERIAL_H
 #define SERIAL_H
 
-#include <linux/types.h>
+// #include <linux/types.h>
+// #include <linux/rtc.h>
+
 #include <stdio.h>
-#include <time.h>
+// #include <time.h>
 #include <stdlib.h>
 #include <fcntl.h>
 #include <unistd.h>
-#include <sys/types.h>
-#include <sys/ioctl.h>
+// #include <sys/types.h>
+// #include <sys/ioctl.h>
 #include <errno.h>
 #include <string.h>
-#include <linux/rtc.h>
 #include <termios.h>
 
 

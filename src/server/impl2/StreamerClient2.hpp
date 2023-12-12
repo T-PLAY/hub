@@ -36,7 +36,7 @@ class StreamerClient2 : public Client2
                      //                    net::ClientSocket&& sock,
                      hub::io::InputOutputSocket&& sock,
                      std::string streamName,
-                     std::string ipv4,
+                     std::string streamIpv4,
                      int port );
 
     ~StreamerClient2();
@@ -87,13 +87,14 @@ class StreamerClient2 : public Client2
     ///
     //    const std::set<sensor::Acquisition>& getPackedAcqs() const;
 
-    const std::string streamName;
-    std::vector<hub::Data_t> m_retainedData;
-    bool m_retained;
-    std::atomic<bool> m_fullyRetained = false;
-    std::atomic<bool> m_retainedSharedToViewer = false;
-    const std::string ipv4;
-    const int port;
+    const std::string m_streamName;
+    // std::vector<hub::Data_t> m_retainedData;
+    // bool m_retained;
+    const std::string m_streamIpv4;
+    const int m_streamPort;
+    Datas_t m_header;
+    // std::atomic<bool> m_fullyRetained = false;
+    // std::atomic<bool> m_retainedSharedToViewer = false;
 
     int getNStreamViewer() const;
 

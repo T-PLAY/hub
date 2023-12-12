@@ -59,7 +59,7 @@ class SRC_API ServerImpl2
     Client2* initClient( hub::io::InputOutputSocket&& sock, int iClient );
 
     void addStreamer( StreamerClient2* streamer );
-    void newStreamViewer( StreamerClient2* streamer );
+    void addStreamViewer( StreamerClient2* streamer );
     void delStreamViewer( StreamerClient2* streamer );
 
     //    void addStreamViewer( server::StreamViewerClient* streamViewer );
