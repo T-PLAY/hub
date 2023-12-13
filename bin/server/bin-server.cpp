@@ -14,9 +14,9 @@ int main( int argc, char* argv[] ) {
     // return 0;
 
     // int maxClient = -1;
-    // int port = HUB_SERVICE_PORT;
-    int port = hub::io::Stream::s_defaultPort;
-// #ifdef HUB_SERVER_PORT
+    int port = HUB_SERVICE_PORT;
+    // int port = hub::io::Stream::s_defaultPort;
+// #ifdef HUB_SERVICE_PORT
 // #else
     // int port = 0;
 // #endif

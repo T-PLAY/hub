@@ -4,13 +4,15 @@ namespace hub {
 namespace io {
 
 // const std::string StreamServer2::s_exitSignal = "exitServer";
-const std::string StreamServer2::s_defaultIpv4 = "127.0.0.1";
 
-#ifdef HUB_SERVER_PORT
-const int StreamServer2::s_defaultPort = HUB_SERVER_PORT;
-#else
-const int StreamServer2::s_defaultPort = 1993; // author's birthday, not snmp-tcp port
-#endif
+// const std::string StreamServer2::s_defaultIpv4 = "127.0.0.1";
+
+// #ifdef HUB_SERVICE_PORT
+// const int StreamServer2::s_defaultPort = HUB_SERVICE_PORT;
+// #else
+// const int StreamServer2::s_defaultPort = 1993; // author's birthday, not snmp-tcp port
+// #endif
+
 // const int StreamServer2::s_defaultPort = HUB_SERVICE_PORT;
 
 // const std::string StreamServer2::s_topicStream = "streams/";

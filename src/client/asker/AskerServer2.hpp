@@ -14,8 +14,8 @@ namespace client {
 class AskerServer2 : public hub::client::AskerInterface
 {
   public:
-    AskerServer2( const std::string& ipv4 = io::StreamServer2::s_defaultIpv4,
-                 int port                = io::StreamServer2::s_defaultPort );
+    AskerServer2( const std::string& ipv4 = HUB_SERVICE_IPV4,
+                 int port                = HUB_SERVICE_PORT );
     ~AskerServer2();
 
     //  protected:

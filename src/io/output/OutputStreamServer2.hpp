@@ -48,8 +48,8 @@ class SRC_API OutputStreamServer2 : public Output, public io::StreamServer2
     OutputStreamServer2( int streamPort );
 
     explicit OutputStreamServer2( const std::string& streamName,
-                                  int port                = s_defaultPort,
-                                  const std::string& ipv4 = s_defaultIpv4,
+                                  int port                = HUB_SERVICE_PORT,
+                                  const std::string& ipv4 = HUB_SERVICE_IPV4,
                                   const hub::io::Header & header = {}
                                   );
                                   // bool retained           = true );

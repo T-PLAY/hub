@@ -2,9 +2,17 @@
 
 #include "core/Macros.hpp"
 
-#include "sensor/SensorSpec.hpp"
+// #include "sensor/SensorSpec.hpp"
 
 namespace hub {
+
+namespace sensor {
+class SensorSpec;
+// class SensorSpec::MetaData;
+// namespace SensorSpec {
+// class MetaData;
+// }
+}
 
 ///
 /// @brief native

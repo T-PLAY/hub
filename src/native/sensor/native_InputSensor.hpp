@@ -2,9 +2,12 @@
 
 #include "core/Macros.hpp"
 
-#include "sensor/InputSensor.hpp"
-
 namespace hub {
+
+namespace sensor {
+class InputSensor;
+class Acquisition;
+} // namespace sensor
 
 ///
 /// @brief native
@@ -24,9 +27,12 @@ extern "C"
     /// \param port
     /// \return
     ///
-    SRC_API sensor::InputSensor* createInputSensor( const char* streamName,
-         const char* ipv4 = input::InputStream::s_defaultIpv4.c_str(),
-                                            int port = input::InputStream::s_defaultPort);
+    SRC_API sensor::InputSensor*
+    createInputSensor( const char* streamName,
+                       // const char* ipv4 = input::InputStream::s_defaultIpv4.c_str(),
+                       // int port = input::InputStream::s_defaultPort);
+                       const char* ipv4 = "127.0.0.1",
+                       int port         = 4042 );
 
     ///
     /// \brief freeInputSensor
@@ -47,7 +53,6 @@ extern "C"
     /// \return
     ///
     SRC_API sensor::Acquisition* getAcquisition( sensor::InputSensor* inputSensor );
-
 
 #ifdef __cplusplus
 } // end extern "C"

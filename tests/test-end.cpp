@@ -3,14 +3,14 @@
 
 // #include <impl/server2/Server.hpp>
 
-// #ifdef HUB_SERVER_PORT
+// #ifdef HUB_SERVICE_PORT
 // #include <impl/server2/io/StreamServer.hpp>
 // #endif
 #include <io/Stream.hpp>
 
 TEST_CASE( "Test end" ) {
 
-// #if defined(HUB_BUILD_SERVER) && defined(HUB_SERVER_PORT)
+// #if defined(HUB_BUILD_SERVER) && defined(HUB_SERVICE_PORT)
     // hub::io::Stream::stopServer();
 // #endif
 #if defined(HUB_BUILD_SERVER)

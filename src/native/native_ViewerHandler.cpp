@@ -1,6 +1,8 @@
 
 #include "native_ViewerHandler.hpp"
 
+#include "client/viewer/ViewerHandler.hpp"
+
 namespace hub {
 namespace native {
 
@@ -8,9 +10,10 @@ namespace native {
 client::ViewerHandler* createViewerHandler( onServerNotFoundFunc onServerNotFound,
                                             onServerConnectedFunc onServerConnected,
                                             onServerDisconnectedFunc onServerDisconnected,
-                                            onNewStreamerFunc onNewStreamer,
-                                            onDelStreamerFunc onDelStreamer,
-                                            onNewAcquisitionFunc onNewAcquisition,
+                                            onNewStreamFunc onNewStream,
+                                            // onNewAcquisitionFunc onNewAcquisition,
+                                            onNewDataFunc onNewData,
+                                            onDelStreamFunc onDelStream,
                                             onSetPropertyFunc onSetProperty,
                                             onLogMessageFunc onLogMessage ) {
 
@@ -25,17 +28,17 @@ client::ViewerHandler* createViewerHandler( onServerNotFoundFunc onServerNotFoun
     viewerHandler->onServerDisconnected = [=]( const std::string& ipv4, int port ) {
         onServerDisconnected( ipv4.c_str(), port );
     };
-    viewerHandler->onNewStreamer = [=]( const std::string& streamName,
-                                        const sensor::SensorSpec& sensorSpec ) {
-        return onNewStreamer( streamName.c_str(), &sensorSpec );
+    viewerHandler->onNewStream = [=]( const std::string& streamName, const io::Header& header ) {
+        return onNewStream( streamName.c_str(), &header );
     };
-    viewerHandler->onDelStreamer = [=]( const std::string& streamName,
-                                        const sensor::SensorSpec& sensorSpec ) {
-        onDelStreamer( streamName.c_str(), &sensorSpec );
+    // viewerHandler->onNewAcquisition = [=]( const std::string& streamName,
+    // const sensor::Acquisition& acq ) {
+    viewerHandler->onNewData = [=]( const std::string& streamName, const hub::Datas_t& datas ) {
+        onNewData( streamName.c_str(), &datas );
     };
-    viewerHandler->onNewAcquisition = [=]( const std::string& streamName,
-                                           const sensor::Acquisition& acq ) {
-        onNewAcquisition( streamName.c_str(), &acq );
+    viewerHandler->onDelStream = [=]( const std::string& streamName ) {
+        // const sensor::SensorSpec& sensorSpec ) {
+        onDelStream( streamName.c_str() );
     };
     viewerHandler->onSetProperty = [=]( const std::string& streamName,
                                         const std::string& objectName,

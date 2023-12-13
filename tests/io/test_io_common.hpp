@@ -28,9 +28,9 @@
 
 #define SERVER_IP "127.0.0.1"
 
-#ifdef HUB_SERVER_PORT
+#ifdef HUB_SERVICE_PORT
 // #ifdef HUB_TEST_ALL
-#    define INIT_SERVER const auto SERVER_PORT = HUB_SERVER_PORT;
+#    define INIT_SERVER const auto SERVER_PORT = HUB_SERVICE_PORT;
 // #    define INIT_SERVER const auto SERVER_PORT = hub::io::StreamServer::s_defaultPort;
 #else
 #    define INIT_SERVER                           \

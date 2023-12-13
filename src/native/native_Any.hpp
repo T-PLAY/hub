@@ -2,9 +2,11 @@
 
 #include "core/Macros.hpp"
 
-#include "core/Any.hpp"
+// #include "core/Any.hpp"
 
 namespace hub {
+
+class Any;
 
 ///
 /// @brief native

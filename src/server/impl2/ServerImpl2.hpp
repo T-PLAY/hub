@@ -29,7 +29,7 @@ class SRC_API ServerImpl2
     /// \brief ServerImpl2
     /// \param port
     ///
-    explicit ServerImpl2( int port = io::StreamServer2::s_defaultPort );
+    explicit ServerImpl2( int port = HUB_SERVICE_PORT );
 
     ~ServerImpl2();
 

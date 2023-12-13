@@ -15,8 +15,8 @@ class StreamServer2 : public hub::io::StreamBase
     using hub::io::StreamBase::getHeader;
 
     //    static const std::string s_exitSignal;
-    static const std::string s_defaultIpv4;
-    static const int s_defaultPort;
+    // static const std::string s_defaultIpv4;
+    // static const int s_defaultPort;
     //    static const std::string s_topicStream;
     //    static const std::string s_topicViewer;
     //    static const std::string s_topicEvents;
@@ -25,7 +25,8 @@ class StreamServer2 : public hub::io::StreamBase
 
     //        static const std::string s_defaultIpv4;
     //        static constexpr int s_defaultPort     = 4042;
-    static void stopServer( std::string ipv4 = s_defaultIpv4, int port = s_defaultPort ) {
+    // static void stopServer( std::string ipv4 = s_defaultIpv4, int port = s_defaultPort ) {
+    static void stopServer( std::string ipv4 = HUB_SERVICE_IPV4, int port = HUB_SERVICE_PORT ) {
         auto clientSock = hub::io::InputOutputSocket( hub::net::ClientSocket( ipv4, port ) );
         clientSock.write( hub::io::StreamBase::ClientType::KILLER );
     }

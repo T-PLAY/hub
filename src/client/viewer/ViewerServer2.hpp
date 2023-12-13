@@ -17,8 +17,8 @@ class SRC_API ViewerServer2 : public hub::client::ViewerInterface<input::InputSt
   public:
     explicit ViewerServer2( const std::string& name,
                             ViewerHandler&& viewerHandler,
-                            const std::string& ipv4 = input::InputStreamServer2::s_defaultIpv4,
-                            int port                = input::InputStreamServer2::s_defaultPort );
+                            const std::string& ipv4 = HUB_SERVICE_IPV4,
+                            int port                = HUB_SERVICE_PORT );
 
     ~ViewerServer2();
 

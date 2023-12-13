@@ -181,8 +181,8 @@ endif()
 # foreach *.cpp tests
 include(CTest)
 
-if (HUB_SERVER_PORT)
-    set(HUB_SERVER_TEST_BIN_PORT ${HUB_SERVER_PORT})
+if (HUB_SERVICE_PORT)
+    set(HUB_SERVER_TEST_BIN_PORT ${HUB_SERVICE_PORT})
 else()
     if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
         set(HUB_SERVER_TEST_BIN_PORT 6000)

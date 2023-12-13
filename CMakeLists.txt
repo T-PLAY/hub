@@ -177,16 +177,16 @@ if (PahoMqttCpp_FOUND)
     link_libraries(PahoMqttCpp::paho-mqttpp3)
 endif()
 
-if (HUB_SERVER_PORT)
-    add_definitions(-DHUB_SERVER_PORT=${HUB_SERVER_PORT})
+if (HUB_SERVICE_PORT)
+    add_definitions(-DHUB_SERVICE_PORT=${HUB_SERVICE_PORT})
 endif()
 
 # option(HUB_BUILD_SERVER "Build implement server" OFF)
 # if (HUB_BUILD_SERVER)
 #     add_definitions(-DHUB_BUILD_SERVER)
 #     # target_compile_definitions(${TARGET_NAME} PUBLIC -DHUB_BUILD_SERVER)
-#     # if (HUB_SERVER_PORT)
-#         # target_compile_definitions(${TARGET_NAME} PUBLIC -DHUB_SERVER_PORT=${HUB_SERVER_PORT})
+#     # if (HUB_SERVICE_PORT)
+#         # target_compile_definitions(${TARGET_NAME} PUBLIC -DHUB_SERVER_PORT=${HUB_SERVICE_PORT})
 #     # endif()
 # endif()
 
@@ -230,7 +230,8 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
 # set(HUB_SOURCE_DIRS "core" "net" "data" "io" "sensor" "server" "client" "native")
 
 # set(HUB_SOURCE_DIRS "core" "net" "io" "server")
-set(HUB_SOURCE_DIRS "core" "net" "io" "server" "client")
+# set(HUB_SOURCE_DIRS "core" "net" "io" "server" "client")
+set(HUB_SOURCE_DIRS "core" "net" "io" "server" "client" "native")
 # set(HUB_SOURCE_DIRS "core" "net" "data" "io" "server" "client" "native")
 
 

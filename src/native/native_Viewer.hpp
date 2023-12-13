@@ -2,9 +2,16 @@
 
 #include "core/Macros.hpp"
 
-#include "client/Viewer.hpp"
+// #include "client/Viewer.hpp"
 
 namespace hub {
+
+#ifndef CPP_SOURCE
+namespace client {
+    class Viewer;
+    class ViewerHandler;
+}
+#endif
 
 ///
 /// @brief native
@@ -20,8 +27,10 @@ extern "C"
     SRC_API client::Viewer*
     createViewer( const char* name,
                   client::ViewerHandler* viewerHandler,
-                  const char* ipv4 = input::InputStream::s_defaultIpv4.c_str(),
-                  int port         = input::InputStream::s_defaultPort );
+                  // const char* ipv4 = input::InputStream::s_defaultIpv4.c_str(),
+                  // int port         = input::InputStream::s_defaultPort );
+                  const char* ipv4 = "127.0.0.1",
+                  int port         = 4042 );
 
     ///
     /// \brief freeViewer
@@ -63,6 +72,10 @@ extern "C"
     /// \return
     ///
     SRC_API bool viewer_isConnected( const client::Viewer* viewer );
+
+    int viewer_nStream(const client::Viewer* viewer);
+
+    int viewer_nStreaming(const client::Viewer* viewer);
 
 #ifdef __cplusplus
 } // end extern "C"

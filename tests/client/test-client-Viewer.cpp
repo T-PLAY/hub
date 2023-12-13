@@ -13,12 +13,9 @@
 TEST_CASE( "Viewer" ) {
     TEST_BEGIN()
 
-    // INIT_SERVER
     const int port = GET_RANDOM_PORT;
 
     const hub::io::Header header_ref { sizeof(int), {'g', 'o', 't'} };
-    // const hub::io::Header header_ref { 0, {'g', 'o', 't'} };
-
 
     {
 

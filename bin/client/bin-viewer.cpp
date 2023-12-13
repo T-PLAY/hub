@@ -13,7 +13,8 @@ int main( int argc, char* argv[] ) {
 
     std::vector<std::string> args( argv + 1, argv + argc );
 
-    int port = hub::io::Stream::s_defaultPort;
+    // int port = hub::io::Stream::s_defaultPort;
+    int port = HUB_SERVICE_PORT;
 
     auto it = args.begin();
     while ( it != args.end() ) {
@@ -63,9 +64,10 @@ int main( int argc, char* argv[] ) {
                                   const hub::Datas_t& datas ) {
                                   // hub::input::InputStream& inputStream ) {
         // std::cout << COLOR "+\033[0m";
+                                  std::cout << "\033[" << std::to_string(std::hash<std::string>{}(streamName) % 10 + 40) << "m+\033[0m";
         // int a;
         // inputStream.read( a );
-        std::cout << "[test-client-Viewer] '" << streamName << "', onNewData : " << datas << std::endl;
+        // std::cout << "[test-client-Viewer] '" << streamName << "', onNewData : " << datas << std::endl;
     };
     // viewerHandler.onNewAcquisition = []( const std::string& streamName,
     //                                      const hub::sensor::Acquisition& acq ) {

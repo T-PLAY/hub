@@ -1,7 +1,8 @@
 
 #include <iostream>
+#include <thread>
 
-#include <io/Stream.hpp>
+// #include <io/Stream.hpp>
 #include <native/Native.hpp>
 
 #define COLOR "\033[44m"
@@ -13,7 +14,8 @@ int main( int argc, char* argv[] ) {
 
     std::vector<std::string> args( argv + 1, argv + argc );
 
-    int port = hub::io::Stream::s_defaultPort;
+    // int port = hub::io::Stream::s_defaultPort;
+    int port = HUB_SERVICE_PORT;
 
     auto it = args.begin();
     while ( it != args.end() ) {
@@ -51,16 +53,21 @@ int main( int argc, char* argv[] ) {
         std::cout << HEADER_MSG "onServerDisconnected : " << ipv4 << " " << port << std::endl;
         if ( exitWhenServerLost ) { exit = true; }
     };
-    auto onNewStreamer = []( const char* streamName, const hub::sensor::SensorSpec* sensorSpec ) {
-        std::cout << HEADER_MSG "onNewStreamer : " << streamName << std::endl;
+    // auto onNewStream = []( const char* streamName, const hub::sensor::SensorSpec* sensorSpec ) {
+    auto onNewStream = []( const char* streamName, const hub::io::Header* header ) {
+        std::cout << HEADER_MSG "onNewStream : " << streamName << ", " << header << std::endl;
         return true;
     };
-    auto onDelStreamer = []( const char* streamName, const hub::sensor::SensorSpec* sensorSpec ) {
-        std::cout << HEADER_MSG "onDelStreamer : " << streamName << std::endl;
+    // auto onDelStream = []( const char* streamName, const hub::sensor::SensorSpec* sensorSpec ) {
+    auto onDelStream = []( const char* streamName ) {
+        std::cout << HEADER_MSG "onDelStream : " << streamName << std::endl;
     };
-    auto onNewAcquisition = []( const char* streamName, const hub::sensor::Acquisition* acq ) {
-        //        std::cout << HEADER_MSG "onNewAcquisition : " << acq << std::endl;
-        std::cout << COLOR "+\033[0m";
+    // auto onNewData = []( const char* streamName, const hub::sensor::Acquisition* acq ) {
+    auto onNewData = []( const char* streamName, const hub::Datas_t* datas ) {
+        //        std::cout << HEADER_MSG "onNewData : " << acq << std::endl;
+        // std::cout << COLOR "+\033[0m";
+        std::cout << "\033[" << std::to_string( std::hash<std::string> {}( streamName ) % 10 + 40 )
+                  << "m+\033[0m";
     };
     auto onSetProperty =
         []( const char* streamName, const char* objectName, int property, const hub::Any* value ) {
@@ -74,9 +81,9 @@ int main( int argc, char* argv[] ) {
     auto* viewerHandler = hub::native::createViewerHandler( onServerNotFound,
                                                             onServerConnected,
                                                             onServerDisconnected,
-                                                            onNewStreamer,
-                                                            onDelStreamer,
-                                                            onNewAcquisition,
+                                                            onNewStream,
+                                                            onNewData,
+                                                            onDelStream,
                                                             onSetProperty,
                                                             onLogMessage );
 

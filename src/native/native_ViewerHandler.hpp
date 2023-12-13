@@ -2,9 +2,19 @@
 
 #include "core/Macros.hpp"
 
-#include "client/viewer/ViewerHandler.hpp"
+// #include "client/viewer/ViewerHandler.hpp"
 
 namespace hub {
+
+class Any;
+
+namespace io {
+class Header;
+}
+
+namespace client {
+class ViewerHandler;
+}
 
 ///
 /// @brief native
@@ -23,14 +33,17 @@ extern "C"
 
     typedef void ( *onServerDisconnectedFunc )( const char* ipv4, int port );
 
-    typedef bool ( *onNewStreamerFunc )( const char* streamName,
-                                         const sensor::SensorSpec* sensorSpec );
+    // typedef bool ( *onNewStreamFunc )( const char* streamName,
+    // const sensor::SensorSpec* sensorSpec );
+    typedef bool ( *onNewStreamFunc )( const char* streamName, const io::Header* header );
 
-    typedef void ( *onDelStreamerFunc )( const char* streamName,
-                                         const sensor::SensorSpec* sensorSpec );
+    typedef void ( *onNewDataFunc )( const char* streamName, const Datas_t* datas );
 
-    typedef void ( *onNewAcquisitionFunc )( const char* streamName,
-                                            const sensor::Acquisition* acq );
+    typedef void ( *onDelStreamFunc )( const char* streamName );
+    // const sensor::SensorSpec* sensorSpec );
+
+    // typedef void ( *onNewAcquisitionFunc )( const char* streamName,
+    // const sensor::Acquisition* acq );
 
     typedef void ( *onSetPropertyFunc )( const char* streamName,
                                          const char* objectName,
@@ -43,9 +56,10 @@ extern "C"
     createViewerHandler( onServerNotFoundFunc onServerNotFound,
                          onServerConnectedFunc onServerConnected,
                          onServerDisconnectedFunc onServerDisconnected,
-                         onNewStreamerFunc onNewStreamer,
-                         onDelStreamerFunc onDelStreamer,
-                         onNewAcquisitionFunc onNewAcquisition,
+                         onNewStreamFunc onNewStreamer,
+                         onNewDataFunc onNewData,
+                         onDelStreamFunc onDelStreamer,
+                         // onNewAcquisitionFunc onNewAcquisition,
                          onSetPropertyFunc onSetProperty,
                          onLogMessageFunc onLogMessage );
 
