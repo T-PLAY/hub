@@ -16,7 +16,7 @@ TEST_CASE( "OutputSensorT test" ) {
     hub::io::Archive archive;
 #endif
 
-    hub::sensor::SensorSpec::MetaData metaData;
+    hub::MetaData metaData;
     metaData["parent"] = "parentName";
 
     const hub::sensor::SensorSpec sensorSpec( "sensorName", metaData );

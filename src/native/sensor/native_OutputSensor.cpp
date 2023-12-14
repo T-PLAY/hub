@@ -1,4 +1,7 @@
 
+#include <sensor/OutputSensor.hpp>
+
+#define HUB_CPP_SOURCE
 #include "native_OutputSensor.hpp"
 
 namespace hub {

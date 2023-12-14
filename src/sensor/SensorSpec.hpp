@@ -12,6 +12,7 @@
 // #include "Resolutions.hpp"
 #include "core/Any.hpp"
 #include "core/Macros.hpp"
+#include "core/MetaData.hpp"
 //// #include "Measure.hpp"
 
 //// user friendly useless includes
@@ -32,6 +33,10 @@ namespace sensor {
 
 // using Resolution = Matrix;
 
+//     using MetaData       = Map<std::string, std::any>; // any -> C++17
+//    using MetaData = std::pair<std::string, Any>;
+// using MetaData = std::map<std::string, Any>; // any -> C++17
+
 ///
 /// \brief The SensorSpec class
 /// describes the sensor in its entirety, like the internal properties of a sensor.
@@ -47,12 +52,9 @@ class SRC_API SensorSpec
     // #if CPLUSPLUS_VERSION == 20
     //     using SensorNameType = std::string_view;
     //     using SensorNameType = std::string;
-    //     using MetaData       = Map<std::string, std::any>; // any -> C++17
-    //    using MetaData = std::pair<std::string, Any>;
-    using MetaData = std::map<std::string, Any>; // any -> C++17
-                                                 // #else
-   static std::string to_string( const MetaData& metaData, bool expand = false );
-   static std::string to_string( const std::pair<std::string, Any>& metaData );
+    // #else
+    // static std::string to_string( const MetaData& metaData, bool expand = false );
+    // static std::string to_string( const std::pair<std::string, Any>& metaData );
     //     ///
     //     /// \brief
     //     /// Type of sensor name
@@ -81,8 +83,7 @@ class SRC_API SensorSpec
                 const MetaData& metaData = {} ) :
         m_sensorName { sensorName }, m_resolution { resolution.clone() }, m_metaData { metaData } {}
 
-    SensorSpec( const std::string& sensorName,
-                const MetaData& metaData = {} ) :
+    SensorSpec( const std::string& sensorName, const MetaData& metaData = {} ) :
         m_sensorName { sensorName }, m_metaData { metaData } {}
 
     //    SensorSpec(const SensorSpec & sensorSpec) = default;
@@ -139,25 +140,26 @@ class SRC_API SensorSpec
         serializer.readAll( m_sensorName, m_resolution, m_metaData );
         // serializer.read(m_sensorName);
     }
-//        static constexpr auto serialize( auto& archive, auto& self ) {
-//            assert(false);
-//            return archive( self.m_sensorName, self.m_resolution, self.m_metaData );
-//            return archive( self.m_sensorName, self.resolution );
-//        }
+    //        static constexpr auto serialize( auto& archive, auto& self ) {
+    //            assert(false);
+    //            return archive( self.m_sensorName, self.m_resolution, self.m_metaData );
+    //            return archive( self.m_sensorName, self.resolution );
+    //        }
 
     SensorSpec operator+( const SensorSpec& sensorSpec ) const {
 
         std::string sensorName;
         Matrix resolution;
-        SensorSpec::MetaData metaData;
+        MetaData metaData;
 
         sensorName = m_sensorName + " + " + sensorSpec.m_sensorName;
 
-        resolution = make_matrix(m_resolution, sensorSpec.m_resolution);
-//        resolution = m_resolution.clone();
-//        resolution.insert(
-//            resolution.end(), sensorSpec.m_resolutions.begin(), sensorSpec.m_resolutions.end() );
-//        resolution.push_back(sensorSpec.m_resolution);
+        resolution = make_matrix( m_resolution, sensorSpec.m_resolution );
+        //        resolution = m_resolution.clone();
+        //        resolution.insert(
+        //            resolution.end(), sensorSpec.m_resolutions.begin(),
+        //            sensorSpec.m_resolutions.end() );
+        //        resolution.push_back(sensorSpec.m_resolution);
 
         metaData = m_metaData;
         metaData.insert( sensorSpec.m_metaData.begin(), sensorSpec.m_metaData.end() );
@@ -178,10 +180,9 @@ class SRC_API SensorSpec
     //        serializer(m_sensorName, resolution, metaData);
     //    }
 
-
     std::string getSensorName() const { return m_sensorName; }
     const Matrix& getResolution() const { return m_resolution; }
-    const MetaData & getMetaData() const { return m_metaData; }
+    const MetaData& getMetaData() const { return m_metaData; }
     void setResolution( Matrix&& newResolution ) { m_resolution = std::move( newResolution ); }
     void setResolution( const Matrix& newResolution ) { m_resolution = newResolution.clone(); }
 

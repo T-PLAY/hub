@@ -377,7 +377,7 @@ template <class Input, class Output>
 static void inputOutputSensorBench( Input& input, Output& output ) {
 
     // init outputSensor
-    hub::sensor::SensorSpec::MetaData metaData;
+    hub::MetaData metaData;
     metaData["name"] = "gauthier";
     const hub::sensor::SensorSpec sensorSpec( "sensorName", metaData );
     using UserResolution = UserType;

@@ -20,7 +20,7 @@ TEST_CASE( "InputSensor test" ) {
     hub::io::Archive archive;
 #endif
 
-    hub::sensor::SensorSpec::MetaData metaData;
+    hub::MetaData metaData;
     metaData["parent"] = "parentName";
 
     using Resolution = hub::sensor::format::BGR8;

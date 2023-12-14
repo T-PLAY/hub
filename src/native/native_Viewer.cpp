@@ -3,7 +3,7 @@
 
 #include "client/Viewer.hpp"
 
-#define CPP_SOURCE
+#define HUB_CPP_SOURCE
 #include "native_Viewer.hpp"
 
 

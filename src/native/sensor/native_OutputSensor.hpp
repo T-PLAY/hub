@@ -2,9 +2,15 @@
 
 #include "core/Macros.hpp"
 
-#include "sensor/OutputSensor.hpp"
+// #include "sensor/OutputSensor.hpp"
 
 namespace hub {
+
+#ifndef HUB_CPP_SOURCE
+namespace sensor {
+class OutputSensor;
+}
+#endif
 
 ///
 /// @brief native

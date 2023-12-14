@@ -2,9 +2,19 @@
 
 #include "core/Macros.hpp"
 
-#include "sensor/SensorSpec.hpp"
+// #include "sensor/SensorSpec.hpp"
 
 namespace hub {
+
+
+#ifndef HUB_CPP_SOURCE
+
+class MetaData;
+
+namespace sensor {
+class SensorSpec;
+}
+#endif
 
 ///
 /// @brief native
@@ -45,6 +55,9 @@ extern "C"
                                             char* metaDataStr );
 
     SRC_API sensor::SensorSpec* sensorSpec_copy( const sensor::SensorSpec* source );
+
+    SRC_API const MetaData*
+    sensorSpec_getMetaData( const sensor::SensorSpec* sensorSpec );
 
 
 #ifdef __cplusplus

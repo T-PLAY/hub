@@ -1,15 +1,17 @@
 
-#include "native_MetaData.hpp"
+
+// #include "sensor/SensorSpec.hpp"
+#include "core/MetaData.hpp"
 #include "sensor/Format.hpp"
+
+#define HUB_CPP_SOURCE
+#include "native_MetaData.hpp"
 
 namespace hub {
 namespace native {
 
-const sensor::SensorSpec::MetaData* sensorSpec_getMetaData( const sensor::SensorSpec* sensorSpec ) {
-    return &sensorSpec->getMetaData();
-}
 
-bool metaData_getString( const sensor::SensorSpec::MetaData* metaData,
+bool metaData_getString( const MetaData* metaData,
                          const char* metaName,
                          char* output,
                          int* strLen ) {
@@ -22,7 +24,7 @@ bool metaData_getString( const sensor::SensorSpec::MetaData* metaData,
     return true;
 }
 
-bool metaData_getMat4( const sensor::SensorSpec::MetaData* metaData,
+bool metaData_getMat4( const MetaData* metaData,
                        const char* metaName,
                        float* output ) {
     if ( metaData->find( metaName ) != metaData->end() ) {
@@ -35,16 +37,16 @@ bool metaData_getMat4( const sensor::SensorSpec::MetaData* metaData,
     return false;
 }
 
-bool metaData_exists( const sensor::SensorSpec::MetaData* metaData, const char* metaName ) {
+bool metaData_exists( const MetaData* metaData, const char* metaName ) {
     return metaData->find( metaName ) != metaData->end();
 }
 
-int metaData_getInt( const sensor::SensorSpec::MetaData* metaData, const char* metaName ) {
+int metaData_getInt( const MetaData* metaData, const char* metaName ) {
     assert( metaData->find( metaName ) != metaData->end() );
     return metaData->at( metaName ).get<int>();
 }
 
-double metaData_getDouble( const sensor::SensorSpec::MetaData* metaData, const char* metaName ) {
+double metaData_getDouble( const MetaData* metaData, const char* metaName ) {
     assert( metaData->find( metaName ) != metaData->end() );
     return metaData->at( metaName ).get<double>();
 }

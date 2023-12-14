@@ -18,7 +18,7 @@ TEST_CASE( "OutputSensor sending acq with disconnect test" ) {
 #endif
 
     {
-        hub::sensor::SensorSpec::MetaData metaData;
+        hub::MetaData metaData;
         metaData["parent"] = "parentName";
 
         using Resolution = hub::sensor::format::BGR8;

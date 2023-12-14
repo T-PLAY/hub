@@ -1,6 +1,7 @@
 
 #include "native_InputSensor.hpp"
 
+#define HUB_CPP_SOURCE
 #include "sensor/InputSensor.hpp"
 
 namespace hub {

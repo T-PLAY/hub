@@ -4,10 +4,12 @@
 
 namespace hub {
 
+#ifndef HUB_CPP_SOURCE
 namespace sensor {
 class InputSensor;
 class Acquisition;
 } // namespace sensor
+#endif
 
 ///
 /// @brief native

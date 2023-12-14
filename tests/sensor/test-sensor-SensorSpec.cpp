@@ -17,7 +17,7 @@ TEST_CASE( "SensorSpec test" ) {
 
     hub::io::Archive archive;
 
-    hub::sensor::SensorSpec::MetaData metaData;
+    hub::MetaData metaData;
     metaData["hello"] = 5;
     metaData["name"]  = "gauthier";
     hub::sensor::SensorSpec sensorSpec{"sensorName", {}, metaData};
@@ -35,7 +35,7 @@ TEST_CASE( "SensorSpec test" ) {
 //    static_assert(hub::serializer::Readable_v<hub::sensor::SensorSpec::MetaData>);
     static_assert(! hub::Serializer::Serializable<hub::sensor::SensorSpec>());
     static_assert(! hub::Serializer::Serializable<hub::Any>());
-    static_assert(! hub::Serializer::Serializable<hub::sensor::SensorSpec::MetaData>());
+    static_assert(! hub::Serializer::Serializable<hub::MetaData>());
     return;
 
 

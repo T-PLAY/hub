@@ -6,7 +6,7 @@
 
 namespace hub {
 
-#ifndef CPP_SOURCE
+#ifndef HUB_CPP_SOURCE
 namespace client {
     class Viewer;
     class ViewerHandler;

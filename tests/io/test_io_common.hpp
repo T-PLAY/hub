@@ -28,11 +28,11 @@
 
 #define SERVER_IP "127.0.0.1"
 
-#ifdef HUB_SERVICE_PORT
-// #ifdef HUB_TEST_ALL
-#    define INIT_SERVER const auto SERVER_PORT = HUB_SERVICE_PORT;
-// #    define INIT_SERVER const auto SERVER_PORT = hub::io::StreamServer::s_defaultPort;
-#else
+// #ifdef HUB_SERVICE_PORT
+// // #ifdef HUB_TEST_ALL
+// #    define INIT_SERVER const auto SERVER_PORT = HUB_SERVICE_PORT;
+// // #    define INIT_SERVER const auto SERVER_PORT = hub::io::StreamServer::s_defaultPort;
+// #else
 #    define INIT_SERVER                           \
         const auto fileName = "hubServerPort.txt"; \
         int SERVER_PORT; \
@@ -47,7 +47,7 @@
             server = std::make_unique<hub::Server>(SERVER_PORT); \
             server->asyncRun(); \
         }
-#endif
+// #endif
 
 template <typename T>
 bool someEnd( const T& t ) {

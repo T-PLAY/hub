@@ -9,40 +9,40 @@
 namespace hub {
 namespace sensor {
 
-std::string SensorSpec::to_string( const SensorSpec::MetaData& metaData, bool expand ) {
-   std::string str = "";
-   if ( expand ) {
-       bool first = true;
-       for ( const auto& pair : metaData ) {
-           if ( first )
-               first = false;
-           else
-               str += "\n";
-           str += to_string( pair );
-       }
-   }
-   else {
-       str += "[";
-       int i = 0;
-       for ( const auto& pair : metaData ) {
-//            for (int i = 0; i < metaData.size(); ++i) {
-//            const auto & pair = metaData.a;
-           str += to_string( pair );
-           if (i != metaData.size() - 1)
-               str += ", ";
-           ++i;
-       }
-       str += "]";
-   }
-   return str;
-}
+// std::string SensorSpec::to_string( const MetaData& metaData, bool expand ) {
+//    std::string str = "";
+//    if ( expand ) {
+//        bool first = true;
+//        for ( const auto& pair : metaData ) {
+//            if ( first )
+//                first = false;
+//            else
+//                str += "\n";
+//            str += to_string( pair );
+//        }
+//    }
+//    else {
+//        str += "[";
+//        int i = 0;
+//        for ( const auto& pair : metaData ) {
+// //            for (int i = 0; i < metaData.size(); ++i) {
+// //            const auto & pair = metaData.a;
+//            str += to_string( pair );
+//            if (i != metaData.size() - 1)
+//                str += ", ";
+//            ++i;
+//        }
+//        str += "]";
+//    }
+//    return str;
+// }
 
-std::string SensorSpec::to_string( const std::pair<std::string, Any>& metaData ) {
-   const auto& name = metaData.first;
-   const auto& val  = metaData.second;
-   std::string str  = name + " : " + val.toString();
-   return str;
-}
+// std::string SensorSpec::to_string( const std::pair<std::string, Any>& metaData ) {
+//    const auto& name = metaData.first;
+//    const auto& val  = metaData.second;
+//    std::string str  = name + " : " + val.toString();
+//    return str;
+// }
 
 
 ////#if CPLUSPLUS_VERSION != 20

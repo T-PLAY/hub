@@ -1,7 +1,7 @@
 
 #include "io/output/OutputStream.hpp"
 
-#define CPP_SOURCE
+#define HUB_CPP_SOURCE
 #include "native_OutputStream.hpp"
 
 #include <cstring>

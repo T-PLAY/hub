@@ -50,7 +50,7 @@ int main( int argc, char* argv[] ) {
 
     using Resolution =
         hub::MatrixTs<hub::sensor::format::Position, hub::sensor::format::Orientation>;
-    hub::sensor::SensorSpec::MetaData metaData;
+    hub::MetaData metaData;
     metaData["manufactor"] = "Shenzhen CO";
     hub::sensor::SensorSpec sensorSpec( "WitMotion", metaData );
     // hub::sensor::OutputSensorT<Resolution> outputSensor(

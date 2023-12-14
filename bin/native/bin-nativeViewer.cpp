@@ -67,7 +67,7 @@ int main( int argc, char* argv[] ) {
         //        std::cout << HEADER_MSG "onNewData : " << acq << std::endl;
         // std::cout << COLOR "+\033[0m";
         std::cout << "\033[" << std::to_string( std::hash<std::string> {}( streamName ) % 10 + 40 )
-                  << "m+\033[0m";
+                  << "m-\033[0m";
     };
     auto onSetProperty =
         []( const char* streamName, const char* objectName, int property, const hub::Any* value ) {

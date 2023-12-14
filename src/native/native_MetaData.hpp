@@ -6,13 +6,17 @@
 
 namespace hub {
 
-namespace sensor {
-class SensorSpec;
+#ifndef HUB_CPP_SOURCE
+class MetaData;
+// namespace sensor {
+// class SensorSpec;
+// class MetaData;
 // class SensorSpec::MetaData;
 // namespace SensorSpec {
 // class MetaData;
 // }
-}
+// }
+#endif
 
 ///
 /// @brief native
@@ -26,25 +30,23 @@ extern "C"
 #endif
 
 
-    SRC_API const sensor::SensorSpec::MetaData*
-    sensorSpec_getMetaData( const sensor::SensorSpec* sensorSpec );
 
-    SRC_API bool metaData_exists( const sensor::SensorSpec::MetaData* metaData,
+    SRC_API bool metaData_exists( const MetaData* metaData,
                                   const char* metaName );
 
-    SRC_API bool metaData_getString( const sensor::SensorSpec::MetaData* metaData,
+    SRC_API bool metaData_getString( const MetaData* metaData,
                                      const char* metaName,
                                      char* output,
                                      int* strLen );
 
-    SRC_API bool metaData_getMat4( const sensor::SensorSpec::MetaData* metaData,
+    SRC_API bool metaData_getMat4( const MetaData* metaData,
                                    const char* metaName,
                                    float* output );
 
-    SRC_API int metaData_getInt( const sensor::SensorSpec::MetaData* metaData,
+    SRC_API int metaData_getInt( const MetaData* metaData,
                                  const char* metaName );
 
-    SRC_API double metaData_getDouble( const sensor::SensorSpec::MetaData* metaData,
+    SRC_API double metaData_getDouble( const MetaData* metaData,
                                        const char* metaName );
 
 #ifdef __cplusplus

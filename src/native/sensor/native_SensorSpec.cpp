@@ -1,4 +1,7 @@
 
+#include <sensor/SensorSpec.hpp>
+
+#define HUB_CPP_SOURCE
 #include "native_SensorSpec.hpp"
 
 namespace hub {
@@ -61,7 +64,7 @@ void sensorSpec_getResolutionsStr( const sensor::SensorSpec* sensorSpec, char* r
 void sensorSpec_getMetaDataStr( const sensor::SensorSpec* sensorSpec, char* metaDataStr ) {
     // const auto& metaDataString = sensor::SensorSpec::to_string( sensorSpec->getMetaData(), true
     // );
-    const auto& metaDataString = sensor::SensorSpec::to_string( sensorSpec->getMetaData(), true );
+    const auto& metaDataString = hub::to_string( sensorSpec->getMetaData(), true );
     const int len              = metaDataString.size(); // todo
     memcpy( metaDataStr, metaDataString.c_str(), len + 1 );
     metaDataStr[len] = 0;
@@ -79,6 +82,10 @@ void freeSensorSpec( sensor::SensorSpec* sensorSpec ) {
     assert( sensorSpec != nullptr );
     std::cout << "[Native] freeSensorSpec( " << sensorSpec << ")" << std::endl;
     delete sensorSpec;
+}
+
+const MetaData* sensorSpec_getMetaData( const sensor::SensorSpec* sensorSpec ) {
+    return &sensorSpec->getMetaData();
 }
 
 

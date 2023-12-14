@@ -7,11 +7,10 @@
 
 namespace hub {
 
-#ifndef CPP_SOURCE
+#ifndef HUB_CPP_SOURCE
 namespace output {
 class OutputStream;
 }
-
 namespace io {
 class Header;
 }
@@ -39,9 +38,9 @@ extern "C"
     // createMat4OutputSensor( const char* sensorName, const char* ipv4, int port );
 
     output::OutputStream* createOutputStream( const char* streamName,
-                                                   int port,
-                                                   const char* ipv4,
-                                                   const io::Header* header );
+                                              int port,
+                                              const char* ipv4,
+                                              const io::Header* header );
 
     ///
     /// \brief mat4OutputSensorSendAcq
