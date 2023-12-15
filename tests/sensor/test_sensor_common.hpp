@@ -243,12 +243,12 @@ void clearAll( Input& input, Inputs&... inputs ) {
 // }
 
 // template <class Output, class Input>
-template <class... Inputs>
+template <class Output, class... Inputs>
 static void
-checkSynchronize( hub::Output& output,
+checkSynchronize( Output& output,
                   const hub::sensor::SensorSpec& ref_sensorSpec,
                   const std::vector<hub::sensor::Acquisition>& ref_acqs,
-                  hub::Output& output2,
+                  Output& output2,
                   const hub::sensor::SensorSpec& ref_sensorSpec2,
                   const std::vector<hub::sensor::Acquisition>& ref_acqs2,
                   //                               hub::Input& input,
@@ -278,8 +278,10 @@ checkSynchronize( hub::Output& output,
     //     std::cout << sync_acq << std::endl;
     // }
 
-    hub::sensor::OutputSensor outputSensor( ref_sensorSpec, output );
-    hub::sensor::OutputSensor outputSensor2( ref_sensorSpec2, output2 );
+    // hub::sensor::OutputSensor outputSensor( ref_sensorSpec, output );
+    // hub::sensor::OutputSensor outputSensor2( ref_sensorSpec2, output2 );
+    hub::sensor::OutputSensor outputSensor( output );
+    hub::sensor::OutputSensor outputSensor2( output2 );
 
     for ( const auto& acq : ref_acqs ) {
         outputSensor << acq;
@@ -375,13 +377,17 @@ static_assert( sizeof( UserType ) == 8 );
 
 template <class Input, class Output>
 static void inputOutputSensorBench( Input& input, Output& output ) {
+// template <class Input, class Output, class... Args>
+// static void inputOutputSensorBench( const Args&... args ) {
 
     // init outputSensor
     hub::MetaData metaData;
     metaData["name"] = "gauthier";
-    const hub::sensor::SensorSpec sensorSpec( "sensorName", metaData );
     using UserResolution = UserType;
-    hub::sensor::OutputSensorT<UserResolution> outputSensor( sensorSpec, output );
+    const hub::sensor::SensorSpec sensorSpec( "sensorName", hub::make_matrix<UserResolution>(), metaData );
+    // hub::sensor::OutputSensorT<UserResolution> outputSensor( sensorSpec, output );
+    hub::sensor::OutputSensorT<UserResolution> outputSensor( output );
+    // hub::sensor::OutputSensorT<UserResolution> outputSensor( Output(hub::io::make_header(sensorSpec), args...) );
 
     // init output acq
     // decltype(outputSensor)::Acq acq;

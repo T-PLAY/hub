@@ -10,6 +10,21 @@
 namespace hub {
 // namespace io {
 
+#if defined( HUB_DEBUG_INPUT ) || defined( HUB_DEBUG_OUTPUT )
+
+extern std::mutex s_mtxIoPrint; // shared mutex over threads
+// static std::mutex s_mtxIoPrint;
+
+#    undef DEBUG_MSG
+#    define DEBUG_MSG( str )               \
+        s_mtxIoPrint.lock();           \
+        do {                               \
+            std::cout << str << std::endl; \
+        } while ( false );                 \
+        s_mtxIoPrint.unlock();
+
+#endif
+
 class ios
 {
   public:
@@ -23,7 +38,10 @@ class ios
 // struct is_std_vector<std::vector<T,A>> : std::true_type {};
 
 template <class T>
-concept isPacket = requires (T t) { t.data(); t.size(); }; // uses by acquisition
+concept isPacket = requires( T t ) {
+    t.data();
+    t.size();
+}; // uses by acquisition
 
 template <typename T>
 using packable_t = decltype( T::packable );

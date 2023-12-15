@@ -15,16 +15,17 @@ InputFile::InputFile(const std::string &filePath)
     , m_file(filePath, std::ios::in | std::ios::binary)
 {
     assert(m_file.is_open());
+    read(m_header);
 }
 
-InputFile::InputFile(const char *filePath)
-    : File(filePath)
-    , m_file(filePath, std::ios::in | std::ios::binary)
-//            io::File( std::fstream( filename, std::ios::in | std::ios::binary ) ) );
-{
-    assert(m_file.is_open());
+// InputFile::InputFile(const char *filePath)
+//     : File(filePath)
+//     , m_file(filePath, std::ios::in | std::ios::binary)
+// //            io::File( std::fstream( filename, std::ios::in | std::ios::binary ) ) );
+// {
+//     assert(m_file.is_open());
 
-}
+// }
 
 bool InputFile::isOpen() const {
     return m_file.is_open();

@@ -1,11 +1,10 @@
-//#include <catch2/catch_test_macros.hpp>
+// #include <catch2/catch_test_macros.hpp>
 #include "test_common.hpp"
-//#include "sensor/test_sensor_common.hpp"
+// #include "sensor/test_sensor_common.hpp"
 
-
-//#include <sensor/InputSensor.hpp>
-//#include <sensor/OutputSensor.hpp>
-// #include <io/File.hpp>
+// #include <sensor/InputSensor.hpp>
+// #include <sensor/OutputSensor.hpp>
+//  #include <io/File.hpp>
 #include <io/input/InputFile.hpp>
 #include <io/output/OutputFile.hpp>
 
@@ -15,36 +14,66 @@
 
 #include <thread>
 
+struct UserDefined {
+    int a;
+    bool b;
+    double c;
+    hub::Size_t dataSize() const { return sizeof( int ); }
+    auto toString() const {
+        return std::to_string( a ) + ":" + std::to_string( b ) + ":" + std::to_string( c );
+    }
+    bool operator==(const UserDefined & other) {
+        return a == other.a && b == other.b && c == other.c;
+    }
+};
+
 TEST_CASE( "File test" ) {
     TEST_BEGIN()
 
-    const std::string filename = "file.txt";
+    const std::string filename = FILE_NAME + ".txt";
 
 #if CPLUSPLUS_VERSION >= 17
     std::filesystem::remove( filename );
 #endif
 
-    std::vector<unsigned char> vector( 1'000 );
-    std::generate( vector.begin(), vector.end(), rand );
-    std::cout << "data: " << vector << std::endl;
+    // std::vector<unsigned char> vector( 1'000 );
+    // std::generate( vector.begin(), vector.end(), rand );
+    // std::cout << "data: " << vector << std::endl;
 
+    // static_assert( hub::readable_v<hub::io::Header> );
+    // static_assert( hub::writable_v<hub::io::Header> );
+    const UserDefined userDefined { 1, true, 2.0 };
+    const auto header_ref = hub::io::make_header( userDefined );
+
+    const int a_ref       = 5;
     {
-        hub::output::OutputFile outputFile( filename );
+        hub::output::OutputFile outputFile( header_ref, filename );
+        outputFile.write( a_ref );
 
-        outputFile.write( vector.data(), vector.size() );
+        // outputFile.write( vector.data(), vector.size() );
 
-//        outputSensorBench(outputFile);
+        //        outputSensorBench(outputFile);
     }
 
+    int a_read;
     {
         hub::input::InputFile inputFile( filename );
+        assert( inputFile.getHeader() == header_ref );
+        inputFile.read( a_read );
 
-        std::vector<unsigned char> vector_read( 1'000 );
-        inputFile.read( vector_read.data(), vector.size() );
-        assert( vector == vector_read );
+        assert( a_ref == a_read );
 
-//        inputSensorBench(inputFile);
-        assert(inputFile.isEnd());
+        hub::io::Memory memory(inputFile.getHeader().getUserDefined());
+        UserDefined userDefined_read;
+        memory.read(userDefined_read);
+        assert(userDefined == userDefined_read);
+
+        // std::vector<unsigned char> vector_read( 1'000 );
+        // inputFile.read( vector_read.data(), vector.size() );
+        // assert( vector == vector_read );
+
+        //        inputSensorBench(inputFile);
+        assert( inputFile.isEnd() );
     }
 
     //    std::vector<hub::sensor::Acquisition> acqs;

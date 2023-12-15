@@ -2,22 +2,37 @@
 // #define HUB_DEBUG_OUTPUT
 
 #include "test_common.hpp"
+#include "io/test_io_common.hpp"
+#include "test_sensor_common.hpp"
 
 // #include <initializer_list>
 // #include <span>
 // #include <vector>
 
 //#include "core/test_core_common.hpp"
-#include "sensor/test_sensor_common.hpp"
+// #include "sensor/test_sensor_common.hpp"
 
-#include <core/io/Archive.hpp>
+// #include <core/io/Archive.hpp>
 #include <sensor/InputSensor.hpp>
 #include <sensor/OutputSensor.hpp>
 
 TEST_CASE( "InputOutputSensor test" ) {
 
-    hub::io::Archive archive;
-    test::sensor::inputOutputSensorBench(archive, archive);
+    INIT_SERVER
+
+    hub::output::OutputStream outputStream( TEST_IO_HEADER, FILE_NAME, SERVER_PORT );
+    hub::input::InputStream inputStream( FILE_NAME, SERVER_PORT );
+
+    // inputOutputBench(inputStream, outputStream);
+
+    test::sensor::inputOutputSensorBench( inputStream, outputStream );
+
+    // hub::io::Archive archive;
+    //     hub::output::OutputStream( hub::io::make_header(sensorSpec), FILE_NAME, SERVER_PORT ) );
+    // // hub::sensor::OutputSensor outputSensor(archive);
+    // // hub::sensor::OutputSensor inputSensor(archive);
+
+    // test::sensor::inputOutputSensorBench(archive, archive);
     return;
 
 

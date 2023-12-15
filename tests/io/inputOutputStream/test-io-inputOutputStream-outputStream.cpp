@@ -16,7 +16,7 @@ TEST_CASE( "OutputStream test" ) {
 
         {
             const hub::io::Header header{sizeof(int)};
-            hub::output::OutputStream outputStream( FILE_NAME, SERVER_PORT, SERVER_IP, header );
+            hub::output::OutputStream outputStream( header, FILE_NAME, SERVER_PORT );
             std::cout << "outputStream created" << std::endl;
 
             int a = 5;

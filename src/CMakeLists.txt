@@ -219,7 +219,7 @@ if (NOT XCODE) # unable to have object files as native build with Xcode
         target_include_directories(${TARGET_NAME}
             PUBLIC
             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-            #                $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.hpp
+                           $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # auto generated Version.hpp from Version.hpp.in
             #                $<INSTALL_INTERFACE:include>
             #            PRIVATE
             ${HUB_EXTERNAL_DIR}

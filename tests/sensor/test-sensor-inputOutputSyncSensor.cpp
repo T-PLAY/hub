@@ -3,6 +3,7 @@
 // #include "sensor/test_sensor_common.hpp"
 #include "test_common.hpp"
 // #include <catch2/catch_test_macros.hpp>
+#include "test_sensor_common.hpp"
 
 // #include <sensor/InputSensor.hpp>
 // #include <sensor/OutputSensor.hpp>
@@ -28,16 +29,17 @@ TEST_CASE( "sensor : InputOutputSensorSync" ) {
 
     INIT_SERVER
 
-    hub::output::OutputStream outputStream( FILE_NAME, SERVER_PORT );
-    hub::output::OutputStream outputStream2( FILE_NAME + "2", SERVER_PORT );
+    hub::output::OutputStream outputStream( TEST_IO_HEADER, FILE_NAME, SERVER_PORT );
+    hub::output::OutputStream outputStream2( TEST_IO_HEADER, FILE_NAME + "2", SERVER_PORT );
 
     hub::input::InputStream inputStream( FILE_NAME, SERVER_PORT );
     hub::input::InputStream inputStream2( FILE_NAME + "2", SERVER_PORT );
 
     // inputOutputBench(inputStream, inputStream2, outputStream, )
-    // test::sensor::inputOutputSensorBench( inputStream, inputStream2, outputStream, outputStream2 );
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    test::sensor::inputOutputSensorBench( inputStream, inputStream2, outputStream, outputStream2 );
+
+    // std::this_thread::sleep_for(std::chrono::milliseconds(100));
     return;
 
     //    // initing datum

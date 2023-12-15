@@ -19,18 +19,19 @@ namespace io {
 // const std::string StreamServer2::s_topicViewer = "viewers/";
 // const std::string StreamServer2::s_topicEvents = "events";
 
-StreamServer2::StreamServer2( const std::string& name,
+StreamServer2::StreamServer2(
+    const std::string& name,
                               const std::string& ipv4,
-                              int port,
-                              const io::Header& header ) :
-    StreamBase( name, ipv4, port, header )
+                              int port
+                               ) :
+    StreamBase( name, ipv4, port )
 //    m_clientSocket(ipv4, port) {}
 {}
 
-StreamServer2::StreamServer2( const char* name, const char* ipv4, int port, const io::Header& header ) :
-    StreamBase( name, ipv4, port, header )
+// StreamServer2::StreamServer2( const char* name, const char* ipv4, int port, const io::Header& header ) :
+    // StreamBase( header, name, ipv4, port )
 //    m_clientSocket(ipv4, port)
-{}
+// {}
 
 } // namespace io
 } // namespace hub

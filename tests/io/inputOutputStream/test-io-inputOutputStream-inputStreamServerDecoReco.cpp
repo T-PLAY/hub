@@ -22,13 +22,14 @@ TEST_CASE( "InputStream server deco reco test" ) {
     {
         // hub::output::OutputStream outputStream( FILE_NAME, port );
         // const hub::io::Header header{sizeof(int)};
-        hub::output::OutputStream outputStream( FILE_NAME, port);
+        hub::output::OutputStream outputStream( {sizeof(int)}, FILE_NAME, port);
         assert(server.nClient() == 1);
         assert( server.nStreamer() == 1 );
         assert(outputStream.getNStreamViewer() == 0);
 
 
         hub::input::InputStream inputStream( FILE_NAME, port );
+        assert(inputStream.getHeader().getDataSize() == sizeof(int));
         assert(outputStream.getNStreamViewer() == 1);
 
         int a = 5;

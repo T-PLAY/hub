@@ -3,22 +3,22 @@
 namespace hub {
 namespace output {
 
-OutputFile::OutputFile(const std::string &filePath)
+OutputFile::OutputFile(const io::Header & header, const std::string &filePath)
     : File(filePath)
     , m_file(filePath, std::ios::out | std::ios::binary | std::ios::trunc)
 //                std::fstream( filename, std::ios::out | std::ios::binary | std::ios::trunc ) ) );
 {
     assert(m_file.is_open());
-
+    // m_header = header;
+    write(header);
 }
 
-OutputFile::OutputFile(const char *filePath)
-    : File(filePath)
-    , m_file(filePath, std::ios::out | std::ios::binary | std::ios::trunc)
-{
-    assert(m_file.is_open());
-
-}
+// OutputFile::OutputFile(const char *filePath)
+//     : File(filePath)
+//     , m_file(filePath, std::ios::out | std::ios::binary | std::ios::trunc)
+// {
+//     assert(m_file.is_open());
+// }
 
 bool OutputFile::isOpen() const {
     return m_file.is_open();

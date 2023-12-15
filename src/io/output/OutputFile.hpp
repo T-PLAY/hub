@@ -3,6 +3,7 @@
 #include <fstream>
 
 #include "core/Output.hpp"
+#include "io/Header.hpp"
 #include "io/File.hpp"
 
 namespace hub {
@@ -11,8 +12,10 @@ namespace output {
 class OutputFile : public Output, public io::File
 {
   public:
-    explicit OutputFile(const std::string & filePath);
-    explicit OutputFile(const char * filePath);
+    using Output::write;
+
+    explicit OutputFile(const io::Header & header, const std::string & filePath);
+    // explicit OutputFile(const io::Header & header, const char * filePath);
 
 //  protected:
   public:

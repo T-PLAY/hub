@@ -7,39 +7,12 @@
 #include "core/ios.hpp"
 
 namespace hub {
-// namespace io {
-// namespace input {
-
-// template <class T>
-// class BusI
-//{
-//   public:
-//     virtual void read(T & t) = 0;
-//     virtual void write(const T & t) = 0;
-// };
-
-// template <class ReaderT>
 class InputBase : public ios
 {
   public:
     virtual void read( Data_t* data, Size_t len ) = 0;
     virtual bool isEnd() const                    = 0;
     virtual void clear()                          = 0;
-
-    //    void read();
-
-    //    template <class T>
-    //    void read( T& t ) {
-    ////        BusI<T>::write(t);
-    ////        ReaderT::read(t);
-    // #ifdef HUB_DEBUG_INPUT
-    //         std::cout << "\t" << HEADER << "read(" << TYPE_NAME( t ) << ") = " << t << std::endl;
-    // #endif
-    ////        assert(false);
-    //    }
-    //    virtual void read() = 0;
-
-    //  private:
 };
 
 template <typename T>
@@ -58,8 +31,7 @@ static constexpr bool not_endable_v = not_endable<T>::value;
 // concept NotEndable = T::not_endable;
 
 template <class T>
-concept Endable = ! not_endable_v<T>;
-
+concept Endable = !not_endable_v<T>;
 
 ///////////////////////////////////////
 
@@ -90,8 +62,7 @@ template <typename T>
 static constexpr bool notReadable_v = notReadable<T>::value;
 //    static constexpr bool packable_v = ! std::is_constructible_v<T> ;
 
-//static_assert(notReadable_v<T>);
-
+// static_assert(notReadable_v<T>);
 
 //} // namespace input
 //} // namespace io

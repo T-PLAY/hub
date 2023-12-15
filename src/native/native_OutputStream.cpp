@@ -50,9 +50,9 @@ namespace native {
 // }
 
 output::OutputStream*
-createOutputStream( const char* streamName, int port, const char* ipv4, const io::Header* header ) {
+createOutputStream( const io::Header * header, const char* streamName, int port, const char* ipv4 ) {
 
-    auto* outputStream = new output::OutputStream( streamName, port, ipv4, *header );
+    auto* outputStream = new output::OutputStream( *header, streamName, port, ipv4 );
     return outputStream;
 }
 

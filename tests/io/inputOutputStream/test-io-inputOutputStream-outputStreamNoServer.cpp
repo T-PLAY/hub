@@ -14,7 +14,7 @@ TEST_CASE( "OutputStream no server test" ) {
 
     {
         try {
-            hub::output::OutputStream outputStream( FILE_NAME, port );
+            hub::output::OutputStream outputStream( {}, FILE_NAME, port );
             assert( false );
         }
         catch ( hub::net::system::SocketSystem::exception& ex ) {

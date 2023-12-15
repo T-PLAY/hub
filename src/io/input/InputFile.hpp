@@ -11,9 +11,11 @@ namespace input {
 class InputFile : public Input, public io::File
 {
   public:
+    using Input::read;
+
 //    InputFile(std::ifstream &&file);
     explicit InputFile(const std::string & filePath);
-    explicit InputFile(const char * filePath);
+    // explicit InputFile(const char * filePath);
 
 //  protected:
   public:
@@ -39,6 +41,10 @@ class InputFile : public Input, public io::File
     void read( Data_t* data, Size_t len ) override;
 
     void clear() override;
+
+    const io::Header & getHeader() const {
+        return m_header;
+    }
 
   private:
     std::ifstream m_file;

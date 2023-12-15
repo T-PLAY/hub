@@ -13,6 +13,7 @@
 #include "core/Any.hpp"
 #include "core/Macros.hpp"
 #include "core/MetaData.hpp"
+
 //// #include "Measure.hpp"
 
 //// user friendly useless includes
@@ -27,6 +28,8 @@
 // #endif
 
 #include "core/Matrix.hpp"
+
+#include "Acquisition.hpp"
 
 namespace hub {
 namespace sensor {
@@ -83,8 +86,8 @@ class SRC_API SensorSpec
                 const MetaData& metaData = {} ) :
         m_sensorName { sensorName }, m_resolution { resolution.clone() }, m_metaData { metaData } {}
 
-    SensorSpec( const std::string& sensorName, const MetaData& metaData = {} ) :
-        m_sensorName { sensorName }, m_metaData { metaData } {}
+    // SensorSpec( const std::string& sensorName, const MetaData& metaData = {} ) :
+        // m_sensorName { sensorName }, m_metaData { metaData } {}
 
     //    SensorSpec(const SensorSpec & sensorSpec) = default;
 
@@ -185,6 +188,8 @@ class SRC_API SensorSpec
     const MetaData& getMetaData() const { return m_metaData; }
     void setResolution( Matrix&& newResolution ) { m_resolution = std::move( newResolution ); }
     void setResolution( const Matrix& newResolution ) { m_resolution = newResolution.clone(); }
+
+    Size_t dataSize() const { return 2 * sizeof( hub::sensor::Clock ) + m_resolution.size(); };
 
   private:
     std::string m_sensorName;

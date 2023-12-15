@@ -9,6 +9,7 @@
 
 #include "core/Macros.hpp"
 //#include "InputOutput.hpp"
+#include "io/Header.hpp"
 
 namespace hub {
 namespace io {
@@ -69,6 +70,7 @@ class SRC_API File
     ///
 //    std::unique_ptr<std::fstream> m_file;
 //    std::unique_ptr<std::basic_ios<char>> m_file;
+    io::Header m_header;
     const std::string m_filePath;
 };
 

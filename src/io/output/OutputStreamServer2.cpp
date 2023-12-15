@@ -5,31 +5,35 @@
 #include <iostream>
 #include <typeinfo>
 
-#include "net/ServerSocket.hpp"
+// include "net/ServerSocket.hpp"
 
 namespace hub {
 namespace output {
 
 static constexpr int s_pingToServerDelay = 500; // ms
 
-OutputStreamServer2::OutputStreamServer2( int streamPort ) :
-    io::StreamServer2( "", "", 0, {} ), m_data( std::make_unique<SharedData>() ) {
+OutputStreamServer2::OutputStreamServer2( const io::Header& header, int streamPort ) :
+    io::StreamServer2( "", "", 0 ), m_data( std::make_unique<SharedData>() ) {
 
+    m_data->m_header     = header;
     m_data->m_streamPort = streamPort;
+    m_data->m_writingFun = [this]( const Data_t* data, Size_t size ) {};
 
     startStreaming();
 }
 
-OutputStreamServer2::OutputStreamServer2( const std::string& streamName,
+OutputStreamServer2::OutputStreamServer2( const io::Header& header,
+                                          const std::string& streamName,
                                           int port,
-                                          const std::string& ipv4,
-                                          const io::Header& header
+                                          const std::string& ipv4
                                           // bool retained ) :
                                           ) :
-    io::StreamServer2( streamName, ipv4, port, header ),
+    io::StreamServer2( streamName, ipv4, port ),
     m_data( std::make_unique<SharedData>(
         std::make_unique<hub::io::InputOutputSocket>( net::ClientSocket( ipv4, port ) ) ) ) {
-    // retained ) ) {
+
+    m_data->m_header     = header;
+    m_data->m_writingFun = [this]( const Data_t* data, Size_t size ) {};
 
     tryConnectToServer();
     assert( m_data->m_serverConnected );
@@ -123,10 +127,9 @@ OutputStreamServer2::OutputStreamServer2( const std::string& streamName,
 }
 
 OutputStreamServer2::OutputStreamServer2( OutputStreamServer2&& outputStream ) noexcept :
-    StreamServer2( outputStream.m_name,
-                   outputStream.m_ipv4,
-                   outputStream.m_port,
-                   std::move( outputStream.m_header ) ),
+    StreamServer2( std::move( outputStream.m_name ),
+                   std::move( outputStream.m_ipv4 ),
+                   outputStream.m_port ),
     m_data( std::move( outputStream.m_data ) ) {
     outputStream.m_moved = true;
 }
@@ -149,7 +152,7 @@ OutputStreamServer2::~OutputStreamServer2() {
 
         if ( m_data->m_streamThread != nullptr ) {
             assert( m_data->m_streamThread->joinable() );
-            killServer();
+            stopStreaming();
             m_data->m_streamThread->join();
         }
 #ifdef DEBUG_OUTPUT_STREAM
@@ -157,11 +160,6 @@ OutputStreamServer2::~OutputStreamServer2() {
 #endif
     }
 }
-
-//////////////////////////////////////////////////////////////////////
-
-// void OutputStreamServer2::streamProcess() {
-// }
 
 void OutputStreamServer2::tryConnectToServer() {
 #ifdef DEBUG_OUTPUT_STREAM
@@ -185,13 +183,8 @@ void OutputStreamServer2::tryConnectToServer() {
     m_data->m_serverSocket->read( m_data->m_streamPort );
 
     m_data->m_serverSocket->write( (int)m_data->m_streamViewerSocks.size() );
-    // m_data->m_serverSocket->write( m_data->m_retained );
 
-    m_data->m_serverSocket->write( m_header );
-
-    // m_data->m_serverSocket->read( mess );
-    // assert( mess == hub::io::StreamBase::ServerMessage::STREAMER_INITED );
-    // m_data->m_serverSocket->write( hub::io::StreamBase::ClientMessage::STREAMER_CLIENT_INITED );
+    m_data->m_serverSocket->write( m_data->m_header );
 
     m_data->m_serverConnected = true;
 #ifdef DEBUG_OUTPUT_STREAM
@@ -205,19 +198,23 @@ void OutputStreamServer2::startStreaming() {
     assert( m_data->m_streamPort != 0 );
 
     auto* data             = m_data.get();
-    m_data->m_streamThread = std::make_unique<std::thread>( [this, data]() {
+    m_data->m_streamThread = std::make_unique<std::thread>( [data]() {
 #ifdef DEBUG_OUTPUT_STREAM
         std::cout << "[OutputStream][Stream] starting stream server" << std::endl;
 #endif
-        net::ServerSocket streamSocket( data->m_streamPort );
-        assert( streamSocket.isConnected() );
+
+        assert( data->m_streamSocket == nullptr );
+        data->m_streamSocket = std::make_unique<net::ServerSocket>( data->m_streamPort );
+
+        assert( data->m_streamSocket->isConnected() );
         data->m_isStreaming = true;
 
         while ( !data->m_killed ) {
 #ifdef DEBUG_OUTPUT_STREAM
             std::cout << "[OutputStream][Stream] waiting for new client" << std::endl;
 #endif
-            auto streamViewerSock = hub::io::InputOutputSocket( streamSocket.waitNewClient() );
+            auto streamViewerSock =
+                hub::io::InputOutputSocket( data->m_streamSocket->waitNewClient() );
             hub::io::StreamBase::ClientType clientType;
             streamViewerSock.read( clientType );
 
@@ -241,24 +238,19 @@ void OutputStreamServer2::startStreaming() {
                     };
                 }
 
-                streamViewerSock.write( m_header );
+                streamViewerSock.write( data->m_header );
 
                 data->m_mtxClientSockets.lock();
                 streamViewerSock.write(
                     hub::io::StreamBase::ClientMessage::STREAMER_CLIENT_STREAM_VIEWER_INITED );
 
                 if ( !data->m_retainedData.empty() ) {
-                    // if ( !m_header.empty() ) {
-                    // std::cout << "[OutputStream] write retain data (" <<
-                    // data->m_retainedData.size()
-                    // << " bytes)" << std::endl;
 #ifdef DEBUG_OUTPUT_STREAM
                     std::cout << "[OutputStream] load retain data " << data->m_retainedData
                               << std::endl;
 #endif
                     streamViewerSock.write( data->m_retainedData.data(),
                                             data->m_retainedData.size() );
-                    // streamViewerSock.write( m_header.data(), m_header.size() );
                 }
 
                 data->m_streamViewerSocks.push_back( std::move( streamViewerSock ) );
@@ -270,11 +262,12 @@ void OutputStreamServer2::startStreaming() {
             }
             else { assert( false ); }
         }
+        data->m_isStreaming = false;
 
 #ifdef DEBUG_OUTPUT_STREAM
         std::cout << "[OutputStream][Stream] server down" << std::endl;
 #endif
-    } );
+    } ); // thread
 
     while ( !m_data->m_isStreaming ) {
         std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
@@ -282,7 +275,11 @@ void OutputStreamServer2::startStreaming() {
 }
 
 void output::OutputStreamServer2::write( const Data_t* data, Size_t size ) {
-    if ( m_data->m_writingFun != nullptr ) m_data->m_writingFun( data, size );
+    assert( m_data->m_header.getDataSize() == size );
+
+    assert( m_data->m_writingFun != nullptr );
+    m_data->m_writingFun( data, size );
+
     m_data->m_mtxClientSockets.lock();
     auto& clientSockets = m_data->m_streamViewerSocks;
 
@@ -307,11 +304,8 @@ void output::OutputStreamServer2::write( const Data_t* data, Size_t size ) {
             clientSocket.write( data, size );
         }
         catch ( std::exception& ex ) {
-            // todo check
-            //            clientSocket.close();
             std::cout << "[OutputStream] catch exception : " << ex.what() << std::endl;
             socketToRemoves.push_back( &clientSocket );
-            // clientSockets.remove()
         }
 
 #ifdef OS_MACOS
@@ -327,21 +321,6 @@ void output::OutputStreamServer2::write( const Data_t* data, Size_t size ) {
         m_data->m_serverSocket->write( (int)m_data->m_streamViewerSocks.size() );
     }
 
-    // auto it = clientSockets.begin();
-    // while ( it != clientSockets.end() ) {
-    //     auto& clientSocket = *it;
-    //     try {
-    //         clientSocket.write( data, size );
-    //     }
-    //     catch ( std::exception& ex ) {
-    //         clientSocket.close();
-    //         std::cout << "[OutputStream] catch exception : " << ex.what() << std::endl;
-    //         it = clientSockets.erase( it );
-    //         continue;
-    //     }
-    //     ++it;
-    // }
-
     m_data->m_mtxClientSockets.unlock();
 }
 
@@ -350,14 +329,6 @@ void OutputStreamServer2::setRetain( bool retain ) {
         m_data->m_writingFun = [this]( const Data_t* data, Size_t size ) {
             assert( size > 0 );
             m_data->m_retainedData.insert( m_data->m_retainedData.end(), data, data + size );
-            // m_header.insert(m_header.end(), data, data + size);
-            // m_data->m_serverSocket->write(size);
-            // m_data->m_serverSocket->write( io::StreamBase::ClientMessage::NEW_RETAIN_DATA );
-            // m_data->m_serverSocket->write( size );
-            // m_data->m_serverSocket->write( data, size );
-            // std::cout << "[OutputStream] save retained data (" << size << " bytes)" <<
-            // std::endl;
-            // std::vector<Data_t> vector(data, data + size);
 #ifdef DEBUG_OUTPUT_STREAM
             std::cout << "[OutputStream] save retained data : " << m_data->m_retainedData
                       << std::endl;
@@ -365,19 +336,7 @@ void OutputStreamServer2::setRetain( bool retain ) {
         };
     }
     else {
-        // assert( !m_data->m_retainedSharedToViewer );
-        // if ( m_data->m_retained ) {
-        // m_data->m_retainedSharedToViewer = false;
-        // m_data->m_serverSocket->write( io::StreamBase::ClientMessage::FULLY_RETAINED_DATA
-        // );
-        // m_data->m_fullyRetained = true;
-        m_data->m_writingFun = nullptr;
-        // while ( !m_data->m_retainedSharedToViewer ) {
-        // std::cout << "[OutputStream] waiting for shared retained data to viewer ..."
-        // << std::endl;
-        // std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
-        // }
-        // }
+        m_data->m_writingFun = [this]( const Data_t* data, Size_t size ) {};
     }
 }
 
@@ -390,15 +349,21 @@ int OutputStreamServer2::getNStreamViewer() const {
     return nStreamViewer;
 }
 
-// int OutputStreamServer2::getNStreamViewer() const {
-// return m_data->m_streamViewerSocks.size();
-// }
+const io::Header& OutputStreamServer2::getHeader() const {
+    return m_data->m_header;
+}
 
-void OutputStreamServer2::killServer() {
+void OutputStreamServer2::stopStreaming() {
     m_data->m_killed = true;
+
+    assert( m_data->m_isStreaming );
     auto clientSock =
         hub::io::InputOutputSocket( hub::net::ClientSocket( "127.0.0.1", m_data->m_streamPort ) );
-    clientSock.write( hub::io::StreamBase::ClientType::KILLER );
+
+    if ( clientSock.isConnected() ) {
+        assert( clientSock.isConnected() );
+        clientSock.write( hub::io::StreamBase::ClientType::KILLER );
+    }
 }
 
 } // namespace output

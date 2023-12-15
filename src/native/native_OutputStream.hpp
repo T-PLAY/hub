@@ -37,10 +37,11 @@ extern "C"
     // SRC_API sensor::OutputSensor*
     // createMat4OutputSensor( const char* sensorName, const char* ipv4, int port );
 
-    output::OutputStream* createOutputStream( const char* streamName,
+    output::OutputStream* createOutputStream(
+        const io::Header * header,
+        const char* streamName,
                                               int port,
-                                              const char* ipv4,
-                                              const io::Header* header );
+        const char* ipv4);
 
     ///
     /// \brief mat4OutputSensorSendAcq

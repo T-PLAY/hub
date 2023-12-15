@@ -127,13 +127,13 @@ struct TestForceSerializable {
 //        any = 1;
 //    }
 
-//    void write(hub::Serializer & serializer) const {
-    void write(auto & serializer) const {
+   void write(hub::Serializer & serializer) const {
+    // void write(auto & serializer) const {
         serializer.writeAll(a, b, c);
         serializer.write(std::any_cast<int>(any));
     }
-//    void read(hub::Serializer & serializer) {
-    void read(auto & serializer) {
+   void read(hub::Serializer & serializer) {
+    // void read(auto & serializer) {
         serializer.readAll(a, b, c);
         int v;
         serializer.read(v);

@@ -19,7 +19,7 @@ TEST_CASE( "InputOutputStream local test" ) {
 
     {
         std::vector<hub::output::OutputStream> outputStreams;
-        outputStreams.emplace_back( port );
+        outputStreams.emplace_back( TEST_IO_HEADER, port );
 
         {
             std::vector<hub::input::InputStream> inputStreams;
@@ -38,7 +38,7 @@ TEST_CASE( "InputOutputStream local test" ) {
             }
         }
     }
-    CHECK_DECLINE( ratio, "InputOutputStreamLocal:broadcast(1->10)/unicast(1->1)", "/" );
+    CHECK_DECLINE( ratio, "InputOutputStreamLocal:Broadcast(1->10)/Unicast(1->1)", "/" );
 
     // std::cout << "[test] tested on machine: '" << hostname << "'" << std::endl;
     TEST_END()

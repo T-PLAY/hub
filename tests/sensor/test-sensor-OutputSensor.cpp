@@ -10,11 +10,11 @@
 
 TEST_CASE( "OutputSensor test" ) {
 
-#ifdef HUB_BUILD_SERVER
+// #ifdef HUB_BUILD_SERVER
     INIT_SERVER
-#else
-    hub::io::Archive archive;
-#endif
+// #else
+    // hub::io::Archive archive;
+// #endif
 
     hub::MetaData metaData;
     metaData["parent"] = "parentName";
@@ -28,12 +28,15 @@ TEST_CASE( "OutputSensor test" ) {
     assert( sensorSpec.getResolution().size() != 0 );
     assert( sensorSpec.getResolution().nType() > 0 );
 
-#ifdef HUB_BUILD_SERVER
-    hub::sensor::OutputSensor outputSensor( sensorSpec,
-                                            hub::output::OutputStream( FILE_NAME, SERVER_PORT ) );
-#else
-    hub::sensor::OutputSensorT<Resolution> outputSensor( sensorSpec, archive );
-#endif
+    // hub::output::OutputStream outputStream(
+        // hub::io::make_header( sensorSpec ), FILE_NAME, SERVER_PORT );
+
+    // hub::sensor::OutputSensor outputSensor(outputStream);
+    hub::sensor::OutputSensor outputSensor(
+        // sensorSpec,
+        hub::output::OutputStream( hub::io::make_header( sensorSpec ), FILE_NAME, SERVER_PORT ) );
+    // hub::sensor::OutputSensorT<Resolution> outputSensor( sensorSpec, archive );
+    assert(outputSensor.getSpec() == sensorSpec);
 
     auto acq = outputSensor.acqMsg();
 

@@ -23,6 +23,7 @@ class MemoryT : public InputOutputT
   public:
     using InputOutputT::read;
     using InputOutputT::write;
+    // using InputOutputT::writeAll;
 
     template <class Container>
     explicit MemoryT(Container & container) {
@@ -72,6 +73,11 @@ class MemoryT : public InputOutputT
     }
 
     void setRetain(bool retained) override {
+    }
+
+    Datas_t getData() const {
+        Datas_t datas(m_data.begin(), m_data.end());
+        return datas;
     }
 
   private:

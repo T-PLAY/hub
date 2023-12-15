@@ -24,14 +24,14 @@ TEST_CASE( "OutputSensor sending acq with disconnect test" ) {
         using Resolution = hub::sensor::format::BGR8;
         // auto resolution = hub::make_matrix<hub::sensor::format::BGR8>();
 
-        const hub::sensor::SensorSpec sensorSpec( "sensorName", metaData );
+        const hub::sensor::SensorSpec sensorSpec( "sensorName", hub::make_matrix<Resolution>(), metaData );
         // const hub::sensor::SensorSpec sensorSpec( "sensorName", resolution, metaData );
 
 #ifdef HUB_BUILD_SERVER
         hub::sensor::OutputSensorT<Resolution> outputSensor(
-            sensorSpec,
+            // sensorSpec,
             // hub::sensor::OutputSensor outputSensor( sensorSpec,
-            hub::output::OutputStream( FILE_NAME, SERVER_PORT ) );
+            hub::output::OutputStream( hub::io::make_header(sensorSpec),  FILE_NAME, SERVER_PORT ) );
 #else
         // hub::sensor::OutputSensorT<Resolution> outputSensor( sensorSpec, archive );
         hub::sensor::OutputSensor outputSensor( sensorSpec, archive );

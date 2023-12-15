@@ -14,17 +14,7 @@ class OutputBase : public ios
 {
   public:
     virtual void write( const Data_t* data, Size_t len ) = 0;
-    virtual void setRetain(bool retain) = 0;
-
-    //    void write() {};
-
-    //    template <class T>
-    //    void write(const T & t) {
-    // #ifdef HUB_DEBUG_OUTPUT
-    //        std::cout << HEADER << "write(" << TYPE_NAME( t ) << ") = " << t << std::endl;
-    // #endif
-    //        assert(false);
-    //    }
+    virtual void setRetain( bool retain )                = 0;
 };
 
 template <typename T>

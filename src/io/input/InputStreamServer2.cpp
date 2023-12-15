@@ -9,7 +9,7 @@ namespace input {
 // InputStreamServer2::InputStreamServer2( const std::string& streamName, net::ClientSocket&&
 // clientSocket ) :
 InputStreamServer2::InputStreamServer2( int streamPort, const std::string& ipv4 ) :
-    io::StreamServer2( "", "", 0, {} ) {
+    io::StreamServer2(  "", "", 0 ) {
 
     m_streamPort = streamPort;
     m_streamIpv4 = ipv4;
@@ -20,7 +20,7 @@ InputStreamServer2::InputStreamServer2( int streamPort, const std::string& ipv4 
 InputStreamServer2::InputStreamServer2( const std::string& streamName,
                                         int serverPort,
                                         const std::string& serverIpv4 ) :
-    io::StreamServer2( streamName, serverIpv4, serverPort, {} ),
+    io::StreamServer2(  streamName, serverIpv4, serverPort ),
     //    m_serverSocket( std::move( clientSocket ) ) {
     //    m_serverSocket(ipv4, serverPort)
     m_serverSocket( std::make_unique<hub::io::InputOutputSocket>(

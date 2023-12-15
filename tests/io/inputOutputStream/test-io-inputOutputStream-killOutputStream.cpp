@@ -20,7 +20,7 @@ TEST_CASE( "InputOutputStream kill output stream test" ) {
     {
         const hub::io::Header header{sizeof(int)};
         auto* outputStream =
-            new hub::output::OutputStream( FILE_NAME, SERVER_PORT, SERVER_IP, header );
+            new hub::output::OutputStream( header, FILE_NAME, SERVER_PORT );
         hub::input::InputStream inputStream( FILE_NAME, SERVER_PORT );
 
         int a = 5;

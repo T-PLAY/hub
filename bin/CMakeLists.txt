@@ -44,6 +44,8 @@ if (HUB_BUILD_SERVER)
 
 endif()
 
+if (HUB_BUILD_SENSOR)
+
 file(
     # GLOB_RECURSE
     GLOB
@@ -65,3 +67,5 @@ foreach(streamer ${streamers})
     add_executable(bin-streamer-${basename} ${sources})
     target_link_libraries(bin-streamer-${basename} ${LINK_LIBRARIES})
 endforeach()
+
+endif()

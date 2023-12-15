@@ -268,7 +268,7 @@ endforeach()
 
 if (HUB_BUILD_NATIVE)
     add_custom_target(
-        test-bins
+        tests-bin
         # COMMAND bash echo "${HUB_SERVER_TEST_BIN_PORT}" > hubServerPort.txt
         COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/generateServerPort.sh ${HUB_SERVER_TEST_BIN_PORT}
         COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/bin-server --port ${HUB_SERVER_TEST_BIN_PORT}
@@ -283,7 +283,7 @@ if (HUB_BUILD_NATIVE)
 
 elseif (HUB_BUILD_CLIENT)
     add_custom_target(
-        test-bins
+        tests-bin
         COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/generateServerPort.sh ${HUB_SERVER_TEST_BIN_PORT}
         COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/bin-server --port ${HUB_SERVER_TEST_BIN_PORT}
         COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/bin-viewer --port ${HUB_SERVER_TEST_BIN_PORT} --exitWhenServerLost
@@ -298,7 +298,7 @@ elseif (HUB_BUILD_CLIENT)
 
 elseif (HUB_BUILD_SERVER)
     add_custom_target(
-        test-bins
+        tests-bin
         COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/generateServerPort.sh ${HUB_SERVER_TEST_BIN_PORT}
         COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/bin-server --port ${HUB_SERVER_TEST_BIN_PORT}
         COMMAND ctest -C ${CMAKE_BUILD_TYPE} -V
@@ -308,8 +308,8 @@ elseif (HUB_BUILD_SERVER)
     )
 endif()
 
-if (TARGET test-bins)
-    custom_target_added(test-bins)
+if (TARGET tests-bin)
+    custom_target_added(tests-bin)
 endif()
 # endif()
 

@@ -52,7 +52,7 @@ int main( int argc, char* argv[] ) {
         hub::MatrixTs<hub::sensor::format::Position, hub::sensor::format::Orientation>;
     hub::MetaData metaData;
     metaData["manufactor"] = "Shenzhen CO";
-    hub::sensor::SensorSpec sensorSpec( "WitMotion", metaData );
+    const hub::sensor::SensorSpec sensorSpec( "WitMotion", Resolution().getMatrix(), metaData );
     // hub::sensor::OutputSensorT<Resolution> outputSensor(
         // sensorSpec, hub::output::OutputStream( "WitMotionStream" ) );
     // auto acq          = outputSensor.acqMsg();

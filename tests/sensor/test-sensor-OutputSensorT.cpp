@@ -10,25 +10,26 @@
 
 TEST_CASE( "OutputSensorT test" ) {
 
-#ifdef HUB_BUILD_SERVER
+// #ifdef HUB_BUILD_SERVER
     INIT_SERVER
-#else
-    hub::io::Archive archive;
-#endif
+// #else
+    // hub::io::Archive archive;
+// #endif
 
     hub::MetaData metaData;
     metaData["parent"] = "parentName";
 
-    const hub::sensor::SensorSpec sensorSpec( "sensorName", metaData );
 
     using Resolution = hub::sensor::format::BGR8;
+    const hub::sensor::SensorSpec sensorSpec( "sensorName", hub::make_matrix<Resolution>(), metaData );
 
-#ifdef HUB_BUILD_SERVER
+// #ifdef HUB_BUILD_SERVER
     hub::sensor::OutputSensorT<Resolution> outputSensor(
-        sensorSpec, hub::output::OutputStream( FILE_NAME, SERVER_PORT ) );
-#else
-    hub::sensor::OutputSensorT<Resolution> outputSensor( sensorSpec, archive );
-#endif
+        // sensorSpec,
+        hub::output::OutputStream( hub::io::make_header(sensorSpec), FILE_NAME, SERVER_PORT ) );
+// #else
+    // hub::sensor::OutputSensorT<Resolution> outputSensor( sensorSpec, archive );
+// #endif
 
     // std::this_thread::sleep_for(std::chrono::milliseconds(100));
 

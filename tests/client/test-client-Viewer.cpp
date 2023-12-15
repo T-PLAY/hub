@@ -114,7 +114,7 @@ TEST_CASE( "Viewer" ) {
                 assert( viewer.nStream() == 0 );
                 assert( viewer.nStreaming() == 0 );
                 CONSTRUCT_BEGIN( "OutputStream" );
-                hub::output::OutputStream outputStream( FILE_NAME, port, "127.0.0.1", header_ref );
+                hub::output::OutputStream outputStream( header_ref, FILE_NAME, port, "127.0.0.1" );
                 CONSTRUCT_END( "OutputStream" );
                 assert( viewer.nStream() == 1 );
                 assert( viewer.nStreaming() == 1 );

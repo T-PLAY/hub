@@ -12,6 +12,7 @@
 #include "io/StreamServer2.hpp"
 // #include "sensor/Acquisition.hpp"
 // #include "sensor/SensorSpec.hpp"
+#include "net/ServerSocket.hpp"
 
 // #define DEBUG_OUTPUT_STREAM
 
@@ -45,14 +46,13 @@ class SRC_API OutputStreamServer2 : public Output, public io::StreamServer2
     ///
     //    explicit OutputStreamServer2( const std::string& streamName,
     //                           net::ClientSocket&& clientSocket = net::ClientSocket() );
-    OutputStreamServer2( int streamPort );
+    OutputStreamServer2( const io::Header& header, int streamPort );
 
-    explicit OutputStreamServer2( const std::string& streamName,
+    explicit OutputStreamServer2( const hub::io::Header& header,
+                                  const std::string& streamName,
                                   int port                = HUB_SERVICE_PORT,
-                                  const std::string& ipv4 = HUB_SERVICE_IPV4,
-                                  const hub::io::Header & header = {}
-                                  );
-                                  // bool retained           = true );
+                                  const std::string& ipv4 = HUB_SERVICE_IPV4 );
+    // bool retained           = true );
     ///
     /// \brief OutputStreamServer2
     /// \param outputStream
@@ -75,87 +75,49 @@ class SRC_API OutputStreamServer2 : public Output, public io::StreamServer2
     // #endif
     // int getNStreamViewer() const;
     int getNStreamViewer() const;
+    const io::Header & getHeader() const;
 
   private:
     void startStreaming();
     void tryConnectToServer();
-    void killServer();
+    void stopStreaming();
 
     struct SharedData {
+        std::unique_ptr<net::ServerSocket> m_streamSocket;
+        io::Header m_header;
         std::unique_ptr<hub::io::InputOutputSocket> m_serverSocket;
-        // bool m_retained;
-        // io::Header m_header;
         int m_streamPort = 0;
         std::list<hub::io::InputOutputSocket> m_streamViewerSocks;
         std::mutex m_mtxClientSockets;
         std::vector<hub::Data_t> m_retainedData;
-        // std::atomic<bool> m_retainedSharedToViewer = false;
-        // std::atomic<bool> m_fullyRetained = false;
         bool m_killed                          = false;
         std::atomic<bool> m_isStreaming        = false;
         std::atomic<bool> m_serverConnected    = false;
         std::atomic<bool> m_streamViewerInited = false;
-        std::atomic<bool> m_streamerInited = false;
+        std::atomic<bool> m_streamerInited     = false;
         std::function<void( const Data_t*, Size_t )> m_writingFun;
         std::unique_ptr<std::thread> m_streamThread;
         std::unique_ptr<std::thread> m_serverThread;
         bool m_shutdown = false;
-        SharedData( std::unique_ptr<hub::io::InputOutputSocket>&& ioSocket ) :
-            m_serverSocket { std::move( ioSocket ) }
-            // m_header{std::move(header)}
-            // m_retained { retained }
-            {};
+
+        SharedData( std::unique_ptr<hub::io::InputOutputSocket>&& serverSocket ) :
+            m_serverSocket { std::move( serverSocket ) } {};
         SharedData() = default;
     };
     std::unique_ptr<SharedData> m_data;
     bool m_moved = false;
-
-    //    std::unique_ptr<std::vector<io::InputOutputSocket>> m_clientSockets;
-    //    hub::Buffer<> m_buffer;
-
-    //    std::unique_ptr<bool> m_serverClosed   = std::make_unique<bool>(false);
-    //    std::unique_ptr<bool> m_streamerClosed = std::make_unique<bool>(false);
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// inline void OutputStreamServer2::write( const sensor::Acquisition& acq ) {
-//     Output::write( io::StreamInterface::ClientMessage::STREAMER_CLIENT_NEW_ACQ );
-//     Output::write( acq );
-// }
-
-// inline void OutputStreamServer2::write(const sensor::SensorSpec &sensorSpec)
-//{
-////    Output::write( io::StreamInterface::ClientMessage::STREAMER_CLIENT_INIT_SENSOR );
-//    Output::write( sensorSpec );
-//}
-
-// void OutputStreamServer2::write( const unsigned char* data, size_t len );
-
 inline void OutputStreamServer2::close() {
-    assert(false);
+    assert( false );
     m_data->m_serverSocket->close();
-    // std::cout << "[OutputStreamServer2] close() started" << std::endl;
-    //    assert( m_serverSocket->isOpen() );
-    //    if ( ! *m_serverClosed && ! *m_streamerClosed ) {
-    //        m_serverSocket->write( io::StreamInterface::ClientMessage::STREAMER_CLIENT_CLOSED );
-    //    }
-    //    int iTry = 0;
-    //    while ( ! *m_serverClosed && ! *m_streamerClosed && iTry < 10 ) {
-    //        std::cout << "[OutputStreamServer2] close() waiting for server/streamer closing" <<
-    //        std::endl; std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
-    //        ++iTry;
-    //    }
-    //    assert(iTry < 10);
-
-    // std::cout << "[OutputStreamServer2] closing connection ended" << std::endl;
-    // m_serverSocket->close();
-    // std::cout << "[OutputStreamServer2] close() ended" << std::endl;
 }
 
 inline bool OutputStreamServer2::isOpen() const {
-    return true;
-    // return m_serverSocket->isOpen();
+    return m_data->m_streamSocket->isConnected();
+    // return true;
 }
 
 } // namespace output

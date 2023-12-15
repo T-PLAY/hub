@@ -102,19 +102,23 @@ std::ostream& operator<<( std::ostream& os, const StreamBase::ServerMessage& msg
 //     return std::to_string((int)message);
 //}
 
-StreamBase::StreamBase( const std::string& name,
+StreamBase::StreamBase(
+    // const Header& header,
+    const std::string& name,
                         const std::string& ipv4,
-                        int port,
-                        const Header& header ) :
-    m_name( name ), m_ipv4( ipv4 ), m_port( port ), m_header( header ) {
+                        int port
+                        ) :
+    m_name( name ), m_ipv4( ipv4 ), m_port( port )
+    // m_header( header )
+{
 }
 
-StreamBase::StreamBase( const char* name, const char* ipv4, int port, const Header& header ) :
-    m_name( name ), m_ipv4( ipv4 ), m_port( port ), m_header( header ) {}
+// StreamBase::StreamBase( const char* name, const char* ipv4, int port, const Header& header ) :
+//     m_name( name ), m_ipv4( ipv4 ), m_port( port ), m_header( header ) {}
 
-const Header& StreamBase::getHeader() const {
-    return m_header;
-}
+// const Header& StreamBase::getHeader() const {
+    // return m_header;
+// }
 
 
 } // namespace io

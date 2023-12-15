@@ -58,27 +58,39 @@ class OutputSensor : public Sensor
   public:
     using Sensor::acqMsg;
 
-    OutputSensor( const SensorSpec& sensorSpec, Output& output ) :
-        Sensor( sensorSpec ), m_output( output ) {
+    // OutputSensor( const SensorSpec& sensorSpec, Output& output ) :
+    template <class OutputT>
+    OutputSensor( OutputT& output ) :
+        // Sensor( sensorSpec ),
+        m_output( output ) {
+
+        const auto & header = output.getHeader();
+        hub::io::Memory memory(header.getUserDefined());
+        memory.read(m_spec);
 
         assert( m_spec.getResolution().nType() > 0 );
-        m_output.setRetain( true );
-        m_output.write( m_spec );
-        m_output.setRetain( false );
+        // m_output.setRetain( true );
+        // m_output.write( m_spec );
+        // m_output.setRetain( false );
         //        m_output << m_spec;
     }
 
     template <class Output>
         requires std::is_base_of_v<hub::Output, Output>
-    OutputSensor( const SensorSpec& sensorSpec, Output&& output ) :
-        Sensor( sensorSpec ),
+    // OutputSensor( const SensorSpec& sensorSpec, Output&& output ) :
+    OutputSensor( Output&& output ) :
+        // Sensor( sensorSpec ),
         m_output( *( new Output( std::move( output ) ) ) ),
         m_outputOwner( true ) {
 
+        const auto & header = dynamic_cast<const Output&>(m_output).getHeader();
+        hub::io::Memory memory(header.getUserDefined());
+        memory.read(m_spec);
+
         assert( m_spec.getResolution().nType() > 0 );
-        m_output.setRetain( true );
-        m_output.write( m_spec );
-        m_output.setRetain( false );
+        // m_output.setRetain( true );
+        // m_output.write( m_spec );
+        // m_output.setRetain( false );
     }
 
     ~OutputSensor() {
@@ -118,30 +130,62 @@ class OutputSensorT : public Sensor
   public:
     // using Acq = Acquisition;
 
-    OutputSensorT( const SensorSpec& sensorSpec, Output& output ) :
-        Sensor( sensorSpec ), m_output( output ) {
+    // OutputSensorT( const SensorSpec& sensorSpec, Output& output ) :
+    template <class Output>
+    OutputSensorT( Output& output ) :
+        // Sensor( sensorSpec ),
+        m_output( output ) {
 
-        if constexpr ( isMatrix<Resolution> ) { m_spec.setResolution( Resolution().getMatrix() ); }
-        else { m_spec.setResolution( make_matrix<Resolution>() ); }
+        auto & header = output.getHeader();
+        hub::io::Memory memory(header.getUserDefined());
+        memory.read(m_spec);
 
-        m_output.setRetain( true );
-        m_output.write( m_spec );
-        m_output.setRetain( false );
+        // if constexpr ( isMatrix<Resolution> ) { m_spec.setResolution( Resolution().getMatrix() ); }
+        // else { m_spec.setResolution( make_matrix<Resolution>() ); }
+#ifdef DEBUG
+        if constexpr ( isMatrix<Resolution> ) {
+            // m_spec.setResolution( Resolution().getMatrix() );
+            assert(Resolution().getMatrix() == m_spec.getResolution());
+        }
+        else {
+            // m_spec.setResolution( make_matrix<Resolution>() );
+            assert(make_matrix<Resolution>() == m_spec.getResolution());
+        }
+#endif
+
+        // m_output.setRetain( true );
+        // m_output.write( m_spec );
+        // m_output.setRetain( false );
     }
 
     template <class Output>
         requires std::is_base_of_v<hub::Output, Output>
-    OutputSensorT( const SensorSpec& sensorSpec, Output&& output ) :
-        Sensor( sensorSpec ),
+    // OutputSensorT( const SensorSpec& sensorSpec, Output&& output ) :
+    OutputSensorT( Output&& output ) :
+        // Sensor( sensorSpec ),
         m_output( *( new Output( std::move( output ) ) ) ),
         m_outputOwner( true ) {
 
-        if constexpr ( isMatrix<Resolution> ) { m_spec.setResolution( Resolution().getMatrix() ); }
-        else { m_spec.setResolution( make_matrix<Resolution>() ); }
+        const auto & header = dynamic_cast<const Output&>(m_output).getHeader();
+        hub::io::Memory memory(header.getUserDefined());
+        memory.read(m_spec);
 
-        m_output.setRetain( true );
-        m_output.write( m_spec );
-        m_output.setRetain( false );
+        // assert(! isMatrix<Resolution> || Resolution().getMatrix() == m_spec.getResolution());
+        // assert(isMatrix<Resolution> || make_matrix<Resolution>() == m_spec.getResolution());
+#ifdef DEBUG
+        if constexpr ( isMatrix<Resolution> ) {
+            // m_spec.setResolution( Resolution().getMatrix() );
+            assert(Resolution().getMatrix() == m_spec.getResolution());
+        }
+        else {
+            // m_spec.setResolution( make_matrix<Resolution>() );
+            assert(make_matrix<Resolution>() == m_spec.getResolution());
+        }
+#endif
+
+        // m_output.setRetain( true );
+        // m_output.write( m_spec );
+        // m_output.setRetain( false );
     }
 
     ~OutputSensorT() {

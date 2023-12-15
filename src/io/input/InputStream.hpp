@@ -4,7 +4,7 @@
 //#include "core/Input.hpp"
 //#include "InputStream.hpp"
 
-#ifdef HUB_BUILD_SERVER
+// #ifdef HUB_BUILD_SERVER
 // #    include "impl/server/io/input/InputStreamServer.hpp"
 // #include "io/input/InputStreamServer.hpp"
 #include "io/input/InputStreamServer2.hpp"
@@ -16,13 +16,13 @@
 
 // #ifdef HUB_BUILD_IMPL_SERVER2
 // #include "impl/server2/io/input/InputStreamServer.hpp"
-#endif
+// #endif
 
 
 namespace hub {
 namespace input {
 
-#ifdef HUB_BUILD_SERVER
+// #ifdef HUB_BUILD_SERVER
 
 // using InputStream = InputStreamServer;
 using InputStream = InputStreamServer2;
@@ -39,7 +39,7 @@ static_assert( std::is_base_of<Input, InputStream>::value,
                "Input is base class of InputStream" );
 static_assert( std::is_base_of<io::StreamBase, InputStream>::value,
                "Stream is base class of InputStream" );
-#endif
+// #endif
 
 //#endif
 

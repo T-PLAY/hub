@@ -31,7 +31,7 @@ TEST_CASE( "InputOutputStream broadcast test" ) {
 
         {
             std::vector<hub::output::OutputStream> outputStreams;
-            outputStreams.emplace_back( FILE_NAME, SERVER_PORT, SERVER_IP, TEST_IO_HEADER );
+            outputStreams.emplace_back(TEST_IO_HEADER, FILE_NAME, SERVER_PORT );
 
             {
                 std::vector<hub::input::InputStream> inputStreams;

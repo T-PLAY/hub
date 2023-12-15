@@ -12,7 +12,7 @@ namespace io {
 class StreamServer2 : public hub::io::StreamBase
 {
   public:
-    using hub::io::StreamBase::getHeader;
+    // using hub::io::StreamBase::getHeader;
 
     //    static const std::string s_exitSignal;
     // static const std::string s_defaultIpv4;
@@ -32,8 +32,8 @@ class StreamServer2 : public hub::io::StreamBase
     }
 
   protected:
-    StreamServer2( const std::string& name, const std::string& ipv4, int port, const io::Header & header );
-    StreamServer2( const char* name, const char* ipv4, int port, const io::Header & header );
+    StreamServer2( const std::string& name, const std::string& ipv4, int port );
+    // StreamServer2( const char* name, const char* ipv4, int port, const io::Header & header );
 
     //    int m_iAcq = 0;
     //    net::ClientSocket m_clientSocket;

@@ -130,7 +130,7 @@ TEST_CASE( "Native Viewer" ) {
                 assert( hub::native::viewer_nStreaming(viewer) == 0 );
                 CONSTRUCT_BEGIN( "OutputStream" );
                 // hub::output::OutputStream outputStream( FILE_NAME, port, "127.0.0.1", header_ref );
-                auto * outputStream =  hub::native::createOutputStream(FILE_NAME.c_str(), port, "127.0.0.1", &header_ref);
+                auto * outputStream =  hub::native::createOutputStream(&header_ref, FILE_NAME.c_str(), port, "127.0.0.1");
                 CONSTRUCT_END( "OutputStream" );
                 assert( hub::native::viewer_nStream(viewer) == 1 );
                 assert( hub::native::viewer_nStreaming(viewer) == 1 );

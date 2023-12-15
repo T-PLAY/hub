@@ -18,7 +18,7 @@ TEST_CASE( "InputOutputStream retain test" ) {
 
     {
         const hub::io::Header header{sizeof(int)};
-        hub::output::OutputStream outputStream( FILE_NAME, SERVER_PORT, SERVER_IP, header );
+        hub::output::OutputStream outputStream( header, FILE_NAME, SERVER_PORT );
 
         {
             hub::input::InputStream inputStream( FILE_NAME, SERVER_PORT );

@@ -29,7 +29,7 @@ class SRC_API InputStreamServer2 : public Input, public io::StreamServer2
     static struct {
     } not_endable;
     using Input::read;
-    using io::StreamServer2::getHeader;
+    // using io::StreamServer2::getHeader;
 
     ///
     /// \brief InputStreamServer2
@@ -96,6 +96,9 @@ class SRC_API InputStreamServer2 : public Input, public io::StreamServer2
     // todo acq
     //    void read( sensor::Acquisition& acq ) override;
     //    void read( sensor::SensorSpec& sensorSpec ) override;
+    const io::Header &  getHeader() const {
+        return m_header;
+    }
 
   private:
     //    net::ClientSocket m_serverSocket;
@@ -103,6 +106,7 @@ class SRC_API InputStreamServer2 : public Input, public io::StreamServer2
     //    bool m_streamViewerClientClosed = false;
     //    bool m_streamerClosed           = false;
     std::unique_ptr<hub::io::InputOutputSocket> m_streamSocket;
+    io::Header m_header;
 
     std::string m_streamIpv4;
     int m_streamPort;
@@ -125,10 +129,11 @@ inline bool InputStreamServer2::isOpen() const {
     return m_streamSocket->isOpen();
 }
 
-inline void InputStreamServer2::read( Data_t* data, Size_t len ) {
-    //    m_serverSocket.read( data, len );
+inline void InputStreamServer2::read( Data_t* data, Size_t size ) {
+    //    m_serverSocket.read( data, size );
     assert( m_streamSocket != nullptr );
-    m_streamSocket->read( data, len );
+    assert( m_header.getDataSize() == size );
+    m_streamSocket->read( data, size );
 }
 
 inline void InputStreamServer2::close() {

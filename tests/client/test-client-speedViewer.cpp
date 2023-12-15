@@ -21,6 +21,8 @@ TEST_CASE( "Server test : viewer" ) {
 
 //    unsigned char* datas = new unsigned char[nAcqs * dataSize];
 
+//    hub::sensor::Acquisition acq;
+
 //    srand( (unsigned)time( NULL ) );
 //    std::vector<hub::sensor::Acquisition> acqs( nAcqs );
 //    for ( int i = 0; i < nAcqs; ++i ) {
@@ -68,16 +70,16 @@ TEST_CASE( "Server test : viewer" ) {
 //                    const unsigned char* data = &datas[iAcq * dataSize];
 //                clientServerSocket.read( dataIn, dataSize );
 
-////                    uploadSize += dataSize;
-////                }
+// //                    uploadSize += dataSize;
+// //                }
 
-////                clientSocket.write( data + uploadSize, dataSize - uploadSize );
-////                clientServerSocket.read( dataIn + uploadSize, dataSize - uploadSize );
+// //                clientSocket.write( data + uploadSize, dataSize - uploadSize );
+// //                clientServerSocket.read( dataIn + uploadSize, dataSize - uploadSize );
 
-////                assert( !memcmp( data, dataIn, dataSize ) );
-//#ifdef DEBUG
+// //                assert( !memcmp( data, dataIn, dataSize ) );
+// #ifdef DEBUG
 //                assert( memcmp( data, dataIn, dataSize ) == 0 );
-//#endif
+// #endif
 //            }
 //            thread.join();
 //        }
@@ -173,9 +175,9 @@ TEST_CASE( "Server test : viewer" ) {
 //                    //                    streamName << " " << acq
 //                    //                              << std::endl;
 //                    std::cout << "+";
-//#ifdef DEBUG
+// #ifdef DEBUG
 //                    assert( acq == acqs.at( nAcqReceived ) );
-//#endif
+// #endif
 //                    ++nAcqReceived;
 //                };
 //                auto onSetProperty = []( const std::string& streamName,
@@ -280,7 +282,7 @@ TEST_CASE( "Server test : viewer" ) {
 //    const auto ratio = 100.0 * megaBytesPerSecondViewer / megaBytesPerSecondClientSocket;
 //    //    std::cout << "[test][ClientSocket/InputOutputSensor] ratio : " << ratio << " %" <<
 //    //    std::endl;
-//    checkRatio( ratio, 50, 50, "Viewer/ClientSocket" );
+//    // checkRatio( ratio, 50, 50, "Viewer/ClientSocket" );
 
 //    // #ifdef WIN32
 //    // #    ifdef DEBUG

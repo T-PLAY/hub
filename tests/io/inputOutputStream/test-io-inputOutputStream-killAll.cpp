@@ -16,7 +16,7 @@ TEST_CASE( "InputOutputStream kill all test" ) {
 
     INIT_SERVER
 
-    hub::output::OutputStream outputStream( FILE_NAME, SERVER_PORT, SERVER_IP, TEST_IO_HEADER );
+    hub::output::OutputStream outputStream( TEST_IO_HEADER, FILE_NAME, SERVER_PORT );
 
     hub::input::InputStream inputStream( FILE_NAME, SERVER_PORT );
 

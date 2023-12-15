@@ -17,8 +17,11 @@
 #    include "core/InputBase.hpp"
 #    include "core/OutputBase.hpp"
 
+
 namespace hub {
 namespace serializer {
+
+
 
 // template <class Out, class... Ts>
 // concept Outable = requires(Out & out, Ts&... ts) {out(ts...); };
@@ -75,7 +78,7 @@ class SerializerZppBits : public SerializerI
     template <class... Ts>
     static constexpr auto Serializables = ( Serializable<Ts>() && ... );
 
-    static constexpr Size_t BuffSize = MAX_STACK_SIZE;
+    static constexpr Size_t BuffSize = 1'000'000; // 1 Mo
 
   private:
     //    using ByteView = std::array<Data_t, BuffSize>;
@@ -107,6 +110,9 @@ class SerializerZppBits : public SerializerI
         //       zpp::bits::out m_out( m_serialBuff );
         // m_out = zpp::bits::out(m_serialBuff);
         m_out.reset( 0 );
+        assert(m_out.processed_data().size() == 0);
+        assert(m_out.remaining_data().size() == BuffSize);
+        // m_out.enlarge_for()
         m_dataWrote = 0;
         //        m_in.reset(0);
         assert( m_out.position() == 0 );
@@ -121,7 +127,7 @@ class SerializerZppBits : public SerializerI
 #    ifdef HUB_DEBUG_OUTPUT
         // std::cout << "<---" << HEADER << "packing " << size << " bytes" << std::endl;
         std::vector<Data_t> data( m_packData, m_packData + m_packSize );
-        std::cout << "<---" << HEADER << "packing serial data : " << data << std::endl;
+        DEBUG_MSG( "<---" << HEADER << "packing serial data : " << data )
 #    endif
     }
 
@@ -137,12 +143,14 @@ class SerializerZppBits : public SerializerI
 #    ifdef HUB_DEBUG_INPUT
         // std::cout << "\t--->" << HEADER << "unpacking " << size << " bytes" << std::endl;
         std::vector<Data_t> data( m_packData, m_packData + m_packSize );
-        std::cout << "\t--->" << HEADER << "unpacking serial data : " << data << std::endl;
+        DEBUG_MSG ("\t--->" << HEADER << "unpacking serial data : " << data);
 #    endif
 
         // zpp::bits::in m_in( m_serialBuff );
         //        m_in = zpp::bits::in(m_serialBuff);
         m_in.reset( 0 );
+        assert(m_in.processed_data().size() == 0);
+        assert(m_in.remaining_data().size() == BuffSize);
         m_dataReaded = 0;
         //        m_in( ts... ).or_throw();
         assert( m_in.position() == 0 );
@@ -226,9 +234,9 @@ class SerializerZppBits : public SerializerI
         // const std::vector<Data_t> data( span.begin() + lastPosition, span.end() );
         const std::vector<Data_t> data( m_serialBuff.data() + lastPosition,
                                         m_serialBuff.data() + newPosition );
-        std::cout << "<---" << HEADER << "\033[1;36mwrite\033[0m(const " << TYPE_NAME( T )
-                  << "&) = " << t << " (" << lastPosition << "->" << newPosition << ")" << data
-                  << std::endl;
+        DEBUG_MSG( "<---" << HEADER << "\033[1;36mwrite\033[0m(const " << TYPE_NAME( T )
+                          << "&) = " << t << " (" << lastPosition << "->" << newPosition << ")" << data);
+
 #    endif
     }
 
@@ -236,8 +244,8 @@ class SerializerZppBits : public SerializerI
         requires( !Serializable<T>() && packable_v<T> )
     void write( const T& t ) {
 #    ifdef HUB_DEBUG_OUTPUT
-        std::cout << "<---" << HEADER << "\033[1mwrite\033[0m(writable: " << TYPE_NAME( T )
-                  << ") ..." << std::endl;
+        DEBUG_MSG( "<---" << HEADER << "\033[1mwrite\033[0m(writable: " << TYPE_NAME( T )
+                          << ") ..." );
 #    endif
 
         const auto lastPosition = m_out.position();
@@ -249,8 +257,8 @@ class SerializerZppBits : public SerializerI
         m_dataWrote += newPosition - lastPosition;
 
 #    ifdef HUB_DEBUG_OUTPUT
-        std::cout << "<---" << HEADER << "\033[1mwrite\033[0m(writable: " << TYPE_NAME( T )
-                  << ") = " << t << std::endl;
+        DEBUG_MSG( "<---" << HEADER << "\033[1mwrite\033[0m(writable: " << TYPE_NAME( T )
+                          << ") = " << t );
 #    endif
     }
 
@@ -259,15 +267,15 @@ class SerializerZppBits : public SerializerI
     void write( const T& t ) {
         static_assert( Writable_v<T> );
 #    ifdef HUB_DEBUG_OUTPUT
-        std::cout << "<---" << HEADER << "\033[1mwrite\033[0m(writable: " << TYPE_NAME( T )
-                  << ") ..." << std::endl;
+        DEBUG_MSG( "<---" << HEADER << "\033[1mwrite\033[0m(writable: " << TYPE_NAME( T )
+                          << ") ..." );
 #    endif
 
         t.write( *this );
 
 #    ifdef HUB_DEBUG_OUTPUT
-        std::cout << "<---" << HEADER << "\033[1mwrite\033[0m(writable: " << TYPE_NAME( T )
-                  << ") = " << t << std::endl;
+        DEBUG_MSG( "<---" << HEADER << "\033[1mwrite\033[0m(writable: " << TYPE_NAME( T )
+                          << ") = " << t );
 #    endif
     }
 
@@ -277,8 +285,8 @@ class SerializerZppBits : public SerializerI
         requires( Serializable<T>() )
     void read( T& t ) {
 #    ifdef HUB_DEBUG_INPUT
-        std::cout << "\t--->" << HEADER << "\033[1;36mread\033[0m(" << TYPE_NAME( T ) << "&) ..."
-                  << std::endl;
+        DEBUG_MSG( "\t--->" << HEADER << "\033[1;36mread\033[0m(" << TYPE_NAME( T ) << "&) ..."
+                     );
 #    endif
 
         const auto lastPosition = m_in.position();
@@ -297,9 +305,9 @@ class SerializerZppBits : public SerializerI
 #    ifdef HUB_DEBUG_INPUT
         // const auto span = m_in.processed_data();
         const std::vector<Data_t> data( m_packData + lastPosition, m_packData + newPosition );
-        std::cout << "\t--->" << HEADER << "\033[1;36mread\033[0m(" << TYPE_NAME( T )
+        DEBUG_MSG(  "\t--->" << HEADER << "\033[1;36mread\033[0m(" << TYPE_NAME( T )
                   << "&) = " << t << " (" << lastPosition << "->" << newPosition << ")" << data
-                  << std::endl;
+                   );
 #    endif
     }
 
@@ -307,8 +315,8 @@ class SerializerZppBits : public SerializerI
         requires( !Serializable<T>() && packable_v<T> )
     void read( T& t ) {
 #    ifdef HUB_DEBUG_INPUT
-        std::cout << "\t--->" << HEADER << "\033[1mread\033[0m(readable: " << TYPE_NAME( T )
-                  << ") ..." << std::endl;
+        DEBUG_MSG( "\t--->" << HEADER << "\033[1mread\033[0m(readable: " << TYPE_NAME( T )
+                            << ") ..." );
 #    endif
 
         const auto lastPosition = m_in.position();
@@ -320,8 +328,8 @@ class SerializerZppBits : public SerializerI
         m_dataReaded += newPosition - lastPosition;
 
 #    ifdef HUB_DEBUG_INPUT
-        std::cout << "\t--->" << HEADER << "\033[1mread\033[0m(readable: " << TYPE_NAME( T )
-                  << ") = " << t << std::endl;
+        DEBUG_MSG( "\t--->" << HEADER << "\033[1mread\033[0m(readable: " << TYPE_NAME( T )
+                            << ") = " << t );
 #    endif
     }
 
@@ -330,15 +338,15 @@ class SerializerZppBits : public SerializerI
     void read( T& t ) {
         static_assert( Readable_v<T> );
 #    ifdef HUB_DEBUG_INPUT
-        std::cout << "\t--->" << HEADER << "\033[1mread\033[0m(readable: " << TYPE_NAME( T )
-                  << ") ..." << std::endl;
+        DEBUG_MSG(  "\t--->" << HEADER << "\033[1mread\033[0m(readable: " << TYPE_NAME( T )
+                            << ") ..." );
 #    endif
 
         t.read( *this );
 
 #    ifdef HUB_DEBUG_INPUT
-        std::cout << "\t--->" << HEADER << "\033[1mread\033[0m(readable: " << TYPE_NAME( T )
-                  << ") = " << t << std::endl;
+        DEBUG_MSG( "\t--->" << HEADER << "\033[1mread\033[0m(readable: " << TYPE_NAME( T )
+                            << ") = " << t );
 #    endif
     }
 
@@ -350,7 +358,7 @@ class SerializerZppBits : public SerializerI
         assert( str != nullptr );
 
 #    ifdef HUB_DEBUG_OUTPUT
-        std::cout << "<---" << HEADER << "write(const char*)" << std::endl;
+        DEBUG_MSG ("<---" << HEADER << "write(const char*)" );
 #    endif
         write( std::string( str ) );
     }
@@ -363,7 +371,7 @@ class SerializerZppBits : public SerializerI
         assert( str != nullptr );
 
 #    ifdef HUB_DEBUG_INPUT
-        std::cout << "\t--->" << HEADER << "read(char *)" << std::endl;
+        DEBUG_MSG( "\t--->" << HEADER << "read(char *)" );;
 #    endif
 
         std::string string;
@@ -380,8 +388,8 @@ class SerializerZppBits : public SerializerI
     void write( const std::pair<T, U>& pair ) {
 
 #    ifdef HUB_DEBUG_OUTPUT
-        std::cout << "<---" << HEADER << "write(std::pair<" << TYPE_NAME( T ) << ", "
-                  << TYPE_NAME( U ) << ">) = " << pair << std::endl;
+        DEBUG_MSG( "<---" << HEADER << "write(std::pair<" << TYPE_NAME( T ) << ", "
+                          << TYPE_NAME( U ) << ">) = " << pair );
 #    endif
         const T& first  = pair.first;
         const U& second = pair.second;
@@ -400,8 +408,8 @@ class SerializerZppBits : public SerializerI
         pair = std::make_pair( std::move( first ), std::move( second ) );
         //        pair = std::make_pair( first, second );
 #    ifdef HUB_DEBUG_INPUT
-        std::cout << "\t--->" << HEADER << "read(std::pair<" << TYPE_NAME( T ) << ", "
-                  << TYPE_NAME( U ) << ">) = " << pair << std::endl;
+        DEBUG_MSG( "\t--->" << HEADER << "read(std::pair<" << TYPE_NAME( T ) << ", "
+                            << TYPE_NAME( U ) << ">) = " << pair );
 #    endif
     }
 
@@ -413,8 +421,8 @@ class SerializerZppBits : public SerializerI
     void write( const std::map<T, U>& map ) {
 
 #    ifdef HUB_DEBUG_OUTPUT
-        std::cout << "<---" << HEADER << "write(std::map<" << TYPE_NAME( T ) << ", "
-                  << TYPE_NAME( U ) << ") = " << map << std::endl;
+        DEBUG_MSG( "<---" << HEADER << "write(std::map<" << TYPE_NAME( T ) << ", "
+                          << TYPE_NAME( U ) << ") = " << map );
 #    endif
 
         uint32_t nbKey = static_cast<uint32_t>( map.size() );
@@ -440,8 +448,8 @@ class SerializerZppBits : public SerializerI
             map.emplace( std::move( pair ) );
         }
 #    ifdef HUB_DEBUG_INPUT
-        std::cout << "\t--->" << HEADER << "read(std::map<" << TYPE_NAME( T ) << ", "
-                  << TYPE_NAME( U ) << ") = " << map << std::endl;
+        DEBUG_MSG(  "\t--->" << HEADER << "read(std::map<" << TYPE_NAME( T ) << ", "
+                            << TYPE_NAME( U ) << ") = " << map );
 #    endif
     }
 };

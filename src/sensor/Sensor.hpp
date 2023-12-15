@@ -24,6 +24,7 @@ class SRC_API Sensor
     /// \param sensorSpec
     /// [in] user defined sensor spec
     ///
+    Sensor() = default;
     explicit Sensor( const SensorSpec& sensorSpec ) : m_spec{sensorSpec} {
     }
     Sensor( const Sensor& sensor ) = delete;

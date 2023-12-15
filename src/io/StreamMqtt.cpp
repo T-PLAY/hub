@@ -11,10 +11,10 @@ const std::string StreamMqtt::s_topicViewer = "viewers/";
 const std::string StreamMqtt::s_topicEvents = "events";
 
 StreamMqtt::StreamMqtt( const std::string& name, const std::string& ipv4, int port ) :
-    StreamBase( name, ipv4, port, {} ) {}
+    StreamBase( name, ipv4, port ) {}
 
 StreamMqtt::StreamMqtt( const char* name, const char* ipv4, int port ) :
-    StreamBase( name, ipv4, port, {} ) {}
+    StreamBase( name, ipv4, port ) {}
 
 } // namespace io
 } // namespace hub

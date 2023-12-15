@@ -34,15 +34,19 @@ TEST_CASE( "Server test : InputOutputStream_vs_Mqtt" ) {
 
     const auto& [data, size] = generateTestData();
     unsigned char* data_read = new unsigned char[size];
-    const auto nIteration = 100;
+    const auto nIteration    = 100;
+
+    const auto port = GET_RANDOM_PORT;
 
     double gigaBytePerSecondInputOutputStream;
     {
-        INIT_SERVER
+        // INIT_SERVER
+        hub::Server server( port );
+        server.asyncRun();
 
         {
-            hub::output::OutputStream outputStream( FILE_NAME, SERVER_PORT, SERVER_IP, TEST_IO_HEADER );
-            hub::input::InputStream inputStream( FILE_NAME, SERVER_PORT );
+            hub::output::OutputStream outputStream( TEST_IO_HEADER, FILE_NAME, port );
+            hub::input::InputStream inputStream( FILE_NAME, port );
 
             const auto& start2 = std::chrono::high_resolution_clock::now();
 
@@ -66,10 +70,10 @@ TEST_CASE( "Server test : InputOutputStream_vs_Mqtt" ) {
                 std::chrono::duration_cast<std::chrono::nanoseconds>( end2 - start2 ).count();
             gigaBytePerSecondInputOutputStream = ( 2 * size * nIteration ) / (double)duration2;
 
-            std::cout << "[test][InputOutputStream] writing/reading rate: " << gigaBytePerSecondInputOutputStream
-                      << " Go/s" << std::endl;
-            std::cout << "[test][InputOutputStream] total time: " << duration2 / 1'000'000.0 << " ms"
-                      << std::endl;
+            std::cout << "[test][InputOutputStream] writing/reading rate: "
+                      << gigaBytePerSecondInputOutputStream << " Go/s" << std::endl;
+            std::cout << "[test][InputOutputStream] total time: " << duration2 / 1'000'000.0
+                      << " ms" << std::endl;
         }
     }
 
