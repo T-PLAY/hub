@@ -10,6 +10,7 @@
 #include <sensor/OutputSensor.hpp>
 
 TEST_CASE( "OutputSensor sending acq with disconnect test" ) {
+    TEST_BEGIN()
 
 #ifdef HUB_BUILD_SERVER
     INIT_SERVER
@@ -108,5 +109,5 @@ TEST_CASE( "OutputSensor sending acq with disconnect test" ) {
 
     // hub::io::Archive archive;
     // test::sensor::inputOutputSensorBench( archive, archive );
-    return;
+    TEST_END()
 }

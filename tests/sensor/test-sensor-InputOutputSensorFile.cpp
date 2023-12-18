@@ -17,6 +17,7 @@
 #include <sensor/OutputSensor.hpp>
 
 TEST_CASE( "InputOutputSensorArchive test" ) {
+    TEST_BEGIN()
 
     test::sensor::inputOutputSensorAsyncBench<hub::input::InputFile, hub::output::OutputFile>(
         FILE_NAME + ".hub" );
@@ -47,6 +48,7 @@ TEST_CASE( "InputOutputSensorArchive test" ) {
     // // hub::sensor::OutputSensor inputSensor(archive);
 
     // test::sensor::inputOutputSensorBench(archive, archive);
+    TEST_END()
     return;
 
 

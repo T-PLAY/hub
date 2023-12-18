@@ -1,11 +1,13 @@
 
-#include <catch2/catch_test_macros.hpp>
+#include "test_common.hpp"
+// #include <catch2/catch_test_macros.hpp>
 #include <list>
 #include <cassert>
 
 #include <sensor/Acquisition.hpp>
 
 TEST_CASE( "Acquisition test" ) {
+    TEST_BEGIN()
 
     using Resolution = hub::sensor::format::BGR8;
     // hub::sensor::AcquisitionT<Resolution> acq;
@@ -46,18 +48,19 @@ TEST_CASE( "Acquisition test" ) {
 
 
 
-    return;
+    TEST_END()
+    // return;
 
-    //    std::list<hub::sensor::Acquisition> acqs;
-    std::vector<hub::sensor::Acquisition> acqs;
-    const auto resolution = hub::make_matrix<int, 640, 480>();
-    acqs.push_back( hub::sensor::make_acquisition( resolution ) );
-    acqs.resize( 5 );
+    // //    std::list<hub::sensor::Acquisition> acqs;
+    // std::vector<hub::sensor::Acquisition> acqs;
+    // const auto resolution = hub::make_matrix<int, 640, 480>();
+    // acqs.push_back( hub::sensor::make_acquisition( resolution ) );
+    // acqs.resize( 5 );
 
-    std::array<std::list<hub::sensor::Acquisition>, 2> lastAcqs;
-    //    lastAcqs.resize(2);
+    // std::array<std::list<hub::sensor::Acquisition>, 2> lastAcqs;
+    // //    lastAcqs.resize(2);
 
-    std::cout << "resolution: " << resolution << std::endl;
+    // std::cout << "resolution: " << resolution << std::endl;
 
     //    const hub::sensor::Resolutions resolutions { { hub::sensor::format::BGR8, 1 } };
     //    auto resolutions_copy = resolutions;

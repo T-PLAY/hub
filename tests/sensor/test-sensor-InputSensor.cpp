@@ -13,6 +13,7 @@
 // #undef HUB_BUILD_SERVER
 
 TEST_CASE( "InputSensor test" ) {
+    TEST_BEGIN()
 
     INIT_SERVER
 
@@ -65,5 +66,6 @@ TEST_CASE( "InputSensor test" ) {
     }
 
 
+    TEST_END()
     return;
 }

@@ -9,6 +9,7 @@
 #include <sensor/OutputSensor.hpp>
 
 TEST_CASE( "OutputSensor test" ) {
+    TEST_BEGIN()
 
 // #ifdef HUB_BUILD_SERVER
     INIT_SERVER
@@ -52,6 +53,7 @@ TEST_CASE( "OutputSensor test" ) {
         outputSensor << acq;
     }
 
+    TEST_END()
     return;
 
     //        assert(UserResolution() == inputSensor.getSpec().resolution);

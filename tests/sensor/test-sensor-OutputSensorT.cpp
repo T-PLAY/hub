@@ -9,6 +9,7 @@
 #include <sensor/OutputSensor.hpp>
 
 TEST_CASE( "OutputSensorT test" ) {
+    TEST_BEGIN()
 
     INIT_SERVER
 
@@ -343,6 +344,7 @@ TEST_CASE( "OutputSensorT test" ) {
     ////        static_assert(acq.getStart() == 0);
     //    }
     //    return;
+    TEST_END()
 }
 
 //    ////////////////////////// ResolutionT //////////////////////////////

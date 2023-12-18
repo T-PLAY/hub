@@ -17,12 +17,14 @@
 #include <sensor/OutputSensor.hpp>
 
 TEST_CASE( "InputOutputSensorStream test" ) {
+    TEST_BEGIN()
 
     INIT_SERVER
 
     test::sensor::inputOutputSensorBench<hub::input::InputStream, hub::output::OutputStream>(
         FILE_NAME, SERVER_PORT );
 
+    TEST_END()
     return;
 
     // using Resolution = hub::sensor::format::BGR8;

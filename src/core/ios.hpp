@@ -6,6 +6,9 @@
 
 #include "core/Traits.hpp"
 // #include <vector>
+#if defined( HUB_DEBUG_INPUT ) || defined( HUB_DEBUG_OUTPUT )
+#include <mutex>
+#endif
 
 namespace hub {
 // namespace io {

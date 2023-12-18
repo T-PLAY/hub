@@ -23,6 +23,7 @@
 
 TEST_CASE( "sensor : InputOutputSensorSync" ) {
     //    const auto hostname = hub::utils::getHostname();
+    TEST_BEGIN()
 
     static_assert( !hub::Endable<hub::io::InputOutputSocket> );
     static_assert( !hub::Endable<hub::input::InputStream> );
@@ -78,6 +79,7 @@ TEST_CASE( "sensor : InputOutputSensorSync" ) {
                                     inputStream2,
                                     inputStream3 );
 
+    TEST_END()
     return;
 
     //    // initing datum

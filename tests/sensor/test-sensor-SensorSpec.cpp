@@ -1,7 +1,9 @@
 // #define HUB_DEBUG_INPUT
 // #define HUB_DEBUG_OUTPUT
 
-#include <catch2/catch_test_macros.hpp>
+
+#include "test_common.hpp"
+// #include <catch2/catch_test_macros.hpp>
 
 //#include <sensor/InputSensor.hpp>
 //#include <sensor/OutputSensor.hpp>
@@ -14,6 +16,7 @@
 #include <any>
 
 TEST_CASE( "SensorSpec test" ) {
+    TEST_BEGIN()
 
     hub::io::Archive archive;
 
@@ -115,4 +118,5 @@ TEST_CASE( "SensorSpec test" ) {
 //    sensorSpec5 += hub::sensor::SensorSpec("sensorName2");
 
 //    std::cout << sensorSpec5 << std::endl;
+    TEST_END()
 }
