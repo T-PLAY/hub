@@ -11,8 +11,10 @@
 #include "io/input/InputStream.hpp"
 // #include "io/output/OutputStream.hpp"
 
-// #include "sensor/Acquisition.hpp"
-// #include "sensor/SensorSpec.hpp"
+#ifdef HUB_BUILD_SENSOR
+#include "sensor/Acquisition.hpp"
+#include "sensor/SensorSpec.hpp"
+#endif
 
 namespace hub {
 namespace client {
@@ -26,17 +28,22 @@ class ViewerHandler
 
     std::function<bool( const char* streamName, const io::Header & header )>
         onNewStream;
+#ifdef HUB_BUILD_SENSOR
+    std::function<bool( const char* streamName, const sensor::SensorSpec& sensorSpec )>
+        onNewSensor;
+#endif
     // std::function<void( const char* streamName, input::InputStream & inputStream )>
         // onInitStream;
     // std::function<void( const char* streamName, input::InputStream & inputStream )> onNewData;
     std::function<void( const char* streamName, const Datas_t & datas )> onNewData;
-    // std::function<bool( const char* streamName, const sensor::SensorSpec& sensorSpec )>
-        // onNewStream;
+#ifdef HUB_BUILD_SENSOR
+    std::function<void( const char* streamName, const sensor::Acquisition& acq )> onNewAcq;
+#endif
+
     std::function<void( const char* streamName )>
         onDelStream;
     // std::function<void( const char* streamName, const sensor::SensorSpec& sensorSpec )>
         // onDelStream;
-    // std::function<void( const char* streamName, const sensor::Acquisition& acq )> onNewAcquisition;
 
     std::function<
         void( const char* streamName, const char* objectName, int property, const Any& value )>

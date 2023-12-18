@@ -77,6 +77,9 @@ class Matrix
     Data_t* data();
     Size_t size() const;
 
+    // std::span getSpan() const;
+    const auto& getData() const { return m_vector; }
+
     bool operator==( const Matrix& other ) const;
 
     void push_back( const Node& node );
@@ -199,7 +202,6 @@ inline bool Matrix::hasValue() const {
     return !m_vector.empty();
 }
 
-
 template <class Type>
 bool Matrix::hasType() const {
     for ( const auto& node : m_nodes ) {
@@ -298,13 +300,13 @@ template <class Type, int i, class RawType>
 Type Matrix::get() const {
     // if ( m_vector.empty() ) m_vector.resize( m_size );
     assert( m_vector.size() == m_size );
-    const auto offset = 0;
+    // const auto offset = 0;
+    const auto offset = getOffset<RawType>( i );
     assert( 0 <= offset && offset < m_size );
     return reinterpret_cast<Type>( *( m_vector.data() + offset ) );
 }
 
-inline void Matrix::clear()
-{
+inline void Matrix::clear() {
     m_vector.clear();
 }
 

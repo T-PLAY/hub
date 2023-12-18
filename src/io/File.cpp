@@ -32,6 +32,11 @@ File::File(const char *filePath)
 
 }
 
+const io::Header & File::getHeader() const
+{
+    return m_header;
+}
+
 //File::File( File&& file ) : m_file( std::move( file.m_file ) ) {
 //    file.m_file = nullptr;
 //}

@@ -235,7 +235,8 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
 # set(HUB_SOURCE_DIRS "core" "net" "io" "server")
 # set(HUB_SOURCE_DIRS "core" "net" "io" "server" "client")
 # set(HUB_SOURCE_DIRS "core" "net" "io" "server" "client" "native")
-set(HUB_SOURCE_DIRS "core" "net" "io" "server" "client" "native" "sensor")
+# set(HUB_SOURCE_DIRS "core" "net" "io" "server" "client" "native" "sensor")
+set(HUB_SOURCE_DIRS "core" "net" "io" "server" "client" "native" "sensor" "data")
 
 
 foreach(MODULE "core" "net" "data" "io" "sensor" "server" "client" "native")

@@ -9,7 +9,7 @@ OutputFile::OutputFile(const io::Header & header, const std::string &filePath)
 //                std::fstream( filename, std::ios::out | std::ios::binary | std::ios::trunc ) ) );
 {
     assert(m_file.is_open());
-    // m_header = header;
+    m_header = header;
     write(header);
 }
 

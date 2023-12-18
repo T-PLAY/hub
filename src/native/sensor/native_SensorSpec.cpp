@@ -88,6 +88,14 @@ const MetaData* sensorSpec_getMetaData( const sensor::SensorSpec* sensorSpec ) {
     return &sensorSpec->getMetaData();
 }
 
+std::string g_lastToString;
+
+const char * to_string(const sensor::SensorSpec *sensorSpec)
+{
+    g_lastToString = sensorSpec->toString();
+    return g_lastToString.c_str();
+}
+
 
 } // namespace native
 } // namespace hub

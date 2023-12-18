@@ -12,6 +12,7 @@ class InputFile : public Input, public io::File
 {
   public:
     using Input::read;
+    using io::File::getHeader;
 
 //    InputFile(std::ifstream &&file);
     explicit InputFile(const std::string & filePath);
@@ -42,9 +43,9 @@ class InputFile : public Input, public io::File
 
     void clear() override;
 
-    const io::Header & getHeader() const {
-        return m_header;
-    }
+    // const io::Header & getHeader() const {
+    //     return m_header;
+    // }
 
   private:
     std::ifstream m_file;

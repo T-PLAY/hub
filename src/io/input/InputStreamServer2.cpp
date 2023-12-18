@@ -69,7 +69,7 @@ void InputStreamServer2::startStream() {
 #ifdef HUB_DEBUG_INPUT_STREAM
     std::cout << "[InputStream] reading header ..." << std::endl;
 #endif
-    assert( m_header.empty() );
+    assert( m_header.getUserDefined().empty() );
     m_streamSocket->read( m_header );
 #ifdef HUB_DEBUG_INPUT_STREAM
     std::cout << "[InputStream] read header" << std::endl;

@@ -11,8 +11,13 @@ client::ViewerHandler* createViewerHandler( onServerNotFoundFunc onServerNotFoun
                                             onServerConnectedFunc onServerConnected,
                                             onServerDisconnectedFunc onServerDisconnected,
                                             onNewStreamFunc onNewStream,
-                                            // onNewAcquisitionFunc onNewAcquisition,
+#ifdef HUB_BUILD_SENSOR
+                                            onNewSensorFunc onNewSensor,
+#endif
                                             onNewDataFunc onNewData,
+#ifdef HUB_BUILD_SENSOR
+                                            onNewAcqFunc onNewAcq,
+#endif
                                             onDelStreamFunc onDelStream,
                                             onSetPropertyFunc onSetProperty,
                                             onLogMessageFunc onLogMessage ) {
@@ -31,11 +36,20 @@ client::ViewerHandler* createViewerHandler( onServerNotFoundFunc onServerNotFoun
     viewerHandler->onNewStream = [=]( const std::string& streamName, const io::Header& header ) {
         return onNewStream( streamName.c_str(), &header );
     };
-    // viewerHandler->onNewAcquisition = [=]( const std::string& streamName,
-    // const sensor::Acquisition& acq ) {
+#ifdef HUB_BUILD_SENSOR
+    viewerHandler->onNewSensor = [=]( const std::string& streamName, const sensor::SensorSpec& sensorSpec ) {
+        return onNewSensor( streamName.c_str(), &sensorSpec );
+    };
+#endif
     viewerHandler->onNewData = [=]( const std::string& streamName, const hub::Datas_t& datas ) {
         onNewData( streamName.c_str(), &datas );
     };
+#ifdef HUB_BUILD_SENSOR
+    viewerHandler->onNewAcq = [=]( const std::string& streamName,
+    const sensor::Acquisition& acq ) {
+        onNewAcq(streamName.c_str(), &acq);
+    };
+#endif
     viewerHandler->onDelStream = [=]( const std::string& streamName ) {
         // const sensor::SensorSpec& sensorSpec ) {
         onDelStream( streamName.c_str() );

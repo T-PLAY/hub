@@ -85,7 +85,7 @@ class Header
     Header( const Header& )            = default;
     Header& operator=( const Header& ) = default;
 
-    bool empty() const { return m_userDefined.empty(); }
+    // bool empty() const { return m_userDefined.empty(); }
     bool operator==( const Header& other ) const {
         return m_magicNumber == other.m_magicNumber && m_headerSize == other.m_headerSize &&
                m_dataSize == other.m_dataSize && m_userDefined == other.m_userDefined;

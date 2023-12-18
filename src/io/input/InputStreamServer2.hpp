@@ -58,6 +58,9 @@ class SRC_API InputStreamServer2 : public Input, public io::StreamServer2
     ///
     //    InputStreamServer2( InputStreamServer2&& inputStream );
 
+    InputStreamServer2(const InputStreamServer2 &) = delete;
+    InputStreamServer2(InputStreamServer2 &&) = default;
+
     //    ~InputStreamServer2();
 
     //  protected:

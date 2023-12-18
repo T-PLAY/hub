@@ -6,16 +6,22 @@
 
 #include <client/Viewer.hpp>
 
-#include <io/output/OutputStream.hpp>
-// #include <sensor/OutputSensor.hpp>
-#include <core/io/Memory.hpp>
+// #include <io/output/OutputStream.hpp>
+#include <sensor/OutputSensor.hpp>
+// #include <core/io/Memory.hpp>
 
 TEST_CASE( "Viewer" ) {
     TEST_BEGIN()
 
     const int port = GET_RANDOM_PORT;
 
-    const hub::io::Header header_ref { sizeof(int), {'g', 'o', 't'} };
+    using Resolution = hub::sensor::format::BGR8;
+    hub::MetaData metaData;
+    metaData["user"] = "gauthier";
+    const hub::sensor::SensorSpec sensorSpec_ref {
+        "sensorName", hub::make_matrix<Resolution>(), metaData };
+
+    std::mutex mtxPrint;
 
     {
 
@@ -26,7 +32,7 @@ TEST_CASE( "Viewer" ) {
         int nServerNotFound                  = 0;
         int nServerConnected                 = 0;
         std::atomic<int> nServerDisconnected = 0;
-        int nNewData                         = 0;
+        int nNewAcq                          = 0;
 
         viewerHandler.onServerNotFound = [&]( const std::string& ipv4, int port ) {
             std::cout << "[test-client-Viewer] onServerNotFound : " << ipv4 << " " << port
@@ -43,29 +49,49 @@ TEST_CASE( "Viewer" ) {
                       << std::endl;
             ++nServerDisconnected;
         };
-        viewerHandler.onNewStream = [&]( const std::string& streamName,
-                                         const hub::io::Header& header ) {
-            std::cout << "[test-client-Viewer] onNewStream : " << streamName << ", " << header
+        viewerHandler.onNewSensor = [&]( const std::string& streamName,
+                                         const hub::sensor::SensorSpec& sensorSpec ) {
+            std::cout << "[test-client-Viewer] onNewStream : " << streamName << ", " << sensorSpec
                       << std::endl;
             assert( streamName == FILE_NAME );
-            assert( header_ref == header );
+            assert( sensorSpec_ref == sensorSpec );
             ++nNewStreamer;
             return true;
         };
         hub::io::Memory memory;
-        viewerHandler.onNewData = [&]( const std::string& streamName,
-                                       // hub::input::InputStream& inputStream ) {
-                                       const hub::Datas_t& datas ) {
+        viewerHandler.onNewAcq = [&]( const std::string& streamName,
+                                      const hub::sensor::Acquisition& acq ) {
+            // hub::input::InputStream& inputStream ) {
+            // const hub::Datas_t& datas ) {
             assert( streamName == FILE_NAME );
-            // assert( inputStream.getHeader() == header_ref );
-            int a;
-            memory.write(datas.data(), datas.size());
-            memory.read(a);
-            assert( a == nNewData );
+            assert( acq.getResolution() == hub::make_matrix<Resolution>() );
+            // assert( inputStream.getHeader() == sensorSpec );
+            // int a;
+            // memory.write( datas.data(), datas.size() );
+            // std::cout << "[test-client-Viewer] onNewAcq : " << acq.getData() << std::endl;
+            // std::cout << "[test-client-Viewer] data ptr : " << (uintptr_t)(acq.getData().data() +
+            // 16) << std::endl;
+
+            // assert(acq.getOffset<const hub::sensor::format::BGR8&>(0) == 0);
+            assert( acq.getOffset<const hub::sensor::format::BGR8&>( 0 ) == 16 );
+            const auto& bgr8 = acq.get<const hub::sensor::format::BGR8&>();
+            // const auto* bgr8  = acq.get<const hub::sensor::format::BGR8*>();
+            // std::cout << "[test-client-Viewer] bgr8 ref : " << (uintptr_t)bgr8 << std::endl;
+            const auto& start = acq.getStart();
+            const auto& end   = acq.getEnd();
+            assert( start == nNewAcq );
+            assert( end == nNewAcq );
+            assert( bgr8.b == nNewAcq );
+            assert( bgr8.g == nNewAcq );
+            assert( bgr8.r == nNewAcq );
+            // memory.read( a );
+            // assert( a == nNewAcq );
             // inputStream.read( a );
             // std::cout << "[test-client-Viewer] onNewData : " << a << std::endl;
-            std::cout << "[test-client-Viewer] onNewData : " << datas << std::endl;
-            ++nNewData;
+            mtxPrint.lock();
+            std::cout << "[test-client-Viewer] onNewAcq : " << acq << std::endl;
+            mtxPrint.unlock();
+            ++nNewAcq;
         };
         viewerHandler.onDelStream = [&]( const std::string& streamName ) {
             assert( streamName == FILE_NAME );
@@ -113,24 +139,40 @@ TEST_CASE( "Viewer" ) {
             {
                 assert( viewer.nStream() == 0 );
                 assert( viewer.nStreaming() == 0 );
-                CONSTRUCT_BEGIN( "OutputStream" );
-                hub::output::OutputStream outputStream( header_ref, FILE_NAME, port, "127.0.0.1" );
-                CONSTRUCT_END( "OutputStream" );
+                CONSTRUCT_BEGIN( "OutputSensor" );
+                hub::sensor::OutputSensor outputSensor( hub::output::OutputStream(
+                    hub::io::make_header( sensorSpec_ref ), FILE_NAME, port ) );
+                CONSTRUCT_END( "OutputSensor" );
                 assert( viewer.nStream() == 1 );
                 assert( viewer.nStreaming() == 1 );
+                auto acq    = outputSensor.acqMsg();
+                auto& bgr8  = acq.get<hub::sensor::format::BGR8&>();
+                auto& start = acq.start();
+                auto& end   = acq.end();
+                // std::this_thread::sleep_for( std::chrono::milliseconds( 500 ) );
 
                 for ( int i = 0; i < 10; ++i ) {
-                    outputStream.write( i );
+                    // outputStream.write( i );
+                    start  = i;
+                    end    = i;
+                    bgr8.r = i;
+                    bgr8.g = i;
+                    bgr8.b = i;
+                    outputSensor << acq;
+                    mtxPrint.lock();
+                    std::cout << "[test] write acq : " << acq << std::endl;
+                    mtxPrint.unlock();
+                    // std::this_thread::sleep_for( std::chrono::milliseconds( 200 ) );
                 }
 
                 iTry = 0;
-                while ( nNewData < 10 && iTry < 10 ) {
-                    std::cout << "[test] waiting for 10 acqs received : " << nNewData << std::endl;
+                while ( nNewAcq < 10 && iTry < 10 ) {
+                    std::cout << "[test] waiting for 10 acqs received : " << nNewAcq << std::endl;
                     std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
                     ++iTry;
                 }
                 assert( iTry != 10 );
-                assert( nNewData == 10 );
+                assert( nNewAcq == 10 );
 
                 DESTRUCT_BEGIN( "OutputStream" );
             } // end outputStream
@@ -139,7 +181,7 @@ TEST_CASE( "Viewer" ) {
             iTry = 0;
             // while ( viewer.nStreaming() != 0 && iTry < 10 ) {
             while ( viewer.nStream() != 0 && iTry < 10 ) {
-            // while ( nDelStreamer == 0 && iTry < 10 ) {
+                // while ( nDelStreamer == 0 && iTry < 10 ) {
                 std::cout << "[test] waiting for outputStream disconnected" << std::endl;
                 std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
                 ++iTry;

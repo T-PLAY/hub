@@ -122,7 +122,9 @@ StreamerClient2::~StreamerClient2() {
     //    m_server->m_mtxPrint.unlock();
 
     assert( m_thread.joinable() );
+    std::cout << headerMsg() << "joining thread" << std::endl;
     m_thread.join();
+    std::cout << headerMsg() << "thread joined" << std::endl;
 
     if ( m_server != nullptr ) m_server->delStreamer( this );
 

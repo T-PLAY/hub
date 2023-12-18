@@ -43,7 +43,7 @@ TEST_CASE( "OutputSensor test" ) {
     auto& start = acq.start();
     auto& end   = acq.end();
     auto& bgr8  = acq.get<hub::sensor::format::BGR8&>();
-    for ( int i = 0; i < 10; ++i ) {
+    for ( int i = 0; i < 20; ++i ) {
         start  = i;
         end    = i;
         bgr8.b = i;

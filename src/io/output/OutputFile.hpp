@@ -13,6 +13,7 @@ class OutputFile : public Output, public io::File
 {
   public:
     using Output::write;
+    using io::File::getHeader;
 
     explicit OutputFile(const io::Header & header, const std::string & filePath);
     // explicit OutputFile(const io::Header & header, const char * filePath);

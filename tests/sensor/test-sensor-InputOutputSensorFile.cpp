@@ -12,22 +12,36 @@
 //#include "core/test_core_common.hpp"
 // #include "sensor/test_sensor_common.hpp"
 
-// #include <core/io/Archive.hpp>
+#include <core/io/Archive.hpp>
 #include <sensor/InputSensor.hpp>
 #include <sensor/OutputSensor.hpp>
 
-TEST_CASE( "InputOutputSensor test" ) {
+TEST_CASE( "InputOutputSensorArchive test" ) {
 
-    INIT_SERVER
+    test::sensor::inputOutputSensorAsyncBench<hub::input::InputFile, hub::output::OutputFile>(
+        FILE_NAME + ".hub" );
 
-    hub::output::OutputStream outputStream( TEST_IO_HEADER, FILE_NAME, SERVER_PORT );
-    hub::input::InputStream inputStream( FILE_NAME, SERVER_PORT );
+    // INIT_SERVER
+
+    // using Resolution = hub::sensor::format::BGR8;
+    // const hub::sensor::SensorSpec sensorSpec( "sensorName", hub::make_matrix<Resolution>() );
+    // hub::sensor::OutputSensorT<Resolution> outputSensor(
+    //     hub::output::OutputStream( hub::io::make_header(sensorSpec), FILE_NAME, SERVER_PORT ) );
+
+
+
+    // hub::output::OutputStream outputStream( TEST_SENSOR_HEADER, FILE_NAME, SERVER_PORT );
+    // hub::input::InputStream inputStream( FILE_NAME, SERVER_PORT );
 
     // inputOutputBench(inputStream, outputStream);
 
-    test::sensor::inputOutputSensorBench( inputStream, outputStream );
+    // test::sensor::inputOutputSensorBench( inputStream, outputStream );
 
     // hub::io::Archive archive;
+
+    // test::sensor::inputOutputSensorBench<hub::input::InputStream, hub::output::OutputStream>( FILE_NAME, SERVER_PORT );
+    // test::sensor::inputOutputSensorBench<hub::io::Archive, hub::io::Archive>( archive );
+
     //     hub::output::OutputStream( hub::io::make_header(sensorSpec), FILE_NAME, SERVER_PORT ) );
     // // hub::sensor::OutputSensor outputSensor(archive);
     // // hub::sensor::OutputSensor inputSensor(archive);

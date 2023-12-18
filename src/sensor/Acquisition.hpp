@@ -6,6 +6,8 @@
 #include "core/Matrix.hpp"
 #include "core/matrix/MatrixTs.hpp"
 
+#include "Format.hpp"
+
 namespace hub {
 namespace sensor {
 

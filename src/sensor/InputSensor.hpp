@@ -41,53 +41,52 @@ namespace sensor {
 // template <typename Input>
 class InputSensor : public Sensor
 {
-    void initSensorSpecFromInputs() {
-#ifdef HUB_DEBUG_INPUT
-        std::cout << "[InputSensor] reading " << m_inputs.size() << " specs ..." << std::endl;
-#endif
-        m_specs.resize( m_inputs.size() );
-        for ( int i = 0; i < m_inputs.size(); ++i ) {
-#ifdef HUB_DEBUG_INPUT
-            std::cout << "[InputSensor] reading spec " << i << " : " << m_specs.at( i )
-                      << std::endl;
-#endif
-            auto* input = m_inputs.at( i );
-            input->read( m_specs.at( i ) );
-            m_spec += m_specs.at( i );
+    template <class Input, class... Inputs>
+    void initSensorSpec( const Input& input, const Inputs&... inputs ) {
+        hub::io::Memory memory( input.getHeader().getUserDefined() );
+        SensorSpec sensorSpec;
+        memory.read( sensorSpec );
+        m_spec += sensorSpec;
+        m_specs.push_back(std::move(sensorSpec));
+
+        if constexpr (sizeof...(inputs) > 0) {
+            initSensorSpec(inputs...);
         }
-        // std::cout << "[InputSensor] specs readed" << std::endl;
-#ifdef HUB_DEBUG_INPUT
-        std::cout << "[InputSensor] spec: " << m_spec << std::endl;
-#endif
     }
 
   public:
     using Sensor::acqMsg;
 
-    InputSensor( Input& input ) : Sensor( SensorSpec {} ), m_inputs( { &input } ) {
-        initSensorSpecFromInputs();
+    template <class InputT>
+        // requires std::is_base_of_v<Input, std::remove_cvref_t<InputT>>
+    InputSensor( InputT& input ) : Sensor( SensorSpec {} ), m_inputs( { &input } ) {
+        initSensorSpec( input );
     }
 
-    InputSensor( Input& input, Input& input2 ) :
+    template <class InputT>
+        // requires std::is_base_of_v<Input, std::remove_cvref_t<InputT>>
+    InputSensor( InputT& input, InputT& input2 ) :
         Sensor( SensorSpec {} ), m_inputs( { &input, &input2 } ) {
-        initSensorSpecFromInputs();
+        initSensorSpec( input, input2 );
     }
 
     template <class InputT>
-        requires std::is_base_of_v<Input, InputT>
+        requires std::is_base_of_v<Input, std::remove_cvref_t<InputT>>
     InputSensor( InputT&& input ) : Sensor( SensorSpec {} ) {
-        m_inputs.push_back( new InputT( std::move( input ) ) );
+        initSensorSpec( input );
+        m_inputs.push_back( new std::remove_cvref_t<InputT>( std::move( input ) ) );
         m_inputOwner = true;
-        initSensorSpecFromInputs();
+        // assert(false);
     }
 
     template <class InputT>
-        requires std::is_base_of_v<Input, InputT>
+        requires std::is_base_of_v<Input, std::remove_cvref_t<InputT>>
     InputSensor( InputT&& input, InputT&& input2 ) : Sensor( SensorSpec {} ) {
-        m_inputs.push_back( new InputT( std::move( input ) ) );
-        m_inputs.push_back( new InputT( std::move( input2 ) ) );
+        initSensorSpec( input, input2 );
+        m_inputs.push_back( new std::remove_cvref_t<InputT>( std::move( input ) ) );
+        m_inputs.push_back( new std::remove_cvref_t<InputT>( std::move( input2 ) ) );
         m_inputOwner = true;
-        initSensorSpecFromInputs();
+        // assert(false);
     }
 
     ~InputSensor() {
@@ -108,7 +107,7 @@ class InputSensor : public Sensor
         if ( m_inputs.size() == 1 ) {
             Input& input = *m_inputs.at( 0 );
             // input.read( acq.data(), acq.size() );
-            input.read(acq);
+            input.read( acq );
         }
         else {
             Input& leftInput  = *m_inputs.at( 0 );

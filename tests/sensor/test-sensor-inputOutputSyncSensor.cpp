@@ -24,22 +24,60 @@
 TEST_CASE( "sensor : InputOutputSensorSync" ) {
     //    const auto hostname = hub::utils::getHostname();
 
-    static_assert(! hub::Endable<hub::io::InputOutputSocket>);
-    static_assert(! hub::Endable<hub::input::InputStream>);
+    static_assert( !hub::Endable<hub::io::InputOutputSocket> );
+    static_assert( !hub::Endable<hub::input::InputStream> );
 
     INIT_SERVER
 
-    hub::output::OutputStream outputStream( TEST_IO_HEADER, FILE_NAME, SERVER_PORT );
-    hub::output::OutputStream outputStream2( TEST_IO_HEADER, FILE_NAME + "2", SERVER_PORT );
+    using Resolution = hub::sensor::format::Y8;
+    const hub::sensor::SensorSpec sensorSpec( "sensorName", hub::make_matrix<Resolution>() );
+    const auto acqs = test::sensor::generateRefAcqs( 0, 10, sensorSpec );
+    hub::output::OutputStream outputStream(
+        hub::io::make_header( sensorSpec ), FILE_NAME, SERVER_PORT );
+
+    using Resolution2 = hub::sensor::format::Z16;
+    const hub::sensor::SensorSpec sensorSpec2( "sensorName2", hub::make_matrix<Resolution2>() );
+    const auto acqs2 = test::sensor::generateRefAcqs( 5, 10, sensorSpec2 );
+    hub::output::OutputStream outputStream2(
+        hub::io::make_header( sensorSpec2 ), FILE_NAME + "2", SERVER_PORT );
 
     hub::input::InputStream inputStream( FILE_NAME, SERVER_PORT );
+
     hub::input::InputStream inputStream2( FILE_NAME + "2", SERVER_PORT );
 
-    // inputOutputBench(inputStream, inputStream2, outputStream, )
 
-    test::sensor::inputOutputSensorBench( inputStream, inputStream2, outputStream, outputStream2 );
+    test::sensor::checkSynchronize( outputStream,
+                                    sensorSpec,
+                                    acqs,
+                                    outputStream2,
+                                    sensorSpec2,
+                                    acqs2,
+                                    inputStream,
+                                    inputStream2 );
 
-    // std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    // auto acq2_read = acqs2.front().clone();
+    // for ( int i = 0; i < 5; ++i ) {
+    //     inputStream2.read( acq2_read );
+    //     std::cout << "clearing input2: read acq: " << acq2_read << std::endl;
+    // }
+
+    using Resolution3 = hub::sensor::format::Y8;
+    const hub::sensor::SensorSpec sensorSpec3( "sensorName3", hub::make_matrix<Resolution3>() );
+    const auto acqs3 = test::sensor::generateRefAcqs( 10, 10, sensorSpec3 );
+    hub::output::OutputStream outputStream3(
+        hub::io::make_header( sensorSpec3 ), FILE_NAME + "3", SERVER_PORT );
+
+    hub::input::InputStream inputStream3( FILE_NAME + "3", SERVER_PORT );
+
+    test::sensor::checkSynchronize( outputStream2,
+                                    sensorSpec2,
+                                    acqs2,
+                                    outputStream3,
+                                    sensorSpec3,
+                                    acqs3,
+                                    inputStream2,
+                                    inputStream3 );
+
     return;
 
     //    // initing datum

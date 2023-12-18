@@ -11,7 +11,11 @@
 #include "ViewerHandler.hpp"
 #include "core/Utils.hpp"
 // #include "sensor/Acquisition.hpp"
-// #include "sensor/InputSensor.hpp"
+
+#ifdef HUB_BUILD_SENSOR
+#    include "sensor/InputSensor.hpp"
+#endif
+
 // #include "sensor/SensorSpec.hpp"
 
 #ifdef HUB_DEBUG_VIEWER_STREAM
@@ -47,7 +51,7 @@ class ViewerStream
         // std::function<bool( const char* streamName, const sensor::SensorSpec& )> onNewStream,
         // std::function<void( const char* streamName, const sensor::SensorSpec& )> onDelStream,
         // std::function<void( const char* streamName, const sensor::Acquisition& )>
-        // onNewAcquisition, std::function<void( const char* logMessage )> onLogMessage );
+        // onNewAcq, std::function<void( const char* logMessage )> onLogMessage );
     );
 
     ViewerStream( ViewerStream&& )      = delete;
@@ -104,7 +108,7 @@ ViewerStream<InputStream>::ViewerStream(
     // const sensor::SensorSpec& sensorSpec,
     // std::function<bool( const char*, const sensor::SensorSpec& )> onNewStream,
     // std::function<void( const char*, const sensor::SensorSpec& )> onDelStream,
-    // std::function<void( const char*, const sensor::Acquisition& )> onNewAcquisition,
+    // std::function<void( const char*, const sensor::Acquisition& )> onNewAcq,
     // std::function<void( const char* logMessage )> onLogMessage
     ) :
 
@@ -117,17 +121,29 @@ ViewerStream<InputStream>::ViewerStream(
 // m_sensorSpec( sensorSpec ),
 // m_onNewStreamer( onNewStream ),
 // m_onDelStreamer( onDelStream ),
-// m_onNewAcquisition( onNewAcquisition ),
+// m_onNewAcquisition( onNewAcq ),
 // m_onLogMessage( onLogMessage )
 {
 
-    assert( m_viewerHandler.onNewStream );
+    assert( m_viewerHandler.onNewStream || m_viewerHandler.onNewSensor );
     // m_streaming = m_onNewStreamer( streamName.c_str(), sensorSpec );
     // const bool clientWantStream = m_onNewStreamer( streamName.c_str(), sensorSpec );
-    const bool clientWantToWatchStream =
-        m_viewerHandler.onNewStream( streamName.c_str(), m_header );
-    // if ( m_viewerHandler.onNewAcquisition && clientWantToWatchStream ) { startStream(); }
-    if ( m_viewerHandler.onNewData && clientWantToWatchStream ) { startStream(); }
+
+    // raw stream
+    if ( m_header.getUserDefined().empty() ) {
+        const bool clientWantToWatchStream =
+            m_viewerHandler.onNewStream( streamName.c_str(), m_header );
+        if ( m_viewerHandler.onNewData && clientWantToWatchStream ) { startStream(); }
+    }
+    // sensor stream
+    else {
+        hub::io::Memory memory(header.getUserDefined());
+        hub::sensor::SensorSpec sensorSpec;
+        memory.read(sensorSpec);
+        const bool clientWantToWatchStream =
+            m_viewerHandler.onNewSensor( streamName.c_str(), sensorSpec );
+        if ( m_viewerHandler.onNewAcq && clientWantToWatchStream ) { startStream(); }
+    }
 }
 
 template <class InputStream>
@@ -135,8 +151,8 @@ ViewerStream<InputStream>::~ViewerStream() {
 #ifdef HUB_DEBUG_VIEWER_STREAM
     DEBUG_MSG( "[Viewer][Stream] ~Stream() streamer '" << m_streamName << "' started" );
 #endif
-    // if ( m_viewerHandler.onNewAcquisition && m_streaming ) {
-    if ( m_viewerHandler.onNewData ) {
+    // if ( m_viewerHandler.onNewAcq && m_streaming ) {
+    if ( m_viewerHandler.onNewData || m_viewerHandler.onNewAcq ) {
         if ( m_streaming ) {
             assert( m_thread != nullptr );
             // if ( m_viewerHandler.onDelStream ) { m_viewerHandler.onDelStream(
@@ -144,6 +160,7 @@ ViewerStream<InputStream>::~ViewerStream() {
             stopStream();
         }
         if ( m_viewerHandler.onDelStream ) { m_viewerHandler.onDelStream( m_streamName.c_str() ); }
+        // if ( m_viewerHandler.onDelSensor ) { m_viewerHandler.onDelSensor( m_streamName.c_str() ); }
     }
 
 #ifdef HUB_DEBUG_VIEWER_STREAM
@@ -188,25 +205,51 @@ void ViewerStream<InputStream>::startStream() {
             // hub::io::Header retainedData(m_header.size());
             // m_inputStream->read(retainedData.data(), retainedData.size());
             assert( m_inputStream->getHeader() == m_header );
-
-            // assert( m_viewerHandler.onNewAcquisition );
-            assert( m_viewerHandler.onNewData );
             assert( m_header.getDataSize() > 0 );
 
-            Datas_t datas( m_header.getDataSize() );
+            // raw stream
+            if ( m_header.getUserDefined().empty() ) {
 
-            assert( !m_streaming );
-            m_streaming = true;
+                // assert( m_viewerHandler.onNewAcq );
+                assert( m_viewerHandler.onNewData );
 
-            // auto acq = m_inputSensor->acqMsg();
-            while ( !m_stopThread ) {
-                assert( m_inputStream->isOpen() );
-                // sensor::Acquisition acq;
-                // *m_inputSensor >> acq;
-                m_inputStream->read( datas.data(), datas.size() );
-                // m_viewerHandler.onNewAcquisition( m_streamName.c_str(), acq );
-                // m_viewerHandler.onNewData( m_streamName.c_str(), *m_inputStream );
-                m_viewerHandler.onNewData( m_streamName.c_str(), datas );
+                Datas_t datas( m_header.getDataSize() );
+
+                assert( !m_streaming );
+                m_streaming = true;
+
+                // auto acq = m_inputSensor->acqMsg();
+                while ( !m_stopThread ) {
+                    assert( m_inputStream->isOpen() );
+                    // sensor::Acquisition acq;
+                    // *m_inputSensor >> acq;
+                    m_inputStream->read( datas.data(), datas.size() );
+                    // m_viewerHandler.onNewAcq( m_streamName.c_str(), acq );
+                    // m_viewerHandler.onNewData( m_streamName.c_str(), *m_inputStream );
+                    m_viewerHandler.onNewData( m_streamName.c_str(), datas );
+                }
+            }
+            // sensor stream
+            else {
+                assert( m_viewerHandler.onNewAcq );
+
+                // Datas_t datas( m_header.getDataSize() );
+                sensor::InputSensor inputSensor( *m_inputStream );
+                auto acq = inputSensor.acqMsg();
+
+                assert( !m_streaming );
+                m_streaming = true;
+
+                while ( !m_stopThread ) {
+                    assert( m_inputStream->isOpen() );
+                    // sensor::Acquisition acq;
+                    inputSensor >> acq;
+                    // std::cout << "[ViewerStream] on new acq : " << acq << std::endl;
+                    // m_inputStream->read( datas.data(), datas.size() );
+                    m_viewerHandler.onNewAcq( m_streamName.c_str(), acq );
+                    // m_viewerHandler.onNewData( m_streamName.c_str(), *m_inputStream );
+                    // m_viewerHandler.onNewData( m_streamName.c_str(), datas );
+                }
             }
         }
         catch ( std::exception& e ) {

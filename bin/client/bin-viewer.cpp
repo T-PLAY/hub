@@ -55,20 +55,28 @@ int main( int argc, char* argv[] ) {
     };
     // auto onNewStream = [=]( const std::string& streamName, const hub::sensor::SensorSpec&
     // sensorSpec ) {
-    viewerHandler.onNewStream = [=]( const std::string& streamName, const hub::io::Header& header ) {
+    viewerHandler.onNewStream = [=]( const std::string& streamName,
+                                     const hub::io::Header& header ) {
         std::cout << HEADER_MSG "onNewStream : " << streamName << ", " << header << std::endl;
         return true;
-        // return header.getDataSize() > 0;
     };
-    viewerHandler.onNewData = []( const std::string& streamName,
-                                  const hub::Datas_t& datas ) {
-                                  // hub::input::InputStream& inputStream ) {
-        // std::cout << COLOR "+\033[0m";
-                                  std::cout << "\033[" << std::to_string(std::hash<std::string>{}(streamName) % 10 + 40) << "m+\033[0m";
-        // int a;
-        // inputStream.read( a );
-        // std::cout << "[test-client-Viewer] '" << streamName << "', onNewData : " << datas << std::endl;
+#ifdef HUB_BUILD_SENSOR
+    viewerHandler.onNewSensor = [=]( const std::string& streamName,
+                                     const hub::sensor::SensorSpec& sensorSpec ) {
+        std::cout << HEADER_MSG "onNewSensor : " << streamName << ", " << sensorSpec << std::endl;
+        return true;
     };
+#endif
+    viewerHandler.onNewData = []( const std::string& streamName, const hub::Datas_t& datas ) {
+        std::cout << "\033[" << std::to_string( std::hash<std::string> {}( streamName ) % 10 + 40 )
+                  << "m+\033[0m";
+    };
+#ifdef HUB_BUILD_SENSOR
+    viewerHandler.onNewAcq = []( const std::string& streamName, const hub::sensor::Acquisition & acq ) {
+        std::cout << "\033[" << std::to_string( std::hash<std::string> {}( streamName ) % 10 + 40 )
+                  << "ma\033[0m";
+    };
+#endif
     // viewerHandler.onNewAcquisition = []( const std::string& streamName,
     //                                      const hub::sensor::Acquisition& acq ) {
     //     //        std::cout << HEADER_MSG "onNewAcquisition : " << acq << std::endl;

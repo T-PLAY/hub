@@ -242,7 +242,7 @@ foreach(testFile ${test_srcs})
     #    custom_target_added(run-${test})
     #endif()
     add_custom_target(
-        test-bin-${test}
+        tests-bin-${test}
         # COMMAND bash echo "${HUB_SERVER_TEST_BIN_PORT}" > hubServerPort.txt
         COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/generateServerPort.sh ${HUB_SERVER_TEST_BIN_PORT}
         COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/bin-server --port ${HUB_SERVER_TEST_BIN_PORT}

@@ -22,7 +22,10 @@ namespace io {
 //class SRC_API File : public InputOutput
 class SRC_API File
 {
-//  public:
+    //  public:
+  public:
+    const Header &getHeader() const;
+
   protected:
     ///
     /// \brief File

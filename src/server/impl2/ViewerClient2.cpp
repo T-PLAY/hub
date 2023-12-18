@@ -115,6 +115,7 @@ void ViewerClient2::notifyNewStreamer( const StreamerClient2* streamer ) {
 
     m_clientStreamAdded = false;
     while ( !m_clientStreamAdded ) {
+        std::cout << "[ViewerClient] waiting for streamer added ..." << std::endl;
         std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
     }
 
