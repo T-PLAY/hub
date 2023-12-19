@@ -1,6 +1,6 @@
 #pragma once
 
-#ifdef HUB_USE_ZPP_BITS
+// #ifdef HUB_USE_ZPP_BITS
 
 #include <thread>
 #include <vector>
@@ -95,4 +95,4 @@ class BookZppBits : public InputOutputBase
 } // namespace io
 } // namespace hub
 
-#endif
+// #endif

@@ -1,14 +1,19 @@
 cmake_minimum_required(VERSION 3.5)
 
+set(CMAKE_CXX_STANDARD 20) # filesystem
 project(bin LANGUAGES CXX)
-if (XCODE)
-        set(LINK_LIBRARIES hub_static)
-else()
-    if (TARGET hub_static)
-        set(LINK_LIBRARIES hub_static)
-    else()
-        set(LINK_LIBRARIES hub_shared)
-    endif()
+# if (XCODE)
+#         set(LINK_LIBRARIES hub_static)
+# else()
+#     if (TARGET hub_static)
+#         set(LINK_LIBRARIES hub_static)
+#     else()
+#         set(LINK_LIBRARIES hub_shared)
+#     endif()
+# endif()
+
+if (NOT TARGET hub)
+    message(FATAL_ERROR "target hub not found")
 endif()
 
 if (HUB_BUILD_SERVER)
@@ -30,14 +35,15 @@ if (HUB_BUILD_SERVER)
         get_filename_component(basename ${name} NAME)
         set(TARGET_NAME ${basename})
         add_executable(${TARGET_NAME} ${name}.cpp)
-        target_link_libraries(${TARGET_NAME} ${LINK_LIBRARIES})
+        # target_link_libraries(${TARGET_NAME} ${LINK_LIBRARIES})
+        target_link_libraries(${TARGET_NAME} hub)
 
         if(WIN32)
-        if (HUB_BUILD_SHARED)
-            add_custom_command(
-                TARGET ${TARGET_NAME}
-                POST_BUILD
-                COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:hub_shared> $<TARGET_FILE_DIR:${TARGET_NAME}>)
+            if (HUB_BUILD_SHARED)
+                add_custom_command(
+                    TARGET ${TARGET_NAME}
+                    POST_BUILD
+                    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:hub_shared> $<TARGET_FILE_DIR:${TARGET_NAME}>)
             endif()
         endif()
     endforeach()
@@ -65,7 +71,8 @@ foreach(streamer ${streamers})
         ${CMAKE_CURRENT_SOURCE_DIR}/streamer/${basename}/*.h
     )
     add_executable(bin-streamer-${basename} ${sources})
-    target_link_libraries(bin-streamer-${basename} ${LINK_LIBRARIES})
+    # target_link_libraries(bin-streamer-${basename} ${LINK_LIBRARIES})
+    target_link_libraries(bin-streamer-${basename} hub)
 endforeach()
 
 endif()

@@ -6,16 +6,17 @@
 // #include "io/input/InputZppBits.hpp"
 
 //#include "core/Macros.hpp"
-#include "serializer/SerializerImpl.hpp"
+// #include "serializer/SerializerImpl.hpp"
 #include "serializer/SerializerZppBits.hpp"
+// #include <core/serializer/SerializerZppBits.hpp>
 
 namespace hub {
 
 
-#ifdef HUB_USE_ZPP_BITS
+// #ifdef HUB_USE_ZPP_BITS
 using Serializer = serializer::SerializerZppBits;
-#else
-using Serializer = serializer::SerializerImpl;
-#endif
+// #else
+// using Serializer = serializer::SerializerImpl;
+// #endif
 
 } // namespace hub

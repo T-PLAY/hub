@@ -2,6 +2,7 @@
 
 
 #include <string>
+#include <list>
 
 #include "sensor/Acquisition.hpp"
 #include "core/Macros.hpp"

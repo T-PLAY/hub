@@ -1,6 +1,6 @@
 #pragma once
 
-#include "book/BookImpl.hpp"
+// #include "book/BookImpl.hpp"
 #include "book/BookZppBits.hpp"
 
 namespace hub {
@@ -11,11 +11,11 @@ namespace io {
 
 //template <Size_t NumberOfCharacter = 100>
 //using Book = book::BookImpl<NumberOfCharacter>;
-#ifdef HUB_USE_ZPP_BITS
+// #ifdef HUB_USE_ZPP_BITS
 using Book = book::BookZppBits<>;
-#else
-using Book = book::BookImpl<>;
-#endif
+// #else
+// using Book = book::BookImpl<>;
+// #endif
 
 } // namespace io
 } // namespace hub

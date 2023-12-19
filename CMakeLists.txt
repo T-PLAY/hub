@@ -209,12 +209,12 @@ endif()
 ##    link_libraries(Threads::Threads)
 #endif()
 
-set(HUB_USE_ZPP_BITS 0) # serializer
-if (CMAKE_CXX_STANDARD GREATER_EQUAL 20)
-#    option(HUB_USE_ZPP_BITS "Use zpp_bits.h for input/output serialization" ON)
-    set(HUB_USE_ZPP_BITS 1)
-    add_definitions(-DHUB_USE_ZPP_BITS)
-endif()
+# set(HUB_USE_ZPP_BITS 0) # serializer
+# if (CMAKE_CXX_STANDARD GREATER_EQUAL 20)
+# #    option(HUB_USE_ZPP_BITS "Use zpp_bits.h for input/output serialization" ON)
+#     set(HUB_USE_ZPP_BITS 1)
+#     add_definitions(-DHUB_USE_ZPP_BITS)
+# endif()
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
 
@@ -269,6 +269,10 @@ foreach(HUB_SOURCE_DIR ${HUB_SOURCE_DIRS})
 endforeach()
 
 set(HUB_EXTERNAL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/external")
+set(HUB_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
+set(HUB_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
+# set(HUB_EXTERNAL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/external")
+
 
 add_subdirectory(src)
 
