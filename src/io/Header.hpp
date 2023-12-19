@@ -46,7 +46,7 @@ class Header
 #ifdef WIN32
         sprintf_s( m_magicNumber.data(),
                   128,
-                   "%c%c%c * %d.%d.%d * %s",
+                   "%c%c%c %d.%d.%d * %s",
                    'H',
                    'U',
                    'B',
@@ -58,7 +58,7 @@ class Header
 #    ifdef OS_MACOS
         snprintf( m_magicNumber.data(),
                   128,
-                  "%c%c%c * %d.%d.%d * %s" ,
+                  "%c%c%c %d.%d.%d * %s" ,
                   'H',
                   'U',
                   'B',

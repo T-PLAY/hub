@@ -4,7 +4,7 @@
 int serial_open(unsigned char* dev, unsigned int baud)
 {
     int fd = 0;
-#ifndef WIN32
+#ifdef OS_LINUX
     fd = open((const char*)dev, O_RDWR|O_NOCTTY);
     if (fd < 0) return fd;
     if(isatty(STDIN_FILENO)==0) 
