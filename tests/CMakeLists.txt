@@ -185,9 +185,9 @@ if (HUB_SERVICE_PORT)
     set(HUB_SERVER_TEST_BIN_PORT ${HUB_SERVICE_PORT})
 else()
     if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
-        set(HUB_SERVER_TEST_BIN_PORT 6000)
+        set(HUB_SERVER_TEST_BIN_PORT 6000) # 5000 used by macos
     else()
-        set(HUB_SERVER_TEST_BIN_PORT 7000)
+        set(HUB_SERVER_TEST_BIN_PORT 8000) # 7000 used by macos
     endif()
 endif()
 
