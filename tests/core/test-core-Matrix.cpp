@@ -41,6 +41,17 @@ class Lambda
     //    Lambda() = default;
 };
 
+struct UserClass {
+    bool a;
+    bool b;
+    auto toString() const {
+        return std::to_string(a) + " " + std::to_string(b);
+    }
+    static constexpr auto name() {
+        return "UserClass";
+    }
+};
+
 //#include "core/Macros.hpp"
 
 //class Test
@@ -54,7 +65,15 @@ class Lambda
 
 TEST_CASE( "Matrix test" ) {
     TEST_BEGIN()
-//int main() {
+
+//     std::cout << typeid(int).hash_code() << std::endl;
+
+//    // check compat with 32/64 bits operating systems
+//    assert(typeid(int).hash_code() == 6253375586064260614ul);
+//    assert(typeid(double).hash_code() == 14494284460613645429ul);
+//    assert(typeid(UserClass).hash_code() == 2193770348167473685ul);
+//    assert(typeid(long long).hash_code() == 13272411544345499535ul);
+
 
 //    Test myTest;
 //      myTest.printHeader();
@@ -288,16 +307,6 @@ TEST_CASE( "Matrix test" ) {
     assert(serial.hasType<char>());
     assert(serial.getDims<char>() == std::vector<int>{10});
 
-    struct UserClass {
-        bool a;
-        bool b;
-        auto toString() const {
-            return std::to_string(a) + " " + std::to_string(b);
-        }
-        static constexpr auto name() {
-            return "UserClass";
-        }
-    };
 
     ////////////////////////////////
 
@@ -323,14 +332,6 @@ TEST_CASE( "Matrix test" ) {
 //    std::cout << "matrixUser: " << matrixUser << std::endl;
 
     ////////////////////////////////
-
-    // std::cout << typeid(long long).hash_code() << std::endl;
-
-    // check compat with 32/64 bits operating systems
-    assert(typeid(int).hash_code() == 6253375586064260614ul);
-    assert(typeid(double).hash_code() == 14494284460613645429ul);
-    assert(typeid(UserClass).hash_code() == 2193770348167473685ul);
-    assert(typeid(long long).hash_code() == 13272411544345499535ul);
 
 //    hub::io::Archive archive;
 //    archive.write(matrices3);

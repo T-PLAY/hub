@@ -3,7 +3,8 @@
 
 int serial_open(unsigned char* dev, unsigned int baud)
 {
-    int fd;
+    int fd = 0;
+#ifndef WIN32
     fd = open((const char*)dev, O_RDWR|O_NOCTTY);
     if (fd < 0) return fd;
     if(isatty(STDIN_FILENO)==0) 
@@ -69,26 +70,33 @@ int serial_open(unsigned char* dev, unsigned int baud)
           perror("com set error"); 
           return -1; 
        }
- 
+
+#endif
     return fd; 
 }
 
 void serial_close(int fd)
 {
+#ifndef WIN32
     close(fd);
+#endif
 }
 
 int serial_read_data(int fd, unsigned char *val, int len)
 {
     
-	len=read(fd,val,len);
+#ifndef WIN32
+    len=read(fd,val,len);
+#endif
 	return len;
     
 }
 
 int serial_write_data(int fd, unsigned char *val, int len)
 {
-	len=write(fd,val,len*sizeof(unsigned char));
+#ifndef WIN32
+    len=write(fd,val,len*sizeof(unsigned char));
+#endif
 	return len;
 }
 

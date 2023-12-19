@@ -39,7 +39,8 @@ int main( int argc, char* argv[] ) {
         std::cout << "open " <<  deviceName << " successed" << std::endl;
 
     float fAcc[3], fGyro[3], fAngle[3];
-    int i, ret;
+    int i;
+//    int ret;
     char cBuff[1];
 
     WitInit( WIT_PROTOCOL_NORMAL, 0x50 );
@@ -145,7 +146,10 @@ static void SensorDataUpdata( uint32_t uiReg, uint32_t uiRegNum ) {
 }
 
 static void Delayms( uint16_t ucMs ) {
-    usleep( ucMs * 1000 );
+    std::this_thread::sleep_for(std::chrono::milliseconds(ucMs));
+//#ifndef WIN32
+//    usleep( ucMs * 1000 );
+//#endif
 }
 
 static void AutoScanSensor(const char *dev ) {

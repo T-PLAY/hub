@@ -34,7 +34,7 @@ TEST_CASE( "Native Viewer" ) {
 
         static int nNewStreamer                     = 0;
         static int nDelStreamer                     = 0;
-        static int nServerNotFound                  = 0;
+        static std::atomic<int> nServerNotFound                  = 0;
         static int nServerConnected                 = 0;
         static std::atomic<int> nServerDisconnected = 0;
         static int nNewData                         = 0;

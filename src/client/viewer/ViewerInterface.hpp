@@ -64,8 +64,8 @@ class SRC_API ViewerInterface
     ///
     explicit ViewerInterface( const std::string& name,
                               ViewerHandler&& viewerHandler = ViewerHandler(),
-                              const std::string& ipv4       = InputStream::s_defaultIpv4,
-                              int port                      = InputStream::s_defaultIpv4 );
+                              const std::string& ipv4       = HUB_SERVICE_IPV4,
+                              int port                      = HUB_SERVICE_PORT );
 
     virtual ~ViewerInterface();
 

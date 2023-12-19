@@ -1,6 +1,7 @@
 
 #include <iostream>
 #include <thread>
+#include <string>
 
 // #include <io/Stream.hpp>
 #include <native/Native.hpp>

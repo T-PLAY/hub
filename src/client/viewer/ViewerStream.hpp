@@ -252,11 +252,9 @@ void ViewerStream<InputStream>::startStream() {
                 }
             }
         }
-        catch ( std::exception& e ) {
-#ifdef HUB_DEBUG_VIEWER_STREAM
+        catch ( std::exception& ex ) {
             DEBUG_MSG( "[Viewer][Stream] startStream() streamer '"
-                       << "'" << m_streamName << "' disconnected, catch exception " << e.what() );
-#endif
+                       << "'" << m_streamName << "' disconnected, catch exception " << ex.what() );
         }
 
 #ifdef HUB_DEBUG_VIEWER_STREAM

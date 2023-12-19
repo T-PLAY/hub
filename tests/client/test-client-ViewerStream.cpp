@@ -23,7 +23,7 @@ TEST_CASE( "Viewer" ) {
 
         int nNewStreamer                     = 0;
         int nDelStreamer                     = 0;
-        int nServerNotFound                  = 0;
+        std::atomic<int> nServerNotFound                  = 0;
         int nServerConnected                 = 0;
         std::atomic<int> nServerDisconnected = 0;
         int nNewData                         = 0;

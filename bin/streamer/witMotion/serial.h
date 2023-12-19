@@ -9,12 +9,14 @@
 // #include <time.h>
 #include <stdlib.h>
 #include <fcntl.h>
+#ifndef WIN32
 #include <unistd.h>
+#include <termios.h>
+#endif
 // #include <sys/types.h>
 // #include <sys/ioctl.h>
 #include <errno.h>
 #include <string.h>
-#include <termios.h>
 
 
 void serial_close(int fd);

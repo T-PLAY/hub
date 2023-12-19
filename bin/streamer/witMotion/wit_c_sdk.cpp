@@ -178,7 +178,7 @@ void WitSerialDataIn(uint8_t ucData)
                     memcpy(s_ucWitDataBuff, &s_ucWitDataBuff[1], s_uiWitDataCnt);
                     return ;
                 }
-                if(s_uiWitDataCnt < (s_ucWitDataBuff[2] + 5))return ;
+                if(s_uiWitDataCnt < (unsigned int)(s_ucWitDataBuff[2] + 5))return ;
                 usTemp = ((uint16_t)s_ucWitDataBuff[s_uiWitDataCnt-2] << 8) | s_ucWitDataBuff[s_uiWitDataCnt-1];
                 usCRC16 = __CRC16(s_ucWitDataBuff, s_uiWitDataCnt-2);
                 if(usTemp != usCRC16)

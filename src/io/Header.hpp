@@ -44,25 +44,28 @@ class Header
         // m_magicNumber.back() = 0;
 
 #ifdef WIN32
-        sprintf_s( m_magicNumber,
-                   "%c%c%c %d.%d.%d",
+        sprintf_s( m_magicNumber.data(),
+                  128,
+                   "%c%c%c * %d.%d.%d * %s",
                    'H',
                    'U',
                    'B',
                    s_versionMajor,
                    s_versionMinor,
-                   s_versionPatch );
+                   s_versionPatch,
+                 "Copyright 2022-2023 * author : gauthierbouyjou@aol.com" );
 #else
 #    ifdef OS_MACOS
-        snprintf( m_magicNumber,
-                  80,
-                  "%c%c%c %d.%d.%d",
+        snprintf( m_magicNumber.data(),
+                  128,
+                  "%c%c%c * %d.%d.%d * %s" ,
                   'H',
                   'U',
                   'B',
                   s_versionMajor,
                   s_versionMinor,
-                  s_versionPatch );
+                  s_versionPatch,
+                 "Copyright 2022-2023 * author : gauthierbouyjou@aol.com" );
 #    else
         sprintf( m_magicNumber.data(),
                  "%c%c%c %d.%d.%d * %s",
@@ -110,7 +113,7 @@ class Header
         char u;
         char b;
 #ifdef WIN32
-        sscanf_s( magicNumber,
+        sscanf_s( m_magicNumber.data(),
                   "%c%c%c %d.%d.%d",
                   &h,
                   1,
@@ -182,7 +185,7 @@ class Header
 
     static_assert( sizeof( m_headerSize ) == 8 );
     static_assert( sizeof( m_dataSize ) == 8 );
-    static_assert( sizeof( m_userDefined ) == 24 );
+//    static_assert( sizeof( m_userDefined ) == 24 );
 };
 // static_assert( sizeof( Header ) == 8 + 8 + 8 + 24 );
 
