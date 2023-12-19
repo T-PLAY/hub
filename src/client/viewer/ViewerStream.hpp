@@ -9,7 +9,7 @@
 #include <thread>
 
 #include "ViewerHandler.hpp"
-#include "core/Utils.hpp"
+//#include "core/Utils.hpp"
 // #include "sensor/Acquisition.hpp"
 
 #ifdef HUB_BUILD_SENSOR
@@ -252,10 +252,16 @@ void ViewerStream<InputStream>::startStream() {
                 }
             }
         }
+#ifdef DEBUG
         catch ( std::exception& ex ) {
             DEBUG_MSG( "[Viewer][Stream] startStream() streamer '"
                        << "'" << m_streamName << "' disconnected, catch exception " << ex.what() );
         }
+#else
+        catch ( std::exception& ) {
+        }
+
+#endif
 
 #ifdef HUB_DEBUG_VIEWER_STREAM
         if ( m_stopThread ) {
