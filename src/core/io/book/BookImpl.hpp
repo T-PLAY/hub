@@ -7,6 +7,7 @@
 //#include "core/io/InputOutputImpl.hpp"
 #include "core/io/InputOutput.hpp"
 //#include "core/io/BasicInputOutputI.hpp"
+#include "core/serializer/SerializerImpl.hpp"
 
 
 namespace hub {

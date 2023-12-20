@@ -28,6 +28,7 @@ using namespace zpp::bits::literals;
 #include <core/Traits.hpp>
 #include <core/io/Archive.hpp>
 #include <core/io/Book.hpp>
+#include <core/io/book/BookImpl.hpp>
 
 
 TEST_CASE( "Book test" ) {

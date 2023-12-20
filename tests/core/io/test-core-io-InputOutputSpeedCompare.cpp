@@ -19,6 +19,7 @@
 #include <core/Input.hpp>
 #include <core/Output.hpp>
 #include <core/io/Book.hpp>
+#include <core/serializer/SerializerImpl.hpp>
 
 TEST_CASE( "InputOutput speed compare test" ) {
     TEST_BEGIN()
