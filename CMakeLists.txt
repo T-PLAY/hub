@@ -151,12 +151,14 @@ if (Boost_FOUND)
 #    target_compile_definitions(${TARGET_NAME} PUBLIC -DHUB_USE_BOOST)
 endif()
 
-find_package(OpenCV QUIET)
-if (OpenCV_FOUND)
-    add_definitions(-DHUB_USE_OPENCV)
-    link_libraries(${OpenCV_LIBS})
-endif()
+# todo move to tests
+# find_package(OpenCV QUIET)
+# if (OpenCV_FOUND)
+#     add_definitions(-DHUB_USE_OPENCV)
+#     link_libraries(${OpenCV_LIBS})
+# endif()
 
+# todo move to tests
 find_package(Eigen3 QUIET)
 if (Eigen3_FOUND)
 #    message(FATAL_ERROR "ouou")
