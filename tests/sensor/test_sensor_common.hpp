@@ -641,10 +641,10 @@ static void inputOutputSensorBench( const Args&... args ) {
 
 // template <class Output, class Input>
 // static void checkSynchronize( Output&& output,
-//                               const hub::SensorSpec& sensorSpec,
+//                               const hub::sensor::SensorSpec& sensorSpec,
 //                               const std::vector<hub::sensor::Acquisition>& ref_acqs,
 //                               Output&& output2,
-//                               const hub::SensorSpec& sensorSpec2,
+//                               const hub::sensor::SensorSpec& sensorSpec2,
 //                               const std::vector<hub::sensor::Acquisition>& ref_acqs2,
 //                               Input&& input,
 //                               Input&& input2,
@@ -677,10 +677,10 @@ static void inputOutputSensorBench( const Args&... args ) {
 
 // template <class Output, class Input>
 // static void checkSynchronize( Output&& output,
-//                               const hub::SensorSpec& sensorSpec,
+//                               const hub::sensor::SensorSpec& sensorSpec,
 //                               const std::vector<hub::sensor::Acquisition>& ref_acqs,
 //                               Output&& output2,
-//                               const hub::SensorSpec& sensorSpec2,
+//                               const hub::sensor::SensorSpec& sensorSpec2,
 //                               const std::vector<hub::sensor::Acquisition>& ref_acqs2,
 //                               Input&& input,
 //                               bool delayed = false ) {
@@ -956,10 +956,10 @@ static void inputOutputSensorBench( const Args&... args ) {
 
 // template <class Output, class Input>
 // static void _checkSynchronize( Output&& output,
-//                                const hub::SensorSpec& sensorSpec,
+//                                const hub::sensor::SensorSpec& sensorSpec,
 //                                const std::vector<hub::sensor::Acquisition>& ref_acqs,
 //                                Output&& output2,
-//                                const hub::SensorSpec& sensorSpec2,
+//                                const hub::sensor::SensorSpec& sensorSpec2,
 //                                const std::vector<hub::sensor::Acquisition>& ref_acqs2,
 //                                Input&& input,
 //                                const std::vector<hub::sensor::Acquisition>& refSyncAcqs,
@@ -1029,10 +1029,10 @@ static void inputOutputSensorBench( const Args&... args ) {
 
 ////template <class Output, class Input>
 // static void checkSynchronize( hub::sensor::OutputSensor&& outputSensor,
-////                              const hub::SensorSpec& sensorSpec,
+////                              const hub::sensor::SensorSpec& sensorSpec,
 //                              const std::vector<hub::sensor::Acquisition>& ref_acqs,
 //                              hub::sensor::OutputSensor&& outputSensor2,
-////                              const hub::SensorSpec& sensorSpec2,
+////                              const hub::sensor::SensorSpec& sensorSpec2,
 //                              const std::vector<hub::sensor::Acquisition>& ref_acqs2,
 //                              hub::sensor::InputSensor&& inputSensor,
 //                              hub::sensor::InputSensor&& inputSensor2,

@@ -72,7 +72,7 @@ TEST_CASE( "Native Viewer" ) {
             ++nNewStreamer;
             return true;
         };
-#ifdef HUB_BUILD_SENSOR
+#ifndef HUB_NON_BUILD_SENSOR
         auto onNewSensor = []( const char* streamName, const hub::sensor::SensorSpec* sensorSpec ) {
             assert( false );
             std::cout << "[test-client-NativeViewer] onNewStream : " << streamName << ", "
@@ -99,7 +99,7 @@ TEST_CASE( "Native Viewer" ) {
             std::cout << "[test-client-NativeViewer] onNewData : " << *datas << std::endl;
             ++nNewData;
         };
-#ifdef HUB_BUILD_SENSOR
+#ifndef HUB_NON_BUILD_SENSOR
         auto onNewAcq = []( const char* streamName, const hub::sensor::Acquisition* acq ) {
             assert( false );
         };
@@ -125,11 +125,11 @@ TEST_CASE( "Native Viewer" ) {
                                                                 onServerConnected,
                                                                 onServerDisconnected,
                                                                 onNewStream,
-#ifdef HUB_BUILD_SENSOR
+#ifndef HUB_NON_BUILD_SENSOR
                                                                 onNewSensor,
 #endif
                                                                 onNewData,
-#ifdef HUB_BUILD_SENSOR
+#ifndef HUB_NON_BUILD_SENSOR
                                                                 onNewAcq,
 #endif
                                                                 onDelStream,

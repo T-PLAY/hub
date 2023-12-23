@@ -11,7 +11,7 @@
 #include "io/input/InputStream.hpp"
 // #include "io/output/OutputStream.hpp"
 
-#ifdef HUB_BUILD_SENSOR
+#ifndef HUB_NON_BUILD_SENSOR
 #include "sensor/Acquisition.hpp"
 #include "sensor/SensorSpec.hpp"
 #endif
@@ -28,7 +28,7 @@ class ViewerHandler
 
     std::function<bool( const char* streamName, const io::Header & header )>
         onNewStream;
-#ifdef HUB_BUILD_SENSOR
+#ifndef HUB_NON_BUILD_SENSOR
     std::function<bool( const char* streamName, const sensor::SensorSpec& sensorSpec )>
         onNewSensor;
 #endif
@@ -36,7 +36,7 @@ class ViewerHandler
         // onInitStream;
     // std::function<void( const char* streamName, input::InputStream & inputStream )> onNewData;
     std::function<void( const char* streamName, const Datas_t & datas )> onNewData;
-#ifdef HUB_BUILD_SENSOR
+#ifndef HUB_NON_BUILD_SENSOR
     std::function<void( const char* streamName, const sensor::Acquisition& acq )> onNewAcq;
 #endif
 

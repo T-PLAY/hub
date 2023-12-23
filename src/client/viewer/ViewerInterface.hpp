@@ -219,7 +219,11 @@ void ViewerInterface<InputStream>::addStream(const std::string& streamName, cons
 {
     assert( m_streams.find( streamName ) == m_streams.end() );
 
+#ifndef HUB_NON_BUILD_SENSOR
     if ( m_viewerHandler.onNewStream || m_viewerHandler.onNewSensor ) {
+#else
+    if ( m_viewerHandler.onNewStream ) {
+#endif
 
         m_streams[streamName] =
             std::make_unique<ViewerStream<InputStream>>( m_nStreamer++,
@@ -241,7 +245,11 @@ void ViewerInterface<InputStream>::addStream(const std::string& streamName, cons
 template <class InputStream>
 void ViewerInterface<InputStream>::delStream( const std::string& streamName ) {
 
+#ifndef HUB_NON_BUILD_SENSOR
     if ( m_viewerHandler.onNewStream || m_viewerHandler.onNewSensor ) {
+#else
+    if ( m_viewerHandler.onNewStream ) {
+#endif
         // assert( m_viewerHandler.onDelStream );
         assert( m_streams.find( streamName ) != m_streams.end() );
         // if ( m_streams.find( streamName ) != m_streams.end() ) { m_streams.erase( streamName ); }
@@ -252,7 +260,11 @@ void ViewerInterface<InputStream>::delStream( const std::string& streamName ) {
 
 template <class InputStream>
 void ViewerInterface<InputStream>::startStream( const std::string& streamName ) {
+#ifndef HUB_NON_BUILD_SENSOR
     assert( m_viewerHandler.onNewStream || m_viewerHandler.onNewSensor );
+#else
+    assert( m_viewerHandler.onNewStream );
+#endif
     assert( m_streams.find( streamName ) != m_streams.end() );
     auto& stream = *m_streams.at( streamName );
     stream.startStream();

@@ -6,7 +6,7 @@
 #include "native_OutputStream.hpp"
 #include "native_MetaData.hpp"
 
-#ifdef HUB_BUILD_SENSOR
+#ifndef HUB_NON_BUILD_SENSOR
 #include "sensor/native_InputSensor.hpp"
 #include "sensor/native_OutputSensor.hpp"
 #include "sensor/native_SensorSpec.hpp"

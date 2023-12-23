@@ -8,7 +8,7 @@ include(GetVersionFromGitTag)
 
 set(REQUIRED_LIBS "")
 
-message(STATUS "Hub version: ${${PROJECT_NAME}_VERSION}")
+message(STATUS "[hub] Version: ${${PROJECT_NAME}_VERSION}")
 
 
 # option(HUB_BUILD_MQTT "Build implement using mqtt" OFF)
@@ -40,7 +40,7 @@ endif()
 #endif()
 
 
-#set(SOURCES_DIR ${HUB_SOURCE_DIR})
+#set(SOURCES_DIR ${HUB_MODULE})
 #set(HEADERS_DIR ${HUB_INCLUDE_DIR})
 
 #list(REMOVE_ITEM headers ${HUB_EXTERNAL_DIR}/mqtt/MQTTAsync.h)
@@ -76,7 +76,7 @@ file(
     #            GLOB
     GLOB_RECURSE
     external_sources
-    #    ${CMAKE_CURRENT_SOURCE_DIR}/${HUB_SOURCE_DIR}/*.cpp
+    #    ${CMAKE_CURRENT_SOURCE_DIR}/${HUB_MODULE}/*.cpp
     ${HUB_EXTERNAL_DIR}/*.cpp
     ${HUB_EXTERNAL_DIR}/*.c
 )
@@ -86,7 +86,7 @@ file(
     #            GLOB
     GLOB_RECURSE
     external_headers
-    #    ${CMAKE_CURRENT_SOURCE_DIR}/${HUB_SOURCE_DIR}/*.hpp
+    #    ${CMAKE_CURRENT_SOURCE_DIR}/${HUB_MODULE}/*.hpp
     ${HUB_EXTERNAL_DIR}/*.hpp
     ${HUB_EXTERNAL_DIR}/*.h
     #    ${HUB_EXTERNAL_DIR}/*.inl
@@ -124,21 +124,21 @@ set (SRC_TARGETS)
 
 if (NOT XCODE) # unable to have object files as native build with Xcode
 
-    foreach(HUB_SOURCE_DIR ${HUB_SOURCE_DIRS})
+    foreach(HUB_MODULE ${HUB_MODULES})
 
-        set(TARGET_NAME ${HUB_SOURCE_DIR})
+        set(TARGET_NAME ${HUB_MODULE})
         string(REPLACE "/" "-" TARGET_NAME "${TARGET_NAME}")
         #        set(TARGET_NAME ${PROJECT_NAME})
 
-        #        message(STATUS "HUB_SOURCE_DIR: ${HUB_SOURCE_DIR}")
+        #        message(STATUS "HUB_MODULE: ${HUB_MODULE}")
 
         set (object_sources)
         file(
             #            GLOB
             GLOB_RECURSE
             object_sources
-            ${CMAKE_CURRENT_SOURCE_DIR}/${HUB_SOURCE_DIR}/*.cpp
-            #            ${CMAKE_CURRENT_SOURCE_DIR}/impl/server/${HUB_SOURCE_DIR}/*.cpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/${HUB_MODULE}/*.cpp
+            #            ${CMAKE_CURRENT_SOURCE_DIR}/impl/server/${HUB_MODULE}/*.cpp
             #            ${HUB_EXTERNAL_DIR}/*.cpp
             #            ${HUB_EXTERNAL_DIR}/*.c
         )
@@ -149,8 +149,8 @@ if (NOT XCODE) # unable to have object files as native build with Xcode
             #            GLOB
             GLOB_RECURSE
             object_headers
-            ${CMAKE_CURRENT_SOURCE_DIR}/${HUB_SOURCE_DIR}/*.hpp
-            #            ${CMAKE_CURRENT_SOURCE_DIR}/impl/server/${HUB_SOURCE_DIR}/*.hpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/${HUB_MODULE}/*.hpp
+            #            ${CMAKE_CURRENT_SOURCE_DIR}/impl/server/${HUB_MODULE}/*.hpp
             #            ${HUB_EXTERNAL_DIR}/*.hpp
             #            ${HUB_EXTERNAL_DIR}/*.h
             #    ${HUB_EXTERNAL_DIR}/*.inl
@@ -167,12 +167,12 @@ if (NOT XCODE) # unable to have object files as native build with Xcode
 #            file(
 #                GLOB_RECURSE
 #                impl_sources
-#                ${CMAKE_CURRENT_SOURCE_DIR}/impl/*/${HUB_SOURCE_DIR}/*.cpp
+#                ${CMAKE_CURRENT_SOURCE_DIR}/impl/*/${HUB_MODULE}/*.cpp
 #            )
 #            file(
 #                GLOB_RECURSE
 #                impl_headers
-#                ${CMAKE_CURRENT_SOURCE_DIR}/impl/*/${HUB_SOURCE_DIR}/*.hpp
+#                ${CMAKE_CURRENT_SOURCE_DIR}/impl/*/${HUB_MODULE}/*.hpp
 #            )
 #        endif()
 #        endif()
@@ -277,7 +277,7 @@ if (NOT XCODE) # unable to have object files as native build with Xcode
             elseif(GCC)
                 set(REQUIRED_LIBS ${REQUIRED_LIBS} ws2_32)
                 get_filename_component(Mingw_Path ${CMAKE_CXX_COMPILER} PATH)
-                message(STATUS "${Mingw_Path}")
+                message(STATUS "[hub] ${Mingw_Path}")
                 set(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS ${Mingw_Path}/libgcc_s_seh-1.dll ${Mingw_Path}/libstdc++-6.dll
                     ${Mingw_Path}/libwinpthread-1.dll)
 
@@ -333,7 +333,7 @@ if (NOT XCODE) # unable to have object files as native build with Xcode
             PATTERN "*.h"
             PATTERN "*.inl")
 
-    endforeach() # (HUB_SOURCE_DIR ${HUB_SOURCE_DIRS})
+    endforeach() # (HUB_MODULE ${HUB_MODULES})
 
 endif()  # NOT XCODE
 
@@ -655,11 +655,11 @@ if(${CMAKE_VERSION} VERSION_LESS "3.20") # ctest --test-dir option
     )
 endif()
 
-add_custom_target(coverage COMMAND ${HUB_BROWSER} ${CMAKE_CURRENT_BINARY_DIR}/../coverage-lcov/index.html)
+add_custom_target(hub-coverage COMMAND ${HUB_BROWSER} ${CMAKE_CURRENT_BINARY_DIR}/../coverage-lcov/index.html)
 custom_target_added(coverage)
-add_dependencies(coverage coverage-lcov)
+add_dependencies(hub-coverage coverage-lcov)
 
-add_custom_target(coverage-all)
+add_custom_target(hub-coverage-all)
 custom_target_added(coverage-all)
 
 file(
@@ -704,7 +704,7 @@ foreach(file ${src_headers})
     #            "*tiny_obj_loader.h"
 
     add_custom_target(
-        coverage-${name}
+        hub-coverage-${name}
         COMMAND
         ls ${CMAKE_CURRENT_BINARY_DIR}/../coverage-lcov-${name}/index.html && head -n 40
         ${CMAKE_CURRENT_BINARY_DIR}/../coverage-lcov-${name}/index.html | grep '100.0 %' || ${HUB_BROWSER}

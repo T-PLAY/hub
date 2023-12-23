@@ -12,11 +12,11 @@
 TEST_CASE( "OutputSensor sending acq with disconnect test" ) {
     TEST_BEGIN()
 
-#ifdef HUB_BUILD_SERVER
+// #ifdef HUB_BUILD_SERVER
     INIT_SERVER
-#else
+// #else
     // hub::io::Archive archive;
-#endif
+// #endif
 
     {
         hub::MetaData metaData;
@@ -28,15 +28,15 @@ TEST_CASE( "OutputSensor sending acq with disconnect test" ) {
         const hub::sensor::SensorSpec sensorSpec( "sensorName", hub::make_matrix<Resolution>(), metaData );
         // const hub::sensor::SensorSpec sensorSpec( "sensorName", resolution, metaData );
 
-#ifdef HUB_BUILD_SERVER
+// #ifdef HUB_BUILD_SERVER
         hub::sensor::OutputSensorT<Resolution> outputSensor(
             // sensorSpec,
             // hub::sensor::OutputSensor outputSensor( sensorSpec,
             hub::output::OutputStream( hub::io::make_header(sensorSpec),  FILE_NAME, SERVER_PORT ) );
-#else
+// #else
         // hub::sensor::OutputSensorT<Resolution> outputSensor( sensorSpec, archive );
-        hub::sensor::OutputSensor outputSensor( sensorSpec, archive );
-#endif
+        // hub::sensor::OutputSensor outputSensor( sensorSpec, archive );
+// #endif
         std::cout << "[test] outputSensor inited" << std::endl;
 
         auto acq = outputSensor.acqMsg();
@@ -70,12 +70,12 @@ TEST_CASE( "OutputSensor sending acq with disconnect test" ) {
         //////////////////////////////////////////////////////////////////////////////////
 
         {
-#ifdef HUB_BUILD_SERVER
+// #ifdef HUB_BUILD_SERVER
             hub::sensor::InputSensor inputSensor(
                 hub::input::InputStream( FILE_NAME, SERVER_PORT ) );
-#else
-            hub::sensor::InputSensor inputSensor( archive );
-#endif
+// #else
+            // hub::sensor::InputSensor inputSensor( archive );
+// #endif
             std::cout << "[test] inputSensor inited" << std::endl;
 
             assert( outputSensor.getSpec() == inputSensor.getSpec() );

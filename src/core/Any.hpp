@@ -239,13 +239,21 @@ class SRC_API Any
     ////        serial(hashCode);
     //        serial(m_any.type().hash_code());
     //    }
+    std::string typeName() const {
+        return m_anyHelper->getTypeName();
+        // return TYPE_NAME(m_any.type());
+    }
+
+    std::string valueAsString() const {
+        return m_anyHelper->getValueStr(m_any);
+        // return TYPE_NAME(m_any.type());
+    }
 
   private:
     ///
     /// \brief typeName
     /// \return
     ///
-    //    const std::string& typeName() const;
     //    std::string anyValue2string() const;
 
   private:

@@ -53,11 +53,19 @@ namespace sensor {
 //#endif
 //}
 
-//std::vector<Acquisition> InputSensor::getAllAcquisitions() {
-//    std::vector<Acquisition> acqs;
-//    m_input->readAll( acqs );
-//    return acqs;
-//}
+std::vector<Acquisition> InputSensor::getAllAcquisitions() {
+   std::vector<Acquisition> acqs;
+    // auto acqMsg = hub::sensor::make_acquisition(m_spec.getResolution());
+   auto acq = acqMsg();
+
+   while (std::none_of(m_inputs.begin(), m_inputs.end(), [](const Input * input) { return input->isEnd(); })) {
+       *this >> acq;
+       acqs.push_back(acq.clone());
+   }
+
+   // m_input->readAll( acqs );
+   return acqs;
+}
 
 //Input& InputSensor::getInput() const {
 //    return *m_input;

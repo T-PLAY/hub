@@ -2,7 +2,7 @@
 
 // #include "ViewerInterface.hpp"
 
-#ifdef HUB_BUILD_SERVER
+// #ifdef HUB_BUILD_SERVER
 // #    include "impl/server/client/ViewerServer.hpp"
 #    include "viewer/ViewerServer2.hpp"
 // #endif
@@ -10,7 +10,7 @@
 // #ifdef HUB_BUILD_MQTT
 // #    include "ViewerMqtt.hpp"
 // #endif
-#endif
+// #endif
 
 #include "io/input/InputStream.hpp"
 // #include "SensorSpec.hpp"
@@ -18,12 +18,12 @@
 namespace hub {
 namespace client {
 
-#ifdef HUB_BUILD_SERVER
+// #ifdef HUB_BUILD_SERVER
 // using Viewer = ViewerServer;
 using Viewer = ViewerServer2;
-#else
-using Viewer = ViewerMqtt;
-#endif
+// #else
+// using Viewer = ViewerMqtt;
+// #endif
 
 // using Viewer = ViewerInterface<InputStream>;
 

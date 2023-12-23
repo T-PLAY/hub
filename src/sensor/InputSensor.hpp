@@ -169,6 +169,8 @@ class InputSensor : public Sensor
 #endif
     }
 
+      std::vector<Acquisition> getAllAcquisitions();
+
     const Input& getInput() const { return *m_inputs.at( 0 ); }
     Input& getInput() { return *m_inputs.at( 0 ); }
 

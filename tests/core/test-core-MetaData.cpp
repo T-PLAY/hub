@@ -8,7 +8,7 @@
 #include <core/MetaData.hpp>
 #include <core/io/Archive.hpp>
 
-#ifdef HUB_BUILD_SENSOR
+#ifndef HUB_NON_BUILD_SENSOR
 #    include <sensor/Format.hpp>
 #endif
 
@@ -157,9 +157,9 @@ TEST_CASE( "MetaData test" ) {
         CHECK( metadata == metadata_read );
     }
 
-#ifdef HUB_BUILD_SENSOR
+#ifndef HUB_NON_BUILD_SENSOR
     {
-        using Format = hub::sensor::format::MAT4;
+        using Format = hub::sensor::format::Mat4;
         static_assert( hub::packable_v<Format> );
         static_assert( !hub::serializer::SerializerZppBits::Serializable<Format>() );
         const Format mat4( 1.0f );

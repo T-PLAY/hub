@@ -28,16 +28,16 @@ if(WIN32)
     add_definitions(-DCPLUSPLUS_VERSION=${CMAKE_CXX_STANDARD})
 endif()
 
-message(STATUS "CXX compiler: ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}")
-message(STATUS "Processor: ${CMAKE_SYSTEM_PROCESSOR}")
-message(STATUS "CMake generator: ${CMAKE_GENERATOR}")
-message(STATUS "CMake system name: ${CMAKE_SYSTEM_NAME}")
-message(STATUS "CMake system version: ${CMAKE_SYSTEM_VERSION}")
+message(STATUS "[hub] CXX compiler: ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}")
+message(STATUS "[hub] Processor: ${CMAKE_SYSTEM_PROCESSOR}")
+message(STATUS "[hub] CMake generator: ${CMAKE_GENERATOR}")
+message(STATUS "[hub] CMake system name: ${CMAKE_SYSTEM_NAME}")
+message(STATUS "[hub] CMake system version: ${CMAKE_SYSTEM_VERSION}")
 
 # Looking for current system archictecture
 set(ARCHITECTURE "")
 if(CMAKE_GENERATOR_PLATFORM)
-    message(STATUS "CMake generator platform: ${CMAKE_GENERATOR_PLATFORM}")
+    message(STATUS "[hub] CMake generator platform: ${CMAKE_GENERATOR_PLATFORM}")
     if(${CMAKE_GENERATOR_PLATFORM} STREQUAL "x64")
         set(ARCHITECTURE "x64")
     elseif(${CMAKE_GENERATOR_PLATFORM} STREQUAL "Win32")
@@ -60,7 +60,7 @@ endif()
 if("${CMAKE_SYSTEM_NAME}" STREQUAL "WindowsStore")
     set(ARCHITECTURE "UWP-${ARCHITECTURE}")
 endif()
-message(STATUS "Architecture: ${ARCHITECTURE}")
+message(STATUS "[hub] Architecture: ${ARCHITECTURE}")
 
 foreach(
     SYSTEM_INFO IN
@@ -129,7 +129,7 @@ endif()
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Debug")
 endif()
-message(STATUS "CMake build type: ${CMAKE_BUILD_TYPE}")
+message(STATUS "[hub] CMake build type: ${CMAKE_BUILD_TYPE}")
 
 set(CMAKE_DEBUG_POSTFIX d)
 set(CMAKE_RELWITHDEBINFO_POSTFIX rd)
@@ -143,6 +143,7 @@ elseif(${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
     set(CMAKE_POSTFIX ${CMAKE_RELWITHDEBINFO_POSTFIX})
 endif()
 
+set(HUB_PROJECT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 add_definitions(-DHUB_PROJECT_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/\")
 
 find_package(Boost QUIET) # tcp socket communication
@@ -220,59 +221,72 @@ endif()
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
 
-# set(HUB_SOURCE_DIRS "core")
-# set(HUB_SOURCE_DIRS "core" "net")
-# set(HUB_SOURCE_DIRS "core" "data")
-# set(HUB_SOURCE_DIRS "core" "net" "data")
-# set(HUB_SOURCE_DIRS "core" "net" "data" "io")
-# set(HUB_SOURCE_DIRS "core" "net" "data" "io" "sensor")
-# set(HUB_SOURCE_DIRS "core" "net" "data" "io" "server")
-# set(HUB_SOURCE_DIRS "core" "net" "data" "io" "sensor" "server")
-# set(HUB_SOURCE_DIRS "core" "net" "data" "io" "sensor" "server" "client")
-# set(HUB_SOURCE_DIRS "core" "net" "data" "io" "sensor" "server" "client" "native")
+# set(HUB_MODULES "core")
+# set(HUB_MODULES "core" "net")
+# set(HUB_MODULES "core" "data")
+# set(HUB_MODULES "core" "net" "data")
+# set(HUB_MODULES "core" "net" "data" "io")
+# set(HUB_MODULES "core" "net" "data" "io" "sensor")
+# set(HUB_MODULES "core" "net" "data" "io" "server")
+# set(HUB_MODULES "core" "net" "data" "io" "sensor" "server")
+# set(HUB_MODULES "core" "net" "data" "io" "sensor" "server" "client")
+# set(HUB_MODULES "core" "net" "data" "io" "sensor" "server" "client" "native")
 
-# set(HUB_SOURCE_DIRS "core")
-# set(HUB_SOURCE_DIRS "core" "net")
-# set(HUB_SOURCE_DIRS "core" "net" "io")
-# set(HUB_SOURCE_DIRS "core" "net" "io" "server")
-# set(HUB_SOURCE_DIRS "core" "net" "io" "server" "client")
-# set(HUB_SOURCE_DIRS "core" "net" "io" "server" "client" "native")
-# set(HUB_SOURCE_DIRS "core" "net" "io" "server" "client" "native" "sensor")
-set(HUB_SOURCE_DIRS "core" "net" "io" "server" "client" "native" "sensor" "data")
+# set(HUB_MODULES "core")
+# set(HUB_MODULES "core" "net")
+# set(HUB_MODULES "core" "net" "io")
+# set(HUB_MODULES "core" "net" "io" "server")
+# set(HUB_MODULES "core" "net" "io" "server" "client")
+# set(HUB_MODULES "core" "net" "io" "server" "client" "native")
+# set(HUB_MODULES "core" "net" "io" "server" "client" "native" "sensor")
+set(HUB_MODULES "core" "net" "io" "server" "client" "native" "sensor" "data")
 
 
-foreach(MODULE "core" "net" "data" "io" "sensor" "server" "client" "native")
+
+set(ALL_HUB_MODULES "core" "net" "data" "io" "sensor" "server" "client" "native")
+foreach(MODULE ${ALL_HUB_MODULES})
     string(TOUPPER ${MODULE} UPPER_MODULE)
-    set(HUB_BUILD_${UPPER_MODULE} 0)
+    if (${MODULE} IN_LIST HUB_MODULES)
+        set(HUB_BUILD_${UPPER_MODULE} 1)
+        # message(STATUS "active module: ${MODULE}")
+    else()
+        message(STATUS "[hub] ${Red}module disabled: ${MODULE}${ColorReset}")
+        add_definitions(-DHUB_NON_BUILD_${UPPER_MODULE})
+        set(HUB_BUILD_${UPPER_MODULE} 0)
+    endif()
 endforeach()
 
-if (HUB_BUILD_NATIVE)
-    message(FATAL_ERROR "ou")
-endif()
 
 #set(HUB_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
 #set(HUB_SOURCE_DIR ".")
-#set(HUB_SOURCE_DIRS "client") # io sensor
-#set(HUB_SOURCE_DIRS "data") # sensor
-#set(HUB_SOURCE_DIRS "io") # core
-#set(HUB_SOURCE_DIRS "native")
-#set(HUB_SOURCE_DIRS "sensor")
-#set(HUB_SOURCE_DIRS "server")
-#set(HUB_SOURCE_DIRS "utils") # core
+#set(HUB_MODULES "client") # io sensor
+#set(HUB_MODULES "data") # sensor
+#set(HUB_MODULES "io") # core
+#set(HUB_MODULES "native")
+#set(HUB_MODULES "sensor")
+#set(HUB_MODULES "server")
+#set(HUB_MODULES "utils") # core
 #set(HUB_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
 #set(HUB_INCLUDE_DIR "net")
 #set(HUB_INCLUDE_DIR ".")
 #set(HUB_INCLUDE_DIR ${HUB_SOURCE_DIR})
-foreach(HUB_SOURCE_DIR ${HUB_SOURCE_DIRS})
-    string(REPLACE "/" "_" HUB_SOURCE_DIR "${HUB_SOURCE_DIR}")
-    string(TOUPPER ${HUB_SOURCE_DIR} UPPER_SOURCE_DIR)
-    set(HUB_BUILD_${UPPER_SOURCE_DIR} 1)
-    add_definitions(-DHUB_BUILD_${UPPER_SOURCE_DIR})
-endforeach()
+# foreach(MODULE ${HUB_MODULES})
+#     string(REPLACE "/" "_" MODULE "${MODULE}")
+#     string(TOUPPER ${MODULE} UPPER_SOURCE_DIR)
+#     set(HUB_BUILD_${UPPER_SOURCE_DIR} 1)
+#     # add_definitions(-DHUB_BUILD_${UPPER_SOURCE_DIR})
+
+# endforeach()
 
 set(HUB_EXTERNAL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/external")
 set(HUB_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
 set(HUB_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
+# set(HUB_BIN_DIR ${CMAKE_CURRENT_BINARY_DIR}/bin)
+if(${CMAKE_GENERATOR} MATCHES "Visual Studio.*")
+    set(HUB_BIN_DIR ${CMAKE_CURRENT_BINARY_DIR}/bin/${CMAKE_BUILD_TYPE})
+else()
+    set(HUB_BIN_DIR ${CMAKE_CURRENT_BINARY_DIR}/bin)
+endif()
 # set(HUB_EXTERNAL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/external")
 
 
@@ -298,7 +312,7 @@ add_subdirectory(bin)
 
 if(NOT WIN32)
     add_custom_target(
-        cppCheck
+        hub-cppCheck
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
         COMMAND cppcheck --enable=all --error-exitcode=1 src tests -I src -I tests --inline-suppr --suppress=toomanyconfigs
                 --suppress=missingIncludeSystem
@@ -307,19 +321,19 @@ if(NOT WIN32)
 endif()
 
 add_custom_target(
-    format
+    hub-format
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
     COMMAND scripts/format-all.sh
     COMMENT "Format sources")
 custom_target_added(format)
 
-add_custom_target(all-targets)
-custom_target_added(all-targets)
-foreach(target "tests" "coverage" "cppCheck" "doc-doxygen" "doc-sphinx")
-    if(TARGET ${target})
-        add_dependencies(all-targets ${target})
-    endif()
-endforeach()
+# add_custom_target(hub-all-targets)
+# custom_target_added(hub-all-targets)
+# foreach(target "hub-tests" "hub-coverage" "hub-cppCheck" "hub-doc-doxygen" "hub-doc-sphinx")
+#     if(TARGET ${target})
+#         add_dependencies(all-targets ${target})
+#     endif()
+# endforeach()
 
 
 option(HUB_ENABLE_WRAPPER "Enable wrapper" OFF)
@@ -327,8 +341,8 @@ if(HUB_ENABLE_WRAPPER)
     add_subdirectory(wrapper)
 endif()
 
-message(STATUS "Modules: ${HUB_SOURCE_DIRS}")
+message(STATUS "[hub] Modules: (${HUB_MODULES})")
 
 get_property(TMP GLOBAL PROPERTY CUSTOM_TARGETS_FOUNDED)
-#message(STATUS "Custom targets: cppCheck format doc-doxygen doc-sphinx coverage coverage-lcov coverage-all tests")
-message(STATUS "Custom targets:${TMP}")
+#message(STATUS "[hub] Custom targets: cppCheck format doc-doxygen doc-sphinx coverage coverage-lcov coverage-all tests")
+message(STATUS "[hub] Custom targets:${TMP}")

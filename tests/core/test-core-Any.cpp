@@ -12,7 +12,7 @@
 #include <core/io/Archive.hpp>
 #include <map>
 
-#ifdef HUB_BUILD_SENSOR
+#ifndef HUB_NON_BUILD_SENSOR
 #include <sensor/Format.hpp>
 #endif
 
@@ -217,7 +217,7 @@ class Lambda
         CHECK( any == any_read );
     }
 
-#ifdef HUB_BUILD_SENSOR
+#ifndef HUB_NON_BUILD_SENSOR
 //     {
 //         using Format = hub::sensor::format::BGR8;
 //         const Format bgr8(0.0f);
@@ -241,7 +241,7 @@ class Lambda
 //     }
 
     {
-        using Format = hub::sensor::format::MAT4;
+        using Format = hub::sensor::format::Mat4;
         static_assert(hub::packable_v<Format>);
         // static_assert(! hub::isPacket<Format>);
         // static_assert(! hub::serializable_v<Format>);

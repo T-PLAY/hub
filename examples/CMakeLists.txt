@@ -14,12 +14,12 @@ endif()
 
 #file(GLOB EXAMPLE_SRC *.cpp)
 set(example_srcs)
-foreach(HUB_SOURCE_DIR ${HUB_SOURCE_DIRS})
+foreach(HUB_MODULE ${HUB_MODULES})
     file(
         GLOB
     #    GLOB_RECURSE
         example_src
-        ${CMAKE_CURRENT_SOURCE_DIR}/${HUB_SOURCE_DIR}/*.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/${HUB_MODULE}/*.cpp
     )
     list(APPEND example_srcs ${example_src})
 endforeach()

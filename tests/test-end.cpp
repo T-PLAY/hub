@@ -13,7 +13,7 @@ TEST_CASE( "Test end" ) {
 // #if defined(HUB_BUILD_SERVER) && defined(HUB_SERVICE_PORT)
     // hub::io::Stream::stopServer();
 // #endif
-#if defined(HUB_BUILD_SERVER)
+#ifndef HUB_NOT_BUILD_SERVER
     INIT_SERVER
     hub::io::Stream::stopServer("127.0.0.1", SERVER_PORT);
 

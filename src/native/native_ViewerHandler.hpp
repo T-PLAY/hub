@@ -39,13 +39,13 @@ extern "C"
     typedef void ( *onServerDisconnectedFunc )( const char* ipv4, int port );
 
     typedef bool ( *onNewStreamFunc )( const char* streamName, const io::Header* header );
-#ifdef HUB_BUILD_SENSOR
+#ifndef HUB_NON_BUILD_SENSOR
     typedef bool ( *onNewSensorFunc )( const char* streamName,
                                        const sensor::SensorSpec* sensorSpec );
 #endif
 
     typedef void ( *onNewDataFunc )( const char* streamName, const Datas_t* datas );
-#ifdef HUB_BUILD_SENSOR
+#ifndef HUB_NON_BUILD_SENSOR
     typedef void ( *onNewAcqFunc )( const char* streamName, const sensor::Acquisition* acq );
 #endif
 
@@ -67,11 +67,11 @@ extern "C"
                          onServerConnectedFunc onServerConnected,
                          onServerDisconnectedFunc onServerDisconnected,
                          onNewStreamFunc onNewStream,
-#ifdef HUB_BUILD_SENSOR
+#ifndef HUB_NON_BUILD_SENSOR
                          onNewSensorFunc onNewSensor,
 #endif
                          onNewDataFunc onNewData,
-#ifdef HUB_BUILD_SENSOR
+#ifndef HUB_NON_BUILD_SENSOR
                          onNewAcqFunc onNewAcq,
 #endif
                          onDelStreamFunc onDelStream,

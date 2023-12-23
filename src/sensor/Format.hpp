@@ -18,40 +18,42 @@
 // #include <cstdlib>
 #include <cstring>
 
+#include "core/Macros.hpp"
+
 namespace hub {
 namespace sensor {
 // namespace resolution {
 
 // class Format
-//{
+// {
 //   public:
 //     constexpr bool operator==( const Format& format ) const {
 //         return nByte == format.nByte && interpolable == format.interpolable && name ==
 //         format.name;
 //     }
 
-//    SRC_API friend std::ostream& operator<<( std::ostream& os, const Format& format );
+//    friend std::ostream& operator<<( std::ostream& os, const Format& format );
 
 //  public:
 //    Size_t nByte;
 //    std::string name;
 //    bool interpolable;
-//};
+// };
 
 namespace format {
 
 /////////////////////////////////////// 1D ////////////////////////////////////////
 
 // Transform matrix 4x4 of float.
-struct MAT4 {
+struct Mat4 {
     static struct {
     } packable;
     float data[16];
     //    static constexpr auto nByte() {return  16;};
     static constexpr auto name() { return "MAT4"; };
-    MAT4( float value = 0.0f ) { std::fill( data, data + 16, value ); }
+    Mat4( float value = 0.0f ) { std::fill( data, data + 16, value ); }
 
-    MAT4( const float* array ) { memcpy( data, array, 64 ); }
+    Mat4( const float* array ) { memcpy( data, array, 64 ); }
 
     auto toString() const {
         float dataTmp[16];
@@ -78,24 +80,24 @@ struct MAT4 {
         (void)dataTmp;
         return str + "]";
     }
-    bool operator==( const MAT4& other ) const { return !memcmp( data, other.data, 64 ); }
+    bool operator==( const Mat4& other ) const { return !memcmp( data, other.data, 64 ); }
     //    static constexpr auto interpolable() { return false; };
 };
-static_assert( sizeof( MAT4 ) == 64 );
+static_assert( sizeof( Mat4 ) == 64 );
 
 // 32-bit density values. For MRI, CT scan and US representations.
-struct DENSITY {
+struct Density {
     uint32_t value;
     static constexpr auto name() { return "DENSITY"; };
 };
-static_assert( sizeof( DENSITY ) == 4 );
+static_assert( sizeof( Density ) == 4 );
 
 // 32-bit float-point depth distance value.
-struct DISTANCE {
+struct Distance {
     float value;
     static constexpr auto name() { return "DISTANCE"; };
 };
-static_assert( sizeof( DISTANCE ) == 4 );
+static_assert( sizeof( Distance ) == 4 );
 
 /////////////////////////////////////// 2D ////////////////////////////////////////
 

@@ -60,7 +60,7 @@ int main( int argc, char* argv[] ) {
         std::cout << HEADER_MSG "onNewStream : " << streamName << ", " << header << std::endl;
         return true;
     };
-#ifdef HUB_BUILD_SENSOR
+#ifndef HUB_NON_BUILD_SENSOR
     viewerHandler.onNewSensor = [=]( const std::string& streamName,
                                      const hub::sensor::SensorSpec& sensorSpec ) {
         std::cout << HEADER_MSG "onNewSensor : " << streamName << ", " << sensorSpec << std::endl;
@@ -71,7 +71,7 @@ int main( int argc, char* argv[] ) {
         std::cout << "\033[" << std::to_string( std::hash<std::string> {}( streamName ) % 10 + 40 )
                   << "m+\033[0m";
     };
-#ifdef HUB_BUILD_SENSOR
+#ifndef HUB_NON_BUILD_SENSOR
     viewerHandler.onNewAcq = []( const std::string& streamName, const hub::sensor::Acquisition & acq ) {
         std::cout << "\033[" << std::to_string( std::hash<std::string> {}( streamName ) % 10 + 40 )
                   << "ma\033[0m";

@@ -42,20 +42,20 @@ endif()
 #file( GLOB test_srcs*.cpp )
 set(test_srcs)
 set(test_headers)
-foreach(HUB_SOURCE_DIR ${HUB_SOURCE_DIRS})
+foreach(HUB_MODULE ${HUB_MODULES})
 #set( DIRS "core" #"net" #"io" )
-#foreach ( HUB_SOURCE_DIR ${ DIRS } )
+#foreach ( HUB_MODULE ${ DIRS } )
     file(
         GLOB_RECURSE
         test_src
-        ${CMAKE_CURRENT_SOURCE_DIR}/${HUB_SOURCE_DIR}/*.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/${HUB_MODULE}/*.cpp
     )
 list(APPEND test_srcs ${test_src})
 file(
     #    GLOB
     GLOB_RECURSE
     test_header
-    ${CMAKE_CURRENT_SOURCE_DIR}/${HUB_SOURCE_DIR}/*.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/${HUB_MODULE}/*.hpp
 )
 list(APPEND test_headers ${test_header})
 endforeach()
@@ -150,15 +150,15 @@ list(PREPEND test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/test-start.cpp)
 
 # gathering tests
 #add_executable(test-all ${test_srcs} ${test_headers} ${test_headers_src})
-add_executable(test-all ${test_srcs} ${test_headers})
+add_executable(hub-test-all ${test_srcs} ${test_headers})
 #add_executable(test-all ${test_srcs})
 # target_link_libraries(test-all Catch2::Catch2WithMain hub PahoMqttCpp::paho-mqttpp3)
-target_link_libraries(test-all ${LINK_LIBRARIES})
-target_include_directories(test-all PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(hub-test-all ${LINK_LIBRARIES})
+target_include_directories(hub-test-all PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 #set_property(TARGET test-all PROPERTY CXX_STANDARD ${CMAKE_CXX_STANDARD})
 #set_property(TARGET test-all PROPERTY CXX_EXTENSIONS OFF)
 if (PahoMqttCpp_FOUND)
-    target_compile_definitions(test-all PUBLIC -DHUB_TESTS_MQTT_FOUND)
+    target_compile_definitions(hub-test-all PUBLIC -DHUB_TESTS_MQTT_FOUND)
 endif()
 # target_compile_definitions(test-all PUBLIC -DHUB_TEST_ALL)
 
@@ -172,11 +172,11 @@ endif()
 #add_definitions(-DHUB_TESTS_BIN_DIR=\"${CMAKE_CURRENT_BINARY_DIR}/\")
 
 #if (WIN32)
-if(${CMAKE_GENERATOR} MATCHES "Visual Studio.*")
-    set(BIN_DIR ${CMAKE_BINARY_DIR}/bin/${CMAKE_BUILD_TYPE})
-else()
-    set(BIN_DIR ${CMAKE_BINARY_DIR}/bin)
-endif()
+# if(${CMAKE_GENERATOR} MATCHES "Visual Studio.*")
+#     set(BIN_DIR ${CMAKE_BINARY_DIR}/bin/${CMAKE_BUILD_TYPE})
+# else()
+#     set(BIN_DIR ${CMAKE_BINARY_DIR}/bin)
+# endif()
 
 # foreach *.cpp tests
 include(CTest)
@@ -205,19 +205,19 @@ foreach(testFile ${test_srcs})
 
     #    add_executable(${test} ${testFile} ${test_common})
     #    add_executable(${test} ${testFile} ${test_headers_src})
-    add_executable(${test} ${testFile})
+    add_executable(hub-${test} ${testFile})
     # target_link_libraries(${test} PRIVATE Catch2::Catch2WithMain hub PahoMqttCpp::paho-mqttpp3)
-    target_link_libraries(${test} PRIVATE ${LINK_LIBRARIES})
-    target_include_directories(${test}
+    target_link_libraries(hub-${test} PRIVATE ${LINK_LIBRARIES})
+    target_include_directories(hub-${test}
         #            PUBLIC
         #                ${CMAKE_CURRENT_SOURCE_DIR}
         PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
     if (PahoMqttCpp_FOUND)
-        target_compile_definitions(${test} PUBLIC -DHUB_TESTS_MQTT_FOUND)
+        target_compile_definitions(hub-${test} PUBLIC -DHUB_TESTS_MQTT_FOUND)
     endif()
     #target_compile_definitions(${test} PUBLIC -DHUB_TESTS_BIN_DIR=\"${CMAKE_CURRENT_BINARY_DIR}/\")
 
-    add_test(NAME ${test} COMMAND ${test})
+    add_test(NAME hub-${test} COMMAND ${test})
 
     # if (HUB_BUILD_IMPL_SERVER2)
     #     target_compile_definitions(${test} PUBLIC -DHUB_SERVER_PORT=5000)
@@ -227,12 +227,12 @@ foreach(testFile ${test_srcs})
     #    add_custom_target(
     #        run-${test}
     ##        COMMAND "${CMAKE_BINARY_DIR}/bin/bin-server &"
-    ##        COMMAND ls ${CMAKE_SOURCE_DIR}/scripts/launcher.sh
+    ##        COMMAND ls ${CMAKE_CURRENT_SOURCE_DIR}/scripts/launcher.sh
     ##        COMMAND ls ${CMAKE_BINARY_DIR}/bin/bin-server.exe
-    ##        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh
-    #        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/server/bin-server
-    #        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/client/bin-viewer --exitWhenServerLost
-    #        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/client/bin-nativeViewer --exitWhenServerLost
+    ##        COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/scripts/launcher.sh
+    #        COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/server/bin-server
+    #        COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/client/bin-viewer --exitWhenServerLost
+    #        COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/client/bin-nativeViewer --exitWhenServerLost
     #        COMMAND ctest -C ${CMAKE_BUILD_TYPE} -V -R ${test}
     #        COMMAND ctest -C ${CMAKE_BUILD_TYPE} -V -R test-end
     #        VERBATIM
@@ -241,17 +241,18 @@ foreach(testFile ${test_srcs})
     #    )
     #    custom_target_added(run-${test})
     #endif()
+
     add_custom_target(
-        tests-bin-${test}
+        hub-tests-bin-${test}
         # COMMAND bash echo "${HUB_SERVER_TEST_BIN_PORT}" > hubServerPort.txt
-        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/generateServerPort.sh ${HUB_SERVER_TEST_BIN_PORT}
-        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/bin-server --port ${HUB_SERVER_TEST_BIN_PORT}
-        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/bin-viewer --port ${HUB_SERVER_TEST_BIN_PORT} --exitWhenServerLost
-        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/bin-nativeViewer --port ${HUB_SERVER_TEST_BIN_PORT} --exitWhenServerLost
+        COMMAND bash ${HUB_PROJECT_DIR}/scripts/generateServerPort.sh ${HUB_SERVER_TEST_BIN_PORT}
+        COMMAND bash ${HUB_PROJECT_DIR}/scripts/launcher.sh ${HUB_BIN_DIR}/hub-server --port ${HUB_SERVER_TEST_BIN_PORT}
+        COMMAND bash ${HUB_PROJECT_DIR}/scripts/launcher.sh ${HUB_BIN_DIR}/hub-viewer --port ${HUB_SERVER_TEST_BIN_PORT} --exitWhenServerLost
+        COMMAND bash ${HUB_PROJECT_DIR}/scripts/launcher.sh ${HUB_BIN_DIR}/hub-nativeViewer --port ${HUB_SERVER_TEST_BIN_PORT} --exitWhenServerLost
         # COMMAND ctest -C ${CMAKE_BUILD_TYPE} -V
         COMMAND ctest -C ${CMAKE_BUILD_TYPE} -V -R ${test}
         COMMAND ctest -C ${CMAKE_BUILD_TYPE} -V -R test-end
-        # COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/deleteServerPort.sh
+        # COMMAND bash ${HUB_PROJECT_DIR}/scripts/deleteServerPort.sh
         # COMMAND bash rm hubServerBinPort.txt
         USES_TERMINAL
         COMMENT "Running server"
@@ -259,7 +260,7 @@ foreach(testFile ${test_srcs})
 
 endforeach()
 
-#if ("cor" IN_LIST HUB_SOURCE_DIRS)
+#if ("cor" IN_LIST HUB_MODULES)
 #    message(FATAL_ERROR "ouou")
 #endif()
 
@@ -268,14 +269,14 @@ endforeach()
 
 if (HUB_BUILD_NATIVE)
     add_custom_target(
-        tests-bin
+        hub-tests-bin
         # COMMAND bash echo "${HUB_SERVER_TEST_BIN_PORT}" > hubServerPort.txt
-        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/generateServerPort.sh ${HUB_SERVER_TEST_BIN_PORT}
-        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/bin-server --port ${HUB_SERVER_TEST_BIN_PORT}
-        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/bin-viewer --port ${HUB_SERVER_TEST_BIN_PORT} --exitWhenServerLost
-        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/bin-nativeViewer --port ${HUB_SERVER_TEST_BIN_PORT} --exitWhenServerLost
+        COMMAND bash ${HUB_PROJECT_DIR}/scripts/generateServerPort.sh ${HUB_SERVER_TEST_BIN_PORT}
+        COMMAND bash ${HUB_PROJECT_DIR}/scripts/launcher.sh ${HUB_BIN_DIR}/bin-server --port ${HUB_SERVER_TEST_BIN_PORT}
+        COMMAND bash ${HUB_PROJECT_DIR}/scripts/launcher.sh ${HUB_BIN_DIR}/bin-viewer --port ${HUB_SERVER_TEST_BIN_PORT} --exitWhenServerLost
+        COMMAND bash ${HUB_PROJECT_DIR}/scripts/launcher.sh ${HUB_BIN_DIR}/bin-nativeViewer --port ${HUB_SERVER_TEST_BIN_PORT} --exitWhenServerLost
         COMMAND ctest -C ${CMAKE_BUILD_TYPE} -V
-        # COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/deleteServerPort.sh
+        # COMMAND bash ${HUB_PROJECT_DIR}/scripts/deleteServerPort.sh
         # COMMAND bash rm hubServerBinPort.txt
         USES_TERMINAL
         COMMENT "Running server"
@@ -283,13 +284,13 @@ if (HUB_BUILD_NATIVE)
 
 elseif (HUB_BUILD_CLIENT)
     add_custom_target(
-        tests-bin
-        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/generateServerPort.sh ${HUB_SERVER_TEST_BIN_PORT}
-        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/bin-server --port ${HUB_SERVER_TEST_BIN_PORT}
-        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/bin-viewer --port ${HUB_SERVER_TEST_BIN_PORT} --exitWhenServerLost
-        # COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/bin-nativeViewer --exitWhenServerLost
+        hub-tests-bin
+        COMMAND bash ${HUB_PROJECT_DIR}/scripts/generateServerPort.sh ${HUB_SERVER_TEST_BIN_PORT}
+        COMMAND bash ${HUB_PROJECT_DIR}/scripts/launcher.sh ${HUB_BIN_DIR}/bin-server --port ${HUB_SERVER_TEST_BIN_PORT}
+        COMMAND bash ${HUB_PROJECT_DIR}/scripts/launcher.sh ${HUB_BIN_DIR}/bin-viewer --port ${HUB_SERVER_TEST_BIN_PORT} --exitWhenServerLost
+        # COMMAND bash ${HUB_PROJECT_DIR}/scripts/launcher.sh ${BIN_DIR}/hub-nativeViewer --exitWhenServerLost
         COMMAND ctest -C ${CMAKE_BUILD_TYPE} -V
-        # COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/deleteServerPort.sh
+        # COMMAND bash ${HUB_PROJECT_DIR}/scripts/deleteServerPort.sh
         # VERBATIM
         USES_TERMINAL
         COMMENT "Running server"
@@ -298,23 +299,23 @@ elseif (HUB_BUILD_CLIENT)
 
 elseif (HUB_BUILD_SERVER)
     add_custom_target(
-        tests-bin
-        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/generateServerPort.sh ${HUB_SERVER_TEST_BIN_PORT}
-        COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/launcher.sh ${BIN_DIR}/bin-server --port ${HUB_SERVER_TEST_BIN_PORT}
+        hub-tests-bin
+        COMMAND bash ${HUB_PROJECT_DIR}/scripts/generateServerPort.sh ${HUB_SERVER_TEST_BIN_PORT}
+        COMMAND bash ${HUB_PROJECT_DIR}/scripts/launcher.sh ${HUB_BIN_DIR}/bin-server --port ${HUB_SERVER_TEST_BIN_PORT}
         COMMAND ctest -C ${CMAKE_BUILD_TYPE} -V
-        # COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/deleteServerPort.sh
+        # COMMAND bash ${HUB_PROJECT_DIR}/scripts/deleteServerPort.sh
         USES_TERMINAL
         COMMENT "Running server"
     )
 endif()
 
-if (TARGET tests-bin)
+if (TARGET hub-tests-bin)
     custom_target_added(tests-bin)
 endif()
 # endif()
 
 add_custom_target(
-    tests
+    hub-tests
     COMMAND ctest -C ${CMAKE_BUILD_TYPE} -V
     USES_TERMINAL
     COMMENT "Running tests")

@@ -12,7 +12,7 @@
 //#include "core/Utils.hpp"
 // #include "sensor/Acquisition.hpp"
 
-#ifdef HUB_BUILD_SENSOR
+#ifndef HUB_NON_BUILD_SENSOR
 #    include "sensor/InputSensor.hpp"
 #endif
 
@@ -125,7 +125,11 @@ ViewerStream<InputStream>::ViewerStream(
 // m_onLogMessage( onLogMessage )
 {
 
+#ifndef HUB_NON_BUILD_SENSOR
     assert( m_viewerHandler.onNewStream || m_viewerHandler.onNewSensor );
+#else
+    assert( m_viewerHandler.onNewStream );
+#endif
     // m_streaming = m_onNewStreamer( streamName.c_str(), sensorSpec );
     // const bool clientWantStream = m_onNewStreamer( streamName.c_str(), sensorSpec );
 
@@ -136,6 +140,7 @@ ViewerStream<InputStream>::ViewerStream(
         if ( m_viewerHandler.onNewData && clientWantToWatchStream ) { startStream(); }
     }
     // sensor stream
+#ifndef HUB_NON_BUILD_SENSOR
     else {
         hub::io::Memory memory(header.getUserDefined());
         hub::sensor::SensorSpec sensorSpec;
@@ -144,6 +149,7 @@ ViewerStream<InputStream>::ViewerStream(
             m_viewerHandler.onNewSensor( streamName.c_str(), sensorSpec );
         if ( m_viewerHandler.onNewAcq && clientWantToWatchStream ) { startStream(); }
     }
+#endif
 }
 
 template <class InputStream>
@@ -152,7 +158,11 @@ ViewerStream<InputStream>::~ViewerStream() {
     DEBUG_MSG( "[Viewer][Stream] ~Stream() streamer '" << m_streamName << "' started" );
 #endif
     // if ( m_viewerHandler.onNewAcq && m_streaming ) {
+#ifndef HUB_NON_BUILD_SENSOR
     if ( m_viewerHandler.onNewData || m_viewerHandler.onNewAcq ) {
+#else
+    if ( m_viewerHandler.onNewData ) {
+#endif
         if ( m_streaming ) {
             assert( m_thread != nullptr );
             // if ( m_viewerHandler.onDelStream ) { m_viewerHandler.onDelStream(
@@ -230,6 +240,7 @@ void ViewerStream<InputStream>::startStream() {
                 }
             }
             // sensor stream
+#ifndef HUB_NON_BUILD_SENSOR
             else {
                 assert( m_viewerHandler.onNewAcq );
 
@@ -251,6 +262,7 @@ void ViewerStream<InputStream>::startStream() {
                     // m_viewerHandler.onNewData( m_streamName.c_str(), datas );
                 }
             }
+#endif
         }
 #ifdef DEBUG
         catch ( std::exception& ex ) {
