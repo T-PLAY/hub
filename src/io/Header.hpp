@@ -6,7 +6,7 @@
 // #include "io/output/OutputZppBits.hpp"
 #include <array>
 
-#include "core/Info.hpp"
+// #include "core/Info.hpp"
 #include "core/Macros.hpp"
 #include "core/Traits.hpp"
 #include "core/io/Memory.hpp"
@@ -33,57 +33,7 @@ class Header
         return sizeof( m_headerSize ) + sizeof( m_dataSize ) + 4 + m_userDefined.size();
     }
 
-    Header( Size_t dataSize = 0, const Datas_t& userDefined = {} ) :
-        m_dataSize( dataSize ), m_userDefined( userDefined ) {
-        m_headerSize = getSize();
-
-        // memset(m_magicNumber.data(), ' ', 31);
-        const auto joker = ' ';
-        std::fill( m_magicNumber.begin(), m_magicNumber.end(), joker );
-        m_magicNumber.back() = '\n';
-        // m_magicNumber.back() = 0;
-
-#ifdef WIN32
-        sprintf_s( m_magicNumber.data(),
-                  128,
-                   "%c%c%c %d.%d.%d * %s",
-                   'H',
-                   'U',
-                   'B',
-                   s_versionMajor,
-                   s_versionMinor,
-                   s_versionPatch,
-                 "Copyright 2022-2023 * author : gauthierbouyjou@aol.com" );
-#else
-#    ifdef OS_MACOS
-        snprintf( m_magicNumber.data(),
-                  128,
-                  "%c%c%c %d.%d.%d * %s" ,
-                  'H',
-                  'U',
-                  'B',
-                  s_versionMajor,
-                  s_versionMinor,
-                  s_versionPatch,
-                 "Copyright 2022-2023 * author : gauthierbouyjou@aol.com" );
-#    else
-        sprintf( m_magicNumber.data(),
-                 "%c%c%c %d.%d.%d * %s",
-                 'H',
-                 'U',
-                 'B',
-                 s_versionMajor,
-                 s_versionMinor,
-                 s_versionPatch,
-                 "Copyright 2022-2023 * author : gauthierbouyjou@aol.com" );
-#    endif
-#endif
-
-        assert( strlen( m_magicNumber.data() ) < sizeof( m_magicNumber ) );
-        m_magicNumber[strlen( m_magicNumber.data() )] = joker;
-        //    memory.write( reinterpret_cast<unsigned char*>(m_magicNumber), 80 );
-        // write( reinterpret_cast<unsigned char*>( m_magicNumber ), 80 );
-    }
+    Header( Size_t dataSize = 0, const Datas_t& userDefined = {} );
 
     Header( const Header& )            = default;
     Header& operator=( const Header& ) = default;
@@ -106,40 +56,7 @@ class Header
     void read( Input& input ) {
         input.read( (Data_t*)m_magicNumber.data(), m_magicNumber.size() );
 
-        int versionMajor;
-        int versionMinor;
-        int versionPatch;
-        char h;
-        char u;
-        char b;
-#ifdef WIN32
-        sscanf_s( m_magicNumber.data(),
-                  "%c%c%c %d.%d.%d",
-                  &h,
-                  1,
-                  &u,
-                  1,
-                  &b,
-                  1,
-                  &versionMajor,
-                  &versionMinor,
-                  &versionPatch );
-#else
-        sscanf( m_magicNumber.data(),
-                "%c%c%c %d.%d.%d",
-                &h,
-                &u,
-                &b,
-                &versionMajor,
-                &versionMinor,
-                &versionPatch );
-#endif
-        assert( h == 'H' );
-        assert( u == 'U' );
-        assert( b == 'B' );
-        assert( versionMajor <= s_versionMajor );
-        assert( versionMinor <= s_versionMinor );
-        assert( versionPatch <= s_versionPatch );
+        checkMagicNumber();
 
         input.readAll( m_headerSize, m_dataSize, m_userDefined );
 
@@ -172,6 +89,9 @@ class Header
     const Datas_t& getUserDefined() const { return m_userDefined; }
 
     // const Datas_t & getUserDefined() const;
+
+  private:
+    void checkMagicNumber() const;
 
   private:
     MagicNumber m_magicNumber;

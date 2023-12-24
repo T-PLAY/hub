@@ -50,17 +50,23 @@ foreach(HUB_MODULE ${HUB_MODULES})
         test_src
         ${CMAKE_CURRENT_SOURCE_DIR}/${HUB_MODULE}/*.cpp
     )
-list(APPEND test_srcs ${test_src})
-file(
-    #    GLOB
-    GLOB_RECURSE
-    test_header
-    ${CMAKE_CURRENT_SOURCE_DIR}/${HUB_MODULE}/*.hpp
-)
-list(APPEND test_headers ${test_header})
+    list(APPEND test_srcs ${test_src})
+
+    file(
+        #    GLOB
+        GLOB_RECURSE
+        test_header
+        ${CMAKE_CURRENT_SOURCE_DIR}/${HUB_MODULE}/*.hpp
+    )
+    list(APPEND test_headers ${test_header})
 endforeach()
 
+# list(APPEND test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/test_common.cpp)
 list(APPEND test_headers ${CMAKE_CURRENT_SOURCE_DIR}/test_common.hpp)
+
+add_library(test-common OBJECT ${test_headers} ${CMAKE_CURRENT_SOURCE_DIR}/test_common.cpp)
+target_link_libraries(test-common PRIVATE ${LINK_LIBRARIES})
+# target_include_directories(test-common PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 
 #set(test_headers_src)
 if (BUILD_CORE)
@@ -153,7 +159,7 @@ list(PREPEND test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/test-start.cpp)
 add_executable(hub-test-all ${test_srcs} ${test_headers})
 #add_executable(test-all ${test_srcs})
 # target_link_libraries(test-all Catch2::Catch2WithMain hub PahoMqttCpp::paho-mqttpp3)
-target_link_libraries(hub-test-all ${LINK_LIBRARIES})
+target_link_libraries(hub-test-all PRIVATE ${LINK_LIBRARIES} test-common)
 target_include_directories(hub-test-all PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 #set_property(TARGET test-all PROPERTY CXX_STANDARD ${CMAKE_CXX_STANDARD})
 #set_property(TARGET test-all PROPERTY CXX_EXTENSIONS OFF)
@@ -205,9 +211,10 @@ foreach(testFile ${test_srcs})
 
     #    add_executable(${test} ${testFile} ${test_common})
     #    add_executable(${test} ${testFile} ${test_headers_src})
+# list(APPEND test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/test_common.cpp)
     add_executable(hub-${test} ${testFile})
     # target_link_libraries(${test} PRIVATE Catch2::Catch2WithMain hub PahoMqttCpp::paho-mqttpp3)
-    target_link_libraries(hub-${test} PRIVATE ${LINK_LIBRARIES})
+    target_link_libraries(hub-${test} PRIVATE ${LINK_LIBRARIES} test-common)
     target_include_directories(hub-${test}
         #            PUBLIC
         #                ${CMAKE_CURRENT_SOURCE_DIR}

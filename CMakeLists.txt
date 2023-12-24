@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.8)
 
 project(hub)
 
-
 include(cmake/Functions.cmake)
 set_property(GLOBAL PROPERTY CUSTOM_TARGETS_FOUNDED "")
 
