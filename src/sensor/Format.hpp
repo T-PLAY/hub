@@ -116,14 +116,24 @@ struct BGR8 {
     unsigned char b;
     unsigned char g;
     unsigned char r;
+    auto toString() const {
+        std::string str;
+        str += std::to_string(b) + " " + std::to_string(g) + " " + std::to_string(r);
+        return str;
+    }
     static constexpr auto name() { return "BGR8"; };
     //    static constexpr auto interpolable() { return false; };
 };
-static_assert( sizeof( RGB8 ) == 3 );
+static_assert( sizeof( BGR8 ) == 3 );
 
 // 8-bit per-pixel
 struct Y8 {
     unsigned char y;
+    auto toString() const {
+        std::string str;
+        str += y;
+        return str;
+    }
     static constexpr auto name() { return "Y8"; };
 };
 static_assert( sizeof( Y8 ) == 1 );

@@ -18,6 +18,7 @@ template <class Type, Size_t... Ns>
 class MatrixXDBase
 {
   public:
+    static struct {} matrix;
     static constexpr auto Capacity = ( Ns * ... );
     static constexpr auto Size     = sizeof_<Type>() * Capacity;
     static constexpr auto capacity() { return Capacity; };
@@ -92,7 +93,8 @@ class MatrixXDBase
     Matrix getMatrix() const {
         Matrix matrix;
         serialize( matrix );
-        matrix.setData( m_buffer.data(), m_buffer.size() );
+        // matrix.setData( m_buffer.data(), m_buffer.size() );
+        matrix.setData( m_buffer.data(), Size );
         return matrix;
     }
 

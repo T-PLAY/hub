@@ -12,6 +12,7 @@ namespace hub {
 namespace sensor {
 
 using Clock = long long;
+static_assert(sizeof(Clock) == 8);
 
 static Clock getClock() {
     return std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count();

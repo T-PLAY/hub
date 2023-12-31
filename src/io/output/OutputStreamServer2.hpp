@@ -83,6 +83,10 @@ class SRC_API OutputStreamServer2 : public Output, public io::StreamServer2
     void stopStreaming();
 
     struct SharedData {
+        SharedData( std::unique_ptr<hub::io::InputOutputSocket>&& serverSocket ) :
+            m_serverSocket { std::move( serverSocket ) } {};
+        SharedData() = default;
+
         std::unique_ptr<net::ServerSocket> m_streamSocket;
         io::Header m_header;
         std::unique_ptr<hub::io::InputOutputSocket> m_serverSocket;
@@ -99,10 +103,8 @@ class SRC_API OutputStreamServer2 : public Output, public io::StreamServer2
         std::unique_ptr<std::thread> m_streamThread;
         std::unique_ptr<std::thread> m_serverThread;
         bool m_shutdown = false;
-
-        SharedData( std::unique_ptr<hub::io::InputOutputSocket>&& serverSocket ) :
-            m_serverSocket { std::move( serverSocket ) } {};
-        SharedData() = default;
+        long long m_byteWrote = 0;
+        std::chrono::high_resolution_clock::time_point m_lastClock = std::chrono::high_resolution_clock::now();
     };
     std::unique_ptr<SharedData> m_data;
     bool m_moved = false;

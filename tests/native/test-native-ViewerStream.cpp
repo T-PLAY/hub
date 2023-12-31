@@ -21,7 +21,7 @@
 
 /// \file
 
-TEST_CASE( "Native Viewer" ) {
+TEST_CASE( "Native Viewer stream" ) {
     TEST_BEGIN()
 
     const int port = GET_RANDOM_PORT;

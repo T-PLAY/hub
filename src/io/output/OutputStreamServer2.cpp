@@ -45,20 +45,20 @@ OutputStreamServer2::OutputStreamServer2( const io::Header& header,
             try {
                 if ( !data->m_serverSocket->isConnected() ) {
 #ifdef DEBUG_OUTPUT_STREAM
-                    std::cout << "[OutputStream][Server] try connect to server "
-                              << *data->m_serverSocket << std::endl;
+                    std::cout << "[OutputStream] try connect to server " << *data->m_serverSocket
+                              << std::endl;
 #endif
                     data->m_serverSocket->connect();
                 }
                 if ( !data->m_serverConnected ) { tryConnectToServer(); }
 #ifdef DEBUG_OUTPUT_STREAM
-                std::cout << "[OutputStream][Server] waiting for server message ..." << std::endl;
+                std::cout << "[OutputStream] waiting for server message ..." << std::endl;
 #endif
                 data->m_serverSocket->read( mess );
 
                 if ( mess == hub::io::StreamBase::ServerMessage::SERVER_CLOSED ) {
 #ifdef DEBUG_OUTPUT_STREAM
-                    std::cout << "[OutputStream][Server] server closed" << std::endl;
+                    std::cout << "[OutputStream] server closed" << std::endl;
 #endif
                     data->m_serverSocket->write(
                         hub::io::StreamBase::ClientMessage::CLIENT_SERVER_DOWN );
@@ -70,14 +70,14 @@ OutputStreamServer2::OutputStreamServer2( const io::Header& header,
                 }
                 else if ( mess == hub::io::StreamBase::ServerMessage::STREAMER_CLOSED ) {
 #ifdef DEBUG_OUTPUT_STREAM
-                    std::cout << "[OutputStream][Server] streamer closed" << std::endl;
+                    std::cout << "[OutputStream] streamer closed" << std::endl;
 #endif
                     data->m_serverConnected = false;
                     break;
                 }
                 else if ( mess == hub::io::StreamBase::ServerMessage::STREAM_VIEWER_INITED ) {
 #ifdef DEBUG_OUTPUT_STREAM
-                    std::cout << "[OutputStream][Server] stream viewer inited" << std::endl;
+                    std::cout << "[OutputStream] stream viewer inited" << std::endl;
 #endif
                     assert( !data->m_streamViewerInited );
                     data->m_streamViewerInited = true;
@@ -85,7 +85,7 @@ OutputStreamServer2::OutputStreamServer2( const io::Header& header,
                 }
                 else if ( mess == hub::io::StreamBase::ServerMessage::STREAMER_INITED ) {
 #ifdef DEBUG_OUTPUT_STREAM
-                    std::cout << "[OutputStream][Server] streamer inited" << std::endl;
+                    std::cout << "[OutputStream] streamer inited" << std::endl;
 #endif
                     // assert( !data->m_streamerInited );
                     data->m_streamerInited = true;
@@ -100,7 +100,7 @@ OutputStreamServer2::OutputStreamServer2( const io::Header& header,
             }
             catch ( net::system::SocketSystem::exception& ex ) {
                 // #ifdef DEBUG_OUTPUT_STREAM
-                std::cout << "[OutputStream][Server] catch exception : " << ex.what() << std::endl;
+                std::cout << "[OutputStream] catch exception : " << ex.what() << std::endl;
                 // #endif
                 std::this_thread::sleep_for( std::chrono::milliseconds( s_pingToServerDelay ) );
                 // std::this_thread::sleep_for( std::chrono::milliseconds( 500 ) );
@@ -163,7 +163,7 @@ OutputStreamServer2::~OutputStreamServer2() {
 
 void OutputStreamServer2::tryConnectToServer() {
 #ifdef DEBUG_OUTPUT_STREAM
-    std::cout << "[OutputStream][Server] server connecting" << std::endl;
+    std::cout << "[OutputStream] server connecting" << std::endl;
 #endif
     assert( !m_data->m_serverConnected );
     m_data->m_serverSocket->write( ClientType::STREAMER );
@@ -188,7 +188,7 @@ void OutputStreamServer2::tryConnectToServer() {
 
     m_data->m_serverConnected = true;
 #ifdef DEBUG_OUTPUT_STREAM
-    std::cout << "[OutputStream][Server] server connected" << std::endl;
+    std::cout << "[OutputStream] server connected" << std::endl;
 #endif
 }
 
@@ -322,6 +322,22 @@ void output::OutputStreamServer2::write( const Data_t* data, Size_t size ) {
     }
 
     m_data->m_mtxClientSockets.unlock();
+
+    // message log
+    if ( !m_data->m_streamViewerSocks.empty() ) {
+        m_data->m_byteWrote += m_data->m_streamViewerSocks.size() * size;
+        const auto now = std::chrono::high_resolution_clock::now();
+        const auto period =
+            std::chrono::duration_cast<std::chrono::milliseconds>( now - m_data->m_lastClock )
+                .count();
+        if ( period > 1'000 ) { // 1 sec
+            const auto bytePerSecond = ( 1000.0 * m_data->m_byteWrote ) / period;
+            std::cout << "[OutputStream] data rate : " << PRETTY_BYTES( bytePerSecond ) << "/s, watched by "
+                      << m_data->m_streamViewerSocks.size() << " streamViewers" << std::endl;
+            m_data->m_lastClock = now;
+            m_data->m_byteWrote = 0;
+        }
+    }
 }
 
 void OutputStreamServer2::setRetain( bool retain ) {

@@ -9,7 +9,7 @@
 #include <io/input/InputStream.hpp>
 #include <io/output/OutputStream.hpp>
 
-TEST_CASE( "InputOutputStream local test" ) {
+TEST_CASE( "InputOutputStream local multicast test" ) {
     TEST_BEGIN()
 
     const auto hostname = hub::utils::getHostname();

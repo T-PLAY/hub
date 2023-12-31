@@ -193,9 +193,9 @@ Client2* ServerImpl2::initClient( hub::io::InputOutputSocket&& sock, int iClient
         }
         else {
             sock.write( hub::io::StreamBase::ServerMessage::OK );
-            const auto& streamer = streamers.find( streamName )->second;
-            const auto& streamIpv4     = streamer->m_streamIpv4;
-            const auto& streamPort     = streamer->m_streamPort;
+            const auto& streamer   = streamers.find( streamName )->second;
+            const auto& streamIpv4 = streamer->m_streamIpv4;
+            const auto& streamPort = streamer->m_streamPort;
 
             sock.write( streamIpv4 );
             sock.write( streamPort );
@@ -314,7 +314,6 @@ void ServerImpl2::addStreamer( StreamerClient2* streamer ) {
     //     streamer->m_retainedSharedToViewer = true;
     // }
     // }
-
 }
 
 void ServerImpl2::addStreamViewer( StreamerClient2* streamer ) {
@@ -364,6 +363,7 @@ void ServerImpl2::delStreamer( StreamerClient2* streamer ) {
     m_mtxStreamName2streamer.lock();
     assert( !m_streamName2streamer.empty() );
     assert( m_streamName2streamer.find( streamName ) != m_streamName2streamer.end() );
+    const auto nActiveClient = m_nActiveClient;
     m_streamName2streamer.erase( streamName );
     m_mtxStreamName2streamer.unlock();
 
@@ -374,6 +374,13 @@ void ServerImpl2::delStreamer( StreamerClient2* streamer ) {
     }
     m_mtxViewers.unlock();
     // }
+
+    int iTry = 0;
+    while ( iTry < 10 && m_nActiveClient == nActiveClient ) {
+        std::cout << headerMsg() << "waiting for removed streamer ..." << std::endl;
+        std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+        ++iTry;
+    }
 
     //    m_mtxPrint.lock();
     std::cout << streamer->headerMsg() << "end streamer : '" << streamName << "'" << std::endl;

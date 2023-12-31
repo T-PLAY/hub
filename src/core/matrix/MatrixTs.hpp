@@ -13,6 +13,7 @@ template <class... Types>
 class MatrixTs
 {
   public:
+    static struct {} matrix;
     static constexpr auto Capacity = 1;
     static constexpr auto Size     = sizeof_<Types...>();
     static constexpr auto capacity() { return Capacity; };

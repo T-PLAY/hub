@@ -86,6 +86,12 @@ class SRC_API SensorSpec
                 const MetaData& metaData = {} ) :
         m_sensorName { sensorName }, m_resolution { resolution.clone() }, m_metaData { metaData } {}
 
+    template <class Matrix>
+    SensorSpec( const std::string& sensorName,
+                const Matrix& resolution,
+                const MetaData& metaData = {} ) :
+        m_sensorName { sensorName }, m_resolution { resolution.getMatrix() }, m_metaData { metaData } {}
+
     // SensorSpec( const std::string& sensorName, const MetaData& metaData = {} ) :
         // m_sensorName { sensorName }, m_metaData { metaData } {}
 
@@ -149,23 +155,24 @@ class SRC_API SensorSpec
     //            return archive( self.m_sensorName, self.resolution );
     //        }
 
-    SensorSpec operator+( const SensorSpec& sensorSpec ) const {
+    SensorSpec operator+( const SensorSpec& other ) const {
 
         std::string sensorName;
         Matrix resolution;
         MetaData metaData;
 
-        sensorName = m_sensorName + " + " + sensorSpec.m_sensorName;
+        sensorName = m_sensorName + " + " + other.m_sensorName;
 
-        resolution = make_matrix( m_resolution, sensorSpec.m_resolution );
+        // resolution = make_matrix( m_resolution, other.m_resolution );
+        resolution = m_resolution | other.m_resolution;
         //        resolution = m_resolution.clone();
         //        resolution.insert(
-        //            resolution.end(), sensorSpec.m_resolutions.begin(),
-        //            sensorSpec.m_resolutions.end() );
-        //        resolution.push_back(sensorSpec.m_resolution);
+        //            resolution.end(), other.m_resolutions.begin(),
+        //            other.m_resolutions.end() );
+        //        resolution.push_back(other.m_resolution);
 
         metaData = m_metaData;
-        metaData.insert( sensorSpec.m_metaData.begin(), sensorSpec.m_metaData.end() );
+        metaData.insert( other.m_metaData.begin(), other.m_metaData.end() );
 
         metaData.erase( "parent" );
 
@@ -173,9 +180,9 @@ class SRC_API SensorSpec
             std::move( sensorName ), std::move( resolution ), std::move( metaData ) );
     }
 
-    SensorSpec& operator+=( const SensorSpec& sensorSpec ) {
-        if ( m_sensorName == "" ) { *this = sensorSpec; }
-        else { *this = *this + sensorSpec; }
+    SensorSpec& operator+=( const SensorSpec& other ) {
+        if ( m_sensorName == "" ) { *this = other; }
+        else { *this = *this + other; }
         return *this;
     }
 

@@ -51,14 +51,14 @@ int main( int argc, char* argv[] ) {
 
     // if ( maxClient != -1 ) { server.setMaxClients( maxClient ); }
 
-    server.run();
+    // server.run();
 
-    // server.asyncRun();
-    // std::cout << "Ctrl+C or Escape to exit" << std::endl;
-    // while ( server.running() && getchar() != 27 ) { // ESC to quit
-    //     server.printStatus();
-    // }
-    // std::cout << "exiting" << std::endl;
+    server.asyncRun();
+    std::cout << "Ctrl+C or Escape to exit" << std::endl;
+    while ( server.running() && getchar() != 27 ) { // ESC to quit
+        server.printStatus();
+    }
+    std::cout << "exiting" << std::endl;
 
     return 0;
 }

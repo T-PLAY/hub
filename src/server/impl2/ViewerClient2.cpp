@@ -114,9 +114,11 @@ void ViewerClient2::notifyNewStreamer( const StreamerClient2* streamer ) {
     // assert(clientMessage == io::StreamBase::ClientMessage::VIEWER_CLIENT_STREAM_ADDED);
 
     m_clientStreamAdded = false;
-    while ( !m_clientStreamAdded ) {
+    int iTry = 0;
+    while ( iTry < 10 && !m_clientStreamAdded ) {
         std::cout << "[ViewerClient] waiting for streamer added ..." << std::endl;
         std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
+        ++iTry;
     }
 
     // m_socket.write(hub::io::StreamBase::ServerMessage::RETAINED_DATA_END);

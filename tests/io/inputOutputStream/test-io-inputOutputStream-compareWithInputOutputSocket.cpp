@@ -8,7 +8,7 @@
 #include <io/input/InputStream.hpp>
 #include <io/output/OutputStream.hpp>
 
-TEST_CASE( "InputOutputStream test" ) {
+TEST_CASE( "InputOutputStream compare with InputOutputSocket" ) {
     TEST_BEGIN()
 
     const std::string ipv4 = "127.0.0.1";

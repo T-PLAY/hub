@@ -385,8 +385,10 @@ static std::string pretty_bytes( hub::Size_t bytes ) {
     constexpr auto buffSize = 32;
     char buff[buffSize] { 0 };
     //static const char* suffixes[7];
+    // static constexpr std::string_view suffixes[] {
+        // "Bytes", "KiloBytes", "MegaBytes", "GigaBytes", "TeraBytes", "PetaBytes", "ExaBytes" };
     static constexpr std::string_view suffixes[] {
-        "Bytes", "KiloBytes", "MegaBytes", "GigaBytes", "TeraBytes", "PetaBytes", "ExaBytes" };
+        "Byte", "Ko", "Mo", "Go", "To", "Po", "Eo" };
     //    suffixes[0]         = "Bytes";
     //    suffixes[1]         = "KiloBytes";
     //    suffixes[2]         = "MegaBytes";

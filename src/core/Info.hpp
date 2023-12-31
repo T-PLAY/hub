@@ -5,14 +5,6 @@
 /* cppcheck-suppress missingInclude */
 // #include "Version.hpp"
 
-// #define HUB_VERSION_MAJOR 2
-// #define HUB_VERSION_MINOR 0
-// #define HUB_VERSION_PATCH 0
-
-// #define HUB_VERSION "2.0.0"
-
-// #define HUB_COMMIT_HASH "38658120d657905efc67523a36e8e5f60469375d"
-
 ///
 /// @author Gauthier Bouyjou
 /// @date 2022-2023
@@ -39,15 +31,12 @@ extern const std::string s_commitHash;
 
 /// @date
 
-///
-/// @brief
-///
-namespace client {}
+namespace core {}
 
 ///
 /// @brief
 ///
-namespace data {}
+namespace net {}
 
 ///
 /// @brief
@@ -58,11 +47,23 @@ namespace io {
 ///
 /// @brief
 ///
-namespace net {}
+namespace server {}
 
 ///
 /// @brief
 ///
-namespace server {}
+namespace client {}
+
+namespace native {}
+
+namespace sensor {}
+
+///
+/// @brief
+///
+namespace data {}
+
+
+
 
 } // namespace hub

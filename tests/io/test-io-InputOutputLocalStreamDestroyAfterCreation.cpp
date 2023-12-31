@@ -18,7 +18,7 @@
 // #include <net/ClientSocket.hpp>
 // #include <net/ServerSocket.hpp>
 
-TEST_CASE( "InputOutputStream test" ) {
+TEST_CASE( "InputOutputStream short destroy both test" ) {
     TEST_BEGIN()
 
     const auto port = GET_RANDOM_PORT;

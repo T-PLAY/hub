@@ -64,7 +64,9 @@ endforeach()
 # list(APPEND test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/test_common.cpp)
 list(APPEND test_headers ${CMAKE_CURRENT_SOURCE_DIR}/test_common.hpp)
 
-add_library(test-common OBJECT ${test_headers} ${CMAKE_CURRENT_SOURCE_DIR}/test_common.cpp)
+# add_library(test-common OBJECT ${test_headers} ${CMAKE_CURRENT_SOURCE_DIR}/test_common.cpp)
+add_library(test-common SHARED ${test_headers} ${CMAKE_CURRENT_SOURCE_DIR}/test_common.cpp)
+# add_library(test-common STATIC ${test_headers} ${CMAKE_CURRENT_SOURCE_DIR}/test_common.cpp)
 target_link_libraries(test-common PRIVATE ${LINK_LIBRARIES})
 # target_include_directories(test-common PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 
@@ -224,7 +226,7 @@ foreach(testFile ${test_srcs})
     endif()
     #target_compile_definitions(${test} PUBLIC -DHUB_TESTS_BIN_DIR=\"${CMAKE_CURRENT_BINARY_DIR}/\")
 
-    add_test(NAME hub-${test} COMMAND ${test})
+    add_test(NAME hub-${test} COMMAND hub-${test})
 
     # if (HUB_BUILD_IMPL_SERVER2)
     #     target_compile_definitions(${test} PUBLIC -DHUB_SERVER_PORT=5000)

@@ -16,7 +16,7 @@ if (NOT TARGET hub)
     message(FATAL_ERROR "target hub not found")
 endif()
 
-if (HUB_BUILD_SERVER)
+# if (HUB_BUILD_SERVER)
 
     set(bin_srcs)
     foreach(HUB_MODULE ${HUB_MODULES})
@@ -33,22 +33,22 @@ if (HUB_BUILD_SERVER)
 
     foreach(name ${SOURCES_BASENAME})
         get_filename_component(basename ${name} NAME)
-        set(TARGET_NAME ${basename})
-        add_executable(hub-${TARGET_NAME} ${name}.cpp)
+        set(TARGET_NAME hub-${basename})
+        add_executable(${TARGET_NAME} ${name}.cpp)
         # target_link_libraries(${TARGET_NAME} ${LINK_LIBRARIES})
-        target_link_libraries(hub-${TARGET_NAME} hub)
+        target_link_libraries(${TARGET_NAME} hub)
 
         if(WIN32)
             if (HUB_BUILD_SHARED)
                 add_custom_command(
-                    TARGET hub-${TARGET_NAME}
+                    TARGET ${TARGET_NAME}
                     POST_BUILD
                     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:hub_shared> $<TARGET_FILE_DIR:${TARGET_NAME}>)
             endif()
         endif()
     endforeach()
 
-endif()
+# endif()
 
 # if (HUB_BUILD_SENSOR)
 # file(

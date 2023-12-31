@@ -6,7 +6,7 @@
 
 #include <io/output/OutputStream.hpp>
 
-TEST_CASE( "InputOutputStream test" ) {
+TEST_CASE( "InputOutputStream local stream destroy after creation test" ) {
     TEST_BEGIN()
 
     const auto port = GET_RANDOM_PORT;

@@ -31,7 +31,7 @@ struct UserDefined {
     }
 };
 
-TEST_CASE( "InputOutputStream test" ) {
+TEST_CASE( "InputOutputStream local header test" ) {
     TEST_BEGIN()
 
     const auto port = GET_RANDOM_PORT;

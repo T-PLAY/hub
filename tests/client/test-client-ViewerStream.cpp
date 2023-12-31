@@ -10,7 +10,7 @@
 // #include <sensor/OutputSensor.hpp>
 #include <core/io/Memory.hpp>
 
-TEST_CASE( "Viewer" ) {
+TEST_CASE( "Viewer stream" ) {
     TEST_BEGIN()
 
     const int port = GET_RANDOM_PORT;

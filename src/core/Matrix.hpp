@@ -9,6 +9,7 @@
 
 #include "core/Macros.hpp"
 #include "core/Node.hpp"
+#include "core/matrix/MatrixBase.hpp"
 #include "core/Traits.hpp"
 
 namespace hub {
@@ -16,6 +17,8 @@ namespace hub {
 class Matrix
 {
   public:
+    static struct {} matrix;
+
     Matrix() = default;
 
     Matrix( Matrix&& matrix )      = default;
@@ -102,7 +105,8 @@ class Matrix
 /////////////////////////////////////// MAKER /////////////////////////////////////////////////////
 
 template <class Type, Size_t N = 1, Size_t... Ns>
-    requires( !std::is_same_v<Type, Matrix> && N > 0 && ( ( Ns > 1 ) && ... ) )
+    // requires( !std::is_same_v<Type, Matrix> && N > 0 && ( ( Ns > 1 ) && ... ) )
+    requires( !isMatrix<Type> && N > 0 && ( ( Ns > 1 ) && ... ) )
 Matrix make_matrix() {
     Matrix matrix;
     matrix.push_back( make_node<Type, N, Ns...>() );
@@ -110,7 +114,8 @@ Matrix make_matrix() {
 }
 
 template <class... Matrices>
-    requires( sizeof...( Matrices ) > 1 )
+    // requires( sizeof...( Matrices ) > 1 )
+    requires( areMatrices<Matrices...> && sizeof...( Matrices ) > 1 )
 Matrix make_matrix( const Matrices&... matrices ) {
     Matrix matrix;
     matrix = ( matrices | ... );

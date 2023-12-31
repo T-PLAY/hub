@@ -5,6 +5,10 @@
 #include "ServerImpl2.hpp"
 #include "StreamerClient2.hpp"
 
+#ifndef HUB_NON_BUILD_SENSOR
+#include "sensor/SensorSpec.hpp"
+#endif
+
 namespace hub {
 namespace server {
 
@@ -22,12 +26,31 @@ StreamerClient2::StreamerClient2( ServerImpl2* server,
 
     // std::cout << headerMsg() << "StreamerClient2() start" << std::endl;
 
-    std::cout << headerMsg() << "new streamer '" << m_streamName << "'" << std::endl;
+    std::cout << headerMsg() << "new stream '" << m_streamName << "'" << std::endl;
 
     m_sock->read( m_nStreamViewer );
 
     // m_sock->read( m_retained );
-    m_sock->read(m_header);
+    m_sock->read( m_header );
+    if ( m_header.getUserDefined().empty() ) {
+        std::cout << headerMsg() << "dectected raw stream of size " << m_header.getDataSize() << std::endl;
+    }
+#ifndef HUB_NON_BUILD_SENSOR
+    else {
+        hub::io::Memory memory(m_header.getUserDefined());
+        hub::sensor::SensorSpec sensorSpec;
+        memory.read(sensorSpec);
+
+        std::cout << headerMsg() << "detected sensor stream '" << sensorSpec.getSensorName() << "'" << std::endl;
+        std::cout << headerMsg() << "acquisitionSize: " << sensorSpec.getResolution().size() << std::endl;
+        std::cout << headerMsg() << "resolution: " << sensorSpec.getResolution() << std::endl;
+
+        const auto& metaData = sensorSpec.getMetaData();
+        for ( const auto& pair : metaData ) {
+            std::cout << headerMsg() << "metaData: " << pair << std::endl;
+        }
+    }
+#endif
 
     // std::atomic<bool> streamerClientInited = false;
 
@@ -85,7 +108,8 @@ StreamerClient2::StreamerClient2( ServerImpl2* server,
                 //             << std::endl;
                 //         std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
                 //     }
-                //     sockPtr->write( hub::io::StreamBase::ServerMessage::RETAINED_SHARED_TO_VIEWER );
+                //     sockPtr->write( hub::io::StreamBase::ServerMessage::RETAINED_SHARED_TO_VIEWER
+                //     );
                 //     // std::cout << "[StreamerClient] new retain data : " << m_retainedData <<
                 //     // std::endl;
                 // }
@@ -108,7 +132,6 @@ StreamerClient2::StreamerClient2( ServerImpl2* server,
 
     assert( m_server != nullptr );
     m_server->addStreamer( this );
-
 }
 
 int StreamerClient2::getNStreamViewer() const {
@@ -157,7 +180,6 @@ void StreamerClient2::notifyInited() {
     // m_sock->write( message );
     m_sock->write( hub::io::StreamBase::ServerMessage::STREAMER_INITED );
 }
-
 
 } // namespace server
 } // namespace hub

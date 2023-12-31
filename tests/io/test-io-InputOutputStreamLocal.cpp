@@ -28,7 +28,7 @@
 //     }
 // };
 
-TEST_CASE( "InputOutputStream test" ) {
+TEST_CASE( "InputOutputStream local test" ) {
     TEST_BEGIN()
 
     const std::string ipv4 = "127.0.0.1";

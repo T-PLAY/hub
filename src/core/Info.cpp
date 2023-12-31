@@ -1,5 +1,7 @@
 #include "Info.hpp"
 
+// #include <string>
+
 #include "Version.hpp"
 
 namespace hub {

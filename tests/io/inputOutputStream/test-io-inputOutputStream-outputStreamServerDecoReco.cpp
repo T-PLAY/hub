@@ -12,6 +12,7 @@
 TEST_CASE( "OutputStream server deco reco test" ) {
     TEST_BEGIN()
 
+    // todo failed on macOs llvm gcc debug segfault
 
     // const auto hostname = hub::utils::getHostname();
     const auto port = GET_RANDOM_PORT;
