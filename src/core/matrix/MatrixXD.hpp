@@ -86,6 +86,7 @@ class MatrixXDBase
     }
 
     void serialize( Matrix& matrix ) const {
+        assert(! matrix.hasValue());
         auto matrix2 = make_matrix<Type, Ns...>();
         matrix |= matrix2;
     }
@@ -94,7 +95,7 @@ class MatrixXDBase
         Matrix matrix;
         serialize( matrix );
         // matrix.setData( m_buffer.data(), m_buffer.size() );
-        matrix.setData( m_buffer.data(), Size );
+        // matrix.setData( m_buffer.data(), Size );
         return matrix;
     }
 

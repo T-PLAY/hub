@@ -316,9 +316,12 @@ void output::OutputStreamServer2::write( const Data_t* data, Size_t size ) {
 
     for ( auto* socketToRemove : socketToRemoves ) {
         clientSockets.remove( *socketToRemove );
-        m_data->m_serverSocket->write(
-            hub::io::StreamBase::ClientMessage::STREAMER_CLIENT_DEL_STREAM_VIEWER );
-        m_data->m_serverSocket->write( (int)m_data->m_streamViewerSocks.size() );
+        // if ( m_data->m_serverSocket != nullptr && m_data->m_serverSocket->isConnected() )
+        if ( m_data->m_serverSocket != nullptr && m_data->m_serverSocket->isConnected() ) {
+            m_data->m_serverSocket->write(
+                hub::io::StreamBase::ClientMessage::STREAMER_CLIENT_DEL_STREAM_VIEWER );
+            m_data->m_serverSocket->write( (int)m_data->m_streamViewerSocks.size() );
+        }
     }
 
     m_data->m_mtxClientSockets.unlock();
@@ -332,8 +335,9 @@ void output::OutputStreamServer2::write( const Data_t* data, Size_t size ) {
                 .count();
         if ( period > 1'000 ) { // 1 sec
             const auto bytePerSecond = ( 1000.0 * m_data->m_byteWrote ) / period;
-            std::cout << "[OutputStream] data rate : " << PRETTY_BYTES( bytePerSecond ) << "/s, watched by "
-                      << m_data->m_streamViewerSocks.size() << " streamViewers" << std::endl;
+            std::cout << "[OutputStream] data rate : " << PRETTY_BYTES( bytePerSecond )
+                      << "/s, watched by " << m_data->m_streamViewerSocks.size() << " streamViewers"
+                      << std::endl;
             m_data->m_lastClock = now;
             m_data->m_byteWrote = 0;
         }

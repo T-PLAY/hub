@@ -375,12 +375,13 @@ void ServerImpl2::delStreamer( StreamerClient2* streamer ) {
     m_mtxViewers.unlock();
     // }
 
-    int iTry = 0;
-    while ( iTry < 10 && m_nActiveClient == nActiveClient ) {
-        std::cout << headerMsg() << "waiting for removed streamer ..." << std::endl;
-        std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
-        ++iTry;
-    }
+    // todo fix
+    // int iTry = 0;
+    // while ( iTry < 10 && m_nActiveClient == nActiveClient ) {
+    //     std::cout << headerMsg() << "waiting for removed streamer ..." << std::endl;
+    //     std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
+    //     ++iTry;
+    // }
 
     //    m_mtxPrint.lock();
     std::cout << streamer->headerMsg() << "end streamer : '" << streamName << "'" << std::endl;

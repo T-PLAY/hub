@@ -94,6 +94,7 @@ class Matrix
     bool hasValue() const;
 
     void clear();
+    void init();
 
   protected:
   protected:
@@ -131,11 +132,14 @@ inline Matrix Matrix::clone() const {
 }
 
 inline Matrix& Matrix::operator|=( const Matrix& other ) {
+    assert(m_nodes.empty() || hasValue() == other.hasValue());
+
     size_t sizeBeforeAdd = m_size;
     for ( const auto& node : other.m_nodes ) {
         push_back( node );
     }
-    if ( !other.m_vector.empty() ) {
+    // if ( !other.m_vector.empty() ) {
+    if (other.hasValue()) {
         m_vector.resize( sizeBeforeAdd + other.m_vector.size() );
         std::copy( other.m_vector.begin(), other.m_vector.end(), m_vector.begin() + sizeBeforeAdd );
     }
@@ -175,6 +179,7 @@ inline Size_t Matrix::nType() const {
 inline void Matrix::setData( const Data_t* data, Size_t size ) {
     assert( size == m_size );
     if ( m_vector.empty() ) m_vector.resize( m_size );
+    assert( !m_vector.empty() );
     assert( m_vector.size() == m_size );
     std::copy( data, data + size, m_vector.data() );
 }
@@ -185,7 +190,7 @@ inline const Data_t* Matrix::data() const {
 }
 
 inline Data_t* Matrix::data() {
-    if ( m_vector.empty() ) m_vector.resize( m_size );
+    // if ( m_vector.empty() ) m_vector.resize( m_size );
     assert( !m_vector.empty() );
     return m_vector.data();
 }
@@ -273,7 +278,8 @@ Size_t Matrix::getOffset( int i ) const {
 template <class Type, int i, class RawType>
     requires( std::is_pointer_v<Type> )
 Type Matrix::get() {
-    if ( m_vector.empty() ) m_vector.resize( m_size );
+    // if ( m_vector.empty() ) m_vector.resize( m_size );
+    assert(! m_vector.empty());
     assert( m_vector.size() == m_size );
     const auto offset = getOffset<RawType>( i );
     assert( 0 <= offset && offset < m_size );
@@ -284,6 +290,7 @@ template <class Type, int i, class RawType>
     requires( std::is_pointer_v<Type> )
 Type Matrix::get() const {
     // if ( m_vector.empty() ) m_vector.resize( m_size );
+    assert(! m_vector.empty());
     assert( m_vector.size() == m_size );
     const auto offset = getOffset<RawType>( i );
     assert( 0 <= offset && offset < m_size );
@@ -293,7 +300,8 @@ Type Matrix::get() const {
 template <class Type, int i, class RawType>
     requires( !std::is_pointer_v<Type> )
 Type Matrix::get() {
-    if ( m_vector.empty() ) m_vector.resize( m_size );
+    // if ( m_vector.empty() ) m_vector.resize( m_size );
+    assert(! m_vector.empty());
     assert( m_vector.size() == m_size );
     const auto offset = getOffset<RawType>( i );
     assert( 0 <= offset && offset < m_size );
@@ -304,6 +312,7 @@ template <class Type, int i, class RawType>
     requires( !std::is_pointer_v<Type> )
 Type Matrix::get() const {
     // if ( m_vector.empty() ) m_vector.resize( m_size );
+    assert(! m_vector.empty());
     assert( m_vector.size() == m_size );
     // const auto offset = 0;
     const auto offset = getOffset<RawType>( i );
@@ -313,6 +322,12 @@ Type Matrix::get() const {
 
 inline void Matrix::clear() {
     m_vector.clear();
+}
+
+inline void Matrix::init()
+{
+    assert(m_size > 0);
+    m_vector.resize(m_size);
 }
 
 } // namespace hub

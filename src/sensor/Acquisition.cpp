@@ -20,6 +20,7 @@ Acquisition make_acquisition(const Matrix &resolution) {
 //    acq.push_back(make_matrix<Clock>());
 //    acq.push_back(resolution);
     acq |= make_matrix<Clock>() | make_matrix<Clock>() | resolution;
+    acq.init();
     return acq;
 }
 

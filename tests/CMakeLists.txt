@@ -65,8 +65,8 @@ endforeach()
 list(APPEND test_headers ${CMAKE_CURRENT_SOURCE_DIR}/test_common.hpp)
 
 # add_library(test-common OBJECT ${test_headers} ${CMAKE_CURRENT_SOURCE_DIR}/test_common.cpp)
-add_library(test-common SHARED ${test_headers} ${CMAKE_CURRENT_SOURCE_DIR}/test_common.cpp)
-# add_library(test-common STATIC ${test_headers} ${CMAKE_CURRENT_SOURCE_DIR}/test_common.cpp)
+# add_library(test-common SHARED ${test_headers} ${CMAKE_CURRENT_SOURCE_DIR}/test_common.cpp)
+add_library(test-common STATIC ${test_headers} ${CMAKE_CURRENT_SOURCE_DIR}/test_common.cpp)
 target_link_libraries(test-common PRIVATE ${LINK_LIBRARIES})
 # target_include_directories(test-common PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 
@@ -255,9 +255,9 @@ foreach(testFile ${test_srcs})
         hub-tests-bin-${test}
         # COMMAND bash echo "${HUB_SERVER_TEST_BIN_PORT}" > hubServerPort.txt
         COMMAND bash ${HUB_PROJECT_DIR}/scripts/generateServerPort.sh ${HUB_SERVER_TEST_BIN_PORT}
-        COMMAND bash ${HUB_PROJECT_DIR}/scripts/launcher.sh ${HUB_BIN_DIR}/hub-server --port ${HUB_SERVER_TEST_BIN_PORT}
-        COMMAND bash ${HUB_PROJECT_DIR}/scripts/launcher.sh ${HUB_BIN_DIR}/hub-viewer --port ${HUB_SERVER_TEST_BIN_PORT} --exitWhenServerLost
-        COMMAND bash ${HUB_PROJECT_DIR}/scripts/launcher.sh ${HUB_BIN_DIR}/hub-nativeViewer --port ${HUB_SERVER_TEST_BIN_PORT} --exitWhenServerLost
+        COMMAND bash ${HUB_PROJECT_DIR}/scripts/launcher.sh ${HUB_BIN_DIR}/hub-bin-server --port ${HUB_SERVER_TEST_BIN_PORT} --daemon
+        COMMAND bash ${HUB_PROJECT_DIR}/scripts/launcher.sh ${HUB_BIN_DIR}/hub-bin-viewer --port ${HUB_SERVER_TEST_BIN_PORT} --exitWhenServerLost
+        COMMAND bash ${HUB_PROJECT_DIR}/scripts/launcher.sh ${HUB_BIN_DIR}/hub-bin-nativeViewer --port ${HUB_SERVER_TEST_BIN_PORT} --exitWhenServerLost
         # COMMAND ctest -C ${CMAKE_BUILD_TYPE} -V
         COMMAND ctest -C ${CMAKE_BUILD_TYPE} -V -R ${test}
         COMMAND ctest -C ${CMAKE_BUILD_TYPE} -V -R test-end
@@ -281,9 +281,9 @@ if (HUB_BUILD_NATIVE)
         hub-tests-bin
         # COMMAND bash echo "${HUB_SERVER_TEST_BIN_PORT}" > hubServerPort.txt
         COMMAND bash ${HUB_PROJECT_DIR}/scripts/generateServerPort.sh ${HUB_SERVER_TEST_BIN_PORT}
-        COMMAND bash ${HUB_PROJECT_DIR}/scripts/launcher.sh ${HUB_BIN_DIR}/bin-server --port ${HUB_SERVER_TEST_BIN_PORT}
-        COMMAND bash ${HUB_PROJECT_DIR}/scripts/launcher.sh ${HUB_BIN_DIR}/bin-viewer --port ${HUB_SERVER_TEST_BIN_PORT} --exitWhenServerLost
-        COMMAND bash ${HUB_PROJECT_DIR}/scripts/launcher.sh ${HUB_BIN_DIR}/bin-nativeViewer --port ${HUB_SERVER_TEST_BIN_PORT} --exitWhenServerLost
+        COMMAND bash ${HUB_PROJECT_DIR}/scripts/launcher.sh ${HUB_BIN_DIR}/hub-bin-server --port ${HUB_SERVER_TEST_BIN_PORT} --daemon
+        COMMAND bash ${HUB_PROJECT_DIR}/scripts/launcher.sh ${HUB_BIN_DIR}/hub-bin-viewer --port ${HUB_SERVER_TEST_BIN_PORT} --exitWhenServerLost
+        COMMAND bash ${HUB_PROJECT_DIR}/scripts/launcher.sh ${HUB_BIN_DIR}/hub-bin-nativeViewer --port ${HUB_SERVER_TEST_BIN_PORT} --exitWhenServerLost
         COMMAND ctest -C ${CMAKE_BUILD_TYPE} -V
         # COMMAND bash ${HUB_PROJECT_DIR}/scripts/deleteServerPort.sh
         # COMMAND bash rm hubServerBinPort.txt
@@ -295,8 +295,8 @@ elseif (HUB_BUILD_CLIENT)
     add_custom_target(
         hub-tests-bin
         COMMAND bash ${HUB_PROJECT_DIR}/scripts/generateServerPort.sh ${HUB_SERVER_TEST_BIN_PORT}
-        COMMAND bash ${HUB_PROJECT_DIR}/scripts/launcher.sh ${HUB_BIN_DIR}/bin-server --port ${HUB_SERVER_TEST_BIN_PORT}
-        COMMAND bash ${HUB_PROJECT_DIR}/scripts/launcher.sh ${HUB_BIN_DIR}/bin-viewer --port ${HUB_SERVER_TEST_BIN_PORT} --exitWhenServerLost
+        COMMAND bash ${HUB_PROJECT_DIR}/scripts/launcher.sh ${HUB_BIN_DIR}/hub-bin-server --port ${HUB_SERVER_TEST_BIN_PORT} --daemon
+        COMMAND bash ${HUB_PROJECT_DIR}/scripts/launcher.sh ${HUB_BIN_DIR}/hub-bin-viewer --port ${HUB_SERVER_TEST_BIN_PORT} --exitWhenServerLost
         # COMMAND bash ${HUB_PROJECT_DIR}/scripts/launcher.sh ${BIN_DIR}/hub-nativeViewer --exitWhenServerLost
         COMMAND ctest -C ${CMAKE_BUILD_TYPE} -V
         # COMMAND bash ${HUB_PROJECT_DIR}/scripts/deleteServerPort.sh
@@ -310,7 +310,7 @@ elseif (HUB_BUILD_SERVER)
     add_custom_target(
         hub-tests-bin
         COMMAND bash ${HUB_PROJECT_DIR}/scripts/generateServerPort.sh ${HUB_SERVER_TEST_BIN_PORT}
-        COMMAND bash ${HUB_PROJECT_DIR}/scripts/launcher.sh ${HUB_BIN_DIR}/bin-server --port ${HUB_SERVER_TEST_BIN_PORT}
+        COMMAND bash ${HUB_PROJECT_DIR}/scripts/launcher.sh ${HUB_BIN_DIR}/hub-bin-server --port ${HUB_SERVER_TEST_BIN_PORT} --daemon
         COMMAND ctest -C ${CMAKE_BUILD_TYPE} -V
         # COMMAND bash ${HUB_PROJECT_DIR}/scripts/deleteServerPort.sh
         USES_TERMINAL

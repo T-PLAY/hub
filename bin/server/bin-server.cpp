@@ -16,10 +16,12 @@ int main( int argc, char* argv[] ) {
     // int maxClient = -1;
     int port = HUB_SERVICE_PORT;
     // int port = hub::io::Stream::s_defaultPort;
-// #ifdef HUB_SERVICE_PORT
-// #else
+    // #ifdef HUB_SERVICE_PORT
+    // #else
     // int port = 0;
-// #endif
+    // #endif
+
+    bool daemon = false;
 
     std::vector<std::string> args( argv + 1, argv + argc );
 
@@ -37,6 +39,9 @@ int main( int argc, char* argv[] ) {
             port                = std::atoi( nextArg.c_str() );
             ++it;
         }
+        else if ( arg == "--daemon" ) {
+            daemon = true;
+        }
         else {
             std::cout << "unrecognized argument: " << arg << std::endl;
             std::cout << argv[0] << " usage: [--maxClient <int>]" << std::endl;
@@ -47,18 +52,19 @@ int main( int argc, char* argv[] ) {
 
     // hub::Server server( port );
 
-    hub::Server server(port);
+    hub::Server server( port );
 
-    // if ( maxClient != -1 ) { server.setMaxClients( maxClient ); }
+    if ( daemon ) { server.run(); }
+    else {
+        // if ( maxClient != -1 ) { server.setMaxClients( maxClient ); }
 
-    // server.run();
-
-    server.asyncRun();
-    std::cout << "Ctrl+C or Escape to exit" << std::endl;
-    while ( server.running() && getchar() != 27 ) { // ESC to quit
-        server.printStatus();
+        server.asyncRun();
+        std::cout << "Ctrl+C or Escape to exit" << std::endl;
+        while ( server.running() && getchar() != 27 ) { // ESC to quit
+            server.printStatus();
+        }
+        std::cout << "exiting" << std::endl;
     }
-    std::cout << "exiting" << std::endl;
 
     return 0;
 }

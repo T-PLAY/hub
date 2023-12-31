@@ -81,6 +81,12 @@ TEST_CASE( "Matrix test" ) {
 //    std::cout << "FILE_NAME: " << FILE_NAME << std::endl;
 //    std::cout << "FILE_NAME_WITHOUT_EXTENSIONS: " << FILE_NAME_WITHOUT_EXTENSION << std::endl;
     //return 0;
+	//
+	
+	static_assert(hub::isMatrix<hub::MatrixXD<int, 640, 480>>);
+    static_assert(hub::isMatrix<hub::MatrixTs<int, double>>);
+    static_assert(hub::isMatrix<hub::Matrix>);
+
 
     hub::io::Archive archive;
 
