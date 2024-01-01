@@ -153,10 +153,10 @@ class SRC_API ViewerInterface
 
     int nStream() const;
     int nStreaming() const;
+    void printStatus() const;
 
   private:
   protected:
-    void printStatus() const;
 
     // void addStream( const std::string& streamName, const sensor::SensorSpec& sensorSpec );
     void addStream(const std::string& streamName , const std::string & streamIpv4, int streamPort, io::Header &&header);

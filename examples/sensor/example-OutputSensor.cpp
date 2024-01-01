@@ -22,10 +22,10 @@ int main() {
     hub::sensor::SensorSpec sensorSpec( "sensorName", Resolution(), metaData );
     std::cout << "sensor spec : " << sensorSpec << std::endl;
 
-    // hub::sensor::OutputSensorT<Resolution> outputSensor(
-        // hub::output::OutputStream( hub::io::make_header( sensorSpec ), "streamName" ) );
     hub::sensor::OutputSensorT<Resolution> outputSensor(
-        hub::output::OutputStream( hub::io::make_header( sensorSpec ), 5000 ) );
+        hub::output::OutputStream( hub::io::make_header( sensorSpec ), "streamName" ) );
+    // hub::sensor::OutputSensorT<Resolution> outputSensor(
+        // hub::output::OutputStream( hub::io::make_header( sensorSpec ), 5000 ) );
 
     std::cout << "sensor spec : " << outputSensor.getSpec() << std::endl;
 

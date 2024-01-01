@@ -41,8 +41,8 @@ StreamerClient2::StreamerClient2( ServerImpl2* server,
         hub::sensor::SensorSpec sensorSpec;
         memory.read(sensorSpec);
 
-        std::cout << headerMsg() << "detected sensor stream '" << sensorSpec.getSensorName() << "'" << std::endl;
-        std::cout << headerMsg() << "acquisitionSize: " << sensorSpec.getResolution().size() << std::endl;
+        std::cout << headerMsg() << "sensor '" << sensorSpec.getSensorName() << "' connected" << std::endl;
+        // std::cout << headerMsg() << "acquisitionSize: " << sensorSpec.getResolution().size() << std::endl;
         std::cout << headerMsg() << "resolution: " << sensorSpec.getResolution() << std::endl;
 
         const auto& metaData = sensorSpec.getMetaData();

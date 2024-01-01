@@ -69,12 +69,13 @@ int main( int argc, char* argv[] ) {
 #endif
     viewerHandler.onNewData = []( const std::string& streamName, const hub::Datas_t& datas ) {
         std::cout << "\033[" << std::to_string( std::hash<std::string> {}( streamName ) % 10 + 40 )
-                  << "m+\033[0m";
+                  << "m+\033[0m" << std::flush;
     };
 #ifndef HUB_NON_BUILD_SENSOR
-    viewerHandler.onNewAcq = []( const std::string& streamName, const hub::sensor::Acquisition & acq ) {
+    viewerHandler.onNewAcq = []( const std::string& streamName,
+                                 const hub::sensor::Acquisition& acq ) {
         std::cout << "\033[" << std::to_string( std::hash<std::string> {}( streamName ) % 10 + 40 )
-                  << "ma\033[0m";
+                  << "ma\033[0m" << std::flush;
     };
 #endif
     // viewerHandler.onNewAcquisition = []( const std::string& streamName,
@@ -103,7 +104,44 @@ int main( int argc, char* argv[] ) {
 
     std::cout << "\t[viewer] Ctrl+C to exit" << std::endl;
 
-    while ( !exit ) {
-        std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
+    if ( exitWhenServerLost ) {
+        while ( !exit ) {
+            std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
+        }
+    }
+    else {
+        // std::cout << "Ctrl+C or Escape to exit" << std::endl;
+        // while ( getchar() != 27 ) { // ESC to quit
+        // viewer.printStatus();
+        // }
+        const auto helperMsg = std::string(argv[0]) + " info: [.|Esc] -> exit, [F5|' '] -> print stats, h -> print this helper message";
+        std::cout << helperMsg << std::endl;
+        // while(true) {
+        // }
+        // while ( server.running() && getchar() != 27 ) { // ESC to quit
+        bool exit = false;
+        while ( !exit ) {                             // ESC to quit
+            const auto key = hub::utils::key_press(); // blocks until a key is pressed
+            // std::cout << "Input is: " << std::to_string( key ) << ", \"" << (char)key << "\""
+            // std::cout << "Input is: " << key << std::endl;
+            switch ( key ) {
+            case hub::utils::Key::F5:
+            case hub::utils::Key::Space:
+                viewer.printStatus();
+                break;
+            case hub::utils::Key::Escape:
+            case hub::utils::Key::Dot:
+                exit = true;
+                break;
+            case hub::utils::Key::h:
+                std::cout << helperMsg << std::endl;
+                break;
+            default:
+                std::cout << "unrecognized key : " << key << std::endl;
+            }
+
+            // server.printStatus();
+        }
+        std::cout << "exiting" << std::endl;
     }
 }

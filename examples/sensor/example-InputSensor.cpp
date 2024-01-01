@@ -15,7 +15,8 @@ int main() {
 
     ////////////////
 
-    hub::sensor::InputSensor inputSensor(hub::input::InputStream(5000));
+    // hub::sensor::InputSensor inputSensor(hub::input::InputStream(5000));
+    hub::sensor::InputSensor inputSensor(hub::input::InputStream("streamName"));
 
     std::cout << "sensor spec : " << inputSensor.getSpec() << std::endl;
     assert(sensorSpec == inputSensor.getSpec());

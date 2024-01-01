@@ -81,7 +81,7 @@ endif()
 
 foreach(name ${EXAMPLE_SRC_BASENAME})
     get_filename_component(basename ${name} NAME)
-    set(TARGET_NAME ${basename})
+    set(TARGET_NAME hub-${basename})
     add_executable(${TARGET_NAME} ${name}.cpp)
 #    target_link_libraries(${TARGET_NAME} hub paho-mqttpp3 paho-mqtt3as)
 #    target_link_libraries(${TARGET_NAME} paho-mqttpp3 paho-mqtt3as)
