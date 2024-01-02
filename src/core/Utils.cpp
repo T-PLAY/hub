@@ -18,6 +18,7 @@
 #include <iostream>
 #include <string>
 #include <thread> // contains <chrono>
+#include <cassert>
 
 namespace hub {
 namespace utils {
@@ -100,7 +101,7 @@ void sleep( const double t ) {
 #    define WIN32_LEAN_AND_MEAN
 #    define VC_EXTRALEAN
 #    include <Windows.h>
-static int key_press() { // not working: F11 (-122, toggles fullscreen)
+Key key_press() { // not working: F11 (-122, toggles fullscreen)
     KEY_EVENT_RECORD keyevent;
     INPUT_RECORD irec;
     DWORD events;
@@ -132,12 +133,13 @@ static int key_press() { // not working: F11 (-122, toggles fullscreen)
                 continue; // disable AltGr + "6"
             case -12:
                 continue; // disable num block 5 with num lock deactivated
-            case 13:
-                return 10; // enter
+            //case 13:
+            //    return 10; // enter
             case -46:
-                return 127; // delete
-            case -49:
-                return 251; // ¹
+                return Key::Delete;
+                //return 127; // delete
+            //case -49:
+            //    return 251; // ¹
             case 0:
                 continue;
             case 1:
@@ -190,7 +192,7 @@ static int key_press() { // not working: F11 (-122, toggles fullscreen)
             case 26:
                 continue; // disable Ctrl + z
             default:
-                return key; // any other ASCII/virtual character
+                return (Key)key; // any other ASCII/virtual character
             }
         }
     }
