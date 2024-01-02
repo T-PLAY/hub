@@ -97,7 +97,8 @@ void sleep( const double t ) {
 // insert, -144 num lock, -20 caps lock, -91 windows key, -93 kontext menu key, -112 to -123 F1 to
 // F12 not working: ¹ (251), num lock (-144), caps lock (-20), windows key (-91), kontext menu key
 // (-93), F11 (-122)
-#if defined( _WIN32 )
+//#if defined( _WIN32 )
+#if defined( WIN32 ) || defined( _WIN32 ) || defined( _WIN64 )
 #    define WIN32_LEAN_AND_MEAN
 #    define VC_EXTRALEAN
 #    include <Windows.h>
@@ -197,7 +198,8 @@ Key key_press() { // not working: F11 (-122, toggles fullscreen)
         }
     }
 }
-#elif defined( __linux__ )
+//#elif defined( __linux__ )
+#else
 #    include <sys/ioctl.h>
 #    include <termios.h>
 Key key_press() { // not working: ¹ (251), num lock (-144), caps lock (-20), windows key
