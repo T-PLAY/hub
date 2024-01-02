@@ -28,8 +28,9 @@ TEST_CASE( "OutputSensor sending acq with disconnect test" ) {
             "sensorName", hub::make_matrix<Resolution>(), metaData );
         // const hub::sensor::SensorSpec sensorSpec( "sensorName", resolution, metaData );
 
-        hub::sensor::OutputSensorT<Resolution> outputSensor( hub::output::OutputStream(
-            hub::io::make_header( sensorSpec ), FILE_NAME, SERVER_PORT ) );
+        hub::sensor::OutputSensorT<Resolution> outputSensor( sensorSpec, FILE_NAME, SERVER_PORT);
+        // hub::sensor::OutputSensorT<Resolution> outputSensor( hub::output::OutputStream(
+            // hub::io::make_header( sensorSpec ), FILE_NAME, SERVER_PORT ) );
         std::cout << "[test] outputSensor inited" << std::endl;
 
         auto acq = outputSensor.acqMsg();

@@ -24,8 +24,9 @@ TEST_CASE( "InputSensor test" ) {
 
     const hub::sensor::SensorSpec sensorSpec( "sensorName", hub::make_matrix<Resolution>(), metaData );
 
-    hub::sensor::OutputSensorT<Resolution> outputSensor(
-        hub::output::OutputStream( hub::io::make_header(sensorSpec), FILE_NAME, SERVER_PORT ) );
+    hub::sensor::OutputSensorT<Resolution> outputSensor(sensorSpec, FILE_NAME, SERVER_PORT);
+    // hub::sensor::OutputSensorT<Resolution> outputSensor(
+        // hub::output::OutputStream( hub::io::make_header(sensorSpec), FILE_NAME, SERVER_PORT ) );
     std::cout << "[test] outputSensor inited" << std::endl;
 
     auto acq = outputSensor.acqMsg();

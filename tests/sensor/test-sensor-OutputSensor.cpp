@@ -33,9 +33,10 @@ TEST_CASE( "OutputSensor test" ) {
         // hub::io::make_header( sensorSpec ), FILE_NAME, SERVER_PORT );
 
     // hub::sensor::OutputSensor outputSensor(outputStream);
-    hub::sensor::OutputSensor outputSensor(
+    hub::sensor::OutputSensor outputSensor(sensorSpec, FILE_NAME, SERVER_PORT);
+    // hub::sensor::OutputSensor outputSensor(
         // sensorSpec,
-        hub::output::OutputStream( hub::io::make_header( sensorSpec ), FILE_NAME, SERVER_PORT ) );
+        // hub::output::OutputStream( hub::io::make_header( sensorSpec ), FILE_NAME, SERVER_PORT ) );
     // hub::sensor::OutputSensorT<Resolution> outputSensor( sensorSpec, archive );
     assert(outputSensor.getSpec() == sensorSpec);
 

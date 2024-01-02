@@ -38,7 +38,6 @@
 namespace hub {
 namespace sensor {
 
-
 /////
 ///// \brief The OutputSensor class
 ///// describes what a sensor physically is.
@@ -58,45 +57,54 @@ class OutputSensor : public Sensor
   public:
     using Sensor::acqMsg;
 
-    // OutputSensor( const SensorSpec& sensorSpec, Output& output ) :
-    template <class OutputT>
-    OutputSensor( OutputT& output ) :
-        // Sensor( sensorSpec ),
-        m_output( output ) {
+    template <class Output = output::OutputStream, class... Args>
+        requires std::is_base_of_v<hub::Output, Output>
+    OutputSensor( const SensorSpec& sensorSpec, const Args&... args ) :
+        Sensor( sensorSpec ),
+        m_output( *( new Output( io::make_header( sensorSpec ), args... ) ) ),
+        m_outputOwner( true ) {
 
-        const auto & header = output.getHeader();
-        hub::io::Memory memory(header.getUserDefined());
-        memory.read(m_spec);
+        assert( m_spec.getResolution().nType() > 0 );
+    }
+
+    template <class OutputT>
+    OutputSensor( const SensorSpec& sensorSpec, OutputT& output ) :
+        Sensor( sensorSpec ), m_output( output ) {
+
+#ifdef DEBUG
+        const auto& header = output.getHeader();
+        hub::io::Memory memory( header.getUserDefined() );
+        SensorSpec headerSpec;
+        memory.read( headerSpec );
+        assert( sensorSpec == headerSpec );
+#endif
 
         assert( m_spec.getResolution().nType() > 0 );
         // m_output.setRetain( true );
         // m_output.write( m_spec );
         // m_output.setRetain( false );
-        //        m_output << m_spec;
     }
 
     template <class Output>
         requires std::is_base_of_v<hub::Output, Output>
-    // OutputSensor( const SensorSpec& sensorSpec, Output&& output ) :
-    OutputSensor( Output&& output ) :
-        // Sensor( sensorSpec ),
+    OutputSensor( const SensorSpec& sensorSpec, Output&& output ) :
+        Sensor( sensorSpec ),
         m_output( *( new Output( std::move( output ) ) ) ),
         m_outputOwner( true ) {
 
-        const auto & header = dynamic_cast<const Output&>(m_output).getHeader();
-        hub::io::Memory memory(header.getUserDefined());
-        memory.read(m_spec);
+#ifdef DEBUG
+        const auto& header = dynamic_cast<const Output&>( m_output ).getHeader();
+        hub::io::Memory memory( header.getUserDefined() );
+        SensorSpec headerSpec;
+        memory.read( headerSpec );
+        assert( sensorSpec == headerSpec );
+#endif
 
         assert( m_spec.getResolution().nType() > 0 );
-        // m_output.setRetain( true );
-        // m_output.write( m_spec );
-        // m_output.setRetain( false );
     }
 
     ~OutputSensor() {
-        if (m_outputOwner) {
-            delete &m_output;
-        }
+        if ( m_outputOwner ) { delete &m_output; }
     }
 
     void operator<<( const Acquisition& acq ) {
@@ -121,85 +129,67 @@ class OutputSensor : public Sensor
 
 /////////////////////////////////////// TEMPLATE //////////////////////////////////////////////////
 
-template <class Resolution>
-// template <class... ResolutionTs>
+template <class Resolution, class Output = output::OutputStream>
 class OutputSensorT : public Sensor
 {
+    static_assert( std::is_base_of_v<hub::Output, Output> );
     using Acquisition = AcquisitionT<Resolution>;
-
-  public:
     // using Acq = Acquisition;
-
-    // OutputSensorT( const SensorSpec& sensorSpec, Output& output ) :
-    template <class Output>
-    OutputSensorT( Output& output ) :
-        // Sensor( sensorSpec ),
-        m_output( output ) {
-
-        auto & header = output.getHeader();
-        hub::io::Memory memory(header.getUserDefined());
-        memory.read(m_spec);
-
-        // if constexpr ( isMatrix<Resolution> ) { m_spec.setResolution( Resolution().getMatrix() ); }
-        // else { m_spec.setResolution( make_matrix<Resolution>() ); }
-#ifdef DEBUG
-        if constexpr ( isMatrix<Resolution> ) {
-            // m_spec.setResolution( Resolution().getMatrix() );
-            assert(Resolution().getMatrix() == m_spec.getResolution());
-        }
-        else {
-            // m_spec.setResolution( make_matrix<Resolution>() );
-            assert(make_matrix<Resolution>() == m_spec.getResolution());
-        }
-#endif
-
-        // m_output.setRetain( true );
-        // m_output.write( m_spec );
-        // m_output.setRetain( false );
-    }
-
-    template <class Output>
-        requires std::is_base_of_v<hub::Output, Output>
-    // OutputSensorT( const SensorSpec& sensorSpec, Output&& output ) :
-    OutputSensorT( Output&& output ) :
-        // Sensor( sensorSpec ),
-        m_output( *( new Output( std::move( output ) ) ) ),
+  public:
+    template <class... Args>
+    OutputSensorT( const SensorSpec& sensorSpec, const Args&... args ) :
+        Sensor( sensorSpec ),
+        m_output( *( new Output( hub::io::make_header( sensorSpec ), args... ) ) ),
         m_outputOwner( true ) {
 
-        const auto & header = dynamic_cast<const Output&>(m_output).getHeader();
-        hub::io::Memory memory(header.getUserDefined());
-        memory.read(m_spec);
-
-        // assert(! isMatrix<Resolution> || Resolution().getMatrix() == m_spec.getResolution());
-        // assert(isMatrix<Resolution> || make_matrix<Resolution>() == m_spec.getResolution());
 #ifdef DEBUG
         if constexpr ( isMatrix<Resolution> ) {
-            // m_spec.setResolution( Resolution().getMatrix() );
-            assert(Resolution().getMatrix() == m_spec.getResolution());
+            assert( Resolution().getMatrix() == m_spec.getResolution() );
         }
-        else {
-            // m_spec.setResolution( make_matrix<Resolution>() );
-            assert(make_matrix<Resolution>() == m_spec.getResolution());
-        }
+        else { assert( make_matrix<Resolution>() == m_spec.getResolution() ); }
 #endif
-
-        // m_output.setRetain( true );
-        // m_output.write( m_spec );
-        // m_output.setRetain( false );
     }
 
+    //     OutputSensorT( Output& output ) : m_output( output ) {
+
+    //         auto& header = output.getHeader();
+    //         hub::io::Memory memory( header.getUserDefined() );
+    //         memory.read( m_spec );
+
+    //         // if constexpr ( isMatrix<Resolution> ) { m_spec.setResolution(
+    //         Resolution().getMatrix() );
+    //         // } else { m_spec.setResolution( make_matrix<Resolution>() ); }
+    // #ifdef DEBUG
+    //         if constexpr ( isMatrix<Resolution> ) {
+    //             assert( Resolution().getMatrix() == m_spec.getResolution() );
+    //         }
+    //         else { assert( make_matrix<Resolution>() == m_spec.getResolution() ); }
+    // #endif
+    //     }
+
+    //     OutputSensorT( Output&& output ) :
+    //         m_output( *( new Output( std::move( output ) ) ) ), m_outputOwner( true ) {
+
+    //         const auto& header = dynamic_cast<const Output&>( m_output ).getHeader();
+    //         hub::io::Memory memory( header.getUserDefined() );
+    //         memory.read( m_spec );
+
+    // #ifdef DEBUG
+    //         if constexpr ( isMatrix<Resolution> ) {
+    //             assert( Resolution().getMatrix() == m_spec.getResolution() );
+    //         }
+    //         else { assert( make_matrix<Resolution>() == m_spec.getResolution() ); }
+    // #endif
+    //     }
+
     ~OutputSensorT() {
-        if (m_outputOwner) {
-            delete &m_output;
-        }
+        if ( m_outputOwner ) { delete &m_output; }
     }
 
     void operator<<( const Acquisition& acq ) {
 #ifdef HUB_DEBUG_OUTPUT
         std::cout << HEADER << "write(const Acquisition&) : " << acq << std::endl;
 #endif
-        //        m_output.write( aqc );
-        //        m_output.write( acq.Matrix::data(), acq.Matrix::size() );
         m_output.write( acq.data(), acq.size() );
     }
 
@@ -210,9 +200,17 @@ class OutputSensorT : public Sensor
   private:
     Output& m_output;
     bool m_outputOwner = false;
-    //    SensorSpec m_sensorSpec;
 
 }; // end OutputSensorT
+
+} // namespace sensor
+
+template <class Resolution, class... Args>
+inline auto make_outputSensor( const sensor::SensorSpec& sensorSpec, const Args&... args ) {
+    return sensor::OutputSensorT<Resolution>( sensorSpec, args... );
+}
+
+} // namespace hub
 
 ////template <typename Output, typename Measures>
 ////// template <typename Measures>
@@ -332,9 +330,6 @@ class OutputSensorT : public Sensor
 /// net::ClientSocket>::value /     //                                           >::type> /     //
 /// OutputSensor( OutputT&& output, SensorSpec&& sensorSpec ) : /     //    return
 /// std::forward<T>(t); / }
-
-} // namespace sensor
-} // namespace hub
 
 //// #ifdef HUB_BUILD_SERVER
 

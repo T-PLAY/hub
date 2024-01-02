@@ -140,8 +140,9 @@ TEST_CASE( "Viewer" ) {
                 assert( viewer.nStream() == 0 );
                 assert( viewer.nStreaming() == 0 );
                 CONSTRUCT_BEGIN( "OutputSensor" );
-                hub::sensor::OutputSensor outputSensor( hub::output::OutputStream(
-                    hub::io::make_header( sensorSpec_ref ), FILE_NAME, port ) );
+                hub::sensor::OutputSensor outputSensor( sensorSpec_ref, FILE_NAME, port);
+                // hub::sensor::OutputSensor outputSensor( hub::output::OutputStream(
+                    // hub::io::make_header( sensorSpec_ref ), FILE_NAME, port ) );
                 CONSTRUCT_END( "OutputSensor" );
                 assert( viewer.nStream() == 1 );
                 assert( viewer.nStreaming() == 1 );

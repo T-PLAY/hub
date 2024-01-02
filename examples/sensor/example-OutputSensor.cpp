@@ -1,17 +1,9 @@
 
-
-#include <queue>
-#include <string>
-
 #include <sensor/OutputSensor.hpp>
 
 int main() {
 
-#if defined( WIN32 ) || defined( DEBUG )
-    constexpr auto maxFps = 40.0;
-#else
-    constexpr auto maxFps = 40.0;
-#endif
+    constexpr auto fps = 40.0;
 
     constexpr auto width  = 640;
     constexpr auto height = 480;
@@ -20,14 +12,8 @@ int main() {
     hub::MetaData metaData;
     metaData["manufactor"] = "My company";
     hub::sensor::SensorSpec sensorSpec( "sensorName", Resolution(), metaData );
-    std::cout << "sensor spec : " << sensorSpec << std::endl;
 
-    hub::sensor::OutputSensorT<Resolution> outputSensor(
-        hub::output::OutputStream( hub::io::make_header( sensorSpec ), "streamName" ) );
-    // hub::sensor::OutputSensorT<Resolution> outputSensor(
-        // hub::output::OutputStream( hub::io::make_header( sensorSpec ), 5000 ) );
-
-    std::cout << "sensor spec : " << outputSensor.getSpec() << std::endl;
+    hub::sensor::OutputSensorT<Resolution> outputSensor( sensorSpec, "streamName" );
 
     auto acq                           = outputSensor.acqMsg();
     auto& start                        = acq.start();
@@ -37,7 +23,7 @@ int main() {
 
     constexpr size_t imgSize = width * height;
 
-    int dec = 0;
+    size_t dec = 0;
     while ( true ) {
         const auto startClock = std::chrono::high_resolution_clock::now();
 
@@ -50,13 +36,12 @@ int main() {
                 imgData[i * width + j].r = ( i + j + dec ) % 256;
             }
         }
-        // end = hub::sensor::getClock();
-        end = start;
+        end = hub::sensor::getClock();
         outputSensor << acq;
 
-        // dec += 50;
         ++dec;
-        const auto endClock = startClock + std::chrono::microseconds( (int)( 1'000'000 / maxFps ) );
+
+        const auto endClock = startClock + std::chrono::microseconds( (int)( 1'000'000 / fps ) );
         std::this_thread::sleep_until( endClock );
     }
 

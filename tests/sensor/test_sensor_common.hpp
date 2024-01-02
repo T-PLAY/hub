@@ -284,9 +284,9 @@ checkSynchronize( Output& output,
 
     // hub::sensor::OutputSensor outputSensor( ref_sensorSpec, output );
     // hub::sensor::OutputSensor outputSensor2( ref_sensorSpec2, output2 );
-    hub::sensor::OutputSensor outputSensor( output );
+    hub::sensor::OutputSensor outputSensor( ref_sensorSpec, output );
     assert( outputSensor.getSpec() == ref_sensorSpec );
-    hub::sensor::OutputSensor outputSensor2( output2 );
+    hub::sensor::OutputSensor outputSensor2( ref_sensorSpec2, output2 );
     assert( outputSensor2.getSpec() == ref_sensorSpec2 );
 
     for ( const auto& acq : ref_acqs ) {
@@ -437,8 +437,9 @@ static void inputOutputSensorAsyncBench( const Args&... args ) {
 
     // outputSensor
     {
-        hub::sensor::OutputSensorT<UserResolution> outputSensor(
-            Output( hub::io::make_header( sensorSpec ), args... ) );
+        hub::sensor::OutputSensorT<UserResolution, Output> outputSensor(sensorSpec, args...);
+        // hub::sensor::OutputSensorT<UserResolution> outputSensor(
+            // Output( hub::io::make_header( sensorSpec ), args... ) );
 
         // write output acq
         outputSensor << acq;
@@ -469,13 +470,14 @@ static void inputOutputSensorBench( const Args&... args ) {
     metaData["name"] = "gauthier";
     const hub::sensor::SensorSpec sensorSpec(
         "sensorName", hub::make_matrix<UserResolution>(), metaData );
-    hub::sensor::OutputSensorT<UserResolution> outputSensor(
-        Output( hub::io::make_header( sensorSpec ), args... ) );
+    hub::sensor::OutputSensorT<UserResolution, Output> outputSensor(sensorSpec, args...);
+    // hub::sensor::OutputSensorT<UserResolution> outputSensor(
+        // Output( hub::io::make_header( sensorSpec ), args... ) );
 
     auto acq       = outputSensor.acqMsg();
     acq.start()    = 4;
     acq.end()      = 3;
-    auto& userType = acq.get<UserType&>();
+    auto& userType = acq.template get<UserType&>();
     userType.a     = 2;
     userType.b     = true;
 
