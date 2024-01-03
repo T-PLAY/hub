@@ -31,7 +31,7 @@ TEST_CASE( "sensor test" ) {
 //            std::cout << "[test] outputSensor created" << std::endl;
 
 //            inputSensor = std::make_unique<hub::sensor::InputSensor>(
-////                hub::io::InputStream( "streamName", hub::net::ClientSocket( ipv4, port ) ) );
+////                hub::input::InputStream( "streamName", hub::net::ClientSocket( ipv4, port ) ) );
 ////                hub::input::InputStreamServer( "streamName", ipv4, port ) );
 //                hub::input::InputStream( FILE_NAME ) );
 //            std::cout << "[test] inputSensor created" << std::endl;

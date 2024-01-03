@@ -460,7 +460,7 @@ TEST_CASE( "InputOutputSensorStream test" ) {
 ////    //////////////////////
 
 ////    std::cout << "ref2_acqs" << std::endl;
-////    const hub::sensor::Resolution ref_resolution2 { hub::format::DOF6, 1 };
+////    const hub::sensor::Resolution ref_resolution2 { hub::format::Dof6, 1 };
 ////    const hub::sensor::Resolutions ref_resolutions2 { ref_resolution2 };
 ////    const hub::sensor::SensorSpec ref_sensorSpec2 { "sensorName2", ref_resolutions2 };
 ////    std::vector<hub::sensor::Acquisition> ref_acqs2;

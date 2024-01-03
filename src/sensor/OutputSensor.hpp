@@ -57,6 +57,18 @@ class OutputSensor : public Sensor
   public:
     using Sensor::acqMsg;
 
+    // OutputSensor( const SensorSpec& sensorSpec,
+    //               const std::string& streamName,
+    //               int port                = HUB_SERVICE_PORT,
+    //               const std::string& ipv4 = HUB_SERVICE_IPV4 ) :
+    //     Sensor( sensorSpec ),
+    //     m_output( *(
+    //         new output::OutputStream( io::make_header( sensorSpec ), streamName, port, ipv4 ) ) ),
+    //     m_outputOwner( true ) {
+
+    //     assert( m_spec.getResolution().nType() > 0 );
+    // }
+
     template <class Output = output::OutputStream, class... Args>
         requires std::is_base_of_v<hub::Output, Output>
     OutputSensor( const SensorSpec& sensorSpec, const Args&... args ) :
@@ -68,6 +80,7 @@ class OutputSensor : public Sensor
     }
 
     template <class OutputT>
+        requires std::is_base_of_v<hub::Output, OutputT>
     OutputSensor( const SensorSpec& sensorSpec, OutputT& output ) :
         Sensor( sensorSpec ), m_output( output ) {
 
@@ -126,7 +139,6 @@ class OutputSensor : public Sensor
     bool m_outputOwner = false;
     //    Measures m_measures;
 };
-
 
 /////////////////////////////////////// TEMPLATE //////////////////////////////////////////////////
 
@@ -211,7 +223,7 @@ class OutputSensorT : public Sensor
 template <class Output = output::OutputStream, class... Args>
 inline auto make_outputSensor( const sensor::SensorSpec& sensorSpec, const Args&... args ) {
     // return sensor::OutputSensorT<Resolution>( sensorSpec, args... );
-    return sensor::OutputSensor(sensorSpec, Output(io::make_header(sensorSpec), args...));
+    return sensor::OutputSensor( sensorSpec, Output( io::make_header( sensorSpec ), args... ) );
 }
 
 template <class Resolution, class... Args>

@@ -95,7 +95,7 @@ TEST_CASE( "File test" ) {
     //        hub::sensor::OutputSensor outputSensor(
     //            hub::sensor::SensorSpec { "sensorName", { { { 1 }, hub::sensor::Format::BGR8 } }
     //            },
-    ////            hub::io::File(
+    ////            hub::input::InputFile(
     ////                std::fstream( filename, std::ios::out | std::ios::binary | std::ios::trunc )
     ///) );
     //            hub::output::OutputFile(filename));
@@ -123,7 +123,7 @@ TEST_CASE( "File test" ) {
     ////        hub::sensor::InputSensor inputSensor(
     ////            hub::input::InputFile(filename));
     //        auto inputSensor = hub::sensor::InputSensor(hub::input::InputFile(filename));
-    ////            hub::io::File( std::fstream( filename, std::ios::in | std::ios::binary ) ) );
+    ////            hub::input::InputFile( std::fstream( filename, std::ios::in | std::ios::binary ) ) );
     //        const auto& input = inputSensor.getInput();
 
     //        const auto& sensorSpec = inputSensor.getSpec();

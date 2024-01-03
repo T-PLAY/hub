@@ -48,7 +48,7 @@ TEST_CASE( "sensor : inputSensorLogoutWithBusyOutputSensor" ) {
 
 //        {
 
-////            hub::io::InputStream inputStream( "streamName", hub::net::ClientSocket( ipv4, port ) );
+////            hub::input::InputStream inputStream( "streamName", hub::net::ClientSocket( ipv4, port ) );
 ////            hub::input::InputStreamServer inputStream( "streamName", ipv4, port );
 //            hub::input::InputStream inputStream( FILE_NAME );
 //            hub::sensor::InputSensor inputSensor( std::move( inputStream ) );

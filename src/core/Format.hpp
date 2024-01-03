@@ -179,7 +179,7 @@ struct Dof6 {
     float w1; // x
     float w2; // y
     float w3; // z
-    static constexpr auto name() { return "DOF6"; };
+    static constexpr auto name() { return "Dof6"; };
 
     auto toString() const {
         return "x:" + std::to_string( x ) + " y:" + std::to_string( y ) +
@@ -254,7 +254,7 @@ static_assert( sizeof( XYZ32F ) == 12 );
 //static constexpr Format MOTION_XYZ32F	{ 3 * 4,			"MOTION_XYZ32F", 	false };	// Motion data packed as 3 32-bit float values, for X, Y, and Z axis.
 //static constexpr Format GPIO_RAW		{ 0, 				"GPIO_RAW", 		false };	// Raw data from the external sensors hooked to one of the GPIO's.
 //static constexpr Format DISPARITY32		{ 4, 				"DISPARITY32", 		false };	// 32-bit float-point disparity values. Depth->Disparity conversion : Disparity = Baseline*FocalLength/Depth.
-// static constexpr Format DOF6			{ 3 * 4 + 4 * 4,	"DOF6", 			false };	// Pose data packed as floats array, containing translation vector (x, y, z), rotation quaternion (w0, w1, w2, w3 || w, x, y, z).
+// static constexpr Format Dof6			{ 3 * 4 + 4 * 4,	"Dof6", 			false };	// Pose data packed as floats array, containing translation vector (x, y, z), rotation quaternion (w0, w1, w2, w3 || w, x, y, z).
 //static constexpr Format INZI			{ 0, 				"INZI", 			false };	// multi-planar Depth 16bit + IR 10bit.
 //static constexpr Format MESH			{ 0, 				"MESH", 			false };	// Mesh consist of shapes of vertices with indexes.
 //static constexpr Format POINT			{ 0, 				"POINT",		 	false };	// Point consist of x, y and z position, rgb color and depth .
@@ -339,7 +339,7 @@ static_assert( sizeof( XYZ32F ) == 12 );
 /// DISPARITY32
 /// { 4, "DISPARITY32", 		false };	// 32-bit float-point disparity values. Depth->Disparity
 /// conversion : Disparity = Baseline*FocalLength/Depth.
-// static constexpr Format DOF6			{ 3 * 4 + 4 * 4,	"DOF6", 			false };	// Pose
+// static constexpr Format Dof6			{ 3 * 4 + 4 * 4,	"Dof6", 			false };	// Pose
 // data packed as floats array, containing translation vector (x, y, z), rotation quaternion (w0,
 // w1, w2, w3 || w, x, y, z).
 ////static constexpr Format INZI			{ 0, 				"INZI", 			false };	//

@@ -22,6 +22,8 @@ OutputStreamServer2::OutputStreamServer2( const io::Header& header, int streamPo
     startStreaming();
 }
 
+
+
 OutputStreamServer2::OutputStreamServer2( const io::Header& header,
                                           const std::string& streamName,
                                           int port,
@@ -372,6 +374,7 @@ int OutputStreamServer2::getNStreamViewer() const {
 const io::Header& OutputStreamServer2::getHeader() const {
     return m_data->m_header;
 }
+
 
 void OutputStreamServer2::stopStreaming() {
     m_data->m_killed = true;

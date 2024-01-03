@@ -57,7 +57,7 @@ TEST_CASE( "sensor : deco reco" ) {
 //            for ( int iInput = 0; iInput < nInput; ++iInput ) {
 //                {
 //                    hub::sensor::InputSensor inputSensor(
-//                        //                        hub::io::InputStream( "stream",
+//                        //                        hub::input::InputStream( "stream",
 //                        //                        hub::net::ClientSocket( ipv4, port ) ) );
 //                        //                        hub::input::InputStreamServer( "stream", ipv4,
 //                        //                        port ) );

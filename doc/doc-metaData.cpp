@@ -5,7 +5,7 @@
 
 int main() {
 
-    hub::SensorSpec::MetaData metaData;
+    hub::MetaData metaData;
     metaData["hello"] = 0;
 
     hub::Any any( "hello" );

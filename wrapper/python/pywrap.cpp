@@ -24,7 +24,7 @@ class CustomSensorSpec
     CustomSensorSpec( const std::string& sensorName,
                       const hub::Resolutions& resolutions,
                       const py::dict& dict ) {
-        hub::SensorSpec::MetaData metaData;
+        hub::MetaData metaData;
         for ( const auto& item : dict ) {
             const auto& key         = item.first;
             const auto& keyStr      = key.cast<std::string>();
@@ -32,9 +32,9 @@ class CustomSensorSpec
             const auto& valueDouble = value.cast<double>();
             metaData[keyStr]        = hub::Any( valueDouble );
         }
-        m_sensorSpec = hub::SensorSpec( sensorName, resolutions, metaData );
+        m_sensorSpec = hub::sensor::SensorSpec( sensorName, resolutions, metaData );
     }
-    hub::SensorSpec m_sensorSpec;
+    hub::sensor::SensorSpec m_sensorSpec;
 };
 
 //////////////////////////////////////////////////////////////
@@ -126,86 +126,86 @@ PYBIND11_MODULE( Hub, m ) {
                 const hub::sensor::Acquisition& acq ) -> void { self.newAcquisition( streamName, acq ); } )
         .def( "isConnected", &hub::client::Streamer::isConnected );
 
-    py::enum_<hub::Format>( m, "Format" )
+    py::enum_<hub::format>( m, "Format" )
         .value(
             "Z16",
-            hub::Format::Z16,
+            hub::format::Z16,
             "16-bit linear depth values. The depth is meters is equal to depth scale pixel value." )
         .value( "DISPARITY16",
-                hub::Format::DISPARITY16,
+                hub::format::DISPARITY16,
                 "16-bit float-point disparity values. Depth->Disparity conversion : Disparity = "
                 "Baseline*FocalLength/Depth." )
-        .value( "XYZ32F", hub::Format::XYZ32F, "32-bit floating point 3D coordinates." )
+        .value( "XYZ32F", hub::format::XYZ32F, "32-bit floating point 3D coordinates." )
         .value( "YUYV",
-                hub::Format::YUYV,
+                hub::format::YUYV,
                 "32-bit y0, u, y1, v data for every two pixels. Similar to YUV422 but packed in a "
                 "different order - https://en.wikipedia.org/wiki/YUV" )
-        .value( "RGB8", hub::Format::RGB8, "8-bit red, green and blue channels" )
+        .value( "RGB8", hub::format::RGB8, "8-bit red, green and blue channels" )
         .value( "BGR8",
-                hub::Format::BGR8,
+                hub::format::BGR8,
                 "8-bit blue, green, and red channels -- suitable for OpenCV" )
         .value( "RGBA8",
-                hub::Format::RGBA8,
+                hub::format::RGBA8,
                 "8-bit red, green and blue channels + constant alpha channel equal to FF" )
         .value( "BGRA8",
-                hub::Format::BGRA8,
+                hub::format::BGRA8,
                 "8-bit blue, green, and red channels + constant alpha channel equal to FF" )
-        .value( "Y8", hub::Format::Y8, "8-bit per-pixel grayscale image" )
-        .value( "Y16", hub::Format::Y16, "16-bit per-pixel grayscale image" )
+        .value( "Y8", hub::format::Y8, "8-bit per-pixel grayscale image" )
+        .value( "Y16", hub::format::Y16, "16-bit per-pixel grayscale image" )
         .value( "RAW10",
-                hub::Format::RAW10,
+                hub::format::RAW10,
                 "Four 10 bits per pixel luminance values packed into a 5-byte macropixel" )
-        .value( "RAW16", hub::Format::RAW16, "16-bit raw image" )
-        .value( "RAW8", hub::Format::RAW8, "8-bit raw image" )
+        .value( "RAW16", hub::format::RAW16, "16-bit raw image" )
+        .value( "RAW8", hub::format::RAW8, "8-bit raw image" )
         .value( "UYVY",
-                hub::Format::UYVY,
+                hub::format::UYVY,
                 "Similar to the standard YUYV pixel format, but packed in a different order" )
-        .value( "MOTION_RAW", hub::Format::MOTION_RAW, "Raw data from the motion sensor" )
+        .value( "MOTION_RAW", hub::format::MOTION_RAW, "Raw data from the motion sensor" )
         .value( "MOTION_XYZ32F",
-                hub::Format::MOTION_XYZ32F,
+                hub::format::MOTION_XYZ32F,
                 "Motion data packed as 3 32-bit float values, for X, Y, and Z axis" )
         .value( "GPIO_RAW",
-                hub::Format::GPIO_RAW,
+                hub::format::GPIO_RAW,
                 "Raw data from the external sensors hooked to one of the GPIO's" )
         .value( "DISPARITY32",
-                hub::Format::DISPARITY32,
+                hub::format::DISPARITY32,
                 "32-bit float-point disparity values. Depth->Disparity conversion : Disparity = "
                 "Baseline*FocalLength/Depth" )
-        .value( "DOF6",
-                hub::Format::DOF6,
+        .value( "Dof6",
+                hub::format::Dof6,
                 "Pose data packed as floats array, containing translation vector (x, y, z), "
                 "rotation quaternion (w0, w1, w2, w3 || w, x, y, z)" )
         .value( "Y10BPACK",
-                hub::Format::Y10BPACK,
+                hub::format::Y10BPACK,
                 "16-bit per-pixel grayscale image unpacked from 10 bits per pixel packed "
                 "([8:8:8:8:2222]) grey-scale image. The data is unpacked to LSB and padded with 6 "
                 "zero bits" )
-        .value( "DISTANCE", hub::Format::DISTANCE, "32-bit float-point depth distance value. " )
+        .value( "DISTANCE", hub::format::DISTANCE, "32-bit float-point depth distance value. " )
         .value(
             "MJPEG",
-            hub::Format::MJPEG,
+            hub::format::MJPEG,
             "Bitstream encoding for video in which an image of each frame is encoded as JPEG-DIB" )
-        .value( "Y8I", hub::Format::Y8I, "8-bit per pixel interleaved. 8-bit left, 8-bit right." )
+        .value( "Y8I", hub::format::Y8I, "8-bit per pixel interleaved. 8-bit left, 8-bit right." )
         .value( "Y12I",
-                hub::Format::Y12I,
+                hub::format::Y12I,
                 "12-bit per pixel interleaved. 12-bit left, 12-bit right. Each pixel is stored in "
                 "a 24-bit word in little-endian order." )
-        .value( "INZI", hub::Format::INZI, "multi-planar Depth 16bit + IR 10bit. " )
-        .value( "INVI", hub::Format::INVI, "8-bit IR stream. " )
+        .value( "INZI", hub::format::INZI, "multi-planar Depth 16bit + IR 10bit. " )
+        .value( "INVI", hub::format::INVI, "8-bit IR stream. " )
         .value( "W10",
-                hub::Format::W10,
+                hub::format::W10,
                 "Grey-scale image as a bit-packed array. 4 pixel data stream taking 5 * byte" )
         .value(
-            "Z16H", hub::Format::Z16H, "Variable-length Huffman-compressed 16-bit depth values." )
-        .value( "FG", hub::Format::FG, "16-bit per-pixel frame grabber format." )
-        .value( "Y411", hub::Format::Y411, "12-bit per-pixel." )
-        .value( "MAT4", hub::Format::MAT4, "Transform matrix 4x4 of float." )
-        .value( "USER_DATA", hub::Format::USER_DATA, "User data with name and any value" )
-        .value( "MESH", hub::Format::MESH, "Mesh consist of shapes of vertices with indexes" )
+            "Z16H", hub::format::Z16H, "Variable-length Huffman-compressed 16-bit depth values." )
+        .value( "FG", hub::format::FG, "16-bit per-pixel frame grabber format." )
+        .value( "Y411", hub::format::Y411, "12-bit per-pixel." )
+        .value( "MAT4", hub::format::Mat4, "Transform matrix 4x4 of float." )
+        .value( "USER_DATA", hub::format::USER_DATA, "User data with name and any value" )
+        .value( "MESH", hub::format::MESH, "Mesh consist of shapes of vertices with indexes" )
         .value( "POINT",
-                hub::Format::POINT,
+                hub::format::POINT,
                 "Point consist of x, y and z position, rgb color and depth " )
         .value( "DENSITY",
-                hub::Format::DENSITY,
+                hub::format::DENSITY,
                 "32-bit density values. For MRI, CT scan and US representations." );
 }

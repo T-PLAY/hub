@@ -730,7 +730,7 @@ namespace input {
 ////           //    return *this;
 ////           //    return rightAcq;
 
-////           //    assert(rightAcq.getMeasures().front().getResolution().second == Format::DOF6);
+////           //    assert(rightAcq.getMeasures().front().getResolution().second == Format::Dof6);
 
 ////           //    auto& leftLastAcqs = leftInput.m_lastAcqs;
 

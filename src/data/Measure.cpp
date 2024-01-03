@@ -58,7 +58,7 @@
 ////        return clone();
 
 //        switch ( m_resolution.second ) {
-//        case sensor::Format::DOF6: {
+//        case sensor::Format::Dof6: {
 //            return data::Dof6::slerp( data::Dof6( *this ), data::Dof6( right ), t );
 //        }
 //        default:
@@ -93,7 +93,7 @@
 
 //    const auto& format = measure.getResolution().second;
 //    switch ( format ) {
-//    case sensor::Format::DOF6: {
+//    case sensor::Format::Dof6: {
 //        const data::Dof6 dof6( measure );
 //        os << dof6;
 //        break;

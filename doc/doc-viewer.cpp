@@ -19,12 +19,12 @@
 int main() {
 
     // startConstruction
-    auto onNewStreamer = [=]( const std::string& streamName, const hub::SensorSpec& sensorSpec ) {
+    auto onNewStreamer = [=]( const std::string& streamName, const hub::sensor::SensorSpec& sensorSpec ) {
         std::cout << "[example-viewer] onNewStreamer : " << streamName << std::endl;
         // accept all stream to run
         return true;
     };
-    auto onDelStreamer = []( const std::string& streamName, const hub::SensorSpec& sensorSpec ) {
+    auto onDelStreamer = []( const std::string& streamName, const hub::sensor::SensorSpec& sensorSpec ) {
         std::cout << "[example-viewer] onDelStreamer : " << streamName << std::endl;
     };
     auto onServerNotFound = []( const std::string& ipv4, int port ) {
@@ -54,7 +54,7 @@ int main() {
         onNewStreamer, onDelStreamer, onServerNotFound, onServerConnected, onServerDisconnected, onNewAcquisition,
                                              onSetProperty,
                                              ipServer.c_str(),
-                                             hub::net::s_defaultServicePort,
+                                             HUB_SERVICE_PORT,
                                             false,
                                              onLogMessage };
     // endConstruction

@@ -1,6 +1,6 @@
 
-#include <InputSensor.hpp>
-#include <OutputSensor.hpp>
+#include <sensor/InputSensor.hpp>
+#include <sensor/OutputSensor.hpp>
 #include <client/Viewer.hpp>
 
 // #include <Server.hpp>
@@ -11,15 +11,15 @@
 
 // needs server running
 
-// void onNewStreamer( const char* sensorName, const hub::SensorSpec* sensorSpec ) {
+// void onNewStreamer( const char* sensorName, const hub::sensor::SensorSpec* sensorSpec ) {
 
-// void onDelStreamer( const char* sensorName, const hub::SensorSpec* sensorSpec ) {
+// void onDelStreamer( const char* sensorName, const hub::sensor::SensorSpec* sensorSpec ) {
 
 /// \file
 
 int main() {
 
-    auto onNewStreamer = []( const char* streamName, const hub::SensorSpec* sensorSpec ) {
+    auto onNewStreamer = []( const char* streamName, const hub::sensor::SensorSpec* sensorSpec ) {
         std::cout << "[Example][Viewer] onNewStreamer : " << streamName << std::endl;
         char sensorName[80] = { 0 };
         int strLen          = 0;
@@ -56,7 +56,7 @@ int main() {
         std::cout << "[Example][Viewer] metaDataStr : '" << metaDataStr << "'" << std::endl;
         return true;
     };
-    auto onDelStreamer = []( const char* streamName, const hub::SensorSpec* sensorSpec ) {
+    auto onDelStreamer = []( const char* streamName, const hub::sensor::SensorSpec* sensorSpec ) {
         std::cout << "[Example][Viewer] onDelStreamer " << streamName << std::endl;
     };
     auto onServerNotFound = []( const char* ipv4, int port ) {
@@ -89,7 +89,7 @@ int main() {
                                              onNewAcquisition,
                                              onSetProperty,
                                              ipServer.c_str(),
-                                             hub::net::s_defaultServicePort,
+                                             HUB_SERVICE_PORT,
                                              onLogMessage );
 
     while ( true ) {

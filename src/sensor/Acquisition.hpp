@@ -2,8 +2,8 @@
 
 #include <chrono>
 
-#include "core/Types.hpp"
 #include "core/Matrix.hpp"
+#include "core/Types.hpp"
 #include "core/matrix/MatrixTs.hpp"
 
 #include "core/Format.hpp"
@@ -15,12 +15,13 @@ namespace hub {
 namespace sensor {
 
 using Clock = long long;
-static_assert(sizeof(Clock) == 8);
+static_assert( sizeof( Clock ) == 8 );
 
 static inline Clock getClock() {
-    return std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count();
+    return std::chrono::duration_cast<std::chrono::microseconds>(
+               std::chrono::high_resolution_clock::now().time_since_epoch() )
+        .count();
 }
-
 
 class Acquisition : public Matrix
 {
@@ -50,17 +51,12 @@ class Acquisition : public Matrix
         }
         return m_resolution;
     }
-    Clock& start() {
-        return get<Clock&>();
-    }
-    Clock getStart() const {
-        return *get<const Clock*>();
-    }
-
+    Clock& start() { return get<Clock&>(); }
     Clock& end() { return get<Clock&, 1>(); }
-    Clock getEnd() const {
-        return *get<const Clock*, 1>();
-    }
+    auto clocks() { return std::tuple<Clock&, Clock&> { start(), end() }; }
+
+    Clock getStart() const { return *get<const Clock*>(); }
+    Clock getEnd() const { return *get<const Clock*, 1>(); }
 
     Acquisition& operator<<( const Acquisition& other ) {
         size_t sizeBeforeAdd = m_size;
@@ -95,7 +91,6 @@ Acquisition make_acquisition( const Matrix& resolution );
 
 ///////////////////////////////////// TEMPLATE ////////////////////////////////
 
-
 template <class Resolution>
 class AcquisitionT : public MatrixTs<Clock, Clock, Resolution>
 {
@@ -103,19 +98,18 @@ class AcquisitionT : public MatrixTs<Clock, Clock, Resolution>
     using Matrix = MatrixTs<Clock, Clock, Resolution>;
     using Matrix::get;
 
-    Clock& start() {
-        return Matrix::template get<Clock&>();
-    }
+    Clock& start() { return Matrix::template get<Clock&>(); }
     Clock getStart() const { return Matrix::template get<Clock>(); }
 
     Clock& end() { return Matrix::template get<Clock&, 1>(); }
     Clock getEnd() const { return Matrix::template get<Clock, 1>(); }
 
+    auto clocks() { return std::tuple<Clock&, Clock&> { start(), end() }; }
+
     // template <class Type>
     // Type get() {
     //     return Matrix::template get<Type>();
     // }
-
 };
 
 //// #include <iostream>

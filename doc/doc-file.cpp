@@ -1,6 +1,6 @@
 
-#include <InputSensor.hpp>
-#include <OutputSensor.hpp>
+#include <sensor/InputSensor.hpp>
+#include <sensor/OutputSensor.hpp>
 
 #include <filesystem>
 #include <thread>
@@ -15,9 +15,9 @@ int main() {
     {
         // clang-format off
         // startConstruction
-hub::io::File outputFile(
+hub::input::InputFile outputFile(
     std::fstream( "file.txt", std::ios::binary | std::ios::out | std::ios::trunc ) );
-hub::io::File inputFile( std::fstream( "file.txt", std::ios::binary | std::ios::in ) );
+hub::input::InputFile inputFile( std::fstream( "file.txt", std::ios::binary | std::ios::in ) );
         // endConstruction
         // clang-format on
     }
@@ -25,36 +25,36 @@ hub::io::File inputFile( std::fstream( "file.txt", std::ios::binary | std::ios::
     // do not execute this code, this is an example of how to use hub library
     {
 
-        hub::SensorSpec::MetaData metaData;
-        hub::Format format = hub::Format::BGR8;
+        hub::MetaData metaData;
+        hub::format format = hub::format::BGR8;
         hub::NDim nDim     = { 1 };
         hub::Resolutions resolutions { { nDim, format } };
-        hub::SensorSpec sensorSpec { "sensorName", { { nDim, hub::Format::BGR8 } }, metaData };
-        hub::SensorSpec sensorSpec2 {
-            "sensorName", { { { 1 }, hub::Format::BGR8 }, { { 1, 2, 3 }, format } }, metaData };
-        hub::SensorSpec sensorSpec3 { "sensorName", {}, metaData };
+        hub::sensor::SensorSpec sensorSpec { "sensorName", { { nDim, hub::format::BGR8 } }, metaData };
+        hub::sensor::SensorSpec sensorSpec2 {
+            "sensorName", { { { 1 }, hub::format::BGR8 }, { { 1, 2, 3 }, format } }, metaData };
+        hub::sensor::SensorSpec sensorSpec3 { "sensorName", {}, metaData };
         {
             hub::sensor::OutputSensor outputSensor2(
-                hub::SensorSpec {
-                    "sensorName", { { { 1 }, hub::Format::BGR8 } }, hub::SensorSpec::MetaData() },
-                hub::io::File( std::fstream( "file.txt", std::ios::out ) ) );
+                hub::sensor::SensorSpec {
+                    "sensorName", { { { 1 }, hub::format::BGR8 } }, hub::MetaData() },
+                hub::input::InputFile( std::fstream( "file.txt", std::ios::out ) ) );
             hub::sensor::OutputSensor outputSensor3(
-                hub::SensorSpec { "sensorName", { { { 1 }, hub::Format::BGR8 } } },
-                hub::io::File( std::fstream( "file.txt", std::ios::out ) ) );
-            hub::SensorSpec sensorSpec( "sensorName", { { { 1 }, hub::Format::BGR8 } }, metaData );
+                hub::sensor::SensorSpec { "sensorName", { { { 1 }, hub::format::BGR8 } } },
+                hub::input::InputFile( std::fstream( "file.txt", std::ios::out ) ) );
+            hub::sensor::SensorSpec sensorSpec( "sensorName", { { { 1 }, hub::format::BGR8 } }, metaData );
             hub::sensor::OutputSensor outputSensor(
-                sensorSpec, hub::io::File( std::fstream( "file.txt", std::ios::out ) ) );
+                sensorSpec, hub::input::InputFile( std::fstream( "file.txt", std::ios::out ) ) );
 
             const unsigned char bgrArray[3] = { 0, 1, 2 };
             const unsigned char dof6Array[28] { 0 };
             hub::data::Dof6 dof6;
             outputSensor2 << ( hub::sensor::Acquisition { 0, 0 }
-                               << hub::Measure { bgrArray, 3, { { 1 }, hub::Format::BGR8 } }
-                               << hub::Measure { dof6Array, 28, { { 1 }, hub::Format::DOF6 } }
+                               << hub::Measure { bgrArray, 3, { { 1 }, hub::format::BGR8 } }
+                               << hub::Measure { dof6Array, 28, { { 1 }, hub::format::Dof6 } }
                                << std::move( hub::data::Dof6() ) << std::move( dof6 ) );
 
             std::fstream file( "file.txt", std::ios::in );
-            hub::sensor::InputSensor inputSensor( hub::io::File( std::move( file ) ) );
+            hub::sensor::InputSensor inputSensor( hub::input::InputFile( std::move( file ) ) );
             const hub::Resolutions& resolutions = inputSensor.getSpec().getResolutions();
 
             hub::sensor::Acquisition acq;
@@ -65,28 +65,28 @@ hub::io::File inputFile( std::fstream( "file.txt", std::ios::binary | std::ios::
         }
 
         {
-            const hub::SensorSpec sensorSpec(
-                "sensorName", { { { 1 }, hub::Format::BGR8 } }, metaData );
+            const hub::sensor::SensorSpec sensorSpec(
+                "sensorName", { { { 1 }, hub::format::BGR8 } }, metaData );
         }
 
         {
-            hub::SensorSpec sensorSpec( "sensorName", { { { 1 }, hub::Format::BGR8 } }, metaData );
+            hub::sensor::SensorSpec sensorSpec( "sensorName", { { { 1 }, hub::format::BGR8 } }, metaData );
             hub::sensor::OutputSensor outputSensor( sensorSpec, "streamName", hub::net::ClientSocket() );
             hub::sensor::InputSensor inputSensor(
-                hub::io::InputStream( "streamName", hub::net::ClientSocket() ) );
+                hub::input::InputStream( "streamName", hub::net::ClientSocket() ) );
         }
     }
 
     {
-        hub::sensor::InputSensor inputSensor( hub::io::File( std::fstream( "file.txt", std::ios::in ) ) );
+        hub::sensor::InputSensor inputSensor( hub::input::InputFile( std::fstream( "file.txt", std::ios::in ) ) );
         hub::sensor::Acquisition acq;
         inputSensor >> acq;
 
         std::cout << "acq = " << acq << std::endl;
 
         hub::sensor::OutputSensor outputSensor(
-            hub::SensorSpec { "sensorName", { { { 1 }, hub::Format::BGR8 } } },
-            hub::io::File( std::fstream( "file.txt", std::ios::out ) ) );
+            hub::sensor::SensorSpec { "sensorName", { { { 1 }, hub::format::BGR8 } } },
+            hub::input::InputFile( std::fstream( "file.txt", std::ios::out ) ) );
         outputSensor << acq;
     }
 

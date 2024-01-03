@@ -1,11 +1,11 @@
 
-#include <InputSensor.hpp>
+#include <sensor/InputSensor.hpp>
 
 #include <filesystem>
 #include <thread>
 
 #include "../tests/test-common.hpp"
-#include <InputSensor.hpp>
+#include <sensor/InputSensor.hpp>
 #include <server/Server.hpp>
 
 /// \file
@@ -22,8 +22,8 @@ int main() {
     constexpr int ref_nAcqs2 = 10;
 
     std::cout << "ref_acqs" << std::endl;
-    const hub::Resolution ref_resolution( { { 1 }, hub::Format::Y8 } );
-    const hub::SensorSpec ref_sensorSpec( "sensorName", { ref_resolution } );
+    const hub::Resolution ref_resolution( { { 1 }, hub::format::Y8 } );
+    const hub::sensor::SensorSpec ref_sensorSpec( "sensorName", { ref_resolution } );
     std::vector<hub::sensor::Acquisition> ref_acqs;
     const int ref_dataSize = hub::sensor::resolution::computeAcquisitionSize( ref_resolution );
     unsigned char* data    = new unsigned char[ref_dataSize];
@@ -43,8 +43,8 @@ int main() {
     //////////////////////
 
     std::cout << "ref2_acqs" << std::endl;
-    const hub::Resolution ref_resolution2( { { 1 }, hub::Format::DOF6 } );
-    const hub::SensorSpec ref_sensorSpec2( "sensorName2", { ref_resolution2 } );
+    const hub::Resolution ref_resolution2( { { 1 }, hub::format::Dof6 } );
+    const hub::sensor::SensorSpec ref_sensorSpec2( "sensorName2", { ref_resolution2 } );
     std::vector<hub::sensor::Acquisition> ref_acqs2;
     const int ref_dataSize2 = hub::sensor::resolution::computeAcquisitionSize( ref_resolution2 );
     unsigned char* data2    = new unsigned char[ref_dataSize2];
@@ -128,7 +128,7 @@ int main() {
 
     std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
 
-    hub::io::InputStream inputStream( "streamName", hub::net::ClientSocket( ipv4, port ) );
+    hub::input::InputStream inputStream( "streamName", hub::net::ClientSocket( ipv4, port ) );
     hub::sensor::InputSensor inputSensor( std::move( inputStream ) );
     std::cout << "inputSensor created" << std::endl;
 

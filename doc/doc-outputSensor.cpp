@@ -1,6 +1,6 @@
 
 
-#include <OutputSensor.hpp>
+#include <sensor/OutputSensor.hpp>
 #include <client/Streamer.hpp>
 
 #include <filesystem>
@@ -17,11 +17,11 @@ int main() {
     constexpr int depth  = 512;
     constexpr int height = 100;
 
-    hub::Format format = hub::Format::DENSITY;
+    hub::format format = hub::format::DENSITY;
     hub::NDim nDim     = { width, depth, height };
     hub::Resolution resolution( { nDim, format } );
     hub::Resolutions resolutions( { resolution } );
-    hub::SensorSpec sensorSpec2( "sensorName", resolutions );
+    hub::sensor::SensorSpec sensorSpec2( "sensorName", resolutions );
     std::cout << sensorSpec2.to_string() << std::endl;
 
     hub::client::Streamer streamer( "127.0.0.1", 4042 );
@@ -43,7 +43,7 @@ int main() {
     return 0;
 
     {
-        hub::SensorSpec sensorSpec;
+        hub::sensor::SensorSpec sensorSpec;
         // clang-format off
         {
             // startConstruction
@@ -76,7 +76,7 @@ hub::sensor::OutputSensor outputSensor(
 // save acquisitions to file
 hub::sensor::OutputSensor outputSensor(
     sensorSpec,
-    hub::io::File( std::fstream(
+    hub::input::InputFile( std::fstream(
         "file.txt", std::ios::binary | std::ios::out | std::ios::trunc ) ) );
             // endConstruction2
         }

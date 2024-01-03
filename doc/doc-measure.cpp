@@ -9,7 +9,7 @@
 // #include <SensorSpec.hpp>
 // #include <Macros.hpp>
 
-#include <Acquisition.hpp>
+#include <sensor/Acquisition.hpp>
 #include <istream>
 #include <ostream>
 #include <streambuf>

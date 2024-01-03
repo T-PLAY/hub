@@ -67,7 +67,9 @@ static Node make_node(const Dims&... dims) {
         }
     // }
     return Node(
-            typeid( Type ).hash_code(), hub::Dims { std::forward<const int&>(dims)... }, TYPE_NAME( Type ), size );
+            // typeid( Type ).hash_code(), hub::Dims { std::forward<const int&>(dims)... }, TYPE_NAME( Type ), size );
+            // typeid( Type ).hash_code(), hub::Dims { std::forward<int>(dims)... }, TYPE_NAME( Type ), size );
+            typeid( Type ).hash_code(), hub::Dims { dims... }, TYPE_NAME( Type ), size );
 }
 
 /////////////////////////////////////// INLINE ////////////////////////////////////////////////////

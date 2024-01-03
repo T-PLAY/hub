@@ -198,6 +198,8 @@ class SRC_API SensorSpec
     std::string getSensorName() const { return m_sensorName; }
     const Matrix& getResolution() const { return m_resolution; }
     const MetaData& getMetaData() const { return m_metaData; }
+    MetaData& getMetaData() { return m_metaData; }
+
     void setResolution( Matrix&& newResolution ) { m_resolution = std::move( newResolution ); }
     void setResolution( const Matrix& newResolution ) { m_resolution = newResolution.clone(); }
 

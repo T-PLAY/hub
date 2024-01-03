@@ -25,7 +25,7 @@ TEST_CASE( "Measure test" ) {
     // CHECK( measure == measure4 );
 
     // unsigned char data2[56] { 1 };
-    // const auto& resolution2 = hub::sensor::Resolution { { 2 }, hub::sensor::Format::DOF6 };
+    // const auto& resolution2 = hub::sensor::Resolution { { 2 }, hub::sensor::Format::Dof6 };
     // hub::Measure measure5( data2, 56, resolution2 );
     // CHECK( measure != measure5 );
 

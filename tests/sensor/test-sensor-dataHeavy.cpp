@@ -42,7 +42,7 @@ TEST_CASE( "sensor : Heavy data" ) {
 
 ////    std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
 //    hub::sensor::InputSensor inputSensor(
-////        hub::io::InputStream( "Sensor", hub::net::ClientSocket( ipv4, port ) ) );
+////        hub::input::InputStream( "Sensor", hub::net::ClientSocket( ipv4, port ) ) );
 ////        hub::input::InputStreamServer( "Sensor", ipv4, port ) );
 //        hub::input::InputStream( FILE_NAME ) );
 

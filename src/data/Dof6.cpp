@@ -7,7 +7,7 @@
 // namespace data {
 
 // Dof6::Dof6( const Measure& measure ) :
-//     Measure( measure.getData(), measure.getSize(), sensor::Resolution { { 1 }, sensor::Format::DOF6 } ) {
+//     Measure( measure.getData(), measure.getSize(), sensor::Resolution { { 1 }, sensor::Format::Dof6 } ) {
 //     assert( measure.getSize() == 28 );
 //     memcpy( reinterpret_cast<unsigned char*>(&m_x), m_data, m_size );
 //     assert( m_data != nullptr );
@@ -16,7 +16,7 @@
 // Dof6::Dof6( float x, float y, float z, float w0, float w1, float w2, float w3 ) :
 //     Measure( reinterpret_cast<unsigned char*>( new float[7] { x, y, z, w0, w1, w2, w3 } ),
 //              28,
-//              sensor::Resolution { { 1 }, sensor::Format::DOF6 } ) {
+//              sensor::Resolution { { 1 }, sensor::Format::Dof6 } ) {
 //     assert( m_size == 28 );
 //     memcpy( reinterpret_cast<unsigned char*>(&m_x), m_data, m_size );
 // }

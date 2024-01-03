@@ -2,8 +2,8 @@
 #include "test_common.hpp"
 #include <catch2/catch_test_macros.hpp>
 
-// #include <InputSensor.hpp>
-// #include <OutputSensor.hpp>
+// #include <sensor/InputSensor.hpp>
+// #include <sensor/OutputSensor.hpp>
 // #include <NativeViewer.hpp>
 
 // #include <Server.hpp>
@@ -244,8 +244,8 @@ TEST_CASE( "Native Viewer stream" ) {
 // ref_metaData["a"] = 0;
 // ref_metaData["b"] = "string";
 // ref_metaData["c"] = 2.0;
-// // const hub::data::Mat4 ref_mat4( 0.0 );
-// const hub::format::MAT4 ref_mat4( 0.0 );
+// // const hub::format::Mat4 ref_mat4( 0.0 );
+// const hub::format::Mat4 ref_mat4( 0.0 );
 
 // std::cout << "ref_mat4: " << ref_mat4 << std::endl;
 // ref_metaData["d"] = ref_mat4;
@@ -283,8 +283,8 @@ TEST_CASE( "Native Viewer stream" ) {
 //     ref_metaData["a"] = 0;
 //     ref_metaData["b"] = "string";
 //     ref_metaData["c"] = 2.0;
-//     // const hub::data::Mat4 ref_mat4( 0.0 );
-//     const hub::format::MAT4 ref_mat4( 0.0 );
+//     // const hub::format::Mat4 ref_mat4( 0.0 );
+//     const hub::format::Mat4 ref_mat4( 0.0 );
 //     ref_metaData["d"] = ref_mat4;
 
 //     std::cout << "[test][NativeViewer] onNewStreamer : " << streamName << std::endl;
@@ -362,8 +362,8 @@ TEST_CASE( "Native Viewer stream" ) {
 //     CHECK( !hub::native::metaData_exists( metaData, "z" ) );
 //     float* data_mat4 = new float[16];
 //     hub::native::metaData_getMat4( metaData, "d", data_mat4 );
-//     // hub::data::Mat4 mat4( data_mat4 );
-//     hub::format::MAT4 mat4( data_mat4 );
+//     // hub::format::Mat4 mat4( data_mat4 );
+//     hub::format::Mat4 mat4( data_mat4 );
 //     CHECK( mat4 == ref_mat4 );
 
 //     CHECK( !hub::native::metaData_getMat4( metaData, "fake", nullptr ) );

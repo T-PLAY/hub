@@ -170,7 +170,7 @@ int main() {
                 << "[test][InputOutputSensor] ############################### inputStream start"
                 << std::endl;
             hub::sensor::InputSensor inputSensor(
-//                hub::io::InputStream( "streamName", hub::net::ClientSocket( ipv4, port2 ) ) );
+//                hub::input::InputStream( "streamName", hub::net::ClientSocket( ipv4, port2 ) ) );
                 hub::input::InputStream( "streamName", ipv4, port2 ) );
 
             const auto& inputSensorSpec = inputSensor.getSpec();

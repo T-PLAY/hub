@@ -12,8 +12,8 @@
 // #include <server/Server.hpp>
 // #include <impl/server2/Server.hpp>
 // #include <impl/server2/io/input/InputStreamServer.hpp>
-// #include <InputSensor.hpp>
-// #include <OutputSensor.hpp>
+// #include <sensor/InputSensor.hpp>
+// #include <sensor/OutputSensor.hpp>
 // #include <thread>
 // #include <net/ClientSocket.hpp>
 // #include <net/ServerSocket.hpp>

@@ -192,10 +192,10 @@ class Lambda
         CHECK( any == any_read );
     }
 
-    //    any = hub::data::Mat4();
+    //    any = hub::format::Mat4();
     //    std::cout << any << std::endl;
-    //    const auto& i = any.get<hub::data::Mat4>();
-    //    CHECK( i == hub::data::Mat4() );
+    //    const auto& i = any.get<hub::format::Mat4>();
+    //    CHECK( i == hub::format::Mat4() );
 
     {
         const Lambda lambda { 5, 0.0, 1.0f, { 0, 1, 2 }, "gauthier" };

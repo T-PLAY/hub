@@ -34,6 +34,7 @@ TEST_CASE( "OutputSensor test" ) {
 
     // hub::sensor::OutputSensor outputSensor(outputStream);
     hub::sensor::OutputSensor outputSensor(sensorSpec, FILE_NAME, SERVER_PORT);
+
     // hub::sensor::OutputSensor outputSensor(
         // sensorSpec,
         // hub::output::OutputStream( hub::io::make_header( sensorSpec ), FILE_NAME, SERVER_PORT ) );
@@ -471,7 +472,7 @@ TEST_CASE( "OutputSensor test" ) {
 ////    //////////////////////
 
 ////    std::cout << "ref2_acqs" << std::endl;
-////    const hub::sensor::Resolution ref_resolution2 { hub::format::DOF6, 1 };
+////    const hub::sensor::Resolution ref_resolution2 { hub::format::Dof6, 1 };
 ////    const hub::sensor::Resolutions ref_resolutions2 { ref_resolution2 };
 ////    const hub::sensor::SensorSpec ref_sensorSpec2 { "sensorName2", ref_resolutions2 };
 ////    std::vector<hub::sensor::Acquisition> ref_acqs2;

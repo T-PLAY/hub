@@ -2,8 +2,8 @@
 // code in README.md of this project
 // streamer code
 
-#include <OutputSensor.hpp>
-#include <io/InputStream.hpp>
+#include <sensor/OutputSensor.hpp>
+#include <io/input/InputStream.hpp>
 #include <io/OutputStream.hpp>
 
 /// \file
@@ -36,7 +36,7 @@ void drawImage( const unsigned char* data, uint64_t size, int width, int height,
 
 } // namespace clientApp
 
-#include <InputSensor.hpp>
+#include <sensor/InputSensor.hpp>
 
 int main() {
 
@@ -46,12 +46,12 @@ int main() {
         constexpr int imageHeight = 480;
 
         // init output sensor
-        const hub::Resolution imageResolution { { imageWidth, imageHeight }, hub::Format::BGR8 };
-        hub::SensorSpec::MetaData metaData;
+        const hub::Resolution imageResolution { { imageWidth, imageHeight }, hub::format::BGR8 };
+        hub::MetaData metaData;
         metaData["fov"]  = 60.0;
         metaData["iso"]  = 200;
         metaData["date"] = "now";
-        const hub::SensorSpec sensorSpec( "sensorName", { imageResolution }, metaData );
+        const hub::sensor::SensorSpec sensorSpec( "sensorName", { imageResolution }, metaData );
 
         hub::sensor::OutputSensor outputSensor {
             sensorSpec, "streamName", hub::net::ClientSocket { "serverIp", serverPort } };
@@ -75,7 +75,7 @@ int main() {
 
     {
         // init input sensor
-        hub::sensor::InputSensor inputSensor { hub::io::InputStream {
+        hub::sensor::InputSensor inputSensor { hub::input::InputStream {
             "streamName", hub::net::ClientSocket { "serverIp", serverPort } } };
 
         const auto& resolutions = inputSensor.getSpec().getResolutions();
@@ -88,7 +88,7 @@ int main() {
 #endif
 
             // if compatible resolution for the client application
-            if ( nDim.size() == 2 && format == hub::Format::BGR8 ) {
+            if ( nDim.size() == 2 && format == hub::format::BGR8 ) {
                 const auto& imageWidth  = nDim.at( 0 );
                 const auto& imageHeight = nDim.at( 1 );
 

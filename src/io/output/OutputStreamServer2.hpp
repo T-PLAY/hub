@@ -48,7 +48,7 @@ class SRC_API OutputStreamServer2 : public Output, public io::StreamServer2
     //                           net::ClientSocket&& clientSocket = net::ClientSocket() );
     OutputStreamServer2( const io::Header& header, int streamPort );
 
-    explicit OutputStreamServer2( const hub::io::Header& header,
+    OutputStreamServer2( const hub::io::Header& header,
                                   const std::string& streamName,
                                   int port                = HUB_SERVICE_PORT,
                                   const std::string& ipv4 = HUB_SERVICE_IPV4 );

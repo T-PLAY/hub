@@ -29,7 +29,7 @@ int main() {
 hub::client::Streamer streamer( "127.0.0.1", 4042 );
 // endConstruction
 
-hub::SensorSpec sensorSpec;
+hub::sensor::SensorSpec sensorSpec;
 hub::Resolution resolution;
 bool receivingDataFromSensor = true;
 

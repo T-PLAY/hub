@@ -20,6 +20,8 @@ using Full_HD      = MatrixXD<format::RGB8, 1920, 1080>;
 using Full_HD_Plus = MatrixXD<format::RGB8, 2160, 1080>;
 using UltraWide    = MatrixXD<format::RGB8, 2560, 1080>;
 
+// static inline make_slice
+
 } // namespace resolution
 
 //using NDim = std::vector<Size_t>;
