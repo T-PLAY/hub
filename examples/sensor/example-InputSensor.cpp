@@ -8,7 +8,7 @@ int main() {
     constexpr auto width  = 640;
     constexpr auto height = 480;
 
-    using Resolution = hub::MatrixXD<hub::sensor::format::BGR8, width, height>;
+    using Resolution = hub::MatrixXD<hub::format::BGR8, width, height>;
     hub::MetaData metaData;
     metaData["manufactor"] = "My company";
     hub::sensor::SensorSpec sensorSpec( "sensorName", Resolution(), metaData );
@@ -24,7 +24,7 @@ int main() {
     auto acq = inputSensor.acqMsg();
     auto& start                        = acq.start();
     auto& end                          = acq.end();
-    hub::sensor::format::BGR8* imgData = acq.get<hub::sensor::format::BGR8*>();
+    hub::format::BGR8* imgData = acq.get<hub::format::BGR8*>();
     assert( acq.size() == 2 * sizeof( hub::sensor::Clock ) + width * height * 3 );
 
     constexpr size_t imgSize = width * height;

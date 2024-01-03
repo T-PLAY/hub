@@ -2,7 +2,8 @@
 
 // #include "sensor/SensorSpec.hpp"
 #include "core/MetaData.hpp"
-#include "sensor/Format.hpp"
+// #include "sensor/Format.hpp"
+#include "core/Format.hpp"
 
 #define HUB_CPP_SOURCE
 #include "native_MetaData.hpp"
@@ -29,7 +30,7 @@ bool metaData_getMat4( const MetaData* metaData,
                        float* output ) {
     if ( metaData->find( metaName ) != metaData->end() ) {
         // const auto& mat4 = metaData->at( metaName ).get<data::Mat4>();
-        const auto& mat4 = metaData->at( metaName ).get<sensor::format::Mat4>();
+        const auto& mat4 = metaData->at( metaName ).get<format::Mat4>();
         // memcpy( output, mat4.getData(), 64 );
         memcpy( output, mat4.data, 64 );
         return true;

@@ -88,7 +88,7 @@ TEST_CASE( "SensorSpec test" ) {
 //    return;
 
     //    hub::sensor::Resolution::NDim nDim = { 1 };
-//    hub::sensor::Resolution resolution { hub::sensor::format::BGR8, 1 };
+//    hub::sensor::Resolution resolution { hub::format::BGR8, 1 };
 //    hub::sensor::Resolution resolution;
 //    hub::sensor::Resolutions resolutions { resolution };
 //    hub::sensor::SensorSpec sensorSpec { "sensorName", resolutions, metaData };
@@ -96,7 +96,7 @@ TEST_CASE( "SensorSpec test" ) {
 //    CHECK( sensorSpec.getSensorName() == "sensorName" );
 //    CHECK( sensorSpec.getAcquisitionSize() == 3 );
 
-//    hub::sensor::SensorSpec sensorSpec2 { "sensorName2", { { hub::sensor::format::RGB8, 1 } } };
+//    hub::sensor::SensorSpec sensorSpec2 { "sensorName2", { { hub::format::RGB8, 1 } } };
 
 //    auto sensorSpecSum = sensorSpec + sensorSpec2;
 //    CHECK( sensorSpecSum.getSensorName() == "sensorName + sensorName2" );

@@ -112,23 +112,26 @@ class MatrixTs
         return getOffset<i, 0, Type, Types...>();
     }
 
-    template <class Type_, class... Types_>
-        requires( !isMatrix<Type_> )
-    void serialize( Matrix& matrix ) const {
-        auto matrix2 = make_matrix<Type_>();
-        matrix |= matrix2;
-        if constexpr ( sizeof...( Types_ ) > 0 ) { serialize<Types_...>( matrix ); }
-    }
+    // template <class Type_, class... Types_>
+    //     requires( !isMatrix<Type_> )
+    // void serialize_( Matrix& matrix ) const {
+    //     auto matrix2 = make_matrix<Type_, 1>();
+    //     matrix |= matrix2;
 
-    template <class Matrix, class... Types_>
-        requires( isMatrix<Matrix> )
-    void serialize( Matrix& matrix ) const {
-        Matrix::serialize( matrix );
+    //     if constexpr ( sizeof...( Types_ ) > 0 ) { serialize_<Types_...>( matrix ); }
+    // }
 
-        if constexpr ( sizeof...( Types_ ) > 0 ) { serialize<Types_...>( matrix ); }
-    }
+    // template <class Matrix, class... Types_>
+    //     requires( isMatrix<Matrix> )
+    // void serialize_( Matrix& matrix ) const {
+    //     // Matrix::serialize_( matrix );
+    //     auto matrix2 = matrix.getMatrix();
+    //     matrix |= matrix2;
 
-    void serialize( Matrix& matrix ) const { serialize<Types...>( matrix ); }
+    //     if constexpr ( sizeof...( Types_ ) > 0 ) { serialize_<Types_...>( matrix ); }
+    // }
+
+    void serialize( Matrix& matrix ) const { serialize_<Types...>( matrix ); }
 
     Matrix getMatrix() const {
         Matrix matrix;
@@ -138,14 +141,30 @@ class MatrixTs
     }
 
     bool operator==( const Matrix& matrix ) {
-        if ( Size == matrix.size() && nType() == matrix.nType() ) {
-            const Matrix& myselfAsMatrix = getMatrix();
-            return myselfAsMatrix == matrix;
-        }
-        return false;
+        return getMatrix() == matrix;
+        // if ( Size == matrix.size() && nType() == matrix.nType() ) {
+            // const Matrix& myselfAsMatrix = getMatrix();
+            // return myselfAsMatrix == matrix;
+        // }
+        // return false;
     }
 
   private:
+    template <class Type_, class... Types_>
+    void serialize_( Matrix& matrix ) const {
+        // Matrix::serialize_( matrix );
+        if constexpr (isMatrix<Type_>) {
+            matrix |= Type_().getMatrix();
+        }
+        else {
+            matrix |= make_matrix<Type_>();
+        }
+        // auto matrix2 = matrix.getMatrix();
+        // matrix |= matrix2;
+
+        if constexpr ( sizeof...( Types_ ) > 0 ) { serialize_<Types_...>( matrix ); }
+    }
+
     template <class Type, class Matrix, class... Types_>
         requires( isMatrix<Matrix> )
     static constexpr auto isSame() {

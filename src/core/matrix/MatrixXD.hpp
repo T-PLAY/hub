@@ -82,7 +82,8 @@ class MatrixXDBase
     template <int i = 0>
     const Type& get() {
         static_assert( 0 <= i && i < Capacity );
-        return reinterpret_cast<const Type&>( *( m_buffer.data() + i ) );
+        // return reinterpret_cast<const Type&>( *( m_buffer.data() + i ) );
+        return reinterpret_cast<const Type&>( *( m_buffer.data() + i * sizeof(Type) ) );
     }
 
     void serialize( Matrix& matrix ) const {
@@ -94,13 +95,18 @@ class MatrixXDBase
     Matrix getMatrix() const {
         Matrix matrix;
         serialize( matrix );
-        // matrix.setData( m_buffer.data(), m_buffer.size() );
+        matrix.setData( m_buffer.data(), m_buffer.size() );
         // matrix.setData( m_buffer.data(), Size );
         return matrix;
     }
 
+    bool operator==( const Matrix& matrix ) {
+        return getMatrix() == matrix;
+    }
+
   private:
-    Buffer<Type, Capacity> m_buffer;
+    // Buffer<Type, Capacity> m_buffer;
+    Buffer<Data_t, Size> m_buffer;
 };
 static_assert( sizeof( MatrixXDBase<int, 2, 3, 4, 5, 6> ) ==
                sizeof( int ) * 2 * 3 * 4 * 5 * 6 + 8 );

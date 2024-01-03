@@ -20,7 +20,7 @@ TEST_CASE( "InputSensor test" ) {
     hub::MetaData metaData;
     metaData["parent"] = "parentName";
 
-    using Resolution = hub::sensor::format::BGR8;
+    using Resolution = hub::format::BGR8;
 
     const hub::sensor::SensorSpec sensorSpec( "sensorName", hub::make_matrix<Resolution>(), metaData );
 
@@ -34,7 +34,7 @@ TEST_CASE( "InputSensor test" ) {
 
     auto& start = acq.start();
     auto& end   = acq.end();
-    auto& bgr8  = acq.get<hub::sensor::format::BGR8&>();
+    auto& bgr8  = acq.get<hub::format::BGR8&>();
     for ( int i = 0; i < 20; ++i ) {
         start  = i;
         end    = i;
@@ -50,12 +50,12 @@ TEST_CASE( "InputSensor test" ) {
     std::cout << "[test] inputSensor inited" << std::endl;
 
     assert( outputSensor.getSpec() == inputSensor.getSpec() );
-    assert( inputSensor.getSpec().getResolution().hasType<hub::sensor::format::BGR8>() );
+    assert( inputSensor.getSpec().getResolution().hasType<hub::format::BGR8>() );
 
     auto acq_read = inputSensor.acqMsg();
     auto& start_read = acq_read.start();
     auto& end_read   = acq_read.end();
-    auto& bgr8_read  = acq_read.get<hub::sensor::format::BGR8&>();
+    auto& bgr8_read  = acq_read.get<hub::format::BGR8&>();
     for ( int i = 0; i < 20; ++i ) {
         std::cout << "read acq " << i << std::endl;
         inputSensor >> acq_read;

@@ -32,7 +32,7 @@ TEST_CASE( "Native Viewer" ) {
 
     // static const hub::io::Header header_ref { sizeof(int) };
 
-    // using Resolution = hub::sensor::format::BGR8;
+    // using Resolution = hub::format::BGR8;
     // hub::MetaData metaData;
     // metaData["user"] = "gauthier";
     // const hub::sensor::SensorSpec sensorSpec_ref {
@@ -244,14 +244,14 @@ TEST_CASE( "Native Viewer" ) {
 // server.asyncRun();
 
 // // const hub::sensor::Resolution ref_resolution( { 1 }, hub::sensor::Format::BGR8 );
-// const auto ref_resolution        = hub::make_matrix<hub::sensor::format::BGR8>();
+// const auto ref_resolution        = hub::make_matrix<hub::format::BGR8>();
 // const std::string ref_sensorName = "sensorName";
 // hub::sensor::SensorSpec::MetaData ref_metaData;
 // ref_metaData["a"] = 0;
 // ref_metaData["b"] = "string";
 // ref_metaData["c"] = 2.0;
 // // const hub::data::Mat4 ref_mat4( 0.0 );
-// const hub::sensor::format::MAT4 ref_mat4( 0.0 );
+// const hub::format::MAT4 ref_mat4( 0.0 );
 
 // std::cout << "ref_mat4: " << ref_mat4 << std::endl;
 // ref_metaData["d"] = ref_mat4;
@@ -264,7 +264,7 @@ TEST_CASE( "Native Viewer" ) {
 // auto ref_acq    = hub::sensor::make_acquisition( ref_resolution );
 // ref_acq.start() = 0;
 // ref_acq.end()   = 1;
-// auto& bgr8      = ref_acq.get<hub::sensor::format::BGR8&>();
+// auto& bgr8      = ref_acq.get<hub::format::BGR8&>();
 // bgr8.b          = 0;
 // bgr8.g          = 1;
 // bgr8.r          = 2;
@@ -283,14 +283,14 @@ TEST_CASE( "Native Viewer" ) {
 // auto onNewStreamer = []( const char* streamName, const hub::sensor::SensorSpec* sensorSpec ) {
 //     //        return false;
 //     // const hub::sensor::Resolution ref_resolution( { 1 }, hub::sensor::Format::BGR8 );
-//     const auto ref_resolution        = hub::make_matrix<hub::sensor::format::BGR8>();
+//     const auto ref_resolution        = hub::make_matrix<hub::format::BGR8>();
 //     const std::string ref_sensorName = "sensorName";
 //     hub::sensor::SensorSpec::MetaData ref_metaData;
 //     ref_metaData["a"] = 0;
 //     ref_metaData["b"] = "string";
 //     ref_metaData["c"] = 2.0;
 //     // const hub::data::Mat4 ref_mat4( 0.0 );
-//     const hub::sensor::format::MAT4 ref_mat4( 0.0 );
+//     const hub::format::MAT4 ref_mat4( 0.0 );
 //     ref_metaData["d"] = ref_mat4;
 
 //     std::cout << "[test][NativeViewer] onNewStreamer : " << streamName << std::endl;
@@ -369,7 +369,7 @@ TEST_CASE( "Native Viewer" ) {
 //     float* data_mat4 = new float[16];
 //     hub::native::metaData_getMat4( metaData, "d", data_mat4 );
 //     // hub::data::Mat4 mat4( data_mat4 );
-//     hub::sensor::format::MAT4 mat4( data_mat4 );
+//     hub::format::MAT4 mat4( data_mat4 );
 //     CHECK( mat4 == ref_mat4 );
 
 //     CHECK( !hub::native::metaData_getMat4( metaData, "fake", nullptr ) );

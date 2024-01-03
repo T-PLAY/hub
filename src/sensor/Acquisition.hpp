@@ -6,7 +6,10 @@
 #include "core/Matrix.hpp"
 #include "core/matrix/MatrixTs.hpp"
 
-#include "Format.hpp"
+#include "core/Format.hpp"
+#include "core/Resolution.hpp"
+
+// #include "Format.hpp"
 
 namespace hub {
 namespace sensor {
@@ -14,7 +17,7 @@ namespace sensor {
 using Clock = long long;
 static_assert(sizeof(Clock) == 8);
 
-static Clock getClock() {
+static inline Clock getClock() {
     return std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count();
 }
 

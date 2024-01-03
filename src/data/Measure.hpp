@@ -3,8 +3,8 @@
 #include <cstdint>
 #include <cstring>
 
-#include "core/Macros.hpp"
-#include "sensor/Resolution.hpp"
+// #include "core/Macros.hpp"
+// #include "sensor/Resolution.hpp"
 //#include "Input.hpp"
 //#include "Output.hpp"
 

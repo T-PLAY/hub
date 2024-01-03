@@ -3,8 +3,11 @@
 #include <initializer_list>
 #include <memory>
 #include <string>
+#include <vector>
 
-#include "Measure.hpp"
+#include <core/Macros.hpp>
+
+// #include "Measure.hpp"
 
 namespace hub {
 namespace data {
@@ -68,6 +71,8 @@ class SRC_API Mesh
     ///
     // explicit Mesh( const Measure& measure );
 
+    Mesh() = default;
+
     ///
     /// \brief Mesh
     /// \param mesh
@@ -123,6 +128,13 @@ class SRC_API Mesh
     /// \brief printInfo
     ///
     void printInfo() const;
+
+    bool operator==( const Mesh& other ) const;
+
+    static constexpr auto serialize( auto& archive, auto& self ) {
+        // todo
+        return archive();
+    }
 
   private:
     void unpack( bool headerOnly = true ) const;

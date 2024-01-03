@@ -8,9 +8,10 @@
 #include <core/MetaData.hpp>
 #include <core/io/Archive.hpp>
 
-#ifndef HUB_NON_BUILD_SENSOR
-#    include <sensor/Format.hpp>
-#endif
+// #ifndef HUB_NON_BUILD_SENSOR
+// #    include <sensor/Format.hpp>
+// #endif
+#include <core/Format.hpp>
 
 class Lambda
 {
@@ -159,7 +160,7 @@ TEST_CASE( "MetaData test" ) {
 
 #ifndef HUB_NON_BUILD_SENSOR
     {
-        using Format = hub::sensor::format::Mat4;
+        using Format = hub::format::Mat4;
         static_assert( hub::packable_v<Format> );
         static_assert( !hub::serializer::SerializerZppBits::Serializable<Format>() );
         const Format mat4( 1.0f );

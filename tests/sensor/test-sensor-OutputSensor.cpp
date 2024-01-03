@@ -20,8 +20,8 @@ TEST_CASE( "OutputSensor test" ) {
     hub::MetaData metaData;
     metaData["parent"] = "parentName";
 
-    // using Resolution = hub::sensor::format::BGR8;
-    auto resolution = hub::make_matrix<hub::sensor::format::BGR8>();
+    // using Resolution = hub::format::BGR8;
+    auto resolution = hub::make_matrix<hub::format::BGR8>();
     assert( resolution.size() != 0 );
     assert( resolution.nType() > 0 );
 
@@ -44,7 +44,7 @@ TEST_CASE( "OutputSensor test" ) {
 
     auto& start = acq.start();
     auto& end   = acq.end();
-    auto& bgr8  = acq.get<hub::sensor::format::BGR8&>();
+    auto& bgr8  = acq.get<hub::format::BGR8&>();
     for ( int i = 0; i < 20; ++i ) {
         start  = i;
         end    = i;
@@ -359,7 +359,7 @@ TEST_CASE( "OutputSensor test" ) {
 
 //    ////////////////////////// ResolutionT //////////////////////////////
 
-//    using Resolution = hub::sensor::ResolutionT<hub::sensor::format::RGB8, 640, 480>;
+//    using Resolution = hub::sensor::ResolutionT<hub::format::RGB8, 640, 480>;
 //    static_assert( Resolution::nResolution == 1 );
 //    //    auto get = Resolution::get<0>();
 //    //    static_assert(Resolution::get<0>() == Resolution());
@@ -450,7 +450,7 @@ TEST_CASE( "OutputSensor test" ) {
 ////    constexpr int ref_nAcqs2 = 10;
 
 ////    std::cout << "ref_acqs" << std::endl;
-////    const hub::sensor::Resolution ref_resolution { hub::sensor::format::Y8, 1 };
+////    const hub::sensor::Resolution ref_resolution { hub::format::Y8, 1 };
 ////    const hub::sensor::Resolutions ref_resolutions { ref_resolution };
 ////    const hub::sensor::SensorSpec ref_sensorSpec( "sensorName", ref_resolutions );
 ////    std::vector<hub::sensor::Acquisition> ref_acqs;
@@ -471,7 +471,7 @@ TEST_CASE( "OutputSensor test" ) {
 ////    //////////////////////
 
 ////    std::cout << "ref2_acqs" << std::endl;
-////    const hub::sensor::Resolution ref_resolution2 { hub::sensor::format::DOF6, 1 };
+////    const hub::sensor::Resolution ref_resolution2 { hub::format::DOF6, 1 };
 ////    const hub::sensor::Resolutions ref_resolutions2 { ref_resolution2 };
 ////    const hub::sensor::SensorSpec ref_sensorSpec2 { "sensorName2", ref_resolutions2 };
 ////    std::vector<hub::sensor::Acquisition> ref_acqs2;
@@ -549,8 +549,8 @@ TEST_CASE( "OutputSensor test" ) {
 //////        auto d = inputOutput.get<double>();
 //////        assert( d == 4.0 );
 
-////        constexpr hub::sensor::Format format = hub::sensor::format::RGB8;
-////        assert( format == hub::sensor::format::RGB8 );
+////        constexpr hub::sensor::Format format = hub::format::RGB8;
+////        assert( format == hub::format::RGB8 );
 ////        inputOutput.write( format );
 ////        std::cout << "start reading" << std::endl;
 ////        hub::sensor::Format format_read;
@@ -684,7 +684,7 @@ TEST_CASE( "OutputSensor test" ) {
 
 ////        return;
 
-////        constexpr hub::sensor::Resolution2 resolution2{hub::sensor::format::RGB8,
+////        constexpr hub::sensor::Resolution2 resolution2{hub::format::RGB8,
 ////        hub::sensor::nDim::Full_HD}; std::cout << resolution2 << std::endl;
 
 //////        constexpr hub::sensor::Resolution2 resolution3{{3, "RGB", true}, {640, 480}};
@@ -1010,7 +1010,7 @@ TEST_CASE( "OutputSensor test" ) {
 
 //////    std::vector<char> buff;
 
-//////    const auto resolution = hub::sensor::Resolution { hub::sensor::format::BGR8, 1 };
+//////    const auto resolution = hub::sensor::Resolution { hub::format::BGR8, 1 };
 //////    const hub::sensor::SensorSpec sensorSpec( "sensorName", { resolution } );
 //////    unsigned char data[3] { 1, 2, 3 };
 //////    hub::sensor::OutputSensor outputSensor( sensorSpec, hub::io::Memory<decltype( buff )>(

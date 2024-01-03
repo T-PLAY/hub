@@ -21,7 +21,7 @@
 #include "core/Macros.hpp"
 
 namespace hub {
-namespace sensor {
+// namespace sensor {
 // namespace resolution {
 
 // class Format
@@ -116,11 +116,11 @@ struct BGR8 {
     unsigned char b;
     unsigned char g;
     unsigned char r;
-    auto toString() const {
-        std::string str;
-        str += std::to_string(b) + " " + std::to_string(g) + " " + std::to_string(r);
-        return str;
-    }
+    // auto toString() const {
+    //     std::string str;
+    //     str += std::to_string( b ) + " " + std::to_string( g ) + " " + std::to_string( r );
+    //     return str;
+    // }
     static constexpr auto name() { return "BGR8"; };
     //    static constexpr auto interpolable() { return false; };
 };
@@ -129,14 +129,20 @@ static_assert( sizeof( BGR8 ) == 3 );
 // 8-bit per-pixel
 struct Y8 {
     unsigned char y;
-    auto toString() const {
-        std::string str;
-        str += y;
-        return str;
-    }
+    // auto toString() const {
+    //     std::string str;
+    //     str += y;
+    //     return str;
+    // }
     static constexpr auto name() { return "Y8"; };
 };
 static_assert( sizeof( Y8 ) == 1 );
+
+// 16-bit per-pixel grayscale image.
+struct Y16 {
+    uint16_t y;
+    static constexpr auto name() { return "Y16"; };
+};
 
 // 16-bit linear depth values. The depth is meters is equal to depth scale pixel value.
 struct Z16 {
@@ -163,7 +169,7 @@ struct Orientation // Euler
 
 // Pose data packed as floats array, containing translation vector (x, y, z), rotation quaternion
 // (w0, w1, w2, w3 || w, x, y, z).
-struct DOF6 {
+struct Dof6 {
     // translation
     float x;
     float y;
@@ -174,8 +180,15 @@ struct DOF6 {
     float w2; // y
     float w3; // z
     static constexpr auto name() { return "DOF6"; };
+
+    auto toString() const {
+        return "x:" + std::to_string( x ) + " y:" + std::to_string( y ) +
+               " z:" + std::to_string( z ) + " w0:" + std::to_string( w0 ) +
+               " w1:" + std::to_string( w1 ) + " w2:" + std::to_string( w2 ) +
+               " w3:" + std::to_string( w3 );
+    }
 };
-static_assert( sizeof( DOF6 ) == 28 );
+static_assert( sizeof( Dof6 ) == 28 );
 
 // Point consist of x, y and z position, rgb color and depth .
 // struct Point {
@@ -189,6 +202,10 @@ static_assert( sizeof( DOF6 ) == 28 );
 //};
 
 // 32-bit floating point 3D coordinates.
+// struct vertex {
+//     float x, y, z;
+//     operator const float*() const { return &x; }
+// };
 struct XYZ32F {
     float x;
     float y;
@@ -342,5 +359,5 @@ static_assert( sizeof( XYZ32F ) == 12 );
 //} // namespace format
 
 //} // namespace resolution
-} // namespace sensor
+// } // namespace sensor
 } // namespace hub

@@ -86,14 +86,19 @@ class SRC_API SensorSpec
                 const MetaData& metaData = {} ) :
         m_sensorName { sensorName }, m_resolution { resolution.clone() }, m_metaData { metaData } {}
 
-    template <class Matrix>
+    template <class Resolution>
     SensorSpec( const std::string& sensorName,
-                const Matrix& resolution,
+                const Resolution& resolution,
                 const MetaData& metaData = {} ) :
-        m_sensorName { sensorName }, m_resolution { resolution.getMatrix() }, m_metaData { metaData } {}
+        m_sensorName { sensorName },
+        // m_resolution { resolution.getMatrix() },
+        m_metaData { metaData } {
+        if constexpr ( isMatrix<Resolution> ) { m_resolution = Resolution().getMatrix(); }
+        else { m_resolution = make_matrix<Resolution>(); }
+    }
 
     // SensorSpec( const std::string& sensorName, const MetaData& metaData = {} ) :
-        // m_sensorName { sensorName }, m_metaData { metaData } {}
+    // m_sensorName { sensorName }, m_metaData { metaData } {}
 
     //    SensorSpec(const SensorSpec & sensorSpec) = default;
 

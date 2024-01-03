@@ -499,6 +499,11 @@ void Mesh::printInfo() const {
     }
 }
 
+bool Mesh::operator==(const Mesh &other) const
+{
+    return false;
+}
+
 std::ostream& operator<<( std::ostream& os, const Mesh& mesh ) {
     os << mesh.to_string();
     return os;

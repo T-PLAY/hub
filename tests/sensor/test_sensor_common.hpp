@@ -372,13 +372,13 @@ static auto generateRefAcqs( int offset, int nAcq, const hub::sensor::SensorSpec
 // template <class Output>
 // static void outputSensorBench( Output& output ) {
 
-//     using Resolution = hub::sensor::format::Y8;
+//     using Resolution = hub::format::Y8;
 //     const hub::sensor::SensorSpec sensorSpec( "sensorName", hub::make_matrix<Resolution>() );
 //     const auto acqs = test::sensor::generateRefAcqs( 0, 10, sensorSpec );
 //     hub::output::OutputStream outputStream(
 //         hub::io::make_header( sensorSpec ), FILE_NAME, SERVER_PORT );
 //     const auto& [ref_sensorSpec, ref_acqs] =
-//         generateRefAcqs<hub::sensor::format::Y8>( 0, 10, "sensorName" );
+//         generateRefAcqs<hub::format::Y8>( 0, 10, "sensorName" );
 //     //    assert( anyEnd( output... ) );
 
 //     hub::sensor::OutputSensor outputSensor( ref_sensorSpec, output );
@@ -393,7 +393,7 @@ static auto generateRefAcqs( int offset, int nAcq, const hub::sensor::SensorSpec
 //     assert( !input.isEnd() );
 
 //     const auto& [ref_sensorSpec, ref_acqs] =
-//         generateRefAcqs<hub::sensor::format::Y8>( 0, 10, "sensorName" );
+//         generateRefAcqs<hub::format::Y8>( 0, 10, "sensorName" );
 
 //     hub::sensor::InputSensor inputSensor( input );
 //     assert( ref_sensorSpec == inputSensor.getSpec() );
@@ -423,10 +423,16 @@ using UserResolution = UserType;
 template <class Input, class Output, class... Args>
 static void inputOutputSensorAsyncBench( const Args&... args ) {
 
+    const auto userResolution = hub::make_matrix<UserResolution>();
+
     hub::MetaData metaData;
     metaData["name"] = "gauthier";
     const hub::sensor::SensorSpec sensorSpec(
-        "sensorName", hub::make_matrix<UserResolution>(), metaData );
+        // "sensorName", hub::make_matrix<UserResolution>(), metaData );
+        "sensorName",
+        UserResolution(),
+        metaData );
+    assert( sensorSpec.getResolution() == userResolution );
 
     hub::sensor::AcquisitionT<UserResolution> acq;
     acq.start()    = 4;
@@ -434,12 +440,13 @@ static void inputOutputSensorAsyncBench( const Args&... args ) {
     auto& userType = acq.get<UserType&>();
     userType.a     = 2;
     userType.b     = true;
+    // assert( acq.getMatrix() == userResolution );
 
     // outputSensor
     {
-        hub::sensor::OutputSensorT<UserResolution, Output> outputSensor(sensorSpec, args...);
+        hub::sensor::OutputSensorT<UserResolution, Output> outputSensor( sensorSpec, args... );
         // hub::sensor::OutputSensorT<UserResolution> outputSensor(
-            // Output( hub::io::make_header( sensorSpec ), args... ) );
+        // Output( hub::io::make_header( sensorSpec ), args... ) );
 
         // write output acq
         outputSensor << acq;
@@ -453,10 +460,14 @@ static void inputOutputSensorAsyncBench( const Args&... args ) {
 
         // read input acq
         auto acq_read = inputSensor.acqMsg();
+        assert( acq_read.getResolution() == userResolution );
         inputSensor >> acq_read;
 
         std::cout << "acq: " << acq << std::endl;
+        std::cout << "acq matrix: " << acq.getMatrix() << std::endl;
         std::cout << "acq_read: " << acq_read << std::endl;
+
+        assert( acq == acq_read );
         CHECK( acq == acq_read );
     }
 
@@ -470,9 +481,9 @@ static void inputOutputSensorBench( const Args&... args ) {
     metaData["name"] = "gauthier";
     const hub::sensor::SensorSpec sensorSpec(
         "sensorName", hub::make_matrix<UserResolution>(), metaData );
-    hub::sensor::OutputSensorT<UserResolution, Output> outputSensor(sensorSpec, args...);
+    hub::sensor::OutputSensorT<UserResolution, Output> outputSensor( sensorSpec, args... );
     // hub::sensor::OutputSensorT<UserResolution> outputSensor(
-        // Output( hub::io::make_header( sensorSpec ), args... ) );
+    // Output( hub::io::make_header( sensorSpec ), args... ) );
 
     auto acq       = outputSensor.acqMsg();
     acq.start()    = 4;
@@ -505,11 +516,11 @@ static void inputOutputSensorBench( const Args&... args ) {
 //     //    InputOutput inputOutput2;
 //     //    const int ref_offset    = 5;
 //     //    constexpr int ref_nAcqs = 10;
-//     //    const auto & [ref_sensorSpec, ref_acqs] = generateRefAcqs<hub::sensor::format::Y8>(0,
+//     //    const auto & [ref_sensorSpec, ref_acqs] = generateRefAcqs<hub::format::Y8>(0,
 //     10,
 //     //    "sensorName"); const auto & [ref_sensorSpec2, ref_acqs2] =
-//     //    generateRefAcqs<hub::sensor::format::Z16>(5, 10, "sensorName2"); const auto &
-//     //    [ref_sensorSpec3, ref_acqs3] = generateRefAcqs<hub::sensor::format::Y8>(10, 10,
+//     //    generateRefAcqs<hub::format::Z16>(5, 10, "sensorName2"); const auto &
+//     //    [ref_sensorSpec3, ref_acqs3] = generateRefAcqs<hub::format::Y8>(10, 10,
 //     //    "sensorName3");
 
 //     //    assert(inputOutput.isEnd());
@@ -536,11 +547,11 @@ static void inputOutputSensorBench( const Args&... args ) {
 // inputOutputSensorSyncBench( Input& input, Input& input2, Output& output, Output& output2 ) {
 
 //     // const auto& [ref_sensorSpec, ref_acqs] =
-//     //     generateRefAcqs<hub::sensor::format::Y8>( 0, 10, "sensorName" );
+//     //     generateRefAcqs<hub::format::Y8>( 0, 10, "sensorName" );
 //     // const auto& [ref_sensorSpec2, ref_acqs2] =
-//     //     generateRefAcqs<hub::sensor::format::Z16>( 5, 10, "sensorName2" );
+//     //     generateRefAcqs<hub::format::Z16>( 5, 10, "sensorName2" );
 //     // const auto& [ref_sensorSpec3, ref_acqs3] =
-//     //     generateRefAcqs<hub::sensor::format::Y8>( 10, 10, "sensorName3" );
+//     //     generateRefAcqs<hub::format::Y8>( 10, 10, "sensorName3" );
 
 //     // checkSynchronize(
 //         // output, ref_sensorSpec, ref_acqs, output2, ref_sensorSpec2, ref_acqs2, input, input2
@@ -570,11 +581,11 @@ static void inputOutputSensorBench( const Args&... args ) {
 //     //    const int ref_offset    = 5;
 //     //    constexpr int ref_nAcqs = 10;
 //     const auto& [ref_sensorSpec, ref_acqs] =
-//         generateRefAcqs<hub::sensor::format::Y8>( 0, 10, "sensorName" );
+//         generateRefAcqs<hub::format::Y8>( 0, 10, "sensorName" );
 //     const auto& [ref_sensorSpec2, ref_acqs2] =
-//         generateRefAcqs<hub::sensor::format::Z16>( 5, 10, "sensorName2" );
+//         generateRefAcqs<hub::format::Z16>( 5, 10, "sensorName2" );
 //     const auto& [ref_sensorSpec3, ref_acqs3] =
-//         generateRefAcqs<hub::sensor::format::Y8>( 10, 10, "sensorName3" );
+//         generateRefAcqs<hub::format::Y8>( 10, 10, "sensorName3" );
 
 //     checkSynchronize( inputOutput,
 //                       ref_sensorSpec,

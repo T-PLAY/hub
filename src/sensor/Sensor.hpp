@@ -3,8 +3,8 @@
 #include "SensorSpec.hpp"
 #include "Acquisition.hpp"
 
-#include "Resolution.hpp"
-#include "Format.hpp"
+// #include "Resolution.hpp"
+// #include "Format.hpp"
 //#include "core/Input.hpp"
 
 namespace hub {

@@ -123,6 +123,15 @@ if (NOT HUB_BUILD_SERVER)
     #    list(REMOVE_ITEM test_srcs ${server_srcs})
 endif()
 
+if (NOT HUB_BUILD_SENSOR)
+#    list(FILTER test_srcs EXCLUDE REGEX ".*Server\\.cpp$")
+#    list(FILTER test_srcs EXCLUDE REGEX ".*-server-.*\\.cpp$")
+    list(REMOVE_ITEM test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/client/test-client-ViewerSensor.cpp)
+
+#    file(GLOB server_srcs server/*.cpp)
+#    list(REMOVE_ITEM test_srcs ${server_srcs})
+endif()
+
 
 #if (NOT HUB_BUILD_SERVER)
 #    list(FILTER test_srcs EXCLUDE REGEX ".*Server\\.cpp$")

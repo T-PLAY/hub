@@ -21,8 +21,8 @@ TEST_CASE( "OutputSensor sending acq with disconnect test" ) {
         hub::MetaData metaData;
         metaData["parent"] = "parentName";
 
-        using Resolution = hub::sensor::format::BGR8;
-        // auto resolution = hub::make_matrix<hub::sensor::format::BGR8>();
+        using Resolution = hub::format::BGR8;
+        // auto resolution = hub::make_matrix<hub::format::BGR8>();
 
         const hub::sensor::SensorSpec sensorSpec(
             "sensorName", hub::make_matrix<Resolution>(), metaData );
@@ -40,7 +40,7 @@ TEST_CASE( "OutputSensor sending acq with disconnect test" ) {
         auto& start = acq.get<hub::sensor::Clock&>();
         // auto& end   = acq.end();
         auto& end  = acq.get<hub::sensor::Clock&, 1>();
-        auto& bgr8 = acq.get<hub::sensor::format::BGR8&>();
+        auto& bgr8 = acq.get<hub::format::BGR8&>();
         // auto& intRef  = acq.get<int&>();
         std::atomic<bool> exit = false;
         auto outputThread      = std::thread( [&]() {
@@ -73,12 +73,12 @@ TEST_CASE( "OutputSensor sending acq with disconnect test" ) {
             std::cout << "[test] inputSensor inited" << std::endl;
 
             assert( outputSensor.getSpec() == inputSensor.getSpec() );
-            assert( inputSensor.getSpec().getResolution().hasType<hub::sensor::format::BGR8>() );
+            assert( inputSensor.getSpec().getResolution().hasType<hub::format::BGR8>() );
 
             auto acq_read    = inputSensor.acqMsg();
             auto& start_read = acq_read.start();
             auto& end_read   = acq_read.end();
-            auto& bgr8_read  = acq_read.get<hub::sensor::format::BGR8&>();
+            auto& bgr8_read  = acq_read.get<hub::format::BGR8&>();
             // while ( !begin ) {
             //     std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
             // };

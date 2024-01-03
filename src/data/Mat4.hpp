@@ -3,9 +3,15 @@
 // #include <string>
 
 // #include "Measure.hpp"
+// #include "sensor/Format.hpp"
 
-// namespace hub {
-// namespace data {
+namespace hub {
+namespace data {
+
+// using Mat4 = sensor::format::Mat4;
+
+}
+} // namespace hub
 
 // ///
 // /// \brief The Mat4 class

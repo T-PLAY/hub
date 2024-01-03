@@ -30,13 +30,13 @@ TEST_CASE( "sensor : InputOutputSensorSync" ) {
 
     INIT_SERVER
 
-    using Resolution = hub::sensor::format::Y8;
+    using Resolution = hub::format::Y8;
     const hub::sensor::SensorSpec sensorSpec( "sensorName", hub::make_matrix<Resolution>() );
     const auto acqs = test::sensor::generateRefAcqs( 0, 10, sensorSpec );
     hub::output::OutputStream outputStream(
         hub::io::make_header( sensorSpec ), FILE_NAME, SERVER_PORT );
 
-    using Resolution2 = hub::sensor::format::Z16;
+    using Resolution2 = hub::format::Z16;
     const hub::sensor::SensorSpec sensorSpec2( "sensorName2", hub::make_matrix<Resolution2>() );
     const auto acqs2 = test::sensor::generateRefAcqs( 5, 10, sensorSpec2 );
     hub::output::OutputStream outputStream2(
@@ -62,7 +62,7 @@ TEST_CASE( "sensor : InputOutputSensorSync" ) {
     //     std::cout << "clearing input2: read acq: " << acq2_read << std::endl;
     // }
 
-    using Resolution3 = hub::sensor::format::Y8;
+    using Resolution3 = hub::format::Y8;
     const hub::sensor::SensorSpec sensorSpec3( "sensorName3", hub::make_matrix<Resolution3>() );
     const auto acqs3 = test::sensor::generateRefAcqs( 10, 10, sensorSpec3 );
     hub::output::OutputStream outputStream3(

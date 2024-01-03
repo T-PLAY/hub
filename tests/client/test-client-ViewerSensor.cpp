@@ -15,7 +15,7 @@ TEST_CASE( "Viewer" ) {
 
     const int port = GET_RANDOM_PORT;
 
-    using Resolution = hub::sensor::format::BGR8;
+    using Resolution = hub::format::BGR8;
     hub::MetaData metaData;
     metaData["user"] = "gauthier";
     const hub::sensor::SensorSpec sensorSpec_ref {
@@ -72,10 +72,10 @@ TEST_CASE( "Viewer" ) {
             // std::cout << "[test-client-Viewer] data ptr : " << (uintptr_t)(acq.getData().data() +
             // 16) << std::endl;
 
-            // assert(acq.getOffset<const hub::sensor::format::BGR8&>(0) == 0);
-            assert( acq.getOffset<const hub::sensor::format::BGR8&>( 0 ) == 16 );
-            const auto& bgr8 = acq.get<const hub::sensor::format::BGR8&>();
-            // const auto* bgr8  = acq.get<const hub::sensor::format::BGR8*>();
+            // assert(acq.getOffset<const hub::format::BGR8&>(0) == 0);
+            assert( acq.getOffset<const hub::format::BGR8&>( 0 ) == 16 );
+            const auto& bgr8 = acq.get<const hub::format::BGR8&>();
+            // const auto* bgr8  = acq.get<const hub::format::BGR8*>();
             // std::cout << "[test-client-Viewer] bgr8 ref : " << (uintptr_t)bgr8 << std::endl;
             const auto& start = acq.getStart();
             const auto& end   = acq.getEnd();
@@ -147,7 +147,7 @@ TEST_CASE( "Viewer" ) {
                 assert( viewer.nStream() == 1 );
                 assert( viewer.nStreaming() == 1 );
                 auto acq    = outputSensor.acqMsg();
-                auto& bgr8  = acq.get<hub::sensor::format::BGR8&>();
+                auto& bgr8  = acq.get<hub::format::BGR8&>();
                 auto& start = acq.start();
                 auto& end   = acq.end();
                 // std::this_thread::sleep_for( std::chrono::milliseconds( 500 ) );

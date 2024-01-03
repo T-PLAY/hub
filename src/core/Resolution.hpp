@@ -12,7 +12,7 @@
 #include "Format.hpp"
 
 namespace hub {
-namespace sensor {
+// namespace sensor {
 
 namespace resolution {
 
@@ -534,7 +534,7 @@ using UltraWide    = MatrixXD<format::RGB8, 2560, 1080>;
 ////     return ResolutionT<Type, Dims...>();
 //// }
 
-} // namespace sensor
+// } // namespace sensor
 } // namespace hub
 
 // namespace hub {

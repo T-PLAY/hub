@@ -127,6 +127,7 @@ class OutputSensor : public Sensor
     //    Measures m_measures;
 };
 
+
 /////////////////////////////////////// TEMPLATE //////////////////////////////////////////////////
 
 template <class Resolution, class Output = output::OutputStream>
@@ -145,6 +146,8 @@ class OutputSensorT : public Sensor
 #ifdef DEBUG
         if constexpr ( isMatrix<Resolution> ) {
             assert( Resolution().getMatrix() == m_spec.getResolution() );
+            // assert( m_spec.getResolution() == Resolution() );
+            // assert( Resolution() == m_spec.getResolution() );
         }
         else { assert( make_matrix<Resolution>() == m_spec.getResolution() ); }
 #endif
@@ -205,8 +208,14 @@ class OutputSensorT : public Sensor
 
 } // namespace sensor
 
-template <class Resolution, class... Args>
+template <class Output = output::OutputStream, class... Args>
 inline auto make_outputSensor( const sensor::SensorSpec& sensorSpec, const Args&... args ) {
+    // return sensor::OutputSensorT<Resolution>( sensorSpec, args... );
+    return sensor::OutputSensor(sensorSpec, Output(io::make_header(sensorSpec), args...));
+}
+
+template <class Resolution, class... Args>
+inline auto make_outputSensorT( const sensor::SensorSpec& sensorSpec, const Args&... args ) {
     return sensor::OutputSensorT<Resolution>( sensorSpec, args... );
 }
 

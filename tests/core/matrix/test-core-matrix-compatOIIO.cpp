@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-#include <sensor/Resolution.hpp>
+// #include <sensor/Resolution.hpp>
 
 //#include <OpenImageIO/image_view.h>
 //#include <OpenImageIO/imagebuf.h>

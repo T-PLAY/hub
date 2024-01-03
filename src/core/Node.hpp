@@ -56,6 +56,20 @@ static Node make_node() {
         typeid( Type ).hash_code(), std::move( Dims { N, Ns... } ), TYPE_NAME( Type ), size );
 }
 
+template <class Type, class... Dims>
+    // requires( N > 0 && ( ( Ns > 1 ) && ... ) )
+static Node make_node(const Dims&... dims) {
+    auto size = sizeof( Type );
+    // if constexpr ( sizeof...( Ns ) > 0 ) {
+        // for ( auto dim : { Ns... } ) {
+        for ( auto dim : { dims... } ) {
+            size *= dim;
+        }
+    // }
+    return Node(
+            typeid( Type ).hash_code(), hub::Dims { std::forward<const int&>(dims)... }, TYPE_NAME( Type ), size );
+}
+
 /////////////////////////////////////// INLINE ////////////////////////////////////////////////////
 
 inline Node::Node( HashType hash, Dims&& dims, std::string name, Size_t size ) :

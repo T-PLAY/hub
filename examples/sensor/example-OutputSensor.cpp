@@ -7,19 +7,18 @@ int main() {
 
     constexpr auto width  = 640;
     constexpr auto height = 480;
-
-    using Resolution = hub::MatrixXD<hub::sensor::format::BGR8, width, height>;
+    using Resolution      = hub::MatrixXD<hub::format::BGR8, width, height>;
     hub::MetaData metaData;
     metaData["manufactor"] = "My company";
     hub::sensor::SensorSpec sensorSpec( "sensorName", Resolution(), metaData );
 
     hub::sensor::OutputSensorT<Resolution> outputSensor( sensorSpec, "streamName" );
 
-    auto acq                           = outputSensor.acqMsg();
-    auto& start                        = acq.start();
-    auto& end                          = acq.end();
-    hub::sensor::format::BGR8* imgData = acq.get<hub::sensor::format::BGR8*>();
-    static_assert( acq.Size == 2 * sizeof( hub::sensor::Clock ) + width * height * 3 );
+    auto acq      = outputSensor.acqMsg();
+    auto& start   = acq.start();
+    auto& end     = acq.end();
+    auto* imgData = acq.get<hub::format::BGR8*>();
+    static_assert( acq.size() == 2 * sizeof( hub::sensor::Clock ) + width * height * 3 );
 
     constexpr size_t imgSize = width * height;
 
@@ -30,10 +29,11 @@ int main() {
         start = hub::sensor::getClock();
         for ( int i = 0; i < height; ++i ) {
             for ( int j = 0; j < width; ++j ) {
-                assert( i * width + j < imgSize );
-                imgData[i * width + j].b = ( i + j + dec ) % 256;
-                imgData[i * width + j].g = ( i + j + dec ) % 256;
-                imgData[i * width + j].r = ( i + j + dec ) % 256;
+                const auto idx = i * width + j;
+                assert( idx < imgSize );
+                imgData[idx].b = ( i + j + dec ) % 256;
+                imgData[idx].g = ( i + j + dec ) % 256;
+                imgData[idx].r = ( i + j + dec ) % 256;
             }
         }
         end = hub::sensor::getClock();

@@ -9,28 +9,28 @@
 TEST_CASE( "Acquisition test" ) {
     TEST_BEGIN()
 
-    using Resolution = hub::sensor::format::BGR8;
+    using Resolution = hub::format::BGR8;
     // hub::sensor::AcquisitionT<Resolution> acq;
     auto acq = hub::sensor::make_acquisition( hub::make_matrix<Resolution>() );
 
     auto* dataPtr = acq.data();
     std::cout << "dataPtr : " << (uintptr_t)dataPtr << std::endl;
 
-    CHECK((const hub::Data_t*)acq.get<const hub::sensor::format::BGR8*>() == dataPtr + 16);
-    CHECK((hub::Data_t*)acq.get<hub::sensor::format::BGR8*>() == dataPtr + 16);
+    CHECK((const hub::Data_t*)acq.get<const hub::format::BGR8*>() == dataPtr + 16);
+    CHECK((hub::Data_t*)acq.get<hub::format::BGR8*>() == dataPtr + 16);
 
-    CHECK((const hub::Data_t*)&acq.get<const hub::sensor::format::BGR8&>() == dataPtr + 16);
-    CHECK((hub::Data_t*)&acq.get<hub::sensor::format::BGR8&>() == dataPtr + 16);
+    CHECK((const hub::Data_t*)&acq.get<const hub::format::BGR8&>() == dataPtr + 16);
+    CHECK((hub::Data_t*)&acq.get<hub::format::BGR8&>() == dataPtr + 16);
 
-    auto * bgr8Ptr = acq.get<hub::sensor::format::BGR8*>();
+    auto * bgr8Ptr = acq.get<hub::format::BGR8*>();
     std::cout << "bgr8Ptr : " << (uintptr_t)bgr8Ptr << std::endl;
     assert((const hub::Data_t*)bgr8Ptr == dataPtr + 16);
 
-    const auto * bgr8CstPtr = acq.get<const hub::sensor::format::BGR8*>();
+    const auto * bgr8CstPtr = acq.get<const hub::format::BGR8*>();
     std::cout << "bgr8CstPtr : " << (uintptr_t)bgr8CstPtr << std::endl;
     assert((const hub::Data_t*)bgr8CstPtr == dataPtr + 16);
 
-    const auto & bgr8Ref = acq.get<const hub::sensor::format::BGR8&>();
+    const auto & bgr8Ref = acq.get<const hub::format::BGR8&>();
     std::cout << "bgr8Ref : " << (uintptr_t)&bgr8Ref << std::endl;
     CHECK(&bgr8Ref.b == dataPtr + 16);
     CHECK(&bgr8Ref.g == dataPtr + 17);
@@ -39,11 +39,11 @@ TEST_CASE( "Acquisition test" ) {
 
     const auto & acqCstRef = acq;
     assert(acq.data() == acqCstRef.data());
-    const auto & bgr8CstRef = acqCstRef.get<const hub::sensor::format::BGR8&>();
+    const auto & bgr8CstRef = acqCstRef.get<const hub::format::BGR8&>();
     std::cout << "bgr8CstRef : " << (uintptr_t)&bgr8CstRef << std::endl;
     assert(&bgr8Ref == &bgr8CstRef);
     assert((const hub::Data_t*)&bgr8CstRef == dataPtr + 16);
-    // CHECK((const hub::Data_t*)&acqCstRef.get<const hub::sensor::format::BGR8&>() == dataPtr + 16);
+    // CHECK((const hub::Data_t*)&acqCstRef.get<const hub::format::BGR8&>() == dataPtr + 16);
 
 
 
@@ -62,7 +62,7 @@ TEST_CASE( "Acquisition test" ) {
 
     // std::cout << "resolution: " << resolution << std::endl;
 
-    //    const hub::sensor::Resolutions resolutions { { hub::sensor::format::BGR8, 1 } };
+    //    const hub::sensor::Resolutions resolutions { { hub::format::BGR8, 1 } };
     //    auto resolutions_copy = resolutions;
     //    auto & resolutions_ref = resolutions;
     //    auto && resolutions_rvalue = hub::sensor::Resolutions(resolutions);
@@ -125,7 +125,7 @@ TEST_CASE( "Acquisition test" ) {
     ////    CHECK( acq2.getStart() == 0 );
     ////    CHECK( acq2.getEnd() == 1 );
 
-    ////    hub::sensor::Resolution resolution { hub::sensor::format::RGB8, 1 };
+    ////    hub::sensor::Resolution resolution { hub::format::RGB8, 1 };
     ////    unsigned char data[3] { 0, 1, 2 };
 
     //////    hub::sensor::Measure measure( data, 3, resolution );
