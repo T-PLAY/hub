@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 
-#include <Macros.hpp>
+#include <core/Macros.hpp>
 #include <SensorSpec.hpp>
 
 // #if ( __cplusplus >= 202001L )

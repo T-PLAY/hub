@@ -7,7 +7,7 @@
 // #include <numeric>
 
 // #include <SensorSpec.hpp>
-// #include <Macros.hpp>
+// #include <core/Macros.hpp>
 
 #include <sensor/Acquisition.hpp>
 #include <istream>
