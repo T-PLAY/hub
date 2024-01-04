@@ -3,7 +3,7 @@
 #include <array>
 #include <iostream>
 //#include "Macros.hpp"
-#include "Traits.hpp"
+#include "core/Traits.hpp"
 //#include <vector>
 
 template <typename T, std::size_t LL, std::size_t RL>

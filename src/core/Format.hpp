@@ -18,7 +18,7 @@
 // #include <cstdlib>
 #include <cstring>
 
-#include "core/Macros.hpp"
+#include "Macros.hpp"
 
 namespace hub {
 // namespace sensor {

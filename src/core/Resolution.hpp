@@ -8,7 +8,7 @@
 //#include "core/Macros.hpp"
 //#include "core/Span.hpp"
 //#include "core/Tuple.hpp"
-#include "core/matrix/MatrixXD.hpp"
+#include "matrix/MatrixXD.hpp"
 #include "Format.hpp"
 
 namespace hub {

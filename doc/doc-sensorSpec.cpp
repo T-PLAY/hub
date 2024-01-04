@@ -70,7 +70,7 @@ hub::sensor::SensorSpec multiCamSpec { "MultiCam (Depth, RGB, Infrared)", {
         "sensorName", { { { 1 }, hub::format::BGR8 }, { { 1, 2, 3 }, format } }, metaData };
     hub::sensor::SensorSpec sensorSpec3 { "sensorName", {}, metaData };
 
-#if CPLUSPLUS_VERSION == 20
+#if CPP_VERSION == 20
     using namespace std::string_literals;
     constexpr std::string_view sensorName2 = "sensorName";
     using namespace std;

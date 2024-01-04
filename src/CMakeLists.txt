@@ -91,9 +91,9 @@ file(
     ${HUB_EXTERNAL_DIR}/*.h
     #    ${HUB_EXTERNAL_DIR}/*.inl
 )
-# if (NOT HUB_USE_ZPP_BITS)
-    # list(REMOVE_ITEM external_headers ${HUB_EXTERNAL_DIR}/zpp_bits.h)
-# endif()
+if (NOT HUB_USE_ZPP_BITS)
+    list(REMOVE_ITEM external_headers ${HUB_EXTERNAL_DIR}/zpp_bits.h)
+endif()
 #add_library(external INTERFACE ${external_headers} ${external_sources})
 add_library(external OBJECT ${external_headers} ${external_sources})
 #add_library(external OBJECT ${external_headers} ${external_sources})

@@ -65,7 +65,7 @@ int main() {
 //#endif
 //    hub::sensor::InputSensor inputSensor8(hub::input::InputFile("filePath"));
 //    std::vector<int> vs;
-//#if CPLUSPLUS_VERSION < 17
+//#if CPP_VERSION < 17
 //    const auto & inputSensor9 = hub::sensor::InputSensor(hub::input::InputMemory<decltype(vs)>(vs));
 //#else
 //    const auto & inputSensor9 = hub::sensor::InputSensor(hub::input::InputMemory(vs));

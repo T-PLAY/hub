@@ -23,7 +23,6 @@ template <class Type, Size_t Size, BufferOption Option>
 class BufferBase
 {
   public:
-    using Span = std::span<Type, Size>;
 //    using Span = std::span<Data_t, Size * sizeof(Type)>;
     //    template <Size_t Size_, BufferOption Option_>
     //    SRC_API friend std::ostream& operator<<( std::ostream& os, const BufferBase<Size_, Option_>&
@@ -35,6 +34,19 @@ class BufferBase
 //        setData(span);
 //    }
 
+
+    virtual Data_t * data() = 0;
+    virtual const Data_t * data() const = 0;
+    virtual Size_t size() const = 0;
+
+    virtual CONSTEXPR20 std::string toString() const = 0;
+
+//    virtual Data_t * getData
+    //  protected:
+//    virtual Span getSpan() = 0;
+#if CPP_VERSION >= 20
+    using Span = std::span<Type, Size>;
+    virtual Span getSpan() = 0;
     void getData( Span& span ) const {
         const auto& internalSpan = getSpan();
         std::copy( internalSpan.begin(), internalSpan.end(), span.begin() );
@@ -43,17 +55,7 @@ class BufferBase
         const auto& internalSpan = getSpan();
         std::copy( span.begin(), span.end(), internalSpan.begin() );
     }
-
-    virtual Data_t * data() = 0;
-    virtual const Data_t * data() const = 0;
-    virtual Size_t size() const = 0;
-
-    virtual constexpr std::string toString() const = 0;
-
-//    virtual Data_t * getData
-    //  protected:
-//    virtual Span getSpan() = 0;
-    virtual Span getSpan() = 0;
+#endif
     //    virtual std::string toString() const = 0;
 };
 static_assert( sizeof( BufferBase<int, 1'000, StaticMemory> ) == 8 );
@@ -92,7 +94,6 @@ class Buffer<Type, Size, StaticMemory> : public BufferBase<Type, Size, StaticMem
 //class StaticBuffer : public BufferBase<Size, StaticMemory>
 {
   public:
-    using Span = typename BufferBase<Type, Size, StaticMemory>::Span;
 
     //    static_assert(Size <= MAX_STACK_SIZE, "Stack size reached, please use static memory.");
     //    STATIC_WARNING(Size <= MAX_STACK_SIZE, "Stack size reached, please use static memory.");
@@ -122,26 +123,18 @@ class Buffer<Type, Size, StaticMemory> : public BufferBase<Type, Size, StaticMem
     //    std::span<Data_t, Size> getSpan() override { return std::span<Data_t, Size> {
     //    m_data.begin(), m_data.end() }; }
     //  protected:
-    Span getSpan() override {
-//        return m_span;
-        //        return m_span;
-        return Span { m_array.begin(), m_array.end() };
-//        auto * noConstThis = const_cast<Buffer<Type, Size, StaticMemory>*>(this);
-//        return std::span<Type, Size> { noConstThis->m_array.begin(), noConstThis->m_array.end() };
-//        return Span { noConstThis->m_array.begin(), noConstThis->m_array.end() };
-//        return Span();
-    }
 
     template <Size_t i>
     constexpr Type get() const {
         return m_array.at(i);
     }
 
-    constexpr std::string toString() const override {
+    CONSTEXPR20 std::string toString() const override {
         std::string str;
         str += "(static)";
 //        str += "[" + TYPE_NAME( Data_t ) + ", " + PRETTY_BYTES( Size ) + "] = ";
-        str += ::toString( m_array );
+        // str += hub::toString( m_array );
+        str += hub::to_string( m_array );
         return str;
     }
 
@@ -159,6 +152,19 @@ class Buffer<Type, Size, StaticMemory> : public BufferBase<Type, Size, StaticMem
         return m_array.size();
     }
 
+#if CPP_VERSION >= 20
+    using Span = typename BufferBase<Type, Size, StaticMemory>::Span;
+    Span getSpan() override {
+//        return m_span;
+        //        return m_span;
+        return Span { m_array.begin(), m_array.end() };
+//        auto * noConstThis = const_cast<Buffer<Type, Size, StaticMemory>*>(this);
+//        return std::span<Type, Size> { noConstThis->m_array.begin(), noConstThis->m_array.end() };
+//        return Span { noConstThis->m_array.begin(), noConstThis->m_array.end() };
+//        return Span();
+    }
+#endif
+
 
   private:
     std::array<Type, Size> m_array;
@@ -174,7 +180,6 @@ class Buffer<Type, Size, DynamicMemory> : public BufferBase<Type, Size, DynamicM
 {
   public:
 //    using Span = std::span<Data_t, Size>;
-    using Span = typename BufferBase<Type, Size, DynamicMemory>::Span;
 
 //    template <class... Args>
 //    constexpr Data(Args... args) : m_data{args...} {}
@@ -184,7 +189,6 @@ class Buffer<Type, Size, DynamicMemory> : public BufferBase<Type, Size, DynamicM
     template <class... Args>
     constexpr Buffer(Args&&... args) : m_vector{std::forward<Type&&>(args)...} {}
 
-    Span getSpan() override { return std::span<Type, Size> { m_vector.begin(), m_vector.end() }; }
 //    Span getSpan() const { return m_span; };
 
 //    template <Size_t i>
@@ -192,11 +196,11 @@ class Buffer<Type, Size, DynamicMemory> : public BufferBase<Type, Size, DynamicM
 //        return m_vector.at(i);
 //    }
 
-    constexpr std::string toString() const override {
+    CONSTEXPR20 std::string toString() const override {
         std::string str;
         str += "(dynamic)";
 //        str += "[" + TYPE_NAME( Data_t ) + ", " + PRETTY_BYTES( Size ) + "] = ";
-        str += ::toString( m_vector );
+        str += toString( m_vector );
         return str;
     }
 
@@ -212,6 +216,11 @@ class Buffer<Type, Size, DynamicMemory> : public BufferBase<Type, Size, DynamicM
     Size_t size() const override {
         return m_vector.size();
     }
+
+#if CPP_VERSION >= 20
+    using Span = typename BufferBase<Type, Size, DynamicMemory>::Span;
+    Span getSpan() override { return std::span<Type, Size> { m_vector.begin(), m_vector.end() }; }
+#endif
 
   private:
     std::vector<Type> m_vector;

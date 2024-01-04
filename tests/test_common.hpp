@@ -210,11 +210,21 @@ static std::string s_latestFilename = "";
 
 namespace algo {
 
+#if CPP_VERSION >= 20
 static double Mean( const auto& first, const auto& last ) {
+#else
+template <class T>
+static double Mean( const T& first, const T& last ) {
+#endif
     return std::accumulate( first, last, 0.0 ) / (double)( last - first );
 }
 
+#if CPP_VERSION >= 20
 static double Variance( const auto& first, const auto& last ) {
+#else
+template <class T>
+static double Variance( const T& first, const T& last ) {
+#endif
     const auto mean = Mean( first, last );
 
     auto variance = 0.0;
@@ -231,7 +241,12 @@ static double Variance( const auto& first, const auto& last ) {
     return variance;
 }
 
+#if CPP_VERSION >= 20
 static double StandardDeviation( const auto& first, const auto& last ) {
+#else
+template <class T>
+static double StandardDeviation( const T& first, const T& last ) {
+#endif
     return sqrt( Variance( first, last ) );
 }
 } // namespace algo

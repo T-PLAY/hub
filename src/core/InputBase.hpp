@@ -2,9 +2,9 @@
 
 #include <cassert>
 
-#include "core/Macros.hpp"
+#include "Macros.hpp"
 // #include "core/Traits.hpp"
-#include "core/ios.hpp"
+#include "ios.hpp"
 
 namespace hub {
 class InputBase : public ios
@@ -30,8 +30,14 @@ static constexpr bool not_endable_v = not_endable<T>::value;
 // template <class T>
 // concept NotEndable = T::not_endable;
 
+#if CPP_VERSION >= 20
 template <class T>
 concept Endable = !not_endable_v<T>;
+#else
+template <class T>
+constexpr bool Endable = !not_endable_v<T>;
+#endif
+
 
 ///////////////////////////////////////
 

@@ -18,13 +18,13 @@
 // #include "core/Vector.hpp"
 //  #include "std_any.hpp"
 
-// #if CPLUSPLUS_VERSION <= 17
+// #if CPP_VERSION <= 17
 // bool Any::operator!=( const Any& any ) const {
 //     return !( *this == any );
 // }
 // #endif
 
-#if CPLUSPLUS_VERSION <= 14
+#if CPP_VERSION <= 14
 #    include "std_any.hpp"
 #else
 #    include <any>
@@ -188,7 +188,7 @@ class SRC_API Any
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     bool hasValue() const {
-#if CPLUSPLUS_VERSION < 17
+#if CPP_VERSION < 17
         return !m_any.empty();
 #else
         return m_any.has_value();
@@ -203,7 +203,7 @@ class SRC_API Any
         return m_anyHelper->getValueStr( m_any );
     }
 
-#if CPLUSPLUS_VERSION <= 17
+#if CPP_VERSION <= 17
     bool operator!=( const Any& any ) const;
 #endif
 
@@ -217,7 +217,7 @@ class SRC_API Any
         return m_any.type() == typeid( T );
     }
 
-    std::string toString() const {
+    auto toString() const {
         std::string str;
         assert( m_anyHelper != nullptr );
         assert( m_anyHelper->getTypeName != nullptr );

@@ -32,6 +32,7 @@
 
 namespace std {
 
+#if CPP_VERSION >= 20
 template <typename T, size_t Extent, typename R>
 bool operator==(span<T, Extent> lhs,
                  R const& rhs) {
@@ -41,6 +42,7 @@ bool operator==(span<T, Extent> lhs,
     return std::equal(begin(lhs), end(lhs),
                        begin(rhs), end(rhs));
 }
+#endif
 
 //template <typename T, size_t Extent, typename R>
 //bool operator==(R const& lhs,
@@ -93,7 +95,7 @@ bool operator==(span<T, Extent> lhs,
 ////    return printTupleImp( os, tp, std::make_index_sequence<TupSize> {} );
 //}
 
-//#if CPLUSPLUS_VERSION >= 20 // concept
+//#if CPP_VERSION >= 20 // concept
 //template <class T>
 //concept Printable = requires( T a ) { std::cout << a; };
 //#else

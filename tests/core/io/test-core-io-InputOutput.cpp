@@ -4,7 +4,7 @@
 
 #include <core/Macros.hpp>
 
-#if CPLUSPLUS_VERSION <= 14
+#if CPP_VERSION <= 14
 #    include "core/std_any.hpp"
 #else
 #    include <any>
@@ -71,7 +71,7 @@ class TestNonPackable
     auto toString() const {
         std::string str;
         str += "{" + std::to_string( m_a ) + " " + std::to_string( m_b ) + " " + m_name + " " +
-               ::toString( m_vints ) + "}";
+               hub::toString( m_vints ) + "}";
         return str;
     }
     //    friend std::ostream& operator<<( std::ostream& os, const TestNonPackable& test ) {

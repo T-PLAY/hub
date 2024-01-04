@@ -7,10 +7,10 @@
 #include <type_traits>
 #include <vector>
 
-#include "core/Macros.hpp"
-#include "core/Node.hpp"
-#include "core/Traits.hpp"
-#include "core/matrix/MatrixBase.hpp"
+#include "Macros.hpp"
+#include "MatrixBase.hpp"
+#include "Node.hpp"
+#include "Traits.hpp"
 
 namespace hub {
 
@@ -39,12 +39,13 @@ class Matrix
     bool hasType() const;
 
     template <class... Types>
-        requires( sizeof...( Types ) > 1 )
-    bool hasAnyType() const;
+    REQUIRES( sizeof...( Types ) > 1, bool )
+    hasAnyType() const;
+    // bool hasAnyType() const;
 
     template <class... Types>
-        requires( sizeof...( Types ) > 1 )
-    bool hasSomeType() const;
+    REQUIRES( sizeof...( Types ) > 1, bool )
+    hasSomeType() const;
 
     template <class Type>
     int nType();
@@ -58,20 +59,20 @@ class Matrix
     Size_t getOffset( int i ) const;
 
     template <class Type, int i = 0, class RawType = std::remove_pointer_t<Type>>
-        requires( std::is_pointer_v<Type> )
-    Type get();
+    REQUIRES( std::is_pointer_v<Type>, Type )
+    get();
 
     template <class Type, int i = 0, class RawType = std::remove_pointer_t<Type>>
-        requires( std::is_pointer_v<Type> )
-    Type get() const;
+    REQUIRES( std::is_pointer_v<Type>, Type )
+    get() const;
 
     template <class Type, int i = 0, class RawType = std::remove_cvref_t<Type>>
-        requires( !std::is_pointer_v<Type> )
-    Type get();
+    REQUIRES( !std::is_pointer_v<Type>, Type )
+    get();
 
     template <class Type, int i = 0, class RawType = std::remove_cvref_t<Type>>
-        requires( !std::is_pointer_v<Type> )
-    Type get() const;
+    REQUIRES( !std::is_pointer_v<Type>, Type )
+    get() const;
 
     Size_t nType() const;
 
@@ -88,9 +89,11 @@ class Matrix
 
     void push_back( const Node& node );
 
+#if CPP_VERSION >= 20
     static constexpr auto serialize( auto& archive, auto& self ) {
         return archive( self.m_nodes, self.m_size, self.m_vector );
     }
+#endif
 
     bool hasValue() const;
 
@@ -108,8 +111,7 @@ class Matrix
 
 template <class Type, Size_t N = 1, Size_t... Ns>
 // requires( !std::is_same_v<Type, Matrix> && N > 0 && ( ( Ns > 1 ) && ... ) )
-    requires( !isMatrix<Type> && N > 0 && ( ( Ns > 1 ) && ... ) )
-Matrix make_matrix() {
+REQUIRES( !isMatrix<Type> && N > 0 && ( ( Ns > 1 ) && ... ), Matrix ) make_matrix() {
     Matrix matrix;
     matrix.push_back( make_node<Type, N, Ns...>() );
     return matrix;
@@ -123,16 +125,17 @@ void fill_matrix( Matrix& matrix ) {
 }
 
 template <class... Types>
-    requires( sizeof...( Types ) > 1 )
-Matrix make_matrix() {
+// requires( sizeof...( Types ) > 1 )
+REQUIRES( sizeof...( Types ) > 1, Matrix ) make_matrix() {
+    // Matrix make_matrix() {
     Matrix matrix;
     fill_matrix<Types...>( matrix );
     return matrix;
 }
 
 template <class Type, class... Dims>
-    requires( !isMatrix<Type> && sizeof...( Dims ) > 0 )
-Matrix make_matrix( const Dims&... dims ) {
+// requires( !isMatrix<Type> && sizeof...( Dims ) > 0 )
+REQUIRES( !isMatrix<Type> && sizeof...( Dims ) > 0, Matrix ) make_matrix( const Dims&... dims ) {
     Matrix matrix;
     // matrix.push_back( make_node<Type, dims...>() );
     matrix.push_back( make_node<Type>( dims... ) );
@@ -141,8 +144,9 @@ Matrix make_matrix( const Dims&... dims ) {
 
 template <class... Matrices>
 // requires( sizeof...( Matrices ) > 1 )
-    requires( areMatrices<Matrices...> && sizeof...( Matrices ) > 1 )
-Matrix make_matrix( const Matrices&... matrices ) {
+// requires( areMatrices<Matrices...> && sizeof...( Matrices ) > 1 )
+REQUIRES( areMatrices<Matrices...> && sizeof...( Matrices ) > 1, Matrix )
+    make_matrix( const Matrices&... matrices ) {
     Matrix matrix;
     matrix = ( matrices | ... );
     return matrix;
@@ -188,7 +192,7 @@ inline std::string Matrix::toString() const {
     if ( m_vector.empty() ) { str += "(" + std::to_string( m_size ) + ")"; }
     else {
         str += " = ";
-        str += ::toString( m_vector );
+        str += hub::to_string( m_vector );
     }
     return str;
 }
@@ -228,9 +232,7 @@ inline bool Matrix::operator==( const Matrix& other ) const {
     if ( hasValue() && other.hasValue() ) {
         return m_nodes == other.m_nodes && m_size == other.m_size && m_vector == other.m_vector;
     }
-    else {
-        return m_nodes == other.m_nodes && m_size == other.m_size;
-    }
+    else { return m_nodes == other.m_nodes && m_size == other.m_size; }
 }
 
 inline void Matrix::push_back( const Node& node ) {
@@ -251,14 +253,14 @@ bool Matrix::hasType() const {
 }
 
 template <class... Types>
-    requires( sizeof...( Types ) > 1 )
-bool Matrix::hasAnyType() const {
+// requires( sizeof...( Types ) > 1 )
+REQUIRES( sizeof...( Types ) > 1, bool ) Matrix::hasAnyType() const {
     return ( hasType<Types>() && ... );
 }
 
 template <class... Types>
-    requires( sizeof...( Types ) > 1 )
-bool Matrix::hasSomeType() const {
+// requires( sizeof...( Types ) > 1 )
+REQUIRES( sizeof...( Types ) > 1, bool ) Matrix::hasSomeType() const {
     return ( hasType<Types>() || ... );
 }
 
@@ -306,8 +308,8 @@ Size_t Matrix::getOffset( int i ) const {
 }
 
 template <class Type, int i, class RawType>
-    requires( std::is_pointer_v<Type> )
-Type Matrix::get() {
+// requires( std::is_pointer_v<Type> )
+REQUIRES( std::is_pointer_v<Type>, Type ) Matrix::get() {
     // if ( m_vector.empty() ) m_vector.resize( m_size );
     assert( !m_vector.empty() );
     assert( m_vector.size() == m_size );
@@ -317,8 +319,8 @@ Type Matrix::get() {
 }
 
 template <class Type, int i, class RawType>
-    requires( std::is_pointer_v<Type> )
-Type Matrix::get() const {
+REQUIRES( std::is_pointer_v<Type>, Type )
+Matrix::get() const {
     // if ( m_vector.empty() ) m_vector.resize( m_size );
     assert( !m_vector.empty() );
     assert( m_vector.size() == m_size );
@@ -328,8 +330,8 @@ Type Matrix::get() const {
 }
 
 template <class Type, int i, class RawType>
-    requires( !std::is_pointer_v<Type> )
-Type Matrix::get() {
+REQUIRES( !std::is_pointer_v<Type>, Type )
+Matrix::get() {
     // if ( m_vector.empty() ) m_vector.resize( m_size );
     assert( !m_vector.empty() );
     assert( m_vector.size() == m_size );
@@ -339,8 +341,8 @@ Type Matrix::get() {
 }
 
 template <class Type, int i, class RawType>
-    requires( !std::is_pointer_v<Type> )
-Type Matrix::get() const {
+REQUIRES( !std::is_pointer_v<Type>, Type )
+Matrix::get() const {
     // if ( m_vector.empty() ) m_vector.resize( m_size );
     assert( !m_vector.empty() );
     assert( m_vector.size() == m_size );

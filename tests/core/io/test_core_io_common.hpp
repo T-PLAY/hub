@@ -31,7 +31,7 @@ struct UserData {
     }
 
     auto toString() const {
-        return std::to_string(a) + " " + std::to_string(b) + " " + name + " " + ::toString(vints);
+        return std::to_string(a) + " " + std::to_string(b) + " " + name + " " + hub::toString(vints);
     }
 
     bool operator==( const UserData& character ) const {
@@ -168,7 +168,7 @@ ReadWriteStat readWriteData( ReadInputFunc& readInputFunc,
     return stats;
 };
 
-#if CPLUSPLUS_VERSION >= 20 // concept
+#if CPP_VERSION >= 20 // concept
 template <class T>
 concept getableNCall_v = requires( const T a ) { a.getNCall(); };
 

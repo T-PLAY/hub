@@ -45,7 +45,7 @@ class Header
     }
     auto toString() const {
         return std::to_string( m_headerSize ) + ":" + std::to_string( m_dataSize ) + ":" +
-               ::toString( m_userDefined );
+               hub::toString( m_userDefined );
     }
     template <class Output>
     void write( Output& output ) {

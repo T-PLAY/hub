@@ -28,7 +28,9 @@ TEST_CASE( "Buffer test" ) {
     }
     rawData[dataSize - 1] = 93;
 
+#if CPP_VERSION >= 20
     std::span<Data_t, dataSize> rawSpan { rawData, rawData + dataSize };
+#endif
     //    std::cout << "rawSpan: " << rawSpan << std::endl;
 
     //////////////////////////////////////////////////////////////////////////////////////////
@@ -36,14 +38,18 @@ TEST_CASE( "Buffer test" ) {
     Buffer<Data_t, dataSize, BufferOption::DynamicMemory> myDynamicData;
     std::cout << "[dynamic] myDynamicData: " << myDynamicData << std::endl;
     auto dynamicStart = std::chrono::high_resolution_clock::now();
+#if CPP_VERSION >= 20
     for ( int i = 0; i < nIteration; ++i ) {
         myDynamicData.setData( rawSpan );
     }
+#endif
     // std::this_thread::sleep_for(std::chrono::milliseconds(1));
     auto dynamicEnd = std::chrono::high_resolution_clock::now();
     auto dynamicDuration =
         std::chrono::duration_cast<std::chrono::microseconds>( dynamicEnd - dynamicStart ).count();
+#if CPP_VERSION >= 20
     CHECK( myDynamicData.getSpan() == rawSpan );
+#endif
     std::cout << "[dynamic] myDynamicData: " << myDynamicData << std::endl;
     std::cout << "[dynamic] static copy duration: " << dynamicDuration / 1000.0 << " ms" << std::endl;
     std::cout << "[dynamic] static copy speed: "
@@ -56,13 +62,17 @@ TEST_CASE( "Buffer test" ) {
     static Buffer<Data_t, dataSize, BufferOption::StaticMemory> myStaticData;
     std::cout << "[static] myStaticData: " << myStaticData << std::endl;
     auto staticStart = std::chrono::high_resolution_clock::now();
+#if CPP_VERSION >= 20
     for ( int i = 0; i < nIteration; ++i ) {
         myStaticData.setData( rawSpan );
     }
+#endif
     auto staticEnd = std::chrono::high_resolution_clock::now();
     auto staticDuration =
         std::chrono::duration_cast<std::chrono::microseconds>( staticEnd - staticStart ).count();
+#if CPP_VERSION >= 20
     CHECK( myStaticData.getSpan() == rawSpan );
+#endif
 //    auto span = myStaticData.getSpan();
     std::cout << "[static] myStaticData: " << myStaticData << std::endl;
     std::cout << "[static] static copy duration: " << staticDuration / 1000.0 << " ms" << std::endl;
@@ -85,7 +95,7 @@ TEST_CASE( "Buffer test" ) {
     struct Random {
         int a;
         bool b;
-        std::string toString() const {
+        auto toString() const {
             return std::to_string(a) + ":" + std::to_string(b);
         }
     };

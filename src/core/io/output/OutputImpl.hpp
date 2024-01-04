@@ -21,7 +21,7 @@
 
 //#include "OutputBase.hpp"
 
-#if defined( OS_MACOS ) && CPLUSPLUS_VERSION <= 14
+#if defined( OS_MACOS ) && CPP_VERSION <= 14
 #    include "core/Traits.hpp"
 #endif
 

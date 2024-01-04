@@ -44,7 +44,8 @@ static constexpr bool serializable_v = serializable<T>::value;
 class SerializerImpl : public SerializerI
 {
     // static constexpr Size_t BuffSize = 1'000'000;
-    static constexpr Size_t BuffSize = MAX_STACK_SIZE;
+    static constexpr Size_t BuffSize = 1'000'000; // 1 Mo
+    // static constexpr Size_t BuffSize = MAX_STACK_SIZE;
     bool m_writing                   = false;
     bool m_reading                   = false;
 
@@ -97,7 +98,7 @@ class SerializerImpl : public SerializerI
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////// WRITE
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  private:
+  // private:
     virtual void write( const Data_t* data, Size_t size ) {
 #ifdef HUB_DEBUG_OUTPUT
         std::vector<Data_t> vector( data, data + size );
@@ -109,171 +110,175 @@ class SerializerImpl : public SerializerI
     }
 
     template <class T>
-    typename std::enable_if<serializable_v<T>>::type write( const T& t ) {
-#ifdef HUB_DEBUG_OUTPUT
-        std::cout << HEADER << "\033[1mwrite\033[0m(serializable: " << TYPE_NAME( T ) << ") ..."
-                  << std::endl;
-#endif
-        //        assert( isOpen() );
-        const_cast<T&>( t ).serialize( *this );
-#ifdef HUB_DEBUG_OUTPUT
-        std::cout << HEADER << "\033[1mwrite\033[0m(serializable: " << TYPE_NAME( T ) << ") = " << t
-                  << std::endl;
-#endif
+    void write( const T& t ) {
     }
 
-    template <class T>
-    typename std::enable_if_t<!serializable_v<T> && packable_v<T>, void> write( const T& t ) {
-//        assert(false);
-#ifdef HUB_DEBUG_OUTPUT
-        std::cout << "<---" << HEADER << "write(" << TYPE_NAME( T ) << ") = " << t << std::endl;
-#endif
-        write( reinterpret_cast<const Data_t*>( &t ), sizeof( T ) );
-    }
+//     template <class T>
+//     typename std::enable_if<serializable_v<T>>::type write( const T& t ) {
+// #ifdef HUB_DEBUG_OUTPUT
+//         std::cout << HEADER << "\033[1mwrite\033[0m(serializable: " << TYPE_NAME( T ) << ") ..."
+//                   << std::endl;
+// #endif
+//         //        assert( isOpen() );
+//         const_cast<T&>( t ).serialize( *this );
+// #ifdef HUB_DEBUG_OUTPUT
+//         std::cout << HEADER << "\033[1mwrite\033[0m(serializable: " << TYPE_NAME( T ) << ") = " << t
+//                   << std::endl;
+// #endif
+//     }
 
-    template <class T>
-    void write( const std::list<T>& list ) {
-        //    assert( isOpen() );
+//     template <class T>
+//     typename std::enable_if_t<!serializable_v<T> && packable_v<T>, void> write( const T& t ) {
+// //        assert(false);
+// #ifdef HUB_DEBUG_OUTPUT
+//         std::cout << "<---" << HEADER << "write(" << TYPE_NAME( T ) << ") = " << t << std::endl;
+// #endif
+//         write( reinterpret_cast<const Data_t*>( &t ), sizeof( T ) );
+//     }
 
-#ifdef HUB_DEBUG_OUTPUT
-        std::cout << HEADER << "write(std::list<" << TYPE_NAME( T ) << ">)" << std::endl;
-#endif
+//     template <class T>
+//     void write( const std::list<T>& list ) {
+//         //    assert( isOpen() );
 
-        int nbEl = list.size(); // todo
-        write( nbEl );
+// #ifdef HUB_DEBUG_OUTPUT
+//         std::cout << HEADER << "write(std::list<" << TYPE_NAME( T ) << ">)" << std::endl;
+// #endif
 
-        for ( const T& el : list ) {
-            write( el );
-        }
-    }
+//         int nbEl = list.size(); // todo
+//         write( nbEl );
 
-    template <class T>
-    typename std::enable_if_t<packable_v<T>, void>
-    //    void
-    write( const std::vector<T>& vector ) {
+//         for ( const T& el : list ) {
+//             write( el );
+//         }
+//     }
 
-#ifdef HUB_DEBUG_OUTPUT
-        std::cout << "<---" << HEADER << "write(std::vector<" << TYPE_NAME( T ) << ">)"
-                  << std::endl;
-#endif
+//     template <class T>
+//     typename std::enable_if_t<packable_v<T>, void>
+//     //    void
+//     write( const std::vector<T>& vector ) {
 
-        uint64_t nEl = static_cast<uint64_t>( vector.size() );
-        write( nEl );
-        write( (unsigned char*)vector.data(), nEl * sizeof( T ) );
-    }
+// #ifdef HUB_DEBUG_OUTPUT
+//         std::cout << "<---" << HEADER << "write(std::vector<" << TYPE_NAME( T ) << ">)"
+//                   << std::endl;
+// #endif
 
-    template <class T>
-    typename std::enable_if_t<!packable_v<T>, void> write( const std::vector<T>& vector ) {
-#ifdef HUB_DEBUG_OUTPUT
-        std::cout << "<---" << HEADER << "write(std::vector" << TYPE_NAME( T ) << ">)" << std::endl;
-#endif
-        uint64_t nbEl = static_cast<uint64_t>( vector.size() );
-        write( nbEl );
+//         uint64_t nEl = static_cast<uint64_t>( vector.size() );
+//         write( nEl );
+//         write( (unsigned char*)vector.data(), nEl * sizeof( T ) );
+//     }
 
-        for ( const T& el : vector ) {
-            write( el );
-        }
-    }
+//     template <class T>
+//     typename std::enable_if_t<!packable_v<T>, void> write( const std::vector<T>& vector ) {
+// #ifdef HUB_DEBUG_OUTPUT
+//         std::cout << "<---" << HEADER << "write(std::vector" << TYPE_NAME( T ) << ">)" << std::endl;
+// #endif
+//         uint64_t nbEl = static_cast<uint64_t>( vector.size() );
+//         write( nbEl );
 
-    template <class T, class U>
-    void write( const std::map<T, U>& map ) {
-        //    assert( isOpen() );
+//         for ( const T& el : vector ) {
+//             write( el );
+//         }
+//     }
 
-#ifdef HUB_DEBUG_OUTPUT
-        std::cout << "<---" << HEADER << "write(std::map<" << TYPE_NAME( T ) << ", "
-                  << TYPE_NAME( U ) << ")" << std::endl;
-#endif
+//     template <class T, class U>
+//     void write( const std::map<T, U>& map ) {
+//         //    assert( isOpen() );
 
-        int nbKey = static_cast<int>( map.size() );
-        write( nbKey );
-        // #ifdef HUB_DEBUG_OUTPUT
-        //     std::cout << HEADER_OUTPUT_MSG "map : nbEl = " << nbKey << std::endl;
-        // #endif
+// #ifdef HUB_DEBUG_OUTPUT
+//         std::cout << "<---" << HEADER << "write(std::map<" << TYPE_NAME( T ) << ", "
+//                   << TYPE_NAME( U ) << ")" << std::endl;
+// #endif
 
-        for ( const std::pair<T, U>& pair : map ) {
-            write( pair );
-        }
-    }
+//         int nbKey = static_cast<int>( map.size() );
+//         write( nbKey );
+//         // #ifdef HUB_DEBUG_OUTPUT
+//         //     std::cout << HEADER_OUTPUT_MSG "map : nbEl = " << nbKey << std::endl;
+//         // #endif
 
-    template <class T, class U>
-    void write( const std::pair<T, U>& pair ) {
-        //    assert( isOpen() );
+//         for ( const std::pair<T, U>& pair : map ) {
+//             write( pair );
+//         }
+//     }
 
-#ifdef HUB_DEBUG_OUTPUT
-        std::cout << "<---" << HEADER << "write(std::pair<" << TYPE_NAME( T ) << ", "
-                  << TYPE_NAME( U ) << ">)" << std::endl;
-#endif
-        const T& first  = pair.first;
-        const U& second = pair.second;
-        write( first );
-        write( second );
-    }
+//     template <class T, class U>
+//     void write( const std::pair<T, U>& pair ) {
+//         //    assert( isOpen() );
 
-    //  public:
-    ///
-    /// \brief write
-    /// \param any
-    ///
-    //    void write( const Any& any );
+// #ifdef HUB_DEBUG_OUTPUT
+//         std::cout << "<---" << HEADER << "write(std::pair<" << TYPE_NAME( T ) << ", "
+//                   << TYPE_NAME( U ) << ">)" << std::endl;
+// #endif
+//         const T& first  = pair.first;
+//         const U& second = pair.second;
+//         write( first );
+//         write( second );
+//     }
 
-    ///
-    /// \brief write
-    /// \param str
-    ///
-    //    void write( const char* str );
+//     //  public:
+//     ///
+//     /// \brief write
+//     /// \param any
+//     ///
+//     //    void write( const Any& any );
 
-    void write( char* str ) = delete; // non compatible format 32/64 bit
+//     ///
+//     /// \brief write
+//     /// \param str
+//     ///
+//     //    void write( const char* str );
 
-    ///
-    /// \brief write
-    /// \param str
-    ///
-    void write( const std::string& str );
+//     void write( char* str ) = delete; // non compatible format 32/64 bit
 
-    //    virtual void write(uint64_t size);
+//     ///
+//     /// \brief write
+//     /// \param str
+//     ///
+//     void write( const std::string& str );
 
-#ifdef ARCH_X86
-    void write( size_t size ) = delete; // non compatible format 32/64 bit
-#endif
+//     //    virtual void write(uint64_t size);
 
-    template <std::size_t I = 0, typename... Tp>
-    inline typename std::enable_if<I == sizeof...( Tp ), void>::type
-    write( const std::tuple<Tp...>& t ) {}
+// #ifdef ARCH_X86
+//     void write( size_t size ) = delete; // non compatible format 32/64 bit
+// #endif
 
-    template <std::size_t I = 0, typename... Tp>
-        typename std::enable_if <
-        I<sizeof...( Tp ), void>::type write( const std::tuple<Tp...>& t ) {
+//     template <std::size_t I = 0, typename... Tp>
+//     inline typename std::enable_if<I == sizeof...( Tp ), void>::type
+//     write( const std::tuple<Tp...>& t ) {}
 
-        if constexpr ( static_cast<int>( I ) == 0 ) {
-#ifdef HUB_DEBUG_OUTPUT
-            std::cout << "<---" << HEADER << "write(std::tuple<" << TYPE_NAME( Tp... ) << ">) : '"
-                      << t << "'" << std::endl;
-#endif
-        }
-        //        std::cout << std::get<I>( t ) << std::endl;
-        write( std::get<I>( t ) );
+//     template <std::size_t I = 0, typename... Tp>
+//         typename std::enable_if <
+//         I<sizeof...( Tp ), void>::type write( const std::tuple<Tp...>& t ) {
 
-        write<I + 1, Tp...>( t );
-    }
+//         if constexpr ( static_cast<int>( I ) == 0 ) {
+// #ifdef HUB_DEBUG_OUTPUT
+//             std::cout << "<---" << HEADER << "write(std::tuple<" << TYPE_NAME( Tp... ) << ">) : '"
+//                       << t << "'" << std::endl;
+// #endif
+//         }
+//         //        std::cout << std::get<I>( t ) << std::endl;
+//         write( std::get<I>( t ) );
 
-    template <std::size_t I = 0, typename... Tp>
-    inline typename std::enable_if<I == sizeof...( Tp ), void>::type
-    write( std::tuple<Tp...>&& t ) {}
+//         write<I + 1, Tp...>( t );
+//     }
 
-    template <std::size_t I = 0, typename... Tp>
-        typename std::enable_if < I<sizeof...( Tp ), void>::type write( std::tuple<Tp...>&& t ) {
+//     template <std::size_t I = 0, typename... Tp>
+//     inline typename std::enable_if<I == sizeof...( Tp ), void>::type
+//     write( std::tuple<Tp...>&& t ) {}
 
-        if constexpr ( static_cast<int>( I ) == 0 ) {
-#ifdef HUB_DEBUG_OUTPUT
-            std::cout << "<---" << HEADER << "write(std::tuple<" << TYPE_NAME( Tp... ) << ">) : '"
-                      << t << "'" << std::endl;
-#endif
-        }
-        //        std::cout << std::get<I>( t ) << std::endl;
-        write( std::get<I>( t ) );
+//     template <std::size_t I = 0, typename... Tp>
+//         typename std::enable_if < I<sizeof...( Tp ), void>::type write( std::tuple<Tp...>&& t ) {
 
-        write<I + 1, Tp...>( t );
-    }
+//         if constexpr ( static_cast<int>( I ) == 0 ) {
+// #ifdef HUB_DEBUG_OUTPUT
+//             std::cout << "<---" << HEADER << "write(std::tuple<" << TYPE_NAME( Tp... ) << ">) : '"
+//                       << t << "'" << std::endl;
+// #endif
+//         }
+//         //        std::cout << std::get<I>( t ) << std::endl;
+//         write( std::get<I>( t ) );
+
+//         write<I + 1, Tp...>( t );
+//     }
 
     template <class T>
     void writeAll( const T& t ) {
@@ -301,219 +306,223 @@ class SerializerImpl : public SerializerI
     }
 
     template <class T>
-    typename std::enable_if<serializable_v<T>>::type read( T& t ) {
-//        assert( isOpen() );
-//        assert( !isEnd() );
-#ifdef HUB_DEBUG_INPUT
-        std::cout << "\t" << HEADER << "\033[1mread\033[0m(serial: " << TYPE_NAME( T ) << ") ..."
-                  << std::endl;
-#endif
-        t.serialize( *this );
-#ifdef HUB_DEBUG_INPUT
-        std::cout << "\t" << HEADER << "\033[1mread\033[0m(serial: " << TYPE_NAME( T )
-                  << ") = " << t << std::endl;
-#endif
+    void read( T& t ) {
     }
 
-    template <class T>
-    typename std::enable_if_t<!serializable_v<T> && packable_v<T>, void>
-    read( T& t ) {
-        //        assert( isOpen() );
-        //        assert( !isEnd() );
-        read( reinterpret_cast<Data_t*>( &t ), sizeof( T ) );
-#ifdef HUB_DEBUG_INPUT
-        std::cout << "\t --->" << HEADER << "read(" << TYPE_NAME( T ) << ") = " << t << std::endl;
-#endif
-    }
+//     template <class T>
+//     typename std::enable_if<serializable_v<T>>::type read( T& t ) {
+// //        assert( isOpen() );
+// //        assert( !isEnd() );
+// #ifdef HUB_DEBUG_INPUT
+//         std::cout << "\t" << HEADER << "\033[1mread\033[0m(serial: " << TYPE_NAME( T ) << ") ..."
+//                   << std::endl;
+// #endif
+//         t.serialize( *this );
+// #ifdef HUB_DEBUG_INPUT
+//         std::cout << "\t" << HEADER << "\033[1mread\033[0m(serial: " << TYPE_NAME( T )
+//                   << ") = " << t << std::endl;
+// #endif
+//     }
 
-    template <class T>
-    void read( std::list<T>& list ) {
-        //    assert( isOpen() );
-        //    assert( !isEnd() );
+//     template <class T>
+//     typename std::enable_if_t<!serializable_v<T> && packable_v<T>, void>
+//     read( T& t ) {
+//         //        assert( isOpen() );
+//         //        assert( !isEnd() );
+//         read( reinterpret_cast<Data_t*>( &t ), sizeof( T ) );
+// #ifdef HUB_DEBUG_INPUT
+//         std::cout << "\t --->" << HEADER << "read(" << TYPE_NAME( T ) << ") = " << t << std::endl;
+// #endif
+//     }
 
-#ifdef HUB_DEBUG_INPUT
-        std::cout << "\t --->" << HEADER << "read(std::list<" << TYPE_NAME( T ) << ">)"
-                  << std::endl;
-#endif
+//     template <class T>
+//     void read( std::list<T>& list ) {
+//         //    assert( isOpen() );
+//         //    assert( !isEnd() );
 
-        int nbEl;
-        read( nbEl );
+// #ifdef HUB_DEBUG_INPUT
+//         std::cout << "\t --->" << HEADER << "read(std::list<" << TYPE_NAME( T ) << ">)"
+//                   << std::endl;
+// #endif
 
-        for ( int i = 0; i < nbEl; ++i ) {
-            T el;
-            read( el );
-            list.push_back( std::move( el ) );
-        }
-    }
+//         int nbEl;
+//         read( nbEl );
 
-    template <class T>
-    typename std::enable_if_t<packable_v<T>, void>
-    //    void
-    read( std::vector<T>& vector ) {
-        //    assert( isOpen() );
-        //    assert( !isEnd() );
+//         for ( int i = 0; i < nbEl; ++i ) {
+//             T el;
+//             read( el );
+//             list.push_back( std::move( el ) );
+//         }
+//     }
 
-#ifdef HUB_DEBUG_INPUT
-        //    std::cout << HEADER_INPUT_MSG "read(" << TYPE_NAME( vector ) << ")" << std::endl;
-        std::cout << "\t --->" << HEADER << "read(std::vector<" << TYPE_NAME( T ) << ">)"
-                  << std::endl;
-#endif
-        uint64_t nEl;
-        static_assert( sizeof( uint64_t ) == 8 );
-        read( nEl );
-        vector.resize( nEl );
-        read( (unsigned char*)vector.data(), nEl * sizeof( T ) );
-    }
+//     template <class T>
+//     typename std::enable_if_t<packable_v<T>, void>
+//     //    void
+//     read( std::vector<T>& vector ) {
+//         //    assert( isOpen() );
+//         //    assert( !isEnd() );
 
-    template <class T>
-    typename std::enable_if_t<!packable_v<T>, void>
-    //    void
-    read( std::vector<T>& vector ) {
-        //    assert( isOpen() );
-        //    assert( !isEnd() );
+// #ifdef HUB_DEBUG_INPUT
+//         //    std::cout << HEADER_INPUT_MSG "read(" << TYPE_NAME( vector ) << ")" << std::endl;
+//         std::cout << "\t --->" << HEADER << "read(std::vector<" << TYPE_NAME( T ) << ">)"
+//                   << std::endl;
+// #endif
+//         uint64_t nEl;
+//         static_assert( sizeof( uint64_t ) == 8 );
+//         read( nEl );
+//         vector.resize( nEl );
+//         read( (unsigned char*)vector.data(), nEl * sizeof( T ) );
+//     }
 
-#ifdef HUB_DEBUG_INPUT
-        //    std::cout << HEADER_INPUT_MSG "read(" << TYPE_NAME( vector ) << ")" << std::endl;
-        std::cout << "\t --->" << HEADER << "read(std::vector<" << TYPE_NAME( T ) << ">)"
-                  << std::endl;
-#endif
+//     template <class T>
+//     typename std::enable_if_t<!packable_v<T>, void>
+//     //    void
+//     read( std::vector<T>& vector ) {
+//         //    assert( isOpen() );
+//         //    assert( !isEnd() );
 
-        uint64_t nEl;
-        static_assert( sizeof( uint64_t ) == 8 );
-        read( nEl );
-        //    std::cout << "nEl = " << nEl << std::endl;
+// #ifdef HUB_DEBUG_INPUT
+//         //    std::cout << HEADER_INPUT_MSG "read(" << TYPE_NAME( vector ) << ")" << std::endl;
+//         std::cout << "\t --->" << HEADER << "read(std::vector<" << TYPE_NAME( T ) << ">)"
+//                   << std::endl;
+// #endif
 
-        //    const auto nEl = size / sizeof(T);
-        //    uint64_t size = static_cast<uint64_t>( vector.size() * sizeof(T) );
-        //    std::cout << "nEl = " << nEl << std::endl;
+//         uint64_t nEl;
+//         static_assert( sizeof( uint64_t ) == 8 );
+//         read( nEl );
+//         //    std::cout << "nEl = " << nEl << std::endl;
 
-        vector.clear();
-        //    vector.reserve( nEl );
-//        vector.resize( nEl );
-        //    read( (unsigned char*)vector.data(), nEl * sizeof( T ) );
+//         //    const auto nEl = size / sizeof(T);
+//         //    uint64_t size = static_cast<uint64_t>( vector.size() * sizeof(T) );
+//         //    std::cout << "nEl = " << nEl << std::endl;
 
-            for ( int i = 0; i < nEl; ++i ) {
-                //        if constexpr ( getable_v<T> ) { vector.push_back( get<T>() ); }
-                //        else {
-                T el;
-                read( el );
-                vector.push_back( std::move( el ) );
-//                vector
-                //        }
-            }
-#ifdef HUB_DEBUG_INPUT
-            std::cout << "\t --->" << HEADER << "read(std::vector<" << TYPE_NAME( T ) << ">) = " << vector
-                  << std::endl;
-#endif
-    }
+//         vector.clear();
+//         //    vector.reserve( nEl );
+// //        vector.resize( nEl );
+//         //    read( (unsigned char*)vector.data(), nEl * sizeof( T ) );
 
-    ///
-    /// \brief read
-    /// \param map
-    ///
-    template <class T, class U>
-    void read( std::map<T, U>& map ) {
-        //    assert( isOpen() );
-        //    assert( !isEnd() );
+//             for ( int i = 0; i < nEl; ++i ) {
+//                 //        if constexpr ( getable_v<T> ) { vector.push_back( get<T>() ); }
+//                 //        else {
+//                 T el;
+//                 read( el );
+//                 vector.push_back( std::move( el ) );
+// //                vector
+//                 //        }
+//             }
+// #ifdef HUB_DEBUG_INPUT
+//             std::cout << "\t --->" << HEADER << "read(std::vector<" << TYPE_NAME( T ) << ">) = " << vector
+//                   << std::endl;
+// #endif
+//     }
 
-#ifdef HUB_DEBUG_INPUT
-        //    std::cout << HEADER_INPUT_MSG "read(std::map)" << std::endl;
-        std::cout << "\t --->" << HEADER << "read(std::map<" << TYPE_NAME( T ) << ", "
-                  << TYPE_NAME( U ) << ")" << std::endl;
-#endif
+//     ///
+//     /// \brief read
+//     /// \param map
+//     ///
+//     template <class T, class U>
+//     void read( std::map<T, U>& map ) {
+//         //    assert( isOpen() );
+//         //    assert( !isEnd() );
 
-        int nbEl;
-        read( nbEl );
-        map.clear();
+// #ifdef HUB_DEBUG_INPUT
+//         //    std::cout << HEADER_INPUT_MSG "read(std::map)" << std::endl;
+//         std::cout << "\t --->" << HEADER << "read(std::map<" << TYPE_NAME( T ) << ", "
+//                   << TYPE_NAME( U ) << ")" << std::endl;
+// #endif
 
-        for ( int i = 0; i < nbEl; ++i ) {
-            std::pair<T, U> pair;
-            read( pair );
-            assert( map.find( pair.first ) == map.end() );
-            map.emplace( std::move( pair ) );
-        }
-    }
+//         int nbEl;
+//         read( nbEl );
+//         map.clear();
 
-    ///
-    /// \brief read
-    /// \param pair
-    ///
-    template <class T, class U>
-    void read( std::pair<T, U>& pair ) {
-        //    assert( isOpen() );
-        //    assert( !isEnd() );
+//         for ( int i = 0; i < nbEl; ++i ) {
+//             std::pair<T, U> pair;
+//             read( pair );
+//             assert( map.find( pair.first ) == map.end() );
+//             map.emplace( std::move( pair ) );
+//         }
+//     }
 
-#ifdef HUB_DEBUG_INPUT
-        //    std::cout << HEADER_INPUT_MSG "read(std::pair)" << std::endl;
-        std::cout << "\t --->" << HEADER << "read(std::pair<" << TYPE_NAME( T ) << ", "
-                  << TYPE_NAME( U ) << ")" << std::endl;
-#endif
-        T first;
-        read( first );
-        U second;
-        read( second );
-        pair = std::make_pair( first, std::move( second ) );
-    }
+//     ///
+//     /// \brief read
+//     /// \param pair
+//     ///
+//     template <class T, class U>
+//     void read( std::pair<T, U>& pair ) {
+//         //    assert( isOpen() );
+//         //    assert( !isEnd() );
 
-    ///
-    /// \brief read
-    /// \param str
-    ///
-    //    void read( char* str );
+// #ifdef HUB_DEBUG_INPUT
+//         //    std::cout << HEADER_INPUT_MSG "read(std::pair)" << std::endl;
+//         std::cout << "\t --->" << HEADER << "read(std::pair<" << TYPE_NAME( T ) << ", "
+//                   << TYPE_NAME( U ) << ")" << std::endl;
+// #endif
+//         T first;
+//         read( first );
+//         U second;
+//         read( second );
+//         pair = std::make_pair( first, std::move( second ) );
+//     }
 
-    ///
-    /// \brief read
-    /// \param str
-    ///
-    void read( std::string& str );
+//     ///
+//     /// \brief read
+//     /// \param str
+//     ///
+//        void read( char* str );
 
-#ifdef ARCH_X86
-    void read( size_t size ) = delete; // non compatible format 32/64 bit
-#endif
+//     ///
+//     /// \brief read
+//     /// \param str
+//     ///
+//     void read( std::string& str );
 
-    template <std::size_t I = 0, typename... Tp>
-    inline typename std::enable_if<I == sizeof...( Tp ), void>::type read( std::tuple<Tp...>& t ) {
-#ifdef HUB_DEBUG_INPUT
-        std::cout << "\t --->" << HEADER << "\033[1mread\033[0m(std::tuple<" << TYPE_NAME( Tp... )
-                  << ">) : '" << t << "'" << std::endl;
-#endif
-    }
+// #ifdef ARCH_X86
+//     void read( size_t size ) = delete; // non compatible format 32/64 bit
+// #endif
 
-    template <std::size_t I = 0, typename... Tp>
-        typename std::enable_if < I<sizeof...( Tp ), void>::type read( std::tuple<Tp...>& t ) {
+//     template <std::size_t I = 0, typename... Tp>
+//     inline typename std::enable_if<I == sizeof...( Tp ), void>::type read( std::tuple<Tp...>& t ) {
+// #ifdef HUB_DEBUG_INPUT
+//         std::cout << "\t --->" << HEADER << "\033[1mread\033[0m(std::tuple<" << TYPE_NAME( Tp... )
+//                   << ">) : '" << t << "'" << std::endl;
+// #endif
+//     }
 
-        if constexpr ( static_cast<int>( I ) == 0 ) {
-#ifdef HUB_DEBUG_INPUT
-            std::cout << "\t --->" << HEADER << "read(std::tuple<" << TYPE_NAME( Tp... ) << ">)"
-                      << std::endl;
-#endif
-        }
-        read( std::get<I>( t ) );
+//     template <std::size_t I = 0, typename... Tp>
+//         typename std::enable_if < I<sizeof...( Tp ), void>::type read( std::tuple<Tp...>& t ) {
 
-        read<I + 1, Tp...>( t );
-    }
+//         if constexpr ( static_cast<int>( I ) == 0 ) {
+// #ifdef HUB_DEBUG_INPUT
+//             std::cout << "\t --->" << HEADER << "read(std::tuple<" << TYPE_NAME( Tp... ) << ">)"
+//                       << std::endl;
+// #endif
+//         }
+//         read( std::get<I>( t ) );
 
-    template <std::size_t I = 0, typename... Tp>
-    inline typename std::enable_if<I == sizeof...( Tp ), void>::type read( std::tuple<Tp...>&& t ) {
-#ifdef HUB_DEBUG_INPUT
-        std::cout << "\t --->" << HEADER << "\033[1mread\033[0m(std::tuple<" << TYPE_NAME( Tp... )
-                  << ">) : '" << t << "'" << std::endl;
-#endif
-    }
+//         read<I + 1, Tp...>( t );
+//     }
 
-    template <std::size_t I = 0, typename... Tp>
-        typename std::enable_if < I<sizeof...( Tp ), void>::type read( std::tuple<Tp...>&& t ) {
+//     template <std::size_t I = 0, typename... Tp>
+//     inline typename std::enable_if<I == sizeof...( Tp ), void>::type read( std::tuple<Tp...>&& t ) {
+// #ifdef HUB_DEBUG_INPUT
+//         std::cout << "\t --->" << HEADER << "\033[1mread\033[0m(std::tuple<" << TYPE_NAME( Tp... )
+//                   << ">) : '" << t << "'" << std::endl;
+// #endif
+//     }
 
-        if constexpr ( static_cast<int>( I ) == 0 ) {
-#ifdef HUB_DEBUG_INPUT
-            std::cout << "\t --->" << HEADER << "read(std::tuple<" << TYPE_NAME( Tp... ) << ">)"
-                      << std::endl;
-#endif
-        }
-        read( std::get<I>( t ) );
+//     template <std::size_t I = 0, typename... Tp>
+//         typename std::enable_if < I<sizeof...( Tp ), void>::type read( std::tuple<Tp...>&& t ) {
 
-        read<I + 1, Tp...>( t );
-    }
+//         if constexpr ( static_cast<int>( I ) == 0 ) {
+// #ifdef HUB_DEBUG_INPUT
+//             std::cout << "\t --->" << HEADER << "read(std::tuple<" << TYPE_NAME( Tp... ) << ">)"
+//                       << std::endl;
+// #endif
+//         }
+//         read( std::get<I>( t ) );
+
+//         read<I + 1, Tp...>( t );
+//     }
 
     template <class T>
     void readAll( T& t ) {
@@ -531,7 +540,9 @@ class SerializerImpl : public SerializerI
 
   private:
     //    std::vector<Data_t> m_serial;
-    std::array<unsigned char, BuffSize> m_serialBuff;
+    using ByteView        = std::vector<Data_t>;
+    ByteView m_serialBuff = std::vector<Data_t>( BuffSize );
+    // std::array<unsigned char, BuffSize> m_serialBuff;
     Size_t m_position = 0;
     //    Result m_result{m_serial.data(), 0};
 };

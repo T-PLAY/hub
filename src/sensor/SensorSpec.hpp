@@ -22,7 +22,7 @@
 //// #include "data/Mesh.hpp"
 //// #include "data/UserData.hpp"
 
-// #if CPLUSPLUS_VERSION == 20
+// #if CPP_VERSION == 20
 //// #    include "Map.hpp"
 // #    include <ranges>
 // #endif
@@ -52,7 +52,7 @@ namespace sensor {
 class SRC_API SensorSpec
 {
   public:
-    // #if CPLUSPLUS_VERSION == 20
+    // #if CPP_VERSION == 20
     //     using SensorNameType = std::string_view;
     //     using SensorNameType = std::string;
     // #else
@@ -103,7 +103,7 @@ class SRC_API SensorSpec
     //    SensorSpec(const SensorSpec & sensorSpec) = default;
 
     auto toString() const {
-        return "'" + m_sensorName + "' " + m_resolution.toString() + " " + ::toString( m_metaData );
+        return "'" + m_sensorName + "' " + m_resolution.toString() + " " + hub::toString( m_metaData );
         //        return sensorName + " " + resolution.toString();
     }
 
@@ -272,7 +272,7 @@ class SRC_API SensorSpec
 //    ///
 
 //  public:
-// #if CPLUSPLUS_VERSION == 20
+// #if CPP_VERSION == 20
 //    inline CONSTEXPR const std::string& getSensorName() const noexcept;
 // #else
 //    ///
@@ -334,7 +334,7 @@ class SRC_API SensorSpec
 /////////////////////////////////////////////////// INLINE
 ///////////////////////////////////////////////////////////////////////////
 
-//// #if CPLUSPLUS_VERSION == 20
+//// #if CPP_VERSION == 20
 //// SensorSpec::SensorSpec( const SensorNameType& sensorName,
 ////                                     const Resolutions& resolution,
 ////                                     const MetaData& metaData ) :

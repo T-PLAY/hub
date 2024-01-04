@@ -4,10 +4,10 @@
 // #include "core/Traits.hpp"
 #include <type_traits>
 
-#include "core/Traits.hpp"
+#include "Traits.hpp"
 // #include <vector>
 #if defined( HUB_DEBUG_INPUT ) || defined( HUB_DEBUG_OUTPUT )
-#include <mutex>
+#    include <mutex>
 #endif
 
 namespace hub {
@@ -20,7 +20,7 @@ extern std::mutex s_mtxIoPrint; // shared mutex over threads
 
 #    undef DEBUG_MSG
 #    define DEBUG_MSG( str )               \
-        s_mtxIoPrint.lock();           \
+        s_mtxIoPrint.lock();               \
         do {                               \
             std::cout << str << std::endl; \
         } while ( false );                 \
@@ -40,11 +40,41 @@ class ios
 // template<typename T, typename A>
 // struct is_std_vector<std::vector<T,A>> : std::true_type {};
 
+
+#if CPP_VERSION >= 20
+
 template <class T>
 concept isPacket = requires( T t ) {
     t.data();
     t.size();
 }; // uses by acquisition
+
+#else
+
+template <typename T>
+using has_data_t = decltype( std::declval<T>().data() );
+template <typename T, typename = std::void_t<>>
+struct has_data : std::false_type {};
+template <typename T>
+struct has_data<T, std::void_t<has_data_t<T>>> : std::true_type {};
+template <typename T>
+static constexpr bool has_data_v = has_data<T>::value;
+
+///////////
+
+template <typename T>
+using has_size_t = decltype( std::declval<T>().size() );
+template <typename T, typename = std::void_t<>>
+struct has_size : std::false_type {};
+template <typename T>
+struct has_size<T, std::void_t<has_size_t<T>>> : std::true_type {};
+template <typename T>
+static constexpr bool has_size_v = has_size<T>::value;
+
+template <class T>
+constexpr bool isPacket = has_data_v<T> && has_size_v<T>;
+
+#endif
 
 template <typename T>
 using packable_t = decltype( T::packable );

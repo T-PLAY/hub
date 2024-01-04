@@ -32,7 +32,7 @@ namespace io {
 //     }
 //     auto toString() const {
 //         return std::to_string( m_headerSize ) + ":" + std::to_string( m_dataSize ) + ":" +
-//                ::toString( m_userData );
+//                hub::toString( m_userData );
 //     }
 //     static constexpr auto serialize( auto& archive, auto& self ) {
 //         return archive( self.m_headerSize, self.m_dataSize, self.m_userData );

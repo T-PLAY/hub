@@ -45,7 +45,7 @@ namespace sensor {
 // }
 
 
-////#if CPLUSPLUS_VERSION != 20
+////#if CPP_VERSION != 20
 //SensorSpec::SensorSpec( const std::string& sensorName,
 //                        const Resolutions& resolutions,
 //                        const MetaData& metaData ) :

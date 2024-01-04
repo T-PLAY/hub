@@ -8,7 +8,7 @@
 #include <io/input/InputFile.hpp>
 #include <io/output/OutputFile.hpp>
 
-#if CPLUSPLUS_VERSION >= 17
+#if CPP_VERSION >= 17
 #    include <filesystem>
 #endif
 
@@ -32,7 +32,7 @@ TEST_CASE( "File test" ) {
 
     const std::string filename = FILE_NAME + ".txt";
 
-#if CPLUSPLUS_VERSION >= 17
+#if CPP_VERSION >= 17
     std::filesystem::remove( filename );
 #endif
 

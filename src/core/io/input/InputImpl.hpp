@@ -21,7 +21,7 @@
 //#include "InputBase.hpp"
 
 #if defined( OS_MACOS ) && \
-    CPLUSPLUS_VERSION <= 14 // std::void_t not supported by AppleClang (c++14)
+    CPP_VERSION <= 14 // std::void_t not supported by AppleClang (c++14)
 #    include "core/Traits.hpp"
 #endif
 

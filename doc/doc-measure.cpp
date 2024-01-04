@@ -18,7 +18,7 @@
 
 int main() {
 
-#if CPLUSPLUS_VERSION == 20
+#if CPP_VERSION == 20
     // todo change char ptr into std::array
     constexpr const unsigned char data[] { 0, 1, 2 };
 

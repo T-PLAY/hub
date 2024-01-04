@@ -13,6 +13,8 @@ namespace hub {
 //    Dynamic = 0x2,
 //};
 
+#if CPP_VERSION >= 20
+
 template <class... Types>
     requires( sizeof...( Types ) > 1 )
 static inline constexpr auto MatrixT() {
@@ -90,5 +92,7 @@ template <Size_t N, Size_t N2, Size_t N3, Size_t N4, Size_t N5, class... Types>
 static inline constexpr auto MatrixT() {
     return MatrixXD<MatrixTs<Types...>, N, N2, N3, N4, N5>();
 }
+
+#endif
 
 } // namespace hub

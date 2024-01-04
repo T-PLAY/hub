@@ -9,7 +9,7 @@
 
 // namespace hub {
 
-//#if CPLUSPLUS_VERSION >= 20 // concept
+//#if CPP_VERSION >= 20 // concept
 //template <class T>
 //concept Printable = requires( T a ) { std::cout << a; };
 //#else

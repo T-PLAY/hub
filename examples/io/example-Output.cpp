@@ -23,7 +23,7 @@ int main() {
 ////    const hub::Output & output4 = hub::output::OutputStreamInterface("streamName", ipv4, port); // abstract class
 //    const hub::Output & output5 = hub::output::OutputFile("filePath");
 //    std::vector<int> vs;
-//#if CPLUSPLUS_VERSION < 17
+//#if CPP_VERSION < 17
 //    const hub::Output & output6 = hub::output::OutputMemory<decltype(vs)>(vs);
 //#else
 //    const hub::Output & output6 = hub::output::OutputMemory(vs);

@@ -3,7 +3,7 @@
 
 #include <type_traits>
 
-#include "MatrixBase.hpp"
+#include "core/MatrixBase.hpp"
 #include "core/Matrix.hpp"
 
 namespace hub {
@@ -14,20 +14,24 @@ namespace hub {
 namespace _ {
 
 template <class Type, Size_t... Ns>
+#if CPP_VERSION >= 20
     requires( sizeof...( Ns ) > 0 && ( ( Ns > 1 ) && ... ) )
+#endif
 class MatrixXDBase
 {
   public:
     static struct {} matrix;
     static constexpr auto Capacity = ( Ns * ... );
-    static constexpr auto Size     = sizeof_<Type>() * Capacity;
+    static constexpr auto Size     = sizeOf<Type>() * Capacity;
     static constexpr auto capacity() { return Capacity; };
     static constexpr auto size() { return Size; };
 
     static constexpr auto nType() { return 1; };
     static constexpr auto nDim() { return sizeof...( Ns ); };
     template <Size_t i>
+#if CPP_VERSION >= 20
         requires( 0 <= i && i < nDim() )
+#endif
     static constexpr auto getDim() {
         auto j = 0;
         for ( auto dim : { Ns... } ) {
@@ -43,7 +47,9 @@ class MatrixXDBase
     }
 
     template <class... Types>
+#if CPP_VERSION >= 20
         requires( sizeof...( Types ) > 1 )
+#endif
     static constexpr auto hasType() {
         return ( hasType<Types>() && ... );
     }
@@ -54,14 +60,17 @@ class MatrixXDBase
     }
 
     template <Size_t ith>
+#if CPP_VERSION >= 20
         requires( ith == 0 )
+#endif
     using getType = Type;
 
   public:
     template <class... Args>
     constexpr MatrixXDBase( Args&&... args ) : m_buffer { std::forward<Type&&>( args )... } {}
 
-    static constexpr std::string name() {
+    // static constexpr std::string name() {
+    static CONSTEXPR20 auto name() {
         std::string str;
         str += TYPE_NAME( Type );
 
@@ -115,7 +124,9 @@ static_assert( isMatrix<MatrixXDBase<int, 2>> );
 } // namespace _
 
 template <class Type, Size_t... Ns>
+#if CPP_VERSION >= 20
     requires( sizeof...( Ns ) > 0 && ( ( Ns > 1 ) && ... ) )
+#endif
 class MatrixXD : public _::MatrixXDBase<Type, Ns...>
 {
   public:
@@ -132,7 +143,9 @@ class MatrixXD : public _::MatrixXDBase<Type, Ns...>
 };
 
 template <class Type, Size_t N>
+#if CPP_VERSION >= 20
     requires( N > 1 )
+#endif
 class MatrixXD<Type, N> : public _::MatrixXDBase<Type, N>
 {
   public:

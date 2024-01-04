@@ -2,7 +2,7 @@
 
 #include "OutputBase.hpp"
 #include "Serializer.hpp"
-#include "core/Macros.hpp"
+#include "Macros.hpp"
 
 // #define HUB_DEBUG_OUTPUT
 

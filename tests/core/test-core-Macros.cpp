@@ -26,10 +26,10 @@ class Lambda
 TEST_CASE( "Macros test" ) {
     TEST_BEGIN()
 
-    static_assert(hub::sizeof_<int>() == 4);
-    static_assert(hub::sizeof_<double>() == 8);
-    static_assert(hub::sizeof_<int, int>() == 8);
-    static_assert(hub::sizeof_<Lambda>() == 5);
+    static_assert(hub::sizeOf<int>() == 4);
+    static_assert(hub::sizeOf<double>() == 8);
+    static_assert(hub::sizeOf<int, int>() == 8);
+    static_assert(hub::sizeOf<Lambda>() == 5);
 
     std::cout << "int: " << TYPE_NAME(int) << std::endl;
     std::cout << "vints: " << TYPE_NAME(std::vector<int>) << std::endl;

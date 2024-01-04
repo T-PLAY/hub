@@ -29,27 +29,27 @@ TEST_CASE( "Traits test" ) {
     //    using namespace hub;
 
     const std::vector<int> vints { 1, 2, 3 };
-    std::cout << "vints: " << toString( vints ) << std::endl;
+    std::cout << "vints: " << hub::toString( vints ) << std::endl;
     std::cout << "vints: " << vints << std::endl;
     std::cout << std::endl;
 
     const std::vector<char> vchar { 'a', 'b', 'c' };
-    std::cout << "vchar: " << toString( vchar ) << std::endl;
+    std::cout << "vchar: " << hub::toString( vchar ) << std::endl;
     std::cout << "vchar: " << vchar << std::endl;
     std::cout << std::endl;
 
     const std::array<int, 5> array { 1, 2, 3, 4, 5 };
-    std::cout << "array: " << toString( array ) << std::endl;
+    std::cout << "array: " << hub::toString( array ) << std::endl;
     std::cout << "array: " << array << std::endl;
     std::cout << std::endl;
 
     const std::span span { array };
-    std::cout << "span: " << toString( span ) << std::endl;
+    std::cout << "span: " << hub::toString( span ) << std::endl;
     std::cout << "span: " << span << std::endl;
     std::cout << std::endl;
 
     const std::string string = "gauthier";
-    std::cout << "string: " << toString( string ) << std::endl;
+    std::cout << "string: " << hub::toString( string ) << std::endl;
     std::cout << "string: " << string << std::endl;
     std::cout << std::endl;
 
@@ -59,7 +59,7 @@ TEST_CASE( "Traits test" ) {
     std::cout << std::endl;
 
     std::vector<std::string> strings{"gauthier", "bouyjou"};
-    std::cout << "strings: " << toString( strings ) << std::endl;
+    std::cout << "strings: " << hub::toString( strings ) << std::endl;
     std::cout << "strings: " << strings << std::endl;
     std::cout << std::endl;
 

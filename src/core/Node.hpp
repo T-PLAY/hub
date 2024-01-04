@@ -7,8 +7,8 @@
 #include <type_traits>
 #include <vector>
 
-#include "core/Macros.hpp"
-#include "core/Traits.hpp"
+#include "Macros.hpp"
+#include "Traits.hpp"
 
 namespace hub {
 
@@ -28,9 +28,11 @@ class Node
 
     bool operator==( const Node& other ) const;
 
+#if CPLUSPLUSVERSION >= 20
     static constexpr auto serialize( auto& archive, auto& self ) {
         return archive( self.m_hashCode, self.m_dims, self.m_name, self.m_size );
     }
+#endif
 
     friend class Matrix;
 
@@ -44,7 +46,9 @@ class Node
 /////////////////////////////////////// MAKER /////////////////////////////////////////////////////
 
 template <class Type, Size_t N = 1, Size_t... Ns>
+#if CPLUSPLUSVERSION >= 20
     requires( N > 0 && ( ( Ns > 1 ) && ... ) )
+#endif
 static Node make_node() {
     auto size = sizeof( Type ) * N;
     if constexpr ( sizeof...( Ns ) > 0 ) {

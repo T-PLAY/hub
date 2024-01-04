@@ -6,7 +6,7 @@
 #include <map>
 #include <sstream>
 
-#include "core/Macros.hpp"
+#include "Macros.hpp"
 // #include "core/std_any.hpp"
 // #include "core/Input.hpp"
 // #include "core/Output.hpp"
@@ -14,10 +14,10 @@
 // #include "core/io/output/OutputBase.hpp"
 //#include "core/Input.hpp"
 //#include "core/Output.hpp"
-#include "core/Serializer.hpp"
+#include "Serializer.hpp"
 //#include "core/serializer/SerializerI.hpp"
 
-#if CPLUSPLUS_VERSION <= 14
+#if CPP_VERSION <= 14
 #    include "std_any.hpp"
 #else
 #    include <any>

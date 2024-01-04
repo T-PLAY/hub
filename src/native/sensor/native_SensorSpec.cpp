@@ -11,7 +11,7 @@ void sensorSpec_getSensorName( const sensor::SensorSpec* sensorSpec,
                                char* sensorName,
                                int* strLen ) {
     *strLen = sensorSpec->getSensorName().size(); // todo
-#if CPLUSPLUS_VERSION == 20
+#if CPP_VERSION == 20
     memcpy( sensorName, sensorSpec->getSensorName().data(), *strLen + 1 );
 #else
     memcpy( sensorName, sensorSpec->getSensorName().c_str(), *strLen + 1 );

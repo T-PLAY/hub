@@ -1,5 +1,20 @@
 #pragma once
 
+#include <cassert>
+#include <cmath>
+#include <cstdint>
+#include <iostream>
+#include <vector>
+
+#include "Configuration.hpp"
+
+// #define HUB_USE_BOOST
+#ifdef HUB_USE_BOOST
+#    include <boost/type_index.hpp>
+#endif
+
+namespace hub {
+
 // ----------------------------------------------------------------------------
 // Compiler identification
 // ----------------------------------------------------------------------------
@@ -177,28 +192,28 @@
 #    define SRC_API
 #endif
 
-#define CPLUSPLUS_VERSION 20
+// #define CPP_VERSION 20
 
-//#ifndef OS_WINDOWS
-#ifndef CPLUSPLUS_VERSION
+// #ifndef OS_WINDOWS
+#ifndef CPP_VERSION
 
 #    if ( __cplusplus >= 202001L )
-#        define CPLUSPLUS_VERSION 20
+#        define CPP_VERSION 20
 #        define CONSTEXPR17 constexpr
 #        define CONSTEXPR20 constexpr
 #        define CONSTEXPR constexpr
 #    elif ( __cplusplus >= 201703L )
-#        define CPLUSPLUS_VERSION 17
+#        define CPP_VERSION 17
 #        define CONSTEXPR17 constexpr
 #        define CONSTEXPR20
 #        define CONSTEXPR constexpr
 #    elif ( __cplusplus >= 201402L ) || ( defined( _MSC_VER ) && _MSC_VER >= 1914 )
-#        define CPLUSPLUS_VERSION 14
+#        define CPP_VERSION 14
 #        define CONSTEXPR17
 #        define CONSTEXPR20
 #        define CONSTEXPR constexpr
 #    else
-#        define CPLUSPLUS_VERSION 14
+#        define CPP_VERSION 14
 #        define CONSTEXPR17
 #        define CONSTEXPR20
 // #    error "C++ version " __cplusplus " not supported"
@@ -220,14 +235,14 @@
 
 // filename = filename.substr( filename.find_last_of( '\\' ) + 1 );
 
-// #include <string.h>
-
 #ifdef WIN32
 // #define FILE_NAME __FILE__
-#    define FILE_NAME                                                   \
-        std::string( __FILE__ )                                         \
-            .substr( std::min( std::string( __FILE__ ).find_last_of( '\\' ), std::string(__FILE__).find_last_of( '/' )) + 1 )
-            //.substr( std::string( __FILE__ ).find_last_of( '\\' ) + 1 ) \
+#    define FILE_NAME                                                          \
+        std::string( __FILE__ )                                                \
+            .substr( std::min( std::string( __FILE__ ).find_last_of( '\\' ),   \
+                               std::string( __FILE__ ).find_last_of( '/' ) ) + \
+                     1 )
+//.substr( std::string( __FILE__ ).find_last_of( '\\' ) + 1 ) \
             //.substr( std::string( __FILE__ ).find_last_of( '/' ) + 1 )
 
 // #define FILE_NAME strrchr( __FILE__, '\\' ) ? strrchr( __FILE__, '\\' ) + 1 : __FILE__
@@ -240,7 +255,7 @@
 #endif
 
 #define FILE_NAME_WITHOUT_EXTENSION FILE_NAME.substr( 0, FILE_NAME.find_first_of( '.' ) )
-//#define FILE_NAME_WITHOUT_EXTENSION FILE_NAME
+// #define FILE_NAME_WITHOUT_EXTENSION FILE_NAME
 
 #define HEADER                                                                             \
     "\033[" << std::to_string( 31 + reinterpret_cast<std::uintptr_t>( this ) % 7 ) << "m[" \
@@ -260,19 +275,36 @@
 #    define MAX_STACK_SIZE 100'000 // 100Ko
 #endif
 
-#include <iostream>
-// #include <stdlib.h>
-// #include <stdint.h>
-#include <cstdint>
-
-// #define HUB_USE_BOOST
-
-#ifdef HUB_USE_BOOST
-#    include <boost/type_index.hpp>
-#endif
-
 // template <class T>
 // concept TypeNameable = requires( const T& t ) { t.name(); };
+
+template <typename T>
+using has_begin_t = decltype( std::begin( std::declval<T>() ) );
+
+template <typename T, typename = std::void_t<>>
+struct has_begin : std::false_type {};
+
+template <typename T>
+struct has_begin<T, std::void_t<has_begin_t<T>>> : std::true_type {};
+
+template <typename T>
+static constexpr bool has_begin_v = has_begin<T>::value;
+
+////////////
+
+template <typename T>
+using has_end_t = decltype( std::end( std::declval<T>() ) );
+
+template <typename T, typename = std::void_t<>>
+struct has_end : std::false_type {};
+
+template <typename T>
+struct has_end<T, std::void_t<has_end_t<T>>> : std::true_type {};
+
+template <typename T>
+static constexpr bool has_end_v = has_end<T>::value;
+
+#if CPP_VERSION >= 20
 
 template <typename T>
 concept isContainer = !std::is_same<T, std::string>() && requires( T t ) {
@@ -280,11 +312,23 @@ concept isContainer = !std::is_same<T, std::string>() && requires( T t ) {
     std::end( t );
 };
 
-//template <typename T>
-//concept isPair = requires( T t ) {
-//    t.first();
-//    t.second();
-//};
+#else
+template <typename T>
+constexpr bool isContainer = !std::is_same<T, std::string>() && has_begin_v<T> && has_end_v<T>;
+#endif
+
+static_assert( isContainer<std::vector<unsigned char>> );
+static_assert( isContainer<std::vector<int>> );
+static_assert( !isContainer<std::string> );
+static_assert( !isContainer<const char*> );
+
+// template <typename T>
+// concept isPair = requires( T t ) {
+//     t.first();
+//     t.second();
+// };
+
+#if CPP_VERSION >= 20
 
 template <class T>
     requires( !isContainer<T> )
@@ -292,15 +336,13 @@ std::string type_name() {
     if constexpr ( requires { T::name(); } ) { return T::name(); }
     else if ( std::is_same_v<T, std::string> ) { return "string"; }
     else {
-#ifdef HUB_USE_BOOST
+#    ifdef HUB_USE_BOOST
         return boost::typeindex::type_id<typeof( T )>().pretty_name();
-#else
+#    else
         return typeid( T ).name();
-#endif
+#    endif
     }
 }
-
-#include <vector>
 
 template <class Container, class T = std::decay_t<decltype( *std::declval<Container>().begin() )>>
     requires( isContainer<Container> )
@@ -311,7 +353,92 @@ std::string type_name() {
     else { return "container<" + type_name<T>() + ">"; }
 }
 
-#define TYPE_NAME( Type ) type_name<Type>()
+#else
+
+template <typename T>
+using has_name_t = decltype( T::name() );
+
+template <typename T, typename = std::void_t<>>
+struct has_name : std::false_type {};
+
+template <typename T>
+struct has_name<T, std::void_t<has_name_t<T>>> : std::true_type {};
+
+template <typename T>
+static constexpr bool has_name_v = has_name<T>::value;
+
+#    if CPP_VERSION >= 20
+// todo c++17
+template <class T>
+// requires( !isContainer<T> )
+// typename std::enable_if<isContainer<T>, std::string>
+std::string type_name() {
+    return "typename";
+    //     if constexpr ( requires { T::name(); } ) { return T::name(); }
+    //     else if ( std::is_same_v<T, std::string> ) { return "string"; }
+    //     else {
+    // #ifdef HUB_USE_BOOST
+    //         return boost::typeindex::type_id<typeof( T )>().pretty_name();
+    // #else
+    //         return typeid( T ).name();
+    // #endif
+    // }
+}
+
+#    else
+
+// template <class T>
+// // typename std::enable_if_t<!has_name_v<T> && std::is_same_v<T, std::string>, std::string>
+// std::string type_name(const T & t) {
+//     return "string";
+// }
+
+// template <class T>
+// std::string type_name() {
+//     return "string";
+// }
+
+template <class T>
+typename std::enable_if_t<has_name_v<T>, std::string> type_name() {
+    return T::name();
+}
+
+template <class T>
+typename std::enable_if_t<std::is_same_v<T, std::string>, std::string> type_name() {
+    return "string";
+}
+
+// template <class T>
+// typename std::enable_if_t<!has_name_v<T> && std::is_same_v<T, std::string>, std::string>
+// type_name(const T & t) {
+//     return "string";
+// }
+
+template <class T>
+typename std::enable_if_t<!has_name_v<T> && !std::is_same_v<T, std::string>, std::string> type_name() {
+#        ifdef HUB_USE_BOOST
+    return boost::typeindex::type_id<typeof( T )>().pretty_name();
+#        else
+    return typeid( T ).name();
+#        endif
+}
+
+#    endif
+
+// template <class Container, class T = std::decay_t<decltype( *std::declval<Container>().begin()
+// )>>
+//     requires( isContainer<Container> )
+// std::string type_name() {
+//     if constexpr ( std::is_same_v<Container, std::vector<T>> ) {
+//         return "vector<" + type_name<T>() + ">";
+//     }
+//     else { return "container<" + type_name<T>() + ">"; }
+// }
+
+#endif
+
+#define TYPE_NAME( Type ) hub::type_name<Type>()
+// #define TYPE_NAME( Type ) hub::type_name(std::declval<Type>())
 
 // #ifdef HUB_USE_BOOST
 // #    define TYPE_NAME( t ) boost::typeindex::type_id<typeof( t )>().pretty_name()
@@ -329,13 +456,12 @@ std::string type_name() {
 // #    endif
 
 // #ifdef DEBUG
-#include <cassert>
 // #else
 ////#undef assert
 // #endif
 
-namespace hub {
-using Data_t = unsigned char;
+// namespace hub {
+using Data_t  = unsigned char;
 using Datas_t = std::vector<Data_t>;
 //    using Data_t =  std::byte;
 using Size_t = uint64_t; // max = 18'446'744'073'709'551'616 ~= 18 exa
@@ -345,17 +471,52 @@ using Size_t = uint64_t; // max = 18'446'744'073'709'551'616 ~= 18 exa
                          //    using Size_t = int;
                          //    using Size_t = unsigned int;
 
+#if CPP_VERSION >= 20
 template <class T>
-constexpr auto sizeof_() {
+constexpr auto sizeOf() {
     if constexpr ( requires { T::Size; } ) { return T::Size; }
     else { return sizeof( T ); }
 }
 
 template <class... Ts>
     requires( sizeof...( Ts ) > 1 )
-constexpr auto sizeof_() {
-    return ( sizeof_<Ts>() + ... );
+constexpr auto sizeOf() {
+    return ( sizeOf<Ts>() + ... );
 }
+
+#else
+
+template <typename T>
+using has_Size_t = decltype( T::Size );
+
+template <typename T, typename = std::void_t<>>
+struct has_Size : std::false_type {};
+
+template <typename T>
+struct has_Size<T, std::void_t<has_Size_t<T>>> : std::true_type {};
+
+template <typename T>
+static constexpr bool has_Size_v = has_Size<T>::value;
+
+// todo c++17
+template <class T>
+constexpr auto sizeOf() {
+    // return 4;
+    // if constexpr ( requires { T::Size; } ) { return T::Size; }
+    // else { return sizeof( T ); }
+    if constexpr ( has_Size_v<T> ) { return T::Size; }
+    else { return sizeof( T ); };
+}
+
+template <class... Ts>
+// requires( sizeof...( Ts ) > 1 )
+constexpr typename std::enable_if<( sizeof...( Ts ) > 1 ), decltype( sizeof( int ) )>::type
+sizeOf() {
+    static_assert( sizeof...( Ts ) > 1 );
+    return ( sizeOf<Ts>() + ... );
+}
+
+#endif
 
 // #ifdef HUB_DEBUG_INPUT
 //     template <typename T>
@@ -372,13 +533,10 @@ constexpr auto sizeof_() {
 // #    endif
 //    }
 // #endif
-} // namespace hub
+// } // namespace hub
 
 /////////////////////////////////////////////// PRETTY BYTES
 /////////////////////////////////////////////////
-
-//#include <iostream>
-#include <cmath>
 
 //// source : https://www.mbeckler.org/blog/?p=114
 //// Prints to the provided buffer a nice number of bytes (KB, MB, GB, etc)
@@ -387,11 +545,10 @@ static std::string pretty_bytes( hub::Size_t bytes ) {
 
     constexpr auto buffSize = 32;
     char buff[buffSize] { 0 };
-    //static const char* suffixes[7];
-    // static constexpr std::string_view suffixes[] {
-        // "Bytes", "KiloBytes", "MegaBytes", "GigaBytes", "TeraBytes", "PetaBytes", "ExaBytes" };
-    static constexpr std::string_view suffixes[] {
-        "Bytes", "Ko", "Mo", "Go", "To", "Po", "Eo" };
+    // static const char* suffixes[7];
+    //  static constexpr std::string_view suffixes[] {
+    //  "Bytes", "KiloBytes", "MegaBytes", "GigaBytes", "TeraBytes", "PetaBytes", "ExaBytes" };
+    static constexpr std::string_view suffixes[] { "Bytes", "Ko", "Mo", "Go", "To", "Po", "Eo" };
     //    suffixes[0]         = "Bytes";
     //    suffixes[1]         = "KiloBytes";
     //    suffixes[2]         = "MegaBytes";
@@ -400,13 +557,13 @@ static std::string pretty_bytes( hub::Size_t bytes ) {
     //    suffixes[5]         = "PetaBytes";
     //    suffixes[6]         = "ExaBytes";
     //    suffixes[0]         = "";
-    //suffixes[0]         = " Bytes";
-    //suffixes[1]         = " Ko";
-    //suffixes[2]         = " Mo";
-    //suffixes[3]         = " Go";
-    //suffixes[4]         = " To";
-    //suffixes[5]         = " Po";
-    //suffixes[6]         = " Eo";
+    // suffixes[0]         = " Bytes";
+    // suffixes[1]         = " Ko";
+    // suffixes[2]         = " Mo";
+    // suffixes[3]         = " Go";
+    // suffixes[4]         = " To";
+    // suffixes[5]         = " Po";
+    // suffixes[6]         = " Eo";
     uint64_t s          = 0; // which suffix to use
     double count        = bytes;
     constexpr auto kilo = 1'000;
@@ -415,12 +572,12 @@ static std::string pretty_bytes( hub::Size_t bytes ) {
         s++;
         count /= kilo;
     }
-    //sprintf_s( buff, buffSize, "%d%s", (int)count, suffixes[s].data() );
-    //return std::string( buff );
+    // sprintf_s( buff, buffSize, "%d%s", (int)count, suffixes[s].data() );
+    // return std::string( buff );
 
     if ( count - floor( count ) == 0.0 )
 #ifdef WIN32
-        //sprintf_s( buff, 80, "%d %s", (int)count, suffixes[s].data() );
+        // sprintf_s( buff, 80, "%d %s", (int)count, suffixes[s].data() );
         snprintf( buff, buffSize, "%d %s", (int)count, suffixes[s].data() );
 #else
 #    ifdef OS_MACOS
@@ -431,7 +588,7 @@ static std::string pretty_bytes( hub::Size_t bytes ) {
 #endif
     else
 #ifdef WIN32
-        //sprintf_s( buff, 80, "%.1f %s", count, suffixes[s].data() );
+        // sprintf_s( buff, 80, "%.1f %s", count, suffixes[s].data() );
         snprintf( buff, buffSize, "%.1f %s", count, suffixes[s].data() );
 #else
 #    ifdef OS_MACOS
@@ -442,9 +599,15 @@ static std::string pretty_bytes( hub::Size_t bytes ) {
 #endif
     return std::string( buff );
 }
-#define PRETTY_BYTES( t ) pretty_bytes( t )
+#define PRETTY_BYTES( t ) hub::pretty_bytes( t )
 
-#include "Configuration.hpp"
+#if CPP_VERSION >= 20
+// #    define REQUIRES( _Type_, _COND_ )
+#    define REQUIRES( _COND_, _TYPE_ ) requires( _COND_ ) _TYPE_
+#else
+// typename std::enable_if<( sizeof...( Types ) > 1 ), bool>::type
+#    define REQUIRES( _COND_, _TYPE_ ) typename std::enable_if<( _COND_ ), _TYPE_>::type
+#endif
 
 /////////////////////////////////////////////// STATIC WARNING
 /////////////////////////////////////////////////
@@ -480,5 +643,7 @@ static std::string pretty_bytes( hub::Size_t bytes ) {
 //// in each structure/class instantiation.  STATIC_WARNING should be preferred in any
 //// non-template situation.
 ////  'token' must be a program-wide unique identifier.
-//     #define STATIC_WARNING_TEMPLATE(token, cond, msg) \
+//           #define STATIC_WARNING_TEMPLATE(token, cond, msg) \
 //STATIC_WARNING(cond, msg) PP_CAT(PP_CAT(_localvar_, token),__LINE__)
+
+} // namespace hub
