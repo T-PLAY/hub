@@ -177,7 +177,10 @@
 #    define SRC_API
 #endif
 
-#ifndef OS_WINDOWS
+#define CPLUSPLUS_VERSION 20
+
+//#ifndef OS_WINDOWS
+#ifndef CPLUSPLUS_VERSION
 
 #    if ( __cplusplus >= 202001L )
 #        define CPLUSPLUS_VERSION 20
