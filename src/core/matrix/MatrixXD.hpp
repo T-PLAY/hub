@@ -72,7 +72,8 @@ class MatrixXDBase
     // static constexpr std::string name() {
     static CONSTEXPR20 auto name() {
         std::string str;
-        str += TYPE_NAME( Type );
+        // str += TYPE_NAME( Type );
+        str += TYPE_NAME( Type() );
 
         if ( !( nDim() == 1 && getDim<0>() == 1 ) ) {
             str += ":";

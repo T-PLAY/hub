@@ -50,7 +50,7 @@ struct Mat4 {
     } packable;
     float data[16];
     //    static constexpr auto nByte() {return  16;};
-    static constexpr auto name() { return "MAT4"; };
+    static constexpr auto name() { return "Mat4"; };
     Mat4( float value = 0.0f ) { std::fill( data, data + 16, value ); }
 
     Mat4( const float* array ) { memcpy( data, array, 64 ); }
@@ -88,14 +88,14 @@ static_assert( sizeof( Mat4 ) == 64 );
 // 32-bit density values. For MRI, CT scan and US representations.
 struct Density {
     uint32_t value;
-    static constexpr auto name() { return "DENSITY"; };
+    static constexpr auto name() { return "Density"; };
 };
 static_assert( sizeof( Density ) == 4 );
 
 // 32-bit float-point depth distance value.
 struct Distance {
     float value;
-    static constexpr auto name() { return "DISTANCE"; };
+    static constexpr auto name() { return "Distance"; };
 };
 static_assert( sizeof( Distance ) == 4 );
 
@@ -158,6 +158,7 @@ struct Position // Cartesian
     float x;
     float y;
     float z;
+    static constexpr auto name() { return "Position"; };
 };
 
 struct Orientation // Euler
@@ -165,6 +166,7 @@ struct Orientation // Euler
     float rx;
     float ry;
     float rz;
+    static constexpr auto name() { return "Orientation"; };
 };
 
 // Pose data packed as floats array, containing translation vector (x, y, z), rotation quaternion

@@ -238,7 +238,8 @@ class MatrixTs
     // static constexpr auto printName() {
     static CONSTEXPR20 auto printName() {
         std::string str;
-        str += TYPE_NAME( Type_ );
+        // str += TYPE_NAME( Type_ );
+        str += TYPE_NAME( Type_() );
         str.erase( std::remove( str.begin(), str.end(), ' ' ), str.end() );
 
         if constexpr ( sizeof...( Types_ ) > 0 ) { return str + "_" + printName<Types_...>(); }

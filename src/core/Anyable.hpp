@@ -62,7 +62,8 @@ class Anyable
         void setup() {
             //            std::cout << "[Anyable] setup type : " << TYPE_NAME(T) << std::endl;
 
-            getTypeName = []() { return TYPE_NAME( T ); };
+            // getTypeName = []() { return TYPE_NAME( T ); };
+            getTypeName = []() { return TYPE_NAME( T() ); };
 
             // void
             if constexpr ( std::is_same_v<T, void> ) {
@@ -165,7 +166,8 @@ class Anyable
         assert( s_anyables.find( typeid( T ).hash_code() ) == s_anyables.end() );
         s_anyables.insert( makeAnyHelperRow<T>() );
         assert( s_anyables.find( typeid( T ).hash_code() ) != s_anyables.end() );
-        std::cout << "[Anyable] added new supported type : " << TYPE_NAME(T) << std::endl;
+        // std::cout << "[Anyable] added new supported type : " << TYPE_NAME(T) << std::endl;
+        std::cout << "[Anyable] added new supported type : " << TYPE_NAME(T()) << std::endl;
     }
     template <class T, class... Ts>
     static void insertSupportedTypes() {

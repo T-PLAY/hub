@@ -4,6 +4,9 @@
 #include <cmath>
 #include <cstdint>
 #include <iostream>
+#include <map>
+#include <tuple>
+#include <type_traits>
 #include <vector>
 
 #include "Configuration.hpp"
@@ -275,6 +278,43 @@ namespace hub {
 #    define MAX_STACK_SIZE 100'000 // 100Ko
 #endif
 
+} // namespace hub
+
+///////////////////////////////////////////////////////////////////////////////////
+
+namespace std {
+
+#if CPP_VERSION < 20
+
+template <typename T>
+struct remove_cvref : std::remove_cv<std::remove_reference_t<T>> {};
+
+template <typename T>
+using remove_cvref_t = typename remove_cvref<T>::type;
+
+#endif
+
+//////////////////////////////////
+
+#if CPP_VERSION < 17
+
+template <class T, class U>
+static constexpr auto is_same_v = is_same<T, U>::value;
+
+template <class T>
+static constexpr bool is_arithmetic_v = is_arithmetic<T>::value;
+
+template <class T>
+static constexpr bool is_array_v = is_array<T>::value;
+
+#endif
+
+} // namespace std
+
+///////////////////////////////////////////////////////////////////////////////////
+
+namespace hub {
+
 // template <class T>
 // concept TypeNameable = requires( const T& t ) { t.name(); };
 
@@ -398,15 +438,200 @@ std::string type_name() {
 //     return "string";
 // }
 
+// template <class T>
+// typename std::enable_if_t<has_name_v<std::remove_cv_t<T>>, std::string>
+
 template <class T>
-typename std::enable_if_t<has_name_v<T>, std::string> type_name() {
+// static typename std::enable_if_t<!has_name_v<std::remove_cv_t<T>>, std::string>
+static typename std::enable_if_t<!has_name_v<T>, std::string> typeName( const T& t ) {
+// typeName(  ) {
+#        ifdef HUB_USE_BOOST
+    return boost::typeindex::type_id<typeof( T )>().pretty_name();
+#        else
+    return typeid( T ).name();
+#        endif
+    // return "unreconized";
+}
+
+
+template <class T>
+// static typename std::enable_if_t<has_name_v<std::remove_cv_t<T>>, std::string>
+static typename std::enable_if_t<has_name_v<T>, std::string> typeName( const T& t ) {
+    // typeName( ) {
     return T::name();
 }
 
-template <class T>
-typename std::enable_if_t<std::is_same_v<T, std::string>, std::string> type_name() {
+// static std::string typeName( unsigned char& ) {
+//     return "uchar";
+// }
+// static std::string typeName( char& ) {
+    // return "char";
+// }
+
+// template <class T>
+// static std::string typeName( const int& ) {
+// static typename std::enable_if_t<std::is_same_v<T, int>, std::string> typeName( const int& t ) {
+    // return "int";
+// }
+// static std::string typeName( const double& ) {
+//     return "double";
+// }
+// static std::string typeName( const char* ) {
+//     return "cstr";
+// }
+static std::string typeName( const std::string& ) {
     return "string";
 }
+// static std::string typeName( const bool& ) {
+//     return "bool";
+// }
+// static std::string typeName( const float& ) {
+//     return "float";
+// }
+
+// static auto typeName(void) {
+//     return "void";
+// }
+template <class T>
+static std::string typeName( const std::vector<T>& ) {
+    // return "vector<" + typeName( T() ) + ">";
+    // return "vector<" + typeName<T>() + ">";
+    // return "vector<" + typeName( std::declval<T>() ) + ">";
+    return "vector<" + typeName( T() ) + ">";
+}
+
+template <class First, class Second>
+static std::string typeName( const std::pair<First, Second>& ) {
+    // return "vector<" + typeName( T() ) + ">";
+    // return "pair<" + typeName<First>() + ", " + typeName<Second>() + ">";
+    // return "pair<" + typeName( std::declval<First>() ) + ", " + typeName( std::declval<Second>()
+    // ) +
+    // ">";
+    return "pair<" + typeName( First() ) + ", " + typeName( Second() ) + ">";
+}
+
+template <class Key, class Value>
+static std::string typeName( const std::map<Key, Value>& ) {
+    // return "map<" + typeName<Key>() + ", " + typeName<Value>() + ">";
+    // return "map<" + typeName( std::declval<Key>() ) + ", " + typeName( std::declval<Value>() ) +
+    // ">";
+    return "map<" + typeName( Key() ) + ", " + typeName( Value() ) + ">";
+}
+
+template <class T, class... Ts>
+static void typeName_recurse( std::string & str  ) {
+    str += ", " + typeName( T() );
+    if constexpr (sizeof...(Ts) > 0) {
+        typeName_recurse<Ts...>(str);
+    }
+}
+
+template <class T, class... Ts>
+static std::string typeName( const std::tuple<T, Ts...>& ) {
+    std::string str = "tuple<";
+    str += typeName( T() );
+    if constexpr (sizeof...(Ts) > 0) {
+        typeName_recurse<Ts...>(str);
+    }
+    str += ">";
+    return str;
+    // return "map<" + typeName( Key() ) + ", " + typeName( Value() ) +
+    // ">";
+}
+
+// template <class T>
+// typename std::enable_if_t<has_name_v<std::remove_cv_t<T>>, std::string> type_name() {
+//     return T::name();
+// }
+
+// template <class T>
+// typename std::enable_if_t<std::is_same_v<std::remove_cv_t<T>, void>, std::string> type_name() {
+//     return "void";
+// }
+// template <class T>
+// typename std::enable_if_t<std::is_same_v<std::remove_cv_t<T>, double>, std::string> type_name() {
+//     return "double";
+// }
+// template <class T>
+// typename std::enable_if_t<std::is_same_v<std::remove_cv_t<T>, unsigned char>, std::string>
+// type_name() {
+//     return "uchar";
+// }
+// template <class T>
+// typename std::enable_if_t<std::is_same_v<std::remove_cv_t<T>, int>, std::string> type_name() {
+//     return "int";
+// }
+// template <class T>
+// typename std::enable_if_t<std::is_same_v<T, const char*>, std::string> type_name() {
+//     return "cstr";
+// }
+// template <class T>
+// typename std::enable_if_t<std::is_same_v<std::remove_cv_t<T>, std::string>, std::string>
+// type_name() {
+//     return "string";
+// }
+// // template <class T>
+// // typename std::enable_if_t<std::is_same_v<T, const std::string>, std::string> type_name() {
+// // return "const string";
+// // }
+// // template <class T, class U>
+// // static auto type_name( const std::map<T, U>& cont ) {
+// //     return "map";
+// // }
+// template <class Pair,
+//           class Key   = std::decay_t<decltype( std::declval<Pair>().first )>,
+//           class Value = std::decay_t<decltype( std::declval<Pair>().second )>>
+// typename std::enable_if_t<std::is_same_v<Pair, std::pair<Key, Value>>, std::string> type_name() {
+//     // std::string type_name() {
+//     return "pair<" + type_name<Key>() + ", " + type_name<Value>() + ">";
+// }
+
+// // template <class Container, class T = std::decay_t<decltype( *std::declval<Container>().begin()
+// template <class Map,
+//           class Key   = std::decay_t<decltype( std::declval<Map>().begin()->first )>,
+//           class Value = std::decay_t<decltype( std::declval<Map>().begin()->second )>>
+// typename std::enable_if_t<std::is_same_v<Map, std::map<Key, Value>>, std::string> type_name() {
+//     // std::string type_name() {
+//     return "map<" + type_name<Key>() + ", " + type_name<Value>() + ">";
+// }
+
+// template <class Vector, class T = std::decay_t<decltype( *std::declval<Vector>().begin() )>>
+// // requires( isContainer<Vector> )
+// typename std::enable_if_t<std::is_same_v<Vector, std::vector<T>>, std::string> type_name() {
+//     // std::string type_name() {
+//     return "vector<" + type_name<T>() + ">";
+//     // if constexpr ( std::is_same_v<Vector, std::vector<T>> ) {
+//     // return "vector<" + type_name<T>() + ">";
+//     // }
+//     // else { return "container<" + type_name<T>() + ">"; }
+// }
+
+// template <class Tuple, class T = std::decay_t<std::remove_cvref_t<decltype( std::get<0>(
+// std::declval<Tuple>() ) )>>>
+// template <class Tuple>
+// typename std::enable_if_t<std::tuple_size_v<Tuple> == 1, std::string> type_name() {
+//     return "tuple<" + type_name<decltype( std::get<0>( Tuple() ) )>() + ">";
+// }
+
+// template <
+//     class Tuple,
+//     class T = std::decay_t<std::remove_cvref_t<decltype( std::get<0>( std::declval<Tuple>() )
+//     )>>, class U = std::decay_t<std::remove_cvref_t<decltype( std::get<1>( std::declval<Tuple>()
+//     ) )>>>
+// typename std::enable_if_t<std::tuple_size_v<Tuple> == 2 && std::is_same_v<Tuple, std::tuple<T,
+// U>>,
+//                           std::string>
+// type_name() {
+//     return "tuple<" + type_name<T>() + ", " + type_name<U>() + ">";
+// }
+
+// template <class Tuple,
+//           class T = std::decay_t<std::remove_cvref_t<decltype( std::get<0>( std::declval<Tuple>()
+//           ) )>>, class U = std::decay_t<decltype( std::get<1>( std::declval<Tuple>() ) )>, class
+//           V = std::decay_t<decltype( std::get<2>( std::declval<Tuple>() ) )>>
+// typename std::enable_if_t<std::is_same_v<Tuple, std::tuple<T, U, V>>, std::string> type_name() {
+//     return "tuple<" + type_name<T>() + ", " + type_name<U>() + ", " + type_name<V>() + ">";
+// }
 
 // template <class T>
 // typename std::enable_if_t<!has_name_v<T> && std::is_same_v<T, std::string>, std::string>
@@ -414,14 +639,15 @@ typename std::enable_if_t<std::is_same_v<T, std::string>, std::string> type_name
 //     return "string";
 // }
 
-template <class T>
-typename std::enable_if_t<!has_name_v<T> && !std::is_same_v<T, std::string>, std::string> type_name() {
-#        ifdef HUB_USE_BOOST
-    return boost::typeindex::type_id<typeof( T )>().pretty_name();
-#        else
-    return typeid( T ).name();
-#        endif
-}
+// template <class T>
+// typename std::enable_if_t<!has_name_v<T> && !std::is_same_v<T, std::string>, std::string>
+// type_name() {
+// #        ifdef HUB_USE_BOOST
+//     return boost::typeindex::type_id<typeof( T )>().pretty_name();
+// #        else
+//     return typeid( T ).name();
+// #        endif
+// }
 
 #    endif
 
@@ -437,7 +663,10 @@ typename std::enable_if_t<!has_name_v<T> && !std::is_same_v<T, std::string>, std
 
 #endif
 
-#define TYPE_NAME( Type ) hub::type_name<Type>()
+// #define TYPE_NAME( Type ) hub::type_name<Type>()
+#define TYPE_NAME( _Type_ ) hub::typeName(_Type_)
+#define TYPE_NAME_T( _Type_ ) hub::typeName(_Type_())
+
 // #define TYPE_NAME( Type ) hub::type_name(std::declval<Type>())
 
 // #ifdef HUB_USE_BOOST
@@ -643,7 +872,7 @@ static std::string pretty_bytes( hub::Size_t bytes ) {
 //// in each structure/class instantiation.  STATIC_WARNING should be preferred in any
 //// non-template situation.
 ////  'token' must be a program-wide unique identifier.
-//           #define STATIC_WARNING_TEMPLATE(token, cond, msg) \
+//                         #define STATIC_WARNING_TEMPLATE(token, cond, msg) \
 //STATIC_WARNING(cond, msg) PP_CAT(PP_CAT(_localvar_, token),__LINE__)
 
 } // namespace hub
