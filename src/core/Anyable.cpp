@@ -26,7 +26,8 @@ std::map<decltype( typeid( void ).hash_code() ), Anyable::AnyHelper> Anyable::s_
     // todo c++17
     // makeAnyHelperMap<void, int, double, std::string, const char*, Mat4>();
     // makeAnyHelperMap<void, int, double, std::string, const char*>();
-    makeAnyHelperMap<int, double, std::string, const char*>();
+    // makeAnyHelperMap<int, double, std::string, const char*>();
+    makeAnyHelperMap<int>();
 #endif
 
 } // namespace hub

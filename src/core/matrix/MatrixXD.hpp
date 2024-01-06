@@ -3,8 +3,8 @@
 
 #include <type_traits>
 
-#include "core/MatrixBase.hpp"
 #include "core/Matrix.hpp"
+#include "core/MatrixBase.hpp"
 
 namespace hub {
 
@@ -19,8 +19,11 @@ template <class Type, Size_t... Ns>
 #endif
 class MatrixXDBase
 {
+    static_assert( sizeof...( Ns ) > 0 && ( ( Ns > 1 ) && ... ) );
+
   public:
-    static struct {} matrix;
+    static struct {
+    } matrix;
     static constexpr auto Capacity = ( Ns * ... );
     static constexpr auto Size     = sizeOf<Type>() * Capacity;
     static constexpr auto capacity() { return Capacity; };
@@ -33,6 +36,7 @@ class MatrixXDBase
         requires( 0 <= i && i < nDim() )
 #endif
     static constexpr auto getDim() {
+        static_assert( 0 <= i && i < nDim() );
         auto j = 0;
         for ( auto dim : { Ns... } ) {
             if ( j == i ) return dim;
@@ -47,10 +51,10 @@ class MatrixXDBase
     }
 
     template <class... Types>
-#if CPP_VERSION >= 20
-        requires( sizeof...( Types ) > 1 )
-#endif
-    static constexpr auto hasType() {
+    // #if CPP_VERSION >= 20
+    // requires( sizeof...( Types ) > 1 )
+    // #endif
+    static constexpr REQUIRES( sizeof...( Types ) > 1, bool ) hasType() {
         return ( hasType<Types>() && ... );
     }
 
@@ -93,11 +97,11 @@ class MatrixXDBase
     const Type& get() {
         static_assert( 0 <= i && i < Capacity );
         // return reinterpret_cast<const Type&>( *( m_buffer.data() + i ) );
-        return reinterpret_cast<const Type&>( *( m_buffer.data() + i * sizeof(Type) ) );
+        return reinterpret_cast<const Type&>( *( m_buffer.data() + i * sizeof( Type ) ) );
     }
 
     void serialize( Matrix& matrix ) const {
-        assert(! matrix.hasValue());
+        assert( !matrix.hasValue() );
         auto matrix2 = make_matrix<Type, Ns...>();
         matrix |= matrix2;
     }
@@ -110,9 +114,7 @@ class MatrixXDBase
         return matrix;
     }
 
-    bool operator==( const Matrix& matrix ) {
-        return getMatrix() == matrix;
-    }
+    bool operator==( const Matrix& matrix ) { return getMatrix() == matrix; }
 
   private:
     // Buffer<Type, Capacity> m_buffer;
@@ -130,6 +132,8 @@ template <class Type, Size_t... Ns>
 #endif
 class MatrixXD : public _::MatrixXDBase<Type, Ns...>
 {
+    static_assert( sizeof...( Ns ) > 0 && ( ( Ns > 1 ) && ... ) );
+
   public:
     template <int i>
     static constexpr Size_t n() {
@@ -149,6 +153,8 @@ template <class Type, Size_t N>
 #endif
 class MatrixXD<Type, N> : public _::MatrixXDBase<Type, N>
 {
+    static_assert( N > 1 );
+
   public:
     static constexpr auto length() { return N; }
 };

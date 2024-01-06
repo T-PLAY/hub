@@ -1,13 +1,14 @@
 
-//#define HUB_DEBUG_INPUT
-//#define HUB_DEBUG_OUTPUT
+// #define HUB_DEBUG_INPUT
+// #define HUB_DEBUG_OUTPUT
 
 #include "test_common.hpp"
+#include <iomanip>
+#include <sstream>
 
 #include <core/Macros.hpp>
-//#include <core/Vector.hpp>
+// #include <core/Vector.hpp>
 #include <core/Traits.hpp>
-
 
 class Lambda
 {
@@ -17,132 +18,154 @@ class Lambda
     double c = 0.0;
     std::vector<int> ds;
     std::string e;
+    auto toString() const {
+        return hub::to_string( a, b, c, ds, e );
+        // return std::to_string( a ) + " " + std::to_string( b ) + " " + hub::to_string( c );
+    }
 
     static constexpr auto Size = 5;
-
 };
 
+#if !defined( COMPILER_GCC ) && !defined( COMPILER_MSVC ) && !defined( COMPILER_CLANG )
+#    error "compiler not supported"
+#endif
+
+#if !defined( OS_LINUX ) && !defined( OS_MACOS ) && !defined( OS_WINDOWS )
+#    error "system not supported"
+#endif
+
+class Printer
+{
+  public:
+    auto print() const {
+        std::stringstream sstream;
+        sstream << HEADER;
+        return sstream.str();
+    }
+};
+
+enum class UserEnum { A, B, C };
+
+auto toString( UserEnum ue ) -> std::string {
+    switch ( ue ) {
+    case UserEnum::A:
+        return "A";
+        break;
+    case UserEnum::B:
+        return "B";
+        break;
+    case UserEnum::C:
+        return "C";
+        break;
+    default:
+        break;
+    }
+    return "None";
+}
+
+template <class T, std::size_t typeSize = 0, std::size_t typeId = 0>
+void checkType( const std::string& typeName, const T& t ) {
+
+    // const T t{args...};
+    // const T t { std::forward<T>( args... ) };
+    // const T t(std::forward<T>(args)...);
+    // const int a = 5;
+    // std::cout << "int: " << std::to_string( t ) << std::endl;
+    // std::cout.width(20);
+    std::cout << std::setw( 30 ) << std::left;
+    std::cout << typeName << ": ";
+    std::cout << std::setw( 30 ) << std::left;
+    std::cout << TYPE_NAME( t ) << " -> ";
+    std::cout << std::setw( 50 ) << std::left;
+    std::cout << hub::to_string( t ) << " (" << TYPE_ID( t ) << ")" << std::endl;
+    assert( TYPE_NAME( t ) == typeName );
+    // std::cout << "typeId(" << typeName << "): " << TYPE_ID( t ) << std::endl;
+    if constexpr ( typeSize != 0 ) { static_assert( hub::sizeOf<T>() == typeSize ); }
+    if constexpr ( typeId != 0 ) { assert( TYPE_ID( t ) == typeId ); }
+}
 
 TEST_CASE( "Macros test" ) {
     TEST_BEGIN()
 
-    static_assert(hub::sizeOf<int>() == 4);
-    static_assert(hub::sizeOf<double>() == 8);
-    static_assert(hub::sizeOf<int, int>() == 8);
-    static_assert(hub::sizeOf<Lambda>() == 5);
+    static_assert( CPP_VERSION == 17 );
 
-    std::cout << "int: " << TYPE_NAME(int) << std::endl;
-    std::cout << "vints: " << TYPE_NAME(std::vector<int>) << std::endl;
+    assert( FILE_NAME == "test-core-Macros.cpp" );
+    assert( FILE_NAME_WITHOUT_EXTENSION == "test-core-Macros" );
 
-    std::cout << "string: " << TYPE_NAME(std::string) << std::endl;
-    std::cout << "strings: " << TYPE_NAME(std::vector<std::string>) << std::endl;
+    auto printed = Printer().print();
+    printed      = printed.substr( 5, printed.find_last_of( ":" ) - 4 );
+    // std::cout << printed << std::endl;
+    assert( printed == "[test-core-Macros:" );
 
-    std::cout << "lambda: " << TYPE_NAME(Lambda) << std::endl;
-    std::cout << "lambdas: " << TYPE_NAME(std::vector<Lambda>) << std::endl;
+    static_assert( hub::sizeOf<Lambda>() == 5 );
+    static_assert( hub::sizeOf<int>() == 4 );
+    static_assert( hub::sizeOf<int, int>() == 8 );
+    static_assert( hub::sizeOf<Lambda, int>() == 9 );
 
     // C Types
     std::cout << "* C types :" << std::endl;
-
-    const int a = 5;
-    std::cout << "int: " << std::to_string( a ) << std::endl;
-    std::cout << "int: '" << TYPE_NAME( a ) << "' -> " << hub::to_string( a ) << std::endl;
-    assert( TYPE_NAME( a ) == "int" );
-
-    const double d = 5;
-    std::cout << "double: " << std::to_string( d ) << std::endl;
-    std::cout << "double: '" << TYPE_NAME( d ) << "' -> " << hub::to_string( d ) << std::endl;
-    assert( TYPE_NAME( d ) == "double" );
-
-    const float f = 5;
-    std::cout << "float: " << std::to_string( f ) << std::endl;
-    std::cout << "float: '" << TYPE_NAME( f ) << "' -> " << hub::to_string( f ) << std::endl;
-    assert( TYPE_NAME( f ) == "float" );
-
-    const char c = 'c';
-    std::cout << "char: " << std::to_string( c ) << std::endl;
-    std::cout << "char: '" << TYPE_NAME( c ) << "' -> " << hub::to_string( c ) << std::endl;
-    assert( TYPE_NAME( c ) == "char" );
-
-    const unsigned char uc = 'd';
-    std::cout << "uchar: " << std::to_string( uc ) << std::endl;
-    std::cout << "uchar: '" << TYPE_NAME( uc ) << "' -> " << hub::to_string( uc ) << std::endl;
-    assert( TYPE_NAME( uc ) == "unsigned char" );
-
-    const char* cstr = "bonjour";
-    std::cout << "cstr: " << cstr << std::endl;
-    std::cout << "cstr: '" << TYPE_NAME( cstr ) << "' -> " << hub::to_string( cstr ) << std::endl;
-    assert( TYPE_NAME( cstr ) == "char const*" );
-
-    const unsigned char* ucstr = (unsigned char*)"hello";
-    std::cout << "ucstr: " << ucstr << std::endl;
-    std::cout << "ucstr: '" << TYPE_NAME( ucstr ) << "' -> " << hub::to_string( ucstr )
-              << std::endl;
-    assert( TYPE_NAME( ucstr ) == "unsigned char const*" );
-
+    checkType<int, 4, 12597418120160561823u>( "int", 5 );
+    checkType<double, 8, 13841485242819600253u>( "double", 2.0 );
+    checkType<float, 4>( "float", 3.0f );
+    checkType<char, 1>( "char", 'c' );
+    checkType<unsigned char, 1>( "unsigned char", 'd' );
+    checkType<const char*, 8>( "char const*", "bonjour" );
     std::cout << std::endl;
 
     // C++ Types
     std::cout << "* C++ types :" << std::endl;
+    checkType<std::string>( "string", "hello" );
+    checkType<std::vector<int>>( "vector<int>", { 1, 2, 3 } );
+    checkType<std::vector<unsigned char>>( "vector<unsigned char>", { 1, 2, 3 } );
+    checkType<std::vector<const char*>>( "vector<char const*>", { "ab", "bc", "cd" } );
+    checkType<std::vector<std::string>>( "vector<string>", { "a", "ab", "abc" } );
+    checkType<std::vector<std::vector<int>>>( "vector<vector<int>>",
+                                              { { 1 }, { 1, 2 }, { 1, 2, 3 } } );
+    checkType<std::map<std::string, int>>( "map<string, int>", { { "a", 1 }, { "b", 2 } } );
+    checkType<std::pair<std::string, int>>( "pair<string, int>", { "a", 1 } );
+    checkType<std::tuple<int>>( "tuple<int>", 5 );
+    checkType<std::tuple<int, double, bool, float, char, std::string>>(
+        "tuple<int, double, bool, float, char, string>", { 5, 2.0, true, 3.0f, 'a', "hello" } );
+    std::cout << std::endl;
 
-    const std::string str = "hello";
-    std::cout << "str: " << str << std::endl;
-    std::cout << "str: '" << TYPE_NAME( str ) << "' -> " << hub::to_string( str ) << std::endl;
-
-    std::vector<int> ints { 1, 2, 3 };
-    std::cout << "ints: '" << TYPE_NAME( ints ) << "' -> " << hub::to_string( ints ) << std::endl;
-
-    std::vector<unsigned char> uchars { 'a', 'b', 'c' };
-    std::cout << "uchars: '" << TYPE_NAME( uchars ) << "' -> " << hub::to_string( uchars )
-              << std::endl;
-
-    std::vector<const char*> cstrings { "a", "b", "c" };
-    std::cout << "cstrings: '" << TYPE_NAME( cstrings ) << "' -> " << hub::to_string( cstrings )
-              << std::endl;
-
-    std::vector<std::string> strings { "a", "b", "c" };
-    std::cout << "strings: '" << TYPE_NAME( strings ) << "' -> " << hub::to_string( strings )
-              << std::endl;
-
-    std::vector<std::vector<int>> intss { { 1 }, { 1, 2 }, { 1, 2, 3 } };
-    std::cout << "intss: '" << TYPE_NAME( intss ) << "' -> " << hub::to_string( intss )
-              << std::endl;
-
-    std::map<std::string, int> map { { "a", 1 }, { "b", 2 } };
-    std::cout << "map: '" << TYPE_NAME( map ) << "' -> " << hub::to_string( map ) << std::endl;
-
-    std::pair<std::string, int> pair { "a", 1 };
-    std::cout << "pair: '" << TYPE_NAME( pair ) << "' -> " << hub::to_string( pair ) << std::endl;
-    std::cout << hub::typeName( pair ) << std::endl;
-
-    std::tuple<int> tuple { 5 };
-    static_assert( std::tuple_size<decltype( tuple )>() == 1 );
-    static_assert( std::is_same_v<int, std::remove_cvref_t<decltype( std::get<0>( tuple ) )>> );
-    std::cout << "tuple: '" << TYPE_NAME( tuple ) << "' -> " << hub::to_string( tuple )
-              << std::endl;
-
-    std::tuple<int, double, bool, float, char, std::string> tuple3 {
-        5, 2.0, true, 3.0f, 'a', "hello" };
-    std::cout << "tuple3: '" << TYPE_NAME( tuple3 ) << "' -> " << hub::to_string( tuple3 )
-              << std::endl;
-
+    // User Types
     struct UserClass {
         int a;
         double b;
         bool c;
-        static constexpr auto name() {
-            return "UserClass";
-        }
+        static constexpr auto name() { return "UserClass"; }
         auto toString() const {
-            return std::to_string(a) + " " + std::to_string(b) + " " + hub::to_string(c);
+            return hub::to_string( a, b, c );
+            // return std::to_string( a ) + " " + std::to_string( b ) + " " + hub::to_string( c );
         }
     };
 
-    UserClass userClass { 1, 2.0, false };
-    // std::cout << "userClass: " << TYPE_NAME( userClass ) << std::endl;
-    std::cout << "userClass: '" << TYPE_NAME( userClass ) << "' -> " << hub::to_string( userClass )
-              << std::endl;
-    assert( TYPE_NAME( userClass ) == "UserClass" );
+    // static_assert(sizeof(int) == 4);
+    // static_assert(sizeof(double) == 8);
+    // static_assert(sizeof(bool) == 1);
+    // static_assert(sizeof(UserClass) == 13);
+    std::cout << "* User types :" << std::endl;
+    checkType<UserClass, 24>( "UserClass", { 1, 2.0, false } );
+    checkType<Lambda, 5>( "Lambda", Lambda { 1, 2.0f, 3.0, { 1, 2 }, "abc" } );
+    // std::cout << "Enum: " << TYPE_NAME( UserEnum::A ) << std::endl;
+    // std::cout << "Enum: " << hub::to_string( UserEnum::A ) << std::endl;
+    checkType<UserEnum>( "UserEnum", UserEnum::A );
+    std::cout << std::endl;
 
+    // return;
+
+    // const unsigned char* ucstr = (unsigned char*)"hello";
+    // user classes
+
+    // UserClass userClass { 1, 2.0, false };
+    // // std::cout << "userClass: " << TYPE_NAME( userClass ) << std::endl;
+    // std::cout << "userClass: '" << TYPE_NAME( userClass ) << "' -> " << hub::to_string( userClass
+    // )
+    //           << std::endl;
+    // assert( TYPE_NAME( userClass ) == "UserClass" );
+
+    // std::cout << "lambda: " << TYPE_NAME( Lambda() ) << std::endl;
+    // std::cout << "lambdas: " << TYPE_NAME( std::vector<Lambda>() ) << std::endl;
 
     TEST_END()
 }

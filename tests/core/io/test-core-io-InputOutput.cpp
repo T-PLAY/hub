@@ -46,7 +46,9 @@ class TestNonPackable
 //        void serialize( Serial& serial ) {
 //            serial( m_a );
 //        }
+#if CPP_VERSION >= 20
         static constexpr auto serialize( auto& archive, auto& self ) { return archive( self.m_a ); }
+#endif
 
       private:
         int m_a;
@@ -71,7 +73,7 @@ class TestNonPackable
     auto toString() const {
         std::string str;
         str += "{" + std::to_string( m_a ) + " " + std::to_string( m_b ) + " " + m_name + " " +
-               hub::toString( m_vints ) + "}";
+               hub::to_string( m_vints ) + "}";
         return str;
     }
     //    friend std::ostream& operator<<( std::ostream& os, const TestNonPackable& test ) {
@@ -86,9 +88,11 @@ class TestNonPackable
 //        //        serial( m_nodes );
 //        serial( m_a, m_b, m_name, m_vints, m_nodes );
 //    }
+#if CPP_VERSION >= 20
     static constexpr auto serialize( auto& archive, auto& self ) {
         return archive( self.m_a, self.m_b, self.m_name, self.m_vints, self.m_nodes );
     }
+#endif
 
   private:
     double m_a;
@@ -174,7 +178,7 @@ void process( Archive& archive ) {
             static_assert( !hub::packable_v<toWriteType> );
 #ifdef HUB_DEBUG_OUTPUT
             std::cout << std::endl
-                      << "------------------ " << TYPE_NAME( toWriteType )
+                      << "------------------ " << TYPE_NAME( toWriteType() )
                       << " ---------------------" << std::endl;
 #endif
             archive.write( toWrite );
@@ -191,7 +195,7 @@ void process( Archive& archive ) {
             static_assert( !hub::packable_v<toWriteType> );
 #ifdef HUB_DEBUG_OUTPUT
             std::cout << std::endl
-                      << "------------------ " << TYPE_NAME( toWriteType )
+                      << "------------------ " << TYPE_NAME( toWriteType() )
                       << " ---------------------" << std::endl;
 #endif
             archive.write( toWrite );
@@ -209,7 +213,7 @@ void process( Archive& archive ) {
             static_assert( !hub::packable_v<toWriteType> );
 #ifdef HUB_DEBUG_OUTPUT
             std::cout << std::endl
-                      << "------------------ " << TYPE_NAME( toWriteType )
+                      << "------------------ " << TYPE_NAME( toWriteType() )
                       << " ---------------------" << std::endl;
 #endif
             archive.write( toWrite );
@@ -226,7 +230,7 @@ void process( Archive& archive ) {
             static_assert( hub::packable_v<toWriteType> );
 #ifdef HUB_DEBUG_OUTPUT
             std::cout << std::endl
-                      << "------------------ " << TYPE_NAME( toWriteType )
+                      << "------------------ " << TYPE_NAME( toWriteType() )
                       << " ---------------------" << std::endl;
 #endif
             archive.write( toWrite );
@@ -243,7 +247,7 @@ void process( Archive& archive ) {
             static_assert( hub::packable_v<toWriteType> );
 #ifdef HUB_DEBUG_OUTPUT
             std::cout << std::endl
-                      << "------------------ " << TYPE_NAME( toWriteType )
+                      << "------------------ " << TYPE_NAME( toWriteType() )
                       << " ---------------------" << std::endl;
 #endif
             archive.write( toWrite );
@@ -260,7 +264,7 @@ void process( Archive& archive ) {
             static_assert( hub::packable_v<toWriteType> );
 #ifdef HUB_DEBUG_OUTPUT
             std::cout << std::endl
-                      << "------------------ " << TYPE_NAME( toWriteType )
+                      << "------------------ " << TYPE_NAME( toWriteType() )
                       << " ---------------------" << std::endl;
 #endif
             archive.write( toWrite );
@@ -277,7 +281,7 @@ void process( Archive& archive ) {
             static_assert( hub::packable_v<toWriteType> );
 #ifdef HUB_DEBUG_OUTPUT
             std::cout << std::endl
-                      << "------------------ " << TYPE_NAME( toWriteType )
+                      << "------------------ " << TYPE_NAME( toWrite )
                       << " ---------------------" << std::endl;
 #endif
             archive.write( toWrite );
@@ -295,7 +299,7 @@ void process( Archive& archive ) {
             static_assert( !hub::packable_v<toWriteType> );
 #ifdef HUB_DEBUG_OUTPUT
             std::cout << std::endl
-                      << "------------------ " << TYPE_NAME( toWriteType )
+                      << "------------------ " << TYPE_NAME( toWriteType() )
                       << " ---------------------" << std::endl;
 #endif
             archive.write( toWrite, strlen( (const char*)buff ) );
@@ -312,7 +316,7 @@ void process( Archive& archive ) {
             static_assert( !hub::packable_v<toWriteType> );
 #ifdef HUB_DEBUG_OUTPUT
             std::cout << std::endl
-                      << "------------------ " << TYPE_NAME( toWriteType )
+                      << "------------------ " << TYPE_NAME( toWriteType() )
                       << " ---------------------" << std::endl;
 #endif
             archive.write( toWrite );
@@ -329,7 +333,7 @@ void process( Archive& archive ) {
             static_assert( hub::packable_v<toWriteType> );
 #ifdef HUB_DEBUG_OUTPUT
             std::cout << std::endl
-                      << "------------------ " << TYPE_NAME( toWriteType )
+                      << "------------------ " << TYPE_NAME( toWriteType() )
                       << " ---------------------" << std::endl;
 #endif
             archive.write( toWrite );
@@ -345,10 +349,11 @@ void process( Archive& archive ) {
         {
             const TestForceSerializable toWrite { 1.0, 5, true, 2 };
             using toWriteType = std::remove_cvref_t<decltype( toWrite )>;
-            static_assert( !hub::Serializer::Serializable<toWriteType>() );
+            // todo c++17
+            // static_assert( !hub::Serializer::Serializable<toWriteType>() );
 #ifdef HUB_DEBUG_OUTPUT
             std::cout << std::endl
-                      << "------------------ " << TYPE_NAME( toWriteType )
+                      << "------------------ " << TYPE_NAME( toWriteType() )
                       << " ---------------------" << std::endl;
 #endif
             archive.write( toWrite );
@@ -365,7 +370,7 @@ void process( Archive& archive ) {
             //        static_assert(! hub::packable_v<toWriteType> );
 #ifdef HUB_DEBUG_OUTPUT
             std::cout << std::endl
-                      << "------------------ " << TYPE_NAME( toWriteType )
+                      << "------------------ " << TYPE_NAME( toWriteType() )
                       << " ---------------------" << std::endl;
 #endif
             archive.write( toWrite );

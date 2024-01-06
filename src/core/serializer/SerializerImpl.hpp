@@ -109,9 +109,9 @@ class SerializerImpl : public SerializerI
         m_position += size;
     }
 
-    template <class T>
-    void write( const T& t ) {
-    }
+    // template <class T>
+    // void write( const T& t ) {
+    // }
 
 //     template <class T>
 //     typename std::enable_if<serializable_v<T>>::type write( const T& t ) {
@@ -305,9 +305,9 @@ class SerializerImpl : public SerializerI
 #endif
     }
 
-    template <class T>
-    void read( T& t ) {
-    }
+    // template <class T>
+    // void read( T& t ) {
+    // }
 
 //     template <class T>
 //     typename std::enable_if<serializable_v<T>>::type read( T& t ) {

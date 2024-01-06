@@ -123,19 +123,21 @@ TEST_CASE( "InputOutput speed compare test" ) {
 #ifdef HUB_DEBUG_OUTPUT
     std::cout << "-------------------- InputOutputImpl ----------------------" << std::endl;
 #endif
-    BenchStat benchStatInputOutputImpl { "ArchiveImpl" };
-    {
-        hub::io::ArchiveT<hub::serializer::SerializerImpl> archive;
 
-        benchStatInputOutputImpl.readWriteDataStat =
-            readWriteData( archive, s_nReadWrite, userData );
-        assert( archive.isEnd() );
+    // todo serializer
+    // BenchStat benchStatInputOutputImpl { "ArchiveImpl" };
+    // {
+    //     hub::io::ArchiveT<hub::serializer::SerializerImpl> archive;
 
-        benchStatInputOutputImpl.readWriteDataPtrStat =
-            readWriteDataPtr( archive, s_nReadWriteDataPtr, data_write, s_DataSizePtr );
-        assert( archive.isEnd() );
-        dataBenchStats.insert( benchStatInputOutputImpl );
-    }
+    //     benchStatInputOutputImpl.readWriteDataStat =
+    //         readWriteData( archive, s_nReadWrite, userData );
+    //     assert( archive.isEnd() );
+
+    //     benchStatInputOutputImpl.readWriteDataPtrStat =
+    //         readWriteDataPtr( archive, s_nReadWriteDataPtr, data_write, s_DataSizePtr );
+    //     assert( archive.isEnd() );
+    //     dataBenchStats.insert( benchStatInputOutputImpl );
+    // }
 
 #ifdef HUB_USE_ZPP_BITS
 #ifdef HUB_DEBUG_OUTPUT

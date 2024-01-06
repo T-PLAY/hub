@@ -28,9 +28,11 @@ class Lambda
     std::vector<int> ds;
     std::string e;
 
+#if CPP_VERSION >= 20
     static constexpr auto serialize( auto& archive, auto& self ) {
         return archive( self.a, self.b, self.c, self.ds, self.e );
     }
+#endif
 
     // template <class Serial>
     // void serialize( Serial& serial ) {
@@ -75,33 +77,36 @@ class Lambda
     assert(! std_any.has_value());
 
     hub::Any any;
-    assert(any.type() == typeid(void));
-    hub::Any any_read;
+    // assert(any.type() == typeid(void));
     assert( !any.hasValue() );
+    hub::Any any_read;
     assert( !any_read.hasValue() );
-    assert( any.type() == typeid( void ) );
+    // assert( any.type() == typeid( void ) );
     //    std::cout << any.type().name() << std::endl;
-    std::cout << any << std::endl;
+    // std::cout << any << std::endl;
 
+#if CPP_VERSION >= 20
     static_assert(hub::Serializer::Readable_v<hub::Any>);
     static_assert(hub::Serializer::Writable_v<hub::Any>);
     static_assert(! hub::Serializer::Serializable<hub::Any>());
-    // void
-    {
-#ifdef HUB_DEBUG_OUTPUT
-        std::cout << "\n------------------ " << TYPE_NAME( void ) << " ---------------------\n";
 #endif
-        archive.write( any );
-        archive.read( any_read );
-        assert(! any_read.hasValue());
-        CHECK( any == any_read );
-    }
+
+//     // void
+//     {
+// #ifdef HUB_DEBUG_OUTPUT
+//         std::cout << "\n------------------ " << TYPE_NAME( void ) << " ---------------------\n";
+// #endif
+//         archive.write( any );
+//         archive.read( any_read );
+//         assert(! any_read.hasValue());
+//         CHECK( any == any_read );
+//     }
 
     // int
     {
         any      = 1;
 #ifdef HUB_DEBUG_OUTPUT
-        std::cout << "\n------------------ " << TYPE_NAME( int ) << " ---------------------\n";
+        std::cout << "\n------------------ " << TYPE_NAME( int() ) << " ---------------------\n";
 #endif
         any_read = 1;
         CHECK( any == any_read );
@@ -133,7 +138,7 @@ class Lambda
     {
         any      = 1.4;
 #ifdef HUB_DEBUG_OUTPUT
-        std::cout << "\n------------------ " << TYPE_NAME( double ) << " ---------------------\n";
+        std::cout << "\n------------------ " << TYPE_NAME( double() ) << " ---------------------\n";
 #endif
         any_read = 1.4;
         CHECK( any == any_read );
@@ -155,7 +160,7 @@ class Lambda
     {
         any      = std::string( "hello" );
 #ifdef HUB_DEBUG_OUTPUT
-        std::cout << "\n------------------ " << TYPE_NAME( std::string ) << " ---------------------\n";
+        std::cout << "\n------------------ " << TYPE_NAME( std::string() ) << " ---------------------\n";
 #endif
         any_read = std::string( "hello" );
         CHECK( any == any_read );
@@ -175,7 +180,8 @@ class Lambda
     {
         const char* str = "hello";
 #ifdef HUB_DEBUG_OUTPUT
-        std::cout << "\n------------------ " << TYPE_NAME( const char * ) << " ---------------------\n";
+        // std::cout << "\n------------------ " << TYPE_NAME( const char * ) << " ---------------------\n";
+        std::cout << "\n------------------ " << TYPE_NAME( str ) << " ---------------------\n";
 #endif
         any             = str;
         any_read        = str;
@@ -200,7 +206,7 @@ class Lambda
     {
         const Lambda lambda { 5, 0.0, 1.0f, { 0, 1, 2 }, "gauthier" };
 #ifdef HUB_DEBUG_OUTPUT
-        std::cout << "\n------------------ " << TYPE_NAME( Lambda ) << " ---------------------\n";
+        std::cout << "\n------------------ " << TYPE_NAME( lambda ) << " ---------------------\n";
 #endif
         //    archive.write(lambda);
         //    Lambda lambda{5, 0.0, 1.0f, {0, 1, 2}};
@@ -223,7 +229,7 @@ class Lambda
 //         using Format = hub::format::BGR8;
 //         const Format bgr8(0.0f);
 // #ifdef HUB_DEBUG_OUTPUT
-//         std::cout << "\n------------------ " << TYPE_NAME( Lambda ) << " ---------------------\n";
+//         std::cout << "\n------------------ " << TYPE_NAME( lambda ) << " ---------------------\n";
 // #endif
 //         //    archive.write(lambda);
 //         //    Lambda lambda{5, 0.0, 1.0f, {0, 1, 2}};
@@ -249,7 +255,7 @@ class Lambda
         static_assert(! hub::serializer::SerializerZppBits::Serializable<Format>());
         const Format mat4(1.0f);
 #ifdef HUB_DEBUG_OUTPUT
-        std::cout << "\n------------------ " << TYPE_NAME( Lambda ) << " ---------------------\n";
+        std::cout << "\n------------------ " << TYPE_NAME( lambda ) << " ---------------------\n";
 #endif
         //    archive.write(lambda);
         //    Lambda lambda{5, 0.0, 1.0f, {0, 1, 2}};

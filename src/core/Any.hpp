@@ -54,13 +54,13 @@ class SRC_API Any
     //    enum class Type { NONE = 0, INT, DOUBLE, STRING, CONST_CHAR_PTR, MAT4, MESH, COUNT };
 
     Any() {
-        assert( Anyable::s_anyables.find( typeid( void ).hash_code() ) !=
-                Anyable::s_anyables.end() );
-        m_anyHelper = std::make_unique<Anyable::AnyHelper>(
-            Anyable::s_anyables.at( typeid( void ).hash_code() ) );
+        // assert( Anyable::s_anyables.find( typeid( void ).hash_code() ) !=
+        // Anyable::s_anyables.end() );
+        // m_anyHelper = std::make_unique<Anyable::AnyHelper>(
+        // Anyable::s_anyables.at( typeid( void ).hash_code() ) );
     }
 
-    Any(Any && any) = default;
+    Any( Any&& any ) = default;
 
     template <class T>
     Any( T&& t ) : m_any( std::forward<T>( t ) ) {
@@ -87,13 +87,8 @@ class SRC_API Any
         }
         assert( Anyable::s_anyables.find( typeid( const T* ).hash_code() ) !=
                 Anyable::s_anyables.end() );
-        //        m_anyHelper = &Anyable::s_anyables.at( typeid( const T* ).hash_code() );
         m_anyHelper = std::make_unique<Anyable::AnyHelper>(
             Anyable::s_anyables.at( typeid( const T* ).hash_code() ) );
-        //        assert( s_anyHelpers.find( typeid( const T* ).hash_code() ) != s_anyHelpers.end()
-        //        ); m_typeName = [](  ) {
-        ////            return std::string("const ") + TYPE_NAME(T) + " *";
-        //            return std::string(TYPE_NAME(T)) + "*";
     };
 
     Any( const Any& any ) :
@@ -112,48 +107,48 @@ class SRC_API Any
         return *this;
     }
 
-//    template <class Output>
     void write( Serializer& serializer ) const {
+        assert( m_anyHelper != nullptr );
         const auto& hashCode = m_any.type().hash_code();
-        serializer.write( hashCode );
+        // serializer.write( hashCode );
 
-        m_anyHelper->write( serializer, m_any );
+        // m_anyHelper->write( serializer, m_any );
     }
 
-//    template <class Input>
+    //    template <class Input>
     void read( Serializer& serializer ) {
         decltype( m_any.type().hash_code() ) hashCode;
-        serializer.read( hashCode );
+        // serializer.read( hashCode );
         assert( Anyable::s_anyables.find( hashCode ) != Anyable::s_anyables.end() );
         m_anyHelper = std::make_unique<Anyable::AnyHelper>( Anyable::s_anyables.at( hashCode ) );
 
-        m_anyHelper->read( serializer, m_any );
+        // m_anyHelper->read( serializer, m_any );
     }
 
-//    static constexpr auto serialize( auto& archive, auto& self ) {
-//        return archive(5);
-//    }
+    //    static constexpr auto serialize( auto& archive, auto& self ) {
+    //        return archive(5);
+    //    }
 
-//    static constexpr auto serialize( auto& archive, auto& self ) {
-//        //        return archive( self.m_anyHelper);
-//        using archive_type = std::remove_cvref_t<decltype( archive )>;
+    //    static constexpr auto serialize( auto& archive, auto& self ) {
+    //        //        return archive( self.m_anyHelper);
+    //        using archive_type = std::remove_cvref_t<decltype( archive )>;
 
-//        if constexpr ( archive_type::kind() == zpp::bits::kind::in ) {
-//            // Input archive
-//            const auto& hashCode = self.m_any.type().hash_code();
-//            //			output.write( hashCode );
-//            archive( hashCode );
-//            return archive;
-//        }
-//        else if constexpr ( archive_type::kind() == zpp::bits::kind::out ) {
-//            // Output archive
-//            const auto& hashCode = self.m_any.type().hash_code();
-//            //			output.write( hashCode );
-//            archive( hashCode );
-//            return archive;
-//        }
-////        return archive;
-//    }
+    //        if constexpr ( archive_type::kind() == zpp::bits::kind::in ) {
+    //            // Input archive
+    //            const auto& hashCode = self.m_any.type().hash_code();
+    //            //			output.write( hashCode );
+    //            archive( hashCode );
+    //            return archive;
+    //        }
+    //        else if constexpr ( archive_type::kind() == zpp::bits::kind::out ) {
+    //            // Output archive
+    //            const auto& hashCode = self.m_any.type().hash_code();
+    //            //			output.write( hashCode );
+    //            archive( hashCode );
+    //            return archive;
+    //        }
+    ////        return archive;
+    //    }
 
     //        m_any2valueStr = []( const std::any& any ) {
     //            assert( typeid( const T* ) == any.type() );
@@ -203,9 +198,9 @@ class SRC_API Any
         return m_anyHelper->getValueStr( m_any );
     }
 
-#if CPP_VERSION <= 17
-    bool operator!=( const Any& any ) const;
-#endif
+    // #if CPP_VERSION <= 17
+    //     bool operator!=( const Any& any ) const;
+    // #endif
 
     template <class T>
     const T& get() const {
@@ -226,12 +221,15 @@ class SRC_API Any
         return str;
     }
 
-    bool operator==( const Any& any ) const {
-        assert( m_any.type() == any.m_any.type() );
+    bool operator==( const Any& other ) const {
+        assert( m_any.type() == other.m_any.type() );
         assert( m_anyHelper != nullptr );
         assert( m_anyHelper->compare != nullptr );
-        return m_anyHelper->compare( m_any, any.m_any );
+        return m_anyHelper->compare( m_any, other.m_any );
     }
+#if CPP_VERSION < 20
+    bool operator!=( const Any& other ) const { return !( *this == other ); }
+#endif
 
     //    template <class Serial>
     //    void serialize(Serial & serial) {
@@ -240,12 +238,14 @@ class SRC_API Any
     //        serial(m_any.type().hash_code());
     //    }
     std::string typeName() const {
+        assert( m_anyHelper != nullptr );
         return m_anyHelper->getTypeName();
         // return TYPE_NAME(m_any.type());
     }
 
     std::string valueAsString() const {
-        return m_anyHelper->getValueStr(m_any);
+        assert( m_anyHelper != nullptr );
+        return m_anyHelper->getValueStr( m_any );
         // return TYPE_NAME(m_any.type());
     }
 
@@ -258,7 +258,7 @@ class SRC_API Any
 
   private:
     std::any m_any;
-//    decltype( m_any.type().hash_code() ) m_hashCode;
+    //    decltype( m_any.type().hash_code() ) m_hashCode;
     std::unique_ptr<Anyable::AnyHelper> m_anyHelper;
 };
 

@@ -1,8 +1,8 @@
 #pragma once
 
+#include "Macros.hpp"
 #include "OutputBase.hpp"
 #include "Serializer.hpp"
-#include "Macros.hpp"
 
 // #define HUB_DEBUG_OUTPUT
 
@@ -19,7 +19,7 @@ class OutputT : public OutputBase
     template <class T>
     typename std::enable_if<packable_v<T>>::type write( const T& t ) {
 #ifdef HUB_DEBUG_OUTPUT
-        DEBUG_MSG( HEADER << "write(packable: " << TYPE_NAME( T ) << ") = " << t );
+        DEBUG_MSG( HEADER << "write(packable: " << TYPE_NAME( t ) << ") = " << t );
 #endif
         assert( isOpen() );
         if constexpr ( isPacket<T> ) { write( t.data(), t.size() ); }
@@ -27,35 +27,26 @@ class OutputT : public OutputBase
     }
 
     template <class T>
-    typename std::enable_if<! packable_v<T> && writable_v<T>>::type
-        // requires (writable_v<T>)
-    write( const T& t ) {
+    typename std::enable_if<!packable_v<T> && writable_v<T>>::type write( const T& t ) {
 #ifdef HUB_DEBUG_OUTPUT
-        DEBUG_MSG( HEADER << "write(writable: " << TYPE_NAME( T ) << ") = " << t );
+        DEBUG_MSG( HEADER << "write(writable: " << TYPE_NAME( t ) << ") = " << t );
 #endif
         assert( isOpen() );
-        // m_serializer.pack( *this, t );
-        const_cast<T&>(t).write(*this);
-        // t.write(const_cast<Output*>(this));
-        // t.write(*reinterpret_cast<T*>(t));
+        const_cast<T&>( t ).write( *this );
     }
 
     template <class T>
-    typename std::enable_if<!packable_v<T> && ! writable_v<T>>::type write( const T& t ) {
+    typename std::enable_if<!packable_v<T> && !writable_v<T>>::type write( const T& t ) {
 #ifdef HUB_DEBUG_OUTPUT
-        DEBUG_MSG( HEADER << "write(raw: " << TYPE_NAME( T ) << ") = " << t );
+        DEBUG_MSG( HEADER << "write(serial: " << TYPE_NAME( t ) << ") = " << t );
 #endif
         assert( isOpen() );
         m_serializer.pack( *this, t );
     }
 
     template <class T, class... Ts>
-    void writeAll(const T& t, const Ts&... ts) {
-        m_serializer.pack(*this, t, ts...);
-        // write(t);
-        // if constexpr (sizeof...(ts) > 0) {
-            // writeAll(ts...);
-        // }
+    void writeAll( const T& t, const Ts&... ts ) {
+        m_serializer.pack( *this, t, ts... );
     }
 
   private:

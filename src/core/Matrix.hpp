@@ -86,6 +86,9 @@ class Matrix
     const auto& getData() const { return m_vector; }
 
     bool operator==( const Matrix& other ) const;
+#if CPP_VERSION < 20
+    bool operator!=( const Matrix& other ) const;
+#endif
 
     void push_back( const Node& node );
 
@@ -233,6 +236,11 @@ inline bool Matrix::operator==( const Matrix& other ) const {
         return m_nodes == other.m_nodes && m_size == other.m_size && m_vector == other.m_vector;
     }
     else { return m_nodes == other.m_nodes && m_size == other.m_size; }
+}
+
+inline bool Matrix::operator!=(const Matrix &other) const
+{
+    return ! (*this == other);
 }
 
 inline void Matrix::push_back( const Node& node ) {

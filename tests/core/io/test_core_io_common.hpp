@@ -31,7 +31,7 @@ struct UserData {
     }
 
     auto toString() const {
-        return std::to_string(a) + " " + std::to_string(b) + " " + name + " " + hub::toString(vints);
+        return std::to_string(a) + " " + std::to_string(b) + " " + name + " " + hub::to_string(vints);
     }
 
     bool operator==( const UserData& character ) const {

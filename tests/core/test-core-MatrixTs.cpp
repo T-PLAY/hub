@@ -4,8 +4,9 @@
 
 #include "test_common.hpp"
 
+#include <core/io/Archive.hpp>
 #include <core/matrix/MatrixTs.hpp>
-#include <core/matrix/MatrixXD.hpp>
+// #include <core/matrix/MatrixXD.hpp>
 // #include <core/Matrix.hpp>
 
 struct RGB8 {
@@ -33,38 +34,125 @@ TEST_CASE( "MatrixTs test" ) {
     CHECK( resCTypes == ResCTypes().getMatrix() );
     CHECK( resCTypes2 != ResCTypes().getMatrix() );
 
-    constexpr auto width  = 640;
-    constexpr auto height = 480;
-    using ResRGB          = hub::MatrixXD<RGB8, width, height>;
-    using ResPoint        = hub::MatrixXD<XYZ32F, width, height>;
+    static_assert( hub::isMatrix<hub::MatrixTs<int, double>> );
+    static_assert( hub::isMatrix<hub::Matrix> );
 
-    std::cout << "ResRGB: " << ResRGB() << std::endl;
-    std::cout << "ResRGB: " << ResRGB().getMatrix() << std::endl;
-    const auto resRGB  = hub::make_matrix<RGB8, width, height>();
-    const auto resRGB2 = hub::make_matrix<RGB8>( width, height );
-    std::cout << "resRGB: " << resRGB << std::endl;
-    std::cout << std::endl;
-    CHECK( resRGB == ResRGB().getMatrix() );
-    CHECK( resRGB2 == ResRGB().getMatrix() );
+    using namespace hub;
 
-    std::cout << "ResPoint: " << ResPoint() << std::endl;
-    std::cout << "ResPoint: " << ResPoint().getMatrix() << std::endl;
-    const auto resPoint  = hub::make_matrix<XYZ32F, width, height>();
-    const auto resPoint2 = hub::make_matrix<XYZ32F>( width, height );
-    std::cout << "resPoint: " << resPoint << std::endl;
-    std::cout << std::endl;
-    CHECK( resPoint == ResPoint().getMatrix() );
-    CHECK( resPoint2 == ResPoint().getMatrix() );
+    using MyMatrixTs = MatrixTs<int, double, float>;
+    static_assert( MyMatrixTs::capacity() == 1 );
+    static_assert( MyMatrixTs::nDim() == 1 );
+    static_assert( MyMatrixTs::getDim<0>() == 1 );
+    static_assert( MyMatrixTs::nType() == 3 );
+    static_assert( MyMatrixTs::hasType<int>() );
+    static_assert( MyMatrixTs::hasType<double>() );
+    static_assert( MyMatrixTs::hasType<float>() );
+    static_assert( !MyMatrixTs::hasType<bool>() );
+    static_assert( MyMatrixTs::hasType<int, double, float>() );
+    static_assert( !MyMatrixTs::hasType<int, double, float, char>() );
+    static_assert( std::is_same<MyMatrixTs::getType<0>, int>() );
+    static_assert( std::is_same<MyMatrixTs::getType<1>, double>() );
+    static_assert( std::is_same<MyMatrixTs::getType<2>, float>() );
+    static_assert( MyMatrixTs::size() == sizeof( int ) + sizeof( double ) + sizeof( float ) );
 
-    using Resolution = hub::MatrixTs<ResRGB, ResPoint>;
-    std::cout << "Resolution: " << Resolution() << std::endl;
-    std::cout << "Resolution: " << Resolution().getMatrix() << std::endl;
-    const auto resolution  = hub::make_matrix( resRGB, resPoint );
-    const auto resolution2 = hub::make_matrix<ResRGB, ResPoint>();
-    std::cout << "resolution: " << resolution << std::endl;
-    std::cout << std::endl;
-    CHECK( resolution == Resolution().getMatrix() );
-    CHECK( resolution2 == Resolution().getMatrix() );
+    std::cout << "MyMatrixTs: " << MyMatrixTs() << std::endl;
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    using MatricesChar = MatrixTs<char, char, char, char, char, char, char, char, char, int>;
+    constexpr MatricesChar matricesChar {
+        'g', 'a', 'u', 't', 'h', 'i', 'e', 'r', '\0', 5, 0, 0, 0 };
+    std::cout << "matricesChar: " << matricesChar << std::endl;
+    static_assert( matricesChar.nDim() == 1 );
+    static_assert( matricesChar.getDim<0>() == 1 );
+    static_assert( matricesChar.nType() == 10 );
+    static_assert( matricesChar.hasType<char, int>() );
+    static_assert( matricesChar.nType<char>() == 9 );
+    static_assert( matricesChar.nType<int>() == 1 );
+    assert( matricesChar.get<const char&>() == 'g' );
+    assert( ( matricesChar.get<const char&, 0>() == 'g' ) );
+    assert( ( matricesChar.get<const char&, 1>() == 'a' ) );
+    assert( ( matricesChar.get<const char&, 2>() == 'u' ) );
+    char* myName = matricesChar.get<char*>();
+    assert( std::memcmp( myName, "gauthier", strlen( myName ) ) == 0 );
+    assert( strlen( myName ) == 8 );
+    std::cout << "myName: " << myName << std::endl;
+    assert( matricesChar.get<const int&>() == 5 );
+
+    auto serialChar = matricesChar.getMatrix();
+    serialChar.setData( matricesChar.data(), matricesChar.size() );
+    std::cout << "serialChar: " << serialChar << std::endl;
+    assert( serialChar.nType() == 10 );
+    assert( ( serialChar.hasAnyType<char, int>() ) );
+    assert( serialChar.nType<char>() == 9 );
+    assert( serialChar.nType<int>() == 1 );
+    assert( serialChar.getDims<char>() == Dims { 1 } );
+    assert( ( serialChar.getDims<char, 1>() == Dims { 1 } ) );
+    assert( ( serialChar.getDims<char, 2>() == Dims { 1 } ) );
+    assert( ( serialChar.getDims<char, 8>() == Dims { 1 } ) );
+    //    std::cout << "const char&: " << std::to_string(serialChar.get<char&>()) << std::endl;
+    assert( serialChar.get<const char&>() == 'g' );
+    assert( ( serialChar.get<const char&, 0>() == 'g' ) );
+    assert( ( serialChar.get<const char&, 1>() == 'a' ) );
+    assert( ( serialChar.get<const char&, 2>() == 'u' ) );
+    char* myName2 = serialChar.get<char*>();
+    assert( std::memcmp( myName2, "gauthier", strlen( myName2 ) ) == 0 );
+    assert( serialChar.get<const int&>() == 5 );
+
+    for ( int iType = 0; iType < serialChar.nType(); ++iType ) {
+        const auto& dims = serialChar.getDims( iType );
+        //        const auto & size = serialChar.getSize(iType);
+        //        const auto * data = serialChar.getData(iType);
+    }
+
+    hub::io::Archive archive;
+    std::cout << "archive write" << std::endl;
+    archive.write( serialChar );
+    //    return 0;
+    Matrix serialChar_read;
+    archive.read( serialChar_read );
+    assert( serialChar == serialChar_read );
+
+    //    return 0;
+
+    archive.write( serialChar.data(), serialChar.size() );
+    archive.read( serialChar_read.data(), serialChar.size() );
+    assert( memcmp( serialChar.data(), serialChar_read.data(), serialChar.size() ) == 0 );
+
+    //////////////////////////////////////////////////////////////////////
+
+    //    return;
+
+    constexpr Buffer<Data_t, 2> buffer { 1, 2 };
+    std::cout << "buffer: " << buffer << std::endl;
+
+    constexpr Buffer<int, 2> buffer2 { 1, 2 };
+    std::cout << "buffer2: " << buffer2 << std::endl;
+
+    char str[] { 'B', 'o', 'u', 'y', 'j', 'o', 'u' };
+    std::cout << "str: " << std::to_string( str[0] ) << std::endl;
+    std::string string;
+    string += str;
+    static_assert( std::is_arithmetic<char>() );
+
+    ///////////////////////////////////////////////////////////////////////////////
+
+    //    UserMatrix matrixUser;
+
+    //    MatrixTs<int, UserMatrix> matrixUser;
+    MatrixTs<int, double> matrixUser;
+    std::cout << "matrixUser: " << matrixUser << std::endl;
+
+    auto serial2 = matrixUser.getMatrix();
+    std::cout << "matrixUser: " << serial2 << std::endl;
+    serial2.hasAnyType<int, double>();
+    auto hasIntDouble = serial2.hasAnyType<int, double>();
+    assert( hasIntDouble );
+
+    assert( ( serial2.hasSomeType<bool, int>() ) );
+
+    assert( serial2.getDims<int>() == Dims { 1 } );
+    assert( serial2.getDims<double>() == Dims { 1 } );
 
     TEST_END()
 }

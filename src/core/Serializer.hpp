@@ -10,7 +10,8 @@
 #ifdef HUB_USE_ZPP_BITS
 #include "serializer/SerializerZppBits.hpp"
 #else
-#include "serializer/SerializerImpl.hpp"
+// #include "serializer/SerializerImpl.hpp"
+#include "serializer/SerializerImpl2.hpp"
 #endif
 
 // #include <core/serializer/SerializerZppBits.hpp>
@@ -21,7 +22,7 @@ namespace hub {
 #ifdef HUB_USE_ZPP_BITS
 using Serializer = serializer::SerializerZppBits;
 #else
-using Serializer = serializer::SerializerImpl;
+using Serializer = serializer::SerializerImpl2;
 #endif
 
 } // namespace hub

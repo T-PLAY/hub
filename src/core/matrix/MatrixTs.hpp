@@ -14,6 +14,8 @@ template <class... Types>
 #endif
 class MatrixTs
 {
+    static_assert( sizeof...( Types ) > 1 );
+
   public:
     static struct {
     } matrix;
@@ -29,6 +31,7 @@ class MatrixTs
         requires( i == 0 )
 #endif
     static constexpr auto getDim() {
+        static_assert( i == 0 );
         return 1;
     }
 
@@ -45,10 +48,10 @@ class MatrixTs
     }
 
     template <class... Types_>
-#if CPP_VERSION >= 20
-        requires( sizeof...( Types_ ) > 1 )
-#endif
-    static constexpr auto hasType() {
+    // #if CPP_VERSION >= 20
+    // requires( sizeof...( Types_ ) > 1 )
+    // #endif
+    static constexpr REQUIRES( sizeof...( Types_ ) > 1, bool ) hasType() {
         return ( hasType<Types_>() && ... );
     }
 
@@ -58,19 +61,12 @@ class MatrixTs
         return ( nType<Type, Types>() + ... );
     }
 
-    template <Size_t i>
-    using getType = typename std::tuple_element<i, std::tuple<Types...>>::type;
-
-    template <class... Args>
-    constexpr MatrixTs( Args&&... args ) : m_buffer { std::forward<Data_t&&>( args )... } {}
-
     template <class Type, class Matrix, class... Types_>
-    static constexpr REQUIRES( isMatrix<Matrix>, int )
-        // #if CPP_VERSION >= 20
-        // requires( isMatrix<Matrix> )
-        // #endif
-        // typename std::enable_if<isMatrix<Matrix>, int>::type
-        nType() {
+    // #if CPP_VERSION >= 20
+    // requires( isMatrix<Matrix> )
+    // #endif
+    // typename std::enable_if<isMatrix<Matrix>, int>::type
+    static constexpr REQUIRES( isMatrix<Matrix>, int ) nType() {
         // static constexpr int nType() {
         if constexpr ( sizeof...( Types_ ) > 0 ) {
             return Matrix::template nType<Type>() + ( nType<Type, Types_>() + ... );
@@ -79,12 +75,19 @@ class MatrixTs
     }
 
     template <class Type, class Type2, class... Types_>
-    static constexpr int nType() {
+    // static constexpr
+    static constexpr REQUIRES( !isMatrix<Type2>, int ) nType() {
         if constexpr ( sizeof...( Types_ ) ) {
             return std::is_same_v<Type, Type2> + nType<Type, Types_...>();
         }
         else { return std::is_same_v<Type, Type2>; }
     }
+
+    template <Size_t i>
+    using getType = typename std::tuple_element<i, std::tuple<Types...>>::type;
+
+    template <class... Args>
+    constexpr MatrixTs( Args&&... args ) : m_buffer { std::forward<Data_t&&>( args )... } {}
 
     template <class Type, int i = 0, class RawType = std::remove_pointer_t<Type>>
     // requires( std::is_pointer_v<Type> && hasType<RawType>() && i < nType<RawType>() )
@@ -120,7 +123,7 @@ class MatrixTs
         //        return (Type)( *( m_buffer.data() + offset ) );
     }
 
-    static constexpr std::string name() { return printName<Types...>(); }
+    static CONSTEXPR20 std::string name() { return printName<Types...>(); }
 
     constexpr auto toString() const { return name() + " = " + m_buffer.toString(); }
 

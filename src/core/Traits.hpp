@@ -102,6 +102,21 @@ static constexpr bool stdToStringable_v = stdToStringable<T>::value;
 template <class T>
 static constexpr auto StdToStringable = stdToStringable_v<T>;
 
+////////////////////////////////
+
+template <typename T>
+using toStringable_t = decltype( toString( std::declval<T>() ) );
+
+template <typename T, typename = std::void_t<>>
+struct toStringable : std::false_type {};
+
+template <typename T>
+struct toStringable<T, std::void_t<toStringable_t<T>>> : std::true_type {};
+
+template <typename T>
+static constexpr bool toStringable_v = toStringable<T>::value;
+
+
 #endif
 
 static_assert( !StdToStringable<std::string> );
@@ -119,7 +134,9 @@ static auto to_string( const char* str ) -> std::string {
     return std::string( "\"" ) + str + "\"";
 }
 static auto to_string( unsigned char c ) -> std::string {
-    return std::string( "'" ) + std::to_string( c ) + "'";
+    // return std::string( "'" ) + std::to_string( c ) + "'";
+    // return std::string(c);
+    return std::to_string(c);
 }
 static auto to_string( bool b ) -> std::string {
     return ( b ) ? ( "true" ) : ( "false" );
@@ -142,6 +159,15 @@ typename std::enable_if_t<hasToString<T>, std::string> to_string( const T& t ) {
     static_assert( !std::is_same_v<T, char*> );
     // static_assert( !StringAddable<T> );
     return t.toString();
+}
+
+template <class T>
+typename std::enable_if_t<toStringable_v<T>, std::string> to_string( const T& t ) {
+    static_assert( !std::is_same_v<T, std::string> );
+    static_assert( !std::is_same_v<T, const char*> );
+    static_assert( !std::is_same_v<T, char*> );
+    // static_assert( !StringAddable<T> );
+    return toString(t);
 }
 
 template <class T>
@@ -225,6 +251,26 @@ static std::string to_string( const std::tuple<Ts...>& tuple ) {
     // ">";
 }
 
+template <char delimiter, class T, class... Ts>
+static void to_string_reduce( std::string& str, const T& t, const Ts&... ts ) {
+    str += to_string( t );
+    if constexpr ( sizeof...( Ts ) > 0 ) {
+        // str += " ";
+        if constexpr ( delimiter == ' ' ) { str += delimiter; }
+        else {
+            str += std::string(" ") + delimiter + " ";
+        }
+        to_string_reduce<delimiter>( str, ts... );
+    }
+}
+
+template <char delimiter = ' ', class... Ts>
+static std::string to_string( const Ts&... ts ) {
+    std::string str;
+    to_string_reduce<delimiter>( str, ts... );
+    return str;
+}
+
 template <typename T>
 using hubToStringable_t = decltype( hub::to_string( std::declval<T>() ) );
 
@@ -238,18 +284,20 @@ template <typename T>
 static constexpr bool hubToStringable_v = hubToStringable<T>::value;
 
 // template <class T>
-// typename std::enable_if_t<! std::is_same_v<T, std::string> && ! std::is_same_v<std::remove_pointer_t<T>,const char> && hubToStringable_v<T>, std::ostream&> operator<<( std::ostream& os,
+// typename std::enable_if_t<! std::is_same_v<T, std::string> && !
+// std::is_same_v<std::remove_pointer_t<T>,const char> && hubToStringable_v<T>, std::ostream&>
+// operator<<( std::ostream& os,
 //                                                                            const T& t ) {
 //     os << hub::to_string( t );
 //     return os;
 // }
 // template <class T>
-// typename std::enable_if_t<! std::is_same_v<T, std::string> && ! std::is_same_v<std::remove_pointer_t<T>,const char> && hubToStringable_v<T>, std::ostream&> operator<<( std::ostream& os,
-                                                                           // const T& t ) {
-    // os << hub::to_string( t );
-    // return os;
+// typename std::enable_if_t<! std::is_same_v<T, std::string> && !
+// std::is_same_v<std::remove_pointer_t<T>,const char> && hubToStringable_v<T>, std::ostream&>
+// operator<<( std::ostream& os, const T& t ) {
+// os << hub::to_string( t );
+// return os;
 // }
-
 
 // template <class T, class U>
 // std::ostream& operator<<( std::ostream& os, const std::pair<T, U>& pair ) {
@@ -387,22 +435,36 @@ using void_t = typename make_void<Ts...>::type;
 } // namespace hub
 
 // template <class T>
-// typename std::enable_if_t<! std::is_same_v<T, std::string> && hub::hubToStringable_v<T>, std::ostream&> operator<<( std::ostream& os,
+// typename std::enable_if_t<! std::is_same_v<T, std::string> && hub::hubToStringable_v<T>,
+// std::ostream&> operator<<( std::ostream& os,
 //                                                                            const T& t ) {
 //     os << hub::to_string( t );
 //     return os;
 // }
 
 template <class T>
-typename std::enable_if_t<hub::hasToString<T>, std::ostream&>
-operator<<( std::ostream& os, const T& t ) {
+typename std::enable_if_t<hub::hasToString<T>, std::ostream&> operator<<( std::ostream& os,
+                                                                          const T& t ) {
     os << t.toString();
+    return os;
+}
+
+template <class T>
+typename std::enable_if_t<hub::toStringable_v<T>, std::ostream&> operator<<( std::ostream& os,
+                                                                          const T& t ) {
+    os << toString(t);
     return os;
 }
 
 template <class T>
 std::ostream& operator<<( std::ostream& os, const std::vector<T>& vector ) {
     os << hub::to_string( vector );
+    return os;
+}
+
+template <class T, std::size_t size>
+std::ostream& operator<<( std::ostream& os, const std::array<T, size>& array ) {
+    os << hub::to_string( array );
     return os;
 }
 
@@ -423,8 +485,6 @@ std::ostream& operator<<( std::ostream& os, const std::tuple<Ts...>& tuple ) {
     os << hub::to_string( tuple );
     return os;
 }
-
-
 
 //     // constexpr bool stringable   = requires( T t ) { str += t; } &&
 //     !std::is_arithmetic_v<T>;

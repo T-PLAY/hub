@@ -31,9 +31,9 @@
 // matrix
 #include "matrix/MatrixXD.hpp"
 #include "matrix/MatrixTs.hpp"
+#include "matrix/MatrixT.hpp"
 
 // level 0
-#include "MatrixT.hpp"
 #include "Resolution.hpp"
 
 // io

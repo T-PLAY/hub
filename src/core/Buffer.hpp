@@ -200,7 +200,7 @@ class Buffer<Type, Size, DynamicMemory> : public BufferBase<Type, Size, DynamicM
         std::string str;
         str += "(dynamic)";
 //        str += "[" + TYPE_NAME( Data_t ) + ", " + PRETTY_BYTES( Size ) + "] = ";
-        str += toString( m_vector );
+        str += hub::to_string( m_vector );
         return str;
     }
 

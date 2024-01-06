@@ -1,8 +1,8 @@
 
 #pragma once
 
-#include "matrix/MatrixTs.hpp"
-#include "matrix/MatrixXD.hpp"
+#include "MatrixTs.hpp"
+#include "MatrixXD.hpp"
 //#include "matrix/Matrix.hpp"
 
 namespace hub {
