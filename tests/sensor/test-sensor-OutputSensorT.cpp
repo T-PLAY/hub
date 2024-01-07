@@ -394,7 +394,6 @@ TEST_CASE( "OutputSensorT test" ) {
 
 ////    std::array<unsigned char, dataSize> array;
 ////    decltype(array)::value_type;
-////    auto type = typeid(std::span<int>::value_type()).hash_code();
 ////    measureT.setData(array);
 
 //    std::memset(data2, 55, dataSize);

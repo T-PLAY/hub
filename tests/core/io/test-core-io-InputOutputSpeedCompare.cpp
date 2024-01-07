@@ -159,6 +159,26 @@ TEST_CASE( "InputOutput speed compare test" ) {
     }
 #endif
 
+// #ifdef HUB_USE_ZPP_BITS
+#ifdef HUB_DEBUG_OUTPUT
+    std::cout << std::endl;
+    std::cout << "-------------------- InputOutputZpp ----------------------" << std::endl;
+#endif
+    BenchStat benchStatInputOutputZpp { "ArchiveZpp" };
+    {
+        hub::io::ArchiveT<hub::SerializerT<hub::serializer::SerializerZpp>> archive;
+
+        benchStatInputOutputZpp.readWriteDataStat =
+            readWriteData( archive, s_nReadWrite, userData );
+        assert( archive.isEnd() );
+
+        benchStatInputOutputZpp.readWriteDataPtrStat =
+            readWriteDataPtr( archive, s_nReadWriteDataPtr, data_write, s_DataSizePtr );
+        assert( archive.isEnd() );
+        dataBenchStats.insert( benchStatInputOutputZpp );
+    }
+// #endif
+
     delete[] data_write;
 
 

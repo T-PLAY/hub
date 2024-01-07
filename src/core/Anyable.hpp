@@ -12,10 +12,10 @@
 // #include "core/Output.hpp"
 // #include "core/io/input/InputBase.hpp"
 // #include "core/io/output/OutputBase.hpp"
-//#include "core/Input.hpp"
-//#include "core/Output.hpp"
+// #include "core/Input.hpp"
+// #include "core/Output.hpp"
 #include "Serializer.hpp"
-//#include "core/serializer/SerializerI.hpp"
+// #include "core/serializer/SerializerI.hpp"
 
 #if CPP_VERSION <= 14
 #    include "traits/std_any.hpp"
@@ -33,9 +33,9 @@ class Anyable
     {
         //  private:
       public:
-//        AnyHelper() = delete;
-//        AnyHelper(AnyHelper &&) = delete;
-//        AnyHelper(const AnyHelper &) = delete;
+        //        AnyHelper() = delete;
+        //        AnyHelper(AnyHelper &&) = delete;
+        //        AnyHelper(const AnyHelper &) = delete;
 
         //    template <typename T>
         //    Anyable( const T* t )
@@ -46,7 +46,6 @@ class Anyable
         //        };
 
         //        getValueStr = []( const std::any& any ) {
-        //            assert( typeid( const T* ) == any.type() );
         //            const T* val = std::any_cast<const T*>( any );
         //            std::stringstream sstream;
         //            sstream << val;
@@ -63,10 +62,10 @@ class Anyable
             //            std::cout << "[Anyable] setup type : " << TYPE_NAME(T) << std::endl;
 
             // getTypeName = []() { return TYPE_NAME( T ); };
-            getTypeName = []() { return TYPE_NAME( T() ); };
 
             // void
             if constexpr ( std::is_same_v<T, void> ) {
+                getTypeName = []() { return "void"; };
                 getValueStr = []( const std::any& ) { return "nil"; };
                 write       = []( Serializer&, const std::any& ) {};
                 read        = []( Serializer&, std::any& ) {};
@@ -78,6 +77,7 @@ class Anyable
                 };
             }
             else {
+                getTypeName = []() { return TYPE_NAME( T() ); };
                 getValueStr = []( const std::any& any ) {
                     assert( typeid( T ) == any.type() );
                     const T& val = std::any_cast<const T&>( any );
@@ -89,12 +89,12 @@ class Anyable
                 if constexpr ( std::is_same_v<T, const char*> ) {
                     write = []( Serializer& serializer, const std::any& any ) {
                         const char* val = std::any_cast<const char*>( any );
-                        // serializer.write( val );
+                        serializer.write( val );
                     };
                     read = []( Serializer& serializer, std::any& any ) {
                         char* val =
                             new char[80]; // leak, please do not use char *, use std::string instead
-                        // serializer.read( val );
+                        serializer.read( val );
                         any = (const char*)val;
                     };
                     compare = []( const std::any& any, const std::any& any2 ) {
@@ -106,11 +106,11 @@ class Anyable
                 else {
                     write = []( Serializer& serializer, const std::any& any ) {
                         const T& val = std::any_cast<const T&>( any );
-                        // serializer.write( val );
+                        serializer.write( val );
                     };
                     read = []( Serializer& serializer, std::any& any ) {
                         T t;
-                        // serializer.read( t );
+                        serializer.read( t );
                         any = t;
                     };
                     compare = []( const std::any& any, const std::any& any2 ) {
@@ -125,15 +125,22 @@ class Anyable
 
         friend class Anyable;
         friend class Any;
+
+        // AnyHelper()
+               // AnyHelper() = default;
+               // AnyHelper(AnyHelper &&) = delete;
+               // AnyHelper(const AnyHelper &) = default;
+               // AnyHelper& operator=(const AnyHelper &) = default;
+
       private:
         std::function<std::string()> getTypeName;
         std::function<std::string( const std::any& )> getValueStr;
         std::function<bool( const std::any&, const std::any& )> compare;
         //        std::function<void( io::output::OutputBase& output, const std::any& )> write;
-//        std::function<void( Output&, const std::any& )> write;
+        //        std::function<void( Output&, const std::any& )> write;
         std::function<void( Serializer&, const std::any& )> write;
         std::function<void( Serializer&, std::any& )> read;
-//        std::function<void( Input&, std::any& )> read;
+        //        std::function<void( Input&, std::any& )> read;
     };
 
     template <class T>
@@ -144,15 +151,21 @@ class Anyable
     }
 
     template <class T>
-    static std::pair<size_t, AnyHelper> makeAnyHelperRow() {
-        return std::make_pair( typeid( T ).hash_code(), make_anyHelper<T>() );
+    static std::pair<std::string, AnyHelper> makeAnyHelperRow() {
+        if constexpr ( std::is_same_v<T, void> ) {
+            return std::make_pair( "void", make_anyHelper<T>() );
+        }
+        else {
+            return std::make_pair( TYPE_NAME( T() ), make_anyHelper<T>() );
+        }
     }
 
     // static std::map<size_t, AnyHelper> s_anyables = makeAnyHelperMap<double>();
 
     //    static std::map<size_t, AnyHelper> s_anyables;
     template <class... T>
-    static std::map<size_t, AnyHelper> makeAnyHelperMap() {
+    static std::map<std::string, AnyHelper> makeAnyHelperMap() {
+        // AnyHelper voidHelper;
         return { makeAnyHelperRow<T>()... };
         //    return std::map<size_t, AnyHelper>{ makeRow<T>()};
     }
@@ -164,25 +177,24 @@ class Anyable
 
     template <class T>
     static void insertSupportedType() {
-        assert( s_anyables.find( typeid( T ).hash_code() ) == s_anyables.end() );
+        assert( s_anyables.find( TYPE_NAME( T() ) ) == s_anyables.end() );
         s_anyables.insert( makeAnyHelperRow<T>() );
-        assert( s_anyables.find( typeid( T ).hash_code() ) != s_anyables.end() );
+        assert( s_anyables.find( TYPE_NAME( T() ) ) != s_anyables.end() );
         // std::cout << "[Anyable] added new supported type : " << TYPE_NAME(T) << std::endl;
-        std::cout << "[Anyable] added new supported type : " << TYPE_NAME(T()) << std::endl;
+        std::cout << "[Anyable] added new supported type : " << TYPE_NAME( T() ) << std::endl;
     }
     template <class T, class... Ts>
     static void insertSupportedTypes() {
         insertSupportedType<T>();
         if constexpr ( sizeof...( Ts ) > 0 ) { insertSupportedTypes<Ts...>(); }
-        //        assert( s_anyables.find( typeid( T ).hash_code() ) == s_anyables.end() );
         //        s_anyables.insert( makeAnyHelperRow<T>() );
-        //        assert( s_anyables.find( typeid( T ).hash_code() ) != s_anyables.end() );
     }
 
   public:
     static std::vector<std::string> supportedTypes() {
         std::vector<std::string> ret;
         for ( const auto& pair : s_anyables ) {
+            assert(pair.first == pair.second.getTypeName());
             ret.push_back( "<" + pair.second.getTypeName() + ">" );
             //        std::cout << pair.first << " -> " << pair.second.getTypeName() << std::endl;
         }
@@ -194,9 +206,7 @@ class Anyable
         insertSupportedTypes<Ts...>();
         //        insertSupportedType<Ts...>();
         //        if constexpr ( sizeof...( Ts ) > 0 ) { addSupportedType<Ts...>(); }
-        //        assert( s_anyables.find( typeid( T ).hash_code() ) == s_anyables.end() );
         //        s_anyables.insert( makeAnyHelperRow<T>() );
-        //        assert( s_anyables.find( typeid( T ).hash_code() ) != s_anyables.end() );
     }
 
     friend class Any;

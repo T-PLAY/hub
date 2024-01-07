@@ -42,7 +42,6 @@ TEST_CASE( "MatrixXD test" ) {
     std::cout << "ResPoint matrix: " << ResPoint().getMatrix() << std::endl;
     // ResPoint().getMatrix();
     // hub::make_matrix<Resolution>();
-    //     std::cout << typeid(int).hash_code() << std::endl;
 
     static_assert( hub::isMatrix<hub::MatrixXD<int, 640, 480>> );
 

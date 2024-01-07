@@ -54,8 +54,10 @@ class SerializerZpp : public SerializerI
     }
     Size_t inPosition() const override { return m_inPosition; }
     Size_t outPosition() const override { return m_outPosition; }
-    void setInPosition( Size_t inPosition ) override { m_inPosition = inPosition; }
-    void setOutPosition( Size_t outPosition ) override { m_outPosition = outPosition; }
+    // void setInPosition( Size_t inPosition ) override {
+    //     m_inPosition = inPosition;
+    // }
+    // void setOutPosition( Size_t outPosition ) override { m_outPosition = outPosition; }
 
     // template <class T>
     // void serialize( const T& t ) {

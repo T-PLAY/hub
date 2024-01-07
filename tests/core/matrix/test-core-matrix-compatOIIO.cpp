@@ -20,6 +20,8 @@ TEST_CASE( "Matrix compat OIIO test" ) {
         data[i] = 65 + i;
     }
 
+    // todo
+
 //    OIIO::ImageSpec imageSpec(width, height, 1, OIIO::TypeDesc::UINT8);
 //    OIIO::ImageBuf imageBuf(imageSpec, data);
 //    for ( int j = 0; j < height; ++j ) {

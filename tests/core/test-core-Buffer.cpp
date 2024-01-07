@@ -13,6 +13,9 @@ TEST_CASE( "Buffer test" ) {
 
 //    std::cout << "FILE_NAME: " << FILE_NAME << std::endl;
 
+    // todo
+
+#if CPP_VERSION >= 20
     using namespace hub;
 
     //    constexpr auto dataSize = 10'000'000'000; // 10Go
@@ -119,5 +122,6 @@ TEST_CASE( "Buffer test" ) {
 
 //    constexpr auto dataStaticConstexpr = Buffer<2, BufferOption::StaticMemory>{"ab"};
     //    constexpr auto dataDynamicContexpr =  Buffer<1000, BufferOption::DynamicMemory>();
+#endif
     TEST_END()
 }

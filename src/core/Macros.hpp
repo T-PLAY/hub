@@ -227,7 +227,7 @@ namespace hub {
 
 #endif
 
-#define HUB_DEBUG_INPUT_OUTPUT
+// #define HUB_DEBUG_INPUT_OUTPUT
 
 #ifdef HUB_DEBUG_INPUT_OUTPUT
 #    define HUB_DEBUG_INPUT
@@ -415,7 +415,6 @@ static_assert( !isContainer<const char*> );
 // #    ifdef HUB_USE_BOOST
 //         return boost::typeindex::type_id<typeof( T )>().pretty_name();
 // #    else
-//         return typeid( T ).name();
 // #    endif
 //     }
 // }
@@ -442,7 +441,6 @@ static_assert( !isContainer<const char*> );
 //     // #ifdef HUB_USE_BOOST
 //     //         return boost::typeindex::type_id<typeof( T )>().pretty_name();
 //     // #else
-//     //         return typeid( T ).name();
 //     // #endif
 //     // }
 // }
@@ -676,7 +674,6 @@ static std::string typeName( const std::tuple<T, Ts...>& ) {
 // #        ifdef HUB_USE_BOOST
 //     return boost::typeindex::type_id<typeof( T )>().pretty_name();
 // #        else
-//     return typeid( T ).name();
 // #        endif
 // }
 
@@ -709,7 +706,7 @@ static std::string typeName( const std::tuple<T, Ts...>& ) {
 // typename std::enable_if<( sizeof...( Types ) > 1 ), bool>::type
 // #    define REQUIRES( _COND_, _TYPE_ ) typename std::enable_if<( _COND_ ), _TYPE_>::type
 #    define REQUIRES( _CONST_, _COND_, _TYPE_ ) \
-        _CONST_ typename std::enable_if<( _COND_ ), _TYPE_>::type
+        _CONST_ typename std::enable_if_t<( _COND_ ), _TYPE_>
 #endif
 // #define TYPE_NAME_T( _Type_ ) hub::typeName(_Type_())
 
@@ -718,15 +715,12 @@ static std::string typeName( const std::tuple<T, Ts...>& ) {
 // #ifdef HUB_USE_BOOST
 // #    define TYPE_NAME( t ) boost::typeindex::type_id<typeof( t )>().pretty_name()
 // #else
-// #    define TYPE_NAME( t ) typeid( t ).name()
 // #endif
 
 // #    ifdef HUB_USE_BOOST
 //         std::cout << HEADER_INPUT_MSG "read(T) : <"
-////                  << typeid( T ).name() << " ("
 //                  << boost::typeindex::type_id<T>().pretty_name() << "> " << t  << std::endl;
 // #    else
-//        std::cout << typeid( T ).name() << "> = " << t
 //                  << std::endl;
 // #    endif
 
@@ -809,10 +803,8 @@ REQUIRES( constexpr, sizeof...( Ts ) > 1, decltype( sizeof( int ) ) ) sizeOf() {
 
 // #    ifdef HUB_USE_BOOST
 //         std::cout << HEADER_INPUT_MSG "read(T) : <"
-////                  << typeid( T ).name() << " ("
 //                  << boost::typeindex::type_id<T>().pretty_name() << "> " << t  << std::endl;
 // #    else
-//        std::cout << typeid( T ).name() << "> = " << t
 //                  << std::endl;
 // #    endif
 //    }

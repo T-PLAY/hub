@@ -60,13 +60,8 @@ struct UserClass {
 TEST_CASE( "Matrix test" ) {
     TEST_BEGIN()
 
-    //     std::cout << typeid(int).hash_code() << std::endl;
 
     //    // check compat with 32/64 bits operating systems
-    //    assert(typeid(int).hash_code() == 6253375586064260614ul);
-    //    assert(typeid(double).hash_code() == 14494284460613645429ul);
-    //    assert(typeid(UserClass).hash_code() == 2193770348167473685ul);
-    //    assert(typeid(long long).hash_code() == 13272411544345499535ul);
 
     //    Test myTest;
     //      myTest.printHeader();

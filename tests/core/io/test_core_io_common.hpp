@@ -1,18 +1,100 @@
 #pragma once
 
 #include <chrono>
+#include <cstring>
 #include <string>
 #include <tuple>
 #include <type_traits>
 #include <vector>
-#include <cstring>
 
 // #include <core/Macros.hpp>
+#include <core/Serializer.hpp>
 #include <core/Traits.hpp>
 #include <core/ios.hpp>
 // #include <core/Vector.hpp>
+#include <core/io/Archive.hpp>
 
 namespace testCoreIoCommon {
+
+class WritableReadableData
+{
+  public:
+    WritableReadableData( std::string name, int value ) : m_name { name }, m_value { value } {};
+    WritableReadableData() = default;
+    auto toString() const { return "name: '" + m_name + "'" + " " + std::to_string( m_value ); }
+
+    void write( hub::Serializer& serializer ) const {
+        // std::cout << "[test][WritableReadableData] write(Serializer&) : " << *this << std::endl;
+        serializer.writeAll( m_name, m_value );
+    }
+    void read( hub::Serializer& serializer ) {
+        serializer.readAll( m_name, m_value );
+        // std::cout << "[test][WritableReadableData] read(Serializer&) : " << *this << std::endl;
+    }
+    bool operator==( const WritableReadableData& other ) const {
+        return m_name == other.m_name && m_value == other.m_value;
+    }
+
+  private:
+    std::string m_name;
+    int m_value;
+};
+
+class SerializedClass
+{
+  public:
+    SerializedClass( int a, bool b ) : m_a { a }, m_b { b } {};
+    SerializedClass() = default;
+    bool operator==( const SerializedClass& other ) const {
+        return m_a == other.m_a && m_b == other.m_b;
+    }
+    auto toString() const { return hub::to_string( m_a, m_b ); }
+
+    // friend zpp::serializer::access;
+    template <typename Archive, typename Self>
+    static void serialize( Archive& archive, Self& self ) {
+        archive( self.m_a, self.m_b );
+    }
+
+  private:
+    int m_a;
+    bool m_b;
+};
+
+enum class UserEnum2 { A, B, C };
+static auto toString( UserEnum2 ue ) -> std::string {
+    switch ( ue ) {
+    case UserEnum2::A:
+        return "A";
+        break;
+    case UserEnum2::B:
+        return "B";
+        break;
+    case UserEnum2::C:
+        return "C";
+        break;
+    default:
+        break;
+    }
+    return "None";
+}
+
+template <class T>
+void checkType( hub::io::Archive& archive, const T& t ) {
+    // std::cout << "-------------------------------- " << TYPE_NAME( t ) << " ----------------------"
+              // << std::endl;
+    assert( archive.isEnd() );
+
+    archive.write( t );
+    T t_read;
+    archive.read( t_read );
+    assert( t == t_read );
+
+    assert( archive.isEnd() );
+#ifdef DEBUG_CHECK_TYPE
+    std::cout << "<" << TYPE_NAME(t) << ">: " << t << std::endl;
+#endif
+}
 
 struct UserData {
     double a;
@@ -25,20 +107,26 @@ struct UserData {
     //        };
     //    }
 
-    template <class Serial>
-    void serialize( Serial& serial ) {
-        serial( a, b, name, vints );
+    // template <class Serial>
+    // void serialize( Serial& serial ) {
+        // serial( a, b, name, vints );
+    // }
+    // friend zpp::serializer::access;
+    template <typename Archive, typename Self>
+    static void serialize( Archive& archive, Self& self ) {
+        archive( self.a, self.b, self.name, self.vints );
     }
 
     auto toString() const {
-        return std::to_string(a) + " " + std::to_string(b) + " " + name + " " + hub::to_string(vints);
+        return std::to_string( a ) + " " + std::to_string( b ) + " " + name + " " +
+               hub::to_string( vints );
     }
 
     bool operator==( const UserData& character ) const {
         return a == character.a && b == character.b && name == character.name &&
                vints == character.vints;
     }
-//    friend std::ostream& operator<<( std::ostream& os, const UserData& character );
+    //    friend std::ostream& operator<<( std::ostream& os, const UserData& character );
 };
 // static_assert( hub::io::serializable_v<UserData> );
 static_assert( sizeof( int ) == 4 );
@@ -70,11 +158,14 @@ struct BenchStat {
     ReadWriteStat readWriteDataPtrStat {};
 
     bool operator<( const BenchStat& benchStat ) const {
-        const auto fatorDataDataPtr = (double)readWriteDataStat.durationInNanoSecond / readWriteDataPtrStat.durationInNanoSecond;
-        const auto fatorDataDataPtr2 = (double)benchStat.readWriteDataStat.durationInNanoSecond / benchStat.readWriteDataPtrStat.durationInNanoSecond;
+        const auto fatorDataDataPtr = (double)readWriteDataStat.durationInNanoSecond /
+                                      readWriteDataPtrStat.durationInNanoSecond;
+        const auto fatorDataDataPtr2 = (double)benchStat.readWriteDataStat.durationInNanoSecond /
+                                       benchStat.readWriteDataPtrStat.durationInNanoSecond;
         const auto fatorDataDataPtrMean = ( fatorDataDataPtr + fatorDataDataPtr2 ) / 2.0;
 
-        return readWriteDataStat.durationInNanoSecond + readWriteDataPtrStat.durationInNanoSecond * fatorDataDataPtrMean <
+        return readWriteDataStat.durationInNanoSecond +
+                   readWriteDataPtrStat.durationInNanoSecond * fatorDataDataPtrMean <
                benchStat.readWriteDataStat.durationInNanoSecond +
                    benchStat.readWriteDataPtrStat.durationInNanoSecond * fatorDataDataPtrMean;
     }
@@ -84,7 +175,7 @@ struct BenchStat {
 template <class BenchStats>
 void printStats( const BenchStats& benchStats ) {
 
-//    std::cout << std::endl;
+    //    std::cout << std::endl;
 
     //    for ( int iImpl = 0; iImpl < dataBenchStats.size(); ++iImpl ) {
     for ( const auto& dataBenchStat : benchStats ) {

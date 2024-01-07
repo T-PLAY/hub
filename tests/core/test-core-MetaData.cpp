@@ -28,6 +28,12 @@ class Lambda
     }
 #endif
 
+    // friend zpp::serializer::access;
+    template <typename Archive, typename Self>
+    static void serialize( Archive& archive, Self& self ) {
+        archive( self.a, self.b, self.c, self.ds, self.e );
+    }
+
     friend std::ostream& operator<<( std::ostream& os, const Lambda& lambda ) {
         os << lambda.a << " " << lambda.b << " " << lambda.c << " " << lambda.ds << " " << lambda.e;
         return os;
@@ -39,6 +45,36 @@ class Lambda
 
 // #include <core/Serializer.hpp>
 
+hub::MetaData s_metaData;
+hub::MetaData s_metaData_read;
+hub::io::Archive s_archive;
+
+template <class T>
+void checkMetaData( const T& t, const T& t2 ) {
+    // int
+    // {
+    CHECK( s_metaData == s_metaData_read );
+    s_metaData[TYPE_NAME( t )] = t;
+    std::cout << "<" << TYPE_NAME( t ) << ">: " << s_metaData << std::endl;
+    // #ifdef HUB_DEBUG_OUTPUT
+    //     std::cout << "\n------------------ MetaData<" << TYPE_NAME( int() )
+    //               << "> ---------------------\n";
+    // #endif
+    CHECK( s_metaData != s_metaData_read );
+    s_metaData_read[TYPE_NAME( t )] = t;
+    CHECK( s_metaData == s_metaData_read );
+    s_metaData_read[TYPE_NAME( t )] = t2;
+    CHECK( s_metaData != s_metaData_read );
+    // std::cout << s_metaData << std::endl;
+
+    assert( s_archive.isEnd() );
+    s_archive.write( s_metaData );
+    s_archive.read( s_metaData_read );
+    assert( s_archive.isEnd() );
+    CHECK( s_metaData == s_metaData_read );
+    // }
+}
+
 TEST_CASE( "MetaData test" ) {
     TEST_BEGIN()
 
@@ -47,125 +83,46 @@ TEST_CASE( "MetaData test" ) {
     // std::any std_any;
     // assert( !std_any.has_value() );
 
-    hub::MetaData metadata;
-    // assert( metadata.type() == typeid( void ) );
-    hub::MetaData metadata_read;
-    assert( metadata == metadata_read );
+    // hub::MetaData metadata;
+    // hub::MetaData metadata_read;
+    assert( s_metaData == s_metaData_read );
+    std::cout << s_metaData << std::endl;
     // assert( !metadata.hasValue() );
     // assert( !metadata_read.hasValue() );
-    // assert( metadata.type() == typeid( void ) );
     //    std::cout << metadata.type().name() << std::endl;
-    std::cout << metadata << std::endl;
 
     // static_assert( hub::Serializer::Readable_v<hub::MetaData> );
     // static_assert( hub::Serializer::Writable_v<hub::MetaData> );
-// todo c++17
+    // todo c++17
 
-#if CPP_VERSION >= 20
+    // #if CPP_VERSION >= 20
     static_assert( !hub::Serializer::Serializable<hub::MetaData>() );
-#endif
+    static_assert( !hub::Serializer::Writable_v<hub::MetaData> );
+    static_assert( !hub::Serializer::Readable_v<hub::MetaData> );
+    static_assert( !hub::packable_v<hub::MetaData> );
+    // #endif
+
+    checkMetaData<int>( 1, 2 );
+    checkMetaData<double>( 1.0, 2.0 );
+    checkMetaData<std::string>( "gauthier", "bouyjou" );
+    checkMetaData<const char*>( "abc", "def" );
+    checkMetaData<Lambda>( Lambda { 1, 2.0f, 3.0, { 1, 2 }, "hello" },
+                           Lambda { 2, 3.0f, 4.0, { 3, 4 }, "hi" } );
 
     // todo serialize
     // hub::io::Archive archive;
 
-//     // void
-//     {
-// #ifdef HUB_DEBUG_OUTPUT
-//         std::cout << "\n------------------ " << TYPE_NAME( void ) << " ---------------------\n";
-// #endif
-//         archive.write( metadata );
-//         archive.read( metadata_read );
-//         // assert( !metadata_read.hasValue() );
-//         CHECK( metadata == metadata_read );
-//     }
-
-    // int
-    {
-        metadata["int"] = 1;
-#ifdef HUB_DEBUG_OUTPUT
-        std::cout << "\n------------------ " << TYPE_NAME( int() ) << " ---------------------\n";
-#endif
-        metadata_read["int"] = 1;
-        CHECK( metadata == metadata_read );
-        metadata_read["int"] = 2;
-        CHECK( metadata != metadata_read );
-        std::cout << metadata << std::endl;
-
-        // archive.write( metadata );
-        // archive.read( metadata_read );
-        // CHECK( metadata == metadata_read );
-    }
-
-    // double
-    {
-        metadata["double"] = 1.4;
-#ifdef HUB_DEBUG_OUTPUT
-        std::cout << "\n------------------ " << TYPE_NAME( double() ) << " ---------------------\n";
-#endif
-        metadata_read["double"] = 1.4;
-        CHECK( metadata == metadata_read );
-        metadata_read["double"] = 2.1;
-        CHECK( metadata != metadata_read );
-        std::cout << metadata << std::endl;
-
-        // archive.write( metadata );
-        // archive.read( metadata_read );
-        // CHECK( metadata == metadata_read );
-    }
-
-    // std::string
-    {
-        metadata["string"] = std::string( "hello" );
-#ifdef HUB_DEBUG_OUTPUT
-        std::cout << "\n------------------ " << TYPE_NAME( std::string() )
-                  << " ---------------------\n";
-#endif
-        metadata_read["string"] = std::string( "hello" );
-        CHECK( metadata == metadata_read );
-        metadata_read["string"] = std::string( "bye" );
-        CHECK( metadata != metadata_read );
-        std::cout << metadata << std::endl;
-
-        // archive.write( metadata );
-        // archive.read( metadata_read );
-        // CHECK( metadata == metadata_read );
-    }
-
-    // const char *
-    {
-        const char* str = "hello";
-#ifdef HUB_DEBUG_OUTPUT
-        std::cout << "\n------------------ " << TYPE_NAME( str )
-                  << " ---------------------\n";
-#endif
-        metadata["char ptr"]      = str;
-        metadata_read["char ptr"] = str;
-        CHECK( metadata == metadata_read );
-        metadata_read["char ptr"] = "bye";
-        CHECK( metadata != metadata_read );
-        std::cout << metadata << std::endl;
-
-        // archive.write( metadata );
-        // archive.read( metadata_read );
-        // CHECK( metadata == metadata_read );
-    }
-
-    {
-        const Lambda lambda { 5, 0.0, 1.0f, { 0, 1, 2 }, "gauthier" };
-#ifdef HUB_DEBUG_OUTPUT
-        std::cout << "\n------------------ " << TYPE_NAME( lambda ) << " ---------------------\n";
-#endif
-        metadata["lambda"]      = lambda;
-        metadata_read["lambda"] = lambda;
-        CHECK( metadata == metadata_read );
-        metadata_read["lambda"] = Lambda { 2, 0.0, 1.0f, { 0 }, "bouyjou" };
-        CHECK( metadata != metadata_read );
-        std::cout << metadata << std::endl;
-
-        // archive.write( metadata );
-        // archive.read( metadata_read );
-        // CHECK( metadata == metadata_read );
-    }
+    //     // void
+    //     {
+    // #ifdef HUB_DEBUG_OUTPUT
+    //         std::cout << "\n------------------ " << "MetaData<void>" << "
+    //         ---------------------\n";
+    // #endif
+    //         archive.write( metadata );
+    //         archive.read( metadata_read );
+    //         // assert( !metadata_read.hasValue() );
+    //         CHECK( metadata == metadata_read );
+    //     }
 
 #ifndef HUB_NON_BUILD_SENSOR
     {

@@ -12,8 +12,10 @@
 
 #include "Macros.hpp"
 #include "Traits.hpp"
+#include "Serializer.hpp"
 
 #include "Anyable.hpp"
+
 
 // #include "core/Vector.hpp"
 //  #include "std_any.hpp"
@@ -32,7 +34,6 @@
 // #    include <boost/type_index.hpp>
 // #endif
 
-// #define typeid
 
 namespace hub {
 
@@ -50,76 +51,131 @@ class SRC_API Any
     //    enum class Type { NONE = 0, INT, DOUBLE, STRING, CONST_CHAR_PTR, MAT4, MESH, COUNT };
 
     Any() {
-        // assert( Anyable::s_anyables.find( typeid( void ).hash_code() ) !=
+#ifdef HUB_DEBUG_ANY
+        std::cout << "[Any] Any()" << std::endl;
+#endif
+
         // Anyable::s_anyables.end() );
+        assert( Anyable::s_anyables.find( "void" ) != Anyable::s_anyables.end() );
         // m_anyHelper = std::make_unique<Anyable::AnyHelper>(
-        // Anyable::s_anyables.at( typeid( void ).hash_code() ) );
+        m_anyHelper = std::make_unique<Anyable::AnyHelper>( Anyable::s_anyables.at( "void" ) );
     }
 
-    Any( Any&& any ) = default;
+    Any( const Any& any ) :
+        m_any( any.m_any )
+    //        m_anyHelper{std::make_unique<Anyable::AnyHelper>(any.m_anyHelper)}
+    {
+#ifdef HUB_DEBUG_ANY
+        std::cout << "[Any] Any(const Any&)" << std::endl;
+#endif
+        // m_any = any.m_any;
+        // m_anyHelper = std::make_unique<Anyable::AnyHelper>(any.m_anyHelper.get());
+        // m_anyHelper = std::make_unique<Anyable::AnyHelper>(*any.m_anyHelper.get());
+        m_anyHelper = std::make_unique<Anyable::AnyHelper>(
+            // Anyable::s_anyables.at( any.type().hash_code() ) );
+            Anyable::s_anyables.at( any.typeName() ) );
+    }
 
-    template <class T>
+    // Any( Any&& any ) { std::cout << "[Any] Any(Any&&)" << std::endl; }
+    Any( Any&& ) = default;
+
+    // Any& operator=( const Any& any ) = default;
+    Any& operator=( const Any& any ) {
+#ifdef HUB_DEBUG_ANY
+        std::cout << "[Any] Any& operator=(const Any&)" << std::endl;
+#endif
+        m_any       = any.m_any;
+        m_anyHelper = std::make_unique<Anyable::AnyHelper>(
+            // Anyable::s_anyables.at( any.type().hash_code() ) );
+            Anyable::s_anyables.at( any.typeName() ) );
+        return *this;
+    }
+
+    // Any& operator=( Any& any ) {
+    //     std::cout << "[Any] Any& operator=(Any&)" << std::endl;
+    //     m_any = any.m_any;
+    //     m_anyHelper = std::make_unique<Anyable::AnyHelper>(
+    //     // Anyable::s_anyables.at( any.type().hash_code() ) );
+    //     Anyable::s_anyables.at( any.typeName() ) );
+    //     return *this;
+    // }
+    // Any& operator=(Any& ) = default;
+
+    Any& operator=( Any&& ) = default;
+    //     std::cout << "[Any] Any& operator=(Any&&)" << std::endl;
+    //     m_any = std::move(any.m_any);
+    //     m_anyHelper = std::make_unique<Anyable::AnyHelper>(
+    //     // Anyable::s_anyables.at( any.type().hash_code() ) );
+    //     Anyable::s_anyables.at( any.typeName() ) );
+    //     return *this;
+    // }
+
+    template <class T,
+              typename = typename std::enable_if_t<!std::is_same_v<std::remove_cvref_t<T>, Any>>>
     Any( T&& t ) : m_any( std::forward<T>( t ) ) {
-        if ( Anyable::s_anyables.find( typeid( T ).hash_code() ) == Anyable::s_anyables.end() ) {
+        static_assert( !std::is_same_v<std::remove_cvref_t<T>, Any> );
+        // std::cout << "[Any] Any(T&&) " << std::endl << std::flush;
+#ifdef HUB_DEBUG_ANY
+        std::cout << "[Any] Any(T&&) " << TYPE_NAME( t ) << std::endl;
+#endif
+        // std::cout << std::flush;
+        // exit( 1 );
+        // m_any = t;
+        if ( Anyable::s_anyables.find( TYPE_NAME( t ) ) == Anyable::s_anyables.end() ) {
             Anyable::registerTypes<std::remove_cvref_t<T>>();
             //            std::cerr << HEADER << "'" << TYPE_NAME(T) << "' is not supported by
             //            hub::Any class, please do hub::Anyable::registerType<" << TYPE_NAME(T) <<
             //            ">() before using it." << std::endl; exit(1);
         }
-        assert( Anyable::s_anyables.find( typeid( T ).hash_code() ) != Anyable::s_anyables.end() );
+        // );
+        assert( Anyable::s_anyables.find( TYPE_NAME( t ) ) != Anyable::s_anyables.end() );
         m_anyHelper = std::make_unique<Anyable::AnyHelper>(
-            Anyable::s_anyables.at( typeid( T ).hash_code() ) );
+            Anyable::s_anyables.at( TYPE_NAME( t ) ) );
     }
 
-    template <typename T>
+    template <class T,
+              typename = typename std::enable_if_t<!std::is_same_v<std::remove_cvref_t<T>, Any>>>
     Any( const T* t ) : m_any( t ) {
-        if ( Anyable::s_anyables.find( typeid( const T* ).hash_code() ) ==
-             Anyable::s_anyables.end() ) {
+        static_assert( !std::is_same_v<std::remove_cvref_t<T>, Any> );
+#ifdef HUB_DEBUG_ANY
+        std::cout << "[Any] Any(const T*)" << std::endl;
+#endif
+        if ( Anyable::s_anyables.find( TYPE_NAME( t ) ) == Anyable::s_anyables.end() ) {
             //            Anyable::registerTypes<const T*>();
             Anyable::registerTypes<const T*>();
             //            std::cerr << HEADER << "'" << TYPE_NAME(const T*) << "' is not supported
             //            by hub::Any class, please do hub::Anyable::registerType<" << TYPE_NAME(T)
             //            << ">() before using it." << std::endl; exit(1);
         }
-        assert( Anyable::s_anyables.find( typeid( const T* ).hash_code() ) !=
-                Anyable::s_anyables.end() );
+        assert( Anyable::s_anyables.find( TYPE_NAME( t ) ) != Anyable::s_anyables.end() );
         m_anyHelper = std::make_unique<Anyable::AnyHelper>(
-            Anyable::s_anyables.at( typeid( const T* ).hash_code() ) );
+            Anyable::s_anyables.at( TYPE_NAME( t ) ) );
     };
-
-    Any( const Any& any ) :
-        m_any( any.m_any )
-    //        m_anyHelper{std::make_unique<Anyable::AnyHelper>(any.m_anyHelper)}
-    {
-        //        m_anyHelper = std::make_unique<Anyable::AnyHelper>(any.m_anyHelper.get());
-        // m_anyHelper = std::make_unique<Anyable::AnyHelper>(
-        // Anyable::s_anyables.at( any.type().hash_code() ) );
-    }
-
-    Any& operator=( const Any& any ) {
-        m_any = any.m_any;
-        // m_anyHelper = std::make_unique<Anyable::AnyHelper>(
-        // Anyable::s_anyables.at( any.type().hash_code() ) );
-        return *this;
-    }
 
     void write( Serializer& serializer ) const {
         assert( m_anyHelper != nullptr );
-        const auto& hashCode = m_any.type().hash_code();
+        // const auto& hashCode = m_any.type().hash_code();
+        const auto& type_name = typeName();
+        serializer.write( type_name );
         // serializer.write( hashCode );
 
-        // m_anyHelper->write( serializer, m_any );
+        m_anyHelper->write( serializer, m_any );
     }
 
     //    template <class Input>
     void read( Serializer& serializer ) {
-        decltype( m_any.type().hash_code() ) hashCode;
+        // decltype( m_any.type_name().hash_code() ) hashCode;
+        decltype( typeName() ) type_name;
+        serializer.read( type_name );
         // serializer.read( hashCode );
-        assert( Anyable::s_anyables.find( hashCode ) != Anyable::s_anyables.end() );
-        m_anyHelper = std::make_unique<Anyable::AnyHelper>( Anyable::s_anyables.at( hashCode ) );
+        // assert( Anyable::s_anyables.find( hashCode ) != Anyable::s_anyables.end() );
+        assert( Anyable::s_anyables.find( type_name ) != Anyable::s_anyables.end() );
+        // m_anyHelper = std::make_unique<Anyable::AnyHelper>( Anyable::s_anyables.at( hashCode ) );
+        m_anyHelper = std::make_unique<Anyable::AnyHelper>( Anyable::s_anyables.at( type_name ) );
 
-        // m_anyHelper->read( serializer, m_any );
+        m_anyHelper->read( serializer, m_any );
     }
+
 
     bool hasValue() const {
 #if CPP_VERSION < 17
@@ -141,12 +197,14 @@ class SRC_API Any
 
     std::string typeName() const {
         assert( m_anyHelper != nullptr );
+        assert( m_anyHelper->getTypeName != nullptr );
         return m_anyHelper->getTypeName();
         // return TYPE_NAME(m_any.type());
     }
 
     std::string valueAsString() const {
         assert( m_anyHelper != nullptr );
+        assert( m_anyHelper->getValueStr != nullptr );
         return m_anyHelper->getValueStr( m_any );
         // return TYPE_NAME(m_any.type());
     }
@@ -154,8 +212,8 @@ class SRC_API Any
     auto toString() const {
         std::string str;
         assert( m_anyHelper != nullptr );
-        assert( m_anyHelper->getTypeName != nullptr );
-        assert( m_anyHelper->getValueStr != nullptr );
+        // assert( m_anyHelper->getTypeName != nullptr );
+        // assert( m_anyHelper->getValueStr != nullptr );
         str += "*'" + typeName() + "' : " + valueAsString() + "*";
         return str;
     }
@@ -218,7 +276,6 @@ class SRC_API Any
 //    }
 
 //        m_any2valueStr = []( const std::any& any ) {
-//            assert( typeid( const T* ) == any.type() );
 //            const T* val = std::any_cast<const T*>( any );
 //            std::stringstream sstream;
 //            sstream << val;
@@ -236,7 +293,6 @@ class SRC_API Any
 //        };
 
 //        m_any2valueStr = []( const std::any& any ) {
-//            assert( typeid( T ) == any.type() );
 //            const T& val = std::any_cast<const T&>( any );
 //            std::stringstream sstream;
 //            sstream << val;
@@ -269,19 +325,15 @@ class SRC_API Any
 
 //    const auto& anyType = m_any.type();
 
-//    if ( anyType == typeid( int ) ) {
 //        //            const auto& val = any.get<int>();
 //        //            return std::to_string( val );
 //    }
-//    else if ( anyType == typeid( double ) ) {
 //        //            const auto& val = any.get<double>();
 //        //            return std::to_string( val );
 //    }
-//    else if ( anyType == typeid( std::string ) ) {
 //        //            const auto& val = "'" + any.get<std::string>() + "'";
 //        //            return val;
 //    }
-//    else if ( anyType == typeid( const char* ) ) {
 //        //            const auto& val = any.get<const char*>();
 //        //            return "'" + std::string( val ) + "'";
 //    }
@@ -292,9 +344,7 @@ class SRC_API Any
 //        m_anyValue2string = []( const std::any& any ) {
 //            //        const auto & val = std::any_cast<const
 //            //        const auto & val = std::any_cast<const T&>(any);
-//            std::cout << "anyToString: " << typeid( T ).name() << " = " << any.type().name()
 //                      << std::endl;
-//            assert( typeid( T ) == any.type() );
 
 //            std::any_cast<T>( any );
 //            //        const T & val = std::any_cast<const T&>(any);
@@ -306,26 +356,18 @@ class SRC_API Any
 
 //    //    const auto & anyType = m_any.type();
 //    //    m_type = std::make_unique<std::type_info>(new std::type_info(m_any.type()));
-//    //    m_type = std::make_unique<std::type_info&>(typeid(T));
 
-//    //    if (anyType == typeid(int)) {
 //    ////        m_type = Type::INT;
-//    //        m_type = std::make_unique<std::type_info>(typeid(int));
 //    //    }
-//    //    else if (anyType == typeid(double)) {
 //    //        m_type = Type::DOUBLE;
 //    //    }
-//    //    else if (anyType == typeid(std::string)) {
 //    //        m_type = Type::STRING;
 //    //    }
-//    //    else if (anyType == typeid(const char *)) {
 //    //        m_type = Type::CONST_CHAR_PTR;
 //    //    }
 //    // todo any
-//    //    else if (anyType == typeid(data::Mat4)) {
 //    //        m_type = Type::MAT4;
 //    //    }
-//    //    else if (anyType == typeid(data::Mesh)) {
 //    //        m_type = Type::MESH;
 //    //    }
 //    //    else {
@@ -347,13 +389,9 @@ class SRC_API Any
 ////     else {
 ////        sstream << "'" << typeName() << "' = " << get<T>();
 // #    ifdef HUB_USE_BOOST
-//     sstream  << "'" << typeid( T ).name() << " ("
 //             << boost::typeindex::type_id<T>().pretty_name() << ")' = " << get<T>();
-////        sstream << "'" << typeid(T).name() << "' = " << get<T>();
 // #    else
-//         sstream << "'" << typeid(T).name() << "' = " << get<T>();
 // #    endif
-////         boost::typeindex::typeid(*p).pretty_name() << ") '" << t << "'" << std::endl;
 ////     }
 //     return sstream.str();
 

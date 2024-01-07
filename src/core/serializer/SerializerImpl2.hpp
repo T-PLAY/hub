@@ -41,8 +41,8 @@ class SerializerImpl2 : public SerializerI
     void resetOut() override {}
     Size_t inPosition() const override { return m_inPosition; }
     Size_t outPosition() const override { return m_outPosition; }
-    void setInPosition( Size_t inPosition ) override { m_inPosition = inPosition; }
-    void setOutPosition( Size_t outPosition ) override { m_outPosition = outPosition; }
+    // void setInPosition( Size_t inPosition ) override { m_inPosition = inPosition; }
+    // void setOutPosition( Size_t outPosition ) override { m_outPosition = outPosition; }
 
     template <class... Ts>
     void serialize( const Ts&... ts ) {

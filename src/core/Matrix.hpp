@@ -256,8 +256,9 @@ inline bool Matrix::hasValue() const {
 
 template <class Type>
 bool Matrix::hasType() const {
+    const auto typeName = TYPE_NAME(Type());
     for ( const auto& node : m_nodes ) {
-        if ( node.m_hashCode == typeid( Type ).hash_code() ) { return true; }
+        if ( node.m_typeName == typeName ) { return true; }
     }
     return false;
 }
@@ -278,9 +279,10 @@ template <class Type>
 int Matrix::nType() {
     assert( hasType<Type>() );
     int ret             = 0;
-    const auto typeHash = typeid( Type ).hash_code();
+    const auto typeName = TYPE_NAME(Type());
     for ( const auto& node : m_nodes ) {
-        if ( node.m_hashCode == typeHash ) { ++ret; }
+        // if ( node.m_hashCode == typeHash ) { ++ret; }
+        if ( node.m_typeName == typeName ) { ++ret; }
     }
     return ret;
 }
@@ -288,9 +290,10 @@ int Matrix::nType() {
 template <class Type, int i>
 Dims Matrix::getDims() const {
     int nFound          = 0;
-    const auto typeHash = typeid( Type ).hash_code();
+    const auto typeName = TYPE_NAME(Type());
     for ( const auto& node : m_nodes ) {
-        if ( node.m_hashCode == typeHash ) {
+        // if ( node.m_hashCode == typeHash ) {
+        if ( node.m_typeName == typeName ) {
             if ( i == nFound ) { return node.m_dims; }
             ++nFound;
         }
@@ -304,10 +307,11 @@ Size_t Matrix::getOffset( int i ) const {
     Size_t offset = 0;
     int cptFound  = 0;
 
-    const auto typeHash = typeid( Type ).hash_code();
+    const auto typeName = TYPE_NAME(Type());
 
     for ( const auto& node : m_nodes ) {
-        if ( node.m_hashCode == typeHash ) {
+        // if ( node.m_hashCode == typeHash ) {
+        if ( node.m_typeName == typeName ) {
             if ( cptFound == i ) { return offset; }
             ++cptFound;
         }

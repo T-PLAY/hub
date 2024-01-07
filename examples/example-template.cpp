@@ -701,7 +701,6 @@ int main() {
     //    //    static_assert(syncAcq == measures12);
     //    static_assert( syncAcq == acq12 );
 
-    //    static_assert(typeid(Acquisition122) == typeid(Measures12));
     //    static_assert(std::is_same<Acquisition122, Measures12>::value);
     //    static_assert(std::is_same<Acquisition122, Acquisition12>::value);
     //    static_assert(syncAcq == measure1);

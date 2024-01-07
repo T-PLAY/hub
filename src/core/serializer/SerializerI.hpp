@@ -21,8 +21,8 @@ class SerializerI
     virtual Size_t inPosition() const                = 0;
     virtual Size_t outPosition() const                = 0;
 
-    virtual void setInPosition( Size_t inPosition ) = 0;
-    virtual void setOutPosition( Size_t outPosition ) = 0;
+    // virtual void setInPosition( Size_t inPosition ) = 0;
+    // virtual void setOutPosition( Size_t outPosition ) = 0;
 
     virtual void resetIn()                           = 0;
     virtual void resetOut()                           = 0;

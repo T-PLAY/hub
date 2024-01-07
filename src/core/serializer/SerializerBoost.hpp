@@ -62,12 +62,12 @@ class SerializerBoost : public SerializerI
         // return m_out.offset();
         return 0;
     }
-    void setInPosition( Size_t inPosition ) override {
-        // m_in.reset( inPosition );
-    }
-    void setOutPosition( Size_t outPosition ) override {
-        // m_out.reset( outPosition );
-    }
+    // void setInPosition( Size_t inPosition ) override {
+    //     // m_in.reset( inPosition );
+    // }
+    // void setOutPosition( Size_t outPosition ) override {
+    //     // m_out.reset( outPosition );
+    // }
 
     template <class... Ts>
     void serialize( const Ts&... ts ) {
