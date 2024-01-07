@@ -12,13 +12,14 @@
 // #include <WinBase.h>
 #endif
 
-// #include "Macros.hpp"
-//  #include "Types.hpp"
 
 #include <iostream>
 #include <string>
 #include <thread> // contains <chrono>
 #include <cassert>
+
+#include "Macros.hpp"
+//  #include "Types.hpp"
 
 namespace hub {
 namespace utils {
@@ -380,7 +381,7 @@ Key key_press() { // not working: ¹ (251), num lock (-144), caps lock (-20), wi
 }
 #endif // Windows/Linux
 
-static constexpr std::string_view s_key2str[Key::Count] = {
+static CONSTEXPR17 std::string_view s_key2str[Key::Count] = {
     // ASCII Characters
     "NUL",              // 0
     "SOH",              // 1

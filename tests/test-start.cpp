@@ -8,6 +8,7 @@
 
 TEST_CASE( "Test start" ) {
 
+#if CPP_VERSION >= 17
     const std::string randomUsedPortsFilename = "randomUsedPorts.txt";
     if ( std::filesystem::exists( randomUsedPortsFilename ) ) {
         std::filesystem::remove( randomUsedPortsFilename );
@@ -17,6 +18,7 @@ TEST_CASE( "Test start" ) {
     if ( std::filesystem::exists( durationTestsFilename ) ) {
         std::filesystem::remove( durationTestsFilename );
     }
+#endif
 
     // #ifdef HUB_TEST_ALL
     // hub::Server server;

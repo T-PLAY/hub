@@ -21,7 +21,10 @@ class InputT : public InputBase
     typename std::enable_if<packable_v<T>>::type read( T& t ) {
         assert( isOpen() );
         assert( !isEnd() );
-        if constexpr ( isPacket<T> ) { read( t.data(), t.size() ); }
+        if constexpr ( isPacket<T> ) {
+            assert( false );
+            read( t.data(), t.size() );
+        }
         else { read( reinterpret_cast<Data_t*>( &t ), sizeof( T ) ); }
 #ifdef HUB_DEBUG_INPUT
         DEBUG_MSG( "\t" << HEADER << "read(packable: " << TYPE_NAME( t ) << ") = " << t );
@@ -30,6 +33,7 @@ class InputT : public InputBase
 
     template <class T>
     typename std::enable_if<!packable_v<T> && readable_v<T>>::type read( T& t ) {
+        assert( false );
         // void read( T& t ) {
         assert( isOpen() );
         assert( !isEnd() );

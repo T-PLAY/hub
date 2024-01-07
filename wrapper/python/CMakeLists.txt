@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.4...3.18)
 project(Hub LANGUAGES CXX)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(PYBIND11_PYTHON_VERSION 3.6)
 set(CMAKE_DEBUG_POSTFIX "")
 

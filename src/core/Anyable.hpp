@@ -18,7 +18,7 @@
 //#include "core/serializer/SerializerI.hpp"
 
 #if CPP_VERSION <= 14
-#    include "std_any.hpp"
+#    include "traits/std_any.hpp"
 #else
 #    include <any>
 #endif
@@ -89,12 +89,12 @@ class Anyable
                 if constexpr ( std::is_same_v<T, const char*> ) {
                     write = []( Serializer& serializer, const std::any& any ) {
                         const char* val = std::any_cast<const char*>( any );
-                        serializer.write( val );
+                        // serializer.write( val );
                     };
                     read = []( Serializer& serializer, std::any& any ) {
                         char* val =
                             new char[80]; // leak, please do not use char *, use std::string instead
-                        serializer.read( val );
+                        // serializer.read( val );
                         any = (const char*)val;
                     };
                     compare = []( const std::any& any, const std::any& any2 ) {
@@ -106,11 +106,11 @@ class Anyable
                 else {
                     write = []( Serializer& serializer, const std::any& any ) {
                         const T& val = std::any_cast<const T&>( any );
-                        serializer.write( val );
+                        // serializer.write( val );
                     };
                     read = []( Serializer& serializer, std::any& any ) {
                         T t;
-                        serializer.read( t );
+                        // serializer.read( t );
                         any = t;
                     };
                     compare = []( const std::any& any, const std::any& any2 ) {
@@ -157,7 +157,8 @@ class Anyable
         //    return std::map<size_t, AnyHelper>{ makeRow<T>()};
     }
 
-    static std::map<size_t, AnyHelper> s_anyables;
+    // static std::map<size_t, AnyHelper> s_anyables;
+    static std::map<std::string, AnyHelper> s_anyables;
 
     //    static std::vector<std::string> supportedTypes();
 

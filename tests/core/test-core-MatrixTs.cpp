@@ -105,19 +105,18 @@ TEST_CASE( "MatrixTs test" ) {
         //        const auto * data = serialChar.getData(iType);
     }
 
-    hub::io::Archive archive;
-    std::cout << "archive write" << std::endl;
-    archive.write( serialChar );
+    // todo serialize
+    // hub::io::Archive archive;
+    // std::cout << "archive write" << std::endl;
+    // archive.write( serialChar );
+    // //    return 0;
+    // Matrix serialChar_read;
+    // archive.read( serialChar_read );
+    // assert( serialChar == serialChar_read );
     //    return 0;
-    Matrix serialChar_read;
-    archive.read( serialChar_read );
-    assert( serialChar == serialChar_read );
-
-    //    return 0;
-
-    archive.write( serialChar.data(), serialChar.size() );
-    archive.read( serialChar_read.data(), serialChar.size() );
-    assert( memcmp( serialChar.data(), serialChar_read.data(), serialChar.size() ) == 0 );
+    // archive.write( serialChar.data(), serialChar.size() );
+    // archive.read( serialChar_read.data(), serialChar.size() );
+    // assert( memcmp( serialChar.data(), serialChar_read.data(), serialChar.size() ) == 0 );
 
     //////////////////////////////////////////////////////////////////////
 

@@ -45,16 +45,19 @@ class MatrixXDBase
         return (Size_t)0;
     }
     const Data_t* data() const { return m_buffer.data(); }
+
     template <class Type_>
     static constexpr auto hasType() {
         return std::is_same<Type, Type_>();
     }
 
-    template <class... Types>
     // #if CPP_VERSION >= 20
     // requires( sizeof...( Types ) > 1 )
     // #endif
-    static constexpr REQUIRES( sizeof...( Types ) > 1, bool ) hasType() {
+    // REQUIRES( (sizeof...( Types ) > 1), bool )
+    template <class... Types>
+    // requires( sizeof...( Types ) > 1 )
+    REQUIRES(static constexpr, sizeof...( Types ) > 1, bool ) hasType() {
         return ( hasType<Types>() && ... );
     }
 

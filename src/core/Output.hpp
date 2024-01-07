@@ -22,12 +22,16 @@ class OutputT : public OutputBase
         DEBUG_MSG( HEADER << "write(packable: " << TYPE_NAME( t ) << ") = " << t );
 #endif
         assert( isOpen() );
-        if constexpr ( isPacket<T> ) { write( t.data(), t.size() ); }
+        if constexpr ( isPacket<T> ) {
+            assert(false);
+            write( t.data(), t.size() );
+        }
         else { write( reinterpret_cast<const Data_t*>( &t ), sizeof( T ) ); }
     }
 
     template <class T>
     typename std::enable_if<!packable_v<T> && writable_v<T>>::type write( const T& t ) {
+        assert(false);
 #ifdef HUB_DEBUG_OUTPUT
         DEBUG_MSG( HEADER << "write(writable: " << TYPE_NAME( t ) << ") = " << t );
 #endif

@@ -24,12 +24,6 @@
 // }
 // #endif
 
-#if CPP_VERSION <= 14
-#    include "std_any.hpp"
-#else
-#    include <any>
-#endif
-
 // #include "data/Mat4.hpp"
 // #include "data/Mesh.hpp"
 
@@ -37,6 +31,8 @@
 // #ifdef HUB_USE_BOOST
 // #    include <boost/type_index.hpp>
 // #endif
+
+// #define typeid
 
 namespace hub {
 
@@ -96,14 +92,14 @@ class SRC_API Any
     //        m_anyHelper{std::make_unique<Anyable::AnyHelper>(any.m_anyHelper)}
     {
         //        m_anyHelper = std::make_unique<Anyable::AnyHelper>(any.m_anyHelper.get());
-        m_anyHelper = std::make_unique<Anyable::AnyHelper>(
-            Anyable::s_anyables.at( any.type().hash_code() ) );
+        // m_anyHelper = std::make_unique<Anyable::AnyHelper>(
+        // Anyable::s_anyables.at( any.type().hash_code() ) );
     }
 
     Any& operator=( const Any& any ) {
-        m_any       = any.m_any;
-        m_anyHelper = std::make_unique<Anyable::AnyHelper>(
-            Anyable::s_anyables.at( any.type().hash_code() ) );
+        m_any = any.m_any;
+        // m_anyHelper = std::make_unique<Anyable::AnyHelper>(
+        // Anyable::s_anyables.at( any.type().hash_code() ) );
         return *this;
     }
 
@@ -125,63 +121,6 @@ class SRC_API Any
         // m_anyHelper->read( serializer, m_any );
     }
 
-    //    static constexpr auto serialize( auto& archive, auto& self ) {
-    //        return archive(5);
-    //    }
-
-    //    static constexpr auto serialize( auto& archive, auto& self ) {
-    //        //        return archive( self.m_anyHelper);
-    //        using archive_type = std::remove_cvref_t<decltype( archive )>;
-
-    //        if constexpr ( archive_type::kind() == zpp::bits::kind::in ) {
-    //            // Input archive
-    //            const auto& hashCode = self.m_any.type().hash_code();
-    //            //			output.write( hashCode );
-    //            archive( hashCode );
-    //            return archive;
-    //        }
-    //        else if constexpr ( archive_type::kind() == zpp::bits::kind::out ) {
-    //            // Output archive
-    //            const auto& hashCode = self.m_any.type().hash_code();
-    //            //			output.write( hashCode );
-    //            archive( hashCode );
-    //            return archive;
-    //        }
-    ////        return archive;
-    //    }
-
-    //        m_any2valueStr = []( const std::any& any ) {
-    //            assert( typeid( const T* ) == any.type() );
-    //            const T* val = std::any_cast<const T*>( any );
-    //            std::stringstream sstream;
-    //            sstream << val;
-    //            return sstream.str();
-    //        };
-    //        m_anyCompare = []( const std::any& any, const std::any& any2 ) {
-    //            return !strcmp( std::any_cast<const T*>( any ), std::any_cast<const T*>( any2 ) );
-    //        };
-    //    }
-
-    //    template <typename T>
-    //    Any( T&& t ) : m_any( std::forward<T>( t ) ) {
-    //        m_typeName = [](  ) {
-    //            return TYPE_NAME(T);
-    //        };
-
-    //        m_any2valueStr = []( const std::any& any ) {
-    //            assert( typeid( T ) == any.type() );
-    //            const T& val = std::any_cast<const T&>( any );
-    //            std::stringstream sstream;
-    //            sstream << val;
-    //            return sstream.str();
-    //        };
-    //        m_anyCompare = []( const std::any& any, const std::any& any2 ) {
-    //            return std::any_cast<const T&>( any ) == std::any_cast<const T&>( any2 );
-    //        };
-    //    }
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     bool hasValue() const {
 #if CPP_VERSION < 17
         return !m_any.empty();
@@ -190,53 +129,16 @@ class SRC_API Any
 #endif
     }
 
-    const std::type_info& type() const { return m_any.type(); }
-
-    std::string getValueStr() const {
-        assert( m_anyHelper != nullptr );
-        assert( m_anyHelper->getValueStr != nullptr );
-        return m_anyHelper->getValueStr( m_any );
+    template <class T>
+    bool is() const {
+        return m_any.type() == typeid( T );
     }
-
-    // #if CPP_VERSION <= 17
-    //     bool operator!=( const Any& any ) const;
-    // #endif
 
     template <class T>
     const T& get() const {
         return std::any_cast<const T&>( m_any );
     }
 
-    template <class T>
-    bool is() const {
-        return m_any.type() == typeid( T );
-    }
-
-    auto toString() const {
-        std::string str;
-        assert( m_anyHelper != nullptr );
-        assert( m_anyHelper->getTypeName != nullptr );
-        assert( m_anyHelper->getValueStr != nullptr );
-        str += "*'" + m_anyHelper->getTypeName() + "' : " + m_anyHelper->getValueStr( m_any ) + "*";
-        return str;
-    }
-
-    bool operator==( const Any& other ) const {
-        assert( m_any.type() == other.m_any.type() );
-        assert( m_anyHelper != nullptr );
-        assert( m_anyHelper->compare != nullptr );
-        return m_anyHelper->compare( m_any, other.m_any );
-    }
-#if CPP_VERSION < 20
-    bool operator!=( const Any& other ) const { return !( *this == other ); }
-#endif
-
-    //    template <class Serial>
-    //    void serialize(Serial & serial) {
-    //        const auto & hashCode = m_any.type().hash_code();
-    ////        serial(hashCode);
-    //        serial(m_any.type().hash_code());
-    //    }
     std::string typeName() const {
         assert( m_anyHelper != nullptr );
         return m_anyHelper->getTypeName();
@@ -248,6 +150,32 @@ class SRC_API Any
         return m_anyHelper->getValueStr( m_any );
         // return TYPE_NAME(m_any.type());
     }
+
+    auto toString() const {
+        std::string str;
+        assert( m_anyHelper != nullptr );
+        assert( m_anyHelper->getTypeName != nullptr );
+        assert( m_anyHelper->getValueStr != nullptr );
+        str += "*'" + typeName() + "' : " + valueAsString() + "*";
+        return str;
+    }
+
+    bool operator==( const Any& other ) const {
+        // assert( m_any.type() == other.m_any.type() );
+        assert( m_anyHelper != nullptr );
+        assert( m_anyHelper->compare != nullptr );
+        return m_any.type() == other.m_any.type() && m_anyHelper->compare( m_any, other.m_any );
+    }
+#if CPP_VERSION < 20
+    bool operator!=( const Any& other ) const { return !( *this == other ); }
+#endif
+
+    //    template <class Serial>
+    //    void serialize(Serial & serial) {
+    //        const auto & hashCode = m_any.type().hash_code();
+    ////        serial(hashCode);
+    //        serial(m_any.type().hash_code());
+    //    }
 
   private:
     ///
@@ -263,6 +191,75 @@ class SRC_API Any
 };
 
 } // namespace hub
+
+//    static constexpr auto serialize( auto& archive, auto& self ) {
+//        return archive(5);
+//    }
+
+//    static constexpr auto serialize( auto& archive, auto& self ) {
+//        //        return archive( self.m_anyHelper);
+//        using archive_type = std::remove_cvref_t<decltype( archive )>;
+
+//        if constexpr ( archive_type::kind() == zpp::bits::kind::in ) {
+//            // Input archive
+//            const auto& hashCode = self.m_any.type().hash_code();
+//            //			output.write( hashCode );
+//            archive( hashCode );
+//            return archive;
+//        }
+//        else if constexpr ( archive_type::kind() == zpp::bits::kind::out ) {
+//            // Output archive
+//            const auto& hashCode = self.m_any.type().hash_code();
+//            //			output.write( hashCode );
+//            archive( hashCode );
+//            return archive;
+//        }
+////        return archive;
+//    }
+
+//        m_any2valueStr = []( const std::any& any ) {
+//            assert( typeid( const T* ) == any.type() );
+//            const T* val = std::any_cast<const T*>( any );
+//            std::stringstream sstream;
+//            sstream << val;
+//            return sstream.str();
+//        };
+//        m_anyCompare = []( const std::any& any, const std::any& any2 ) {
+//            return !strcmp( std::any_cast<const T*>( any ), std::any_cast<const T*>( any2 ) );
+//        };
+//    }
+
+//    template <typename T>
+//    Any( T&& t ) : m_any( std::forward<T>( t ) ) {
+//        m_typeName = [](  ) {
+//            return TYPE_NAME(T);
+//        };
+
+//        m_any2valueStr = []( const std::any& any ) {
+//            assert( typeid( T ) == any.type() );
+//            const T& val = std::any_cast<const T&>( any );
+//            std::stringstream sstream;
+//            sstream << val;
+//            return sstream.str();
+//        };
+//        m_anyCompare = []( const std::any& any, const std::any& any2 ) {
+//            return std::any_cast<const T&>( any ) == std::any_cast<const T&>( any2 );
+//        };
+//    }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// const std::type_info& type() const { return m_any.type(); }
+
+// std::string getValueStr() const {
+//     assert( m_anyHelper != nullptr );
+//     assert( m_anyHelper->getValueStr != nullptr );
+//     return m_anyHelper->getValueStr( m_any );
+// }
+
+// #if CPP_VERSION <= 17
+//     bool operator!=( const Any& any ) const;
+// #endif
 
 // template <typename T>
 // Any::Any( T&& t ) :

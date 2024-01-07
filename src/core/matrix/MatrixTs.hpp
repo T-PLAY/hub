@@ -51,7 +51,7 @@ class MatrixTs
     // #if CPP_VERSION >= 20
     // requires( sizeof...( Types_ ) > 1 )
     // #endif
-    static constexpr REQUIRES( sizeof...( Types_ ) > 1, bool ) hasType() {
+    REQUIRES( static constexpr, sizeof...( Types_ ) > 1, bool ) hasType() {
         return ( hasType<Types_>() && ... );
     }
 
@@ -66,7 +66,7 @@ class MatrixTs
     // requires( isMatrix<Matrix> )
     // #endif
     // typename std::enable_if<isMatrix<Matrix>, int>::type
-    static constexpr REQUIRES( isMatrix<Matrix>, int ) nType() {
+    REQUIRES( static constexpr, isMatrix<Matrix>, int ) nType() {
         // static constexpr int nType() {
         if constexpr ( sizeof...( Types_ ) > 0 ) {
             return Matrix::template nType<Type>() + ( nType<Type, Types_>() + ... );
@@ -76,7 +76,7 @@ class MatrixTs
 
     template <class Type, class Type2, class... Types_>
     // static constexpr
-    static constexpr REQUIRES( !isMatrix<Type2>, int ) nType() {
+    REQUIRES( static constexpr, !isMatrix<Type2>, int ) nType() {
         if constexpr ( sizeof...( Types_ ) ) {
             return std::is_same_v<Type, Type2> + nType<Type, Types_...>();
         }
@@ -91,14 +91,14 @@ class MatrixTs
 
     template <class Type, int i = 0, class RawType = std::remove_pointer_t<Type>>
     // requires( std::is_pointer_v<Type> && hasType<RawType>() && i < nType<RawType>() )
-    REQUIRES( std::is_pointer_v<Type>&& hasType<RawType>() && i < nType<RawType>(), Type ) get() {
+    REQUIRES(, std::is_pointer_v<Type>&& hasType<RawType>() && i < nType<RawType>(), Type ) get() {
         const auto offset = getOffset<i, 0, RawType, Types...>();
         static_assert( 0 <= offset && offset < Size );
         return (Type)( m_buffer.data() + offset );
     }
     template <class Type, int i = 0, class RawType = std::remove_pointer_t<Type>>
     // requires( std::is_pointer_v<Type> && hasType<RawType>() && i < nType<RawType>() )
-    REQUIRES( std::is_pointer_v<Type>&& hasType<RawType>() && i < nType<RawType>(), Type )
+    REQUIRES(, std::is_pointer_v<Type>&& hasType<RawType>() && i < nType<RawType>(), Type )
         get() const {
         const auto offset = getOffset<i, 0, RawType, Types...>();
         static_assert( 0 <= offset && offset < Size );
@@ -107,7 +107,8 @@ class MatrixTs
 
     template <class Type, int i = 0, class RawType = std::remove_cvref_t<Type>>
     // requires( !std::is_pointer_v<Type> && hasType<RawType>() && i < nType<RawType>() )
-    REQUIRES( !std::is_pointer_v<Type> && hasType<RawType>() && i < nType<RawType>(), Type ) get() {
+    REQUIRES(, !std::is_pointer_v<Type> && hasType<RawType>() && i < nType<RawType>(), Type )
+        get() {
         const auto offset = getOffset<i, 0, RawType, Types...>();
         static_assert( 0 <= offset && offset < Size );
         return reinterpret_cast<Type>( *( m_buffer.data() + offset ) );
@@ -115,7 +116,7 @@ class MatrixTs
 
     template <class Type, int i = 0, class RawType = std::remove_cvref_t<Type>>
     // requires( !std::is_pointer_v<Type> && hasType<RawType>() && i < nType<RawType>() )
-    REQUIRES( !std::is_pointer_v<Type> && hasType<RawType>() && i < nType<RawType>(), Type )
+    REQUIRES(, !std::is_pointer_v<Type> && hasType<RawType>() && i < nType<RawType>(), Type )
         get() const {
         const auto offset = getOffset<i, 0, RawType, Types...>();
         static_assert( 0 <= offset && offset < Size );
@@ -128,9 +129,9 @@ class MatrixTs
     constexpr auto toString() const { return name() + " = " + m_buffer.toString(); }
 
     template <class Type, int i = 0>
-    static constexpr
-        // requires( hasType<Type>() && i < nType<Type>() )
-        REQUIRES( hasType<Type>() && i < nType<Type>(), Size_t ) getOffset() {
+    // static constexpr
+    // requires( hasType<Type>() && i < nType<Type>() )
+    REQUIRES( static constexpr, hasType<Type>() && i < nType<Type>(), Size_t ) getOffset() {
         return getOffset<i, 0, Type, Types...>();
     }
 
@@ -184,7 +185,8 @@ class MatrixTs
     }
 
     template <class Type, class Matrix, class... Types_>
-    static constexpr REQUIRES( isMatrix<Matrix>, bool ) isSame() {
+    REQUIRES( static constexpr, isMatrix<Matrix>, bool )
+    isSame() {
         if constexpr ( sizeof...( Types_ ) > 0 ) {
             return Matrix::template hasType<Type>() || isSame<Type, Types_...>();
         }
@@ -192,7 +194,8 @@ class MatrixTs
     }
 
     template <class Type, class Type_, class... Types_>
-    static constexpr REQUIRES( !isMatrix<Type_>, bool ) isSame() {
+    REQUIRES( static constexpr, !isMatrix<Type_>, bool )
+    isSame() {
         if constexpr ( sizeof...( Types_ ) > 0 ) {
             return std::is_same<Type, Type_>() || isSame<Type, Types_...>();
         }
@@ -200,7 +203,8 @@ class MatrixTs
     }
 
     template <int ith, int i, class targetType, class Matrix, class... Types_>
-    static constexpr REQUIRES( isMatrix<Matrix>, Size_t ) getOffset() {
+    REQUIRES( static constexpr, isMatrix<Matrix>, Size_t )
+    getOffset() {
         if constexpr ( Matrix::template hasType<targetType>() ) {
             if ( ith == i ) { return 0; }
             else {
@@ -219,7 +223,8 @@ class MatrixTs
     }
 
     template <int ith, int i, class targetType, class Type_, class... Types_>
-    static constexpr REQUIRES( !isMatrix<Type_>, Size_t ) getOffset() {
+    REQUIRES( static constexpr, !isMatrix<Type_>, Size_t )
+    getOffset() {
         if constexpr ( std::is_same_v<targetType, Type_> ) {
             if ( ith == i ) { return 0; }
             else {

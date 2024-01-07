@@ -11,10 +11,12 @@
 
 #include "Configuration.hpp"
 
+
 // #define HUB_USE_BOOST
 #ifdef HUB_USE_BOOST
 #    include <boost/type_index.hpp>
 #endif
+
 
 namespace hub {
 
@@ -282,6 +284,12 @@ namespace hub {
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+#if CPP_VERSION <= 14
+#    include "traits/std_any.hpp"
+#else
+#    include <any>
+#endif
+
 namespace std {
 
 #if CPP_VERSION < 20
@@ -307,6 +315,35 @@ static constexpr bool is_arithmetic_v = is_arithmetic<T>::value;
 template <class T>
 static constexpr bool is_array_v = is_array<T>::value;
 
+#endif
+
+#if CPP_VERSION <= 14 // std::void_t not supported by AppleClang (c++14)
+
+using string_view = string;
+
+template <class T>
+static constexpr bool is_enum_v = is_enum<T>::value;
+
+template <class T>
+static constexpr bool is_pointer_v = is_pointer<T>::value;
+
+template <class Base, class T>
+static constexpr bool is_base_of_v = is_base_of<Base, T>::value;
+
+#endif
+
+#if defined( OS_MACOS ) && CPP_VERSION <= 14 // std::void_t not supported by AppleClang (c++14)
+// namespace std {
+
+template <typename... Ts>
+struct make_void {
+    typedef void type;
+};
+
+template <typename... Ts>
+using void_t = typename make_void<Ts...>::type;
+
+// } // namespace std
 #endif
 
 } // namespace std
@@ -367,49 +404,50 @@ static_assert( !isContainer<const char*> );
 //     t.second();
 // };
 
-#if CPP_VERSION >= 20
+// #if CPP_VERSION >= 20
 
-template <class T>
-    requires( !isContainer<T> )
-std::string type_name() {
-    if constexpr ( requires { T::name(); } ) { return T::name(); }
-    else if ( std::is_same_v<T, std::string> ) { return "string"; }
-    else {
-#    ifdef HUB_USE_BOOST
-        return boost::typeindex::type_id<typeof( T )>().pretty_name();
-#    else
-        return typeid( T ).name();
-#    endif
-    }
-}
+// template <class T>
+//     requires( !isContainer<T> )
+// std::string type_name() {
+//     if constexpr ( requires { T::name(); } ) { return T::name(); }
+//     else if ( std::is_same_v<T, std::string> ) { return "string"; }
+//     else {
+// #    ifdef HUB_USE_BOOST
+//         return boost::typeindex::type_id<typeof( T )>().pretty_name();
+// #    else
+//         return typeid( T ).name();
+// #    endif
+//     }
+// }
 
-template <class Container, class T = std::decay_t<decltype( *std::declval<Container>().begin() )>>
-    requires( isContainer<Container> )
-std::string type_name() {
-    if constexpr ( std::is_same_v<Container, std::vector<T>> ) {
-        return "vector<" + type_name<T>() + ">";
-    }
-    else { return "container<" + type_name<T>() + ">"; }
-}
+// template <class Container, class T = std::decay_t<decltype( *std::declval<Container>().begin()
+// )>>
+//     requires( isContainer<Container> )
+// std::string type_name() {
+//     if constexpr ( std::is_same_v<Container, std::vector<T>> ) {
+//         return "vector<" + type_name<T>() + ">";
+//     }
+//     else { return "container<" + type_name<T>() + ">"; }
+// }
 
-// todo c++17
-template <class T>
-// requires( !isContainer<T> )
-// typename std::enable_if<isContainer<T>, std::string>
-std::string type_name() {
-    return "typename";
-    //     if constexpr ( requires { T::name(); } ) { return T::name(); }
-    //     else if ( std::is_same_v<T, std::string> ) { return "string"; }
-    //     else {
-    // #ifdef HUB_USE_BOOST
-    //         return boost::typeindex::type_id<typeof( T )>().pretty_name();
-    // #else
-    //         return typeid( T ).name();
-    // #endif
-    // }
-}
+// // todo c++17
+// template <class T>
+// // requires( !isContainer<T> )
+// // typename std::enable_if<isContainer<T>, std::string>
+// std::string type_name() {
+//     return "typename";
+//     //     if constexpr ( requires { T::name(); } ) { return T::name(); }
+//     //     else if ( std::is_same_v<T, std::string> ) { return "string"; }
+//     //     else {
+//     // #ifdef HUB_USE_BOOST
+//     //         return boost::typeindex::type_id<typeof( T )>().pretty_name();
+//     // #else
+//     //         return typeid( T ).name();
+//     // #endif
+//     // }
+// }
 
-#else
+// #else
 
 template <typename T>
 using has_name_t = decltype( T::name() );
@@ -441,11 +479,11 @@ template <class T>
 // static typename std::enable_if_t<!has_name_v<std::remove_cv_t<T>>, std::string>
 static typename std::enable_if_t<!has_name_v<T>, std::string> typeName( const T& t ) {
 // typeName(  ) {
-#    ifdef HUB_USE_BOOST
+#ifdef HUB_USE_BOOST
     return boost::typeindex::type_id<typeof( T )>().pretty_name();
-#    else
+#else
     return typeid( T ).name();
-#    endif
+#endif
     // return "unreconized";
 }
 
@@ -516,14 +554,16 @@ static std::string typeName( const std::map<Key, Value>& ) {
 template <class T, class... Ts>
 static void typeName_recurse( std::string& str ) {
     str += ", " + typeName( T() );
-    if constexpr ( sizeof...( Ts ) > 0 ) { typeName_recurse<Ts...>( str ); }
+    if CONSTEXPR17 ( sizeof...( Ts ) > 0 ) { typeName_recurse<Ts...>( str ); }
 }
 
 template <class T, class... Ts>
 static std::string typeName( const std::tuple<T, Ts...>& ) {
     std::string str = "tuple<";
     str += typeName( T() );
-    if constexpr ( sizeof...( Ts ) > 0 ) { typeName_recurse<Ts...>( str ); }
+#if CPP_VERSION > 14
+    if CONSTEXPR17 ( sizeof...( Ts ) > 0 ) { typeName_recurse<Ts...>( str ); }
+#endif
     str += ">";
     return str;
     // return "map<" + typeName( Key() ) + ", " + typeName( Value() ) +
@@ -650,17 +690,27 @@ static std::string typeName( const std::tuple<T, Ts...>& ) {
 //     else { return "container<" + type_name<T>() + ">"; }
 // }
 
-
-#endif
+// #endif
 
 // #define TYPE_NAME( Type ) hub::type_name<Type>()
 #define TYPE_NAME( _Type_ ) hub::typeName( _Type_ )
 
-template <class T>
-auto typeId( const T& t ) -> std::size_t {
-    return std::hash<std::string>()( typeName( t ) );
-}
-#define TYPE_ID( _Type_ ) hub::typeId( _Type_ )
+// template <class T>
+// auto typeId( const T& t ) -> std::size_t {
+//     return std::hash<std::string>()( typeName( t ) );
+// }
+// #define TYPE_ID( _Type_ ) hub::typeId( _Type_ )
+
+#if CPP_VERSION >= 20
+// #    define REQUIRES( _Type_, _COND_ )
+#    define REQUIRES( _CONST_, _COND_, _TYPE_ ) requires( _COND_ ) _CONST_ _TYPE_
+// #    define REQUIRES( _COND_, _TYPE_ ) requires( _COND_ ) _TYPE_
+#else
+// typename std::enable_if<( sizeof...( Types ) > 1 ), bool>::type
+// #    define REQUIRES( _COND_, _TYPE_ ) typename std::enable_if<( _COND_ ), _TYPE_>::type
+#    define REQUIRES( _CONST_, _COND_, _TYPE_ ) \
+        _CONST_ typename std::enable_if<( _COND_ ), _TYPE_>::type
+#endif
 // #define TYPE_NAME_T( _Type_ ) hub::typeName(_Type_())
 
 // #define TYPE_NAME( Type ) hub::type_name(std::declval<Type>())
@@ -724,22 +774,31 @@ template <typename T>
 static constexpr bool has_Size_v = has_Size<T>::value;
 
 // todo c++17
+// template <class T>
+// constexpr auto sizeOf() {
+// if constexpr ( requires { T::Size; } ) { return T::Size; }
+//     if CONSTEXPR17 ( has_Size_v<T> ) { return T::Size; }
+//     else { return sizeof( T ); };
+// }
 template <class T>
-constexpr auto sizeOf() {
-    // return 4;
-    // if constexpr ( requires { T::Size; } ) { return T::Size; }
-    // else { return sizeof( T ); }
-    if constexpr ( has_Size_v<T> ) { return T::Size; }
-    else { return sizeof( T ); };
+REQUIRES( static constexpr, has_Size_v<T>, decltype( sizeof( int ) ) )
+sizeOf() {
+    return T::Size;
+}
+template <class T>
+REQUIRES( static constexpr, !has_Size_v<T>, decltype( sizeof( int ) ) )
+sizeOf() {
+    return sizeof( T );
 }
 
+// #if CPP_VERSION >= 17
 template <class... Ts>
 // requires( sizeof...( Ts ) > 1 )
-constexpr typename std::enable_if<( sizeof...( Ts ) > 1 ), decltype( sizeof( int ) )>::type
-sizeOf() {
+REQUIRES( constexpr, sizeof...( Ts ) > 1, decltype( sizeof( int ) ) ) sizeOf() {
     static_assert( sizeof...( Ts ) > 1 );
     return ( sizeOf<Ts>() + ... );
 }
+// #endif
 
 #endif
 
@@ -773,7 +832,7 @@ static std::string pretty_bytes( hub::Size_t bytes ) {
     // static const char* suffixes[7];
     //  static constexpr std::string_view suffixes[] {
     //  "Bytes", "KiloBytes", "MegaBytes", "GigaBytes", "TeraBytes", "PetaBytes", "ExaBytes" };
-    static constexpr std::string_view suffixes[] { "Bytes", "Ko", "Mo", "Go", "To", "Po", "Eo" };
+    static CONSTEXPR17 std::string_view suffixes[] { "Bytes", "Ko", "Mo", "Go", "To", "Po", "Eo" };
     //    suffixes[0]         = "Bytes";
     //    suffixes[1]         = "KiloBytes";
     //    suffixes[2]         = "MegaBytes";
@@ -826,14 +885,6 @@ static std::string pretty_bytes( hub::Size_t bytes ) {
 }
 #define PRETTY_BYTES( t ) hub::pretty_bytes( t )
 
-#if CPP_VERSION >= 20
-// #    define REQUIRES( _Type_, _COND_ )
-#    define REQUIRES( _COND_, _TYPE_ ) requires( _COND_ ) _TYPE_
-#else
-// typename std::enable_if<( sizeof...( Types ) > 1 ), bool>::type
-#    define REQUIRES( _COND_, _TYPE_ ) typename std::enable_if<( _COND_ ), _TYPE_>::type
-#endif
-
 /////////////////////////////////////////////// STATIC WARNING
 /////////////////////////////////////////////////
 
@@ -868,7 +919,8 @@ static std::string pretty_bytes( hub::Size_t bytes ) {
 //// in each structure/class instantiation.  STATIC_WARNING should be preferred in any
 //// non-template situation.
 ////  'token' must be a program-wide unique identifier.
-//                            #define STATIC_WARNING_TEMPLATE(token, cond, msg) \
+//                                 #define STATIC_WARNING_TEMPLATE(token, cond, msg) \
 //STATIC_WARNING(cond, msg) PP_CAT(PP_CAT(_localvar_, token),__LINE__)
 
 } // namespace hub
+

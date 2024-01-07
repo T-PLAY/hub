@@ -75,6 +75,7 @@ template <typename T>
 struct packable<T, std::void_t<packable_t<T>>> : std::true_type {};
 template <typename T>
 static constexpr bool packable_v =
-    packable<T>::value || std::is_arithmetic_v<T> || std::is_array_v<T> || std::is_enum_v<T> || isPacket<T>;
+    // packable<T>::value || std::is_arithmetic_v<T> || std::is_array_v<T> || std::is_enum_v<T> || isPacket<T>;
+    packable<T>::value || std::is_arithmetic_v<T> || std::is_array_v<T> || std::is_enum_v<T>;
 
 } // namespace hub

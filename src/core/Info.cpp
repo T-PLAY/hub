@@ -53,6 +53,9 @@
 #include "serializer/SerializerI.hpp"
 #include "serializer/SerializerImpl.hpp"
 #include "serializer/SerializerZppBits.hpp"
+#include "serializer/SerializerImpl2.hpp"
+#include "serializer/SerializerZpp.hpp"
+#include "serializer/SerializerBoost.hpp"
 
 // traits
 #include "traits/Array.hpp"

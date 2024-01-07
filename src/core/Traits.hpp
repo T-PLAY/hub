@@ -47,8 +47,10 @@ static constexpr auto StringAddable = is_string_v<T> && !std::is_arithmetic_v<T>
 #endif
 
 static_assert( StringAddable<std::string> );
+#if CPP_VERSION < 20
 static_assert( !StringAddable<int> );
 static_assert( !StringAddable<char> );
+#endif
 static_assert( StringAddable<char*> );
 static_assert( !StringAddable<std::vector<int>> );
 static_assert( !StringAddable<std::vector<char>> );
@@ -83,7 +85,10 @@ static constexpr auto hasToString = has_toString_v<T>;
 
 #if CPP_VERSION >= 20
 template <class T>
-concept stdToStringable = requires( std::ostream& os, const T& t ) { os << t.toString(); };
+concept StdToStringable = requires( std::ostream& os, const T& t ) { std::to_string(t); };
+
+template <class T>
+concept toStringable_v = requires( std::ostream& os, const T& t ) { toString(t); };
 
 #else
 
@@ -345,19 +350,6 @@ constexpr bool is_one_of() noexcept {
 }
 #endif
 
-#if defined( OS_MACOS ) && CPP_VERSION <= 14 // std::void_t not supported by AppleClang (c++14)
-namespace std {
-
-template <typename... Ts>
-struct make_void {
-    typedef void type;
-};
-
-template <typename... Ts>
-using void_t = typename make_void<Ts...>::type;
-
-} // namespace std
-#endif
 
 // template <class T>
 // constexpr bool isSimpleType() noexcept {

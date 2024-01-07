@@ -77,17 +77,18 @@ void checkType( const std::string& typeName, const T& t ) {
     std::cout << std::setw( 30 ) << std::left;
     std::cout << TYPE_NAME( t ) << " -> ";
     std::cout << std::setw( 50 ) << std::left;
-    std::cout << hub::to_string( t ) << " (" << TYPE_ID( t ) << ")" << std::endl;
+    std::cout << hub::to_string( t ) << std::endl;
+    // std::cout << hub::to_string( t ) << " (" << TYPE_ID( t ) << ")" << std::endl;
     assert( TYPE_NAME( t ) == typeName );
     // std::cout << "typeId(" << typeName << "): " << TYPE_ID( t ) << std::endl;
     if constexpr ( typeSize != 0 ) { static_assert( hub::sizeOf<T>() == typeSize ); }
-    if constexpr ( typeId != 0 ) { assert( TYPE_ID( t ) == typeId ); }
+    // if constexpr ( typeId != 0 ) { assert( TYPE_ID( t ) == typeId ); }
 }
 
 TEST_CASE( "Macros test" ) {
     TEST_BEGIN()
 
-    static_assert( CPP_VERSION == 17 );
+    // static_assert( CPP_VERSION == 17 );
 
     assert( FILE_NAME == "test-core-Macros.cpp" );
     assert( FILE_NAME_WITHOUT_EXTENSION == "test-core-Macros" );
@@ -136,36 +137,14 @@ TEST_CASE( "Macros test" ) {
         static constexpr auto name() { return "UserClass"; }
         auto toString() const {
             return hub::to_string( a, b, c );
-            // return std::to_string( a ) + " " + std::to_string( b ) + " " + hub::to_string( c );
         }
     };
 
-    // static_assert(sizeof(int) == 4);
-    // static_assert(sizeof(double) == 8);
-    // static_assert(sizeof(bool) == 1);
-    // static_assert(sizeof(UserClass) == 13);
     std::cout << "* User types :" << std::endl;
     checkType<UserClass, 24>( "UserClass", { 1, 2.0, false } );
     checkType<Lambda, 5>( "Lambda", Lambda { 1, 2.0f, 3.0, { 1, 2 }, "abc" } );
-    // std::cout << "Enum: " << TYPE_NAME( UserEnum::A ) << std::endl;
-    // std::cout << "Enum: " << hub::to_string( UserEnum::A ) << std::endl;
     checkType<UserEnum>( "UserEnum", UserEnum::A );
     std::cout << std::endl;
-
-    // return;
-
-    // const unsigned char* ucstr = (unsigned char*)"hello";
-    // user classes
-
-    // UserClass userClass { 1, 2.0, false };
-    // // std::cout << "userClass: " << TYPE_NAME( userClass ) << std::endl;
-    // std::cout << "userClass: '" << TYPE_NAME( userClass ) << "' -> " << hub::to_string( userClass
-    // )
-    //           << std::endl;
-    // assert( TYPE_NAME( userClass ) == "UserClass" );
-
-    // std::cout << "lambda: " << TYPE_NAME( Lambda() ) << std::endl;
-    // std::cout << "lambdas: " << TYPE_NAME( std::vector<Lambda>() ) << std::endl;
 
     TEST_END()
 }

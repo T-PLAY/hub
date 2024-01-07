@@ -35,22 +35,39 @@ namespace serializer {
 class SerializerImpl2 : public SerializerI
 {
   public:
+    SerializerImpl2( ByteView& byteView ) : SerializerI( byteView ) {}
 
-    void reset() override {
-    }
-    Size_t position() const override {
-        return 0;
-    }
-    void setPosition(Size_t newPosition) override {
-    }
-
-    template <class... Ts>
-    void serialize(const Ts&... ts) {
-    }
+    void resetIn() override {}
+    void resetOut() override {}
+    Size_t inPosition() const override { return m_inPosition; }
+    Size_t outPosition() const override { return m_outPosition; }
+    void setInPosition( Size_t inPosition ) override { m_inPosition = inPosition; }
+    void setOutPosition( Size_t outPosition ) override { m_outPosition = outPosition; }
 
     template <class... Ts>
-    void deserialize(const Ts&... ts) {
+    void serialize( const Ts&... ts ) {
+        assert(false);
+
     }
+
+    // void serialize(const std::string & str) {
+    //     // m_buff[m_inPosition] = str.size();
+    //     // memcpy(&m_buff[m_inPosition], str.max_size(), sizeof())
+    // }
+
+    template <class... Ts>
+    void deserialize( const Ts&... ts ) {
+        assert(false);
+
+    }
+    // void deserialize(std::string & str) {
+    //     // m_buff[m_inPosition] = str.size();
+    //     // memcpy(&m_buff[m_inPosition], str.max_size(), sizeof())
+    // }
+
+  private:
+    Size_t m_inPosition  = 0;
+    Size_t m_outPosition = 0;
 };
 
 } // namespace serializer

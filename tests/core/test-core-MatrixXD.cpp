@@ -84,11 +84,13 @@ TEST_CASE( "MatrixXD test" ) {
     constexpr Buffer<int, 2> buffer2 { 1, 2 };
     std::cout << "buffer2: " << buffer2 << std::endl;
 
+#if CPP_VERSION > 14
     constexpr MatrixXD<char, 2> matrice4 { { 1, 2 } };
     std::cout << "matrice4: " << matrice4 << std::endl;
 
     constexpr MatrixXD<int, 2> matrice5 { { 1, 2 } };
     std::cout << "matrice5: " << matrice5 << std::endl;
+#endif
 
     char str[] { 'B', 'o', 'u', 'y', 'j', 'o', 'u' };
     std::cout << "str: " << std::to_string( str[0] ) << std::endl;
@@ -98,6 +100,7 @@ TEST_CASE( "MatrixXD test" ) {
 
     ///////////////////////////////////////////////////////////////////////////////
 
+#if CPP_VERSION > 14
     using VectorChar = Vector<char, 10>;
     VectorChar vectorChar { { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 } };
     std::cout << "vectorChar: " << vectorChar << std::endl;
@@ -109,6 +112,7 @@ TEST_CASE( "MatrixXD test" ) {
 
     assert( serial.hasType<char>() );
     assert( serial.getDims<char>() == std::vector<int> { 10 } );
+#endif
 
     ////////////////////////////////
     /// \brief The UserClass class

@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.5)
 
-set(CMAKE_CXX_STANDARD 20) # filesystem
+# set(CMAKE_CXX_STANDARD 20) # filesystem
+# set(CMAKE_CXX_STANDARD 17) # filesystem
 project(bin LANGUAGES CXX)
 # if (XCODE)
 #         set(LINK_LIBRARIES hub_static)
