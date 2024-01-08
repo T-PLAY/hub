@@ -24,6 +24,7 @@ namespace hub {
 #if defined( __clang__ )
 #    define COMPILER_CLANG
 #define CLANG_VERSION __clang_major__
+
 #elif defined( __GNUC__ )
 #    define COMPILER_GCC
 #include <features.h>
