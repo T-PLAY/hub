@@ -85,7 +85,7 @@ class SerializerT
     template <class... Ts>
     static constexpr auto Serializables = ( Serializable<Ts>() && ... );
 
-    static constexpr Size_t BuffSize = 1'000'000; // 1 Mo
+    static constexpr Size_t BuffSize = 2'000'000; // 2 Mo
 
   private:
     using ByteView        = std::vector<Data_t>;

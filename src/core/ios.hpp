@@ -53,14 +53,14 @@ static constexpr bool has_data_v = has_data<T>::value;
 
 ///////////
 
-template <typename T>
-using has_size_t = decltype( std::declval<T>().size() );
-template <typename T, typename = std::void_t<>>
-struct has_size : std::false_type {};
-template <typename T>
-struct has_size<T, std::void_t<has_size_t<T>>> : std::true_type {};
-template <typename T>
-static constexpr bool has_size_v = has_size<T>::value;
+// template <typename T>
+// using has_size_t = decltype( std::declval<T>().size() );
+// template <typename T, typename = std::void_t<>>
+// struct has_size : std::false_type {};
+// template <typename T>
+// struct has_size<T, std::void_t<has_size_t<T>>> : std::true_type {};
+// template <typename T>
+// static constexpr bool has_size_v = has_size<T>::value;
 
 template <class T>
 constexpr bool isPacket = has_data_v<T> && has_size_v<T>;

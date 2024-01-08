@@ -11,12 +11,10 @@
 
 #include "Configuration.hpp"
 
-
 // #define HUB_USE_BOOST
 #ifdef HUB_USE_BOOST
 #    include <boost/type_index.hpp>
 #endif
-
 
 namespace hub {
 
@@ -568,6 +566,14 @@ static std::string typeName( const std::tuple<T, Ts...>& ) {
     // ">";
 }
 
+template <class T, class... Ts>
+static std::string typeName() {
+    std::string str;
+    str += typeName( T() );
+    if constexpr ( sizeof...( Ts ) > 0 ) { str += ", " + typeName<Ts...>(); }
+    return str;
+}
+
 // template <class T>
 // typename std::enable_if_t<has_name_v<std::remove_cv_t<T>>, std::string> type_name() {
 //     return T::name();
@@ -767,6 +773,20 @@ struct has_Size<T, std::void_t<has_Size_t<T>>> : std::true_type {};
 template <typename T>
 static constexpr bool has_Size_v = has_Size<T>::value;
 
+////////////////////////
+
+template <typename T>
+using has_size_t = decltype( std::declval<T>().size() );
+
+template <typename T, typename = std::void_t<>>
+struct has_size : std::false_type {};
+
+template <typename T>
+struct has_size<T, std::void_t<has_size_t<T>>> : std::true_type {};
+
+template <typename T>
+static constexpr bool has_size_v = has_size<T>::value;
+
 // todo c++17
 // template <class T>
 // constexpr auto sizeOf() {
@@ -791,6 +811,25 @@ template <class... Ts>
 REQUIRES( constexpr, sizeof...( Ts ) > 1, decltype( sizeof( int ) ) ) sizeOf() {
     static_assert( sizeof...( Ts ) > 1 );
     return ( sizeOf<Ts>() + ... );
+}
+
+template <class T>
+REQUIRES( static constexpr, has_size_v<T>, decltype( sizeof( int ) ) )
+sizeOf( const T& t ) {
+    // static_assert(isMatrix<T>);
+    return t.size();
+    // return T::Size;
+}
+
+template <class T, class... Ts>
+// requires( sizeof...( Ts ) > 1 )
+REQUIRES( constexpr, sizeof...( Ts ) > 0, decltype( sizeof( int ) ) )
+    sizeOf( const T& t, const Ts&... ts ) {
+
+    if constexpr ( sizeof...( Ts ) > 0 ) { return sizeOf( t ) + sizeOf( ts... ); }
+    else { return sizeOf( t ); }
+    // static_assert( sizeof...( Ts ) > 1 );
+    // return ( sizeOf(ts) + ... );
 }
 // #endif
 
@@ -911,8 +950,7 @@ static std::string pretty_bytes( hub::Size_t bytes ) {
 //// in each structure/class instantiation.  STATIC_WARNING should be preferred in any
 //// non-template situation.
 ////  'token' must be a program-wide unique identifier.
-//                                 #define STATIC_WARNING_TEMPLATE(token, cond, msg) \
+//                                     #define STATIC_WARNING_TEMPLATE(token, cond, msg) \
 //STATIC_WARNING(cond, msg) PP_CAT(PP_CAT(_localvar_, token),__LINE__)
 
 } // namespace hub
-

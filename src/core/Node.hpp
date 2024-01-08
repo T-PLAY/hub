@@ -34,14 +34,21 @@ class Node
         return archive( self.m_dims, self.m_typeName, self.m_size );
     }
 #endif
+    // friend zpp::serializer::access;
+    template <typename Archive, typename Self>
+    static void serialize( Archive& archive, Self& self ) {
+        archive( self.m_dims, self.m_typeName, self.m_size );
+    }
+
 
     friend class Matrix;
 
   private:
+    // cannot be const due of serialize
     // HashType m_hashCode;
-    const Dims m_dims;
-    const std::string m_typeName;
-    const Size_t m_size;
+    Dims m_dims;
+    std::string m_typeName;
+    Size_t m_size;
 };
 
 /////////////////////////////////////// MAKER /////////////////////////////////////////////////////

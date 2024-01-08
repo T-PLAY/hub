@@ -9,6 +9,7 @@
 
 #include "Macros.hpp"
 #include "MatrixBase.hpp"
+// #include "Serializer.hpp"
 #include "Node.hpp"
 #include "Traits.hpp"
 
@@ -74,6 +75,21 @@ class Matrix
     REQUIRES(, !std::is_pointer_v<Type>, Type )
     get() const;
 
+    template <int i = 0, class T, class... Ts>
+    void fill_reduce( const T& t, const Ts&... ts ) {
+        // std::cout << "fill_reduce " << i << std::endl;
+        Data_t* data = getData<i>();
+        T& tIn     = reinterpret_cast<T&>( *(T*)data );
+        tIn        = t;
+
+        if constexpr ( sizeof...( ts ) > 0 ) { fill_reduce<i + 1>( ts... ); }
+    }
+
+    template <class... Ts>
+    void fill( const Ts&... ts ) {
+        fill_reduce<0>( ts... );
+    }
+
     Size_t nType() const;
 
     void setData( const Data_t* data, Size_t size );
@@ -84,6 +100,46 @@ class Matrix
 
     // std::span getSpan() const;
     const auto& getData() const { return m_vector; }
+
+    template <int i = 0>
+    Size_t getOffset() const {
+        assert( i < m_nodes.size() );
+
+        Size_t offset = 0;
+        auto it       = m_nodes.begin();
+        int iNode     = 0;
+        while ( iNode < i ) {
+            assert( it != m_nodes.end() );
+            const auto& node = *it;
+            offset += node.m_size;
+            ++it;
+            ++iNode;
+        }
+
+        // std::cout << "getOffset : " << offset << std::endl;
+
+        return offset;
+    }
+
+    template <int i = 0>
+    const Data_t* getData() const {
+        assert( !m_vector.empty() );
+        assert( m_vector.size() == m_size );
+
+        const auto offset = getOffset<i>();
+        assert( 0 <= offset && offset < m_size );
+        return m_vector.data() + offset;
+    }
+
+    template <int i = 0>
+    Data_t* getData() {
+        assert( !m_vector.empty() );
+        assert( m_vector.size() == m_size );
+
+        const auto offset = getOffset<i>();
+        assert( 0 <= offset && offset < m_size );
+        return m_vector.data() + offset;
+    }
 
     bool operator==( const Matrix& other ) const;
 #if CPP_VERSION < 20
@@ -97,6 +153,11 @@ class Matrix
         return archive( self.m_nodes, self.m_size, self.m_vector );
     }
 #endif
+    // friend zpp::serializer::access;
+    template <typename Archive, typename Self>
+    static void serialize( Archive& archive, Self& self ) {
+        archive( self.m_nodes, self.m_size, self.m_vector );
+    }
 
     bool hasValue() const;
 
@@ -239,9 +300,8 @@ inline bool Matrix::operator==( const Matrix& other ) const {
 }
 
 #if CPP_VERSION < 20
-inline bool Matrix::operator!=(const Matrix &other) const
-{
-    return ! (*this == other);
+inline bool Matrix::operator!=( const Matrix& other ) const {
+    return !( *this == other );
 }
 #endif
 
@@ -256,7 +316,7 @@ inline bool Matrix::hasValue() const {
 
 template <class Type>
 bool Matrix::hasType() const {
-    const auto typeName = TYPE_NAME(Type());
+    const auto typeName = TYPE_NAME( Type() );
     for ( const auto& node : m_nodes ) {
         if ( node.m_typeName == typeName ) { return true; }
     }
@@ -279,7 +339,7 @@ template <class Type>
 int Matrix::nType() {
     assert( hasType<Type>() );
     int ret             = 0;
-    const auto typeName = TYPE_NAME(Type());
+    const auto typeName = TYPE_NAME( Type() );
     for ( const auto& node : m_nodes ) {
         // if ( node.m_hashCode == typeHash ) { ++ret; }
         if ( node.m_typeName == typeName ) { ++ret; }
@@ -290,7 +350,7 @@ int Matrix::nType() {
 template <class Type, int i>
 Dims Matrix::getDims() const {
     int nFound          = 0;
-    const auto typeName = TYPE_NAME(Type());
+    const auto typeName = TYPE_NAME( Type() );
     for ( const auto& node : m_nodes ) {
         // if ( node.m_hashCode == typeHash ) {
         if ( node.m_typeName == typeName ) {
@@ -307,7 +367,7 @@ Size_t Matrix::getOffset( int i ) const {
     Size_t offset = 0;
     int cptFound  = 0;
 
-    const auto typeName = TYPE_NAME(Type());
+    const auto typeName = TYPE_NAME( Type() );
 
     for ( const auto& node : m_nodes ) {
         // if ( node.m_hashCode == typeHash ) {

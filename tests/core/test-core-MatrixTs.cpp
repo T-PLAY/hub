@@ -4,7 +4,7 @@
 
 #include "test_common.hpp"
 
-#include <core/io/Archive.hpp>
+// #include <core/io/Archive.hpp>
 #include <core/matrix/MatrixTs.hpp>
 // #include <core/matrix/MatrixXD.hpp>
 // #include <core/Matrix.hpp>
@@ -23,6 +23,8 @@ struct XYZ32F {
 
 TEST_CASE( "MatrixTs test" ) {
     TEST_BEGIN()
+
+    // hub::io::Archive archive;
 
     using ResCTypes = hub::MatrixTs<int, double, bool>;
     std::cout << "ResCTypes: " << ResCTypes() << std::endl;
@@ -106,14 +108,13 @@ TEST_CASE( "MatrixTs test" ) {
     }
 
     // todo serialize
-    // hub::io::Archive archive;
     // std::cout << "archive write" << std::endl;
     // archive.write( serialChar );
-    // //    return 0;
+    // // //    return 0;
     // Matrix serialChar_read;
     // archive.read( serialChar_read );
     // assert( serialChar == serialChar_read );
-    //    return 0;
+    // //    return 0;
     // archive.write( serialChar.data(), serialChar.size() );
     // archive.read( serialChar_read.data(), serialChar.size() );
     // assert( memcmp( serialChar.data(), serialChar_read.data(), serialChar.size() ) == 0 );
