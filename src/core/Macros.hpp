@@ -457,6 +457,20 @@ struct has_name<T, std::void_t<has_name_t<T>>> : std::true_type {};
 template <typename T>
 static constexpr bool has_name_v = has_name<T>::value;
 
+//////////////
+
+template <typename T>
+using nameable_t = decltype( name( std::declval<T>() ) );
+
+template <typename T, typename = std::void_t<>>
+struct nameable : std::false_type {};
+
+template <typename T>
+struct nameable<T, std::void_t<nameable_t<T>>> : std::true_type {};
+
+template <typename T>
+static constexpr bool nameable_v = nameable<T>::value;
+
 // template <class T>
 // // typename std::enable_if_t<!has_name_v<T> && std::is_same_v<T, std::string>, std::string>
 // std::string type_name(const T & t) {
@@ -477,7 +491,7 @@ static constexpr bool has_name_v = has_name<T>::value;
 
 template <class T>
 // static typename std::enable_if_t<!has_name_v<std::remove_cv_t<T>>, std::string>
-static typename std::enable_if_t<!has_name_v<T>, std::string> typeName( const T& t ) {
+static typename std::enable_if_t<! nameable_v<T> && !has_name_v<T>, std::string> typeName( const T& t ) {
 // typeName(  ) {
 #ifdef HUB_USE_BOOST
     return boost::typeindex::type_id<typeof( T )>().pretty_name();
@@ -489,9 +503,17 @@ static typename std::enable_if_t<!has_name_v<T>, std::string> typeName( const T&
 
 template <class T>
 // static typename std::enable_if_t<has_name_v<std::remove_cv_t<T>>, std::string>
-static typename std::enable_if_t<has_name_v<T>, std::string> typeName( const T& t ) {
+static typename std::enable_if_t<! nameable_v<T> && has_name_v<T>, std::string> typeName( const T& t ) {
     // typeName( ) {
     return T::name();
+}
+
+template <class T>
+// static typename std::enable_if_t<has_name_v<std::remove_cv_t<T>>, std::string>
+static typename std::enable_if_t<nameable_v<T>, std::string> typeName( const T& t ) {
+    static_assert(! has_name_v<T>);
+    // typeName( ) {
+    return name(t);
 }
 
 static std::string typeName( const std::string& ) {

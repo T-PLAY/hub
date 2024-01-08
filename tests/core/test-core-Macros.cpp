@@ -64,6 +64,10 @@ auto toString( UserEnum ue ) -> std::string {
     return "None";
 }
 
+auto name(UserEnum ue) -> std::string {
+    return "UserEnum";
+}
+
 template <class T, std::size_t typeSize = 0, std::size_t typeId = 0>
 void checkType( const std::string& typeName, const T& t ) {
 
@@ -148,7 +152,7 @@ TEST_CASE( "Macros test" ) {
     std::cout << "* User types :" << std::endl;
     checkType<UserClass, 24>( "UserClass", { 1, 2.0, false } );
     checkType<Lambda, 5>( "Lambda", Lambda { 1, 2.0f, 3.0, { 1, 2 }, "abc" } );
-//    checkType<UserEnum>( "UserEnum", UserEnum::A );
+   checkType<UserEnum>( "UserEnum", UserEnum::A );
     std::cout << std::endl;
 
     TEST_END()
