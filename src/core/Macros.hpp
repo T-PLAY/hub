@@ -276,10 +276,25 @@ namespace hub {
 // #define FILE_NAME std::string( strrchr( __FILE__, '\\' ) ? strrchr( __FILE__, '\\' ) + 1 :
 // __FILE__ )
 
+#else // unix system
+// #    define FILE_NAME std::string( __FILE_NAME__ )
+#ifdef COMPILER_GCC
+
+#if GCC_VERSION < 12
+// #    define FILE_NAME std::string( __FILE__ )
+#    define FILE_NAME                                                          \
+        std::string( __FILE__ )                                                \
+            .substr( std::min( std::string( __FILE__ ).find_last_of( '\\' ),   \
+                               std::string( __FILE__ ).find_last_of( '/' ) ) + \
+                     1 )
 #else
-// #    define FILE_NAME std::string( __FILE_NAME__ )
-// #    define FILE_NAME std::string( __FILE_NAME__ )
-#    define FILE_NAME std::string( __FILE__ )
+#    define FILE_NAME std::string( __FILE_NAME__ )
+#endif
+
+#else
+#    define FILE_NAME std::string( __FILE_NAME__ )
+#endif
+
 #endif
 
 #define FILE_NAME_WITHOUT_EXTENSION FILE_NAME.substr( 0, FILE_NAME.find_first_of( '.' ) )

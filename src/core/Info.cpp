@@ -1,6 +1,6 @@
 #include "Info.hpp"
 
-// #include <string>
+#include <string>
 
 #include "Version.hpp"
 
