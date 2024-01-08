@@ -221,19 +221,29 @@ namespace hub {
 // #define CPP_VERSION 20
 
 // #ifndef OS_WINDOWS
-#ifndef CPP_VERSION
+//#ifndef CPP_VERSION
+#ifdef WIN32
+    #define CPLUSPLUS_VERSION _MSVC_LANG
+//    #ifdef __cplusplus
+//#            error "__cplusplus may not found on win system"
+//    #endif
+    //#define __cplusplus _MSVC_LANG
+#else
+    #define CPLUSPLUS_VERSION __cplusplus
+#endif
 
-#    if ( __cplusplus >= 202001L )
+#    if ( CPLUSPLUS_VERSION >= 202001L )
 #        define CPP_VERSION 20
 #        define CONSTEXPR17 constexpr
 #        define CONSTEXPR20 constexpr
 #        define CONSTEXPR constexpr
-#    elif ( __cplusplus >= 201703L )
+#    elif ( CPLUSPLUS_VERSION >= 201703L )
 #        define CPP_VERSION 17
 #        define CONSTEXPR17 constexpr
 #        define CONSTEXPR20
 #        define CONSTEXPR constexpr
-#    elif ( __cplusplus >= 201402L ) || ( defined( _MSC_VER ) && _MSC_VER >= 1914 )
+//#    elif ( CPLUSPLUS_VERSION >= 201402L ) || ( defined( _MSC_VER ) && _MSC_VER >= 1914 )
+#    elif ( CPLUSPLUS_VERSION >= 201402L )
 #        define CPP_VERSION 14
 #        define CONSTEXPR17
 #        define CONSTEXPR20
@@ -246,7 +256,7 @@ namespace hub {
 #        define CONSTEXPR const
 #    endif
 
-#endif
+//#endif
 
 // #define HUB_DEBUG_INPUT_OUTPUT
 

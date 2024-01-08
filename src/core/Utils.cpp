@@ -4,15 +4,6 @@
 #include <chrono>
 // #include <memory>
 #include <string>
-#ifndef WIN32
-#    include <unistd.h>
-#else
-#    include <iostream>
-#    include <winsock2.h>
-// #include <WinBase.h>
-#endif
-
-
 #include <iostream>
 #include <string>
 #include <thread> // contains <chrono>
@@ -20,6 +11,17 @@
 
 #include "Macros.hpp"
 //  #include "Types.hpp"
+
+#ifndef WIN32
+#    include <unistd.h>
+#else
+
+#    include <winsock2.h>
+#    pragma comment( lib, "ws2_32.lib")
+// #include <WinBase.h>
+#endif
+
+
 
 namespace hub {
 namespace utils {

@@ -7,7 +7,7 @@
 //#include "core/Traits.hpp"
 //#include "Vector.hpp"
 //#include <vector>
-#include <span>
+//#include <span>
 
 
 //template <class T, std::size_t N>

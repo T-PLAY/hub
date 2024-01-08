@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include <span>
+//#include <span>
 #include <type_traits>
 #include <vector>
 #include <array>
