@@ -3,6 +3,7 @@
 #include "core/InputBase.hpp"
 #include "core/Macros.hpp"
 #include "core/OutputBase.hpp"
+#include "cstring"
 
 namespace hub {
 

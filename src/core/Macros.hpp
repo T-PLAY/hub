@@ -471,6 +471,10 @@ static constexpr bool has_name_v = has_name<T>::value;
 // template <class T>
 // typename std::enable_if_t<has_name_v<std::remove_cv_t<T>>, std::string>
 
+// template <class T>
+// static std::string typeName( const int& ) {
+// static typename std::enable_if_t<std::is_same_v<T, int>, std::string> t
+
 template <class T>
 // static typename std::enable_if_t<!has_name_v<std::remove_cv_t<T>>, std::string>
 static typename std::enable_if_t<!has_name_v<T>, std::string> typeName( const T& t ) {
@@ -490,33 +494,31 @@ static typename std::enable_if_t<has_name_v<T>, std::string> typeName( const T& 
     return T::name();
 }
 
-// static std::string typeName( unsigned char& ) {
-//     return "uchar";
-// }
-// static std::string typeName( char& ) {
-// return "char";
-// }
-
-// template <class T>
-// static std::string typeName( const int& ) {
-// static typename std::enable_if_t<std::is_same_v<T, int>, std::string> typeName( const int& t ) {
-// return "int";
-// }
-// static std::string typeName( const double& ) {
-//     return "double";
-// }
-// static std::string typeName( const char* ) {
-//     return "cstr";
-// }
 static std::string typeName( const std::string& ) {
     return "string";
 }
-// static std::string typeName( const bool& ) {
-//     return "bool";
-// }
-// static std::string typeName( const float& ) {
-//     return "float";
-// }
+static std::string   typeName( int ) {
+ return "int";
+}
+ static std::string typeName( double) {
+     return "double";
+ }
+ static std::string typeName( bool ) {
+     return "bool";
+ }
+ static std::string typeName( float ) {
+     return "float";
+ }
+ static std::string typeName( char ) {
+ return "char";
+ }
+ static std::string typeName( unsigned char ) {
+     return "uchar";
+ }
+ static std::string typeName( const char* ) {
+     return "cstr";
+ }
+
 
 // static auto typeName(void) {
 //     return "void";

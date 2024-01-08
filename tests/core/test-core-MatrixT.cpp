@@ -63,7 +63,7 @@ struct UserClass {
 //};
 
 
-TEST_CASE( "Matrix test" ) {
+TEST_CASE( "MatrixT test" ) {
     TEST_BEGIN()
 
 

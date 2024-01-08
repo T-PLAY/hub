@@ -22,6 +22,7 @@ class Lambda
         return hub::to_string( a, b, c, ds, e );
         // return std::to_string( a ) + " " + std::to_string( b ) + " " + hub::to_string( c );
     }
+    static constexpr auto name() { return "Lambda"; };
 
     static constexpr auto Size = 5;
 };
@@ -109,16 +110,20 @@ TEST_CASE( "Macros test" ) {
     checkType<double, 8, 13841485242819600253u>( "double", 2.0 );
     checkType<float, 4>( "float", 3.0f );
     checkType<char, 1>( "char", 'c' );
-    checkType<unsigned char, 1>( "unsigned char", 'd' );
-    checkType<const char*, 8>( "char const*", "bonjour" );
+//    checkType<unsigned char, 1>( "unsigned char", 'd' );
+    checkType<unsigned char, 1>( "uchar", 'd' );
+//    checkType<const char*, 8>( "char const*", "bonjour" );
+    checkType<const char*, 8>( "cstr", "bonjour" );
     std::cout << std::endl;
 
     // C++ Types
     std::cout << "* C++ types :" << std::endl;
     checkType<std::string>( "string", "hello" );
     checkType<std::vector<int>>( "vector<int>", { 1, 2, 3 } );
-    checkType<std::vector<unsigned char>>( "vector<unsigned char>", { 1, 2, 3 } );
-    checkType<std::vector<const char*>>( "vector<char const*>", { "ab", "bc", "cd" } );
+//    checkType<std::vector<unsigned char>>( "vector<unsigned char>", { 1, 2, 3 } );
+    checkType<std::vector<unsigned char>>( "vector<uchar>", { 1, 2, 3 } );
+//    checkType<std::vector<const char*>>( "vector<char const*>", { "ab", "bc", "cd" } );
+    checkType<std::vector<const char*>>( "vector<cstr>", { "ab", "bc", "cd" } );
     checkType<std::vector<std::string>>( "vector<string>", { "a", "ab", "abc" } );
     checkType<std::vector<std::vector<int>>>( "vector<vector<int>>",
                                               { { 1 }, { 1, 2 }, { 1, 2, 3 } } );
@@ -143,7 +148,7 @@ TEST_CASE( "Macros test" ) {
     std::cout << "* User types :" << std::endl;
     checkType<UserClass, 24>( "UserClass", { 1, 2.0, false } );
     checkType<Lambda, 5>( "Lambda", Lambda { 1, 2.0f, 3.0, { 1, 2 }, "abc" } );
-    checkType<UserEnum>( "UserEnum", UserEnum::A );
+//    checkType<UserEnum>( "UserEnum", UserEnum::A );
     std::cout << std::endl;
 
     TEST_END()

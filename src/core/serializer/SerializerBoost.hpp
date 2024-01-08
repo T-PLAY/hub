@@ -2,6 +2,7 @@
 #pragma once
 
 // #ifdef HUB_USE_ZPP_BITS
+#ifdef HUB_USE_BOOST
 
 #include <array>
 // #include <concepts>
@@ -90,4 +91,4 @@ class SerializerBoost : public SerializerI
 } // namespace serializer
 } // namespace hub
 
-// #endif
+ #endif
