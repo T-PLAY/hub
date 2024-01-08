@@ -21,13 +21,35 @@ namespace hub {
 // ----------------------------------------------------------------------------
 // Compiler identification
 // ----------------------------------------------------------------------------
-#if defined( __GNUC__ )
+#if defined( __clang__ )
+#    define COMPILER_CLANG
+#define CLANG_VERSION __clang_major__
+#elif defined( __GNUC__ )
 #    define COMPILER_GCC
+#include <features.h>
+#  if __GNUC_PREREQ(15,0)
+#define GCC_VERSION 15
+#  elif __GNUC_PREREQ(14,0)
+#define GCC_VERSION 14
+#  elif __GNUC_PREREQ(13,0)
+#define GCC_VERSION 13
+#  elif __GNUC_PREREQ(12,0)
+#define GCC_VERSION 12
+#  elif __GNUC_PREREQ(11,0)
+#define GCC_VERSION 11
+#  elif __GNUC_PREREQ(10,0)
+#define GCC_VERSION 10
+#  elif __GNUC_PREREQ(9,0)
+#define GCC_VERSION 9
+#  elif __GNUC_PREREQ(8,0)
+#define GCC_VERSION 8
+#else
+#error "gcc version not supported"
+#endif
+
 #elif defined( _MSC_VER )
 #    define COMPILER_MSVC
 #    define _USE_MATH_DEFINES
-#elif defined( __clang__ )
-#    define COMPILER_CLANG
 #else
 #    error unsupported compiler
 #endif
@@ -237,6 +259,7 @@ namespace hub {
 #endif
 
 // filename = filename.substr( filename.find_last_of( '\\' ) + 1 );
+// #include <features.h>
 
 #ifdef WIN32
 // #define FILE_NAME __FILE__
@@ -254,7 +277,9 @@ namespace hub {
 // __FILE__ )
 
 #else
-#    define FILE_NAME std::string( __FILE_NAME__ )
+// #    define FILE_NAME std::string( __FILE_NAME__ )
+// #    define FILE_NAME std::string( __FILE_NAME__ )
+#    define FILE_NAME std::string( __FILE__ )
 #endif
 
 #define FILE_NAME_WITHOUT_EXTENSION FILE_NAME.substr( 0, FILE_NAME.find_first_of( '.' ) )

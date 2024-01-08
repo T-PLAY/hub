@@ -84,7 +84,7 @@ void checkType( const std::string& typeName, const T& t ) {
     std::cout << std::setw( 50 ) << std::left;
     std::cout << hub::to_string( t ) << std::endl;
     // std::cout << hub::to_string( t ) << " (" << TYPE_ID( t ) << ")" << std::endl;
-    assert( TYPE_NAME( t ) == typeName );
+    CHECK( TYPE_NAME( t ) == typeName );
     // std::cout << "typeId(" << typeName << "): " << TYPE_ID( t ) << std::endl;
     if constexpr ( typeSize != 0 ) { static_assert( hub::sizeOf<T>() == typeSize ); }
     // if constexpr ( typeId != 0 ) { assert( TYPE_ID( t ) == typeId ); }
@@ -95,13 +95,13 @@ TEST_CASE( "Macros test" ) {
 
     // static_assert( CPP_VERSION == 17 );
 
-    assert( FILE_NAME == "test-core-Macros.cpp" );
-    assert( FILE_NAME_WITHOUT_EXTENSION == "test-core-Macros" );
+    CHECK( FILE_NAME == "test-core-Macros.cpp" );
+    CHECK( FILE_NAME_WITHOUT_EXTENSION == "test-core-Macros" );
 
     auto printed = Printer().print();
     printed      = printed.substr( 5, printed.find_last_of( ":" ) - 4 );
     // std::cout << printed << std::endl;
-    assert( printed == "[test-core-Macros:" );
+    CHECK( printed == "[test-core-Macros:" );
 
     static_assert( hub::sizeOf<Lambda>() == 5 );
     static_assert( hub::sizeOf<int>() == 4 );

@@ -55,8 +55,28 @@ class SerializerT
     template <typename T>
     static constexpr bool has_it_second_v = has_it_second<T>::value;
 
+#  if defined(COMPILER_GCC)
+#if GCC_VERSION >= 12
     template <class T>
     static constexpr auto isMap = has_it_first_v<T> && has_it_second_v<T>;
+#else
+    template <class T>
+    static constexpr bool isMap = has_it_first_v<T> && has_it_second_v<T>;
+#endif
+
+#elif defined(COMPILER_CLANG)
+#if CLANG_VERSION >= 14
+    template <class T>
+    static constexpr auto isMap = has_it_first_v<T> && has_it_second_v<T>;
+#else
+    template <class T>
+    static constexpr auto isMap = has_it_first_v<T> && has_it_second_v<T>;
+#endif
+
+#else
+    template <class T>
+    static constexpr auto isMap = has_it_first_v<T> && has_it_second_v<T>;
+#endif
 
 // template <class T>
 // concept isMap = requires( T t ) {
