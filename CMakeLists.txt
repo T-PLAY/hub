@@ -119,11 +119,6 @@ if(NOT COMPILER_FOUND)
     message(FATAL_ERROR "no supported compiler founded")
 endif()
 
-if(NOT DEFINED CMAKE_INSTALL_PREFIX OR UNIX)
-    set(CMAKE_INSTALL_PREFIX
-        "${CMAKE_SOURCE_DIR}/install"
-        CACHE PATH "Install path prefix." FORCE)
-endif()
 
 # Set default value of CMake variables
 if(NOT CMAKE_BUILD_TYPE)
@@ -141,6 +136,12 @@ if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
     add_definitions(-DDEBUG)
 elseif(${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
     set(CMAKE_POSTFIX ${CMAKE_RELWITHDEBINFO_POSTFIX})
+endif()
+
+if(NOT DEFINED CMAKE_INSTALL_PREFIX OR UNIX)
+    set(CMAKE_INSTALL_PREFIX
+        "${CMAKE_SOURCE_DIR}/install/${ARCHITECTURE}-${CMAKE_BUILD_TYPE}"
+        CACHE PATH "Install path prefix." FORCE)
 endif()
 
 set(HUB_PROJECT_DIR ${CMAKE_CURRENT_SOURCE_DIR})

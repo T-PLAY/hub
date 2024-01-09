@@ -326,8 +326,9 @@ if (NOT XCODE) # unable to have object files as native build with Xcode
         target_link_libraries(${TARGET_NAME} PRIVATE ${REQUIRED_LIBS})
 
         install(
-            DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/
-            DESTINATION include
+            # DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/
+            DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${HUB_MODULE}/
+            DESTINATION include/${HUB_MODULE}
             FILES_MATCHING
             PATTERN "*.hpp"
             PATTERN "*.h"

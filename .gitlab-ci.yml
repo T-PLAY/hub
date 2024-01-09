@@ -57,6 +57,7 @@ cache:
     - cmake -B $buildDir -DCMAKE_C_COMPILER=$CMAKE_C_COMPILER -DCMAKE_CXX_COMPILER=$CMAKE_CXX_COMPILER -DCMAKE_BUILD_TYPE=$BUILD_TYPE $CMAKE_CONFIGURE_ARGS
     # - cmake -B $CACHE_PATH/build-release -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON
     - cmake --build $buildDir --config $BUILD_TYPE --parallel
+    - cmake --install $buildDir --config $BUILD_TYPE
 
 .test_any:
   script:
@@ -95,73 +96,7 @@ build-linux-clang-release:
     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON"
     - !reference [.build_any, script]
   # when: manual
-
-build-linux-gcc-debug:
-  stage: build
-  tags:
-    - $LINUX_TAG
-  script:
-    - BUILD_TYPE=Debug
-    - CMAKE_C_COMPILER=gcc
-    - CMAKE_CXX_COMPILER=g++
-    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON"
-    - !reference [.build_any, script]
-  # when: manual
-
-build-windows-cl-release:
-  stage: build
-  tags:
-    - $WIN_TAG
-  script:
-    - BUILD_TYPE=Release
-    - CMAKE_C_COMPILER=cl
-    - CMAKE_CXX_COMPILER=cl
-    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON"
-    - !reference [.build_any, script]
-  # when: manual
-
-build-windows-cl-debug:
-  stage: build
-  tags:
-    - $WIN_TAG
-  script:
-    - BUILD_TYPE=Debug
-    - CMAKE_C_COMPILER=cl
-    - CMAKE_CXX_COMPILER=cl
-    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON"
-    - !reference [.build_any, script]
-  # when: manual
-
-build-macOs-clang-release:
-  stage: build
-  tags:
-    - $MACOS_TAG
-  script:
-    - BUILD_TYPE=Release
-    - CMAKE_C_COMPILER=clang
-    - CMAKE_CXX_COMPILER=clang++
-    # - CMAKE_CONFIGURE_ARGS="-DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON"
-    # - CMAKE_CONFIGURE_ARGS="-DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON"
-    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON"
-    - !reference [.build_any, script]
-  # when: manual
-
-build-macOs-llvm-gcc-debug:
-  stage: build
-  tags:
-    - $MACOS_TAG
-  script:
-    - BUILD_TYPE=Debug
-    #- CMAKE_C_COMPILER=gcc
-    - CMAKE_C_COMPILER=llvm-gcc
-    #- CMAKE_CXX_COMPILER=g++
-    - CMAKE_CXX_COMPILER=llvm-g++
-    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON"
-    - !reference [.build_any, script]
-  # when: manual
-
-########################################################## TESTING
-
+  
 test-linux-clang-release:
   stage: test
   tags:
@@ -175,6 +110,20 @@ test-linux-clang-release:
     - job: build-linux-clang-release
       optional: true
 
+####################        
+
+build-linux-gcc-debug:
+  stage: build
+  tags:
+    - $LINUX_TAG
+  script:
+    - BUILD_TYPE=Debug
+    - CMAKE_C_COMPILER=gcc
+    - CMAKE_CXX_COMPILER=g++
+    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON"
+    - !reference [.build_any, script]
+  # when: manual
+  
 test-linux-gcc-debug:
   stage: test
   tags:
@@ -187,6 +136,21 @@ test-linux-gcc-debug:
   needs:
     - job: build-linux-gcc-debug
       optional: true
+
+####################        
+
+build-windows-cl-release:
+  stage: build
+  tags:
+    - $WIN_TAG
+  script:
+    - BUILD_TYPE=Release
+    - CMAKE_C_COMPILER=cl
+    - CMAKE_CXX_COMPILER=cl
+    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON"
+    - !reference [.build_any, script]
+  # when: manual
+
 
 test-windows-cl-release:
   stage: test
@@ -201,6 +165,20 @@ test-windows-cl-release:
     - job: build-windows-cl-release
       optional: true
 
+####################        
+
+build-windows-cl-debug:
+  stage: build
+  tags:
+    - $WIN_TAG
+  script:
+    - BUILD_TYPE=Debug
+    - CMAKE_C_COMPILER=cl
+    - CMAKE_CXX_COMPILER=cl
+    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON"
+    - !reference [.build_any, script]
+  # when: manual
+  
 test-windows-cl-debug:
   stage: test
   tags:
@@ -214,6 +192,22 @@ test-windows-cl-debug:
     - job: build-windows-cl-debug
       optional: true
 
+####################        
+
+build-macOs-clang-release:
+  stage: build
+  tags:
+    - $MACOS_TAG
+  script:
+    - BUILD_TYPE=Release
+    - CMAKE_C_COMPILER=clang
+    - CMAKE_CXX_COMPILER=clang++
+    # - CMAKE_CONFIGURE_ARGS="-DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON"
+    # - CMAKE_CONFIGURE_ARGS="-DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON"
+    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON"
+    - !reference [.build_any, script]
+  # when: manual
+  
 test-macOs-clang-release:
   stage: test
   tags:
@@ -227,6 +221,22 @@ test-macOs-clang-release:
     - job: build-macOs-clang-release
       optional: true
 
+####################        
+
+build-macOs-llvm-gcc-debug:
+  stage: build
+  tags:
+    - $MACOS_TAG
+  script:
+    - BUILD_TYPE=Debug
+    #- CMAKE_C_COMPILER=gcc
+    - CMAKE_C_COMPILER=llvm-gcc
+    #- CMAKE_CXX_COMPILER=g++
+    - CMAKE_CXX_COMPILER=llvm-g++
+    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON"
+    - !reference [.build_any, script]
+  # when: manual
+  
 test-macOs-llvm-gcc-debug:
   stage: test
   tags:
@@ -240,6 +250,13 @@ test-macOs-llvm-gcc-debug:
   needs:
     - job: build-macOs-llvm-gcc-debug
       optional: true
+
+
+
+
+
+
+
 
 
 # build-cl-release:
