@@ -40,7 +40,7 @@ std::string getHostname() {
 
     WORD wVersionRequested;
     WSADATA wsaData;
-    char name[255];
+    char name[255] { 0 };
     // CString ip;
     std::string ip;
     //    PHOSTENT hostinfo;

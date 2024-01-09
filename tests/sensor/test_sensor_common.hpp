@@ -454,7 +454,7 @@ static void inputOutputSensorAsyncBench( const Args&... args ) {
 
     // inputSensor
     {
-        hub::sensor::InputSensor inputSensor( Input( args... ) );
+        hub::sensor::InputSensor inputSensor{ Input( args... ) };
         // CHECK( input.isEnd() );
         CHECK( sensorSpec == inputSensor.getSpec() );
 
