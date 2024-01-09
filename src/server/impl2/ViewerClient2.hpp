@@ -3,6 +3,7 @@
 
 #include <mutex>
 #include <thread>
+#include <atomic>
 
 #include "Client2.hpp"
 // #include "net/ClientSocket.hpp"

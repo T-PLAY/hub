@@ -7,6 +7,7 @@
 #include <sstream>
 #include <string>
 #include <thread>
+#include <atomic>
 
 #include "ViewerHandler.hpp"
 //#include "core/Utils.hpp"

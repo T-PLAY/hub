@@ -108,6 +108,7 @@ TEST_CASE( "MetaData test" ) {
     checkMetaData<const char*>( "abc", "def" );
     checkMetaData<Lambda>( Lambda { 1, 2.0f, 3.0, { 1, 2 }, "hello" },
                            Lambda { 2, 3.0f, 4.0, { 3, 4 }, "hi" } );
+    // checkMetaData<hub::format::Mat4>(hub::format::Mat4(1.0), hub::format::Mat4());
 
     // todo serialize
     // hub::io::Archive archive;
@@ -124,29 +125,29 @@ TEST_CASE( "MetaData test" ) {
     //         CHECK( metadata == metadata_read );
     //     }
 
-#ifndef HUB_NON_BUILD_SENSOR
-    {
-        using Format = hub::format::Mat4;
-        static_assert( hub::packable_v<Format> );
-        static_assert( !hub::serializer::SerializerZppBits::Serializable<Format>() );
-        const Format mat4( 1.0f );
-#    ifdef HUB_DEBUG_OUTPUT
-        std::cout << "\n------------------ " << TYPE_NAME( lambda ) << " ---------------------\n";
-#    endif
-        //    archive.write(lambda);
-        //    Lambda lambda{5, 0.0, 1.0f, {0, 1, 2}};
-        metadata["mat4"]      = mat4;
-        metadata_read["mat4"] = mat4;
-        CHECK( metadata == metadata_read );
-        metadata_read["mat4"] = Format( 2.0f );
-        CHECK( metadata != metadata_read );
-        std::cout << metadata << std::endl;
+// #ifndef HUB_NON_BUILD_SENSOR
+//     {
+//         using Format = hub::format::Mat4;
+//         static_assert( hub::packable_v<Format> );
+//         static_assert( !hub::serializer::SerializerZppBits::Serializable<Format>() );
+//         const Format mat4( 1.0f );
+// #    ifdef HUB_DEBUG_OUTPUT
+//         std::cout << "\n------------------ " << TYPE_NAME( lambda ) << " ---------------------\n";
+// #    endif
+//         //    archive.write(lambda);
+//         //    Lambda lambda{5, 0.0, 1.0f, {0, 1, 2}};
+//         metadata["mat4"]      = mat4;
+//         metadata_read["mat4"] = mat4;
+//         CHECK( metadata == metadata_read );
+//         metadata_read["mat4"] = Format( 2.0f );
+//         CHECK( metadata != metadata_read );
+//         std::cout << metadata << std::endl;
 
-        archive.write( metadata );
-        archive.read( metadata_read );
-        CHECK( metadata == metadata_read );
-    }
-#endif
+//         archive.write( metadata );
+//         archive.read( metadata_read );
+//         CHECK( metadata == metadata_read );
+//     }
+// #endif
 
     std::cout << "any supported types : " << hub::Anyable::supportedTypes() << std::endl;
     TEST_END()

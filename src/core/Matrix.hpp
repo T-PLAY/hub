@@ -367,7 +367,7 @@ Size_t Matrix::getOffset( int i ) const {
     Size_t offset = 0;
     int cptFound  = 0;
 
-    const auto typeName = TYPE_NAME( Type() );
+    const auto typeName = TYPE_NAME( Type{} );
 
     for ( const auto& node : m_nodes ) {
         // if ( node.m_hashCode == typeHash ) {

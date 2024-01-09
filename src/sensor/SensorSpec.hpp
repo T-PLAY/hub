@@ -103,7 +103,7 @@ class SRC_API SensorSpec
     //    SensorSpec(const SensorSpec & sensorSpec) = default;
 
     auto toString() const {
-        return "'" + m_sensorName + "' " + m_resolution.toString() + " " + hub::toString( m_metaData );
+        return "'" + m_sensorName + "' " + m_resolution.toString() + " " + hub::to_string( m_metaData );
         //        return sensorName + " " + resolution.toString();
     }
 

@@ -2,6 +2,7 @@
 
 #include <mutex>
 #include <thread>
+#include <atomic>
 
 // #include "Output.hpp"
 // #include "OutputStreamInterface.hpp"

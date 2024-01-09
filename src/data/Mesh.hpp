@@ -131,10 +131,17 @@ class SRC_API Mesh
 
     bool operator==( const Mesh& other ) const;
 
+#if CPP_VERSION >= 20
     static constexpr auto serialize( auto& archive, auto& self ) {
         // todo
         return archive();
     }
+#else
+    template <typename Archive, typename Self>
+    static void serialize( Archive& archive, Self& self ) {
+        // archive( self.a, self.b, self.c );
+    }
+#endif
 
   private:
     void unpack( bool headerOnly = true ) const;

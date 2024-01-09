@@ -35,6 +35,12 @@ TEST_CASE( "InputOutputSocket test" ) {
     hub::io::InputOutputSocket inputOutputSocket( std::move( clientSocket ) );
     hub::io::InputOutputSocket inputOutputSocket2( std::move( clientServerSocket ) );
 
+    const std::string str = "hello";
+    inputOutputSocket.write(str);
+    std::string str_read;
+    inputOutputSocket2.read(str_read);
+    assert(str == str_read);
+
     const auto& [durationInMillisecondInputOutputSocket, gigaBytePerSecondInputOutputSocket] =
         inputOutputBench( inputOutputSocket, inputOutputSocket2, "InputOutputSocket" );
     // inputOutputBench( inputOutputSocket2, inputOutputSocket );

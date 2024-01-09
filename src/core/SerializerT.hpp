@@ -55,41 +55,40 @@ class SerializerT
     template <typename T>
     static constexpr bool has_it_second_v = has_it_second<T>::value;
 
-#  if defined(COMPILER_GCC)
+#if defined( COMPILER_GCC )
 // #if GCC_VERSION >= 12
-#if __GNUC_PREREQ(12, 3)
+#    if __GNUC_PREREQ( 12, 3 )
     template <class T>
     static constexpr auto isMap = has_it_first_v<T> && has_it_second_v<T>;
-#else
+#    else
     template <class T>
     static constexpr bool isMap = has_it_first_v<T> && has_it_second_v<T>;
-#endif
+#    endif
 
-#elif defined(COMPILER_CLANG)
-#if CLANG_VERSION >= 14
+#elif defined( COMPILER_CLANG )
+#    if CLANG_VERSION >= 14
     template <class T>
     static constexpr auto isMap = has_it_first_v<T> && has_it_second_v<T>;
+#    else
+    template <class T>
+    static constexpr auto isMap = has_it_first_v<T> && has_it_second_v<T>;
+#    endif
+
 #else
     template <class T>
     static constexpr auto isMap = has_it_first_v<T> && has_it_second_v<T>;
 #endif
 
-#else
-    template <class T>
-    static constexpr auto isMap = has_it_first_v<T> && has_it_second_v<T>;
-#endif
-
-// template <class T>
-// concept isMap = requires( T t ) {
-//     t.begin()->first;
-//     t.begin()->second;
-// };
+    // template <class T>
+    // concept isMap = requires( T t ) {
+    //     t.begin()->first;
+    //     t.begin()->second;
+    // };
 
     template <class T>
     // requires( !isMap<T> )
     // static constexpr auto Serializable() {
-    REQUIRES(static constexpr, ! isMap<T>, bool)
-    Serializable() {
+    REQUIRES( static constexpr, !isMap<T>, bool ) Serializable() {
         return !Readable_v<T> && !Writable_v<T> && !packable_v<T>;
     };
 
@@ -97,10 +96,9 @@ class SerializerT
               class Pair = std::decay_t<decltype( *std::declval<Map>().begin() )>,
               class T    = std::decay_t<decltype( ( *std::declval<Map>().begin() ).first )>,
               class U    = std::decay_t<decltype( ( *std::declval<Map>().begin() ).second )>>
-        // requires( isMap<Map> )
+    // requires( isMap<Map> )
     // static constexpr auto Serializable() {
-    REQUIRES(static constexpr, isMap<Map>, bool)
-    Serializable() {
+    REQUIRES( static constexpr, isMap<Map>, bool ) Serializable() {
         return Serializable<T>() && Serializable<U>();
     };
 
@@ -109,18 +107,48 @@ class SerializerT
 
     static constexpr Size_t BuffSize = 2'000'000; // 2 Mo
 
-  private:
-    using ByteView        = std::vector<Data_t>;
-    ByteView m_serialBuff = std::vector<Data_t>( BuffSize );
+    // SerializerT() = default;
 
-    Data_t* const m_packData = m_serialBuff.data();
-    Size_t m_dataWrote       = 0;
-    Size_t m_dataReaded      = 0;
-    Serializer m_serializer { m_serialBuff };
+    SerializerT() :
+        m_serialBuff( BuffSize ),
+        m_packData( m_serialBuff.data() ),
+        m_dataWrote( 0 ),
+        m_dataReaded( 0 ),
+        m_serializer( m_serialBuff ) {}
+    // SerializerT(const SerializerT &) = delete;
+    SerializerT( const SerializerT& ) :
+        m_serialBuff( BuffSize ),
+        m_packData( m_serialBuff.data() ),
+        m_dataWrote( 0 ),
+        m_dataReaded( 0 ),
+        m_serializer( m_serialBuff ) {}
+    SerializerT( SerializerT&& ) :
+        m_serialBuff( BuffSize ),
+        m_packData( m_serialBuff.data() ),
+        m_dataWrote( 0 ),
+        m_dataReaded( 0 ),
+        m_serializer( m_serialBuff ) {}
+    // SerializerT& operator=(const SerializerT &) = delete;
+    // SerializerT& operator=(SerializerT && other) = default;
+
+    // private:
+    using ByteView = std::vector<Data_t>;
+    ByteView m_serialBuff;
+    // std::unique_ptr<ByteView> m_serialBuff = std::make_unique<ByteView>(BuffSize);
+
+    Data_t* const m_packData;
+    Size_t m_dataWrote;
+    Size_t m_dataReaded;
+    // std::unique_ptr<Serializer> m_serializer = std::make_unique<Serializer>(m_serialBuff);
+    Serializer m_serializer;
 
   public:
     template <class Output, class... Ts>
     void pack( Output& output, const Ts&... ts ) {
+        // std::cout << "[SerializerT] pack() m_serialBuff = " << &m_serialBuff << std::endl;
+        // std::cout << "[SerializerT] pack() m_serializer.getBuff() = " << &m_serializer.getBuff()
+                  // << std::endl;
+        assert( &m_serializer.getBuff() == &m_serialBuff );
         // m_out.reset( 0 );
         m_serializer.resetOut();
         // assert(m_out.processed_data().size() == 0);
@@ -144,6 +172,10 @@ class SerializerT
 
     template <class Input, class... Ts>
     void unpack( Input& input, Ts&... ts ) {
+        // std::cout << "[SerializerT] unpack() m_serialBuff = " << &m_serialBuff << std::endl;
+        // std::cout << "[SerializerT] pack() m_serializer.getBuff() = " << &m_serializer.getBuff()
+                  // << std::endl;
+        assert( &m_serializer.getBuff() == &m_serialBuff );
         assert( !input.isEnd() );
         Size_t m_packSize;
         input.read( reinterpret_cast<Data_t*>( &m_packSize ), sizeof( Size_t ) );
@@ -217,16 +249,16 @@ class SerializerT
     template <class T>
     REQUIRES(, !Serializable<T>() && packable_v<T>, void )
     write( const T& t ) {
-// #ifdef HUB_DEBUG_OUTPUT
+        // #ifdef HUB_DEBUG_OUTPUT
         // DEBUG_MSG( "<---" << HEADER << "\033[1mwrite\033[0m(packable: " << TYPE_NAME( t )
-                          // << ") ..." );
-// #endif
+        // << ") ..." );
+        // #endif
         const auto lastPosition = m_serializer.outPosition();
 
         // memcpy( m_packData + lastPosition, reinterpret_cast<const Data_t*>( &t ), sizeof( T ) );
-        m_serializer.serialize(t);
+        m_serializer.serialize( t );
 
-        // m_serializer.setOutPosition( lastPosition + sizeof( T ) );
+        // m_serializer.etOutPosition( lastPosition + sizeof( T ) );
         const auto newPosition = m_serializer.outPosition();
         m_dataWrote += newPosition - lastPosition;
 
@@ -245,25 +277,25 @@ class SerializerT
     read( T& t ) {
 #ifdef HUB_DEBUG_INPUT
         // DEBUG_MSG( "\t--->" << HEADER << "\033[1mread\033[0m(packable: " << TYPE_NAME( t )
-                            // << ") ..." );
+        // << ") ..." );
         auto serialCopy = m_serialBuff;
 #endif
         const auto lastPosition = m_serializer.inPosition();
 
-        m_serializer.deserialize(t);
+        m_serializer.deserialize( t );
         // memcpy( reinterpret_cast<Data_t*>( &t ), m_packData + lastPosition, sizeof( T ) );
         // memcpy( reinterpret_cast<Data_t*>( &t ), m_packData + lastPosition, sizeof( T ) );
 
-        // m_serializer.setInPosition( lastPosition + sizeof( T ) );
+        // m_serializer.etInPosition( lastPosition + sizeof( T ) );
         const auto newPosition = m_serializer.inPosition();
         m_dataReaded += newPosition - lastPosition;
 #ifdef HUB_DEBUG_INPUT
         const std::vector<Data_t> data( serialCopy.data(),
                                         serialCopy.data() + newPosition - lastPosition );
         DEBUG_MSG( "\t--->" << HEADER << "\033[1mread\033[0m(packable: " << TYPE_NAME( t ) << ") = "
-                          << t << " (" << lastPosition << "->" << newPosition << ")" << data );
+                            << t << " (" << lastPosition << "->" << newPosition << ")" << data );
         // DEBUG_MSG( "\t--->" << HEADER << "\033[1mread\033[0m(packable: " << TYPE_NAME( t )
-                            // << ") = " << t );
+        // << ") = " << t );
 #endif
     }
 
@@ -329,7 +361,7 @@ class SerializerT
     read( T& t ) {
 #ifdef HUB_DEBUG_INPUT
         // DEBUG_MSG( "\t--->" << HEADER << "\033[1;36mread\033[0m(serial: " << TYPE_NAME( t )
-                            // << ") ..." );
+        // << ") ..." );
         auto serialCopy = m_serialBuff;
 #endif
         const auto lastPosition = m_serializer.inPosition();
@@ -340,7 +372,8 @@ class SerializerT
         m_dataReaded += newPosition - lastPosition;
 
 #ifdef HUB_DEBUG_INPUT
-        const std::vector<Data_t> data( serialCopy.data(), serialCopy.data() + newPosition - lastPosition );
+        const std::vector<Data_t> data( serialCopy.data(),
+                                        serialCopy.data() + newPosition - lastPosition );
         DEBUG_MSG( "\t--->" << HEADER << "\033[1;36mread\033[0m(serial: " << TYPE_NAME( t )
                             << ") = " << t << " (" << lastPosition << "->" << newPosition << ")"
                             << data );

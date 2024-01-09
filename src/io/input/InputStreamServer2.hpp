@@ -13,6 +13,8 @@
 // #include "../StreamServer.hpp"
 #include "io/StreamServer2.hpp"
 
+// #define HUB_DEBUG_INPUT_STREAM
+
 namespace hub {
 namespace input {
 

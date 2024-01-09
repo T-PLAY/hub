@@ -43,11 +43,14 @@ class SerializerZpp : public SerializerI
     }
 
     void resetIn() override {
+        // std::cout << "[SerializerZpp] resetIn() m_buff = " << &m_buff << std::endl;
         assert( !m_buff.empty() );
         // m_in.reset( 0 );
+
         m_inPosition = 0;
     }
     void resetOut() override {
+        // std::cout << "[SerializerZpp] resetOut() m_buff = " << &m_buff << std::endl;
         m_buff.clear();
         // m_out.reset( 0 );
         m_outPosition = 0;

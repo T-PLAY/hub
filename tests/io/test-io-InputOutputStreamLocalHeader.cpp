@@ -22,11 +22,15 @@ struct UserDefined {
     int a;
     bool b;
     double c;
+    template <typename Archive, typename Self>
+    static void serialize( Archive& archive, Self& self ) {
+        archive( self.a, self.b, self.c );
+    }
     hub::Size_t dataSize() const { return sizeof( int ); }
     auto toString() const {
         return std::to_string( a ) + ":" + std::to_string( b ) + ":" + std::to_string( c );
     }
-    bool operator==( const UserDefined& other ) {
+    bool operator==( const UserDefined& other ) const {
         return a == other.a && b == other.b && c == other.c;
     }
 };

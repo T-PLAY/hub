@@ -71,8 +71,12 @@ class InputSensor : public Sensor
     }
 
     template <class InputT>
+#if CPP_VERSION >= 20
         requires std::is_base_of_v<Input, std::remove_cvref_t<InputT>>
+#endif
+    // REQUIRES (std::is_base_of_v<Input, std::remove_cvref_t<InputT>>)
     InputSensor( InputT&& input ) : Sensor( SensorSpec {} ) {
+        static_assert(std::is_base_of_v<Input, std::remove_cvref_t<InputT>>);
         initSensorSpec( input );
         m_inputs.push_back( new std::remove_cvref_t<InputT>( std::move( input ) ) );
         m_inputOwner = true;
@@ -80,8 +84,11 @@ class InputSensor : public Sensor
     }
 
     template <class InputT>
+#if CPP_VERSION >= 20
         requires std::is_base_of_v<Input, std::remove_cvref_t<InputT>>
+#endif
     InputSensor( InputT&& input, InputT&& input2 ) : Sensor( SensorSpec {} ) {
+        static_assert(std::is_base_of_v<Input, std::remove_cvref_t<InputT>>);
         initSensorSpec( input, input2 );
         m_inputs.push_back( new std::remove_cvref_t<InputT>( std::move( input ) ) );
         m_inputs.push_back( new std::remove_cvref_t<InputT>( std::move( input2 ) ) );

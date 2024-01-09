@@ -32,7 +32,14 @@ TEST_CASE( "Server test : InputOutputStream_vs_Mqtt" ) {
     //     gigaBytePerSecondSocket = gigaBytePerSecond;
     // }
 
+#if CPP_VERSION >= 20
     const auto& [data, size] = generateTestData();
+#else
+    const auto& tuple = generateTestData();
+    const auto& data = std::get<0>(tuple);
+    const auto& size = std::get<1>(tuple);
+#endif
+
     unsigned char* data_read = new unsigned char[size];
     const auto nIteration    = 100;
 

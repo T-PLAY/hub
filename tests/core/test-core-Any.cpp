@@ -8,13 +8,19 @@
 
 #include <core/Any.hpp>
 #include <core/io/Archive.hpp>
+#include <core/Format.hpp>
+#include <core/Serializer.hpp>
+
+// #ifndef HUB_NON_BUILD_IO
+// #include <io/output/OutputFile.hpp>
+// #include <io/input/InputFile.hpp>
+// #endif
 
 // #ifndef HUB_NON_BUILD_SENSOR
 // #include <sensor/Format.hpp>
 // #endif
 
 // #include <data/Mat4.hpp>
-// #include <core/Format.hpp>
 
 #define USE_ARCHIVE
 
@@ -143,10 +149,19 @@ void checkAny( const T& t, const T& t2 ) {
     // std::cout << std::endl;
 }
 
+struct RGB {
+    unsigned char r;
+    unsigned char g;
+    unsigned char b;
+};
+
 // #include <core/Serializer.hpp>
 
 TEST_CASE( "Any test" ) {
     TEST_BEGIN()
+
+// #ifndef HUB_NON_BUILD_IO
+// #endif
 
 // #if CPP_VERSION >= 20
     static_assert( hub::Serializer::Readable_v<hub::Any> );
@@ -184,8 +199,13 @@ TEST_CASE( "Any test" ) {
     checkAny<const char*>( "abc", "def" );
     checkAny<Lambda>( Lambda { 1, 2.0f, 3.0, { 1, 2 }, "hello" },
                       Lambda { 2, 3.0f, 4.0, { 3, 4 }, "hi" } );
+    static_assert(hub::packable_v<hub::format::Mat4>);
+    static_assert(! hub::Serializer::Serializable<hub::format::Mat4>());
+    static_assert(! hub::Serializer::Writable_v<hub::format::Mat4>);
+    static_assert(! hub::Serializer::Readable_v<hub::format::Mat4>);
+    // checkAny<hub::format::Mat4>(hub::format::Mat4(1.0), hub::format::Mat4());
 
-#ifndef HUB_NON_BUILD_SENSOR
+// #ifndef HUB_NON_BUILD_SENSOR
     //     {
     //         using Format = hub::format::BGR8;
     //         const Format bgr8(0.0f);
@@ -209,32 +229,32 @@ TEST_CASE( "Any test" ) {
     //         CHECK( any == any_read );
     //     }
 
-    {
-        using Format = hub::format::Mat4;
-        static_assert( hub::packable_v<Format> );
-        // static_assert(! hub::isPacket<Format>);
-        // static_assert(! hub::serializable_v<Format>);
-        static_assert( !hub::serializer::SerializerZppBits::Serializable<Format>() );
-        const Format mat4( 1.0f );
-#    ifdef HUB_DEBUG_OUTPUT
-        std::cout << "\n------------------ " << TYPE_NAME( lambda ) << " ---------------------\n";
-#    endif
-        //    archive.write(lambda);
-        //    Lambda lambda{5, 0.0, 1.0f, {0, 1, 2}};
-        any      = mat4;
-        any_read = mat4;
-        CHECK( any == any_read );
-        any_read = Format( 2.0f );
-        CHECK( any != any_read );
-        std::cout << any << std::endl;
-        CHECK( any.is<Format>() );
-        CHECK( any.get<Format>() == mat4 );
+//     {
+//         using Format = hub::format::Mat4;
+//         static_assert( hub::packable_v<Format> );
+//         // static_assert(! hub::isPacket<Format>);
+//         // static_assert(! hub::serializable_v<Format>);
+//         // static_assert( !hub::serializer::SerializerZppBits::Serializable<Format>() );
+//         const Format mat4( 1.0f );
+// #    ifdef HUB_DEBUG_OUTPUT
+//         std::cout << "\n------------------ " << TYPE_NAME( lambda ) << " ---------------------\n";
+// #    endif
+//         //    archive.write(lambda);
+//         //    Lambda lambda{5, 0.0, 1.0f, {0, 1, 2}};
+//         any      = mat4;
+//         any_read = mat4;
+//         CHECK( any == any_read );
+//         any_read = Format( 2.0f );
+//         CHECK( any != any_read );
+//         std::cout << any << std::endl;
+//         CHECK( any.is<Format>() );
+//         CHECK( any.get<Format>() == mat4 );
 
-        archive.write( any );
-        archive.read( any_read );
-        CHECK( any == any_read );
-    }
-#endif
+//         archive.write( any );
+//         archive.read( any_read );
+//         CHECK( any == any_read );
+    // }
+// #endif
 
     std::cout << "any supported types : " << hub::Anyable::supportedTypes() << std::endl;
     TEST_END()

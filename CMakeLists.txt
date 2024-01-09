@@ -233,14 +233,14 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
 # set(HUB_MODULES "core" "net" "data" "io" "sensor" "server" "client")
 # set(HUB_MODULES "core" "net" "data" "io" "sensor" "server" "client" "native")
 
-set(HUB_MODULES "core")
+# set(HUB_MODULES "core")
 # set(HUB_MODULES "core" "net")
 # set(HUB_MODULES "core" "net" "io")
 # set(HUB_MODULES "core" "net" "io" "server")
 # set(HUB_MODULES "core" "net" "io" "server" "client")
 # set(HUB_MODULES "core" "net" "io" "server" "client" "native")
 # set(HUB_MODULES "core" "net" "io" "server" "client" "native" "sensor")
-# set(HUB_MODULES "core" "net" "io" "server" "client" "native" "sensor" "data")
+set(HUB_MODULES "core" "net" "io" "server" "client" "native" "sensor" "data")
 
 
 

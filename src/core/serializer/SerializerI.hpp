@@ -18,6 +18,9 @@ class SerializerI
     using ByteView = std::vector<Data_t>;
     SerializerI( ByteView& byteView ) : m_buff { byteView } {};
 
+    // SerializerI(SerializerI&&) = delete;
+    // SerializerI(const SerializerI&) = delete;
+
     virtual Size_t inPosition() const                = 0;
     virtual Size_t outPosition() const                = 0;
 
@@ -26,6 +29,10 @@ class SerializerI
 
     virtual void resetIn()                           = 0;
     virtual void resetOut()                           = 0;
+
+    const ByteView& getBuff() const {
+        return m_buff;
+    }
 
   // private:
   protected:

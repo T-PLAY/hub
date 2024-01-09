@@ -19,7 +19,9 @@ using namespace format;
 #ifndef HUB_NON_BUILD_DATA
 // using namespace sensor::format;
 // using namespace data;
-    makeAnyHelperMap<void, int, double, std::string, const char*, format::Mat4, data::Mesh>();
+std::map<std::string, Anyable::AnyHelper> Anyable::s_anyables =
+    // makeAnyHelperMap<void, int, double, std::string, const char*, format::Mat4, data::Mesh>();
+    makeAnyHelperMap<void, int, double, std::string, const char*>();
 #else
 std::map<std::string, Anyable::AnyHelper> Anyable::s_anyables =
     // todo c++17

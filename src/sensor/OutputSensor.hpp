@@ -70,19 +70,25 @@ class OutputSensor : public Sensor
     // }
 
     template <class Output = output::OutputStream, class... Args>
+#if CPP_VERSION >= 20
         requires std::is_base_of_v<hub::Output, Output>
+#endif
     OutputSensor( const SensorSpec& sensorSpec, const Args&... args ) :
         Sensor( sensorSpec ),
         m_output( *( new Output( io::make_header( sensorSpec ), args... ) ) ),
         m_outputOwner( true ) {
+        static_assert( std::is_base_of_v<hub::Output, Output>);
 
         assert( m_spec.getResolution().nType() > 0 );
     }
 
     template <class OutputT>
+#if CPP_VERSION >= 20
         requires std::is_base_of_v<hub::Output, OutputT>
+#endif
     OutputSensor( const SensorSpec& sensorSpec, OutputT& output ) :
         Sensor( sensorSpec ), m_output( output ) {
+        static_assert( std::is_base_of_v<hub::Output, OutputT>);
 
 #ifdef DEBUG
         const auto& header = output.getHeader();
@@ -99,11 +105,14 @@ class OutputSensor : public Sensor
     }
 
     template <class Output>
+#if CPP_VERSION >= 20
         requires std::is_base_of_v<hub::Output, Output>
+#endif
     OutputSensor( const SensorSpec& sensorSpec, Output&& output ) :
         Sensor( sensorSpec ),
         m_output( *( new Output( std::move( output ) ) ) ),
         m_outputOwner( true ) {
+        static_assert( std::is_base_of_v<hub::Output, Output>);
 
 #ifdef DEBUG
         const auto& header = dynamic_cast<const Output&>( m_output ).getHeader();
