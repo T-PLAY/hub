@@ -1,4 +1,7 @@
-
+/// © 2021-2024 Hub, All Rights Reserved
+/// @author gauthier <gauthierbouyjou@aol.com>
+/// @date 2024/01/07
+	
 #pragma once
 
 // #ifdef HUB_USE_ZPP_BITS

@@ -1,8 +1,8 @@
 #! /bin/bash -e
 
 
-projectBeginDate=$(git log --reverse --format=%as . | head -1)
-projectEndDate=$(git log --format="%as" . | head -1)
+projectBeginDate=$(git log --full-history --reverse --format=%as . | head -1)
+projectEndDate=$(git log --full-history --format="%as" . | head -1)
 projectBeginYear=$(echo $projectBeginDate | awk -F- '{print $1}')
 projectEndYear=$(echo $projectEndDate | awk -F- '{print $1}')
 # echo "projectYear $projectBeginYear-$projectEndYear"
@@ -13,25 +13,26 @@ projectEndYear=$(echo $projectEndDate | awk -F- '{print $1}')
 
 cd $(git rev-parse --show-toplevel)
 
-file=src/core/ios.hpp
+# file=src/core/ios.hpp
 # for file in $(find $(cat scripts/source_dirs.txt) -type f \( -name "*.hpp" \)); do
-# for file in $(find src/ -type f \( -name "*.hpp" \)); do
+for file in $(find src/ -type f \( -name "*.hpp" \)); do
 
 	echo "$file"
 
 	# file="ios.hpp"
-	authorName=$(git log --reverse --format=%an $file | head -1)
-	authorEmail=$(git log --reverse --format=%ae  $file | head -1)
-	# authorDate=$(git log --reverse --format=%as -n 1 $file | head -1 | sed 's/-/\//g')
-	authorDate=$(git log --reverse --format="%ah" $file | head -1)
+	authorName=$(git log --full-history --reverse --format=%an $file | head -1)
+	authorEmail=$(git log --full-history --reverse --format=%ae  $file | head -1)
+	authorDate=$(git log --full-history --reverse --format=%as $file | head -1 | sed 's/-/\//g')
+	# authorDate=$(git log --reverse --format="%ah" $file | head -1)
 	# echo "authorName $authorName"
 	# echo "authorEmail $authorEmail"
 	# echo "authorDate $authorDate"
 	#
 	
 	pragmaLine=$(cat $file | grep -n '#pragma once' | awk -F: '{print $1}')
-	tail -n +"$pragmaLine" $file > tmp.txt
-	mv tmp.txt $file
+	tail -n +"$pragmaLine" $file > /tmp/tmp.txt
+	# mv /tmp/tmp.txt $file
+	cat /tmp/tmp.txt > $file
 
 
 	header="/// © $projectBeginYear-$projectEndYear Hub, All Rights Reserved
@@ -40,7 +41,10 @@ file=src/core/ios.hpp
 	"
 
 	echo "$header"
-	echo -e "$header\n$(cat $file)" > $file
+	# echo -e "$header\n$(cat $file)" > $file
+	echo "$header" > /tmp/tmp.txt
+	cat $file >> /tmp/tmp.txt
+	mv /tmp/tmp.txt $file
 
 	# clang-format-11 -i --style=file $file
-# done
+done

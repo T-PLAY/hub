@@ -1,6 +1,6 @@
-/// © 2022-2023 Hub, All Rights Reserved
+/// © 2021-2024 Hub, All Rights Reserved
 /// @author gauthier <gauthierbouyjou@aol.com>
-/// @date Nov 9 2023
+/// @date 2023/11/09
 	
 #pragma once
 

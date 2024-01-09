@@ -1,4 +1,7 @@
-
+/// © 2021-2024 Hub, All Rights Reserved
+/// @author gauthier <gauthierbouyjou@aol.com>
+/// @date 2024/01/04
+	
 #pragma once
 
 #include <algorithm>

@@ -1,3 +1,7 @@
+/// © 2021-2024 Hub, All Rights Reserved
+/// @author gauthier <gauthierbouyjou@aol.com>
+/// @date 2023/09/29
+	
 #pragma once
 
 #include "native_Any.hpp"

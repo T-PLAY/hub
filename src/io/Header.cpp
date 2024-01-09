@@ -15,12 +15,11 @@
 namespace hub {
 namespace io {
 
-
-Header::Header(Size_t dataSize, const Datas_t &userDefined) :
+Header::Header( Size_t dataSize, const Datas_t& userDefined ) :
     m_dataSize( dataSize ), m_userDefined( userDefined ) {
     m_headerSize = getSize();
 
-           // memset(m_magicNumber.data(), ' ', 31);
+    // memset(m_magicNumber.data(), ' ', 31);
     const auto joker = ' ';
     std::fill( m_magicNumber.begin(), m_magicNumber.end(), joker );
     m_magicNumber.back() = '\n';
@@ -36,19 +35,19 @@ Header::Header(Size_t dataSize, const Datas_t &userDefined) :
                s_versionMajor,
                s_versionMinor,
                s_versionPatch,
-               "Copyright 2022-2023 * author : gauthierbouyjou@aol.com" );
+             std::string("Copyright " + std::to_string(s_contributionStart) + "-" + std::to_string(s_contributionEnd) + "* author : gauthierbouyjou@aol.com").c_str() );
 #else
 #    ifdef OS_MACOS
     snprintf( m_magicNumber.data(),
               128,
-              "%c%c%c %d.%d.%d * %s" ,
+              "%c%c%c %d.%d.%d * %s",
               'H',
               'U',
               'B',
               s_versionMajor,
               s_versionMinor,
               s_versionPatch,
-              "Copyright 2022-2023 * author : gauthierbouyjou@aol.com" );
+             std::string("Copyright " + std::to_string(s_contributionStart) + "-" + std::to_string(s_contributionEnd) + "* author : gauthierbouyjou@aol.com").c_str() );
 #    else
     sprintf( m_magicNumber.data(),
              "%c%c%c %d.%d.%d * %s",
@@ -58,7 +57,7 @@ Header::Header(Size_t dataSize, const Datas_t &userDefined) :
              s_versionMajor,
              s_versionMinor,
              s_versionPatch,
-             "Copyright 2022-2023 * author : gauthierbouyjou@aol.com" );
+             std::string("Copyright " + std::to_string(s_contributionStart) + "-" + std::to_string(s_contributionEnd) + "* author : gauthierbouyjou@aol.com").c_str() );
 #    endif
 #endif
 
@@ -109,19 +108,18 @@ void Header::checkMagicNumber() const {
 
     // input.readAll( m_headerSize, m_dataSize, m_userDefined );
 
-           // #ifdef DEBUG
-           //     std::cout <<  "[InputImpl] read(magic number) : '" << magicNumber << "'" <<
-           //     std::endl;
-           // #endif
+    // #ifdef DEBUG
+    //     std::cout <<  "[InputImpl] read(magic number) : '" << magicNumber << "'" <<
+    //     std::endl;
+    // #endif
 
-           // assert( m_magicNumber[0] == 'H' );
-           // assert( m_magicNumber[1] == 'U' );
-           // assert( m_magicNumber[2] == 'B' );
-           // assert( m_magicNumber[3] <= s_versionMajor );
-           // assert( m_magicNumber[4] <= s_versionMinor );
-           // assert( m_magicNumber[5] <= s_versionPatch );
+    // assert( m_magicNumber[0] == 'H' );
+    // assert( m_magicNumber[1] == 'U' );
+    // assert( m_magicNumber[2] == 'B' );
+    // assert( m_magicNumber[3] <= s_versionMajor );
+    // assert( m_magicNumber[4] <= s_versionMinor );
+    // assert( m_magicNumber[5] <= s_versionPatch );
 }
-
 
 } // namespace io
 } // namespace hub

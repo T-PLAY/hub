@@ -67,6 +67,8 @@
 
 namespace hub {
 
+const int s_contributionStart = HUB_CONTRIBUTION_START;
+const int s_contributionEnd = HUB_CONTRIBUTION_END;
 const int s_versionMajor = HUB_VERSION_MAJOR;
 const int s_versionMinor = HUB_VERSION_MINOR;
 const int s_versionPatch = HUB_VERSION_PATCH; // Revision

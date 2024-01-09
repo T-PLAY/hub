@@ -1,3 +1,7 @@
+/// © 2021-2024 Hub, All Rights Reserved
+/// @author gauthier <gauthierbouyjou@aol.com>
+/// @date 2023/11/09
+	
 #pragma once
 
 #include "core/Macros.hpp"
@@ -21,7 +25,6 @@
 //
 #ifndef LINB_ANY_HPP
 #define LINB_ANY_HPP
-#pragma once
 #include <typeinfo>
 #include <type_traits>
 #include <stdexcept>

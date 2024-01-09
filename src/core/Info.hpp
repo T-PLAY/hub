@@ -1,3 +1,7 @@
+/// © 2021-2024 Hub, All Rights Reserved
+/// @author gauthier <gauthierbouyjou@aol.com>
+/// @date 2023/10/01
+	
 #pragma once
 
 #include <string>
@@ -5,14 +9,10 @@
 /* cppcheck-suppress missingInclude */
 // #include "Version.hpp"
 
-///
-/// @author Gauthier Bouyjou
-/// @date 2022-2023
-/// If you have any questions please do not hesitate to send me message to my mailbox.
-/// email : gauthierbouyjou@aol.com
-/// @brief
-///
 namespace hub {
+
+extern const int s_contributionStart;
+extern const int s_contributionEnd;
 
 /** @brief Returns major library version */
 // static constexpr int s_versionMajor = HUB_VERSION_MAJOR;

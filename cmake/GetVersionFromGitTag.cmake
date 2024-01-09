@@ -48,8 +48,14 @@ endif()
 set(LATEST_VERSION_MAJOR 2)
 set(LATEST_VERSION_MINOR 0)
 set(LATEST_VERSION_PATCH 0)
+set(CONTRIBUTION_START 2021)
+set(CONTRIBUTION_END 2024)
 if (NOT GIT_FOUND OR GIT_DESCRIBE_ERROR_CODE)
 # if (TRUE)
+
+    set(${PROJECT_NAME}_CONTRIBUTION_START "${CONTRIBUTION_START}")
+    set(${PROJECT_NAME}_CONTRIBUTION_END "${CONTRIBUTION_END}")
+
 #        message(STATUS "Version describe ${${PROJECT_NAME}_VERSION_STRING}")
     set(${PROJECT_NAME}_VERSION_MAJOR ${LATEST_VERSION_MAJOR})
     set(${PROJECT_NAME}_VERSION_MINOR ${LATEST_VERSION_MINOR})
@@ -128,6 +134,25 @@ else()
         )
 
 #    message(STATUS "################### ${${PROJECT_NAME}_GIT_HASH}")
+
+        execute_process(
+    #        COMMAND ${GIT_EXECUTABLE} describe --tags --dirty --match "v*"
+            COMMAND ${GIT_EXECUTABLE} log -1 --date=format:%Y --format=%ad
+            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+            OUTPUT_VARIABLE ${PROJECT_NAME}_CONTRIBUTION_END
+            RESULT_VARIABLE GIT_DESCRIBE_ERROR_CODE
+            OUTPUT_STRIP_TRAILING_WHITESPACE
+        )
+
+    # message(STATUS "git: ${${PROJECT_NAME}_DATE}")
+
+    set(${PROJECT_NAME}_CONTRIBUTION_START "${CONTRIBUTION_START}")
+    # set(${PROJECT_NAME}_CONTRIBUTION_END "${CONTRIBUTION_END}")
+
+        if (NOT ${PROJECT_NAME}_CONTRIBUTION_END EQUAL ${CONTRIBUTION_END}
+            )
+            message(FATAL_ERROR "You must update the last contribution date for offline use")
+        endif()
 
         # Set full project version string
 #        set(${PROJECT_NAME}_VERSION_STRING_FULL
