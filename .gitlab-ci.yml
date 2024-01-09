@@ -82,7 +82,7 @@ cache:
 #   script:
 #     - git fetch
 
-############################################# BUILDING
+############################################# LINUX
 
 build-linux-clang-release:
   stage: build
@@ -138,7 +138,7 @@ test-linux-gcc-debug:
     - job: build-linux-gcc-debug
       optional: true
 
-####################        
+############################################# DOS
 
 build-windows-cl-release:
   stage: build
@@ -193,7 +193,7 @@ test-windows-cl-debug:
     - job: build-windows-cl-debug
       optional: true
 
-####################        
+############################################# MacOs
 
 build-macOs-clang-release:
   stage: build
