@@ -1,3 +1,7 @@
+/// © 2022-2023 Hub, All Rights Reserved
+/// @author gauthier <gauthierbouyjou@aol.com>
+/// @date Nov 9 2023
+	
 #pragma once
 
 #include <type_traits>
