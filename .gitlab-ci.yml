@@ -7,11 +7,12 @@
 # image: stormirit/radium_dev:latest
 #image: docker-linux
 variables:
-  CACHE_PATH: "cache11"
+  CACHE_PATH: "cache12"
   GIT_STRATEGY: fetch
   LINUX_TAG: "linux"
   WIN_TAG: "windows"
   MACOS_TAG: "macOs"
+  MASTER_BRANCH: "documentation"
   # GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_CONCURRENT_ID/$CI_PROJECT_PATH
 
 #https://docs.gitlab.com/ee/ci/yaml/#extends
@@ -39,7 +40,7 @@ stages:
 cache:
   key: cache
   paths:
-    - $CACHE_PATH/
+    - $CACHE_PATH/$CI_COMMIT_BRANCH/
     # - dep-cache/
     # - build-gcc-release/
     # - build-clang-debug/
@@ -144,7 +145,7 @@ build-windows-cl-Win32-debug:
     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -A $ARCHITECTURE"
     - !reference [.build_any, script]
   only:
-    - master
+    - $MASTER_BRANCH
   
 build-windows-cl-ARM64-debug:
   stage: build
@@ -158,7 +159,7 @@ build-windows-cl-ARM64-debug:
     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -A $ARCHITECTURE"
     - !reference [.build_any, script]
   only:
-    - master
+    - $MASTER_BRANCH
   
 build-windows-cl-ARM-debug:
   stage: build
@@ -172,7 +173,7 @@ build-windows-cl-ARM-debug:
     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -A $ARCHITECTURE"
     - !reference [.build_any, script]
   only:
-    - master
+    - $MASTER_BRANCH
 
 build-windows-cl-UWP-x64-debug:
   stage: build
@@ -186,7 +187,7 @@ build-windows-cl-UWP-x64-debug:
     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -A x64 -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0"
     - !reference [.build_any, script]
   only:
-    - master
+    - $MASTER_BRANCH
   
 build-macOs-clang-release:
   stage: build
@@ -335,7 +336,7 @@ build-macOs-llvm-gcc-debug:
 #     - cmake --build $CACHE_PATH/build-release --config Release --parallel
 #     - cmake --install $CACHE_PATH/build-release --config Release
 #   # only:
-#   # - master
+#   # - $MASTER_BRANCH
 #
 # build-cl-debug:
 #   stage: build
@@ -346,7 +347,7 @@ build-macOs-llvm-gcc-debug:
 #     - cmake -B $CACHE_PATH/build-gcc-debug -DCMAKE_CXX_COMPILER=cl -DCMAKE_C_COMPILER=cl -DCMAKE_BUILD_TYPE=Debug -DHUB_ENABLE_TESTS=ON
 #     - cmake --build $CACHE_PATH/build-debug --config Debug --parallel
 #   # only:
-#     # - master
+#     # - $MASTER_BRANCH
 #
 # build-clang-release:
 #   stage: build
@@ -358,7 +359,7 @@ build-macOs-llvm-gcc-debug:
 #     - cmake --build $CACHE_PATH/build-clang-release --config Release --parallel
 #     - cmake --install $CACHE_PATH/build-clang-release --config Release
 #   # only:
-#   # - master
+#   # - $MASTER_BRANCH
 #
 # build-gcc-debug:
 #   stage: build
@@ -369,7 +370,7 @@ build-macOs-llvm-gcc-debug:
 #     - cmake -B $CACHE_PATH/build-gcc-debug -DCMAKE_CXX_COMPILER=/usr/bin/g++ -DCMAKE_C_COMPILER=/usr/bin/gcc -DCMAKE_BUILD_TYPE=Debug -DHUB_ENABLE_TESTS=ON -DHUB_ENABLE_COVERAGE=ON
 #     - cmake --build $CACHE_PATH/build-gcc-debug --config Debug --parallel
 #   # only:
-#     # - master
+#     # - $MASTER_BRANCH
 #
 # test:
 #   stage: test
@@ -379,7 +380,7 @@ build-macOs-llvm-gcc-debug:
 #     - cmake --build $CACHE_PATH/build-gcc-debug --target tests
 # #    - ./runmytests.sh
 #   # only:
-#   # - master
+#   # - $MASTER_BRANCH
 #
 # coverage:
 #   stage: coverage
@@ -399,7 +400,7 @@ build-macOs-llvm-gcc-debug:
 #       # - public
 #     # expire_in: 1 week
 #   # only:
-#     # - master
+#     # - $MASTER_BRANCH
 #
 # cppCheck:
 #   stage: code-analysis
@@ -427,7 +428,7 @@ build-macOs-llvm-gcc-debug:
 #   # only:
 #     # - feature/add-gitlab-pages-support
 #   # only:
-#   # - master
+#   # - $MASTER_BRANCH
 #
 # # cache-sphinx:
 # #   stage: doc
@@ -459,7 +460,7 @@ build-macOs-llvm-gcc-debug:
 # #         cp -ar /usr/local/lib/python* sphinx-cache/usr/local/lib/
 # #       fi
 # #   only:
-# #   - master
+# #   - $MASTER_BRANCH
 #
 #
 # doc-sphinx:
@@ -481,7 +482,7 @@ build-macOs-llvm-gcc-debug:
 #       # - public
 #     # expire_in: 1 week
 #   # only:
-#   # - master
+#   # - $MASTER_BRANCH
 #
 # # cache-format:
 # #   stage: format
@@ -508,7 +509,7 @@ build-macOs-llvm-gcc-debug:
 # #         cp -ar /usr/lib/python* format-cache/usr/lib/
 # #       fi
 # #   only:
-# #   - master
+# #   - $MASTER_BRANCH
 #
 # format:
 #   stage: format
@@ -520,7 +521,7 @@ build-macOs-llvm-gcc-debug:
 #       cmake --build $CACHE_PATH/build-gcc-debug --target format
 #       git diff --exit-code
 #   only:
-#   - master
+#   - $MASTER_BRANCH
 #
 #
 
@@ -604,4 +605,4 @@ build-macOs-llvm-gcc-debug:
   #     # ls dep-cache/usr/share/
   #     # ls dep-cache/usr/share/*
   # # only:
-  # # - master
+  # # - $MASTER_BRANCH
