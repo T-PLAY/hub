@@ -12,7 +12,7 @@ variables:
   LINUX_TAG: "linux"
   WIN_TAG: "windows"
   MACOS_TAG: "macOs"
-  MASTER_BRANCH: "documentation"
+  # MASTER_BRANCH: "documentation"
   # GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_CONCURRENT_ID/$CI_PROJECT_PATH
 
 #https://docs.gitlab.com/ee/ci/yaml/#extends
@@ -56,7 +56,7 @@ cache:
     # - buildDir=build-$CMAKE_C_COMPILER-$BUILD_TYPE
     - mkdir -p $buildDir
     # - cmake -B $CACHE_PATH/build-cl-release -DCMAKE_CXX_COMPILER=cl -DCMAKE_C_COMPILER=cl -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON
-    - cmake -B $buildDir -DCMAKE_C_COMPILER=$CMAKE_C_COMPILER -DCMAKE_CXX_COMPILER=$CMAKE_CXX_COMPILER -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_INSTALL_PREFIX=$installDir $CMAKE_CONFIGURE_ARGS
+    # - cmake -B $buildDir -DCMAKE_C_COMPILER=$CMAKE_C_COMPILER -DCMAKE_CXX_COMPILER=$CMAKE_CXX_COMPILER -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_INSTALL_PREFIX=$installDir $CMAKE_CONFIGURE_ARGS
     # - cmake -B $CACHE_PATH/build-release -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON
     # - cmake --build $buildDir --config $BUILD_TYPE --parallel
     # - cmake --install $buildDir --config $BUILD_TYPE
@@ -145,7 +145,7 @@ build-windows-cl-Win32-debug:
     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -A $ARCHITECTURE"
     - !reference [.build_any, script]
   only:
-    - $MASTER_BRANCH
+    - documentation
   
 build-windows-cl-ARM64-debug:
   stage: build
@@ -159,7 +159,7 @@ build-windows-cl-ARM64-debug:
     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -A $ARCHITECTURE"
     - !reference [.build_any, script]
   only:
-    - $MASTER_BRANCH
+    - documentation
   
 build-windows-cl-ARM-debug:
   stage: build
@@ -173,7 +173,7 @@ build-windows-cl-ARM-debug:
     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -A $ARCHITECTURE"
     - !reference [.build_any, script]
   only:
-    - $MASTER_BRANCH
+    - documentation
 
 build-windows-cl-UWP-x64-debug:
   stage: build
@@ -187,7 +187,7 @@ build-windows-cl-UWP-x64-debug:
     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -A x64 -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0"
     - !reference [.build_any, script]
   only:
-    - $MASTER_BRANCH
+    - documentation
   
 build-macOs-clang-release:
   stage: build
