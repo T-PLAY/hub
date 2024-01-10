@@ -51,6 +51,10 @@ cache:
 .build_any: &build_any
   script:
     # - pwd -P
+    - pwd
+    - whoami
+    - echo "shell: $SHELL"
+    - echo "path: $PATH" | tr : '\n'
     - buildDir=$CACHE_PATH/$CI_COMMIT_BRANCH/build-$ARCHITECTURE-$CMAKE_C_COMPILER-$BUILD_TYPE
     - installDir=$CACHE_PATH/$CI_COMMIT_BRANCH/install-$ARCHITECTURE-$CMAKE_C_COMPILER-$BUILD_TYPE
     # - buildDir=build-$CMAKE_C_COMPILER-$BUILD_TYPE
@@ -227,7 +231,7 @@ build-macOs-x86_64-clang-debug:
   only:
     - documentation
 
-build-macOs-x86_64-clang-debug:
+build-macOs-arm64-clang-debug:
   stage: build
   tags:
     - $MACOS_TAG
