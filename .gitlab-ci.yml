@@ -51,8 +51,6 @@ cache:
 .build_any: &build_any
   script:
     # - pwd -P
-    - pwd
-    - whoami
     - echo "shell: $SHELL"
     - echo "path: $PATH"
     - buildDir=$CACHE_PATH/$CI_COMMIT_BRANCH/build-$ARCHITECTURE-$CMAKE_C_COMPILER-$BUILD_TYPE
