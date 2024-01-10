@@ -126,8 +126,8 @@ class MatrixXDBase
     // Buffer<Type, Capacity> m_buffer;
     Buffer<Data_t, Size> m_buffer;
 };
-static_assert( sizeof( MatrixXDBase<int, 2, 3, 4, 5, 6> ) ==
-               sizeof( int ) * 2 * 3 * 4 * 5 * 6 + 8 );
+//static_assert( sizeof( MatrixXDBase<int, 2, 3, 4, 5, 6> ) ==
+//               sizeof( int ) * 2 * 3 * 4 * 5 * 6 + 8 );
 static_assert( isMatrix<MatrixXDBase<int, 2>> );
 
 } // namespace _

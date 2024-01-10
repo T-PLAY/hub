@@ -110,14 +110,22 @@ TEST_CASE( "Macros test" ) {
 
     // C Types
     std::cout << "* C types :" << std::endl;
+    static_assert( sizeof( int ) == 4 );
     checkType<int, 4, 12597418120160561823u>( "int", 5 );
+    static_assert( sizeof( double ) == 8 );
     checkType<double, 8, 13841485242819600253u>( "double", 2.0 );
     checkType<float, 4>( "float", 3.0f );
+    static_assert( sizeof( char ) == 1 );
     checkType<char, 1>( "char", 'c' );
 //    checkType<unsigned char, 1>( "unsigned char", 'd' );
     checkType<unsigned char, 1>( "uchar", 'd' );
 //    checkType<const char*, 8>( "char const*", "bonjour" );
+    static_assert( sizeof( const char* ) == 4 );
+#ifdef ARCH_X86
+    checkType<const char*, 4>( "cstr", "bonjour" );
+#else
     checkType<const char*, 8>( "cstr", "bonjour" );
+#endif
     std::cout << std::endl;
 
     // C++ Types

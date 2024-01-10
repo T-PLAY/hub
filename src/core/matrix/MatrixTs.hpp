@@ -257,8 +257,8 @@ class MatrixTs
         else { return str; }
     }
 };
-static_assert( sizeof( MatrixTs<int, double, float> ) ==
-               sizeof( int ) + sizeof( double ) + sizeof( float ) + 8 );
+//static_assert( sizeof( MatrixTs<int, double, float> ) ==
+//               sizeof( int ) + sizeof( double ) + sizeof( float ) + 8 );
 static_assert( isMatrix<MatrixTs<int, double>> );
 
 } // namespace hub

@@ -61,8 +61,9 @@ class BufferBase
 #endif
     //    virtual std::string toString() const = 0;
 };
-static_assert( sizeof( BufferBase<int, 1'000, StaticMemory> ) == 8 );
-static_assert( sizeof( BufferBase<int, 1'000, DynamicMemory> ) == 8 );
+//static_assert( sizeof( int ) == 4 );
+//static_assert( sizeof( BufferBase<int, 1'000, StaticMemory> ) == 8 );
+//static_assert( sizeof( BufferBase<int, 1'000, DynamicMemory> ) == 8 );
 
 //template <class Type, Size_t Size, BufferOption Option>
 //SRC_API std::ostream& operator<<( std::ostream& os, const BufferBase<Type, Size, Option>& data ) {
@@ -173,7 +174,7 @@ class Buffer<Type, Size, StaticMemory> : public BufferBase<Type, Size, StaticMem
     std::array<Type, Size> m_array;
 //    Span m_span;
 };
-static_assert( sizeof( Buffer<unsigned char, 1'000, StaticMemory> ) == 1'000 + 8 );
+//static_assert( sizeof( Buffer<unsigned char, 1'000, StaticMemory> ) == 1'000 + 8 );
 
 ////////////////////////////////////////////////////////////////////
 

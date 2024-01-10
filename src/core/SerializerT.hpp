@@ -397,8 +397,12 @@ class SerializerT
         write( std::string( str ) );
     }
 
+// size_t = 64 bits or 32 bits depending of architecture 32/64 bits
+// please use uint64_t instead
 #ifdef ARCH_X86
     void read( size_t size ) = delete; // non compatible format 32/64 bit
+#else
+    void read( uint32_t size ) = delete; // non compatible format 32/64 bit
 #endif
 
     void read( char* str ) {
@@ -457,7 +461,7 @@ class SerializerT
                           << TYPE_NAME( U() ) << ") = " << map );
 #endif
 
-        uint32_t nbKey = static_cast<uint32_t>( map.size() );
+        uint64_t nbKey = static_cast<uint64_t>( map.size() );
         write( nbKey );
 
         for ( const std::pair<T, U>& pair : map ) {
@@ -469,7 +473,7 @@ class SerializerT
     REQUIRES(, (!Serializables<T, U>), void )
     read( std::map<T, U>& map ) {
 
-        uint32_t nbEl;
+        uint64_t nbEl;
         read( nbEl );
         map.clear();
 
