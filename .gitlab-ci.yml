@@ -127,11 +127,11 @@ build-windows-cl-x64-debug:
   tags:
     - $WIN_TAG
   script:
-    - $BUILD_TYPE=Debug
-    - $CMAKE_C_COMPILER=cl
-    - $CMAKE_CXX_COMPILER=cl
-    - $ARCHITECTURE=x64
-    - $CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -A $ARCHITECTURE"
+    - BUILD_TYPE=Debug
+    - CMAKE_C_COMPILER=cl
+    - CMAKE_CXX_COMPILER=cl
+    - ARCHITECTURE=x64
+    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -A $ARCHITECTURE"
     - !reference [.build_any, script]
 
 build-windows-cl-Win32-debug:
