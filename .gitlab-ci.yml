@@ -119,8 +119,8 @@ build-windows-cl-x64-release:
     - $WIN_TAG
   script:
     - BUILD_TYPE=Release
-    - COMPILER_C=cl
-    - COMPILER_CXX=cl
+    # - COMPILER_C=cl
+    # - COMPILER_CXX=cl
     - ARCHITECTURE=x64
     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -A $ARCHITECTURE"
     - !reference [.build_any, script]
@@ -131,8 +131,8 @@ build-windows-cl-Win32-debug:
     - $WIN_TAG
   script:
     - BUILD_TYPE=Debug
-    - COMPILER_C=cl
-    - COMPILER_CXX=cl
+    # - COMPILER_C=cl
+    # - COMPILER_CXX=cl
     - ARCHITECTURE=Win32
     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -A $ARCHITECTURE"
     - !reference [.build_any, script]
