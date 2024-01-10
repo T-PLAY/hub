@@ -49,26 +49,18 @@ cache:
 
 .build_any:
   script:
-    - mkdir -p $buildDir
-    - cmake -B $buildDir -DCMAKE_C_COMPILER=$CMAKE_C_COMPILER -DCMAKE_CXX_COMPILER=$CMAKE_CXX_COMPILER -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_INSTALL_PREFIX=$installDir $CMAKE_CONFIGURE_ARGS
-
-.build_bash_any:
-  script:
     # - pwd -P
     - buildDir=$CACHE_PATH/$CI_COMMIT_BRANCH/build-$ARCHITECTURE-$CMAKE_C_COMPILER-$BUILD_TYPE
     - installDir=$CACHE_PATH/$CI_COMMIT_BRANCH/install-$ARCHITECTURE-$CMAKE_C_COMPILER-$BUILD_TYPE
     # - buildDir=build-$CMAKE_C_COMPILER-$BUILD_TYPE
     # - cmake -B $CACHE_PATH/build-cl-release -DCMAKE_CXX_COMPILER=cl -DCMAKE_C_COMPILER=cl -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON
-    - !reference [.build_bash_any, script]
+    - mkdir -p $buildDir
+    - cmake -B $buildDir -DCMAKE_C_COMPILER=$CMAKE_C_COMPILER -DCMAKE_CXX_COMPILER=$CMAKE_CXX_COMPILER -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_INSTALL_PREFIX=$installDir $CMAKE_CONFIGURE_ARGS
+    # - !reference [.build_any, script]
     # - cmake -B $CACHE_PATH/build-release -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON
     # - cmake --build $buildDir --config $BUILD_TYPE --parallel
     # - cmake --install $buildDir --config $BUILD_TYPE
     
-.build_pwsh_any:
-  script:
-    - $buildDir="$CACHE_PATH/$CI_COMMIT_BRANCH/build-$ARCHITECTURE-$CMAKE_C_COMPILER-$BUILD_TYPE"
-    - $installDir="$CACHE_PATH/$CI_COMMIT_BRANCH/install-$ARCHITECTURE-$CMAKE_C_COMPILER-$BUILD_TYPE"
-    - !reference [.build_bash_any, script]
 
 .test_bash_any:
   script:
@@ -104,7 +96,7 @@ build-linux-clang-release:
     - CMAKE_CXX_COMPILER=clang++
     - ARCHITECTURE=x64
     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON"
-    - !reference [.build_bash_any, script]
+    - !reference [.build_any, script]
   
 build-linux-gcc-debug:
   stage: build
@@ -116,7 +108,7 @@ build-linux-gcc-debug:
     - CMAKE_CXX_COMPILER=g++
     - ARCHITECTURE=x64
     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON"
-    - !reference [.build_bash_any, script]
+    - !reference [.build_any, script]
   
 build-windows-cl-x64-release:
   stage: build
@@ -207,7 +199,7 @@ build-macOs-clang-release:
     - CMAKE_C_COMPILER=clang
     - CMAKE_CXX_COMPILER=clang++
     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON"
-    - !reference [.build_bash_any, script]
+    - !reference [.build_any, script]
   
 build-macOs-llvm-gcc-debug:
   stage: build
@@ -220,7 +212,7 @@ build-macOs-llvm-gcc-debug:
     #- CMAKE_CXX_COMPILER=g++
     - CMAKE_CXX_COMPILER=llvm-g++
     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON"
-    - !reference [.build_bash_any, script]
+    - !reference [.build_any, script]
 
 build-macOs-x86_64-clang-debug:
   stage: build
@@ -232,7 +224,7 @@ build-macOs-x86_64-clang-debug:
     - CMAKE_CXX_COMPILER=clang++
     - ARCHITECTURE=x86_64
     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -DCMAKE_OSX_ARCHITECTURES=$ARCHITECTURE"
-    - !reference [.build_bash_any, script]
+    - !reference [.build_any, script]
   only:
     - documentation
 
@@ -246,7 +238,7 @@ build-macOs-arm64-clang-debug:
     - CMAKE_CXX_COMPILER=clang++
     - ARCHITECTURE=arm64
     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -DCMAKE_OSX_ARCHITECTURES=$ARCHITECTURE"
-    - !reference [.build_bash_any, script]
+    - !reference [.build_any, script]
   only:
     - documentation
   
