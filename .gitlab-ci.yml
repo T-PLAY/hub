@@ -59,7 +59,7 @@ cache:
     - cmake -B $buildDir -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_INSTALL_PREFIX=$installDir $CMAKE_CONFIGURE_ARGS
     # - !reference [.build_any, script]
     # - cmake -B $CACHE_PATH/build-release -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON
-    # - cmake --build $buildDir --config $BUILD_TYPE --parallel
+    - cmake --build $buildDir --config $BUILD_TYPE --parallel
     # - cmake --install $buildDir --config $BUILD_TYPE
     
 
