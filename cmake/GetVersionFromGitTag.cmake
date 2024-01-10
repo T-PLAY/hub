@@ -106,7 +106,19 @@ else()
         NOT ${LATEST_VERSION_MINOR} EQUAL ${${PROJECT_NAME}_VERSION_MINOR} OR
         NOT ${LATEST_VERSION_PATCH} EQUAL ${${PROJECT_NAME}_VERSION_PATCH}
             )
-            message(FATAL_ERROR "You must update the latest version for offline use")
+            message(WARNING "${${PROJECT_NAME}_VERSION_STRING} is outdated")
+            if (${LATEST_VERSION_MAJOR} GREATER ${${PROJECT_NAME}_VERSION_MAJOR} OR
+            NOT ${LATEST_VERSION_MINOR} GREATER ${${PROJECT_NAME}_VERSION_MINOR} OR
+            NOT ${LATEST_VERSION_PATCH} GREATER ${${PROJECT_NAME}_VERSION_PATCH}
+                )
+                set(${PROJECT_NAME}_VERSION_MAJOR ${LATEST_VERSION_MAJOR})
+                set(${PROJECT_NAME}_VERSION_MINOR ${LATEST_VERSION_MINOR})
+                set(${PROJECT_NAME}_VERSION_PATCH ${LATEST_VERSION_PATCH})
+                string(TIMESTAMP DATE_EPOCH "%s" UTC)
+                set(${PROJECT_NAME}_HASH \"${DATE_EPOCH}\")
+            else()
+                message(FATAL_ERROR "You must update the latest version for offline use")
+            endif()
         endif()
 
 #            foreach(MATCH ${${PROJECT_NAME}_PARTIAL_VERSION_LIST})
