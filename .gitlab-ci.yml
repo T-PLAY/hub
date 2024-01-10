@@ -119,8 +119,8 @@ build-windows-cl-x64-release:
     - $WIN_TAG
   script:
     - BUILD_TYPE=Release
-    - CMAKE_C_COMPILER=cl
-    - CMAKE_CXX_COMPILER=cl
+    # - CMAKE_C_COMPILER=cl
+    # - CMAKE_CXX_COMPILER=cl
     - ARCHITECTURE=x64
     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -A $ARCHITECTURE"
     - !reference [.build_any, script]
@@ -131,8 +131,8 @@ build-windows-cl-Win32-debug:
     - $WIN_TAG
   script:
     - BUILD_TYPE=Debug
-    - CMAKE_C_COMPILER=cl
-    - CMAKE_CXX_COMPILER=cl
+    # - CMAKE_C_COMPILER=cl
+    # - CMAKE_CXX_COMPILER=cl
     - ARCHITECTURE=Win32
     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -A $ARCHITECTURE"
     - !reference [.build_any, script]
@@ -143,8 +143,8 @@ build-windows-cl-x64-debug:
     - $WIN_TAG
   script:
     - BUILD_TYPE=Debug
-    - CMAKE_C_COMPILER=cl
-    - CMAKE_CXX_COMPILER=cl
+    # - CMAKE_C_COMPILER=cl
+    # - CMAKE_CXX_COMPILER=cl
     - ARCHITECTURE=x64
     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -A $ARCHITECTURE"
     - !reference [.build_any, script]
@@ -157,8 +157,8 @@ build-windows-cl-ARM64-debug:
     - $WIN_TAG
   script:
     - BUILD_TYPE=Debug
-    - CMAKE_C_COMPILER=cl
-    - CMAKE_CXX_COMPILER=cl
+    # - CMAKE_C_COMPILER=cl
+    # - CMAKE_CXX_COMPILER=cl
     - ARCHITECTURE=ARM64
     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -A $ARCHITECTURE"
     - !reference [.build_any, script]
@@ -171,8 +171,8 @@ build-windows-cl-ARM-debug:
     - $WIN_TAG
   script:
     - BUILD_TYPE=Debug
-    - CMAKE_C_COMPILER=cl
-    - CMAKE_CXX_COMPILER=cl
+    # - CMAKE_C_COMPILER=cl
+    # - CMAKE_CXX_COMPILER=cl
     - ARCHITECTURE=ARM
     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -A $ARCHITECTURE"
     - !reference [.build_any, script]
@@ -185,8 +185,8 @@ build-windows-cl-UWP_x64-debug:
     - $WIN_TAG
   script:
     - BUILD_TYPE=Debug
-    - CMAKE_C_COMPILER=cl
-    - CMAKE_CXX_COMPILER=cl
+    # - CMAKE_C_COMPILER=cl
+    # - CMAKE_CXX_COMPILER=cl
     - ARCHITECTURE=UWP-x64
     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -A x64 -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0"
     - !reference [.build_any, script]
