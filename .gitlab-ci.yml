@@ -53,8 +53,8 @@ cache:
     # - pwd -P
     - echo "shell: $SHELL"
     - echo "path: $PATH"
-    - buildDir=$CACHE_PATH/$CI_COMMIT_BRANCH/build-$ARCHITECTURE-$CMAKE_C_COMPILER-$BUILD_TYPE
-    - installDir=$CACHE_PATH/$CI_COMMIT_BRANCH/install-$ARCHITECTURE-$CMAKE_C_COMPILER-$BUILD_TYPE
+    - $buildDir=$CACHE_PATH/$CI_COMMIT_BRANCH/build-$ARCHITECTURE-$CMAKE_C_COMPILER-$BUILD_TYPE
+    - $installDir=$CACHE_PATH/$CI_COMMIT_BRANCH/install-$ARCHITECTURE-$CMAKE_C_COMPILER-$BUILD_TYPE
     # - buildDir=build-$CMAKE_C_COMPILER-$BUILD_TYPE
     - mkdir -p $buildDir
     # - cmake -B $CACHE_PATH/build-cl-release -DCMAKE_CXX_COMPILER=cl -DCMAKE_C_COMPILER=cl -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON
@@ -128,11 +128,11 @@ build-windows-cl-x64-debug:
   tags:
     - $WIN_TAG
   script:
-    - BUILD_TYPE=Debug
-    - CMAKE_C_COMPILER=cl
-    - CMAKE_CXX_COMPILER=cl
-    - ARCHITECTURE=x64
-    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -A $ARCHITECTURE"
+    - $BUILD_TYPE=Debug
+    - $CMAKE_C_COMPILER=cl
+    - $CMAKE_CXX_COMPILER=cl
+    - $ARCHITECTURE=x64
+    - $CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -A $ARCHITECTURE"
     - !reference [.build_any, script]
 
 build-windows-cl-Win32-debug:
