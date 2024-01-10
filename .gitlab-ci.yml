@@ -195,32 +195,6 @@ build-windows-cl-UWP_x64-debug:
 
 #################################### MacOs
 
-build-macOs-x86_64-clang-debug:
-  stage: build
-  tags:
-    - $MACOS_TAG
-  script:
-    - BUILD_TYPE=Debug
-    - COMPILER_C=clang
-    - COMPILER_CXX=clang++
-    - ARCHITECTURE=x86_64
-    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -DCMAKE_OSX_ARCHITECTURES=$ARCHITECTURE"
-    # - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$COMPILER_C -DCMAKE_CXX_COMPILER=$COMPILER_CXX -DHUB_ENABLE_TESTS=ON -DCMAKE_OSX_ARCHITECTURES=$ARCHITECTURE"
-    - !reference [.build_any, script]
-
-build-macOs-arm64-clang-debug:
-  stage: build
-  tags:
-    - $MACOS_TAG
-  script:
-    - BUILD_TYPE=Debug
-    - COMPILER_C=clang
-    - COMPILER_CXX=clang++
-    - ARCHITECTURE=arm64
-    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -DCMAKE_OSX_ARCHITECTURES=$ARCHITECTURE"
-    # - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$COMPILER_C -DCMAKE_CXX_COMPILER=$COMPILER_CXX -DHUB_ENABLE_TESTS=ON -DCMAKE_OSX_ARCHITECTURES=$ARCHITECTURE"
-    - !reference [.build_any, script]
-  
 build-macOs-arm64-clang-release:
   stage: build
   tags:
@@ -233,8 +207,6 @@ build-macOs-arm64-clang-release:
     # - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON"
     - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$COMPILER_C -DCMAKE_CXX_COMPILER=$COMPILER_CXX -DHUB_ENABLE_TESTS=ON"
     - !reference [.build_any, script]
-  only:
-    - master
   
 build-macOs-arm64-llvm-gcc-debug:
   stage: build
@@ -249,8 +221,37 @@ build-macOs-arm64-llvm-gcc-debug:
     - ARCHITECTURE=arm64
     - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$COMPILER_C -DCMAKE_CXX_COMPILER=$COMPILER_CXX -DHUB_ENABLE_TESTS=ON"
     - !reference [.build_any, script]
+
+build-macOs-x86_64-clang-debug:
+  stage: build
+  tags:
+    - $MACOS_TAG
+  script:
+    - BUILD_TYPE=Debug
+    - COMPILER_C=clang
+    - COMPILER_CXX=clang++
+    - ARCHITECTURE=x86_64
+    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -DCMAKE_OSX_ARCHITECTURES=$ARCHITECTURE"
+    # - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$COMPILER_C -DCMAKE_CXX_COMPILER=$COMPILER_CXX -DHUB_ENABLE_TESTS=ON -DCMAKE_OSX_ARCHITECTURES=$ARCHITECTURE"
+    - !reference [.build_any, script]
   only:
     - master
+
+build-macOs-arm64-clang-debug:
+  stage: build
+  tags:
+    - $MACOS_TAG
+  script:
+    - BUILD_TYPE=Debug
+    - COMPILER_C=clang
+    - COMPILER_CXX=clang++
+    - ARCHITECTURE=arm64
+    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -DCMAKE_OSX_ARCHITECTURES=$ARCHITECTURE"
+    # - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$COMPILER_C -DCMAKE_CXX_COMPILER=$COMPILER_CXX -DHUB_ENABLE_TESTS=ON -DCMAKE_OSX_ARCHITECTURES=$ARCHITECTURE"
+    - !reference [.build_any, script]
+  only:
+    - master
+  
 
   
 ############################################# TESTS
