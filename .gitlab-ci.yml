@@ -49,12 +49,12 @@ cache:
 .build_any:
   script:
     # - pwd -P
-    - buildDir=$CACHE_PATH/$CI_COMMIT_BRANCH/build-$ARCHITECTURE-$C_COMPILER-$BUILD_TYPE
-    - installDir=$CACHE_PATH/$CI_COMMIT_BRANCH/install-$ARCHITECTURE-$C_COMPILER-$BUILD_TYPE
-    # - buildDir=build-$C_COMPILER-$BUILD_TYPE
+    - buildDir=$CACHE_PATH/$CI_COMMIT_BRANCH/build-$ARCHITECTURE-$COMPILER_C-$BUILD_TYPE
+    - installDir=$CACHE_PATH/$CI_COMMIT_BRANCH/install-$ARCHITECTURE-$COMPILER_C-$BUILD_TYPE
+    # - buildDir=build-$COMPILER_C-$BUILD_TYPE
     # - cmake -B $CACHE_PATH/build-cl-release -DCMAKE_CXX_COMPILER=cl -DCMAKE_C_COMPILER=cl -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON
     - mkdir -p $buildDir
-    # - cmake -B $buildDir -DCMAKE_C_COMPILER=$C_COMPILER -DCMAKE_CXX_COMPILER=$CXX_COMPILER -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_INSTALL_PREFIX=$installDir $CMAKE_CONFIGURE_ARGS
+    # - cmake -B $buildDir -DCMAKE_C_COMPILER=$COMPILER_C -DCMAKE_CXX_COMPILER=$COMPILER_CXX -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_INSTALL_PREFIX=$installDir $CMAKE_CONFIGURE_ARGS
     - cmake -B $buildDir -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_INSTALL_PREFIX=$installDir $CMAKE_CONFIGURE_ARGS
     # - !reference [.build_any, script]
     # - cmake -B $CACHE_PATH/build-release -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON
@@ -64,9 +64,9 @@ cache:
 
 .test_bash_any:
   script:
-    - buildDir=$CACHE_PATH/$CI_COMMIT_BRANCH/build-$ARCHITECTURE-$C_COMPILER-$BUILD_TYPE
+    - buildDir=$CACHE_PATH/$CI_COMMIT_BRANCH/build-$ARCHITECTURE-$COMPILER_C-$BUILD_TYPE
     - cmake --build $buildDir --config $BUILD_TYPE --target hub-tests-bin
-    # - cmake --build build-$C_COMPILER-$BUILD_TYPE --config $BUILD_TYPE --target tests
+    # - cmake --build build-$COMPILER_C-$BUILD_TYPE --config $BUILD_TYPE --target tests
 
 #############################################
 
@@ -92,10 +92,10 @@ build-linux-x64-clang-release:
     - $LINUX_TAG
   script:
     - BUILD_TYPE=Release
-    - C_COMPILER=clang
-    - CXX_COMPILER=clang++
+    - COMPILER_C=clang
+    - COMPILER_CXX=clang++
     - ARCHITECTURE=x64
-    - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$C_COMPILER -DCMAKE_CXX_COMPILER=$CXX_COMPILER -DHUB_ENABLE_TESTS=ON"
+    - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$COMPILER_C -DCMAKE_CXX_COMPILER=$COMPILER_CXX -DHUB_ENABLE_TESTS=ON"
     - !reference [.build_any, script]
   
 build-linux-x64-gcc-debug:
@@ -104,11 +104,11 @@ build-linux-x64-gcc-debug:
     - $LINUX_TAG
   script:
     - BUILD_TYPE=Debug
-    - C_COMPILER=gcc
-    - CXX_COMPILER=g++
+    - COMPILER_C=gcc
+    - COMPILER_CXX=g++
     - ARCHITECTURE=x64
     # - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON"
-    - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$C_COMPILER -DCMAKE_CXX_COMPILER=$CXX_COMPILER -DHUB_ENABLE_TESTS=ON"
+    - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$COMPILER_C -DCMAKE_CXX_COMPILER=$COMPILER_CXX -DHUB_ENABLE_TESTS=ON"
     - !reference [.build_any, script]
   
 ############################################# Windows
@@ -119,8 +119,8 @@ build-windows-cl-x64-release:
     - $WIN_TAG
   script:
     - BUILD_TYPE=Release
-    - C_COMPILER=cl
-    - CXX_COMPILER=cl
+    - COMPILER_C=cl
+    - COMPILER_CXX=cl
     - ARCHITECTURE=x64
     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -A $ARCHITECTURE"
     - !reference [.build_any, script]
@@ -131,8 +131,8 @@ build-windows-cl-Win32-debug:
     - $WIN_TAG
   script:
     - BUILD_TYPE=Debug
-    - C_COMPILER=cl
-    - CXX_COMPILER=cl
+    - COMPILER_C=cl
+    - COMPILER_CXX=cl
     - ARCHITECTURE=Win32
     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -A $ARCHITECTURE"
     - !reference [.build_any, script]
@@ -143,8 +143,8 @@ build-windows-cl-x64-debug:
     - $WIN_TAG
   script:
     - BUILD_TYPE=Debug
-    - C_COMPILER=cl
-    - CXX_COMPILER=cl
+    - COMPILER_C=cl
+    - COMPILER_CXX=cl
     - ARCHITECTURE=x64
     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -A $ARCHITECTURE"
     - !reference [.build_any, script]
@@ -157,8 +157,8 @@ build-windows-cl-ARM64-debug:
     - $WIN_TAG
   script:
     - BUILD_TYPE=Debug
-    - C_COMPILER=cl
-    - CXX_COMPILER=cl
+    - COMPILER_C=cl
+    - COMPILER_CXX=cl
     - ARCHITECTURE=ARM64
     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -A $ARCHITECTURE"
     - !reference [.build_any, script]
@@ -171,8 +171,8 @@ build-windows-cl-ARM-debug:
     - $WIN_TAG
   script:
     - BUILD_TYPE=Debug
-    - C_COMPILER=cl
-    - CXX_COMPILER=cl
+    - COMPILER_C=cl
+    - COMPILER_CXX=cl
     - ARCHITECTURE=ARM
     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -A $ARCHITECTURE"
     - !reference [.build_any, script]
@@ -185,8 +185,8 @@ build-windows-cl-UWP_x64-debug:
     - $WIN_TAG
   script:
     - BUILD_TYPE=Debug
-    - C_COMPILER=cl
-    - CXX_COMPILER=cl
+    - COMPILER_C=cl
+    - COMPILER_CXX=cl
     - ARCHITECTURE=UWP-x64
     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -A x64 -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0"
     - !reference [.build_any, script]
@@ -201,11 +201,11 @@ build-macOs-x86_64-clang-debug:
     - $MACOS_TAG
   script:
     - BUILD_TYPE=Debug
-    - C_COMPILER=clang
-    - CXX_COMPILER=clang++
+    - COMPILER_C=clang
+    - COMPILER_CXX=clang++
     - ARCHITECTURE=x86_64
     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -DCMAKE_OSX_ARCHITECTURES=$ARCHITECTURE"
-    # - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$C_COMPILER -DCMAKE_CXX_COMPILER=$CXX_COMPILER -DHUB_ENABLE_TESTS=ON -DCMAKE_OSX_ARCHITECTURES=$ARCHITECTURE"
+    # - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$COMPILER_C -DCMAKE_CXX_COMPILER=$COMPILER_CXX -DHUB_ENABLE_TESTS=ON -DCMAKE_OSX_ARCHITECTURES=$ARCHITECTURE"
     - !reference [.build_any, script]
 
 build-macOs-arm64-clang-debug:
@@ -214,11 +214,11 @@ build-macOs-arm64-clang-debug:
     - $MACOS_TAG
   script:
     - BUILD_TYPE=Debug
-    - C_COMPILER=clang
-    - CXX_COMPILER=clang++
+    - COMPILER_C=clang
+    - COMPILER_CXX=clang++
     - ARCHITECTURE=arm64
     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -DCMAKE_OSX_ARCHITECTURES=$ARCHITECTURE"
-    # - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$C_COMPILER -DCMAKE_CXX_COMPILER=$CXX_COMPILER -DHUB_ENABLE_TESTS=ON -DCMAKE_OSX_ARCHITECTURES=$ARCHITECTURE"
+    # - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$COMPILER_C -DCMAKE_CXX_COMPILER=$COMPILER_CXX -DHUB_ENABLE_TESTS=ON -DCMAKE_OSX_ARCHITECTURES=$ARCHITECTURE"
     - !reference [.build_any, script]
   
 build-macOs-arm64-clang-release:
@@ -227,11 +227,11 @@ build-macOs-arm64-clang-release:
     - $MACOS_TAG
   script:
     - BUILD_TYPE=Release
-    - C_COMPILER=clang
-    - CXX_COMPILER=clang++
+    - COMPILER_C=clang
+    - COMPILER_CXX=clang++
     - ARCHITECTURE=arm64
     # - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON"
-    - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$C_COMPILER -DCMAKE_CXX_COMPILER=$CXX_COMPILER -DHUB_ENABLE_TESTS=ON"
+    - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$COMPILER_C -DCMAKE_CXX_COMPILER=$COMPILER_CXX -DHUB_ENABLE_TESTS=ON"
     - !reference [.build_any, script]
   only:
     - master
@@ -242,12 +242,12 @@ build-macOs-arm64-llvm-gcc-debug:
     - $MACOS_TAG
   script:
     - BUILD_TYPE=Debug
-    #- C_COMPILER=gcc
-    - C_COMPILER=llvm-gcc
-    #- CXX_COMPILER=g++
-    - CXX_COMPILER=llvm-g++
+    #- COMPILER_C=gcc
+    - COMPILER_C=llvm-gcc
+    #- COMPILER_CXX=g++
+    - COMPILER_CXX=llvm-g++
     - ARCHITECTURE=arm64
-    - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$C_COMPILER -DCMAKE_CXX_COMPILER=$CXX_COMPILER -DHUB_ENABLE_TESTS=ON"
+    - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$COMPILER_C -DCMAKE_CXX_COMPILER=$COMPILER_CXX -DHUB_ENABLE_TESTS=ON"
     - !reference [.build_any, script]
   only:
     - master
@@ -261,7 +261,7 @@ build-macOs-arm64-llvm-gcc-debug:
 #     - $LINUX_TAG
 #   script:
 #     - BUILD_TYPE=Release
-#     - C_COMPILER=clang
+#     - COMPILER_C=clang
 #     - !reference [.test_any, script]
 #   # when: manual
 #   needs:
@@ -277,7 +277,7 @@ build-macOs-arm64-llvm-gcc-debug:
 #     - $LINUX_TAG
 #   script:
 #     - BUILD_TYPE=Debug
-#     - C_COMPILER=gcc
+#     - COMPILER_C=gcc
 #     - !reference [.test_any, script]
 #   # when: manual
 #   needs:
@@ -294,7 +294,7 @@ build-macOs-arm64-llvm-gcc-debug:
 #     - $WIN_TAG
 #   script:
 #     - BUILD_TYPE=Release
-#     - C_COMPILER=cl
+#     - COMPILER_C=cl
 #     - !reference [.test_any, script]
 #   # when: manual
 #   needs:
@@ -310,7 +310,7 @@ build-macOs-arm64-llvm-gcc-debug:
 #     - $WIN_TAG
 #   script:
 #     - BUILD_TYPE=Debug
-#     - C_COMPILER=cl
+#     - COMPILER_C=cl
 #     - !reference [.test_any, script]
 #   # when: manual
 #   needs:
@@ -326,7 +326,7 @@ build-macOs-arm64-llvm-gcc-debug:
 #     - $MACOS_TAG
 #   script:
 #     - BUILD_TYPE=Release
-#     - C_COMPILER=clang
+#     - COMPILER_C=clang
 #     - !reference [.test_any, script]
 #   # when: manual
 #   needs:
@@ -342,8 +342,8 @@ build-macOs-arm64-llvm-gcc-debug:
 #     - $MACOS_TAG
 #   script:
 #     - BUILD_TYPE=Debug
-#     #- C_COMPILER=gcc
-#     - C_COMPILER=llvm-gcc
+#     #- COMPILER_C=gcc
+#     - COMPILER_C=llvm-gcc
 #     - !reference [.test_any, script]
 #   # when: manual
 #   needs:
