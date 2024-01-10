@@ -212,6 +212,34 @@ build-macOs-llvm-gcc-debug:
     - CMAKE_CXX_COMPILER=llvm-g++
     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON"
     - !reference [.build_any, script]
+
+build-macOs-x86_64-clang-debug:
+  stage: build
+  tags:
+    - $MACOS_TAG
+  script:
+    - BUILD_TYPE=Debug
+    - CMAKE_C_COMPILER=clang
+    - CMAKE_CXX_COMPILER=clang++
+    - ARCHITECTURE=x86_64
+    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -DCMAKE_OSX_ARCHITECTURES=$ARCHITECTURE"
+    - !reference [.build_any, script]
+  only:
+    - documentation
+
+build-macOs-x86_64-clang-debug:
+  stage: build
+  tags:
+    - $MACOS_TAG
+  script:
+    - BUILD_TYPE=Debug
+    - CMAKE_C_COMPILER=clang
+    - CMAKE_CXX_COMPILER=clang++
+    - ARCHITECTURE=arm64
+    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -DCMAKE_OSX_ARCHITECTURES=$ARCHITECTURE"
+    - !reference [.build_any, script]
+  only:
+    - documentation
   
 ############################################# TESTS
 
