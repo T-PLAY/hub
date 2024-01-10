@@ -96,7 +96,7 @@ build-linux-clang-release:
     - CMAKE_C_COMPILER=clang
     - CMAKE_CXX_COMPILER=clang++
     - ARCHITECTURE=x64
-    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON"
+    - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$CMAKE_C_COMPILER -DCMAKE_CXX_COMPILER=$CMAKE_CXX_COMPILER -DHUB_ENABLE_TESTS=ON"
     - !reference [.build_any, script]
   
 build-linux-gcc-debug:
@@ -108,7 +108,8 @@ build-linux-gcc-debug:
     - CMAKE_C_COMPILER=gcc
     - CMAKE_CXX_COMPILER=g++
     - ARCHITECTURE=x64
-    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON"
+    # - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON"
+    - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$CMAKE_C_COMPILER -DCMAKE_CXX_COMPILER=$CMAKE_CXX_COMPILER -DHUB_ENABLE_TESTS=ON"
     - !reference [.build_any, script]
   
 build-windows-cl-x64-release:
@@ -117,8 +118,8 @@ build-windows-cl-x64-release:
     - $WIN_TAG
   script:
     - BUILD_TYPE=Release
-    - CMAKE_C_COMPILER=cl
-    - CMAKE_CXX_COMPILER=cl
+    # - CMAKE_C_COMPILER=cl
+    # - CMAKE_CXX_COMPILER=cl
     - ARCHITECTURE=x64
     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -A $ARCHITECTURE"
     - !reference [.build_any, script]
@@ -141,8 +142,8 @@ build-windows-cl-Win32-debug:
     - $WIN_TAG
   script:
     - BUILD_TYPE=Debug
-    - CMAKE_C_COMPILER=cl
-    - CMAKE_CXX_COMPILER=cl
+    # - CMAKE_C_COMPILER=cl
+    # - CMAKE_CXX_COMPILER=cl
     - ARCHITECTURE=Win32
     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -A $ARCHITECTURE"
     - !reference [.build_any, script]
@@ -155,8 +156,8 @@ build-windows-cl-ARM64-debug:
     - $WIN_TAG
   script:
     - BUILD_TYPE=Debug
-    - CMAKE_C_COMPILER=cl
-    - CMAKE_CXX_COMPILER=cl
+    # - CMAKE_C_COMPILER=cl
+    # - CMAKE_CXX_COMPILER=cl
     - ARCHITECTURE=ARM64
     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -A $ARCHITECTURE"
     - !reference [.build_any, script]
@@ -169,8 +170,8 @@ build-windows-cl-ARM-debug:
     - $WIN_TAG
   script:
     - BUILD_TYPE=Debug
-    - CMAKE_C_COMPILER=cl
-    - CMAKE_CXX_COMPILER=cl
+    # - CMAKE_C_COMPILER=cl
+    # - CMAKE_CXX_COMPILER=cl
     - ARCHITECTURE=ARM
     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -A $ARCHITECTURE"
     - !reference [.build_any, script]
@@ -183,8 +184,8 @@ build-windows-cl-UWP-x64-debug:
     - $WIN_TAG
   script:
     - BUILD_TYPE=Debug
-    - CMAKE_C_COMPILER=cl
-    - CMAKE_CXX_COMPILER=cl
+    # - CMAKE_C_COMPILER=cl
+    # - CMAKE_CXX_COMPILER=cl
     - ARCHITECTURE=UWP-x64
     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -A x64 -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0"
     - !reference [.build_any, script]
@@ -199,7 +200,8 @@ build-macOs-clang-release:
     - BUILD_TYPE=Release
     - CMAKE_C_COMPILER=clang
     - CMAKE_CXX_COMPILER=clang++
-    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON"
+    # - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON"
+    - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$CMAKE_C_COMPILER -DCMAKE_CXX_COMPILER=$CMAKE_CXX_COMPILER -DHUB_ENABLE_TESTS=ON"
     - !reference [.build_any, script]
   
 build-macOs-llvm-gcc-debug:
@@ -212,7 +214,8 @@ build-macOs-llvm-gcc-debug:
     - CMAKE_C_COMPILER=llvm-gcc
     #- CMAKE_CXX_COMPILER=g++
     - CMAKE_CXX_COMPILER=llvm-g++
-    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON"
+    # - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON"
+    - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$CMAKE_C_COMPILER -DCMAKE_CXX_COMPILER=$CMAKE_CXX_COMPILER -DHUB_ENABLE_TESTS=ON"
     - !reference [.build_any, script]
 
 build-macOs-x86_64-clang-debug:
@@ -224,7 +227,8 @@ build-macOs-x86_64-clang-debug:
     - CMAKE_C_COMPILER=clang
     - CMAKE_CXX_COMPILER=clang++
     - ARCHITECTURE=x86_64
-    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -DCMAKE_OSX_ARCHITECTURES=$ARCHITECTURE"
+    # - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -DCMAKE_OSX_ARCHITECTURES=$ARCHITECTURE"
+    - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$CMAKE_C_COMPILER -DCMAKE_CXX_COMPILER=$CMAKE_CXX_COMPILER -DHUB_ENABLE_TESTS=ON"
     - !reference [.build_any, script]
   only:
     - documentation
@@ -238,7 +242,8 @@ build-macOs-arm64-clang-debug:
     - CMAKE_C_COMPILER=clang
     - CMAKE_CXX_COMPILER=clang++
     - ARCHITECTURE=arm64
-    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -DCMAKE_OSX_ARCHITECTURES=$ARCHITECTURE"
+    # - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -DCMAKE_OSX_ARCHITECTURES=$ARCHITECTURE"
+    - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$CMAKE_C_COMPILER -DCMAKE_CXX_COMPILER=$CMAKE_CXX_COMPILER -DHUB_ENABLE_TESTS=ON"
     - !reference [.build_any, script]
   only:
     - documentation
