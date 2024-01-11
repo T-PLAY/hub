@@ -183,14 +183,14 @@ struct Orientation // Euler
 // (w0, w1, w2, w3 || w, x, y, z).
 struct Dof6 {
     // translation
-    float x;
-    float y;
-    float z;
+    float x = 0.0;
+    float y = 0.0;
+    float z = 0.0;
     // quaternion
-    float w0; // w
-    float w1; // x
-    float w2; // y
-    float w3; // z
+    float w0 = 1.0; // w
+    float w1 = 0.0; // x
+    float w2 = 0.0; // y
+    float w3 = 0.0; // z
     static constexpr auto name() { return "Dof6"; };
 
     auto toString() const {
