@@ -8,7 +8,7 @@ include(GetVersionFromGitTag)
 
 set(REQUIRED_LIBS "")
 
-message(STATUS "[hub] Version: ${${PROJECT_NAME}_VERSION}")
+message(STATUS "${HEADER_MSG} Version: ${${PROJECT_NAME}_VERSION}")
 
 
 # option(HUB_BUILD_MQTT "Build implement using mqtt" OFF)

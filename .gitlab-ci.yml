@@ -267,7 +267,7 @@ test-linux-clang-x64-release:
     - !reference [.test_any, script]
   # when: manual
   needs:
-    - job: build-linux-clang-release
+    - job: build-linux-clang-x64-release
       optional: true
 
 ###################
@@ -284,7 +284,7 @@ test-linux-gcc-x64-debug:
     - !reference [.test_any, script]
   # when: manual
   needs:
-    - job: build-linux-gcc-debug
+    - job: build-linux-gcc-x64-debug
       optional: true
 
 ############################################ DOS
@@ -302,7 +302,7 @@ test-windows-cl-x64-release:
     - !reference [.test_any, script]
   # when: manual
   needs:
-    - job: build-windows-cl-release
+    - job: build-windows-cl-x64-release
       optional: true
 
 ###################
@@ -319,7 +319,7 @@ test-windows-cl-Win32-debug:
     - !reference [.test_any, script]
   # when: manual
   needs:
-    - job: build-windows-cl-debug
+    - job: build-windows-cl-Win32-debug
       optional: true
 
 ############################################ MacOs
@@ -336,7 +336,7 @@ test-macOs-clang-arm64-release:
     - !reference [.test_any, script]
   # when: manual
   needs:
-    - job: build-macOs-clang-release
+    - job: build-macOs-clang-arm64-release
       optional: true
 
 ###################
@@ -354,7 +354,7 @@ test-macOs-llvm_gcc-arm64-debug:
     - !reference [.test_any, script]
   # when: manual
   needs:
-    - job: build-macOs-llvm-gcc-debug
+    - job: build-macOs-llvm_gcc-arm64-debug
       optional: true
 
 
