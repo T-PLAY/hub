@@ -120,7 +120,6 @@ TEST_CASE( "Macros test" ) {
 //    checkType<unsigned char, 1>( "unsigned char", 'd' );
     checkType<unsigned char, 1>( "uchar", 'd' );
 //    checkType<const char*, 8>( "char const*", "bonjour" );
-    static_assert( sizeof( const char* ) == 4 );
 #ifdef ARCH_X86
     checkType<const char*, 4>( "cstr", "bonjour" );
 #else
