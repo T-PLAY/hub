@@ -26,7 +26,7 @@ stages:
   - build
   # - build-debug
   # - build-release
-  # - test
+  - test
   # - coverage
   # - code-analysis
   # - format
@@ -59,7 +59,7 @@ cache:
     # - !reference [.build_any, script]
     # - cmake -B $CACHE_PATH/build-release -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON
     - cmake --build $buildDir --config $BUILD_TYPE --parallel
-    # - cmake --install $buildDir --config $BUILD_TYPE
+    - cmake --install $buildDir --config $BUILD_TYPE
     
 
 .test_bash_any:
@@ -254,103 +254,109 @@ build-macOs-clang-arm64-debug:
   
 
   
-############################################# TESTS
+############################################ TESTS
 
-# test-linux-clang-release:
-#   stage: test
-#   tags:
-#     - $LINUX_TAG
-#   script:
-#     - BUILD_TYPE=Release
-#     - COMPILER_C=clang
-#     - !reference [.test_any, script]
-#   # when: manual
-#   needs:
-#     - job: build-linux-clang-release
-#       optional: true
+test-linux-clang-x64-release:
+  stage: test
+  tags:
+    - $LINUX_TAG
+  script:
+    - COMPILER_C=clang
+    - ARCHITECTURE=x64
+    - BUILD_TYPE=Release
+    - !reference [.test_any, script]
+  # when: manual
+  needs:
+    - job: build-linux-clang-release
+      optional: true
 
-####################        
-
-  
-# test-linux-gcc-debug:
-#   stage: test
-#   tags:
-#     - $LINUX_TAG
-#   script:
-#     - BUILD_TYPE=Debug
-#     - COMPILER_C=gcc
-#     - !reference [.test_any, script]
-#   # when: manual
-#   needs:
-#     - job: build-linux-gcc-debug
-#       optional: true
-
-############################################# DOS
+###################
 
 
+test-linux-gcc-x64-debug:
+  stage: test
+  tags:
+    - $LINUX_TAG
+  script:
+    - COMPILER_C=gcc
+    - ARCHITECTURE=x64
+    - BUILD_TYPE=Debug
+    - !reference [.test_any, script]
+  # when: manual
+  needs:
+    - job: build-linux-gcc-debug
+      optional: true
 
-# test-windows-cl-release:
-#   stage: test
-#   tags:
-#     - $WIN_TAG
-#   script:
-#     - BUILD_TYPE=Release
-#     - COMPILER_C=cl
-#     - !reference [.test_any, script]
-#   # when: manual
-#   needs:
-#     - job: build-windows-cl-release
-#       optional: true
+############################################ DOS
 
-####################        
 
-  
-# test-windows-cl-debug:
-#   stage: test
-#   tags:
-#     - $WIN_TAG
-#   script:
-#     - BUILD_TYPE=Debug
-#     - COMPILER_C=cl
-#     - !reference [.test_any, script]
-#   # when: manual
-#   needs:
-#     - job: build-windows-cl-debug
-#       optional: true
 
-############################################# MacOs
+test-windows-cl-x64-release:
+  stage: test
+  tags:
+    - $WIN_TAG
+  script:
+    - COMPILER_C=cl
+    - ARCHITECTURE=x64
+    - BUILD_TYPE=Release
+    - !reference [.test_any, script]
+  # when: manual
+  needs:
+    - job: build-windows-cl-release
+      optional: true
 
-  
-# test-macOs-clang-release:
-#   stage: test
-#   tags:
-#     - $MACOS_TAG
-#   script:
-#     - BUILD_TYPE=Release
-#     - COMPILER_C=clang
-#     - !reference [.test_any, script]
-#   # when: manual
-#   needs:
-#     - job: build-macOs-clang-release
-#       optional: true
+###################
 
-####################        
 
-  
-# test-macOs-llvm-gcc-debug:
-#   stage: test
-#   tags:
-#     - $MACOS_TAG
-#   script:
-#     - BUILD_TYPE=Debug
-#     #- COMPILER_C=gcc
-#     - COMPILER_C=llvm-gcc
-#     - !reference [.test_any, script]
-#   # when: manual
-#   needs:
-#     - job: build-macOs-llvm-gcc-debug
-#       optional: true
-#
+test-windows-cl-Win32-debug:
+  stage: test
+  tags:
+    - $WIN_TAG
+  script:
+    - COMPILER_C=cl
+    - ARCHITECTURE=Win32
+    - BUILD_TYPE=Debug
+    - !reference [.test_any, script]
+  # when: manual
+  needs:
+    - job: build-windows-cl-debug
+      optional: true
+
+############################################ MacOs
+
+
+test-macOs-clang-arm64-release:
+  stage: test
+  tags:
+    - $MACOS_TAG
+  script:
+    - COMPILER_C=clang
+    - ARCHITECTURE=arm64
+    - BUILD_TYPE=Release
+    - !reference [.test_any, script]
+  # when: manual
+  needs:
+    - job: build-macOs-clang-release
+      optional: true
+
+###################
+
+
+test-macOs-llvm_gcc-arm64-debug:
+  stage: test
+  tags:
+    - $MACOS_TAG
+  script:
+    #- COMPILER_C=gcc
+    - COMPILER_C=llvm-gcc
+    - ARCHITECTURE=arm64
+    - BUILD_TYPE=Debug
+    - !reference [.test_any, script]
+  # when: manual
+  needs:
+    - job: build-macOs-llvm-gcc-debug
+      optional: true
+
 
 
 
