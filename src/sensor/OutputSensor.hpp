@@ -1,7 +1,7 @@
 /// © 2021-2024 Hub, All Rights Reserved
 /// @author gauthier <gauthierbouyjou@aol.com>
 /// @date 2023/09/28
-	
+
 #pragma once
 
 //// #include <type_traits>
@@ -67,32 +67,36 @@ class OutputSensor : public Sensor
     //               const std::string& ipv4 = HUB_SERVICE_IPV4 ) :
     //     Sensor( sensorSpec ),
     //     m_output( *(
-    //         new output::OutputStream( io::make_header( sensorSpec ), streamName, port, ipv4 ) ) ),
+    //         new output::OutputStream( io::make_header( sensorSpec ), streamName, port, ipv4 ) )
+    //         ),
     //     m_outputOwner( true ) {
 
     //     assert( m_spec.getResolution().nType() > 0 );
     // }
 
-    template <class Output = output::OutputStream, class... Args>
+    template <class OutputT = output::OutputStream,
 #if CPP_VERSION >= 20
-        requires std::is_base_of_v<hub::Output, Output>
+                  requires std::is_base_of_v<hub::Output, OutputT>
 #endif
-    OutputSensor( const SensorSpec& sensorSpec, const Args&... args ) :
+              typename = typename std::enable_if_t<std::is_base_of_v<hub::Output, OutputT>>,
+              class... Args>
+              OutputSensor( const SensorSpec& sensorSpec, const Args&... args ) :
         Sensor( sensorSpec ),
-        m_output( *( new Output( io::make_header( sensorSpec ), args... ) ) ),
+        m_output( *( new OutputT( io::make_header( sensorSpec ), args... ) ) ),
         m_outputOwner( true ) {
-        static_assert( std::is_base_of_v<hub::Output, Output>);
+        static_assert( std::is_base_of_v<hub::Output, OutputT> );
 
         assert( m_spec.getResolution().nType() > 0 );
     }
 
-    template <class OutputT>
+    template <class OutputT,
 #if CPP_VERSION >= 20
-        requires std::is_base_of_v<hub::Output, OutputT>
+                  requires std::is_base_of_v<hub::Output, OutputT>
 #endif
-    OutputSensor( const SensorSpec& sensorSpec, OutputT& output ) :
+              typename = typename std::enable_if_t<std::is_base_of_v<hub::Output, OutputT>>>
+              OutputSensor( const SensorSpec& sensorSpec, OutputT& output ) :
         Sensor( sensorSpec ), m_output( output ) {
-        static_assert( std::is_base_of_v<hub::Output, OutputT>);
+        static_assert( std::is_base_of_v<hub::Output, OutputT> );
 
 #ifdef DEBUG
         const auto& header = output.getHeader();
@@ -108,18 +112,19 @@ class OutputSensor : public Sensor
         // m_output.setRetain( false );
     }
 
-    template <class Output>
+    template <class OutputT,
 #if CPP_VERSION >= 20
-        requires std::is_base_of_v<hub::Output, Output>
+                  requires std::is_base_of_v<hub::Output, OutputT>
 #endif
-    OutputSensor( const SensorSpec& sensorSpec, Output&& output ) :
+              typename = typename std::enable_if_t<std::is_base_of_v<hub::Output, OutputT>>>
+              OutputSensor( const SensorSpec& sensorSpec, OutputT&& output ) :
         Sensor( sensorSpec ),
-        m_output( *( new Output( std::move( output ) ) ) ),
+        m_output( *( new OutputT( std::move( output ) ) ) ),
         m_outputOwner( true ) {
-        static_assert( std::is_base_of_v<hub::Output, Output>);
+        static_assert( std::is_base_of_v<hub::Output, OutputT> );
 
 #ifdef DEBUG
-        const auto& header = dynamic_cast<const Output&>( m_output ).getHeader();
+        const auto& header = dynamic_cast<const OutputT&>( m_output ).getHeader();
         hub::io::Memory memory( header.getUserDefined() );
         SensorSpec headerSpec;
         memory.read( headerSpec );
