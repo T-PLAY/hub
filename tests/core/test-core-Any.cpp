@@ -162,6 +162,11 @@ TEST_CASE( "Any test" ) {
 
 // #ifndef HUB_NON_BUILD_IO
 // #endif
+    using namespace hub::format;
+    // hub::Anyable::registerTypes<Mat4>();
+    // hub::Any any_wip;
+    // any_wip = hub::format::Mat4{1.0};
+    // return;
 
 // #if CPP_VERSION >= 20
     static_assert( hub::Serializer::Readable_v<hub::Any> );
@@ -193,6 +198,7 @@ TEST_CASE( "Any test" ) {
     assert( any2.hasValue() );
     std::cout << "any2: " << any2 << std::endl;
 
+
     checkAny<int>( 1, 2 );
     checkAny<double>( 1.0, 2.0 );
     checkAny<std::string>( "gauthier", "bouyjou" );
@@ -203,7 +209,7 @@ TEST_CASE( "Any test" ) {
     static_assert(! hub::Serializer::Serializable<hub::format::Mat4>());
     static_assert(! hub::Serializer::Writable_v<hub::format::Mat4>);
     static_assert(! hub::Serializer::Readable_v<hub::format::Mat4>);
-    // checkAny<hub::format::Mat4>(hub::format::Mat4(1.0), hub::format::Mat4());
+    checkAny<hub::format::Mat4>(hub::format::Mat4(1.0), hub::format::Mat4(2.0));
 
 // #ifndef HUB_NON_BUILD_SENSOR
     //     {

@@ -11,6 +11,7 @@
 // #ifndef HUB_NON_BUILD_SENSOR
 // #    include <sensor/Format.hpp>
 // #endif
+
 #include <core/Format.hpp>
 
 class Lambda
@@ -108,6 +109,10 @@ TEST_CASE( "MetaData test" ) {
     checkMetaData<const char*>( "abc", "def" );
     checkMetaData<Lambda>( Lambda { 1, 2.0f, 3.0, { 1, 2 }, "hello" },
                            Lambda { 2, 3.0f, 4.0, { 3, 4 }, "hi" } );
+    using namespace hub::format;
+    // checkMetaData<Mat4>(Mat4{1.0f}, Mat4{2.0f});
+    Mat4 mat4{1.0f};
+    s_archive.write(mat4);
     // checkMetaData<hub::format::Mat4>(hub::format::Mat4(1.0), hub::format::Mat4());
 
     // todo serialize

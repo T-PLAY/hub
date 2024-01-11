@@ -37,6 +37,8 @@
 // #    include <boost/type_index.hpp>
 // #endif
 
+// #define HUB_DEBUG_ANY
+
 
 namespace hub {
 
@@ -121,9 +123,7 @@ class SRC_API Any
 #ifdef HUB_DEBUG_ANY
         std::cout << "[Any] Any(T&&) " << TYPE_NAME( t ) << std::endl;
 #endif
-        // std::cout << std::flush;
-        // exit( 1 );
-        // m_any = t;
+
         if ( Anyable::s_anyables.find( TYPE_NAME( t ) ) == Anyable::s_anyables.end() ) {
             Anyable::registerTypes<std::remove_cvref_t<T>>();
             //            std::cerr << HEADER << "'" << TYPE_NAME(T) << "' is not supported by

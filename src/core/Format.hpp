@@ -1,7 +1,7 @@
 /// © 2021-2024 Hub, All Rights Reserved
 /// @author gauthier <gauthierbouyjou@aol.com>
 /// @date 2024/01/03
-	
+
 #pragma once
 
 // #include <numeric>
@@ -85,6 +85,12 @@ struct Mat4 {
         return str + "]";
     }
     bool operator==( const Mat4& other ) const { return !memcmp( data, other.data, 64 ); }
+#if CPP_VERSION <= 17
+    template <typename Archive, typename Self>
+    static void serialize( Archive& archive, Self& self ) {
+        archive( self.data );
+    }
+#endif
     //    static constexpr auto interpolable() { return false; };
 };
 static_assert( sizeof( Mat4 ) == 64 );
